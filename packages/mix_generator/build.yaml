@@ -4,7 +4,7 @@ targets:
       mix_generator:
         enabled: true
         generate_for:
-          - lib/**/*.dart
+          - lib/src/specs/**/*.dart  # Narrowed scope for specs only
         options:
           debug: false
 

@@ -90,6 +90,33 @@ mixin _$BoxSpecMethods on Spec<BoxSpec>, Diagnosticable {
 
 ---
 
+## Generated Styler Mixin Lists
+
+Each styler extends `Style<XSpec>` and uses the following mixins (in declaration order):
+
+| Styler | Mixins |
+|--------|--------|
+| BoxStyler | `Diagnosticable`, `WidgetModifierStyleMixin<BoxStyler, BoxSpec>`, `VariantStyleMixin<BoxStyler, BoxSpec>`, `WidgetStateVariantMixin<BoxStyler, BoxSpec>`, `BorderStyleMixin<BoxStyler>`, `BorderRadiusStyleMixin<BoxStyler>`, `ShadowStyleMixin<BoxStyler>`, `DecorationStyleMixin<BoxStyler>`, `SpacingStyleMixin<BoxStyler>`, `TransformStyleMixin<BoxStyler>`, `ConstraintStyleMixin<BoxStyler>`, `AnimationStyleMixin<BoxStyler, BoxSpec>` |
+| TextStyler | `Diagnosticable`, `WidgetModifierStyleMixin<TextStyler, TextSpec>`, `VariantStyleMixin<TextStyler, TextSpec>`, `WidgetStateVariantMixin<TextStyler, TextSpec>`, `TextStyleMixin<TextStyler>`, `AnimationStyleMixin<TextStyler, TextSpec>` |
+| IconStyler | `Diagnosticable`, `WidgetModifierStyleMixin<IconStyler, IconSpec>`, `VariantStyleMixin<IconStyler, IconSpec>`, `WidgetStateVariantMixin<IconStyler, IconSpec>`, `AnimationStyleMixin<IconStyler, IconSpec>` |
+| ImageStyler | `Diagnosticable`, `WidgetModifierStyleMixin<ImageStyler, ImageSpec>`, `VariantStyleMixin<ImageStyler, ImageSpec>`, `WidgetStateVariantMixin<ImageStyler, ImageSpec>`, `AnimationStyleMixin<ImageStyler, ImageSpec>` |
+| FlexStyler | `Diagnosticable`, `WidgetModifierStyleMixin<FlexStyler, FlexSpec>`, `VariantStyleMixin<FlexStyler, FlexSpec>`, `WidgetStateVariantMixin<FlexStyler, FlexSpec>`, `FlexStyleMixin<FlexStyler>`, `AnimationStyleMixin<FlexStyler, FlexSpec>` |
+| StackStyler | `Diagnosticable`, `WidgetModifierStyleMixin<StackStyler, StackSpec>`, `VariantStyleMixin<StackStyler, StackSpec>`, `WidgetStateVariantMixin<StackStyler, StackSpec>`, `AnimationStyleMixin<StackStyler, StackSpec>` |
+
+**Common mixins (all stylers)**:
+- `Diagnosticable` - Flutter diagnostics integration
+- `WidgetModifierStyleMixin<S, T>` - `wrap()`, `modifier()` methods
+- `VariantStyleMixin<S, T>` - `variant()`, `onVariant()` methods
+- `WidgetStateVariantMixin<S, T>` - `onHovered()`, `onPressed()`, etc.
+- `AnimationStyleMixin<S, T>` - `animate()` method
+
+**Spec-specific mixins**:
+- `BorderStyleMixin`, `BorderRadiusStyleMixin`, `ShadowStyleMixin`, `DecorationStyleMixin`, `SpacingStyleMixin`, `TransformStyleMixin`, `ConstraintStyleMixin` - BoxStyler only
+- `TextStyleMixin` - TextStyler only
+- `FlexStyleMixin` - FlexStyler only
+
+---
+
 ## Generated Styler (Example: Box)
 
 ```dart
@@ -168,7 +195,7 @@ class BoxStyler extends Style<BoxSpec>
 | BoxSpec | Yes | `Box call({Key? key, Widget? child})` | Mixins: Decoration/Spacing/Transform/Constraint/Border/BorderRadius/Shadow + Animation |
 | TextSpec | Yes | `StyledText call(String text)` | `textDirectives` raw list; `textDirective` + `directive` + case helpers |
 | IconSpec | Yes | `StyledIcon call({Key? key, IconData? icon, String? semanticLabel})` | `List<ShadowMix>` -> `Prop.mix(ShadowListMix(...))` |
-| ImageSpec | Yes | `StyledImage call({ImageProvider? image, ...})` | Standard mixins including AnimationStyleMixin |
+| ImageSpec | Yes | `StyledImage call({ImageProvider? image, ImageFrameBuilder? frameBuilder, ImageLoadingBuilder? loadingBuilder, ImageErrorWidgetBuilder? errorBuilder, Animation<double>? opacity})` | Standard mixins; note: no `Key? key` parameter |
 | FlexSpec | Yes | **No call method** | Deprecated `gap` param in `.create()` |
 | StackSpec | Yes | **No call method** | Layout spec only |
 | FlexBoxSpec | **Spec mixin only** | N/A | Composite styler deferred |
@@ -179,18 +206,177 @@ class BoxStyler extends Style<BoxSpec>
 ## Special Cases (v1)
 
 ### TextStyler directives
-`textDirectives` is a **raw List**, not a Prop.
+`textDirectives` is a **raw List**, NOT wrapped in `Prop<>`.
 
-Expected behavior:
+**CRITICAL: No setter method is generated for textDirectives!**
+
+Unlike other fields, `textDirectives` does NOT get a setter method like `textDirectives(List<Directive<String>> value)`. Instead, it's handled by custom directive methods.
+
+**Field declaration**:
 ```dart
-final List<Directive<String>>? $textDirectives; // NOT Prop<List<...>>
-textDirectives: $textDirectives, // direct assignment in resolve
-MixOps.mergeList($textDirectives, other?.$textDirectives) // in merge
-..add(DiagnosticsProperty('directives', $textDirectives)); // diagnostic label
+final List<Directive<String>>? $textDirectives; // NOT Prop<List<...>>?
 ```
 
-Custom methods expected:
-- `textDirective`, `directive`, `uppercase`, `lowercase`, `capitalize`, `titlecase`, `sentencecase`
+**Constructor handling**:
+```dart
+// .create() constructor - accepts raw list
+TextStyler.create({
+  List<Directive<String>>? textDirectives,  // NOT Prop<...>
+  // ...
+}) : $textDirectives = textDirectives;
+
+// Public constructor - passes through directly
+TextStyler({
+  List<Directive<String>>? textDirectives,  // No wrapping, no Mix type
+  // ...
+}) : this.create(
+       textDirectives: textDirectives,  // Direct assignment, NOT Prop.maybe
+       // ...
+     );
+```
+
+**Merge handling**:
+```dart
+textDirectives: MixOps.mergeList($textDirectives, other?.$textDirectives),  // NOT MixOps.merge
+```
+
+**Resolve handling**:
+```dart
+textDirectives: $textDirectives,  // Direct pass-through, NOT MixOps.resolve
+```
+
+**Diagnostic label**:
+```dart
+..add(DiagnosticsProperty('directives', $textDirectives));  // Label is 'directives', NOT 'textDirectives'
+```
+
+**Custom methods (instead of setter)**:
+- `textDirective(Directive<String> value)` - adds single directive
+- `directive(Directive<String> value)` - alias for textDirective
+- `uppercase()` - adds UppercaseStringDirective
+- `lowercase()` - adds LowercaseStringDirective
+- `capitalize()` - adds CapitalizeStringDirective
+- `titlecase()` - adds TitleCaseStringDirective
+- `sentencecase()` - adds SentenceCaseStringDirective
+
+### TextStyler setter methods
+`TextStyler` generates setter methods for its properties, similar to other stylers.
+
+**Setter methods generated**:
+- `overflow(TextOverflow value)` - Sets text overflow behavior
+- `strutStyle(StrutStyleMix value)` - Sets strut style
+- `textAlign(TextAlign value)` - Sets text alignment
+- `textScaler(TextScaler value)` - Sets text scaler
+- `maxLines(int value)` - Sets maximum number of lines
+- `textWidthBasis(TextWidthBasis value)` - Sets text width basis
+- `textHeightBehavior(TextHeightBehaviorMix value)` - Sets text height behavior
+- `textDirection(TextDirection value)` - Sets text direction
+- `softWrap(bool value)` - Sets soft wrap behavior
+- `selectionColor(Color value)` - Sets selection color
+- `semanticsLabel(String value)` - Sets semantics label
+- `locale(Locale value)` - Sets locale
+
+**Note**: `TextStyleMixin<TextStyler>` provides additional text-styling convenience methods (font, color, decoration, etc.).
+
+### Base-field handling in Stylers
+
+Stylers inherit **base fields** (`$variants`, `$modifier`, `$animation`) from `Style<T>`. These are passed via `super` in constructors but must be handled correctly in generated code.
+
+**CRITICAL: props vs debugFillProperties handling differs!**
+
+#### props getter - INCLUDES base fields
+
+The `props` getter must include ALL fields (domain + base) for proper equality comparison:
+
+```dart
+@override
+List<Object?> get props => [
+  // Domain-specific fields
+  $alignment,
+  $padding,
+  $margin,
+  $constraints,
+  $decoration,
+  $foregroundDecoration,
+  $transform,
+  $transformAlignment,
+  $clipBehavior,
+  // Base fields (ALWAYS INCLUDED in props)
+  $animation,
+  $modifier,
+  $variants,
+];
+```
+
+#### debugFillProperties - EXCLUDES base fields
+
+The `debugFillProperties` method only includes domain-specific fields:
+
+```dart
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  super.debugFillProperties(properties);
+  properties
+    ..add(DiagnosticsProperty('alignment', $alignment))
+    ..add(DiagnosticsProperty('padding', $padding))
+    ..add(DiagnosticsProperty('margin', $margin))
+    ..add(DiagnosticsProperty('constraints', $constraints))
+    ..add(DiagnosticsProperty('decoration', $decoration))
+    ..add(DiagnosticsProperty('foregroundDecoration', $foregroundDecoration))
+    ..add(DiagnosticsProperty('transform', $transform))
+    ..add(DiagnosticsProperty('transformAlignment', $transformAlignment))
+    ..add(DiagnosticsProperty('clipBehavior', $clipBehavior));
+  // NO base fields ($animation, $modifier, $variants)
+}
+```
+
+#### Field counts by Styler
+
+| Styler | Domain Fields | Base Fields | Total in props |
+|--------|---------------|-------------|----------------|
+| BoxStyler | 9 | 3 | 12 |
+| TextStyler | 14 | 3 | 17 |
+| IconStyler | 13 | 3 | 16 |
+| ImageStyler | 15 | 3 | 18 |
+| FlexStyler | 9 | 3 | 12 |
+| StackStyler | 4 | 3 | 7 |
+
+#### Constructor handling
+
+Base fields are passed via `super` parameters, not assigned to local fields:
+
+```dart
+const BoxStyler.create({
+  Prop<AlignmentGeometry>? alignment,
+  Prop<EdgeInsetsGeometry>? padding,
+  // ... domain fields ...
+  super.variants,   // Base field via super
+  super.modifier,   // Base field via super
+  super.animation,  // Base field via super
+}) : $alignment = alignment,
+     $padding = padding;
+     // NO assignment for base fields - they go to super
+```
+
+#### merge() handling
+
+Base fields use specialized merge functions:
+
+```dart
+@override
+BoxStyler merge(BoxStyler? other) {
+  return BoxStyler.create(
+    // Domain fields use MixOps.merge
+    alignment: MixOps.merge($alignment, other?.$alignment),
+    padding: MixOps.merge($padding, other?.$padding),
+    // ...
+    // Base fields use specialized merge functions
+    variants: MixOps.mergeVariants($variants, other?.$variants),
+    modifier: MixOps.mergeModifier($modifier, other?.$modifier),
+    animation: MixOps.mergeAnimation($animation, other?.$animation),
+  );
+}
+```
 
 ### FlexStyler deprecated gap (constructor override)
 `FlexStyler.create` must accept deprecated `gap` param and map to `$spacing`.
