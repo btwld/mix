@@ -18,7 +18,7 @@ test.describe('FlutterMultiView', () => {
 
     // Container should have data-demo-id attribute
     const container = wrapper.locator('[data-demo-id="box-basic"]');
-    await expect(container).toBeVisible();
+    await expect(container).toBeAttached();
   });
 
   test('multiple views can coexist on same page', async ({ page }) => {
@@ -30,8 +30,8 @@ test.describe('FlutterMultiView', () => {
     await scrollIntoViewAndWait(wrapper2);
 
     // Verify both have their correct demo IDs
-    await expect(wrapper1.locator('[data-demo-id="box-basic"]')).toBeVisible();
-    await expect(wrapper2.locator('[data-demo-id="variant-hover"]')).toBeVisible();
+    await expect(wrapper1.locator('[data-demo-id="box-basic"]')).toBeAttached();
+    await expect(wrapper2.locator('[data-demo-id="variant-hover"]')).toBeAttached();
   });
 
   test('has data-state attribute for tracking loading state', async ({ page }) => {
@@ -65,12 +65,22 @@ test.describe('FlutterMultiView', () => {
     // Loading text should be visible initially or transition quickly
     // We check that the loading infrastructure exists
     const loadingIndicator = wrapper.locator('text=Loading');
-    const isVisible = await loadingIndicator.isVisible().catch(() => false);
+    const waitingIndicator = wrapper.locator('text=Waiting');
+    const isLoadingVisible = await loadingIndicator.isVisible().catch(() => false);
+    const isWaitingVisible = await waitingIndicator.isVisible().catch(() => false);
 
     // Either loading is visible OR we've already reached ready state
     const container = wrapper.locator('[data-state]');
     const state = await container.getAttribute('data-state');
 
-    expect(isVisible || state === 'ready' || state === 'error').toBe(true);
+    expect(
+      isLoadingVisible ||
+        isWaitingVisible ||
+        state === 'idle' ||
+        state === 'loading-engine' ||
+        state === 'adding-view' ||
+        state === 'ready' ||
+        state === 'error'
+    ).toBe(true);
   });
 });

@@ -48,8 +48,12 @@ Map<String, Object?>? getInitialData(int viewId) {
 }
 
 /// Convert a JSAny to a Dart Map.
-Map<String, Object?>? _jsObjectToMap(JSAny? jsAny) {
+Map<String, Object?>? _jsObjectToMap(JSAny? jsAny, [int depth = 0]) {
   if (jsAny == null) return null;
+  if (depth > 10) {
+    debugPrint('_jsObjectToMap: Max depth exceeded');
+    return null;
+  }
 
   final result = <String, Object?>{};
 
@@ -59,22 +63,23 @@ Map<String, Object?>? _jsObjectToMap(JSAny? jsAny) {
 
   for (final key in keys) {
     final value = _getProperty(jsObject, key);
-    result[key] = _jsToValue(value);
+    result[key] = _jsToValue(value, depth + 1);
   }
 
   return result;
 }
 
 /// Convert a JSAny value to a Dart value.
-Object? _jsToValue(JSAny? jsValue) {
+Object? _jsToValue(JSAny? jsValue, [int depth = 0]) {
   if (jsValue == null) return null;
+  if (depth > 10) return null;
   if (jsValue.isA<JSString>()) return (jsValue as JSString).toDart;
   if (jsValue.isA<JSNumber>()) return (jsValue as JSNumber).toDartDouble;
   if (jsValue.isA<JSBoolean>()) return (jsValue as JSBoolean).toDart;
   if (jsValue.isA<JSArray>()) {
-    return (jsValue as JSArray).toDart.map(_jsToValue).toList();
+    return (jsValue as JSArray).toDart.map((value) => _jsToValue(value, depth + 1)).toList();
   }
-  if (jsValue.isA<JSObject>()) return _jsObjectToMap(jsValue);
+  if (jsValue.isA<JSObject>()) return _jsObjectToMap(jsValue, depth + 1);
   return jsValue.toString();
 }
 

@@ -118,7 +118,11 @@ async function loadFlutterLoaderScript(basePath: string): Promise<void> {
           flutterLoaderState = "ready";
           resolve();
         })
-        .catch(reject);
+        .catch((error) => {
+          flutterLoaderState = "error";
+          flutterLoaderPromise = null;
+          reject(error);
+        });
     };
 
     script.onerror = () => {
@@ -329,10 +333,19 @@ export function FlutterEmbed({
   const mountedRef = useRef(true);
   const loadingRef = useRef(false);
   const loadingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const releaseLockRef = useRef<(() => void) | null>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
   // Validate src prop - iframe mode still validates but allows more domains
   const validatedSrc = useIframe ? validateIframeSrc(src) : validateAndNormalizeSrc(src);
+
+  const releaseInitializationLock = useCallback(() => {
+    const release = releaseLockRef.current;
+    if (release) {
+      releaseLockRef.current = null;
+      release();
+    }
+  }, []);
 
   const loadFlutterApp = useCallback(async () => {
     if (!containerRef.current || useIframe || loadingRef.current) return;
@@ -362,6 +375,7 @@ export function FlutterEmbed({
     // Multiple Flutter element embeds cannot initialize simultaneously - they compete for
     // CanvasKit/WebGL resources causing BindingErrors.
     const releaseLock = await acquireInitializationLock();
+    releaseLockRef.current = releaseLock;
 
     try {
       // Check if component was unmounted while waiting for lock
@@ -421,9 +435,9 @@ export function FlutterEmbed({
       setStatus("error");
     } finally {
       loadingRef.current = false;
-      releaseLock(); // Release the initialization lock for other embeds
+      releaseInitializationLock(); // Release the initialization lock for other embeds
     }
-  }, [validatedSrc, useIframe]);
+  }, [releaseInitializationLock, validatedSrc, useIframe]);
 
   // Q8 fix: Proper cleanup on unmount
   useEffect(() => {
@@ -453,6 +467,8 @@ export function FlutterEmbed({
 
     loadingTimeoutRef.current = setTimeout(() => {
       if (mountedRef.current && status === "loading") {
+        loadingRef.current = false;
+        releaseInitializationLock();
         const errorDetails = capturedErrors.length > 0
           ? `Captured errors: ${capturedErrors.join("; ")}`
           : "No errors captured - check browser console for details.";
@@ -467,7 +483,7 @@ export function FlutterEmbed({
         loadingTimeoutRef.current = null;
       }
     };
-  }, [status, loadingStage, capturedErrors]);
+  }, [status, loadingStage, capturedErrors, releaseInitializationLock]);
 
   // Capture global errors during Flutter initialization
   useEffect(() => {
@@ -632,7 +648,7 @@ export function FlutterEmbed({
   );
 
   // Show error immediately if src validation failed
-  if (!validatedSrc && status !== "error") {
+  if (!validatedSrc) {
     return (
       <div className="my-6 not-prose">
         {title && (
@@ -667,7 +683,7 @@ export function FlutterEmbed({
         {useIframe ? (
           <iframe
             ref={iframeRef}
-            src={`${validatedSrc || src}/index.html`}
+            src={`${validatedSrc}/index.html`}
             data-testid="flutter-iframe"
             className="h-full w-full"
             style={{ border: "none" }}

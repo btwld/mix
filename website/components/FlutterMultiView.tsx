@@ -106,12 +106,8 @@ async function ensureFlutterEngine(basePath: string): Promise<FlutterMultiViewAp
     return window.flutterApp;
   }
 
-  if (enginePromise) {
-    return enginePromise;
-  }
-
-  enginePromise = withTimeout(
-    (async () => {
+  if (!enginePromise) {
+    const initPromise = (async () => {
       await ensureFlutterScript(basePath);
 
       // Set multi-view mode flag
@@ -155,16 +151,19 @@ async function ensureFlutterEngine(basePath: string): Promise<FlutterMultiViewAp
           },
         });
       });
-    })(),
+    })();
+
+    enginePromise = initPromise.catch((err) => {
+      enginePromise = null;
+      throw err;
+    });
+  }
+
+  return withTimeout(
+    enginePromise!,
     INIT_TIMEOUT_MS,
     `Flutter engine initialization timed out after ${INIT_TIMEOUT_MS / 1000}s`
-  ).catch((err) => {
-    // Reset state on failure so retry can work
-    enginePromise = null;
-    throw err;
-  });
-
-  return enginePromise;
+  );
 }
 
 /**
@@ -203,6 +202,7 @@ export function FlutterMultiView({
   const isInViewRef = useRef(false);
   const hasLoadedRef = useRef(false);
   const isMountedRef = useRef(true);
+  const addViewCancelledRef = useRef(false);
 
   const loadView = useCallback(async () => {
     const container = containerRef.current;
@@ -227,17 +227,45 @@ export function FlutterMultiView({
       }
 
       setState("adding-view");
+      addViewCancelledRef.current = false;
 
       // Add the view with timeout protection
       const hostElement = containerRef.current;
-      const viewId = await withTimeout(
-        Promise.resolve(app.addView({
-          hostElement,
-          initialData: { demoId },
-        })),
-        ADD_VIEW_TIMEOUT_MS,
-        `Adding view "${demoId}" timed out after ${ADD_VIEW_TIMEOUT_MS / 1000}s`
-      );
+      const addViewPromise = Promise.resolve(app.addView({
+        hostElement,
+        initialData: { demoId },
+      }));
+      let addViewTimeoutId: ReturnType<typeof setTimeout> | null = null;
+      const timeoutPromise = new Promise<number>((_, reject) => {
+        addViewTimeoutId = setTimeout(() => {
+          addViewCancelledRef.current = true;
+          reject(new Error(
+            `Adding view "${demoId}" timed out after ${ADD_VIEW_TIMEOUT_MS / 1000}s`
+          ));
+        }, ADD_VIEW_TIMEOUT_MS);
+      });
+
+      addViewPromise
+        .then((pendingViewId) => {
+          if (!addViewCancelledRef.current) return;
+          try {
+            app.removeView(pendingViewId);
+          } catch (err) {
+            if (process.env.NODE_ENV === "development") {
+              console.warn("[FlutterMultiView] Failed to remove timed-out view:", err);
+            }
+          }
+        })
+        .catch(() => {
+          // Errors are handled by the race below.
+        });
+
+      const viewId = await Promise.race([addViewPromise, timeoutPromise]).finally(() => {
+        if (addViewTimeoutId) {
+          clearTimeout(addViewTimeoutId);
+          addViewTimeoutId = null;
+        }
+      });
 
       // Check again after addView (handles unmount during addView)
       if (!isMountedRef.current) {
@@ -275,7 +303,7 @@ export function FlutterMultiView({
       (contextError as Error & { cause?: unknown }).cause = error;
       onError?.(contextError);
     }
-  }, [demoId, onReady, onError]);
+  }, [basePath, demoId, onReady, onError]);
 
   // Set up IntersectionObserver for lazy loading
   useEffect(() => {

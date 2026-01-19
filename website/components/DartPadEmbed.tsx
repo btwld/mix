@@ -78,6 +78,19 @@ export function DartPadEmbed({
     return `${baseUrl}?${params.toString()}`;
   }, [gistId, theme, run, split, flutter]);
 
+  const [resolvedSrc, setResolvedSrc] = useState<string | null>(null);
+
+  // Ensure iframe loads after hydration to avoid missing the load event.
+  React.useEffect(() => {
+    setStatus("loading");
+    setResolvedSrc(iframeSrc);
+  }, [iframeSrc]);
+
+  const reloadIframe = React.useCallback(() => {
+    setResolvedSrc(null);
+    requestAnimationFrame(() => setResolvedSrc(iframeSrc));
+  }, [iframeSrc]);
+
   // For inline code, we need to use a different approach
   // DartPad supports postMessage API for setting code
   const iframeRef = React.useRef<HTMLIFrameElement>(null);
@@ -104,16 +117,23 @@ export function DartPadEmbed({
         }
       };
 
-      // Fix load race: check if iframe already loaded (fast cache path)
-      if (iframe.contentDocument?.readyState === "complete") {
+      const retryTimeouts: Array<ReturnType<typeof setTimeout>> = [];
+      const sendCodeWithRetry = () => {
         sendCode();
-      }
+        retryTimeouts.push(setTimeout(sendCode, 500));
+        retryTimeouts.push(setTimeout(sendCode, 1500));
+      };
 
-      // Also listen for load event in case it hasn't loaded yet
-      iframe.addEventListener("load", sendCode);
-      return () => iframe.removeEventListener("load", sendCode);
+      // Send immediately and also on load to handle cross-origin iframe readiness
+      sendCodeWithRetry();
+      iframe.addEventListener("load", sendCodeWithRetry);
+
+      return () => {
+        iframe.removeEventListener("load", sendCodeWithRetry);
+        retryTimeouts.forEach((timeoutId) => clearTimeout(timeoutId));
+      };
     }
-  }, [code]);
+  }, [code, resolvedSrc]);
 
   // Show error if no content source provided
   if (!hasContent) {
@@ -158,7 +178,10 @@ export function DartPadEmbed({
               Unable to connect to dartpad.dev. Check your internet connection.
             </div>
             <button
-              onClick={() => setStatus("loading")}
+              onClick={() => {
+                setStatus("loading");
+                reloadIframe();
+              }}
               className="mt-4 px-4 py-2 bg-purple-600 hover:bg-purple-500 rounded text-sm text-white transition-colors"
             >
               Retry
@@ -182,20 +205,22 @@ export function DartPadEmbed({
         className="overflow-hidden rounded-lg border border-white/10"
         style={{ height }}
       >
-        <iframe
-          ref={iframeRef}
-          src={iframeSrc}
-          data-testid="dartpad-iframe"
-          className="h-full w-full"
-          style={{ border: "none" }}
-          title={title || "DartPad Demo"}
-          allow="clipboard-write"
-          sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
-          referrerPolicy="no-referrer"
-          loading="lazy"
-          onLoad={() => setStatus("ready")}
-          onError={() => setStatus("error")}
-        />
+        {resolvedSrc && (
+          <iframe
+            ref={iframeRef}
+            src={resolvedSrc}
+            data-testid="dartpad-iframe"
+            className="h-full w-full"
+            style={{ border: "none" }}
+            title={title || "DartPad Demo"}
+            allow="clipboard-write"
+            sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+            referrerPolicy="no-referrer"
+            loading="lazy"
+            onLoad={() => setStatus("ready")}
+            onError={() => setStatus("error")}
+          />
+        )}
       </div>
       <div className="mt-2 flex items-center gap-2 text-xs text-zinc-500">
         <span>Powered by</span>

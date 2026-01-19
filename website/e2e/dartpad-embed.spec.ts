@@ -1,10 +1,14 @@
 import { test, expect } from '@playwright/test';
 import { scrollIntoViewAndWait, waitForStatus } from './helpers/scroll-and-wait';
+import { isDartPadAvailable } from './helpers/dartpad';
 
 const TEST_PAGE = '/documentation/test/demo-test';
 
 test.describe('DartPadEmbed @slow', () => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, request }) => {
+    const dartpadAvailable = await isDartPadAvailable(request);
+    test.skip(!dartpadAvailable, 'dartpad.dev is unavailable');
+
     await page.goto(TEST_PAGE);
   });
 
