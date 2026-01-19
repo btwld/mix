@@ -59,7 +59,7 @@ class AspectRatioModifierMix extends ModifierMix<AspectRatioModifier>
 
   @override
   AspectRatioModifier resolve(BuildContext context) {
-    return AspectRatioModifier(aspectRatio?.resolveProp(context));
+    return AspectRatioModifier(MixOps.resolve(context, aspectRatio));
   }
 
   @override
