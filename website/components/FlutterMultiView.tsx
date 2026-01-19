@@ -11,6 +11,8 @@ type LoadingState = "idle" | "loading-engine" | "adding-view" | "ready" | "error
 interface FlutterMultiViewProps {
   /** The demo ID to render (e.g., 'box-basic', 'variant-hover') */
   demoId: string;
+  /** Base path where Flutter demos are hosted (default: /demos) */
+  basePath?: string;
   /** Height of the demo container */
   height?: number;
   /** Whether to show a border around the demo */
@@ -32,6 +34,8 @@ let flutterScriptPromise: Promise<void> | null = null;
 
 // Timeout for initialization (30 seconds)
 const INIT_TIMEOUT_MS = 30000;
+// Timeout for adding a view (15 seconds)
+const ADD_VIEW_TIMEOUT_MS = 15000;
 
 /**
  * Wrap a promise with a timeout.
@@ -184,6 +188,7 @@ async function ensureFlutterEngine(basePath: string): Promise<FlutterMultiViewAp
  */
 export function FlutterMultiView({
   demoId,
+  basePath = "/demos",
   height = 400,
   bordered = true,
   className = "",
@@ -198,8 +203,6 @@ export function FlutterMultiView({
   const isInViewRef = useRef(false);
   const hasLoadedRef = useRef(false);
   const isMountedRef = useRef(true);
-
-  const basePath = "/demos";
 
   const loadView = useCallback(async () => {
     const container = containerRef.current;
@@ -225,11 +228,16 @@ export function FlutterMultiView({
 
       setState("adding-view");
 
-      // Add the view
-      const viewId = app.addView({
-        hostElement: containerRef.current,
-        initialData: { demoId },
-      });
+      // Add the view with timeout protection
+      const hostElement = containerRef.current;
+      const viewId = await withTimeout(
+        Promise.resolve(app.addView({
+          hostElement,
+          initialData: { demoId },
+        })),
+        ADD_VIEW_TIMEOUT_MS,
+        `Adding view "${demoId}" timed out after ${ADD_VIEW_TIMEOUT_MS / 1000}s`
+      );
 
       // Check again after addView (handles unmount during addView)
       if (!isMountedRef.current) {

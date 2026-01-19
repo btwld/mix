@@ -119,8 +119,10 @@ if [ -f "$BOOTSTRAP_FILE" ]; then
             exit 1
         fi
     else
-        echo "Warning: flutter_bootstrap.js structure changed - auto-load not found"
-        echo "Multi-view embedding may not work correctly"
+        echo "Error: flutter_bootstrap.js structure changed - auto-load pattern not found"
+        echo "Multi-view embedding requires patching the auto-load call."
+        echo "Check if Flutter changed the bootstrap output format."
+        exit 1
     fi
 else
     echo "Error: flutter_bootstrap.js not found in build output"

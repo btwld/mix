@@ -190,6 +190,8 @@ export function DartPadEmbed({
           style={{ border: "none" }}
           title={title || "DartPad Demo"}
           allow="clipboard-write"
+          sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+          referrerPolicy="no-referrer"
           loading="lazy"
           onLoad={() => setStatus("ready")}
           onError={() => setStatus("error")}

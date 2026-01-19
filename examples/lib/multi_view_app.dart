@@ -67,7 +67,9 @@ class _DemoView extends StatelessWidget {
   Widget build(BuildContext context) {
     // Get the initialData passed from JavaScript via addView().
     final initialData = multi_view.getInitialData(viewId);
-    final demoId = initialData?['demoId'] as String?;
+    // Defensive typing: JS may pass non-string values
+    final rawDemoId = initialData?['demoId'];
+    final demoId = rawDemoId is String ? rawDemoId : rawDemoId?.toString();
     final view = View.of(context);
 
     return ColoredBox(

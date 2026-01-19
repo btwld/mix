@@ -67,10 +67,15 @@ async function loadFlutterLoaderScript(basePath: string): Promise<void> {
     return;
   }
 
-  // If previously errored, reset state to allow retry
+  // If previously errored, reset state AND remove stale script to allow retry
   if (flutterLoaderState === "error") {
     flutterLoaderState = "idle";
     flutterLoaderPromise = null;
+    // Remove stale script element so retry can insert fresh one
+    const staleScript = document.getElementById("flutter-loader-script");
+    if (staleScript) {
+      staleScript.remove();
+    }
   }
 
   // If currently loading, wait for the existing promise
@@ -233,6 +238,46 @@ function validateAndNormalizeSrc(src: string): string | null {
   }
 }
 
+/**
+ * Validates src for iframe mode.
+ * Allows any https URL but blocks dangerous schemes.
+ */
+function validateIframeSrc(src: string): string | null {
+  if (!src || typeof src !== "string") {
+    console.error("FlutterEmbed: src prop is required for iframe mode");
+    return null;
+  }
+
+  const trimmed = src.trim();
+  if (!trimmed) {
+    console.error("FlutterEmbed: src prop resolved to empty string");
+    return null;
+  }
+
+  // Block dangerous schemes
+  const lowerSrc = trimmed.toLowerCase();
+  const blockedSchemes = ["javascript:", "data:", "blob:", "vbscript:"];
+  for (const scheme of blockedSchemes) {
+    if (lowerSrc.startsWith(scheme)) {
+      console.error(`FlutterEmbed: Blocked scheme "${scheme}" in iframe src`);
+      return null;
+    }
+  }
+
+  // For absolute URLs, verify protocol
+  try {
+    const url = new URL(trimmed, window.location.origin);
+    if (!["http:", "https:"].includes(url.protocol)) {
+      console.error(`FlutterEmbed: Only http/https allowed, got "${url.protocol}"`);
+      return null;
+    }
+    return url.href.replace(/\/$/, "");
+  } catch {
+    // Relative path - allow
+    return trimmed;
+  }
+}
+
 // ============================================================================
 // Component
 // ============================================================================
@@ -286,8 +331,8 @@ export function FlutterEmbed({
   const loadingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
-  // Validate src prop (skip validation for iframe mode - allows any external URL)
-  const validatedSrc = useIframe ? src.trim() : validateAndNormalizeSrc(src);
+  // Validate src prop - iframe mode still validates but allows more domains
+  const validatedSrc = useIframe ? validateIframeSrc(src) : validateAndNormalizeSrc(src);
 
   const loadFlutterApp = useCallback(async () => {
     if (!containerRef.current || useIframe || loadingRef.current) return;
@@ -628,6 +673,8 @@ export function FlutterEmbed({
             style={{ border: "none" }}
             title={title || "Flutter Demo"}
             loading="lazy"
+            sandbox="allow-scripts allow-same-origin"
+            referrerPolicy="no-referrer"
             onError={() => {
               setErrorMessage("Failed to load iframe");
               setStatus("error");
