@@ -4,7 +4,7 @@ targets:
       mix_generator:
         enabled: true
         generate_for:
-          - lib/**/*.dart
+          - lib/src/specs/**/*.dart
         options:
           debug: false
 
@@ -12,7 +12,7 @@ builders:
   mix_generator:
     import: 'package:mix_generator/mix_generator.dart'
     builder_factories: ['mixGenerator']
-    build_extensions: {'.dart': ['.mix.dart']}
+    build_extensions: {'.dart': ['.g.dart']}
     auto_apply: dependents
     build_to: source
     applies_builders: []
