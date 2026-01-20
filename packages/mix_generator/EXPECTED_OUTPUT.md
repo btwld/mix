@@ -49,7 +49,7 @@ final class BoxSpec extends Spec<BoxSpec>
 
 ## Generated Spec Mixin (Example)
 
-> **Note**: For complete lerp strategy (lerp vs lerpSnap) and diagnostic type mappings, see `mix_generator_plan.md` sections 1.5 and 1.6.
+> **Note**: For complete lerp strategy (lerp vs lerpSnap) and diagnostic type mappings, see `PLAN.md` sections 1.5 and 1.6.
 
 ```dart
 mixin _$BoxSpecMethods on Spec<BoxSpec>, Diagnosticable {
