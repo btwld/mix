@@ -12,7 +12,7 @@ builders:
   mix_generator:
     import: 'package:mix_generator/mix_generator.dart'
     builder_factories: ['mixGenerator']
-    build_extensions: {'.dart': ['.g.part']}
+    build_extensions: {'.dart': ['.mix_generator.g.part']}
     auto_apply: dependents
     build_to: cache
-    applies_builders: ['source_gen|combining_builder']
+    applies_builders: ['source_gen:combining_builder']
