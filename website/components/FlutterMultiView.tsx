@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import type { FlutterMultiViewApp, FlutterEngineInitializer } from "./flutter-types";
+import { FLUTTER_TIMEOUTS, withTimeout } from "./flutter/timeouts";
 
 // Re-export for consumers
 export type { FlutterMultiViewApp };
@@ -27,27 +28,38 @@ interface FlutterMultiViewProps {
   lazyLoad?: boolean;
 }
 
-// Shared state for the Flutter engine
+// =============================================================================
+// Singleton Engine Lifecycle
+// =============================================================================
+//
+// This module manages a singleton Flutter engine shared across all views.
+// The lifecycle is:
+//
+// 1. IDLE: No engine loaded (initial state, all variables null/false)
+// 2. LOADING: Engine being initialized (first component mount triggers this)
+// 3. READY: Engine ready, views can be added (engineReady = true)
+//
+// State is stored at module level to survive component remounts.
+// This is intentional - recreating the engine is expensive (~2-3s).
+//
+// IMPORTANT: The engine is NEVER destroyed during normal operation.
+// Only a full page reload resets the engine state.
+// This prevents WebGL context loss and CanvasKit reinitialization.
+//
+// Why module-level state instead of React context?
+// - Context would cause re-initialization on every provider remount
+// - The Flutter engine is truly global to the page (one WebGL context)
+// - This matches Flutter's own singleton pattern for web embedding
+// =============================================================================
+
+/** Promise resolving to initialized Flutter app (singleton, survives remounts) */
 let enginePromise: Promise<FlutterMultiViewApp> | null = null;
+
+/** Whether engine initialization completed successfully */
 let engineReady = false;
+
+/** Promise for loading flutter_bootstrap.js script (singleton) */
 let flutterScriptPromise: Promise<void> | null = null;
-
-// Timeout for initialization (30 seconds)
-const INIT_TIMEOUT_MS = 30000;
-// Timeout for adding a view (15 seconds)
-const ADD_VIEW_TIMEOUT_MS = 15000;
-
-/**
- * Wrap a promise with a timeout.
- */
-function withTimeout<T>(promise: Promise<T>, ms: number, errorMsg: string): Promise<T> {
-  return Promise.race([
-    promise,
-    new Promise<T>((_, reject) =>
-      setTimeout(() => reject(new Error(errorMsg)), ms)
-    ),
-  ]);
-}
 
 /**
  * Load the Flutter bootstrap script.
@@ -161,8 +173,8 @@ async function ensureFlutterEngine(basePath: string): Promise<FlutterMultiViewAp
 
   return withTimeout(
     enginePromise!,
-    INIT_TIMEOUT_MS,
-    `Flutter engine initialization timed out after ${INIT_TIMEOUT_MS / 1000}s`
+    FLUTTER_TIMEOUTS.ENGINE_INIT,
+    "Flutter engine initialization"
   );
 }
 
@@ -199,7 +211,6 @@ export function FlutterMultiView({
   const viewIdRef = useRef<number | null>(null);
   const [state, setState] = useState<LoadingState>("idle");
   const [error, setError] = useState<string | null>(null);
-  const isInViewRef = useRef(false);
   const hasLoadedRef = useRef(false);
   const isMountedRef = useRef(true);
   const addViewCancelledRef = useRef(false);
@@ -240,9 +251,9 @@ export function FlutterMultiView({
         addViewTimeoutId = setTimeout(() => {
           addViewCancelledRef.current = true;
           reject(new Error(
-            `Adding view "${demoId}" timed out after ${ADD_VIEW_TIMEOUT_MS / 1000}s`
+            `Adding view "${demoId}" timed out after ${FLUTTER_TIMEOUTS.ADD_VIEW / 1000}s`
           ));
-        }, ADD_VIEW_TIMEOUT_MS);
+        }, FLUTTER_TIMEOUTS.ADD_VIEW);
       });
 
       addViewPromise
@@ -320,10 +331,7 @@ export function FlutterMultiView({
 
     const observer = new IntersectionObserver(
       (entries) => {
-        const entry = entries[0];
-        isInViewRef.current = entry.isIntersecting;
-
-        if (entry.isIntersecting && !hasLoadedRef.current) {
+        if (entries[0].isIntersecting && !hasLoadedRef.current) {
           loadView();
         }
       },
@@ -469,6 +477,21 @@ export function FlutterMultiView({
       `}</style>
     </div>
   );
+}
+
+/**
+ * Reset engine state. ONLY for testing or explicit cleanup.
+ *
+ * WARNING: This invalidates all existing views. Only use in test teardown
+ * or when deliberately resetting the entire Flutter state.
+ */
+export function __resetEngineState_TESTING_ONLY(): void {
+  if (process.env.NODE_ENV !== "test" && process.env.NODE_ENV !== "development") {
+    console.warn("__resetEngineState_TESTING_ONLY should only be used in tests");
+  }
+  enginePromise = null;
+  engineReady = false;
+  flutterScriptPromise = null;
 }
 
 export default FlutterMultiView;

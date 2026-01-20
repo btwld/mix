@@ -97,6 +97,43 @@ flutter build web --release --pwa-strategy=none --base-href=/demos/
 rm -rf "$BUILD_DIR/canvaskit"
 
 # ============================================================================
+# Extract build config for runtime use
+# This allows FlutterEmbed.tsx to load config dynamically instead of hard-coding
+# the engineRevision, which would drift when Flutter is upgraded.
+# ============================================================================
+FLUTTER_JS="$BUILD_DIR/flutter.js"
+CONFIG_OUTPUT="$BUILD_DIR/flutter-build-config.json"
+
+if [ -f "$FLUTTER_JS" ]; then
+    # Extract engineRevision from flutter.js
+    # The format is: engineRevision: "abc123..."
+    ENGINE_REVISION=$(grep -oE 'engineRevision:\s*"[^"]+"' "$FLUTTER_JS" | grep -oE '"[^"]+"' | tr -d '"' | head -1)
+
+    if [ -z "$ENGINE_REVISION" ]; then
+        echo "Error: Could not extract engineRevision from flutter.js"
+        exit 1
+    fi
+
+    # Generate config JSON for runtime loading
+    cat > "$CONFIG_OUTPUT" << EOF
+{
+  "engineRevision": "$ENGINE_REVISION",
+  "builds": [
+    {
+      "compileTarget": "dart2js",
+      "renderer": "canvaskit",
+      "mainJsPath": "main.dart.js"
+    }
+  ]
+}
+EOF
+    echo "Generated flutter-build-config.json (engineRevision: $ENGINE_REVISION)"
+else
+    echo "Error: flutter.js not found in build output"
+    exit 1
+fi
+
+# ============================================================================
 # Patch flutter_bootstrap.js for multi-view embedding
 # The default build auto-calls _flutter.loader.load() which prevents us from
 # configuring entrypointBaseUrl for proper path resolution when embedding.

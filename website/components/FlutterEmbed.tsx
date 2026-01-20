@@ -3,26 +3,12 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 // Types are defined in flutter-types.ts - imported for re-export
 import "./flutter-types";
-
-/**
- * Flutter engine configuration for element embedding mode.
- *
- * MAINTENANCE: This revision must match Flutter version in .fvmrc (currently 3.38.1).
- * To update after Flutter upgrade:
- * 1. Run: flutter build web (in examples/)
- * 2. Check build/web/flutter_bootstrap.js for new engineRevision
- * 3. Update constant below
- *
- * Note: iframe mode doesn't require this - the iframe loads its own buildConfig.
- * Element embedding requires it because we load flutter.js (not flutter_bootstrap.js)
- * to avoid the auto-load that uses document.baseURI for path resolution.
- */
-const FLUTTER_ENGINE_CONFIG = {
-  engineRevision: "78fc3012e45889657f72359b005af7beac47ba3d",
-  builds: [
-    { compileTarget: "dart2js", renderer: "canvaskit", mainJsPath: "main.dart.js" },
-  ],
-};
+import { getFlutterBuildConfig } from "./flutter/config";
+import { FLUTTER_TIMEOUTS } from "./flutter/timeouts";
+import { loadFlutterLoaderScript } from "./flutter/loader";
+import { acquireInitializationLock } from "./flutter/initialization-lock";
+import { validateAndNormalizeSrc, validateIframeSrc } from "./flutter/validate-src";
+import { useFlutterErrorCapture } from "./flutter/hooks/useFlutterErrorCapture";
 
 interface FlutterEmbedProps {
   /**
@@ -46,245 +32,6 @@ interface FlutterEmbedProps {
   /** Loading placeholder content */
   loadingContent?: React.ReactNode;
 }
-
-// ============================================================================
-// Singleton Script Loader (Q7 fix: prevents race conditions)
-// ============================================================================
-
-type LoaderState = "idle" | "loading" | "ready" | "error";
-
-// Module-level state for coordinating script loading across all instances
-let flutterLoaderState: LoaderState = "idle";
-let flutterLoaderPromise: Promise<void> | null = null;
-
-/**
- * Loads the Flutter loader script exactly once, coordinating across all
- * FlutterEmbed instances to prevent duplicate script tags.
- */
-async function loadFlutterLoaderScript(basePath: string): Promise<void> {
-  // If already loaded, return immediately
-  if (flutterLoaderState === "ready" && window._flutter?.loader) {
-    return;
-  }
-
-  // If previously errored, reset state AND remove stale script to allow retry
-  if (flutterLoaderState === "error") {
-    flutterLoaderState = "idle";
-    flutterLoaderPromise = null;
-    // Remove stale script element so retry can insert fresh one
-    const staleScript = document.getElementById("flutter-loader-script");
-    if (staleScript) {
-      staleScript.remove();
-    }
-  }
-
-  // If currently loading, wait for the existing promise
-  if (flutterLoaderState === "loading" && flutterLoaderPromise) {
-    return flutterLoaderPromise;
-  }
-
-  // Start loading
-  flutterLoaderState = "loading";
-
-  flutterLoaderPromise = new Promise<void>((resolve, reject) => {
-    const scriptId = "flutter-loader-script";
-    const existingScript = document.getElementById(scriptId);
-
-    if (existingScript) {
-      // Script tag exists, wait for Flutter to be available
-      waitForFlutterLoader()
-        .then(() => {
-          flutterLoaderState = "ready";
-          resolve();
-        })
-        .catch((error) => {
-          flutterLoaderState = "error";
-          flutterLoaderPromise = null; // Clear so retry creates fresh promise
-          reject(error);
-        });
-      return;
-    }
-
-    const script = document.createElement("script");
-    script.id = scriptId;
-    // Uses flutter.js (loader only) - does NOT auto-initialize.
-    // Safe for iframe mode where each iframe has isolated context.
-    script.src = `${basePath}/flutter.js`;
-    script.async = true;
-
-    script.onload = () => {
-      waitForFlutterLoader()
-        .then(() => {
-          flutterLoaderState = "ready";
-          resolve();
-        })
-        .catch((error) => {
-          flutterLoaderState = "error";
-          flutterLoaderPromise = null;
-          reject(error);
-        });
-    };
-
-    script.onerror = () => {
-      flutterLoaderState = "error";
-      reject(new Error("Failed to load flutter.js"));
-    };
-
-    document.head.appendChild(script);
-  });
-
-  return flutterLoaderPromise;
-}
-
-async function waitForFlutterLoader(retries = 20): Promise<void> {
-  if (window._flutter?.loader) return;
-  if (retries <= 0) throw new Error("Flutter loader not available after timeout");
-  await new Promise((r) => setTimeout(r, 100));
-  return waitForFlutterLoader(retries - 1);
-}
-
-// ============================================================================
-// Initialization Queue (prevents WebGL conflicts from concurrent initializations)
-// ============================================================================
-
-// Multiple Flutter element embeds cannot initialize simultaneously because they
-// compete for WebGL/CanvasKit resources, causing BindingErrors. This queue
-// ensures only one element embed initializes at a time.
-let initializationQueue: Array<() => void> = [];
-let isInitializing = false;
-
-/**
- * Waits for the queue to be empty before proceeding with initialization.
- * Returns a release function that must be called when initialization completes.
- */
-async function acquireInitializationLock(): Promise<() => void> {
-  return new Promise((resolve) => {
-    const tryAcquire = () => {
-      if (!isInitializing) {
-        isInitializing = true;
-        resolve(() => {
-          isInitializing = false;
-          // Signal next waiting embed
-          const next = initializationQueue.shift();
-          if (next) next();
-        });
-      } else {
-        // Add ourselves to queue and wait
-        initializationQueue.push(tryAcquire);
-      }
-    };
-    tryAcquire();
-  });
-}
-
-// ============================================================================
-// URL Validation (Q1 fix: prevents script injection)
-// ============================================================================
-
-/** Allowed external domains for Flutter demos */
-const ALLOWED_DOMAINS = [
-  "localhost",
-  "127.0.0.1",
-  "mix-demos.web.app",
-  "mix.flutterando.com.br",
-];
-
-/**
- * Validates and normalizes the src path.
- * - Relative paths are allowed
- * - Absolute URLs must match allowed domains
- * - Returns null if validation fails
- */
-function validateAndNormalizeSrc(src: string): string | null {
-  // Q13 fix: Handle empty strings and normalize slashes
-  if (!src || typeof src !== "string") {
-    console.error("FlutterEmbed: src prop is required and must be a non-empty string");
-    return null;
-  }
-
-  let normalized = src.trim();
-
-  if (!normalized) {
-    console.error("FlutterEmbed: src prop resolved to empty string after normalization");
-    return null;
-  }
-
-  // Check if it's a relative path (starts with / but not //)
-  if (normalized.startsWith("/") && !normalized.startsWith("//")) {
-    // Only normalize slashes for relative paths (safe, no protocol to mangle)
-    normalized = normalized.replace(/\/+/g, "/"); // Dedupe slashes
-    normalized = normalized.replace(/\/$/, ""); // Remove trailing slash
-    return normalized;
-  }
-
-  // Check if it's a protocol-relative URL or absolute URL
-  try {
-    const url = new URL(normalized, window.location.origin);
-
-    // Check against allowed domains
-    const hostname = url.hostname.toLowerCase();
-    const isAllowed = ALLOWED_DOMAINS.some(
-      (domain) => hostname === domain || hostname.endsWith(`.${domain}`)
-    );
-
-    if (!isAllowed) {
-      console.error(
-        `FlutterEmbed: Domain "${hostname}" is not in the allowed list. ` +
-          `Use useIframe={true} for external domains or add to ALLOWED_DOMAINS.`
-      );
-      return null;
-    }
-
-    return url.href.replace(/\/$/, ""); // Return normalized absolute URL
-  } catch {
-    // If URL parsing fails, treat as relative path
-    return normalized;
-  }
-}
-
-/**
- * Validates src for iframe mode.
- * Allows any https URL but blocks dangerous schemes.
- */
-function validateIframeSrc(src: string): string | null {
-  if (!src || typeof src !== "string") {
-    console.error("FlutterEmbed: src prop is required for iframe mode");
-    return null;
-  }
-
-  const trimmed = src.trim();
-  if (!trimmed) {
-    console.error("FlutterEmbed: src prop resolved to empty string");
-    return null;
-  }
-
-  // Block dangerous schemes
-  const lowerSrc = trimmed.toLowerCase();
-  const blockedSchemes = ["javascript:", "data:", "blob:", "vbscript:"];
-  for (const scheme of blockedSchemes) {
-    if (lowerSrc.startsWith(scheme)) {
-      console.error(`FlutterEmbed: Blocked scheme "${scheme}" in iframe src`);
-      return null;
-    }
-  }
-
-  // For absolute URLs, verify protocol
-  try {
-    const url = new URL(trimmed, window.location.origin);
-    if (!["http:", "https:"].includes(url.protocol)) {
-      console.error(`FlutterEmbed: Only http/https allowed, got "${url.protocol}"`);
-      return null;
-    }
-    return url.href.replace(/\/$/, "");
-  } catch {
-    // Relative path - allow
-    return trimmed;
-  }
-}
-
-// ============================================================================
-// Component
-// ============================================================================
 
 /**
  * FlutterEmbed - Embeds a Flutter web application using Element Embedding
@@ -329,7 +76,10 @@ export function FlutterEmbed({
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [loadingStage, setLoadingStage] = useState<string>("Initializing...");
-  const [capturedErrors, setCapturedErrors] = useState<string[]>([]);
+  // Key to force iframe remount on retry
+  const [iframeKey, setIframeKey] = useState(0);
+  // Use extracted hook for error capture
+  const { errors: capturedErrors, clearErrors } = useFlutterErrorCapture(status === "loading");
   const mountedRef = useRef(true);
   const loadingRef = useRef(false);
   const loadingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -356,14 +106,14 @@ export function FlutterEmbed({
     }
 
     loadingRef.current = true;
-    setCapturedErrors([]);
+    clearErrors();
 
     // Initial delay to let iframe Flutter instances stabilize first
     // Iframes load Flutter in isolated contexts that we can't coordinate with.
     // This delay ensures any iframe Flutter has finished loading CanvasKit before
     // element embedding starts, preventing WebGL resource conflicts.
     setLoadingStage("Waiting for resources...");
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    await new Promise((resolve) => setTimeout(resolve, FLUTTER_TIMEOUTS.RESOURCE_STABILIZATION));
 
     // Check if component was unmounted during delay
     if (!mountedRef.current) {
@@ -394,9 +144,12 @@ export function FlutterEmbed({
 
       // Step 2: Set buildConfig if not already set
       // This is required by the Flutter loader - normally set by flutter_bootstrap.js
-      // See FLUTTER_ENGINE_CONFIG constant for maintenance instructions
+      // Config is loaded from flutter-build-config.json (generated during build)
       if (!window._flutter!.buildConfig) {
-        window._flutter!.buildConfig = { ...FLUTTER_ENGINE_CONFIG };
+        setLoadingStage("Loading build configuration...");
+        const buildConfig = await getFlutterBuildConfig(validatedSrc);
+        if (!mountedRef.current) return;
+        window._flutter!.buildConfig = buildConfig;
       }
 
       setLoadingStage("Initializing Flutter engine...");
@@ -475,7 +228,7 @@ export function FlutterEmbed({
         setErrorMessage(`Loading timed out at stage: "${loadingStage}". ${errorDetails}`);
         setStatus("error");
       }
-    }, 30000); // 30 second timeout
+    }, FLUTTER_TIMEOUTS.ENGINE_INIT);
 
     return () => {
       if (loadingTimeoutRef.current) {
@@ -484,47 +237,6 @@ export function FlutterEmbed({
       }
     };
   }, [status, loadingStage, capturedErrors, releaseInitializationLock]);
-
-  // Capture global errors during Flutter initialization
-  useEffect(() => {
-    if (status !== "loading") return;
-
-    const errorHandler = (event: ErrorEvent) => {
-      const msg = event.message || "";
-      // Capture Flutter/canvaskit related errors
-      if (
-        msg.toLowerCase().includes("canvaskit") ||
-        msg.toLowerCase().includes("flutter") ||
-        msg.includes("Failed to fetch") ||
-        msg.includes("dynamically imported module")
-      ) {
-        setCapturedErrors((prev) => [...prev, msg]);
-        console.warn("[FlutterEmbed] Captured error:", msg);
-      }
-    };
-
-    const rejectionHandler = (event: PromiseRejectionEvent) => {
-      const msg = event.reason?.message || String(event.reason);
-      // Capture Flutter/canvaskit related rejections
-      if (
-        msg.toLowerCase().includes("canvaskit") ||
-        msg.toLowerCase().includes("flutter") ||
-        msg.includes("Failed to fetch") ||
-        msg.includes("dynamically imported module")
-      ) {
-        setCapturedErrors((prev) => [...prev, msg]);
-        console.warn("[FlutterEmbed] Captured rejection:", msg);
-      }
-    };
-
-    window.addEventListener("error", errorHandler);
-    window.addEventListener("unhandledrejection", rejectionHandler);
-
-    return () => {
-      window.removeEventListener("error", errorHandler);
-      window.removeEventListener("unhandledrejection", rejectionHandler);
-    };
-  }, [status]);
 
   // iframe mode: handle load detection with fallback for cached iframes
   useEffect(() => {
@@ -559,12 +271,12 @@ export function FlutterEmbed({
     const timeout = setTimeout(() => {
       if (mountedRef.current && status === "loading") {
         setErrorMessage(
-          "Flutter iframe did not load within 45 seconds. " +
+          `Flutter iframe did not load within ${FLUTTER_TIMEOUTS.IFRAME_LOAD / 1000} seconds. ` +
           "Check that the demos are built and the server is running."
         );
         setStatus("error");
       }
-    }, 45000);
+    }, FLUTTER_TIMEOUTS.IFRAME_LOAD);
 
     return () => {
       iframe.removeEventListener("load", handleLoad);
@@ -634,8 +346,13 @@ export function FlutterEmbed({
             setStatus("loading");
             setErrorMessage("");
             setLoadingStage("Initializing...");
-            setCapturedErrors([]);
-            loadFlutterApp();
+            clearErrors();
+            if (useIframe) {
+              // Force iframe remount by changing key
+              setIframeKey((k) => k + 1);
+            } else {
+              loadFlutterApp();
+            }
           }}
           disabled={loadingRef.current}
           data-testid="flutter-retry"
@@ -682,6 +399,7 @@ export function FlutterEmbed({
       <div style={containerStyle}>
         {useIframe ? (
           <iframe
+            key={iframeKey}
             ref={iframeRef}
             src={`${validatedSrc}/index.html`}
             data-testid="flutter-iframe"
