@@ -11,11 +11,15 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  mix_annotations:
+    path: ../mix_annotations
 
 dev_dependencies:
   flutter_lints: ^6.0.0
   dart_code_metrics_presets: ^2.24.0
   build_runner: ^2.4.9
+  mix_generator:
+    path: ../mix_generator
   flutter_test:
     sdk: flutter
 

@@ -1,5 +1,11 @@
 import 'generator_flags.dart';
 
+class MixableStyler {
+  final List<Type> mixins;
+
+  const MixableStyler({this.mixins = const []});
+}
+
 /// Annotation for configuring generated methods and components for Spec classes.
 ///
 /// [methods] specifies generated methods within the annotated class.
