@@ -1,11 +1,5 @@
 import 'generator_flags.dart';
 
-class MixableStyler {
-  final List<Type> mixins;
-
-  const MixableStyler({this.mixins = const []});
-}
-
 /// Annotation for configuring generated methods and components for Spec classes.
 ///
 /// [methods] specifies generated methods within the annotated class.
@@ -19,6 +13,39 @@ class MixableSpec {
     this.components = GeneratedSpecComponents.all,
   });
 }
+
+const mixableSpec = MixableSpec();
+
+/// Annotation for configuring generated mixin for Styler classes.
+///
+/// [methods] specifies which methods to generate in the mixin.
+///
+/// The generated mixin includes:
+/// - Abstract getters for `$`-prefixed fields
+/// - Setter methods for each field
+/// - `merge()` method for combining styles
+/// - `resolve()` method for resolving to StyleSpec
+/// - `debugFillProperties()` for diagnostics
+/// - `props` getter for equality comparison
+/// - `call()` method for widget creation (optional)
+///
+/// Example usage:
+/// ```dart
+/// @MixableStyler()
+/// class BoxStyler extends Style<BoxSpec>
+///     with Diagnosticable, ..., _$BoxStylerMixin {
+///   final Prop<AlignmentGeometry>? $alignment;
+///   // ... fields and constructors
+/// }
+/// ```
+class MixableStyler {
+  /// Flags indicating which methods to generate in the mixin.
+  final int methods;
+
+  const MixableStyler({this.methods = GeneratedStylerMethods.all});
+}
+
+const mixableStyler = MixableStyler();
 
 /// An annotation class used to mark a constructor for code generation.
 ///

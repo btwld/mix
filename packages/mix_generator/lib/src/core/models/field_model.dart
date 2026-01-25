@@ -94,7 +94,8 @@ class FieldModel {
     required String stylerName,
   }) {
     final type = element.type;
-    final name = element.name;
+    // FieldElement.name is String? in analyzer 10.x, but fields always have names
+    final name = element.name!;
     final isNullable = type.nullabilitySuffix == NullabilitySuffix.question;
 
     // Get base type name
@@ -137,13 +138,12 @@ class FieldModel {
     final setterNameOverride = aliasConfig?.setterName;
     final generateSetter = setterNameOverride != null || aliasConfig == null;
     final setterName = generateSetter
-        ? (setterNameOverride?.isNotEmpty == true ? setterNameOverride : name)
+        ? (setterNameOverride?.isNotEmpty == true ? setterNameOverride! : name)
         : null;
 
     // Get flag description for bool fields
-    final flagDescription = typeName == 'bool'
-        ? getFlagDescription(name)
-        : null;
+    final flagDescription =
+        typeName == 'bool' ? getFlagDescription(name) : null;
 
     return FieldModel(
       name: name,

@@ -58,30 +58,6 @@ mixin _$TextSpecMethods on Spec<TextSpec>, Diagnosticable {
   }
 
   @override
-  TextSpec lerp(TextSpec? other, double t) {
-    return TextSpec(
-      overflow: MixOps.lerpSnap(overflow, other?.overflow, t),
-      strutStyle: MixOps.lerp(strutStyle, other?.strutStyle, t),
-      textAlign: MixOps.lerpSnap(textAlign, other?.textAlign, t),
-      textScaler: MixOps.lerpSnap(textScaler, other?.textScaler, t),
-      maxLines: MixOps.lerp(maxLines, other?.maxLines, t),
-      style: MixOps.lerp(style, other?.style, t),
-      textWidthBasis: MixOps.lerpSnap(textWidthBasis, other?.textWidthBasis, t),
-      textHeightBehavior: MixOps.lerpSnap(
-        textHeightBehavior,
-        other?.textHeightBehavior,
-        t,
-      ),
-      textDirection: MixOps.lerpSnap(textDirection, other?.textDirection, t),
-      softWrap: MixOps.lerpSnap(softWrap, other?.softWrap, t),
-      textDirectives: MixOps.lerpSnap(textDirectives, other?.textDirectives, t),
-      selectionColor: MixOps.lerp(selectionColor, other?.selectionColor, t),
-      semanticsLabel: MixOps.lerpSnap(semanticsLabel, other?.semanticsLabel, t),
-      locale: MixOps.lerpSnap(locale, other?.locale, t),
-    );
-  }
-
-  @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties

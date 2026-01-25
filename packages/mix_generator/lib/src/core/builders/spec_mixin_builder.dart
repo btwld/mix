@@ -3,6 +3,7 @@
 /// Generates copyWith(), lerp(), debugFillProperties(), and props.
 library;
 
+import '../models/annotation_config.dart';
 import '../models/field_model.dart';
 import '../resolvers/diagnostic_resolver.dart';
 import '../resolvers/lerp_resolver.dart';
@@ -11,8 +12,13 @@ import '../resolvers/lerp_resolver.dart';
 class SpecMixinBuilder {
   final String specName;
   final List<FieldModel> fields;
+  final MixableSpecAnnotationConfig config;
 
-  const SpecMixinBuilder({required this.specName, required this.fields});
+  const SpecMixinBuilder({
+    required this.specName,
+    required this.fields,
+    required this.config,
+  });
 
   String _buildAbstractGetters() {
     if (fields.isEmpty) return '';
@@ -127,17 +133,23 @@ class SpecMixinBuilder {
     // Generate abstract getters
     buffer.writeln(_buildAbstractGetters());
 
-    // Generate copyWith
-    buffer.writeln(_buildCopyWith());
+    // Generate copyWith (controlled by GeneratedSpecMethods.copyWith)
+    if (config.generateCopyWith) {
+      buffer.writeln(_buildCopyWith());
+    }
 
-    // Generate lerp
-    buffer.writeln(_buildLerp());
+    // Generate lerp (controlled by GeneratedSpecMethods.lerp)
+    if (config.generateLerp) {
+      buffer.writeln(_buildLerp());
+    }
 
-    // Generate debugFillProperties
+    // Generate debugFillProperties (always generated for diagnostics)
     buffer.writeln(_buildDebugFillProperties());
 
-    // Generate props
-    buffer.writeln(_buildProps());
+    // Generate props (controlled by GeneratedSpecMethods.equals)
+    if (config.generateEquals) {
+      buffer.writeln(_buildProps());
+    }
 
     buffer.writeln('}');
 
