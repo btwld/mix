@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
 
 import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
@@ -19,6 +20,7 @@ import 'icon_widget.dart';
 @Deprecated('Use IconStyler instead')
 typedef IconMix = IconStyler;
 
+@mixableStyler
 class IconStyler extends Style<IconSpec>
     with
         Diagnosticable,
