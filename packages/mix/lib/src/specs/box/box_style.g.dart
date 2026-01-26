@@ -52,16 +52,6 @@ mixin _$BoxStylerMixin on Style<BoxSpec>, Diagnosticable {
     return merge(BoxStyler(padding: value));
   }
 
-  /// Sets the transform.
-  BoxStyler transform(Matrix4 value) {
-    return merge(BoxStyler(transform: value));
-  }
-
-  /// Sets the transformAlignment.
-  BoxStyler transformAlignment(AlignmentGeometry value) {
-    return merge(BoxStyler(transformAlignment: value));
-  }
-
   /// Sets the animation configuration.
   BoxStyler animate(AnimationConfig value) {
     return merge(BoxStyler(animation: value));

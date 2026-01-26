@@ -64,8 +64,11 @@ class BoxStyler extends Style<BoxSpec>
   final Prop<Decoration>? $foregroundDecoration;
 
   @override
+  @MixableField(ignoreSetter: true)
   final Prop<Matrix4>? $transform;
+
   @override
+  @MixableField(ignoreSetter: true)
   final Prop<AlignmentGeometry>? $transformAlignment;
   @override
   final Prop<Clip>? $clipBehavior;
@@ -120,4 +123,9 @@ class BoxStyler extends Style<BoxSpec>
          modifier: modifier,
          animation: animation,
        );
+
+  @override
+  BoxStyler transform(Matrix4 value, {Alignment alignment = Alignment.center}) {
+    return BoxStyler(transform: value, transformAlignment: alignment);
+  }
 }

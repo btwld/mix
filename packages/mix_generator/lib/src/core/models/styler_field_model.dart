@@ -6,8 +6,13 @@ library;
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
+import 'package:source_gen/source_gen.dart';
 
 import '../curated/type_mappings.dart';
+
+const _mixableFieldChecker = TypeChecker.fromUrl(
+  'package:mix_annotations/src/annotations.dart#MixableField',
+);
 
 /// Represents a Styler field with computed values for generation.
 class StylerFieldModel {
@@ -104,11 +109,24 @@ class StylerFieldModel {
     // Check if has Mix type
     final hasMixType = mixTypeMap.containsKey(innerTypeName);
 
+    // Check for @MixableField annotation
+    final mixableFieldAnnotation = _mixableFieldChecker.firstAnnotationOf(
+      element,
+    );
+    final ignoreSetter =
+        mixableFieldAnnotation?.getField('ignoreSetter')?.toBoolValue() ??
+        false;
+
     // Get field alias config
     final aliasConfig = fieldAliasMap['$stylerName.$name'];
     final diagnosticLabel = aliasConfig?.diagnosticLabel;
     final setterNameOverride = aliasConfig?.setterName;
-    final generateSetter = setterNameOverride != null || aliasConfig == null;
+
+    // Setter is generated unless:
+    // 1. @MixableField(ignoreSetter: true) is present, OR
+    // 2. aliasConfig explicitly sets setterName to empty string
+    final generateSetter =
+        !ignoreSetter && (setterNameOverride != null || aliasConfig == null);
     final setterName = generateSetter
         ? (setterNameOverride?.isNotEmpty == true ? setterNameOverride! : name)
         : null;
