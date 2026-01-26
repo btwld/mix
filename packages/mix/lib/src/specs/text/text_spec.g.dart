@@ -3,7 +3,7 @@
 part of 'text_spec.dart';
 
 // **************************************************************************
-// MixGenerator
+// SpecGenerator
 // **************************************************************************
 
 mixin _$TextSpecMethods on Spec<TextSpec>, Diagnosticable {

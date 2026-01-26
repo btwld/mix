@@ -3,7 +3,7 @@
 part of 'stackbox_spec.dart';
 
 // **************************************************************************
-// MixGenerator
+// SpecGenerator
 // **************************************************************************
 
 mixin _$StackBoxSpecMethods on Spec<StackBoxSpec>, Diagnosticable {

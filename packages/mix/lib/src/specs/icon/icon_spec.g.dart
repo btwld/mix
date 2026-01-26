@@ -3,7 +3,7 @@
 part of 'icon_spec.dart';
 
 // **************************************************************************
-// MixGenerator
+// SpecGenerator
 // **************************************************************************
 
 mixin _$IconSpecMethods on Spec<IconSpec>, Diagnosticable {

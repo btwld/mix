@@ -120,9 +120,16 @@ class ShadowMix extends BaseShadowMix<Shadow>
 /// Mix representation of [BoxShadow].
 ///
 /// Extends [ShadowMix] with spread radius support.
+
 class BoxShadowMix extends BaseShadowMix<BoxShadow>
     with DefaultValue<BoxShadow>, Diagnosticable {
   final Prop<double>? $spreadRadius;
+  @override
+  final Prop<Color>? $color;
+  @override
+  final Prop<Offset>? $offset;
+  @override
+  final Prop<double>? $blurRadius;
 
   BoxShadowMix({
     Color? color,
@@ -141,7 +148,10 @@ class BoxShadowMix extends BaseShadowMix<BoxShadow>
     super.offset,
     super.blurRadius,
     Prop<double>? spreadRadius,
-  }) : $spreadRadius = spreadRadius;
+  }) : $spreadRadius = spreadRadius,
+       $color = color,
+       $offset = offset,
+       $blurRadius = blurRadius;
 
   /// Creates a [BoxShadowMix] from an existing [BoxShadow].
   BoxShadowMix.value(BoxShadow boxShadow)

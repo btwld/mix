@@ -3,7 +3,7 @@
 part of 'flexbox_spec.dart';
 
 // **************************************************************************
-// MixGenerator
+// SpecGenerator
 // **************************************************************************
 
 mixin _$FlexBoxSpecMethods on Spec<FlexBoxSpec>, Diagnosticable {

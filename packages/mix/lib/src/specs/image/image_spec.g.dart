@@ -3,7 +3,7 @@
 part of 'image_spec.dart';
 
 // **************************************************************************
-// MixGenerator
+// SpecGenerator
 // **************************************************************************
 
 mixin _$ImageSpecMethods on Spec<ImageSpec>, Diagnosticable {

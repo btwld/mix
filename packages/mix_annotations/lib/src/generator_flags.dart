@@ -83,3 +83,29 @@ class GeneratedStylerMethods {
 
   const GeneratedStylerMethods._();
 }
+
+/// Flags indicating methods to generate within the Mix mixin.
+class GeneratedMixMethods {
+  static const int none = 0x00;
+
+  /// Generate `merge()` method
+  static const int merge = 0x01;
+
+  /// Generate `resolve()` method
+  static const int resolve = 0x02;
+
+  /// Generate `props` getter for equality
+  static const int props = 0x04;
+
+  /// Generate `debugFillProperties()` method
+  static const int debugFillProperties = 0x08;
+
+  static const int all = merge | resolve | props | debugFillProperties;
+
+  static const skipMerge = all & ~merge;
+  static const skipResolve = all & ~resolve;
+  static const skipProps = all & ~props;
+  static const skipDebugFillProperties = all & ~debugFillProperties;
+
+  const GeneratedMixMethods._();
+}

@@ -63,3 +63,37 @@ class MixableStylerAnnotationConfig {
   @override
   String toString() => 'MixableStylerAnnotationConfig(methods: $methods)';
 }
+
+/// Configuration extracted from @Mixable annotation.
+class MixableAnnotationConfig {
+  /// Flags indicating which methods to generate in the Mix mixin.
+  final int methods;
+
+  /// The name of the target type to resolve to.
+  final String? resolveToType;
+
+  const MixableAnnotationConfig({
+    this.methods = GeneratedMixMethods.all,
+    this.resolveToType,
+  });
+
+  /// Whether to generate merge() method.
+  bool get generateMerge => (methods & GeneratedMixMethods.merge) != 0;
+
+  /// Whether to generate resolve() method.
+  bool get generateResolve => (methods & GeneratedMixMethods.resolve) != 0;
+
+  /// Whether to generate props getter.
+  bool get generateProps => (methods & GeneratedMixMethods.props) != 0;
+
+  /// Whether to generate debugFillProperties() method.
+  bool get generateDebugFillProperties =>
+      (methods & GeneratedMixMethods.debugFillProperties) != 0;
+
+  @override
+  String toString() {
+    final typeStr = resolveToType ?? 'null';
+
+    return 'MixableAnnotationConfig(methods: $methods, resolveToType: $typeStr)';
+  }
+}

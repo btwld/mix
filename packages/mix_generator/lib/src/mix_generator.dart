@@ -16,8 +16,8 @@ import 'core/models/field_model.dart';
 ///
 /// Triggers on @MixableSpec annotations and generates:
 /// - _$XSpecMethods mixin (Spec method overrides)
-class MixGenerator extends GeneratorForAnnotation<MixableSpec> {
-  const MixGenerator();
+class SpecGenerator extends GeneratorForAnnotation<MixableSpec> {
+  const SpecGenerator();
   bool _isSpecClass(ClassElement element) {
     // Check if class extends Spec<T>
     final supertype = element.supertype;

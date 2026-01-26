@@ -3,7 +3,7 @@
 part of 'box_spec.dart';
 
 // **************************************************************************
-// MixGenerator
+// SpecGenerator
 // **************************************************************************
 
 mixin _$BoxSpecMethods on Spec<BoxSpec>, Diagnosticable {

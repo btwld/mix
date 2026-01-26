@@ -52,3 +52,36 @@ class MixableField {
 
   const MixableField({this.ignoreSetter = false});
 }
+
+/// Annotation for configuring generated mixin for Mix classes.
+///
+/// [methods] specifies which methods to generate in the mixin.
+///
+/// The generated mixin includes:
+/// - `merge()` method for combining Mix instances
+/// - `resolve()` method for resolving to the target type
+/// - `debugFillProperties()` for diagnostics
+/// - `props` getter for equality comparison
+///
+/// Example usage:
+/// ```dart
+/// @Mixable()
+/// final class BoxConstraintsMix extends ConstraintsMix<BoxConstraints>
+///     with DefaultValue<BoxConstraints>, Diagnosticable, _$BoxConstraintsMixMixin {
+///   final Prop<double>? $minWidth;
+///   final Prop<double>? $maxWidth;
+///   // ... fields and constructors
+/// }
+/// ```
+class Mixable {
+  /// Flags indicating which methods to generate in the mixin.
+  final int methods;
+
+  /// The name of the target type to resolve to.
+  /// If not specified, it will be inferred from the supertype's type argument.
+  final String? resolveToType;
+
+  const Mixable({this.methods = GeneratedMixMethods.all, this.resolveToType});
+}
+
+const mixable = Mixable();
