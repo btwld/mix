@@ -22,7 +22,9 @@ import '../../style/mixins/transform_style_mixin.dart';
 import '../../style/mixins/variant_style_mixin.dart';
 import '../../style/mixins/widget_modifier_style_mixin.dart';
 import '../../style/mixins/widget_state_variant_mixin.dart';
+import 'box_mutable_style.dart';
 import 'box_spec.dart';
+import 'box_widget.dart';
 
 part 'box_style.g.dart';
 
@@ -34,7 +36,7 @@ typedef BoxMix = BoxStyler;
 /// Encapsulates alignment, padding, margin, constraints, decoration,
 /// and other styling properties for box layouts with support for
 /// widget modifiers, variants, and animations.
-@mixableStyler
+@MixableStyler()
 class BoxStyler extends Style<BoxSpec>
     with
         Diagnosticable,
@@ -62,13 +64,11 @@ class BoxStyler extends Style<BoxSpec>
   final Prop<Decoration>? $decoration;
   @override
   final Prop<Decoration>? $foregroundDecoration;
-
-  @override
   @MixableField(ignoreSetter: true)
+  @override
   final Prop<Matrix4>? $transform;
-
-  @override
   @MixableField(ignoreSetter: true)
+  @override
   final Prop<AlignmentGeometry>? $transformAlignment;
   @override
   final Prop<Clip>? $clipBehavior;
@@ -124,8 +124,14 @@ class BoxStyler extends Style<BoxSpec>
          animation: animation,
        );
 
+  static BoxMutableStyler get chain => BoxMutableStyler(BoxStyler());
+
+  Box call({Key? key, Widget? child}) {
+    return Box(key: key, style: this, child: child);
+  }
+
   @override
   BoxStyler transform(Matrix4 value, {Alignment alignment = Alignment.center}) {
-    return BoxStyler(transform: value, transformAlignment: alignment);
+    return merge(BoxStyler(transform: value, transformAlignment: alignment));
   }
 }
