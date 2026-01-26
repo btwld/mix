@@ -72,8 +72,13 @@ class MixableGenerator extends GeneratorForAnnotation<Mixable> {
   }
 
   List<MixFieldModel> _extractFields(ClassElement classElement) {
-    // Get all fields that start with $
-    final dollarFields = classElement.fields
+    final allFields = <String, FieldElement>{};
+
+    // Collect fields from superclass hierarchy first (so subclass fields override)
+    _collectFieldsFromHierarchy(classElement, allFields);
+
+    // Get $ fields only
+    final dollarFields = allFields.values
         .where((f) => f.name!.startsWith(r'$'))
         .toList();
 
@@ -81,6 +86,35 @@ class MixableGenerator extends GeneratorForAnnotation<Mixable> {
     dollarFields.sort((a, b) => a.name!.compareTo(b.name!));
 
     return dollarFields.map(MixFieldModel.fromElement).toList();
+  }
+
+  void _collectFieldsFromHierarchy(
+    InterfaceElement classElement,
+    Map<String, FieldElement> fields,
+  ) {
+    // First collect from superclass (if it's not Mix or Object)
+    if (classElement is ClassElement) {
+      final supertype = classElement.supertype;
+      if (supertype != null) {
+        final superElement = supertype.element;
+        final superName = superElement.name;
+
+        // Stop at Mix, Mixable, or Object
+        if (superName != 'Mix' &&
+            superName != 'Mixable' &&
+            superName != 'Object') {
+          _collectFieldsFromHierarchy(superElement, fields);
+        }
+      }
+    }
+
+    // Then collect from current class (overrides super fields)
+    for (final field in classElement.fields) {
+      final name = field.name;
+      if (name != null) {
+        fields[name] = field;
+      }
+    }
   }
 
   MixableAnnotationConfig _extractAnnotationConfig(
