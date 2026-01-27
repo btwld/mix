@@ -43,7 +43,7 @@ class _ExampleState extends State<Example> {
 
     return MediaQuery(
       data: MediaQuery.of(context).copyWith(
-        platformBrightness: isDark ? Brightness.dark : Brightness.light,
+        platformBrightness: isDark ? .dark : .light,
       ),
       child: PressableBox(
         style: buttonStyle,

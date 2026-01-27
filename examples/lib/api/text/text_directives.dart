@@ -18,7 +18,7 @@ class Example extends StatelessWidget {
         .color(Colors.blue.shade700);
 
     return ColumnBox(
-      style: FlexBoxStyler().spacing(16).mainAxisSize(MainAxisSize.min),
+      style: FlexBoxStyler().spacing(16).mainAxisSize(.min),
       children: [
         StyledText('hello world', style: baseStyle.uppercase()),
         StyledText('HELLO WORLD', style: baseStyle.lowercase()),

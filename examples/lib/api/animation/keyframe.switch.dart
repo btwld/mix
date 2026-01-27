@@ -41,7 +41,7 @@ class _SwitchAnimationState extends State<SwitchAnimation> {
               .width(65)
               .borderRadiusAll(.circular(40))
               .alignment(
-                _trigger.value ? Alignment.centerRight : Alignment.centerLeft,
+                _trigger.value ? .centerRight : .centerLeft,
               )
               .animate(.easeOut(300.ms)),
           child: Box(
