@@ -947,6 +947,28 @@ void main() {
     expect(parser.wantsFlex({'text-center'}), isFalse);
   });
 
+  test('wantsFlex handles arbitrary values with colons correctly', () {
+    final parser = TwParser();
+
+    // Arbitrary values with colons should NOT trigger false positives
+    // The colon inside brackets should be ignored
+    expect(parser.wantsFlex({'bg-[color:red]'}), isFalse);
+    expect(parser.wantsFlex({'bg-[color:rgba(0,0,0,0.5)]'}), isFalse);
+    expect(parser.wantsFlex({'text-[color:blue]'}), isFalse);
+
+    // Prefixed arbitrary values should also work correctly
+    expect(parser.wantsFlex({'md:bg-[color:red]'}), isFalse);
+    expect(parser.wantsFlex({'hover:bg-[color:rgba(0,0,0,0.5)]'}), isFalse);
+
+    // Flex with arbitrary values should still be detected
+    expect(parser.wantsFlex({'flex', 'bg-[color:red]'}), isTrue);
+    expect(parser.wantsFlex({'md:flex', 'bg-[color:red]'}), isTrue);
+
+    // Malformed brackets should be handled gracefully (no crash)
+    expect(parser.wantsFlex({'bg-[color:red'}), isFalse);
+    expect(parser.wantsFlex({'md:bg-[color'}), isFalse);
+  });
+
   test('Parser defaults to column for prefixed-only flex tokens', () {
     final parser = TwParser();
 
