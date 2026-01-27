@@ -251,9 +251,12 @@ Map directly to Mix's existing style system:
 | Schema Property | Mix Equivalent | Notes |
 |-----------------|----------------|-------|
 | `padding`, `margin` | EdgeInsets utilities | Supports `all`, `x`, `y`, `top`, etc. |
-| `color`, `backgroundColor` | Color properties | Token refs or direct values |
+| `color` | `color(...)` on decoration mixin | Token refs or direct values |
 | `borderRadius` | BorderRadius utilities | `all`, `topLeft`, etc. |
-| `elevation`, `opacity`, `scale` | Numeric properties | Direct values |
+| `elevation` | `elevation(ElevationShadow)` | Requires mapping to `ElevationShadow` |
+| `opacity`, `scale` | Numeric properties | Direct values |
+| `spacing` | `spacing(...)` on flex styles | Replaces deprecated `gap` |
+| `direction` | `direction(Axis)` on flex styles | Use `Axis.horizontal`/`Axis.vertical` |
 | `textStyle` | Text styling | fontSize, fontWeight, color, etc. |
 | `flex`, `alignment` | Layout properties | Standard Flutter semantics |
 
@@ -357,7 +360,7 @@ abstract class SchemaTokenResolver {
     // Context variants
     "onDark": {"color": {"token": "color.text.onDark"}},
     "onMobile": {"padding": {"all": 8}},
-    "onLandscape": {"flexDirection": "row"},
+    "onLandscape": {"direction": "horizontal"},
 
     // Named variants (applied explicitly)
     "named:elevated": {"elevation": 8},
@@ -1236,7 +1239,7 @@ Accessibility staging:
   "variants": {
     "onHovered": {"elevation": 4}
   },
-  "animation": {"type": "curve", "duration": 150},
+  "animation": {"type": "curve", "durationMs": 150},
   "children": [
     {
       "type": "text",
@@ -1257,7 +1260,7 @@ Accessibility staging:
 {
   "$schema": "mix://schema/v1",
   "type": "flex",
-  "style": {"direction": "column", "gap": 8},
+  "style": {"direction": "column", "spacing": 8},
   "children": {
     "repeat": "items",
     "as": "item",
@@ -1284,7 +1287,7 @@ Accessibility staging:
   "type": "flex",
   "style": {
     "direction": {"responsive": {"mobile": "column", "tablet": "row"}},
-    "gap": {"responsive": {"mobile": 8, "tablet": 16, "desktop": 24}}
+    "spacing": {"responsive": {"mobile": 8, "tablet": 16, "desktop": 24}}
   },
   "children": [
     {
@@ -1397,6 +1400,7 @@ final class BoxStyleProps {
   final double? paddingAll;
   final ColorValue? color;
   final double? borderRadiusAll;
+  /// Schema uses numeric elevation; handler maps to Mix's ElevationShadow.
   final double? elevation;
 }
 
@@ -1461,7 +1465,10 @@ final class BoxHandler /* implements SchemaHandler<BoxSpec> */ {
     if (props.paddingAll != null) s = s.paddingAll(props.paddingAll!);
     // if (props.color != null) s = s.color(resolveColor(props.color!, ctx));
     if (props.borderRadiusAll != null) s = s.borderRounded(props.borderRadiusAll!);
-    if (props.elevation != null) s = s.elevation(props.elevation!);
+    // Schema uses numeric elevation; map to ElevationShadow for Mix
+    if (props.elevation != null) {
+      s = s.elevation(ElevationShadow(props.elevation!.toInt()));
+    }
     return s;
   }
 

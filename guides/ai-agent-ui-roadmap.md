@@ -76,28 +76,27 @@ Agent experiences need standardized, easy-to-scan trust surfaces.
 
 ## Proposals
 
-### A) Update "AI usage" guidance to Mix 2.0 (fast, high leverage)
-**Why:** `packages/mix/ai.txt` currently describes v1.x patterns; coding agents and humans will generate outdated code.
+### A) Maintain AI guidance for Mix 2.0 (fast, high leverage)
+**Why:** AI guidance files (`AGENTS.md`, `CLAUDE.md` at repo root) must stay current with Mix 2.0 patterns so coding agents generate correct code.
 
 **Deliverables**
-- Add a v2-focused AI guidance file (suggested path: `packages/mix/ai_v2.txt`).
-- Keep `packages/mix/ai.txt` but clearly mark it as `mix: 1.x` and point to the v2 file.
+- Keep `AGENTS.md` and `CLAUDE.md` updated with Mix 2.0 patterns.
 - Include "golden snippets" covering:
-  - tokens (`MixScope`, `$token()` usage)
+  - tokens (`MixScope`, token classes like `ColorToken('name')()`)
   - variants (`.onHovered`, `.onDark`, `.onBuilder`)
   - modifiers (`.wrap(.opacity(...))`, transforms)
   - common agent UI patterns (tool card, streaming state, approval CTA row)
 
 **Acceptance criteria**
-- A codegen agent can produce a correct Mix 2.0 example app without using `$box/$on/$with` namespaces.
+- A codegen agent can produce a correct Mix 2.0 example app using Styler classes (not deprecated `$box/$on/$with` namespaces).
 
 ---
 
 ### B) Add an "Agent UI Patterns" section to the docs site (no core changes)
 **Why:** Mix can be *the styling substrate* for agent apps, but teams need canonical patterns they can copy.
 
-**Deliverables (docs)**
-- A new docs folder under `website/src/content/documentation/agent-ui/` with pages like:
+**Deliverables (docs)** *(planned)*
+- A new docs folder under `website/src/content/documentation/agent-ui/` (to be created) with pages like:
   - `overview.mdx` — mental model and pattern inventory
   - `message-layouts.mdx` — user/assistant/tool message structures
   - `streaming.mdx` — skeletons, incremental rendering, "stop" affordance
@@ -119,8 +118,8 @@ Agent experiences need standardized, easy-to-scan trust surfaces.
 ### C) Publish a reference Flutter app: "Mix Agent Playground"
 **Why:** Patterns become real when there's a runnable implementation.
 
-**Deliverables (repo)**
-- Add an example under `examples/agent_playground/` that simulates:
+**Deliverables (repo)** *(planned)*
+- Add an example under `examples/agent_playground/` (to be created) that simulates:
   - streaming messages
   - tool calls with progress + output
   - approval gating
@@ -216,7 +215,7 @@ These are the *few* changes worth considering inside `packages/mix` because they
 - Decide on a single reference app structure and state machine.
 
 ### Phase 1 (1–2 weeks): Quick wins
-- A) v2 AI guidance file + update existing `ai.txt`.
+- A) Ensure `AGENTS.md`/`CLAUDE.md` reflect Mix 2.0 patterns.
 - B) Agent UI docs section (initial 3 pages: streaming, tool calls, approvals).
 - C) Minimal playground example (fake streams + tool cards).
 

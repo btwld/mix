@@ -1,0 +1,70 @@
+# Mix 2.0
+
+> Type-safe styling system for Flutter that separates style semantics from widgets.
+
+Mix provides fluent stylers, design tokens, context-aware variants, and modifiers for building consistent, adaptive UIs in Flutter.
+
+## Documentation
+
+- [AGENTS.md](AGENTS.md): Repository structure, commands, architecture, and coding patterns
+- [CLAUDE.md](CLAUDE.md): Same as AGENTS.md (for Claude-specific tooling)
+
+## Guides
+
+- [guides/ai-roadmap.md](guides/ai-roadmap.md): AI integration strategy overview
+- [guides/ai-agent-ui-roadmap.md](guides/ai-agent-ui-roadmap.md): Track A - Developer-authored agent UI patterns
+- [guides/ai-integration-vision.md](guides/ai-integration-vision.md): Track B - Schema-generated ephemeral UIs
+- [guides/api-composition-guidelines.md](guides/api-composition-guidelines.md): Fluent API design patterns
+
+## Package Documentation
+
+- [packages/mix/README.md](packages/mix/README.md): Core framework usage
+- [website/](website/): Full documentation site source
+
+## Key Concepts
+
+### Fluent Stylers (Mix 2.0 pattern)
+```dart
+final style = BoxStyler()
+    .color(Colors.blue)
+    .size(100, 100)
+    .paddingAll(16)
+    .borderRounded(8);
+
+Box(style: style, child: child)
+```
+
+### Context-Aware Variants
+```dart
+final style = BoxStyler()
+    .color(Colors.white)
+    .onDark(BoxStyler().color(Colors.black))
+    .onHovered(BoxStyler().color(Colors.blue));
+```
+
+### Design Tokens
+```dart
+MixScope(
+  data: MixScopeData.withTokens([
+    ColorToken('primary')(Colors.blue),
+    SpaceToken('md')(16.0),
+  ]),
+  child: child,
+)
+```
+
+## Commands
+
+```bash
+melos bootstrap           # Install dependencies
+melos run gen:build       # Generate code
+melos run ci              # Run all tests
+melos run analyze         # Dart + DCM analysis
+```
+
+## Constraints
+
+- Dart SDK: >=3.10.0
+- Flutter: >=3.38.1
+- Specs are immutable; use copyWith() for changes
+- Run `melos run gen:build` after modifying specs

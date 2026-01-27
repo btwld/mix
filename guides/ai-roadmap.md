@@ -47,8 +47,8 @@ Practical implications:
 ## 90-day actionable plan (suggested)
 
 ### 0–2 weeks (alignment + quick wins)
-- Update AI guidance for v2 (current `packages/mix/ai.txt` is 1.x oriented).
-- Publish 3 “Agent UI patterns” docs pages: streaming, tool calls, approvals.
+- Ensure AI guidance files (`AGENTS.md`, `CLAUDE.md`) reflect Mix 2.0 patterns.
+- Publish 3 "Agent UI patterns" docs pages: streaming, tool calls, approvals.
 - Create the minimal Agent Playground example app (fake streams + state machine).
 
 ### 2–6 weeks (make it reusable)
