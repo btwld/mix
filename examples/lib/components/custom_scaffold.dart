@@ -37,7 +37,7 @@ class CustomScaffold extends StatelessWidget {
       children: [
         if (appBar != null) appBar!,
         Expanded(
-          child: SizedBox(width: double.infinity, child: body),
+          child: SizedBox(width: .infinity, child: body),
         ),
       ],
     );
