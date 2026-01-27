@@ -1115,7 +1115,9 @@ class TwParser {
 
   bool wantsFlex(Set<String> tokens) {
     for (final token in tokens) {
-      final base = token.substring(token.lastIndexOf(':') + 1);
+      // Use bracket-aware colon finding to handle arbitrary values like bg-[color:red]
+      final colonIdx = findLastColonOutsideBrackets(token);
+      final base = colonIdx >= 0 ? token.substring(colonIdx + 1) : token;
       if (base == 'flex' || base == 'flex-row' || base == 'flex-col') {
         return true;
       }
@@ -1345,7 +1347,9 @@ class TwParser {
     var delay = Duration.zero;
 
     for (final token in tokens) {
-      final base = token.substring(token.lastIndexOf(':') + 1);
+      // Use bracket-aware colon finding to handle arbitrary values like bg-[color:red]
+      final colonIdx = findLastColonOutsideBrackets(token);
+      final base = colonIdx >= 0 ? token.substring(colonIdx + 1) : token;
 
       if (_transitionTriggerTokens.contains(base)) {
         hasTransition = true;
@@ -1425,26 +1429,8 @@ class TwParser {
       );
 
   /// Finds the first colon that's not inside square brackets.
-  /// Returns -1 if brackets are malformed (unclosed or extra closing).
-  int _findFirstPrefixColon(String token) {
-    var bracketDepth = 0;
-    var firstColonOutside = -1;
-    for (var i = 0; i < token.length; i++) {
-      final c = token[i];
-      if (c == '[') {
-        bracketDepth++;
-      } else if (c == ']') {
-        bracketDepth--;
-        // Extra closing bracket - malformed
-        if (bracketDepth < 0) return -1;
-      } else if (c == ':' && bracketDepth == 0 && firstColonOutside == -1) {
-        firstColonOutside = i;
-      }
-    }
-    // Unclosed brackets - malformed, treat as no prefix
-    if (bracketDepth != 0) return -1;
-    return firstColonOutside;
-  }
+  /// Delegates to the shared utility in tw_utils.dart.
+  int _findFirstPrefixColon(String token) => findFirstColonOutsideBrackets(token);
 
   S _applyPrefixedToken<S>(
     S base,

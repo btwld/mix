@@ -128,3 +128,152 @@ Flutter has no such exception - widgets always have intrinsic minimum sizes unle
 - Child's minimum size was still enforced (before fix)
 
 mix_tailwinds now automatically applies `min-w-0` semantics for `flex-1` to match CSS behavior.
+
+---
+
+## Known Limitations
+
+The following Tailwind utilities have limited or no support in mix_tailwinds due to fundamental differences between CSS and Flutter's layout system.
+
+### Percent-Based Sizing
+
+**Tailwind CSS:**
+```html
+<div className="w-[50%] h-[25%]">...</div>
+```
+- Percent sizing is relative to parent container
+
+**Current Limitation:**
+- Arbitrary percent values like `w-[50%]` are parsed but **silently dropped**
+- Only pixel values (`w-[100px]`) work in arbitrary syntax
+
+**Workaround:**
+```dart
+// Use fractional sizing instead
+Div(classNames: 'w-1/2 h-1/4', ...)  // ✓ Works
+
+// Or use Flutter's FractionallySizedBox directly
+FractionallySizedBox(
+  widthFactor: 0.5,
+  child: Div(classNames: '...', ...),
+)
+```
+
+---
+
+### Translate with Fractions/Percent
+
+**Tailwind CSS:**
+```html
+<div className="translate-x-1/2 translate-y-[50%]">...</div>
+```
+- Translates by 50% of the element's own size
+
+**Current Limitation:**
+- `translate-x-1/2` and similar fractions are **not supported**
+- `translate-x-[50%]` is **treated as 50 pixels**, not 50%
+
+**Workaround:**
+```dart
+// Use explicit pixel values
+Div(classNames: 'translate-x-4', ...)  // ✓ Works (16px)
+
+// Or use Flutter's Transform directly for percent-based translation
+Transform.translate(
+  offset: Offset(size.width * 0.5, 0),
+  child: Div(classNames: '...', ...),
+)
+```
+
+**Why:** Flutter's `Matrix4` transform uses absolute pixels. Percent-based translation would require a `LayoutBuilder` to measure the element first.
+
+---
+
+### Flex Basis Fractions
+
+**Tailwind CSS:**
+```html
+<div className="basis-1/2 basis-full">...</div>
+```
+- Sets flex basis to 50% or 100% of container
+
+**Current Limitation:**
+- `basis-1/2`, `basis-1/3`, `basis-full` are **not supported**
+- Only space scale values (`basis-4`, `basis-8`) and `basis-auto` work
+
+**Workaround:**
+```dart
+// Use width/height constraints instead
+Div(classNames: 'w-1/2 flex-none', ...)  // Approximate basis-1/2
+
+// Or set explicit pixel basis
+Div(classNames: 'basis-48', ...)  // 192px basis
+```
+
+---
+
+### Arbitrary Color Formats
+
+**Tailwind CSS:**
+```html
+<div className="bg-[rgb(255,0,0)] bg-[hsl(0,100%,50%)]">...</div>
+```
+- Supports hex, rgb(), rgba(), hsl(), hsla()
+
+**Current Limitation:**
+- Only **hex colors** are supported in arbitrary syntax
+- `bg-[#ff0000]` ✓ works
+- `bg-[rgb(255,0,0)]` ✗ not supported
+- Short hex like `bg-[#f00]` ✗ not supported
+
+**Workaround:**
+```dart
+// Use full 6-digit hex
+Div(classNames: 'bg-[#ff0000]', ...)  // ✓ Works
+
+// Or add custom colors to TwConfig
+final config = TwConfig.standard().copyWith(
+  colors: {
+    ...TwConfig.standard().colors,
+    'brand': Color(0xFFFF0000),
+  },
+);
+```
+
+---
+
+### Variant Margin Behavior
+
+**Tailwind CSS:**
+```html
+<div className="m-2 hover:m-4">...</div>
+```
+- Margin changes on hover
+
+**Current Limitation:**
+- Margin is resolved once at build time
+- `hover:m-4`, `dark:m-2` and similar variant margins **do not update** on state change
+
+**Workaround:**
+```dart
+// Use padding instead (which does respond to variants)
+Div(classNames: 'p-2 hover:p-4', ...)  // ✓ Works
+
+// Or handle margin changes manually with StatefulWidget
+```
+
+**Why:** CSS semantic margin is applied outside the `StyleBuilder` to ensure correct hit-testing behavior (margin should not be part of the interactive area). This means it doesn't receive variant state updates.
+
+---
+
+## Limitations Summary Table
+
+| Tailwind Feature | Status | Workaround |
+|-----------------|--------|------------|
+| `w-[50%]`, `h-[25%]` | ✗ Silently dropped | Use `w-1/2`, `h-1/4` fractions |
+| `translate-x-1/2` | ✗ Not supported | Use pixel values |
+| `translate-x-[50%]` | ⚠️ Treated as pixels | Use Flutter Transform |
+| `basis-1/2`, `basis-full` | ✗ Not supported | Use `w-1/2 flex-none` |
+| `bg-[rgb(...)]` | ✗ Not supported | Use hex: `bg-[#rrggbb]` |
+| `bg-[#f00]` (short hex) | ✗ Not supported | Use full hex: `bg-[#ff0000]` |
+| `hover:m-4` | ✗ Not reactive | Use padding instead |

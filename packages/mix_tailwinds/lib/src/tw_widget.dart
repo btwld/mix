@@ -7,6 +7,50 @@ import 'tw_parser.dart';
 import 'tw_utils.dart';
 
 // =============================================================================
+// CSS Semantic Margin Helpers
+// =============================================================================
+
+/// Creates a new [BoxSpec] with margin set to null.
+///
+/// Used to strip margin from a spec so it can be applied externally
+/// for CSS semantic hit-testing (margin outside interactive area).
+BoxSpec _boxSpecWithoutMargin(BoxSpec spec) {
+  return BoxSpec(
+    alignment: spec.alignment,
+    padding: spec.padding,
+    margin: null,
+    constraints: spec.constraints,
+    decoration: spec.decoration,
+    foregroundDecoration: spec.foregroundDecoration,
+    transform: spec.transform,
+    transformAlignment: spec.transformAlignment,
+    clipBehavior: spec.clipBehavior,
+  );
+}
+
+/// Creates a new [StyleSpec<BoxSpec>] with margin stripped from the inner spec.
+///
+/// Preserves animation and widgetModifiers from the original.
+StyleSpec<BoxSpec> _styleSpecWithoutMargin(StyleSpec<BoxSpec> styleSpec) {
+  return StyleSpec<BoxSpec>(
+    spec: _boxSpecWithoutMargin(styleSpec.spec),
+    animation: styleSpec.animation,
+    widgetModifiers: styleSpec.widgetModifiers,
+  );
+}
+
+/// Creates a new [FlexBoxSpec] with margin stripped from the box spec.
+///
+/// Preserves flex spec and other box properties.
+FlexBoxSpec _flexBoxSpecWithoutMargin(FlexBoxSpec spec) {
+  if (spec.box == null) return spec;
+  return FlexBoxSpec(
+    box: _styleSpecWithoutMargin(spec.box!),
+    flex: spec.flex,
+  );
+}
+
+// =============================================================================
 // CSS Semantic Box Widgets
 // =============================================================================
 
@@ -21,7 +65,7 @@ import 'tw_utils.dart';
 /// Padding(margin)              <- OUTSIDE hover detection
 ///   └── StyleBuilder
 ///         └── MixInteractionDetector  <- Hover detection here
-///               └── Container(no margin)
+///               └── Box(no margin)
 /// ```
 class _CssSemanticBox extends StatelessWidget {
   const _CssSemanticBox({required this.style, this.child});
@@ -40,17 +84,9 @@ class _CssSemanticBox extends StatelessWidget {
     Widget inner = StyleBuilder<BoxSpec>(
       style: style,
       builder: (context, spec) {
-        // Build Container WITHOUT margin - margin is applied externally
-        return Container(
-          alignment: spec.alignment,
-          padding: spec.padding,
-          decoration: spec.decoration,
-          foregroundDecoration: spec.foregroundDecoration,
-          constraints: spec.constraints,
-          transform: spec.transform,
-          transformAlignment: spec.transformAlignment,
-          clipBehavior: spec.clipBehavior ?? Clip.none,
-          // NOTE: margin intentionally omitted - applied externally
+        // Use Box widget with margin stripped - margin is applied externally
+        return Box(
+          styleSpec: _styleSpecWithoutMargin(StyleSpec(spec: spec)),
           child: child,
         );
       },
@@ -84,41 +120,11 @@ class _CssSemanticFlexBox extends StatelessWidget {
     Widget inner = StyleBuilder<FlexBoxSpec>(
       style: style,
       builder: (context, spec) {
-        // Build Flex widget
-        final flexWidget = Flex(
-          direction: spec.flex?.spec.direction ?? Axis.horizontal,
-          mainAxisAlignment:
-              spec.flex?.spec.mainAxisAlignment ?? MainAxisAlignment.start,
-          mainAxisSize: spec.flex?.spec.mainAxisSize ?? MainAxisSize.max,
-          crossAxisAlignment:
-              spec.flex?.spec.crossAxisAlignment ?? CrossAxisAlignment.center,
-          textDirection: spec.flex?.spec.textDirection,
-          verticalDirection:
-              spec.flex?.spec.verticalDirection ?? VerticalDirection.down,
-          textBaseline: spec.flex?.spec.textBaseline,
-          clipBehavior: spec.flex?.spec.clipBehavior ?? Clip.none,
-          spacing: spec.flex?.spec.spacing ?? 0.0,
+        // Use FlexBox widget with margin stripped - margin is applied externally
+        return FlexBox(
+          styleSpec: StyleSpec(spec: _flexBoxSpecWithoutMargin(spec)),
           children: children,
         );
-
-        // Wrap with box styling if present (but WITHOUT margin)
-        if (spec.box != null) {
-          final boxSpec = spec.box!.spec;
-          return Container(
-            alignment: boxSpec.alignment,
-            padding: boxSpec.padding,
-            decoration: boxSpec.decoration,
-            foregroundDecoration: boxSpec.foregroundDecoration,
-            constraints: boxSpec.constraints,
-            transform: boxSpec.transform,
-            transformAlignment: boxSpec.transformAlignment,
-            clipBehavior: boxSpec.clipBehavior ?? Clip.none,
-            // NOTE: margin intentionally omitted - applied externally
-            child: flexWidget,
-          );
-        }
-
-        return flexWidget;
       },
     );
 
@@ -523,7 +529,9 @@ Widget _wrapWithFlexItemDecorators({
 
 bool _needsFlexItemDecorators(Set<String> tokens) {
   for (final token in tokens) {
-    final base = token.substring(token.lastIndexOf(':') + 1);
+    // Use bracket-aware colon finding to handle arbitrary values like bg-[color:red]
+    final colonIdx = findLastColonOutsideBrackets(token);
+    final base = colonIdx >= 0 ? token.substring(colonIdx + 1) : token;
     if (base.startsWith('flex-') ||
         base.startsWith('basis-') ||
         base.startsWith('self-')) {
@@ -867,7 +875,8 @@ _ResponsiveToken _parseResponsiveToken(String token, TwConfig cfg) {
   double minWidth = 0;
 
   while (true) {
-    final index = remaining.indexOf(':');
+    // Use bracket-aware colon finding to handle arbitrary values like bg-[color:red]
+    final index = findFirstColonOutsideBrackets(remaining);
     if (index <= 0) {
       break;
     }
