@@ -25,11 +25,16 @@ mixin AnimationStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
   }
 
   /// Creates a phase animation. It will animate through the given phases.
+  ///
+  /// When [repeat] is true, the animation loops continuously from the last
+  /// phase back to the first phase. This is useful for indefinite effects
+  /// like pulsing or rotating.
   T phaseAnimation<P>({
     required Listenable trigger,
     required List<P> phases,
     required T Function(P phase, T style) styleBuilder,
     required CurveAnimationConfig Function(P phase) configBuilder,
+    bool repeat = false,
   }) {
     final styles = <T>[];
     final configs = <CurveAnimationConfig>[];
@@ -44,6 +49,7 @@ mixin AnimationStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
         styles: styles,
         curveConfigs: configs,
         trigger: trigger,
+        repeat: repeat,
       ),
     );
   }

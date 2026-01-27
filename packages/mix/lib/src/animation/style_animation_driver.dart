@@ -253,13 +253,19 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
 
     config.trigger.addListener(_onTriggerChanged);
 
-    // Add status listener for onEnd callback
-    if (config.curveConfigs.last.onEnd != null) {
-      _animation.addStatusListener((status) {
-        if (status == AnimationStatus.completed) {
-          config.curveConfigs.last.onEnd!();
-        }
-      });
+    // Add status listener for onEnd callback and repeat handling
+    _animation.addStatusListener(_onAnimationStatusChanged);
+  }
+
+  void _onAnimationStatusChanged(AnimationStatus status) {
+    if (status == AnimationStatus.completed) {
+      // Call onEnd callback if provided
+      config.onEnd?.call();
+
+      // If repeat is enabled, restart the animation
+      if (config.repeat) {
+        controller.forward(from: 0.0);
+      }
     }
   }
 
@@ -272,15 +278,23 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
     List<CurveAnimationConfig> configs,
   ) {
     final items = <TweenSequenceItem<StyleSpec<S>?>>[];
-    for (int i = 0; i < specs.length; i++) {
-      final currentIndex = i % specs.length;
+
+    // Calculate number of transitions: specs.length - 1 for non-wrapping,
+    // or specs.length if repeat/wrap is enabled
+    final transitionCount = config.repeat ? specs.length : specs.length - 1;
+
+    for (int i = 0; i < transitionCount; i++) {
+      final currentIndex = i;
       final nextIndex = (i + 1) % specs.length;
 
-      if (configs[currentIndex].delay > Duration.zero) {
+      // Use currentIndex config for the transition FROM currentIndex TO nextIndex
+      final transitionConfig = configs[currentIndex];
+
+      if (transitionConfig.delay > Duration.zero) {
         items.add(
           TweenSequenceItem(
             tween: ConstantTween(specs[currentIndex]),
-            weight: configs[nextIndex].delay.inMilliseconds.toDouble(),
+            weight: transitionConfig.delay.inMilliseconds.toDouble(),
           ),
         );
       }
@@ -291,8 +305,8 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
       );
 
       final item = TweenSequenceItem(
-        tween: tween.chain(CurveTween(curve: configs[nextIndex].curve)),
-        weight: configs[nextIndex].duration.inMilliseconds.toDouble(),
+        tween: tween.chain(CurveTween(curve: transitionConfig.curve)),
+        weight: transitionConfig.duration.inMilliseconds.toDouble(),
       );
 
       items.add(item);
@@ -312,6 +326,7 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
   @override
   void dispose() {
     config.trigger.removeListener(_onTriggerChanged);
+    _animation.removeStatusListener(_onAnimationStatusChanged);
     super.dispose();
   }
 
@@ -324,7 +339,9 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
 
   @override
   void updateDriver(covariant PhaseAnimationConfig config) {
-    config.trigger.removeListener(_onTriggerChanged);
+    // Remove listeners from OLD config before replacing
+    this.config.trigger.removeListener(_onTriggerChanged);
+    _animation.removeStatusListener(_onAnimationStatusChanged);
     this.config = config;
     _setUpAnimation();
   }
