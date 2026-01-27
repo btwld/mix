@@ -33,7 +33,7 @@ class _ExampleState extends State<Example> {
         .borderAll(color: Colors.grey.shade300, width: 2)
         .animate(.spring(300.ms))
         .variant(
-          ContextVariant.widgetState(WidgetState.selected),
+          ContextVariant.widgetState(.selected),
           BoxStyler()
               .color(Colors.blue.shade500)
               .borderAll(color: Colors.blue.shade600, width: 2)
@@ -47,24 +47,24 @@ class _ExampleState extends State<Example> {
 
     final textStyle = TextStyler()
         .fontSize(16)
-        .fontWeight(FontWeight.w600)
+        .fontWeight(.w600)
         .color(Colors.grey.shade700)
         .variant(
-          ContextVariant.widgetState(WidgetState.selected),
+          ContextVariant.widgetState(.selected),
           TextStyler().color(Colors.white),
         );
 
     return Pressable(
       onPress: () {
-        final isSelected = controller.has(WidgetState.selected);
-        controller.update(WidgetState.selected, !isSelected);
+        final isSelected = controller.has(.selected);
+        controller.update(.selected, !isSelected);
       },
       controller: controller,
       child: Box(
         style: style,
         child: Center(
           child: StyledText(
-            controller.has(WidgetState.selected) ? 'Selected' : 'Select Me',
+            controller.has(.selected) ? 'Selected' : 'Select Me',
             style: textStyle,
           ),
         ),

@@ -44,7 +44,7 @@ class _DemoAppState extends State<DemoApp> {
     super.dispose();
   }
 
-  BoxMix get _boxStyle => BoxStyler()
+  BoxMix get _boxStyle => .new()
       .color(Colors.blueAccent.shade400)
       .paddingX(16)
       .paddingY(8)
@@ -99,7 +99,7 @@ class _SlidingGradientTransform extends GradientTransform {
 
   @override
   Matrix4 transform(Rect bounds, {TextDirection? textDirection}) {
-    return Matrix4.identity()
+    return .identity()
       ..translateByDouble(bounds.width * slidePercent, 0.0, 0.0, 1);
   }
 }

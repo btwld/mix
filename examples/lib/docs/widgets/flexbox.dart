@@ -8,8 +8,8 @@ void main() {
   FlexBox(
     style: FlexBoxStyler()
         .color(Colors.blue)
-        .direction(Axis.horizontal)
-        .mainAxisAlignment(MainAxisAlignment.spaceBetween),
+        .direction(.horizontal)
+        .mainAxisAlignment(.spaceBetween),
 
     children: [
       Box(child: Text('Box 1')),
@@ -22,7 +22,7 @@ void main() {
   RowBox(
     style: FlexBoxStyler()
         .color(Colors.blue)
-        .mainAxisAlignment(MainAxisAlignment.spaceBetween),
+        .mainAxisAlignment(.spaceBetween),
     children: [
       //...
     ],
@@ -32,7 +32,7 @@ void main() {
   ColumnBox(
     style: FlexBoxStyler()
         .color(Colors.blue)
-        .mainAxisAlignment(MainAxisAlignment.spaceBetween),
+        .mainAxisAlignment(.spaceBetween),
     children: [
       //...
     ],
