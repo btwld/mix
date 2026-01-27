@@ -316,11 +316,18 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
   }
 
   /// Gets the total duration of all animation phases combined.
+  ///
+  /// When [repeat] is false, only the first N-1 configs are used (for N phases).
+  /// When [repeat] is true, all N configs are used (including wrap-around).
   Duration get totalDuration {
-    return config.curveConfigs.fold(
-      Duration.zero,
-      (acc, config) => acc + config.totalDuration,
-    );
+    final transitionCount =
+        config.repeat ? config.curveConfigs.length : config.curveConfigs.length - 1;
+
+    var total = Duration.zero;
+    for (var i = 0; i < transitionCount; i++) {
+      total += config.curveConfigs[i].totalDuration;
+    }
+    return total;
   }
 
   @override
