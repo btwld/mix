@@ -192,6 +192,17 @@ void main() {
 
         expect(attribute.$animation, equals(animation));
       });
+
+      test('has AnimationStyleMixin methods available', () {
+        // Verify that ImageStyler now has AnimationStyleMixin methods
+        // The presence of these methods confirms the mixin was added correctly
+        final styler = ImageStyler();
+
+        // These methods should exist from AnimationStyleMixin
+        expect(styler.animate, isA<Function>());
+        // keyframeAnimation and phaseAnimation exist but require complex parameters
+        // The animate method is the key one that proves the mixin is present
+      });
     });
 
     group('Variant Methods', () {

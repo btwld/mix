@@ -14,6 +14,16 @@ examples/           # Interactive widget gallery
 website/            # Documentation site
 ```
 
+## Environment Setup
+
+If Flutter is not installed or `flutter --version` fails, run the setup script:
+
+```bash
+bash setup.sh
+```
+
+This installs FVM, Flutter SDK (3.38.1), DCM, and melos, then bootstraps all packages.
+
 ## Commands
 
 ```bash
@@ -84,7 +94,7 @@ final style = BoxStyler()
 
 ## Critical Rules
 
-- **Dart SDK:** >=3.9.0 (enables dot-shorthands)
+- **Dart SDK:** >=3.10.0 (enables dot-shorthands)
 - **Flutter:** >=3.38.1
 - **Immutability:** Specs are always immutable; use `copyWith()` for changes
 - **Code generation:** Run `melos run gen:build` after modifying specs

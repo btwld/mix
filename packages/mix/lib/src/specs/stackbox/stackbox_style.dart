@@ -12,6 +12,7 @@ import '../../properties/layout/edge_insets_geometry_mix.dart';
 import '../../properties/painting/border_mix.dart';
 import '../../properties/painting/border_radius_mix.dart';
 import '../../properties/painting/decoration_mix.dart';
+import '../../style/mixins/animation_style_mixin.dart';
 import '../../style/mixins/border_radius_style_mixin.dart';
 import '../../style/mixins/border_style_mixin.dart';
 import '../../style/mixins/constraint_style_mixin.dart';
@@ -30,6 +31,7 @@ import 'stackbox_mutable_style.dart';
 import 'stackbox_spec.dart';
 import 'stackbox_widget.dart';
 
+@Deprecated('Use StackBoxStyler instead')
 typedef StackBoxMix = StackBoxStyler;
 
 /// Represents the attributes of a [StackBoxSpec].
@@ -51,7 +53,8 @@ class StackBoxStyler extends Style<StackBoxSpec>
         DecorationStyleMixin<StackBoxStyler>,
         SpacingStyleMixin<StackBoxStyler>,
         TransformStyleMixin<StackBoxStyler>,
-        ConstraintStyleMixin<StackBoxStyler> {
+        ConstraintStyleMixin<StackBoxStyler>,
+        AnimationStyleMixin<StackBoxStyler, StackBoxSpec> {
   final Prop<StyleSpec<BoxSpec>>? $box;
   final Prop<StyleSpec<StackSpec>>? $stack;
 
@@ -117,6 +120,7 @@ class StackBoxStyler extends Style<StackBoxSpec>
       StackBoxMutableStyler(StackBoxStyler());
 
   /// Sets animation
+  @override
   StackBoxStyler animate(AnimationConfig animation) {
     return merge(StackBoxStyler(animation: animation));
   }
@@ -292,5 +296,5 @@ class StackBoxStyler extends Style<StackBoxSpec>
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [StackBoxStyler] instances for equality.
   @override
-  List<Object?> get props => [$box, $stack];
+  List<Object?> get props => [$box, $stack, $animation, $modifier, $variants];
 }

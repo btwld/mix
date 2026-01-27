@@ -10,7 +10,8 @@ import '../../core/spec.dart';
 /// Provides comprehensive box styling including alignment, padding, margin, constraints,
 /// decoration, transformation, and clipping behavior. Used as the resolved form
 /// of [BoxStyle] styling attributes.
-class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
+@immutable
+final class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
   /// Aligns the child within the box.
   final AlignmentGeometry? alignment;
 

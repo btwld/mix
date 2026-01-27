@@ -10,6 +10,7 @@ import '../stack/stack_spec.dart';
 /// Provides comprehensive styling for widgets that need both
 /// box decoration and stack layout capabilities. Merges [BoxSpec] and
 /// [StackSpec] into a unified specification.
+@immutable
 final class StackBoxSpec extends Spec<StackBoxSpec> with Diagnosticable {
   /// Box styling properties for decoration, padding, constraints, etc.
   final StyleSpec<BoxSpec>? box;

@@ -6,6 +6,14 @@ die() { log "ERROR: $*"; exit 1; }
 have() { command -v "$1" >/dev/null 2>&1; }
 
 # ----------------------------
+# Environment check
+# ----------------------------
+if [ "${CLAUDE_CODE_REMOTE:-}" != "true" ]; then
+  die "This setup script is intended for Claude Code remote environments only.
+       Set CLAUDE_CODE_REMOTE=true to override, or use standard Flutter/FVM installation."
+fi
+
+# ----------------------------
 # Config
 # ----------------------------
 FVM_INSTALL_DIR="${FVM_INSTALL_DIR:-$HOME/fvm}"
@@ -103,17 +111,36 @@ elif [ -f "pubspec.yaml" ]; then
 fi
 
 # ----------------------------
-# Setup PATH for direct command access
+# Setup symlinks for non-interactive shell access
 # ----------------------------
+SYMLINK_DIR="/usr/local/bin"
+
 if [ -d ".fvm/flutter_sdk/bin" ]; then
   FLUTTER_SDK_BIN="$(cd .fvm/flutter_sdk/bin && pwd)"
-  export PATH="$FLUTTER_SDK_BIN:$PATH"
+
+  # Create symlinks for flutter and dart
+  for cmd in flutter dart; do
+    if [ -x "$FLUTTER_SDK_BIN/$cmd" ]; then
+      ln -sf "$FLUTTER_SDK_BIN/$cmd" "$SYMLINK_DIR/$cmd"
+      log "Created symlink: $SYMLINK_DIR/$cmd -> $FLUTTER_SDK_BIN/$cmd"
+    fi
+  done
+fi
+
+# Create symlinks for fvm and melos
+if [ -x "$FVM_BIN_DIR/fvm" ]; then
+  ln -sf "$FVM_BIN_DIR/fvm" "$SYMLINK_DIR/fvm"
+  log "Created symlink: $SYMLINK_DIR/fvm"
+fi
+
+if [ -x "$PUB_CACHE_BIN/melos" ]; then
+  ln -sf "$PUB_CACHE_BIN/melos" "$SYMLINK_DIR/melos"
+  log "Created symlink: $SYMLINK_DIR/melos"
 fi
 
 log ""
-log "Setup complete. Flutter, Dart, and pub-cache are now available."
-log ""
-log "Verify with:"
+log "Setup complete. Commands are available globally:"
 log "  flutter --version"
 log "  dart --version"
+log "  fvm --version"
 log "  melos --version"

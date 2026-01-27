@@ -16,6 +16,7 @@ import '../../style/mixins/border_radius_style_mixin.dart';
 import '../../style/mixins/border_style_mixin.dart';
 import '../../style/mixins/constraint_style_mixin.dart';
 import '../../style/mixins/decoration_style_mixin.dart';
+import '../../style/mixins/animation_style_mixin.dart';
 import '../../style/mixins/flex_style_mixin.dart';
 import '../../style/mixins/shadow_style_mixin.dart';
 import '../../style/mixins/spacing_style_mixin.dart';
@@ -31,6 +32,7 @@ import 'flexbox_mutable_style.dart';
 import 'flexbox_spec.dart';
 import 'flexbox_widget.dart';
 
+@Deprecated('Use FlexBoxStyler instead')
 typedef FlexBoxMix = FlexBoxStyler;
 
 /// Represents the attributes of a [FlexBoxSpec].
@@ -53,7 +55,8 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
         SpacingStyleMixin<FlexBoxStyler>,
         TransformStyleMixin<FlexBoxStyler>,
         ConstraintStyleMixin<FlexBoxStyler>,
-        FlexStyleMixin<FlexBoxStyler> {
+        FlexStyleMixin<FlexBoxStyler>,
+        AnimationStyleMixin<FlexBoxStyler, FlexBoxSpec> {
   final Prop<StyleSpec<BoxSpec>>? $box;
   final Prop<StyleSpec<FlexSpec>>? $flex;
 
@@ -129,6 +132,7 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
       FlexBoxMutableStyler(FlexBoxStyler());
 
   /// Sets the animation property.
+  @override
   FlexBoxStyler animate(AnimationConfig animation) {
     return merge(FlexBoxStyler(animation: animation));
   }
@@ -294,5 +298,5 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [FlexBoxStyler] instances for equality.
   @override
-  List<Object?> get props => [$box, $flex];
+  List<Object?> get props => [$box, $flex, $animation, $modifier, $variants];
 }
