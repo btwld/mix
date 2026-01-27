@@ -87,7 +87,7 @@ class CustomWidgetState extends State<CustomWidget> {
     final isDark = MediaQuery.platformBrightnessOf(context) == .dark;
     final backgroundColor = isDark ? Colors.cyan : Colors.blue;
     final textColor = isDark ? Colors.black : Colors.white;
-    final borderRadius = BorderRadius.circular(10);
+    final BorderRadius borderRadius = .circular(10);
 
     final onHoverTextColor = isDark
         ? Colors.grey.shade700
