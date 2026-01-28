@@ -13,6 +13,7 @@ import '../specs/icon/icon_style.dart';
 import '../specs/text/text_style.dart';
 import 'align_modifier.dart';
 import 'aspect_ratio_modifier.dart';
+import 'blur_modifier.dart';
 import 'box_modifier.dart';
 import 'clip_modifier.dart';
 import 'default_text_style_modifier.dart';
@@ -61,6 +62,10 @@ final class WidgetModifierConfig with Equatable {
 
   factory WidgetModifierConfig.opacity(double opacity) {
     return WidgetModifierConfig.modifier(OpacityModifierMix(opacity: opacity));
+  }
+
+  factory WidgetModifierConfig.blur(double sigma) {
+    return WidgetModifierConfig.modifier(BlurModifierMix(sigma: sigma));
   }
 
   factory WidgetModifierConfig.aspectRatio(double aspectRatio) {

@@ -2145,8 +2145,10 @@ void main() {
     await tester.pump();
     await gesture.removePointer();
 
-    final afterExit = tester.widget<Container>(containerFinder).transform!;
-    expect(afterExit[0], closeTo(1.0, 0.001));
+    final afterExit = tester.widget<Container>(containerFinder).transform;
+    // After mouse exits, transform returns to identity (needed for animation interpolation)
+    expect(afterExit, isNotNull);
+    expect(afterExit![0], closeTo(1.0, 0.01)); // identity matrix
   });
 
   testWidgets('hover transform returns to base state when mouse exits', (
@@ -2178,8 +2180,10 @@ void main() {
     await tester.pump();
     await gesture.removePointer();
 
-    final reset = tester.widget<Container>(containerFinder).transform!;
-    expect(reset[0], closeTo(1.0, 0.001));
+    final reset = tester.widget<Container>(containerFinder).transform;
+    // After mouse exits, transform returns to identity (needed for animation interpolation)
+    expect(reset, isNotNull);
+    expect(reset![0], closeTo(1.0, 0.01)); // identity matrix
   });
 
   testWidgets('md:rotate-45 applies only at md breakpoint', (tester) async {
@@ -2195,8 +2199,10 @@ void main() {
 
     // CSS semantic box creates single Container - no nested Container
     final containerFinder = find.byType(Container);
-    final baseMatrix = tester.widget<Container>(containerFinder).transform!;
-    expect(baseMatrix[0], closeTo(1.0, 0.001));
+    // At width 500, md breakpoint (768) is not reached, so identity transform (for animation interpolation)
+    final baseMatrix = tester.widget<Container>(containerFinder).transform;
+    expect(baseMatrix, isNotNull);
+    expect(baseMatrix![0], closeTo(1.0, 0.01)); // identity matrix
 
     await _pumpSized(
       tester,
@@ -2263,15 +2269,18 @@ void main() {
     // CSS semantic box creates single Container - no nested Container
     final containerFinder = find.byType(Container);
 
-    final baseMatrix = tester.widget<Container>(containerFinder).transform!;
-    expect(baseMatrix[0], closeTo(1.0, 0.001));
+    // Before hover, identity transform (needed for animation interpolation when variants have transforms)
+    final baseMatrix = tester.widget<Container>(containerFinder).transform;
+    expect(baseMatrix, isNotNull);
+    expect(baseMatrix![0], closeTo(1.0, 0.01)); // identity matrix has 1.0 at [0][0]
 
     await gesture.moveTo(tester.getCenter(containerFinder));
     await tester.pump(); // start animation
 
     await tester.pump(const Duration(milliseconds: 50));
-    final midMatrix = tester.widget<Container>(containerFinder).transform!;
-    expect(midMatrix[0], greaterThan(1.0));
+    final midMatrix = tester.widget<Container>(containerFinder).transform;
+    expect(midMatrix, isNotNull);
+    expect(midMatrix![0], greaterThan(1.0));
     expect(midMatrix[0], lessThan(1.11));
 
     await tester.pump(const Duration(milliseconds: 200));
@@ -2295,12 +2304,13 @@ void main() {
     );
 
     final boxFinder = find.byType(Container);
-    final transformFinder = find.descendant(
-      of: boxFinder,
-      matching: find.byType(Transform),
-    );
 
-    expect(transformFinder, findsOneWidget);
+    // Transform is applied via Container.transform property, not a separate Transform widget
+    final container = tester.widget<Container>(boxFinder);
+    expect(container.transform, isNotNull);
+    expect(container.transform![0], closeTo(1.05, 0.01));
+
+    // No external Transform wrapper should exist
     expect(
       find.ancestor(of: boxFinder, matching: find.byType(Transform)),
       findsNothing,

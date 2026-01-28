@@ -34,18 +34,14 @@ class _TransformAccum {
   double? rotateDeg;
   double? translateX;
   double? translateY;
+  /// When true, always produce identity matrix even if no transforms are set.
+  /// Used for animation interpolation when variants have transforms but base doesn't.
+  bool needsIdentity = false;
 
   _TransformAccum();
 
-  _TransformAccum inheritFrom(_TransformAccum base) {
-    return _TransformAccum()
-      ..scale = scale ?? base.scale
-      ..rotateDeg = rotateDeg ?? base.rotateDeg
-      ..translateX = translateX ?? base.translateX
-      ..translateY = translateY ?? base.translateY;
-  }
-
   bool get hasAnyTransform =>
+      needsIdentity ||
       scale != null ||
       rotateDeg != null ||
       translateX != null ||
@@ -66,6 +62,63 @@ class _TransformAccum {
     }
     return matrix;
   }
+}
+
+class _TransformAccumTracker {
+  // Identity map avoids sharing accumulators across value-equal stylers.
+  final Map<Object, _TransformAccum> _accumulators =
+      Map<Object, _TransformAccum>.identity();
+
+  _TransformAccum forStyler<S>(S styler) {
+    return _accumulators.putIfAbsent(styler as Object, _TransformAccum.new);
+  }
+
+  bool hasTransforms<S>(S styler) {
+    final accum = _accumulators[styler as Object];
+    return accum != null && accum.hasAnyTransform;
+  }
+
+  Matrix4? flush<S>(S styler) {
+    final accum = _accumulators.remove(styler as Object);
+    if (accum == null || !accum.hasAnyTransform) return null;
+    return accum.toMatrix4();
+  }
+
+  void transfer<S>(S from, S to) {
+    if (identical(from, to)) return;
+    final fromKey = from as Object;
+    final toKey = to as Object;
+    final accum = _accumulators.remove(fromKey);
+    if (accum == null) return;
+    final existing = _accumulators[toKey];
+    if (existing == null) {
+      _accumulators[toKey] = accum;
+      return;
+    }
+    existing.scale ??= accum.scale;
+    existing.rotateDeg ??= accum.rotateDeg;
+    existing.translateX ??= accum.translateX;
+    existing.translateY ??= accum.translateY;
+  }
+
+  /// Copies transforms from [from] to [to] without removing from source.
+  /// Used for variants where base transforms should remain AND be included
+  /// in the variant's combined transform.
+  void copyTo<S>(S from, S to) {
+    if (identical(from, to)) return;
+    final fromKey = from as Object;
+    final toKey = to as Object;
+    final accum = _accumulators[fromKey];
+    if (accum == null || !accum.hasAnyTransform) return;
+    final target = _accumulators.putIfAbsent(toKey, _TransformAccum.new);
+    // Copy base transforms to target (base values act as defaults)
+    target.scale ??= accum.scale;
+    target.rotateDeg ??= accum.rotateDeg;
+    target.translateX ??= accum.translateX;
+    target.translateY ??= accum.translateY;
+  }
+
+  void clear() => _accumulators.clear();
 }
 
 // =============================================================================
@@ -314,6 +367,7 @@ class TwResolver {
       TwProperty.borderXWidth => const TwLengthValue(1),
       TwProperty.borderYWidth => const TwLengthValue(1),
       TwProperty.borderRadius => TwLengthValue(config.radiusOf('')),
+      TwProperty.blur => TwLengthValue(config.blurOf('') ?? 0.0),
       _ => null,
     };
   }
@@ -336,6 +390,7 @@ class TwResolver {
       'delays' => _resolveDelay(key),
       'scales' => _resolveScale(key),
       'rotations' => _resolveRotation(key),
+      'blurs' => config.hasBlur(key) ? TwLengthValue(config.blurOf(key)!) : null,
       _ => null,
     };
   }
@@ -445,132 +500,6 @@ void _accumulateGradient(_GradientAccum accum, String base, TwConfig config) {
   } else if (base.startsWith('to-') && !gradientDirections.containsKey(base)) {
     accum.toColor = config.colorOf(base.substring(3));
   }
-}
-
-const Set<String> _validScaleKeys = {
-  '0',
-  '50',
-  '75',
-  '90',
-  '95',
-  '100',
-  '105',
-  '110',
-  '125',
-  '150',
-};
-
-const Set<String> _validRotationKeys = {
-  '0',
-  '1',
-  '2',
-  '3',
-  '6',
-  '12',
-  '45',
-  '90',
-  '180',
-};
-
-bool _isTransformToken(String token) {
-  if (token.startsWith('scale-')) {
-    return _validScaleKeys.contains(token.substring(6));
-  }
-  if (token.startsWith('-rotate-')) {
-    return _validRotationKeys.contains(token.substring(8));
-  }
-  if (token.startsWith('rotate-')) {
-    return _validRotationKeys.contains(token.substring(7));
-  }
-  if (token.startsWith('translate-x-')) return true;
-  if (token.startsWith('translate-y-')) return true;
-  if (token.startsWith('-translate-x-')) return true;
-  if (token.startsWith('-translate-y-')) return true;
-  return false;
-}
-
-void _accumulateTransform(
-  _TransformAccum accum,
-  String base,
-  TwConfig config, {
-  String? token,
-  TokenWarningCallback? onUnsupported,
-}) {
-  if (base.startsWith('scale-')) {
-    final key = base.substring(6);
-    if (config.hasScale(key)) {
-      accum.scale = config.scaleOf(key);
-    } else {
-      onUnsupported?.call(token ?? base);
-    }
-  } else if (base.startsWith('-rotate-')) {
-    final deg = config.rotationOf(base.substring(8));
-    if (deg != null) accum.rotateDeg = -deg;
-  } else if (base.startsWith('rotate-')) {
-    accum.rotateDeg = config.rotationOf(base.substring(7));
-  } else if (base.startsWith('-translate-x-')) {
-    final key = base.substring(13);
-    final value = _resolveTranslateValue(key, config);
-    if (value != null) {
-      accum.translateX = -value;
-    } else {
-      onUnsupported?.call(token ?? base);
-    }
-  } else if (base.startsWith('translate-x-')) {
-    final key = base.substring(12);
-    final value = _resolveTranslateValue(key, config);
-    if (value != null) {
-      accum.translateX = value;
-    } else {
-      onUnsupported?.call(token ?? base);
-    }
-  } else if (base.startsWith('-translate-y-')) {
-    final key = base.substring(13);
-    final value = _resolveTranslateValue(key, config);
-    if (value != null) {
-      accum.translateY = -value;
-    } else {
-      onUnsupported?.call(token ?? base);
-    }
-  } else if (base.startsWith('translate-y-')) {
-    final key = base.substring(12);
-    final value = _resolveTranslateValue(key, config);
-    if (value != null) {
-      accum.translateY = value;
-    } else {
-      onUnsupported?.call(token ?? base);
-    }
-  }
-}
-
-/// Regex for parsing arbitrary length values (e.g., 123px, 1.5rem, 50%).
-final _arbitraryLengthRegex = RegExp(r'^(-?\d+\.?\d*)(px|rem|em|%)?$');
-
-/// Resolves a translate value from either a spacing key or arbitrary value.
-/// Returns null if the key is invalid.
-double? _resolveTranslateValue(String key, TwConfig config) {
-  // Handle arbitrary values like [100px], [2rem]
-  if (key.startsWith('[') && key.endsWith(']')) {
-    final inner = key.substring(1, key.length - 1);
-    final match = _arbitraryLengthRegex.firstMatch(inner);
-    if (match == null) return null;
-
-    var num = double.parse(match.group(1)!);
-    final unitStr = match.group(2) ?? 'px';
-
-    // Convert rem/em to px using 16px base
-    if (unitStr == 'rem' || unitStr == 'em') {
-      return num * 16;
-    }
-    // For %, just return the raw number (caller can handle percentage)
-    // For px or no unit, return as-is
-    return num;
-  }
-  // Handle spacing scale keys
-  if (config.hasSpace(key)) {
-    return config.spaceOf(key);
-  }
-  return null;
 }
 
 Color _defaultBorderColor(TwConfig config) =>
@@ -811,11 +740,48 @@ final _textVariants = _buildVariants<TextStyler>(
 // Unified Property Appliers
 // =============================================================================
 
+S _accumulateScale<S>(
+  S styler,
+  double value,
+  _TransformAccumTracker tracker,
+) {
+  tracker.forStyler(styler).scale = value;
+  return styler;
+}
+
+S _accumulateRotate<S>(
+  S styler,
+  double value,
+  _TransformAccumTracker tracker,
+) {
+  tracker.forStyler(styler).rotateDeg = value;
+  return styler;
+}
+
+S _accumulateTranslateX<S>(
+  S styler,
+  double value,
+  _TransformAccumTracker tracker,
+) {
+  tracker.forStyler(styler).translateX = value;
+  return styler;
+}
+
+S _accumulateTranslateY<S>(
+  S styler,
+  double value,
+  _TransformAccumTracker tracker,
+) {
+  tracker.forStyler(styler).translateY = value;
+  return styler;
+}
+
 FlexBoxStyler _applyPropertyToFlex(
   FlexBoxStyler styler,
   TwProperty property,
   TwValue value,
   TwConfig config,
+  _TransformAccumTracker transformTracker,
 ) {
   return switch (property) {
     // Spacing
@@ -895,7 +861,19 @@ FlexBoxStyler _applyPropertyToFlex(
     TwProperty.borderRadiusBottomRight =>
       styler.borderRoundedBottomRight((value as TwLengthValue).value),
 
+    // Transform
+    TwProperty.scale => _accumulateScale(
+        styler, (value as TwLengthValue).value, transformTracker),
+    TwProperty.rotate => _accumulateRotate(
+        styler, (value as TwLengthValue).value, transformTracker),
+    TwProperty.translateX => _accumulateTranslateX(
+        styler, (value as TwLengthValue).value, transformTracker),
+    TwProperty.translateY => _accumulateTranslateY(
+        styler, (value as TwLengthValue).value, transformTracker),
+
     // Effects
+    TwProperty.blur => styler.wrap(
+        WidgetModifierConfig.blur((value as TwLengthValue).value)),
     TwProperty.boxShadow => _applyFlexShadow(styler, value),
     TwProperty.clipBehavior =>
       styler.clipBehavior((value as TwEnumValue<Clip>).value),
@@ -907,6 +885,7 @@ FlexBoxStyler _applyPropertyToFlex(
         TextStyleMix().fontSize((value as TwLengthValue).value)),
     TwProperty.fontWeight => styler.wrapDefaultTextStyle(
         TextStyleMix().fontWeight((value as TwEnumValue<FontWeight>).value)),
+    TwProperty.textShadow => _applyFlexTextShadow(styler, value),
 
     _ => styler,
   };
@@ -955,6 +934,7 @@ BoxStyler _applyPropertyToBox(
   TwProperty property,
   TwValue value,
   TwConfig config,
+  _TransformAccumTracker transformTracker,
 ) {
   return switch (property) {
     // Spacing
@@ -1024,7 +1004,19 @@ BoxStyler _applyPropertyToBox(
     TwProperty.borderRadiusBottomRight =>
       styler.borderRoundedBottomRight((value as TwLengthValue).value),
 
+    // Transform
+    TwProperty.scale => _accumulateScale(
+        styler, (value as TwLengthValue).value, transformTracker),
+    TwProperty.rotate => _accumulateRotate(
+        styler, (value as TwLengthValue).value, transformTracker),
+    TwProperty.translateX => _accumulateTranslateX(
+        styler, (value as TwLengthValue).value, transformTracker),
+    TwProperty.translateY => _accumulateTranslateY(
+        styler, (value as TwLengthValue).value, transformTracker),
+
     // Effects
+    TwProperty.blur => styler.wrap(
+        WidgetModifierConfig.blur((value as TwLengthValue).value)),
     TwProperty.boxShadow => _applyBoxShadow(styler, value),
     TwProperty.clipBehavior =>
       styler.clipBehavior((value as TwEnumValue<Clip>).value),
@@ -1036,6 +1028,7 @@ BoxStyler _applyPropertyToBox(
         TextStyleMix().fontSize((value as TwLengthValue).value)),
     TwProperty.fontWeight => styler.wrapDefaultTextStyle(
         TextStyleMix().fontWeight((value as TwEnumValue<FontWeight>).value)),
+    TwProperty.textShadow => _applyBoxTextShadow(styler, value),
 
     _ => styler,
   };
@@ -1051,6 +1044,42 @@ BoxStyler _applyBoxShadow(BoxStyler styler, TwValue value) {
   return styler;
 }
 
+List<ShadowMix>? _resolveTextShadowMixes(TwValue value) {
+  if (value is TwEnumValue<TextShadowPreset?>) {
+    final preset = value.value;
+    if (preset == null) {
+      return const <ShadowMix>[];
+    }
+    final shadows = kTextShadowPresets[preset]!
+        .map((s) => ShadowMix(
+              color: s.color,
+              offset: s.offset,
+              blurRadius: s.blurRadius,
+            ))
+        .toList();
+    return shadows;
+  }
+  return null;
+}
+
+FlexBoxStyler _applyFlexTextShadow(FlexBoxStyler styler, TwValue value) {
+  final shadows = _resolveTextShadowMixes(value);
+  if (shadows == null) return styler;
+  return styler.wrapDefaultTextStyle(TextStyleMix().shadows(shadows));
+}
+
+BoxStyler _applyBoxTextShadow(BoxStyler styler, TwValue value) {
+  final shadows = _resolveTextShadowMixes(value);
+  if (shadows == null) return styler;
+  return styler.wrapDefaultTextStyle(TextStyleMix().shadows(shadows));
+}
+
+TextStyler _applyTextShadow(TextStyler styler, TwValue value) {
+  final shadows = _resolveTextShadowMixes(value);
+  if (shadows == null) return styler;
+  return styler.shadows(shadows);
+}
+
 TextStyler _applyPropertyToText(
   TextStyler styler,
   TwProperty property,
@@ -1062,6 +1091,7 @@ TextStyler _applyPropertyToText(
     TwProperty.fontSize => styler.fontSize((value as TwLengthValue).value),
     TwProperty.fontWeight =>
       styler.fontWeight((value as TwEnumValue<FontWeight>).value),
+    TwProperty.textShadow => _applyTextShadow(styler, value),
     TwProperty.lineHeight => styler.height((value as TwLengthValue).value),
     TwProperty.letterSpacing =>
       styler.letterSpacing((value as TwLengthValue).value),
@@ -1104,6 +1134,7 @@ class TwParser {
   final TwConfig config;
   final TokenWarningCallback? onUnsupported;
   final TwResolver _resolver;
+  final _TransformAccumTracker _transformTracker = _TransformAccumTracker();
 
   List<String> listTokens(String classNames) {
     final trimmed = classNames.trim();
@@ -1134,11 +1165,11 @@ class TwParser {
   FlexBoxStyler parseFlex(String classNames) {
     final tokens = listTokens(classNames);
 
+    _transformTracker.clear();
+
     var hasBaseFlex = false;
-    final baseTransform = _TransformAccum();
     final baseBorder = _BorderAccum();
     final baseGradient = _GradientAccum();
-    final variantTransforms = <String, _TransformAccum>{};
     final variantBorders = <String, _BorderAccum>{};
 
     var styler = FlexBoxStyler();
@@ -1163,20 +1194,6 @@ class TwParser {
         continue;
       }
 
-      // Accumulate transform tokens
-      if (_isTransformToken(base)) {
-        if (!_hasOnlyKnownPrefixParts(prefix, _flexVariants)) {
-          onUnsupported?.call(token);
-          continue;
-        }
-        final accum = prefix.isEmpty
-            ? baseTransform
-            : variantTransforms.putIfAbsent(prefix, _TransformAccum.new);
-        _accumulateTransform(accum, base, config,
-            token: token, onUnsupported: onUnsupported);
-        continue;
-      }
-
       // Accumulate border tokens
       if (_isBorderToken(base, config)) {
         if (!_hasOnlyKnownPrefixParts(prefix, _flexVariants)) {
@@ -1196,54 +1213,53 @@ class TwParser {
 
     // Default to column when only prefixed flex
     if (!hasBaseFlex) {
-      styler = styler.column();
+      styler = _carryTransforms(styler, styler.column());
     }
 
     // Apply accumulated gradient
     final gradientMix = baseGradient.toGradientMix();
     if (gradientMix != null) {
-      styler = styler.gradient(gradientMix);
+      styler = _carryTransforms(styler, styler.gradient(gradientMix));
     }
 
     // Apply accumulated borders
-    styler = _applyAccumulatedBorders(
+    styler = _carryTransforms(
       styler,
-      baseBorder,
-      variantBorders,
-      variants: _flexVariants,
-      newStyler: FlexBoxStyler.new,
-      merge: (a, b) => a.merge(b),
-      applyBreakpoint: (b, bp, s) => b.onBreakpoint(bp, s),
-      top: (s, {required color, required width}) =>
-          s.borderTop(color: color, width: width),
-      bottom: (s, {required color, required width}) =>
-          s.borderBottom(color: color, width: width),
-      left: (s, {required color, required width}) =>
-          s.borderLeft(color: color, width: width),
-      right: (s, {required color, required width}) =>
-          s.borderRight(color: color, width: width),
+      _applyAccumulatedBorders(
+        styler,
+        baseBorder,
+        variantBorders,
+        variants: _flexVariants,
+        newStyler: FlexBoxStyler.new,
+        merge: (a, b) => a.merge(b),
+        applyBreakpoint: (b, bp, s) => b.onBreakpoint(bp, s),
+        top: (s, {required color, required width}) =>
+            s.borderTop(color: color, width: width),
+        bottom: (s, {required color, required width}) =>
+            s.borderBottom(color: color, width: width),
+        left: (s, {required color, required width}) =>
+            s.borderLeft(color: color, width: width),
+        right: (s, {required color, required width}) =>
+            s.borderRight(color: color, width: width),
+      ),
     );
 
-    // Apply accumulated transforms
-    return _applyAccumulatedTransforms(
-      styler,
-      baseTransform,
-      variantTransforms,
-      variants: _flexVariants,
-      newStyler: FlexBoxStyler.new,
-      merge: (a, b) => a.merge(b),
-      applyBreakpoint: (b, bp, s) => b.onBreakpoint(bp, s),
-      setTransform: (s, m) => s.transform(m),
-    );
+    final baseMatrix = _transformTracker.flush(styler);
+    if (baseMatrix != null) {
+      styler = _applyTransformMatrix(styler, baseMatrix);
+    }
+    _transformTracker.clear();
+
+    return styler;
   }
 
   BoxStyler parseBox(String classNames) {
     final tokens = listTokens(classNames);
 
-    final baseTransform = _TransformAccum();
+    _transformTracker.clear();
+
     final baseBorder = _BorderAccum();
     final baseGradient = _GradientAccum();
-    final variantTransforms = <String, _TransformAccum>{};
     final variantBorders = <String, _BorderAccum>{};
 
     var styler = BoxStyler();
@@ -1259,20 +1275,6 @@ class TwParser {
         if (prefix.isEmpty) {
           _accumulateGradient(baseGradient, base, config);
         }
-        continue;
-      }
-
-      // Accumulate transform tokens
-      if (_isTransformToken(base)) {
-        if (!_hasOnlyKnownPrefixParts(prefix, _boxVariants)) {
-          onUnsupported?.call(token);
-          continue;
-        }
-        final accum = prefix.isEmpty
-            ? baseTransform
-            : variantTransforms.putIfAbsent(prefix, _TransformAccum.new);
-        _accumulateTransform(accum, base, config,
-            token: token, onUnsupported: onUnsupported);
         continue;
       }
 
@@ -1296,39 +1298,38 @@ class TwParser {
     // Apply accumulated gradient
     final gradientMix = baseGradient.toGradientMix();
     if (gradientMix != null) {
-      styler = styler.gradient(gradientMix);
+      styler = _carryTransforms(styler, styler.gradient(gradientMix));
     }
 
     // Apply accumulated borders
-    styler = _applyAccumulatedBorders(
+    styler = _carryTransforms(
       styler,
-      baseBorder,
-      variantBorders,
-      variants: _boxVariants,
-      newStyler: BoxStyler.new,
-      merge: (a, b) => a.merge(b),
-      applyBreakpoint: (b, bp, s) => b.onBreakpoint(bp, s),
-      top: (s, {required color, required width}) =>
-          s.borderTop(color: color, width: width),
-      bottom: (s, {required color, required width}) =>
-          s.borderBottom(color: color, width: width),
-      left: (s, {required color, required width}) =>
-          s.borderLeft(color: color, width: width),
-      right: (s, {required color, required width}) =>
-          s.borderRight(color: color, width: width),
+      _applyAccumulatedBorders(
+        styler,
+        baseBorder,
+        variantBorders,
+        variants: _boxVariants,
+        newStyler: BoxStyler.new,
+        merge: (a, b) => a.merge(b),
+        applyBreakpoint: (b, bp, s) => b.onBreakpoint(bp, s),
+        top: (s, {required color, required width}) =>
+            s.borderTop(color: color, width: width),
+        bottom: (s, {required color, required width}) =>
+            s.borderBottom(color: color, width: width),
+        left: (s, {required color, required width}) =>
+            s.borderLeft(color: color, width: width),
+        right: (s, {required color, required width}) =>
+            s.borderRight(color: color, width: width),
+      ),
     );
 
-    // Apply accumulated transforms
-    return _applyAccumulatedTransforms(
-      styler,
-      baseTransform,
-      variantTransforms,
-      variants: _boxVariants,
-      newStyler: BoxStyler.new,
-      merge: (a, b) => a.merge(b),
-      applyBreakpoint: (b, bp, s) => b.onBreakpoint(bp, s),
-      setTransform: (s, m) => s.transform(m),
-    );
+    final baseMatrix = _transformTracker.flush(styler);
+    if (baseMatrix != null) {
+      styler = _applyTransformMatrix(styler, baseMatrix);
+    }
+    _transformTracker.clear();
+
+    return styler;
   }
 
   TextStyler parseText(String classNames) {
@@ -1432,6 +1433,28 @@ class TwParser {
   /// Delegates to the shared utility in tw_utils.dart.
   int _findFirstPrefixColon(String token) => findFirstColonOutsideBrackets(token);
 
+  S _carryTransforms<S>(S from, S to) {
+    _transformTracker.transfer(from, to);
+    return to;
+  }
+
+  S _applyTransformMatrix<S>(S styler, Matrix4 matrix) {
+    if (styler is BoxStyler) {
+      return styler.transform(matrix) as S;
+    }
+    if (styler is FlexBoxStyler) {
+      return styler.transform(matrix) as S;
+    }
+    return styler;
+  }
+
+  S _flushTransforms<S>(S styler) {
+    if (!_transformTracker.hasTransforms(styler)) return styler;
+    final matrix = _transformTracker.flush(styler);
+    if (matrix == null) return styler;
+    return _applyTransformMatrix(styler, matrix);
+  }
+
   S _applyPrefixedToken<S>(
     S base,
     String token,
@@ -1442,7 +1465,8 @@ class TwParser {
   ) {
     final prefixIndex = _findFirstPrefixColon(token);
     if (prefixIndex <= 0) {
-      return applyAtomic(base, token);
+      final result = applyAtomic(base, token);
+      return _carryTransforms(base, result);
     }
 
     final head = token.substring(0, prefixIndex);
@@ -1450,7 +1474,7 @@ class TwParser {
 
     if (_isBreakpoint(head)) {
       final min = config.breakpointOf(head);
-      final childStyler = _applyPrefixedToken(
+      var childStyler = _applyPrefixedToken(
         newStyler(),
         tail,
         variants,
@@ -1458,12 +1482,24 @@ class TwParser {
         applyAtomic,
         applyBreakpoint,
       );
-      return applyBreakpoint(base, Breakpoint(minWidth: min), childStyler);
+      // Copy base transforms to child BEFORE flushing so variant gets both
+      // Use copyTo (not transfer) to preserve base transforms for final flush
+      _transformTracker.copyTo(base, childStyler);
+      // If child has transforms but base doesn't, mark base as needing identity for animation
+      final childHasTransforms = _transformTracker.hasTransforms(childStyler);
+      final baseHasTransforms = _transformTracker.hasTransforms(base);
+      if (childHasTransforms && !baseHasTransforms) {
+        _transformTracker.forStyler(base).needsIdentity = true;
+      }
+      childStyler = _flushTransforms(childStyler);
+      final result =
+          applyBreakpoint(base, Breakpoint(minWidth: min), childStyler);
+      return _carryTransforms(base, result);
     }
 
     final variantFn = variants[head];
     if (variantFn != null) {
-      final childStyler = _applyPrefixedToken(
+      var childStyler = _applyPrefixedToken(
         newStyler(),
         tail,
         variants,
@@ -1471,10 +1507,22 @@ class TwParser {
         applyAtomic,
         applyBreakpoint,
       );
-      return variantFn(base, childStyler);
+      // Copy base transforms to child BEFORE flushing so variant gets both
+      // Use copyTo (not transfer) to preserve base transforms for final flush
+      _transformTracker.copyTo(base, childStyler);
+      // If child has transforms but base doesn't, mark base as needing identity for animation
+      final childHasTransforms = _transformTracker.hasTransforms(childStyler);
+      final baseHasTransforms = _transformTracker.hasTransforms(base);
+      if (childHasTransforms && !baseHasTransforms) {
+        _transformTracker.forStyler(base).needsIdentity = true;
+      }
+      childStyler = _flushTransforms(childStyler);
+      final result = variantFn(base, childStyler);
+      return _carryTransforms(base, result);
     }
 
-    return applyAtomic(base, token);
+    final result = applyAtomic(base, token);
+    return _carryTransforms(base, result);
   }
 
   FlexBoxStyler _applyFlexAtomic(FlexBoxStyler styler, String token) {
@@ -1483,7 +1531,13 @@ class TwParser {
     if (parsed != null && parsed.isNotEmpty) {
       var result = styler;
       for (final p in parsed) {
-        result = _applyPropertyToFlex(result, p.property, p.value, config);
+        result = _applyPropertyToFlex(
+          result,
+          p.property,
+          p.value,
+          config,
+          _transformTracker,
+        );
       }
       return result;
     }
@@ -1545,7 +1599,7 @@ class TwParser {
     } else if (_isAnimationToken(token)) {
       // Animation tokens handled by parseAnimationFromTokens()
       return styler;
-    } else if (_isBorderToken(token, config) || _isTransformToken(token)) {
+    } else if (_isBorderToken(token, config)) {
       // These are accumulated, not applied here
       return styler;
     } else if (token == 'items-baseline') {
@@ -1570,7 +1624,13 @@ class TwParser {
     if (parsed != null && parsed.isNotEmpty) {
       var result = styler;
       for (final p in parsed) {
-        result = _applyPropertyToBox(result, p.property, p.value, config);
+        result = _applyPropertyToBox(
+          result,
+          p.property,
+          p.value,
+          config,
+          _transformTracker,
+        );
       }
       return result;
     }
@@ -1625,7 +1685,7 @@ class TwParser {
       handled = false;
     } else if (_isAnimationToken(token)) {
       return styler;
-    } else if (_isBorderToken(token, config) || _isTransformToken(token)) {
+    } else if (_isBorderToken(token, config)) {
       return styler;
     } else {
       handled = false;
@@ -1730,25 +1790,6 @@ class TwParser {
   // Accumulator Application
   // ===========================================================================
 
-  S _wrapStyleWithPrefix<S>(
-    String prefix,
-    S style, {
-    required Map<String, _VariantApplier<S>> variants,
-    required S Function() newStyler,
-    required _BreakpointApplier<S> applyBreakpoint,
-  }) {
-    if (prefix.isEmpty) return style;
-
-    return _applyPrefixedToken<S>(
-      newStyler(),
-      '$prefix:__tw_internal__',
-      variants,
-      newStyler,
-      (base, _) => style,
-      applyBreakpoint,
-    );
-  }
-
   S _applyBorderSides<S>(
     S styler,
     _BorderAccum border, {
@@ -1821,12 +1862,13 @@ class TwParser {
         right: right,
       );
 
-      final wrapped = _wrapStyleWithPrefix(
-        entry.key,
-        variantStyle,
-        variants: variants,
-        newStyler: newStyler,
-        applyBreakpoint: applyBreakpoint,
+      final wrapped = _applyPrefixedToken<S>(
+        newStyler(),
+        '${entry.key}:__tw_internal__',
+        variants,
+        newStyler,
+        (base, _) => variantStyle,
+        applyBreakpoint,
       );
       result = merge(result, wrapped);
     }
@@ -1834,43 +1876,6 @@ class TwParser {
     return result;
   }
 
-  S _applyAccumulatedTransforms<S>(
-    S styler,
-    _TransformAccum baseTransform,
-    Map<String, _TransformAccum> variantTransforms, {
-    required Map<String, _VariantApplier<S>> variants,
-    required S Function() newStyler,
-    required _StylerMerge<S> merge,
-    required _BreakpointApplier<S> applyBreakpoint,
-    required S Function(S, Matrix4) setTransform,
-  }) {
-    var result = styler;
-
-    // Base transform or identity for animation interpolation
-    if (baseTransform.hasAnyTransform) {
-      result = setTransform(result, baseTransform.toMatrix4());
-    } else if (variantTransforms.isNotEmpty) {
-      result = setTransform(result, Matrix4.identity());
-    }
-
-    // Variant transforms
-    for (final entry in variantTransforms.entries) {
-      final inherited = entry.value.inheritFrom(baseTransform);
-      if (!inherited.hasAnyTransform) continue;
-
-      final variantStyle = setTransform(newStyler(), inherited.toMatrix4());
-      final wrapped = _wrapStyleWithPrefix(
-        entry.key,
-        variantStyle,
-        variants: variants,
-        newStyler: newStyler,
-        applyBreakpoint: applyBreakpoint,
-      );
-      result = merge(result, wrapped);
-    }
-
-    return result;
-  }
 }
 
 bool _isFullOrScreenKey(String key) => key == 'full' || key == 'screen';

@@ -13,6 +13,7 @@ class TwConfig {
     required this.delays,
     required this.scales,
     required this.rotations,
+    required this.blurs,
   });
 
   final Map<String, double> space;
@@ -25,6 +26,7 @@ class TwConfig {
   final Map<String, int> delays;
   final Map<String, double> scales;
   final Map<String, double> rotations;
+  final Map<String, double> blurs;
 
   double spaceOf(String key, {double fallback = 0}) => space[key] ?? fallback;
 
@@ -64,6 +66,8 @@ class TwConfig {
 
   double? rotationOf(String key) => rotations[key];
 
+  double? blurOf(String key) => blurs[key];
+
   // Key existence checks for strict validation
   bool hasSpace(String key) => space.containsKey(key);
   bool hasRadius(String key) => radii.containsKey(key);
@@ -74,6 +78,7 @@ class TwConfig {
   bool hasDelay(String key) => delays.containsKey(key);
   bool hasScale(String key) => scales.containsKey(key);
   bool hasRotation(String key) => rotations.containsKey(key);
+  bool hasBlur(String key) => blurs.containsKey(key);
 
   bool hasColor(String key) {
     // Handle opacity modifiers like 'white/10', 'purple-500/30'
@@ -107,6 +112,7 @@ class TwConfig {
     Map<String, int>? delays,
     Map<String, double>? scales,
     Map<String, double>? rotations,
+    Map<String, double>? blurs,
   }) {
     return TwConfig(
       space: space ?? this.space,
@@ -119,6 +125,7 @@ class TwConfig {
       delays: delays ?? this.delays,
       scales: scales ?? this.scales,
       rotations: rotations ?? this.rotations,
+      blurs: blurs ?? this.blurs,
     );
   }
 
@@ -273,6 +280,16 @@ class TwConfig {
       '45': 45,
       '90': 90,
       '180': 180,
+    },
+    blurs: {
+      'none': 0.0,
+      'sm': 2.0,
+      '': 4.0,
+      'md': 6.0,
+      'lg': 8.0,
+      'xl': 12.0,
+      '2xl': 20.0,
+      '3xl': 32.0,
     },
   );
 
