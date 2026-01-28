@@ -202,6 +202,42 @@ final class TwCurveValue extends TwValue {
 }
 
 // =============================================================================
+// Text Shadow Presets
+// =============================================================================
+
+enum TextShadowPreset {
+  twoXs,
+  xs,
+  sm,
+  md,
+  lg,
+}
+
+const Map<TextShadowPreset, List<Shadow>> kTextShadowPresets = {
+  TextShadowPreset.twoXs: [
+    Shadow(offset: Offset(0, 1), blurRadius: 0, color: Color(0x26000000)),
+  ],
+  TextShadowPreset.xs: [
+    Shadow(offset: Offset(0, 1), blurRadius: 1, color: Color(0x33000000)),
+  ],
+  TextShadowPreset.sm: [
+    Shadow(offset: Offset(0, 1), blurRadius: 0, color: Color(0x13000000)),
+    Shadow(offset: Offset(0, 1), blurRadius: 1, color: Color(0x13000000)),
+    Shadow(offset: Offset(0, 2), blurRadius: 2, color: Color(0x13000000)),
+  ],
+  TextShadowPreset.md: [
+    Shadow(offset: Offset(0, 1), blurRadius: 1, color: Color(0x1A000000)),
+    Shadow(offset: Offset(0, 1), blurRadius: 2, color: Color(0x1A000000)),
+    Shadow(offset: Offset(0, 2), blurRadius: 4, color: Color(0x1A000000)),
+  ],
+  TextShadowPreset.lg: [
+    Shadow(offset: Offset(0, 1), blurRadius: 2, color: Color(0x1A000000)),
+    Shadow(offset: Offset(0, 3), blurRadius: 2, color: Color(0x1A000000)),
+    Shadow(offset: Offset(0, 4), blurRadius: 8, color: Color(0x1A000000)),
+  ],
+};
+
+// =============================================================================
 // Property Enum
 // =============================================================================
 
@@ -282,10 +318,12 @@ enum TwProperty {
   textTransform,
   textOverflow,
   textDecoration,
+  textShadow,
 
   // Effects
   boxShadow,
   opacity,
+  blur,
 
   // Transform (individual components)
   scale,
@@ -741,6 +779,14 @@ const Map<String, TwFunctionalPlugin> functionalPlugins = {
     supportsNegative: true,
   ),
 
+  // Effects
+  'blur': TwFunctionalPlugin(
+    property: TwProperty.blur,
+    type: TwPluginType.length,
+    scale: 'blurs',
+    supportsNegative: false,
+  ),
+
   // Animation
   'duration': TwFunctionalPlugin(
     property: TwProperty.transitionDuration,
@@ -917,6 +963,12 @@ final Map<String, TwNamedPlugin> namedPlugins = {
     value: const TwEnumValue(Clip.hardEdge),
   ),
 
+  // Blur
+  'blur-none': TwNamedPlugin(
+    property: TwProperty.blur,
+    value: const TwLengthValue(0.0),
+  ),
+
   // Shadows
   'shadow-none': TwNamedPlugin(
     property: TwProperty.boxShadow,
@@ -945,6 +997,32 @@ final Map<String, TwNamedPlugin> namedPlugins = {
   'shadow-2xl': TwNamedPlugin(
     property: TwProperty.boxShadow,
     value: const TwEnumValue(ElevationShadow.twelve),
+  ),
+
+  // Text shadows
+  'text-shadow-none': TwNamedPlugin(
+    property: TwProperty.textShadow,
+    value: const TwEnumValue<TextShadowPreset?>(null),
+  ),
+  'text-shadow-2xs': TwNamedPlugin(
+    property: TwProperty.textShadow,
+    value: const TwEnumValue(TextShadowPreset.twoXs),
+  ),
+  'text-shadow-xs': TwNamedPlugin(
+    property: TwProperty.textShadow,
+    value: const TwEnumValue(TextShadowPreset.xs),
+  ),
+  'text-shadow-sm': TwNamedPlugin(
+    property: TwProperty.textShadow,
+    value: const TwEnumValue(TextShadowPreset.sm),
+  ),
+  'text-shadow-md': TwNamedPlugin(
+    property: TwProperty.textShadow,
+    value: const TwEnumValue(TextShadowPreset.md),
+  ),
+  'text-shadow-lg': TwNamedPlugin(
+    property: TwProperty.textShadow,
+    value: const TwEnumValue(TextShadowPreset.lg),
   ),
 
   // Font weights
