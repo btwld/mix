@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
+import '../core/helpers.dart';
 import '../core/widget_modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
@@ -68,7 +69,7 @@ class VisibilityModifierMix extends ModifierMix<VisibilityModifier>
 
   @override
   VisibilityModifier resolve(BuildContext context) {
-    return VisibilityModifier(visible?.resolveProp(context));
+    return VisibilityModifier(MixOps.resolve(context, visible));
   }
 
   @override

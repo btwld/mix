@@ -7,7 +7,7 @@ final chipButtonLabel = TextStyler(
   style: TextStyleMix(
     color: Colors.white,
     fontSize: 12,
-    fontWeight: FontWeight.w500,
+    fontWeight: .w500,
   ),
 );
 
@@ -18,10 +18,10 @@ final chipButtonContainer = BoxStyler()
     .borderRounded(20)
     .onHovered(BoxStyler().color(Colors.blue.shade700))
     .variant(
-      ContextVariant.widgetState(WidgetState.selected),
+      ContextVariant.widgetState(.selected),
       BoxStyler().color(Colors.black),
     )
-    .alignment(Alignment.center)
+    .alignment(.center)
     .animate(.easeInOut(300.ms));
 
 class FilterChipButton extends StatefulWidget {

@@ -30,7 +30,7 @@ class Example extends StatelessWidget {
             Colors.orange.shade400,
             Colors.blue.shade400,
           ],
-          center: Alignment.center,
+          center: .center,
           startAngle: 0,
           endAngle: math.pi * 2,
         );

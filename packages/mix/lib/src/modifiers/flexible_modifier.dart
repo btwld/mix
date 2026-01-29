@@ -65,8 +65,8 @@ class FlexibleModifierMix extends ModifierMix<FlexibleModifier>
   @override
   FlexibleModifier resolve(BuildContext context) {
     return FlexibleModifier(
-      flex: flex?.resolveProp(context),
-      fit: fit?.resolveProp(context),
+      flex: MixOps.resolve(context, flex),
+      fit: MixOps.resolve(context, fit),
     );
   }
 

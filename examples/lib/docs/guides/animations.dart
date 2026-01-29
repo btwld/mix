@@ -16,7 +16,7 @@ class Example extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisSize: MainAxisSize.min,
+      mainAxisSize: .min,
       spacing: 16,
       children: [
         ScaleAnimation(),
@@ -117,17 +117,15 @@ class _CompressExpandAnimationState extends State<CompressExpandAnimation> {
           trigger: _isExpanded,
           phases: AnimationPhases.values,
           styleBuilder: (phase, style) => switch (phase) {
-            AnimationPhases.initial => style.scale(1),
-            AnimationPhases.compress =>
-              style.scale(0.75).color(Colors.red.shade800),
-            AnimationPhases.expanded =>
+            .initial => style.scale(1),
+            .compress => style.scale(0.75).color(Colors.red.shade800),
+            .expanded =>
               style.scale(1.25).borderRounded(20).color(Colors.yellow.shade300),
           },
           configBuilder: (phase) => switch (phase) {
-            AnimationPhases.initial =>
-              CurveAnimationConfig.springWithDampingRatio(800.ms, ratio: 0.3),
-            AnimationPhases.compress => CurveAnimationConfig.decelerate(200.ms),
-            AnimationPhases.expanded => CurveAnimationConfig.decelerate(100.ms),
+            .initial => .springWithDampingRatio(800.ms, ratio: 0.3),
+            .compress => .decelerate(200.ms),
+            .expanded => .decelerate(100.ms),
           },
         );
 
@@ -213,7 +211,7 @@ class _HeartKeyframeAnimationState extends State<HeartKeyframeAnimation> {
 
             return style.wrap(
               .new().transform(
-                transform: Matrix4.identity()
+                transform: .identity()
                   ..scaleByDouble(scale, scale, scale, 1.0)
                   ..translateByDouble(0, verticalOffset, 0, 1)
                   ..scaleByDouble(1, verticalStretch, 1, 1)
