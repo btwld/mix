@@ -1,0 +1,51 @@
+---
+title: Multi-View Test
+---
+
+{/*
+  TEST FIXTURE PAGE - FOR E2E/CI TESTING ONLY
+  This page is hidden from navigation and used by Playwright tests.
+  Do not reference in user documentation.
+*/}
+
+# FlutterMultiView Test
+
+This page tests the multi-view mode - multiple Flutter demos sharing a single Flutter engine.
+
+**Note:** Multi-view mode cannot be mixed with iframe mode on the same page.
+
+## Box Basic Demo
+
+<div data-testid="test-multiview-box">
+<FlutterMultiView
+  demoId="box-basic"
+  height={300}
+/>
+</div>
+
+## Hover Variant Demo
+
+<div data-testid="test-multiview-hover">
+<FlutterMultiView
+  demoId="variant-hover"
+  height={300}
+/>
+</div>
+
+## Hover Scale Animation
+
+<div data-testid="test-multiview-anim">
+<FlutterMultiView
+  demoId="anim-hover-scale"
+  height={300}
+/>
+</div>
+
+## Gradient Linear
+
+<div data-testid="test-multiview-gradient">
+<FlutterMultiView
+  demoId="gradient-linear"
+  height={300}
+/>
+</div>

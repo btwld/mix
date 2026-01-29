@@ -116,3 +116,11 @@ website/public/_pagefind/
 # Claude Code
 CLAUDE.md
 .claude/settings.local.json
+
+# Flutter web demos (generated via: cd examples && flutter build web)
+# These are built and deployed separately, not committed to git
+website/public/demos/
+
+# Playwright
+website/playwright-report/
+website/test-results/
