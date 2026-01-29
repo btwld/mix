@@ -46,7 +46,7 @@ class SpecGenerator extends GeneratorForAnnotation<MixableSpec> {
       final field = classElement.getField(paramName);
       if (field == null) {
         throw InvalidGenerationSourceError(
-          'Field $paramName not found in $specName',
+          'Field $paramName not found in ${specName ?? 'unknown'}',
           element: classElement,
         );
       }

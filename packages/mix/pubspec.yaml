@@ -11,8 +11,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  mix_annotations:
-    path: ../mix_annotations
+  mix_annotations: ^1.7.0
 
 dev_dependencies:
   flutter_lints: ^6.0.0
