@@ -1,40 +1,54 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
 
 import '../../core/helpers.dart';
 import '../../core/spec.dart';
+
+part 'flex_spec.g.dart';
 
 /// Defines the styling for a Flex widget.
 ///
 /// This class provides configuration for flex-specific properties such as
 /// direction, alignment, and spacing through the Mix framework.
+@MixableSpec()
 @immutable
-final class FlexSpec extends Spec<FlexSpec> with Diagnosticable {
+final class FlexSpec extends Spec<FlexSpec>
+    with Diagnosticable, _$FlexSpecMethods {
   /// The direction to use as the main axis.
+  @override
   final Axis? direction;
 
   /// How the children should be placed along the main axis.
+  @override
   final MainAxisAlignment? mainAxisAlignment;
 
   /// How the children should be placed along the cross axis.
+  @override
   final CrossAxisAlignment? crossAxisAlignment;
 
   /// How much space should be occupied in the main axis.
+  @override
   final MainAxisSize? mainAxisSize;
 
   /// Determines the order to lay children out vertically.
+  @override
   final VerticalDirection? verticalDirection;
 
   /// Determines the order to lay children out horizontally.
+  @override
   final TextDirection? textDirection;
 
   /// A baseline to use for aligning items.
+  @override
   final TextBaseline? textBaseline;
 
   /// The content will be clipped (or not) according to this option.
+  @override
   final Clip? clipBehavior;
 
   /// The spacing between children.
+  @override
   final double? spacing;
 
   /// Creates a [FlexSpec] with the provided properties.
@@ -49,95 +63,4 @@ final class FlexSpec extends Spec<FlexSpec> with Diagnosticable {
     this.clipBehavior,
     this.spacing,
   });
-
-  /// Creates a copy of this [FlexSpec] with the given properties replaced.
-  @override
-  FlexSpec copyWith({
-    Axis? direction,
-    MainAxisAlignment? mainAxisAlignment,
-    CrossAxisAlignment? crossAxisAlignment,
-    MainAxisSize? mainAxisSize,
-    VerticalDirection? verticalDirection,
-    TextDirection? textDirection,
-    TextBaseline? textBaseline,
-    Clip? clipBehavior,
-    double? spacing,
-  }) {
-    return FlexSpec(
-      direction: direction ?? this.direction,
-      mainAxisAlignment: mainAxisAlignment ?? this.mainAxisAlignment,
-      crossAxisAlignment: crossAxisAlignment ?? this.crossAxisAlignment,
-      mainAxisSize: mainAxisSize ?? this.mainAxisSize,
-      verticalDirection: verticalDirection ?? this.verticalDirection,
-      textDirection: textDirection ?? this.textDirection,
-      textBaseline: textBaseline ?? this.textBaseline,
-      clipBehavior: clipBehavior ?? this.clipBehavior,
-      spacing: spacing ?? this.spacing,
-    );
-  }
-
-  /// Linearly interpolates between this [FlexSpec] and another [FlexSpec].
-  @override
-  FlexSpec lerp(FlexSpec? other, double t) {
-    return FlexSpec(
-      direction: MixOps.lerpSnap(direction, other?.direction, t),
-      mainAxisAlignment: MixOps.lerpSnap(
-        mainAxisAlignment,
-        other?.mainAxisAlignment,
-        t,
-      ),
-      crossAxisAlignment: MixOps.lerpSnap(
-        crossAxisAlignment,
-        other?.crossAxisAlignment,
-        t,
-      ),
-      mainAxisSize: MixOps.lerpSnap(mainAxisSize, other?.mainAxisSize, t),
-      verticalDirection: MixOps.lerpSnap(
-        verticalDirection,
-        other?.verticalDirection,
-        t,
-      ),
-      textDirection: MixOps.lerpSnap(textDirection, other?.textDirection, t),
-      textBaseline: MixOps.lerpSnap(textBaseline, other?.textBaseline, t),
-      clipBehavior: MixOps.lerpSnap(clipBehavior, other?.clipBehavior, t),
-      spacing: MixOps.lerp(spacing, other?.spacing, t),
-    );
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(EnumProperty<Axis>('direction', direction))
-      ..add(
-        EnumProperty<MainAxisAlignment>('mainAxisAlignment', mainAxisAlignment),
-      )
-      ..add(
-        EnumProperty<CrossAxisAlignment>(
-          'crossAxisAlignment',
-          crossAxisAlignment,
-        ),
-      )
-      ..add(EnumProperty<MainAxisSize>('mainAxisSize', mainAxisSize))
-      ..add(
-        EnumProperty<VerticalDirection>('verticalDirection', verticalDirection),
-      )
-      ..add(EnumProperty<TextDirection>('textDirection', textDirection))
-      ..add(EnumProperty<TextBaseline>('textBaseline', textBaseline))
-      ..add(EnumProperty<Clip>('clipBehavior', clipBehavior))
-      ..add(DoubleProperty('spacing', spacing));
-  }
-
-  @override
-  List<Object?> get props => [
-    direction,
-    mainAxisAlignment,
-    crossAxisAlignment,
-    mainAxisSize,
-    verticalDirection,
-    textDirection,
-    textBaseline,
-    clipBehavior,
-    spacing,
-  ];
 }

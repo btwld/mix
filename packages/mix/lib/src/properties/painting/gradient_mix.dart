@@ -1,16 +1,18 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
 
 import '../../core/helpers.dart';
 import '../../core/mix_element.dart';
 import '../../core/prop.dart';
 
+part 'gradient_mix.g.dart';
+
 /// Base class for gradient styling.
 ///
 /// Supports tokens and type-aware merging.
 @immutable
-sealed class GradientMix<T extends Gradient> extends Mix<T>
-    with DefaultValue<T> {
+sealed class GradientMix<T extends Gradient> extends Mix<T> {
   final Prop<List<double>>? $stops;
   final Prop<List<Color>>? $colors;
   final Prop<GradientTransform>? $transform;
@@ -76,11 +78,17 @@ sealed class GradientMix<T extends Gradient> extends Mix<T>
 }
 
 /// Mix representation of [LinearGradient].
-
+@mixable
 final class LinearGradientMix extends GradientMix<LinearGradient>
-    with Diagnosticable {
+    with
+        DefaultValue<LinearGradient>,
+        Diagnosticable,
+        _$LinearGradientMixMixin {
+  @override
   final Prop<AlignmentGeometry>? $begin;
+  @override
   final Prop<AlignmentGeometry>? $end;
+  @override
   final Prop<TileMode>? $tileMode;
 
   LinearGradientMix({
@@ -187,64 +195,25 @@ final class LinearGradientMix extends GradientMix<LinearGradient>
   }
 
   @override
-  LinearGradient resolve(BuildContext context) {
-    return LinearGradient(
-      begin: MixOps.resolve(context, $begin) ?? defaultValue.begin,
-      end: MixOps.resolve(context, $end) ?? defaultValue.end,
-      colors: MixOps.resolve(context, $colors) ?? defaultValue.colors,
-      stops: MixOps.resolve(context, $stops) ?? defaultValue.stops,
-      tileMode: MixOps.resolve(context, $tileMode) ?? defaultValue.tileMode,
-      transform: MixOps.resolve(context, $transform) ?? defaultValue.transform,
-    );
-  }
-
-  @override
-  LinearGradientMix merge(LinearGradientMix? other) {
-    final commonProps = mergeCommonProperties(other);
-
-    return LinearGradientMix.create(
-      begin: MixOps.merge($begin, other?.$begin),
-      end: MixOps.merge($end, other?.$end),
-      tileMode: MixOps.merge($tileMode, other?.$tileMode),
-      transform: commonProps['transform'],
-      colors: commonProps['colors'],
-      stops: commonProps['stops'],
-    );
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(DiagnosticsProperty('begin', $begin))
-      ..add(DiagnosticsProperty('end', $end))
-      ..add(DiagnosticsProperty('tileMode', $tileMode))
-      ..add(DiagnosticsProperty('transform', $transform))
-      ..add(DiagnosticsProperty('colors', $colors))
-      ..add(DiagnosticsProperty('stops', $stops));
-  }
-
-  @override
-  List<Object?> get props => [
-    $begin,
-    $end,
-    $tileMode,
-    $transform,
-    $colors,
-    $stops,
-  ];
-
-  @override
   LinearGradient get defaultValue => const LinearGradient(colors: []);
 }
 
 /// Mix representation of [RadialGradient].
+@mixable
 final class RadialGradientMix extends GradientMix<RadialGradient>
-    with Diagnosticable {
+    with
+        DefaultValue<RadialGradient>,
+        Diagnosticable,
+        _$RadialGradientMixMixin {
+  @override
   final Prop<AlignmentGeometry>? $center;
+  @override
   final Prop<double>? $radius;
+  @override
   final Prop<TileMode>? $tileMode;
+  @override
   final Prop<AlignmentGeometry>? $focal;
+  @override
   final Prop<double>? $focalRadius;
 
   RadialGradientMix({
@@ -383,73 +352,20 @@ final class RadialGradientMix extends GradientMix<RadialGradient>
   }
 
   @override
-  RadialGradient resolve(BuildContext context) {
-    return RadialGradient(
-      center: MixOps.resolve(context, $center) ?? defaultValue.center,
-      radius: MixOps.resolve(context, $radius) ?? defaultValue.radius,
-      colors: MixOps.resolve(context, $colors) ?? defaultValue.colors,
-      stops: MixOps.resolve(context, $stops) ?? defaultValue.stops,
-      tileMode: MixOps.resolve(context, $tileMode) ?? defaultValue.tileMode,
-      focal: MixOps.resolve(context, $focal) ?? defaultValue.focal,
-      focalRadius:
-          MixOps.resolve(context, $focalRadius) ?? defaultValue.focalRadius,
-      transform: MixOps.resolve(context, $transform) ?? defaultValue.transform,
-    );
-  }
-
-  @override
-  RadialGradientMix merge(RadialGradientMix? other) {
-    final commonProps = mergeCommonProperties(other);
-
-    return RadialGradientMix.create(
-      center: MixOps.merge($center, other?.$center),
-      radius: MixOps.merge($radius, other?.$radius),
-      tileMode: MixOps.merge($tileMode, other?.$tileMode),
-      focal: MixOps.merge($focal, other?.$focal),
-      focalRadius: MixOps.merge($focalRadius, other?.$focalRadius),
-      transform: commonProps['transform'],
-      colors: commonProps['colors'],
-      stops: commonProps['stops'],
-    );
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(DiagnosticsProperty('center', $center))
-      ..add(DiagnosticsProperty('radius', $radius))
-      ..add(DiagnosticsProperty('tileMode', $tileMode))
-      ..add(DiagnosticsProperty('focal', $focal))
-      ..add(DiagnosticsProperty('focalRadius', $focalRadius))
-      ..add(DiagnosticsProperty('transform', $transform))
-      ..add(DiagnosticsProperty('colors', $colors))
-      ..add(DiagnosticsProperty('stops', $stops));
-  }
-
-  @override
-  List<Object?> get props => [
-    $center,
-    $radius,
-    $tileMode,
-    $focal,
-    $focalRadius,
-    $transform,
-    $colors,
-    $stops,
-  ];
-
-  @override
   RadialGradient get defaultValue => const RadialGradient(colors: []);
 }
 
 /// Mix representation of [SweepGradient].
-
+@mixable
 final class SweepGradientMix extends GradientMix<SweepGradient>
-    with Diagnosticable {
+    with DefaultValue<SweepGradient>, Diagnosticable, _$SweepGradientMixMixin {
+  @override
   final Prop<AlignmentGeometry>? $center;
+  @override
   final Prop<double>? $startAngle;
+  @override
   final Prop<double>? $endAngle;
+  @override
   final Prop<TileMode>? $tileMode;
 
   SweepGradientMix({
@@ -569,59 +485,6 @@ final class SweepGradientMix extends GradientMix<SweepGradient>
   SweepGradientMix stops(List<double> value) {
     return merge(SweepGradientMix.stops(value));
   }
-
-  @override
-  SweepGradient resolve(BuildContext context) {
-    return SweepGradient(
-      center: MixOps.resolve(context, $center) ?? defaultValue.center,
-      startAngle:
-          MixOps.resolve(context, $startAngle) ?? defaultValue.startAngle,
-      endAngle: MixOps.resolve(context, $endAngle) ?? defaultValue.endAngle,
-      colors: MixOps.resolve(context, $colors) ?? defaultValue.colors,
-      stops: MixOps.resolve(context, $stops) ?? defaultValue.stops,
-      tileMode: MixOps.resolve(context, $tileMode) ?? defaultValue.tileMode,
-      transform: MixOps.resolve(context, $transform) ?? defaultValue.transform,
-    );
-  }
-
-  @override
-  SweepGradientMix merge(SweepGradientMix? other) {
-    final commonProps = mergeCommonProperties(other);
-
-    return SweepGradientMix.create(
-      center: MixOps.merge($center, other?.$center),
-      startAngle: MixOps.merge($startAngle, other?.$startAngle),
-      endAngle: MixOps.merge($endAngle, other?.$endAngle),
-      tileMode: MixOps.merge($tileMode, other?.$tileMode),
-      transform: commonProps['transform'],
-      colors: commonProps['colors'],
-      stops: commonProps['stops'],
-    );
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(DiagnosticsProperty('center', $center))
-      ..add(DiagnosticsProperty('startAngle', $startAngle))
-      ..add(DiagnosticsProperty('endAngle', $endAngle))
-      ..add(DiagnosticsProperty('tileMode', $tileMode))
-      ..add(DiagnosticsProperty('transform', $transform))
-      ..add(DiagnosticsProperty('colors', $colors))
-      ..add(DiagnosticsProperty('stops', $stops));
-  }
-
-  @override
-  List<Object?> get props => [
-    $center,
-    $startAngle,
-    $endAngle,
-    $tileMode,
-    $transform,
-    $colors,
-    $stops,
-  ];
 
   @override
   SweepGradient get defaultValue => const SweepGradient(colors: []);

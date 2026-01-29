@@ -1,40 +1,67 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:mix_annotations/mix_annotations.dart';
 
 import '../../core/helpers.dart';
-import '../../core/mix_element.dart';
+import '../../core/mix_element.dart' hide Mixable;
 import '../../core/prop.dart';
 import '../painting/shadow_mix.dart';
+
+part 'text_style_mix.g.dart';
 
 /// Mix representation of [TextStyle].
 ///
 /// Comprehensive text styling with tokens.
 @immutable
-class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
+@Mixable(methods: GeneratedMixMethods.skipResolve)
+class TextStyleMix extends Mix<TextStyle>
+    with Diagnosticable, _$TextStyleMixMixin {
   // Simple properties use MixValue directly
+  @override
   final Prop<Color>? $color;
+  @override
   final Prop<Color>? $backgroundColor;
+  @override
   final Prop<double>? $fontSize;
+  @override
   final Prop<FontWeight>? $fontWeight;
+  @override
   final Prop<FontStyle>? $fontStyle;
+  @override
   final Prop<double>? $letterSpacing;
+  @override
   final Prop<String>? $debugLabel;
+  @override
   final Prop<double>? $wordSpacing;
+  @override
   final Prop<TextBaseline>? $textBaseline;
+  @override
   final Prop<TextDecoration>? $decoration;
+  @override
   final Prop<Color>? $decorationColor;
+  @override
   final Prop<TextDecorationStyle>? $decorationStyle;
+  @override
   final Prop<double>? $height;
+  @override
   final Prop<double>? $decorationThickness;
+  @override
   final Prop<String>? $fontFamily;
+  @override
   final Prop<Paint>? $foreground;
+  @override
   final Prop<Paint>? $background;
+  @override
   final Prop<bool>? $inherit;
 
   // List properties as Prop<List<...>>
+  @override
   final Prop<List<String>>? $fontFamilyFallback;
+  @override
   final Prop<List<FontFeature>>? $fontFeatures;
+  @override
   final Prop<List<FontVariation>>? $fontVariations;
+  @override
   final Prop<List<Shadow>>? $shadows;
 
   /// Creates with text color.
@@ -418,93 +445,4 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
       fontFamilyFallback: MixOps.resolve(context, $fontFamilyFallback),
     );
   }
-
-  @override
-  TextStyleMix merge(TextStyleMix? other) {
-    return TextStyleMix.create(
-      color: MixOps.merge($color, other?.$color),
-      backgroundColor: MixOps.merge($backgroundColor, other?.$backgroundColor),
-      fontSize: MixOps.merge($fontSize, other?.$fontSize),
-      fontWeight: MixOps.merge($fontWeight, other?.$fontWeight),
-      fontStyle: MixOps.merge($fontStyle, other?.$fontStyle),
-      letterSpacing: MixOps.merge($letterSpacing, other?.$letterSpacing),
-      debugLabel: MixOps.merge($debugLabel, other?.$debugLabel),
-      wordSpacing: MixOps.merge($wordSpacing, other?.$wordSpacing),
-      textBaseline: MixOps.merge($textBaseline, other?.$textBaseline),
-      shadows: MixOps.merge($shadows, other?.$shadows),
-      // Merge lists - default replace strategy (merge at index)
-      fontFeatures: MixOps.merge($fontFeatures, other?.$fontFeatures),
-      decoration: MixOps.merge($decoration, other?.$decoration),
-      decorationColor: MixOps.merge($decorationColor, other?.$decorationColor),
-      decorationStyle: MixOps.merge($decorationStyle, other?.$decorationStyle),
-      fontVariations: MixOps.merge($fontVariations, other?.$fontVariations),
-      height: MixOps.merge($height, other?.$height),
-      foreground: MixOps.merge($foreground, other?.$foreground),
-      background: MixOps.merge($background, other?.$background),
-      decorationThickness: MixOps.merge(
-        $decorationThickness,
-        other?.$decorationThickness,
-      ),
-      fontFamily: MixOps.merge($fontFamily, other?.$fontFamily),
-      fontFamilyFallback: MixOps.merge(
-        $fontFamilyFallback,
-        other?.$fontFamilyFallback,
-      ),
-      inherit: MixOps.merge($inherit, other?.$inherit),
-    );
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(DiagnosticsProperty('color', $color))
-      ..add(DiagnosticsProperty('backgroundColor', $backgroundColor))
-      ..add(DiagnosticsProperty('fontSize', $fontSize))
-      ..add(DiagnosticsProperty('fontWeight', $fontWeight))
-      ..add(DiagnosticsProperty('fontStyle', $fontStyle))
-      ..add(DiagnosticsProperty('letterSpacing', $letterSpacing))
-      ..add(DiagnosticsProperty('wordSpacing', $wordSpacing))
-      ..add(DiagnosticsProperty('textBaseline', $textBaseline))
-      ..add(DiagnosticsProperty('height', $height))
-      ..add(DiagnosticsProperty('decoration', $decoration))
-      ..add(DiagnosticsProperty('decorationColor', $decorationColor))
-      ..add(DiagnosticsProperty('decorationStyle', $decorationStyle))
-      ..add(DiagnosticsProperty('decorationThickness', $decorationThickness))
-      ..add(DiagnosticsProperty('fontFamily', $fontFamily))
-      ..add(DiagnosticsProperty('fontFamilyFallback', $fontFamilyFallback))
-      ..add(DiagnosticsProperty('shadows', $shadows))
-      ..add(DiagnosticsProperty('fontFeatures', $fontFeatures))
-      ..add(DiagnosticsProperty('fontVariations', $fontVariations))
-      ..add(DiagnosticsProperty('foreground', $foreground))
-      ..add(DiagnosticsProperty('background', $background))
-      ..add(DiagnosticsProperty('debugLabel', $debugLabel))
-      ..add(DiagnosticsProperty('inherit', $inherit));
-  }
-
-  @override
-  List<Object?> get props => [
-    $color,
-    $backgroundColor,
-    $fontSize,
-    $fontWeight,
-    $fontStyle,
-    $letterSpacing,
-    $debugLabel,
-    $wordSpacing,
-    $textBaseline,
-    $decoration,
-    $decorationColor,
-    $decorationStyle,
-    $height,
-    $decorationThickness,
-    $fontFamily,
-    $foreground,
-    $background,
-    $fontFamilyFallback,
-    $fontFeatures,
-    $fontVariations,
-    $shadows,
-    $inherit,
-  ];
 }

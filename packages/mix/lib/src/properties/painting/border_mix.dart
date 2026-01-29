@@ -1,9 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:mix_annotations/mix_annotations.dart';
 
 import '../../core/helpers.dart';
 import '../../core/mix_element.dart';
 import '../../core/prop.dart';
+
+part 'border_mix.g.dart';
 
 /// Base class for Mix border types.
 ///
@@ -149,8 +152,12 @@ sealed class BoxBorderMix<T extends BoxBorder> extends Mix<T> {
 /// Mix representation of [Border].
 ///
 /// Independent side control with tokens.
-final class BorderMix extends BoxBorderMix<Border> with DefaultValue<Border> {
+@mixable
+final class BorderMix extends BoxBorderMix<Border>
+    with DefaultValue<Border>, Diagnosticable, _$BorderMixMixin {
+  @override
   final Prop<BorderSide>? $left;
+  @override
   final Prop<BorderSide>? $right;
 
   BorderMix({
@@ -257,45 +264,6 @@ final class BorderMix extends BoxBorderMix<Border> with DefaultValue<Border> {
     return merge(BorderMix.right(side));
   }
 
-  /// Resolves to [Border] using the provided [BuildContext].
-  ///
-  /// If a property is null in the [BuildContext], it falls back to the
-  /// default value defined in the `defaultValue` for that property.
-  ///
-  /// ```dart
-  /// final border = BorderMix(...).resolve(mix);
-  /// ```
-  @override
-  Border resolve(BuildContext context) {
-    return Border(
-      top: MixOps.resolve(context, $top) ?? BorderSide.none,
-      right: MixOps.resolve(context, $right) ?? BorderSide.none,
-      bottom: MixOps.resolve(context, $bottom) ?? BorderSide.none,
-      left: MixOps.resolve(context, $left) ?? BorderSide.none,
-    );
-  }
-
-  /// Merges the properties of this [BorderMix] with the properties of [other].
-  ///
-  /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [BorderMix] with the properties of [other] taking precedence over
-  /// the corresponding properties of this instance.
-  ///
-  /// Properties from [other] that are null will fall back
-  /// to the values from this instance.
-  @override
-  BorderMix merge(BorderMix? other) {
-    return BorderMix.create(
-      top: MixOps.merge($top, other?.$top),
-      bottom: MixOps.merge($bottom, other?.$bottom),
-      left: MixOps.merge($left, other?.$left),
-      right: MixOps.merge($right, other?.$right),
-    );
-  }
-
-  @override
-  List<Object?> get props => [$top, $bottom, $left, $right];
-
   @override
   bool get isUniform => $top == $bottom && $bottom == $left && $left == $right;
 
@@ -314,9 +282,15 @@ final class BorderMix extends BoxBorderMix<Border> with DefaultValue<Border> {
 ///
 /// Allows styling of top, bottom, start, and end border sides with proper
 /// right-to-left layout handling and token support.
+@mixable
 final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
-    with DefaultValue<BorderDirectional> {
+    with
+        DefaultValue<BorderDirectional>,
+        Diagnosticable,
+        _$BorderDirectionalMixMixin {
+  @override
   final Prop<BorderSide>? $start;
+  @override
   final Prop<BorderSide>? $end;
   static final BorderDirectionalMix none = BorderDirectionalMix.all(
     BorderSideMix.none,
@@ -423,45 +397,6 @@ final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
     return merge(BorderDirectionalMix.end(side));
   }
 
-  /// Resolves to [BorderDirectional] using the provided [BuildContext].
-  ///
-  /// If a property is null in the [BuildContext], it falls back to the
-  /// default value defined in the `defaultValue` for that property.
-  ///
-  /// ```dart
-  /// final borderDirectional = BorderDirectionalMix(...).resolve(mix);
-  /// ```
-  @override
-  BorderDirectional resolve(BuildContext context) {
-    return BorderDirectional(
-      top: MixOps.resolve(context, $top) ?? defaultValue.top,
-      start: MixOps.resolve(context, $start) ?? defaultValue.start,
-      end: MixOps.resolve(context, $end) ?? defaultValue.end,
-      bottom: MixOps.resolve(context, $bottom) ?? defaultValue.bottom,
-    );
-  }
-
-  /// Merges the properties of this [BorderDirectionalMix] with the properties of [other].
-  ///
-  /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [BorderDirectionalMix] with the properties of [other] taking precedence over
-  /// the corresponding properties of this instance.
-  ///
-  /// Properties from [other] that are null will fall back
-  /// to the values from this instance.
-  @override
-  BorderDirectionalMix merge(BorderDirectionalMix? other) {
-    return BorderDirectionalMix.create(
-      top: MixOps.merge($top, other?.$top),
-      bottom: MixOps.merge($bottom, other?.$bottom),
-      start: MixOps.merge($start, other?.$start),
-      end: MixOps.merge($end, other?.$end),
-    );
-  }
-
-  @override
-  List<Object?> get props => [$top, $bottom, $start, $end];
-
   @override
   bool get isUniform => $top == $bottom && $bottom == $start && $start == $end;
 
@@ -480,11 +415,16 @@ final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
 ///
 /// Configures color, width, style, and stroke alignment for a single border edge
 /// with token support and merging capabilities.
+@mixable
 final class BorderSideMix extends Mix<BorderSide>
-    with DefaultValue<BorderSide>, Diagnosticable {
+    with DefaultValue<BorderSide>, Diagnosticable, _$BorderSideMixMixin {
+  @override
   final Prop<Color>? $color;
+  @override
   final Prop<double>? $width;
+  @override
   final Prop<BorderStyle>? $style;
+  @override
   final Prop<double>? $strokeAlign;
 
   static final BorderSideMix none = BorderSideMix.value(BorderSide.none);
@@ -574,56 +514,6 @@ final class BorderSideMix extends Mix<BorderSide>
   BorderSideMix strokeAlign(double value) {
     return merge(BorderSideMix.strokeAlign(value));
   }
-
-  /// Resolves to [BorderSide] using the provided [BuildContext].
-  ///
-  /// If a property is null in the [BuildContext], it falls back to the
-  /// default value defined in the `defaultValue` for that property.
-  ///
-  /// ```dart
-  /// final borderSide = BorderSideMix(...).resolve(mix);
-  /// ```
-  @override
-  BorderSide resolve(BuildContext context) {
-    return BorderSide(
-      color: MixOps.resolve(context, $color) ?? defaultValue.color,
-      width: MixOps.resolve(context, $width) ?? defaultValue.width,
-      style: MixOps.resolve(context, $style) ?? defaultValue.style,
-      strokeAlign:
-          MixOps.resolve(context, $strokeAlign) ?? defaultValue.strokeAlign,
-    );
-  }
-
-  /// Merges the properties of this [BorderSideMix] with the properties of [other].
-  ///
-  /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [BorderSideMix] with the properties of [other] taking precedence over
-  /// the corresponding properties of this instance.
-  ///
-  /// Properties from [other] that are null will fall back
-  /// to the values from this instance.
-  @override
-  BorderSideMix merge(BorderSideMix? other) {
-    return BorderSideMix.create(
-      color: MixOps.merge($color, other?.$color),
-      width: MixOps.merge($width, other?.$width),
-      style: MixOps.merge($style, other?.$style),
-      strokeAlign: MixOps.merge($strokeAlign, other?.$strokeAlign),
-    );
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(DiagnosticsProperty('color', $color))
-      ..add(DiagnosticsProperty('width', $width))
-      ..add(DiagnosticsProperty('style', $style))
-      ..add(DiagnosticsProperty('strokeAlign', $strokeAlign));
-  }
-
-  @override
-  List<Object?> get props => [$color, $width, $style, $strokeAlign];
 
   @override
   BorderSide get defaultValue => const BorderSide();
