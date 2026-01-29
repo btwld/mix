@@ -29,5 +29,5 @@ jobs:
     secrets:
       token: ${{ secrets.GITHUB_TOKEN }}
     with:
-      flutter-version: 'beta'
+      flutter-version: '3.38.1'
       run-dcm: true
