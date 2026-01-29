@@ -2429,4 +2429,207 @@ void main() {
     expect(find.text('Hello'), findsOneWidget);
     expect(find.text('World'), findsOneWidget);
   });
+
+  // ==========================================================================
+  // Blur Token Tests
+  // ==========================================================================
+
+  group('Blur tokens', () {
+    test('blur-none parses without warnings', () {
+      final seen = <String>[];
+      TwParser(onUnsupported: seen.add).parseBox('blur-none');
+      expect(seen, isEmpty);
+    });
+
+    test('blur-sm parses without warnings', () {
+      final seen = <String>[];
+      TwParser(onUnsupported: seen.add).parseBox('blur-sm');
+      expect(seen, isEmpty);
+    });
+
+    test('blur parses without warnings (default)', () {
+      final seen = <String>[];
+      TwParser(onUnsupported: seen.add).parseBox('blur');
+      expect(seen, isEmpty);
+    });
+
+    test('blur-md parses without warnings', () {
+      final seen = <String>[];
+      TwParser(onUnsupported: seen.add).parseBox('blur-md');
+      expect(seen, isEmpty);
+    });
+
+    test('blur-lg parses without warnings', () {
+      final seen = <String>[];
+      TwParser(onUnsupported: seen.add).parseBox('blur-lg');
+      expect(seen, isEmpty);
+    });
+
+    test('blur-xl parses without warnings', () {
+      final seen = <String>[];
+      TwParser(onUnsupported: seen.add).parseBox('blur-xl');
+      expect(seen, isEmpty);
+    });
+
+    test('blur-2xl parses without warnings', () {
+      final seen = <String>[];
+      TwParser(onUnsupported: seen.add).parseBox('blur-2xl');
+      expect(seen, isEmpty);
+    });
+
+    test('blur-3xl parses without warnings', () {
+      final seen = <String>[];
+      TwParser(onUnsupported: seen.add).parseBox('blur-3xl');
+      expect(seen, isEmpty);
+    });
+
+    test('blur-999 warns via onUnsupported', () {
+      final seen = <String>[];
+      TwParser(onUnsupported: seen.add).parseBox('blur-999');
+      expect(seen, contains('blur-999'));
+    });
+
+    testWidgets('Div with blur-md applies ImageFiltered', (tester) async {
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: Div(
+            classNames: 'blur-md',
+            child: const SizedBox(width: 40, height: 40),
+          ),
+        ),
+      );
+
+      expect(find.byType(ImageFiltered), findsOneWidget);
+    });
+
+    testWidgets('Div with blur-none does not apply ImageFiltered', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: Div(
+            classNames: 'blur-none',
+            child: const SizedBox(width: 40, height: 40),
+          ),
+        ),
+      );
+
+      expect(find.byType(ImageFiltered), findsNothing);
+    });
+
+    testWidgets('hover:blur-lg applies blur on hover only', (tester) async {
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: Div(
+            classNames: 'hover:blur-lg',
+            child: const SizedBox(width: 40, height: 40),
+          ),
+        ),
+      );
+
+      // Initially no blur
+      expect(find.byType(ImageFiltered), findsNothing);
+
+      // Hover
+      final gesture =
+          await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await gesture.addPointer(location: Offset.zero);
+      await tester.pump();
+
+      final boxFinder = find.byType(Container);
+      await gesture.moveTo(tester.getCenter(boxFinder.first));
+      await tester.pump();
+
+      // Blur applied on hover
+      expect(find.byType(ImageFiltered), findsOneWidget);
+
+      // Move away
+      await gesture.moveTo(const Offset(-500, -500));
+      await tester.pump();
+
+      // Blur removed
+      expect(find.byType(ImageFiltered), findsNothing);
+
+      await gesture.removePointer();
+    });
+  });
+
+  // ==========================================================================
+  // Text Shadow Token Tests
+  // ==========================================================================
+
+  group('Text shadow tokens', () {
+    test('text-shadow-none parses without warnings', () {
+      final seen = <String>[];
+      TwParser(onUnsupported: seen.add).parseText('text-shadow-none');
+      expect(seen, isEmpty);
+    });
+
+    test('text-shadow-2xs parses without warnings', () {
+      final seen = <String>[];
+      TwParser(onUnsupported: seen.add).parseText('text-shadow-2xs');
+      expect(seen, isEmpty);
+    });
+
+    test('text-shadow-xs parses without warnings', () {
+      final seen = <String>[];
+      TwParser(onUnsupported: seen.add).parseText('text-shadow-xs');
+      expect(seen, isEmpty);
+    });
+
+    test('text-shadow-sm parses without warnings', () {
+      final seen = <String>[];
+      TwParser(onUnsupported: seen.add).parseText('text-shadow-sm');
+      expect(seen, isEmpty);
+    });
+
+    test('text-shadow-md parses without warnings', () {
+      final seen = <String>[];
+      TwParser(onUnsupported: seen.add).parseText('text-shadow-md');
+      expect(seen, isEmpty);
+    });
+
+    test('text-shadow-lg parses without warnings', () {
+      final seen = <String>[];
+      TwParser(onUnsupported: seen.add).parseText('text-shadow-lg');
+      expect(seen, isEmpty);
+    });
+
+    test('text-shadow-999 warns via onUnsupported', () {
+      final seen = <String>[];
+      TwParser(onUnsupported: seen.add).parseText('text-shadow-999');
+      expect(seen, contains('text-shadow-999'));
+    });
+
+    testWidgets('Div with text-shadow-md applies shadows via DefaultTextStyle',
+        (tester) async {
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: Div(
+            classNames: 'text-shadow-md',
+            children: [const Text('Hello')],
+          ),
+        ),
+      );
+
+      // Div wraps children with DefaultTextStyle for text shadows
+      final defaultTextStyles = find.byType(DefaultTextStyle);
+      expect(defaultTextStyles, findsWidgets);
+
+      // Find the one with shadows
+      bool foundShadows = false;
+      for (final element in defaultTextStyles.evaluate()) {
+        final widget = element.widget as DefaultTextStyle;
+        if (widget.style.shadows != null && widget.style.shadows!.isNotEmpty) {
+          foundShadows = true;
+          break;
+        }
+      }
+      expect(foundShadows, isTrue);
+    });
+  });
 }
