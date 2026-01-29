@@ -2,16 +2,29 @@
 
 ## Summary
 
-This document explores adding SwiftUI-like `matchedGeometryEffect` to Mix for same-route shared element transitions (e.g., thumbnail → full image, card → detail view).
+This document explores adding SwiftUI-like `matchedGeometryEffect` to Mix for same-route shared element transitions.
+
+The goal: make "expand card to detail" and "shared element" transitions as easy as adding a single wrapper widget.
 
 ---
 
-## Problem
+## The Problem
 
-Animating a widget from one position/size to another on the same screen requires significant boilerplate:
+**Scenario 1: Expandable Card**
+User taps a card thumbnail → card smoothly expands to fill the screen → tap again → collapses back. Think: App Store Today tab, photo galleries, product cards.
+
+**Scenario 2: Segmented Control Animation**
+Selected indicator slides smoothly from one segment to another. The indicator "follows" the selection.
+
+**Scenario 3: Tab Bar Indicator**
+Active tab indicator moves to track the selected tab.
+
+All of these share a pattern: **one widget needs to animate its position/size to match another widget's geometry**.
+
+### What users do today
 
 ```dart
-// Current approach: ~50+ lines of manual setup
+// ~50+ lines of boilerplate for a simple expand animation
 class _ExpandableCardState extends State<ExpandableCard>
     with SingleTickerProviderStateMixin {
   final _sourceKey = GlobalKey();
@@ -21,13 +34,13 @@ class _ExpandableCardState extends State<ExpandableCard>
   Rect? _targetRect;
 
   void _expand() {
-    // Measure source geometry
+    // 1. Measure source geometry with GlobalKey
     final sourceBox = _sourceKey.currentContext?.findRenderObject() as RenderBox?;
     _sourceRect = sourceBox?.localToGlobal(Offset.zero) & sourceBox!.size;
 
     setState(() => _isExpanded = true);
 
-    // Wait for layout, measure target, animate
+    // 2. Wait for layout, measure target
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final targetBox = _targetKey.currentContext?.findRenderObject() as RenderBox?;
       _targetRect = targetBox?.localToGlobal(Offset.zero) & targetBox!.size;
@@ -37,15 +50,46 @@ class _ExpandableCardState extends State<ExpandableCard>
 
   @override
   Widget build(BuildContext context) {
+    // 3. Complex transform interpolation
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, _) {
-        // Complex transform interpolation...
+        final rect = Rect.lerp(_sourceRect, _targetRect, _controller.value)!;
+        return Positioned(
+          left: rect.left,
+          top: rect.top,
+          width: rect.width,
+          height: rect.height,
+          child: _isExpanded ? LargeCard() : SmallCard(),
+        );
       },
     );
   }
 }
 ```
+
+The pain points:
+- Manual GlobalKey management
+- PostFrameCallback timing gymnastics
+- Custom transform/position math
+- State management boilerplate
+- No automatic reverse animation
+- Hard to reuse across different transitions
+
+---
+
+## Why not Hero?
+
+Flutter's `Hero` widget solves this... but only across routes:
+
+```dart
+// Hero requires Navigator.push/pop
+Navigator.push(context, MaterialPageRoute(
+  builder: (_) => DetailPage(hero: Hero(tag: 'photo', child: Image())),
+));
+```
+
+For **same-route** animations (card expands in-place, overlay slides up, indicator moves), Hero doesn't work. You're back to manual animation boilerplate.
 
 ---
 
@@ -56,97 +100,91 @@ SwiftUI's `matchedGeometryEffect` coordinates shared element transitions:
 ```swift
 @Namespace var namespace
 
-// Source
+// Source (thumbnail)
 Image("thumbnail")
     .matchedGeometryEffect(id: "photo", in: namespace)
 
-// Target (when expanded)
+// Target (when expanded) - same id, same namespace
 Image("fullsize")
     .matchedGeometryEffect(id: "photo", in: namespace)
 ```
 
-Key behaviors:
-- Views with same `id` in same `namespace` share geometry
-- When one appears and other disappears, transition animates automatically
-- Works within the same view hierarchy (same-route)
+When one appears and the other disappears, SwiftUI automatically animates between their geometries.
 
 ---
 
-## Flutter Context
+## Proposed API Options
 
-**Existing solutions:**
-- `Hero`: Cross-route only (requires Navigator push/pop)
-- `AnimatedContainer`: Same-route, but only for property changes on a single widget
-- `animations` package: Various transitions, but not geometry matching
-
-**Gap:** No declarative same-route geometry matching in Flutter.
-
----
-
-## Proposed API
-
-### GeometryScope
-
-Provides a namespace for geometry tracking:
+### Option A: Widget-based (like Hero)
 
 ```dart
-GeometryScope(
-  child: MyWidget(),
+SharedGeometry(
+  child: Column(
+    children: [
+      if (!isExpanded)
+        SharedGeometrySource(
+          tag: 'card',
+          child: SmallCard(),
+        ),
+      if (isExpanded)
+        SharedGeometryTarget(
+          tag: 'card',
+          duration: 400.ms,
+          curve: Curves.easeOutCubic,
+          child: LargeCard(),
+        ),
+    ],
+  ),
 )
 ```
 
-### GeometryMatch
+- `SharedGeometry` - Scope that tracks geometry by tag
+- `SharedGeometrySource` - Registers position/size
+- `SharedGeometryTarget` - Animates FROM source TO its own position
 
-Tracks or animates geometry within a scope:
-
-```dart
-GeometryMatch(
-  id: 'card',           // Unique identifier
-  isSource: true,       // true = register geometry, false = animate to it
-  duration: Duration(milliseconds: 300),
-  curve: Curves.easeOutCubic,
-  child: MyCard(),
-)
-```
-
-### Full Example
+### Option B: Fluent API (more Mix-like)
 
 ```dart
-class ExpandableCard extends StatefulWidget {
-  @override
-  State<ExpandableCard> createState() => _ExpandableCardState();
-}
+// Define the geometry group
+final geometryScope = SharedGeometryScope();
 
-class _ExpandableCardState extends State<ExpandableCard> {
-  bool isExpanded = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return GeometryScope(
-      child: GestureDetector(
-        onTap: () => setState(() => isExpanded = !isExpanded),
-        child: isExpanded
-            ? GeometryMatch(
-                id: 'card',
-                isSource: false,  // Animate FROM source TO here
-                duration: Duration(milliseconds: 400),
-                curve: Curves.easeOutCubic,
-                child: LargeCard(),
-              )
-            : GeometryMatch(
-                id: 'card',
-                isSource: true,   // Register this geometry
-                child: SmallCard(),
-              ),
+// In widget tree
+Column(
+  children: [
+    if (!isExpanded)
+      SmallCard().sharedGeometry(
+        scope: geometryScope,
+        tag: 'card',
+        isSource: true,
       ),
-    );
-  }
-}
+    if (isExpanded)
+      LargeCard().sharedGeometry(
+        scope: geometryScope,
+        tag: 'card',
+        duration: 400.ms,
+        curve: Curves.easeOutCubic,
+      ),
+  ],
+)
 ```
+
+### Option C: Style-based (integrate with Mix styles)
+
+```dart
+final style = BoxStyler()
+  .sharedGeometry(tag: 'card', isSource: !isExpanded)
+  .animation(400.ms, Curves.easeOutCubic);
+
+Box(style: style, child: isExpanded ? LargeCard() : SmallCard())
+```
+
+This option would integrate with Mix's existing animation system but is more complex to implement.
 
 ---
 
-## Implementation Approach
+## Implementation Notes
+
+Core components (~200 LOC total):
 
 ### TrackedGeometry (data class)
 
@@ -172,36 +210,36 @@ class TrackedGeometry {
 ```dart
 class GeometryNotifier extends ChangeNotifier {
   final Map<Object, TrackedGeometry> _geometries = {};
-  final Map<Object, Set<VoidCallback>> _idListeners = {};
+  final Map<Object, Set<VoidCallback>> _tagListeners = {};
 
-  TrackedGeometry? operator [](Object id) => _geometries[id];
+  TrackedGeometry? operator [](Object tag) => _geometries[tag];
 
-  void register(Object id, TrackedGeometry geometry) {
-    if (_geometries[id] != geometry) {
-      _geometries[id] = geometry;
-      _notifyIdListeners(id);
+  void register(Object tag, TrackedGeometry geometry) {
+    if (_geometries[tag] != geometry) {
+      _geometries[tag] = geometry;
+      _notifyTagListeners(tag);
       notifyListeners();
     }
   }
 
-  void unregister(Object id) => _geometries.remove(id);
+  void unregister(Object tag) => _geometries.remove(tag);
 
-  void addIdListener(Object id, VoidCallback callback) {
-    _idListeners.putIfAbsent(id, () => {}).add(callback);
+  void addTagListener(Object tag, VoidCallback callback) {
+    _tagListeners.putIfAbsent(tag, () => {}).add(callback);
   }
 
-  void removeIdListener(Object id, VoidCallback callback) {
-    _idListeners[id]?.remove(callback);
+  void removeTagListener(Object tag, VoidCallback callback) {
+    _tagListeners[tag]?.remove(callback);
   }
 }
 ```
 
-### GeometryScope
+### SharedGeometry (scope widget)
 
 Uses `InheritedNotifier` pattern (same as `PointerPositionProvider` in Mix):
 
 ```dart
-class GeometryScope extends StatefulWidget {
+class SharedGeometry extends StatefulWidget {
   final Widget child;
 
   static GeometryNotifier of(BuildContext context) { ... }
@@ -209,9 +247,9 @@ class GeometryScope extends StatefulWidget {
 }
 ```
 
-### GeometryMatch
+### Source/Target widgets
 
-- Uses `GlobalKey` to read `RenderBox` geometry after layout
+- Use `GlobalKey` to read `RenderBox` geometry after layout
 - **Source**: registers geometry on first frame and rebuilds
 - **Target**: reads source geometry, animates from source → own position
 
@@ -224,38 +262,18 @@ class GeometryScope extends StatefulWidget {
 | Same-route only | Cross-route requires Navigator integration (use Hero) |
 | One-frame delay | Target needs post-layout pass to measure destination |
 | No scroll awareness | May glitch if container scrolls during animation |
-| No scale clamping | Extreme size ratios produce extreme transforms |
 | Transform-based | Text may appear soft during scale |
 | No border-radius morphing | Would need custom painter |
-| Uses GlobalKey | Required for RenderBox measurement |
-
----
-
-## Alternatives
-
-1. **Document Hero patterns** - Explain same-route Hero workarounds
-2. **Recommend packages** - Point to `animations` or `flutter_animate`
-3. **Don't build it** - Wait for user demand
 
 ---
 
 ## Open Questions
 
-1. **Should this be in Mix core or a separate package?**
-   - It's widget-based, not style-based
-   - Doesn't fit Mix's Style → Spec → Widget pattern
-
-2. **API shape**
-   - `isSource: bool` vs `role: GeometryRole.source/target`
-   - Auto-detection based on widget lifecycle?
-
-3. **Both widgets mounted simultaneously?**
-   - Current design: one at a time (if/else pattern)
-   - Could support overlay-based flight for simultaneous
-
-4. **Custom flight widgets?**
-   - Like Hero's `flightShuttleBuilder`
-   - V2 enhancement if needed
+1. **API style**: Widget-based (A), extension-based (B), or style-based (C)?
+2. **Naming**: `SharedGeometry`, `MatchedGeometry`, `GeometryMatch`?
+3. **Should this be in Mix core or a standalone package?**
+4. **Both widgets mounted simultaneously?** Current design assumes one-at-a-time
+5. **Is there actual user demand?** Hero covers cross-route; same-route might be niche
 
 ---
 
@@ -265,8 +283,8 @@ class GeometryScope extends StatefulWidget {
 |-----------|-----|
 | `TrackedGeometry` | ~20 |
 | `GeometryNotifier` | ~40 |
-| `GeometryScope` | ~50 |
-| `GeometryMatch` | ~100 |
+| `SharedGeometry` | ~50 |
+| `Source/Target` | ~100 |
 | **Total** | ~210 |
 
 ---
@@ -275,4 +293,5 @@ class GeometryScope extends StatefulWidget {
 
 - [SwiftUI matchedGeometryEffect](https://developer.apple.com/documentation/swiftui/view/matchedgeometryeffect(id:in:properties:anchor:issource:))
 - [Flutter Hero widget](https://api.flutter.dev/flutter/widgets/Hero-class.html)
-- Discussion #809 (symbolEffect - separate feature)
+- [Discussion #842](https://github.com/leoafarias/mix/discussions/842) - RFC discussion
+- Discussion #809 (symbolEffect - separate feature for icon micro-animations)
