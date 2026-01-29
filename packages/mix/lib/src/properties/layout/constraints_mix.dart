@@ -1,9 +1,13 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
 
 import '../../core/helpers.dart';
-import '../../core/mix_element.dart';
+import '../../core/mix_element.dart' hide Mixable;
 import '../../core/prop.dart';
+
+part 'constraints_mix.g.dart';
 
 /// Base class for Mix constraint types.
 ///
@@ -56,11 +60,19 @@ sealed class ConstraintsMix<T extends Constraints> extends Mix<T> {
 /// Mix representation of [BoxConstraints].
 ///
 /// Supports tokens and merging for constraint values.
+@Mixable()
 final class BoxConstraintsMix extends ConstraintsMix<BoxConstraints>
-    with DefaultValue<BoxConstraints> {
+    with
+        DefaultValue<BoxConstraints>,
+        Diagnosticable,
+        _$BoxConstraintsMixMixin {
+  @override
   final Prop<double>? $minWidth;
+  @override
   final Prop<double>? $maxWidth;
+  @override
   final Prop<double>? $minHeight;
+  @override
   final Prop<double>? $maxHeight;
 
   BoxConstraintsMix({
@@ -189,31 +201,6 @@ final class BoxConstraintsMix extends ConstraintsMix<BoxConstraints>
   BoxConstraintsMix maxHeight(double value) {
     return merge(BoxConstraintsMix.maxHeight(value));
   }
-
-  /// Resolves to [BoxConstraints] using context.
-  @override
-  BoxConstraints resolve(BuildContext context) {
-    return BoxConstraints(
-      minWidth: MixOps.resolve(context, $minWidth) ?? defaultValue.minWidth,
-      maxWidth: MixOps.resolve(context, $maxWidth) ?? defaultValue.maxWidth,
-      minHeight: MixOps.resolve(context, $minHeight) ?? defaultValue.minHeight,
-      maxHeight: MixOps.resolve(context, $maxHeight) ?? defaultValue.maxHeight,
-    );
-  }
-
-  /// Merges with another [BoxConstraintsMix].
-  @override
-  BoxConstraintsMix merge(BoxConstraintsMix? other) {
-    return BoxConstraintsMix.create(
-      minWidth: MixOps.merge($minWidth, other?.$minWidth),
-      maxWidth: MixOps.merge($maxWidth, other?.$maxWidth),
-      minHeight: MixOps.merge($minHeight, other?.$minHeight),
-      maxHeight: MixOps.merge($maxHeight, other?.$maxHeight),
-    );
-  }
-
-  @override
-  List<Object?> get props => [$minWidth, $maxWidth, $minHeight, $maxHeight];
 
   @override
   BoxConstraints get defaultValue => const BoxConstraints();

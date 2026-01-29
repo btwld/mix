@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
 
 import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
@@ -12,11 +13,11 @@ import '../../properties/layout/edge_insets_geometry_mix.dart';
 import '../../properties/painting/border_mix.dart';
 import '../../properties/painting/border_radius_mix.dart';
 import '../../properties/painting/decoration_mix.dart';
+import '../../style/mixins/animation_style_mixin.dart';
 import '../../style/mixins/border_radius_style_mixin.dart';
 import '../../style/mixins/border_style_mixin.dart';
 import '../../style/mixins/constraint_style_mixin.dart';
 import '../../style/mixins/decoration_style_mixin.dart';
-import '../../style/mixins/animation_style_mixin.dart';
 import '../../style/mixins/flex_style_mixin.dart';
 import '../../style/mixins/shadow_style_mixin.dart';
 import '../../style/mixins/spacing_style_mixin.dart';
@@ -32,6 +33,8 @@ import 'flexbox_mutable_style.dart';
 import 'flexbox_spec.dart';
 import 'flexbox_widget.dart';
 
+part 'flexbox_style.g.dart';
+
 @Deprecated('Use FlexBoxStyler instead')
 typedef FlexBoxMix = FlexBoxStyler;
 
@@ -42,6 +45,7 @@ typedef FlexBoxMix = FlexBoxStyler;
 ///
 /// Use this class to configure the attributes of a [FlexBoxSpec] and pass it to
 /// the [FlexBoxSpec] constructor.
+@MixableStyler(methods: GeneratedStylerMethods.skipSetters)
 class FlexBoxStyler extends Style<FlexBoxSpec>
     with
         Diagnosticable,
@@ -56,8 +60,11 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
         TransformStyleMixin<FlexBoxStyler>,
         ConstraintStyleMixin<FlexBoxStyler>,
         FlexStyleMixin<FlexBoxStyler>,
-        AnimationStyleMixin<FlexBoxStyler, FlexBoxSpec> {
+        AnimationStyleMixin<FlexBoxStyler, FlexBoxSpec>,
+        _$FlexBoxStylerMixin {
+  @override
   final Prop<StyleSpec<BoxSpec>>? $box;
+  @override
   final Prop<StyleSpec<FlexSpec>>? $flex;
 
   /// Main constructor with individual property parameters
@@ -131,12 +138,6 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
   static FlexBoxMutableStyler get chain =>
       FlexBoxMutableStyler(FlexBoxStyler());
 
-  /// Sets the animation property.
-  @override
-  FlexBoxStyler animate(AnimationConfig animation) {
-    return merge(FlexBoxStyler(animation: animation));
-  }
-
   // BoxMix instance methods
 
   /// Sets the alignment property.
@@ -171,6 +172,12 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
   /// Creates a FlexBox widget with children.
   FlexBox call({Key? key, required List<Widget> children}) {
     return FlexBox(key: key, style: this, children: children);
+  }
+
+  /// Sets the animation property.
+  @override
+  FlexBoxStyler animate(AnimationConfig animation) {
+    return merge(FlexBoxStyler(animation: animation));
   }
 
   /// Sets the foreground decoration.
@@ -243,60 +250,4 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
   FlexBoxStyler border(BoxBorderMix value) {
     return merge(FlexBoxStyler(decoration: DecorationMix.border(value)));
   }
-
-  /// Resolves to [FlexBoxSpec] using the provided [BuildContext].
-  ///
-  /// If a property is null in the context, it uses the default value
-  /// defined in the property specification.
-  ///
-  /// ```dart
-  /// final flexBoxStyleSpec = FlexBoxStyler(...).resolve(context);
-  /// ```
-  @override
-  StyleSpec<FlexBoxSpec> resolve(BuildContext context) {
-    final boxSpec = MixOps.resolve(context, $box);
-    final flexSpec = MixOps.resolve(context, $flex);
-
-    final flexBoxSpec = FlexBoxSpec(box: boxSpec, flex: flexSpec);
-
-    return StyleSpec(
-      spec: flexBoxSpec,
-      animation: $animation,
-      widgetModifiers: $modifier?.resolve(context),
-    );
-  }
-
-  /// Merges the properties of this [FlexBoxStyler] with the properties of [other].
-  ///
-  /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [FlexBoxStyler] with the properties of [other] taking precedence over
-  /// the corresponding properties of this instance.
-  ///
-  /// Properties from [other] that are null will fall back
-  /// to the values from this instance.
-  @override
-  FlexBoxStyler merge(FlexBoxStyler? other) {
-    return FlexBoxStyler.create(
-      box: MixOps.merge($box, other?.$box),
-      flex: MixOps.merge($flex, other?.$flex),
-      animation: MixOps.mergeAnimation($animation, other?.$animation),
-      modifier: MixOps.mergeModifier($modifier, other?.$modifier),
-      variants: MixOps.mergeVariants($variants, other?.$variants),
-    );
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(DiagnosticsProperty('box', $box))
-      ..add(DiagnosticsProperty('flex', $flex));
-  }
-
-  /// The list of properties that constitute the state of this [FlexBoxStyler].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [FlexBoxStyler] instances for equality.
-  @override
-  List<Object?> get props => [$box, $flex, $animation, $modifier, $variants];
 }

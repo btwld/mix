@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
 
 import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
@@ -15,30 +16,49 @@ import 'image_mutable_style.dart';
 import 'image_spec.dart';
 import 'image_widget.dart';
 
+part 'image_style.g.dart';
+
 @Deprecated('Use ImageStyler instead')
 typedef ImageMix = ImageStyler;
 
+@MixableStyler()
 class ImageStyler extends Style<ImageSpec>
     with
         Diagnosticable,
         WidgetModifierStyleMixin<ImageStyler, ImageSpec>,
         VariantStyleMixin<ImageStyler, ImageSpec>,
         WidgetStateVariantMixin<ImageStyler, ImageSpec>,
-        AnimationStyleMixin<ImageStyler, ImageSpec> {
+        AnimationStyleMixin<ImageStyler, ImageSpec>,
+        _$ImageStylerMixin {
+  @override
   final Prop<ImageProvider<Object>>? $image;
+  @override
   final Prop<double>? $width;
+  @override
   final Prop<double>? $height;
+  @override
   final Prop<Color>? $color;
+  @override
   final Prop<ImageRepeat>? $repeat;
+  @override
   final Prop<BoxFit>? $fit;
+  @override
   final Prop<AlignmentGeometry>? $alignment;
+  @override
   final Prop<Rect>? $centerSlice;
+  @override
   final Prop<FilterQuality>? $filterQuality;
+  @override
   final Prop<BlendMode>? $colorBlendMode;
+  @override
   final Prop<String>? $semanticLabel;
+  @override
   final Prop<bool>? $excludeFromSemantics;
+  @override
   final Prop<bool>? $gaplessPlayback;
+  @override
   final Prop<bool>? $isAntiAlias;
+  @override
   final Prop<bool>? $matchTextDirection;
 
   const ImageStyler.create({
@@ -118,41 +138,6 @@ class ImageStyler extends Style<ImageSpec>
 
   static ImageMutableStyler get chain => ImageMutableStyler(ImageStyler());
 
-  /// Sets image provider
-  ImageStyler image(ImageProvider<Object> value) {
-    return merge(ImageStyler(image: value));
-  }
-
-  /// Sets image width
-  ImageStyler width(double value) {
-    return merge(ImageStyler(width: value));
-  }
-
-  /// Sets image height
-  ImageStyler height(double value) {
-    return merge(ImageStyler(height: value));
-  }
-
-  /// Sets image color
-  ImageStyler color(Color value) {
-    return merge(ImageStyler(color: value));
-  }
-
-  /// Sets image repeat
-  ImageStyler repeat(ImageRepeat value) {
-    return merge(ImageStyler(repeat: value));
-  }
-
-  /// Sets image fit
-  ImageStyler fit(BoxFit value) {
-    return merge(ImageStyler(fit: value));
-  }
-
-  /// Sets image alignment
-  ImageStyler alignment(AlignmentGeometry value) {
-    return merge(ImageStyler(alignment: value));
-  }
-
   StyledImage call({
     ImageProvider? image,
     ImageFrameBuilder? frameBuilder,
@@ -170,166 +155,8 @@ class ImageStyler extends Style<ImageSpec>
     );
   }
 
-  /// Sets center slice
-  ImageStyler centerSlice(Rect value) {
-    return merge(ImageStyler(centerSlice: value));
-  }
-
-  /// Sets filter quality
-  ImageStyler filterQuality(FilterQuality value) {
-    return merge(ImageStyler(filterQuality: value));
-  }
-
-  /// Sets color blend mode
-  ImageStyler colorBlendMode(BlendMode value) {
-    return merge(ImageStyler(colorBlendMode: value));
-  }
-
-  /// Sets semantic label
-  ImageStyler semanticLabel(String value) {
-    return merge(ImageStyler(semanticLabel: value));
-  }
-
-  /// Sets exclude from semantics
-  ImageStyler excludeFromSemantics(bool value) {
-    return merge(ImageStyler(excludeFromSemantics: value));
-  }
-
-  /// Sets gapless playback
-  ImageStyler gaplessPlayback(bool value) {
-    return merge(ImageStyler(gaplessPlayback: value));
-  }
-
-  /// Sets is anti alias
-  ImageStyler isAntiAlias(bool value) {
-    return merge(ImageStyler(isAntiAlias: value));
-  }
-
-  /// Sets match text direction
-  ImageStyler matchTextDirection(bool value) {
-    return merge(ImageStyler(matchTextDirection: value));
-  }
-
   /// Sets the widget modifier.
   ImageStyler modifier(WidgetModifierConfig value) {
     return merge(ImageStyler(modifier: value));
   }
-
-  /// Convenience method for animating the ImageStyleSpec
-  @override
-  ImageStyler animate(AnimationConfig animation) {
-    return merge(ImageStyler(animation: animation));
-  }
-
-  /// Sets the variants list.
-  @override
-  ImageStyler variants(List<VariantStyle<ImageSpec>> variants) {
-    return merge(ImageStyler(variants: variants));
-  }
-
-  @override
-  StyleSpec<ImageSpec> resolve(BuildContext context) {
-    final imageSpec = ImageSpec(
-      image: MixOps.resolve(context, $image),
-      width: MixOps.resolve(context, $width),
-      height: MixOps.resolve(context, $height),
-      color: MixOps.resolve(context, $color),
-      repeat: MixOps.resolve(context, $repeat),
-      fit: MixOps.resolve(context, $fit),
-      alignment: MixOps.resolve(context, $alignment),
-      centerSlice: MixOps.resolve(context, $centerSlice),
-      filterQuality: MixOps.resolve(context, $filterQuality),
-      colorBlendMode: MixOps.resolve(context, $colorBlendMode),
-      semanticLabel: MixOps.resolve(context, $semanticLabel),
-      excludeFromSemantics: MixOps.resolve(context, $excludeFromSemantics),
-      gaplessPlayback: MixOps.resolve(context, $gaplessPlayback),
-      isAntiAlias: MixOps.resolve(context, $isAntiAlias),
-      matchTextDirection: MixOps.resolve(context, $matchTextDirection),
-    );
-
-    return StyleSpec(
-      spec: imageSpec,
-      animation: $animation,
-      widgetModifiers: $modifier?.resolve(context),
-    );
-  }
-
-  @override
-  ImageStyler merge(ImageStyler? other) {
-    return ImageStyler.create(
-      image: MixOps.merge($image, other?.$image),
-      width: MixOps.merge($width, other?.$width),
-      height: MixOps.merge($height, other?.$height),
-      color: MixOps.merge($color, other?.$color),
-      repeat: MixOps.merge($repeat, other?.$repeat),
-      fit: MixOps.merge($fit, other?.$fit),
-      alignment: MixOps.merge($alignment, other?.$alignment),
-      centerSlice: MixOps.merge($centerSlice, other?.$centerSlice),
-      filterQuality: MixOps.merge($filterQuality, other?.$filterQuality),
-      colorBlendMode: MixOps.merge($colorBlendMode, other?.$colorBlendMode),
-      semanticLabel: MixOps.merge($semanticLabel, other?.$semanticLabel),
-      excludeFromSemantics: MixOps.merge(
-        $excludeFromSemantics,
-        other?.$excludeFromSemantics,
-      ),
-      gaplessPlayback: MixOps.merge($gaplessPlayback, other?.$gaplessPlayback),
-      isAntiAlias: MixOps.merge($isAntiAlias, other?.$isAntiAlias),
-      matchTextDirection: MixOps.merge(
-        $matchTextDirection,
-        other?.$matchTextDirection,
-      ),
-      animation: MixOps.mergeAnimation($animation, other?.$animation),
-      modifier: MixOps.mergeModifier($modifier, other?.$modifier),
-      variants: MixOps.mergeVariants($variants, other?.$variants),
-    );
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(DiagnosticsProperty('image', $image))
-      ..add(DiagnosticsProperty('width', $width))
-      ..add(DiagnosticsProperty('height', $height))
-      ..add(DiagnosticsProperty('color', $color))
-      ..add(DiagnosticsProperty('repeat', $repeat))
-      ..add(DiagnosticsProperty('fit', $fit))
-      ..add(DiagnosticsProperty('alignment', $alignment))
-      ..add(DiagnosticsProperty('centerSlice', $centerSlice))
-      ..add(DiagnosticsProperty('filterQuality', $filterQuality))
-      ..add(DiagnosticsProperty('colorBlendMode', $colorBlendMode))
-      ..add(DiagnosticsProperty('semanticLabel', $semanticLabel))
-      ..add(DiagnosticsProperty('excludeFromSemantics', $excludeFromSemantics))
-      ..add(DiagnosticsProperty('gaplessPlayback', $gaplessPlayback))
-      ..add(DiagnosticsProperty('isAntiAlias', $isAntiAlias))
-      ..add(DiagnosticsProperty('matchTextDirection', $matchTextDirection));
-  }
-
-  /// Sets the widget modifier.
-  @override
-  ImageStyler wrap(WidgetModifierConfig value) {
-    return modifier(value);
-  }
-
-  @override
-  List<Object?> get props => [
-    $image,
-    $width,
-    $height,
-    $color,
-    $repeat,
-    $fit,
-    $alignment,
-    $centerSlice,
-    $filterQuality,
-    $colorBlendMode,
-    $semanticLabel,
-    $excludeFromSemantics,
-    $gaplessPlayback,
-    $isAntiAlias,
-    $matchTextDirection,
-    $animation,
-    $modifier,
-    $variants,
-  ];
 }

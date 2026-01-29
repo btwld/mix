@@ -1,17 +1,24 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
 
 import '../../core/helpers.dart';
-import '../../core/mix_element.dart';
+import '../../core/mix_element.dart' hide Mixable;
 import '../../core/prop.dart';
+
+part 'text_height_behavior_mix.g.dart';
 
 /// Mix representation of [TextHeightBehavior].
 ///
 /// Controls text height behavior with tokens.
+@Mixable(methods: GeneratedMixMethods.skipResolve)
 class TextHeightBehaviorMix extends Mix<TextHeightBehavior>
-    with Diagnosticable {
+    with Diagnosticable, _$TextHeightBehaviorMixMixin {
+  @override
   final Prop<bool>? $applyHeightToFirstAscent;
+  @override
   final Prop<bool>? $applyHeightToLastDescent;
+  @override
   final Prop<TextLeadingDistribution>? $leadingDistribution;
 
   TextHeightBehaviorMix({

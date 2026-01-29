@@ -1,8 +1,12 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:mix_annotations/mix_annotations.dart';
 
 import '../../core/helpers.dart';
-import '../../core/mix_element.dart';
+import '../../core/mix_element.dart' hide Mixable;
 import '../../core/prop.dart';
+
+part 'edge_insets_geometry_mix.g.dart';
 
 // Deprecated typedef moved to src/core/deprecated.dart
 
@@ -156,8 +160,12 @@ sealed class EdgeInsetsGeometryMix<T extends EdgeInsetsGeometry>
 /// Mix representation of [EdgeInsets].
 ///
 /// Uses absolute positioning (left, right) with token support.
-final class EdgeInsetsMix extends EdgeInsetsGeometryMix<EdgeInsets> {
+@Mixable(methods: GeneratedMixMethods.skipResolve)
+final class EdgeInsetsMix extends EdgeInsetsGeometryMix<EdgeInsets>
+    with DefaultValue<EdgeInsets>, Diagnosticable, _$EdgeInsetsMixMixin {
+  @override
   final Prop<double>? $left;
+  @override
   final Prop<double>? $right;
 
   /// Zero padding.
@@ -282,25 +290,19 @@ final class EdgeInsetsMix extends EdgeInsetsGeometryMix<EdgeInsets> {
   }
 
   @override
-  EdgeInsetsMix merge(EdgeInsetsMix? other) {
-    return EdgeInsetsMix.create(
-      top: MixOps.merge($top, other?.$top),
-      bottom: MixOps.merge($bottom, other?.$bottom),
-      left: MixOps.merge($left, other?.$left),
-      right: MixOps.merge($right, other?.$right),
-    );
-  }
-
-  @override
-  List<Object?> get props => [$top, $bottom, $left, $right];
+  EdgeInsets get defaultValue => .zero;
 }
 
 /// Mix representation of [EdgeInsetsDirectional].
 ///
 /// Uses directional positioning (start, end) with token support.
+@Mixable(methods: GeneratedMixMethods.skipResolve)
 final class EdgeInsetsDirectionalMix
-    extends EdgeInsetsGeometryMix<EdgeInsetsDirectional> {
+    extends EdgeInsetsGeometryMix<EdgeInsetsDirectional>
+    with Diagnosticable, _$EdgeInsetsDirectionalMixMixin {
+  @override
   final Prop<double>? $start;
+  @override
   final Prop<double>? $end;
 
   static EdgeInsetsDirectionalMix zero = EdgeInsetsDirectionalMix.all(0);
@@ -422,17 +424,4 @@ final class EdgeInsetsDirectionalMix
       MixOps.resolve(context, $bottom) ?? 0,
     );
   }
-
-  @override
-  EdgeInsetsDirectionalMix merge(EdgeInsetsDirectionalMix? other) {
-    return EdgeInsetsDirectionalMix.create(
-      top: MixOps.merge($top, other?.$top),
-      bottom: MixOps.merge($bottom, other?.$bottom),
-      start: MixOps.merge($start, other?.$start),
-      end: MixOps.merge($end, other?.$end),
-    );
-  }
-
-  @override
-  List<Object?> get props => [$top, $bottom, $start, $end];
 }
