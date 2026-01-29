@@ -13,6 +13,7 @@ mixin _$BorderRadiusMixMixin
   Prop<Radius>? get $topLeft;
   Prop<Radius>? get $topRight;
 
+  /// Merges with another [BorderRadiusMix].
   @override
   BorderRadiusMix merge(BorderRadiusMix? other) {
     return BorderRadiusMix.create(
@@ -47,6 +48,7 @@ mixin _$BorderRadiusDirectionalMixMixin
   Prop<Radius>? get $topEnd;
   Prop<Radius>? get $topStart;
 
+  /// Merges with another [BorderRadiusDirectionalMix].
   @override
   BorderRadiusDirectionalMix merge(BorderRadiusDirectionalMix? other) {
     return BorderRadiusDirectionalMix.create(

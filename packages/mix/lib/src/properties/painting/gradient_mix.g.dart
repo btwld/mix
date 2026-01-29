@@ -15,6 +15,7 @@ mixin _$LinearGradientMixMixin
   Prop<TileMode>? get $tileMode;
   Prop<GradientTransform>? get $transform;
 
+  /// Merges with another [LinearGradientMix].
   @override
   LinearGradientMix merge(LinearGradientMix? other) {
     return LinearGradientMix.create(
@@ -27,6 +28,7 @@ mixin _$LinearGradientMixMixin
     );
   }
 
+  /// Resolves to [LinearGradient] using context.
   @override
   LinearGradient resolve(BuildContext context) {
     return LinearGradient(
@@ -73,6 +75,7 @@ mixin _$RadialGradientMixMixin
   Prop<TileMode>? get $tileMode;
   Prop<GradientTransform>? get $transform;
 
+  /// Merges with another [RadialGradientMix].
   @override
   RadialGradientMix merge(RadialGradientMix? other) {
     return RadialGradientMix.create(
@@ -87,6 +90,7 @@ mixin _$RadialGradientMixMixin
     );
   }
 
+  /// Resolves to [RadialGradient] using context.
   @override
   RadialGradient resolve(BuildContext context) {
     return RadialGradient(
@@ -139,6 +143,7 @@ mixin _$SweepGradientMixMixin
   Prop<TileMode>? get $tileMode;
   Prop<GradientTransform>? get $transform;
 
+  /// Merges with another [SweepGradientMix].
   @override
   SweepGradientMix merge(SweepGradientMix? other) {
     return SweepGradientMix.create(
@@ -152,6 +157,7 @@ mixin _$SweepGradientMixMixin
     );
   }
 
+  /// Resolves to [SweepGradient] using context.
   @override
   SweepGradient resolve(BuildContext context) {
     return SweepGradient(

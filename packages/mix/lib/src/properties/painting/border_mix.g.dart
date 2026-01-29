@@ -12,6 +12,7 @@ mixin _$BorderMixMixin on Mix<Border>, DefaultValue<Border>, Diagnosticable {
   Prop<BorderSide>? get $right;
   Prop<BorderSide>? get $top;
 
+  /// Merges with another [BorderMix].
   @override
   BorderMix merge(BorderMix? other) {
     return BorderMix.create(
@@ -22,6 +23,7 @@ mixin _$BorderMixMixin on Mix<Border>, DefaultValue<Border>, Diagnosticable {
     );
   }
 
+  /// Resolves to [Border] using context.
   @override
   Border resolve(BuildContext context) {
     return Border(
@@ -53,6 +55,7 @@ mixin _$BorderDirectionalMixMixin
   Prop<BorderSide>? get $start;
   Prop<BorderSide>? get $top;
 
+  /// Merges with another [BorderDirectionalMix].
   @override
   BorderDirectionalMix merge(BorderDirectionalMix? other) {
     return BorderDirectionalMix.create(
@@ -63,6 +66,7 @@ mixin _$BorderDirectionalMixMixin
     );
   }
 
+  /// Resolves to [BorderDirectional] using context.
   @override
   BorderDirectional resolve(BuildContext context) {
     return BorderDirectional(
@@ -94,6 +98,7 @@ mixin _$BorderSideMixMixin
   Prop<BorderStyle>? get $style;
   Prop<double>? get $width;
 
+  /// Merges with another [BorderSideMix].
   @override
   BorderSideMix merge(BorderSideMix? other) {
     return BorderSideMix.create(
@@ -104,6 +109,7 @@ mixin _$BorderSideMixMixin
     );
   }
 
+  /// Resolves to [BorderSide] using context.
   @override
   BorderSide resolve(BuildContext context) {
     return BorderSide(

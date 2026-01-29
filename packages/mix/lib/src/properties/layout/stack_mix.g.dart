@@ -12,6 +12,7 @@ mixin _$StackMixMixin on Mix<StackSpec>, Diagnosticable {
   Prop<StackFit>? get $fit;
   Prop<TextDirection>? get $textDirection;
 
+  /// Merges with another [StackMix].
   @override
   StackMix merge(StackMix? other) {
     return StackMix.create(
@@ -22,6 +23,7 @@ mixin _$StackMixMixin on Mix<StackSpec>, Diagnosticable {
     );
   }
 
+  /// Resolves to [StackSpec] using context.
   @override
   StackSpec resolve(BuildContext context) {
     return StackSpec(

@@ -91,6 +91,7 @@ class StylerMixinBuilder {
 
     final buffer = StringBuffer();
 
+    buffer.writeln('  /// Merges with another [$stylerName].');
     buffer.writeln('  @override');
     buffer.writeln('  $stylerName merge($stylerName? other) {');
     buffer.writeln('    return $stylerName.create(');
@@ -135,6 +136,7 @@ class StylerMixinBuilder {
 
     final buffer = StringBuffer();
 
+    buffer.writeln('  /// Resolves to [StyleSpec<$specName>] using context.');
     buffer.writeln('  @override');
     buffer.writeln('  StyleSpec<$specName> resolve(BuildContext context) {');
     buffer.writeln('    final spec = $specName(');

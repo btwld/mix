@@ -16,6 +16,7 @@ mixin _$StrutStyleMixMixin on Mix<StrutStyle>, Diagnosticable {
   Prop<double>? get $height;
   Prop<double>? get $leading;
 
+  /// Merges with another [StrutStyleMix].
   @override
   StrutStyleMix merge(StrutStyleMix? other) {
     return StrutStyleMix.create(
@@ -36,6 +37,7 @@ mixin _$StrutStyleMixMixin on Mix<StrutStyle>, Diagnosticable {
     );
   }
 
+  /// Resolves to [StrutStyle] using context.
   @override
   StrutStyle resolve(BuildContext context) {
     return StrutStyle(

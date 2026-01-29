@@ -67,6 +67,7 @@ mixin _$BoxStylerMixin on Style<BoxSpec>, Diagnosticable {
     return merge(BoxStyler(modifier: value));
   }
 
+  /// Merges with another [BoxStyler].
   @override
   BoxStyler merge(BoxStyler? other) {
     return BoxStyler.create(
@@ -91,6 +92,7 @@ mixin _$BoxStylerMixin on Style<BoxSpec>, Diagnosticable {
     );
   }
 
+  /// Resolves to [StyleSpec<BoxSpec>] using context.
   @override
   StyleSpec<BoxSpec> resolve(BuildContext context) {
     final spec = BoxSpec(

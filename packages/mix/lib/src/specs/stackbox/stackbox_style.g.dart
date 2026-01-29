@@ -10,6 +10,7 @@ mixin _$StackBoxStylerMixin on Style<StackBoxSpec>, Diagnosticable {
   Prop<StyleSpec<BoxSpec>>? get $box;
   Prop<StyleSpec<StackSpec>>? get $stack;
 
+  /// Merges with another [StackBoxStyler].
   @override
   StackBoxStyler merge(StackBoxStyler? other) {
     return StackBoxStyler.create(
@@ -21,6 +22,7 @@ mixin _$StackBoxStylerMixin on Style<StackBoxSpec>, Diagnosticable {
     );
   }
 
+  /// Resolves to [StyleSpec<StackBoxSpec>] using context.
   @override
   StyleSpec<StackBoxSpec> resolve(BuildContext context) {
     final spec = StackBoxSpec(

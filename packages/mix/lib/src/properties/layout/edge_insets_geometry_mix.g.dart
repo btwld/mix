@@ -13,6 +13,7 @@ mixin _$EdgeInsetsMixMixin
   Prop<double>? get $right;
   Prop<double>? get $top;
 
+  /// Merges with another [EdgeInsetsMix].
   @override
   EdgeInsetsMix merge(EdgeInsetsMix? other) {
     return EdgeInsetsMix.create(
@@ -44,6 +45,7 @@ mixin _$EdgeInsetsDirectionalMixMixin
   Prop<double>? get $start;
   Prop<double>? get $top;
 
+  /// Merges with another [EdgeInsetsDirectionalMix].
   @override
   EdgeInsetsDirectionalMix merge(EdgeInsetsDirectionalMix? other) {
     return EdgeInsetsDirectionalMix.create(

@@ -47,6 +47,7 @@ mixin _$StackStylerMixin on Style<StackSpec>, Diagnosticable {
     return merge(StackStyler(modifier: value));
   }
 
+  /// Merges with another [StackStyler].
   @override
   StackStyler merge(StackStyler? other) {
     return StackStyler.create(
@@ -60,6 +61,7 @@ mixin _$StackStylerMixin on Style<StackSpec>, Diagnosticable {
     );
   }
 
+  /// Resolves to [StyleSpec<StackSpec>] using context.
   @override
   StyleSpec<StackSpec> resolve(BuildContext context) {
     final spec = StackSpec(

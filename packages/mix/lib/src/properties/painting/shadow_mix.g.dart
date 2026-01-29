@@ -11,6 +11,7 @@ mixin _$ShadowMixMixin on Mix<Shadow>, DefaultValue<Shadow>, Diagnosticable {
   Prop<Color>? get $color;
   Prop<Offset>? get $offset;
 
+  /// Merges with another [ShadowMix].
   @override
   ShadowMix merge(ShadowMix? other) {
     return ShadowMix.create(
@@ -20,6 +21,7 @@ mixin _$ShadowMixMixin on Mix<Shadow>, DefaultValue<Shadow>, Diagnosticable {
     );
   }
 
+  /// Resolves to [Shadow] using context.
   @override
   Shadow resolve(BuildContext context) {
     return Shadow(
@@ -50,6 +52,7 @@ mixin _$BoxShadowMixMixin
   Prop<Offset>? get $offset;
   Prop<double>? get $spreadRadius;
 
+  /// Merges with another [BoxShadowMix].
   @override
   BoxShadowMix merge(BoxShadowMix? other) {
     return BoxShadowMix.create(
@@ -60,6 +63,7 @@ mixin _$BoxShadowMixMixin
     );
   }
 
+  /// Resolves to [BoxShadow] using context.
   @override
   BoxShadow resolve(BuildContext context) {
     return BoxShadow(

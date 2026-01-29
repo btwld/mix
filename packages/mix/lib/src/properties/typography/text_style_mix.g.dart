@@ -30,6 +30,7 @@ mixin _$TextStyleMixMixin on Mix<TextStyle>, Diagnosticable {
   Prop<TextBaseline>? get $textBaseline;
   Prop<double>? get $wordSpacing;
 
+  /// Merges with another [TextStyleMix].
   @override
   TextStyleMix merge(TextStyleMix? other) {
     return TextStyleMix.create(

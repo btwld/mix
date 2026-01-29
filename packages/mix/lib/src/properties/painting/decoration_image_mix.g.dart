@@ -16,6 +16,7 @@ mixin _$DecorationImageMixMixin on Mix<DecorationImage>, Diagnosticable {
   Prop<bool>? get $isAntiAlias;
   Prop<ImageRepeat>? get $repeat;
 
+  /// Merges with another [DecorationImageMix].
   @override
   DecorationImageMix merge(DecorationImageMix? other) {
     return DecorationImageMix.create(

@@ -17,6 +17,7 @@ mixin _$BoxDecorationMixMixin
   Prop<DecorationImage>? get $image;
   Prop<BoxShape>? get $shape;
 
+  /// Merges with another [BoxDecorationMix].
   @override
   BoxDecorationMix merge(BoxDecorationMix? other) {
     return BoxDecorationMix.create(
@@ -34,6 +35,7 @@ mixin _$BoxDecorationMixMixin
     );
   }
 
+  /// Resolves to [BoxDecoration] using context.
   @override
   BoxDecoration resolve(BuildContext context) {
     return BoxDecoration(

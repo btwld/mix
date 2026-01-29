@@ -40,6 +40,7 @@ class MixMixinBuilder {
 
     final buffer = StringBuffer();
 
+    buffer.writeln('  /// Merges with another [$mixName].');
     buffer.writeln('  @override');
     buffer.writeln('  $mixName merge($mixName? other) {');
     buffer.writeln('    return $mixName.create(');
@@ -65,6 +66,7 @@ class MixMixinBuilder {
 
     final buffer = StringBuffer();
 
+    buffer.writeln('  /// Resolves to [$resolveToType] using context.');
     buffer.writeln('  @override');
     buffer.writeln('  $resolveToType resolve(BuildContext context) {');
     buffer.writeln('    return $resolveToType(');

@@ -13,6 +13,7 @@ mixin _$BoxConstraintsMixMixin
   Prop<double>? get $minHeight;
   Prop<double>? get $minWidth;
 
+  /// Merges with another [BoxConstraintsMix].
   @override
   BoxConstraintsMix merge(BoxConstraintsMix? other) {
     return BoxConstraintsMix.create(
@@ -23,6 +24,7 @@ mixin _$BoxConstraintsMixMixin
     );
   }
 
+  /// Resolves to [BoxConstraints] using context.
   @override
   BoxConstraints resolve(BuildContext context) {
     return BoxConstraints(

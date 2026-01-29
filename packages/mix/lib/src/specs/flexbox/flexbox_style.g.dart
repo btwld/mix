@@ -10,6 +10,7 @@ mixin _$FlexBoxStylerMixin on Style<FlexBoxSpec>, Diagnosticable {
   Prop<StyleSpec<BoxSpec>>? get $box;
   Prop<StyleSpec<FlexSpec>>? get $flex;
 
+  /// Merges with another [FlexBoxStyler].
   @override
   FlexBoxStyler merge(FlexBoxStyler? other) {
     return FlexBoxStyler.create(
@@ -21,6 +22,7 @@ mixin _$FlexBoxStylerMixin on Style<FlexBoxSpec>, Diagnosticable {
     );
   }
 
+  /// Resolves to [StyleSpec<FlexBoxSpec>] using context.
   @override
   StyleSpec<FlexBoxSpec> resolve(BuildContext context) {
     final spec = FlexBoxSpec(

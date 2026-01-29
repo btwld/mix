@@ -77,6 +77,7 @@ mixin _$FlexStylerMixin on Style<FlexSpec>, Diagnosticable {
     return merge(FlexStyler(modifier: value));
   }
 
+  /// Merges with another [FlexStyler].
   @override
   FlexStyler merge(FlexStyler? other) {
     return FlexStyler.create(
@@ -104,6 +105,7 @@ mixin _$FlexStylerMixin on Style<FlexSpec>, Diagnosticable {
     );
   }
 
+  /// Resolves to [StyleSpec<FlexSpec>] using context.
   @override
   StyleSpec<FlexSpec> resolve(BuildContext context) {
     final spec = FlexSpec(

@@ -113,6 +113,7 @@ mixin _$ImageStylerMixin on Style<ImageSpec>, Diagnosticable {
     return merge(ImageStyler(modifier: value));
   }
 
+  /// Merges with another [ImageStyler].
   @override
   ImageStyler merge(ImageStyler? other) {
     return ImageStyler.create(
@@ -143,6 +144,7 @@ mixin _$ImageStylerMixin on Style<ImageSpec>, Diagnosticable {
     );
   }
 
+  /// Resolves to [StyleSpec<ImageSpec>] using context.
   @override
   StyleSpec<ImageSpec> resolve(BuildContext context) {
     final spec = ImageSpec(

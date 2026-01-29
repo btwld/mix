@@ -11,6 +11,7 @@ mixin _$TextHeightBehaviorMixMixin on Mix<TextHeightBehavior>, Diagnosticable {
   Prop<bool>? get $applyHeightToLastDescent;
   Prop<TextLeadingDistribution>? get $leadingDistribution;
 
+  /// Merges with another [TextHeightBehaviorMix].
   @override
   TextHeightBehaviorMix merge(TextHeightBehaviorMix? other) {
     return TextHeightBehaviorMix.create(

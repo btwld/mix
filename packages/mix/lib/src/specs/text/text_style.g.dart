@@ -102,6 +102,7 @@ mixin _$TextStylerMixin on Style<TextSpec>, Diagnosticable {
     return merge(TextStyler(modifier: value));
   }
 
+  /// Merges with another [TextStyler].
   @override
   TextStyler merge(TextStyler? other) {
     return TextStyler.create(
@@ -128,6 +129,7 @@ mixin _$TextStylerMixin on Style<TextSpec>, Diagnosticable {
     );
   }
 
+  /// Resolves to [StyleSpec<TextSpec>] using context.
   @override
   StyleSpec<TextSpec> resolve(BuildContext context) {
     final spec = TextSpec(
