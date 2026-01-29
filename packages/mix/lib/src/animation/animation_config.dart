@@ -782,15 +782,22 @@ class PhaseAnimationConfig<T extends Spec<T>, U extends Style<T>>
   final Listenable trigger;
   final VoidCallback? onEnd;
 
+  /// Whether to repeat the animation sequence continuously.
+  ///
+  /// When true, the animation loops from last phase back to first phase.
+  /// When false (default), the animation plays through phases once and stops.
+  final bool repeat;
+
   const PhaseAnimationConfig({
     required this.styles,
     required this.curveConfigs,
     required this.trigger,
     this.onEnd,
+    this.repeat = false,
   });
 
   @override
-  List<Object?> get props => [styles, trigger, curveConfigs];
+  List<Object?> get props => [styles, trigger, curveConfigs, repeat];
 }
 
 class Keyframe<T> with Equatable {
