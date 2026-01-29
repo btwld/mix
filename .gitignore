@@ -112,3 +112,7 @@ packages/mix/.cody/ignore
 api-compat-*.md
 website/.next/
 website/public/_pagefind/
+
+# Claude Code
+CLAUDE.md
+.claude/settings.local.json

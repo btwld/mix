@@ -2,6 +2,16 @@
 
 Type-safe styling system for Flutter that separates style semantics from widgets.
 
+## Environment Setup
+
+If Flutter is not installed or `flutter --version` fails, run the setup script:
+
+```bash
+bash setup.sh
+```
+
+This installs FVM, Flutter SDK (3.38.1), DCM, and melos, then bootstraps all packages.
+
 ## Structure
 
 ```
