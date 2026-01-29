@@ -259,8 +259,8 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
 
   void _onAnimationStatusChanged(AnimationStatus status) {
     if (status == AnimationStatus.completed) {
-      // Call onEnd callback if provided
-      config.onEnd?.call();
+      // Prefer explicit config onEnd, fall back to last phase config onEnd.
+      (config.onEnd ?? config.curveConfigs.last.onEnd)?.call();
 
       // If repeat is enabled, restart the animation
       if (config.repeat) {
@@ -278,23 +278,15 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
     List<CurveAnimationConfig> configs,
   ) {
     final items = <TweenSequenceItem<StyleSpec<S>?>>[];
-
-    // Calculate number of transitions: specs.length - 1 for non-wrapping,
-    // or specs.length if repeat/wrap is enabled
-    final transitionCount = config.repeat ? specs.length : specs.length - 1;
-
-    for (int i = 0; i < transitionCount; i++) {
-      final currentIndex = i;
+    for (int i = 0; i < specs.length; i++) {
+      final currentIndex = i % specs.length;
       final nextIndex = (i + 1) % specs.length;
 
-      // Use currentIndex config for the transition FROM currentIndex TO nextIndex
-      final transitionConfig = configs[currentIndex];
-
-      if (transitionConfig.delay > Duration.zero) {
+      if (configs[currentIndex].delay > Duration.zero) {
         items.add(
           TweenSequenceItem(
             tween: ConstantTween(specs[currentIndex]),
-            weight: transitionConfig.delay.inMilliseconds.toDouble(),
+            weight: configs[nextIndex].delay.inMilliseconds.toDouble(),
           ),
         );
       }
@@ -305,8 +297,8 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
       );
 
       final item = TweenSequenceItem(
-        tween: tween.chain(CurveTween(curve: transitionConfig.curve)),
-        weight: transitionConfig.duration.inMilliseconds.toDouble(),
+        tween: tween.chain(CurveTween(curve: configs[nextIndex].curve)),
+        weight: configs[nextIndex].duration.inMilliseconds.toDouble(),
       );
 
       items.add(item);
@@ -316,18 +308,11 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
   }
 
   /// Gets the total duration of all animation phases combined.
-  ///
-  /// When [repeat] is false, only the first N-1 configs are used (for N phases).
-  /// When [repeat] is true, all N configs are used (including wrap-around).
   Duration get totalDuration {
-    final transitionCount =
-        config.repeat ? config.curveConfigs.length : config.curveConfigs.length - 1;
-
-    var total = Duration.zero;
-    for (var i = 0; i < transitionCount; i++) {
-      total += config.curveConfigs[i].totalDuration;
-    }
-    return total;
+    return config.curveConfigs.fold(
+      Duration.zero,
+      (acc, config) => acc + config.totalDuration,
+    );
   }
 
   @override

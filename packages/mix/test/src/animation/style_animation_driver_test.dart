@@ -427,6 +427,149 @@ void main() {
       expect(startCount, 1);
       expect(completeCount, 1);
     });
+
+    test('totalDuration includes wrap-around transition for non-repeat', () {
+      final localTrigger = ValueNotifier(false);
+      addTearDown(localTrigger.dispose);
+
+      final config = PhaseAnimationConfig<MockSpec, MockStyle>(
+        styles: [MockStyle(0.0), MockStyle(1.0), MockStyle(2.0)],
+        curveConfigs: [
+          CurveAnimationConfig(duration: 50.ms, curve: Curves.linear),
+          CurveAnimationConfig(duration: 150.ms, curve: Curves.linear),
+          CurveAnimationConfig(duration: 300.ms, curve: Curves.linear),
+        ],
+        trigger: localTrigger,
+      );
+
+      final localDriver = PhaseAnimationDriver<MockSpec>(
+        vsync: const TestVSync(),
+        config: config,
+        initialSpec: MockSpec(resolvedValue: 0.0).toStyleSpec(),
+        context: mockContext,
+      );
+      addTearDown(() {
+        localDriver.stop();
+        localDriver.dispose();
+      });
+
+      expect(localDriver.totalDuration, 500.ms);
+    });
+
+    testWidgets(
+      'uses destination config durations and returns to initial phase by default',
+      (tester) async {
+        final localTrigger = ValueNotifier(false);
+        addTearDown(localTrigger.dispose);
+
+        final config = PhaseAnimationConfig<MockSpec, MockStyle>(
+          styles: [MockStyle(0.0), MockStyle(1.0), MockStyle(2.0)],
+          curveConfigs: [
+            CurveAnimationConfig(duration: 50.ms, curve: Curves.linear),
+            CurveAnimationConfig(duration: 150.ms, curve: Curves.linear),
+            CurveAnimationConfig(duration: 300.ms, curve: Curves.linear),
+          ],
+          trigger: localTrigger,
+        );
+
+        final localDriver = PhaseAnimationDriver<MockSpec>(
+          vsync: const TestVSync(),
+          config: config,
+          initialSpec: MockSpec(resolvedValue: 0.0).toStyleSpec(),
+          context: mockContext,
+        );
+        addTearDown(() {
+          localDriver.stop();
+          localDriver.dispose();
+        });
+
+        localTrigger.value = true;
+        await tester.pump();
+
+        await tester.pump(100.ms);
+        expect(localDriver.animation.value?.spec.resolvedValue, 1.0);
+
+        final remaining = localDriver.totalDuration - 101.ms;
+        await tester.pump(remaining);
+
+        expect(localDriver.animation.value?.spec.resolvedValue, 0.0);
+
+        await tester.pump(1.ms);
+        await tester.pumpAndSettle();
+      },
+    );
+
+    testWidgets('calls last phase onEnd when config.onEnd is not set', (
+      tester,
+    ) async {
+      int onEndCount = 0;
+      final localTrigger = ValueNotifier(false);
+      addTearDown(localTrigger.dispose);
+
+      final config = PhaseAnimationConfig<MockSpec, MockStyle>(
+        styles: [MockStyle(0.0), MockStyle(1.0)],
+        curveConfigs: [
+          CurveAnimationConfig(duration: 50.ms, curve: Curves.linear),
+          CurveAnimationConfig(
+            duration: 50.ms,
+            curve: Curves.linear,
+            onEnd: () => onEndCount++,
+          ),
+        ],
+        trigger: localTrigger,
+      );
+
+      final localDriver = PhaseAnimationDriver<MockSpec>(
+        vsync: const TestVSync(),
+        config: config,
+        initialSpec: MockSpec(resolvedValue: 0.0).toStyleSpec(),
+        context: mockContext,
+      );
+      addTearDown(() {
+        localDriver.stop();
+        localDriver.dispose();
+      });
+
+      localTrigger.value = true;
+      await tester.pumpAndSettle();
+
+      expect(onEndCount, 1);
+    });
+
+    testWidgets('repeats when repeat is true', (tester) async {
+      final localTrigger = ValueNotifier(false);
+      addTearDown(localTrigger.dispose);
+
+      final config = PhaseAnimationConfig<MockSpec, MockStyle>(
+        styles: [MockStyle(0.0), MockStyle(1.0)],
+        curveConfigs: [
+          CurveAnimationConfig(duration: 100.ms, curve: Curves.linear),
+          CurveAnimationConfig(duration: 100.ms, curve: Curves.linear),
+        ],
+        trigger: localTrigger,
+        repeat: true,
+      );
+
+      final localDriver = PhaseAnimationDriver<MockSpec>(
+        vsync: const TestVSync(),
+        config: config,
+        initialSpec: MockSpec(resolvedValue: 0.0).toStyleSpec(),
+        context: mockContext,
+      );
+      addTearDown(() {
+        localDriver.stop();
+        localDriver.dispose();
+      });
+
+      localTrigger.value = true;
+      await tester.pump();
+
+      await tester.pump(localDriver.totalDuration + 10.ms);
+
+      expect(localDriver.animation.isAnimating, true);
+      localDriver.stop();
+      await tester.pump();
+    });
   });
 
   group('KeyframeAnimationDriver', () {
