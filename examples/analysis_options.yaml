@@ -5,3 +5,7 @@ analyzer:
     prefer_const_constructors: ignore
   enable-experiment:
     - dot-shorthands
+
+linter:
+  rules:
+    use_build_context_synchronously: false

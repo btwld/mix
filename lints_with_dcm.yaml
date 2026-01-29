@@ -15,6 +15,7 @@ dart_code_metrics:
   rules:
     # avoid-collection-mutating-methods: true
     newline-before-return: true
+    avoid-inferrable-type-arguments: false
     avoid-importing-entrypoint-exports:
       only-in-src: true
     avoid-duplicate-constant-values: false
@@ -30,7 +31,11 @@ dart_code_metrics:
     enum-constants-ordering: false
     avoid-unsafe-collection-methods: false
     prefer-prefixed-global-constants: false
+    prefer-returning-shorthands: false
     avoid-returning-widgets: false
+    prefer-shorthands-with-constructors: false
+    prefer-shorthands-with-enums: false
+    prefer-shorthands-with-static-fields: false
     avoid-unnecessary-overrides: false
     arguments-ordering:
       first:

@@ -20,27 +20,20 @@ class ShapeBorderMerger {
   /// Extracts borderRadius and side properties from rectangle variants.
   static ({Prop<BorderRadiusGeometry>? $borderRadius, Prop<BorderSide>? $side})
   _extractRectangleProperties(ShapeBorderMix border) {
-    return switch (border) {
-      RoundedRectangleBorderMix b => (
-        $borderRadius: b.$borderRadius,
-        $side: b.$side,
-      ),
-      BeveledRectangleBorderMix b => (
-        $borderRadius: b.$borderRadius,
-        $side: b.$side,
-      ),
-      ContinuousRectangleBorderMix b => (
-        $borderRadius: b.$borderRadius,
-        $side: b.$side,
-      ),
-      RoundedSuperellipseBorderMix b => (
-        $borderRadius: b.$borderRadius,
-        $side: b.$side,
-      ),
-      _ => throw ArgumentError(
-        'Expected rectangle variant, got ${border.runtimeType}',
-      ),
-    };
+    if (border is RoundedRectangleBorderMix) {
+      return ($borderRadius: border.$borderRadius, $side: border.$side);
+    }
+    if (border is BeveledRectangleBorderMix) {
+      return ($borderRadius: border.$borderRadius, $side: border.$side);
+    }
+    if (border is ContinuousRectangleBorderMix) {
+      return ($borderRadius: border.$borderRadius, $side: border.$side);
+    }
+    if (border is RoundedSuperellipseBorderMix) {
+      return ($borderRadius: border.$borderRadius, $side: border.$side);
+    }
+
+    throw ArgumentError('Expected rectangle variant, got ${border.runtimeType}');
   }
 
   /// Reconstructs a rectangle variant with the given properties.

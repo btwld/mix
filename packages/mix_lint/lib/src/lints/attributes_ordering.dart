@@ -9,6 +9,10 @@ import '../utils/type_checker.dart';
 
 const _whiteList = ['Style.asAttribute'];
 
+String _invocationTarget(FunctionExpressionInvocation expression) {
+  return expression.function.toSource();
+}
+
 class AttributesOrdering extends DartLintRule {
   static const _code = LintCode(
     name: 'mix_attributes_ordering',
@@ -56,9 +60,7 @@ class AttributesOrdering extends DartLintRule {
         variantAttributeChecker.isAssignableFromType(expression.staticType!),
       );
 
-      reportWhen(
-        _whiteList.contains(expression.childEntities.first.toString()),
-      );
+      reportWhen(_whiteList.contains(_invocationTarget(expression)));
     });
   }
 }
@@ -70,7 +72,7 @@ class _AttributesOrderingFix extends DartFix {
 
   void sortArgument(List<Expression> arguments) {
     final currentOrder = arguments
-        .map((e) => e.staticType!.toString())
+        .map((e) => e.staticType!.getDisplayString())
         .toSet()
         .toList();
 
@@ -80,8 +82,12 @@ class _AttributesOrderingFix extends DartFix {
     );
 
     arguments.sort((a, b) {
-      final weightA = mapWithOthers[a.staticType!.toString()] ?? 0;
-      final weightB = mapWithOthers[b.staticType!.toString()] ?? 0;
+      final weightA =
+          mapWithOthers[a.staticType!.getDisplayString()] ??
+          0;
+      final weightB =
+          mapWithOthers[b.staticType!.getDisplayString()] ??
+          0;
 
       return weightA.compareTo(weightB);
     });
@@ -149,7 +155,7 @@ class _AttributesOrderingFix extends DartFix {
         );
       }
 
-      if (_whiteList.contains(expression.childEntities.first.toString())) {
+      if (_whiteList.contains(_invocationTarget(expression))) {
         suggestReplacementIfNeeded(
           arguments: expression.argumentList.arguments,
           sourceRange: expression.argumentList.sourceRange,
