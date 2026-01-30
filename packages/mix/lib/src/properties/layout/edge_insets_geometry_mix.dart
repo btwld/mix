@@ -54,10 +54,16 @@ sealed class EdgeInsetsGeometryMix<T extends EdgeInsetsGeometry>
     double? end,
     double? top,
     double? bottom,
-  }) => EdgeInsetsDirectionalMix(top: top, bottom: bottom, start: start, end: end);
+  }) => EdgeInsetsDirectionalMix(
+    top: top,
+    bottom: bottom,
+    start: start,
+    end: end,
+  );
 
   /// Equal horizontal offsets.
-  static EdgeInsetsMix horizontal(double value) => EdgeInsetsMix.horizontal(value);
+  static EdgeInsetsMix horizontal(double value) =>
+      EdgeInsetsMix.horizontal(value);
 
   /// Equal vertical offsets.
   static EdgeInsetsMix vertical(double value) => EdgeInsetsMix.vertical(value);
@@ -104,10 +110,12 @@ sealed class EdgeInsetsGeometryMix<T extends EdgeInsetsGeometry>
   static EdgeInsetsMix right(double value) => EdgeInsetsMix(right: value);
 
   /// Start offset only.
-  static EdgeInsetsDirectionalMix start(double value) => EdgeInsetsDirectionalMix(start: value);
+  static EdgeInsetsDirectionalMix start(double value) =>
+      EdgeInsetsDirectionalMix(start: value);
 
   /// End offset only.
-  static EdgeInsetsDirectionalMix end(double value) => EdgeInsetsDirectionalMix(end: value);
+  static EdgeInsetsDirectionalMix end(double value) =>
+      EdgeInsetsDirectionalMix(end: value);
 
   static EdgeInsetsGeometryMix? tryToMerge(
     EdgeInsetsGeometryMix? a,
