@@ -89,7 +89,7 @@ class StylerFieldModel {
         ? declaredName.substring(1)
         : declaredName;
 
-    final isNullable = type.nullabilitySuffix == NullabilitySuffix.question;
+    final isNullable = type.nullabilitySuffix == .question;
 
     // Check if wrapped in Prop<>
     final isWrappedInProp = _isWrappedInProp(type);

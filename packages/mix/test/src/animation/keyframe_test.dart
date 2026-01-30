@@ -167,15 +167,11 @@ void main() {
   group('KeyframeTrack', () {
     group('totalDuration', () {
       test('sums all segment durations', () {
-        final track = KeyframeTrack<double>(
-          'opacity',
-          const [
-            Keyframe.linear(0.5, Duration(milliseconds: 100)),
-            Keyframe.linear(1.0, Duration(milliseconds: 200)),
-            Keyframe.linear(0.8, Duration(milliseconds: 150)),
-          ],
-          initial: 0.0,
-        );
+        final track = KeyframeTrack<double>('opacity', const [
+          Keyframe.linear(0.5, Duration(milliseconds: 100)),
+          Keyframe.linear(1.0, Duration(milliseconds: 200)),
+          Keyframe.linear(0.8, Duration(milliseconds: 150)),
+        ], initial: 0.0);
 
         expect(track.totalDuration, const Duration(milliseconds: 450));
       });
@@ -187,11 +183,9 @@ void main() {
       });
 
       test('handles single segment', () {
-        final track = KeyframeTrack<double>(
-          'single',
-          const [Keyframe.linear(1.0, Duration(milliseconds: 500))],
-          initial: 0.0,
-        );
+        final track = KeyframeTrack<double>('single', const [
+          Keyframe.linear(1.0, Duration(milliseconds: 500)),
+        ], initial: 0.0);
 
         expect(track.totalDuration, const Duration(milliseconds: 500));
       });
@@ -199,14 +193,10 @@ void main() {
 
     group('createSequenceItems', () {
       test('creates correct number of items', () {
-        final track = KeyframeTrack<double>(
-          'test',
-          const [
-            Keyframe.linear(0.5, Duration(milliseconds: 100)),
-            Keyframe.linear(1.0, Duration(milliseconds: 200)),
-          ],
-          initial: 0.0,
-        );
+        final track = KeyframeTrack<double>('test', const [
+          Keyframe.linear(0.5, Duration(milliseconds: 100)),
+          Keyframe.linear(1.0, Duration(milliseconds: 200)),
+        ], initial: 0.0);
 
         final items = track.createSequenceItems();
 
@@ -214,14 +204,10 @@ void main() {
       });
 
       test('items have correct weights based on duration', () {
-        final track = KeyframeTrack<double>(
-          'test',
-          const [
-            Keyframe.linear(0.5, Duration(milliseconds: 100)),
-            Keyframe.linear(1.0, Duration(milliseconds: 300)),
-          ],
-          initial: 0.0,
-        );
+        final track = KeyframeTrack<double>('test', const [
+          Keyframe.linear(0.5, Duration(milliseconds: 100)),
+          Keyframe.linear(1.0, Duration(milliseconds: 300)),
+        ], initial: 0.0);
 
         final items = track.createSequenceItems();
 
@@ -240,14 +226,10 @@ void main() {
 
     group('createAnimatable', () {
       test('creates animatable for timeline duration', () {
-        final track = KeyframeTrack<double>(
-          'test',
-          const [
-            Keyframe.linear(0.5, Duration(milliseconds: 100)),
-            Keyframe.linear(1.0, Duration(milliseconds: 100)),
-          ],
-          initial: 0.0,
-        );
+        final track = KeyframeTrack<double>('test', const [
+          Keyframe.linear(0.5, Duration(milliseconds: 100)),
+          Keyframe.linear(1.0, Duration(milliseconds: 100)),
+        ], initial: 0.0);
 
         final animatable = track.createAnimatable(
           const Duration(milliseconds: 200),
@@ -257,11 +239,9 @@ void main() {
       });
 
       test('animatable transforms values correctly at boundaries', () {
-        final track = KeyframeTrack<double>(
-          'test',
-          const [Keyframe.linear(1.0, Duration(milliseconds: 100))],
-          initial: 0.0,
-        );
+        final track = KeyframeTrack<double>('test', const [
+          Keyframe.linear(1.0, Duration(milliseconds: 100)),
+        ], initial: 0.0);
 
         final animatable = track.createAnimatable(
           const Duration(milliseconds: 100),
@@ -277,11 +257,9 @@ void main() {
 
     group('custom tweenBuilder', () {
       test('uses default Tween when not provided', () {
-        final track = KeyframeTrack<double>(
-          'test',
-          const [Keyframe.linear(1.0, Duration(milliseconds: 100))],
-          initial: 0.0,
-        );
+        final track = KeyframeTrack<double>('test', const [
+          Keyframe.linear(1.0, Duration(milliseconds: 100)),
+        ], initial: 0.0);
 
         // Should not throw
         expect(() => track.createSequenceItems(), returnsNormally);
@@ -308,16 +286,12 @@ void main() {
 
     group('equality', () {
       test('equal tracks have same props', () {
-        final track1 = KeyframeTrack<double>(
-          'test',
-          const [Keyframe.linear(1.0, Duration(milliseconds: 100))],
-          initial: 0.0,
-        );
-        final track2 = KeyframeTrack<double>(
-          'test',
-          const [Keyframe.linear(1.0, Duration(milliseconds: 100))],
-          initial: 0.0,
-        );
+        final track1 = KeyframeTrack<double>('test', const [
+          Keyframe.linear(1.0, Duration(milliseconds: 100)),
+        ], initial: 0.0);
+        final track2 = KeyframeTrack<double>('test', const [
+          Keyframe.linear(1.0, Duration(milliseconds: 100)),
+        ], initial: 0.0);
 
         expect(track1.props, equals(track2.props));
       });
@@ -327,10 +301,7 @@ void main() {
   group('KeyframeAnimationResult', () {
     group('get<T>', () {
       test('returns value for existing key', () {
-        const result = KeyframeAnimationResult({
-          'opacity': 0.5,
-          'scale': 1.2,
-        });
+        const result = KeyframeAnimationResult({'opacity': 0.5, 'scale': 1.2});
 
         expect(result.get<double>('opacity'), 0.5);
         expect(result.get<double>('scale'), 1.2);
@@ -369,11 +340,9 @@ void main() {
     test('stores all required parameters', () {
       final trigger = ValueNotifier(false);
       final timeline = [
-        KeyframeTrack<double>(
-          'test',
-          const [Keyframe.linear(1.0, Duration(milliseconds: 100))],
-          initial: 0.0,
-        ),
+        KeyframeTrack<double>('test', const [
+          Keyframe.linear(1.0, Duration(milliseconds: 100)),
+        ], initial: 0.0),
       ];
 
       final config = KeyframeAnimationConfig<MockSpec<double>>(

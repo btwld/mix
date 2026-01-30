@@ -85,7 +85,7 @@ class ShadowMix extends BaseShadowMix<Shadow>
   }
 
   @override
-  Shadow get defaultValue => const Shadow();
+  Shadow get defaultValue => const .new();
 }
 
 /// Mix representation of [BoxShadow].
@@ -180,7 +180,7 @@ class BoxShadowMix extends BaseShadowMix<BoxShadow>
   }
 
   @override
-  BoxShadow get defaultValue => const BoxShadow();
+  BoxShadow get defaultValue => const .new();
 }
 
 /// Material Design elevation levels.
@@ -217,11 +217,7 @@ class ShadowListMix extends Mix<List<Shadow>> with Diagnosticable {
 
   @override
   ShadowListMix merge(covariant ShadowListMix? other) {
-    final merged = MixOps.mergeList(
-      items,
-      other?.items,
-      strategy: ListMergeStrategy.replace,
-    )!;
+    final merged = MixOps.mergeList(items, other?.items, strategy: .replace)!;
 
     return ShadowListMix(merged);
   }
@@ -249,11 +245,7 @@ class BoxShadowListMix extends Mix<List<BoxShadow>> with Diagnosticable {
 
   @override
   BoxShadowListMix merge(covariant BoxShadowListMix? other) {
-    final merged = MixOps.mergeList(
-      items,
-      other?.items,
-      strategy: ListMergeStrategy.replace,
-    )!;
+    final merged = MixOps.mergeList(items, other?.items, strategy: .replace)!;
 
     return BoxShadowListMix(merged);
   }

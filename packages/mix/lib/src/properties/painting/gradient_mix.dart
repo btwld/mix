@@ -195,7 +195,7 @@ final class LinearGradientMix extends GradientMix<LinearGradient>
   }
 
   @override
-  LinearGradient get defaultValue => const LinearGradient(colors: []);
+  LinearGradient get defaultValue => const .new(colors: []);
 }
 
 /// Mix representation of [RadialGradient].
@@ -352,7 +352,7 @@ final class RadialGradientMix extends GradientMix<RadialGradient>
   }
 
   @override
-  RadialGradient get defaultValue => const RadialGradient(colors: []);
+  RadialGradient get defaultValue => const .new(colors: []);
 }
 
 /// Mix representation of [SweepGradient].
@@ -487,5 +487,5 @@ final class SweepGradientMix extends GradientMix<SweepGradient>
   }
 
   @override
-  SweepGradient get defaultValue => const SweepGradient(colors: []);
+  SweepGradient get defaultValue => const .new(colors: []);
 }

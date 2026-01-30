@@ -117,9 +117,7 @@ class MixableGenerator extends GeneratorForAnnotation<Mixable> {
     }
   }
 
-  MixableAnnotationConfig _extractAnnotationConfig(
-    ConstantReader annotation,
-  ) {
+  MixableAnnotationConfig _extractAnnotationConfig(ConstantReader annotation) {
     final methodsReader = annotation.peek('methods');
     final resolveToTypeReader = annotation.peek('resolveToType');
 
@@ -164,7 +162,8 @@ class MixableGenerator extends GeneratorForAnnotation<Mixable> {
     final config = _extractAnnotationConfig(annotation);
 
     // Extract resolve-to type from annotation or infer from supertype
-    final resolveToType = config.resolveToType ?? _extractResolveToType(classElement);
+    final resolveToType =
+        config.resolveToType ?? _extractResolveToType(classElement);
     if (resolveToType == null) {
       throw InvalidGenerationSourceError(
         'Could not determine target type for resolve(). '

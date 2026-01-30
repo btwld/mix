@@ -45,7 +45,7 @@ final class FlexibleModifier extends WidgetModifier<FlexibleModifier>
 
   @override
   Widget build(Widget child) {
-    return Flexible(flex: flex ?? 1, fit: fit ?? FlexFit.loose, child: child);
+    return Flexible(flex: flex ?? 1, fit: fit ?? .loose, child: child);
   }
 }
 

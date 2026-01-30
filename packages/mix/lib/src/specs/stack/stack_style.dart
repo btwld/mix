@@ -76,7 +76,7 @@ class StackStyler extends Style<StackSpec>
          variants: variants,
        );
 
-  static StackMutableStyler get chain => StackMutableStyler(StackStyler());
+  static StackMutableStyler get chain => .new(StackStyler());
 
   /// Sets the widget modifier.
   StackStyler modifier(WidgetModifierConfig value) {

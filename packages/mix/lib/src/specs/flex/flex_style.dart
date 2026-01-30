@@ -115,7 +115,7 @@ class FlexStyler extends Style<FlexSpec>
          variants: variants,
        );
 
-  static FlexMutableStyler get chain => FlexMutableStyler(FlexStyler());
+  static FlexMutableStyler get chain => .new(FlexStyler());
 
   /// Sets the widget modifier.
   FlexStyler modifier(WidgetModifierConfig value) {
