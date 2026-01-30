@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base href="$FLUTTER_BASE_HREF">
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="Mix Flutter Examples - Interactive demos">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Mix Examples">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+  <link rel="icon" type="image/png" href="favicon.png"/>
+  <title>Mix Examples</title>
+  <link rel="manifest" href="manifest.json">
+
+  <style>
+    /* Ensure Flutter fills the container when embedded */
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    /* Full-page mode styles */
+    body.full-page {
+      background-color: #1a1a2e;
+    }
+
+    /* Element embedding mode - Flutter will be placed in a host element */
+    #flutter-host {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Loading indicator */
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      background-color: #1a1a2e;
+      color: #a78bfa;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(167, 139, 250, 0.3);
+      border-top-color: #a78bfa;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body class="full-page">
+  <div id="flutter-host">
+    <div class="loading">
+      <div class="loading-spinner"></div>
+    </div>
+  </div>
+
+  <script src="flutter_bootstrap.js" async></script>
+  <script>
+    // Flutter Multi-View Mode Support
+    // Allows embedding multiple Flutter views on the same page without WebGL conflicts
+
+    // Single-view initialization (legacy, for full-page mode or single embed)
+    window.initFlutterApp = async function(hostElement) {
+      if (!window._flutter) {
+        console.error('Flutter not loaded');
+        return;
+      }
+
+      const config = hostElement ? { hostElement } : {};
+
+      window._flutter.loader.load({
+        onEntrypointLoaded: async function(engineInitializer) {
+          let appRunner = await engineInitializer.initializeEngine(config);
+          await appRunner.runApp();
+        }
+      });
+    };
+
+    // Multi-view initialization (recommended for multiple embeds on same page)
+    // Usage:
+    //   await window.initFlutterMultiView();
+    //   window.flutterApp.addView({ hostElement: el, initialData: { demoId: 'box-basic' } });
+    window.initFlutterMultiView = async function() {
+      if (window.flutterApp) {
+        return window.flutterApp; // Already initialized
+      }
+
+      return new Promise((resolve, reject) => {
+        if (!window._flutter) {
+          reject(new Error('Flutter not loaded'));
+          return;
+        }
+
+        window._flutter.loader.load({
+          onEntrypointLoaded: async function(engineInitializer) {
+            try {
+              // Set flag for Dart side to detect multi-view mode
+              window.__FLUTTER_MULTI_VIEW_ENABLED__ = true;
+
+              // Initialize engine with multi-view enabled
+              const engine = await engineInitializer.initializeEngine({
+                multiViewEnabled: true,
+              });
+
+              // Run the app - in multi-view mode this doesn't create a default view
+              const app = await engine.runApp();
+
+              // Expose the app globally for adding/removing views
+              window.flutterApp = app;
+
+              console.log('[Flutter] Multi-view engine initialized');
+              resolve(app);
+            } catch (err) {
+              reject(err);
+            }
+          }
+        });
+      });
+    };
+
+    // Convenience function to add a view with a specific demo
+    window.addFlutterView = async function(hostElement, demoId, options = {}) {
+      if (!window.flutterApp) {
+        await window.initFlutterMultiView();
+      }
+
+      const viewId = window.flutterApp.addView({
+        hostElement: hostElement,
+        initialData: { demoId: demoId, ...options },
+      });
+
+      console.log(`[Flutter] Added view ${viewId} for demo: ${demoId}`);
+      return viewId;
+    };
+
+    // Remove a view by ID
+    window.removeFlutterView = function(viewId) {
+      if (!window.flutterApp) {
+        console.warn('[Flutter] App not initialized');
+        return false;
+      }
+
+      window.flutterApp.removeView(viewId);
+      console.log(`[Flutter] Removed view ${viewId}`);
+      return true;
+    };
+
+    // Auto-initialize in full-page mode (gallery)
+    window.addEventListener('load', function() {
+      // Check if we're in embedded mode (parent sets this)
+      if (!window.FLUTTER_EMBEDDED_MODE && !window.FLUTTER_MULTI_VIEW_MODE) {
+        const host = document.getElementById('flutter-host');
+        window.initFlutterApp(host);
+      }
+    });
+  </script>
+</body>
+</html>
