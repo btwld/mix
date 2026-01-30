@@ -35,7 +35,7 @@ class CustomScaffold extends StatelessWidget {
     return ColumnBox(
       style: scaffoldContainer,
       children: [
-        ?appBar,
+        if (appBar != null) appBar!,
         Expanded(
           child: SizedBox(width: .infinity, child: body),
         ),

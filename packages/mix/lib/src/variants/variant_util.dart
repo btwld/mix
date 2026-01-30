@@ -236,7 +236,7 @@ class VariantAttributeBuilder<T extends Spec<T>> {
   // MultiSpec/CompoundStyle cleanup. Apply variants directly to spec types.
 
   @override
-  String toString() => 'VariantAttributeBuilder(${variant.key})';
+  String toString() => 'VariantAttributeBuilder($variant)';
 
   @override
   bool operator ==(Object other) =>

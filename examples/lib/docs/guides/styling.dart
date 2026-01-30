@@ -1,4 +1,4 @@
-// ignore_for_file: unused_local_variable, avoid-unused-local-variable
+// ignore_for_file: unused_local_variable
 
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';

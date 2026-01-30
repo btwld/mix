@@ -56,8 +56,10 @@ bool _isDartFile(String path) {
   return path.endsWith('.dart');
 }
 
-String _joinPaths(String path1, String path2) {
-  return [path1, path2].join(Platform.pathSeparator);
+String _joinPaths(String path1, String path2, [String? path3, String? path4]) {
+  final paths = [path1, path2, path3, path4];
+
+  return paths.where((e) => e != null).join(Platform.pathSeparator);
 }
 
 String _getRelativePath(String filePath, String fromPath) {

@@ -69,6 +69,16 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
     }
   }
 
+  @override
+  void didUpdateWidget(covariant StyleBuilder<S> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // Handle controller changes
+    if (oldWidget.controller != widget.controller) {
+      _handleControllerChange(oldWidget);
+    }
+  }
+
   void _handleControllerChange(StyleBuilder<S> oldWidget) {
     // Dispose old internal controller if we owned it
     if (_ownsController) {
@@ -90,16 +100,6 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
     final inheritedStyle = Style.maybeOf<S>(context);
 
     return inheritedStyle?.merge(widget.style) ?? widget.style;
-  }
-
-  @override
-  void didUpdateWidget(covariant StyleBuilder<S> oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    // Handle controller changes
-    if (oldWidget.controller != widget.controller) {
-      _handleControllerChange(oldWidget);
-    }
   }
 
   @override

@@ -46,7 +46,7 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
         'No Style<$S> ancestor could be found starting from the context that was passed to Style.of().\n\n'
         'If you are using StyleBuilder, make sure to set inheritable: true to provide the style to descendant widgets.\n\n'
         'The context used was:\n'
-        '  ${context.widget.toStringShort()}',
+        '  $context',
       );
     }
 

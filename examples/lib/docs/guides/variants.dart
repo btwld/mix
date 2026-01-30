@@ -1,4 +1,4 @@
-// ignore_for_file: unused_local_variable, avoid-unused-local-variable
+// ignore_for_file: unused_local_variable
 
 import '../../helpers.dart';
 import 'package:flutter/material.dart';

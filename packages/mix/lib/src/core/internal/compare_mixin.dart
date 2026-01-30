@@ -11,8 +11,9 @@ import 'internal_extensions.dart';
 const _equality = DeepCollectionEquality();
 
 /// Determines whether [list1] and [list2] are equal using deep comparison.
-bool _equals(List list1, List list2) {
+bool _equals(List? list1, List? list2) {
   if (identical(list1, list2)) return true;
+  if (list1 == null || list2 == null) return false;
   final length = list1.length;
   if (length != list2.length) return false;
 
@@ -101,7 +102,6 @@ mixin Equatable {
     if (props.length != otherProps.length) {
       diff['props.length'] =
           'this: ${props.length}, other: ${otherProps.length}';
-
       return diff;
     }
 
