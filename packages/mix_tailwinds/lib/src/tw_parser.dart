@@ -34,6 +34,7 @@ class _TransformAccum {
   double? rotateDeg;
   double? translateX;
   double? translateY;
+
   /// When true, always produce identity matrix even if no transforms are set.
   /// Used for animation interpolation when variants have transforms but base doesn't.
   bool needsIdentity = false;
@@ -201,8 +202,7 @@ class TwResolver {
   const TwResolver(this.config, {this.onUnknownVariant});
 
   /// Pre-compiled regex for parsing arbitrary length values (e.g., 123px, 1.5rem, 50%).
-  static final _arbitraryLengthRegex =
-      RegExp(r'^(-?\d+\.?\d*)(px|rem|em|%)?$');
+  static final _arbitraryLengthRegex = RegExp(r'^(-?\d+\.?\d*)(px|rem|em|%)?$');
 
   final TwConfig config;
   final TokenWarningCallback? onUnknownVariant;
@@ -263,7 +263,7 @@ class TwResolver {
           value: namedPlugin.value,
           variants: variants,
           important: important,
-        )
+        ),
       ];
     }
 
@@ -287,7 +287,7 @@ class TwResolver {
         important: important,
         negative: negative,
         arbitrary: _isArbitrary(valueKey),
-      )
+      ),
     ];
   }
 
@@ -377,20 +377,23 @@ class TwResolver {
 
     // Use hasKey checks to return null for unknown keys (triggers onUnsupported)
     return switch (scale) {
-      'space' => config.hasSpace(key) ? TwLengthValue(config.spaceOf(key)) : null,
-      'radii' => config.hasRadius(key) ? TwLengthValue(config.radiusOf(key)) : null,
-      'borderWidths' => config.hasBorderWidth(key)
-          ? TwLengthValue(config.borderWidthOf(key))
-          : null,
-      'fontSizes' => config.hasFontSize(key)
-          ? TwLengthValue(config.fontSizeOf(key))
-          : null,
+      'space' =>
+        config.hasSpace(key) ? TwLengthValue(config.spaceOf(key)) : null,
+      'radii' =>
+        config.hasRadius(key) ? TwLengthValue(config.radiusOf(key)) : null,
+      'borderWidths' =>
+        config.hasBorderWidth(key)
+            ? TwLengthValue(config.borderWidthOf(key))
+            : null,
+      'fontSizes' =>
+        config.hasFontSize(key) ? TwLengthValue(config.fontSizeOf(key)) : null,
       'colors' => _resolveColor(key),
       'durations' => _resolveDuration(key),
       'delays' => _resolveDelay(key),
       'scales' => _resolveScale(key),
       'rotations' => _resolveRotation(key),
-      'blurs' => config.hasBlur(key) ? TwLengthValue(config.blurOf(key)!) : null,
+      'blurs' =>
+        config.hasBlur(key) ? TwLengthValue(config.blurOf(key)!) : null,
       _ => null,
     };
   }
@@ -461,8 +464,9 @@ class TwResolver {
       final intVal = int.tryParse(hex, radix: 16);
       if (intVal == null) return null;
 
-      final color =
-          hex.length == 6 ? Color(0xFF000000 | intVal) : Color(intVal);
+      final color = hex.length == 6
+          ? Color(0xFF000000 | intVal)
+          : Color(intVal);
       return TwColorValue(color);
     }
     return null;
@@ -679,11 +683,8 @@ bool _isAnimationToken(String token) {
 typedef _VariantApplier<S> = S Function(S base, S variant);
 typedef _BreakpointApplier<S> = S Function(S base, Breakpoint bp, S child);
 typedef _StylerMerge<S> = S Function(S base, S other);
-typedef _BorderSideApplier<S> = S Function(
-  S styler, {
-  required Color color,
-  required double width,
-});
+typedef _BorderSideApplier<S> =
+    S Function(S styler, {required Color color, required double width});
 
 Map<String, _VariantApplier<S>> _buildVariants<S>({
   required _VariantApplier<S> hover,
@@ -740,20 +741,12 @@ final _textVariants = _buildVariants<TextStyler>(
 // Unified Property Appliers
 // =============================================================================
 
-S _accumulateScale<S>(
-  S styler,
-  double value,
-  _TransformAccumTracker tracker,
-) {
+S _accumulateScale<S>(S styler, double value, _TransformAccumTracker tracker) {
   tracker.forStyler(styler).scale = value;
   return styler;
 }
 
-S _accumulateRotate<S>(
-  S styler,
-  double value,
-  _TransformAccumTracker tracker,
-) {
+S _accumulateRotate<S>(S styler, double value, _TransformAccumTracker tracker) {
   tracker.forStyler(styler).rotateDeg = value;
   return styler;
 }
@@ -785,106 +778,139 @@ FlexBoxStyler _applyPropertyToFlex(
 ) {
   return switch (property) {
     // Spacing
-    TwProperty.padding =>
-      styler.paddingAll((value as TwLengthValue).value),
+    TwProperty.padding => styler.paddingAll((value as TwLengthValue).value),
     TwProperty.paddingX => styler.paddingX((value as TwLengthValue).value),
     TwProperty.paddingY => styler.paddingY((value as TwLengthValue).value),
-    TwProperty.paddingTop =>
-      styler.paddingTop((value as TwLengthValue).value),
-    TwProperty.paddingRight =>
-      styler.paddingRight((value as TwLengthValue).value),
-    TwProperty.paddingBottom =>
-      styler.paddingBottom((value as TwLengthValue).value),
-    TwProperty.paddingLeft =>
-      styler.paddingLeft((value as TwLengthValue).value),
+    TwProperty.paddingTop => styler.paddingTop((value as TwLengthValue).value),
+    TwProperty.paddingRight => styler.paddingRight(
+      (value as TwLengthValue).value,
+    ),
+    TwProperty.paddingBottom => styler.paddingBottom(
+      (value as TwLengthValue).value,
+    ),
+    TwProperty.paddingLeft => styler.paddingLeft(
+      (value as TwLengthValue).value,
+    ),
     TwProperty.margin => styler.marginAll((value as TwLengthValue).value),
     TwProperty.marginX => styler.marginX((value as TwLengthValue).value),
     TwProperty.marginY => styler.marginY((value as TwLengthValue).value),
-    TwProperty.marginTop =>
-      styler.marginTop((value as TwLengthValue).value),
-    TwProperty.marginRight =>
-      styler.marginRight((value as TwLengthValue).value),
-    TwProperty.marginBottom =>
-      styler.marginBottom((value as TwLengthValue).value),
-    TwProperty.marginLeft =>
-      styler.marginLeft((value as TwLengthValue).value),
+    TwProperty.marginTop => styler.marginTop((value as TwLengthValue).value),
+    TwProperty.marginRight => styler.marginRight(
+      (value as TwLengthValue).value,
+    ),
+    TwProperty.marginBottom => styler.marginBottom(
+      (value as TwLengthValue).value,
+    ),
+    TwProperty.marginLeft => styler.marginLeft((value as TwLengthValue).value),
     TwProperty.gap => styler.spacing((value as TwLengthValue).value),
 
     // Sizing (only apply length values with px unit; enum values and % handled by widget layer)
-    TwProperty.width => value is TwLengthValue && value.unit == TwUnit.px
-        ? styler.width(value.value)
-        : styler,
-    TwProperty.height => value is TwLengthValue && value.unit == TwUnit.px
-        ? styler.height(value.value)
-        : styler,
-    TwProperty.minWidth => value is TwLengthValue && value.unit == TwUnit.px
-        ? styler.minWidth(value.value)
-        : styler,
-    TwProperty.minHeight => value is TwLengthValue && value.unit == TwUnit.px
-        ? styler.minHeight(value.value)
-        : styler,
-    TwProperty.maxWidth => value is TwLengthValue && value.unit == TwUnit.px
-        ? styler.maxWidth(value.value)
-        : styler,
-    TwProperty.maxHeight => value is TwLengthValue && value.unit == TwUnit.px
-        ? styler.maxHeight(value.value)
-        : styler,
+    TwProperty.width =>
+      value is TwLengthValue && value.unit == TwUnit.px
+          ? styler.width(value.value)
+          : styler,
+    TwProperty.height =>
+      value is TwLengthValue && value.unit == TwUnit.px
+          ? styler.height(value.value)
+          : styler,
+    TwProperty.minWidth =>
+      value is TwLengthValue && value.unit == TwUnit.px
+          ? styler.minWidth(value.value)
+          : styler,
+    TwProperty.minHeight =>
+      value is TwLengthValue && value.unit == TwUnit.px
+          ? styler.minHeight(value.value)
+          : styler,
+    TwProperty.maxWidth =>
+      value is TwLengthValue && value.unit == TwUnit.px
+          ? styler.maxWidth(value.value)
+          : styler,
+    TwProperty.maxHeight =>
+      value is TwLengthValue && value.unit == TwUnit.px
+          ? styler.maxHeight(value.value)
+          : styler,
 
     // Layout
     TwProperty.display => _applyFlexDisplay(styler, value),
     TwProperty.flexDirection => _applyFlexDirection(styler, value),
     TwProperty.alignItems => _applyAlignItems(styler, value),
-    TwProperty.justifyContent =>
-      styler.mainAxisAlignment((value as TwEnumValue<MainAxisAlignment>).value),
+    TwProperty.justifyContent => styler.mainAxisAlignment(
+      (value as TwEnumValue<MainAxisAlignment>).value,
+    ),
 
     // Background
-    TwProperty.backgroundColor =>
-      styler.color((value as TwColorValue).color),
+    TwProperty.backgroundColor => styler.color((value as TwColorValue).color),
 
     // Border radius
-    TwProperty.borderRadius =>
-      styler.borderRounded((value as TwLengthValue).value),
-    TwProperty.borderRadiusTop =>
-      styler.borderRoundedTop((value as TwLengthValue).value),
-    TwProperty.borderRadiusBottom =>
-      styler.borderRoundedBottom((value as TwLengthValue).value),
-    TwProperty.borderRadiusLeft =>
-      styler.borderRoundedLeft((value as TwLengthValue).value),
-    TwProperty.borderRadiusRight =>
-      styler.borderRoundedRight((value as TwLengthValue).value),
-    TwProperty.borderRadiusTopLeft =>
-      styler.borderRoundedTopLeft((value as TwLengthValue).value),
-    TwProperty.borderRadiusTopRight =>
-      styler.borderRoundedTopRight((value as TwLengthValue).value),
-    TwProperty.borderRadiusBottomLeft =>
-      styler.borderRoundedBottomLeft((value as TwLengthValue).value),
-    TwProperty.borderRadiusBottomRight =>
-      styler.borderRoundedBottomRight((value as TwLengthValue).value),
+    TwProperty.borderRadius => styler.borderRounded(
+      (value as TwLengthValue).value,
+    ),
+    TwProperty.borderRadiusTop => styler.borderRoundedTop(
+      (value as TwLengthValue).value,
+    ),
+    TwProperty.borderRadiusBottom => styler.borderRoundedBottom(
+      (value as TwLengthValue).value,
+    ),
+    TwProperty.borderRadiusLeft => styler.borderRoundedLeft(
+      (value as TwLengthValue).value,
+    ),
+    TwProperty.borderRadiusRight => styler.borderRoundedRight(
+      (value as TwLengthValue).value,
+    ),
+    TwProperty.borderRadiusTopLeft => styler.borderRoundedTopLeft(
+      (value as TwLengthValue).value,
+    ),
+    TwProperty.borderRadiusTopRight => styler.borderRoundedTopRight(
+      (value as TwLengthValue).value,
+    ),
+    TwProperty.borderRadiusBottomLeft => styler.borderRoundedBottomLeft(
+      (value as TwLengthValue).value,
+    ),
+    TwProperty.borderRadiusBottomRight => styler.borderRoundedBottomRight(
+      (value as TwLengthValue).value,
+    ),
 
     // Transform
     TwProperty.scale => _accumulateScale(
-        styler, (value as TwLengthValue).value, transformTracker),
+      styler,
+      (value as TwLengthValue).value,
+      transformTracker,
+    ),
     TwProperty.rotate => _accumulateRotate(
-        styler, (value as TwLengthValue).value, transformTracker),
+      styler,
+      (value as TwLengthValue).value,
+      transformTracker,
+    ),
     TwProperty.translateX => _accumulateTranslateX(
-        styler, (value as TwLengthValue).value, transformTracker),
+      styler,
+      (value as TwLengthValue).value,
+      transformTracker,
+    ),
     TwProperty.translateY => _accumulateTranslateY(
-        styler, (value as TwLengthValue).value, transformTracker),
+      styler,
+      (value as TwLengthValue).value,
+      transformTracker,
+    ),
 
     // Effects
     TwProperty.blur => styler.wrap(
-        WidgetModifierConfig.blur((value as TwLengthValue).value)),
+      WidgetModifierConfig.blur((value as TwLengthValue).value),
+    ),
     TwProperty.boxShadow => _applyFlexShadow(styler, value),
-    TwProperty.clipBehavior =>
-      styler.clipBehavior((value as TwEnumValue<Clip>).value),
+    TwProperty.clipBehavior => styler.clipBehavior(
+      (value as TwEnumValue<Clip>).value,
+    ),
 
     // Typography (propagates via DefaultTextStyle)
     TwProperty.textColor => styler.wrapDefaultTextStyle(
-        TextStyleMix().color((value as TwColorValue).color)),
+      TextStyleMix().color((value as TwColorValue).color),
+    ),
     TwProperty.fontSize => styler.wrapDefaultTextStyle(
-        TextStyleMix().fontSize((value as TwLengthValue).value)),
+      TextStyleMix().fontSize((value as TwLengthValue).value),
+    ),
     TwProperty.fontWeight => styler.wrapDefaultTextStyle(
-        TextStyleMix().fontWeight((value as TwEnumValue<FontWeight>).value)),
+      TextStyleMix().fontWeight((value as TwEnumValue<FontWeight>).value),
+    ),
     TwProperty.textShadow => _applyFlexTextShadow(styler, value),
 
     _ => styler,
@@ -900,7 +926,9 @@ FlexBoxStyler _applyFlexDisplay(FlexBoxStyler styler, TwValue value) {
 
 FlexBoxStyler _applyFlexDirection(FlexBoxStyler styler, TwValue value) {
   if (value is TwEnumValue<Axis>) {
-    final result = value.value == Axis.horizontal ? styler.row() : styler.column();
+    final result = value.value == Axis.horizontal
+        ? styler.row()
+        : styler.column();
     return result.crossAxisAlignment(CrossAxisAlignment.start);
   }
   return styler;
@@ -941,93 +969,127 @@ BoxStyler _applyPropertyToBox(
     TwProperty.padding => styler.paddingAll((value as TwLengthValue).value),
     TwProperty.paddingX => styler.paddingX((value as TwLengthValue).value),
     TwProperty.paddingY => styler.paddingY((value as TwLengthValue).value),
-    TwProperty.paddingTop =>
-      styler.paddingTop((value as TwLengthValue).value),
-    TwProperty.paddingRight =>
-      styler.paddingRight((value as TwLengthValue).value),
-    TwProperty.paddingBottom =>
-      styler.paddingBottom((value as TwLengthValue).value),
-    TwProperty.paddingLeft =>
-      styler.paddingLeft((value as TwLengthValue).value),
+    TwProperty.paddingTop => styler.paddingTop((value as TwLengthValue).value),
+    TwProperty.paddingRight => styler.paddingRight(
+      (value as TwLengthValue).value,
+    ),
+    TwProperty.paddingBottom => styler.paddingBottom(
+      (value as TwLengthValue).value,
+    ),
+    TwProperty.paddingLeft => styler.paddingLeft(
+      (value as TwLengthValue).value,
+    ),
     TwProperty.margin => styler.marginAll((value as TwLengthValue).value),
     TwProperty.marginX => styler.marginX((value as TwLengthValue).value),
     TwProperty.marginY => styler.marginY((value as TwLengthValue).value),
-    TwProperty.marginTop =>
-      styler.marginTop((value as TwLengthValue).value),
-    TwProperty.marginRight =>
-      styler.marginRight((value as TwLengthValue).value),
-    TwProperty.marginBottom =>
-      styler.marginBottom((value as TwLengthValue).value),
-    TwProperty.marginLeft =>
-      styler.marginLeft((value as TwLengthValue).value),
+    TwProperty.marginTop => styler.marginTop((value as TwLengthValue).value),
+    TwProperty.marginRight => styler.marginRight(
+      (value as TwLengthValue).value,
+    ),
+    TwProperty.marginBottom => styler.marginBottom(
+      (value as TwLengthValue).value,
+    ),
+    TwProperty.marginLeft => styler.marginLeft((value as TwLengthValue).value),
 
     // Sizing (only apply length values with px unit; enum values and % handled by widget layer)
-    TwProperty.width => value is TwLengthValue && value.unit == TwUnit.px
-        ? styler.width(value.value)
-        : styler,
-    TwProperty.height => value is TwLengthValue && value.unit == TwUnit.px
-        ? styler.height(value.value)
-        : styler,
-    TwProperty.minWidth => value is TwLengthValue && value.unit == TwUnit.px
-        ? styler.minWidth(value.value)
-        : styler,
-    TwProperty.minHeight => value is TwLengthValue && value.unit == TwUnit.px
-        ? styler.minHeight(value.value)
-        : styler,
-    TwProperty.maxWidth => value is TwLengthValue && value.unit == TwUnit.px
-        ? styler.maxWidth(value.value)
-        : styler,
-    TwProperty.maxHeight => value is TwLengthValue && value.unit == TwUnit.px
-        ? styler.maxHeight(value.value)
-        : styler,
+    TwProperty.width =>
+      value is TwLengthValue && value.unit == TwUnit.px
+          ? styler.width(value.value)
+          : styler,
+    TwProperty.height =>
+      value is TwLengthValue && value.unit == TwUnit.px
+          ? styler.height(value.value)
+          : styler,
+    TwProperty.minWidth =>
+      value is TwLengthValue && value.unit == TwUnit.px
+          ? styler.minWidth(value.value)
+          : styler,
+    TwProperty.minHeight =>
+      value is TwLengthValue && value.unit == TwUnit.px
+          ? styler.minHeight(value.value)
+          : styler,
+    TwProperty.maxWidth =>
+      value is TwLengthValue && value.unit == TwUnit.px
+          ? styler.maxWidth(value.value)
+          : styler,
+    TwProperty.maxHeight =>
+      value is TwLengthValue && value.unit == TwUnit.px
+          ? styler.maxHeight(value.value)
+          : styler,
 
     // Background
     TwProperty.backgroundColor => styler.color((value as TwColorValue).color),
 
     // Border radius
-    TwProperty.borderRadius =>
-      styler.borderRounded((value as TwLengthValue).value),
-    TwProperty.borderRadiusTop =>
-      styler.borderRoundedTop((value as TwLengthValue).value),
-    TwProperty.borderRadiusBottom =>
-      styler.borderRoundedBottom((value as TwLengthValue).value),
-    TwProperty.borderRadiusLeft =>
-      styler.borderRoundedLeft((value as TwLengthValue).value),
-    TwProperty.borderRadiusRight =>
-      styler.borderRoundedRight((value as TwLengthValue).value),
-    TwProperty.borderRadiusTopLeft =>
-      styler.borderRoundedTopLeft((value as TwLengthValue).value),
-    TwProperty.borderRadiusTopRight =>
-      styler.borderRoundedTopRight((value as TwLengthValue).value),
-    TwProperty.borderRadiusBottomLeft =>
-      styler.borderRoundedBottomLeft((value as TwLengthValue).value),
-    TwProperty.borderRadiusBottomRight =>
-      styler.borderRoundedBottomRight((value as TwLengthValue).value),
+    TwProperty.borderRadius => styler.borderRounded(
+      (value as TwLengthValue).value,
+    ),
+    TwProperty.borderRadiusTop => styler.borderRoundedTop(
+      (value as TwLengthValue).value,
+    ),
+    TwProperty.borderRadiusBottom => styler.borderRoundedBottom(
+      (value as TwLengthValue).value,
+    ),
+    TwProperty.borderRadiusLeft => styler.borderRoundedLeft(
+      (value as TwLengthValue).value,
+    ),
+    TwProperty.borderRadiusRight => styler.borderRoundedRight(
+      (value as TwLengthValue).value,
+    ),
+    TwProperty.borderRadiusTopLeft => styler.borderRoundedTopLeft(
+      (value as TwLengthValue).value,
+    ),
+    TwProperty.borderRadiusTopRight => styler.borderRoundedTopRight(
+      (value as TwLengthValue).value,
+    ),
+    TwProperty.borderRadiusBottomLeft => styler.borderRoundedBottomLeft(
+      (value as TwLengthValue).value,
+    ),
+    TwProperty.borderRadiusBottomRight => styler.borderRoundedBottomRight(
+      (value as TwLengthValue).value,
+    ),
 
     // Transform
     TwProperty.scale => _accumulateScale(
-        styler, (value as TwLengthValue).value, transformTracker),
+      styler,
+      (value as TwLengthValue).value,
+      transformTracker,
+    ),
     TwProperty.rotate => _accumulateRotate(
-        styler, (value as TwLengthValue).value, transformTracker),
+      styler,
+      (value as TwLengthValue).value,
+      transformTracker,
+    ),
     TwProperty.translateX => _accumulateTranslateX(
-        styler, (value as TwLengthValue).value, transformTracker),
+      styler,
+      (value as TwLengthValue).value,
+      transformTracker,
+    ),
     TwProperty.translateY => _accumulateTranslateY(
-        styler, (value as TwLengthValue).value, transformTracker),
+      styler,
+      (value as TwLengthValue).value,
+      transformTracker,
+    ),
 
     // Effects
     TwProperty.blur => styler.wrap(
-        WidgetModifierConfig.blur((value as TwLengthValue).value)),
+      WidgetModifierConfig.blur((value as TwLengthValue).value),
+    ),
     TwProperty.boxShadow => _applyBoxShadow(styler, value),
-    TwProperty.clipBehavior =>
-      styler.clipBehavior((value as TwEnumValue<Clip>).value),
+    TwProperty.clipBehavior => styler.clipBehavior(
+      (value as TwEnumValue<Clip>).value,
+    ),
 
     // Typography (propagates via DefaultTextStyle)
     TwProperty.textColor => styler.wrapDefaultTextStyle(
-        TextStyleMix().color((value as TwColorValue).color)),
+      TextStyleMix().color((value as TwColorValue).color),
+    ),
     TwProperty.fontSize => styler.wrapDefaultTextStyle(
-        TextStyleMix().fontSize((value as TwLengthValue).value)),
+      TextStyleMix().fontSize((value as TwLengthValue).value),
+    ),
     TwProperty.fontWeight => styler.wrapDefaultTextStyle(
-        TextStyleMix().fontWeight((value as TwEnumValue<FontWeight>).value)),
+      TextStyleMix().fontWeight((value as TwEnumValue<FontWeight>).value),
+    ),
     TwProperty.textShadow => _applyBoxTextShadow(styler, value),
 
     _ => styler,
@@ -1051,11 +1113,13 @@ List<ShadowMix>? _resolveTextShadowMixes(TwValue value) {
       return const <ShadowMix>[];
     }
     final shadows = kTextShadowPresets[preset]!
-        .map((s) => ShadowMix(
-              color: s.color,
-              offset: s.offset,
-              blurRadius: s.blurRadius,
-            ))
+        .map(
+          (s) => ShadowMix(
+            color: s.color,
+            offset: s.offset,
+            blurRadius: s.blurRadius,
+          ),
+        )
         .toList();
     return shadows;
   }
@@ -1089,17 +1153,17 @@ TextStyler _applyPropertyToText(
   return switch (property) {
     TwProperty.textColor => styler.color((value as TwColorValue).color),
     TwProperty.fontSize => styler.fontSize((value as TwLengthValue).value),
-    TwProperty.fontWeight =>
-      styler.fontWeight((value as TwEnumValue<FontWeight>).value),
+    TwProperty.fontWeight => styler.fontWeight(
+      (value as TwEnumValue<FontWeight>).value,
+    ),
     TwProperty.textShadow => _applyTextShadow(styler, value),
     TwProperty.lineHeight => styler.height((value as TwLengthValue).value),
-    TwProperty.letterSpacing =>
-      styler.letterSpacing((value as TwLengthValue).value),
+    TwProperty.letterSpacing => styler.letterSpacing(
+      (value as TwLengthValue).value,
+    ),
     TwProperty.textTransform => _applyTextTransform(styler, value),
-    TwProperty.textOverflow => styler
-        .overflow(TextOverflow.ellipsis)
-        .maxLines(1)
-        .softWrap(false),
+    TwProperty.textOverflow =>
+      styler.overflow(TextOverflow.ellipsis).maxLines(1).softWrap(false),
     _ => styler,
   };
 }
@@ -1122,11 +1186,11 @@ TextStyler _applyTextTransform(TextStyler styler, TwValue value) {
 
 class TwParser {
   TwParser({TwConfig? config, this.onUnsupported})
-      : config = config ?? TwConfig.standard(),
-        _resolver = TwResolver(
-          config ?? TwConfig.standard(),
-          onUnknownVariant: onUnsupported,
-        );
+    : config = config ?? TwConfig.standard(),
+      _resolver = TwResolver(
+        config ?? TwConfig.standard(),
+        onUnknownVariant: onUnsupported,
+      );
 
   /// Pre-compiled regex for splitting class names by whitespace.
   static final _whitespaceRegex = RegExp(r'\s+');
@@ -1409,15 +1473,14 @@ class TwParser {
         (b, bp, s) => b.onBreakpoint(bp, s),
       );
 
-  BoxStyler _applyBoxToken(BoxStyler base, String token) =>
-      _applyPrefixedToken(
-        base,
-        token,
-        _boxVariants,
-        BoxStyler.new,
-        _applyBoxAtomic,
-        (b, bp, s) => b.onBreakpoint(bp, s),
-      );
+  BoxStyler _applyBoxToken(BoxStyler base, String token) => _applyPrefixedToken(
+    base,
+    token,
+    _boxVariants,
+    BoxStyler.new,
+    _applyBoxAtomic,
+    (b, bp, s) => b.onBreakpoint(bp, s),
+  );
 
   TextStyler _applyTextToken(TextStyler base, String token) =>
       _applyPrefixedToken(
@@ -1431,7 +1494,8 @@ class TwParser {
 
   /// Finds the first colon that's not inside square brackets.
   /// Delegates to the shared utility in tw_utils.dart.
-  int _findFirstPrefixColon(String token) => findFirstColonOutsideBrackets(token);
+  int _findFirstPrefixColon(String token) =>
+      findFirstColonOutsideBrackets(token);
 
   S _carryTransforms<S>(S from, S to) {
     _transformTracker.transfer(from, to);
@@ -1492,8 +1556,11 @@ class TwParser {
         _transformTracker.forStyler(base).needsIdentity = true;
       }
       childStyler = _flushTransforms(childStyler);
-      final result =
-          applyBreakpoint(base, Breakpoint(minWidth: min), childStyler);
+      final result = applyBreakpoint(
+        base,
+        Breakpoint(minWidth: min),
+        childStyler,
+      );
       return _carryTransforms(base, result);
     }
 
@@ -1726,7 +1793,9 @@ class TwParser {
     // leading-even and leading-trim special cases
     if (token == 'leading-even') {
       return styler.textHeightBehavior(
-        TextHeightBehaviorMix(leadingDistribution: TextLeadingDistribution.even),
+        TextHeightBehaviorMix(
+          leadingDistribution: TextLeadingDistribution.even,
+        ),
       );
     }
     if (token == 'leading-trim') {
@@ -1875,7 +1944,6 @@ class TwParser {
 
     return result;
   }
-
 }
 
 bool _isFullOrScreenKey(String key) => key == 'full' || key == 'screen';

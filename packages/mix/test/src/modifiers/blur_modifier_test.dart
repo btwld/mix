@@ -113,8 +113,9 @@ void main() {
 
         await tester.pumpWidget(modifier.build(child));
 
-        final imageFiltered =
-            tester.widget<ImageFiltered>(find.byType(ImageFiltered));
+        final imageFiltered = tester.widget<ImageFiltered>(
+          find.byType(ImageFiltered),
+        );
         expect(imageFiltered.child, same(child));
 
         // Verify the blur is applied (ImageFiltered with blur filter)
@@ -236,8 +237,9 @@ void main() {
       await tester.pumpWidget(modifier.build(child));
 
       expect(find.byType(ImageFiltered), findsOneWidget);
-      final imageFiltered =
-          tester.widget<ImageFiltered>(find.byType(ImageFiltered));
+      final imageFiltered = tester.widget<ImageFiltered>(
+        find.byType(ImageFiltered),
+      );
       expect(imageFiltered.child, same(child));
     });
 

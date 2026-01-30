@@ -52,10 +52,7 @@ Future<void> _expectShadowElevation(
 
 /// Helper to parse animation config from class names.
 /// Uses the non-deprecated parseAnimationFromTokens internally.
-CurveAnimationConfig? _parseAnimation(
-  String classNames, {
-  TwParser? parser,
-}) {
+CurveAnimationConfig? _parseAnimation(String classNames, {TwParser? parser}) {
   final p = parser ?? TwParser();
   return p.parseAnimationFromTokens(p.listTokens(classNames));
 }
@@ -795,7 +792,9 @@ void main() {
     expect(border.right.color, const Color(0xFFEF4444));
   });
 
-  testWidgets('border-gray-200 alone produces no visible border', (tester) async {
+  testWidgets('border-gray-200 alone produces no visible border', (
+    tester,
+  ) async {
     // Color-only border tokens should NOT create borders
     final decoration = await _boxDecorationFor(tester, 'border-gray-200');
     final border = decoration?.border as Border?;
@@ -806,10 +805,13 @@ void main() {
     expect(border?.right.width ?? 0, 0);
   });
 
-  testWidgets('border-t border-gray-200 applies color to top only',
-      (tester) async {
-    final decoration =
-        await _boxDecorationFor(tester, 'border-t border-gray-200');
+  testWidgets('border-t border-gray-200 applies color to top only', (
+    tester,
+  ) async {
+    final decoration = await _boxDecorationFor(
+      tester,
+      'border-t border-gray-200',
+    );
     final border = decoration?.border as Border?;
     expect(border, isNotNull);
     expect(border!.top.width, 1);
@@ -819,10 +821,10 @@ void main() {
     expect(border.right.width, 0);
   });
 
-  testWidgets('border border-red-500 applies color to all sides',
-      (tester) async {
-    final decoration =
-        await _boxDecorationFor(tester, 'border border-red-500');
+  testWidgets('border border-red-500 applies color to all sides', (
+    tester,
+  ) async {
+    final decoration = await _boxDecorationFor(tester, 'border border-red-500');
     final border = decoration?.border as Border?;
     expect(border, isNotNull);
     expect(border!.top.width, 1);
@@ -832,10 +834,13 @@ void main() {
     expect(border.right.color, const Color(0xFFEF4444));
   });
 
-  testWidgets('border-x-2 border-blue-500 applies width and color',
-      (tester) async {
-    final decoration =
-        await _boxDecorationFor(tester, 'border-x-2 border-blue-500');
+  testWidgets('border-x-2 border-blue-500 applies width and color', (
+    tester,
+  ) async {
+    final decoration = await _boxDecorationFor(
+      tester,
+      'border-x-2 border-blue-500',
+    );
     final border = decoration?.border as Border?;
     expect(border, isNotNull);
     expect(border!.left.width, 2);
@@ -858,7 +863,9 @@ void main() {
     expect(styler, isNotNull);
 
     // Parse with color on base to verify variant inheritance
-    final styler2 = parser.parseFlex('border-t border-gray-200 hover:border-red-500');
+    final styler2 = parser.parseFlex(
+      'border-t border-gray-200 hover:border-red-500',
+    );
     expect(styler2, isNotNull);
   });
 
@@ -1137,12 +1144,14 @@ void main() {
     expect(seen, isEmpty);
   });
 
-  test('leading-trim applies even distribution with trimmed ascent/descent',
-      () {
-    final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseText('leading-trim');
-    expect(seen, isEmpty);
-  });
+  test(
+    'leading-trim applies even distribution with trimmed ascent/descent',
+    () {
+      final seen = <String>[];
+      TwParser(onUnsupported: seen.add).parseText('leading-trim');
+      expect(seen, isEmpty);
+    },
+  );
 
   // ==========================================================================
   // Letter Spacing (tracking-*) Tests
@@ -1549,9 +1558,7 @@ void main() {
   // ==========================================================================
 
   test('later duration overrides earlier', () {
-    final config = _parseAnimation(
-      'transition duration-100 duration-300',
-    );
+    final config = _parseAnimation('transition duration-100 duration-300');
     expect(config, isNotNull);
     expect(config!.duration, const Duration(milliseconds: 300));
   });
@@ -1689,9 +1696,7 @@ void main() {
   // ==========================================================================
 
   test('transition with all modifiers parses correctly', () {
-    final config = _parseAnimation(
-      'transition duration-300 ease-in delay-100',
-    );
+    final config = _parseAnimation('transition duration-300 ease-in delay-100');
     expect(config, isNotNull);
     expect(config!.duration, const Duration(milliseconds: 300));
     expect(config.curve, Curves.easeIn);
@@ -2015,7 +2020,10 @@ void main() {
     expect(container.transform, isNotNull);
     expect(container.transform![0], closeTo(1.05, 0.0001));
     expect(
-      find.descendant(of: find.byType(Container), matching: find.byType(Transform)),
+      find.descendant(
+        of: find.byType(Container),
+        matching: find.byType(Transform),
+      ),
       findsOneWidget,
     );
   });
@@ -2026,7 +2034,10 @@ void main() {
     expect(container.transform, isNotNull);
     expect(container.transform![0], closeTo(0.7071, 0.001));
     expect(
-      find.descendant(of: find.byType(Container), matching: find.byType(Transform)),
+      find.descendant(
+        of: find.byType(Container),
+        matching: find.byType(Transform),
+      ),
       findsOneWidget,
     );
   });
@@ -2039,7 +2050,10 @@ void main() {
     expect(container.transform, isNotNull);
     expect(container.transform![12], closeTo(16, 0.0001));
     expect(
-      find.descendant(of: find.byType(Container), matching: find.byType(Transform)),
+      find.descendant(
+        of: find.byType(Container),
+        matching: find.byType(Transform),
+      ),
       findsOneWidget,
     );
   });
@@ -2051,7 +2065,10 @@ void main() {
 
     expect(container.transform, isNull);
     expect(
-      find.descendant(of: find.byType(Container), matching: find.byType(Transform)),
+      find.descendant(
+        of: find.byType(Container),
+        matching: find.byType(Transform),
+      ),
       findsNothing,
     );
   });
@@ -2078,7 +2095,10 @@ void main() {
     expect(matrix[12], closeTo(8, 0.0001)); // x translation
 
     expect(
-      find.descendant(of: find.byType(Container), matching: find.byType(Transform)),
+      find.descendant(
+        of: find.byType(Container),
+        matching: find.byType(Transform),
+      ),
       findsOneWidget,
     );
   });
@@ -2105,7 +2125,10 @@ void main() {
     expect(containerFinder, findsOneWidget);
     expect(tester.widget<Container>(containerFinder).transform, isNotNull);
     expect(
-      find.descendant(of: find.byType(Container), matching: find.byType(Transform)),
+      find.descendant(
+        of: find.byType(Container),
+        matching: find.byType(Transform),
+      ),
       findsOneWidget,
     );
   });
@@ -2272,7 +2295,10 @@ void main() {
     // Before hover, identity transform (needed for animation interpolation when variants have transforms)
     final baseMatrix = tester.widget<Container>(containerFinder).transform;
     expect(baseMatrix, isNotNull);
-    expect(baseMatrix![0], closeTo(1.0, 0.01)); // identity matrix has 1.0 at [0][0]
+    expect(
+      baseMatrix![0],
+      closeTo(1.0, 0.01),
+    ); // identity matrix has 1.0 at [0][0]
 
     await gesture.moveTo(tester.getCenter(containerFinder));
     await tester.pump(); // start animation
@@ -2534,8 +2560,7 @@ void main() {
       expect(find.byType(ImageFiltered), findsNothing);
 
       // Hover
-      final gesture =
-          await tester.createGesture(kind: PointerDeviceKind.mouse);
+      final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
       await gesture.addPointer(location: Offset.zero);
       await tester.pump();
 
@@ -2604,32 +2629,35 @@ void main() {
       expect(seen, contains('text-shadow-999'));
     });
 
-    testWidgets('Div with text-shadow-md applies shadows via DefaultTextStyle',
-        (tester) async {
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: Div(
-            classNames: 'text-shadow-md',
-            children: [const Text('Hello')],
+    testWidgets(
+      'Div with text-shadow-md applies shadows via DefaultTextStyle',
+      (tester) async {
+        await tester.pumpWidget(
+          Directionality(
+            textDirection: TextDirection.ltr,
+            child: Div(
+              classNames: 'text-shadow-md',
+              children: [const Text('Hello')],
+            ),
           ),
-        ),
-      );
+        );
 
-      // Div wraps children with DefaultTextStyle for text shadows
-      final defaultTextStyles = find.byType(DefaultTextStyle);
-      expect(defaultTextStyles, findsWidgets);
+        // Div wraps children with DefaultTextStyle for text shadows
+        final defaultTextStyles = find.byType(DefaultTextStyle);
+        expect(defaultTextStyles, findsWidgets);
 
-      // Find the one with shadows
-      bool foundShadows = false;
-      for (final element in defaultTextStyles.evaluate()) {
-        final widget = element.widget as DefaultTextStyle;
-        if (widget.style.shadows != null && widget.style.shadows!.isNotEmpty) {
-          foundShadows = true;
-          break;
+        // Find the one with shadows
+        bool foundShadows = false;
+        for (final element in defaultTextStyles.evaluate()) {
+          final widget = element.widget as DefaultTextStyle;
+          if (widget.style.shadows != null &&
+              widget.style.shadows!.isNotEmpty) {
+            foundShadows = true;
+            break;
+          }
         }
-      }
-      expect(foundShadows, isTrue);
-    });
+        expect(foundShadows, isTrue);
+      },
+    );
   });
 }
