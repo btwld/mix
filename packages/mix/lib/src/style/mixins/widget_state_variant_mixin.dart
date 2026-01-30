@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 import '../../core/spec.dart';
 import '../../core/style.dart';
 import '../../variants/variant.dart';
