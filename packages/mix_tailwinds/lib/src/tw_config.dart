@@ -49,7 +49,10 @@ class TwConfig {
       final opacityStr = key.substring(slashIndex + 1);
       final opacity = int.tryParse(opacityStr);
       final baseColor = colors[colorKey];
-      if (baseColor != null && opacity != null && opacity >= 0 && opacity <= 100) {
+      if (baseColor != null &&
+          opacity != null &&
+          opacity >= 0 &&
+          opacity <= 100) {
         // Convert percentage (0-100) to alpha (0-255)
         final alpha = (opacity * 255 / 100).round();
         return baseColor.withAlpha(alpha);

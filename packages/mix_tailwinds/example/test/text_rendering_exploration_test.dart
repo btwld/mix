@@ -27,10 +27,7 @@ void main() {
           data: const MediaQueryData(size: Size(testWidth, testHeight)),
           child: ColoredBox(
             color: const Color(0xFFF3F4F6),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: child,
-            ),
+            child: Padding(padding: const EdgeInsets.all(16), child: child),
           ),
         ),
       ),
@@ -46,7 +43,8 @@ void main() {
     bool? applyHeightToFirstAscent,
     bool? applyHeightToLastDescent,
   }) {
-    final textHeightBehavior = (leadingDistribution != null ||
+    final textHeightBehavior =
+        (leadingDistribution != null ||
             applyHeightToFirstAscent != null ||
             applyHeightToLastDescent != null)
         ? TextHeightBehavior(
@@ -131,10 +129,7 @@ void main() {
   group('Text Rendering Exploration', () {
     // Experiment A: Flutter default (no height specified)
     testWidgets('A: Flutter default (no height)', (tester) async {
-      await pumpWidget(
-        tester,
-        createTextSample(label: 'A: Flutter default'),
-      );
+      await pumpWidget(tester, createTextSample(label: 'A: Flutter default'));
       await expectLater(
         find.byType(ColoredBox),
         matchesGoldenFile('goldens/exploration/exp-a-flutter-default.png'),

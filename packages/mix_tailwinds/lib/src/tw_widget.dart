@@ -44,10 +44,7 @@ StyleSpec<BoxSpec> _styleSpecWithoutMargin(StyleSpec<BoxSpec> styleSpec) {
 /// Preserves flex spec and other box properties.
 FlexBoxSpec _flexBoxSpecWithoutMargin(FlexBoxSpec spec) {
   if (spec.box == null) return spec;
-  return FlexBoxSpec(
-    box: _styleSpecWithoutMargin(spec.box!),
-    flex: spec.flex,
-  );
+  return FlexBoxSpec(box: _styleSpecWithoutMargin(spec.box!), flex: spec.flex);
 }
 
 // =============================================================================
@@ -603,8 +600,18 @@ Widget _applyMinSizingResponsive(
   BuildContext context,
   double width,
 ) {
-  final minWidthScreen = _resolveMinScreenIntent(tokens, cfg, width, isWidth: true);
-  final minHeightScreen = _resolveMinScreenIntent(tokens, cfg, width, isWidth: false);
+  final minWidthScreen = _resolveMinScreenIntent(
+    tokens,
+    cfg,
+    width,
+    isWidth: true,
+  );
+  final minHeightScreen = _resolveMinScreenIntent(
+    tokens,
+    cfg,
+    width,
+    isWidth: false,
+  );
 
   if (!minWidthScreen && !minHeightScreen) {
     return child;

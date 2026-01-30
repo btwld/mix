@@ -29,7 +29,6 @@ class ScreenshotConfig {
     final params = Uri.base.queryParameters;
     return params['example'] ?? 'dashboard';
   }
-
 }
 
 class TailwindParityApp extends StatelessWidget {

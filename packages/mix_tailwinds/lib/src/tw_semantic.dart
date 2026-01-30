@@ -156,7 +156,8 @@ final class TwGradientValue extends TwValue {
   int get hashCode => Object.hash(begin, end, Object.hashAll(colors));
 
   @override
-  String toString() => 'TwGradientValue(begin: $begin, end: $end, colors: $colors)';
+  String toString() =>
+      'TwGradientValue(begin: $begin, end: $end, colors: $colors)';
 }
 
 /// A duration value in milliseconds.
@@ -205,13 +206,7 @@ final class TwCurveValue extends TwValue {
 // Text Shadow Presets
 // =============================================================================
 
-enum TextShadowPreset {
-  twoXs,
-  xs,
-  sm,
-  md,
-  lg,
-}
+enum TextShadowPreset { twoXs, xs, sm, md, lg }
 
 const Map<TextShadowPreset, List<Shadow>> kTextShadowPresets = {
   TextShadowPreset.twoXs: [
@@ -439,10 +434,10 @@ final class TwParsedClass {
       variants.isEmpty ? '' : variants.map(_variantToKey).join(':');
 
   static String _variantToKey(TwVariantType v) => switch (v) {
-        TwInteractionVariant(:final state) => state,
-        TwBreakpointVariant(:final name) => name,
-        TwThemeVariant(:final mode) => mode,
-      };
+    TwInteractionVariant(:final state) => state,
+    TwBreakpointVariant(:final name) => name,
+    TwThemeVariant(:final mode) => mode,
+  };
 
   @override
   bool operator ==(Object other) =>
@@ -458,13 +453,13 @@ final class TwParsedClass {
 
   @override
   int get hashCode => Object.hash(
-        property,
-        value,
-        Object.hashAll(variants),
-        important,
-        negative,
-        arbitrary,
-      );
+    property,
+    value,
+    Object.hashAll(variants),
+    important,
+    negative,
+    arbitrary,
+  );
 
   @override
   String toString() =>
@@ -511,10 +506,7 @@ final class TwFunctionalPlugin {
 
 /// A named plugin that produces a fixed value (e.g., flex-row, items-center).
 final class TwNamedPlugin {
-  const TwNamedPlugin({
-    required this.property,
-    required this.value,
-  });
+  const TwNamedPlugin({required this.property, required this.value});
 
   final TwProperty property;
   final TwValue value;
@@ -1261,10 +1253,7 @@ const Map<String, String> interactionVariants = {
 };
 
 /// Theme variant names.
-const Map<String, String> themeVariants = {
-  'dark': 'dark',
-  'light': 'light',
-};
+const Map<String, String> themeVariants = {'dark': 'dark', 'light': 'light'};
 
 // =============================================================================
 // findRoot Algorithm
