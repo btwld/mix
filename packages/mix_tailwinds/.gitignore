@@ -1,2 +1,4 @@
-visual-comparison/
+# Visual comparison output (screenshots and diffs)
+/visual-comparison/
+# Node modules for comparison tool
 tool/visual-comparison/node_modules/
