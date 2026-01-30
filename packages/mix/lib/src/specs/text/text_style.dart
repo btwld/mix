@@ -143,7 +143,7 @@ class TextStyler extends Style<TextSpec>
          variants: variants,
        );
 
-  static TextMutableStyler get chain => TextMutableStyler(TextStyler());
+  static TextMutableStyler get chain => .new(TextStyler());
 
   StyledText call(String text) {
     return StyledText(text, style: this);

@@ -15,7 +15,7 @@ sealed class BoxBorderMix<T extends BoxBorder> extends Mix<T> {
   final Prop<BorderSide>? $top;
   final Prop<BorderSide>? $bottom;
 
-  static BorderMix none = BorderMix.all(BorderSideMix.none);
+  static BorderMix none = BorderMix.all(.none);
 
   const BoxBorderMix.create({Prop<BorderSide>? top, Prop<BorderSide>? bottom})
     : $top = top,
@@ -275,7 +275,7 @@ final class BorderMix extends BoxBorderMix<Border>
   }
 
   @override
-  Border get defaultValue => const Border();
+  Border get defaultValue => const .new();
 }
 
 /// Mix-compatible representation of Flutter's [BorderDirectional] with RTL support.
@@ -292,9 +292,7 @@ final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
   final Prop<BorderSide>? $start;
   @override
   final Prop<BorderSide>? $end;
-  static final BorderDirectionalMix none = BorderDirectionalMix.all(
-    BorderSideMix.none,
-  );
+  static final BorderDirectionalMix none = BorderDirectionalMix.all(.none);
 
   BorderDirectionalMix({
     BorderSideMix? top,
@@ -408,7 +406,7 @@ final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
   }
 
   @override
-  BorderDirectional get defaultValue => const BorderDirectional();
+  BorderDirectional get defaultValue => const .new();
 }
 
 /// Mix-compatible representation of Flutter's [BorderSide] for individual border styling.
@@ -427,7 +425,7 @@ final class BorderSideMix extends Mix<BorderSide>
   @override
   final Prop<double>? $strokeAlign;
 
-  static final BorderSideMix none = BorderSideMix.value(BorderSide.none);
+  static final BorderSideMix none = BorderSideMix.value(.none);
 
   BorderSideMix({
     Color? color,
@@ -490,7 +488,7 @@ final class BorderSideMix extends Mix<BorderSide>
   /// final dto = BorderSideMix.maybeValue(borderSide); // Returns BorderSideMix or null
   /// ```
   static BorderSideMix? maybeValue(BorderSide? borderSide) {
-    return borderSide != null && borderSide != BorderSide.none
+    return borderSide != null && borderSide != .none
         ? BorderSideMix.value(borderSide)
         : null;
   }
@@ -516,5 +514,5 @@ final class BorderSideMix extends Mix<BorderSide>
   }
 
   @override
-  BorderSide get defaultValue => const BorderSide();
+  BorderSide get defaultValue => const .new();
 }

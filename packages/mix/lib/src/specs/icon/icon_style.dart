@@ -128,7 +128,7 @@ class IconStyler extends Style<IconSpec>
          variants: variants,
        );
 
-  static IconMutableStyler get chain => IconMutableStyler(IconStyler());
+  static IconMutableStyler get chain => .new(IconStyler());
 
   /// Sets single icon shadow
   IconStyler shadow(ShadowMix value) {

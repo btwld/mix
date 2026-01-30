@@ -42,9 +42,9 @@ class _ExampleState extends State<Example> {
         .onDark(IconStyler().icon(Icons.light_mode).color(Colors.yellow));
 
     return MediaQuery(
-      data: MediaQuery.of(context).copyWith(
-        platformBrightness: isDark ? .dark : .light,
-      ),
+      data: MediaQuery.of(
+        context,
+      ).copyWith(platformBrightness: isDark ? .dark : .light),
       child: PressableBox(
         style: buttonStyle,
         onPress: () => setState(() => isDark = !isDark),

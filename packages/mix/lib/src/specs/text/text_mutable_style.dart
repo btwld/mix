@@ -38,12 +38,12 @@ class TextMutableStyler extends StyleMutableBuilder<TextSpec>
     (prop) => mutable.merge(TextStyler.create(style: prop)),
   );
   late final textWidthBasis = MixUtility(mutable.textWidthBasis);
-  late final textHeightBehavior = TextHeightBehaviorUtility<TextStyler>(
+  late final textHeightBehavior = TextHeightBehaviorUtility(
     mutable.textHeightBehavior,
   );
   late final textDirection = MixUtility(mutable.textDirection);
   late final directives = MixUtility(mutable.textDirective);
-  late final selectionColor = ColorUtility<TextStyler>(
+  late final selectionColor = ColorUtility(
     (prop) => mutable.merge(TextStyler.create(selectionColor: prop)),
   );
   late final locale = MixUtility(mutable.locale);

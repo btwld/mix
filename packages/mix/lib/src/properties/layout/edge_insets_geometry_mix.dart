@@ -290,7 +290,7 @@ final class EdgeInsetsMix extends EdgeInsetsGeometryMix<EdgeInsets>
   }
 
   @override
-  EdgeInsets get defaultValue => .zero;
+  EdgeInsets get defaultValue => EdgeInsets.zero;
 }
 
 /// Mix representation of [EdgeInsetsDirectional].

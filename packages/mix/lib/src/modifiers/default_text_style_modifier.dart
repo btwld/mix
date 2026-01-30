@@ -33,8 +33,8 @@ final class DefaultTextStyleModifier
     this.textHeightBehavior,
   }) : style = style ?? const TextStyle(),
        softWrap = softWrap ?? true,
-       overflow = overflow ?? TextOverflow.clip,
-       textWidthBasis = textWidthBasis ?? TextWidthBasis.parent;
+       overflow = overflow ?? .clip,
+       textWidthBasis = textWidthBasis ?? .parent;
 
   @override
   DefaultTextStyleModifier copyWith({

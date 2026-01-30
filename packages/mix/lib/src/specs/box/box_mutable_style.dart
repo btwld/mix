@@ -26,19 +26,19 @@ class BoxMutableStyler extends StyleMutableBuilder<BoxSpec>
     with
         UtilityVariantMixin<BoxStyler, BoxSpec>,
         UtilityWidgetStateVariantMixin<BoxStyler, BoxSpec> {
-  late final padding = EdgeInsetsGeometryUtility<BoxStyler>(
+  late final padding = EdgeInsetsGeometryUtility(
     (prop) => mutable.merge(BoxStyler.create(padding: Prop.mix(prop))),
   );
 
-  late final margin = EdgeInsetsGeometryUtility<BoxStyler>(
+  late final margin = EdgeInsetsGeometryUtility(
     (prop) => mutable.merge(BoxStyler.create(margin: Prop.mix(prop))),
   );
 
-  late final constraints = BoxConstraintsUtility<BoxStyler>(
+  late final constraints = BoxConstraintsUtility(
     (prop) => mutable.merge(BoxStyler.create(constraints: Prop.mix(prop))),
   );
 
-  late final decoration = DecorationUtility<BoxStyler>(
+  late final decoration = DecorationUtility(
     (prop) => mutable.merge(BoxStyler.create(decoration: Prop.mix(prop))),
   );
 
