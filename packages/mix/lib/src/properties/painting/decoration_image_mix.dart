@@ -191,9 +191,8 @@ final class DecorationImageMix extends Mix<DecorationImage>
       fit: MixOps.resolve(context, $fit),
       alignment: MixOps.resolve(context, $alignment) ?? Alignment.center,
       centerSlice: MixOps.resolve(context, $centerSlice),
-      repeat: MixOps.resolve(context, $repeat) ?? ImageRepeat.noRepeat,
-      filterQuality:
-          MixOps.resolve(context, $filterQuality) ?? FilterQuality.medium,
+      repeat: MixOps.resolve(context, $repeat) ?? .noRepeat,
+      filterQuality: MixOps.resolve(context, $filterQuality) ?? .medium,
       invertColors: MixOps.resolve(context, $invertColors) ?? false,
       isAntiAlias: MixOps.resolve(context, $isAntiAlias) ?? false,
     );

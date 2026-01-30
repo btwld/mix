@@ -103,11 +103,11 @@ class DecorationMerger {
     // Handle shape conversion with resolved values
     if (resolvedShape != null) {
       switch (resolvedShape) {
-        case BoxShape.circle:
+        case .circle:
           return side != null
               ? Prop.mix(CircleBorderMix.create(side: side))
               : null;
-        case BoxShape.rectangle:
+        case .rectangle:
           if (side != null || borderRadius != null) {
             return Prop.mix(
               RoundedRectangleBorderMix.create(

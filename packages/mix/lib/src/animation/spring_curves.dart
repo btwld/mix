@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 
 /// A curve that uses a spring simulation to animate.
 class SpringCurve extends Curve {
-  final Tolerance tolerance = Tolerance.defaultTolerance;
+  final Tolerance tolerance = .defaultTolerance;
   final SpringSimulation _sim;
 
   /// Creates a spring curve with the given [mass], [stiffness], and [damping].

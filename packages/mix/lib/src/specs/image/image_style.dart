@@ -136,7 +136,7 @@ class ImageStyler extends Style<ImageSpec>
          variants: variants,
        );
 
-  static ImageMutableStyler get chain => ImageMutableStyler(ImageStyler());
+  static ImageMutableStyler get chain => .new(ImageStyler());
 
   StyledImage call({
     ImageProvider? image,

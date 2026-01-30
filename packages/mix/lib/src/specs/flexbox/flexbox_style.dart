@@ -135,8 +135,7 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
   }) : $box = box,
        $flex = flex;
 
-  static FlexBoxMutableStyler get chain =>
-      FlexBoxMutableStyler(FlexBoxStyler());
+  static FlexBoxMutableStyler get chain => .new(FlexBoxStyler());
 
   // BoxMix instance methods
 

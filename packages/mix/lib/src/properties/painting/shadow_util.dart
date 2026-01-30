@@ -13,7 +13,7 @@ import 'shadow_mix.dart';
 final class ShadowUtility<T extends Style<Object?>>
     extends MixUtility<T, ShadowMix> {
   /// Utility for defining [ShadowMix.color].
-  late final color = ColorUtility<T>(
+  late final color = ColorUtility(
     (prop) => utilityBuilder(ShadowMix.create(color: prop)),
   );
 
@@ -43,7 +43,7 @@ final class ShadowUtility<T extends Style<Object?>>
 final class BoxShadowUtility<T extends Style<Object?>>
     extends MixUtility<T, BoxShadowMix> {
   /// Utility for defining [BoxShadowMix.color].
-  late final color = ColorUtility<T>(
+  late final color = ColorUtility(
     (prop) => utilityBuilder(BoxShadowMix.create(color: prop)),
   );
 

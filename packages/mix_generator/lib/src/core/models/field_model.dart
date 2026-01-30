@@ -4,7 +4,6 @@
 library;
 
 import 'package:analyzer/dart/element/element.dart';
-import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
 
 import '../curated/flag_descriptions.dart';
@@ -96,7 +95,7 @@ class FieldModel {
     final type = element.type;
     // FieldElement.name is String? in analyzer 10.x, but fields always have names
     final name = element.name!;
-    final isNullable = type.nullabilitySuffix == NullabilitySuffix.question;
+    final isNullable = type.nullabilitySuffix == .question;
 
     // Get base type name
     final typeName = _getBaseTypeName(type);
@@ -127,7 +126,7 @@ class FieldModel {
       fieldName: name,
     );
 
-    final isWrappedInProp = propWrapperKind != PropWrapperKind.none;
+    final isWrappedInProp = propWrapperKind != .none;
 
     // Determine diagnostic kind
     final diagnosticKind = _getDiagnosticKind(typeName, isList);
@@ -142,8 +141,9 @@ class FieldModel {
         : null;
 
     // Get flag description for bool fields
-    final flagDescription =
-        typeName == 'bool' ? getFlagDescription(name) : null;
+    final flagDescription = typeName == 'bool'
+        ? getFlagDescription(name)
+        : null;
 
     return FieldModel(
       name: name,
@@ -323,16 +323,16 @@ bool _isLerpable(String typeName, bool isList, String? listElementType) {
 
 DiagnosticKind _getDiagnosticKind(String typeName, bool isList) {
   if (isList) {
-    return DiagnosticKind.iterableProperty;
+    return .iterableProperty;
   }
 
   return switch (typeName) {
-    'Color' => DiagnosticKind.color,
-    'double' => DiagnosticKind.doubleProperty,
-    'int' => DiagnosticKind.intProperty,
-    'String' => DiagnosticKind.stringProperty,
-    'bool' => DiagnosticKind.flagProperty,
-    _ when enumTypes.contains(typeName) => DiagnosticKind.enumProperty,
-    _ => DiagnosticKind.diagnostics,
+    'Color' => .color,
+    'double' => .doubleProperty,
+    'int' => .intProperty,
+    'String' => .stringProperty,
+    'bool' => .flagProperty,
+    _ when enumTypes.contains(typeName) => .enumProperty,
+    _ => .diagnostics,
   };
 }

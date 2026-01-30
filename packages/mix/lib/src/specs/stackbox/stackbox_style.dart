@@ -123,8 +123,7 @@ class StackBoxStyler extends Style<StackBoxSpec>
   }) : $box = box,
        $stack = stack;
 
-  static StackBoxMutableStyler get chain =>
-      StackBoxMutableStyler(StackBoxStyler());
+  static StackBoxMutableStyler get chain => .new(StackBoxStyler());
 
   // BoxMix instance methods
 

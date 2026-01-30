@@ -4,11 +4,7 @@ import 'package:mix/mix.dart';
 
 final chipButtonLabel = TextStyler(
   textAlign: .center,
-  style: TextStyleMix(
-    color: Colors.white,
-    fontSize: 12,
-    fontWeight: .w500,
-  ),
+  style: TextStyleMix(color: Colors.white, fontSize: 12, fontWeight: .w500),
 );
 
 final chipButtonContainer = BoxStyler()

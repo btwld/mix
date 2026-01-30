@@ -14,7 +14,7 @@ sealed class AnimationConfig {
   factory AnimationConfig.curve({
     required Duration duration,
     required Curve curve,
-    Duration delay = Duration.zero,
+    Duration delay = .zero,
     VoidCallback? onEnd,
   }) => CurveAnimationConfig(
     duration: duration,
@@ -25,13 +25,13 @@ sealed class AnimationConfig {
 
   factory AnimationConfig.decelerate(
     Duration duration, {
-    Duration delay = Duration.zero,
+    Duration delay = .zero,
     VoidCallback? onEnd,
   }) => CurveAnimationConfig.decelerate(duration, onEnd: onEnd, delay: delay);
 
   factory AnimationConfig.fastLinearToSlowEaseIn(
     Duration duration, {
-    Duration delay = Duration.zero,
+    Duration delay = .zero,
     VoidCallback? onEnd,
   }) => CurveAnimationConfig.fastLinearToSlowEaseIn(
     duration,
@@ -41,7 +41,7 @@ sealed class AnimationConfig {
 
   factory AnimationConfig.fastEaseInToSlowEaseOut(
     Duration duration, {
-    Duration delay = Duration.zero,
+    Duration delay = .zero,
     VoidCallback? onEnd,
   }) => CurveAnimationConfig.fastEaseInToSlowEaseOut(
     duration,
@@ -51,80 +51,80 @@ sealed class AnimationConfig {
 
   factory AnimationConfig.ease(
     Duration duration, {
-    Duration delay = Duration.zero,
+    Duration delay = .zero,
     VoidCallback? onEnd,
   }) => CurveAnimationConfig.ease(duration, onEnd: onEnd, delay: delay);
 
   factory AnimationConfig.easeIn(
     Duration duration, {
-    Duration delay = Duration.zero,
+    Duration delay = .zero,
     VoidCallback? onEnd,
   }) => CurveAnimationConfig.easeIn(duration, onEnd: onEnd, delay: delay);
 
   factory AnimationConfig.easeInToLinear(
     Duration duration, {
-    Duration delay = Duration.zero,
+    Duration delay = .zero,
     VoidCallback? onEnd,
   }) =>
       CurveAnimationConfig.easeInToLinear(duration, onEnd: onEnd, delay: delay);
 
   factory AnimationConfig.easeInSine(
     Duration duration, {
-    Duration delay = Duration.zero,
+    Duration delay = .zero,
     VoidCallback? onEnd,
   }) => CurveAnimationConfig.easeInSine(duration, onEnd: onEnd, delay: delay);
 
   factory AnimationConfig.easeInQuad(
     Duration duration, {
-    Duration delay = Duration.zero,
+    Duration delay = .zero,
     VoidCallback? onEnd,
   }) => CurveAnimationConfig.easeInQuad(duration, onEnd: onEnd, delay: delay);
 
   factory AnimationConfig.easeInCubic(
     Duration duration, {
-    Duration delay = Duration.zero,
+    Duration delay = .zero,
     VoidCallback? onEnd,
   }) => CurveAnimationConfig.easeInCubic(duration, onEnd: onEnd, delay: delay);
 
   factory AnimationConfig.easeInQuart(
     Duration duration, {
-    Duration delay = Duration.zero,
+    Duration delay = .zero,
     VoidCallback? onEnd,
   }) => CurveAnimationConfig.easeInQuart(duration, onEnd: onEnd, delay: delay);
 
   factory AnimationConfig.easeInQuint(
     Duration duration, {
-    Duration delay = Duration.zero,
+    Duration delay = .zero,
     VoidCallback? onEnd,
   }) => CurveAnimationConfig.easeInQuint(duration, onEnd: onEnd, delay: delay);
 
   factory AnimationConfig.easeInExpo(
     Duration duration, {
-    Duration delay = Duration.zero,
+    Duration delay = .zero,
     VoidCallback? onEnd,
   }) => CurveAnimationConfig.easeInExpo(duration, onEnd: onEnd, delay: delay);
 
   factory AnimationConfig.easeInCirc(
     Duration duration, {
-    Duration delay = Duration.zero,
+    Duration delay = .zero,
     VoidCallback? onEnd,
   }) => CurveAnimationConfig.easeInCirc(duration, onEnd: onEnd, delay: delay);
 
   factory AnimationConfig.easeInBack(
     Duration duration, {
-    Duration delay = Duration.zero,
+    Duration delay = .zero,
     VoidCallback? onEnd,
   }) => CurveAnimationConfig.easeInBack(duration, onEnd: onEnd, delay: delay);
 
   factory AnimationConfig.easeOut(
     Duration duration, {
-    Duration delay = Duration.zero,
+    Duration delay = .zero,
     VoidCallback? onEnd,
   }) => CurveAnimationConfig.easeOut(duration, onEnd: onEnd, delay: delay);
 
   factory AnimationConfig.linearToEaseOut(
     Duration duration, {
-    Duration delay = Duration.zero,
+    Duration delay = .zero,
     VoidCallback? onEnd,
   }) => CurveAnimationConfig.linearToEaseOut(
     duration,
@@ -134,82 +134,82 @@ sealed class AnimationConfig {
 
   factory AnimationConfig.easeOutSine(
     Duration duration, {
-    Duration delay = Duration.zero,
+    Duration delay = .zero,
     VoidCallback? onEnd,
   }) => CurveAnimationConfig.easeOutSine(duration, onEnd: onEnd, delay: delay);
 
   factory AnimationConfig.easeOutQuad(
     Duration duration, {
-    Duration delay = Duration.zero,
+    Duration delay = .zero,
     VoidCallback? onEnd,
   }) => CurveAnimationConfig.easeOutQuad(duration, onEnd: onEnd, delay: delay);
 
   factory AnimationConfig.easeOutCubic(
     Duration duration, {
-    Duration delay = Duration.zero,
+    Duration delay = .zero,
     VoidCallback? onEnd,
   }) => CurveAnimationConfig.easeOutCubic(duration, onEnd: onEnd, delay: delay);
 
   factory AnimationConfig.easeOutQuart(
     Duration duration, {
-    Duration delay = Duration.zero,
+    Duration delay = .zero,
     VoidCallback? onEnd,
   }) => CurveAnimationConfig.easeOutQuart(duration, onEnd: onEnd, delay: delay);
 
   factory AnimationConfig.easeOutQuint(
     Duration duration, {
-    Duration delay = Duration.zero,
+    Duration delay = .zero,
     VoidCallback? onEnd,
   }) => CurveAnimationConfig.easeOutQuint(duration, onEnd: onEnd, delay: delay);
 
   factory AnimationConfig.easeOutExpo(
     Duration duration, {
-    Duration delay = Duration.zero,
+    Duration delay = .zero,
     VoidCallback? onEnd,
   }) => CurveAnimationConfig.easeOutExpo(duration, onEnd: onEnd, delay: delay);
 
   factory AnimationConfig.easeOutCirc(
     Duration duration, {
-    Duration delay = Duration.zero,
+    Duration delay = .zero,
     VoidCallback? onEnd,
   }) => CurveAnimationConfig.easeOutCirc(duration, onEnd: onEnd, delay: delay);
 
   factory AnimationConfig.easeOutBack(
     Duration duration, {
-    Duration delay = Duration.zero,
+    Duration delay = .zero,
     VoidCallback? onEnd,
   }) => CurveAnimationConfig.easeOutBack(duration, onEnd: onEnd, delay: delay);
 
   factory AnimationConfig.easeInOut(
     Duration duration, {
-    Duration delay = Duration.zero,
+    Duration delay = .zero,
     VoidCallback? onEnd,
   }) => CurveAnimationConfig.easeInOut(duration, onEnd: onEnd, delay: delay);
 
   factory AnimationConfig.easeInOutSine(
     Duration duration, {
-    Duration delay = Duration.zero,
+    Duration delay = .zero,
     VoidCallback? onEnd,
   }) =>
       CurveAnimationConfig.easeInOutSine(duration, onEnd: onEnd, delay: delay);
 
   factory AnimationConfig.easeInOutQuad(
     Duration duration, {
-    Duration delay = Duration.zero,
+    Duration delay = .zero,
     VoidCallback? onEnd,
   }) =>
       CurveAnimationConfig.easeInOutQuad(duration, onEnd: onEnd, delay: delay);
 
   factory AnimationConfig.easeInOutCubic(
     Duration duration, {
-    Duration delay = Duration.zero,
+    Duration delay = .zero,
     VoidCallback? onEnd,
   }) =>
       CurveAnimationConfig.easeInOutCubic(duration, onEnd: onEnd, delay: delay);
 
   factory AnimationConfig.easeInOutCubicEmphasized(
     Duration duration, {
-    Duration delay = Duration.zero,
+    Duration delay = .zero,
     VoidCallback? onEnd,
   }) => CurveAnimationConfig.easeInOutCubicEmphasized(
     duration,
@@ -219,91 +219,91 @@ sealed class AnimationConfig {
 
   factory AnimationConfig.easeInOutQuart(
     Duration duration, {
-    Duration delay = Duration.zero,
+    Duration delay = .zero,
     VoidCallback? onEnd,
   }) =>
       CurveAnimationConfig.easeInOutQuart(duration, onEnd: onEnd, delay: delay);
 
   factory AnimationConfig.easeInOutQuint(
     Duration duration, {
-    Duration delay = Duration.zero,
+    Duration delay = .zero,
     VoidCallback? onEnd,
   }) =>
       CurveAnimationConfig.easeInOutQuint(duration, onEnd: onEnd, delay: delay);
 
   factory AnimationConfig.easeInOutExpo(
     Duration duration, {
-    Duration delay = Duration.zero,
+    Duration delay = .zero,
     VoidCallback? onEnd,
   }) =>
       CurveAnimationConfig.easeInOutExpo(duration, onEnd: onEnd, delay: delay);
 
   factory AnimationConfig.easeInOutCirc(
     Duration duration, {
-    Duration delay = Duration.zero,
+    Duration delay = .zero,
     VoidCallback? onEnd,
   }) =>
       CurveAnimationConfig.easeInOutCirc(duration, onEnd: onEnd, delay: delay);
 
   factory AnimationConfig.easeInOutBack(
     Duration duration, {
-    Duration delay = Duration.zero,
+    Duration delay = .zero,
     VoidCallback? onEnd,
   }) =>
       CurveAnimationConfig.easeInOutBack(duration, onEnd: onEnd, delay: delay);
 
   factory AnimationConfig.fastOutSlowIn(
     Duration duration, {
-    Duration delay = Duration.zero,
+    Duration delay = .zero,
     VoidCallback? onEnd,
   }) =>
       CurveAnimationConfig.fastOutSlowIn(duration, onEnd: onEnd, delay: delay);
 
   factory AnimationConfig.slowMiddle(
     Duration duration, {
-    Duration delay = Duration.zero,
+    Duration delay = .zero,
     VoidCallback? onEnd,
   }) => CurveAnimationConfig.slowMiddle(duration, onEnd: onEnd, delay: delay);
 
   factory AnimationConfig.bounceIn(
     Duration duration, {
-    Duration delay = Duration.zero,
+    Duration delay = .zero,
     VoidCallback? onEnd,
   }) => CurveAnimationConfig.bounceIn(duration, onEnd: onEnd, delay: delay);
 
   factory AnimationConfig.bounceOut(
     Duration duration, {
-    Duration delay = Duration.zero,
+    Duration delay = .zero,
     VoidCallback? onEnd,
   }) => CurveAnimationConfig.bounceOut(duration, onEnd: onEnd, delay: delay);
 
   factory AnimationConfig.bounceInOut(
     Duration duration, {
-    Duration delay = Duration.zero,
+    Duration delay = .zero,
     VoidCallback? onEnd,
   }) => CurveAnimationConfig.bounceInOut(duration, onEnd: onEnd, delay: delay);
 
   factory AnimationConfig.elasticIn(
     Duration duration, {
-    Duration delay = Duration.zero,
+    Duration delay = .zero,
     VoidCallback? onEnd,
   }) => CurveAnimationConfig.elasticIn(duration, onEnd: onEnd, delay: delay);
 
   factory AnimationConfig.elasticOut(
     Duration duration, {
-    Duration delay = Duration.zero,
+    Duration delay = .zero,
     VoidCallback? onEnd,
   }) => CurveAnimationConfig.elasticOut(duration, onEnd: onEnd, delay: delay);
 
   factory AnimationConfig.elasticInOut(
     Duration duration, {
-    Duration delay = Duration.zero,
+    Duration delay = .zero,
     VoidCallback? onEnd,
   }) => CurveAnimationConfig.elasticInOut(duration, onEnd: onEnd, delay: delay);
 
   factory AnimationConfig.linear(
     Duration duration, {
-    Duration delay = Duration.zero,
+    Duration delay = .zero,
     VoidCallback? onEnd,
   }) => CurveAnimationConfig.linear(duration, onEnd: onEnd, delay: delay);
 
@@ -324,7 +324,7 @@ sealed class AnimationConfig {
     double damping = 12.0,
     // Duration delay = Duration.zero,
     VoidCallback? onEnd,
-  }) => SpringAnimationConfig(
+  }) => .new(
     spring: SpringDescription(
       mass: mass,
       stiffness: stiffness,
@@ -338,7 +338,7 @@ sealed class AnimationConfig {
     double bounce = 0,
     // Duration delay = Duration.zero,
     VoidCallback? onEnd,
-  }) => SpringAnimationConfig(
+  }) => .new(
     spring: SpringDescription.withDurationAndBounce(
       duration: duration,
       bounce: bounce,
@@ -352,7 +352,7 @@ sealed class AnimationConfig {
     double dampingRatio = 0.8,
     // Duration delay = Duration.zero,
     VoidCallback? onEnd,
-  }) => SpringAnimationConfig(
+  }) => .new(
     spring: SpringDescription.withDampingRatio(
       mass: mass,
       stiffness: stiffness,
@@ -641,7 +641,7 @@ class CurveAnimationConfig extends AnimationConfig with Equatable {
     double mass = 1.0,
     double stiffness = 180.0,
     double damping = 12.0,
-    Duration delay = Duration.zero,
+    Duration delay = .zero,
     VoidCallback? onEnd,
   }) {
     final curve = SpringCurve(
@@ -663,7 +663,7 @@ class CurveAnimationConfig extends AnimationConfig with Equatable {
     double mass = 1.0,
     double stiffness = 180.0,
     double ratio = 0.8,
-    Duration delay = Duration.zero,
+    Duration delay = .zero,
     VoidCallback? onEnd,
   }) {
     final curve = SpringCurve.withDampingRatio(
@@ -683,7 +683,7 @@ class CurveAnimationConfig extends AnimationConfig with Equatable {
   factory CurveAnimationConfig.springDurationBased(
     Duration duration, {
     double bounce = 0.0,
-    Duration delay = Duration.zero,
+    Duration delay = .zero,
     VoidCallback? onEnd,
   }) {
     return CurveAnimationConfig(
@@ -704,7 +704,7 @@ class CurveAnimationConfig extends AnimationConfig with Equatable {
     Curve? curve,
     Duration? delay,
     VoidCallback? onEnd,
-  }) => CurveAnimationConfig(
+  }) => .new(
     duration: duration ?? this.duration,
     curve: curve ?? this.curve,
     delay: delay ?? this.delay,

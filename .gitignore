@@ -114,3 +114,7 @@ CLAUDE.md
 api-compat-*.md
 website/.next/
 website/public/_pagefind/
+
+# Claude Code
+CLAUDE.md
+.claude/settings.local.json
