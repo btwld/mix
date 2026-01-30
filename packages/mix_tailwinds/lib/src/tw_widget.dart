@@ -190,8 +190,14 @@ class Div extends StatelessWidget {
       if (animationConfig != null) {
         boxStyle = boxStyle.animate(animationConfig);
       }
-      final resolvedChild =
-          child ?? (children.isNotEmpty ? Column(children: children) : null);
+      // CSS block elements stretch by default; mimic this with CrossAxisAlignment.stretch
+      final resolvedChild = child ??
+          (children.isNotEmpty
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: children,
+                )
+              : null);
 
       built = _buildResponsiveBox(
         tokens: tokens,

@@ -41,19 +41,31 @@ This script automatically:
 
 ### Output
 
-Screenshots and diffs are saved to `visual-comparison/` (gitignored):
+Screenshots and diffs are saved to `visual-comparison/<example>/` (gitignored):
 ```
 visual-comparison/
-├── flutter-480.png
-├── flutter-768.png
-├── flutter-1024.png
-├── tailwind-480.png
-├── tailwind-768.png
-├── tailwind-1024.png
-└── diff/
-    ├── diff-480.png
-    ├── diff-768.png
-    └── diff-1024.png
+├── dashboard/
+│   ├── flutter-480.png
+│   ├── flutter-768.png
+│   ├── flutter-1024.png
+│   ├── tailwind-480.png
+│   ├── tailwind-768.png
+│   ├── tailwind-1024.png
+│   └── diff/
+│       ├── diff-480.png
+│       ├── diff-768.png
+│       └── diff-1024.png
+└── card-alert/
+    ├── flutter-480.png
+    ├── ... (same structure)
+    └── diff/
+        └── ...
+```
+
+To run a specific example:
+```bash
+npm run compare -- --example=dashboard
+npm run compare -- --example=card-alert
 ```
 
 ### Interpreting Results
