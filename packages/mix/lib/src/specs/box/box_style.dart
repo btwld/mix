@@ -124,14 +124,14 @@ class BoxStyler extends Style<BoxSpec>
          animation: animation,
        );
 
-  static BoxMutableStyler get chain => BoxMutableStyler(BoxStyler());
+  static BoxMutableStyler get chain => .new(BoxStyler());
 
   Box call({Key? key, Widget? child}) {
     return Box(key: key, style: this, child: child);
   }
 
   @override
-  BoxStyler transform(Matrix4 value, {Alignment alignment = Alignment.center}) {
+  BoxStyler transform(Matrix4 value, {Alignment alignment = .center}) {
     return merge(BoxStyler(transform: value, transformAlignment: alignment));
   }
 }

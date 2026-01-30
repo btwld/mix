@@ -29,7 +29,7 @@ class LerpResolver {
   LerpStrategy resolveStrategy(FieldModel field) {
     // Check if it's a StyleSpec<T> field (composite specs)
     if (_isStyleSpecField(field.typeName)) {
-      return LerpStrategy.delegateToSpec;
+      return .delegateToSpec;
     }
 
     // Check annotation override (isLerpable: false)
@@ -38,10 +38,10 @@ class LerpResolver {
 
     // Use field's computed lerpable value
     if (field.isLerpable) {
-      return LerpStrategy.interpolate;
+      return .interpolate;
     }
 
-    return LerpStrategy.snap;
+    return .snap;
   }
 
   /// Generates the lerp code for a field.
@@ -50,9 +50,9 @@ class LerpResolver {
     final name = field.name;
 
     return switch (strategy) {
-      LerpStrategy.interpolate => 'MixOps.lerp($name, other?.$name, t)',
-      LerpStrategy.snap => 'MixOps.lerpSnap($name, other?.$name, t)',
-      LerpStrategy.delegateToSpec => '$name?.lerp(other?.$name, t)',
+      .interpolate => 'MixOps.lerp($name, other?.$name, t)',
+      .snap => 'MixOps.lerpSnap($name, other?.$name, t)',
+      .delegateToSpec => '$name?.lerp(other?.$name, t)',
     };
   }
 }

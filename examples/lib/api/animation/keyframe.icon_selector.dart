@@ -58,11 +58,7 @@ class EmojiSelector extends StatelessWidget {
 }
 
 class PopUpAnimation extends StatefulWidget {
-  const PopUpAnimation({
-    super.key,
-    required this.child,
-    this.delay = .zero,
-  });
+  const PopUpAnimation({super.key, required this.child, this.delay = .zero});
 
   final Widget child;
   final Duration delay;

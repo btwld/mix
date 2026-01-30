@@ -193,7 +193,8 @@ class PressableWidgetState extends State<Pressable> {
   @override
   Widget build(BuildContext context) {
     // Only track pressed state if there's a tap or long press handler
-    final hasGestureHandler = widget.onPress != null || widget.onLongPress != null;
+    final hasGestureHandler =
+        widget.onPress != null || widget.onLongPress != null;
 
     Widget current = GestureDetector(
       onTapDown: hasGestureHandler ? (_) => _onTapDown() : null,

@@ -4,7 +4,6 @@
 library;
 
 import 'package:analyzer/dart/element/element.dart';
-import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:source_gen/source_gen.dart';
 
@@ -89,7 +88,7 @@ class StylerFieldModel {
         ? declaredName.substring(1)
         : declaredName;
 
-    final isNullable = type.nullabilitySuffix == NullabilitySuffix.question;
+    final isNullable = type.nullabilitySuffix == .question;
 
     // Check if wrapped in Prop<>
     final isWrappedInProp = _isWrappedInProp(type);

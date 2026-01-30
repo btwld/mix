@@ -200,9 +200,7 @@ enum ButtonVariant {
         );
       case .link:
         return _outlinedStyle.container(
-          FlexBoxStyler()
-              .borderAll(style: .none)
-              .color(Colors.transparent),
+          FlexBoxStyler().borderAll(style: .none).color(Colors.transparent),
         );
     }
   }

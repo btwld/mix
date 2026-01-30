@@ -260,7 +260,7 @@ final class BoxDecorationMix extends DecorationMix<BoxDecoration>
   }
 
   @override
-  BoxDecoration get defaultValue => const BoxDecoration();
+  BoxDecoration get defaultValue => const .new();
 }
 
 /// Mix-compatible representation of Flutter's [ShapeDecoration] with custom shape support.
@@ -364,5 +364,5 @@ final class ShapeDecorationMix extends DecorationMix<ShapeDecoration>
 
   @override
   ShapeDecoration get defaultValue =>
-      const ShapeDecoration(shape: RoundedRectangleBorder());
+      const .new(shape: RoundedRectangleBorder());
 }
