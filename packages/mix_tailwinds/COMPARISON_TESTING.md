@@ -174,6 +174,82 @@ Some properties are handled in `lib/src/tw_widget.dart`:
 
 ---
 
+## Deep Analysis with Codex Agent
+
+After running the visual comparison, use the Codex MCP agent for automated deep analysis of parity issues.
+
+### Running Codex Visual Parity Analysis
+
+Invoke the Codex agent with this configuration:
+
+```
+Tool: mcp__plugin_codex_codex__codex
+Model: gpt-5.2-codex
+Config: { "reasoning_effort": "xhigh" }
+Sandbox: read-only
+CWD: packages/mix_tailwinds
+```
+
+### Image Paths for Analysis
+
+Reference these paths when prompting Codex:
+
+**Dashboard Example:**
+- `visual-comparison/dashboard/tailwind-480.png` - Tailwind CSS reference
+- `visual-comparison/dashboard/flutter-480.png` - Flutter mix_tailwinds output
+- `visual-comparison/dashboard/diff/diff-480.png` - Pixel diff highlighting
+
+**Card-Alert Example:**
+- `visual-comparison/card-alert/tailwind-480.png` - Tailwind CSS reference
+- `visual-comparison/card-alert/flutter-480.png` - Flutter mix_tailwinds output
+- `visual-comparison/card-alert/diff/diff-480.png` - Pixel diff highlighting
+
+Also available at 768px and 1024px widths.
+
+### Example Codex Prompt
+
+```
+Perform a DEEP visual parity analysis between Tailwind CSS examples and Flutter mix_tailwinds.
+
+Image paths:
+- visual-comparison/dashboard/tailwind-480.png
+- visual-comparison/dashboard/flutter-480.png
+- visual-comparison/dashboard/diff/diff-480.png
+- visual-comparison/card-alert/tailwind-480.png
+- visual-comparison/card-alert/flutter-480.png
+- visual-comparison/card-alert/diff/diff-480.png
+
+Tasks:
+1. Read Flutter examples in example/lib/
+2. Read Tailwind HTML in example/real_tailwind/
+3. Analyze parser in lib/src/tw_parser.dart
+4. Analyze widget in lib/src/tw_widget.dart
+5. Cross-reference each Tailwind class with its Flutter implementation
+6. Identify ALL potential sources of visual differences
+
+Focus on: gradients, spacing, sizing, typography, colors, borders, shadows, flexbox behavior.
+```
+
+### Expected Output
+
+Codex returns YAML with:
+- `parity_analysis` - Per-example breakdown with issue severity
+- `parser_findings` - Issues in tw_parser.dart
+- `widget_findings` - Issues in tw_widget.dart
+- `priority_fixes` - Ranked list of recommended fixes
+- `summary` - Overall assessment and issue counts
+
+### Interpreting Codex Results
+
+| Severity | Meaning |
+|----------|---------|
+| CRITICAL | Will cause runtime failures |
+| MAJOR | Significant visual difference (missing badge, collapsed spacing) |
+| MINOR | Noticeable but not breaking (line-height, hover states) |
+| COSMETIC | Platform-specific (shadow blur, font anti-aliasing) |
+
+---
+
 ## Reference: Tailwind Value Mappings
 
 ### Spacing Scale (space)
