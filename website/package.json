@@ -3,7 +3,11 @@
     "dev": "next --turbopack",
     "build": "next build",
     "start": "next start",
-    "postbuild": "pagefind --site .next/server/app --output-path public/_pagefind"
+    "postbuild": "pagefind --site .next/server/app --output-path public/_pagefind",
+    "screenshots:tailwind": "node ./scripts/capture-tailwind-screenshots.mjs",
+    "compare:tailwind": "node ./scripts/compare-tailwind-flutter.mjs",
+    "compare:screenshots": "node scripts/compare-playwright-screenshots.mjs",
+    "compare:full": "node scripts/run-visual-comparison.mjs"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.1.13",
@@ -23,6 +27,9 @@
     "@types/react": "19.1.13",
     "eslint": "^9.35.0",
     "pagefind": "^1.4.0",
+    "pixelmatch": "^7.1.0",
+    "playwright": "^1.56.1",
+    "pngjs": "^7.0.0",
     "typescript": "^5.9.2"
   }
 }
