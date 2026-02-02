@@ -283,11 +283,12 @@ class Div extends StatelessWidget {
       if (animationConfig != null) {
         boxStyle = boxStyle.animate(animationConfig);
       }
-      // CSS block elements stretch by default; mimic this with CrossAxisAlignment.stretch
+      // CSS block elements stretch horizontally but shrink-wrap vertically.
       final resolvedChild =
           child ??
           (children.isNotEmpty
               ? Column(
+                  mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: children,
                 )
