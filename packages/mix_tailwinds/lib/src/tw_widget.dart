@@ -7,6 +7,99 @@ import 'tw_parser.dart';
 import 'tw_utils.dart';
 
 // =============================================================================
+// Box/Margin Utility Detection
+// =============================================================================
+
+/// Tokens that indicate box-level styling (padding, background, border, etc.)
+/// When present on Span, we need to wrap text in a Box container.
+const _boxUtilityPrefixes = [
+  'p-', 'px-', 'py-', 'pt-', 'pr-', 'pb-', 'pl-', // padding
+  'bg-', // background
+  'border', // border (includes border-*, rounded-*)
+  'rounded', // border radius
+  'shadow', // box shadow
+  'ring', // ring
+  'opacity-', // opacity
+];
+
+/// Check if classNames contain any box utilities that require wrapping.
+bool _hasBoxUtilities(String classNames) {
+  final tokens = classNames.split(RegExp(r'\s+'));
+  for (final token in tokens) {
+    // Strip variant prefixes (hover:, md:, etc.) to get base token
+    final colonIdx = findLastColonOutsideBrackets(token);
+    final base = colonIdx >= 0 ? token.substring(colonIdx + 1) : token;
+
+    for (final prefix in _boxUtilityPrefixes) {
+      if (base.startsWith(prefix) || base == prefix.replaceAll('-', '')) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+/// Extract margin value from tokens for a given prefix (e.g., 'mb-').
+/// Returns null if not found.
+EdgeInsets? _extractMargin(String classNames, TwConfig cfg) {
+  final tokens = classNames.split(RegExp(r'\s+'));
+  double? top, right, bottom, left;
+
+  for (final token in tokens) {
+    final colonIdx = findLastColonOutsideBrackets(token);
+    final base = colonIdx >= 0 ? token.substring(colonIdx + 1) : token;
+
+    if (base.startsWith('m-')) {
+      final value = cfg.spaceOf(base.substring(2), fallback: double.nan);
+      if (!value.isNaN) {
+        top = right = bottom = left = value;
+      }
+    } else if (base.startsWith('mx-')) {
+      final value = cfg.spaceOf(base.substring(3), fallback: double.nan);
+      if (!value.isNaN) {
+        left = right = value;
+      }
+    } else if (base.startsWith('my-')) {
+      final value = cfg.spaceOf(base.substring(3), fallback: double.nan);
+      if (!value.isNaN) {
+        top = bottom = value;
+      }
+    } else if (base.startsWith('mt-')) {
+      final value = cfg.spaceOf(base.substring(3), fallback: double.nan);
+      if (!value.isNaN) {
+        top = value;
+      }
+    } else if (base.startsWith('mr-')) {
+      final value = cfg.spaceOf(base.substring(3), fallback: double.nan);
+      if (!value.isNaN) {
+        right = value;
+      }
+    } else if (base.startsWith('mb-')) {
+      final value = cfg.spaceOf(base.substring(3), fallback: double.nan);
+      if (!value.isNaN) {
+        bottom = value;
+      }
+    } else if (base.startsWith('ml-')) {
+      final value = cfg.spaceOf(base.substring(3), fallback: double.nan);
+      if (!value.isNaN) {
+        left = value;
+      }
+    }
+  }
+
+  if (top == null && right == null && bottom == null && left == null) {
+    return null;
+  }
+
+  return EdgeInsets.only(
+    top: top ?? 0,
+    right: right ?? 0,
+    bottom: bottom ?? 0,
+    left: left ?? 0,
+  );
+}
+
+// =============================================================================
 // CSS Semantic Margin Helpers
 // =============================================================================
 
@@ -221,10 +314,13 @@ class Div extends StatelessWidget {
 /// Equivalent to HTML `<p>`. Renders as Flutter's `Text` widget
 /// which is block-level (takes its own line).
 ///
+/// Supports margin utilities (m-*, mx-*, my-*, mt-*, mr-*, mb-*, ml-*)
+/// which wrap the text with appropriate padding.
+///
 /// ```dart
 /// P(
 ///   text: 'Hello world',
-///   classNames: 'text-lg font-bold text-gray-700',
+///   classNames: 'text-lg font-bold text-gray-700 mb-4',
 /// )
 /// ```
 class P extends StatelessWidget {
@@ -238,13 +334,25 @@ class P extends StatelessWidget {
   Widget build(BuildContext context) {
     final cfg = config ?? TwConfigProvider.of(context);
     final style = TwParser(config: cfg).parseText(classNames);
-    return StyledText(text, style: style);
+    Widget result = StyledText(text, style: style);
+
+    // Apply margin if present
+    final margin = _extractMargin(classNames, cfg);
+    if (margin != null) {
+      result = Padding(padding: margin, child: result);
+    }
+
+    return result;
   }
 }
 
 /// Inline-level text element with Tailwind styling.
 ///
 /// Equivalent to HTML `<span>`. Renders as Mix's `StyledText` widget.
+///
+/// When box utilities (padding, background, border, rounded, etc.) are present,
+/// the text is wrapped in a Box container to apply those styles, matching
+/// CSS behavior where `<span>` can have padding, background, etc.
 class Span extends StatelessWidget {
   const Span({
     super.key,
@@ -260,7 +368,24 @@ class Span extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cfg = config ?? TwConfigProvider.of(context);
-    final style = TwParser(config: cfg).parseText(classNames);
+    final parser = TwParser(config: cfg);
+
+    // Check if we need box styling (padding, background, border, etc.)
+    if (_hasBoxUtilities(classNames)) {
+      // Parse as box to get padding, background, border, etc.
+      // parseBox also handles text styling via DefaultTextStyle wrapper
+      final boxStyle = parser.parseBox(classNames);
+      final textStyle = parser.parseText(classNames);
+
+      // Use inline layout (no block-level stretch)
+      return _CssSemanticBox(
+        style: boxStyle,
+        child: StyledText(text, style: textStyle),
+      );
+    }
+
+    // No box utilities - render as simple styled text
+    final style = parser.parseText(classNames);
     return StyledText(text, style: style);
   }
 }
@@ -269,6 +394,7 @@ class Span extends StatelessWidget {
 ///
 /// Equivalent to HTML `<h1>`. Note: Like Tailwind's Preflight, headings have
 /// no default styles - use utility classes like `text-4xl font-bold`.
+/// Supports margin utilities (m-*, mx-*, my-*, mt-*, mr-*, mb-*, ml-*).
 class H1 extends StatelessWidget {
   const H1({super.key, required this.text, this.classNames = '', this.config});
 
@@ -280,7 +406,14 @@ class H1 extends StatelessWidget {
   Widget build(BuildContext context) {
     final cfg = config ?? TwConfigProvider.of(context);
     final style = TwParser(config: cfg).parseText(classNames);
-    return StyledText(text, style: style);
+    Widget result = StyledText(text, style: style);
+
+    final margin = _extractMargin(classNames, cfg);
+    if (margin != null) {
+      result = Padding(padding: margin, child: result);
+    }
+
+    return result;
   }
 }
 
@@ -288,6 +421,7 @@ class H1 extends StatelessWidget {
 ///
 /// Equivalent to HTML `<h2>`. Note: Like Tailwind's Preflight, headings have
 /// no default styles - use utility classes like `text-3xl font-semibold`.
+/// Supports margin utilities (m-*, mx-*, my-*, mt-*, mr-*, mb-*, ml-*).
 class H2 extends StatelessWidget {
   const H2({super.key, required this.text, this.classNames = '', this.config});
 
@@ -299,7 +433,14 @@ class H2 extends StatelessWidget {
   Widget build(BuildContext context) {
     final cfg = config ?? TwConfigProvider.of(context);
     final style = TwParser(config: cfg).parseText(classNames);
-    return StyledText(text, style: style);
+    Widget result = StyledText(text, style: style);
+
+    final margin = _extractMargin(classNames, cfg);
+    if (margin != null) {
+      result = Padding(padding: margin, child: result);
+    }
+
+    return result;
   }
 }
 
@@ -307,6 +448,7 @@ class H2 extends StatelessWidget {
 ///
 /// Equivalent to HTML `<h3>`. Note: Like Tailwind's Preflight, headings have
 /// no default styles - use utility classes like `text-2xl font-semibold`.
+/// Supports margin utilities (m-*, mx-*, my-*, mt-*, mr-*, mb-*, ml-*).
 class H3 extends StatelessWidget {
   const H3({super.key, required this.text, this.classNames = '', this.config});
 
@@ -318,7 +460,14 @@ class H3 extends StatelessWidget {
   Widget build(BuildContext context) {
     final cfg = config ?? TwConfigProvider.of(context);
     final style = TwParser(config: cfg).parseText(classNames);
-    return StyledText(text, style: style);
+    Widget result = StyledText(text, style: style);
+
+    final margin = _extractMargin(classNames, cfg);
+    if (margin != null) {
+      result = Padding(padding: margin, child: result);
+    }
+
+    return result;
   }
 }
 
@@ -326,6 +475,7 @@ class H3 extends StatelessWidget {
 ///
 /// Equivalent to HTML `<h4>`. Note: Like Tailwind's Preflight, headings have
 /// no default styles - use utility classes like `text-xl font-semibold`.
+/// Supports margin utilities (m-*, mx-*, my-*, mt-*, mr-*, mb-*, ml-*).
 class H4 extends StatelessWidget {
   const H4({super.key, required this.text, this.classNames = '', this.config});
 
@@ -337,7 +487,14 @@ class H4 extends StatelessWidget {
   Widget build(BuildContext context) {
     final cfg = config ?? TwConfigProvider.of(context);
     final style = TwParser(config: cfg).parseText(classNames);
-    return StyledText(text, style: style);
+    Widget result = StyledText(text, style: style);
+
+    final margin = _extractMargin(classNames, cfg);
+    if (margin != null) {
+      result = Padding(padding: margin, child: result);
+    }
+
+    return result;
   }
 }
 
@@ -345,6 +502,7 @@ class H4 extends StatelessWidget {
 ///
 /// Equivalent to HTML `<h5>`. Note: Like Tailwind's Preflight, headings have
 /// no default styles - use utility classes like `text-lg font-semibold`.
+/// Supports margin utilities (m-*, mx-*, my-*, mt-*, mr-*, mb-*, ml-*).
 class H5 extends StatelessWidget {
   const H5({super.key, required this.text, this.classNames = '', this.config});
 
@@ -356,7 +514,14 @@ class H5 extends StatelessWidget {
   Widget build(BuildContext context) {
     final cfg = config ?? TwConfigProvider.of(context);
     final style = TwParser(config: cfg).parseText(classNames);
-    return StyledText(text, style: style);
+    Widget result = StyledText(text, style: style);
+
+    final margin = _extractMargin(classNames, cfg);
+    if (margin != null) {
+      result = Padding(padding: margin, child: result);
+    }
+
+    return result;
   }
 }
 
@@ -364,6 +529,7 @@ class H5 extends StatelessWidget {
 ///
 /// Equivalent to HTML `<h6>`. Note: Like Tailwind's Preflight, headings have
 /// no default styles - use utility classes like `text-base font-semibold`.
+/// Supports margin utilities (m-*, mx-*, my-*, mt-*, mr-*, mb-*, ml-*).
 class H6 extends StatelessWidget {
   const H6({super.key, required this.text, this.classNames = '', this.config});
 
@@ -375,7 +541,14 @@ class H6 extends StatelessWidget {
   Widget build(BuildContext context) {
     final cfg = config ?? TwConfigProvider.of(context);
     final style = TwParser(config: cfg).parseText(classNames);
-    return StyledText(text, style: style);
+    Widget result = StyledText(text, style: style);
+
+    final margin = _extractMargin(classNames, cfg);
+    if (margin != null) {
+      result = Padding(padding: margin, child: result);
+    }
+
+    return result;
   }
 }
 
