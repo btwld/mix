@@ -2660,4 +2660,390 @@ void main() {
       },
     );
   });
+
+  // ===========================================================================
+  // Span Box Utilities Tests
+  // ===========================================================================
+
+  group('Span box utilities', () {
+    testWidgets('Span without box utilities renders StyledText only', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        const Directionality(
+          textDirection: TextDirection.ltr,
+          child: Span(text: 'Hello', classNames: 'text-blue-500 font-bold'),
+        ),
+      );
+
+      // Should have StyledText but no Container wrapper
+      expect(find.byType(StyledText), findsOneWidget);
+      expect(find.byType(Container), findsNothing);
+    });
+
+    testWidgets('Span with px-2 py-1 wraps in Box with padding', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        const Directionality(
+          textDirection: TextDirection.ltr,
+          child: Span(text: 'Badge', classNames: 'px-2 py-1 text-white'),
+        ),
+      );
+
+      // Should wrap in a Container (from _CssSemanticBox)
+      expect(find.byType(Container), findsOneWidget);
+
+      final container = tester.widget<Container>(find.byType(Container));
+      final padding = container.padding as EdgeInsets?;
+      expect(padding, isNotNull);
+      expect(padding!.left, 8); // px-2 = 8px
+      expect(padding.right, 8);
+      expect(padding.top, 4); // py-1 = 4px
+      expect(padding.bottom, 4);
+    });
+
+    testWidgets('Span with bg-purple-500 applies background color', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        const Directionality(
+          textDirection: TextDirection.ltr,
+          child: Span(text: 'Badge', classNames: 'bg-purple-500'),
+        ),
+      );
+
+      expect(find.byType(Container), findsOneWidget);
+
+      final container = tester.widget<Container>(find.byType(Container));
+      final decoration = container.decoration as BoxDecoration?;
+      expect(decoration, isNotNull);
+      expect(decoration!.color, isNotNull);
+      // Purple-500 should have a non-zero alpha (visible color)
+      expect(decoration.color!.a, greaterThan(0));
+    });
+
+    testWidgets('Span with rounded-full applies circular border radius', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        const Directionality(
+          textDirection: TextDirection.ltr,
+          child: Span(text: 'Pill', classNames: 'px-2 rounded-full'),
+        ),
+      );
+
+      expect(find.byType(Container), findsOneWidget);
+
+      final container = tester.widget<Container>(find.byType(Container));
+      final decoration = container.decoration as BoxDecoration?;
+      expect(decoration, isNotNull);
+      expect(decoration!.borderRadius, isNotNull);
+      // rounded-full should be 9999px (effectively circular)
+      final radius = decoration.borderRadius as BorderRadius;
+      expect(radius.topLeft.x, greaterThan(100));
+    });
+
+    testWidgets('Span with border applies border', (tester) async {
+      await tester.pumpWidget(
+        const Directionality(
+          textDirection: TextDirection.ltr,
+          child: Span(text: 'Bordered', classNames: 'border border-gray-300'),
+        ),
+      );
+
+      expect(find.byType(Container), findsOneWidget);
+
+      final container = tester.widget<Container>(find.byType(Container));
+      final decoration = container.decoration as BoxDecoration?;
+      expect(decoration, isNotNull);
+      expect(decoration!.border, isNotNull);
+    });
+
+    testWidgets('Span with combined box utilities (badge pill)', (
+      tester,
+    ) async {
+      // This matches the card-alert Admin badge use case
+      await tester.pumpWidget(
+        const Directionality(
+          textDirection: TextDirection.ltr,
+          child: Span(
+            text: 'Admin',
+            classNames:
+                'px-2 py-0.5 bg-purple-500/30 text-purple-200 text-xs rounded-full font-medium',
+          ),
+        ),
+      );
+
+      // Should have Container wrapper with all box properties
+      expect(find.byType(Container), findsOneWidget);
+      expect(find.byType(StyledText), findsOneWidget);
+
+      final container = tester.widget<Container>(find.byType(Container));
+
+      // Check padding
+      final padding = container.padding as EdgeInsets?;
+      expect(padding, isNotNull);
+      expect(padding!.left, 8); // px-2 = 8px
+      expect(padding.right, 8);
+      expect(padding.top, 2); // py-0.5 = 2px
+      expect(padding.bottom, 2);
+
+      // Check decoration
+      final decoration = container.decoration as BoxDecoration?;
+      expect(decoration, isNotNull);
+      expect(decoration!.color, isNotNull); // bg-purple-500/30
+      expect(decoration.borderRadius, isNotNull); // rounded-full
+    });
+
+    testWidgets('Span with shadow wraps in Box', (tester) async {
+      await tester.pumpWidget(
+        const Directionality(
+          textDirection: TextDirection.ltr,
+          child: Span(text: 'Shadowed', classNames: 'shadow-md'),
+        ),
+      );
+
+      // shadow is a box utility, should trigger wrapping
+      expect(find.byType(Container), findsOneWidget);
+    });
+
+    testWidgets('Span with opacity wraps in Box', (tester) async {
+      await tester.pumpWidget(
+        const Directionality(
+          textDirection: TextDirection.ltr,
+          child: Span(text: 'Faded', classNames: 'opacity-50'),
+        ),
+      );
+
+      // opacity is a box utility, should trigger wrapping
+      expect(find.byType(Container), findsOneWidget);
+    });
+  });
+
+  // ===========================================================================
+  // P Margin Utilities Tests
+  // ===========================================================================
+
+  group('P margin utilities', () {
+    testWidgets('P without margin renders without Padding wrapper', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        const Directionality(
+          textDirection: TextDirection.ltr,
+          child: P(text: 'Hello', classNames: 'text-lg font-bold'),
+        ),
+      );
+
+      // Should have StyledText but no Padding wrapper at root
+      expect(find.byType(StyledText), findsOneWidget);
+      // The root should not be a Padding
+      final root = find.byType(P);
+      expect(root, findsOneWidget);
+      final pWidget = tester.element(root).widget;
+      expect(pWidget, isA<P>());
+    });
+
+    testWidgets('P with mb-4 applies bottom margin via Padding', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        const Directionality(
+          textDirection: TextDirection.ltr,
+          child: P(text: 'Paragraph', classNames: 'text-sm mb-4'),
+        ),
+      );
+
+      // Should wrap in Padding
+      expect(find.byType(Padding), findsOneWidget);
+
+      final padding = tester.widget<Padding>(find.byType(Padding));
+      final edgeInsets = padding.padding as EdgeInsets;
+      expect(edgeInsets.bottom, 16); // mb-4 = 16px
+      expect(edgeInsets.top, 0);
+      expect(edgeInsets.left, 0);
+      expect(edgeInsets.right, 0);
+    });
+
+    testWidgets('P with m-4 applies margin on all sides', (tester) async {
+      await tester.pumpWidget(
+        const Directionality(
+          textDirection: TextDirection.ltr,
+          child: P(text: 'Spaced', classNames: 'm-4'),
+        ),
+      );
+
+      expect(find.byType(Padding), findsOneWidget);
+
+      final padding = tester.widget<Padding>(find.byType(Padding));
+      final edgeInsets = padding.padding as EdgeInsets;
+      expect(edgeInsets.top, 16);
+      expect(edgeInsets.right, 16);
+      expect(edgeInsets.bottom, 16);
+      expect(edgeInsets.left, 16);
+    });
+
+    testWidgets('P with mx-4 my-2 applies horizontal and vertical margins', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        const Directionality(
+          textDirection: TextDirection.ltr,
+          child: P(text: 'Mixed', classNames: 'mx-4 my-2'),
+        ),
+      );
+
+      expect(find.byType(Padding), findsOneWidget);
+
+      final padding = tester.widget<Padding>(find.byType(Padding));
+      final edgeInsets = padding.padding as EdgeInsets;
+      expect(edgeInsets.left, 16); // mx-4
+      expect(edgeInsets.right, 16); // mx-4
+      expect(edgeInsets.top, 8); // my-2
+      expect(edgeInsets.bottom, 8); // my-2
+    });
+
+    testWidgets('P with individual margins mt-2 mr-4 mb-6 ml-8', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        const Directionality(
+          textDirection: TextDirection.ltr,
+          child: P(text: 'Individual', classNames: 'mt-2 mr-4 mb-6 ml-8'),
+        ),
+      );
+
+      expect(find.byType(Padding), findsOneWidget);
+
+      final padding = tester.widget<Padding>(find.byType(Padding));
+      final edgeInsets = padding.padding as EdgeInsets;
+      expect(edgeInsets.top, 8); // mt-2
+      expect(edgeInsets.right, 16); // mr-4
+      expect(edgeInsets.bottom, 24); // mb-6
+      expect(edgeInsets.left, 32); // ml-8
+    });
+
+    testWidgets('P margin combined with text styles', (tester) async {
+      await tester.pumpWidget(
+        const Directionality(
+          textDirection: TextDirection.ltr,
+          child: P(
+            text: 'Styled',
+            classNames: 'text-slate-300 text-sm mb-4 font-medium',
+          ),
+        ),
+      );
+
+      // Should have both Padding and StyledText
+      expect(find.byType(Padding), findsOneWidget);
+      expect(find.byType(StyledText), findsOneWidget);
+
+      final padding = tester.widget<Padding>(find.byType(Padding));
+      final edgeInsets = padding.padding as EdgeInsets;
+      expect(edgeInsets.bottom, 16);
+    });
+  });
+
+  // ===========================================================================
+  // H1-H6 Margin Utilities Tests
+  // ===========================================================================
+
+  group('H1-H6 margin utilities', () {
+    testWidgets('H1 with mb-4 applies bottom margin', (tester) async {
+      await tester.pumpWidget(
+        const Directionality(
+          textDirection: TextDirection.ltr,
+          child: H1(text: 'Heading', classNames: 'text-4xl font-bold mb-4'),
+        ),
+      );
+
+      expect(find.byType(Padding), findsOneWidget);
+
+      final padding = tester.widget<Padding>(find.byType(Padding));
+      final edgeInsets = padding.padding as EdgeInsets;
+      expect(edgeInsets.bottom, 16);
+    });
+
+    testWidgets('H2 with my-4 applies vertical margins', (tester) async {
+      await tester.pumpWidget(
+        const Directionality(
+          textDirection: TextDirection.ltr,
+          child: H2(text: 'Section', classNames: 'text-3xl my-4'),
+        ),
+      );
+
+      expect(find.byType(Padding), findsOneWidget);
+
+      final padding = tester.widget<Padding>(find.byType(Padding));
+      final edgeInsets = padding.padding as EdgeInsets;
+      expect(edgeInsets.top, 16);
+      expect(edgeInsets.bottom, 16);
+    });
+
+    testWidgets('H3 with m-2 applies margin all sides', (tester) async {
+      await tester.pumpWidget(
+        const Directionality(
+          textDirection: TextDirection.ltr,
+          child: H3(text: 'Subsection', classNames: 'text-2xl m-2'),
+        ),
+      );
+
+      expect(find.byType(Padding), findsOneWidget);
+
+      final padding = tester.widget<Padding>(find.byType(Padding));
+      final edgeInsets = padding.padding as EdgeInsets;
+      expect(edgeInsets.top, 8);
+      expect(edgeInsets.right, 8);
+      expect(edgeInsets.bottom, 8);
+      expect(edgeInsets.left, 8);
+    });
+
+    testWidgets('H4 without margin renders without Padding', (tester) async {
+      await tester.pumpWidget(
+        const Directionality(
+          textDirection: TextDirection.ltr,
+          child: H4(text: 'Title', classNames: 'text-xl font-semibold'),
+        ),
+      );
+
+      // Should have StyledText but check there's no margin Padding
+      expect(find.byType(StyledText), findsOneWidget);
+      // H4 without margin should not add Padding wrapper
+      expect(find.byType(Padding), findsNothing);
+    });
+
+    testWidgets('H5 with mb-1 applies small bottom margin', (tester) async {
+      await tester.pumpWidget(
+        const Directionality(
+          textDirection: TextDirection.ltr,
+          child: H5(text: 'Label', classNames: 'text-lg mb-1'),
+        ),
+      );
+
+      expect(find.byType(Padding), findsOneWidget);
+
+      final padding = tester.widget<Padding>(find.byType(Padding));
+      final edgeInsets = padding.padding as EdgeInsets;
+      expect(edgeInsets.bottom, 4); // mb-1 = 4px
+    });
+
+    testWidgets('H6 with mx-2 applies horizontal margins', (tester) async {
+      await tester.pumpWidget(
+        const Directionality(
+          textDirection: TextDirection.ltr,
+          child: H6(text: 'Small', classNames: 'text-base mx-2'),
+        ),
+      );
+
+      expect(find.byType(Padding), findsOneWidget);
+
+      final padding = tester.widget<Padding>(find.byType(Padding));
+      final edgeInsets = padding.padding as EdgeInsets;
+      expect(edgeInsets.left, 8);
+      expect(edgeInsets.right, 8);
+      expect(edgeInsets.top, 0);
+      expect(edgeInsets.bottom, 0);
+    });
+  });
 }
