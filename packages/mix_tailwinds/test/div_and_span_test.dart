@@ -643,12 +643,21 @@ void main() {
     );
     expect(paddingFinder, findsNWidgets(2));
 
-    final padding =
-        tester.widget<Padding>(paddingFinder.first).padding as EdgeInsets;
-    expect(padding.top, closeTo(8, 0.0001));
-    expect(padding.bottom, closeTo(8, 0.0001));
-    expect(padding.left, 0);
-    expect(padding.right, 0);
+    final paddings = tester
+        .widgetList<Padding>(paddingFinder)
+        .toList(growable: false);
+    final firstPadding = paddings.first.padding as EdgeInsets;
+    final lastPadding = paddings.last.padding as EdgeInsets;
+
+    expect(firstPadding.top, 0);
+    expect(firstPadding.bottom, closeTo(8, 0.0001));
+    expect(firstPadding.left, 0);
+    expect(firstPadding.right, 0);
+
+    expect(lastPadding.top, closeTo(8, 0.0001));
+    expect(lastPadding.bottom, 0);
+    expect(lastPadding.left, 0);
+    expect(lastPadding.right, 0);
   });
 
   testWidgets('gap-y-6 sets main-axis spacing for column flex', (tester) async {
@@ -691,12 +700,21 @@ void main() {
     );
     expect(paddingFinder, findsNWidgets(2));
 
-    final padding =
-        tester.widget<Padding>(paddingFinder.first).padding as EdgeInsets;
-    expect(padding.left, closeTo(4, 0.0001));
-    expect(padding.right, closeTo(4, 0.0001));
-    expect(padding.top, 0);
-    expect(padding.bottom, 0);
+    final paddings = tester
+        .widgetList<Padding>(paddingFinder)
+        .toList(growable: false);
+    final firstPadding = paddings.first.padding as EdgeInsets;
+    final lastPadding = paddings.last.padding as EdgeInsets;
+
+    expect(firstPadding.left, 0);
+    expect(firstPadding.right, closeTo(4, 0.0001));
+    expect(firstPadding.top, 0);
+    expect(firstPadding.bottom, 0);
+
+    expect(lastPadding.left, closeTo(4, 0.0001));
+    expect(lastPadding.right, 0);
+    expect(lastPadding.top, 0);
+    expect(lastPadding.bottom, 0);
   });
 
   testWidgets('gap-x overrides gap on row flex', (tester) async {

@@ -592,13 +592,23 @@ List<Widget> _applyCrossAxisGap(List<Widget> input, Axis axis, double? gap) {
     return input;
   }
 
-  final padding = axis == Axis.horizontal
-      ? EdgeInsets.symmetric(vertical: gap / 2)
-      : EdgeInsets.symmetric(horizontal: gap / 2);
+  final halfGap = gap / 2;
+  final lastIndex = input.length - 1;
 
-  return input
-      .map((child) => Padding(padding: padding, child: child))
-      .toList(growable: false);
+  return List<Widget>.generate(input.length, (index) {
+    final isFirst = index == 0;
+    final isLast = index == lastIndex;
+    final padding = axis == Axis.horizontal
+        ? EdgeInsets.only(
+            top: isFirst ? 0 : halfGap,
+            bottom: isLast ? 0 : halfGap,
+          )
+        : EdgeInsets.only(
+            left: isFirst ? 0 : halfGap,
+            right: isLast ? 0 : halfGap,
+          );
+    return Padding(padding: padding, child: input[index]);
+  }, growable: false);
 }
 
 Widget _buildResponsiveFlex({
@@ -626,21 +636,7 @@ Widget _buildResponsiveFlex({
       final crossGap = axis == Axis.horizontal ? gapY : gapX;
       final flexChildren = _applyCrossAxisGap(rawChildren, axis, crossGap);
 
-      final hasBoundedMainAxis = axis == Axis.horizontal
-          ? constraints.hasBoundedWidth
-          : constraints.hasBoundedHeight;
-      final resolvedChildren =
-          flexChildren.length == 1 &&
-              hasBoundedMainAxis &&
-              flexChildren.single is! ParentDataWidget<FlexParentData>
-          ? <Widget>[
-              _FlexParentDataWrapper(
-                flex: 1,
-                fit: FlexFit.loose,
-                child: flexChildren.single,
-              ),
-            ]
-          : flexChildren;
+      final resolvedChildren = flexChildren;
 
       // Use CSS semantic flex box - margin is outside hover/press detection area
       Widget current = _CssSemanticFlexBox(
