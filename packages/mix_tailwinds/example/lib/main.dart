@@ -1,10 +1,16 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:mix_tailwinds/mix_tailwinds.dart';
 
 import 'card_alert_preview.dart';
 
 void main() {
+  // Ensure debug paint overlays are disabled for parity screenshots.
+  debugPaintBaselinesEnabled = false;
+  debugPaintSizeEnabled = false;
+  debugPaintPointersEnabled = false;
+  debugRepaintRainbowEnabled = false;
   runApp(const TailwindParityApp());
 }
 
@@ -50,7 +56,10 @@ class TailwindParityApp extends StatelessWidget {
             scaffoldBackgroundColor: slate900,
             canvasColor: slate900,
           ),
-          home: const CardAlertPreview(),
+          home: const Scaffold(
+            backgroundColor: slate900,
+            body: CardAlertPreview(),
+          ),
         );
       }
 
