@@ -284,7 +284,8 @@ class Div extends StatelessWidget {
         boxStyle = boxStyle.animate(animationConfig);
       }
       // CSS block elements stretch by default; mimic this with CrossAxisAlignment.stretch
-      final resolvedChild = child ??
+      final resolvedChild =
+          child ??
           (children.isNotEmpty
               ? Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
