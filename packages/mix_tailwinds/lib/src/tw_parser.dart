@@ -927,7 +927,7 @@ FlexBoxStyler _applyPropertyToFlex(
 
 FlexBoxStyler _applyFlexDisplay(FlexBoxStyler styler, TwValue value) {
   if (value is TwEnumValue && value.value == 'flex') {
-    return styler.row().crossAxisAlignment(CrossAxisAlignment.start);
+    return styler.row();
   }
   return styler;
 }
@@ -937,7 +937,7 @@ FlexBoxStyler _applyFlexDirection(FlexBoxStyler styler, TwValue value) {
     final result = value.value == Axis.horizontal
         ? styler.row()
         : styler.column();
-    return result.crossAxisAlignment(CrossAxisAlignment.start);
+    return result;
   }
   return styler;
 }
