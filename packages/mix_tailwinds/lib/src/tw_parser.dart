@@ -150,22 +150,12 @@ class _BorderAccum {
       leftWidth != null ||
       rightWidth != null;
 
-  void setAll(double width) {
-    topWidth = width;
-    bottomWidth = width;
-    leftWidth = width;
-    rightWidth = width;
-  }
+  void setAll(double width) =>
+      topWidth = bottomWidth = leftWidth = rightWidth = width;
 
-  void setHorizontal(double width) {
-    leftWidth = width;
-    rightWidth = width;
-  }
+  void setHorizontal(double width) => leftWidth = rightWidth = width;
 
-  void setVertical(double width) {
-    topWidth = width;
-    bottomWidth = width;
-  }
+  void setVertical(double width) => topWidth = bottomWidth = width;
 }
 
 // =============================================================================
@@ -933,21 +923,16 @@ FlexBoxStyler _applyFlexDisplay(FlexBoxStyler styler, TwValue value) {
 }
 
 FlexBoxStyler _applyFlexDirection(FlexBoxStyler styler, TwValue value) {
-  if (value is TwEnumValue<Axis>) {
-    final result = value.value == Axis.horizontal
-        ? styler.row()
-        : styler.column();
-    return result;
+  if (value case TwEnumValue<Axis>(:final value)) {
+    return value == Axis.horizontal ? styler.row() : styler.column();
   }
   return styler;
 }
 
 FlexBoxStyler _applyAlignItems(FlexBoxStyler styler, TwValue value) {
-  if (value is TwEnumValue<CrossAxisAlignment>) {
-    final alignment = value.value;
-    var result = styler.crossAxisAlignment(alignment);
-    // CrossAxisAlignment.baseline requires textBaseline to be set
-    if (alignment == CrossAxisAlignment.baseline) {
+  if (value case TwEnumValue<CrossAxisAlignment>(:final value)) {
+    var result = styler.crossAxisAlignment(value);
+    if (value == CrossAxisAlignment.baseline) {
       result = result.textBaseline(TextBaseline.alphabetic);
     }
     return result;
@@ -956,16 +941,13 @@ FlexBoxStyler _applyAlignItems(FlexBoxStyler styler, TwValue value) {
 }
 
 FlexBoxStyler _applyFlexShadow(FlexBoxStyler styler, TwValue value) {
-  if (value is TwEnumValue) {
-    final shadowValue = value.value;
-    if (shadowValue is ElevationShadow?) {
-      return shadowValue == null
-          ? styler.boxShadows(const <BoxShadowMix>[])
-          : styler.elevation(shadowValue);
-    }
-    if (shadowValue is List<BoxShadowMix>?) {
-      return styler.boxShadows(shadowValue ?? const <BoxShadowMix>[]);
-    }
+  if (value case TwEnumValue(:final value)) {
+    return switch (value) {
+      ElevationShadow shadow => styler.elevation(shadow),
+      null => styler.boxShadows(const <BoxShadowMix>[]),
+      List<BoxShadowMix> shadows => styler.boxShadows(shadows),
+      _ => styler,
+    };
   }
   return styler;
 }
@@ -1110,27 +1092,21 @@ BoxStyler _applyPropertyToBox(
 }
 
 BoxStyler _applyBoxShadow(BoxStyler styler, TwValue value) {
-  if (value is TwEnumValue) {
-    final shadowValue = value.value;
-    if (shadowValue is ElevationShadow?) {
-      return shadowValue == null
-          ? styler.boxShadows(const <BoxShadowMix>[])
-          : styler.elevation(shadowValue);
-    }
-    if (shadowValue is List<BoxShadowMix>?) {
-      return styler.boxShadows(shadowValue ?? const <BoxShadowMix>[]);
-    }
+  if (value case TwEnumValue(:final value)) {
+    return switch (value) {
+      ElevationShadow shadow => styler.elevation(shadow),
+      null => styler.boxShadows(const <BoxShadowMix>[]),
+      List<BoxShadowMix> shadows => styler.boxShadows(shadows),
+      _ => styler,
+    };
   }
   return styler;
 }
 
 List<ShadowMix>? _resolveTextShadowMixes(TwValue value) {
-  if (value is TwEnumValue<TextShadowPreset?>) {
-    final preset = value.value;
-    if (preset == null) {
-      return const <ShadowMix>[];
-    }
-    final shadows = kTextShadowPresets[preset]!
+  if (value case TwEnumValue<TextShadowPreset?>(:final value)) {
+    if (value == null) return const <ShadowMix>[];
+    return kTextShadowPresets[value]!
         .map(
           (s) => ShadowMix(
             color: s.color,
@@ -1139,7 +1115,6 @@ List<ShadowMix>? _resolveTextShadowMixes(TwValue value) {
           ),
         )
         .toList();
-    return shadows;
   }
   return null;
 }
@@ -1187,8 +1162,8 @@ TextStyler _applyPropertyToText(
 }
 
 TextStyler _applyTextTransform(TextStyler styler, TwValue value) {
-  if (value is TwEnumValue<String>) {
-    return switch (value.value) {
+  if (value case TwEnumValue<String>(:final value)) {
+    return switch (value) {
       'uppercase' => styler.uppercase(),
       'lowercase' => styler.lowercase(),
       'capitalize' => styler.capitalize(),

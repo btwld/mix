@@ -39,6 +39,19 @@ bool _hasBoxUtilities(String classNames) {
   return false;
 }
 
+(String?, String) _splitMarginToken(String base) {
+  const prefixes = ['mx-', 'my-', 'mt-', 'mr-', 'mb-', 'ml-', 'm-'];
+  for (final prefix in prefixes) {
+    if (base.startsWith(prefix)) {
+      return (
+        prefix.substring(0, prefix.length - 1),
+        base.substring(prefix.length),
+      );
+    }
+  }
+  return (null, base);
+}
+
 /// Extract margin value from tokens for a given prefix (e.g., 'mb-').
 /// Returns null if not found.
 EdgeInsets? _extractMargin(String classNames, TwConfig cfg) {
@@ -49,41 +62,27 @@ EdgeInsets? _extractMargin(String classNames, TwConfig cfg) {
     final colonIdx = findLastColonOutsideBrackets(token);
     final base = colonIdx >= 0 ? token.substring(colonIdx + 1) : token;
 
-    if (base.startsWith('m-')) {
-      final value = cfg.spaceOf(base.substring(2), fallback: double.nan);
-      if (!value.isNaN) {
+    final (prefix, suffix) = _splitMarginToken(base);
+    if (prefix == null) continue;
+
+    final value = cfg.spaceOf(suffix, fallback: double.nan);
+    if (value.isNaN) continue;
+
+    switch (prefix) {
+      case 'm':
         top = right = bottom = left = value;
-      }
-    } else if (base.startsWith('mx-')) {
-      final value = cfg.spaceOf(base.substring(3), fallback: double.nan);
-      if (!value.isNaN) {
+      case 'mx':
         left = right = value;
-      }
-    } else if (base.startsWith('my-')) {
-      final value = cfg.spaceOf(base.substring(3), fallback: double.nan);
-      if (!value.isNaN) {
+      case 'my':
         top = bottom = value;
-      }
-    } else if (base.startsWith('mt-')) {
-      final value = cfg.spaceOf(base.substring(3), fallback: double.nan);
-      if (!value.isNaN) {
+      case 'mt':
         top = value;
-      }
-    } else if (base.startsWith('mr-')) {
-      final value = cfg.spaceOf(base.substring(3), fallback: double.nan);
-      if (!value.isNaN) {
+      case 'mr':
         right = value;
-      }
-    } else if (base.startsWith('mb-')) {
-      final value = cfg.spaceOf(base.substring(3), fallback: double.nan);
-      if (!value.isNaN) {
+      case 'mb':
         bottom = value;
-      }
-    } else if (base.startsWith('ml-')) {
-      final value = cfg.spaceOf(base.substring(3), fallback: double.nan);
-      if (!value.isNaN) {
+      case 'ml':
         left = value;
-      }
     }
   }
 
@@ -392,6 +391,24 @@ class Span extends StatelessWidget {
   }
 }
 
+Widget _buildHeading(
+  BuildContext context,
+  String text,
+  String classNames,
+  TwConfig? config,
+) {
+  final cfg = config ?? TwConfigProvider.of(context);
+  final style = TwParser(config: cfg).parseText(classNames);
+  Widget result = StyledText(text, style: style);
+
+  final margin = _extractMargin(classNames, cfg);
+  if (margin != null) {
+    result = Padding(padding: margin, child: result);
+  }
+
+  return result;
+}
+
 /// Heading level 1 element with Tailwind styling.
 ///
 /// Equivalent to HTML `<h1>`. Note: Like Tailwind's Preflight, headings have
@@ -405,18 +422,8 @@ class H1 extends StatelessWidget {
   final TwConfig? config;
 
   @override
-  Widget build(BuildContext context) {
-    final cfg = config ?? TwConfigProvider.of(context);
-    final style = TwParser(config: cfg).parseText(classNames);
-    Widget result = StyledText(text, style: style);
-
-    final margin = _extractMargin(classNames, cfg);
-    if (margin != null) {
-      result = Padding(padding: margin, child: result);
-    }
-
-    return result;
-  }
+  Widget build(BuildContext context) =>
+      _buildHeading(context, text, classNames, config);
 }
 
 /// Heading level 2 element with Tailwind styling.
@@ -432,18 +439,8 @@ class H2 extends StatelessWidget {
   final TwConfig? config;
 
   @override
-  Widget build(BuildContext context) {
-    final cfg = config ?? TwConfigProvider.of(context);
-    final style = TwParser(config: cfg).parseText(classNames);
-    Widget result = StyledText(text, style: style);
-
-    final margin = _extractMargin(classNames, cfg);
-    if (margin != null) {
-      result = Padding(padding: margin, child: result);
-    }
-
-    return result;
-  }
+  Widget build(BuildContext context) =>
+      _buildHeading(context, text, classNames, config);
 }
 
 /// Heading level 3 element with Tailwind styling.
@@ -459,18 +456,8 @@ class H3 extends StatelessWidget {
   final TwConfig? config;
 
   @override
-  Widget build(BuildContext context) {
-    final cfg = config ?? TwConfigProvider.of(context);
-    final style = TwParser(config: cfg).parseText(classNames);
-    Widget result = StyledText(text, style: style);
-
-    final margin = _extractMargin(classNames, cfg);
-    if (margin != null) {
-      result = Padding(padding: margin, child: result);
-    }
-
-    return result;
-  }
+  Widget build(BuildContext context) =>
+      _buildHeading(context, text, classNames, config);
 }
 
 /// Heading level 4 element with Tailwind styling.
@@ -486,18 +473,8 @@ class H4 extends StatelessWidget {
   final TwConfig? config;
 
   @override
-  Widget build(BuildContext context) {
-    final cfg = config ?? TwConfigProvider.of(context);
-    final style = TwParser(config: cfg).parseText(classNames);
-    Widget result = StyledText(text, style: style);
-
-    final margin = _extractMargin(classNames, cfg);
-    if (margin != null) {
-      result = Padding(padding: margin, child: result);
-    }
-
-    return result;
-  }
+  Widget build(BuildContext context) =>
+      _buildHeading(context, text, classNames, config);
 }
 
 /// Heading level 5 element with Tailwind styling.
@@ -513,18 +490,8 @@ class H5 extends StatelessWidget {
   final TwConfig? config;
 
   @override
-  Widget build(BuildContext context) {
-    final cfg = config ?? TwConfigProvider.of(context);
-    final style = TwParser(config: cfg).parseText(classNames);
-    Widget result = StyledText(text, style: style);
-
-    final margin = _extractMargin(classNames, cfg);
-    if (margin != null) {
-      result = Padding(padding: margin, child: result);
-    }
-
-    return result;
-  }
+  Widget build(BuildContext context) =>
+      _buildHeading(context, text, classNames, config);
 }
 
 /// Heading level 6 element with Tailwind styling.
@@ -540,18 +507,8 @@ class H6 extends StatelessWidget {
   final TwConfig? config;
 
   @override
-  Widget build(BuildContext context) {
-    final cfg = config ?? TwConfigProvider.of(context);
-    final style = TwParser(config: cfg).parseText(classNames);
-    Widget result = StyledText(text, style: style);
-
-    final margin = _extractMargin(classNames, cfg);
-    if (margin != null) {
-      result = Padding(padding: margin, child: result);
-    }
-
-    return result;
-  }
+  Widget build(BuildContext context) =>
+      _buildHeading(context, text, classNames, config);
 }
 
 /// Convenience wrapper for truncated text in flex containers.
