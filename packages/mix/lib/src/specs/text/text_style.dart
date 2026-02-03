@@ -12,11 +12,8 @@ import '../../modifiers/widget_modifier_config.dart';
 import '../../properties/typography/strut_style_mix.dart';
 import '../../properties/typography/text_height_behavior_mix.dart';
 import '../../properties/typography/text_style_mix.dart';
-import '../../style/mixins/animation_style_mixin.dart';
+import '../../style/abstracts/styler.dart';
 import '../../style/mixins/text_style_mixin.dart';
-import '../../style/mixins/variant_style_mixin.dart';
-import '../../style/mixins/widget_modifier_style_mixin.dart';
-import '../../style/mixins/widget_state_variant_mixin.dart';
 import 'text_mutable_style.dart';
 import 'text_spec.dart';
 import 'text_widget.dart';
@@ -34,15 +31,8 @@ typedef TextMix = TextStyler;
 /// Use this class to configure the attributes of a [TextSpec] and pass it to
 /// the [TextSpec] constructor.
 @MixableStyler()
-class TextStyler extends Style<TextSpec>
-    with
-        Diagnosticable,
-        WidgetModifierStyleMixin<TextStyler, TextSpec>,
-        VariantStyleMixin<TextStyler, TextSpec>,
-        WidgetStateVariantMixin<TextStyler, TextSpec>,
-        TextStyleMixin<TextStyler>,
-        AnimationStyleMixin<TextStyler, TextSpec>,
-        _$TextStylerMixin {
+class TextStyler extends MixStyler<TextStyler, TextSpec>
+    with TextStyleMixin<TextStyler>, _$TextStylerMixin {
   @override
   final Prop<TextOverflow>? $overflow;
   @override

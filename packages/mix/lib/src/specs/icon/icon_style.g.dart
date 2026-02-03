@@ -66,6 +66,11 @@ mixin _$IconStylerMixin on Style<IconSpec>, Diagnosticable {
     return merge(IconStyler(semanticsLabel: value));
   }
 
+  /// Sets the shadows.
+  IconStyler shadows(List<ShadowMix> value) {
+    return merge(IconStyler(shadows: value));
+  }
+
   /// Sets the size.
   IconStyler size(double value) {
     return merge(IconStyler(size: value));
