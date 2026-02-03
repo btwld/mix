@@ -914,10 +914,9 @@ Widget _applyFlexItemDecorators(
   final isAlreadyFlexible =
       context.findAncestorWidgetOfExactType<Flexible>() != null ||
       context.findAncestorWidgetOfExactType<Expanded>() != null;
-  final wantsFullOnMainAxis =
-      axis == Axis.horizontal
-          ? widthIntent == _DimensionIntent.full
-          : heightIntent == _DimensionIntent.full;
+  final wantsFullOnMainAxis = axis == Axis.horizontal
+      ? widthIntent == _DimensionIntent.full
+      : heightIntent == _DimensionIntent.full;
   if (!isAlreadyFlexible &&
       wantsFullOnMainAxis &&
       behavior == null &&
