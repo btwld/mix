@@ -956,11 +956,16 @@ FlexBoxStyler _applyAlignItems(FlexBoxStyler styler, TwValue value) {
 }
 
 FlexBoxStyler _applyFlexShadow(FlexBoxStyler styler, TwValue value) {
-  if (value is TwEnumValue<ElevationShadow?>) {
-    final shadow = value.value;
-    return shadow == null
-        ? styler.boxShadows(const <BoxShadowMix>[])
-        : styler.elevation(shadow);
+  if (value is TwEnumValue) {
+    final shadowValue = value.value;
+    if (shadowValue is ElevationShadow?) {
+      return shadowValue == null
+          ? styler.boxShadows(const <BoxShadowMix>[])
+          : styler.elevation(shadowValue);
+    }
+    if (shadowValue is List<BoxShadowMix>?) {
+      return styler.boxShadows(shadowValue ?? const <BoxShadowMix>[]);
+    }
   }
   return styler;
 }
@@ -1105,11 +1110,16 @@ BoxStyler _applyPropertyToBox(
 }
 
 BoxStyler _applyBoxShadow(BoxStyler styler, TwValue value) {
-  if (value is TwEnumValue<ElevationShadow?>) {
-    final shadow = value.value;
-    return shadow == null
-        ? styler.boxShadows(const <BoxShadowMix>[])
-        : styler.elevation(shadow);
+  if (value is TwEnumValue) {
+    final shadowValue = value.value;
+    if (shadowValue is ElevationShadow?) {
+      return shadowValue == null
+          ? styler.boxShadows(const <BoxShadowMix>[])
+          : styler.elevation(shadowValue);
+    }
+    if (shadowValue is List<BoxShadowMix>?) {
+      return styler.boxShadows(shadowValue ?? const <BoxShadowMix>[]);
+    }
   }
   return styler;
 }
@@ -1668,7 +1678,12 @@ class TwParser {
       }
       final size = config.fontSizeOf(key, fallback: -1);
       if (size > 0) {
-        return styler.wrapDefaultTextStyle(TextStyleMix().fontSize(size));
+        var textStyle = TextStyleMix().fontSize(size);
+        final lineHeight = tailwindLineHeights[key];
+        if (lineHeight != null) {
+          textStyle = textStyle.height(lineHeight);
+        }
+        return styler.wrapDefaultTextStyle(textStyle);
       }
       handled = false;
     } else if (_isAnimationToken(token)) {
@@ -1755,7 +1770,12 @@ class TwParser {
       }
       final size = config.fontSizeOf(key, fallback: -1);
       if (size > 0) {
-        return styler.wrapDefaultTextStyle(TextStyleMix().fontSize(size));
+        var textStyle = TextStyleMix().fontSize(size);
+        final lineHeight = tailwindLineHeights[key];
+        if (lineHeight != null) {
+          textStyle = textStyle.height(lineHeight);
+        }
+        return styler.wrapDefaultTextStyle(textStyle);
       }
       handled = false;
     } else if (_isAnimationToken(token)) {
