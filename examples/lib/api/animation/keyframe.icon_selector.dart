@@ -92,8 +92,8 @@ class _PopUpAnimationState extends State<PopUpAnimation> {
             .ease(0.2, 200.ms),
             .elasticOut(1.0, 1000.ms),
           ], initial: 0),
-          KeyframeTrack<double>('y', [.elasticOut(0, 800.ms)], initial: -100),
-          KeyframeTrack<double>('opacity', [.easeIn(1.0, 500.ms)], initial: 0),
+          KeyframeTrack('y', [.elasticOut(0, 800.ms)], initial: -100),
+          KeyframeTrack('opacity', [.easeIn(1.0, 500.ms)], initial: 0),
         ],
         styleBuilder: (values, style) {
           final scale = values.get('scale');
