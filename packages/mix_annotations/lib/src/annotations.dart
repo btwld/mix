@@ -47,10 +47,28 @@ class MixableStyler {
 
 const mixableStyler = MixableStyler();
 
+/// Annotation for configuring individual fields in Styler classes.
+///
+/// [ignoreSetter] when true, no setter method will be generated for this field.
+/// [setterType] optionally overrides the parameter type for the generated setter.
+///
+/// Example usage:
+/// ```dart
+/// @MixableField(ignoreSetter: true)
+/// final Prop<Matrix4>? $transform;
+///
+/// @MixableField(setterType: 'List<Shadow>')
+/// final Prop<List<Shadow>>? $shadows;
+/// ```
 class MixableField {
+  /// Whether to skip generating a setter for this field.
   final bool ignoreSetter;
 
-  const MixableField({this.ignoreSetter = false});
+  /// Optional type override for the setter parameter.
+  /// If not specified, the type is inferred from the field's Prop<T> type argument.
+  final Type? setterType;
+
+  const MixableField({this.ignoreSetter = false, this.setterType});
 }
 
 /// Annotation for configuring generated mixin for Mix classes.

@@ -98,13 +98,6 @@ class StylerFieldModel {
     final isRawList = rawListTypes.containsKey(name);
     final rawListElementType = rawListTypes[name];
 
-    // Determine effective public param type
-    final effectivePublicParamType = _getEffectivePublicParamType(
-      innerTypeName,
-      isRawList,
-      rawListElementType,
-    );
-
     // Check if has Mix type
     final hasMixType = mixTypeMap.containsKey(innerTypeName);
 
@@ -115,6 +108,22 @@ class StylerFieldModel {
     final ignoreSetter =
         mixableFieldAnnotation?.getField('ignoreSetter')?.toBoolValue() ??
         false;
+
+    // Get setterType override from annotation if specified
+    final setterTypeValue = mixableFieldAnnotation?.getField('setterType');
+    final setterTypeOverride = setterTypeValue
+        ?.toTypeValue()
+        ?.getDisplayString();
+
+    // Determine effective public param type
+    // Use @MixableField(setterType:) override if provided, otherwise compute from type
+    final effectivePublicParamType =
+        setterTypeOverride ??
+        _getEffectivePublicParamType(
+          innerTypeName,
+          isRawList,
+          rawListElementType,
+        );
 
     // Get field alias config
     final aliasConfig = fieldAliasMap['$stylerName.$name'];
