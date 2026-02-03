@@ -33,21 +33,14 @@ Future<BoxDecoration?> _boxDecorationFor(
   return container.decoration as BoxDecoration?;
 }
 
-Future<void> _expectShadowElevation(
+Future<void> _expectBoxShadows(
   WidgetTester tester,
   String classNames,
-  int elevation,
+  List<BoxShadow> expected,
 ) async {
   final decoration = await _boxDecorationFor(tester, classNames);
-  final expected = kElevationToShadow[elevation]!;
   final actual = decoration?.boxShadow;
-
-  expect(actual, isNotNull);
-  expect(actual, hasLength(expected.length));
-
-  for (var i = 0; i < expected.length; i++) {
-    expect(actual![i], equals(expected[i]));
-  }
+  expect(actual ?? const <BoxShadow>[], orderedEquals(expected));
 }
 
 /// Helper to parse animation config from class names.
@@ -196,6 +189,33 @@ void main() {
     final boxSize = tester.getSize(boxFinder);
     final rowSize = tester.getSize(find.byType(Row));
     expect(boxSize.width, rowSize.width);
+  });
+
+  testWidgets('w-full inside Row respects padded available width', (
+    tester,
+  ) async {
+    await _pumpSized(
+      tester,
+      Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: const [
+            Div(classNames: 'w-full bg-blue-500', child: SizedBox(height: 10)),
+          ],
+        ),
+      ),
+      width: 260,
+      height: 120,
+    );
+
+    expect(tester.takeException(), isNull);
+
+    final boxFinder = find.descendant(
+      of: find.byType(Row),
+      matching: find.byType(Container),
+    );
+    final boxSize = tester.getSize(boxFinder);
+    expect(boxSize.width, closeTo(260 - 32, 0.0001));
   });
 
   testWidgets('h-full does not crash inside Column', (tester) async {
@@ -579,28 +599,94 @@ void main() {
     expect(shadows, anyOf(isNull, isEmpty));
   });
 
-  testWidgets('shadow-sm maps to elevation 1', (tester) async {
-    await _expectShadowElevation(tester, 'shadow-sm', 1);
+  testWidgets('shadow-sm matches Tailwind preset', (tester) async {
+    await _expectBoxShadows(tester, 'shadow-sm', const [
+      BoxShadow(
+        offset: Offset(0, 1),
+        blurRadius: 2,
+        spreadRadius: 0,
+        color: Color(0x0D000000),
+      ),
+    ]);
   });
 
-  testWidgets('shadow maps to elevation 2', (tester) async {
-    await _expectShadowElevation(tester, 'shadow', 2);
+  testWidgets('shadow matches Tailwind preset', (tester) async {
+    await _expectBoxShadows(tester, 'shadow', const [
+      BoxShadow(
+        offset: Offset(0, 1),
+        blurRadius: 3,
+        spreadRadius: 0,
+        color: Color(0x1A000000),
+      ),
+      BoxShadow(
+        offset: Offset(0, 1),
+        blurRadius: 2,
+        spreadRadius: 0,
+        color: Color(0x0F000000),
+      ),
+    ]);
   });
 
-  testWidgets('shadow-md maps to elevation 3', (tester) async {
-    await _expectShadowElevation(tester, 'shadow-md', 3);
+  testWidgets('shadow-md matches Tailwind preset', (tester) async {
+    await _expectBoxShadows(tester, 'shadow-md', const [
+      BoxShadow(
+        offset: Offset(0, 4),
+        blurRadius: 6,
+        spreadRadius: -1,
+        color: Color(0x1A000000),
+      ),
+      BoxShadow(
+        offset: Offset(0, 2),
+        blurRadius: 4,
+        spreadRadius: -2,
+        color: Color(0x1A000000),
+      ),
+    ]);
   });
 
-  testWidgets('shadow-lg maps to elevation 6', (tester) async {
-    await _expectShadowElevation(tester, 'shadow-lg', 6);
+  testWidgets('shadow-lg matches Tailwind preset', (tester) async {
+    await _expectBoxShadows(tester, 'shadow-lg', const [
+      BoxShadow(
+        offset: Offset(0, 10),
+        blurRadius: 15,
+        spreadRadius: -3,
+        color: Color(0x1A000000),
+      ),
+      BoxShadow(
+        offset: Offset(0, 4),
+        blurRadius: 6,
+        spreadRadius: -4,
+        color: Color(0x1A000000),
+      ),
+    ]);
   });
 
-  testWidgets('shadow-xl maps to elevation 9', (tester) async {
-    await _expectShadowElevation(tester, 'shadow-xl', 9);
+  testWidgets('shadow-xl matches Tailwind preset', (tester) async {
+    await _expectBoxShadows(tester, 'shadow-xl', const [
+      BoxShadow(
+        offset: Offset(0, 20),
+        blurRadius: 25,
+        spreadRadius: -5,
+        color: Color(0x1A000000),
+      ),
+      BoxShadow(
+        offset: Offset(0, 8),
+        blurRadius: 10,
+        spreadRadius: -6,
+        color: Color(0x1A000000),
+      ),
+    ]);
   });
 
-  testWidgets('shadow-2xl maps to elevation 12', (tester) async {
-    await _expectShadowElevation(tester, 'shadow-2xl', 12);
+  testWidgets('shadow-2xl matches Tailwind preset', (tester) async {
+    await _expectBoxShadows(tester, 'shadow-2xl', const [
+      BoxShadow(
+        offset: Offset(0, 25),
+        blurRadius: 50,
+        spreadRadius: -12,
+        color: Color(0x40000000),
+      ),
+    ]);
   });
 
   testWidgets('gap-x-4 sets main-axis spacing for row flex', (tester) async {

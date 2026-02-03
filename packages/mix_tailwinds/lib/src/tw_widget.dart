@@ -706,6 +706,9 @@ bool _needsFlexItemDecorators(Set<String> tokens) {
     // Use bracket-aware colon finding to handle arbitrary values like bg-[color:red]
     final colonIdx = findLastColonOutsideBrackets(token);
     final base = colonIdx >= 0 ? token.substring(colonIdx + 1) : token;
+    if (base == 'w-full' || base == 'h-full') {
+      return true;
+    }
     if (base.startsWith('flex-') ||
         base.startsWith('basis-') ||
         base.startsWith('self-')) {
@@ -873,6 +876,19 @@ Widget _applyFlexItemDecorators(
   final axis = renderFlex.direction;
   var current = child;
 
+  final widthIntent = _resolveDimensionIntent(
+    tokens,
+    cfg,
+    viewportWidth,
+    isWidth: true,
+  );
+  final heightIntent = _resolveDimensionIntent(
+    tokens,
+    cfg,
+    viewportWidth,
+    isWidth: false,
+  );
+
   final basis = _resolveBasisValue(tokens, cfg, viewportWidth);
   if (basis != null) {
     current = _applyBasis(current, basis, axis);
@@ -884,6 +900,35 @@ Widget _applyFlexItemDecorators(
   }
 
   final behavior = _resolveFlexItemBehavior(tokens, cfg, viewportWidth);
+
+  // Handle w-full/h-full when used as a direct child of a Flex.
+  //
+  // In Flutter, non-flex children of Row/Column get unbounded constraints along
+  // the main axis. Our `w-full`/`h-full` sizing currently falls back to the
+  // viewport size in that case, which does not match CSS semantics inside flex
+  // containers (it should resolve against the flex container’s available space).
+  //
+  // To align with Tailwind/CSS behavior, treat w-full/h-full as a flex item that
+  // expands to fill the available space on the main axis, unless the user already
+  // provided explicit flex/basis behavior (or wrapped the widget in Flexible).
+  final isAlreadyFlexible =
+      context.findAncestorWidgetOfExactType<Flexible>() != null ||
+      context.findAncestorWidgetOfExactType<Expanded>() != null;
+  final wantsFullOnMainAxis =
+      axis == Axis.horizontal
+          ? widthIntent == _DimensionIntent.full
+          : heightIntent == _DimensionIntent.full;
+  if (!isAlreadyFlexible &&
+      wantsFullOnMainAxis &&
+      behavior == null &&
+      basis == null) {
+    current = _FlexParentDataWrapper(
+      flex: 1,
+      fit: FlexFit.tight,
+      child: current,
+    );
+  }
+
   if (behavior != null) {
     // Apply min constraint for CSS flex: 1 1 0% parity (shrink below content)
     if (behavior.applyMinConstraint) {
