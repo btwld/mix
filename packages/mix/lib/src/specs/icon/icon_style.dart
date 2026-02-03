@@ -34,7 +34,7 @@ class IconStyler extends MixStyler<IconStyler, IconSpec>
   final Prop<double>? $opticalSize;
 
   @override
-  @MixableField(ignoreSetter: true)
+  @MixableField(setterType: List<ShadowMix>)
   final Prop<List<Shadow>>? $shadows;
 
   @override
@@ -124,11 +124,6 @@ class IconStyler extends MixStyler<IconStyler, IconSpec>
   /// Sets single icon shadow
   IconStyler shadow(ShadowMix value) {
     return merge(IconStyler(shadows: [value]));
-  }
-
-  /// Sets icon shadows
-  IconStyler shadows(List<ShadowMix> value) {
-    return merge(IconStyler(shadows: value));
   }
 
   StyledIcon call({Key? key, IconData? icon, String? semanticLabel}) {
