@@ -233,6 +233,85 @@ const Map<TextShadowPreset, List<Shadow>> kTextShadowPresets = {
 };
 
 // =============================================================================
+// Box Shadow Presets (Tailwind parity)
+// =============================================================================
+
+final Map<String, List<BoxShadowMix>> kTailwindBoxShadowPresets = {
+  'shadow-sm': [
+    BoxShadowMix(
+      offset: const Offset(0, 1),
+      blurRadius: 2,
+      spreadRadius: 0,
+      color: const Color(0x0D000000), // 0.05
+    ),
+  ],
+  'shadow': [
+    BoxShadowMix(
+      offset: const Offset(0, 1),
+      blurRadius: 3,
+      spreadRadius: 0,
+      color: const Color(0x1A000000), // 0.10
+    ),
+    BoxShadowMix(
+      offset: const Offset(0, 1),
+      blurRadius: 2,
+      spreadRadius: 0,
+      color: const Color(0x0F000000), // 0.06
+    ),
+  ],
+  'shadow-md': [
+    BoxShadowMix(
+      offset: const Offset(0, 4),
+      blurRadius: 6,
+      spreadRadius: -1,
+      color: const Color(0x1A000000), // 0.10
+    ),
+    BoxShadowMix(
+      offset: const Offset(0, 2),
+      blurRadius: 4,
+      spreadRadius: -2,
+      color: const Color(0x1A000000), // 0.10
+    ),
+  ],
+  'shadow-lg': [
+    BoxShadowMix(
+      offset: const Offset(0, 10),
+      blurRadius: 15,
+      spreadRadius: -3,
+      color: const Color(0x1A000000), // 0.10
+    ),
+    BoxShadowMix(
+      offset: const Offset(0, 4),
+      blurRadius: 6,
+      spreadRadius: -4,
+      color: const Color(0x1A000000), // 0.10
+    ),
+  ],
+  'shadow-xl': [
+    BoxShadowMix(
+      offset: const Offset(0, 20),
+      blurRadius: 25,
+      spreadRadius: -5,
+      color: const Color(0x1A000000), // 0.10
+    ),
+    BoxShadowMix(
+      offset: const Offset(0, 8),
+      blurRadius: 10,
+      spreadRadius: -6,
+      color: const Color(0x1A000000), // 0.10
+    ),
+  ],
+  'shadow-2xl': [
+    BoxShadowMix(
+      offset: const Offset(0, 25),
+      blurRadius: 50,
+      spreadRadius: -12,
+      color: const Color(0x40000000), // 0.25
+    ),
+  ],
+};
+
+// =============================================================================
 // Property Enum
 // =============================================================================
 
@@ -964,31 +1043,31 @@ final Map<String, TwNamedPlugin> namedPlugins = {
   // Shadows
   'shadow-none': TwNamedPlugin(
     property: TwProperty.boxShadow,
-    value: const TwEnumValue<ElevationShadow?>(null),
+    value: const TwEnumValue<List<BoxShadowMix>?>(<BoxShadowMix>[]),
   ),
   'shadow-sm': TwNamedPlugin(
     property: TwProperty.boxShadow,
-    value: const TwEnumValue(ElevationShadow.one),
+    value: TwEnumValue(kTailwindBoxShadowPresets['shadow-sm']!),
   ),
   'shadow': TwNamedPlugin(
     property: TwProperty.boxShadow,
-    value: const TwEnumValue(ElevationShadow.two),
+    value: TwEnumValue(kTailwindBoxShadowPresets['shadow']!),
   ),
   'shadow-md': TwNamedPlugin(
     property: TwProperty.boxShadow,
-    value: const TwEnumValue(ElevationShadow.three),
+    value: TwEnumValue(kTailwindBoxShadowPresets['shadow-md']!),
   ),
   'shadow-lg': TwNamedPlugin(
     property: TwProperty.boxShadow,
-    value: const TwEnumValue(ElevationShadow.six),
+    value: TwEnumValue(kTailwindBoxShadowPresets['shadow-lg']!),
   ),
   'shadow-xl': TwNamedPlugin(
     property: TwProperty.boxShadow,
-    value: const TwEnumValue(ElevationShadow.nine),
+    value: TwEnumValue(kTailwindBoxShadowPresets['shadow-xl']!),
   ),
   'shadow-2xl': TwNamedPlugin(
     property: TwProperty.boxShadow,
-    value: const TwEnumValue(ElevationShadow.twelve),
+    value: TwEnumValue(kTailwindBoxShadowPresets['shadow-2xl']!),
   ),
 
   // Text shadows
