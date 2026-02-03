@@ -4,6 +4,7 @@
 library;
 
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 import 'package:source_gen/source_gen.dart';
@@ -20,24 +21,42 @@ class StylerGenerator extends GeneratorForAnnotation<MixableStyler> {
   const StylerGenerator();
 
   bool _isStyleClass(ClassElement element) {
-    // Check if class extends Style<T>
-    final supertype = element.supertype;
-    if (supertype == null) return false;
+    // Check if class extends Style<T> directly or through inheritance
+    InterfaceType? currentType = element.supertype;
 
-    final supertypeName = supertype.element.name;
+    while (currentType != null) {
+      final supertypeName = currentType.element.name;
+      if (supertypeName == 'Style') {
+        return true;
+      }
 
-    return supertypeName == 'Style';
+      // Move up the hierarchy using superclass (preserves type substitution)
+      currentType = currentType.superclass;
+    }
+
+    return false;
   }
 
   String? _extractSpecName(ClassElement classElement) {
-    final supertype = classElement.supertype;
-    if (supertype == null) return null;
+    // Traverse the hierarchy to find Style<T>
+    InterfaceType? currentType = classElement.supertype;
 
-    // Style<BoxSpec> -> BoxSpec
-    if (supertype.typeArguments.isNotEmpty) {
-      final specType = supertype.typeArguments.first;
+    while (currentType != null) {
+      final supertypeName = currentType.element.name;
 
-      return specType.getDisplayString();
+      // Found Style<T>, extract the type argument
+      if (supertypeName == 'Style') {
+        if (currentType.typeArguments.isNotEmpty) {
+          final specType = currentType.typeArguments.first;
+
+          return specType.getDisplayString();
+        }
+
+        return null;
+      }
+
+      // Move up the hierarchy using superclass (preserves type substitution)
+      currentType = currentType.superclass;
     }
 
     return null;

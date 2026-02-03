@@ -9,10 +9,7 @@ import '../../core/style.dart';
 import '../../core/style_spec.dart';
 import '../../modifiers/widget_modifier_config.dart';
 import '../../properties/painting/shadow_mix.dart';
-import '../../style/mixins/animation_style_mixin.dart';
-import '../../style/mixins/variant_style_mixin.dart';
-import '../../style/mixins/widget_modifier_style_mixin.dart';
-import '../../style/mixins/widget_state_variant_mixin.dart';
+import '../../style/abstracts/styler.dart';
 import 'icon_mutable_style.dart';
 import 'icon_spec.dart';
 import 'icon_widget.dart';
@@ -23,14 +20,8 @@ part 'icon_style.g.dart';
 typedef IconMix = IconStyler;
 
 @mixableStyler
-class IconStyler extends Style<IconSpec>
-    with
-        Diagnosticable,
-        WidgetModifierStyleMixin<IconStyler, IconSpec>,
-        VariantStyleMixin<IconStyler, IconSpec>,
-        WidgetStateVariantMixin<IconStyler, IconSpec>,
-        AnimationStyleMixin<IconStyler, IconSpec>,
-        _$IconStylerMixin {
+class IconStyler extends MixStyler<IconStyler, IconSpec>
+    with _$IconStylerMixin {
   @override
   final Prop<Color>? $color;
   @override

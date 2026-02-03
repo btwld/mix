@@ -13,7 +13,7 @@ import '../../properties/layout/edge_insets_geometry_mix.dart';
 import '../../properties/painting/border_mix.dart';
 import '../../properties/painting/border_radius_mix.dart';
 import '../../properties/painting/decoration_mix.dart';
-import '../../style/mixins/animation_style_mixin.dart';
+import '../../style/abstracts/styler.dart';
 import '../../style/mixins/border_radius_style_mixin.dart';
 import '../../style/mixins/border_style_mixin.dart';
 import '../../style/mixins/constraint_style_mixin.dart';
@@ -21,9 +21,6 @@ import '../../style/mixins/decoration_style_mixin.dart';
 import '../../style/mixins/shadow_style_mixin.dart';
 import '../../style/mixins/spacing_style_mixin.dart';
 import '../../style/mixins/transform_style_mixin.dart';
-import '../../style/mixins/variant_style_mixin.dart';
-import '../../style/mixins/widget_modifier_style_mixin.dart';
-import '../../style/mixins/widget_state_variant_mixin.dart';
 import '../box/box_spec.dart';
 import '../box/box_style.dart';
 import '../stack/stack_spec.dart';
@@ -45,12 +42,8 @@ typedef StackBoxMix = StackBoxStyler;
 /// Use this class to configure the attributes of a [StackBoxSpec] and pass it to
 /// the [StackBoxSpec] constructor.
 @MixableStyler(methods: GeneratedStylerMethods.skipSetters)
-class StackBoxStyler extends Style<StackBoxSpec>
+class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
     with
-        Diagnosticable,
-        WidgetModifierStyleMixin<StackBoxStyler, StackBoxSpec>,
-        VariantStyleMixin<StackBoxStyler, StackBoxSpec>,
-        WidgetStateVariantMixin<StackBoxStyler, StackBoxSpec>,
         BorderStyleMixin<StackBoxStyler>,
         BorderRadiusStyleMixin<StackBoxStyler>,
         ShadowStyleMixin<StackBoxStyler>,
@@ -58,7 +51,6 @@ class StackBoxStyler extends Style<StackBoxSpec>
         SpacingStyleMixin<StackBoxStyler>,
         TransformStyleMixin<StackBoxStyler>,
         ConstraintStyleMixin<StackBoxStyler>,
-        AnimationStyleMixin<StackBoxStyler, StackBoxSpec>,
         _$StackBoxStylerMixin {
   @override
   final Prop<StyleSpec<BoxSpec>>? $box;
