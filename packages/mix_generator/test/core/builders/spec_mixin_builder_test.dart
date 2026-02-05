@@ -1,7 +1,66 @@
+import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/nullability_suffix.dart';
+import 'package:analyzer/dart/element/type.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 import 'package:mix_generator/src/core/builders/spec_mixin_builder.dart';
 import 'package:mix_generator/src/core/models/annotation_config.dart';
+import 'package:mix_generator/src/core/models/field_model.dart';
+import 'package:mix_generator/src/core/registry/mix_type_registry.dart';
 import 'package:test/test.dart';
+
+// Test helper to create FieldModel instances for testing
+FieldModel createTestFieldModel({
+  required String name,
+  required String effectiveSpecType,
+  bool isNullable = false,
+  String? typeName,
+  bool isLerpable = false,
+}) {
+  return FieldModel(
+    name: name,
+    dartType: _FakeDartType(effectiveSpecType, isNullable),
+    element: _FakeFieldElement(name),
+    isNullable: isNullable,
+    typeName: typeName ?? effectiveSpecType.replaceAll('?', ''),
+    isList: false,
+    effectiveSpecType: effectiveSpecType,
+    effectivePublicParamType: effectiveSpecType,
+    isLerpable: isLerpable,
+    propWrapperKind: PropWrapperKind.none,
+    isWrappedInProp: false,
+    diagnosticKind: DiagnosticKind.diagnostics,
+    generateSetter: true,
+  );
+}
+
+// Minimal fake DartType for testing
+class _FakeDartType implements DartType {
+  final String _displayString;
+  final bool _isNullable;
+
+  _FakeDartType(this._displayString, this._isNullable);
+
+  @override
+  String getDisplayString({bool withNullability = true}) => _displayString;
+
+  @override
+  NullabilitySuffix get nullabilitySuffix =>
+      _isNullable ? NullabilitySuffix.question : NullabilitySuffix.none;
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => null;
+}
+
+// Minimal fake FieldElement for testing
+class _FakeFieldElement implements FieldElement {
+  @override
+  final String name;
+
+  _FakeFieldElement(this.name);
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => null;
+}
 
 void main() {
   // Default config that generates all methods
@@ -216,6 +275,183 @@ void main() {
         expect(code, contains('BoxSpec copyWith('));
         expect(code, isNot(contains('BoxSpec lerp(')));
         expect(code, isNot(contains('List<Object?> get props =>')));
+      });
+    });
+
+    group('copyWith optional parameters', () {
+      test('makes nullable field types optional in copyWith', () {
+        final fields = [
+          createTestFieldModel(
+            name: 'color',
+            effectiveSpecType: 'Color?',
+            isNullable: true,
+          ),
+          createTestFieldModel(
+            name: 'size',
+            effectiveSpecType: 'double?',
+            isNullable: true,
+          ),
+        ];
+
+        final builder = SpecMixinBuilder(
+          specName: 'TestSpec',
+          fields: fields,
+          config: defaultConfig,
+        );
+        final code = builder.build();
+
+        // Nullable types should remain nullable (already optional)
+        expect(code, contains('Color? color,'));
+        expect(code, contains('double? size,'));
+      });
+
+      test('makes non-nullable field types optional in copyWith', () {
+        final fields = [
+          createTestFieldModel(
+            name: 'name',
+            effectiveSpecType: 'String',
+            isNullable: false,
+          ),
+          createTestFieldModel(
+            name: 'count',
+            effectiveSpecType: 'int',
+            isNullable: false,
+          ),
+        ];
+
+        final builder = SpecMixinBuilder(
+          specName: 'TestSpec',
+          fields: fields,
+          config: defaultConfig,
+        );
+        final code = builder.build();
+
+        // Non-nullable types should become nullable (optional) in copyWith
+        expect(code, contains('String? name,'));
+        expect(code, contains('int? count,'));
+        // Should NOT contain non-nullable parameters
+        expect(code, isNot(contains('String name,')));
+        expect(code, isNot(contains('int count,')));
+      });
+
+      test('handles mixed nullable and non-nullable fields', () {
+        final fields = [
+          createTestFieldModel(
+            name: 'requiredField',
+            effectiveSpecType: 'String',
+            isNullable: false,
+          ),
+          createTestFieldModel(
+            name: 'optionalField',
+            effectiveSpecType: 'String?',
+            isNullable: true,
+          ),
+        ];
+
+        final builder = SpecMixinBuilder(
+          specName: 'MixedSpec',
+          fields: fields,
+          config: defaultConfig,
+        );
+        final code = builder.build();
+
+        // Both should be optional (nullable) in copyWith
+        expect(code, contains('String? requiredField,'));
+        expect(code, contains('String? optionalField,'));
+      });
+
+      test('handles complex types that are non-nullable', () {
+        final fields = [
+          createTestFieldModel(
+            name: 'decoration',
+            effectiveSpecType: 'BoxDecoration',
+            isNullable: false,
+          ),
+          createTestFieldModel(
+            name: 'alignment',
+            effectiveSpecType: 'AlignmentGeometry',
+            isNullable: false,
+          ),
+        ];
+
+        final builder = SpecMixinBuilder(
+          specName: 'ComplexSpec',
+          fields: fields,
+          config: defaultConfig,
+        );
+        final code = builder.build();
+
+        // Non-nullable complex types should become optional
+        expect(code, contains('BoxDecoration? decoration,'));
+        expect(code, contains('AlignmentGeometry? alignment,'));
+      });
+
+      test('handles list types correctly', () {
+        final fields = [
+          createTestFieldModel(
+            name: 'shadows',
+            effectiveSpecType: 'List<Shadow>',
+            isNullable: false,
+          ),
+          createTestFieldModel(
+            name: 'nullableShadows',
+            effectiveSpecType: 'List<Shadow>?',
+            isNullable: true,
+          ),
+        ];
+
+        final builder = SpecMixinBuilder(
+          specName: 'ListSpec',
+          fields: fields,
+          config: defaultConfig,
+        );
+        final code = builder.build();
+
+        // Non-nullable list should become optional
+        expect(code, contains('List<Shadow>? shadows,'));
+        // Already nullable list stays nullable
+        expect(code, contains('List<Shadow>? nullableShadows,'));
+      });
+
+      test('uses null coalescing in copyWith body', () {
+        final fields = [
+          createTestFieldModel(
+            name: 'value',
+            effectiveSpecType: 'String',
+            isNullable: false,
+          ),
+        ];
+
+        final builder = SpecMixinBuilder(
+          specName: 'TestSpec',
+          fields: fields,
+          config: defaultConfig,
+        );
+        final code = builder.build();
+
+        // Should use ?? for fallback to current value
+        expect(code, contains('value: value ?? this.value,'));
+      });
+
+      test('does not double-add nullable suffix', () {
+        final fields = [
+          createTestFieldModel(
+            name: 'color',
+            effectiveSpecType: 'Color?',
+            isNullable: true,
+          ),
+        ];
+
+        final builder = SpecMixinBuilder(
+          specName: 'TestSpec',
+          fields: fields,
+          config: defaultConfig,
+        );
+        final code = builder.build();
+
+        // Should NOT have double question marks
+        expect(code, isNot(contains('Color?? color')));
+        expect(code, contains('Color? color,'));
       });
     });
   });

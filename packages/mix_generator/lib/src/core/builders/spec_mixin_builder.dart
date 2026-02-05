@@ -38,9 +38,12 @@ class SpecMixinBuilder {
     buffer.writeln('  @override');
     buffer.writeln('  $specName copyWith({');
 
-    // Parameters
+    // Parameters - always optional (nullable) for copyWith
     for (final field in fields) {
-      buffer.writeln('    ${field.effectiveSpecType} ${field.name},');
+      final type = field.effectiveSpecType;
+      // Ensure type is nullable for optional parameter
+      final optionalType = type.endsWith('?') ? type : '$type?';
+      buffer.writeln('    $optionalType ${field.name},');
     }
 
     buffer.writeln('  }) {');
