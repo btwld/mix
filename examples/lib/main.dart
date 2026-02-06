@@ -7,7 +7,8 @@ import 'demo_registry.dart';
 import 'multi_view_app.dart';
 
 // Conditional import for web-specific APIs
-import 'multi_view_stub.dart' if (dart.library.js_interop) 'multi_view_web.dart'
+import 'multi_view_stub.dart'
+    if (dart.library.js_interop) 'multi_view_web.dart'
     as multi_view;
 
 void main() {

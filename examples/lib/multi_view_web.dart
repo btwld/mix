@@ -129,8 +129,7 @@ Object? _jsToValue(
   if (jsValue.isA<JSNumber>()) return (jsValue as JSNumber).toDartDouble;
   if (jsValue.isA<JSBoolean>()) return (jsValue as JSBoolean).toDart;
   if (jsValue.isA<JSArray>()) {
-    return (jsValue as JSArray)
-        .toDart
+    return (jsValue as JSArray).toDart
         .map((value) => _jsToValue(value, depth: depth + 1, maxDepth: maxDepth))
         .toList();
   }

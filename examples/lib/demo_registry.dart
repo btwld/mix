@@ -128,7 +128,8 @@ class DemoRegistry {
     DemoEntry(
       id: 'text-directives',
       title: 'Text - Directives',
-      description: 'Text transformations: uppercase, lowercase, capitalize, etc.',
+      description:
+          'Text transformations: uppercase, lowercase, capitalize, etc.',
       category: _widgets,
       builder: (_) => const text_directives.Example(),
     ),
@@ -311,8 +312,9 @@ class _UnknownDemo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Sanitize demoId to prevent excessively long strings
-    final sanitizedId =
-        demoId.length > 100 ? '${demoId.substring(0, 100)}...' : demoId;
+    final sanitizedId = demoId.length > 100
+        ? '${demoId.substring(0, 100)}...'
+        : demoId;
 
     return Center(
       child: Padding(
@@ -322,10 +324,7 @@ class _UnknownDemo extends StatelessWidget {
           'Available demos:\n'
           '${DemoRegistry.availableDemos.join('\n')}',
           textAlign: TextAlign.center,
-          style: const TextStyle(
-            color: Color(0xFFEF4444),
-            fontSize: 14,
-          ),
+          style: const TextStyle(color: Color(0xFFEF4444), fontSize: 14),
         ),
       ),
     );
@@ -363,19 +362,13 @@ class _ErrorDemo extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               'Demo: $demoId',
-              style: const TextStyle(
-                color: Color(0xFF9CA3AF),
-                fontSize: 12,
-              ),
+              style: const TextStyle(color: Color(0xFF9CA3AF), fontSize: 12),
             ),
             const SizedBox(height: 8),
             Text(
               error.toString(),
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: Color(0xFFEF4444),
-                fontSize: 12,
-              ),
+              style: const TextStyle(color: Color(0xFFEF4444), fontSize: 12),
               maxLines: 5,
               overflow: TextOverflow.ellipsis,
             ),

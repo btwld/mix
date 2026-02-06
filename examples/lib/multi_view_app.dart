@@ -3,7 +3,8 @@ import 'dart:ui' as ui;
 import 'package:flutter/widgets.dart';
 
 import 'demo_registry.dart';
-import 'multi_view_stub.dart' if (dart.library.js_interop) 'multi_view_web.dart'
+import 'multi_view_stub.dart'
+    if (dart.library.js_interop) 'multi_view_web.dart'
     as multi_view;
 
 /// Multi-view app wrapper that renders different demos based on view's initialData.
@@ -20,7 +21,8 @@ class MultiViewApp extends StatefulWidget {
   State<MultiViewApp> createState() => _MultiViewAppState();
 }
 
-class _MultiViewAppState extends State<MultiViewApp> with WidgetsBindingObserver {
+class _MultiViewAppState extends State<MultiViewApp>
+    with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
