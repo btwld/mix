@@ -1,20 +1,33 @@
 import 'package:flutter/material.dart';
 
 /// Runtime configuration for translating Tailwind-like tokens into Mix stylers.
+///
+/// Maps are stored as unmodifiable to ensure `updateShouldNotify` identity
+/// comparison works correctly. To change config, create a new TwConfig instance.
 class TwConfig {
-  const TwConfig({
-    required this.space,
-    required this.radii,
-    required this.borderWidths,
-    required this.breakpoints,
-    required this.fontSizes,
-    required this.colors,
-    required this.durations,
-    required this.delays,
-    required this.scales,
-    required this.rotations,
-    required this.blurs,
-  });
+  TwConfig({
+    required Map<String, double> space,
+    required Map<String, double> radii,
+    required Map<String, double> borderWidths,
+    required Map<String, double> breakpoints,
+    required Map<String, double> fontSizes,
+    required Map<String, Color> colors,
+    required Map<String, int> durations,
+    required Map<String, int> delays,
+    required Map<String, double> scales,
+    required Map<String, double> rotations,
+    required Map<String, double> blurs,
+  })  : space = Map.unmodifiable(space),
+        radii = Map.unmodifiable(radii),
+        borderWidths = Map.unmodifiable(borderWidths),
+        breakpoints = Map.unmodifiable(breakpoints),
+        fontSizes = Map.unmodifiable(fontSizes),
+        colors = Map.unmodifiable(colors),
+        durations = Map.unmodifiable(durations),
+        delays = Map.unmodifiable(delays),
+        scales = Map.unmodifiable(scales),
+        rotations = Map.unmodifiable(rotations),
+        blurs = Map.unmodifiable(blurs);
 
   final Map<String, double> space;
   final Map<String, double> radii;
@@ -132,7 +145,7 @@ class TwConfig {
     );
   }
 
-  static const TwConfig _standard = TwConfig(
+  static final TwConfig _standard = TwConfig(
     space: {
       '0': 0,
       'px': 1,

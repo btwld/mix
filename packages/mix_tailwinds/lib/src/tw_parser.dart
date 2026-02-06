@@ -216,27 +216,8 @@ class TwResolver {
   final TokenWarningCallback? onUnknownVariant;
 
   /// Finds the last colon that's not inside square brackets.
-  /// This handles tokens like `hover:bg-[color:var(--x)]` correctly.
-  /// Returns -1 if brackets are malformed (unclosed or extra closing).
-  int _findLastPrefixColon(String token) {
-    var bracketDepth = 0;
-    var lastColonOutside = -1;
-    for (var i = 0; i < token.length; i++) {
-      final c = token[i];
-      if (c == '[') {
-        bracketDepth++;
-      } else if (c == ']') {
-        bracketDepth--;
-        // Extra closing bracket - malformed
-        if (bracketDepth < 0) return -1;
-      } else if (c == ':' && bracketDepth == 0) {
-        lastColonOutside = i;
-      }
-    }
-    // Unclosed brackets - malformed, treat as no prefix
-    if (bracketDepth != 0) return -1;
-    return lastColonOutside;
-  }
+  /// Delegates to shared utility to avoid duplicate logic.
+  int _findLastPrefixColon(String token) => findLastColonOutsideBrackets(token);
 
   /// Resolves a single token to parsed classes.
   List<TwParsedClass>? resolveToken(String token) {

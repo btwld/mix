@@ -18,8 +18,7 @@ const _boxUtilityPrefixes = [
   'border', // border (includes border-*, rounded-*)
   'rounded', // border radius
   'shadow', // box shadow
-  'ring', // ring
-  'opacity-', // opacity
+  // Note: 'ring' and 'opacity-' removed until implemented
 ];
 
 /// Check if classNames contain any box utilities that require wrapping.
@@ -146,6 +145,67 @@ FlexBoxSpec _flexBoxSpecWithoutMargin(FlexBoxSpec spec) {
 
 /// A Box widget with CSS-style margin semantics.
 ///
+// =============================================================================
+// Flex Scope (boundedness propagation)
+// =============================================================================
+
+/// Exposes flex container context to children for boundedness gating.
+///
+/// Injected by [_buildResponsiveFlex] inside its [LayoutBuilder], where the
+/// parent constraints are known. Children read this via [maybeOf] to decide
+/// whether `flex > 0` wrappers are safe to apply.
+class _TwFlexScope extends InheritedWidget {
+  const _TwFlexScope({
+    required this.axis,
+    required this.isMainAxisBounded,
+    required super.child,
+  });
+
+  final Axis axis;
+  final bool isMainAxisBounded;
+
+  static _TwFlexScope? maybeOf(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<_TwFlexScope>();
+
+  @override
+  bool updateShouldNotify(_TwFlexScope oldWidget) =>
+      axis != oldWidget.axis ||
+      isMainAxisBounded != oldWidget.isMainAxisBounded;
+}
+
+/// Determines if the parent flex container's main axis is bounded.
+///
+/// Priority:
+/// 1. [_TwFlexScope] (accurate, set at LayoutBuilder time) — only used when
+///    scope axis matches [axis] to prevent nested mismatch.
+/// 2. [RenderFlex.constraints] from previous layout pass (covers native
+///    Column/Row parents that have no scope).
+/// 3. Default `true` (first frame, conservative — prevents false negatives).
+bool _resolveIsMainAxisBounded(
+  BuildContext context,
+  RenderFlex renderFlex,
+  Axis axis,
+) {
+  final scope = _TwFlexScope.maybeOf(context);
+  if (scope != null && scope.axis == axis) {
+    return scope.isMainAxisBounded;
+  }
+
+  // Fallback: read RenderFlex constraints directly (covers native parents)
+  if (renderFlex.hasSize) {
+    return axis == Axis.horizontal
+        ? renderFlex.constraints.hasBoundedWidth
+        : renderFlex.constraints.hasBoundedHeight;
+  }
+
+  // First frame, no layout yet — assume bounded (safe default)
+  return true;
+}
+
+// =============================================================================
+// CSS Semantic Widgets
+// =============================================================================
+
 /// In CSS, margin is outside the hit-test area - hover/press only triggers
 /// on the border-box (content + padding + border). This widget extracts
 /// margin from the BoxSpec and applies it OUTSIDE the MixInteractionDetector.
@@ -622,6 +682,9 @@ Widget _buildResponsiveFlex({
     builder: (context, constraints) {
       final width = _effectiveWidth(constraints, context);
       final axis = _resolveFlexAxisResponsive(tokens, cfg, width);
+      final isMainAxisBounded = axis == Axis.horizontal
+          ? constraints.hasBoundedWidth
+          : constraints.hasBoundedHeight;
       final baseGap = _resolveResponsiveGap(tokens, cfg, width, 'gap-');
       final gapX = _resolveResponsiveGap(tokens, cfg, width, 'gap-x-');
       final gapY = _resolveResponsiveGap(tokens, cfg, width, 'gap-y-');
@@ -640,9 +703,13 @@ Widget _buildResponsiveFlex({
       final resolvedChildren = flexChildren;
 
       // Use CSS semantic flex box - margin is outside hover/press detection area
-      Widget current = _CssSemanticFlexBox(
-        style: style,
-        children: resolvedChildren,
+      Widget current = _TwFlexScope(
+        axis: axis,
+        isMainAxisBounded: isMainAxisBounded,
+        child: _CssSemanticFlexBox(
+          style: style,
+          children: resolvedChildren,
+        ),
       );
       current = _applyContainerSizingResponsive(
         current,
@@ -711,7 +778,8 @@ bool _needsFlexItemDecorators(Set<String> tokens) {
     }
     if (base.startsWith('flex-') ||
         base.startsWith('basis-') ||
-        base.startsWith('self-')) {
+        base.startsWith('self-') ||
+        base.startsWith('shrink')) {
       return true;
     }
   }
@@ -874,6 +942,8 @@ Widget _applyFlexItemDecorators(
   }
 
   final axis = renderFlex.direction;
+  final isMainAxisBounded =
+      _resolveIsMainAxisBounded(context, renderFlex, axis);
   var current = child;
 
   final widthIntent = _resolveDimensionIntent(
@@ -920,7 +990,8 @@ Widget _applyFlexItemDecorators(
   if (!isAlreadyFlexible &&
       wantsFullOnMainAxis &&
       behavior == null &&
-      basis == null) {
+      basis == null &&
+      isMainAxisBounded) {
     current = _FlexParentDataWrapper(
       flex: 1,
       fit: FlexFit.tight,
@@ -929,18 +1000,21 @@ Widget _applyFlexItemDecorators(
   }
 
   if (behavior != null) {
-    // Apply min constraint for CSS flex: 1 1 0% parity (shrink below content)
-    if (behavior.applyMinConstraint) {
-      current = ConstrainedBox(
-        constraints: const BoxConstraints(minWidth: 0, minHeight: 0),
+    if (!isMainAxisBounded && behavior.flex > 0) {
+      // CSS parity: flex-grow has no effect in unbounded context. Skip.
+    } else {
+      if (behavior.applyMinConstraint) {
+        current = ConstrainedBox(
+          constraints: const BoxConstraints(minWidth: 0, minHeight: 0),
+          child: current,
+        );
+      }
+      current = _FlexParentDataWrapper(
+        flex: behavior.flex,
+        fit: behavior.fit,
         child: current,
       );
     }
-    current = _FlexParentDataWrapper(
-      flex: behavior.flex,
-      fit: behavior.fit,
-      child: current,
-    );
   }
 
   return current;
@@ -1177,13 +1251,17 @@ _FlexItemBehavior? _resolveFlexItemBehavior(
       ),
       'flex-auto' => const _FlexItemBehavior(flex: 1, fit: FlexFit.loose),
       'flex-initial' => const _FlexItemBehavior(flex: 0, fit: FlexFit.loose),
-      // flex-none / shrink-0: maintain intrinsic size (don't grow or fill)
+      // flex-none / shrink-0: maintain intrinsic size (don't shrink)
       'flex-none' ||
       'flex-shrink-0' ||
       'shrink-0' => const _FlexItemBehavior(flex: 0, fit: FlexFit.loose),
-      // Allow shrinking (default behavior)
+      // shrink: allow item to shrink below intrinsic size when constrained
       'flex-shrink' ||
-      'shrink' => const _FlexItemBehavior(flex: 0, fit: FlexFit.loose),
+      'shrink' => _FlexItemBehavior(
+        flex: 1,
+        fit: FlexFit.tight,
+        applyMinConstraint: !hasMinWidthAuto,
+      ),
       _ => null,
     };
 
