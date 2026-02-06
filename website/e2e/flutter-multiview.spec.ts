@@ -52,10 +52,14 @@ test.describe('FlutterMultiView', () => {
 
     // Container should have role="application" for screen readers
     const container = wrapper.locator('[role="application"]');
-    await expect(container).toBeVisible();
+    await expect(container).toBeAttached();
 
     // Should have aria-label for accessibility
     await expect(container).toHaveAttribute('aria-label', /Flutter demo/);
+
+    // Once the engine is ready, the container becomes visible
+    await expect(container).toHaveAttribute('data-state', 'ready', { timeout: 45000 });
+    await expect(container).toBeVisible();
   });
 
   test('shows loading indicator during initialization', async ({ page }) => {

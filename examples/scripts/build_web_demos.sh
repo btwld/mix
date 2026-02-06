@@ -101,16 +101,17 @@ rm -rf "$BUILD_DIR/canvaskit"
 # This allows FlutterEmbed.tsx to load config dynamically instead of hard-coding
 # the engineRevision, which would drift when Flutter is upgraded.
 # ============================================================================
-FLUTTER_JS="$BUILD_DIR/flutter.js"
+BOOTSTRAP_JS="$BUILD_DIR/flutter_bootstrap.js"
 CONFIG_OUTPUT="$BUILD_DIR/flutter-build-config.json"
 
-if [ -f "$FLUTTER_JS" ]; then
-    # Extract engineRevision from flutter.js
-    # The format is: engineRevision: "abc123..."
-    ENGINE_REVISION=$(grep -oE 'engineRevision:\s*"[^"]+"' "$FLUTTER_JS" | grep -oE '"[^"]+"' | tr -d '"' | head -1)
+if [ -f "$BOOTSTRAP_JS" ]; then
+    # Extract engineRevision from flutter_bootstrap.js
+    # In Flutter 3.38+, the buildConfig JSON is in flutter_bootstrap.js:
+    #   _flutter.buildConfig = {"engineRevision":"abc123...","builds":[...]};
+    ENGINE_REVISION=$(grep -oE '"engineRevision":"[^"]+"' "$BOOTSTRAP_JS" | grep -oE '"[^"]+"$' | tr -d '"' | head -1)
 
     if [ -z "$ENGINE_REVISION" ]; then
-        echo "Error: Could not extract engineRevision from flutter.js"
+        echo "Error: Could not extract engineRevision from flutter_bootstrap.js"
         exit 1
     fi
 
@@ -129,7 +130,7 @@ if [ -f "$FLUTTER_JS" ]; then
 EOF
     echo "Generated flutter-build-config.json (engineRevision: $ENGINE_REVISION)"
 else
-    echo "Error: flutter.js not found in build output"
+    echo "Error: flutter_bootstrap.js not found in build output"
     exit 1
 fi
 
