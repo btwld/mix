@@ -34,10 +34,7 @@ Future<void> _pumpAtWidth(
             height: height,
             child: ColoredBox(
               color: const Color(0xFFF3F4F6),
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: child,
-              ),
+              child: Padding(padding: const EdgeInsets.all(16), child: child),
             ),
           ),
         ),
@@ -81,13 +78,9 @@ class _ShrinkSample extends StatelessWidget {
           classNames: 'flex w-44 gap-2 rounded bg-gray-100 p-2',
           children: [
             // This one should shrink
-            Div(
-              classNames: 'shrink w-32 h-10 bg-blue-500 rounded',
-            ),
+            Div(classNames: 'shrink w-32 h-10 bg-blue-500 rounded'),
             // This one should NOT shrink
-            Div(
-              classNames: 'shrink-0 w-24 h-10 bg-emerald-400 rounded',
-            ),
+            Div(classNames: 'shrink-0 w-24 h-10 bg-emerald-400 rounded'),
           ],
         ),
       ],

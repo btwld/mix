@@ -34,10 +34,7 @@ Future<void> _pumpAtWidth(
             height: height,
             child: ColoredBox(
               color: const Color(0xFFF3F4F6),
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: child,
-              ),
+              child: Padding(padding: const EdgeInsets.all(16), child: child),
             ),
           ),
         ),
@@ -85,10 +82,7 @@ class _RingSample extends StatelessWidget {
                   classNames:
                       'w-16 h-16 bg-white ring ring-blue-500 rounded-lg',
                 ),
-                const P(
-                  text: 'ring',
-                  classNames: 'text-xs text-gray-500',
-                ),
+                const P(text: 'ring', classNames: 'text-xs text-gray-500'),
               ],
             ),
             Div(

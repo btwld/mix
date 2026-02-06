@@ -17,17 +17,17 @@ class TwConfig {
     required Map<String, double> scales,
     required Map<String, double> rotations,
     required Map<String, double> blurs,
-  })  : space = Map.unmodifiable(space),
-        radii = Map.unmodifiable(radii),
-        borderWidths = Map.unmodifiable(borderWidths),
-        breakpoints = Map.unmodifiable(breakpoints),
-        fontSizes = Map.unmodifiable(fontSizes),
-        colors = Map.unmodifiable(colors),
-        durations = Map.unmodifiable(durations),
-        delays = Map.unmodifiable(delays),
-        scales = Map.unmodifiable(scales),
-        rotations = Map.unmodifiable(rotations),
-        blurs = Map.unmodifiable(blurs);
+  }) : space = Map.unmodifiable(space),
+       radii = Map.unmodifiable(radii),
+       borderWidths = Map.unmodifiable(borderWidths),
+       breakpoints = Map.unmodifiable(breakpoints),
+       fontSizes = Map.unmodifiable(fontSizes),
+       colors = Map.unmodifiable(colors),
+       durations = Map.unmodifiable(durations),
+       delays = Map.unmodifiable(delays),
+       scales = Map.unmodifiable(scales),
+       rotations = Map.unmodifiable(rotations),
+       blurs = Map.unmodifiable(blurs);
 
   final Map<String, double> space;
   final Map<String, double> radii;

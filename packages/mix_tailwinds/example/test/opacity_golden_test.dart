@@ -34,10 +34,7 @@ Future<void> _pumpAtWidth(
             height: height,
             child: ColoredBox(
               color: const Color(0xFFF3F4F6),
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: child,
-              ),
+              child: Padding(padding: const EdgeInsets.all(16), child: child),
             ),
           ),
         ),
@@ -79,13 +76,9 @@ class _OpacitySample extends StatelessWidget {
           classNames: 'flex gap-4',
           children: [
             // Full opacity - should be solid blue
-            Div(
-              classNames: 'w-24 h-12 bg-blue-500 opacity-100 rounded',
-            ),
+            Div(classNames: 'w-24 h-12 bg-blue-500 opacity-100 rounded'),
             // Half opacity - should show background through
-            Div(
-              classNames: 'w-24 h-12 bg-blue-500 opacity-50 rounded',
-            ),
+            Div(classNames: 'w-24 h-12 bg-blue-500 opacity-50 rounded'),
           ],
         ),
       ],

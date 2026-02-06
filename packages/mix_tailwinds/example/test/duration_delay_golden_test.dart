@@ -39,10 +39,7 @@ Future<void> _pumpScene(
             height: height,
             child: ColoredBox(
               color: const Color(0xFFF3F4F6),
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: child,
-              ),
+              child: Padding(padding: const EdgeInsets.all(16), child: child),
             ),
           ),
         ),
@@ -98,10 +95,7 @@ void main() {
 }
 
 class _AnimatedColorBox extends StatefulWidget {
-  const _AnimatedColorBox({
-    required this.label,
-    required this.timingClass,
-  });
+  const _AnimatedColorBox({required this.label, required this.timingClass});
 
   final String label;
   final String timingClass;
