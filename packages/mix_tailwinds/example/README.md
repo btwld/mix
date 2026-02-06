@@ -20,7 +20,7 @@ flutter pub get
 flutter run -d macos   # or chrome/ios/android as needed
 ```
 
-The slider across the top constrains the preview width between 320 px and 1040 px so you can quickly check behavior below and above the Tailwind `md` breakpoint (768 px).
+The slider across the top constrains the preview width between 320 px and 1040 px so you can quickly check behavior below and above the Tailwind `md` breakpoint (768 px).
 
 ## Run the real Tailwind sample
 
@@ -35,47 +35,37 @@ python3 -m http.server 5173 --directory real_tailwind
 
 Because the document pulls Tailwind from the official CDN, no extra tooling is required. Resize the browser window to the same widths you used in the Flutter app; every class list is identical between both experiences.
 
-## Capture Tailwind screenshots automatically
+## Visual comparison tool
 
-The Next.js docs site now ships with a Playwright-based helper that boots the Tailwind example page and exports PNGs at a few canonical widths. This gives us artifacts we can diff against Flutter renders (manually for now, or via future tooling).
+A Playwright-based tool captures screenshots of both the Flutter and Tailwind versions at canonical widths (480, 768, 1024 px), then diffs them with `pixelmatch`.
 
-1. Install the Playwright browser binary once:
-
-   ```bash
-   cd website
-   yarn install
-   npx playwright install chromium
-   ```
-
-2. Generate screenshots (defaults: 480 px, 768 px, 1024 px):
-
-   ```bash
-   yarn screenshots:tailwind
-   # override the dev-server port if needed
-   TAILWIND_SCREENSHOT_PORT=4500 yarn screenshots:tailwind
-   ```
-
-The PNGs land in `website/screenshots/tailwind-plan-card/`. They’re `.gitignore`’d so you can diff locally or feed them into whatever image comparison pipeline you prefer before committing.
-
-## Generate Flutter goldens + compare
-
-1. Render the Flutter surface into golden PNGs (same widths):
+1. Start the Flutter web server:
 
    ```bash
    cd packages/mix_tailwinds/example
-   flutter test --update-goldens test/parity_golden_test.dart
+   flutter run -d web-server --web-port=8089 --profile
    ```
 
-   The outputs live under `packages/mix_tailwinds/example/test/goldens/`.
-
-2. With both sets of PNGs present, run the automated diff:
+2. Run the comparison:
 
    ```bash
-   cd website
-   yarn compare:tailwind
+   cd packages/mix_tailwinds/tool/visual-comparison
+   npm install   # first time only
+   npm run compare
    ```
 
-   The script crops heights to match, runs `pixelmatch`, and writes per-width diff images to `website/screenshots/tailwind-plan-card/diff/` while printing mismatch percentages to the console.
+Screenshots and diff images are saved to `packages/mix_tailwinds/visual-comparison/`.
+
+## Generate Flutter goldens
+
+Render the Flutter surface into golden PNGs (same widths):
+
+```bash
+cd packages/mix_tailwinds/example
+flutter test --update-goldens test/parity_golden_test.dart
+```
+
+The outputs live under `packages/mix_tailwinds/example/test/goldens/`.
 
 ## Notes
 

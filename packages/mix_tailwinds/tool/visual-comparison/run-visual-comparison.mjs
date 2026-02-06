@@ -16,10 +16,11 @@ import { chromium } from 'playwright';
 import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
+import { fileURLToPath } from 'node:url';
 import pixelmatch from 'pixelmatch';
 import { PNG } from 'pngjs';
 
-const __dirname = path.dirname(new URL(import.meta.url).pathname);
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const packageRoot = path.resolve(__dirname, '../..'); // packages/mix_tailwinds
 const baseScreenshotDir = path.join(packageRoot, 'visual-comparison');
 
