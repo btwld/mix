@@ -62,7 +62,10 @@ jobs:
     with:
       packages_folder_path: "packages"
       # packages: ${{ needs.prepare-packages.outputs.packages }}
-      packages: "mix"
+      packages: |
+        mix
+        mix_annotations
+        mix_generator
     permissions:
       id-token: write
       contents: read
