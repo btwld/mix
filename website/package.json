@@ -3,10 +3,7 @@
     "dev": "next --turbopack",
     "build": "next build",
     "start": "next start",
-    "postbuild": "pagefind --site .next/server/app --output-path public/_pagefind",
-    "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui",
-    "test:e2e:update": "playwright test --update-snapshots"
+    "postbuild": "pagefind --site .next/server/app --output-path public/_pagefind"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.1.13",
@@ -22,7 +19,6 @@
     "tailwindcss": "^4.1.13"
   },
   "devDependencies": {
-    "@playwright/test": "^1.57.0",
     "@types/node": "24.5.0",
     "@types/react": "19.1.13",
     "eslint": "^9.35.0",

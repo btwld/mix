@@ -11,8 +11,4 @@ export default {
     widgets: {
         title: 'Widgets',
     },
-    test: {
-        title: 'Test',
-        display: 'hidden',
-    },
 }
