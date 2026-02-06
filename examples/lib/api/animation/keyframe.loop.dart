@@ -62,7 +62,7 @@ class _DemoAppState extends State<DemoApp> {
       .keyframeAnimation(
         trigger: trigger,
         timeline: [
-          KeyframeTrack<double>('progress', [.ease(1, 2000.ms)], initial: -1),
+          KeyframeTrack('progress', [.ease(1, 2000.ms)], initial: -1),
         ],
         styleBuilder: (values, style) => style.foregroundDecoration(
           .gradient(
