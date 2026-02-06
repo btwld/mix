@@ -65,7 +65,7 @@ dart run build_runner build
 ```
 
 <details>
-<summary>Generated code (`button_spec.g.dart`)</summary>
+<summary>Generated code (`button_spec.g.dart`) — key signatures</summary>
 
 ```dart
 // GENERATED CODE - DO NOT MODIFY BY HAND
@@ -73,40 +73,14 @@ dart run build_runner build
 part of 'button_spec.dart';
 
 mixin _$ButtonSpecMethods on Spec<ButtonSpec>, Diagnosticable {
-  StyleSpec<FlexBoxSpec>? get container;
-  StyleSpec<IconSpec>? get icon;
-  StyleSpec<TextSpec>? get label;
+  @override
+  ButtonSpec copyWith({StyleSpec<FlexBoxSpec>? container, ...}) { ... }
 
   @override
-  ButtonSpec copyWith({
-    StyleSpec<FlexBoxSpec>? container,
-    StyleSpec<IconSpec>? icon,
-    StyleSpec<TextSpec>? label,
-  }) {
-    return ButtonSpec(
-      container: container ?? this.container,
-      icon: icon ?? this.icon,
-      label: label ?? this.label,
-    );
-  }
+  ButtonSpec lerp(ButtonSpec? other, double t) { ... }
 
   @override
-  ButtonSpec lerp(ButtonSpec? other, double t) {
-    return ButtonSpec(
-      container: container?.lerp(other?.container, t),
-      icon: icon?.lerp(other?.icon, t),
-      label: label?.lerp(other?.label, t),
-    );
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(DiagnosticsProperty('container', container))
-      ..add(DiagnosticsProperty('icon', icon))
-      ..add(DiagnosticsProperty('label', label));
-  }
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) { ... }
 
   @override
   List<Object?> get props => [container, icon, label];
@@ -195,7 +169,7 @@ The `@MixableField(setterType: FlexBoxStyler)` annotation tells the generator to
 The generated `_$ButtonStylerMixin` handles setters, `merge()`, `resolve()`, `debugFillProperties()`, and `props`:
 
 <details>
-<summary>Generated code (`button_style.g.dart`)</summary>
+<summary>Generated code (`button_style.g.dart`) — key signatures</summary>
 
 ```dart
 // GENERATED CODE - DO NOT MODIFY BY HAND
@@ -203,58 +177,24 @@ The generated `_$ButtonStylerMixin` handles setters, `merge()`, `resolve()`, `de
 part of 'button_style.dart';
 
 mixin _$ButtonStylerMixin on Style<ButtonSpec>, Diagnosticable {
-  Prop<StyleSpec<FlexBoxSpec>>? get $container;
-  Prop<StyleSpec<IconSpec>>? get $icon;
-  Prop<StyleSpec<TextSpec>>? get $label;
+  // Setters generated from @MixableField(setterType:)
+  ButtonStyler container(FlexBoxStyler value) { ... }
+  ButtonStyler icon(IconStyler value) { ... }
+  ButtonStyler label(TextStyler value) { ... }
 
-  // Generated setters using @MixableField(setterType:)
-  ButtonStyler container(FlexBoxStyler value) {
-    return merge(ButtonStyler(container: value));
-  }
-
-  ButtonStyler icon(IconStyler value) {
-    return merge(ButtonStyler(icon: value));
-  }
-
-  ButtonStyler label(TextStyler value) {
-    return merge(ButtonStyler(label: value));
-  }
+  // Base methods from MixStyler
+  ButtonStyler animate(AnimationConfig value) { ... }
+  ButtonStyler variants(List<VariantStyle<ButtonSpec>> value) { ... }
+  ButtonStyler wrap(WidgetModifierConfig value) { ... }
 
   @override
-  ButtonStyler merge(ButtonStyler? other) {
-    return ButtonStyler.create(
-      container: MixOps.merge($container, other?.$container),
-      icon: MixOps.merge($icon, other?.$icon),
-      label: MixOps.merge($label, other?.$label),
-      variants: MixOps.mergeVariants($variants, other?.$variants),
-      modifier: MixOps.mergeModifier($modifier, other?.$modifier),
-      animation: MixOps.mergeAnimation($animation, other?.$animation),
-    );
-  }
+  ButtonStyler merge(ButtonStyler? other) { ... }
 
   @override
-  StyleSpec<ButtonSpec> resolve(BuildContext context) {
-    final spec = ButtonSpec(
-      container: MixOps.resolve(context, $container),
-      icon: MixOps.resolve(context, $icon),
-      label: MixOps.resolve(context, $label),
-    );
-
-    return StyleSpec(
-      spec: spec,
-      animation: $animation,
-      widgetModifiers: $modifier?.resolve(context),
-    );
-  }
+  StyleSpec<ButtonSpec> resolve(BuildContext context) { ... }
 
   @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(DiagnosticsProperty('container', $container))
-      ..add(DiagnosticsProperty('icon', $icon))
-      ..add(DiagnosticsProperty('label', $label));
-  }
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) { ... }
 
   @override
   List<Object?> get props =>
@@ -559,4 +499,4 @@ This tutorial covered:
 | Spec fields and constructor | `copyWith()`, `lerp()`, `debugFillProperties()`, `props` |
 | Styler fields, constructors, convenience methods | Setters (via `@MixableField`), `merge()`, `resolve()`, `debugFillProperties()`, `props` |
 
-This pattern extends to other components: cards, inputs, dialogs, etc. Add `mix_annotations` to your `dependencies` and `mix_generator` to `dev_dependencies`, then run `dart run build_runner build` to generate code.
+This pattern extends to other components: cards, inputs, dialogs, etc. Add `mix_annotations` to your `dependencies` and `mix_generator` + `build_runner` to `dev_dependencies`, then run `dart run build_runner build` to generate code.
