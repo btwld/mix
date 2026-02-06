@@ -82,17 +82,11 @@ final style = Style.box(
 );
 ```
 
-### Enabling Dot Notation Syntax (Recommended)
+### Dot Notation Syntax (Recommended)
 
-Mix 2.0 is optimized for Dart's experimental dot notation syntax, which provides a cleaner and more intuitive API. To enable it, add this to your `analysis_options.yaml`:
+Mix 2.0 is optimized for Dart's dot notation syntax, which provides a cleaner and more intuitive API. On Dart SDK `>=3.10.0`, no `analysis_options.yaml` experiment flag is required.
 
-```yaml
-analyzer:
-  enable-experiment:
-    - dot-shorthands
-```
-
-**Note**: This feature requires Dart SDK ≥ 3.10.0. The traditional cascade syntax will always remain supported.
+The traditional cascade syntax is still fully supported.
 
 Learn more about [styling](https://fluttermix.com/docs/guides/styling)
 

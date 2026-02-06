@@ -41,17 +41,9 @@ The dot notation syntax provides:
 - Natural chaining without cascade operators
 - Consistent syntax across all properties
 
-#### Enabling Dot Notation
+#### Dot Notation Availability
 
-To use Mix's dot notation syntax, enable the experimental feature in your `analysis_options.yaml`:
-
-```yaml
-analyzer:
-  enable-experiment:
-    - dot-shorthands
-```
-
-**Note**: This requires Dart SDK ≥ 3.10.0
+Mix's dot notation syntax is available on Dart SDK `>=3.10.0`. No `analysis_options.yaml` experiment flag is required.
 
 ## Getting Started with Mix
 
@@ -71,17 +63,9 @@ cd my_mix_app
 flutter pub add mix:^2.0.0-rc.0
 ```
 
-### Enable Dot Notation Syntax
+### Dot Notation Syntax
 
-To use Mix's modern dot notation syntax, add this to your `analysis_options.yaml`:
-
-```yaml
-analyzer:
-  enable-experiment:
-    - dot-shorthands
-```
-
-This enables the cleaner syntax shown throughout these examples:
+Mix's modern dot notation syntax works out of the box on Dart SDK `>=3.10.0`:
 
 ```dart
 // Instead of: $box.height(100)..width(100)

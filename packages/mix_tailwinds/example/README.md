@@ -2,6 +2,11 @@
 
 This example renders the same UI twice: once with `mix_tailwinds` (Flutter) and once with real Tailwind CSS (HTML). Use it to verify that our class parser stays aligned with upstream Tailwind semantics.
 
+## Requirements
+
+- Dart SDK `>=3.10.0`
+- Flutter `>=3.38.1`
+
 ## Directory layout
 
 - `lib/main.dart` – Flutter app that drives the Mix `Div`/`Span` widgets. A width slider lets you exercise the responsive tokens (e.g., `md:flex-row`).
