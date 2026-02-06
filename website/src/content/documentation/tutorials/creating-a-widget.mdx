@@ -1,7 +1,7 @@
 
 # Building a Design System Widget
 
-This guide walks through creating a design system button with Mix, demonstrating Specs, Stylers, variants, and state handling.
+This guide walks through creating a design system button with Mix, demonstrating Specs, Stylers, variants, and state handling — using **annotations and code generation** to eliminate boilerplate.
 
 ![Button Example](./images/button-example.png)
 
@@ -33,18 +33,49 @@ This guide walks through creating a design system button with Mix, demonstrating
 
 ### Create a Button Spec
 
-A `Spec` defines resolved visual properties. `ButtonSpec` contains specs for container, icon, and label:
+A `Spec` defines resolved visual properties. With `@MixableSpec()`, the generator creates `copyWith()`, `lerp()`, `debugFillProperties()`, and `props` for you:
 
 ```dart
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
+import 'package:mix_annotations/mix_annotations.dart';
 
-class ButtonSpec extends Spec<ButtonSpec> {
+part 'button_spec.g.dart';
+
+@MixableSpec()
+@immutable
+final class ButtonSpec extends Spec<ButtonSpec>
+    with Diagnosticable, _$ButtonSpecMethods {
+  @override
   final StyleSpec<FlexBoxSpec>? container;
+  @override
   final StyleSpec<IconSpec>? icon;
+  @override
   final StyleSpec<TextSpec>? label;
 
   const ButtonSpec({this.container, this.icon, this.label});
+}
+```
+
+That's it — no manual `copyWith`, `lerp`, or `props`. The generated mixin `_$ButtonSpecMethods` provides all of those. Run code generation with:
+
+```bash
+dart run build_runner build
+```
+
+<details>
+<summary>Generated code (`button_spec.g.dart`)</summary>
+
+```dart
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of 'button_spec.dart';
+
+mixin _$ButtonSpecMethods on Spec<ButtonSpec>, Diagnosticable {
+  StyleSpec<FlexBoxSpec>? get container;
+  StyleSpec<IconSpec>? get icon;
+  StyleSpec<TextSpec>? get label;
 
   @override
   ButtonSpec copyWith({
@@ -60,7 +91,7 @@ class ButtonSpec extends Spec<ButtonSpec> {
   }
 
   @override
-  ButtonSpec lerp(covariant ButtonSpec? other, double t) {
+  ButtonSpec lerp(ButtonSpec? other, double t) {
     return ButtonSpec(
       container: container?.lerp(other?.container, t),
       icon: icon?.lerp(other?.icon, t),
@@ -69,20 +100,41 @@ class ButtonSpec extends Spec<ButtonSpec> {
   }
 
   @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('container', container))
+      ..add(DiagnosticsProperty('icon', icon))
+      ..add(DiagnosticsProperty('label', label));
+  }
+
+  @override
   List<Object?> get props => [container, icon, label];
 }
 ```
 
+</details>
+
 ### Create a Button Styler
 
-`ButtonStyler` provides a fluent interface for styling. It extends `Style<ButtonSpec>` and uses `WidgetStateVariantMixin` for state support:
+`ButtonStyler` provides a fluent interface for styling. With `@MixableStyler()`, the generator creates setters, `merge()`, `resolve()`, `debugFillProperties()`, and `props`.
+
+Use `@MixableField(setterType: ...)` to tell the generator the public type for each setter. Since the fields are `Prop<StyleSpec<T>>` internally but users pass Styler types, `setterType` bridges that gap:
 
 ```dart
-class ButtonStyler extends Style<ButtonSpec>
-    with VariantStyleMixin<ButtonStyler, ButtonSpec>,
-         WidgetStateVariantMixin<ButtonStyler, ButtonSpec> {
+part 'button_style.g.dart';
+
+@MixableStyler()
+class ButtonStyler extends MixStyler<ButtonStyler, ButtonSpec>
+    with _$ButtonStylerMixin {
+  @override
+  @MixableField(setterType: FlexBoxStyler)
   final Prop<StyleSpec<FlexBoxSpec>>? $container;
+  @override
+  @MixableField(setterType: IconStyler)
   final Prop<StyleSpec<IconSpec>>? $icon;
+  @override
+  @MixableField(setterType: TextStyler)
   final Prop<StyleSpec<TextSpec>>? $label;
 
   ButtonStyler({
@@ -96,20 +148,18 @@ class ButtonStyler extends Style<ButtonSpec>
        $icon = Prop.maybeMix(icon),
        $label = Prop.maybeMix(label);
 
-  // Component methods
-  ButtonStyler container(FlexBoxStyler value) {
-    return merge(ButtonStyler(container: value));
-  }
+  const ButtonStyler.create({
+    Prop<StyleSpec<FlexBoxSpec>>? container,
+    Prop<StyleSpec<IconSpec>>? icon,
+    Prop<StyleSpec<TextSpec>>? label,
+    super.animation,
+    super.modifier,
+    super.variants,
+  }) : $container = container,
+       $icon = icon,
+       $label = label;
 
-  ButtonStyler icon(IconStyler value) {
-    return merge(ButtonStyler(icon: value));
-  }
-
-  ButtonStyler label(TextStyler value) {
-    return merge(ButtonStyler(label: value));
-  }
-
-  // Convenience methods
+  // Convenience methods (beyond the generated container/icon/label setters)
   ButtonStyler backgroundColor(Color value) {
     return merge(ButtonStyler(container: FlexBoxStyler().color(value)));
   }
@@ -132,49 +182,87 @@ class ButtonStyler extends Style<ButtonSpec>
     );
   }
 
-  ButtonStyler.create({
-    Prop<StyleSpec<FlexBoxSpec>>? container,
-    Prop<StyleSpec<IconSpec>>? icon,
-    Prop<StyleSpec<TextSpec>>? label,
-    super.animation,
-    super.modifier,
-    super.variants,
-  }) : $container = container,
-       $icon = icon,
-       $label = label;
+  ButtonStyler scale(double value) {
+    return merge(ButtonStyler(container: FlexBoxStyler().scale(value)));
+  }
+}
+```
+
+The `@MixableField(setterType: FlexBoxStyler)` annotation tells the generator to produce `ButtonStyler container(FlexBoxStyler value)` instead of `ButtonStyler container(StyleSpec<FlexBoxSpec> value)`. This gives users the fluent Styler API they expect.
+
+`MixStyler` already provides `WidgetStateVariantMixin` (for `onPressed`, `onHovered`, `onDisabled`, etc.), `VariantStyleMixin`, and `AnimationStyleMixin` — so you get state handling for free.
+
+The generated `_$ButtonStylerMixin` handles setters, `merge()`, `resolve()`, `debugFillProperties()`, and `props`:
+
+<details>
+<summary>Generated code (`button_style.g.dart`)</summary>
+
+```dart
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of 'button_style.dart';
+
+mixin _$ButtonStylerMixin on Style<ButtonSpec>, Diagnosticable {
+  Prop<StyleSpec<FlexBoxSpec>>? get $container;
+  Prop<StyleSpec<IconSpec>>? get $icon;
+  Prop<StyleSpec<TextSpec>>? get $label;
+
+  // Generated setters using @MixableField(setterType:)
+  ButtonStyler container(FlexBoxStyler value) {
+    return merge(ButtonStyler(container: value));
+  }
+
+  ButtonStyler icon(IconStyler value) {
+    return merge(ButtonStyler(icon: value));
+  }
+
+  ButtonStyler label(TextStyler value) {
+    return merge(ButtonStyler(label: value));
+  }
 
   @override
-  ButtonStyler merge(covariant ButtonStyler? other) {
+  ButtonStyler merge(ButtonStyler? other) {
     return ButtonStyler.create(
       container: MixOps.merge($container, other?.$container),
       icon: MixOps.merge($icon, other?.$icon),
       label: MixOps.merge($label, other?.$label),
-      animation: MixOps.mergeAnimation($animation, other?.$animation),
-      modifier: MixOps.mergeModifier($modifier, other?.$modifier),
       variants: MixOps.mergeVariants($variants, other?.$variants),
+      modifier: MixOps.mergeModifier($modifier, other?.$modifier),
+      animation: MixOps.mergeAnimation($animation, other?.$animation),
     );
   }
-
-  @override
-  List<Object?> get props => [$container, $icon, $label];
 
   @override
   StyleSpec<ButtonSpec> resolve(BuildContext context) {
-    final container = MixOps.resolve(context, $container);
-    final icon = MixOps.resolve(context, $icon);
-    final label = MixOps.resolve(context, $label);
+    final spec = ButtonSpec(
+      container: MixOps.resolve(context, $container),
+      icon: MixOps.resolve(context, $icon),
+      label: MixOps.resolve(context, $label),
+    );
 
     return StyleSpec(
-      spec: ButtonSpec(container: container, icon: icon, label: label),
+      spec: spec,
+      animation: $animation,
+      widgetModifiers: $modifier?.resolve(context),
     );
   }
 
   @override
-  ButtonStyler variant(Variant variant, ButtonStyler style) {
-    return merge(ButtonStyler(variants: [VariantStyle(variant, style)]));
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('container', $container))
+      ..add(DiagnosticsProperty('icon', $icon))
+      ..add(DiagnosticsProperty('label', $label));
   }
+
+  @override
+  List<Object?> get props =>
+      [$container, $icon, $label, $animation, $modifier, $variants];
 }
 ```
+
+</details>
 
 ### Define Variants
 
@@ -457,9 +545,18 @@ class ButtonExampleScreen extends StatelessWidget {
 
 This tutorial covered:
 
-- **ButtonSpec**: Resolved visual properties with animation support
-- **ButtonStyler**: Fluent API with state handling via `WidgetStateVariantMixin`
+- **`@MixableSpec`**: Generates `copyWith()`, `lerp()`, `debugFillProperties()`, and `props` — no manual boilerplate
+- **`@MixableStyler`**: Generates setters, `merge()`, `resolve()`, `debugFillProperties()`, and `props` — you only write convenience methods
+- **`@MixableField(setterType:)`**: Controls the public type of generated setters (e.g., accept `FlexBoxStyler` instead of `StyleSpec<FlexBoxSpec>`)
+- **`MixStyler`**: Base class that provides `WidgetStateVariantMixin`, `VariantStyleMixin`, and `AnimationStyleMixin` for free
 - **ButtonVariant**: Enum associating variants with styles
 - **CustomButton**: Widget combining `Pressable` and `StyleBuilder`
 
-This pattern extends to other components: cards, inputs, dialogs, etc.
+### What you write vs. what's generated
+
+| You write | Generator provides |
+|---|---|
+| Spec fields and constructor | `copyWith()`, `lerp()`, `debugFillProperties()`, `props` |
+| Styler fields, constructors, convenience methods | Setters (via `@MixableField`), `merge()`, `resolve()`, `debugFillProperties()`, `props` |
+
+This pattern extends to other components: cards, inputs, dialogs, etc. Add `mix_annotations` to your `dependencies` and `mix_generator` to `dev_dependencies`, then run `dart run build_runner build` to generate code.
