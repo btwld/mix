@@ -93,8 +93,7 @@ class TextHeightBehaviorMix extends Mix<TextHeightBehavior>
       applyHeightToLastDescent:
           MixOps.resolve(context, $applyHeightToLastDescent) ?? true,
       leadingDistribution:
-          MixOps.resolve(context, $leadingDistribution) ??
-          TextLeadingDistribution.proportional,
+          MixOps.resolve(context, $leadingDistribution) ?? .proportional,
     );
   }
 

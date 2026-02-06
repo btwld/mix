@@ -8,10 +8,7 @@ import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/style_spec.dart';
 import '../../modifiers/widget_modifier_config.dart';
-import '../../style/mixins/animation_style_mixin.dart';
-import '../../style/mixins/variant_style_mixin.dart';
-import '../../style/mixins/widget_modifier_style_mixin.dart';
-import '../../style/mixins/widget_state_variant_mixin.dart';
+import '../../style/abstracts/styler.dart';
 import 'image_mutable_style.dart';
 import 'image_spec.dart';
 import 'image_widget.dart';
@@ -22,14 +19,8 @@ part 'image_style.g.dart';
 typedef ImageMix = ImageStyler;
 
 @MixableStyler()
-class ImageStyler extends Style<ImageSpec>
-    with
-        Diagnosticable,
-        WidgetModifierStyleMixin<ImageStyler, ImageSpec>,
-        VariantStyleMixin<ImageStyler, ImageSpec>,
-        WidgetStateVariantMixin<ImageStyler, ImageSpec>,
-        AnimationStyleMixin<ImageStyler, ImageSpec>,
-        _$ImageStylerMixin {
+class ImageStyler extends MixStyler<ImageStyler, ImageSpec>
+    with _$ImageStylerMixin {
   @override
   final Prop<ImageProvider<Object>>? $image;
   @override
@@ -136,7 +127,7 @@ class ImageStyler extends Style<ImageSpec>
          variants: variants,
        );
 
-  static ImageMutableStyler get chain => ImageMutableStyler(ImageStyler());
+  static ImageMutableStyler get chain => .new(ImageStyler());
 
   StyledImage call({
     ImageProvider? image,

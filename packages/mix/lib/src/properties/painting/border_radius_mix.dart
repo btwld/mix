@@ -74,12 +74,12 @@ sealed class BorderRadiusGeometryMix<T extends BorderRadiusGeometry>
 
   /// Creates circular radius for all corners.
   static BorderRadiusMix circular(double radius) {
-    return BorderRadiusMix.all(Radius.circular(radius));
+    return BorderRadiusMix.all(.circular(radius));
   }
 
   /// Creates elliptical radius for all corners.
   static BorderRadiusMix elliptical(double xRadius, double yRadius) {
-    return BorderRadiusMix.all(Radius.elliptical(xRadius, yRadius));
+    return BorderRadiusMix.all(.elliptical(xRadius, yRadius));
   }
 
   static BorderRadiusGeometryMix<T>? maybeValue<T extends BorderRadiusGeometry>(
@@ -248,7 +248,7 @@ final class BorderRadiusMix extends BorderRadiusGeometryMix<BorderRadius>
   factory BorderRadiusMix.circular(double radius) {
     // Use a simple value-based creation. Token-aware radius should be passed as
     // a Radius token to BorderRadiusMix.all(...) at call sites.
-    return BorderRadiusMix.all(Radius.circular(radius));
+    return BorderRadiusMix.all(.circular(radius));
   }
 
   /// Creates with top-left corner.
@@ -273,7 +273,7 @@ final class BorderRadiusMix extends BorderRadiusGeometryMix<BorderRadius>
 
   /// Creates with elliptical radius.
   factory BorderRadiusMix.elliptical(double xRadius, double yRadius) {
-    return BorderRadiusMix.all(Radius.elliptical(xRadius, yRadius));
+    return BorderRadiusMix.all(.elliptical(xRadius, yRadius));
   }
 
   /// Creates from nullable [BorderRadius].
@@ -304,10 +304,10 @@ final class BorderRadiusMix extends BorderRadiusGeometryMix<BorderRadius>
   @override
   BorderRadius resolve(BuildContext context) {
     return BorderRadius.only(
-      topLeft: MixOps.resolve(context, $topLeft) ?? Radius.zero,
-      topRight: MixOps.resolve(context, $topRight) ?? Radius.zero,
-      bottomLeft: MixOps.resolve(context, $bottomLeft) ?? Radius.zero,
-      bottomRight: MixOps.resolve(context, $bottomRight) ?? Radius.zero,
+      topLeft: MixOps.resolve(context, $topLeft) ?? .zero,
+      topRight: MixOps.resolve(context, $topRight) ?? .zero,
+      bottomLeft: MixOps.resolve(context, $bottomLeft) ?? .zero,
+      bottomRight: MixOps.resolve(context, $bottomRight) ?? .zero,
     );
   }
 
@@ -367,7 +367,7 @@ final class BorderRadiusDirectionalMix
 
   /// Creates a border radius with all corners having the same circular radius.
   factory BorderRadiusDirectionalMix.circular(double radius) {
-    return BorderRadiusDirectionalMix.all(Radius.circular(radius));
+    return BorderRadiusDirectionalMix.all(.circular(radius));
   }
 
   /// Creates a border radius with the specified top-start corner.
@@ -395,7 +395,7 @@ final class BorderRadiusDirectionalMix
     double xRadius,
     double yRadius,
   ) {
-    return BorderRadiusDirectionalMix.all(Radius.elliptical(xRadius, yRadius));
+    return BorderRadiusDirectionalMix.all(.elliptical(xRadius, yRadius));
   }
 
   BorderRadiusDirectionalMix.all(Radius radius)
@@ -438,10 +438,10 @@ final class BorderRadiusDirectionalMix
   @override
   BorderRadiusDirectional resolve(BuildContext context) {
     return BorderRadiusDirectional.only(
-      topStart: MixOps.resolve(context, $topStart) ?? Radius.zero,
-      topEnd: MixOps.resolve(context, $topEnd) ?? Radius.zero,
-      bottomStart: MixOps.resolve(context, $bottomStart) ?? Radius.zero,
-      bottomEnd: MixOps.resolve(context, $bottomEnd) ?? Radius.zero,
+      topStart: MixOps.resolve(context, $topStart) ?? .zero,
+      topEnd: MixOps.resolve(context, $topEnd) ?? .zero,
+      bottomStart: MixOps.resolve(context, $bottomStart) ?? .zero,
+      bottomEnd: MixOps.resolve(context, $bottomEnd) ?? .zero,
     );
   }
 

@@ -84,7 +84,7 @@ class MixTypeRegistry {
   }) {
     // Check for raw list fields first
     if (isRawListField(fieldName)) {
-      return PropWrapperKind.none;
+      return .none;
     }
 
     // Handle list types
@@ -92,18 +92,18 @@ class MixTypeRegistry {
       // Check if element type has a Mix variant
       final mixElementType = getListElementMixType(listElementType);
       if (mixElementType != null && hasListMixType(mixElementType)) {
-        return PropWrapperKind.listMix;
+        return .listMix;
       }
 
-      return PropWrapperKind.maybe;
+      return .maybe;
     }
 
     // Handle regular types
     if (hasMixType(typeName)) {
-      return PropWrapperKind.maybeMix;
+      return .maybeMix;
     }
 
-    return PropWrapperKind.maybe;
+    return .maybe;
   }
 }
 

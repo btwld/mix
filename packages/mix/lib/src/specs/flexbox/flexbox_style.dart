@@ -13,7 +13,7 @@ import '../../properties/layout/edge_insets_geometry_mix.dart';
 import '../../properties/painting/border_mix.dart';
 import '../../properties/painting/border_radius_mix.dart';
 import '../../properties/painting/decoration_mix.dart';
-import '../../style/mixins/animation_style_mixin.dart';
+import '../../style/abstracts/styler.dart';
 import '../../style/mixins/border_radius_style_mixin.dart';
 import '../../style/mixins/border_style_mixin.dart';
 import '../../style/mixins/constraint_style_mixin.dart';
@@ -22,9 +22,6 @@ import '../../style/mixins/flex_style_mixin.dart';
 import '../../style/mixins/shadow_style_mixin.dart';
 import '../../style/mixins/spacing_style_mixin.dart';
 import '../../style/mixins/transform_style_mixin.dart';
-import '../../style/mixins/variant_style_mixin.dart';
-import '../../style/mixins/widget_modifier_style_mixin.dart';
-import '../../style/mixins/widget_state_variant_mixin.dart';
 import '../box/box_spec.dart';
 import '../box/box_style.dart';
 import '../flex/flex_spec.dart';
@@ -46,12 +43,8 @@ typedef FlexBoxMix = FlexBoxStyler;
 /// Use this class to configure the attributes of a [FlexBoxSpec] and pass it to
 /// the [FlexBoxSpec] constructor.
 @MixableStyler(methods: GeneratedStylerMethods.skipSetters)
-class FlexBoxStyler extends Style<FlexBoxSpec>
+class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
     with
-        Diagnosticable,
-        WidgetModifierStyleMixin<FlexBoxStyler, FlexBoxSpec>,
-        VariantStyleMixin<FlexBoxStyler, FlexBoxSpec>,
-        WidgetStateVariantMixin<FlexBoxStyler, FlexBoxSpec>,
         BorderStyleMixin<FlexBoxStyler>,
         BorderRadiusStyleMixin<FlexBoxStyler>,
         ShadowStyleMixin<FlexBoxStyler>,
@@ -60,7 +53,6 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
         TransformStyleMixin<FlexBoxStyler>,
         ConstraintStyleMixin<FlexBoxStyler>,
         FlexStyleMixin<FlexBoxStyler>,
-        AnimationStyleMixin<FlexBoxStyler, FlexBoxSpec>,
         _$FlexBoxStylerMixin {
   @override
   final Prop<StyleSpec<BoxSpec>>? $box;
@@ -135,8 +127,7 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
   }) : $box = box,
        $flex = flex;
 
-  static FlexBoxMutableStyler get chain =>
-      FlexBoxMutableStyler(FlexBoxStyler());
+  static FlexBoxMutableStyler get chain => .new(FlexBoxStyler());
 
   // BoxMix instance methods
 

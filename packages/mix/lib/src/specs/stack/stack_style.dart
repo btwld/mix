@@ -8,10 +8,7 @@ import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/style_spec.dart';
 import '../../modifiers/widget_modifier_config.dart';
-import '../../style/mixins/animation_style_mixin.dart';
-import '../../style/mixins/variant_style_mixin.dart';
-import '../../style/mixins/widget_modifier_style_mixin.dart';
-import '../../style/mixins/widget_state_variant_mixin.dart';
+import '../../style/abstracts/styler.dart';
 import 'stack_mutable_style.dart';
 import 'stack_spec.dart';
 
@@ -28,14 +25,8 @@ typedef StackMix = StackStyler;
 /// Use this class to configure the attributes of a [StackSpec] and pass it to
 /// the [StackSpec] constructor.
 @MixableStyler()
-class StackStyler extends Style<StackSpec>
-    with
-        Diagnosticable,
-        WidgetModifierStyleMixin<StackStyler, StackSpec>,
-        VariantStyleMixin<StackStyler, StackSpec>,
-        WidgetStateVariantMixin<StackStyler, StackSpec>,
-        AnimationStyleMixin<StackStyler, StackSpec>,
-        _$StackStylerMixin {
+class StackStyler extends MixStyler<StackStyler, StackSpec>
+    with _$StackStylerMixin {
   @override
   final Prop<AlignmentGeometry>? $alignment;
   @override
@@ -76,7 +67,7 @@ class StackStyler extends Style<StackSpec>
          variants: variants,
        );
 
-  static StackMutableStyler get chain => StackMutableStyler(StackStyler());
+  static StackMutableStyler get chain => .new(StackStyler());
 
   /// Sets the widget modifier.
   StackStyler modifier(WidgetModifierConfig value) {

@@ -11,7 +11,7 @@ import 'text_style_mix.dart';
 
 final class TextStyleUtility<T extends Style<Object?>>
     extends MixUtility<T, Prop<TextStyle>> {
-  late final color = ColorUtility<T>(
+  late final color = ColorUtility(
     (prop) => buildProp(TextStyleMix.create(color: prop)),
   );
 
@@ -27,11 +27,11 @@ final class TextStyleUtility<T extends Style<Object?>>
     (prop) => call(decoration: prop),
   );
 
-  late final backgroundColor = ColorUtility<T>(
+  late final backgroundColor = ColorUtility(
     (prop) => buildProp(TextStyleMix.create(backgroundColor: prop)),
   );
 
-  late final decorationColor = ColorUtility<T>(
+  late final decorationColor = ColorUtility(
     (prop) => buildProp(TextStyleMix.create(decorationColor: prop)),
   );
 
@@ -63,7 +63,7 @@ final class TextStyleUtility<T extends Style<Object?>>
 
   T shadows(List<Shadow> v) => call(shadows: v.map(ShadowMix.value).toList());
 
-  T italic() => fontStyle(FontStyle.italic);
+  T italic() => fontStyle(.italic);
 
   T bold() => fontWeight.bold();
 

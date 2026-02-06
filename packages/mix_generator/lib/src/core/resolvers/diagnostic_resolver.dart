@@ -35,16 +35,14 @@ class DiagnosticResolver {
     final displayName = field.displayName;
 
     return switch (field.diagnosticKind) {
-      DiagnosticKind.color => "ColorProperty('$displayName', $name)",
-      DiagnosticKind.doubleProperty => "DoubleProperty('$displayName', $name)",
-      DiagnosticKind.intProperty => "IntProperty('$displayName', $name)",
-      DiagnosticKind.stringProperty => "StringProperty('$displayName', $name)",
-      DiagnosticKind.enumProperty =>
-        "EnumProperty<${field.typeName}>('$displayName', $name)",
-      DiagnosticKind.flagProperty => _generateFlagProperty(field),
-      DiagnosticKind.iterableProperty => _generateIterableProperty(field),
-      DiagnosticKind.diagnostics =>
-        "DiagnosticsProperty('$displayName', $name)",
+      .color => "ColorProperty('$displayName', $name)",
+      .doubleProperty => "DoubleProperty('$displayName', $name)",
+      .intProperty => "IntProperty('$displayName', $name)",
+      .stringProperty => "StringProperty('$displayName', $name)",
+      .enumProperty => "EnumProperty<${field.typeName}>('$displayName', $name)",
+      .flagProperty => _generateFlagProperty(field),
+      .iterableProperty => _generateIterableProperty(field),
+      .diagnostics => "DiagnosticsProperty('$displayName', $name)",
     };
   }
 }

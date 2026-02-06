@@ -11,7 +11,7 @@ import '../../modifiers/widget_modifier_config.dart';
 import '../../properties/layout/constraints_mix.dart';
 import '../../properties/layout/edge_insets_geometry_mix.dart';
 import '../../properties/painting/decoration_mix.dart';
-import '../../style/mixins/animation_style_mixin.dart';
+import '../../style/abstracts/styler.dart';
 import '../../style/mixins/border_radius_style_mixin.dart';
 import '../../style/mixins/border_style_mixin.dart';
 import '../../style/mixins/constraint_style_mixin.dart';
@@ -19,9 +19,6 @@ import '../../style/mixins/decoration_style_mixin.dart';
 import '../../style/mixins/shadow_style_mixin.dart';
 import '../../style/mixins/spacing_style_mixin.dart';
 import '../../style/mixins/transform_style_mixin.dart';
-import '../../style/mixins/variant_style_mixin.dart';
-import '../../style/mixins/widget_modifier_style_mixin.dart';
-import '../../style/mixins/widget_state_variant_mixin.dart';
 import 'box_mutable_style.dart';
 import 'box_spec.dart';
 import 'box_widget.dart';
@@ -37,12 +34,8 @@ typedef BoxMix = BoxStyler;
 /// and other styling properties for box layouts with support for
 /// widget modifiers, variants, and animations.
 @MixableStyler()
-class BoxStyler extends Style<BoxSpec>
+class BoxStyler extends MixStyler<BoxStyler, BoxSpec>
     with
-        Diagnosticable,
-        WidgetModifierStyleMixin<BoxStyler, BoxSpec>,
-        VariantStyleMixin<BoxStyler, BoxSpec>,
-        WidgetStateVariantMixin<BoxStyler, BoxSpec>,
         BorderStyleMixin<BoxStyler>,
         BorderRadiusStyleMixin<BoxStyler>,
         ShadowStyleMixin<BoxStyler>,
@@ -50,7 +43,6 @@ class BoxStyler extends Style<BoxSpec>
         SpacingStyleMixin<BoxStyler>,
         TransformStyleMixin<BoxStyler>,
         ConstraintStyleMixin<BoxStyler>,
-        AnimationStyleMixin<BoxStyler, BoxSpec>,
         _$BoxStylerMixin {
   @override
   final Prop<AlignmentGeometry>? $alignment;
@@ -124,14 +116,14 @@ class BoxStyler extends Style<BoxSpec>
          animation: animation,
        );
 
-  static BoxMutableStyler get chain => BoxMutableStyler(BoxStyler());
+  static BoxMutableStyler get chain => .new(BoxStyler());
 
   Box call({Key? key, Widget? child}) {
     return Box(key: key, style: this, child: child);
   }
 
   @override
-  BoxStyler transform(Matrix4 value, {Alignment alignment = Alignment.center}) {
+  BoxStyler transform(Matrix4 value, {Alignment alignment = .center}) {
     return merge(BoxStyler(transform: value, transformAlignment: alignment));
   }
 }

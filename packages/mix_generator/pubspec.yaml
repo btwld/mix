@@ -1,6 +1,6 @@
 name: mix_generator
 description: A code generator for Mix, an expressive way to effortlessly build design systems in Flutter.
-version: 1.7.0
+version: 2.0.0-rc.1
 homepage: https://github.com/btwld/mix
 repository: https://github.com/btwld/mix/tree/main/packages/mix_generator
 
@@ -8,13 +8,13 @@ environment:
   sdk: ">=3.10.0 <4.0.0"
   
 dependencies:
-  mix_annotations: ^1.7.0
-  build: ^4.0.4
-  source_gen: ^4.2.0
-  analyzer: ^10.0.1
-  dart_style: ^3.1.4
-  collection: ^1.17.1
-  build_config: ^1.2.0
+  mix_annotations: ^2.0.0-rc.1
+  dart_style: ^3.0.0
+  collection: ^1.15.0
+  source_gen: ">=3.0.0 <5.0.0"
+  analyzer: '>=9.0.0 <11.0.0'
+  build: ">=3.0.0 <5.0.0"
+  build_config: ^1.1.0
   logging: ^1.2.0
   path: ^1.8.3
 

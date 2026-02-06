@@ -15,12 +15,12 @@ import 'shape_border_mix.dart';
 final class RoundedRectangleBorderUtility<T extends Style<Object?>>
     extends MixUtility<T, RoundedRectangleBorderMix> {
   /// Utility for defining [RoundedRectangleBorderMix.borderRadius]
-  late final borderRadius = BorderRadiusGeometryUtility<T>(
+  late final borderRadius = BorderRadiusGeometryUtility(
     (v) => call(borderRadius: v),
   );
 
   /// Utility for defining [RoundedRectangleBorderMix.side]
-  late final side = BorderSideUtility<T>((v) => call(side: v));
+  late final side = BorderSideUtility((v) => call(side: v));
 
   RoundedRectangleBorderUtility(super.utilityBuilder);
 
@@ -48,12 +48,12 @@ final class RoundedRectangleBorderUtility<T extends Style<Object?>>
 final class BeveledRectangleBorderUtility<T extends Style<Object?>>
     extends MixUtility<T, BeveledRectangleBorderMix> {
   /// Utility for defining [BeveledRectangleBorderMix.borderRadius]
-  late final borderRadius = BorderRadiusGeometryUtility<T>(
+  late final borderRadius = BorderRadiusGeometryUtility(
     (v) => call(borderRadius: v),
   );
 
   /// Utility for defining [BeveledRectangleBorderMix.side]
-  late final side = BorderSideUtility<T>((v) => call(side: v));
+  late final side = BorderSideUtility((v) => call(side: v));
 
   BeveledRectangleBorderUtility(super.utilityBuilder);
 
@@ -81,12 +81,12 @@ final class BeveledRectangleBorderUtility<T extends Style<Object?>>
 final class ContinuousRectangleBorderUtility<T extends Style<Object?>>
     extends MixUtility<T, ContinuousRectangleBorderMix> {
   /// Utility for defining [ContinuousRectangleBorderMix.borderRadius]
-  late final borderRadius = BorderRadiusGeometryUtility<T>(
+  late final borderRadius = BorderRadiusGeometryUtility(
     (v) => call(borderRadius: v),
   );
 
   /// Utility for defining [ContinuousRectangleBorderMix.side]
-  late final side = BorderSideUtility<T>((v) => call(side: v));
+  late final side = BorderSideUtility((v) => call(side: v));
 
   ContinuousRectangleBorderUtility(super.utilityBuilder);
 
@@ -114,7 +114,7 @@ final class ContinuousRectangleBorderUtility<T extends Style<Object?>>
 final class CircleBorderUtility<T extends Style<Object?>>
     extends MixUtility<T, CircleBorderMix> {
   /// Utility for defining [CircleBorderMix.side]
-  late final side = BorderSideUtility<T>((v) => call(side: v));
+  late final side = BorderSideUtility((v) => call(side: v));
 
   late final only = call;
 
@@ -141,7 +141,7 @@ final class CircleBorderUtility<T extends Style<Object?>>
 final class StarBorderUtility<T extends Style<Object?>>
     extends MixUtility<T, StarBorderMix> {
   /// Utility for defining [StarBorderMix.side]
-  late final side = BorderSideUtility<T>((v) => call(side: v));
+  late final side = BorderSideUtility((v) => call(side: v));
 
   late final only = call;
 
@@ -199,19 +199,19 @@ final class StarBorderUtility<T extends Style<Object?>>
 final class LinearBorderUtility<T extends Style<Object?>>
     extends MixUtility<T, LinearBorderMix> {
   /// Utility for defining [LinearBorderMix.side]
-  late final side = BorderSideUtility<T>((v) => only(side: v));
+  late final side = BorderSideUtility((v) => only(side: v));
 
   /// Utility for defining [LinearBorderMix.start]
-  late final start = LinearBorderEdgeUtility<T>((v) => only(start: v));
+  late final start = LinearBorderEdgeUtility((v) => only(start: v));
 
   /// Utility for defining [LinearBorderMix.end]
-  late final end = LinearBorderEdgeUtility<T>((v) => only(end: v));
+  late final end = LinearBorderEdgeUtility((v) => only(end: v));
 
   /// Utility for defining [LinearBorderMix.top]
-  late final top = LinearBorderEdgeUtility<T>((v) => only(top: v));
+  late final top = LinearBorderEdgeUtility((v) => only(top: v));
 
   /// Utility for defining [LinearBorderMix.bottom]
-  late final bottom = LinearBorderEdgeUtility<T>((v) => only(bottom: v));
+  late final bottom = LinearBorderEdgeUtility((v) => only(bottom: v));
 
   LinearBorderUtility(super.utilityBuilder);
 
@@ -282,7 +282,7 @@ final class LinearBorderEdgeUtility<T extends Style<Object?>>
 final class StadiumBorderUtility<T extends Style<Object?>>
     extends MixUtility<T, StadiumBorderMix> {
   /// Utility for defining [StadiumBorderMix.side]
-  late final side = BorderSideUtility<T>((v) => only(side: v));
+  late final side = BorderSideUtility((v) => only(side: v));
 
   StadiumBorderUtility(super.utilityBuilder);
 
@@ -306,27 +306,25 @@ final class StadiumBorderUtility<T extends Style<Object?>>
 final class ShapeBorderUtility<T extends Style<Object?>>
     extends MixUtility<T, ShapeBorderMix<ShapeBorder>> {
   /// Utility for defining RoundedRectangleBorder
-  late final roundedRectangle = RoundedRectangleBorderUtility<T>(
-    utilityBuilder,
-  );
+  late final roundedRectangle = RoundedRectangleBorderUtility(utilityBuilder);
 
   /// Utility for defining BeveledRectangleBorder
-  late final beveled = BeveledRectangleBorderUtility<T>(utilityBuilder);
+  late final beveled = BeveledRectangleBorderUtility(utilityBuilder);
 
   /// Utility for defining ContinuousRectangleBorder
-  late final continuous = ContinuousRectangleBorderUtility<T>(utilityBuilder);
+  late final continuous = ContinuousRectangleBorderUtility(utilityBuilder);
 
   /// Utility for defining CircleBorder
-  late final circle = CircleBorderUtility<T>(utilityBuilder);
+  late final circle = CircleBorderUtility(utilityBuilder);
 
   /// Utility for defining StarBorder
-  late final star = StarBorderUtility<T>(utilityBuilder);
+  late final star = StarBorderUtility(utilityBuilder);
 
   /// Utility for defining LinearBorder
-  late final linear = LinearBorderUtility<T>(utilityBuilder);
+  late final linear = LinearBorderUtility(utilityBuilder);
 
   /// Utility for defining StadiumBorder
-  late final stadium = StadiumBorderUtility<T>(utilityBuilder);
+  late final stadium = StadiumBorderUtility(utilityBuilder);
 
   ShapeBorderUtility(super.utilityBuilder);
   T as(ShapeBorder value) {

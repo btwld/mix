@@ -203,5 +203,5 @@ final class BoxConstraintsMix extends ConstraintsMix<BoxConstraints>
   }
 
   @override
-  BoxConstraints get defaultValue => const BoxConstraints();
+  BoxConstraints get defaultValue => const .new();
 }

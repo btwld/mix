@@ -37,8 +37,13 @@ void main() {
         );
       });
 
-      test('delegate pattern uses direct lerp call', () {
+      test('delegate pattern for nullable field uses ?. operator', () {
         expect('box?.lerp(other?.box, t)', contains('?.lerp('));
+      });
+
+      test('delegate pattern for non-nullable field uses . operator', () {
+        expect('box.lerp(other?.box, t)', isNot(contains('?.lerp(')));
+        expect('box.lerp(other?.box, t)', contains('.lerp('));
       });
     });
   });
