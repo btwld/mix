@@ -17,6 +17,7 @@ void main() {
       expect(modified.delays, equals(base.delays));
       expect(modified.scales, equals(base.scales));
       expect(modified.rotations, equals(base.rotations));
+      expect(modified.blurs, equals(base.blurs));
     });
 
     test('overrides specified values', () {
@@ -176,6 +177,30 @@ void main() {
 
       // Should use explicit config, not provider config
       expect(tester.takeException(), isNull);
+    });
+  });
+
+  group('TwConfig.colorOf', () {
+    test('applies opacity modifier to known colors', () {
+      final config = TwConfig.standard();
+
+      expect(config.colorOf('white/50'), equals(const Color(0x80FFFFFF)));
+      expect(config.colorOf('blue-500/30'), equals(const Color(0x4D3B82F6)));
+    });
+
+    test('returns null for unknown base color with opacity modifier', () {
+      final config = TwConfig.standard();
+
+      expect(config.colorOf('missing/50'), isNull);
+    });
+
+    test('rejects invalid opacity values', () {
+      final config = TwConfig.standard();
+
+      expect(config.colorOf('white/-1'), isNull);
+      expect(config.colorOf('white/101'), isNull);
+      expect(config.colorOf('white/abc'), isNull);
+      expect(config.colorOf('white/'), isNull);
     });
   });
 }

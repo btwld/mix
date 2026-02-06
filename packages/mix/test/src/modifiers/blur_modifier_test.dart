@@ -93,9 +93,7 @@ void main() {
     });
 
     group('build', () {
-      testWidgets('returns child unchanged when sigma is 0.0', (
-        WidgetTester tester,
-      ) async {
+      test('returns child unchanged when sigma is 0.0', () {
         const modifier = BlurModifier(0.0);
         const child = SizedBox(width: 50, height: 50);
 

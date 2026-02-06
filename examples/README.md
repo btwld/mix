@@ -221,6 +221,6 @@ When adding new examples:
 
 ## Resources
 
-- [Mix Documentation](https://github.com/conceptadev/mix)
+- [Mix Documentation](https://github.com/btwld/mix)
 - [Flutter Documentation](https://flutter.dev/docs)
 - [Package on pub.dev](https://pub.dev/packages/mix)

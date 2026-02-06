@@ -404,6 +404,10 @@ final class WidgetModifierConfig with Equatable {
     return merge(WidgetModifierConfig.opacity(value));
   }
 
+  WidgetModifierConfig blur(double sigma) {
+    return merge(WidgetModifierConfig.blur(sigma));
+  }
+
   WidgetModifierConfig aspectRatio(double value) {
     return merge(WidgetModifierConfig.aspectRatio(value));
   }
@@ -697,6 +701,7 @@ const _defaultOrder = [
 
   // 15. OpacityModifier: Applies transparency as the final visual effect.
   // Always applied last to ensure optimal performance and correct visual layering.
+  BlurModifier,
   OpacityModifier,
 
   // 16. ShaderMaskModifier: Applies a shader mask to the widget.
@@ -726,6 +731,7 @@ final defaultModifier = {
   ClipRRectModifier: ClipRRectModifier(),
   ClipPathModifier: ClipPathModifier(),
   ClipTriangleModifier: ClipTriangleModifier(),
+  BlurModifier: BlurModifier(),
   OpacityModifier: OpacityModifier(),
 };
 

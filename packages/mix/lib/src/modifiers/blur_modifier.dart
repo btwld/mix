@@ -62,7 +62,7 @@ class BlurModifierMix extends ModifierMix<BlurModifier> with Diagnosticable {
 
   @override
   BlurModifier resolve(BuildContext context) {
-    return BlurModifier(sigma?.resolveProp(context));
+    return BlurModifier(MixOps.resolve(context, sigma));
   }
 
   @override

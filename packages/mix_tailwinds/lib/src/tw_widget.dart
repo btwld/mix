@@ -20,10 +20,11 @@ const _boxUtilityPrefixes = [
   'shadow', // box shadow
   // Note: 'ring' and 'opacity-' removed until implemented
 ];
+final _whitespaceRegex = RegExp(r'\s+');
 
 /// Check if classNames contain any box utilities that require wrapping.
 bool _hasBoxUtilities(String classNames) {
-  final tokens = classNames.split(RegExp(r'\s+'));
+  final tokens = classNames.split(_whitespaceRegex);
   for (final token in tokens) {
     // Strip variant prefixes (hover:, md:, etc.) to get base token
     final colonIdx = findLastColonOutsideBrackets(token);
@@ -41,7 +42,7 @@ bool _hasBoxUtilities(String classNames) {
 /// Extract margin value from tokens for a given prefix (e.g., 'mb-').
 /// Returns null if not found.
 EdgeInsets? _extractMargin(String classNames, TwConfig cfg) {
-  final tokens = classNames.split(RegExp(r'\s+'));
+  final tokens = classNames.split(_whitespaceRegex);
   double? top, right, bottom, left;
 
   for (final token in tokens) {

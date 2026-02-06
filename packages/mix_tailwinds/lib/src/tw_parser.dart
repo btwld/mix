@@ -450,6 +450,8 @@ class TwResolver {
   TwColorValue? _parseArbitraryColor(String value) {
     if (value.startsWith('#')) {
       final hex = value.substring(1);
+      if (hex.length != 6 && hex.length != 8) return null;
+
       final intVal = int.tryParse(hex, radix: 16);
       if (intVal == null) return null;
 
@@ -1184,12 +1186,13 @@ TextStyler _applyTextTransform(TextStyler styler, TwValue value) {
 // =============================================================================
 
 class TwParser {
-  TwParser({TwConfig? config, this.onUnsupported})
-    : config = config ?? TwConfig.standard(),
-      _resolver = TwResolver(
-        config ?? TwConfig.standard(),
-        onUnknownVariant: onUnsupported,
-      );
+  factory TwParser({TwConfig? config, TokenWarningCallback? onUnsupported}) {
+    final resolvedConfig = config ?? TwConfig.standard();
+    return TwParser._(config: resolvedConfig, onUnsupported: onUnsupported);
+  }
+
+  TwParser._({required this.config, this.onUnsupported})
+    : _resolver = TwResolver(config, onUnknownVariant: onUnsupported);
 
   /// Pre-compiled regex for splitting class names by whitespace.
   static final _whitespaceRegex = RegExp(r'\s+');

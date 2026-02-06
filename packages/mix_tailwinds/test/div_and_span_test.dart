@@ -1211,6 +1211,24 @@ void main() {
     expect(() => parser.parseBox('h-1/'), returnsNormally);
   });
 
+  test('Arbitrary 3/4-digit hex colors are rejected', () {
+    final seen = <String>[];
+    final parser = TwParser(onUnsupported: seen.add);
+
+    parser.parseBox('bg-[#fff] bg-[#ffff]');
+
+    expect(seen, contains('bg-[#fff]'));
+    expect(seen, contains('bg-[#ffff]'));
+  });
+
+  testWidgets('Arbitrary 6/8-digit hex colors are applied', (tester) async {
+    final opaque = await _boxDecorationFor(tester, 'bg-[#ffffff]');
+    expect(opaque?.color, equals(const Color(0xFFFFFFFF)));
+
+    final alpha = await _boxDecorationFor(tester, 'bg-[#80ffffff]');
+    expect(alpha?.color, equals(const Color(0x80FFFFFF)));
+  });
+
   // ==========================================================================
   // State Prefix Tests
   // ==========================================================================
