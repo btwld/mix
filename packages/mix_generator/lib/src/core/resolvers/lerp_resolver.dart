@@ -48,11 +48,16 @@ class LerpResolver {
   String generateLerpCode(FieldModel field) {
     final strategy = resolveStrategy(field);
     final name = field.name;
+    final isNullable = field.isNullable;
 
     return switch (strategy) {
       .interpolate => 'MixOps.lerp($name, other?.$name, t)',
       .snap => 'MixOps.lerpSnap($name, other?.$name, t)',
-      .delegateToSpec => '$name?.lerp(other?.$name, t)',
+      // Use ?. for nullable fields, . for non-nullable fields
+      .delegateToSpec =>
+        isNullable
+            ? '$name?.lerp(other?.$name, t)'
+            : '$name.lerp(other?.$name, t)',
     };
   }
 }
