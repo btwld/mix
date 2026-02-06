@@ -366,7 +366,7 @@ class Div extends StatelessWidget {
       child: built,
       tokens: tokens,
       cfg: cfg,
-      viewportWidth: _viewportSize(context).width,
+      viewportWidth: _responsiveWidth(null, context),
     );
   }
 }
@@ -680,7 +680,7 @@ Widget _buildResponsiveFlex({
 }) {
   return LayoutBuilder(
     builder: (context, constraints) {
-      final width = _effectiveWidth(constraints, context);
+      final width = _responsiveWidth(constraints, context);
       final axis = _resolveFlexAxisResponsive(tokens, cfg, width);
       final isMainAxisBounded = axis == Axis.horizontal
           ? constraints.hasBoundedWidth
@@ -696,6 +696,21 @@ Widget _buildResponsiveFlex({
       if (mainGap != null) {
         style = style.spacing(mainGap);
       }
+      final hasExplicitItemsAlignment = _hasExplicitItemsAlignment(
+        tokens,
+        cfg,
+        width,
+      );
+      if (!hasExplicitItemsAlignment) {
+        // CSS default align-items is stretch, but Flutter cannot stretch on an
+        // unbounded cross axis. Apply stretch only when cross axis is bounded.
+        final isCrossAxisBounded = axis == Axis.horizontal
+            ? constraints.hasBoundedHeight
+            : constraints.hasBoundedWidth;
+        if (isCrossAxisBounded) {
+          style = style.crossAxisAlignment(CrossAxisAlignment.stretch);
+        }
+      }
 
       final crossGap = axis == Axis.horizontal ? gapY : gapX;
       final flexChildren = _applyCrossAxisGap(rawChildren, axis, crossGap);
@@ -706,10 +721,7 @@ Widget _buildResponsiveFlex({
       Widget current = _TwFlexScope(
         axis: axis,
         isMainAxisBounded: isMainAxisBounded,
-        child: _CssSemanticFlexBox(
-          style: style,
-          children: resolvedChildren,
-        ),
+        child: _CssSemanticFlexBox(style: style, children: resolvedChildren),
       );
       current = _applyContainerSizingResponsive(
         current,
@@ -734,7 +746,7 @@ Widget _buildResponsiveBox({
 }) {
   return LayoutBuilder(
     builder: (context, constraints) {
-      final width = _effectiveWidth(constraints, context);
+      final width = _responsiveWidth(constraints, context);
       // Use CSS semantic box - margin is outside hover/press detection area
       Widget current = _CssSemanticBox(style: style, child: child);
       current = _applyContainerSizingResponsive(
@@ -942,8 +954,11 @@ Widget _applyFlexItemDecorators(
   }
 
   final axis = renderFlex.direction;
-  final isMainAxisBounded =
-      _resolveIsMainAxisBounded(context, renderFlex, axis);
+  final isMainAxisBounded = _resolveIsMainAxisBounded(
+    context,
+    renderFlex,
+    axis,
+  );
   var current = child;
 
   final widthIntent = _resolveDimensionIntent(
@@ -1091,6 +1106,27 @@ double? _resolveResponsiveGap(
   return resolved;
 }
 
+bool _hasExplicitItemsAlignment(
+  Set<String> tokens,
+  TwConfig cfg,
+  double width,
+) {
+  for (final token in tokens) {
+    final info = _parseResponsiveToken(token, cfg);
+    if (info.minWidth > width) {
+      continue;
+    }
+    if (info.base == 'items-start' ||
+        info.base == 'items-center' ||
+        info.base == 'items-end' ||
+        info.base == 'items-stretch' ||
+        info.base == 'items-baseline') {
+      return true;
+    }
+  }
+  return false;
+}
+
 double? _resolveResponsiveFraction(
   Set<String> tokens,
   TwConfig cfg,
@@ -1156,6 +1192,17 @@ double _effectiveWidth(BoxConstraints constraints, BuildContext context) {
   }
   final mediaWidth = _viewportSize(context).width;
   return mediaWidth > 0 ? mediaWidth : 0;
+}
+
+double _responsiveWidth(BoxConstraints? constraints, BuildContext context) {
+  final viewportWidth = _viewportSize(context).width;
+  if (viewportWidth > 0) {
+    return viewportWidth;
+  }
+  if (constraints != null) {
+    return _effectiveWidth(constraints, context);
+  }
+  return 0;
 }
 
 Size _viewportSize(BuildContext context) {
@@ -1256,8 +1303,7 @@ _FlexItemBehavior? _resolveFlexItemBehavior(
       'flex-shrink-0' ||
       'shrink-0' => const _FlexItemBehavior(flex: 0, fit: FlexFit.loose),
       // shrink: allow item to shrink below intrinsic size when constrained
-      'flex-shrink' ||
-      'shrink' => _FlexItemBehavior(
+      'flex-shrink' || 'shrink' => _FlexItemBehavior(
         flex: 1,
         fit: FlexFit.tight,
         applyMinConstraint: !hasMinWidthAuto,

@@ -406,6 +406,69 @@ void main() {
     expect(boxSize.height, closeTo(120, 0.0001));
   });
 
+  testWidgets('flex containers default to items-stretch (CSS parity)', (
+    tester,
+  ) async {
+    await _pumpSized(
+      tester,
+      Div(
+        classNames: 'flex flex-col',
+        children: const [
+          Div(
+            key: ValueKey('metric-a'),
+            classNames: 'flex flex-1 flex-col gap-2 rounded-xl bg-blue-50 p-4',
+            child: P(text: 'Spend'),
+          ),
+          Div(
+            key: ValueKey('metric-b'),
+            classNames: 'flex flex-1 flex-col gap-2 rounded-xl bg-blue-50 p-4',
+            child: P(text: 'Return'),
+          ),
+        ],
+      ),
+      width: 320,
+      height: 240,
+    );
+
+    final firstTile = find.descendant(
+      of: find.byKey(const ValueKey('metric-a')),
+      matching: find.byType(Container),
+    );
+    final secondTile = find.descendant(
+      of: find.byKey(const ValueKey('metric-b')),
+      matching: find.byType(Container),
+    );
+    final firstWidth = tester.getSize(firstTile).width;
+    final secondWidth = tester.getSize(secondTile).width;
+
+    expect(firstWidth, closeTo(320, 0.0001));
+    expect(secondWidth, closeTo(320, 0.0001));
+  });
+
+  testWidgets('row flex avoids stretch on unbounded cross axis', (
+    tester,
+  ) async {
+    await _pumpSized(
+      tester,
+      Div(
+        classNames: 'flex flex-col',
+        children: const [
+          Div(
+            classNames: 'flex gap-4',
+            children: [
+              Div(classNames: 'w-20 h-10 bg-blue-500'),
+              Div(classNames: 'w-20 h-10 bg-red-500'),
+            ],
+          ),
+        ],
+      ),
+      width: 320,
+      height: 200,
+    );
+
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('flex-1 applies flex parent data when used inside Row', (
     tester,
   ) async {
@@ -3157,9 +3220,7 @@ void main() {
   // ===========================================================================
 
   group('flex in unbounded contexts (CSS parity)', () {
-    testWidgets('flex-1 in vertical ScrollView does not crash', (
-      tester,
-    ) async {
+    testWidgets('flex-1 in vertical ScrollView does not crash', (tester) async {
       await tester.pumpWidget(
         const Directionality(
           textDirection: TextDirection.ltr,
@@ -3178,9 +3239,7 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('shrink in vertical ScrollView does not crash', (
-      tester,
-    ) async {
+    testWidgets('shrink in vertical ScrollView does not crash', (tester) async {
       await tester.pumpWidget(
         const Directionality(
           textDirection: TextDirection.ltr,
