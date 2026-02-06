@@ -144,7 +144,7 @@ The following Tailwind utilities have limited or no support in mix_tailwinds due
 - Percent sizing is relative to parent container
 
 **Current Limitation:**
-- Arbitrary percent values like `w-[50%]` are parsed but **silently dropped**
+- Arbitrary percent values like `w-[50%]` are parsed (as `TwUnit.percent`) but **not applied** by style appliers
 - Only pixel values (`w-[100px]`) work in arbitrary syntax
 
 **Workaround:**
@@ -221,15 +221,16 @@ Div(classNames: 'basis-48', ...)  // 192px basis
 - Supports hex, rgb(), rgba(), hsl(), hsla()
 
 **Current Limitation:**
-- Only **hex colors** are supported in arbitrary syntax
+- Only **6-digit hex colors** are supported in arbitrary syntax
 - `bg-[#ff0000]` ✓ works
 - `bg-[rgb(255,0,0)]` ✗ not supported
-- Short hex like `bg-[#f00]` ✗ not supported
+- Short hex like `bg-[#f00]` ✗ **silently produces a wrong color** (parsed as a raw int, not expanded to 6 digits)
 
 **Workaround:**
 ```dart
-// Use full 6-digit hex
+// Always use full 6-digit hex (short hex silently produces wrong colors)
 Div(classNames: 'bg-[#ff0000]', ...)  // ✓ Works
+Div(classNames: 'bg-[#f00]', ...)     // ✗ Wrong color!
 
 // Or add custom colors to TwConfig
 final config = TwConfig.standard().copyWith(
@@ -270,10 +271,10 @@ Div(classNames: 'p-2 hover:p-4', ...)  // ✓ Works
 
 | Tailwind Feature | Status | Workaround |
 |-----------------|--------|------------|
-| `w-[50%]`, `h-[25%]` | ✗ Silently dropped | Use `w-1/2`, `h-1/4` fractions |
+| `w-[50%]`, `h-[25%]` | ✗ Parsed but not applied | Use `w-1/2`, `h-1/4` fractions |
 | `translate-x-1/2` | ✗ Not supported | Use pixel values |
 | `translate-x-[50%]` | ⚠️ Treated as pixels | Use Flutter Transform |
 | `basis-1/2`, `basis-full` | ✗ Not supported | Use `w-1/2 flex-none` |
 | `bg-[rgb(...)]` | ✗ Not supported | Use hex: `bg-[#rrggbb]` |
-| `bg-[#f00]` (short hex) | ✗ Not supported | Use full hex: `bg-[#ff0000]` |
+| `bg-[#f00]` (short hex) | ⚠️ Silently wrong color | Use full hex: `bg-[#ff0000]` |
 | `hover:m-4` | ✗ Not reactive | Use padding instead |
