@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 import '../variants/variant.dart';
 import 'spec.dart';
 import 'style.dart';
@@ -20,7 +18,7 @@ mixin UtilityWidgetStateVariantMixin<T extends Style<S>, S extends Spec<S>> {
   /// $box.onHovered($box.color.red())
   /// ```
   T onHovered(T style) {
-    return withVariant(ContextVariant.widgetState(WidgetState.hovered), style);
+    return withVariant(ContextVariant.widgetState(.hovered), style);
   }
 
   /// Creates a variant for pressed state.
@@ -30,7 +28,7 @@ mixin UtilityWidgetStateVariantMixin<T extends Style<S>, S extends Spec<S>> {
   /// $box.onPressed($box.color.blue())
   /// ```
   T onPressed(T style) {
-    return withVariant(ContextVariant.widgetState(WidgetState.pressed), style);
+    return withVariant(ContextVariant.widgetState(.pressed), style);
   }
 
   /// Creates a variant for focused state.
@@ -56,7 +54,7 @@ mixin UtilityWidgetStateVariantMixin<T extends Style<S>, S extends Spec<S>> {
   /// )
   /// ```
   T onFocused(T style) {
-    return withVariant(ContextVariant.widgetState(WidgetState.focused), style);
+    return withVariant(ContextVariant.widgetState(.focused), style);
   }
 
   /// Creates a variant for disabled state.
@@ -66,7 +64,7 @@ mixin UtilityWidgetStateVariantMixin<T extends Style<S>, S extends Spec<S>> {
   /// $box.onDisabled($box.color.grey())
   /// ```
   T onDisabled(T style) {
-    return withVariant(ContextVariant.widgetState(WidgetState.disabled), style);
+    return withVariant(ContextVariant.widgetState(.disabled), style);
   }
 
   /// Creates a variant for enabled state (opposite of disabled).
@@ -77,7 +75,7 @@ mixin UtilityWidgetStateVariantMixin<T extends Style<S>, S extends Spec<S>> {
   /// ```
   T onEnabled(T style) {
     return withVariant(
-      ContextVariant.not(ContextVariant.widgetState(WidgetState.disabled)),
+      ContextVariant.not(ContextVariant.widgetState(.disabled)),
       style,
     );
   }

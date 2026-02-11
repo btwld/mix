@@ -2,6 +2,7 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
 
 import '../../core/decoration_merge.dart';
 import '../../core/helpers.dart';
@@ -13,6 +14,8 @@ import 'decoration_image_mix.dart';
 import 'gradient_mix.dart';
 import 'shadow_mix.dart';
 import 'shape_border_mix.dart';
+
+part 'decoration_mix.g.dart';
 
 /// Base class for decoration styling.
 ///
@@ -109,11 +112,16 @@ sealed class DecorationMix<T extends Decoration> extends Mix<T> {
 }
 
 /// Mix representation of [BoxDecoration].
+@mixable
 final class BoxDecorationMix extends DecorationMix<BoxDecoration>
-    with Diagnosticable {
+    with DefaultValue<BoxDecoration>, Diagnosticable, _$BoxDecorationMixMixin {
+  @override
   final Prop<BoxBorder>? $border;
+  @override
   final Prop<BorderRadiusGeometry>? $borderRadius;
+  @override
   final Prop<BoxShape>? $shape;
+  @override
   final Prop<BlendMode>? $backgroundBlendMode;
 
   BoxDecorationMix({
@@ -241,53 +249,6 @@ final class BoxDecorationMix extends DecorationMix<BoxDecoration>
     return merge(BoxDecorationMix.backgroundBlendMode(value));
   }
 
-  /// Resolves to [BoxDecoration] using the provided [BuildContext].
-  @override
-  BoxDecoration resolve(BuildContext context) {
-    return BoxDecoration(
-      color: MixOps.resolve(context, $color),
-      image: MixOps.resolve(context, $image),
-      border: MixOps.resolve(context, $border),
-      borderRadius: MixOps.resolve(context, $borderRadius),
-      boxShadow: MixOps.resolve(context, $boxShadow),
-      gradient: MixOps.resolve(context, $gradient),
-      backgroundBlendMode: MixOps.resolve(context, $backgroundBlendMode),
-      shape: MixOps.resolve(context, $shape) ?? BoxShape.rectangle,
-    );
-  }
-
-  /// Merges the properties of this [BoxDecorationMix] with the properties of [other].
-  @override
-  BoxDecorationMix merge(BoxDecorationMix? other) {
-    return BoxDecorationMix.create(
-      border: MixOps.merge($border, other?.$border),
-      borderRadius: MixOps.merge($borderRadius, other?.$borderRadius),
-      shape: MixOps.merge($shape, other?.$shape),
-      backgroundBlendMode: MixOps.merge(
-        $backgroundBlendMode,
-        other?.$backgroundBlendMode,
-      ),
-      color: MixOps.merge($color, other?.$color),
-      image: MixOps.merge($image, other?.$image),
-      gradient: MixOps.merge($gradient, other?.$gradient),
-      boxShadow: MixOps.merge($boxShadow, other?.$boxShadow),
-    );
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(DiagnosticsProperty('border', $border))
-      ..add(DiagnosticsProperty('borderRadius', $borderRadius))
-      ..add(DiagnosticsProperty('shape', $shape))
-      ..add(DiagnosticsProperty('backgroundBlendMode', $backgroundBlendMode))
-      ..add(DiagnosticsProperty('color', $color))
-      ..add(DiagnosticsProperty('image', $image))
-      ..add(DiagnosticsProperty('gradient', $gradient))
-      ..add(DiagnosticsProperty('boxShadow', $boxShadow));
-  }
-
   @override
   bool get isMergeable {
     // Cannot merge if has backgroundBlendMode (ShapeDecoration doesn't support it)
@@ -299,16 +260,7 @@ final class BoxDecorationMix extends DecorationMix<BoxDecoration>
   }
 
   @override
-  List<Object?> get props => [
-    $border,
-    $borderRadius,
-    $shape,
-    $backgroundBlendMode,
-    $color,
-    $image,
-    $gradient,
-    $boxShadow,
-  ];
+  BoxDecoration get defaultValue => const .new();
 }
 
 /// Mix-compatible representation of Flutter's [ShapeDecoration] with custom shape support.
@@ -412,5 +364,5 @@ final class ShapeDecorationMix extends DecorationMix<ShapeDecoration>
 
   @override
   ShapeDecoration get defaultValue =>
-      const ShapeDecoration(shape: RoundedRectangleBorder());
+      const .new(shape: RoundedRectangleBorder());
 }

@@ -380,7 +380,7 @@ void main() {
     group('Modifier Methods', () {
       test('modifier method sets modifier config', () {
         final modifier = WidgetModifierConfig();
-        final boxMix = BoxStyler().modifier(modifier);
+        final boxMix = BoxStyler().wrap(modifier);
 
         expect(boxMix.$modifier, modifier);
       });

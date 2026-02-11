@@ -29,7 +29,7 @@ class _ExampleState extends State<Example> {
         .animate(.spring(300.ms, bounce: 0.6));
 
     return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: .center,
       spacing: 20,
       children: [
         Box(style: style),

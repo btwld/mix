@@ -66,9 +66,9 @@ enum ArrowPhases {
   bottomLeft;
 
   Offset get offset => switch (this) {
-    identity => Offset.zero,
-    topRight => const Offset(16, -16),
-    bottomLeft => const Offset(-16, 16),
+    identity => .zero,
+    topRight => const .new(16, -16),
+    bottomLeft => const .new(-16, 16),
   };
 
   Duration get duration => switch (this) {
@@ -92,7 +92,7 @@ class ArrowIconButton extends StatelessWidget {
         .color(Colors.grey.shade200)
         .borderRadius(BorderRadiusMix.circular(10))
         .size(20, 20)
-        .clipBehavior(Clip.hardEdge);
+        .clipBehavior(.hardEdge);
 
     final icon = IconStyler()
         .color(Colors.grey.shade500)

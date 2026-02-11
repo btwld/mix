@@ -102,6 +102,7 @@ mixin Equatable {
     if (props.length != otherProps.length) {
       diff['props.length'] =
           'this: ${props.length}, other: ${otherProps.length}';
+
       return diff;
     }
 

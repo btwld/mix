@@ -24,8 +24,8 @@ class Example extends StatelessWidget {
         )
         .linearGradient(
           colors: [Colors.purple.shade400, Colors.pink.shade300],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+          begin: .topLeft,
+          end: .bottomRight,
         );
 
     return Box(style: style);

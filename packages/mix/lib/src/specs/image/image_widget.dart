@@ -69,12 +69,12 @@ class StyledImage extends StyleWidget<ImageSpec> {
       colorBlendMode: spec.colorBlendMode,
       fit: spec.fit,
       alignment: spec.alignment ?? Alignment.center,
-      repeat: spec.repeat ?? ImageRepeat.noRepeat,
+      repeat: spec.repeat ?? .noRepeat,
       centerSlice: spec.centerSlice,
       matchTextDirection: spec.matchTextDirection ?? false,
       gaplessPlayback: spec.gaplessPlayback ?? false,
       isAntiAlias: spec.isAntiAlias ?? false,
-      filterQuality: spec.filterQuality ?? FilterQuality.medium,
+      filterQuality: spec.filterQuality ?? .medium,
     );
   }
 }

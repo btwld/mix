@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 import '../../core/spec.dart';
 import '../../core/style.dart';
 import '../../variants/variant.dart';
@@ -15,12 +13,12 @@ mixin WidgetStateVariantMixin<T extends Style<S>, S extends Spec<S>>
 
   /// Creates a variant for hover state
   T onHovered(T style) {
-    return variant(ContextVariant.widgetState(WidgetState.hovered), style);
+    return variant(ContextVariant.widgetState(.hovered), style);
   }
 
   /// Creates a variant for pressed state
   T onPressed(T style) {
-    return variant(ContextVariant.widgetState(WidgetState.pressed), style);
+    return variant(ContextVariant.widgetState(.pressed), style);
   }
 
   /// Creates a variant for focused state.
@@ -45,18 +43,18 @@ mixin WidgetStateVariantMixin<T extends Style<S>, S extends Spec<S>>
   /// )
   /// ```
   T onFocused(T style) {
-    return variant(ContextVariant.widgetState(WidgetState.focused), style);
+    return variant(ContextVariant.widgetState(.focused), style);
   }
 
   /// Creates a variant for disabled state
   T onDisabled(T style) {
-    return variant(ContextVariant.widgetState(WidgetState.disabled), style);
+    return variant(ContextVariant.widgetState(.disabled), style);
   }
 
   /// Creates a variant for enabled state (opposite of disabled)
   T onEnabled(T style) {
     return variant(
-      ContextVariant.not(ContextVariant.widgetState(WidgetState.disabled)),
+      ContextVariant.not(ContextVariant.widgetState(.disabled)),
       style,
     );
   }

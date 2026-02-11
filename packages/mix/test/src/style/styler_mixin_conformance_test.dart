@@ -198,11 +198,9 @@ void main() {
         final animated = styler.keyframeAnimation(
           trigger: trigger,
           timeline: [
-            KeyframeTrack<double>(
-              'scale',
-              [Keyframe.linear(1.0, Duration(milliseconds: 500))],
-              initial: 1.0,
-            ),
+            KeyframeTrack<double>('scale', [
+              Keyframe.linear(1.0, Duration(milliseconds: 500)),
+            ], initial: 1.0),
           ],
           styleBuilder: (values, style) => style,
         );
@@ -237,17 +235,18 @@ void main() {
         final animated = styler.keyframeAnimation(
           trigger: trigger,
           timeline: [
-            KeyframeTrack<double>(
-              'opacity',
-              [Keyframe.linear(0.5, Duration(milliseconds: 200))],
-              initial: 1.0,
-            ),
+            KeyframeTrack<double>('opacity', [
+              Keyframe.linear(0.5, Duration(milliseconds: 200)),
+            ], initial: 1.0),
           ],
           styleBuilder: (values, style) => style,
         );
 
         expect(animated, isA<FlexBoxStyler>());
-        expect(animated.$animation, isA<KeyframeAnimationConfig<FlexBoxSpec>>());
+        expect(
+          animated.$animation,
+          isA<KeyframeAnimationConfig<FlexBoxSpec>>(),
+        );
       });
 
       test('StackBoxStyler phaseAnimation works correctly', () {

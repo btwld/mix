@@ -31,7 +31,7 @@ import 'text/text_mutable_style.dart';
   'Use BoxStyler() directly instead. '
   'This accessor was deprecated after Mix v2.0.0.',
 )
-BoxMutableStyler get $box => BoxMutableStyler();
+BoxMutableStyler get $box => .new();
 
 /// Global accessor for flex specification utilities.
 ///
@@ -48,7 +48,7 @@ BoxMutableStyler get $box => BoxMutableStyler();
   'Use FlexStyler() directly instead. '
   'This accessor was deprecated after Mix v2.0.0.',
 )
-FlexMutableStyler get $flex => FlexMutableStyler();
+FlexMutableStyler get $flex => .new();
 
 /// Global accessor for flexbox specification utilities.
 ///
@@ -65,7 +65,7 @@ FlexMutableStyler get $flex => FlexMutableStyler();
   'Use FlexBoxStyler() directly instead. '
   'This accessor was deprecated after Mix v2.0.0.',
 )
-FlexBoxMutableStyler get $flexbox => FlexBoxMutableStyler();
+FlexBoxMutableStyler get $flexbox => .new();
 
 /// Global accessor for image specification utilities.
 ///
@@ -82,7 +82,7 @@ FlexBoxMutableStyler get $flexbox => FlexBoxMutableStyler();
   'Use ImageStyler() directly instead. '
   'This accessor was deprecated after Mix v2.0.0.',
 )
-ImageMutableStyler get $image => ImageMutableStyler();
+ImageMutableStyler get $image => .new();
 
 /// Global accessor for icon specification utilities.
 ///
@@ -99,7 +99,7 @@ ImageMutableStyler get $image => ImageMutableStyler();
   'Use IconStyler() directly instead. '
   'This accessor was deprecated after Mix v2.0.0.',
 )
-IconMutableStyler get $icon => IconMutableStyler();
+IconMutableStyler get $icon => .new();
 
 /// Global accessor for text specification utilities.
 ///
@@ -116,7 +116,7 @@ IconMutableStyler get $icon => IconMutableStyler();
   'Use TextStyler() directly instead. '
   'This accessor was deprecated after Mix v2.0.0.',
 )
-TextMutableStyler get $text => TextMutableStyler();
+TextMutableStyler get $text => .new();
 
 /// Global accessor for stack specification utilities.
 ///
@@ -133,7 +133,7 @@ TextMutableStyler get $text => TextMutableStyler();
   'Use StackStyler() directly instead. '
   'This accessor was deprecated after Mix v2.0.0.',
 )
-StackMutableStyler get $stack => StackMutableStyler();
+StackMutableStyler get $stack => .new();
 
 /// Global accessor for stackbox specification utilities.
 ///
@@ -150,7 +150,7 @@ StackMutableStyler get $stack => StackMutableStyler();
   'Use StackBoxStyler() directly instead. '
   'This accessor was deprecated after Mix v2.0.0.',
 )
-StackBoxMutableStyler get $stackbox => StackBoxMutableStyler();
+StackBoxMutableStyler get $stackbox => .new();
 
 // Global $on and $wrap utilities have been replaced by spec-specific utilities:
 //
