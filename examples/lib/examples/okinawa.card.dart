@@ -42,7 +42,7 @@ class OkinawaCard extends StatelessWidget {
         .borderRounded(10)
         .backgroundImageUrl(
           'https://images.pexels.com/photos/5472603/pexels-photo-5472603.jpeg',
-          fit: BoxFit.cover,
+          fit: .cover,
         )
         .borderAll(
           color: Colors.white,
@@ -57,14 +57,14 @@ class OkinawaCard extends StatelessWidget {
 
     final columnBoxStyle = FlexBoxStyler()
         .paddingAll(8)
-        .width(double.infinity)
+        .width(.infinity)
         .color(Colors.black.withValues(alpha: 0.1))
-        .mainAxisSize(MainAxisSize.min)
-        .crossAxisAlignment(CrossAxisAlignment.start);
+        .mainAxisSize(.min)
+        .crossAxisAlignment(.start);
 
     final titleStyle = TextStyler()
         .color(Colors.white)
-        .fontWeight(FontWeight.bold)
+        .fontWeight(.bold)
         .fontSize(16);
 
     final subtitleStyle = TextStyler().color(Colors.white70).fontSize(14);
@@ -72,7 +72,7 @@ class OkinawaCard extends StatelessWidget {
     return Box(
       style: boxStyle,
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: .circular(8),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
           child: ColumnBox(

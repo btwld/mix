@@ -69,16 +69,6 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
     }
   }
 
-  @override
-  void didUpdateWidget(covariant StyleBuilder<S> oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    // Handle controller changes
-    if (oldWidget.controller != widget.controller) {
-      _handleControllerChange(oldWidget);
-    }
-  }
-
   void _handleControllerChange(StyleBuilder<S> oldWidget) {
     // Dispose old internal controller if we owned it
     if (_ownsController) {
@@ -100,6 +90,16 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
     final inheritedStyle = Style.maybeOf<S>(context);
 
     return inheritedStyle?.merge(widget.style) ?? widget.style;
+  }
+
+  @override
+  void didUpdateWidget(covariant StyleBuilder<S> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // Handle controller changes
+    if (oldWidget.controller != widget.controller) {
+      _handleControllerChange(oldWidget);
+    }
   }
 
   @override
@@ -147,7 +147,7 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
 
     // If inheritable is true, wrap with StyleProvider to pass the merged style down
     if (widget.inheritable) {
-      current = StyleProvider<S>(style: style, child: current);
+      current = StyleProvider(style: style, child: current);
     }
 
     return current;
@@ -179,7 +179,7 @@ class StyleSpecBuilder<S extends Spec<S>> extends StatelessWidget {
     Widget current = builder(context, styleSpec.spec);
 
     // Always wrap with StyleSpecProvider first
-    current = StyleSpecProvider<S>(spec: styleSpec, child: current);
+    current = StyleSpecProvider(spec: styleSpec, child: current);
 
     if (styleSpec.widgetModifiers != null &&
         styleSpec.widgetModifiers!.isNotEmpty) {
@@ -197,7 +197,7 @@ class StyleSpecBuilder<S extends Spec<S>> extends StatelessWidget {
         Widget animatedChild = builder(context, animatedWrappedSpec.spec);
 
         // Always wrap with StyleSpecProvider first
-        animatedChild = StyleSpecProvider<S>(
+        animatedChild = StyleSpecProvider(
           spec: animatedWrappedSpec,
           child: animatedChild,
         );

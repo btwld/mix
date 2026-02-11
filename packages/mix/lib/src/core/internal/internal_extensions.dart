@@ -120,7 +120,7 @@ extension StringExt on String {
 /// Extension on [double] to provide radius conversion.
 extension DoubleExt on double {
   /// Converts this double to a circular [Radius].
-  Radius toRadius() => Radius.circular(this);
+  Radius toRadius() => .circular(this);
 }
 
 /// Extension on [Matrix4] to provide merge functionality.
@@ -302,11 +302,11 @@ extension BuildContextExt on BuildContext {
   MixScope get mixTheme => MixScope.of(this);
 
   /// Check if brightness is Brightness.dark.
-  bool get isDarkMode => brightness == Brightness.dark;
+  bool get isDarkMode => brightness == .dark;
 
   /// Is device in landscape mode.
-  bool get isLandscape => orientation == Orientation.landscape;
+  bool get isLandscape => orientation == .landscape;
 
   /// Is device in portrait mode.
-  bool get isPortrait => orientation == Orientation.portrait;
+  bool get isPortrait => orientation == .portrait;
 }

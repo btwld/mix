@@ -137,7 +137,7 @@ class TransformModifierMix extends ModifierMix<TransformModifier>
   TransformModifier resolve(BuildContext context) {
     return TransformModifier(
       transform: MixOps.resolve(context, transform),
-      alignment: MixOps.resolve(context, alignment) ?? Alignment.center,
+      alignment: MixOps.resolve(context, alignment) ?? .center,
     );
   }
 
@@ -220,8 +220,7 @@ class ScaleModifierMix extends ModifierMix<ScaleModifier> with Diagnosticable {
   ScaleModifier resolve(BuildContext context) {
     final resolvedx = MixOps.resolve(context, x) ?? 1.0;
     final resolvedy = MixOps.resolve(context, y) ?? 1.0;
-    final resolvedAlignment =
-        MixOps.resolve(context, alignment) ?? Alignment.center;
+    final resolvedAlignment = MixOps.resolve(context, alignment) ?? .center;
 
     return ScaleModifier(
       x: resolvedx,
@@ -372,8 +371,7 @@ class RotateModifierMix extends ModifierMix<RotateModifier>
   @override
   RotateModifier resolve(BuildContext context) {
     final resolvedRadians = MixOps.resolve(context, radians) ?? 0.0;
-    final resolvedAlignment =
-        MixOps.resolve(context, alignment) ?? Alignment.center;
+    final resolvedAlignment = MixOps.resolve(context, alignment) ?? .center;
 
     return RotateModifier(
       radians: resolvedRadians,
@@ -453,8 +451,7 @@ class SkewModifierMix extends ModifierMix<SkewModifier> with Diagnosticable {
   SkewModifier resolve(BuildContext context) {
     final resolvedSkewX = MixOps.resolve(context, skewX) ?? 0.0;
     final resolvedSkewY = MixOps.resolve(context, skewY) ?? 0.0;
-    final resolvedAlignment =
-        MixOps.resolve(context, alignment) ?? Alignment.center;
+    final resolvedAlignment = MixOps.resolve(context, alignment) ?? .center;
 
     return SkewModifier(
       skewX: resolvedSkewX,

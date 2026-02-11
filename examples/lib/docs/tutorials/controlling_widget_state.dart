@@ -12,7 +12,7 @@ void main() {
 class Example1 extends StatelessWidget {
   const Example1({super.key});
 
-  BoxStyler get style => BoxStyler()
+  BoxStyler get style => .new()
       .color(Colors.red)
       .size(100, 100)
       .onHovered(BoxStyler().color(Colors.blue))
@@ -41,7 +41,7 @@ class _Example2State extends State<Example2> {
     super.dispose();
   }
 
-  BoxStyler get style => BoxStyler()
+  BoxStyler get style => .new()
       .color(Colors.red)
       .size(100, 100)
       .onHovered(BoxStyler().color(Colors.blue))

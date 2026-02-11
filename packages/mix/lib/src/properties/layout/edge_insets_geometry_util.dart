@@ -13,15 +13,15 @@ final class EdgeInsetsGeometryUtility<U extends Style<Object?>>
     extends MixUtility<U, EdgeInsetsGeometryMix> {
   late final directional = EdgeInsetsDirectionalUtility(utilityBuilder);
 
-  late final horizontal = SpacingSideUtility<U>((v) => only(left: v, right: v));
-  late final vertical = SpacingSideUtility<U>((v) => only(top: v, bottom: v));
-  late final all = SpacingSideUtility<U>(
+  late final horizontal = SpacingSideUtility((v) => only(left: v, right: v));
+  late final vertical = SpacingSideUtility((v) => only(top: v, bottom: v));
+  late final all = SpacingSideUtility(
     (v) => only(top: v, bottom: v, left: v, right: v),
   );
-  late final top = SpacingSideUtility<U>((v) => only(top: v));
-  late final bottom = SpacingSideUtility<U>((v) => only(bottom: v));
-  late final left = SpacingSideUtility<U>((v) => only(left: v));
-  late final right = SpacingSideUtility<U>((v) => only(right: v));
+  late final top = SpacingSideUtility((v) => only(top: v));
+  late final bottom = SpacingSideUtility((v) => only(bottom: v));
+  late final left = SpacingSideUtility((v) => only(left: v));
+  late final right = SpacingSideUtility((v) => only(right: v));
 
   EdgeInsetsGeometryUtility(super.utilityBuilder);
 
@@ -72,15 +72,15 @@ final class EdgeInsetsGeometryUtility<U extends Style<Object?>>
 @immutable
 final class EdgeInsetsDirectionalUtility<U extends Style<Object?>>
     extends MixUtility<U, EdgeInsetsDirectionalMix> {
-  late final all = SpacingSideUtility<U>(
+  late final all = SpacingSideUtility(
     (v) => only(top: v, bottom: v, start: v, end: v),
   );
-  late final start = SpacingSideUtility<U>((v) => only(start: v));
-  late final end = SpacingSideUtility<U>((v) => only(end: v));
-  late final top = SpacingSideUtility<U>((v) => only(top: v));
-  late final bottom = SpacingSideUtility<U>((v) => only(bottom: v));
-  late final vertical = SpacingSideUtility<U>((v) => only(top: v, bottom: v));
-  late final horizontal = SpacingSideUtility<U>((v) => only(start: v, end: v));
+  late final start = SpacingSideUtility((v) => only(start: v));
+  late final end = SpacingSideUtility((v) => only(end: v));
+  late final top = SpacingSideUtility((v) => only(top: v));
+  late final bottom = SpacingSideUtility((v) => only(bottom: v));
+  late final vertical = SpacingSideUtility((v) => only(top: v, bottom: v));
+  late final horizontal = SpacingSideUtility((v) => only(start: v, end: v));
 
   EdgeInsetsDirectionalUtility(super.utilityBuilder);
 

@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
 
 import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
@@ -8,36 +9,47 @@ import '../../core/style.dart';
 import '../../core/style_spec.dart';
 import '../../modifiers/widget_modifier_config.dart';
 import '../../properties/painting/shadow_mix.dart';
-import '../../style/mixins/animation_style_mixin.dart';
-import '../../style/mixins/variant_style_mixin.dart';
-import '../../style/mixins/widget_modifier_style_mixin.dart';
-import '../../style/mixins/widget_state_variant_mixin.dart';
+import '../../style/abstracts/styler.dart';
 import 'icon_mutable_style.dart';
 import 'icon_spec.dart';
 import 'icon_widget.dart';
 
+part 'icon_style.g.dart';
+
 @Deprecated('Use IconStyler instead')
 typedef IconMix = IconStyler;
 
-class IconStyler extends Style<IconSpec>
-    with
-        Diagnosticable,
-        WidgetModifierStyleMixin<IconStyler, IconSpec>,
-        VariantStyleMixin<IconStyler, IconSpec>,
-        WidgetStateVariantMixin<IconStyler, IconSpec>,
-        AnimationStyleMixin<IconStyler, IconSpec> {
+@mixableStyler
+class IconStyler extends MixStyler<IconStyler, IconSpec>
+    with _$IconStylerMixin {
+  @override
   final Prop<Color>? $color;
+  @override
   final Prop<double>? $size;
+  @override
   final Prop<double>? $weight;
+  @override
   final Prop<double>? $grade;
+  @override
   final Prop<double>? $opticalSize;
+
+  @override
+  @MixableField(setterType: List<ShadowMix>)
   final Prop<List<Shadow>>? $shadows;
+
+  @override
   final Prop<TextDirection>? $textDirection;
+  @override
   final Prop<bool>? $applyTextScaling;
+  @override
   final Prop<double>? $fill;
+  @override
   final Prop<String>? $semanticsLabel;
+  @override
   final Prop<double>? $opacity;
+  @override
   final Prop<BlendMode>? $blendMode;
+  @override
   final Prop<IconData>? $icon;
 
   const IconStyler.create({
@@ -107,76 +119,11 @@ class IconStyler extends Style<IconSpec>
          variants: variants,
        );
 
-  static IconMutableStyler get chain => IconMutableStyler(IconStyler());
-
-  /// Sets icon color
-  IconStyler color(Color value) {
-    return merge(IconStyler(color: value));
-  }
-
-  /// Sets icon size
-  IconStyler size(double value) {
-    return merge(IconStyler(size: value));
-  }
-
-  /// Sets icon weight
-  IconStyler weight(double value) {
-    return merge(IconStyler(weight: value));
-  }
-
-  /// Sets icon grade
-  IconStyler grade(double value) {
-    return merge(IconStyler(grade: value));
-  }
-
-  /// Sets icon optical size
-  IconStyler opticalSize(double value) {
-    return merge(IconStyler(opticalSize: value));
-  }
+  static IconMutableStyler get chain => .new(IconStyler());
 
   /// Sets single icon shadow
   IconStyler shadow(ShadowMix value) {
     return merge(IconStyler(shadows: [value]));
-  }
-
-  /// Sets icon shadows
-  IconStyler shadows(List<ShadowMix> value) {
-    return merge(IconStyler(shadows: value));
-  }
-
-  /// Sets text direction
-  IconStyler textDirection(TextDirection value) {
-    return merge(IconStyler(textDirection: value));
-  }
-
-  /// Sets apply text scaling
-  IconStyler applyTextScaling(bool value) {
-    return merge(IconStyler(applyTextScaling: value));
-  }
-
-  /// Sets icon fill
-  IconStyler fill(double value) {
-    return merge(IconStyler(fill: value));
-  }
-
-  /// Sets semantics label
-  IconStyler semanticsLabel(String value) {
-    return merge(IconStyler(semanticsLabel: value));
-  }
-
-  /// Sets opacity
-  IconStyler opacity(double value) {
-    return merge(IconStyler(opacity: value));
-  }
-
-  /// Sets blend mode
-  IconStyler blendMode(BlendMode value) {
-    return merge(IconStyler(blendMode: value));
-  }
-
-  /// Sets icon data
-  IconStyler icon(IconData value) {
-    return merge(IconStyler(icon: value));
   }
 
   StyledIcon call({Key? key, IconData? icon, String? semanticLabel}) {
@@ -192,111 +139,4 @@ class IconStyler extends Style<IconSpec>
   IconStyler modifier(WidgetModifierConfig value) {
     return merge(IconStyler(modifier: value));
   }
-
-  /// Sets animation
-  @override
-  IconStyler animate(AnimationConfig animation) {
-    return merge(IconStyler(animation: animation));
-  }
-
-  @override
-  StyleSpec<IconSpec> resolve(BuildContext context) {
-    final iconSpec = IconSpec(
-      color: MixOps.resolve(context, $color),
-      size: MixOps.resolve(context, $size),
-      weight: MixOps.resolve(context, $weight),
-      grade: MixOps.resolve(context, $grade),
-      opticalSize: MixOps.resolve(context, $opticalSize),
-      shadows: MixOps.resolve(context, $shadows),
-      textDirection: MixOps.resolve(context, $textDirection),
-      applyTextScaling: MixOps.resolve(context, $applyTextScaling),
-      fill: MixOps.resolve(context, $fill),
-      semanticsLabel: MixOps.resolve(context, $semanticsLabel),
-      opacity: MixOps.resolve(context, $opacity),
-      blendMode: MixOps.resolve(context, $blendMode),
-      icon: MixOps.resolve(context, $icon),
-    );
-
-    return StyleSpec(
-      spec: iconSpec,
-      animation: $animation,
-      widgetModifiers: $modifier?.resolve(context),
-    );
-  }
-
-  @override
-  IconStyler merge(IconStyler? other) {
-    return IconStyler.create(
-      color: MixOps.merge($color, other?.$color),
-      size: MixOps.merge($size, other?.$size),
-      weight: MixOps.merge($weight, other?.$weight),
-      grade: MixOps.merge($grade, other?.$grade),
-      opticalSize: MixOps.merge($opticalSize, other?.$opticalSize),
-      shadows: MixOps.merge($shadows, other?.$shadows),
-      textDirection: MixOps.merge($textDirection, other?.$textDirection),
-      applyTextScaling: MixOps.merge(
-        $applyTextScaling,
-        other?.$applyTextScaling,
-      ),
-      fill: MixOps.merge($fill, other?.$fill),
-      semanticsLabel: MixOps.merge($semanticsLabel, other?.$semanticsLabel),
-      opacity: MixOps.merge($opacity, other?.$opacity),
-      blendMode: MixOps.merge($blendMode, other?.$blendMode),
-      icon: MixOps.merge($icon, other?.$icon),
-      animation: MixOps.mergeAnimation($animation, other?.$animation),
-      modifier: MixOps.mergeModifier($modifier, other?.$modifier),
-      variants: MixOps.mergeVariants($variants, other?.$variants),
-    );
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(DiagnosticsProperty('color', $color))
-      ..add(DiagnosticsProperty('size', $size))
-      ..add(DiagnosticsProperty('weight', $weight))
-      ..add(DiagnosticsProperty('grade', $grade))
-      ..add(DiagnosticsProperty('opticalSize', $opticalSize))
-      ..add(DiagnosticsProperty('shadows', $shadows))
-      ..add(DiagnosticsProperty('textDirection', $textDirection))
-      ..add(DiagnosticsProperty('applyTextScaling', $applyTextScaling))
-      ..add(DiagnosticsProperty('fill', $fill))
-      ..add(DiagnosticsProperty('semanticsLabel', $semanticsLabel))
-      ..add(DiagnosticsProperty('opacity', $opacity))
-      ..add(DiagnosticsProperty('blendMode', $blendMode))
-      ..add(DiagnosticsProperty('icon', $icon));
-  }
-
-  /// Sets the variants list.
-  @override
-  IconStyler variants(List<VariantStyle<IconSpec>> value) {
-    return merge(IconStyler(variants: value));
-  }
-
-  /// Sets the widget modifier.
-  @override
-  IconStyler wrap(WidgetModifierConfig value) {
-    return modifier(value);
-  }
-
-  @override
-  List<Object?> get props => [
-    $color,
-    $size,
-    $weight,
-    $grade,
-    $opticalSize,
-    $shadows,
-    $textDirection,
-    $applyTextScaling,
-    $fill,
-    $semanticsLabel,
-    $opacity,
-    $blendMode,
-    $icon,
-    $animation,
-    $modifier,
-    $variants,
-  ];
 }

@@ -108,7 +108,7 @@ abstract class ImplicitAnimationDriver<
   }
 
   void _onAnimationComplete(AnimationStatus status) {
-    if (status == AnimationStatus.completed) {
+    if (status == .completed) {
       onCompleteAnimation();
     }
   }
@@ -155,8 +155,8 @@ class CurveAnimationDriver<S extends Spec<S>>
     _animation = _controller.drive(_tween);
   }
 
-  TweenSequence<StyleSpec<S>?> _createTweenSequence() => TweenSequence([
-    if (config.delay > Duration.zero)
+  TweenSequence<StyleSpec<S>?> _createTweenSequence() => .new([
+    if (config.delay > .zero)
       TweenSequenceItem(
         tween: ConstantTween(_initialSpec),
         weight: config.delay.inMilliseconds.toDouble(),
@@ -259,7 +259,7 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
     // Add status listener for onEnd callback
     if (config.curveConfigs.last.onEnd != null) {
       _animation.addStatusListener((status) {
-        if (status == AnimationStatus.completed) {
+        if (status == .completed) {
           config.curveConfigs.last.onEnd!();
         }
       });
@@ -279,7 +279,7 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
       final currentIndex = i % specs.length;
       final nextIndex = (i + 1) % specs.length;
 
-      if (configs[currentIndex].delay > Duration.zero) {
+      if (configs[currentIndex].delay > .zero) {
         items.add(
           TweenSequenceItem(
             tween: ConstantTween(specs[currentIndex]),
@@ -390,7 +390,7 @@ class KeyframeAnimationDriver<S extends Spec<S>>
   bool get _isLooping => _config.trigger == null;
 
   Duration get duration {
-    if (_config.timeline.isEmpty) return Duration.zero;
+    if (_config.timeline.isEmpty) return .zero;
 
     return _config.timeline.fold(
       Duration.zero,

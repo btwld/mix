@@ -43,7 +43,7 @@ void main() {
 
   runMixApp(
     Row(
-      mainAxisSize: MainAxisSize.min,
+      mainAxisSize: .min,
       spacing: 16,
       children: [
         Box(style: style),

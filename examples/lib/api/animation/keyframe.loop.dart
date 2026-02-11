@@ -77,7 +77,7 @@ class _SlidingGradientTransform extends GradientTransform {
 
   @override
   Matrix4 transform(Rect bounds, {TextDirection? textDirection}) {
-    return Matrix4.identity()
+    return .identity()
       ..translateByDouble(bounds.width * slidePercent, 0.0, 0.0, 1);
   }
 }
