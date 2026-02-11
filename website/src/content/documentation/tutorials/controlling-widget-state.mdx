@@ -5,7 +5,7 @@ In this tutorial, we'll explore how to manage manually widget states in Mix, inc
 
 ## Approach 1: Automatic State Management
 
-The simplest way to handle widget states is using Mix's automatic state management with the `Box` widget. Mix automatically tracks hover, press, and focus states for you:
+Mix makes handling hover and press states effortless with any `StyledWidget` these states are tracked for you automatically, requiring no extra setup:
 
 ```dart
 class SimpleExample extends StatelessWidget {
@@ -15,21 +15,47 @@ class SimpleExample extends StatelessWidget {
       .color(Colors.red)
       .size(100, 100)
       .onHovered(BoxStyler().color(Colors.blue))
-      .onPressed(BoxStyler().color(Colors.green))
-      .onFocused(BoxStyler().color(Colors.yellow));
+      .onPressed(BoxStyler().color(Colors.green));
 
   @override
   Widget build(BuildContext context) {
-    return style();
+    // Just calling style() gives you a Box that handles these states for you.
+    return style() // return a Box;
   }
 }
 ```
 
 In this example:
-- The base color is red
-- When hovered, the color changes to blue
-- When pressed, the color changes to green
-- When focused, the color changes to yellow
+- The base color is red.
+- When hovered, the color changes to blue.
+- When pressed, the color changes to green.
+
+You do not need to wrap `Pressable` or do anything else for these states—they work out of the box.
+
+---
+
+If you want to control focus state (`onFocused`), you'll need to wrap the Box with a `Pressable` widget or use `PressableBox` instead. This is because tracking focus state requires a `Focus` widget, which `Pressable` provides:
+
+```dart
+class FocusedExample extends StatelessWidget {
+  const FocusedExample({super.key});
+
+  BoxStyler get style => BoxStyler()
+      .color(Colors.red)
+      .size(100, 100)
+      .onFocused(BoxStyler().color(Colors.yellow));
+
+  @override
+  Widget build(BuildContext context) {
+    // Now focus events will be tracked:
+    return Pressable(child: style());
+    // Alternatively, use:
+    // return PressableBox(style: style);
+  }
+}
+```
+
+In this example, the color changes to yellow when the widget has focus.
 
 ## Approach 2: Manual State Control with WidgetStatesController
 

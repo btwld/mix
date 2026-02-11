@@ -26,12 +26,24 @@ class Example extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // BoxStyler() fluent API - the recommended approach in Mix 2.0
     final boxStyle = BoxStyler()
         .color(Colors.red)
         .size(100, 100)
-        .borderRounded(10);
+        .borderRounded(10)
+        .onHovered(BoxStyler().color(Colors.blue))
+        .onFocused(BoxStyler().color(Colors.green))
+        .onPressed(BoxStyler().color(Colors.yellow));
 
-    return Box(style: boxStyle);
+    return Row(
+      children: [
+        Pressable(child: Box(style: boxStyle)),
+        TextButton(
+          onPressed: () {
+            print('pressed');
+          },
+          child: Text('Press me'),
+        ),
+      ],
+    );
   }
 }
