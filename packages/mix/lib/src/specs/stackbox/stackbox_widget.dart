@@ -78,8 +78,8 @@ Stack _createStackSpecWidget({
   return Stack(
     alignment: spec?.alignment ?? AlignmentDirectional.topStart,
     textDirection: spec?.textDirection,
-    fit: spec?.fit ?? StackFit.loose,
-    clipBehavior: spec?.clipBehavior ?? Clip.hardEdge,
+    fit: spec?.fit ?? .loose,
+    clipBehavior: spec?.clipBehavior ?? .hardEdge,
     children: children,
   );
 }

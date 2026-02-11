@@ -229,21 +229,21 @@ class _ExampleNavigatorState extends State<ExampleNavigator> {
 
   Widget _buildExampleCard(ExampleItem example) {
     return Padding(
-      padding: const EdgeInsets.all(12),
+      padding: const .all(12),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: .start,
         children: [
           Text(
             example.title,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(fontSize: 16, fontWeight: .bold),
+            overflow: .ellipsis,
             maxLines: 2,
           ),
           const SizedBox(height: 8),
           Text(
             example.description,
             style: const TextStyle(color: Colors.grey, fontSize: 12),
-            overflow: TextOverflow.ellipsis,
+            overflow: .ellipsis,
             maxLines: 2,
           ),
           const SizedBox(height: 12),
@@ -266,7 +266,7 @@ class _ExampleNavigatorState extends State<ExampleNavigator> {
         children: [
           // Category filter buttons
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: const .all(16),
             child: Wrap(
               spacing: 8,
               children: categories.map((category) {
@@ -287,7 +287,7 @@ class _ExampleNavigatorState extends State<ExampleNavigator> {
           // Examples grid
           Expanded(
             child: GridView.builder(
-              padding: const EdgeInsets.all(16),
+              padding: const .all(16),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: MediaQuery.of(context).size.width > 800 ? 3 : 2,
                 mainAxisSpacing: 16,

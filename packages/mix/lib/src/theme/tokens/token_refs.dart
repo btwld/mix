@@ -56,7 +56,7 @@ final class TextStyleRef extends Prop<TextStyle>
   TextStyleRef(super.prop) : super.fromProp();
 
   @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+  String toString({DiagnosticLevel minLevel = .info}) {
     return super.toString();
   }
 }
@@ -97,7 +97,7 @@ final class TextStyleMixRef extends Prop<TextStyle>
   TextStyleMixRef(super.prop) : super.fromProp();
 
   @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+  String toString({DiagnosticLevel minLevel = .info}) {
     return super.toString();
   }
 }
@@ -109,7 +109,7 @@ final class ShadowMixRef extends Prop<Shadow>
   ShadowMixRef(super.prop) : super.fromProp();
 
   @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+  String toString({DiagnosticLevel minLevel = .info}) {
     return super.toString();
   }
 }
@@ -121,7 +121,7 @@ final class BoxShadowMixRef extends Prop<BoxShadow>
   BoxShadowMixRef(super.prop) : super.fromProp();
 
   @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+  String toString({DiagnosticLevel minLevel = .info}) {
     return super.toString();
   }
 }
@@ -133,7 +133,7 @@ final class ShadowListMixRef extends Prop<List<Shadow>>
   ShadowListMixRef(super.prop) : super.fromProp();
 
   @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+  String toString({DiagnosticLevel minLevel = .info}) {
     return super.toString();
   }
 }
@@ -145,7 +145,7 @@ final class BoxShadowListMixRef extends Prop<List<BoxShadow>>
   BoxShadowListMixRef(super.prop) : super.fromProp();
 
   @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+  String toString({DiagnosticLevel minLevel = .info}) {
     return super.toString();
   }
 }

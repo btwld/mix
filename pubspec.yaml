@@ -6,4 +6,4 @@ environment:
 
 dependencies:
   melos: ^6.3.3
-  analyzer: ^7.5.4
+  analyzer: '>=9.0.0 <11.0.0'

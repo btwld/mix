@@ -41,7 +41,7 @@ class MouseCursorModifier extends WidgetModifier<MouseCursorModifier>
 
   @override
   Widget build(Widget child) {
-    return MouseRegion(cursor: mouseCursor ?? MouseCursor.defer, child: child);
+    return MouseRegion(cursor: mouseCursor ?? .defer, child: child);
   }
 }
 
@@ -114,8 +114,8 @@ class MouseCursorModifierUtility<T extends Style<Object?>>
     return utilityBuilder(MouseCursorModifierMix(mouseCursor: mouseCursor));
   }
 
-  T defer() => call(MouseCursor.defer);
-  T uncontrolled() => call(MouseCursor.uncontrolled);
+  T defer() => call(.defer);
+  T uncontrolled() => call(.uncontrolled);
 
   T none() => call(SystemMouseCursors.none);
 

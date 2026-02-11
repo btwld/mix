@@ -31,7 +31,7 @@ enum CustomColorTokens {
 
   const CustomColorTokens(this.name);
 
-  ColorToken get token => ColorToken(name);
+  ColorToken get token => .new(name);
 }
 
 enum CustomTextStyleTokens {
@@ -44,7 +44,7 @@ enum CustomTextStyleTokens {
   final String name;
   const CustomTextStyleTokens(this.name);
 
-  TextStyleToken get token => TextStyleToken(name);
+  TextStyleToken get token => .new(name);
 }
 
 enum MyThemeRadiusToken {
@@ -54,7 +54,7 @@ enum MyThemeRadiusToken {
   final String name;
   const MyThemeRadiusToken(this.name);
 
-  RadiusToken get token => RadiusToken(name);
+  RadiusToken get token => .new(name);
 }
 
 enum MyThemeSpaceToken {
@@ -64,7 +64,7 @@ enum MyThemeSpaceToken {
   final String name;
   const MyThemeSpaceToken(this.name);
 
-  SpaceToken get token => SpaceToken(name);
+  SpaceToken get token => .new(name);
 }
 
 // Light Blue Theme
@@ -80,27 +80,27 @@ class LightBlueTheme {
   static Map<TextStyleToken, TextStyle> get textStyles => {
     CustomTextStyleTokens.headline1.token: const TextStyle(
       fontSize: 22,
-      fontWeight: FontWeight.bold,
+      fontWeight: .bold,
       fontFamily: 'Roboto',
     ),
     CustomTextStyleTokens.headline2.token: const TextStyle(
       fontSize: 18,
-      fontWeight: FontWeight.bold,
+      fontWeight: .bold,
       fontFamily: 'Roboto',
     ),
     CustomTextStyleTokens.button.token: const TextStyle(
       fontSize: 14,
-      fontWeight: FontWeight.bold,
+      fontWeight: .bold,
       fontFamily: 'Roboto',
     ),
     CustomTextStyleTokens.body.token: const TextStyle(
       fontSize: 16,
-      fontWeight: FontWeight.normal,
+      fontWeight: .normal,
       fontFamily: 'Roboto',
     ),
     CustomTextStyleTokens.callout.token: const TextStyle(
       fontSize: 14,
-      fontWeight: FontWeight.normal,
+      fontWeight: .normal,
       fontFamily: 'Roboto',
     ),
   };
@@ -129,27 +129,27 @@ class DarkPurpleTheme {
   static Map<TextStyleToken, TextStyle> get textStyles => {
     CustomTextStyleTokens.headline1.token: const TextStyle(
       fontSize: 22,
-      fontWeight: FontWeight.bold,
+      fontWeight: .bold,
       fontFamily: 'Courier',
     ),
     CustomTextStyleTokens.headline2.token: const TextStyle(
       fontSize: 18,
-      fontWeight: FontWeight.bold,
+      fontWeight: .bold,
       fontFamily: 'Courier',
     ),
     CustomTextStyleTokens.button.token: const TextStyle(
       fontSize: 14,
-      fontWeight: FontWeight.bold,
+      fontWeight: .bold,
       fontFamily: 'Courier',
     ),
     CustomTextStyleTokens.body.token: const TextStyle(
       fontSize: 16,
-      fontWeight: FontWeight.normal,
+      fontWeight: .normal,
       fontFamily: 'Courier',
     ),
     CustomTextStyleTokens.callout.token: const TextStyle(
       fontSize: 14,
-      fontWeight: FontWeight.normal,
+      fontWeight: .normal,
       fontFamily: 'Courier',
     ),
   };
@@ -175,9 +175,9 @@ class ProfileButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final box = BoxStyler()
         .height(50)
-        .width(double.infinity)
+        .width(.infinity)
         .color(CustomColorTokens.primary.token())
-        .alignment(Alignment.center)
+        .alignment(.center)
         .borderRadiusAll(MyThemeRadiusToken.large.token());
 
     final text = TextStyler()
@@ -254,7 +254,7 @@ class ImagePlaceholder extends StatelessWidget {
   Widget build(BuildContext context) {
     final imageContainer = BoxStyler()
         .height(200)
-        .width(double.infinity)
+        .width(.infinity)
         .color(CustomColorTokens.primary.token())
         .borderRadiusAll(MyThemeRadiusToken.medium.token());
 

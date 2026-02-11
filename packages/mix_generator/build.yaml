@@ -4,7 +4,19 @@ targets:
       mix_generator:
         enabled: true
         generate_for:
-          - lib/**/*.dart
+          - lib/src/specs/**/*.dart  # Narrowed scope for specs only
+        options:
+          debug: false
+      styler_generator:
+        enabled: true
+        generate_for:
+          - lib/src/specs/**/*.dart  # Narrowed scope for specs only
+        options:
+          debug: false
+      mixable_generator:
+        enabled: true
+        generate_for:
+          - lib/src/properties/**/*.dart  # Mix property classes
         options:
           debug: false
 
@@ -12,7 +24,23 @@ builders:
   mix_generator:
     import: 'package:mix_generator/mix_generator.dart'
     builder_factories: ['mixGenerator']
-    build_extensions: {'.dart': ['.mix.dart']}
+    build_extensions: {'.dart': ['.mix_generator.g.part']}
     auto_apply: dependents
-    build_to: source
-    applies_builders: []
+    build_to: cache
+    applies_builders: ['source_gen:combining_builder']
+
+  styler_generator:
+    import: 'package:mix_generator/mix_generator.dart'
+    builder_factories: ['stylerGenerator']
+    build_extensions: {'.dart': ['.styler_generator.g.part']}
+    auto_apply: dependents
+    build_to: cache
+    applies_builders: ['source_gen:combining_builder']
+
+  mixable_generator:
+    import: 'package:mix_generator/mix_generator.dart'
+    builder_factories: ['mixableGenerator']
+    build_extensions: {'.dart': ['.mixable_generator.g.part']}
+    auto_apply: dependents
+    build_to: cache
+    applies_builders: ['source_gen:combining_builder']

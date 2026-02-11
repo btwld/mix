@@ -16,7 +16,7 @@ final class ClipOvalModifier extends WidgetModifier<ClipOvalModifier>
   final Clip clipBehavior;
 
   const ClipOvalModifier({this.clipper, Clip? clipBehavior})
-    : clipBehavior = clipBehavior ?? Clip.antiAlias;
+    : clipBehavior = clipBehavior ?? .antiAlias;
 
   @override
   ClipOvalModifier copyWith({
@@ -102,7 +102,7 @@ final class ClipRectModifier extends WidgetModifier<ClipRectModifier>
   final Clip clipBehavior;
 
   const ClipRectModifier({this.clipper, Clip? clipBehavior})
-    : clipBehavior = clipBehavior ?? Clip.hardEdge;
+    : clipBehavior = clipBehavior ?? .hardEdge;
 
   @override
   ClipRectModifier copyWith({
@@ -193,7 +193,7 @@ final class ClipRRectModifier extends WidgetModifier<ClipRRectModifier>
     this.clipper,
     Clip? clipBehavior,
   }) : borderRadius = borderRadius ?? BorderRadius.zero,
-       clipBehavior = clipBehavior ?? Clip.antiAlias;
+       clipBehavior = clipBehavior ?? .antiAlias;
 
   @override
   ClipRRectModifier copyWith({
@@ -299,7 +299,7 @@ final class ClipPathModifier extends WidgetModifier<ClipPathModifier>
   final Clip clipBehavior;
 
   const ClipPathModifier({this.clipper, Clip? clipBehavior})
-    : clipBehavior = clipBehavior ?? Clip.antiAlias;
+    : clipBehavior = clipBehavior ?? .antiAlias;
 
   @override
   ClipPathModifier copyWith({
@@ -384,7 +384,7 @@ final class ClipTriangleModifier extends WidgetModifier<ClipTriangleModifier>
   final Clip clipBehavior;
 
   const ClipTriangleModifier({Clip? clipBehavior})
-    : clipBehavior = clipBehavior ?? Clip.antiAlias;
+    : clipBehavior = clipBehavior ?? .antiAlias;
 
   @override
   ClipTriangleModifier copyWith({Clip? clipBehavior}) {

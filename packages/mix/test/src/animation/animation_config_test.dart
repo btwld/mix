@@ -148,9 +148,7 @@ void main() {
             curve: Curves.easeIn,
           );
 
-          final copy = original.copyWith(
-            duration: const Duration(seconds: 2),
-          );
+          final copy = original.copyWith(duration: const Duration(seconds: 2));
 
           expect(copy.duration, const Duration(seconds: 2));
           expect(copy.curve, Curves.easeIn);

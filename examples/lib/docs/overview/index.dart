@@ -15,7 +15,7 @@ class Example extends StatelessWidget {
     return MixScope(
       tokens: tokenDefinitions,
       child: Column(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: .min,
         children: [
           Box(style: boxStyle),
           StyledText('Hello, World!', style: textStyle),
@@ -36,7 +36,7 @@ final boxStyle = BoxStyler()
 
 final textStyle = TextStyler()
     .fontSize(20)
-    .fontWeight(FontWeight.bold)
+    .fontWeight(.bold)
     .color(Colors.black);
 
 // 2
