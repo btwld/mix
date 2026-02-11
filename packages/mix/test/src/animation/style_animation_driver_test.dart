@@ -496,6 +496,44 @@ void main() {
         expect(driver.animation.isAnimating, true);
         driver.dispose();
       });
+
+      testWidgets('switches from looping to triggered mode on updateDriver', (
+        tester,
+      ) async {
+        final trigger = ValueNotifier(false);
+        final driver = createDriver(createConfig());
+
+        await tester.pump();
+        expect(driver.animation.isAnimating, true);
+
+        driver.updateDriver(createConfig(trigger: trigger));
+        await tester.pump();
+        expect(driver.animation.isAnimating, false);
+
+        trigger.value = true;
+        await tester.pump();
+        expect(driver.animation.isAnimating, true);
+
+        trigger.dispose();
+        driver.dispose();
+      });
+
+      testWidgets('switches from triggered to looping mode on updateDriver', (
+        tester,
+      ) async {
+        final trigger = ValueNotifier(false);
+        final driver = createDriver(createConfig(trigger: trigger));
+
+        await tester.pump();
+        expect(driver.animation.isAnimating, false);
+
+        driver.updateDriver(createConfig());
+        await tester.pump();
+        expect(driver.animation.isAnimating, true);
+
+        trigger.dispose();
+        driver.dispose();
+      });
     });
   });
 
@@ -788,6 +826,46 @@ void main() {
         expect(driver.animation.isAnimating, true);
         await tester.pump(300.ms);
         expect(driver.animation.isAnimating, true);
+        driver.dispose();
+      });
+
+      testWidgets('switches from looping to triggered mode on updateDriver', (
+        tester,
+      ) async {
+        final trigger = ValueNotifier(false);
+        final driver = createLoopingDriver(createLoopingConfig());
+
+        await tester.pump();
+        expect(driver.animation.isAnimating, true);
+
+        driver.updateDriver(createLoopingConfig(trigger: trigger));
+        await tester.pump();
+        expect(driver.animation.isAnimating, false);
+
+        trigger.value = true;
+        await tester.pump();
+        expect(driver.animation.isAnimating, true);
+
+        trigger.dispose();
+        driver.dispose();
+      });
+
+      testWidgets('switches from triggered to looping mode on updateDriver', (
+        tester,
+      ) async {
+        final trigger = ValueNotifier(false);
+        final driver = createLoopingDriver(
+          createLoopingConfig(trigger: trigger),
+        );
+
+        await tester.pump();
+        expect(driver.animation.isAnimating, false);
+
+        driver.updateDriver(createLoopingConfig());
+        await tester.pump();
+        expect(driver.animation.isAnimating, true);
+
+        trigger.dispose();
         driver.dispose();
       });
     });

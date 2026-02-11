@@ -335,12 +335,12 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
 
   @override
   void updateDriver(covariant PhaseAnimationConfig config) {
-    config.trigger?.removeListener(_onTriggerChanged);
+    this.config.trigger?.removeListener(_onTriggerChanged);
+    this.config = config;
+    controller.reset();
     if (_isLooping) {
-      controller.reset();
       _startLoopingAnimation();
     }
-    this.config = config;
     _setUpAnimation();
   }
 }
@@ -419,11 +419,11 @@ class KeyframeAnimationDriver<S extends Spec<S>>
   @override
   void updateDriver(covariant KeyframeAnimationConfig<S> config) {
     _config.trigger?.removeListener(_onTriggerChanged);
+    _config = config;
+    controller.reset();
     if (_isLooping) {
-      controller.reset();
       _startLoopingAnimation();
     }
-    _config = config;
     _setUpAnimation();
   }
 }
