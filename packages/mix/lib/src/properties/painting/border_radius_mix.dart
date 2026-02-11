@@ -1,8 +1,12 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
 
 import '../../core/helpers.dart';
-import '../../core/mix_element.dart';
+import '../../core/mix_element.dart' hide Mixable;
 import '../../core/prop.dart';
+
+part 'border_radius_mix.g.dart';
 
 /// Base class for Mix border radius types.
 ///
@@ -70,12 +74,12 @@ sealed class BorderRadiusGeometryMix<T extends BorderRadiusGeometry>
 
   /// Creates circular radius for all corners.
   static BorderRadiusMix circular(double radius) {
-    return BorderRadiusMix.all(Radius.circular(radius));
+    return BorderRadiusMix.all(.circular(radius));
   }
 
   /// Creates elliptical radius for all corners.
   static BorderRadiusMix elliptical(double xRadius, double yRadius) {
-    return BorderRadiusMix.all(Radius.elliptical(xRadius, yRadius));
+    return BorderRadiusMix.all(.elliptical(xRadius, yRadius));
   }
 
   static BorderRadiusGeometryMix<T>? maybeValue<T extends BorderRadiusGeometry>(
@@ -189,10 +193,16 @@ sealed class BorderRadiusGeometryMix<T extends BorderRadiusGeometry>
 /// Mix representation of [BorderRadius].
 ///
 /// Supports individual corner control with tokens.
-final class BorderRadiusMix extends BorderRadiusGeometryMix<BorderRadius> {
+@Mixable(methods: GeneratedMixMethods.skipResolve)
+final class BorderRadiusMix extends BorderRadiusGeometryMix<BorderRadius>
+    with DefaultValue<BorderRadius>, Diagnosticable, _$BorderRadiusMixMixin {
+  @override
   final Prop<Radius>? $topLeft;
+  @override
   final Prop<Radius>? $topRight;
+  @override
   final Prop<Radius>? $bottomLeft;
+  @override
   final Prop<Radius>? $bottomRight;
 
   BorderRadiusMix({
@@ -238,7 +248,7 @@ final class BorderRadiusMix extends BorderRadiusGeometryMix<BorderRadius> {
   factory BorderRadiusMix.circular(double radius) {
     // Use a simple value-based creation. Token-aware radius should be passed as
     // a Radius token to BorderRadiusMix.all(...) at call sites.
-    return BorderRadiusMix.all(Radius.circular(radius));
+    return BorderRadiusMix.all(.circular(radius));
   }
 
   /// Creates with top-left corner.
@@ -263,7 +273,7 @@ final class BorderRadiusMix extends BorderRadiusGeometryMix<BorderRadius> {
 
   /// Creates with elliptical radius.
   factory BorderRadiusMix.elliptical(double xRadius, double yRadius) {
-    return BorderRadiusMix.all(Radius.elliptical(xRadius, yRadius));
+    return BorderRadiusMix.all(.elliptical(xRadius, yRadius));
   }
 
   /// Creates from nullable [BorderRadius].
@@ -294,35 +304,34 @@ final class BorderRadiusMix extends BorderRadiusGeometryMix<BorderRadius> {
   @override
   BorderRadius resolve(BuildContext context) {
     return BorderRadius.only(
-      topLeft: MixOps.resolve(context, $topLeft) ?? Radius.zero,
-      topRight: MixOps.resolve(context, $topRight) ?? Radius.zero,
-      bottomLeft: MixOps.resolve(context, $bottomLeft) ?? Radius.zero,
-      bottomRight: MixOps.resolve(context, $bottomRight) ?? Radius.zero,
+      topLeft: MixOps.resolve(context, $topLeft) ?? .zero,
+      topRight: MixOps.resolve(context, $topRight) ?? .zero,
+      bottomLeft: MixOps.resolve(context, $bottomLeft) ?? .zero,
+      bottomRight: MixOps.resolve(context, $bottomRight) ?? .zero,
     );
   }
 
   @override
-  BorderRadiusMix merge(BorderRadiusMix? other) {
-    return BorderRadiusMix.create(
-      topLeft: MixOps.merge($topLeft, other?.$topLeft),
-      topRight: MixOps.merge($topRight, other?.$topRight),
-      bottomLeft: MixOps.merge($bottomLeft, other?.$bottomLeft),
-      bottomRight: MixOps.merge($bottomRight, other?.$bottomRight),
-    );
-  }
-
-  @override
-  List<Object?> get props => [$topLeft, $topRight, $bottomLeft, $bottomRight];
+  BorderRadius get defaultValue => .zero;
 }
 
 /// Mix representation of [BorderRadiusDirectional].
 ///
 /// Supports RTL layout handling and tokens.
+@Mixable(methods: GeneratedMixMethods.skipResolve)
 final class BorderRadiusDirectionalMix
-    extends BorderRadiusGeometryMix<BorderRadiusDirectional> {
+    extends BorderRadiusGeometryMix<BorderRadiusDirectional>
+    with
+        DefaultValue<BorderRadiusDirectional>,
+        Diagnosticable,
+        _$BorderRadiusDirectionalMixMixin {
+  @override
   final Prop<Radius>? $topStart;
+  @override
   final Prop<Radius>? $topEnd;
+  @override
   final Prop<Radius>? $bottomStart;
+  @override
   final Prop<Radius>? $bottomEnd;
 
   BorderRadiusDirectionalMix({
@@ -358,7 +367,7 @@ final class BorderRadiusDirectionalMix
 
   /// Creates a border radius with all corners having the same circular radius.
   factory BorderRadiusDirectionalMix.circular(double radius) {
-    return BorderRadiusDirectionalMix.all(Radius.circular(radius));
+    return BorderRadiusDirectionalMix.all(.circular(radius));
   }
 
   /// Creates a border radius with the specified top-start corner.
@@ -386,7 +395,7 @@ final class BorderRadiusDirectionalMix
     double xRadius,
     double yRadius,
   ) {
-    return BorderRadiusDirectionalMix.all(Radius.elliptical(xRadius, yRadius));
+    return BorderRadiusDirectionalMix.all(.elliptical(xRadius, yRadius));
   }
 
   BorderRadiusDirectionalMix.all(Radius radius)
@@ -429,23 +438,13 @@ final class BorderRadiusDirectionalMix
   @override
   BorderRadiusDirectional resolve(BuildContext context) {
     return BorderRadiusDirectional.only(
-      topStart: MixOps.resolve(context, $topStart) ?? Radius.zero,
-      topEnd: MixOps.resolve(context, $topEnd) ?? Radius.zero,
-      bottomStart: MixOps.resolve(context, $bottomStart) ?? Radius.zero,
-      bottomEnd: MixOps.resolve(context, $bottomEnd) ?? Radius.zero,
+      topStart: MixOps.resolve(context, $topStart) ?? .zero,
+      topEnd: MixOps.resolve(context, $topEnd) ?? .zero,
+      bottomStart: MixOps.resolve(context, $bottomStart) ?? .zero,
+      bottomEnd: MixOps.resolve(context, $bottomEnd) ?? .zero,
     );
   }
 
   @override
-  BorderRadiusDirectionalMix merge(BorderRadiusDirectionalMix? other) {
-    return BorderRadiusDirectionalMix.create(
-      topStart: MixOps.merge($topStart, other?.$topStart),
-      topEnd: MixOps.merge($topEnd, other?.$topEnd),
-      bottomStart: MixOps.merge($bottomStart, other?.$bottomStart),
-      bottomEnd: MixOps.merge($bottomEnd, other?.$bottomEnd),
-    );
-  }
-
-  @override
-  List<Object?> get props => [$topStart, $topEnd, $bottomStart, $bottomEnd];
+  BorderRadiusDirectional get defaultValue => .zero;
 }

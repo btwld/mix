@@ -118,7 +118,7 @@ final class WidgetModifierConfig with Equatable {
 
   factory WidgetModifierConfig.transform({
     Matrix4? transform,
-    Alignment alignment = Alignment.center,
+    Alignment alignment = .center,
   }) {
     return WidgetModifierConfig.modifier(
       TransformModifierMix(transform: transform, alignment: alignment),
@@ -127,7 +127,7 @@ final class WidgetModifierConfig with Equatable {
 
   factory WidgetModifierConfig.shaderMask({
     required ShaderCallbackBuilder shaderCallback,
-    BlendMode blendMode = BlendMode.modulate,
+    BlendMode blendMode = .modulate,
   }) {
     return WidgetModifierConfig.modifier(
       ShaderMaskModifierMix(
@@ -141,7 +141,7 @@ final class WidgetModifierConfig with Equatable {
   factory WidgetModifierConfig.scale({
     required double x,
     required double y,
-    Alignment alignment = Alignment.center,
+    Alignment alignment = .center,
   }) {
     return WidgetModifierConfig.modifier(
       ScaleModifierMix(x: x, y: y, alignment: alignment),
@@ -150,7 +150,7 @@ final class WidgetModifierConfig with Equatable {
 
   factory WidgetModifierConfig.rotate({
     required double radians,
-    Alignment alignment = Alignment.center,
+    Alignment alignment = .center,
   }) {
     return WidgetModifierConfig.modifier(
       RotateModifierMix(radians: radians, alignment: alignment),
@@ -167,7 +167,7 @@ final class WidgetModifierConfig with Equatable {
   factory WidgetModifierConfig.skew({
     required double skewX,
     required double skewY,
-    Alignment alignment = Alignment.center,
+    Alignment alignment = .center,
   }) {
     return WidgetModifierConfig.modifier(
       SkewModifierMix(skewX: skewX, skewY: skewY, alignment: alignment),
@@ -339,7 +339,7 @@ final class WidgetModifierConfig with Equatable {
 
   WidgetModifierConfig rotate({
     required double radians,
-    Alignment alignment = Alignment.center,
+    Alignment alignment = .center,
   }) {
     return merge(
       WidgetModifierConfig.rotate(radians: radians, alignment: alignment),
@@ -377,7 +377,7 @@ final class WidgetModifierConfig with Equatable {
 
   WidgetModifierConfig shaderMask({
     required ShaderCallbackBuilder shaderCallback,
-    BlendMode blendMode = BlendMode.modulate,
+    BlendMode blendMode = .modulate,
   }) {
     return merge(
       WidgetModifierConfig.shaderMask(
@@ -390,7 +390,7 @@ final class WidgetModifierConfig with Equatable {
   WidgetModifierConfig scale(
     double x,
     double y, {
-    Alignment alignment = Alignment.center,
+    Alignment alignment = .center,
   }) {
     return merge(WidgetModifierConfig.scale(x: x, y: y, alignment: alignment));
   }
@@ -463,7 +463,7 @@ final class WidgetModifierConfig with Equatable {
 
   WidgetModifierConfig transform({
     Matrix4? transform,
-    Alignment alignment = Alignment.center,
+    Alignment alignment = .center,
   }) {
     return merge(
       WidgetModifierConfig.transform(
@@ -731,7 +731,8 @@ class ModifierListTween extends Tween<List<WidgetModifier>?> {
   List<WidgetModifier>? lerp(double t) {
     List<WidgetModifier>? lerpedModifiers;
     if (end != null) {
-      final thisModifiers = begin!;
+      // Use empty list if begin is null (handles lerp from null to non-null)
+      final thisModifiers = begin ?? [];
       final otherModifiers = end!;
 
       // Create a map of modifiers by runtime type from the other list

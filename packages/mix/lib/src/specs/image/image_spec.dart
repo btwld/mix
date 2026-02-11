@@ -1,24 +1,78 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
 
 import '../../core/helpers.dart';
 import '../../core/spec.dart';
 
-final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
+part 'image_spec.g.dart';
+
+/// Specification for image styling properties.
+///
+/// Provides comprehensive image styling including dimensions, color, fit,
+/// alignment, filtering, and semantic properties.
+@MixableSpec()
+@immutable
+final class ImageSpec extends Spec<ImageSpec>
+    with Diagnosticable, _$ImageSpecMethods {
+  /// The image to display.
+  @override
   final ImageProvider<Object>? image;
-  final double? width, height;
+
+  /// The width of the image.
+  @override
+  final double? width;
+
+  /// The height of the image.
+  @override
+  final double? height;
+
+  /// The color to blend with the image.
+  @override
   final Color? color;
+
+  /// How to repeat the image if it doesn't fill the box.
+  @override
   final ImageRepeat? repeat;
+
+  /// How to inscribe the image into the space.
+  @override
   final BoxFit? fit;
+
+  /// How to align the image within its bounds.
+  @override
   final AlignmentGeometry? alignment;
+
+  /// The center slice for nine-patch images.
+  @override
   final Rect? centerSlice;
+
+  /// The rendering quality of the image.
+  @override
   final FilterQuality? filterQuality;
 
+  /// The blend mode to use when drawing the image.
+  @override
   final BlendMode? colorBlendMode;
+
+  /// A semantic description of the image.
+  @override
   final String? semanticLabel;
+
+  /// Whether to exclude the image from semantics.
+  @override
   final bool? excludeFromSemantics;
+
+  /// Whether to continue showing the old image when the image provider changes.
+  @override
   final bool? gaplessPlayback;
+
+  /// Whether to paint the image with anti-aliasing.
+  @override
   final bool? isAntiAlias;
+
+  /// Whether to paint the image in the direction of the text.
+  @override
   final bool? matchTextDirection;
 
   const ImageSpec({
@@ -38,134 +92,4 @@ final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
     this.isAntiAlias,
     this.matchTextDirection,
   });
-
-  @override
-  ImageSpec copyWith({
-    ImageProvider<Object>? image,
-    double? width,
-    double? height,
-    Color? color,
-    ImageRepeat? repeat,
-    BoxFit? fit,
-    AlignmentGeometry? alignment,
-    Rect? centerSlice,
-    FilterQuality? filterQuality,
-    BlendMode? colorBlendMode,
-    String? semanticLabel,
-    bool? excludeFromSemantics,
-    bool? gaplessPlayback,
-    bool? isAntiAlias,
-    bool? matchTextDirection,
-  }) {
-    return ImageSpec(
-      image: image ?? this.image,
-      width: width ?? this.width,
-      height: height ?? this.height,
-      color: color ?? this.color,
-      repeat: repeat ?? this.repeat,
-      fit: fit ?? this.fit,
-      alignment: alignment ?? this.alignment,
-      centerSlice: centerSlice ?? this.centerSlice,
-      filterQuality: filterQuality ?? this.filterQuality,
-      colorBlendMode: colorBlendMode ?? this.colorBlendMode,
-      semanticLabel: semanticLabel ?? this.semanticLabel,
-      excludeFromSemantics: excludeFromSemantics ?? this.excludeFromSemantics,
-      gaplessPlayback: gaplessPlayback ?? this.gaplessPlayback,
-      isAntiAlias: isAntiAlias ?? this.isAntiAlias,
-      matchTextDirection: matchTextDirection ?? this.matchTextDirection,
-    );
-  }
-
-  @override
-  ImageSpec lerp(ImageSpec? other, double t) {
-    return ImageSpec(
-      image: MixOps.lerpSnap(image, other?.image, t),
-      width: MixOps.lerp(width, other?.width, t),
-      height: MixOps.lerp(height, other?.height, t),
-      color: MixOps.lerp(color, other?.color, t),
-      repeat: MixOps.lerpSnap(repeat, other?.repeat, t),
-      fit: MixOps.lerpSnap(fit, other?.fit, t),
-      alignment: MixOps.lerp(alignment, other?.alignment, t),
-      centerSlice: MixOps.lerp(centerSlice, other?.centerSlice, t),
-      filterQuality: MixOps.lerpSnap(filterQuality, other?.filterQuality, t),
-      colorBlendMode: MixOps.lerpSnap(colorBlendMode, other?.colorBlendMode, t),
-      semanticLabel: MixOps.lerpSnap(semanticLabel, other?.semanticLabel, t),
-      excludeFromSemantics: MixOps.lerpSnap(
-        excludeFromSemantics,
-        other?.excludeFromSemantics,
-        t,
-      ),
-      gaplessPlayback: MixOps.lerpSnap(
-        gaplessPlayback,
-        other?.gaplessPlayback,
-        t,
-      ),
-      isAntiAlias: MixOps.lerpSnap(isAntiAlias, other?.isAntiAlias, t),
-      matchTextDirection: MixOps.lerpSnap(
-        matchTextDirection,
-        other?.matchTextDirection,
-        t,
-      ),
-    );
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(DiagnosticsProperty('image', image))
-      ..add(DoubleProperty('width', width))
-      ..add(DoubleProperty('height', height))
-      ..add(ColorProperty('color', color))
-      ..add(EnumProperty<ImageRepeat>('repeat', repeat))
-      ..add(EnumProperty<BoxFit>('fit', fit))
-      ..add(DiagnosticsProperty('alignment', alignment))
-      ..add(DiagnosticsProperty('centerSlice', centerSlice))
-      ..add(EnumProperty<FilterQuality>('filterQuality', filterQuality))
-      ..add(EnumProperty<BlendMode>('colorBlendMode', colorBlendMode))
-      ..add(StringProperty('semanticLabel', semanticLabel))
-      ..add(
-        FlagProperty(
-          'excludeFromSemantics',
-          value: excludeFromSemantics,
-          ifTrue: 'excluded from semantics',
-        ),
-      )
-      ..add(
-        FlagProperty(
-          'gaplessPlayback',
-          value: gaplessPlayback,
-          ifTrue: 'gapless playback',
-        ),
-      )
-      ..add(
-        FlagProperty('isAntiAlias', value: isAntiAlias, ifTrue: 'anti-aliased'),
-      )
-      ..add(
-        FlagProperty(
-          'matchTextDirection',
-          value: matchTextDirection,
-          ifTrue: 'matches text direction',
-        ),
-      );
-  }
-
-  @override
-  List<Object?> get props => [
-    image,
-    width,
-    height,
-    color,
-    repeat,
-    fit,
-    alignment,
-    centerSlice,
-    filterQuality,
-    colorBlendMode,
-    semanticLabel,
-    excludeFromSemantics,
-    gaplessPlayback,
-    isAntiAlias,
-    matchTextDirection,
-  ];
 }

@@ -26,30 +26,34 @@ class BoxMutableStyler extends StyleMutableBuilder<BoxSpec>
     with
         UtilityVariantMixin<BoxStyler, BoxSpec>,
         UtilityWidgetStateVariantMixin<BoxStyler, BoxSpec> {
-  late final padding = EdgeInsetsGeometryUtility<BoxStyler>(
+  late final padding = EdgeInsetsGeometryUtility(
     (prop) => mutable.merge(BoxStyler.create(padding: Prop.mix(prop))),
   );
 
-  late final margin = EdgeInsetsGeometryUtility<BoxStyler>(
+  late final margin = EdgeInsetsGeometryUtility(
     (prop) => mutable.merge(BoxStyler.create(margin: Prop.mix(prop))),
   );
 
-  late final constraints = BoxConstraintsUtility<BoxStyler>(
+  late final constraints = BoxConstraintsUtility(
     (prop) => mutable.merge(BoxStyler.create(constraints: Prop.mix(prop))),
   );
 
-  late final decoration = DecorationUtility<BoxStyler>(
+  late final decoration = DecorationUtility(
     (prop) => mutable.merge(BoxStyler.create(decoration: Prop.mix(prop))),
   );
 
   @Deprecated(
-    'Use direct methods like \$box.onHovered() instead. '
-    'Note: Returns BoxStyle for consistency with other utility methods like animate().',
+    'Use BoxStyler().onHovered() and similar methods directly instead. '
+    'This property was deprecated after Mix v2.0.0.',
   )
   late final on = OnContextVariantUtility<BoxSpec, BoxStyler>(
     (v) => mutable.variants([v]),
   );
 
+  @Deprecated(
+    'Use BoxStyler().wrap() method directly instead. '
+    'This property was deprecated after Mix v2.0.0.',
+  )
   late final wrap = WidgetModifierUtility(
     (prop) => mutable.wrap(WidgetModifierConfig(modifiers: [prop])),
   );

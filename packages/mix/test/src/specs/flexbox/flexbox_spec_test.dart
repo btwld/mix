@@ -192,6 +192,63 @@ void main() {
 
         expect(attr1, isNot(equals(attr2)));
       });
+
+      test('Stylers with different animation are not equal', () {
+        final attr1 = FlexBoxStyler(
+          animation: AnimationConfig.linear(const Duration(milliseconds: 100)),
+        );
+        final attr2 = FlexBoxStyler(
+          animation: AnimationConfig.linear(const Duration(milliseconds: 200)),
+        );
+
+        expect(attr1, isNot(equals(attr2)));
+      });
+
+      test('Stylers with different modifier are not equal', () {
+        final attr1 = FlexBoxStyler(
+          modifier: WidgetModifierConfig(
+            modifiers: [OpacityModifierMix(opacity: 0.5)],
+          ),
+        );
+        final attr2 = FlexBoxStyler(
+          modifier: WidgetModifierConfig(
+            modifiers: [OpacityModifierMix(opacity: 0.8)],
+          ),
+        );
+
+        expect(attr1, isNot(equals(attr2)));
+      });
+
+      test('Stylers with different variants are not equal', () {
+        final variant = ContextVariant('test', (context) => true);
+        final attr1 = FlexBoxStyler(
+          variants: [VariantStyle(variant, FlexBoxStyler(spacing: 8.0))],
+        );
+        final attr2 = FlexBoxStyler(
+          variants: [VariantStyle(variant, FlexBoxStyler(spacing: 16.0))],
+        );
+
+        expect(attr1, isNot(equals(attr2)));
+      });
+    });
+
+    group('Props', () {
+      test('props includes all base Style fields', () {
+        final styler = FlexBoxStyler(
+          alignment: Alignment.center,
+          animation: AnimationConfig.linear(const Duration(milliseconds: 100)),
+        );
+
+        // Guard: If a field is added/removed, this count will fail
+        expect(styler.props.length, 5);
+
+        // Verify all expected fields are present
+        expect(styler.props, contains(styler.$box));
+        expect(styler.props, contains(styler.$flex));
+        expect(styler.props, contains(styler.$animation));
+        expect(styler.props, contains(styler.$modifier));
+        expect(styler.props, contains(styler.$variants));
+      });
     });
 
     group('Modifiers', () {

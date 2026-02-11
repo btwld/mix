@@ -48,12 +48,42 @@ class StyleBuilder<S extends Spec<S>> extends StatefulWidget {
 
 class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
     with TickerProviderStateMixin {
-  late final WidgetStatesController _controller;
+  late WidgetStatesController _controller;
+
+  /// Tracks whether we created the controller internally (and thus own it)
+  bool _ownsController = false;
 
   @override
   void initState() {
     super.initState();
-    _controller = widget.controller ?? WidgetStatesController();
+    _initController();
+  }
+
+  void _initController() {
+    if (widget.controller != null) {
+      _controller = widget.controller!;
+      _ownsController = false;
+    } else {
+      _controller = WidgetStatesController();
+      _ownsController = true;
+    }
+  }
+
+  void _handleControllerChange(StyleBuilder<S> oldWidget) {
+    // Dispose old internal controller if we owned it
+    if (_ownsController) {
+      _controller.dispose();
+    }
+
+    // Set up new controller
+    if (widget.controller != null) {
+      _controller = widget.controller!;
+      _ownsController = false;
+    } else {
+      // Create internal controller, preserving state from old external controller
+      _controller = WidgetStatesController(oldWidget.controller?.value ?? {});
+      _ownsController = true;
+    }
   }
 
   Style<S> _buildStyle(BuildContext context) {
@@ -63,9 +93,19 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
   }
 
   @override
+  void didUpdateWidget(covariant StyleBuilder<S> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // Handle controller changes
+    if (oldWidget.controller != widget.controller) {
+      _handleControllerChange(oldWidget);
+    }
+  }
+
+  @override
   void dispose() {
     // Only dispose controllers we created internally
-    if (widget.controller == null) {
+    if (_ownsController) {
       _controller.dispose();
     }
 
@@ -107,7 +147,7 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
 
     // If inheritable is true, wrap with StyleProvider to pass the merged style down
     if (widget.inheritable) {
-      current = StyleProvider<S>(style: style, child: current);
+      current = StyleProvider(style: style, child: current);
     }
 
     return current;
@@ -133,23 +173,6 @@ class StyleSpecBuilder<S extends Spec<S>> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // style.build returns StyleSpec<S>
-
-    // Pass the inner spec to the builder
-    Widget current = builder(context, styleSpec.spec);
-
-    // Always wrap with StyleSpecProvider first
-    current = StyleSpecProvider<S>(spec: styleSpec, child: current);
-
-    if (styleSpec.widgetModifiers != null &&
-        styleSpec.widgetModifiers!.isNotEmpty) {
-      // Apply modifiers if any
-      current = RenderModifiers(
-        widgetModifiers: styleSpec.widgetModifiers!,
-        child: current,
-      );
-    }
-
     return StyleAnimationBuilder<S>(
       spec: styleSpec,
 
@@ -157,7 +180,7 @@ class StyleSpecBuilder<S extends Spec<S>> extends StatelessWidget {
         Widget animatedChild = builder(context, animatedWrappedSpec.spec);
 
         // Always wrap with StyleSpecProvider first
-        animatedChild = StyleSpecProvider<S>(
+        animatedChild = StyleSpecProvider(
           spec: animatedWrappedSpec,
           child: animatedChild,
         );

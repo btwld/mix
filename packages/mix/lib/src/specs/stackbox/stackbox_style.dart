@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
 
 import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
@@ -12,6 +13,7 @@ import '../../properties/layout/edge_insets_geometry_mix.dart';
 import '../../properties/painting/border_mix.dart';
 import '../../properties/painting/border_radius_mix.dart';
 import '../../properties/painting/decoration_mix.dart';
+import '../../style/abstracts/styler.dart';
 import '../../style/mixins/border_radius_style_mixin.dart';
 import '../../style/mixins/border_style_mixin.dart';
 import '../../style/mixins/constraint_style_mixin.dart';
@@ -19,9 +21,6 @@ import '../../style/mixins/decoration_style_mixin.dart';
 import '../../style/mixins/shadow_style_mixin.dart';
 import '../../style/mixins/spacing_style_mixin.dart';
 import '../../style/mixins/transform_style_mixin.dart';
-import '../../style/mixins/variant_style_mixin.dart';
-import '../../style/mixins/widget_modifier_style_mixin.dart';
-import '../../style/mixins/widget_state_variant_mixin.dart';
 import '../box/box_spec.dart';
 import '../box/box_style.dart';
 import '../stack/stack_spec.dart';
@@ -30,6 +29,9 @@ import 'stackbox_mutable_style.dart';
 import 'stackbox_spec.dart';
 import 'stackbox_widget.dart';
 
+part 'stackbox_style.g.dart';
+
+@Deprecated('Use StackBoxStyler instead')
 typedef StackBoxMix = StackBoxStyler;
 
 /// Represents the attributes of a [StackBoxSpec].
@@ -39,20 +41,20 @@ typedef StackBoxMix = StackBoxStyler;
 ///
 /// Use this class to configure the attributes of a [StackBoxSpec] and pass it to
 /// the [StackBoxSpec] constructor.
-class StackBoxStyler extends Style<StackBoxSpec>
+@MixableStyler(methods: GeneratedStylerMethods.skipSetters)
+class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
     with
-        Diagnosticable,
-        WidgetModifierStyleMixin<StackBoxStyler, StackBoxSpec>,
-        VariantStyleMixin<StackBoxStyler, StackBoxSpec>,
-        WidgetStateVariantMixin<StackBoxStyler, StackBoxSpec>,
         BorderStyleMixin<StackBoxStyler>,
         BorderRadiusStyleMixin<StackBoxStyler>,
         ShadowStyleMixin<StackBoxStyler>,
         DecorationStyleMixin<StackBoxStyler>,
         SpacingStyleMixin<StackBoxStyler>,
         TransformStyleMixin<StackBoxStyler>,
-        ConstraintStyleMixin<StackBoxStyler> {
+        ConstraintStyleMixin<StackBoxStyler>,
+        _$StackBoxStylerMixin {
+  @override
   final Prop<StyleSpec<BoxSpec>>? $box;
+  @override
   final Prop<StyleSpec<StackSpec>>? $stack;
 
   /// Main constructor with individual property parameters
@@ -113,13 +115,7 @@ class StackBoxStyler extends Style<StackBoxSpec>
   }) : $box = box,
        $stack = stack;
 
-  static StackBoxMutableStyler get chain =>
-      StackBoxMutableStyler(StackBoxStyler());
-
-  /// Sets animation
-  StackBoxStyler animate(AnimationConfig animation) {
-    return merge(StackBoxStyler(animation: animation));
-  }
+  static StackBoxMutableStyler get chain => .new(StackBoxStyler());
 
   // BoxMix instance methods
 
@@ -171,6 +167,12 @@ class StackBoxStyler extends Style<StackBoxSpec>
   /// Applies a custom StackStyler to the StackBox.
   StackBoxStyler stack(StackStyler value) {
     return merge(StackBoxStyler.create(stack: Prop.maybeMix(value)));
+  }
+
+  /// Sets animation
+  @override
+  StackBoxStyler animate(AnimationConfig animation) {
+    return merge(StackBoxStyler(animation: animation));
   }
 
   /// Foreground decoration instance method
@@ -237,60 +239,4 @@ class StackBoxStyler extends Style<StackBoxSpec>
   StackBoxStyler border(BoxBorderMix value) {
     return merge(StackBoxStyler(decoration: DecorationMix.border(value)));
   }
-
-  /// Resolves to [StackBoxSpec] using the provided [BuildContext].
-  ///
-  /// If a property is null in the context, it uses the default value
-  /// defined in the property specification.
-  ///
-  /// ```dart
-  /// final stackBoxStyleSpec = StackBoxStyler(...).resolve(context);
-  /// ```
-  @override
-  StyleSpec<StackBoxSpec> resolve(BuildContext context) {
-    final boxSpec = MixOps.resolve(context, $box);
-    final stackSpec = MixOps.resolve(context, $stack);
-
-    final stackBoxSpec = StackBoxSpec(box: boxSpec, stack: stackSpec);
-
-    return StyleSpec(
-      spec: stackBoxSpec,
-      animation: $animation,
-      widgetModifiers: $modifier?.resolve(context),
-    );
-  }
-
-  /// Merges the properties of this [StackBoxStyler] with the properties of [other].
-  ///
-  /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [StackBoxStyler] with the properties of [other] taking precedence over
-  /// the corresponding properties of this instance.
-  ///
-  /// Properties from [other] that are null will fall back
-  /// to the values from this instance.
-  @override
-  StackBoxStyler merge(StackBoxStyler? other) {
-    return StackBoxStyler.create(
-      box: MixOps.merge($box, other?.$box),
-      stack: MixOps.merge($stack, other?.$stack),
-      animation: MixOps.mergeAnimation($animation, other?.$animation),
-      modifier: MixOps.mergeModifier($modifier, other?.$modifier),
-      variants: MixOps.mergeVariants($variants, other?.$variants),
-    );
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(DiagnosticsProperty('box', $box))
-      ..add(DiagnosticsProperty('stack', $stack));
-  }
-
-  /// The list of properties that constitute the state of this [StackBoxStyler].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [StackBoxStyler] instances for equality.
-  @override
-  List<Object?> get props => [$box, $stack];
 }

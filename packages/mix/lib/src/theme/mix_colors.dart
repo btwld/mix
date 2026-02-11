@@ -43,7 +43,7 @@ class MixColors {
   static const white10 = Color(0x1AFFFFFF);
 
   // Color swatches - Primary colors
-  static const redSwatch = ColorSwatch<int>(0xFFF44336, {
+  static const redSwatch = ColorSwatch(0xFFF44336, {
     50: Color(0xFFFFEBEE),
     100: Color(0xFFFFCDD2),
     200: Color(0xFFEF9A9A),
@@ -56,7 +56,7 @@ class MixColors {
     900: Color(0xFFB71C1C),
   });
 
-  static const pinkSwatch = ColorSwatch<int>(0xFFE91E63, {
+  static const pinkSwatch = ColorSwatch(0xFFE91E63, {
     50: Color(0xFFFCE4EC),
     100: Color(0xFFF8BBD0),
     200: Color(0xFFF48FB1),
@@ -69,7 +69,7 @@ class MixColors {
     900: Color(0xFF880E4F),
   });
 
-  static const purpleSwatch = ColorSwatch<int>(0xFF9C27B0, {
+  static const purpleSwatch = ColorSwatch(0xFF9C27B0, {
     50: Color(0xFFF3E5F5),
     100: Color(0xFFE1BEE7),
     200: Color(0xFFCE93D8),
@@ -82,7 +82,7 @@ class MixColors {
     900: Color(0xFF4A148C),
   });
 
-  static const deepPurpleSwatch = ColorSwatch<int>(0xFF673AB7, {
+  static const deepPurpleSwatch = ColorSwatch(0xFF673AB7, {
     50: Color(0xFFEDE7F6),
     100: Color(0xFFD1C4E9),
     200: Color(0xFFB39DDB),
@@ -95,7 +95,7 @@ class MixColors {
     900: Color(0xFF311B92),
   });
 
-  static const indigoSwatch = ColorSwatch<int>(0xFF3F51B5, {
+  static const indigoSwatch = ColorSwatch(0xFF3F51B5, {
     50: Color(0xFFE8EAF6),
     100: Color(0xFFC5CAE9),
     200: Color(0xFF9FA8DA),
@@ -108,7 +108,7 @@ class MixColors {
     900: Color(0xFF1A237E),
   });
 
-  static const blueSwatch = ColorSwatch<int>(0xFF2196F3, {
+  static const blueSwatch = ColorSwatch(0xFF2196F3, {
     50: Color(0xFFE3F2FD),
     100: Color(0xFFBBDEFB),
     200: Color(0xFF90CAF9),
@@ -121,7 +121,7 @@ class MixColors {
     900: Color(0xFF0D47A1),
   });
 
-  static const lightBlueSwatch = ColorSwatch<int>(0xFF03A9F4, {
+  static const lightBlueSwatch = ColorSwatch(0xFF03A9F4, {
     50: Color(0xFFE1F5FE),
     100: Color(0xFFB3E5FC),
     200: Color(0xFF81D4FA),
@@ -134,7 +134,7 @@ class MixColors {
     900: Color(0xFF01579B),
   });
 
-  static const cyanSwatch = ColorSwatch<int>(0xFF00BCD4, {
+  static const cyanSwatch = ColorSwatch(0xFF00BCD4, {
     50: Color(0xFFE0F7FA),
     100: Color(0xFFB2EBF2),
     200: Color(0xFF80DEEA),
@@ -147,7 +147,7 @@ class MixColors {
     900: Color(0xFF006064),
   });
 
-  static const tealSwatch = ColorSwatch<int>(0xFF009688, {
+  static const tealSwatch = ColorSwatch(0xFF009688, {
     50: Color(0xFFE0F2F1),
     100: Color(0xFFB2DFDB),
     200: Color(0xFF80CBC4),
@@ -160,7 +160,7 @@ class MixColors {
     900: Color(0xFF004D40),
   });
 
-  static const greenSwatch = ColorSwatch<int>(0xFF4CAF50, {
+  static const greenSwatch = ColorSwatch(0xFF4CAF50, {
     50: Color(0xFFE8F5E9),
     100: Color(0xFFC8E6C9),
     200: Color(0xFFA5D6A7),
@@ -173,7 +173,7 @@ class MixColors {
     900: Color(0xFF1B5E20),
   });
 
-  static const lightGreenSwatch = ColorSwatch<int>(0xFF8BC34A, {
+  static const lightGreenSwatch = ColorSwatch(0xFF8BC34A, {
     50: Color(0xFFF1F8E9),
     100: Color(0xFFDCEDC8),
     200: Color(0xFFC5E1A5),
@@ -186,7 +186,7 @@ class MixColors {
     900: Color(0xFF33691E),
   });
 
-  static const limeSwatch = ColorSwatch<int>(0xFFCDDC39, {
+  static const limeSwatch = ColorSwatch(0xFFCDDC39, {
     50: Color(0xFFF9FBE7),
     100: Color(0xFFF0F4C3),
     200: Color(0xFFE6EE9C),
@@ -199,7 +199,7 @@ class MixColors {
     900: Color(0xFF827717),
   });
 
-  static const yellowSwatch = ColorSwatch<int>(0xFFFFEB3B, {
+  static const yellowSwatch = ColorSwatch(0xFFFFEB3B, {
     50: Color(0xFFFFFDE7),
     100: Color(0xFFFFF9C4),
     200: Color(0xFFFFF59D),
@@ -212,7 +212,7 @@ class MixColors {
     900: Color(0xFFF57F17),
   });
 
-  static const amberSwatch = ColorSwatch<int>(0xFFFFC107, {
+  static const amberSwatch = ColorSwatch(0xFFFFC107, {
     50: Color(0xFFFFF8E1),
     100: Color(0xFFFFECB3),
     200: Color(0xFFFFE082),
@@ -225,7 +225,7 @@ class MixColors {
     900: Color(0xFFFF6F00),
   });
 
-  static const orangeSwatch = ColorSwatch<int>(0xFFFF9800, {
+  static const orangeSwatch = ColorSwatch(0xFFFF9800, {
     50: Color(0xFFFFF3E0),
     100: Color(0xFFFFE0B2),
     200: Color(0xFFFFCC80),
@@ -238,7 +238,7 @@ class MixColors {
     900: Color(0xFFE65100),
   });
 
-  static const deepOrangeSwatch = ColorSwatch<int>(0xFFFF5722, {
+  static const deepOrangeSwatch = ColorSwatch(0xFFFF5722, {
     50: Color(0xFFFBE9E7),
     100: Color(0xFFFFCCBC),
     200: Color(0xFFFFAB91),
@@ -251,7 +251,7 @@ class MixColors {
     900: Color(0xFFBF360C),
   });
 
-  static const brownSwatch = ColorSwatch<int>(0xFF795548, {
+  static const brownSwatch = ColorSwatch(0xFF795548, {
     50: Color(0xFFEFEBE9),
     100: Color(0xFFD7CCC8),
     200: Color(0xFFBCAAA4),
@@ -264,7 +264,7 @@ class MixColors {
     900: Color(0xFF3E2723),
   });
 
-  static const greySwatch = ColorSwatch<int>(0xFF9E9E9E, {
+  static const greySwatch = ColorSwatch(0xFF9E9E9E, {
     50: Color(0xFFFAFAFA),
     100: Color(0xFFF5F5F5),
     200: Color(0xFFEEEEEE),
@@ -279,7 +279,7 @@ class MixColors {
     900: Color(0xFF212121),
   });
 
-  static const blueGreySwatch = ColorSwatch<int>(0xFF607D8B, {
+  static const blueGreySwatch = ColorSwatch(0xFF607D8B, {
     50: Color(0xFFECEFF1),
     100: Color(0xFFCFD8DC),
     200: Color(0xFFB0BEC5),
@@ -293,112 +293,112 @@ class MixColors {
   });
 
   // Accent color swatches
-  static const redAccentSwatch = ColorSwatch<int>(0xFFFF5252, {
+  static const redAccentSwatch = ColorSwatch(0xFFFF5252, {
     100: Color(0xFFFF8A80),
     200: Color(0xFFFF5252),
     400: Color(0xFFFF1744),
     700: Color(0xFFD50000),
   });
 
-  static const pinkAccentSwatch = ColorSwatch<int>(0xFFFF4081, {
+  static const pinkAccentSwatch = ColorSwatch(0xFFFF4081, {
     100: Color(0xFFFF80AB),
     200: Color(0xFFFF4081),
     400: Color(0xFFF50057),
     700: Color(0xFFC51162),
   });
 
-  static const purpleAccentSwatch = ColorSwatch<int>(0xFFE040FB, {
+  static const purpleAccentSwatch = ColorSwatch(0xFFE040FB, {
     100: Color(0xFFEA80FC),
     200: Color(0xFFE040FB),
     400: Color(0xFFD500F9),
     700: Color(0xFFAA00FF),
   });
 
-  static const deepPurpleAccentSwatch = ColorSwatch<int>(0xFF7C4DFF, {
+  static const deepPurpleAccentSwatch = ColorSwatch(0xFF7C4DFF, {
     100: Color(0xFFB388FF),
     200: Color(0xFF7C4DFF),
     400: Color(0xFF651FFF),
     700: Color(0xFF6200EA),
   });
 
-  static const indigoAccentSwatch = ColorSwatch<int>(0xFF536DFE, {
+  static const indigoAccentSwatch = ColorSwatch(0xFF536DFE, {
     100: Color(0xFF8C9EFF),
     200: Color(0xFF536DFE),
     400: Color(0xFF3D5AFE),
     700: Color(0xFF304FFE),
   });
 
-  static const blueAccentSwatch = ColorSwatch<int>(0xFF448AFF, {
+  static const blueAccentSwatch = ColorSwatch(0xFF448AFF, {
     100: Color(0xFF82B1FF),
     200: Color(0xFF448AFF),
     400: Color(0xFF2979FF),
     700: Color(0xFF2962FF),
   });
 
-  static const lightBlueAccentSwatch = ColorSwatch<int>(0xFF40C4FF, {
+  static const lightBlueAccentSwatch = ColorSwatch(0xFF40C4FF, {
     100: Color(0xFF80D8FF),
     200: Color(0xFF40C4FF),
     400: Color(0xFF00B0FF),
     700: Color(0xFF0091EA),
   });
 
-  static const cyanAccentSwatch = ColorSwatch<int>(0xFF18FFFF, {
+  static const cyanAccentSwatch = ColorSwatch(0xFF18FFFF, {
     100: Color(0xFF84FFFF),
     200: Color(0xFF18FFFF),
     400: Color(0xFF00E5FF),
     700: Color(0xFF00B8D4),
   });
 
-  static const tealAccentSwatch = ColorSwatch<int>(0xFF64FFDA, {
+  static const tealAccentSwatch = ColorSwatch(0xFF64FFDA, {
     100: Color(0xFFA7FFEB),
     200: Color(0xFF64FFDA),
     400: Color(0xFF1DE9B6),
     700: Color(0xFF00BFA5),
   });
 
-  static const greenAccentSwatch = ColorSwatch<int>(0xFF69F0AE, {
+  static const greenAccentSwatch = ColorSwatch(0xFF69F0AE, {
     100: Color(0xFFB9F6CA),
     200: Color(0xFF69F0AE),
     400: Color(0xFF00E676),
     700: Color(0xFF00C853),
   });
 
-  static const lightGreenAccentSwatch = ColorSwatch<int>(0xFFB2FF59, {
+  static const lightGreenAccentSwatch = ColorSwatch(0xFFB2FF59, {
     100: Color(0xFFCCFF90),
     200: Color(0xFFB2FF59),
     400: Color(0xFF76FF03),
     700: Color(0xFF64DD17),
   });
 
-  static const limeAccentSwatch = ColorSwatch<int>(0xFFEEFF41, {
+  static const limeAccentSwatch = ColorSwatch(0xFFEEFF41, {
     100: Color(0xFFF4FF81),
     200: Color(0xFFEEFF41),
     400: Color(0xFFC6FF00),
     700: Color(0xFFAEEA00),
   });
 
-  static const yellowAccentSwatch = ColorSwatch<int>(0xFFFFFF00, {
+  static const yellowAccentSwatch = ColorSwatch(0xFFFFFF00, {
     100: Color(0xFFFFFF8D),
     200: Color(0xFFFFFF00),
     400: Color(0xFFFFEA00),
     700: Color(0xFFFFD600),
   });
 
-  static const amberAccentSwatch = ColorSwatch<int>(0xFFFFD740, {
+  static const amberAccentSwatch = ColorSwatch(0xFFFFD740, {
     100: Color(0xFFFFE57F),
     200: Color(0xFFFFD740),
     400: Color(0xFFFFC400),
     700: Color(0xFFFFAB00),
   });
 
-  static const orangeAccentSwatch = ColorSwatch<int>(0xFFFFAB40, {
+  static const orangeAccentSwatch = ColorSwatch(0xFFFFAB40, {
     100: Color(0xFFFFD180),
     200: Color(0xFFFFAB40),
     400: Color(0xFFFF9100),
     700: Color(0xFFFF6D00),
   });
 
-  static const deepOrangeAccentSwatch = ColorSwatch<int>(0xFFFF6E40, {
+  static const deepOrangeAccentSwatch = ColorSwatch(0xFFFF6E40, {
     100: Color(0xFFFF9E80),
     200: Color(0xFFFF6E40),
     400: Color(0xFFFF3D00),

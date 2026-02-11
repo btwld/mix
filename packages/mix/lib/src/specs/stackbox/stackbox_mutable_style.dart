@@ -26,30 +26,34 @@ class StackBoxMutableStyler extends StyleMutableBuilder<StackBoxSpec>
     with
         UtilityVariantMixin<StackBoxStyler, StackBoxSpec>,
         UtilityWidgetStateVariantMixin<StackBoxStyler, StackBoxSpec> {
-  late final padding = EdgeInsetsGeometryUtility<StackBoxStyler>(
+  late final padding = EdgeInsetsGeometryUtility(
     (prop) => mutable.merge(StackBoxStyler(padding: prop)),
   );
 
-  late final margin = EdgeInsetsGeometryUtility<StackBoxStyler>(
+  late final margin = EdgeInsetsGeometryUtility(
     (prop) => mutable.merge(StackBoxStyler(margin: prop)),
   );
 
-  late final constraints = BoxConstraintsUtility<StackBoxStyler>(
+  late final constraints = BoxConstraintsUtility(
     (prop) => mutable.merge(StackBoxStyler(constraints: prop)),
   );
 
-  late final decoration = DecorationUtility<StackBoxStyler>(
+  late final decoration = DecorationUtility(
     (prop) => mutable.merge(StackBoxStyler(decoration: prop)),
   );
 
   @Deprecated(
-    'Use direct methods like \$stackbox.onHovered() instead. '
-    'Note: Returns StackBoxStyle for consistency with other utility methods like animate().',
+    'Use StackBoxStyler().onHovered() and similar methods directly instead. '
+    'This property was deprecated after Mix v2.0.0.',
   )
   late final on = OnContextVariantUtility<StackBoxSpec, StackBoxStyler>(
     (v) => mutable.variants([v]),
   );
 
+  @Deprecated(
+    'Use StackBoxStyler().wrap() method directly instead. '
+    'This property was deprecated after Mix v2.0.0.',
+  )
   late final wrap = WidgetModifierUtility(
     (prop) => mutable.wrap(WidgetModifierConfig(modifiers: [prop])),
   );

@@ -39,13 +39,17 @@ class FlexMutableStyler extends StyleMutableBuilder<FlexSpec>
   late final clipBehavior = MixUtility(mutable.clipBehavior);
 
   @Deprecated(
-    'Use direct methods like \$flex.onHovered() instead. '
-    'Note: Returns FlexStyle for consistency with other utility methods like animate().',
+    'Use FlexStyler().onHovered() and similar methods directly instead. '
+    'This property was deprecated after Mix v2.0.0.',
   )
   late final on = OnContextVariantUtility<FlexSpec, FlexStyler>(
     (v) => mutable.variants([v]),
   );
 
+  @Deprecated(
+    'Use FlexStyler().wrap() method directly instead. '
+    'This property was deprecated after Mix v2.0.0.',
+  )
   late final wrap = WidgetModifierUtility(
     (prop) => mutable.wrap(WidgetModifierConfig(modifiers: [prop])),
   );
@@ -63,10 +67,10 @@ class FlexMutableStyler extends StyleMutableBuilder<FlexSpec>
   FlexStyler spacing(double v) => mutable.spacing(v);
 
   /// Sets flex direction to horizontal (row layout).
-  FlexStyler row() => mutable.direction(Axis.horizontal);
+  FlexStyler row() => mutable.direction(.horizontal);
 
   /// Sets flex direction to vertical (column layout).
-  FlexStyler column() => mutable.direction(Axis.vertical);
+  FlexStyler column() => mutable.direction(.vertical);
 
   /// Applies animation configuration to the flex styling.
   FlexStyler animate(AnimationConfig animation) => mutable.animate(animation);

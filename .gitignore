@@ -100,15 +100,19 @@ pubspec.lock
 
 # FVM Version Cache
 .fvm/
+.flutter_env
 packages/remix/context.md
 packages/mix/.cody/ignore
 
 .cursor
 .orbit
-CLAUDE.md
 .augment/env/setup.sh
 
 # API compatibility reports
 api-compat-*.md
 website/.next/
 website/public/_pagefind/
+
+# Claude Code
+CLAUDE.md
+.claude/settings.local.json

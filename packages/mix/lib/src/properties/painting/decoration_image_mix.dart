@@ -1,22 +1,34 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
 
 import '../../core/helpers.dart';
-import '../../core/mix_element.dart';
+import '../../core/mix_element.dart' hide Mixable;
 import '../../core/prop.dart';
+
+part 'decoration_image_mix.g.dart';
 
 /// Mix representation of [DecorationImage].
 ///
 /// Controls image display with fit, alignment, and quality.
+@Mixable(methods: GeneratedMixMethods.skipResolve)
 final class DecorationImageMix extends Mix<DecorationImage>
-    with Diagnosticable {
+    with Diagnosticable, _$DecorationImageMixMixin {
+  @override
   final Prop<ImageProvider>? $image;
+  @override
   final Prop<BoxFit>? $fit;
+  @override
   final Prop<AlignmentGeometry>? $alignment;
+  @override
   final Prop<Rect>? $centerSlice;
+  @override
   final Prop<ImageRepeat>? $repeat;
+  @override
   final Prop<FilterQuality>? $filterQuality;
+  @override
   final Prop<bool>? $invertColors;
+  @override
   final Prop<bool>? $isAntiAlias;
 
   DecorationImageMix({
@@ -179,59 +191,10 @@ final class DecorationImageMix extends Mix<DecorationImage>
       fit: MixOps.resolve(context, $fit),
       alignment: MixOps.resolve(context, $alignment) ?? Alignment.center,
       centerSlice: MixOps.resolve(context, $centerSlice),
-      repeat: MixOps.resolve(context, $repeat) ?? ImageRepeat.noRepeat,
-      filterQuality:
-          MixOps.resolve(context, $filterQuality) ?? FilterQuality.medium,
+      repeat: MixOps.resolve(context, $repeat) ?? .noRepeat,
+      filterQuality: MixOps.resolve(context, $filterQuality) ?? .medium,
       invertColors: MixOps.resolve(context, $invertColors) ?? false,
       isAntiAlias: MixOps.resolve(context, $isAntiAlias) ?? false,
     );
   }
-
-  /// Merges the properties of this [DecorationImageMix] with the properties of [other].
-  ///
-  /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [DecorationImageMix] with the properties of [other] taking precedence over
-  /// the corresponding properties of this instance.
-  ///
-  /// Properties from [other] that are null will fall back
-  /// to the values from this instance.
-  @override
-  DecorationImageMix merge(DecorationImageMix? other) {
-    return DecorationImageMix.create(
-      image: MixOps.merge($image, other?.$image),
-      fit: MixOps.merge($fit, other?.$fit),
-      alignment: MixOps.merge($alignment, other?.$alignment),
-      centerSlice: MixOps.merge($centerSlice, other?.$centerSlice),
-      repeat: MixOps.merge($repeat, other?.$repeat),
-      filterQuality: MixOps.merge($filterQuality, other?.$filterQuality),
-      invertColors: MixOps.merge($invertColors, other?.$invertColors),
-      isAntiAlias: MixOps.merge($isAntiAlias, other?.$isAntiAlias),
-    );
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(DiagnosticsProperty('image', $image))
-      ..add(DiagnosticsProperty('fit', $fit))
-      ..add(DiagnosticsProperty('alignment', $alignment))
-      ..add(DiagnosticsProperty('centerSlice', $centerSlice))
-      ..add(DiagnosticsProperty('repeat', $repeat))
-      ..add(DiagnosticsProperty('filterQuality', $filterQuality))
-      ..add(DiagnosticsProperty('invertColors', $invertColors))
-      ..add(DiagnosticsProperty('isAntiAlias', $isAntiAlias));
-  }
-
-  @override
-  List<Object?> get props => [
-    $image,
-    $fit,
-    $alignment,
-    $centerSlice,
-    $repeat,
-    $filterQuality,
-    $invertColors,
-    $isAntiAlias,
-  ];
 }
