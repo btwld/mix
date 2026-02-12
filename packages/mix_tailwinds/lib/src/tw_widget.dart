@@ -458,8 +458,13 @@ class Span extends StatelessWidget {
 /// Equivalent to HTML `<h1>`. Note: Like Tailwind's Preflight, headings have
 /// no default styles - use utility classes like `text-4xl font-bold`.
 /// Supports margin utilities (m-*, mx-*, my-*, mt-*, mr-*, mb-*, ml-*).
-class H1 extends StatelessWidget {
-  const H1({super.key, required this.text, this.classNames = '', this.config});
+abstract class _Heading extends StatelessWidget {
+  const _Heading({
+    super.key,
+    required this.text,
+    this.classNames = '',
+    this.config,
+  });
 
   final String text;
   final String classNames;
@@ -478,6 +483,15 @@ class H1 extends StatelessWidget {
 
     return result;
   }
+}
+
+class H1 extends _Heading {
+  const H1({
+    super.key,
+    required super.text,
+    super.classNames = '',
+    super.config,
+  });
 }
 
 /// Heading level 2 element with Tailwind styling.
@@ -485,26 +499,13 @@ class H1 extends StatelessWidget {
 /// Equivalent to HTML `<h2>`. Note: Like Tailwind's Preflight, headings have
 /// no default styles - use utility classes like `text-3xl font-semibold`.
 /// Supports margin utilities (m-*, mx-*, my-*, mt-*, mr-*, mb-*, ml-*).
-class H2 extends StatelessWidget {
-  const H2({super.key, required this.text, this.classNames = '', this.config});
-
-  final String text;
-  final String classNames;
-  final TwConfig? config;
-
-  @override
-  Widget build(BuildContext context) {
-    final cfg = config ?? TwConfigProvider.of(context);
-    final style = TwParser(config: cfg).parseText(classNames);
-    Widget result = StyledText(text, style: style);
-
-    final margin = _extractMargin(classNames, cfg);
-    if (margin != null) {
-      result = Padding(padding: margin, child: result);
-    }
-
-    return result;
-  }
+class H2 extends _Heading {
+  const H2({
+    super.key,
+    required super.text,
+    super.classNames = '',
+    super.config,
+  });
 }
 
 /// Heading level 3 element with Tailwind styling.
@@ -512,26 +513,13 @@ class H2 extends StatelessWidget {
 /// Equivalent to HTML `<h3>`. Note: Like Tailwind's Preflight, headings have
 /// no default styles - use utility classes like `text-2xl font-semibold`.
 /// Supports margin utilities (m-*, mx-*, my-*, mt-*, mr-*, mb-*, ml-*).
-class H3 extends StatelessWidget {
-  const H3({super.key, required this.text, this.classNames = '', this.config});
-
-  final String text;
-  final String classNames;
-  final TwConfig? config;
-
-  @override
-  Widget build(BuildContext context) {
-    final cfg = config ?? TwConfigProvider.of(context);
-    final style = TwParser(config: cfg).parseText(classNames);
-    Widget result = StyledText(text, style: style);
-
-    final margin = _extractMargin(classNames, cfg);
-    if (margin != null) {
-      result = Padding(padding: margin, child: result);
-    }
-
-    return result;
-  }
+class H3 extends _Heading {
+  const H3({
+    super.key,
+    required super.text,
+    super.classNames = '',
+    super.config,
+  });
 }
 
 /// Heading level 4 element with Tailwind styling.
@@ -539,26 +527,13 @@ class H3 extends StatelessWidget {
 /// Equivalent to HTML `<h4>`. Note: Like Tailwind's Preflight, headings have
 /// no default styles - use utility classes like `text-xl font-semibold`.
 /// Supports margin utilities (m-*, mx-*, my-*, mt-*, mr-*, mb-*, ml-*).
-class H4 extends StatelessWidget {
-  const H4({super.key, required this.text, this.classNames = '', this.config});
-
-  final String text;
-  final String classNames;
-  final TwConfig? config;
-
-  @override
-  Widget build(BuildContext context) {
-    final cfg = config ?? TwConfigProvider.of(context);
-    final style = TwParser(config: cfg).parseText(classNames);
-    Widget result = StyledText(text, style: style);
-
-    final margin = _extractMargin(classNames, cfg);
-    if (margin != null) {
-      result = Padding(padding: margin, child: result);
-    }
-
-    return result;
-  }
+class H4 extends _Heading {
+  const H4({
+    super.key,
+    required super.text,
+    super.classNames = '',
+    super.config,
+  });
 }
 
 /// Heading level 5 element with Tailwind styling.
@@ -566,26 +541,13 @@ class H4 extends StatelessWidget {
 /// Equivalent to HTML `<h5>`. Note: Like Tailwind's Preflight, headings have
 /// no default styles - use utility classes like `text-lg font-semibold`.
 /// Supports margin utilities (m-*, mx-*, my-*, mt-*, mr-*, mb-*, ml-*).
-class H5 extends StatelessWidget {
-  const H5({super.key, required this.text, this.classNames = '', this.config});
-
-  final String text;
-  final String classNames;
-  final TwConfig? config;
-
-  @override
-  Widget build(BuildContext context) {
-    final cfg = config ?? TwConfigProvider.of(context);
-    final style = TwParser(config: cfg).parseText(classNames);
-    Widget result = StyledText(text, style: style);
-
-    final margin = _extractMargin(classNames, cfg);
-    if (margin != null) {
-      result = Padding(padding: margin, child: result);
-    }
-
-    return result;
-  }
+class H5 extends _Heading {
+  const H5({
+    super.key,
+    required super.text,
+    super.classNames = '',
+    super.config,
+  });
 }
 
 /// Heading level 6 element with Tailwind styling.
@@ -593,26 +555,13 @@ class H5 extends StatelessWidget {
 /// Equivalent to HTML `<h6>`. Note: Like Tailwind's Preflight, headings have
 /// no default styles - use utility classes like `text-base font-semibold`.
 /// Supports margin utilities (m-*, mx-*, my-*, mt-*, mr-*, mb-*, ml-*).
-class H6 extends StatelessWidget {
-  const H6({super.key, required this.text, this.classNames = '', this.config});
-
-  final String text;
-  final String classNames;
-  final TwConfig? config;
-
-  @override
-  Widget build(BuildContext context) {
-    final cfg = config ?? TwConfigProvider.of(context);
-    final style = TwParser(config: cfg).parseText(classNames);
-    Widget result = StyledText(text, style: style);
-
-    final margin = _extractMargin(classNames, cfg);
-    if (margin != null) {
-      result = Padding(padding: margin, child: result);
-    }
-
-    return result;
-  }
+class H6 extends _Heading {
+  const H6({
+    super.key,
+    required super.text,
+    super.classNames = '',
+    super.config,
+  });
 }
 
 /// Convenience wrapper for truncated text in flex containers.
@@ -673,6 +622,57 @@ List<Widget> _applyCrossAxisGap(List<Widget> input, Axis axis, double? gap) {
   }, growable: false);
 }
 
+bool _hasResponsiveAlignItems(Set<String> tokens, TwConfig cfg, double width) {
+  for (final token in tokens) {
+    final info = _parseResponsiveToken(token, cfg);
+    if (info.minWidth > width) {
+      continue;
+    }
+    if (info.base.startsWith('items-')) {
+      return true;
+    }
+  }
+  return false;
+}
+
+bool _hasResponsiveWidthToken(String classNames, TwConfig cfg, double width) {
+  final tokens = classNames.split(_whitespaceRegex);
+  for (final token in tokens) {
+    final info = _parseResponsiveToken(token, cfg);
+    if (info.minWidth > width) {
+      continue;
+    }
+    if (info.base.startsWith('w-')) {
+      return true;
+    }
+  }
+  return false;
+}
+
+Widget _wrapIfExplicitWidthInStretchColumn(
+  Widget child,
+  TwConfig cfg,
+  double width,
+) {
+  final classNames = switch (child) {
+    Div() => child.classNames,
+    P() => child.classNames,
+    _Heading() => child.classNames,
+    _ => null,
+  };
+
+  if (classNames == null || classNames.trim().isEmpty) {
+    return child;
+  }
+
+  if (_hasResponsiveWidthToken(classNames, cfg, width)) {
+    // Allow the child to keep its own explicit width under a stretched Column.
+    return Align(alignment: AlignmentDirectional.centerStart, child: child);
+  }
+
+  return child;
+}
+
 Widget _buildResponsiveFlex({
   required Set<String> tokens,
   required TwConfig cfg,
@@ -697,26 +697,33 @@ Widget _buildResponsiveFlex({
       if (mainGap != null) {
         style = style.spacing(mainGap);
       }
-      final hasExplicitItemsAlignment = _hasExplicitItemsAlignment(
-        tokens,
-        cfg,
-        width,
-      );
-      if (!hasExplicitItemsAlignment) {
-        // CSS default align-items is stretch, but Flutter cannot stretch on an
-        // unbounded cross axis. Apply stretch only when cross axis is bounded.
-        final isCrossAxisBounded = axis == Axis.horizontal
-            ? constraints.hasBoundedHeight
-            : constraints.hasBoundedWidth;
-        if (isCrossAxisBounded) {
-          style = style.crossAxisAlignment(CrossAxisAlignment.stretch);
-        }
-      }
 
       final crossGap = axis == Axis.horizontal ? gapY : gapX;
       final flexChildren = _applyCrossAxisGap(rawChildren, axis, crossGap);
 
-      final resolvedChildren = flexChildren;
+      var resolvedChildren = flexChildren;
+
+      // CSS parity: Tailwind's default `align-items` is `stretch` (unless an
+      // explicit `items-*` utility is present). In Flutter, a Column/Row with
+      // `crossAxisAlignment == center` shrink-wraps on the cross-axis, causing
+      // flex containers to render centered/narrower than their available width.
+      //
+      // Only apply `stretch` when the cross-axis is bounded to avoid Flutter
+      // layout assertions in unbounded contexts (e.g. Row inside Column).
+      final hasExplicitItems = _hasResponsiveAlignItems(tokens, cfg, width);
+      final isCrossAxisBounded = axis == Axis.horizontal
+          ? constraints.hasBoundedHeight
+          : constraints.hasBoundedWidth;
+      if (!hasExplicitItems &&
+          axis == Axis.vertical &&
+          isCrossAxisBounded) {
+        style = style.crossAxisAlignment(CrossAxisAlignment.stretch);
+        // Preserve explicit widths (e.g. `w-44`) which should not be stretched.
+        resolvedChildren = [
+          for (final child in resolvedChildren)
+            _wrapIfExplicitWidthInStretchColumn(child, cfg, width),
+        ];
+      }
 
       // Use CSS semantic flex box - margin is outside hover/press detection area
       Widget current = _TwFlexScope(
@@ -1105,27 +1112,6 @@ double? _resolveResponsiveGap(
   }
 
   return resolved;
-}
-
-bool _hasExplicitItemsAlignment(
-  Set<String> tokens,
-  TwConfig cfg,
-  double width,
-) {
-  for (final token in tokens) {
-    final info = _parseResponsiveToken(token, cfg);
-    if (info.minWidth > width) {
-      continue;
-    }
-    if (info.base == 'items-start' ||
-        info.base == 'items-center' ||
-        info.base == 'items-end' ||
-        info.base == 'items-stretch' ||
-        info.base == 'items-baseline') {
-      return true;
-    }
-  }
-  return false;
 }
 
 double? _resolveResponsiveFraction(

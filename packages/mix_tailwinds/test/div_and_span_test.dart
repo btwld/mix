@@ -50,6 +50,17 @@ CurveAnimationConfig? _parseAnimation(String classNames, {TwParser? parser}) {
   return p.parseAnimationFromTokens(p.listTokens(classNames));
 }
 
+TwParsedClass _resolveSingle(String token, {TokenWarningCallback? onUnknown}) {
+  final parsed = TwResolver(
+    TwConfig.standard(),
+    onUnknownVariant: onUnknown,
+  ).resolveToken(token);
+
+  expect(parsed, isNotNull);
+  expect(parsed, hasLength(1));
+  return parsed!.single;
+}
+
 Future<void> _pumpSized(
   WidgetTester tester,
   Widget child, {
@@ -406,13 +417,13 @@ void main() {
     expect(boxSize.height, closeTo(120, 0.0001));
   });
 
-  testWidgets('flex containers default to items-stretch (CSS parity)', (
+  testWidgets('items-stretch expands cross axis when explicitly requested', (
     tester,
   ) async {
     await _pumpSized(
       tester,
       Div(
-        classNames: 'flex flex-col',
+        classNames: 'flex flex-col items-stretch',
         children: const [
           Div(
             key: ValueKey('metric-a'),
@@ -430,16 +441,22 @@ void main() {
       height: 240,
     );
 
-    final firstTile = find.descendant(
-      of: find.byKey(const ValueKey('metric-a')),
-      matching: find.byType(Container),
-    );
-    final secondTile = find.descendant(
-      of: find.byKey(const ValueKey('metric-b')),
-      matching: find.byType(Container),
-    );
-    final firstWidth = tester.getSize(firstTile).width;
-    final secondWidth = tester.getSize(secondTile).width;
+    final firstWidth = tester
+        .getSize(
+          find.descendant(
+            of: find.byKey(const ValueKey('metric-a')),
+            matching: find.byType(Container),
+          ),
+        )
+        .width;
+    final secondWidth = tester
+        .getSize(
+          find.descendant(
+            of: find.byKey(const ValueKey('metric-b')),
+            matching: find.byType(Container),
+          ),
+        )
+        .width;
 
     expect(firstWidth, closeTo(320, 0.0001));
     expect(secondWidth, closeTo(320, 0.0001));
@@ -1018,22 +1035,18 @@ void main() {
     expect(border.bottom.width, 0);
   });
 
-  test('variant borders inherit base border structure', () {
-    // This tests that hover:border-red-500 inherits border-t's structure
-    // Previously, inheritColorFrom only inherited color, not widths
-    final parser = TwParser();
-    final styler = parser.parseFlex('border-t hover:border-red-500');
-
-    // The base should have top border with default width
-    // The hover variant should inherit the top-only structure
-    // We can verify the styler was created without errors
-    expect(styler, isNotNull);
-
-    // Parse with color on base to verify variant inheritance
-    final styler2 = parser.parseFlex(
-      'border-t border-gray-200 hover:border-red-500',
+  testWidgets('variant borders inherit base border structure', (tester) async {
+    final decoration = await _boxDecorationFor(
+      tester,
+      'border-t hover:border-red-500',
     );
-    expect(styler2, isNotNull);
+    final border = decoration?.border as Border?;
+
+    expect(border, isNotNull);
+    expect(border!.top.width, greaterThan(0));
+    expect(border.bottom.width, 0);
+    expect(border.left.width, 0);
+    expect(border.right.width, 0);
   });
 
   testWidgets('rounded-t-md applies top border radius', (tester) async {
@@ -1143,20 +1156,30 @@ void main() {
     expect(parser.wantsFlex({'md:bg-[color'}), isFalse);
   });
 
-  test('Parser defaults to column for prefixed-only flex tokens', () {
-    final parser = TwParser();
+  testWidgets('Parser defaults to column for prefixed-only flex tokens', (
+    tester,
+  ) async {
+    await _pumpSized(
+      tester,
+      const Div(classNames: 'md:flex', children: [SizedBox(), SizedBox()]),
+      width: 700,
+    );
+    expect(find.byType(Flex), findsOneWidget);
+    expect(tester.widget<Flex>(find.byType(Flex)).direction, Axis.vertical);
 
-    // Only prefixed flex - should start with column (block-like)
-    final prefixedOnly = parser.parseFlex('md:flex');
-    expect(prefixedOnly, isA<FlexBoxStyler>());
+    await _pumpSized(
+      tester,
+      const Div(classNames: 'flex', children: [SizedBox(), SizedBox()]),
+    );
+    expect(find.byType(Flex), findsOneWidget);
+    expect(tester.widget<Flex>(find.byType(Flex)).direction, Axis.horizontal);
 
-    // Base flex - should allow default row behavior
-    final baseFlex = parser.parseFlex('flex');
-    expect(baseFlex, isA<FlexBoxStyler>());
-
-    // Explicit column - should be column
-    final explicitCol = parser.parseFlex('flex-col');
-    expect(explicitCol, isA<FlexBoxStyler>());
+    await _pumpSized(
+      tester,
+      const Div(classNames: 'flex-col', children: [SizedBox(), SizedBox()]),
+    );
+    expect(find.byType(Flex), findsOneWidget);
+    expect(tester.widget<Flex>(find.byType(Flex)).direction, Axis.vertical);
   });
 
   test('Div constructor is const', () {
@@ -1288,53 +1311,87 @@ void main() {
   // ==========================================================================
 
   test('leading-none applies line height 1.0', () {
-    final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseText('leading-none');
-    expect(seen, isEmpty);
+    final parsed = _resolveSingle('leading-none');
+    expect(parsed.property, TwProperty.lineHeight);
+    expect(parsed.value, const TwLengthValue(1.0, TwUnit.none));
   });
 
   test('leading-tight applies line height 1.25', () {
-    final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseText('leading-tight');
-    expect(seen, isEmpty);
+    final parsed = _resolveSingle('leading-tight');
+    expect(parsed.property, TwProperty.lineHeight);
+    expect(parsed.value, const TwLengthValue(1.25, TwUnit.none));
   });
 
   test('leading-snug applies line height 1.375', () {
-    final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseText('leading-snug');
-    expect(seen, isEmpty);
+    final parsed = _resolveSingle('leading-snug');
+    expect(parsed.property, TwProperty.lineHeight);
+    expect(parsed.value, const TwLengthValue(1.375, TwUnit.none));
   });
 
   test('leading-normal applies line height 1.5', () {
-    final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseText('leading-normal');
-    expect(seen, isEmpty);
+    final parsed = _resolveSingle('leading-normal');
+    expect(parsed.property, TwProperty.lineHeight);
+    expect(parsed.value, const TwLengthValue(1.5, TwUnit.none));
   });
 
   test('leading-relaxed applies line height 1.625', () {
-    final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseText('leading-relaxed');
-    expect(seen, isEmpty);
+    final parsed = _resolveSingle('leading-relaxed');
+    expect(parsed.property, TwProperty.lineHeight);
+    expect(parsed.value, const TwLengthValue(1.625, TwUnit.none));
   });
 
   test('leading-loose applies line height 2.0', () {
-    final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseText('leading-loose');
-    expect(seen, isEmpty);
+    final parsed = _resolveSingle('leading-loose');
+    expect(parsed.property, TwProperty.lineHeight);
+    expect(parsed.value, const TwLengthValue(2.0, TwUnit.none));
   });
 
-  test('leading-even applies even leading distribution', () {
+  testWidgets('leading-even applies even leading distribution', (tester) async {
+    const value = 'leading-even sample';
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseText('leading-even');
+    final style = TwParser(onUnsupported: seen.add).parseText('leading-even');
+
     expect(seen, isEmpty);
+
+    await tester.pumpWidget(
+      Directionality(
+        textDirection: TextDirection.ltr,
+        child: StyledText(value, style: style),
+      ),
+    );
+
+    final text = tester.widget<Text>(find.text(value));
+    final behavior = text.textHeightBehavior;
+
+    expect(behavior, isNotNull);
+    expect(behavior!.leadingDistribution, TextLeadingDistribution.even);
+    expect(behavior.applyHeightToFirstAscent, isTrue);
+    expect(behavior.applyHeightToLastDescent, isTrue);
   });
 
-  test(
+  testWidgets(
     'leading-trim applies even distribution with trimmed ascent/descent',
-    () {
+    (tester) async {
+      const value = 'leading-trim sample';
       final seen = <String>[];
-      TwParser(onUnsupported: seen.add).parseText('leading-trim');
+      final style = TwParser(onUnsupported: seen.add).parseText('leading-trim');
+
       expect(seen, isEmpty);
+
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: StyledText(value, style: style),
+        ),
+      );
+
+      final text = tester.widget<Text>(find.text(value));
+      final behavior = text.textHeightBehavior;
+
+      expect(behavior, isNotNull);
+      expect(behavior!.leadingDistribution, TextLeadingDistribution.even);
+      expect(behavior.applyHeightToFirstAscent, isFalse);
+      expect(behavior.applyHeightToLastDescent, isFalse);
     },
   );
 
@@ -1342,40 +1399,40 @@ void main() {
   // Letter Spacing (tracking-*) Tests
   // ==========================================================================
 
-  test('tracking-tighter parses without warnings', () {
-    final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseText('tracking-tighter');
-    expect(seen, isEmpty);
+  test('tracking-tighter applies -0.8 letter spacing', () {
+    final parsed = _resolveSingle('tracking-tighter');
+    expect(parsed.property, TwProperty.letterSpacing);
+    expect(parsed.value, const TwLengthValue(-0.8));
   });
 
-  test('tracking-tight parses without warnings', () {
-    final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseText('tracking-tight');
-    expect(seen, isEmpty);
+  test('tracking-tight applies -0.4 letter spacing', () {
+    final parsed = _resolveSingle('tracking-tight');
+    expect(parsed.property, TwProperty.letterSpacing);
+    expect(parsed.value, const TwLengthValue(-0.4));
   });
 
-  test('tracking-normal parses without warnings', () {
-    final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseText('tracking-normal');
-    expect(seen, isEmpty);
+  test('tracking-normal applies 0 letter spacing', () {
+    final parsed = _resolveSingle('tracking-normal');
+    expect(parsed.property, TwProperty.letterSpacing);
+    expect(parsed.value, const TwLengthValue(0));
   });
 
-  test('tracking-wide parses without warnings', () {
-    final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseText('tracking-wide');
-    expect(seen, isEmpty);
+  test('tracking-wide applies 0.4 letter spacing', () {
+    final parsed = _resolveSingle('tracking-wide');
+    expect(parsed.property, TwProperty.letterSpacing);
+    expect(parsed.value, const TwLengthValue(0.4));
   });
 
-  test('tracking-wider parses without warnings', () {
-    final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseText('tracking-wider');
-    expect(seen, isEmpty);
+  test('tracking-wider applies 0.8 letter spacing', () {
+    final parsed = _resolveSingle('tracking-wider');
+    expect(parsed.property, TwProperty.letterSpacing);
+    expect(parsed.value, const TwLengthValue(0.8));
   });
 
-  test('tracking-widest parses without warnings', () {
-    final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseText('tracking-widest');
-    expect(seen, isEmpty);
+  test('tracking-widest applies 1.6 letter spacing', () {
+    final parsed = _resolveSingle('tracking-widest');
+    expect(parsed.property, TwProperty.letterSpacing);
+    expect(parsed.value, const TwLengthValue(1.6));
   });
 
   // ==========================================================================
@@ -2621,9 +2678,9 @@ void main() {
     expect(flexNoneSize.width, 50);
   });
 
-  testWidgets('items-baseline renders without assertion', (tester) async {
-    // This test verifies that items-baseline sets textBaseline,
-    // which is required by Flutter when using CrossAxisAlignment.baseline
+  testWidgets('items-baseline sets baseline alignment and textBaseline', (
+    tester,
+  ) async {
     await _pumpSized(
       tester,
       Div(
@@ -2636,7 +2693,9 @@ void main() {
       width: 300,
     );
 
-    // If we get here without an assertion, the test passes
+    final flex = tester.widget<Flex>(find.byType(Flex));
+    expect(flex.crossAxisAlignment, CrossAxisAlignment.baseline);
+    expect(flex.textBaseline, TextBaseline.alphabetic);
     expect(find.text('Hello'), findsOneWidget);
     expect(find.text('World'), findsOneWidget);
   });
@@ -3024,6 +3083,7 @@ void main() {
 
       // Should have StyledText but no Padding wrapper at root
       expect(find.byType(StyledText), findsOneWidget);
+      expect(find.byType(Padding), findsNothing);
       // The root should not be a Padding
       final root = find.byType(P);
       expect(root, findsOneWidget);

@@ -150,8 +150,9 @@ void main() {
         ),
       );
 
-      // If no error thrown, the custom color was found via provider
-      expect(tester.takeException(), isNull);
+      final container = tester.widget<Container>(find.byType(Container));
+      final decoration = container.decoration as BoxDecoration?;
+      expect(decoration?.color, equals(Colors.purple));
     });
 
     testWidgets('Div explicit config overrides provider', (tester) async {
@@ -175,8 +176,9 @@ void main() {
         ),
       );
 
-      // Should use explicit config, not provider config
-      expect(tester.takeException(), isNull);
+      final container = tester.widget<Container>(find.byType(Container));
+      final decoration = container.decoration as BoxDecoration?;
+      expect(decoration?.color, equals(Colors.red));
     });
   });
 
@@ -184,7 +186,9 @@ void main() {
     test('applies opacity modifier to known colors', () {
       final config = TwConfig.standard();
 
+      expect(config.colorOf('white/0'), equals(const Color(0x00FFFFFF)));
       expect(config.colorOf('white/50'), equals(const Color(0x80FFFFFF)));
+      expect(config.colorOf('white/100'), equals(const Color(0xFFFFFFFF)));
       expect(config.colorOf('blue-500/30'), equals(const Color(0x4D3B82F6)));
     });
 

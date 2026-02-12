@@ -62,6 +62,8 @@ As an experimental proof of concept:
 
 For the authoritative list of Tailwind ↔ Flutter behavioral differences and recommended workarounds, see `FLUTTER_ADAPTATIONS.md`. This README focuses on the surface API and supported tokens to avoid duplication.
 
+For default typography parity guidance (Tailwind base defaults vs Flutter `ThemeData`/`MixScope`), see the "Default Typography Parity" section in `FLUTTER_ADAPTATIONS.md`.
+
 ### Flex Item Tokens
 
 Flex item tokens (`flex-1`, `flex-auto`, `flex-none`, `basis-*`, `self-*`, `shrink-*`) are handled at the widget layer, not the parser layer.

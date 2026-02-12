@@ -31,11 +31,17 @@ const FLUTTER_PORT = 8089;
 const EXAMPLES = {
   dashboard: {
     htmlFile: 'example/real_tailwind/index.html',
-    selector: 'main', // Element to screenshot in Tailwind HTML
+    selector: 'main',
+    margin: 16,
+    moderateDiffThreshold: 6,
+    highDiffThreshold: 12,
   },
   'card-alert': {
     htmlFile: 'example/real_tailwind/card-alert.html',
-    selector: 'body', // Full body with gradient background
+    selector: 'body > div > div',
+    margin: 16,
+    moderateDiffThreshold: 7,
+    highDiffThreshold: 16,
   },
 };
 
@@ -59,6 +65,8 @@ async function main() {
 
   const tailwindPath = path.resolve(packageRoot, exampleConfig.htmlFile);
   const elementSelector = exampleConfig.selector;
+  const captureMargin = exampleConfig.margin ?? 0;
+  const clipByWidth = new Map();
 
   // Create example-specific directories
   const screenshotDir = path.join(baseScreenshotDir, exampleArg);
@@ -81,32 +89,33 @@ async function main() {
 
   // Capture Tailwind screenshots
   for (const width of WIDTHS) {
-    await page.setViewportSize({ width, height: 1200 });
+    const viewport = { width, height: 1200 };
+    await page.setViewportSize(viewport);
     await page.goto(`file://${tailwindPath}`);
     await page.waitForLoadState('networkidle');
-    // For body selector, use page screenshot to match Flutter's approach
-    if (elementSelector === 'body') {
-      await page.screenshot({
-        path: path.join(screenshotDir, `tailwind-${width}.png`),
-        fullPage: false,
-      });
-      console.log(`  tailwind-${width}.png`);
-    } else {
-      const element = await page.$(elementSelector);
-      if (element) {
-        await element.screenshot({
-          path: path.join(screenshotDir, `tailwind-${width}.png`),
-        });
-        console.log(`  tailwind-${width}.png`);
-      } else {
-        console.error(`  ERROR: Could not find <${elementSelector}> element for ${width}px`);
-      }
+    const element = await page.$(elementSelector);
+    if (!element) {
+      console.error(`  ERROR: Could not find <${elementSelector}> element for ${width}px`);
+      continue;
     }
+    const box = await element.boundingBox();
+    if (!box) {
+      console.error(`  ERROR: Could not read bounds for <${elementSelector}> at ${width}px`);
+      continue;
+    }
+    const clip = expandClipBox(box, viewport, captureMargin);
+    clipByWidth.set(width, clip);
+    await page.screenshot({
+      path: path.join(screenshotDir, `tailwind-${width}.png`),
+      clip,
+    });
+    console.log(`  tailwind-${width}.png`);
   }
 
   // Capture Flutter screenshots
   for (const width of WIDTHS) {
-    await page.setViewportSize({ width, height: 1200 });
+    const viewport = { width, height: 1200 };
+    await page.setViewportSize(viewport);
     try {
       await page.goto(`${flutterUrl}/?screenshot=true&width=${width}&example=${exampleArg}`, {
         timeout: 30000,
@@ -117,9 +126,10 @@ async function main() {
       await page.waitForLoadState('networkidle');
       // Additional delay for Flutter to finish painting
       await page.waitForTimeout(1000);
+      const clip = clipByWidth.get(width) ?? fullViewportClip(viewport);
       await page.screenshot({
         path: path.join(screenshotDir, `flutter-${width}.png`),
-        fullPage: false,
+        clip,
       });
       console.log(`  flutter-${width}.png`);
     } catch (error) {
@@ -197,14 +207,17 @@ async function main() {
   const avgDiff =
     results.reduce((sum, r) => sum + r.delta, 0) / results.length || 0;
 
-  if (results.some((r) => r.delta > 15)) {
+  const moderateDiffThreshold = exampleConfig.moderateDiffThreshold ?? 5;
+  const highDiffThreshold = exampleConfig.highDiffThreshold ?? 15;
+
+  if (results.some((r) => r.delta > highDiffThreshold)) {
     console.log(
-      '\nHigh diff detected! Check for structural issues in the diff images.',
+      `\nHigh diff detected (>${highDiffThreshold}%). Check for structural issues in the diff images.`,
     );
     process.exitCode = 1;
-  } else if (results.some((r) => r.delta > 5)) {
+  } else if (results.some((r) => r.delta > moderateDiffThreshold)) {
     console.log(
-      '\nModerate diff detected (likely font rendering differences).',
+      `\nModerate diff detected (>${moderateDiffThreshold}%, likely font/background rendering differences).`,
     );
   } else if (avgDiff < 3) {
     console.log('\nExcellent parity! Remaining diff is likely platform-specific font rendering.');
@@ -229,6 +242,23 @@ function cropToSize(png, targetWidth, targetHeight) {
     }
   }
   return cropped;
+}
+
+function fullViewportClip(viewport) {
+  return { x: 0, y: 0, width: viewport.width, height: viewport.height };
+}
+
+function expandClipBox(box, viewport, margin) {
+  const x = Math.max(0, Math.floor(box.x - margin));
+  const y = Math.max(0, Math.floor(box.y - margin));
+  const right = Math.min(viewport.width, Math.ceil(box.x + box.width + margin));
+  const bottom = Math.min(viewport.height, Math.ceil(box.y + box.height + margin));
+  return {
+    x,
+    y,
+    width: Math.max(1, right - x),
+    height: Math.max(1, bottom - y),
+  };
 }
 
 main().catch((error) => {

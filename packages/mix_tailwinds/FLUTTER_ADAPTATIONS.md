@@ -98,6 +98,88 @@ Div(
 
 ---
 
+## Default Typography Parity (Tailwind vs Mix)
+
+### Why text can still look different even when tokens match
+
+`mix_tailwinds` maps utility tokens correctly (`text-lg` -> `18`, `font-semibold` -> `w600`, etc.), but text can still render differently because:
+
+1. Tailwind relies on browser defaults and Preflight (`ui-sans-serif`, `letter-spacing: normal`).
+2. Flutter text inherits `ThemeData.textTheme` defaults (often Roboto + non-zero letter spacing in some slots).
+3. `H1`-`H6` in `mix_tailwinds` intentionally have no default heading styles (Tailwind-like behavior).
+
+If you want visual parity, align **global defaults** first, then compare utility mapping.
+
+### Which system controls what
+
+| Concern | Tailwind side | Flutter side |
+|---|---|---|
+| Utility scale (`text-*`, spacing, colors, breakpoints) | `tailwind.config.js` theme scale | `TwConfig.standard().copyWith(...)` |
+| Global defaults (`font-family`, base tracking, base line-height) | `@layer base` / body defaults | `ThemeData.textTheme` / `DefaultTextStyle` |
+| Semantic app design tokens | Tailwind CSS variables or design token layer | `MixScope` (`ColorToken`, `TextStyleToken`, `SpaceToken`, etc.) |
+
+### Tailwind change -> Mix equivalent
+
+| Tailwind change | Mix equivalent |
+|---|---|
+| `theme.extend.colors` | `TwConfig.copyWith(colors: {...})` |
+| `theme.extend.spacing` | `TwConfig.copyWith(space: {...})` |
+| `theme.extend.borderRadius` | `TwConfig.copyWith(radii: {...})` |
+| `theme.extend.screens` | `TwConfig.copyWith(breakpoints: {...})` |
+| `theme.extend.fontSize` | `TwConfig.copyWith(fontSizes: {...})` |
+| `theme.extend.fontWeight` | Update parser semantic mapping (currently from `tw_semantic.dart`) or use `MixScope(fontWeights: ...)` for non-tailwind Mix styles |
+| `theme.extend.fontFamily` / base `font-sans` stack | Set app-wide Flutter text defaults via `ThemeData.textTheme.apply(...)` / `DefaultTextStyle` |
+| `@layer base { body { letter-spacing / line-height } }` | Set app-wide `TextStyle(letterSpacing: ..., height: ...)` defaults |
+
+### Recommended parity setup
+
+Use a single source of truth for both utility parsing and semantic Mix styling:
+
+```dart
+final twConfig = TwConfig.standard().copyWith(
+  colors: {
+    ...TwConfig.standard().colors,
+    'brand-500': const Color(0xFF4F46E5),
+  },
+  fontSizes: {
+    ...TwConfig.standard().fontSizes,
+    'lg': 18, // keep in sync with Tailwind
+  },
+);
+
+final parityTheme = ThemeData(
+  textTheme: ThemeData.light().textTheme.apply(
+    // Choose the same family used by your Tailwind setup.
+    fontFamily: 'Inter',
+    bodyColor: const Color(0xFF374151),
+    displayColor: const Color(0xFF374151),
+  ).copyWith(
+    bodyMedium: const TextStyle(letterSpacing: 0),
+  ),
+);
+
+runApp(
+  MixScope(
+    textStyles: {
+      const TextStyleToken('typography.body'):
+          const TextStyle(fontSize: 16, height: 1.5),
+    },
+    child: TwConfigProvider(
+      config: twConfig,
+      child: MaterialApp(theme: parityTheme, home: const MyPage()),
+    ),
+  ),
+);
+```
+
+### Decision rule
+
+- If you are matching Tailwind utility behavior: use `TwConfig` + parser/widget behavior.
+- If you are defining app-level design semantics: use `MixScope` tokens.
+- For pixel parity screenshots, always normalize global typography defaults in Flutter and Tailwind before debugging individual utilities.
+
+---
+
 ## Technical Background
 
 ### CSS vs Flutter Layout Philosophy

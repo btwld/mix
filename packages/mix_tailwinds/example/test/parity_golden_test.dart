@@ -5,8 +5,40 @@ import 'package:mix_tailwinds_example/main.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   final originalOnError = FlutterError.onError;
+  var sawUnexpectedFlutterError = false;
 
-  setUpAll(() {
+  void drainKnownOverflowExceptions(WidgetTester tester) {
+    while (true) {
+      final exception = tester.takeException();
+      if (exception == null) break;
+
+      final message = exception.toString();
+      if (message.contains('RenderFlex overflowed')) {
+        continue;
+      }
+
+      final isAggregateException =
+          message.startsWith('Multiple exceptions (') &&
+          message.contains('at least one was unexpected.');
+      if (isAggregateException && !sawUnexpectedFlutterError) {
+        continue;
+      }
+
+      throw TestFailure(
+        'Unexpected exception during parity golden capture:\n$message',
+      );
+    }
+
+    if (sawUnexpectedFlutterError) {
+      throw TestFailure(
+        'Unexpected non-overflow FlutterError was reported during capture.',
+      );
+    }
+
+    sawUnexpectedFlutterError = false;
+  }
+
+  Future<void> pumpAtWidth(WidgetTester tester, double width) async {
     FlutterError.onError = (details) {
       final message = details.exceptionAsString();
       if (message.contains('RenderFlex overflowed')) {
@@ -14,15 +46,13 @@ void main() {
         // compare visual diffs even when shrink semantics diverge.
         return;
       }
+      sawUnexpectedFlutterError = true;
       originalOnError?.call(details);
     };
-  });
+    addTearDown(() {
+      FlutterError.onError = originalOnError;
+    });
 
-  tearDownAll(() {
-    FlutterError.onError = originalOnError;
-  });
-
-  Future<void> pumpAtWidth(WidgetTester tester, double width) async {
     tester.view.devicePixelRatio = 1;
     tester.view.physicalSize = Size(width, 2000);
     addTearDown(() {
@@ -45,7 +75,9 @@ void main() {
         ),
       ),
     );
+    drainKnownOverflowExceptions(tester);
     await tester.pumpAndSettle();
+    drainKnownOverflowExceptions(tester);
   }
 
   const widths = [480.0, 768.0, 1024.0];
@@ -57,6 +89,7 @@ void main() {
         find.byType(TailwindParityPreview),
         matchesGoldenFile('goldens/flutter-plan-card-${width.toInt()}.png'),
       );
+      drainKnownOverflowExceptions(tester);
     });
   }
 }

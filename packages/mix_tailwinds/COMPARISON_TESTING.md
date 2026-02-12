@@ -18,6 +18,8 @@ The visual output should be identical (or as close as possible given platform di
 
 ```bash
 cd packages/mix_tailwinds/example
+# If you see "not configured to build on the web", run:
+#   flutter create . --platforms=web
 flutter run -d web-server --web-port=8089 --profile
 ```
 

@@ -939,18 +939,12 @@ FlexBoxStyler _applyAlignItems(FlexBoxStyler styler, TwValue value) {
 }
 
 FlexBoxStyler _applyFlexShadow(FlexBoxStyler styler, TwValue value) {
-  if (value is TwEnumValue) {
-    final shadowValue = value.value;
-    if (shadowValue is ElevationShadow?) {
-      return shadowValue == null
-          ? styler.boxShadows(const <BoxShadowMix>[])
-          : styler.elevation(shadowValue);
-    }
-    if (shadowValue is List<BoxShadowMix>?) {
-      return styler.boxShadows(shadowValue ?? const <BoxShadowMix>[]);
-    }
-  }
-  return styler;
+  return _applyShadowValue(
+    styler,
+    value,
+    applyElevation: (style, elevation) => style.elevation(elevation),
+    applyBoxShadows: (style, shadows) => style.boxShadows(shadows),
+  );
 }
 
 BoxStyler _applyPropertyToBox(
@@ -1093,17 +1087,124 @@ BoxStyler _applyPropertyToBox(
 }
 
 BoxStyler _applyBoxShadow(BoxStyler styler, TwValue value) {
+  return _applyShadowValue(
+    styler,
+    value,
+    applyElevation: (style, elevation) => style.elevation(elevation),
+    applyBoxShadows: (style, shadows) => style.boxShadows(shadows),
+  );
+}
+
+S _applyShadowValue<S>(
+  S styler,
+  TwValue value, {
+  required S Function(S styler, ElevationShadow elevation) applyElevation,
+  required S Function(S styler, List<BoxShadowMix> shadows) applyBoxShadows,
+}) {
   if (value is TwEnumValue) {
     final shadowValue = value.value;
     if (shadowValue is ElevationShadow?) {
       return shadowValue == null
-          ? styler.boxShadows(const <BoxShadowMix>[])
-          : styler.elevation(shadowValue);
+          ? applyBoxShadows(styler, const <BoxShadowMix>[])
+          : applyElevation(styler, shadowValue);
     }
     if (shadowValue is List<BoxShadowMix>?) {
-      return styler.boxShadows(shadowValue ?? const <BoxShadowMix>[]);
+      return applyBoxShadows(styler, shadowValue ?? const <BoxShadowMix>[]);
     }
   }
+  return styler;
+}
+
+S _applyResolvedProperties<S>(
+  S styler,
+  List<TwParsedClass>? parsed,
+  S Function(S styler, TwProperty property, TwValue value) applyProperty,
+) {
+  if (parsed == null || parsed.isEmpty) return styler;
+
+  var result = styler;
+  for (final p in parsed) {
+    result = applyProperty(result, p.property, p.value);
+  }
+  return result;
+}
+
+S _applySharedBoxLikeFallback<S>(
+  S styler,
+  String token, {
+  required TwConfig config,
+  required TokenWarningCallback? onUnsupported,
+  required S Function(S styler, double value) setWidth,
+  required S Function(S styler, double value) setHeight,
+  required S Function(S styler, TextStyleMix style) applyDefaultTextStyle,
+  S Function(S styler)? applyItemsBaseline,
+}) {
+  var handled = true;
+
+  if (token.startsWith('w-')) {
+    final key = token.substring(2);
+    final fraction = parseFractionToken(key);
+    if (fraction != null) {
+      return styler; // Handled by widget layer
+    }
+    if (_isFullOrScreenKey(key)) {
+      return styler; // Handled by widget layer
+    }
+    final size = config.spaceOf(key, fallback: double.nan);
+    if (!size.isNaN) {
+      return setWidth(styler, size);
+    }
+    handled = false;
+  } else if (token.startsWith('h-')) {
+    final key = token.substring(2);
+    final fraction = parseFractionToken(key);
+    if (fraction != null) {
+      return styler; // Handled by widget layer
+    }
+    if (_isFullOrScreenKey(key)) {
+      return styler; // Handled by widget layer
+    }
+    final size = config.spaceOf(key, fallback: double.nan);
+    if (!size.isNaN) {
+      return setHeight(styler, size);
+    }
+    handled = false;
+  } else if (token.startsWith('flex-') ||
+      token.startsWith('basis-') ||
+      token.startsWith('self-') ||
+      token.startsWith('shrink')) {
+    // Item-level utilities handled at widget layer
+    return styler;
+  } else if (token.startsWith('text-')) {
+    final key = token.substring(5);
+    final color = config.colorOf(key);
+    if (color != null) {
+      return applyDefaultTextStyle(styler, TextStyleMix().color(color));
+    }
+    final size = config.fontSizeOf(key, fallback: -1);
+    if (size > 0) {
+      var textStyle = TextStyleMix().fontSize(size);
+      final lineHeight = tailwindLineHeights[key];
+      if (lineHeight != null) {
+        textStyle = textStyle.height(lineHeight);
+      }
+      return applyDefaultTextStyle(styler, textStyle);
+    }
+    handled = false;
+  } else if (_isAnimationToken(token)) {
+    return styler;
+  } else if (_isBorderToken(token, config)) {
+    return styler;
+  } else if (token == 'items-baseline' && applyItemsBaseline != null) {
+    return applyItemsBaseline(styler);
+  } else {
+    handled = false;
+  }
+
+  if (!handled) {
+    onUnsupported?.call(token);
+  }
+
   return styler;
 }
 
@@ -1596,185 +1697,67 @@ class TwParser {
 
   FlexBoxStyler _applyFlexAtomic(FlexBoxStyler styler, String token) {
     // Try resolver first
-    final parsed = _resolver.resolveToken(token);
-    if (parsed != null && parsed.isNotEmpty) {
-      var result = styler;
-      for (final p in parsed) {
-        result = _applyPropertyToFlex(
-          result,
-          p.property,
-          p.value,
-          config,
-          _transformTracker,
-        );
-      }
-      return result;
-    }
-
-    // Fallback handling for tokens not in plugin registry
-    var handled = true;
-
-    // Gap-x/gap-y handled in widget layer
     if (token.startsWith('gap-x-') || token.startsWith('gap-y-')) {
       return styler;
     }
 
-    // Width/height fractions and special values
-    if (token.startsWith('w-')) {
-      final key = token.substring(2);
-      final fraction = parseFractionToken(key);
-      if (fraction != null) {
-        return styler; // Handled by widget layer
-      }
-      if (_isFullOrScreenKey(key)) {
-        return styler; // Handled by widget layer
-      }
-      final size = _sizeFrom(key);
-      if (size != null) {
-        return styler.width(size);
-      }
-      handled = false;
-    } else if (token.startsWith('h-')) {
-      final key = token.substring(2);
-      final fraction = parseFractionToken(key);
-      if (fraction != null) {
-        return styler; // Handled by widget layer
-      }
-      if (_isFullOrScreenKey(key)) {
-        return styler; // Handled by widget layer
-      }
-      final size = _sizeFrom(key);
-      if (size != null) {
-        return styler.height(size);
-      }
-      handled = false;
-    } else if (token.startsWith('flex-') ||
-        token.startsWith('basis-') ||
-        token.startsWith('self-') ||
-        token.startsWith('shrink')) {
-      // Item-level utilities handled at widget layer
-      return styler;
-    } else if (token.startsWith('text-')) {
-      final key = token.substring(5);
-      final color = config.colorOf(key);
-      if (color != null) {
-        return styler.wrapDefaultTextStyle(TextStyleMix().color(color));
-      }
-      final size = config.fontSizeOf(key, fallback: -1);
-      if (size > 0) {
-        var textStyle = TextStyleMix().fontSize(size);
-        final lineHeight = tailwindLineHeights[key];
-        if (lineHeight != null) {
-          textStyle = textStyle.height(lineHeight);
-        }
-        return styler.wrapDefaultTextStyle(textStyle);
-      }
-      handled = false;
-    } else if (_isAnimationToken(token)) {
-      // Animation tokens handled by parseAnimationFromTokens()
-      return styler;
-    } else if (_isBorderToken(token, config)) {
-      // These are accumulated, not applied here
-      return styler;
-    } else if (token == 'items-baseline') {
-      // Special case: baseline needs textBaseline set
-      return styler
+    final parsed = _resolver.resolveToken(token);
+    if (parsed != null && parsed.isNotEmpty) {
+      return _applyResolvedProperties(
+        styler,
+        parsed,
+        (current, property, value) => _applyPropertyToFlex(
+          current,
+          property,
+          value,
+          config,
+          _transformTracker,
+        ),
+      );
+    }
+
+    return _applySharedBoxLikeFallback(
+      styler,
+      token,
+      config: config,
+      onUnsupported: onUnsupported,
+      setWidth: (current, value) => current.width(value),
+      setHeight: (current, value) => current.height(value),
+      applyDefaultTextStyle: (current, textStyle) =>
+          current.wrapDefaultTextStyle(textStyle),
+      applyItemsBaseline: (current) => current
           .crossAxisAlignment(CrossAxisAlignment.baseline)
-          .textBaseline(TextBaseline.alphabetic);
-    } else {
-      handled = false;
-    }
-
-    if (!handled) {
-      onUnsupported?.call(token);
-    }
-
-    return styler;
+          .textBaseline(TextBaseline.alphabetic),
+    );
   }
 
   BoxStyler _applyBoxAtomic(BoxStyler styler, String token) {
     // Try resolver first
     final parsed = _resolver.resolveToken(token);
     if (parsed != null && parsed.isNotEmpty) {
-      var result = styler;
-      for (final p in parsed) {
-        result = _applyPropertyToBox(
-          result,
-          p.property,
-          p.value,
+      return _applyResolvedProperties(
+        styler,
+        parsed,
+        (current, property, value) => _applyPropertyToBox(
+          current,
+          property,
+          value,
           config,
           _transformTracker,
-        );
-      }
-      return result;
+        ),
+      );
     }
 
-    // Fallback handling
-    var handled = true;
-
-    if (token.startsWith('w-')) {
-      final key = token.substring(2);
-      final fraction = parseFractionToken(key);
-      if (fraction != null) {
-        return styler; // Handled by widget layer
-      }
-      if (_isFullOrScreenKey(key)) {
-        return styler; // Handled by widget layer
-      }
-      final size = _sizeFrom(key);
-      if (size != null) {
-        return styler.width(size);
-      }
-      handled = false;
-    } else if (token.startsWith('h-')) {
-      final key = token.substring(2);
-      final fraction = parseFractionToken(key);
-      if (fraction != null) {
-        return styler; // Handled by widget layer
-      }
-      if (_isFullOrScreenKey(key)) {
-        return styler; // Handled by widget layer
-      }
-      final size = _sizeFrom(key);
-      if (size != null) {
-        return styler.height(size);
-      }
-      handled = false;
-    } else if (token.startsWith('flex-') ||
-        token.startsWith('basis-') ||
-        token.startsWith('self-') ||
-        token.startsWith('shrink')) {
-      // Item-level utilities handled at widget layer
-      return styler;
-    } else if (token.startsWith('text-')) {
-      final key = token.substring(5);
-      final color = config.colorOf(key);
-      if (color != null) {
-        return styler.wrapDefaultTextStyle(TextStyleMix().color(color));
-      }
-      final size = config.fontSizeOf(key, fallback: -1);
-      if (size > 0) {
-        var textStyle = TextStyleMix().fontSize(size);
-        final lineHeight = tailwindLineHeights[key];
-        if (lineHeight != null) {
-          textStyle = textStyle.height(lineHeight);
-        }
-        return styler.wrapDefaultTextStyle(textStyle);
-      }
-      handled = false;
-    } else if (_isAnimationToken(token)) {
-      return styler;
-    } else if (_isBorderToken(token, config)) {
-      return styler;
-    } else {
-      handled = false;
-    }
-
-    if (!handled) {
-      onUnsupported?.call(token);
-    }
-
-    return styler;
+    return _applySharedBoxLikeFallback(
+      styler,
+      token,
+      config: config,
+      onUnsupported: onUnsupported,
+      setWidth: (current, value) => current.width(value),
+      setHeight: (current, value) => current.height(value),
+      applyDefaultTextStyle: (current, textStyle) =>
+          current.wrapDefaultTextStyle(textStyle),
+    );
   }
 
   TextStyler _applyTextAtomic(TextStyler styler, String token) {
@@ -1860,11 +1843,6 @@ class TwParser {
       return token.substring(5);
     }
     return null;
-  }
-
-  double? _sizeFrom(String key) {
-    final value = config.spaceOf(key, fallback: double.nan);
-    return value.isNaN ? null : value;
   }
 
   // ===========================================================================
