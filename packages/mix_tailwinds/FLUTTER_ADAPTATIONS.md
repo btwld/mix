@@ -105,7 +105,7 @@ Div(
 `mix_tailwinds` maps utility tokens correctly (`text-lg` -> `18`, `font-semibold` -> `w600`, etc.), but text can still render differently because:
 
 1. Tailwind relies on browser defaults and Preflight (`ui-sans-serif`, `letter-spacing: normal`).
-2. Flutter text inherits `ThemeData.textTheme` defaults (often Roboto + non-zero letter spacing in some slots).
+2. Flutter text can inherit app theme defaults that don't match Tailwind base typography.
 3. `H1`-`H6` in `mix_tailwinds` intentionally have no default heading styles (Tailwind-like behavior).
 
 If you want visual parity, align **global defaults** first, then compare utility mapping.
@@ -115,7 +115,7 @@ If you want visual parity, align **global defaults** first, then compare utility
 | Concern | Tailwind side | Flutter side |
 |---|---|---|
 | Utility scale (`text-*`, spacing, colors, breakpoints) | `tailwind.config.js` theme scale | `TwConfig.standard().copyWith(...)` |
-| Global defaults (`font-family`, base tracking, base line-height) | `@layer base` / body defaults | `ThemeData.textTheme` / `DefaultTextStyle` |
+| Global defaults (`font-family`, base font-size, base tracking, base line-height) | `@layer base` / body defaults | `TwConfig.textDefaults` applied by `TwScope` (`MixScope` + `TextScope`) |
 | Semantic app design tokens | Tailwind CSS variables or design token layer | `MixScope` (`ColorToken`, `TextStyleToken`, `SpaceToken`, etc.) |
 
 ### Tailwind change -> Mix equivalent
@@ -128,8 +128,9 @@ If you want visual parity, align **global defaults** first, then compare utility
 | `theme.extend.screens` | `TwConfig.copyWith(breakpoints: {...})` |
 | `theme.extend.fontSize` | `TwConfig.copyWith(fontSizes: {...})` |
 | `theme.extend.fontWeight` | Update parser semantic mapping (currently from `tw_semantic.dart`) or use `MixScope(fontWeights: ...)` for non-tailwind Mix styles |
-| `theme.extend.fontFamily` / base `font-sans` stack | Set app-wide Flutter text defaults via `ThemeData.textTheme.apply(...)` / `DefaultTextStyle` |
-| `@layer base { body { letter-spacing / line-height } }` | Set app-wide `TextStyle(letterSpacing: ..., height: ...)` defaults |
+| `theme.extend.fontFamily` / base `font-sans` stack | `TwConfig.copyWith(textDefaults: config.textDefaults.copyWith(...))` |
+| Use native platform font defaults | `TwConfig.copyWith(textDefaults: const TwTextDefaults.platformDefault())` |
+| `@layer base { body { font-size / letter-spacing / line-height } }` | `TwConfig.textDefaults.copyWith(fontSize: ..., letterSpacing: ..., lineHeight: ...)` |
 
 ### Recommended parity setup
 
@@ -145,38 +146,37 @@ final twConfig = TwConfig.standard().copyWith(
     ...TwConfig.standard().fontSizes,
     'lg': 18, // keep in sync with Tailwind
   },
-);
-
-final parityTheme = ThemeData(
-  textTheme: ThemeData.light().textTheme.apply(
-    // Choose the same family used by your Tailwind setup.
+  textDefaults: TwConfig.standard().textDefaults.copyWith(
+    // Match your Tailwind base stack.
     fontFamily: 'Inter',
-    bodyColor: const Color(0xFF374151),
-    displayColor: const Color(0xFF374151),
-  ).copyWith(
-    bodyMedium: const TextStyle(letterSpacing: 0),
+    fontSize: 16, // Tailwind preflight default
+    letterSpacing: 0,
+    lineHeight: 1.5,
   ),
 );
 
 runApp(
-  MixScope(
-    textStyles: {
-      const TextStyleToken('typography.body'):
-          const TextStyle(fontSize: 16, height: 1.5),
+  TwScope(
+    config: twConfig,
+    // Optional semantic tokens for your design system
+    tokens: const {
+      TextStyleToken('typography.body'): TextStyle(fontSize: 16, height: 1.5),
     },
-    child: TwConfigProvider(
-      config: twConfig,
-      child: MaterialApp(theme: parityTheme, home: const MyPage()),
-    ),
+    child: const MaterialApp(home: MyPage()),
   ),
 );
 ```
 
+`TwScope` internally wires:
+- `TwConfigProvider` for utility parsing scales
+- `MixScope` for tokenized default text style
+- `TextScope` for tree-level default typography
+
 ### Decision rule
 
-- If you are matching Tailwind utility behavior: use `TwConfig` + parser/widget behavior.
+- If you are matching Tailwind utility behavior and defaults: use `TwConfig` + `TwScope`.
 - If you are defining app-level design semantics: use `MixScope` tokens.
-- For pixel parity screenshots, always normalize global typography defaults in Flutter and Tailwind before debugging individual utilities.
+- For pixel parity screenshots, normalize global typography via `TwConfig.textDefaults` before debugging individual utilities.
 
 ---
 

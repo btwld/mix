@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -3290,6 +3292,41 @@ void main() {
       expect(edgeInsets.right, 8);
       expect(edgeInsets.top, 0);
       expect(edgeInsets.bottom, 0);
+    });
+  });
+
+  group('Gradient direction parity', () {
+    testWidgets('bg-gradient-to-br maps to 45deg rotated axis', (tester) async {
+      final decoration = await _boxDecorationFor(
+        tester,
+        'bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900',
+      );
+      final gradient = decoration?.gradient as LinearGradient?;
+
+      expect(gradient, isNotNull);
+      expect(gradient!.begin, Alignment.centerLeft);
+      expect(gradient.end, Alignment.centerRight);
+      expect(gradient.stops, const [0.0, 0.5, 1.0]);
+
+      final transform = gradient.transform as GradientRotation?;
+      expect(transform, isNotNull);
+      expect(transform!.radians, closeTo(math.pi / 4, 0.0001));
+    });
+
+    testWidgets('bg-gradient-to-r uses unrotated horizontal axis', (
+      tester,
+    ) async {
+      final decoration = await _boxDecorationFor(
+        tester,
+        'bg-gradient-to-r from-slate-900 to-slate-900',
+      );
+      final gradient = decoration?.gradient as LinearGradient?;
+
+      expect(gradient, isNotNull);
+      expect(gradient!.begin, Alignment.centerLeft);
+      expect(gradient.end, Alignment.centerRight);
+      expect(gradient.stops, const [0.0, 1.0]);
+      expect(gradient.transform, isNull);
     });
   });
 

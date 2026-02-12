@@ -173,18 +173,19 @@ class _BorderAccum {
 // =============================================================================
 
 class _GradientAccum {
-  (Alignment, Alignment)? direction;
+  String? directionKey;
   Color? fromColor;
   Color? viaColor;
   Color? toColor;
 
   _GradientAccum();
 
-  bool get hasGradient => direction != null && fromColor != null;
+  bool get hasGradient => directionKey != null && fromColor != null;
 
   LinearGradientMix? toGradientMix() {
     if (!hasGradient) return null;
-    final (begin, end) = direction!;
+    final angle = _tailwindGradientAngles[directionKey!];
+    if (angle == null) return null;
     final colors = <Color>[
       fromColor!,
       if (viaColor != null) viaColor!,
@@ -194,13 +195,29 @@ class _GradientAccum {
     // Flutter interpolates linearly which doesn't match Tailwind's behavior
     final stops = viaColor != null ? const [0.0, 0.5, 1.0] : const [0.0, 1.0];
     return LinearGradientMix(
-      begin: begin,
-      end: end,
+      begin: Alignment.centerLeft,
+      end: Alignment.centerRight,
+      transform: angle == 0.0 ? null : GradientRotation(angle),
       colors: colors,
       stops: stops,
     );
   }
 }
+
+/// Tailwind directional gradient angles (CSS-like "to-*" directions).
+///
+/// Flutter gradients run left->right by default; rotating that axis gives us
+/// CSS-style directional behavior regardless of widget aspect ratio.
+const Map<String, double> _tailwindGradientAngles = {
+  'to-r': 0.0,
+  'to-br': math.pi / 4,
+  'to-b': math.pi / 2,
+  'to-bl': 3 * math.pi / 4,
+  'to-l': math.pi,
+  'to-tl': -3 * math.pi / 4,
+  'to-t': -math.pi / 2,
+  'to-tr': -math.pi / 4,
+};
 
 // =============================================================================
 // Resolver - Parses tokens to semantic AST
@@ -482,12 +499,14 @@ bool _isGradientToken(String token) {
 void _accumulateGradient(_GradientAccum accum, String base, TwConfig config) {
   if (base.startsWith('bg-gradient-')) {
     final dirKey = base.substring(12);
-    final dir = gradientDirections[dirKey];
-    if (dir != null) accum.direction = dir;
+    if (gradientDirections.containsKey(dirKey)) {
+      accum.directionKey = dirKey;
+    }
   } else if (base.startsWith('bg-linear-')) {
     final dirKey = base.substring(10);
-    final dir = gradientDirections[dirKey];
-    if (dir != null) accum.direction = dir;
+    if (gradientDirections.containsKey(dirKey)) {
+      accum.directionKey = dirKey;
+    }
   } else if (base.startsWith('from-')) {
     accum.fromColor = config.colorOf(base.substring(5));
   } else if (base.startsWith('via-')) {
@@ -1500,7 +1519,7 @@ class TwParser {
   }
 
   TextStyler parseText(String classNames) {
-    var styler = TextStyler().height(preflightLineHeight);
+    var styler = TextStyler().height(config.textDefaults.lineHeight);
     for (final token in listTokens(classNames)) {
       styler = _applyTextToken(styler, token);
     }

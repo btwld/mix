@@ -42,6 +42,8 @@ class TailwindParityApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final twConfig = TwConfig.standard();
+
     // Screenshot mode: render clean preview without UI chrome
     if (ScreenshotConfig.isScreenshotMode) {
       final width = ScreenshotConfig.width;
@@ -50,38 +52,47 @@ class TailwindParityApp extends StatelessWidget {
       // Card alert example - use slate-900 background to match gradient edge
       if (example == 'card-alert') {
         const slate900 = Color(0xFF0F172A);
-        return MaterialApp(
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            scaffoldBackgroundColor: slate900,
-            canvasColor: slate900,
-          ),
-          home: const Scaffold(
-            backgroundColor: slate900,
-            body: CardAlertPreview(),
+        return TwScope(
+          config: twConfig,
+          child: MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+              scaffoldBackgroundColor: slate900,
+              canvasColor: slate900,
+            ),
+            home: const Scaffold(
+              backgroundColor: slate900,
+              body: CardAlertPreview(),
+            ),
           ),
         );
       }
 
       // Default dashboard example
-      return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: Scaffold(
-          backgroundColor: const Color(0xFFF3F4F6),
-          body: SingleChildScrollView(
-            child: TailwindParityPreview(width: width, scrollable: false),
+      return TwScope(
+        config: twConfig,
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          home: Scaffold(
+            backgroundColor: const Color(0xFFF3F4F6),
+            body: SingleChildScrollView(
+              child: TailwindParityPreview(width: width, scrollable: false),
+            ),
           ),
         ),
       );
     }
 
-    return MaterialApp(
-      title: 'mix_tailwinds vs Tailwind CSS',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF2563EB)),
-        useMaterial3: true,
+    return TwScope(
+      config: twConfig,
+      child: MaterialApp(
+        title: 'mix_tailwinds vs Tailwind CSS',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF2563EB)),
+          useMaterial3: true,
+        ),
+        home: const TailwindParityScreen(),
       ),
-      home: const TailwindParityScreen(),
     );
   }
 }
@@ -124,9 +135,10 @@ class _TailwindParityScreenState extends State<TailwindParityScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Preview width: ${_previewWidth.toStringAsFixed(0)} px',
-                    style: Theme.of(context).textTheme.titleMedium,
+                  P(
+                    text:
+                        'Preview width: ${_previewWidth.toStringAsFixed(0)} px',
+                    classNames: 'text-base font-semibold text-gray-700',
                   ),
                   Slider(
                     min: 320,

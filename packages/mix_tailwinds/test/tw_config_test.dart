@@ -18,6 +18,7 @@ void main() {
       expect(modified.scales, equals(base.scales));
       expect(modified.rotations, equals(base.rotations));
       expect(modified.blurs, equals(base.blurs));
+      expect(modified.textDefaults, equals(base.textDefaults));
     });
 
     test('overrides specified values', () {
@@ -47,6 +48,31 @@ void main() {
 
       expect(modified.spaceOf('custom'), equals(999.0));
       expect(modified.radiusOf('custom'), equals(50.0));
+    });
+
+    test('allows overriding text defaults', () {
+      final modified = TwConfig.standard().copyWith(
+        textDefaults: TwConfig.standard().textDefaults.copyWith(
+          fontFamily: 'Inter',
+          letterSpacing: 0.02,
+          fontSize: 15,
+        ),
+      );
+
+      expect(modified.textDefaults.fontFamily, equals('Inter'));
+      expect(modified.textDefaults.letterSpacing, equals(0.02));
+      expect(modified.textDefaults.fontSize, equals(15));
+    });
+
+    test('allows clearing font family to platform default', () {
+      final defaults = TwConfig.standard().textDefaults;
+      final modified = defaults.copyWith(
+        fontFamily: null,
+        fontFamilyFallback: const [],
+      );
+
+      expect(modified.fontFamily, isNull);
+      expect(modified.fontFamilyFallback, isEmpty);
     });
   });
 
@@ -179,6 +205,73 @@ void main() {
       final container = tester.widget<Container>(find.byType(Container));
       final decoration = container.decoration as BoxDecoration?;
       expect(decoration?.color, equals(Colors.red));
+    });
+  });
+
+  group('TwScope', () {
+    testWidgets('applies TwConfig defaults through TextScope', (tester) async {
+      final customConfig = TwConfig.standard().copyWith(
+        textDefaults: TwConfig.standard().textDefaults.copyWith(
+          fontFamily: 'Inter',
+          letterSpacing: 0.05,
+          lineHeight: 1.7,
+          fontSize: 15,
+        ),
+      );
+
+      late TextStyle resolvedDefaultTextStyle;
+
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: TwScope(
+            config: customConfig,
+            child: Builder(
+              builder: (context) {
+                expect(TwConfigProvider.of(context), same(customConfig));
+                resolvedDefaultTextStyle = DefaultTextStyle.of(context).style;
+                return const SizedBox();
+              },
+            ),
+          ),
+        ),
+      );
+
+      expect(resolvedDefaultTextStyle.fontFamily, equals('Inter'));
+      expect(resolvedDefaultTextStyle.letterSpacing, equals(0.05));
+      expect(resolvedDefaultTextStyle.height, equals(1.7));
+      expect(resolvedDefaultTextStyle.fontSize, equals(15));
+    });
+
+    testWidgets('parser base line-height follows config defaults', (
+      tester,
+    ) async {
+      final customConfig = TwConfig.standard().copyWith(
+        textDefaults: TwConfig.standard().textDefaults.copyWith(
+          lineHeight: 1.8,
+        ),
+      );
+
+      late TextStyle parsedTextStyle;
+
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: TwScope(
+            config: customConfig,
+            child: Builder(
+              builder: (context) {
+                parsedTextStyle = TwParser(
+                  config: customConfig,
+                ).parseText('').resolve(context).spec.style!;
+                return const SizedBox();
+              },
+            ),
+          ),
+        ),
+      );
+
+      expect(parsedTextStyle.height, equals(1.8));
     });
   });
 

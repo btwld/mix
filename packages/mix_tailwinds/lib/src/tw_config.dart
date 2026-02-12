@@ -1,5 +1,116 @@
 import 'package:flutter/material.dart';
 
+/// Tailwind-oriented typography defaults for Flutter text rendering.
+///
+/// These values are applied through Mix `TextScope` (via `TwScope`) so
+/// parity does not depend on `ThemeData.textTheme`.
+@immutable
+class TwTextDefaults {
+  static const Object _noChange = Object();
+
+  const TwTextDefaults({
+    this.fontFamily,
+    this.fontFamilyFallback = const [
+      '.SF Pro Text',
+      'SF Pro Text',
+      '-apple-system',
+      'BlinkMacSystemFont',
+      'Segoe UI',
+      'Roboto',
+      'Helvetica Neue',
+      'Arial',
+      'Noto Sans',
+      'sans-serif',
+    ],
+    this.letterSpacing = 0,
+    this.lineHeight = 1.5,
+    this.fontSize = 16,
+    this.fontWeight = FontWeight.w400,
+  });
+
+  /// Tailwind-compatible defaults using a system sans stack.
+  const TwTextDefaults.tailwindSans()
+    : fontFamily = 'sans-serif',
+      fontFamilyFallback = const [
+        '.SF Pro Text',
+        'SF Pro Text',
+        '-apple-system',
+        'BlinkMacSystemFont',
+        'Segoe UI',
+        'Roboto',
+        'Helvetica Neue',
+        'Arial',
+        'Noto Sans',
+        'sans-serif',
+      ],
+      letterSpacing = 0,
+      lineHeight = 1.5,
+      fontSize = 16,
+      fontWeight = FontWeight.w400;
+
+  /// Platform-default typography (no explicit font family override).
+  ///
+  /// Useful when you want Flutter to pick the native system font stack.
+  const TwTextDefaults.platformDefault()
+    : fontFamily = null,
+      fontFamilyFallback = const [],
+      letterSpacing = 0,
+      lineHeight = 1.5,
+      fontSize = 16,
+      fontWeight = FontWeight.w400;
+
+  /// Primary font family. If null, Flutter uses the platform default.
+  final String? fontFamily;
+
+  /// Font fallback chain used when [fontFamily] cannot render a glyph.
+  final List<String> fontFamilyFallback;
+
+  /// Base tracking equivalent to Tailwind's normal letter spacing.
+  final double letterSpacing;
+
+  /// Base line-height (Tailwind Preflight is 1.5).
+  final double lineHeight;
+
+  /// Base font size (Tailwind Preflight is 16px).
+  final double fontSize;
+
+  /// Base font weight (Tailwind Preflight is normal / 400).
+  final FontWeight fontWeight;
+
+  TwTextDefaults copyWith({
+    Object? fontFamily = _noChange,
+    List<String>? fontFamilyFallback,
+    double? letterSpacing,
+    double? lineHeight,
+    double? fontSize,
+    FontWeight? fontWeight,
+  }) {
+    final resolvedFontFamily = identical(fontFamily, _noChange)
+        ? this.fontFamily
+        : fontFamily as String?;
+
+    return TwTextDefaults(
+      fontFamily: resolvedFontFamily,
+      fontFamilyFallback: fontFamilyFallback ?? this.fontFamilyFallback,
+      letterSpacing: letterSpacing ?? this.letterSpacing,
+      lineHeight: lineHeight ?? this.lineHeight,
+      fontSize: fontSize ?? this.fontSize,
+      fontWeight: fontWeight ?? this.fontWeight,
+    );
+  }
+
+  TextStyle toTextStyle() {
+    return TextStyle(
+      fontFamily: fontFamily,
+      fontFamilyFallback: fontFamilyFallback,
+      letterSpacing: letterSpacing,
+      height: lineHeight,
+      fontSize: fontSize,
+      fontWeight: fontWeight,
+    );
+  }
+}
+
 /// Runtime configuration for translating Tailwind-like tokens into Mix stylers.
 ///
 /// Maps are stored as unmodifiable to ensure `updateShouldNotify` identity
@@ -17,6 +128,7 @@ class TwConfig {
     required Map<String, double> scales,
     required Map<String, double> rotations,
     required Map<String, double> blurs,
+    TwTextDefaults textDefaults = const TwTextDefaults.tailwindSans(),
   }) : space = Map.unmodifiable(space),
        radii = Map.unmodifiable(radii),
        borderWidths = Map.unmodifiable(borderWidths),
@@ -27,7 +139,8 @@ class TwConfig {
        delays = Map.unmodifiable(delays),
        scales = Map.unmodifiable(scales),
        rotations = Map.unmodifiable(rotations),
-       blurs = Map.unmodifiable(blurs);
+       blurs = Map.unmodifiable(blurs),
+       textDefaults = textDefaults;
 
   final Map<String, double> space;
   final Map<String, double> radii;
@@ -40,6 +153,7 @@ class TwConfig {
   final Map<String, double> scales;
   final Map<String, double> rotations;
   final Map<String, double> blurs;
+  final TwTextDefaults textDefaults;
 
   double spaceOf(String key, {double fallback = 0}) => space[key] ?? fallback;
 
@@ -129,6 +243,7 @@ class TwConfig {
     Map<String, double>? scales,
     Map<String, double>? rotations,
     Map<String, double>? blurs,
+    TwTextDefaults? textDefaults,
   }) {
     return TwConfig(
       space: space ?? this.space,
@@ -142,6 +257,7 @@ class TwConfig {
       scales: scales ?? this.scales,
       rotations: rotations ?? this.rotations,
       blurs: blurs ?? this.blurs,
+      textDefaults: textDefaults ?? this.textDefaults,
     );
   }
 
@@ -307,6 +423,7 @@ class TwConfig {
       '2xl': 20.0,
       '3xl': 32.0,
     },
+    textDefaults: const TwTextDefaults.tailwindSans(),
   );
 
   factory TwConfig.standard() => _standard;

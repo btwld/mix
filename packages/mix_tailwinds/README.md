@@ -62,7 +62,7 @@ As an experimental proof of concept:
 
 For the authoritative list of Tailwind ↔ Flutter behavioral differences and recommended workarounds, see `FLUTTER_ADAPTATIONS.md`. This README focuses on the surface API and supported tokens to avoid duplication.
 
-For default typography parity guidance (Tailwind base defaults vs Flutter `ThemeData`/`MixScope`), see the "Default Typography Parity" section in `FLUTTER_ADAPTATIONS.md`.
+For default typography parity guidance (Tailwind base defaults vs Flutter `TwScope`/`MixScope`), see the "Default Typography Parity" section in `FLUTTER_ADAPTATIONS.md`.
 
 ### Flex Item Tokens
 
@@ -79,22 +79,37 @@ Flex item tokens (`flex-1`, `flex-auto`, `flex-none`, `basis-*`, `self-*`, `shri
 
 ## Custom Configuration
 
-You can customize the default configuration using `TwConfigProvider`:
+You can customize defaults and provide config with `TwScope`:
 
 ```dart
-TwConfigProvider(
+TwScope(
   config: TwConfig.standard().copyWith(
     colors: {
       ...TwConfig.standard().colors,
       'brand-500': Color(0xFF8B5CF6),
       'brand-600': Color(0xFF7C3AED),
     },
+    textDefaults: TwConfig.standard().textDefaults.copyWith(
+      fontFamily: 'Inter',
+      fontSize: 16,
+    ),
   ),
   child: MyApp(),
 )
 ```
 
-Descendant `Div` and `Span` widgets will automatically use this configuration without needing to pass `config` explicitly.
+Descendant `Div` and `Span` widgets automatically use this config, and typography defaults are applied via Mix `TextScope` (without `ThemeData.textTheme` overrides).
+
+To use native platform defaults (no explicit `sans-serif` override):
+
+```dart
+TwScope(
+  config: TwConfig.standard().copyWith(
+    textDefaults: const TwTextDefaults.platformDefault(),
+  ),
+  child: MyApp(),
+)
+```
 
 ## Handling Unsupported Tokens
 
