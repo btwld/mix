@@ -8,6 +8,9 @@ export default {
     tutorials: {
         title: 'Tutorials',
     },
+    ecosystem: {
+        title: 'Ecosystem',
+    },
     widgets: {
         title: 'Widgets',
     },

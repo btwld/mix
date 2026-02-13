@@ -113,6 +113,8 @@ CLAUDE.md
 # API compatibility reports
 api-compat-*.md
 website/.next/
+website/.yarn/
+website/.yarnrc.yml
 website/public/_pagefind/
 
 # Claude Code

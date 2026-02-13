@@ -714,9 +714,7 @@ Widget _buildResponsiveFlex({
       final isCrossAxisBounded = axis == Axis.horizontal
           ? constraints.hasBoundedHeight
           : constraints.hasBoundedWidth;
-      if (!hasExplicitItems &&
-          axis == Axis.vertical &&
-          isCrossAxisBounded) {
+      if (!hasExplicitItems && axis == Axis.vertical && isCrossAxisBounded) {
         style = style.crossAxisAlignment(CrossAxisAlignment.stretch);
         // Preserve explicit widths (e.g. `w-44`) which should not be stretched.
         resolvedChildren = [
