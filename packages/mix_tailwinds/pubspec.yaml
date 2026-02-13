@@ -1,7 +1,8 @@
 name: mix_tailwinds
 description: Tailwind-like class utilities mapped to Mix 2.0 stylers.
-version: 0.1.0-dev.0
-publish_to: "none"
+version: 0.0.1-alpha.1
+homepage: https://github.com/btwld/mix
+repository: https://github.com/btwld/mix/tree/main/packages/mix_tailwinds
 
 environment:
   sdk: ">=3.10.0 <4.0.0"

@@ -3,6 +3,8 @@
 > **Warning**
 > This package is **highly experimental** and should be considered a **proof of concept**. The API is unstable and subject to breaking changes without notice. Use at your own risk in production environments.
 
+Current release channel: **`0.0.1-alpha.1`** (experimental alpha).
+
 Tailwind-like class utilities mapped to [Mix](https://pub.dev/packages/mix) 2.0 stylers.
 
 ## Overview
@@ -10,6 +12,13 @@ Tailwind-like class utilities mapped to [Mix](https://pub.dev/packages/mix) 2.0 
 `mix_tailwinds` provides a familiar Tailwind CSS-like syntax for styling Flutter widgets using the Mix styling system. It allows you to use class name strings like `flex flex-col gap-4 p-6 bg-white rounded-lg` to style your widgets.
 
 ## Installation
+
+```yaml
+dependencies:
+  mix_tailwinds: 0.0.1-alpha.1
+```
+
+For unreleased changes, use the git reference:
 
 ```yaml
 dependencies:

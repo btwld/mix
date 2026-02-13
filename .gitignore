@@ -117,4 +117,5 @@ website/public/_pagefind/
 
 # Claude Code
 CLAUDE.md
+!packages/mix_tailwinds/CLAUDE.md
 .claude/settings.local.json
