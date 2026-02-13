@@ -35,6 +35,29 @@ Future<BoxDecoration?> _boxDecorationFor(
   return container.decoration as BoxDecoration?;
 }
 
+Future<BoxDecoration?> _boxDecorationForWithConfig(
+  WidgetTester tester,
+  String classNames,
+  TwConfig config,
+) async {
+  await tester.pumpWidget(
+    Directionality(
+      textDirection: TextDirection.ltr,
+      child: TwScope(
+        config: config,
+        child: Div(classNames: classNames, child: const SizedBox()),
+      ),
+    ),
+  );
+  await tester.pump();
+
+  final containerFinder = find.byType(Container);
+  expect(containerFinder, findsOneWidget);
+
+  final container = tester.widget<Container>(containerFinder);
+  return container.decoration as BoxDecoration?;
+}
+
 Future<void> _expectBoxShadows(
   WidgetTester tester,
   String classNames,
@@ -3296,10 +3319,50 @@ void main() {
   });
 
   group('Gradient direction parity', () {
-    testWidgets('bg-gradient-to-br maps to 45deg rotated axis', (tester) async {
+    testWidgets('bg-gradient-to-br defaults to cssAngleRect strategy', (
+      tester,
+    ) async {
       final decoration = await _boxDecorationFor(
         tester,
         'bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900',
+      );
+      final gradient = decoration?.gradient as LinearGradient?;
+
+      expect(gradient, isNotNull);
+      expect(gradient!.begin, Alignment.centerLeft);
+      expect(gradient.end, Alignment.centerRight);
+      expect(gradient.stops, const [0.0, 0.5, 1.0]);
+      expect(gradient.transform, isA<TwCssKeywordLinearTransform>());
+    });
+
+    testWidgets('bg-gradient-to-br can still use alignment strategy', (
+      tester,
+    ) async {
+      final config = TwConfig.standard().copyWith(
+        gradientStrategy: TwGradientStrategy.alignment,
+      );
+      final decoration = await _boxDecorationForWithConfig(
+        tester,
+        'bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900',
+        config,
+      );
+      final gradient = decoration?.gradient as LinearGradient?;
+
+      expect(gradient, isNotNull);
+      expect(gradient!.begin, Alignment.topLeft);
+      expect(gradient.end, Alignment.bottomRight);
+      expect(gradient.stops, const [0.0, 0.5, 1.0]);
+      expect(gradient.transform, isNull);
+    });
+
+    testWidgets('bg-gradient-to-br can use angle strategy', (tester) async {
+      final config = TwConfig.standard().copyWith(
+        gradientStrategy: TwGradientStrategy.angle,
+      );
+      final decoration = await _boxDecorationForWithConfig(
+        tester,
+        'bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900',
+        config,
       );
       final gradient = decoration?.gradient as LinearGradient?;
 
@@ -3311,6 +3374,41 @@ void main() {
       final transform = gradient.transform as GradientRotation?;
       expect(transform, isNotNull);
       expect(transform!.radians, closeTo(math.pi / 4, 0.0001));
+    });
+
+    testWidgets('bg-gradient-to-br can use cssAngleRect strategy', (
+      tester,
+    ) async {
+      final config = TwConfig.standard().copyWith(
+        gradientStrategy: TwGradientStrategy.cssAngleRect,
+      );
+      final decoration = await _boxDecorationForWithConfig(
+        tester,
+        'bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900',
+        config,
+      );
+      final gradient = decoration?.gradient as LinearGradient?;
+
+      expect(gradient, isNotNull);
+      expect(gradient!.begin, Alignment.centerLeft);
+      expect(gradient.end, Alignment.centerRight);
+      expect(gradient.stops, const [0.0, 0.5, 1.0]);
+      expect(gradient.transform, isA<TwCssKeywordLinearTransform>());
+
+      final rect = const Rect.fromLTWH(0, 0, 300, 120);
+      final matrix = gradient.transform!.transform(rect)!;
+      final center = rect.center;
+      final transformedCenter = MatrixUtils.transformPoint(matrix, center);
+      final transformedPoint = MatrixUtils.transformPoint(
+        matrix,
+        center + const Offset(1, 0),
+      );
+      final direction = transformedPoint - transformedCenter;
+      final angle = math.atan2(direction.dy, direction.dx);
+
+      // CSS-equivalent direction for `to-br` in non-square bounds uses
+      // atan2(width, height), not a fixed 45-degree angle.
+      expect(angle, closeTo(math.atan2(rect.width, rect.height), 0.0001));
     });
 
     testWidgets('bg-gradient-to-r uses unrotated horizontal axis', (

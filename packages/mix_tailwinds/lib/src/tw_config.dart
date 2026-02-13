@@ -1,5 +1,24 @@
 import 'package:flutter/material.dart';
 
+/// Controls how Tailwind directional gradients (`to-*`) are mapped in Flutter.
+enum TwGradientStrategy {
+  /// Uses direct begin/end alignments (for example, `to-br` -> topLeft to bottomRight).
+  alignment,
+
+  /// Uses a centered horizontal axis with rotation (`GradientRotation`).
+  angle,
+
+  /// Uses CSS keyword semantics with bounds-aware transform parity.
+  ///
+  /// This makes corner directions like `to-br` adapt to rectangle aspect ratio,
+  /// matching CSS "magic corners" behavior.
+  cssAngleRect,
+
+  /// Legacy name kept for backward compatibility.
+  @Deprecated('Use cssAngleRect')
+  adaptive,
+}
+
 /// Tailwind-oriented typography defaults for Flutter text rendering.
 ///
 /// These values are applied through Mix `TextScope` (via `TwScope`) so
@@ -129,6 +148,7 @@ class TwConfig {
     required Map<String, double> rotations,
     required Map<String, double> blurs,
     TwTextDefaults textDefaults = const TwTextDefaults.tailwindSans(),
+    TwGradientStrategy gradientStrategy = TwGradientStrategy.cssAngleRect,
   }) : space = Map.unmodifiable(space),
        radii = Map.unmodifiable(radii),
        borderWidths = Map.unmodifiable(borderWidths),
@@ -140,7 +160,8 @@ class TwConfig {
        scales = Map.unmodifiable(scales),
        rotations = Map.unmodifiable(rotations),
        blurs = Map.unmodifiable(blurs),
-       textDefaults = textDefaults;
+       textDefaults = textDefaults,
+       gradientStrategy = gradientStrategy;
 
   final Map<String, double> space;
   final Map<String, double> radii;
@@ -154,6 +175,7 @@ class TwConfig {
   final Map<String, double> rotations;
   final Map<String, double> blurs;
   final TwTextDefaults textDefaults;
+  final TwGradientStrategy gradientStrategy;
 
   double spaceOf(String key, {double fallback = 0}) => space[key] ?? fallback;
 
@@ -244,6 +266,7 @@ class TwConfig {
     Map<String, double>? rotations,
     Map<String, double>? blurs,
     TwTextDefaults? textDefaults,
+    TwGradientStrategy? gradientStrategy,
   }) {
     return TwConfig(
       space: space ?? this.space,
@@ -258,6 +281,7 @@ class TwConfig {
       rotations: rotations ?? this.rotations,
       blurs: blurs ?? this.blurs,
       textDefaults: textDefaults ?? this.textDefaults,
+      gradientStrategy: gradientStrategy ?? this.gradientStrategy,
     );
   }
 

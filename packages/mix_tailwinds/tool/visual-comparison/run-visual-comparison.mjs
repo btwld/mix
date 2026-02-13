@@ -26,6 +26,7 @@ const baseScreenshotDir = path.join(packageRoot, 'visual-comparison');
 
 const WIDTHS = [480, 768, 1024];
 const FLUTTER_PORT = 8089;
+const DEFAULT_GRADIENT_STRATEGY = 'css-angle-rect';
 
 // Example configurations
 const EXAMPLES = {
@@ -43,6 +44,13 @@ const EXAMPLES = {
     moderateDiffThreshold: 7,
     highDiffThreshold: 16,
   },
+  'gradient-debug': {
+    htmlFile: 'example/real_tailwind/gradient-debug.html',
+    selector: 'main',
+    margin: 16,
+    moderateDiffThreshold: 5,
+    highDiffThreshold: 12,
+  },
 };
 
 async function main() {
@@ -50,6 +58,10 @@ async function main() {
   const flutterUrl =
     process.argv.find((a) => a.startsWith('--flutter-url='))?.split('=')[1] ||
     `http://localhost:${FLUTTER_PORT}`;
+
+  const gradientStrategy =
+    process.argv.find((a) => a.startsWith('--gradient-strategy='))?.split('=')[1] ||
+    DEFAULT_GRADIENT_STRATEGY;
 
   const exampleArg =
     process.argv.find((a) => a.startsWith('--example='))?.split('=')[1] ||
@@ -68,13 +80,19 @@ async function main() {
   const captureMargin = exampleConfig.margin ?? 0;
   const clipByWidth = new Map();
 
-  // Create example-specific directories
-  const screenshotDir = path.join(baseScreenshotDir, exampleArg);
+  // Create example-specific directories.
+  // Keep non-default gradient strategy outputs separate for A/B comparisons.
+  const screenshotSubdir =
+    gradientStrategy === DEFAULT_GRADIENT_STRATEGY
+      ? exampleArg
+      : `${exampleArg}-${gradientStrategy}`;
+  const screenshotDir = path.join(baseScreenshotDir, screenshotSubdir);
   const diffDir = path.join(screenshotDir, 'diff');
   await fs.promises.mkdir(diffDir, { recursive: true });
 
   console.log('Automated Visual Comparison: Flutter vs Tailwind CSS\n');
   console.log(`Example: ${exampleArg}`);
+  console.log(`Gradient strategy: ${gradientStrategy}`);
   console.log(`Flutter URL: ${flutterUrl}`);
   console.log(`Tailwind HTML: ${tailwindPath}`);
   console.log(`Selector: ${elementSelector}`);
@@ -117,7 +135,9 @@ async function main() {
     const viewport = { width, height: 1200 };
     await page.setViewportSize(viewport);
     try {
-      await page.goto(`${flutterUrl}/?screenshot=true&width=${width}&example=${exampleArg}`, {
+      await page.goto(
+        `${flutterUrl}/?screenshot=true&width=${width}&example=${exampleArg}&gradient=${gradientStrategy}`,
+        {
         timeout: 30000,
       });
       // Wait for Flutter to fully render (flt-glass-pane indicates Flutter is ready)

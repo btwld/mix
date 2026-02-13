@@ -174,18 +174,17 @@ class _BorderAccum {
 
 class _GradientAccum {
   String? directionKey;
+  (Alignment, Alignment)? direction;
   Color? fromColor;
   Color? viaColor;
   Color? toColor;
 
   _GradientAccum();
 
-  bool get hasGradient => directionKey != null && fromColor != null;
+  bool get hasGradient => direction != null && fromColor != null;
 
-  LinearGradientMix? toGradientMix() {
+  LinearGradientMix? toGradientMix(TwGradientStrategy strategy) {
     if (!hasGradient) return null;
-    final angle = _tailwindGradientAngles[directionKey!];
-    if (angle == null) return null;
     final colors = <Color>[
       fromColor!,
       if (viaColor != null) viaColor!,
@@ -194,10 +193,39 @@ class _GradientAccum {
     // Tailwind anchors via-* at 50% by default; without explicit stops
     // Flutter interpolates linearly which doesn't match Tailwind's behavior
     final stops = viaColor != null ? const [0.0, 0.5, 1.0] : const [0.0, 1.0];
+
+    if (strategy == TwGradientStrategy.angle && directionKey != null) {
+      final angle = _tailwindGradientAngles[directionKey!];
+      if (angle != null) {
+        return LinearGradientMix(
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+          transform: angle == 0.0 ? null : GradientRotation(angle),
+          colors: colors,
+          stops: stops,
+        );
+      }
+    }
+
+    final useCssAngleRect =
+        strategy == TwGradientStrategy.cssAngleRect ||
+        strategy.name == 'adaptive';
+    if (useCssAngleRect &&
+        directionKey != null &&
+        _tailwindCornerDirections.contains(directionKey)) {
+      return LinearGradientMix(
+        begin: Alignment.centerLeft,
+        end: Alignment.centerRight,
+        transform: TwCssKeywordLinearTransform(directionKey!),
+        colors: colors,
+        stops: stops,
+      );
+    }
+
+    final (begin, end) = direction!;
     return LinearGradientMix(
-      begin: Alignment.centerLeft,
-      end: Alignment.centerRight,
-      transform: angle == 0.0 ? null : GradientRotation(angle),
+      begin: begin,
+      end: end,
       colors: colors,
       stops: stops,
     );
@@ -207,7 +235,7 @@ class _GradientAccum {
 /// Tailwind directional gradient angles (CSS-like "to-*" directions).
 ///
 /// Flutter gradients run left->right by default; rotating that axis gives us
-/// CSS-style directional behavior regardless of widget aspect ratio.
+/// an alternative parity strategy for directional gradients.
 const Map<String, double> _tailwindGradientAngles = {
   'to-r': 0.0,
   'to-br': math.pi / 4,
@@ -218,6 +246,79 @@ const Map<String, double> _tailwindGradientAngles = {
   'to-t': -math.pi / 2,
   'to-tr': -math.pi / 4,
 };
+
+const Set<String> _tailwindCornerDirections = {
+  'to-br',
+  'to-bl',
+  'to-tr',
+  'to-tl',
+};
+
+/// A [GradientTransform] that maps Tailwind/CSS `to-*` keyword directions
+/// using bounds-aware geometry.
+///
+/// The transform keeps a base left-to-right gradient but rotates/scales it
+/// per-rect so corner keywords follow CSS "magic corners" behavior.
+@immutable
+class TwCssKeywordLinearTransform extends GradientTransform {
+  const TwCssKeywordLinearTransform(this.directionKey);
+
+  final String directionKey;
+
+  @override
+  Matrix4 transform(Rect bounds, {TextDirection? textDirection}) {
+    final w = bounds.width;
+    final h = bounds.height;
+    if (w <= 0 || h <= 0) return Matrix4.identity();
+
+    final (rawX, rawY) = _directionVector(directionKey, w, h);
+    final magnitude = math.sqrt((rawX * rawX) + (rawY * rawY));
+    if (magnitude == 0) return Matrix4.identity();
+
+    final ux = rawX / magnitude;
+    final uy = rawY / magnitude;
+
+    // CSS-equivalent gradient line length for direction vector `u`.
+    // Base Flutter segment (centerLeft -> centerRight) has length = w.
+    final gradientLength = (w * ux.abs()) + (h * uy.abs());
+    final scale = gradientLength / w;
+    final angle = math.atan2(uy, ux);
+
+    return Matrix4.identity()
+      ..translateByDouble(bounds.center.dx, bounds.center.dy, 0, 1)
+      ..rotateZ(angle)
+      ..scaleByDouble(scale, scale, 1, 1)
+      ..translateByDouble(-bounds.center.dx, -bounds.center.dy, 0, 1);
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is TwCssKeywordLinearTransform &&
+          directionKey == other.directionKey;
+
+  @override
+  int get hashCode => directionKey.hashCode;
+
+  static (double, double) _directionVector(
+    String directionKey,
+    double width,
+    double height,
+  ) {
+    return switch (directionKey) {
+      'to-r' => (1, 0),
+      'to-l' => (-1, 0),
+      'to-b' => (0, 1),
+      'to-t' => (0, -1),
+      // Corner vectors are aspect-ratio aware.
+      'to-br' => (height, width),
+      'to-tr' => (height, -width),
+      'to-bl' => (-height, width),
+      'to-tl' => (-height, -width),
+      _ => (0, 1),
+    };
+  }
+}
 
 // =============================================================================
 // Resolver - Parses tokens to semantic AST
@@ -499,13 +600,17 @@ bool _isGradientToken(String token) {
 void _accumulateGradient(_GradientAccum accum, String base, TwConfig config) {
   if (base.startsWith('bg-gradient-')) {
     final dirKey = base.substring(12);
-    if (gradientDirections.containsKey(dirKey)) {
+    final dir = gradientDirections[dirKey];
+    if (dir != null) {
       accum.directionKey = dirKey;
+      accum.direction = dir;
     }
   } else if (base.startsWith('bg-linear-')) {
     final dirKey = base.substring(10);
-    if (gradientDirections.containsKey(dirKey)) {
+    final dir = gradientDirections[dirKey];
+    if (dir != null) {
       accum.directionKey = dirKey;
+      accum.direction = dir;
     }
   } else if (base.startsWith('from-')) {
     accum.fromColor = config.colorOf(base.substring(5));
@@ -1403,7 +1508,7 @@ class TwParser {
     }
 
     // Apply accumulated gradient
-    final gradientMix = baseGradient.toGradientMix();
+    final gradientMix = baseGradient.toGradientMix(config.gradientStrategy);
     if (gradientMix != null) {
       styler = _carryTransforms(styler, styler.gradient(gradientMix));
     }
@@ -1482,7 +1587,7 @@ class TwParser {
     }
 
     // Apply accumulated gradient
-    final gradientMix = baseGradient.toGradientMix();
+    final gradientMix = baseGradient.toGradientMix(config.gradientStrategy);
     if (gradientMix != null) {
       styler = _carryTransforms(styler, styler.gradient(gradientMix));
     }

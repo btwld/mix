@@ -3,6 +3,15 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix_tailwinds/mix_tailwinds.dart';
 
 void main() {
+  group('TwConfig defaults', () {
+    test('standard uses cssAngleRect gradient strategy', () {
+      expect(
+        TwConfig.standard().gradientStrategy,
+        equals(TwGradientStrategy.cssAngleRect),
+      );
+    });
+  });
+
   group('TwConfig.copyWith', () {
     test('preserves unmodified values', () {
       final base = TwConfig.standard();

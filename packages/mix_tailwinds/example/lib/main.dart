@@ -4,6 +4,7 @@ import 'package:flutter/rendering.dart';
 import 'package:mix_tailwinds/mix_tailwinds.dart';
 
 import 'card_alert_preview.dart';
+import 'gradient_debug_preview.dart';
 
 void main() {
   // Ensure debug paint overlays are disabled for parity screenshots.
@@ -15,7 +16,7 @@ void main() {
 }
 
 /// Parses URL query parameters for screenshot mode (web only).
-/// Usage: ?screenshot=true&width=480&example=card-alert
+/// Usage: ?screenshot=true&width=480&example=card-alert&gradient=css-angle-rect
 class ScreenshotConfig {
   static bool get isScreenshotMode {
     if (!kIsWeb) return false;
@@ -29,11 +30,34 @@ class ScreenshotConfig {
     return double.tryParse(params['width'] ?? '') ?? 480;
   }
 
-  /// Returns the example to display: 'dashboard' (default) or 'card-alert'.
+  /// Returns the example to display.
+  ///
+  /// Supported values:
+  /// - `dashboard` (default)
+  /// - `card-alert`
+  /// - `gradient-debug`
   static String get example {
     if (!kIsWeb) return 'dashboard';
     final params = Uri.base.queryParameters;
     return params['example'] ?? 'dashboard';
+  }
+
+  /// Returns gradient strategy for screenshot experiments.
+  ///
+  /// Accepted values:
+  /// - css-angle-rect (default)
+  /// - alignment
+  /// - angle
+  static TwGradientStrategy get gradientStrategy {
+    if (!kIsWeb) return TwGradientStrategy.cssAngleRect;
+    final params = Uri.base.queryParameters;
+    final raw = params['gradient'];
+    if (raw == 'angle') return TwGradientStrategy.angle;
+    if (raw == 'css-angle-rect' || raw == 'cssAngleRect' || raw == 'adaptive') {
+      return TwGradientStrategy.cssAngleRect;
+    }
+    if (raw == 'alignment') return TwGradientStrategy.alignment;
+    return TwGradientStrategy.cssAngleRect;
   }
 }
 
@@ -42,12 +66,29 @@ class TailwindParityApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final twConfig = TwConfig.standard();
+    final twConfig = TwConfig.standard().copyWith(
+      gradientStrategy: ScreenshotConfig.gradientStrategy,
+    );
 
     // Screenshot mode: render clean preview without UI chrome
     if (ScreenshotConfig.isScreenshotMode) {
       final width = ScreenshotConfig.width;
       final example = ScreenshotConfig.example;
+
+      if (example == 'gradient-debug') {
+        return TwScope(
+          config: twConfig,
+          child: MaterialApp(
+            debugShowCheckedModeBanner: false,
+            home: Scaffold(
+              backgroundColor: const Color(0xFFE2E8F0),
+              body: SingleChildScrollView(
+                child: GradientDebugPreview(width: width),
+              ),
+            ),
+          ),
+        );
+      }
 
       // Card alert example - use slate-900 background to match gradient edge
       if (example == 'card-alert') {
