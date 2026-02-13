@@ -5,6 +5,9 @@ export default {
     guides: {
         title: 'Guides',
     },
+    ecosystem: {
+        title: 'Ecosystem',
+    },
     tutorials: {
         title: 'Tutorials',
     },
