@@ -1,0 +1,83 @@
+---
+title: mix_tailwinds
+description: Tailwind-inspired utility layer for Mix.
+---
+
+import { Callout } from "nextra/components";
+
+# mix_tailwinds
+
+`mix_tailwinds` is a Tailwind-inspired utility layer built on top of Mix.
+
+<Callout type="warning">
+  `mix_tailwinds` is currently experimental (`0.0.1-alpha.1`). APIs and behavior may change in future releases.
+</Callout>
+
+## Package links
+
+- Pub.dev: <https://pub.dev/packages/mix_tailwinds>
+- Source: <https://github.com/btwld/mix/tree/main/packages/mix_tailwinds>
+
+## Installation
+
+Use the published alpha:
+
+```yaml
+dependencies:
+  mix_tailwinds: 0.0.1-alpha.1
+```
+
+Or track unreleased changes from git:
+
+```yaml
+dependencies:
+  mix_tailwinds:
+    git:
+      url: https://github.com/btwld/mix.git
+      path: packages/mix_tailwinds
+```
+
+## Quick start
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:mix_tailwinds/mix_tailwinds.dart';
+
+void main() {
+  runApp(
+    TwScope(
+      config: TwConfig.standard(),
+      child: const MaterialApp(home: DemoPage()),
+    ),
+  );
+}
+
+class DemoPage extends StatelessWidget {
+  const DemoPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Div(
+          classNames: 'p-6 rounded-xl bg-white shadow-md',
+          child: Span(
+            text: 'Hello mix_tailwinds',
+            classNames: 'text-lg font-semibold text-slate-900',
+          ),
+        ),
+      ),
+    );
+  }
+}
+```
+
+## Why use `TwScope`
+
+`TwScope` wires the Tailwind config through the tree and applies default typography parity using Mix (`MixScope`/`TextScope`) instead of relying on Flutter `ThemeData.textTheme` overrides.
+
+## Next steps
+
+- [Dynamic Styling](/documentation/guides/dynamic-styling)
+- [Design Tokens and Theming](/documentation/guides/design-token)
+- [Mix widgets](/documentation/widgets/stylewidgets)
