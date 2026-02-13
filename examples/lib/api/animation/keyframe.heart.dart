@@ -57,18 +57,18 @@ class _HeartAnimationState extends State<HeartAnimation> {
         style: BoxStyler().keyframeAnimation(
           trigger: _trigger,
           timeline: [
-            KeyframeTrack<double>('scale', [
+            KeyframeTrack('scale', [
               .linear(1.0, 360.ms),
               .elasticOut(1.5, 800.ms),
               .elasticOut(1.0, 800.ms),
             ], initial: 1.0),
-            KeyframeTrack<double>('verticalOffset', [
+            KeyframeTrack('verticalOffset', [
               .linear(0.0, 100.ms),
               .easeIn(20.0, 150.ms),
               .elasticOut(-60.0, 1000.ms),
               .elasticOut(0.0, 800.ms),
             ], initial: 0.0),
-            KeyframeTrack<double>('verticalStretch', [
+            KeyframeTrack('verticalStretch', [
               .ease(1.0, 100.ms),
               .ease(0.6, 150.ms),
               .ease(1.5, 100.ms),
@@ -78,7 +78,7 @@ class _HeartAnimationState extends State<HeartAnimation> {
               .ease(1.04, 400.ms),
               .ease(1.0, 220.ms),
             ], initial: 1.0),
-            KeyframeTrack<double>('angle', [
+            KeyframeTrack('angle', [
               .easeIn(0.0, 580.ms),
               .easeIn(16.0 * (pi / 180), 125.ms),
               .easeIn(-16.0 * (pi / 180), 125.ms),

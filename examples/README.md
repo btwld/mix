@@ -14,32 +14,43 @@ Mix is a powerful styling framework for Flutter that provides:
 
 ### Dot Notation Syntax
 
-Mix 2.0 is designed to take full advantage of Dart's modern syntax features. The framework uses Styler classes with a fluent, chainable API that makes styling intuitive and readable:
+Mix is designed to take full advantage of Dart's modern syntax features. The framework uses a unique dot notation pattern that makes styling intuitive and readable:
 
 ```dart
-// Mix 2.0 Styler API with dot notation
-final style = BoxStyler()
-    .color(Colors.blue)
-    .height(100)
-    .width(100)
-    .borderRounded(10)
-    .onHovered(BoxStyler().scale(1.5));
+// Traditional syntax (using cascade notation)
+final style = Style(
+  $box.height(100)
+    ..width(100)
+    ..color.blue()
+    ..borderRadius(10),
+);
+
+// NEW: Dot notation syntax (cleaner and more intuitive)
+final style = Style.box(
+  .color(Colors.blue)      // Start properties with a dot
+  .height(100)
+  .width(100)
+  .borderRadius(.circular(10))  // Even nested properties use dots
+  .onHovered(.scale(1.5))       // Variants also use dot notation
+);
 ```
 
-The Styler API provides:
+The dot notation syntax provides:
 - Better IDE support and autocompletion
 - Cleaner, more readable code
 - Natural chaining without cascade operators
 - Consistent syntax across all properties
 
-**Note**: This requires Dart SDK ≥ 3.10.0
+#### Dot Notation Availability
+
+Mix's dot notation syntax is available on Dart SDK `>=3.10.0`. No `analysis_options.yaml` experiment flag is required.
 
 ## Getting Started with Mix
 
 ### Prerequisites
 
 - **Dart SDK**: ≥ 3.10.0 (required for dot notation syntax)
-- **Flutter**: Latest stable version
+- **Flutter**: ≥ 3.38.1
 
 ### Setting Up Your Project
 
@@ -50,6 +61,20 @@ cd my_mix_app
 
 # Add Mix 2.0 to your dependencies
 flutter pub add mix:^2.0.0-rc.0
+```
+
+### Dot Notation Syntax
+
+Mix's modern dot notation syntax works out of the box on Dart SDK `>=3.10.0`:
+
+```dart
+// Instead of: $box.height(100)..width(100)
+// You can write:
+Style.box(
+  .height(100)
+  .width(100)
+  .color(Colors.blue)
+)
 ```
 
 ## Running the Examples
@@ -80,9 +105,9 @@ flutter run lib/api/animation/spring_animation.dart
 |------|-------------|--------------|
 | [`simple_box.dart`](lib/api/widgets/box/simple_box.dart) | Basic styled container | Colors, dimensions, border radius |
 | [`gradient_box.dart`](lib/api/widgets/box/gradient_box.dart) | Box with gradient and shadow | Gradients, shadows, advanced styling |
-| [`icon_label_chip.dart`](lib/api/widgets/hbox/icon_label_chip.dart) | Horizontal layout chip | RowBox, flex properties, gaps |
-| [`card_layout.dart`](lib/api/widgets/vbox/card_layout.dart) | Vertical card layout | ColumnBox, alignment, spacing |
-| [`layered_boxes.dart`](lib/api/widgets/zbox/layered_boxes.dart) | Stacked layout example | StackBox, layering, positioning |
+| [`icon_label_chip.dart`](lib/api/widgets/hbox/icon_label_chip.dart) | Horizontal layout chip | HBox, flex properties, gaps |
+| [`card_layout.dart`](lib/api/widgets/vbox/card_layout.dart) | Vertical card layout | VBox, alignment, spacing |
+| [`layered_boxes.dart`](lib/api/widgets/zbox/layered_boxes.dart) | Stacked layout example | ZBox, layering, positioning |
 | [`styled_icon.dart`](lib/api/widgets/icon/styled_icon.dart) | Customized icon | Icon styling, sizes, colors |
 | [`styled_text.dart`](lib/api/widgets/text/styled_text.dart) | Typography example | Text styling, fonts, weights |
 
@@ -117,32 +142,35 @@ flutter run lib/api/animation/spring_animation.dart
 
 ### Basic Box Styling
 ```dart
-final style = BoxStyler()
-    .color(Colors.red)
-    .height(100)
-    .width(100)
-    .borderRounded(10);
+final style = Style.box(
+  .color(Colors.red)
+  .height(100)
+  .width(100)
+  .borderRadius(.circular(10))
+);
 
 Box(style: style);
 ```
 
-💡 **Note**: The Styler API (`.color()`, `.height()`, etc.) is a key feature of Mix 2.0 that provides a fluent, chainable API for building styles.
+💡 **Note**: The dot notation (`.color()`, `.height()`, etc.) is a key feature of Mix that provides a fluent, chainable API for building styles.
 
 ### Animation with Hover
 ```dart
-final style = BoxStyler()
-    .color(Colors.black)
-    .onHovered(BoxStyler().color(Colors.blue).scale(1.5))
-    .animate(.easeInOut(300.ms));
+final style = Style.box(
+  .color(Colors.black)
+  .onHovered(.color(Colors.blue).scale(1.5))
+  .animate(.easeInOut(300.ms))
+);
 ```
 
 ### Using Design Tokens
 ```dart
 final $primaryColor = MixToken<Color>('primary');
 
-final style = BoxStyler()
-    .color($primaryColor())
-    .borderRounded(10);
+final style = Style.box(
+  .color($primaryColor())
+  .borderRadius(.topLeft($pill()))
+);
 
 MixScope(
   tokens: {$primaryColor: Colors.blue},
@@ -152,27 +180,26 @@ MixScope(
 
 ### Phase Animations
 ```dart
-BoxStyler()
-    .phaseAnimation(
-      trigger: _isExpanded,
-      phases: AnimationPhases.values,
-      styleBuilder: (phase, style) => switch (phase) {
-        AnimationPhases.initial => style.scale(1),
-        AnimationPhases.compress => style.scale(0.75),
-        AnimationPhases.expanded => style.scale(1.25),
-      },
-      configBuilder: (phase) => switch (phase) {
-        AnimationPhases.initial => .decelerate(200.ms),
-        AnimationPhases.compress => .decelerate(100.ms),
-        AnimationPhases.expanded => .bounceOut(600.ms),
-      },
-    )
+.phaseAnimation(
+  trigger: _isExpanded,
+  phases: AnimationPhases.values,
+  styleBuilder: (phase, style) => switch (phase) {
+    .initial => style.scale(1),
+    .compress => style.scale(0.75),
+    .expanded => style.scale(1.25),
+  },
+  configBuilder: (phase) => switch (phase) {
+    .initial => .decelerate(200.ms),
+    .compress => .decelerate(100.ms),
+    .expanded => .bounceOut(600.ms),
+  },
+)
 ```
 
 ## Learning Path
 
 1. **Start with widgets** - Understand basic styling with `simple_box.dart`
-2. **Explore layouts** - Learn about RowBox, ColumnBox, and StackBox
+2. **Explore layouts** - Learn about HBox, VBox, and ZBox
 3. **Add interactivity** - Try context variants (hover, press, focus)
 4. **Animate** - Progress from simple to complex animations
 5. **Build systems** - Use design tokens for consistent theming

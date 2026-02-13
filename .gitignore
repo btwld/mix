@@ -106,6 +106,8 @@ packages/mix/.cody/ignore
 
 .cursor
 .orbit
+CLAUDE.md
+!packages/mix_tailwinds/CLAUDE.md
 .augment/env/setup.sh
 
 # API compatibility reports
@@ -115,4 +117,5 @@ website/public/_pagefind/
 
 # Claude Code
 CLAUDE.md
+!packages/mix_tailwinds/CLAUDE.md
 .claude/settings.local.json

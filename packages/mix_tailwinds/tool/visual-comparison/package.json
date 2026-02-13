@@ -1,0 +1,15 @@
+{
+  "name": "mix-tailwinds-visual-comparison",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "compare": "node run-visual-comparison.mjs",
+    "analyze-gradient": "node analyze-gradient-samples.mjs"
+  },
+  "dependencies": {
+    "pixelmatch": "^5.3.0",
+    "playwright": "^1.40.0",
+    "pngjs": "^7.0.0"
+  }
+}

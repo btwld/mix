@@ -13,6 +13,7 @@ import '../specs/icon/icon_style.dart';
 import '../specs/text/text_style.dart';
 import 'align_modifier.dart';
 import 'aspect_ratio_modifier.dart';
+import 'blur_modifier.dart';
 import 'box_modifier.dart';
 import 'clip_modifier.dart';
 import 'default_text_style_modifier.dart';
@@ -61,6 +62,10 @@ final class WidgetModifierConfig with Equatable {
 
   factory WidgetModifierConfig.opacity(double opacity) {
     return WidgetModifierConfig.modifier(OpacityModifierMix(opacity: opacity));
+  }
+
+  factory WidgetModifierConfig.blur(double sigma) {
+    return WidgetModifierConfig.modifier(BlurModifierMix(sigma: sigma));
   }
 
   factory WidgetModifierConfig.aspectRatio(double aspectRatio) {
@@ -399,6 +404,10 @@ final class WidgetModifierConfig with Equatable {
     return merge(WidgetModifierConfig.opacity(value));
   }
 
+  WidgetModifierConfig blur(double sigma) {
+    return merge(WidgetModifierConfig.blur(sigma));
+  }
+
   WidgetModifierConfig aspectRatio(double value) {
     return merge(WidgetModifierConfig.aspectRatio(value));
   }
@@ -692,6 +701,7 @@ const _defaultOrder = [
 
   // 15. OpacityModifier: Applies transparency as the final visual effect.
   // Always applied last to ensure optimal performance and correct visual layering.
+  BlurModifier,
   OpacityModifier,
 
   // 16. ShaderMaskModifier: Applies a shader mask to the widget.
@@ -721,6 +731,7 @@ final defaultModifier = {
   ClipRRectModifier: ClipRRectModifier(),
   ClipPathModifier: ClipPathModifier(),
   ClipTriangleModifier: ClipTriangleModifier(),
+  BlurModifier: BlurModifier(),
   OpacityModifier: OpacityModifier(),
 };
 
