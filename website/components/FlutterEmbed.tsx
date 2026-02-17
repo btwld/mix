@@ -85,6 +85,10 @@ export function FlutterEmbed({
   const loadingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const releaseLockRef = useRef<(() => void) | null>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const loadingStageRef = useRef(loadingStage);
+  loadingStageRef.current = loadingStage;
+  const capturedErrorsRef = useRef(capturedErrors);
+  capturedErrorsRef.current = capturedErrors;
 
   // Validate src prop - iframe mode still validates but allows more domains
   const validatedSrc = useIframe ? validateIframeSrc(src) : validateAndNormalizeSrc(src);
@@ -222,10 +226,10 @@ export function FlutterEmbed({
       if (mountedRef.current && status === "loading") {
         loadingRef.current = false;
         releaseInitializationLock();
-        const errorDetails = capturedErrors.length > 0
-          ? `Captured errors: ${capturedErrors.join("; ")}`
+        const errorDetails = capturedErrorsRef.current.length > 0
+          ? `Captured errors: ${capturedErrorsRef.current.join("; ")}`
           : "No errors captured - check browser console for details.";
-        setErrorMessage(`Loading timed out at stage: "${loadingStage}". ${errorDetails}`);
+        setErrorMessage(`Loading timed out at stage: "${loadingStageRef.current}". ${errorDetails}`);
         setStatus("error");
       }
     }, FLUTTER_TIMEOUTS.ENGINE_INIT);
@@ -236,7 +240,7 @@ export function FlutterEmbed({
         loadingTimeoutRef.current = null;
       }
     };
-  }, [status, loadingStage, capturedErrors, releaseInitializationLock]);
+  }, [status, releaseInitializationLock]);
 
   // iframe mode: handle load detection with fallback for cached iframes
   useEffect(() => {
