@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]+*'
+      - 'mix_tailwinds-v[0-9]+.[0-9]+.[0-9]+*'
       # - 'mix_lint-*'
       # - 'mix_annotations-*'
       # - 'mix_generator-*'
@@ -57,6 +58,7 @@ jobs:
   #         echo "EOF" >> $GITHUB_OUTPUT
 
   publish:
+    if: startsWith(github.ref_name, 'v')
     # needs: [prepare-packages]
     uses: btwld/dart-actions/.github/workflows/publish.yml@main
     with:
@@ -66,6 +68,17 @@ jobs:
         mix_annotations
         mix_generator
         mix
+    permissions:
+      id-token: write
+      contents: read
+
+  publish_mix_tailwinds:
+    if: startsWith(github.ref_name, 'mix_tailwinds-v')
+    uses: btwld/dart-actions/.github/workflows/publish.yml@main
+    with:
+      packages_folder_path: "packages"
+      packages: |
+        mix_tailwinds
     permissions:
       id-token: write
       contents: read

@@ -779,7 +779,7 @@ class PhaseAnimationConfig<T extends Spec<T>, U extends Style<T>>
     with Equatable {
   final List<U> styles;
   final List<CurveAnimationConfig> curveConfigs;
-  final Listenable trigger;
+  final Listenable? trigger;
   final VoidCallback? onEnd;
 
   const PhaseAnimationConfig({
@@ -1050,7 +1050,7 @@ class KeyframeAnimationResult {
 
 class KeyframeAnimationConfig<S extends Spec<S>> extends AnimationConfig
     with Equatable {
-  final Listenable trigger;
+  final Listenable? trigger;
   final List<KeyframeTrack> timeline;
   final KeyframeStyleBuilder<S, Style<S>> styleBuilder;
   final Style<S> initialStyle;

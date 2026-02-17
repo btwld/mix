@@ -341,7 +341,7 @@ void main() {
       final trigger = ValueNotifier(false);
       final timeline = [
         KeyframeTrack<double>('test', const [
-          Keyframe.linear(1.0, Duration(milliseconds: 100)),
+          Keyframe.linear(1, Duration(milliseconds: 100)),
         ], initial: 0.0),
       ];
 
