@@ -19,6 +19,34 @@ This is not about replacing developer-crafted UIs, but enabling a new class of a
 
 This document focuses on **schema-generated / ephemeral UIs** (Track B). The agent UI roadmap covers consistent, trustworthy affordances that both hand-authored and generated UIs should reuse.
 
+## Decision Sync (2026-02-06)
+
+### Main Goal
+
+Deliver a **Track B v0.1** that can safely render agent-generated UIs by using:
+- external protocol adapters (starting with A2UI compatibility),
+- a stable Mix-owned canonical AST,
+- Mix-native rendering/resolution pipeline,
+- strict trust and validation boundaries.
+
+### Decisions Locked
+
+- Schema direction: **adapt** (external wire schemas + Mix canonical AST).
+- A2UI version targeting: **latest-first** (`v0.9` draft) with **`v0.8` stable compatibility**.
+- Canonical internal representation: **yes**.
+- Token reference format: **explicit object** (`{type,name}`), with optional ingress shorthand normalization.
+- Token naming convention: **`type.<name>`**.
+- Variant composition: **simple mapping only** for v1 (no expression DSL).
+- Transform model: **closed registry** (pure, deterministic, trust-gated).
+- Tooling MVP scope: **Part 9.6 as-is**.
+- Perf budgets: **needs change** (cold vs warm split, p50/p95 targets, tighter warm mobile target).
+- Accessibility contract: **needs change** (interactive state semantics, focus ordering, richer live-region controls).
+- Patch/diff format: **JSON Patch (RFC 6902)**.
+- Streaming support: **Phase 2**.
+- Authoring validation: **both** (meta-schema + runtime validate API).
+- Structural model: **needs change** (explicit repeat/template node shape).
+- Animation duration keys: **`durationMs`**.
+
 ## Notes from Feedback Review (Implementation Readiness)
 
 This vision needs to be both aspirational and implementable against **Mix 2.0 as it exists today**. Key items raised in feedback that should be first-class in the vision:
@@ -44,13 +72,11 @@ This section is a “reviewer-facing” checklist so we can gather complete feed
 - Handler guidance recommends using Mix’s `StyleBuilder` pipeline (`Part 4.2 Reuse Mix’s rendering pipeline`).
 - Roadmap includes these missing foundations (updated Phase 1/2/4 deliverables).
 
-### Still Open (explicit decisions needed)
-- **External protocol choice:** adopt/adapt/extend vs Mix-native + adapters (decide before Phase 1 implementation).
-- **Canonical internal representation:** should `mix_schema` parse any incoming schema into a single internal AST to support multiple formats?
-- **Schema value model:** should “adaptive/responsive” be represented as dedicated value types or expressed purely via variants?
-- **Accessibility model:** what is the minimum semantics contract per node (role/label/hint/live-region/focus order)?
-- **Debug tooling scope:** what is the minimal “must-have” inspector for v0.1 (tree view, node path, token/variant trace, errors)?
-- **Performance budgets:** what are realistic targets per device class (mobile/web/desktop) and per schema size?
+### Remaining Open (implementation details)
+- **Version support window:** how many schema major versions remain supported concurrently?
+- **Deprecation policy:** what is the guaranteed migration window for older wire schemas?
+- **Registry scope for v0.1:** which non-core components are in-bounds vs deferred?
+- **Large-list strategy:** where do we enforce virtualization/pagination defaults?
 
 ---
 
@@ -159,28 +185,35 @@ Non-goal:
 
 ## Part 3: StyleSchema Specification
 
-### 3.0 Interoperability & External Schemas (Decision Needed)
+### 3.0 Interoperability & External Schemas (Decision: adapt)
 
-Before locking a schema format, decide whether we want:
-- **Adopt** an existing/open UI schema protocol (and map it onto Mix)
-- **Adapt/extend** an existing schema with Mix-specific styling extensions (tokens, variants, animations)
-- **Define** a Mix-native schema and optionally support import/export adapters later
+We will **adapt** external/wire schemas and map them into a Mix-owned canonical AST.
 
-The decision criteria should include:
-- ecosystem interoperability (agents/tools can produce the schema)
-- validation and safety model compatibility
-- ability to express Mix concepts (tokens, variants, animation, trust boundaries)
-- long-term maintenance and versioning costs
+Practical policy:
+- Keep transport/wire compatibility at adapter boundaries.
+- Keep rendering, validation, trust, and tooling contracts on the canonical AST.
+- Avoid binding `mix_schema` internals to any single wire protocol version.
 
 #### Compatibility stance (recommended)
 
-Even if we decide to define a Mix-native schema, we should plan for:
+Under the adapt strategy we should support:
 - **Adapters in**: accept an external/wire schema and map into the canonical AST.
 - **Adapters out**: export canonical AST into an external schema (where possible) for interoperability and debugging.
 
 This avoids “schema fork” concerns while preserving Mix’s ability to represent Mix-specific styling concepts.
 
-### 3.0.1 Schema Versioning and Migration Policy (Missing Detail)
+### 3.0.1 A2UI compatibility window (decision-synced)
+
+As of 2026-02-06:
+- Latest upstream A2UI line: `v0.9` (draft).
+- Stable production line: `v0.8`.
+
+Planning policy for Track B v0.1:
+- Primary adapter target: `a2ui_v0_9_draft_latest`.
+- Compatibility adapter target: `a2ui_v0_8_stable`.
+- Keep this at the adapter boundary only; canonical AST remains Mix-owned.
+
+### 3.0.2 Schema Versioning and Migration Policy (Missing Detail)
 
 Schemas must be versioned and migration-friendly.
 
@@ -234,12 +267,24 @@ Recommended default:
 
 This keeps rendering deterministic and reduces “LLM guessed structure” errors.
 
+### 3.1.2 Repeat/Template Structure (Decision)
+
+Do not overload `children` to represent iteration templates.
+
+Recommended v1 shape:
+- Introduce an explicit repeat/template node (e.g., `type: "repeat"`).
+- `repeat` carries list source + alias + template node.
+- Layout nodes keep `children` as arrays of concrete child nodes.
+
+This reduces structural ambiguity and improves validator quality for LLM-generated payloads.
+
 ### 3.2 Component Types
 
 ```
 Primitives:     box, text, icon, image
 Layout:         flex, stack, grid, wrap, scrollable
 Interactive:    pressable, input, select, slider
+Control:        repeat
 Composite:      card, button, chip, badge (registered patterns)
 Custom:         Developer-defined via ComponentRegistry
 ```
@@ -263,11 +308,11 @@ Map directly to Mix's existing style system:
 ### 3.4 Value Resolution
 
 ```json
-// Design token reference
-{"token": "color.primary"}
+// Preferred v1 token reference (explicit typing)
+{"token": {"name": "surface.primary", "type": "color"}}
 
-// Design token reference with explicit typing (recommended for validation)
-{"token": {"name": "primary", "type": "color"}}
+// Optional ingress shorthand (normalized by adapter before validation/rendering)
+{"token": "color.surface.primary"}
 
 // Direct value
 {"value": "#FF5733"}
@@ -279,14 +324,15 @@ Map directly to Mix's existing style system:
 {"responsive": {"mobile": 8, "tablet": 16, "desktop": 24}}
 ```
 
-#### Typed token resolution (required)
+#### Typed token resolution (required, explicit object first)
 
 Mix tokens are typed (`MixToken<T>`), but schemas reference tokens as strings. This requires a runtime mechanism to map a schema token reference to the correct typed token instance.
 
-Two viable approaches:
+Primary wire format:
+1) **Explicit `{name,type}` token object**: `{"token":{"name":"surface.primary","type":"color"}}`.
 
-1) **Type-in-name convention** (simple for LLMs): `color.<name>`, `space.<name>`, `radius.<name>`, `textStyle.<name>`, `duration.<name>`, `breakpoint.<name>`.
-2) **Explicit `{name,type}` token object** (best for validation): `{"token":{"name":"primary","type":"color"}}`.
+Ingress compatibility:
+2) **Type-in-name shorthand** accepted by adapters and normalized into explicit form.
 
 Where `<name>` may contain additional dots for namespacing, e.g. `color.surface.primary` or `color.text.secondary`.
 
@@ -384,9 +430,9 @@ Schema variant keys must map deterministically to Mix variants:
 - `onLtr` / `onRtl` → `ContextVariant.directionality(...)`
 - `named:<key>` → `NamedVariant(<key>)` applied via `namedVariants`
 
-If the schema supports negation or composition, it should reuse existing Mix semantics:
+If the schema supports negation, it should reuse existing Mix semantics:
 - `onNot(X)` → `ContextVariant.not(X)`
-- complex compositions should be expressed as schema templates/registry handlers rather than an unbounded boolean expression language in JSON.
+- For v1, do not add an expression language for variants; keep simple mapped keys and compose at template/handler level.
 
 #### Unknown variant keys (default behavior)
 
@@ -435,7 +481,7 @@ The host app may tighten this (e.g., fail validation for unknown keys) via confi
 
 ### 3.6.1 Accessibility & Semantics (Schema Shape)
 
-Generated UIs must be accessible. Schemas should be able to express a minimum semantics contract per node.
+Generated UIs must be accessible. Schemas should express a minimum semantics contract per node, including interactive-state and focus metadata.
 
 Illustrative schema:
 
@@ -447,7 +493,18 @@ Illustrative schema:
     "label": "Submit form",
     "hint": "Activates the submission",
     "enabled": true,
-    "liveRegion": "polite"
+    "selected": false,
+    "checked": null,
+    "expanded": false,
+    "focusOrder": 20,
+    "labelledBy": "node:title",
+    "describedBy": "node:help",
+    "liveRegion": {
+      "mode": "polite",
+      "atomic": false,
+      "relevant": ["additions", "text"],
+      "busy": false
+    }
   },
   "child": { "type": "text", "content": "Submit" }
 }
@@ -455,7 +512,10 @@ Illustrative schema:
 
 Renderer mapping guidance:
 - `role/label/hint/value/enabled` map to Flutter `Semantics` properties.
-- `liveRegion` is used for streaming/progressive updates (must be rate-limited to avoid spam).
+- `selected/checked/expanded` map to corresponding interactive semantics.
+- `focusOrder` participates in deterministic focus traversal order.
+- `labelledBy` / `describedBy` enable relationship semantics.
+- `liveRegion` announcements are supported for streaming/progressive updates and must be rate-limited.
 
 ### 3.7 Data Binding
 
@@ -469,16 +529,14 @@ Renderer mapping guidance:
 }
 
 {
-  "type": "flex",
-  "children": {
-    "repeat": "items",
-    "as": "item",
-    "template": {
-      "type": "box",
-      "child": {
-        "type": "text",
-        "content": {"bind": "item.title"}
-      }
+  "type": "repeat",
+  "items": {"bind": "items"},
+  "as": "item",
+  "template": {
+    "type": "box",
+    "child": {
+      "type": "text",
+      "content": {"bind": "item.title"}
     }
   }
 }
@@ -544,7 +602,7 @@ Example schema:
 Mapping guidance (illustrative, exact API may differ):
 - `type: "curve"` → `AnimationConfig.curve(duration: ..., curve: ...)`
 - `type: "spring"` → `AnimationConfig.spring(...)`
-- `type: "keyframes"` → `AnimationConfig.keyframes(...)`
+- `type: "keyframes"` → internal keyframe config (e.g., `KeyframeAnimationConfig` path)
 
 Important constraints:
 - Curves must come from a closed allowlist (no arbitrary code).
@@ -835,11 +893,13 @@ EphemeralState(
 ephemeralScope.update(newSchema);
 ```
 
-**Diff**: Partial updates for efficiency (decision needed)
+**Diff**: Partial updates for efficiency (decision: JSON Patch)
 
-Prefer adopting an existing, well-specified patch format rather than inventing a bespoke patch language.
+Use JSON Patch (RFC 6902) as the default patch format:
+- allowed ops for v1: `add`, `remove`, `replace`, `test`
+- prefer stable node keys over array-index-heavy addressing where possible
 
-Recommended default: JSON Patch (RFC 6902) style operations (illustrative):
+Illustrative operations:
 
 ```json
 [
@@ -1045,20 +1105,20 @@ enum SchemaTrust {
 
 ---
 
-## Part 9: Implementation Roadmap
+## Part 9: Implementation Roadmap (Decision-Synced)
 
 ### Phase 1: Foundation
 **Goal**: Basic schema rendering
 
 **Deliverables**:
-1. Decide schema direction: adopt/adapt external protocol vs Mix-native schema (+ adapters)
-2. StyleSchema (naming TBD: MixSchema/UiSchema) specification v1
-3. Token reference format + `SchemaTokenResolver` (typed token resolution)
-4. Variant key mapping spec (schema → Mix variants)
-5. SchemaHandler/registry interfaces aligned with Mix `StyleBuilder`
-6. Built-in handlers: box, text, flex, stack, icon
-7. SchemaWidget for rendering (error boundaries + debug node path)
-8. Basic validation (structure, types, limits)
+1. Lock naming (`UiSchema` or `MixSchema`) and publish schema specification v1.
+2. Implement adapter boundary with canonical AST as internal contract, targeting `a2ui_v0_9_draft_latest` first and `a2ui_v0_8_stable` compatibility.
+3. Implement explicit token object resolution (`{type,name}`), with ingress shorthand normalization.
+4. Implement simple variant-key mapping (`onHovered`, `onDark`, `named:*`, etc.).
+5. Implement SchemaHandler/registry interfaces aligned to Mix `StyleBuilder`.
+6. Build built-in handlers: box, text, flex, stack, icon.
+7. Implement SchemaWidget with error boundaries + structured diagnostics (`path`, `nodeId`).
+8. Implement basic validation (structure, types, limits).
 
 **Success Criteria**:
 - AI generates valid schema → Mix renders it
@@ -1076,12 +1136,16 @@ enum SchemaTrust {
 5. Animation support
 6. Variant resolution (leveraging Mix widget-state tracking where possible)
 7. Safe transform registry for binding transforms
+8. JSON Patch support for schema diffs
+9. Streaming/progressive rendering (stable `nodeId`, incremental apply, partial mode)
+10. Explicit repeat/template node implementation
 
 **Success Criteria**:
 - Buttons trigger events
 - Forms collect input
 - State persists in session
 - Smooth animations
+- Incremental updates apply without full-tree rebuilds for trivial patches
 
 ### Phase 3: Agent Integration
 **Goal**: Full agent-UI workflow
@@ -1103,9 +1167,9 @@ enum SchemaTrust {
 
 **Deliverables**:
 1. Security model implementation
-2. Performance optimization
+2. Performance budgets enforced by automated benchmarks (cold/warm, p50/p95)
 3. Memory management
-4. Accessibility support
+4. Accessibility contract implementation (interactive semantics, focus order, live regions)
 5. Developer tooling (schema inspector, token/variant trace, error reports)
 6. Documentation (schema spec, registry, trust model, testing)
 
@@ -1146,21 +1210,27 @@ This section turns “production readiness” into explicit deliverables reviewe
 - **Golden tests**: snapshot rendered output for a small set of canonical schemas (especially trust boundaries and error states).
 - **Migration tests**: for `$schema` version bumps, ensure old schemas migrate or fail with clear diagnostics.
 
-### Performance budgets (proposed starting targets)
-Targets should be validated with profiling, but reviewers need something concrete:
+### Performance budgets (decision-synced targets)
+Targets should be measured by device tier and reported as p50/p95:
 - **Parse + validate**: O(n) in number of nodes; no unbounded recursion; enforce max depth.
-- **Schema → widget**:
-  - “Typical” schema (<= 200 nodes): aim for <16ms on desktop, <32ms on mid-tier mobile.
-  - Larger schemas: degrade gracefully via pagination/virtualization (e.g., list handlers).
-- **Update/diff**: prefer incremental updates; avoid rebuilding the entire tree for small diffs.
-  - Target (small patches): aim for <8ms on desktop for trivial diffs (single property/text updates), with profiling to validate.
+- **Cold render (parse + validate + build)**:
+  - Typical schema (<= 200 nodes): target p50 <= 32ms desktop, <= 64ms mid-tier mobile.
+  - Target p95 <= 64ms desktop, <= 96ms mid-tier mobile.
+- **Warm update (incremental patch apply)**:
+  - Trivial patches (single property/text update): target p50 <= 8ms desktop, <= 16ms mid-tier mobile.
+  - Target p95 <= 16ms desktop, <= 24ms mid-tier mobile.
+- **Large schemas**:
+  - Must degrade gracefully via pagination/virtualization (especially repeat/list handlers).
 
-### Accessibility contract (minimum viable)
+### Accessibility contract (decision-synced)
 - Schema nodes must be able to carry:
   - role/type (button, text, heading, image, input)
   - label/hint/value
   - enabled/disabled state
-  - (optional) live-region announcements for streaming updates
+  - interactive states (`selected`, `checked`, `expanded`)
+  - focus ordering key
+  - relationship metadata (`labelledBy`, `describedBy`)
+  - live-region controls (`mode`, `atomic`, `relevant`, `busy`)
 - Renderer must ensure:
   - focus order is stable across diffs
   - streaming updates do not spam announcements
@@ -1174,25 +1244,21 @@ Accessibility staging:
 ## Part 10: Open Questions
 
 ### Technical
-1. How to handle schema versioning and migration?
-2. What's the performance ceiling for schema resolution?
-3. How to support offline/cached schemas?
-4. How to ensure accessibility in generated UIs?
-5. How do we support streaming/partial schemas (progressive rendering, mid-stream recovery)?
-6. What is the canonical AST (Dart types) and how stable is it across schema versions?
-7. What are update/diff latency targets (separate from cold render budgets)?
-8. How do agents validate schemas before sending (meta-schema vs validate API)?
+1. How many schema major versions do we support concurrently, and for how long?
+2. What is the deprecation/migration guarantee for supported adapter versions?
+3. How should offline/cached schemas be stored and invalidated?
+4. Which list-size threshold triggers required virtualization?
+5. What telemetry is required by default vs opt-in?
 
 ### Design
 1. Should there be a shorthand DSL for common patterns?
-2. What components belong in the core registry?
-3. How tightly coupled to MixScope tokens?
-4. What debugging tools are needed?
+2. Which composite components belong in the default registry vs examples-only?
+3. How tightly coupled should schema-level token names be to MixScope organization?
 
 ### Ecosystem
 1. How do generated and hand-crafted UIs coexist?
 2. How to share/reuse schema templates?
-3. How to test agent-generated UI flows?
+3. What compatibility matrix do we maintain across wire adapters?
 4. What analytics should be built-in?
 
 ---
@@ -1202,7 +1268,7 @@ Accessibility staging:
 ### Framework Quality
 - Schema spec is stable and versioned
 - 15+ built-in component handlers
-- <50ms schema-to-widget time (typical)
+- Cold and warm render/update budgets consistently met at p50/p95 targets
 - Zero critical security vulnerabilities
 - 90%+ test coverage on core
 - DevTools-grade schema inspector + trace tooling
@@ -1216,7 +1282,7 @@ Accessibility staging:
 
 ### AI Integration
 - Works with major LLM providers
-- <500ms intent-to-render time
+- Strong streaming UX (incremental updates + stable focus/semantics)
 - Smooth animations during updates
 - No memory leaks in long sessions
 - Graceful degradation on errors
@@ -1258,22 +1324,18 @@ Accessibility staging:
 ### Data List with Binding
 ```json
 {
-  "$schema": "mix://schema/v1",
-  "type": "flex",
-  "style": {"direction": "column", "spacing": 8},
-  "children": {
-    "repeat": "items",
-    "as": "item",
-    "template": {
-      "type": "pressable",
-      "onTap": {"action": "emit", "event": "item.tap", "payload": {"id": "{{item.id}}"}},
+  "type": "repeat",
+  "items": {"bind": "items"},
+  "as": "item",
+  "template": {
+    "type": "pressable",
+    "onTap": {"action": "emit", "event": "item.tap", "payload": {"id": "{{item.id}}"}},
+    "child": {
+      "type": "box",
+      "style": {"padding": {"all": 12}, "color": {"token": {"type": "color", "name": "surface.primary"}}},
       "child": {
-        "type": "box",
-        "style": {"padding": {"all": 12}, "color": {"token": "color.surface.primary"}},
-        "child": {
-          "type": "text",
-          "content": {"bind": "item.title"}
-        }
+        "type": "text",
+        "content": {"bind": "item.title"}
       }
     }
   }
@@ -1502,3 +1564,4 @@ Notes:
 | Version | Date | Changes |
 |---------|------|---------|
 | 0.1 | 2024-12 | Initial research document |
+| 0.2 | 2026-02 | Decision sync completed (strategy locked, roadmap/perf/a11y/structure updated). |

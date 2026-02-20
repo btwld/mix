@@ -44,6 +44,22 @@ Practical implications:
 - `packages/mix_agent_ui` (new): agent UI tokens + scopes + recipe stylers (optionally widgets).
 - `scripts/` (optional): token import/export tooling (if/when teams need it).
 
+## Decision Sync (2026-02-06)
+
+Track B decisions are now locked in `guides/ai-integration-review-checklist.md` and reflected in `guides/ai-integration-vision.md`.
+Execution freeze for `mix_schema` v0.1 is captured in `guides/mix-schema-v0.1-freeze.md`.
+
+Main goal:
+- Deliver a Track B v0.1 that safely renders generated UI via **adapted wire schemas + canonical AST + Mix-native renderer**.
+
+Locked direction (summary):
+- Use `adapt` (wire protocol compatibility via adapters, not direct core coupling).
+- Keep a stable canonical AST internal contract.
+- Target A2UI latest line (`v0.9` draft) with `v0.8` stable compatibility adapter.
+- Prefer explicit typed token objects, simple variant mapping, closed transform registry.
+- Use JSON Patch for diffs and deliver streaming in Phase 2.
+- Keep tooling MVP scope from Part 9.6, with tighter perf and expanded a11y contracts.
+
 ## 90-day actionable plan (suggested)
 
 ### 0–2 weeks (alignment + quick wins)
@@ -55,14 +71,22 @@ Practical implications:
 - Define a stable token set for agent affordances (provenance/risk/density).
 - Cut `mix_agent_ui` v0.1 with 3 recipe stylers (message bubble, tool card, approval panel).
 
-### 6–12 weeks (schema foundations, if still aligned)
-- Decide schema direction: adopt/adapt an external UI schema protocol vs define a Mix-native schema with adapters.
-- Implement `mix_schema` Phase 1 (parse/validate/render primitives with tokens + variants).
-- Add trust model enforcement and error boundaries.
+### 6–12 weeks (schema foundations, decision-synced)
+- Implement `mix_schema` Phase 1 with canonical AST + adapter boundary + core handlers.
+- Land adapter contracts for `a2ui_v0_9_draft_latest` (primary) and `a2ui_v0_8_stable` (compat).
+- Add trust model enforcement, structured diagnostics, and authoring/runtime validation.
+- Implement Phase 2 streaming+deltas path (JSON Patch + stable `nodeId` semantics).
 - Ensure schema-rendered UIs can reuse Track A patterns (templates).
+- Start benchmark/a11y hardening tracks with decision-synced targets.
 
-## Key decisions to make early
-- Naming to avoid confusion: keep Track A state scopes distinct (e.g., `AgentUiScope`) from Track B orchestration scopes.
-- How opinionated recipes should be: “style-only” vs “widgets + styles”.
-- Whether schema expresses responsive/adaptive values via variants vs separate value encodings (prefer variants for consistency with Mix).
+## Immediate Next Steps (No Code)
+- Review and approve `guides/mix-schema-v0.1-freeze.md` as the execution contract.
+- Confirm adapter naming/version policy in writing (`v0.9` draft latest + `v0.8` stable compat).
+- Freeze initial fixture matrix (valid/invalid/lossy) for both adapters.
+- Confirm v0.1 built-in handler scope (box/text/flex/stack/icon).
+- Confirm what must be complete before implementation starts (definition of done + owners).
 
+## Remaining Early Decisions
+- Naming polish: finalize `UiSchema`/`MixSchema` naming and keep Track A/Track B scopes distinct.
+- Version policy: set explicit support/deprecation window for `a2ui_v0_9_draft_latest` and `a2ui_v0_8_stable`.
+- Component registry scope for `mix_schema` v0.1 (what ships built-in vs examples-only).

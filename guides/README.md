@@ -14,3 +14,5 @@ If you want these guides mirrored privately, keep the source of truth in Notion 
 - `guides/ai-agent-ui-roadmap.md` — detailed roadmap for developer-authored agent UIs (Track A: streaming, tools, approvals, provenance).
 - `guides/ai-integration-vision.md` — Vision + roadmap for schema-generated/ephemeral UIs powered by AI (Track B).
 - `guides/ai-integration-review-checklist.md` — review worksheet for collecting decisions/feedback on the schema/ephemeral UI vision.
+- `guides/a2ui-protocol-research.md` — research notes on A2UI protocol status (latest `v0.9` draft + `v0.8` stable), migration deltas, and implications for Mix Track B decisions.
+- `guides/mix-schema-v0.1-freeze.md` — frozen v0.1 execution contract for `mix_schema` (scope, AST, adapters, validation, and implementation sequence).
