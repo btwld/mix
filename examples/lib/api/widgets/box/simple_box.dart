@@ -8,7 +8,6 @@
 /// - Using BoxStyler() to create box styles (recommended Mix 2.0 API)
 /// - Setting color, width, height, and border radius properties
 /// - Fluent method chaining for readable styling code
-// ignore_for_file: unused_local_variable
 
 library;
 
@@ -29,21 +28,8 @@ class Example extends StatelessWidget {
     final boxStyle = BoxStyler()
         .color(Colors.red)
         .size(100, 100)
-        .borderRounded(10)
-        .onHovered(BoxStyler().color(Colors.blue))
-        .onFocused(BoxStyler().color(Colors.green))
-        .onPressed(BoxStyler().color(Colors.yellow));
+        .borderRounded(10);
 
-    return Row(
-      children: [
-        Pressable(child: Box(style: boxStyle)),
-        TextButton(
-          onPressed: () {
-            print('pressed');
-          },
-          child: Text('Press me'),
-        ),
-      ],
-    );
+    return Box(style: boxStyle);
   }
 }
