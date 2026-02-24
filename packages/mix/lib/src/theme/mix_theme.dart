@@ -66,6 +66,67 @@ class MixScope extends InheritedModel<String> {
     : _tokens = null,
       orderOfModifiers = null;
 
+  /// Creates a [MixScope] that inherits tokens from the nearest parent [MixScope]
+  /// and adds (or overrides with) the given tokens.
+  ///
+  /// Use this when you need additional Mix tokens (e.g. [ColorToken],
+  /// [TextStyleToken], [SpaceToken]) inside a subtree that already has an outer
+  /// scope,
+  /// without replacing upstream tokens. The resulting scope has a single merged
+  /// token map: parent tokens first, then these tokens (so local tokens override
+  /// parent when keys collide).
+  ///
+  /// Keeps the outer scope's tokens available while allowing additive custom
+  /// tokens in the same widget subtree. Valid for both light and dark themes
+  /// when the parent scope provides theme-dependent tokens.
+  static Widget inherit({
+    Map<MixToken, Object>? tokens,
+    Map<ColorToken, Color>? colors,
+    Map<TextStyleToken, TextStyle>? textStyles,
+    Map<SpaceToken, double>? spaces,
+    Map<DoubleToken, double>? doubles,
+    Map<RadiusToken, Radius>? radii,
+    Map<BreakpointToken, Breakpoint>? breakpoints,
+    Map<ShadowToken, List<Shadow>>? shadows,
+    Map<BoxShadowToken, List<BoxShadow>>? boxShadows,
+    Map<BorderSideToken, BorderSide>? borders,
+    Map<FontWeightToken, FontWeight>? fontWeights,
+    List<Type>? orderOfModifiers,
+    required Widget child,
+    Key? key,
+  }) {
+    final childTokens = <MixToken, Object>{
+      ...?tokens,
+      ...?colors?.cast<MixToken, Object>(),
+      ...?textStyles?.cast<MixToken, Object>(),
+      ...?spaces?.cast<MixToken, Object>(),
+      ...?doubles?.cast<MixToken, Object>(),
+      ...?radii?.cast<MixToken, Object>(),
+      ...?breakpoints?.cast<MixToken, Object>(),
+      ...?shadows?.cast<MixToken, Object>(),
+      ...?boxShadows?.cast<MixToken, Object>(),
+      ...?borders?.cast<MixToken, Object>(),
+      ...?fontWeights?.cast<MixToken, Object>(),
+    };
+
+    return Builder(
+      builder: (context) {
+        final parent = MixScope.maybeOf(context);
+        final mergedTokens = <MixToken, Object>{
+          ...?parent?.tokens,
+          ...childTokens,
+        };
+
+        return MixScope._(
+          key: key,
+          tokens: mergedTokens,
+          orderOfModifiers: orderOfModifiers ?? parent?.orderOfModifiers,
+          child: child,
+        );
+      },
+    );
+  }
+
   /// Creates a widget with Material Design tokens pre-configured.
   static Widget withMaterial({
     Map<MixToken, Object>? tokens,

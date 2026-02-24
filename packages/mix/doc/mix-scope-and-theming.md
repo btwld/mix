@@ -182,6 +182,20 @@ MixScope(
 )
 ```
 
+A nested `MixScope` is the *nearest* scope for its subtree, so it *replaces* the parent for token resolution. To **combine** tokens—keep the parent’s tokens and add (or override) your own—use **MixScope.inherit**. It builds a single scope whose token map is the parent’s map merged with yours: parent tokens plus your tokens, with your entries winning when the same token is defined in both. That way both upstream tokens and your local tokens resolve in the same subtree. Valid for both light and dark themes.
+
+```dart
+// Outer scope provides base tokens; inherit combines them with yours
+MixScope(
+  colors: { ColorToken('brand.primary'): Colors.blue },
+  colors: { ColorToken('custom.accent'): Colors.orange },
+  child: MixScope.inherit(
+    spaces: { SpaceToken('custom.gap'): 12.0 },
+    child: MySubtree(), // resolves both brand and custom tokens
+  ),
+)
+```
+
 ## Hands‑On Tutorial
 
 This tutorial creates brand color and spacing tokens, applies them, and integrates Material.
