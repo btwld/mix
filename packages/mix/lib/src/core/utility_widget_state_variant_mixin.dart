@@ -33,9 +33,25 @@ mixin UtilityWidgetStateVariantMixin<T extends Style<S>, S extends Spec<S>> {
 
   /// Creates a variant for focused state.
   ///
+  /// **Note:** Focus state tracking requires the widget to be wrapped with
+  /// [Pressable] or use [PressableBox]. Unlike [onHovered] and [onPressed],
+  /// which work automatically with any styled widget, focus handling needs
+  /// the [Pressable] widget.
+  ///
   /// Example:
   /// ```dart
-  /// $box.onFocused($box.color.green())
+  /// // Focus variant only activates when wrapped with Pressable
+  /// Pressable(
+  ///   child: Box(
+  ///     style: BoxStyler().onFocused(.new().color(Colors.green))
+  ///   ),
+  /// )
+  ///
+  /// // Or use PressableBox directly
+  /// PressableBox(
+  ///   style: BoxStyler().onFocused(.new().color(Colors.green)),
+  ///   child: child,
+  /// )
   /// ```
   T onFocused(T style) {
     return withVariant(ContextVariant.widgetState(.focused), style);
