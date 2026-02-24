@@ -1,56 +1,11 @@
-# name: "Widgetbook"
+name: Widgetbook (disabled)
 
-# on: push
+on:
+  workflow_dispatch:
 
-# jobs:
-#   production:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Checkout
-#         uses: actions/checkout@v4
-
-#       - name: Install FVM
-#         shell: bash
-#         run: |
-#           curl -fsSL https://fvm.app/install.sh | bash
-#           fvm use ${{ inputs.flutter-version }} --force
-
-#       - uses: kuhnroyal/flutter-fvm-config-action@v2
-#         id: fvm-config-action
-
-#       - uses: subosito/flutter-action@v2
-#         with:
-#           flutter-version: ${{ steps.fvm-config-action.outputs.FLUTTER_VERSION }}
-#           channel: ${{ steps.fvm-config-action.outputs.FLUTTER_CHANNEL }}
-
-#       - name: Flutter version
-#         shell: bash
-#         run: flutter --version
-
-#       - name: Setup Melos
-#         uses: bluefireteam/melos-action@v3
-
-#       - name: Bootstrap App
-#         shell: bash
-#         run: |
-#           flutter pub get
-
-#       - name: Bootstrap Widgetbook
-#         working-directory: packages/remix/demo
-#         shell: bash
-#         run: |
-#           flutter pub get
-#           dart run build_runner build -d
-
-#       - name: Build Widgetbook
-#         working-directory: packages/remix/demo
-#         shell: bash
-#         run: |
-#           flutter build web
-
-#       - name: Install Widgetbook CLI
-#         run: dart pub global activate widgetbook_cli
-
-#       - name: Upload Widgetbook
-#         working-directory: packages/remix/demo
-#         run: widgetbook cloud build push --api-key ${{ secrets.WIDGETBOOK_API_KEY }}
+jobs:
+  disabled:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notice
+        run: echo "Widgetbook workflow is intentionally disabled."

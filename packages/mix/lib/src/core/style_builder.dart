@@ -173,23 +173,6 @@ class StyleSpecBuilder<S extends Spec<S>> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // style.build returns StyleSpec<S>
-
-    // Pass the inner spec to the builder
-    Widget current = builder(context, styleSpec.spec);
-
-    // Always wrap with StyleSpecProvider first
-    current = StyleSpecProvider(spec: styleSpec, child: current);
-
-    if (styleSpec.widgetModifiers != null &&
-        styleSpec.widgetModifiers!.isNotEmpty) {
-      // Apply modifiers if any
-      current = RenderModifiers(
-        widgetModifiers: styleSpec.widgetModifiers!,
-        child: current,
-      );
-    }
-
     return StyleAnimationBuilder<S>(
       spec: styleSpec,
 

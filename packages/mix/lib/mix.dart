@@ -53,6 +53,7 @@ export 'src/core/utility_widget_state_variant_mixin.dart';
 export 'src/core/widget_modifier.dart';
 export 'src/modifiers/align_modifier.dart';
 export 'src/modifiers/aspect_ratio_modifier.dart';
+export 'src/modifiers/blur_modifier.dart';
 export 'src/modifiers/box_modifier.dart' hide BoxModifierUtility;
 export 'src/modifiers/clip_modifier.dart';
 export 'src/modifiers/default_text_style_modifier.dart';

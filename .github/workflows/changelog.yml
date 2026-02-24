@@ -5,11 +5,19 @@ on:
     inputs:
       update_mix_packages:
         type: boolean
-        description: whether to update all mix-related packages
+        description: whether to update mix core packages (mix, mix_lint, mix_annotations, mix_generator)
         default: true
+      update_mix_tailwinds:
+        type: boolean
+        description: whether to update mix_tailwinds package
+        default: false
       mix_version:
         type: string
-        description: set the version for all mix-related packages
+        description: set the version for mix core packages
+        default: ""
+      mix_tailwinds_version:
+        type: string
+        description: set the version for mix_tailwinds
         default: ""
 
 jobs:
@@ -62,6 +70,10 @@ jobs:
           ignored_packages="$ignored_packages --ignore=mix,mix_lint,mix_annotations,mix_generator"
         fi
 
+        if [ "${{ github.event.inputs.update_mix_tailwinds }}" == "false" ]; then
+          ignored_packages="$ignored_packages --ignore=mix_tailwinds"
+        fi
+
 
         packages_with_versions=""
 
@@ -70,6 +82,10 @@ jobs:
           packages_with_versions="$packages_with_versions -V mix_lint:${{ github.event.inputs.mix_version }}"
           packages_with_versions="$packages_with_versions -V mix_annotations:${{ github.event.inputs.mix_version }}"
           packages_with_versions="$packages_with_versions -V mix_generator:${{ github.event.inputs.mix_version }}"
+        fi
+
+        if [ "${{ github.event.inputs.mix_tailwinds_version }}" != "" ]; then
+          packages_with_versions="$packages_with_versions -V mix_tailwinds:${{ github.event.inputs.mix_tailwinds_version }}"
         fi
 
         melos version $ignored_packages --yes --no-git-tag-version $packages_with_versions
