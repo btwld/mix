@@ -27,6 +27,7 @@ mixin WidgetStateVariantMixin<T extends Style<S>, S extends Spec<S>>
   /// [Pressable] or use [PressableBox]. Unlike [onHovered] and [onPressed],
   /// which work automatically with any styled widget, focus handling needs
   /// the [Pressable] widget.
+  ///
   /// Example:
   /// ```dart
   /// // Focus variant only activates when wrapped with Pressable

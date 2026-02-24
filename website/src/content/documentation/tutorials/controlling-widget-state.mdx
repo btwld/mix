@@ -5,7 +5,7 @@ In this tutorial, we'll explore how to manage manually widget states in Mix, inc
 
 ## Approach 1: Automatic State Management
 
-Mix makes handling hover and press states effortless with any `StyledWidget` these states are tracked for you automatically, requiring no extra setup:
+Mix makes handling hover and press states effortless with any `StyledWidget`. These states are tracked for you automatically, requiring no extra setup:
 
 ```dart
 class SimpleExample extends StatelessWidget {
@@ -34,7 +34,7 @@ You do not need to wrap `Pressable` or do anything else for these states—they 
 
 ---
 
-If you want to control focus state (`onFocused`), you'll need to wrap the Box with a `Pressable` widget or use `PressableBox` instead. This is because tracking focus state requires a `Focus` widget, which `Pressable` provides:
+If you want to control focus state (`onFocused`), use `PressableBox` instead of `Box`. This is because tracking focus state requires a `Focus` widget, which `PressableBox` provides:
 
 ```dart
 class FocusedExample extends StatelessWidget {
@@ -47,10 +47,7 @@ class FocusedExample extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Now focus events will be tracked:
-    return Pressable(child: style());
-    // Alternatively, use:
-    // return PressableBox(style: style);
+    return PressableBox(style: style);
   }
 }
 ```
@@ -164,7 +161,7 @@ GestureDetector(
 ## When to Use Each Approach
 
 **Use automatic state management (Approach 1) when:**
-- You need simple hover, press, and focus interactions
+- You need simple hover and press interactions (focus requires a `Pressable` wrapper)
 - You want Mix to handle all the complexity for you
 - You're building standard interactive widgets
 
