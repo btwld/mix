@@ -1,68 +1,314 @@
 ---
-id: design_token
-title: "Design Tokens"
+title: Design Tokens
 ---
+
+import { Callout } from "nextra/components";
 
 # Design Tokens
 
-## Introduction
-
-Design tokens are the core of any design system. They are the smallest pieces of a design system that define the visual properties of a UI. These properties can include colors, typography, spacing, and more. Design tokens are used to maintain consistency across an application and make it easier to update the design system. As Mix is a solution for styling and is used for building design systems, it also supports design tokens.
+Design tokens define visual properties (colors, typography, spacing) in a centralized way. Mix provides built-in support through `MixToken` and `MixScope`.
 
 ## Getting Started
 
-Mix has built-in support for design tokens. The tokens are used to define the visual properties in key-value pairs, where the key is a class that extends `MixToken` and the value is the actual value of the token.
+Mix tokens are defined as key-value pairs where the key is a class that extends `MixToken<T>` and the value is the actual resolved value.
 
 ```dart
-// 1. declare the token
-final $primary = ColorToken('primary'); // ColorToken is a class that extends MixToken<Color>
+import 'package:flutter/material.dart';
+import 'package:mix/mix.dart';
 
-// 2. define the token value
+// 1. Declare the token
+final $primary = ColorToken('primary');
+
+// 2. Define the token value in MixScope
 MixScope(
   colors: {
     $primary: Colors.lightBlue,
   },
-  child: ...
+  child: MyApp(),
 );
 
 // 3. Use the token in a style
 final style = BoxStyler()
-  .color($primary()) // Use the call method to pass the token value to the style
-  .size(100, 100);
+    .color($primary())  // Use call() to reference the token
+    .size(100, 100);
 ```
 
 ## MixScope
 
-In the same way we use `Theme` and `ThemeData` in Flutter, Mix has `MixScope`. It is a widget that wraps the application and provides the design tokens values to all its child widgets.
+`MixScope` is the widget that provides token values to all its descendants. It works similar to Flutter's `Theme` and `ThemeData` pattern.
 
-```dart {1,5}
+```dart
+import 'package:flutter/material.dart';
+import 'package:mix/mix.dart';
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MixScope(
+      colors: {
+        $primary: Colors.blue,
+        $secondary: Colors.green,
+        $background: Colors.white,
+      },
+      spaces: {
+        $spacingSm: 8.0,
+        $spacingMd: 16.0,
+        $spacingLg: 24.0,
+      },
+      radii: {
+        $radiusSm: Radius.circular(4),
+        $radiusMd: Radius.circular(8),
+      },
+      child: MaterialApp(
+        home: MyHomePage(),
+      ),
+    );
+  }
+}
+```
+
+## Built-in Token Types
+
+Mix provides several built-in token types for common styling needs:
+
+| Token Type | Value Type | Use Case |
+|------------|------------|----------|
+| `ColorToken` | `Color` | Colors and backgrounds |
+| `SpaceToken` | `double` | Spacing values (padding, margin) |
+| `DoubleToken` | `double` | Any numeric value |
+| `RadiusToken` | `Radius` | Border radii |
+| `TextStyleToken` | `TextStyle` | Typography styles |
+| `BorderSideToken` | `BorderSide` | Border definitions |
+| `ShadowToken` | `List<Shadow>` | Text shadows |
+| `BoxShadowToken` | `List<BoxShadow>` | Box shadows |
+| `FontWeightToken` | `FontWeight` | Font weights |
+| `DurationToken` | `Duration` | Animation durations |
+| `BreakpointToken` | `Breakpoint` | Responsive breakpoints |
+
+### Token Examples
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:mix/mix.dart';
+
+// Color tokens
+final $primary = ColorToken('color.primary');
+final $secondary = ColorToken('color.secondary');
+final $error = ColorToken('color.error');
+
+// Spacing tokens
+final $spacingSm = SpaceToken('spacing.sm');
+final $spacingMd = SpaceToken('spacing.md');
+final $spacingLg = SpaceToken('spacing.lg');
+
+// Radius tokens
+final $radiusSm = RadiusToken('radius.sm');
+final $radiusMd = RadiusToken('radius.md');
+
+// Typography tokens
+final $headingStyle = TextStyleToken('typography.heading');
+final $bodyStyle = TextStyleToken('typography.body');
+
+// Duration tokens
+final $durationFast = DurationToken('duration.fast');
+final $durationNormal = DurationToken('duration.normal');
+
+// Provide values in MixScope
 MixScope(
   colors: {
     $primary: Colors.blue,
+    $secondary: Colors.green,
+    $error: Colors.red,
   },
-)
+  spaces: {
+    $spacingSm: 8.0,
+    $spacingMd: 16.0,
+    $spacingLg: 24.0,
+  },
+  radii: {
+    $radiusSm: Radius.circular(4),
+    $radiusMd: Radius.circular(8),
+  },
+  textStyles: {
+    $headingStyle: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+    $bodyStyle: TextStyle(fontSize: 16),
+  },
+  child: MyApp(),
+);
 ```
 
-## Creating a custom token
+## Using Tokens in Styles
 
-Mix provides a set of built-in tokens. But you can also create your own tokens to fit your needs. To create a custom token, you need to extend the `MixToken` class. For the next example, we will create a custom token for a `EdgeInsetsGeometry`.
+### Call Syntax
+
+Use `${token_name}.call()` or `${token_name}()` to reference a token:
 
 ```dart
+final style = BoxStyler()
+    .color($primary())
+    .paddingAll($spacingMd());
+```
+
+### Token Methods
+
+Some stylers provide dedicated token methods:
+
+```dart
+final style = BoxStyler()
+    .colorToken($primary)
+    .paddingToken($spacingMd);
+```
+
+### Prop.token
+
+Use `Prop.token()` with `.create()` constructors for advanced composition:
+
+```dart
+final style = BoxStyler.create(
+  color: Prop.token($primary),
+  padding: Prop.token($spacingMd),
+);
+```
+
+## Creating Custom Tokens
+
+You can create custom token types for values not covered by built-in tokens. To create a custom token:
+
+1. Extend `MixToken<T>` with your value type
+2. Override the `call()` method to return a reference type
+
+### Example: EdgeInsetsGeometry Token
+
+```dart
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+
+/// Token for EdgeInsetsGeometry values
 class EdgeInsetsGeometryToken extends MixToken<EdgeInsetsGeometry> {
   const EdgeInsetsGeometryToken(super.name);
 
   @override
   EdgeInsetsGeometryRef call() => EdgeInsetsGeometryRef(Prop.token(this));
 }
+
+/// Reference class for EdgeInsetsGeometry tokens
+class EdgeInsetsGeometryRef extends Prop<EdgeInsetsGeometry> {
+  EdgeInsetsGeometryRef(Prop<EdgeInsetsGeometry> prop) : super.fromProp(prop);
+}
 ```
 
-The `call` method of your custom token returns an `EdgeInsetsGeometryRef`, which acts as a reference to the token's value. This reference extends type `Prop<EdgeInsetsGeometry>`, making it fully compatible with any Mix API that accepts this type. For example, you can directly use it with the `padding` parameter of `BoxStyler.create(padding: Prop<EdgeInsetsGeometry>)` to apply our custom token.
+### Using the Custom Token
 
 ```dart
+// Declare the token
+final $contentPadding = EdgeInsetsGeometryToken('padding.content');
+final $cardPadding = EdgeInsetsGeometryToken('padding.card');
+
+// Provide values in MixScope
+MixScope(
+  // Custom tokens use the generic tokens map
+  tokens: {
+    $contentPadding: EdgeInsets.all(16),
+    $cardPadding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+  },
+  child: MyApp(),
+);
+
+// Use with BoxStyler.create
 final style = BoxStyler()
-  .color(Colors.red)
-  .size(100, 100)
-  .merge(BoxStyler.create(padding: $spacing()));
+    .color(Colors.red)
+    .size(100, 100)
+    .merge(BoxStyler.create(padding: $contentPadding()));
 ```
 
+<Callout type="info">
+  For most use cases, the built-in token types cover common styling needs. Only create custom tokens when you need specialized value types.
+</Callout>
 
+## Theme Switching
+
+Tokens enable theme switching by providing different values in different contexts:
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:mix/mix.dart';
+
+// Define tokens
+final $background = ColorToken('background');
+final $foreground = ColorToken('foreground');
+final $surface = ColorToken('surface');
+
+// Light theme values
+final lightTheme = {
+  $background: Colors.white,
+  $foreground: Colors.black,
+  $surface: Colors.grey[100]!,
+};
+
+// Dark theme values
+final darkTheme = {
+  $background: Colors.grey[900]!,
+  $foreground: Colors.white,
+  $surface: Colors.grey[800]!,
+};
+
+class ThemedApp extends StatefulWidget {
+  @override
+  State<ThemedApp> createState() => _ThemedAppState();
+}
+
+class _ThemedAppState extends State<ThemedApp> {
+  bool isDark = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MixScope(
+      colors: isDark ? darkTheme : lightTheme,
+      child: MaterialApp(
+        home: Scaffold(
+          body: Box(
+            style: BoxStyler().color($background()),
+            child: Column(
+              children: [
+                StyledText(
+                  'Hello, World!',
+                  style: TextStyler().color($foreground()),
+                ),
+                ElevatedButton(
+                  onPressed: () => setState(() => isDark = !isDark),
+                  child: Text('Toggle Theme'),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+```
+
+## Resolving Tokens Programmatically
+
+You can resolve tokens outside of styles using `BuildContext`:
+
+```dart
+@override
+Widget build(BuildContext context) {
+  // Resolve a token to get its value
+  final primaryColor = $primary.resolve(context);
+  final spacing = $spacingMd.resolve(context);
+
+  return Container(
+    color: primaryColor,
+    padding: EdgeInsets.all(spacing),
+    child: Text('Resolved tokens'),
+  );
+}
+```
+
+## Best Practices
+
+- Use descriptive, hierarchical names: `$colorPrimary`, `$spacingMd`
+- Group related tokens in separate files (`tokens/colors.dart`, `tokens/spacing.dart`)
+- Replace hardcoded values with semantic tokens

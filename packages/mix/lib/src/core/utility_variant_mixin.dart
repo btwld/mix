@@ -26,7 +26,7 @@ mixin UtilityVariantMixin<T extends Style<S>, S extends Spec<S>> {
   /// $box.onDark($box.color.white())
   /// ```
   T onDark(T style) {
-    return withVariant(ContextVariant.brightness(Brightness.dark), style);
+    return withVariant(ContextVariant.brightness(.dark), style);
   }
 
   /// Creates a variant for light mode.
@@ -36,7 +36,7 @@ mixin UtilityVariantMixin<T extends Style<S>, S extends Spec<S>> {
   /// $box.onLight($box.color.black())
   /// ```
   T onLight(T style) {
-    return withVariant(ContextVariant.brightness(Brightness.light), style);
+    return withVariant(ContextVariant.brightness(.light), style);
   }
 
   /// Creates a variant that applies styling based on the build context.

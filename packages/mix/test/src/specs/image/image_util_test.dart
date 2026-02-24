@@ -92,10 +92,6 @@ void main() {
         expect(util.matchTextDirection, isA<Function>());
       });
 
-      test('on utility is OnContextVariantUtility', () {
-        expect(util.on, isA<OnContextVariantUtility<ImageSpec, ImageStyler>>());
-      });
-
       test('wrap utility is WidgetModifierUtility', () {
         expect(util.wrap, isA<WidgetModifierUtility<ImageStyler>>());
       });
@@ -251,14 +247,6 @@ void main() {
         final result = util.animate(animationConfig);
 
         expect(result.$animation, animationConfig);
-      });
-    });
-
-    group('Variant utilities', () {
-      test('on utility creates VariantAttributeBuilder', () {
-        final hoverBuilder = util.on.hover;
-
-        expect(hoverBuilder, isA<VariantAttributeBuilder<ImageSpec>>());
       });
     });
 

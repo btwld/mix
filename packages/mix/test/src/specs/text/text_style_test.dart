@@ -381,10 +381,6 @@ void main() {
         expect(attribute.$softWrap, resolvesTo(true));
       });
 
-      test('maybeValue returns null for null spec', () {
-        expect(null, isNull); // TextStyling.maybeValue removed
-      });
-
       test('maybeValue returns attribute for non-null spec', () {
         const spec = TextSpec(overflow: TextOverflow.visible, maxLines: 1);
         final attribute = TextStyler(
@@ -606,14 +602,14 @@ void main() {
       });
 
       test('titleCase utility works correctly', () {
-        final attribute = TextStyler().titleCase();
+        final attribute = TextStyler().titlecase();
 
         expect(attribute.$textDirectives, isNotNull);
         expect(attribute.$textDirectives!.length, 1);
       });
 
       test('sentenceCase utility works correctly', () {
-        final attribute = TextStyler().sentenceCase();
+        final attribute = TextStyler().sentencecase();
 
         expect(attribute.$textDirectives, isNotNull);
         expect(attribute.$textDirectives!.length, 1);

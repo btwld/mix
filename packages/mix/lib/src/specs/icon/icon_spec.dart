@@ -1,51 +1,70 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
 
 import '../../core/helpers.dart';
 import '../../core/spec.dart';
+
+part 'icon_spec.g.dart';
 
 /// Specification for icon styling properties.
 ///
 /// Provides comprehensive icon styling including color, size, weight, optical properties,
 /// text direction, scaling behavior, and shadow effects.
-final class IconSpec extends Spec<IconSpec> with Diagnosticable {
+@MixableSpec()
+@immutable
+final class IconSpec extends Spec<IconSpec>
+    with Diagnosticable, _$IconSpecMethods {
   /// The color to use when drawing the icon.
+  @override
   final Color? color;
 
   /// The size of the icon in logical pixels.
+  @override
   final double? size;
 
   /// The font weight variant (100-900) for supported icon fonts.
+  @override
   final double? weight;
 
   /// The grade variant (-25 to 200) for supported icon fonts.
+  @override
   final double? grade;
 
   /// The optical size variant (20-48) for supported icon fonts.
+  @override
   final double? opticalSize;
 
   /// The text direction to use for rendering the icon.
+  @override
   final TextDirection? textDirection;
 
   /// Whether to scale the icon according to the textScaleFactor.
+  @override
   final bool? applyTextScaling;
 
   /// A list of shadows to paint behind the icon.
+  @override
   final List<Shadow>? shadows;
 
   /// The fill variant (0.0-1.0) for supported icon fonts.
+  @override
   final double? fill;
 
   /// Semantic description for accessibility.
+  @override
   final String? semanticsLabel;
 
   /// The opacity to apply to the icon.
+  @override
   final double? opacity;
 
   /// The blend mode to apply when drawing the icon.
+  @override
   final BlendMode? blendMode;
 
   /// The icon data to display.
+  @override
   final IconData? icon;
 
   const IconSpec({
@@ -63,102 +82,4 @@ final class IconSpec extends Spec<IconSpec> with Diagnosticable {
     this.blendMode,
     this.icon,
   });
-
-  @override
-  IconSpec copyWith({
-    Color? color,
-    double? size,
-    double? weight,
-    double? grade,
-    double? opticalSize,
-    List<Shadow>? shadows,
-    TextDirection? textDirection,
-    bool? applyTextScaling,
-    double? fill,
-    String? semanticsLabel,
-    double? opacity,
-    BlendMode? blendMode,
-    IconData? icon,
-  }) {
-    return IconSpec(
-      color: color ?? this.color,
-      size: size ?? this.size,
-      weight: weight ?? this.weight,
-      grade: grade ?? this.grade,
-      opticalSize: opticalSize ?? this.opticalSize,
-      shadows: shadows ?? this.shadows,
-      textDirection: textDirection ?? this.textDirection,
-      applyTextScaling: applyTextScaling ?? this.applyTextScaling,
-      fill: fill ?? this.fill,
-      semanticsLabel: semanticsLabel ?? this.semanticsLabel,
-      opacity: opacity ?? this.opacity,
-      blendMode: blendMode ?? this.blendMode,
-      icon: icon ?? this.icon,
-    );
-  }
-
-  @override
-  IconSpec lerp(IconSpec? other, double t) {
-    return IconSpec(
-      color: MixOps.lerp(color, other?.color, t),
-      size: MixOps.lerp(size, other?.size, t),
-      weight: MixOps.lerp(weight, other?.weight, t),
-      grade: MixOps.lerp(grade, other?.grade, t),
-      opticalSize: MixOps.lerp(opticalSize, other?.opticalSize, t),
-      shadows: MixOps.lerp(shadows, other?.shadows, t),
-      textDirection: MixOps.lerpSnap(textDirection, other?.textDirection, t),
-      applyTextScaling: MixOps.lerpSnap(
-        applyTextScaling,
-        other?.applyTextScaling,
-        t,
-      ),
-      fill: MixOps.lerp(fill, other?.fill, t),
-      semanticsLabel: MixOps.lerpSnap(semanticsLabel, other?.semanticsLabel, t),
-      opacity: MixOps.lerp(opacity, other?.opacity, t),
-      blendMode: MixOps.lerpSnap(blendMode, other?.blendMode, t),
-      icon: MixOps.lerpSnap(icon, other?.icon, t),
-    );
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(ColorProperty('color', color))
-      ..add(DoubleProperty('size', size))
-      ..add(DoubleProperty('weight', weight))
-      ..add(DoubleProperty('grade', grade))
-      ..add(DoubleProperty('opticalSize', opticalSize))
-      ..add(IterableProperty<Shadow>('shadows', shadows))
-      ..add(EnumProperty<TextDirection>('textDirection', textDirection))
-      ..add(
-        FlagProperty(
-          'applyTextScaling',
-          value: applyTextScaling,
-          ifTrue: 'scales with text',
-        ),
-      )
-      ..add(DoubleProperty('fill', fill))
-      ..add(StringProperty('semanticsLabel', semanticsLabel))
-      ..add(DoubleProperty('opacity', opacity))
-      ..add(EnumProperty<BlendMode>('blendMode', blendMode))
-      ..add(DiagnosticsProperty('icon', icon));
-  }
-
-  @override
-  List<Object?> get props => [
-    color,
-    size,
-    weight,
-    grade,
-    opticalSize,
-    shadows,
-    textDirection,
-    applyTextScaling,
-    fill,
-    semanticsLabel,
-    opacity,
-    blendMode,
-    icon,
-  ];
 }

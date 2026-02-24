@@ -49,8 +49,8 @@ mixin FlexStyleMixin<T extends Mix<Object?>> {
   }
 
   /// Convenience method for setting direction to horizontal (row)
-  T row() => direction(Axis.horizontal);
+  T row() => direction(.horizontal);
 
   /// Convenience method for setting direction to vertical (column)
-  T column() => direction(Axis.vertical);
+  T column() => direction(.vertical);
 }

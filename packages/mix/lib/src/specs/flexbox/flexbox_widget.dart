@@ -15,10 +15,36 @@ typedef VBox = ColumnBox;
 @Deprecated('Use RowBox instead')
 typedef HBox = RowBox;
 
-/// Combines [Container] and [Flex] with Mix styling.
+/// [FlexBox] combines Flutter's [Container] and [Flex] widgets with Mix styling.
 ///
-/// Applies both box and flex specifications for flexible layouts,
-/// providing decoration, constraints, and flex layout in one widget.
+/// It provides both box styling (decoration, padding, margins, transforms, constraints)
+/// and flex layout capabilities (direction, alignment, spacing) in a single widget.
+/// This makes it ideal for creating styled flex layouts without nesting multiple widgets.
+///
+/// For specific layouts, use [RowBox] for horizontal layouts or [ColumnBox] for vertical layouts.
+///
+/// You can use [FlexBoxStyler] to create styles with a fluent API. Example:
+///
+/// ```dart
+/// final style = FlexBoxStyler()
+///   .direction(Axis.horizontal)
+///   .mainAxisAlignment(MainAxisAlignment.spaceBetween)
+///   .crossAxisAlignment(CrossAxisAlignment.center)
+///   .padding(16)
+///   .spacing(12)
+///   .color(Colors.grey.shade100)
+///   .borderRounded(8);
+///
+/// FlexBox(
+///   style: style,
+///   children: [
+///     StyledIcon(icon: Icons.star),
+///     StyledText('Rating'),
+///     StyledText('4.5'),
+///   ],
+/// )
+/// ```
+///
 class FlexBox extends StyleWidget<FlexBoxSpec> {
   const FlexBox({
     super.style = const FlexBoxStyler.create(),
@@ -62,7 +88,7 @@ class RowBox extends FlexBox {
   });
 
   @override
-  Axis get _forcedDirection => Axis.horizontal;
+  Axis get _forcedDirection => .horizontal;
 }
 
 /// Vertical flex box with Mix styling.
@@ -77,7 +103,7 @@ class ColumnBox extends FlexBox {
   });
 
   @override
-  Axis get _forcedDirection => Axis.vertical;
+  Axis get _forcedDirection => .vertical;
 }
 
 /// Creates a [Flex] widget from a [FlexSpec] and required parameters.
@@ -99,14 +125,14 @@ Flex _createFlexSpecWidget({
   );
 
   return Flex(
-    direction: spec?.direction ?? forcedDirection ?? Axis.horizontal,
-    mainAxisAlignment: spec?.mainAxisAlignment ?? MainAxisAlignment.start,
-    mainAxisSize: spec?.mainAxisSize ?? MainAxisSize.max,
-    crossAxisAlignment: spec?.crossAxisAlignment ?? CrossAxisAlignment.center,
+    direction: spec?.direction ?? forcedDirection ?? .horizontal,
+    mainAxisAlignment: spec?.mainAxisAlignment ?? .start,
+    mainAxisSize: spec?.mainAxisSize ?? .max,
+    crossAxisAlignment: spec?.crossAxisAlignment ?? .center,
     textDirection: spec?.textDirection,
-    verticalDirection: spec?.verticalDirection ?? VerticalDirection.down,
+    verticalDirection: spec?.verticalDirection ?? .down,
     textBaseline: spec?.textBaseline,
-    clipBehavior: spec?.clipBehavior ?? Clip.none,
+    clipBehavior: spec?.clipBehavior ?? .none,
     spacing: spec?.spacing ?? 0.0,
     children: children,
   );
@@ -130,9 +156,9 @@ extension FlexBoxSpecWrappedWidget on StyleSpec<FlexBoxSpec> {
   )
   Widget call({required Axis direction, List<Widget> children = const []}) {
     switch (direction) {
-      case Axis.horizontal:
+      case .horizontal:
         return RowBox(styleSpec: this, children: children);
-      case Axis.vertical:
+      case .vertical:
         return ColumnBox(styleSpec: this, children: children);
     }
   }

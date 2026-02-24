@@ -1,3 +1,11 @@
+## 2.0.0-rc.1
+
+ - **BREAKING**: The Mix Generator was completely rebuilt to support the architecture and requirements of Mix V2.0.
+ - **FEAT**: Support Style class extensions in code generation (#845).
+ - **FEAT**: Add MixableSpec, MixableStyler, and code generation for properties (#835).
+ - **FIX**: Respect nullability in lerp resolver.
+ - **FIX**: Make copyWith parameters nullable (#848).
+
 ## 1.7.0
 
  - **REFACTOR**: Rename WidgetModifiersData to WidgetModifiersConfig (#649).

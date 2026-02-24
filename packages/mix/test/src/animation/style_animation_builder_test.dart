@@ -193,6 +193,141 @@ void main() {
       // Should render container even with empty/default spec
       expect(find.byKey(const Key('test-container')), findsOneWidget);
     });
+
+    testWidgets('switches from curve to spring animation config', (
+      tester,
+    ) async {
+      const curveConfig = CurveAnimationConfig(
+        duration: Duration(milliseconds: 100),
+        curve: Curves.linear,
+      );
+      final springConfig = SpringAnimationConfig.standard();
+
+      const specWithCurve = StyleSpec<TestSpec>(
+        spec: TestSpec(color: Colors.red),
+        animation: curveConfig,
+      );
+      final specWithSpring = StyleSpec<TestSpec>(
+        spec: const TestSpec(color: Colors.blue),
+        animation: springConfig,
+      );
+
+      // Start with curve animation
+      await tester.pumpWidget(
+        MaterialApp(
+          home: StyleAnimationBuilder<TestSpec>(
+            spec: specWithCurve,
+            builder: (context, spec) => Container(
+              key: const Key('test-container'),
+              color: spec.spec.color,
+            ),
+          ),
+        ),
+      );
+
+      await tester.pump();
+
+      // Switch to spring animation
+      await tester.pumpWidget(
+        MaterialApp(
+          home: StyleAnimationBuilder<TestSpec>(
+            spec: specWithSpring,
+            builder: (context, spec) => Container(
+              key: const Key('test-container'),
+              color: spec.spec.color,
+            ),
+          ),
+        ),
+      );
+
+      // Should not throw, animation driver should switch correctly
+      await tester.pump();
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('test-container')), findsOneWidget);
+    });
+
+    testWidgets('switches from animation to no animation config', (
+      tester,
+    ) async {
+      const curveConfig = CurveAnimationConfig(
+        duration: Duration(milliseconds: 100),
+        curve: Curves.linear,
+      );
+
+      const specWithAnimation = StyleSpec<TestSpec>(
+        spec: TestSpec(color: Colors.red),
+        animation: curveConfig,
+      );
+      const specWithoutAnimation = StyleSpec<TestSpec>(
+        spec: TestSpec(color: Colors.blue),
+        animation: null,
+      );
+
+      // Start with animation
+      await tester.pumpWidget(
+        MaterialApp(
+          home: StyleAnimationBuilder<TestSpec>(
+            spec: specWithAnimation,
+            builder: (context, spec) => Container(
+              key: const Key('test-container'),
+              color: spec.spec.color,
+            ),
+          ),
+        ),
+      );
+
+      await tester.pump();
+
+      // Switch to no animation
+      await tester.pumpWidget(
+        MaterialApp(
+          home: StyleAnimationBuilder<TestSpec>(
+            spec: specWithoutAnimation,
+            builder: (context, spec) => Container(
+              key: const Key('test-container'),
+              color: spec.spec.color,
+            ),
+          ),
+        ),
+      );
+
+      // Should update immediately (no animation)
+      await tester.pump();
+
+      expect(find.byKey(const Key('test-container')), findsOneWidget);
+    });
+
+    testWidgets('handles null animation value gracefully', (tester) async {
+      // Create spec with animation that produces null value
+      const animationConfig = CurveAnimationConfig(
+        duration: Duration(milliseconds: 100),
+        curve: Curves.linear,
+      );
+      const spec = StyleSpec<TestSpec>(
+        spec: TestSpec(),
+        animation: animationConfig,
+      );
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: StyleAnimationBuilder<TestSpec>(
+            spec: spec,
+            builder: (context, spec) {
+              // Builder should receive valid spec even during animation
+              expect(spec, isNotNull);
+              return Container(key: const Key('test-container'));
+            },
+          ),
+        ),
+      );
+
+      // Pump through animation
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 50));
+
+      expect(find.byKey(const Key('test-container')), findsOneWidget);
+    });
   });
 }
 

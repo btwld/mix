@@ -198,6 +198,73 @@ void main() {
 
         expect(attr1, isNot(attr2));
       });
+
+      test('Stylers with different animation are not equal', () {
+        final attr1 = StackBoxStyler(
+          animation: AnimationConfig.linear(const Duration(milliseconds: 100)),
+        );
+        final attr2 = StackBoxStyler(
+          animation: AnimationConfig.linear(const Duration(milliseconds: 200)),
+        );
+
+        expect(attr1, isNot(equals(attr2)));
+      });
+
+      test('Stylers with different modifier are not equal', () {
+        final attr1 = StackBoxStyler(
+          modifier: WidgetModifierConfig(
+            modifiers: [OpacityModifierMix(opacity: 0.5)],
+          ),
+        );
+        final attr2 = StackBoxStyler(
+          modifier: WidgetModifierConfig(
+            modifiers: [OpacityModifierMix(opacity: 0.8)],
+          ),
+        );
+
+        expect(attr1, isNot(equals(attr2)));
+      });
+
+      test('Stylers with different variants are not equal', () {
+        final variant = ContextVariant.brightness(Brightness.dark);
+        final attr1 = StackBoxStyler(
+          variants: [
+            VariantStyle(
+              variant,
+              StackBoxStyler(padding: EdgeInsetsMix.all(8.0)),
+            ),
+          ],
+        );
+        final attr2 = StackBoxStyler(
+          variants: [
+            VariantStyle(
+              variant,
+              StackBoxStyler(padding: EdgeInsetsMix.all(16.0)),
+            ),
+          ],
+        );
+
+        expect(attr1, isNot(equals(attr2)));
+      });
+    });
+
+    group('Props', () {
+      test('props includes all base Style fields', () {
+        final styler = StackBoxStyler(
+          stackAlignment: Alignment.center,
+          animation: AnimationConfig.linear(const Duration(milliseconds: 100)),
+        );
+
+        // Guard: If a field is added/removed, this count will fail
+        expect(styler.props.length, 5);
+
+        // Verify all expected fields are present
+        expect(styler.props, contains(styler.$box));
+        expect(styler.props, contains(styler.$stack));
+        expect(styler.props, contains(styler.$animation));
+        expect(styler.props, contains(styler.$modifier));
+        expect(styler.props, contains(styler.$variants));
+      });
     });
 
     group('Debug', () {

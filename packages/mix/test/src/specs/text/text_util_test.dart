@@ -91,10 +91,6 @@ void main() {
         expect(util.locale, isA<MixUtility<TextStyler, Locale>>());
       });
 
-      test('on utility is OnContextVariantUtility', () {
-        expect(util.on, isA<OnContextVariantUtility<TextSpec, TextStyler>>());
-      });
-
       test('wrap utility is WidgetModifierUtility', () {
         expect(util.wrap, isA<WidgetModifierUtility<TextStyler>>());
       });
@@ -257,14 +253,6 @@ void main() {
         final result = util.animate(animationConfig);
 
         expect(result.$animation, animationConfig);
-      });
-    });
-
-    group('Variant utilities', () {
-      test('on utility creates VariantAttributeBuilder', () {
-        final hoverBuilder = util.on.hover;
-
-        expect(hoverBuilder, isA<VariantAttributeBuilder<TextSpec>>());
       });
     });
 

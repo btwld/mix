@@ -38,22 +38,26 @@ class TextMutableStyler extends StyleMutableBuilder<TextSpec>
     (prop) => mutable.merge(TextStyler.create(style: prop)),
   );
   late final textWidthBasis = MixUtility(mutable.textWidthBasis);
-  late final textHeightBehavior = TextHeightBehaviorUtility<TextStyler>(
+  late final textHeightBehavior = TextHeightBehaviorUtility(
     mutable.textHeightBehavior,
   );
   late final textDirection = MixUtility(mutable.textDirection);
   late final directives = MixUtility(mutable.textDirective);
-  late final selectionColor = ColorUtility<TextStyler>(
+  late final selectionColor = ColorUtility(
     (prop) => mutable.merge(TextStyler.create(selectionColor: prop)),
   );
   late final locale = MixUtility(mutable.locale);
   @Deprecated(
-    'Use direct methods like \$text.onHovered() instead. '
-    'Note: Returns TextStyling for consistency with other utility methods like animate().',
+    'Use TextStyler().onHovered() and similar methods directly instead. '
+    'This property was deprecated after Mix v2.0.0.',
   )
   late final on = OnContextVariantUtility<TextSpec, TextStyler>(
     (v) => mutable.variants([v]),
   );
+  @Deprecated(
+    'Use TextStyler().wrap() method directly instead. '
+    'This property was deprecated after Mix v2.0.0.',
+  )
   late final wrap = WidgetModifierUtility(
     (prop) => mutable.wrap(WidgetModifierConfig(modifiers: [prop])),
   );

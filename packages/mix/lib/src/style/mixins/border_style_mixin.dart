@@ -8,6 +8,7 @@ import 'decoration_style_mixin.dart';
 mixin BorderStyleMixin<T extends Mix<Object?>>
     implements DecorationStyleMixin<T> {
   // Individual border side methods with full BorderSide property support
+  /// Sets the top border.
   T borderTop({
     Color? color,
     double? width,
@@ -26,6 +27,7 @@ mixin BorderStyleMixin<T extends Mix<Object?>>
     );
   }
 
+  /// Sets the bottom border.
   T borderBottom({
     Color? color,
     double? width,
@@ -44,6 +46,7 @@ mixin BorderStyleMixin<T extends Mix<Object?>>
     );
   }
 
+  /// Sets the left border.
   T borderLeft({
     Color? color,
     double? width,
@@ -62,6 +65,7 @@ mixin BorderStyleMixin<T extends Mix<Object?>>
     );
   }
 
+  /// Sets the right border.
   T borderRight({
     Color? color,
     double? width,
@@ -80,7 +84,7 @@ mixin BorderStyleMixin<T extends Mix<Object?>>
     );
   }
 
-  // Logical directional borders (RTL-aware)
+  /// Sets the start border (RTL-aware).
   T borderStart({
     Color? color,
     double? width,
@@ -99,6 +103,7 @@ mixin BorderStyleMixin<T extends Mix<Object?>>
     );
   }
 
+  /// Sets the end border (RTL-aware).
   T borderEnd({
     Color? color,
     double? width,
@@ -117,7 +122,7 @@ mixin BorderStyleMixin<T extends Mix<Object?>>
     );
   }
 
-  // Border groups
+  /// Sets vertical borders (top & bottom).
   T borderVertical({
     Color? color,
     double? width,
@@ -134,6 +139,7 @@ mixin BorderStyleMixin<T extends Mix<Object?>>
     return border(BorderMix.vertical(side));
   }
 
+  /// Sets horizontal borders (left & right).
   T borderHorizontal({
     Color? color,
     double? width,
@@ -150,6 +156,7 @@ mixin BorderStyleMixin<T extends Mix<Object?>>
     return border(BorderMix.horizontal(side));
   }
 
+  /// Sets all borders.
   T borderAll({
     Color? color,
     double? width,

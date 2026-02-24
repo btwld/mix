@@ -1,17 +1,8 @@
 /// Flags to indicate external code entities (classes, extensions, etc.) to generate.
 class GeneratedSpecComponents {
   static const int none = 0x00;
-  static const int utility = 0x01;
-  static const int attribute = 0x02;
-  static const int resolvableExtension = 0x04;
-  static const int tween = 0x08;
 
-  static const int all = utility | attribute | resolvableExtension | tween;
-
-  static const skipUtility = all & ~utility;
-  static const skipAttribute = all & ~attribute;
-  static const skipResolvableExtension = all & ~resolvableExtension;
-  static const skipTween = all & ~tween;
+  static const int all = none;
 
   const GeneratedSpecComponents._();
 }
@@ -56,4 +47,65 @@ class GeneratedPropertyComponents {
   static const int all = utility | resolvableExtension;
 
   const GeneratedPropertyComponents._();
+}
+
+/// Flags indicating methods to generate within the Styler mixin.
+class GeneratedStylerMethods {
+  static const int none = 0x00;
+
+  /// Generate setter methods for fields (e.g., `alignment(value)`)
+  static const int setters = 0x01;
+
+  /// Generate `merge()` method
+  static const int merge = 0x02;
+
+  /// Generate `resolve()` method
+  static const int resolve = 0x04;
+
+  /// Generate `debugFillProperties()` method
+  static const int debugFillProperties = 0x08;
+
+  /// Generate `props` getter for equality
+  static const int props = 0x10;
+
+  /// Generate `call()` method for widget creation
+  static const int call = 0x20;
+
+  static const int all =
+      setters | merge | resolve | debugFillProperties | props | call;
+
+  static const skipSetters = all & ~setters;
+  static const skipMerge = all & ~merge;
+  static const skipResolve = all & ~resolve;
+  static const skipDebugFillProperties = all & ~debugFillProperties;
+  static const skipProps = all & ~props;
+  static const skipCall = all & ~call;
+
+  const GeneratedStylerMethods._();
+}
+
+/// Flags indicating methods to generate within the Mix mixin.
+class GeneratedMixMethods {
+  static const int none = 0x00;
+
+  /// Generate `merge()` method
+  static const int merge = 0x01;
+
+  /// Generate `resolve()` method
+  static const int resolve = 0x02;
+
+  /// Generate `props` getter for equality
+  static const int props = 0x04;
+
+  /// Generate `debugFillProperties()` method
+  static const int debugFillProperties = 0x08;
+
+  static const int all = merge | resolve | props | debugFillProperties;
+
+  static const skipMerge = all & ~merge;
+  static const skipResolve = all & ~resolve;
+  static const skipProps = all & ~props;
+  static const skipDebugFillProperties = all & ~debugFillProperties;
+
+  const GeneratedMixMethods._();
 }

@@ -14,7 +14,6 @@ import 'directive.dart';
 import 'internal/deep_collection_equality.dart';
 import 'mix_element.dart';
 import 'prop.dart';
-import 'prop_source.dart';
 import 'shape_border_merge.dart';
 import 'spec.dart';
 import 'style.dart';
@@ -77,8 +76,8 @@ class MixOps {
     List<VariantStyle<S>>? other,
   ) {
     if (current == null && other == null) return null;
-    if (current == null) return List<VariantStyle<S>>.of(other!);
-    if (other == null) return List<VariantStyle<S>>.of(current);
+    if (current == null) return List.of(other!);
+    if (other == null) return List.of(current);
 
     final Map<Object, VariantStyle<S>> merged = {};
 
@@ -108,12 +107,12 @@ class MixOps {
     if (a.isEmpty) return b;
     if (b.isEmpty) return a;
 
-    strategy ??= ListMergeStrategy.replace;
+    strategy ??= .replace;
 
     switch (strategy) {
-      case ListMergeStrategy.append:
+      case .append:
         return [...a, ...b];
-      case ListMergeStrategy.replace:
+      case .replace:
         final listLength = a.length;
         final otherLength = b.length;
         final maxLength = math.max(listLength, otherLength);
@@ -134,7 +133,7 @@ class MixOps {
 
           return b[index];
         });
-      case ListMergeStrategy.override:
+      case .override:
         return b;
     }
   }
@@ -309,38 +308,6 @@ class PropOps {
     };
   }
 
-  /// Merges two Prop instances.
-  ///
-  /// Delegates to the current prop's mergeProp method.
-  static Prop<V> merge<V>(Prop<V> current, Prop<V>? other) {
-    // Delegate to Prop's own mergeProp method
-    return current.mergeProp(other);
-  }
-
-  /// Resolves a Prop instance to its final value.
-  ///
-  /// Delegates to the prop's resolveProp method with the given context.
-  static V resolve<V>(Prop<V> prop, BuildContext context) {
-    // Delegate to Prop's own resolveProp method
-    return prop.resolveProp(context);
-  }
-
-  /// Merges two Prop instances containing Mix values.
-  ///
-  /// Delegates to the current prop's mergeProp method.
-  static Prop<V> mergeMix<V>(Prop<V> current, Prop<V>? other) {
-    // Delegate to Prop's own mergeProp method
-    return current.mergeProp(other);
-  }
-
-  /// Resolves a Prop instance containing Mix values to its final value.
-  ///
-  /// Delegates to the prop's resolveProp method with the given context.
-  static V resolveMix<V>(Prop<V> prop, BuildContext context) {
-    // Delegate to Prop's own resolveProp method
-    return prop.resolveProp(context);
-  }
-
   /// Merges two Mix instances using appropriate merger with BuildContext.
   ///
   /// Uses specialized mergers for [DecorationMix] and [ShapeBorderMix]
@@ -354,47 +321,6 @@ class PropOps {
         ShapeBorderMerger().tryMerge(context, a, b)! as Mix<V>,
       _ => a.merge(b),
     };
-  }
-
-  /// Consolidates consecutive MixSource instances.
-  ///
-  /// Merges consecutive [MixSource] instances in the list to optimize
-  /// the prop source chain and reduce unnecessary operations.
-  static List<PropSource<V>> consolidateSources<V>(
-    List<PropSource<V>> sources,
-    BuildContext context,
-  ) {
-    if (sources.length <= 1) return sources;
-
-    final consolidated = <PropSource<V>>[];
-    MixSource<V>? pendingMixSource;
-
-    for (final source in sources) {
-      if (source is MixSource<V>) {
-        if (pendingMixSource != null) {
-          final mergedMix = mergeMixes(
-            context,
-            pendingMixSource.mix,
-            source.mix,
-          );
-          pendingMixSource = MixSource(mergedMix);
-        } else {
-          pendingMixSource = source;
-        }
-      } else {
-        if (pendingMixSource != null) {
-          consolidated.add(pendingMixSource);
-          pendingMixSource = null;
-        }
-        consolidated.add(source);
-      }
-    }
-
-    if (pendingMixSource != null) {
-      consolidated.add(pendingMixSource);
-    }
-
-    return consolidated;
   }
 }
 

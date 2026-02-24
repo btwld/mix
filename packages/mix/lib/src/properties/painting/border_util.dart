@@ -174,9 +174,9 @@ mixin BorderMixin<T extends Mix<Object?>> implements DecorationStyleMixin<T> {
 /// Provides access to border and directional border utilities for flexible border styling.
 final class BoxBorderUtility<T extends Style<Object?>>
     extends MixUtility<T, BoxBorderMix> {
-  late final border = BorderUtility<T>(utilityBuilder);
+  late final border = BorderUtility(utilityBuilder);
 
-  late final borderDirectional = BorderDirectionalUtility<T>(utilityBuilder);
+  late final borderDirectional = BorderDirectionalUtility(utilityBuilder);
 
   BoxBorderUtility(super.utilityBuilder);
 
@@ -194,21 +194,21 @@ final class BoxBorderUtility<T extends Style<Object?>>
 /// Provides utilities for styling all sides together or individual border sides.
 final class BorderUtility<T extends Style<Object?>>
     extends MixUtility<T, BorderMix> {
-  late final all = BorderSideUtility<T>(
+  late final all = BorderSideUtility(
     (v) => only(top: v, bottom: v, left: v, right: v),
   );
 
-  late final bottom = BorderSideUtility<T>((v) => only(bottom: v));
+  late final bottom = BorderSideUtility((v) => only(bottom: v));
 
-  late final top = BorderSideUtility<T>((v) => only(top: v));
+  late final top = BorderSideUtility((v) => only(top: v));
 
-  late final left = BorderSideUtility<T>((v) => only(left: v));
+  late final left = BorderSideUtility((v) => only(left: v));
 
-  late final right = BorderSideUtility<T>((v) => only(right: v));
+  late final right = BorderSideUtility((v) => only(right: v));
 
-  late final vertical = BorderSideUtility<T>((v) => only(left: v, right: v));
+  late final vertical = BorderSideUtility((v) => only(left: v, right: v));
 
-  late final horizontal = BorderSideUtility<T>((v) => only(top: v, bottom: v));
+  late final horizontal = BorderSideUtility((v) => only(top: v, bottom: v));
 
   late final color = all.color;
 
@@ -220,12 +220,7 @@ final class BorderUtility<T extends Style<Object?>>
 
   BorderUtility(super.utilityBuilder);
 
-  T none() => only(
-    top: BorderSideMix.none,
-    bottom: BorderSideMix.none,
-    left: BorderSideMix.none,
-    right: BorderSideMix.none,
-  );
+  T none() => only(top: .none, bottom: .none, left: .none, right: .none);
 
   T only({
     BorderSideMix? top,
@@ -264,21 +259,21 @@ final class BorderUtility<T extends Style<Object?>>
 /// Provides utilities for styling all sides together or individual border sides.
 final class BorderDirectionalUtility<T extends Style<Object?>>
     extends MixUtility<T, BorderDirectionalMix> {
-  late final all = BorderSideUtility<T>(
+  late final all = BorderSideUtility(
     (v) => only(top: v, bottom: v, start: v, end: v),
   );
 
-  late final bottom = BorderSideUtility<T>((v) => only(bottom: v));
+  late final bottom = BorderSideUtility((v) => only(bottom: v));
 
-  late final top = BorderSideUtility<T>((v) => only(top: v));
+  late final top = BorderSideUtility((v) => only(top: v));
 
-  late final start = BorderSideUtility<T>((v) => only(start: v));
+  late final start = BorderSideUtility((v) => only(start: v));
 
-  late final end = BorderSideUtility<T>((v) => only(end: v));
+  late final end = BorderSideUtility((v) => only(end: v));
 
-  late final vertical = BorderSideUtility<T>((v) => only(top: v, bottom: v));
+  late final vertical = BorderSideUtility((v) => only(top: v, bottom: v));
 
-  late final horizontal = BorderSideUtility<T>((v) => only(start: v, end: v));
+  late final horizontal = BorderSideUtility((v) => only(start: v, end: v));
 
   late final color = all.color;
 
@@ -290,12 +285,7 @@ final class BorderDirectionalUtility<T extends Style<Object?>>
 
   BorderDirectionalUtility(super.utilityBuilder);
 
-  T none() => only(
-    top: BorderSideMix.none,
-    bottom: BorderSideMix.none,
-    start: BorderSideMix.none,
-    end: BorderSideMix.none,
-  );
+  T none() => only(top: .none, bottom: .none, start: .none, end: .none);
 
   T only({
     BorderSideMix? top,
@@ -336,7 +326,7 @@ final class BorderDirectionalUtility<T extends Style<Object?>>
 final class BorderSideUtility<T extends Style<Object?>>
     extends MixUtility<T, BorderSideMix> {
   /// Utility for defining [BorderSideMix.color]
-  late final color = ColorUtility<T>(
+  late final color = ColorUtility(
     (prop) => utilityBuilder(BorderSideMix.create(color: prop)),
   );
 
@@ -352,7 +342,7 @@ final class BorderSideUtility<T extends Style<Object?>>
   T width(double v) => call(width: v);
 
   /// Creates a [Style] instance using the [BorderSideMix.none] constructor.
-  T none() => utilityBuilder(BorderSideMix.none);
+  T none() => utilityBuilder(.none);
 
   T call({
     Color? color,

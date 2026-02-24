@@ -92,7 +92,7 @@ void main() {
         modifiers: [opacityModifierMix],
       );
 
-      final style = BoxStyler().color(Colors.blue).modifier(modifierConfig);
+      final style = BoxStyler().color(Colors.blue).wrap(modifierConfig);
 
       await tester.pumpWidget(
         MaterialApp(

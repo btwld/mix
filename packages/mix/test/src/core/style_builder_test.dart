@@ -76,7 +76,7 @@ void main() {
       });
 
       testWidgets(
-        'No animation driver when animation config is null',
+        'Animation driver is still present when animation config is null',
         (tester) async {
           final boxAttribute = BoxStyler()
               .width(100)
@@ -97,12 +97,9 @@ void main() {
             ),
           );
 
-          // Verify that no animation wrapper is created
-          expect(find.byType(StyleAnimationBuilder<BoxSpec>), findsNothing);
+          // StyleSpecBuilder always wraps with StyleAnimationBuilder.
+          expect(find.byType(StyleAnimationBuilder<BoxSpec>), findsOneWidget);
         },
-        skip:
-            // TODO: SHOULD REVIEW LATER: Skips because we are adding the animation driver everytime
-            true,
       );
 
       testWidgets(
@@ -482,7 +479,7 @@ void main() {
                   builder: (context, childSpec) {
                     childResolvedSpec = childSpec;
                     // Verify that StyleProvider is accessible within scope
-                    inheritedStyleFromProvider = StyleProvider.maybeOf<BoxSpec>(
+                    inheritedStyleFromProvider = Style.maybeOf<BoxSpec>(
                       context,
                     );
                     return Container(
@@ -596,7 +593,7 @@ void main() {
                   builder: (context, childSpec) {
                     childResolvedSpec = childSpec;
                     // Verify that StyleProvider is NOT accessible when inheritable=false
-                    inheritedStyleFromProvider = StyleProvider.maybeOf<BoxSpec>(
+                    inheritedStyleFromProvider = Style.maybeOf<BoxSpec>(
                       context,
                     );
                     return Container(
@@ -697,15 +694,11 @@ void main() {
                   style: middleStyle,
                   inheritable: true,
                   builder: (context, middleSpec) {
-                    middleProviderStyle = StyleProvider.maybeOf<BoxSpec>(
-                      context,
-                    );
+                    middleProviderStyle = Style.maybeOf<BoxSpec>(context);
                     return StyleBuilder<BoxSpec>(
                       style: innerStyle,
                       builder: (context, innerSpec) {
-                        innerProviderStyle = StyleProvider.maybeOf<BoxSpec>(
-                          context,
-                        );
+                        innerProviderStyle = Style.maybeOf<BoxSpec>(context);
                         return Container(
                           decoration: innerSpec.decoration,
                           constraints: innerSpec.constraints,
@@ -732,7 +725,7 @@ void main() {
       });
 
       testWidgets(
-        'Should create MixInteractionDetector when StyleProvider\'s style contains widget state variants',
+        'Should create MixInteractionDetector when inherited style contains widget state variants',
         (tester) async {
           // Parent style provides a variant for hovered state
           final parentStyle = BoxStyler()
@@ -746,17 +739,20 @@ void main() {
 
           await tester.pumpWidget(
             MaterialApp(
-              home: StyleProvider<BoxSpec>(
+              home: StyleBuilder<BoxSpec>(
                 style: parentStyle,
-                child: StyleBuilder<BoxSpec>(
-                  style: childStyle,
-                  builder: (context, childSpec) {
-                    return Container(
-                      decoration: childSpec.decoration,
-                      constraints: childSpec.constraints,
-                    );
-                  },
-                ),
+                inheritable: true,
+                builder: (context, parentSpec) {
+                  return StyleBuilder<BoxSpec>(
+                    style: childStyle,
+                    builder: (context, childSpec) {
+                      return Container(
+                        decoration: childSpec.decoration,
+                        constraints: childSpec.constraints,
+                      );
+                    },
+                  );
+                },
               ),
             ),
           );
@@ -793,6 +789,53 @@ void main() {
                 return Container();
               },
             ),
+          );
+        },
+      );
+
+      testWidgets(
+        'preserves widget state when external controller is removed',
+        (tester) async {
+          final externalController = WidgetStatesController();
+          addTearDown(externalController.dispose);
+          externalController.update(WidgetState.hovered, true);
+
+          WidgetStatesController? controller = externalController;
+          late void Function(VoidCallback) setState;
+
+          await tester.pumpWidget(
+            MaterialApp(
+              home: StatefulBuilder(
+                builder: (context, stateSetter) {
+                  setState = stateSetter;
+                  return StyleBuilder<BoxSpec>(
+                    controller: controller,
+                    style: BoxStyler()
+                        .color(Colors.red)
+                        .onHovered(BoxStyler().color(Colors.blue)),
+                    builder: (context, spec) {
+                      return Container(decoration: spec.decoration);
+                    },
+                  );
+                },
+              ),
+            ),
+          );
+
+          final initial = tester.widget<Container>(find.byType(Container));
+          expect(initial.decoration, BoxDecoration(color: Colors.blue));
+
+          setState(() {
+            controller = null;
+          });
+          await tester.pump();
+
+          final afterSwap = tester.widget<Container>(find.byType(Container));
+          expect(afterSwap.decoration, BoxDecoration(color: Colors.blue));
+
+          expect(
+            () => externalController.update(WidgetState.hovered, false),
+            returnsNormally,
           );
         },
       );

@@ -14,7 +14,7 @@ sealed class Variant {
   const Variant();
 
   /// Factory method to create a named variant
-  static NamedVariant named(String name) => NamedVariant(name);
+  static NamedVariant named(String name) => .new(name);
 
   String get key;
 }

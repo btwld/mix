@@ -1,6 +1,6 @@
 ### mix_max_number_of_attributes_per_style
 
-Limit the number of attributes per style. The default value is 10. This rule aims to encourage developers to keep their styles concise and focused on a few key aspects.
+Limit the number of attributes per style. The default value is 15. This rule aims to encourage developers to keep their styles concise and focused on a few key aspects.
 
 #### Don't
 
@@ -46,4 +46,4 @@ final mainStyle = Style(
 
 ##### max_number (int)
 
-The maximum number of attributes allowed per style. The default value is 10.
+The maximum number of attributes allowed per style. The default value is 15.

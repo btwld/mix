@@ -108,7 +108,7 @@ abstract class ImplicitAnimationDriver<
   }
 
   void _onAnimationComplete(AnimationStatus status) {
-    if (status == AnimationStatus.completed) {
+    if (status == .completed) {
       onCompleteAnimation();
     }
   }
@@ -155,8 +155,8 @@ class CurveAnimationDriver<S extends Spec<S>>
     _animation = _controller.drive(_tween);
   }
 
-  TweenSequence<StyleSpec<S>?> _createTweenSequence() => TweenSequence([
-    if (config.delay > Duration.zero)
+  TweenSequence<StyleSpec<S>?> _createTweenSequence() => .new([
+    if (config.delay > .zero)
       TweenSequenceItem(
         tween: ConstantTween(_initialSpec),
         weight: config.delay.inMilliseconds.toDouble(),
@@ -239,6 +239,9 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
     required this.context,
   }) {
     _setUpAnimation();
+    if (_isLooping) {
+      _startLoopingAnimation();
+    }
   }
 
   void _setUpAnimation() {
@@ -251,12 +254,12 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
     // Override the animation to use TweenSequence wrapped in a tween
     _animation = controller.drive(_PhasedSpecTween(_tweenSequence));
 
-    config.trigger.addListener(_onTriggerChanged);
+    config.trigger?.addListener(_onTriggerChanged);
 
     // Add status listener for onEnd callback
     if (config.curveConfigs.last.onEnd != null) {
       _animation.addStatusListener((status) {
-        if (status == AnimationStatus.completed) {
+        if (status == .completed) {
           config.curveConfigs.last.onEnd!();
         }
       });
@@ -276,7 +279,7 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
       final currentIndex = i % specs.length;
       final nextIndex = (i + 1) % specs.length;
 
-      if (configs[currentIndex].delay > Duration.zero) {
+      if (configs[currentIndex].delay > .zero) {
         items.add(
           TweenSequenceItem(
             tween: ConstantTween(specs[currentIndex]),
@@ -301,6 +304,13 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
     return TweenSequence(items);
   }
 
+  void _startLoopingAnimation() {
+    controller.duration = totalDuration;
+    controller.repeat();
+  }
+
+  bool get _isLooping => config.trigger == null;
+
   /// Gets the total duration of all animation phases combined.
   Duration get totalDuration {
     return config.curveConfigs.fold(
@@ -311,7 +321,8 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
 
   @override
   void dispose() {
-    config.trigger.removeListener(_onTriggerChanged);
+    config.trigger?.removeListener(_onTriggerChanged);
+    controller.stop();
     super.dispose();
   }
 
@@ -324,8 +335,12 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
 
   @override
   void updateDriver(covariant PhaseAnimationConfig config) {
-    config.trigger.removeListener(_onTriggerChanged);
+    this.config.trigger?.removeListener(_onTriggerChanged);
     this.config = config;
+    controller.reset();
+    if (_isLooping) {
+      _startLoopingAnimation();
+    }
     _setUpAnimation();
   }
 }
@@ -345,6 +360,9 @@ class KeyframeAnimationDriver<S extends Spec<S>>
     required this.context,
   }) : _config = config {
     _setUpAnimation();
+    if (_isLooping) {
+      _startLoopingAnimation();
+    }
   }
 
   void _onTriggerChanged() {
@@ -361,11 +379,18 @@ class KeyframeAnimationDriver<S extends Spec<S>>
       _KeyframeAnimatable(_sequenceMap, _config, context),
     );
 
-    _config.trigger.addListener(_onTriggerChanged);
+    _config.trigger?.addListener(_onTriggerChanged);
   }
 
+  void _startLoopingAnimation() {
+    controller.duration = duration;
+    controller.repeat();
+  }
+
+  bool get _isLooping => _config.trigger == null;
+
   Duration get duration {
-    if (_config.timeline.isEmpty) return Duration.zero;
+    if (_config.timeline.isEmpty) return .zero;
 
     return _config.timeline.fold(
       Duration.zero,
@@ -375,7 +400,8 @@ class KeyframeAnimationDriver<S extends Spec<S>>
 
   @override
   void dispose() {
-    _config.trigger.removeListener(_onTriggerChanged);
+    _config.trigger?.removeListener(_onTriggerChanged);
+    controller.stop();
     super.dispose();
   }
 
@@ -392,8 +418,12 @@ class KeyframeAnimationDriver<S extends Spec<S>>
 
   @override
   void updateDriver(covariant KeyframeAnimationConfig<S> config) {
-    _config.trigger.removeListener(_onTriggerChanged);
+    _config.trigger?.removeListener(_onTriggerChanged);
     _config = config;
+    controller.reset();
+    if (_isLooping) {
+      _startLoopingAnimation();
+    }
     _setUpAnimation();
   }
 }

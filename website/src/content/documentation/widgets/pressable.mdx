@@ -2,6 +2,8 @@
 title: Pressable
 ---
 
+import { Callout } from "nextra/components";
+
 # Pressable
 
 This is equivalent to Flutter's **GestureDetector**, **MouseRegion**, and **Focus** widgets but with enhanced interaction state management and styling capabilities.
@@ -27,6 +29,8 @@ Pressable(
 | autofocus | `bool` | Optional, defaults to `false` |
 | focusNode | `FocusNode?` | Optional |
 | mouseCursor | `MouseCursor?` | Optional |
+| onKey | `FocusOnKeyEventCallback?` | Optional |
+| onKeyEvent | `FocusOnKeyEventCallback?` | Optional |
 | canRequestFocus | `bool` | Optional, defaults to `true` |
 | excludeFromSemantics | `bool` | Optional, defaults to `false` |
 | semanticButtonLabel | `String?` | Optional |
@@ -57,6 +61,10 @@ Pressable(
   child: StyledText('Disabled Button'),
 );
 ```
+
+<Callout type="info">
+When `mouseCursor` is null, `Pressable` chooses `SystemMouseCursors.click` when enabled and `SystemMouseCursors.basic` when disabled.
+</Callout>
 
 ## PressableBox
 
@@ -97,8 +105,8 @@ Pressable(
 PressableBox(
   style: BoxStyler()
       .color(Colors.blue)
-      .padding(16)
-      .borderRadius(8)
+      .paddingAll(16)
+      .borderRounded(8)
       .onPressed(BoxStyler().color(Colors.red))
       .onHovered(BoxStyler().color(Colors.green))
       .onFocused(BoxStyler().border(Border.all(color: Colors.white, width: 2)))
@@ -113,7 +121,6 @@ PressableBox(
 | State | Description |
 |-------|-------------|
 | `onPressed` | Styles applied when the widget is being pressed |
-| `onLongPressed` | Styles applied when the widget is being long-pressed |
 | `onHovered` | Styles applied when a pointer hovers over the widget |
 | `onFocused` | Styles applied when the widget gains focus |
 | `onDisabled` | Styles applied when the widget is disabled |

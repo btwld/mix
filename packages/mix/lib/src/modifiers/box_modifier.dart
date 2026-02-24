@@ -44,7 +44,10 @@ final class BoxModifier extends WidgetModifier<BoxModifier>
 
   @override
   Widget build(Widget child) {
-    return Box(styleSpec: StyleSpec(spec: spec), child: child);
+    return Box(
+      styleSpec: StyleSpec(spec: spec),
+      child: child,
+    );
   }
 }
 

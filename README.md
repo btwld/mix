@@ -35,20 +35,20 @@ Mix addresses these challenges by creating a styling system that uses utility fu
 
 ### Prerequisites
 
-- **Dart SDK**: ≥ 3.9.0 (required for dot notation syntax)
-- **Flutter**: Latest stable version
+- **Dart SDK**: ≥ 3.10.0 (required for dot notation syntax)
+- **Flutter**: ≥ 3.38.1
 
 ### Add Mix to Your Project
 
 ```yaml
 dependencies:
-  mix: ^2.0.0-dev.1
+  mix: ^2.0.0-rc.0
 ```
 
 Or using the Flutter CLI:
 
 ```bash
-flutter pub add mix:^2.0.0-dev.1
+flutter pub add mix:^2.0.0-rc.0
 ```
 
 ## Guiding Principles
@@ -73,7 +73,7 @@ final style = Style(
     ..borderRadius(10),
 );
 
-// NEW: Dot notation syntax (requires Dart SDK ≥ 3.9.0)
+// NEW: Dot notation syntax (requires Dart SDK ≥ 3.10.0)
 final style = Style.box(
   .height(100)
   .width(100)
@@ -82,17 +82,11 @@ final style = Style.box(
 );
 ```
 
-### Enabling Dot Notation Syntax (Recommended)
+### Dot Notation Syntax (Recommended)
 
-Mix 2.0 is optimized for Dart's experimental dot notation syntax, which provides a cleaner and more intuitive API. To enable it, add this to your `analysis_options.yaml`:
+Mix 2.0 is optimized for Dart's dot notation syntax, which provides a cleaner and more intuitive API. On Dart SDK `>=3.10.0`, no `analysis_options.yaml` experiment flag is required.
 
-```yaml
-analyzer:
-  enable-experiment:
-    - dot-shorthands
-```
-
-**Note**: This feature requires Dart SDK ≥ 3.9.0. The traditional cascade syntax will always remain supported.
+The traditional cascade syntax is still fully supported.
 
 Learn more about [styling](https://fluttermix.com/docs/guides/styling)
 

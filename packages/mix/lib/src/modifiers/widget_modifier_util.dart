@@ -22,39 +22,39 @@ import 'visibility_modifier.dart';
 final class WidgetModifierUtility<T extends Style<Object?>>
     extends MixUtility<T, ModifierMix> {
   /// Opacity modifier utility.
-  late final opacity = OpacityModifierUtility<T>(utilityBuilder);
+  late final opacity = OpacityModifierUtility(utilityBuilder);
 
   /// Transform modifier utility.
-  late final transform = TransformModifierUtility<T>(utilityBuilder);
+  late final transform = TransformModifierUtility(utilityBuilder);
 
   /// Visibility modifier utility.
-  late final visibility = VisibilityModifierUtility<T>(utilityBuilder);
+  late final visibility = VisibilityModifierUtility(utilityBuilder);
 
   /// Aspect ratio modifier utility.
-  late final aspectRatio = AspectRatioModifierUtility<T>(utilityBuilder);
+  late final aspectRatio = AspectRatioModifierUtility(utilityBuilder);
 
   /// Align modifier utility.
-  late final align = AlignModifierUtility<T>(utilityBuilder);
+  late final align = AlignModifierUtility(utilityBuilder);
 
   /// Padding modifier utility.
-  late final padding = PaddingModifierUtility<T>(utilityBuilder);
+  late final padding = PaddingModifierUtility(utilityBuilder);
 
   /// Sized box modifier utility.
-  late final sizedBox = SizedBoxModifierUtility<T>(utilityBuilder);
+  late final sizedBox = SizedBoxModifierUtility(utilityBuilder);
 
   /// Flexible modifier utility.
-  late final flexible = FlexibleModifierUtility<T>(utilityBuilder);
+  late final flexible = FlexibleModifierUtility(utilityBuilder);
 
   /// Fractionally sized box modifier utility.
-  late final fractionallySizedBox = FractionallySizedBoxModifierUtility<T>(
+  late final fractionallySizedBox = FractionallySizedBoxModifierUtility(
     utilityBuilder,
   );
 
   /// Rotated box modifier utility.
-  late final rotatedBox = RotatedBoxModifierUtility<T>(utilityBuilder);
+  late final rotatedBox = RotatedBoxModifierUtility(utilityBuilder);
 
   /// Icon theme modifier utility.
-  late final iconTheme = IconThemeModifierUtility<T>(utilityBuilder);
+  late final iconTheme = IconThemeModifierUtility(utilityBuilder);
 
   WidgetModifierUtility(super.utilityBuilder);
 

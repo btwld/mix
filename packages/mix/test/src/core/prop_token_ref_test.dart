@@ -14,27 +14,27 @@ void main() {
     });
 
     group('Current Behavior Tests', () {
-      test('ColorProp behavior - isAnyTokenRef detects it correctly', () {
+      test('ColorRef behavior - isAnyTokenRef detects it correctly', () {
         final colorToken = TestToken<Color>('test-color');
         final colorRef = ColorRef(Prop.token(colorToken));
 
-        // ColorProp should be detected as a token reference
+        // ColorRef should be detected as a token reference
         expect(
           isAnyTokenRef(colorRef),
           isTrue,
-          reason: 'Should detect ColorProp as token reference',
+          reason: 'Should detect ColorRef as token reference',
         );
 
-        // ColorProp already has proper token behavior built-in
+        // ColorRef already has proper token behavior built-in
         expect(
           colorRef,
           PropMatcher.hasTokens,
-          reason: 'ColorProp should have token source',
+          reason: 'ColorRef should have token source',
         );
         expect(
           colorRef,
           PropMatcher.isToken(colorToken),
-          reason: 'ColorProp should contain the original token',
+          reason: 'ColorRef should contain the original token',
         );
       });
 
@@ -174,14 +174,14 @@ void main() {
     });
 
     group('Verify detection functions work', () {
-      test('isAnyTokenRef detects ColorProp correctly', () {
+      test('isAnyTokenRef detects ColorRef correctly', () {
         final colorToken = TestToken<Color>('test-color');
         final colorRef = ColorRef(Prop.token(colorToken));
 
         expect(
           isAnyTokenRef(colorRef),
           isTrue,
-          reason: 'isAnyTokenRef should detect ColorProp',
+          reason: 'isAnyTokenRef should detect ColorRef',
         );
       });
 

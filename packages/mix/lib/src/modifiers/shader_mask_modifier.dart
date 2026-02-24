@@ -82,7 +82,7 @@ class ShaderMaskModifierMix extends ModifierMix<ShaderMaskModifier>
 
   ShaderMaskModifierMix({
     required ShaderCallback shaderCallback,
-    BlendMode blendMode = BlendMode.modulate,
+    BlendMode blendMode = .modulate,
   }) : this.create(
          shaderCallback: Prop.value(shaderCallback),
          blendMode: Prop.value(blendMode),
@@ -92,7 +92,7 @@ class ShaderMaskModifierMix extends ModifierMix<ShaderMaskModifier>
   ShaderMaskModifier resolve(BuildContext context) {
     return ShaderMaskModifier(
       shaderCallback: MixOps.resolve(context, shaderCallback)!,
-      blendMode: MixOps.resolve(context, blendMode) ?? BlendMode.modulate,
+      blendMode: MixOps.resolve(context, blendMode) ?? .modulate,
     );
   }
 
@@ -127,7 +127,7 @@ final class ShaderMaskModifierUtility<T extends Style<Object?>>
 
   T call({
     required ShaderCallbackBuilder shaderCallback,
-    BlendMode blendMode = BlendMode.modulate,
+    BlendMode blendMode = .modulate,
   }) {
     return utilityBuilder(
       ShaderMaskModifierMix(
@@ -149,11 +149,11 @@ class ShaderCallbackBuilder {
   /// Returns a [Shader] that draws a linear gradient from [begin] to [end]
   /// with the given [colors] and optional [stops] and [tileMode].
   static ShaderCallbackBuilder linearGradient({
-    Alignment begin = Alignment.centerLeft,
-    Alignment end = Alignment.centerRight,
+    Alignment begin = .centerLeft,
+    Alignment end = .centerRight,
     required List<Color> colors,
     List<double>? stops,
-    TileMode tileMode = TileMode.clamp,
+    TileMode tileMode = .clamp,
   }) {
     return ShaderCallbackBuilder(
       callback: (Rect bounds) {
@@ -171,11 +171,11 @@ class ShaderCallbackBuilder {
   /// Returns a [Shader] that draws a radial gradient centered at [center]
   /// with the given [radius], [colors], optional [stops], and [tileMode].
   static ShaderCallbackBuilder radialGradient({
-    Alignment center = Alignment.center,
+    Alignment center = .center,
     double radius = 0.5,
     required List<Color> colors,
     List<double>? stops,
-    TileMode tileMode = TileMode.clamp,
+    TileMode tileMode = .clamp,
   }) {
     return ShaderCallbackBuilder(
       callback: (Rect bounds) {
@@ -193,12 +193,12 @@ class ShaderCallbackBuilder {
   /// Returns a [Shader] that draws a sweep gradient centered at [center]
   /// with the given [colors], optional [stops], [startAngle], [endAngle], and [tileMode].
   static ShaderCallbackBuilder sweepGradient({
-    Alignment center = Alignment.center,
+    Alignment center = .center,
     required List<Color> colors,
     List<double>? stops,
     double startAngle = 0.0,
     double endAngle = 3.1415926535897932 * 2,
-    TileMode tileMode = TileMode.clamp,
+    TileMode tileMode = .clamp,
   }) {
     return ShaderCallbackBuilder(
       callback: (Rect bounds) {

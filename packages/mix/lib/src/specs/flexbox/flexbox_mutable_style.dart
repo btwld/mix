@@ -26,30 +26,34 @@ class FlexBoxMutableStyler extends StyleMutableBuilder<FlexBoxSpec>
     with
         UtilityVariantMixin<FlexBoxStyler, FlexBoxSpec>,
         UtilityWidgetStateVariantMixin<FlexBoxStyler, FlexBoxSpec> {
-  late final padding = EdgeInsetsGeometryUtility<FlexBoxStyler>(
+  late final padding = EdgeInsetsGeometryUtility(
     (prop) => mutable.merge(FlexBoxStyler(padding: prop)),
   );
 
-  late final margin = EdgeInsetsGeometryUtility<FlexBoxStyler>(
+  late final margin = EdgeInsetsGeometryUtility(
     (prop) => mutable.merge(FlexBoxStyler(margin: prop)),
   );
 
-  late final constraints = BoxConstraintsUtility<FlexBoxStyler>(
+  late final constraints = BoxConstraintsUtility(
     (prop) => mutable.merge(FlexBoxStyler(constraints: prop)),
   );
 
-  late final decoration = DecorationUtility<FlexBoxStyler>(
+  late final decoration = DecorationUtility(
     (prop) => mutable.merge(FlexBoxStyler(decoration: prop)),
   );
 
   @Deprecated(
-    'Use direct methods like \$flexbox.onHovered() instead. '
-    'Note: Returns FlexBoxStyle for consistency with other utility methods like animate().',
+    'Use FlexBoxStyler().onHovered() and similar methods directly instead. '
+    'This property was deprecated after Mix v2.0.0.',
   )
   late final on = OnContextVariantUtility<FlexBoxSpec, FlexBoxStyler>(
     (v) => mutable.variants([v]),
   );
 
+  @Deprecated(
+    'Use FlexBoxStyler().wrap() method directly instead. '
+    'This property was deprecated after Mix v2.0.0.',
+  )
   late final wrap = WidgetModifierUtility(
     (prop) => mutable.wrap(WidgetModifierConfig(modifiers: [prop])),
   );

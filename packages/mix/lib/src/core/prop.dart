@@ -204,6 +204,10 @@ class Prop<V> {
   /// 4. Applies any directives to transform the final value
   ///
   /// Throws [FlutterError] if the property has no sources.
+  ///
+  /// This method is internal to the Mix package. External consumers should use
+  /// [MixOps.resolve] instead.
+  @internal
   V resolveProp(BuildContext context) {
     if (sources.isEmpty) {
       throw FlutterError('Prop<$V> has no sources');

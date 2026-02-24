@@ -52,14 +52,14 @@ class WidgetStateProvider extends InheritedModel<WidgetState> {
     }
 
     return switch (state) {
-      WidgetState.disabled => model.disabled,
-      WidgetState.hovered => model.hovered,
-      WidgetState.focused => model.focused,
-      WidgetState.pressed => model.pressed,
-      WidgetState.dragged => model.dragged,
-      WidgetState.selected => model.selected,
-      WidgetState.error => model.error,
-      WidgetState.scrolledUnder => false,
+      .disabled => model.disabled,
+      .hovered => model.hovered,
+      .focused => model.focused,
+      .pressed => model.pressed,
+      .dragged => model.dragged,
+      .selected => model.selected,
+      .error => model.error,
+      .scrolledUnder => false,
     };
   }
 
@@ -116,18 +116,18 @@ class WidgetStateProvider extends InheritedModel<WidgetState> {
 /// Simplifies working with widget state controllers by providing direct access
 /// to common states like disabled, hovered, pressed, etc.
 extension WidgetStateControllerExtension on WidgetStatesController {
-  set disabled(bool value) => update(WidgetState.disabled, value);
+  set disabled(bool value) => update(.disabled, value);
 
-  set hovered(bool value) => update(WidgetState.hovered, value);
+  set hovered(bool value) => update(.hovered, value);
 
-  set pressed(bool value) => update(WidgetState.pressed, value);
+  set pressed(bool value) => update(.pressed, value);
 
-  set focused(bool value) => update(WidgetState.focused, value);
+  set focused(bool value) => update(.focused, value);
 
-  set selected(bool value) => update(WidgetState.selected, value);
-  set dragged(bool value) => update(WidgetState.dragged, value);
-  set scrolledUnder(bool value) => update(WidgetState.scrolledUnder, value);
-  set error(bool value) => update(WidgetState.error, value);
+  set selected(bool value) => update(.selected, value);
+  set dragged(bool value) => update(.dragged, value);
+  set scrolledUnder(bool value) => update(.scrolledUnder, value);
+  set error(bool value) => update(.error, value);
 
   bool get disabled => value.contains(WidgetState.disabled);
   bool get hovered => value.contains(WidgetState.hovered);

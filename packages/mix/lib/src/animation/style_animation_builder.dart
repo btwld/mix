@@ -48,33 +48,33 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
   }) {
     return switch (config) {
       // ignore: avoid-undisposed-instances
-      CurveAnimationConfig() => CurveAnimationDriver<S>(
+      CurveAnimationConfig() => CurveAnimationDriver(
         vsync: this,
         config: config,
         initialSpec: initialSpec,
       ),
       // ignore: avoid-undisposed-instances
-      SpringAnimationConfig() => SpringAnimationDriver<S>(
+      SpringAnimationConfig() => SpringAnimationDriver(
         vsync: this,
         config: config,
         initialSpec: initialSpec,
       ),
       // ignore: avoid-undisposed-instances
-      PhaseAnimationConfig() => PhaseAnimationDriver<S>(
+      PhaseAnimationConfig() => PhaseAnimationDriver(
         vsync: this,
         config: config,
         initialSpec: initialSpec,
         context: context,
       ),
       // ignore: avoid-undisposed-instances
-      KeyframeAnimationConfig() => KeyframeAnimationDriver<S>(
+      KeyframeAnimationConfig() => KeyframeAnimationDriver(
         vsync: this,
         config: config as KeyframeAnimationConfig<S>,
         initialSpec: initialSpec,
         context: context,
       ),
       // ignore: avoid-undisposed-instances
-      null => NoAnimationDriver<S>(vsync: this, initialSpec: initialSpec),
+      null => NoAnimationDriver(vsync: this, initialSpec: initialSpec),
     };
   }
 

@@ -222,13 +222,13 @@ final class SweepGradientUtility<T extends Style<Object?>>
 final class GradientUtility<T extends Style<Object?>>
     extends MixUtility<T, GradientMix> {
   /// Returns a [LinearGradientUtility] for creating linear gradients
-  late final linear = LinearGradientUtility<T>(utilityBuilder);
+  late final linear = LinearGradientUtility(utilityBuilder);
 
   /// Returns a [RadialGradientUtility] for creating radial gradients
-  late final radial = RadialGradientUtility<T>(utilityBuilder);
+  late final radial = RadialGradientUtility(utilityBuilder);
 
   /// Returns a [SweepGradientUtility] for creating sweep gradients
-  late final sweep = SweepGradientUtility<T>(utilityBuilder);
+  late final sweep = SweepGradientUtility(utilityBuilder);
 
   GradientUtility(super.utilityBuilder);
 

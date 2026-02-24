@@ -1,5 +1,7 @@
 # mix_generator
 
+
+
 A package that provides code generation for Spec and Dto classes in the Mix package. It simplifies the creation of Spec and Dto classes by automatically generating the necessary code based on annotated classes.
 
 ## Installation
@@ -9,7 +11,7 @@ To use Mix Generator, add the following dependencies to your `pubspec.yaml` file
 ```bash
 flutter pub add mix
 flutter pub add mix_annotations
-flutter pub add:dev mix_generator
+flutter pub add --dev mix_generator
 ```
 
 pubspec.yaml

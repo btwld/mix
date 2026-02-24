@@ -14,7 +14,7 @@ class ColorToken extends MixToken<Color> {
   const ColorToken(super.name);
 
   @override
-  ColorRef call() => ColorRef(Prop.token(this));
+  ColorRef call() => .new(Prop.token(this));
 }
 
 /// Design token for [Radius] values.
@@ -22,7 +22,7 @@ class RadiusToken extends MixToken<Radius> {
   const RadiusToken(super.name);
 
   @override
-  RadiusRef call() => RadiusRef(Prop.token(this));
+  RadiusRef call() => .new(Prop.token(this));
 }
 
 /// Design token for spacing values.
@@ -50,7 +50,7 @@ class BreakpointToken extends MixToken<Breakpoint> {
   const BreakpointToken(super.name);
 
   @override
-  BreakpointRef call() => BreakpointRef(this);
+  BreakpointRef call() => .new(this);
 
   @override
   Breakpoint resolve(BuildContext context) {
@@ -76,10 +76,10 @@ class TextStyleToken extends MixToken<TextStyle> {
   const TextStyleToken(super.name);
 
   /// Returns a Mix framework compatible reference for use with Mix styling utilities.
-  TextStyleMixRef mix() => TextStyleMixRef(Prop.token(this));
+  TextStyleMixRef mix() => .new(Prop.token(this));
 
   @override
-  TextStyleRef call() => TextStyleRef(Prop.token(this));
+  TextStyleRef call() => .new(Prop.token(this));
 }
 
 /// Design token for [BorderSide] values.
@@ -87,7 +87,7 @@ class BorderSideToken extends MixToken<BorderSide> {
   const BorderSideToken(super.name);
 
   @override
-  BorderSideRef call() => BorderSideRef(Prop.token(this));
+  BorderSideRef call() => .new(Prop.token(this));
 }
 
 /// Design token for shadow lists.
@@ -95,10 +95,10 @@ class ShadowToken extends MixToken<List<Shadow>> {
   const ShadowToken(super.name);
 
   /// Returns a Mix framework compatible reference for use with Mix styling utilities.
-  ShadowListMixRef mix() => ShadowListMixRef(Prop.token(this));
+  ShadowListMixRef mix() => .new(Prop.token(this));
 
   @override
-  ShadowListRef call() => ShadowListRef(Prop.token(this));
+  ShadowListRef call() => .new(Prop.token(this));
 }
 
 /// Design token for box shadow lists.
@@ -106,10 +106,10 @@ class BoxShadowToken extends MixToken<List<BoxShadow>> {
   const BoxShadowToken(super.name);
 
   /// Returns a Mix framework compatible reference for use with Mix styling utilities.
-  BoxShadowListMixRef mix() => BoxShadowListMixRef(Prop.token(this));
+  BoxShadowListMixRef mix() => .new(Prop.token(this));
 
   @override
-  BoxShadowListRef call() => BoxShadowListRef(Prop.token(this));
+  BoxShadowListRef call() => .new(Prop.token(this));
 }
 
 /// Design token for [FontWeight] values.
@@ -117,7 +117,7 @@ class FontWeightToken extends MixToken<FontWeight> {
   const FontWeightToken(super.name);
 
   @override
-  FontWeightRef call() => FontWeightRef(Prop.token(this));
+  FontWeightRef call() => .new(Prop.token(this));
 }
 
 /// Design token for [Duration] values.
@@ -125,5 +125,5 @@ class DurationToken extends MixToken<Duration> {
   const DurationToken(super.name);
 
   @override
-  DurationRef call() => DurationRef(Prop.token(this));
+  DurationRef call() => .new(Prop.token(this));
 }

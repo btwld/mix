@@ -44,10 +44,6 @@ void main() {
         expect(util.decoration, isA<DecorationUtility<BoxStyler>>());
       });
 
-      test('on utility is OnContextVariantUtility', () {
-        expect(util.on, isA<OnContextVariantUtility<BoxSpec, BoxStyler>>());
-      });
-
       test('wrap utility is WidgetModifierUtility', () {
         expect(util.wrap, isA<WidgetModifierUtility<BoxStyler>>());
       });
@@ -151,14 +147,6 @@ void main() {
         final result = util.animate(animationConfig);
 
         expect(result.$animation, animationConfig);
-      });
-    });
-
-    group('Variant utilities', () {
-      test('on utility creates VariantAttributeBuilder', () {
-        final hoverBuilder = util.on.hover;
-
-        expect(hoverBuilder, isA<VariantAttributeBuilder<BoxSpec>>());
       });
     });
 

@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+// ignore_for_file: deprecated_member_use, deprecated_member_use_from_same_package
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';

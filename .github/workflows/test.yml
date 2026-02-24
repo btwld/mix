@@ -23,27 +23,25 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  format:
+    name: Format Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: kuhnroyal/flutter-fvm-config-action@v2
+        id: fvm-config-action
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ steps.fvm-config-action.outputs.FLUTTER_VERSION }}
+          channel: ${{ steps.fvm-config-action.outputs.FLUTTER_CHANNEL }}
+      - name: Check formatting
+        run: dart format --set-exit-if-changed .
+
   test:
     name: Test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout mix repo
-        uses: actions/checkout@v4
-      - name: Run Tests
-        uses: ./.github/actions/test/
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-  test_min_sdk:
-    runs-on: ubuntu-latest
-    name: Test Min SDK
-    steps:
-      - name: Checkout mix repo
-        uses: actions/checkout@v4
-
-      - name: Run Tests
-        uses: ./.github/actions/test/
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          run-dcm: false
-          flutter-version: 'stable'
+    uses: btwld/dart-actions/.github/workflows/ci.yml@main
+    secrets:
+      token: ${{ secrets.GITHUB_TOKEN }}
+    with:
+      flutter-version: 'stable'
+      run-dcm: true

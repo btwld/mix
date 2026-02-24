@@ -1,18 +1,27 @@
-## 2.0.0-dev.4
+## 2.0.0-rc.1
 
+- **FEAT**: Add applyVariants() method for NamedVariants (#801).
+- **FEAT**: Deprecate $ utility accessors in favor of Styler classes (#806).
+- **FIX**: Make copyWith parameters nullable (#848).
+- **FIX**: Respect nullability in lerp resolver.
+- **FIX**: Standardize specs with @immutable and fix equality bugs (#821).
+- **FIX**: Add missing chain getter to StackStyler (#818).
+- **FIX**: Add AnimationStyleMixin to FlexBoxStyler and StackBoxStyler (#819).
+- **FIX**: Ensure that Visibility Widget are visible until the end of animation (#771).
+- **REFACTOR**: Mark resolveProp as @internal and migrate to MixOps.resolve (#833).
+- **REFACTOR**: Widget modifier API and update to Dart 3.10 (#775).
+
+## 2.0.0-rc.0
+
+- refactor: `Stack` and `StackBox`
+- refactor: introduce Style.of() and Style.maybeOf() static methods
+- feat: Implement call method for `Stack` and `FlexBox` 
+- feat: add number directives and extension for numeric transformations
+- fix: VariantStyle merge
+- refactor: extract widget state variant mixins into separate files
+- feat: Add DefaultStyledText and DefaultStyledIcon typedefs
+- refactor: remove unsupported widget state variants
 - fix: widget state tracking logic in StyleBuilder
-
-## 2.0.0-dev.3
-
-- small update public beta
-
-## 2.0.0-dev.2
-
-- First public beta
-
-## 2.0.0-dev.1
-
-- Initial development version for Mix 2.0
 
 ### 1.7.0
 
