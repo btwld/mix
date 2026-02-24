@@ -150,6 +150,7 @@ async function ensureFlutterEngine(basePath: string): Promise<FlutterMultiViewAp
 
               const engine = await engineInitializer.initializeEngine({
                 multiViewEnabled: true,
+                assetBase: basePath + "/",
               });
 
               const app = await engine.runApp() as unknown as FlutterMultiViewApp;

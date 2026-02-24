@@ -85,7 +85,9 @@ class _PreviewView extends StatelessWidget {
         textDirection: ui.TextDirection.ltr,
         child: MediaQuery.fromView(
           view: view,
-          child: PreviewRegistry.build(previewId, context),
+          child: Center(
+            child: PreviewRegistry.build(previewId, context),
+          ),
         ),
       ),
     );

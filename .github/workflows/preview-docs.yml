@@ -46,6 +46,11 @@ jobs:
       - name: Build Flutter Preview Bundle
         run: bash examples/scripts/build_web_previews.sh --local
 
+      - name: Copy Preview Bundle to Website
+        run: |
+          mkdir -p website/public/previews
+          cp -r examples/build/web/* website/public/previews/
+
       - name: Install Website Dependencies
         run: cd website && npm install
 
