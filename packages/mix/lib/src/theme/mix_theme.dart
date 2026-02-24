@@ -109,20 +109,18 @@ class MixScope extends InheritedModel<String> {
       ...?fontWeights?.cast<MixToken, Object>(),
     };
 
+    final nestedScope = MixScope._(
+      key: key,
+      tokens: childTokens,
+      orderOfModifiers: orderOfModifiers,
+      child: child,
+    );
+
     return Builder(
       builder: (context) {
         final parent = MixScope.maybeOf(context);
-        final mergedTokens = <MixToken, Object>{
-          ...?parent?.tokens,
-          ...childTokens,
-        };
 
-        return MixScope._(
-          key: key,
-          tokens: mergedTokens,
-          orderOfModifiers: orderOfModifiers ?? parent?.orderOfModifiers,
-          child: child,
-        );
+        return MixScope.combine(scopes: [?parent, nestedScope], child: child);
       },
     );
   }
