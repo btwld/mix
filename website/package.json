@@ -2,6 +2,7 @@
   "scripts": {
     "dev": "next --turbopack",
     "build": "next build",
+    "check:previews": "node scripts/check-previews-manifest.mjs",
     "start": "next start",
     "postbuild": "pagefind --site .next/server/app --output-path public/_pagefind"
   },
@@ -22,6 +23,8 @@
     "@types/node": "24.5.0",
     "@types/react": "19.1.13",
     "eslint": "^9.35.0",
+    "eslint-config-next": "^15.5.7",
+    "eslint-plugin-mdx": "^3.6.2",
     "pagefind": "^1.4.0",
     "typescript": "^5.9.2"
   }

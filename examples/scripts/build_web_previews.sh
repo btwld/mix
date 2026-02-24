@@ -2,14 +2,14 @@
 # Build Mix examples for web embedding
 #
 # Usage:
-#   ./scripts/build_web_demos.sh           # Build and copy to website
-#   ./scripts/build_web_demos.sh --local   # Build only (no copy)
+#   ./scripts/build_web_previews.sh           # Build and copy to website
+#   ./scripts/build_web_previews.sh --local   # Build only (no copy)
 #
 # Output:
 #   - Build artifacts in examples/build/web/
-#   - Copied to website/public/demos/ (unless --local)
+#   - Copied to website/public/previews/ (unless --local)
 #
-# Note: The demos folder is gitignored. Run this script:
+# Note: The previews bundle folder is gitignored. Run this script:
 #   - Locally before testing the website
 #   - In CI/CD before deploying the website
 
@@ -25,7 +25,10 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 EXAMPLES_DIR="$(dirname "$SCRIPT_DIR")"       # examples/ directory
 PROJECT_DIR="$(dirname "$EXAMPLES_DIR")"       # project root (mix/)
 BUILD_DIR="$EXAMPLES_DIR/build/web"            # Flutter web build output
-WEBSITE_DEMOS_DIR="$PROJECT_DIR/website/public/demos"  # Website public folder
+WEBSITE_PREVIEWS_DIR="$PROJECT_DIR/website/public/previews"  # Website public folder (served at /previews)
+SOURCES_DIR="$BUILD_DIR/sources"               # Exported Dart sources for docs code view
+PREVIEWS_MANIFEST="$BUILD_DIR/previews-manifest.json"  # Preview metadata for website
+PREVIEW_CHECK_SCRIPT="$PROJECT_DIR/website/scripts/check-previews-manifest.mjs"
 
 # Parse command line arguments
 LOCAL_ONLY=false
@@ -42,9 +45,9 @@ if ! command -v flutter &> /dev/null; then
     exit 1
 fi
 
-# Verify minimum Flutter version (3.38.0+ required for stable multi-view)
+# Verify minimum Flutter version (3.38.1+ required for stable multi-view)
 FLUTTER_VERSION=$(flutter --version | head -1 | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
-REQUIRED_VERSION="3.38.0"
+REQUIRED_VERSION="3.38.1"
 
 version_ge() {
     local IFS=.
@@ -89,12 +92,52 @@ rm -rf "$BUILD_DIR"
 # Build Flutter for web in release mode
 # Uses CanvasKit renderer by default for best visual fidelity
 # --pwa-strategy=none disables service worker generation to prevent 404 errors
-# --base-href=/demos/ ensures all relative paths resolve correctly when served from /demos/
-flutter build web --release --pwa-strategy=none --base-href=/demos/
+# --base-href=/previews/ ensures all relative paths resolve correctly when served from /previews/
+flutter build web --release --pwa-strategy=none --base-href=/previews/
 
 # Remove canvaskit (loaded from Google CDN automatically)
 # This reduces the build size from ~30MB to ~3MB
 rm -rf "$BUILD_DIR/canvaskit"
+
+# ============================================================================
+# Export Dart source files for docs code rendering
+# This enables reusable code snippets across docs pages by serving source files
+# from /previews/sources/...
+# ============================================================================
+rm -rf "$SOURCES_DIR"
+mkdir -p "$SOURCES_DIR"
+
+# Export main examples sources
+mkdir -p "$SOURCES_DIR/examples"
+cp -R "$EXAMPLES_DIR/lib" "$SOURCES_DIR/examples/lib"
+
+# Export package example sources (e.g., packages/*/example/lib)
+PACKAGE_EXAMPLE_LIBS=$(find "$PROJECT_DIR/packages" -maxdepth 3 -type d -path "*/example/lib" 2>/dev/null || true)
+if [ -n "$PACKAGE_EXAMPLE_LIBS" ]; then
+    while IFS= read -r src_dir; do
+        [ -z "$src_dir" ] && continue
+        rel_path="${src_dir#$PROJECT_DIR/}"
+        dest_path="$SOURCES_DIR/$rel_path"
+        mkdir -p "$(dirname "$dest_path")"
+        cp -R "$src_dir" "$dest_path"
+    done <<< "$PACKAGE_EXAMPLE_LIBS"
+fi
+
+# Generate preview manifest from PreviewRegistry.
+# This is the single source of truth used by website docs:
+# previewId -> sourcePath/snippet metadata.
+dart run tool/generate_previews_manifest.dart --output "$PREVIEWS_MANIFEST"
+
+# Validate previewId -> sourcePath snippet resolution against build output.
+if [ -f "$PREVIEW_CHECK_SCRIPT" ]; then
+    if command -v node &> /dev/null; then
+        node "$PREVIEW_CHECK_SCRIPT" "$BUILD_DIR"
+    else
+        echo "Warning: Node not found. Skipping preview manifest validation."
+    fi
+else
+    echo "Warning: Preview check script not found at $PREVIEW_CHECK_SCRIPT"
+fi
 
 # ============================================================================
 # Extract build config for runtime use
@@ -170,14 +213,15 @@ fi
 echo ""
 echo "Build complete! Output: $BUILD_DIR"
 echo "Build size: $(du -sh "$BUILD_DIR" | cut -f1)"
+echo "Source bundle size: $(du -sh "$SOURCES_DIR" | cut -f1)"
 
 if [ "$LOCAL_ONLY" = false ]; then
     echo ""
-    echo "Copying to website/public/demos/..."
-    rm -rf "$WEBSITE_DEMOS_DIR"
-    mkdir -p "$WEBSITE_DEMOS_DIR"
-    cp -r "$BUILD_DIR"/* "$WEBSITE_DEMOS_DIR/"
-    echo "Done! Demos ready at: $WEBSITE_DEMOS_DIR"
+    echo "Copying to website/public/previews/..."
+    rm -rf "$WEBSITE_PREVIEWS_DIR"
+    mkdir -p "$WEBSITE_PREVIEWS_DIR"
+    cp -r "$BUILD_DIR"/* "$WEBSITE_PREVIEWS_DIR/"
+    echo "Done! Previews ready at: $WEBSITE_PREVIEWS_DIR"
 fi
 
 echo ""

@@ -122,9 +122,9 @@ CLAUDE.md
 !packages/mix_tailwinds/CLAUDE.md
 .claude/settings.local.json
 
-# Flutter web demos (generated via: cd examples && flutter build web)
+# Flutter web previews (generated via: examples/scripts/build_web_previews.sh)
 # These are built and deployed separately, not committed to git
-website/public/demos/
+website/public/previews/
 
 # Playwright
 website/playwright-report/

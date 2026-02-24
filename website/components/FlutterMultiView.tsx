@@ -10,17 +10,17 @@ export type { FlutterMultiViewApp };
 type LoadingState = "idle" | "loading-engine" | "adding-view" | "ready" | "error";
 
 interface FlutterMultiViewProps {
-  /** The demo ID to render (e.g., 'box-basic', 'variant-hover') */
-  demoId: string;
-  /** Base path where Flutter demos are hosted (default: /demos) */
+  /** Preview ID to render (e.g., 'box-basic', 'variant-hover') */
+  previewId: string;
+  /** Base path where Flutter previews are hosted (default: /previews) */
   basePath?: string;
-  /** Height of the demo container */
+  /** Height of the preview container */
   height?: number;
-  /** Whether to show a border around the demo */
+  /** Whether to show a border around the preview */
   bordered?: boolean;
   /** Additional CSS classes */
   className?: string;
-  /** Callback when demo is ready */
+  /** Callback when preview is ready */
   onReady?: () => void;
   /** Callback on error */
   onError?: (error: Error) => void;
@@ -175,31 +175,28 @@ async function ensureFlutterEngine(basePath: string): Promise<FlutterMultiViewAp
     enginePromise!,
     FLUTTER_TIMEOUTS.ENGINE_INIT,
     "Flutter engine initialization"
-  );
+  ).catch((err) => {
+    if (err?.name === "TimeoutError") {
+      enginePromise = null;
+    }
+    throw err;
+  });
 }
 
 /**
- * FlutterMultiView - React component for embedding Flutter demos using multi-view mode.
+ * FlutterMultiView - React component for embedding Flutter previews using multi-view mode.
  *
- * Uses Flutter's multi-view API to render multiple independent demos on the same page
+ * Uses Flutter's multi-view API to render multiple independent previews on the same page
  * with a single shared Flutter engine, avoiding WebGL/CanvasKit conflicts.
  *
  * @example
  * ```tsx
- * <FlutterMultiView demoId="box-basic" height={400} />
- * <FlutterMultiView demoId="variant-hover" height={350} />
+ * <FlutterMultiView previewId="box-basic" height={400} />
  * ```
- *
- * Available demo IDs (from DemoRegistry):
- * - Widgets: box-basic, box-gradient, hbox-chip, vbox-card, zbox-layers, icon-styled, text-styled, text-directives
- * - Variants: variant-hover, variant-pressed, variant-focused, variant-selected, variant-disabled, variant-dark-light, variant-selected-toggle, variant-responsive
- * - Gradients: gradient-linear, gradient-radial, gradient-sweep
- * - Tokens: tokens-theme
- * - Animations: anim-hover-scale, anim-auto-scale, anim-tap-phase, anim-switch, anim-spring
  */
 export function FlutterMultiView({
-  demoId,
-  basePath = "/demos",
+  previewId,
+  basePath = "/previews",
   height = 400,
   bordered = true,
   className = "",
@@ -213,7 +210,7 @@ export function FlutterMultiView({
   const [error, setError] = useState<string | null>(null);
   const hasLoadedRef = useRef(false);
   const isMountedRef = useRef(true);
-  const addViewCancelledRef = useRef(false);
+  const addViewAttemptRef = useRef(0);
 
   const loadView = useCallback(async () => {
     const container = containerRef.current;
@@ -238,27 +235,34 @@ export function FlutterMultiView({
       }
 
       setState("adding-view");
-      addViewCancelledRef.current = false;
+      const myAttempt = ++addViewAttemptRef.current;
 
       // Add the view with timeout protection
+      if (!previewId) {
+        throw new Error("previewId is required");
+      }
+
+      const initialData: Record<string, string> = { previewId };
+
       const hostElement = containerRef.current;
       const addViewPromise = Promise.resolve(app.addView({
         hostElement,
-        initialData: { demoId },
+        initialData,
       }));
       let addViewTimeoutId: ReturnType<typeof setTimeout> | null = null;
       const timeoutPromise = new Promise<number>((_, reject) => {
         addViewTimeoutId = setTimeout(() => {
-          addViewCancelledRef.current = true;
+          // Mark this attempt as canceled so late-resolving addView calls get cleaned up.
+          addViewAttemptRef.current += 1;
           reject(new Error(
-            `Adding view "${demoId}" timed out after ${FLUTTER_TIMEOUTS.ADD_VIEW / 1000}s`
+            `Adding view "${previewId}" timed out after ${FLUTTER_TIMEOUTS.ADD_VIEW / 1000}s`
           ));
         }, FLUTTER_TIMEOUTS.ADD_VIEW);
       });
 
       addViewPromise
         .then((pendingViewId) => {
-          if (!addViewCancelledRef.current) return;
+          if (addViewAttemptRef.current === myAttempt) return;
           try {
             app.removeView(pendingViewId);
           } catch (err) {
@@ -301,7 +305,7 @@ export function FlutterMultiView({
       const error = err instanceof Error ? err : new Error(String(err));
       if (process.env.NODE_ENV === "development") {
         console.error("[FlutterMultiView] Failed to load view:", {
-          demoId,
+          previewId,
           error: error.message,
           stack: error.stack,
         });
@@ -310,18 +314,20 @@ export function FlutterMultiView({
       setError(error.message);
       setState("error");
       hasLoadedRef.current = false;
-      const contextError = new Error(`Demo "${demoId}" failed: ${error.message}`);
+      const contextError = new Error(
+        `Preview "${previewId}" failed: ${error.message}`,
+      );
       (contextError as Error & { cause?: unknown }).cause = error;
       onError?.(contextError);
     }
-  }, [basePath, demoId, onReady, onError]);
+  }, [basePath, onReady, onError, previewId]);
 
   // Set up IntersectionObserver for lazy loading
   useEffect(() => {
     if (!containerRef.current) return;
 
-    // Prevent re-initialization if demoId changes after initial load
-    // (use React key prop to remount if demoId needs to change dynamically)
+    // Prevent re-initialization if inputs change after initial load.
+    // (use React key prop to remount if dynamic changes are needed)
     if (hasLoadedRef.current) return;
 
     if (!lazyLoad) {
@@ -407,7 +413,7 @@ export function FlutterMultiView({
           />
           <span style={{ color: "#a78bfa", fontSize: "12px" }}>
             {state === "loading-engine" && "Loading Flutter engine..."}
-            {state === "adding-view" && "Initializing demo view..."}
+            {state === "adding-view" && "Initializing preview view..."}
             {state === "idle" && "Waiting..."}
           </span>
         </div>
@@ -430,7 +436,7 @@ export function FlutterMultiView({
             textAlign: "center",
           }}
         >
-          <span>⚠️ Failed to load demo</span>
+          <span>⚠️ Failed to load preview</span>
           <span style={{ fontSize: "12px", opacity: 0.7 }}>{error}</span>
           <button
             onClick={() => {
@@ -459,9 +465,9 @@ export function FlutterMultiView({
       <div
         ref={containerRef}
         role="application"
-        aria-label={`Flutter demo: ${demoId}`}
+        aria-label={`Flutter preview: ${previewId}`}
         aria-busy={state === "loading-engine" || state === "adding-view"}
-        data-demo-id={demoId}
+        data-preview-id={previewId}
         data-state={state}
         style={{
           width: "100%",

@@ -2,15 +2,15 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/widgets.dart';
 
-import 'demo_registry.dart';
+import 'preview_registry.dart';
 import 'multi_view_stub.dart'
     if (dart.library.js_interop) 'multi_view_web.dart'
     as multi_view;
 
-/// Multi-view app wrapper that renders different demos based on view's initialData.
+/// Multi-view app wrapper that renders previews based on view initialData.
 ///
 /// When embedded in a web page with multi-view enabled, each view receives
-/// its own initialData containing the demoId to display.
+/// its own initialData containing the previewId to display.
 ///
 /// This widget implements the official Flutter multi-view pattern with
 /// WidgetsBindingObserver to properly handle dynamic view additions/removals.
@@ -51,17 +51,20 @@ class _MultiViewAppState extends State<MultiViewApp>
         for (final view in views)
           View(
             view: view,
-            child: _DemoView(viewId: view.viewId),
+            child: _PreviewView(viewId: view.viewId),
           ),
       ],
     );
   }
 }
 
-/// Individual demo view widget that renders the appropriate demo
+/// Individual preview view widget that renders the appropriate preview
 /// based on the initialData passed from JavaScript.
-class _DemoView extends StatelessWidget {
-  const _DemoView({required this.viewId});
+///
+/// Uses:
+/// - `previewId`: explicit preview lookup.
+class _PreviewView extends StatelessWidget {
+  const _PreviewView({required this.viewId});
 
   final int viewId;
 
@@ -70,8 +73,10 @@ class _DemoView extends StatelessWidget {
     // Get the initialData passed from JavaScript via addView().
     final initialData = multi_view.getInitialData(viewId);
     // Defensive typing: JS may pass non-string values
-    final rawDemoId = initialData?['demoId'];
-    final demoId = rawDemoId is String ? rawDemoId : rawDemoId?.toString();
+    final rawPreviewId = initialData?['previewId'];
+    final previewId = rawPreviewId is String
+        ? rawPreviewId
+        : rawPreviewId?.toString();
     final view = View.of(context);
 
     return ColoredBox(
@@ -80,7 +85,7 @@ class _DemoView extends StatelessWidget {
         textDirection: ui.TextDirection.ltr,
         child: MediaQuery.fromView(
           view: view,
-          child: DemoRegistry.build(demoId, context),
+          child: PreviewRegistry.build(previewId, context),
         ),
       ),
     );

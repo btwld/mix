@@ -2,6 +2,7 @@
 ///
 /// Multi-view mode is only supported on web, so these functions
 /// return safe defaults on other platforms.
+library;
 
 /// Whether multi-view mode is enabled (always false on non-web).
 bool get isMultiViewEnabled => false;

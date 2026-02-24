@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'components/chip_button.dart';
 import 'components/custom_scaffold.dart';
-import 'demo_registry.dart';
+import 'preview_registry.dart';
 import 'multi_view_app.dart';
 
 // Conditional import for web-specific APIs
@@ -51,29 +51,29 @@ class _ExampleNavigatorState extends State<ExampleNavigator> {
   String _selectedCategory = 'All';
 
   // Use centralized registry as single source of truth
-  List<DemoEntry> get _demos => DemoRegistry.all;
+  List<PreviewEntry> get _previews => PreviewRegistry.all;
 
-  Widget _buildExampleCard(DemoEntry demo, BuildContext context) {
+  Widget _buildExampleCard(PreviewEntry preview, BuildContext context) {
     return Padding(
       padding: const .all(12),
       child: Column(
         crossAxisAlignment: .start,
         children: [
           Text(
-            demo.title,
+            preview.title,
             style: const TextStyle(fontSize: 16, fontWeight: .bold),
             overflow: .ellipsis,
             maxLines: 2,
           ),
           const SizedBox(height: 8),
           Text(
-            demo.description,
+            preview.description,
             style: const TextStyle(color: Colors.grey, fontSize: 12),
             overflow: .ellipsis,
             maxLines: 2,
           ),
           const SizedBox(height: 12),
-          Expanded(child: Center(child: demo.builder(context))),
+          Expanded(child: Center(child: preview.builder(context))),
         ],
       ),
     );
@@ -81,10 +81,10 @@ class _ExampleNavigatorState extends State<ExampleNavigator> {
 
   @override
   Widget build(BuildContext context) {
-    final categories = ['All', ..._demos.map((e) => e.category).toSet()];
-    final filteredDemos = _selectedCategory == 'All'
-        ? _demos
-        : _demos.where((e) => e.category == _selectedCategory).toList();
+    final categories = ['All', ..._previews.map((e) => e.category).toSet()];
+    final filteredPreviews = _selectedCategory == 'All'
+        ? _previews
+        : _previews.where((e) => e.category == _selectedCategory).toList();
 
     return CustomScaffold(
       appBar: const CustomAppBar(title: 'Mix Examples'),
@@ -121,11 +121,11 @@ class _ExampleNavigatorState extends State<ExampleNavigator> {
                 childAspectRatio: 0.9,
               ),
               itemBuilder: (context, index) {
-                final demo = filteredDemos[index];
+                final preview = filteredPreviews[index];
 
-                return _buildExampleCard(demo, context);
+                return _buildExampleCard(preview, context);
               },
-              itemCount: filteredDemos.length,
+              itemCount: filteredPreviews.length,
             ),
           ),
         ],

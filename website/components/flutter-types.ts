@@ -133,7 +133,7 @@ declare global {
     /** Convenience function to add a view (set in index.html) */
     addFlutterView?: (
       hostElement: HTMLElement,
-      demoId: string,
+      previewId: string,
       options?: Record<string, unknown>
     ) => Promise<number>;
 

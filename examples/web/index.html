@@ -4,7 +4,7 @@
   <base href="$FLUTTER_BASE_HREF">
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="Mix Flutter Examples - Interactive demos">
+  <meta name="description" content="Mix Flutter Examples - Interactive previews">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="Mix Examples">
@@ -90,7 +90,7 @@
     // Multi-view initialization (recommended for multiple embeds on same page)
     // Usage:
     //   await window.initFlutterMultiView();
-    //   window.flutterApp.addView({ hostElement: el, initialData: { demoId: 'box-basic' } });
+    //   window.flutterApp.addView({ hostElement: el, initialData: { previewId: 'box-basic' } });
     window.initFlutterMultiView = async function() {
       if (window.flutterApp) {
         return window.flutterApp; // Already initialized
@@ -129,18 +129,18 @@
       });
     };
 
-    // Convenience function to add a view with a specific demo
-    window.addFlutterView = async function(hostElement, demoId, options = {}) {
+    // Convenience function to add a view with a specific preview.
+    window.addFlutterView = async function(hostElement, previewId, options = {}) {
       if (!window.flutterApp) {
         await window.initFlutterMultiView();
       }
 
       const viewId = window.flutterApp.addView({
         hostElement: hostElement,
-        initialData: { demoId: demoId, ...options },
+        initialData: { previewId: previewId, ...options },
       });
 
-      console.log(`[Flutter] Added view ${viewId} for demo: ${demoId}`);
+      console.log(`[Flutter] Added view ${viewId} for preview: ${previewId}`);
       return viewId;
     };
 
