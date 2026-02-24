@@ -37,20 +37,14 @@ void main() {
 
       test('hasToken returns true', () {
         final token = TestToken<Color>('primary');
-        final prop = Prop.tokenWith<Color, Color>(
-          token,
-          (color) => color,
-        );
+        final prop = Prop.tokenWith<Color, Color>(token, (color) => color);
 
         expect(prop.hasToken, isTrue);
       });
 
       test('resolves mapped token from context', () {
         final token = TestToken<Color>('primary');
-        final prop = Prop.tokenWith<Color, Color>(
-          token,
-          (color) => color,
-        );
+        final prop = Prop.tokenWith<Color, Color>(token, (color) => color);
 
         final context = MockBuildContext(tokens: {token: Colors.red});
 
@@ -109,22 +103,19 @@ void main() {
 
       test('throws when resolver returns unsupported type', () {
         final token = TestToken<Color>('primary');
-        final prop = Prop.tokenWith<Color, Color>(token, (color) => color.value);
+        final prop = Prop.tokenWith<Color, Color>(
+          token,
+          (color) => color.value,
+        );
 
         final context = MockBuildContext(tokens: {token: Colors.red});
 
-        expect(
-          () => prop.resolveProp(context),
-          throwsA(isA<ArgumentError>()),
-        );
+        expect(() => prop.resolveProp(context), throwsA(isA<ArgumentError>()));
       });
 
       test('nullable resolver can return null for nullable V', () {
         final token = TestToken<Color>('primary');
-        final prop = Prop.tokenWith<Color?, Color>(
-          token,
-          (color) => null,
-        );
+        final prop = Prop.tokenWith<Color?, Color>(token, (color) => null);
 
         final context = MockBuildContext(tokens: {token: Colors.red});
 
@@ -133,17 +124,11 @@ void main() {
 
       test('non-nullable resolver cannot return null', () {
         final token = TestToken<Color>('primary');
-        final prop = Prop.tokenWith<Color, Color>(
-          token,
-          (color) => null,
-        );
+        final prop = Prop.tokenWith<Color, Color>(token, (color) => null);
 
         final context = MockBuildContext(tokens: {token: Colors.red});
 
-        expect(
-          () => prop.resolveProp(context),
-          throwsA(isA<ArgumentError>()),
-        );
+        expect(() => prop.resolveProp(context), throwsA(isA<ArgumentError>()));
       });
 
       test('merge order: tokenWith + value keeps value', () {
@@ -152,9 +137,7 @@ void main() {
           token,
           (color) => TextStyle(color: color),
         );
-        final valueProp = Prop.value<TextStyle>(
-          const TextStyle(fontSize: 20),
-        );
+        final valueProp = Prop.value<TextStyle>(const TextStyle(fontSize: 20));
 
         final merged = tokenProp.mergeProp(valueProp);
         final context = MockBuildContext(tokens: {token: Colors.red});
@@ -166,9 +149,7 @@ void main() {
 
       test('merge order: value + tokenWith keeps token', () {
         final token = TestToken<Color>('primary');
-        final valueProp = Prop.value<TextStyle>(
-          const TextStyle(fontSize: 20),
-        );
+        final valueProp = Prop.value<TextStyle>(const TextStyle(fontSize: 20));
         final tokenProp = Prop.tokenWith<TextStyle, Color>(
           token,
           (color) => TextStyle(color: color),
@@ -184,14 +165,8 @@ void main() {
 
       test('same token with different resolvers are equal', () {
         final token = TestToken<Color>('primary');
-        final mapped1 = Prop.tokenWith<Color, Color>(
-          token,
-          (_) => Colors.red,
-        );
-        final mapped2 = Prop.tokenWith<Color, Color>(
-          token,
-          (_) => Colors.blue,
-        );
+        final mapped1 = Prop.tokenWith<Color, Color>(token, (_) => Colors.red);
+        final mapped2 = Prop.tokenWith<Color, Color>(token, (_) => Colors.blue);
 
         expect(mapped1, equals(mapped2));
       });
@@ -211,18 +186,24 @@ void main() {
         final blueThenRed = blue.mergeProp(red);
         final context = MockBuildContext(tokens: {token: Colors.black});
 
-        expect(redThenBlue.resolveProp(context), equals(const Color(0xFF0000FF)));
-        expect(blueThenRed.resolveProp(context), equals(const Color(0xFFFF0000)));
+        expect(
+          redThenBlue.resolveProp(context),
+          equals(const Color(0xFF0000FF)),
+        );
+        expect(
+          blueThenRed.resolveProp(context),
+          equals(const Color(0xFFFF0000)),
+        );
       });
 
       test('missing token throws consistent error', () {
         final token = TestToken<Color>('missing');
-        final prop = Prop.tokenWith<Color, Color>(
-          token,
-          (color) => color,
-        );
+        final prop = Prop.tokenWith<Color, Color>(token, (color) => color);
 
-        expect(() => prop.resolveProp(MockBuildContext()), throwsA(isA<StateError>()));
+        expect(
+          () => prop.resolveProp(MockBuildContext()),
+          throwsA(isA<StateError>()),
+        );
       });
     });
 

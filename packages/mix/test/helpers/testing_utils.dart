@@ -672,7 +672,9 @@ class _PropMappedTokenMatcher<T> extends Matcher {
 
   @override
   Description describe(Description description) {
-    return description.add('Prop with mapped token ').addDescriptionOf(expected);
+    return description
+        .add('Prop with mapped token ')
+        .addDescriptionOf(expected);
   }
 
   @override
@@ -687,8 +689,9 @@ class _PropMappedTokenMatcher<T> extends Matcher {
     }
 
     if (item is Prop) {
-      final mappedSource =
-          item.sources.whereType<MappedTokenSource>().firstOrNull;
+      final mappedSource = item.sources
+          .whereType<MappedTokenSource>()
+          .firstOrNull;
       if (mappedSource != null) {
         return mismatchDescription
             .add('has mapped token ')
