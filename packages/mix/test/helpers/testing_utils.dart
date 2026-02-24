@@ -522,6 +522,10 @@ class PropMatcher {
   static Matcher isToken<T>(MixToken<T> expected) =>
       _PropTokenMatcher<T>(expected);
 
+  /// Matches a Prop containing a [MappedTokenSource] for the given token.
+  static Matcher isMappedToken<T>(MixToken<T> expected) =>
+      _PropMappedTokenMatcher<T>(expected);
+
   /// Matches a Prop that contains a specific Mix
   static Matcher isMix<T>(Mix<T> expected) => _PropMixMatcher<T>(expected);
 
@@ -644,6 +648,60 @@ class _PropTokenMatcher<T> extends Matcher {
   }
 }
 
+/// Matcher for Prop mapped token sources
+class _PropMappedTokenMatcher<T> extends Matcher {
+  final MixToken<T> expected;
+
+  const _PropMappedTokenMatcher(this.expected);
+
+  @override
+  bool matches(dynamic item, Map matchState) {
+    if (item is! Prop) {
+      matchState['error'] = 'Expected Prop, got ${item.runtimeType}';
+      return false;
+    }
+
+    final mappedSources = item.sources.whereType<MappedTokenSource>();
+    if (mappedSources.isEmpty) {
+      matchState['error'] = 'Prop does not contain a MappedTokenSource';
+      return false;
+    }
+
+    return mappedSources.any((source) => source.token == expected);
+  }
+
+  @override
+  Description describe(Description description) {
+    return description.add('Prop with mapped token ').addDescriptionOf(expected);
+  }
+
+  @override
+  Description describeMismatch(
+    dynamic item,
+    Description mismatchDescription,
+    Map matchState,
+    bool verbose,
+  ) {
+    if (matchState.containsKey('error')) {
+      return mismatchDescription.add(matchState['error']);
+    }
+
+    if (item is Prop) {
+      final mappedSource =
+          item.sources.whereType<MappedTokenSource>().firstOrNull;
+      if (mappedSource != null) {
+        return mismatchDescription
+            .add('has mapped token ')
+            .addDescriptionOf(mappedSource.token)
+            .add(' instead of ')
+            .addDescriptionOf(expected);
+      }
+    }
+
+    return mismatchDescription.add('is not a Prop with a mapped token');
+  }
+}
+
 /// Matcher for Prop Mix values
 class _PropMixMatcher<T> extends Matcher {
   final Mix<T> expected;
@@ -742,7 +800,7 @@ class _PropHasTokensMatcher extends Matcher {
       return false;
     }
 
-    return item.sources.any((s) => s is TokenSource);
+    return item.sources.any((s) => s is TokenSource || s is MappedTokenSource);
   }
 
   @override

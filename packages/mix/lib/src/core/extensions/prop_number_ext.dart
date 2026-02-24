@@ -164,7 +164,9 @@ extension NumberPropDirectiveExt<T extends num> on Prop<T> {
         : source is TokenSource<T>
         ? Prop.token((source).token as MixToken<num>)
         : throw UnimplementedError(
-            'Source type ${source.runtimeType} not supported',
+            'Source type ${source.runtimeType} not supported for number '
+            'directives. '
+            'MappedTokenSource cannot be used with arithmetic extensions.',
           );
 
     // Preserve existing directives for chaining (e.g., multiply().add().round())

@@ -81,6 +81,46 @@ void main() {
       });
     });
 
+    group('MappedTokenSource', () {
+      test('stores token and resolver', () {
+        final token = TestToken<Color>('color.primary');
+        final source = MappedTokenSource<Color, Color>(
+          token,
+          (value) => value.withAlpha(255),
+        );
+
+        expect(source.token, equals(token));
+        expect(source.resolve(Colors.red), equals(Colors.red.withAlpha(255)));
+      });
+
+      test('toString includes token', () {
+        final token = TestToken<Color>('color.primary');
+        final source = MappedTokenSource<Color, Color>(token, (value) => value);
+
+        expect(source.toString(), contains('MappedTokenSource'));
+        expect(source.toString(), contains(token.toString()));
+      });
+
+      test('equals by token only', () {
+        final token = TestToken<Color>('color.primary');
+        final source1 = MappedTokenSource<Color, Color>(
+          token,
+          (value) => value.withAlpha(255),
+        );
+        final source2 = MappedTokenSource<Color, Color>(
+          token,
+          (value) => value.withBlue(0),
+        );
+        final source3 = MappedTokenSource<Color, Color>(
+          const TestToken<Color>('color.secondary'),
+          (value) => value,
+        );
+
+        expect(source1, equals(source2));
+        expect(source1, isNot(source3));
+      });
+    });
+
     group('Merging behavior', () {
       test('token source + value source (accumulation strategy)', () {
         final token = TestToken<Shadow>('shadow.primary');
