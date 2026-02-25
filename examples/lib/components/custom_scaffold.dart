@@ -3,26 +3,23 @@
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
-final scaffoldContainer = FlexBoxStyler()
-    .mainAxisSize(.max)
-    .crossAxisAlignment(.stretch)
-    .mainAxisAlignment(.start)
-    .color(Colors.white);
+final scaffoldContainer = FlexBoxStyler.mainAxisSize(
+  .max,
+).crossAxisAlignment(.stretch).mainAxisAlignment(.start).color(Colors.white);
 
-final appHeaderContainer = BoxStyler()
-    .height(80)
+final appHeaderContainer = BoxStyler.height(80)
     .color(Colors.black)
     .paddingAll(16)
     .alignment(.center)
     .wrap(
       .new().defaultText(
-        TextStyler().fontSize(20).fontWeight(.bold).color(Colors.white),
+        TextStyler.fontSize(20).fontWeight(.bold).color(Colors.white),
       ),
     );
 
-final scaffoldBodyContainer = BoxStyler()
-    .color(Colors.grey.shade50)
-    .padding(.all(16));
+final scaffoldBodyContainer = BoxStyler.color(
+  Colors.grey.shade50,
+).padding(.all(16));
 
 class CustomScaffold extends StatelessWidget {
   const CustomScaffold({super.key, this.appBar, required this.body});

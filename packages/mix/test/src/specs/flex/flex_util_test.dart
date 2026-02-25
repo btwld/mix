@@ -21,7 +21,7 @@ void main() {
       });
 
       test('mainAxisAlignment utility modifies internal state', () {
-        util.mainAxisAlignment(MainAxisAlignment.center);
+        util.mainAxisAlignment(.center);
 
         final spec = util.resolve(MockBuildContext());
         expect(
@@ -105,7 +105,7 @@ void main() {
       test('chains all properties together', () {
         util
           ..direction(Axis.vertical)
-          ..mainAxisAlignment(MainAxisAlignment.center)
+          ..mainAxisAlignment(.center)
           ..crossAxisAlignment(CrossAxisAlignment.stretch)
           ..spacing(12.0);
 
@@ -256,7 +256,7 @@ void main() {
       test('', () {
         util
           ..direction(Axis.vertical)
-          ..mainAxisAlignment(MainAxisAlignment.center)
+          ..mainAxisAlignment(.center)
           ..spacing(12.0);
 
         final spec = util.resolve(MockBuildContext());
@@ -276,7 +276,7 @@ void main() {
       test('', () {
         util
           ..direction(Axis.horizontal)
-          ..mainAxisAlignment(MainAxisAlignment.center)
+          ..mainAxisAlignment(.center)
           ..spacing(8.0);
 
         expect(
@@ -325,8 +325,7 @@ void main() {
         final util1 = FlexMutableStyler()
           ..direction(Axis.horizontal)
           ..spacing(4.0);
-        final util2 = FlexMutableStyler()
-          ..mainAxisAlignment(MainAxisAlignment.center);
+        final util2 = FlexMutableStyler()..mainAxisAlignment(.center);
 
         final result = util1.merge(util2);
         final spec = result.resolve(MockBuildContext());
@@ -344,7 +343,7 @@ void main() {
       test('chaining after construction with initial mix', () {
         final utility =
             FlexMutableStyler(FlexStyler(direction: Axis.horizontal))
-              ..mainAxisAlignment(MainAxisAlignment.center)
+              ..mainAxisAlignment(.center)
               ..spacing(8);
 
         final spec = utility.resolve(MockBuildContext());

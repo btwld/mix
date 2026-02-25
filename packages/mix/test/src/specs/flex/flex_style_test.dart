@@ -123,7 +123,7 @@ void main() {
 
       test('mainAxisAlignment method creates new instance', () {
         final original = FlexStyler();
-        final modified = original.mainAxisAlignment(MainAxisAlignment.center);
+        final modified = original.mainAxisAlignment(.center);
 
         expect(identical(original, modified), isFalse);
         expect(

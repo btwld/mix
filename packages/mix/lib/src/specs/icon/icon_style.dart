@@ -119,6 +119,16 @@ class IconStyler extends MixStyler<IconStyler, IconSpec>
          variants: variants,
        );
 
+  // Factory constructors for dot-shorthand notation
+  factory IconStyler.icon(IconData value) => IconStyler(icon: value);
+  factory IconStyler.color(Color value) => IconStyler(color: value);
+  factory IconStyler.size(double value) => IconStyler(size: value);
+  factory IconStyler.weight(double value) => IconStyler(weight: value);
+  factory IconStyler.fill(double value) => IconStyler(fill: value);
+  factory IconStyler.opacity(double value) => IconStyler(opacity: value);
+  factory IconStyler.shadows(List<ShadowMix> value) =>
+      IconStyler(shadows: value);
+
   static IconMutableStyler get chain => .new(IconStyler());
 
   /// Sets single icon shadow

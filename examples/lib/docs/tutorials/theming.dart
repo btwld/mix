@@ -173,16 +173,15 @@ class ProfileButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final box = BoxStyler()
-        .height(50)
+    final box = BoxStyler.height(50)
         .width(.infinity)
         .color(CustomColorTokens.primary.token())
         .alignment(.center)
         .borderRadiusAll(MyThemeRadiusToken.large.token());
 
-    final text = TextStyler()
-        .style(CustomTextStyleTokens.button.token.mix())
-        .color(CustomColorTokens.onPrimary.token());
+    final text = TextStyler.style(
+      CustomTextStyleTokens.button.token.mix(),
+    ).color(CustomColorTokens.onPrimary.token());
 
     return box(child: text(label));
   }
@@ -194,12 +193,11 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final appBarTitle = TextStyler()
-        .style(CustomTextStyleTokens.headline2.token.mix())
-        .color(CustomColorTokens.onSurface.token());
+    final appBarTitle = TextStyler.style(
+      CustomTextStyleTokens.headline2.token.mix(),
+    ).color(CustomColorTokens.onSurface.token());
 
-    final flexBox = FlexBoxStyler()
-        .crossAxisAlignment(.start)
+    final flexBox = FlexBoxStyler.crossAxisAlignment(.start)
         .marginAll(MyThemeSpaceToken.medium.token())
         .spacing(MyThemeSpaceToken.medium.token());
 
@@ -218,23 +216,23 @@ class ProfilePage extends StatelessWidget {
             // Title
             StyledText(
               'Hollywood Academy',
-              style: TextStyler()
-                  .style(CustomTextStyleTokens.headline1.token.mix())
-                  .color(CustomColorTokens.onSurface.token()),
+              style: TextStyler.style(
+                CustomTextStyleTokens.headline1.token.mix(),
+              ).color(CustomColorTokens.onSurface.token()),
             ),
             // Subtitle
             StyledText(
               'Education · Los Angeles, California',
-              style: TextStyler()
-                  .style(CustomTextStyleTokens.callout.token.mix())
-                  .color(CustomColorTokens.onSurfaceVariant.token()),
+              style: TextStyler.style(
+                CustomTextStyleTokens.callout.token.mix(),
+              ).color(CustomColorTokens.onSurfaceVariant.token()),
             ),
             // Description
             StyledText(
               'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s.',
-              style: TextStyler()
-                  .style(CustomTextStyleTokens.body.token.mix())
-                  .color(CustomColorTokens.onSurfaceVariant.token()),
+              style: TextStyler.style(
+                CustomTextStyleTokens.body.token.mix(),
+              ).color(CustomColorTokens.onSurfaceVariant.token()),
             ),
             const Spacer(),
             // Button
@@ -252,15 +250,12 @@ class ImagePlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final imageContainer = BoxStyler()
-        .height(200)
+    final imageContainer = BoxStyler.height(200)
         .width(.infinity)
         .color(CustomColorTokens.primary.token())
         .borderRadiusAll(MyThemeRadiusToken.medium.token());
 
-    final icon = IconStyler()
-        .size(80)
-        .color(CustomColorTokens.onPrimary.token());
+    final icon = IconStyler.size(80).color(CustomColorTokens.onPrimary.token());
 
     return imageContainer(child: icon(icon: Icons.image));
   }

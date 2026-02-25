@@ -21,7 +21,7 @@ This approach promotes:
 `Styler` methods are descriptive, predictable, and easy to chain. For example:
 
 ```dart
-final boxStyle = BoxStyler()
+final boxStyle = BoxStyler
   .width(100)
   .paddingAll(10)
   .alignment(Alignment.center)
@@ -36,11 +36,11 @@ Mix's API is designed to be intuitive and easy to pick up, especially for Flutte
 
 ```dart
 // Explicit alignment
-BoxStyler().alignment(Alignment.centerRight);
+BoxStyler.alignment(Alignment.centerRight);
 
 // Spacing helpers
-BoxStyler().paddingAll(16); // All sides
-BoxStyler().paddingX(12).paddingY(8); // Horizontal and vertical
+BoxStyler.padding(EdgeInsetsGeometryMix.all(16)); // All sides
+BoxStyler.padding(EdgeInsetsGeometryMix.symmetric(horizontal: 12, vertical: 8)); // Horizontal and vertical
 BoxStyler().paddingOnly(horizontal: 12, vertical: 8); // Specific sides
 ```
 
@@ -79,5 +79,5 @@ extension on BoxStyler {
 }
 
 // Use the extension method
-BoxStyler().borderRedTop();
+BoxStyler.borderRedTop();
 ```

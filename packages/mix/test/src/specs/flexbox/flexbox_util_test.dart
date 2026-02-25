@@ -129,7 +129,7 @@ void main() {
       });
 
       test('', () {
-        final result = util.mainAxisAlignment(MainAxisAlignment.center);
+        final result = util.mainAxisAlignment(.center);
         expect(result, isA<FlexBoxStyler>());
       });
 
@@ -302,7 +302,7 @@ void main() {
 
         // Chain multiple method calls - these mutate internal state
         util.direction(Axis.vertical);
-        util.mainAxisAlignment(MainAxisAlignment.center);
+        util.mainAxisAlignment(.center);
         util.spacing(16.0);
 
         // Verify accumulated state through resolution
@@ -317,7 +317,7 @@ void main() {
       test('cascade notation works with utility methods', () {
         final util = FlexBoxMutableStyler()
           ..direction(Axis.vertical)
-          ..mainAxisAlignment(MainAxisAlignment.center)
+          ..mainAxisAlignment(.center)
           ..spacing(16.0);
 
         final context = MockBuildContext();
@@ -375,7 +375,7 @@ void main() {
         final util = FlexBoxMutableStyler();
 
         util.direction(Axis.vertical);
-        util.mainAxisAlignment(MainAxisAlignment.center);
+        util.mainAxisAlignment(.center);
         util.spacing(16.0);
 
         final context = MockBuildContext();

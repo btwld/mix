@@ -129,7 +129,7 @@ class CustomButtonStyle {
   final CustomButtonSize size;
 
   BoxStyler container() {
-    var style = BoxStyler().borderRounded(8);
+    var style = BoxStyler.borderRadius(BorderRadiusMix.circular(8));
 
     // Apply size
     style = switch (size) {
@@ -148,7 +148,7 @@ class CustomButtonStyle {
   }
 
   TextStyler label() {
-    var style = TextStyler()
+    var style = TextStyler
         .color(Colors.white)
         .fontWeight(FontWeight.bold);
 

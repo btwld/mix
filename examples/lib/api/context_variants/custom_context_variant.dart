@@ -99,8 +99,7 @@ class Badge extends StatelessWidget {
         )
         .variant(
           PressedShiftContextVariant(),
-          BoxStyler()
-              .color(Colors.deepPurpleAccent.shade100)
+          BoxStyler.color(Colors.deepPurpleAccent.shade100)
               .shapeStadium(
                 side: .new().color(Colors.deepPurpleAccent.shade700),
               )

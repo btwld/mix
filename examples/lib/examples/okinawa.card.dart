@@ -34,8 +34,7 @@ class OkinawaCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final boxStyle = BoxStyler()
-        .height(200)
+    final boxStyle = BoxStyler.height(200)
         .width(200)
         .paddingAll(8)
         .alignment(Alignment.bottomCenter)
@@ -62,12 +61,11 @@ class OkinawaCard extends StatelessWidget {
         .mainAxisSize(.min)
         .crossAxisAlignment(.start);
 
-    final titleStyle = TextStyler()
-        .color(Colors.white)
-        .fontWeight(.bold)
-        .fontSize(16);
+    final titleStyle = TextStyler.color(
+      Colors.white,
+    ).fontWeight(.bold).fontSize(16);
 
-    final subtitleStyle = TextStyler().color(Colors.white70).fontSize(14);
+    final subtitleStyle = TextStyler.color(Colors.white70).fontSize(14);
 
     return Box(
       style: boxStyle,

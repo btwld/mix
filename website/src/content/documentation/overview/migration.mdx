@@ -9,7 +9,7 @@ This guide covers migrating between major versions of Mix.
 Mix 2.0 introduces a new fluent Styler API that replaces the utility-prefix pattern from v1.x. This change provides better IDE support, more intuitive method chaining, and improved type safety.
 
 <Callout type="warning">
-  **Deprecated Utilities**: The global `$box`, `$text`, `$icon`, `$flex`, `$stack`, `$image`, `$flexbox`, and `$stackbox` accessors are now deprecated. Use the corresponding Styler classes directly (e.g., `BoxStyler()`, `TextStyler()`).
+  **Deprecated Utilities**: The global `$box`, `$text`, `$icon`, `$flex`, `$stack`, `$image`, `$flexbox`, and `$stackbox` accessors are now deprecated. Use the corresponding Styler classes directly (e.g., `BoxStyler`, `TextStyler`).
 </Callout>
 
 ### Breaking Changes
@@ -20,11 +20,11 @@ The biggest change is moving from the `Style()` constructor with utility prefixe
 
 | v1.x Pattern | v2.0 Pattern |
 |--------------|--------------|
-| `Style($box.color.blue())` | `BoxStyler().color(Colors.blue)` |
-| `Style($text.style.fontSize(16))` | `TextStyler().fontSize(16)` |
-| `Style($icon.size(24))` | `IconStyler().size(24)` |
-| `Style($flexbox.gap(8))` | `FlexBoxStyler().spacing(8)` |
-| `Style($stack.alignment.center())` | `StackBoxStyler().alignment(Alignment.center)` |
+| `Style($box.color.blue())` | `BoxStyler.color(Colors.blue)` |
+| `Style($text.style.fontSize(16))` | `TextStyler.fontSize(16)` |
+| `Style($icon.size(24))` | `IconStyler.size(24)` |
+| `Style($flexbox.gap(8))` | `FlexBoxStyler.spacing(8)` |
+| `Style($stack.alignment.center())` | `StackBoxStyler.alignment(Alignment.center)` |
 
 #### Utility Prefixes Deprecated
 
@@ -39,7 +39,7 @@ final style = Style(
 );
 
 // v2.0
-final style = BoxStyler()
+final style = BoxStyler
     .color(Colors.blue)
     .paddingAll(16)
     .borderRounded(8);
@@ -67,10 +67,10 @@ final style = Style(
 );
 
 // v2.0
-final style = BoxStyler()
+final style = BoxStyler
     .color(Colors.blue)
-    .onHovered(BoxStyler().color(Colors.red))
-    .onDark(BoxStyler().color(Colors.white));
+    .onHovered(BoxStyler.color(Colors.red))
+    .onDark(BoxStyler.color(Colors.white));
 ```
 
 #### Widget Modifiers
@@ -112,7 +112,7 @@ Token resolution syntax has changed:
 $box.color.ref(primaryColor)
 
 // v2.0
-BoxStyler().color(primaryColor())
+BoxStyler.color(primaryColor())
 ```
 
 ### Widget Name Changes
@@ -131,7 +131,7 @@ BoxStyler().color(primaryColor())
 ### New Features in 2.0
 
 - **Fluent Styler API**: Chain methods for better readability
-- **Callable Stylers**: Use `BoxStyler()...()` as shorthand for creating widgets
+- **Callable Stylers**: Use `BoxStyler.<factory>(...)()` as shorthand for creating widgets
 - **Style.of() / Style.maybeOf()**: Access resolved styles from the widget tree
 - **Number directives**: `multiply()`, `add()`, `subtract()`, `divide()`, `clamp()`
 - **Improved animation support**: Better integration with animation configs
@@ -235,7 +235,7 @@ MixTheme(
 ### The use of $ (Deprecated in 2.0)
 
 <Callout type="warning">
-  **Note**: The `$` prefix utilities described below are **deprecated in Mix 2.0**. If you're migrating to Mix 2.0, use the Styler classes directly (e.g., `BoxStyler()` instead of `$box`). See the [1.x to 2.0 migration section](#1x-to-20) above.
+  **Note**: The `$` prefix utilities described below are **deprecated in Mix 2.0**. If you're migrating to Mix 2.0, use the Styler classes directly (e.g., `BoxStyler` instead of `$box`). See the [1.x to 2.0 migration section](#1x-to-20) above.
 </Callout>
 
 In version 1.0.0, the `$` symbol was introduced to access the API from the Mix package. This made it easier to identify the utilities provided by Mix. For example, to access the `box` namespace, you would use `$box`.
@@ -287,14 +287,14 @@ PressableBox(
 PressableBox(
   onPress: () {},
   child: Box(
-    style: BoxStyler()
+    style: BoxStyler
         .width(200)
         .height(200)
         .color(Colors.blue)
         .scale(2)
         .wrap(OpacityModifierMix(opacity: 0.5))
-        .onHovered(BoxStyler().color(Colors.red))
-        .onPressed(BoxStyler().color(Colors.green)),
+        .onHovered(BoxStyler.color(Colors.red))
+        .onPressed(BoxStyler.color(Colors.green)),
   ),
 )
 ```

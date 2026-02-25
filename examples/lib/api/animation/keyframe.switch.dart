@@ -33,18 +33,19 @@ class _SwitchAnimationState extends State<SwitchAnimation> {
           });
         },
         child: Box(
-          style: BoxStyler()
-              .color(
-                _trigger.value ? Colors.deepPurpleAccent : Colors.grey.shade300,
-              )
-              .height(30)
-              .width(65)
-              .borderRadiusAll(.circular(40))
-              .alignment(_trigger.value ? .centerRight : .centerLeft)
-              .animate(.easeOut(300.ms)),
+          style:
+              BoxStyler.color(
+                    _trigger.value
+                        ? Colors.deepPurpleAccent
+                        : Colors.grey.shade300,
+                  )
+                  .height(30)
+                  .width(65)
+                  .borderRadiusAll(.circular(40))
+                  .alignment(_trigger.value ? .centerRight : .centerLeft)
+                  .animate(.easeOut(300.ms)),
           child: Box(
-            style: BoxStyler()
-                .height(30)
+            style: BoxStyler.height(30)
                 .width(40)
                 .color(Colors.white)
                 .foregroundRadialGradient(

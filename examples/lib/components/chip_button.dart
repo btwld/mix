@@ -7,15 +7,14 @@ final chipButtonLabel = TextStyler(
   style: TextStyleMix(color: Colors.white, fontSize: 12, fontWeight: .w500),
 );
 
-final chipButtonContainer = BoxStyler()
-    .height(40)
+final chipButtonContainer = BoxStyler.height(40)
     .width(120)
     .color(Colors.blue)
     .borderRounded(20)
-    .onHovered(BoxStyler().color(Colors.blue.shade700))
+    .onHovered(BoxStyler.color(Colors.blue.shade700))
     .variant(
       ContextVariant.widgetState(.selected),
-      BoxStyler().color(Colors.black),
+      BoxStyler.color(Colors.black),
     )
     .alignment(.center)
     .animate(.easeInOut(300.ms));

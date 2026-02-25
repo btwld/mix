@@ -19,7 +19,7 @@ Mix provides a chainable builder API that mirrors Flutter's naming conventions a
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
-final style = BoxStyler()
+final style = BoxStyler
     .width(240)
     .height(100)
     .color(Colors.blue)
@@ -33,7 +33,7 @@ This familiar approach reduces the learning curve and makes your styling code fe
 One of Mix's most powerful features is the ability to build new styles on top of existing ones. This composition pattern promotes reusability and maintains consistency across your application:
 
 ```dart
-final base = BoxStyler()
+final base = BoxStyler
     .paddingX(16)
     .paddingY(8)
     .borderRounded(8)
@@ -51,8 +51,8 @@ final soft = base.color(Colors.blue.shade100);
 Mix styles can adapt to user interactions and context changes using variants. This enables responsive designs that react to hover states, theme changes, and other contextual factors:
 
 ```dart
-final button = BoxStyler()
+final button = BoxStyler
   .color(Colors.blue)
-  .onHovered(BoxStyler().color(Colors.blue.shade700))
-  .onDark(BoxStyler().color(Colors.blue.shade200));
+  .onHovered(BoxStyler.color(Colors.blue.shade700))
+  .onDark(BoxStyler.color(Colors.blue.shade200));
 ```

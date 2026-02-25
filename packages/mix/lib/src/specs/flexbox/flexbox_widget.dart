@@ -28,7 +28,7 @@ typedef HBox = RowBox;
 /// ```dart
 /// final style = FlexBoxStyler()
 ///   .direction(Axis.horizontal)
-///   .mainAxisAlignment(MainAxisAlignment.spaceBetween)
+///   .mainAxisAlignment(.spaceBetween)
 ///   .crossAxisAlignment(CrossAxisAlignment.center)
 ///   .padding(16)
 ///   .spacing(12)

@@ -38,8 +38,7 @@ class _ExampleState extends State<Example> {
     return MouseRegion(
       onEnter: (event) => trigger.value++,
       child: RowBox(
-        style: FlexBoxStyler()
-            .color(Colors.white)
+        style: FlexBoxStyler.color(Colors.white)
             .paddingX(16)
             .paddingY(8)
             .borderRounded(10)
@@ -47,7 +46,7 @@ class _ExampleState extends State<Example> {
             .mainAxisSize(.min)
             .spacing(8)
             .onHovered(
-              FlexBoxStyler().border(.all(.new().color(Colors.grey.shade300))),
+              FlexBoxStyler.border(.all(.new().color(Colors.grey.shade300))),
             )
             .animate(.easeInOut(150.ms)),
 
@@ -88,14 +87,12 @@ class ArrowIconButton extends StatelessWidget {
   final ValueNotifier animationTrigger;
   @override
   Widget build(BuildContext context) {
-    final boxContainer = BoxStyler()
-        .color(Colors.grey.shade200)
+    final boxContainer = BoxStyler.color(Colors.grey.shade200)
         .borderRadius(BorderRadiusMix.circular(10))
         .size(20, 20)
         .clipBehavior(.hardEdge);
 
-    final icon = IconStyler()
-        .color(Colors.grey.shade500)
+    final icon = IconStyler.color(Colors.grey.shade500)
         .size(14)
         .phaseAnimation(
           trigger: animationTrigger,

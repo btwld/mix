@@ -5,7 +5,7 @@
 /// styled container.
 ///
 /// Key concepts:
-/// - Using BoxStyler() to create box styles (recommended Mix 2.0 API)
+/// - Using BoxStyler to create box styles (recommended Mix 2.0 API)
 /// - Setting color, width, height, and border radius properties
 /// - Fluent method chaining for readable styling code
 
@@ -25,10 +25,9 @@ class Example extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final boxStyle = BoxStyler()
-        .color(Colors.red)
-        .size(100, 100)
-        .borderRounded(10);
+    final boxStyle = BoxStyler.color(
+      Colors.red,
+    ).size(100, 100).borderRounded(10);
 
     return Box(style: boxStyle);
   }

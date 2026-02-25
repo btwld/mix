@@ -415,7 +415,7 @@ void main() {
         utility.margin.horizontal(20.0);
         utility.color.red();
         utility.direction(Axis.horizontal);
-        utility.mainAxisAlignment(MainAxisAlignment.spaceBetween);
+        utility.mainAxisAlignment(.spaceBetween);
         utility.spacing(10.0);
 
         final context = MockBuildContext();

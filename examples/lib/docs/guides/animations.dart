@@ -53,8 +53,7 @@ class _ScaleAnimationState extends State<ScaleAnimation> {
 
   @override
   Widget build(BuildContext context) {
-    final style = BoxStyler()
-        .color(Colors.black)
+    final style = BoxStyler.color(Colors.black)
         .height(100)
         .width(100)
         .borderRounded(10)
@@ -72,13 +71,12 @@ class HoverAnimation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = BoxStyler()
-        .color(Colors.black)
+    final style = BoxStyler.color(Colors.black)
         .height(100)
         .width(100)
         .borderRounded(10)
         .scale(1)
-        .onHovered(BoxStyler().color(Colors.blue).scale(1.5))
+        .onHovered(BoxStyler.color(Colors.blue).scale(1.5))
         .animate(.spring(800.ms));
 
     return Box(style: style);
@@ -108,8 +106,7 @@ class _CompressExpandAnimationState extends State<CompressExpandAnimation> {
 
   @override
   Widget build(BuildContext context) {
-    final style = BoxStyler()
-        .color(Colors.deepPurple)
+    final style = BoxStyler.color(Colors.deepPurple)
         .height(100)
         .width(100)
         .borderRounded(40)
@@ -158,8 +155,7 @@ class _HeartKeyframeAnimationState extends State<HeartKeyframeAnimation> {
 
   @override
   Widget build(BuildContext context) {
-    final style = IconStyler()
-        .color(Colors.red)
+    final style = IconStyler.color(Colors.red)
         .size(80)
         .keyframeAnimation(
           trigger: _trigger,
