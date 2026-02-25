@@ -689,3 +689,134 @@ The `examples/` directory contains runnable demos. Suggested live-coding order:
 | Getting Started          | 1-2 min    |
 | Wrap-Up                  | 1 min      |
 | **Total**                | **25-35 min** |
+
+---
+
+## Recommendations & Action Items
+
+Consolidated from three independent reviewer perspectives (Priya — pragmatic tech lead, Marcus — OSS/architecture-focused developer, Sofia — UI/animation-focused developer) and our own editorial review.
+
+---
+
+### Consensus Findings (All 3 Reviewers Agreed)
+
+These came up independently in every review — they're the highest-confidence signals.
+
+1. **Variants are THE killer feature.** Every reviewer called the variant system (`.onDark()`, `.onHovered()`, `.onPressed()`) the single most compelling part of Mix. It should be treated as the centerpiece of the presentation, not just one segment among many.
+
+2. **StatelessWidget > line count.** The Before/After segment currently emphasizes "60 lines to 20 lines." All three reviewers said the real story is eliminating `StatefulWidget` — fewer lifecycle bugs, simpler mental model, smaller rebuild surface. Lead with the architecture win, not the number.
+
+3. **Acknowledge Flutter's existing solutions.** Experienced viewers will mentally check out if we pretend `ThemeExtension`, `AnimatedContainer`, and `InheritedWidget` don't exist. Name them, acknowledge they partially solve these problems, then explain why Mix goes further. This builds credibility.
+
+4. **Address the "two theming systems" concern.** Running `MixScope` alongside `ThemeData` raises a red flag. The presentation needs to explain: does Mix replace Flutter's Theme or complement it? Can tokens reference `Theme.of(context)` values? Silence on this reads as "we didn't think about it."
+
+5. **RC status is a trust blocker.** All three reviewers flagged `2.0.0-rc.0` as a concern. Don't hide it. Be transparent about the roadmap: when is stable expected, what breaking changes are planned, what's the migration path. Honesty here actually accelerates adoption.
+
+6. **Show incremental adoption.** Everyone asked: "Can I use this in one screen and not another?" Show a Mix `Box` widget living next to a vanilla `Container`. Show a partial migration. This removes the biggest adoption fear.
+
+7. **Show the running app.** This is a YouTube video, not a blog post. Every code snippet should have a corresponding screen recording of the result. Viewers want to SEE the hover effect, the animation, the dark mode toggle — not just read code.
+
+---
+
+### Structural Changes (Segment Reordering)
+
+Based on reviewer feedback, the current segment order buries two of the strongest moments.
+
+**Current order:**
+```
+1. Problem → 2. What Is Mix → 3. Fluent API → 4. Variants →
+5. Animations → 6. Tokens → 7. Okinawa Card → 8. Before/After →
+9. Getting Started → 10. Wrap-Up
+```
+
+**Recommended changes:**
+
+- **Move Before/After earlier.** Priya: "Lead with the Before/After, not the problem statement. The code comparison is more visceral than abstract pain points." Consider placing it right after The Problem (Seg 1) — show the payoff immediately, then explain how it works.
+
+- **Move Okinawa Card earlier.** Sofia: "Lead with the impressive visual result, THEN explain how it works. Hook people with the output, not the architecture." Could open the Fluent API segment with the finished card, then deconstruct it.
+
+- **Add new mini-segments:**
+  - **"Who Maintains This" (~1 min):** Team, company (Concepta Dev), contributor count, release history, community size. Priya: "Trust is the bottleneck for adoption, not features."
+  - **"What Mix Doesn't Do" (~1 min):** Be upfront about limitations. Where does `AnimationController` still win? What about gesture-driven animations? What about custom `RenderObject` scenarios? Sofia/Marcus: "Acknowledging weaknesses builds trust."
+  - **Incremental adoption demo (~1-2 min):** Show a single vanilla Flutter screen, convert one widget to Mix, show them coexisting. Priya: "This removes the biggest adoption fear."
+
+---
+
+### Content Additions Per Segment
+
+Specific talking points to weave into existing segments:
+
+**Segment 1 (The Problem):**
+- Add: "Flutter does have answers here — `ThemeExtension`, `AnimatedContainer`, manual composition. They work, but they're verbose and scattered. Mix consolidates them into a single declarative pattern."
+- This earns trust with experienced viewers who would otherwise tune out.
+
+**Segment 2 (What Is Mix):**
+- Add an "under the hood" moment: briefly show what the widget tree looks like at runtime for a styled `Box`. Marcus: "Even 60 seconds on what the widget tree looks like would satisfy architecture-minded viewers."
+- Address interop: "Mix widgets and vanilla Flutter widgets live side by side. A `Box` can be a child of a `Column`, and a `Text` can be a child of a `ColumnBox`."
+
+**Segment 4 (Variants):**
+- Explain variant precedence — when `.onDark()` and `.onHovered()` both set a color, which wins? How do they compose? What about `.onDark().onHovered()` (dark AND hovered)?
+- Address rebuilds: "Variants are resolved through context lookups, but Mix diffs the resolved spec before triggering a rebuild." (Verify this claim against actual implementation.)
+
+**Segment 5 (Animations):**
+- Be upfront about the ceiling. Sofia: "Simple cases look great, but I'll hit a wall with complex, gesture-driven animations." Acknowledge where `AnimationController` is still the right tool.
+- Marcus flagged string-typed keyframe keys (`values.get('scale')`) as undermining the "type-safe" narrative. Either explain the design choice or acknowledge it as a known tradeoff.
+
+**Segment 6 (Design Tokens):**
+- Clarify the relationship between `MixScope` and `ThemeData`. Can tokens reference `Theme.of(context).colorScheme.primary`? If yes, show it. If no, explain why that's acceptable.
+- Mention hot reload support.
+
+**Segment 8 (Before/After):**
+- Reframe around architecture: "The real win isn't fewer lines — it's eliminating `StatefulWidget`. No `setState`, no lifecycle timing bugs, no `mounted` checks. Your widget is a pure function of its style."
+- Priya: "Where did the state go? Mix manages it internally." Briefly address this.
+
+**Segment 9 (Getting Started):**
+- Add trust-building content: who maintains Mix (Concepta Dev), how long it's been in development, contributor count, GitHub activity, community channels.
+- Clarify: code generation (`build_runner`) is only needed for custom specs, not basic usage.
+- Acknowledge Flutter version requirement honestly.
+
+---
+
+### Presentation Style Recommendations
+
+How to deliver the content (applies across all segments):
+
+1. **Show result first, code second.** For every demo: display the running widget, let viewers react, THEN walk through the code. This is the "wow then how" pattern that works on YouTube.
+
+2. **Type code live when possible.** The building-up effect (starting with `BoxStyler()`, then chaining methods one by one) is more compelling than pre-written blocks. Viewers follow along and "get it" as you build.
+
+3. **Be honest about limitations.** Every reviewer said this. Acknowledging what Mix can't do builds more trust than pretending it does everything. One segment on limitations is worth more than three segments of features for credibility.
+
+4. **Use side-by-side comparisons.** Before/After works on screen. Vanilla Flutter on the left, Mix on the right. Let viewers see both simultaneously.
+
+5. **End with a single memorable line.** Sofia: "Mix lets you describe what your UI should look like in every state, and it handles the how." That's the takeaway.
+
+---
+
+### Diagram Concepts (Future Reference)
+
+Five diagrams discussed for potential visual aids. These should be simple enough to grasp in 5-10 seconds on screen.
+
+1. **The Three Pillars:** Three boxes with arrows: `Styler → Style → Widget`. One sentence per box. This is the foundational mental model.
+
+2. **Variant Stacking:** A single button shown in 4 states stacked vertically: `base` → `+ onDark` → `+ onHovered` → `+ onDark + onHovered`. Shows that variants layer, with a visual for precedence.
+
+3. **Before/After Split Screen:** Left side: tall nested block labeled "StatefulWidget" with MouseRegion > AnimatedContainer > BoxDecoration > ... inside. Right side: short flat block labeled "StatelessWidget." Line counts at bottom: `~60` vs `~20`.
+
+4. **Style Composition Tree:** `baseCard` at top, three arrows fanning down to `primaryCard`, `successCard`, `errorCard` — each adds one color. Shows inheritance visually.
+
+5. **Token Flow / Scoping:** `MixScope` at top providing `primary: blue`, child subtree uses it, then a nested `MixScope` overrides `primary: red` for its subtree. Color-coded to make scoping obvious.
+
+---
+
+### Open Questions to Resolve
+
+Before finalizing the presentation, verify these against the actual Mix codebase:
+
+- [ ] What does Box's widget tree actually look like at runtime? Count the widgets.
+- [ ] How does Mix handle rebuilds when variants depend on context? Is there spec diffing?
+- [ ] Can MixScope tokens reference `Theme.of(context)` values?
+- [ ] What's the actual bundle size impact of adding Mix?
+- [ ] Does Pressable add Semantics nodes for accessibility?
+- [ ] Is `build_runner` required for basic usage or only for custom specs?
+- [ ] What is the variant precedence model when multiple variants are active?
