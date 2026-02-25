@@ -272,12 +272,12 @@ class _ThemedAppState extends State<ThemedApp> {
       child: MaterialApp(
         home: Scaffold(
           body: Box(
-            style: BoxStyler().color($background()),
+            style: BoxStyler.color($background()),
             child: Column(
               children: [
                 StyledText(
                   'Hello, World!',
-                  style: TextStyler().color($foreground()),
+                  style: TextStyler.color($foreground()),
                 ),
                 ElevatedButton(
                   onPressed: () => setState(() => isDark = !isDark),

@@ -32,6 +32,6 @@ void main() {
   // 3
   final button = BoxStyler()
       .color(Colors.blue)
-      .onHovered(BoxStyler().color(Colors.blue.shade700))
-      .onDark(BoxStyler().color(Colors.blue.shade200));
+      .onHovered(BoxStyler.color(Colors.blue.shade700))
+      .onDark(BoxStyler.color(Colors.blue.shade200));
 }

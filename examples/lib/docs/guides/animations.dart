@@ -78,7 +78,7 @@ class HoverAnimation extends StatelessWidget {
         .width(100)
         .borderRounded(10)
         .scale(1)
-        .onHovered(BoxStyler().color(Colors.blue).scale(1.5))
+        .onHovered(BoxStyler.color(Colors.blue).scale(1.5))
         .animate(.spring(800.ms));
 
     return Box(style: style);

@@ -114,10 +114,10 @@ PressableBox(
       .color(Colors.blue)
       .paddingAll(16)
       .borderRounded(8)
-      .onPressed(BoxStyler().color(Colors.red))
-      .onHovered(BoxStyler().color(Colors.green))
-      .onFocused(BoxStyler().border(Border.all(color: Colors.white, width: 2)))
-      .onDisabled(BoxStyler().color(Colors.grey)),
+      .onPressed(BoxStyler.color(Colors.red))
+      .onHovered(BoxStyler.color(Colors.green))
+      .onFocused(BoxStyler.border(Border.all(color: Colors.white, width: 2)))
+      .onDisabled(BoxStyler.color(Colors.grey)),
   onPress: () => print('Interactive button pressed'),
   child: StyledText('Interactive Button'),
 );

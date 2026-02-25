@@ -11,11 +11,11 @@ void main() {
       .color(Colors.red);
 
   // 2
-  BoxStyler().alignment(.centerRight);
+  BoxStyler.alignment(.centerRight);
 
-  BoxStyler().paddingAll(16);
+  BoxStyler.paddingAll(16);
 
-  BoxStyler().paddingX(12).paddingY(8);
+  BoxStyler.paddingX(12).paddingY(8);
   BoxStyler().paddingOnly(horizontal: 12, vertical: 8);
 
   // 4

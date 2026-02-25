@@ -12,10 +12,10 @@ final chipButtonContainer = BoxStyler()
     .width(120)
     .color(Colors.blue)
     .borderRounded(20)
-    .onHovered(BoxStyler().color(Colors.blue.shade700))
+    .onHovered(BoxStyler.color(Colors.blue.shade700))
     .variant(
       ContextVariant.widgetState(.selected),
-      BoxStyler().color(Colors.black),
+      BoxStyler.color(Colors.black),
     )
     .alignment(.center)
     .animate(.easeInOut(300.ms));

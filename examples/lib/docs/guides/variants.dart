@@ -11,7 +11,7 @@ void main() {
       .height(100)
       .width(100)
       .borderRounded(10)
-      .onHovered(BoxStyler().color(Colors.blue));
+      .onHovered(BoxStyler.color(Colors.blue));
 
   // 2
   final styleA = BoxStyler()
@@ -19,9 +19,9 @@ void main() {
       .height(100)
       .width(100)
       .borderRounded(10)
-      .onHovered(BoxStyler().color(Colors.blue).width(200));
+      .onHovered(BoxStyler.color(Colors.blue).width(200));
 
-  final styleB = styleA.onHovered(BoxStyler().color(Colors.green));
+  final styleB = styleA.onHovered(BoxStyler.color(Colors.green));
 
   final result = BoxStyler()
       .color(Colors.green)
@@ -31,8 +31,8 @@ void main() {
 
   // 3
   final hoverStyle = BoxStyler()
-      .onDark(BoxStyler().color(Colors.blue))
-      .onLight(BoxStyler().color(Colors.green));
+      .onDark(BoxStyler.color(Colors.blue))
+      .onLight(BoxStyler.color(Colors.green));
 
   final nestedStyle = BoxStyler()
       .color(Colors.red)

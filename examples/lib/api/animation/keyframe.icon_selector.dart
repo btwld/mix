@@ -33,7 +33,7 @@ class EmojiSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget emoji(String emoji) {
-      return StyledText(emoji, style: TextStyler().fontSize(25));
+      return StyledText(emoji, style: TextStyler.fontSize(25));
     }
 
     return FlexBox(

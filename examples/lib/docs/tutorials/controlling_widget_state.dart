@@ -15,9 +15,9 @@ class Example1 extends StatelessWidget {
   BoxStyler get style => .new()
       .color(Colors.red)
       .size(100, 100)
-      .onHovered(BoxStyler().color(Colors.blue))
-      .onPressed(BoxStyler().color(Colors.green))
-      .onFocused(BoxStyler().color(Colors.yellow));
+      .onHovered(BoxStyler.color(Colors.blue))
+      .onPressed(BoxStyler.color(Colors.green))
+      .onFocused(BoxStyler.color(Colors.yellow));
 
   @override
   Widget build(BuildContext context) {
@@ -44,9 +44,9 @@ class _Example2State extends State<Example2> {
   BoxStyler get style => .new()
       .color(Colors.red)
       .size(100, 100)
-      .onHovered(BoxStyler().color(Colors.blue))
-      .onPressed(BoxStyler().color(Colors.green))
-      .onFocused(BoxStyler().color(Colors.yellow));
+      .onHovered(BoxStyler.color(Colors.blue))
+      .onPressed(BoxStyler.color(Colors.green))
+      .onFocused(BoxStyler.color(Colors.yellow));
 
   @override
   Widget build(BuildContext context) {

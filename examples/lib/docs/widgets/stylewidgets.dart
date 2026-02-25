@@ -5,7 +5,7 @@ import 'package:mix/mix.dart';
 
 void main() {
   // 1
-  final boxStyle = BoxStyler().size(100, 100).color(Colors.blue);
+  final boxStyle = BoxStyler.size(100, 100).color(Colors.blue);
 
   Box(style: boxStyle);
 
@@ -21,17 +21,17 @@ void main() {
   );
 
   // 3
-  final style = TextStyler().color(Colors.blue).fontSize(20);
+  final style = TextStyler.color(Colors.blue).fontSize(20);
 
   StyledText('Hello, World!', style: style);
 
   // 4
-  final iconStyle = IconStyler().color(Colors.blue).size(30);
+  final iconStyle = IconStyler.color(Colors.blue).size(30);
 
   StyledIcon(icon: Icons.ac_unit, style: iconStyle);
 
   // 5
-  final imageStyle = ImageStyler().width(200).height(150);
+  final imageStyle = ImageStyler.width(200).height(150);
 
   StyledImage(
     style: imageStyle,
@@ -39,7 +39,7 @@ void main() {
   );
 
   // 6
-  final pressableStyle = BoxStyler().color(Colors.blue).size(100, 100);
+  final pressableStyle = BoxStyler.color(Colors.blue).size(100, 100);
 
   PressableBox(
     style: pressableStyle,

@@ -20,7 +20,7 @@ void main() {
 
   // 2.
   RowBox(
-    style: FlexBoxStyler().color(Colors.blue).mainAxisAlignment(.spaceBetween),
+    style: FlexBoxStyler.color(Colors.blue).mainAxisAlignment(.spaceBetween),
     children: [
       //...
     ],
@@ -28,7 +28,7 @@ void main() {
 
   // 3.
   ColumnBox(
-    style: FlexBoxStyler().color(Colors.blue).mainAxisAlignment(.spaceBetween),
+    style: FlexBoxStyler.color(Colors.blue).mainAxisAlignment(.spaceBetween),
     children: [
       //...
     ],

@@ -32,7 +32,7 @@ class _ExampleState extends State<Example> {
         .borderRounded(10)
         .variant(
           ContextVariant.widgetState(.selected),
-          BoxStyler().color(Colors.blue),
+          BoxStyler.color(Colors.blue),
         );
 
     return Pressable(

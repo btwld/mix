@@ -44,8 +44,8 @@ final buttonStyle = BoxStyler()
     .height(50)
     .borderRounded(25)
     .color(Colors.blue)
-    .onHovered(BoxStyler().color(Colors.blue.shade700))
-    .onDark(BoxStyler().color(Colors.blue.shade200));
+    .onHovered(BoxStyler.color(Colors.blue.shade700))
+    .onDark(BoxStyler.color(Colors.blue.shade200));
 
 // 3
 final $primaryColor = ColorToken('primary');

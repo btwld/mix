@@ -47,7 +47,7 @@ class _ExampleState extends State<Example> {
             .mainAxisSize(.min)
             .spacing(8)
             .onHovered(
-              FlexBoxStyler().border(.all(.new().color(Colors.grey.shade300))),
+              FlexBoxStyler.border(.all(.new().color(Colors.grey.shade300))),
             )
             .animate(.easeInOut(150.ms)),
 

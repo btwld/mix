@@ -24,12 +24,12 @@ class CustomMixWidget extends StatelessWidget {
         .fontWeight(.w600)
         .color(Colors.white)
         .animate(.easeInOut(100.ms))
-        .onDark(TextStyler().color(Colors.black))
+        .onDark(TextStyler.color(Colors.black))
         .onHovered(
           TextStyler()
               .animate(.easeInOut(100.ms))
               .color(Colors.grey.shade700)
-              .onLight(TextStyler().color(Colors.white)),
+              .onLight(TextStyler.color(Colors.white)),
         );
   }
 
@@ -44,7 +44,7 @@ class CustomMixWidget extends StatelessWidget {
         .color(Colors.blue)
         .scale(1.0)
         .animate(.easeInOut(100.ms))
-        .onDark(BoxStyler().color(Colors.cyan))
+        .onDark(BoxStyler.color(Colors.cyan))
         .onHovered(
           BoxStyler()
               .alignment(.topLeft)
@@ -53,7 +53,7 @@ class CustomMixWidget extends StatelessWidget {
               .scale(1.5)
               .animate(.easeInOut(100.ms))
               .color(Colors.cyan.shade300)
-              .onLight(BoxStyler().color(Colors.blue.shade300)),
+              .onLight(BoxStyler.color(Colors.blue.shade300)),
         );
   }
 

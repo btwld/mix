@@ -28,9 +28,7 @@ class Example extends StatelessWidget {
       style: flexStyle,
       children: [
         Box(style: boxStyle),
-        Box(
-          style: BoxStyler().color(Colors.grey.shade300).height(50).width(100),
-        ),
+        Box(style: BoxStyler.color(Colors.grey.shade300).height(50).width(100)),
         Box(
           style: BoxStyler()
               .color(Colors.black)

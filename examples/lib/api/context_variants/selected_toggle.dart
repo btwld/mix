@@ -51,7 +51,7 @@ class _ExampleState extends State<Example> {
         .color(Colors.grey.shade700)
         .variant(
           ContextVariant.widgetState(.selected),
-          TextStyler().color(Colors.white),
+          TextStyler.color(Colors.white),
         );
 
     return Pressable(

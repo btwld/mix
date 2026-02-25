@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
             style: cardStyle,
             child: StyledText(
               'Hello Mix',
-              style: TextStyler().color(Colors.white).fontSize(18),
+              style: TextStyler.color(Colors.white).fontSize(18),
             ),
           ),
         ),
@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-final primaryCard = BoxStyler().color(Colors.blue).borderRounded(12);
+final primaryCard = BoxStyler.color(Colors.blue).borderRounded(12);
 
 final box = Box(style: primaryCard, child: StyledText('Primary'));
 final box2 = Box(

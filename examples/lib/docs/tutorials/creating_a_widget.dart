@@ -82,23 +82,23 @@ class ButtonStyler extends Style<ButtonSpec>
   }
 
   ButtonStyler backgroundColor(Color value) {
-    return merge(ButtonStyler(container: FlexBoxStyler().color(value)));
+    return merge(ButtonStyler(container: FlexBoxStyler.color(value)));
   }
 
   ButtonStyler textColor(Color value) {
-    return merge(ButtonStyler(label: TextStyler().color(value)));
+    return merge(ButtonStyler(label: TextStyler.color(value)));
   }
 
   ButtonStyler iconColor(Color value) {
-    return merge(ButtonStyler(icon: IconStyler().color(value)));
+    return merge(ButtonStyler(icon: IconStyler.color(value)));
   }
 
   ButtonStyler fontSize(double value) {
-    return merge(ButtonStyler(label: TextStyler().fontSize(value)));
+    return merge(ButtonStyler(label: TextStyler.fontSize(value)));
   }
 
   ButtonStyler lineHeight(double value) {
-    return merge(ButtonStyler(label: TextStyler().height(value)));
+    return merge(ButtonStyler(label: TextStyler.height(value)));
   }
 
   ButtonStyler borderWidth(double value) {
@@ -114,7 +114,7 @@ class ButtonStyler extends Style<ButtonSpec>
   }
 
   ButtonStyler borderRadius(double value) {
-    return merge(ButtonStyler(container: FlexBoxStyler().borderRounded(value)));
+    return merge(ButtonStyler(container: FlexBoxStyler.borderRounded(value)));
   }
 
   ButtonStyler shadow(BoxShadowMix value) {
@@ -123,12 +123,12 @@ class ButtonStyler extends Style<ButtonSpec>
 
   ButtonStyler padding({required double x, required double y}) {
     return merge(
-      ButtonStyler(container: FlexBoxStyler().paddingX(x).paddingY(y)),
+      ButtonStyler(container: FlexBoxStyler.paddingX(x).paddingY(y)),
     );
   }
 
   ButtonStyler scale(double value) {
-    return merge(ButtonStyler(container: FlexBoxStyler().scale(value)));
+    return merge(ButtonStyler(container: FlexBoxStyler.scale(value)));
   }
 
   @override
@@ -235,11 +235,11 @@ class CustomButton extends StatelessWidget {
         .crossAxisAlignment(.center)
         .mainAxisSize(.min);
 
-    final label = TextStyler().style(
+    final label = TextStyler.style(
       TextStyleMix().fontSize(16).fontWeight(.w500),
     );
 
-    final icon = IconStyler().size(18);
+    final icon = IconStyler.size(18);
 
     return ButtonStyler()
         .container(container)
@@ -248,20 +248,20 @@ class CustomButton extends StatelessWidget {
         .merge(variant?.style)
         .onPressed(
           ButtonStyler()
-              .container(FlexBoxStyler().color(Colors.blueAccent.shade400))
-              .label(TextStyler().style(TextStyleMix().color(Colors.white)))
-              .icon(IconStyler().color(Colors.white))
+              .container(FlexBoxStyler.color(Colors.blueAccent.shade400))
+              .label(TextStyler.style(TextStyleMix().color(Colors.white)))
+              .icon(IconStyler.color(Colors.white))
               .scale(0.9),
         )
         .onDisabled(
           ButtonStyler()
-              .container(FlexBoxStyler().color(Colors.blueGrey.shade100))
+              .container(FlexBoxStyler.color(Colors.blueGrey.shade100))
               .label(
-                TextStyler().style(
+                TextStyler.style(
                   TextStyleMix().color(Colors.blueGrey.shade700),
                 ),
               )
-              .icon(IconStyler().color(Colors.blueGrey.shade700)),
+              .icon(IconStyler.color(Colors.blueGrey.shade700)),
         )
         .merge(style);
   }

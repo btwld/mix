@@ -67,7 +67,7 @@ class OkinawaCard extends StatelessWidget {
         .fontWeight(.bold)
         .fontSize(16);
 
-    final subtitleStyle = TextStyler().color(Colors.white70).fontSize(14);
+    final subtitleStyle = TextStyler.color(Colors.white70).fontSize(14);
 
     return Box(
       style: boxStyle,

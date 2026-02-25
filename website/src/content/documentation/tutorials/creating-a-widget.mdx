@@ -135,29 +135,29 @@ class ButtonStyler extends MixStyler<ButtonStyler, ButtonSpec>
 
   // Convenience methods (beyond the generated container/icon/label setters)
   ButtonStyler backgroundColor(Color value) {
-    return merge(ButtonStyler(container: FlexBoxStyler().color(value)));
+    return merge(ButtonStyler(container: FlexBoxStyler.color(value)));
   }
 
   ButtonStyler textColor(Color value) {
-    return merge(ButtonStyler(label: TextStyler().color(value)));
+    return merge(ButtonStyler(label: TextStyler.color(value)));
   }
 
   ButtonStyler iconColor(Color value) {
-    return merge(ButtonStyler(icon: IconStyler().color(value)));
+    return merge(ButtonStyler(icon: IconStyler.color(value)));
   }
 
   ButtonStyler borderRadius(double value) {
-    return merge(ButtonStyler(container: FlexBoxStyler().borderRounded(value)));
+    return merge(ButtonStyler(container: FlexBoxStyler.borderRounded(value)));
   }
 
   ButtonStyler padding({required double x, required double y}) {
     return merge(
-      ButtonStyler(container: FlexBoxStyler().paddingX(x).paddingY(y)),
+      ButtonStyler(container: FlexBoxStyler.paddingX(x).paddingY(y)),
     );
   }
 
   ButtonStyler scale(double value) {
-    return merge(ButtonStyler(container: FlexBoxStyler().scale(value)));
+    return merge(ButtonStyler(container: FlexBoxStyler.scale(value)));
   }
 }
 ```
@@ -321,11 +321,11 @@ ButtonStyler buttonStyle(ButtonStyler? style, ButtonVariant? variant) {
       .crossAxisAlignment(CrossAxisAlignment.center)
       .mainAxisSize(MainAxisSize.min);
 
-  final label = TextStyler().style(
+  final label = TextStyler.style(
     TextStyleMix().fontSize(16).fontWeight(FontWeight.w500),
   );
 
-  final icon = IconStyler().size(18);
+  final icon = IconStyler.size(18);
 
   return ButtonStyler()
       .container(container)
@@ -334,17 +334,17 @@ ButtonStyler buttonStyle(ButtonStyler? style, ButtonVariant? variant) {
       .merge(variant?.style)
       .onPressed(
         ButtonStyler()
-            .container(FlexBoxStyler().scale(0.9)),
+            .container(FlexBoxStyler.scale(0.9)),
       )
       .onDisabled(
         ButtonStyler()
-            .container(FlexBoxStyler().color(Colors.blueGrey.shade100))
+            .container(FlexBoxStyler.color(Colors.blueGrey.shade100))
             .label(
-              TextStyler().style(
+              TextStyler.style(
                 TextStyleMix().color(Colors.blueGrey.shade700),
               ),
             )
-            .icon(IconStyler().color(Colors.blueGrey.shade700)),
+            .icon(IconStyler.color(Colors.blueGrey.shade700)),
       )
       .merge(style);
 }

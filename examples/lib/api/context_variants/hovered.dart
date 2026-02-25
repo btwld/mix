@@ -17,7 +17,7 @@ class Example extends StatelessWidget {
         .height(100)
         .width(100)
         .borderRounded(10)
-        .onHovered(BoxStyler().color(Colors.blue));
+        .onHovered(BoxStyler.color(Colors.blue));
 
     return Box(style: style);
   }

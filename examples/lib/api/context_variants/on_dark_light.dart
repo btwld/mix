@@ -26,7 +26,7 @@ class _ExampleState extends State<Example> {
         .borderRounded(30)
         .color(Colors.grey.shade200)
         .animate(.easeInOut(600.ms))
-        .onDark(BoxStyler().color(Colors.grey.shade800))
+        .onDark(BoxStyler.color(Colors.grey.shade800))
         .shadowOnly(
           color: Colors.black.withValues(alpha: 0.1),
           offset: Offset(0, 4),
@@ -39,7 +39,7 @@ class _ExampleState extends State<Example> {
         .size(28)
         .icon(Icons.dark_mode)
         .animate(.easeInOut(200.ms))
-        .onDark(IconStyler().icon(Icons.light_mode).color(Colors.yellow));
+        .onDark(IconStyler.icon(Icons.light_mode).color(Colors.yellow));
 
     return MediaQuery(
       data: MediaQuery.of(
