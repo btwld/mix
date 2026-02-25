@@ -62,6 +62,11 @@ class _ScaleAnimationState extends State<ScaleAnimation> {
 }
 ```
 
+<FlutterPreview
+  previewId="anim-hover-scale"
+  height={200}
+/>
+
 ### Example: Variant-triggered
 
 In the following example, the box smoothly grows in size and shifts its color from black to blue when you hover over it. Rather than toggling a state variable yourself, you can use variants like onHovered or onPressed to trigger these implicit animations directly in your style definitions.
@@ -100,6 +105,11 @@ Phase animations let you define a small set of named phases, each with its own s
   - `phases`: a list of values (usually an enum).
   - `styleBuilder`: returns the style for each phase.
   - `configBuilder`: returns the animation config for each phase.
+
+<FlutterPreview
+  previewId="anim-tap-phase"
+  height={200}
+/>
 
 ### Example: Compress/Expand
 
