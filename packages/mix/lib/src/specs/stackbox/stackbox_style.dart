@@ -276,6 +276,9 @@ class StackBoxStyler extends Style<StackBoxSpec>
   /// to the values from this instance.
   @override
   StackBoxStyler merge(StackBoxStyler? other) {
+    final accumulated = tryAccumulateAsContextBuilder(other);
+    if (accumulated != null) return accumulated;
+
     return StackBoxStyler.create(
       box: MixOps.merge($box, other?.$box),
       stack: MixOps.merge($stack, other?.$stack),

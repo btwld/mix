@@ -278,6 +278,9 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
   /// to the values from this instance.
   @override
   FlexBoxStyler merge(FlexBoxStyler? other) {
+    final accumulated = tryAccumulateAsContextBuilder(other);
+    if (accumulated != null) return accumulated;
+
     return FlexBoxStyler.create(
       box: MixOps.merge($box, other?.$box),
       flex: MixOps.merge($flex, other?.$flex),

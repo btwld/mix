@@ -228,6 +228,9 @@ class IconStyler extends Style<IconSpec>
 
   @override
   IconStyler merge(IconStyler? other) {
+    final accumulated = tryAccumulateAsContextBuilder(other);
+    if (accumulated != null) return accumulated;
+
     return IconStyler.create(
       color: MixOps.merge($color, other?.$color),
       size: MixOps.merge($size, other?.$size),

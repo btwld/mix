@@ -244,6 +244,9 @@ class BoxStyler extends Style<BoxSpec>
   /// to the values from this instance.
   @override
   BoxStyler merge(BoxStyler? other) {
+    final accumulated = tryAccumulateAsContextBuilder(other);
+    if (accumulated != null) return accumulated;
+
     return BoxStyler.create(
       alignment: MixOps.merge($alignment, other?.$alignment),
       padding: MixOps.merge($padding, other?.$padding),

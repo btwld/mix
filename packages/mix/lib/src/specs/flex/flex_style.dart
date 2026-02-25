@@ -170,6 +170,9 @@ class FlexStyler extends Style<FlexSpec>
   /// to the values from this instance.
   @override
   FlexStyler merge(FlexStyler? other) {
+    final accumulated = tryAccumulateAsContextBuilder(other);
+    if (accumulated != null) return accumulated;
+
     return FlexStyler.create(
       direction: MixOps.merge($direction, other?.$direction),
       mainAxisAlignment: MixOps.merge(

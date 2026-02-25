@@ -10,6 +10,28 @@ import '../../variants/variant.dart';
 /// This mixin follows the same pattern as ModifierMixin, providing
 /// a fluent API for applying context variants to spec attributes.
 mixin VariantStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
+  /// Returns true when this style already has at least one builder-based variant.
+  ///
+  /// Once a context builder exists, subsequent non-variant merges should preserve
+  /// fluent call order by being accumulated as additional context builders.
+  bool get hasContextVariantBuilders =>
+      $variants?.any((v) => v.variant is ContextVariantBuilder) ?? false;
+
+  /// Accumulates [other] as a static context builder when needed.
+  ///
+  /// This is used by concrete `merge()` implementations to preserve ordering for
+  /// chains like `property -> useToken -> property`, where the final property
+  /// should continue to win.
+  T? tryAccumulateAsContextBuilder(T? other) {
+    if (other == null) return null;
+    if (Style.isResolvingActiveVariants) return null;
+    if (!hasContextVariantBuilders) return null;
+    if (other.$variants != null) return null; // Avoid recursive accumulation.
+
+    final builder = ContextVariantBuilder<T>((_) => other);
+    return variants([VariantStyle<S>(builder, other)]);
+  }
+
   /// Adds a single variant to this style.
   T variant(Variant variant, T style) {
     return variants([VariantStyle<S>(variant, style)]);

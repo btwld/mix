@@ -70,7 +70,7 @@ void main() {
 
         // Should have variant
         expect(style.$variants, isNotNull);
-        expect(style.$variants!.length, 1);
+        expect(style.$variants!.length, 2);
       });
 
       test('can be used with different token types', () {
@@ -217,6 +217,63 @@ void main() {
         final container = tester.widget<Container>(find.byType(Container));
         final decoration = container.decoration as BoxDecoration?;
         expect(decoration?.color, equals(testColor));
+      });
+
+      testWidgets('property after useToken takes precedence', (tester) async {
+        const colorToken = ColorToken('test.after.token');
+
+        final style = BoxStyler()
+            .useToken(colorToken, BoxStyler().color)
+            .color(Colors.red);
+
+        await tester.pumpWithTokens({
+          colorToken: Colors.green,
+        }, child: Box(style: style));
+
+        final container = tester.widget<Container>(find.byType(Container));
+        final decoration = container.decoration as BoxDecoration?;
+        expect(decoration?.color, equals(Colors.red));
+      });
+
+      testWidgets('property-token-property keeps last property winner', (
+        tester,
+      ) async {
+        const colorToken = ColorToken('test.middle.token');
+
+        final style = BoxStyler()
+            .color(Colors.blue)
+            .useToken(colorToken, BoxStyler().color)
+            .color(Colors.red);
+
+        await tester.pumpWithTokens({
+          colorToken: Colors.green,
+        }, child: Box(style: style));
+
+        final container = tester.widget<Container>(find.byType(Container));
+        final decoration = container.decoration as BoxDecoration?;
+        expect(decoration?.color, equals(Colors.red));
+      });
+
+      testWidgets('post-token non-color properties are preserved', (
+        tester,
+      ) async {
+        const colorToken = ColorToken('test.chain.token');
+        const testWidth = 123.0;
+
+        final style = BoxStyler()
+            .useToken(colorToken, BoxStyler().color)
+            .width(testWidth)
+            .color(Colors.red);
+
+        await tester.pumpWithTokens({
+          colorToken: Colors.green,
+        }, child: Box(style: style));
+
+        final container = tester.widget<Container>(find.byType(Container));
+        final decoration = container.decoration as BoxDecoration?;
+        expect(decoration?.color, equals(Colors.red));
+        expect(container.constraints?.minWidth, equals(testWidth));
+        expect(container.constraints?.maxWidth, equals(testWidth));
       });
     });
 

@@ -304,6 +304,9 @@ class TextStyler extends Style<TextSpec>
   /// to the values from this instance.
   @override
   TextStyler merge(TextStyler? other) {
+    final accumulated = tryAccumulateAsContextBuilder(other);
+    if (accumulated != null) return accumulated;
+
     return TextStyler.create(
       overflow: MixOps.merge($overflow, other?.$overflow),
       strutStyle: MixOps.merge($strutStyle, other?.$strutStyle),

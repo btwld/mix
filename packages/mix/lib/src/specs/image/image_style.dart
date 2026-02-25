@@ -258,6 +258,9 @@ class ImageStyler extends Style<ImageSpec>
 
   @override
   ImageStyler merge(ImageStyler? other) {
+    final accumulated = tryAccumulateAsContextBuilder(other);
+    if (accumulated != null) return accumulated;
+
     return ImageStyler.create(
       image: MixOps.merge($image, other?.$image),
       width: MixOps.merge($width, other?.$width),
