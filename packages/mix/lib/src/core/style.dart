@@ -29,7 +29,6 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
   @internal
   static bool get isResolvingActiveVariants => _activeVariantMergeDepth > 0;
 
-  @internal
   static T _withActiveVariantMergeGuard<T>(T Function() fn) {
     _activeVariantMergeDepth++;
     try {
