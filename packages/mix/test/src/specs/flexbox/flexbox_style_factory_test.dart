@@ -77,7 +77,7 @@ void main() {
 
       test('mainAxisAlignment', () {
         expect(
-          FlexBoxStyler.mainAxisAlignment(MainAxisAlignment.center),
+          FlexBoxStyler.mainAxisAlignment(.center),
           equals(FlexBoxStyler(mainAxisAlignment: MainAxisAlignment.center)),
         );
       });

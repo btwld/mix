@@ -15,7 +15,7 @@ void main() {
       test('chaining after factory constructor works', () {
         final styler = FlexStyler.direction(
           Axis.horizontal,
-        ).spacing(8).mainAxisAlignment(MainAxisAlignment.center);
+        ).spacing(8).mainAxisAlignment(.center);
         expect(styler.$direction, isNotNull);
         expect(styler.$spacing, isNotNull);
         expect(styler.$mainAxisAlignment, isNotNull);
@@ -32,7 +32,7 @@ void main() {
 
       test('mainAxisAlignment', () {
         expect(
-          FlexStyler.mainAxisAlignment(MainAxisAlignment.center),
+          FlexStyler.mainAxisAlignment(.center),
           equals(FlexStyler(mainAxisAlignment: MainAxisAlignment.center)),
         );
       });
