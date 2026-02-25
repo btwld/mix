@@ -13,6 +13,18 @@ mixin _$StackBoxStylerMixin on Style<StackBoxSpec>, Diagnosticable {
   /// Merges with another [StackBoxStyler].
   @override
   StackBoxStyler merge(StackBoxStyler? other) {
+    final hasContextVariantBuilders =
+        $variants?.any((v) => v.variant is ContextVariantBuilder) ?? false;
+    if (other != null &&
+        !Style.isResolvingActiveVariants &&
+        hasContextVariantBuilders &&
+        other.$variants == null) {
+      final builder = ContextVariantBuilder<StackBoxStyler>((_) => other);
+      return merge(
+        StackBoxStyler(variants: [VariantStyle<StackBoxSpec>(builder, other)]),
+      );
+    }
+
     return StackBoxStyler.create(
       box: MixOps.merge($box, other?.$box),
       stack: MixOps.merge($stack, other?.$stack),

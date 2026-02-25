@@ -94,6 +94,22 @@ class StylerMixinBuilder {
     buffer.writeln('  /// Merges with another [$stylerName].');
     buffer.writeln('  @override');
     buffer.writeln('  $stylerName merge($stylerName? other) {');
+    buffer.writeln('    final hasContextVariantBuilders =');
+    buffer.writeln(
+      '        \$variants?.any((v) => v.variant is ContextVariantBuilder) ?? false;',
+    );
+    buffer.writeln('    if (other != null &&');
+    buffer.writeln('        !Style.isResolvingActiveVariants &&');
+    buffer.writeln('        hasContextVariantBuilders &&');
+    buffer.writeln('        other.\$variants == null) {');
+    buffer.writeln('      final builder = ContextVariantBuilder<$stylerName>(');
+    buffer.writeln('        (_) => other,');
+    buffer.writeln('      );');
+    buffer.writeln(
+      '      return merge($stylerName(variants: [VariantStyle<$specName>(builder, other)]));',
+    );
+    buffer.writeln('    }');
+    buffer.writeln();
     buffer.writeln('    return $stylerName.create(');
 
     // Field merge assignments

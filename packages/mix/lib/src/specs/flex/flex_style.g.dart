@@ -80,6 +80,18 @@ mixin _$FlexStylerMixin on Style<FlexSpec>, Diagnosticable {
   /// Merges with another [FlexStyler].
   @override
   FlexStyler merge(FlexStyler? other) {
+    final hasContextVariantBuilders =
+        $variants?.any((v) => v.variant is ContextVariantBuilder) ?? false;
+    if (other != null &&
+        !Style.isResolvingActiveVariants &&
+        hasContextVariantBuilders &&
+        other.$variants == null) {
+      final builder = ContextVariantBuilder<FlexStyler>((_) => other);
+      return merge(
+        FlexStyler(variants: [VariantStyle<FlexSpec>(builder, other)]),
+      );
+    }
+
     return FlexStyler.create(
       clipBehavior: MixOps.merge($clipBehavior, other?.$clipBehavior),
       crossAxisAlignment: MixOps.merge(

@@ -13,6 +13,18 @@ mixin _$FlexBoxStylerMixin on Style<FlexBoxSpec>, Diagnosticable {
   /// Merges with another [FlexBoxStyler].
   @override
   FlexBoxStyler merge(FlexBoxStyler? other) {
+    final hasContextVariantBuilders =
+        $variants?.any((v) => v.variant is ContextVariantBuilder) ?? false;
+    if (other != null &&
+        !Style.isResolvingActiveVariants &&
+        hasContextVariantBuilders &&
+        other.$variants == null) {
+      final builder = ContextVariantBuilder<FlexBoxStyler>((_) => other);
+      return merge(
+        FlexBoxStyler(variants: [VariantStyle<FlexBoxSpec>(builder, other)]),
+      );
+    }
+
     return FlexBoxStyler.create(
       box: MixOps.merge($box, other?.$box),
       flex: MixOps.merge($flex, other?.$flex),

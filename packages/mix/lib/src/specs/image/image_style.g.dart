@@ -116,6 +116,18 @@ mixin _$ImageStylerMixin on Style<ImageSpec>, Diagnosticable {
   /// Merges with another [ImageStyler].
   @override
   ImageStyler merge(ImageStyler? other) {
+    final hasContextVariantBuilders =
+        $variants?.any((v) => v.variant is ContextVariantBuilder) ?? false;
+    if (other != null &&
+        !Style.isResolvingActiveVariants &&
+        hasContextVariantBuilders &&
+        other.$variants == null) {
+      final builder = ContextVariantBuilder<ImageStyler>((_) => other);
+      return merge(
+        ImageStyler(variants: [VariantStyle<ImageSpec>(builder, other)]),
+      );
+    }
+
     return ImageStyler.create(
       alignment: MixOps.merge($alignment, other?.$alignment),
       centerSlice: MixOps.merge($centerSlice, other?.$centerSlice),

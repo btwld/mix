@@ -70,6 +70,18 @@ mixin _$BoxStylerMixin on Style<BoxSpec>, Diagnosticable {
   /// Merges with another [BoxStyler].
   @override
   BoxStyler merge(BoxStyler? other) {
+    final hasContextVariantBuilders =
+        $variants?.any((v) => v.variant is ContextVariantBuilder) ?? false;
+    if (other != null &&
+        !Style.isResolvingActiveVariants &&
+        hasContextVariantBuilders &&
+        other.$variants == null) {
+      final builder = ContextVariantBuilder<BoxStyler>((_) => other);
+      return merge(
+        BoxStyler(variants: [VariantStyle<BoxSpec>(builder, other)]),
+      );
+    }
+
     return BoxStyler.create(
       alignment: MixOps.merge($alignment, other?.$alignment),
       clipBehavior: MixOps.merge($clipBehavior, other?.$clipBehavior),

@@ -104,6 +104,18 @@ mixin _$IconStylerMixin on Style<IconSpec>, Diagnosticable {
   /// Merges with another [IconStyler].
   @override
   IconStyler merge(IconStyler? other) {
+    final hasContextVariantBuilders =
+        $variants?.any((v) => v.variant is ContextVariantBuilder) ?? false;
+    if (other != null &&
+        !Style.isResolvingActiveVariants &&
+        hasContextVariantBuilders &&
+        other.$variants == null) {
+      final builder = ContextVariantBuilder<IconStyler>((_) => other);
+      return merge(
+        IconStyler(variants: [VariantStyle<IconSpec>(builder, other)]),
+      );
+    }
+
     return IconStyler.create(
       applyTextScaling: MixOps.merge(
         $applyTextScaling,

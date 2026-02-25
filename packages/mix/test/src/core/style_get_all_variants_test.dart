@@ -599,26 +599,70 @@ void main() {
         expect((spec.resolvedValue as Map)['width'], 50.0);
       });
 
-      test('sorting is stable for non-WidgetStateVariant elements', () {
-        // Create multiple non-WidgetState variants to test stable sort
-        final variants = [
-          VariantStyle(
-            ContextVariant('context1', (context) => true),
-            _MockSpecAttribute(width: 100.0),
-          ),
-          VariantStyle(
-            const NamedVariant('named1'),
-            _MockSpecAttribute(width: 200.0),
-          ),
-          VariantStyle(
-            ContextVariant('context2', (context) => true),
-            _MockSpecAttribute(width: 300.0),
-          ),
-          VariantStyle(
-            const NamedVariant('named2'),
-            _MockSpecAttribute(width: 400.0),
-          ),
+      test('non-WidgetState variants preserve insertion order', () {
+        // This specific order is intentionally non-sequential and large enough
+        // to catch unstable ordering if equal-priority variants are re-sorted.
+        const order = [
+          48,
+          42,
+          46,
+          5,
+          20,
+          24,
+          36,
+          28,
+          23,
+          32,
+          13,
+          0,
+          30,
+          16,
+          31,
+          10,
+          11,
+          25,
+          9,
+          1,
+          41,
+          33,
+          26,
+          2,
+          29,
+          6,
+          35,
+          39,
+          18,
+          22,
+          14,
+          37,
+          19,
+          40,
+          38,
+          44,
+          49,
+          15,
+          43,
+          34,
+          3,
+          12,
+          7,
+          8,
+          45,
+          27,
+          21,
+          47,
+          17,
+          4,
         ];
+
+        final variants = order
+            .map(
+              (value) => VariantStyle(
+                ContextVariant('context$value', (context) => true),
+                _MockSpecAttribute(width: value.toDouble()),
+              ),
+            )
+            .toList();
 
         final testAttribute = _MockSpecAttribute(
           width: 50.0,
@@ -628,15 +672,11 @@ void main() {
         final context = MockBuildContext();
         final result = testAttribute.mergeActiveVariants(
           context,
-          namedVariants: {
-            const NamedVariant('named1'),
-            const NamedVariant('named2'),
-          },
+          namedVariants: {},
         );
 
-        // Should maintain original order, last applied is named2 (400)
         final spec = result.resolve(context);
-        expect((spec.resolvedValue as Map)['width'], 400.0);
+        expect((spec.resolvedValue as Map)['width'], 4.0);
       });
     });
 

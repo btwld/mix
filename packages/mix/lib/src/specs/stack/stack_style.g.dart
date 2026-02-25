@@ -50,6 +50,18 @@ mixin _$StackStylerMixin on Style<StackSpec>, Diagnosticable {
   /// Merges with another [StackStyler].
   @override
   StackStyler merge(StackStyler? other) {
+    final hasContextVariantBuilders =
+        $variants?.any((v) => v.variant is ContextVariantBuilder) ?? false;
+    if (other != null &&
+        !Style.isResolvingActiveVariants &&
+        hasContextVariantBuilders &&
+        other.$variants == null) {
+      final builder = ContextVariantBuilder<StackStyler>((_) => other);
+      return merge(
+        StackStyler(variants: [VariantStyle<StackSpec>(builder, other)]),
+      );
+    }
+
     return StackStyler.create(
       alignment: MixOps.merge($alignment, other?.$alignment),
       clipBehavior: MixOps.merge($clipBehavior, other?.$clipBehavior),

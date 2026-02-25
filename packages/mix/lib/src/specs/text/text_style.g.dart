@@ -105,6 +105,18 @@ mixin _$TextStylerMixin on Style<TextSpec>, Diagnosticable {
   /// Merges with another [TextStyler].
   @override
   TextStyler merge(TextStyler? other) {
+    final hasContextVariantBuilders =
+        $variants?.any((v) => v.variant is ContextVariantBuilder) ?? false;
+    if (other != null &&
+        !Style.isResolvingActiveVariants &&
+        hasContextVariantBuilders &&
+        other.$variants == null) {
+      final builder = ContextVariantBuilder<TextStyler>((_) => other);
+      return merge(
+        TextStyler(variants: [VariantStyle<TextSpec>(builder, other)]),
+      );
+    }
+
     return TextStyler.create(
       locale: MixOps.merge($locale, other?.$locale),
       maxLines: MixOps.merge($maxLines, other?.$maxLines),
