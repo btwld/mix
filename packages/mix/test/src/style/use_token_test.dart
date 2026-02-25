@@ -28,29 +28,33 @@ void main() {
         expect(decoration.color, equals(tokenColor));
       });
 
-      test('preserves chain ordering - useToken then explicit (explicit wins)',
-          () {
-        final style = BoxStyler()
-            .useToken(colorToken, (color) => BoxStyler().color(color))
-            .color(Colors.green);
+      test(
+        'preserves chain ordering - useToken then explicit (explicit wins)',
+        () {
+          final style = BoxStyler()
+              .useToken(colorToken, (color) => BoxStyler().color(color))
+              .color(Colors.green);
 
-        final resolved = style.resolve(context);
-        final decoration = resolved.spec.decoration as BoxDecoration;
+          final resolved = style.resolve(context);
+          final decoration = resolved.spec.decoration as BoxDecoration;
 
-        expect(decoration.color, equals(Colors.green));
-      });
+          expect(decoration.color, equals(Colors.green));
+        },
+      );
 
-      test('preserves chain ordering - explicit then useToken (token wins)',
-          () {
-        final style = BoxStyler()
-            .color(Colors.red)
-            .useToken(colorToken, (color) => BoxStyler().color(color));
+      test(
+        'preserves chain ordering - explicit then useToken (token wins)',
+        () {
+          final style = BoxStyler()
+              .color(Colors.red)
+              .useToken(colorToken, (color) => BoxStyler().color(color));
 
-        final resolved = style.resolve(context);
-        final decoration = resolved.spec.decoration as BoxDecoration;
+          final resolved = style.resolve(context);
+          final decoration = resolved.spec.decoration as BoxDecoration;
 
-        expect(decoration.color, equals(tokenColor));
-      });
+          expect(decoration.color, equals(tokenColor));
+        },
+      );
 
       test('works with method tear-off syntax', () {
         final style = BoxStyler().useToken(colorToken, BoxStyler().color);
