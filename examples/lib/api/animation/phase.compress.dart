@@ -71,10 +71,9 @@ class _BlockAnimationState extends State<BlockAnimation> {
         );
 
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: () {
-        setState(() {
-          _isExpanded.value = !_isExpanded.value;
-        });
+        _isExpanded.value = !_isExpanded.value;
       },
       child: Box(style: style),
     );
