@@ -13,8 +13,9 @@ void main() {
       });
 
       test('chaining after factory constructor works', () {
-        final styler =
-            ImageStyler.color(Colors.red).width(100).fit(BoxFit.cover);
+        final styler = ImageStyler.color(
+          Colors.red,
+        ).width(100).fit(BoxFit.cover);
         expect(styler.$color, isNotNull);
         expect(styler.$width, isNotNull);
         expect(styler.$fit, isNotNull);
@@ -24,24 +25,15 @@ void main() {
     group('factory matches instance method', () {
       test('image', () {
         const img = AssetImage('test.png');
-        expect(
-          ImageStyler.image(img),
-          equals(ImageStyler(image: img)),
-        );
+        expect(ImageStyler.image(img), equals(ImageStyler(image: img)));
       });
 
       test('width', () {
-        expect(
-          ImageStyler.width(200),
-          equals(ImageStyler(width: 200)),
-        );
+        expect(ImageStyler.width(200), equals(ImageStyler(width: 200)));
       });
 
       test('height', () {
-        expect(
-          ImageStyler.height(100),
-          equals(ImageStyler(height: 100)),
-        );
+        expect(ImageStyler.height(100), equals(ImageStyler(height: 100)));
       });
 
       test('color', () {
@@ -75,16 +67,16 @@ void main() {
 
     group('resolved values', () {
       test('width resolves correctly', () {
-        final width =
-            ImageStyler.width(200).$width!.resolveProp(MockBuildContext());
+        final width = ImageStyler.width(
+          200,
+        ).$width!.resolveProp(MockBuildContext());
         expect(width, 200);
       });
 
       test('fit resolves correctly', () {
-        final fit =
-            ImageStyler.fit(BoxFit.cover).$fit!.resolveProp(
-              MockBuildContext(),
-            );
+        final fit = ImageStyler.fit(
+          BoxFit.cover,
+        ).$fit!.resolveProp(MockBuildContext());
         expect(fit, BoxFit.cover);
       });
     });

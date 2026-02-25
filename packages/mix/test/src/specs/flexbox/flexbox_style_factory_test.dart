@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
-import '../../../helpers/testing_utils.dart';
-
 void main() {
   group('FlexBoxStyler factory constructors', () {
     group('dot-shorthand resolution', () {
@@ -13,8 +11,9 @@ void main() {
       });
 
       test('chaining after factory constructor works', () {
-        final styler =
-            FlexBoxStyler.color(Colors.red).paddingAll(16).borderRounded(8);
+        final styler = FlexBoxStyler.color(
+          Colors.red,
+        ).paddingAll(16).borderRounded(8);
         expect(styler.$box, isNotNull);
       });
     });
@@ -30,18 +29,12 @@ void main() {
 
       test('padding', () {
         final mix = EdgeInsetsGeometryMix.all(16);
-        expect(
-          FlexBoxStyler.padding(mix),
-          equals(FlexBoxStyler(padding: mix)),
-        );
+        expect(FlexBoxStyler.padding(mix), equals(FlexBoxStyler(padding: mix)));
       });
 
       test('margin', () {
         final mix = EdgeInsetsGeometryMix.all(8);
-        expect(
-          FlexBoxStyler.margin(mix),
-          equals(FlexBoxStyler(margin: mix)),
-        );
+        expect(FlexBoxStyler.margin(mix), equals(FlexBoxStyler(margin: mix)));
       });
 
       test('constraints', () {
@@ -92,9 +85,7 @@ void main() {
       test('crossAxisAlignment', () {
         expect(
           FlexBoxStyler.crossAxisAlignment(CrossAxisAlignment.stretch),
-          equals(
-            FlexBoxStyler(crossAxisAlignment: CrossAxisAlignment.stretch),
-          ),
+          equals(FlexBoxStyler(crossAxisAlignment: CrossAxisAlignment.stretch)),
         );
       });
 
@@ -106,10 +97,7 @@ void main() {
       });
 
       test('spacing', () {
-        expect(
-          FlexBoxStyler.spacing(8),
-          equals(FlexBoxStyler(spacing: 8)),
-        );
+        expect(FlexBoxStyler.spacing(8), equals(FlexBoxStyler(spacing: 8)));
       });
 
       // Decoration convenience factories
@@ -157,17 +145,11 @@ void main() {
       });
 
       test('paddingX', () {
-        expect(
-          FlexBoxStyler.paddingX(8),
-          equals(FlexBoxStyler().paddingX(8)),
-        );
+        expect(FlexBoxStyler.paddingX(8), equals(FlexBoxStyler().paddingX(8)));
       });
 
       test('paddingY', () {
-        expect(
-          FlexBoxStyler.paddingY(8),
-          equals(FlexBoxStyler().paddingY(8)),
-        );
+        expect(FlexBoxStyler.paddingY(8), equals(FlexBoxStyler().paddingY(8)));
       });
 
       test('marginAll', () {
@@ -178,17 +160,11 @@ void main() {
       });
 
       test('marginX', () {
-        expect(
-          FlexBoxStyler.marginX(6),
-          equals(FlexBoxStyler().marginX(6)),
-        );
+        expect(FlexBoxStyler.marginX(6), equals(FlexBoxStyler().marginX(6)));
       });
 
       test('marginY', () {
-        expect(
-          FlexBoxStyler.marginY(6),
-          equals(FlexBoxStyler().marginY(6)),
-        );
+        expect(FlexBoxStyler.marginY(6), equals(FlexBoxStyler().marginY(6)));
       });
 
       // Border radius convenience

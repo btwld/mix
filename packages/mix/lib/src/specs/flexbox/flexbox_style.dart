@@ -154,8 +154,7 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
       FlexBoxStyler(crossAxisAlignment: value);
   factory FlexBoxStyler.mainAxisSize(MainAxisSize value) =>
       FlexBoxStyler(mainAxisSize: value);
-  factory FlexBoxStyler.spacing(double value) =>
-      FlexBoxStyler(spacing: value);
+  factory FlexBoxStyler.spacing(double value) => FlexBoxStyler(spacing: value);
 
   // Decoration convenience
   factory FlexBoxStyler.color(Color value) => FlexBoxStyler().color(value);
@@ -177,10 +176,8 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
       FlexBoxStyler().paddingY(value);
   factory FlexBoxStyler.marginAll(double value) =>
       FlexBoxStyler().marginAll(value);
-  factory FlexBoxStyler.marginX(double value) =>
-      FlexBoxStyler().marginX(value);
-  factory FlexBoxStyler.marginY(double value) =>
-      FlexBoxStyler().marginY(value);
+  factory FlexBoxStyler.marginX(double value) => FlexBoxStyler().marginX(value);
+  factory FlexBoxStyler.marginY(double value) => FlexBoxStyler().marginY(value);
 
   // Border radius convenience
   factory FlexBoxStyler.borderRounded(double value) =>
@@ -193,14 +190,10 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
       FlexBoxStyler().size(width, height);
 
   // Transform convenience
-  factory FlexBoxStyler.scale(
-    double scale, {
-    Alignment alignment = .center,
-  }) => FlexBoxStyler().scale(scale, alignment: alignment);
-  factory FlexBoxStyler.rotate(
-    double angle, {
-    Alignment alignment = .center,
-  }) => FlexBoxStyler().rotate(angle, alignment: alignment);
+  factory FlexBoxStyler.scale(double scale, {Alignment alignment = .center}) =>
+      FlexBoxStyler().scale(scale, alignment: alignment);
+  factory FlexBoxStyler.rotate(double angle, {Alignment alignment = .center}) =>
+      FlexBoxStyler().rotate(angle, alignment: alignment);
 
   // Flex convenience (zero-param presets)
   factory FlexBoxStyler.row() => FlexBoxStyler(direction: .horizontal);

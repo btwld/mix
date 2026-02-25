@@ -168,18 +168,14 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
       StackBoxStyler().borderRounded(value);
 
   // Constraints convenience
-  factory StackBoxStyler.width(double value) =>
-      StackBoxStyler().width(value);
-  factory StackBoxStyler.height(double value) =>
-      StackBoxStyler().height(value);
+  factory StackBoxStyler.width(double value) => StackBoxStyler().width(value);
+  factory StackBoxStyler.height(double value) => StackBoxStyler().height(value);
   factory StackBoxStyler.size(double width, double height) =>
       StackBoxStyler().size(width, height);
 
   // Transform convenience
-  factory StackBoxStyler.scale(
-    double scale, {
-    Alignment alignment = .center,
-  }) => StackBoxStyler().scale(scale, alignment: alignment);
+  factory StackBoxStyler.scale(double scale, {Alignment alignment = .center}) =>
+      StackBoxStyler().scale(scale, alignment: alignment);
   factory StackBoxStyler.rotate(
     double angle, {
     Alignment alignment = .center,

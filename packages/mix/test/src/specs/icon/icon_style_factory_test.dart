@@ -36,31 +36,19 @@ void main() {
       });
 
       test('size', () {
-        expect(
-          IconStyler.size(24),
-          equals(IconStyler(size: 24)),
-        );
+        expect(IconStyler.size(24), equals(IconStyler(size: 24)));
       });
 
       test('weight', () {
-        expect(
-          IconStyler.weight(400),
-          equals(IconStyler(weight: 400)),
-        );
+        expect(IconStyler.weight(400), equals(IconStyler(weight: 400)));
       });
 
       test('fill', () {
-        expect(
-          IconStyler.fill(1.0),
-          equals(IconStyler(fill: 1.0)),
-        );
+        expect(IconStyler.fill(1.0), equals(IconStyler(fill: 1.0)));
       });
 
       test('opacity', () {
-        expect(
-          IconStyler.opacity(0.5),
-          equals(IconStyler(opacity: 0.5)),
-        );
+        expect(IconStyler.opacity(0.5), equals(IconStyler(opacity: 0.5)));
       });
 
       test('shadows', () {
@@ -74,16 +62,14 @@ void main() {
 
     group('resolved values', () {
       test('color resolves correctly', () {
-        final color =
-            IconStyler.color(Colors.blue).$color!.resolveProp(
-              MockBuildContext(),
-            );
+        final color = IconStyler.color(
+          Colors.blue,
+        ).$color!.resolveProp(MockBuildContext());
         expect(color, Colors.blue);
       });
 
       test('size resolves correctly', () {
-        final size =
-            IconStyler.size(24).$size!.resolveProp(MockBuildContext());
+        final size = IconStyler.size(24).$size!.resolveProp(MockBuildContext());
         expect(size, 24);
       });
     });

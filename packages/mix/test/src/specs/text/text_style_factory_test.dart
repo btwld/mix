@@ -13,8 +13,9 @@ void main() {
       });
 
       test('chaining after factory constructor works', () {
-        final styler =
-            TextStyler.color(Colors.red).fontSize(16).fontWeight(FontWeight.bold);
+        final styler = TextStyler.color(
+          Colors.red,
+        ).fontSize(16).fontWeight(FontWeight.bold);
         expect(styler.$style, isNotNull);
       });
     });
@@ -36,17 +37,11 @@ void main() {
       });
 
       test('maxLines', () {
-        expect(
-          TextStyler.maxLines(3),
-          equals(TextStyler(maxLines: 3)),
-        );
+        expect(TextStyler.maxLines(3), equals(TextStyler(maxLines: 3)));
       });
 
       test('softWrap', () {
-        expect(
-          TextStyler.softWrap(false),
-          equals(TextStyler(softWrap: false)),
-        );
+        expect(TextStyler.softWrap(false), equals(TextStyler(softWrap: false)));
       });
 
       test('textDirection', () {
@@ -58,10 +53,7 @@ void main() {
 
       test('style', () {
         final mix = TextStyleMix.color(Colors.red);
-        expect(
-          TextStyler.style(mix),
-          equals(TextStyler(style: mix)),
-        );
+        expect(TextStyler.style(mix), equals(TextStyler(style: mix)));
       });
 
       // TextStyleMixin convenience factories
@@ -73,10 +65,7 @@ void main() {
       });
 
       test('fontSize', () {
-        expect(
-          TextStyler.fontSize(24),
-          equals(TextStyler().fontSize(24)),
-        );
+        expect(TextStyler.fontSize(24), equals(TextStyler().fontSize(24)));
       });
 
       test('fontWeight', () {
@@ -108,10 +97,7 @@ void main() {
       });
 
       test('height', () {
-        expect(
-          TextStyler.height(1.5),
-          equals(TextStyler().height(1.5)),
-        );
+        expect(TextStyler.height(1.5), equals(TextStyler().height(1.5)));
       });
 
       test('fontFamily', () {
@@ -131,19 +117,17 @@ void main() {
 
     group('resolved values', () {
       test('color resolves correctly', () {
-        final textStyle =
-            TextStyler.color(Colors.blue).$style!.resolveProp(
-              MockBuildContext(),
-            );
+        final textStyle = TextStyler.color(
+          Colors.blue,
+        ).$style!.resolveProp(MockBuildContext());
         expect(textStyle, isA<TextStyle>());
         expect(textStyle.color, Colors.blue);
       });
 
       test('fontSize resolves correctly', () {
-        final textStyle =
-            TextStyler.fontSize(24).$style!.resolveProp(
-              MockBuildContext(),
-            );
+        final textStyle = TextStyler.fontSize(
+          24,
+        ).$style!.resolveProp(MockBuildContext());
         expect(textStyle, isA<TextStyle>());
         expect(textStyle.fontSize, 24);
       });

@@ -13,8 +13,9 @@ void main() {
       });
 
       test('chaining after factory constructor works', () {
-        final styler =
-            BoxStyler.color(Colors.red).paddingAll(16).borderRounded(8);
+        final styler = BoxStyler.color(
+          Colors.red,
+        ).paddingAll(16).borderRounded(8);
         expect(styler.$decoration, isNotNull);
         expect(styler.$padding, isNotNull);
       });
@@ -49,10 +50,7 @@ void main() {
 
       test('decoration', () {
         final mix = DecorationMix.color(Colors.red);
-        expect(
-          BoxStyler.decoration(mix),
-          equals(BoxStyler().decoration(mix)),
-        );
+        expect(BoxStyler.decoration(mix), equals(BoxStyler().decoration(mix)));
       });
 
       test('foregroundDecoration', () {
@@ -105,10 +103,7 @@ void main() {
 
       // Spacing convenience factories
       test('paddingAll', () {
-        expect(
-          BoxStyler.paddingAll(16),
-          equals(BoxStyler().paddingAll(16)),
-        );
+        expect(BoxStyler.paddingAll(16), equals(BoxStyler().paddingAll(16)));
       });
 
       test('paddingX', () {
@@ -149,10 +144,7 @@ void main() {
       });
 
       test('size', () {
-        expect(
-          BoxStyler.size(200, 100),
-          equals(BoxStyler().size(200, 100)),
-        );
+        expect(BoxStyler.size(200, 100), equals(BoxStyler().size(200, 100)));
       });
 
       // Transform convenience factories
@@ -181,32 +173,33 @@ void main() {
 
     group('resolved values', () {
       test('color resolves correctly', () {
-        final decoration =
-            BoxStyler.color(Colors.blue).$decoration!.resolveProp(
-              MockBuildContext(),
-            );
+        final decoration = BoxStyler.color(
+          Colors.blue,
+        ).$decoration!.resolveProp(MockBuildContext());
         expect(decoration, isA<BoxDecoration>());
         expect((decoration as BoxDecoration).color, Colors.blue);
       });
 
       test('paddingAll resolves correctly', () {
-        final padding =
-            BoxStyler.paddingAll(16).$padding!.resolveProp(MockBuildContext());
+        final padding = BoxStyler.paddingAll(
+          16,
+        ).$padding!.resolveProp(MockBuildContext());
         expect(padding, const EdgeInsets.all(16));
       });
 
       test('width resolves correctly', () {
-        final constraints =
-            BoxStyler.width(200).$constraints!.resolveProp(MockBuildContext());
+        final constraints = BoxStyler.width(
+          200,
+        ).$constraints!.resolveProp(MockBuildContext());
         expect(constraints.minWidth, 200);
         expect(constraints.maxWidth, 200);
       });
 
       test('size resolves correctly', () {
-        final constraints =
-            BoxStyler.size(200, 100).$constraints!.resolveProp(
-              MockBuildContext(),
-            );
+        final constraints = BoxStyler.size(
+          200,
+          100,
+        ).$constraints!.resolveProp(MockBuildContext());
         expect(constraints.minWidth, 200);
         expect(constraints.maxWidth, 200);
         expect(constraints.minHeight, 100);

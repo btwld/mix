@@ -138,8 +138,7 @@ class TextStyler extends MixStyler<TextStyler, TextSpec>
   // Direct constructor params
   factory TextStyler.overflow(TextOverflow value) =>
       TextStyler(overflow: value);
-  factory TextStyler.textAlign(TextAlign value) =>
-      TextStyler(textAlign: value);
+  factory TextStyler.textAlign(TextAlign value) => TextStyler(textAlign: value);
   factory TextStyler.maxLines(int value) => TextStyler(maxLines: value);
   factory TextStyler.softWrap(bool value) => TextStyler(softWrap: value);
   factory TextStyler.textDirection(TextDirection value) =>
@@ -158,8 +157,7 @@ class TextStyler extends MixStyler<TextStyler, TextSpec>
   factory TextStyler.wordSpacing(double value) =>
       TextStyler().wordSpacing(value);
   factory TextStyler.height(double value) => TextStyler().height(value);
-  factory TextStyler.fontFamily(String value) =>
-      TextStyler().fontFamily(value);
+  factory TextStyler.fontFamily(String value) => TextStyler().fontFamily(value);
   factory TextStyler.decoration(TextDecoration value) =>
       TextStyler().decoration(value);
 

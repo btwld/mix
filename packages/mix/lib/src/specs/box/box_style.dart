@@ -136,8 +136,7 @@ class BoxStyler extends MixStyler<BoxStyler, BoxSpec>
       BoxStyler(decoration: value);
   factory BoxStyler.foregroundDecoration(DecorationMix value) =>
       BoxStyler(foregroundDecoration: value);
-  factory BoxStyler.clipBehavior(Clip value) =>
-      BoxStyler(clipBehavior: value);
+  factory BoxStyler.clipBehavior(Clip value) => BoxStyler(clipBehavior: value);
 
   // Decoration convenience
   factory BoxStyler.color(Color value) => BoxStyler().color(value);

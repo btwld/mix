@@ -13,9 +13,9 @@ void main() {
       });
 
       test('chaining after factory constructor works', () {
-        final styler = StackStyler.alignment(Alignment.center)
-            .fit(StackFit.expand)
-            .clipBehavior(Clip.hardEdge);
+        final styler = StackStyler.alignment(
+          Alignment.center,
+        ).fit(StackFit.expand).clipBehavior(Clip.hardEdge);
         expect(styler.$alignment, isNotNull);
         expect(styler.$fit, isNotNull);
         expect(styler.$clipBehavior, isNotNull);
@@ -47,18 +47,16 @@ void main() {
 
     group('resolved values', () {
       test('alignment resolves correctly', () {
-        final alignment =
-            StackStyler.alignment(Alignment.center).$alignment!.resolveProp(
-              MockBuildContext(),
-            );
+        final alignment = StackStyler.alignment(
+          Alignment.center,
+        ).$alignment!.resolveProp(MockBuildContext());
         expect(alignment, Alignment.center);
       });
 
       test('fit resolves correctly', () {
-        final fit =
-            StackStyler.fit(StackFit.expand).$fit!.resolveProp(
-              MockBuildContext(),
-            );
+        final fit = StackStyler.fit(
+          StackFit.expand,
+        ).$fit!.resolveProp(MockBuildContext());
         expect(fit, StackFit.expand);
       });
     });

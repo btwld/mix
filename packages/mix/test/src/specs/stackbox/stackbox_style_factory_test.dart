@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
-import '../../../helpers/testing_utils.dart';
-
 void main() {
   group('StackBoxStyler factory constructors', () {
     group('dot-shorthand resolution', () {
@@ -13,8 +11,9 @@ void main() {
       });
 
       test('chaining after factory constructor works', () {
-        final styler =
-            StackBoxStyler.color(Colors.red).paddingAll(16).borderRounded(8);
+        final styler = StackBoxStyler.color(
+          Colors.red,
+        ).paddingAll(16).borderRounded(8);
         expect(styler.$box, isNotNull);
       });
     });
@@ -38,10 +37,7 @@ void main() {
 
       test('margin', () {
         final mix = EdgeInsetsGeometryMix.all(8);
-        expect(
-          StackBoxStyler.margin(mix),
-          equals(StackBoxStyler(margin: mix)),
-        );
+        expect(StackBoxStyler.margin(mix), equals(StackBoxStyler(margin: mix)));
       });
 
       test('constraints', () {
@@ -107,10 +103,7 @@ void main() {
 
       test('border', () {
         final b = BoxBorderMix.all(BorderSideMix(color: Colors.red));
-        expect(
-          StackBoxStyler.border(b),
-          equals(StackBoxStyler().border(b)),
-        );
+        expect(StackBoxStyler.border(b), equals(StackBoxStyler().border(b)));
       });
 
       test('borderRadius', () {
@@ -158,17 +151,11 @@ void main() {
       });
 
       test('marginX', () {
-        expect(
-          StackBoxStyler.marginX(6),
-          equals(StackBoxStyler().marginX(6)),
-        );
+        expect(StackBoxStyler.marginX(6), equals(StackBoxStyler().marginX(6)));
       });
 
       test('marginY', () {
-        expect(
-          StackBoxStyler.marginY(6),
-          equals(StackBoxStyler().marginY(6)),
-        );
+        expect(StackBoxStyler.marginY(6), equals(StackBoxStyler().marginY(6)));
       });
 
       // Border radius convenience
@@ -181,10 +168,7 @@ void main() {
 
       // Constraints convenience factories
       test('width', () {
-        expect(
-          StackBoxStyler.width(200),
-          equals(StackBoxStyler().width(200)),
-        );
+        expect(StackBoxStyler.width(200), equals(StackBoxStyler().width(200)));
       });
 
       test('height', () {
@@ -203,10 +187,7 @@ void main() {
 
       // Transform convenience factories
       test('scale', () {
-        expect(
-          StackBoxStyler.scale(0.5),
-          equals(StackBoxStyler().scale(0.5)),
-        );
+        expect(StackBoxStyler.scale(0.5), equals(StackBoxStyler().scale(0.5)));
       });
 
       test('scale with alignment', () {

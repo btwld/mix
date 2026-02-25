@@ -136,8 +136,7 @@ class ImageStyler extends MixStyler<ImageStyler, ImageSpec>
   factory ImageStyler.fit(BoxFit value) => ImageStyler(fit: value);
   factory ImageStyler.alignment(AlignmentGeometry value) =>
       ImageStyler(alignment: value);
-  factory ImageStyler.repeat(ImageRepeat value) =>
-      ImageStyler(repeat: value);
+  factory ImageStyler.repeat(ImageRepeat value) => ImageStyler(repeat: value);
 
   static ImageMutableStyler get chain => .new(ImageStyler());
 

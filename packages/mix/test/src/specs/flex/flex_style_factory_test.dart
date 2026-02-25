@@ -13,9 +13,9 @@ void main() {
       });
 
       test('chaining after factory constructor works', () {
-        final styler = FlexStyler.direction(Axis.horizontal)
-            .spacing(8)
-            .mainAxisAlignment(MainAxisAlignment.center);
+        final styler = FlexStyler.direction(
+          Axis.horizontal,
+        ).spacing(8).mainAxisAlignment(MainAxisAlignment.center);
         expect(styler.$direction, isNotNull);
         expect(styler.$spacing, isNotNull);
         expect(styler.$mainAxisAlignment, isNotNull);
@@ -52,10 +52,7 @@ void main() {
       });
 
       test('spacing', () {
-        expect(
-          FlexStyler.spacing(16),
-          equals(FlexStyler(spacing: 16)),
-        );
+        expect(FlexStyler.spacing(16), equals(FlexStyler(spacing: 16)));
       });
 
       test('clipBehavior', () {
@@ -82,16 +79,16 @@ void main() {
 
     group('resolved values', () {
       test('direction resolves correctly', () {
-        final direction =
-            FlexStyler.direction(Axis.horizontal).$direction!.resolveProp(
-              MockBuildContext(),
-            );
+        final direction = FlexStyler.direction(
+          Axis.horizontal,
+        ).$direction!.resolveProp(MockBuildContext());
         expect(direction, Axis.horizontal);
       });
 
       test('spacing resolves correctly', () {
-        final spacing =
-            FlexStyler.spacing(16).$spacing!.resolveProp(MockBuildContext());
+        final spacing = FlexStyler.spacing(
+          16,
+        ).$spacing!.resolveProp(MockBuildContext());
         expect(spacing, 16);
       });
     });
