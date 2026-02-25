@@ -239,7 +239,7 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
     required this.context,
   }) {
     _setUpAnimation();
-    if (_isLooping) {
+    if (config.isLooping) {
       _startLoopingAnimation();
     }
   }
@@ -309,8 +309,6 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
     controller.repeat();
   }
 
-  bool get _isLooping => config.trigger == null;
-
   /// Gets the total duration of all animation phases combined.
   Duration get totalDuration {
     return config.curveConfigs.fold(
@@ -336,11 +334,15 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
   @override
   void updateDriver(covariant PhaseAnimationConfig config) {
     this.config.trigger?.removeListener(_onTriggerChanged);
-    this.config = config;
-    controller.reset();
-    if (_isLooping) {
+    if (config != this.config) {
+      controller.reset();
+    }
+
+    if (config.isLooping) {
       _startLoopingAnimation();
     }
+
+    this.config = config;
     _setUpAnimation();
   }
 }
@@ -360,7 +362,7 @@ class KeyframeAnimationDriver<S extends Spec<S>>
     required this.context,
   }) : _config = config {
     _setUpAnimation();
-    if (_isLooping) {
+    if (config.isLooping) {
       _startLoopingAnimation();
     }
   }
@@ -386,8 +388,6 @@ class KeyframeAnimationDriver<S extends Spec<S>>
     controller.duration = duration;
     controller.repeat();
   }
-
-  bool get _isLooping => _config.trigger == null;
 
   Duration get duration {
     if (_config.timeline.isEmpty) return .zero;
@@ -419,11 +419,15 @@ class KeyframeAnimationDriver<S extends Spec<S>>
   @override
   void updateDriver(covariant KeyframeAnimationConfig<S> config) {
     _config.trigger?.removeListener(_onTriggerChanged);
-    _config = config;
-    controller.reset();
-    if (_isLooping) {
+    if (_config != config) {
+      controller.reset();
+    }
+
+    if (config.isLooping) {
       _startLoopingAnimation();
     }
+
+    _config = config;
     _setUpAnimation();
   }
 }
