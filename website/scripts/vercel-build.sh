@@ -6,7 +6,9 @@
 # 2. Build the Flutter preview bundle (interactive widget examples)
 # 3. Build the Next.js website
 #
-# Vercel's root directory is set to website/, so ".." is the project root.
+# Vercel's root directory must be set to the repo root (not website/)
+# and "Include source files outside of the Root Directory" must be enabled
+# so the script can access examples/, packages/, and .fvmrc.
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -15,9 +17,14 @@ PROJECT_DIR="$(cd "$WEBSITE_DIR/.." && pwd)"
 
 fail() { echo "ERROR: $*" >&2; exit 1; }
 
+echo "==> Project root: $PROJECT_DIR"
+echo "==> Website dir:  $WEBSITE_DIR"
+
 # ============================================================================
 # Install Flutter SDK
 # ============================================================================
+[ -f "$PROJECT_DIR/.fvmrc" ] || fail ".fvmrc not found at $PROJECT_DIR/.fvmrc"
+
 FLUTTER_VERSION=$(node -e "console.log(JSON.parse(require('fs').readFileSync('$PROJECT_DIR/.fvmrc','utf8')).flutter)")
 [ -z "$FLUTTER_VERSION" ] && fail "Could not read Flutter version from .fvmrc"
 
@@ -56,8 +63,8 @@ bash "$PROJECT_DIR/examples/scripts/build_web_previews.sh" --local
 
 # Verify the build produced the expected artifacts
 BUILD_DIR="$PROJECT_DIR/examples/build/web"
-[ -f "$BUILD_DIR/main.dart.js" ]          || fail "Flutter web build missing: main.dart.js"
-[ -f "$BUILD_DIR/flutter_bootstrap.js" ]  || fail "Flutter web build missing: flutter_bootstrap.js"
+[ -f "$BUILD_DIR/main.dart.js" ]           || fail "Flutter web build missing: main.dart.js"
+[ -f "$BUILD_DIR/flutter_bootstrap.js" ]   || fail "Flutter web build missing: flutter_bootstrap.js"
 [ -f "$BUILD_DIR/previews-manifest.json" ] || fail "Flutter web build missing: previews-manifest.json"
 
 echo "    Build verified: main.dart.js, flutter_bootstrap.js, previews-manifest.json"
