@@ -38,6 +38,10 @@ jobs:
         with:
           node-version: 20
 
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
       - name: Setup Melos
         run: |
           dart pub global activate melos
@@ -52,10 +56,10 @@ jobs:
           cp -r examples/build/web/* website/public/previews/
 
       - name: Install Website Dependencies
-        run: cd website && npm install
+        run: cd website && pnpm install
 
       - name: Validate Preview Manifest
-        run: cd website && npm run check:previews
+        run: cd website && pnpm run check:previews
 
       - name: Build Website
-        run: cd website && npm run build
+        run: cd website && pnpm run build

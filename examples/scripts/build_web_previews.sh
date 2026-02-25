@@ -226,5 +226,5 @@ fi
 
 echo ""
 echo "To test locally:"
-echo "  cd $PROJECT_DIR/website && npm run dev"
+echo "  cd $PROJECT_DIR/website && pnpm dev"
 echo "  Open http://localhost:3000/documentation/widgets/box"
