@@ -228,7 +228,7 @@ class ProfileButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Create a box styler with tokens
-    final box = BoxStyler()
+    final box = BoxStyler
         .height(50)
         .width(double.infinity)
         .color(CustomColorTokens.primary.token())
@@ -236,7 +236,7 @@ class ProfileButton extends StatelessWidget {
         .borderRadiusAll(MyThemeRadiusToken.large.token());
 
     // Create a text styler with tokens
-    final text = TextStyler()
+    final text = TextStyler
         .style(CustomTextStyleTokens.button.token.mix())
         .color(CustomColorTokens.onPrimary.token());
 
@@ -264,12 +264,12 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // AppBar title styling
-    final appBarTitle = TextStyler()
+    final appBarTitle = TextStyler
         .style(CustomTextStyleTokens.headline2.token.mix())
         .color(CustomColorTokens.onSurface.token());
 
     // Layout styling with FlexBoxStyler
-    final flexBox = FlexBoxStyler()
+    final flexBox = FlexBoxStyler
         .crossAxisAlignment(.start)
         .marginAll(MyThemeSpaceToken.medium.token())
         .spacing(MyThemeSpaceToken.medium.token());
@@ -290,21 +290,21 @@ class ProfilePage extends StatelessWidget {
             // Title
             StyledText(
               'Hollywood Academy',
-              style: TextStyler()
+              style: TextStyler
                   .style(CustomTextStyleTokens.headline1.token.mix())
                   .color(CustomColorTokens.onSurface.token()),
             ),
             // Subtitle
             StyledText(
               'Education · Los Angeles, California',
-              style: TextStyler()
+              style: TextStyler
                   .style(CustomTextStyleTokens.callout.token.mix())
                   .color(CustomColorTokens.onSurfaceVariant.token()),
             ),
             // Description
             StyledText(
               'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-              style: TextStyler()
+              style: TextStyler
                   .style(CustomTextStyleTokens.body.token.mix())
                   .color(CustomColorTokens.onSurfaceVariant.token()),
             ),
@@ -323,13 +323,13 @@ class ImagePlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final imageContainer = BoxStyler()
+    final imageContainer = BoxStyler
         .height(200)
         .width(double.infinity)
         .color(CustomColorTokens.primary.token())
         .borderRadiusAll(MyThemeRadiusToken.medium.token());
 
-    final icon = IconStyler()
+    final icon = IconStyler
         .size(80)
         .color(CustomColorTokens.onPrimary.token());
 

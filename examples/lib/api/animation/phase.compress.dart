@@ -40,9 +40,8 @@ class _BlockAnimationState extends State<BlockAnimation> {
 
   @override
   Widget build(BuildContext context) {
-    // Using BoxStyler() - the recommended Mix 2.0 API
-    final style = BoxStyler()
-        .color(Colors.deepPurple)
+    // Using BoxStyler - the recommended Mix 2.0 API
+    final style = BoxStyler.color(Colors.deepPurple)
         .height(100)
         .width(100)
         .borderRounded(40)

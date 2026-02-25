@@ -5,15 +5,12 @@ import 'package:mix/mix.dart';
 
 void main() {
   // 1
-  final style = BoxStyler()
-      .width(240)
-      .height(100)
-      .color(Colors.blue)
-      .borderRounded(12);
+  final style = BoxStyler.width(
+    240,
+  ).height(100).color(Colors.blue).borderRounded(12);
 
   // 2
-  final base = BoxStyler()
-      .paddingX(16)
+  final base = BoxStyler.paddingX(16)
       .paddingY(8)
       .borderRounded(8)
       .color(Colors.black)
@@ -30,8 +27,7 @@ void main() {
       .wrap(.new().defaultTextStyle(style: TextStyleMix().color(Colors.blue)));
 
   // 3
-  final button = BoxStyler()
-      .color(Colors.blue)
+  final button = BoxStyler.color(Colors.blue)
       .onHovered(BoxStyler.color(Colors.blue.shade700))
       .onDark(BoxStyler.color(Colors.blue.shade200));
 }

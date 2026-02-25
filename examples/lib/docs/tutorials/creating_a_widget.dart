@@ -114,7 +114,11 @@ class ButtonStyler extends Style<ButtonSpec>
   }
 
   ButtonStyler borderRadius(double value) {
-    return merge(ButtonStyler(container: FlexBoxStyler.borderRounded(value)));
+    return merge(
+      ButtonStyler(
+        container: FlexBoxStyler.borderRadius(BorderRadiusMix.circular(value)),
+      ),
+    );
   }
 
   ButtonStyler shadow(BoxShadowMix value) {
@@ -123,7 +127,11 @@ class ButtonStyler extends Style<ButtonSpec>
 
   ButtonStyler padding({required double x, required double y}) {
     return merge(
-      ButtonStyler(container: FlexBoxStyler.paddingX(x).paddingY(y)),
+      ButtonStyler(
+        container: FlexBoxStyler.padding(
+          EdgeInsetsGeometryMix.symmetric(horizontal: x, vertical: y),
+        ),
+      ),
     );
   }
 
@@ -176,9 +184,9 @@ enum ButtonVariant {
 
   ButtonStyler get _outlinedStyle => _filledStyle
       .container(
-        FlexBoxStyler()
-            .color(Colors.transparent)
-            .borderAll(color: Colors.blueAccent, width: 1.5),
+        FlexBoxStyler.color(
+          Colors.transparent,
+        ).borderAll(color: Colors.blueAccent, width: 1.5),
       )
       .backgroundColor(Colors.transparent)
       .borderWidth(1.5)
@@ -226,8 +234,7 @@ class CustomButton extends StatelessWidget {
   final ButtonStyler? style;
 
   ButtonStyler buttonStyle(ButtonStyler? style, ButtonVariant? variant) {
-    final container = FlexBoxStyler()
-        .borderRounded(6)
+    final container = FlexBoxStyler.borderRounded(6)
         .paddingX(8)
         .paddingY(12)
         .spacing(8)

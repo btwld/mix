@@ -28,20 +28,14 @@ class Example extends StatelessWidget {
 }
 
 // 1
-final boxStyle = BoxStyler()
-    .height(100)
-    .width(100)
-    .color(Colors.purple)
-    .borderRounded(10);
+final boxStyle = BoxStyler.height(
+  100,
+).width(100).color(Colors.purple).borderRounded(10);
 
-final textStyle = TextStyler()
-    .fontSize(20)
-    .fontWeight(.bold)
-    .color(Colors.black);
+final textStyle = TextStyler.fontSize(20).fontWeight(.bold).color(Colors.black);
 
 // 2
-final buttonStyle = BoxStyler()
-    .height(50)
+final buttonStyle = BoxStyler.height(50)
     .borderRounded(25)
     .color(Colors.blue)
     .onHovered(BoxStyler.color(Colors.blue.shade700))
@@ -56,8 +50,7 @@ final tokenDefinitions = <MixToken, Object>{
   $borderRadius: Radius.circular(8),
 };
 
-final tokenStyle = BoxStyler()
-    .color($primaryColor())
+final tokenStyle = BoxStyler.color($primaryColor())
     .width(100)
     .height(100)
     .borderRadius(BorderRadiusGeometryMix.all($borderRadius()));

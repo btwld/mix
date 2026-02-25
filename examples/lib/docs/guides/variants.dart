@@ -6,16 +6,14 @@ import 'package:mix/mix.dart';
 
 void main() {
   // 1
-  final style = BoxStyler()
-      .color(Colors.red)
+  final style = BoxStyler.color(Colors.red)
       .height(100)
       .width(100)
       .borderRounded(10)
       .onHovered(BoxStyler.color(Colors.blue));
 
   // 2
-  final styleA = BoxStyler()
-      .color(Colors.red)
+  final styleA = BoxStyler.color(Colors.red)
       .height(100)
       .width(100)
       .borderRounded(10)
@@ -23,23 +21,18 @@ void main() {
 
   final styleB = styleA.onHovered(BoxStyler.color(Colors.green));
 
-  final result = BoxStyler()
-      .color(Colors.green)
-      .height(100)
-      .width(200)
-      .borderRounded(10);
+  final result = BoxStyler.color(
+    Colors.green,
+  ).height(100).width(200).borderRounded(10);
 
   // 3
   final hoverStyle = BoxStyler()
       .onDark(BoxStyler.color(Colors.blue))
       .onLight(BoxStyler.color(Colors.green));
 
-  final nestedStyle = BoxStyler()
-      .color(Colors.red)
-      .height(100)
-      .width(100)
-      .borderRounded(10)
-      .onHovered(hoverStyle);
+  final nestedStyle = BoxStyler.color(
+    Colors.red,
+  ).height(100).width(100).borderRounded(10).onHovered(hoverStyle);
 
   runMixApp(
     Row(

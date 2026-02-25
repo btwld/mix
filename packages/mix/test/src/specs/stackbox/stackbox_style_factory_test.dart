@@ -6,14 +6,14 @@ void main() {
   group('StackBoxStyler factory constructors', () {
     group('dot-shorthand resolution', () {
       test('factory resolves via dot-shorthand typed assignment', () {
-        StackBoxStyler styler = StackBoxStyler.color(Colors.red);
+        StackBoxStyler styler = StackBoxStyler.alignment(.center);
         expect(styler.$box, isNotNull);
       });
 
       test('chaining after factory constructor works', () {
         final styler = StackBoxStyler.color(
           Colors.red,
-        ).paddingAll(16).borderRounded(8);
+        ).padding(.all(16)).borderRadius(BorderRadiusMix.circular(8));
         expect(styler.$box, isNotNull);
       });
     });
@@ -121,51 +121,6 @@ void main() {
         );
       });
 
-      // Spacing convenience factories
-      test('paddingAll', () {
-        expect(
-          StackBoxStyler.paddingAll(16),
-          equals(StackBoxStyler().paddingAll(16)),
-        );
-      });
-
-      test('paddingX', () {
-        expect(
-          StackBoxStyler.paddingX(8),
-          equals(StackBoxStyler().paddingX(8)),
-        );
-      });
-
-      test('paddingY', () {
-        expect(
-          StackBoxStyler.paddingY(8),
-          equals(StackBoxStyler().paddingY(8)),
-        );
-      });
-
-      test('marginAll', () {
-        expect(
-          StackBoxStyler.marginAll(12),
-          equals(StackBoxStyler().marginAll(12)),
-        );
-      });
-
-      test('marginX', () {
-        expect(StackBoxStyler.marginX(6), equals(StackBoxStyler().marginX(6)));
-      });
-
-      test('marginY', () {
-        expect(StackBoxStyler.marginY(6), equals(StackBoxStyler().marginY(6)));
-      });
-
-      // Border radius convenience
-      test('borderRounded', () {
-        expect(
-          StackBoxStyler.borderRounded(12),
-          equals(StackBoxStyler().borderRounded(12)),
-        );
-      });
-
       // Constraints convenience factories
       test('width', () {
         expect(StackBoxStyler.width(200), equals(StackBoxStyler().width(200)));
@@ -212,6 +167,16 @@ void main() {
           ),
         );
       });
+
+      test('animate', () {
+        final animation = AnimationConfig.ease(
+          const Duration(milliseconds: 300),
+        );
+        expect(
+          StackBoxStyler.animate(animation),
+          equals(StackBoxStyler().animate(animation)),
+        );
+      });
     });
 
     group('resolved values', () {
@@ -220,8 +185,18 @@ void main() {
         expect(styler.$box, isNotNull);
       });
 
-      test('paddingAll resolves correctly', () {
-        final styler = StackBoxStyler.paddingAll(16);
+      test('padding resolves correctly', () {
+        final styler = StackBoxStyler.padding(.all(16));
+        expect(styler.$box, isNotNull);
+      });
+
+      test('animate sets animation config', () {
+        final animation = AnimationConfig.ease(
+          const Duration(milliseconds: 300),
+        );
+        final styler = StackBoxStyler.animate(animation);
+
+        expect(styler.$animation, equals(animation));
         expect(styler.$box, isNotNull);
       });
     });

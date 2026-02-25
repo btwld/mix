@@ -35,7 +35,7 @@ class CustomInheritedWidget extends InheritedWidget {
 Now you can create a `ContextVariant` that checks this inherited widget's state:
 
 ```dart
-BoxStyler()
+BoxStyler
   .color(Colors.red)
   .size(100, 100)
   .variant(
@@ -74,7 +74,7 @@ extension WidgetStateVariantMixinX<T extends Style<S>, S extends Spec<S>>
 Now you can use the extension method for a more readable API:
 
 ```dart
-BoxStyler()
+BoxStyler
   .color(Colors.red)
   .size(100, 100)
   .onCustomFlag(
@@ -113,7 +113,7 @@ class Example extends StatelessWidget {
   const Example({super.key});
 
   BoxStyler get box =>
-      BoxStyler()
+      BoxStyler
           .color(Colors.red)
           .size(100, 100)
           .variant(

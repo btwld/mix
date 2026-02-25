@@ -147,12 +147,20 @@ class ButtonStyler extends MixStyler<ButtonStyler, ButtonSpec>
   }
 
   ButtonStyler borderRadius(double value) {
-    return merge(ButtonStyler(container: FlexBoxStyler.borderRounded(value)));
+    return merge(
+      ButtonStyler(
+        container: FlexBoxStyler.borderRadius(BorderRadiusMix.circular(value)),
+      ),
+    );
   }
 
   ButtonStyler padding({required double x, required double y}) {
     return merge(
-      ButtonStyler(container: FlexBoxStyler.paddingX(x).paddingY(y)),
+      ButtonStyler(
+        container: FlexBoxStyler.padding(
+          EdgeInsetsGeometryMix.symmetric(horizontal: x, vertical: y),
+        ),
+      ),
     );
   }
 
@@ -226,7 +234,7 @@ enum ButtonVariant {
       case ButtonVariant.outlined:
         return ButtonStyler()
             .container(
-              FlexBoxStyler()
+              FlexBoxStyler
                   .color(Colors.transparent)
                   .borderAll(width: 1.5, color: Colors.blueAccent),
             )
@@ -312,7 +320,7 @@ The `buttonStyle` function defines base styles, merges variant styles, and adds 
 ```dart
 ButtonStyler buttonStyle(ButtonStyler? style, ButtonVariant? variant) {
   // Base styles shared across all variants
-  final container = FlexBoxStyler()
+  final container = FlexBoxStyler
       .borderRounded(6)
       .paddingX(8)
       .paddingY(12)

@@ -8,21 +8,21 @@ void main() {
   group('BoxStyler factory constructors', () {
     group('dot-shorthand resolution', () {
       test('factory resolves via dot-shorthand typed assignment', () {
-        BoxStyler styler = BoxStyler.color(Colors.red);
-        expect(styler.$decoration, isNotNull);
+        BoxStyler styler = BoxStyler.alignment(.center);
+        expect(styler.$alignment, isNotNull);
       });
 
       test('chaining after factory constructor works', () {
         final styler = BoxStyler.color(
           Colors.red,
-        ).paddingAll(16).borderRounded(8);
-        expect(styler.$decoration, isNotNull);
+        ).padding(.all(16)).borderRadius(BorderRadiusMix.circular(8));
+
         expect(styler.$padding, isNotNull);
+        expect(styler.$decoration, isNotNull);
       });
     });
 
     group('factory matches instance method', () {
-      // Direct constructor param factories
       test('alignment', () {
         expect(
           BoxStyler.alignment(Alignment.center),
@@ -68,7 +68,6 @@ void main() {
         );
       });
 
-      // Decoration convenience factories
       test('color', () {
         expect(
           BoxStyler.color(Colors.blue),
@@ -101,40 +100,6 @@ void main() {
         );
       });
 
-      // Spacing convenience factories
-      test('paddingAll', () {
-        expect(BoxStyler.paddingAll(16), equals(BoxStyler().paddingAll(16)));
-      });
-
-      test('paddingX', () {
-        expect(BoxStyler.paddingX(8), equals(BoxStyler().paddingX(8)));
-      });
-
-      test('paddingY', () {
-        expect(BoxStyler.paddingY(8), equals(BoxStyler().paddingY(8)));
-      });
-
-      test('marginAll', () {
-        expect(BoxStyler.marginAll(12), equals(BoxStyler().marginAll(12)));
-      });
-
-      test('marginX', () {
-        expect(BoxStyler.marginX(6), equals(BoxStyler().marginX(6)));
-      });
-
-      test('marginY', () {
-        expect(BoxStyler.marginY(6), equals(BoxStyler().marginY(6)));
-      });
-
-      // Border radius convenience
-      test('borderRounded', () {
-        expect(
-          BoxStyler.borderRounded(12),
-          equals(BoxStyler().borderRounded(12)),
-        );
-      });
-
-      // Constraints convenience factories
       test('width', () {
         expect(BoxStyler.width(200), equals(BoxStyler().width(200)));
       });
@@ -147,7 +112,6 @@ void main() {
         expect(BoxStyler.size(200, 100), equals(BoxStyler().size(200, 100)));
       });
 
-      // Transform convenience factories
       test('scale', () {
         expect(BoxStyler.scale(0.5), equals(BoxStyler().scale(0.5)));
       });
@@ -169,6 +133,16 @@ void main() {
           equals(BoxStyler().rotate(0.5, alignment: Alignment.bottomRight)),
         );
       });
+
+      test('animate', () {
+        final animation = AnimationConfig.ease(
+          const Duration(milliseconds: 300),
+        );
+        expect(
+          BoxStyler.animate(animation),
+          equals(BoxStyler().animate(animation)),
+        );
+      });
     });
 
     group('resolved values', () {
@@ -176,13 +150,14 @@ void main() {
         final decoration = BoxStyler.color(
           Colors.blue,
         ).$decoration!.resolveProp(MockBuildContext());
+
         expect(decoration, isA<BoxDecoration>());
         expect((decoration as BoxDecoration).color, Colors.blue);
       });
 
-      test('paddingAll resolves correctly', () {
-        final padding = BoxStyler.paddingAll(
-          16,
+      test('padding resolves correctly', () {
+        final padding = BoxStyler.padding(
+          .all(16),
         ).$padding!.resolveProp(MockBuildContext());
         expect(padding, const EdgeInsets.all(16));
       });
@@ -200,10 +175,20 @@ void main() {
           200,
           100,
         ).$constraints!.resolveProp(MockBuildContext());
+
         expect(constraints.minWidth, 200);
         expect(constraints.maxWidth, 200);
         expect(constraints.minHeight, 100);
         expect(constraints.maxHeight, 100);
+      });
+
+      test('animate sets animation config', () {
+        final animation = AnimationConfig.ease(
+          const Duration(milliseconds: 300),
+        );
+        final styler = BoxStyler.animate(animation);
+
+        expect(styler.$animation, equals(animation));
       });
     });
   });

@@ -34,16 +34,15 @@ class _ExampleState extends State<Example> {
 
   @override
   Widget build(BuildContext context) {
-    final style = BoxStyler()
-        .color(Colors.red)
+    final style = BoxStyler.color(Colors.red)
         .height(100)
         .width(100)
         .borderRounded(10)
         .wrap(.new().opacity(0.4))
         .onFocused(
-          BoxStyler()
-              .color(Colors.blue)
-              .borderAll(color: Colors.blue.shade700, width: 3),
+          BoxStyler.color(
+            Colors.blue,
+          ).borderAll(color: Colors.blue.shade700, width: 3),
         );
 
     return Column(

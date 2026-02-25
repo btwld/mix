@@ -25,8 +25,7 @@ class _ExampleState extends State<Example> {
 
   @override
   Widget build(BuildContext context) {
-    final style = BoxStyler()
-        .height(60)
+    final style = BoxStyler.height(60)
         .width(120)
         .borderRounded(30)
         .color(Colors.grey.shade200)
@@ -34,8 +33,7 @@ class _ExampleState extends State<Example> {
         .animate(.spring(300.ms))
         .variant(
           ContextVariant.widgetState(.selected),
-          BoxStyler()
-              .color(Colors.blue.shade500)
+          BoxStyler.color(Colors.blue.shade500)
               .borderAll(color: Colors.blue.shade600, width: 2)
               .shadow(
                 BoxShadowMix()
@@ -45,8 +43,7 @@ class _ExampleState extends State<Example> {
               ),
         );
 
-    final textStyle = TextStyler()
-        .fontSize(16)
+    final textStyle = TextStyler.fontSize(16)
         .fontWeight(.w600)
         .color(Colors.grey.shade700)
         .variant(

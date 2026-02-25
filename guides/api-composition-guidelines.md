@@ -1,5 +1,8 @@
 # Mix API Composition Guide (Concise Tutorial)
 
+Related:
+- Styler static factory policy: `guides/styler-api-guidelines.md`
+
 ## 1) Core Principle
 
 Prefer fluent chaining on Styler types for everyday composition.
@@ -17,9 +20,8 @@ Box sizing
 - Already have a Size: `BoxStyler(constraints: BoxConstraintsMix.size(const Size(200, 120)))`
 
 Stack layout
-- Chain properties: `StackStyler.alignment(Alignment.center).fit(StackFit.expand)`
-- Short factory: `StackStyler.alignment(Alignment.center).fit(StackFit.expand)`
-- Small constructor bundle: `StackStyler(alignment: Alignment.center, fit: StackFit.expand)`
+- Factory + chaining: `StackStyler.alignment(Alignment.center).fit(StackFit.expand)`
+- Constructor bundle: `StackStyler(alignment: Alignment.center, fit: StackFit.expand)`
 
 Composition
 - Reuse fragments: `final card = base.merge(elevated);`
@@ -106,4 +108,3 @@ Tip
 - Prefer chaining in tests for readability
 - Use `merge()` in tests when verifying composition of reusable fragments
 - Focus on resolved outcomes, not construction details
-

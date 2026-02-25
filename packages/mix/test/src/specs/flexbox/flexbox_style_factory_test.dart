@@ -6,14 +6,14 @@ void main() {
   group('FlexBoxStyler factory constructors', () {
     group('dot-shorthand resolution', () {
       test('factory resolves via dot-shorthand typed assignment', () {
-        FlexBoxStyler styler = FlexBoxStyler.color(Colors.red);
+        FlexBoxStyler styler = FlexBoxStyler.alignment(.center);
         expect(styler.$box, isNotNull);
       });
 
       test('chaining after factory constructor works', () {
         final styler = FlexBoxStyler.color(
           Colors.red,
-        ).paddingAll(16).borderRounded(8);
+        ).padding(.all(16)).borderRadius(BorderRadiusMix.circular(8));
         expect(styler.$box, isNotNull);
       });
     });
@@ -136,45 +136,6 @@ void main() {
         );
       });
 
-      // Spacing convenience factories
-      test('paddingAll', () {
-        expect(
-          FlexBoxStyler.paddingAll(16),
-          equals(FlexBoxStyler().paddingAll(16)),
-        );
-      });
-
-      test('paddingX', () {
-        expect(FlexBoxStyler.paddingX(8), equals(FlexBoxStyler().paddingX(8)));
-      });
-
-      test('paddingY', () {
-        expect(FlexBoxStyler.paddingY(8), equals(FlexBoxStyler().paddingY(8)));
-      });
-
-      test('marginAll', () {
-        expect(
-          FlexBoxStyler.marginAll(12),
-          equals(FlexBoxStyler().marginAll(12)),
-        );
-      });
-
-      test('marginX', () {
-        expect(FlexBoxStyler.marginX(6), equals(FlexBoxStyler().marginX(6)));
-      });
-
-      test('marginY', () {
-        expect(FlexBoxStyler.marginY(6), equals(FlexBoxStyler().marginY(6)));
-      });
-
-      // Border radius convenience
-      test('borderRounded', () {
-        expect(
-          FlexBoxStyler.borderRounded(12),
-          equals(FlexBoxStyler().borderRounded(12)),
-        );
-      });
-
       // Constraints convenience factories
       test('width', () {
         expect(FlexBoxStyler.width(200), equals(FlexBoxStyler().width(200)));
@@ -214,6 +175,16 @@ void main() {
         );
       });
 
+      test('animate', () {
+        final animation = AnimationConfig.ease(
+          const Duration(milliseconds: 300),
+        );
+        expect(
+          FlexBoxStyler.animate(animation),
+          equals(FlexBoxStyler().animate(animation)),
+        );
+      });
+
       // Preset factories
       test('row', () {
         expect(
@@ -236,8 +207,18 @@ void main() {
         expect(styler.$box, isNotNull);
       });
 
-      test('paddingAll resolves correctly', () {
-        final styler = FlexBoxStyler.paddingAll(16);
+      test('padding resolves correctly', () {
+        final styler = FlexBoxStyler.padding(.all(16));
+        expect(styler.$box, isNotNull);
+      });
+
+      test('animate sets animation config', () {
+        final animation = AnimationConfig.ease(
+          const Duration(milliseconds: 300),
+        );
+        final styler = FlexBoxStyler.animate(animation);
+
+        expect(styler.$animation, equals(animation));
         expect(styler.$box, isNotNull);
       });
     });

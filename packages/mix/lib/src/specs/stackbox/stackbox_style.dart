@@ -117,7 +117,8 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
   }) : $box = box,
        $stack = stack;
 
-  // Factory constructors for dot-shorthand notation
+  // Factory constructors for dot-shorthand notation.
+  // Keep only base primitives and non-compound conveniences.
 
   // Direct constructor params (Box + Stack)
   factory StackBoxStyler.alignment(AlignmentGeometry value) =>
@@ -149,24 +150,6 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
   factory StackBoxStyler.elevation(ElevationShadow value) =>
       StackBoxStyler().elevation(value);
 
-  // Spacing convenience
-  factory StackBoxStyler.paddingAll(double value) =>
-      StackBoxStyler().paddingAll(value);
-  factory StackBoxStyler.paddingX(double value) =>
-      StackBoxStyler().paddingX(value);
-  factory StackBoxStyler.paddingY(double value) =>
-      StackBoxStyler().paddingY(value);
-  factory StackBoxStyler.marginAll(double value) =>
-      StackBoxStyler().marginAll(value);
-  factory StackBoxStyler.marginX(double value) =>
-      StackBoxStyler().marginX(value);
-  factory StackBoxStyler.marginY(double value) =>
-      StackBoxStyler().marginY(value);
-
-  // Border radius convenience
-  factory StackBoxStyler.borderRounded(double value) =>
-      StackBoxStyler().borderRounded(value);
-
   // Constraints convenience
   factory StackBoxStyler.width(double value) => StackBoxStyler().width(value);
   factory StackBoxStyler.height(double value) => StackBoxStyler().height(value);
@@ -180,6 +163,10 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
     double angle, {
     Alignment alignment = .center,
   }) => StackBoxStyler().rotate(angle, alignment: alignment);
+
+  // Style metadata convenience
+  factory StackBoxStyler.animate(AnimationConfig value) =>
+      StackBoxStyler().animate(value);
 
   static StackBoxMutableStyler get chain => .new(StackBoxStyler());
 

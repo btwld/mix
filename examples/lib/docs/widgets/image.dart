@@ -7,7 +7,7 @@ void main() {
   // 1.
   StyledImage(
     style:
-        ImageStyler() //
+        ImageStyler //
             .width(152)
             .height(152)
             .fit(.cover),

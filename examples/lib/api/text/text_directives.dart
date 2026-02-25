@@ -12,10 +12,9 @@ class Example extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final baseStyle = TextStyler()
-        .fontSize(18)
-        .fontWeight(.w600)
-        .color(Colors.blue.shade700);
+    final baseStyle = TextStyler.fontSize(
+      18,
+    ).fontWeight(.w600).color(Colors.blue.shade700);
 
     return ColumnBox(
       style: FlexBoxStyler.spacing(16).mainAxisSize(.min),

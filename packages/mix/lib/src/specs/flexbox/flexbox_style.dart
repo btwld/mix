@@ -129,7 +129,8 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
   }) : $box = box,
        $flex = flex;
 
-  // Factory constructors for dot-shorthand notation
+  // Factory constructors for dot-shorthand notation.
+  // Keep only base primitives and non-compound conveniences.
 
   // Direct constructor params (Box + Flex)
   factory FlexBoxStyler.alignment(AlignmentGeometry value) =>
@@ -167,22 +168,6 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
   factory FlexBoxStyler.elevation(ElevationShadow value) =>
       FlexBoxStyler().elevation(value);
 
-  // Spacing convenience
-  factory FlexBoxStyler.paddingAll(double value) =>
-      FlexBoxStyler().paddingAll(value);
-  factory FlexBoxStyler.paddingX(double value) =>
-      FlexBoxStyler().paddingX(value);
-  factory FlexBoxStyler.paddingY(double value) =>
-      FlexBoxStyler().paddingY(value);
-  factory FlexBoxStyler.marginAll(double value) =>
-      FlexBoxStyler().marginAll(value);
-  factory FlexBoxStyler.marginX(double value) => FlexBoxStyler().marginX(value);
-  factory FlexBoxStyler.marginY(double value) => FlexBoxStyler().marginY(value);
-
-  // Border radius convenience
-  factory FlexBoxStyler.borderRounded(double value) =>
-      FlexBoxStyler().borderRounded(value);
-
   // Constraints convenience
   factory FlexBoxStyler.width(double value) => FlexBoxStyler().width(value);
   factory FlexBoxStyler.height(double value) => FlexBoxStyler().height(value);
@@ -194,6 +179,10 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
       FlexBoxStyler().scale(scale, alignment: alignment);
   factory FlexBoxStyler.rotate(double angle, {Alignment alignment = .center}) =>
       FlexBoxStyler().rotate(angle, alignment: alignment);
+
+  // Style metadata convenience
+  factory FlexBoxStyler.animate(AnimationConfig value) =>
+      FlexBoxStyler().animate(value);
 
   // Flex convenience (zero-param presets)
   factory FlexBoxStyler.row() => FlexBoxStyler(direction: .horizontal);

@@ -10,10 +10,9 @@ void main() {
   Box(style: boxStyle);
 
   // 2
-  final flexStyle = FlexBoxStyler()
-      .mainAxisAlignment(.spaceBetween)
-      .color(Colors.blue)
-      .direction(.vertical);
+  final flexStyle = FlexBoxStyler.mainAxisAlignment(
+    .spaceBetween,
+  ).color(Colors.blue).direction(.vertical);
 
   FlexBox(
     style: flexStyle,

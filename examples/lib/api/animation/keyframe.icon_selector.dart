@@ -37,8 +37,7 @@ class EmojiSelector extends StatelessWidget {
     }
 
     return FlexBox(
-      style: FlexBoxStyler()
-          .padding(.symmetric(vertical: 10, horizontal: 16))
+      style: FlexBoxStyler.padding(.symmetric(vertical: 10, horizontal: 16))
           .color(Colors.white)
           .borderRounded(50)
           .shadowOnly(color: Colors.black12, blurRadius: 50)

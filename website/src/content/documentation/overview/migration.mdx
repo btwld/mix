@@ -9,7 +9,7 @@ This guide covers migrating between major versions of Mix.
 Mix 2.0 introduces a new fluent Styler API that replaces the utility-prefix pattern from v1.x. This change provides better IDE support, more intuitive method chaining, and improved type safety.
 
 <Callout type="warning">
-  **Deprecated Utilities**: The global `$box`, `$text`, `$icon`, `$flex`, `$stack`, `$image`, `$flexbox`, and `$stackbox` accessors are now deprecated. Use the corresponding Styler classes directly (e.g., `BoxStyler()`, `TextStyler()`).
+  **Deprecated Utilities**: The global `$box`, `$text`, `$icon`, `$flex`, `$stack`, `$image`, `$flexbox`, and `$stackbox` accessors are now deprecated. Use the corresponding Styler classes directly (e.g., `BoxStyler`, `TextStyler`).
 </Callout>
 
 ### Breaking Changes
@@ -39,7 +39,7 @@ final style = Style(
 );
 
 // v2.0
-final style = BoxStyler()
+final style = BoxStyler
     .color(Colors.blue)
     .paddingAll(16)
     .borderRounded(8);
@@ -67,7 +67,7 @@ final style = Style(
 );
 
 // v2.0
-final style = BoxStyler()
+final style = BoxStyler
     .color(Colors.blue)
     .onHovered(BoxStyler.color(Colors.red))
     .onDark(BoxStyler.color(Colors.white));
@@ -235,7 +235,7 @@ MixTheme(
 ### The use of $ (Deprecated in 2.0)
 
 <Callout type="warning">
-  **Note**: The `$` prefix utilities described below are **deprecated in Mix 2.0**. If you're migrating to Mix 2.0, use the Styler classes directly (e.g., `BoxStyler()` instead of `$box`). See the [1.x to 2.0 migration section](#1x-to-20) above.
+  **Note**: The `$` prefix utilities described below are **deprecated in Mix 2.0**. If you're migrating to Mix 2.0, use the Styler classes directly (e.g., `BoxStyler` instead of `$box`). See the [1.x to 2.0 migration section](#1x-to-20) above.
 </Callout>
 
 In version 1.0.0, the `$` symbol was introduced to access the API from the Mix package. This made it easier to identify the utilities provided by Mix. For example, to access the `box` namespace, you would use `$box`.
@@ -287,7 +287,7 @@ PressableBox(
 PressableBox(
   onPress: () {},
   child: Box(
-    style: BoxStyler()
+    style: BoxStyler
         .width(200)
         .height(200)
         .color(Colors.blue)

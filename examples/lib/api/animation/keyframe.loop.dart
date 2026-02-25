@@ -18,8 +18,7 @@ class MyApp extends StatelessWidget {
 class DemoApp extends StatelessWidget {
   const DemoApp({super.key});
 
-  BoxStyler get _boxStyle => BoxStyler()
-      .color(Colors.blueAccent.shade400)
+  BoxStyler get _boxStyle => BoxStyler.color(Colors.blueAccent.shade400)
       .paddingX(16)
       .paddingY(8)
       .borderRounded(30)
@@ -55,10 +54,7 @@ class DemoApp extends StatelessWidget {
           style: _boxStyle,
           child: StyledText(
             'Update',
-            style: TextStyler()
-                //
-                .color(Colors.white)
-                .fontWeight(.w500),
+            style: TextStyler.color(Colors.white).fontWeight(.w500),
           ),
         ),
       ),

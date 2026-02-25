@@ -12,8 +12,7 @@ class Example extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = BoxStyler()
-        .width(100)
+    final style = BoxStyler.width(100)
         .height(100)
         .color(Colors.blue.shade400)
         .onBreakpoint(Breakpoint.maxWidth(575), BoxStyler.color(Colors.green))
@@ -21,10 +20,7 @@ class Example extends StatelessWidget {
         .shadowOnly(color: Colors.black.withValues(alpha: 0.2), blurRadius: 20)
         .wrap(
           WidgetModifierConfig.defaultText(
-            TextStyler() //
-                .fontSize(16)
-                .fontWeight(.bold)
-                .color(Colors.white),
+            TextStyler.fontSize(16).fontWeight(.bold).color(Colors.white),
           ).align(alignment: .center),
         )
         .animate(.spring(300.ms));

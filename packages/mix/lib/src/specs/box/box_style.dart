@@ -120,8 +120,8 @@ class BoxStyler extends MixStyler<BoxStyler, BoxSpec>
          animation: animation,
        );
 
-  // Factory constructors for dot-shorthand notation (e.g., `.color(Colors.blue)`)
-  // These enable concise syntax when BoxStyler is used as a sub-styler in compound widgets.
+  // Factory constructors for dot-shorthand notation.
+  // Keep only base primitives and non-compound conveniences.
 
   // Direct constructor params
   factory BoxStyler.alignment(AlignmentGeometry value) =>
@@ -147,18 +147,6 @@ class BoxStyler extends MixStyler<BoxStyler, BoxSpec>
   factory BoxStyler.elevation(ElevationShadow value) =>
       BoxStyler().elevation(value);
 
-  // Spacing convenience
-  factory BoxStyler.paddingAll(double value) => BoxStyler().paddingAll(value);
-  factory BoxStyler.paddingX(double value) => BoxStyler().paddingX(value);
-  factory BoxStyler.paddingY(double value) => BoxStyler().paddingY(value);
-  factory BoxStyler.marginAll(double value) => BoxStyler().marginAll(value);
-  factory BoxStyler.marginX(double value) => BoxStyler().marginX(value);
-  factory BoxStyler.marginY(double value) => BoxStyler().marginY(value);
-
-  // Border radius convenience
-  factory BoxStyler.borderRounded(double value) =>
-      BoxStyler().borderRounded(value);
-
   // Constraints convenience
   factory BoxStyler.width(double value) => BoxStyler().width(value);
   factory BoxStyler.height(double value) => BoxStyler().height(value);
@@ -170,6 +158,10 @@ class BoxStyler extends MixStyler<BoxStyler, BoxSpec>
       BoxStyler().scale(scale, alignment: alignment);
   factory BoxStyler.rotate(double angle, {Alignment alignment = .center}) =>
       BoxStyler().rotate(angle, alignment: alignment);
+
+  // Style metadata convenience
+  factory BoxStyler.animate(AnimationConfig value) =>
+      BoxStyler().animate(value);
 
   static BoxMutableStyler get chain => .new(BoxStyler());
 
