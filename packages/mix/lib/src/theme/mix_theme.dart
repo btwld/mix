@@ -110,7 +110,6 @@ class MixScope extends InheritedModel<String> {
     };
 
     final nestedScope = MixScope._(
-      key: key,
       tokens: childTokens,
       orderOfModifiers: orderOfModifiers,
       child: child,
@@ -120,7 +119,11 @@ class MixScope extends InheritedModel<String> {
       builder: (context) {
         final parent = MixScope.maybeOf(context);
 
-        return MixScope.combine(scopes: [?parent, nestedScope], child: child);
+        return MixScope.combine(
+          key: key,
+          scopes: [?parent, nestedScope],
+          child: child,
+        );
       },
     );
   }

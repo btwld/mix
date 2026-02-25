@@ -149,11 +149,32 @@ MixScope(
 
 ## Combining/Overriding Scopes
 
-You can merge scopes or create nested scopes to override subsets of tokens for parts of the tree.
+When you place a new `MixScope` inside an existing one, the inner scope becomes the *nearest* scope for its subtree and **completely replaces** the parent for token resolution. Any token that the parent defined but the child did not is no longer visible:
+
+```dart
+MixScope(
+  colors: { ColorToken('brand.primary'): Colors.blue },
+  spaces: { SpaceToken('space.md'): 16.0 },
+  child: FeatureShell(
+    child: MixScope(
+      // Only overrides the color, but space.md is now gone
+      colors: { ColorToken('brand.primary'): Colors.green },
+      child: FeatureWidget(), // SpaceToken('space.md') will throw an error
+    ),
+  ),
+)
+```
+
+In the example above, `FeatureWidget` can resolve `brand.primary` (green), but `space.md` is lost because the inner scope does not carry the parent's tokens. To keep upstream tokens available while adding or overriding a subset, use `MixScope.combine` or `MixScope.inherit`.
+
+### MixScope.combine
+
+`MixScope.combine` takes a list of `MixScope` instances and folds them into a single scope. Token maps are merged in order: later scopes override earlier ones when the same token appears in both.
 
 ```dart
 final base = MixScope(
   colors: { ColorToken('brand.primary'): Colors.blue },
+  spaces: { SpaceToken('space.md'): 16.0 },
   child: const SizedBox(),
 );
 
@@ -162,41 +183,35 @@ final feature = MixScope(
   child: const SizedBox(),
 );
 
+// Merged result: brand.primary -> green, space.md -> 16.0
 final combined = MixScope.combine(
   scopes: [base, feature],
   child: MyApp(),
 );
 ```
 
-Or simply nest a child scope where needed:
+This is useful when you have multiple scope definitions (e.g. a base theme and a feature-level override) and want to merge them explicitly before placing them in the tree.
+
+### MixScope.inherit
+
+`MixScope.inherit` is a convenience for the most common case: you already have a parent `MixScope` in the tree and want to add (or override) a few tokens without losing the rest. It reads the nearest parent scope at build time and merges it with the tokens you provide. Parent tokens come first, then yours, so your entries win when keys collide:
 
 ```dart
 MixScope(
-  colors: { ColorToken('brand.primary'): Colors.blue },
-  child: FeatureShell(
-    child: MixScope(
-      colors: { ColorToken('brand.primary'): Colors.green },
-      child: FeatureWidget(),
-    ),
-  ),
-)
-```
-
-A nested `MixScope` is the *nearest* scope for its subtree, so it *replaces* the parent for token resolution. To **combine** tokens—keep the parent’s tokens and add (or override) your own—use **MixScope.inherit**. It builds a single scope whose token map is the parent’s map merged with yours: parent tokens plus your tokens, with your entries winning when the same token is defined in both. That way both upstream tokens and your local tokens resolve in the same subtree. Valid for both light and dark themes.
-
-```dart
-// Outer scope provides base tokens; inherit combines them with yours
-MixScope(
-  colors: { ColorToken('brand.primary'): Colors.blue },
-  colors: { ColorToken('custom.accent'): Colors.orange },
+  colors: {
+    ColorToken('brand.primary'): Colors.blue,
+    ColorToken('custom.accent'): Colors.orange,
+  },
+  spaces: { SpaceToken('space.md'): 16.0 },
   child: MixScope.inherit(
+    // Only adds a new space token; all parent tokens remain available
     spaces: { SpaceToken('custom.gap'): 12.0 },
-    child: MySubtree(), // resolves both brand and custom tokens
+    child: MySubtree(), // resolves brand.primary, custom.accent, space.md, and custom.gap
   ),
 )
 ```
 
-## Hands‑On Tutorial
+## Hands-On Tutorial
 
 This tutorial creates brand color and spacing tokens, applies them, and integrates Material.
 
