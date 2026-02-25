@@ -6,16 +6,27 @@
 # 2. Build the Flutter preview bundle (interactive widget examples)
 # 3. Build the Next.js website
 #
-# Vercel's root directory must be set to the repo root (not website/)
-# and "Include source files outside of the Root Directory" must be enabled
-# so the script can access examples/, packages/, and .fvmrc.
+# Vercel requirement: "Include source files outside of the Root Directory"
+# must be enabled in Project Settings > Root Directory. This makes the full
+# repo available at /vercel/path0/ while website/ is at /vercel/path1/.
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 WEBSITE_DIR="$(dirname "$SCRIPT_DIR")"
-PROJECT_DIR="$(cd "$WEBSITE_DIR/.." && pwd)"
 
 fail() { echo "ERROR: $*" >&2; exit 1; }
+
+# Resolve the monorepo root.
+# On Vercel with "Include source files outside Root Directory" enabled,
+# the full repo is at /vercel/path0/ while the root directory (website/)
+# is mounted at /vercel/path1/. Locally, ".." from website/ is the repo root.
+if [ -d "/vercel/path0" ] && [ -f "/vercel/path0/.fvmrc" ]; then
+    PROJECT_DIR="/vercel/path0"
+elif [ -f "$WEBSITE_DIR/../.fvmrc" ]; then
+    PROJECT_DIR="$(cd "$WEBSITE_DIR/.." && pwd)"
+else
+    fail "Cannot find monorepo root. Ensure 'Include source files outside of the Root Directory' is enabled in Vercel Project Settings."
+fi
 
 echo "==> Project root: $PROJECT_DIR"
 echo "==> Website dir:  $WEBSITE_DIR"
