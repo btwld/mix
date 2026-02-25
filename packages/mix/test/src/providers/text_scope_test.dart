@@ -114,9 +114,7 @@ void main() {
       expect(dependencyChanges, 2);
     });
 
-    testWidgets('does not notify dependents when text is same', (
-      tester,
-    ) async {
+    testWidgets('does not notify dependents when text is same', (tester) async {
       final text = TextStyler(maxLines: 1);
       var dependencyChanges = 0;
 
@@ -211,27 +209,31 @@ void main() {
         );
       });
 
-      testWidgets('textWidthBasis defaults to TextWidthBasis.parent when null', (
-        tester,
-      ) async {
-        // TextStyler with no textWidthBasis specified
-        final text = TextStyler(textAlign: TextAlign.left);
+      testWidgets(
+        'textWidthBasis defaults to TextWidthBasis.parent when null',
+        (tester) async {
+          // TextStyler with no textWidthBasis specified
+          final text = TextStyler(textAlign: TextAlign.left);
 
-        await tester.pumpWidget(
-          MaterialApp(
-            home: TextScope(
-              text: text,
-              child: Builder(
-                builder: (context) {
-                  final defaultTextStyle = DefaultTextStyle.of(context);
-                  expect(defaultTextStyle.textWidthBasis, TextWidthBasis.parent);
-                  return const SizedBox();
-                },
+          await tester.pumpWidget(
+            MaterialApp(
+              home: TextScope(
+                text: text,
+                child: Builder(
+                  builder: (context) {
+                    final defaultTextStyle = DefaultTextStyle.of(context);
+                    expect(
+                      defaultTextStyle.textWidthBasis,
+                      TextWidthBasis.parent,
+                    );
+                    return const SizedBox();
+                  },
+                ),
               ),
             ),
-          ),
-        );
-      });
+          );
+        },
+      );
 
       testWidgets('style defaults to empty TextStyle when null', (
         tester,

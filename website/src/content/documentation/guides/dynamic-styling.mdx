@@ -21,6 +21,11 @@ final style = BoxStyler()
 
 Mix automatically merges the hovered style with the base style—you only define what changes.
 
+<FlutterPreview
+  previewId="variant-hover"
+  height={200}
+/>
+
 ### Composing Styles with Variants
 
 When you define a style, it is expected to be reused in multiple places. With Mix, you can easily reuse styles even when a variant was defined inside it.
@@ -77,7 +82,7 @@ Below is a list of all built-in variant methods available on stylers (e.g., `Box
 |--------|-------------|
 | `onHovered(style)` | Applies style when the widget is hovered |
 | `onPressed(style)` | Applies style when the widget is pressed |
-| `onFocused(style)` | Applies style when the widget is focused |
+| `onFocused(style)` | Applies style when the widget is focused (requires `PressableBox` or `Pressable` wrapper) |
 | `onDisabled(style)` | Applies style when the widget is disabled |
 | `onEnabled(style)` | Applies style when the widget is enabled (not disabled) |
 | `onDark(style)` | Applies style in dark mode |

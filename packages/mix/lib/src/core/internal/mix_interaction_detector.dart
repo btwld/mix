@@ -46,15 +46,15 @@ class _MixInteractionDetectorState extends State<MixInteractionDetector> {
 
   /// Creates an internal controller with initial disabled state if needed.
   WidgetStatesController _createInternalController() {
-    return WidgetStatesController({if (!widget.enabled) WidgetState.disabled});
+    return WidgetStatesController({if (!widget.enabled) .disabled});
   }
 
   /// Syncs disabled state and clears transients when disabling.
   void _syncDisabledState() {
-    _effectiveController.update(WidgetState.disabled, !widget.enabled);
+    _effectiveController.update(.disabled, !widget.enabled);
     if (!widget.enabled) {
-      _effectiveController.update(WidgetState.hovered, false);
-      _effectiveController.update(WidgetState.pressed, false);
+      _effectiveController.update(.hovered, false);
+      _effectiveController.update(.pressed, false);
       _cursorPositionNotifier.clearPosition();
       widget.onHoverChange?.call(false);
     }
@@ -75,14 +75,14 @@ class _MixInteractionDetectorState extends State<MixInteractionDetector> {
   /// Clears the pressed state and notifies listeners.
   void _clearPressedState() {
     if (!_effectiveController.value.contains(WidgetState.pressed)) return;
-    _effectiveController.update(WidgetState.pressed, false);
+    _effectiveController.update(.pressed, false);
   }
 
   /// Handles pointer entering the widget bounds.
   void _handlePointerEnter(PointerEnterEvent event) {
     if (!mounted) return;
 
-    _effectiveController.update(WidgetState.hovered, true);
+    _effectiveController.update(.hovered, true);
     widget.onHoverChange?.call(true);
   }
 
@@ -90,7 +90,7 @@ class _MixInteractionDetectorState extends State<MixInteractionDetector> {
   void _handlePointerExit(PointerExitEvent event) {
     if (!mounted) return;
 
-    _effectiveController.update(WidgetState.hovered, false);
+    _effectiveController.update(.hovered, false);
     _cursorPositionNotifier.clearPosition();
     widget.onHoverChange?.call(false);
 
@@ -102,23 +102,22 @@ class _MixInteractionDetectorState extends State<MixInteractionDetector> {
   void _handlePointerDown(PointerDownEvent event) {
     if (!mounted) return;
     // Only treat primary mouse button as "pressed" for mouse; all other kinds count.
-    if (event.kind == PointerDeviceKind.mouse &&
-        (event.buttons & kPrimaryMouseButton) == 0) {
+    if (event.kind == .mouse && (event.buttons & kPrimaryMouseButton) == 0) {
       return;
     }
-    _effectiveController.update(WidgetState.pressed, true);
+    _effectiveController.update(.pressed, true);
   }
 
   /// Handles pointer up events.
   void _handlePointerUp(PointerUpEvent event) {
     if (!mounted) return;
-    _effectiveController.update(WidgetState.pressed, false);
+    _effectiveController.update(.pressed, false);
   }
 
   /// Handles pointer cancel events.
   void _handlePointerCancel(PointerCancelEvent event) {
     if (!mounted) return;
-    _effectiveController.update(WidgetState.pressed, false);
+    _effectiveController.update(.pressed, false);
   }
 
   /// Handles pointer move events to track boundary crossings.
@@ -206,7 +205,7 @@ class _MixInteractionDetectorState extends State<MixInteractionDetector> {
           onPointerMove: _handlePointerMove,
           onPointerUp: _handlePointerUp,
           onPointerCancel: _handlePointerCancel,
-          behavior: HitTestBehavior.opaque,
+          behavior: .opaque,
           child: PointerPositionProvider(
             notifier: _cursorPositionNotifier,
             child: ListenableBuilder(

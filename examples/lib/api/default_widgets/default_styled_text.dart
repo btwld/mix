@@ -14,7 +14,7 @@ class Example extends StatelessWidget {
   Widget build(BuildContext context) {
     final baseStyle = TextStyler()
         .fontSize(50)
-        .fontWeight(FontWeight.w600)
+        .fontWeight(.w600)
         .color(Colors.blue.shade700)
         .onHovered(TextStyler().color(Colors.red))
         .animate(.easeInOut(1.s));
@@ -26,7 +26,7 @@ class Example extends StatelessWidget {
       child: DefaultStyledText(
         style: baseStyle,
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize: .min,
           spacing: 16,
           children: [
             StyledText('hello world'),

@@ -8,7 +8,7 @@ import '../../helpers.dart';
 void main() {
   runMixApp(
     const Row(
-      mainAxisSize: MainAxisSize.min,
+      mainAxisSize: .min,
       spacing: 16,
       children: [CustomMixWidget(), CustomWidget()],
     ),
@@ -21,7 +21,7 @@ class CustomMixWidget extends StatelessWidget {
   TextStyler get customTextStyle {
     return TextStyler()
         .fontSize(16)
-        .fontWeight(FontWeight.w600)
+        .fontWeight(.w600)
         .color(Colors.white)
         .animate(.easeInOut(100.ms))
         .onDark(TextStyler().color(Colors.black))
@@ -38,8 +38,8 @@ class CustomMixWidget extends StatelessWidget {
         .height(120)
         .width(120)
         .paddingAll(20)
-        .elevation(ElevationShadow.nine)
-        .alignment(Alignment.center)
+        .elevation(.nine)
+        .alignment(.center)
         .borderRounded(10)
         .color(Colors.blue)
         .scale(1.0)
@@ -47,8 +47,8 @@ class CustomMixWidget extends StatelessWidget {
         .onDark(BoxStyler().color(Colors.cyan))
         .onHovered(
           BoxStyler()
-              .alignment(Alignment.topLeft)
-              .elevation(ElevationShadow.two)
+              .alignment(.topLeft)
+              .elevation(.two)
               .paddingAll(10)
               .scale(1.5)
               .animate(.easeInOut(100.ms))
@@ -73,7 +73,7 @@ class CustomWidget extends StatefulWidget {
   const CustomWidget({super.key});
 
   @override
-  CustomWidgetState createState() => CustomWidgetState();
+  CustomWidgetState createState() => .new();
 }
 
 class CustomWidgetState extends State<CustomWidget> {
@@ -84,10 +84,10 @@ class CustomWidgetState extends State<CustomWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = MediaQuery.platformBrightnessOf(context) == Brightness.dark;
+    final isDark = MediaQuery.platformBrightnessOf(context) == .dark;
     final backgroundColor = isDark ? Colors.cyan : Colors.blue;
     final textColor = isDark ? Colors.black : Colors.white;
-    final borderRadius = BorderRadius.circular(10);
+    final BorderRadius borderRadius = .circular(10);
 
     final onHoverTextColor = isDark
         ? Colors.grey.shade700
@@ -122,7 +122,7 @@ class CustomWidgetState extends State<CustomWidget> {
             curve: _curve,
             duration: _duration,
             child: AnimatedAlign(
-              alignment: _isHover ? Alignment.topLeft : Alignment.center,
+              alignment: _isHover ? .topLeft : .center,
               curve: _curve,
               duration: _duration,
               child: Text(
@@ -130,7 +130,7 @@ class CustomWidgetState extends State<CustomWidget> {
                 style: Theme.of(context).textTheme.labelLarge?.copyWith(
                   color: _isHover ? onHoverTextColor : textColor,
                   fontSize: 16,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: .w600,
                 ),
               ),
             ),

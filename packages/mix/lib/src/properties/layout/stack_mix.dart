@@ -1,18 +1,27 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
 
 import '../../core/helpers.dart';
-import '../../core/mix_element.dart';
+import '../../core/mix_element.dart' hide Mixable;
 import '../../core/prop.dart';
 import '../../specs/stack/stack_spec.dart';
+
+part 'stack_mix.g.dart';
 
 /// Mix class for configuring [StackSpec] properties.
 ///
 /// Encapsulates stack layout properties with support for proper Mix framework integration.
-final class StackMix extends Mix<StackSpec> with Diagnosticable {
+@Mixable()
+final class StackMix extends Mix<StackSpec>
+    with Diagnosticable, _$StackMixMixin {
+  @override
   final Prop<AlignmentGeometry>? $alignment;
+  @override
   final Prop<StackFit>? $fit;
+  @override
   final Prop<TextDirection>? $textDirection;
+  @override
   final Prop<Clip>? $clipBehavior;
 
   /// Main constructor with user-friendly Mix types
@@ -98,39 +107,4 @@ final class StackMix extends Mix<StackSpec> with Diagnosticable {
   StackMix clipBehavior(Clip value) {
     return merge(StackMix.clipBehavior(value));
   }
-
-  /// Resolves to [StackSpec] using the provided [BuildContext].
-  @override
-  StackSpec resolve(BuildContext context) {
-    return StackSpec(
-      alignment: MixOps.resolve(context, $alignment),
-      fit: MixOps.resolve(context, $fit),
-      textDirection: MixOps.resolve(context, $textDirection),
-      clipBehavior: MixOps.resolve(context, $clipBehavior),
-    );
-  }
-
-  /// Merges the properties of this [StackMix] with the properties of [other].
-  @override
-  StackMix merge(StackMix? other) {
-    return StackMix.create(
-      alignment: MixOps.merge($alignment, other?.$alignment),
-      fit: MixOps.merge($fit, other?.$fit),
-      textDirection: MixOps.merge($textDirection, other?.$textDirection),
-      clipBehavior: MixOps.merge($clipBehavior, other?.$clipBehavior),
-    );
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(DiagnosticsProperty('alignment', $alignment))
-      ..add(DiagnosticsProperty('fit', $fit))
-      ..add(DiagnosticsProperty('textDirection', $textDirection))
-      ..add(DiagnosticsProperty('clipBehavior', $clipBehavior));
-  }
-
-  @override
-  List<Object?> get props => [$alignment, $fit, $textDirection, $clipBehavior];
 }

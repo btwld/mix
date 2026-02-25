@@ -74,73 +74,55 @@ mixin BorderRadiusMixin<T extends Mix<Object?>>
   // Rounded shortcuts - GROUPED corners
 
   T borderRoundedTop(double radius) {
-    return borderRadius(BorderRadiusGeometryMix.top(Radius.circular(radius)));
+    return borderRadius(BorderRadiusGeometryMix.top(.circular(radius)));
   }
 
   T borderRoundedBottom(double radius) {
-    return borderRadius(
-      BorderRadiusGeometryMix.bottom(Radius.circular(radius)),
-    );
+    return borderRadius(BorderRadiusGeometryMix.bottom(.circular(radius)));
   }
 
   T borderRoundedLeft(double radius) {
-    return borderRadius(BorderRadiusGeometryMix.left(Radius.circular(radius)));
+    return borderRadius(BorderRadiusGeometryMix.left(.circular(radius)));
   }
 
   T borderRoundedRight(double radius) {
-    return borderRadius(BorderRadiusGeometryMix.right(Radius.circular(radius)));
+    return borderRadius(BorderRadiusGeometryMix.right(.circular(radius)));
   }
 
   // Rounded shortcuts - SINGLE corners
 
   T borderRoundedTopLeft(double radius) {
-    return borderRadius(
-      BorderRadiusGeometryMix.topLeft(Radius.circular(radius)),
-    );
+    return borderRadius(BorderRadiusGeometryMix.topLeft(.circular(radius)));
   }
 
   T borderRoundedTopRight(double radius) {
-    return borderRadius(
-      BorderRadiusGeometryMix.topRight(Radius.circular(radius)),
-    );
+    return borderRadius(BorderRadiusGeometryMix.topRight(.circular(radius)));
   }
 
   T borderRoundedBottomLeft(double radius) {
-    return borderRadius(
-      BorderRadiusGeometryMix.bottomLeft(Radius.circular(radius)),
-    );
+    return borderRadius(BorderRadiusGeometryMix.bottomLeft(.circular(radius)));
   }
 
   T borderRoundedBottomRight(double radius) {
-    return borderRadius(
-      BorderRadiusGeometryMix.bottomRight(Radius.circular(radius)),
-    );
+    return borderRadius(BorderRadiusGeometryMix.bottomRight(.circular(radius)));
   }
 
   // Rounded shortcuts - DIRECTIONAL (RTL-aware)
 
   T borderRoundedTopStart(double radius) {
-    return borderRadius(
-      BorderRadiusGeometryMix.topStart(Radius.circular(radius)),
-    );
+    return borderRadius(BorderRadiusGeometryMix.topStart(.circular(radius)));
   }
 
   T borderRoundedTopEnd(double radius) {
-    return borderRadius(
-      BorderRadiusGeometryMix.topEnd(Radius.circular(radius)),
-    );
+    return borderRadius(BorderRadiusGeometryMix.topEnd(.circular(radius)));
   }
 
   T borderRoundedBottomStart(double radius) {
-    return borderRadius(
-      BorderRadiusGeometryMix.bottomStart(Radius.circular(radius)),
-    );
+    return borderRadius(BorderRadiusGeometryMix.bottomStart(.circular(radius)));
   }
 
   T borderRoundedBottomEnd(double radius) {
-    return borderRadius(
-      BorderRadiusGeometryMix.bottomEnd(Radius.circular(radius)),
-    );
+    return borderRadius(BorderRadiusGeometryMix.bottomEnd(.circular(radius)));
   }
 }
 
@@ -151,12 +133,12 @@ mixin BorderRadiusMixin<T extends Mix<Object?>>
 final class BorderRadiusGeometryUtility<T extends Style<Object?>>
     extends MixUtility<T, BorderRadiusGeometryMix> {
   /// Returns a directional utility for creating and manipulating attributes with [BorderRadiusDirectional]
-  late final borderRadiusDirectional = BorderRadiusDirectionalUtility<T>(
+  late final borderRadiusDirectional = BorderRadiusDirectionalUtility(
     utilityBuilder,
   );
 
   /// Returns a utility for creating and manipulating attributes with [BorderRadius]
-  late final borderRadius = BorderRadiusUtility<T>(utilityBuilder);
+  late final borderRadius = BorderRadiusUtility(utilityBuilder);
 
   BorderRadiusGeometryUtility(super.utilityBuilder);
   @Deprecated('Use borderRadius.circular instead')

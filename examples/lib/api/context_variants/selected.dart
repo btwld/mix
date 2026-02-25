@@ -31,14 +31,14 @@ class _ExampleState extends State<Example> {
         .width(100)
         .borderRounded(10)
         .variant(
-          ContextVariant.widgetState(WidgetState.selected),
+          ContextVariant.widgetState(.selected),
           BoxStyler().color(Colors.blue),
         );
 
     return Pressable(
       onPress: () {
-        final isSelected = controller.has(WidgetState.selected);
-        controller.update(WidgetState.selected, !isSelected);
+        final isSelected = controller.has(.selected);
+        controller.update(.selected, !isSelected);
       },
       controller: controller,
       child: Box(style: style),

@@ -1,37 +1,75 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
 
 import '../../core/directive.dart';
 import '../../core/helpers.dart';
 import '../../core/spec.dart';
 
+part 'text_spec.g.dart';
+
 /// Specification for text styling and layout properties.
 ///
 /// Provides comprehensive text styling including overflow behavior, structure styling,
 /// alignment, line limits, text direction, and string directive support.
+@MixableSpec(methods: GeneratedSpecMethods.skipLerp)
 @immutable
-final class TextSpec extends Spec<TextSpec> with Diagnosticable {
+final class TextSpec extends Spec<TextSpec>
+    with Diagnosticable, _$TextSpecMethods {
+  /// How visual overflow should be handled.
+  @override
   final TextOverflow? overflow;
+
+  /// The strut style to use for the text.
+  @override
   final StrutStyle? strutStyle;
+
+  /// How the text should be aligned horizontally.
+  @override
   final TextAlign? textAlign;
+
+  /// The maximum number of lines to display.
+  @override
   final int? maxLines;
+
+  /// Defines how to measure the width of the text.
+  @override
   final TextWidthBasis? textWidthBasis;
+
+  /// How text should be scaled.
+  @override
   final TextScaler? textScaler;
 
+  /// The style to use for the text.
+  @override
   final TextStyle? style;
+
+  /// The directionality of the text.
+  @override
   final TextDirection? textDirection;
+
+  /// Whether the text should break at soft line breaks.
+  @override
   final bool? softWrap;
 
+  /// Defines how the height of the text should be calculated.
+  @override
   final TextHeightBehavior? textHeightBehavior;
 
+  /// Directives to transform the text string.
+  @override
   final List<Directive<String>>? textDirectives;
 
+  /// The color to use when painting the selection.
+  @override
   final Color? selectionColor;
 
   /// Alternative semantics label for accessibility.
+  @override
   final String? semanticsLabel;
 
   /// Locale for text rendering and formatting.
+  @override
   final Locale? locale;
 
   const TextSpec({
@@ -51,61 +89,6 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
     this.locale,
   });
 
-  /// Creates a copy of this [TextSpec] but with the given fields
-  /// replaced with the new values.
-  @override
-  TextSpec copyWith({
-    TextOverflow? overflow,
-    StrutStyle? strutStyle,
-    TextAlign? textAlign,
-    TextScaler? textScaler,
-    int? maxLines,
-    TextStyle? style,
-    TextWidthBasis? textWidthBasis,
-    TextHeightBehavior? textHeightBehavior,
-    TextDirection? textDirection,
-    bool? softWrap,
-    List<Directive<String>>? textDirectives,
-    Color? selectionColor,
-    String? semanticsLabel,
-    Locale? locale,
-  }) {
-    return TextSpec(
-      overflow: overflow ?? this.overflow,
-      strutStyle: strutStyle ?? this.strutStyle,
-      textAlign: textAlign ?? this.textAlign,
-      textScaler: textScaler ?? this.textScaler,
-      maxLines: maxLines ?? this.maxLines,
-      style: style ?? this.style,
-      textWidthBasis: textWidthBasis ?? this.textWidthBasis,
-      textHeightBehavior: textHeightBehavior ?? this.textHeightBehavior,
-      textDirection: textDirection ?? this.textDirection,
-      softWrap: softWrap ?? this.softWrap,
-      textDirectives: textDirectives ?? this.textDirectives,
-      selectionColor: selectionColor ?? this.selectionColor,
-      semanticsLabel: semanticsLabel ?? this.semanticsLabel,
-      locale: locale ?? this.locale,
-    );
-  }
-
-  /// Linearly interpolates between this [TextSpec] and another [TextSpec] based on the given parameter [t].
-  ///
-  /// The parameter [t] represents the interpolation factor, typically ranging from 0.0 to 1.0.
-  /// When [t] is 0.0, the current [TextSpec] is returned. When [t] is 1.0, the [other] [TextSpec] is returned.
-  /// For values of [t] between 0.0 and 1.0, an interpolated [TextSpec] is returned.
-  ///
-  /// If [other] is null, this method returns the current [TextSpec] instance.
-  ///
-  /// The interpolation is performed on each property of the [TextSpec] using the appropriate
-  /// interpolation method:
-  /// - [MixOps.lerpStrutStyle] for [strutStyle].
-  /// - [MixOps.lerp] for [style].
-  /// For [overflow] and [textAlign] and [textScaler] and [maxLines] and [textWidthBasis] and [textHeightBehavior] and [textDirection] and [softWrap] and [textDirectives], the interpolation is performed using a step function.
-  /// If [t] is less than 0.5, the value from the current [TextSpec] is used. Otherwise, the value
-  /// from the [other] [TextSpec] is used.
-  ///
-  /// This method is typically used in animations to smoothly transition between
-  /// different [TextSpec] configurations.
   @override
   TextSpec lerp(TextSpec? other, double t) {
     return TextSpec(
@@ -129,54 +112,4 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
       locale: MixOps.lerpSnap(locale, other?.locale, t),
     );
   }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(EnumProperty<TextOverflow>('overflow', overflow))
-      ..add(DiagnosticsProperty('strutStyle', strutStyle))
-      ..add(EnumProperty<TextAlign>('textAlign', textAlign))
-      ..add(DiagnosticsProperty('textScaler', textScaler))
-      ..add(IntProperty('maxLines', maxLines))
-      ..add(DiagnosticsProperty('style', style))
-      ..add(EnumProperty<TextWidthBasis>('textWidthBasis', textWidthBasis))
-      ..add(DiagnosticsProperty('textHeightBehavior', textHeightBehavior))
-      ..add(EnumProperty<TextDirection>('textDirection', textDirection))
-      ..add(
-        FlagProperty(
-          'softWrap',
-          value: softWrap,
-          ifTrue: 'wrapping at word boundaries',
-        ),
-      )
-      ..add(
-        IterableProperty<Directive<String>>('textDirectives', textDirectives),
-      )
-      ..add(ColorProperty('selectionColor', selectionColor))
-      ..add(StringProperty('semanticsLabel', semanticsLabel))
-      ..add(DiagnosticsProperty('locale', locale));
-  }
-
-  /// The list of properties that constitute the state of this [TextSpec].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [TextSpec] instances for equality.
-  @override
-  List<Object?> get props => [
-    overflow,
-    strutStyle,
-    textAlign,
-    textScaler,
-    maxLines,
-    style,
-    textWidthBasis,
-    textHeightBehavior,
-    textDirection,
-    softWrap,
-    textDirectives,
-    selectionColor,
-    semanticsLabel,
-    locale,
-  ];
 }

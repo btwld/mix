@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
         .width(240)
         .color(Colors.blue)
         .borderRounded(12)
-        .borderAll(color: Colors.black, width: 1, style: BorderStyle.solid);
+        .borderAll(color: Colors.black, width: 1, style: .solid);
 
     return MaterialApp(
       home: Scaffold(

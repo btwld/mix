@@ -26,19 +26,19 @@ class FlexBoxMutableStyler extends StyleMutableBuilder<FlexBoxSpec>
     with
         UtilityVariantMixin<FlexBoxStyler, FlexBoxSpec>,
         UtilityWidgetStateVariantMixin<FlexBoxStyler, FlexBoxSpec> {
-  late final padding = EdgeInsetsGeometryUtility<FlexBoxStyler>(
+  late final padding = EdgeInsetsGeometryUtility(
     (prop) => mutable.merge(FlexBoxStyler(padding: prop)),
   );
 
-  late final margin = EdgeInsetsGeometryUtility<FlexBoxStyler>(
+  late final margin = EdgeInsetsGeometryUtility(
     (prop) => mutable.merge(FlexBoxStyler(margin: prop)),
   );
 
-  late final constraints = BoxConstraintsUtility<FlexBoxStyler>(
+  late final constraints = BoxConstraintsUtility(
     (prop) => mutable.merge(FlexBoxStyler(constraints: prop)),
   );
 
-  late final decoration = DecorationUtility<FlexBoxStyler>(
+  late final decoration = DecorationUtility(
     (prop) => mutable.merge(FlexBoxStyler(decoration: prop)),
   );
 

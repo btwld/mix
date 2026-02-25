@@ -1,6 +1,6 @@
 name: mix_annotations
 description: Annotations for mix and mix_generator
-version: 1.7.0
+version: 2.0.0-rc.1
 repository: https://github.com/btwld/mix/tree/main/packages/mix_annotations
 
 environment:

@@ -17,82 +17,62 @@ class OnContextVariantUtility<S extends Spec<S>, T extends Style<S>>
 
   /// Creates a variant attribute for the hover state
   VariantAttributeBuilder<S> get hover {
-    return VariantAttributeBuilder(
-      ContextVariant.widgetState(WidgetState.hovered),
-    );
+    return VariantAttributeBuilder(ContextVariant.widgetState(.hovered));
   }
 
   /// Creates a variant attribute for the press state
   VariantAttributeBuilder<S> get press {
-    return VariantAttributeBuilder(
-      ContextVariant.widgetState(WidgetState.pressed),
-    );
+    return VariantAttributeBuilder(ContextVariant.widgetState(.pressed));
   }
 
   /// Creates a variant attribute for the focus state
   VariantAttributeBuilder<S> get focus {
-    return VariantAttributeBuilder(
-      ContextVariant.widgetState(WidgetState.focused),
-    );
+    return VariantAttributeBuilder(ContextVariant.widgetState(.focused));
   }
 
   /// Creates a variant attribute for the disabled state
   VariantAttributeBuilder<S> get disabled {
-    return VariantAttributeBuilder(
-      ContextVariant.widgetState(WidgetState.disabled),
-    );
+    return VariantAttributeBuilder(ContextVariant.widgetState(.disabled));
   }
 
   /// Creates a variant attribute for the selected state
   VariantAttributeBuilder<S> get selected {
-    return VariantAttributeBuilder(
-      ContextVariant.widgetState(WidgetState.selected),
-    );
+    return VariantAttributeBuilder(ContextVariant.widgetState(.selected));
   }
 
   /// Creates a variant attribute for the dragged state
   VariantAttributeBuilder<S> get dragged {
-    return VariantAttributeBuilder(
-      ContextVariant.widgetState(WidgetState.dragged),
-    );
+    return VariantAttributeBuilder(ContextVariant.widgetState(.dragged));
   }
 
   /// Creates a variant attribute for the error state
   VariantAttributeBuilder<S> get error {
-    return VariantAttributeBuilder(
-      ContextVariant.widgetState(WidgetState.error),
-    );
+    return VariantAttributeBuilder(ContextVariant.widgetState(.error));
   }
 
   /// Creates a variant attribute for the scrolled under state
   VariantAttributeBuilder<S> get scrolledUnder {
-    return VariantAttributeBuilder(
-      ContextVariant.widgetState(WidgetState.scrolledUnder),
-    );
+    return VariantAttributeBuilder(ContextVariant.widgetState(.scrolledUnder));
   }
 
   /// Creates a variant attribute for dark mode
   VariantAttributeBuilder<S> get dark {
-    return VariantAttributeBuilder(ContextVariant.brightness(Brightness.dark));
+    return VariantAttributeBuilder(ContextVariant.brightness(.dark));
   }
 
   /// Creates a variant attribute for light mode
   VariantAttributeBuilder<S> get light {
-    return VariantAttributeBuilder(ContextVariant.brightness(Brightness.light));
+    return VariantAttributeBuilder(ContextVariant.brightness(.light));
   }
 
   /// Creates a variant attribute for portrait orientation
   VariantAttributeBuilder<S> get portrait {
-    return VariantAttributeBuilder(
-      ContextVariant.orientation(Orientation.portrait),
-    );
+    return VariantAttributeBuilder(ContextVariant.orientation(.portrait));
   }
 
   /// Creates a variant attribute for landscape orientation
   VariantAttributeBuilder<S> get landscape {
-    return VariantAttributeBuilder(
-      ContextVariant.orientation(Orientation.landscape),
-    );
+    return VariantAttributeBuilder(ContextVariant.orientation(.landscape));
   }
 
   /// Creates a variant attribute for mobile size
@@ -112,56 +92,42 @@ class OnContextVariantUtility<S extends Spec<S>, T extends Style<S>>
 
   /// Creates a variant attribute for left-to-right direction
   VariantAttributeBuilder<S> get ltr {
-    return VariantAttributeBuilder(
-      ContextVariant.directionality(TextDirection.ltr),
-    );
+    return VariantAttributeBuilder(ContextVariant.directionality(.ltr));
   }
 
   /// Creates a variant attribute for right-to-left direction
   VariantAttributeBuilder<S> get rtl {
-    return VariantAttributeBuilder(
-      ContextVariant.directionality(TextDirection.rtl),
-    );
+    return VariantAttributeBuilder(ContextVariant.directionality(.rtl));
   }
 
   /// Creates a variant attribute for iOS platform
   VariantAttributeBuilder<S> get ios {
-    return VariantAttributeBuilder(ContextVariant.platform(TargetPlatform.iOS));
+    return VariantAttributeBuilder(ContextVariant.platform(.iOS));
   }
 
   /// Creates a variant attribute for Android platform
   VariantAttributeBuilder<S> get android {
-    return VariantAttributeBuilder(
-      ContextVariant.platform(TargetPlatform.android),
-    );
+    return VariantAttributeBuilder(ContextVariant.platform(.android));
   }
 
   /// Creates a variant attribute for macOS platform
   VariantAttributeBuilder<S> get macos {
-    return VariantAttributeBuilder(
-      ContextVariant.platform(TargetPlatform.macOS),
-    );
+    return VariantAttributeBuilder(ContextVariant.platform(.macOS));
   }
 
   /// Creates a variant attribute for Windows platform
   VariantAttributeBuilder<S> get windows {
-    return VariantAttributeBuilder(
-      ContextVariant.platform(TargetPlatform.windows),
-    );
+    return VariantAttributeBuilder(ContextVariant.platform(.windows));
   }
 
   /// Creates a variant attribute for Linux platform
   VariantAttributeBuilder<S> get linux {
-    return VariantAttributeBuilder(
-      ContextVariant.platform(TargetPlatform.linux),
-    );
+    return VariantAttributeBuilder(ContextVariant.platform(.linux));
   }
 
   /// Creates a variant attribute for Fuchsia platform
   VariantAttributeBuilder<S> get fuchsia {
-    return VariantAttributeBuilder(
-      ContextVariant.platform(TargetPlatform.fuchsia),
-    );
+    return VariantAttributeBuilder(ContextVariant.platform(.fuchsia));
   }
 
   /// Creates a variant attribute for web platform
@@ -172,7 +138,7 @@ class OnContextVariantUtility<S extends Spec<S>, T extends Style<S>>
   /// Creates a variant attribute for the enabled state (opposite of disabled)
   VariantAttributeBuilder<S> get enabled {
     return VariantAttributeBuilder(
-      ContextVariant.not(ContextVariant.widgetState(WidgetState.disabled)),
+      ContextVariant.not(ContextVariant.widgetState(.disabled)),
     );
   }
 

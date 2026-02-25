@@ -7,11 +7,11 @@ void main() {
   final boxStyle = BoxStyler()
       .width(100)
       .paddingAll(10)
-      .alignment(Alignment.center)
+      .alignment(.center)
       .color(Colors.red);
 
   // 2
-  BoxStyler().alignment(Alignment.centerRight);
+  BoxStyler().alignment(.centerRight);
 
   BoxStyler().paddingAll(16);
 
@@ -23,13 +23,13 @@ void main() {
   BoxStyler().borderTop(color: Colors.red, width: 2);
 
   // 5
-  BoxStyler borderTop(Color color) => BoxStyler().borderTop(color: color);
+  BoxStyler borderTop(Color color) => .new().borderTop(color: color);
   borderTop(Colors.red);
   // ignore: unused_local_variable
   final style = borderTop(Colors.red).paddingAll(8);
 
   // 6
-  BoxStyler borderRedTop() => BoxStyler().borderRedTop();
+  BoxStyler borderRedTop() => .new().borderRedTop();
 
   borderRedTop();
 }

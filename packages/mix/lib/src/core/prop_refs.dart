@@ -120,7 +120,7 @@ final class StrutStyleRef extends Prop<StrutStyle>
   StrutStyleRef(super.prop) : super.fromProp();
 
   @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+  String toString({DiagnosticLevel minLevel = .info}) {
     return super.toString();
   }
 }
@@ -132,7 +132,7 @@ final class TextHeightBehaviorRef extends Prop<TextHeightBehavior>
   TextHeightBehaviorRef(super.prop) : super.fromProp();
 
   @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+  String toString({DiagnosticLevel minLevel = .info}) {
     return super.toString();
   }
 }
@@ -221,7 +221,7 @@ final class BoxDecorationRef extends Prop<BoxDecoration>
   BoxDecorationRef(super.prop) : super.fromProp();
 
   @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+  String toString({DiagnosticLevel minLevel = .info}) {
     return super.toString();
   }
 }
@@ -233,7 +233,7 @@ final class BorderSideRef extends Prop<BorderSide>
   BorderSideRef(super.prop) : super.fromProp();
 
   @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+  String toString({DiagnosticLevel minLevel = .info}) {
     return super.toString();
   }
 }
@@ -245,7 +245,7 @@ final class ShapeBorderRef extends Prop<ShapeBorder>
   ShapeBorderRef(super.prop) : super.fromProp();
 
   @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+  String toString({DiagnosticLevel minLevel = .info}) {
     return super.toString();
   }
 }

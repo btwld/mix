@@ -291,7 +291,7 @@ void main() {
           textHeightBehavior: TextHeightBehavior(),
           textDirection: TextDirection.rtl,
           softWrap: false,
-          textDirectives: [],
+          textDirectives: [CapitalizeStringDirective()],
         );
 
         final diagnostics = DiagnosticPropertiesBuilder();
@@ -308,7 +308,7 @@ void main() {
         expect(properties.any((p) => p.name == 'textHeightBehavior'), isTrue);
         expect(properties.any((p) => p.name == 'textDirection'), isTrue);
         expect(properties.any((p) => p.name == 'softWrap'), isTrue);
-        expect(properties.any((p) => p.name == 'textDirectives'), isTrue);
+        expect(properties.any((p) => p.name == 'directives'), isTrue);
       });
     });
 

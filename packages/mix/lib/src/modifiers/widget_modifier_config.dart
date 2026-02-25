@@ -13,6 +13,7 @@ import '../specs/icon/icon_style.dart';
 import '../specs/text/text_style.dart';
 import 'align_modifier.dart';
 import 'aspect_ratio_modifier.dart';
+import 'blur_modifier.dart';
 import 'box_modifier.dart';
 import 'clip_modifier.dart';
 import 'default_text_style_modifier.dart';
@@ -61,6 +62,10 @@ final class WidgetModifierConfig with Equatable {
 
   factory WidgetModifierConfig.opacity(double opacity) {
     return WidgetModifierConfig.modifier(OpacityModifierMix(opacity: opacity));
+  }
+
+  factory WidgetModifierConfig.blur(double sigma) {
+    return WidgetModifierConfig.modifier(BlurModifierMix(sigma: sigma));
   }
 
   factory WidgetModifierConfig.aspectRatio(double aspectRatio) {
@@ -118,7 +123,7 @@ final class WidgetModifierConfig with Equatable {
 
   factory WidgetModifierConfig.transform({
     Matrix4? transform,
-    Alignment alignment = Alignment.center,
+    Alignment alignment = .center,
   }) {
     return WidgetModifierConfig.modifier(
       TransformModifierMix(transform: transform, alignment: alignment),
@@ -127,7 +132,7 @@ final class WidgetModifierConfig with Equatable {
 
   factory WidgetModifierConfig.shaderMask({
     required ShaderCallbackBuilder shaderCallback,
-    BlendMode blendMode = BlendMode.modulate,
+    BlendMode blendMode = .modulate,
   }) {
     return WidgetModifierConfig.modifier(
       ShaderMaskModifierMix(
@@ -141,7 +146,7 @@ final class WidgetModifierConfig with Equatable {
   factory WidgetModifierConfig.scale({
     required double x,
     required double y,
-    Alignment alignment = Alignment.center,
+    Alignment alignment = .center,
   }) {
     return WidgetModifierConfig.modifier(
       ScaleModifierMix(x: x, y: y, alignment: alignment),
@@ -150,7 +155,7 @@ final class WidgetModifierConfig with Equatable {
 
   factory WidgetModifierConfig.rotate({
     required double radians,
-    Alignment alignment = Alignment.center,
+    Alignment alignment = .center,
   }) {
     return WidgetModifierConfig.modifier(
       RotateModifierMix(radians: radians, alignment: alignment),
@@ -167,7 +172,7 @@ final class WidgetModifierConfig with Equatable {
   factory WidgetModifierConfig.skew({
     required double skewX,
     required double skewY,
-    Alignment alignment = Alignment.center,
+    Alignment alignment = .center,
   }) {
     return WidgetModifierConfig.modifier(
       SkewModifierMix(skewX: skewX, skewY: skewY, alignment: alignment),
@@ -339,7 +344,7 @@ final class WidgetModifierConfig with Equatable {
 
   WidgetModifierConfig rotate({
     required double radians,
-    Alignment alignment = Alignment.center,
+    Alignment alignment = .center,
   }) {
     return merge(
       WidgetModifierConfig.rotate(radians: radians, alignment: alignment),
@@ -377,7 +382,7 @@ final class WidgetModifierConfig with Equatable {
 
   WidgetModifierConfig shaderMask({
     required ShaderCallbackBuilder shaderCallback,
-    BlendMode blendMode = BlendMode.modulate,
+    BlendMode blendMode = .modulate,
   }) {
     return merge(
       WidgetModifierConfig.shaderMask(
@@ -390,13 +395,17 @@ final class WidgetModifierConfig with Equatable {
   WidgetModifierConfig scale(
     double x,
     double y, {
-    Alignment alignment = Alignment.center,
+    Alignment alignment = .center,
   }) {
     return merge(WidgetModifierConfig.scale(x: x, y: y, alignment: alignment));
   }
 
   WidgetModifierConfig opacity(double value) {
     return merge(WidgetModifierConfig.opacity(value));
+  }
+
+  WidgetModifierConfig blur(double sigma) {
+    return merge(WidgetModifierConfig.blur(sigma));
   }
 
   WidgetModifierConfig aspectRatio(double value) {
@@ -463,7 +472,7 @@ final class WidgetModifierConfig with Equatable {
 
   WidgetModifierConfig transform({
     Matrix4? transform,
-    Alignment alignment = Alignment.center,
+    Alignment alignment = .center,
   }) {
     return merge(
       WidgetModifierConfig.transform(
@@ -692,6 +701,7 @@ const _defaultOrder = [
 
   // 15. OpacityModifier: Applies transparency as the final visual effect.
   // Always applied last to ensure optimal performance and correct visual layering.
+  BlurModifier,
   OpacityModifier,
 
   // 16. ShaderMaskModifier: Applies a shader mask to the widget.
@@ -721,6 +731,7 @@ final defaultModifier = {
   ClipRRectModifier: ClipRRectModifier(),
   ClipPathModifier: ClipPathModifier(),
   ClipTriangleModifier: ClipTriangleModifier(),
+  BlurModifier: BlurModifier(),
   OpacityModifier: OpacityModifier(),
 };
 

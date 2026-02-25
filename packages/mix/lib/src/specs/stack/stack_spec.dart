@@ -1,14 +1,34 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
 
 import '../../core/helpers.dart';
 import '../../core/spec.dart';
 
+part 'stack_spec.g.dart';
+
+/// Specification for stack layout properties.
+///
+/// Provides configuration for stack-specific properties such as
+/// alignment, fit, text direction, and clipping behavior.
+@MixableSpec()
 @immutable
-final class StackSpec extends Spec<StackSpec> with Diagnosticable {
+final class StackSpec extends Spec<StackSpec>
+    with Diagnosticable, _$StackSpecMethods {
+  /// How to align the non-positioned children.
+  @override
   final AlignmentGeometry? alignment;
+
+  /// How to size the non-positioned children.
+  @override
   final StackFit? fit;
+
+  /// The text direction to use for rendering.
+  @override
   final TextDirection? textDirection;
+
+  /// The content will be clipped (or not) according to this option.
+  @override
   final Clip? clipBehavior;
 
   const StackSpec({
@@ -17,46 +37,4 @@ final class StackSpec extends Spec<StackSpec> with Diagnosticable {
     this.textDirection,
     this.clipBehavior,
   });
-
-  /// Creates a copy of this [StackSpec] but with the given fields
-  /// replaced with the new values.
-  @override
-  StackSpec copyWith({
-    AlignmentGeometry? alignment,
-    StackFit? fit,
-    TextDirection? textDirection,
-    Clip? clipBehavior,
-  }) {
-    return StackSpec(
-      alignment: alignment ?? this.alignment,
-      fit: fit ?? this.fit,
-      textDirection: textDirection ?? this.textDirection,
-      clipBehavior: clipBehavior ?? this.clipBehavior,
-    );
-  }
-
-  /// Linearly interpolates between this [StackSpec] and another [StackSpec] based on the given parameter [t].
-  @override
-  StackSpec lerp(StackSpec? other, double t) {
-    return StackSpec(
-      alignment: MixOps.lerp(alignment, other?.alignment, t),
-      fit: MixOps.lerpSnap(fit, other?.fit, t),
-      textDirection: MixOps.lerpSnap(textDirection, other?.textDirection, t),
-      clipBehavior: MixOps.lerpSnap(clipBehavior, other?.clipBehavior, t),
-    );
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(DiagnosticsProperty('alignment', alignment))
-      ..add(EnumProperty<StackFit>('fit', fit))
-      ..add(EnumProperty<TextDirection>('textDirection', textDirection))
-      ..add(EnumProperty<Clip>('clipBehavior', clipBehavior));
-  }
-
-  /// The list of properties that constitute the state of this [StackSpec].
-  @override
-  List<Object?> get props => [alignment, fit, textDirection, clipBehavior];
 }

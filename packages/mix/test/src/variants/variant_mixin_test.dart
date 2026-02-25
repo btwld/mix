@@ -363,14 +363,8 @@ void main() {
       // Both variants remain (named variant style is merged in)
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 2);
-      expect(
-        result.$variants!.any((v) => v.variant is ContextVariant),
-        isTrue,
-      );
-      expect(
-        result.$variants!.any((v) => v.variant == smallVariant),
-        isTrue,
-      );
+      expect(result.$variants!.any((v) => v.variant is ContextVariant), isTrue);
+      expect(result.$variants!.any((v) => v.variant == smallVariant), isTrue);
     });
   });
 }

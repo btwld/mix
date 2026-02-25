@@ -46,7 +46,7 @@ class Box extends StyleWidget<BoxSpec> {
       margin: spec.margin,
       transform: spec.transform,
       transformAlignment: spec.transformAlignment,
-      clipBehavior: spec.clipBehavior ?? Clip.none,
+      clipBehavior: spec.clipBehavior ?? .none,
       child: child,
     );
   }

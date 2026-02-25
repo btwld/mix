@@ -67,10 +67,10 @@ class FlexMutableStyler extends StyleMutableBuilder<FlexSpec>
   FlexStyler spacing(double v) => mutable.spacing(v);
 
   /// Sets flex direction to horizontal (row layout).
-  FlexStyler row() => mutable.direction(Axis.horizontal);
+  FlexStyler row() => mutable.direction(.horizontal);
 
   /// Sets flex direction to vertical (column layout).
-  FlexStyler column() => mutable.direction(Axis.vertical);
+  FlexStyler column() => mutable.direction(.vertical);
 
   /// Applies animation configuration to the flex styling.
   FlexStyler animate(AnimationConfig animation) => mutable.animate(animation);

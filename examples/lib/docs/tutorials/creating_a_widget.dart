@@ -169,7 +169,7 @@ enum ButtonVariant {
   elevated,
   link;
 
-  ButtonStyler get _filledStyle => ButtonStyler()
+  ButtonStyler get _filledStyle => .new()
       .backgroundColor(Colors.blueAccent)
       .textColor(Colors.white)
       .iconColor(Colors.white);
@@ -188,21 +188,19 @@ enum ButtonVariant {
 
   ButtonStyler get style {
     switch (this) {
-      case ButtonVariant.filled:
+      case .filled:
         return _filledStyle;
-      case ButtonVariant.outlined:
+      case .outlined:
         return _outlinedStyle;
-      case ButtonVariant.elevated:
+      case .elevated:
         return _filledStyle.container(
           FlexBoxStyler().shadow(
             BoxShadowMix().color(Colors.blueAccent.shade700).offset(x: 0, y: 5),
           ),
         );
-      case ButtonVariant.link:
+      case .link:
         return _outlinedStyle.container(
-          FlexBoxStyler()
-              .borderAll(style: BorderStyle.none)
-              .color(Colors.transparent),
+          FlexBoxStyler().borderAll(style: .none).color(Colors.transparent),
         );
     }
   }
@@ -216,7 +214,7 @@ class CustomButton extends StatelessWidget {
     this.disabled = false,
     this.icon,
     required this.onPressed,
-    this.variant = ButtonVariant.filled,
+    this.variant = .filled,
     this.style,
   });
 
@@ -233,12 +231,12 @@ class CustomButton extends StatelessWidget {
         .paddingX(8)
         .paddingY(12)
         .spacing(8)
-        .mainAxisAlignment(MainAxisAlignment.center)
-        .crossAxisAlignment(CrossAxisAlignment.center)
-        .mainAxisSize(MainAxisSize.min);
+        .mainAxisAlignment(.center)
+        .crossAxisAlignment(.center)
+        .mainAxisSize(.min);
 
     final label = TextStyler().style(
-      TextStyleMix().fontSize(16).fontWeight(FontWeight.w500),
+      TextStyleMix().fontSize(16).fontWeight(.w500),
     );
 
     final icon = IconStyler().size(18);
@@ -297,7 +295,7 @@ final class FilledButton extends CustomButton {
     super.icon,
     required super.onPressed,
     super.style,
-  }) : super(variant: ButtonVariant.filled);
+  }) : super(variant: .filled);
 }
 
 final class OutlinedButton extends CustomButton {
@@ -308,7 +306,7 @@ final class OutlinedButton extends CustomButton {
     super.icon,
     required super.onPressed,
     super.style,
-  }) : super(variant: ButtonVariant.outlined);
+  }) : super(variant: .outlined);
 }
 
 final class ElevatedButton extends CustomButton {
@@ -319,7 +317,7 @@ final class ElevatedButton extends CustomButton {
     super.icon,
     required super.onPressed,
     super.style,
-  }) : super(variant: ButtonVariant.elevated);
+  }) : super(variant: .elevated);
 }
 
 final class LinkButton extends CustomButton {
@@ -330,7 +328,7 @@ final class LinkButton extends CustomButton {
     super.icon,
     required super.onPressed,
     super.style,
-  }) : super(variant: ButtonVariant.link);
+  }) : super(variant: .link);
 }
 
 // Example App
@@ -344,10 +342,10 @@ class CreatingAWidgetExample extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Creating a Widget Example')),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const .all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: .center,
+          crossAxisAlignment: .stretch,
           children: [
             FilledButton(label: 'Filled Button', icon: icon, onPressed: () {}),
             const SizedBox(height: 10),
@@ -367,7 +365,7 @@ class CreatingAWidgetExample extends StatelessWidget {
             const SizedBox(height: 20),
             const Text(
               'Disabled State:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 18, fontWeight: .bold),
             ),
             const SizedBox(height: 10),
             FilledButton(

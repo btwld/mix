@@ -50,7 +50,7 @@ mixin VariantStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
 
   /// Creates a variant for dark mode.
   T onDark(T style) {
-    return variant(ContextVariant.brightness(Brightness.dark), style);
+    return variant(ContextVariant.brightness(.dark), style);
   }
 
   /// Creates a variant for when the context does NOT match the provided variant.
@@ -60,7 +60,7 @@ mixin VariantStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
 
   /// Creates a variant for light mode.
   T onLight(T style) {
-    return variant(ContextVariant.brightness(Brightness.light), style);
+    return variant(ContextVariant.brightness(.light), style);
   }
 
   /// Creates a variant using a builder function that receives the build context.
@@ -85,12 +85,12 @@ mixin VariantStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
 
   /// Creates a variant for portrait device orientation.
   T onPortrait(T style) {
-    return variant(ContextVariant.orientation(Orientation.portrait), style);
+    return variant(ContextVariant.orientation(.portrait), style);
   }
 
   /// Creates a variant for landscape device orientation.
   T onLandscape(T style) {
-    return variant(ContextVariant.orientation(Orientation.landscape), style);
+    return variant(ContextVariant.orientation(.landscape), style);
   }
 
   /// Creates a variant for mobile breakpoint.
@@ -110,42 +110,42 @@ mixin VariantStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
 
   /// Creates a variant for left-to-right text direction.
   T onLtr(T style) {
-    return variant(ContextVariant.directionality(TextDirection.ltr), style);
+    return variant(ContextVariant.directionality(.ltr), style);
   }
 
   /// Creates a variant for right-to-left text direction.
   T onRtl(T style) {
-    return variant(ContextVariant.directionality(TextDirection.rtl), style);
+    return variant(ContextVariant.directionality(.rtl), style);
   }
 
   /// Creates a variant for iOS platform.
   T onIos(T style) {
-    return variant(ContextVariant.platform(TargetPlatform.iOS), style);
+    return variant(ContextVariant.platform(.iOS), style);
   }
 
   /// Creates a variant for Android platform.
   T onAndroid(T style) {
-    return variant(ContextVariant.platform(TargetPlatform.android), style);
+    return variant(ContextVariant.platform(.android), style);
   }
 
   /// Creates a variant for macOS platform.
   T onMacos(T style) {
-    return variant(ContextVariant.platform(TargetPlatform.macOS), style);
+    return variant(ContextVariant.platform(.macOS), style);
   }
 
   /// Creates a variant for Windows platform.
   T onWindows(T style) {
-    return variant(ContextVariant.platform(TargetPlatform.windows), style);
+    return variant(ContextVariant.platform(.windows), style);
   }
 
   /// Creates a variant for Linux platform.
   T onLinux(T style) {
-    return variant(ContextVariant.platform(TargetPlatform.linux), style);
+    return variant(ContextVariant.platform(.linux), style);
   }
 
   /// Creates a variant for Fuchsia platform.
   T onFuchsia(T style) {
-    return variant(ContextVariant.platform(TargetPlatform.fuchsia), style);
+    return variant(ContextVariant.platform(.fuchsia), style);
   }
 
   /// Creates a variant for web platform.

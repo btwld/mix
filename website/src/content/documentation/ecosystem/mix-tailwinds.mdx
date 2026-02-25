@@ -1,0 +1,79 @@
+---
+title: mix_tailwinds
+---
+
+import { Callout } from "nextra/components";
+
+# mix_tailwinds
+
+`mix_tailwinds` provides a familiar Tailwind CSS-like utility syntax for styling Flutter widgets using Mix class names such as `flex`, `gap-4`, and `text-lg`.
+
+<Callout type="warning">
+  This package is **highly experimental** and should be treated as a proof of concept.
+  The API is unstable and may change without notice.
+</Callout>
+
+## Links
+
+- [Pub package](https://pub.dev/packages/mix_tailwinds)
+- [GitHub source](https://github.com/btwld/mix/tree/main/packages/mix_tailwinds)
+
+## Install
+
+Using pub.dev:
+
+```yaml
+dependencies:
+  mix_tailwinds: 0.0.1-alpha.1
+```
+
+Using unreleased changes from this repo:
+
+```yaml
+dependencies:
+  mix_tailwinds:
+    git:
+      url: https://github.com/btwld/mix.git
+      path: packages/mix_tailwinds
+```
+
+## Quick start
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:mix_tailwinds/mix_tailwinds.dart';
+
+void main() {
+  runApp(
+    TwScope(
+      child: MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: Div(
+              classNames:
+                  'flex flex-col gap-4 p-6 bg-white rounded-xl shadow-md',
+              children: [
+                Span(
+                  text: 'Hello mix_tailwinds',
+                  classNames: 'text-2xl font-bold text-gray-900',
+                ),
+                Span(
+                  text: 'Utility-first styling powered by Mix.',
+                  classNames: 'text-sm text-gray-600',
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+}
+```
+
+## Defaults and typography configuration
+
+<Callout type="info">
+  `mix_tailwinds` applies default typography through Mix scope (`TwScope` + `TextScope`).
+  Prefer this over overriding `ThemeData.textTheme` when configuring default text styles.
+</Callout>

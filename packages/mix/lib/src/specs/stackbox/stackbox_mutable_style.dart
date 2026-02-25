@@ -26,19 +26,19 @@ class StackBoxMutableStyler extends StyleMutableBuilder<StackBoxSpec>
     with
         UtilityVariantMixin<StackBoxStyler, StackBoxSpec>,
         UtilityWidgetStateVariantMixin<StackBoxStyler, StackBoxSpec> {
-  late final padding = EdgeInsetsGeometryUtility<StackBoxStyler>(
+  late final padding = EdgeInsetsGeometryUtility(
     (prop) => mutable.merge(StackBoxStyler(padding: prop)),
   );
 
-  late final margin = EdgeInsetsGeometryUtility<StackBoxStyler>(
+  late final margin = EdgeInsetsGeometryUtility(
     (prop) => mutable.merge(StackBoxStyler(margin: prop)),
   );
 
-  late final constraints = BoxConstraintsUtility<StackBoxStyler>(
+  late final constraints = BoxConstraintsUtility(
     (prop) => mutable.merge(StackBoxStyler(constraints: prop)),
   );
 
-  late final decoration = DecorationUtility<StackBoxStyler>(
+  late final decoration = DecorationUtility(
     (prop) => mutable.merge(StackBoxStyler(decoration: prop)),
   );
 

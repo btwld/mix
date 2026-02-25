@@ -1,3 +1,16 @@
+## 2.0.0-rc.1
+
+- **FEAT**: Add applyVariants() method for NamedVariants (#801).
+- **FEAT**: Deprecate $ utility accessors in favor of Styler classes (#806).
+- **FIX**: Make copyWith parameters nullable (#848).
+- **FIX**: Respect nullability in lerp resolver.
+- **FIX**: Standardize specs with @immutable and fix equality bugs (#821).
+- **FIX**: Add missing chain getter to StackStyler (#818).
+- **FIX**: Add AnimationStyleMixin to FlexBoxStyler and StackBoxStyler (#819).
+- **FIX**: Ensure that Visibility Widget are visible until the end of animation (#771).
+- **REFACTOR**: Mark resolveProp as @internal and migrate to MixOps.resolve (#833).
+- **REFACTOR**: Widget modifier API and update to Dart 3.10 (#775).
+
 ## 2.0.0-rc.0
 
 - refactor: `Stack` and `StackBox`

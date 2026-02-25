@@ -4,6 +4,6 @@ targets:
       mix_generator:
         enabled: true
         generate_for:
-          - lib/**/*.dart
+          - lib/src/specs/**/*.dart  # Only run on spec files
         options:
           debug: false

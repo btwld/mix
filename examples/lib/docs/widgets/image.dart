@@ -10,7 +10,7 @@ void main() {
         ImageStyler() //
             .width(152)
             .height(152)
-            .fit(BoxFit.cover),
+            .fit(.cover),
     image: AssetImage('assets/image.jpg'),
   );
 }

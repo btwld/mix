@@ -126,9 +126,7 @@ void main() {
       expect(dependencyChanges, 2);
     });
 
-    testWidgets('does not notify dependents when icon is same', (
-      tester,
-    ) async {
+    testWidgets('does not notify dependents when icon is same', (tester) async {
       final icon = IconStyler(size: 16.0);
       var dependencyChanges = 0;
 

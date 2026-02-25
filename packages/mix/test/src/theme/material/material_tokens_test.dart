@@ -104,7 +104,10 @@ void main() {
       expect(scope.getToken(tokens.bodyMedium, context), textTheme.bodyMedium);
       expect(scope.getToken(tokens.bodySmall, context), textTheme.bodySmall);
       expect(scope.getToken(tokens.labelLarge, context), textTheme.labelLarge);
-      expect(scope.getToken(tokens.labelMedium, context), textTheme.labelMedium);
+      expect(
+        scope.getToken(tokens.labelMedium, context),
+        textTheme.labelMedium,
+      );
       expect(scope.getToken(tokens.labelSmall, context), textTheme.labelSmall);
 
       // Deprecated aliases

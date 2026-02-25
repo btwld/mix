@@ -78,31 +78,31 @@ extension AlignmentDirectionalPropUtilityExt<S extends Style<Object?>>
   }
 
   /// Creates a [StyleBase] instance with [AlignmentDirectional.topStart] value.
-  S topStart() => call(AlignmentDirectional.topStart);
+  S topStart() => call(.topStart);
 
   /// Creates a [StyleBase] instance with [AlignmentDirectional.topCenter] value.
-  S topCenter() => call(AlignmentDirectional.topCenter);
+  S topCenter() => call(.topCenter);
 
   /// Creates a [StyleBase] instance with [AlignmentDirectional.topEnd] value.
-  S topEnd() => call(AlignmentDirectional.topEnd);
+  S topEnd() => call(.topEnd);
 
   /// Creates a [StyleBase] instance with [AlignmentDirectional.centerStart] value.
-  S centerStart() => call(AlignmentDirectional.centerStart);
+  S centerStart() => call(.centerStart);
 
   /// Creates a [StyleBase] instance with [AlignmentDirectional.center] value.
-  S center() => call(AlignmentDirectional.center);
+  S center() => call(.center);
 
   /// Creates a [StyleBase] instance with [AlignmentDirectional.centerEnd] value.
-  S centerEnd() => call(AlignmentDirectional.centerEnd);
+  S centerEnd() => call(.centerEnd);
 
   /// Creates a [StyleBase] instance with [AlignmentDirectional.bottomStart] value.
-  S bottomStart() => call(AlignmentDirectional.bottomStart);
+  S bottomStart() => call(.bottomStart);
 
   /// Creates a [StyleBase] instance with [AlignmentDirectional.bottomCenter] value.
-  S bottomCenter() => call(AlignmentDirectional.bottomCenter);
+  S bottomCenter() => call(.bottomCenter);
 
   /// Creates a [StyleBase] instance with [AlignmentDirectional.bottomEnd] value.
-  S bottomEnd() => call(AlignmentDirectional.bottomEnd);
+  S bottomEnd() => call(.bottomEnd);
 }
 
 /// Extension for creating [FontFeature] values with predefined OpenType features.
@@ -211,7 +211,7 @@ extension DurationPropUtilityExt<T extends Style<Object?>>
   T minutes(int minutes) => call(Duration(minutes: minutes));
 
   /// Creates a [Style] instance with [Duration.zero] value.
-  T zero() => call(Duration.zero);
+  T zero() => call(.zero);
 }
 
 /// Extension for creating double values with predefined options.
@@ -226,37 +226,37 @@ extension FontWeightPropUtilityExt<T extends Style<Object?>>
   T call(FontWeight value) => utilityBuilder(value);
 
   /// Creates a [Style] instance with [FontWeight.w100] value.
-  T w100() => call(FontWeight.w100);
+  T w100() => call(.w100);
 
   /// Creates a [Style] instance with [FontWeight.w200] value.
-  T w200() => call(FontWeight.w200);
+  T w200() => call(.w200);
 
   /// Creates a [Style] instance with [FontWeight.w300] value.
-  T w300() => call(FontWeight.w300);
+  T w300() => call(.w300);
 
   /// Creates a [Style] instance with [FontWeight.w400] value.
-  T w400() => call(FontWeight.w400);
+  T w400() => call(.w400);
 
   /// Creates a [Style] instance with [FontWeight.w500] value.
-  T w500() => call(FontWeight.w500);
+  T w500() => call(.w500);
 
   /// Creates a [Style] instance with [FontWeight.w600] value.
-  T w600() => call(FontWeight.w600);
+  T w600() => call(.w600);
 
   /// Creates a [Style] instance with [FontWeight.w700] value.
-  T w700() => call(FontWeight.w700);
+  T w700() => call(.w700);
 
   /// Creates a [Style] instance with [FontWeight.w800] value.
-  T w800() => call(FontWeight.w800);
+  T w800() => call(.w800);
 
   /// Creates a [Style] instance with [FontWeight.w900] value.
-  T w900() => call(FontWeight.w900);
+  T w900() => call(.w900);
 
   /// Creates a [Style] instance with [FontWeight.normal] value.
-  T normal() => call(FontWeight.normal);
+  T normal() => call(.normal);
 
   /// Creates a [Style] instance with [FontWeight.bold] value.
-  T bold() => call(FontWeight.bold);
+  T bold() => call(.bold);
 }
 
 /// Extension for creating [TextDecoration] values with predefined decorations.
@@ -265,16 +265,16 @@ extension TextDecorationPropUtilityExt<T extends Style<Object?>>
   T call(TextDecoration value) => utilityBuilder(value);
 
   /// Creates a [Style] instance with [TextDecoration.none] value.
-  T none() => call(TextDecoration.none);
+  T none() => call(.none);
 
   /// Creates a [Style] instance with [TextDecoration.underline] value.
-  T underline() => call(TextDecoration.underline);
+  T underline() => call(.underline);
 
   /// Creates a [Style] instance with [TextDecoration.overline] value.
-  T overline() => call(TextDecoration.overline);
+  T overline() => call(.overline);
 
   /// Creates a [Style] instance with [TextDecoration.lineThrough] value.
-  T lineThrough() => call(TextDecoration.lineThrough);
+  T lineThrough() => call(.lineThrough);
 
   /// Creates a [Style] instance using the [TextDecoration.combine] constructor.
   T combine(List<TextDecoration> decorations) {
@@ -432,10 +432,10 @@ extension OffsetPropUtilityExt<T extends Style<Object?>>
   T call(Offset value) => utilityBuilder(value);
 
   /// Creates a [Style] instance with [Offset.zero] value.
-  T zero() => call(Offset.zero);
+  T zero() => call(.zero);
 
   /// Creates a [Style] instance with [Offset.infinite] value.
-  T infinite() => call(Offset.infinite);
+  T infinite() => call(.infinite);
 
   /// Creates a [Style] instance using the [Offset.fromDirection] constructor.
   T fromDirection(double direction, [double distance = 1.0]) {
@@ -449,13 +449,13 @@ extension RadiusPropUtilityExt<T extends Style<Object?>>
   T call(Radius value) => utilityBuilder(value);
 
   /// Creates a [Style] instance with [Radius.zero] value.
-  T zero() => call(Radius.zero);
+  T zero() => call(.zero);
 
   /// Creates a [Style] instance using the [Radius.circular] constructor.
-  T circular(double radius) => call(Radius.circular(radius));
+  T circular(double radius) => call(.circular(radius));
 
   /// Creates a [Style] instance using the [Radius.elliptical] constructor.
-  T elliptical(double x, double y) => call(Radius.elliptical(x, y));
+  T elliptical(double x, double y) => call(.elliptical(x, y));
 }
 
 /// Extension for creating [Rect] values with predefined rectangles and constructors.
@@ -463,10 +463,10 @@ extension RectPropUtilityExt<T extends Style<Object?>> on MixUtility<T, Rect> {
   T call(Rect value) => utilityBuilder(value);
 
   /// Creates a [Style] instance with [Rect.zero] value.
-  T zero() => call(Rect.zero);
+  T zero() => call(.zero);
 
   /// Creates a [Style] instance with [Rect.largest] value.
-  T largest() => call(Rect.largest);
+  T largest() => call(.largest);
 
   /// Creates a [Style] instance using the [Rect.fromLTRB] constructor.
   T fromLTRB(double left, double top, double right, double bottom) {
@@ -588,7 +588,7 @@ extension TextScalerPropUtilityExt<T extends Style<Object?>>
   T call(TextScaler value) => utilityBuilder(value);
 
   /// Creates a [Style] instance with [TextScaler.noScaling] value.
-  T noScaling() => call(TextScaler.noScaling);
+  T noScaling() => call(.noScaling);
 
   /// Creates a [Style] instance using the [TextScaler.linear] constructor.
   T linear(double textScaleFactor) => call(TextScaler.linear(textScaleFactor));
@@ -611,8 +611,8 @@ extension TableBorderUtility<T extends Style<Object?>>
   T all({
     Color color = const Color(0xFF000000),
     double width = 1.0,
-    BorderStyle style = BorderStyle.solid,
-    BorderRadius borderRadius = BorderRadius.zero,
+    BorderStyle style = .solid,
+    BorderRadius borderRadius = .zero,
   }) {
     return call(
       TableBorder.all(
@@ -626,9 +626,9 @@ extension TableBorderUtility<T extends Style<Object?>>
 
   /// Creates a [Style] instance using the [TableBorder.symmetric] constructor.
   T symmetric({
-    BorderSide inside = BorderSide.none,
-    BorderSide outside = BorderSide.none,
-    BorderRadius borderRadius = BorderRadius.zero,
+    BorderSide inside = .none,
+    BorderSide outside = .none,
+    BorderRadius borderRadius = .zero,
   }) {
     return call(
       TableBorder.symmetric(
@@ -652,34 +652,34 @@ extension ElevationShadowPropUtilityExt<T extends Style<Object?>>
   T call(ElevationShadow value) => utilityBuilder(value);
 
   /// Creates a [Style] instance with [ElevationShadow.one] value.
-  T one() => call(ElevationShadow.one);
+  T one() => call(.one);
 
   /// Creates a [Style] instance with [ElevationShadow.two] value.
-  T two() => call(ElevationShadow.two);
+  T two() => call(.two);
 
   /// Creates a [Style] instance with [ElevationShadow.three] value.
-  T three() => call(ElevationShadow.three);
+  T three() => call(.three);
 
   /// Creates a [Style] instance with [ElevationShadow.four] value.
-  T four() => call(ElevationShadow.four);
+  T four() => call(.four);
 
   /// Creates a [Style] instance with [ElevationShadow.six] value.
-  T six() => call(ElevationShadow.six);
+  T six() => call(.six);
 
   /// Creates a [Style] instance with [ElevationShadow.eight] value.
-  T eight() => call(ElevationShadow.eight);
+  T eight() => call(.eight);
 
   /// Creates a [Style] instance with [ElevationShadow.nine] value.
-  T nine() => call(ElevationShadow.nine);
+  T nine() => call(.nine);
 
   /// Creates a [Style] instance with [ElevationShadow.twelve] value.
-  T twelve() => call(ElevationShadow.twelve);
+  T twelve() => call(.twelve);
 
   /// Creates a [Style] instance with [ElevationShadow.sixteen] value.
-  T sixteen() => call(ElevationShadow.sixteen);
+  T sixteen() => call(.sixteen);
 
   /// Creates a [Style] instance with [ElevationShadow.twentyFour] value.
-  T twentyFour() => call(ElevationShadow.twentyFour);
+  T twentyFour() => call(.twentyFour);
 }
 
 /// Extension for creating [Directive<String>] values with text transformations.

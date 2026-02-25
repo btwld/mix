@@ -85,11 +85,11 @@ final class ScrollViewModifier extends WidgetModifier<ScrollViewModifier>
   @override
   Widget build(Widget child) {
     return SingleChildScrollView(
-      scrollDirection: scrollDirection ?? Axis.vertical,
+      scrollDirection: scrollDirection ?? .vertical,
       reverse: reverse ?? false,
       padding: padding,
       physics: physics,
-      clipBehavior: clipBehavior ?? Clip.hardEdge,
+      clipBehavior: clipBehavior ?? .hardEdge,
       child: child,
     );
   }
@@ -116,10 +116,10 @@ final class ScrollViewModifierUtility<T extends Style<Object?>>
   T direction(Axis axis) => only(scrollDirection: axis);
 
   /// Set the scroll direction of the scroll view to horizontal.
-  T horizontal() => only(scrollDirection: Axis.horizontal);
+  T horizontal() => only(scrollDirection: .horizontal);
 
   /// Set the scroll direction of the scroll view to vertical.
-  T vertical() => only(scrollDirection: Axis.vertical);
+  T vertical() => only(scrollDirection: .vertical);
 
   /// Set the physics of the scroll view.
   T physics(ScrollPhysics physics) => only(physics: physics);

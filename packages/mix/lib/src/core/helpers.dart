@@ -76,8 +76,8 @@ class MixOps {
     List<VariantStyle<S>>? other,
   ) {
     if (current == null && other == null) return null;
-    if (current == null) return List<VariantStyle<S>>.of(other!);
-    if (other == null) return List<VariantStyle<S>>.of(current);
+    if (current == null) return List.of(other!);
+    if (other == null) return List.of(current);
 
     final Map<Object, VariantStyle<S>> merged = {};
 
@@ -107,12 +107,12 @@ class MixOps {
     if (a.isEmpty) return b;
     if (b.isEmpty) return a;
 
-    strategy ??= ListMergeStrategy.replace;
+    strategy ??= .replace;
 
     switch (strategy) {
-      case ListMergeStrategy.append:
+      case .append:
         return [...a, ...b];
-      case ListMergeStrategy.replace:
+      case .replace:
         final listLength = a.length;
         final otherLength = b.length;
         final maxLength = math.max(listLength, otherLength);
@@ -133,7 +133,7 @@ class MixOps {
 
           return b[index];
         });
-      case ListMergeStrategy.override:
+      case .override:
         return b;
     }
   }

@@ -11,9 +11,9 @@ void main() {
 
   // 2
   final flexStyle = FlexBoxStyler()
-      .mainAxisAlignment(MainAxisAlignment.spaceBetween)
+      .mainAxisAlignment(.spaceBetween)
       .color(Colors.blue)
-      .direction(Axis.vertical);
+      .direction(.vertical);
 
   FlexBox(
     style: flexStyle,

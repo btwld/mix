@@ -8,7 +8,6 @@
 /// - Using BoxStyler() to create box styles (recommended Mix 2.0 API)
 /// - Setting color, width, height, and border radius properties
 /// - Fluent method chaining for readable styling code
-// ignore_for_file: unused_local_variable
 
 library;
 
@@ -26,7 +25,6 @@ class Example extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // BoxStyler() fluent API - the recommended approach in Mix 2.0
     final boxStyle = BoxStyler()
         .color(Colors.red)
         .size(100, 100)

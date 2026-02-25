@@ -32,7 +32,7 @@ class Example extends StatelessWidget {
   const Example({super.key});
 
   BoxStyler get box =>
-      BoxStyler() //
+      .new() //
           .color(Colors.red)
           .size(100, 100)
           .variant(

@@ -160,12 +160,12 @@ mixin DecorationStyleMixin<T extends Mix<Object?>> {
     ImageProvider image, {
     BoxFit? fit,
     AlignmentGeometry? alignment,
-    ImageRepeat repeat = ImageRepeat.noRepeat,
+    ImageRepeat repeat = .noRepeat,
   }) {
     return decoration(
       DecorationMix.image(
         DecorationImageMix.image(image)
-            .fit(fit ?? BoxFit.cover)
+            .fit(fit ?? .cover)
             .alignment(alignment ?? Alignment.center)
             .repeat(repeat),
       ),
@@ -177,7 +177,7 @@ mixin DecorationStyleMixin<T extends Mix<Object?>> {
     String url, {
     BoxFit? fit,
     AlignmentGeometry? alignment,
-    ImageRepeat repeat = ImageRepeat.noRepeat,
+    ImageRepeat repeat = .noRepeat,
   }) {
     return backgroundImage(
       NetworkImage(url),
@@ -192,7 +192,7 @@ mixin DecorationStyleMixin<T extends Mix<Object?>> {
     String path, {
     BoxFit? fit,
     AlignmentGeometry? alignment,
-    ImageRepeat repeat = ImageRepeat.noRepeat,
+    ImageRepeat repeat = .noRepeat,
   }) {
     return backgroundImage(
       AssetImage(path),

@@ -25,11 +25,11 @@ class IconMutableStyler extends StyleMutableBuilder<IconSpec>
     with
         UtilityVariantMixin<IconStyler, IconSpec>,
         UtilityWidgetStateVariantMixin<IconStyler, IconSpec> {
-  late final color = ColorUtility<IconStyler>(
+  late final color = ColorUtility(
     (prop) => mutable.merge(IconStyler.create(color: prop)),
   );
 
-  late final shadow = ShadowUtility<IconStyler>((v) => mutable.shadows([v]));
+  late final shadow = ShadowUtility((v) => mutable.shadows([v]));
 
   late final textDirection = MixUtility(mutable.textDirection);
 

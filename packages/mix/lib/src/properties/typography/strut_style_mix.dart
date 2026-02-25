@@ -1,23 +1,36 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:mix_annotations/mix_annotations.dart';
 
 import '../../core/helpers.dart';
 import '../../core/mix_element.dart';
 import '../../core/prop.dart';
 
+part 'strut_style_mix.g.dart';
+
 /// Mix representation of [StrutStyle].
 ///
 /// Text layout properties with tokens.
+@mixable
 @immutable
-class StrutStyleMix extends Mix<StrutStyle> with Diagnosticable {
+class StrutStyleMix extends Mix<StrutStyle>
+    with Diagnosticable, _$StrutStyleMixMixin {
   // Properties use MixableProperty for cleaner merging
+  @override
   final Prop<String>? $fontFamily;
+  @override
   final Prop<List<String>>? $fontFamilyFallback;
+  @override
   final Prop<double>? $fontSize;
+  @override
   final Prop<FontWeight>? $fontWeight;
+  @override
   final Prop<FontStyle>? $fontStyle;
+  @override
   final Prop<double>? $height;
+  @override
   final Prop<double>? $leading;
+  @override
   final Prop<bool>? $forceStrutHeight;
 
   StrutStyleMix({
@@ -155,64 +168,4 @@ class StrutStyleMix extends Mix<StrutStyle> with Diagnosticable {
   StrutStyleMix forceStrutHeight(bool value) {
     return merge(StrutStyleMix.forceStrutHeight(value));
   }
-
-  @override
-  StrutStyle resolve(BuildContext context) {
-    return StrutStyle(
-      fontFamily: MixOps.resolve(context, $fontFamily),
-      fontFamilyFallback: MixOps.resolve(context, $fontFamilyFallback),
-      fontSize: MixOps.resolve(context, $fontSize),
-      height: MixOps.resolve(context, $height),
-      leading: MixOps.resolve(context, $leading),
-      fontWeight: MixOps.resolve(context, $fontWeight),
-      fontStyle: MixOps.resolve(context, $fontStyle),
-      forceStrutHeight: MixOps.resolve(context, $forceStrutHeight),
-    );
-  }
-
-  @override
-  StrutStyleMix merge(StrutStyleMix? other) {
-    return StrutStyleMix.create(
-      fontFamily: MixOps.merge($fontFamily, other?.$fontFamily),
-      fontFamilyFallback: MixOps.merge(
-        $fontFamilyFallback,
-        other?.$fontFamilyFallback,
-      ),
-      fontSize: MixOps.merge($fontSize, other?.$fontSize),
-      fontWeight: MixOps.merge($fontWeight, other?.$fontWeight),
-      fontStyle: MixOps.merge($fontStyle, other?.$fontStyle),
-      height: MixOps.merge($height, other?.$height),
-      leading: MixOps.merge($leading, other?.$leading),
-      forceStrutHeight: MixOps.merge(
-        $forceStrutHeight,
-        other?.$forceStrutHeight,
-      ),
-    );
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(DiagnosticsProperty('fontFamily', $fontFamily))
-      ..add(DiagnosticsProperty('fontFamilyFallback', $fontFamilyFallback))
-      ..add(DiagnosticsProperty('fontSize', $fontSize))
-      ..add(DiagnosticsProperty('fontWeight', $fontWeight))
-      ..add(DiagnosticsProperty('fontStyle', $fontStyle))
-      ..add(DiagnosticsProperty('height', $height))
-      ..add(DiagnosticsProperty('leading', $leading))
-      ..add(DiagnosticsProperty('forceStrutHeight', $forceStrutHeight));
-  }
-
-  @override
-  List<Object?> get props => [
-    $fontFamily,
-    $fontFamilyFallback,
-    $fontSize,
-    $fontWeight,
-    $fontStyle,
-    $height,
-    $leading,
-    $forceStrutHeight,
-  ];
 }

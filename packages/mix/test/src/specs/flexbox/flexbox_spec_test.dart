@@ -222,20 +222,10 @@ void main() {
       test('Stylers with different variants are not equal', () {
         final variant = ContextVariant('test', (context) => true);
         final attr1 = FlexBoxStyler(
-          variants: [
-            VariantStyle(
-              variant,
-              FlexBoxStyler(spacing: 8.0),
-            ),
-          ],
+          variants: [VariantStyle(variant, FlexBoxStyler(spacing: 8.0))],
         );
         final attr2 = FlexBoxStyler(
-          variants: [
-            VariantStyle(
-              variant,
-              FlexBoxStyler(spacing: 16.0),
-            ),
-          ],
+          variants: [VariantStyle(variant, FlexBoxStyler(spacing: 16.0))],
         );
 
         expect(attr1, isNot(equals(attr2)));

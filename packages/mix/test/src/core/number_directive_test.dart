@@ -86,10 +86,7 @@ void main() {
       });
 
       test('equality works correctly', () {
-        expect(
-          AddNumberDirective(5.0),
-          equals(AddNumberDirective(5.0)),
-        );
+        expect(AddNumberDirective(5.0), equals(AddNumberDirective(5.0)));
         expect(
           AddNumberDirective(5.0),
           isNot(equals(AddNumberDirective(10.0))),
@@ -202,10 +199,7 @@ void main() {
       });
 
       test('equality works correctly', () {
-        expect(
-          DivideNumberDirective(2),
-          equals(DivideNumberDirective(2)),
-        );
+        expect(DivideNumberDirective(2), equals(DivideNumberDirective(2)));
         expect(
           DivideNumberDirective(2),
           isNot(equals(DivideNumberDirective(3))),
@@ -218,10 +212,7 @@ void main() {
       });
 
       test('throws ArgumentError for zero divisor', () {
-        expect(
-          () => DivideNumberDirective(0),
-          throwsA(isA<ArgumentError>()),
-        );
+        expect(() => DivideNumberDirective(0), throwsA(isA<ArgumentError>()));
       });
 
       test('throws ArgumentError for NaN divisor', () {
@@ -342,10 +333,7 @@ void main() {
       });
 
       test('equality works correctly', () {
-        expect(
-          const AbsNumberDirective(),
-          equals(const AbsNumberDirective()),
-        );
+        expect(const AbsNumberDirective(), equals(const AbsNumberDirective()));
       });
 
       test('key is correct', () {

@@ -4,11 +4,7 @@ import 'package:mix/mix.dart';
 
 final chipButtonLabel = TextStyler(
   textAlign: .center,
-  style: TextStyleMix(
-    color: Colors.white,
-    fontSize: 12,
-    fontWeight: FontWeight.w500,
-  ),
+  style: TextStyleMix(color: Colors.white, fontSize: 12, fontWeight: .w500),
 );
 
 final chipButtonContainer = BoxStyler()
@@ -18,10 +14,10 @@ final chipButtonContainer = BoxStyler()
     .borderRounded(20)
     .onHovered(BoxStyler().color(Colors.blue.shade700))
     .variant(
-      ContextVariant.widgetState(WidgetState.selected),
+      ContextVariant.widgetState(.selected),
       BoxStyler().color(Colors.black),
     )
-    .alignment(Alignment.center)
+    .alignment(.center)
     .animate(.easeInOut(300.ms));
 
 class FilterChipButton extends StatefulWidget {

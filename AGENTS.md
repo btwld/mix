@@ -2,6 +2,16 @@
 
 Type-safe styling system for Flutter that separates style semantics from widgets.
 
+## Environment Setup
+
+If Flutter is not installed or `flutter --version` fails, run the setup script:
+
+```bash
+bash setup.sh
+```
+
+This installs FVM, Flutter SDK (3.38.1), DCM, and melos, then bootstraps all packages.
+
 ## Structure
 
 ```
@@ -96,6 +106,24 @@ final style = BoxStyler()
 melos run test:flutter    # Flutter package tests
 melos run test:dart       # Dart package tests
 melos run test:coverage   # With coverage report
+```
+
+## Git Conventions
+
+**Branch naming** (Git Flow prefixes):
+- `feat/` - New features
+- `fix/` - Bug fixes
+- `chore/` - Maintenance (deps, config, cleanup)
+- `docs/` - Documentation changes
+- `refactor/` - Code restructuring
+- `test/` - Test additions/updates
+
+**Commit messages** (Conventional Commits):
+```
+<type>(<scope>): <description>
+
+type: feat, fix, chore, docs, refactor, test, ci
+scope: mix, mix_generator, mix_annotations, mix_lint, examples, website
 ```
 
 ## Key Files
