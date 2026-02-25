@@ -13,6 +13,8 @@ import '../../properties/layout/edge_insets_geometry_mix.dart';
 import '../../properties/painting/border_mix.dart';
 import '../../properties/painting/border_radius_mix.dart';
 import '../../properties/painting/decoration_mix.dart';
+import '../../properties/painting/gradient_mix.dart';
+import '../../properties/painting/shadow_mix.dart';
 import '../../style/abstracts/styler.dart';
 import '../../style/mixins/border_radius_style_mixin.dart';
 import '../../style/mixins/border_style_mixin.dart';
@@ -126,6 +128,83 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
     super.variants,
   }) : $box = box,
        $flex = flex;
+
+  // Factory constructors for dot-shorthand notation
+
+  // Direct constructor params (Box + Flex)
+  factory FlexBoxStyler.alignment(AlignmentGeometry value) =>
+      FlexBoxStyler(alignment: value);
+  factory FlexBoxStyler.padding(EdgeInsetsGeometryMix value) =>
+      FlexBoxStyler(padding: value);
+  factory FlexBoxStyler.margin(EdgeInsetsGeometryMix value) =>
+      FlexBoxStyler(margin: value);
+  factory FlexBoxStyler.constraints(BoxConstraintsMix value) =>
+      FlexBoxStyler(constraints: value);
+  factory FlexBoxStyler.decoration(DecorationMix value) =>
+      FlexBoxStyler(decoration: value);
+  factory FlexBoxStyler.foregroundDecoration(DecorationMix value) =>
+      FlexBoxStyler(foregroundDecoration: value);
+  factory FlexBoxStyler.clipBehavior(Clip value) =>
+      FlexBoxStyler(clipBehavior: value);
+  factory FlexBoxStyler.direction(Axis value) =>
+      FlexBoxStyler(direction: value);
+  factory FlexBoxStyler.mainAxisAlignment(MainAxisAlignment value) =>
+      FlexBoxStyler(mainAxisAlignment: value);
+  factory FlexBoxStyler.crossAxisAlignment(CrossAxisAlignment value) =>
+      FlexBoxStyler(crossAxisAlignment: value);
+  factory FlexBoxStyler.mainAxisSize(MainAxisSize value) =>
+      FlexBoxStyler(mainAxisSize: value);
+  factory FlexBoxStyler.spacing(double value) =>
+      FlexBoxStyler(spacing: value);
+
+  // Decoration convenience
+  factory FlexBoxStyler.color(Color value) => FlexBoxStyler().color(value);
+  factory FlexBoxStyler.gradient(GradientMix value) =>
+      FlexBoxStyler().gradient(value);
+  factory FlexBoxStyler.border(BoxBorderMix value) =>
+      FlexBoxStyler().border(value);
+  factory FlexBoxStyler.borderRadius(BorderRadiusGeometryMix value) =>
+      FlexBoxStyler().borderRadius(value);
+  factory FlexBoxStyler.elevation(ElevationShadow value) =>
+      FlexBoxStyler().elevation(value);
+
+  // Spacing convenience
+  factory FlexBoxStyler.paddingAll(double value) =>
+      FlexBoxStyler().paddingAll(value);
+  factory FlexBoxStyler.paddingX(double value) =>
+      FlexBoxStyler().paddingX(value);
+  factory FlexBoxStyler.paddingY(double value) =>
+      FlexBoxStyler().paddingY(value);
+  factory FlexBoxStyler.marginAll(double value) =>
+      FlexBoxStyler().marginAll(value);
+  factory FlexBoxStyler.marginX(double value) =>
+      FlexBoxStyler().marginX(value);
+  factory FlexBoxStyler.marginY(double value) =>
+      FlexBoxStyler().marginY(value);
+
+  // Border radius convenience
+  factory FlexBoxStyler.borderRounded(double value) =>
+      FlexBoxStyler().borderRounded(value);
+
+  // Constraints convenience
+  factory FlexBoxStyler.width(double value) => FlexBoxStyler().width(value);
+  factory FlexBoxStyler.height(double value) => FlexBoxStyler().height(value);
+  factory FlexBoxStyler.size(double width, double height) =>
+      FlexBoxStyler().size(width, height);
+
+  // Transform convenience
+  factory FlexBoxStyler.scale(
+    double scale, {
+    Alignment alignment = .center,
+  }) => FlexBoxStyler().scale(scale, alignment: alignment);
+  factory FlexBoxStyler.rotate(
+    double angle, {
+    Alignment alignment = .center,
+  }) => FlexBoxStyler().rotate(angle, alignment: alignment);
+
+  // Flex convenience (zero-param presets)
+  factory FlexBoxStyler.row() => FlexBoxStyler(direction: .horizontal);
+  factory FlexBoxStyler.column() => FlexBoxStyler(direction: .vertical);
 
   static FlexBoxMutableStyler get chain => .new(FlexBoxStyler());
 

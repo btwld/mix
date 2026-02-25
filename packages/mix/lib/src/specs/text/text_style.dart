@@ -133,6 +133,36 @@ class TextStyler extends MixStyler<TextStyler, TextSpec>
          variants: variants,
        );
 
+  // Factory constructors for dot-shorthand notation
+
+  // Direct constructor params
+  factory TextStyler.overflow(TextOverflow value) =>
+      TextStyler(overflow: value);
+  factory TextStyler.textAlign(TextAlign value) =>
+      TextStyler(textAlign: value);
+  factory TextStyler.maxLines(int value) => TextStyler(maxLines: value);
+  factory TextStyler.softWrap(bool value) => TextStyler(softWrap: value);
+  factory TextStyler.textDirection(TextDirection value) =>
+      TextStyler(textDirection: value);
+  factory TextStyler.style(TextStyleMix value) => TextStyler(style: value);
+
+  // TextStyleMixin convenience
+  factory TextStyler.color(Color value) => TextStyler().color(value);
+  factory TextStyler.fontSize(double value) => TextStyler().fontSize(value);
+  factory TextStyler.fontWeight(FontWeight value) =>
+      TextStyler().fontWeight(value);
+  factory TextStyler.fontStyle(FontStyle value) =>
+      TextStyler().fontStyle(value);
+  factory TextStyler.letterSpacing(double value) =>
+      TextStyler().letterSpacing(value);
+  factory TextStyler.wordSpacing(double value) =>
+      TextStyler().wordSpacing(value);
+  factory TextStyler.height(double value) => TextStyler().height(value);
+  factory TextStyler.fontFamily(String value) =>
+      TextStyler().fontFamily(value);
+  factory TextStyler.decoration(TextDecoration value) =>
+      TextStyler().decoration(value);
+
   static TextMutableStyler get chain => .new(TextStyler());
 
   StyledText call(String text) {

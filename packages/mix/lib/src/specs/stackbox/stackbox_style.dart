@@ -13,6 +13,8 @@ import '../../properties/layout/edge_insets_geometry_mix.dart';
 import '../../properties/painting/border_mix.dart';
 import '../../properties/painting/border_radius_mix.dart';
 import '../../properties/painting/decoration_mix.dart';
+import '../../properties/painting/gradient_mix.dart';
+import '../../properties/painting/shadow_mix.dart';
 import '../../style/abstracts/styler.dart';
 import '../../style/mixins/border_radius_style_mixin.dart';
 import '../../style/mixins/border_style_mixin.dart';
@@ -114,6 +116,74 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
     super.variants,
   }) : $box = box,
        $stack = stack;
+
+  // Factory constructors for dot-shorthand notation
+
+  // Direct constructor params (Box + Stack)
+  factory StackBoxStyler.alignment(AlignmentGeometry value) =>
+      StackBoxStyler(alignment: value);
+  factory StackBoxStyler.padding(EdgeInsetsGeometryMix value) =>
+      StackBoxStyler(padding: value);
+  factory StackBoxStyler.margin(EdgeInsetsGeometryMix value) =>
+      StackBoxStyler(margin: value);
+  factory StackBoxStyler.constraints(BoxConstraintsMix value) =>
+      StackBoxStyler(constraints: value);
+  factory StackBoxStyler.decoration(DecorationMix value) =>
+      StackBoxStyler(decoration: value);
+  factory StackBoxStyler.foregroundDecoration(DecorationMix value) =>
+      StackBoxStyler(foregroundDecoration: value);
+  factory StackBoxStyler.clipBehavior(Clip value) =>
+      StackBoxStyler(clipBehavior: value);
+  factory StackBoxStyler.stackAlignment(AlignmentGeometry value) =>
+      StackBoxStyler(stackAlignment: value);
+  factory StackBoxStyler.fit(StackFit value) => StackBoxStyler(fit: value);
+
+  // Decoration convenience
+  factory StackBoxStyler.color(Color value) => StackBoxStyler().color(value);
+  factory StackBoxStyler.gradient(GradientMix value) =>
+      StackBoxStyler().gradient(value);
+  factory StackBoxStyler.border(BoxBorderMix value) =>
+      StackBoxStyler().border(value);
+  factory StackBoxStyler.borderRadius(BorderRadiusGeometryMix value) =>
+      StackBoxStyler().borderRadius(value);
+  factory StackBoxStyler.elevation(ElevationShadow value) =>
+      StackBoxStyler().elevation(value);
+
+  // Spacing convenience
+  factory StackBoxStyler.paddingAll(double value) =>
+      StackBoxStyler().paddingAll(value);
+  factory StackBoxStyler.paddingX(double value) =>
+      StackBoxStyler().paddingX(value);
+  factory StackBoxStyler.paddingY(double value) =>
+      StackBoxStyler().paddingY(value);
+  factory StackBoxStyler.marginAll(double value) =>
+      StackBoxStyler().marginAll(value);
+  factory StackBoxStyler.marginX(double value) =>
+      StackBoxStyler().marginX(value);
+  factory StackBoxStyler.marginY(double value) =>
+      StackBoxStyler().marginY(value);
+
+  // Border radius convenience
+  factory StackBoxStyler.borderRounded(double value) =>
+      StackBoxStyler().borderRounded(value);
+
+  // Constraints convenience
+  factory StackBoxStyler.width(double value) =>
+      StackBoxStyler().width(value);
+  factory StackBoxStyler.height(double value) =>
+      StackBoxStyler().height(value);
+  factory StackBoxStyler.size(double width, double height) =>
+      StackBoxStyler().size(width, height);
+
+  // Transform convenience
+  factory StackBoxStyler.scale(
+    double scale, {
+    Alignment alignment = .center,
+  }) => StackBoxStyler().scale(scale, alignment: alignment);
+  factory StackBoxStyler.rotate(
+    double angle, {
+    Alignment alignment = .center,
+  }) => StackBoxStyler().rotate(angle, alignment: alignment);
 
   static StackBoxMutableStyler get chain => .new(StackBoxStyler());
 

@@ -105,6 +105,22 @@ class FlexStyler extends MixStyler<FlexStyler, FlexSpec>
          variants: variants,
        );
 
+  // Factory constructors for dot-shorthand notation
+  factory FlexStyler.direction(Axis value) => FlexStyler(direction: value);
+  factory FlexStyler.mainAxisAlignment(MainAxisAlignment value) =>
+      FlexStyler(mainAxisAlignment: value);
+  factory FlexStyler.crossAxisAlignment(CrossAxisAlignment value) =>
+      FlexStyler(crossAxisAlignment: value);
+  factory FlexStyler.mainAxisSize(MainAxisSize value) =>
+      FlexStyler(mainAxisSize: value);
+  factory FlexStyler.spacing(double value) => FlexStyler(spacing: value);
+  factory FlexStyler.clipBehavior(Clip value) =>
+      FlexStyler(clipBehavior: value);
+
+  // FlexStyleMixin convenience (zero-param presets)
+  factory FlexStyler.row() => FlexStyler(direction: .horizontal);
+  factory FlexStyler.column() => FlexStyler(direction: .vertical);
+
   static FlexMutableStyler get chain => .new(FlexStyler());
 
   /// Sets the widget modifier.

@@ -25,7 +25,7 @@ import 'text/text_mutable_style.dart';
 /// final style = $box.color(Colors.red).size(100, 100);
 ///
 /// // After (recommended):
-/// final style = BoxStyler().color(Colors.red).size(100, 100);
+/// final style = BoxStyler.color(Colors.red).size(100, 100);
 /// ```
 @Deprecated(
   'Use BoxStyler() directly instead. '
@@ -42,7 +42,7 @@ BoxMutableStyler get $box => .new();
 /// final style = $flex.direction(Axis.horizontal).spacing(8);
 ///
 /// // After (recommended):
-/// final style = FlexStyler().direction(Axis.horizontal).spacing(8);
+/// final style = FlexStyler.direction(.horizontal).spacing(8);
 /// ```
 @Deprecated(
   'Use FlexStyler() directly instead. '
@@ -59,7 +59,7 @@ FlexMutableStyler get $flex => .new();
 /// final style = $flexbox.color(Colors.red).spacing(8);
 ///
 /// // After (recommended):
-/// final style = FlexBoxStyler().color(Colors.red).spacing(8);
+/// final style = FlexBoxStyler.color(Colors.red).spacing(8);
 /// ```
 @Deprecated(
   'Use FlexBoxStyler() directly instead. '
@@ -76,7 +76,7 @@ FlexBoxMutableStyler get $flexbox => .new();
 /// final style = $image.width(100).height(100).fit(BoxFit.cover);
 ///
 /// // After (recommended):
-/// final style = ImageStyler().width(100).height(100).fit(BoxFit.cover);
+/// final style = ImageStyler.width(100).height(100).fit(.cover);
 /// ```
 @Deprecated(
   'Use ImageStyler() directly instead. '
@@ -93,7 +93,7 @@ ImageMutableStyler get $image => .new();
 /// final style = $icon.size(24).color(Colors.blue);
 ///
 /// // After (recommended):
-/// final style = IconStyler().size(24).color(Colors.blue);
+/// final style = IconStyler.size(24).color(Colors.blue);
 /// ```
 @Deprecated(
   'Use IconStyler() directly instead. '
@@ -110,7 +110,7 @@ IconMutableStyler get $icon => .new();
 /// final style = $text.fontSize(16).color(Colors.black);
 ///
 /// // After (recommended):
-/// final style = TextStyler().fontSize(16).color(Colors.black);
+/// final style = TextStyler.fontSize(16).color(Colors.black);
 /// ```
 @Deprecated(
   'Use TextStyler() directly instead. '
@@ -127,7 +127,7 @@ TextMutableStyler get $text => .new();
 /// final style = $stack.alignment(Alignment.center).fit(StackFit.expand);
 ///
 /// // After (recommended):
-/// final style = StackStyler().alignment(Alignment.center).fit(StackFit.expand);
+/// final style = StackStyler.alignment(.center).fit(.expand);
 /// ```
 @Deprecated(
   'Use StackStyler() directly instead. '
@@ -144,7 +144,7 @@ StackMutableStyler get $stack => .new();
 /// final style = $stackbox.color(Colors.red).alignment(Alignment.center);
 ///
 /// // After (recommended):
-/// final style = StackBoxStyler().color(Colors.red).alignment(Alignment.center);
+/// final style = StackBoxStyler.color(Colors.red).alignment(.center);
 /// ```
 @Deprecated(
   'Use StackBoxStyler() directly instead. '

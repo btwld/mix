@@ -10,7 +10,11 @@ import '../../core/style_spec.dart';
 import '../../modifiers/widget_modifier_config.dart';
 import '../../properties/layout/constraints_mix.dart';
 import '../../properties/layout/edge_insets_geometry_mix.dart';
+import '../../properties/painting/border_mix.dart';
+import '../../properties/painting/border_radius_mix.dart';
 import '../../properties/painting/decoration_mix.dart';
+import '../../properties/painting/gradient_mix.dart';
+import '../../properties/painting/shadow_mix.dart';
 import '../../style/abstracts/styler.dart';
 import '../../style/mixins/border_radius_style_mixin.dart';
 import '../../style/mixins/border_style_mixin.dart';
@@ -115,6 +119,58 @@ class BoxStyler extends MixStyler<BoxStyler, BoxSpec>
          modifier: modifier,
          animation: animation,
        );
+
+  // Factory constructors for dot-shorthand notation (e.g., `.color(Colors.blue)`)
+  // These enable concise syntax when BoxStyler is used as a sub-styler in compound widgets.
+
+  // Direct constructor params
+  factory BoxStyler.alignment(AlignmentGeometry value) =>
+      BoxStyler(alignment: value);
+  factory BoxStyler.padding(EdgeInsetsGeometryMix value) =>
+      BoxStyler(padding: value);
+  factory BoxStyler.margin(EdgeInsetsGeometryMix value) =>
+      BoxStyler(margin: value);
+  factory BoxStyler.constraints(BoxConstraintsMix value) =>
+      BoxStyler(constraints: value);
+  factory BoxStyler.decoration(DecorationMix value) =>
+      BoxStyler(decoration: value);
+  factory BoxStyler.foregroundDecoration(DecorationMix value) =>
+      BoxStyler(foregroundDecoration: value);
+  factory BoxStyler.clipBehavior(Clip value) =>
+      BoxStyler(clipBehavior: value);
+
+  // Decoration convenience
+  factory BoxStyler.color(Color value) => BoxStyler().color(value);
+  factory BoxStyler.gradient(GradientMix value) => BoxStyler().gradient(value);
+  factory BoxStyler.border(BoxBorderMix value) => BoxStyler().border(value);
+  factory BoxStyler.borderRadius(BorderRadiusGeometryMix value) =>
+      BoxStyler().borderRadius(value);
+  factory BoxStyler.elevation(ElevationShadow value) =>
+      BoxStyler().elevation(value);
+
+  // Spacing convenience
+  factory BoxStyler.paddingAll(double value) => BoxStyler().paddingAll(value);
+  factory BoxStyler.paddingX(double value) => BoxStyler().paddingX(value);
+  factory BoxStyler.paddingY(double value) => BoxStyler().paddingY(value);
+  factory BoxStyler.marginAll(double value) => BoxStyler().marginAll(value);
+  factory BoxStyler.marginX(double value) => BoxStyler().marginX(value);
+  factory BoxStyler.marginY(double value) => BoxStyler().marginY(value);
+
+  // Border radius convenience
+  factory BoxStyler.borderRounded(double value) =>
+      BoxStyler().borderRounded(value);
+
+  // Constraints convenience
+  factory BoxStyler.width(double value) => BoxStyler().width(value);
+  factory BoxStyler.height(double value) => BoxStyler().height(value);
+  factory BoxStyler.size(double width, double height) =>
+      BoxStyler().size(width, height);
+
+  // Transform convenience
+  factory BoxStyler.scale(double scale, {Alignment alignment = .center}) =>
+      BoxStyler().scale(scale, alignment: alignment);
+  factory BoxStyler.rotate(double angle, {Alignment alignment = .center}) =>
+      BoxStyler().rotate(angle, alignment: alignment);
 
   static BoxMutableStyler get chain => .new(BoxStyler());
 
