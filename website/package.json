@@ -1,13 +1,16 @@
 {
+  "packageManager": "pnpm@10.29.3",
   "scripts": {
     "dev": "next --turbopack",
     "build": "next build",
+    "check:previews": "node scripts/check-previews-manifest.mjs",
     "start": "next start",
     "postbuild": "pagefind --site .next/server/app --output-path public/_pagefind"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.1.13",
     "@vercel/og": "^0.8.5",
+    "clsx": "^2.1.1",
     "framer-motion": "^12.23.12",
     "lucide-react": "^0.544.0",
     "next": "15.5.7",
@@ -22,6 +25,8 @@
     "@types/node": "24.5.0",
     "@types/react": "19.1.13",
     "eslint": "^9.35.0",
+    "eslint-config-next": "^15.5.7",
+    "eslint-plugin-mdx": "^3.6.2",
     "pagefind": "^1.4.0",
     "typescript": "^5.9.2"
   }
