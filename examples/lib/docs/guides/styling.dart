@@ -10,7 +10,8 @@ void main() {
   ).height(100).color(Colors.blue).borderRounded(12);
 
   // 2
-  final base = BoxStyler.paddingX(16)
+  final base = BoxStyler()
+      .paddingX(16)
       .paddingY(8)
       .borderRounded(8)
       .color(Colors.black)

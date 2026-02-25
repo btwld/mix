@@ -20,10 +20,9 @@ Methods used **mid-chain or at the end** (animate, wrap, variants, etc.) do not 
 |---|---|
 | Direct params | `alignment`, `padding`, `margin`, `constraints`, `decoration`, `foregroundDecoration`, `clipBehavior` |
 | Decoration | `color`, `gradient`, `border`, `borderRadius`, `elevation` |
-| Spacing | `paddingAll`, `paddingX`, `paddingY`, `marginAll`, `marginX`, `marginY` |
-| Border radius | `borderRounded` |
 | Constraints | `width`, `height`, `size` |
 | Transform | `scale`, `rotate` |
+| Animation | `animate` |
 
 ### FlexStyler
 
@@ -71,12 +70,14 @@ These are used mid-chain or at the end. They should remain as instance methods:
 
 | Category | Methods |
 |---|---|
-| Animation/modifiers | `animate`, `wrap`, `phaseAnimation`, `keyframeAnimation` |
-| Compound box methods | `borderAll`, `borderTop`, `shadowOnly`, `backgroundImageUrl`, `paddingOnly`, `minWidth`, `maxWidth`, `minHeight` |
+| Modifiers | `wrap`, `phaseAnimation`, `keyframeAnimation` |
+| Compound spacing | `paddingAll`, `paddingX`, `paddingY`, `marginAll`, `marginX`, `marginY`, `paddingOnly` |
+| Compound border | `borderAll`, `borderTop`, `borderRounded` |
+| Compound box methods | `shadowOnly`, `backgroundImageUrl`, `minWidth`, `maxWidth`, `minHeight` |
 | Text directives | `uppercase`, `titlecase`, `sentencecase`, `reverse` |
 | Variants | `onHovered`, `onPressed`, `onDark`, `onLight`, `onDisabled`, `onFocused`, `variant`, `onBreakpoint` |
 
-**Rationale:** These methods are never used as the first call in a chain. Adding factory constructors for them would add API surface with no practical benefit.
+**Rationale:** Factory constructors are reserved for primitives that map to stable style concepts. Compound convenience methods (spacing shortcuts, border shortcuts) remain as instance methods to keep the static API focused.
 
 ## Dot-Shorthand Usage
 
@@ -105,12 +106,13 @@ style.onDark(TextStyler.color(Colors.white))
 
 // Chain-only methods stay as Styler().method()
 BoxStyler().borderAll(color: Colors.red, width: 2)
+BoxStyler().paddingAll(16).borderRounded(8)
 BoxStyler().minWidth(100).maxWidth(300)
 TextStyler().uppercase().fontSize(18)
 
 // Mid-chain methods — no change needed
 BoxStyler.color(Colors.blue).animate(.easeInOut(100.ms))
-BoxStyler.paddingAll(16).wrap(.new().align(alignment: .center))
+BoxStyler().paddingAll(16).wrap(.new().align(alignment: .center))
 ```
 
 ## Testing Requirements

@@ -234,7 +234,8 @@ class CustomButton extends StatelessWidget {
   final ButtonStyler? style;
 
   ButtonStyler buttonStyle(ButtonStyler? style, ButtonVariant? variant) {
-    final container = FlexBoxStyler.borderRounded(6)
+    final container = FlexBoxStyler()
+        .borderRounded(6)
         .paddingX(8)
         .paddingY(12)
         .spacing(8)
