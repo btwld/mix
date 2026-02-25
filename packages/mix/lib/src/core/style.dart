@@ -24,11 +24,20 @@ sealed class StyleElement {
 /// Provides variant support, modifiers, and animation configuration for styled elements.
 abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
     implements StyleElement {
-  static int _activeVariantResolutionDepth = 0;
+  static int _activeVariantMergeDepth = 0;
 
   @internal
-  static bool get isResolvingActiveVariants =>
-      _activeVariantResolutionDepth > 0;
+  static bool get isResolvingActiveVariants => _activeVariantMergeDepth > 0;
+
+  @internal
+  static T _withActiveVariantMergeGuard<T>(T Function() fn) {
+    _activeVariantMergeDepth++;
+    try {
+      return fn();
+    } finally {
+      _activeVariantMergeDepth--;
+    }
+  }
 
   final List<VariantStyle<S>>? $variants;
 
@@ -92,84 +101,80 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
     BuildContext context, {
     required Set<NamedVariant> namedVariants,
   }) {
-    _activeVariantResolutionDepth++;
-    try {
-      // Filter variants that should be active in this context.
-      final activeVariants = ($variants ?? [])
-          .where(
-            (variantAttr) => switch (variantAttr.variant) {
-              (ContextVariant variant) => variant.when(context),
-              (NamedVariant variant) => namedVariants.contains(variant),
-              (ContextVariantBuilder _) => true,
-            },
-          )
-          .toList();
+    // Filter variants that should be active in this context.
+    final activeVariants = ($variants ?? [])
+        .where(
+          (variantAttr) => switch (variantAttr.variant) {
+            (ContextVariant variant) => variant.when(context),
+            (NamedVariant variant) => namedVariants.contains(variant),
+            (ContextVariantBuilder _) => true,
+          },
+        )
+        .toList();
 
-      // Preserve insertion order while still applying WidgetStateVariant last.
-      final prioritizedVariants = <VariantStyle<S>>[];
-      final widgetStateVariants = <VariantStyle<S>>[];
-      for (final variantAttr in activeVariants) {
-        if (variantAttr.variant is WidgetStateVariant) {
-          widgetStateVariants.add(variantAttr);
-        } else {
-          prioritizedVariants.add(variantAttr);
-        }
+    // Preserve insertion order while still applying WidgetStateVariant last.
+    final prioritizedVariants = <VariantStyle<S>>[];
+    final widgetStateVariants = <VariantStyle<S>>[];
+    for (final variantAttr in activeVariants) {
+      if (variantAttr.variant is WidgetStateVariant) {
+        widgetStateVariants.add(variantAttr);
+      } else {
+        prioritizedVariants.add(variantAttr);
       }
-      prioritizedVariants.addAll(widgetStateVariants);
-
-      // Extract the style from each active variant
-      final stylesToMerge =
-          <(Style<S>, bool)>[]; // (style, isFromStyleVariation)
-
-      for (final variantAttr in prioritizedVariants) {
-        final result = switch (variantAttr.variant) {
-          ContextVariantBuilder variant => (
-            variant.build(context) as Style<S>,
-            false,
-          ),
-          (ContextVariant() || NamedVariant()) => () {
-            // Check if the value is a StyleVariation
-            // ignore: avoid-unrelated-type-assertions
-            if (variantAttr.value is StyleVariation<S>) {
-              // ignore: avoid-unrelated-type-casts
-              final styleVariation = variantAttr.value as StyleVariation<S>;
-              // Only apply if this variant is active
-              if (namedVariants.contains(styleVariation.variantType)) {
-                return (
-                  styleVariation.styleBuilder(this, namedVariants, context),
-                  true,
-                );
-              }
-            }
-
-            return (variantAttr.value, false);
-          }(),
-        };
-        stylesToMerge.add(result);
-      }
-
-      // Start with current style as base
-      Style<S> mergedStyle = this;
-
-      // Merge each variant style, recursively resolving nested variants
-      for (final (variantStyle, isFromStyleVariation) in stylesToMerge) {
-        final fullyResolvedStyle = isFromStyleVariation
-            // For StyleVariation results, we don't recursively resolve variants
-            // since StyleVariation.styleBuilder should handle its own variant logic
-            // and return a final style. This prevents infinite recursion.
-            ? variantStyle
-            // For regular variants, recursively resolve any nested variants
-            : variantStyle.mergeActiveVariants(
-                context,
-                namedVariants: namedVariants,
-              );
-        mergedStyle = mergedStyle.merge(fullyResolvedStyle);
-      }
-
-      return mergedStyle;
-    } finally {
-      _activeVariantResolutionDepth--;
     }
+    prioritizedVariants.addAll(widgetStateVariants);
+
+    // Extract the style from each active variant
+    final stylesToMerge = <(Style<S>, bool)>[]; // (style, isFromStyleVariation)
+
+    for (final variantAttr in prioritizedVariants) {
+      final result = switch (variantAttr.variant) {
+        ContextVariantBuilder variant => (
+          variant.build(context) as Style<S>,
+          false,
+        ),
+        (ContextVariant() || NamedVariant()) => () {
+          // Check if the value is a StyleVariation
+          // ignore: avoid-unrelated-type-assertions
+          if (variantAttr.value is StyleVariation<S>) {
+            // ignore: avoid-unrelated-type-casts
+            final styleVariation = variantAttr.value as StyleVariation<S>;
+            // Only apply if this variant is active
+            if (namedVariants.contains(styleVariation.variantType)) {
+              return (
+                styleVariation.styleBuilder(this, namedVariants, context),
+                true,
+              );
+            }
+          }
+
+          return (variantAttr.value, false);
+        }(),
+      };
+      stylesToMerge.add(result);
+    }
+
+    // Start with current style as base
+    Style<S> mergedStyle = this;
+
+    // Merge each variant style, recursively resolving nested variants
+    for (final (variantStyle, isFromStyleVariation) in stylesToMerge) {
+      final fullyResolvedStyle = isFromStyleVariation
+          // For StyleVariation results, we don't recursively resolve variants
+          // since StyleVariation.styleBuilder should handle its own variant logic
+          // and return a final style. This prevents infinite recursion.
+          ? variantStyle
+          // For regular variants, recursively resolve any nested variants
+          : variantStyle.mergeActiveVariants(
+              context,
+              namedVariants: namedVariants,
+            );
+      mergedStyle = _withActiveVariantMergeGuard(
+        () => mergedStyle.merge(fullyResolvedStyle),
+      );
+    }
+
+    return mergedStyle;
   }
 
   /// Resolves this attribute to its concrete value using the provided [BuildContext].

@@ -98,5 +98,26 @@ void main() {
       expect(container.constraints?.minWidth, testWidth);
       expect(container.constraints?.maxWidth, testWidth);
     });
+
+    testWidgets(
+      'nested onBuilder output preserves post-token property precedence',
+      (tester) async {
+        const colorToken = ColorToken('test.nested.builder.token');
+
+        final style = BoxStyler().onBuilder((context) {
+          return BoxStyler()
+              .useToken(colorToken, BoxStyler().color)
+              .color(Colors.red);
+        });
+
+        await tester.pumpWithTokens({
+          colorToken: Colors.green,
+        }, child: Box(style: style));
+
+        final container = tester.widget<Container>(find.byType(Container));
+        final decoration = container.decoration as BoxDecoration?;
+        expect(decoration?.color, Colors.red);
+      },
+    );
   });
 }
