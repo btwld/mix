@@ -1,8 +1,10 @@
 import 'package:flutter/widgets.dart';
 
+import 'api/animation/implicit.anim.counter.dart' as implicit_counter;
 import 'api/animation/implicit.curved.hover.dart' as hover_scale;
 import 'api/animation/implicit.curved.scale.dart' as auto_scale;
 import 'api/animation/implicit.spring.translate.dart' as spring_anim;
+import 'api/animation/keyframe.loop.scale_color.dart' as keyframe_loop;
 import 'api/animation/keyframe.switch.dart' as animated_switch;
 import 'api/animation/phase.compress.dart' as tap_phase;
 import 'api/context_variants/disabled.dart' as disabled;
@@ -29,17 +31,6 @@ import 'api/widgets/zbox/layered_boxes.dart' as layered_boxes;
 /// A preview entry with metadata for multi-view embedding, gallery display,
 /// and docs code snippets.
 class PreviewEntry {
-  const PreviewEntry({
-    required this.previewId,
-    required this.sourcePath,
-    required this.title,
-    required this.description,
-    required this.category,
-    required this.builder,
-    this.snippetRegion,
-    this.renderable = true,
-  });
-
   /// Unique ID used for multi-view embedding (e.g., 'box-basic').
   final String previewId;
 
@@ -63,6 +54,17 @@ class PreviewEntry {
 
   /// Whether this entry should render as an interactive Flutter preview.
   final bool renderable;
+
+  const PreviewEntry({
+    required this.previewId,
+    required this.sourcePath,
+    required this.title,
+    required this.description,
+    required this.category,
+    required this.builder,
+    this.snippetRegion,
+    this.renderable = true,
+  });
 }
 
 /// Registry for preview widgets used in both multi-view embedding and the gallery.
@@ -78,15 +80,13 @@ class PreviewEntry {
 /// });
 /// ```
 class PreviewRegistry {
-  PreviewRegistry._();
-
   /// All available previews with full metadata.
   static const String _widgets = 'Widgets';
+
   static const String _variants = 'Context Variants';
   static const String _gradients = 'Gradients';
   static const String _tokens = 'Design System';
   static const String _animations = 'Animations';
-
   static final List<PreviewEntry> _previews = [
     // Widget Examples
     PreviewEntry(
@@ -259,6 +259,14 @@ class PreviewRegistry {
 
     // Animations
     PreviewEntry(
+      previewId: 'implicit-anim-counter',
+      sourcePath: 'examples/lib/api/animation/implicit.anim.counter.dart',
+      title: 'State-triggered Implicit Animation',
+      description: 'Square grows each time you tap it',
+      category: _animations,
+      builder: (_) => const implicit_counter.Example(),
+    ),
+    PreviewEntry(
       previewId: 'anim-hover-scale',
       sourcePath: 'examples/lib/api/animation/implicit.curved.hover.dart',
       title: 'Hover Scale Animation',
@@ -283,6 +291,23 @@ class PreviewRegistry {
       builder: (_) => const tap_phase.BlockAnimation(),
     ),
     PreviewEntry(
+      previewId: 'anim-keyframe-toggle',
+      sourcePath: 'examples/lib/api/animation/keyframe.switch.dart',
+      title: 'Keyframe Toggle (scale + width)',
+      description:
+          'Single trigger drives two tracks; style builder applies both',
+      category: _animations,
+      builder: (_) => const animated_switch.SwitchAnimation(),
+    ),
+    PreviewEntry(
+      previewId: 'anim-keyframe-loop',
+      sourcePath: 'examples/lib/api/animation/keyframe.loop.scale_color.dart',
+      title: 'Keyframe Loop (scale + color + opacity)',
+      description: 'Looping keyframe animation with multiple tracks',
+      category: _animations,
+      builder: (_) => const keyframe_loop.Example(),
+    ),
+    PreviewEntry(
       previewId: 'anim-switch',
       sourcePath: 'examples/lib/api/animation/keyframe.switch.dart',
       title: 'Animated Switch',
@@ -305,58 +330,11 @@ class PreviewRegistry {
     _previews,
   );
 
-  /// All registered previews.
-  static List<PreviewEntry> get all => _previews;
-
-  /// Builds a widget for the given preview ID.
-  ///
-  /// Returns an error widget if the preview ID is not found or if the preview
-  /// widget throws during construction.
-  static Widget build(String? previewId, BuildContext context) {
-    if (previewId == null || previewId.isEmpty) {
-      return const _UnknownPreview(previewId: 'null');
-    }
-
-    final entry = _byPreviewId[previewId];
-    if (entry == null) {
-      return _UnknownPreview(previewId: previewId);
-    }
-
-    try {
-      return entry.builder(context);
-    } catch (e, stackTrace) {
-      debugPrint('Preview "$previewId" construction error: $e');
-      return _ErrorPreview(
-        previewId: previewId,
-        error: e,
-        stackTrace: stackTrace,
-      );
-    }
-  }
-
-  /// Returns all available preview IDs.
-  static List<String> get availablePreviewIds => _byPreviewId.keys.toList();
+  const PreviewRegistry._();
 
   /// Gets a preview entry by ID.
   static PreviewEntry? getByPreviewId(String previewId) =>
       _byPreviewId[previewId];
-
-  /// Returns manifest entries for website/docs consumption.
-  static List<Map<String, Object?>> get manifestEntries {
-    return _previews
-        .map((preview) {
-          return <String, Object?>{
-            'previewId': preview.previewId,
-            'sourcePath': preview.sourcePath,
-            'snippetRegion': preview.snippetRegion,
-            'title': preview.title,
-            'description': preview.description,
-            'category': preview.category,
-            'renderable': preview.renderable,
-          };
-        })
-        .toList(growable: false);
-  }
 
   static Map<String, PreviewEntry> _buildPreviewIdIndex(
     List<PreviewEntry> previews,
@@ -387,6 +365,56 @@ class PreviewRegistry {
 
     return previewIdIndex;
   }
+
+  /// All registered previews.
+  static List<PreviewEntry> get all => _previews;
+
+  /// Returns all available preview IDs.
+  static List<String> get availablePreviewIds => _byPreviewId.keys.toList();
+
+  /// Returns manifest entries for website/docs consumption.
+  static List<Map<String, Object?>> get manifestEntries {
+    return _previews
+        .map((preview) {
+          return <String, Object?>{
+            'previewId': preview.previewId,
+            'sourcePath': preview.sourcePath,
+            'snippetRegion': preview.snippetRegion,
+            'title': preview.title,
+            'description': preview.description,
+            'category': preview.category,
+            'renderable': preview.renderable,
+          };
+        })
+        .toList(growable: false);
+  }
+
+  /// Builds a widget for the given preview ID.
+  ///
+  /// Returns an error widget if the preview ID is not found or if the preview
+  /// widget throws during construction.
+  static Widget build(String? previewId, BuildContext context) {
+    if (previewId == null || previewId.isEmpty) {
+      return const _UnknownPreview(previewId: 'null');
+    }
+
+    final entry = _byPreviewId[previewId];
+    if (entry == null) {
+      return _UnknownPreview(previewId: previewId);
+    }
+
+    try {
+      return entry.builder(context);
+    } catch (e, stackTrace) {
+      debugPrint('Preview "$previewId" construction error: $e');
+
+      return _ErrorPreview(
+        previewId: previewId,
+        error: e,
+        stackTrace: stackTrace,
+      );
+    }
+  }
 }
 
 /// Widget displayed when an unknown preview ID is requested.
@@ -408,8 +436,8 @@ class _UnknownPreview extends StatelessWidget {
           'Unknown previewId: $sanitizedId\n\n'
           'Available previewIds:\n'
           '${PreviewRegistry.availablePreviewIds.join('\n')}',
-          textAlign: TextAlign.center,
           style: const TextStyle(color: Color(0xFFEF4444), fontSize: 14),
+          textAlign: TextAlign.center,
         ),
       ),
     );
@@ -452,10 +480,10 @@ class _ErrorPreview extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               error.toString(),
-              textAlign: TextAlign.center,
               style: const TextStyle(color: Color(0xFFEF4444), fontSize: 12),
-              maxLines: 5,
+              textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,
+              maxLines: 5,
             ),
           ],
         ),
