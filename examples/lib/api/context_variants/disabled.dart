@@ -12,11 +12,12 @@ class Example extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = BoxStyler.color(Colors.red)
+    final style = BoxStyler()
+        .color(Colors.red)
         .height(100)
         .width(100)
         .borderRounded(10)
-        .onDisabled(BoxStyler.color(Colors.grey));
+        .onDisabled(.color(Colors.grey));
 
     return Pressable(enabled: false, child: Box(style: style));
   }

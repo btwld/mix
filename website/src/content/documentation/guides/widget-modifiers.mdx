@@ -16,7 +16,7 @@ Use `.wrap()` with a modifier mix class to wrap a widget:
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
-final style = BoxStyler
+final style = BoxStyler()
     .color(Colors.red)
     .size(100, 100)
     .wrap(.opacity(0.4));
@@ -46,7 +46,7 @@ import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
 // Combine multiple modifiers
-final cardStyle = BoxStyler
+final cardStyle = BoxStyler()
     .color(Colors.white)
     .size(200, 100)
     .wrap(.opacity(0.9))
@@ -54,11 +54,11 @@ final cardStyle = BoxStyler
     .wrap(.align(alignment: .center));
 
 // Use transform methods for scale/rotate
-final buttonStyle = BoxStyler
+final buttonStyle = BoxStyler()
     .color(Colors.blue)
     .paddingAll(16)
     .scale(1.0)
-    .onHovered(BoxStyler.scale(1.1));
+    .onHovered(.scale(1.1));
 ```
 
 ## Modifier Ordering
@@ -181,7 +181,7 @@ To use your custom modifier in a style, use the `.wrap()` method:
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
-final style = BoxStyler
+final style = BoxStyler()
     .color(Colors.red)
     .size(100, 100)
     .wrap(.opacity(0.4));
@@ -189,7 +189,7 @@ final style = BoxStyler
 // With tokens
 final $opacityToken = DoubleToken('custom.opacity');
 
-final tokenStyle = BoxStyler
+final tokenStyle = BoxStyler()
     .color(Colors.blue)
     .wrap(.opacity(Prop.token($opacityToken)));
 ```

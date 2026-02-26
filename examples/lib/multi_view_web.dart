@@ -25,7 +25,7 @@ class JsConversionDepthError implements Exception {
   final int maxDepth;
 
   /// Creates a new [JsConversionDepthError].
-  JsConversionDepthError(this.depth, this.maxDepth);
+  const JsConversionDepthError(this.depth, this.maxDepth);
 
   @override
   String toString() =>
@@ -45,6 +45,7 @@ bool get isMultiViewEnabled {
     return _isMultiViewModeFromJS;
   } catch (e) {
     debugPrint('isMultiViewEnabled check failed: $e');
+
     return false;
   }
 }
@@ -78,6 +79,7 @@ Map<String, Object?>? getInitialData(int viewId, {int? maxDepth}) {
     rethrow;
   } catch (e) {
     debugPrint('getInitialData failed for viewId $viewId: $e');
+
     return null;
   }
 }
@@ -129,6 +131,7 @@ Object? _jsToValue(
   if (jsValue.isA<JSNumber>()) return (jsValue as JSNumber).toDartDouble;
   if (jsValue.isA<JSBoolean>()) return (jsValue as JSBoolean).toDart;
   if (jsValue.isA<JSArray>()) {
+    // ignore: avoid-casting-to-extension-type
     return (jsValue as JSArray).toDart
         .map((value) => _jsToValue(value, depth: depth + 1, maxDepth: maxDepth))
         .toList();
@@ -136,6 +139,7 @@ Object? _jsToValue(
   if (jsValue.isA<JSObject>()) {
     return _jsObjectToMap(jsValue, depth: depth + 1, maxDepth: maxDepth);
   }
+
   return jsValue.toString();
 }
 
@@ -162,6 +166,7 @@ bool get _isMultiViewModeFromJS {
     return _multiViewEnabledFlag ?? false;
   } catch (e) {
     debugPrint('_isMultiViewModeFromJS check failed: $e');
+
     return false;
   }
 }

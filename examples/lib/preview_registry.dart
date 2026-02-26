@@ -1,12 +1,12 @@
 import 'package:flutter/widgets.dart';
 
-import 'api/animation/implicit.anim.counter.dart' as implicit_counter;
-import 'api/animation/implicit.curved.hover.dart' as hover_scale;
 import 'api/animation/implicit.curved.scale.dart' as auto_scale;
 import 'api/animation/implicit.spring.translate.dart' as spring_anim;
-import 'api/animation/keyframe.loop.scale_color.dart' as keyframe_loop;
-import 'api/animation/keyframe.switch.dart' as animated_switch;
-import 'api/animation/phase.compress.dart' as tap_phase;
+import 'docs/guides/animations/implicit_state_counter.dart' as guide_implicit_counter;
+import 'docs/guides/animations/implicit_variant_hover.dart' as guide_implicit_hover;
+import 'docs/guides/animations/keyframe_loop.dart' as guide_keyframe_loop;
+import 'docs/guides/animations/keyframe_switch.dart' as guide_keyframe_switch;
+import 'docs/guides/animations/phase_tap_compress.dart' as guide_phase_tap;
 import 'api/context_variants/disabled.dart' as disabled;
 import 'api/context_variants/focused.dart' as focused;
 import 'api/context_variants/hovered.dart' as hovered;
@@ -257,22 +257,22 @@ class PreviewRegistry {
       builder: (_) => const theme_tokens.Example(),
     ),
 
-    // Animations
+    // Animations (guides — match animations.mdx)
     PreviewEntry(
       previewId: 'implicit-anim-counter',
-      sourcePath: 'examples/lib/api/animation/implicit.anim.counter.dart',
+      sourcePath: 'examples/lib/docs/guides/animations/implicit_state_counter.dart',
       title: 'State-triggered Implicit Animation',
       description: 'Square grows each time you tap it',
       category: _animations,
-      builder: (_) => const implicit_counter.Example(),
+      builder: (_) => const guide_implicit_counter.ImplicitStateCounterExample(),
     ),
     PreviewEntry(
       previewId: 'anim-hover-scale',
-      sourcePath: 'examples/lib/api/animation/implicit.curved.hover.dart',
+      sourcePath: 'examples/lib/docs/guides/animations/implicit_variant_hover.dart',
       title: 'Hover Scale Animation',
       description: 'Box that scales up smoothly when hovered',
       category: _animations,
-      builder: (_) => const hover_scale.Example(),
+      builder: (_) => const guide_implicit_hover.ImplicitVariantHoverExample(),
     ),
     PreviewEntry(
       previewId: 'anim-auto-scale',
@@ -284,27 +284,27 @@ class PreviewRegistry {
     ),
     PreviewEntry(
       previewId: 'anim-tap-phase',
-      sourcePath: 'examples/lib/api/animation/phase.compress.dart',
+      sourcePath: 'examples/lib/docs/guides/animations/phase_tap_compress.dart',
       title: 'Tap Phase Animation',
       description: 'Multi-phase animation triggered by tap',
       category: _animations,
-      builder: (_) => const tap_phase.BlockAnimation(),
+      builder: (_) => const guide_phase_tap.PhaseTapCompressExample(),
     ),
     PreviewEntry(
       previewId: 'anim-keyframe-loop',
-      sourcePath: 'examples/lib/api/animation/keyframe.loop.scale_color.dart',
+      sourcePath: 'examples/lib/docs/guides/animations/keyframe_loop.dart',
       title: 'Keyframe Loop (scale + color + opacity)',
       description: 'Looping keyframe animation with multiple tracks',
       category: _animations,
-      builder: (_) => const keyframe_loop.Example(),
+      builder: (_) => const guide_keyframe_loop.KeyframeLoopExample(),
     ),
     PreviewEntry(
       previewId: 'anim-switch',
-      sourcePath: 'examples/lib/api/animation/keyframe.switch.dart',
+      sourcePath: 'examples/lib/docs/guides/animations/keyframe_switch.dart',
       title: 'Animated Switch',
-      description: 'Toggle switch with phase-based animation',
+      description: 'Toggle switch with keyframe animation',
       category: _animations,
-      builder: (_) => const animated_switch.SwitchAnimation(),
+      builder: (_) => const guide_keyframe_switch.KeyframeSwitchExample(),
     ),
     PreviewEntry(
       previewId: 'anim-spring',
@@ -454,6 +454,7 @@ class _ErrorPreview extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          spacing: 8,
           children: [
             const Text(
               '⚠️ Preview Error',
@@ -463,12 +464,10 @@ class _ErrorPreview extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 8),
             Text(
               'Preview: $previewId',
               style: const TextStyle(color: Color(0xFF9CA3AF), fontSize: 12),
             ),
-            const SizedBox(height: 8),
             Text(
               error.toString(),
               style: const TextStyle(color: Color(0xFFEF4444), fontSize: 12),

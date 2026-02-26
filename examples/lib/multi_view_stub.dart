@@ -8,4 +8,4 @@ library;
 bool get isMultiViewEnabled => false;
 
 /// Get initial data for a view (always null on non-web).
-Map<String, Object?>? getInitialData(int viewId) => null;
+Map<String, Object?>? getInitialData() => null;
