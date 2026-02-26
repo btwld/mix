@@ -326,11 +326,11 @@ ButtonStyler buttonStyle(ButtonStyler? style, ButtonVariant? variant) {
       .paddingY(12)
       .spacing(8)
       .mainAxisAlignment(.center)
-      .crossAxisAlignment(CrossAxisAlignment.center)
-      .mainAxisSize(MainAxisSize.min);
+      .crossAxisAlignment(.center)
+      .mainAxisSize(.min);
 
   final label = TextStyler.style(
-    TextStyleMix().fontSize(16).fontWeight(FontWeight.w500),
+    TextStyleMix().fontSize(16).fontWeight(.w500),
   );
 
   final icon = IconStyler.size(18);

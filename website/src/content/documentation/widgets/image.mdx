@@ -10,9 +10,9 @@ You can use `ImageStyler` to create styles with a fluent API. Example:
 final style = ImageStyler
  .width(200)
  .height(200)
- .fit(BoxFit.cover)
+ .fit(.cover)
  .color(Colors.blue.withOpacity(0.5))
- .colorBlendMode(BlendMode.overlay);
+ .colorBlendMode(.overlay);
 
 StyledImage(
  image: AssetImage('assets/photo.jpg'),
