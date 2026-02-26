@@ -109,7 +109,7 @@ void main() {
       }
     });
 
-    test('12 whitelisted action types', () {
+    test('13 whitelisted action types', () {
       const actions = <SchemaAction>[
         NavigateAction(to: '/'),
         SetStateAction(path: 'x', value: 0),
@@ -123,11 +123,27 @@ void main() {
         OpenUrlAction(url: 'u'),
         RequestAction(method: 'GET', url: 'u'),
         SequenceAction(steps: []),
+        ConditionalAction(
+          condition: 'isLoggedIn',
+          then: NavigateAction(to: '/home'),
+          elseAction: NavigateAction(to: '/login'),
+        ),
       ];
 
-      expect(actions.length, 12);
+      expect(actions.length, 13);
       final types = actions.map((a) => a.type).toSet();
-      expect(types.length, 12); // All unique types
+      expect(types.length, 13); // All unique types
+    });
+
+    test('ConditionalAction is low risk', () {
+      const action = ConditionalAction(
+        condition: 'x',
+        then: DismissAction(),
+      );
+      expect(action.risk, ActionRisk.low);
+      expect(action.condition, 'x');
+      expect(action.then, isA<DismissAction>());
+      expect(action.elseAction, isNull);
     });
   });
 }

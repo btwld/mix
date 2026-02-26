@@ -116,3 +116,15 @@ final class SequenceAction extends SchemaAction {
   const SequenceAction({required this.steps})
       : super(type: 'sequence', risk: ActionRisk.high);
 }
+
+final class ConditionalAction extends SchemaAction {
+  final String condition;
+  final SchemaAction then;
+  final SchemaAction? elseAction;
+
+  const ConditionalAction({
+    required this.condition,
+    required this.then,
+    this.elseAction,
+  }) : super(type: 'conditional', risk: ActionRisk.low);
+}

@@ -25,7 +25,7 @@ BoxStyler applyContainerStyle(
 
     styler = switch (entry.key) {
       // Colors
-      'backgroundColor' => _applyColor(styler, resolved),
+      'color' || 'backgroundColor' => _applyColor(styler, resolved),
 
       // Spacing
       'padding' => styler.paddingAll(_toDouble(resolved)),
@@ -75,7 +75,7 @@ FlexBoxStyler applyFlexContainerStyle(
     if (resolved == null) continue;
 
     styler = switch (entry.key) {
-      'backgroundColor' => _applyColorFlex(styler, resolved),
+      'color' || 'backgroundColor' => _applyColorFlex(styler, resolved),
       'padding' => styler.paddingAll(_toDouble(resolved)),
       'paddingX' => styler.paddingX(_toDouble(resolved)),
       'paddingY' => styler.paddingY(_toDouble(resolved)),
@@ -107,7 +107,7 @@ StackBoxStyler applyStackContainerStyle(
     if (resolved == null) continue;
 
     styler = switch (entry.key) {
-      'backgroundColor' => _applyColorStack(styler, resolved),
+      'color' || 'backgroundColor' => _applyColorStack(styler, resolved),
       'padding' => styler.paddingAll(_toDouble(resolved)),
       'paddingX' => styler.paddingX(_toDouble(resolved)),
       'paddingY' => styler.paddingY(_toDouble(resolved)),
@@ -291,12 +291,68 @@ StackBoxStyler applyStackAnimation(
   return config != null ? styler.animate(config) : styler;
 }
 
-// -- IconStyler animation (no variants for icons in v0.1) --
+// -- IconStyler animation --
 
 IconStyler applyIconAnimation(IconStyler styler, SchemaAnimation? anim) {
   final config = _buildAnimConfig(anim);
   return config != null ? styler.animate(config) : styler;
 }
+
+// -- ImageStyler variants + animation --
+
+ImageStyler applyImageVariants(
+  ImageStyler styler,
+  Map<String, SchemaValue>? variants,
+  RenderContext ctx,
+  BuildContext context,
+) {
+  if (variants == null) return styler;
+  for (final entry in variants.entries) {
+    final vs = _extractVariantStyle(entry.value);
+    if (vs == null) continue;
+    final v = _applyImageStyleProps(ImageStyler(), vs, ctx, context);
+    styler = _imageVariant(styler, entry.key, v);
+  }
+  return styler;
+}
+
+ImageStyler applyImageAnimation(ImageStyler styler, SchemaAnimation? anim) {
+  final config = _buildAnimConfig(anim);
+  return config != null ? styler.animate(config) : styler;
+}
+
+ImageStyler _applyImageStyleProps(
+  ImageStyler styler,
+  Map<String, SchemaValue> style,
+  RenderContext ctx,
+  BuildContext context,
+) {
+  for (final entry in style.entries) {
+    final resolved = ctx.resolveValue<dynamic>(entry.value, context);
+    if (resolved == null) continue;
+    styler = switch (entry.key) {
+      'width' => styler.width(_toDouble(resolved)),
+      'height' => styler.height(_toDouble(resolved)),
+      _ => styler,
+    };
+  }
+  return styler;
+}
+
+ImageStyler _imageVariant(ImageStyler s, String name, ImageStyler v) =>
+    switch (name) {
+      'hover' || 'hovered' => s.onHovered(v),
+      'press' || 'pressed' => s.onPressed(v),
+      'focus' || 'focused' => s.onFocused(v),
+      'disabled' => s.onDisabled(v),
+      'enabled' => s.onEnabled(v),
+      'dark' => s.onDark(v),
+      'light' => s.onLight(v),
+      'mobile' => s.onMobile(v),
+      'tablet' => s.onTablet(v),
+      'desktop' => s.onDesktop(v),
+      _ => s,
+    };
 
 /// Apply a named variant to any styler that has the variant mixin methods.
 /// All concrete stylers have the same method names, so this works for any T
@@ -529,7 +585,33 @@ Curve parseCurve(String? name) => switch (name) {
 IconData resolveIconData(dynamic value) {
   if (value is IconData) return value;
   if (value is int) return IconData(value, fontFamily: 'MaterialIcons');
-  // String icon names: try to match common material icons
-  // For now, return a default icon. A full icon registry could be added.
+  if (value is String) {
+    return _iconLookup[value] ?? Icons.help_outline;
+  }
   return Icons.help_outline;
 }
+
+const _iconLookup = <String, IconData>{
+  'add': Icons.add,
+  'arrow_back': Icons.arrow_back,
+  'arrow_forward': Icons.arrow_forward,
+  'check': Icons.check,
+  'check_circle': Icons.check_circle,
+  'close': Icons.close,
+  'delete': Icons.delete,
+  'edit': Icons.edit,
+  'error': Icons.error,
+  'favorite': Icons.favorite,
+  'home': Icons.home,
+  'info': Icons.info,
+  'menu': Icons.menu,
+  'more_vert': Icons.more_vert,
+  'person': Icons.person,
+  'search': Icons.search,
+  'settings': Icons.settings,
+  'share': Icons.share,
+  'star': Icons.star,
+  'visibility': Icons.visibility,
+  'visibility_off': Icons.visibility_off,
+  'warning': Icons.warning,
+};
