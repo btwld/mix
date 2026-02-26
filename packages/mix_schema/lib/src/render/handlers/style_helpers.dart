@@ -28,27 +28,27 @@ BoxStyler applyContainerStyle(
       'color' || 'backgroundColor' => _applyColor(styler, resolved),
 
       // Spacing
-      'padding' => styler.paddingAll(_toDouble(resolved)),
-      'paddingX' => styler.paddingX(_toDouble(resolved)),
-      'paddingY' => styler.paddingY(_toDouble(resolved)),
-      'paddingTop' => styler.paddingTop(_toDouble(resolved)),
-      'paddingBottom' => styler.paddingBottom(_toDouble(resolved)),
-      'paddingLeft' => styler.paddingLeft(_toDouble(resolved)),
-      'paddingRight' => styler.paddingRight(_toDouble(resolved)),
-      'margin' => styler.marginAll(_toDouble(resolved)),
-      'marginX' => styler.marginX(_toDouble(resolved)),
-      'marginY' => styler.marginY(_toDouble(resolved)),
+      'padding' => styler.paddingAll(toDouble(resolved)),
+      'paddingX' => styler.paddingX(toDouble(resolved)),
+      'paddingY' => styler.paddingY(toDouble(resolved)),
+      'paddingTop' => styler.paddingTop(toDouble(resolved)),
+      'paddingBottom' => styler.paddingBottom(toDouble(resolved)),
+      'paddingLeft' => styler.paddingLeft(toDouble(resolved)),
+      'paddingRight' => styler.paddingRight(toDouble(resolved)),
+      'margin' => styler.marginAll(toDouble(resolved)),
+      'marginX' => styler.marginX(toDouble(resolved)),
+      'marginY' => styler.marginY(toDouble(resolved)),
 
       // Sizing
-      'width' => styler.width(_toDouble(resolved)),
-      'height' => styler.height(_toDouble(resolved)),
-      'minWidth' => styler.minWidth(_toDouble(resolved)),
-      'maxWidth' => styler.maxWidth(_toDouble(resolved)),
-      'minHeight' => styler.minHeight(_toDouble(resolved)),
-      'maxHeight' => styler.maxHeight(_toDouble(resolved)),
+      'width' => styler.width(toDouble(resolved)),
+      'height' => styler.height(toDouble(resolved)),
+      'minWidth' => styler.minWidth(toDouble(resolved)),
+      'maxWidth' => styler.maxWidth(toDouble(resolved)),
+      'minHeight' => styler.minHeight(toDouble(resolved)),
+      'maxHeight' => styler.maxHeight(toDouble(resolved)),
 
       // Border
-      'borderRadius' => styler.borderRounded(_toDouble(resolved)),
+      'borderRadius' => styler.borderRounded(toDouble(resolved)),
 
       // Clip
       'clipBehavior' =>
@@ -76,17 +76,17 @@ FlexBoxStyler applyFlexContainerStyle(
 
     styler = switch (entry.key) {
       'color' || 'backgroundColor' => _applyColorFlex(styler, resolved),
-      'padding' => styler.paddingAll(_toDouble(resolved)),
-      'paddingX' => styler.paddingX(_toDouble(resolved)),
-      'paddingY' => styler.paddingY(_toDouble(resolved)),
-      'margin' => styler.marginAll(_toDouble(resolved)),
-      'width' => styler.width(_toDouble(resolved)),
-      'height' => styler.height(_toDouble(resolved)),
-      'minWidth' => styler.minWidth(_toDouble(resolved)),
-      'maxWidth' => styler.maxWidth(_toDouble(resolved)),
-      'minHeight' => styler.minHeight(_toDouble(resolved)),
-      'maxHeight' => styler.maxHeight(_toDouble(resolved)),
-      'borderRadius' => styler.borderRounded(_toDouble(resolved)),
+      'padding' => styler.paddingAll(toDouble(resolved)),
+      'paddingX' => styler.paddingX(toDouble(resolved)),
+      'paddingY' => styler.paddingY(toDouble(resolved)),
+      'margin' => styler.marginAll(toDouble(resolved)),
+      'width' => styler.width(toDouble(resolved)),
+      'height' => styler.height(toDouble(resolved)),
+      'minWidth' => styler.minWidth(toDouble(resolved)),
+      'maxWidth' => styler.maxWidth(toDouble(resolved)),
+      'minHeight' => styler.minHeight(toDouble(resolved)),
+      'maxHeight' => styler.maxHeight(toDouble(resolved)),
+      'borderRadius' => styler.borderRounded(toDouble(resolved)),
       _ => skipUnknown(styler, entry.key, ctx),
     };
   }
@@ -108,17 +108,17 @@ StackBoxStyler applyStackContainerStyle(
 
     styler = switch (entry.key) {
       'color' || 'backgroundColor' => _applyColorStack(styler, resolved),
-      'padding' => styler.paddingAll(_toDouble(resolved)),
-      'paddingX' => styler.paddingX(_toDouble(resolved)),
-      'paddingY' => styler.paddingY(_toDouble(resolved)),
-      'margin' => styler.marginAll(_toDouble(resolved)),
-      'width' => styler.width(_toDouble(resolved)),
-      'height' => styler.height(_toDouble(resolved)),
-      'minWidth' => styler.minWidth(_toDouble(resolved)),
-      'maxWidth' => styler.maxWidth(_toDouble(resolved)),
-      'minHeight' => styler.minHeight(_toDouble(resolved)),
-      'maxHeight' => styler.maxHeight(_toDouble(resolved)),
-      'borderRadius' => styler.borderRounded(_toDouble(resolved)),
+      'padding' => styler.paddingAll(toDouble(resolved)),
+      'paddingX' => styler.paddingX(toDouble(resolved)),
+      'paddingY' => styler.paddingY(toDouble(resolved)),
+      'margin' => styler.marginAll(toDouble(resolved)),
+      'width' => styler.width(toDouble(resolved)),
+      'height' => styler.height(toDouble(resolved)),
+      'minWidth' => styler.minWidth(toDouble(resolved)),
+      'maxWidth' => styler.maxWidth(toDouble(resolved)),
+      'minHeight' => styler.minHeight(toDouble(resolved)),
+      'maxHeight' => styler.maxHeight(toDouble(resolved)),
+      'borderRadius' => styler.borderRounded(toDouble(resolved)),
       _ => skipUnknown(styler, entry.key, ctx),
     };
   }
@@ -140,10 +140,10 @@ TextStyler applyTextStyle(
 
     styler = switch (entry.key) {
       'color' => _applyTextColor(styler, resolved),
-      'fontSize' => styler.fontSize(_toDouble(resolved)),
+      'fontSize' => styler.fontSize(toDouble(resolved)),
       'fontWeight' => styler.fontWeight(parseFontWeight(resolved)),
-      'lineHeight' => styler.height(_toDouble(resolved)),
-      'letterSpacing' => styler.letterSpacing(_toDouble(resolved)),
+      'lineHeight' => styler.height(toDouble(resolved)),
+      'letterSpacing' => styler.letterSpacing(toDouble(resolved)),
       'overflow' =>
         styler.overflow(parseTextOverflow(resolved as String)),
       'maxLines' => styler.maxLines(_toInt(resolved)),
@@ -168,7 +168,7 @@ IconStyler applyIconStyle(
 
     styler = switch (entry.key) {
       'color' => _applyIconColor(styler, resolved),
-      'size' => styler.size(_toDouble(resolved)),
+      'size' => styler.size(toDouble(resolved)),
       _ => skipUnknown(styler, entry.key, ctx),
     };
   }
@@ -311,7 +311,7 @@ ImageStyler applyImageVariants(
     final vs = _extractVariantStyle(entry.value);
     if (vs == null) continue;
     final v = _applyImageStyleProps(ImageStyler(), vs, ctx, context);
-    styler = _imageVariant(styler, entry.key, v);
+    styler = _applyVariantByName(styler, entry.key, v);
   }
   return styler;
 }
@@ -331,51 +331,46 @@ ImageStyler _applyImageStyleProps(
     final resolved = ctx.resolveValue<dynamic>(entry.value, context);
     if (resolved == null) continue;
     styler = switch (entry.key) {
-      'width' => styler.width(_toDouble(resolved)),
-      'height' => styler.height(_toDouble(resolved)),
+      'width' => styler.width(toDouble(resolved)),
+      'height' => styler.height(toDouble(resolved)),
       _ => styler,
     };
   }
   return styler;
 }
 
-ImageStyler _imageVariant(ImageStyler s, String name, ImageStyler v) =>
-    switch (name) {
-      'hover' || 'hovered' => s.onHovered(v),
-      'press' || 'pressed' => s.onPressed(v),
-      'focus' || 'focused' => s.onFocused(v),
-      'disabled' => s.onDisabled(v),
-      'enabled' => s.onEnabled(v),
-      'dark' => s.onDark(v),
-      'light' => s.onLight(v),
-      'mobile' => s.onMobile(v),
-      'tablet' => s.onTablet(v),
-      'desktop' => s.onDesktop(v),
-      _ => s,
-    };
-
-/// Apply a named variant to any styler that has the variant mixin methods.
-/// All concrete stylers have the same method names, so this works for any T
-/// that extends a MixStyler with VariantStyleMixin + WidgetStateVariantMixin.
+/// Apply a named variant to any styler type.
+///
+/// All Mix stylers share identical variant method names (onHovered, onDark,
+/// etc.) via mixins, but MixStyler is package-private so we must dispatch
+/// to each concrete type. This single function replaces what would otherwise
+/// be 5 identical switch blocks (one per styler type).
 T _applyVariantByName<T>(T styler, String name, T variantStyler) {
-  // We need to call onHovered/onDark/etc on the concrete type.
-  // Since MixStyler is private, we pattern-match on the concrete type.
-  if (styler is BoxStyler) {
-    return _boxVariant(styler, name, variantStyler as BoxStyler) as T;
-  }
-  if (styler is TextStyler) {
-    return _textVariant(styler, name, variantStyler as TextStyler) as T;
-  }
-  if (styler is FlexBoxStyler) {
-    return _flexVariant(styler, name, variantStyler as FlexBoxStyler) as T;
-  }
-  if (styler is StackBoxStyler) {
-    return _stackVariant(styler, name, variantStyler as StackBoxStyler) as T;
-  }
-  return styler;
+  // Dispatch to concrete type, then apply the variant by name.
+  // Each branch calls the same method names — the duplication is in the
+  // type dispatch, not the variant logic.
+  return switch (styler) {
+    BoxStyler s =>
+      _variantSwitch(s, name, variantStyler as BoxStyler) as T,
+    TextStyler s =>
+      _variantSwitch(s, name, variantStyler as TextStyler) as T,
+    FlexBoxStyler s =>
+      _variantSwitch(s, name, variantStyler as FlexBoxStyler) as T,
+    StackBoxStyler s =>
+      _variantSwitch(s, name, variantStyler as StackBoxStyler) as T,
+    ImageStyler s =>
+      _variantSwitch(s, name, variantStyler as ImageStyler) as T,
+    _ => styler,
+  };
 }
 
-BoxStyler _boxVariant(BoxStyler s, String name, BoxStyler v) => switch (name) {
+/// Single variant name → method dispatch.
+///
+/// Works for any styler type because all Mix stylers expose the same
+/// variant methods (onHovered, onDark, etc.) via VariantStyleMixin and
+/// WidgetStateVariantMixin. Dart's type system requires a concrete type
+/// at the call site, so callers must cast before calling.
+S _variantSwitch<S>(dynamic s, String name, dynamic v) => switch (name) {
       'hover' || 'hovered' => s.onHovered(v),
       'press' || 'pressed' => s.onPressed(v),
       'focus' || 'focused' => s.onFocused(v),
@@ -387,53 +382,7 @@ BoxStyler _boxVariant(BoxStyler s, String name, BoxStyler v) => switch (name) {
       'tablet' => s.onTablet(v),
       'desktop' => s.onDesktop(v),
       _ => s,
-    };
-
-TextStyler _textVariant(TextStyler s, String name, TextStyler v) =>
-    switch (name) {
-      'hover' || 'hovered' => s.onHovered(v),
-      'press' || 'pressed' => s.onPressed(v),
-      'focus' || 'focused' => s.onFocused(v),
-      'disabled' => s.onDisabled(v),
-      'enabled' => s.onEnabled(v),
-      'dark' => s.onDark(v),
-      'light' => s.onLight(v),
-      'mobile' => s.onMobile(v),
-      'tablet' => s.onTablet(v),
-      'desktop' => s.onDesktop(v),
-      _ => s,
-    };
-
-FlexBoxStyler _flexVariant(FlexBoxStyler s, String name, FlexBoxStyler v) =>
-    switch (name) {
-      'hover' || 'hovered' => s.onHovered(v),
-      'press' || 'pressed' => s.onPressed(v),
-      'focus' || 'focused' => s.onFocused(v),
-      'disabled' => s.onDisabled(v),
-      'enabled' => s.onEnabled(v),
-      'dark' => s.onDark(v),
-      'light' => s.onLight(v),
-      'mobile' => s.onMobile(v),
-      'tablet' => s.onTablet(v),
-      'desktop' => s.onDesktop(v),
-      _ => s,
-    };
-
-StackBoxStyler _stackVariant(
-        StackBoxStyler s, String name, StackBoxStyler v) =>
-    switch (name) {
-      'hover' || 'hovered' => s.onHovered(v),
-      'press' || 'pressed' => s.onPressed(v),
-      'focus' || 'focused' => s.onFocused(v),
-      'disabled' => s.onDisabled(v),
-      'enabled' => s.onEnabled(v),
-      'dark' => s.onDark(v),
-      'light' => s.onLight(v),
-      'mobile' => s.onMobile(v),
-      'tablet' => s.onTablet(v),
-      'desktop' => s.onDesktop(v),
-      _ => s,
-    };
+    } as S;
 
 /// Emit a diagnostic for an unknown style property and return styler unchanged.
 T skipUnknown<T>(T styler, String property, RenderContext ctx) {
@@ -493,7 +442,7 @@ Color? _parseColor(dynamic resolved) {
   return null;
 }
 
-double _toDouble(dynamic v) {
+double toDouble(dynamic v) {
   if (v is double) return v;
   if (v is num) return v.toDouble();
   return 0.0;

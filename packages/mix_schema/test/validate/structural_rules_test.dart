@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix_schema/mix_schema.dart';
+import 'package:mix_schema/src/validate/structural_rules.dart';
 
 void main() {
   const rules = StructuralRules();

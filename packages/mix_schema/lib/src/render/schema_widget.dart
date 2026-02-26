@@ -27,10 +27,14 @@ class SchemaWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final engine = SchemaScope.engineOf(context);
-    final validation = engine.validate(schema, trust: trust);
 
-    if (!validation.isValid && onError != null) {
-      return onError!(validation.diagnostics);
+    // Engine.build() auto-validates. If an error callback is provided,
+    // we pre-validate to show errors instead of throwing.
+    if (onError != null) {
+      final validation = engine.validate(schema, trust: trust);
+      if (!validation.isValid) {
+        return onError!(validation.diagnostics);
+      }
     }
 
     return engine.build(schema, onEvent: onEvent);

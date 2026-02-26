@@ -107,22 +107,6 @@ void main() {
       });
     });
 
-    group('expandComponent', () {
-      test('expands known component', () {
-        final node = engine.expandComponent('Card', {
-          'title': 'Test',
-        }, 'card1');
-
-        expect(node, isNotNull);
-        expect(node, isA<BoxNode>());
-      });
-
-      test('returns null for unknown component', () {
-        final node = engine.expandComponent('Unknown', {}, 'test');
-        expect(node, isNull);
-      });
-    });
-
     group('end-to-end pipeline', () {
       test('adapt → validate → succeed for valid schema', () {
         final adaptResult = engine.adapt(

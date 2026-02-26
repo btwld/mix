@@ -41,8 +41,8 @@ class ImageHandler extends NodeHandler<ImageNode> {
       if (resolved == null) continue;
 
       styler = switch (entry.key) {
-        'width' => styler.width(_toDouble(resolved)),
-        'height' => styler.height(_toDouble(resolved)),
+        'width' => styler.width(toDouble(resolved)),
+        'height' => styler.height(toDouble(resolved)),
         'fit' => styler.fit(_parseBoxFit(resolved as String)),
         _ => skipUnknown(styler, entry.key, ctx),
       };
@@ -60,10 +60,4 @@ class ImageHandler extends NodeHandler<ImageNode> {
         'scaleDown' => BoxFit.scaleDown,
         _ => BoxFit.contain,
       };
-}
-
-double _toDouble(dynamic v) {
-  if (v is double) return v;
-  if (v is num) return v.toDouble();
-  return 0.0;
 }

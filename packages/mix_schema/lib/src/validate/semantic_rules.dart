@@ -8,6 +8,10 @@ import 'diagnostics.dart';
 /// - PressableNode must have a semantic label
 /// - ImageNode should have alt or semantic label (warning)
 /// - Live regions must specify mode if present
+///
+/// **Note**: Validation model is v0.1 scope. Live-region enforcement
+/// (blocking rendering on missing semantics) is deferred to Phase 2
+/// per freeze §10 Step 4.
 class SemanticRules {
   const SemanticRules();
 

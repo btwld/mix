@@ -6,47 +6,32 @@
 /// ```
 library mix_schema;
 
-// AST
+// AST — public types consumers create and inspect
 export 'src/ast/schema_node.dart';
 export 'src/ast/schema_semantics.dart';
 export 'src/ast/schema_values.dart';
 export 'src/ast/ui_schema_root.dart';
 
-// Adapters
+// Adapters — public: consumers may implement custom adapters
 export 'src/adapters/a2ui_v08_adapter.dart';
 export 'src/adapters/a2ui_v09_adapter.dart';
 export 'src/adapters/wire_adapter.dart';
 
-// Validation
-export 'src/validate/default_validator.dart';
+// Validation — public interface + result types only
 export 'src/validate/diagnostics.dart';
 export 'src/validate/schema_validator.dart';
-export 'src/validate/semantic_rules.dart';
-export 'src/validate/structural_rules.dart';
-export 'src/validate/trust_rules.dart';
 
-// Trust
-export 'src/trust/capability_matrix.dart';
+// Trust — trust level enum
 export 'src/trust/schema_trust.dart';
 
-// Events & Actions
+// Events & Actions — public types for event handling
 export 'src/events/schema_action.dart';
 export 'src/events/schema_event.dart';
 
-// Render
-export 'src/render/node_handler.dart';
-export 'src/render/render_context.dart';
-export 'src/render/schema_data_context.dart';
-export 'src/render/schema_registry.dart';
+// Render — consumer-facing widgets only
 export 'src/render/schema_renderer.dart';
 export 'src/render/schema_scope.dart';
 export 'src/render/schema_widget.dart';
 
-// Tokens
-export 'src/tokens/schema_token_resolver.dart';
-
-// Components
-export 'src/components/component_registry.dart';
-
-// Engine (public API facade)
+// Engine — public API facade
 export 'src/engine.dart';

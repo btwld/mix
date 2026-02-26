@@ -9,6 +9,9 @@ import '../render_context.dart';
 ///
 /// Uses Flutter input widgets with Mix-styled containers. No Mix input
 /// spec exists, so we use Flutter widgets directly per freeze §5.5.
+///
+/// **Experimental**: Included ahead of Phase 4 schedule in executable plan.
+/// API may change as input handling patterns evolve.
 class InputHandler extends NodeHandler<InputNode> {
   const InputHandler();
 

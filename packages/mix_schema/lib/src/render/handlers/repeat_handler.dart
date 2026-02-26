@@ -9,6 +9,9 @@ import '../schema_data_context.dart';
 ///
 /// Control node — iterates data and renders template per item.
 /// Creates a scoped SchemaDataContext for each iteration.
+///
+/// **Experimental**: Included ahead of Phase 2 schedule (freeze §10 Step 4).
+/// API may change when streaming/patch support is added.
 class RepeatHandler extends NodeHandler<RepeatNode> {
   const RepeatHandler();
 
