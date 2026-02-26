@@ -6,71 +6,169 @@ import { Callout } from "nextra/components";
 
 # mix_schema
 
-`mix_schema` bridges AI protocol payloads and Mix-powered Flutter UI through a deterministic, validated rendering pipeline.
+`mix_schema` connects AI agent protocols to your Mix design system so that AI-generated UI renders with the same brand quality as hand-crafted UI.
 
-## Why this exists
+## The problem: every AI UI looks the same
 
-AI-generated UI is powerful but unstable when raw payloads are rendered directly. `mix_schema` adds structure, trust boundaries, and design-system consistency.
+An AI agent sends structured payloads describing *what* to render — a card, a heading, a button. Without a design system, those payloads produce generic Material widgets. Every app using the same protocol renders identical output. No brand. No differentiation.
 
-## Core benefits
+```dart
+// What the agent sends
+{ "type": "Card", "children": [
+    { "type": "Text", "text": "Meeting Notes", "usageHint": "h2" },
+    { "type": "Button", "label": "Review", "variant": "primary" }
+]}
 
-1. Consistent output through a canonical AST.
-2. Protocol change isolation through adapter boundaries.
-3. Safer execution through trust and action gating.
-4. Design fidelity through Mix tokens, variants, and modifiers.
-5. Better debugging through deterministic diagnostics.
-
-## Architecture
-
-```mermaid
-flowchart LR
-  A[Agent Protocol Payload] --> B[Wire Adapter]
-  B --> C[Canonical AST<br/>UiSchemaRoot]
-  C --> D[Schema Validator]
-  D --> E[Trust Policy Gate]
-  E --> F[Schema Renderer]
-  F --> G[Mix Widgets]
-  G --> H[Branded Flutter UI]
+// What renders: default Material. No brand. No design system.
+Card(
+  child: Column(children: [
+    Text('Meeting Notes', style: Theme.of(context).textTheme.headlineSmall),
+    FilledButton(onPressed: () {}, child: Text('Review')),
+  ]),
+)
 ```
 
-## Runtime flow
+The agent tells you **what** to show. Nobody tells it **how** things should look.
 
-```mermaid
-sequenceDiagram
-  participant Agent
-  participant Adapter
-  participant Validator
-  participant Trust
-  participant Renderer
-  participant App
+## The gap: two worlds, no bridge
 
-  Agent->>Adapter: Send UI payload
-  Adapter->>Validator: Map payload to AST
-  Validator->>Trust: Evaluate structure + action risk
-  alt Valid and permitted
-    Trust->>Renderer: Pass AST
-    Renderer->>App: Build widget tree
-    App-->>Agent: Emit UI events
-  else Invalid or blocked
-    Trust-->>Agent: Return diagnostics / blocked actions
-  end
+Flutter has two mature stacks that operate independently:
+
+```
+ AGENT PROTOCOLS                    DESIGN SYSTEMS
+ ──────────────────                 ──────────────────
+ A2UI  /  AG-UI                     Mix  /  Material Tokens
+ GenUI SDK                          ThemeExtensions
+
+ + Component structure              + Design tokens
+ + Data binding                     + Responsive variants
+ + Agent communication              + Animation pipeline
+ + Event routing                    + Brand consistency
+
+ - No tokens                        - No schema input
+ - No styling                       - No agent awareness
+ - No responsive                    - No wire adapters
+ - No animation                     - No trust gating
 ```
 
-## Trust model
+Agent protocols know *what* to render but have zero styling capability. Design systems know *how* things look but have no way to accept structured input from an agent. The gap between these two stacks is where `mix_schema` operates.
+
+## One pipeline
+
+Mix already provides a complete resolution pipeline: `Styler → Spec → Widget`. Developer-authored code enters this pipeline through stylers. `mix_schema` feeds AI payloads into the **same pipeline** through adapters.
+
+```
+ Developer Code ──────────────> Styler ──> Spec ──> Widget ──> Branded UI
+                                  ^
+ Agent Payload ──> Adapter ──> Styler +    (same from here on)
+```
+
+Both paths resolve through the same token system, the same variants, and the same widget builders. The output is indistinguishable.
+
+```dart
+// What a developer writes today
+final card = BoxStyler()
+    .color($surface())
+    .borderRounded($radius())
+    .paddingAll($spacing())
+    .onDark(BoxStyler.color($surfaceDark()));
+
+Box(style: card, child: content);
+```
+
+```dart
+// What mix_schema generates from the same agent payload
+Widget handleBox(SchemaNode node, RenderContext ctx) {
+  final style = BoxStyler()
+      .color(resolveToken(node.props['color'], ctx))
+      .borderRounded(resolveToken(node.props['radius'], ctx))
+      .paddingAll(resolveToken(node.props['padding'], ctx));
+
+  return Box(style: style, child: renderChildren(node, ctx));
+}
+// Same BoxStyler. Same token resolution. Same pipeline.
+```
+
+## Brand safety through tokens
 
 <Callout type="info">
-  `mix_schema` treats validation and action policies as first-class runtime contracts, not optional checks.
+  Agents send token **references**, not raw values. Your `MixScope` resolves those references to your brand's actual colors, typography, and spacing. The agent never has direct access to rendering values.
 </Callout>
 
-Risk policy example:
+```dart
+// 1. Define your brand tokens
+final $primary = ColorToken('brand.primary');
+final $surface = ColorToken('brand.surface');
+final $heading = TextStyleToken('brand.heading');
 
-- Low-risk actions: execute directly.
-- Medium-risk actions: propose before execute.
-- High-risk actions: blocked or explicit approval required.
+// 2. Provide values at app root
+MixScope(
+  colors: {
+    $primary: Color(0xFF6750A4),
+    $surface: Color(0xFFF7F2FA),
+  },
+  textStyles: {
+    $heading: TextStyle(fontFamily: 'Acme', fontSize: 24),
+  },
+  child: MyApp(),
+)
+
+// 3. Agent sends token references, not raw values
+{ "color": { "type": "color", "name": "brand.primary" } }
+
+// 4. mix_schema resolves: $primary() → your brand color
+//    Unknown tokens → validation diagnostic, not a crash
+```
+
+The brand stays consistent because the agent can only *reference* tokens your design system defines. It cannot inject arbitrary colors, fonts, or sizes.
+
+## What this unlocks
+
+Because AI-generated UI resolves through the full Mix pipeline, it automatically inherits every capability Mix provides — without the agent knowing about any of it:
+
+```dart
+final cardStyle = BoxStyler()
+    .color($surface())
+    .borderRounded($radius())
+    .paddingAll($spacing())
+
+    // Responsive — breakpoint variants
+    .onMobile(BoxStyler.paddingAll(8).borderRounded(8))
+    .onDesktop(BoxStyler.paddingAll(24).borderRounded(16))
+
+    // Dark mode — context variants
+    .onDark(BoxStyler.color($surfaceDark()))
+
+    // Interaction states
+    .onPressed(BoxStyler.color($primaryPressed()).scale(0.98))
+    .onHovered(BoxStyler.color($primaryHovered()))
+
+    // Implicit animation
+    .animate(duration: Duration(milliseconds: 200), curve: Curves.easeOut);
+```
+
+The developer controls all of this through tokens and variants. The agent controls none of it. The user sees branded, responsive, animated UI that looks identical to hand-crafted UI.
+
+## Protocol-agnostic by design
+
+`mix_schema` uses a wire adapter layer to convert protocol payloads into a canonical AST (`UiSchemaRoot`). When protocols change — A2UI today, AG-UI tomorrow — only the adapter changes. The rest of the pipeline stays the same.
+
+The validation and trust layers sit between the adapter and the renderer:
+
+- **Schema validator** checks structural correctness of the AST
+- **Trust policy gate** evaluates action risk before rendering:
+  - Low-risk actions execute directly
+  - Medium-risk actions require confirmation
+  - High-risk actions are blocked
+
+<Callout type="warning">
+  `mix_schema` treats trust policies as runtime contracts, not optional checks. Invalid or blocked payloads produce structured diagnostics instead of crashes.
+</Callout>
 
 ## Related docs
 
-- [mix_tailwinds](/documentation/ecosystem/mix-tailwinds)
-- [Design Tokens](/documentation/guides/design-token)
-- [Dynamic Styling](/documentation/guides/dynamic-styling)
-- [Introduction](/documentation/overview/introduction)
+- [Design Tokens](/documentation/guides/design-token) — How `MixScope` and tokens work
+- [Dynamic Styling](/documentation/guides/dynamic-styling) — Variants, context-aware styling
+- [Animations](/documentation/guides/animations) — Implicit, Phase, and Keyframe animations
+- [mix_tailwinds](/documentation/ecosystem/mix-tailwinds) — Another adapter that proves the "one pipeline" pattern
+- [Introduction](/documentation/overview/introduction) — Mix core concepts
