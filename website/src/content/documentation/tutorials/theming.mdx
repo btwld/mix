@@ -5,21 +5,21 @@ description: "Build and apply token-driven Mix themes with MixScope."
 
 # Theming
 
-## Introduction
+**Prerequisites:** Familiarity with [Styling with Mix](/documentation/guides/styling) and [Design Tokens](/documentation/guides/design-token).
 
-Mix offers a robust theming system that enables you to style your application consistently and efficiently, providing both scalability and flexibility. The theming system is built on the concept of design tokens, which are key-value pairs defining visual properties such as colors, text styles, spacing, and border radii. These tokens can be uniformly applied across all your widgets, ensuring a consistent aesthetic throughout your application. You can easily alter the appearance of your application by updating the design tokens, without modifying individual widget implementations.
+Mix's theming system uses design tokens — key-value pairs for colors, text styles, spacing, and border radii — to style your app consistently. Provide token values through `MixScope`, and all descendant widgets resolve those values at build time. Switch themes by swapping the token maps.
 
 ## Getting Started
 
-In this guide, we will create a single-screen, multi-theme application to demonstrate the power of Mix's theming system. The final result will look like this:
+This tutorial builds a single-screen, multi-theme application. The final result looks like this:
 
-![images](./images/two-themed-app.png)
+![Side-by-side comparison of light blue and dark purple themed profile screens](./images/two-themed-app.png)
 
-As depicted in the image above, we have two different themes for the same screen, each using distinct colors, text styles, fonts, and border radii. The left one employs a light theme with blue as the primary color, hence it will be referred to as `LightBlueTheme`. The right one utilizes a dark theme with purple as the primary color, and will therefore be named `DarkPurpleTheme`.
+The image shows two themes for the same screen, each using distinct colors, text styles, fonts, and border radii. The left uses a light theme with blue as the primary color (`LightBlueTheme`). The right uses a dark theme with purple (`DarkPurpleTheme`).
 
 ## Setting Up MixScope
 
-Before we start styling our application with these themes, the initial step is to configure `MixScope`. `MixScope` acts as an ancestor widget that passes down the defined tokens to all its child widgets, ensuring they can access and utilize the same styling information. Properly setting up MixScope is crucial to harnessing the full potential of the Mix package for your application's theming needs.
+`MixScope` provides token values to all descendant widgets. Wrap your root widget with `MixScope` and pass token value maps through named parameters.
 
 Here's how you can initialize and implement `MixScope`:
 
@@ -351,7 +351,7 @@ Key points about this implementation:
 
 Now that everything is set up, you can wrap your app with `MixScope` to provide the theme values.
 
-![images](./images/light-themed-app.png)
+![Profile screen with light blue theme applied](./images/light-themed-app.png)
 
 ## Switching Between Themes
 

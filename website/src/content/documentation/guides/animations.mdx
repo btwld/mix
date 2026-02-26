@@ -1,5 +1,4 @@
 ---
-id: animations
 title: "Animations"
 description: "Build implicit, phase, and keyframe animations with Mix styling APIs."
 ---
@@ -34,6 +33,9 @@ When something in your UI changes—a color on hover, a size on tap, or switchin
 In this example a square grows each time you tap it.
 
 ```dart
+import 'package:flutter/material.dart';
+import 'package:mix/mix.dart';
+
 int _counter = 2;
 
 final box = BoxStyler()
@@ -210,3 +212,8 @@ For a more advanced keyframe example (e.g. multi-track heart with color, scale, 
 ## Conclusion
 
 Start with **implicit** when you just want values to transition smoothly. Move to **phase** when you have a clear sequence of steps that return to the start. Reach for **keyframe** when you need a full timeline with multiple properties and precise control.
+
+## Related
+
+- [Dynamic Styling](/documentation/guides/dynamic-styling) — variant-triggered style changes
+- [Styling with Mix](/documentation/guides/styling) — fluent Styler API basics

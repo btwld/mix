@@ -176,24 +176,22 @@ Key methods:
 
 ### Step 3: Use the Custom Modifier
 
-To use your custom modifier in a style, use the `.wrap()` method:
+Pass an instance of your `ModifierMix` class to `.wrap()`:
 
 ```dart
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
+// Pass the custom ModifierMix instance to .wrap()
 final style = BoxStyler()
     .color(Colors.red)
     .size(100, 100)
-    .wrap(.opacity(0.4));
-
-// With tokens
-final $opacityToken = DoubleToken('custom.opacity');
-
-final tokenStyle = BoxStyler()
-    .color(Colors.blue)
-    .wrap(.opacity($opacityToken()));
+    .wrap(OpacityModifierMix(opacity: 0.4));
 ```
+
+<Callout type="info">
+  Mix ships with built-in modifier shorthands like `.wrap(.opacity(0.4))`. When you create a custom modifier, you use `.wrap(YourModifierMix(...))` with the full class name instead.
+</Callout>
 
 ## Best Practices
 
@@ -201,3 +199,9 @@ final tokenStyle = BoxStyler()
 - Use styler methods (not modifiers) for colors, borders, shadows
 - Avoid deeply nested modifier chains
 - Implement `lerp` properly for smooth animations
+
+## Related
+
+- [Styling with Mix](/documentation/guides/styling) — fluent Styler API basics
+- [Box](/documentation/widgets/box) — `BoxStyler` API reference
+- [FlexBox](/documentation/widgets/flexbox) — `FlexBoxStyler` API reference

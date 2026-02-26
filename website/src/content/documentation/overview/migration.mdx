@@ -36,7 +36,7 @@ The biggest change is moving from the `Style()` constructor with utility prefixe
 The `$box`, `$text`, `$icon`, `$flex`, `$stack`, `$image`, `$flexbox`, and `$stackbox` utility prefixes are deprecated. Use the corresponding Styler class instead:
 
 ```dart
-// v1.x
+// DEPRECATED - v1.x
 final style = Style(
   $box.color.blue(),
   $box.padding(16),
@@ -64,7 +64,7 @@ The `$on` namespace is replaced with method calls directly on the Styler:
 | `$on.light(...)` | `.onLight(...)` |
 
 ```dart
-// v1.x
+// DEPRECATED - v1.x
 final style = Style(
   $box.color.blue(),
   $on.hover($box.color.red()),
@@ -84,7 +84,7 @@ The `$with` namespace is replaced with `.wrap()` method using ModifierMix classe
 
 | v1.x Pattern | v2.0 Pattern |
 |--------------|--------------|
-| `$with.opacity(0.5)` | `.wrap(OpacityModifierMix(opacity: 0.5))` |
+| `$with.opacity(0.5)` | `.wrap(.opacity(0.5))` |
 | `$with.scale(2)` | `.scale(2)` (use transform methods) |
 | `$with.rotate(45)` | `.rotate(45)` (use transform methods) |
 
@@ -146,7 +146,7 @@ BoxStyler().color(primaryColor())
 1. **Start with imports**: Replace `Style(` with the appropriate Styler class
 2. **Update utility calls**: Convert `$box.property()` to `.property()` method chains
 3. **Update variants**: Replace `$on.hover()` with `.onHovered()`
-4. **Update modifiers**: Replace `$with.opacity()` with `.wrap(OpacityModifierMix(...))`
+4. **Update modifiers**: Replace `$with.opacity()` with `.wrap(.opacity(...))`
 5. **Update theming**: Replace `MixTheme` with `MixScope`
 
 ---
@@ -169,8 +169,8 @@ The `Mix` class is now `Style`. Several methods in the renamed class, including 
 | before 1.0.0 | 1.0.0+ |
 | ------- | ------ |
 | `Mix`   | `Style` |
-| `Mix.withVariant` | Use `.variant()` on Styler classes |
-| `Mix.withManyVariants` | Use multiple `.variant()` calls |
+| `Mix.withVariant` | `Style.withVariant()` |
+| `Mix.withManyVariants` | `Style.withManyVariants()` |
 | `withMaybeVariant` or `withMaybeVariants` | removed |
 
 
@@ -261,13 +261,13 @@ In version 1.0.0, the `$` symbol was introduced to access the API from the Mix p
 <Callout type="warning">
   **Deprecated**: In Mix 2.0, use the direct methods on Styler classes instead:
   - `$on.hover()` → `.onHovered()`
-  - `$with.opacity()` → `.wrap(OpacityModifierMix())`
+  - `$with.opacity()` → `.wrap(.opacity())`
 </Callout>
 
 Two namespaces were added in 1.0.0: `$on` and `$with`. The `$on` namespace was used to access ContextVariants, and `$with` was used for modifiers.
 
 ```dart
-// v1.x syntax (deprecated)
+// DEPRECATED - v1.x syntax
 PressableBox(
   onPress: () {},
   style: Style(
@@ -297,7 +297,7 @@ PressableBox(
         .height(200)
         .color(Colors.blue)
         .scale(2)
-        .wrap(OpacityModifierMix(opacity: 0.5))
+        .wrap(.opacity(0.5))
         .onHovered(.color(Colors.red))
         .onPressed(.color(Colors.green)),
   ),

@@ -1,6 +1,6 @@
 ---
 title: "Box"
-description: "Reference for the Box widget and BoxStyler API in Mix."
+description: "Style Flutter containers with BoxStyler — decoration, padding, margins, transforms, constraints, and interaction variants in Mix."
 ---
 
 # Box
@@ -132,7 +132,7 @@ Box(style: style, child: Text('Hello Mix'))
 | `gradient` | Sets gradient with any GradientMix type |
 | `shadow` | Sets single shadow |
 | `shadows` | Sets multiple shadows |
-| `elevation` | Sets elevation shadow |
+| `elevation` | Sets Material Design elevation shadow. Values: `one`, `two`, `three`, `four`, `six`, `eight`, `nine`, `twelve`, `sixteen`, `twentyFour` |
 | `image` | Sets image decoration |
 | `shape` | Sets box shape |
 | `shapeCircle` | Sets a circular shape (CircleBorder) |
@@ -231,3 +231,9 @@ Box(style: style, child: Text('Hello Mix'))
 | `onFocused` | Creates a variant for focused state (requires `PressableBox` or `Pressable` wrapper) |
 | `onDisabled` | Creates a variant for disabled state |
 | `onEnabled` | Creates a variant for enabled state (opposite of disabled) |
+
+## Related
+
+- [FlexBox](/documentation/widgets/flexbox) — flex layout with box styling
+- [Styling with Mix](/documentation/guides/styling) — fluent Styler API patterns
+- [Dynamic Styling](/documentation/guides/dynamic-styling) — variants for hover, press, dark mode

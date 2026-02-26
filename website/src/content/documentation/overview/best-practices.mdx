@@ -8,14 +8,13 @@ import { Callout,FileTree } from 'nextra/components';
 
 # Best Practices
 
-As you start to build your app with Mix, you'll want to follow some best practices to ensure your code aligns with the framework's conventions.
+Follow these practices to keep your Mix code consistent and maintainable as your app grows.
 
 <Callout type="info">
-  Guidelines in this guide are crafted for scalability and maintainability in
-  Mix, and will evolve with community insights.
+  These guidelines target scalability and maintainability in Mix, and will evolve with community feedback.
 </Callout>
 
-To get started, we'll create a button based on Shadcn's [Button](https://ui.shadcn.com/docs/components/button) component. We'll call it `CustomButton`.
+This walkthrough creates a button based on Shadcn's [Button](https://ui.shadcn.com/docs/components/button) component, called `CustomButton`.
 
 ## File Structure
 
@@ -33,13 +32,13 @@ A well-organized file structure is crucial for maintaining a clean and scalable 
 
 - `button.dart` - This file will contain the CustomButton class and define the component's structure.
 
-- `button.variant.dart` - Here, we'll define the CustomButtonVariant class and all its Variant instances.
+- `button.variant.dart` - Contains the CustomButtonVariant class and all its Variant instances.
 
 - `button.style.dart` - In this file, the CustomButtonStyle class will be created, housing all Style instances related to the button.
 
 ## Widget Structure
 
-It's recommended to use Mix's styled widgets for component creation. These widgets are key in structuring and styling your component. For example, the structure of your Button might look like this:
+Use Mix's styled widgets for component creation. These widgets are key in structuring and styling your component. For example, the structure of your Button might look like this:
 
 ```dart
 class CustomButton extends StatelessWidget {
@@ -64,7 +63,7 @@ class CustomButton extends StatelessWidget {
 }
 ```
 
-This example utilizes Mix's styled widgets: `Pressable`, `Box`, and `StyledText`. Explore the full list of styled widgets [here](/documentation/widgets/stylewidgets).
+This example uses Mix's styled widgets: `Pressable`, `Box`, and `StyledText`. See the full list in the [StyleWidgets reference](/documentation/widgets/stylewidgets).
 
 ## Defining Variants
 
@@ -124,7 +123,7 @@ class CustomButton extends StatelessWidget {
 
 ## Styling the component
 
-In the `CustomButtonStyle` class, we carefully define the styles for each variant associated with the `CustomButton`. This approach is central to ensuring that the button not only functions well but also aligns with the aesthetic and usability standards of our design system.
+The `CustomButtonStyle` class defines styles for each variant. Each method returns a Styler with the appropriate visual properties based on the active type and size.
 
 ```dart
 class CustomButtonStyle {
@@ -211,4 +210,4 @@ class CustomButton extends StatelessWidget {
 }
 ```
 
-Congratulations! You are now ready to use your `CustomButton` component, fully aligned with the Mix framework's conventions.
+The `CustomButton` component is now ready to use, following Mix's recommended structure and conventions.

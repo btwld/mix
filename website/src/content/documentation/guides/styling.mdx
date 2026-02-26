@@ -5,9 +5,7 @@ description: "Learn how to define, compose, and apply styles with Mix Styler cla
 
 # Styling with Mix
 
-Mix enhances Flutter development with a functional styling approach, focusing on separating visual semantics from business logic for improved readability and maintainability. Its emphasis on concise style declarations simplifies the workflow, allowing the creation of complex styles from simple building blocks.
-
-This method fosters modularity, reusability, and flexibility in styling, streamlining the process of defining and applying styles to widgets.
+Mix separates visual style definitions from widget structure. You define styles using Styler classes, compose them through method chaining, and apply them to widgets — keeping presentation logic out of your widget tree.
 
 ## Understanding Style and Styler
 
@@ -50,6 +48,44 @@ final soft = base.color(Colors.blue.shade100);
 
 **Order Matters**: The sequence in which you chain styling attributes directly affects the final result. Attributes are merged in order, so later attributes will override earlier ones when there are conflicts.
 
+## Default Constructor vs `.create()`
+
+Styler classes have two constructors:
+
+- **Default constructor** (`BoxStyler()`) — use for fluent chaining with concrete values
+- **`.create()` constructor** (`BoxStyler.create(...)`) — use when passing `Prop<T>` values (tokens, directives)
+
+```dart
+// Default: concrete values via fluent API
+final style = BoxStyler()
+    .color(Colors.blue)
+    .paddingAll(16);
+
+// .create(): Prop<T> values for tokens and directives
+final $baseSize = DoubleToken('base.size');
+final style = BoxStyler.create(
+  width: Prop.token($baseSize).multiply(2),
+);
+```
+
+## `style` vs `styleSpec`
+
+All Mix widgets accept both `style` and `styleSpec`:
+
+- **`style`** — pass a Styler instance (e.g., `BoxStyler()`). This is the standard approach.
+- **`styleSpec`** — pass a pre-resolved `StyleSpec<T>`. Use only with `StyleBuilder` when you need manual state control.
+
+```dart
+// Standard usage
+Box(style: BoxStyler().color(Colors.blue))
+
+// With StyleBuilder for manual state control
+StyleBuilder(
+  style: myStyle,
+  builder: (context, spec) => Box(styleSpec: StyleSpec(spec: spec)),
+)
+```
+
 ## Dynamic and Context-Aware Styling
 
 Mix styles can adapt to user interactions and context changes using variants. This enables responsive designs that react to hover states, theme changes, and other contextual factors:
@@ -60,3 +96,9 @@ final button = BoxStyler()
   .onHovered(.color(Colors.blue.shade700))
   .onDark(.color(Colors.blue.shade200));
 ```
+
+## Related
+
+- [Dynamic Styling](/documentation/guides/dynamic-styling) — variants for hover, press, dark mode
+- [Design Tokens](/documentation/guides/design-token) — centralized style values with `MixScope`
+- [Utility-First Styling](/documentation/overview/utility-first) — Mix's styling philosophy

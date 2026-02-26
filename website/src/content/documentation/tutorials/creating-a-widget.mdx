@@ -5,15 +5,17 @@ description: "Build a reusable button component with Mix specs, stylers, and var
 
 # Building a Design System Widget
 
+**Prerequisites:** Familiarity with [Styling with Mix](/documentation/guides/styling) and [Dynamic Styling](/documentation/guides/dynamic-styling).
+
 This guide walks through creating a design system button with Mix, demonstrating Specs, Stylers, variants, and state handling — using **annotations and code generation** to eliminate boilerplate.
 
-![Button Example](./images/button-example.png)
+![Four button variants: filled, outline, elevated, and link styles](./images/button-example.png)
 
 ## Component Overview
 
 ### Button Variants
 
-![Button Variants](./images/button-variants.png)
+![Button variants showing filled, outline, elevated, and link styles side by side](./images/button-variants.png)
 
 - **Filled**: Solid background color
 - **Outline**: Transparent background with visible border
@@ -22,7 +24,7 @@ This guide walks through creating a design system button with Mix, demonstrating
 
 ### Button States
 
-![Button States](./images/button-states.png)
+![Button states showing normal, hover, pressed, and disabled appearances](./images/button-states.png)
 
 - **Normal**: Default state
 - **Hover**: Mouse over or keyboard focus
@@ -410,7 +412,7 @@ final class LinkButton extends CustomButton {
 
 ## Results
 
-![Button Demo](./images/button-demo.png)
+![Demo app showing all button variants and a disabled button](./images/button-demo.png)
 
 ```dart
 // Main App

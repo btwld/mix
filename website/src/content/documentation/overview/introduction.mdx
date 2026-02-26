@@ -4,6 +4,8 @@ og_image: introduction-og.png
 description: "Learn the core ideas behind Mix and how it separates style semantics from widget structure."
 ---
 
+# Introduction
+
 Mix is a styling system for Flutter that separates style definitions from widget structure. It provides a composable, type-safe way to define and apply styles.
 
 -  Compose, merge, and apply styles across widgets
@@ -79,20 +81,20 @@ Define reusable design tokens for colors, spacing, radii, and more:
 final $primaryColor = ColorToken('primary');
 final $borderRadius = RadiusToken('borderRadius');
 
-final tokenDefinitions = <MixToken, Object>{
-  $primaryColor: Colors.blue,
-  $borderRadius: Radius.circular(8),
-};
-
 final tokenStyle = BoxStyler()
     .color($primaryColor())
     .width(100)
     .height(100)
     .borderRadius(.all($borderRadius()));
 
-// Set the tokens in the MixScope
+// Provide token values through MixScope
 MixScope(
-  tokens: tokenDefinitions,
+  colors: {
+    $primaryColor: Colors.blue,
+  },
+  radii: {
+    $borderRadius: Radius.circular(8),
+  },
   child: MyApp(),
 );
 ```

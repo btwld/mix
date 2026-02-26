@@ -5,7 +5,7 @@ description: "Manage hover, press, focus, and disabled states for Mix widgets."
 
 # Controlling Widget State
 
-In this tutorial, we'll explore how to manage manually widget states in Mix, including hover, pressed, and focused states. Mix provides multiple approaches to handle widget states, from simple automatic state management to advanced manual control using `WidgetStatesController`.
+This guide covers two approaches to managing widget states (hover, pressed, focused) in Mix: automatic state management and manual control with `WidgetStatesController`.
 
 ## Approach 1: Automatic State Management
 
@@ -34,7 +34,7 @@ In this example:
 - When hovered, the color changes to blue.
 - When pressed, the color changes to green.
 
-You do not need to wrap `Pressable` or do anything else for these states—they work out of the box.
+You do not need to wrap `Pressable` or do anything else for these states—they are tracked automatically.
 
 ---
 
@@ -161,6 +161,15 @@ GestureDetector(
   child: StyleBuilder(...),
 )
 ```
+
+## Automatic State Tracking Scope
+
+| State | Tracked automatically | Requires wrapper |
+|-------|----------------------|------------------|
+| `onHovered` | Yes — any `StyledWidget` | None |
+| `onPressed` | Yes — any `StyledWidget` | None |
+| `onFocused` | No | `Pressable` or `PressableBox` |
+| `onDisabled` | No | `Pressable` or `PressableBox` (with `enabled: false`) |
 
 ## When to Use Each Approach
 

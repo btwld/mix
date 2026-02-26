@@ -78,7 +78,7 @@ Mix provides several built-in token types for common styling needs:
 | `SpaceToken` | `double` | Spacing values (padding, margin) |
 | `DoubleToken` | `double` | Any numeric value |
 | `RadiusToken` | `Radius` | Border radii |
-| `TextStyleToken` | `TextStyle` | Typography styles |
+| `TextStyleToken` | `TextStyle` | Typography styles. Use `.mix()` to get a `TextStyleMixRef` for `TextStyler.style()` |
 | `BorderSideToken` | `BorderSide` | Border definitions |
 | `ShadowToken` | `List<Shadow>` | Text shadows |
 | `BoxShadowToken` | `List<BoxShadow>` | Box shadows |
@@ -154,6 +154,20 @@ final style = BoxStyler()
     .color($primary())
     .paddingAll($spacingMd());
 ```
+
+### TextStyleToken
+
+`TextStyleToken` requires an extra `.mix()` call to produce a `TextStyleMixRef` that `TextStyler.style()` accepts:
+
+```dart
+final $heading = TextStyleToken('heading');
+
+final textStyle = TextStyler()
+    .style($heading.mix())
+    .color($primary());
+```
+
+Other token types (e.g. `ColorToken`, `SpaceToken`, `RadiusToken`) resolve directly with `()` — only `TextStyleToken` needs `.mix()`.
 
 ## Creating Custom Tokens
 
@@ -297,3 +311,8 @@ Widget build(BuildContext context) {
 - Use descriptive, hierarchical names: `$colorPrimary`, `$spacingMd`
 - Group related tokens in separate files (`tokens/colors.dart`, `tokens/spacing.dart`)
 - Replace hardcoded values with semantic tokens
+
+## Related
+
+- [Styling with Mix](/documentation/guides/styling) — fluent Styler API patterns
+- [Theming](/documentation/tutorials/theming) — build multi-theme apps with tokens

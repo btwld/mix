@@ -13,7 +13,7 @@ A `ContextVariant` evaluates a condition at build time using the current `BuildC
 
 ## Creating a Basic Context Variant
 
-Let's create a context variant that responds to a custom `InheritedWidget`:
+Start by defining a custom `InheritedWidget`:
 
 ```dart
 class CustomInheritedWidget extends InheritedWidget {
@@ -43,11 +43,10 @@ BoxStyler()
     .color(Colors.red)
     .size(100, 100)
     .variant(
-      ContextVariant('custom_flag', (context) {
-        final flag = CustomInheritedWidget.of(context)?.flag ?? false;
-        return flag;
-      }),
-      BoxStyler().color(Colors.blue),
+      ContextVariant('custom_flag', (context) =>
+        CustomInheritedWidget.of(context)?.flag ?? false,
+      ),
+      .color(Colors.blue),
     );
 ```
 
@@ -65,10 +64,9 @@ extension WidgetStateVariantMixinX<T extends Style<S>, S extends Spec<S>>
     on WidgetStateVariantMixin<T, S> {
   T onCustomFlag(T style) {
     return variant(
-      ContextVariant('custom_flag', (context) {
-        final flag = CustomInheritedWidget.of(context)?.flag ?? false;
-        return flag;
-      }),
+      ContextVariant('custom_flag', (context) =>
+        CustomInheritedWidget.of(context)?.flag ?? false,
+      ),
       style,
     );
   }
@@ -81,9 +79,7 @@ Now you can use the extension method for a more readable API:
 BoxStyler()
     .color(Colors.red)
     .size(100, 100)
-    .onCustomFlag(
-      BoxStyler().color(Colors.blue),
-    );
+    .onCustomFlag(.color(Colors.blue));
 ```
 
 ## Complete Example
@@ -121,11 +117,10 @@ class Example extends StatelessWidget {
           .color(Colors.red)
           .size(100, 100)
           .variant(
-            ContextVariant('custom_flag', (context) {
-              final flag = CustomInheritedWidget.of(context)?.flag ?? false;
-              return flag;
-            }),
-            BoxStyler().color(Colors.blue),
+            ContextVariant('custom_flag', (context) =>
+              CustomInheritedWidget.of(context)?.flag ?? false,
+            ),
+            .color(Colors.blue),
           );
 
   @override
