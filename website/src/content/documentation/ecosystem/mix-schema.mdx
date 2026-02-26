@@ -22,17 +22,33 @@ AI-generated UI is powerful but unstable when raw payloads are rendered directly
 
 ## Architecture
 
+Mix already has a complete resolution pipeline that every developer uses: **Styler → Spec → Widget**. `mix_schema` feeds agent payloads into that same pipeline through an adapter layer. From the Styler onward, the path is identical.
+
 ```mermaid
-flowchart LR
-  Dev[Developer Code] --> Styler[Mix Styler]
-  Agent[Agent Payload] --> Adapter[Wire Adapter]
-  Adapter --> AST[Canonical AST]
-  AST --> Validate[Validate & Trust Gate]
-  Validate --> Styler
-  Styler --> Spec[Spec] --> Widget[Widget] --> UI[Branded UI]
+flowchart TD
+  subgraph inputs [" "]
+    direction LR
+    Dev["Developer Code"]
+    Agent["Agent Payload"]
+  end
+
+  Agent --> Adapter["Wire Adapter"]
+  Adapter --> AST["Canonical AST"]
+  AST --> Gate["Validate &\nTrust Gate"]
+
+  subgraph mix ["Mix Pipeline"]
+    direction LR
+    Styler["Styler"] --> Spec["Spec"] --> Widget["Widget"]
+  end
+
+  Dev --> mix
+  Gate --> mix
+  mix --> UI["Branded UI"]
 ```
 
-Both developer-authored and AI-generated UI converge into the same Mix pipeline. The output is indistinguishable.
+<Callout type="info">
+  The agent describes **what** to render. Mix decides **how** it looks. The user sees the same quality from both paths.
+</Callout>
 
 ## Runtime flow
 
@@ -44,10 +60,10 @@ sequenceDiagram
   participant App
 
   Agent->>mix_schema: UI payload
-  mix_schema->>mix_schema: Adapt → AST → Validate → Trust gate
-  alt Valid and permitted
-    mix_schema->>Mix: Resolve tokens & build styles
-    Mix->>App: Render widget tree
+  mix_schema->>mix_schema: Adapt → Validate → Trust gate
+  alt Permitted
+    mix_schema->>Mix: Resolve tokens & styles
+    Mix->>App: Widget tree
     App-->>Agent: UI events
   else Blocked
     mix_schema-->>Agent: Diagnostics
