@@ -93,8 +93,9 @@ class A2uiV08Adapter implements WireAdapter {
       );
     }
 
-    // Recursively normalize nodes
+    // Recursively normalize nodes (deep-copy to avoid mutating const maps)
     if (payload['root'] is Map<String, dynamic>) {
+      payload['root'] = _deepCopyMap(payload['root'] as Map<String, dynamic>);
       _normalizeNode(
           payload['root'] as Map<String, dynamic>, diagnostics, 'root');
     }
@@ -141,23 +142,40 @@ class A2uiV08Adapter implements WireAdapter {
       );
     }
 
-    // Recursively normalize child/children
+    // Recursively normalize child/children (deep-copy nested maps)
     if (node['child'] is Map<String, dynamic>) {
+      node['child'] = _deepCopyMap(node['child'] as Map<String, dynamic>);
       _normalizeNode(
           node['child'] as Map<String, dynamic>, diagnostics, '$path.child');
     }
     if (node['children'] is List) {
-      final children = node['children'] as List;
+      final children = List<dynamic>.from(node['children'] as List);
+      node['children'] = children;
       for (var i = 0; i < children.length; i++) {
         if (children[i] is Map<String, dynamic>) {
+          children[i] = _deepCopyMap(children[i] as Map<String, dynamic>);
           _normalizeNode(children[i] as Map<String, dynamic>, diagnostics,
               '$path.children[$i]');
         }
       }
     }
     if (node['template'] is Map<String, dynamic>) {
+      node['template'] =
+          _deepCopyMap(node['template'] as Map<String, dynamic>);
       _normalizeNode(node['template'] as Map<String, dynamic>, diagnostics,
           '$path.template');
     }
+  }
+
+  static Map<String, dynamic> _deepCopyMap(Map<String, dynamic> source) {
+    return source.map((key, value) {
+      if (value is Map<String, dynamic>) {
+        return MapEntry(key, _deepCopyMap(value));
+      }
+      if (value is List) {
+        return MapEntry(key, List<dynamic>.from(value));
+      }
+      return MapEntry(key, value);
+    });
   }
 }
