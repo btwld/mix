@@ -41,7 +41,8 @@ class _BlockAnimationState extends State<BlockAnimation> {
   @override
   Widget build(BuildContext context) {
     // Using BoxStyler - the recommended Mix 2.0 API
-    final style = BoxStyler.color(Colors.deepPurple)
+    final style = BoxStyler()
+        .color(Colors.deepPurple)
         .height(100)
         .width(100)
         .borderRounded(40)
@@ -69,11 +70,8 @@ class _BlockAnimationState extends State<BlockAnimation> {
           },
         );
 
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: () {
-        _isExpanded.value = !_isExpanded.value;
-      },
+    return Pressable(
+      onPress: () => _isExpanded.value = !_isExpanded.value,
       child: Box(style: style),
     );
   }

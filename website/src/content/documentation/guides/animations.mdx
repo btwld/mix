@@ -5,273 +5,215 @@ title: "Animations"
 
 # Animations
 
-Mix provides three main ways to animate your widgets, each suited to different levels of control and complexity:
+Mix gives you three ways to bring motion into your UI, depending on how much control you want:
 
-- **Implicit**: Simple property transitions that animate automatically when values change (state or variants).
-- **Phase**: Multi-step sequences that progress through defined phases, great for state machines.
-- **Keyframe**: Timeline-based animations with precise control over multiple properties and easing.
+**Implicit** — Easiest to use. When a value changes (state or a variant like hover), the style animates smoothly to the new value. No timeline to manage.
+**Phase** — For multi-step flows that go through distinct steps and then back (e.g. tap → compress → expand → rest). Think of it as a small state machine for animation.
+**Keyframe** — Full control. You define a timeline with tracks and keyframes, so multiple properties can change over time with precise easing.
+
+---
 
 ## Implicit Animations
 
-Implicit animations are the easiest way to animate style changes—Mix interpolates between old and new values automatically.
+When something in your UI changes—a color on hover, a size on tap, or switching to dark mode—you often want that change to feel smooth rather than instant. Implicit animations do exactly that: whenever a value flips from A to B, Mix interpolates between them so the transition feels natural.
 
-- **When to use**: Simple hover/press effect or any other variant/state transition.
-- **How it works**: Call `.animate(...)` on any `Style`/`Styler`. Works with state and variants (e.g. hover, press, dark mode).
+**How to use:** Add `.animate(AnimationConfig....)` to any `Style` or `Styler`. It works with regular state (e.g. `setState`) and with variants like `onHovered`, `onPressed`, and `onDark`.
 
-### Example: State-triggered
+### Case 1: State-triggered
 
-This example demonstrates an implicit animation in Mix. When the `appear` state changes, the box smoothly transitions its scale between 0.1 and 1 using the `.animate(...)` modifier. The `AnimationConfig.easeInOut(1.s)` sets the animation to use an ease-in-out curve over 1 second.
-
-```dart
-import 'package:flutter/material.dart';
-import 'package:mix/mix.dart';
-
-class ScaleAnimation extends StatefulWidget {
-  const ScaleAnimation({super.key});
-
-  @override
-  State<ScaleAnimation> createState() => _ScaleAnimationState();
-}
-
-class _ScaleAnimationState extends State<ScaleAnimation> {
-  bool appear = false;
-
-  @override
-  void initState() {
-    super.initState();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        appear = true;
-      });
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final style = BoxStyler
-        .color(Colors.black)
-        .height(100)
-        .width(100)
-        .borderRounded(10)
-        .scale(appear ? 1 : 0.1) // state-based
-        .animate(.easeInOut(1.s));
-
-    return Box(style: style);
-  }
-}
-```
-
-<FlutterPreview
-  previewId="anim-hover-scale"
-  height={200}
-/>
-
-### Example: Variant-triggered
-
-In the following example, the box smoothly grows in size and shifts its color from black to blue when you hover over it. Rather than toggling a state variable yourself, you can use variants like onHovered or onPressed to trigger these implicit animations directly in your style definitions.
+In this example a square grows each time you tap it.
 
 ```dart
-class HoverAnimation extends StatelessWidget {
-  const HoverAnimation({super.key});
+int _counter = 2;
 
-  @override
-  Widget build(BuildContext context) {
-    final style = BoxStyler
-        .color(Colors.black)
-        .height(100)
-        .width(100)
-        .borderRounded(10)
-        .scale(1)
-        .onHovered(
-          BoxStyler
-            .color(Colors.blue)
-            .scale(1.5),
-        )
-        .animate(.spring(800.ms));
+// Inside of the build method.
+final box = BoxStyler()
+    .color(Colors.deepPurple)
+    .size(_counter * 10, _counter * 10)
+    .animate(.spring(1.s, bounce: 0.6));
 
-    return Box(style: style);
-  }
-}
+return Pressable(
+  onPress: () => setState(() => _counter += 3),
+  child: box(),
+);
 ```
+
+<FlutterPreview previewId="implicit-anim-counter" height={200} />
+
+### Case 2: Variant-triggered
+
+Animations also work with variants. When the widget enters a variant (e.g. hovered), the style animates toward the variant’s “target” style; `.animate(...)` controls how that transition runs.
+
+```dart
+final style = BoxStyler()
+    .color(Colors.black)
+    .size(100, 100)
+    .borderRounded(10)
+    .scale(1)
+    .onHovered(
+      BoxStyler()
+        .color(Colors.blue)
+        .scale(1.5),
+    )
+    .animate(.spring(800.ms));
+
+return Box(style: style);
+// Hover: color and scale animate to blue and 1.5.
+```
+
+<FlutterPreview previewId="anim-hover-scale" height={200} />
+
+---
 
 ## Phase Animations
 
-Phase animations let you define a small set of named phases, each with its own style and config. The sequence plays forward to completion, then resolves back to the initial phase.
+Sometimes you need more than a simple A→B transition: a button that squashes on press then bounces back, or a flow that goes through several distinct steps and returns to the start. Phase animations are built for that. You define a set of phases, and for each one you choose the style and how the transition into that phase should animate.
 
-- **When to use**: State machines, progress indicators, or sequential micro-interactions that start with an initial value and, in the end, return to that same initial value.
-- **How it works**: Use `.phaseAnimation(...)` with:
-  - `trigger`: a `Listenable` (e.g., `ValueNotifier`, `ChangeNotifier`).
-  - `phases`: a list of values (usually an enum).
-  - `styleBuilder`: returns the style for each phase.
-  - `configBuilder`: returns the animation config for each phase.
+**How to use:** Use `.phaseAnimation(...)` to define your phases and what style and animation config each one uses. Optionally pass a **trigger**—with it, the animation runs only when that value changes; without it, it loops on its own.
 
-<FlutterPreview
-  previewId="anim-tap-phase"
-  height={200}
-/>
+### Case: Tap → compress → expand → initial
 
-### Example: Compress/Expand
+Below, a square reacts to tap: it compresses, then expands, then returns to its original size, moving through each phase in order.
 
 ```dart
 enum AnimationPhases { initial, compress, expanded }
 
-class CompressExpandAnimation extends StatefulWidget {
-  const CompressExpandAnimation({super.key});
+final _isExpanded = ValueNotifier(false);
 
-  @override
-  State<CompressExpandAnimation> createState() =>
-      _CompressExpandAnimationState();
-}
-
-class _CompressExpandAnimationState extends State<CompressExpandAnimation> {
-  final _isExpanded = ValueNotifier(false);
-
-  @override
-  void dispose() {
-    _isExpanded.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final style = BoxStyler
-        .color(Colors.deepPurple)
-        .height(100)
-        .width(100)
-        .borderRounded(40)
-        .phaseAnimation(
-          trigger: _isExpanded,
-          phases: AnimationPhases.values,
-          styleBuilder: (phase, style) => switch (phase) {
-            .initial => style.scale(1),
-            .compress => style
-                .scale(0.75)
-                .color(Colors.red.shade800),
-            .expanded => style
-                .scale(1.25)
-                .borderRounded(20)
-                .color(Colors.yellow.shade300),
-          },
-          configBuilder: (phase) => switch (phase) {
-            .initial => .springWithDampingRatio(800.ms, ratio: 0.3),
-            .compress => .decelerate(200.ms),
-            .expanded => .decelerate(100.ms),
-          },
-        );
-    return Pressable(
-      onPress: () {
-        _isExpanded.value = !_isExpanded.value;
+final style = BoxStyler()
+    .color(Colors.deepPurple)
+    .height(100)
+    .width(100)
+    .borderRounded(40)
+    .phaseAnimation(
+      trigger: _isExpanded, // if you want to make it loop, just remove this line
+      phases: AnimationPhases.values,
+      styleBuilder: (phase, style) => switch (phase) {
+        .initial => style
+            .scale(1),
+        .compress => style
+            .scale(0.75)
+            .color(Colors.red.shade800),
+        .expanded => style
+            .scale(1.25)
+            .borderRounded(20)
+            .color(Colors.yellow.shade300),
       },
-      child: Box(style: style),
+      configBuilder: (phase) => switch (phase) {
+        .initial => .springWithDampingRatio(800.ms, ratio: 0.3),
+        .compress => .decelerate(200.ms),
+        .expanded => .decelerate(100.ms),
+      },
     );
-  }
-}
+
+return Pressable(
+  onPress: () => _isExpanded.value = !_isExpanded.value,
+  child: Box(style: style),
+);
 ```
+
+<FlutterPreview previewId="anim-tap-phase" height={200} />
+
+---
 
 ## Keyframe Animations
 
-Keyframes give you full control by mapping moments in time to values across multiple tracks (like CSS keyframes).
+When you want full control—a thumb that scales and slides, a pop-in that combines scale, opacity, and offset, or any timeline where several values change in sync—keyframe animations are the tool. You build a timeline with tracks and keyframes, and Mix drives your style from those values.
 
-- **When to use**: Choreographed sequences, multi-property transitions.
-- **How it works**: Use `.keyframeAnimation(...)` with a list of `KeyframeTrack`s. Each track represents a property to animate and runs in parallel with the others, while the keyframes within a track are executed in sequence. Each keyframe defines a value, duration, and easing, and you can optionally provide a `tweenBuilder` for custom interpolation.
+**How to use:** With `.keyframeAnimation(...)` you define a **timeline** of tracks. Each track has keyframes that run in sequence; tracks run in parallel. A style builder then maps the current track values onto your style. Optionally pass a **trigger** so the animation runs only when that value changes; without it, the animation loops on its own.
 
-### Example: Heart
+### Case 1: Simple toggle (scale + width)
+
+A single trigger drives two tracks (scale and width). The style builder reads both values and applies them together. Note that each track has its own keyframe with its own values and duration.
 
 ```dart
-class HeartKeyframeAnimation extends StatefulWidget {
-  const HeartKeyframeAnimation({super.key});
+final _trigger = ValueNotifier(false);
 
-  @override
-  State<HeartKeyframeAnimation> createState() => _HeartKeyframeAnimationState();
-}
-
-class _HeartKeyframeAnimationState extends State<HeartKeyframeAnimation> {
-  final _trigger = ValueNotifier(0);
-
-  @override
-  Widget build(BuildContext context) {
-    final style = IconStyler
-        .color(Colors.red)
-        .size(80)
-        .keyframeAnimation(
-          trigger: _trigger,
-          timeline: [
-            KeyframeTrack<Color>(
-              'color',
-              [
-                .linear(Colors.blue.shade100, 100.ms),
-                .elasticOut(Colors.blue.shade400, 800.ms),
-                .elasticOut(Colors.green.shade100, 800.ms),
-              ],
-              initial: Colors.red.shade100,
-              tweenBuilder: ColorTween.new,
-            ),
-            KeyframeTrack<double>('scale', [
-              .linear(1.0, 360.ms),
-              .elasticOut(1.5, 800.ms),
-              .elasticOut(1.0, 800.ms),
-            ], initial: 1.0),
-            KeyframeTrack<double>('verticalOffset', [
-              .linear(0.0, 100.ms),
-              .easeIn(20.0, 150.ms),
-              .elasticOut(-60.0, 1000.ms),
-              .elasticOut(0.0, 800.ms),
-            ], initial: 0.0),
-            KeyframeTrack<double>('verticalStretch', [
-              .ease(1.0, 100.ms),
-              .ease(0.6, 150.ms),
-              .ease(1.5, 100.ms),
-              .ease(1.05, 150.ms),
-              .ease(1.0, 880.ms),
-              .ease(0.8, 100.ms),
-              .ease(1.04, 400.ms),
-              .ease(1.0, 220.ms),
-            ], initial: 1.0),
-            KeyframeTrack<double>('angle', [
-              .easeIn(0.0, 580.ms),
-              .easeIn(16.0 * (pi / 180), 125.ms),
-              .easeIn(-16.0 * (pi / 180), 125.ms),
-              .easeIn(16.0 * (pi / 180), 125.ms),
-              .easeIn(0.0, 125.ms),
-            ], initial: 0.0),
+// Inner thumb or knob (see keyframe.switch.dart for full switch UI)
+final style = BoxStyler()
+    .height(30)
+    .width(40)
+    .color(Colors.deepPurpleAccent)
+    .shapeStadium()
+    .keyframeAnimation(
+      trigger: _trigger,
+      timeline: [
+        KeyframeTrack('scale', [
+          .easeOutSine(1.25, 200.ms),
+          .elasticOut(0.85, 500.ms),
+        ], initial: 0.85),
+        KeyframeTrack<double>(
+          'width',
+          [
+            .decelerate(50, 100.ms),
+            .linear(50, 100.ms),
+            .elasticOut(40, 500.ms),
           ],
-          styleBuilder: (values, style) {
-            final scale = values.get<double>('scale');
-            final verticalOffset = values.get<double>('verticalOffset');
-            final verticalStretch = values.get<double>('verticalStretch');
-            final angle = values.get<double>('angle');
-
-            return style.transform(
-              Matrix4.identity()
-                ..scale(scale, scale, scale)
-                ..translate(0.0, verticalOffset, 0.0)
-                ..scale(1.0, verticalStretch, 1.0)
-                ..rotateZ(angle),
-            );
-          },
-        );
-    return Pressable(
-      onPress: () {
-        _trigger.value++;
-      },
-      child: StyledIcon(icon: CupertinoIcons.heart_fill, style: style),
+          initial: 40,
+          tweenBuilder: Tween.new,
+        ),
+      ],
+      styleBuilder: (values, style) => style
+          .scale(values.get('scale'))
+          .width(values.get('width')),
     );
-  }
-}
 
+return Center(
+  child: Pressable(
+    onPress: () {
+      setState(() {
+        _trigger.value = !_trigger.value;
+      });
+    },
+    child: style(),
+  ),
+);
 ```
 
-## Comparison
+<FlutterPreview previewId="anim-switch" height={200} />
 
-| Type | Use Case | Complexity | Control |
-|------|----------|------------|---------|
-| **Implicit** | Simple state transitions | Low | Basic |
-| **Phase** | Multi-step/state machine | Medium | Moderate |
-| **Keyframe** | Choreographed, multi-track | High | Full |
+### Case 2: Loop animation (scale + color + opacity)
 
-## Notes
+Several tracks run in parallel to create one looping animation. The style builder applies scale, color, and opacity from the tracks. Here we use a `ColorTween` to interpolate between the initial and end colors. 
 
-- **Animation triggers**: Phase and keyframe animations use a `Listenable` to start/advance animations.
-- **Configs**: Use `AnimationConfig` for timing, easing and delay.
-- **Works with context**: Variants like hover/press/dark mode combine well with animations.
+The Keyframe animation feature allows you to use any custom Tween you want to interpolate between the initial and end values.
+
+```dart
+final style = BoxStyler()
+    .size(60, 60)
+    .alignment(.centerLeft)
+    .keyframeAnimation(
+      timeline: [
+        KeyframeTrack('scale', [
+          .springWithBounce(1.0, 2000.ms, bounce: 0.5),
+        ], initial: 0.0),
+        KeyframeTrack<Color>(
+          'color',
+          [.easeInOut(Colors.deepPurpleAccent, 2000.ms)],
+          initial: Colors.grey.shade300,
+          tweenBuilder: ColorTween.new,
+        ),
+        KeyframeTrack('opacity', [.easeIn(1.0, 500.ms)], initial: 0.0),
+      ],
+      styleBuilder: (values, style) {
+        final scale = values.get('scale');
+        final opacity = values.get('opacity');
+        return style
+            .transform(Matrix4.diagonal3Values(scale, scale, 1.0))
+            .color(values.get('color'))
+            .wrap(WidgetModifierConfig.opacity(opacity));
+      },
+    );
+
+return style();
+```
+
+<FlutterPreview previewId="anim-keyframe-loop" height={200} />
+
+For a more advanced keyframe example (e.g. multi-track heart with color, scale, offset, stretch, rotation), see the keyframe heart example in the examples app.
+
+---
+
+## Conclusion
+
+Start with **implicit** when you just want values to transition smoothly. Move to **phase** when you have a clear sequence of steps that return to the start. Reach for **keyframe** when you need a full timeline with multiple properties and precise control.

@@ -45,22 +45,18 @@ class _SwitchAnimationState extends State<SwitchAnimation> {
                   .alignment(_trigger.value ? .centerRight : .centerLeft)
                   .animate(.easeOut(300.ms)),
           child: Box(
-            style: BoxStyler.height(30)
+            style: BoxStyler()
+                .height(30)
                 .width(40)
                 .color(Colors.white)
-                .foregroundRadialGradient(
-                  colors: [
-                    Colors.black.withValues(alpha: 0.2),
-                    Colors.transparent,
-                  ],
-                  stops: [0.3, 1],
-                  focal: .center,
-                  focalRadius: 1.1,
+                .shapeStadium(
+                  side: .create()
+                      .color(Colors.black.withValues(alpha: 0.2))
+                      .width(1.5),
                 )
-                .borderRounded(40)
                 .scale(0.85)
                 .shadowOnly(
-                  color: Colors.black.withValues(alpha: 0.1),
+                  color: Colors.black.withValues(alpha: 0.15),
                   offset: Offset(2, 4),
                   blurRadius: 4,
                   spreadRadius: 3,
