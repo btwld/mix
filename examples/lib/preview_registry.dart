@@ -291,15 +291,6 @@ class PreviewRegistry {
       builder: (_) => const tap_phase.BlockAnimation(),
     ),
     PreviewEntry(
-      previewId: 'anim-keyframe-toggle',
-      sourcePath: 'examples/lib/api/animation/keyframe.switch.dart',
-      title: 'Keyframe Toggle (scale + width)',
-      description:
-          'Single trigger drives two tracks; style builder applies both',
-      category: _animations,
-      builder: (_) => const animated_switch.SwitchAnimation(),
-    ),
-    PreviewEntry(
       previewId: 'anim-keyframe-loop',
       sourcePath: 'examples/lib/api/animation/keyframe.loop.scale_color.dart',
       title: 'Keyframe Loop (scale + color + opacity)',
