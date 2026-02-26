@@ -100,6 +100,19 @@ void main() {
         );
       });
 
+      test('shadow', () {
+        final s = BoxShadowMix(color: Colors.black, blurRadius: 10);
+        expect(BoxStyler.shadow(s), equals(BoxStyler().shadow(s)));
+      });
+
+      test('shadows', () {
+        final s = [
+          BoxShadowMix(color: Colors.black, blurRadius: 10),
+          BoxShadowMix(color: Colors.grey, blurRadius: 5),
+        ];
+        expect(BoxStyler.shadows(s), equals(BoxStyler().shadows(s)));
+      });
+
       test('width', () {
         expect(BoxStyler.width(200), equals(BoxStyler().width(200)));
       });
@@ -110,6 +123,22 @@ void main() {
 
       test('size', () {
         expect(BoxStyler.size(200, 100), equals(BoxStyler().size(200, 100)));
+      });
+
+      test('minWidth', () {
+        expect(BoxStyler.minWidth(100), equals(BoxStyler().minWidth(100)));
+      });
+
+      test('maxWidth', () {
+        expect(BoxStyler.maxWidth(300), equals(BoxStyler().maxWidth(300)));
+      });
+
+      test('minHeight', () {
+        expect(BoxStyler.minHeight(50), equals(BoxStyler().minHeight(50)));
+      });
+
+      test('maxHeight', () {
+        expect(BoxStyler.maxHeight(400), equals(BoxStyler().maxHeight(400)));
       });
 
       test('scale', () {

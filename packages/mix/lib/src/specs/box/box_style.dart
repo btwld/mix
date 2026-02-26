@@ -146,12 +146,19 @@ class BoxStyler extends MixStyler<BoxStyler, BoxSpec>
       BoxStyler().borderRadius(value);
   factory BoxStyler.elevation(ElevationShadow value) =>
       BoxStyler().elevation(value);
+  factory BoxStyler.shadow(BoxShadowMix value) => BoxStyler().shadow(value);
+  factory BoxStyler.shadows(List<BoxShadowMix> value) =>
+      BoxStyler().shadows(value);
 
   // Constraints convenience
   factory BoxStyler.width(double value) => BoxStyler().width(value);
   factory BoxStyler.height(double value) => BoxStyler().height(value);
   factory BoxStyler.size(double width, double height) =>
       BoxStyler().size(width, height);
+  factory BoxStyler.minWidth(double value) => BoxStyler().minWidth(value);
+  factory BoxStyler.maxWidth(double value) => BoxStyler().maxWidth(value);
+  factory BoxStyler.minHeight(double value) => BoxStyler().minHeight(value);
+  factory BoxStyler.maxHeight(double value) => BoxStyler().maxHeight(value);
 
   // Transform convenience
   factory BoxStyler.scale(double scale, {Alignment alignment = .center}) =>

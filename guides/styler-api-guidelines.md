@@ -2,13 +2,22 @@
 
 ## Purpose
 
-Define the policy for static factory constructors on Styler classes, enabling dot-shorthand usage while avoiding API bloat.
+Define the policy for static factory constructors on Styler classes. Factories enable dot-shorthand usage in nested/typed contexts while keeping top-level declarations explicit.
 
 ## The Rule
 
-**Convert `Styler().method(args)` → `Styler.method(args)` when:**
-1. The method is the **first call** in the chain
-2. The method has a matching factory constructor (see tables below)
+**Base style declaration (first style):**
+1. Always start top-level style declarations with `BoxStyler()` (instance constructor), then chain methods
+2. Do not use static factory constructors (`BoxStyler.color(...)`) or bare dot-shorthand (`.method()`) at top-level
+
+**Nested style arguments (variants/state/typed params):**
+1. Prefer bare shorthand `.method(args)` when the receiving type is known from context
+2. Do not pass `BoxStyler().method()` as nested style arguments — use bare shorthand instead
+
+Common typed contexts:
+- `.container(.shadow(...))`
+- `.onHovered(.color(...))`
+- `.onDisabled(.color(...))`
 
 Methods used **mid-chain or at the end** (animate, wrap, variants, etc.) do not need factories — they are never the entry point.
 
@@ -19,8 +28,8 @@ Methods used **mid-chain or at the end** (animate, wrap, variants, etc.) do not 
 | Category | Factories |
 |---|---|
 | Direct params | `alignment`, `padding`, `margin`, `constraints`, `decoration`, `foregroundDecoration`, `clipBehavior` |
-| Decoration | `color`, `gradient`, `border`, `borderRadius`, `elevation` |
-| Constraints | `width`, `height`, `size` |
+| Decoration | `color`, `gradient`, `border`, `borderRadius`, `elevation`, `shadow`, `shadows` |
+| Constraints | `width`, `height`, `size`, `minWidth`, `maxWidth`, `minHeight`, `maxHeight` |
 | Transform | `scale`, `rotate` |
 | Animation | `animate` |
 
@@ -56,7 +65,7 @@ All BoxStyler factories + `stackAlignment`, `fit`.
 
 | Category | Factories |
 |---|---|
-| All | `icon`, `color`, `size`, `weight`, `fill`, `opacity`, `shadows` |
+| All | `icon`, `color`, `size`, `weight`, `fill`, `opacity`, `shadows`, `shadow` |
 
 ### ImageStyler
 
@@ -71,9 +80,9 @@ These are used mid-chain or at the end. They should remain as instance methods:
 | Category | Methods |
 |---|---|
 | Modifiers | `wrap`, `phaseAnimation`, `keyframeAnimation` |
-| Compound spacing | `paddingAll`, `paddingX`, `paddingY`, `marginAll`, `marginX`, `marginY`, `paddingOnly` |
-| Compound border | `borderAll`, `borderTop`, `borderRounded` |
-| Compound box methods | `shadowOnly`, `backgroundImageUrl`, `minWidth`, `maxWidth`, `minHeight` |
+| Compound spacing | `padding(.all(8))`, `padding(.horizontal(8))`, `padding(.vertical(8))`, `margin(.all(8))`, `margin(.horizontal(8))`, `margin(.vertical(8))`, `padding(.only(left: 8, right: 8))` |
+| Compound border | `border(.all())`, `border(.top())`, `borderRadius(.circular())` |
+| Compound box methods | `shadow(.color(...).blurRadius(...))`, `backgroundImageUrl` |
 | Text directives | `uppercase`, `titlecase`, `sentencecase`, `reverse` |
 | Variants | `onHovered`, `onPressed`, `onDark`, `onLight`, `onDisabled`, `onFocused`, `variant`, `onBreakpoint` |
 
@@ -81,38 +90,48 @@ These are used mid-chain or at the end. They should remain as instance methods:
 
 ## Dot-Shorthand Usage
 
-Use Dart 3.10+ inferred enum/constant shorthand when context is typed:
+Use Dart 3.11+ inferred enum/constant shorthand when context is typed:
 ```dart
-BoxStyler.alignment(.center)
-FlexBoxStyler.mainAxisAlignment(.center)
-StackBoxStyler.fit(.expand)
-FlexStyler.row()  // preset for direction: .horizontal
+// Dot-shorthand for enum/constant arguments within chains
+BoxStyler().alignment(.center)
+FlexBoxStyler().mainAxisAlignment(.center)
+StackBoxStyler().fit(.expand)
+```
+
+Use bare shorthand for nested typed style arguments:
+```dart
+final interactive = BoxStyler().color(Colors.blue)
+  .onHovered(.shadow(.color(Colors.black12).blurRadius(10)))
+  .onDisabled(.color(Colors.grey));
 ```
 
 ## Code Examples
 
 ```dart
-// Simple — factory replaces Styler() + first method
-BoxStyler.color(Colors.blue)
-TextStyler.fontSize(18)
-IconStyler.size(24)
+// Top-level — always start with Styler() instance
+BoxStyler().color(Colors.blue)
+TextStyler().fontSize(18)
+IconStyler().size(24)
 
-// Chained — only the first call uses the factory
-BoxStyler.color(Colors.blue).paddingAll(16).borderRounded(8)
+// Chained — instance constructor then fluent chain
+BoxStyler().color(Colors.blue).padding(.all(16)).borderRadius(.circular(8))
 
-// Inside variants — saves parens in common patterns
-style.onHovered(BoxStyler.color(Colors.blue))
-style.onDark(TextStyler.color(Colors.white))
+// Inside variants — bare shorthand in typed contexts
+style.onHovered(.color(Colors.blue))
+style.onDark(.color(Colors.white))
 
-// Chain-only methods stay as Styler().method()
-BoxStyler().borderAll(color: Colors.red, width: 2)
-BoxStyler().paddingAll(16).borderRounded(8)
+// Constraints and shadows
 BoxStyler().minWidth(100).maxWidth(300)
-TextStyler().uppercase().fontSize(18)
+BoxStyler().shadow(.color(Colors.black12).blurRadius(10))
 
-// Mid-chain methods — no change needed
-BoxStyler.color(Colors.blue).animate(.easeInOut(100.ms))
-BoxStyler().paddingAll(16).wrap(.new().align(alignment: .center))
+// Compound methods (chain-only, no static factories)
+BoxStyler().border(.all(.color(Colors.red).width(2)))
+BoxStyler().padding(.all(16)).borderRadius(.circular(8))
+final directive = TextStyler().uppercase().fontSize(18);
+
+// Mid-chain methods
+BoxStyler().color(Colors.blue).animate(.easeInOut(100.ms))
+BoxStyler().padding(.all(16)).wrap(.new().align(alignment: .center))
 ```
 
 ## Testing Requirements
