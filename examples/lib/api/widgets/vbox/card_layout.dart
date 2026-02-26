@@ -12,7 +12,8 @@ class Example extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final flexStyle = FlexBoxStyler().mainAxisSize(.min)
+    final flexStyle = FlexBoxStyler()
+        .mainAxisSize(.min)
         .spacing(4)
         .crossAxisAlignment(.start)
         .mainAxisAlignment(.spaceBetween)
@@ -24,13 +25,15 @@ class Example extends StatelessWidget {
         .width(120)
         .shadow(.color(Colors.black12).blurRadius(10));
 
-    final iconStyle = IconStyler().icon(
-      Icons.piano_outlined,
-    ).color(Colors.blueGrey.shade600).size(20);
+    final iconStyle = IconStyler()
+        .icon(Icons.piano_outlined)
+        .color(Colors.blueGrey.shade600)
+        .size(20);
 
-    final textStyle = TextStyler().fontSize(
-      16,
-    ).fontWeight(.w500).color(Colors.blueGrey.shade600);
+    final textStyle = TextStyler()
+        .fontSize(16)
+        .fontWeight(.w500)
+        .color(Colors.blueGrey.shade600);
 
     return ColumnBox(
       style: flexStyle,

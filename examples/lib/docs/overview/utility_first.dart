@@ -4,9 +4,11 @@ import 'package:mix/mix.dart';
 void main() {
   // 1
   // ignore: unused_local_variable
-  final boxStyle = BoxStyler().width(
-    100,
-  ).padding(.all(10)).alignment(.center).color(Colors.red);
+  final boxStyle = BoxStyler()
+      .width(100)
+      .padding(.all(10))
+      .alignment(.center)
+      .color(Colors.red);
 
   // 2
   BoxStyler().alignment(.centerRight);

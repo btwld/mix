@@ -6,9 +6,10 @@ import 'package:mix/mix.dart';
 void main() {
   // 1.
   FlexBox(
-    style: FlexBoxStyler().color(
-      Colors.blue,
-    ).direction(.horizontal).mainAxisAlignment(.spaceBetween),
+    style: FlexBoxStyler()
+        .color(Colors.blue)
+        .direction(.horizontal)
+        .mainAxisAlignment(.spaceBetween),
 
     children: [
       Box(child: Text('Box 1')),

@@ -25,7 +25,8 @@ class _ExampleState extends State<Example> {
 
   @override
   Widget build(BuildContext context) {
-    final style = BoxStyler().color(Colors.red)
+    final style = BoxStyler()
+        .color(Colors.red)
         .height(100)
         .width(100)
         .borderRadius(.circular(10))

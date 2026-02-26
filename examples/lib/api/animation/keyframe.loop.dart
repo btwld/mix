@@ -18,7 +18,8 @@ class MyApp extends StatelessWidget {
 class DemoApp extends StatelessWidget {
   const DemoApp({super.key});
 
-  BoxStyler get _boxStyle => BoxStyler().color(Colors.blueAccent.shade400)
+  BoxStyler get _boxStyle => BoxStyler()
+      .color(Colors.blueAccent.shade400)
       .padding(.horizontal(16).vertical(8))
       .borderRadius(.circular(30))
       .foregroundDecoration(

@@ -8,7 +8,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cardStyle = BoxStyler().height(100)
+    final cardStyle = BoxStyler()
+        .height(100)
         .width(240)
         .color(Colors.blue)
         .borderRadius(.circular(12))

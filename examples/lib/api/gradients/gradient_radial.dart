@@ -11,7 +11,8 @@ class Example extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = BoxStyler().height(150)
+    final style = BoxStyler()
+        .height(150)
         .width(150)
         .borderRadius(.circular(75))
         .shadow(.color(Colors.orange.shade400).blurRadius(30).spreadRadius(5))
