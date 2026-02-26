@@ -43,14 +43,14 @@ The dot notation syntax provides:
 
 #### Dot Notation Availability
 
-Mix's dot notation syntax is available on Dart SDK `>=3.11.0`. No `analysis_options.yaml` experiment flag is required.
+Mix's dot notation syntax is available on Dart SDK `>=3.10.0`. No `analysis_options.yaml` experiment flag is required.
 
 ## Getting Started with Mix
 
 ### Prerequisites
 
-- **Dart SDK**: ≥ 3.11.0 (required for dot notation syntax)
-- **Flutter**: ≥ 3.41.2
+- **Dart SDK**: ≥ 3.10.0 (required for dot notation syntax)
+- **Flutter**: ≥ 3.38.1
 
 ### Setting Up Your Project
 
@@ -65,7 +65,7 @@ flutter pub add mix:^2.0.0-rc.0
 
 ### Dot Notation Syntax
 
-Mix's modern dot notation syntax works out of the box on Dart SDK `>=3.11.0`:
+Mix's modern dot notation syntax works out of the box on Dart SDK `>=3.10.0`:
 
 ```dart
 // Instead of: $box.height(100)..width(100)

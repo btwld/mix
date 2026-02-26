@@ -26,12 +26,11 @@ class Example extends StatelessWidget {
   Widget build(BuildContext context) {
     final style = BoxStyler()
         .color(Colors.black)
-        .height(100)
-        .width(100)
-        .borderRadius(.circular(10))
+        .size(100, 100)
+        .borderRounded(10)
         .scale(1)
-        .onHovered(.color(Colors.blue).scale(1.5).animate(.easeInOut(1000.ms)))
-        .animate(.linear(300.ms));
+        .onHovered(BoxStyler().color(Colors.blue).scale(1.5))
+        .animate(.spring(800.ms));
 
     return Box(style: style);
   }

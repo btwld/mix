@@ -25,10 +25,7 @@ void main() {
 
   // 4.
   PressableBox(
-    style: BoxStyler()
-        .color(Colors.blue)
-        .padding(.all(16))
-        .borderRadius(.circular(8)),
+    style: BoxStyler.color(Colors.blue).paddingAll(16).borderRounded(8),
     onPress: () => print('PressableBox pressed'),
     child: StyledText('Styled Button'),
   );

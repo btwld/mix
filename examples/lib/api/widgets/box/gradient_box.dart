@@ -12,17 +12,18 @@ class Example extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = BoxStyler()
-        .height(50)
+    final style = BoxStyler.height(50)
         .width(100)
-        .borderRadius(.circular(10))
+        .borderRounded(10)
         .linearGradient(
           colors: [Colors.deepPurple.shade700, Colors.deepPurple.shade200],
           begin: .topLeft,
           end: .bottomRight,
         )
-        .shadow(
-          .color(Colors.deepPurple.shade700).offset(x: 0, y: 4).blurRadius(10),
+        .shadowOnly(
+          color: Colors.deepPurple.shade700,
+          offset: Offset(0, 4),
+          blurRadius: 10,
         );
 
     return Box(style: style);

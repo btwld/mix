@@ -33,36 +33,33 @@ class _SwitchAnimationState extends State<SwitchAnimation> {
           });
         },
         child: Box(
-          style: BoxStyler()
-              .color(
-                _trigger.value ? Colors.deepPurpleAccent : Colors.grey.shade300,
-              )
-              .height(30)
-              .width(65)
-              .borderRadius(.circular(40))
-              .alignment(_trigger.value ? .centerRight : .centerLeft)
-              .animate(.easeOut(300.ms)),
+          style:
+              BoxStyler.color(
+                    _trigger.value
+                        ? Colors.deepPurpleAccent
+                        : Colors.grey.shade300,
+                  )
+                  .height(30)
+                  .width(65)
+                  .borderRadiusAll(.circular(40))
+                  .alignment(_trigger.value ? .centerRight : .centerLeft)
+                  .animate(.easeOut(300.ms)),
           child: Box(
             style: BoxStyler()
                 .height(30)
                 .width(40)
                 .color(Colors.white)
-                .foregroundDecoration(
-                  .gradient(
-                    .radial(
-                      .colors([
-                        Colors.black.withValues(alpha: 0.2),
-                        Colors.transparent,
-                      ]).stops([0.3, 1]).focal(.center).focalRadius(1.1),
-                    ),
-                  ),
+                .shapeStadium(
+                  side: .create()
+                      .color(Colors.black.withValues(alpha: 0.2))
+                      .width(1.5),
                 )
-                .borderRadius(.circular(40))
                 .scale(0.85)
-                .shadow(
-                  .color(
-                    Colors.black.withValues(alpha: 0.1),
-                  ).offset(x: 2, y: 4).blurRadius(4).spreadRadius(3),
+                .shadowOnly(
+                  color: Colors.black.withValues(alpha: 0.15),
+                  offset: Offset(2, 4),
+                  blurRadius: 4,
+                  spreadRadius: 3,
                 )
                 .keyframeAnimation(
                   trigger: _trigger,

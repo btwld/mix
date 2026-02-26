@@ -81,8 +81,8 @@ When `mouseCursor` is null, `Pressable` chooses `SystemMouseCursors.click` when 
   PressableBox(
     style: BoxStyler
       .color(Colors.blue)
-      .padding(.all(16))
-      .borderRadius(.circular(8)),
+      .paddingAll(16)
+      .borderRounded(8),
     onPress: () => print('PressableBox pressed'),
     child: StyledText('Styled Button'),
   );
@@ -112,12 +112,12 @@ When `mouseCursor` is null, `Pressable` chooses `SystemMouseCursors.click` when 
 PressableBox(
   style: BoxStyler
       .color(Colors.blue)
-      .padding(.all(16))
-      .borderRadius(.circular(8))
-      .onPressed(.color(Colors.red))
-      .onHovered(.color(Colors.green))
-      .onFocused(.border(Border.all(color: Colors.white, width: 2)))
-      .onDisabled(.color(Colors.grey)),
+      .paddingAll(16)
+      .borderRounded(8)
+      .onPressed(BoxStyler.color(Colors.red))
+      .onHovered(BoxStyler.color(Colors.green))
+      .onFocused(BoxStyler.border(Border.all(color: Colors.white, width: 2)))
+      .onDisabled(BoxStyler.color(Colors.grey)),
   onPress: () => print('Interactive button pressed'),
   child: StyledText('Interactive Button'),
 );

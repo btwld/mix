@@ -12,14 +12,13 @@ class Example extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final baseStyle = TextStyler()
-        .fontSize(50)
+    final baseStyle = TextStyler.fontSize(50)
         .fontWeight(.w600)
         .color(Colors.blue.shade700)
-        .onHovered(.color(Colors.red))
+        .onHovered(TextStyler.color(Colors.red))
         .animate(.easeInOut(1.s));
 
-    final iconStyle = IconStyler().size(20).color(Colors.blueAccent);
+    final iconStyle = IconStyler.size(20).color(Colors.blueAccent);
 
     return DefaultStyledIcon(
       style: iconStyle,
@@ -32,7 +31,9 @@ class Example extends StatelessWidget {
             StyledText('hello world'),
             StyledText(
               'Mix is awesome',
-              style: TextStyler().onHovered(.color(Colors.deepPurple)),
+              style: TextStyler().onHovered(
+                TextStyler.color(Colors.deepPurple),
+              ),
             ),
             StyledIcon(icon: Icons.ac_unit),
           ],

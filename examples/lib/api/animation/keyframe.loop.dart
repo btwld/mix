@@ -18,21 +18,19 @@ class MyApp extends StatelessWidget {
 class DemoApp extends StatelessWidget {
   const DemoApp({super.key});
 
-  BoxStyler get _boxStyle => BoxStyler()
-      .color(Colors.blueAccent.shade400)
-      .padding(.horizontal(16).vertical(8))
-      .borderRadius(.circular(30))
-      .foregroundDecoration(
-        .gradient(
-          .linear(
-            .colors([
-              Colors.white.withValues(alpha: 0),
-              Colors.white.withValues(alpha: 0.2),
-              Colors.white.withValues(alpha: 0.2),
-              Colors.white.withValues(alpha: 0),
-            ]).stops([0.0, 0.3, 0.4, 1]).tileMode(.clamp),
-          ),
-        ),
+  BoxStyler get _boxStyle => BoxStyler.color(Colors.blueAccent.shade400)
+      .paddingX(16)
+      .paddingY(8)
+      .borderRounded(30)
+      .foregroundLinearGradient(
+        colors: [
+          Colors.white.withValues(alpha: 0),
+          Colors.white.withValues(alpha: 0.2),
+          Colors.white.withValues(alpha: 0.2),
+          Colors.white.withValues(alpha: 0),
+        ],
+        stops: [0.0, 0.3, 0.4, 1],
+        tileMode: .clamp,
       )
       .keyframeAnimation(
         timeline: [
@@ -41,10 +39,8 @@ class DemoApp extends StatelessWidget {
         ],
         styleBuilder: (values, style) => style.foregroundDecoration(
           .gradient(
-            .linear(
-              .transform(
-                _SlidingGradientTransform(slidePercent: values.get('progress')),
-              ),
+            LinearGradientMix().transform(
+              _SlidingGradientTransform(slidePercent: values.get('progress')),
             ),
           ),
         ),
@@ -58,7 +54,7 @@ class DemoApp extends StatelessWidget {
           style: _boxStyle,
           child: StyledText(
             'Update',
-            style: TextStyler().color(Colors.white).fontWeight(.w500),
+            style: TextStyler.color(Colors.white).fontWeight(.w500),
           ),
         ),
       ),

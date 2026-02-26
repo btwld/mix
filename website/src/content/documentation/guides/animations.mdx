@@ -80,11 +80,11 @@ enum AnimationPhases { initial, compress, expanded }
 
 final _isExpanded = ValueNotifier(false);
 
-final style = BoxStyler
+final style = BoxStyler()
     .color(Colors.deepPurple)
     .height(100)
     .width(100)
-    .borderRadius(.circular(40))
+    .borderRounded(40)
     .phaseAnimation(
       trigger: _isExpanded, // if you want to make it loop, just remove this line
       phases: AnimationPhases.values,
@@ -96,7 +96,7 @@ final style = BoxStyler
             .color(Colors.red.shade800),
         .expanded => style
             .scale(1.25)
-            .borderRadius(.circular(20))
+            .borderRounded(20)
             .color(Colors.yellow.shade300),
       },
       configBuilder: (phase) => switch (phase) {

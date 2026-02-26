@@ -23,7 +23,7 @@ final style = BoxStyler
     .width(240)
     .height(100)
     .color(Colors.blue)
-    .borderRadius(.circular(12));
+    .borderRounded(12);
 ```
 
 This familiar approach reduces the learning curve and makes your styling code feel natural within the Flutter ecosystem.
@@ -34,8 +34,9 @@ One of Mix's most powerful features is the ability to build new styles on top of
 
 ```dart
 final base = BoxStyler
-    .padding(.horizontal(16).vertical(8))
-    .borderRadius(.circular(8))
+    .paddingX(16)
+    .paddingY(8)
+    .borderRounded(8)
     .color(Colors.black);
 
 final solid = base.color(Colors.blue);
@@ -52,6 +53,6 @@ Mix styles can adapt to user interactions and context changes using variants. Th
 ```dart
 final button = BoxStyler
   .color(Colors.blue)
-  .onHovered(.color(Colors.blue.shade700))
-  .onDark(.color(Colors.blue.shade200));
+  .onHovered(BoxStyler.color(Colors.blue.shade700))
+  .onDark(BoxStyler.color(Colors.blue.shade200));
 ```

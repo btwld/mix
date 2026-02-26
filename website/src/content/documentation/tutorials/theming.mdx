@@ -233,7 +233,7 @@ class ProfileButton extends StatelessWidget {
         .width(double.infinity)
         .color(CustomColorTokens.primary.token())
         .alignment(Alignment.center)
-        .borderRadius(.all(MyThemeRadiusToken.large.token()));
+        .borderRadiusAll(MyThemeRadiusToken.large.token());
 
     // Create a text styler with tokens
     final text = TextStyler
@@ -271,7 +271,7 @@ class ProfilePage extends StatelessWidget {
     // Layout styling with FlexBoxStyler
     final flexBox = FlexBoxStyler
         .crossAxisAlignment(.start)
-        .margin(.all(MyThemeSpaceToken.medium.token()))
+        .marginAll(MyThemeSpaceToken.medium.token())
         .spacing(MyThemeSpaceToken.medium.token());
 
     return Scaffold(
@@ -327,7 +327,7 @@ class ImagePlaceholder extends StatelessWidget {
         .height(200)
         .width(double.infinity)
         .color(CustomColorTokens.primary.token())
-        .borderRadius(.all(MyThemeRadiusToken.medium.token()));
+        .borderRadiusAll(MyThemeRadiusToken.medium.token());
 
     final icon = IconStyler
         .size(80)

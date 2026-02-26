@@ -11,11 +11,14 @@ class Example extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = BoxStyler()
-        .height(150)
+    final style = BoxStyler.height(150)
         .width(150)
-        .borderRadius(.circular(75))
-        .shadow(.color(Colors.orange.shade400).blurRadius(30).spreadRadius(5))
+        .borderRounded(75)
+        .shadowOnly(
+          color: Colors.orange.shade400,
+          blurRadius: 30,
+          spreadRadius: 5,
+        )
         .radialGradient(
           colors: [Colors.orange.shade300, Colors.deepOrange.shade600],
           center: Alignment(-0.3, -0.3),

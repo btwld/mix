@@ -53,11 +53,10 @@ class _ScaleAnimationState extends State<ScaleAnimation> {
 
   @override
   Widget build(BuildContext context) {
-    final style = BoxStyler()
-        .color(Colors.black)
+    final style = BoxStyler.color(Colors.black)
         .height(100)
         .width(100)
-        .borderRadius(.circular(10))
+        .borderRounded(10)
         .scale(appear ? 1 : 0.1) // state-based
         .animate(.easeInOut(1.s));
 
@@ -72,13 +71,12 @@ class HoverAnimation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = BoxStyler()
-        .color(Colors.black)
+    final style = BoxStyler.color(Colors.black)
         .height(100)
         .width(100)
-        .borderRadius(.circular(10))
+        .borderRounded(10)
         .scale(1)
-        .onHovered(.color(Colors.blue).scale(1.5))
+        .onHovered(BoxStyler.color(Colors.blue).scale(1.5))
         .animate(.spring(800.ms));
 
     return Box(style: style);
@@ -108,11 +106,10 @@ class _CompressExpandAnimationState extends State<CompressExpandAnimation> {
 
   @override
   Widget build(BuildContext context) {
-    final style = BoxStyler()
-        .color(Colors.deepPurple)
+    final style = BoxStyler.color(Colors.deepPurple)
         .height(100)
         .width(100)
-        .borderRadius(.circular(40))
+        .borderRounded(40)
         .phaseAnimation(
           trigger: _isExpanded,
           phases: AnimationPhases.values,
@@ -120,10 +117,7 @@ class _CompressExpandAnimationState extends State<CompressExpandAnimation> {
             .initial => style.scale(1),
             .compress => style.scale(0.75).color(Colors.red.shade800),
             .expanded =>
-              style
-                  .scale(1.25)
-                  .borderRadius(.circular(20))
-                  .color(Colors.yellow.shade300),
+              style.scale(1.25).borderRounded(20).color(Colors.yellow.shade300),
           },
           configBuilder: (phase) => switch (phase) {
             .initial => .springWithDampingRatio(800.ms, ratio: 0.3),
@@ -161,8 +155,7 @@ class _HeartKeyframeAnimationState extends State<HeartKeyframeAnimation> {
 
   @override
   Widget build(BuildContext context) {
-    final style = IconStyler()
-        .color(Colors.red)
+    final style = IconStyler.color(Colors.red)
         .size(80)
         .keyframeAnimation(
           trigger: _trigger,

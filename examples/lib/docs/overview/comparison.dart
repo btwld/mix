@@ -19,40 +19,38 @@ class CustomMixWidget extends StatelessWidget {
   const CustomMixWidget({super.key});
 
   TextStyler get customTextStyle {
-    return TextStyler()
-        .fontSize(16)
+    return TextStyler.fontSize(16)
         .fontWeight(.w600)
         .color(Colors.white)
         .animate(.easeInOut(100.ms))
-        .onDark(.color(Colors.black))
+        .onDark(TextStyler.color(Colors.black))
         .onHovered(
-          .new()
+          TextStyler()
               .animate(.easeInOut(100.ms))
               .color(Colors.grey.shade700)
-              .onLight(.color(Colors.white)),
+              .onLight(TextStyler.color(Colors.white)),
         );
   }
 
   BoxStyler get customBoxStyle {
-    return BoxStyler()
-        .height(120)
+    return BoxStyler.height(120)
         .width(120)
-        .padding(.all(20))
+        .paddingAll(20)
         .elevation(.nine)
         .alignment(.center)
-        .borderRadius(.circular(10))
+        .borderRounded(10)
         .color(Colors.blue)
         .scale(1.0)
         .animate(.easeInOut(100.ms))
-        .onDark(.color(Colors.cyan))
+        .onDark(BoxStyler.color(Colors.cyan))
         .onHovered(
-          .alignment(.topLeft)
+          BoxStyler.alignment(.topLeft)
               .elevation(.two)
-              .padding(.all(10))
+              .paddingAll(10)
               .scale(1.5)
               .animate(.easeInOut(100.ms))
               .color(Colors.cyan.shade300)
-              .onLight(.color(Colors.blue.shade300)),
+              .onLight(BoxStyler.color(Colors.blue.shade300)),
         );
   }
 

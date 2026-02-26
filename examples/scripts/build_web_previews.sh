@@ -45,9 +45,9 @@ if ! command -v flutter &> /dev/null; then
     exit 1
 fi
 
-# Verify minimum Flutter version (3.41.0+ required for stable multi-view)
+# Verify minimum Flutter version (3.38.1+ required for stable multi-view)
 FLUTTER_VERSION=$(flutter --version | head -1 | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
-REQUIRED_VERSION="3.41.0"
+REQUIRED_VERSION="3.38.1"
 
 version_ge() {
     local IFS=.

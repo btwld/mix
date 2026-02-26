@@ -15,8 +15,8 @@ final style = BoxStyler
     .color(Colors.red)
     .height(100)
     .width(100)
-    .borderRadius(.circular(10))
-    .onHovered(.color(Colors.blue));
+    .borderRounded(10)
+    .onHovered(BoxStyler.color(Colors.blue));
 ```
 
 Mix automatically merges the hovered style with the base style—you only define what changes.
@@ -35,14 +35,14 @@ final styleA = BoxStyler
   .color(Colors.red)
   .height(100)
   .width(100)
-  .borderRadius(.circular(10))
+  .borderRounded(10)
   .onHovered(
     BoxStyler
       .color(Colors.blue)
       .width(200)
   );
 
-final styleB = styleA.onHovered(.color(Colors.green));
+final styleB = styleA.onHovered(BoxStyler.color(Colors.green));
 ```
 
 In this example, `styleB` will have the same style as `styleA`, but when the widget is hovered it has a different color and maintains the width equal to 200. So the final style when hovered will be:
@@ -52,7 +52,7 @@ BoxStyler
   .color(Colors.green)
   .height(100)
   .width(200)
-  .borderRadius(.circular(10));
+  .borderRounded(10);
 ```
 
 ### Nesting Variants
@@ -61,14 +61,14 @@ There are cases where you want to combine multiple variants to achieve a specifi
 
 ```dart
 final hoverStyle = BoxStyler()
-  .onDark(.color(Colors.blue))
-  .onLight(.color(Colors.green));
+  .onDark(BoxStyler.color(Colors.blue))
+  .onLight(BoxStyler.color(Colors.green));
 
 final style = BoxStyler
   .color(Colors.red)
   .height(100)
   .width(100)
-  .borderRadius(.circular(10))
+  .borderRounded(10)
   .onHovered(hoverStyle);
 ```
 

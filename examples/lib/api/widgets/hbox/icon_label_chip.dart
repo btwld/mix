@@ -12,22 +12,20 @@ class Example extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final flexStyle = FlexBoxStyler()
-        .mainAxisSize(.min)
+    final flexStyle = FlexBoxStyler.mainAxisSize(.min)
         .spacing(4)
         .color(Colors.cyan.shade50)
-        .padding(.horizontal(10).vertical(4))
-        .borderRadius(.circular(99))
-        .border(.all(.color(Colors.cyan.shade600).width(2)));
+        .paddingX(10)
+        .paddingY(4)
+        .borderRounded(99)
+        .borderAll(color: Colors.cyan.shade600, width: 2);
 
-    final iconStyle = IconStyler()
-        .icon(Icons.ac_unit_rounded)
-        .color(Colors.cyan.shade600)
-        .size(18);
-    final textStyle = TextStyler()
-        .fontSize(16)
-        .fontWeight(.w500)
-        .color(Colors.cyan.shade700);
+    final iconStyle = IconStyler.icon(
+      Icons.ac_unit_rounded,
+    ).color(Colors.cyan.shade600).size(18);
+    final textStyle = TextStyler.fontSize(
+      16,
+    ).fontWeight(.w500).color(Colors.cyan.shade700);
 
     return RowBox(
       style: flexStyle,

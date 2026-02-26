@@ -41,8 +41,8 @@ final style = Style(
 // v2.0
 final style = BoxStyler
     .color(Colors.blue)
-    .padding(.all(16))
-    .borderRadius(.circular(8));
+    .paddingAll(16)
+    .borderRounded(8);
 ```
 
 #### Context Variants
@@ -69,8 +69,8 @@ final style = Style(
 // v2.0
 final style = BoxStyler
     .color(Colors.blue)
-    .onHovered(.color(Colors.red))
-    .onDark(.color(Colors.white));
+    .onHovered(BoxStyler.color(Colors.red))
+    .onDark(BoxStyler.color(Colors.white));
 ```
 
 #### Widget Modifiers
@@ -293,8 +293,8 @@ PressableBox(
         .color(Colors.blue)
         .scale(2)
         .wrap(OpacityModifierMix(opacity: 0.5))
-        .onHovered(.color(Colors.red))
-        .onPressed(.color(Colors.green)),
+        .onHovered(BoxStyler.color(Colors.red))
+        .onPressed(BoxStyler.color(Colors.green)),
   ),
 )
 ```
