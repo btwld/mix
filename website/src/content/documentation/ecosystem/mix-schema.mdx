@@ -1,0 +1,76 @@
+---
+title: mix_schema
+---
+
+import { Callout } from "nextra/components";
+
+# mix_schema
+
+`mix_schema` bridges AI protocol payloads and Mix-powered Flutter UI through a deterministic, validated rendering pipeline.
+
+## Why this exists
+
+AI-generated UI is powerful but unstable when raw payloads are rendered directly. `mix_schema` adds structure, trust boundaries, and design-system consistency.
+
+## Core benefits
+
+1. Consistent output through a canonical AST.
+2. Protocol change isolation through adapter boundaries.
+3. Safer execution through trust and action gating.
+4. Design fidelity through Mix tokens, variants, and modifiers.
+5. Better debugging through deterministic diagnostics.
+
+## Architecture
+
+```mermaid
+flowchart LR
+  A[Agent Protocol Payload] --> B[Wire Adapter]
+  B --> C[Canonical AST<br/>UiSchemaRoot]
+  C --> D[Schema Validator]
+  D --> E[Trust Policy Gate]
+  E --> F[Schema Renderer]
+  F --> G[Mix Widgets]
+  G --> H[Branded Flutter UI]
+```
+
+## Runtime flow
+
+```mermaid
+sequenceDiagram
+  participant Agent
+  participant Adapter
+  participant Validator
+  participant Trust
+  participant Renderer
+  participant App
+
+  Agent->>Adapter: Send UI payload
+  Adapter->>Validator: Map payload to AST
+  Validator->>Trust: Evaluate structure + action risk
+  alt Valid and permitted
+    Trust->>Renderer: Pass AST
+    Renderer->>App: Build widget tree
+    App-->>Agent: Emit UI events
+  else Invalid or blocked
+    Trust-->>Agent: Return diagnostics / blocked actions
+  end
+```
+
+## Trust model
+
+<Callout type="info">
+  `mix_schema` treats validation and action policies as first-class runtime contracts, not optional checks.
+</Callout>
+
+Risk policy example:
+
+- Low-risk actions: execute directly.
+- Medium-risk actions: propose before execute.
+- High-risk actions: blocked or explicit approval required.
+
+## Related docs
+
+- [mix_tailwinds](/documentation/ecosystem/mix-tailwinds)
+- [Design Tokens](/documentation/guides/design-token)
+- [Dynamic Styling](/documentation/guides/dynamic-styling)
+- [Introduction](/documentation/overview/introduction)
