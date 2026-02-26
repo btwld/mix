@@ -13,11 +13,17 @@ export 'src/ast/schema_values.dart';
 export 'src/ast/ui_schema_root.dart';
 
 // Adapters
+export 'src/adapters/a2ui_v08_adapter.dart';
+export 'src/adapters/a2ui_v09_adapter.dart';
 export 'src/adapters/wire_adapter.dart';
 
 // Validation
+export 'src/validate/default_validator.dart';
 export 'src/validate/diagnostics.dart';
 export 'src/validate/schema_validator.dart';
+export 'src/validate/semantic_rules.dart';
+export 'src/validate/structural_rules.dart';
+export 'src/validate/trust_rules.dart';
 
 // Trust
 export 'src/trust/capability_matrix.dart';
