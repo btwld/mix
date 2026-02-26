@@ -22,9 +22,9 @@ class _ExampleState extends State<Example> {
     final style = BoxStyler.color(Colors.black)
         .height(100)
         .width(100)
-        .borderRounded(10)
-        .onHovered(BoxStyler.color(Colors.blue))
-        .onPressed(BoxStyler.color(Colors.red).animate(.easeIn(200.ms)));
+        .borderRadius(.circular(10))
+        .onHovered(.color(Colors.blue))
+        .onPressed(.color(Colors.red).animate(.easeIn(200.ms)));
 
     return Box(style: style);
   }

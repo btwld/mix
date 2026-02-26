@@ -35,8 +35,8 @@ Mix addresses these challenges by creating a styling system that uses utility fu
 
 ### Prerequisites
 
-- **Dart SDK**: ≥ 3.10.0 (required for dot notation syntax)
-- **Flutter**: ≥ 3.38.1
+- **Dart SDK**: ≥ 3.11.0 (required for dot notation syntax)
+- **Flutter**: ≥ 3.41.2
 
 ### Add Mix to Your Project
 
@@ -73,7 +73,7 @@ final style = Style(
     ..borderRadius(10),
 );
 
-// NEW: Dot notation syntax (requires Dart SDK ≥ 3.10.0)
+// NEW: Dot notation syntax (requires Dart SDK ≥ 3.11.0)
 final style = Style.box(
   .height(100)
   .width(100)
@@ -84,7 +84,7 @@ final style = Style.box(
 
 ### Dot Notation Syntax (Recommended)
 
-Mix 2.0 is optimized for Dart's dot notation syntax, which provides a cleaner and more intuitive API. On Dart SDK `>=3.10.0`, no `analysis_options.yaml` experiment flag is required.
+Mix 2.0 is optimized for Dart's dot notation syntax, which provides a cleaner and more intuitive API. On Dart SDK `>=3.11.0`, no `analysis_options.yaml` experiment flag is required.
 
 The traditional cascade syntax is still fully supported.
 

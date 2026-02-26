@@ -41,7 +41,7 @@ class Example extends StatelessWidget {
 
               return flag;
             }),
-            BoxStyler.color(Colors.blue),
+            .color(Colors.blue),
           );
 
   @override

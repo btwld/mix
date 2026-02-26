@@ -22,22 +22,18 @@ class _ExampleState extends State<Example> {
     // Button style that adapts to dark/light mode
     final buttonStyle = BoxStyler.height(60)
         .width(60)
-        .borderRounded(30)
+        .borderRadius(.circular(30))
         .color(Colors.grey.shade200)
         .animate(.easeInOut(600.ms))
-        .onDark(BoxStyler.color(Colors.grey.shade800))
-        .shadowOnly(
-          color: Colors.black.withValues(alpha: 0.1),
-          offset: Offset(0, 4),
-          blurRadius: 10,
-        );
+        .onDark(.color(Colors.grey.shade800))
+        .shadow(.color(Colors.black.withValues(alpha: 0.1)).offset(x: 0, y: 4).blurRadius(10));
 
     // Icon style that adapts to dark/light mode
     final iconStyle = IconStyler.color(Colors.grey.shade800)
         .size(28)
         .icon(Icons.dark_mode)
         .animate(.easeInOut(200.ms))
-        .onDark(IconStyler.icon(Icons.light_mode).color(Colors.yellow));
+        .onDark(.icon(Icons.light_mode).color(Colors.yellow));
 
     return MediaQuery(
       data: MediaQuery.of(

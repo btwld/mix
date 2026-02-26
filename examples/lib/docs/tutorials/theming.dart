@@ -177,7 +177,7 @@ class ProfileButton extends StatelessWidget {
         .width(.infinity)
         .color(CustomColorTokens.primary.token())
         .alignment(.center)
-        .borderRadiusAll(MyThemeRadiusToken.large.token());
+        .borderRadius(.all(MyThemeRadiusToken.large.token()));
 
     final text = TextStyler.style(
       CustomTextStyleTokens.button.token.mix(),
@@ -198,7 +198,7 @@ class ProfilePage extends StatelessWidget {
     ).color(CustomColorTokens.onSurface.token());
 
     final flexBox = FlexBoxStyler.crossAxisAlignment(.start)
-        .marginAll(MyThemeSpaceToken.medium.token())
+        .margin(.all(MyThemeSpaceToken.medium.token()))
         .spacing(MyThemeSpaceToken.medium.token());
 
     return Scaffold(
@@ -216,21 +216,21 @@ class ProfilePage extends StatelessWidget {
             // Title
             StyledText(
               'Hollywood Academy',
-              style: TextStyler.style(
+              style: .style(
                 CustomTextStyleTokens.headline1.token.mix(),
               ).color(CustomColorTokens.onSurface.token()),
             ),
             // Subtitle
             StyledText(
               'Education · Los Angeles, California',
-              style: TextStyler.style(
+              style: .style(
                 CustomTextStyleTokens.callout.token.mix(),
               ).color(CustomColorTokens.onSurfaceVariant.token()),
             ),
             // Description
             StyledText(
               'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s.',
-              style: TextStyler.style(
+              style: .style(
                 CustomTextStyleTokens.body.token.mix(),
               ).color(CustomColorTokens.onSurfaceVariant.token()),
             ),
@@ -253,7 +253,7 @@ class ImagePlaceholder extends StatelessWidget {
     final imageContainer = BoxStyler.height(200)
         .width(.infinity)
         .color(CustomColorTokens.primary.token())
-        .borderRadiusAll(MyThemeRadiusToken.medium.token());
+        .borderRadius(.all(MyThemeRadiusToken.medium.token()));
 
     final icon = IconStyler.size(80).color(CustomColorTokens.onPrimary.token());
 

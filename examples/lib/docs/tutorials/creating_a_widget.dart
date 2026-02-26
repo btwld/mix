@@ -82,53 +82,53 @@ class ButtonStyler extends Style<ButtonSpec>
   }
 
   ButtonStyler backgroundColor(Color value) {
-    return merge(ButtonStyler(container: FlexBoxStyler.color(value)));
+    return merge(ButtonStyler(container: .color(value)));
   }
 
   ButtonStyler textColor(Color value) {
-    return merge(ButtonStyler(label: TextStyler.color(value)));
+    return merge(ButtonStyler(label: .color(value)));
   }
 
   ButtonStyler iconColor(Color value) {
-    return merge(ButtonStyler(icon: IconStyler.color(value)));
+    return merge(ButtonStyler(icon: .color(value)));
   }
 
   ButtonStyler fontSize(double value) {
-    return merge(ButtonStyler(label: TextStyler.fontSize(value)));
+    return merge(ButtonStyler(label: .fontSize(value)));
   }
 
   ButtonStyler lineHeight(double value) {
-    return merge(ButtonStyler(label: TextStyler.height(value)));
+    return merge(ButtonStyler(label: .height(value)));
   }
 
   ButtonStyler borderWidth(double value) {
     return merge(
-      ButtonStyler(container: FlexBoxStyler().borderAll(width: value)),
+      ButtonStyler(container: .border(.all(.width(value)))),
     );
   }
 
   ButtonStyler borderColor(Color value) {
     return merge(
-      ButtonStyler(container: FlexBoxStyler().borderAll(color: value)),
+      ButtonStyler(container: .border(.all(.color(value)))),
     );
   }
 
   ButtonStyler borderRadius(double value) {
     return merge(
       ButtonStyler(
-        container: FlexBoxStyler.borderRadius(BorderRadiusMix.circular(value)),
+        container: .borderRadius(BorderRadiusMix.circular(value)),
       ),
     );
   }
 
   ButtonStyler shadow(BoxShadowMix value) {
-    return merge(ButtonStyler(container: FlexBoxStyler().shadow(value)));
+    return merge(ButtonStyler(container: .shadow(value)));
   }
 
   ButtonStyler padding({required double x, required double y}) {
     return merge(
       ButtonStyler(
-        container: FlexBoxStyler.padding(
+        container: .padding(
           EdgeInsetsGeometryMix.symmetric(horizontal: x, vertical: y),
         ),
       ),
@@ -136,7 +136,7 @@ class ButtonStyler extends Style<ButtonSpec>
   }
 
   ButtonStyler scale(double value) {
-    return merge(ButtonStyler(container: FlexBoxStyler.scale(value)));
+    return merge(ButtonStyler(container: .scale(value)));
   }
 
   @override
@@ -184,9 +184,9 @@ enum ButtonVariant {
 
   ButtonStyler get _outlinedStyle => _filledStyle
       .container(
-        FlexBoxStyler.color(
+        .color(
           Colors.transparent,
-        ).borderAll(color: Colors.blueAccent, width: 1.5),
+        ).border(.all(.color(Colors.blueAccent).width(1.5))),
       )
       .backgroundColor(Colors.transparent)
       .borderWidth(1.5)
@@ -202,13 +202,13 @@ enum ButtonVariant {
         return _outlinedStyle;
       case .elevated:
         return _filledStyle.container(
-          FlexBoxStyler().shadow(
-            BoxShadowMix().color(Colors.blueAccent.shade700).offset(x: 0, y: 5),
+          .shadow(
+            .color(Colors.blueAccent.shade700).offset(x: 0, y: 5),
           ),
         );
       case .link:
         return _outlinedStyle.container(
-          FlexBoxStyler().borderAll(style: .none).color(Colors.transparent),
+          .border(.all(.style(.none))).color(Colors.transparent),
         );
     }
   }
@@ -234,17 +234,15 @@ class CustomButton extends StatelessWidget {
   final ButtonStyler? style;
 
   ButtonStyler buttonStyle(ButtonStyler? style, ButtonVariant? variant) {
-    final container = FlexBoxStyler()
-        .borderRounded(6)
-        .paddingX(8)
-        .paddingY(12)
+    final container = FlexBoxStyler.borderRadius(.circular(6))
+        .padding(.horizontal(8).vertical(12))
         .spacing(8)
         .mainAxisAlignment(.center)
         .crossAxisAlignment(.center)
         .mainAxisSize(.min);
 
     final label = TextStyler.style(
-      TextStyleMix().fontSize(16).fontWeight(.w500),
+      TextStyleMix.fontSize(16).fontWeight(.w500),
     );
 
     final icon = IconStyler.size(18);
@@ -256,20 +254,20 @@ class CustomButton extends StatelessWidget {
         .merge(variant?.style)
         .onPressed(
           ButtonStyler()
-              .container(FlexBoxStyler.color(Colors.blueAccent.shade400))
-              .label(TextStyler.style(TextStyleMix().color(Colors.white)))
-              .icon(IconStyler.color(Colors.white))
+              .container(.color(Colors.blueAccent.shade400))
+              .label(.style(TextStyleMix.color(Colors.white)))
+              .icon(.color(Colors.white))
               .scale(0.9),
         )
         .onDisabled(
           ButtonStyler()
-              .container(FlexBoxStyler.color(Colors.blueGrey.shade100))
+              .container(.color(Colors.blueGrey.shade100))
               .label(
-                TextStyler.style(
-                  TextStyleMix().color(Colors.blueGrey.shade700),
+                .style(
+                  TextStyleMix.color(Colors.blueGrey.shade700),
                 ),
               )
-              .icon(IconStyler.color(Colors.blueGrey.shade700)),
+              .icon(.color(Colors.blueGrey.shade700)),
         )
         .merge(style);
   }

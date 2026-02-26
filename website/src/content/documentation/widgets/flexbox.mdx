@@ -15,10 +15,10 @@ final style = FlexBoxStyler
  .direction(Axis.horizontal)
  .mainAxisAlignment(.spaceBetween)
  .crossAxisAlignment(CrossAxisAlignment.center)
- .paddingAll(16)
+ .padding(.all(16))
  .spacing(12)
  .color(Colors.grey.shade100)
- .borderRounded(8);
+ .borderRadius(.circular(8));
 
 FlexBox(
  style: style,
@@ -69,7 +69,10 @@ FlexBox(
 | `borderRadius` | Sets the border radius property via decoration. |
 | `border` | Sets the border property via decoration. |
 
-### Border Radius
+### Border Radius (Legacy Convenience Methods)
+
+Preferred style syntax: `borderRadius(.all(...))`, `borderRadius(.topLeft(...))`, etc.  
+The method names below are legacy convenience APIs.
 
 | Method | Description |
 |--------|-------------|
@@ -149,6 +152,7 @@ FlexBox(
 | `backgroundImage` | Sets a background image from an ImageProvider |
 | `backgroundImageUrl` | Sets a background image from a network URL |
 | `backgroundImageAsset` | Sets a background image from an asset path |
+| `preferred` | Use `foregroundDecoration(.gradient(.linear(...)))` and `gradient(.linear(...))` for composable gradient styling. |
 | `foregroundLinearGradient` | Sets a foreground linear gradient |
 | `foregroundRadialGradient` | Sets a foreground radial gradient |
 | `foregroundSweepGradient` | Sets a foreground sweep gradient |

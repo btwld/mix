@@ -36,26 +36,18 @@ class OkinawaCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final boxStyle = BoxStyler.height(200)
         .width(200)
-        .paddingAll(8)
+        .padding(.all(8))
         .alignment(Alignment.bottomCenter)
-        .borderRounded(10)
+        .borderRadius(.circular(10))
         .backgroundImageUrl(
           'https://images.pexels.com/photos/5472603/pexels-photo-5472603.jpeg',
           fit: .cover,
         )
-        .borderAll(
-          color: Colors.white,
-          width: 6,
-          strokeAlign: BorderSide.strokeAlignOutside,
-        )
+        .border(.all(.color(Colors.white).width(6).strokeAlign(BorderSide.strokeAlignOutside)))
         .color(Colors.blueGrey.shade50)
-        .shadowOnly(
-          color: Colors.black.withValues(alpha: 0.35),
-          blurRadius: 100,
-        );
+        .shadow(.color(Colors.black.withValues(alpha: 0.35)).blurRadius(100));
 
-    final columnBoxStyle = FlexBoxStyler()
-        .paddingAll(8)
+    final columnBoxStyle = FlexBoxStyler.padding(.all(8))
         .width(.infinity)
         .color(Colors.black.withValues(alpha: 0.1))
         .mainAxisSize(.min)

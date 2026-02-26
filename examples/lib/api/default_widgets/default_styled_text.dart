@@ -15,7 +15,7 @@ class Example extends StatelessWidget {
     final baseStyle = TextStyler.fontSize(50)
         .fontWeight(.w600)
         .color(Colors.blue.shade700)
-        .onHovered(TextStyler.color(Colors.red))
+        .onHovered(.color(Colors.red))
         .animate(.easeInOut(1.s));
 
     final iconStyle = IconStyler.size(20).color(Colors.blueAccent);
@@ -31,8 +31,8 @@ class Example extends StatelessWidget {
             StyledText('hello world'),
             StyledText(
               'Mix is awesome',
-              style: TextStyler().onHovered(
-                TextStyler.color(Colors.deepPurple),
+              style: .new().onHovered(
+                .color(Colors.deepPurple),
               ),
             ),
             StyledIcon(icon: Icons.ac_unit),

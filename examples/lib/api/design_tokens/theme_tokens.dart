@@ -45,11 +45,11 @@ class _Example extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final style = BoxStyler()
-        .borderRadiusTopLeft($pill())
+        .borderRadius(.topLeft($pill()))
         .color($primaryColor())
         .height(100)
         .width(100)
-        .paddingAll(16.0);
+        .padding(.all(16.0));
 
     return Box(
       style: style,
@@ -57,7 +57,7 @@ class _Example extends StatelessWidget {
         colors: {$primaryColor: Colors.red},
         child: StyledText(
           'Hello, World!',
-          style: TextStyler.color(
+          style: .color(
             $primaryColor(),
           ).wrap(.new().padding(.all($spacing()))),
         ),

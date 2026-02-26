@@ -151,7 +151,7 @@ Use `${token_name}.call()` or `${token_name}()` to reference a token:
 ```dart
 final style = BoxStyler
     .color($primary())
-    .paddingAll($spacingMd());
+    .padding(.all($spacingMd()));
 ```
 
 ### Token Methods
@@ -223,7 +223,7 @@ MixScope(
 final style = BoxStyler
     .color(Colors.red)
     .size(100, 100)
-    .merge(BoxStyler.create(padding: $contentPadding()));
+    .merge(.create(padding: $contentPadding()));
 ```
 
 <Callout type="info">
@@ -272,12 +272,12 @@ class _ThemedAppState extends State<ThemedApp> {
       child: MaterialApp(
         home: Scaffold(
           body: Box(
-            style: BoxStyler.color($background()),
+            style: .color($background()),
             child: Column(
               children: [
                 StyledText(
                   'Hello, World!',
-                  style: TextStyler.color($foreground()),
+                  style: .color($foreground()),
                 ),
                 ElevatedButton(
                   onPressed: () => setState(() => isDark = !isDark),

@@ -14,7 +14,7 @@ class Example extends StatelessWidget {
   Widget build(BuildContext context) {
     final style = BoxStyler.height(100)
         .width(200)
-        .borderRounded(16)
+        .borderRadius(.circular(16))
         .shadow(
           BoxShadowMix()
               .color(Colors.purple.shade200)

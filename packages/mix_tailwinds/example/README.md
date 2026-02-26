@@ -4,8 +4,8 @@ This example renders the same UI twice: once with `mix_tailwinds` (Flutter) and 
 
 ## Requirements
 
-- Dart SDK `>=3.10.0`
-- Flutter `>=3.38.1`
+- Dart SDK `>=3.11.0`
+- Flutter `>=3.41.0`
 
 ## Directory layout
 

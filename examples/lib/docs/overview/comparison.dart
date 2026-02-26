@@ -23,34 +23,34 @@ class CustomMixWidget extends StatelessWidget {
         .fontWeight(.w600)
         .color(Colors.white)
         .animate(.easeInOut(100.ms))
-        .onDark(TextStyler.color(Colors.black))
+        .onDark(.color(Colors.black))
         .onHovered(
-          TextStyler()
+          .new()
               .animate(.easeInOut(100.ms))
               .color(Colors.grey.shade700)
-              .onLight(TextStyler.color(Colors.white)),
+              .onLight(.color(Colors.white)),
         );
   }
 
   BoxStyler get customBoxStyle {
     return BoxStyler.height(120)
         .width(120)
-        .paddingAll(20)
+        .padding(.all(20))
         .elevation(.nine)
         .alignment(.center)
-        .borderRounded(10)
+        .borderRadius(.circular(10))
         .color(Colors.blue)
         .scale(1.0)
         .animate(.easeInOut(100.ms))
-        .onDark(BoxStyler.color(Colors.cyan))
+        .onDark(.color(Colors.cyan))
         .onHovered(
-          BoxStyler.alignment(.topLeft)
+          .alignment(.topLeft)
               .elevation(.two)
-              .paddingAll(10)
+              .padding(.all(10))
               .scale(1.5)
               .animate(.easeInOut(100.ms))
               .color(Colors.cyan.shade300)
-              .onLight(BoxStyler.color(Colors.blue.shade300)),
+              .onLight(.color(Colors.blue.shade300)),
         );
   }
 

@@ -10,11 +10,11 @@ final chipButtonLabel = TextStyler(
 final chipButtonContainer = BoxStyler.height(40)
     .width(120)
     .color(Colors.blue)
-    .borderRounded(20)
-    .onHovered(BoxStyler.color(Colors.blue.shade700))
+    .borderRadius(.circular(20))
+    .onHovered(.color(Colors.blue.shade700))
     .variant(
       ContextVariant.widgetState(.selected),
-      BoxStyler.color(Colors.black),
+      .color(Colors.black),
     )
     .alignment(.center)
     .animate(.easeInOut(300.ms));

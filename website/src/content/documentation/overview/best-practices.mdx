@@ -133,8 +133,8 @@ class CustomButtonStyle {
 
     // Apply size
     style = switch (size) {
-      CustomButtonSize.medium => style.paddingX(16).paddingY(8),
-      CustomButtonSize.large => style.paddingX(24).paddingY(16),
+      CustomButtonSize.medium => style.padding(.horizontal(16).vertical(8)),
+      CustomButtonSize.large => style.padding(.horizontal(24).vertical(16)),
     };
 
     // Apply type

@@ -39,8 +39,8 @@ The default constructor provides a fluent API for chaining style properties:
 ```dart
 final style = BoxStyler
     .color(Colors.blue)
-    .paddingAll(16)
-    .borderRounded(8);
+    .padding(.all(16))
+    .borderRadius(.circular(8));
 ```
 
 Use this pattern when:
@@ -87,7 +87,7 @@ final boxStyle = BoxStyler
     .height(100)
     .width(100)
     .color(Colors.purple)
-    .borderRounded(10);
+    .borderRadius(.circular(10));
 
 final textStyle = TextStyler
     .fontSize(20)
@@ -104,10 +104,10 @@ Styles can adapt to interactions and context (hover, press, dark mode):
 ```dart
 final buttonStyle = BoxStyler
     .height(50)
-    .borderRounded(25)
+    .borderRadius(.circular(25))
     .color(Colors.blue)
-    .onHovered(BoxStyler.color(Colors.blue.shade700))
-    .onDark(BoxStyler.color(Colors.blue.shade200));
+    .onHovered(.color(Colors.blue.shade700))
+    .onDark(.color(Colors.blue.shade200));
 ```
 
 Learn more about [Dynamic Styling](/documentation/guides/dynamic-styling)

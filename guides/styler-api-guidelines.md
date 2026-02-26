@@ -6,9 +6,18 @@ Define the policy for static factory constructors on Styler classes, enabling do
 
 ## The Rule
 
-**Convert `Styler().method(args)` → `Styler.method(args)` when:**
-1. The method is the **first call** in the chain
-2. The method has a matching factory constructor (see tables below)
+**Base style declaration (first style):**
+1. `Styler().chain` is valid and preferred for top-level style declarations
+2. `Styler.factory(...)` is also valid when it improves readability
+
+**Nested style arguments (variants/state/typed params):**
+1. Prefer shorthand `.method(args)` when the receiving type is known
+2. Do not pass `Styler().chain` as nested style arguments
+
+Common typed contexts:
+- `style: .color(...)`
+- `.container(.shadow(...))`
+- `.onHovered(.color(...))`
 
 Methods used **mid-chain or at the end** (animate, wrap, variants, etc.) do not need factories — they are never the entry point.
 
@@ -19,8 +28,8 @@ Methods used **mid-chain or at the end** (animate, wrap, variants, etc.) do not 
 | Category | Factories |
 |---|---|
 | Direct params | `alignment`, `padding`, `margin`, `constraints`, `decoration`, `foregroundDecoration`, `clipBehavior` |
-| Decoration | `color`, `gradient`, `border`, `borderRadius`, `elevation` |
-| Constraints | `width`, `height`, `size` |
+| Decoration | `color`, `gradient`, `border`, `borderRadius`, `elevation`, `shadow`, `shadows` |
+| Constraints | `width`, `height`, `size`, `minWidth`, `maxWidth`, `minHeight`, `maxHeight` |
 | Transform | `scale`, `rotate` |
 | Animation | `animate` |
 
@@ -56,7 +65,7 @@ All BoxStyler factories + `stackAlignment`, `fit`.
 
 | Category | Factories |
 |---|---|
-| All | `icon`, `color`, `size`, `weight`, `fill`, `opacity`, `shadows` |
+| All | `icon`, `color`, `size`, `weight`, `fill`, `opacity`, `shadows`, `shadow` |
 
 ### ImageStyler
 
@@ -71,9 +80,9 @@ These are used mid-chain or at the end. They should remain as instance methods:
 | Category | Methods |
 |---|---|
 | Modifiers | `wrap`, `phaseAnimation`, `keyframeAnimation` |
-| Compound spacing | `paddingAll`, `paddingX`, `paddingY`, `marginAll`, `marginX`, `marginY`, `paddingOnly` |
-| Compound border | `borderAll`, `borderTop`, `borderRounded` |
-| Compound box methods | `shadowOnly`, `backgroundImageUrl`, `minWidth`, `maxWidth`, `minHeight` |
+| Compound spacing | `padding(.all())`, `padding(.horizontal())`, `padding(.vertical())`, `margin(.all())`, `marginX`, `marginY`, `padding(.only())` |
+| Compound border | `border(.all())`, `border(.top())`, `borderRadius(.circular())` |
+| Compound box methods | `shadow(.color(...).blurRadius(...))`, `backgroundImageUrl` |
 | Text directives | `uppercase`, `titlecase`, `sentencecase`, `reverse` |
 | Variants | `onHovered`, `onPressed`, `onDark`, `onLight`, `onDisabled`, `onFocused`, `variant`, `onBreakpoint` |
 
@@ -81,12 +90,19 @@ These are used mid-chain or at the end. They should remain as instance methods:
 
 ## Dot-Shorthand Usage
 
-Use Dart 3.10+ inferred enum/constant shorthand when context is typed:
+Use Dart 3.11+ inferred enum/constant shorthand when context is typed:
 ```dart
 BoxStyler.alignment(.center)
 FlexBoxStyler.mainAxisAlignment(.center)
 StackBoxStyler.fit(.expand)
 FlexStyler.row()  // preset for direction: .horizontal
+```
+
+Use shorthand for typed style arguments too:
+```dart
+final interactive = BoxStyler.color(Colors.blue)
+  .onHovered(.shadow(.color(Colors.black12).blurRadius(10)))
+  .onDisabled(.color(Colors.grey));
 ```
 
 ## Code Examples
@@ -98,21 +114,24 @@ TextStyler.fontSize(18)
 IconStyler.size(24)
 
 // Chained — only the first call uses the factory
-BoxStyler.color(Colors.blue).paddingAll(16).borderRounded(8)
+BoxStyler.color(Colors.blue).padding(.all(16)).borderRadius(.circular(8))
 
 // Inside variants — saves parens in common patterns
-style.onHovered(BoxStyler.color(Colors.blue))
-style.onDark(TextStyler.color(Colors.white))
+style.onHovered(.color(Colors.blue))
+style.onDark(.color(Colors.white))
+
+// Constraint and shadow entry points
+BoxStyler.minWidth(100).maxWidth(300)
+BoxStyler.shadow(.color(Colors.black12).blurRadius(10))
 
 // Chain-only methods stay as Styler().method()
-BoxStyler().borderAll(color: Colors.red, width: 2)
-BoxStyler().paddingAll(16).borderRounded(8)
-BoxStyler().minWidth(100).maxWidth(300)
-TextStyler().uppercase().fontSize(18)
+BoxStyler.border(.all(.color(Colors.red).width(2)))
+BoxStyler.padding(.all(16)).borderRadius(.circular(8))
+final directive = TextStyler().uppercase().fontSize(18);
 
 // Mid-chain methods — no change needed
 BoxStyler.color(Colors.blue).animate(.easeInOut(100.ms))
-BoxStyler().paddingAll(16).wrap(.new().align(alignment: .center))
+BoxStyler.padding(.all(16)).wrap(.new().align(alignment: .center))
 ```
 
 ## Testing Requirements

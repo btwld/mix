@@ -167,12 +167,24 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
       FlexBoxStyler().borderRadius(value);
   factory FlexBoxStyler.elevation(ElevationShadow value) =>
       FlexBoxStyler().elevation(value);
+  factory FlexBoxStyler.shadow(BoxShadowMix value) =>
+      FlexBoxStyler().shadow(value);
+  factory FlexBoxStyler.shadows(List<BoxShadowMix> value) =>
+      FlexBoxStyler().shadows(value);
 
   // Constraints convenience
   factory FlexBoxStyler.width(double value) => FlexBoxStyler().width(value);
   factory FlexBoxStyler.height(double value) => FlexBoxStyler().height(value);
   factory FlexBoxStyler.size(double width, double height) =>
       FlexBoxStyler().size(width, height);
+  factory FlexBoxStyler.minWidth(double value) =>
+      FlexBoxStyler().minWidth(value);
+  factory FlexBoxStyler.maxWidth(double value) =>
+      FlexBoxStyler().maxWidth(value);
+  factory FlexBoxStyler.minHeight(double value) =>
+      FlexBoxStyler().minHeight(value);
+  factory FlexBoxStyler.maxHeight(double value) =>
+      FlexBoxStyler().maxHeight(value);
 
   // Transform convenience
   factory FlexBoxStyler.scale(double scale, {Alignment alignment = .center}) =>

@@ -16,7 +16,7 @@ Prefer fluent chaining on Styler types for everyday composition.
 Box sizing
 - Fixed square: `BoxStyler.size(200, 200)` or `BoxStyler(constraints: BoxConstraintsMix.square(200))`
 - Fixed width/height: `BoxStyler.width(200).height(120)`
-- Min/Max bounds: `BoxStyler().minWidth(100).maxWidth(300).minHeight(50)`
+- Min/Max bounds: `BoxStyler.minWidth(100).maxWidth(300).minHeight(50)`
 - Already have a Size: `BoxStyler(constraints: BoxConstraintsMix.size(const Size(200, 120)))`
 
 Stack layout
@@ -26,6 +26,7 @@ Stack layout
 Composition
 - Reuse fragments: `final card = base.merge(elevated);`
 - Everyday props: use chaining instead of merging multiple Styler instances
+- In typed style arguments, prefer shorthand: `.onHovered(.color(...))`, `.container(.shadow(...))`
 
 ---
 
@@ -67,8 +68,7 @@ final card = base.merge(elevated); // Use merge() when composing fragments
 
 Example C — Min/Max constraints
 ```dart
-final resizable = BoxStyler()
-  .minWidth(120)
+final resizable = BoxStyler.minWidth(120)
   .maxWidth(480)
   .minHeight(80);
 ```
@@ -77,6 +77,13 @@ Example D — You already have a Size
 ```dart
 final size = const Size(240, 160);
 final boxFromSize = BoxStyler(constraints: BoxConstraintsMix.size(size));
+```
+
+Example E — Typed argument shorthand
+```dart
+final interactive = BoxStyler.color(Colors.blue)
+  .onHovered(.shadow(.color(Colors.black12).blurRadius(8)))
+  .onDisabled(.color(Colors.grey));
 ```
 
 ---

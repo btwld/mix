@@ -23,7 +23,7 @@ This approach promotes:
 ```dart
 final boxStyle = BoxStyler
   .width(100)
-  .paddingAll(10)
+  .padding(.all(10))
   .alignment(Alignment.center)
   .color(Colors.red);
 ```
@@ -41,7 +41,7 @@ BoxStyler.alignment(Alignment.centerRight);
 // Spacing helpers
 BoxStyler.padding(EdgeInsetsGeometryMix.all(16)); // All sides
 BoxStyler.padding(EdgeInsetsGeometryMix.symmetric(horizontal: 12, vertical: 8)); // Horizontal and vertical
-BoxStyler().paddingOnly(horizontal: 12, vertical: 8); // Specific sides
+BoxStyler.padding(.only(left: 12, right: 12, top: 8, bottom: 8)); // Specific sides
 ```
 
 ## Styler helpers (aliases)
@@ -54,10 +54,10 @@ Direct border methods are available on the styler.
 
 ```dart
 // Red border on all sides
-BoxStyler().borderAll(color: Colors.red);
+BoxStyler.border(.all(.color(Colors.red)));
 
 // Top border only with custom width
-BoxStyler().borderTop(color: Colors.red, width: 2);
+BoxStyler.border(.top(.color(Colors.red).width(2)));
 ```
 
 ### Creating helpers
@@ -68,7 +68,7 @@ You can create your own shorthand by either defining small helper functions that
 
 ```dart
 // Custom helper for border top styling
-BoxStyler borderTop(Color color) => BoxStyler().borderTop(color: color);
+BoxStyler borderTop(Color color) => BoxStyler.border(.top(.color(color)));
 
 // Use the helper
 borderTop(Colors.red);

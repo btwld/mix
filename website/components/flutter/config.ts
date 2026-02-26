@@ -17,7 +17,7 @@ export interface FlutterBuildConfig {
 let cachedConfig: FlutterBuildConfig | null = null;
 
 /**
- * Fallback config matching Flutter 3.38.1.
+ * Fallback config matching Flutter 3.41.0.
  * Used when flutter-build-config.json cannot be loaded (e.g., local dev without build).
  */
 const FALLBACK_CONFIG: FlutterBuildConfig = {

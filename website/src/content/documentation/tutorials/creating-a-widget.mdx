@@ -135,21 +135,21 @@ class ButtonStyler extends MixStyler<ButtonStyler, ButtonSpec>
 
   // Convenience methods (beyond the generated container/icon/label setters)
   ButtonStyler backgroundColor(Color value) {
-    return merge(ButtonStyler(container: FlexBoxStyler.color(value)));
+    return merge(ButtonStyler(container: .color(value)));
   }
 
   ButtonStyler textColor(Color value) {
-    return merge(ButtonStyler(label: TextStyler.color(value)));
+    return merge(ButtonStyler(label: .color(value)));
   }
 
   ButtonStyler iconColor(Color value) {
-    return merge(ButtonStyler(icon: IconStyler.color(value)));
+    return merge(ButtonStyler(icon: .color(value)));
   }
 
   ButtonStyler borderRadius(double value) {
     return merge(
       ButtonStyler(
-        container: FlexBoxStyler.borderRadius(BorderRadiusMix.circular(value)),
+        container: .borderRadius(BorderRadiusMix.circular(value)),
       ),
     );
   }
@@ -157,7 +157,7 @@ class ButtonStyler extends MixStyler<ButtonStyler, ButtonSpec>
   ButtonStyler padding({required double x, required double y}) {
     return merge(
       ButtonStyler(
-        container: FlexBoxStyler.padding(
+        container: .padding(
           EdgeInsetsGeometryMix.symmetric(horizontal: x, vertical: y),
         ),
       ),
@@ -165,7 +165,7 @@ class ButtonStyler extends MixStyler<ButtonStyler, ButtonSpec>
   }
 
   ButtonStyler scale(double value) {
-    return merge(ButtonStyler(container: FlexBoxStyler.scale(value)));
+    return merge(ButtonStyler(container: .scale(value)));
   }
 }
 ```
@@ -234,9 +234,8 @@ enum ButtonVariant {
       case ButtonVariant.outlined:
         return ButtonStyler()
             .container(
-              FlexBoxStyler
-                  .color(Colors.transparent)
-                  .borderAll(width: 1.5, color: Colors.blueAccent),
+              .color(Colors.transparent)
+                  .border(.all(.color(Colors.blueAccent).width(1.5))),
             )
             .textColor(Colors.blueAccent)
             .iconColor(Colors.blueAccent);
@@ -247,9 +246,8 @@ enum ButtonVariant {
             .textColor(Colors.white)
             .iconColor(Colors.white)
             .container(
-              FlexBoxStyler().shadow(
-                BoxShadowMix()
-                    .color(Colors.blueAccent.shade700)
+              .shadow(
+                .color(Colors.blueAccent.shade700)
                     .offset(x: 0, y: 5),
               ),
             );
@@ -257,8 +255,7 @@ enum ButtonVariant {
       case ButtonVariant.link:
         return ButtonStyler()
             .container(
-              FlexBoxStyler()
-                  .borderAll(style: BorderStyle.none)
+              .border(.all(.style(BorderStyle.none)))
                   .color(Colors.transparent),
             )
             .textColor(Colors.blueAccent)
@@ -321,16 +318,15 @@ The `buttonStyle` function defines base styles, merges variant styles, and adds 
 ButtonStyler buttonStyle(ButtonStyler? style, ButtonVariant? variant) {
   // Base styles shared across all variants
   final container = FlexBoxStyler
-      .borderRounded(6)
-      .paddingX(8)
-      .paddingY(12)
+      .borderRadius(.circular(6))
+      .padding(.horizontal(8).vertical(12))
       .spacing(8)
       .mainAxisAlignment(.center)
       .crossAxisAlignment(CrossAxisAlignment.center)
       .mainAxisSize(MainAxisSize.min);
 
   final label = TextStyler.style(
-    TextStyleMix().fontSize(16).fontWeight(FontWeight.w500),
+    TextStyleMix.fontSize(16).fontWeight(FontWeight.w500),
   );
 
   final icon = IconStyler.size(18);
@@ -342,17 +338,17 @@ ButtonStyler buttonStyle(ButtonStyler? style, ButtonVariant? variant) {
       .merge(variant?.style)
       .onPressed(
         ButtonStyler()
-            .container(FlexBoxStyler.scale(0.9)),
+            .container(.scale(0.9)),
       )
       .onDisabled(
         ButtonStyler()
-            .container(FlexBoxStyler.color(Colors.blueGrey.shade100))
+            .container(.color(Colors.blueGrey.shade100))
             .label(
-              TextStyler.style(
-                TextStyleMix().color(Colors.blueGrey.shade700),
+              .style(
+                TextStyleMix.color(Colors.blueGrey.shade700),
               ),
             )
-            .icon(IconStyler.color(Colors.blueGrey.shade700)),
+            .icon(.color(Colors.blueGrey.shade700)),
       )
       .merge(style);
 }

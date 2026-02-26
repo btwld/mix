@@ -15,8 +15,8 @@ class Example extends StatelessWidget {
     final style = BoxStyler.color(Colors.red)
         .height(100)
         .width(100)
-        .borderRounded(10)
-        .onDisabled(BoxStyler.color(Colors.grey));
+        .borderRadius(.circular(10))
+        .onDisabled(.color(Colors.grey));
 
     return Pressable(enabled: false, child: Box(style: style));
   }

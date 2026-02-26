@@ -27,14 +27,14 @@ class _ExampleState extends State<Example> {
   Widget build(BuildContext context) {
     final style = BoxStyler.height(60)
         .width(120)
-        .borderRounded(30)
+        .borderRadius(.circular(30))
         .color(Colors.grey.shade200)
-        .borderAll(color: Colors.grey.shade300, width: 2)
+        .border(.all(.color(Colors.grey.shade300).width(2)))
         .animate(.spring(300.ms))
         .variant(
           ContextVariant.widgetState(.selected),
-          BoxStyler.color(Colors.blue.shade500)
-              .borderAll(color: Colors.blue.shade600, width: 2)
+          .color(Colors.blue.shade500)
+              .border(.all(.color(Colors.blue.shade600).width(2)))
               .shadow(
                 BoxShadowMix()
                     .color(Colors.blue.shade200)
@@ -48,7 +48,7 @@ class _ExampleState extends State<Example> {
         .color(Colors.grey.shade700)
         .variant(
           ContextVariant.widgetState(.selected),
-          TextStyler.color(Colors.white),
+          .color(Colors.white),
         );
 
     return Pressable(

@@ -11,6 +11,6 @@ class Example extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StyledText('hello world', style: TextStyler().uppercase());
+    return StyledText('hello world', style: .new().uppercase());
   }
 }

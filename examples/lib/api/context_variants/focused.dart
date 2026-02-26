@@ -37,12 +37,12 @@ class _ExampleState extends State<Example> {
     final style = BoxStyler.color(Colors.red)
         .height(100)
         .width(100)
-        .borderRounded(10)
+        .borderRadius(.circular(10))
         .wrap(.new().opacity(0.4))
         .onFocused(
-          BoxStyler.color(
+          .color(
             Colors.blue,
-          ).borderAll(color: Colors.blue.shade700, width: 3),
+          ).border(.all(.color(Colors.blue.shade700).width(3))),
         );
 
     return Column(

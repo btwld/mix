@@ -33,7 +33,7 @@ class _ExampleState extends State<Example> {
     final style = BoxStyler.color(Colors.black)
         .height(100)
         .width(100)
-        .borderRounded(10)
+        .borderRadius(.circular(10))
         .translate(appear ? 0 : -50, 0)
         .scale(appear ? 1 : 0.1)
         .animate(.easeInOut(1.s));

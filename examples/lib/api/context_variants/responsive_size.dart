@@ -15,12 +15,12 @@ class Example extends StatelessWidget {
     final style = BoxStyler.width(100)
         .height(100)
         .color(Colors.blue.shade400)
-        .onBreakpoint(Breakpoint.maxWidth(575), BoxStyler.color(Colors.green))
-        .borderRounded(16)
-        .shadowOnly(color: Colors.black.withValues(alpha: 0.2), blurRadius: 20)
+        .onBreakpoint(Breakpoint.maxWidth(575), .color(Colors.green))
+        .borderRadius(.circular(16))
+        .shadow(.color(Colors.black.withValues(alpha: 0.2)).blurRadius(20))
         .wrap(
           WidgetModifierConfig.defaultText(
-            TextStyler.fontSize(16).fontWeight(.bold).color(Colors.white),
+            .fontSize(16).fontWeight(.bold).color(Colors.white),
           ).align(alignment: .center),
         )
         .animate(.spring(300.ms));

@@ -9,11 +9,11 @@ final scaffoldContainer = FlexBoxStyler.mainAxisSize(
 
 final appHeaderContainer = BoxStyler.height(80)
     .color(Colors.black)
-    .paddingAll(16)
+    .padding(.all(16))
     .alignment(.center)
     .wrap(
       .new().defaultText(
-        TextStyler.fontSize(20).fontWeight(.bold).color(Colors.white),
+        .fontSize(20).fontWeight(.bold).color(Colors.white),
       ),
     );
 

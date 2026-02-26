@@ -53,7 +53,7 @@ class _ScaleAnimationState extends State<ScaleAnimation> {
         .color(Colors.black)
         .height(100)
         .width(100)
-        .borderRounded(10)
+        .borderRadius(.circular(10))
         .scale(appear ? 1 : 0.1) // state-based
         .animate(.easeInOut(1.s));
 
@@ -81,7 +81,7 @@ class HoverAnimation extends StatelessWidget {
         .color(Colors.black)
         .height(100)
         .width(100)
-        .borderRounded(10)
+        .borderRadius(.circular(10))
         .scale(1)
         .onHovered(
           BoxStyler
@@ -139,7 +139,7 @@ class _CompressExpandAnimationState extends State<CompressExpandAnimation> {
         .color(Colors.deepPurple)
         .height(100)
         .width(100)
-        .borderRounded(40)
+        .borderRadius(.circular(40))
         .phaseAnimation(
           trigger: _isExpanded,
           phases: AnimationPhases.values,
@@ -150,7 +150,7 @@ class _CompressExpandAnimationState extends State<CompressExpandAnimation> {
                 .color(Colors.red.shade800),
             .expanded => style
                 .scale(1.25)
-                .borderRounded(20)
+                .borderRadius(.circular(20))
                 .color(Colors.yellow.shade300),
           },
           configBuilder: (phase) => switch (phase) {

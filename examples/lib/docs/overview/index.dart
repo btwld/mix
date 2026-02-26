@@ -30,16 +30,16 @@ class Example extends StatelessWidget {
 // 1
 final boxStyle = BoxStyler.height(
   100,
-).width(100).color(Colors.purple).borderRounded(10);
+).width(100).color(Colors.purple).borderRadius(.circular(10));
 
 final textStyle = TextStyler.fontSize(20).fontWeight(.bold).color(Colors.black);
 
 // 2
 final buttonStyle = BoxStyler.height(50)
-    .borderRounded(25)
+    .borderRadius(.circular(25))
     .color(Colors.blue)
-    .onHovered(BoxStyler.color(Colors.blue.shade700))
-    .onDark(BoxStyler.color(Colors.blue.shade200));
+    .onHovered(.color(Colors.blue.shade700))
+    .onDark(.color(Colors.blue.shade200));
 
 // 3
 final $primaryColor = ColorToken('primary');
