@@ -20,7 +20,7 @@ class _ExampleState extends State<Example> {
   @override
   Widget build(BuildContext context) {
     // Button style that adapts to dark/light mode
-    final buttonStyle = BoxStyler.height(60)
+    final buttonStyle = BoxStyler().height(60)
         .width(60)
         .borderRadius(.circular(30))
         .color(Colors.grey.shade200)
@@ -33,7 +33,7 @@ class _ExampleState extends State<Example> {
         );
 
     // Icon style that adapts to dark/light mode
-    final iconStyle = IconStyler.color(Colors.grey.shade800)
+    final iconStyle = IconStyler().color(Colors.grey.shade800)
         .size(28)
         .icon(Icons.dark_mode)
         .animate(.easeInOut(200.ms))

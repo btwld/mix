@@ -8,7 +8,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cardStyle = BoxStyler.height(100)
+    final cardStyle = BoxStyler().height(100)
         .width(240)
         .color(Colors.blue)
         .borderRadius(.circular(12))
@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
             style: cardStyle,
             child: StyledText(
               'Hello Mix',
-              style: TextStyler.color(Colors.white).fontSize(18),
+              style: TextStyler().color(Colors.white).fontSize(18),
             ),
           ),
         ),
@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-final primaryCard = BoxStyler.color(Colors.blue).borderRadius(.circular(12));
+final primaryCard = BoxStyler().color(Colors.blue).borderRadius(.circular(12));
 
 final box = Box(style: primaryCard, child: StyledText('Primary'));
 final box2 = Box(

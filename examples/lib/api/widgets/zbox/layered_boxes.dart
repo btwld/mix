@@ -19,20 +19,20 @@ class Example extends StatelessWidget {
       stackAlignment: .bottomCenter,
     );
 
-    final boxStyle = BoxStyler.color(Colors.deepOrange).height(100).width(100);
+    final boxStyle = BoxStyler().color(Colors.deepOrange).height(100).width(100);
 
     return StackBox(
       style: flexStyle,
       children: [
         Box(style: boxStyle),
-        Box(style: BoxStyler.color(Colors.grey.shade300).height(50).width(100)),
+        Box(style: BoxStyler().color(Colors.grey.shade300).height(50).width(100)),
         Box(
-          style: BoxStyler.color(
+          style: BoxStyler().color(
             Colors.black,
           ).height(15).width(100).wrap(.new().align(alignment: .center)),
         ),
         Box(
-          style: BoxStyler.color(Colors.grey.shade100)
+          style: BoxStyler().color(Colors.grey.shade100)
               .height(100)
               .width(100)
               .border(.all(.color(Colors.black).width(20)))

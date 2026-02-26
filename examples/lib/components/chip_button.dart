@@ -7,7 +7,7 @@ final chipButtonLabel = TextStyler(
   style: TextStyleMix(color: Colors.white, fontSize: 12, fontWeight: .w500),
 );
 
-final chipButtonContainer = BoxStyler.height(40)
+final chipButtonContainer = BoxStyler().height(40)
     .width(120)
     .color(Colors.blue)
     .borderRadius(.circular(20))

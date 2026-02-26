@@ -12,12 +12,12 @@ class Example extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final baseStyle = TextStyler.fontSize(
+    final baseStyle = TextStyler().fontSize(
       18,
     ).fontWeight(.w600).color(Colors.blue.shade700);
 
     return ColumnBox(
-      style: FlexBoxStyler.spacing(16).mainAxisSize(.min),
+      style: FlexBoxStyler().spacing(16).mainAxisSize(.min),
       children: [
         StyledText('hello world', style: baseStyle.uppercase()),
         StyledText('HELLO WORLD', style: baseStyle.lowercase()),

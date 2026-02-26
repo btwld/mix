@@ -57,7 +57,7 @@ class _Example extends StatelessWidget {
         colors: {$primaryColor: Colors.red},
         child: StyledText(
           'Hello, World!',
-          style: TextStyler.color(
+          style: TextStyler().color(
             $primaryColor(),
           ).wrap(.new().padding(.all($spacing()))),
         ),

@@ -7,17 +7,17 @@ Define the policy for static factory constructors on Styler classes, enabling do
 ## The Rule
 
 **Base style declaration (first style):**
-1. `Styler().chain` is valid and preferred for top-level style declarations
-2. `Styler.factory(...)` is also valid when it improves readability
+1. Always use `Styler().chain` for top-level style declarations
+2. Do not use dot-shorthand at top-level style assignment
 
 **Nested style arguments (variants/state/typed params):**
 1. Prefer shorthand `.method(args)` when the receiving type is known
 2. Do not pass `Styler().chain` as nested style arguments
 
 Common typed contexts:
-- `style: .color(...)`
 - `.container(.shadow(...))`
 - `.onHovered(.color(...))`
+- `.onDisabled(.color(...))`
 
 Methods used **mid-chain or at the end** (animate, wrap, variants, etc.) do not need factories — they are never the entry point.
 
@@ -109,29 +109,29 @@ final interactive = BoxStyler.color(Colors.blue)
 
 ```dart
 // Simple — factory replaces Styler() + first method
-BoxStyler.color(Colors.blue)
-TextStyler.fontSize(18)
-IconStyler.size(24)
+BoxStyler().color(Colors.blue)
+TextStyler().fontSize(18)
+IconStyler().size(24)
 
-// Chained — only the first call uses the factory
-BoxStyler.color(Colors.blue).padding(.all(16)).borderRadius(.circular(8))
+// Chained — top-level starts with an explicit styler
+BoxStyler().color(Colors.blue).padding(.all(16)).borderRadius(.circular(8))
 
 // Inside variants — saves parens in common patterns
 style.onHovered(.color(Colors.blue))
 style.onDark(.color(Colors.white))
 
 // Constraint and shadow entry points
-BoxStyler.minWidth(100).maxWidth(300)
-BoxStyler.shadow(.color(Colors.black12).blurRadius(10))
+BoxStyler().minWidth(100).maxWidth(300)
+BoxStyler().shadow(.color(Colors.black12).blurRadius(10))
 
 // Chain-only methods stay as Styler().method()
-BoxStyler.border(.all(.color(Colors.red).width(2)))
-BoxStyler.padding(.all(16)).borderRadius(.circular(8))
+BoxStyler().border(.all(.color(Colors.red).width(2)))
+BoxStyler().padding(.all(16)).borderRadius(.circular(8))
 final directive = TextStyler().uppercase().fontSize(18);
 
 // Mid-chain methods — no change needed
-BoxStyler.color(Colors.blue).animate(.easeInOut(100.ms))
-BoxStyler.padding(.all(16)).wrap(.new().align(alignment: .center))
+BoxStyler().color(Colors.blue).animate(.easeInOut(100.ms))
+BoxStyler().padding(.all(16)).wrap(.new().align(alignment: .center))
 ```
 
 ## Testing Requirements

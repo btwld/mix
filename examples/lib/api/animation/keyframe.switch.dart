@@ -34,7 +34,7 @@ class _SwitchAnimationState extends State<SwitchAnimation> {
         },
         child: Box(
           style:
-              BoxStyler.color(
+              BoxStyler().color(
                     _trigger.value
                         ? Colors.deepPurpleAccent
                         : Colors.grey.shade300,

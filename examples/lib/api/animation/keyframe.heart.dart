@@ -54,7 +54,7 @@ class _HeartAnimationState extends State<HeartAnimation> {
         });
       },
       child: Box(
-        style: BoxStyler.keyframeAnimation(
+        style: BoxStyler().keyframeAnimation(
           trigger: _trigger,
           timeline: [
             KeyframeTrack('scale', [
@@ -93,9 +93,11 @@ class _HeartAnimationState extends State<HeartAnimation> {
             final angle = values.get('angle');
 
             return style
-                .wrap(.new().scale(scale, scale * verticalStretch))
-                .wrap(.new().translate(x: 0, y: verticalOffset))
-                .wrap(.new().rotate(radians: angle));
+                .wrap(
+                  WidgetModifierConfig().scale(scale, scale * verticalStretch),
+                )
+                .wrap(WidgetModifierConfig().translate(x: 0, y: verticalOffset))
+                .wrap(WidgetModifierConfig().rotate(radians: angle));
           },
         ),
         child: ShaderMask(

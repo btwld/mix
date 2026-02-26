@@ -3,11 +3,11 @@
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
-final scaffoldContainer = FlexBoxStyler.mainAxisSize(
+final scaffoldContainer = FlexBoxStyler().mainAxisSize(
   .max,
 ).crossAxisAlignment(.stretch).mainAxisAlignment(.start).color(Colors.white);
 
-final appHeaderContainer = BoxStyler.height(80)
+final appHeaderContainer = BoxStyler().height(80)
     .color(Colors.black)
     .padding(.all(16))
     .alignment(.center)
@@ -15,7 +15,7 @@ final appHeaderContainer = BoxStyler.height(80)
       .new().defaultText(.fontSize(20).fontWeight(.bold).color(Colors.white)),
     );
 
-final scaffoldBodyContainer = BoxStyler.color(
+final scaffoldBodyContainer = BoxStyler().color(
   Colors.grey.shade50,
 ).padding(.all(16));
 

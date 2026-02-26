@@ -12,7 +12,7 @@ class Example extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = TextStyler.style(
+    final style = TextStyler().style(
       TextStyleMix.create(
         color: .value<Color>(
           Colors.red,

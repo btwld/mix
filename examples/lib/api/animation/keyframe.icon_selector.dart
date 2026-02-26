@@ -33,11 +33,11 @@ class EmojiSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget emoji(String emoji) {
-      return StyledText(emoji, style: TextStyler.fontSize(25));
+      return StyledText(emoji, style: TextStyler().fontSize(25));
     }
 
     return FlexBox(
-      style: FlexBoxStyler.padding(.symmetric(vertical: 10, horizontal: 16))
+      style: FlexBoxStyler().padding(.symmetric(vertical: 10, horizontal: 16))
           .color(Colors.white)
           .borderRadius(.circular(50))
           .shadow(.color(Colors.black12).blurRadius(50))
@@ -84,7 +84,7 @@ class _PopUpAnimationState extends State<PopUpAnimation> {
   @override
   Widget build(BuildContext context) {
     return Box(
-      style: BoxStyler.keyframeAnimation(
+      style: BoxStyler().keyframeAnimation(
         trigger: trigger,
         timeline: [
           KeyframeTrack('scale', [
@@ -105,7 +105,7 @@ class _PopUpAnimationState extends State<PopUpAnimation> {
                   ..scaleByDouble(scale, scale, 1, 1)
                   ..translateByDouble(0.0, y, 0, 1),
               )
-              .wrap(.new().opacity(opacity));
+              .wrap(WidgetModifierConfig().opacity(opacity));
         },
       ),
       child: widget.child,

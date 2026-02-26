@@ -226,16 +226,16 @@ class CustomButton extends StatelessWidget {
   final ButtonStyler? style;
 
   ButtonStyler buttonStyle(ButtonStyler? style, ButtonVariant? variant) {
-    final container = FlexBoxStyler.borderRadius(.circular(6))
+    final container = FlexBoxStyler().borderRadius(.circular(6))
         .padding(.horizontal(8).vertical(12))
         .spacing(8)
         .mainAxisAlignment(.center)
         .crossAxisAlignment(.center)
         .mainAxisSize(.min);
 
-    final label = TextStyler.style(TextStyleMix.fontSize(16).fontWeight(.w500));
+    final label = TextStyler().style(TextStyleMix.fontSize(16).fontWeight(.w500));
 
-    final icon = IconStyler.size(18);
+    final icon = IconStyler().size(18);
 
     return ButtonStyler()
         .container(container)
