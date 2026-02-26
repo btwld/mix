@@ -36,7 +36,7 @@ Mix addresses these challenges by creating a styling system that uses utility fu
 ### Prerequisites
 
 - **Dart SDK**: ≥ 3.11.0 (required for dot notation syntax)
-- **Flutter**: ≥ 3.41.2
+- **Flutter**: ≥ 3.41.0
 
 ### Add Mix to Your Project
 

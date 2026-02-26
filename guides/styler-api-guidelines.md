@@ -2,17 +2,17 @@
 
 ## Purpose
 
-Define the policy for static factory constructors on Styler classes, enabling dot-shorthand usage while avoiding API bloat.
+Define the policy for static factory constructors on Styler classes. Factories enable dot-shorthand usage in nested/typed contexts while keeping top-level declarations explicit.
 
 ## The Rule
 
 **Base style declaration (first style):**
-1. Always use `Styler().chain` for top-level style declarations
-2. Do not use dot-shorthand at top-level style assignment
+1. Always start top-level style declarations with `BoxStyler()` (instance constructor), then chain methods
+2. Do not use static factory constructors (`BoxStyler.color(...)`) or bare dot-shorthand (`.method()`) at top-level
 
 **Nested style arguments (variants/state/typed params):**
-1. Prefer shorthand `.method(args)` when the receiving type is known
-2. Do not pass `Styler().chain` as nested style arguments
+1. Prefer bare shorthand `.method(args)` when the receiving type is known from context
+2. Do not pass `BoxStyler().method()` as nested style arguments — use bare shorthand instead
 
 Common typed contexts:
 - `.container(.shadow(...))`
@@ -80,7 +80,7 @@ These are used mid-chain or at the end. They should remain as instance methods:
 | Category | Methods |
 |---|---|
 | Modifiers | `wrap`, `phaseAnimation`, `keyframeAnimation` |
-| Compound spacing | `padding(.all())`, `padding(.horizontal())`, `padding(.vertical())`, `margin(.all())`, `marginX`, `marginY`, `padding(.only())` |
+| Compound spacing | `padding(.all(8))`, `padding(.horizontal(8))`, `padding(.vertical(8))`, `margin(.all(8))`, `margin(.horizontal(8))`, `margin(.vertical(8))`, `padding(.only(left: 8, right: 8))` |
 | Compound border | `border(.all())`, `border(.top())`, `borderRadius(.circular())` |
 | Compound box methods | `shadow(.color(...).blurRadius(...))`, `backgroundImageUrl` |
 | Text directives | `uppercase`, `titlecase`, `sentencecase`, `reverse` |
@@ -92,15 +92,15 @@ These are used mid-chain or at the end. They should remain as instance methods:
 
 Use Dart 3.11+ inferred enum/constant shorthand when context is typed:
 ```dart
-BoxStyler.alignment(.center)
-FlexBoxStyler.mainAxisAlignment(.center)
-StackBoxStyler.fit(.expand)
-FlexStyler.row()  // preset for direction: .horizontal
+// Dot-shorthand for enum/constant arguments within chains
+BoxStyler().alignment(.center)
+FlexBoxStyler().mainAxisAlignment(.center)
+StackBoxStyler().fit(.expand)
 ```
 
-Use shorthand for typed style arguments too:
+Use bare shorthand for nested typed style arguments:
 ```dart
-final interactive = BoxStyler.color(Colors.blue)
+final interactive = BoxStyler().color(Colors.blue)
   .onHovered(.shadow(.color(Colors.black12).blurRadius(10)))
   .onDisabled(.color(Colors.grey));
 ```
@@ -108,28 +108,28 @@ final interactive = BoxStyler.color(Colors.blue)
 ## Code Examples
 
 ```dart
-// Simple — factory replaces Styler() + first method
+// Top-level — always start with Styler() instance
 BoxStyler().color(Colors.blue)
 TextStyler().fontSize(18)
 IconStyler().size(24)
 
-// Chained — top-level starts with an explicit styler
+// Chained — instance constructor then fluent chain
 BoxStyler().color(Colors.blue).padding(.all(16)).borderRadius(.circular(8))
 
-// Inside variants — saves parens in common patterns
+// Inside variants — bare shorthand in typed contexts
 style.onHovered(.color(Colors.blue))
 style.onDark(.color(Colors.white))
 
-// Constraint and shadow entry points
+// Constraints and shadows
 BoxStyler().minWidth(100).maxWidth(300)
 BoxStyler().shadow(.color(Colors.black12).blurRadius(10))
 
-// Chain-only methods stay as Styler().method()
+// Compound methods (chain-only, no static factories)
 BoxStyler().border(.all(.color(Colors.red).width(2)))
 BoxStyler().padding(.all(16)).borderRadius(.circular(8))
 final directive = TextStyler().uppercase().fontSize(18);
 
-// Mid-chain methods — no change needed
+// Mid-chain methods
 BoxStyler().color(Colors.blue).animate(.easeInOut(100.ms))
 BoxStyler().padding(.all(16)).wrap(.new().align(alignment: .center))
 ```
