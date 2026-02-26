@@ -63,14 +63,14 @@ final buttonStyle = BoxStyler()
 
 ## Modifier Ordering
 
-Modifiers are applied from innermost to outermost in the order they are chained. This means the last modifier in the chain becomes the outermost wrapper:
+Modifiers are applied in chain order: the first `.wrap()` becomes the innermost wrapper (closest to the widget), and the last `.wrap()` becomes the outermost wrapper:
 
 ```dart
-// Result: Align → Opacity → Padding → Box
+// Widget tree (inside out): Box → Padding → Opacity → Align
 final style = BoxStyler()
-    .wrap(.padding(.all(8)))  // innermost wrapper
-    .wrap(.opacity(0.5))                 // middle wrapper
-    .wrap(.align(alignment: .center));   // outermost wrapper
+    .wrap(.padding(.all(8)))             // innermost — wraps the Box
+    .wrap(.opacity(0.5))                 // middle
+    .wrap(.align(alignment: .center));   // outermost — wraps everything
 ```
 
 <Callout type="info">
@@ -191,7 +191,7 @@ final $opacityToken = DoubleToken('custom.opacity');
 
 final tokenStyle = BoxStyler()
     .color(Colors.blue)
-    .wrap(.opacity(Prop.token($opacityToken)));
+    .wrap(.opacity($opacityToken()));
 ```
 
 ## Best Practices

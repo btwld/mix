@@ -20,11 +20,11 @@ The biggest change is moving from the `Style()` constructor with utility prefixe
 
 | v1.x Pattern | v2.0 Pattern |
 |--------------|--------------|
-| `Style($box.color.blue())` | `BoxStyler.color(Colors.blue)` |
-| `Style($text.style.fontSize(16))` | `TextStyler.fontSize(16)` |
-| `Style($icon.size(24))` | `IconStyler.size(24)` |
-| `Style($flexbox.gap(8))` | `FlexBoxStyler.spacing(8)` |
-| `Style($stack.alignment.center())` | `StackBoxStyler.alignment(.center)` |
+| `Style($box.color.blue())` | `BoxStyler().color(Colors.blue)` |
+| `Style($text.style.fontSize(16))` | `TextStyler().fontSize(16)` |
+| `Style($icon.size(24))` | `IconStyler().size(24)` |
+| `Style($flexbox.gap(8))` | `FlexBoxStyler().spacing(8)` |
+| `Style($stack.alignment.center())` | `StackBoxStyler().alignment(.center)` |
 
 #### Utility Prefixes Deprecated
 
@@ -131,7 +131,7 @@ BoxStyler().color(primaryColor())
 ### New Features in 2.0
 
 - **Fluent Styler API**: Chain methods for better readability
-- **Callable Stylers**: Use `BoxStyler.<factory>(...)()` as shorthand for creating widgets
+- **Callable Stylers**: Use a styler as a widget factory — e.g., `BoxStyler().color(Colors.blue)(child: Text('Hello'))` creates a `Box` widget directly
 - **Style.of() / Style.maybeOf()**: Access resolved styles from the widget tree
 - **Number directives**: `multiply()`, `add()`, `subtract()`, `divide()`, `clamp()`
 - **Improved animation support**: Better integration with animation configs

@@ -8,10 +8,10 @@ transformations, and responsive variants.
 You can use `TextStyler` to create styles with a fluent API. Example:
 
 ```dart
-final style = TextStyler
- .fontSize(24)
- .fontWeight(.bold)
- .color(Colors.blue);
+final style = TextStyler()
+    .fontSize(24)
+    .fontWeight(.bold)
+    .color(Colors.blue);
 
 StyledText(
  'Hello Mix',
@@ -131,6 +131,6 @@ StyledText(
 |--------|-------------|
 | `onHovered` | Creates a variant for hover state |
 | `onPressed` | Creates a variant for pressed state |
-| `onFocused` | Creates a variant for focused state |
+| `onFocused` | Creates a variant for focused state. Requires `Pressable` or `PressableBox` wrapper for focus tracking. |
 | `onDisabled` | Creates a variant for disabled state |
 | `onEnabled` | Creates a variant for enabled state (opposite of disabled) |

@@ -28,8 +28,8 @@ MixScope(
 );
 
 // 3. Use the token in a style
-final style = BoxStyler
-    .color($primary())  // Use call() to reference the token
+final style = BoxStyler()
+    .color($primary())  // Call the token with () to create a reference resolved at build time
     .size(100, 100);
 ```
 
@@ -149,30 +149,9 @@ MixScope(
 Use `${token_name}.call()` or `${token_name}()` to reference a token:
 
 ```dart
-final style = BoxStyler
+final style = BoxStyler()
     .color($primary())
     .paddingAll($spacingMd());
-```
-
-### Token Methods
-
-Some stylers provide dedicated token methods:
-
-```dart
-final style = BoxStyler
-    .colorToken($primary)
-    .paddingToken($spacingMd);
-```
-
-### Prop.token
-
-Use `Prop.token()` with `.create()` constructors for advanced composition:
-
-```dart
-final style = BoxStyler.create(
-  color: Prop.token($primary),
-  padding: Prop.token($spacingMd),
-);
 ```
 
 ## Creating Custom Tokens
@@ -220,7 +199,7 @@ MixScope(
 );
 
 // Use with BoxStyler.create
-final style = BoxStyler
+final style = BoxStyler()
     .color(Colors.red)
     .size(100, 100)
     .merge(BoxStyler.create(padding: $contentPadding()));
@@ -272,12 +251,12 @@ class _ThemedAppState extends State<ThemedApp> {
       child: MaterialApp(
         home: Scaffold(
           body: Box(
-            style: BoxStyler.color($background()),
+            style: BoxStyler().color($background()),
             child: Column(
               children: [
                 StyledText(
                   'Hello, World!',
-                  style: TextStyler.color($foreground()),
+                  style: TextStyler().color($foreground()),
                 ),
                 ElevatedButton(
                   onPressed: () => setState(() => isDark = !isDark),

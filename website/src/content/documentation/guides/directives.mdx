@@ -16,7 +16,7 @@ StyledText(
 )
 ```
 
-Directives can be chained:
+Directives can be chained. Number directives operate on `Prop<T>`, which requires the `.create()` constructor. This is the only case where you interact with `Prop` directly:
 
 ```dart
 // Chain: multiply by 2, then add 5, then clamp between 0-30
@@ -94,11 +94,12 @@ Transform numeric values (width, height, padding, font sizes):
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
-// Proportional typography scaling
+// Number directives require .create() + Prop — this is the only case
+// where you need to interact with Prop directly
 final style = TextStyler.create(
-  style: TextStyleMix(
+  style: Prop.mix(TextStyleMix(
     letterSpacing: Prop.value(0.0025).multiply(12.0),
-  ),
+  )),
 );
 
 // Dynamic sizing with tokens
@@ -202,7 +203,7 @@ extension NegateNumberPropExt<T extends num> on Prop<T> {
 
 - Use text directives for consistent case formatting
 - Use number directives for proportional sizing with tokens
-- Use color directives for state variations (hover, disabled)
+- Color directives (`DarkenColorDirective`, `LightenColorDirective`, `TintColorDirective`, `ShadeColorDirective`, etc.) are available for programmatic color transformations via `Prop.directives([...])`
 - Keep directives simple—complex logic belongs elsewhere
 
 **Chaining order matters:**

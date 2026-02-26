@@ -15,11 +15,18 @@ Mix gives you three ways to bring motion into your UI, depending on how much con
 
 ---
 
+## Duration Extensions
+
+Mix provides duration extensions on `int` for convenience. These are available via `import 'package:mix/mix.dart'`:
+
+- `300.ms` → `Duration(milliseconds: 300)`
+- `1.s` → `Duration(seconds: 1)`
+
 ## Implicit Animations
 
 When something in your UI changes—a color on hover, a size on tap, or switching to dark mode—you often want that change to feel smooth rather than instant. Implicit animations do exactly that: whenever a value flips from A to B, Mix interpolates between them so the transition feels natural.
 
-**How to use:** Add `.animate(AnimationConfig....)` to any `Style` or `Styler`. It works with regular state (e.g. `setState`) and with variants like `onHovered`, `onPressed`, and `onDark`.
+**How to use:** Add `.animate(...)` to any `Style` or `Styler`. It works with regular state (e.g. `setState`) and with variants like `onHovered`, `onPressed`, and `onDark`.
 
 ### Case 1: State-triggered
 
@@ -31,7 +38,7 @@ int _counter = 2;
 final box = BoxStyler()
     .color(Colors.deepPurple)
     .size(_counter * 10, _counter * 10)
-    .animate(.spring(1.s, bounce: 0.6));
+    .animate(.springDurationBased(1.s, bounce: 0.6));
 
 return Pressable(
   onPress: () => setState(() => _counter += 3),
@@ -158,9 +165,9 @@ return Center(
 
 ### Case 2: Loop animation (scale + color + opacity)
 
-Several tracks run in parallel to create one looping animation. The style builder applies scale, color, and opacity from the tracks. Here we use a `ColorTween` to interpolate between the initial and end colors.
+Several tracks run in parallel to create one looping animation. The style builder applies scale, color, and opacity from the tracks.
 
-The Keyframe animation feature allows you to use any custom Tween you want to interpolate between the initial and end values.
+For non-numeric types (like `Color`), provide a `tweenBuilder` (e.g., `ColorTween.new`) so the animation system knows how to interpolate between values. Numeric types (`double`, `int`) are interpolated automatically. The Keyframe animation feature allows you to use any custom Tween you want.
 
 ```dart
 final box = BoxStyler()
@@ -186,7 +193,7 @@ final box = BoxStyler()
         return style
             .transform(Matrix4.diagonal3Values(scale, scale, 1.0))
             .color(values.get('color'))
-            .wrap(WidgetModifierConfig.opacity(opacity));
+            .wrap(.opacity(opacity));
       },
     );
 

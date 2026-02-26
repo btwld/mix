@@ -6,9 +6,9 @@ It allows you to create visually styled icons with color, size, shadows, and res
 You can use `IconStyler` to create styles with a fluent API. Example:
 
 ```dart
-final style = IconStyler
- .size(32)
- .color(Colors.blue);
+final style = IconStyler()
+    .size(32)
+    .color(Colors.blue);
 
 StyledIcon(
  Icons.favorite,
@@ -96,6 +96,6 @@ StyledIcon(
 |--------|-------------|
 | `onHovered` | Creates a variant for hover state |
 | `onPressed` | Creates a variant for pressed state |
-| `onFocused` | Creates a variant for focused state |
+| `onFocused` | Creates a variant for focused state. Requires `Pressable` or `PressableBox` wrapper for focus tracking. |
 | `onDisabled` | Creates a variant for disabled state |
 | `onEnabled` | Creates a variant for enabled state (opposite of disabled) |

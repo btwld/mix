@@ -11,14 +11,14 @@ For specific layouts, use `RowBox` for horizontal layouts or `ColumnBox` for ver
 You can use `FlexBoxStyler` to create styles with a fluent API. Example:
 
 ```dart
-final style = FlexBoxStyler
- .direction(.horizontal)
- .mainAxisAlignment(.spaceBetween)
- .crossAxisAlignment(.center)
- .paddingAll(16)
- .spacing(12)
- .color(Colors.grey.shade100)
- .borderRounded(8);
+final style = FlexBoxStyler()
+    .direction(.horizontal)
+    .mainAxisAlignment(.spaceBetween)
+    .crossAxisAlignment(.center)
+    .paddingAll(16)
+    .spacing(12)
+    .color(Colors.grey.shade100)
+    .borderRounded(8);
 
 FlexBox(
  style: style,
@@ -246,6 +246,6 @@ FlexBox(
 |--------|-------------|
 | `onHovered` | Creates a variant for hover state |
 | `onPressed` | Creates a variant for pressed state |
-| `onFocused` | Creates a variant for focused state |
+| `onFocused` | Creates a variant for focused state. Requires `Pressable` or `PressableBox` wrapper for focus tracking. |
 | `onDisabled` | Creates a variant for disabled state |
 | `onEnabled` | Creates a variant for enabled state (opposite of disabled) |

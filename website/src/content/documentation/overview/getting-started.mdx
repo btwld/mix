@@ -11,11 +11,11 @@ import { Steps, Callout } from "nextra/components";
 
 Before installing Mix 2.0, ensure you have:
 
-- **Dart SDK**: 3.10.0 or higher (required for the fluent Styler API)
-- **Flutter**: Latest stable version recommended
+- **Dart SDK**: 3.11.0 or higher (required for the fluent Styler API and dot-shorthand syntax)
+- **Flutter**: 3.41.0 or higher
 
 <Callout type="info">
-  Mix 2.0 uses Dart's enhanced method chaining capabilities introduced in Dart 3.10. Ensure your project's `pubspec.yaml` specifies the correct SDK constraint: `sdk: '>=3.10.0 <4.0.0'`
+  Mix 2.0 uses Dart's dot-shorthand syntax introduced in Dart 3.11. Ensure your project's `pubspec.yaml` specifies the correct SDK constraint: `sdk: '>=3.11.0 <4.0.0'`
 </Callout>
 
 <Steps>
@@ -54,12 +54,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cardStyle = BoxStyler
+    final cardStyle = BoxStyler()
         .height(100)
         .width(240)
         .color(Colors.blue)
         .borderRounded(12)
-        .borderAll(color: Colors.black, width: 1, style: BorderStyle.solid);
+        .borderAll(color: Colors.black, width: 1, style: .solid);
 
     return MaterialApp(
       home: Scaffold(
@@ -68,7 +68,7 @@ class MyApp extends StatelessWidget {
             style: cardStyle,
             child: StyledText(
               'Hello Mix',
-              style: TextStyler.color(Colors.white).fontSize(18),
+              style: TextStyler().color(Colors.white).fontSize(18),
             ),
           ),
         ),
@@ -83,9 +83,9 @@ class MyApp extends StatelessWidget {
 Extract it and reuse across widgets:
 
 ```dart
-final primaryCard = BoxStyler
-  .color(Colors.blue)
-  .borderRounded(12);
+final primaryCard = BoxStyler()
+    .color(Colors.blue)
+    .borderRounded(12);
 
 final box = Box(style: primaryCard, child: StyledText('Primary'));
 

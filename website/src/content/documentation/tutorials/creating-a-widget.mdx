@@ -61,7 +61,7 @@ final class ButtonSpec extends Spec<ButtonSpec>
 That's it — no manual `copyWith`, `lerp`, or `props`. The generated mixin `_$ButtonSpecMethods` provides all of those. Run code generation with:
 
 ```bash
-dart run build_runner build
+melos run gen:build
 ```
 
 <details>
@@ -118,7 +118,8 @@ class ButtonStyler extends MixStyler<ButtonStyler, ButtonSpec>
     super.animation,
     super.modifier,
     super.variants,
-  }) : $container = Prop.maybeMix(container),
+  }) : // Prop.maybeMix wraps optional Styler values for the resolution pipeline
+       $container = Prop.maybeMix(container),
        $icon = Prop.maybeMix(icon),
        $label = Prop.maybeMix(label);
 
@@ -135,21 +136,21 @@ class ButtonStyler extends MixStyler<ButtonStyler, ButtonSpec>
 
   // Convenience methods (beyond the generated container/icon/label setters)
   ButtonStyler backgroundColor(Color value) {
-    return merge(ButtonStyler(container: FlexBoxStyler.color(value)));
+    return merge(ButtonStyler(container: FlexBoxStyler().color(value)));
   }
 
   ButtonStyler textColor(Color value) {
-    return merge(ButtonStyler(label: TextStyler.color(value)));
+    return merge(ButtonStyler(label: TextStyler().color(value)));
   }
 
   ButtonStyler iconColor(Color value) {
-    return merge(ButtonStyler(icon: IconStyler.color(value)));
+    return merge(ButtonStyler(icon: IconStyler().color(value)));
   }
 
   ButtonStyler borderRadius(double value) {
     return merge(
       ButtonStyler(
-        container: FlexBoxStyler.borderRadius(BorderRadiusMix.circular(value)),
+        container: FlexBoxStyler().borderRadius(.circular(value)),
       ),
     );
   }
@@ -157,15 +158,14 @@ class ButtonStyler extends MixStyler<ButtonStyler, ButtonSpec>
   ButtonStyler padding({required double x, required double y}) {
     return merge(
       ButtonStyler(
-        container: FlexBoxStyler.padding(
-          EdgeInsetsGeometryMix.symmetric(horizontal: x, vertical: y),
-        ),
+        container: FlexBoxStyler().padding(
+            .symmetric(horizontal: x, vertical: y)),
       ),
     );
   }
 
   ButtonStyler scale(double value) {
-    return merge(ButtonStyler(container: FlexBoxStyler.scale(value)));
+    return merge(ButtonStyler(container: FlexBoxStyler().scale(value)));
   }
 }
 ```
@@ -234,7 +234,7 @@ enum ButtonVariant {
       case ButtonVariant.outlined:
         return ButtonStyler()
             .container(
-              FlexBoxStyler
+              FlexBoxStyler()
                   .color(Colors.transparent)
                   .borderAll(width: 1.5, color: Colors.blueAccent),
             )
@@ -320,7 +320,7 @@ The `buttonStyle` function defines base styles, merges variant styles, and adds 
 ```dart
 ButtonStyler buttonStyle(ButtonStyler? style, ButtonVariant? variant) {
   // Base styles shared across all variants
-  final container = FlexBoxStyler
+  final container = FlexBoxStyler()
       .borderRounded(6)
       .paddingX(8)
       .paddingY(12)
@@ -329,11 +329,11 @@ ButtonStyler buttonStyle(ButtonStyler? style, ButtonVariant? variant) {
       .crossAxisAlignment(.center)
       .mainAxisSize(.min);
 
-  final label = TextStyler.style(
-    TextStyleMix().fontSize(16).fontWeight(.w500),
-  );
+  final label = TextStyler()
+      .fontSize(16)
+      .fontWeight(.w500);
 
-  final icon = IconStyler.size(18);
+  final icon = IconStyler().size(18);
 
   return ButtonStyler()
       .container(container)
@@ -342,17 +342,13 @@ ButtonStyler buttonStyle(ButtonStyler? style, ButtonVariant? variant) {
       .merge(variant?.style)
       .onPressed(
         ButtonStyler()
-            .container(FlexBoxStyler.scale(0.9)),
+            .container(FlexBoxStyler().scale(0.9)),
       )
       .onDisabled(
         ButtonStyler()
-            .container(FlexBoxStyler.color(Colors.blueGrey.shade100))
-            .label(
-              TextStyler.style(
-                TextStyleMix().color(Colors.blueGrey.shade700),
-              ),
-            )
-            .icon(IconStyler.color(Colors.blueGrey.shade700)),
+            .container(FlexBoxStyler().color(Colors.blueGrey.shade100))
+            .label(TextStyler().color(Colors.blueGrey.shade700))
+            .icon(IconStyler().color(Colors.blueGrey.shade700)),
       )
       .merge(style);
 }

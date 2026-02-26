@@ -7,15 +7,11 @@
 You can use the `StackBoxStyler` API to fluently compose your layout and decoration styles. Example:
 
 ```dart
-final style = StackBoxStyler
- .padding(EdgeInsets.all(16))
- .decoration(
-   BoxDecoration(
-     color: Colors.white,
-     borderRadius: BorderRadius.circular(12),
-   ),
- )
- .alignment(.center);
+final style = StackBoxStyler()
+    .paddingAll(16)
+    .color(Colors.white)
+    .borderRounded(12)
+    .stackAlignment(.center);
 
 StackBox(
  children: [
@@ -234,6 +230,6 @@ StackBox(
 |--------|-------------|
 | `onHovered` | Creates a variant for hover state |
 | `onPressed` | Creates a variant for pressed state |
-| `onFocused` | Creates a variant for focused state |
+| `onFocused` | Creates a variant for focused state. Requires `Pressable` or `PressableBox` wrapper for focus tracking. |
 | `onDisabled` | Creates a variant for disabled state |
 | `onEnabled` | Creates a variant for enabled state (opposite of disabled) |
