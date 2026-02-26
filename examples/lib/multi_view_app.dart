@@ -72,7 +72,7 @@ class _PreviewView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Get the initialData passed from JavaScript via addView().
-    final initialData = multi_view.getInitialData();
+    final initialData = multi_view.getInitialData(viewId);
     // Defensive typing: JS may pass non-string values
     final rawPreviewId = initialData?['previewId'];
     final previewId = rawPreviewId is String

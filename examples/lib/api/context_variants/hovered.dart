@@ -12,13 +12,13 @@ class Example extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = BoxStyler()
+    final box = BoxStyler()
         .color(Colors.red)
         .height(100)
         .width(100)
         .borderRounded(10)
         .onHovered(.color(Colors.blue));
 
-    return Box(style: style);
+    return box();
   }
 }
