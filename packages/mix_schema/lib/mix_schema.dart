@@ -13,7 +13,6 @@ export 'src/ast/schema_values.dart';
 export 'src/ast/ui_schema_root.dart';
 
 // Adapters — public: consumers may implement custom adapters
-export 'src/adapters/a2ui_v08_adapter.dart';
 export 'src/adapters/a2ui_v09_adapter.dart';
 export 'src/adapters/wire_adapter.dart';
 
@@ -24,8 +23,7 @@ export 'src/validate/schema_validator.dart';
 // Trust — trust level enum
 export 'src/trust/schema_trust.dart';
 
-// Events & Actions — public types for event handling
-export 'src/events/schema_action.dart';
+// Events — public types for event handling
 export 'src/events/schema_event.dart';
 
 // Render — consumer-facing widgets only

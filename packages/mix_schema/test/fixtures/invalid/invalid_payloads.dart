@@ -94,18 +94,6 @@ const invalidPressableNoSemantics = <String, dynamic>{
   },
 };
 
-/// Invalid: image without alt text (warning).
-const invalidImageNoAlt = <String, dynamic>{
-  'id': 'test_image_no_alt',
-  'version': '0.9',
-  'trust': 'standard',
-  'root': {
-    'type': 'image',
-    'nodeId': 'bare_image',
-    'src': 'https://example.com/img.png',
-  },
-};
-
 /// Invalid: scrollable without child.
 const invalidScrollableNoChild = <String, dynamic>{
   'id': 'test_scrollable_no_child',

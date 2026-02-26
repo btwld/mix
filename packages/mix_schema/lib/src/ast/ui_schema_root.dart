@@ -1,5 +1,4 @@
 import 'schema_node.dart';
-import 'schema_values.dart';
 import '../trust/schema_trust.dart';
 
 /// Root container for a canonical UI schema.
@@ -24,14 +23,8 @@ final class UiSchemaRoot {
 /// Environment data provided alongside the schema.
 final class SchemaEnvironment {
   final Map<String, dynamic>? data; // initial data context
-  final Map<String, dynamic>? state; // initial local state
-  final Map<String, SchemaValue>? tokens; // token overrides
-  final List<String>? breakpoints; // breakpoint names in order
 
   const SchemaEnvironment({
     this.data,
-    this.state,
-    this.tokens,
-    this.breakpoints,
   });
 }

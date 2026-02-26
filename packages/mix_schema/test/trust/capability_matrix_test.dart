@@ -32,76 +32,6 @@ void main() {
     });
   });
 
-  group('ActionPolicy', () {
-    group('policyFor matches §9.3 trust-action gating table', () {
-      // Minimal trust
-      test('minimal + low = execute', () {
-        expect(
-          TrustCapabilities.policyFor(SchemaTrust.minimal, ActionRisk.low),
-          ActionPolicy.execute,
-        );
-      });
-
-      test('minimal + medium = block', () {
-        expect(
-          TrustCapabilities.policyFor(SchemaTrust.minimal, ActionRisk.medium),
-          ActionPolicy.block,
-        );
-      });
-
-      test('minimal + high = block', () {
-        expect(
-          TrustCapabilities.policyFor(SchemaTrust.minimal, ActionRisk.high),
-          ActionPolicy.block,
-        );
-      });
-
-      // Standard trust
-      test('standard + low = execute', () {
-        expect(
-          TrustCapabilities.policyFor(SchemaTrust.standard, ActionRisk.low),
-          ActionPolicy.execute,
-        );
-      });
-
-      test('standard + medium = proposeBeforeExecute', () {
-        expect(
-          TrustCapabilities.policyFor(SchemaTrust.standard, ActionRisk.medium),
-          ActionPolicy.proposeBeforeExecute,
-        );
-      });
-
-      test('standard + high = block', () {
-        expect(
-          TrustCapabilities.policyFor(SchemaTrust.standard, ActionRisk.high),
-          ActionPolicy.block,
-        );
-      });
-
-      // Elevated trust
-      test('elevated + low = execute', () {
-        expect(
-          TrustCapabilities.policyFor(SchemaTrust.elevated, ActionRisk.low),
-          ActionPolicy.execute,
-        );
-      });
-
-      test('elevated + medium = execute', () {
-        expect(
-          TrustCapabilities.policyFor(SchemaTrust.elevated, ActionRisk.medium),
-          ActionPolicy.execute,
-        );
-      });
-
-      test('elevated + high = proposeBeforeExecute', () {
-        expect(
-          TrustCapabilities.policyFor(SchemaTrust.elevated, ActionRisk.high),
-          ActionPolicy.proposeBeforeExecute,
-        );
-      });
-    });
-  });
-
   group('SchemaTrust', () {
     test('has three values', () {
       expect(SchemaTrust.values.length, 3);
@@ -111,12 +41,4 @@ void main() {
     });
   });
 
-  group('ActionRisk', () {
-    test('has three levels', () {
-      expect(ActionRisk.values.length, 3);
-      expect(ActionRisk.values, contains(ActionRisk.low));
-      expect(ActionRisk.values, contains(ActionRisk.medium));
-      expect(ActionRisk.values, contains(ActionRisk.high));
-    });
-  });
 }

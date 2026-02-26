@@ -1,17 +1,4 @@
-import '../events/schema_action.dart';
 import 'schema_trust.dart';
-
-/// How an action is handled given trust level + risk.
-enum ActionPolicy {
-  /// Execute the action immediately.
-  execute,
-
-  /// Present to user for approval before executing.
-  proposeBeforeExecute,
-
-  /// Block the action entirely.
-  block,
-}
 
 /// Trust-level capability limits.
 ///
@@ -52,32 +39,4 @@ class TrustCapabilities {
         SchemaTrust.elevated => elevated,
       };
 
-  /// Determines how an action at a given risk level should be handled.
-  ///
-  /// Matches the §9.3 Trust → Action Gating table exactly:
-  /// | Trust     | Low     | Medium              | High                |
-  /// |-----------|---------|---------------------|---------------------|
-  /// | minimal   | Execute | Block               | Block               |
-  /// | standard  | Execute | Propose-before-exec | Block               |
-  /// | elevated  | Execute | Execute             | Propose-before-exec |
-  static ActionPolicy policyFor(SchemaTrust trust, ActionRisk risk) {
-    return switch ((trust, risk)) {
-      // minimal: only low risk executes
-      (SchemaTrust.minimal, ActionRisk.low) => ActionPolicy.execute,
-      (SchemaTrust.minimal, ActionRisk.medium) => ActionPolicy.block,
-      (SchemaTrust.minimal, ActionRisk.high) => ActionPolicy.block,
-
-      // standard: low executes, medium proposes, high blocks
-      (SchemaTrust.standard, ActionRisk.low) => ActionPolicy.execute,
-      (SchemaTrust.standard, ActionRisk.medium) =>
-        ActionPolicy.proposeBeforeExecute,
-      (SchemaTrust.standard, ActionRisk.high) => ActionPolicy.block,
-
-      // elevated: low+medium execute, high proposes
-      (SchemaTrust.elevated, ActionRisk.low) => ActionPolicy.execute,
-      (SchemaTrust.elevated, ActionRisk.medium) => ActionPolicy.execute,
-      (SchemaTrust.elevated, ActionRisk.high) =>
-        ActionPolicy.proposeBeforeExecute,
-    };
-  }
 }

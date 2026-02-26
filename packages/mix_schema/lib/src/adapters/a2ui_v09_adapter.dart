@@ -102,8 +102,6 @@ class A2uiV09Adapter implements WireAdapter {
     if (envData != null) {
       environment = SchemaEnvironment(
         data: envData['data'] as Map<String, dynamic>?,
-        state: envData['state'] as Map<String, dynamic>?,
-        breakpoints: (envData['breakpoints'] as List?)?.cast<String>(),
       );
     }
 

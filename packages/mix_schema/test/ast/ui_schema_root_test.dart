@@ -26,14 +26,10 @@ void main() {
         trust: SchemaTrust.standard,
         environment: SchemaEnvironment(
           data: {'key': 'value'},
-          state: {'count': 0},
-          breakpoints: ['mobile', 'tablet', 'desktop'],
         ),
       );
 
       expect(root.environment?.data?['key'], 'value');
-      expect(root.environment?.state?['count'], 0);
-      expect(root.environment?.breakpoints, ['mobile', 'tablet', 'desktop']);
     });
   });
 
@@ -41,9 +37,6 @@ void main() {
     test('all fields optional', () {
       const env = SchemaEnvironment();
       expect(env.data, isNull);
-      expect(env.state, isNull);
-      expect(env.tokens, isNull);
-      expect(env.breakpoints, isNull);
     });
 
     test('stores data', () {

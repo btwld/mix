@@ -29,36 +29,3 @@ final class ChangeEvent extends SchemaEvent {
       'ChangeEvent(nodeId: $nodeId, field: $field, value: $value)';
 }
 
-final class SubmitEvent extends SchemaEvent {
-  final Map<String, dynamic> formData;
-
-  SubmitEvent({required super.nodeId, required this.formData});
-
-  @override
-  String toString() => 'SubmitEvent(nodeId: $nodeId, formData: $formData)';
-}
-
-final class SelectEvent extends SchemaEvent {
-  final List<dynamic> selected;
-
-  SelectEvent({required super.nodeId, required this.selected});
-
-  @override
-  String toString() => 'SelectEvent(nodeId: $nodeId, selected: $selected)';
-}
-
-final class DismissEvent extends SchemaEvent {
-  final String? reason;
-
-  DismissEvent({required super.nodeId, this.reason});
-
-  @override
-  String toString() => 'DismissEvent(nodeId: $nodeId, reason: $reason)';
-}
-
-final class ScrollEndEvent extends SchemaEvent {
-  ScrollEndEvent({required super.nodeId});
-
-  @override
-  String toString() => 'ScrollEndEvent(nodeId: $nodeId)';
-}

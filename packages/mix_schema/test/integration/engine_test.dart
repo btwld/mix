@@ -3,7 +3,6 @@ import 'package:mix_schema/mix_schema.dart';
 
 import '../fixtures/valid/simple_box.dart';
 import '../fixtures/invalid/invalid_payloads.dart';
-import '../fixtures/lossy/v08_payload.dart';
 
 void main() {
   late SchemaEngine engine;
@@ -22,19 +21,6 @@ void main() {
 
         expect(result.root, isNotNull);
         expect(result.hasErrors, false);
-      });
-
-      test('adapts v0.8 payload with lossy diagnostics', () {
-        final result = engine.adapt(
-          v08Payload,
-          adapterId: 'a2ui_v0_8_stable',
-        );
-
-        expect(result.root, isNotNull);
-        final lossyDiags = result.diagnostics.where(
-          (d) => d.code == DiagnosticCode.lossyAdaptation,
-        );
-        expect(lossyDiags, isNotEmpty);
       });
 
       test('throws for unknown adapter', () {
@@ -160,17 +146,6 @@ void main() {
         expect(errors, isEmpty);
       });
 
-      test('v0.8 adapt → validate end-to-end', () {
-        final adaptResult = engine.adapt(
-          v08Payload,
-          adapterId: 'a2ui_v0_8_stable',
-        );
-
-        expect(adaptResult.root, isNotNull);
-
-        final validResult = engine.validate(adaptResult.root!);
-        expect(validResult.isValid, true);
-      });
     });
 
     group('custom configuration', () {
@@ -186,11 +161,11 @@ void main() {
         );
         expect(result.root, isNotNull);
 
-        // v0.8 not available
+        // unknown adapter throws
         expect(
           () => customEngine.adapt(
-            v08Payload,
-            adapterId: 'a2ui_v0_8_stable',
+            simpleBoxPayload,
+            adapterId: 'unknown',
           ),
           throwsA(isA<ArgumentError>()),
         );

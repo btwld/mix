@@ -25,7 +25,8 @@ BoxStyler applyContainerStyle(
 
     styler = switch (entry.key) {
       // Colors
-      'color' || 'backgroundColor' => _applyColor(styler, resolved),
+      'color' || 'backgroundColor' =>
+        _applyColorTo(styler, resolved, (s, c) => s.color(c)),
 
       // Spacing
       'padding' => styler.paddingAll(toDouble(resolved)),
@@ -75,7 +76,8 @@ FlexBoxStyler applyFlexContainerStyle(
     if (resolved == null) continue;
 
     styler = switch (entry.key) {
-      'color' || 'backgroundColor' => _applyColorFlex(styler, resolved),
+      'color' || 'backgroundColor' =>
+        _applyColorTo(styler, resolved, (s, c) => s.color(c)),
       'padding' => styler.paddingAll(toDouble(resolved)),
       'paddingX' => styler.paddingX(toDouble(resolved)),
       'paddingY' => styler.paddingY(toDouble(resolved)),
@@ -107,7 +109,8 @@ StackBoxStyler applyStackContainerStyle(
     if (resolved == null) continue;
 
     styler = switch (entry.key) {
-      'color' || 'backgroundColor' => _applyColorStack(styler, resolved),
+      'color' || 'backgroundColor' =>
+        _applyColorTo(styler, resolved, (s, c) => s.color(c)),
       'padding' => styler.paddingAll(toDouble(resolved)),
       'paddingX' => styler.paddingX(toDouble(resolved)),
       'paddingY' => styler.paddingY(toDouble(resolved)),
@@ -139,7 +142,7 @@ TextStyler applyTextStyle(
     if (resolved == null) continue;
 
     styler = switch (entry.key) {
-      'color' => _applyTextColor(styler, resolved),
+      'color' => _applyColorTo(styler, resolved, (s, c) => s.color(c)),
       'fontSize' => styler.fontSize(toDouble(resolved)),
       'fontWeight' => styler.fontWeight(parseFontWeight(resolved)),
       'lineHeight' => styler.height(toDouble(resolved)),
@@ -167,7 +170,7 @@ IconStyler applyIconStyle(
     if (resolved == null) continue;
 
     styler = switch (entry.key) {
-      'color' => _applyIconColor(styler, resolved),
+      'color' => _applyColorTo(styler, resolved, (s, c) => s.color(c)),
       'size' => styler.size(toDouble(resolved)),
       _ => skipUnknown(styler, entry.key, ctx),
     };
@@ -395,31 +398,14 @@ T skipUnknown<T>(T styler, String property, RenderContext ctx) {
   return styler;
 }
 
-// --- Color helpers (typed per-styler due to sibling hierarchy) ---
+// --- Color helper ---
 
-BoxStyler _applyColor(BoxStyler styler, dynamic resolved) {
+/// Parses a color value and applies it via a callback.
+/// All styler types have `.color()` but share no common supertype,
+/// so we use a callback to apply the parsed color generically.
+T _applyColorTo<T>(T styler, dynamic resolved, T Function(T, Color) apply) {
   final color = _parseColor(resolved);
-  return color != null ? styler.color(color) : styler;
-}
-
-FlexBoxStyler _applyColorFlex(FlexBoxStyler styler, dynamic resolved) {
-  final color = _parseColor(resolved);
-  return color != null ? styler.color(color) : styler;
-}
-
-StackBoxStyler _applyColorStack(StackBoxStyler styler, dynamic resolved) {
-  final color = _parseColor(resolved);
-  return color != null ? styler.color(color) : styler;
-}
-
-TextStyler _applyTextColor(TextStyler styler, dynamic resolved) {
-  final color = _parseColor(resolved);
-  return color != null ? styler.color(color) : styler;
-}
-
-IconStyler _applyIconColor(IconStyler styler, dynamic resolved) {
-  final color = _parseColor(resolved);
-  return color != null ? styler.color(color) : styler;
+  return color != null ? apply(styler, color) : styler;
 }
 
 // --- Parsers ---

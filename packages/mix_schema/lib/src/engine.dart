@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 
-import 'adapters/a2ui_v08_adapter.dart';
 import 'adapters/a2ui_v09_adapter.dart';
 import 'adapters/wire_adapter.dart';
 import 'ast/ui_schema_root.dart';
@@ -25,7 +24,7 @@ class SchemaEngine {
     SchemaRenderer? renderer,
   })  : _adapters = {
           for (final a in (adapters ??
-              const [A2uiV09Adapter(), A2uiV08Adapter()]))
+              const [A2uiV09Adapter()]))
             a.id: a,
         },
         _validator = validator ?? const DefaultSchemaValidator(),
