@@ -24,7 +24,8 @@ class ImplicitStateCounterExample extends StatefulWidget {
       _ImplicitStateCounterExampleState();
 }
 
-class _ImplicitStateCounterExampleState extends State<ImplicitStateCounterExample> {
+class _ImplicitStateCounterExampleState
+    extends State<ImplicitStateCounterExample> {
   int _counter = 2;
 
   @override

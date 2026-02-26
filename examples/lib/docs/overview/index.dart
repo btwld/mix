@@ -28,9 +28,16 @@ class Example extends StatelessWidget {
 }
 
 // 1
-final boxStyle = BoxStyler().height(100).width(100).color(Colors.purple).borderRounded(10);
+final boxStyle = BoxStyler()
+    .height(100)
+    .width(100)
+    .color(Colors.purple)
+    .borderRounded(10);
 
-final textStyle = TextStyler().fontSize(20).fontWeight(.bold).color(Colors.black);
+final textStyle = TextStyler()
+    .fontSize(20)
+    .fontWeight(.bold)
+    .color(Colors.black);
 
 // 2
 final buttonStyle = BoxStyler()
