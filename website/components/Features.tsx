@@ -8,6 +8,7 @@ import Link from "next/link";
 
 import {
   HandMetalIcon,
+  LayersIcon,
   LucideIcon,
   PaintBucketIcon,
   VenetianMaskIcon,
@@ -50,6 +51,13 @@ const features: Array<IFeature> = [
     description:
       "Craft your styling with simple, reusable functions for easy customization and API extension.",
     icon: WrenchIcon,
+  },
+  {
+    href: "/documentation/ecosystem/mix-schema",
+    name: "Schema-driven UI",
+    description:
+      "Convert AI payloads into validated, Mix-native Flutter UI with trust boundaries.",
+    icon: LayersIcon,
   },
 ];
 
