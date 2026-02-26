@@ -32,3 +32,21 @@ export 'src/trust/schema_trust.dart';
 // Events & Actions
 export 'src/events/schema_action.dart';
 export 'src/events/schema_event.dart';
+
+// Render
+export 'src/render/node_handler.dart';
+export 'src/render/render_context.dart';
+export 'src/render/schema_data_context.dart';
+export 'src/render/schema_registry.dart';
+export 'src/render/schema_renderer.dart';
+export 'src/render/schema_scope.dart';
+export 'src/render/schema_widget.dart';
+
+// Tokens
+export 'src/tokens/schema_token_resolver.dart';
+
+// Components
+export 'src/components/component_registry.dart';
+
+// Engine (public API facade)
+export 'src/engine.dart';
