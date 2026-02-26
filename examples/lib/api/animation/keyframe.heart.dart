@@ -108,7 +108,7 @@ class _HeartAnimationState extends State<HeartAnimation> {
           },
           child: StyledIcon(
             icon: CupertinoIcons.heart_fill,
-            style: IconMix().size(100).color(Colors.white),
+            style: IconStyler().size(100).color(Colors.white),
           ),
         ),
       ),

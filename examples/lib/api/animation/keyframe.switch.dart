@@ -44,7 +44,8 @@ class _SwitchAnimationState extends State<SwitchAnimation> {
                   .alignment(_trigger.value ? .centerRight : .centerLeft)
                   .animate(.easeOut(300.ms)),
           child: Box(
-            style: BoxStyler.height(30)
+            style: BoxStyler()
+                .height(30)
                 .width(40)
                 .color(Colors.white)
                 .foregroundDecoration(
