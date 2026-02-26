@@ -37,7 +37,7 @@ Mix provides two constructor patterns for Styler classes. Understanding when to 
 The default constructor provides a fluent API for chaining style properties:
 
 ```dart
-final style = BoxStyler
+final style = BoxStyler()
     .color(Colors.blue)
     .paddingAll(16)
     .borderRounded(8);
@@ -83,13 +83,13 @@ Define styles using a fluent, chainable API with `Styler` classes:
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
-final boxStyle = BoxStyler
+final boxStyle = BoxStyler()
     .height(100)
     .width(100)
     .color(Colors.purple)
     .borderRounded(10);
 
-final textStyle = TextStyler
+final textStyle = TextStyler()
     .fontSize(20)
     .fontWeight(FontWeight.bold)
     .color(Colors.black);
@@ -102,12 +102,12 @@ Learn more about [styling](/documentation/guides/styling)
 Styles can adapt to interactions and context (hover, press, dark mode):
 
 ```dart
-final buttonStyle = BoxStyler
+final buttonStyle = BoxStyler()
     .height(50)
     .borderRounded(25)
     .color(Colors.blue)
-    .onHovered(BoxStyler.color(Colors.blue.shade700))
-    .onDark(BoxStyler.color(Colors.blue.shade200));
+    .onHovered(.color(Colors.blue.shade700))
+    .onDark(.color(Colors.blue.shade200));
 ```
 
 Learn more about [Dynamic Styling](/documentation/guides/dynamic-styling)
@@ -129,7 +129,7 @@ final tokenDefinitions = <MixToken, Object>{
   $borderRadius: Radius.circular(8),
 };
 
-final tokenStyle = BoxStyler
+final tokenStyle = BoxStyler()
     .color($primaryColor())
     .width(100)
     .height(100)

@@ -1,227 +1,127 @@
-import 'dart:math';
+/// Animations guide — gallery of all cases from the animations documentation.
+///
+/// Each case lives in its own file under docs/guides/animations/ and has a
+/// Preview declared in [PreviewRegistry] for FlutterPreview in animations.mdx.
+library;
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mix/mix.dart';
 
+import 'animations/implicit_state_counter.dart' as implicit_counter;
+import 'animations/implicit_variant_hover.dart' as implicit_hover;
+import 'animations/keyframe_loop.dart' as keyframe_loop;
+import 'animations/keyframe_switch.dart' as keyframe_switch;
+import 'animations/phase_tap_compress.dart' as phase_tap;
 import '../../helpers.dart';
 
 void main() {
-  runMixApp(const Example());
+  runMixApp(const AnimationsGuideExample());
 }
 
-class Example extends StatelessWidget {
-  const Example({super.key});
+class AnimationsGuideExample extends StatelessWidget {
+  const AnimationsGuideExample({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: .min,
-      spacing: 16,
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(24),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _Section(
+            title: 'Implicit',
+            children: [
+              _Card(
+                title: 'Case 1: State-triggered',
+                child: const implicit_counter.ImplicitStateCounterExample(),
+              ),
+              _Card(
+                title: 'Case 2: Variant-triggered',
+                child: const implicit_hover.ImplicitVariantHoverExample(),
+              ),
+            ],
+          ),
+          const SizedBox(width: 24),
+          _Section(
+            title: 'Phase',
+            children: [
+              _Card(
+                title: 'Tap → compress → expand',
+                child: const phase_tap.PhaseTapCompressExample(),
+              ),
+            ],
+          ),
+          const SizedBox(width: 24),
+          _Section(
+            title: 'Keyframe',
+            children: [
+              _Card(
+                title: 'Case 1: Switch (scale + width)',
+                child: const keyframe_switch.KeyframeSwitchExample(),
+              ),
+              _Card(
+                title: 'Case 2: Loop (scale + color + opacity)',
+                child: const keyframe_loop.KeyframeLoopExample(),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _Section extends StatelessWidget {
+  const _Section({required this.title, required this.children});
+
+  final String title;
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ScaleAnimation(),
-        HoverAnimation(),
-        CompressExpandAnimation(),
-        HeartKeyframeAnimation(),
+        Text(
+          title,
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 12),
+        ...children,
       ],
     );
   }
 }
 
-// 1
+class _Card extends StatelessWidget {
+  const _Card({required this.title, required this.child});
 
-class ScaleAnimation extends StatefulWidget {
-  const ScaleAnimation({super.key});
-
-  @override
-  State<ScaleAnimation> createState() => _ScaleAnimationState();
-}
-
-class _ScaleAnimationState extends State<ScaleAnimation> {
-  bool appear = false;
-
-  @override
-  void initState() {
-    super.initState();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        appear = true;
-      });
-    });
-  }
+  final String title;
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
-    final style = BoxStyler.color(Colors.black)
-        .height(100)
-        .width(100)
-        .borderRounded(10)
-        .scale(appear ? 1 : 0.1) // state-based
-        .animate(.easeInOut(1.s));
-
-    return Box(style: style);
-  }
-}
-
-// 2
-
-class HoverAnimation extends StatelessWidget {
-  const HoverAnimation({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final style = BoxStyler.color(Colors.black)
-        .height(100)
-        .width(100)
-        .borderRounded(10)
-        .scale(1)
-        .onHovered(BoxStyler.color(Colors.blue).scale(1.5))
-        .animate(.spring(800.ms));
-
-    return Box(style: style);
-  }
-}
-
-// 3
-
-enum AnimationPhases { initial, compress, expanded }
-
-class CompressExpandAnimation extends StatefulWidget {
-  const CompressExpandAnimation({super.key});
-
-  @override
-  State<CompressExpandAnimation> createState() =>
-      _CompressExpandAnimationState();
-}
-
-class _CompressExpandAnimationState extends State<CompressExpandAnimation> {
-  final _isExpanded = ValueNotifier(false);
-
-  @override
-  void dispose() {
-    _isExpanded.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final style = BoxStyler.color(Colors.deepPurple)
-        .height(100)
-        .width(100)
-        .borderRounded(40)
-        .phaseAnimation(
-          trigger: _isExpanded,
-          phases: AnimationPhases.values,
-          styleBuilder: (phase, style) => switch (phase) {
-            .initial => style.scale(1),
-            .compress => style.scale(0.75).color(Colors.red.shade800),
-            .expanded =>
-              style.scale(1.25).borderRounded(20).color(Colors.yellow.shade300),
-          },
-          configBuilder: (phase) => switch (phase) {
-            .initial => .springWithDampingRatio(800.ms, ratio: 0.3),
-            .compress => .decelerate(200.ms),
-            .expanded => .decelerate(100.ms),
-          },
-        );
-
-    return Pressable(
-      onPress: () {
-        _isExpanded.value = !_isExpanded.value;
-      },
-      child: Box(style: style),
-    );
-  }
-}
-
-// 4
-
-class HeartKeyframeAnimation extends StatefulWidget {
-  const HeartKeyframeAnimation({super.key});
-
-  @override
-  State<HeartKeyframeAnimation> createState() => _HeartKeyframeAnimationState();
-}
-
-class _HeartKeyframeAnimationState extends State<HeartKeyframeAnimation> {
-  final _trigger = ValueNotifier(0);
-
-  @override
-  void dispose() {
-    _trigger.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final style = IconStyler.color(Colors.red)
-        .size(80)
-        .keyframeAnimation(
-          trigger: _trigger,
-          timeline: [
-            KeyframeTrack<Color>(
-              'color',
-              [
-                .linear(Colors.blue.shade100, 100.ms),
-                .elasticOut(Colors.blue.shade400, 800.ms),
-                .elasticOut(Colors.green.shade100, 800.ms),
-              ],
-              initial: Colors.red.shade100,
-              tweenBuilder: ColorTween.new,
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
             ),
-            KeyframeTrack('scale', [
-              .linear(1.0, 360.ms),
-              .elasticOut(1.5, 800.ms),
-              .elasticOut(1.0, 800.ms),
-            ], initial: 1.0),
-            KeyframeTrack('verticalOffset', [
-              .linear(0.0, 100.ms),
-              .easeIn(20.0, 150.ms),
-              .elasticOut(-60.0, 1000.ms),
-              .elasticOut(0.0, 800.ms),
-            ], initial: 0.0),
-            KeyframeTrack('verticalStretch', [
-              .ease(1.0, 100.ms),
-              .ease(0.6, 150.ms),
-              .ease(1.5, 100.ms),
-              .ease(1.05, 150.ms),
-              .ease(1.0, 880.ms),
-              .ease(0.8, 100.ms),
-              .ease(1.04, 400.ms),
-              .ease(1.0, 220.ms),
-            ], initial: 1.0),
-            KeyframeTrack('angle', [
-              .easeIn(0.0, 580.ms),
-              .easeIn(16.0 * (pi / 180), 125.ms),
-              .easeIn(-16.0 * (pi / 180), 125.ms),
-              .easeIn(16.0 * (pi / 180), 125.ms),
-              .easeIn(0.0, 125.ms),
-            ], initial: 0.0),
-          ],
-          styleBuilder: (values, style) {
-            final scale = values.get('scale');
-            final verticalOffset = values.get('verticalOffset');
-            final verticalStretch = values.get('verticalStretch');
-            final angle = values.get('angle');
-
-            return style.wrap(
-              .new().transform(
-                transform: .identity()
-                  ..scaleByDouble(scale, scale, scale, 1.0)
-                  ..translateByDouble(0, verticalOffset, 0, 1)
-                  ..scaleByDouble(1, verticalStretch, 1, 1)
-                  ..rotateZ(angle),
-              ),
-            );
-          },
-        );
-
-    return Pressable(
-      onPress: () {
-        _trigger.value++;
-      },
-      child: StyledIcon(icon: CupertinoIcons.heart_fill, style: style),
+          ),
+          const SizedBox(height: 8),
+          child,
+        ],
+      ),
     );
   }
 }
