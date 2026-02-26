@@ -37,7 +37,7 @@ class OkinawaCard extends StatelessWidget {
     final boxStyle = BoxStyler.height(200)
         .width(200)
         .paddingAll(8)
-        .alignment(Alignment.bottomCenter)
+        .alignment(.bottomCenter)
         .borderRounded(10)
         .backgroundImageUrl(
           'https://images.pexels.com/photos/5472603/pexels-photo-5472603.jpeg',
