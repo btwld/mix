@@ -9,11 +9,11 @@ void main() {
   ).paddingAll(10).alignment(.center).color(Colors.red);
 
   // 2
-  BoxStyler.alignment(.centerRight);
+  BoxStyler().alignment(.centerRight);
 
-  BoxStyler.padding(.all(16));
+  BoxStyler().padding(.all(16));
 
-  BoxStyler.padding(.symmetric(horizontal: 12, vertical: 8));
+  BoxStyler().padding(.symmetric(vertical: 8, horizontal: 12));
   BoxStyler().paddingOnly(horizontal: 12, vertical: 8);
 
   // 4

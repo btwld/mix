@@ -39,7 +39,7 @@ final style = Style(
 );
 
 // v2.0
-final style = BoxStyler
+final style = BoxStyler()
     .color(Colors.blue)
     .paddingAll(16)
     .borderRounded(8);
@@ -67,10 +67,10 @@ final style = Style(
 );
 
 // v2.0
-final style = BoxStyler
+final style = BoxStyler()
     .color(Colors.blue)
-    .onHovered(BoxStyler.color(Colors.red))
-    .onDark(BoxStyler.color(Colors.white));
+    .onHovered(.color(Colors.red))
+    .onDark(.color(Colors.white));
 ```
 
 #### Widget Modifiers
@@ -112,7 +112,7 @@ Token resolution syntax has changed:
 $box.color.ref(primaryColor)
 
 // v2.0
-BoxStyler.color(primaryColor())
+BoxStyler().color(primaryColor())
 ```
 
 ### Widget Name Changes
@@ -287,14 +287,14 @@ PressableBox(
 PressableBox(
   onPress: () {},
   child: Box(
-    style: BoxStyler
+    style: BoxStyler()
         .width(200)
         .height(200)
         .color(Colors.blue)
         .scale(2)
         .wrap(OpacityModifierMix(opacity: 0.5))
-        .onHovered(BoxStyler.color(Colors.red))
-        .onPressed(BoxStyler.color(Colors.green)),
+        .onHovered(.color(Colors.red))
+        .onPressed(.color(Colors.green)),
   ),
 )
 ```

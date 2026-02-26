@@ -8,7 +8,9 @@ title: "Animations"
 Mix gives you three ways to bring motion into your UI, depending on how much control you want:
 
 **Implicit** — Easiest to use. When a value changes (state or a variant like hover), the style animates smoothly to the new value. No timeline to manage.
+
 **Phase** — For multi-step flows that go through distinct steps and then back (e.g. tap → compress → expand → rest). Think of it as a small state machine for animation.
+
 **Keyframe** — Full control. You define a timeline with tracks and keyframes, so multiple properties can change over time with precise easing.
 
 ---
@@ -26,7 +28,6 @@ In this example a square grows each time you tap it.
 ```dart
 int _counter = 2;
 
-// Inside of the build method.
 final box = BoxStyler()
     .color(Colors.deepPurple)
     .size(_counter * 10, _counter * 10)
@@ -45,20 +46,15 @@ return Pressable(
 Animations also work with variants. When the widget enters a variant (e.g. hovered), the style animates toward the variant’s “target” style; `.animate(...)` controls how that transition runs.
 
 ```dart
-final style = BoxStyler()
+final box = BoxStyler()
     .color(Colors.black)
     .size(100, 100)
     .borderRounded(10)
     .scale(1)
-    .onHovered(
-      BoxStyler()
-        .color(Colors.blue)
-        .scale(1.5),
-    )
+    .onHovered(.color(Colors.blue).scale(1.5))
     .animate(.spring(800.ms));
 
-return Box(style: style);
-// Hover: color and scale animate to blue and 1.5.
+return box();
 ```
 
 <FlutterPreview previewId="anim-hover-scale" height={200} />
@@ -80,24 +76,19 @@ enum AnimationPhases { initial, compress, expanded }
 
 final _isExpanded = ValueNotifier(false);
 
-final style = BoxStyler()
+final box = BoxStyler()
     .color(Colors.deepPurple)
     .height(100)
     .width(100)
     .borderRounded(40)
     .phaseAnimation(
-      trigger: _isExpanded, // if you want to make it loop, just remove this line
+      trigger: _isExpanded,
       phases: AnimationPhases.values,
       styleBuilder: (phase, style) => switch (phase) {
-        .initial => style
-            .scale(1),
-        .compress => style
-            .scale(0.75)
-            .color(Colors.red.shade800),
-        .expanded => style
-            .scale(1.25)
-            .borderRounded(20)
-            .color(Colors.yellow.shade300),
+        .initial => style.scale(1),
+        .compress => style.scale(0.75).color(Colors.red.shade800),
+        .expanded =>
+          style.scale(1.25).borderRounded(20).color(Colors.yellow.shade300),
       },
       configBuilder: (phase) => switch (phase) {
         .initial => .springWithDampingRatio(800.ms, ratio: 0.3),
@@ -108,7 +99,7 @@ final style = BoxStyler()
 
 return Pressable(
   onPress: () => _isExpanded.value = !_isExpanded.value,
-  child: Box(style: style),
+  child: box(),
 );
 ```
 
@@ -129,8 +120,7 @@ A single trigger drives two tracks (scale and width). The style builder reads bo
 ```dart
 final _trigger = ValueNotifier(false);
 
-// Inner thumb or knob (see keyframe.switch.dart for full switch UI)
-final style = BoxStyler()
+final box = BoxStyler()
     .height(30)
     .width(40)
     .color(Colors.deepPurpleAccent)
@@ -142,20 +132,14 @@ final style = BoxStyler()
           .easeOutSine(1.25, 200.ms),
           .elasticOut(0.85, 500.ms),
         ], initial: 0.85),
-        KeyframeTrack<double>(
-          'width',
-          [
-            .decelerate(50, 100.ms),
-            .linear(50, 100.ms),
-            .elasticOut(40, 500.ms),
-          ],
-          initial: 40,
-          tweenBuilder: Tween.new,
-        ),
+        KeyframeTrack<double>('width', [
+          .decelerate(50, 100.ms),
+          .ease(80, 300.ms),
+          .elasticOut(40, 500.ms),
+        ], initial: 40),
       ],
-      styleBuilder: (values, style) => style
-          .scale(values.get('scale'))
-          .width(values.get('width')),
+      styleBuilder: (values, style) =>
+          style.scale(values.get('scale')).width(values.get('width')),
     );
 
 return Center(
@@ -165,7 +149,7 @@ return Center(
         _trigger.value = !_trigger.value;
       });
     },
-    child: style(),
+    child: box(),
   ),
 );
 ```
@@ -174,12 +158,12 @@ return Center(
 
 ### Case 2: Loop animation (scale + color + opacity)
 
-Several tracks run in parallel to create one looping animation. The style builder applies scale, color, and opacity from the tracks. Here we use a `ColorTween` to interpolate between the initial and end colors. 
+Several tracks run in parallel to create one looping animation. The style builder applies scale, color, and opacity from the tracks. Here we use a `ColorTween` to interpolate between the initial and end colors.
 
 The Keyframe animation feature allows you to use any custom Tween you want to interpolate between the initial and end values.
 
 ```dart
-final style = BoxStyler()
+final box = BoxStyler()
     .size(60, 60)
     .alignment(.centerLeft)
     .keyframeAnimation(
@@ -198,6 +182,7 @@ final style = BoxStyler()
       styleBuilder: (values, style) {
         final scale = values.get('scale');
         final opacity = values.get('opacity');
+
         return style
             .transform(Matrix4.diagonal3Values(scale, scale, 1.0))
             .color(values.get('color'))
@@ -205,7 +190,7 @@ final style = BoxStyler()
       },
     );
 
-return style();
+return box();
 ```
 
 <FlutterPreview previewId="anim-keyframe-loop" height={200} />

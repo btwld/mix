@@ -129,7 +129,7 @@ class ButtonStyler extends Style<ButtonSpec>
     return merge(
       ButtonStyler(
         container: FlexBoxStyler.padding(
-          EdgeInsetsGeometryMix.symmetric(horizontal: x, vertical: y),
+          .symmetric(vertical: y, horizontal: x),
         ),
       ),
     );
@@ -184,9 +184,9 @@ enum ButtonVariant {
 
   ButtonStyler get _outlinedStyle => _filledStyle
       .container(
-        FlexBoxStyler.color(
-          Colors.transparent,
-        ).borderAll(color: Colors.blueAccent, width: 1.5),
+        FlexBoxStyler()
+            .color(Colors.transparent)
+            .borderAll(color: Colors.blueAccent, width: 1.5),
       )
       .backgroundColor(Colors.transparent)
       .borderWidth(1.5)
@@ -255,21 +255,21 @@ class CustomButton extends StatelessWidget {
         .icon(icon)
         .merge(variant?.style)
         .onPressed(
-          ButtonStyler()
-              .container(FlexBoxStyler.color(Colors.blueAccent.shade400))
-              .label(TextStyler.style(TextStyleMix().color(Colors.white)))
-              .icon(IconStyler.color(Colors.white))
+          .new()
+              .container(FlexBoxStyler().color(Colors.blueAccent.shade400))
+              .label(TextStyler().style(TextStyleMix().color(Colors.white)))
+              .icon(IconStyler().color(Colors.white))
               .scale(0.9),
         )
         .onDisabled(
-          ButtonStyler()
-              .container(FlexBoxStyler.color(Colors.blueGrey.shade100))
+          .new()
+              .container(FlexBoxStyler().color(Colors.blueGrey.shade100))
               .label(
-                TextStyler.style(
+                TextStyler().style(
                   TextStyleMix().color(Colors.blueGrey.shade700),
                 ),
               )
-              .icon(IconStyler.color(Colors.blueGrey.shade700)),
+              .icon(IconStyler().color(Colors.blueGrey.shade700)),
         )
         .merge(style);
   }

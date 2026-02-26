@@ -103,7 +103,7 @@ List<Map<String, Object?>> _parsePreviewEntries(
     final snippetRegion = _extractStringField(block, 'snippetRegion');
     final renderable = _extractBoolField(block, 'renderable') ?? true;
 
-    entries.add(<String, Object?>{
+    entries.add({
       'previewId': previewId,
       'sourcePath': sourcePath,
       'snippetRegion': snippetRegion,
@@ -197,6 +197,7 @@ String? _extractStringField(String block, String fieldName) {
 
 String? _extractTokenField(String block, String fieldName) {
   final pattern = RegExp('$fieldName\\s*:\\s*([a-zA-Z0-9_]+)');
+
   return pattern.firstMatch(block)?.group(1);
 }
 
@@ -233,13 +234,15 @@ void _validateEntries(List<Map<String, Object?>> entries, String projectRoot) {
   for (final entry in entries) {
     final rawPreviewId = entry['previewId'];
     if (rawPreviewId is! String || rawPreviewId.isEmpty) {
-      throw StateError('Manifest entry has invalid previewId: $rawPreviewId');
+      throw StateError(
+        'Manifest entry has invalid previewId: "${rawPreviewId ?? ''}"',
+      );
     }
 
     final rawSourcePath = entry['sourcePath'];
     if (rawSourcePath is! String || rawSourcePath.isEmpty) {
       throw StateError(
-        'Manifest entry "$rawPreviewId" has invalid sourcePath: $rawSourcePath',
+        'Manifest entry "$rawPreviewId" has invalid sourcePath: "${rawSourcePath ?? ''}"',
       );
     }
 
