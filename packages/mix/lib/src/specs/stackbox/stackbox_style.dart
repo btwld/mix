@@ -149,12 +149,24 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
       StackBoxStyler().borderRadius(value);
   factory StackBoxStyler.elevation(ElevationShadow value) =>
       StackBoxStyler().elevation(value);
+  factory StackBoxStyler.shadow(BoxShadowMix value) =>
+      StackBoxStyler().shadow(value);
+  factory StackBoxStyler.shadows(List<BoxShadowMix> value) =>
+      StackBoxStyler().shadows(value);
 
   // Constraints convenience
   factory StackBoxStyler.width(double value) => StackBoxStyler().width(value);
   factory StackBoxStyler.height(double value) => StackBoxStyler().height(value);
   factory StackBoxStyler.size(double width, double height) =>
       StackBoxStyler().size(width, height);
+  factory StackBoxStyler.minWidth(double value) =>
+      StackBoxStyler().minWidth(value);
+  factory StackBoxStyler.maxWidth(double value) =>
+      StackBoxStyler().maxWidth(value);
+  factory StackBoxStyler.minHeight(double value) =>
+      StackBoxStyler().minHeight(value);
+  factory StackBoxStyler.maxHeight(double value) =>
+      StackBoxStyler().maxHeight(value);
 
   // Transform convenience
   factory StackBoxStyler.scale(double scale, {Alignment alignment = .center}) =>

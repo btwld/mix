@@ -136,6 +136,19 @@ void main() {
         );
       });
 
+      test('shadow', () {
+        final s = BoxShadowMix(color: Colors.black, blurRadius: 10);
+        expect(FlexBoxStyler.shadow(s), equals(FlexBoxStyler().shadow(s)));
+      });
+
+      test('shadows', () {
+        final s = [
+          BoxShadowMix(color: Colors.black, blurRadius: 10),
+          BoxShadowMix(color: Colors.grey, blurRadius: 5),
+        ];
+        expect(FlexBoxStyler.shadows(s), equals(FlexBoxStyler().shadows(s)));
+      });
+
       // Constraints convenience factories
       test('width', () {
         expect(FlexBoxStyler.width(200), equals(FlexBoxStyler().width(200)));
@@ -149,6 +162,34 @@ void main() {
         expect(
           FlexBoxStyler.size(200, 100),
           equals(FlexBoxStyler().size(200, 100)),
+        );
+      });
+
+      test('minWidth', () {
+        expect(
+          FlexBoxStyler.minWidth(100),
+          equals(FlexBoxStyler().minWidth(100)),
+        );
+      });
+
+      test('maxWidth', () {
+        expect(
+          FlexBoxStyler.maxWidth(300),
+          equals(FlexBoxStyler().maxWidth(300)),
+        );
+      });
+
+      test('minHeight', () {
+        expect(
+          FlexBoxStyler.minHeight(50),
+          equals(FlexBoxStyler().minHeight(50)),
+        );
+      });
+
+      test('maxHeight', () {
+        expect(
+          FlexBoxStyler.maxHeight(400),
+          equals(FlexBoxStyler().maxHeight(400)),
         );
       });
 

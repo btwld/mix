@@ -58,6 +58,11 @@ void main() {
           equals(IconStyler(shadows: shadows)),
         );
       });
+
+      test('shadow', () {
+        final s = ShadowMix(color: Colors.black, blurRadius: 4);
+        expect(IconStyler.shadow(s), equals(IconStyler().shadow(s)));
+      });
     });
 
     group('resolved values', () {

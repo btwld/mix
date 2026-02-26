@@ -128,6 +128,7 @@ class IconStyler extends MixStyler<IconStyler, IconSpec>
   factory IconStyler.opacity(double value) => IconStyler(opacity: value);
   factory IconStyler.shadows(List<ShadowMix> value) =>
       IconStyler(shadows: value);
+  factory IconStyler.shadow(ShadowMix value) => IconStyler().shadow(value);
 
   static IconMutableStyler get chain => .new(IconStyler());
 

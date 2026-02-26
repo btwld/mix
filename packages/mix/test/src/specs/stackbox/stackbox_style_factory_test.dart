@@ -121,6 +121,19 @@ void main() {
         );
       });
 
+      test('shadow', () {
+        final s = BoxShadowMix(color: Colors.black, blurRadius: 10);
+        expect(StackBoxStyler.shadow(s), equals(StackBoxStyler().shadow(s)));
+      });
+
+      test('shadows', () {
+        final s = [
+          BoxShadowMix(color: Colors.black, blurRadius: 10),
+          BoxShadowMix(color: Colors.grey, blurRadius: 5),
+        ];
+        expect(StackBoxStyler.shadows(s), equals(StackBoxStyler().shadows(s)));
+      });
+
       // Constraints convenience factories
       test('width', () {
         expect(StackBoxStyler.width(200), equals(StackBoxStyler().width(200)));
@@ -137,6 +150,34 @@ void main() {
         expect(
           StackBoxStyler.size(200, 100),
           equals(StackBoxStyler().size(200, 100)),
+        );
+      });
+
+      test('minWidth', () {
+        expect(
+          StackBoxStyler.minWidth(100),
+          equals(StackBoxStyler().minWidth(100)),
+        );
+      });
+
+      test('maxWidth', () {
+        expect(
+          StackBoxStyler.maxWidth(300),
+          equals(StackBoxStyler().maxWidth(300)),
+        );
+      });
+
+      test('minHeight', () {
+        expect(
+          StackBoxStyler.minHeight(50),
+          equals(StackBoxStyler().minHeight(50)),
+        );
+      });
+
+      test('maxHeight', () {
+        expect(
+          StackBoxStyler.maxHeight(400),
+          equals(StackBoxStyler().maxHeight(400)),
         );
       });
 
