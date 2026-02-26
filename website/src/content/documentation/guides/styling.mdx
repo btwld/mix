@@ -62,10 +62,10 @@ final style = BoxStyler()
     .paddingAll(16);
 
 // .create(): Prop<T> values for tokens and directives
-final $baseSize = DoubleToken('base.size');
+final $primaryColor = ColorToken('primary');
 final style = BoxStyler.create(
-  width: Prop.token($baseSize).multiply(2),
-);
+  padding: Prop.token($spacingMd),
+).color($primaryColor());
 ```
 
 ## `style` vs `styleSpec`
