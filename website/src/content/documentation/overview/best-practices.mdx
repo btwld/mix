@@ -150,7 +150,7 @@ class CustomButtonStyle {
   TextStyler label() {
     var style = TextStyler
         .color(Colors.white)
-        .fontWeight(FontWeight.bold);
+        .fontWeight(.bold);
 
     // Apply size
     style = switch (size) {
@@ -164,7 +164,7 @@ class CustomButtonStyle {
       CustomButtonType.destructive => style.color(Colors.white),
       CustomButtonType.link => style
           .color(Colors.black)
-          .decoration(TextDecoration.underline),
+          .decoration(.underline),
     };
 
     return style;
