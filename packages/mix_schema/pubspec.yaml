@@ -1,0 +1,16 @@
+name: mix_schema
+description: Schema-driven UI rendering for Mix — bridges AI agent protocols with Mix's styling system.
+version: 0.1.0
+
+environment:
+  sdk: ">=3.10.0 <4.0.0"
+  flutter: ">=3.38.1"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  mix: ^2.0.0-dev.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
