@@ -34,6 +34,10 @@ jobs:
         with:
           flutter-version: ${{ steps.fvm-config-action.outputs.FLUTTER_VERSION }}
           channel: ${{ steps.fvm-config-action.outputs.FLUTTER_CHANNEL }}
+      - name: Install Melos
+        run: dart pub global activate melos
+      - name: Bootstrap packages
+        run: melos bootstrap
       - name: Check formatting
         run: dart format --set-exit-if-changed .
 
