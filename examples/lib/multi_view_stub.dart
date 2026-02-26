@@ -9,4 +9,4 @@ bool get isMultiViewEnabled => false;
 
 /// Get initial data for a view (always null on non-web).
 // ignore: avoid-unused-parameters
-Map<String, Object?>? getInitialData(int viewId) => null;
+Map<String, Object?>? getInitialData(int viewId, {int? maxDepth}) => null;
