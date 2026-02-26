@@ -1,17 +1,16 @@
 ---
 title: Widget Modifiers
-description: "Wrap Mix widgets with modifier mixes like opacity, padding, transform, and more."
 ---
 
 import { Callout } from "nextra/components";
 
 # Widget Modifiers
 
-Modifiers wrap a widget with another widget (like `Transform`, `Padding`, or `Opacity`) to add effects without changing the widget tree. Use the `.wrap()` method with a `WidgetModifierConfig` class.
+Modifiers wrap a widget with another widget (like `Transform`, `Padding`, or `Opacity`) to add effects without changing the widget tree. Use the `.wrap()` method with a `ModifierMix` class.
 
 ## How Modifiers Work
 
-Use `.wrap()` with a modifier config to wrap a widget:
+Use `.wrap()` with a modifier mix class to wrap a widget:
 
 ```dart
 import 'package:flutter/material.dart';
@@ -27,7 +26,7 @@ This produces a widget tree equivalent to `Opacity(opacity: 0.4, child: Containe
 
 ## Built-in Modifiers
 
-| Modifier | Description | Wrapper Widget |
+| ModifierMix Class | Description | Wrapper Widget |
 |-------------------|-------------|----------------|
 | `.opacity(value)` | Sets opacity | `Opacity` |
 | `.padding(insets)` | Adds padding | `Padding` |
@@ -64,26 +63,18 @@ final buttonStyle = BoxStyler()
 
 ## Modifier Ordering
 
-Built-in modifiers follow a predefined ordering defined by the framework, regardless of the order you chain them. Mix enforces a specific modifier order to ensure consistent widget tree structure:
-
-1. **Context & Behavior** — `Flexible`, `Visibility`, `IconTheme`, `DefaultTextStyle`
-2. **Size Establishment** — `SizedBox`, `FractionallySizedBox`, `IntrinsicWidth/Height`
-3. **Positioning** — `Align`, `Padding`, `AspectRatio`
-4. **Visual Effects** — `Opacity`, `Transform`, `ClipRect/RRect/Oval`
+Modifiers are applied from innermost to outermost in the order they are chained. This means the last modifier in the chain becomes the outermost wrapper:
 
 ```dart
-// These two produce the same widget tree — chain order has no effect
-final a = BoxStyler()
-    .wrap(.opacity(0.5))
-    .wrap(.padding(.all(8)));
-
-final b = BoxStyler()
-    .wrap(.padding(.all(8)))
-    .wrap(.opacity(0.5));
+// Result: Align → Opacity → Padding → Box
+final style = BoxStyler()
+    .wrap(.padding(.all(8)))  // innermost wrapper
+    .wrap(.opacity(0.5))                 // middle wrapper
+    .wrap(.align(alignment: .center));   // outermost wrapper
 ```
 
 <Callout type="info">
-  The framework reorders modifiers according to its internal ordering rules. If you need explicit control over ordering, create a custom modifier with a specific position in the tree.
+  The order of modifiers matters. Padding applied before opacity will have its padding inside the opacity effect, while padding after opacity will be outside.
 </Callout>
 
 ## Creating Custom Modifiers
@@ -91,7 +82,7 @@ final b = BoxStyler()
 Create custom modifiers with two classes:
 
 1. **WidgetModifier** - Builds the wrapper widget
-2. **WidgetModifierConfig** (via `ModifierMix`) - Handles merging and resolving
+2. **ModifierMix** - Handles merging and resolving
 
 ### Step 1: Create the WidgetModifier
 
@@ -139,7 +130,7 @@ Key methods to implement:
 
 ### Step 2: Create the ModifierMix
 
-The `ModifierMix` class makes the modifier mergeable and resolvable. It extends `ModifierMix<T>` and gets wrapped in a `WidgetModifierConfig` when passed to `.wrap()`. It uses `Prop<T>` for properties to support tokens and lazy resolution.
+The `ModifierMix` class makes the modifier mergeable and resolvable. It uses `Prop<T>` for properties to support tokens and lazy resolution.
 
 ```dart
 import 'package:flutter/widgets.dart';
@@ -179,27 +170,29 @@ Key methods:
 | Method | Purpose |
 |--------|---------|
 | `resolve` | Resolves `Prop` values using BuildContext and creates the final `WidgetModifier` |
-| `merge` | Combines two instances, with the other's values taking precedence |
+| `merge` | Combines two `ModifierMix` instances, with other's values taking precedence |
 | `props` | List of properties for equality comparison |
 
 ### Step 3: Use the Custom Modifier
 
-Pass an instance of your `ModifierMix` class to `.wrap()`:
+To use your custom modifier in a style, use the `.wrap()` method:
 
 ```dart
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
-// Pass the custom ModifierMix instance to .wrap()
 final style = BoxStyler()
     .color(Colors.red)
     .size(100, 100)
-    .wrap(OpacityModifierMix(opacity: 0.4));
-```
+    .wrap(.opacity(0.4));
 
-<Callout type="info">
-  Mix ships with built-in modifier shorthands like `.wrap(.opacity(0.4))`. When you create a custom modifier, you use `.wrap(YourModifierMix(...))` with the full class name instead.
-</Callout>
+// With tokens
+final $opacityToken = DoubleToken('custom.opacity');
+
+final tokenStyle = BoxStyler()
+    .color(Colors.blue)
+    .wrap(.opacity(Prop.token($opacityToken)));
+```
 
 ## Best Practices
 
@@ -207,9 +200,3 @@ final style = BoxStyler()
 - Use styler methods (not modifiers) for colors, borders, shadows
 - Avoid deeply nested modifier chains
 - Implement `lerp` properly for smooth animations
-
-## Related
-
-- [Styling with Mix](/documentation/guides/styling) — fluent Styler API basics
-- [Box](/documentation/widgets/box) — `BoxStyler` API reference
-- [FlexBox](/documentation/widgets/flexbox) — `FlexBoxStyler` API reference

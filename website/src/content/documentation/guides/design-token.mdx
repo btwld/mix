@@ -1,6 +1,5 @@
 ---
 title: Design Tokens
-description: "Define, provide, and resolve Mix design tokens with MixScope."
 ---
 
 import { Callout } from "nextra/components";
@@ -29,8 +28,8 @@ MixScope(
 );
 
 // 3. Use the token in a style
-final style = BoxStyler()
-    .color($primary())  // Call the token with () to create a reference resolved at build time
+final style = BoxStyler
+    .color($primary())  // Use call() to reference the token
     .size(100, 100);
 ```
 
@@ -78,7 +77,7 @@ Mix provides several built-in token types for common styling needs:
 | `SpaceToken` | `double` | Spacing values (padding, margin) |
 | `DoubleToken` | `double` | Any numeric value |
 | `RadiusToken` | `Radius` | Border radii |
-| `TextStyleToken` | `TextStyle` | Typography styles. Use `.mix()` to get a `TextStyleMixRef` for `TextStyler.style()` |
+| `TextStyleToken` | `TextStyle` | Typography styles |
 | `BorderSideToken` | `BorderSide` | Border definitions |
 | `ShadowToken` | `List<Shadow>` | Text shadows |
 | `BoxShadowToken` | `List<BoxShadow>` | Box shadows |
@@ -150,24 +149,31 @@ MixScope(
 Use `${token_name}.call()` or `${token_name}()` to reference a token:
 
 ```dart
-final style = BoxStyler()
+final style = BoxStyler
     .color($primary())
     .paddingAll($spacingMd());
 ```
 
-### TextStyleToken
+### Token Methods
 
-`TextStyleToken` requires an extra `.mix()` call to produce a `TextStyleMixRef` that `TextStyler.style()` accepts:
+Some stylers provide dedicated token methods:
 
 ```dart
-final $heading = TextStyleToken('heading');
-
-final textStyle = TextStyler()
-    .style($heading.mix())
-    .color($primary());
+final style = BoxStyler
+    .colorToken($primary)
+    .paddingToken($spacingMd);
 ```
 
-Other token types (e.g. `ColorToken`, `SpaceToken`, `RadiusToken`) resolve directly with `()` — only `TextStyleToken` needs `.mix()`.
+### Prop.token
+
+Use `Prop.token()` with `.create()` constructors for advanced composition:
+
+```dart
+final style = BoxStyler.create(
+  color: Prop.token($primary),
+  padding: Prop.token($spacingMd),
+);
+```
 
 ## Creating Custom Tokens
 
@@ -214,7 +220,7 @@ MixScope(
 );
 
 // Use with BoxStyler.create
-final style = BoxStyler()
+final style = BoxStyler
     .color(Colors.red)
     .size(100, 100)
     .merge(BoxStyler.create(padding: $contentPadding()));
@@ -266,12 +272,12 @@ class _ThemedAppState extends State<ThemedApp> {
       child: MaterialApp(
         home: Scaffold(
           body: Box(
-            style: BoxStyler().color($background()),
+            style: BoxStyler.color($background()),
             child: Column(
               children: [
                 StyledText(
                   'Hello, World!',
-                  style: TextStyler().color($foreground()),
+                  style: TextStyler.color($foreground()),
                 ),
                 ElevatedButton(
                   onPressed: () => setState(() => isDark = !isDark),
@@ -311,8 +317,3 @@ Widget build(BuildContext context) {
 - Use descriptive, hierarchical names: `$colorPrimary`, `$spacingMd`
 - Group related tokens in separate files (`tokens/colors.dart`, `tokens/spacing.dart`)
 - Replace hardcoded values with semantic tokens
-
-## Related
-
-- [Styling with Mix](/documentation/guides/styling) — fluent Styler API patterns
-- [Theming](/documentation/tutorials/theming) — build multi-theme apps with tokens
