@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import 'api/ecosystem/tw_card_alert.dart' as tw_card_alert;
 import 'api/animation/implicit.anim.counter.dart' as implicit_counter;
 import 'api/animation/implicit.curved.hover.dart' as hover_scale;
 import 'api/animation/implicit.curved.scale.dart' as auto_scale;
@@ -87,6 +88,7 @@ class PreviewRegistry {
   static const String _gradients = 'Gradients';
   static const String _tokens = 'Design System';
   static const String _animations = 'Animations';
+  static const String _ecosystem = 'Ecosystem';
   static final List<PreviewEntry> _previews = [
     // Widget Examples
     PreviewEntry(
@@ -313,6 +315,17 @@ class PreviewRegistry {
       description: 'Bouncy spring physics animation',
       category: _animations,
       builder: (_) => const spring_anim.Example(),
+    ),
+
+    // Ecosystem
+    PreviewEntry(
+      previewId: 'tw-card-alert',
+      sourcePath: 'examples/lib/api/ecosystem/tw_card_alert.dart',
+      title: 'mix_tailwinds - Card Alert',
+      description: 'Notification card with gradient avatar and action buttons',
+      category: _ecosystem,
+      snippetRegion: 'example',
+      builder: (_) => const tw_card_alert.Example(),
     ),
   ];
 
