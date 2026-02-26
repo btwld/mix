@@ -6,28 +6,33 @@ import { Callout } from "nextra/components";
 
 # mix_tailwinds
 
-`mix_tailwinds` provides a familiar Tailwind CSS-like utility syntax for styling Flutter widgets using Mix class names such as `flex`, `gap-4`, and `text-lg`.
+`mix_tailwinds` provides a Tailwind CSS-like utility syntax for styling Flutter widgets using Mix. Write class names such as `flex`, `gap-4`, and `text-lg` instead of composing stylers manually.
 
 <Callout type="warning">
-  This package is **highly experimental** and should be treated as a proof of concept.
-  The API is unstable and may change without notice.
+  Treat this package as a proof of concept. The API is unstable and will change without notice.
 </Callout>
 
+## Interactive Preview
+
+<FlutterPreview previewId="tw-card-alert" height={480} />
+
 ## Links
+
+The following resources point to the package registry and source code:
 
 - [Pub package](https://pub.dev/packages/mix_tailwinds)
 - [GitHub source](https://github.com/btwld/mix/tree/main/packages/mix_tailwinds)
 
 ## Install
 
-Using pub.dev:
+From pub.dev:
 
 ```yaml
 dependencies:
   mix_tailwinds: 0.0.1-alpha.1
 ```
 
-Using unreleased changes from this repo:
+From the Git repository (latest unreleased changes):
 
 ```yaml
 dependencies:
@@ -38,6 +43,8 @@ dependencies:
 ```
 
 ## Quick start
+
+Wrap your app with `TwScope`, then use `Div` and `Span` to build layouts with Tailwind-like class names:
 
 ```dart
 import 'package:flutter/material.dart';
@@ -71,9 +78,237 @@ void main() {
 }
 ```
 
+This renders a white rounded card with a title and subtitle, using only class name strings.
+
+## Widget API
+
+The following table lists all widgets provided by `mix_tailwinds`:
+
+| Widget | Purpose |
+|--------|---------|
+| `TwScope` | Root wrapper. Provides `TwConfig` (scales, colors, breakpoints) and default typography to the widget tree. |
+| `Div` | Container and layout element. Auto-detects whether to render as a flex container or a box based on class names. |
+| `Span` | Inline text element. |
+| `P` | Block-level paragraph element. |
+| `H1` – `H6` | Heading elements. No default styles applied (matches Tailwind Preflight behavior). |
+| `TruncatedP` | Convenience wrapper for text truncation in flex containers. Auto-applies `flex-1 min-w-0`. |
+
+All layout widgets accept a `classNames` string and an optional `onUnsupported` callback for unrecognized tokens:
+
+```dart
+Div(
+  classNames: 'flex gap-4 unknown-class',
+  onUnsupported: (token) => debugPrint('Unsupported: $token'),
+  children: [...],
+)
+```
+
+## Supported utility classes
+
+### Layout
+
+| Utility | Description |
+|---------|-------------|
+| `flex` | Enable flex layout |
+| `flex-row`, `flex-col` | Flex direction |
+| `flex-wrap`, `flex-nowrap`, `flex-wrap-reverse` | Flex wrap behavior |
+| `flex-1`, `flex-auto`, `flex-initial`, `flex-none` | Flex shorthand |
+| `grow`, `grow-0`, `shrink`, `shrink-0` | Flex grow/shrink |
+| `items-start`, `items-center`, `items-end`, `items-stretch`, `items-baseline` | Cross-axis alignment |
+| `justify-start`, `justify-center`, `justify-end`, `justify-between`, `justify-around`, `justify-evenly` | Main-axis alignment |
+| `self-auto`, `self-start`, `self-center`, `self-end`, `self-stretch` | Self alignment |
+| `hidden`, `block` | Display mode |
+| `overflow-hidden`, `overflow-visible`, `overflow-clip` | Overflow behavior |
+
+### Spacing
+
+| Utility | Scale |
+|---------|-------|
+| `p-*`, `px-*`, `py-*`, `pt-*`, `pr-*`, `pb-*`, `pl-*` | Padding (0–96) |
+| `m-*`, `mx-*`, `my-*`, `mt-*`, `mr-*`, `mb-*`, `ml-*` | Margin (0–96, supports negative: `-m-*`) |
+| `gap-*`, `gap-x-*`, `gap-y-*` | Gap between flex children (0–96) |
+
+### Sizing
+
+| Utility | Scale |
+|---------|-------|
+| `w-*`, `h-*` | Width/height (0–96, plus `full`, `screen`, `auto`) |
+| `min-w-*`, `min-h-*`, `max-w-*`, `max-h-*` | Min/max constraints |
+| Fractional: `w-1/2`, `h-1/3`, `w-2/5` | Percentage-based sizing |
+
+### Typography
+
+| Utility | Description |
+|---------|-------------|
+| `text-xs` through `text-9xl` | Font size (12px–128px) |
+| `font-thin` through `font-black` | Font weight (100–900) |
+| `text-left`, `text-center`, `text-right`, `text-justify`, `text-start`, `text-end` | Text alignment |
+| `uppercase`, `lowercase`, `capitalize` | Text transform |
+| `truncate` | Text overflow ellipsis |
+| `leading-none` through `leading-loose` | Line height |
+| `tracking-tighter` through `tracking-widest` | Letter spacing |
+
+### Colors
+
+| Utility | Description |
+|---------|-------------|
+| `bg-*` | Background color |
+| `text-*` | Text color |
+
+Available color palettes: `slate`, `gray`, `blue`, `purple`, `pink`, `red`, `amber`, `emerald`, plus `black`, `white`, and `transparent`. Each palette includes shades from 50 to 950.
+
+### Borders
+
+| Utility | Scale |
+|---------|-------|
+| `border-*`, `border-t-*`, `border-r-*`, `border-b-*`, `border-l-*`, `border-x-*`, `border-y-*` | Border width (0, 1, 2, 4, 8) |
+| `rounded-*`, `rounded-t-*`, `rounded-b-*`, `rounded-l-*`, `rounded-r-*`, `rounded-tl-*`, `rounded-tr-*`, `rounded-bl-*`, `rounded-br-*` | Border radius (none–full) |
+
+### Effects
+
+| Utility | Description |
+|---------|-------------|
+| `shadow-none` through `shadow-2xl` | Box shadow |
+| `text-shadow-none` through `text-shadow-lg` | Text shadow |
+| `blur-none` through `blur-3xl` | Blur filter |
+
+### Transforms
+
+| Utility | Scale |
+|---------|-------|
+| `scale-*` | Transform scale (0–1.5) |
+| `rotate-*` | Rotation (0–180°, supports negative: `-rotate-*`) |
+| `translate-x-*`, `translate-y-*` | Translation (supports negative) |
+
+### Animations
+
+| Utility | Description |
+|---------|-------------|
+| `transition`, `transition-all`, `transition-colors`, `transition-opacity`, `transition-shadow`, `transition-transform`, `transition-none` | Transition properties |
+| `duration-*` | Animation duration (0–1000ms) |
+| `delay-*` | Animation delay (0–1000ms) |
+| `ease-linear`, `ease-in`, `ease-out`, `ease-in-out` | Easing curves |
+
+## Variants
+
+Prefix any utility with a variant to apply it conditionally.
+
+### Responsive breakpoints
+
+| Prefix | Min-width |
+|--------|-----------|
+| `sm:` | 640px |
+| `md:` | 768px |
+| `lg:` | 1024px |
+| `xl:` | 1280px |
+| `2xl:` | 1536px |
+
+```dart
+Div(classNames: 'flex flex-col md:flex-row gap-4', children: [...])
+```
+
+### Interaction states
+
+| Prefix | Triggers when |
+|--------|---------------|
+| `hover:` | Pointer hovers over the widget |
+| `active:` | Widget is pressed |
+| `focus:` | Widget has focus |
+| `disabled:` | Widget is disabled |
+| `group:` | Parent group state |
+| `group-hover:` | Parent group is hovered |
+
+```dart
+Div(
+  classNames: 'bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white px-4 py-2 rounded-lg',
+  child: Span(text: 'Click me'),
+)
+```
+
+### Theme variants
+
+| Prefix | Applies when |
+|--------|-------------|
+| `dark:` | Dark theme is active |
+| `light:` | Light theme is active |
+
+### Composing variants
+
+Combine multiple variant prefixes on a single token:
+
+```dart
+Div(classNames: 'bg-white md:hover:bg-blue-500 dark:bg-gray-900')
+```
+
+## Special syntax
+
+### Arbitrary values
+
+Use square brackets for values outside the default scale:
+
+```dart
+Div(classNames: 'bg-[#FF0000] p-[24px] w-[100px]')
+```
+
+### Opacity modifiers
+
+Append `/<opacity>` (0–100) to any color utility:
+
+```dart
+Div(classNames: 'bg-white/50 text-black/75')
+```
+
+### Important flag
+
+Prefix with `!` to mark a utility as important (overrides other values during merge):
+
+```dart
+Div(classNames: '!font-bold')
+```
+
+### Negative values
+
+Prefix with `-` for margin and transform utilities:
+
+```dart
+Div(classNames: '-mt-4 -translate-x-8')
+```
+
 ## Defaults and typography configuration
 
 <Callout type="info">
-  `mix_tailwinds` applies default typography through Mix scope (`TwScope` + `TextScope`).
+  `mix_tailwinds` applies default typography through `TwScope` using Mix's token and text scope system.
   Prefer this over overriding `ThemeData.textTheme` when configuring default text styles.
 </Callout>
+
+`TwScope` injects a base text style into the widget tree so all text inherits consistent defaults. Configure typography through `TwTextDefaults`:
+
+```dart
+TwScope(
+  config: TwConfig.standard().copyWith(
+    textDefaults: TwTextDefaults(
+      fontFamily: 'Inter',
+      fontSize: 16,
+      lineHeight: 1.5,
+      letterSpacing: 0,
+      fontWeight: FontWeight.w400,
+    ),
+  ),
+  child: MyApp(),
+)
+```
+
+Two built-in presets are available:
+
+| Preset | Description |
+|--------|-------------|
+| `TwTextDefaults.tailwindSans()` | System sans-serif stack matching Tailwind's default (used by `TwConfig.standard()`) |
+| `TwTextDefaults.platformDefault()` | Flutter's platform-native font with no explicit font family |
+
+## Known limitations
+
+The following features are parsed but not applied or have incomplete support:
+
+- **Percent-based sizing** — `w-[50%]` is parsed but not applied. Use fractional syntax (`w-1/2`) instead.
+- **Fractional translate** — `translate-x-1/2` is not supported. Use pixel values.
+- **Fractional basis** — `basis-1/2` is not supported. Use spacing scale values or explicit sizing.
