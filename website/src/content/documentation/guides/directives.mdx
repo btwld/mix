@@ -17,13 +17,12 @@ StyledText(
 )
 ```
 
-Directives can be chained. Number directives operate on `Prop<T>`, which requires the `.create()` constructor. This is the only case where you interact with `Prop` directly:
+Directives can be chained. Number directives operate on `Prop<T>` values:
 
 ```dart
 // Chain: multiply by 2, then add 5, then clamp between 0-30
-final style = BoxStyler.create(
-  width: Prop.value(10.0).multiply(2).add(5).clamp(0, 30),
-);
+final scaled = Prop.value(10.0).multiply(2).add(5).clamp(0, 30);
+// Result: (10 * 2) + 5 = 25, clamped to [0, 30] = 25
 ```
 
 ## Text Directives
@@ -36,8 +35,8 @@ Transform strings in `StyledText` widgets:
 |--------|-------------|---------------|--------|
 | `.uppercase()` | Converts all characters to uppercase | "hello world" | "HELLO WORLD" |
 | `.lowercase()` | Converts all characters to lowercase | "Hello World" | "hello world" |
-| `.capitalize()` | Capitalizes the first letter of each word | "hello world" | "Hello World" |
-| `.titlecase()` | Transforms to title case format | "hello world" | "Hello World" |
+| `.capitalize()` | Capitalizes the first letter of the string and lowercases the rest | "hello World" | "Hello world" |
+| `.titlecase()` | Capitalizes the first letter of each word | "hello world" | "Hello World" |
 | `.sentencecase()` | Capitalizes the first letter of the first word | "hello world" | "Hello world" |
 
 <FlutterPreview
@@ -98,20 +97,16 @@ import 'package:mix/mix.dart';
 // Dynamic sizing with tokens
 final $baseSize = DoubleToken('base.size');
 
-final boxStyle = BoxStyler.create(
-  width: Prop.token($baseSize).multiply(2),
-  height: Prop.token($baseSize).multiply(1.5),
-);
+// Use Prop.token() with number directives for token-based calculations
+final scaledSize = Prop.token($baseSize).multiply(2);
+final adjustedSize = Prop.token($baseSize).multiply(1.5);
 
 // Clamped responsive values
-final responsiveStyle = BoxStyler.create(
-  padding: Prop.value(16.0).clamp(8, 32),
-);
+final clampedPadding = Prop.value(16.0).clamp(8, 32);
 
 // Chaining multiple directives
-final chainedStyle = BoxStyler.create(
-  width: Prop.value(100.0).multiply(2).add(20).clamp(0, 300),
-);
+final computed = Prop.value(100.0).multiply(2).add(20).clamp(0, 300);
+// Result: (100 * 2) + 20 = 220, clamped to [0, 300] = 220
 ```
 
 <Callout type="warning">

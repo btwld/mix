@@ -229,48 +229,43 @@ enum ButtonVariant {
   elevated,
   link;
 
-  ButtonStyler get style {
-    switch (this) {
-      case ButtonVariant.filled:
-        return ButtonStyler()
-            .backgroundColor(Colors.blueAccent)
-            .textColor(Colors.white)
-            .iconColor(Colors.white);
-      
-      case ButtonVariant.outlined:
-        return ButtonStyler()
-            .container(
-              FlexBoxStyler()
-                  .color(Colors.transparent)
-                  .borderAll(width: 1.5, color: Colors.blueAccent),
-            )
-            .textColor(Colors.blueAccent)
-            .iconColor(Colors.blueAccent);
-      
-      case ButtonVariant.elevated:
-        return ButtonStyler()
-            .backgroundColor(Colors.blueAccent)
-            .textColor(Colors.white)
-            .iconColor(Colors.white)
-            .container(
-              FlexBoxStyler().shadow(
-                BoxShadowMix()
-                    .color(Colors.blueAccent.shade700)
-                    .offset(x: 0, y: 5),
-              ),
-            );
-      
-      case ButtonVariant.link:
-        return ButtonStyler()
-            .container(
-              FlexBoxStyler()
-                  .borderAll(style: BorderStyle.none)
-                  .color(Colors.transparent),
-            )
-            .textColor(Colors.blueAccent)
-            .iconColor(Colors.blueAccent);
-    }
-  }
+  ButtonStyler get style => switch (this) {
+    ButtonVariant.filled => ButtonStyler()
+        .backgroundColor(Colors.blueAccent)
+        .textColor(Colors.white)
+        .iconColor(Colors.white),
+
+    ButtonVariant.outlined => ButtonStyler()
+        .container(
+          FlexBoxStyler()
+              .color(Colors.transparent)
+              .borderAll(width: 1.5, color: Colors.blueAccent),
+        )
+        .textColor(Colors.blueAccent)
+        .iconColor(Colors.blueAccent),
+
+    ButtonVariant.elevated => ButtonStyler()
+        .backgroundColor(Colors.blueAccent)
+        .textColor(Colors.white)
+        .iconColor(Colors.white)
+        .container(
+          FlexBoxStyler().shadow(
+            // BoxShadowMix is Mix's fluent builder for BoxShadow
+            BoxShadowMix()
+                .color(Colors.blueAccent.shade700)
+                .offset(x: 0, y: 5),
+          ),
+        ),
+
+    ButtonVariant.link => ButtonStyler()
+        .container(
+          FlexBoxStyler()
+              .borderAll(style: .none)
+              .color(Colors.transparent),
+        )
+        .textColor(Colors.blueAccent)
+        .iconColor(Colors.blueAccent),
+  };
 }
 ```
 

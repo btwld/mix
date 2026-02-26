@@ -107,6 +107,10 @@ final primaryColorToken = CustomColorTokens.primary.token;
 final headline1TextStyleToken = CustomTextStyleTokens.headline1.token;
 ```
 
+<Callout type="info">
+  An alternative is to define tokens as top-level constants with the `$` prefix convention (e.g., `const $primary = ColorToken('primary')`). Both approaches work — enums provide organization, while `$` constants are more concise for inline usage.
+</Callout>
+
 ### Creating Theme Data
 
 Now that we have our tokens defined, we need to create theme classes that map tokens to their actual values. We'll organize these as static maps within theme classes. This makes it easy to switch between themes.
@@ -389,7 +393,9 @@ class _ThemingTutorialAppState extends State<ThemingTutorialApp> {
       textStyles: textStyles,
       radii: radii,
       spaces: spaces,
-      child: const ProfilePage(),
+      child: const MaterialApp(
+        home: ProfilePage(),
+      ),
     );
   }
 }

@@ -7,16 +7,16 @@ description: "Compare Mix and plain Flutter approaches for styling and interacti
 
 ## A Comparative Look at Mix
 
-Mix rethinks the way we handle styling in Flutter by simplifying and streamlining the process. This comparison aims to showcase how Mix enhances code readability, maintainability, and reduces boilerplate, especially when dealing with complex widget styles and interactions.
+Mix simplifies Flutter styling by reducing boilerplate and separating style from logic. This comparison shows how Mix handles complex widget styles and interactions versus plain Flutter.
 
 ### Code Comparison: With Mix vs. Without Mix
 
-This comparison uses a common scenario — styling a custom widget — to illustrate the advantages of using Mix. The example styles a custom widget with the following requirements:
+This comparison styles a custom widget with the following requirements:
 
-- **Flexible Overriding of Styles**: This demonstrates the ability to override specific `TextStyle` and `BoxDecoration` properties, showcasing Mix's flexibility and adaptability in customization.
-- **Simplified Interaction-Based Styling**: This highlights Mix’s capability to handle hover states effortlessly, allowing for dynamic styling changes in response to user interactions.
+- **Flexible style overriding** — Override specific `TextStyle` and `BoxDecoration` properties independently
+- **Interaction-based styling** — Apply different styles on hover, press, and dark mode without manual state management
 
-#### With Mix
+### With Mix
 
 ```dart
 class CustomMixWidget extends StatelessWidget {
@@ -152,4 +152,4 @@ class _CustomWidgetState extends State<CustomWidget> {
 }
 ```
 
-Without Mix, the code is more verbose, especially in managing the hover state and styling. The separation between logic and presentation is less clear.
+Without Mix, the code requires manual `setState`, `MouseRegion`, and multiple `Animated*` widgets. Style logic is interleaved with widget construction, making it harder to maintain.
