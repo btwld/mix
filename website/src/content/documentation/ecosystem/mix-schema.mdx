@@ -24,35 +24,33 @@ AI-generated UI is powerful but unstable when raw payloads are rendered directly
 
 ```mermaid
 flowchart LR
-  A[Agent Protocol Payload] --> B[Wire Adapter]
-  B --> C[Canonical AST<br/>UiSchemaRoot]
-  C --> D[Schema Validator]
-  D --> E[Trust Policy Gate]
-  E --> F[Schema Renderer]
-  F --> G[Mix Widgets]
-  G --> H[Branded Flutter UI]
+  Dev[Developer Code] --> Styler[Mix Styler]
+  Agent[Agent Payload] --> Adapter[Wire Adapter]
+  Adapter --> AST[Canonical AST]
+  AST --> Validate[Validate & Trust Gate]
+  Validate --> Styler
+  Styler --> Spec[Spec] --> Widget[Widget] --> UI[Branded UI]
 ```
+
+Both developer-authored and AI-generated UI converge into the same Mix pipeline. The output is indistinguishable.
 
 ## Runtime flow
 
 ```mermaid
 sequenceDiagram
   participant Agent
-  participant Adapter
-  participant Validator
-  participant Trust
-  participant Renderer
+  participant mix_schema
+  participant Mix
   participant App
 
-  Agent->>Adapter: Send UI payload
-  Adapter->>Validator: Map payload to AST
-  Validator->>Trust: Evaluate structure + action risk
+  Agent->>mix_schema: UI payload
+  mix_schema->>mix_schema: Adapt → AST → Validate → Trust gate
   alt Valid and permitted
-    Trust->>Renderer: Pass AST
-    Renderer->>App: Build widget tree
-    App-->>Agent: Emit UI events
-  else Invalid or blocked
-    Trust-->>Agent: Return diagnostics / blocked actions
+    mix_schema->>Mix: Resolve tokens & build styles
+    Mix->>App: Render widget tree
+    App-->>Agent: UI events
+  else Blocked
+    mix_schema-->>Agent: Diagnostics
   end
 ```
 
