@@ -46,10 +46,7 @@ class _ExampleState extends State<Example> {
     final textStyle = TextStyler.fontSize(16)
         .fontWeight(.w600)
         .color(Colors.grey.shade700)
-        .variant(
-          ContextVariant.widgetState(.selected),
-          .color(Colors.white),
-        );
+        .variant(ContextVariant.widgetState(.selected), .color(Colors.white));
 
     return Pressable(
       onPress: () {

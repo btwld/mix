@@ -12,9 +12,7 @@ final appHeaderContainer = BoxStyler.height(80)
     .padding(.all(16))
     .alignment(.center)
     .wrap(
-      .new().defaultText(
-        .fontSize(20).fontWeight(.bold).color(Colors.white),
-      ),
+      .new().defaultText(.fontSize(20).fontWeight(.bold).color(Colors.white)),
     );
 
 final scaffoldBodyContainer = BoxStyler.color(

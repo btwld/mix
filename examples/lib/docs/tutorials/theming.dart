@@ -216,21 +216,21 @@ class ProfilePage extends StatelessWidget {
             // Title
             StyledText(
               'Hollywood Academy',
-              style: .style(
+              style: TextStyler.style(
                 CustomTextStyleTokens.headline1.token.mix(),
               ).color(CustomColorTokens.onSurface.token()),
             ),
             // Subtitle
             StyledText(
               'Education · Los Angeles, California',
-              style: .style(
+              style: TextStyler.style(
                 CustomTextStyleTokens.callout.token.mix(),
               ).color(CustomColorTokens.onSurfaceVariant.token()),
             ),
             // Description
             StyledText(
               'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s.',
-              style: .style(
+              style: TextStyler.style(
                 CustomTextStyleTokens.body.token.mix(),
               ).color(CustomColorTokens.onSurfaceVariant.token()),
             ),

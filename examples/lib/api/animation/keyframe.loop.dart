@@ -42,7 +42,7 @@ class DemoApp extends StatelessWidget {
           .gradient(
             .linear(
               .transform(
-              _SlidingGradientTransform(slidePercent: values.get('progress')),
+                _SlidingGradientTransform(slidePercent: values.get('progress')),
               ),
             ),
           ),

@@ -38,15 +38,13 @@ class _ExampleState extends State<Example> {
     return MouseRegion(
       onEnter: (event) => trigger.value++,
       child: RowBox(
-        style: .color(Colors.white)
+        style: FlexBoxStyler.color(Colors.white)
             .padding(.horizontal(16).vertical(8))
             .borderRadius(.circular(10))
             .border(.all(.color(Colors.grey.shade200)))
             .mainAxisSize(.min)
             .spacing(8)
-            .onHovered(
-              .border(.all(.color(Colors.grey.shade300))),
-            )
+            .onHovered(.border(.all(.color(Colors.grey.shade300))))
             .animate(.easeInOut(150.ms)),
 
         children: [

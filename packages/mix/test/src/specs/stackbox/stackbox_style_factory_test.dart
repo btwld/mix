@@ -123,10 +123,7 @@ void main() {
 
       test('shadow', () {
         final s = BoxShadowMix(color: Colors.black, blurRadius: 10);
-        expect(
-          StackBoxStyler.shadow(s),
-          equals(StackBoxStyler().shadow(s)),
-        );
+        expect(StackBoxStyler.shadow(s), equals(StackBoxStyler().shadow(s)));
       });
 
       test('shadows', () {
@@ -134,10 +131,7 @@ void main() {
           BoxShadowMix(color: Colors.black, blurRadius: 10),
           BoxShadowMix(color: Colors.grey, blurRadius: 5),
         ];
-        expect(
-          StackBoxStyler.shadows(s),
-          equals(StackBoxStyler().shadows(s)),
-        );
+        expect(StackBoxStyler.shadows(s), equals(StackBoxStyler().shadows(s)));
       });
 
       // Constraints convenience factories

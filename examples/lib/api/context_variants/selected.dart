@@ -29,10 +29,7 @@ class _ExampleState extends State<Example> {
         .height(100)
         .width(100)
         .borderRadius(.circular(10))
-        .variant(
-          ContextVariant.widgetState(.selected),
-          .color(Colors.blue),
-        );
+        .variant(ContextVariant.widgetState(.selected), .color(Colors.blue));
 
     return Pressable(
       onPress: () {

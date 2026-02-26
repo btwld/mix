@@ -102,22 +102,16 @@ class ButtonStyler extends Style<ButtonSpec>
   }
 
   ButtonStyler borderWidth(double value) {
-    return merge(
-      ButtonStyler(container: .border(.all(.width(value)))),
-    );
+    return merge(ButtonStyler(container: .border(.all(.width(value)))));
   }
 
   ButtonStyler borderColor(Color value) {
-    return merge(
-      ButtonStyler(container: .border(.all(.color(value)))),
-    );
+    return merge(ButtonStyler(container: .border(.all(.color(value)))));
   }
 
   ButtonStyler borderRadius(double value) {
     return merge(
-      ButtonStyler(
-        container: .borderRadius(BorderRadiusMix.circular(value)),
-      ),
+      ButtonStyler(container: .borderRadius(BorderRadiusMix.circular(value))),
     );
   }
 
@@ -202,9 +196,7 @@ enum ButtonVariant {
         return _outlinedStyle;
       case .elevated:
         return _filledStyle.container(
-          .shadow(
-            .color(Colors.blueAccent.shade700).offset(x: 0, y: 5),
-          ),
+          .shadow(.color(Colors.blueAccent.shade700).offset(x: 0, y: 5)),
         );
       case .link:
         return _outlinedStyle.container(
@@ -241,9 +233,7 @@ class CustomButton extends StatelessWidget {
         .crossAxisAlignment(.center)
         .mainAxisSize(.min);
 
-    final label = TextStyler.style(
-      TextStyleMix.fontSize(16).fontWeight(.w500),
-    );
+    final label = TextStyler.style(TextStyleMix.fontSize(16).fontWeight(.w500));
 
     final icon = IconStyler.size(18);
 
@@ -262,11 +252,7 @@ class CustomButton extends StatelessWidget {
         .onDisabled(
           ButtonStyler()
               .container(.color(Colors.blueGrey.shade100))
-              .label(
-                .style(
-                  TextStyleMix.color(Colors.blueGrey.shade700),
-                ),
-              )
+              .label(.style(TextStyleMix.color(Colors.blueGrey.shade700)))
               .icon(.color(Colors.blueGrey.shade700)),
         )
         .merge(style);

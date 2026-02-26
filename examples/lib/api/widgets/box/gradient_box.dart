@@ -20,7 +20,9 @@ class Example extends StatelessWidget {
           begin: .topLeft,
           end: .bottomRight,
         )
-        .shadow(.color(Colors.deepPurple.shade700).offset(x: 0, y: 4).blurRadius(10));
+        .shadow(
+          .color(Colors.deepPurple.shade700).offset(x: 0, y: 4).blurRadius(10),
+        );
 
     return Box(style: style);
   }

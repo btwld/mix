@@ -31,9 +31,7 @@ class Example extends StatelessWidget {
             StyledText('hello world'),
             StyledText(
               'Mix is awesome',
-              style: .new().onHovered(
-                .color(Colors.deepPurple),
-              ),
+              style: TextStyler().onHovered(.color(Colors.deepPurple)),
             ),
             StyledIcon(icon: Icons.ac_unit),
           ],

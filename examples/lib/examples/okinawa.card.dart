@@ -43,7 +43,13 @@ class OkinawaCard extends StatelessWidget {
           'https://images.pexels.com/photos/5472603/pexels-photo-5472603.jpeg',
           fit: .cover,
         )
-        .border(.all(.color(Colors.white).width(6).strokeAlign(BorderSide.strokeAlignOutside)))
+        .border(
+          .all(
+            .color(
+              Colors.white,
+            ).width(6).strokeAlign(BorderSide.strokeAlignOutside),
+          ),
+        )
         .color(Colors.blueGrey.shade50)
         .shadow(.color(Colors.black.withValues(alpha: 0.35)).blurRadius(100));
 
