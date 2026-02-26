@@ -113,20 +113,55 @@ mixin _$ImageStylerMixin on Style<ImageSpec>, Diagnosticable {
     return merge(ImageStyler(modifier: value));
   }
 
+  @override
+  bool get hasBasePayload =>
+      $alignment != null ||
+      $centerSlice != null ||
+      $color != null ||
+      $colorBlendMode != null ||
+      $excludeFromSemantics != null ||
+      $filterQuality != null ||
+      $fit != null ||
+      $gaplessPlayback != null ||
+      $height != null ||
+      $image != null ||
+      $isAntiAlias != null ||
+      $matchTextDirection != null ||
+      $repeat != null ||
+      $semanticLabel != null ||
+      $width != null ||
+      $modifier != null ||
+      $animation != null;
+
+  @override
+  ImageStyler copyWithVariants(List<VariantStyle<ImageSpec>>? variants) {
+    return ImageStyler.create(
+      alignment: $alignment,
+      centerSlice: $centerSlice,
+      color: $color,
+      colorBlendMode: $colorBlendMode,
+      excludeFromSemantics: $excludeFromSemantics,
+      filterQuality: $filterQuality,
+      fit: $fit,
+      gaplessPlayback: $gaplessPlayback,
+      height: $height,
+      image: $image,
+      isAntiAlias: $isAntiAlias,
+      matchTextDirection: $matchTextDirection,
+      repeat: $repeat,
+      semanticLabel: $semanticLabel,
+      width: $width,
+      variants: variants,
+      modifier: $modifier,
+      animation: $animation,
+    );
+  }
+
   /// Merges with another [ImageStyler].
   @override
   ImageStyler merge(ImageStyler? other) {
-    final hasContextVariantBuilders =
-        $variants?.any((v) => v.variant is ContextVariantBuilder) ?? false;
-    if (other != null &&
-        !Style.isResolvingActiveVariants &&
-        hasContextVariantBuilders &&
-        other.$variants == null) {
-      final builder = ContextVariantBuilder<ImageStyler>((_) => other);
-      return merge(
-        ImageStyler(variants: [VariantStyle<ImageSpec>(builder, other)]),
-      );
-    }
+    final deferred = deferMerge(other);
+    if (deferred != null) return deferred as ImageStyler;
 
     return ImageStyler.create(
       alignment: MixOps.merge($alignment, other?.$alignment),

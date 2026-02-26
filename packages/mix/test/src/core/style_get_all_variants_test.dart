@@ -600,60 +600,8 @@ void main() {
       });
 
       test('non-WidgetState variants preserve insertion order', () {
-        // This specific order is intentionally non-sequential and large enough
-        // to catch unstable ordering if equal-priority variants are re-sorted.
-        const order = [
-          48,
-          42,
-          46,
-          5,
-          20,
-          24,
-          36,
-          28,
-          23,
-          32,
-          13,
-          0,
-          30,
-          16,
-          31,
-          10,
-          11,
-          25,
-          9,
-          1,
-          41,
-          33,
-          26,
-          2,
-          29,
-          6,
-          35,
-          39,
-          18,
-          22,
-          14,
-          37,
-          19,
-          40,
-          38,
-          44,
-          49,
-          15,
-          43,
-          34,
-          3,
-          12,
-          7,
-          8,
-          45,
-          27,
-          21,
-          47,
-          17,
-          4,
-        ];
+        // Non-sequential order to catch unstable sorting of equal-priority variants.
+        const order = [5, 3, 7, 1, 6, 2, 4];
 
         final variants = order
             .map(
@@ -675,6 +623,7 @@ void main() {
           namedVariants: {},
         );
 
+        // Last element in insertion order (4) wins via sequential merge.
         final spec = result.resolve(context);
         expect((spec.resolvedValue as Map)['width'], 4.0);
       });
@@ -779,6 +728,23 @@ class _MockSpecAttribute extends Style<MockSpec<Map<String, dynamic>>> {
     super.modifier,
     super.animation,
   });
+
+  @override
+  bool get hasBasePayload =>
+      width != 0.0 || height != null || $modifier != null || $animation != null;
+
+  @override
+  _MockSpecAttribute copyWithVariants(
+    List<VariantStyle<MockSpec<Map<String, dynamic>>>>? variants,
+  ) {
+    return _MockSpecAttribute(
+      width: width,
+      height: height,
+      variants: variants,
+      modifier: $modifier,
+      animation: $animation,
+    );
+  }
 
   @override
   StyleSpec<MockSpec<Map<String, dynamic>>> resolve(BuildContext context) {

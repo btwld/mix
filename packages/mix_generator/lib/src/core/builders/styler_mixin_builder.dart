@@ -86,6 +86,43 @@ class StylerMixinBuilder {
     return buffer.toString();
   }
 
+  String _buildDeferredMergeHooks() {
+    final buffer = StringBuffer();
+
+    final deferredChecks = <String>[
+      ...fields.map((field) => '${field.declaredName} != null'),
+      '\$modifier != null',
+      '\$animation != null',
+    ];
+
+    buffer.writeln('  @override');
+    buffer.writeln('  bool get hasBasePayload =>');
+    for (int i = 0; i < deferredChecks.length; i++) {
+      final isLast = i == deferredChecks.length - 1;
+      final suffix = isLast ? ';' : ' ||';
+      buffer.writeln('      ${deferredChecks[i]}$suffix');
+    }
+    buffer.writeln();
+
+    buffer.writeln('  @override');
+    buffer.writeln(
+      '  $stylerName copyWithVariants(List<VariantStyle<$specName>>? variants) {',
+    );
+    buffer.writeln('    return $stylerName.create(');
+    for (final field in fields) {
+      final fieldName = field.declaredName;
+      final name = field.name;
+      buffer.writeln('      $name: $fieldName,');
+    }
+    buffer.writeln('      variants: variants,');
+    buffer.writeln('      modifier: \$modifier,');
+    buffer.writeln('      animation: \$animation,');
+    buffer.writeln('    );');
+    buffer.writeln('  }');
+
+    return buffer.toString();
+  }
+
   String _buildMerge() {
     if (!config.generateMerge) return '';
 
@@ -94,21 +131,8 @@ class StylerMixinBuilder {
     buffer.writeln('  /// Merges with another [$stylerName].');
     buffer.writeln('  @override');
     buffer.writeln('  $stylerName merge($stylerName? other) {');
-    buffer.writeln('    final hasContextVariantBuilders =');
-    buffer.writeln(
-      '        \$variants?.any((v) => v.variant is ContextVariantBuilder) ?? false;',
-    );
-    buffer.writeln('    if (other != null &&');
-    buffer.writeln('        !Style.isResolvingActiveVariants &&');
-    buffer.writeln('        hasContextVariantBuilders &&');
-    buffer.writeln('        other.\$variants == null) {');
-    buffer.writeln('      final builder = ContextVariantBuilder<$stylerName>(');
-    buffer.writeln('        (_) => other,');
-    buffer.writeln('      );');
-    buffer.writeln(
-      '      return merge($stylerName(variants: [VariantStyle<$specName>(builder, other)]));',
-    );
-    buffer.writeln('    }');
+    buffer.writeln('    final deferred = deferMerge(other);');
+    buffer.writeln('    if (deferred != null) return deferred as $stylerName;');
     buffer.writeln();
     buffer.writeln('    return $stylerName.create(');
 
@@ -264,6 +288,9 @@ class StylerMixinBuilder {
     if (config.generateSetters) {
       buffer.writeln(_buildBaseMethods());
     }
+
+    // Generate deferred-merge hooks
+    buffer.writeln(_buildDeferredMergeHooks());
 
     // Generate merge
     if (config.generateMerge) {

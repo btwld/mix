@@ -117,6 +117,120 @@ void main() {
       expect(decoration?.color, Colors.red);
     });
 
+    testWidgets(
+      'explicit merge with base and onDark preserves light order and dark override',
+      (tester) async {
+        const colorToken = ColorToken('test.explicit.merge.dark.token');
+        final merged = BoxStyler()
+            .color(Colors.red)
+            .onDark(BoxStyler().color(Colors.black));
+        final style = BoxStyler()
+            .useToken(colorToken, BoxStyler().color)
+            .merge(merged);
+
+        Future<void> pumpWithBrightness(Brightness brightness) {
+          return tester.pumpWidget(
+            MediaQuery(
+              data: MediaQueryData(platformBrightness: brightness),
+              child: Directionality(
+                textDirection: TextDirection.ltr,
+                child: MixScope(
+                  tokens: {colorToken: Colors.green},
+                  child: Box(style: style),
+                ),
+              ),
+            ),
+          );
+        }
+
+        await pumpWithBrightness(Brightness.light);
+        var container = tester.widget<Container>(find.byType(Container));
+        var decoration = container.decoration as BoxDecoration?;
+        expect(decoration?.color, Colors.red);
+
+        await pumpWithBrightness(Brightness.dark);
+        container = tester.widget<Container>(find.byType(Container));
+        decoration = container.decoration as BoxDecoration?;
+        expect(decoration?.color, Colors.black);
+      },
+    );
+
+    testWidgets(
+      'explicit merge with base and onHovered preserves normal order and hovered override',
+      (tester) async {
+        const colorToken = ColorToken('test.explicit.merge.hovered.token');
+        final merged = BoxStyler()
+            .color(Colors.red)
+            .onHovered(BoxStyler().color(Colors.blue));
+        final style = BoxStyler()
+            .useToken(colorToken, BoxStyler().color)
+            .merge(merged);
+
+        Future<void> pumpWithStates(Set<WidgetState> states) {
+          return tester.pumpWidget(
+            Directionality(
+              textDirection: TextDirection.ltr,
+              child: MixScope(
+                tokens: {colorToken: Colors.green},
+                child: WidgetStateProvider(
+                  states: states,
+                  child: Box(style: style),
+                ),
+              ),
+            ),
+          );
+        }
+
+        await pumpWithStates(<WidgetState>{});
+        var container = tester.widget<Container>(find.byType(Container));
+        var decoration = container.decoration as BoxDecoration?;
+        expect(decoration?.color, Colors.red);
+
+        await pumpWithStates({WidgetState.hovered});
+        container = tester.widget<Container>(find.byType(Container));
+        decoration = container.decoration as BoxDecoration?;
+        expect(decoration?.color, Colors.blue);
+      },
+    );
+
+    testWidgets(
+      'explicit merge with variants-only style keeps token fallback',
+      (tester) async {
+        const colorToken = ColorToken(
+          'test.explicit.merge.variants.only.token',
+        );
+        final merged = BoxStyler().onDark(BoxStyler().color(Colors.black));
+        final style = BoxStyler()
+            .useToken(colorToken, BoxStyler().color)
+            .merge(merged);
+
+        Future<void> pumpWithBrightness(Brightness brightness) {
+          return tester.pumpWidget(
+            MediaQuery(
+              data: MediaQueryData(platformBrightness: brightness),
+              child: Directionality(
+                textDirection: TextDirection.ltr,
+                child: MixScope(
+                  tokens: {colorToken: Colors.green},
+                  child: Box(style: style),
+                ),
+              ),
+            ),
+          );
+        }
+
+        await pumpWithBrightness(Brightness.light);
+        var container = tester.widget<Container>(find.byType(Container));
+        var decoration = container.decoration as BoxDecoration?;
+        expect(decoration?.color, Colors.green);
+
+        await pumpWithBrightness(Brightness.dark);
+        container = tester.widget<Container>(find.byType(Container));
+        decoration = container.decoration as BoxDecoration?;
+        expect(decoration?.color, Colors.black);
+      },
+    );
+
     testWidgets('post-token animation and modifiers are preserved', (
       tester,
     ) async {

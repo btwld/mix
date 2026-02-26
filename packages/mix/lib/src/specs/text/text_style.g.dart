@@ -102,20 +102,53 @@ mixin _$TextStylerMixin on Style<TextSpec>, Diagnosticable {
     return merge(TextStyler(modifier: value));
   }
 
+  @override
+  bool get hasBasePayload =>
+      $locale != null ||
+      $maxLines != null ||
+      $overflow != null ||
+      $selectionColor != null ||
+      $semanticsLabel != null ||
+      $softWrap != null ||
+      $strutStyle != null ||
+      $style != null ||
+      $textAlign != null ||
+      $textDirection != null ||
+      $textDirectives != null ||
+      $textHeightBehavior != null ||
+      $textScaler != null ||
+      $textWidthBasis != null ||
+      $modifier != null ||
+      $animation != null;
+
+  @override
+  TextStyler copyWithVariants(List<VariantStyle<TextSpec>>? variants) {
+    return TextStyler.create(
+      locale: $locale,
+      maxLines: $maxLines,
+      overflow: $overflow,
+      selectionColor: $selectionColor,
+      semanticsLabel: $semanticsLabel,
+      softWrap: $softWrap,
+      strutStyle: $strutStyle,
+      style: $style,
+      textAlign: $textAlign,
+      textDirection: $textDirection,
+      textDirectives: $textDirectives,
+      textHeightBehavior: $textHeightBehavior,
+      textScaler: $textScaler,
+      textWidthBasis: $textWidthBasis,
+      variants: variants,
+      modifier: $modifier,
+      animation: $animation,
+    );
+  }
+
   /// Merges with another [TextStyler].
   @override
   TextStyler merge(TextStyler? other) {
-    final hasContextVariantBuilders =
-        $variants?.any((v) => v.variant is ContextVariantBuilder) ?? false;
-    if (other != null &&
-        !Style.isResolvingActiveVariants &&
-        hasContextVariantBuilders &&
-        other.$variants == null) {
-      final builder = ContextVariantBuilder<TextStyler>((_) => other);
-      return merge(
-        TextStyler(variants: [VariantStyle<TextSpec>(builder, other)]),
-      );
-    }
+    final deferred = deferMerge(other);
+    if (deferred != null) return deferred as TextStyler;
 
     return TextStyler.create(
       locale: MixOps.merge($locale, other?.$locale),

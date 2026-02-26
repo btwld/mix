@@ -309,6 +309,23 @@ class _MockSpecAttribute extends Style<MockSpec<Map<String, dynamic>>> {
   });
 
   @override
+  bool get hasBasePayload =>
+      width != 0.0 || height != null || $modifier != null || $animation != null;
+
+  @override
+  _MockSpecAttribute copyWithVariants(
+    List<VariantStyle<MockSpec<Map<String, dynamic>>>>? variants,
+  ) {
+    return _MockSpecAttribute(
+      width: width,
+      height: height,
+      variants: variants,
+      modifier: $modifier,
+      animation: $animation,
+    );
+  }
+
+  @override
   StyleSpec<MockSpec<Map<String, dynamic>>> resolve(BuildContext context) {
     return StyleSpec(
       spec: MockSpec<Map<String, dynamic>>(

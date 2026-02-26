@@ -77,20 +77,43 @@ mixin _$FlexStylerMixin on Style<FlexSpec>, Diagnosticable {
     return merge(FlexStyler(modifier: value));
   }
 
+  @override
+  bool get hasBasePayload =>
+      $clipBehavior != null ||
+      $crossAxisAlignment != null ||
+      $direction != null ||
+      $mainAxisAlignment != null ||
+      $mainAxisSize != null ||
+      $spacing != null ||
+      $textBaseline != null ||
+      $textDirection != null ||
+      $verticalDirection != null ||
+      $modifier != null ||
+      $animation != null;
+
+  @override
+  FlexStyler copyWithVariants(List<VariantStyle<FlexSpec>>? variants) {
+    return FlexStyler.create(
+      clipBehavior: $clipBehavior,
+      crossAxisAlignment: $crossAxisAlignment,
+      direction: $direction,
+      mainAxisAlignment: $mainAxisAlignment,
+      mainAxisSize: $mainAxisSize,
+      spacing: $spacing,
+      textBaseline: $textBaseline,
+      textDirection: $textDirection,
+      verticalDirection: $verticalDirection,
+      variants: variants,
+      modifier: $modifier,
+      animation: $animation,
+    );
+  }
+
   /// Merges with another [FlexStyler].
   @override
   FlexStyler merge(FlexStyler? other) {
-    final hasContextVariantBuilders =
-        $variants?.any((v) => v.variant is ContextVariantBuilder) ?? false;
-    if (other != null &&
-        !Style.isResolvingActiveVariants &&
-        hasContextVariantBuilders &&
-        other.$variants == null) {
-      final builder = ContextVariantBuilder<FlexStyler>((_) => other);
-      return merge(
-        FlexStyler(variants: [VariantStyle<FlexSpec>(builder, other)]),
-      );
-    }
+    final deferred = deferMerge(other);
+    if (deferred != null) return deferred as FlexStyler;
 
     return FlexStyler.create(
       clipBehavior: MixOps.merge($clipBehavior, other?.$clipBehavior),

@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../animation/animation_config.dart';
+import 'helpers.dart';
 import '../modifiers/widget_modifier_config.dart';
 import '../variants/variant.dart';
 import 'internal/compare_mixin.dart';
@@ -25,6 +26,7 @@ sealed class StyleElement {
 abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
     implements StyleElement {
   static int _activeVariantMergeDepth = 0;
+  static final _visitedStyles = <int>{};
 
   @internal
   static bool get isResolvingActiveVariants => _activeVariantMergeDepth > 0;
@@ -50,6 +52,38 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
   }) : $modifier = modifier,
        $animation = animation,
        $variants = variants;
+
+  @internal
+  bool get hasBasePayload;
+
+  /// Copies current style payload while replacing only variants.
+  @internal
+  Style<S> copyWithVariants(List<VariantStyle<S>>? variants);
+
+  @internal
+  Style<S>? deferMerge(covariant Style<S>? other) {
+    if (other == null) return null;
+    if (isResolvingActiveVariants) return null;
+
+    final hasBuilders =
+        $variants?.any((v) => v.variant is ContextVariantBuilder) ?? false;
+    if (!hasBuilders) return null;
+
+    List<VariantStyle<S>>? deferredVariants;
+    if (other.hasBasePayload) {
+      final payload = other.copyWithVariants(null);
+      deferredVariants = [
+        VariantStyle<S>(DeferredVariant<S>(payload), payload),
+      ];
+    }
+
+    return copyWithVariants(
+      MixOps.mergeVariants(
+        [...?$variants, ...?deferredVariants],
+        other.$variants,
+      ),
+    );
+  }
 
   /// Gets the closest [Style] from the widget tree.
   ///
@@ -100,80 +134,90 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
     BuildContext context, {
     required Set<NamedVariant> namedVariants,
   }) {
-    // Filter variants that should be active in this context.
-    final activeVariants = ($variants ?? [])
-        .where(
-          (variantAttr) => switch (variantAttr.variant) {
-            (ContextVariant variant) => variant.when(context),
-            (NamedVariant variant) => namedVariants.contains(variant),
-            (ContextVariantBuilder _) => true,
-          },
-        )
-        .toList();
+    final styleId = identityHashCode(this);
+    if (!_visitedStyles.add(styleId)) return this;
 
-    // Preserve insertion order while still applying WidgetStateVariant last.
-    final prioritizedVariants = <VariantStyle<S>>[];
-    final widgetStateVariants = <VariantStyle<S>>[];
-    for (final variantAttr in activeVariants) {
-      if (variantAttr.variant is WidgetStateVariant) {
-        widgetStateVariants.add(variantAttr);
-      } else {
-        prioritizedVariants.add(variantAttr);
+    try {
+      // Filter variants that should be active in this context.
+      final activeVariants = ($variants ?? [])
+          .where(
+            (variantAttr) => switch (variantAttr.variant) {
+              (ContextVariant variant) => variant.when(context),
+              (NamedVariant variant) => namedVariants.contains(variant),
+              (ContextVariantBuilder _) => true,
+              (DeferredVariant _) => true,
+            },
+          )
+          .toList();
+
+      // Preserve insertion order while still applying WidgetStateVariant last.
+      final prioritizedVariants = <VariantStyle<S>>[];
+      final widgetStateVariants = <VariantStyle<S>>[];
+      for (final variantAttr in activeVariants) {
+        if (variantAttr.variant is WidgetStateVariant) {
+          widgetStateVariants.add(variantAttr);
+        } else {
+          prioritizedVariants.add(variantAttr);
+        }
       }
-    }
-    prioritizedVariants.addAll(widgetStateVariants);
+      prioritizedVariants.addAll(widgetStateVariants);
 
-    // Extract the style from each active variant
-    final stylesToMerge = <(Style<S>, bool)>[]; // (style, isFromStyleVariation)
+      // Extract the style from each active variant
+      final stylesToMerge =
+          <(Style<S>, bool)>[]; // (style, isFromStyleVariation)
 
-    for (final variantAttr in prioritizedVariants) {
-      final result = switch (variantAttr.variant) {
-        ContextVariantBuilder variant => (
-          variant.build(context) as Style<S>,
-          false,
-        ),
-        (ContextVariant() || NamedVariant()) => () {
-          // Check if the value is a StyleVariation
-          // ignore: avoid-unrelated-type-assertions
-          if (variantAttr.value is StyleVariation<S>) {
-            // ignore: avoid-unrelated-type-casts
-            final styleVariation = variantAttr.value as StyleVariation<S>;
-            // Only apply if this variant is active
-            if (namedVariants.contains(styleVariation.variantType)) {
-              return (
-                styleVariation.styleBuilder(this, namedVariants, context),
-                true,
-              );
+      for (final variantAttr in prioritizedVariants) {
+        final result = switch (variantAttr.variant) {
+          ContextVariantBuilder variant => (
+            variant.build(context) as Style<S>,
+            false,
+          ),
+          DeferredVariant variant => (variant.payload as Style<S>, false),
+          (ContextVariant() || NamedVariant()) => () {
+            // Check if the value is a StyleVariation
+            // ignore: avoid-unrelated-type-assertions
+            if (variantAttr.value is StyleVariation<S>) {
+              // ignore: avoid-unrelated-type-casts
+              final styleVariation = variantAttr.value as StyleVariation<S>;
+              // Only apply if this variant is active
+              if (namedVariants.contains(styleVariation.variantType)) {
+                return (
+                  styleVariation.styleBuilder(this, namedVariants, context),
+                  true,
+                );
+              }
             }
-          }
 
-          return (variantAttr.value, false);
-        }(),
-      };
-      stylesToMerge.add(result);
+            return (variantAttr.value, false);
+          }(),
+        };
+        stylesToMerge.add(result);
+      }
+
+      // Start with current style as base
+      Style<S> mergedStyle = this;
+
+      // Merge each variant style, recursively resolving nested variants
+      for (final (variantStyle, isFromStyleVariation) in stylesToMerge) {
+        final fullyResolvedStyle = isFromStyleVariation
+            // For StyleVariation results, we don't recursively resolve variants
+            // since StyleVariation.styleBuilder should handle its own variant logic
+            // and return a final style. This prevents infinite recursion.
+            ? variantStyle
+            // For regular variants, recursively resolve any nested variants
+            : variantStyle.mergeActiveVariants(
+                context,
+                namedVariants: namedVariants,
+              );
+        mergedStyle = _withActiveVariantMergeGuard(
+          () => mergedStyle.merge(fullyResolvedStyle),
+        );
+      }
+
+      return mergedStyle;
+    } finally {
+      _visitedStyles.remove(styleId);
     }
-
-    // Start with current style as base
-    Style<S> mergedStyle = this;
-
-    // Merge each variant style, recursively resolving nested variants
-    for (final (variantStyle, isFromStyleVariation) in stylesToMerge) {
-      final fullyResolvedStyle = isFromStyleVariation
-          // For StyleVariation results, we don't recursively resolve variants
-          // since StyleVariation.styleBuilder should handle its own variant logic
-          // and return a final style. This prevents infinite recursion.
-          ? variantStyle
-          // For regular variants, recursively resolve any nested variants
-          : variantStyle.mergeActiveVariants(
-              context,
-              namedVariants: namedVariants,
-            );
-      mergedStyle = _withActiveVariantMergeGuard(
-        () => mergedStyle.merge(fullyResolvedStyle),
-      );
-    }
-
-    return mergedStyle;
   }
 
   /// Resolves this attribute to its concrete value using the provided [BuildContext].
