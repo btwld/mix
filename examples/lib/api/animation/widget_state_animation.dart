@@ -19,12 +19,13 @@ class _ExampleState extends State<Example> {
 
   @override
   Widget build(BuildContext context) {
-    final style = BoxStyler.color(Colors.black)
+    final style = BoxStyler()
+        .color(Colors.black)
         .height(100)
         .width(100)
         .borderRounded(10)
-        .onHovered(BoxStyler.color(Colors.blue))
-        .onPressed(BoxStyler.color(Colors.red).animate(.easeIn(200.ms)));
+        .onHovered(.color(Colors.blue))
+        .onPressed(.color(Colors.red).animate(.easeIn(200.ms)));
 
     return Box(style: style);
   }

@@ -11,12 +11,12 @@ Let's look at a simple example: suppose you want a `Box` to change its color whe
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
-final style = BoxStyler
+final style = BoxStyler()
     .color(Colors.red)
     .height(100)
     .width(100)
     .borderRounded(10)
-    .onHovered(BoxStyler.color(Colors.blue));
+    .onHovered(.color(Colors.blue));
 ```
 
 Mix automatically merges the hovered style with the base style—you only define what changes.
@@ -31,24 +31,23 @@ Mix automatically merges the hovered style with the base style—you only define
 When you define a style, it is expected to be reused in multiple places. With Mix, you can easily reuse styles even when a variant was defined inside it.
 
 ```dart
-final styleA = BoxStyler
+final styleA = BoxStyler()
   .color(Colors.red)
   .height(100)
   .width(100)
   .borderRounded(10)
   .onHovered(
-    BoxStyler
-      .color(Colors.blue)
+    .color(Colors.blue)
       .width(200)
   );
 
-final styleB = styleA.onHovered(BoxStyler.color(Colors.green));
+final styleB = styleA.onHovered(.color(Colors.green));
 ```
 
 In this example, `styleB` will have the same style as `styleA`, but when the widget is hovered it has a different color and maintains the width equal to 200. So the final style when hovered will be:
 
 ```dart
-BoxStyler
+BoxStyler()
   .color(Colors.green)
   .height(100)
   .width(200)
@@ -61,10 +60,10 @@ There are cases where you want to combine multiple variants to achieve a specifi
 
 ```dart
 final hoverStyle = BoxStyler()
-  .onDark(BoxStyler.color(Colors.blue))
-  .onLight(BoxStyler.color(Colors.green));
+  .onDark(.color(Colors.blue))
+  .onLight(.color(Colors.green));
 
-final style = BoxStyler
+final style = BoxStyler()
   .color(Colors.red)
   .height(100)
   .width(100)

@@ -2,10 +2,10 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/widgets.dart';
 
-import 'preview_registry.dart';
 import 'multi_view_stub.dart'
     if (dart.library.js_interop) 'multi_view_web.dart'
     as multi_view;
+import 'preview_registry.dart';
 
 /// Multi-view app wrapper that renders previews based on view initialData.
 ///
@@ -38,6 +38,7 @@ class _MultiViewAppState extends State<MultiViewApp>
   @override
   void didChangeMetrics() {
     // Rebuild when views are added or removed.
+    // ignore: avoid-empty-setstate, no-empty-block
     setState(() {});
   }
 
