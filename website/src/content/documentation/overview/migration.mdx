@@ -1,3 +1,8 @@
+---
+title: "Migration Guide"
+description: "Migrate existing Mix code from v1.x patterns to the Mix 2.0 Styler API."
+---
+
 import { Callout } from "nextra/components";
 
 # Migration Guide
@@ -224,13 +229,13 @@ final theme = MixThemeData(
 // ... body method ...
 MixTheme(
   data: theme,
-  Box(
+  child: Box(
     key: key,
     style: Style(
       $box.color.ref(primaryColor),
     ),
-  )
-)
+  ),
+);
 ```
 ### The use of $ (Deprecated in 2.0)
 

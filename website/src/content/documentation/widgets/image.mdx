@@ -1,3 +1,8 @@
+---
+title: "StyledImage"
+description: "Reference for the StyledImage widget and ImageStyler APIs in Mix."
+---
+
 # StyledImage
 
 `StyledImage` is equivalent to Flutter's `Image` widget, but provides styling
@@ -11,7 +16,7 @@ final style = ImageStyler()
     .width(200)
     .height(200)
     .fit(.cover)
-    .color(Colors.blue.withOpacity(0.5))
+    .color(Colors.blue.withValues(alpha: 0.5))
     .colorBlendMode(.overlay);
 
 StyledImage(

@@ -4,6 +4,7 @@
     "dev": "next --turbopack",
     "build": "next build",
     "check:previews": "node scripts/check-previews-manifest.mjs",
+    "check:frontmatter": "node scripts/check-docs-frontmatter.mjs",
     "start": "next start",
     "postbuild": "pagefind --site .next/server/app --output-path public/_pagefind"
   },

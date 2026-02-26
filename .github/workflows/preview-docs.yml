@@ -61,5 +61,8 @@ jobs:
       - name: Validate Preview Manifest
         run: cd website && pnpm run check:previews
 
+      - name: Validate Docs Frontmatter
+        run: cd website && pnpm run check:frontmatter
+
       - name: Build Website
         run: cd website && pnpm run build

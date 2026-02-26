@@ -1,5 +1,6 @@
 ---
 title: Directives
+description: "Apply text and number directives to transform style values at resolution time."
 ---
 
 import { Callout } from "nextra/components";
@@ -93,14 +94,6 @@ Transform numeric values (width, height, padding, font sizes):
 ```dart
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
-
-// Number directives require .create() + Prop — this is the only case
-// where you need to interact with Prop directly
-final style = TextStyler.create(
-  style: Prop.mix(TextStyleMix(
-    letterSpacing: Prop.value(0.0025).multiply(12.0),
-  )),
-);
 
 // Dynamic sizing with tokens
 final $baseSize = DoubleToken('base.size');

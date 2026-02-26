@@ -1,8 +1,13 @@
+---
+title: "StyleWidgets"
+description: "Overview of Mix prebuilt styled widgets and their typed Styler APIs."
+---
+
 # StyleWidgets
 
 Mix is designed to extend Flutter’s core capabilities by introducing a set of enhanced widgets known as **StyleWidgets**. These widgets seamlessly integrate with Flutter’s familiar workflow, but add powerful styling features that make it easier to build composable and expressive UIs.
 
-At the heart of this system, `StyleWidgets` accept a `Style` object as a parameter. This object lets you define a wide range of visual attributes—such as color, padding, margin, and more—in a clear and composable way. Among these, the most commonly used is the `Box` widget, which is equivalent to Flutter's `Container`.
+At the heart of this system, `StyleWidgets` use typed Styler APIs (for example, `BoxStyler`, `TextStyler`, and `IconStyler`) through their `style` property. This keeps styling explicit and composable. Among these, the most commonly used is the `Box` widget, which is equivalent to Flutter's `Container`.
 
 ## Prebuilt StyleWidgets
 

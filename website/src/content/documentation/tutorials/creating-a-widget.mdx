@@ -1,3 +1,7 @@
+---
+title: "Building a Design System Widget"
+description: "Build a reusable button component with Mix specs, stylers, and variants."
+---
 
 # Building a Design System Widget
 
@@ -61,7 +65,7 @@ final class ButtonSpec extends Spec<ButtonSpec>
 That's it — no manual `copyWith`, `lerp`, or `props`. The generated mixin `_$ButtonSpecMethods` provides all of those. Run code generation with:
 
 ```bash
-melos run gen:build
+dart run build_runner build
 ```
 
 <details>

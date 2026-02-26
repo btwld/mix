@@ -1,8 +1,8 @@
 ---
 title: Introduction
 og_image: introduction-og.png
+description: "Learn the core ideas behind Mix and how it separates style semantics from widget structure."
 ---
-# Introduction
 
 Mix is a styling system for Flutter that separates style definitions from widget structure. It provides a composable, type-safe way to define and apply styles.
 
@@ -27,47 +27,6 @@ Mix provides utility functions for intuitive, composable styling that stays cons
 -  **Consistent**: API mirrors Flutter naming conventions
 -  **Composable**: Build complex styles from simple, reusable pieces
 -  **Extensible**: Override and extend utilities to fit your needs
-
-## Understanding the Styler Pattern
-
-Mix provides two constructor patterns for Styler classes. Understanding when to use each is key to effective styling:
-
-### Fluent API: `BoxStyler`
-
-The default constructor provides a fluent API for chaining style properties:
-
-```dart
-final style = BoxStyler()
-    .color(Colors.blue)
-    .paddingAll(16)
-    .borderRounded(8);
-```
-
-Use this pattern when:
-- Defining styles with direct values
-- Chaining multiple style properties together
-- Building most common styling use cases
-
-### Number Directives with `.create()`
-
-For number directives like `.multiply()`, `.add()`, and `.clamp()`, use the `.create()` constructor:
-
-```dart
-final $baseSize = DoubleToken('base.size');
-
-final style = BoxStyler.create(
-  width: Prop.token($baseSize).multiply(2),
-  height: Prop.value(100.0).clamp(50, 200),
-);
-```
-
-For all other cases — including tokens — prefer the fluent API:
-
-```dart
-final style = BoxStyler()
-    .color($primary())
-    .paddingAll($spacingMd());
-```
 
 ## Key Features
 
