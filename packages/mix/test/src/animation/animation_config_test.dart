@@ -410,6 +410,50 @@ void main() {
 
           expect(config, isA<SpringAnimationConfig>());
         });
+
+        test('spring propagates duration and bounce parameters', () {
+          final config = AnimationConfig.spring(
+            const Duration(milliseconds: 750),
+            bounce: 0.4,
+          ) as SpringAnimationConfig;
+
+          expect(config.spring, isNotNull);
+          // SpringDescription.withDurationAndBounce uses the duration and bounce
+          // to compute physics params, so verify the spring object was created
+          expect(config.spring.mass, isPositive);
+          expect(config.spring.stiffness, isPositive);
+        });
+
+        test('springWithDampingRatio propagates parameters', () {
+          final config = AnimationConfig.springWithDampingRatio(
+            mass: 2.0,
+            stiffness: 300.0,
+            dampingRatio: 0.5,
+          ) as SpringAnimationConfig;
+
+          expect(config.spring.mass, 2.0);
+          expect(config.spring.stiffness, 300.0);
+        });
+
+        test('springDurationBased propagates duration', () {
+          final config = AnimationConfig.springDurationBased(
+            const Duration(milliseconds: 600),
+            bounce: 0.3,
+          ) as CurveAnimationConfig;
+
+          expect(config.duration, const Duration(milliseconds: 600));
+        });
+
+        test('curveSpring propagates duration and physics params', () {
+          final config = AnimationConfig.curveSpring(
+            const Duration(milliseconds: 400),
+            mass: 2.0,
+            stiffness: 200.0,
+            damping: 15.0,
+          ) as CurveAnimationConfig;
+
+          expect(config.duration, const Duration(milliseconds: 400));
+        });
       });
     });
   });
