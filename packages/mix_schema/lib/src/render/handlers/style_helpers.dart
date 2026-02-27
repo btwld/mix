@@ -8,7 +8,7 @@ import '../../validate/diagnostics.dart';
 import '../render_context.dart';
 import 'parsers.dart';
 
-// Re-export parsers so existing imports continue to work.
+// Re-export parsers so handlers only need to import style_helpers.dart.
 export 'parsers.dart';
 
 // ---------------------------------------------------------------------------
