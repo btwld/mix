@@ -1,5 +1,5 @@
 import 'schema_node.dart';
-import '../trust/schema_trust.dart';
+import '../trust/capability_matrix.dart';
 
 /// Root container for a canonical UI schema.
 ///

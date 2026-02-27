@@ -1,8 +1,7 @@
 import '../ast/schema_node.dart';
-import '../ast/schema_semantics.dart';
 import '../ast/schema_values.dart';
 import '../ast/ui_schema_root.dart';
-import '../trust/schema_trust.dart';
+import '../trust/capability_matrix.dart';
 import '../validate/diagnostics.dart';
 import 'wire_adapter.dart';
 
@@ -21,8 +20,6 @@ const _tokenTypes = {
   'double',
 };
 
-bool _isTokenType(String prefix) => _tokenTypes.contains(prefix);
-
 /// A2UI v0.9 draft adapter — primary adapter for mix_schema.
 ///
 /// Implementation approach (from executable plan §5.2):
@@ -31,16 +28,13 @@ bool _isTokenType(String prefix) => _tokenTypes.contains(prefix);
 /// 3. Walk root node tree recursively
 /// 4. Emit lossy-mapping diagnostics
 /// 5. Return UiSchemaRoot
-class A2uiV09Adapter implements WireAdapter {
+class A2uiV09Adapter {
   const A2uiV09Adapter();
 
-  @override
   String get id => 'a2ui_v0_9_draft_latest';
 
-  @override
   List<String> get supportedVersions => const ['0.9'];
 
-  @override
   AdaptResult adapt(Object wirePayload, AdaptContext context) {
     final diagnostics = <SchemaDiagnostic>[];
 
@@ -495,7 +489,7 @@ SchemaValue _normalizeValue(dynamic raw) {
   if (raw is String) {
     // Check for token shorthand: "color.primary"
     final dotIndex = raw.indexOf('.');
-    if (dotIndex > 0 && _isTokenType(raw.substring(0, dotIndex))) {
+    if (dotIndex > 0 && _tokenTypes.contains(raw.substring(0, dotIndex))) {
       return TokenRef(
         type: raw.substring(0, dotIndex),
         name: raw.substring(dotIndex + 1),

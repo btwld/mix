@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../engine.dart';
-import '../trust/schema_trust.dart';
+import '../trust/capability_matrix.dart';
 
 /// InheritedWidget that provides SchemaEngine and trust configuration.
 ///

@@ -7,21 +7,20 @@
 library mix_schema;
 
 // AST — public types consumers create and inspect
-export 'src/ast/schema_node.dart';
-export 'src/ast/schema_semantics.dart';
+export 'src/ast/schema_node.dart'; // includes SchemaSemantics
 export 'src/ast/schema_values.dart';
 export 'src/ast/ui_schema_root.dart';
 
-// Adapters — public: consumers may implement custom adapters
+// Adapters — wire protocol adapter + data types
 export 'src/adapters/a2ui_v09_adapter.dart';
-export 'src/adapters/wire_adapter.dart';
+export 'src/adapters/wire_adapter.dart'; // AdaptContext, AdaptResult
 
-// Validation — public interface + result types only
+// Validation — result types + diagnostics
 export 'src/validate/diagnostics.dart';
-export 'src/validate/schema_validator.dart';
+export 'src/validate/schema_validator.dart'; // ValidationContext, ValidationResult
 
-// Trust — trust level enum
-export 'src/trust/schema_trust.dart';
+// Trust — trust level enum + capability matrix
+export 'src/trust/capability_matrix.dart' show SchemaTrust;
 
 // Events — public types for event handling
 export 'src/events/schema_event.dart';

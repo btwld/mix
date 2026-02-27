@@ -3,16 +3,15 @@ import 'package:flutter/semantics.dart' show OrdinalSortKey;
 import 'package:mix/mix.dart';
 
 import '../../ast/schema_node.dart';
-import '../../ast/schema_semantics.dart';
 import '../../ast/schema_values.dart';
 import '../../validate/diagnostics.dart';
 import '../render_context.dart';
 
+// ---------------------------------------------------------------------------
+// Style application helpers
+// ---------------------------------------------------------------------------
+
 /// Apply container-level style properties to a BoxStyler.
-///
-/// FlexHandler and StackHandler use their own typed versions since
-/// FlexBoxStyler and StackBoxStyler are siblings (not subtypes of BoxStyler),
-/// but share the same method names via mixins.
 BoxStyler applyContainerStyle(
   BoxStyler styler,
   Map<String, SchemaValue>? style,
@@ -26,11 +25,8 @@ BoxStyler applyContainerStyle(
     if (resolved == null) continue;
 
     styler = switch (entry.key) {
-      // Colors
       'color' || 'backgroundColor' =>
         _applyColorTo(styler, resolved, (s, c) => s.color(c)),
-
-      // Spacing
       'padding' => styler.paddingAll(toDouble(resolved)),
       'paddingX' => styler.paddingX(toDouble(resolved)),
       'paddingY' => styler.paddingY(toDouble(resolved)),
@@ -41,23 +37,15 @@ BoxStyler applyContainerStyle(
       'margin' => styler.marginAll(toDouble(resolved)),
       'marginX' => styler.marginX(toDouble(resolved)),
       'marginY' => styler.marginY(toDouble(resolved)),
-
-      // Sizing
       'width' => styler.width(toDouble(resolved)),
       'height' => styler.height(toDouble(resolved)),
       'minWidth' => styler.minWidth(toDouble(resolved)),
       'maxWidth' => styler.maxWidth(toDouble(resolved)),
       'minHeight' => styler.minHeight(toDouble(resolved)),
       'maxHeight' => styler.maxHeight(toDouble(resolved)),
-
-      // Border
       'borderRadius' => styler.borderRounded(toDouble(resolved)),
-
-      // Clip
       'clipBehavior' =>
         styler.clipBehavior(parseClip(resolved as String)),
-
-      // Unknown: skip with diagnostic
       _ => skipUnknown(styler, entry.key, ctx),
     };
   }
@@ -180,151 +168,106 @@ IconStyler applyIconStyle(
   return styler;
 }
 
-// --- Concrete variant + animation helpers per Styler type ---
-// MixStyler is package-private in Mix, so generic helpers can't access
-// onHovered/onDark/animate. Instead we provide concrete typed versions.
+// ---------------------------------------------------------------------------
+// Variant + animation helpers
+// ---------------------------------------------------------------------------
 
-Map<String, SchemaValue>? _extractVariantStyle(SchemaValue value) {
-  return switch (value) {
-    DirectValue<Map<String, SchemaValue>>(value: final v) => v,
-    _ => null,
-  };
-}
+// All Mix stylers share .animate() and variant methods via mixins but have
+// no common supertype accessible from outside the package. We use dynamic
+// dispatch for animate (single method, no branching needed) and typed
+// dispatch for variants (which need concrete styler constructors).
 
-CurveAnimationConfig? _buildAnimConfig(SchemaAnimation? anim) {
-  if (anim == null) return null;
-  return CurveAnimationConfig(
+/// Apply animation config to any styler. Works via dynamic dispatch since
+/// all Mix stylers expose `.animate(CurveAnimationConfig)`.
+T applyAnimation<T>(T styler, SchemaAnimation? anim) {
+  if (anim == null) return styler;
+  final config = CurveAnimationConfig(
     duration: Duration(milliseconds: anim.durationMs),
     curve: parseCurve(anim.curve),
     delay: anim.delayMs != null
         ? Duration(milliseconds: anim.delayMs!)
         : Duration.zero,
   );
+  return (styler as dynamic).animate(config) as T;
 }
 
-// -- BoxStyler variants + animation --
+/// Apply variants using a style-application callback to build the variant styler.
+T applyVariants<T>(
+  T styler,
+  Map<String, SchemaValue>? variants,
+  RenderContext ctx,
+  BuildContext context,
+  T Function(T fresh, Map<String, SchemaValue> style, RenderContext ctx,
+          BuildContext context)
+      applyStyle,
+  T Function() createFresh,
+) {
+  if (variants == null) return styler;
+  for (final entry in variants.entries) {
+    final vs = _extractVariantStyle(entry.value);
+    if (vs == null) continue;
+    final v = applyStyle(createFresh(), vs, ctx, context);
+    styler = _applyVariantByName(styler, entry.key, v);
+  }
+  return styler;
+}
+
+// Convenience wrappers for each styler type (needed because each requires
+// a different style-application function and fresh constructor).
 
 BoxStyler applyBoxVariants(
   BoxStyler styler,
   Map<String, SchemaValue>? variants,
   RenderContext ctx,
   BuildContext context,
-) {
-  if (variants == null) return styler;
-  for (final entry in variants.entries) {
-    final vs = _extractVariantStyle(entry.value);
-    if (vs == null) continue;
-    final v = applyContainerStyle(BoxStyler(), vs, ctx, context);
-    styler = _applyVariantByName(styler, entry.key, v);
-  }
-  return styler;
-}
-
-BoxStyler applyBoxAnimation(BoxStyler styler, SchemaAnimation? anim) {
-  final config = _buildAnimConfig(anim);
-  return config != null ? styler.animate(config) : styler;
-}
-
-// -- TextStyler variants + animation --
+) =>
+    applyVariants(styler, variants, ctx, context, applyContainerStyle,
+        BoxStyler.new);
 
 TextStyler applyTextVariants(
   TextStyler styler,
   Map<String, SchemaValue>? variants,
   RenderContext ctx,
   BuildContext context,
-) {
-  if (variants == null) return styler;
-  for (final entry in variants.entries) {
-    final vs = _extractVariantStyle(entry.value);
-    if (vs == null) continue;
-    final v = applyTextStyle(TextStyler(), vs, ctx, context);
-    styler = _applyVariantByName(styler, entry.key, v);
-  }
-  return styler;
-}
-
-TextStyler applyTextAnimation(TextStyler styler, SchemaAnimation? anim) {
-  final config = _buildAnimConfig(anim);
-  return config != null ? styler.animate(config) : styler;
-}
-
-// -- FlexBoxStyler variants + animation --
+) =>
+    applyVariants(
+        styler, variants, ctx, context, applyTextStyle, TextStyler.new);
 
 FlexBoxStyler applyFlexVariants(
   FlexBoxStyler styler,
   Map<String, SchemaValue>? variants,
   RenderContext ctx,
   BuildContext context,
-) {
-  if (variants == null) return styler;
-  for (final entry in variants.entries) {
-    final vs = _extractVariantStyle(entry.value);
-    if (vs == null) continue;
-    final v = applyFlexContainerStyle(FlexBoxStyler(), vs, ctx, context);
-    styler = _applyVariantByName(styler, entry.key, v);
-  }
-  return styler;
-}
-
-FlexBoxStyler applyFlexAnimation(
-    FlexBoxStyler styler, SchemaAnimation? anim) {
-  final config = _buildAnimConfig(anim);
-  return config != null ? styler.animate(config) : styler;
-}
-
-// -- StackBoxStyler variants + animation --
+) =>
+    applyVariants(styler, variants, ctx, context, applyFlexContainerStyle,
+        FlexBoxStyler.new);
 
 StackBoxStyler applyStackVariants(
   StackBoxStyler styler,
   Map<String, SchemaValue>? variants,
   RenderContext ctx,
   BuildContext context,
-) {
-  if (variants == null) return styler;
-  for (final entry in variants.entries) {
-    final vs = _extractVariantStyle(entry.value);
-    if (vs == null) continue;
-    final v = applyStackContainerStyle(StackBoxStyler(), vs, ctx, context);
-    styler = _applyVariantByName(styler, entry.key, v);
-  }
-  return styler;
-}
+) =>
+    applyVariants(styler, variants, ctx, context, applyStackContainerStyle,
+        StackBoxStyler.new);
 
-StackBoxStyler applyStackAnimation(
-    StackBoxStyler styler, SchemaAnimation? anim) {
-  final config = _buildAnimConfig(anim);
-  return config != null ? styler.animate(config) : styler;
-}
-
-// -- IconStyler animation --
-
-IconStyler applyIconAnimation(IconStyler styler, SchemaAnimation? anim) {
-  final config = _buildAnimConfig(anim);
-  return config != null ? styler.animate(config) : styler;
-}
-
-// -- ImageStyler variants + animation --
+IconStyler applyIconVariants(
+  IconStyler styler,
+  Map<String, SchemaValue>? variants,
+  RenderContext ctx,
+  BuildContext context,
+) =>
+    applyVariants(
+        styler, variants, ctx, context, applyIconStyle, IconStyler.new);
 
 ImageStyler applyImageVariants(
   ImageStyler styler,
   Map<String, SchemaValue>? variants,
   RenderContext ctx,
   BuildContext context,
-) {
-  if (variants == null) return styler;
-  for (final entry in variants.entries) {
-    final vs = _extractVariantStyle(entry.value);
-    if (vs == null) continue;
-    final v = _applyImageStyleProps(ImageStyler(), vs, ctx, context);
-    styler = _applyVariantByName(styler, entry.key, v);
-  }
-  return styler;
-}
-
-ImageStyler applyImageAnimation(ImageStyler styler, SchemaAnimation? anim) {
-  final config = _buildAnimConfig(anim);
-  return config != null ? styler.animate(config) : styler;
-}
+) =>
+    applyVariants(
+        styler, variants, ctx, context, _applyImageStyleProps, ImageStyler.new);
 
 ImageStyler _applyImageStyleProps(
   ImageStyler styler,
@@ -344,16 +287,15 @@ ImageStyler _applyImageStyleProps(
   return styler;
 }
 
+Map<String, SchemaValue>? _extractVariantStyle(SchemaValue value) {
+  return switch (value) {
+    DirectValue<Map<String, SchemaValue>>(value: final v) => v,
+    _ => null,
+  };
+}
+
 /// Apply a named variant to any styler type.
-///
-/// All Mix stylers share identical variant method names (onHovered, onDark,
-/// etc.) via mixins, but MixStyler is package-private so we must dispatch
-/// to each concrete type. This single function replaces what would otherwise
-/// be 5 identical switch blocks (one per styler type).
 T _applyVariantByName<T>(T styler, String name, T variantStyler) {
-  // Dispatch to concrete type, then apply the variant by name.
-  // Each branch calls the same method names — the duplication is in the
-  // type dispatch, not the variant logic.
   return switch (styler) {
     BoxStyler s =>
       _variantSwitch(s, name, variantStyler as BoxStyler) as T,
@@ -365,16 +307,13 @@ T _applyVariantByName<T>(T styler, String name, T variantStyler) {
       _variantSwitch(s, name, variantStyler as StackBoxStyler) as T,
     ImageStyler s =>
       _variantSwitch(s, name, variantStyler as ImageStyler) as T,
+    IconStyler s =>
+      _variantSwitch(s, name, variantStyler as IconStyler) as T,
     _ => styler,
   };
 }
 
-/// Single variant name → method dispatch.
-///
-/// Works for any styler type because all Mix stylers expose the same
-/// variant methods (onHovered, onDark, etc.) via VariantStyleMixin and
-/// WidgetStateVariantMixin. Dart's type system requires a concrete type
-/// at the call site, so callers must cast before calling.
+/// Single variant name -> method dispatch.
 S _variantSwitch<S>(dynamic s, String name, dynamic v) => switch (name) {
       'hover' || 'hovered' => s.onHovered(v),
       'press' || 'pressed' => s.onPressed(v),
@@ -389,6 +328,10 @@ S _variantSwitch<S>(dynamic s, String name, dynamic v) => switch (name) {
       _ => s,
     } as S;
 
+// ---------------------------------------------------------------------------
+// Utility helpers
+// ---------------------------------------------------------------------------
+
 /// Emit a diagnostic for an unknown style property and return styler unchanged.
 T skipUnknown<T>(T styler, String property, RenderContext ctx) {
   ctx.diagnostics.add(SchemaDiagnostic(
@@ -400,31 +343,23 @@ T skipUnknown<T>(T styler, String property, RenderContext ctx) {
   return styler;
 }
 
-// --- Color helper ---
-
-/// Parses a color value and applies it via a callback.
-/// All styler types have `.color()` but share no common supertype,
-/// so we use a callback to apply the parsed color generically.
 T _applyColorTo<T>(T styler, dynamic resolved, T Function(T, Color) apply) {
   final color = _parseColor(resolved);
   return color != null ? apply(styler, color) : styler;
 }
 
-// --- Parsers ---
+// ---------------------------------------------------------------------------
+// Parsers
+// ---------------------------------------------------------------------------
 
 Color? _parseColor(dynamic resolved) {
   if (resolved is Color) return resolved;
   if (resolved is String) {
-    // Parse hex color: "#RRGGBB" or "#AARRGGBB"
     final hex = resolved.replaceFirst('#', '');
     final intVal = int.tryParse(hex, radix: 16);
     if (intVal != null) {
-      if (hex.length == 6) {
-        return Color(0xFF000000 | intVal);
-      }
-      if (hex.length == 8) {
-        return Color(intVal);
-      }
+      if (hex.length == 6) return Color(0xFF000000 | intVal);
+      if (hex.length == 8) return Color(intVal);
     }
   }
   return null;
@@ -442,21 +377,19 @@ int _toInt(dynamic v) {
   return 0;
 }
 
-FontWeight parseFontWeight(dynamic value) {
-  return switch (value) {
-    FontWeight w => w,
-    'thin' || 'w100' || '100' => FontWeight.w100,
-    'extraLight' || 'w200' || '200' => FontWeight.w200,
-    'light' || 'w300' || '300' => FontWeight.w300,
-    'normal' || 'regular' || 'w400' || '400' => FontWeight.w400,
-    'medium' || 'w500' || '500' => FontWeight.w500,
-    'semiBold' || 'w600' || '600' => FontWeight.w600,
-    'bold' || 'w700' || '700' => FontWeight.w700,
-    'extraBold' || 'w800' || '800' => FontWeight.w800,
-    'black' || 'w900' || '900' => FontWeight.w900,
-    _ => FontWeight.w400,
-  };
-}
+FontWeight parseFontWeight(dynamic value) => switch (value) {
+      FontWeight w => w,
+      'thin' || 'w100' || '100' => FontWeight.w100,
+      'extraLight' || 'w200' || '200' => FontWeight.w200,
+      'light' || 'w300' || '300' => FontWeight.w300,
+      'normal' || 'regular' || 'w400' || '400' => FontWeight.w400,
+      'medium' || 'w500' || '500' => FontWeight.w500,
+      'semiBold' || 'w600' || '600' => FontWeight.w600,
+      'bold' || 'w700' || '700' => FontWeight.w700,
+      'extraBold' || 'w800' || '800' => FontWeight.w800,
+      'black' || 'w900' || '900' => FontWeight.w900,
+      _ => FontWeight.w400,
+    };
 
 TextOverflow parseTextOverflow(String value) => switch (value) {
       'ellipsis' => TextOverflow.ellipsis,
@@ -515,45 +448,25 @@ Curve parseCurve(String? name) => switch (name) {
       'bounceOut' => Curves.bounceOut,
       'elasticIn' => Curves.elasticIn,
       'elasticOut' => Curves.elasticOut,
-      _ => Curves.easeOut, // default
+      _ => Curves.easeOut,
     };
 
 /// Resolve a Material Icons icon name to IconData.
 IconData resolveIconData(dynamic value) {
   if (value is IconData) return value;
   if (value is int) return IconData(value, fontFamily: 'MaterialIcons');
-  if (value is String) {
-    return _iconLookup[value] ?? Icons.help_outline;
-  }
+  if (value is String) return _iconLookup[value] ?? Icons.help_outline;
   return Icons.help_outline;
 }
 
-// -- IconStyler variants --
-
-IconStyler applyIconVariants(
-  IconStyler styler,
-  Map<String, SchemaValue>? variants,
-  RenderContext ctx,
-  BuildContext context,
-) {
-  if (variants == null) return styler;
-  for (final entry in variants.entries) {
-    final vs = _extractVariantStyle(entry.value);
-    if (vs == null) continue;
-    final v = applyIconStyle(IconStyler(), vs, ctx, context);
-    styler = _applyVariantByName(styler, entry.key, v);
-  }
-  return styler;
-}
+// ---------------------------------------------------------------------------
+// Semantics helper
+// ---------------------------------------------------------------------------
 
 /// Wrap a widget with Flutter Semantics when the node has semantic metadata.
-///
-/// Maps SchemaSemantics fields to Flutter's Semantics widget properties.
-/// Only wraps if at least one semantic field is non-null.
 Widget wrapWithSemantics(Widget child, SchemaSemantics? semantics) {
   if (semantics == null) return child;
 
-  // Only wrap if there's something to announce
   final hasContent = semantics.role != null ||
       semantics.label != null ||
       semantics.hint != null ||

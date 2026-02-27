@@ -4,7 +4,7 @@ import '../ast/schema_node.dart';
 import '../ast/schema_values.dart';
 import '../events/schema_event.dart';
 import '../tokens/schema_token_resolver.dart';
-import '../trust/schema_trust.dart';
+import '../trust/capability_matrix.dart';
 import '../validate/diagnostics.dart';
 import 'schema_data_context.dart';
 

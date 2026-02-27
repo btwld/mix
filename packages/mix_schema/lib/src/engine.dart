@@ -7,20 +7,20 @@ import 'events/schema_event.dart';
 import 'render/schema_data_context.dart';
 import 'render/schema_registry.dart';
 import 'render/schema_renderer.dart';
-import 'trust/schema_trust.dart';
+import 'trust/capability_matrix.dart';
 import 'validate/default_validator.dart';
 import 'validate/diagnostics.dart';
 import 'validate/schema_validator.dart';
 
 /// Public facade for the schema pipeline: adapt → validate → render.
 class SchemaEngine {
-  final Map<String, WireAdapter> _adapters;
-  final SchemaValidator _validator;
+  final Map<String, A2uiV09Adapter> _adapters;
+  final DefaultSchemaValidator _validator;
   final SchemaRenderer _renderer;
 
   SchemaEngine({
-    List<WireAdapter>? adapters,
-    SchemaValidator? validator,
+    List<A2uiV09Adapter>? adapters,
+    DefaultSchemaValidator? validator,
     SchemaRenderer? renderer,
   })  : _adapters = {
           for (final a in (adapters ??

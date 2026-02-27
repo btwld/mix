@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 
 import '../ast/ui_schema_root.dart';
 import '../events/schema_event.dart';
-import '../trust/schema_trust.dart';
+import '../trust/capability_matrix.dart';
 import '../validate/diagnostics.dart';
 import 'schema_scope.dart';
 

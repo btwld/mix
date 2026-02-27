@@ -16,7 +16,7 @@ class BoxHandler extends NodeHandler<BoxNode> {
       var styler = BoxStyler();
       styler = applyContainerStyle(styler, node.style, ctx, context);
       styler = applyBoxVariants(styler, node.variants, ctx, context);
-      styler = applyBoxAnimation(styler, node.animation);
+      styler = applyAnimation(styler, node.animation);
 
       final child = node.child != null ? ctx.buildChild(node.child!) : null;
 

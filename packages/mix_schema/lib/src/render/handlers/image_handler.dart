@@ -17,7 +17,7 @@ class ImageHandler extends NodeHandler<ImageNode> {
       var styler = ImageStyler();
       styler = _applyImageStyle(styler, node.style, ctx, context);
       styler = applyImageVariants(styler, node.variants, ctx, context);
-      styler = applyImageAnimation(styler, node.animation);
+      styler = applyAnimation(styler, node.animation);
 
       final src = ctx.resolveValue<String>(node.src, context) ?? '';
 

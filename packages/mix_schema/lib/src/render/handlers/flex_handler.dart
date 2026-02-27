@@ -42,7 +42,7 @@ class FlexHandler extends NodeHandler<FlexNode> {
       // Container-level style
       styler = applyFlexContainerStyle(styler, node.style, ctx, context);
       styler = applyFlexVariants(styler, node.variants, ctx, context);
-      styler = applyFlexAnimation(styler, node.animation);
+      styler = applyAnimation(styler, node.animation);
 
       final children = node.children.map((c) => ctx.buildChild(c)).toList();
 

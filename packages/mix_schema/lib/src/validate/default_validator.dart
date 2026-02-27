@@ -10,7 +10,7 @@ import 'trust_rules.dart';
 /// See freeze §7.1: two validation layers:
 /// 1. Structural (shape-level)
 /// 2. Runtime (cross-field/catalog/trust-aware, including semantic checks)
-class DefaultSchemaValidator implements SchemaValidator {
+class DefaultSchemaValidator {
   final StructuralRules _structural;
   final TrustRules _trust;
   final SemanticRules _semantic;
@@ -23,7 +23,6 @@ class DefaultSchemaValidator implements SchemaValidator {
         _trust = trust,
         _semantic = semantic;
 
-  @override
   ValidationResult validate(UiSchemaRoot root, ValidationContext context) {
     final diagnostics = <SchemaDiagnostic>[];
 

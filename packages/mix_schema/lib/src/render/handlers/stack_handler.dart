@@ -24,7 +24,7 @@ class StackHandler extends NodeHandler<StackNode> {
       styler =
           applyStackContainerStyle(styler, node.style, ctx, context);
       styler = applyStackVariants(styler, node.variants, ctx, context);
-      styler = applyStackAnimation(styler, node.animation);
+      styler = applyAnimation(styler, node.animation);
 
       final children = node.children.map((c) => ctx.buildChild(c)).toList();
 

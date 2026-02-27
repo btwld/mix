@@ -16,7 +16,7 @@ class IconHandler extends NodeHandler<IconNode> {
       var styler = IconStyler();
       styler = applyIconStyle(styler, node.style, ctx, context);
       styler = applyIconVariants(styler, node.variants, ctx, context);
-      styler = applyIconAnimation(styler, node.animation);
+      styler = applyAnimation(styler, node.animation);
 
       final iconValue = ctx.resolveValue<dynamic>(node.icon, context);
       final iconData = resolveIconData(iconValue);

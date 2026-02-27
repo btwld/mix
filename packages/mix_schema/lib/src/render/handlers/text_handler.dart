@@ -16,7 +16,7 @@ class TextHandler extends NodeHandler<TextNode> {
       var styler = TextStyler();
       styler = applyTextStyle(styler, node.style, ctx, context);
       styler = applyTextVariants(styler, node.variants, ctx, context);
-      styler = applyTextAnimation(styler, node.animation);
+      styler = applyAnimation(styler, node.animation);
 
       final text = ctx.resolveValue<String>(node.content, context) ?? '';
 

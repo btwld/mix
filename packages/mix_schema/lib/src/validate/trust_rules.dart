@@ -1,6 +1,5 @@
 import '../ast/schema_node.dart';
 import '../trust/capability_matrix.dart';
-import '../trust/schema_trust.dart';
 import 'diagnostics.dart';
 
 /// Trust-based validation rules (from executable plan §6.3).

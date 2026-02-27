@@ -1,15 +1,5 @@
-import '../ast/ui_schema_root.dart';
-import '../trust/schema_trust.dart';
+import '../trust/capability_matrix.dart';
 import 'diagnostics.dart';
-
-/// Interface for schema validation.
-///
-/// Two layers per freeze §7.1:
-/// 1. Structural validation (shape-level)
-/// 2. Runtime validation (cross-field/catalog/trust-aware)
-abstract class SchemaValidator {
-  ValidationResult validate(UiSchemaRoot root, ValidationContext context);
-}
 
 /// Context provided to validators.
 final class ValidationContext {

@@ -24,7 +24,7 @@ class PressableHandler extends NodeHandler<PressableNode> {
       if (node.style != null) {
         styler = applyContainerStyle(BoxStyler(), node.style, ctx, context);
         styler = applyBoxVariants(styler, node.variants, ctx, context);
-        styler = applyBoxAnimation(styler, node.animation);
+        styler = applyAnimation(styler, node.animation);
       }
 
       return wrapWithSemantics(
