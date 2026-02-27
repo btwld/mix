@@ -119,7 +119,8 @@ void main() {
       expect(
         styledStack.alignment,
         AlignmentDirectional.topStart,
-        reason: 'StackBox Stack should default to AlignmentDirectional.topStart',
+        reason:
+            'StackBox Stack should default to AlignmentDirectional.topStart',
       );
       expect(
         stack.alignment,

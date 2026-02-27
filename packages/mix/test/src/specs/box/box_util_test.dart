@@ -43,7 +43,6 @@ void main() {
       test('decoration utility is DecorationUtility', () {
         expect(util.decoration, isA<DecorationUtility<BoxStyler>>());
       });
-
     });
 
     group('Flattened access properties', () {
@@ -284,27 +283,30 @@ void main() {
         expect(spec.spec.clipBehavior, Clip.antiAlias);
       });
 
-      test('individual utility calls return BoxStyler for further chaining', () {
-        final util = BoxMutableStyler();
-        final matrix = Matrix4.identity();
+      test(
+        'individual utility calls return BoxStyler for further chaining',
+        () {
+          final util = BoxMutableStyler();
+          final matrix = Matrix4.identity();
 
-        // Each utility call should return a BoxStyle
-        final alignmentResult = util.alignment(Alignment.center);
-        final transformResult = util.transform(matrix);
-        final clipResult = util.clipBehavior(Clip.antiAlias);
+          // Each utility call should return a BoxStyle
+          final alignmentResult = util.alignment(Alignment.center);
+          final transformResult = util.transform(matrix);
+          final clipResult = util.clipBehavior(Clip.antiAlias);
 
-        expect(alignmentResult, isA<BoxStyler>());
-        expect(transformResult, isA<BoxStyler>());
-        expect(clipResult, isA<BoxStyler>());
+          expect(alignmentResult, isA<BoxStyler>());
+          expect(transformResult, isA<BoxStyler>());
+          expect(clipResult, isA<BoxStyler>());
 
-        // But the utility itself should have accumulated all changes
-        final context = MockBuildContext();
-        final spec = util.resolve(context);
+          // But the utility itself should have accumulated all changes
+          final context = MockBuildContext();
+          final spec = util.resolve(context);
 
-        expect(spec.spec.alignment, Alignment.center);
-        expect(spec.spec.transform, matrix);
-        expect(spec.spec.clipBehavior, Clip.antiAlias);
-      });
+          expect(spec.spec.alignment, Alignment.center);
+          expect(spec.spec.transform, matrix);
+          expect(spec.spec.clipBehavior, Clip.antiAlias);
+        },
+      );
     });
 
     group('Mutating behavior vs Builder pattern', () {

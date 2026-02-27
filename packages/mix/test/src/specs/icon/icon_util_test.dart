@@ -68,7 +68,6 @@ void main() {
       test('fill is now a method', () {
         expect(util.fill, isA<Function>());
       });
-
     });
 
     group('Icon property utilities', () {

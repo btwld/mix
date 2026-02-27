@@ -90,7 +90,6 @@ void main() {
       test('locale utility is MixUtility', () {
         expect(util.locale, isA<MixUtility<TextStyler, Locale>>());
       });
-
     });
 
     group('Flattened access properties', () {
