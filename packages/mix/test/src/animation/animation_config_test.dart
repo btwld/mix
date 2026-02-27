@@ -243,11 +243,13 @@ void main() {
 
     group('SpringAnimationConfig', () {
       test('creates with spring factory', () {
-        final config = AnimationConfig.springDescription(
-          mass: 2.0,
-          stiffness: 100.0,
-          damping: 10.0,
-        ) as SpringAnimationConfig;
+        final config =
+            AnimationConfig.springDescription(
+                  mass: 2.0,
+                  stiffness: 100.0,
+                  damping: 10.0,
+                )
+                as SpringAnimationConfig;
 
         expect(config, isA<SpringAnimationConfig>());
         expect(config.spring.mass, 2.0);
@@ -256,11 +258,13 @@ void main() {
       });
 
       test('creates with custom SpringDescription', () {
-        final config = AnimationConfig.springDescription(
-          mass: 3.0,
-          stiffness: 150.0,
-          damping: 15.0,
-        ) as SpringAnimationConfig;
+        final config =
+            AnimationConfig.springDescription(
+                  mass: 3.0,
+                  stiffness: 150.0,
+                  damping: 15.0,
+                )
+                as SpringAnimationConfig;
 
         expect(config.spring.mass, 3.0);
         expect(config.spring.stiffness, 150.0);
@@ -268,10 +272,9 @@ void main() {
       });
 
       test('creates critically damped spring', () {
-        final config = AnimationConfig.springDescription(
-          mass: 2.0,
-          stiffness: 200.0,
-        ) as SpringAnimationConfig;
+        final config =
+            AnimationConfig.springDescription(mass: 2.0, stiffness: 200.0)
+                as SpringAnimationConfig;
 
         expect(config, isA<SpringAnimationConfig>());
         expect(config.spring.mass, 2.0);
@@ -279,10 +282,9 @@ void main() {
       });
 
       test('creates underdamped spring', () {
-        final config = AnimationConfig.springDescription(
-          mass: 1.5,
-          stiffness: 250.0,
-        ) as SpringAnimationConfig;
+        final config =
+            AnimationConfig.springDescription(mass: 1.5, stiffness: 250.0)
+                as SpringAnimationConfig;
 
         expect(config, isA<SpringAnimationConfig>());
         expect(config.spring.mass, 1.5);
@@ -312,9 +314,9 @@ void main() {
 
       test('handles onEnd callback', () {
         bool called = false;
-        final config = AnimationConfig.springDescription(
-          onEnd: () => called = true,
-        ) as SpringAnimationConfig;
+        final config =
+            AnimationConfig.springDescription(onEnd: () => called = true)
+                as SpringAnimationConfig;
 
         expect(config.onEnd, isNotNull);
         config.onEnd!();
@@ -345,8 +347,9 @@ void main() {
 
       group('AnimationConfig factory wrappers', () {
         test('spring creates SpringAnimationConfig', () {
-          final config =
-              AnimationConfig.spring(const Duration(milliseconds: 500));
+          final config = AnimationConfig.spring(
+            const Duration(milliseconds: 500),
+          );
 
           expect(config, isA<SpringAnimationConfig>());
         });

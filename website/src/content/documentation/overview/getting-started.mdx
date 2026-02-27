@@ -12,11 +12,11 @@ import { Steps, Callout } from "nextra/components";
 
 Before installing Mix 2.0, ensure you have:
 
-- **Dart SDK**: 3.11.0 or higher (required for the fluent Styler API and dot-shorthand syntax)
+- **Dart SDK**: 3.11.0 or higher (required to avoid a dot-shorthand compiler bug with factory constructors)
 - **Flutter**: 3.41.0 or higher
 
 <Callout type="info">
-  Mix 2.0 uses Dart's dot-shorthand syntax introduced in Dart 3.11. Ensure your project's `pubspec.yaml` specifies the correct SDK constraint: `sdk: '>=3.11.0 <4.0.0'`
+  Mix 2.0 requires Dart 3.11 or higher. Earlier versions have a compiler bug where dot-shorthands conflict with factory and instance methods. Ensure your project's `pubspec.yaml` specifies the correct SDK constraint: `sdk: '>=3.11.0 <4.0.0'`
 </Callout>
 
 <Steps>
@@ -33,7 +33,7 @@ Or pin explicitly in `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  mix: ^2.0.0-rc.1
+  mix: ^<latest>
 ```
 
 Import it where you use it:

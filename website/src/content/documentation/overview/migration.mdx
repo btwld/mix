@@ -136,7 +136,12 @@ BoxStyler().color(primaryColor())
 ### New Features in 2.0
 
 - **Fluent Styler API**: Chain methods for better readability
-- **Callable Stylers**: Use a styler as a widget factory — e.g., `BoxStyler().color(Colors.blue)(child: Text('Hello'))` creates a `Box` widget directly
+- **Callable Stylers**: Any styler can be called directly to create its widget:
+
+  ```dart
+  final box = BoxStyler().color(Colors.blue);
+  box(child: Text('Hello')) // creates a Box widget
+  ```
 - **Style.of() / Style.maybeOf()**: Access resolved styles from the widget tree
 - **Number directives**: `multiply()`, `add()`, `subtract()`, `divide()`, `clamp()`
 - **Improved animation support**: Better integration with animation configs
