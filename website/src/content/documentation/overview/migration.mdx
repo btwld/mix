@@ -140,7 +140,7 @@ BoxStyler().color(primaryColor())
 
   ```dart
   final box = BoxStyler().color(Colors.blue);
-  box(child: Text('Hello')) // creates a Box widget
+  box(child: Text('Hello')); // creates a Box widget
   ```
 - **Style.of() / Style.maybeOf()**: Access resolved styles from the widget tree
 - **Number directives**: `multiply()`, `add()`, `subtract()`, `divide()`, `clamp()`
@@ -174,8 +174,8 @@ The `Mix` class is now `Style`. Several methods in the renamed class, including 
 | before 1.0.0 | 1.0.0+ |
 | ------- | ------ |
 | `Mix`   | `Style` |
-| `Mix.withVariant` | `Style.withVariant()` |
-| `Mix.withManyVariants` | `Style.withManyVariants()` |
+| `Mix.withVariant` | Use `.variant()` on Styler classes |
+| `Mix.withManyVariants` | Use `.variants([...])` or multiple `.variant()` calls on Styler classes |
 | `withMaybeVariant` or `withMaybeVariants` | removed |
 
 

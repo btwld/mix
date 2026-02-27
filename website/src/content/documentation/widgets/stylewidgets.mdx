@@ -87,15 +87,15 @@ All Styler classes support a **callable pattern** — you can call a styler inst
 ```dart
 // BoxStyler creates a Box when called
 final box = BoxStyler().color(Colors.blue).paddingAll(16);
-box(child: Text('Hello'))  // Equivalent to Box(style: box, child: Text('Hello'))
+box(child: Text('Hello')); // Equivalent to Box(style: box, child: Text('Hello'))
 
 // TextStyler creates a StyledText when called
 final text = TextStyler().fontSize(18).color(Colors.white);
-text('Hello')  // Equivalent to StyledText('Hello', style: text)
+text('Hello'); // Equivalent to StyledText('Hello', style: text)
 
 // IconStyler creates a StyledIcon when called
 final icon = IconStyler().size(24).color(Colors.red);
-icon(icon: Icons.star)  // Equivalent to StyledIcon(icon: Icons.star, style: icon)
+icon(icon: Icons.star); // Equivalent to StyledIcon(icon: Icons.star, style: icon)
 ```
 
 This is useful for concise widget composition, especially when building reusable components.
