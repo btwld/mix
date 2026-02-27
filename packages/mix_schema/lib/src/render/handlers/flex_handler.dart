@@ -2,54 +2,51 @@ import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
 import '../../ast/schema_node.dart';
-import '../node_handler.dart';
+import '../../ast/schema_values.dart';
 import '../render_context.dart';
 import 'style_helpers.dart';
+import 'styled_node_handler.dart';
 
 /// Handler for FlexNode → Mix FlexBox widget.
-class FlexHandler extends NodeHandler<FlexNode> {
+class FlexHandler extends StyledNodeHandler<FlexNode, FlexBoxStyler> {
   const FlexHandler();
 
   @override
-  Widget build(FlexNode node, RenderContext ctx) {
-    return Builder(builder: (context) {
-      var styler = FlexBoxStyler();
+  FlexBoxStyler createStyler() => FlexBoxStyler();
 
-      // Direction
-      final dir = ctx.resolveValue<String>(node.direction, context);
-      if (dir == 'row') {
-        styler = styler.row();
-      } else {
-        styler = styler.column();
-      }
+  @override
+  FlexBoxStyler applyNodeProps(FlexBoxStyler styler, FlexNode node,
+      RenderContext ctx, BuildContext context) {
+    final dir = ctx.resolveValue<String>(node.direction, context);
+    styler = dir == 'row' ? styler.row() : styler.column();
 
-      // Spacing
-      final spacing = ctx.resolveValue<double>(node.spacing, context);
-      if (spacing != null) styler = styler.spacing(spacing);
+    final spacing = ctx.resolveValue<double>(node.spacing, context);
+    if (spacing != null) styler = styler.spacing(spacing);
 
-      // Alignment
-      final cross =
-          ctx.resolveValue<String>(node.crossAxisAlignment, context);
-      if (cross != null) {
-        styler = styler.crossAxisAlignment(parseCrossAxis(cross));
-      }
-      final main =
-          ctx.resolveValue<String>(node.mainAxisAlignment, context);
-      if (main != null) {
-        styler = styler.mainAxisAlignment(parseMainAxis(main));
-      }
+    final cross =
+        ctx.resolveValue<String>(node.crossAxisAlignment, context);
+    if (cross != null) {
+      styler = styler.crossAxisAlignment(parseCrossAxis(cross));
+    }
 
-      // Container-level style
-      styler = applyFlexContainerStyle(styler, node.style, ctx, context);
-      styler = applyFlexVariants(styler, node.variants, ctx, context);
-      styler = applyAnimation(styler, node.animation);
+    final main =
+        ctx.resolveValue<String>(node.mainAxisAlignment, context);
+    if (main != null) {
+      styler = styler.mainAxisAlignment(parseMainAxis(main));
+    }
 
-      final children = node.children.map((c) => ctx.buildChild(c)).toList();
+    return styler;
+  }
 
-      return wrapWithSemantics(
-        FlexBox(style: styler, children: children),
-        node.semantics,
-      );
-    });
+  @override
+  FlexBoxStyler applyStyleMap(FlexBoxStyler s, Map<String, SchemaValue> style,
+          RenderContext ctx, BuildContext context) =>
+      applyContainerStyleMap(s, style, ctx, context);
+
+  @override
+  Widget buildWidget(FlexBoxStyler styler, FlexNode node, RenderContext ctx,
+      BuildContext context) {
+    final children = node.children.map((c) => ctx.buildChild(c)).toList();
+    return FlexBox(style: styler, children: children);
   }
 }

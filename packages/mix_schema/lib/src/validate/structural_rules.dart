@@ -2,193 +2,59 @@ import '../ast/schema_node.dart';
 import '../ast/schema_values.dart';
 import 'diagnostics.dart';
 
-/// Structural validation rules (from executable plan §6.3).
+/// Structural validation rules.
 ///
-/// Checks:
-/// - Node type is a known AST node type
-/// - Required fields present for each node type
-/// - child vs children used correctly
-/// - Value types are valid
+/// Checks: required fields present, child/children used correctly,
+/// value types valid. Uses a generic tree walker instead of per-node methods.
 class StructuralRules {
   const StructuralRules();
 
+  static const _validInputTypes = {'text', 'toggle', 'slider', 'select', 'date'};
+
   List<SchemaDiagnostic> validate(SchemaNode node, [String path = 'root']) {
     final diagnostics = <SchemaDiagnostic>[];
-    _validateNode(node, diagnostics, path);
+    _walk(node, diagnostics, path);
     return diagnostics;
   }
 
-  void _validateNode(
-    SchemaNode node,
-    List<SchemaDiagnostic> diagnostics,
-    String path,
-  ) {
+  void _walk(SchemaNode node, List<SchemaDiagnostic> diags, String path) {
+    // Required-field checks and node-specific validation.
     switch (node) {
-      case TextNode():
-        _validateTextNode(node, diagnostics, path);
-      case ImageNode():
-        _validateImageNode(node, diagnostics, path);
-      case FlexNode():
-        _validateFlexNode(node, diagnostics, path);
-      case StackNode():
-        _validateStackNode(node, diagnostics, path);
-      case ScrollableNode():
-        _validateScrollableNode(node, diagnostics, path);
-      case WrapNode():
-        _validateWrapNode(node, diagnostics, path);
-      case PressableNode():
-        _validatePressableNode(node, diagnostics, path);
-      case InputNode():
-        _validateInputNode(node, diagnostics, path);
-      case RepeatNode():
-        _validateRepeatNode(node, diagnostics, path);
-      case BoxNode():
-        _validateBoxNode(node, diagnostics, path);
-      case IconNode():
-        _validateIconNode(node, diagnostics, path);
-    }
-  }
-
-  void _validateBoxNode(
-    BoxNode node,
-    List<SchemaDiagnostic> diagnostics,
-    String path,
-  ) {
-    if (node.child != null) {
-      _validateNode(node.child!, diagnostics, '$path.child');
-    }
-  }
-
-  void _validateTextNode(
-    TextNode node,
-    List<SchemaDiagnostic> diagnostics,
-    String path,
-  ) {
-    // Content is required and should be a string-producing value
-    if (node.content case DirectValue(value: final v) when v == null) {
-      diagnostics.add(
-        SchemaDiagnostic(
+      case TextNode() when node.content is DirectValue && (node.content as DirectValue).value == null:
+        diags.add(SchemaDiagnostic(
           code: DiagnosticCode.missingRequiredField,
           severity: DiagnosticSeverity.error,
           nodeId: node.nodeId,
           path: '$path.content',
           message: 'TextNode requires non-null content',
-        ),
-      );
-    }
-  }
-
-  void _validateIconNode(
-    IconNode node,
-    List<SchemaDiagnostic> diagnostics,
-    String path,
-  ) {
-    if (node.icon case DirectValue(value: final v) when v == null) {
-      diagnostics.add(
-        SchemaDiagnostic(
+        ));
+      case IconNode() when node.icon is DirectValue && (node.icon as DirectValue).value == null:
+        diags.add(SchemaDiagnostic(
           code: DiagnosticCode.missingRequiredField,
           severity: DiagnosticSeverity.error,
           nodeId: node.nodeId,
           path: '$path.icon',
           message: 'IconNode requires non-null icon',
-        ),
-      );
-    }
-  }
-
-  void _validateImageNode(
-    ImageNode node,
-    List<SchemaDiagnostic> diagnostics,
-    String path,
-  ) {
-    if (node.src case DirectValue(value: final v) when v == null) {
-      diagnostics.add(
-        SchemaDiagnostic(
+        ));
+      case ImageNode() when node.src is DirectValue && (node.src as DirectValue).value == null:
+        diags.add(SchemaDiagnostic(
           code: DiagnosticCode.missingRequiredField,
           severity: DiagnosticSeverity.error,
           nodeId: node.nodeId,
           path: '$path.src',
           message: 'ImageNode requires non-null src',
-        ),
-      );
-    }
-  }
-
-  void _validateFlexNode(
-    FlexNode node,
-    List<SchemaDiagnostic> diagnostics,
-    String path,
-  ) {
-    for (var i = 0; i < node.children.length; i++) {
-      _validateNode(node.children[i], diagnostics, '$path.children[$i]');
-    }
-  }
-
-  void _validateStackNode(
-    StackNode node,
-    List<SchemaDiagnostic> diagnostics,
-    String path,
-  ) {
-    for (var i = 0; i < node.children.length; i++) {
-      _validateNode(node.children[i], diagnostics, '$path.children[$i]');
-    }
-  }
-
-  void _validateScrollableNode(
-    ScrollableNode node,
-    List<SchemaDiagnostic> diagnostics,
-    String path,
-  ) {
-    _validateNode(node.child, diagnostics, '$path.child');
-  }
-
-  void _validateWrapNode(
-    WrapNode node,
-    List<SchemaDiagnostic> diagnostics,
-    String path,
-  ) {
-    for (var i = 0; i < node.children.length; i++) {
-      _validateNode(node.children[i], diagnostics, '$path.children[$i]');
-    }
-  }
-
-  void _validatePressableNode(
-    PressableNode node,
-    List<SchemaDiagnostic> diagnostics,
-    String path,
-  ) {
-    _validateNode(node.child, diagnostics, '$path.child');
-  }
-
-  void _validateInputNode(
-    InputNode node,
-    List<SchemaDiagnostic> diagnostics,
-    String path,
-  ) {
-    final validTypes = {'text', 'toggle', 'slider', 'select', 'date'};
-    if (!validTypes.contains(node.inputType)) {
-      diagnostics.add(
-        SchemaDiagnostic(
+        ));
+      case InputNode() when !_validInputTypes.contains(node.inputType):
+        diags.add(SchemaDiagnostic(
           code: DiagnosticCode.invalidValueType,
           severity: DiagnosticSeverity.warning,
           nodeId: node.nodeId,
           path: '$path.inputType',
           message:
-              'Unknown input type "${node.inputType}", expected one of: $validTypes',
-        ),
-      );
-    }
-  }
-
-  void _validateRepeatNode(
-    RepeatNode node,
-    List<SchemaDiagnostic> diagnostics,
-    String path,
-  ) {
-    // items should be a binding or direct list value
-    if (node.items is DirectValue<String>) {
-      diagnostics.add(
-        SchemaDiagnostic(
+              'Unknown input type "${node.inputType}", expected one of: $_validInputTypes',
+        ));
+      case RepeatNode() when node.items is DirectValue<String>:
+        diags.add(SchemaDiagnostic(
           code: DiagnosticCode.invalidValueType,
           severity: DiagnosticSeverity.warning,
           nodeId: node.nodeId,
@@ -196,9 +62,40 @@ class StructuralRules {
           message:
               'RepeatNode items should be a BindingValue or DirectValue<List>, '
               'got a string direct value',
-        ),
-      );
+        ));
+      default:
+        break;
     }
-    _validateNode(node.template, diagnostics, '$path.template');
+
+    // Recurse into children.
+    final children = _childrenOf(node);
+    for (var i = 0; i < children.length; i++) {
+      _walk(children[i], diags, _childPath(node, path, i));
+    }
   }
+
+  /// Extract all child nodes from any node type.
+  static List<SchemaNode> _childrenOf(SchemaNode node) => switch (node) {
+        BoxNode(child: final c) => c != null ? [c] : const [],
+        FlexNode(children: final cs) => cs,
+        StackNode(children: final cs) => cs,
+        WrapNode(children: final cs) => cs,
+        ScrollableNode(child: final c) => [c],
+        PressableNode(child: final c) => [c],
+        RepeatNode(template: final t) => [t],
+        TextNode() => const [],
+        IconNode() => const [],
+        ImageNode() => const [],
+        InputNode() => const [],
+      };
+
+  /// Build the path string for a child.
+  static String _childPath(SchemaNode parent, String path, int index) =>
+      switch (parent) {
+        BoxNode() => '$path.child',
+        ScrollableNode() => '$path.child',
+        PressableNode() => '$path.child',
+        RepeatNode() => '$path.template',
+        _ => '$path.children[$index]',
+      };
 }

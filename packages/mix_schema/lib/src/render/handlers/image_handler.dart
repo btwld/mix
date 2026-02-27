@@ -3,64 +3,26 @@ import 'package:mix/mix.dart';
 
 import '../../ast/schema_node.dart';
 import '../../ast/schema_values.dart';
-import '../node_handler.dart';
 import '../render_context.dart';
 import 'style_helpers.dart';
+import 'styled_node_handler.dart';
 
 /// Handler for ImageNode → Mix StyledImage widget.
-class ImageHandler extends NodeHandler<ImageNode> {
+class ImageHandler extends StyledNodeHandler<ImageNode, ImageStyler> {
   const ImageHandler();
 
   @override
-  Widget build(ImageNode node, RenderContext ctx) {
-    return Builder(builder: (context) {
-      var styler = ImageStyler();
-      styler = _applyImageStyle(styler, node.style, ctx, context);
-      styler = applyImageVariants(styler, node.variants, ctx, context);
-      styler = applyAnimation(styler, node.animation);
+  ImageStyler createStyler() => ImageStyler();
 
-      final src = ctx.resolveValue<String>(node.src, context) ?? '';
+  @override
+  ImageStyler applyStyleMap(ImageStyler s, Map<String, SchemaValue> style,
+          RenderContext ctx, BuildContext context) =>
+      applyImageStyleMap(s, style, ctx, context);
 
-      return wrapWithSemantics(
-        StyledImage(
-          image: NetworkImage(src),
-          style: styler,
-        ),
-        node.semantics,
-      );
-    });
+  @override
+  Widget buildWidget(ImageStyler styler, ImageNode node, RenderContext ctx,
+      BuildContext context) {
+    final src = ctx.resolveValue<String>(node.src, context) ?? '';
+    return StyledImage(image: NetworkImage(src), style: styler);
   }
-
-  ImageStyler _applyImageStyle(
-    ImageStyler styler,
-    Map<String, SchemaValue>? style,
-    RenderContext ctx,
-    BuildContext context,
-  ) {
-    if (style == null) return styler;
-
-    for (final entry in style.entries) {
-      final resolved = ctx.resolveValue<dynamic>(entry.value, context);
-      if (resolved == null) continue;
-
-      styler = switch (entry.key) {
-        'width' => styler.width(toDouble(resolved)),
-        'height' => styler.height(toDouble(resolved)),
-        'fit' => styler.fit(_parseBoxFit(resolved as String)),
-        _ => skipUnknown(styler, entry.key, ctx),
-      };
-    }
-    return styler;
-  }
-
-  BoxFit _parseBoxFit(String value) => switch (value) {
-        'contain' => BoxFit.contain,
-        'cover' => BoxFit.cover,
-        'fill' => BoxFit.fill,
-        'fitWidth' => BoxFit.fitWidth,
-        'fitHeight' => BoxFit.fitHeight,
-        'none' => BoxFit.none,
-        'scaleDown' => BoxFit.scaleDown,
-        _ => BoxFit.contain,
-      };
 }

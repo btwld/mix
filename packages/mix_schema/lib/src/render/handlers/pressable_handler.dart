@@ -22,9 +22,13 @@ class PressableHandler extends NodeHandler<PressableNode> {
       // Build BoxStyler for press styling (hover/pressed variants)
       BoxStyler? styler;
       if (node.style != null) {
-        styler = applyContainerStyle(BoxStyler(), node.style, ctx, context);
-        styler = applyBoxVariants(styler, node.variants, ctx, context);
-        styler = applyAnimation(styler, node.animation);
+        var s = applyContainerStyleMap(BoxStyler(), node.style, ctx, context);
+        s = applyVariants<BoxStyler>(
+          s, node.variants, ctx, context,
+          (fresh, style, c, bc) => applyContainerStyleMap(fresh, style, c, bc),
+          BoxStyler.new,
+        );
+        styler = applyAnimation(s, node.animation);
       }
 
       return wrapWithSemantics(

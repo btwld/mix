@@ -2,28 +2,27 @@ import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
 import '../../ast/schema_node.dart';
-import '../node_handler.dart';
+import '../../ast/schema_values.dart';
 import '../render_context.dart';
 import 'style_helpers.dart';
+import 'styled_node_handler.dart';
 
 /// Handler for TextNode → Mix StyledText widget.
-class TextHandler extends NodeHandler<TextNode> {
+class TextHandler extends StyledNodeHandler<TextNode, TextStyler> {
   const TextHandler();
 
   @override
-  Widget build(TextNode node, RenderContext ctx) {
-    return Builder(builder: (context) {
-      var styler = TextStyler();
-      styler = applyTextStyle(styler, node.style, ctx, context);
-      styler = applyTextVariants(styler, node.variants, ctx, context);
-      styler = applyAnimation(styler, node.animation);
+  TextStyler createStyler() => TextStyler();
 
-      final text = ctx.resolveValue<String>(node.content, context) ?? '';
+  @override
+  TextStyler applyStyleMap(TextStyler s, Map<String, SchemaValue> style,
+          RenderContext ctx, BuildContext context) =>
+      applyTextStyle(s, style, ctx, context);
 
-      return wrapWithSemantics(
-        StyledText(text, style: styler),
-        node.semantics,
-      );
-    });
+  @override
+  Widget buildWidget(TextStyler styler, TextNode node, RenderContext ctx,
+      BuildContext context) {
+    final text = ctx.resolveValue<String>(node.content, context) ?? '';
+    return StyledText(text, style: styler);
   }
 }

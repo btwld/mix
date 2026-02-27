@@ -2,36 +2,38 @@ import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
 import '../../ast/schema_node.dart';
-import '../node_handler.dart';
+import '../../ast/schema_values.dart';
 import '../render_context.dart';
 import 'style_helpers.dart';
+import 'styled_node_handler.dart';
 
 /// Handler for StackNode → Mix StackBox widget.
-class StackHandler extends NodeHandler<StackNode> {
+class StackHandler extends StyledNodeHandler<StackNode, StackBoxStyler> {
   const StackHandler();
 
   @override
-  Widget build(StackNode node, RenderContext ctx) {
-    return Builder(builder: (context) {
-      var styler = StackBoxStyler();
+  StackBoxStyler createStyler() => StackBoxStyler();
 
-      final alignment = ctx.resolveValue<String>(node.alignment, context);
-      if (alignment != null) {
-        styler = styler.alignment(parseAlignment(alignment));
-      }
+  @override
+  StackBoxStyler applyNodeProps(StackBoxStyler styler, StackNode node,
+      RenderContext ctx, BuildContext context) {
+    final alignment = ctx.resolveValue<String>(node.alignment, context);
+    if (alignment != null) {
+      styler = styler.alignment(parseAlignment(alignment));
+    }
+    return styler;
+  }
 
-      // Container-level style
-      styler =
-          applyStackContainerStyle(styler, node.style, ctx, context);
-      styler = applyStackVariants(styler, node.variants, ctx, context);
-      styler = applyAnimation(styler, node.animation);
+  @override
+  StackBoxStyler applyStyleMap(StackBoxStyler s,
+          Map<String, SchemaValue> style, RenderContext ctx,
+          BuildContext context) =>
+      applyContainerStyleMap(s, style, ctx, context);
 
-      final children = node.children.map((c) => ctx.buildChild(c)).toList();
-
-      return wrapWithSemantics(
-        StackBox(style: styler, children: children),
-        node.semantics,
-      );
-    });
+  @override
+  Widget buildWidget(StackBoxStyler styler, StackNode node, RenderContext ctx,
+      BuildContext context) {
+    final children = node.children.map((c) => ctx.buildChild(c)).toList();
+    return StackBox(style: styler, children: children);
   }
 }

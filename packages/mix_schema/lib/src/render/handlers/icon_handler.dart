@@ -2,29 +2,28 @@ import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
 import '../../ast/schema_node.dart';
-import '../node_handler.dart';
+import '../../ast/schema_values.dart';
 import '../render_context.dart';
 import 'style_helpers.dart';
+import 'styled_node_handler.dart';
 
 /// Handler for IconNode → Mix StyledIcon widget.
-class IconHandler extends NodeHandler<IconNode> {
+class IconHandler extends StyledNodeHandler<IconNode, IconStyler> {
   const IconHandler();
 
   @override
-  Widget build(IconNode node, RenderContext ctx) {
-    return Builder(builder: (context) {
-      var styler = IconStyler();
-      styler = applyIconStyle(styler, node.style, ctx, context);
-      styler = applyIconVariants(styler, node.variants, ctx, context);
-      styler = applyAnimation(styler, node.animation);
+  IconStyler createStyler() => IconStyler();
 
-      final iconValue = ctx.resolveValue<dynamic>(node.icon, context);
-      final iconData = resolveIconData(iconValue);
+  @override
+  IconStyler applyStyleMap(IconStyler s, Map<String, SchemaValue> style,
+          RenderContext ctx, BuildContext context) =>
+      applyIconStyle(s, style, ctx, context);
 
-      return wrapWithSemantics(
-        StyledIcon(icon: iconData, style: styler),
-        node.semantics,
-      );
-    });
+  @override
+  Widget buildWidget(IconStyler styler, IconNode node, RenderContext ctx,
+      BuildContext context) {
+    final iconValue = ctx.resolveValue<dynamic>(node.icon, context);
+    final iconData = resolveIconData(iconValue);
+    return StyledIcon(icon: iconData, style: styler);
   }
 }

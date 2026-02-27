@@ -2,28 +2,27 @@ import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
 import '../../ast/schema_node.dart';
-import '../node_handler.dart';
+import '../../ast/schema_values.dart';
 import '../render_context.dart';
 import 'style_helpers.dart';
+import 'styled_node_handler.dart';
 
 /// Handler for BoxNode → Mix Box widget.
-class BoxHandler extends NodeHandler<BoxNode> {
+class BoxHandler extends StyledNodeHandler<BoxNode, BoxStyler> {
   const BoxHandler();
 
   @override
-  Widget build(BoxNode node, RenderContext ctx) {
-    return Builder(builder: (context) {
-      var styler = BoxStyler();
-      styler = applyContainerStyle(styler, node.style, ctx, context);
-      styler = applyBoxVariants(styler, node.variants, ctx, context);
-      styler = applyAnimation(styler, node.animation);
+  BoxStyler createStyler() => BoxStyler();
 
-      final child = node.child != null ? ctx.buildChild(node.child!) : null;
+  @override
+  BoxStyler applyStyleMap(BoxStyler s, Map<String, SchemaValue> style,
+          RenderContext ctx, BuildContext context) =>
+      applyContainerStyleMap(s, style, ctx, context);
 
-      return wrapWithSemantics(
-        Box(style: styler, child: child),
-        node.semantics,
-      );
-    });
+  @override
+  Widget buildWidget(
+      BoxStyler styler, BoxNode node, RenderContext ctx, BuildContext context) {
+    final child = node.child != null ? ctx.buildChild(node.child!) : null;
+    return Box(style: styler, child: child);
   }
 }

@@ -1,19 +1,26 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart' show OrdinalSortKey;
+import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
 import '../../ast/schema_node.dart';
 import '../../ast/schema_values.dart';
 import '../../validate/diagnostics.dart';
 import '../render_context.dart';
+import 'parsers.dart';
+
+// Re-export parsers so existing imports continue to work.
+export 'parsers.dart';
 
 // ---------------------------------------------------------------------------
 // Style application helpers
 // ---------------------------------------------------------------------------
 
-/// Apply container-level style properties to a BoxStyler.
-BoxStyler applyContainerStyle(
-  BoxStyler styler,
+/// Apply container-level style properties to any container styler
+/// (BoxStyler, FlexBoxStyler, StackBoxStyler). Uses dynamic dispatch for
+/// shared methods. Box-only properties (paddingTop/Bottom/Left/Right,
+/// marginX/Y, clipBehavior) are gated to BoxStyler.
+T applyContainerStyleMap<T>(
+  T styler,
   Map<String, SchemaValue>? style,
   RenderContext ctx,
   BuildContext context,
@@ -26,92 +33,32 @@ BoxStyler applyContainerStyle(
 
     styler = switch (entry.key) {
       'color' || 'backgroundColor' =>
-        _applyColorTo(styler, resolved, (s, c) => s.color(c)),
-      'padding' => styler.paddingAll(toDouble(resolved)),
-      'paddingX' => styler.paddingX(toDouble(resolved)),
-      'paddingY' => styler.paddingY(toDouble(resolved)),
-      'paddingTop' => styler.paddingTop(toDouble(resolved)),
-      'paddingBottom' => styler.paddingBottom(toDouble(resolved)),
-      'paddingLeft' => styler.paddingLeft(toDouble(resolved)),
-      'paddingRight' => styler.paddingRight(toDouble(resolved)),
-      'margin' => styler.marginAll(toDouble(resolved)),
-      'marginX' => styler.marginX(toDouble(resolved)),
-      'marginY' => styler.marginY(toDouble(resolved)),
-      'width' => styler.width(toDouble(resolved)),
-      'height' => styler.height(toDouble(resolved)),
-      'minWidth' => styler.minWidth(toDouble(resolved)),
-      'maxWidth' => styler.maxWidth(toDouble(resolved)),
-      'minHeight' => styler.minHeight(toDouble(resolved)),
-      'maxHeight' => styler.maxHeight(toDouble(resolved)),
-      'borderRadius' => styler.borderRounded(toDouble(resolved)),
-      'clipBehavior' =>
-        styler.clipBehavior(parseClip(resolved as String)),
-      _ => skipUnknown(styler, entry.key, ctx),
-    };
-  }
-  return styler;
-}
-
-/// Apply container-level style properties to a FlexBoxStyler.
-FlexBoxStyler applyFlexContainerStyle(
-  FlexBoxStyler styler,
-  Map<String, SchemaValue>? style,
-  RenderContext ctx,
-  BuildContext context,
-) {
-  if (style == null) return styler;
-
-  for (final entry in style.entries) {
-    final resolved = ctx.resolveValue<dynamic>(entry.value, context);
-    if (resolved == null) continue;
-
-    styler = switch (entry.key) {
-      'color' || 'backgroundColor' =>
-        _applyColorTo(styler, resolved, (s, c) => s.color(c)),
-      'padding' => styler.paddingAll(toDouble(resolved)),
-      'paddingX' => styler.paddingX(toDouble(resolved)),
-      'paddingY' => styler.paddingY(toDouble(resolved)),
-      'margin' => styler.marginAll(toDouble(resolved)),
-      'width' => styler.width(toDouble(resolved)),
-      'height' => styler.height(toDouble(resolved)),
-      'minWidth' => styler.minWidth(toDouble(resolved)),
-      'maxWidth' => styler.maxWidth(toDouble(resolved)),
-      'minHeight' => styler.minHeight(toDouble(resolved)),
-      'maxHeight' => styler.maxHeight(toDouble(resolved)),
-      'borderRadius' => styler.borderRounded(toDouble(resolved)),
-      _ => skipUnknown(styler, entry.key, ctx),
-    };
-  }
-  return styler;
-}
-
-/// Apply container-level style properties to a StackBoxStyler.
-StackBoxStyler applyStackContainerStyle(
-  StackBoxStyler styler,
-  Map<String, SchemaValue>? style,
-  RenderContext ctx,
-  BuildContext context,
-) {
-  if (style == null) return styler;
-
-  for (final entry in style.entries) {
-    final resolved = ctx.resolveValue<dynamic>(entry.value, context);
-    if (resolved == null) continue;
-
-    styler = switch (entry.key) {
-      'color' || 'backgroundColor' =>
-        _applyColorTo(styler, resolved, (s, c) => s.color(c)),
-      'padding' => styler.paddingAll(toDouble(resolved)),
-      'paddingX' => styler.paddingX(toDouble(resolved)),
-      'paddingY' => styler.paddingY(toDouble(resolved)),
-      'margin' => styler.marginAll(toDouble(resolved)),
-      'width' => styler.width(toDouble(resolved)),
-      'height' => styler.height(toDouble(resolved)),
-      'minWidth' => styler.minWidth(toDouble(resolved)),
-      'maxWidth' => styler.maxWidth(toDouble(resolved)),
-      'minHeight' => styler.minHeight(toDouble(resolved)),
-      'maxHeight' => styler.maxHeight(toDouble(resolved)),
-      'borderRadius' => styler.borderRounded(toDouble(resolved)),
+        _applyColorTo(styler, resolved, (s, c) => (s as dynamic).color(c) as T),
+      'padding' => (styler as dynamic).paddingAll(toDouble(resolved)) as T,
+      'paddingX' => (styler as dynamic).paddingX(toDouble(resolved)) as T,
+      'paddingY' => (styler as dynamic).paddingY(toDouble(resolved)) as T,
+      'paddingTop' when styler is BoxStyler =>
+        (styler as BoxStyler).paddingTop(toDouble(resolved)) as T,
+      'paddingBottom' when styler is BoxStyler =>
+        (styler as BoxStyler).paddingBottom(toDouble(resolved)) as T,
+      'paddingLeft' when styler is BoxStyler =>
+        (styler as BoxStyler).paddingLeft(toDouble(resolved)) as T,
+      'paddingRight' when styler is BoxStyler =>
+        (styler as BoxStyler).paddingRight(toDouble(resolved)) as T,
+      'margin' => (styler as dynamic).marginAll(toDouble(resolved)) as T,
+      'marginX' when styler is BoxStyler =>
+        (styler as BoxStyler).marginX(toDouble(resolved)) as T,
+      'marginY' when styler is BoxStyler =>
+        (styler as BoxStyler).marginY(toDouble(resolved)) as T,
+      'width' => (styler as dynamic).width(toDouble(resolved)) as T,
+      'height' => (styler as dynamic).height(toDouble(resolved)) as T,
+      'minWidth' => (styler as dynamic).minWidth(toDouble(resolved)) as T,
+      'maxWidth' => (styler as dynamic).maxWidth(toDouble(resolved)) as T,
+      'minHeight' => (styler as dynamic).minHeight(toDouble(resolved)) as T,
+      'maxHeight' => (styler as dynamic).maxHeight(toDouble(resolved)) as T,
+      'borderRadius' => (styler as dynamic).borderRounded(toDouble(resolved)) as T,
+      'clipBehavior' when styler is BoxStyler =>
+        (styler as BoxStyler).clipBehavior(parseClip(resolved as String)) as T,
       _ => skipUnknown(styler, entry.key, ctx),
     };
   }
@@ -139,7 +86,7 @@ TextStyler applyTextStyle(
       'letterSpacing' => styler.letterSpacing(toDouble(resolved)),
       'overflow' =>
         styler.overflow(parseTextOverflow(resolved as String)),
-      'maxLines' => styler.maxLines(_toInt(resolved)),
+      'maxLines' => styler.maxLines(toInt(resolved)),
       _ => skipUnknown(styler, entry.key, ctx),
     };
   }
@@ -168,14 +115,32 @@ IconStyler applyIconStyle(
   return styler;
 }
 
+/// Apply image-level style properties to an ImageStyler.
+ImageStyler applyImageStyleMap(
+  ImageStyler styler,
+  Map<String, SchemaValue>? style,
+  RenderContext ctx,
+  BuildContext context,
+) {
+  if (style == null) return styler;
+
+  for (final entry in style.entries) {
+    final resolved = ctx.resolveValue<dynamic>(entry.value, context);
+    if (resolved == null) continue;
+
+    styler = switch (entry.key) {
+      'width' => styler.width(toDouble(resolved)),
+      'height' => styler.height(toDouble(resolved)),
+      'fit' => styler.fit(parseBoxFit(resolved as String)),
+      _ => skipUnknown(styler, entry.key, ctx),
+    };
+  }
+  return styler;
+}
+
 // ---------------------------------------------------------------------------
 // Variant + animation helpers
 // ---------------------------------------------------------------------------
-
-// All Mix stylers share .animate() and variant methods via mixins but have
-// no common supertype accessible from outside the package. We use dynamic
-// dispatch for animate (single method, no branching needed) and typed
-// dispatch for variants (which need concrete styler constructors).
 
 /// Apply animation config to any styler. Works via dynamic dispatch since
 /// all Mix stylers expose `.animate(CurveAnimationConfig)`.
@@ -191,7 +156,9 @@ T applyAnimation<T>(T styler, SchemaAnimation? anim) {
   return (styler as dynamic).animate(config) as T;
 }
 
-/// Apply variants using a style-application callback to build the variant styler.
+/// Apply variants using a style-application callback to build the variant
+/// styler. Uses dynamic dispatch for the variant method (all Mix stylers
+/// share .onHovered/.onPressed/etc. via mixins).
 T applyVariants<T>(
   T styler,
   Map<String, SchemaValue>? variants,
@@ -212,81 +179,6 @@ T applyVariants<T>(
   return styler;
 }
 
-// Convenience wrappers for each styler type (needed because each requires
-// a different style-application function and fresh constructor).
-
-BoxStyler applyBoxVariants(
-  BoxStyler styler,
-  Map<String, SchemaValue>? variants,
-  RenderContext ctx,
-  BuildContext context,
-) =>
-    applyVariants(styler, variants, ctx, context, applyContainerStyle,
-        BoxStyler.new);
-
-TextStyler applyTextVariants(
-  TextStyler styler,
-  Map<String, SchemaValue>? variants,
-  RenderContext ctx,
-  BuildContext context,
-) =>
-    applyVariants(
-        styler, variants, ctx, context, applyTextStyle, TextStyler.new);
-
-FlexBoxStyler applyFlexVariants(
-  FlexBoxStyler styler,
-  Map<String, SchemaValue>? variants,
-  RenderContext ctx,
-  BuildContext context,
-) =>
-    applyVariants(styler, variants, ctx, context, applyFlexContainerStyle,
-        FlexBoxStyler.new);
-
-StackBoxStyler applyStackVariants(
-  StackBoxStyler styler,
-  Map<String, SchemaValue>? variants,
-  RenderContext ctx,
-  BuildContext context,
-) =>
-    applyVariants(styler, variants, ctx, context, applyStackContainerStyle,
-        StackBoxStyler.new);
-
-IconStyler applyIconVariants(
-  IconStyler styler,
-  Map<String, SchemaValue>? variants,
-  RenderContext ctx,
-  BuildContext context,
-) =>
-    applyVariants(
-        styler, variants, ctx, context, applyIconStyle, IconStyler.new);
-
-ImageStyler applyImageVariants(
-  ImageStyler styler,
-  Map<String, SchemaValue>? variants,
-  RenderContext ctx,
-  BuildContext context,
-) =>
-    applyVariants(
-        styler, variants, ctx, context, _applyImageStyleProps, ImageStyler.new);
-
-ImageStyler _applyImageStyleProps(
-  ImageStyler styler,
-  Map<String, SchemaValue> style,
-  RenderContext ctx,
-  BuildContext context,
-) {
-  for (final entry in style.entries) {
-    final resolved = ctx.resolveValue<dynamic>(entry.value, context);
-    if (resolved == null) continue;
-    styler = switch (entry.key) {
-      'width' => styler.width(toDouble(resolved)),
-      'height' => styler.height(toDouble(resolved)),
-      _ => styler,
-    };
-  }
-  return styler;
-}
-
 Map<String, SchemaValue>? _extractVariantStyle(SchemaValue value) {
   return switch (value) {
     DirectValue<Map<String, SchemaValue>>(value: final v) => v,
@@ -294,39 +186,24 @@ Map<String, SchemaValue>? _extractVariantStyle(SchemaValue value) {
   };
 }
 
-/// Apply a named variant to any styler type.
+/// Apply a named variant to any styler via dynamic dispatch.
 T _applyVariantByName<T>(T styler, String name, T variantStyler) {
-  return switch (styler) {
-    BoxStyler s =>
-      _variantSwitch(s, name, variantStyler as BoxStyler) as T,
-    TextStyler s =>
-      _variantSwitch(s, name, variantStyler as TextStyler) as T,
-    FlexBoxStyler s =>
-      _variantSwitch(s, name, variantStyler as FlexBoxStyler) as T,
-    StackBoxStyler s =>
-      _variantSwitch(s, name, variantStyler as StackBoxStyler) as T,
-    ImageStyler s =>
-      _variantSwitch(s, name, variantStyler as ImageStyler) as T,
-    IconStyler s =>
-      _variantSwitch(s, name, variantStyler as IconStyler) as T,
-    _ => styler,
-  };
+  final s = styler as dynamic;
+  final v = variantStyler as dynamic;
+  return (switch (name) {
+    'hover' || 'hovered' => s.onHovered(v),
+    'press' || 'pressed' => s.onPressed(v),
+    'focus' || 'focused' => s.onFocused(v),
+    'disabled' => s.onDisabled(v),
+    'enabled' => s.onEnabled(v),
+    'dark' => s.onDark(v),
+    'light' => s.onLight(v),
+    'mobile' => s.onMobile(v),
+    'tablet' => s.onTablet(v),
+    'desktop' => s.onDesktop(v),
+    _ => s,
+  }) as T;
 }
-
-/// Single variant name -> method dispatch.
-S _variantSwitch<S>(dynamic s, String name, dynamic v) => switch (name) {
-      'hover' || 'hovered' => s.onHovered(v),
-      'press' || 'pressed' => s.onPressed(v),
-      'focus' || 'focused' => s.onFocused(v),
-      'disabled' => s.onDisabled(v),
-      'enabled' => s.onEnabled(v),
-      'dark' => s.onDark(v),
-      'light' => s.onLight(v),
-      'mobile' => s.onMobile(v),
-      'tablet' => s.onTablet(v),
-      'desktop' => s.onDesktop(v),
-      _ => s,
-    } as S;
 
 // ---------------------------------------------------------------------------
 // Utility helpers
@@ -344,119 +221,8 @@ T skipUnknown<T>(T styler, String property, RenderContext ctx) {
 }
 
 T _applyColorTo<T>(T styler, dynamic resolved, T Function(T, Color) apply) {
-  final color = _parseColor(resolved);
+  final color = parseColor(resolved);
   return color != null ? apply(styler, color) : styler;
-}
-
-// ---------------------------------------------------------------------------
-// Parsers
-// ---------------------------------------------------------------------------
-
-Color? _parseColor(dynamic resolved) {
-  if (resolved is Color) return resolved;
-  if (resolved is String) {
-    final hex = resolved.replaceFirst('#', '');
-    final intVal = int.tryParse(hex, radix: 16);
-    if (intVal != null) {
-      if (hex.length == 6) return Color(0xFF000000 | intVal);
-      if (hex.length == 8) return Color(intVal);
-    }
-  }
-  return null;
-}
-
-double toDouble(dynamic v) {
-  if (v is double) return v;
-  if (v is num) return v.toDouble();
-  return 0.0;
-}
-
-int _toInt(dynamic v) {
-  if (v is int) return v;
-  if (v is num) return v.toInt();
-  return 0;
-}
-
-FontWeight parseFontWeight(dynamic value) => switch (value) {
-      FontWeight w => w,
-      'thin' || 'w100' || '100' => FontWeight.w100,
-      'extraLight' || 'w200' || '200' => FontWeight.w200,
-      'light' || 'w300' || '300' => FontWeight.w300,
-      'normal' || 'regular' || 'w400' || '400' => FontWeight.w400,
-      'medium' || 'w500' || '500' => FontWeight.w500,
-      'semiBold' || 'w600' || '600' => FontWeight.w600,
-      'bold' || 'w700' || '700' => FontWeight.w700,
-      'extraBold' || 'w800' || '800' => FontWeight.w800,
-      'black' || 'w900' || '900' => FontWeight.w900,
-      _ => FontWeight.w400,
-    };
-
-TextOverflow parseTextOverflow(String value) => switch (value) {
-      'ellipsis' => TextOverflow.ellipsis,
-      'clip' => TextOverflow.clip,
-      'fade' => TextOverflow.fade,
-      'visible' => TextOverflow.visible,
-      _ => TextOverflow.clip,
-    };
-
-Clip parseClip(String value) => switch (value) {
-      'none' => Clip.none,
-      'hardEdge' => Clip.hardEdge,
-      'antiAlias' => Clip.antiAlias,
-      'antiAliasWithSaveLayer' => Clip.antiAliasWithSaveLayer,
-      _ => Clip.none,
-    };
-
-CrossAxisAlignment parseCrossAxis(String value) => switch (value) {
-      'start' => CrossAxisAlignment.start,
-      'end' => CrossAxisAlignment.end,
-      'center' => CrossAxisAlignment.center,
-      'stretch' => CrossAxisAlignment.stretch,
-      'baseline' => CrossAxisAlignment.baseline,
-      _ => CrossAxisAlignment.start,
-    };
-
-MainAxisAlignment parseMainAxis(String value) => switch (value) {
-      'start' => MainAxisAlignment.start,
-      'end' => MainAxisAlignment.end,
-      'center' => MainAxisAlignment.center,
-      'spaceBetween' => MainAxisAlignment.spaceBetween,
-      'spaceAround' => MainAxisAlignment.spaceAround,
-      'spaceEvenly' => MainAxisAlignment.spaceEvenly,
-      _ => MainAxisAlignment.start,
-    };
-
-AlignmentGeometry parseAlignment(String value) => switch (value) {
-      'topLeft' => Alignment.topLeft,
-      'topCenter' => Alignment.topCenter,
-      'topRight' => Alignment.topRight,
-      'centerLeft' => Alignment.centerLeft,
-      'center' => Alignment.center,
-      'centerRight' => Alignment.centerRight,
-      'bottomLeft' => Alignment.bottomLeft,
-      'bottomCenter' => Alignment.bottomCenter,
-      'bottomRight' => Alignment.bottomRight,
-      _ => Alignment.center,
-    };
-
-Curve parseCurve(String? name) => switch (name) {
-      'linear' => Curves.linear,
-      'easeIn' => Curves.easeIn,
-      'easeOut' => Curves.easeOut,
-      'easeInOut' => Curves.easeInOut,
-      'bounceIn' => Curves.bounceIn,
-      'bounceOut' => Curves.bounceOut,
-      'elasticIn' => Curves.elasticIn,
-      'elasticOut' => Curves.elasticOut,
-      _ => Curves.easeOut,
-    };
-
-/// Resolve a Material Icons icon name to IconData.
-IconData resolveIconData(dynamic value) {
-  if (value is IconData) return value;
-  if (value is int) return IconData(value, fontFamily: 'MaterialIcons');
-  if (value is String) return _iconLookup[value] ?? Icons.help_outline;
-  return Icons.help_outline;
 }
 
 // ---------------------------------------------------------------------------
@@ -497,28 +263,3 @@ Widget wrapWithSemantics(Widget child, SchemaSemantics? semantics) {
     child: child,
   );
 }
-
-const _iconLookup = <String, IconData>{
-  'add': Icons.add,
-  'arrow_back': Icons.arrow_back,
-  'arrow_forward': Icons.arrow_forward,
-  'check': Icons.check,
-  'check_circle': Icons.check_circle,
-  'close': Icons.close,
-  'delete': Icons.delete,
-  'edit': Icons.edit,
-  'error': Icons.error,
-  'favorite': Icons.favorite,
-  'home': Icons.home,
-  'info': Icons.info,
-  'menu': Icons.menu,
-  'more_vert': Icons.more_vert,
-  'person': Icons.person,
-  'search': Icons.search,
-  'settings': Icons.settings,
-  'share': Icons.share,
-  'star': Icons.star,
-  'visibility': Icons.visibility,
-  'visibility_off': Icons.visibility_off,
-  'warning': Icons.warning,
-};
