@@ -51,7 +51,6 @@ void main() {
       test('clipBehavior utility is MixUtility', () {
         expect(util.clipBehavior, isA<MixUtility<StackStyler, Clip>>());
       });
-
     });
 
     group('Stack property utilities', () {

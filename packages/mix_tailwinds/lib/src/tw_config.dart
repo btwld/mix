@@ -13,7 +13,6 @@ enum TwGradientStrategy {
   /// This makes corner directions like `to-br` adapt to rectangle aspect ratio,
   /// matching CSS "magic corners" behavior.
   cssAngleRect,
-
 }
 
 /// Tailwind-oriented typography defaults for Flutter text rendering.

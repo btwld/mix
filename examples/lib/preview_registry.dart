@@ -3,8 +3,10 @@ import 'package:flutter/widgets.dart';
 import 'api/ecosystem/tw_card_alert.dart' as tw_card_alert;
 import 'api/animation/implicit.curved.scale.dart' as auto_scale;
 import 'api/animation/implicit.spring.translate.dart' as spring_anim;
-import 'docs/guides/animations/implicit_state_counter.dart' as guide_implicit_counter;
-import 'docs/guides/animations/implicit_variant_hover.dart' as guide_implicit_hover;
+import 'docs/guides/animations/implicit_state_counter.dart'
+    as guide_implicit_counter;
+import 'docs/guides/animations/implicit_variant_hover.dart'
+    as guide_implicit_hover;
 import 'docs/guides/animations/keyframe_loop.dart' as guide_keyframe_loop;
 import 'docs/guides/animations/keyframe_switch.dart' as guide_keyframe_switch;
 import 'docs/guides/animations/phase_tap_compress.dart' as guide_phase_tap;
@@ -262,15 +264,18 @@ class PreviewRegistry {
     // Animations (guides — match animations.mdx)
     PreviewEntry(
       previewId: 'implicit-anim-counter',
-      sourcePath: 'examples/lib/docs/guides/animations/implicit_state_counter.dart',
+      sourcePath:
+          'examples/lib/docs/guides/animations/implicit_state_counter.dart',
       title: 'State-triggered Implicit Animation',
       description: 'Square grows each time you tap it',
       category: _animations,
-      builder: (_) => const guide_implicit_counter.ImplicitStateCounterExample(),
+      builder: (_) =>
+          const guide_implicit_counter.ImplicitStateCounterExample(),
     ),
     PreviewEntry(
       previewId: 'anim-hover-scale',
-      sourcePath: 'examples/lib/docs/guides/animations/implicit_variant_hover.dart',
+      sourcePath:
+          'examples/lib/docs/guides/animations/implicit_variant_hover.dart',
       title: 'Hover Scale Animation',
       description: 'Box that scales up smoothly when hovered',
       category: _animations,

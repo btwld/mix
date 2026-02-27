@@ -91,7 +91,6 @@ void main() {
       test('matchTextDirection is now a method', () {
         expect(util.matchTextDirection, isA<Function>());
       });
-
     });
 
     group('Image property utilities', () {

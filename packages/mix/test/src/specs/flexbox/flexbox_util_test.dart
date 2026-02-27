@@ -45,7 +45,6 @@ void main() {
       test('decoration utility is DecorationUtility', () {
         expect(util.decoration, isA<DecorationUtility<FlexBoxStyler>>());
       });
-
     });
 
     group('Flattened access utilities', () {

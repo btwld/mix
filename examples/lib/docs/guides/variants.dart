@@ -23,7 +23,11 @@ void main() {
 
   final styleB = styleA.onHovered(.color(Colors.green));
 
-  final result = BoxStyler().color(Colors.green).height(100).width(200).borderRounded(10);
+  final result = BoxStyler()
+      .color(Colors.green)
+      .height(100)
+      .width(200)
+      .borderRounded(10);
 
   // 3
   final hoverStyle = BoxStyler()

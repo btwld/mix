@@ -17,7 +17,6 @@ class MaterialColorCallableUtility<T extends Style<Object?>> {
   T call([int? shade]) => builder(
     Prop.value(shade == null ? materialColor : materialColor[shade]!),
   );
-
 }
 
 /// Utility for Material Design color palettes with shade access.

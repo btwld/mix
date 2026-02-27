@@ -56,5 +56,4 @@ mixin UtilityVariantMixin<T extends Style<S>, S extends Spec<S>> {
       VariantStyle<S>(ContextVariantBuilder<T>(fn), currentValue),
     ]);
   }
-
 }

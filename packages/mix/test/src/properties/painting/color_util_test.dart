@@ -30,7 +30,6 @@ void main() {
 
         expect(color, Colors.blue);
       });
-
     });
 
     group('BasicColorsMixin', () {
