@@ -20,7 +20,10 @@ class TextHandler extends NodeHandler<TextNode> {
 
       final text = ctx.resolveValue<String>(node.content, context) ?? '';
 
-      return StyledText(text, style: styler);
+      return wrapWithSemantics(
+        StyledText(text, style: styler),
+        node.semantics,
+      );
     });
   }
 }

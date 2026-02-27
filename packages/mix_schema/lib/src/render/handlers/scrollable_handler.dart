@@ -4,6 +4,7 @@ import 'package:mix/mix.dart';
 import '../../ast/schema_node.dart';
 import '../node_handler.dart';
 import '../render_context.dart';
+import 'style_helpers.dart';
 
 /// Handler for ScrollableNode.
 ///
@@ -26,7 +27,10 @@ class ScrollableHandler extends NodeHandler<ScrollableNode> {
         ),
       );
 
-      return Box(style: styler, child: child);
+      return wrapWithSemantics(
+        Box(style: styler, child: child),
+        node.semantics,
+      );
     });
   }
 }

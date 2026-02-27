@@ -28,7 +28,10 @@ class StackHandler extends NodeHandler<StackNode> {
 
       final children = node.children.map((c) => ctx.buildChild(c)).toList();
 
-      return StackBox(style: styler, children: children);
+      return wrapWithSemantics(
+        StackBox(style: styler, children: children),
+        node.semantics,
+      );
     });
   }
 }

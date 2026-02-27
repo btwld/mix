@@ -4,6 +4,7 @@ import '../../ast/schema_node.dart';
 import '../node_handler.dart';
 import '../render_context.dart';
 import '../schema_data_context.dart';
+import 'style_helpers.dart';
 
 /// Handler for RepeatNode.
 ///
@@ -20,26 +21,29 @@ class RepeatHandler extends NodeHandler<RepeatNode> {
     return Builder(builder: (context) {
       final items = ctx.resolveValue<List>(node.items, context) ?? [];
 
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          for (var i = 0; i < items.length; i++)
-            Builder(
-              builder: (_) {
-                final parentData =
-                    ctx.dataContext ?? SchemaDataContext.root();
-                final childData = parentData.child(
-                  alias: node.itemAlias,
-                  item: items[i],
-                  index: i,
-                );
+      return wrapWithSemantics(
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            for (var i = 0; i < items.length; i++)
+              Builder(
+                builder: (_) {
+                  final parentData =
+                      ctx.dataContext ?? SchemaDataContext.root();
+                  final childData = parentData.child(
+                    alias: node.itemAlias,
+                    item: items[i],
+                    index: i,
+                  );
 
-                return ctx
-                    .copyWith(dataContext: childData)
-                    .buildChild(node.template);
-              },
-            ),
-        ],
+                  return ctx
+                      .copyWith(dataContext: childData)
+                      .buildChild(node.template);
+                },
+              ),
+          ],
+        ),
+        node.semantics,
       );
     });
   }

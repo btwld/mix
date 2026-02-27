@@ -27,15 +27,18 @@ class PressableHandler extends NodeHandler<PressableNode> {
         styler = applyBoxAnimation(styler, node.animation);
       }
 
-      return PressableBox(
-        style: styler,
-        onPress: () {
-          ctx.onEvent?.call(TapEvent(
-            nodeId: node.nodeId,
-            actionId: node.actionId,
-          ));
-        },
-        child: child,
+      return wrapWithSemantics(
+        PressableBox(
+          style: styler,
+          onPress: () {
+            ctx.onEvent?.call(TapEvent(
+              nodeId: node.nodeId,
+              actionId: node.actionId,
+            ));
+          },
+          child: child,
+        ),
+        node.semantics,
       );
     });
   }

@@ -20,7 +20,10 @@ class BoxHandler extends NodeHandler<BoxNode> {
 
       final child = node.child != null ? ctx.buildChild(node.child!) : null;
 
-      return Box(style: styler, child: child);
+      return wrapWithSemantics(
+        Box(style: styler, child: child),
+        node.semantics,
+      );
     });
   }
 }

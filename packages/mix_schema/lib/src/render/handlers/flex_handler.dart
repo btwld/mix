@@ -46,7 +46,10 @@ class FlexHandler extends NodeHandler<FlexNode> {
 
       final children = node.children.map((c) => ctx.buildChild(c)).toList();
 
-      return FlexBox(style: styler, children: children);
+      return wrapWithSemantics(
+        FlexBox(style: styler, children: children),
+        node.semantics,
+      );
     });
   }
 }

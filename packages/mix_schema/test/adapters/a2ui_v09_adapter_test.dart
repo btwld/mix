@@ -250,6 +250,209 @@ void main() {
         expect(result.root, isNull);
       });
     });
+
+    group('lossy adaptation diagnostics', () {
+      test('emits unsupportedWireVersion for non-0.9 version', () {
+        final payload = <String, dynamic>{
+          'id': 'test',
+          'version': '1.0',
+          'trust': 'standard',
+          'root': {
+            'type': 'text',
+            'nodeId': 'text1',
+            'content': 'hello',
+          },
+        };
+
+        final result = adapter.adapt(
+          payload,
+          const AdaptContext(trust: SchemaTrust.standard),
+        );
+
+        expect(result.root, isNotNull);
+        expect(
+          result.diagnostics.any(
+            (d) =>
+                d.code == DiagnosticCode.unsupportedWireVersion &&
+                d.severity == DiagnosticSeverity.warning,
+          ),
+          true,
+        );
+      });
+
+      test('generates auto nodeId when missing', () {
+        final payload = <String, dynamic>{
+          'id': 'test',
+          'version': '0.9',
+          'trust': 'standard',
+          'root': {
+            'type': 'text',
+            // no nodeId — should auto-generate
+            'content': 'hello',
+          },
+        };
+
+        final result = adapter.adapt(
+          payload,
+          const AdaptContext(trust: SchemaTrust.standard),
+        );
+
+        expect(result.root, isNotNull);
+        expect(result.root!.root.nodeId, 'root_auto');
+      });
+
+      test('handles repeat node missing template gracefully', () {
+        final payload = <String, dynamic>{
+          'id': 'test',
+          'version': '0.9',
+          'trust': 'standard',
+          'root': {
+            'type': 'repeat',
+            'nodeId': 'rep1',
+            'items': ['a', 'b'],
+            // missing template
+          },
+        };
+
+        final result = adapter.adapt(
+          payload,
+          const AdaptContext(trust: SchemaTrust.standard),
+        );
+
+        expect(result.root, isNull);
+        expect(
+          result.diagnostics.any(
+            (d) => d.code == DiagnosticCode.missingRequiredField,
+          ),
+          true,
+        );
+      });
+
+      test('handles pressable without child', () {
+        final payload = <String, dynamic>{
+          'id': 'test',
+          'version': '0.9',
+          'trust': 'standard',
+          'root': {
+            'type': 'pressable',
+            'nodeId': 'btn1',
+            // missing child
+          },
+        };
+
+        final result = adapter.adapt(
+          payload,
+          const AdaptContext(trust: SchemaTrust.standard),
+        );
+
+        expect(result.root, isNull);
+        expect(
+          result.diagnostics.any(
+            (d) => d.code == DiagnosticCode.missingRequiredField,
+          ),
+          true,
+        );
+      });
+
+      test('parses variants block correctly', () {
+        final payload = <String, dynamic>{
+          'id': 'test',
+          'version': '0.9',
+          'trust': 'standard',
+          'root': {
+            'type': 'box',
+            'nodeId': 'box1',
+            'style': {'color': '#FF0000'},
+            'variants': {
+              'dark': {'color': '#0000FF'},
+              'hovered': {'color': '#00FF00'},
+            },
+          },
+        };
+
+        final result = adapter.adapt(
+          payload,
+          const AdaptContext(trust: SchemaTrust.standard),
+        );
+
+        expect(result.root, isNotNull);
+        final box = result.root!.root as BoxNode;
+        expect(box.variants, isNotNull);
+        expect(box.variants!.containsKey('dark'), true);
+        expect(box.variants!.containsKey('hovered'), true);
+      });
+
+      test('parses transform value', () {
+        final payload = <String, dynamic>{
+          'id': 'test',
+          'version': '0.9',
+          'trust': 'standard',
+          'root': {
+            'type': 'text',
+            'nodeId': 't1',
+            'content': {'bind': 'price', 'transform': 'currency'},
+          },
+        };
+
+        final result = adapter.adapt(
+          payload,
+          const AdaptContext(trust: SchemaTrust.standard),
+        );
+
+        expect(result.root, isNotNull);
+        final text = result.root!.root as TextNode;
+        expect(text.content, isA<TransformValue>());
+        final tv = text.content as TransformValue;
+        expect(tv.path, 'price');
+        expect(tv.transformKey, 'currency');
+      });
+
+      test('handles multiple semantic fields', () {
+        final payload = <String, dynamic>{
+          'id': 'test',
+          'version': '0.9',
+          'trust': 'standard',
+          'root': {
+            'type': 'pressable',
+            'nodeId': 'btn1',
+            'child': {
+              'type': 'text',
+              'nodeId': 't1',
+              'content': 'Click',
+            },
+            'semantics': {
+              'role': 'button',
+              'label': 'Submit',
+              'hint': 'Double tap to submit',
+              'enabled': true,
+              'selected': false,
+              'expanded': true,
+              'focusOrder': 1,
+              'liveRegionMode': 'polite',
+              'liveRegionAtomic': true,
+            },
+          },
+        };
+
+        final result = adapter.adapt(
+          payload,
+          const AdaptContext(trust: SchemaTrust.standard),
+        );
+
+        expect(result.root, isNotNull);
+        final pressable = result.root!.root as PressableNode;
+        final sem = pressable.semantics!;
+        expect(sem.role, 'button');
+        expect(sem.label, 'Submit');
+        expect(sem.hint, 'Double tap to submit');
+        expect(sem.enabled, true);
+        expect(sem.selected, false);
+        expect(sem.expanded, true);
+        expect(sem.focusOrder, 1);
+        expect(sem.liveRegionMode, 'polite');
+        expect(sem.liveRegionAtomic, true);
+      });
+    });
   });
 
   group('normalizeValue', () {

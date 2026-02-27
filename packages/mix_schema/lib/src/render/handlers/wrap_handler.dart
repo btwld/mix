@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import '../../ast/schema_node.dart';
 import '../node_handler.dart';
 import '../render_context.dart';
+import 'style_helpers.dart';
 
 /// Handler for WrapNode.
 ///
@@ -20,10 +21,13 @@ class WrapHandler extends NodeHandler<WrapNode> {
 
       final children = node.children.map((c) => ctx.buildChild(c)).toList();
 
-      return Wrap(
-        spacing: spacing,
-        runSpacing: runSpacing,
-        children: children,
+      return wrapWithSemantics(
+        Wrap(
+          spacing: spacing,
+          runSpacing: runSpacing,
+          children: children,
+        ),
+        node.semantics,
       );
     });
   }

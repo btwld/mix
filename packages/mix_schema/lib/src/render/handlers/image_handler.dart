@@ -21,9 +21,12 @@ class ImageHandler extends NodeHandler<ImageNode> {
 
       final src = ctx.resolveValue<String>(node.src, context) ?? '';
 
-      return StyledImage(
-        image: NetworkImage(src),
-        style: styler,
+      return wrapWithSemantics(
+        StyledImage(
+          image: NetworkImage(src),
+          style: styler,
+        ),
+        node.semantics,
       );
     });
   }

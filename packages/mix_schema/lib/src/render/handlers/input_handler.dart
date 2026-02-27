@@ -4,6 +4,7 @@ import '../../ast/schema_node.dart';
 import '../../events/schema_event.dart';
 import '../node_handler.dart';
 import '../render_context.dart';
+import 'style_helpers.dart';
 
 /// Handler for InputNode.
 ///
@@ -18,12 +19,13 @@ class InputHandler extends NodeHandler<InputNode> {
   @override
   Widget build(InputNode node, RenderContext ctx) {
     return Builder(builder: (context) {
-      return switch (node.inputType) {
+      final widget = switch (node.inputType) {
         'text' => _buildTextInput(node, ctx, context),
         'toggle' => _buildToggle(node, ctx, context),
         'slider' => _buildSlider(node, ctx, context),
         _ => _buildTextInput(node, ctx, context), // fallback to text
       };
+      return wrapWithSemantics(widget, node.semantics);
     });
   }
 

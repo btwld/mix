@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart' show OrdinalSortKey;
 import 'package:mix/mix.dart';
 
 import '../../ast/schema_node.dart';
+import '../../ast/schema_semantics.dart';
 import '../../ast/schema_values.dart';
 import '../../validate/diagnostics.dart';
 import '../render_context.dart';
@@ -524,6 +526,63 @@ IconData resolveIconData(dynamic value) {
     return _iconLookup[value] ?? Icons.help_outline;
   }
   return Icons.help_outline;
+}
+
+// -- IconStyler variants --
+
+IconStyler applyIconVariants(
+  IconStyler styler,
+  Map<String, SchemaValue>? variants,
+  RenderContext ctx,
+  BuildContext context,
+) {
+  if (variants == null) return styler;
+  for (final entry in variants.entries) {
+    final vs = _extractVariantStyle(entry.value);
+    if (vs == null) continue;
+    final v = applyIconStyle(IconStyler(), vs, ctx, context);
+    styler = _applyVariantByName(styler, entry.key, v);
+  }
+  return styler;
+}
+
+/// Wrap a widget with Flutter Semantics when the node has semantic metadata.
+///
+/// Maps SchemaSemantics fields to Flutter's Semantics widget properties.
+/// Only wraps if at least one semantic field is non-null.
+Widget wrapWithSemantics(Widget child, SchemaSemantics? semantics) {
+  if (semantics == null) return child;
+
+  // Only wrap if there's something to announce
+  final hasContent = semantics.role != null ||
+      semantics.label != null ||
+      semantics.hint != null ||
+      semantics.value != null ||
+      semantics.enabled != null ||
+      semantics.selected != null ||
+      semantics.checked != null ||
+      semantics.expanded != null ||
+      semantics.liveRegionMode != null;
+
+  if (!hasContent) return child;
+
+  return Semantics(
+    label: semantics.label,
+    hint: semantics.hint,
+    value: semantics.value,
+    enabled: semantics.enabled,
+    selected: semantics.selected,
+    checked: semantics.checked,
+    expanded: semantics.expanded,
+    button: semantics.role == 'button',
+    header: semantics.role == 'heading',
+    image: semantics.role == 'img',
+    liveRegion: semantics.liveRegionMode != null,
+    sortKey: semantics.focusOrder != null
+        ? OrdinalSortKey(semantics.focusOrder!.toDouble())
+        : null,
+    child: child,
+  );
 }
 
 const _iconLookup = <String, IconData>{
