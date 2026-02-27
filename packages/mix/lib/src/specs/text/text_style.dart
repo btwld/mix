@@ -20,9 +20,6 @@ import 'text_widget.dart';
 
 part 'text_style.g.dart';
 
-@Deprecated('Use TextStyler instead')
-typedef TextMix = TextStyler;
-
 /// Represents the attributes of a [TextSpec].
 ///
 /// This class encapsulates properties defining the layout and

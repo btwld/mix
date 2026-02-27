@@ -7,10 +7,8 @@ import 'package:flutter/widgets.dart';
 ///
 /// Example usage:
 /// ```dart
-/// Style(
-///   $box.color(MixColors.blue),
-///   $text.style.color(MixColors.red),
-/// )
+/// final boxStyle = BoxStyler().color(MixColors.blue);
+/// final textStyle = TextStyler().color(MixColors.red);
 /// ```
 ///
 /// For accessing specific shades:

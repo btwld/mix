@@ -5,9 +5,7 @@ import '../../core/style.dart';
 import '../../core/utility.dart';
 import 'color_util.dart';
 
-/// Utility for accessing Material colors with both method call and .shadeXXX() syntax.
-///
-/// This class allows both `.grey(300)` (recommended) and `.grey.shade300()` (deprecated) syntax.
+/// Utility for accessing Material colors with method-call syntax.
 @immutable
 class MaterialColorCallableUtility<T extends Style<Object?>> {
   final T Function(Prop<Color>) builder;
@@ -20,36 +18,6 @@ class MaterialColorCallableUtility<T extends Style<Object?>> {
     Prop.value(shade == null ? materialColor : materialColor[shade]!),
   );
 
-  // Deprecated shade methods for backward compatibility
-  @Deprecated('Use grey(50) instead of grey.shade50()')
-  T shade50() => call(50);
-
-  @Deprecated('Use grey(100) instead of grey.shade100()')
-  T shade100() => call(100);
-
-  @Deprecated('Use grey(200) instead of grey.shade200()')
-  T shade200() => call(200);
-
-  @Deprecated('Use grey(300) instead of grey.shade300()')
-  T shade300() => call(300);
-
-  @Deprecated('Use grey(400) instead of grey.shade400()')
-  T shade400() => call(400);
-
-  @Deprecated('Use grey(500) instead of grey.shade500()')
-  T shade500() => call(500);
-
-  @Deprecated('Use grey(600) instead of grey.shade600()')
-  T shade600() => call(600);
-
-  @Deprecated('Use grey(700) instead of grey.shade700()')
-  T shade700() => call(700);
-
-  @Deprecated('Use grey(800) instead of grey.shade800()')
-  T shade800() => call(800);
-
-  @Deprecated('Use grey(900) instead of grey.shade900()')
-  T shade900() => call(900);
 }
 
 /// Utility for Material Design color palettes with shade access.
@@ -117,7 +85,7 @@ mixin ColorsUtilityMixin<T extends Style<Object?>>
   T _wrapColor(ColorSwatch color, [int? shade]) =>
       utilityBuilder(Prop.value(shade == null ? color : color[shade]!));
 
-  // Use MaterialColorCallableUtility to support both .grey(300) and .grey.shade300()
+  // Use MaterialColorCallableUtility for .grey(300)-style access.
   late final red = MaterialColorCallableUtility(utilityBuilder, Colors.red);
   late final pink = MaterialColorCallableUtility(utilityBuilder, Colors.pink);
   late final purple = MaterialColorCallableUtility(

@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 
-import '../../core/style_spec.dart';
 import '../../core/style_widget.dart';
 import 'image_spec.dart';
 import 'image_style.dart';
@@ -97,53 +96,10 @@ ImageProvider<Object> _resolveImage(
       ErrorHint(
         'To fix this, either:\n'
         '  - Pass an image parameter when creating the StyledImage\n'
-        '  - Include an image property in your ImageMix style',
+        '  - Include an image property in your ImageStyler style',
       ),
     ]);
   }
 
   return imageProvider;
-}
-
-extension ImageSpecWrappedWidget on StyleSpec<ImageSpec> {
-  /// Creates a widget that resolves this [StyleSpec<ImageSpec>] with context.
-  @Deprecated(
-    'Use StyledImage(image: image, frameBuilder: frameBuilder, loadingBuilder: loadingBuilder, errorBuilder: errorBuilder, opacity: opacity, styleSpec: styleSpec) instead',
-  )
-  Widget createWidget({
-    ImageProvider<Object>? image,
-    ImageFrameBuilder? frameBuilder,
-    ImageLoadingBuilder? loadingBuilder,
-    ImageErrorWidgetBuilder? errorBuilder,
-    Animation<double>? opacity,
-  }) {
-    return call(
-      image: image,
-      frameBuilder: frameBuilder,
-      loadingBuilder: loadingBuilder,
-      errorBuilder: errorBuilder,
-      opacity: opacity,
-    );
-  }
-
-  /// Convenient shorthand for creating a StyledImage widget with this StyleSpec.
-  @Deprecated(
-    'Use StyledImage(image: image, frameBuilder: frameBuilder, loadingBuilder: loadingBuilder, errorBuilder: errorBuilder, opacity: opacity, styleSpec: styleSpec) instead',
-  )
-  Widget call({
-    ImageProvider<Object>? image,
-    ImageFrameBuilder? frameBuilder,
-    ImageLoadingBuilder? loadingBuilder,
-    ImageErrorWidgetBuilder? errorBuilder,
-    Animation<double>? opacity,
-  }) {
-    return StyledImage(
-      styleSpec: this,
-      frameBuilder: frameBuilder,
-      loadingBuilder: loadingBuilder,
-      errorBuilder: errorBuilder,
-      image: image,
-      opacity: opacity,
-    );
-  }
 }

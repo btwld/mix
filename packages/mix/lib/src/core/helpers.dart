@@ -34,12 +34,6 @@ class MixOps {
 
   const MixOps._();
 
-  @Deprecated('Use resolve(context, Prop<List<V>>?) directly')
-  static List<V>? resolvePropList<T extends Prop<V>, V>(
-    BuildContext context,
-    List<T>? a,
-  ) => _resolveList(context, a);
-
   static List<V>? resolveList<V>(BuildContext context, Prop<List<V>>? prop) {
     return resolve(context, prop);
   }
@@ -136,15 +130,6 @@ class MixOps {
       case .override:
         return b;
     }
-  }
-
-  static List<V>? _resolveList<T extends Prop<V>, V>(
-    BuildContext mix,
-    List<T>? a,
-  ) {
-    if (a == null) return null;
-
-    return a.map((e) => e.resolveProp(mix)).whereType<V>().toList();
   }
 
   static w.StrutStyle? _lerpStrutStyle(

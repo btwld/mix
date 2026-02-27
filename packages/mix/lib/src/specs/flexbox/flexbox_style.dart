@@ -34,9 +34,6 @@ import 'flexbox_widget.dart';
 
 part 'flexbox_style.g.dart';
 
-@Deprecated('Use FlexBoxStyler instead')
-typedef FlexBoxMix = FlexBoxStyler;
-
 /// Represents the attributes of a [FlexBoxSpec].
 ///
 /// This class encapsulates properties defining the layout and
@@ -202,7 +199,7 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
 
   static FlexBoxMutableStyler get chain => .new(FlexBoxStyler());
 
-  // BoxMix instance methods
+  // Box-style instance methods
 
   /// Sets the alignment property.
   FlexBoxStyler alignment(AlignmentGeometry value) {
@@ -217,15 +214,6 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
   /// Sets the clip behavior.
   FlexBoxStyler clipBehavior(Clip value) {
     return merge(FlexBoxStyler(clipBehavior: value));
-  }
-
-  /// Sets gap value (deprecated).
-  @Deprecated(
-    'Use spacing instead. '
-    'This feature was deprecated after Mix v2.0.0.',
-  )
-  FlexBoxStyler gap(double value) {
-    return merge(FlexBoxStyler(spacing: value));
   }
 
   /// Sets the widget modifier.

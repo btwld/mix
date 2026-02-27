@@ -8,20 +8,17 @@ import '../../core/style_spec.dart';
 import '../../core/utility.dart';
 import '../../core/utility_variant_mixin.dart';
 import '../../core/utility_widget_state_variant_mixin.dart';
-import '../../modifiers/widget_modifier_config.dart';
-import '../../modifiers/widget_modifier_util.dart';
 import '../../properties/layout/constraints_util.dart';
 import '../../properties/layout/edge_insets_geometry_util.dart';
 import '../../properties/painting/decoration_util.dart';
 import '../../variants/variant.dart';
-import '../../variants/variant_util.dart';
 import 'flexbox_spec.dart';
 import 'flexbox_style.dart';
 
 /// Provides mutable utility for flexbox styling with cascade notation support.
 ///
 /// Combines box and flex styling capabilities. Supports the same API as [FlexBoxStyler]
-/// but maintains mutable internal state enabling fluid styling: `$flexbox..color.red()..width(100)`.
+/// but maintains mutable internal state enabling fluid styling: `FlexBoxMutableStyler()..color.red()..width(100)`.
 class FlexBoxMutableStyler extends StyleMutableBuilder<FlexBoxSpec>
     with
         UtilityVariantMixin<FlexBoxStyler, FlexBoxSpec>,
@@ -40,22 +37,6 @@ class FlexBoxMutableStyler extends StyleMutableBuilder<FlexBoxSpec>
 
   late final decoration = DecorationUtility(
     (prop) => mutable.merge(FlexBoxStyler(decoration: prop)),
-  );
-
-  @Deprecated(
-    'Use FlexBoxStyler().onHovered() and similar methods directly instead. '
-    'This property was deprecated after Mix v2.0.0.',
-  )
-  late final on = OnContextVariantUtility<FlexBoxSpec, FlexBoxStyler>(
-    (v) => mutable.variants([v]),
-  );
-
-  @Deprecated(
-    'Use FlexBoxStyler().wrap() method directly instead. '
-    'This property was deprecated after Mix v2.0.0.',
-  )
-  late final wrap = WidgetModifierUtility(
-    (prop) => mutable.wrap(WidgetModifierConfig(modifiers: [prop])),
   );
 
   /// Container decoration convenience accessors.
@@ -132,14 +113,6 @@ class FlexBoxMutableStyler extends StyleMutableBuilder<FlexBoxSpec>
 
   /// Sets the spacing between children in the flex layout.
   FlexBoxStyler spacing(double v) => mutable.merge(FlexBoxStyler(spacing: v));
-
-  /// Sets the gap between children in the flex layout.
-  /// @deprecated Use spacing instead.
-  @Deprecated(
-    'Use spacing instead. '
-    'This feature was deprecated after Mix v2.0.0.',
-  )
-  FlexBoxStyler gap(double v) => mutable.merge(FlexBoxStyler(spacing: v));
 
   /// Applies animation configuration to the flexbox styling.
   FlexBoxStyler animate(AnimationConfig animation) =>

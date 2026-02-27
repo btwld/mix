@@ -7,9 +7,6 @@ import 'material/material_theme.dart';
 import 'tokens/mix_token.dart';
 import 'tokens/value_tokens.dart';
 
-@Deprecated('Use MixScope instead')
-typedef MixTheme = MixScope;
-
 /// Provides Mix design tokens and configuration to descendant widgets.
 ///
 /// Exposes type-safe design tokens, modifier ordering, and token resolution.

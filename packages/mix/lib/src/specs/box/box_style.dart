@@ -29,9 +29,6 @@ import 'box_widget.dart';
 
 part 'box_style.g.dart';
 
-@Deprecated('Use BoxStyler instead')
-typedef BoxMix = BoxStyler;
-
 /// Style class for configuring [BoxSpec] properties.
 ///
 /// Encapsulates alignment, padding, margin, constraints, decoration,

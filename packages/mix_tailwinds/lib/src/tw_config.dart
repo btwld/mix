@@ -14,9 +14,6 @@ enum TwGradientStrategy {
   /// matching CSS "magic corners" behavior.
   cssAngleRect,
 
-  /// Legacy name kept for backward compatibility.
-  @Deprecated('Use cssAngleRect')
-  adaptive,
 }
 
 /// Tailwind-oriented typography defaults for Flutter text rendering.

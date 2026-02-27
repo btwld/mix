@@ -12,27 +12,17 @@ Mix is a powerful styling framework for Flutter that provides:
 - ✨ **Smooth animations** - Built-in animation support with various easing curves
 - 🔗 **Optimized for Dot Notation** - Clean, chainable syntax using Dart's newest features
 
-### Dot Notation Syntax
+### Fluent Styling Syntax
 
-Mix is designed to take full advantage of Dart's modern syntax features. The framework uses a unique dot notation pattern that makes styling intuitive and readable:
+Mix uses fluent stylers so styles stay type-safe and easy to read:
 
 ```dart
-// Traditional syntax (using cascade notation)
-final style = Style(
-  $box.height(100)
-    ..width(100)
-    ..color.blue()
-    ..borderRadius(10),
-);
-
-// NEW: Dot notation syntax (cleaner and more intuitive)
-final style = Style.box(
-  .color(Colors.blue)      // Start properties with a dot
-  .height(100)
-  .width(100)
-  .borderRadius(.circular(10))  // Even nested properties use dots
-  .onHovered(.scale(1.5))       // Variants also use dot notation
-);
+final style = BoxStyler()
+    .color(Colors.blue)
+    .height(100)
+    .width(100)
+    .borderRounded(10)
+    .onHovered(.scale(1.5));
 ```
 
 The dot notation syntax provides:
@@ -41,16 +31,16 @@ The dot notation syntax provides:
 - Natural chaining without cascade operators
 - Consistent syntax across all properties
 
-#### Dot Notation Availability
+#### SDK Availability
 
-Mix's dot notation syntax is available on Dart SDK `>=3.10.0`. No `analysis_options.yaml` experiment flag is required.
+Mix requires Dart SDK `>=3.11.0`. No `analysis_options.yaml` experiment flag is required.
 
 ## Getting Started with Mix
 
 ### Prerequisites
 
-- **Dart SDK**: ≥ 3.10.0 (required for dot notation syntax)
-- **Flutter**: ≥ 3.38.1
+- **Dart SDK**: ≥ 3.11.0
+- **Flutter**: ≥ 3.41.0
 
 ### Setting Up Your Project
 
@@ -63,18 +53,12 @@ cd my_mix_app
 flutter pub add mix:^2.0.0-rc.0
 ```
 
-### Dot Notation Syntax
+### Fluent Syntax
 
-Mix's modern dot notation syntax works out of the box on Dart SDK `>=3.10.0`:
+Mix's modern fluent syntax works out of the box on Dart SDK `>=3.11.0`:
 
 ```dart
-// Instead of: $box.height(100)..width(100)
-// You can write:
-Style.box(
-  .height(100)
-  .width(100)
-  .color(Colors.blue)
-)
+final style = BoxStyler().height(100).width(100).color(Colors.blue);
 ```
 
 ## Running the Examples
@@ -142,38 +126,37 @@ flutter run lib/api/animation/spring_animation.dart
 
 ### Basic Box Styling
 ```dart
-final style = Style.box(
-  .color(Colors.red)
-  .height(100)
-  .width(100)
-  .borderRadius(.circular(10))
-);
+final style = BoxStyler()
+    .color(Colors.red)
+    .height(100)
+    .width(100)
+    .borderRounded(10);
 
 Box(style: style);
 ```
 
-💡 **Note**: The dot notation (`.color()`, `.height()`, etc.) is a key feature of Mix that provides a fluent, chainable API for building styles.
+💡 **Note**: Fluent methods (`.color()`, `.height()`, etc.) provide a chainable API for building styles.
 
 ### Animation with Hover
 ```dart
-final style = Style.box(
-  .color(Colors.black)
-  .onHovered(.color(Colors.blue).scale(1.5))
-  .animate(.easeInOut(300.ms))
-);
+final style = BoxStyler()
+    .color(Colors.black)
+    .onHovered(.color(Colors.blue).scale(1.5))
+    .animate(.easeInOut(300.ms));
 ```
 
 ### Using Design Tokens
 ```dart
-final $primaryColor = MixToken<Color>('primary');
+const primaryColor = ColorToken('primary');
+const pill = RadiusToken('pill');
 
-final style = Style.box(
-  .color($primaryColor())
-  .borderRadius(.topLeft($pill()))
-);
+final style = BoxStyler()
+    .color(primaryColor())
+    .borderRadius(.topLeft(pill()));
 
 MixScope(
-  tokens: {$primaryColor: Colors.blue},
+  colors: {primaryColor: Colors.blue},
+  radii: {pill: const Radius.circular(999)},
   child: Box(style: style),
 );
 ```
