@@ -31,15 +31,6 @@ void main() {
         expect(color, Colors.blue);
       });
 
-      test('ref method (deprecated) delegates to token', () {
-        const colorToken = TestToken<Color>('primaryColor');
-        final context = MockBuildContext(tokens: {colorToken: Colors.green});
-
-        final result = util.ref(colorToken);
-        final color = result.value.resolveProp(context);
-
-        expect(color, Colors.green);
-      });
     });
 
     group('BasicColorsMixin', () {

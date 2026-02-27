@@ -6,7 +6,7 @@ import '../../core/utility.dart';
 import 'edge_insets_geometry_mix.dart';
 import 'scalar_util.dart';
 
-// Deprecated typedef moved to src/core/deprecated.dart
+// Legacy typedef removed during the Mix 2.0 transition.
 
 @immutable
 final class EdgeInsetsGeometryUtility<U extends Style<Object?>>

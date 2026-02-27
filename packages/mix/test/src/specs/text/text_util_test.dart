@@ -91,9 +91,6 @@ void main() {
         expect(util.locale, isA<MixUtility<TextStyler, Locale>>());
       });
 
-      test('wrap utility is WidgetModifierUtility', () {
-        expect(util.wrap, isA<WidgetModifierUtility<TextStyler>>());
-      });
     });
 
     group('Flattened access properties', () {
@@ -253,16 +250,6 @@ void main() {
         final result = util.animate(animationConfig);
 
         expect(result.$animation, animationConfig);
-      });
-    });
-
-    group('Modifier utilities', () {
-      test('wrap utility creates modifier TextStyling', () {
-        final result = util.wrap.opacity(0.5);
-
-        expect(result, isA<TextStyler>());
-        expect(result.$modifier, isNotNull);
-        expect(result.$modifier!.$modifiers!.length, 1);
       });
     });
 

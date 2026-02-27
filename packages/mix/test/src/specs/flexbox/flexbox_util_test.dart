@@ -46,9 +46,6 @@ void main() {
         expect(util.decoration, isA<DecorationUtility<FlexBoxStyler>>());
       });
 
-      test('wrap utility is WidgetModifierUtility', () {
-        expect(util.wrap, isA<WidgetModifierUtility<FlexBoxStyler>>());
-      });
     });
 
     group('Flattened access utilities', () {
@@ -177,16 +174,6 @@ void main() {
         final result = util.animate(animationConfig);
 
         expect(result.$animation, animationConfig);
-      });
-    });
-
-    group('Modifier utilities', () {
-      test('', () {
-        final result = util.wrap.opacity(0.5);
-
-        expect(result, isA<FlexBoxStyler>());
-        expect(result.$modifier, isNotNull);
-        expect(result.$modifier!.$modifiers!.length, 1);
       });
     });
 

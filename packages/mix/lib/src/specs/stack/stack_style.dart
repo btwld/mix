@@ -14,9 +14,6 @@ import 'stack_spec.dart';
 
 part 'stack_style.g.dart';
 
-@Deprecated('Use StackStyler instead')
-typedef StackMix = StackStyler;
-
 /// Represents the attributes of a [StackSpec].
 ///
 /// This class encapsulates properties defining the layout and
