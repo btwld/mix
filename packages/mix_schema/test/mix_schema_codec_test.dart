@@ -21,6 +21,18 @@ void main() {
         'schemaVersion': 1,
         'stylerType': 'box',
         'data': <String, Object?>{
+          'padding': <String, Object?>{
+            'kind': 'edgeInsets',
+            'left': 8.0,
+            'top': 12.0,
+            'right': 8.0,
+            'bottom': 12.0,
+          },
+          'constraints': <String, Object?>{'minWidth': 10.0, 'maxWidth': 100.0},
+          'decoration': <String, Object?>{
+            'kind': 'boxDecoration',
+            'color': 0xFFFF0000,
+          },
           'clipBehavior': 'hardEdge',
           'animation': <String, Object?>{
             'durationMs': 200,
@@ -36,6 +48,9 @@ void main() {
       final success = result as MixSchemaSuccess<DecodedStyler>;
       final box = success.value.boxStyler!;
       expect(success.value.stylerType, StylerType.box);
+      expect(box.$padding, isNotNull);
+      expect(box.$constraints, isNotNull);
+      expect(box.$decoration, isNotNull);
 
       final animation = box.$animation;
       expect(animation, isA<CurveAnimationConfig>());
@@ -47,6 +62,17 @@ void main() {
 
       curveAnimation.onEnd?.call();
       expect(callbackTriggered, isNotNull);
+
+      final encodeResult = codec.encode(success.value, registries: registries);
+      expect(encodeResult, isA<MixSchemaSuccess<Map<String, Object?>>>());
+
+      final encodedPayload =
+          (encodeResult as MixSchemaSuccess<Map<String, Object?>>).value;
+      final encodedData = encodedPayload['data'] as Map<String, Object?>;
+      final sourceData = payload['data'] as Map<String, Object?>;
+      expect(encodedData['padding'], sourceData['padding']);
+      expect(encodedData['constraints'], sourceData['constraints']);
+      expect(encodedData['decoration'], sourceData['decoration']);
     });
 
     test('returns unknown_field for nested extra keys with dot paths', () {
@@ -146,6 +172,36 @@ void main() {
       expect(failure.errors.length, greaterThanOrEqualTo(2));
       expect(failure.errors[0].path, 'data.a');
       expect(failure.errors[1].path, 'data.z');
+    });
+
+    test('returns unknown_field for nested extra key in padding dto', () {
+      final payload = <String, Object?>{
+        'schemaVersion': 1,
+        'stylerType': 'box',
+        'data': <String, Object?>{
+          'padding': <String, Object?>{
+            'kind': 'edgeInsets',
+            'left': 4.0,
+            'extra': true,
+          },
+        },
+      };
+
+      final result = codec.decode(
+        payload,
+        registries: FrozenRegistryBundle.empty(),
+      );
+      expect(result, isA<MixSchemaFailure<DecodedStyler>>());
+
+      final failure = result as MixSchemaFailure<DecodedStyler>;
+      expect(
+        failure.errors.any(
+          (error) =>
+              error.code == 'unknown_field' &&
+              error.path == 'data.padding.extra',
+        ),
+        isTrue,
+      );
     });
   });
 

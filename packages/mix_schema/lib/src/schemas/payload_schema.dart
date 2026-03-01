@@ -1,31 +1,11 @@
 import 'package:ack/ack.dart';
-import 'package:mix_schema/src/codecs/curve_codec.dart';
-import 'package:mix_schema/src/contracts/styler_type.dart';
+
+import '../contracts/styler_type.dart';
+import 'dto_schemas.dart';
 
 final _allowedStylerTypeValues = StylerType.values
     .map((type) => type.wire)
     .toList(growable: false);
-
-final boxAnimationSchema = Ack.object(
-  {
-    'durationMs': Ack.int,
-    'curve': Ack.enumString(CurveCodec.supportedCurveNames),
-    'delayMs': Ack.int.nullable(),
-    'onEnd': Ack.string.nullable(),
-  },
-  additionalProperties: false,
-  required: ['durationMs', 'curve'],
-);
-
-final boxDataSchema = Ack.object({
-  'clipBehavior': Ack.enumString([
-    'none',
-    'hardEdge',
-    'antiAlias',
-    'antiAliasWithSaveLayer',
-  ]).nullable(),
-  'animation': boxAnimationSchema.nullable(),
-}, additionalProperties: false);
 
 final payloadEnvelopeSchema = Ack.object(
   {
@@ -53,4 +33,16 @@ Map<String, Object?> exportEnvelopeSchemaDefinition() {
 
 Map<String, Object?> exportBoxPayloadSchemaDefinition() {
   return OpenApiSchemaConverter(schema: boxPayloadSchema).toSchema();
+}
+
+Map<String, Object?> exportTextStyleSchemaDefinition() {
+  return OpenApiSchemaConverter(schema: textStyleDtoSchema).toSchema();
+}
+
+Map<String, Object?> exportStrutStyleSchemaDefinition() {
+  return OpenApiSchemaConverter(schema: strutStyleDtoSchema).toSchema();
+}
+
+Map<String, Object?> exportTextHeightBehaviorSchemaDefinition() {
+  return OpenApiSchemaConverter(schema: textHeightBehaviorDtoSchema).toSchema();
 }

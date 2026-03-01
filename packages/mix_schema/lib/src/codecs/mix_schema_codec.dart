@@ -9,6 +9,7 @@ import '../contracts/styler_type.dart';
 import '../registries/registry_bundle.dart';
 import '../schemas/payload_schema.dart';
 import 'curve_codec.dart';
+import 'dto_codecs.dart';
 
 final class MixSchemaCodec {
   const MixSchemaCodec();
@@ -19,6 +20,18 @@ final class MixSchemaCodec {
 
   Map<String, Object?> exportBoxPayloadSchema() {
     return exportBoxPayloadSchemaDefinition();
+  }
+
+  Map<String, Object?> exportTextStyleSchema() {
+    return exportTextStyleSchemaDefinition();
+  }
+
+  Map<String, Object?> exportStrutStyleSchema() {
+    return exportStrutStyleSchemaDefinition();
+  }
+
+  Map<String, Object?> exportTextHeightBehaviorSchema() {
+    return exportTextHeightBehaviorSchemaDefinition();
   }
 
   MixSchemaResult<DecodedStyler> decode(
@@ -75,7 +88,7 @@ final class MixSchemaCodec {
             code: MixSchemaErrorCode.unsupportedStylerType,
             path: 'stylerType',
             message:
-                'Styler type "${stylerType.wire}" is not implemented in M1.',
+                'Styler type "${stylerType.wire}" is not implemented in M2.',
             value: stylerType.wire,
           ),
         ]);
@@ -115,7 +128,7 @@ final class MixSchemaCodec {
             code: MixSchemaErrorCode.unsupportedStylerType,
             path: 'stylerType',
             message:
-                'Styler type "${decoded.stylerType.wire}" is not implemented in M1.',
+                'Styler type "${decoded.stylerType.wire}" is not implemented in M2.',
             value: decoded.stylerType.wire,
           ),
         ]);
@@ -128,6 +141,42 @@ final class MixSchemaCodec {
   }) {
     final errors = <MixSchemaError>[];
     final data = <String, Object?>{};
+
+    _encodeEdgeInsetsField(
+      prop: styler.$padding,
+      key: 'padding',
+      path: 'data.padding',
+      data: data,
+      errors: errors,
+    );
+    _encodeEdgeInsetsField(
+      prop: styler.$margin,
+      key: 'margin',
+      path: 'data.margin',
+      data: data,
+      errors: errors,
+    );
+    _encodeConstraintsField(
+      prop: styler.$constraints,
+      key: 'constraints',
+      path: 'data.constraints',
+      data: data,
+      errors: errors,
+    );
+    _encodeDecorationField(
+      prop: styler.$decoration,
+      key: 'decoration',
+      path: 'data.decoration',
+      data: data,
+      errors: errors,
+    );
+    _encodeDecorationField(
+      prop: styler.$foregroundDecoration,
+      key: 'foregroundDecoration',
+      path: 'data.foregroundDecoration',
+      data: data,
+      errors: errors,
+    );
 
     final clipBehavior = _extractSingleValue<Clip>(styler.$clipBehavior);
     if (styler.$clipBehavior != null && clipBehavior == null) {
@@ -209,7 +258,7 @@ final class MixSchemaCodec {
         MixSchemaError.fromCode(
           code: MixSchemaErrorCode.unsupportedMetadata,
           path: 'data.modifier',
-          message: 'Modifier encoding is not implemented in M1.',
+          message: 'Modifier encoding is not implemented in M2.',
         ),
       );
     }
@@ -220,7 +269,7 @@ final class MixSchemaCodec {
         MixSchemaError.fromCode(
           code: MixSchemaErrorCode.unsupportedMetadata,
           path: 'data.variants',
-          message: 'Variants encoding is not implemented in M1.',
+          message: 'Variants encoding is not implemented in M2.',
         ),
       );
     }
@@ -252,6 +301,94 @@ final class MixSchemaCodec {
     }
 
     final data = payload['data'] as Map<String, Object?>;
+
+    EdgeInsetsGeometryMix? padding;
+    final paddingData = data['padding'] as Map<String, Object?>?;
+    if (paddingData != null) {
+      try {
+        padding = DtoCodecs.decodeEdgeInsetsGeometry(paddingData);
+      } catch (error) {
+        errors.add(
+          MixSchemaError.fromCode(
+            code: MixSchemaErrorCode.invalidValue,
+            path: 'data.padding',
+            message: error.toString(),
+            value: paddingData,
+          ),
+        );
+      }
+    }
+
+    EdgeInsetsGeometryMix? margin;
+    final marginData = data['margin'] as Map<String, Object?>?;
+    if (marginData != null) {
+      try {
+        margin = DtoCodecs.decodeEdgeInsetsGeometry(marginData);
+      } catch (error) {
+        errors.add(
+          MixSchemaError.fromCode(
+            code: MixSchemaErrorCode.invalidValue,
+            path: 'data.margin',
+            message: error.toString(),
+            value: marginData,
+          ),
+        );
+      }
+    }
+
+    BoxConstraintsMix? constraints;
+    final constraintsData = data['constraints'] as Map<String, Object?>?;
+    if (constraintsData != null) {
+      try {
+        constraints = DtoCodecs.decodeBoxConstraints(constraintsData);
+      } catch (error) {
+        errors.add(
+          MixSchemaError.fromCode(
+            code: MixSchemaErrorCode.invalidValue,
+            path: 'data.constraints',
+            message: error.toString(),
+            value: constraintsData,
+          ),
+        );
+      }
+    }
+
+    DecorationMix? decoration;
+    final decorationData = data['decoration'] as Map<String, Object?>?;
+    if (decorationData != null) {
+      try {
+        decoration = DtoCodecs.decodeBoxDecoration(decorationData);
+      } catch (error) {
+        errors.add(
+          MixSchemaError.fromCode(
+            code: MixSchemaErrorCode.invalidValue,
+            path: 'data.decoration',
+            message: error.toString(),
+            value: decorationData,
+          ),
+        );
+      }
+    }
+
+    DecorationMix? foregroundDecoration;
+    final foregroundDecorationData =
+        data['foregroundDecoration'] as Map<String, Object?>?;
+    if (foregroundDecorationData != null) {
+      try {
+        foregroundDecoration = DtoCodecs.decodeBoxDecoration(
+          foregroundDecorationData,
+        );
+      } catch (error) {
+        errors.add(
+          MixSchemaError.fromCode(
+            code: MixSchemaErrorCode.invalidValue,
+            path: 'data.foregroundDecoration',
+            message: error.toString(),
+            value: foregroundDecorationData,
+          ),
+        );
+      }
+    }
 
     Clip? clipBehavior;
     final clipBehaviorWire = data['clipBehavior'];
@@ -321,7 +458,15 @@ final class MixSchemaCodec {
       return MixSchemaFailure(errors);
     }
 
-    final styler = BoxStyler(clipBehavior: clipBehavior, animation: animation);
+    final styler = BoxStyler(
+      padding: padding,
+      margin: margin,
+      constraints: constraints,
+      decoration: decoration,
+      foregroundDecoration: foregroundDecoration,
+      clipBehavior: clipBehavior,
+      animation: animation,
+    );
 
     return MixSchemaSuccess(
       DecodedStyler(stylerType: StylerType.box, styler: styler),
@@ -331,14 +476,23 @@ final class MixSchemaCodec {
   List<MixSchemaError> _mapSchemaError(
     SchemaError error, {
     String parentPath = '',
+    Object? parentValue,
   }) {
-    final currentPath = _appendPath(parentPath, error.name);
+    final currentPath = _composeSchemaPath(
+      parentPath,
+      error,
+      parentValue: parentValue,
+    );
 
     switch (error) {
       case SchemaNestedError(:final errors):
         return [
           for (final nested in errors)
-            ..._mapSchemaError(nested, parentPath: currentPath),
+            ..._mapSchemaError(
+              nested,
+              parentPath: currentPath,
+              parentValue: error.value,
+            ),
         ];
       case SchemaConstraintsError(:final constraints, :final value):
         return _mapConstraintErrors(
@@ -365,6 +519,33 @@ final class MixSchemaCodec {
           ),
         ];
     }
+  }
+
+  String _composeSchemaPath(
+    String parentPath,
+    SchemaError error, {
+    Object? parentValue,
+  }) {
+    final segment = error.name;
+    if (segment.isEmpty) return parentPath;
+
+    // Discriminated schemas may surface a branch label as a synthetic segment.
+    // Keep paths stable to payload field names by eliding that branch segment.
+    final value = error.value;
+    if (value is Map<Object?, Object?> && value['kind'] == segment) {
+      if (parentValue is Map<Object?, Object?>) {
+        for (final entry in parentValue.entries) {
+          if (entry.key case final String key
+              when identical(entry.value, value)) {
+            return _appendPath(parentPath, key);
+          }
+        }
+      }
+
+      return parentPath;
+    }
+
+    return _appendPath(parentPath, segment);
   }
 
   List<MixSchemaError> _mapConstraintErrors({
@@ -479,5 +660,157 @@ final class MixSchemaCodec {
     }
 
     return null;
+  }
+
+  void _encodeEdgeInsetsField({
+    required Prop<EdgeInsetsGeometry>? prop,
+    required String key,
+    required String path,
+    required Map<String, Object?> data,
+    required List<MixSchemaError> errors,
+  }) {
+    if (prop == null) return;
+
+    try {
+      final mix = _extractEdgeInsetsGeometryMix(prop, fieldPath: path);
+      data[key] = DtoCodecs.encodeEdgeInsetsGeometry(mix);
+    } catch (error) {
+      errors.add(
+        MixSchemaError.fromCode(
+          code: MixSchemaErrorCode.invalidValue,
+          path: path,
+          message: error.toString(),
+        ),
+      );
+    }
+  }
+
+  void _encodeConstraintsField({
+    required Prop<BoxConstraints>? prop,
+    required String key,
+    required String path,
+    required Map<String, Object?> data,
+    required List<MixSchemaError> errors,
+  }) {
+    if (prop == null) return;
+
+    try {
+      final mix = _extractBoxConstraintsMix(prop, fieldPath: path);
+      data[key] = DtoCodecs.encodeBoxConstraints(mix);
+    } catch (error) {
+      errors.add(
+        MixSchemaError.fromCode(
+          code: MixSchemaErrorCode.invalidValue,
+          path: path,
+          message: error.toString(),
+        ),
+      );
+    }
+  }
+
+  void _encodeDecorationField({
+    required Prop<Decoration>? prop,
+    required String key,
+    required String path,
+    required Map<String, Object?> data,
+    required List<MixSchemaError> errors,
+  }) {
+    if (prop == null) return;
+
+    try {
+      final mix = _extractBoxDecorationMix(prop, fieldPath: path);
+      data[key] = DtoCodecs.encodeBoxDecoration(mix);
+    } catch (error) {
+      errors.add(
+        MixSchemaError.fromCode(
+          code: MixSchemaErrorCode.invalidValue,
+          path: path,
+          message: error.toString(),
+        ),
+      );
+    }
+  }
+
+  EdgeInsetsGeometryMix _extractEdgeInsetsGeometryMix(
+    Prop<EdgeInsetsGeometry> prop, {
+    required String fieldPath,
+  }) {
+    if (prop.sources.length != 1) {
+      throw StateError(
+        'Field "$fieldPath" must contain exactly one source for deterministic encoding.',
+      );
+    }
+
+    final source = prop.sources.single;
+    return switch (source) {
+      MixSource<EdgeInsetsGeometry>(:final mix) =>
+        mix is EdgeInsetsGeometryMix
+            ? mix
+            : throw StateError(
+                'Field "$fieldPath" must use EdgeInsetsGeometryMix.',
+              ),
+      ValueSource<EdgeInsetsGeometry>(:final value) =>
+        EdgeInsetsGeometryMix.value(value),
+      _ => throw StateError(
+        'Field "$fieldPath" has unsupported source type ${source.runtimeType}.',
+      ),
+    };
+  }
+
+  BoxConstraintsMix _extractBoxConstraintsMix(
+    Prop<BoxConstraints> prop, {
+    required String fieldPath,
+  }) {
+    if (prop.sources.length != 1) {
+      throw StateError(
+        'Field "$fieldPath" must contain exactly one source for deterministic encoding.',
+      );
+    }
+
+    final source = prop.sources.single;
+    return switch (source) {
+      MixSource<BoxConstraints>(:final mix) =>
+        mix is BoxConstraintsMix
+            ? mix
+            : throw StateError(
+                'Field "$fieldPath" must use BoxConstraintsMix.',
+              ),
+      ValueSource<BoxConstraints>(:final value) => BoxConstraintsMix.value(
+        value,
+      ),
+      _ => throw StateError(
+        'Field "$fieldPath" has unsupported source type ${source.runtimeType}.',
+      ),
+    };
+  }
+
+  BoxDecorationMix _extractBoxDecorationMix(
+    Prop<Decoration> prop, {
+    required String fieldPath,
+  }) {
+    if (prop.sources.length != 1) {
+      throw StateError(
+        'Field "$fieldPath" must contain exactly one source for deterministic encoding.',
+      );
+    }
+
+    final source = prop.sources.single;
+    return switch (source) {
+      MixSource<Decoration>(:final mix) =>
+        mix is BoxDecorationMix
+            ? mix
+            : throw StateError(
+                'Field "$fieldPath" only supports BoxDecorationMix in v1.',
+              ),
+      ValueSource<Decoration>(:final value) =>
+        value is BoxDecoration
+            ? BoxDecorationMix.value(value)
+            : throw StateError(
+                'Field "$fieldPath" only supports BoxDecoration values in v1.',
+              ),
+      _ => throw StateError(
+        'Field "$fieldPath" has unsupported source type ${source.runtimeType}.',
+      ),
+    };
   }
 }
