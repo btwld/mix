@@ -1,0 +1,22 @@
+name: mix_schema
+description: Schema and codec package for Mix stylers.
+version: 0.0.1-alpha.1
+homepage: https://github.com/btwld/mix
+repository: https://github.com/btwld/mix/tree/main/packages/mix_schema
+publish_to: none
+
+environment:
+  sdk: ">=3.11.0 <4.0.0"
+  flutter: ">=3.41.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  ack: ^0.1.2
+  mix:
+    path: ../mix
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
