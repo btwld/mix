@@ -154,6 +154,24 @@ Required codes include:
    - preserve registry IDs as strings,
    - ignore map key order.
 
+### 4.6 M3 Execution Locks (Pre-Implementation)
+1. Tricky-field behavior is locked for v1:
+   - `TextScaler`: only linear form is data-encodable (`{"type":"linear","factor":<double>}`).
+   - `Locale`: data-encodable as `{"languageCode":"<string>","countryCode":"<string|null>"}`.
+   - `TextStyler.textDirectives` (`List<Directive<String>>`): rejected in v1.
+   - `IconStyler.icon` (`IconData`): rejected in v1.
+   - `ImageStyler.image`: registry-backed only via `image_provider`.
+2. Variant generalization must use a matching generic pair (`Spec` + `Style`):
+   - nested decode/encode callbacks return style objects (for example `BoxStyler`, `TextStyler`), not `Spec`.
+   - `ContextVariantBuilder` validation is enforced against the active styler callback type.
+3. Dispatch sequencing is incremental: add each `decode/encode` `stylerType` switch case only with that styler's completed schema+codec implementation.
+4. Composite stylers require reusable data-level helpers before composition:
+   - `_decodeBoxData` / `_encodeBoxData`
+   - `_decodeFlexData` / `_encodeFlexData`
+   - `_decodeStackData` / `_encodeStackData`
+5. M3 checkpoint gate command is required for every implementation step:
+   - `cd packages/mix_schema && dart analyze && flutter test`
+
 ---
 
 ## 5) Functional Requirements
@@ -199,9 +217,12 @@ Acceptance:
 ### FR-006 Tricky Field Policy
 Implement safe subset + registry fallback policy for tricky/runtime values.
 Acceptance:
-1. Data-encodable supported subset is accepted.
-2. Non-data values require registry IDs.
-3. Unsupported non-registry forms are rejected with explicit reason/path.
+1. `TextScaler` accepts only linear payload form (`type: linear` + numeric factor).
+2. `Locale` is encoded/decoded only as `{languageCode, countryCode?}`.
+3. `TextStyler.textDirectives` is rejected in v1 with explicit path/reason.
+4. `IconStyler.icon` (`IconData`) is rejected in v1 with explicit path/reason.
+5. `ImageStyler.image` requires registry resolution in scope `image_provider`.
+6. Unsupported forms are aggregated and returned with deterministic path/code ordering.
 
 ### FR-007 JSON Schema Export
 Export schema definitions from Ack for integrator use.
@@ -314,10 +335,13 @@ Goal: complete v1 feature coverage and migrate to layered structure.
 Scope:
 1. All 8 stylers.
 2. Metadata support across stylers.
-3. Begin migration to target file structure.
+3. Variant helper generalization using `Spec` + `Style` matching generics.
+4. Extract reusable `*_Data` helpers (`box`, `flex`, `stack`) for composite stylers.
+5. Begin migration to target file structure.
 Exit criteria:
 1. FR-004/005/006/008 covered by tests.
-2. Target structure migration substantially complete.
+2. Each M3 step passes `cd packages/mix_schema && dart analyze && flutter test`.
+3. Target structure migration substantially complete.
 
 ### M4 Hardening and Release Readiness
 Goal: production-ready quality and docs.
@@ -356,6 +380,7 @@ Minimum release gate:
 1. All required tests pass.
 2. Analyzer/CI pass.
 3. Requirement-to-test traceability present.
+4. Package gate passes for implemented M3 scope: `cd packages/mix_schema && dart analyze && flutter test`.
 
 ---
 
@@ -364,7 +389,7 @@ Minimum release gate:
 ### R1 Ambiguous tricky-field subset
 Risk: inconsistent implementations.
 Mitigation:
-1. Keep strict reject+registry fallback behavior.
+1. Lock v1 behavior for `TextScaler`, `Locale`, `textDirectives`, `IconData`, and `ImageProvider` before coding.
 2. Add explicit test cases for accepted/rejected forms as they are implemented.
 
 ### R2 JSON Schema vs Runtime mismatch
@@ -405,12 +430,16 @@ Mitigation:
 - [ ] Styler codecs (8)
 - [ ] Metadata codecs
 - [ ] Canonical encode behavior
+- [ ] Variant helper generics use matching `Spec` + `Style` callback types
+- [ ] Data-level decode/encode helpers extracted for `box`, `flex`, `stack`
+- [ ] Tricky-field locks enforced (`TextScaler`, `Locale`, `textDirectives`, `IconData`, `ImageProvider`)
 
 ### Testing
 - [ ] Unit + integration tests
 - [ ] Round-trip invariants
 - [ ] Unknown field/version/ID failures
 - [ ] Error code/path stability
+- [ ] Per-step M3 package gate passes: `cd packages/mix_schema && dart analyze && flutter test`
 
 ### Release readiness
 - [ ] `melos run gen:build`

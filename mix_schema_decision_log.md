@@ -82,13 +82,42 @@ These clarifications are normative and do not change locked A-I scope. They tigh
   - `box`, `text`, `flex`, `icon`, `image`, `stack`, `flexBox`, `stackBox`
 - Any other value fails validation.
 
+### F) Tricky-field v1 freeze before M3 implementation
+- `TextScaler` supports only linear payload form in v1: `{"type":"linear","factor":<double>}`.
+- `Locale` supports only object payload form in v1: `{"languageCode":"<string>","countryCode":"<string|null>"}`.
+- `TextStyler.textDirectives` (`List<Directive<String>>`) is rejected in v1.
+- `IconStyler.icon` (`IconData`) is rejected in v1.
+- `ImageStyler.image` remains registry-backed in scope `image_provider`.
+
+### G) Variant helper generic typing lock
+- Generic variant helpers must model a matching pair of `Spec` and `Style`.
+- Nested decode/encode callbacks return style instances (for example `BoxStyler`, `TextStyler`), not `Spec`.
+- `ContextVariantBuilder` validation uses the active styler callback type for the current styler family.
+
+### H) Dispatch sequencing lock
+- New `decode/encode` dispatch cases for `stylerType` are added incrementally.
+- A dispatch case is added only when that styler schema+codec path is implemented and testable.
+- Placeholder-only switch branches are not allowed.
+
+### I) Composite helper extraction lock
+- Before FlexBox/StackBox composition, extract reusable data-level helpers:
+  - `_decodeBoxData` / `_encodeBoxData`
+  - `_decodeFlexData` / `_encodeFlexData`
+  - `_decodeStackData` / `_encodeStackData`
+
+### J) M3 verification gate lock
+- Required checkpoint command for each M3 step:
+  - `cd packages/mix_schema && dart analyze && flutter test`
+
 ## Resolved Documentation Actions
 - `H` resolved: explicit `M0` milestone added in the handoff execution plan.
 - Drift between handoff and decision log resolved for `A/B/C/D`.
 - Registry immutability shape clarified and locked (builder + frozen runtime view).
+- Pre-M3 drift controls locked across docs for tricky fields, variant typing, dispatch sequencing, composite extraction, and verification gate.
 
 ## Pending Decisions Requiring Owner Choice
 - None. All tracked decisions are locked.
 
 ## Status
 Decision review complete for items `A` through `I`.
+Post-lock clarifications `A` through `J` are now synchronized across plan + handoff + decision log.

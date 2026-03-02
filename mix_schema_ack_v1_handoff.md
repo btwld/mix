@@ -338,9 +338,12 @@ ID uniqueness and collision policy:
 - `ContextVariantBuilder.fn` (closure) in variants
 
 ### Tricky-type safe subset (Decision A = `B1`)
-- `TextScaler`: support data-encodable subset; custom/non-standard forms require registry IDs.
-- `Paint` and `GradientTransform`: support data-encodable subset; custom/runtime forms require registry IDs.
-- Any value that is neither data-encodable nor registry-resolved is rejected.
+- `TextScaler`: only linear form is supported in v1 as `{"type":"linear","factor":<double>}`.
+- `Locale`: only object form is supported in v1 as `{"languageCode":"<string>","countryCode":"<string|null>"}`.
+- `TextStyler.textDirectives` (`List<Directive<String>>`): rejected in v1.
+- `IconStyler.icon` (`IconData`): rejected in v1.
+- `Paint` and `GradientTransform`: only currently data-encodable forms are supported in v1.
+- Any value outside the supported v1 subset is rejected with explicit path/reason.
 
 Lookup policy (Decision D):
 - payload holds string ID
@@ -365,6 +368,11 @@ Supported v1 variant forms:
 
 Rejected in v1:
 - all other variant forms, including non-supported `ContextVariant` forms
+
+Implementation lock for M3 generic variant helpers:
+- parameterize helpers with matching `Spec` + `Style` types.
+- nested variant decode/encode callbacks return style objects (`BoxStyler`, `TextStyler`, etc), not `Spec`.
+- `ContextVariantBuilder` validation is enforced against the active styler callback type.
 
 ---
 
@@ -506,10 +514,15 @@ Structure mode for M3 (`I-A`):
 - begin migration to the full layered target structure from Section 6.
 
 Required:
-1. Per-styler schema + codec.
-2. Envelope dispatch by `stylerType`.
-3. Metadata support (`animation`, `modifier`, `variants`) using v1 strategy.
-4. Round-trip semantic tests per styler.
+1. Step 0 first: extract reusable data-level helpers before composites:
+   - `_decodeBoxData` / `_encodeBoxData`
+   - `_decodeFlexData` / `_encodeFlexData`
+   - `_decodeStackData` / `_encodeStackData`
+2. Per-styler schema + codec.
+3. Add each envelope `stylerType` dispatch case only with that styler's completed implementation (no placeholder switch branches).
+4. Metadata support (`animation`, `modifier`, `variants`) using v1 strategy.
+5. Round-trip semantic tests per styler.
+6. M3 checkpoint gate per step: `cd packages/mix_schema && dart analyze && flutter test`.
 
 ### M4 - Hardening
 Deliver production-readiness.
@@ -543,6 +556,9 @@ melos bootstrap
 melos run gen:build
 melos run ci
 melos run analyze
+
+# Required per-step gate during M3 implementation
+cd packages/mix_schema && dart analyze && flutter test
 ```
 
 ---
