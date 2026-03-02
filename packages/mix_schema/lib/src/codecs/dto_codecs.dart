@@ -259,32 +259,18 @@ final class DtoCodecs {
   }
 
   static Map<String, Object?> encodeBoxShadow(BoxShadowMix value) {
-    final result = <String, Object?>{};
-
-    final color = _directColor(value.$color, field: 'color');
-    if (color != null) {
-      result['color'] = color.toARGB32();
-    }
-
-    final offset = _directOffset(value.$offset, field: 'offset');
-    if (offset != null) {
-      result['offset'] = {'dx': offset.dx, 'dy': offset.dy};
-    }
-
-    final blurRadius = _directDouble(value.$blurRadius, field: 'blurRadius');
-    if (blurRadius != null) {
-      result['blurRadius'] = blurRadius;
-    }
-
-    final spreadRadius = _directDouble(
-      value.$spreadRadius,
-      field: 'spreadRadius',
-    );
-    if (spreadRadius != null) {
-      result['spreadRadius'] = spreadRadius;
-    }
-
-    return result;
+    return {
+      if (_directColor(value.$color, field: 'color') case final color?)
+        'color': color.toARGB32(),
+      if (_directOffset(value.$offset, field: 'offset') case final offset?)
+        'offset': {'dx': offset.dx, 'dy': offset.dy},
+      if (_directDouble(value.$blurRadius, field: 'blurRadius')
+          case final blurRadius?)
+        'blurRadius': blurRadius,
+      if (_directDouble(value.$spreadRadius, field: 'spreadRadius')
+          case final spreadRadius?)
+        'spreadRadius': spreadRadius,
+    };
   }
 
   static BoxBorderMix decodeBoxBorder(Map<String, Object?> data) {
@@ -750,37 +736,7 @@ final class DtoCodecs {
     throw StateError('Expected int value, got ${value.runtimeType}');
   }
 
-  static double? _directDouble(Prop<double>? prop, {required String field}) {
-    if (prop == null) return null;
-
-    final source = _singleSource(prop, field: field);
-    return switch (source) {
-      ValueSource<double>(:final value) => value,
-      _ => throw StateError('Field "$field" must use a direct value source.'),
-    };
-  }
-
-  static bool? _directBool(Prop<bool>? prop, {required String field}) {
-    if (prop == null) return null;
-
-    final source = _singleSource(prop, field: field);
-    return switch (source) {
-      ValueSource<bool>(:final value) => value,
-      _ => throw StateError('Field "$field" must use a direct value source.'),
-    };
-  }
-
-  static String? _directString(Prop<String>? prop, {required String field}) {
-    if (prop == null) return null;
-
-    final source = _singleSource(prop, field: field);
-    return switch (source) {
-      ValueSource<String>(:final value) => value,
-      _ => throw StateError('Field "$field" must use a direct value source.'),
-    };
-  }
-
-  static String? _directEnumName<T extends Enum>(
+  static T? _directValue<T extends Object>(
     Prop<T>? prop, {
     required String field,
   }) {
@@ -788,22 +744,37 @@ final class DtoCodecs {
 
     final source = _singleSource(prop, field: field);
     return switch (source) {
-      ValueSource<T>(:final value) => value.name,
+      ValueSource<T>(:final value) => value,
       _ => throw StateError('Field "$field" must use a direct value source.'),
     };
+  }
+
+  static double? _directDouble(Prop<double>? prop, {required String field}) {
+    return _directValue(prop, field: field);
+  }
+
+  static bool? _directBool(Prop<bool>? prop, {required String field}) {
+    return _directValue(prop, field: field);
+  }
+
+  static String? _directString(Prop<String>? prop, {required String field}) {
+    return _directValue(prop, field: field);
+  }
+
+  static String? _directEnumName<T extends Enum>(
+    Prop<T>? prop, {
+    required String field,
+  }) {
+    final value = _directValue(prop, field: field);
+    return value?.name;
   }
 
   static String? _directFontWeightName(
     Prop<FontWeight>? prop, {
     required String field,
   }) {
-    if (prop == null) return null;
-
-    final source = _singleSource(prop, field: field);
-    final value = switch (source) {
-      ValueSource<FontWeight>(:final value) => value,
-      _ => throw StateError('Field "$field" must use a direct value source.'),
-    };
+    final value = _directValue(prop, field: field);
+    if (value == null) return null;
 
     return switch (value) {
       FontWeight.w100 => 'w100',
@@ -820,75 +791,39 @@ final class DtoCodecs {
   }
 
   static Color? _directColor(Prop<Color>? prop, {required String field}) {
-    if (prop == null) return null;
-
-    final source = _singleSource(prop, field: field);
-    return switch (source) {
-      ValueSource<Color>(:final value) => value,
-      _ => throw StateError('Field "$field" must use a direct value source.'),
-    };
+    return _directValue(prop, field: field);
   }
 
   static Offset? _directOffset(Prop<Offset>? prop, {required String field}) {
-    if (prop == null) return null;
-
-    final source = _singleSource(prop, field: field);
-    return switch (source) {
-      ValueSource<Offset>(:final value) => value,
-      _ => throw StateError('Field "$field" must use a direct value source.'),
-    };
+    return _directValue(prop, field: field);
   }
 
   static AlignmentGeometry? _directAlignmentGeometry(
     Prop<AlignmentGeometry>? prop, {
     required String field,
   }) {
-    if (prop == null) return null;
-
-    final source = _singleSource(prop, field: field);
-    return switch (source) {
-      ValueSource<AlignmentGeometry>(:final value) => value,
-      _ => throw StateError('Field "$field" must use a direct value source.'),
-    };
+    return _directValue(prop, field: field);
   }
 
   static List<Color>? _directColorList(
     Prop<List<Color>>? prop, {
     required String field,
   }) {
-    if (prop == null) return null;
-
-    final source = _singleSource(prop, field: field);
-    return switch (source) {
-      ValueSource<List<Color>>(:final value) => value,
-      _ => throw StateError('Field "$field" must use a direct value source.'),
-    };
+    return _directValue(prop, field: field);
   }
 
   static List<double>? _directDoubleList(
     Prop<List<double>>? prop, {
     required String field,
   }) {
-    if (prop == null) return null;
-
-    final source = _singleSource(prop, field: field);
-    return switch (source) {
-      ValueSource<List<double>>(:final value) => value,
-      _ => throw StateError('Field "$field" must use a direct value source.'),
-    };
+    return _directValue(prop, field: field);
   }
 
   static GradientTransform? _directGradientTransform(
     Prop<GradientTransform>? prop, {
     required String field,
   }) {
-    if (prop == null) return null;
-
-    final source = _singleSource(prop, field: field);
-    return switch (source) {
-      ValueSource<GradientTransform>(:final value) => value,
-      _ => throw StateError('Field "$field" must use a direct value source.'),
-    };
+    return _directValue(prop, field: field);
   }
 
   static BoxBorderMix? _directBoxBorder(
@@ -967,13 +902,7 @@ final class DtoCodecs {
   }
 
   static Radius? _directRadius(Prop<Radius>? prop, {required String field}) {
-    if (prop == null) return null;
-
-    final source = _singleSource(prop, field: field);
-    return switch (source) {
-      ValueSource<Radius>(:final value) => value,
-      _ => throw StateError('Field "$field" must use a direct value source.'),
-    };
+    return _directValue(prop, field: field);
   }
 
   static List<BoxShadowMix>? _directBoxShadowList(
@@ -1089,21 +1018,17 @@ final class DtoCodecs {
 
   static FontStyle? _fontStyleFromName(String? name) {
     if (name == null) return null;
-    return switch (name) {
-      'normal' => FontStyle.normal,
-      'italic' => FontStyle.italic,
-      _ => throw StateError('Unsupported FontStyle value: $name'),
-    };
+    return _enumByName(FontStyle.values, name, field: 'FontStyle');
   }
 
   static TextLeadingDistribution? _textLeadingDistributionFromName(
     String? name,
   ) {
     if (name == null) return null;
-    return switch (name) {
-      'proportional' => TextLeadingDistribution.proportional,
-      'even' => TextLeadingDistribution.even,
-      _ => throw StateError('Unsupported TextLeadingDistribution value: $name'),
-    };
+    return _enumByName(
+      TextLeadingDistribution.values,
+      name,
+      field: 'TextLeadingDistribution',
+    );
   }
 }

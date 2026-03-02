@@ -142,76 +142,85 @@ final class MixSchemaCodec {
     final errors = <MixSchemaError>[];
     final data = <String, Object?>{};
 
-    _encodeEdgeInsetsField(
+    _encodeField<EdgeInsetsGeometry, EdgeInsetsGeometryMix>(
       prop: styler.$padding,
       key: 'padding',
       path: 'data.padding',
       data: data,
       errors: errors,
+      extract: _extractEdgeInsetsGeometryMix,
+      encode: DtoCodecs.encodeEdgeInsetsGeometry,
     );
-    _encodeEdgeInsetsField(
+    _encodeField<EdgeInsetsGeometry, EdgeInsetsGeometryMix>(
       prop: styler.$margin,
       key: 'margin',
       path: 'data.margin',
       data: data,
       errors: errors,
+      extract: _extractEdgeInsetsGeometryMix,
+      encode: DtoCodecs.encodeEdgeInsetsGeometry,
     );
-    _encodeConstraintsField(
+    _encodeField<BoxConstraints, BoxConstraintsMix>(
       prop: styler.$constraints,
       key: 'constraints',
       path: 'data.constraints',
       data: data,
       errors: errors,
+      extract: _extractBoxConstraintsMix,
+      encode: DtoCodecs.encodeBoxConstraints,
     );
-    _encodeDecorationField(
+    _encodeField<Decoration, BoxDecorationMix>(
       prop: styler.$decoration,
       key: 'decoration',
       path: 'data.decoration',
       data: data,
       errors: errors,
+      extract: _extractBoxDecorationMix,
+      encode: DtoCodecs.encodeBoxDecoration,
     );
-    _encodeDecorationField(
+    _encodeField<Decoration, BoxDecorationMix>(
       prop: styler.$foregroundDecoration,
       key: 'foregroundDecoration',
       path: 'data.foregroundDecoration',
       data: data,
       errors: errors,
+      extract: _extractBoxDecorationMix,
+      encode: DtoCodecs.encodeBoxDecoration,
     );
-    _encodeAlignmentField(
+    _encodeField<AlignmentGeometry, AlignmentGeometry>(
       prop: styler.$alignment,
       key: 'alignment',
       path: 'data.alignment',
       data: data,
       errors: errors,
+      extract: _extractAlignmentGeometry,
+      encode: DtoCodecs.encodeAlignmentGeometry,
     );
-    _encodeTransformField(
+    _encodeField<Matrix4, Matrix4>(
       prop: styler.$transform,
       key: 'transform',
       path: 'data.transform',
       data: data,
       errors: errors,
+      extract: _extractMatrix4,
+      encode: DtoCodecs.encodeMatrix4,
     );
-    _encodeAlignmentField(
+    _encodeField<AlignmentGeometry, AlignmentGeometry>(
       prop: styler.$transformAlignment,
       key: 'transformAlignment',
       path: 'data.transformAlignment',
       data: data,
       errors: errors,
+      extract: _extractAlignmentGeometry,
+      encode: DtoCodecs.encodeAlignmentGeometry,
     );
 
-    final clipBehavior = _extractSingleValue<Clip>(styler.$clipBehavior);
-    if (styler.$clipBehavior != null && clipBehavior == null) {
-      errors.add(
-        MixSchemaError.fromCode(
-          code: MixSchemaErrorCode.invalidValue,
-          path: 'data.clipBehavior',
-          message:
-              'clipBehavior must be a direct value source to be encoded in v1.',
-        ),
-      );
-    } else if (clipBehavior != null) {
-      data['clipBehavior'] = clipBehavior.name;
-    }
+    _encodeClipBehaviorField(
+      prop: styler.$clipBehavior,
+      path: 'data.clipBehavior',
+      data: data,
+      errors: errors,
+    );
 
     final animation = styler.$animation;
     if (animation != null) {
@@ -329,147 +338,71 @@ final class MixSchemaCodec {
 
     final data = payload['data'] as Map<String, Object?>;
 
-    AlignmentGeometry? alignment;
     final alignmentData = data['alignment'] as Map<String, Object?>?;
-    if (alignmentData != null) {
-      try {
-        alignment = DtoCodecs.decodeAlignmentGeometry(alignmentData);
-      } catch (error) {
-        errors.add(
-          MixSchemaError.fromCode(
-            code: MixSchemaErrorCode.invalidValue,
-            path: 'data.alignment',
-            message: error.toString(),
-            value: alignmentData,
-          ),
-        );
-      }
-    }
+    final alignment = _decodeFieldValue(
+      wire: alignmentData,
+      path: 'data.alignment',
+      errors: errors,
+      decode: DtoCodecs.decodeAlignmentGeometry,
+    );
 
-    Matrix4? transform;
     final transformData = data['transform'] as List<Object?>?;
-    if (transformData != null) {
-      try {
-        transform = DtoCodecs.decodeMatrix4(transformData);
-      } catch (error) {
-        errors.add(
-          MixSchemaError.fromCode(
-            code: MixSchemaErrorCode.invalidValue,
-            path: 'data.transform',
-            message: error.toString(),
-            value: transformData,
-          ),
-        );
-      }
-    }
+    final transform = _decodeFieldValue(
+      wire: transformData,
+      path: 'data.transform',
+      errors: errors,
+      decode: DtoCodecs.decodeMatrix4,
+    );
 
-    AlignmentGeometry? transformAlignment;
     final transformAlignmentData =
         data['transformAlignment'] as Map<String, Object?>?;
-    if (transformAlignmentData != null) {
-      try {
-        transformAlignment = DtoCodecs.decodeAlignmentGeometry(
-          transformAlignmentData,
-        );
-      } catch (error) {
-        errors.add(
-          MixSchemaError.fromCode(
-            code: MixSchemaErrorCode.invalidValue,
-            path: 'data.transformAlignment',
-            message: error.toString(),
-            value: transformAlignmentData,
-          ),
-        );
-      }
-    }
+    final transformAlignment = _decodeFieldValue(
+      wire: transformAlignmentData,
+      path: 'data.transformAlignment',
+      errors: errors,
+      decode: DtoCodecs.decodeAlignmentGeometry,
+    );
 
-    EdgeInsetsGeometryMix? padding;
     final paddingData = data['padding'] as Map<String, Object?>?;
-    if (paddingData != null) {
-      try {
-        padding = DtoCodecs.decodeEdgeInsetsGeometry(paddingData);
-      } catch (error) {
-        errors.add(
-          MixSchemaError.fromCode(
-            code: MixSchemaErrorCode.invalidValue,
-            path: 'data.padding',
-            message: error.toString(),
-            value: paddingData,
-          ),
-        );
-      }
-    }
+    final padding = _decodeFieldValue(
+      wire: paddingData,
+      path: 'data.padding',
+      errors: errors,
+      decode: DtoCodecs.decodeEdgeInsetsGeometry,
+    );
 
-    EdgeInsetsGeometryMix? margin;
     final marginData = data['margin'] as Map<String, Object?>?;
-    if (marginData != null) {
-      try {
-        margin = DtoCodecs.decodeEdgeInsetsGeometry(marginData);
-      } catch (error) {
-        errors.add(
-          MixSchemaError.fromCode(
-            code: MixSchemaErrorCode.invalidValue,
-            path: 'data.margin',
-            message: error.toString(),
-            value: marginData,
-          ),
-        );
-      }
-    }
+    final margin = _decodeFieldValue(
+      wire: marginData,
+      path: 'data.margin',
+      errors: errors,
+      decode: DtoCodecs.decodeEdgeInsetsGeometry,
+    );
 
-    BoxConstraintsMix? constraints;
     final constraintsData = data['constraints'] as Map<String, Object?>?;
-    if (constraintsData != null) {
-      try {
-        constraints = DtoCodecs.decodeBoxConstraints(constraintsData);
-      } catch (error) {
-        errors.add(
-          MixSchemaError.fromCode(
-            code: MixSchemaErrorCode.invalidValue,
-            path: 'data.constraints',
-            message: error.toString(),
-            value: constraintsData,
-          ),
-        );
-      }
-    }
+    final constraints = _decodeFieldValue(
+      wire: constraintsData,
+      path: 'data.constraints',
+      errors: errors,
+      decode: DtoCodecs.decodeBoxConstraints,
+    );
 
-    DecorationMix? decoration;
     final decorationData = data['decoration'] as Map<String, Object?>?;
-    if (decorationData != null) {
-      try {
-        decoration = DtoCodecs.decodeBoxDecoration(decorationData);
-      } catch (error) {
-        errors.add(
-          MixSchemaError.fromCode(
-            code: MixSchemaErrorCode.invalidValue,
-            path: 'data.decoration',
-            message: error.toString(),
-            value: decorationData,
-          ),
-        );
-      }
-    }
+    final decoration = _decodeFieldValue(
+      wire: decorationData,
+      path: 'data.decoration',
+      errors: errors,
+      decode: DtoCodecs.decodeBoxDecoration,
+    );
 
-    DecorationMix? foregroundDecoration;
     final foregroundDecorationData =
         data['foregroundDecoration'] as Map<String, Object?>?;
-    if (foregroundDecorationData != null) {
-      try {
-        foregroundDecoration = DtoCodecs.decodeBoxDecoration(
-          foregroundDecorationData,
-        );
-      } catch (error) {
-        errors.add(
-          MixSchemaError.fromCode(
-            code: MixSchemaErrorCode.invalidValue,
-            path: 'data.foregroundDecoration',
-            message: error.toString(),
-            value: foregroundDecorationData,
-          ),
-        );
-      }
-    }
+    final foregroundDecoration = _decodeFieldValue(
+      wire: foregroundDecorationData,
+      path: 'data.foregroundDecoration',
+      errors: errors,
+      decode: DtoCodecs.decodeBoxDecoration,
+    );
 
     Clip? clipBehavior;
     final clipBehaviorWire = data['clipBehavior'];
@@ -1403,21 +1336,12 @@ final class MixSchemaCodec {
         if (clipperId != null) {
           result['clipper'] = clipperId;
         }
-        final clipBehavior = _extractSingleValue<Clip>(
-          clipOvalModifier.clipBehavior,
+        _encodeClipBehaviorField(
+          prop: clipOvalModifier.clipBehavior,
+          path: '$path.clipBehavior',
+          data: result,
+          errors: errors,
         );
-        if (clipOvalModifier.clipBehavior != null && clipBehavior == null) {
-          errors.add(
-            MixSchemaError.fromCode(
-              code: MixSchemaErrorCode.invalidValue,
-              path: '$path.clipBehavior',
-              message:
-                  'clipBehavior must be a direct value source to be encoded in v1.',
-            ),
-          );
-        } else if (clipBehavior != null) {
-          result['clipBehavior'] = clipBehavior.name;
-        }
         return result;
       case ClipRectModifierMix clipRectModifier:
         final result = <String, Object?>{'kind': 'clipRect'};
@@ -1430,21 +1354,12 @@ final class MixSchemaCodec {
         if (clipperId != null) {
           result['clipper'] = clipperId;
         }
-        final clipBehavior = _extractSingleValue<Clip>(
-          clipRectModifier.clipBehavior,
+        _encodeClipBehaviorField(
+          prop: clipRectModifier.clipBehavior,
+          path: '$path.clipBehavior',
+          data: result,
+          errors: errors,
         );
-        if (clipRectModifier.clipBehavior != null && clipBehavior == null) {
-          errors.add(
-            MixSchemaError.fromCode(
-              code: MixSchemaErrorCode.invalidValue,
-              path: '$path.clipBehavior',
-              message:
-                  'clipBehavior must be a direct value source to be encoded in v1.',
-            ),
-          );
-        } else if (clipBehavior != null) {
-          result['clipBehavior'] = clipBehavior.name;
-        }
         return result;
       case ClipPathModifierMix clipPathModifier:
         final result = <String, Object?>{'kind': 'clipPath'};
@@ -1457,21 +1372,12 @@ final class MixSchemaCodec {
         if (clipperId != null) {
           result['clipper'] = clipperId;
         }
-        final clipBehavior = _extractSingleValue<Clip>(
-          clipPathModifier.clipBehavior,
+        _encodeClipBehaviorField(
+          prop: clipPathModifier.clipBehavior,
+          path: '$path.clipBehavior',
+          data: result,
+          errors: errors,
         );
-        if (clipPathModifier.clipBehavior != null && clipBehavior == null) {
-          errors.add(
-            MixSchemaError.fromCode(
-              code: MixSchemaErrorCode.invalidValue,
-              path: '$path.clipBehavior',
-              message:
-                  'clipBehavior must be a direct value source to be encoded in v1.',
-            ),
-          );
-        } else if (clipBehavior != null) {
-          result['clipBehavior'] = clipBehavior.name;
-        }
         return result;
       case ClipRRectModifierMix clipRRectModifier:
         final result = <String, Object?>{'kind': 'clipRRect'};
@@ -1502,39 +1408,21 @@ final class MixSchemaCodec {
         if (clipperId != null) {
           result['clipper'] = clipperId;
         }
-        final clipBehavior = _extractSingleValue<Clip>(
-          clipRRectModifier.clipBehavior,
+        _encodeClipBehaviorField(
+          prop: clipRRectModifier.clipBehavior,
+          path: '$path.clipBehavior',
+          data: result,
+          errors: errors,
         );
-        if (clipRRectModifier.clipBehavior != null && clipBehavior == null) {
-          errors.add(
-            MixSchemaError.fromCode(
-              code: MixSchemaErrorCode.invalidValue,
-              path: '$path.clipBehavior',
-              message:
-                  'clipBehavior must be a direct value source to be encoded in v1.',
-            ),
-          );
-        } else if (clipBehavior != null) {
-          result['clipBehavior'] = clipBehavior.name;
-        }
         return result;
       case ClipTriangleModifierMix clipTriangleModifier:
         final result = <String, Object?>{'kind': 'clipTriangle'};
-        final clipBehavior = _extractSingleValue<Clip>(
-          clipTriangleModifier.clipBehavior,
+        _encodeClipBehaviorField(
+          prop: clipTriangleModifier.clipBehavior,
+          path: '$path.clipBehavior',
+          data: result,
+          errors: errors,
         );
-        if (clipTriangleModifier.clipBehavior != null && clipBehavior == null) {
-          errors.add(
-            MixSchemaError.fromCode(
-              code: MixSchemaErrorCode.invalidValue,
-              path: '$path.clipBehavior',
-              message:
-                  'clipBehavior must be a direct value source to be encoded in v1.',
-            ),
-          );
-        } else if (clipBehavior != null) {
-          result['clipBehavior'] = clipBehavior.name;
-        }
         return result;
       default:
         errors.add(
@@ -1653,6 +1541,30 @@ final class MixSchemaCodec {
     return null;
   }
 
+  void _encodeClipBehaviorField({
+    required Prop<Clip>? prop,
+    required String path,
+    required Map<String, Object?> data,
+    required List<MixSchemaError> errors,
+  }) {
+    final clipBehavior = _extractSingleValue<Clip>(prop);
+    if (prop != null && clipBehavior == null) {
+      errors.add(
+        MixSchemaError.fromCode(
+          code: MixSchemaErrorCode.invalidValue,
+          path: path,
+          message:
+              'clipBehavior must be a direct value source to be encoded in v1.',
+        ),
+      );
+      return;
+    }
+
+    if (clipBehavior != null) {
+      data['clipBehavior'] = clipBehavior.name;
+    }
+  }
+
   List<Object?>? _encodeVariants(
     List<VariantStyle<BoxSpec>> variants, {
     required String path,
@@ -1687,19 +1599,7 @@ final class MixSchemaCodec {
 
     switch (variant) {
       case NamedVariant named:
-        if (style is! BoxStyler) {
-          errors.add(
-            MixSchemaError.fromCode(
-              code: MixSchemaErrorCode.unsupportedMetadata,
-              path: '$path.style',
-              message: 'Only BoxStyler is supported in box variant styles.',
-              value: style.runtimeType.toString(),
-            ),
-          );
-          return null;
-        }
-
-        final encodedStyle = _encodeNestedVariantStyle(
+        final encodedStyle = _encodeBoxVariantStyle(
           style,
           path: '$path.style',
           registries: registries,
@@ -1709,19 +1609,7 @@ final class MixSchemaCodec {
 
         return {'kind': 'named', 'name': named.name, 'style': encodedStyle};
       case WidgetStateVariant widgetState:
-        if (style is! BoxStyler) {
-          errors.add(
-            MixSchemaError.fromCode(
-              code: MixSchemaErrorCode.unsupportedMetadata,
-              path: '$path.style',
-              message: 'Only BoxStyler is supported in box variant styles.',
-              value: style.runtimeType.toString(),
-            ),
-          );
-          return null;
-        }
-
-        final encodedStyle = _encodeNestedVariantStyle(
+        final encodedStyle = _encodeBoxVariantStyle(
           style,
           path: '$path.style',
           registries: registries,
@@ -1764,6 +1652,32 @@ final class MixSchemaCodec {
         );
         return null;
     }
+  }
+
+  Map<String, Object?>? _encodeBoxVariantStyle(
+    Object style, {
+    required String path,
+    required FrozenRegistryBundle registries,
+    required List<MixSchemaError> errors,
+  }) {
+    if (style is! BoxStyler) {
+      errors.add(
+        MixSchemaError.fromCode(
+          code: MixSchemaErrorCode.unsupportedMetadata,
+          path: path,
+          message: 'Only BoxStyler is supported in box variant styles.',
+          value: style.runtimeType.toString(),
+        ),
+      );
+      return null;
+    }
+
+    return _encodeNestedVariantStyle(
+      style,
+      path: path,
+      registries: registries,
+      errors: errors,
+    );
   }
 
   Map<String, Object?>? _encodeNestedVariantStyle(
@@ -2002,110 +1916,43 @@ final class MixSchemaCodec {
     return null;
   }
 
-  void _encodeEdgeInsetsField({
-    required Prop<EdgeInsetsGeometry>? prop,
-    required String key,
+  T? _decodeFieldValue<T, W>({
+    required W? wire,
     required String path,
-    required Map<String, Object?> data,
     required List<MixSchemaError> errors,
+    required T Function(W wire) decode,
   }) {
-    if (prop == null) return;
+    if (wire == null) return null;
 
     try {
-      final mix = _extractEdgeInsetsGeometryMix(prop, fieldPath: path);
-      data[key] = DtoCodecs.encodeEdgeInsetsGeometry(mix);
+      return decode(wire);
     } catch (error) {
       errors.add(
         MixSchemaError.fromCode(
           code: MixSchemaErrorCode.invalidValue,
           path: path,
           message: error.toString(),
+          value: wire,
         ),
       );
+      return null;
     }
   }
 
-  void _encodeConstraintsField({
-    required Prop<BoxConstraints>? prop,
+  void _encodeField<T extends Object, R>({
+    required Prop<T>? prop,
     required String key,
     required String path,
     required Map<String, Object?> data,
     required List<MixSchemaError> errors,
+    required R Function(Prop<T> prop, {required String fieldPath}) extract,
+    required Object? Function(R value) encode,
   }) {
     if (prop == null) return;
 
     try {
-      final mix = _extractBoxConstraintsMix(prop, fieldPath: path);
-      data[key] = DtoCodecs.encodeBoxConstraints(mix);
-    } catch (error) {
-      errors.add(
-        MixSchemaError.fromCode(
-          code: MixSchemaErrorCode.invalidValue,
-          path: path,
-          message: error.toString(),
-        ),
-      );
-    }
-  }
-
-  void _encodeDecorationField({
-    required Prop<Decoration>? prop,
-    required String key,
-    required String path,
-    required Map<String, Object?> data,
-    required List<MixSchemaError> errors,
-  }) {
-    if (prop == null) return;
-
-    try {
-      final mix = _extractBoxDecorationMix(prop, fieldPath: path);
-      data[key] = DtoCodecs.encodeBoxDecoration(mix);
-    } catch (error) {
-      errors.add(
-        MixSchemaError.fromCode(
-          code: MixSchemaErrorCode.invalidValue,
-          path: path,
-          message: error.toString(),
-        ),
-      );
-    }
-  }
-
-  void _encodeAlignmentField({
-    required Prop<AlignmentGeometry>? prop,
-    required String key,
-    required String path,
-    required Map<String, Object?> data,
-    required List<MixSchemaError> errors,
-  }) {
-    if (prop == null) return;
-
-    try {
-      final alignment = _extractAlignmentGeometry(prop, fieldPath: path);
-      data[key] = DtoCodecs.encodeAlignmentGeometry(alignment);
-    } catch (error) {
-      errors.add(
-        MixSchemaError.fromCode(
-          code: MixSchemaErrorCode.invalidValue,
-          path: path,
-          message: error.toString(),
-        ),
-      );
-    }
-  }
-
-  void _encodeTransformField({
-    required Prop<Matrix4>? prop,
-    required String key,
-    required String path,
-    required Map<String, Object?> data,
-    required List<MixSchemaError> errors,
-  }) {
-    if (prop == null) return;
-
-    try {
-      final transform = _extractMatrix4(prop, fieldPath: path);
-      data[key] = DtoCodecs.encodeMatrix4(transform);
+      final extracted = extract(prop, fieldPath: path);
+      data[key] = encode(extracted);
     } catch (error) {
       errors.add(
         MixSchemaError.fromCode(
@@ -2121,113 +1968,76 @@ final class MixSchemaCodec {
     Prop<EdgeInsetsGeometry> prop, {
     required String fieldPath,
   }) {
-    if (prop.sources.length != 1) {
-      throw StateError(
-        'Field "$fieldPath" must contain exactly one source for deterministic encoding.',
-      );
-    }
-
-    final source = prop.sources.single;
-    return switch (source) {
-      MixSource<EdgeInsetsGeometry>(:final mix) =>
-        mix is EdgeInsetsGeometryMix
-            ? mix
-            : throw StateError(
-                'Field "$fieldPath" must use EdgeInsetsGeometryMix.',
-              ),
-      ValueSource<EdgeInsetsGeometry>(:final value) =>
-        EdgeInsetsGeometryMix.value(value),
-      _ => throw StateError(
-        'Field "$fieldPath" has unsupported source type ${source.runtimeType}.',
-      ),
-    };
+    return _extractMixOrValue<EdgeInsetsGeometry, EdgeInsetsGeometryMix>(
+      prop,
+      fieldPath: fieldPath,
+      mixError: 'Field "$fieldPath" must use EdgeInsetsGeometryMix.',
+      fromValue: EdgeInsetsGeometryMix.value,
+    );
   }
 
   BoxConstraintsMix _extractBoxConstraintsMix(
     Prop<BoxConstraints> prop, {
     required String fieldPath,
   }) {
-    if (prop.sources.length != 1) {
-      throw StateError(
-        'Field "$fieldPath" must contain exactly one source for deterministic encoding.',
-      );
-    }
-
-    final source = prop.sources.single;
-    return switch (source) {
-      MixSource<BoxConstraints>(:final mix) =>
-        mix is BoxConstraintsMix
-            ? mix
-            : throw StateError(
-                'Field "$fieldPath" must use BoxConstraintsMix.',
-              ),
-      ValueSource<BoxConstraints>(:final value) => BoxConstraintsMix.value(
-        value,
-      ),
-      _ => throw StateError(
-        'Field "$fieldPath" has unsupported source type ${source.runtimeType}.',
-      ),
-    };
+    return _extractMixOrValue<BoxConstraints, BoxConstraintsMix>(
+      prop,
+      fieldPath: fieldPath,
+      mixError: 'Field "$fieldPath" must use BoxConstraintsMix.',
+      fromValue: BoxConstraintsMix.value,
+    );
   }
 
   BoxDecorationMix _extractBoxDecorationMix(
     Prop<Decoration> prop, {
     required String fieldPath,
   }) {
-    if (prop.sources.length != 1) {
-      throw StateError(
-        'Field "$fieldPath" must contain exactly one source for deterministic encoding.',
-      );
-    }
-
-    final source = prop.sources.single;
-    return switch (source) {
-      MixSource<Decoration>(:final mix) =>
-        mix is BoxDecorationMix
-            ? mix
-            : throw StateError(
-                'Field "$fieldPath" only supports BoxDecorationMix in v1.',
-              ),
-      ValueSource<Decoration>(:final value) =>
-        value is BoxDecoration
-            ? BoxDecorationMix.value(value)
-            : throw StateError(
-                'Field "$fieldPath" only supports BoxDecoration values in v1.',
-              ),
-      _ => throw StateError(
-        'Field "$fieldPath" has unsupported source type ${source.runtimeType}.',
-      ),
-    };
+    return _extractMixOrValue<Decoration, BoxDecorationMix>(
+      prop,
+      fieldPath: fieldPath,
+      mixError: 'Field "$fieldPath" only supports BoxDecorationMix in v1.',
+      fromValue: (value) {
+        if (value is BoxDecoration) return BoxDecorationMix.value(value);
+        throw StateError(
+          'Field "$fieldPath" only supports BoxDecoration values in v1.',
+        );
+      },
+    );
   }
 
   BorderRadiusGeometryMix _extractBorderRadiusGeometryMix(
     Prop<BorderRadiusGeometry> prop, {
     required String fieldPath,
   }) {
-    if (prop.sources.length != 1) {
-      throw StateError(
-        'Field "$fieldPath" must contain exactly one source for deterministic encoding.',
-      );
-    }
-
-    final source = prop.sources.single;
-    return switch (source) {
-      MixSource<BorderRadiusGeometry>(:final mix) =>
-        mix is BorderRadiusGeometryMix
-            ? mix
-            : throw StateError(
-                'Field "$fieldPath" must use BorderRadiusGeometryMix.',
-              ),
-      ValueSource<BorderRadiusGeometry>(:final value) =>
-        BorderRadiusGeometryMix.value(value),
-      _ => throw StateError(
-        'Field "$fieldPath" has unsupported source type ${source.runtimeType}.',
-      ),
-    };
+    return _extractMixOrValue<BorderRadiusGeometry, BorderRadiusGeometryMix>(
+      prop,
+      fieldPath: fieldPath,
+      mixError: 'Field "$fieldPath" must use BorderRadiusGeometryMix.',
+      fromValue: BorderRadiusGeometryMix.value,
+    );
   }
 
   AlignmentGeometry _extractAlignmentGeometry(
     Prop<AlignmentGeometry> prop, {
+    required String fieldPath,
+  }) {
+    return _extractDirectValue(
+      prop,
+      fieldPath: fieldPath,
+      valueType: 'alignment',
+    );
+  }
+
+  Matrix4 _extractMatrix4(Prop<Matrix4> prop, {required String fieldPath}) {
+    return _extractDirectValue(
+      prop,
+      fieldPath: fieldPath,
+      valueType: 'Matrix4',
+    );
+  }
+
+  PropSource<T> _singleSourceForEncoding<T extends Object>(
+    Prop<T> prop, {
     required String fieldPath,
   }) {
     if (prop.sources.length != 1) {
@@ -2236,27 +2046,39 @@ final class MixSchemaCodec {
       );
     }
 
-    final source = prop.sources.single;
-    return switch (source) {
-      ValueSource<AlignmentGeometry>(:final value) => value,
-      _ => throw StateError(
-        'Field "$fieldPath" must use a direct alignment value source.',
-      ),
-    };
+    return prop.sources.single;
   }
 
-  Matrix4 _extractMatrix4(Prop<Matrix4> prop, {required String fieldPath}) {
-    if (prop.sources.length != 1) {
-      throw StateError(
-        'Field "$fieldPath" must contain exactly one source for deterministic encoding.',
-      );
+  M _extractMixOrValue<T extends Object, M extends Object>(
+    Prop<T> prop, {
+    required String fieldPath,
+    required String mixError,
+    required M Function(T value) fromValue,
+  }) {
+    final source = _singleSourceForEncoding(prop, fieldPath: fieldPath);
+    switch (source) {
+      case MixSource<T>(:final mix):
+        if (mix is M) return mix as M;
+        throw StateError(mixError);
+      case ValueSource<T>(:final value):
+        return fromValue(value);
+      default:
+        throw StateError(
+          'Field "$fieldPath" has unsupported source type ${source.runtimeType}.',
+        );
     }
+  }
 
-    final source = prop.sources.single;
+  T _extractDirectValue<T extends Object>(
+    Prop<T> prop, {
+    required String fieldPath,
+    required String valueType,
+  }) {
+    final source = _singleSourceForEncoding(prop, fieldPath: fieldPath);
     return switch (source) {
-      ValueSource<Matrix4>(:final value) => value,
+      ValueSource<T>(:final value) => value,
       _ => throw StateError(
-        'Field "$fieldPath" must use a direct Matrix4 value source.',
+        'Field "$fieldPath" must use a direct $valueType value source.',
       ),
     };
   }
