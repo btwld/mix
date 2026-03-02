@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix_schema/mix_schema.dart';
 
@@ -232,6 +233,33 @@ void main() {
         throwsA(isA<StateError>()),
       );
     });
+
+    test('encodes and decodes shadow dto', () {
+      final input = <String, Object?>{
+        'color': 0xFF010203,
+        'offset': <String, Object?>{'dx': 2.0, 'dy': -1.0},
+        'blurRadius': 3.5,
+      };
+
+      final shadow = DtoCodecs.decodeShadow(input);
+      final encoded = DtoCodecs.encodeShadow(shadow);
+
+      expect(encoded, input);
+    });
+
+    test('encodes and decodes rect dto', () {
+      final input = <String, Object?>{
+        'left': 1.0,
+        'top': 2.0,
+        'right': 40.0,
+        'bottom': 50.0,
+      };
+
+      final rect = DtoCodecs.decodeRect(input);
+      final encoded = DtoCodecs.encodeRect(rect);
+
+      expect(encoded, input);
+    });
   });
 
   group('DtoCodecs typography', () {
@@ -305,5 +333,61 @@ void main() {
         throwsA(isA<StateError>()),
       );
     });
+
+    test('encodes and decodes linear text scaler', () {
+      final input = <String, Object?>{'type': 'linear', 'factor': 1.4};
+
+      final scaler = DtoCodecs.decodeTextScaler(input);
+      final encoded = DtoCodecs.encodeTextScaler(scaler);
+
+      expect(encoded, input);
+    });
+
+    test('throws on non-linear text scaler encoding', () {
+      const scaler = _NonLinearTextScaler();
+
+      expect(
+        () => DtoCodecs.encodeTextScaler(scaler),
+        throwsA(isA<StateError>()),
+      );
+    });
+
+    test('encodes and decodes locale', () {
+      final input = <String, Object?>{
+        'languageCode': 'en',
+        'countryCode': 'US',
+      };
+
+      final locale = DtoCodecs.decodeLocale(input);
+      final encoded = DtoCodecs.encodeLocale(locale);
+
+      expect(encoded, input);
+    });
   });
+}
+
+final class _NonLinearTextScaler implements TextScaler {
+  const _NonLinearTextScaler();
+
+  @override
+  double scale(double fontSize) {
+    if (fontSize <= 10) return fontSize * 1.1;
+
+    return fontSize * 1.3;
+  }
+
+  @override
+  TextScaler clamp({
+    double minScaleFactor = 0,
+    double maxScaleFactor = double.infinity,
+  }) {
+    return this;
+  }
+
+  @override
+  @Deprecated(
+    'Use of textScaleFactor was deprecated in preparation for the upcoming nonlinear text scaling support. '
+    'This feature was deprecated after v3.12.0-2.0.pre.',
+  )
+  double get textScaleFactor => 1.2;
 }

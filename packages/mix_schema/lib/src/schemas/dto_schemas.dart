@@ -28,6 +28,48 @@ final _blendModeValues = BlendMode.values
 final _widgetStateValues = WidgetState.values
     .map((value) => value.name)
     .toList(growable: false);
+final _axisValues = Axis.values
+    .map((value) => value.name)
+    .toList(growable: false);
+final _mainAxisAlignmentValues = MainAxisAlignment.values
+    .map((value) => value.name)
+    .toList(growable: false);
+final _crossAxisAlignmentValues = CrossAxisAlignment.values
+    .map((value) => value.name)
+    .toList(growable: false);
+final _mainAxisSizeValues = MainAxisSize.values
+    .map((value) => value.name)
+    .toList(growable: false);
+final _verticalDirectionValues = VerticalDirection.values
+    .map((value) => value.name)
+    .toList(growable: false);
+final _textDirectionValues = TextDirection.values
+    .map((value) => value.name)
+    .toList(growable: false);
+final _textBaselineValues = TextBaseline.values
+    .map((value) => value.name)
+    .toList(growable: false);
+final _stackFitValues = StackFit.values
+    .map((value) => value.name)
+    .toList(growable: false);
+final _textOverflowValues = TextOverflow.values
+    .map((value) => value.name)
+    .toList(growable: false);
+final _textAlignValues = TextAlign.values
+    .map((value) => value.name)
+    .toList(growable: false);
+final _textWidthBasisValues = TextWidthBasis.values
+    .map((value) => value.name)
+    .toList(growable: false);
+final _imageRepeatValues = ImageRepeat.values
+    .map((value) => value.name)
+    .toList(growable: false);
+final _boxFitValues = BoxFit.values
+    .map((value) => value.name)
+    .toList(growable: false);
+final _filterQualityValues = FilterQuality.values
+    .map((value) => value.name)
+    .toList(growable: false);
 const _modifierKindValues = [
   'reset',
   'opacity',
@@ -121,6 +163,23 @@ final boxShadowSchema = Ack.object({
   'blurRadius': Ack.double.nullable(),
   'spreadRadius': Ack.double.nullable(),
 }, additionalProperties: false);
+
+final shadowSchema = Ack.object({
+  'color': Ack.int.nullable(),
+  'offset': offsetSchema.nullable(),
+  'blurRadius': Ack.double.nullable(),
+}, additionalProperties: false);
+
+final rectSchema = Ack.object(
+  {
+    'left': Ack.double,
+    'top': Ack.double,
+    'right': Ack.double,
+    'bottom': Ack.double,
+  },
+  additionalProperties: false,
+  required: ['left', 'top', 'right', 'bottom'],
+);
 
 final borderSideSchema = Ack.object({
   'color': Ack.int.nullable(),
@@ -313,6 +372,21 @@ final textHeightBehaviorDtoSchema = Ack.object({
   ).nullable(),
 }, additionalProperties: false);
 
+final textScalerSchema = Ack.object(
+  {
+    'type': Ack.enumString(['linear']),
+    'factor': Ack.double,
+  },
+  additionalProperties: false,
+  required: ['type', 'factor'],
+);
+
+final localeSchema = Ack.object(
+  {'languageCode': Ack.string, 'countryCode': Ack.string.nullable()},
+  additionalProperties: false,
+  required: ['languageCode'],
+);
+
 final namedVariantSchema = Ack.object(
   {
     'kind': Ack.enumString(['named']),
@@ -457,19 +531,20 @@ final modifierConfigSchema = Ack.object({
   'modifiers': Ack.list(modifierItemSchema).nullable(),
 }, additionalProperties: false);
 
-final boxDataSchema = Ack.object({
+final animationSchema = Ack.object(
+  {
+    'durationMs': Ack.int,
+    'curve': Ack.enumString(CurveCodec.supportedCurveNames),
+    'delayMs': Ack.int.nullable(),
+    'onEnd': Ack.string.nullable(),
+  },
+  additionalProperties: false,
+  required: ['durationMs', 'curve'],
+);
+
+final boxCoreDataSchema = Ack.object({
   'alignment': alignmentGeometrySchema.nullable(),
   'clipBehavior': Ack.enumString(_clipValues).nullable(),
-  'animation': Ack.object(
-    {
-      'durationMs': Ack.int,
-      'curve': Ack.enumString(CurveCodec.supportedCurveNames),
-      'delayMs': Ack.int.nullable(),
-      'onEnd': Ack.string.nullable(),
-    },
-    additionalProperties: false,
-    required: ['durationMs', 'curve'],
-  ).nullable(),
   'transform': matrix4Schema.nullable(),
   'transformAlignment': alignmentGeometrySchema.nullable(),
   'padding': edgeInsetsGeometrySchema.nullable(),
@@ -477,6 +552,141 @@ final boxDataSchema = Ack.object({
   'constraints': boxConstraintsSchema.nullable(),
   'decoration': boxDecorationSchema.nullable(),
   'foregroundDecoration': boxDecorationSchema.nullable(),
+}, additionalProperties: false);
+
+final boxDataSchema = Ack.object({
+  'alignment': alignmentGeometrySchema.nullable(),
+  'clipBehavior': Ack.enumString(_clipValues).nullable(),
+  'animation': animationSchema.nullable(),
+  'transform': matrix4Schema.nullable(),
+  'transformAlignment': alignmentGeometrySchema.nullable(),
+  'padding': edgeInsetsGeometrySchema.nullable(),
+  'margin': edgeInsetsGeometrySchema.nullable(),
+  'constraints': boxConstraintsSchema.nullable(),
+  'decoration': boxDecorationSchema.nullable(),
+  'foregroundDecoration': boxDecorationSchema.nullable(),
+  'modifier': modifierConfigSchema.nullable(),
+  'variants': Ack.list(variantSchema).nullable(),
+}, additionalProperties: false);
+
+final stackCoreDataSchema = Ack.object({
+  'alignment': alignmentGeometrySchema.nullable(),
+  'fit': Ack.enumString(_stackFitValues).nullable(),
+  'textDirection': Ack.enumString(_textDirectionValues).nullable(),
+  'clipBehavior': Ack.enumString(_clipValues).nullable(),
+}, additionalProperties: false);
+
+final stackDataSchema = Ack.object({
+  'alignment': alignmentGeometrySchema.nullable(),
+  'fit': Ack.enumString(_stackFitValues).nullable(),
+  'textDirection': Ack.enumString(_textDirectionValues).nullable(),
+  'clipBehavior': Ack.enumString(_clipValues).nullable(),
+  'animation': animationSchema.nullable(),
+  'modifier': modifierConfigSchema.nullable(),
+  'variants': Ack.list(variantSchema).nullable(),
+}, additionalProperties: false);
+
+final flexCoreDataSchema = Ack.object({
+  'direction': Ack.enumString(_axisValues).nullable(),
+  'mainAxisAlignment': Ack.enumString(_mainAxisAlignmentValues).nullable(),
+  'crossAxisAlignment': Ack.enumString(_crossAxisAlignmentValues).nullable(),
+  'mainAxisSize': Ack.enumString(_mainAxisSizeValues).nullable(),
+  'verticalDirection': Ack.enumString(_verticalDirectionValues).nullable(),
+  'textDirection': Ack.enumString(_textDirectionValues).nullable(),
+  'textBaseline': Ack.enumString(_textBaselineValues).nullable(),
+  'clipBehavior': Ack.enumString(_clipValues).nullable(),
+  'spacing': Ack.double.nullable(),
+}, additionalProperties: false);
+
+final flexDataSchema = Ack.object({
+  'direction': Ack.enumString(_axisValues).nullable(),
+  'mainAxisAlignment': Ack.enumString(_mainAxisAlignmentValues).nullable(),
+  'crossAxisAlignment': Ack.enumString(_crossAxisAlignmentValues).nullable(),
+  'mainAxisSize': Ack.enumString(_mainAxisSizeValues).nullable(),
+  'verticalDirection': Ack.enumString(_verticalDirectionValues).nullable(),
+  'textDirection': Ack.enumString(_textDirectionValues).nullable(),
+  'textBaseline': Ack.enumString(_textBaselineValues).nullable(),
+  'clipBehavior': Ack.enumString(_clipValues).nullable(),
+  'spacing': Ack.double.nullable(),
+  'animation': animationSchema.nullable(),
+  'modifier': modifierConfigSchema.nullable(),
+  'variants': Ack.list(variantSchema).nullable(),
+}, additionalProperties: false);
+
+final textDataSchema = Ack.object({
+  'overflow': Ack.enumString(_textOverflowValues).nullable(),
+  'strutStyle': strutStyleDtoSchema.nullable(),
+  'textAlign': Ack.enumString(_textAlignValues).nullable(),
+  'textScaler': textScalerSchema.nullable(),
+  'maxLines': Ack.int.nullable(),
+  'style': textStyleDtoSchema.nullable(),
+  'textWidthBasis': Ack.enumString(_textWidthBasisValues).nullable(),
+  'textHeightBehavior': textHeightBehaviorDtoSchema.nullable(),
+  'textDirection': Ack.enumString(_textDirectionValues).nullable(),
+  'softWrap': Ack.boolean.nullable(),
+  'textDirectives': Ack.list(
+    Ack.object({}, additionalProperties: true),
+  ).nullable(),
+  'selectionColor': Ack.int.nullable(),
+  'semanticsLabel': Ack.string.nullable(),
+  'locale': localeSchema.nullable(),
+  'animation': animationSchema.nullable(),
+  'modifier': modifierConfigSchema.nullable(),
+  'variants': Ack.list(variantSchema).nullable(),
+}, additionalProperties: false);
+
+final iconDataSchema = Ack.object({
+  'color': Ack.int.nullable(),
+  'size': Ack.double.nullable(),
+  'weight': Ack.double.nullable(),
+  'grade': Ack.double.nullable(),
+  'opticalSize': Ack.double.nullable(),
+  'shadows': Ack.list(shadowSchema).nullable(),
+  'textDirection': Ack.enumString(_textDirectionValues).nullable(),
+  'applyTextScaling': Ack.boolean.nullable(),
+  'fill': Ack.double.nullable(),
+  'semanticsLabel': Ack.string.nullable(),
+  'opacity': Ack.double.nullable(),
+  'blendMode': Ack.enumString(_blendModeValues).nullable(),
+  'icon': Ack.object({}, additionalProperties: true).nullable(),
+  'animation': animationSchema.nullable(),
+  'modifier': modifierConfigSchema.nullable(),
+  'variants': Ack.list(variantSchema).nullable(),
+}, additionalProperties: false);
+
+final imageDataSchema = Ack.object({
+  'image': Ack.string.nullable(),
+  'width': Ack.double.nullable(),
+  'height': Ack.double.nullable(),
+  'color': Ack.int.nullable(),
+  'repeat': Ack.enumString(_imageRepeatValues).nullable(),
+  'fit': Ack.enumString(_boxFitValues).nullable(),
+  'alignment': alignmentGeometrySchema.nullable(),
+  'centerSlice': rectSchema.nullable(),
+  'filterQuality': Ack.enumString(_filterQualityValues).nullable(),
+  'colorBlendMode': Ack.enumString(_blendModeValues).nullable(),
+  'semanticLabel': Ack.string.nullable(),
+  'excludeFromSemantics': Ack.boolean.nullable(),
+  'gaplessPlayback': Ack.boolean.nullable(),
+  'isAntiAlias': Ack.boolean.nullable(),
+  'matchTextDirection': Ack.boolean.nullable(),
+  'animation': animationSchema.nullable(),
+  'modifier': modifierConfigSchema.nullable(),
+  'variants': Ack.list(variantSchema).nullable(),
+}, additionalProperties: false);
+
+final flexBoxDataSchema = Ack.object({
+  'box': boxCoreDataSchema.nullable(),
+  'flex': flexCoreDataSchema.nullable(),
+  'animation': animationSchema.nullable(),
+  'modifier': modifierConfigSchema.nullable(),
+  'variants': Ack.list(variantSchema).nullable(),
+}, additionalProperties: false);
+
+final stackBoxDataSchema = Ack.object({
+  'box': boxCoreDataSchema.nullable(),
+  'stack': stackCoreDataSchema.nullable(),
+  'animation': animationSchema.nullable(),
   'modifier': modifierConfigSchema.nullable(),
   'variants': Ack.list(variantSchema).nullable(),
 }, additionalProperties: false);

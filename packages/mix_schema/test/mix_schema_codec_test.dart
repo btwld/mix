@@ -406,47 +406,44 @@ void main() {
       expect(failure.errors[1].path, 'data.z');
     });
 
-    test(
-      'returns invalid_value when clipper resolves to incompatible type',
-      () {
-        final registryBuilder = RegistryBundleBuilder();
-        // Register an RRect clipper, but the payload uses clipOval which expects Rect
-        registryBuilder.modifierClipper.register(
-          'wrong_type_clipper',
-          const _TestRRectClipper(),
-        );
-        final registries = registryBuilder.freeze();
+    test('returns invalid_value when clipper resolves to incompatible type', () {
+      final registryBuilder = RegistryBundleBuilder();
+      // Register an RRect clipper, but the payload uses clipOval which expects Rect
+      registryBuilder.modifierClipper.register(
+        'wrong_type_clipper',
+        const _TestRRectClipper(),
+      );
+      final registries = registryBuilder.freeze();
 
-        final payload = <String, Object?>{
-          'schemaVersion': 1,
-          'stylerType': 'box',
-          'data': <String, Object?>{
-            'modifier': <String, Object?>{
-              'modifiers': <Object?>[
-                <String, Object?>{
-                  'kind': 'clipOval',
-                  'clipper': 'wrong_type_clipper',
-                },
-              ],
-            },
+      final payload = <String, Object?>{
+        'schemaVersion': 1,
+        'stylerType': 'box',
+        'data': <String, Object?>{
+          'modifier': <String, Object?>{
+            'modifiers': <Object?>[
+              <String, Object?>{
+                'kind': 'clipOval',
+                'clipper': 'wrong_type_clipper',
+              },
+            ],
           },
-        };
+        },
+      };
 
-        final result = codec.decode(payload, registries: registries);
-        expect(result, isA<MixSchemaFailure<DecodedStyler>>());
+      final result = codec.decode(payload, registries: registries);
+      expect(result, isA<MixSchemaFailure<DecodedStyler>>());
 
-        final failure = result as MixSchemaFailure<DecodedStyler>;
-        expect(
-          failure.errors.any(
-            (error) =>
-                error.code == 'invalid_value' &&
-                error.path == 'data.modifier.modifiers[0].clipper' &&
-                error.value == 'wrong_type_clipper',
-          ),
-          isTrue,
-        );
-      },
-    );
+      final failure = result as MixSchemaFailure<DecodedStyler>;
+      expect(
+        failure.errors.any(
+          (error) =>
+              error.code == 'invalid_value' &&
+              error.path == 'data.modifier.modifiers[0].clipper' &&
+              error.value == 'wrong_type_clipper',
+        ),
+        isTrue,
+      );
+    });
 
     test(
       'returns invalid_value when context variant builder resolves to incompatible type',
@@ -659,6 +656,490 @@ void main() {
         );
       },
     );
+  });
+
+  group('MixSchemaCodec M3 stylers', () {
+    test('decodes and encodes stack payload', () {
+      final payload = <String, Object?>{
+        'schemaVersion': 1,
+        'stylerType': 'stack',
+        'data': <String, Object?>{
+          'alignment': <String, Object?>{
+            'kind': 'alignment',
+            'x': 0.5,
+            'y': -0.25,
+          },
+          'fit': 'expand',
+          'textDirection': 'rtl',
+          'clipBehavior': 'hardEdge',
+        },
+      };
+
+      final decodeResult = codec.decode(
+        payload,
+        registries: FrozenRegistryBundle.empty(),
+      );
+      expect(decodeResult, isA<MixSchemaSuccess<DecodedStyler>>());
+      final decoded = (decodeResult as MixSchemaSuccess<DecodedStyler>).value;
+      expect(decoded.stackStyler, isNotNull);
+
+      final encodeResult = codec.encode(
+        decoded,
+        registries: FrozenRegistryBundle.empty(),
+      );
+      expect(encodeResult, isA<MixSchemaSuccess<Map<String, Object?>>>());
+      final encodedPayload =
+          (encodeResult as MixSchemaSuccess<Map<String, Object?>>).value;
+      expect(encodedPayload['stylerType'], 'stack');
+      expect(encodedPayload['data'], payload['data']);
+    });
+
+    test('decodes and encodes flex payload', () {
+      final payload = <String, Object?>{
+        'schemaVersion': 1,
+        'stylerType': 'flex',
+        'data': <String, Object?>{
+          'direction': 'horizontal',
+          'mainAxisAlignment': 'spaceBetween',
+          'crossAxisAlignment': 'center',
+          'mainAxisSize': 'max',
+          'verticalDirection': 'down',
+          'textDirection': 'ltr',
+          'textBaseline': 'alphabetic',
+          'clipBehavior': 'antiAlias',
+          'spacing': 12.0,
+        },
+      };
+
+      final decodeResult = codec.decode(
+        payload,
+        registries: FrozenRegistryBundle.empty(),
+      );
+      expect(decodeResult, isA<MixSchemaSuccess<DecodedStyler>>());
+      final decoded = (decodeResult as MixSchemaSuccess<DecodedStyler>).value;
+      expect(decoded.flexStyler, isNotNull);
+
+      final encodeResult = codec.encode(
+        decoded,
+        registries: FrozenRegistryBundle.empty(),
+      );
+      expect(encodeResult, isA<MixSchemaSuccess<Map<String, Object?>>>());
+      final encodedPayload =
+          (encodeResult as MixSchemaSuccess<Map<String, Object?>>).value;
+      expect(encodedPayload['stylerType'], 'flex');
+      expect(encodedPayload['data'], payload['data']);
+    });
+
+    test('decodes and encodes text payload with textScaler and locale', () {
+      final payload = <String, Object?>{
+        'schemaVersion': 1,
+        'stylerType': 'text',
+        'data': <String, Object?>{
+          'overflow': 'ellipsis',
+          'strutStyle': <String, Object?>{
+            'fontFamily': 'Roboto',
+            'fontSize': 14.0,
+            'fontWeight': 'w500',
+            'fontStyle': 'normal',
+            'height': 1.1,
+            'leading': 0.2,
+            'forceStrutHeight': true,
+          },
+          'textAlign': 'center',
+          'textScaler': <String, Object?>{'type': 'linear', 'factor': 1.25},
+          'maxLines': 2,
+          'style': <String, Object?>{
+            'color': 0xFF102030,
+            'fontSize': 16.0,
+            'fontWeight': 'w400',
+            'fontStyle': 'italic',
+            'letterSpacing': 0.2,
+            'wordSpacing': 0.4,
+            'height': 1.3,
+            'fontFamily': 'Roboto',
+          },
+          'textWidthBasis': 'longestLine',
+          'textHeightBehavior': <String, Object?>{
+            'applyHeightToFirstAscent': true,
+            'applyHeightToLastDescent': true,
+            'leadingDistribution': 'even',
+          },
+          'textDirection': 'ltr',
+          'softWrap': true,
+          'selectionColor': 0xFF445566,
+          'semanticsLabel': 'label',
+          'locale': <String, Object?>{
+            'languageCode': 'en',
+            'countryCode': 'US',
+          },
+        },
+      };
+
+      final decodeResult = codec.decode(
+        payload,
+        registries: FrozenRegistryBundle.empty(),
+      );
+      expect(decodeResult, isA<MixSchemaSuccess<DecodedStyler>>());
+      final decoded = (decodeResult as MixSchemaSuccess<DecodedStyler>).value;
+      expect(decoded.textStyler, isNotNull);
+
+      final encodeResult = codec.encode(
+        decoded,
+        registries: FrozenRegistryBundle.empty(),
+      );
+      expect(encodeResult, isA<MixSchemaSuccess<Map<String, Object?>>>());
+      final encodedPayload =
+          (encodeResult as MixSchemaSuccess<Map<String, Object?>>).value;
+      expect(encodedPayload['stylerType'], 'text');
+      expect(encodedPayload['data'], payload['data']);
+    });
+
+    test('rejects textDirectives in v1', () {
+      final payload = <String, Object?>{
+        'schemaVersion': 1,
+        'stylerType': 'text',
+        'data': <String, Object?>{
+          'textDirectives': <Object?>[
+            <String, Object?>{'kind': 'uppercase'},
+          ],
+        },
+      };
+
+      final result = codec.decode(
+        payload,
+        registries: FrozenRegistryBundle.empty(),
+      );
+      expect(result, isA<MixSchemaFailure<DecodedStyler>>());
+
+      final failure = result as MixSchemaFailure<DecodedStyler>;
+      expect(
+        failure.errors.any(
+          (error) =>
+              error.code == 'unsupported_metadata' &&
+              error.path == 'data.textDirectives',
+        ),
+        isTrue,
+      );
+    });
+
+    test('decodes and encodes icon payload', () {
+      final payload = <String, Object?>{
+        'schemaVersion': 1,
+        'stylerType': 'icon',
+        'data': <String, Object?>{
+          'color': 0xFF556677,
+          'size': 20.0,
+          'weight': 350.0,
+          'grade': 50.0,
+          'opticalSize': 24.0,
+          'shadows': <Object?>[
+            <String, Object?>{
+              'color': 0xFF111111,
+              'offset': <String, Object?>{'dx': 1.0, 'dy': 2.0},
+              'blurRadius': 4.0,
+            },
+          ],
+          'textDirection': 'ltr',
+          'applyTextScaling': true,
+          'fill': 1.0,
+          'semanticsLabel': 'icon label',
+          'opacity': 0.8,
+          'blendMode': 'srcOver',
+        },
+      };
+
+      final decodeResult = codec.decode(
+        payload,
+        registries: FrozenRegistryBundle.empty(),
+      );
+      expect(decodeResult, isA<MixSchemaSuccess<DecodedStyler>>());
+
+      final encodeResult = codec.encode(
+        (decodeResult as MixSchemaSuccess<DecodedStyler>).value,
+        registries: FrozenRegistryBundle.empty(),
+      );
+      expect(encodeResult, isA<MixSchemaSuccess<Map<String, Object?>>>());
+      final encodedPayload =
+          (encodeResult as MixSchemaSuccess<Map<String, Object?>>).value;
+      expect(encodedPayload['stylerType'], 'icon');
+      expect(encodedPayload['data'], payload['data']);
+    });
+
+    test('rejects icon field in v1', () {
+      final payload = <String, Object?>{
+        'schemaVersion': 1,
+        'stylerType': 'icon',
+        'data': <String, Object?>{
+          'icon': <String, Object?>{'codePoint': 57345},
+        },
+      };
+
+      final result = codec.decode(
+        payload,
+        registries: FrozenRegistryBundle.empty(),
+      );
+      expect(result, isA<MixSchemaFailure<DecodedStyler>>());
+
+      final failure = result as MixSchemaFailure<DecodedStyler>;
+      expect(
+        failure.errors.any(
+          (error) =>
+              error.code == 'unsupported_metadata' && error.path == 'data.icon',
+        ),
+        isTrue,
+      );
+    });
+
+    test('decodes and encodes image payload with registry-backed image', () {
+      const imageProvider = AssetImage('assets/sample.png');
+      final registryBuilder = RegistryBundleBuilder();
+      registryBuilder.imageProvider.register('img_primary', imageProvider);
+      final registries = registryBuilder.freeze();
+
+      final payload = <String, Object?>{
+        'schemaVersion': 1,
+        'stylerType': 'image',
+        'data': <String, Object?>{
+          'image': 'img_primary',
+          'width': 40.0,
+          'height': 50.0,
+          'color': 0xFF001122,
+          'repeat': 'noRepeat',
+          'fit': 'cover',
+          'alignment': <String, Object?>{
+            'kind': 'alignment',
+            'x': 0.0,
+            'y': 0.0,
+          },
+          'centerSlice': <String, Object?>{
+            'left': 1.0,
+            'top': 2.0,
+            'right': 30.0,
+            'bottom': 40.0,
+          },
+          'filterQuality': 'high',
+          'colorBlendMode': 'srcOver',
+          'semanticLabel': 'image label',
+          'excludeFromSemantics': false,
+          'gaplessPlayback': true,
+          'isAntiAlias': true,
+          'matchTextDirection': false,
+        },
+      };
+
+      final decodeResult = codec.decode(payload, registries: registries);
+      expect(decodeResult, isA<MixSchemaSuccess<DecodedStyler>>());
+      final decoded = (decodeResult as MixSchemaSuccess<DecodedStyler>).value;
+      expect(decoded.imageStyler, isNotNull);
+
+      final encodeResult = codec.encode(decoded, registries: registries);
+      expect(encodeResult, isA<MixSchemaSuccess<Map<String, Object?>>>());
+      final encodedPayload =
+          (encodeResult as MixSchemaSuccess<Map<String, Object?>>).value;
+      expect(encodedPayload['stylerType'], 'image');
+      expect(encodedPayload['data'], payload['data']);
+    });
+
+    test(
+      'returns unknown_registry_id for missing image registry id on decode',
+      () {
+        final payload = <String, Object?>{
+          'schemaVersion': 1,
+          'stylerType': 'image',
+          'data': <String, Object?>{'image': 'missing_image'},
+        };
+
+        final result = codec.decode(
+          payload,
+          registries: FrozenRegistryBundle.empty(),
+        );
+        expect(result, isA<MixSchemaFailure<DecodedStyler>>());
+
+        final failure = result as MixSchemaFailure<DecodedStyler>;
+        expect(
+          failure.errors.any(
+            (error) =>
+                error.code == 'unknown_registry_id' &&
+                error.path == 'data.image' &&
+                error.value == 'missing_image',
+          ),
+          isTrue,
+        );
+      },
+    );
+
+    test(
+      'aggregates encode unknown_registry_id errors for image + animation',
+      () {
+        void onEnd() {}
+
+        final style = ImageStyler(
+          image: const AssetImage('assets/unknown.png'),
+          animation: AnimationConfig.curve(
+            duration: const Duration(milliseconds: 120),
+            curve: Curves.linear,
+            onEnd: onEnd,
+          ),
+        );
+
+        final result = codec.encodeImage(
+          style,
+          registries: FrozenRegistryBundle.empty(),
+        );
+        expect(result, isA<MixSchemaFailure<Map<String, Object?>>>());
+
+        final failure = result as MixSchemaFailure<Map<String, Object?>>;
+        expect(failure.errors.length, 2);
+        expect(failure.errors[0].path, 'data.animation.onEnd');
+        expect(failure.errors[1].path, 'data.image');
+        expect(failure.errors[0].code, 'unknown_registry_id');
+        expect(failure.errors[1].code, 'unknown_registry_id');
+      },
+    );
+
+    test('decodes and encodes flexBox payload', () {
+      final payload = <String, Object?>{
+        'schemaVersion': 1,
+        'stylerType': 'flexBox',
+        'data': <String, Object?>{
+          'box': <String, Object?>{
+            'padding': <String, Object?>{
+              'kind': 'edgeInsets',
+              'left': 8.0,
+              'top': 6.0,
+            },
+            'clipBehavior': 'hardEdge',
+          },
+          'flex': <String, Object?>{
+            'direction': 'vertical',
+            'mainAxisAlignment': 'center',
+            'spacing': 10.0,
+          },
+        },
+      };
+
+      final decodeResult = codec.decode(
+        payload,
+        registries: FrozenRegistryBundle.empty(),
+      );
+      expect(decodeResult, isA<MixSchemaSuccess<DecodedStyler>>());
+      final decoded = (decodeResult as MixSchemaSuccess<DecodedStyler>).value;
+      expect(decoded.flexBoxStyler, isNotNull);
+
+      final encodeResult = codec.encode(
+        decoded,
+        registries: FrozenRegistryBundle.empty(),
+      );
+      expect(encodeResult, isA<MixSchemaSuccess<Map<String, Object?>>>());
+      final encodedPayload =
+          (encodeResult as MixSchemaSuccess<Map<String, Object?>>).value;
+      expect(encodedPayload['stylerType'], 'flexBox');
+      expect(encodedPayload['data'], payload['data']);
+    });
+
+    test('decodes and encodes stackBox payload', () {
+      final payload = <String, Object?>{
+        'schemaVersion': 1,
+        'stylerType': 'stackBox',
+        'data': <String, Object?>{
+          'box': <String, Object?>{
+            'margin': <String, Object?>{
+              'kind': 'edgeInsetsDirectional',
+              'start': 2.0,
+              'top': 1.0,
+            },
+          },
+          'stack': <String, Object?>{
+            'fit': 'passthrough',
+            'clipBehavior': 'antiAlias',
+          },
+        },
+      };
+
+      final decodeResult = codec.decode(
+        payload,
+        registries: FrozenRegistryBundle.empty(),
+      );
+      expect(decodeResult, isA<MixSchemaSuccess<DecodedStyler>>());
+      final decoded = (decodeResult as MixSchemaSuccess<DecodedStyler>).value;
+      expect(decoded.stackBoxStyler, isNotNull);
+
+      final encodeResult = codec.encode(
+        decoded,
+        registries: FrozenRegistryBundle.empty(),
+      );
+      expect(encodeResult, isA<MixSchemaSuccess<Map<String, Object?>>>());
+      final encodedPayload =
+          (encodeResult as MixSchemaSuccess<Map<String, Object?>>).value;
+      expect(encodedPayload['stylerType'], 'stackBox');
+      expect(encodedPayload['data'], payload['data']);
+    });
+
+    test('rejects nested metadata inside flexBox composite branches', () {
+      final style = FlexBoxStyler.create(
+        box: Prop.maybeMix(
+          BoxStyler(
+            animation: AnimationConfig.curve(
+              duration: const Duration(milliseconds: 100),
+              curve: Curves.linear,
+            ),
+          ),
+        ),
+      );
+
+      final result = codec.encodeFlexBox(
+        style,
+        registries: FrozenRegistryBundle.empty(),
+      );
+      expect(result, isA<MixSchemaFailure<Map<String, Object?>>>());
+
+      final failure = result as MixSchemaFailure<Map<String, Object?>>;
+      expect(
+        failure.errors.any(
+          (error) =>
+              error.code == 'unsupported_metadata' &&
+              error.path == 'data.box.animation',
+        ),
+        isTrue,
+      );
+    });
+
+    test('supports typed context variant builder for text', () {
+      final registryBuilder = RegistryBundleBuilder();
+      TextStyler textBuilder(BuildContext context) {
+        return TextStyler().color(const Color(0xFFABCDEF));
+      }
+
+      registryBuilder.contextVariantBuilder.register('ctx_text', textBuilder);
+      final registries = registryBuilder.freeze();
+
+      final payload = <String, Object?>{
+        'schemaVersion': 1,
+        'stylerType': 'text',
+        'data': <String, Object?>{
+          'variants': <Object?>[
+            <String, Object?>{
+              'kind': 'contextVariantBuilder',
+              'fn': 'ctx_text',
+            },
+          ],
+        },
+      };
+
+      final decodeResult = codec.decode(payload, registries: registries);
+      expect(decodeResult, isA<MixSchemaSuccess<DecodedStyler>>());
+
+      final encodeResult = codec.encode(
+        (decodeResult as MixSchemaSuccess<DecodedStyler>).value,
+        registries: registries,
+      );
+      expect(encodeResult, isA<MixSchemaSuccess<Map<String, Object?>>>());
+      final encodedPayload =
+          (encodeResult as MixSchemaSuccess<Map<String, Object?>>).value;
+      final encodedData = encodedPayload['data'] as Map<String, Object?>;
+      final sourceData = payload['data'] as Map<String, Object?>;
+      expect(encodedData['variants'], sourceData['variants']);
+    });
   });
 }
 

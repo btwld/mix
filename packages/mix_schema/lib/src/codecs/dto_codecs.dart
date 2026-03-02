@@ -273,6 +273,58 @@ final class DtoCodecs {
     };
   }
 
+  static Shadow decodeShadow(Map<String, Object?> data) {
+    final colorInt = _asInt(data['color']);
+    final offsetData = data['offset'] as Map<String, Object?>?;
+    final dx = _asDouble(offsetData?['dx']) ?? 0.0;
+    final dy = _asDouble(offsetData?['dy']) ?? 0.0;
+
+    return Shadow(
+      color: colorInt != null ? Color(colorInt) : const Color(0xFF000000),
+      offset: Offset(dx, dy),
+      blurRadius: _asDouble(data['blurRadius']) ?? 0.0,
+    );
+  }
+
+  static Map<String, Object?> encodeShadow(Shadow value) {
+    return {
+      'color': value.color.toARGB32(),
+      if (value.offset != Offset.zero)
+        'offset': {'dx': value.offset.dx, 'dy': value.offset.dy},
+      if (value.blurRadius != 0) 'blurRadius': value.blurRadius,
+    };
+  }
+
+  static Map<String, Object?> encodeShadowMix(ShadowMix value) {
+    return {
+      if (_directColor(value.$color, field: 'color') case final color?)
+        'color': color.toARGB32(),
+      if (_directOffset(value.$offset, field: 'offset') case final offset?)
+        'offset': {'dx': offset.dx, 'dy': offset.dy},
+      if (_directDouble(value.$blurRadius, field: 'blurRadius')
+          case final blurRadius?)
+        'blurRadius': blurRadius,
+    };
+  }
+
+  static Rect decodeRect(Map<String, Object?> data) {
+    return Rect.fromLTRB(
+      _asRequiredDouble(data['left'], field: 'left'),
+      _asRequiredDouble(data['top'], field: 'top'),
+      _asRequiredDouble(data['right'], field: 'right'),
+      _asRequiredDouble(data['bottom'], field: 'bottom'),
+    );
+  }
+
+  static Map<String, Object?> encodeRect(Rect value) {
+    return {
+      'left': value.left,
+      'top': value.top,
+      'right': value.right,
+      'bottom': value.bottom,
+    };
+  }
+
   static BoxBorderMix decodeBoxBorder(Map<String, Object?> data) {
     final kind = data['kind'] as String;
 
@@ -706,6 +758,48 @@ final class DtoCodecs {
           )
           case final leadingDistribution?)
         'leadingDistribution': leadingDistribution,
+    };
+  }
+
+  static TextScaler decodeTextScaler(Map<String, Object?> data) {
+    final type = data['type'] as String?;
+    if (type != 'linear') {
+      throw StateError('Unsupported TextScaler type: $type');
+    }
+
+    return TextScaler.linear(
+      _asRequiredDouble(data['factor'], field: 'factor'),
+    );
+  }
+
+  static Map<String, Object?> encodeTextScaler(TextScaler value) {
+    final factor = value.scale(1.0);
+    if (value != TextScaler.linear(factor)) {
+      throw StateError(
+        'Only linear TextScaler is supported in v1. Received: ${value.runtimeType}.',
+      );
+    }
+
+    return {'type': 'linear', 'factor': factor};
+  }
+
+  static Locale decodeLocale(Map<String, Object?> data) {
+    final languageCode = data['languageCode'] as String?;
+    if (languageCode == null || languageCode.isEmpty) {
+      throw StateError('Locale.languageCode must be a non-empty string.');
+    }
+
+    final countryCode = data['countryCode'] as String?;
+    return Locale(
+      languageCode,
+      countryCode?.isEmpty ?? true ? null : countryCode,
+    );
+  }
+
+  static Map<String, Object?> encodeLocale(Locale value) {
+    return {
+      'languageCode': value.languageCode,
+      if (value.countryCode != null) 'countryCode': value.countryCode,
     };
   }
 
