@@ -14,9 +14,6 @@ final plugin = MixLintPlugin();
 
 class MixLintPlugin extends Plugin {
   @override
-  String get name => 'mix_lint';
-
-  @override
   void register(PluginRegistry registry) {
     registry.registerLintRule(MixAvoidDefiningTokensWithinStyle());
     registry.registerLintRule(MixAvoidDefiningTokensWithinScope());
@@ -25,4 +22,7 @@ class MixLintPlugin extends Plugin {
     registry.registerLintRule(MixVariantsLast());
     registry.registerLintRule(MixMixableStylerHasCreate());
   }
+
+  @override
+  String get name => 'mix_lint';
 }

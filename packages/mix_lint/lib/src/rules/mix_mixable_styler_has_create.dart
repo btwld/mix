@@ -39,7 +39,7 @@ class MixMixableStylerHasCreate extends AnalysisRule {
 class _Visitor extends SimpleAstVisitor<void> {
   final AnalysisRule rule;
 
-  _Visitor(this.rule);
+  const _Visitor(this.rule);
 
   bool _isMixableStylerAnnotation(Annotation annotation) {
     // Use toSource() on the name to handle both simple and prefixed identifiers.
@@ -56,13 +56,15 @@ class _Visitor extends SimpleAstVisitor<void> {
     final hasMixableStyler = node.metadata.any(_isMixableStylerAnnotation);
     if (!hasMixableStyler) return;
 
-    final hasCreateConstructor = node.members.any((member) {
-      return member is ConstructorDeclaration &&
-          member.name?.lexeme == 'create';
-    });
+    final body = node.body;
+    final hasCreateConstructor = body is BlockClassBody &&
+        body.members.any((member) {
+          return member is ConstructorDeclaration &&
+              member.name?.lexeme == 'create';
+        });
 
     if (!hasCreateConstructor) {
-      rule.reportAtToken(node.name);
+      rule.reportAtNode(node.namePart);
     }
   }
 }

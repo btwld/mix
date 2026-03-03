@@ -16,15 +16,12 @@ class MixAvoidDefiningTokensWithinStyle extends AnalysisRule {
   );
 
   MixAvoidDefiningTokensWithinStyle()
-      : super(
-          name: 'mix_avoid_defining_tokens_within_style',
-          description:
-              'Ensures MixToken instances are not created inline within Styler method chains. '
-              'Tokens are meant to be shared; creating them inline makes them local and hard to reuse.',
-        );
-
-  @override
-  LintCode get diagnosticCode => code;
+    : super(
+        name: 'mix_avoid_defining_tokens_within_style',
+        description:
+            'Ensures MixToken instances are not created inline within Styler method chains. '
+            'Tokens are meant to be shared; creating them inline makes them local and hard to reuse.',
+      );
 
   @override
   void registerNodeProcessors(
@@ -34,12 +31,15 @@ class MixAvoidDefiningTokensWithinStyle extends AnalysisRule {
     final visitor = _Visitor(this);
     registry.addInstanceCreationExpression(this, visitor);
   }
+
+  @override
+  LintCode get diagnosticCode => code;
 }
 
 class _Visitor extends SimpleAstVisitor<void> {
   final AnalysisRule rule;
 
-  _Visitor(this.rule);
+  const _Visitor(this.rule);
 
   @override
   void visitInstanceCreationExpression(InstanceCreationExpression node) {
@@ -53,11 +53,13 @@ class _Visitor extends SimpleAstVisitor<void> {
         current is! Declaration) {
       if (current is MethodInvocation && isMixStylerType(current.staticType)) {
         rule.reportAtNode(node);
+
         return;
       }
       if (current is InstanceCreationExpression &&
           isMixStylerType(current.staticType)) {
         rule.reportAtNode(node);
+
         return;
       }
       current = current.parent;

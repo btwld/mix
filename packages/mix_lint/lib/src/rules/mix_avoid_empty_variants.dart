@@ -16,15 +16,12 @@ class MixAvoidEmptyVariants extends AnalysisRule {
   );
 
   MixAvoidEmptyVariants()
-      : super(
-          name: 'mix_avoid_empty_variants',
-          description:
-              'Ensures Styler chains include at least one non-variant method. '
-              'A style with only variant overrides (onHovered, onDark, etc.) has no default appearance.',
-        );
-
-  @override
-  LintCode get diagnosticCode => code;
+    : super(
+        name: 'mix_avoid_empty_variants',
+        description:
+            'Ensures Styler chains include at least one non-variant method. '
+            'A style with only variant overrides (onHovered, onDark, etc.) has no default appearance.',
+      );
 
   @override
   void registerNodeProcessors(
@@ -34,26 +31,15 @@ class MixAvoidEmptyVariants extends AnalysisRule {
     final visitor = _Visitor(this);
     registry.addInstanceCreationExpression(this, visitor);
   }
+
+  @override
+  LintCode get diagnosticCode => code;
 }
 
 class _Visitor extends SimpleAstVisitor<void> {
   final AnalysisRule rule;
 
-  _Visitor(this.rule);
-
-  @override
-  void visitInstanceCreationExpression(InstanceCreationExpression node) {
-    if (!isMixStylerType(node.staticType)) return;
-
-    final chain = _collectChain(node);
-    if (chain.isEmpty) return;
-
-    final allVariants =
-        chain.every((mi) => isVariantMethodName(mi.methodName.name));
-    if (allVariants) {
-      rule.reportAtNode(node);
-    }
-  }
+  const _Visitor(this.rule);
 
   /// Collects the linear chain of [MethodInvocation]s directly following [ice].
   /// Stops when the chain branches into non-target contexts (e.g. argument lists).
@@ -72,5 +58,20 @@ class _Visitor extends SimpleAstVisitor<void> {
     }
 
     return chain;
+  }
+
+  @override
+  void visitInstanceCreationExpression(InstanceCreationExpression node) {
+    if (!isMixStylerType(node.staticType)) return;
+
+    final chain = _collectChain(node);
+    if (chain.isEmpty) return;
+
+    final allVariants = chain.every(
+      (mi) => isVariantMethodName(mi.methodName.name),
+    );
+    if (allVariants) {
+      rule.reportAtNode(node);
+    }
   }
 }

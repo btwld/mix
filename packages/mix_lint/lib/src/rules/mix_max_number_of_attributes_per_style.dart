@@ -20,16 +20,13 @@ class MixMaxNumberOfAttributesPerStyle extends AnalysisRule {
   final int maxNumber;
 
   MixMaxNumberOfAttributesPerStyle({this.maxNumber = defaultMaxNumber})
-      : super(
-          name: 'mix_max_number_of_attributes_per_style',
-          description:
-              'Limits the number of method calls in a single Styler chain. '
-              'Large styles are harder to read and maintain; '
-              'prefer composing smaller Stylers with merge().',
-        );
-
-  @override
-  LintCode get diagnosticCode => code;
+    : super(
+        name: 'mix_max_number_of_attributes_per_style',
+        description:
+            'Limits the number of method calls in a single Styler chain. '
+            'Large styles are harder to read and maintain; '
+            'prefer composing smaller Stylers with merge().',
+      );
 
   @override
   void registerNodeProcessors(
@@ -39,23 +36,16 @@ class MixMaxNumberOfAttributesPerStyle extends AnalysisRule {
     final visitor = _Visitor(this, maxNumber);
     registry.addInstanceCreationExpression(this, visitor);
   }
+
+  @override
+  LintCode get diagnosticCode => code;
 }
 
 class _Visitor extends SimpleAstVisitor<void> {
   final AnalysisRule rule;
   final int maxNumber;
 
-  _Visitor(this.rule, this.maxNumber);
-
-  @override
-  void visitInstanceCreationExpression(InstanceCreationExpression node) {
-    if (!isMixStylerType(node.staticType)) return;
-
-    final chain = _collectChain(node);
-    if (chain.length > maxNumber) {
-      rule.reportAtNode(node);
-    }
-  }
+  const _Visitor(this.rule, this.maxNumber);
 
   List<MethodInvocation> _collectChain(InstanceCreationExpression ice) {
     final chain = <MethodInvocation>[];
@@ -72,5 +62,15 @@ class _Visitor extends SimpleAstVisitor<void> {
     }
 
     return chain;
+  }
+
+  @override
+  void visitInstanceCreationExpression(InstanceCreationExpression node) {
+    if (!isMixStylerType(node.staticType)) return;
+
+    final chain = _collectChain(node);
+    if (chain.length > maxNumber) {
+      rule.reportAtNode(node);
+    }
   }
 }
