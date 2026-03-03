@@ -1,23 +1,21 @@
 ### mix_avoid_empty_variants
 
-Avoid creating empty variants directly inside `Style`. Empty variants are essentially useless and can make the code harder to read and understand.
+Don't create a Styler that only has `.on` variant methods (e.g. `.onHovered`, `.onDark`, `.onPressed`). Always include base styling so the style has a default appearance; then add variants for overrides.
 
 #### Don't
 
 ```dart
-final a = NamedVariant('a');
-
-final wrong_case = Style(
-  a(),
-);
+// Styler with only variant methods, no base style
+final style = BoxStyler()
+    .onHovered(BoxStyler().color(Colors.blue))
+    .onPressed(BoxStyler().color(Colors.green));
 ```
 
 #### Do
 
 ```dart
-final correct_case = Style(
-  a(
-    $box.color.amber(),
-  ),
-);
+final style = BoxStyler()
+    .color(Colors.grey)
+    .onHovered(BoxStyler().color(Colors.blue))
+    .onPressed(BoxStyler().color(Colors.green));
 ```

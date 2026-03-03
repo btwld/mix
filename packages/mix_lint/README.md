@@ -1,250 +1,246 @@
 # mix_lint
 
-Mix Lint is a powerful tool that helps you enforce coding standards and best practices in your Flutter apps using Mix.
+Mix Lint helps you enforce coding standards and best practices in Flutter apps using [Mix](https://github.com/virtuallyio/mix).
 
 ## Getting Started
 
-Run this command in the root of your Flutter project:
+Add `mix_lint` as a dev dependency:
 
 ```bash
-flutter pub add -d mix_lint custom_lint
+dart pub add -d mix_lint
 ```
 
-Then edit your `analysis_options.yaml` file and add these lines of code:
+Enable the plugin in `analysis_options.yaml` (requires Dart ≥ 3.10 / Flutter ≥ 3.38):
 
-```bash
-analyzer:
-  plugins:
-    - custom_lint
+```yaml
+plugins:
+  mix_lint: any
 ```
 
-Then run:
+Enable individual lint rules:
 
-```bash
-flutter clean
-flutter pub get
-dart run custom_lint
+```yaml
+plugins:
+  mix_lint:
+    diagnostics:
+      mix_avoid_defining_tokens_within_style: true
+      mix_avoid_defining_tokens_within_scope: true
+      mix_avoid_empty_variants: true
+      mix_max_number_of_attributes_per_style: true
+      mix_variants_last: true
+      mix_mixable_styler_has_create: true
 ```
 
-## Customize rules
+Then restart the analysis server (or your IDE) to pick up the new plugin.
 
-Some rules have their own configuration. You can customize them in the `analysis_options.yaml` file. For example, you can customize the rules for the `mix_max_number_of_attributes_per_style` rule.
+## Suppressing diagnostics
 
-```yaml filename="analysis_options.dart"
-custom_lint:
-  rules:
-    - mix_max_number_of_attributes_per_style:
-      max_number: 11
+Use standard `// ignore:` comments with the format `mix_lint/<rule_name>`:
+
+```dart
+// ignore: mix_lint/mix_variants_last
+final style = BoxStyler().onHovered(x).paddingAll(16);
 ```
 
 ## Rules
 
-### mix_attributes_ordering
+### mix_avoid_defining_tokens_within_style
 
-Ensure that the attributes are ordered in groups of the same category in the Style constructor. It makes the code easier to read and understand the Style.
+Ensure that `MixToken` instances are not created directly inside Styler method calls. Define tokens outside the style (e.g. top-level or as local constants), then pass them in.
+
+Tokens are meant to be shared across the app. Creating them inline inside a Styler makes them local to that call and harder to reuse or reference elsewhere.
 
 #### Don't
 
 ```dart
-Style (
-    $box.color.red(),
-    $text.color.blue(),
-    $box.height(200),
-    $text.style.fontSize(10),
-)
+// Inline token inside a Styler
+final style = BoxStyler()
+    .color.ref(ColorToken('primary'))
+    .borderRadiusTopLeft(RadiusToken('rounded')());
 ```
 
 #### Do
 
 ```dart
-Style (
-    $box.color.red(),
-    $box.height(200),
-    $text.color.blue(),
-    $text.style.fontSize(10),
-)
+final primary = ColorToken('primary');
+final rounded = RadiusToken('rounded');
+
+final style = BoxStyler()
+    .color.ref(primary)
+    .borderRadiusTopLeft(rounded());
 ```
 
-### mix_avoid_defining_tokens_or_variants_within_style
+### mix_avoid_defining_tokens_within_scope
 
-Ensure that `Variant` and `MixToken` instances are not created directly inside Style constructors. Instead, instantiate Variant and `MixToken` outside of Style constructors.
+Ensure that `MixToken` instances are not created directly inside `MixScope` constructors. Define tokens outside (e.g. top-level or as local constants), then use them as keys in the scope's maps.
 
-`Variant`s and `MixToken`s should be shared across the application. If they are created inside a `Style`, it means that they are local to the `Style`, and it will be harder to reuse them.
+The scope maps tokens to resolved values; the tokens themselves should already exist. Creating them inline makes them unreferenceable elsewhere and can lead to duplication.
 
 #### Don't
 
 ```dart
-Style(
-    const Variant('example')(
-        $text.textAlign.center(),
-        $box.height(200),
-        $box.width(200),
-    ),
-)
-```
-
-```dart
-Style(
-    $box.color.ref(ColorToken('primary')),
-)
+MixScope(
+  colors: {
+    ColorToken('primary'): Colors.blue,
+  },
+  child: child,
+);
 ```
 
 #### Do
-
-```dart
-final example = NamedVariant('example');
-
-Style(
-    example(
-        $text.textAlign.center(),
-        $box.height(200),
-        $box.width(200),
-    ),
-)
-```
 
 ```dart
 final primary = ColorToken('primary');
 
-Style(
-    $box.color.ref(primary),
-)
-```
-
-### mix_avoid_defining_tokens_within_theme_data
-
-Ensure that Tokens instances are not created directly inside `MixThemeData` constructors.
-
-When you create tokens within a `MixThemeData`, you're essentially creating a localized scope that may not be easily accessible elsewhere in your application. This can lead to unnecessary token recreation or, worse, duplicated efforts to reuse them.
-
-#### Don't
-
-```dart
-MixThemeData(
-    colors: {
-        const ColorToken('a'): Colors.black12,
-    }
-)
-```
-
-#### Do
-
-```dart
-final primary = ColorToken('a');
-
-MixThemeData(
-    colors: {
-        primary: Colors.black12,
-    }
-)
+MixScope(
+  colors: {
+    primary: Colors.blue,
+  },
+  child: child,
+);
 ```
 
 ### mix_avoid_empty_variants
 
-Avoid creating empty variants directly inside `Style`. Empty variants are essentially useless and can make the code harder to read and understand.
+Don't create a Styler that only has `.on` variant methods (e.g. `.onHovered`, `.onDark`, `.onPressed`). Always include base styling so the style has a default appearance; then add variants for overrides.
 
 #### Don't
 
 ```dart
-final a = NamedVariant('a');
-
-final wrong_case = Style(
-  a(),
-);
+// Styler with only variant methods, no base style
+final style = BoxStyler()
+    .onHovered(BoxStyler().color(Colors.blue))
+    .onPressed(BoxStyler().color(Colors.green));
 ```
 
 #### Do
 
 ```dart
-final correct_case = Style(
-  a(
-    $box.color.amber(),
-  ),
-);
-```
-
-### mix_avoid_variant_inside_context_variant
-
-`ContextVariant` and the standard `Variant` are applied at different moments during the `Style` lifecycle. Because of this, we strongly recommend that you don't create a `Variant` inside the `ContextVariant`'s scope. Instead, you can combine the `Variant`s using the `&` and `|` operators.
-
-#### Don't
-
-```dart
-final variantTest = NamedVariant('test');
-
-Style (
-    $box.color.red(),
-    $on.hover(
-        $box.color.green(),
-        variantTest(
-            $box.color.blue(),
-        )
-    ),
-)
-```
-
-#### Do
-
-```dart
-final variantTest = NamedVariant('test');
-
-Style (
-    $box.color.red(),
-    $on.hover(
-        $box.color.green(),
-    ),
-    ($on.hover & variantTest)(
-        $box.color.blue(),
-    ),
-)
+final style = BoxStyler()
+    .color(Colors.grey)
+    .onHovered(BoxStyler().color(Colors.blue))
+    .onPressed(BoxStyler().color(Colors.green));
 ```
 
 ### mix_max_number_of_attributes_per_style
 
-Limit the number of attributes per style. The default value is 15. This rule aims to encourage developers to keep their styles concise and focused on a few key aspects.
+Limit the number of attributes per style. The default value is 15. This rule encourages keeping styles concise and focused; split large styles into smaller, reusable Stylers and compose with `merge()`.
+
+The rule reports when a `Styler` constructor or a variant-style invocation has more than `max_number` arguments.
 
 #### Don't
 
 ```dart
-final style = Style (
-    $attribute1(),
-    $attribute2(),
-    $attribute3(),
-    $attribute4(),
-    $attribute5(),
-    $attribute6(),
-    $attribute7(),
-    $attribute8(),
-    $attribute9(),
-    $attribute10(),
-    $attribute11(),
-);
+// One large style with too many arguments (exceeds max_number)
+final style = BoxStyler()
+    .color(Colors.blue)
+    .paddingAll(8)
+    .margin(.all(4))
+    .alignment(.center)
+    .borderRounded(8)
+    .width(200)
+    .height(100)
+    .opacity(0.9)
+    .onHovered(BoxStyler()
+        .color(Colors.red)
+        .paddingAll(12)
+        .margin(.all(6))
+        .borderRounded(10)
+        .width(220)
+        .height(120)
+        .opacity(1.0));
 ```
 
 #### Do
 
 ```dart
-final auxStyle = Style(
-    $attribute1(),
-    $attribute2(),
-    $attribute3(),
-    $attribute4(),
-    $attribute5(),
-);
+final layout = BoxStyler()
+    .paddingAll(8)
+    .margin(.all(4))
+    .alignment(.center);
 
-final mainStyle = Style(
-    auxStyle(),
-    $attribute6(),
-    $attribute7(),
-    $attribute8(),
-    $attribute9(),
-    $attribute10(),
-    $attribute11(),
-);
+final appearance = BoxStyler()
+    .color(Colors.blue)
+    .borderRounded(8)
+    .width(200)
+    .height(100)
+    .opacity(0.9);
+
+final hovered = BoxStyler()
+    .color(Colors.red)
+    .paddingAll(12)
+    .margin(.all(6))
+    .borderRounded(10)
+    .width(220)
+    .height(120)
+    .opacity(1.0);
+
+final style = layout
+    .merge(appearance)
+    .onHovered(hovered);
 ```
 
 #### Parameters
 
 ##### max_number (int)
 
-The maximum number of attributes allowed per style. The default value is 15.
+The maximum number of attributes allowed per style (or per variant invocation). The default value is 15.
+
+### mix_variants_last
+
+Ensures that variant methods (`onHovered`, `onPressed`, `onFocused`, `onDisabled`, `onDark`, etc.) are placed at the bottom of the Styler chain, after all base styling methods. Mixing variant calls between base properties makes the style harder to read and reason about.
+
+#### Don't
+
+```dart
+final style = BoxStyler()
+    .color(Colors.red)
+    .onHovered(.color(Colors.blue))
+    .paddingAll(16)
+    .borderRounded(8)
+    .onPressed(.color(Colors.green));
+```
+
+#### Do
+
+```dart
+final style = BoxStyler()
+    .color(Colors.red)
+    .paddingAll(16)
+    .borderRounded(8)
+    .onHovered(.color(Colors.blue))
+    .onPressed(.color(Colors.green));
+```
+
+### mix_mixable_styler_has_create
+
+Ensures that every class annotated with `@MixableStyler` defines a named constructor `.create`. The generated Styler mixin and the rest of the Mix API expect this constructor for const instantiation, merging, and default styles (e.g. `const BoxStyler.create()`).
+
+#### Don't
+
+```dart
+@MixableStyler()
+class MyStyler extends Style<MySpec> with _$MyStylerMixin {
+  final Prop<Color>? $color;
+
+  MyStyler({Prop<Color>? color}) : $color = color;
+}
+```
+
+#### Do
+
+```dart
+@MixableStyler()
+class MyStyler extends Style<MySpec> with _$MyStylerMixin {
+  final Prop<Color>? $color;
+
+  const MyStyler.create({
+    Prop<Color>? color,
+    super.variants,
+    super.modifier,
+    super.animation,
+  }) : $color = color;
+
+  MyStyler({Color? color, ...}) : this.create(color: Prop.maybe(color), ...);
+}
+```
