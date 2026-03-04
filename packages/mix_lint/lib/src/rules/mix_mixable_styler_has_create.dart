@@ -57,7 +57,8 @@ class _Visitor extends SimpleAstVisitor<void> {
     if (!hasMixableStyler) return;
 
     final body = node.body;
-    final hasCreateConstructor = body is BlockClassBody &&
+    final hasCreateConstructor =
+        body is BlockClassBody &&
         body.members.any((member) {
           return member is ConstructorDeclaration &&
               member.name?.lexeme == 'create';
