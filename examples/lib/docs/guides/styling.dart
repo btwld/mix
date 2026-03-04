@@ -5,7 +5,11 @@ import 'package:mix/mix.dart';
 
 void main() {
   // 1
-  final style = BoxStyler().width(240).height(100).color(Colors.blue).borderRounded(12);
+  final style = BoxStyler()
+      .width(240)
+      .height(100)
+      .color(Colors.blue)
+      .borderRounded(12);
 
   // 2
   final base = BoxStyler()
