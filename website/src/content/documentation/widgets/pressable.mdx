@@ -1,5 +1,6 @@
 ---
 title: Pressable
+description: "Handle press, hover, focus, and disabled interaction states for Mix widgets."
 ---
 
 import { Callout } from "nextra/components";
@@ -70,7 +71,7 @@ Pressable(
 ```
 
 <Callout type="info">
-When `mouseCursor` is null, `Pressable` chooses `SystemMouseCursors.click` when enabled and `SystemMouseCursors.basic` when disabled.
+When `mouseCursor` is null, `Pressable` chooses `SystemMouseCursors.click` when enabled and `SystemMouseCursors.forbidden` when disabled.
 </Callout>
 
 ## PressableBox
@@ -116,7 +117,7 @@ PressableBox(
       .borderRounded(8)
       .onPressed(.color(Colors.red))
       .onHovered(.color(Colors.green))
-      .onFocused(.border(Border.all(color: Colors.white, width: 2)))
+      .onFocused(.borderAll(color: Colors.white, width: 2))
       .onDisabled(.color(Colors.grey)),
   onPress: () => print('Interactive button pressed'),
   child: StyledText('Interactive Button'),
@@ -132,3 +133,8 @@ PressableBox(
 | `onFocused` | Styles applied when the widget gains focus |
 | `onDisabled` | Styles applied when the widget is disabled |
 | `onEnabled` | Styles applied when the widget is enabled and interactive |
+
+## Related
+
+- [Dynamic Styling](/documentation/guides/dynamic-styling) — variant system for hover, press, focus, and more
+- [Box](/documentation/widgets/box) — `BoxStyler` API used with `PressableBox`

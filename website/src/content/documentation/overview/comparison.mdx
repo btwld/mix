@@ -1,15 +1,22 @@
+---
+title: "Comparison"
+description: "Compare Mix and plain Flutter approaches for styling and interaction states."
+---
+
+# Comparison
+
 ## A Comparative Look at Mix
 
-Mix rethinks the way we handle styling in Flutter by simplifying and streamlining the process. This comparison aims to showcase how Mix enhances code readability, maintainability, and reduces boilerplate, especially when dealing with complex widget styles and interactions.
+Mix simplifies Flutter styling by reducing boilerplate and separating style from logic. This comparison shows how Mix handles complex widget styles and interactions versus plain Flutter.
 
 ### Code Comparison: With Mix vs. Without Mix
 
-We'll compare a common scenario: styling a custom widget, to illustrate the advantages of using Mix. In this example, we'll be styling a custom widget with the following requirements:
+This comparison styles a custom widget with the following requirements:
 
-- **Flexible Overriding of Styles**: This demonstrates the ability to override specific `TextStyle` and `BoxDecoration` properties, showcasing Mix's flexibility and adaptability in customization.
-- **Simplified Interaction-Based Styling**: This highlights Mix’s capability to handle hover states effortlessly, allowing for dynamic styling changes in response to user interactions.
+- **Flexible style overriding** — Override specific `TextStyle` and `BoxDecoration` properties independently
+- **Interaction-based styling** — Apply different styles on hover, press, and dark mode without manual state management
 
-#### With Mix
+### With Mix
 
 ```dart
 class CustomMixWidget extends StatelessWidget {
@@ -23,8 +30,7 @@ class CustomMixWidget extends StatelessWidget {
         .animate(.easeInOut(100.ms))
         .onDark(.color(Colors.black))
         .onHovered(
-          .new()
-              .animate(.easeInOut(100.ms))
+          .animate(.easeInOut(100.ms))
               .onLight(.color(Colors.white)),
         );
   }
@@ -64,7 +70,7 @@ class CustomMixWidget extends StatelessWidget {
 }
 ```
 
-Take a look at how Mix lets you define styles and handle hover states in a really clean. The code is shorter, easier to follow, and just feels more natural to work with.
+Mix separates style definitions from interaction logic. The code is shorter, has no manual state tracking, and style changes are declarative.
 
 ### Without Mix
 
@@ -82,7 +88,7 @@ class _CustomWidgetState extends State<CustomWidget> {
   bool _isHover = false;
 
   final _curve = Curves.linear;
-  final _duration = 100.ms;
+  final _duration = const Duration(milliseconds: 100);
 
   @override
   Widget build(BuildContext context) {
@@ -92,10 +98,14 @@ class _CustomWidgetState extends State<CustomWidget> {
     final borderRadius = BorderRadius.circular(10);
 
     final onHoverTextColor =
-        isDark ? textColor.lighten(20) : textColor.darken(20);
+        isDark
+            ? Color.lerp(textColor, Colors.white, 0.2)!
+            : Color.lerp(textColor, Colors.black, 0.2)!;
 
     final onHoverBgColor =
-        isDark ? backgroundColor.lighten(20) : backgroundColor.darken(30);
+        isDark
+            ? Color.lerp(backgroundColor, Colors.white, 0.2)!
+            : Color.lerp(backgroundColor, Colors.black, 0.3)!;
 
     return MouseRegion(
       onEnter: (event) {
@@ -142,4 +152,4 @@ class _CustomWidgetState extends State<CustomWidget> {
 }
 ```
 
-Without Mix, the code is more verbose, especially in managing the hover state and styling. The separation between logic and presentation is less clear.
+Without Mix, the code requires manual `setState`, `MouseRegion`, and multiple `Animated*` widgets. Style logic is interleaved with widget construction, making it harder to maintain.

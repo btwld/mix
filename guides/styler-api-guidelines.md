@@ -82,7 +82,7 @@ These are used mid-chain or at the end. They should remain as instance methods:
 | Modifiers | `wrap`, `phaseAnimation`, `keyframeAnimation` |
 | Compound spacing | `padding(.all(8))`, `padding(.horizontal(8))`, `padding(.vertical(8))`, `margin(.all(8))`, `margin(.horizontal(8))`, `margin(.vertical(8))`, `padding(.only(left: 8, right: 8))` |
 | Compound border | `border(.all())`, `border(.top())`, `borderRadius(.circular())` |
-| Compound box methods | `shadow(.color(...).blurRadius(...))`, `backgroundImageUrl` |
+| Compound box methods | `backgroundImageUrl` |
 | Text directives | `uppercase`, `titlecase`, `sentencecase`, `reverse` |
 | Variants | `onHovered`, `onPressed`, `onDark`, `onLight`, `onDisabled`, `onFocused`, `variant`, `onBreakpoint` |
 

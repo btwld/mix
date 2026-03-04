@@ -1,3 +1,8 @@
+---
+title: "StackBox"
+description: "Build styled stacked layouts in Flutter with StackBoxStyler — positioning, decoration, constraints, and responsive variants in Mix."
+---
+
 # StackBox
 
 `StackBox` is equivalent to Flutter's `Stack` and `Container` widgets combined, but provides powerful styling capabilities through the Mix framework.
@@ -7,15 +12,11 @@
 You can use the `StackBoxStyler` API to fluently compose your layout and decoration styles. Example:
 
 ```dart
-final style = StackBoxStyler
- .padding(EdgeInsets.all(16))
- .decoration(
-   BoxDecoration(
-     color: Colors.white,
-     borderRadius: BorderRadius.circular(12),
-   ),
- )
- .alignment(.center);
+final style = StackBoxStyler()
+    .paddingAll(16)
+    .color(Colors.white)
+    .borderRounded(12)
+    .stackAlignment(.center);
 
 StackBox(
  children: [
@@ -211,7 +212,7 @@ StackBox(
 | `onNot` | Creates a variant for when the context does NOT match the provided variant. |
 | `onLight` | Creates a variant for light mode. |
 | `onBuilder` | Creates a variant using a builder function that receives the build context. |
-| `builder` | Deprecated: Use [onBuilder] instead. |
+| `builder` | Deprecated: Use `onBuilder` instead. |
 | `onBreakpoint` | Creates a variant based on the specified breakpoint. |
 | `onPortrait` | Creates a variant for portrait device orientation. |
 | `onLandscape` | Creates a variant for landscape device orientation. |
@@ -234,6 +235,11 @@ StackBox(
 |--------|-------------|
 | `onHovered` | Creates a variant for hover state |
 | `onPressed` | Creates a variant for pressed state |
-| `onFocused` | Creates a variant for focused state |
+| `onFocused` | Creates a variant for focused state. Requires `Pressable` or `PressableBox` wrapper for focus tracking. |
 | `onDisabled` | Creates a variant for disabled state |
 | `onEnabled` | Creates a variant for enabled state (opposite of disabled) |
+
+## Related
+
+- [Box](/documentation/widgets/box) — `BoxStyler` API reference
+- [FlexBox](/documentation/widgets/flexbox) — flex layouts with `FlexBoxStyler`

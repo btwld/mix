@@ -1,7 +1,9 @@
 ---
 title: Introduction
 og_image: introduction-og.png
+description: "Learn the core ideas behind Mix and how it separates style semantics from widget structure."
 ---
+
 # Introduction
 
 Mix is a styling system for Flutter that separates style definitions from widget structure. It provides a composable, type-safe way to define and apply styles.
@@ -27,51 +29,6 @@ Mix provides utility functions for intuitive, composable styling that stays cons
 -  **Consistent**: API mirrors Flutter naming conventions
 -  **Composable**: Build complex styles from simple, reusable pieces
 -  **Extensible**: Override and extend utilities to fit your needs
-
-## Understanding the Styler Pattern
-
-Mix provides two constructor patterns for Styler classes. Understanding when to use each is key to effective styling:
-
-### Fluent API: `BoxStyler`
-
-The default constructor provides a fluent API for chaining style properties:
-
-```dart
-final style = BoxStyler()
-    .color(Colors.blue)
-    .paddingAll(16)
-    .borderRounded(8);
-```
-
-Use this pattern when:
-- Defining styles with direct values
-- Chaining multiple style properties together
-- Building most common styling use cases
-
-### Prop-Based API: `BoxStyler.create()`
-
-The `.create()` constructor accepts `Prop<T>` parameters for advanced composition:
-
-```dart
-final style = BoxStyler.create(
-  color: Prop.token($primaryColor),
-  padding: Prop.value(EdgeInsets.all(16)),
-);
-```
-
-Use this pattern when:
-- Working with design tokens (`Prop.token()`)
-- Applying number directives like `multiply()` or `clamp()`
-- Building custom widget libraries that need deferred resolution
-
-### How `Prop<T>` Works
-
-`Prop<T>` is a wrapper that enables deferred value resolution. It can hold:
-- **Direct values**: `Prop.value(Colors.blue)`
-- **Token references**: `Prop.token($primaryColor)`
-- **Directives**: `Prop.value(16.0).multiply(2).clamp(0, 50)`
-
-Values are resolved when the style is applied, allowing tokens to be looked up from `MixScope` and directives to transform values at build time.
 
 ## Key Features
 
@@ -124,20 +81,20 @@ Define reusable design tokens for colors, spacing, radii, and more:
 final $primaryColor = ColorToken('primary');
 final $borderRadius = RadiusToken('borderRadius');
 
-final tokenDefinitions = <MixToken, Object>{
-  $primaryColor: Colors.blue,
-  $borderRadius: Radius.circular(8),
-};
-
 final tokenStyle = BoxStyler()
     .color($primaryColor())
     .width(100)
     .height(100)
-    .borderRadius(BorderRadiusGeometryMix.all($borderRadius()));
+    .borderRadius(.all($borderRadius()));
 
-// Set the tokens in the MixScope
+// Provide token values through MixScope
 MixScope(
-  tokens: tokenDefinitions,
+  colors: {
+    $primaryColor: Colors.blue,
+  },
+  radii: {
+    $borderRadius: Radius.circular(8),
+  },
   child: MyApp(),
 );
 ```
