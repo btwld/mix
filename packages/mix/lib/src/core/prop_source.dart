@@ -6,10 +6,11 @@ import 'mix_element.dart';
 
 /// Represents the origin of a property value.
 ///
-/// A [PropSource] is a sealed class with three concrete implementations:
+/// A [PropSource] is a sealed class with four concrete implementations:
 /// - [ValueSource]: Holds a direct value
 /// - [TokenSource]: References a token to be resolved from context
 /// - [MixSource]: Contains a Mix value for accumulation merging
+/// - [MappedTokenSource]: Resolves a token to a different output type
 @immutable
 sealed class PropSource<V> {
   const PropSource();
@@ -44,6 +45,31 @@ class TokenSource<V> extends PropSource<V> with Equatable {
 
   @override
   String toString() => 'TokenSource($token)';
+
+  @override
+  List<Object?> get props => [token];
+}
+
+/// A source that references a token and maps it to a different output type.
+///
+/// The [token] is resolved from [MixScope] during property resolution, then
+/// [resolve] transforms the result to the target type.
+///
+/// Equality is based on [token] only; the [resolve] function is excluded to
+/// keep source identity stable across equivalent mapping strategies.
+@immutable
+class MappedTokenSource<V, T> extends PropSource<V> with Equatable {
+  final MixToken<T> token;
+  final Object? Function(T) resolve;
+
+  const MappedTokenSource(this.token, this.resolve);
+
+  Object? resolveToken(Object? value) {
+    return resolve(value as T);
+  }
+
+  @override
+  String toString() => 'MappedTokenSource($token)';
 
   @override
   List<Object?> get props => [token];

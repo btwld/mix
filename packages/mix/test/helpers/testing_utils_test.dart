@@ -44,6 +44,33 @@ void main() {
         final spacingProp = Prop.token(spacingToken);
         expect(spacingProp, PropMatcher.isToken(spacingToken));
         expect(spacingProp, PropMatcher.hasTokens);
+
+        final mappedToken = TestToken<Color>('mapped');
+        final mappedProp = Prop.tokenWith<Color, Color>(
+          mappedToken,
+          (value) => value,
+        );
+
+        expect(mappedProp, PropMatcher.hasTokens);
+        expect(mappedProp, PropMatcher.isMappedToken(mappedToken));
+        expect(
+          mappedProp,
+          isNot(PropMatcher.isMappedToken(TestToken<Color>('mapped-other'))),
+        );
+        expect(mappedProp, isNot(PropMatcher.isToken(mappedToken)));
+
+        final sameMappedToken = TestToken<Color>('mapped');
+        expect(mappedProp, PropMatcher.isMappedToken(sameMappedToken));
+      });
+
+      test('isAnyTokenRef excludes mapped token props without Ref suffix', () {
+        final mappedToken = TestToken<Color>('mapped');
+        final mappedProp = Prop.tokenWith<Color, Color>(
+          mappedToken,
+          (value) => value,
+        );
+
+        expect(isAnyTokenRef(mappedProp), isFalse);
       });
 
       test(
