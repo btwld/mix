@@ -149,3 +149,4 @@ scripts:
   api-check:
     run: dart scripts/api_check.dart
     description: "Check API compatibility for mix packages (usage: melos run api-check -- [package] [version])"
+sdkPath: .fvm/flutter_sdk
