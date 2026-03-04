@@ -5,9 +5,9 @@ import 'package:mix/mix.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
-  group('BoxMix', () {
+  group('BoxStyler', () {
     group('Factory Constructors', () {
-      test('color factory creates BoxMix with color decoration', () {
+      test('color factory creates BoxStyler with color decoration', () {
         final boxMix = BoxStyler(decoration: DecorationMix.color(Colors.red));
 
         expect(boxMix.$decoration, isNotNull);
@@ -16,7 +16,7 @@ void main() {
         expect((decoration as BoxDecoration).color, Colors.red);
       });
 
-      test('gradient factory creates BoxMix with gradient decoration', () {
+      test('gradient factory creates BoxStyler with gradient decoration', () {
         final gradient = LinearGradientMix(colors: [Colors.red, Colors.blue]);
         final boxMix = BoxStyler(
           decoration: BoxDecorationMix(gradient: gradient),
@@ -25,7 +25,7 @@ void main() {
         expect(boxMix.$decoration, isNotNull);
       });
 
-      test('shape factory creates BoxMix with shape decoration', () {
+      test('shape factory creates BoxStyler with shape decoration', () {
         final boxMix = BoxStyler(
           decoration: BoxDecorationMix(shape: BoxShape.circle),
         );
@@ -33,7 +33,7 @@ void main() {
         expect(boxMix.$decoration, isNotNull);
       });
 
-      test('height factory creates BoxMix with height constraints', () {
+      test('height factory creates BoxStyler with height constraints', () {
         final boxMix = BoxStyler().height(100.0);
 
         expect(boxMix.$constraints, isNotNull);
@@ -44,7 +44,7 @@ void main() {
         expect(constraints.maxHeight, 100.0);
       });
 
-      test('width factory creates BoxMix with width constraints', () {
+      test('width factory creates BoxStyler with width constraints', () {
         final boxMix = BoxStyler().width(200.0);
 
         expect(boxMix.$constraints, isNotNull);
@@ -55,14 +55,14 @@ void main() {
         expect(constraints.maxWidth, 200.0);
       });
 
-      test('constraints factory creates BoxMix with constraints', () {
+      test('constraints factory creates BoxStyler with constraints', () {
         final constraintsMix = BoxConstraintsMix.minWidth(50.0);
         final boxMix = BoxStyler(constraints: constraintsMix);
 
         expect(boxMix.$constraints, isNotNull);
       });
 
-      test('minWidth factory creates BoxMix with min width constraint', () {
+      test('minWidth factory creates BoxStyler with min width constraint', () {
         final boxMix = BoxStyler(
           constraints: BoxConstraintsMix.minWidth(150.0),
         );
@@ -74,7 +74,7 @@ void main() {
         expect(constraints.minWidth, 150.0);
       });
 
-      test('maxWidth factory creates BoxMix with max width constraint', () {
+      test('maxWidth factory creates BoxStyler with max width constraint', () {
         final boxMix = BoxStyler(
           constraints: BoxConstraintsMix.maxWidth(300.0),
         );
@@ -86,14 +86,14 @@ void main() {
         expect(constraints.maxWidth, 300.0);
       });
 
-      test('animation factory creates BoxMix with animation config', () {
+      test('animation factory creates BoxStyler with animation config', () {
         final animation = AnimationConfig.linear(Duration(seconds: 1));
         final boxMix = BoxStyler(animation: animation);
 
         expect(boxMix.$animation, animation);
       });
 
-      test('variant factory creates BoxMix with variant', () {
+      test('variant factory creates BoxStyler with variant', () {
         final variant = ContextVariant.brightness(Brightness.dark);
         final style = BoxStyler(decoration: DecorationMix.color(Colors.blue));
         final boxMix = BoxStyler(variants: [VariantStyle(variant, style)]);
@@ -102,28 +102,28 @@ void main() {
         expect(boxMix.$variants!.length, 1);
       });
 
-      test('alignment factory creates BoxMix with alignment', () {
+      test('alignment factory creates BoxStyler with alignment', () {
         final boxMix = BoxStyler(alignment: Alignment.center);
 
         expect(boxMix.$alignment, isNotNull);
         expect(boxMix.$alignment, resolvesTo(Alignment.center));
       });
 
-      test('padding factory creates BoxMix with padding', () {
+      test('padding factory creates BoxStyler with padding', () {
         final padding = EdgeInsetsGeometryMix.all(16.0);
         final boxMix = BoxStyler(padding: padding);
 
         expect(boxMix.$padding, isNotNull);
       });
 
-      test('margin factory creates BoxMix with margin', () {
+      test('margin factory creates BoxStyler with margin', () {
         final margin = EdgeInsetsGeometryMix.all(8.0);
         final boxMix = BoxStyler(margin: margin);
 
         expect(boxMix.$margin, isNotNull);
       });
 
-      test('transform factory creates BoxMix with transform', () {
+      test('transform factory creates BoxStyler with transform', () {
         final transform = Matrix4.rotationZ(0.5);
         final boxMix = BoxStyler(transform: transform);
 
@@ -131,7 +131,7 @@ void main() {
         expect(boxMix.$transform, resolvesTo(transform));
       });
 
-      test('clipBehavior factory creates BoxMix with clip behavior', () {
+      test('clipBehavior factory creates BoxStyler with clip behavior', () {
         final boxMix = BoxStyler(clipBehavior: Clip.antiAlias);
 
         expect(boxMix.$clipBehavior, isNotNull);
@@ -140,7 +140,7 @@ void main() {
     });
 
     group('Constructor', () {
-      test('default constructor creates BoxMix with all properties', () {
+      test('default constructor creates BoxStyler with all properties', () {
         final boxMix = BoxStyler(
           alignment: Alignment.topLeft,
           padding: EdgeInsetsGeometryMix.all(10.0),
@@ -318,7 +318,7 @@ void main() {
     });
 
     group('Equality and Props', () {
-      test('equal BoxMix instances have same props', () {
+      test('equal BoxStyler instances have same props', () {
         final boxMix1 = BoxStyler(
           alignment: Alignment.center,
           padding: EdgeInsetsGeometryMix.all(10.0),
@@ -332,7 +332,7 @@ void main() {
         expect(boxMix1.props, equals(boxMix2.props));
       });
 
-      test('different BoxMix instances have different props', () {
+      test('different BoxStyler instances have different props', () {
         final boxMix1 = BoxStyler(alignment: Alignment.center);
         final boxMix2 = BoxStyler(alignment: Alignment.topLeft);
 
@@ -350,7 +350,7 @@ void main() {
     });
 
     group('Variant Methods', () {
-      test('variant method adds variant to BoxMix', () {
+      test('variant method adds variant to BoxStyler', () {
         final variant = ContextVariant.brightness(Brightness.dark);
         final style = BoxStyler(decoration: DecorationMix.color(Colors.white));
         final boxMix = BoxStyler().variant(variant, style);

@@ -310,16 +310,6 @@ void main() {
       });
     });
 
-    group('modifier utilities', () {
-      test('', () {
-        final result = util.wrap.opacity(0.5);
-
-        expect(result, isA<FlexStyler>());
-        expect(result.$modifier, isNotNull);
-        expect(result.$modifier!.$modifiers!.length, 1);
-      });
-    });
-
     group('complex scenarios', () {
       test('combines chaining with merge', () {
         final util1 = FlexMutableStyler()

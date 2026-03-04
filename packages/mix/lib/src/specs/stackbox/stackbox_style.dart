@@ -33,9 +33,6 @@ import 'stackbox_widget.dart';
 
 part 'stackbox_style.g.dart';
 
-@Deprecated('Use StackBoxStyler instead')
-typedef StackBoxMix = StackBoxStyler;
-
 /// Represents the attributes of a [StackBoxSpec].
 ///
 /// This class encapsulates properties defining the layout and
@@ -182,7 +179,7 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
 
   static StackBoxMutableStyler get chain => .new(StackBoxStyler());
 
-  // BoxMix instance methods
+  // Box-style instance methods
 
   /// Sets the alignment for the box.
   StackBoxStyler alignment(AlignmentGeometry value) {

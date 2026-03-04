@@ -71,7 +71,7 @@ void main() {
     });
   });
 
-  group('Default parameters for HBox matches Row', () {
+  group('Default parameters for RowBox matches Row', () {
     testWidgets('should have the same default parameters', (tester) async {
       const hBoxKey = Key('hbox');
       const rowKey = Key('row');
@@ -93,7 +93,7 @@ void main() {
       final hBoxFinder = find.byKey(hBoxKey);
       final rowFinder = find.byKey(rowKey);
 
-      /// Find the Flex widget inside the HBox widget
+      /// Find the Flex widget inside the RowBox widget
       final styledFlex = tester.widget<Flex>(
         find.descendant(of: hBoxFinder, matching: find.byType(Flex)),
       );
@@ -111,7 +111,7 @@ void main() {
     });
   });
 
-  group('Default parameters for VBox matches Column', () {
+  group('Default parameters for ColumnBox matches Column', () {
     testWidgets('should have the same default parameters', (tester) async {
       const vBoxKey = Key('vbox');
       const columnKey = Key('column');
@@ -133,7 +133,7 @@ void main() {
       final vBoxFinder = find.byKey(vBoxKey);
       final columnFinder = find.byKey(columnKey);
 
-      /// Find the Flex widget inside the VBox widget
+      /// Find the Flex widget inside the ColumnBox widget
       final styledFlex = tester.widget<Flex>(
         find.descendant(of: vBoxFinder, matching: find.byType(Flex)),
       );

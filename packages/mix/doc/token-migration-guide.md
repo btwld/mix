@@ -247,12 +247,12 @@ void main() {
 
 #### Current Standard Pattern
 ```dart
-// Using .token() method (current standard)
-final style = Style(
-  $box.color.token(primaryColor),
-  $box.padding.all.token(largeSpace),
-  $text.style.token(headingStyle),
-);
+// Mix 2 standard usage
+final boxStyle = BoxStyler()
+    .color(primaryColor())
+    .paddingAll(largeSpace());
+
+final textStyle = TextStyler().style(headingStyle.mix());
 ```
 
 #### Direct Token Call (Returns Refs)
@@ -260,14 +260,12 @@ final style = Style(
 // Token call() method returns refs for styling
 final colorRef = primaryColor(); // Returns ColorRef
 final spaceRef = largeSpace();   // Returns SpaceRef
-final styleRef = headingStyle(); // Returns TextStyleRef
+final textStyleMixRef = headingStyle.mix(); // Returns TextStyleMixRef
+final flutterTextStyleRef = headingStyle(); // Returns TextStyleRef
 
 // Use refs in styling utilities
-final style = Style(
-  $box.color(colorRef),
-  $box.padding.all(spaceRef),
-  $text.style(styleRef),
-);
+final boxStyle = BoxStyler().color(colorRef).paddingAll(spaceRef);
+final textStyle = TextStyler().style(textStyleMixRef);
 ```
 
 ### 4. Using Tokens in Properties
@@ -306,7 +304,7 @@ const primaryColor = ColorToken('primary');
 final colorRef = primaryColor(); // Returns ColorRef
 
 // 2. Use in styling 
-$box.color(colorRef)
+BoxStyler().color(colorRef)
 
 // 3. During resolution, token is extracted and resolved
 // colorRef contains Prop.token(primaryColor)
@@ -409,8 +407,8 @@ const primaryColor = ColorToken('primary');
 const headerTextStyle = TextStyleToken('text.header');
 
 // Good: Consistent usage
-$box.color.token(primaryColor)
-$text.style.token(headerTextStyle)
+BoxStyler().color(primaryColor())
+TextStyler().style(headerTextStyle.mix())
 ```
 
 ## Testing
@@ -463,11 +461,10 @@ class ThemedContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Box(
-      style: Style(
-        $box.color.token(AppTokens.surface),
-        $box.padding.all.token(AppTokens.md),
-        $box.borderRadius.all.token(AppTokens.rounded),
-      ),
+      style: BoxStyler()
+          .color(AppTokens.surface())
+          .paddingAll(AppTokens.md())
+          .borderRounded(AppTokens.rounded()),
       child: Text('Themed content'),
     );
   }
@@ -575,9 +572,9 @@ import 'package:mix/mix.dart'; // All tokens available via public API
 
 #### Step 3: Update Usage
 ```dart
-// Usage remains the same
-$box.color.token(primaryColor)
-$box.padding.all.token(largeSpace)
+// Mix 2 usage
+BoxStyler().color(primaryColor())
+BoxStyler().paddingAll(largeSpace())
 ```
 
 ## Troubleshooting
@@ -606,7 +603,7 @@ The Mix token system uses `MixToken<T>` with `MixScope` for a type-safe, streaml
 
 1. **Use `MixScope`** for theme setup with type-specific maps
 2. **Create tokens with specific token classes** for type safety
-3. **Use `.token()` method** in styling utilities
+3. **Use token refs (`token()` / `.mix()`)** in stylers
 4. **Token references** automatically created via `call()` method
 5. **Consolidated token types** in single `value_tokens.dart` file
 
