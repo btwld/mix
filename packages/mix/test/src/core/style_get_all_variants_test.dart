@@ -599,26 +599,18 @@ void main() {
         expect((spec.resolvedValue as Map)['width'], 50.0);
       });
 
-      test('sorting is stable for non-WidgetStateVariant elements', () {
-        // Create multiple non-WidgetState variants to test stable sort
-        final variants = [
-          VariantStyle(
-            ContextVariant('context1', (context) => true),
-            _MockSpecAttribute(width: 100.0),
-          ),
-          VariantStyle(
-            const NamedVariant('named1'),
-            _MockSpecAttribute(width: 200.0),
-          ),
-          VariantStyle(
-            ContextVariant('context2', (context) => true),
-            _MockSpecAttribute(width: 300.0),
-          ),
-          VariantStyle(
-            const NamedVariant('named2'),
-            _MockSpecAttribute(width: 400.0),
-          ),
-        ];
+      test('non-WidgetState variants preserve insertion order', () {
+        // Non-sequential order to catch unstable sorting of equal-priority variants.
+        const order = [5, 3, 7, 1, 6, 2, 4];
+
+        final variants = order
+            .map(
+              (value) => VariantStyle(
+                ContextVariant('context$value', (context) => true),
+                _MockSpecAttribute(width: value.toDouble()),
+              ),
+            )
+            .toList();
 
         final testAttribute = _MockSpecAttribute(
           width: 50.0,
@@ -628,15 +620,12 @@ void main() {
         final context = MockBuildContext();
         final result = testAttribute.mergeActiveVariants(
           context,
-          namedVariants: {
-            const NamedVariant('named1'),
-            const NamedVariant('named2'),
-          },
+          namedVariants: {},
         );
 
-        // Should maintain original order, last applied is named2 (400)
+        // Last element in insertion order (4) wins via sequential merge.
         final spec = result.resolve(context);
-        expect((spec.resolvedValue as Map)['width'], 400.0);
+        expect((spec.resolvedValue as Map)['width'], 4.0);
       });
     });
 
@@ -739,6 +728,23 @@ class _MockSpecAttribute extends Style<MockSpec<Map<String, dynamic>>> {
     super.modifier,
     super.animation,
   });
+
+  @override
+  bool get hasBasePayload =>
+      width != 0.0 || height != null || $modifier != null || $animation != null;
+
+  @override
+  _MockSpecAttribute copyWithVariants(
+    List<VariantStyle<MockSpec<Map<String, dynamic>>>>? variants,
+  ) {
+    return _MockSpecAttribute(
+      width: width,
+      height: height,
+      variants: variants,
+      modifier: $modifier,
+      animation: $animation,
+    );
+  }
 
   @override
   StyleSpec<MockSpec<Map<String, dynamic>>> resolve(BuildContext context) {

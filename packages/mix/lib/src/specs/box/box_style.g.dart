@@ -67,9 +67,44 @@ mixin _$BoxStylerMixin on Style<BoxSpec>, Diagnosticable {
     return merge(BoxStyler(modifier: value));
   }
 
+  @override
+  bool get hasBasePayload =>
+      $alignment != null ||
+      $clipBehavior != null ||
+      $constraints != null ||
+      $decoration != null ||
+      $foregroundDecoration != null ||
+      $margin != null ||
+      $padding != null ||
+      $transform != null ||
+      $transformAlignment != null ||
+      $modifier != null ||
+      $animation != null;
+
+  @override
+  BoxStyler copyWithVariants(List<VariantStyle<BoxSpec>>? variants) {
+    return BoxStyler.create(
+      alignment: $alignment,
+      clipBehavior: $clipBehavior,
+      constraints: $constraints,
+      decoration: $decoration,
+      foregroundDecoration: $foregroundDecoration,
+      margin: $margin,
+      padding: $padding,
+      transform: $transform,
+      transformAlignment: $transformAlignment,
+      variants: variants,
+      modifier: $modifier,
+      animation: $animation,
+    );
+  }
+
   /// Merges with another [BoxStyler].
   @override
   BoxStyler merge(BoxStyler? other) {
+    final deferred = deferMerge(other);
+    if (deferred != null) return deferred as BoxStyler;
+
     return BoxStyler.create(
       alignment: MixOps.merge($alignment, other?.$alignment),
       clipBehavior: MixOps.merge($clipBehavior, other?.$clipBehavior),

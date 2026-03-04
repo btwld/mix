@@ -10,9 +10,27 @@ mixin _$FlexBoxStylerMixin on Style<FlexBoxSpec>, Diagnosticable {
   Prop<StyleSpec<BoxSpec>>? get $box;
   Prop<StyleSpec<FlexSpec>>? get $flex;
 
+  @override
+  bool get hasBasePayload =>
+      $box != null || $flex != null || $modifier != null || $animation != null;
+
+  @override
+  FlexBoxStyler copyWithVariants(List<VariantStyle<FlexBoxSpec>>? variants) {
+    return FlexBoxStyler.create(
+      box: $box,
+      flex: $flex,
+      variants: variants,
+      modifier: $modifier,
+      animation: $animation,
+    );
+  }
+
   /// Merges with another [FlexBoxStyler].
   @override
   FlexBoxStyler merge(FlexBoxStyler? other) {
+    final deferred = deferMerge(other);
+    if (deferred != null) return deferred as FlexBoxStyler;
+
     return FlexBoxStyler.create(
       box: MixOps.merge($box, other?.$box),
       flex: MixOps.merge($flex, other?.$flex),
