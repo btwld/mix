@@ -27,11 +27,11 @@ categories:
   flutter_projects: 
     - packages/mix
     - packages/mix/example
-    - packages/mix_lint
     - packages/mix_lint_test
     - packages/annotations
   dart_projects:
     - packages/mix_generator
+    - packages/mix_lint
 
 scripts:
   # ANALYSIS
