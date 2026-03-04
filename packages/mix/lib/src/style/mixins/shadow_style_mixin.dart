@@ -23,18 +23,18 @@ mixin ShadowStyleMixin<T extends Mix<Object?>> {
       spreadRadius: spreadRadius,
     );
 
-    return decoration(BoxDecorationMix.boxShadow([shadow]));
+    return decoration(BoxDecorationMix.boxShadow(BoxShadowListMix([shadow])));
   }
 
   /// Creates multiple box shadows from a list of BoxShadowMix
-  T boxShadows(List<BoxShadowMix> value) {
+  T boxShadows(BoxShadowListMix value) {
     return decoration(BoxDecorationMix.boxShadow(value));
   }
 
   /// Creates box shadows from Material Design elevation level
   T boxElevation(ElevationShadow value) {
     return decoration(
-      BoxDecorationMix.boxShadow(BoxShadowMix.fromElevation(value)),
+      BoxDecorationMix.boxShadow(BoxShadowMix.fromElevation(value).toMix()),
     );
   }
 }
