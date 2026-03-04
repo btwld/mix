@@ -94,19 +94,19 @@ mixin VariantStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
   }
 
   /// Creates a variant for mobile breakpoint.
-  T onMobile(T style) {
-    return variant(ContextVariant.mobile(), style);
-  }
+  // T onMobile(T style) {
+  //   return variant(ContextVariant.mobile(), style);
+  // }
 
-  /// Creates a variant for tablet breakpoint.
-  T onTablet(T style) {
-    return variant(ContextVariant.tablet(), style);
-  }
+  // /// Creates a variant for tablet breakpoint.
+  // T onTablet(T style) {
+  //   return variant(ContextVariant.tablet(), style);
+  // }
 
-  /// Creates a variant for desktop breakpoint.
-  T onDesktop(T style) {
-    return variant(ContextVariant.desktop(), style);
-  }
+  // /// Creates a variant for desktop breakpoint.
+  // T onDesktop(T style) {
+  //   return variant(ContextVariant.desktop(), style);
+  // }
 
   /// Creates a variant for left-to-right text direction.
   T onLtr(T style) {

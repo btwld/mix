@@ -22,6 +22,7 @@ import '../../style/mixins/constraint_style_mixin.dart';
 import '../../style/mixins/decoration_style_mixin.dart';
 import '../../style/mixins/shadow_style_mixin.dart';
 import '../../style/mixins/spacing_style_mixin.dart';
+import '../../style/mixins/token_style_mixin.dart';
 import '../../style/mixins/transform_style_mixin.dart';
 import '../box/box_spec.dart';
 import '../box/box_style.dart';
@@ -53,6 +54,7 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
         SpacingStyleMixin<StackBoxStyler>,
         TransformStyleMixin<StackBoxStyler>,
         ConstraintStyleMixin<StackBoxStyler>,
+        TokenStyleMixin<StackBoxStyler, StackBoxSpec>,
         _$StackBoxStylerMixin {
   @override
   final Prop<StyleSpec<BoxSpec>>? $box;

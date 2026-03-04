@@ -14,6 +14,7 @@ import '../../properties/typography/text_height_behavior_mix.dart';
 import '../../properties/typography/text_style_mix.dart';
 import '../../style/abstracts/styler.dart';
 import '../../style/mixins/text_style_mixin.dart';
+import '../../style/mixins/token_style_mixin.dart';
 import 'text_mutable_style.dart';
 import 'text_spec.dart';
 import 'text_widget.dart';
@@ -32,7 +33,7 @@ typedef TextMix = TextStyler;
 /// the [TextSpec] constructor.
 @MixableStyler()
 class TextStyler extends MixStyler<TextStyler, TextSpec>
-    with TextStyleMixin<TextStyler>, _$TextStylerMixin {
+    with TextStyleMixin<TextStyler>, TokenStyleMixin<TextStyler, TextSpec>, _$TextStylerMixin {
   @override
   final Prop<TextOverflow>? $overflow;
   @override

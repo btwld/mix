@@ -11,6 +11,7 @@ import '../../core/style_spec.dart';
 import '../../modifiers/widget_modifier_config.dart';
 import '../../style/abstracts/styler.dart';
 import '../../style/mixins/flex_style_mixin.dart';
+import '../../style/mixins/token_style_mixin.dart';
 import 'flex_mutable_style.dart';
 import 'flex_spec.dart';
 
@@ -29,7 +30,7 @@ typedef FlexMix = FlexStyler;
 /// A style/attribute class for [FlexSpec], used to configure and compose flex layout properties.
 @MixableStyler()
 class FlexStyler extends MixStyler<FlexStyler, FlexSpec>
-    with FlexStyleMixin<FlexStyler>, _$FlexStylerMixin {
+    with FlexStyleMixin<FlexStyler>, TokenStyleMixin<FlexStyler, FlexSpec>, _$FlexStylerMixin {
   @override
   final Prop<Axis>? $direction;
   @override

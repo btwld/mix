@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 
 import '../../core/breakpoint.dart';
 import '../../core/prop.dart';
-import '../../core/prop_refs.dart';
 import 'mix_token.dart';
 import 'token_refs.dart';
 
@@ -28,17 +27,11 @@ class RadiusToken extends MixToken<Radius> {
 /// Design token for spacing values.
 class SpaceToken extends MixToken<double> {
   const SpaceToken(super.name);
-
-  @override
-  double call() => DoubleRef.token(this);
 }
 
 /// Design token for general [double] values.
 class DoubleToken extends MixToken<double> {
   const DoubleToken(super.name);
-
-  @override
-  double call() => DoubleRef.token(this);
 }
 
 /// Design token for [Breakpoint] values.
