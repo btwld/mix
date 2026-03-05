@@ -5,7 +5,7 @@ environment:
   flutter: ">=3.41.0 <4.0.0"
 
 dependencies:
-  melos: ^6.3.3
+  melos: 6.3.3
   analyzer: '>=9.0.0 <11.0.0'
 
 dev_dependencies:
