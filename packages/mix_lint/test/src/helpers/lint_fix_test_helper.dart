@@ -48,9 +48,7 @@ Future<String> applyQuickFix({
 
   final chosenList = fixes.where(selectFix).toList();
   if (chosenList.isEmpty) {
-    throw StateError(
-      'No fix matched selectFix among ${fixes.length} fix(es)',
-    );
+    throw StateError('No fix matched selectFix among ${fixes.length} fix(es)');
   }
   final chosen = chosenList.first;
 
@@ -86,8 +84,9 @@ Future<String> applyQuickFixForResult(
   }
   final diagnostic = matching.first;
 
-  final libraryResult =
-      await result.session.getResolvedLibraryContaining(result.path);
+  final libraryResult = await result.session.getResolvedLibraryContaining(
+    result.path,
+  );
   if (libraryResult is! ResolvedLibraryResult) {
     throw StateError('Expected ResolvedLibraryResult');
   }
