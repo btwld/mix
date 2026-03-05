@@ -2,7 +2,7 @@ import 'package:analyzer_testing/analysis_rule/analysis_rule.dart';
 import 'package:mix_lint/src/rules/mix_mixable_styler_has_create.dart';
 import 'package:test_reflective_loader/test_reflective_loader.dart';
 
-import 'src/mix_stub.dart';
+import '../mix_stub.dart';
 
 @reflectiveTest
 class MixMixableStylerHasCreateTest extends AnalysisRuleTest {

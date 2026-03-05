@@ -91,9 +91,26 @@ class _Visitor extends SimpleAstVisitor<void> {
     return enclosing is InterfaceElement ? enclosing.thisType : null;
   }
 
+  bool _isDeclaredInExtension(AstNode node) {
+    Element? memberElement;
+    if (node is MethodInvocation) {
+      memberElement = node.methodName.element;
+    } else if (node is PropertyAccess) {
+      memberElement = node.propertyName.element;
+    } else if (node is PrefixedIdentifier) {
+      memberElement = node.identifier.element;
+    } else if (node is InstanceCreationExpression) {
+      memberElement = node.constructorName.element;
+    }
+
+    return memberElement?.enclosingElement is ExtensionElement;
+  }
+
   /// Only report when the expression type is the same as the declaring class.
   /// E.g. [Colors.blue] has type [Color], not [Colors], so we do not report.
+  /// Static members from extensions (e.g. DoubleExtension.margin) are not reported.
   bool _staticHasSameTypeAsDeclaringClass(AstNode node) {
+    if (_isDeclaredInExtension(node)) return false;
     final expressionType = (node as Expression).staticType;
     final declaringType = _getDeclaringClassType(node);
     if (declaringType == null || expressionType == null) return true;

@@ -2,7 +2,7 @@ import 'package:analyzer_testing/analysis_rule/analysis_rule.dart';
 import 'package:mix_lint/src/rules/mix_prefer_dot_shorthands.dart';
 import 'package:test_reflective_loader/test_reflective_loader.dart';
 
-import 'src/mix_stub.dart';
+import '../mix_stub.dart';
 
 @reflectiveTest
 class MixPreferDotShorthandsTest extends AnalysisRuleTest {
@@ -65,6 +65,21 @@ void main() {
 import 'package:mix/mix.dart';
 void main() {
   final s = BoxStyler().color(Colors.blue);
+}
+''');
+  }
+
+  void test_extension_static_no_diagnostic() async {
+    // Static members from extensions (e.g. DoubleExtension.margin) should not lint.
+    await assertNoDiagnostics(r'''
+import 'package:mix/mix.dart';
+
+extension DoubleExtension on double {
+  static double get margin => 10;
+}
+
+void main() {
+  final s = BoxStyler().width(DoubleExtension.margin);
 }
 ''');
   }

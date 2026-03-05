@@ -30,6 +30,7 @@ class Color {
 }
 class BoxStyler extends MixStyler {
   BoxStyler color(Object? c) => this;
+  BoxStyler width(num n) => this;
   BoxStyler height(num n) => this;
   BoxStyler paddingAll(num n) => this;
   BoxStyler padding(EdgeInsetsGeometryMix e) => this;
