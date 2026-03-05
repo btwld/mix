@@ -216,6 +216,13 @@ enum ButtonVariant {
 
 // Button Widget
 class CustomButton extends StatelessWidget {
+  final String label;
+
+  final bool disabled;
+  final IconData? icon;
+  final ButtonVariant variant;
+  final VoidCallback? onPressed;
+  final ButtonStyler? style;
   const CustomButton({
     super.key,
     required this.label,
@@ -225,13 +232,6 @@ class CustomButton extends StatelessWidget {
     this.variant = .filled,
     this.style,
   });
-
-  final String label;
-  final bool disabled;
-  final IconData? icon;
-  final ButtonVariant variant;
-  final VoidCallback? onPressed;
-  final ButtonStyler? style;
 
   ButtonStyler buttonStyle(ButtonStyler? style, ButtonVariant? variant) {
     final container = FlexBoxStyler()

@@ -50,9 +50,6 @@ class ExampleNavigator extends StatefulWidget {
 class _ExampleNavigatorState extends State<ExampleNavigator> {
   String _selectedCategory = 'All';
 
-  // Use centralized registry as single source of truth
-  List<PreviewEntry> get _previews => PreviewRegistry.all;
-
   Widget _buildExampleCard(PreviewEntry preview, BuildContext context) {
     return Padding(
       padding: const .all(12),
@@ -78,6 +75,9 @@ class _ExampleNavigatorState extends State<ExampleNavigator> {
       ),
     );
   }
+
+  // Use centralized registry as single source of truth
+  List<PreviewEntry> get _previews => PreviewRegistry.all;
 
   @override
   Widget build(BuildContext context) {

@@ -50,9 +50,9 @@ class AvoidVariantInsideContextVariant extends DartLintRule {
 
       for (final type in types) {
         reporter.atOffset(
+          errorCode: _code,
           offset: type.offset,
           length: type.length,
-          errorCode: _code,
         );
       }
     });

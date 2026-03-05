@@ -26,9 +26,9 @@ class AvoidEmptyVariants extends DartLintRule {
 
       if (expression.argumentList.arguments.isEmpty) {
         reporter.atOffset(
+          errorCode: _code,
           offset: expression.offset,
           length: expression.length,
-          errorCode: _code,
         );
       }
     });

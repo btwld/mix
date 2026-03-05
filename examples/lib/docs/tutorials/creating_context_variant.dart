@@ -10,6 +10,8 @@ void main() {
 }
 
 class CustomInheritedWidget extends InheritedWidget {
+  final bool flag;
+
   const CustomInheritedWidget({
     super.key,
     required super.child,
@@ -19,8 +21,6 @@ class CustomInheritedWidget extends InheritedWidget {
   static CustomInheritedWidget? of(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType();
   }
-
-  final bool flag;
 
   @override
   bool updateShouldNotify(covariant CustomInheritedWidget oldWidget) {

@@ -329,8 +329,8 @@ class PreviewRegistry {
       title: 'mix_tailwinds - Card Alert',
       description: 'Notification card with gradient avatar and action buttons',
       category: _ecosystem,
-      snippetRegion: 'example',
       builder: (_) => const tw_card_alert.Example(),
+      snippetRegion: 'example',
     ),
   ];
 
@@ -428,9 +428,9 @@ class PreviewRegistry {
 
 /// Widget displayed when an unknown preview ID is requested.
 class _UnknownPreview extends StatelessWidget {
-  const _UnknownPreview({required this.previewId});
-
   final String previewId;
+
+  const _UnknownPreview({required this.previewId});
 
   @override
   Widget build(BuildContext context) {
@@ -455,15 +455,15 @@ class _UnknownPreview extends StatelessWidget {
 
 /// Widget displayed when a preview throws an error.
 class _ErrorPreview extends StatelessWidget {
+  final String previewId;
+
+  final Object error;
+  final StackTrace? stackTrace;
   const _ErrorPreview({
     required this.previewId,
     required this.error,
     this.stackTrace,
   });
-
-  final String previewId;
-  final Object error;
-  final StackTrace? stackTrace;
 
   @override
   Widget build(BuildContext context) {

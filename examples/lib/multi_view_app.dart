@@ -65,9 +65,9 @@ class _MultiViewAppState extends State<MultiViewApp>
 /// Uses:
 /// - `previewId`: explicit preview lookup.
 class _PreviewView extends StatelessWidget {
-  const _PreviewView({required this.viewId});
-
   final int viewId;
+
+  const _PreviewView({required this.viewId});
 
   @override
   Widget build(BuildContext context) {

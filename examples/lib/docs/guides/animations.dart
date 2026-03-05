@@ -72,10 +72,10 @@ class AnimationsGuideExample extends StatelessWidget {
 }
 
 class _Section extends StatelessWidget {
-  const _Section({required this.title, required this.children});
-
   final String title;
+
   final List<Widget> children;
+  const _Section({required this.title, required this.children});
 
   @override
   Widget build(BuildContext context) {
@@ -95,10 +95,10 @@ class _Section extends StatelessWidget {
 }
 
 class _Card extends StatelessWidget {
-  const _Card({required this.title, required this.child});
-
   final String title;
+
   final Widget child;
+  const _Card({required this.title, required this.child});
 
   @override
   Widget build(BuildContext context) {
