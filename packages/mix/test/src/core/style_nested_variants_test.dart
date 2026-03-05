@@ -303,6 +303,8 @@ class _MockSpecAttribute extends Style<MockSpec<Map<String, dynamic>>> {
   _MockSpecAttribute({
     required this.width,
     this.height,
+    super.modifier,
+    super.animation,
     super.variants = const [],
   });
 
