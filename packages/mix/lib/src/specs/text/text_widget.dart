@@ -25,6 +25,9 @@ import 'text_style.dart';
 /// )
 /// ```
 class StyledText extends StyleWidget<TextSpec> {
+  /// The text to display.
+  final String text;
+
   /// Creates a [StyledText] with required [text] and optional [style] or [spec].
   const StyledText(
     this.text, {
@@ -32,9 +35,6 @@ class StyledText extends StyleWidget<TextSpec> {
     super.styleSpec,
     super.key,
   });
-
-  /// The text to display.
-  final String text;
 
   @override
   Widget build(BuildContext context, TextSpec spec) {

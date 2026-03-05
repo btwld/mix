@@ -167,9 +167,9 @@ class DarkPurpleTheme {
 
 // ProfileButton Component
 class ProfileButton extends StatelessWidget {
-  const ProfileButton({super.key, required this.label});
-
   final String label;
+
+  const ProfileButton({super.key, required this.label});
 
   @override
   Widget build(BuildContext context) {

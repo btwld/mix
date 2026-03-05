@@ -48,9 +48,9 @@ extension CustomLintContextExt on CustomLintContext {
       if (!node.isDecendentOf(parent)) return;
 
       reporter.atOffset(
+        errorCode: code,
         offset: node.offset,
         length: node.length,
-        errorCode: code,
       );
     });
   }

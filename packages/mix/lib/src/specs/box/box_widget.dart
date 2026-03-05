@@ -25,15 +25,15 @@ import 'box_style.dart';
 /// ```
 ///
 class Box extends StyleWidget<BoxSpec> {
+  /// Child widget to display inside the box.
+  final Widget? child;
+
   const Box({
     super.style = const BoxStyler.create(),
     super.styleSpec,
     super.key,
     this.child,
   });
-
-  /// Child widget to display inside the box.
-  final Widget? child;
 
   @override
   Widget build(BuildContext context, BoxSpec spec) {

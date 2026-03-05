@@ -35,18 +35,18 @@ class Example2 extends StatefulWidget {
 class _Example2State extends State<Example2> {
   final controller = WidgetStatesController();
 
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
-
   BoxStyler get style => .new()
       .color(Colors.red)
       .size(100, 100)
       .onHovered(.color(Colors.blue))
       .onPressed(.color(Colors.green))
       .onFocused(.color(Colors.yellow));
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
