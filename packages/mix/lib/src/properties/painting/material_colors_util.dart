@@ -102,7 +102,7 @@ final class MaterialColorUtility<T extends Style<Object?>>
     utilityBuilder,
     materialColor.shade900,
   );
-  MaterialColorUtility(super.builder, MaterialColor super.color);
+  MaterialColorUtility(super.builder, super.color);
 
   /// Gets the underlying MaterialColor for shade access.
   MaterialColor get materialColor => color as MaterialColor;
@@ -211,7 +211,7 @@ final class MaterialAccentColorUtility<T extends Style<Object?>>
     utilityBuilder,
     materialAccentColor.shade700,
   );
-  MaterialAccentColorUtility(super.builder, MaterialAccentColor super.color);
+  MaterialAccentColorUtility(super.builder, super.color);
 
   /// Gets the underlying MaterialAccentColor for shade access.
   MaterialAccentColor get materialAccentColor => color as MaterialAccentColor;

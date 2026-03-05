@@ -16,14 +16,6 @@ import 'style_spec.dart';
 /// and provides it to the builder function. It also manages style inheritance,
 /// variant application, and modifier rendering.
 class StyleBuilder<S extends Spec<S>> extends StatefulWidget {
-  const StyleBuilder({
-    super.key,
-    required this.style,
-    required this.builder,
-    this.controller,
-    this.inheritable = false,
-  });
-
   /// The style element to resolve and apply.
   final Style<S> style;
 
@@ -42,6 +34,14 @@ class StyleBuilder<S extends Spec<S>> extends StatefulWidget {
   /// Defaults to false.
   final bool inheritable;
 
+  const StyleBuilder({
+    super.key,
+    required this.style,
+    required this.builder,
+    this.controller,
+    this.inheritable = false,
+  });
+
   @override
   State<StyleBuilder<S>> createState() => _StyleBuilderState<S>();
 }
@@ -52,12 +52,6 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
 
   /// Tracks whether we created the controller internally (and thus own it)
   bool _ownsController = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _initController();
-  }
 
   void _initController() {
     if (widget.controller != null) {
@@ -90,6 +84,12 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
     final inheritedStyle = Style.maybeOf<S>(context);
 
     return inheritedStyle?.merge(widget.style) ?? widget.style;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _initController();
   }
 
   @override
@@ -159,17 +159,17 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
 /// Applies resolved style specs, widget modifiers, and animation support
 /// to the builder function while providing the spec through StyleSpecProvider.
 class StyleSpecBuilder<S extends Spec<S>> extends StatelessWidget {
-  const StyleSpecBuilder({
-    super.key,
-    required this.builder,
-    required this.styleSpec,
-  });
-
   /// The style to resolve.
   final StyleSpec<S> styleSpec;
 
   /// The builder function that receives the resolved style.
   final Widget Function(BuildContext context, S spec) builder;
+
+  const StyleSpecBuilder({
+    super.key,
+    required this.builder,
+    required this.styleSpec,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -201,13 +201,13 @@ class StyleSpecBuilder<S extends Spec<S>> extends StatelessWidget {
 }
 
 class _ExternalControllerProvider extends StatelessWidget {
+  final WidgetStatesController controller;
+
+  final Widget child;
   const _ExternalControllerProvider({
     required this.controller,
     required this.child,
   });
-
-  final WidgetStatesController controller;
-  final Widget child;
 
   @override
   Widget build(BuildContext context) {

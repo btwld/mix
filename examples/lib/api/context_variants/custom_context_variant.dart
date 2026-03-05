@@ -16,6 +16,8 @@ class Example extends StatefulWidget {
 }
 
 class ShiftPressedInheritedWidget extends InheritedWidget {
+  final bool isShiftPressed;
+
   const ShiftPressedInheritedWidget({
     super.key,
     required this.isShiftPressed,
@@ -25,8 +27,6 @@ class ShiftPressedInheritedWidget extends InheritedWidget {
   static ShiftPressedInheritedWidget? of(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType();
   }
-
-  final bool isShiftPressed;
 
   @override
   bool updateShouldNotify(ShiftPressedInheritedWidget oldWidget) {
@@ -45,12 +45,6 @@ class _ExampleState extends State<Example> {
   bool isShiftPressed = false;
   final focusNode = FocusNode();
 
-  @override
-  void initState() {
-    super.initState();
-    HardwareKeyboard.instance.addHandler(_onKey);
-  }
-
   bool _onKey(KeyEvent event) {
     if (event.logicalKey == LogicalKeyboardKey.shift) return false;
 
@@ -59,6 +53,12 @@ class _ExampleState extends State<Example> {
     });
 
     return true;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    HardwareKeyboard.instance.addHandler(_onKey);
   }
 
   @override
