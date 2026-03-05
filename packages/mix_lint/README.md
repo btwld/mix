@@ -29,6 +29,7 @@ plugins:
       mix_max_number_of_attributes_per_style: true
       mix_variants_last: true
       mix_mixable_styler_has_create: true
+      mix_prefer_dot_shorthands: true
 ```
 
 Then restart the analysis server (or your IDE) to pick up the new plugin.
@@ -210,6 +211,24 @@ final style = BoxStyler()
     .borderRounded(8)
     .onHovered(.color(Colors.blue))
     .onPressed(.color(Colors.green));
+```
+
+### mix_prefer_dot_shorthands
+
+Prefer Dart's dot shorthand syntax when calling static methods or constructors on types that can be inferred from context. Instead of writing the full type name (e.g. `EdgeInsetsGeometryMix.all(10)` or `TextStyler.color(...)`), use the leading dot (e.g. `.all(10)` or `.color(...)`). This keeps code concise and readable while remaining type-safe. Requires Dart 3.11 or later.
+
+#### Don't
+
+```dart
+final style = BoxStyler()
+    .padding(EdgeInsetsGeometryMix.all(10))
+```
+
+#### Do
+
+```dart
+final style = BoxStyler()
+    .padding(.all(10))
 ```
 
 ### mix_mixable_styler_has_create
