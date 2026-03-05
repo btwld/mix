@@ -21,6 +21,13 @@ class FontWeight {
 class Constants {
   static const num foo = 100;
 }
+class Colors {
+  Colors._();
+  static const Color blue = Color._();
+}
+class Color {
+  const Color._();
+}
 class BoxStyler extends MixStyler {
   BoxStyler color(Object? c) => this;
   BoxStyler height(num n) => this;

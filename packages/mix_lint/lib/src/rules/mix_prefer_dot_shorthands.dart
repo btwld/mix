@@ -3,6 +3,8 @@ import 'package:analyzer/analysis_rule/rule_context.dart';
 import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
+import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
 
 import '../utils/type_helpers.dart';
@@ -71,10 +73,40 @@ class _Visitor extends SimpleAstVisitor<void> {
     return false;
   }
 
+  /// Returns the [InterfaceType] of the class that declares the static member
+  /// (e.g. [Colors] for [Colors.blue]), or null if it cannot be determined.
+  InterfaceType? _getDeclaringClassType(AstNode node) {
+    Element? memberElement;
+    if (node is MethodInvocation) {
+      memberElement = node.methodName.element;
+    } else if (node is PropertyAccess) {
+      memberElement = node.propertyName.element;
+    } else if (node is PrefixedIdentifier) {
+      memberElement = node.identifier.element;
+    } else if (node is InstanceCreationExpression) {
+      memberElement = node.constructorName.element;
+    }
+    final enclosing = memberElement?.enclosingElement;
+
+    return enclosing is InterfaceElement ? enclosing.thisType : null;
+  }
+
+  /// Only report when the expression type is the same as the declaring class.
+  /// E.g. [Colors.blue] has type [Color], not [Colors], so we do not report.
+  bool _staticHasSameTypeAsDeclaringClass(AstNode node) {
+    final expressionType = (node as Expression).staticType;
+    final declaringType = _getDeclaringClassType(node);
+    if (declaringType == null || expressionType == null) return true;
+    if (expressionType is! InterfaceType) return false;
+
+    return expressionType.element == declaringType.element;
+  }
+
   @override
   void visitMethodInvocation(MethodInvocation node) {
     if (!_isPartOfStylerDeclaration(node)) return;
     if (!_isTypeLikeTarget(node.target)) return;
+    if (!_staticHasSameTypeAsDeclaringClass(node)) return;
 
     rule.reportAtNode(node);
   }
@@ -83,6 +115,7 @@ class _Visitor extends SimpleAstVisitor<void> {
   void visitPropertyAccess(PropertyAccess node) {
     if (!_isPartOfStylerDeclaration(node)) return;
     if (!_isTypeLikeTarget(node.target)) return;
+    if (!_staticHasSameTypeAsDeclaringClass(node)) return;
 
     rule.reportAtNode(node);
   }
@@ -93,6 +126,7 @@ class _Visitor extends SimpleAstVisitor<void> {
 
     final name = node.prefix.name;
     if (name.isEmpty || name[0] != name[0].toUpperCase()) return;
+    if (!_staticHasSameTypeAsDeclaringClass(node)) return;
 
     rule.reportAtNode(node);
   }
@@ -107,7 +141,7 @@ class _Visitor extends SimpleAstVisitor<void> {
         token.lexeme[0] != token.lexeme[0].toUpperCase()) {
       return;
     }
-
+    // Constructor always returns an instance of the declaring class.
     rule.reportAtNode(node);
   }
 }

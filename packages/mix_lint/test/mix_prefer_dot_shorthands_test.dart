@@ -58,6 +58,16 @@ void main() {
 }
 ''');
   }
+
+  void test_static_with_different_type_than_declaring_class_no_diagnostic() async {
+    // Colors.blue has type Color, not Colors; dot shorthand would be ambiguous.
+    await assertNoDiagnostics(r'''
+import 'package:mix/mix.dart';
+void main() {
+  final s = BoxStyler().color(Colors.blue);
+}
+''');
+  }
 }
 
 void main() {
