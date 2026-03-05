@@ -1,0 +1,23 @@
+name: mix_schema
+description: Decode external UI payloads into Mix-powered Flutter UI.
+publish_to: none
+version: 0.1.0-dev.0
+repository: https://github.com/btwld/mix/tree/main/packages/mix_schema
+
+environment:
+  sdk: ">=3.11.0 <4.0.0"
+  flutter: ">=3.41.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  mix:
+    path: ../mix
+  ack:
+    git:
+      url: https://github.com/btwld/ack.git
+      ref: feat/discrim-transformed-branches
+      path: packages/ack
+
+dev_dependencies:
+  flutter_lints: ^6.0.0
