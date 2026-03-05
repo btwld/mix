@@ -1,12 +1,20 @@
-name: mix
+name: mix_workspace
 
 environment:
   sdk: ">=3.11.0 <4.0.0"
   flutter: ">=3.41.0 <4.0.0"
 
+workspace:
+  - packages/mix
+  - packages/mix_annotations
+  - packages/mix_generator
+  - packages/mix_tailwinds
+  - packages/mix_tailwinds/example
+  - examples
+
 dependencies:
   melos: ^6.3.3
-  analyzer: '>=9.0.0 <11.0.0'
+  analyzer: ">=9.0.0 <11.0.0"
 
 dev_dependencies:
   flutter_lints: ^6.0.0
