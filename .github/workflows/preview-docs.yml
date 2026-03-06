@@ -43,7 +43,9 @@ jobs:
           version: 10
 
       - name: Setup Melos
-        uses: bluefireteam/melos-action@v3
+        run: |
+          dart pub global activate melos
+          melos bootstrap
 
       - name: Build Flutter Preview Bundle
         run: bash examples/scripts/build_web_previews.sh --local
