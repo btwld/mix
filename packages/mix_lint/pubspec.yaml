@@ -1,17 +1,19 @@
 name: mix_lint
 description: A linter for the mix package
-version: 1.7.0
+version: 2.0.0
 repository: https://github.com/btwld/mix/tree/main/packages/mix_lint
 
 environment:
   sdk: ">=3.11.0 <4.0.0"
 
 dependencies:
-  analyzer: ^7.3.0
-  analyzer_plugin: ^0.13.0
-  custom_lint_builder: ^0.7.5
+  analysis_server_plugin: ^0.3.0
+  analyzer: ">=8.4.0 <12.0.0"
+  analyzer_plugin: ^0.14.0
 
 dev_dependencies:
+  analyzer_testing: ^0.1.10
   test: ^1.24.0
+  test_reflective_loader: ^0.4.0
   dart_code_metrics_presets: ^2.24.0
   flutter_lints: ^6.0.0
