@@ -549,9 +549,9 @@ Lessons from the simplification pass:
 - package-local contract: complete
 - package-local validation: complete
 - internal architecture: clean enough for v1
-- follow-up cleanup required before feature expansion: low
+- follow-up cleanup required before feature expansion: none
 
-The remaining work is documentation/maintenance scale work, not architecture
+Any remaining work is documentation/maintenance scale work, not architecture
 correction work.
 
 ## 2026-03-06 — Enum Surface and Drift Cleanup

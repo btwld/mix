@@ -207,8 +207,9 @@ Rules:
 - no built-in file may duplicate the same `Ack.object({...})` field list twice
 - closed discriminator sets use internal enhanced enums with `wireValue`
 - those internal enums are not exported from the package root
-- the current drift review found no functional divergence between plan and code;
-  remaining cleanup work is naming and ergonomics only
+- the drift review found no functional divergence between plan and code
+- the naming and ergonomics cleanup was completed as a behavior-preserving
+  follow-up
 
 ### 6.3 File layout
 

@@ -1,6 +1,3 @@
-import 'package:ack/ack.dart';
-import 'package:mix/mix.dart';
-
 import '../core/json_map.dart';
 import '../core/schema_wire_types.dart';
 import '../errors/mix_schema_decode_result.dart';
@@ -16,8 +13,8 @@ import '../schema/builtins/image_schema.dart';
 import '../schema/builtins/stack_box_schema.dart';
 import '../schema/builtins/stack_schema.dart';
 import '../schema/builtins/text_schema.dart';
+import '../schema/erased_styler_definition.dart';
 import '../schema/mix_schema_catalog.dart';
-import '../schema/styler_definition.dart';
 
 /// Decodes payload maps into Mix styling objects.
 ///
@@ -44,10 +41,15 @@ final class MixSchemaDecoder {
     final stylerRegistry = StylerRegistry();
 
     for (final type in SchemaStyler.values) {
+      final definition = _selectBuiltInStylerDefinition(
+        catalog: catalog,
+        type: type,
+      );
+
       _registerBuiltInStyler(
         registry: stylerRegistry,
         catalog: catalog,
-        type: type,
+        definition: definition,
       );
     }
 
@@ -70,32 +72,42 @@ final class MixSchemaDecoder {
 void _registerBuiltInStyler({
   required StylerRegistry registry,
   required MixSchemaCatalog catalog,
-  required SchemaStyler type,
+  required ErasedStylerDefinition definition,
 }) {
-  final schema = _buildBuiltInSchema(catalog: catalog, type: type);
-  registry.register(type.wireValue, schema);
+  registry.register(
+    definition.type.wireValue,
+    definition.buildFullSchema(catalog),
+  );
 }
 
-AckSchema<Object> _buildBuiltInSchema({
+ErasedStylerDefinition _selectBuiltInStylerDefinition({
   required MixSchemaCatalog catalog,
   required SchemaStyler type,
 }) {
   return switch (type) {
-    .box => _fullSchema(buildBoxStylerDefinition(catalog), catalog),
-    .text => _fullSchema(buildTextStylerDefinition(catalog), catalog),
-    .flex => _fullSchema(buildFlexStylerDefinition(catalog), catalog),
-    .icon => _fullSchema(buildIconStylerDefinition(catalog), catalog),
-    .image => _fullSchema(buildImageStylerDefinition(catalog), catalog),
-    .stack => _fullSchema(buildStackStylerDefinition(catalog), catalog),
-    .flexBox => _fullSchema(buildFlexBoxStylerDefinition(catalog), catalog),
-    .stackBox => _fullSchema(buildStackBoxStylerDefinition(catalog), catalog),
+    .box => ErasedStylerDefinition.fromDefinition(
+      buildBoxStylerDefinition(catalog),
+    ),
+    .text => ErasedStylerDefinition.fromDefinition(
+      buildTextStylerDefinition(catalog),
+    ),
+    .flex => ErasedStylerDefinition.fromDefinition(
+      buildFlexStylerDefinition(catalog),
+    ),
+    .icon => ErasedStylerDefinition.fromDefinition(
+      buildIconStylerDefinition(catalog),
+    ),
+    .image => ErasedStylerDefinition.fromDefinition(
+      buildImageStylerDefinition(catalog),
+    ),
+    .stack => ErasedStylerDefinition.fromDefinition(
+      buildStackStylerDefinition(catalog),
+    ),
+    .flexBox => ErasedStylerDefinition.fromDefinition(
+      buildFlexBoxStylerDefinition(catalog),
+    ),
+    .stackBox => ErasedStylerDefinition.fromDefinition(
+      buildStackBoxStylerDefinition(catalog),
+    ),
   };
-}
-
-AckSchema<Object> _fullSchema<S extends Spec<S>, T extends Style<S>>(
-  StylerDefinition<S, T> definition,
-  MixSchemaCatalog catalog,
-) {
-  return buildStylerSchemas(definition: definition, catalog: catalog).fullSchema
-      as AckSchema<Object>;
 }
