@@ -50,10 +50,11 @@ melos run exports
 - Match existing coding patterns in nearby files.
 - Update tests only where behavior changed.
 
-## Troubleshooting / known errors encountered during onboarding
-The following issues occurred while onboarding in this environment:
+## Troubleshooting / environment-specific onboarding errors
+The following issues were observed in one constrained CI-like onboarding environment (not repository-wide known defects):
+If your local setup works, you can ignore this section.
 
-1. `flutter --version` failed with: `flutter: command not found`.
+1. `flutter --version` returned: `flutter: command not found`.
 2. Running setup with `CLAUDE_CODE_REMOTE=true bash setup.sh` failed:
    - `curl: (6) Could not resolve host: fvm.app`
    - `ERROR: fvm not found on PATH after install`
@@ -71,4 +72,4 @@ When CI is mentioned, inspect GitHub Actions in this order:
 2. Inspect run/job details and logs for failures.
 3. Summarize root cause and map it to the smallest repository change.
 
-If a run is `action_required` for `pull_request_target`, verify whether it is awaiting manual approval/security policy before treating it as a code regression.
+If a run is `action_required` for `pull_request_target`, verify whether it is awaiting manual approval or blocked by security policy requirements before treating it as a code regression.
