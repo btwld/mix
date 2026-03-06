@@ -42,8 +42,8 @@ jobs:
         with:
           version: 10
 
-      - name: Setup Dependencies
-        run: flutter pub get
+      - name: Setup Melos
+        uses: bluefireteam/melos-action@v3
 
       - name: Build Flutter Preview Bundle
         run: bash examples/scripts/build_web_previews.sh --local
