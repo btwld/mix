@@ -43,7 +43,7 @@ final class SchemaErrorMapper {
           ),
         );
       case SchemaTransformError():
-        results.add(_mapTransformError(error));
+        results.addAll(_mapTransformErrors(error));
       default:
         results.add(
           MixSchemaError(
@@ -56,21 +56,55 @@ final class SchemaErrorMapper {
     }
   }
 
-  MixSchemaError _mapTransformError(SchemaTransformError error) {
+  Iterable<MixSchemaError> _mapTransformErrors(SchemaTransformError error) {
     final cause = error.cause;
-    final code = switch (cause) {
-      RegistryLookupError() => MixSchemaErrorCode.unknownRegistryId,
-      RegistryTypeMismatchError() => MixSchemaErrorCode.transformFailed,
-      UnsupportedValueError() => MixSchemaErrorCode.unsupportedValueType,
-      _ => MixSchemaErrorCode.transformFailed,
-    };
-
-    return MixSchemaError(
-      code: code,
-      path: error.path,
-      message: cause?.toString() ?? error.message,
-      value: error.value,
-    );
+    switch (cause) {
+      case NestedSchemaErrorsException():
+        return cause.errors.map((nestedError) {
+          return MixSchemaError(
+            code: nestedError.code,
+            path: _prefixPath(error.path, nestedError.path),
+            message: nestedError.message,
+            value: nestedError.value,
+          );
+        });
+      case RegistryLookupError():
+        return [
+          MixSchemaError(
+            code: MixSchemaErrorCode.unknownRegistryId,
+            path: error.path,
+            message: cause.toString(),
+            value: error.value,
+          ),
+        ];
+      case RegistryTypeMismatchError():
+        return [
+          MixSchemaError(
+            code: MixSchemaErrorCode.transformFailed,
+            path: error.path,
+            message: cause.toString(),
+            value: error.value,
+          ),
+        ];
+      case UnsupportedValueError():
+        return [
+          MixSchemaError(
+            code: MixSchemaErrorCode.unsupportedValueType,
+            path: error.path,
+            message: cause.toString(),
+            value: error.value,
+          ),
+        ];
+      default:
+        return [
+          MixSchemaError(
+            code: MixSchemaErrorCode.transformFailed,
+            path: error.path,
+            message: cause?.toString() ?? error.message,
+            value: error.value,
+          ),
+        ];
+    }
   }
 
   MixSchemaErrorCode _mapConstraint(String path, String constraintKey) {
@@ -89,6 +123,18 @@ final class SchemaErrorMapper {
 
   bool _isDiscriminatorPath(String path) {
     return path == '#/type' || path.endsWith('/type');
+  }
+
+  String _prefixPath(String prefix, String nestedPath) {
+    if (nestedPath == '#') {
+      return prefix;
+    }
+
+    if (prefix == '#') {
+      return nestedPath;
+    }
+
+    return '$prefix${nestedPath.substring(1)}';
   }
 
   List<MixSchemaError> map(SchemaError error) {

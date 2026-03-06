@@ -1,3 +1,5 @@
+import 'mix_schema_error.dart';
+
 /// Thrown when a registry lookup fails during schema transform.
 final class RegistryLookupError implements Exception {
   final String scope;
@@ -38,4 +40,19 @@ final class UnsupportedValueError implements Exception {
 
   @override
   String toString() => reason;
+}
+
+/// Thrown when a transform delegates to nested schema parsing and needs to
+/// preserve the resulting path-specific validation errors.
+final class NestedSchemaErrorsException implements Exception {
+  final List<MixSchemaError> errors;
+
+  const NestedSchemaErrorsException(this.errors);
+
+  @override
+  String toString() {
+    return errors
+        .map((error) => '${error.code.wireValue} at ${error.path}')
+        .join(', ');
+  }
 }

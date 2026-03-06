@@ -58,5 +58,35 @@ void main() {
       expect(result.ok, isTrue);
       expect(result.value, isA<BoxStyler>());
     });
+
+    test('extends the built-in styler set with custom schemas', () {
+      final registry = StylerRegistry.builtIn()
+        ..register(
+          'custom_box',
+          Ack.object({'color': colorSchema.optional()}).transform<BoxStyler>((
+            data,
+          ) {
+            final map = data!;
+            return BoxStyler(
+              decoration: map['color'] == null
+                  ? null
+                  : BoxDecorationMix(color: map['color'] as Color),
+            );
+          }),
+        )
+        ..freeze();
+
+      final decoder = MixSchemaDecoder(stylerRegistry: registry);
+      final builtInResult = decoder.decode({'type': 'box'});
+      final customResult = decoder.decode({
+        'type': 'custom_box',
+        'color': 0xFF336699,
+      });
+
+      expect(builtInResult.ok, isTrue);
+      expect(builtInResult.value, isA<BoxStyler>());
+      expect(customResult.ok, isTrue);
+      expect(customResult.value, isA<BoxStyler>());
+    });
   });
 }

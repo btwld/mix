@@ -1,5 +1,13 @@
 ## 0.1.0-dev.0
 
+- Add `StylerRegistry.builtIn(...)` for extending the built-in styler set with
+  custom branches, and decode language-only locales plus decoration images.
+- Add public compound context variant decoding with the `context_all_of`
+  branch and nested condition parsing.
+- Preserve deep nested condition error paths during transform failures and
+  keep compound variants aligned with Mix widget-state priority ordering.
+- Allow sparse `context_breakpoint` payloads by treating omitted dimensions as
+  absent instead of required-null fields.
 - Add the initial `mix_schema` package scaffold.
 - Implement the first decode vertical slice for `box` payloads.
 - Expand the shared schema foundation for box layout and decoration decoding.

@@ -155,7 +155,7 @@ void main() {
 
       expect(result.ok, isFalse);
       expect(result.errors.single.code, MixSchemaErrorCode.transformFailed);
-      expect(result.errors.single.path, '#');
+      expect(result.errors.single.path, '#/image');
     });
   });
 }

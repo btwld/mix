@@ -146,6 +146,46 @@ void main() {
         );
       });
 
+      testWidgets('custom variant priorities share widget state precedence', (
+        tester,
+      ) async {
+        final contextVariant = ContextVariant('context', (context) => true);
+        final prioritizedVariant = _PriorityContextVariant(
+          key: 'compound',
+          sortPriority: 1,
+        );
+        final widgetStateVariant = WidgetStateVariant(WidgetState.hovered);
+
+        final testAttribute = _MockSpecAttribute(
+          width: 50.0,
+          variants: [
+            VariantStyle(contextVariant, _MockSpecAttribute(width: 100.0)),
+            VariantStyle(prioritizedVariant, _MockSpecAttribute(width: 200.0)),
+            VariantStyle(widgetStateVariant, _MockSpecAttribute(width: 300.0)),
+          ],
+        );
+
+        await tester.pumpWidget(
+          MaterialApp(
+            home: WidgetStateProvider(
+              states: const {WidgetState.hovered},
+              child: Builder(
+                builder: (context) {
+                  final result = testAttribute.mergeActiveVariants(
+                    context,
+                    namedVariants: const {},
+                  );
+                  final spec = result.resolve(context);
+
+                  expect((spec.resolvedValue as Map)['width'], 300.0);
+                  return Container();
+                },
+              ),
+            ),
+          ),
+        );
+      });
+
       testWidgets('mixed variant types are sorted correctly', (tester) async {
         // Create a mix of all variant types
         final contextVariant = ContextVariant('context', (context) => true);
@@ -764,4 +804,17 @@ class _MockSpecAttribute extends Style<MockSpec<Map<String, dynamic>>> {
 
   @override
   List<Object?> get props => [width, height, $variants];
+}
+
+final class _PriorityContextVariant extends ContextVariant
+    implements VariantPriority {
+  @override
+  final int sortPriority;
+
+  const _PriorityContextVariant({
+    required String key,
+    required this.sortPriority,
+  }) : super(key, _alwaysTrue);
+
+  static bool _alwaysTrue(BuildContext context) => true;
 }

@@ -138,7 +138,7 @@ final AckSchema<TextHeightBehaviorMix> textHeightBehaviorSchema =
 final AckSchema<Locale> localeSchema =
     Ack.object({
       'languageCode': Ack.string(),
-      'countryCode': Ack.string().nullable(),
+      'countryCode': Ack.string().nullable().optional(),
     }).transform<Locale>((data) {
       final map = data!;
       final languageCode = map['languageCode'] as String;

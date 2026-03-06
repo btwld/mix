@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
@@ -116,6 +118,87 @@ void main() {
 
       animation.onEnd?.call();
       expect(didComplete, isTrue);
+    });
+
+    testWidgets('decodes text locales without countryCode', (tester) async {
+      final decoder = MixSchemaDecoder.builtIn();
+      final result = decoder.decode({
+        'type': 'text',
+        'locale': {'languageCode': 'en'},
+      });
+
+      expect(result.ok, isTrue);
+      expect(result.errors, isEmpty);
+
+      final style = result.value! as TextStyler;
+      late StyleSpec<TextSpec> resolved;
+
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: Builder(
+            builder: (context) {
+              resolved = style.resolve(context);
+              return const SizedBox();
+            },
+          ),
+        ),
+      );
+
+      expect(resolved.spec.locale, const Locale('en'));
+    });
+
+    testWidgets('decodes decoration images for box and shape decorations', (
+      tester,
+    ) async {
+      final heroImage = MemoryImage(Uint8List.fromList([0, 0, 0, 0]));
+      final images = RegistryBuilder<ImageProvider<Object>>.builtIn(
+        scope: MixSchemaScope.imageProvider,
+      )..register('hero', heroImage);
+
+      final decoder = MixSchemaDecoder.builtIn(registries: [images.freeze()]);
+      final result = decoder.decode({
+        'type': 'box',
+        'decoration': {
+          'type': 'box_decoration',
+          'image': {'image': 'hero', 'fit': 'cover', 'isAntiAlias': true},
+        },
+        'foregroundDecoration': {
+          'type': 'shape_decoration',
+          'image': {'image': 'hero', 'repeat': 'repeatX', 'invertColors': true},
+        },
+      });
+
+      expect(result.ok, isTrue);
+      expect(result.errors, isEmpty);
+
+      final style = result.value! as BoxStyler;
+      late StyleSpec<BoxSpec> resolved;
+
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: Builder(
+            builder: (context) {
+              resolved = style.resolve(context);
+              return const SizedBox();
+            },
+          ),
+        ),
+      );
+
+      final decoration = resolved.spec.decoration! as BoxDecoration;
+      expect(decoration.image, isNotNull);
+      expect(decoration.image!.image, same(heroImage));
+      expect(decoration.image!.fit, BoxFit.cover);
+      expect(decoration.image!.isAntiAlias, isTrue);
+
+      final foregroundDecoration =
+          resolved.spec.foregroundDecoration! as ShapeDecoration;
+      expect(foregroundDecoration.image, isNotNull);
+      expect(foregroundDecoration.image!.image, same(heroImage));
+      expect(foregroundDecoration.image!.repeat, ImageRepeat.repeatX);
+      expect(foregroundDecoration.image!.invertColors, isTrue);
     });
 
     test('returns required_field when type is missing', () {

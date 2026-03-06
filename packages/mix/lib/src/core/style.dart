@@ -75,19 +75,18 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
   /// within each active variant's style. The result is a fully merged style
   /// with all applicable variants applied.
   ///
-  /// Variant priority order (lowest to highest):
-  /// 1. ContextVariant and NamedVariant (applied first)
-  /// 2. StyleVariation (applied second)
-  /// 3. WidgetStateVariant (applied last, highest priority)
+  /// Active variants are merged by ascending `VariantPriority.sortPriority`.
+  /// Variants without an explicit priority use `0`, and declaration order stays
+  /// stable within the same priority tier.
   @visibleForTesting
   Style<S> mergeActiveVariants(
     BuildContext context, {
     required Set<NamedVariant> namedVariants,
   }) {
     // Filter variants that should be active in this context
-    final activeVariants = ($variants ?? [])
+    final activeVariantEntries = ($variants ?? []).indexed
         .where(
-          (variantAttr) => switch (variantAttr.variant) {
+          (entry) => switch (entry.$2.variant) {
             (ContextVariant variant) => variant.when(context),
             (NamedVariant variant) => namedVariants.contains(variant),
             (ContextVariantBuilder _) => true,
@@ -95,13 +94,23 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
         )
         .toList();
 
-    // Sort by priority: WidgetStateVariant gets applied last (highest priority)
-    activeVariants.sort(
-      (a, b) => Comparable.compare(
-        a.variant is WidgetStateVariant ? 1 : 0,
-        b.variant is WidgetStateVariant ? 1 : 0,
-      ),
-    );
+    // Sort by priority while preserving declaration order within each tier.
+    activeVariantEntries.sort((left, right) {
+      final priorityCompare = Comparable.compare(
+        _variantSortPriority(left.$2.variant),
+        _variantSortPriority(right.$2.variant),
+      );
+
+      if (priorityCompare != 0) {
+        return priorityCompare;
+      }
+
+      return left.$1.compareTo(right.$1);
+    });
+
+    final activeVariants = activeVariantEntries
+        .map((entry) => entry.$2)
+        .toList();
 
     // Extract the style from each active variant
     final stylesToMerge = <(Style<S>, bool)>[]; // (style, isFromStyleVariation)
@@ -152,6 +161,13 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
     }
 
     return mergedStyle;
+  }
+
+  int _variantSortPriority(Variant variant) {
+    return switch (variant) {
+      VariantPriority priority => priority.sortPriority,
+      _ => 0,
+    };
   }
 
   /// Resolves this attribute to its concrete value using the provided [BuildContext].

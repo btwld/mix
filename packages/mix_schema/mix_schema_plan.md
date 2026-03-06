@@ -1,6 +1,6 @@
 # mix_schema v1 Redesign Plan
 
-**Version:** 15.0.0  
+**Version:** 15.1.0
 **Date:** 2026-03-06  
 **Owner:** Mix 2.0 team
 
@@ -82,6 +82,42 @@ The previous nested shape is removed:
   }
 }
 ```
+
+### Compound context variants
+
+Variants now support a public `context_all_of` branch for declarative compound
+context conditions:
+
+```json
+{
+  "type": "context_all_of",
+  "conditions": [
+    { "type": "context_breakpoint", "minWidth": 768 },
+    { "type": "widget_state", "state": "hovered" }
+  ],
+  "style": { "clipBehavior": "hardEdge" }
+}
+```
+
+Rules:
+
+- `conditions` must contain at least two entries.
+- Nested `context_all_of` conditions are allowed and flattened during decode.
+- Condition ordering does not affect the generated compound key.
+- Compound condition leaves reuse the same wire ids and shared internal leaf
+  definitions as their top-level context-variant counterparts; there is no
+  separate condition enum.
+- Compound variant styles still use the active styler's fields-only schema, so
+  nested `animation`, `modifiers`, and `variants` remain rejected there.
+- Condition trees support only context-capable leaves:
+  - `widget_state`
+  - `enabled`
+  - `context_brightness`
+  - `context_breakpoint`
+  - `context_not_widget_state`
+  - `context_all_of`
+- `named` and `context_variant_builder` stay valid top-level variant branches
+  but are explicitly excluded from `context_all_of.conditions`.
 
 ### Registry-backed values
 
@@ -218,6 +254,7 @@ Shared schemas are split by domain:
 - `schema/metadata/`
   - `animation_schema.dart`
   - `modifier_schema.dart`
+  - `variant_condition_schema.dart`
   - `variant_schema.dart`
   - `metadata_field_schemas.dart`
 - `schema/painting/`
@@ -244,7 +281,12 @@ The discriminated branch registry stays as a dedicated internal helper under
 - Variants remain a discriminated list.
 - Variant nested styles validate against the fields-only schema for the active
   styler family.
+- `context_all_of` composes multiple context conditions into a single runtime
+  variant while preserving Mix's widget-state priority tier.
+- Compound condition parsing is recursive, but the public style payload remains
+  non-recursive at the metadata level.
 - `ContextVariantBuilder` remains registry-backed.
+- `ContextVariantBuilder` is excluded from compound condition trees.
 - Placeholder values required by Mix internals must be hidden behind internal
   helpers and not leak into multiple styler files.
 

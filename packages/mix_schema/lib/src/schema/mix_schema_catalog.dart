@@ -15,6 +15,7 @@ import 'shared/box_constraints_schema.dart';
 import 'shared/color_schema.dart';
 import 'shared/edge_insets_schema.dart';
 import 'shared/enum_schemas.dart';
+import 'shared/image_provider_schema.dart';
 import 'shared/primitive_schemas.dart';
 import 'shared/typography_schemas.dart';
 
@@ -32,10 +33,14 @@ final class MixSchemaCatalog {
   late final AckSchema<Color> color = colorSchema;
   late final AckSchema<CrossAxisAlignment> crossAxisAlignment =
       crossAxisAlignmentSchema;
+  late final AckSchema<ImageProvider<Object>> imageProvider =
+      buildImageProviderSchema(registries: registries);
   late final AckSchema<DecorationMix> decoration = buildDecorationSchema(
     boxDecorationSchema: boxDecoration,
     shapeDecorationSchema: shapeDecoration,
   );
+  late final AckSchema<DecorationImageMix> decorationImage =
+      buildDecorationImageSchema(imageProviderSchema: imageProvider);
   late final AckSchema<EdgeInsetsGeometryMix> edgeInsetsGeometry =
       edgeInsetsGeometrySchema;
   late final AckSchema<FilterQuality> filterQuality = filterQualitySchema;
@@ -84,11 +89,13 @@ final class MixSchemaCatalog {
         borderSchema: boxBorder,
         borderRadiusSchema: borderRadius,
         gradientSchema: gradient,
+        imageSchema: decorationImage,
       );
   late final AckSchema<ShapeDecorationMix> shapeDecoration =
       buildShapeDecorationSchema(
         shapeBorderSchema: shapeBorder,
         gradientSchema: gradient,
+        imageSchema: decorationImage,
       );
   MixSchemaCatalog({required this.registries});
 

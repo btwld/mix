@@ -112,6 +112,7 @@ enum SchemaVariant {
   enabled('enabled'),
   brightness('context_brightness'),
   breakpoint('context_breakpoint'),
+  contextAllOf('context_all_of'),
   notWidgetState('context_not_widget_state'),
   contextBuilder('context_variant_builder');
 

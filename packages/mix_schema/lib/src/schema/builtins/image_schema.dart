@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-import '../../core/mix_schema_scope.dart';
 import '../mix_schema_catalog.dart';
 import '../styler_definition.dart';
 
@@ -14,7 +13,7 @@ StylerDefinition<ImageSpec, ImageStyler> buildImageStylerDefinition(
     type: .image,
     emptyStyle: ImageStyler(image: _TransparentImageProvider.instance),
     fields: {
-      'image': Ack.string(),
+      'image': catalog.imageProvider,
       'width': Ack.double().optional(),
       'height': Ack.double().optional(),
       'color': catalog.color.optional(),
@@ -32,10 +31,7 @@ StylerDefinition<ImageSpec, ImageStyler> buildImageStylerDefinition(
     },
     build: (data, {animation, modifier, variants}) {
       return ImageStyler(
-        image: catalog.registries.lookup(
-          MixSchemaScope.imageProvider.wireValue,
-          data['image'] as String,
-        ),
+        image: data['image'] as ImageProvider<Object>,
         width: data['width'] as double?,
         height: data['height'] as double?,
         color: data['color'] as Color?,

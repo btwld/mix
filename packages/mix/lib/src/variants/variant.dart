@@ -19,6 +19,13 @@ sealed class Variant {
   String get key;
 }
 
+/// Optional ordering hint used when multiple active variants are merged.
+///
+/// Higher values are applied later and therefore have higher precedence.
+abstract interface class VariantPriority {
+  int get sortPriority;
+}
+
 /// Manual variants applied when explicitly requested.
 @immutable
 class NamedVariant extends Variant {
@@ -134,7 +141,8 @@ class ContextVariant extends Variant {
   }
 }
 
-final class WidgetStateVariant extends ContextVariant {
+final class WidgetStateVariant extends ContextVariant
+    implements VariantPriority {
   final WidgetState state;
 
   WidgetStateVariant(this.state)
@@ -149,6 +157,9 @@ final class WidgetStateVariant extends ContextVariant {
 
   @override
   int get hashCode => state.hashCode;
+
+  @override
+  int get sortPriority => 1;
 }
 
 /// Variant that dynamically builds a Style based on build context.
