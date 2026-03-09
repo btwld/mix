@@ -57,19 +57,12 @@ class _ExampleNavigatorState extends State<ExampleNavigator> {
         crossAxisAlignment: .start,
         children: [
           Text(
-            preview.title,
-            style: const TextStyle(fontSize: 16, fontWeight: .bold),
+            preview.previewId,
+            style: const TextStyle(fontSize: 12, color: Colors.grey),
             overflow: .ellipsis,
-            maxLines: 2,
+            maxLines: 1,
           ),
           const SizedBox(height: 8),
-          Text(
-            preview.description,
-            style: const TextStyle(color: Colors.grey, fontSize: 12),
-            overflow: .ellipsis,
-            maxLines: 2,
-          ),
-          const SizedBox(height: 12),
           Expanded(child: Center(child: preview.builder(context))),
         ],
       ),

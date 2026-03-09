@@ -15,14 +15,8 @@ type ManifestState = "loading" | "ready" | "error";
 interface FlutterPreviewProps {
   /** Preview ID registered in PreviewRegistry */
   previewId: string;
-  /** Header title */
-  title?: string;
-  /** Optional subtitle/description */
-  description?: string;
   /** Initial mode shown */
   defaultMode?: PreviewMode;
-  /** Show mode tabs */
-  showTabs?: boolean;
   /** Flutter preview height */
   height?: number;
   /** Maximum code block height */
@@ -39,10 +33,7 @@ interface FlutterPreviewProps {
 
 export function FlutterPreview({
   previewId,
-  title,
-  description,
   defaultMode = "preview",
-  showTabs = false,
   height = 360,
   codeMaxHeight = 420,
   basePath = "/previews",
@@ -50,14 +41,11 @@ export function FlutterPreview({
   bordered = true,
   fallbackToFullFile = true,
 }: FlutterPreviewProps) {
-  const [mode, setMode] = useState<PreviewMode>(defaultMode);
   const [manifestState, setManifestState] = useState<ManifestState>("loading");
   const [entry, setEntry] = useState<PreviewManifestEntry | null>(null);
   const [manifestError, setManifestError] = useState<string | null>(null);
-  const showPreview = mode === "preview" || mode === "both";
-  const showCode = mode === "code" || mode === "both";
-  const resolvedTitle = title ?? entry?.title;
-  const resolvedDescription = description ?? entry?.description;
+  const showPreview = defaultMode === "preview" || defaultMode === "both";
+  const showCode = defaultMode === "code" || defaultMode === "both";
 
   useEffect(() => {
     let isMounted = true;
@@ -97,39 +85,6 @@ export function FlutterPreview({
       data-testid="flutter-preview"
       data-preview-id={previewId}
     >
-      {(resolvedTitle || resolvedDescription || showTabs) && (
-        <div className="mb-3 flex items-start justify-between gap-4">
-          <div>
-            {resolvedTitle && (
-              <h4 className="text-base font-semibold text-white">{resolvedTitle}</h4>
-            )}
-            {resolvedDescription && (
-              <p className="mt-1 text-sm text-zinc-400">{resolvedDescription}</p>
-            )}
-          </div>
-
-          {showTabs && (
-            <div className="flex gap-1">
-              <ModeButton
-                active={mode === "preview"}
-                onClick={() => setMode("preview")}
-                label="Preview"
-              />
-              <ModeButton
-                active={mode === "code"}
-                onClick={() => setMode("code")}
-                label="Code"
-              />
-              <ModeButton
-                active={mode === "both"}
-                onClick={() => setMode("both")}
-                label="Both"
-              />
-            </div>
-          )}
-        </div>
-      )}
-
       {manifestState === "loading" && (
         <div className="rounded-lg border border-white/10 bg-[#1a1a2e] px-4 py-3 text-sm text-zinc-400">
           Resolving preview metadata...
@@ -174,29 +129,6 @@ export function FlutterPreview({
         </>
       )}
     </div>
-  );
-}
-
-function ModeButton({
-  active,
-  onClick,
-  label,
-}: {
-  active: boolean;
-  onClick: () => void;
-  label: string;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className={`rounded px-3 py-1.5 text-xs font-medium transition-colors ${
-        active
-          ? "bg-purple-600 text-white"
-          : "bg-white/5 text-zinc-400 hover:bg-white/10 hover:text-zinc-300"
-      }`}
-    >
-      {label}
-    </button>
   );
 }
 

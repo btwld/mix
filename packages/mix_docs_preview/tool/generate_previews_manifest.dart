@@ -3,7 +3,8 @@ import 'dart:io';
 
 const _defaultOutputPath = 'build/web/previews-manifest.json';
 const _registryPath = 'lib/preview_registry.dart';
-const _packageRegistryPath = 'packages/mix_docs_preview/lib/preview_registry.dart';
+const _packageRegistryPath =
+    'packages/mix_docs_preview/lib/preview_registry.dart';
 
 void main(List<String> args) {
   final outputPath = _readOutputPath(args) ?? _defaultOutputPath;

@@ -27,9 +27,7 @@ class Example extends StatelessWidget {
         .colorBlendMode(.overlay);
 
     return StyledImage(
-      image: NetworkImage(
-        'https://picsum.photos/160',
-      ),
+      image: NetworkImage('https://picsum.photos/160'),
       style: style,
       loadingBuilder: (_, child, loadingProgress) {
         if (loadingProgress == null) return child;
