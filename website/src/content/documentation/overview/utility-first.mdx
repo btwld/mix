@@ -21,7 +21,7 @@ This approach promotes:
 `Styler` methods are descriptive, predictable, and easy to chain. For example:
 
 ```dart
-final boxStyle = BoxStyler
+final boxStyle = BoxStyler()
   .width(100)
   .paddingAll(10)
   .alignment(.center)
@@ -30,17 +30,19 @@ final boxStyle = BoxStyler
 
 The example above shows how you can build up a style step by step using the **builder design pattern**. Each method—like `.width(100)` or `.color(Colors.red)`—adds a style property, and you can chain them together. This makes it easy to create and reuse styles in a clear and readable way.
 
+<FlutterPreview previewId="overview/utility-first.0" height={200} />
+
 ## Intuitive and Familiar API
 
 Mix's API is designed to be intuitive and easy to pick up, especially for Flutter developers. The method names and patterns closely follow those established by Flutter itself, making the API both easy to understand and predict.
 
 ```dart
 // Explicit alignment
-BoxStyler.alignment(.centerRight);
+BoxStyler().alignment(.centerRight);
 
 // Spacing helpers
-BoxStyler.padding(EdgeInsetsGeometryMix.all(16)); // All sides
-BoxStyler.padding(EdgeInsetsGeometryMix.symmetric(horizontal: 12, vertical: 8)); // Horizontal and vertical
+BoxStyler().padding(.all(16)); // All sides
+BoxStyler().padding(.symmetric(horizontal: 12, vertical: 8)); // Horizontal and vertical
 BoxStyler().paddingOnly(horizontal: 12, vertical: 8); // Specific sides
 ```
 
@@ -79,5 +81,5 @@ extension on BoxStyler {
 }
 
 // Use the extension method
-BoxStyler.borderRedTop();
+BoxStyler().borderRedTop();
 ```

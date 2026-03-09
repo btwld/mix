@@ -4,7 +4,7 @@ og_image: introduction-og.png
 ---
 # Introduction
 
-Mix is a styling system for Flutter that separates style definitions from widget structure. It provides a composable, type-safe way to define and apply styles.
+Mix is a styling system for Flutter that separates style definitions from widget structure. It provides a composable, type-safe way to define and apply styles. You'll learn how to define styles with Stylers, apply them to widgets, and adapt them with variants and tokens.
 
 -  Compose, merge, and apply styles across widgets
 -  Write maintainable styling definitions separate from widget code
@@ -37,18 +37,22 @@ Mix provides two constructor patterns for Styler classes. Understanding when to 
 The default constructor provides a fluent API for chaining style properties:
 
 ```dart
-final style = BoxStyler()
-    .color(Colors.blue)
-    .paddingAll(16)
-    .borderRounded(8);
+final boxStyle = BoxStyler()
+    .color(Colors.red)
+    .size(100, 100)
+    .borderRounded(10);
 ```
+
+The preview below shows this style applied to a box.
+
+<FlutterPreview previewId="overview/introduction.0" height={200} />
 
 Use this pattern when:
 - Defining styles with direct values
 - Chaining multiple style properties together
 - Building most common styling use cases
 
-### Prop-Based API: `BoxStyler.create()`
+### Prop-Based API
 
 The `.create()` constructor accepts `Prop<T>` parameters for advanced composition:
 

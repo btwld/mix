@@ -43,6 +43,10 @@ import 'package:mix/mix.dart';
 
 ### Your first Mix widget
 
+The preview below shows the result: a blue card with "Hello Mix" text.
+
+<FlutterPreview previewId="overview/getting-started.0" height={220} />
+
 ```dart
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
@@ -54,7 +58,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cardStyle = BoxStyler
+    final cardStyle = BoxStyler()
         .height(100)
         .width(240)
         .color(Colors.blue)
@@ -68,7 +72,7 @@ class MyApp extends StatelessWidget {
             style: cardStyle,
             child: StyledText(
               'Hello Mix',
-              style: TextStyler.color(Colors.white).fontSize(18),
+              style: TextStyler().color(Colors.white).fontSize(18),
             ),
           ),
         ),
@@ -83,7 +87,7 @@ class MyApp extends StatelessWidget {
 Extract it and reuse across widgets:
 
 ```dart
-final primaryCard = BoxStyler
+final primaryCard = BoxStyler()
   .color(Colors.blue)
   .borderRounded(12);
 

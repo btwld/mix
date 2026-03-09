@@ -51,15 +51,15 @@ jobs:
               console.log('documentation label was added')
             }
 
-            // verify examples
-            const wasExampleModified = files.filter(file => file.startsWith('examples/')).length > 0
-            if (wasExampleModified) {
-              newLabels.push('examples')
-              console.log('examples label was added')
+            // verify docs preview
+            const wasDocsPreviewModified = files.filter(file => file.startsWith('packages/mix_docs_preview/')).length > 0
+            if (wasDocsPreviewModified) {
+              newLabels.push('docs-preview')
+              console.log('docs-preview label was added')
             }
 
             // verify repo
-            const wasRepoModified = files.filter(file => !file.startsWith('website/') && !file.startsWith('packages/') && !file.startsWith('examples/')).length > 0
+            const wasRepoModified = files.filter(file => !file.startsWith('website/') && !file.startsWith('packages/')).length > 0
             if (wasRepoModified) {
               newLabels.push('repo')
               console.log('rep label was added')

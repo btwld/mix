@@ -4,13 +4,13 @@ on:
   pull_request:
     branches: [main, next]
     paths:
-      - 'examples/**'
+      - 'packages/mix_docs_preview/**'
       - 'website/**'
       - '.github/workflows/preview-docs.yml'
   push:
     branches: [main, next]
     paths:
-      - 'examples/**'
+      - 'packages/mix_docs_preview/**'
       - 'website/**'
       - '.github/workflows/preview-docs.yml'
 
@@ -48,12 +48,12 @@ jobs:
           melos bootstrap
 
       - name: Build Flutter Preview Bundle
-        run: bash examples/scripts/build_web_previews.sh --local
+        run: bash packages/mix_docs_preview/scripts/build_web_previews.sh --local
 
       - name: Copy Preview Bundle to Website
         run: |
           mkdir -p website/public/previews
-          cp -r examples/build/web/* website/public/previews/
+          cp -r packages/mix_docs_preview/build/web/* website/public/previews/
 
       - name: Install Website Dependencies
         run: cd website && pnpm install

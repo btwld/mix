@@ -3,6 +3,8 @@
 
 This guide walks through creating a design system button with Mix, demonstrating Specs, Stylers, variants, and state handling — using **annotations and code generation** to eliminate boilerplate.
 
+<FlutterPreview previewId="tutorials/creating-a-widget.0" title="Button gallery (Filled, Outlined, Elevated, Link, Disabled)" height={320} />
+
 ![Button Example](./images/button-example.png)
 
 ## Component Overview
@@ -149,7 +151,7 @@ class ButtonStyler extends MixStyler<ButtonStyler, ButtonSpec>
   ButtonStyler borderRadius(double value) {
     return merge(
       ButtonStyler(
-        container: FlexBoxStyler.borderRadius(BorderRadiusMix.circular(value)),
+        container: FlexBoxStyler().borderRadius(.circular(value)),
       ),
     );
   }
@@ -157,7 +159,7 @@ class ButtonStyler extends MixStyler<ButtonStyler, ButtonSpec>
   ButtonStyler padding({required double x, required double y}) {
     return merge(
       ButtonStyler(
-        container: FlexBoxStyler.padding(
+        container: FlexBoxStyler().padding(
           EdgeInsetsGeometryMix.symmetric(horizontal: x, vertical: y),
         ),
       ),
@@ -165,7 +167,7 @@ class ButtonStyler extends MixStyler<ButtonStyler, ButtonSpec>
   }
 
   ButtonStyler scale(double value) {
-    return merge(ButtonStyler(container: FlexBoxStyler.scale(value)));
+    return merge(ButtonStyler(container: FlexBoxStyler().scale(value)));
   }
 }
 ```
@@ -234,7 +236,7 @@ enum ButtonVariant {
       case ButtonVariant.outlined:
         return ButtonStyler()
             .container(
-              FlexBoxStyler
+              FlexBoxStyler()
                   .color(Colors.transparent)
                   .borderAll(width: 1.5, color: Colors.blueAccent),
             )
@@ -320,7 +322,7 @@ The `buttonStyle` function defines base styles, merges variant styles, and adds 
 ```dart
 ButtonStyler buttonStyle(ButtonStyler? style, ButtonVariant? variant) {
   // Base styles shared across all variants
-  final container = FlexBoxStyler
+  final container = FlexBoxStyler()
       .borderRounded(6)
       .paddingX(8)
       .paddingY(12)
@@ -329,11 +331,11 @@ ButtonStyler buttonStyle(ButtonStyler? style, ButtonVariant? variant) {
       .crossAxisAlignment(.center)
       .mainAxisSize(.min);
 
-  final label = TextStyler.style(
+  final label = TextStyler().style(
     TextStyleMix().fontSize(16).fontWeight(.w500),
   );
 
-  final icon = IconStyler.size(18);
+  final icon = IconStyler().size(18);
 
   return ButtonStyler()
       .container(container)
@@ -342,17 +344,17 @@ ButtonStyler buttonStyle(ButtonStyler? style, ButtonVariant? variant) {
       .merge(variant?.style)
       .onPressed(
         ButtonStyler()
-            .container(FlexBoxStyler.scale(0.9)),
+            .container(FlexBoxStyler().scale(0.9)),
       )
       .onDisabled(
         ButtonStyler()
-            .container(FlexBoxStyler.color(Colors.blueGrey.shade100))
+            .container(FlexBoxStyler().color(Colors.blueGrey.shade100))
             .label(
-              TextStyler.style(
+              TextStyler().style(
                 TextStyleMix().color(Colors.blueGrey.shade700),
               ),
             )
-            .icon(IconStyler.color(Colors.blueGrey.shade700)),
+            .icon(IconStyler().color(Colors.blueGrey.shade700)),
       )
       .merge(style);
 }

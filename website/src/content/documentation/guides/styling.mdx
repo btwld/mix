@@ -26,6 +26,8 @@ final style = BoxStyler()
     .borderRounded(12);
 ```
 
+<FlutterPreview previewId="guides/styling.0" height={200} />
+
 This familiar approach reduces the learning curve and makes your styling code feel natural within the Flutter ecosystem.
 
 ## Style Composition and Override
@@ -43,6 +45,8 @@ final solid = base.color(Colors.blue);
 
 final soft = base.color(Colors.blue.shade100);
 ```
+
+<FlutterPreview previewId="guides/styling.1" height={180} />
 
 **Order Matters**: The sequence in which you chain styling attributes directly affects the final result. Attributes are merged in order, so later attributes will override earlier ones when there are conflicts.
 

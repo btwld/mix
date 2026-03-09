@@ -1,4 +1,4 @@
-import { Callout,FileTree } from 'nextra/components';
+import { Callout, FileTree } from 'nextra/components';
 
 
 # Best Practices
@@ -129,7 +129,7 @@ class CustomButtonStyle {
   final CustomButtonSize size;
 
   BoxStyler container() {
-    var style = BoxStyler.borderRadius(BorderRadiusMix.circular(8));
+    var style = BoxStyler().borderRadius(.circular(8));
 
     // Apply size
     style = switch (size) {
@@ -148,7 +148,7 @@ class CustomButtonStyle {
   }
 
   TextStyler label() {
-    var style = TextStyler
+    var style = TextStyler()
         .color(Colors.white)
         .fontWeight(.bold);
 
@@ -207,3 +207,7 @@ class CustomButton extends StatelessWidget {
 ```
 
 Congratulations! You are now ready to use your `CustomButton` component, fully aligned with the Mix framework's conventions.
+
+<FlutterPreview previewId="overview/best-practices.0" title="CustomButton-style interaction" height={220} />
+
+The preview below shows hover and press states similar to what your CustomButton will exhibit when you add variants to its style.

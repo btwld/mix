@@ -19,7 +19,7 @@ StyledText(
 Directives can be chained:
 
 ```dart
-// Chain: multiply by 2, then add 5, then clamp between 0-30
+// Chain: multiply by 2, then add 5, then clamp between 0-30 (use .create() for number directives)
 final style = BoxStyler.create(
   width: Prop.value(10.0).multiply(2).add(5).clamp(0, 30),
 );
@@ -40,7 +40,7 @@ Transform strings in `StyledText` widgets:
 | `.sentencecase()` | Capitalizes the first letter of the first word | "hello world" | "Hello world" |
 
 <FlutterPreview
-  previewId="text-directives"
+  previewId="guides/directives.0"
   height={200}
 />
 
@@ -94,7 +94,7 @@ Transform numeric values (width, height, padding, font sizes):
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
-// Proportional typography scaling
+// Proportional typography scaling (use .create() when using Prop with directives)
 final style = TextStyler.create(
   style: TextStyleMix(
     letterSpacing: Prop.value(0.0025).multiply(12.0),

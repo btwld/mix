@@ -5,7 +5,7 @@ title: "Animations"
 
 # Animations
 
-Mix gives you three ways to bring motion into your UI, depending on how much control you want:
+Mix gives you three ways to bring motion into your UI, depending on how much control you want. You'll see implicit transitions, phase-based sequences, and keyframe timelines in the previews below.
 
 **Implicit** — Easiest to use. When a value changes (state or a variant like hover), the style animates smoothly to the new value. No timeline to manage.
 
@@ -39,7 +39,7 @@ return Pressable(
 );
 ```
 
-<FlutterPreview previewId="implicit-anim-counter" height={200} />
+<FlutterPreview previewId="guides/animations.0" height={200} />
 
 ### Case 2: Variant-triggered
 
@@ -57,7 +57,7 @@ final box = BoxStyler()
 return box();
 ```
 
-<FlutterPreview previewId="anim-hover-scale" height={200} />
+<FlutterPreview previewId="guides/animations.1" height={200} />
 
 ---
 
@@ -103,7 +103,7 @@ return Pressable(
 );
 ```
 
-<FlutterPreview previewId="anim-tap-phase" height={200} />
+<FlutterPreview previewId="guides/animations.2" height={200} />
 
 ---
 
@@ -154,7 +154,7 @@ return Center(
 );
 ```
 
-<FlutterPreview previewId="anim-switch" height={200} />
+<FlutterPreview previewId="guides/animations.3" height={200} />
 
 ### Case 2: Loop animation (scale + color + opacity)
 
@@ -193,7 +193,7 @@ final box = BoxStyler()
 return box();
 ```
 
-<FlutterPreview previewId="anim-keyframe-loop" height={200} />
+<FlutterPreview previewId="guides/animations.4" height={200} />
 
 For a more advanced keyframe example (e.g. multi-track heart with color, scale, offset, stretch, rotation), see the keyframe heart example in the examples app.
 
