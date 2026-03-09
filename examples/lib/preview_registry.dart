@@ -10,6 +10,7 @@ import 'docs/guides/animations/implicit_variant_hover.dart'
 import 'docs/guides/animations/keyframe_loop.dart' as guide_keyframe_loop;
 import 'docs/guides/animations/keyframe_switch.dart' as guide_keyframe_switch;
 import 'docs/guides/animations/phase_tap_compress.dart' as guide_phase_tap;
+import 'api/context_variants/context_variant_flag.dart' as context_variant_flag;
 import 'api/context_variants/disabled.dart' as disabled;
 import 'api/context_variants/focused.dart' as focused;
 import 'api/context_variants/hovered.dart' as hovered;
@@ -27,7 +28,10 @@ import 'api/widgets/box/gradient_box.dart' as gradient_box;
 import 'api/widgets/box/simple_box.dart' as simple_box;
 import 'api/widgets/hbox/icon_label_chip.dart' as icon_label_chip;
 import 'api/widgets/icon/styled_icon.dart' as styled_icon;
+import 'api/widgets/image/styled_image.dart' as styled_image;
 import 'api/widgets/text/styled_text.dart' as styled_text;
+import 'docs/overview/getting_started_hello_mix.dart' as getting_started_hello_mix;
+import 'docs/tutorials/design_system_button.dart' as design_system_button;
 import 'api/widgets/vbox/card_layout.dart' as card_layout;
 import 'api/widgets/zbox/layered_boxes.dart' as layered_boxes;
 
@@ -158,6 +162,30 @@ class PreviewRegistry {
       category: _widgets,
       builder: (_) => const text_directives.Example(),
     ),
+    PreviewEntry(
+      previewId: 'image-styled',
+      sourcePath: 'examples/lib/api/widgets/image/styled_image.dart',
+      title: 'Image - Styled',
+      description: 'StyledImage with dimensions, fit, and color blend',
+      category: _widgets,
+      builder: (_) => const styled_image.Example(),
+    ),
+    PreviewEntry(
+      previewId: 'getting-started-hello-mix',
+      sourcePath: 'examples/lib/docs/overview/getting_started_hello_mix.dart',
+      title: 'Getting Started - Hello Mix',
+      description: 'Blue card with "Hello Mix" text from the first Mix widget',
+      category: _widgets,
+      builder: (_) => const getting_started_hello_mix.Example(),
+    ),
+    PreviewEntry(
+      previewId: 'design-system-button',
+      sourcePath: 'examples/lib/docs/tutorials/design_system_button.dart',
+      title: 'Design System Button Gallery',
+      description: 'Filled, Outlined, Elevated, Link, and Disabled buttons',
+      category: _widgets,
+      builder: (_) => const design_system_button.Example(),
+    ),
 
     // Context Variants
     PreviewEntry(
@@ -223,6 +251,14 @@ class PreviewRegistry {
       description: 'Dynamic sizing based on screen width',
       category: _variants,
       builder: (_) => const responsive_size.Example(),
+    ),
+    PreviewEntry(
+      previewId: 'context-variant-flag',
+      sourcePath: 'examples/lib/api/context_variants/context_variant_flag.dart',
+      title: 'Context Variant - Custom Flag',
+      description: 'Box color depends on InheritedWidget flag; tap to toggle',
+      category: _variants,
+      builder: (_) => const context_variant_flag.Example(),
     ),
 
     // Gradients
