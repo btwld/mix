@@ -34,7 +34,9 @@ function resolveDemosDir(inputDir) {
 
   const candidates = [
     path.resolve(path.join(process.cwd(), "public", "previews")),
-    path.resolve(path.join(process.cwd(), "..", "examples", "build", "web")),
+    path.resolve(
+      path.join(process.cwd(), "..", "packages", "mix_docs_preview", "build", "web"),
+    ),
   ];
 
   for (const candidate of candidates) {
@@ -44,7 +46,7 @@ function resolveDemosDir(inputDir) {
   }
 
   fail(
-    "Manifest not found. Build previews first via examples/scripts/build_web_previews.sh",
+    "Manifest not found. Build previews first via packages/mix_docs_preview/scripts/build_web_previews.sh",
   );
 }
 
