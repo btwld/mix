@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
 import 'package:mix_docs_preview/main.dart';
 import 'package:mix_docs_preview/preview_registry.dart';
 
