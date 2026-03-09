@@ -7,7 +7,7 @@ import 'package:mix_docs_preview/preview_registry.dart';
 void main() {
   testWidgets('PreviewRegistry has entries', (WidgetTester tester) async {
     expect(PreviewRegistry.all, isNotEmpty);
-    expect(PreviewRegistry.getByPreviewId('box-basic'), isNotNull);
+    expect(PreviewRegistry.getByPreviewId('overview/introduction.0'), isNotNull);
   });
 
   testWidgets('MixExampleApp smoke test', (WidgetTester tester) async {

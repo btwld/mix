@@ -230,7 +230,6 @@ void _validateEntries(List<Map<String, Object?>> entries, String projectRoot) {
   }
 
   final previewIds = <String>{};
-  final sourcePaths = <String>{};
 
   for (final entry in entries) {
     final rawPreviewId = entry['previewId'];
@@ -253,12 +252,6 @@ void _validateEntries(List<Map<String, Object?>> entries, String projectRoot) {
     if (!previewIds.add(previewId)) {
       throw StateError(
         'Duplicate previewId in manifest generation: $previewId',
-      );
-    }
-
-    if (!sourcePaths.add(sourcePath)) {
-      throw StateError(
-        'Duplicate sourcePath in manifest generation: $sourcePath',
       );
     }
 

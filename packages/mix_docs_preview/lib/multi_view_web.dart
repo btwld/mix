@@ -56,7 +56,7 @@ bool get isMultiViewEnabled {
 /// ```javascript
 /// app.addView({
 ///   hostElement: container,
-///   initialData: { previewId: 'box-basic' }
+///   initialData: { previewId: 'overview/introduction.0' }
 /// });
 /// ```
 ///

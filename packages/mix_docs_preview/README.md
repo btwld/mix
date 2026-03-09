@@ -35,5 +35,5 @@ CI and Vercel use the same script to produce the preview bundle before building 
 ## Adding a new preview
 
 1. Add a new Dart file under the doc-matching folder (e.g. `lib/guides/animations/`, `lib/widgets/box/`). Use a new folder when that doc section has more than one file.
-2. Register it in `lib/preview_registry.dart`: add a `PreviewEntry` with a unique `previewId`, `sourcePath` (e.g. `packages/mix_docs_preview/lib/guides/animations/foo.dart`), and `builder`.
+2. Register it in `lib/preview_registry.dart`: add a `PreviewEntry` with a doc-scoped `previewId` (e.g. `overview/introduction.0` for the first preview in that doc), `sourcePath` (e.g. `packages/mix_docs_preview/lib/guides/animations/foo.dart`), and `builder`.
 3. Re-run the build script so the manifest and sources are updated.

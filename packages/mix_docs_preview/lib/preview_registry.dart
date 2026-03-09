@@ -36,7 +36,7 @@ import 'widgets/stack/layered_boxes.dart' as layered_boxes;
 /// A preview entry with metadata for multi-view embedding, gallery display,
 /// and docs code snippets.
 class PreviewEntry {
-  /// Unique ID used for multi-view embedding (e.g., 'box-basic').
+  /// Unique ID used for multi-view embedding (e.g., 'overview/introduction.0').
   final String previewId;
 
   /// Source file path used for docs snippet rendering.
@@ -81,7 +81,7 @@ class PreviewEntry {
 /// ```javascript
 /// app.addView({
 ///   hostElement: container,
-///   initialData: { previewId: 'box-basic' }
+///   initialData: { previewId: 'overview/introduction.0' }
 /// });
 /// ```
 class PreviewRegistry {
@@ -94,15 +94,251 @@ class PreviewRegistry {
   static const String _animations = 'Animations';
   static const String _ecosystem = 'Ecosystem';
   static final List<PreviewEntry> _previews = [
-    // Widget Examples
+    // Documentation embeddings: previewId = doc path (without .mdx) + index
+    // overview
     PreviewEntry(
-      previewId: 'box-basic',
+      previewId: 'overview/introduction.0',
+      sourcePath: 'packages/mix_docs_preview/lib/overview/introduction/preview.dart',
+      title: 'Box - Basic',
+      description: 'Simple red box with rounded corners',
+      category: _widgets,
+      builder: (_) => const simple_box.Example(),
+    ),
+    PreviewEntry(
+      previewId: 'overview/utility-first.0',
+      sourcePath: 'packages/mix_docs_preview/lib/overview/utility_first/preview.dart',
+      title: 'Box - Basic',
+      description: 'Simple red box with rounded corners',
+      category: _widgets,
+      builder: (_) => const simple_box.Example(),
+    ),
+    PreviewEntry(
+      previewId: 'overview/getting-started.0',
+      sourcePath: 'packages/mix_docs_preview/lib/overview/getting_started/hello_mix.dart',
+      title: 'Getting Started - Hello Mix',
+      description: 'Blue card with "Hello Mix" text from the first Mix widget',
+      category: _widgets,
+      builder: (_) => const getting_started_hello_mix.Example(),
+    ),
+    PreviewEntry(
+      previewId: 'overview/best-practices.0',
+      sourcePath: 'packages/mix_docs_preview/lib/overview/best_practices/preview.dart',
+      title: 'Hover State',
+      description: 'Box that changes color on hover',
+      category: _variants,
+      builder: (_) => const hovered.Example(),
+    ),
+    PreviewEntry(
+      previewId: 'overview/comparison.0',
+      sourcePath: 'packages/mix_docs_preview/lib/overview/comparison/preview_0.dart',
+      title: 'Hover State',
+      description: 'Box that changes color on hover',
+      category: _variants,
+      builder: (_) => const hovered.Example(),
+    ),
+    PreviewEntry(
+      previewId: 'overview/comparison.1',
+      sourcePath: 'packages/mix_docs_preview/lib/overview/comparison/preview_1.dart',
+      title: 'Dark/Light Theme',
+      description: 'Boxes that adapt to theme changes',
+      category: _variants,
+      builder: (_) => const dark_light.Example(),
+    ),
+    // guides
+    PreviewEntry(
+      previewId: 'guides/widget-modifiers.0',
+      sourcePath: 'packages/mix_docs_preview/lib/guides/widget_modifiers/preview.dart',
+      title: 'Box - Basic',
+      description: 'Simple red box with rounded corners',
+      category: _widgets,
+      builder: (_) => const simple_box.Example(),
+    ),
+    PreviewEntry(
+      previewId: 'guides/styling.0',
+      sourcePath: 'packages/mix_docs_preview/lib/guides/styling/preview_0.dart',
+      title: 'Box - Basic',
+      description: 'Simple red box with rounded corners',
+      category: _widgets,
+      builder: (_) => const simple_box.Example(),
+    ),
+    PreviewEntry(
+      previewId: 'guides/styling.1',
+      sourcePath: 'packages/mix_docs_preview/lib/guides/styling/preview_1.dart',
+      title: 'Box - Basic',
+      description: 'Simple red box with rounded corners',
+      category: _widgets,
+      builder: (_) => const simple_box.Example(),
+    ),
+    PreviewEntry(
+      previewId: 'guides/dynamic-styling.0',
+      sourcePath: 'packages/mix_docs_preview/lib/guides/dynamic_styling/hovered.dart',
+      title: 'Hover State',
+      description: 'Box that changes color on hover',
+      category: _variants,
+      builder: (_) => const hovered.Example(),
+    ),
+    PreviewEntry(
+      previewId: 'guides/animations.0',
+      sourcePath:
+          'packages/mix_docs_preview/lib/guides/animations/implicit_state_counter.dart',
+      title: 'State-triggered Implicit Animation',
+      description: 'Square grows each time you tap it',
+      category: _animations,
+      builder: (_) =>
+          const guide_implicit_counter.ImplicitStateCounterExample(),
+    ),
+    PreviewEntry(
+      previewId: 'guides/animations.1',
+      sourcePath:
+          'packages/mix_docs_preview/lib/guides/animations/implicit_variant_hover.dart',
+      title: 'Hover Scale Animation',
+      description: 'Box that scales up smoothly when hovered',
+      category: _animations,
+      builder: (_) => const guide_implicit_hover.ImplicitVariantHoverExample(),
+    ),
+    PreviewEntry(
+      previewId: 'guides/animations.2',
+      sourcePath: 'packages/mix_docs_preview/lib/guides/animations/phase_tap_compress.dart',
+      title: 'Tap Phase Animation',
+      description: 'Multi-phase animation triggered by tap',
+      category: _animations,
+      builder: (_) => const guide_phase_tap.PhaseTapCompressExample(),
+    ),
+    PreviewEntry(
+      previewId: 'guides/animations.3',
+      sourcePath: 'packages/mix_docs_preview/lib/guides/animations/keyframe_switch.dart',
+      title: 'Animated Switch',
+      description: 'Toggle switch with keyframe animation',
+      category: _animations,
+      builder: (_) => const guide_keyframe_switch.KeyframeSwitchExample(),
+    ),
+    PreviewEntry(
+      previewId: 'guides/animations.4',
+      sourcePath: 'packages/mix_docs_preview/lib/guides/animations/keyframe_loop.dart',
+      title: 'Keyframe Loop (scale + color + opacity)',
+      description: 'Looping keyframe animation with multiple tracks',
+      category: _animations,
+      builder: (_) => const guide_keyframe_loop.KeyframeLoopExample(),
+    ),
+    PreviewEntry(
+      previewId: 'guides/design-token.0',
+      sourcePath: 'packages/mix_docs_preview/lib/guides/design_token/theme_tokens.dart',
+      title: 'Design Tokens',
+      description: 'Using design tokens for consistent styling',
+      category: _tokens,
+      builder: (_) => const theme_tokens.Example(),
+    ),
+    PreviewEntry(
+      previewId: 'guides/directives.0',
+      sourcePath: 'packages/mix_docs_preview/lib/guides/directives/text_directives.dart',
+      title: 'Text - Directives',
+      description:
+          'Text transformations: uppercase, lowercase, capitalize, etc.',
+      category: _widgets,
+      builder: (_) => const text_directives.Example(),
+    ),
+    // widgets
+    PreviewEntry(
+      previewId: 'widgets/box.0',
       sourcePath: 'packages/mix_docs_preview/lib/widgets/box/simple_box.dart',
       title: 'Box - Basic',
       description: 'Simple red box with rounded corners',
       category: _widgets,
       builder: (_) => const simple_box.Example(),
     ),
+    PreviewEntry(
+      previewId: 'widgets/icon.0',
+      sourcePath: 'packages/mix_docs_preview/lib/widgets/icon/styled_icon.dart',
+      title: 'Icon - Styled',
+      description: 'Styled icon with custom size and color',
+      category: _widgets,
+      builder: (_) => const styled_icon.Example(),
+    ),
+    PreviewEntry(
+      previewId: 'widgets/text.0',
+      sourcePath: 'packages/mix_docs_preview/lib/widgets/text/styled_text.dart',
+      title: 'Text - Styled',
+      description: 'Styled text with custom typography',
+      category: _widgets,
+      builder: (_) => const styled_text.Example(),
+    ),
+    PreviewEntry(
+      previewId: 'widgets/image.0',
+      sourcePath: 'packages/mix_docs_preview/lib/widgets/image/styled_image.dart',
+      title: 'Image - Styled',
+      description: 'StyledImage with dimensions, fit, and color blend',
+      category: _widgets,
+      builder: (_) => const styled_image.Example(),
+    ),
+    PreviewEntry(
+      previewId: 'widgets/stack.0',
+      sourcePath: 'packages/mix_docs_preview/lib/widgets/stack/layered_boxes.dart',
+      title: 'ZBox - Stack Layout',
+      description: 'Stacked boxes with different alignments',
+      category: _widgets,
+      builder: (_) => const layered_boxes.Example(),
+    ),
+    PreviewEntry(
+      previewId: 'widgets/flexbox.0',
+      sourcePath: 'packages/mix_docs_preview/lib/widgets/flexbox/icon_label_chip.dart',
+      title: 'HBox - Horizontal Layout',
+      description: 'Horizontal flex container with icon and text',
+      category: _widgets,
+      builder: (_) => const icon_label_chip.Example(),
+    ),
+    PreviewEntry(
+      previewId: 'widgets/pressable.0',
+      sourcePath: 'packages/mix_docs_preview/lib/widgets/pressable/preview.dart',
+      title: 'Hover State',
+      description: 'Box that changes color on hover',
+      category: _variants,
+      builder: (_) => const hovered.Example(),
+    ),
+    // tutorials
+    PreviewEntry(
+      previewId: 'tutorials/creating-a-widget.0',
+      sourcePath: 'packages/mix_docs_preview/lib/tutorials/creating_a_widget/design_system_button.dart',
+      title: 'Design System Button Gallery',
+      description: 'Filled, Outlined, Elevated, Link, and Disabled buttons',
+      category: _widgets,
+      builder: (_) => const design_system_button.Example(),
+    ),
+    PreviewEntry(
+      previewId: 'tutorials/theming.0',
+      sourcePath: 'packages/mix_docs_preview/lib/tutorials/theming/preview.dart',
+      title: 'Design Tokens',
+      description: 'Using design tokens for consistent styling',
+      category: _tokens,
+      builder: (_) => const theme_tokens.Example(),
+    ),
+    PreviewEntry(
+      previewId: 'tutorials/controlling-widget-state.0',
+      sourcePath: 'packages/mix_docs_preview/lib/tutorials/controlling_widget_state/preview.dart',
+      title: 'Hover State',
+      description: 'Box that changes color on hover',
+      category: _variants,
+      builder: (_) => const hovered.Example(),
+    ),
+    PreviewEntry(
+      previewId: 'tutorials/creating-context-variants.0',
+      sourcePath: 'packages/mix_docs_preview/lib/tutorials/creating_context_variants/preview.dart',
+      title: 'Context Variant - Custom Flag',
+      description: 'Box color depends on InheritedWidget flag; tap to toggle',
+      category: _variants,
+      builder: (_) => const context_variant_flag.Example(),
+    ),
+    // ecosystem
+    PreviewEntry(
+      previewId: 'ecosystem/mix-tailwinds.0',
+      sourcePath: 'packages/mix_docs_preview/lib/ecosystem/mix_tailwinds.dart',
+      title: 'mix_tailwinds - Card Alert',
+      description: 'Notification card with gradient avatar and action buttons',
+      category: _ecosystem,
+      builder: (_) => const tw_card_alert.Example(),
+      snippetRegion: 'example',
+    ),
+
+    // Gallery-only widget examples (not embedded in a specific doc)
     PreviewEntry(
       previewId: 'box-gradient',
       sourcePath: 'packages/mix_docs_preview/lib/widgets/box/gradient_box.dart',
@@ -112,14 +348,6 @@ class PreviewRegistry {
       builder: (_) => const gradient_box.Example(),
     ),
     PreviewEntry(
-      previewId: 'hbox-chip',
-      sourcePath: 'packages/mix_docs_preview/lib/widgets/flexbox/icon_label_chip.dart',
-      title: 'HBox - Horizontal Layout',
-      description: 'Horizontal flex container with icon and text',
-      category: _widgets,
-      builder: (_) => const icon_label_chip.Example(),
-    ),
-    PreviewEntry(
       previewId: 'vbox-card',
       sourcePath: 'packages/mix_docs_preview/lib/widgets/vbox/card_layout.dart',
       title: 'VBox - Vertical Layout',
@@ -127,73 +355,8 @@ class PreviewRegistry {
       category: _widgets,
       builder: (_) => const card_layout.Example(),
     ),
-    PreviewEntry(
-      previewId: 'zbox-layers',
-      sourcePath: 'packages/mix_docs_preview/lib/widgets/stack/layered_boxes.dart',
-      title: 'ZBox - Stack Layout',
-      description: 'Stacked boxes with different alignments',
-      category: _widgets,
-      builder: (_) => const layered_boxes.Example(),
-    ),
-    PreviewEntry(
-      previewId: 'icon-styled',
-      sourcePath: 'packages/mix_docs_preview/lib/widgets/icon/styled_icon.dart',
-      title: 'Icon - Styled',
-      description: 'Styled icon with custom size and color',
-      category: _widgets,
-      builder: (_) => const styled_icon.Example(),
-    ),
-    PreviewEntry(
-      previewId: 'text-styled',
-      sourcePath: 'packages/mix_docs_preview/lib/widgets/text/styled_text.dart',
-      title: 'Text - Styled',
-      description: 'Styled text with custom typography',
-      category: _widgets,
-      builder: (_) => const styled_text.Example(),
-    ),
-    PreviewEntry(
-      previewId: 'text-directives',
-      sourcePath: 'packages/mix_docs_preview/lib/guides/directives/text_directives.dart',
-      title: 'Text - Directives',
-      description:
-          'Text transformations: uppercase, lowercase, capitalize, etc.',
-      category: _widgets,
-      builder: (_) => const text_directives.Example(),
-    ),
-    PreviewEntry(
-      previewId: 'image-styled',
-      sourcePath: 'packages/mix_docs_preview/lib/widgets/image/styled_image.dart',
-      title: 'Image - Styled',
-      description: 'StyledImage with dimensions, fit, and color blend',
-      category: _widgets,
-      builder: (_) => const styled_image.Example(),
-    ),
-    PreviewEntry(
-      previewId: 'getting-started-hello-mix',
-      sourcePath: 'packages/mix_docs_preview/lib/overview/getting_started/hello_mix.dart',
-      title: 'Getting Started - Hello Mix',
-      description: 'Blue card with "Hello Mix" text from the first Mix widget',
-      category: _widgets,
-      builder: (_) => const getting_started_hello_mix.Example(),
-    ),
-    PreviewEntry(
-      previewId: 'design-system-button',
-      sourcePath: 'packages/mix_docs_preview/lib/tutorials/creating_a_widget/design_system_button.dart',
-      title: 'Design System Button Gallery',
-      description: 'Filled, Outlined, Elevated, Link, and Disabled buttons',
-      category: _widgets,
-      builder: (_) => const design_system_button.Example(),
-    ),
 
-    // Context Variants
-    PreviewEntry(
-      previewId: 'variant-hover',
-      sourcePath: 'packages/mix_docs_preview/lib/guides/dynamic_styling/hovered.dart',
-      title: 'Hover State',
-      description: 'Box that changes color on hover',
-      category: _variants,
-      builder: (_) => const hovered.Example(),
-    ),
+    // Context Variants (gallery-only)
     PreviewEntry(
       previewId: 'variant-pressed',
       sourcePath: 'packages/mix_docs_preview/lib/guides/dynamic_styling/pressed.dart',
@@ -227,14 +390,6 @@ class PreviewRegistry {
       builder: (_) => const disabled.Example(),
     ),
     PreviewEntry(
-      previewId: 'variant-dark-light',
-      sourcePath: 'packages/mix_docs_preview/lib/guides/dynamic_styling/on_dark_light.dart',
-      title: 'Dark/Light Theme',
-      description: 'Boxes that adapt to theme changes',
-      category: _variants,
-      builder: (_) => const dark_light.Example(),
-    ),
-    PreviewEntry(
       previewId: 'variant-selected-toggle',
       sourcePath: 'packages/mix_docs_preview/lib/guides/dynamic_styling/selected_toggle.dart',
       title: 'Selected Toggle',
@@ -250,15 +405,6 @@ class PreviewRegistry {
       category: _variants,
       builder: (_) => const responsive_size.Example(),
     ),
-    PreviewEntry(
-      previewId: 'context-variant-flag',
-      sourcePath: 'packages/mix_docs_preview/lib/guides/dynamic_styling/context_variant_flag.dart',
-      title: 'Context Variant - Custom Flag',
-      description: 'Box color depends on InheritedWidget flag; tap to toggle',
-      category: _variants,
-      builder: (_) => const context_variant_flag.Example(),
-    ),
-
     // Gradients
     PreviewEntry(
       previewId: 'gradient-linear',
@@ -285,36 +431,7 @@ class PreviewRegistry {
       builder: (_) => const gradient_sweep.Example(),
     ),
 
-    // Design Tokens
-    PreviewEntry(
-      previewId: 'tokens-theme',
-      sourcePath: 'packages/mix_docs_preview/lib/guides/design_token/theme_tokens.dart',
-      title: 'Design Tokens',
-      description: 'Using design tokens for consistent styling',
-      category: _tokens,
-      builder: (_) => const theme_tokens.Example(),
-    ),
-
-    // Animations (guides — match animations.mdx)
-    PreviewEntry(
-      previewId: 'implicit-anim-counter',
-      sourcePath:
-          'packages/mix_docs_preview/lib/guides/animations/implicit_state_counter.dart',
-      title: 'State-triggered Implicit Animation',
-      description: 'Square grows each time you tap it',
-      category: _animations,
-      builder: (_) =>
-          const guide_implicit_counter.ImplicitStateCounterExample(),
-    ),
-    PreviewEntry(
-      previewId: 'anim-hover-scale',
-      sourcePath:
-          'packages/mix_docs_preview/lib/guides/animations/implicit_variant_hover.dart',
-      title: 'Hover Scale Animation',
-      description: 'Box that scales up smoothly when hovered',
-      category: _animations,
-      builder: (_) => const guide_implicit_hover.ImplicitVariantHoverExample(),
-    ),
+    // Animations (gallery-only)
     PreviewEntry(
       previewId: 'anim-auto-scale',
       sourcePath: 'packages/mix_docs_preview/lib/guides/animations/implicit_curved_scale.dart',
@@ -322,30 +439,6 @@ class PreviewRegistry {
       description: 'Box that automatically scales on load',
       category: _animations,
       builder: (_) => const auto_scale.Example(),
-    ),
-    PreviewEntry(
-      previewId: 'anim-tap-phase',
-      sourcePath: 'packages/mix_docs_preview/lib/guides/animations/phase_tap_compress.dart',
-      title: 'Tap Phase Animation',
-      description: 'Multi-phase animation triggered by tap',
-      category: _animations,
-      builder: (_) => const guide_phase_tap.PhaseTapCompressExample(),
-    ),
-    PreviewEntry(
-      previewId: 'anim-keyframe-loop',
-      sourcePath: 'packages/mix_docs_preview/lib/guides/animations/keyframe_loop.dart',
-      title: 'Keyframe Loop (scale + color + opacity)',
-      description: 'Looping keyframe animation with multiple tracks',
-      category: _animations,
-      builder: (_) => const guide_keyframe_loop.KeyframeLoopExample(),
-    ),
-    PreviewEntry(
-      previewId: 'anim-switch',
-      sourcePath: 'packages/mix_docs_preview/lib/guides/animations/keyframe_switch.dart',
-      title: 'Animated Switch',
-      description: 'Toggle switch with keyframe animation',
-      category: _animations,
-      builder: (_) => const guide_keyframe_switch.KeyframeSwitchExample(),
     ),
     PreviewEntry(
       previewId: 'anim-spring',
@@ -356,16 +449,6 @@ class PreviewRegistry {
       builder: (_) => const spring_anim.Example(),
     ),
 
-    // Ecosystem
-    PreviewEntry(
-      previewId: 'tw-card-alert',
-      sourcePath: 'packages/mix_docs_preview/lib/ecosystem/mix_tailwinds.dart',
-      title: 'mix_tailwinds - Card Alert',
-      description: 'Notification card with gradient avatar and action buttons',
-      category: _ecosystem,
-      builder: (_) => const tw_card_alert.Example(),
-      snippetRegion: 'example',
-    ),
   ];
 
   /// Index for fast preview ID lookup.
@@ -383,7 +466,6 @@ class PreviewRegistry {
     List<PreviewEntry> previews,
   ) {
     final previewIdIndex = <String, PreviewEntry>{};
-    final sourceIndex = <String, PreviewEntry>{};
 
     for (final preview in previews) {
       if (previewIdIndex.containsKey(preview.previewId)) {
@@ -394,16 +476,7 @@ class PreviewRegistry {
         );
       }
 
-      if (sourceIndex.containsKey(preview.sourcePath)) {
-        final existing = sourceIndex[preview.sourcePath]!;
-        throw StateError(
-          'Duplicate sourcePath "${preview.sourcePath}" for previews '
-          '"${existing.previewId}" and "${preview.previewId}".',
-        );
-      }
-
       previewIdIndex[preview.previewId] = preview;
-      sourceIndex[preview.sourcePath] = preview;
     }
 
     return previewIdIndex;
