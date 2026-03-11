@@ -1,3 +1,8 @@
+---
+title: "StyledImage"
+description: "Style Flutter images with ImageStyler — dimensions, color blend modes, fit, filters, and responsive variants in Mix."
+---
+
 # StyledImage
 
 `StyledImage` is equivalent to Flutter's `Image` widget, but provides styling
@@ -7,12 +12,12 @@ images with dimensions, colors, blend modes, filters, and responsive variants.
 You can use `ImageStyler` to create styles with a fluent API. Example:
 
 ```dart
-final style = ImageStyler
- .width(200)
- .height(200)
- .fit(.cover)
- .color(Colors.blue.withOpacity(0.5))
- .colorBlendMode(.overlay);
+final style = ImageStyler()
+    .width(200)
+    .height(200)
+    .fit(.cover)
+    .color(Colors.blue.withValues(alpha: 0.5))
+    .colorBlendMode(.overlay);
 
 StyledImage(
  image: AssetImage('assets/photo.jpg'),
@@ -67,7 +72,7 @@ StyledImage(
 | `onNot` | Creates a variant for when the context does NOT match the provided variant. |
 | `onLight` | Creates a variant for light mode. |
 | `onBuilder` | Creates a variant using a builder function that receives the build context. |
-| `builder` | Deprecated: Use [onBuilder] instead. |
+| `builder` | Deprecated: Use `onBuilder` instead. |
 | `onBreakpoint` | Creates a variant based on the specified breakpoint. |
 | `onPortrait` | Creates a variant for portrait device orientation. |
 | `onLandscape` | Creates a variant for landscape device orientation. |
@@ -90,6 +95,11 @@ StyledImage(
 |--------|-------------|
 | `onHovered` | Creates a variant for hover state |
 | `onPressed` | Creates a variant for pressed state |
-| `onFocused` | Creates a variant for focused state |
+| `onFocused` | Creates a variant for focused state. Requires `Pressable` or `PressableBox` wrapper for focus tracking. |
 | `onDisabled` | Creates a variant for disabled state |
 | `onEnabled` | Creates a variant for enabled state (opposite of disabled) |
+
+## Related
+
+- [Box](/documentation/widgets/box) — container styling with `BoxStyler`
+- [Styling with Mix](/documentation/guides/styling) — fluent Styler API basics

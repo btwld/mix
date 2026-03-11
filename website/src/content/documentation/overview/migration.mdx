@@ -1,3 +1,8 @@
+---
+title: "Migration Guide"
+description: "Migrate existing Mix code from v1.x patterns to the Mix 2.0 Styler API."
+---
+
 import { Callout } from "nextra/components";
 
 # Migration Guide
@@ -20,18 +25,18 @@ The biggest change is moving from the `Style()` constructor with utility prefixe
 
 | v1.x Pattern | v2.0 Pattern |
 |--------------|--------------|
-| `Style($box.color.blue())` | `BoxStyler.color(Colors.blue)` |
-| `Style($text.style.fontSize(16))` | `TextStyler.fontSize(16)` |
-| `Style($icon.size(24))` | `IconStyler.size(24)` |
-| `Style($flexbox.gap(8))` | `FlexBoxStyler.spacing(8)` |
-| `Style($stack.alignment.center())` | `StackBoxStyler.alignment(.center)` |
+| `Style($box.color.blue())` | `BoxStyler().color(Colors.blue)` |
+| `Style($text.style.fontSize(16))` | `TextStyler().fontSize(16)` |
+| `Style($icon.size(24))` | `IconStyler().size(24)` |
+| `Style($flexbox.gap(8))` | `FlexBoxStyler().spacing(8)` |
+| `Style($stack.alignment.center())` | `StackBoxStyler().alignment(.center)` |
 
 #### Utility Prefixes Deprecated
 
 The `$box`, `$text`, `$icon`, `$flex`, `$stack`, `$image`, `$flexbox`, and `$stackbox` utility prefixes are deprecated. Use the corresponding Styler class instead:
 
 ```dart
-// v1.x
+// DEPRECATED - v1.x
 final style = Style(
   $box.color.blue(),
   $box.padding(16),
@@ -59,7 +64,7 @@ The `$on` namespace is replaced with method calls directly on the Styler:
 | `$on.light(...)` | `.onLight(...)` |
 
 ```dart
-// v1.x
+// DEPRECATED - v1.x
 final style = Style(
   $box.color.blue(),
   $on.hover($box.color.red()),
@@ -75,11 +80,11 @@ final style = BoxStyler()
 
 #### Widget Modifiers
 
-The `$with` namespace is replaced with `.wrap()` method using ModifierMix classes:
+The `$with` namespace is replaced with the `.wrap()` method or shorthand modifier methods:
 
 | v1.x Pattern | v2.0 Pattern |
 |--------------|--------------|
-| `$with.opacity(0.5)` | `.wrap(OpacityModifierMix(opacity: 0.5))` |
+| `$with.opacity(0.5)` | `.wrap(.opacity(0.5))` |
 | `$with.scale(2)` | `.scale(2)` (use transform methods) |
 | `$with.rotate(45)` | `.rotate(45)` (use transform methods) |
 
@@ -131,7 +136,12 @@ BoxStyler().color(primaryColor())
 ### New Features in 2.0
 
 - **Fluent Styler API**: Chain methods for better readability
-- **Callable Stylers**: Use `BoxStyler.<factory>(...)()` as shorthand for creating widgets
+- **Callable Stylers**: Any styler can be called directly to create its widget:
+
+  ```dart
+  final box = BoxStyler().color(Colors.blue);
+  box(child: Text('Hello')); // creates a Box widget
+  ```
 - **Style.of() / Style.maybeOf()**: Access resolved styles from the widget tree
 - **Number directives**: `multiply()`, `add()`, `subtract()`, `divide()`, `clamp()`
 - **Improved animation support**: Better integration with animation configs
@@ -141,7 +151,7 @@ BoxStyler().color(primaryColor())
 1. **Start with imports**: Replace `Style(` with the appropriate Styler class
 2. **Update utility calls**: Convert `$box.property()` to `.property()` method chains
 3. **Update variants**: Replace `$on.hover()` with `.onHovered()`
-4. **Update modifiers**: Replace `$with.opacity()` with `.wrap(OpacityModifierMix(...))`
+4. **Update modifiers**: Replace `$with.opacity()` with `.wrap(.opacity(...))`
 5. **Update theming**: Replace `MixTheme` with `MixScope`
 
 ---
@@ -152,7 +162,7 @@ BoxStyler().color(primaryColor())
   This section documents migration from legacy versions. If you're upgrading to Mix 2.0, see the section above.
 </Callout>
 
-In our pursuit of API usability and efficiency, we introduced several deprecations in the latest Mix Package versions. If you encounter issues not covered by deprecation notices, please [open an issue or send a PR to our deprecation file](https://github.com/btwld/mix/blob/main/lib/src/deprecations.dart).
+In our pursuit of API usability and efficiency, we introduced several deprecations in the latest Mix Package versions. If you encounter issues not covered by deprecation notices, please [open an issue](https://github.com/btwld/mix/issues).
 
 ### Deprecations
 
@@ -165,7 +175,7 @@ The `Mix` class is now `Style`. Several methods in the renamed class, including 
 | ------- | ------ |
 | `Mix`   | `Style` |
 | `Mix.withVariant` | Use `.variant()` on Styler classes |
-| `Mix.withManyVariants` | Use multiple `.variant()` calls |
+| `Mix.withManyVariants` | Use `.variants([...])` or multiple `.variant()` calls on Styler classes |
 | `withMaybeVariant` or `withMaybeVariants` | removed |
 
 
@@ -180,7 +190,7 @@ The `MixContextBuilder` was renamed to `SpecBuilder` to better reflect its purpo
 
 #### Short Aliases
 
-To enhance readability, short aliases and shorthand property/method names are replaced with their fully named counterparts. You can find the full list of removed aliases in the [deprecations file](https://github.com/btwld/mix/blob/main/lib/src/deprecations.dart)
+To enhance readability, short aliases and shorthand property/method names are replaced with their fully named counterparts.
 
 #### Modifiers
 
@@ -224,13 +234,13 @@ final theme = MixThemeData(
 // ... body method ...
 MixTheme(
   data: theme,
-  Box(
+  child: Box(
     key: key,
     style: Style(
       $box.color.ref(primaryColor),
     ),
-  )
-)
+  ),
+);
 ```
 ### The use of $ (Deprecated in 2.0)
 
@@ -256,13 +266,13 @@ In version 1.0.0, the `$` symbol was introduced to access the API from the Mix p
 <Callout type="warning">
   **Deprecated**: In Mix 2.0, use the direct methods on Styler classes instead:
   - `$on.hover()` → `.onHovered()`
-  - `$with.opacity()` → `.wrap(OpacityModifierMix())`
+  - `$with.opacity()` → `.wrap(.opacity())`
 </Callout>
 
 Two namespaces were added in 1.0.0: `$on` and `$with`. The `$on` namespace was used to access ContextVariants, and `$with` was used for modifiers.
 
 ```dart
-// v1.x syntax (deprecated)
+// DEPRECATED - v1.x syntax
 PressableBox(
   onPress: () {},
   style: Style(
@@ -292,7 +302,7 @@ PressableBox(
         .height(200)
         .color(Colors.blue)
         .scale(2)
-        .wrap(OpacityModifierMix(opacity: 0.5))
+        .wrap(.opacity(0.5))
         .onHovered(.color(Colors.red))
         .onPressed(.color(Colors.green)),
   ),

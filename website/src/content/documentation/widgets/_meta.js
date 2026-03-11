@@ -17,6 +17,9 @@ export default {
     image: {
         title: "Image"
     },
+    stack: {
+        title: "StackBox"
+    },
     pressable: {
         title: "Pressable"
     },

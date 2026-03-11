@@ -310,21 +310,18 @@ sealed class AnimationConfig {
   const AnimationConfig();
 
   /// Creates animation data with default settings.
-  static CurveAnimationConfig withDefaults() {
-    return const CurveAnimationConfig(
-      duration: kDefaultAnimationDuration,
-      curve: Curves.linear,
-    );
-  }
+  factory AnimationConfig.withDefaults() => const CurveAnimationConfig(
+    duration: kDefaultAnimationDuration,
+    curve: Curves.linear,
+  );
 
   /// Creates a spring animation configuration with standard spring physics.
-  static SpringAnimationConfig springDescription({
+  factory AnimationConfig.springDescription({
     double mass = 1.0,
     double stiffness = 180.0,
     double damping = 12.0,
-    // Duration delay = Duration.zero,
     VoidCallback? onEnd,
-  }) => .new(
+  }) => SpringAnimationConfig(
     spring: SpringDescription(
       mass: mass,
       stiffness: stiffness,
@@ -333,12 +330,11 @@ sealed class AnimationConfig {
     onEnd: onEnd,
   );
 
-  static SpringAnimationConfig spring(
+  factory AnimationConfig.spring(
     Duration duration, {
     double bounce = 0,
-    // Duration delay = Duration.zero,
     VoidCallback? onEnd,
-  }) => .new(
+  }) => SpringAnimationConfig(
     spring: SpringDescription.withDurationAndBounce(
       duration: duration,
       bounce: bounce,
@@ -346,18 +342,112 @@ sealed class AnimationConfig {
     onEnd: onEnd,
   );
 
-  static SpringAnimationConfig springWithDampingRatio({
+  factory AnimationConfig.springWithDampingRatio({
     double mass = 1.0,
     double stiffness = 180.0,
     double dampingRatio = 0.8,
-    // Duration delay = Duration.zero,
     VoidCallback? onEnd,
-  }) => .new(
+  }) => SpringAnimationConfig(
     spring: SpringDescription.withDampingRatio(
       mass: mass,
       stiffness: stiffness,
       ratio: dampingRatio,
     ),
+    onEnd: onEnd,
+  );
+
+  /// Creates a curve-based spring animation with duration and bounce.
+  factory AnimationConfig.springDurationBased(
+    Duration duration, {
+    double bounce = 0.0,
+    Duration delay = .zero,
+    VoidCallback? onEnd,
+  }) => CurveAnimationConfig.springDurationBased(
+    duration,
+    bounce: bounce,
+    delay: delay,
+    onEnd: onEnd,
+  );
+
+  /// Creates a curve-based spring animation with explicit physics parameters.
+  factory AnimationConfig.curveSpring(
+    Duration duration, {
+    double mass = 1.0,
+    double stiffness = 180.0,
+    double damping = 12.0,
+    Duration delay = .zero,
+    VoidCallback? onEnd,
+  }) => CurveAnimationConfig.spring(
+    duration,
+    mass: mass,
+    stiffness: stiffness,
+    damping: damping,
+    delay: delay,
+    onEnd: onEnd,
+  );
+
+  /// Creates a curve-based spring animation with damping ratio.
+  factory AnimationConfig.curveSpringWithDampingRatio(
+    Duration duration, {
+    double mass = 1.0,
+    double stiffness = 180.0,
+    double ratio = 0.8,
+    Duration delay = .zero,
+    VoidCallback? onEnd,
+  }) => CurveAnimationConfig.springWithDampingRatio(
+    duration,
+    mass: mass,
+    stiffness: stiffness,
+    ratio: ratio,
+    delay: delay,
+    onEnd: onEnd,
+  );
+
+  /// Creates a spring animation with standard physics parameters.
+  factory AnimationConfig.springStandard({
+    double mass = 1.0,
+    double stiffness = 180.0,
+    double damping = 12.0,
+    VoidCallback? onEnd,
+  }) => SpringAnimationConfig.standard(
+    mass: mass,
+    stiffness: stiffness,
+    damping: damping,
+    onEnd: onEnd,
+  );
+
+  /// Creates a spring animation with duration and bounce.
+  factory AnimationConfig.springWithDurationAndBounce({
+    Duration duration = const Duration(milliseconds: 500),
+    double bounce = 0.0,
+    VoidCallback? onEnd,
+  }) => SpringAnimationConfig.withDurationAndBounce(
+    duration: duration,
+    bounce: bounce,
+    onEnd: onEnd,
+  );
+
+  /// Creates a critically damped spring animation.
+  factory AnimationConfig.springCriticallyDamped({
+    double mass = 1.0,
+    double stiffness = 180.0,
+    VoidCallback? onEnd,
+  }) => SpringAnimationConfig.criticallyDamped(
+    mass: mass,
+    stiffness: stiffness,
+    onEnd: onEnd,
+  );
+
+  /// Creates an under-damped (bouncy) spring animation.
+  factory AnimationConfig.springUnderdamped({
+    double mass = 1.0,
+    double stiffness = 180.0,
+    double ratio = 0.5,
+    VoidCallback? onEnd,
+  }) => SpringAnimationConfig.underdamped(
+    mass: mass,
+    stiffness: stiffness,
+    ratio: ratio,
     onEnd: onEnd,
   );
 }

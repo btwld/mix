@@ -1,21 +1,27 @@
+---
+title: "Theming"
+description: "Build and apply token-driven Mix themes with MixScope."
+---
+
+import { Callout } from "nextra/components";
 
 # Theming
 
-## Introduction
+**Prerequisites:** Familiarity with [Styling with Mix](/documentation/guides/styling) and [Design Tokens](/documentation/guides/design-token).
 
-Mix offers a robust theming system that enables you to style your application consistently and efficiently, providing both scalability and flexibility. The theming system is built on the concept of design tokens, which are key-value pairs defining visual properties such as colors, text styles, spacing, and border radii. These tokens can be uniformly applied across all your widgets, ensuring a consistent aesthetic throughout your application. You can easily alter the appearance of your application by updating the design tokens, without modifying individual widget implementations.
+Mix's theming system uses design tokens — key-value pairs for colors, text styles, spacing, and border radii — to style your app consistently. Provide token values through `MixScope`, and all descendant widgets resolve those values at build time. Switch themes by swapping the token maps.
 
 ## Getting Started
 
-In this guide, we will create a single-screen, multi-theme application to demonstrate the power of Mix's theming system. The final result will look like this:
+This tutorial builds a single-screen, multi-theme application. The final result looks like this:
 
-![images](./images/two-themed-app.png)
+![Side-by-side comparison of light blue and dark purple themed profile screens](./images/two-themed-app.png)
 
-As depicted in the image above, we have two different themes for the same screen, each using distinct colors, text styles, fonts, and border radii. The left one employs a light theme with blue as the primary color, hence it will be referred to as `LightBlueTheme`. The right one utilizes a dark theme with purple as the primary color, and will therefore be named `DarkPurpleTheme`.
+The image shows two themes for the same screen, each using distinct colors, text styles, fonts, and border radii. The left uses a light theme with blue as the primary color (`LightBlueTheme`). The right uses a dark theme with purple (`DarkPurpleTheme`).
 
 ## Setting Up MixScope
 
-Before we start styling our application with these themes, the initial step is to configure `MixScope`. `MixScope` acts as an ancestor widget that passes down the defined tokens to all its child widgets, ensuring they can access and utilize the same styling information. Properly setting up MixScope is crucial to harnessing the full potential of the Mix package for your application's theming needs.
+`MixScope` provides token values to all descendant widgets. Wrap your root widget with `MixScope` and pass token value maps through named parameters.
 
 Here's how you can initialize and implement `MixScope`:
 
@@ -102,6 +108,10 @@ With this approach, you access tokens like this:
 final primaryColorToken = CustomColorTokens.primary.token;
 final headline1TextStyleToken = CustomTextStyleTokens.headline1.token;
 ```
+
+<Callout type="info">
+  An alternative is to define tokens as top-level constants with the `$` prefix convention (e.g., `const $primary = ColorToken('primary')`). Both approaches work — enums provide organization, while `$` constants are more concise for inline usage.
+</Callout>
 
 ### Creating Theme Data
 
@@ -228,7 +238,7 @@ class ProfileButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Create a box styler with tokens
-    final box = BoxStyler
+    final box = BoxStyler()
         .height(50)
         .width(double.infinity)
         .color(CustomColorTokens.primary.token())
@@ -236,7 +246,7 @@ class ProfileButton extends StatelessWidget {
         .borderRadiusAll(MyThemeRadiusToken.large.token());
 
     // Create a text styler with tokens
-    final text = TextStyler
+    final text = TextStyler()
         .style(CustomTextStyleTokens.button.token.mix())
         .color(CustomColorTokens.onPrimary.token());
 
@@ -248,9 +258,9 @@ class ProfileButton extends StatelessWidget {
 
 This code demonstrates several key concepts:
 
-1. **Token calling**: Call tokens as functions with `token()` to get token references for use in stylers
-2. **TextStyle tokens**: Use `.token.mix()` for text style tokens to get the Mix-compatible reference
-3. **Callable stylers**: Mix stylers can be called like functions, passing the child widget directly
+1. **Token calling**: Call tokens as functions with `token()` to get token references that resolve at build time
+2. **TextStyle tokens**: Use `.token.mix()` for `TextStyleToken` to get a Mix-compatible reference for use with the `.style()` method. This is needed because `TextStyleToken` resolves to `TextStyle`, which must be wrapped as a `TextStyleMix` for the styling pipeline
+3. **Callable stylers**: Mix stylers can be called like functions — `box(child: widget)` is equivalent to `Box(style: box, child: widget)`, and `text(label)` is equivalent to `StyledText(label, style: text)`
 4. **Fluent API**: Chain styling methods for clean, readable code
 
 ### Creating the ProfilePage
@@ -264,12 +274,12 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // AppBar title styling
-    final appBarTitle = TextStyler
+    final appBarTitle = TextStyler()
         .style(CustomTextStyleTokens.headline2.token.mix())
         .color(CustomColorTokens.onSurface.token());
 
     // Layout styling with FlexBoxStyler
-    final flexBox = FlexBoxStyler
+    final flexBox = FlexBoxStyler()
         .crossAxisAlignment(.start)
         .marginAll(MyThemeSpaceToken.medium.token())
         .spacing(MyThemeSpaceToken.medium.token());
@@ -290,21 +300,21 @@ class ProfilePage extends StatelessWidget {
             // Title
             StyledText(
               'Hollywood Academy',
-              style: TextStyler
+              style: TextStyler()
                   .style(CustomTextStyleTokens.headline1.token.mix())
                   .color(CustomColorTokens.onSurface.token()),
             ),
             // Subtitle
             StyledText(
               'Education · Los Angeles, California',
-              style: TextStyler
+              style: TextStyler()
                   .style(CustomTextStyleTokens.callout.token.mix())
                   .color(CustomColorTokens.onSurfaceVariant.token()),
             ),
             // Description
             StyledText(
               'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-              style: TextStyler
+              style: TextStyler()
                   .style(CustomTextStyleTokens.body.token.mix())
                   .color(CustomColorTokens.onSurfaceVariant.token()),
             ),
@@ -323,13 +333,13 @@ class ImagePlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final imageContainer = BoxStyler
+    final imageContainer = BoxStyler()
         .height(200)
         .width(double.infinity)
         .color(CustomColorTokens.primary.token())
         .borderRadiusAll(MyThemeRadiusToken.medium.token());
 
-    final icon = IconStyler
+    final icon = IconStyler()
         .size(80)
         .color(CustomColorTokens.onPrimary.token());
 
@@ -347,7 +357,7 @@ Key points about this implementation:
 
 Now that everything is set up, you can wrap your app with `MixScope` to provide the theme values.
 
-![images](./images/light-themed-app.png)
+![Profile screen with light blue theme applied](./images/light-themed-app.png)
 
 ## Switching Between Themes
 
@@ -385,7 +395,9 @@ class _ThemingTutorialAppState extends State<ThemingTutorialApp> {
       textStyles: textStyles,
       radii: radii,
       spaces: spaces,
-      child: const ProfilePage(),
+      child: const MaterialApp(
+        home: ProfilePage(),
+      ),
     );
   }
 }

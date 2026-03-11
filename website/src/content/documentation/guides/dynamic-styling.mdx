@@ -1,3 +1,7 @@
+---
+title: "Dynamic Styling"
+description: "Use variants to style widgets based on state, platform, and context."
+---
 
 # Dynamic Styling
 
@@ -5,7 +9,7 @@ Mix lets you define state-aware styles in one place instead of scattering condit
 
 ## Understanding Variants
 
-Let's look at a simple example: suppose you want a `Box` to change its color when hovered. With Mix, you can achieve this by simply adding `.onHovered(...)` to your style definition.
+To make a `Box` change color when hovered, add `.onHovered(...)` to the style definition:
 
 ```dart
 import 'package:flutter/material.dart';
@@ -71,6 +75,18 @@ final style = BoxStyler()
   .onHovered(hoverStyle);
 ```
 
+## Variant Types
+
+Mix provides three types of variants for different use cases:
+
+| Type | When to use | Example |
+|------|-------------|---------|
+| **State variant** | Interaction-driven (hover, press, focus, disabled) | `.onHovered(.color(Colors.blue))` |
+| **Context variant** | BuildContext-driven (dark mode, platform, breakpoint) | `.onDark(.color(Colors.white))` |
+| **Named variant** | Reusable across widgets via `NamedVariant` | `.variant(myVariant, .color(Colors.red))` |
+
+State variants (`onHovered`, `onPressed`, `onFocused`, `onDisabled`) respond to user interactions. Context variants (`onDark`, `onMobile`, `onBuilder`) respond to `BuildContext` values. Named variants are custom identifiers you define and apply manually.
+
 ## Built-in Variants
 
 ### Built-in Variant Methods
@@ -103,3 +119,9 @@ Below is a list of all built-in variant methods available on stylers (e.g., `Box
 | `onWeb(style)` | Applies style on web |
 | `onNot(contextVariant, style)` | Applies style when the given context variant is **not** active |
 | `onBuilder((context) => style)` | Applies a style based on a custom function using BuildContext |
+
+## Related
+
+- [Styling with Mix](/documentation/guides/styling) — fluent Styler API basics
+- [Design Tokens](/documentation/guides/design-token) — token-based theming with `MixScope`
+- [Pressable](/documentation/widgets/pressable) — interaction state handling for widgets

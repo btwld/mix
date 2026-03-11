@@ -1,5 +1,6 @@
 ---
-title: "Utilities Fundamentals"
+title: "Utility-First Approach"
+description: "Understand Mix’s utility-first styling model and composable Styler patterns."
 ---
 
 # Utility-First Approach
@@ -9,7 +10,7 @@ A *styler* (such as `BoxStyler`) provides small, composable utilities—like `co
 
 This approach promotes:
 
-- **Declarative Semantic** — Facilitates meaningful and easily understandable styling for widgets.
+- **Declarative Semantics** — meaningful, readable styling for widgets.
 - **Composability** — freely combine, conditionally apply, or reuse utilities across contexts.
 - **Efficiency** — simple, chainable methods and reusability reduce boilerplate.
 - **Flexibility** — build modular UIs without being locked into rigid abstractions.
@@ -21,11 +22,11 @@ This approach promotes:
 `Styler` methods are descriptive, predictable, and easy to chain. For example:
 
 ```dart
-final boxStyle = BoxStyler
-  .width(100)
-  .paddingAll(10)
-  .alignment(.center)
-  .color(Colors.red);
+final boxStyle = BoxStyler()
+    .width(100)
+    .paddingAll(10)
+    .alignment(.center)
+    .color(Colors.red);
 ```
 
 The example above shows how you can build up a style step by step using the **builder design pattern**. Each method—like `.width(100)` or `.color(Colors.red)`—adds a style property, and you can chain them together. This makes it easy to create and reuse styles in a clear and readable way.
@@ -36,11 +37,11 @@ Mix's API is designed to be intuitive and easy to pick up, especially for Flutte
 
 ```dart
 // Explicit alignment
-BoxStyler.alignment(.centerRight);
+BoxStyler().alignment(.centerRight);
 
 // Spacing helpers
-BoxStyler.padding(EdgeInsetsGeometryMix.all(16)); // All sides
-BoxStyler.padding(EdgeInsetsGeometryMix.symmetric(horizontal: 12, vertical: 8)); // Horizontal and vertical
+BoxStyler().padding(.all(16)); // All sides
+BoxStyler().padding(.symmetric(horizontal: 12, vertical: 8)); // Horizontal and vertical
 BoxStyler().paddingOnly(horizontal: 12, vertical: 8); // Specific sides
 ```
 
@@ -79,5 +80,5 @@ extension on BoxStyler {
 }
 
 // Use the extension method
-BoxStyler.borderRedTop();
+BoxStyler().borderRedTop();
 ```
