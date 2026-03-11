@@ -203,7 +203,8 @@ final class BoxShadowListRef extends Prop<List<BoxShadow>>
 /// and extension type token references.
 bool isAnyTokenRef(Object value) {
   // Check for class-based token references
-  if (value is Prop && value.sources.any((s) => s is TokenSource)) {
+  if (value is Prop &&
+      value.sources.any((s) => s is TokenSource || s is MappedTokenSource)) {
     final typeName = value.runtimeType.toString();
     if (typeName.endsWith('Ref') || typeName.endsWith('Prop')) {
       return true;

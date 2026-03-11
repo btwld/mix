@@ -33,7 +33,8 @@ import 'prop_source.dart';
 class Prop<V> {
   /// The list of sources that provide values for this property.
   ///
-  /// Sources can be [ValueSource], [TokenSource], or [MixSource].
+  /// Sources can be [ValueSource], [TokenSource], [MappedTokenSource], or
+  /// [MixSource].
   final List<PropSource<V>> sources;
 
   /// Optional directives to transform the resolved value.
@@ -62,6 +63,31 @@ class Prop<V> {
   /// Optionally accepts [directives] configuration.
   factory Prop.token(MixToken<V> token, {List<Directive<V>>? directives}) {
     return Prop._(sources: [TokenSource(token)], directives: directives);
+  }
+
+  /// Creates a property that references a token of type [T] and maps to [V].
+  ///
+  /// The token is resolved from [MixScope] during resolution, then [resolve]
+  /// transforms the result. The resolver must return either a [V] value or a
+  /// [Mix<V>] for accumulation merging. Returning any other type throws
+  /// [ArgumentError] at resolution time.
+  ///
+  /// Example:
+  /// ```dart
+  /// Prop.tokenWith<Decoration, Color>(
+  ///   $primary,
+  ///   (color) => BoxDecorationMix.color(color),
+  /// )
+  /// ```
+  static Prop<V> tokenWith<V, T>(
+    MixToken<T> token,
+    Object? Function(T) resolve, {
+    List<Directive<V>>? directives,
+  }) {
+    return Prop._(
+      sources: [MappedTokenSource<V, T>(token, resolve)],
+      directives: directives,
+    );
   }
 
   /// Creates a property with only directives.
@@ -167,8 +193,9 @@ class Prop<V> {
 
   /// Whether this property contains at least one token source.
   ///
-  /// Returns `true` if the property has [TokenSource].
-  bool get hasToken => sources.any((s) => s is TokenSource<V>);
+  /// Returns `true` if the property has [TokenSource] or [MappedTokenSource].
+  bool get hasToken =>
+      sources.any((s) => s is TokenSource<V> || s is MappedTokenSource);
 
   // Methods
 
@@ -220,6 +247,16 @@ class Prop<V> {
         ValueSource<V>(:final value) => value,
         TokenSource<V>(:final token) => MixScope.tokenOf(token, context),
         MixSource<V>(:final mix) => mix,
+        final MappedTokenSource s => () {
+          final resolved = MixScope.tokenOf(s.token, context);
+          final result = s.resolveToken(resolved);
+          if (result is V || result is Mix<V>) return result;
+
+          throw ArgumentError(
+            'MappedTokenSource resolver for token "${s.token.name}" '
+            'returned ${result.runtimeType}, expected $V or Mix<$V>.',
+          );
+        }(),
       };
       values.add(value);
     }
