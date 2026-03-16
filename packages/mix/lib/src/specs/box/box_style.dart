@@ -22,6 +22,7 @@ import '../../style/mixins/constraint_style_mixin.dart';
 import '../../style/mixins/decoration_style_mixin.dart';
 import '../../style/mixins/shadow_style_mixin.dart';
 import '../../style/mixins/spacing_style_mixin.dart';
+import '../../style/mixins/token_style_mixin.dart';
 import '../../style/mixins/transform_style_mixin.dart';
 import 'box_mutable_style.dart';
 import 'box_spec.dart';
@@ -47,6 +48,7 @@ class BoxStyler extends MixStyler<BoxStyler, BoxSpec>
         SpacingStyleMixin<BoxStyler>,
         TransformStyleMixin<BoxStyler>,
         ConstraintStyleMixin<BoxStyler>,
+        TokenStyleMixin<BoxStyler, BoxSpec>,
         _$BoxStylerMixin {
   @override
   final Prop<AlignmentGeometry>? $alignment;

@@ -9,6 +9,7 @@ import '../../core/style.dart';
 import '../../core/style_spec.dart';
 import '../../modifiers/widget_modifier_config.dart';
 import '../../style/abstracts/styler.dart';
+import '../../style/mixins/token_style_mixin.dart';
 import 'image_mutable_style.dart';
 import 'image_spec.dart';
 import 'image_widget.dart';
@@ -20,7 +21,7 @@ typedef ImageMix = ImageStyler;
 
 @MixableStyler()
 class ImageStyler extends MixStyler<ImageStyler, ImageSpec>
-    with _$ImageStylerMixin {
+    with TokenStyleMixin<ImageStyler, ImageSpec>, _$ImageStylerMixin {
   @override
   final Prop<ImageProvider<Object>>? $image;
   @override

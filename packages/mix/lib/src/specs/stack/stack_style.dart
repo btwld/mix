@@ -9,6 +9,7 @@ import '../../core/style.dart';
 import '../../core/style_spec.dart';
 import '../../modifiers/widget_modifier_config.dart';
 import '../../style/abstracts/styler.dart';
+import '../../style/mixins/token_style_mixin.dart';
 import 'stack_mutable_style.dart';
 import 'stack_spec.dart';
 
@@ -26,7 +27,7 @@ typedef StackMix = StackStyler;
 /// the [StackSpec] constructor.
 @MixableStyler()
 class StackStyler extends MixStyler<StackStyler, StackSpec>
-    with _$StackStylerMixin {
+    with TokenStyleMixin<StackStyler, StackSpec>, _$StackStylerMixin {
   @override
   final Prop<AlignmentGeometry>? $alignment;
   @override

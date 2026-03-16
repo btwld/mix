@@ -23,6 +23,7 @@ import '../../style/mixins/decoration_style_mixin.dart';
 import '../../style/mixins/flex_style_mixin.dart';
 import '../../style/mixins/shadow_style_mixin.dart';
 import '../../style/mixins/spacing_style_mixin.dart';
+import '../../style/mixins/token_style_mixin.dart';
 import '../../style/mixins/transform_style_mixin.dart';
 import '../box/box_spec.dart';
 import '../box/box_style.dart';
@@ -55,6 +56,7 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
         TransformStyleMixin<FlexBoxStyler>,
         ConstraintStyleMixin<FlexBoxStyler>,
         FlexStyleMixin<FlexBoxStyler>,
+        TokenStyleMixin<FlexBoxStyler, FlexBoxSpec>,
         _$FlexBoxStylerMixin {
   @override
   final Prop<StyleSpec<BoxSpec>>? $box;
