@@ -65,7 +65,7 @@ sealed class DecorationMix<T extends Decoration> extends Mix<T> {
   }
 
   /// Creates with box shadows.
-  static BoxDecorationMix boxShadow(List<BoxShadowMix> value) {
+  static BoxDecorationMix boxShadow(BoxShadowListMix value) {
     return BoxDecorationMix(boxShadow: value);
   }
 
@@ -132,7 +132,7 @@ final class BoxDecorationMix extends DecorationMix<BoxDecoration>
     Color? color,
     DecorationImageMix? image,
     GradientMix? gradient,
-    List<BoxShadowMix>? boxShadow,
+    BoxShadowListMix? boxShadow,
   }) : this.create(
          border: Prop.maybeMix(border),
          borderRadius: Prop.maybeMix(borderRadius),
@@ -141,9 +141,7 @@ final class BoxDecorationMix extends DecorationMix<BoxDecoration>
          color: Prop.maybe(color),
          image: Prop.maybeMix(image),
          gradient: Prop.maybeMix(gradient),
-         boxShadow: boxShadow != null
-             ? Prop.mix(BoxShadowListMix(boxShadow))
-             : null,
+         boxShadow: boxShadow != null ? Prop.mix(boxShadow) : null,
        );
 
   /// Creates with border only.
@@ -170,7 +168,7 @@ final class BoxDecorationMix extends DecorationMix<BoxDecoration>
   BoxDecorationMix.gradient(GradientMix gradient) : this(gradient: gradient);
 
   /// Creates a box decoration with only the box shadows specified.
-  BoxDecorationMix.boxShadow(List<BoxShadowMix> boxShadow)
+  BoxDecorationMix.boxShadow(BoxShadowListMix boxShadow)
     : this(boxShadow: boxShadow);
 
   /// Creates a [BoxDecorationMix] from an existing [BoxDecoration].
@@ -185,7 +183,13 @@ final class BoxDecorationMix extends DecorationMix<BoxDecoration>
         color: decoration.color,
         image: DecorationImageMix.maybeValue(decoration.image),
         gradient: GradientMix.maybeValue(decoration.gradient),
-        boxShadow: decoration.boxShadow?.map(BoxShadowMix.value).toList(),
+        boxShadow: decoration.boxShadow != null
+            ? BoxShadowListMix(
+                decoration.boxShadow!
+                    .map((e) => BoxShadowMix.value(e))
+                    .toList(),
+              )
+            : null,
       );
 
   const BoxDecorationMix.create({
@@ -225,7 +229,7 @@ final class BoxDecorationMix extends DecorationMix<BoxDecoration>
   }
 
   /// Returns a copy with the specified box shadows.
-  BoxDecorationMix boxShadow(List<BoxShadowMix> value) {
+  BoxDecorationMix boxShadow(BoxShadowListMix value) {
     return merge(BoxDecorationMix.boxShadow(value));
   }
 
