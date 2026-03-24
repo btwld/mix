@@ -5,25 +5,75 @@ title: "Animations"
 
 # Animations
 
-Mix gives you three ways to bring motion into your UI, depending on how much control you want. You'll see implicit transitions, phase-based sequences, and keyframe timelines in the previews below.
+Flutter gives you `AnimatedContainer`, `TweenAnimationBuilder`, and explicit `AnimationController` — but wiring them into your styling logic takes boilerplate. Mix lets you attach animations directly to your styles, so motion stays where your design decisions live.
 
-**Implicit** — Easiest to use. When a value changes (state or a variant like hover), the style animates smoothly to the new value. No timeline to manage.
+Mix offers three animation types, each suited to a different level of control.
 
-**Phase** — For multi-step flows that go through distinct steps and then back (e.g. tap → compress → expand → rest). Think of it as a small state machine for animation.
+## Choosing the right type
 
-**Keyframe** — Full control. You define a timeline with tracks and keyframes, so multiple properties can change over time with precise easing.
+| | **Implicit** | **Phase** | **Keyframe** |
+|---|---|---|---|
+| **Best for** | Simple A→B transitions | Multi-step sequences | Full timelines with parallel tracks |
+| **Complexity** | Low | Medium | High |
+| **Control** | Automatic interpolation | Ordered steps with per-step config | Per-property keyframes with custom easing |
+| **Trigger** | State change or variant | `ValueNotifier` (or auto-loop) | `ValueNotifier` (or auto-loop) |
+| **Example** | Color fade on hover | Tap → squash → bounce → rest | Scale + opacity + color changing in sync |
+
+**Rule of thumb:** start with implicit. Move to phase when you need ordered steps. Reach for keyframe when you need parallel tracks with independent timing.
+
+---
+
+## Animation configs
+
+Every animation type uses an `AnimationConfig` to control timing and easing. You create one with a named constructor — either **curve-based** (fixed duration) or **spring-based** (physics-driven).
+
+### Curve-based configs
+
+All curve configs take a `duration` and an optional `delay`:
+
+```dart
+// Standard easing — good default for most transitions
+.ease(300.ms)
+
+// Starts fast, decelerates to a stop — natural for elements settling into place
+.decelerate(200.ms)
+
+// Smooth sinusoidal ease-out
+.easeOutSine(400.ms)
+
+// With a delay before starting
+.easeInOut(500.ms, delay: 200.ms)
+```
+
+Available curves include: `linear`, `ease`, `easeIn`, `easeOut`, `easeInOut`, `decelerate`, `bounceIn`, `bounceOut`, `elasticOut`, and many more — each matching a Flutter `Curves` constant.
+
+### Spring-based configs
+
+Springs produce natural, physics-driven motion. Mix offers three ways to configure them:
+
+```dart
+// Duration-based spring — set duration and bounciness (0 = no bounce, 1 = very bouncy)
+.spring(800.ms, bounce: 0.6)
+
+// Damping-ratio spring — ratio of 1.0 is critically damped (no overshoot),
+// below 1.0 oscillates, above 1.0 is overdamped
+.springWithDampingRatio(800.ms, ratio: 0.3)
+
+// Raw physics spring — direct control over mass, stiffness, and damping force
+.springDescription(mass: 1.0, stiffness: 180.0, damping: 12.0)
+```
 
 ---
 
 ## Implicit Animations
 
-When something in your UI changes—a color on hover, a size on tap, or switching to dark mode—you often want that change to feel smooth rather than instant. Implicit animations do exactly that: whenever a value flips from A to B, Mix interpolates between them so the transition feels natural.
+When something in your UI changes — a color on hover, a size on tap, or switching to dark mode — you often want that change to feel smooth rather than instant. Implicit animations do exactly that: whenever a value changes from A to B, Mix interpolates between them so the transition feels natural.
 
-**How to use:** Add `.animate(AnimationConfig....)` to any `Style` or `Styler`. It works with regular state (e.g. `setState`) and with variants like `onHovered`, `onPressed`, and `onDark`.
+**How to use:** Add `.animate(AnimationConfig)` to any `Style` or `Styler`. It works with state changes (e.g. `setState`) and with variants like `onHovered`, `onPressed`, and `onDark`.
 
 ### Case 1: State-triggered
 
-In this example a square grows each time you tap it.
+In this example a square grows each time you tap it. The `.spring(1.s, bounce: 0.6)` config creates a bouncy overshoot effect on each size change.
 
 ```dart
 int _counter = 2;
@@ -43,7 +93,7 @@ return Pressable(
 
 ### Case 2: Variant-triggered
 
-Animations also work with variants. When the widget enters a variant (e.g. hovered), the style animates toward the variant’s “target” style; `.animate(...)` controls how that transition runs.
+Animations also work with variants. When the widget enters a variant (e.g. hovered), the style animates toward the variant's target style; `.animate(...)` controls how that transition runs.
 
 ```dart
 final box = BoxStyler()
@@ -65,11 +115,11 @@ return box();
 
 Sometimes you need more than a simple A→B transition: a button that squashes on press then bounces back, or a flow that goes through several distinct steps and returns to the start. Phase animations are built for that. You define a set of phases, and for each one you choose the style and how the transition into that phase should animate.
 
-**How to use:** Use `.phaseAnimation(...)` to define your phases and what style and animation config each one uses. Optionally pass a **trigger**—with it, the animation runs only when that value changes; without it, it loops on its own.
+**How to use:** Use `.phaseAnimation(...)` to define your phases and what style and animation config each one uses. Optionally pass a **trigger** — with it, the animation runs only when that value changes; without it, it loops on its own.
 
 ### Case: Tap → compress → expand → initial
 
-Below, a square reacts to tap: it compresses, then expands, then returns to its original size, moving through each phase in order.
+Below, a square reacts to tap: it compresses, then expands, then returns to its original size, moving through each phase in order. Each phase has its own animation config — the compress uses `.decelerate(200.ms)` for a quick settle, while the return to initial uses a low damping ratio spring for a bouncy finish.
 
 ```dart
 enum AnimationPhases { initial, compress, expanded }
@@ -109,13 +159,13 @@ return Pressable(
 
 ## Keyframe Animations
 
-When you want full control—a thumb that scales and slides, a pop-in that combines scale, opacity, and offset, or any timeline where several values change in sync—keyframe animations are the tool. You build a timeline with tracks and keyframes, and Mix drives your style from those values.
+When you want full control — a thumb that scales and slides, a pop-in that combines scale, opacity, and offset, or any timeline where several values change in sync — keyframe animations are the tool. You build a timeline with tracks and keyframes, and Mix drives your style from those values.
 
 **How to use:** With `.keyframeAnimation(...)` you define a **timeline** of tracks. Each track has keyframes that run in sequence; tracks run in parallel. A style builder then maps the current track values onto your style. Optionally pass a **trigger** so the animation runs only when that value changes; without it, the animation loops on its own.
 
 ### Case 1: Simple toggle (scale + width)
 
-A single trigger drives two tracks (scale and width). The style builder reads both values and applies them together. Note that each track has its own keyframe with its own values and duration.
+A single trigger drives two tracks (scale and width). The style builder reads both values and applies them together. Each track has its own keyframes with independent values and durations — the scale track uses two keyframes while the width track uses three.
 
 ```dart
 final _trigger = ValueNotifier(false);
@@ -158,9 +208,12 @@ return Center(
 
 ### Case 2: Loop animation (scale + color + opacity)
 
-Several tracks run in parallel to create one looping animation. The style builder applies scale, color, and opacity from the tracks. Here we use a `ColorTween` to interpolate between the initial and end colors.
+Several tracks run in parallel to create one looping animation. Since no `trigger` is passed, the animation repeats continuously.
 
-The Keyframe animation feature allows you to use any custom Tween you want to interpolate between the initial and end values.
+This example shows two advanced patterns:
+
+- **Custom tweens:** The color track passes `tweenBuilder: ColorTween.new` so Mix can interpolate between `Color` values correctly. You can use any `Tween` subclass this way.
+- **`.wrap()` for widget-level effects:** Opacity cannot be interpolated as a style property, so `.wrap(WidgetModifierConfig.opacity(...))` wraps the widget in Flutter's `Opacity` widget. The `.transform()` call similarly applies a `Matrix4` scale — useful when you need to animate a raw transform matrix rather than using the `.scale()` shorthand.
 
 ```dart
 final box = BoxStyler()
@@ -195,10 +248,14 @@ return box();
 
 <FlutterPreview previewId="guides/animations.4" height={200} />
 
-For a more advanced keyframe example (e.g. multi-track heart with color, scale, offset, stretch, rotation), see the keyframe heart example in the examples app.
-
 ---
 
-## Conclusion
+## Common pitfalls
 
-Start with **implicit** when you just want values to transition smoothly. Move to **phase** when you have a clear sequence of steps that return to the start. Reach for **keyframe** when you need a full timeline with multiple properties and precise control.
+**Animation not replaying on tap.** Phase and keyframe animations use a `ValueNotifier` as a trigger. The animation runs when the *value changes*, not when it's set. If you set it to the same value, nothing happens. Toggle it (`!value`) or increment a counter.
+
+**Spring animations that never settle.** A low damping ratio (e.g. `ratio: 0.1`) or high bounce (e.g. `bounce: 0.9`) can cause long oscillations. Start with `bounce: 0.3` or `ratio: 0.8` and adjust from there.
+
+**Forgetting `tweenBuilder` for non-numeric types.** Tracks that animate `Color`, `Offset`, or other non-numeric types need a `tweenBuilder` (e.g. `ColorTween.new`). Without it, the interpolation will fail at runtime.
+
+**Using `.animate()` with `.phaseAnimation()` or `.keyframeAnimation()`.** Implicit animations (`.animate()`) and explicit animations (phase/keyframe) are separate systems. Don't combine them on the same styler — pick one.
