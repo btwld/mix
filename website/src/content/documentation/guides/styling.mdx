@@ -1,19 +1,16 @@
+---
+title: Styling
+---
 
 # Styling with Mix
 
-Mix enhances Flutter development with a functional styling approach, focusing on separating visual semantics from business logic for improved readability and maintainability. Its emphasis on concise style declarations simplifies the workflow, allowing the creation of complex styles from simple building blocks.
+In Flutter, styling lives inside your widget tree — a `Container` owns its color, padding, and border. This makes styles hard to reuse, share, or override without duplicating widget code. Mix solves this by pulling style declarations out of the tree into composable, chainable objects called **stylers**.
 
-This method fosters modularity, reusability, and flexibility in styling, streamlining the process of defining and applying styles to widgets.
+## Style and Styler
 
-## Understanding Style and Styler
+`Style` is the abstract base class for all styling in Mix. Concrete implementations follow the naming convention `<Widget>Styler` — for example, `BoxStyler`, `TextStyler`, `IconStyler`. Each styler is a declarative builder that resolves with `BuildContext` at build time, giving it access to theme data, media queries, and other contextual information.
 
-In Mix, `Style` is an abstract class that defines the contract for visual semantics outside of widget builds. Classes that extend `Style` typically follow the naming convention of ending with `Styler` (for example, `BoxStyler`, `TextStyler`). These styler classes act as declarative style builders, resolving with `BuildContext` to access theme data, media queries, and other contextual information—enabling adaptive, context-aware styling for your app.
-
-By using stylers, you separate presentation logic from your widget tree, making your codebase more maintainable and your styles more reusable.
-
-## Fluent and Familiar API
-
-Mix provides a chainable builder API that mirrors Flutter's naming conventions and behavior, making styles predictable and easy to read for Flutter developers:
+You define a style, then pass it to the matching Mix widget:
 
 ```dart
 import 'package:flutter/material.dart';
@@ -24,15 +21,29 @@ final style = BoxStyler()
     .height(100)
     .color(Colors.blue)
     .borderRounded(12);
+
+// Pass the style to a Box widget
+Box(style: style, child: Text('Hello'));
 ```
 
 <FlutterPreview previewId="guides/styling.0" height={200} />
 
-This familiar approach reduces the learning curve and makes your styling code feel natural within the Flutter ecosystem.
+## Fluent Chaining
+
+Mix provides a chainable API that mirrors Flutter's naming conventions. Each method returns a new styler with the property applied, so you can chain as many as you need:
+
+```dart
+final style = BoxStyler()
+    .color(Colors.blue)
+    .size(100, 100)
+    .paddingAll(16)
+    .borderRounded(8)
+    .shadow(blurRadius: 10, color: Colors.black26);
+```
 
 ## Style Composition and Override
 
-One of Mix's most powerful features is the ability to build new styles on top of existing ones. This composition pattern promotes reusability and maintains consistency across your application:
+Build new styles on top of existing ones. This keeps your design consistent — define a base once, then create variations by chaining additional properties:
 
 ```dart
 final base = BoxStyler()
@@ -48,11 +59,11 @@ final soft = base.color(Colors.blue.shade100);
 
 <FlutterPreview previewId="guides/styling.1" height={180} />
 
-**Order Matters**: The sequence in which you chain styling attributes directly affects the final result. Attributes are merged in order, so later attributes will override earlier ones when there are conflicts.
+**Order matters:** properties are merged in sequence, so later values override earlier ones. In the example above, `base.color(Colors.blue)` replaces the original `Colors.black`.
 
 ## Dynamic and Context-Aware Styling
 
-Mix styles can adapt to user interactions and context changes using variants. This enables responsive designs that react to hover states, theme changes, and other contextual factors:
+Styles can adapt to user interactions and context using **variants**. Instead of writing conditional logic in your widget tree, you declare what changes and when:
 
 ```dart
 final button = BoxStyler()
@@ -60,3 +71,5 @@ final button = BoxStyler()
   .onHovered(.color(Colors.blue.shade700))
   .onDark(.color(Colors.blue.shade200));
 ```
+
+Variants are covered in depth in the [Dynamic Styling](/documentation/guides/dynamic-styling) guide.

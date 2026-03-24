@@ -6,50 +6,38 @@ import { Callout } from "nextra/components";
 
 # Directives
 
-Directives transform values (text, numbers) when a style is resolved. Unlike modifiers (which wrap widgets), directives transform the underlying data values.
+You could transform text with `toUpperCase()` or compute sizes with `* 2` before passing them to a style — but those transformations live outside the style, so they get lost when styles merge or resolve tokens. Directives keep transformations *inside* the style, making them composable, merge-safe, and token-aware.
+
+Directives transform values (text, numbers, colors) when a style is resolved. Unlike modifiers (which wrap widgets), directives transform the underlying data.
 
 ```dart
-// The text "hello world" is transformed to "HELLO WORLD" at build time
+// The text "hello world" is transformed to "HELLO WORLD" at resolve time
 StyledText(
   'hello world',
   style: TextStyler().uppercase(),
 )
 ```
 
-Directives can be chained:
-
-```dart
-// Chain: multiply by 2, then add 5, then clamp between 0-30 (use .create() for number directives)
-final style = BoxStyler.create(
-  width: Prop.value(10.0).multiply(2).add(5).clamp(0, 30),
-);
-```
+---
 
 ## Text Directives
 
-Transform strings in `StyledText` widgets:
+Transform strings in `StyledText` widgets. Text directives are called directly on `TextStyler`:
 
-### Available Text Directives
-
-| Method | Description | Example Input | Result |
-|--------|-------------|---------------|--------|
-| `.uppercase()` | Converts all characters to uppercase | "hello world" | "HELLO WORLD" |
-| `.lowercase()` | Converts all characters to lowercase | "Hello World" | "hello world" |
-| `.capitalize()` | Capitalizes the first letter of each word | "hello world" | "Hello World" |
-| `.titlecase()` | Transforms to title case format | "hello world" | "Hello World" |
-| `.sentencecase()` | Capitalizes the first letter of the first word | "hello world" | "Hello world" |
+| Method | Description | Input | Output |
+|--------|-------------|-------|--------|
+| `.uppercase()` | All characters to uppercase | "hello world" | "HELLO WORLD" |
+| `.lowercase()` | All characters to lowercase | "Hello World" | "hello world" |
+| `.capitalize()` | First letter of each word | "hello world" | "Hello World" |
+| `.titlecase()` | Title case format | "hello world" | "Hello World" |
+| `.sentencecase()` | First letter of first word | "hello world" | "Hello world" |
 
 <FlutterPreview
   previewId="guides/directives.0"
   height={200}
 />
 
-### Usage Examples
-
 ```dart
-import 'package:flutter/material.dart';
-import 'package:mix/mix.dart';
-
 // Uppercase text
 StyledText(
   'welcome back',
@@ -69,11 +57,24 @@ StyledText(
 )
 ```
 
+---
+
 ## Number Directives
 
-Transform numeric values (width, height, padding, font sizes):
+Transform numeric values (width, height, padding, font sizes). Number directives are chained on `Prop` values inside `.create()`:
 
-### Available Number Directives
+```dart
+// .create() gives you access to the Prop API, where directives live
+final style = BoxStyler.create(
+  width: Prop.value(10.0).multiply(2).add(5).clamp(0, 30),
+);
+```
+
+<Callout type="info">
+  Number directives require `.create()` instead of the fluent API (`.width(...)`) because directives are methods on `Prop`, not on the styler itself.
+</Callout>
+
+### Available number directives
 
 | Method | Description | Example |
 |--------|-------------|---------|
@@ -88,20 +89,10 @@ Transform numeric values (width, height, padding, font sizes):
 | `.ceil()` | Rounds up | `Prop.value(15.3).ceil()` → 16 |
 | `.scale(ratio)` | Alias for multiply | `Prop.value(10).scale(1.5)` → 15 |
 
-### Usage Examples
+### Usage examples
 
 ```dart
-import 'package:flutter/material.dart';
-import 'package:mix/mix.dart';
-
-// Proportional typography scaling (use .create() when using Prop with directives)
-final style = TextStyler.create(
-  style: TextStyleMix(
-    letterSpacing: Prop.value(0.0025).multiply(12.0),
-  ),
-);
-
-// Dynamic sizing with tokens
+// Dynamic sizing with tokens — the token resolves first, then the directive applies
 final $baseSize = DoubleToken('base.size');
 
 final boxStyle = BoxStyler.create(
@@ -114,7 +105,7 @@ final responsiveStyle = BoxStyler.create(
   padding: Prop.value(16.0).clamp(8, 32),
 );
 
-// Chaining multiple directives
+// Chaining multiple directives (applied left to right)
 final chainedStyle = BoxStyler.create(
   width: Prop.value(100.0).multiply(2).add(20).clamp(0, 300),
 );
@@ -124,15 +115,53 @@ final chainedStyle = BoxStyler.create(
   Division always returns a double in Dart. The divisor cannot be zero.
 </Callout>
 
-## Creating Custom Directives
-
-Extend `Directive<T>` to create application-specific transformations.
-
-### Text Directive Example
+**Chaining order matters** — directives apply left to right:
 
 ```dart
-import 'package:mix/mix.dart';
+Prop.value(10).add(5).multiply(2)  // (10 + 5) * 2 = 30
+Prop.value(10).multiply(2).add(5)  // (10 * 2) + 5 = 25
+```
 
+---
+
+## Color Directives
+
+Transform colors by adjusting opacity, brightness, saturation, and more. Color directives are called directly on color styler methods:
+
+| Method | Description |
+|--------|-------------|
+| `.withOpacity(double)` | Set opacity (0.0–1.0) |
+| `.withAlpha(int)` | Set alpha channel (0–255) |
+| `.darken(double)` | Darken by percentage |
+| `.lighten(double)` | Lighten by percentage |
+| `.saturate(double)` | Increase saturation |
+| `.desaturate(double)` | Decrease saturation |
+| `.tint(double)` | Mix with white |
+| `.shade(double)` | Mix with black |
+| `.brighten(double)` | Increase brightness |
+
+```dart
+final style = BoxStyler()
+    .color(Colors.blue.withOpacity(0.5));
+
+// Color directives also work with tokens
+final style = BoxStyler()
+    .color($primary().withOpacity(0.8));
+```
+
+---
+
+## Creating Custom Directives
+
+Extend `Directive<T>` to create application-specific transformations. Each directive needs three things:
+
+- **`apply()`** — the transformation logic
+- **`key`** — a unique string identifier used for equality and merging
+- **`==` / `hashCode`** — required so Mix can deduplicate directives when styles merge
+
+### Text directive example
+
+```dart
 /// Directive that reverses a string
 final class ReverseStringDirective extends Directive<String> {
   const ReverseStringDirective();
@@ -151,7 +180,7 @@ final class ReverseStringDirective extends Directive<String> {
   int get hashCode => key.hashCode;
 }
 
-// Usage with TextStyler
+// Expose it as a fluent method on TextStyler
 extension ReverseTextDirective on TextStyler {
   TextStyler reverse() {
     return merge(
@@ -160,18 +189,16 @@ extension ReverseTextDirective on TextStyler {
   }
 }
 
-// Apply the custom directive
+// Usage
 StyledText(
   'hello',
   style: TextStyler().reverse(), // Displays "olleh"
 )
 ```
 
-### Number Directive Example
+### Number directive example
 
 ```dart
-import 'package:mix/mix.dart';
-
 /// Directive that negates a number
 final class NegateNumberDirective extends NumberDirective {
   const NegateNumberDirective();
@@ -190,7 +217,7 @@ final class NegateNumberDirective extends NumberDirective {
   int get hashCode => key.hashCode;
 }
 
-// Extension to make it easy to use
+// Expose it as a chainable method on Prop
 extension NegateNumberPropExt<T extends num> on Prop<T> {
   Prop<num> negate() {
     return directives([const NegateNumberDirective()]);
@@ -200,14 +227,7 @@ extension NegateNumberPropExt<T extends num> on Prop<T> {
 
 ## Best Practices
 
-- Use text directives for consistent case formatting
-- Use number directives for proportional sizing with tokens
-- Use color directives for state variations (hover, disabled)
-- Keep directives simple—complex logic belongs elsewhere
-
-**Chaining order matters:**
-
-```dart
-Prop.value(10).add(5).multiply(2)  // (10 + 5) * 2 = 30
-Prop.value(10).multiply(2).add(5)  // (10 * 2) + 5 = 25
-```
+- **Text directives for consistent formatting** — use `.uppercase()` or `.titlecase()` instead of transforming strings before passing them in, so the transformation survives style merging
+- **Number directives for proportional sizing** — pair with tokens (e.g. `Prop.token($base).multiply(2)`) to keep ratios in the style rather than scattered across your code
+- **Color directives for visual states** — `.withOpacity(0.5)` on a disabled variant keeps the color relationship intact when the base color changes
+- **Keep directives simple** — a directive should do one thing. If you need complex logic, compute the value outside the style and pass it in
