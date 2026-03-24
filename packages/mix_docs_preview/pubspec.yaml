@@ -1,0 +1,26 @@
+name: mix_docs_preview
+description: Flutter preview widgets and manifest for the Mix documentation site.
+publish_to: none
+version: 1.0.0
+
+environment:
+  sdk: ">=3.11.0 <4.0.0"
+  flutter: ">=3.41.0"
+
+dependencies:
+  cupertino_icons: ^1.0.8
+  flutter:
+    sdk: flutter
+  mix:
+    path: ../mix
+  mix_tailwinds:
+    path: ../mix_tailwinds
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  dart_code_metrics_presets: ^2.24.0
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true

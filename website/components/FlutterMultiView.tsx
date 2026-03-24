@@ -10,7 +10,7 @@ export type { FlutterMultiViewApp };
 type LoadingState = "idle" | "loading-engine" | "adding-view" | "ready" | "error";
 
 interface FlutterMultiViewProps {
-  /** Preview ID to render (e.g., 'box-basic', 'variant-hover') */
+  /** Preview ID to render (e.g., 'overview/introduction.0', 'guides/styling.0') */
   previewId: string;
   /** Base path where Flutter previews are hosted (default: /previews) */
   basePath?: string;
@@ -192,7 +192,7 @@ async function ensureFlutterEngine(basePath: string): Promise<FlutterMultiViewAp
  *
  * @example
  * ```tsx
- * <FlutterMultiView previewId="box-basic" height={400} />
+ * <FlutterMultiView previewId="overview/introduction.0" height={400} />
  * ```
  */
 export function FlutterMultiView({

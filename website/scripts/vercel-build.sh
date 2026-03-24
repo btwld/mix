@@ -70,10 +70,10 @@ melos bootstrap
 # Build Flutter preview bundle
 # ============================================================================
 echo "==> Building Flutter preview bundle..."
-bash "$PROJECT_DIR/examples/scripts/build_web_previews.sh" --local
+bash "$PROJECT_DIR/packages/mix_docs_preview/scripts/build_web_previews.sh" --local
 
 # Verify the build produced the expected artifacts
-BUILD_DIR="$PROJECT_DIR/examples/build/web"
+BUILD_DIR="$PROJECT_DIR/packages/mix_docs_preview/build/web"
 [ -f "$BUILD_DIR/main.dart.js" ]           || fail "Flutter web build missing: main.dart.js"
 [ -f "$BUILD_DIR/flutter_bootstrap.js" ]   || fail "Flutter web build missing: flutter_bootstrap.js"
 [ -f "$BUILD_DIR/previews-manifest.json" ] || fail "Flutter web build missing: previews-manifest.json"

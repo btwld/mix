@@ -4,7 +4,7 @@ on:
   push:
     branches: [main, next]
     paths-ignore:
-      - 'examples/**'
+      - 'packages/mix_docs_preview/**'
       - 'website/**'
       - 'assets/**'
       - 'tool/**'
@@ -12,7 +12,7 @@ on:
   pull_request:
     branches: [main, next]
     paths-ignore:
-      - 'examples/**'
+      - 'packages/mix_docs_preview/**'
       - 'test_resources/**'
       - 'website/**'
       - 'assets/**'

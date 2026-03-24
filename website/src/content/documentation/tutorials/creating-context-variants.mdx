@@ -35,7 +35,7 @@ class CustomInheritedWidget extends InheritedWidget {
 Now you can create a `ContextVariant` that checks this inherited widget's state:
 
 ```dart
-BoxStyler
+BoxStyler()
   .color(Colors.red)
   .size(100, 100)
   .variant(
@@ -43,7 +43,7 @@ BoxStyler
       final flag = CustomInheritedWidget.of(context)?.flag ?? false;
       return flag;
     }),
-    BoxStyler.color(Colors.blue),
+    BoxStyler().color(Colors.blue),
   );
 ```
 
@@ -51,6 +51,8 @@ In this example:
 - The box is normally red with 100x100 size
 - When `CustomInheritedWidget.flag` is true, the box becomes blue
 - The `ContextVariant` constructor takes a name and a function that evaluates the condition
+
+<FlutterPreview previewId="tutorials/creating-context-variants.0" title="Context variant with custom flag" height={200} />
 
 ## Creating Reusable Variant Extensions
 
@@ -74,11 +76,11 @@ extension WidgetStateVariantMixinX<T extends Style<S>, S extends Spec<S>>
 Now you can use the extension method for a more readable API:
 
 ```dart
-BoxStyler
+BoxStyler()
   .color(Colors.red)
   .size(100, 100)
   .onCustomFlag(
-    BoxStyler.color(Colors.blue),
+    BoxStyler().color(Colors.blue),
   );
 ```
 
@@ -113,7 +115,7 @@ class Example extends StatelessWidget {
   const Example({super.key});
 
   BoxStyler get box =>
-      BoxStyler
+      BoxStyler()
           .color(Colors.red)
           .size(100, 100)
           .variant(
@@ -121,7 +123,7 @@ class Example extends StatelessWidget {
               final flag = CustomInheritedWidget.of(context)?.flag ?? false;
               return flag;
             }),
-            BoxStyler.color(Colors.blue),
+            BoxStyler().color(Colors.blue),
           );
 
   @override

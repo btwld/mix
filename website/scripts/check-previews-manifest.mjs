@@ -34,7 +34,9 @@ function resolveDemosDir(inputDir) {
 
   const candidates = [
     path.resolve(path.join(process.cwd(), "public", "previews")),
-    path.resolve(path.join(process.cwd(), "..", "examples", "build", "web")),
+    path.resolve(
+      path.join(process.cwd(), "..", "packages", "mix_docs_preview", "build", "web"),
+    ),
   ];
 
   for (const candidate of candidates) {
@@ -44,7 +46,7 @@ function resolveDemosDir(inputDir) {
   }
 
   fail(
-    "Manifest not found. Build previews first via examples/scripts/build_web_previews.sh",
+    "Manifest not found. Build previews first via packages/mix_docs_preview/scripts/build_web_previews.sh",
   );
 }
 
@@ -59,7 +61,6 @@ if (entries.length === 0) {
 }
 
 const previewIds = new Set();
-const sourcePaths = new Set();
 const byPreviewId = new Map();
 
 for (const entry of entries) {
@@ -82,21 +83,16 @@ for (const entry of entries) {
     fail(`Duplicate previewId found: ${previewId}`);
   }
 
-  if (sourcePaths.has(sourcePath)) {
-    fail(`Duplicate sourcePath found: ${sourcePath}`);
-  }
-
   const sourceFile = path.join(sourcesRoot, ...sourcePath.split("/"));
   if (!fs.existsSync(sourceFile)) {
     fail(`Missing source file for "${previewId}": ${sourceFile}`);
   }
 
   previewIds.add(previewId);
-  sourcePaths.add(sourcePath);
   byPreviewId.set(previewId, { sourcePath, sourceFile });
 }
 
-const smokePreviewId = "box-basic";
+const smokePreviewId = "overview/introduction.0";
 if (!byPreviewId.has(smokePreviewId)) {
   fail(`Smoke check failed: missing "${smokePreviewId}" previewId`);
 }
