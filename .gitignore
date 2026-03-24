@@ -20,6 +20,8 @@
 **/example/android/
 **/example/ios/
 **/example/web/
+!packages/mix_tailwinds/example/web/
+!packages/mix_tailwinds/example/web/**
 **/example/windows/
 **/example/macos/
 **/example/linux/

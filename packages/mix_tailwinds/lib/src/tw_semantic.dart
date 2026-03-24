@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mix/mix.dart';
 
 // =============================================================================
 // Value Types (Semantic AST Values)
@@ -236,9 +235,9 @@ const Map<TextShadowPreset, List<Shadow>> kTextShadowPresets = {
 // Box Shadow Presets (Tailwind parity)
 // =============================================================================
 
-final Map<String, List<BoxShadowMix>> kTailwindBoxShadowPresets = {
+final Map<String, List<BoxShadow>> kTailwindBoxShadowPresets = {
   'shadow-sm': [
-    BoxShadowMix(
+    BoxShadow(
       offset: const Offset(0, 1),
       blurRadius: 2,
       spreadRadius: 0,
@@ -246,13 +245,13 @@ final Map<String, List<BoxShadowMix>> kTailwindBoxShadowPresets = {
     ),
   ],
   'shadow': [
-    BoxShadowMix(
+    BoxShadow(
       offset: const Offset(0, 1),
       blurRadius: 3,
       spreadRadius: 0,
       color: const Color(0x1A000000), // 0.10
     ),
-    BoxShadowMix(
+    BoxShadow(
       offset: const Offset(0, 1),
       blurRadius: 2,
       spreadRadius: 0,
@@ -260,13 +259,13 @@ final Map<String, List<BoxShadowMix>> kTailwindBoxShadowPresets = {
     ),
   ],
   'shadow-md': [
-    BoxShadowMix(
+    BoxShadow(
       offset: const Offset(0, 4),
       blurRadius: 6,
       spreadRadius: -1,
       color: const Color(0x1A000000), // 0.10
     ),
-    BoxShadowMix(
+    BoxShadow(
       offset: const Offset(0, 2),
       blurRadius: 4,
       spreadRadius: -2,
@@ -274,13 +273,13 @@ final Map<String, List<BoxShadowMix>> kTailwindBoxShadowPresets = {
     ),
   ],
   'shadow-lg': [
-    BoxShadowMix(
+    BoxShadow(
       offset: const Offset(0, 10),
       blurRadius: 15,
       spreadRadius: -3,
       color: const Color(0x1A000000), // 0.10
     ),
-    BoxShadowMix(
+    BoxShadow(
       offset: const Offset(0, 4),
       blurRadius: 6,
       spreadRadius: -4,
@@ -288,13 +287,13 @@ final Map<String, List<BoxShadowMix>> kTailwindBoxShadowPresets = {
     ),
   ],
   'shadow-xl': [
-    BoxShadowMix(
+    BoxShadow(
       offset: const Offset(0, 20),
       blurRadius: 25,
       spreadRadius: -5,
       color: const Color(0x1A000000), // 0.10
     ),
-    BoxShadowMix(
+    BoxShadow(
       offset: const Offset(0, 8),
       blurRadius: 10,
       spreadRadius: -6,
@@ -302,7 +301,7 @@ final Map<String, List<BoxShadowMix>> kTailwindBoxShadowPresets = {
     ),
   ],
   'shadow-2xl': [
-    BoxShadowMix(
+    BoxShadow(
       offset: const Offset(0, 25),
       blurRadius: 50,
       spreadRadius: -12,
@@ -1043,7 +1042,7 @@ final Map<String, TwNamedPlugin> namedPlugins = {
   // Shadows
   'shadow-none': TwNamedPlugin(
     property: TwProperty.boxShadow,
-    value: const TwEnumValue<List<BoxShadowMix>?>(<BoxShadowMix>[]),
+    value: const TwEnumValue<List<BoxShadow>?>(<BoxShadow>[]),
   ),
   'shadow-sm': TwNamedPlugin(
     property: TwProperty.boxShadow,

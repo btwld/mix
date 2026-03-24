@@ -9,7 +9,7 @@ class CardAlertPreview extends StatelessWidget {
   Widget build(BuildContext context) {
     return Div(
       classNames:
-          'min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-start justify-start p-4',
+          'bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-start justify-start p-4',
       child: Div(
         classNames: 'w-full',
         child: Div(

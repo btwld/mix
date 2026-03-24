@@ -10,7 +10,8 @@ This example renders the same UI twice: once with `mix_tailwinds` (Flutter) and 
 ## Directory layout
 
 - `lib/main.dart` – Flutter app that drives the Mix `Div`/`Span` widgets. A width slider lets you exercise the responsive tokens (e.g., `md:flex-row`).
-- `real_tailwind/index.html` – Standalone CDN-powered Tailwind page that reuses the exact same class strings.
+- `real_tailwind/dashboard.html` – Standalone CDN-powered Tailwind page for the dashboard parity sample.
+- `web/` – Checked-in Flutter web target so the screenshot workflow works from a fresh checkout.
 
 ## Run the Flutter preview
 
@@ -28,7 +29,7 @@ Open the HTML file directly in a browser (or serve it via any static server):
 
 ```bash
 cd packages/mix_tailwinds/example
-open real_tailwind/index.html
+open real_tailwind/dashboard.html
 # — or —
 python3 -m http.server 5173 --directory real_tailwind
 ```
@@ -37,26 +38,65 @@ Because the document pulls Tailwind from the official CDN, no extra tooling is r
 
 ## Visual comparison tool
 
-A Playwright-based tool captures screenshots of both the Flutter and Tailwind versions at canonical widths (480, 768, 1024 px), then diffs them with `pixelmatch`.
+A comparison tool captures screenshots of both the Flutter and Tailwind versions at canonical widths (480, 768, 1024 px), then diffs them with `pixelmatch`.
 
-1. Start the Flutter web server:
+This workflow is CLI-only:
+
+- run `npm run doctor` and `npm run compare ...`
+- the repo script shells out to the global `playwright` CLI
+- do not use MCP to generate these screenshots
+
+Machine setup:
 
    ```bash
-   cd packages/mix_tailwinds/example
-   # If you see "not configured to build on the web", run:
-   #   flutter create . --platforms=web
-   flutter run -d web-server --web-port=8089 --profile
+   npm install -g playwright@1.56.0
+   playwright install chromium
    ```
 
-2. Run the comparison:
+   Playwright keeps browser binaries in the shared OS cache on macOS at `~/Library/Caches/ms-playwright` unless you override `PLAYWRIGHT_BROWSERS_PATH`. This repo does not own Chromium in `node_modules`.
+
+Project setup:
 
    ```bash
    cd packages/mix_tailwinds/tool/visual-comparison
-   npm install   # first time only
-   npm run compare
+   npm install
+   npm run doctor
+   npm run compare -- --example=dashboard
+   npm run compare -- --example=card-alert
    ```
 
-Screenshots and diff images are saved to `packages/mix_tailwinds/visual-comparison/`.
+The tool will:
+
+1. Validate the pinned global Playwright CLI version and Chromium cache.
+2. Reuse `http://127.0.0.1:8089` when a Flutter web server is already running.
+3. Start `fvm flutter run -d web-server --web-port=8089 --profile` automatically when it is not.
+4. Save generated artifacts to `packages/mix_tailwinds/visual-comparison/<example>/`.
+
+Internally, the local script calls `playwright screenshot`. The screenshot path is still the Playwright CLI, not MCP.
+
+Each run writes:
+
+- `tailwind-480.png`, `tailwind-768.png`, `tailwind-1024.png`
+- `flutter-480.png`, `flutter-768.png`, `flutter-1024.png`
+- `side-by-side-480.png`, `side-by-side-768.png`, `side-by-side-1024.png`
+- `diff/diff-480.png`, `diff/diff-768.png`, `diff/diff-1024.png`
+
+Useful global Playwright maintenance commands:
+
+```bash
+playwright install --list
+playwright uninstall --all
+```
+
+`playwright uninstall --all` removes browsers for every Playwright installation on the machine, not just this repo.
+
+The website preview build is a separate pipeline:
+
+```bash
+bash examples/scripts/build_web_previews.sh --local
+```
+
+That command builds the interactive docs preview bundle. It does not generate the visual comparison PNGs above.
 
 ## Generate Flutter goldens
 
@@ -72,4 +112,4 @@ The outputs live under `packages/mix_tailwinds/example/test/goldens/`.
 ## Notes
 
 - All color, spacing, radius, and typography tokens come from `TwConfig.standard()`, so helping parity means updating a single config map.
-- The components intentionally stick to utilities we already support (layout, spacing, border, radius, typography, responsive prefixes, and hover states on the buttons). If you add more classes to the Flutter example, mirror the change in `real_tailwind/index.html` so comparisons stay 1:1.
+- The components intentionally stick to utilities we already support (layout, spacing, border, radius, typography, responsive prefixes, and hover states on the buttons). If you add more classes to the Flutter example, mirror the change in `real_tailwind/dashboard.html` so comparisons stay 1:1.

@@ -14,32 +14,62 @@ The visual output should be identical (or as close as possible given platform di
 
 ## Quick Start: Run Visual Comparison
 
-### Step 1: Start Flutter Web Server
+The screenshot workflow is CLI-only:
+
+- Run the repo script with `npm run doctor` and `npm run compare ...`
+- That script shells out to the global `playwright` CLI
+- Do not use MCP to generate screenshots for this workflow
+- Do not install a repo-local Playwright browser runtime for this workflow
+
+### Step 1: Install the pinned global Playwright CLI
 
 ```bash
-cd packages/mix_tailwinds/example
-# If you see "not configured to build on the web", run:
-#   flutter create . --platforms=web
-flutter run -d web-server --web-port=8089 --profile
+npm install -g playwright@1.56.0
+playwright install chromium
 ```
 
-Wait for: `lib/main.dart is being served at http://localhost:8089`
+This workflow treats the global `playwright` CLI as the browser owner. Chromium lives in Playwright's shared OS cache on macOS at `~/Library/Caches/ms-playwright` unless `PLAYWRIGHT_BROWSERS_PATH` is overridden.
 
-**Note**: Use `--profile` mode for better Playwright compatibility.
-
-### Step 2: Run Comparison Script
+### Step 2: Install the local comparison dependencies
 
 ```bash
 cd packages/mix_tailwinds/tool/visual-comparison
-npm install  # first time only
-npm run compare
+npm install
 ```
 
-This script automatically:
-1. Captures Tailwind screenshots from `real_tailwind/index.html`
-2. Captures Flutter screenshots from `localhost:8089`
-3. Generates pixel-diff images
-4. Reports diff percentages
+The local package only owns the orchestration and image-diff dependencies (`pixelmatch`, `pngjs`). It does not own Chromium and it does not use MCP for screenshot capture.
+
+### Step 3: Run doctor
+
+```bash
+npm run doctor
+```
+
+`doctor` validates:
+
+1. The global `playwright` CLI exists and matches the pinned repo version exactly.
+2. Chromium is present in the Playwright cache for that CLI.
+3. Flutter is available via `fvm flutter` or `flutter`.
+4. `packages/mix_tailwinds/example/web/` is checked in.
+5. The example app can serve web output, either by reusing `http://127.0.0.1:8089` or by starting it automatically.
+
+### Step 4: Run comparison
+
+```bash
+npm run compare -- --example=dashboard
+npm run compare -- --example=card-alert
+```
+
+The comparison tool automatically:
+1. Captures Tailwind screenshots from the screenshot-stable HTML surface.
+2. Captures Flutter screenshots from `http://127.0.0.1:8089` or a custom `--flutter-url`.
+3. Generates `side-by-side-*.png` composites.
+4. Generates pixel-diff images.
+5. Reports diff percentages.
+
+Internally, `npm run compare` calls the local Node script, and that script shells out to `playwright screenshot`. The repo workflow is still Playwright CLI based.
+
+If you do not pass `--flutter-url`, the script will start `fvm flutter run -d web-server --web-port=8089 --profile` when needed and shut it down again when it was the owner.
 
 ### Output
 
@@ -50,6 +80,9 @@ visual-comparison/
 │   ├── flutter-480.png
 │   ├── flutter-768.png
 │   ├── flutter-1024.png
+│   ├── side-by-side-480.png
+│   ├── side-by-side-768.png
+│   ├── side-by-side-1024.png
 │   ├── tailwind-480.png
 │   ├── tailwind-768.png
 │   ├── tailwind-1024.png
@@ -69,6 +102,40 @@ To run a specific example:
 npm run compare -- --example=dashboard
 npm run compare -- --example=card-alert
 ```
+
+Convenience aliases:
+
+```bash
+npm run compare:dashboard
+npm run compare:card-alert
+npm run compare:all
+```
+
+### Browser maintenance
+
+Inspect machine-wide Playwright browser installs:
+
+```bash
+playwright install --list
+```
+
+Remove machine-wide Playwright browser installs:
+
+```bash
+playwright uninstall --all
+```
+
+`playwright uninstall --all` affects every Playwright installation on the machine, not just this repo.
+
+### Separate pipeline: website docs previews
+
+The website preview bundle is not part of the screenshot comparison flow.
+
+```bash
+bash examples/scripts/build_web_previews.sh --local
+```
+
+That command builds the interactive docs preview bundle used by the website. It does not generate `tailwind-*.png`, `flutter-*.png`, `side-by-side-*.png`, or diff images.
 
 ### Interpreting Results
 
@@ -156,7 +223,7 @@ Red pixels in diff images indicate differences between Flutter and Tailwind:
 ### Step 1: Identify the Problem Class
 
 Look at the diff image and identify which element has the red pixels. Find the corresponding class string in both:
-- `real_tailwind/index.html` - The HTML element
+- `real_tailwind/dashboard.html` - The HTML element
 - `example/lib/main.dart` - The Flutter `Div` widget
 
 ### Step 2: Check the Parser
@@ -176,11 +243,15 @@ Some properties are handled in `lib/src/tw_widget.dart`:
 
 ---
 
-## Deep Analysis with Codex Agent
+## Optional Analysis with Codex
 
-After running the visual comparison, use the Codex MCP agent for automated deep analysis of parity issues.
+This section is optional and separate from screenshot generation.
 
-### Running Codex Visual Parity Analysis
+- Use the Playwright CLI workflow above to generate screenshots
+- Only after that, if you want extra analysis, you can point another tool or agent at the generated PNGs
+- MCP is not part of the screenshot capture path
+
+### Optional Codex Visual Parity Analysis
 
 Invoke the Codex agent with this configuration:
 
@@ -303,7 +374,7 @@ Codex returns YAML with:
 | `lib/src/tw_widget.dart` | Div/Span widget implementation |
 | `lib/src/tw_utils.dart` | Utility functions (fraction parsing) |
 | `example/lib/main.dart` | Flutter test component |
-| `example/real_tailwind/index.html` | Tailwind reference HTML (uses Tailwind CDN) |
+| `example/real_tailwind/dashboard.html` | Tailwind reference HTML (uses Tailwind CDN) |
 | `tool/visual-comparison/run-visual-comparison.mjs` | Visual comparison script |
 
 ---

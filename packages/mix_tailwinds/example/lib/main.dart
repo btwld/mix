@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -66,6 +68,7 @@ class TailwindParityApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenshotWidth = _screenshotContentWidth(ScreenshotConfig.width);
     final twConfig = TwConfig.standard().copyWith(
       gradientStrategy: ScreenshotConfig.gradientStrategy,
     );
@@ -117,7 +120,10 @@ class TailwindParityApp extends StatelessWidget {
           home: Scaffold(
             backgroundColor: const Color(0xFFF3F4F6),
             body: SingleChildScrollView(
-              child: TailwindParityPreview(width: width, scrollable: false),
+              child: TailwindParityPreview(
+                width: screenshotWidth,
+                scrollable: false,
+              ),
             ),
           ),
         ),
@@ -381,10 +387,12 @@ class _TeamActivityCard extends StatelessWidget {
 class TailwindParityPreview extends StatelessWidget {
   const TailwindParityPreview({
     super.key,
+    this.padding = const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
     required this.width,
     this.scrollable = true,
   });
 
+  final EdgeInsetsGeometry padding;
   final double width;
   final bool scrollable;
 
@@ -393,22 +401,24 @@ class TailwindParityPreview extends StatelessWidget {
     final content = SizedBox(width: width, child: const _ComparisonStack());
 
     if (!scrollable) {
-      return Align(
-        alignment: Alignment.topCenter,
-        heightFactor: 1,
-        widthFactor: 1,
-        child: content,
+      return Padding(
+        padding: padding,
+        child: Align(alignment: Alignment.topCenter, child: content),
       );
     }
 
     return Align(
       alignment: Alignment.topCenter,
       child: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+        padding: padding,
         child: content,
       ),
     );
   }
+}
+
+double _screenshotContentWidth(double viewportWidth) {
+  return math.max(320, viewportWidth - 32);
 }
 
 class _ActivityRow extends StatelessWidget {

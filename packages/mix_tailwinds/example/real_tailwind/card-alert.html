@@ -1,12 +1,22 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-tailwind-ready="false">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Card Alert - Tailwind CSS Parity Sample</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script
+      src="https://cdn.tailwindcss.com"
+      onload="document.documentElement.dataset.tailwindReady = 'true'"
+    ></script>
+    <style>
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+      }
+    </style>
   </head>
-  <body class="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-start justify-start p-4">
+  <body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-start justify-start p-4">
     <div class="w-full">
       <div class="bg-white/10 border border-white/20 rounded-3xl p-6 shadow-2xl">
         <div class="flex items-start gap-4">

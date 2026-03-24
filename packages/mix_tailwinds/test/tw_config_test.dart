@@ -187,7 +187,7 @@ void main() {
 
       final container = tester.widget<Container>(find.byType(Container));
       final decoration = container.decoration as BoxDecoration?;
-      expect(decoration?.color, equals(Colors.purple));
+      expect(decoration?.color, equals(const Color(0xFF9C27B0)));
     });
 
     testWidgets('Div explicit config overrides provider', (tester) async {
@@ -213,7 +213,7 @@ void main() {
 
       final container = tester.widget<Container>(find.byType(Container));
       final decoration = container.decoration as BoxDecoration?;
-      expect(decoration?.color, equals(Colors.red));
+      expect(decoration?.color, equals(const Color(0xFFF44336)));
     });
   });
 

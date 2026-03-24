@@ -1,10 +1,20 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-tailwind-ready="false">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Gradient Debug - Tailwind vs Flutter</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script
+      src="https://cdn.tailwindcss.com"
+      onload="document.documentElement.dataset.tailwindReady = 'true'"
+    ></script>
+    <style>
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+      }
+    </style>
   </head>
   <body class="min-h-screen bg-slate-200 p-4">
     <main class="mx-auto w-full max-w-5xl rounded-2xl border border-slate-400 bg-white p-4 shadow-md">

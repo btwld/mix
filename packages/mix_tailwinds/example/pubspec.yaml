@@ -26,3 +26,5 @@ dependency_overrides:
     path: ../../mix
   mix_annotations:
     path: ../../mix_annotations
+  mix_schema:
+    path: ../../mix_schema

@@ -140,44 +140,53 @@ void main() {
       );
     });
 
-    test('rejects metadata inside compound variant styles', () {
-      final decoder = MixSchemaDecoder.builtIn();
-      final result = decoder.decode({
-        'type': 'box',
-        'variants': [
-          {
-            'type': 'context_all_of',
-            'conditions': [
-              {'type': 'context_breakpoint', 'minWidth': 768.0},
-              {'type': 'widget_state', 'state': 'hovered'},
-            ],
-            'style': {
-              'animation': {'duration': 200, 'curve': 'easeIn'},
-              'modifiers': [
-                {'type': 'opacity', 'value': 0.5},
+    test(
+      'allows modifiers but rejects other metadata inside compound styles',
+      () {
+        final decoder = MixSchemaDecoder.builtIn();
+        final result = decoder.decode({
+          'type': 'box',
+          'modifiers': [
+            {'type': 'opacity', 'value': 0.9},
+          ],
+          'variants': [
+            {
+              'type': 'context_all_of',
+              'conditions': [
+                {'type': 'context_breakpoint', 'minWidth': 768.0},
+                {'type': 'widget_state', 'state': 'hovered'},
               ],
-              'variants': [
-                {
-                  'type': 'widget_state',
-                  'state': 'hovered',
-                  'style': {'clipBehavior': 'hardEdge'},
-                },
-              ],
+              'style': {
+                'animation': {'duration': 200, 'curve': 'easeIn'},
+                'modifiers': [
+                  {'type': 'opacity', 'value': 0.5},
+                ],
+                'variants': [
+                  {
+                    'type': 'widget_state',
+                    'state': 'hovered',
+                    'style': {'clipBehavior': 'hardEdge'},
+                  },
+                ],
+              },
             },
-          },
-        ],
-      });
+          ],
+        });
 
-      expect(result.ok, isFalse);
-      expect(
-        result.errors.map((error) => (error.code, error.path)).toList(),
-        containsAll(<(MixSchemaErrorCode, String)>[
-          (MixSchemaErrorCode.unknownField, '#/variants/0/style/animation'),
-          (MixSchemaErrorCode.unknownField, '#/variants/0/style/modifiers'),
-          (MixSchemaErrorCode.unknownField, '#/variants/0/style/variants'),
-        ]),
-      );
-    });
+        expect(result.ok, isFalse);
+        expect(
+          result.errors.map((error) => (error.code, error.path)).toList(),
+          containsAll(<(MixSchemaErrorCode, String)>[
+            (MixSchemaErrorCode.unknownField, '#/variants/0/style/animation'),
+            (MixSchemaErrorCode.unknownField, '#/variants/0/style/variants'),
+          ]),
+        );
+        expect(
+          result.errors.map((error) => error.path),
+          isNot(contains('#/variants/0/style/modifiers')),
+        );
+      },
+    );
 
     test('requires at least two conditions', () {
       final decoder = MixSchemaDecoder.builtIn();

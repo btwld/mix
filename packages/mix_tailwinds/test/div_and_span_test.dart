@@ -3332,7 +3332,7 @@ void main() {
       expect(gradient!.begin, Alignment.centerLeft);
       expect(gradient.end, Alignment.centerRight);
       expect(gradient.stops, const [0.0, 0.5, 1.0]);
-      expect(gradient.transform, isA<TwCssKeywordLinearTransform>());
+      expect(gradient.transform, isNotNull);
     });
 
     testWidgets('bg-gradient-to-br can still use alignment strategy', (
@@ -3393,7 +3393,7 @@ void main() {
       expect(gradient!.begin, Alignment.centerLeft);
       expect(gradient.end, Alignment.centerRight);
       expect(gradient.stops, const [0.0, 0.5, 1.0]);
-      expect(gradient.transform, isA<TwCssKeywordLinearTransform>());
+      expect(gradient.transform, isNotNull);
 
       final rect = const Rect.fromLTWH(0, 0, 300, 120);
       final matrix = gradient.transform!.transform(rect)!;

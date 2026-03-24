@@ -46,12 +46,25 @@ buildStylerSchemas<S extends Spec<S>, T extends Style<S>>({
   final fieldsSchema = Ack.object(fields).transform<T>((data) {
     return definition.build(data!);
   });
+  final variantStyleSchema =
+      Ack.object({
+        ...fields,
+        'modifiers': Ack.list(catalog.modifier).optional(),
+        'modifierOrder': Ack.list(Ack.string()).optional(),
+      }).transform<T>((data) {
+        final map = data!;
+
+        return definition.build(
+          map,
+          modifier: catalog.buildModifierConfig(map),
+        );
+      });
 
   final fullSchema =
       Ack.object({
         ...fields,
         ...catalog.buildMetadataFields<S, T>(
-          styleSchema: fieldsSchema,
+          styleSchema: variantStyleSchema,
           emptyStyle: definition.emptyStyle,
         ),
       }).transform<T>((data) {

@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
+import 'package:mix_schema/mix_schema.dart';
 
 import 'tw_config.dart';
 import 'tw_semantic.dart';
@@ -9,44 +10,27 @@ import 'tw_utils.dart';
 
 typedef TokenWarningCallback = void Function(String token);
 
-// =============================================================================
-// Styler Extensions for DefaultTextStyle
-// =============================================================================
-
-extension BoxStylerTextStyleExtension on BoxStyler {
-  BoxStyler wrapDefaultTextStyle(TextStyleMix textStyle) {
-    return wrap(WidgetModifierConfig.defaultTextStyle(style: textStyle));
-  }
-}
-
-extension FlexBoxStylerTextStyleExtension on FlexBoxStyler {
-  FlexBoxStyler wrapDefaultTextStyle(TextStyleMix textStyle) {
-    return wrap(WidgetModifierConfig.defaultTextStyle(style: textStyle));
-  }
-}
-
-// =============================================================================
-// Transform Accumulator
-// =============================================================================
-
 class _TransformAccum {
   double? scale;
   double? rotateDeg;
   double? translateX;
   double? translateY;
 
-  /// When true, always produce identity matrix even if no transforms are set.
-  /// Used for animation interpolation when variants have transforms but base doesn't.
-  bool needsIdentity = false;
-
   _TransformAccum();
 
   bool get hasAnyTransform =>
-      needsIdentity ||
       scale != null ||
       rotateDeg != null ||
       translateX != null ||
       translateY != null;
+
+  _TransformAccum mergedWith(_TransformAccum base) {
+    return _TransformAccum()
+      ..scale = scale ?? base.scale
+      ..rotateDeg = rotateDeg ?? base.rotateDeg
+      ..translateX = translateX ?? base.translateX
+      ..translateY = translateY ?? base.translateY;
+  }
 
   Matrix4 toMatrix4() {
     var matrix = Matrix4.identity();
@@ -63,63 +47,8 @@ class _TransformAccum {
     }
     return matrix;
   }
-}
 
-class _TransformAccumTracker {
-  // Identity map avoids sharing accumulators across value-equal stylers.
-  final Map<Object, _TransformAccum> _accumulators =
-      Map<Object, _TransformAccum>.identity();
-
-  _TransformAccum forStyler<S>(S styler) {
-    return _accumulators.putIfAbsent(styler as Object, _TransformAccum.new);
-  }
-
-  bool hasTransforms<S>(S styler) {
-    final accum = _accumulators[styler as Object];
-    return accum != null && accum.hasAnyTransform;
-  }
-
-  Matrix4? flush<S>(S styler) {
-    final accum = _accumulators.remove(styler as Object);
-    if (accum == null || !accum.hasAnyTransform) return null;
-    return accum.toMatrix4();
-  }
-
-  void transfer<S>(S from, S to) {
-    if (identical(from, to)) return;
-    final fromKey = from as Object;
-    final toKey = to as Object;
-    final accum = _accumulators.remove(fromKey);
-    if (accum == null) return;
-    final existing = _accumulators[toKey];
-    if (existing == null) {
-      _accumulators[toKey] = accum;
-      return;
-    }
-    existing.scale ??= accum.scale;
-    existing.rotateDeg ??= accum.rotateDeg;
-    existing.translateX ??= accum.translateX;
-    existing.translateY ??= accum.translateY;
-  }
-
-  /// Copies transforms from [from] to [to] without removing from source.
-  /// Used for variants where base transforms should remain AND be included
-  /// in the variant's combined transform.
-  void copyTo<S>(S from, S to) {
-    if (identical(from, to)) return;
-    final fromKey = from as Object;
-    final toKey = to as Object;
-    final accum = _accumulators[fromKey];
-    if (accum == null || !accum.hasAnyTransform) return;
-    final target = _accumulators.putIfAbsent(toKey, _TransformAccum.new);
-    // Copy base transforms to target (base values act as defaults)
-    target.scale ??= accum.scale;
-    target.rotateDeg ??= accum.rotateDeg;
-    target.translateX ??= accum.translateX;
-    target.translateY ??= accum.translateY;
-  }
-
-  void clear() => _accumulators.clear();
+  List<double> toSchemaValues() => toMatrix4().storage.toList(growable: false);
 }
 
 // =============================================================================
@@ -209,7 +138,7 @@ class _GradientAccum {
 
     final useCssAngleRect =
         strategy == TwGradientStrategy.cssAngleRect ||
-        strategy.name == 'adaptive';
+        strategy == TwGradientStrategy.adaptive;
     if (useCssAngleRect &&
         directionKey != null &&
         _tailwindCornerDirections.contains(directionKey)) {
@@ -431,6 +360,10 @@ class TwResolver {
     }
 
     return variants;
+  }
+
+  List<TwVariantType> parseVariantPrefix(String prefix) {
+    return _parseVariants(prefix);
   }
 
   TwValue? _resolveValue(
@@ -791,619 +724,1164 @@ bool _isAnimationToken(String token) {
   return false;
 }
 
-// =============================================================================
-// Variant Appliers
-// =============================================================================
+bool _hasOnlyKnownPrefixParts(String prefix, TwConfig config) {
+  if (prefix.isEmpty) return true;
 
-typedef _VariantApplier<S> = S Function(S base, S variant);
-typedef _BreakpointApplier<S> = S Function(S base, Breakpoint bp, S child);
-typedef _StylerMerge<S> = S Function(S base, S other);
-typedef _BorderSideApplier<S> =
-    S Function(S styler, {required Color color, required double width});
+  for (final part in prefix.split(':')) {
+    if (config.breakpoints.containsKey(part)) continue;
+    if (interactionVariants.containsKey(part)) continue;
+    if (themeVariants.containsKey(part)) continue;
+    return false;
+  }
 
-Map<String, _VariantApplier<S>> _buildVariants<S>({
-  required _VariantApplier<S> hover,
-  required _VariantApplier<S> focus,
-  required _VariantApplier<S> pressed,
-  required _VariantApplier<S> disabled,
-  required _VariantApplier<S> enabled,
-  required _VariantApplier<S> dark,
-  required _VariantApplier<S> light,
-}) {
-  return {
-    'hover': hover,
-    'focus': focus,
-    'active': pressed,
-    'pressed': pressed,
-    'disabled': disabled,
-    'enabled': enabled,
-    'dark': dark,
-    'light': light,
+  return true;
+}
+
+String _variantKey(List<TwVariantType> variants) {
+  if (variants.isEmpty) return '';
+
+  return variants
+      .map((variant) {
+        return switch (variant) {
+          TwInteractionVariant(:final state) => state,
+          TwBreakpointVariant(:final name) => name,
+          TwThemeVariant(:final mode) => mode,
+        };
+      })
+      .join(':');
+}
+
+String _fontWeightWireName(FontWeight value) {
+  return switch (value) {
+    FontWeight.w100 => 'w100',
+    FontWeight.w200 => 'w200',
+    FontWeight.w300 => 'w300',
+    FontWeight.w400 => 'w400',
+    FontWeight.w500 => 'w500',
+    FontWeight.w600 => 'w600',
+    FontWeight.w700 => 'w700',
+    FontWeight.w800 => 'w800',
+    FontWeight.w900 => 'w900',
+    _ => throw StateError('Unsupported font weight: $value'),
   };
 }
 
-final _flexVariants = _buildVariants<FlexBoxStyler>(
-  hover: (b, v) => b.onHovered(v),
-  focus: (b, v) => b.onFocused(v),
-  pressed: (b, v) => b.onPressed(v),
-  disabled: (b, v) => b.onDisabled(v),
-  enabled: (b, v) => b.onEnabled(v),
-  dark: (b, v) => b.onDark(v),
-  light: (b, v) => b.onLight(v),
-);
+int _schemaColor(Color color) => color.toARGB32();
 
-final _boxVariants = _buildVariants<BoxStyler>(
-  hover: (b, v) => b.onHovered(v),
-  focus: (b, v) => b.onFocused(v),
-  pressed: (b, v) => b.onPressed(v),
-  disabled: (b, v) => b.onDisabled(v),
-  enabled: (b, v) => b.onEnabled(v),
-  dark: (b, v) => b.onDark(v),
-  light: (b, v) => b.onLight(v),
-);
-
-final _textVariants = _buildVariants<TextStyler>(
-  hover: (b, v) => b.onHovered(v),
-  focus: (b, v) => b.onFocused(v),
-  pressed: (b, v) => b.onPressed(v),
-  disabled: (b, v) => b.onDisabled(v),
-  enabled: (b, v) => b.onEnabled(v),
-  dark: (b, v) => b.onDark(v),
-  light: (b, v) => b.onLight(v),
-);
-
-// =============================================================================
-// Unified Property Appliers
-// =============================================================================
-
-S _accumulateScale<S>(S styler, double value, _TransformAccumTracker tracker) {
-  tracker.forStyler(styler).scale = value;
-  return styler;
+JsonMap _alignmentPayload(AlignmentGeometry alignment) {
+  final resolved = alignment.resolve(TextDirection.ltr);
+  return {'x': resolved.x, 'y': resolved.y};
 }
 
-S _accumulateRotate<S>(S styler, double value, _TransformAccumTracker tracker) {
-  tracker.forStyler(styler).rotateDeg = value;
-  return styler;
+JsonMap _offsetPayload(Offset offset) => {'dx': offset.dx, 'dy': offset.dy};
+
+JsonMap _radiusPayload(Radius radius) {
+  return {'x': radius.x, if (radius.y != radius.x) 'y': radius.y};
 }
 
-S _accumulateTranslateX<S>(
-  S styler,
-  double value,
-  _TransformAccumTracker tracker,
-) {
-  tracker.forStyler(styler).translateX = value;
-  return styler;
-}
-
-S _accumulateTranslateY<S>(
-  S styler,
-  double value,
-  _TransformAccumTracker tracker,
-) {
-  tracker.forStyler(styler).translateY = value;
-  return styler;
-}
-
-FlexBoxStyler _applyPropertyToFlex(
-  FlexBoxStyler styler,
-  TwProperty property,
-  TwValue value,
-  TwConfig config,
-  _TransformAccumTracker transformTracker,
-) {
-  return switch (property) {
-    // Spacing
-    TwProperty.padding => styler.paddingAll((value as TwLengthValue).value),
-    TwProperty.paddingX => styler.paddingX((value as TwLengthValue).value),
-    TwProperty.paddingY => styler.paddingY((value as TwLengthValue).value),
-    TwProperty.paddingTop => styler.paddingTop((value as TwLengthValue).value),
-    TwProperty.paddingRight => styler.paddingRight(
-      (value as TwLengthValue).value,
-    ),
-    TwProperty.paddingBottom => styler.paddingBottom(
-      (value as TwLengthValue).value,
-    ),
-    TwProperty.paddingLeft => styler.paddingLeft(
-      (value as TwLengthValue).value,
-    ),
-    TwProperty.margin => styler.marginAll((value as TwLengthValue).value),
-    TwProperty.marginX => styler.marginX((value as TwLengthValue).value),
-    TwProperty.marginY => styler.marginY((value as TwLengthValue).value),
-    TwProperty.marginTop => styler.marginTop((value as TwLengthValue).value),
-    TwProperty.marginRight => styler.marginRight(
-      (value as TwLengthValue).value,
-    ),
-    TwProperty.marginBottom => styler.marginBottom(
-      (value as TwLengthValue).value,
-    ),
-    TwProperty.marginLeft => styler.marginLeft((value as TwLengthValue).value),
-    TwProperty.gap => styler.spacing((value as TwLengthValue).value),
-
-    // Sizing (only apply length values with px unit; enum values and % handled by widget layer)
-    TwProperty.width =>
-      value is TwLengthValue && value.unit == TwUnit.px
-          ? styler.width(value.value)
-          : styler,
-    TwProperty.height =>
-      value is TwLengthValue && value.unit == TwUnit.px
-          ? styler.height(value.value)
-          : styler,
-    TwProperty.minWidth =>
-      value is TwLengthValue && value.unit == TwUnit.px
-          ? styler.minWidth(value.value)
-          : styler,
-    TwProperty.minHeight =>
-      value is TwLengthValue && value.unit == TwUnit.px
-          ? styler.minHeight(value.value)
-          : styler,
-    TwProperty.maxWidth =>
-      value is TwLengthValue && value.unit == TwUnit.px
-          ? styler.maxWidth(value.value)
-          : styler,
-    TwProperty.maxHeight =>
-      value is TwLengthValue && value.unit == TwUnit.px
-          ? styler.maxHeight(value.value)
-          : styler,
-
-    // Layout
-    TwProperty.display => _applyFlexDisplay(styler, value),
-    TwProperty.flexDirection => _applyFlexDirection(styler, value),
-    TwProperty.alignItems => _applyAlignItems(styler, value),
-    TwProperty.justifyContent => styler.mainAxisAlignment(
-      (value as TwEnumValue<MainAxisAlignment>).value,
-    ),
-
-    // Background
-    TwProperty.backgroundColor => styler.color((value as TwColorValue).color),
-
-    // Border radius
-    TwProperty.borderRadius => styler.borderRounded(
-      (value as TwLengthValue).value,
-    ),
-    TwProperty.borderRadiusTop => styler.borderRoundedTop(
-      (value as TwLengthValue).value,
-    ),
-    TwProperty.borderRadiusBottom => styler.borderRoundedBottom(
-      (value as TwLengthValue).value,
-    ),
-    TwProperty.borderRadiusLeft => styler.borderRoundedLeft(
-      (value as TwLengthValue).value,
-    ),
-    TwProperty.borderRadiusRight => styler.borderRoundedRight(
-      (value as TwLengthValue).value,
-    ),
-    TwProperty.borderRadiusTopLeft => styler.borderRoundedTopLeft(
-      (value as TwLengthValue).value,
-    ),
-    TwProperty.borderRadiusTopRight => styler.borderRoundedTopRight(
-      (value as TwLengthValue).value,
-    ),
-    TwProperty.borderRadiusBottomLeft => styler.borderRoundedBottomLeft(
-      (value as TwLengthValue).value,
-    ),
-    TwProperty.borderRadiusBottomRight => styler.borderRoundedBottomRight(
-      (value as TwLengthValue).value,
-    ),
-
-    // Transform
-    TwProperty.scale => _accumulateScale(
-      styler,
-      (value as TwLengthValue).value,
-      transformTracker,
-    ),
-    TwProperty.rotate => _accumulateRotate(
-      styler,
-      (value as TwLengthValue).value,
-      transformTracker,
-    ),
-    TwProperty.translateX => _accumulateTranslateX(
-      styler,
-      (value as TwLengthValue).value,
-      transformTracker,
-    ),
-    TwProperty.translateY => _accumulateTranslateY(
-      styler,
-      (value as TwLengthValue).value,
-      transformTracker,
-    ),
-
-    // Effects
-    TwProperty.blur => styler.wrap(
-      WidgetModifierConfig.blur((value as TwLengthValue).value),
-    ),
-    TwProperty.boxShadow => _applyFlexShadow(styler, value),
-    TwProperty.clipBehavior => styler.clipBehavior(
-      (value as TwEnumValue<Clip>).value,
-    ),
-
-    // Typography (propagates via DefaultTextStyle)
-    TwProperty.textColor => styler.wrapDefaultTextStyle(
-      TextStyleMix().color((value as TwColorValue).color),
-    ),
-    TwProperty.fontSize => styler.wrapDefaultTextStyle(
-      TextStyleMix().fontSize((value as TwLengthValue).value),
-    ),
-    TwProperty.fontWeight => styler.wrapDefaultTextStyle(
-      TextStyleMix().fontWeight((value as TwEnumValue<FontWeight>).value),
-    ),
-    TwProperty.textShadow => _applyFlexTextShadow(styler, value),
-
-    _ => styler,
+JsonMap _variantConditionPayload(TwVariantType variant) {
+  return switch (variant) {
+    TwInteractionVariant(state: 'hover') => {
+      'type': 'widget_state',
+      'state': 'hovered',
+    },
+    TwInteractionVariant(state: 'focus') => {
+      'type': 'widget_state',
+      'state': 'focused',
+    },
+    TwInteractionVariant(state: 'pressed') => {
+      'type': 'widget_state',
+      'state': 'pressed',
+    },
+    TwInteractionVariant(state: 'disabled') => {
+      'type': 'widget_state',
+      'state': 'disabled',
+    },
+    TwInteractionVariant(state: 'enabled') => {'type': 'enabled'},
+    TwBreakpointVariant(:final minWidth) => {
+      'type': 'context_breakpoint',
+      'minWidth': minWidth,
+    },
+    TwThemeVariant(mode: 'dark') => {
+      'type': 'context_brightness',
+      'brightness': 'dark',
+    },
+    TwThemeVariant(mode: 'light') => {
+      'type': 'context_brightness',
+      'brightness': 'light',
+    },
+    _ => throw StateError('Unsupported variant payload: $variant'),
   };
 }
 
-FlexBoxStyler _applyFlexDisplay(FlexBoxStyler styler, TwValue value) {
-  if (value is TwEnumValue && value.value == 'flex') {
-    return styler.row();
-  }
-  return styler;
-}
-
-FlexBoxStyler _applyFlexDirection(FlexBoxStyler styler, TwValue value) {
-  if (value is TwEnumValue<Axis>) {
-    final result = value.value == Axis.horizontal
-        ? styler.row()
-        : styler.column();
-    return result;
-  }
-  return styler;
-}
-
-FlexBoxStyler _applyAlignItems(FlexBoxStyler styler, TwValue value) {
-  if (value is TwEnumValue<CrossAxisAlignment>) {
-    final alignment = value.value;
-    var result = styler.crossAxisAlignment(alignment);
-    // CrossAxisAlignment.baseline requires textBaseline to be set
-    if (alignment == CrossAxisAlignment.baseline) {
-      result = result.textBaseline(TextBaseline.alphabetic);
-    }
-    return result;
-  }
-  return styler;
-}
-
-FlexBoxStyler _applyFlexShadow(FlexBoxStyler styler, TwValue value) {
-  return _applyShadowValue(
-    styler,
-    value,
-    applyElevation: (style, elevation) => style.elevation(elevation),
-    applyBoxShadows: (style, shadows) => style.boxShadows(shadows),
-  );
-}
-
-BoxStyler _applyPropertyToBox(
-  BoxStyler styler,
-  TwProperty property,
-  TwValue value,
-  TwConfig config,
-  _TransformAccumTracker transformTracker,
-) {
-  return switch (property) {
-    // Spacing
-    TwProperty.padding => styler.paddingAll((value as TwLengthValue).value),
-    TwProperty.paddingX => styler.paddingX((value as TwLengthValue).value),
-    TwProperty.paddingY => styler.paddingY((value as TwLengthValue).value),
-    TwProperty.paddingTop => styler.paddingTop((value as TwLengthValue).value),
-    TwProperty.paddingRight => styler.paddingRight(
-      (value as TwLengthValue).value,
-    ),
-    TwProperty.paddingBottom => styler.paddingBottom(
-      (value as TwLengthValue).value,
-    ),
-    TwProperty.paddingLeft => styler.paddingLeft(
-      (value as TwLengthValue).value,
-    ),
-    TwProperty.margin => styler.marginAll((value as TwLengthValue).value),
-    TwProperty.marginX => styler.marginX((value as TwLengthValue).value),
-    TwProperty.marginY => styler.marginY((value as TwLengthValue).value),
-    TwProperty.marginTop => styler.marginTop((value as TwLengthValue).value),
-    TwProperty.marginRight => styler.marginRight(
-      (value as TwLengthValue).value,
-    ),
-    TwProperty.marginBottom => styler.marginBottom(
-      (value as TwLengthValue).value,
-    ),
-    TwProperty.marginLeft => styler.marginLeft((value as TwLengthValue).value),
-
-    // Sizing (only apply length values with px unit; enum values and % handled by widget layer)
-    TwProperty.width =>
-      value is TwLengthValue && value.unit == TwUnit.px
-          ? styler.width(value.value)
-          : styler,
-    TwProperty.height =>
-      value is TwLengthValue && value.unit == TwUnit.px
-          ? styler.height(value.value)
-          : styler,
-    TwProperty.minWidth =>
-      value is TwLengthValue && value.unit == TwUnit.px
-          ? styler.minWidth(value.value)
-          : styler,
-    TwProperty.minHeight =>
-      value is TwLengthValue && value.unit == TwUnit.px
-          ? styler.minHeight(value.value)
-          : styler,
-    TwProperty.maxWidth =>
-      value is TwLengthValue && value.unit == TwUnit.px
-          ? styler.maxWidth(value.value)
-          : styler,
-    TwProperty.maxHeight =>
-      value is TwLengthValue && value.unit == TwUnit.px
-          ? styler.maxHeight(value.value)
-          : styler,
-
-    // Background
-    TwProperty.backgroundColor => styler.color((value as TwColorValue).color),
-
-    // Border radius
-    TwProperty.borderRadius => styler.borderRounded(
-      (value as TwLengthValue).value,
-    ),
-    TwProperty.borderRadiusTop => styler.borderRoundedTop(
-      (value as TwLengthValue).value,
-    ),
-    TwProperty.borderRadiusBottom => styler.borderRoundedBottom(
-      (value as TwLengthValue).value,
-    ),
-    TwProperty.borderRadiusLeft => styler.borderRoundedLeft(
-      (value as TwLengthValue).value,
-    ),
-    TwProperty.borderRadiusRight => styler.borderRoundedRight(
-      (value as TwLengthValue).value,
-    ),
-    TwProperty.borderRadiusTopLeft => styler.borderRoundedTopLeft(
-      (value as TwLengthValue).value,
-    ),
-    TwProperty.borderRadiusTopRight => styler.borderRoundedTopRight(
-      (value as TwLengthValue).value,
-    ),
-    TwProperty.borderRadiusBottomLeft => styler.borderRoundedBottomLeft(
-      (value as TwLengthValue).value,
-    ),
-    TwProperty.borderRadiusBottomRight => styler.borderRoundedBottomRight(
-      (value as TwLengthValue).value,
-    ),
-
-    // Transform
-    TwProperty.scale => _accumulateScale(
-      styler,
-      (value as TwLengthValue).value,
-      transformTracker,
-    ),
-    TwProperty.rotate => _accumulateRotate(
-      styler,
-      (value as TwLengthValue).value,
-      transformTracker,
-    ),
-    TwProperty.translateX => _accumulateTranslateX(
-      styler,
-      (value as TwLengthValue).value,
-      transformTracker,
-    ),
-    TwProperty.translateY => _accumulateTranslateY(
-      styler,
-      (value as TwLengthValue).value,
-      transformTracker,
-    ),
-
-    // Effects
-    TwProperty.blur => styler.wrap(
-      WidgetModifierConfig.blur((value as TwLengthValue).value),
-    ),
-    TwProperty.boxShadow => _applyBoxShadow(styler, value),
-    TwProperty.clipBehavior => styler.clipBehavior(
-      (value as TwEnumValue<Clip>).value,
-    ),
-
-    // Typography (propagates via DefaultTextStyle)
-    TwProperty.textColor => styler.wrapDefaultTextStyle(
-      TextStyleMix().color((value as TwColorValue).color),
-    ),
-    TwProperty.fontSize => styler.wrapDefaultTextStyle(
-      TextStyleMix().fontSize((value as TwLengthValue).value),
-    ),
-    TwProperty.fontWeight => styler.wrapDefaultTextStyle(
-      TextStyleMix().fontWeight((value as TwEnumValue<FontWeight>).value),
-    ),
-    TwProperty.textShadow => _applyBoxTextShadow(styler, value),
-
-    _ => styler,
-  };
-}
-
-BoxStyler _applyBoxShadow(BoxStyler styler, TwValue value) {
-  return _applyShadowValue(
-    styler,
-    value,
-    applyElevation: (style, elevation) => style.elevation(elevation),
-    applyBoxShadows: (style, shadows) => style.boxShadows(shadows),
-  );
-}
-
-S _applyShadowValue<S>(
-  S styler,
-  TwValue value, {
-  required S Function(S styler, ElevationShadow elevation) applyElevation,
-  required S Function(S styler, List<BoxShadowMix> shadows) applyBoxShadows,
-}) {
-  if (value is TwEnumValue) {
-    final shadowValue = value.value;
-    if (shadowValue is ElevationShadow?) {
-      return shadowValue == null
-          ? applyBoxShadows(styler, const <BoxShadowMix>[])
-          : applyElevation(styler, shadowValue);
-    }
-    if (shadowValue is List<BoxShadowMix>?) {
-      return applyBoxShadows(styler, shadowValue ?? const <BoxShadowMix>[]);
-    }
-  }
-  return styler;
-}
-
-S _applyResolvedProperties<S>(
-  S styler,
-  List<TwParsedClass>? parsed,
-  S Function(S styler, TwProperty property, TwValue value) applyProperty,
-) {
-  if (parsed == null || parsed.isEmpty) return styler;
-
-  var result = styler;
-  for (final p in parsed) {
-    result = applyProperty(result, p.property, p.value);
-  }
-  return result;
-}
-
-S _applySharedBoxLikeFallback<S>(
-  S styler,
-  String token, {
-  required TwConfig config,
-  required TokenWarningCallback? onUnsupported,
-  required S Function(S styler, double value) setWidth,
-  required S Function(S styler, double value) setHeight,
-  required S Function(S styler, TextStyleMix style) applyDefaultTextStyle,
-  S Function(S styler)? applyItemsBaseline,
-}) {
-  var handled = true;
-
-  if (token.startsWith('w-')) {
-    final key = token.substring(2);
-    final fraction = parseFractionToken(key);
-    if (fraction != null) {
-      return styler; // Handled by widget layer
-    }
-    if (_isFullOrScreenKey(key)) {
-      return styler; // Handled by widget layer
-    }
-    final size = config.spaceOf(key, fallback: double.nan);
-    if (!size.isNaN) {
-      return setWidth(styler, size);
-    }
-    handled = false;
-  } else if (token.startsWith('h-')) {
-    final key = token.substring(2);
-    final fraction = parseFractionToken(key);
-    if (fraction != null) {
-      return styler; // Handled by widget layer
-    }
-    if (_isFullOrScreenKey(key)) {
-      return styler; // Handled by widget layer
-    }
-    final size = config.spaceOf(key, fallback: double.nan);
-    if (!size.isNaN) {
-      return setHeight(styler, size);
-    }
-    handled = false;
-  } else if (token.startsWith('flex-') ||
-      token.startsWith('basis-') ||
-      token.startsWith('self-') ||
-      token.startsWith('shrink')) {
-    // Item-level utilities handled at widget layer
-    return styler;
-  } else if (token.startsWith('text-')) {
-    final key = token.substring(5);
-    final color = config.colorOf(key);
-    if (color != null) {
-      return applyDefaultTextStyle(styler, TextStyleMix().color(color));
-    }
-    final size = config.fontSizeOf(key, fallback: -1);
-    if (size > 0) {
-      var textStyle = TextStyleMix().fontSize(size);
-      final lineHeight = tailwindLineHeights[key];
-      if (lineHeight != null) {
-        textStyle = textStyle.height(lineHeight);
-      }
-      return applyDefaultTextStyle(styler, textStyle);
-    }
-    handled = false;
-  } else if (_isAnimationToken(token)) {
-    return styler;
-  } else if (_isBorderToken(token, config)) {
-    return styler;
-  } else if (token == 'items-baseline' && applyItemsBaseline != null) {
-    return applyItemsBaseline(styler);
-  } else {
-    handled = false;
-  }
-
-  if (!handled) {
-    onUnsupported?.call(token);
-  }
-
-  return styler;
-}
-
-List<ShadowMix>? _resolveTextShadowMixes(TwValue value) {
+List<Shadow>? _resolveTextShadowMixes(TwValue value) {
   if (value is TwEnumValue<TextShadowPreset?>) {
     final preset = value.value;
     if (preset == null) {
-      return const <ShadowMix>[];
+      return const <Shadow>[];
     }
-    final shadows = kTextShadowPresets[preset]!
-        .map(
-          (s) => ShadowMix(
-            color: s.color,
-            offset: s.offset,
-            blurRadius: s.blurRadius,
-          ),
-        )
-        .toList();
-    return shadows;
+
+    return List<Shadow>.unmodifiable(kTextShadowPresets[preset]!);
   }
+
   return null;
 }
 
-FlexBoxStyler _applyFlexTextShadow(FlexBoxStyler styler, TwValue value) {
-  final shadows = _resolveTextShadowMixes(value);
-  if (shadows == null) return styler;
-  return styler.wrapDefaultTextStyle(TextStyleMix().shadows(shadows));
+final class _TwSchemaDecoderAdapter {
+  static final MixSchemaDecoder _decoder = MixSchemaDecoder.builtIn();
+
+  static BoxStyler decodeBox(JsonMap payload) =>
+      _decodeTyped<BoxStyler>(payload, 'BoxStyler');
+
+  static FlexBoxStyler decodeFlexBox(JsonMap payload) =>
+      _decodeTyped<FlexBoxStyler>(payload, 'FlexBoxStyler');
+
+  static TextStyler decodeText(JsonMap payload) =>
+      _decodeTyped<TextStyler>(payload, 'TextStyler');
+
+  static T _decodeTyped<T extends Object>(JsonMap payload, String label) {
+    final result = _decoder.decode(payload);
+    if (!result.ok) {
+      final details = result.errors
+          .map((error) => '${error.path}: ${error.message}')
+          .join('; ');
+      throw StateError('Internal $label schema decode failed: $details');
+    }
+
+    final value = result.value;
+    if (value == null) {
+      throw StateError(
+        'Internal $label schema decode returned no value for payload type '
+        '${payload['type']}.',
+      );
+    }
+
+    if (value is! T) {
+      throw StateError(
+        'Internal $label schema decode returned ${value.runtimeType} '
+        'for payload type ${payload['type']}.',
+      );
+    }
+
+    return value;
+  }
 }
 
-BoxStyler _applyBoxTextShadow(BoxStyler styler, TwValue value) {
-  final shadows = _resolveTextShadowMixes(value);
-  if (shadows == null) return styler;
-  return styler.wrapDefaultTextStyle(TextStyleMix().shadows(shadows));
+final class _BuiltSchemaStyle {
+  final JsonMap payload;
+  final bool hasTransform;
+
+  const _BuiltSchemaStyle({required this.payload, required this.hasTransform});
 }
 
-TextStyler _applyTextShadow(TextStyler styler, TwValue value) {
-  final shadows = _resolveTextShadowMixes(value);
-  if (shadows == null) return styler;
-  return styler.shadows(shadows);
+final class _TextStylePayloadBuilder {
+  int? color;
+  double? fontSize;
+  String? fontWeight;
+  double? height;
+  double? letterSpacing;
+  List<JsonMap>? shadows;
+  bool _shadowsSet = false;
+
+  bool get hasAny =>
+      color != null ||
+      fontSize != null ||
+      fontWeight != null ||
+      height != null ||
+      letterSpacing != null ||
+      _shadowsSet;
+
+  void setColor(Color value) => color = _schemaColor(value);
+
+  void setFontSize(double value) => fontSize = value;
+
+  void setFontWeight(FontWeight value) =>
+      fontWeight = _fontWeightWireName(value);
+
+  void setHeight(double value) => height = value;
+
+  void setLetterSpacing(double value) => letterSpacing = value;
+
+  void setShadows(List<Shadow> value) {
+    _shadowsSet = true;
+    shadows = [
+      for (final shadow in value)
+        {
+          'color': _schemaColor(shadow.color),
+          'offset': _offsetPayload(shadow.offset),
+          'blurRadius': shadow.blurRadius,
+        },
+    ];
+  }
+
+  JsonMap build() {
+    return {
+      if (color != null) 'color': color,
+      if (fontSize != null) 'fontSize': fontSize,
+      if (fontWeight != null) 'fontWeight': fontWeight,
+      if (height != null) 'height': height,
+      if (letterSpacing != null) 'letterSpacing': letterSpacing,
+      if (_shadowsSet) 'shadows': shadows ?? const <JsonMap>[],
+    };
+  }
 }
 
-TextStyler _applyPropertyToText(
-  TextStyler styler,
-  TwProperty property,
-  TwValue value,
-  TwConfig config,
-) {
-  return switch (property) {
-    TwProperty.textColor => styler.color((value as TwColorValue).color),
-    TwProperty.fontSize => styler.fontSize((value as TwLengthValue).value),
-    TwProperty.fontWeight => styler.fontWeight(
-      (value as TwEnumValue<FontWeight>).value,
-    ),
-    TwProperty.textShadow => _applyTextShadow(styler, value),
-    TwProperty.lineHeight => styler.height((value as TwLengthValue).value),
-    TwProperty.letterSpacing => styler.letterSpacing(
-      (value as TwLengthValue).value,
-    ),
-    TwProperty.textTransform => _applyTextTransform(styler, value),
-    TwProperty.textOverflow =>
-      styler.overflow(TextOverflow.ellipsis).maxLines(1).softWrap(false),
-    _ => styler,
+final class _ModifierPayloadBuilder {
+  double? blurSigma;
+  bool _blurSet = false;
+  final _TextStylePayloadBuilder defaultTextStyle = _TextStylePayloadBuilder();
+  final List<String> _order = <String>[];
+
+  bool get hasAny => _blurSet || defaultTextStyle.hasAny;
+
+  void setBlur(double sigma) {
+    _blurSet = true;
+    blurSigma = sigma;
+    _touch('blur');
+  }
+
+  void touchDefaultTextStyle() {
+    _touch('default_text_style');
+  }
+
+  void _touch(String wireType) {
+    if (_order.contains(wireType)) return;
+    _order.add(wireType);
+  }
+
+  void applyTo(JsonMap payload) {
+    final modifiers = <JsonMap>[];
+
+    for (final wireType in _order) {
+      switch (wireType) {
+        case 'blur':
+          if (_blurSet) {
+            modifiers.add({'type': 'blur', 'sigma': blurSigma});
+          }
+          break;
+        case 'default_text_style':
+          if (defaultTextStyle.hasAny) {
+            modifiers.add({
+              'type': 'default_text_style',
+              'style': defaultTextStyle.build(),
+            });
+          }
+          break;
+      }
+    }
+
+    if (modifiers.isEmpty) return;
+
+    payload['modifiers'] = modifiers;
+    payload['modifierOrder'] = List<String>.unmodifiable(_order);
+  }
+}
+
+final class _BoxDecorationPayloadBuilder {
+  int? color;
+  JsonMap? gradient;
+  final _BorderAccum border = _BorderAccum();
+  Radius? topLeft;
+  Radius? topRight;
+  Radius? bottomLeft;
+  Radius? bottomRight;
+  bool _boxShadowSet = false;
+  List<JsonMap>? boxShadow;
+
+  bool get hasAny =>
+      color != null ||
+      gradient != null ||
+      border.hasStructure ||
+      topLeft != null ||
+      topRight != null ||
+      bottomLeft != null ||
+      bottomRight != null ||
+      _boxShadowSet;
+
+  void setAllRadius(double value) {
+    final radius = Radius.circular(value);
+    topLeft = radius;
+    topRight = radius;
+    bottomLeft = radius;
+    bottomRight = radius;
+  }
+
+  void setTopRadius(double value) {
+    final radius = Radius.circular(value);
+    topLeft = radius;
+    topRight = radius;
+  }
+
+  void setBottomRadius(double value) {
+    final radius = Radius.circular(value);
+    bottomLeft = radius;
+    bottomRight = radius;
+  }
+
+  void setLeftRadius(double value) {
+    final radius = Radius.circular(value);
+    topLeft = radius;
+    bottomLeft = radius;
+  }
+
+  void setRightRadius(double value) {
+    final radius = Radius.circular(value);
+    topRight = radius;
+    bottomRight = radius;
+  }
+
+  void setTopLeftRadius(double value) => topLeft = Radius.circular(value);
+
+  void setTopRightRadius(double value) => topRight = Radius.circular(value);
+
+  void setBottomLeftRadius(double value) => bottomLeft = Radius.circular(value);
+
+  void setBottomRightRadius(double value) =>
+      bottomRight = Radius.circular(value);
+
+  void setBoxShadows(List<BoxShadow> shadows) {
+    _boxShadowSet = true;
+    boxShadow = [
+      for (final shadow in shadows)
+        {
+          'color': _schemaColor(shadow.color),
+          'offset': _offsetPayload(shadow.offset),
+          'blurRadius': shadow.blurRadius,
+          'spreadRadius': shadow.spreadRadius,
+        },
+    ];
+  }
+
+  JsonMap? build(TwConfig config, {_BorderAccum? inheritedBorder}) {
+    final effectiveBorder = inheritedBorder == null
+        ? border
+        : border.inheritFrom(inheritedBorder);
+    final hasEffectiveBorder = effectiveBorder.hasStructure;
+    if (!hasAny && !hasEffectiveBorder) return null;
+
+    return {
+      'type': 'box_decoration',
+      if (color != null) 'color': color,
+      if (gradient != null) 'gradient': gradient,
+      if (hasEffectiveBorder)
+        'border': _buildBorderPayload(effectiveBorder, config),
+      if (topLeft != null ||
+          topRight != null ||
+          bottomLeft != null ||
+          bottomRight != null)
+        'borderRadius': {
+          'type': 'border_radius',
+          if (topLeft != null) 'topLeft': _radiusPayload(topLeft!),
+          if (topRight != null) 'topRight': _radiusPayload(topRight!),
+          if (bottomLeft != null) 'bottomLeft': _radiusPayload(bottomLeft!),
+          if (bottomRight != null) 'bottomRight': _radiusPayload(bottomRight!),
+        },
+      if (_boxShadowSet) 'boxShadow': boxShadow ?? const <JsonMap>[],
+    };
+  }
+}
+
+JsonMap _buildBorderPayload(_BorderAccum border, TwConfig config) {
+  final color = border.color ?? _defaultBorderColor(config);
+  return {
+    'type': 'border',
+    if (border.topWidth != null)
+      'top': {'color': _schemaColor(color), 'width': border.topWidth},
+    if (border.bottomWidth != null)
+      'bottom': {'color': _schemaColor(color), 'width': border.bottomWidth},
+    if (border.leftWidth != null)
+      'left': {'color': _schemaColor(color), 'width': border.leftWidth},
+    if (border.rightWidth != null)
+      'right': {'color': _schemaColor(color), 'width': border.rightWidth},
   };
 }
 
-TextStyler _applyTextTransform(TextStyler styler, TwValue value) {
-  if (value is TwEnumValue<String>) {
-    return switch (value.value) {
-      'uppercase' => styler.uppercase(),
-      'lowercase' => styler.lowercase(),
-      'capitalize' => styler.capitalize(),
-      _ => styler,
+JsonMap? _buildGradientPayload(
+  _GradientAccum gradient,
+  TwGradientStrategy strategy,
+) {
+  if (!gradient.hasGradient) return null;
+
+  final colors = <int>[
+    _schemaColor(gradient.fromColor!),
+    if (gradient.viaColor != null) _schemaColor(gradient.viaColor!),
+    _schemaColor(gradient.toColor ?? gradient.fromColor!),
+  ];
+  final stops = gradient.viaColor != null
+      ? const [0.0, 0.5, 1.0]
+      : const [0.0, 1.0];
+
+  if (strategy == TwGradientStrategy.angle && gradient.directionKey != null) {
+    final angle = _tailwindGradientAngles[gradient.directionKey!];
+    if (angle != null) {
+      return {
+        'type': 'linear_gradient',
+        'colors': colors,
+        'stops': stops,
+        'begin': {'x': -1.0, 'y': 0.0},
+        'end': {'x': 1.0, 'y': 0.0},
+        if (angle != 0.0)
+          'transform': {'type': 'gradient_rotation', 'radians': angle},
+      };
+    }
+  }
+
+  final useCssAngleRect =
+      strategy == TwGradientStrategy.cssAngleRect ||
+      strategy == TwGradientStrategy.adaptive;
+  if (useCssAngleRect &&
+      gradient.directionKey != null &&
+      _tailwindCornerDirections.contains(gradient.directionKey)) {
+    return {
+      'type': 'linear_gradient',
+      'colors': colors,
+      'stops': stops,
+      'begin': {'x': -1.0, 'y': 0.0},
+      'end': {'x': 1.0, 'y': 0.0},
+      'transform': {
+        'type': 'tailwind_css_angle_rect',
+        'direction': gradient.directionKey!,
+      },
     };
   }
-  return styler;
+
+  final (begin, end) = gradient.direction!;
+  return {
+    'type': 'linear_gradient',
+    'colors': colors,
+    'stops': stops,
+    'begin': _alignmentPayload(begin),
+    'end': _alignmentPayload(end),
+  };
+}
+
+final class _BoxLikeSchemaState {
+  _BoxLikeSchemaState({required this.isFlex});
+
+  final bool isFlex;
+  final Map<String, Object?> padding = <String, Object?>{};
+  final Map<String, Object?> margin = <String, Object?>{};
+  final Map<String, Object?> constraints = <String, Object?>{};
+  final _BoxDecorationPayloadBuilder decoration =
+      _BoxDecorationPayloadBuilder();
+  final _ModifierPayloadBuilder modifiers = _ModifierPayloadBuilder();
+  final _TransformAccum transform = _TransformAccum();
+  final _GradientAccum gradient = _GradientAccum();
+  final Map<String, _BoxLikeSchemaState> variants =
+      <String, _BoxLikeSchemaState>{};
+  final Map<String, List<TwVariantType>> variantTypes =
+      <String, List<TwVariantType>>{};
+  String? direction;
+  String? mainAxisAlignment;
+  String? crossAxisAlignment;
+  String? textBaseline;
+  double? spacing;
+  String? clipBehavior;
+
+  _BoxLikeSchemaState stateFor(List<TwVariantType> tokenVariants) {
+    if (tokenVariants.isEmpty) return this;
+
+    final key = _variantKey(tokenVariants);
+    variantTypes.putIfAbsent(key, () => List.unmodifiable(tokenVariants));
+    return variants.putIfAbsent(key, () => _BoxLikeSchemaState(isFlex: isFlex));
+  }
+
+  void applyResolvedProperty(
+    TwProperty property,
+    TwValue value,
+    TwConfig config,
+  ) {
+    switch (property) {
+      case TwProperty.padding:
+        _setAllEdges(padding, (value as TwLengthValue).value);
+        break;
+      case TwProperty.paddingX:
+        _setHorizontalEdges(padding, (value as TwLengthValue).value);
+        break;
+      case TwProperty.paddingY:
+        _setVerticalEdges(padding, (value as TwLengthValue).value);
+        break;
+      case TwProperty.paddingTop:
+        padding['top'] = (value as TwLengthValue).value;
+        break;
+      case TwProperty.paddingRight:
+        padding['right'] = (value as TwLengthValue).value;
+        break;
+      case TwProperty.paddingBottom:
+        padding['bottom'] = (value as TwLengthValue).value;
+        break;
+      case TwProperty.paddingLeft:
+        padding['left'] = (value as TwLengthValue).value;
+        break;
+      case TwProperty.margin:
+        _setAllEdges(margin, (value as TwLengthValue).value);
+        break;
+      case TwProperty.marginX:
+        _setHorizontalEdges(margin, (value as TwLengthValue).value);
+        break;
+      case TwProperty.marginY:
+        _setVerticalEdges(margin, (value as TwLengthValue).value);
+        break;
+      case TwProperty.marginTop:
+        margin['top'] = (value as TwLengthValue).value;
+        break;
+      case TwProperty.marginRight:
+        margin['right'] = (value as TwLengthValue).value;
+        break;
+      case TwProperty.marginBottom:
+        margin['bottom'] = (value as TwLengthValue).value;
+        break;
+      case TwProperty.marginLeft:
+        margin['left'] = (value as TwLengthValue).value;
+        break;
+      case TwProperty.gap:
+        if (isFlex) {
+          spacing = (value as TwLengthValue).value;
+        }
+        break;
+      case TwProperty.width:
+        final length = value;
+        if (length is TwLengthValue && length.unit == TwUnit.px) {
+          constraints['minWidth'] = length.value;
+          constraints['maxWidth'] = length.value;
+        }
+        break;
+      case TwProperty.height:
+        final length = value;
+        if (length is TwLengthValue && length.unit == TwUnit.px) {
+          constraints['minHeight'] = length.value;
+          constraints['maxHeight'] = length.value;
+        }
+        break;
+      case TwProperty.minWidth:
+        final length = value;
+        if (length is TwLengthValue && length.unit == TwUnit.px) {
+          constraints['minWidth'] = length.value;
+        }
+        break;
+      case TwProperty.minHeight:
+        final length = value;
+        if (length is TwLengthValue && length.unit == TwUnit.px) {
+          constraints['minHeight'] = length.value;
+        }
+        break;
+      case TwProperty.maxWidth:
+        final length = value;
+        if (length is TwLengthValue && length.unit == TwUnit.px) {
+          constraints['maxWidth'] = length.value;
+        }
+        break;
+      case TwProperty.maxHeight:
+        final length = value;
+        if (length is TwLengthValue && length.unit == TwUnit.px) {
+          constraints['maxHeight'] = length.value;
+        }
+        break;
+      case TwProperty.display:
+        if (isFlex && value is TwEnumValue && value.value == 'flex') {
+          direction = Axis.horizontal.name;
+        }
+        break;
+      case TwProperty.flexDirection:
+        if (isFlex && value is TwEnumValue<Axis>) {
+          direction = value.value.name;
+        }
+        break;
+      case TwProperty.alignItems:
+        if (isFlex && value is TwEnumValue<CrossAxisAlignment>) {
+          crossAxisAlignment = value.value.name;
+          if (value.value == CrossAxisAlignment.baseline) {
+            textBaseline = TextBaseline.alphabetic.name;
+          }
+        }
+        break;
+      case TwProperty.justifyContent:
+        if (isFlex) {
+          mainAxisAlignment =
+              (value as TwEnumValue<MainAxisAlignment>).value.name;
+        }
+        break;
+      case TwProperty.backgroundColor:
+        decoration.color = _schemaColor((value as TwColorValue).color);
+        break;
+      case TwProperty.borderRadius:
+        decoration.setAllRadius((value as TwLengthValue).value);
+        break;
+      case TwProperty.borderRadiusTop:
+        decoration.setTopRadius((value as TwLengthValue).value);
+        break;
+      case TwProperty.borderRadiusBottom:
+        decoration.setBottomRadius((value as TwLengthValue).value);
+        break;
+      case TwProperty.borderRadiusLeft:
+        decoration.setLeftRadius((value as TwLengthValue).value);
+        break;
+      case TwProperty.borderRadiusRight:
+        decoration.setRightRadius((value as TwLengthValue).value);
+        break;
+      case TwProperty.borderRadiusTopLeft:
+        decoration.setTopLeftRadius((value as TwLengthValue).value);
+        break;
+      case TwProperty.borderRadiusTopRight:
+        decoration.setTopRightRadius((value as TwLengthValue).value);
+        break;
+      case TwProperty.borderRadiusBottomLeft:
+        decoration.setBottomLeftRadius((value as TwLengthValue).value);
+        break;
+      case TwProperty.borderRadiusBottomRight:
+        decoration.setBottomRightRadius((value as TwLengthValue).value);
+        break;
+      case TwProperty.scale:
+        transform.scale = (value as TwLengthValue).value;
+        break;
+      case TwProperty.rotate:
+        transform.rotateDeg = (value as TwLengthValue).value;
+        break;
+      case TwProperty.translateX:
+        transform.translateX = (value as TwLengthValue).value;
+        break;
+      case TwProperty.translateY:
+        transform.translateY = (value as TwLengthValue).value;
+        break;
+      case TwProperty.blur:
+        modifiers.setBlur((value as TwLengthValue).value);
+        break;
+      case TwProperty.boxShadow:
+        if (value is TwEnumValue<List<BoxShadow>?>) {
+          decoration.setBoxShadows(value.value ?? const <BoxShadow>[]);
+        }
+        break;
+      case TwProperty.clipBehavior:
+        clipBehavior = (value as TwEnumValue<Clip>).value.name;
+        break;
+      case TwProperty.textColor:
+        modifiers.touchDefaultTextStyle();
+        modifiers.defaultTextStyle.setColor((value as TwColorValue).color);
+        break;
+      case TwProperty.fontSize:
+        modifiers.touchDefaultTextStyle();
+        modifiers.defaultTextStyle.setFontSize((value as TwLengthValue).value);
+        break;
+      case TwProperty.fontWeight:
+        modifiers.touchDefaultTextStyle();
+        modifiers.defaultTextStyle.setFontWeight(
+          (value as TwEnumValue<FontWeight>).value,
+        );
+        break;
+      case TwProperty.textShadow:
+        final shadows = _resolveTextShadowMixes(value);
+        if (shadows != null) {
+          modifiers.touchDefaultTextStyle();
+          modifiers.defaultTextStyle.setShadows(shadows);
+        }
+        break;
+      default:
+        break;
+    }
+  }
+
+  bool applyFallbackToken(
+    String token,
+    TwConfig config,
+    TokenWarningCallback? onUnsupported, {
+    required bool allowFlexSizingNoops,
+  }) {
+    if (isFlex && (token.startsWith('gap-x-') || token.startsWith('gap-y-'))) {
+      return true;
+    }
+
+    if (token.startsWith('w-')) {
+      final key = token.substring(2);
+      if (parseFractionToken(key) != null || _isFullOrScreenKey(key)) {
+        return true;
+      }
+
+      final size = config.spaceOf(key, fallback: double.nan);
+      if (!size.isNaN) {
+        constraints['minWidth'] = size;
+        constraints['maxWidth'] = size;
+        return true;
+      }
+      onUnsupported?.call(token);
+      return false;
+    }
+
+    if (token.startsWith('h-')) {
+      final key = token.substring(2);
+      if (parseFractionToken(key) != null || _isFullOrScreenKey(key)) {
+        return true;
+      }
+
+      final size = config.spaceOf(key, fallback: double.nan);
+      if (!size.isNaN) {
+        constraints['minHeight'] = size;
+        constraints['maxHeight'] = size;
+        return true;
+      }
+      onUnsupported?.call(token);
+      return false;
+    }
+
+    if (allowFlexSizingNoops &&
+        (token.startsWith('flex-') ||
+            token.startsWith('basis-') ||
+            token.startsWith('self-') ||
+            token.startsWith('shrink'))) {
+      return true;
+    }
+
+    if (token.startsWith('text-')) {
+      final key = token.substring(5);
+      final color = config.colorOf(key);
+      if (color != null) {
+        modifiers.touchDefaultTextStyle();
+        modifiers.defaultTextStyle.setColor(color);
+        return true;
+      }
+
+      final size = config.fontSizeOf(key, fallback: -1);
+      if (size > 0) {
+        modifiers.touchDefaultTextStyle();
+        modifiers.defaultTextStyle.setFontSize(size);
+        final lineHeight = tailwindLineHeights[key];
+        if (lineHeight != null) {
+          modifiers.defaultTextStyle.setHeight(lineHeight);
+        }
+        return true;
+      }
+
+      onUnsupported?.call(token);
+      return false;
+    }
+
+    if (_isAnimationToken(token) || _isBorderToken(token, config)) {
+      return true;
+    }
+
+    onUnsupported?.call(token);
+    return false;
+  }
+
+  _BuiltSchemaStyle buildStylePayload({
+    required TwConfig config,
+    required _TransformAccum inheritedTransform,
+    _BorderAccum? inheritedBorder,
+  }) {
+    final payload = <String, Object?>{};
+    final effectiveTransform = transform.mergedWith(inheritedTransform);
+    var hasTransform = effectiveTransform.hasAnyTransform;
+    final builtVariants = <JsonMap>[];
+    final effectiveBorder = inheritedBorder == null
+        ? decoration.border
+        : decoration.border.inheritFrom(inheritedBorder);
+
+    for (final entry in variants.entries) {
+      final built = entry.value.buildStylePayload(
+        config: config,
+        inheritedTransform: effectiveTransform,
+        inheritedBorder: effectiveBorder,
+      );
+      if (built.hasTransform && !effectiveTransform.hasAnyTransform) {
+        hasTransform = true;
+      }
+
+      builtVariants.add(
+        _wrapVariantStyle(variantTypes[entry.key]!, built.payload),
+      );
+    }
+
+    if (padding.isNotEmpty)
+      payload['padding'] = Map<String, Object?>.from(padding);
+    if (margin.isNotEmpty)
+      payload['margin'] = Map<String, Object?>.from(margin);
+    if (constraints.isNotEmpty) {
+      payload['constraints'] = Map<String, Object?>.from(constraints);
+    }
+
+    final decorationPayload = decoration.build(
+      config,
+      inheritedBorder: inheritedBorder,
+    );
+    if (decorationPayload != null) {
+      payload['decoration'] = decorationPayload;
+    }
+
+    if (clipBehavior != null) payload['clipBehavior'] = clipBehavior;
+
+    if (isFlex) {
+      if (direction != null) payload['direction'] = direction;
+      if (mainAxisAlignment != null) {
+        payload['mainAxisAlignment'] = mainAxisAlignment;
+      }
+      if (crossAxisAlignment != null) {
+        payload['crossAxisAlignment'] = crossAxisAlignment;
+      }
+      if (textBaseline != null) payload['textBaseline'] = textBaseline;
+      if (spacing != null) payload['spacing'] = spacing;
+    }
+
+    if (effectiveTransform.hasAnyTransform) {
+      payload['transform'] = effectiveTransform.toSchemaValues();
+      payload['transformAlignment'] = const {'x': 0.0, 'y': 0.0};
+    } else if (hasTransform) {
+      payload['transform'] = Matrix4.identity().storage.toList(growable: false);
+      payload['transformAlignment'] = const {'x': 0.0, 'y': 0.0};
+    }
+
+    modifiers.applyTo(payload);
+
+    if (builtVariants.isNotEmpty) payload['variants'] = builtVariants;
+
+    return _BuiltSchemaStyle(payload: payload, hasTransform: hasTransform);
+  }
+}
+
+final class _TextSchemaState {
+  _TextSchemaState();
+
+  final _TextStylePayloadBuilder style = _TextStylePayloadBuilder();
+  final Map<String, _TextSchemaState> variants = <String, _TextSchemaState>{};
+  final Map<String, List<TwVariantType>> variantTypes =
+      <String, List<TwVariantType>>{};
+  String? overflow;
+  int? maxLines;
+  bool? softWrap;
+  JsonMap? textHeightBehavior;
+  String? textTransform;
+
+  _TextSchemaState stateFor(List<TwVariantType> tokenVariants) {
+    if (tokenVariants.isEmpty) return this;
+
+    final key = _variantKey(tokenVariants);
+    variantTypes.putIfAbsent(key, () => List.unmodifiable(tokenVariants));
+    return variants.putIfAbsent(key, _TextSchemaState.new);
+  }
+
+  void applyResolvedProperty(TwProperty property, TwValue value) {
+    switch (property) {
+      case TwProperty.textColor:
+        style.setColor((value as TwColorValue).color);
+        break;
+      case TwProperty.fontSize:
+        style.setFontSize((value as TwLengthValue).value);
+        break;
+      case TwProperty.fontWeight:
+        style.setFontWeight((value as TwEnumValue<FontWeight>).value);
+        break;
+      case TwProperty.textShadow:
+        final shadows = _resolveTextShadowMixes(value);
+        if (shadows != null) {
+          style.setShadows(shadows);
+        }
+        break;
+      case TwProperty.lineHeight:
+        style.setHeight((value as TwLengthValue).value);
+        break;
+      case TwProperty.letterSpacing:
+        style.setLetterSpacing((value as TwLengthValue).value);
+        break;
+      case TwProperty.textTransform:
+        textTransform = (value as TwEnumValue<String>).value;
+        break;
+      case TwProperty.textOverflow:
+        overflow = TextOverflow.ellipsis.name;
+        maxLines = 1;
+        softWrap = false;
+        break;
+      default:
+        break;
+    }
+  }
+
+  bool applyFallbackToken(
+    String token,
+    TwConfig config,
+    TokenWarningCallback? onUnsupported,
+  ) {
+    if (token == 'leading-even') {
+      textHeightBehavior = {'leadingDistribution': 'even'};
+      return true;
+    }
+    if (token == 'leading-trim') {
+      textHeightBehavior = {
+        'leadingDistribution': 'even',
+        'applyHeightToFirstAscent': false,
+        'applyHeightToLastDescent': false,
+      };
+      return true;
+    }
+    if (_isAnimationToken(token)) {
+      return true;
+    }
+
+    if (token.startsWith('text-')) {
+      final key = token.substring(5);
+      final size = config.fontSizeOf(key, fallback: -1);
+      if (size > 0) {
+        style.setFontSize(size);
+        final lineHeight = tailwindLineHeights[key];
+        if (lineHeight != null) {
+          style.setHeight(lineHeight);
+        }
+        return true;
+      }
+
+      final color = config.colorOf(key);
+      if (color != null) {
+        style.setColor(color);
+        return true;
+      }
+    }
+
+    onUnsupported?.call(token);
+    return false;
+  }
+
+  JsonMap buildStylePayload() {
+    final payload = <String, Object?>{};
+    final builtVariants = <JsonMap>[];
+
+    if (style.hasAny) payload['style'] = style.build();
+    if (overflow != null) payload['overflow'] = overflow;
+    if (maxLines != null) payload['maxLines'] = maxLines;
+    if (softWrap != null) payload['softWrap'] = softWrap;
+    if (textHeightBehavior != null) {
+      payload['textHeightBehavior'] = Map<String, Object?>.from(
+        textHeightBehavior!,
+      );
+    }
+    if (textTransform != null) payload['textTransform'] = textTransform;
+
+    for (final entry in variants.entries) {
+      builtVariants.add(
+        _wrapVariantStyle(
+          variantTypes[entry.key]!,
+          entry.value.buildStylePayload(),
+        ),
+      );
+    }
+
+    if (builtVariants.isNotEmpty) payload['variants'] = builtVariants;
+
+    return payload;
+  }
+}
+
+JsonMap _wrapVariantStyle(List<TwVariantType> variants, JsonMap style) {
+  if (variants.length == 1) {
+    return {..._variantConditionPayload(variants.single), 'style': style};
+  }
+
+  return {
+    'type': 'context_all_of',
+    'conditions': [
+      for (final variant in variants) _variantConditionPayload(variant),
+    ],
+    'style': style,
+  };
+}
+
+void _setAllEdges(Map<String, Object?> target, double value) {
+  target['top'] = value;
+  target['right'] = value;
+  target['bottom'] = value;
+  target['left'] = value;
+}
+
+void _setHorizontalEdges(Map<String, Object?> target, double value) {
+  target['left'] = value;
+  target['right'] = value;
+}
+
+void _setVerticalEdges(Map<String, Object?> target, double value) {
+  target['top'] = value;
+  target['bottom'] = value;
+}
+
+final class _TwSchemaEmitter {
+  _TwSchemaEmitter({
+    required this.config,
+    required this.resolver,
+    required this.onUnsupported,
+  });
+
+  final TwConfig config;
+  final TwResolver resolver;
+  final TokenWarningCallback? onUnsupported;
+
+  FlexBoxStyler parseFlex(List<String> tokens) {
+    var hasBaseFlex = false;
+    final root = _BoxLikeSchemaState(isFlex: true);
+
+    for (final token in tokens) {
+      final colonIndex = findLastColonOutsideBrackets(token);
+      final prefix = colonIndex > 0 ? token.substring(0, colonIndex) : '';
+      final baseToken = colonIndex > 0
+          ? token.substring(colonIndex + 1)
+          : token;
+
+      if (prefix.isEmpty &&
+          (baseToken == 'flex' ||
+              baseToken == 'flex-row' ||
+              baseToken == 'flex-col')) {
+        hasBaseFlex = true;
+      }
+
+      if (_isGradientToken(baseToken)) {
+        if (prefix.isEmpty) {
+          _accumulateGradient(root.gradient, baseToken, config);
+        }
+        continue;
+      }
+
+      if (_isBorderToken(baseToken, config)) {
+        if (!_hasOnlyKnownPrefixParts(prefix, config)) {
+          onUnsupported?.call(token);
+          continue;
+        }
+        final target = root.stateFor(resolver.parseVariantPrefix(prefix));
+        _accumulateBorder(target.decoration.border, baseToken, config);
+        continue;
+      }
+
+      final parsed = resolver.resolveToken(token);
+      if (parsed != null && parsed.isNotEmpty) {
+        for (final entry in parsed) {
+          final target = root.stateFor(entry.variants);
+          target.applyResolvedProperty(entry.property, entry.value, config);
+        }
+        continue;
+      }
+
+      if (!_hasOnlyKnownPrefixParts(prefix, config)) {
+        onUnsupported?.call(token);
+        continue;
+      }
+
+      final target = root.stateFor(resolver.parseVariantPrefix(prefix));
+      target.applyFallbackToken(
+        baseToken,
+        config,
+        onUnsupported,
+        allowFlexSizingNoops: true,
+      );
+    }
+
+    if (!hasBaseFlex) {
+      root.direction = Axis.vertical.name;
+    }
+
+    root.decoration.gradient = _buildGradientPayload(
+      root.gradient,
+      config.gradientStrategy,
+    );
+
+    final built = root.buildStylePayload(
+      config: config,
+      inheritedTransform: _TransformAccum(),
+    );
+    return _TwSchemaDecoderAdapter.decodeFlexBox({
+      'type': 'flex_box',
+      ...built.payload,
+    });
+  }
+
+  BoxStyler parseBox(List<String> tokens) {
+    final root = _BoxLikeSchemaState(isFlex: false);
+
+    for (final token in tokens) {
+      final colonIndex = findLastColonOutsideBrackets(token);
+      final prefix = colonIndex > 0 ? token.substring(0, colonIndex) : '';
+      final baseToken = colonIndex > 0
+          ? token.substring(colonIndex + 1)
+          : token;
+
+      if (_isGradientToken(baseToken)) {
+        if (prefix.isEmpty) {
+          _accumulateGradient(root.gradient, baseToken, config);
+        }
+        continue;
+      }
+
+      if (_isBorderToken(baseToken, config)) {
+        if (!_hasOnlyKnownPrefixParts(prefix, config)) {
+          onUnsupported?.call(token);
+          continue;
+        }
+        final target = root.stateFor(resolver.parseVariantPrefix(prefix));
+        _accumulateBorder(target.decoration.border, baseToken, config);
+        continue;
+      }
+
+      final parsed = resolver.resolveToken(token);
+      if (parsed != null && parsed.isNotEmpty) {
+        for (final entry in parsed) {
+          final target = root.stateFor(entry.variants);
+          target.applyResolvedProperty(entry.property, entry.value, config);
+        }
+        continue;
+      }
+
+      if (!_hasOnlyKnownPrefixParts(prefix, config)) {
+        onUnsupported?.call(token);
+        continue;
+      }
+
+      final target = root.stateFor(resolver.parseVariantPrefix(prefix));
+      target.applyFallbackToken(
+        baseToken,
+        config,
+        onUnsupported,
+        allowFlexSizingNoops: false,
+      );
+    }
+
+    root.decoration.gradient = _buildGradientPayload(
+      root.gradient,
+      config.gradientStrategy,
+    );
+
+    final built = root.buildStylePayload(
+      config: config,
+      inheritedTransform: _TransformAccum(),
+    );
+    return _TwSchemaDecoderAdapter.decodeBox({'type': 'box', ...built.payload});
+  }
+
+  TextStyler parseText(List<String> tokens) {
+    final root = _TextSchemaState();
+    root.style.setHeight(config.textDefaults.lineHeight);
+
+    for (final token in tokens) {
+      final parsed = resolver.resolveToken(token);
+      if (parsed != null && parsed.isNotEmpty) {
+        for (final entry in parsed) {
+          final target = root.stateFor(entry.variants);
+          target.applyResolvedProperty(entry.property, entry.value);
+        }
+        continue;
+      }
+
+      final colonIndex = findLastColonOutsideBrackets(token);
+      final prefix = colonIndex > 0 ? token.substring(0, colonIndex) : '';
+      final baseToken = colonIndex > 0
+          ? token.substring(colonIndex + 1)
+          : token;
+
+      if (!_hasOnlyKnownPrefixParts(prefix, config)) {
+        onUnsupported?.call(token);
+        continue;
+      }
+
+      final target = root.stateFor(resolver.parseVariantPrefix(prefix));
+      target.applyFallbackToken(baseToken, config, onUnsupported);
+    }
+
+    return _TwSchemaDecoderAdapter.decodeText({
+      'type': 'text',
+      ...root.buildStylePayload(),
+    });
+  }
 }
 
 // =============================================================================
@@ -1425,7 +1903,6 @@ class TwParser {
   final TwConfig config;
   final TokenWarningCallback? onUnsupported;
   final TwResolver _resolver;
-  final _TransformAccumTracker _transformTracker = _TransformAccumTracker();
 
   List<String> listTokens(String classNames) {
     final trimmed = classNames.trim();
@@ -1454,181 +1931,27 @@ class TwParser {
   }
 
   FlexBoxStyler parseFlex(String classNames) {
-    final tokens = listTokens(classNames);
-
-    _transformTracker.clear();
-
-    var hasBaseFlex = false;
-    final baseBorder = _BorderAccum();
-    final baseGradient = _GradientAccum();
-    final variantBorders = <String, _BorderAccum>{};
-
-    var styler = FlexBoxStyler();
-
-    for (final token in tokens) {
-      // Use bracket-aware colon finding to handle arbitrary values like bg-[color:red]
-      final colonIndex = _findFirstPrefixColon(token);
-      final prefix = colonIndex > 0 ? token.substring(0, colonIndex) : '';
-      final base = colonIndex > 0 ? token.substring(colonIndex + 1) : token;
-
-      // Track base flex
-      if (prefix.isEmpty &&
-          (base == 'flex' || base == 'flex-row' || base == 'flex-col')) {
-        hasBaseFlex = true;
-      }
-
-      // Accumulate gradient tokens
-      if (_isGradientToken(base)) {
-        if (prefix.isEmpty) {
-          _accumulateGradient(baseGradient, base, config);
-        }
-        continue;
-      }
-
-      // Accumulate border tokens
-      if (_isBorderToken(base, config)) {
-        if (!_hasOnlyKnownPrefixParts(prefix, _flexVariants)) {
-          onUnsupported?.call(token);
-          continue;
-        }
-        final accum = prefix.isEmpty
-            ? baseBorder
-            : variantBorders.putIfAbsent(prefix, _BorderAccum.new);
-        _accumulateBorder(accum, base, config);
-        continue;
-      }
-
-      // Apply via resolver + applier
-      styler = _applyFlexToken(styler, token);
-    }
-
-    // Default to column when only prefixed flex
-    if (!hasBaseFlex) {
-      styler = _carryTransforms(styler, styler.column());
-    }
-
-    // Apply accumulated gradient
-    final gradientMix = baseGradient.toGradientMix(config.gradientStrategy);
-    if (gradientMix != null) {
-      styler = _carryTransforms(styler, styler.gradient(gradientMix));
-    }
-
-    // Apply accumulated borders
-    styler = _carryTransforms(
-      styler,
-      _applyAccumulatedBorders(
-        styler,
-        baseBorder,
-        variantBorders,
-        variants: _flexVariants,
-        newStyler: FlexBoxStyler.new,
-        merge: (a, b) => a.merge(b),
-        applyBreakpoint: (b, bp, s) => b.onBreakpoint(bp, s),
-        top: (s, {required color, required width}) =>
-            s.borderTop(color: color, width: width),
-        bottom: (s, {required color, required width}) =>
-            s.borderBottom(color: color, width: width),
-        left: (s, {required color, required width}) =>
-            s.borderLeft(color: color, width: width),
-        right: (s, {required color, required width}) =>
-            s.borderRight(color: color, width: width),
-      ),
-    );
-
-    final baseMatrix = _transformTracker.flush(styler);
-    if (baseMatrix != null) {
-      styler = _applyTransformMatrix(styler, baseMatrix);
-    }
-    _transformTracker.clear();
-
-    return styler;
+    return _TwSchemaEmitter(
+      config: config,
+      resolver: _resolver,
+      onUnsupported: onUnsupported,
+    ).parseFlex(listTokens(classNames));
   }
 
   BoxStyler parseBox(String classNames) {
-    final tokens = listTokens(classNames);
-
-    _transformTracker.clear();
-
-    final baseBorder = _BorderAccum();
-    final baseGradient = _GradientAccum();
-    final variantBorders = <String, _BorderAccum>{};
-
-    var styler = BoxStyler();
-
-    for (final token in tokens) {
-      // Use bracket-aware colon finding to handle arbitrary values like bg-[color:red]
-      final colonIndex = _findFirstPrefixColon(token);
-      final prefix = colonIndex > 0 ? token.substring(0, colonIndex) : '';
-      final base = colonIndex > 0 ? token.substring(colonIndex + 1) : token;
-
-      // Accumulate gradient tokens
-      if (_isGradientToken(base)) {
-        if (prefix.isEmpty) {
-          _accumulateGradient(baseGradient, base, config);
-        }
-        continue;
-      }
-
-      // Accumulate border tokens
-      if (_isBorderToken(base, config)) {
-        if (!_hasOnlyKnownPrefixParts(prefix, _boxVariants)) {
-          onUnsupported?.call(token);
-          continue;
-        }
-        final accum = prefix.isEmpty
-            ? baseBorder
-            : variantBorders.putIfAbsent(prefix, _BorderAccum.new);
-        _accumulateBorder(accum, base, config);
-        continue;
-      }
-
-      // Apply via resolver + applier
-      styler = _applyBoxToken(styler, token);
-    }
-
-    // Apply accumulated gradient
-    final gradientMix = baseGradient.toGradientMix(config.gradientStrategy);
-    if (gradientMix != null) {
-      styler = _carryTransforms(styler, styler.gradient(gradientMix));
-    }
-
-    // Apply accumulated borders
-    styler = _carryTransforms(
-      styler,
-      _applyAccumulatedBorders(
-        styler,
-        baseBorder,
-        variantBorders,
-        variants: _boxVariants,
-        newStyler: BoxStyler.new,
-        merge: (a, b) => a.merge(b),
-        applyBreakpoint: (b, bp, s) => b.onBreakpoint(bp, s),
-        top: (s, {required color, required width}) =>
-            s.borderTop(color: color, width: width),
-        bottom: (s, {required color, required width}) =>
-            s.borderBottom(color: color, width: width),
-        left: (s, {required color, required width}) =>
-            s.borderLeft(color: color, width: width),
-        right: (s, {required color, required width}) =>
-            s.borderRight(color: color, width: width),
-      ),
-    );
-
-    final baseMatrix = _transformTracker.flush(styler);
-    if (baseMatrix != null) {
-      styler = _applyTransformMatrix(styler, baseMatrix);
-    }
-    _transformTracker.clear();
-
-    return styler;
+    return _TwSchemaEmitter(
+      config: config,
+      resolver: _resolver,
+      onUnsupported: onUnsupported,
+    ).parseBox(listTokens(classNames));
   }
 
   TextStyler parseText(String classNames) {
-    var styler = TextStyler().height(config.textDefaults.lineHeight);
-    for (final token in listTokens(classNames)) {
-      styler = _applyTextToken(styler, token);
-    }
-    return styler;
+    return _TwSchemaEmitter(
+      config: config,
+      resolver: _resolver,
+      onUnsupported: onUnsupported,
+    ).parseText(listTokens(classNames));
   }
 
   CurveAnimationConfig? parseAnimationFromTokens(List<String> tokens) {
@@ -1672,391 +1995,6 @@ class TwParser {
     if (!hasTransition) return null;
 
     return CurveAnimationConfig(duration: duration, curve: curve, delay: delay);
-  }
-
-  // ===========================================================================
-  // Private Token Application
-  // ===========================================================================
-
-  bool _hasOnlyKnownPrefixParts<T>(String prefix, Map<String, T> variants) {
-    if (prefix.isEmpty) return true;
-    for (final part in prefix.split(':')) {
-      if (_isBreakpoint(part)) continue;
-      if (variants.containsKey(part)) continue;
-      return false;
-    }
-    return true;
-  }
-
-  bool _isBreakpoint(String prefix) => config.breakpoints.containsKey(prefix);
-
-  FlexBoxStyler _applyFlexToken(FlexBoxStyler base, String token) =>
-      _applyPrefixedToken(
-        base,
-        token,
-        _flexVariants,
-        FlexBoxStyler.new,
-        _applyFlexAtomic,
-        (b, bp, s) => b.onBreakpoint(bp, s),
-      );
-
-  BoxStyler _applyBoxToken(BoxStyler base, String token) => _applyPrefixedToken(
-    base,
-    token,
-    _boxVariants,
-    BoxStyler.new,
-    _applyBoxAtomic,
-    (b, bp, s) => b.onBreakpoint(bp, s),
-  );
-
-  TextStyler _applyTextToken(TextStyler base, String token) =>
-      _applyPrefixedToken(
-        base,
-        token,
-        _textVariants,
-        TextStyler.new,
-        _applyTextAtomic,
-        (b, bp, s) => b.onBreakpoint(bp, s),
-      );
-
-  /// Finds the first colon that's not inside square brackets.
-  /// Delegates to the shared utility in tw_utils.dart.
-  int _findFirstPrefixColon(String token) =>
-      findFirstColonOutsideBrackets(token);
-
-  S _carryTransforms<S>(S from, S to) {
-    _transformTracker.transfer(from, to);
-    return to;
-  }
-
-  S _applyTransformMatrix<S>(S styler, Matrix4 matrix) {
-    if (styler is BoxStyler) {
-      return styler.transform(matrix) as S;
-    }
-    if (styler is FlexBoxStyler) {
-      return styler.transform(matrix) as S;
-    }
-    return styler;
-  }
-
-  S _flushTransforms<S>(S styler) {
-    if (!_transformTracker.hasTransforms(styler)) return styler;
-    final matrix = _transformTracker.flush(styler);
-    if (matrix == null) return styler;
-    return _applyTransformMatrix(styler, matrix);
-  }
-
-  S _applyPrefixedToken<S>(
-    S base,
-    String token,
-    Map<String, _VariantApplier<S>> variants,
-    S Function() newStyler,
-    S Function(S, String) applyAtomic,
-    S Function(S, Breakpoint, S) applyBreakpoint,
-  ) {
-    final prefixIndex = _findFirstPrefixColon(token);
-    if (prefixIndex <= 0) {
-      final result = applyAtomic(base, token);
-      return _carryTransforms(base, result);
-    }
-
-    final head = token.substring(0, prefixIndex);
-    final tail = token.substring(prefixIndex + 1);
-
-    if (_isBreakpoint(head)) {
-      final min = config.breakpointOf(head);
-      var childStyler = _applyPrefixedToken(
-        newStyler(),
-        tail,
-        variants,
-        newStyler,
-        applyAtomic,
-        applyBreakpoint,
-      );
-      // Copy base transforms to child BEFORE flushing so variant gets both
-      // Use copyTo (not transfer) to preserve base transforms for final flush
-      _transformTracker.copyTo(base, childStyler);
-      // If child has transforms but base doesn't, mark base as needing identity for animation
-      final childHasTransforms = _transformTracker.hasTransforms(childStyler);
-      final baseHasTransforms = _transformTracker.hasTransforms(base);
-      if (childHasTransforms && !baseHasTransforms) {
-        _transformTracker.forStyler(base).needsIdentity = true;
-      }
-      childStyler = _flushTransforms(childStyler);
-      final result = applyBreakpoint(
-        base,
-        Breakpoint(minWidth: min),
-        childStyler,
-      );
-      return _carryTransforms(base, result);
-    }
-
-    final variantFn = variants[head];
-    if (variantFn != null) {
-      var childStyler = _applyPrefixedToken(
-        newStyler(),
-        tail,
-        variants,
-        newStyler,
-        applyAtomic,
-        applyBreakpoint,
-      );
-      // Copy base transforms to child BEFORE flushing so variant gets both
-      // Use copyTo (not transfer) to preserve base transforms for final flush
-      _transformTracker.copyTo(base, childStyler);
-      // If child has transforms but base doesn't, mark base as needing identity for animation
-      final childHasTransforms = _transformTracker.hasTransforms(childStyler);
-      final baseHasTransforms = _transformTracker.hasTransforms(base);
-      if (childHasTransforms && !baseHasTransforms) {
-        _transformTracker.forStyler(base).needsIdentity = true;
-      }
-      childStyler = _flushTransforms(childStyler);
-      final result = variantFn(base, childStyler);
-      return _carryTransforms(base, result);
-    }
-
-    final result = applyAtomic(base, token);
-    return _carryTransforms(base, result);
-  }
-
-  FlexBoxStyler _applyFlexAtomic(FlexBoxStyler styler, String token) {
-    // Try resolver first
-    if (token.startsWith('gap-x-') || token.startsWith('gap-y-')) {
-      return styler;
-    }
-
-    final parsed = _resolver.resolveToken(token);
-    if (parsed != null && parsed.isNotEmpty) {
-      return _applyResolvedProperties(
-        styler,
-        parsed,
-        (current, property, value) => _applyPropertyToFlex(
-          current,
-          property,
-          value,
-          config,
-          _transformTracker,
-        ),
-      );
-    }
-
-    return _applySharedBoxLikeFallback(
-      styler,
-      token,
-      config: config,
-      onUnsupported: onUnsupported,
-      setWidth: (current, value) => current.width(value),
-      setHeight: (current, value) => current.height(value),
-      applyDefaultTextStyle: (current, textStyle) =>
-          current.wrapDefaultTextStyle(textStyle),
-      applyItemsBaseline: (current) => current
-          .crossAxisAlignment(CrossAxisAlignment.baseline)
-          .textBaseline(TextBaseline.alphabetic),
-    );
-  }
-
-  BoxStyler _applyBoxAtomic(BoxStyler styler, String token) {
-    // Try resolver first
-    final parsed = _resolver.resolveToken(token);
-    if (parsed != null && parsed.isNotEmpty) {
-      return _applyResolvedProperties(
-        styler,
-        parsed,
-        (current, property, value) => _applyPropertyToBox(
-          current,
-          property,
-          value,
-          config,
-          _transformTracker,
-        ),
-      );
-    }
-
-    return _applySharedBoxLikeFallback(
-      styler,
-      token,
-      config: config,
-      onUnsupported: onUnsupported,
-      setWidth: (current, value) => current.width(value),
-      setHeight: (current, value) => current.height(value),
-      applyDefaultTextStyle: (current, textStyle) =>
-          current.wrapDefaultTextStyle(textStyle),
-    );
-  }
-
-  TextStyler _applyTextAtomic(TextStyler styler, String token) {
-    // Try resolver first
-    final parsed = _resolver.resolveToken(token);
-    if (parsed != null && parsed.isNotEmpty) {
-      var result = styler;
-      for (final p in parsed) {
-        result = _applyPropertyToText(result, p.property, p.value, config);
-        // Apply Tailwind's default line heights for text-* sizes
-        if (p.property == TwProperty.fontSize && p.value is TwLengthValue) {
-          // Find the original key to look up line height
-          final key = _findTextSizeKey(token);
-          if (key != null) {
-            final lineHeight = tailwindLineHeights[key];
-            if (lineHeight != null) {
-              result = result.height(lineHeight);
-            }
-          }
-        }
-      }
-      return result;
-    }
-
-    // Fallback handling
-    var handled = true;
-
-    // leading-even and leading-trim special cases
-    if (token == 'leading-even') {
-      return styler.textHeightBehavior(
-        TextHeightBehaviorMix(
-          leadingDistribution: TextLeadingDistribution.even,
-        ),
-      );
-    }
-    if (token == 'leading-trim') {
-      return styler.textHeightBehavior(
-        TextHeightBehaviorMix(
-          leadingDistribution: TextLeadingDistribution.even,
-          applyHeightToFirstAscent: false,
-          applyHeightToLastDescent: false,
-        ),
-      );
-    }
-
-    if (_isAnimationToken(token)) {
-      return styler;
-    }
-
-    // Text size tokens (text-lg, text-sm, etc.)
-    // The resolver treats 'text-*' as color tokens, but these are font sizes
-    if (token.startsWith('text-')) {
-      final key = token.substring(5);
-      // First check if it's a font size
-      final size = config.fontSizeOf(key, fallback: -1);
-      if (size > 0) {
-        var result = styler.fontSize(size);
-        final lineHeight = tailwindLineHeights[key];
-        if (lineHeight != null) {
-          result = result.height(lineHeight);
-        }
-        return result;
-      }
-      // Then check if it's a color
-      final color = config.colorOf(key);
-      if (color != null) {
-        return styler.color(color);
-      }
-      handled = false;
-    } else {
-      handled = false;
-    }
-
-    if (!handled) {
-      onUnsupported?.call(token);
-    }
-
-    return styler;
-  }
-
-  String? _findTextSizeKey(String token) {
-    if (token.startsWith('text-')) {
-      return token.substring(5);
-    }
-    return null;
-  }
-
-  // ===========================================================================
-  // Accumulator Application
-  // ===========================================================================
-
-  S _applyBorderSides<S>(
-    S styler,
-    _BorderAccum border, {
-    required Color color,
-    required _BorderSideApplier<S> top,
-    required _BorderSideApplier<S> bottom,
-    required _BorderSideApplier<S> left,
-    required _BorderSideApplier<S> right,
-  }) {
-    var result = styler;
-
-    if (border.topWidth != null) {
-      result = top(result, color: color, width: border.topWidth!);
-    }
-    if (border.bottomWidth != null) {
-      result = bottom(result, color: color, width: border.bottomWidth!);
-    }
-    if (border.leftWidth != null) {
-      result = left(result, color: color, width: border.leftWidth!);
-    }
-    if (border.rightWidth != null) {
-      result = right(result, color: color, width: border.rightWidth!);
-    }
-
-    return result;
-  }
-
-  S _applyAccumulatedBorders<S>(
-    S styler,
-    _BorderAccum baseBorder,
-    Map<String, _BorderAccum> variantBorders, {
-    required Map<String, _VariantApplier<S>> variants,
-    required S Function() newStyler,
-    required _StylerMerge<S> merge,
-    required _BreakpointApplier<S> applyBreakpoint,
-    required _BorderSideApplier<S> top,
-    required _BorderSideApplier<S> bottom,
-    required _BorderSideApplier<S> left,
-    required _BorderSideApplier<S> right,
-  }) {
-    var result = styler;
-
-    // Base borders
-    if (baseBorder.hasStructure) {
-      final color = baseBorder.color ?? _defaultBorderColor(config);
-      result = _applyBorderSides(
-        result,
-        baseBorder,
-        color: color,
-        top: top,
-        bottom: bottom,
-        left: left,
-        right: right,
-      );
-    }
-
-    // Variant borders
-    for (final entry in variantBorders.entries) {
-      final inherited = entry.value.inheritFrom(baseBorder);
-      if (!inherited.hasStructure) continue;
-
-      final color = inherited.color ?? _defaultBorderColor(config);
-      final variantStyle = _applyBorderSides(
-        newStyler(),
-        inherited,
-        color: color,
-        top: top,
-        bottom: bottom,
-        left: left,
-        right: right,
-      );
-
-      final wrapped = _applyPrefixedToken<S>(
-        newStyler(),
-        '${entry.key}:__tw_internal__',
-        variants,
-        newStyler,
-        (base, _) => variantStyle,
-        applyBreakpoint,
-      );
-      result = merge(result, wrapped);
-    }
-
-    return result;
   }
 }
 
