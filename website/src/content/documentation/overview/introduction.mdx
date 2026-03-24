@@ -4,37 +4,34 @@ og_image: introduction-og.png
 ---
 # Introduction
 
-Mix is a styling system for Flutter that separates style definitions from widget structure. It provides a composable, type-safe way to define and apply styles. You'll learn how to define styles with Stylers, apply them to widgets, and adapt them with variants and tokens.
+Mix is a styling system for Flutter that separates style definitions from widget structure. It provides a composable, type-safe way to define and apply styles using a fluent API, design tokens, and context-aware variants.
 
--  Compose, merge, and apply styles across widgets
--  Write maintainable styling definitions separate from widget code
--  Apply styles conditionally based on BuildContext
+- Compose, merge, and apply styles across widgets
+- Write maintainable styling definitions separate from widget code
+- Adapt styles conditionally based on interactions and context
 
 ## Why Mix?
 
-Mix provides utility functions for intuitive, composable styling that stays consistent across widgets and files—without being tied to Material Design.
+Flutter's built-in styling works well for simple widgets, but as your app grows, common pain points emerge:
 
-## Goals
+- **Style duplication**: The same colors, spacing, and borders are repeated across widgets with no easy way to share them.
+- **Tight coupling**: Style logic lives inside `build()` methods, making it hard to reuse or test independently.
+- **No conditional styling**: Adapting styles for hover, press, dark mode, or breakpoints requires manual boilerplate.
+
+Mix solves these by giving you a dedicated styling layer that stays consistent across widgets and files — without being tied to Material Design.
+
+## Goals and Principles
 
 - Define styles outside widgets while retaining `BuildContext` access
 - Reuse style definitions across your app for consistency
 - Adapt styles conditionally using variants (hover, dark mode, breakpoints)
 - Type-safe composability using Dart's type system
 
-## Guiding Principles
+Mix is designed to be a **simple**, thin layer over Flutter — widgets remain compatible and predictable. The API mirrors Flutter naming conventions for **consistency**, lets you build complex styles from reusable pieces through **composability**, and is fully **extensible** to fit your needs.
 
--  **Simple**: Thin layer over Flutter—widgets remain compatible and predictable
--  **Consistent**: API mirrors Flutter naming conventions
--  **Composable**: Build complex styles from simple, reusable pieces
--  **Extensible**: Override and extend utilities to fit your needs
+## The Styler Pattern
 
-## Understanding the Styler Pattern
-
-Mix provides two constructor patterns for Styler classes. Understanding when to use each is key to effective styling:
-
-### Fluent API: `BoxStyler`
-
-The default constructor provides a fluent API for chaining style properties:
+Define styles using a fluent, chainable API with `Styler` classes:
 
 ```dart
 final boxStyle = BoxStyler()
@@ -43,18 +40,11 @@ final boxStyle = BoxStyler()
     .borderRounded(10);
 ```
 
-The preview below shows this style applied to a box.
-
 <FlutterPreview previewId="overview/introduction.0" height={200} />
 
-Use this pattern when:
-- Defining styles with direct values
-- Chaining multiple style properties together
-- Building most common styling use cases
+Use this pattern when defining styles with direct values, chaining multiple properties, or building most common styling use cases. Learn more about [styling](/documentation/guides/styling).
 
-### Prop-Based API
-
-The `.create()` constructor accepts `Prop<T>` parameters for advanced composition:
+For advanced composition with design tokens and directives, Mix also offers a [Prop-based API](/documentation/guides/styling) using the `.create()` constructor:
 
 ```dart
 final style = BoxStyler.create(
@@ -63,45 +53,9 @@ final style = BoxStyler.create(
 );
 ```
 
-Use this pattern when:
-- Working with design tokens (`Prop.token()`)
-- Applying number directives like `multiply()` or `clamp()`
-- Building custom widget libraries that need deferred resolution
-
-### How `Prop<T>` Works
-
-`Prop<T>` is a wrapper that enables deferred value resolution. It can hold:
-- **Direct values**: `Prop.value(Colors.blue)`
-- **Token references**: `Prop.token($primaryColor)`
-- **Directives**: `Prop.value(16.0).multiply(2).clamp(0, 50)`
-
-Values are resolved when the style is applied, allowing tokens to be looked up from `MixScope` and directives to transform values at build time.
-
 ## Key Features
 
-### **Powerful Styling API**:
-
-Define styles using a fluent, chainable API with `Styler` classes:
-
-```dart
-import 'package:flutter/material.dart';
-import 'package:mix/mix.dart';
-
-final boxStyle = BoxStyler()
-    .height(100)
-    .width(100)
-    .color(Colors.purple)
-    .borderRounded(10);
-
-final textStyle = TextStyler()
-    .fontSize(20)
-    .fontWeight(.bold)
-    .color(Colors.black);
-```
-
-Learn more about [styling](/documentation/guides/styling)
-
-### **Dynamic Styling**
+### Dynamic Styling
 
 Styles can adapt to interactions and context (hover, press, dark mode):
 
@@ -114,13 +68,13 @@ final buttonStyle = BoxStyler()
     .onDark(.color(Colors.blue.shade200));
 ```
 
-Learn more about [Dynamic Styling](/documentation/guides/dynamic-styling)
+Learn more about [Dynamic Styling](/documentation/guides/dynamic-styling).
 
-### **Animation Support**:
+### Animation Support
 
 Mix supports implicit animations, phase animations (multi-step sequences), and keyframe animations. Learn more in the [Animations Guide](/documentation/guides/animations).
 
-### **Design Tokens and Theming**:
+### Design Tokens and Theming
 
 Define reusable design tokens for colors, spacing, radii, and more:
 
@@ -133,17 +87,14 @@ final tokenDefinitions = <MixToken, Object>{
   $borderRadius: Radius.circular(8),
 };
 
-final tokenStyle = BoxStyler()
-    .color($primaryColor())
-    .width(100)
-    .height(100)
-    .borderRadius(BorderRadiusGeometryMix.all($borderRadius()));
-
-// Set the tokens in the MixScope
 MixScope(
   tokens: tokenDefinitions,
   child: MyApp(),
 );
 ```
 
-Learn more about [Design Tokens and Theming](/documentation/guides/design-token)
+Learn more about [Design Tokens and Theming](/documentation/guides/design-token).
+
+## Next Steps
+
+Ready to start building? Head to the [Getting Started](/documentation/overview/getting-started) guide to set up Mix and create your first styled widget.

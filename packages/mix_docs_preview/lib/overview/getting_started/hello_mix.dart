@@ -7,7 +7,6 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
-
 import 'package:mix_docs_preview/helpers.dart';
 
 void main() {
@@ -17,21 +16,17 @@ void main() {
 class Example extends StatelessWidget {
   const Example({super.key});
 
+  BoxStyler get _box => BoxStyler()
+      .size(240, 100)
+      .color(Colors.blue)
+      .alignment(.center)
+      .borderRounded(12)
+      .border(.all(.color(Colors.black).width(1).style(.solid)));
+
+  TextStyler get _text => TextStyler().color(Colors.white).fontSize(18);
+
   @override
   Widget build(BuildContext context) {
-    final cardStyle = BoxStyler()
-        .height(100)
-        .width(240)
-        .color(Colors.blue)
-        .borderRounded(12)
-        .borderAll(color: Colors.black, width: 1, style: BorderStyle.solid);
-
-    return Box(
-      style: cardStyle,
-      child: StyledText(
-        'Hello Mix',
-        style: TextStyler.color(Colors.white).fontSize(18),
-      ),
-    );
+    return _box(child: _text('Hello Mix'));
   }
 }
