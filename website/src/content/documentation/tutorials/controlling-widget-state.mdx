@@ -1,74 +1,264 @@
 
-# Controlling Widget State
+# Advanced Widget State Control
 
-In this tutorial, we'll explore how to manage manually widget states in Mix, including hover, pressed, and focused states. Mix provides multiple approaches to handle widget states, from simple automatic state management to advanced manual control using `WidgetStatesController`.
+This tutorial covers scenarios where Mix's automatic state management isn't enough. You'll learn to use `WidgetStatesController` for programmatic control, custom states like `selected`, shared state across widgets, and low-level style resolution with `StyleBuilder`.
 
-## Approach 1: Automatic State Management
+## Prerequisites
 
-Mix makes handling hover and press states effortless with any `StyledWidget`. These states are tracked for you automatically, requiring no extra setup:
+Before starting, you should be familiar with:
+
+- [Dynamic Styling](/documentation/guides/dynamic-styling) — how `onHovered`, `onPressed`, `onFocused`, and other built-in variants work
+- Flutter's `StatefulWidget` lifecycle and `WidgetStatesController`
+
+> The Dynamic Styling guide covers automatic state management — variants that work out of the box with any Mix widget. This tutorial picks up where that guide leaves off.
+
+## When You Need Manual Control
+
+Automatic variants handle the common cases: hover, press, focus, disabled. But you need `WidgetStatesController` when:
+
+- You want to **toggle custom states** like `selected` or `error`
+- You need **programmatic control** (setting states from timers, streams, or callbacks)
+- You want to **share a single controller** across multiple widgets
+- You're building a **custom interactive widget** with non-standard gesture handling
+
+## WidgetStatesController API
+
+`WidgetStatesController` is Flutter's standard controller for tracking widget states. Mix extends it with convenience setters and getters:
 
 ```dart
-class SimpleExample extends StatelessWidget {
-  const SimpleExample({super.key});
+final controller = WidgetStatesController();
 
-  BoxStyler get style => BoxStyler()
-      .color(Colors.red)
-      .size(100, 100)
-      .onHovered(.color(Colors.blue))
-      .onPressed(.color(Colors.green));
+// Setters
+controller.pressed = true;
+controller.hovered = true;
+controller.focused = true;
+controller.disabled = true;
+controller.selected = true;
+controller.dragged = true;
+controller.error = true;
+
+// Getters
+controller.pressed;   // bool
+controller.selected;  // bool
+
+// Generic API
+controller.update(WidgetState.selected, true);
+controller.has(WidgetState.selected); // bool
+```
+
+The controller is a `Listenable` — it notifies listeners whenever its state set changes.
+
+> Always dispose the controller in your `State.dispose()` method to avoid memory leaks.
+
+## Passing a Controller to Pressable
+
+The simplest way to use manual state control is to pass a controller directly to `Pressable`. This lets you read and write states while `Pressable` still handles gesture detection for you:
+
+```dart
+class SelectableBox extends StatefulWidget {
+  const SelectableBox({super.key});
+
+  @override
+  State<SelectableBox> createState() => _SelectableBoxState();
+}
+
+class _SelectableBoxState extends State<SelectableBox> {
+  final controller = WidgetStatesController();
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Just calling style() gives you a Box that handles these states for you.
-    return style() // return a Box;
+    final style = BoxStyler()
+        .color(Colors.red)
+        .height(100)
+        .width(100)
+        .borderRounded(10)
+        .variant(ContextVariant.widgetState(.selected), .color(Colors.blue));
+
+    return Pressable(
+      onPress: () {
+        final isSelected = controller.has(.selected);
+        controller.update(.selected, !isSelected);
+      },
+      controller: controller,
+      child: Box(style: style),
+    );
   }
 }
 ```
 
-<FlutterPreview previewId="tutorials/controlling-widget-state.0" title="Automatic hover state" height={200} />
+<FlutterPreview previewId="tutorials/controlling-widget-state.0" title="Tap to toggle selected state" height={200} />
 
-In this example:
-- The base color is red.
-- When hovered, the color changes to blue.
-- When pressed, the color changes to green.
+Key points:
+- `Pressable` still tracks hover, press, and focus automatically
+- The controller gives you access to toggle `selected` on tap
+- `.variant(ContextVariant.widgetState(.selected), ...)` applies styles when the selected state is active
+- Unlike `onHovered` or `onPressed`, there is no `.onSelected()` shorthand — use `.variant()` with `ContextVariant.widgetState()` for states beyond the standard interaction set
 
-You do not need to wrap `Pressable` or do anything else for these states—they work out of the box.
+## Custom States with `.variant()`
 
----
-
-If you want to control focus state (`onFocused`), use `PressableBox` instead of `Box`. This is because tracking focus state requires a `Focus` widget, which `PressableBox` provides:
+The `onHovered`, `onPressed`, `onFocused`, and `onDisabled` shortcuts cover common interaction states. For other states — `selected`, `dragged`, `error` — use `.variant()` with `ContextVariant.widgetState()`:
 
 ```dart
-class FocusedExample extends StatelessWidget {
-  const FocusedExample({super.key});
+final style = BoxStyler()
+    .color(Colors.grey)
+    .variant(ContextVariant.widgetState(.selected), .color(Colors.blue))
+    .variant(ContextVariant.widgetState(.error), .color(Colors.red));
+```
 
-  BoxStyler get style => BoxStyler()
-      .color(Colors.red)
-      .size(100, 100)
-      .onFocused(.color(Colors.yellow));
+This works with any `WidgetState` value. The variant activates when the corresponding state is present in the nearest `WidgetStatesController`.
+
+## Selected Toggle Example
+
+Here's a more complete example — a toggle button that animates between selected and unselected states, with coordinated styles across the container and its label:
+
+```dart
+class ToggleButton extends StatefulWidget {
+  const ToggleButton({super.key});
+
+  @override
+  State<ToggleButton> createState() => _ToggleButtonState();
+}
+
+class _ToggleButtonState extends State<ToggleButton> {
+  final controller = WidgetStatesController();
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return PressableBox(style: style);
+    final boxStyle = BoxStyler()
+        .height(60)
+        .width(120)
+        .borderRounded(30)
+        .color(Colors.grey.shade200)
+        .borderAll(color: Colors.grey.shade300, width: 2)
+        .animate(.spring(300.ms))
+        .variant(
+          ContextVariant.widgetState(.selected),
+          .color(Colors.blue.shade500)
+              .borderAll(color: Colors.blue.shade600, width: 2)
+              .shadow(
+                .color(Colors.blue.shade200)
+                .blurRadius(10)
+                .spreadRadius(2),
+              ),
+        );
+
+    final textStyle = TextStyler()
+        .fontSize(16)
+        .fontWeight(.w600)
+        .color(Colors.grey.shade700)
+        .variant(ContextVariant.widgetState(.selected), .color(Colors.white));
+
+    return Pressable(
+      onPress: () {
+        final isSelected = controller.has(.selected);
+        controller.update(.selected, !isSelected);
+      },
+      controller: controller,
+      child: Box(
+        style: boxStyle,
+        child: Center(
+          child: StyledText(
+            controller.has(.selected) ? 'Selected' : 'Select Me',
+            style: textStyle,
+          ),
+        ),
+      ),
+    );
   }
 }
 ```
 
-In this example, the color changes to yellow when the widget has focus.
+Both the container and the text respond to the same `.selected` state because they share the same `WidgetStatesController` through `Pressable`. The `.animate(.spring(300.ms))` on the box style produces a smooth spring transition when toggling.
 
-## Approach 2: Manual State Control with WidgetStatesController
+## Driving State from External Sources
 
-For more advanced scenarios where you need manual control over widget states, you can use `WidgetStatesController` with `StyleBuilder`:
+Because `WidgetStatesController` is just a `Listenable`, you can drive it from any source — a parent widget, a stream, a timer, or business logic:
 
 ```dart
-class AdvancedExample extends StatefulWidget {
-  const AdvancedExample({super.key});
+class ExternallyControlledBox extends StatefulWidget {
+  final bool selected;
+  final VoidCallback onPressed;
+  const ExternallyControlledBox({
+    super.key,
+    required this.selected,
+    required this.onPressed,
+  });
 
   @override
-  State<AdvancedExample> createState() => _AdvancedExampleState();
+  State<ExternallyControlledBox> createState() =>
+      _ExternallyControlledBoxState();
 }
 
-class _AdvancedExampleState extends State<AdvancedExample> {
+class _ExternallyControlledBoxState extends State<ExternallyControlledBox> {
+  late final WidgetStatesController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = WidgetStatesController();
+    controller.selected = widget.selected;
+  }
+
+  @override
+  void didUpdateWidget(ExternallyControlledBox oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.selected != widget.selected) {
+      controller.selected = widget.selected;
+    }
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final style = BoxStyler()
+        .color(Colors.grey)
+        .height(60)
+        .width(120)
+        .borderRounded(8)
+        .animate(.easeInOut(300.ms))
+        .variant(ContextVariant.widgetState(.selected), .color(Colors.black));
+
+    return Pressable(
+      onPress: widget.onPressed,
+      controller: controller,
+      child: Box(style: style),
+    );
+  }
+}
+```
+
+The parent controls `selected` via a prop, and the widget syncs the controller in `didUpdateWidget`. Gesture handling (hover, press) still works automatically through `Pressable`.
+
+## Low-Level Control with StyleBuilder
+
+For full control over how styles are resolved and rendered — without `Pressable` — use `StyleBuilder` directly with a controller. This is useful when you need custom gesture handling or want to build a non-standard interactive widget.
+
+```dart
+class CustomInteraction extends StatefulWidget {
+  const CustomInteraction({super.key});
+
+  @override
+  State<CustomInteraction> createState() => _CustomInteractionState();
+}
+
+class _CustomInteractionState extends State<CustomInteraction> {
   final controller = WidgetStatesController();
 
   @override
@@ -81,8 +271,7 @@ class _AdvancedExampleState extends State<AdvancedExample> {
       .color(Colors.red)
       .size(100, 100)
       .onHovered(.color(Colors.blue))
-      .onPressed(.color(Colors.green))
-      .onFocused(.color(Colors.yellow));
+      .onPressed(.color(Colors.green));
 
   @override
   Widget build(BuildContext context) {
@@ -102,73 +291,76 @@ class _AdvancedExampleState extends State<AdvancedExample> {
 }
 ```
 
-### Creating the WidgetStatesController
+### How StyleBuilder Works
 
-First, create an instance of `WidgetStatesController` in your state class:
+`StyleBuilder` resolves your style definition against the current controller state and passes the fully resolved spec to the builder function:
+
+- **`style`** — the style (with variants) to resolve
+- **`controller`** — the `WidgetStatesController` whose state set determines which variants are active
+- **`builder(context, spec)`** — receives the resolved spec reflecting the current state (e.g., if `controller.pressed` is `true`, the spec already includes the `onPressed` overrides)
+
+The `StyleSpec(spec: spec)` wrapper passes the pre-resolved spec directly to `Box`, bypassing the normal style resolution that `Box` would do on its own. This is necessary because `StyleBuilder` has already resolved the style for you.
+
+### Inheritable Styles
+
+`StyleBuilder` has an `inheritable` parameter. When set to `true`, the resolved style is provided to descendant widgets via `StyleProvider`, letting child `StyleBuilder` instances inherit and merge with the parent's style:
 
 ```dart
-final controller = WidgetStatesController();
+StyleBuilder(
+  style: parentStyle,
+  controller: controller,
+  inheritable: true,
+  builder: (context, spec) {
+    return StyleBuilder(
+      style: childStyle, // merges with parentStyle
+      builder: (context, childSpec) {
+        return Box(styleSpec: StyleSpec(spec: childSpec));
+      },
+    );
+  },
+)
 ```
 
-Remember to dispose of the controller when the widget is disposed to avoid memory leaks:
+## Listening to State Changes
+
+Since `WidgetStatesController` extends `ChangeNotifier`, you can listen to state changes for side effects — logging, analytics, triggering animations:
 
 ```dart
 @override
+void initState() {
+  super.initState();
+  controller = WidgetStatesController();
+  controller.addListener(_onStateChanged);
+}
+
+void _onStateChanged() {
+  if (controller.selected) {
+    // Trigger a side effect when selected
+    analytics.track('item_selected');
+  }
+}
+
+@override
 void dispose() {
+  controller.removeListener(_onStateChanged);
   controller.dispose();
   super.dispose();
 }
 ```
 
-### Managing Widget States
+## Summary
 
-The `WidgetStatesController` provides properties to control different widget states:
+| Pattern | When to use |
+|---------|-------------|
+| `onHovered` / `onPressed` / `onFocused` on any widget | Standard interaction states — [covered in Dynamic Styling](/documentation/guides/dynamic-styling) |
+| `Pressable` + `controller` | Toggle custom states (`selected`, `error`) while keeping automatic gesture handling |
+| `.variant(ContextVariant.widgetState(...))` | Style any `WidgetState` beyond the `on*` shortcuts |
+| `StyleBuilder` + `controller` | Full control over gesture detection and style resolution |
+| `inheritable: true` on `StyleBuilder` | Pass resolved styles down to child `StyleBuilder` instances |
+| `controller.addListener(...)` | React to state changes with side effects |
 
-- `controller.pressed = true/false` - Controls the pressed state
-- `controller.hovered = true/false` - Controls the hover state  
-- `controller.focused = true/false` - Controls the focus state
-- `controller.disabled = true/false` - Controls the disabled state
+## Next Steps
 
-### Using StyleBuilder
-
-`StyleBuilder` is the low-level building block for creating styled widgets with Mix. It resolves your style definitions and provides the resolved spec to the builder function:
-
-```dart
-StyleBuilder(
-  style: style,
-  controller: controller,
-  builder: (context, spec) {
-    return Box(styleSpec: StyleSpec(spec: spec));
-  },
-)
-```
-
-The `builder` function receives:
-- `context` - The build context
-- `spec` - The resolved `BoxSpec` with all style properties applied based on the current widget states
-
-### Connecting Gesture Detection
-
-Use Flutter's `GestureDetector` to connect user interactions to the controller:
-
-```dart
-GestureDetector(
-  onTapDown: (_) => controller.pressed = true,
-  onTapUp: (_) => controller.pressed = false,
-  onTapCancel: () => controller.pressed = false,
-  child: StyleBuilder(...),
-)
-```
-
-## When to Use Each Approach
-
-**Use automatic state management (Approach 1) when:**
-- You need simple hover and press interactions (focus requires `PressableBox` or a `Pressable` wrapper)
-- You want Mix to handle all the complexity for you
-- You're building standard interactive widgets
-
-**Use manual state control (Approach 2) when:**
-- You need custom gesture handling logic
-- You want to programmatically control widget states
-- You need to share state across multiple widgets
-- You're building complex custom widgets with specific interaction patterns
+- [Building a Design System Widget](/documentation/tutorials/creating-a-widget) — see `Pressable`, `StyleBuilder`, and variant enums used together in a full button component
+- [Creating Context Variants](/documentation/tutorials/creating-context-variants) — create custom `ContextVariant` instances based on `BuildContext`
+- [Animations](/documentation/guides/animations) — add implicit and spring animations to state transitions

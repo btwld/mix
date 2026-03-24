@@ -7,32 +7,30 @@ import { Steps, Callout } from "nextra/components";
 
 # Getting Started
 
+This guide walks you through installing Mix and building your first styled widget.
+
 ## Prerequisites
 
-Before installing Mix 2.0, ensure you have:
+Before installing Mix, ensure you have:
 
-- **Dart SDK**: 3.10.0 or higher (required for the fluent Styler API)
-- **Flutter**: Latest stable version recommended
-
-<Callout type="info">
-  Mix 2.0 uses Dart's enhanced method chaining capabilities introduced in Dart 3.10. Ensure your project's `pubspec.yaml` specifies the correct SDK constraint: `sdk: '>=3.10.0 <4.0.0'`
-</Callout>
+- **Dart SDK**: 3.11.0 or higher
+- **Flutter**: 3.41.0 or higher
 
 <Steps>
 
 ### Installation
 
-Install the current 2.0 RC (pre-release):
+Install the latest version:
 
 ```bash
-flutter pub add mix --pre-release
+flutter pub add mix
 ```
 
 Or pin explicitly in `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  mix: ^2.0.0-rc.0
+  mix: ^{latest_version}
 ```
 
 Import it where you use it:
@@ -43,48 +41,36 @@ import 'package:mix/mix.dart';
 
 ### Your first Mix widget
 
-The preview below shows the result: a blue card with "Hello Mix" text.
-
-<FlutterPreview previewId="overview/getting-started.0" height={220} />
+Build a blue card with "Hello Mix" text. The `BoxStyler` and `TextStyler` classes define styles with a fluent API, and calling them directly creates the corresponding widget:
 
 ```dart
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
-void main() => runApp(const MyApp());
+class Example extends StatelessWidget {
+  const Example({super.key});
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  BoxStyler get _box => BoxStyler()
+      .size(240, 100)
+      .color(Colors.blue)
+      .alignment(.center)
+      .borderRounded(12)
+      .border(.all(.color(Colors.black).width(1).style(.solid)));
+
+  TextStyler get _text => TextStyler().color(Colors.white).fontSize(18);
 
   @override
   Widget build(BuildContext context) {
-    final cardStyle = BoxStyler()
-        .height(100)
-        .width(240)
-        .color(Colors.blue)
-        .borderRounded(12)
-        .borderAll(color: Colors.black, width: 1, style: BorderStyle.solid);
-
-    return MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Box(
-            style: cardStyle,
-            child: StyledText(
-              'Hello Mix',
-              style: TextStyler().color(Colors.white).fontSize(18),
-            ),
-          ),
-        ),
-      ),
-    );
+    return _box(child: _text('Hello Mix'));
   }
 }
 ```
 
+<FlutterPreview previewId="overview/getting-started.0" height={220} />
+
 ### Reuse the style
 
-Extract it and reuse across widgets:
+Extract styles into top-level variables and reuse them across widgets. You can also pass styles via the `style` parameter using Mix's widget classes like `Box` and `StyledText`, and override individual properties by chaining:
 
 ```dart
 final primaryCard = BoxStyler()
@@ -99,11 +85,11 @@ final box2 = Box(
 );
 ```
 
-### What’s next
+### What's next
 
-- [Dynamic Styling](/documentation/guides/dynamic-styling)
-- [Animations Guide](/documentation/guides/animations)
-- [Design Tokens and Theming](/documentation/guides/design-token)
-- [mix_tailwinds Ecosystem Package](/documentation/ecosystem/mix-tailwinds)
+- [Dynamic Styling](/documentation/guides/dynamic-styling) — adapt styles for hover, press, dark mode, and breakpoints
+- [Animations Guide](/documentation/guides/animations) — implicit, phase, and keyframe animations
+- [Design Tokens and Theming](/documentation/guides/design-token) — reusable tokens for colors, spacing, and radii
+- [mix_tailwinds Ecosystem Package](/documentation/ecosystem/mix-tailwinds) — utility-first styling inspired by Tailwind CSS
 
 </Steps>

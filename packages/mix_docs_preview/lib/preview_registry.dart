@@ -9,6 +9,8 @@ import 'guides/animations/implicit_variant_hover.dart' as guide_implicit_hover;
 import 'guides/animations/keyframe_loop.dart' as guide_keyframe_loop;
 import 'guides/animations/keyframe_switch.dart' as guide_keyframe_switch;
 import 'guides/animations/phase_tap_compress.dart' as guide_phase_tap;
+import 'guides/design_token/theme_tokens.dart' as theme_tokens;
+import 'guides/directives/text_directives.dart' as text_directives;
 import 'guides/dynamic_styling/context_variant_flag.dart'
     as context_variant_flag;
 import 'guides/dynamic_styling/disabled.dart' as disabled;
@@ -19,22 +21,21 @@ import 'guides/dynamic_styling/pressed.dart' as pressed;
 import 'guides/dynamic_styling/responsive_size.dart' as responsive_size;
 import 'guides/dynamic_styling/selected.dart' as selected;
 import 'guides/dynamic_styling/selected_toggle.dart' as selected_toggle;
-import 'guides/design_token/theme_tokens.dart' as theme_tokens;
 import 'guides/gradients/gradient_linear.dart' as gradient_linear;
 import 'guides/gradients/gradient_radial.dart' as gradient_radial;
 import 'guides/gradients/gradient_sweep.dart' as gradient_sweep;
-import 'guides/directives/text_directives.dart' as text_directives;
+import 'overview/comparison/preview_0.dart' as comparison_0;
+import 'overview/getting_started/hello_mix.dart' as getting_started_hello_mix;
+import 'tutorials/creating_a_widget/design_system_button.dart'
+    as design_system_button;
 import 'widgets/box/gradient_box.dart' as gradient_box;
 import 'widgets/box/simple_box.dart' as simple_box;
 import 'widgets/flexbox/icon_label_chip.dart' as icon_label_chip;
 import 'widgets/icon/styled_icon.dart' as styled_icon;
 import 'widgets/image/styled_image.dart' as styled_image;
-import 'widgets/text/styled_text.dart' as styled_text;
-import 'overview/getting_started/hello_mix.dart' as getting_started_hello_mix;
-import 'tutorials/creating_a_widget/design_system_button.dart'
-    as design_system_button;
-import 'widgets/vbox/card_layout.dart' as card_layout;
 import 'widgets/stack/layered_boxes.dart' as layered_boxes;
+import 'widgets/text/styled_text.dart' as styled_text;
+import 'widgets/vbox/card_layout.dart' as card_layout;
 
 /// A preview entry with metadata for multi-view embedding, gallery display,
 /// and docs code snippets.
@@ -124,7 +125,7 @@ class PreviewRegistry {
       sourcePath:
           'packages/mix_docs_preview/lib/overview/comparison/preview_0.dart',
       category: _variants,
-      builder: (_) => const hovered.Example(),
+      builder: (_) => const comparison_0.Example(),
     ),
     PreviewEntry(
       previewId: 'overview/comparison.1',
