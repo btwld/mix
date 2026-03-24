@@ -10,7 +10,7 @@ If Flutter is not installed or `flutter --version` fails, run the setup script:
 bash setup.sh
 ```
 
-This installs FVM, Flutter SDK (3.38.1), DCM, and melos, then bootstraps all packages.
+This installs FVM, Flutter SDK (3.41.2), DCM, and melos, then bootstraps all packages.
 
 ## Structure
 
@@ -19,10 +19,17 @@ packages/
   mix/              # Core framework (v2.0.0-rc.0)
   mix_annotations/  # Annotations for codegen
   mix_generator/    # build_runner generator
-  mix_lint/         # Custom linter
-examples/           # Interactive widget gallery
+  mix_lint/         # Custom linter (not in pub workspace, see below)
+  mix_docs_preview/ # Doc preview widgets and manifest for the website
 website/            # Documentation site
 ```
+
+## Pub workspace
+
+The repo uses [Dart pub workspaces](https://dart.dev/tools/pub/workspaces): a single `pubspec.lock` and shared resolution at the root. Run `dart pub get` at the repo root to resolve all workspace packages.
+
+- **In the workspace:** mix, mix_annotations, mix_generator, mix_tailwinds, mix_tailwinds/example, mix_docs_preview.
+- **Excluded:** `mix_lint` (uses analyzer ^7.x for custom_lint_builder; other packages use analyzer >=9). Run `dart pub get` inside `packages/mix_lint` when working on the linter.
 
 ## Commands
 
@@ -89,13 +96,13 @@ final style = BoxStyler()
 - `website/src/content/documentation/widgets/` - Widget-specific APIs
 
 **Reference implementations:**
-- `examples/` - Interactive widget examples (Box, HBox, VBox, Text, Icon)
+- `packages/mix_docs_preview/` - Doc preview widgets (Box, HBox, VBox, Text, Icon, etc.)
 - `packages/mix/lib/src/specs/box/` - Spec/Style/Widget pattern
 
 ## Critical Rules
 
-- **Dart SDK:** >=3.10.0 (enables dot-shorthands)
-- **Flutter:** >=3.38.1
+- **Dart SDK:** >=3.11.0 (enables dot-shorthands)
+- **Flutter:** >=3.41.0
 - **Immutability:** Specs are always immutable; use `copyWith()` for changes
 - **Code generation:** Run `melos run gen:build` after modifying specs
 - **mix.dart is generated:** Don't edit directly; run `melos run exports`
@@ -108,9 +115,27 @@ melos run test:dart       # Dart package tests
 melos run test:coverage   # With coverage report
 ```
 
+## Git Conventions
+
+**Branch naming** (Git Flow prefixes):
+- `feat/` - New features
+- `fix/` - Bug fixes
+- `chore/` - Maintenance (deps, config, cleanup)
+- `docs/` - Documentation changes
+- `refactor/` - Code restructuring
+- `test/` - Test additions/updates
+
+**Commit messages** (Conventional Commits):
+```
+<type>(<scope>): <description>
+
+type: feat, fix, chore, docs, refactor, test, ci
+scope: mix, mix_generator, mix_annotations, mix_lint, mix_docs_preview, website
+```
+
 ## Key Files
 
 - `melos.yaml` - All script definitions
 - `lints_with_dcm.yaml` - Linting rules
-- `.fvmrc` - Flutter version (3.38.1)
+- `.fvmrc` - Flutter version (3.41.2)
 - `packages/mix/lib/src/core/` - Core abstractions

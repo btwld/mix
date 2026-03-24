@@ -9,14 +9,23 @@ You can use `BoxStyler` to create styles with a fluent API. Example:
 
 ```dart
 final style = BoxStyler()
- .width(200)
- .height(100)
- .color(Colors.blue)
- .borderRounded(12)
- .paddingAll(16);
+  .width(200)
+  .height(100)
+  .color(Colors.blue)
+  .borderRounded(12)
+  .paddingAll(16);
 
 Box(style: style, child: Text('Hello Mix'))
 ```
+
+The preview below shows this style applied.
+
+## Interactive Preview
+
+<FlutterPreview
+  previewId="widgets/box.0"
+  height={320}
+/>
 
 ## Constructor
 
@@ -216,6 +225,6 @@ Box(style: style, child: Text('Hello Mix'))
 |--------|-------------|
 | `onHovered` | Creates a variant for hover state |
 | `onPressed` | Creates a variant for pressed state |
-| `onFocused` | Creates a variant for focused state |
+| `onFocused` | Creates a variant for focused state (requires `PressableBox` or `Pressable` wrapper) |
 | `onDisabled` | Creates a variant for disabled state |
 | `onEnabled` | Creates a variant for enabled state (opposite of disabled) |

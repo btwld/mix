@@ -16,10 +16,15 @@ final style = BoxStyler()
     .height(100)
     .width(100)
     .borderRounded(10)
-    .onHovered(BoxStyler().color(Colors.blue));
+    .onHovered(.color(Colors.blue));
 ```
 
 Mix automatically merges the hovered style with the base style—you only define what changes.
+
+<FlutterPreview
+  previewId="guides/dynamic-styling.0"
+  height={200}
+/>
 
 ### Composing Styles with Variants
 
@@ -32,12 +37,11 @@ final styleA = BoxStyler()
   .width(100)
   .borderRounded(10)
   .onHovered(
-    BoxStyler()
-      .color(Colors.blue)
+    .color(Colors.blue)
       .width(200)
   );
 
-final styleB = styleA.onHovered(BoxStyler().color(Colors.green));
+final styleB = styleA.onHovered(.color(Colors.green));
 ```
 
 In this example, `styleB` will have the same style as `styleA`, but when the widget is hovered it has a different color and maintains the width equal to 200. So the final style when hovered will be:
@@ -56,8 +60,8 @@ There are cases where you want to combine multiple variants to achieve a specifi
 
 ```dart
 final hoverStyle = BoxStyler()
-  .onDark(BoxStyler().color(Colors.blue))
-  .onLight(BoxStyler().color(Colors.green));
+  .onDark(.color(Colors.blue))
+  .onLight(.color(Colors.green));
 
 final style = BoxStyler()
   .color(Colors.red)
@@ -77,7 +81,7 @@ Below is a list of all built-in variant methods available on stylers (e.g., `Box
 |--------|-------------|
 | `onHovered(style)` | Applies style when the widget is hovered |
 | `onPressed(style)` | Applies style when the widget is pressed |
-| `onFocused(style)` | Applies style when the widget is focused |
+| `onFocused(style)` | Applies style when the widget is focused (requires `PressableBox` or `Pressable` wrapper) |
 | `onDisabled(style)` | Applies style when the widget is disabled |
 | `onEnabled(style)` | Applies style when the widget is enabled (not disabled) |
 | `onDark(style)` | Applies style in dark mode |

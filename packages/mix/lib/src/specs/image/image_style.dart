@@ -127,6 +127,17 @@ class ImageStyler extends MixStyler<ImageStyler, ImageSpec>
          variants: variants,
        );
 
+  // Factory constructors for dot-shorthand notation
+  factory ImageStyler.image(ImageProvider<Object> value) =>
+      ImageStyler(image: value);
+  factory ImageStyler.width(double value) => ImageStyler(width: value);
+  factory ImageStyler.height(double value) => ImageStyler(height: value);
+  factory ImageStyler.color(Color value) => ImageStyler(color: value);
+  factory ImageStyler.fit(BoxFit value) => ImageStyler(fit: value);
+  factory ImageStyler.alignment(AlignmentGeometry value) =>
+      ImageStyler(alignment: value);
+  factory ImageStyler.repeat(ImageRepeat value) => ImageStyler(repeat: value);
+
   static ImageMutableStyler get chain => .new(ImageStyler());
 
   StyledImage call({

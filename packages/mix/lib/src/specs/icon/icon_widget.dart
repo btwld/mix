@@ -21,6 +21,12 @@ import 'icon_style.dart';
 /// )
 /// ```
 class StyledIcon extends StyleWidget<IconSpec> {
+  /// The icon to display.
+  final IconData? icon;
+
+  /// Semantic label for accessibility.
+  final String? semanticLabel;
+
   const StyledIcon({
     this.icon,
     this.semanticLabel,
@@ -28,12 +34,6 @@ class StyledIcon extends StyleWidget<IconSpec> {
     super.styleSpec,
     super.key,
   });
-
-  /// The icon to display.
-  final IconData? icon;
-
-  /// Semantic label for accessibility.
-  final String? semanticLabel;
 
   @override
   Widget build(BuildContext context, IconSpec spec) {

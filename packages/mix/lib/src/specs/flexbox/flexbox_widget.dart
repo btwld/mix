@@ -28,7 +28,7 @@ typedef HBox = RowBox;
 /// ```dart
 /// final style = FlexBoxStyler()
 ///   .direction(Axis.horizontal)
-///   .mainAxisAlignment(MainAxisAlignment.spaceBetween)
+///   .mainAxisAlignment(.spaceBetween)
 ///   .crossAxisAlignment(CrossAxisAlignment.center)
 ///   .padding(16)
 ///   .spacing(12)
@@ -46,15 +46,15 @@ typedef HBox = RowBox;
 /// ```
 ///
 class FlexBox extends StyleWidget<FlexBoxSpec> {
+  /// Child widgets to be arranged in the flex layout.
+  final List<Widget> children;
+
   const FlexBox({
     super.style = const FlexBoxStyler.create(),
     super.styleSpec,
     super.key,
     this.children = const <Widget>[],
   });
-
-  /// Child widgets to be arranged in the flex layout.
-  final List<Widget> children;
 
   /// Constrains the flex direction for RowBox/ColumnBox.
   /// When specified, prevents conflicting direction in style specs.

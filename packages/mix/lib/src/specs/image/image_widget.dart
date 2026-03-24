@@ -25,17 +25,6 @@ import 'image_style.dart';
 /// )
 /// ```
 class StyledImage extends StyleWidget<ImageSpec> {
-  const StyledImage({
-    super.key,
-    super.style = const ImageStyler.create(),
-    super.styleSpec,
-    this.frameBuilder,
-    this.loadingBuilder,
-    this.errorBuilder,
-    this.image,
-    this.opacity,
-  });
-
   /// The image to display.
   final ImageProvider<Object>? image;
 
@@ -50,6 +39,17 @@ class StyledImage extends StyleWidget<ImageSpec> {
 
   /// Animation for opacity changes.
   final Animation<double>? opacity;
+
+  const StyledImage({
+    super.key,
+    super.style = const ImageStyler.create(),
+    super.styleSpec,
+    this.frameBuilder,
+    this.loadingBuilder,
+    this.errorBuilder,
+    this.image,
+    this.opacity,
+  });
 
   @override
   Widget build(BuildContext context, ImageSpec spec) {

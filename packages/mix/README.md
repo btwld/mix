@@ -6,52 +6,190 @@
 ![GitHub stars](https://img.shields.io/github/stars/btwld/mix?style=for-the-badge&logo=GitHub&logoColor=black&labelColor=white&color=dddddd)
 [![Pub Version](https://img.shields.io/pub/v/mix?label=version&style=for-the-badge)](https://pub.dev/packages/mix/changelog)
 ![Pub Likes](https://img.shields.io/pub/likes/mix?label=Pub%20Likes&style=for-the-badge)
-![Pub Points](https://img.shields.io/pub/points/mix?label=Pub%20Points&style=for-the-badge) [![MIT Licence](https://img.shields.io/github/license/leoafarias/mix?style=for-the-badge&longCache=true)](https://opensource.org/licenses/mit-license.php) [![Awesome Flutter](https://img.shields.io/badge/awesome-flutter-purple?longCache=true&style=for-the-badge)](https://github.com/Solido/awesome-flutter)
+![Pub Points](https://img.shields.io/pub/points/mix?label=Pub%20Points&style=for-the-badge)
+[![MIT Licence](https://img.shields.io/github/license/leoafarias/mix?style=for-the-badge&longCache=true)](https://opensource.org/licenses/mit-license.php)
+[![Awesome Flutter](https://img.shields.io/badge/awesome-flutter-purple?longCache=true&style=for-the-badge)](https://github.com/Solido/awesome-flutter)
 
-Mix is a simple and intuitive styling system for Flutter, enabling the creation of beautiful and consistent UIs with ease.
+**Mix** is a styling system for Flutter that separates style definitions from widget structure. It provides a composable, type-safe way to define and apply styles.
 
-Mix brings industry-proven design system concepts to Flutter. It separates style semantics from widgets while maintaining an easy-to-understand and manageable relationship between them.
-
--  Easily compose, merge, and apply styles across widgets.
--  Write cleaner, more maintainable styling definitions.
--  Apply styles conditionally based on the BuildContext.
+- Compose, merge, and apply styles across widgets
+- Write maintainable styling definitions separate from widget code
+- Apply styles conditionally based on `BuildContext`
 
 ## Why Mix?
 
-Flutter developers often face challenges when it comes to styling widgets and maintaining a consistent look and feel across their apps. Flutter is heavily dependent on the Material Design System and theming, and that can be challenging, especially when creating your own design system.
+Mix provides utility functions for intuitive, composable styling that stays consistent across widgets and files—without being tied to Material Design.
 
-Mix addresses these challenges by creating a styling system that uses utility functions for a more intuitive and composable way to style. This approach can be kept consistent across widgets and files.
+## Goals
 
-## Goals with Mix
-
-- Define visual properties outside the widget's build method while still allowing access to the BuildContext. This is done by having the style definition resolved during widget build, similar to how the current `Theme.of` works, but with much more flexibility.
-- Ensure consistent styling throughout your app. By having separate style definitions, you can reuse not only specific values, like colors and typography, but also entire style definitions across other styles.
-- Quickly adapt to changing design requirements. By promoting style composability and inheritance, you can more easily maintain a `DRY` approach to managing your design system.
-- Create adaptive designs and layouts by leveraging style variants, which are based on existing styles but can be applied conditionally or responsively.
-- Type-safe composability. Mix leverages the power of Dart's type system and class to create a type-safe styling experience.
+- **Define styles outside widgets** while retaining `BuildContext` access (resolved at build time, like `Theme.of`, with more flexibility)
+- **Reuse style definitions** across your app for consistency
+- **Adapt styles conditionally** using variants (hover, dark mode, breakpoints)
+- **Type-safe composability** using Dart's type system
 
 ## Guiding Principles
 
--  **Simple Abstraction**: A low-cost layer over the Flutter API, letting you style widgets without altering their core behavior, ensuring they remain compatible and predictable.
--  **Consistent**: Even though we are creating a new styling system, we should always keep the styling API consistent with its Flutter equivalents.
--  **Composable**: Styles should be easily composable by combining simple, reusable elements, promoting code reuse and maintainability.
--  **Extensible**: Mix should allow for reasonable overrides and reuse of its utilities, making it easy to fit your own needs.
+- **Simple** — Thin layer over Flutter; widgets remain compatible and predictable
+- **Consistent** — API mirrors Flutter naming conventions
+- **Composable** — Build complex styles from simple, reusable pieces
+- **Extensible** — Override and extend utilities to fit your needs
+
+## Understanding the Styler Pattern
+
+Mix provides two constructor patterns for Styler classes:
+
+### Fluent API: `BoxStyler()`
+
+The default constructor gives you a chainable API:
+
+```dart
+final style = BoxStyler()
+    .color(Colors.blue)
+    .paddingAll(16)
+    .borderRounded(8);
+```
+
+Use this when defining styles with direct values and chaining properties.
+
+### Prop-Based API: `BoxStyler.create()`
+
+The `.create()` constructor accepts `Prop<T>` for advanced composition (tokens, directives):
+
+```dart
+final style = BoxStyler.create(
+  color: Prop.token($primaryColor),
+  padding: Prop.value(EdgeInsets.all(16)),
+);
+```
+
+Use this when working with design tokens or number directives like `multiply()` or `clamp()`.
 
 ## Key Features
 
-### **Powerful Styling API**:
+### Styling API
 
-Styles are easily defined using Styler classes like `BoxStyler` and `TextStyler`, which provide a fluent, chainable API for defining style properties:
+Define styles with a fluent, chainable API. Style composition and override are supported—later attributes override earlier ones when chained:
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:mix/mix.dart';
+
+final boxStyle = BoxStyler()
+    .height(100)
+    .width(100)
+    .color(Colors.purple)
+    .borderRounded(10);
+
+final textStyle = TextStyler()
+    .fontSize(20)
+    .fontWeight(.bold)
+    .color(Colors.black);
+
+// Compose from a base style
+final base = BoxStyler()
+    .paddingX(16)
+    .paddingY(8)
+    .borderRounded(8)
+    .color(Colors.black);
+final solid = base.color(Colors.blue);
+```
+
+[Styling guide →](https://fluttermix.com/docs/guides/styling)
+
+### Dynamic Styling (Variants)
+
+Styles adapt to interactions and context (hover, press, dark mode, breakpoints) in one place:
+
+```dart
+final buttonStyle = BoxStyler()
+    .height(50)
+    .borderRounded(25)
+    .color(Colors.blue)
+    .onHovered(.color(Colors.blue.shade700))
+    .onDark(.color(Colors.blue.shade200));
+```
+
+Built-in variants include `onHovered`, `onPressed`, `onFocused`, `onDisabled`, `onDark`, `onLight`, `onBreakpoint`, `onMobile`, `onTablet`, `onDesktop`, and platform/context variants.
+
+[Dynamic styling guide →](https://fluttermix.com/docs/guides/dynamic-styling)
+
+### Design Tokens and Theming
+
+Define reusable tokens and provide them via `MixScope`:
+
+```dart
+final $primary = ColorToken('primary');
+final $spacingMd = SpaceToken('spacing.md');
+
+MixScope(
+  colors: { $primary: Colors.blue },
+  spaces: { $spacingMd: 16.0 },
+  child: MyApp(),
+);
+
+final style = BoxStyler()
+    .color($primary())
+    .paddingAll($spacingMd());
+```
+
+[Design tokens guide →](https://fluttermix.com/docs/guides/design-token)
+
+### Animations
+
+- **Implicit** — Values (state or variants) animate smoothly with `.animate(AnimationConfig....)`
+- **Phase** — Multi-step flows (e.g. tap → compress → expand) with `.phaseAnimation(...)`
+- **Keyframe** — Full control with tracks and keyframes
+
+[Animations guide →](https://fluttermix.com/docs/guides/animations)
+
+### Utility-First Approach
+
+Stylers expose small, composable utilities you combine (e.g. `color`, `border`, `padding`, `borderRadius`). The API follows Flutter naming so it stays familiar:
+
+```dart
+BoxStyler()
+    .paddingAll(20)
+    .paddingX(16)
+    .paddingY(8)
+    .borderAll(color: Colors.red);
+```
+
+[Utility-first overview →](https://fluttermix.com/docs/overview/utility-first)
+
+## Getting Started
+
+### Prerequisites
+
+- **Dart SDK**: 3.11.0 or higher
+- **Flutter**: Latest stable recommended
+
+### Installation
+
+```bash
+flutter pub add mix --pre-release
+```
+
+Or in `pubspec.yaml`:
+
+```yaml
+dependencies:
+  mix: <latest>
+```
+
+```dart
+import 'package:mix/mix.dart';
+```
+
+### First widget
 
 ```dart
 final cardStyle = BoxStyler()
     .height(100)
     .width(240)
-    .color(Colors.purple)
+    .color(Colors.blue)
     .borderRounded(12)
-    .paddingAll(16);
+    .borderAll(color: Colors.black, width: 1, style: orderStyle.solid);
 
-// Apply the style to a Box widget
 Box(
   style: cardStyle,
   child: StyledText(
@@ -61,39 +199,18 @@ Box(
 );
 ```
 
-Learn more about [styling](https://fluttermix.com/docs/guides/styling)
+[Getting started →](https://fluttermix.com/docs/overview/getting-started)
 
-### **BuildContext Responsive Styling**:
+## Documentation
 
-Mix allows you to define styles that are context-aware, applying styles conditionally based on the BuildContext.
-
-```dart
-final style = BoxStyler()
-    .color(Colors.black)
-    .onDark(BoxStyler().color(Colors.white))
-    .onLight(BoxStyler().color(Colors.black));
-```
-
-Learn more about [dynamic styling](https://fluttermix.com/docs/guides/dynamic-styling)
-
-### **Design Tokens and Theming**:
-
-Mix goes beyond the Material `Theme` definitions by allowing the definition of design tokens and properties that can be used across all styling utilities.
-
-### **Utility-First Approach**:
-
-A complete set of utility primitives allows you to define styling properties and values in a more intuitive and composable way.
-
-```dart
-BoxStyler()
-    .paddingAll(20)           // Padding 20 on all sides
-    .paddingX(16)             // Padding 16 on left and right
-    .paddingY(8)              // Padding 8 on top and bottom
-    .paddingTop(20)           // Padding 20 on top
-    .paddingLeft(20);         // Padding 20 on left
-```
-
-Learn more about [utilities](https://fluttermix.com/docs/overview/utility-first)
+- [Introduction](https://fluttermix.com/docs/overview/introduction)
+- [Getting started](https://fluttermix.com/docs/overview/getting-started)
+- [Styling](https://fluttermix.com/docs/guides/styling)
+- [Dynamic styling](https://fluttermix.com/docs/guides/dynamic-styling)
+- [Design tokens](https://fluttermix.com/docs/guides/design-token)
+- [Animations](https://fluttermix.com/docs/guides/animations)
+- [Widgets](https://fluttermix.com/docs/widgets/box) (Box, Text, Icon, Flexbox, Stack, etc.)
+- [Best practices](https://fluttermix.com/docs/overview/best-practices)
 
 ## Contributors
 

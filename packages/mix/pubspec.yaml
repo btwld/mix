@@ -5,8 +5,8 @@ homepage: https://github.com/btwld/mix
 repository: https://github.com/btwld/mix/tree/main/packages/mix
 
 environment:
-  sdk: ">=3.10.0 <4.0.0"
-  flutter: ">=3.38.1"
+  sdk: ">=3.11.0 <4.0.0"
+  flutter: ">=3.41.0"
   
 dependencies:
   flutter:
@@ -16,7 +16,7 @@ dependencies:
 dev_dependencies:
   flutter_lints: ^6.0.0
   dart_code_metrics_presets: ^2.24.0
-  build_runner: ^2.10.5
+  build_runner: ^2.11.0
   mix_generator:
     path: ../mix_generator
   flutter_test:

@@ -789,6 +789,8 @@ class PhaseAnimationConfig<T extends Spec<T>, U extends Style<T>>
     this.onEnd,
   });
 
+  bool get isLooping => trigger == null;
+
   @override
   List<Object?> get props => [styles, trigger, curveConfigs];
 }
@@ -1021,7 +1023,7 @@ class KeyframeTrack<T> with Equatable {
   }
 
   @override
-  List<Object?> get props => [id, segments, tweenBuilder];
+  List<Object?> get props => [id, segments, initial];
 }
 
 typedef KeyframeStyleBuilder<T extends Spec<T>, U extends Style<T>> =
@@ -1062,6 +1064,8 @@ class KeyframeAnimationConfig<S extends Spec<S>> extends AnimationConfig
     required this.initialStyle,
   });
 
+  bool get isLooping => trigger == null;
+
   @override
-  List<Object?> get props => [trigger, timeline, styleBuilder, initialStyle];
+  List<Object?> get props => [trigger, timeline, initialStyle];
 }

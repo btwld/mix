@@ -28,8 +28,8 @@ mixin VariantStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
   /// Returns the concrete type [T], enabling method chaining:
   /// ```dart
   /// final style = BoxStyler()
-  ///   .variant(small, BoxStyler().width(100))
-  ///   .variant(primary, BoxStyler().color(Colors.blue));
+  ///   .variant(small, BoxStyler.width(100))
+  ///   .variant(primary, BoxStyler.color(Colors.blue));
   ///
   /// // Apply and chain:
   /// style.applyVariants([small]).onHovered(BoxStyler().opacity(0.8))

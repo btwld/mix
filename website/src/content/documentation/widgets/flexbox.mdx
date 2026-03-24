@@ -11,10 +11,10 @@ For specific layouts, use `RowBox` for horizontal layouts or `ColumnBox` for ver
 You can use `FlexBoxStyler` to create styles with a fluent API. Example:
 
 ```dart
-final style = FlexBoxStyler()
- .direction(Axis.horizontal)
- .mainAxisAlignment(MainAxisAlignment.spaceBetween)
- .crossAxisAlignment(CrossAxisAlignment.center)
+final style = FlexBoxStyler
+ .direction(.horizontal)
+ .mainAxisAlignment(.spaceBetween)
+ .crossAxisAlignment(.center)
  .paddingAll(16)
  .spacing(12)
  .color(Colors.grey.shade100)
@@ -29,6 +29,13 @@ FlexBox(
  ],
 )
 ```
+
+## Interactive Preview
+
+<FlutterPreview
+  previewId="widgets/flexbox.0"
+  height={320}
+/>
 
 ## Constructor
 

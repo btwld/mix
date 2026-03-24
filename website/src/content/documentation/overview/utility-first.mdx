@@ -24,11 +24,13 @@ This approach promotes:
 final boxStyle = BoxStyler()
   .width(100)
   .paddingAll(10)
-  .alignment(Alignment.center)
+  .alignment(.center)
   .color(Colors.red);
 ```
 
 The example above shows how you can build up a style step by step using the **builder design pattern**. Each method—like `.width(100)` or `.color(Colors.red)`—adds a style property, and you can chain them together. This makes it easy to create and reuse styles in a clear and readable way.
+
+<FlutterPreview previewId="overview/utility-first.0" height={200} />
 
 ## Intuitive and Familiar API
 
@@ -36,11 +38,11 @@ Mix's API is designed to be intuitive and easy to pick up, especially for Flutte
 
 ```dart
 // Explicit alignment
-BoxStyler().alignment(Alignment.centerRight);
+BoxStyler().alignment(.centerRight);
 
 // Spacing helpers
-BoxStyler().paddingAll(16); // All sides
-BoxStyler().paddingX(12).paddingY(8); // Horizontal and vertical
+BoxStyler().padding(.all(16)); // All sides
+BoxStyler().padding(.symmetric(horizontal: 12, vertical: 8)); // Horizontal and vertical
 BoxStyler().paddingOnly(horizontal: 12, vertical: 8); // Specific sides
 ```
 

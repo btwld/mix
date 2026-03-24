@@ -1,6 +1,14 @@
 ## A Comparative Look at Mix
 
-Mix rethinks the way we handle styling in Flutter by simplifying and streamlining the process. This comparison aims to showcase how Mix enhances code readability, maintainability, and reduces boilerplate, especially when dealing with complex widget styles and interactions.
+Mix rethinks the way we handle styling in Flutter by simplifying and streamlining the process.
+
+See the same kind of behavior live: a styled box that reacts to hover and dark mode with Mix (left) and a static box for comparison (right).
+
+<FlutterPreview previewId="overview/comparison.0" height={200} />
+
+<FlutterPreview previewId="overview/comparison.1" height={200} />
+
+This comparison aims to showcase how Mix enhances code readability, maintainability, and reduces boilerplate, especially when dealing with complex widget styles and interactions.
 
 ### Code Comparison: With Mix vs. Without Mix
 
@@ -21,11 +29,11 @@ class CustomMixWidget extends StatelessWidget {
         .fontWeight(.w600)
         .color(Colors.white)
         .animate(.easeInOut(100.ms))
-        .onDark(TextStyler().color(Colors.black))
+        .onDark(.color(Colors.black))
         .onHovered(
-          TextStyler()
+          .new()
               .animate(.easeInOut(100.ms))
-              .onLight(TextStyler().color(Colors.white)),
+              .onLight(.color(Colors.white)),
         );
   }
 
@@ -40,15 +48,14 @@ class CustomMixWidget extends StatelessWidget {
         .color(Colors.blue)
         .scale(1.0)
         .animate(.easeInOut(100.ms))
-        .onDark(BoxStyler().color(Colors.cyan))
+        .onDark(.color(Colors.cyan))
         .onHovered(
-          BoxStyler()
-              .alignment(.topLeft)
+          .alignment(.topLeft)
               .elevation(.two)
               .paddingAll(10)
               .scale(1.5)
               .animate(.easeInOut(100.ms))
-              .onLight(BoxStyler().color(Colors.blue.shade300)),
+              .onLight(.color(Colors.blue.shade300)),
         );
   }
 

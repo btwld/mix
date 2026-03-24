@@ -3,6 +3,8 @@
 
 This guide walks through creating a design system button with Mix, demonstrating Specs, Stylers, variants, and state handling — using **annotations and code generation** to eliminate boilerplate.
 
+<FlutterPreview previewId="tutorials/creating-a-widget.0" title="Button gallery (Filled, Outlined, Elevated, Link, Disabled)" height={320} />
+
 ![Button Example](./images/button-example.png)
 
 ## Component Overview
@@ -135,24 +137,32 @@ class ButtonStyler extends MixStyler<ButtonStyler, ButtonSpec>
 
   // Convenience methods (beyond the generated container/icon/label setters)
   ButtonStyler backgroundColor(Color value) {
-    return merge(ButtonStyler(container: FlexBoxStyler().color(value)));
+    return merge(ButtonStyler(container: FlexBoxStyler.color(value)));
   }
 
   ButtonStyler textColor(Color value) {
-    return merge(ButtonStyler(label: TextStyler().color(value)));
+    return merge(ButtonStyler(label: TextStyler.color(value)));
   }
 
   ButtonStyler iconColor(Color value) {
-    return merge(ButtonStyler(icon: IconStyler().color(value)));
+    return merge(ButtonStyler(icon: IconStyler.color(value)));
   }
 
   ButtonStyler borderRadius(double value) {
-    return merge(ButtonStyler(container: FlexBoxStyler().borderRounded(value)));
+    return merge(
+      ButtonStyler(
+        container: FlexBoxStyler().borderRadius(.circular(value)),
+      ),
+    );
   }
 
   ButtonStyler padding({required double x, required double y}) {
     return merge(
-      ButtonStyler(container: FlexBoxStyler().paddingX(x).paddingY(y)),
+      ButtonStyler(
+        container: FlexBoxStyler().padding(
+          EdgeInsetsGeometryMix.symmetric(horizontal: x, vertical: y),
+        ),
+      ),
     );
   }
 
@@ -317,12 +327,12 @@ ButtonStyler buttonStyle(ButtonStyler? style, ButtonVariant? variant) {
       .paddingX(8)
       .paddingY(12)
       .spacing(8)
-      .mainAxisAlignment(MainAxisAlignment.center)
-      .crossAxisAlignment(CrossAxisAlignment.center)
-      .mainAxisSize(MainAxisSize.min);
+      .mainAxisAlignment(.center)
+      .crossAxisAlignment(.center)
+      .mainAxisSize(.min);
 
   final label = TextStyler().style(
-    TextStyleMix().fontSize(16).fontWeight(FontWeight.w500),
+    TextStyleMix().fontSize(16).fontWeight(.w500),
   );
 
   final icon = IconStyler().size(18);

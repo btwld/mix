@@ -168,7 +168,7 @@ void main() {
       // Chaining now properly accumulates all properties
       final chained = FlexStyler()
           .direction(Axis.horizontal)
-          .mainAxisAlignment(MainAxisAlignment.spaceBetween)
+          .mainAxisAlignment(.spaceBetween)
           .crossAxisAlignment(CrossAxisAlignment.center)
           .spacing(16.0);
 
@@ -336,14 +336,14 @@ void main() {
     test('merges all properties when both have values', () {
       final first = FlexStyler()
           .direction(Axis.horizontal)
-          .mainAxisAlignment(MainAxisAlignment.center)
+          .mainAxisAlignment(.center)
           .crossAxisAlignment(CrossAxisAlignment.start)
           .mainAxisSize(MainAxisSize.max)
           .verticalDirection(VerticalDirection.down);
 
       final second = FlexStyler()
           .direction(Axis.vertical)
-          .mainAxisAlignment(MainAxisAlignment.end)
+          .mainAxisAlignment(.end)
           .textDirection(TextDirection.rtl)
           .textBaseline(TextBaseline.ideographic)
           .clipBehavior(Clip.hardEdge)
@@ -382,12 +382,12 @@ void main() {
     test('equal attributes have same hashCode', () {
       final attr1 = FlexStyler()
           .direction(Axis.horizontal)
-          .mainAxisAlignment(MainAxisAlignment.center)
+          .mainAxisAlignment(.center)
           .spacing(16.0);
 
       final attr2 = FlexStyler()
           .direction(Axis.horizontal)
-          .mainAxisAlignment(MainAxisAlignment.center)
+          .mainAxisAlignment(.center)
           .spacing(16.0);
 
       expect(attr1, equals(attr2));
@@ -512,7 +512,7 @@ void main() {
     test('builder methods can be combined with merge', () {
       final attribute = FlexStyler()
           .direction(Axis.horizontal)
-          .merge(FlexStyler().mainAxisAlignment(MainAxisAlignment.spaceBetween))
+          .merge(FlexStyler().mainAxisAlignment(.spaceBetween))
           .merge(FlexStyler().crossAxisAlignment(CrossAxisAlignment.center))
           .merge(FlexStyler().spacing(16.0));
 
@@ -531,7 +531,7 @@ void main() {
       // This test verifies that the attribute implements Diagnosticable correctly
       final attribute = FlexStyler()
           .direction(Axis.horizontal)
-          .mainAxisAlignment(MainAxisAlignment.center)
+          .mainAxisAlignment(.center)
           .spacing(16.0);
 
       // The presence of debugFillProperties is tested by the framework

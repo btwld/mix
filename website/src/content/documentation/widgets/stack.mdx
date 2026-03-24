@@ -7,7 +7,7 @@
 You can use the `StackBoxStyler` API to fluently compose your layout and decoration styles. Example:
 
 ```dart
-final style = StackBoxStyler()
+final style = StackBoxStyler
  .padding(EdgeInsets.all(16))
  .decoration(
    BoxDecoration(
@@ -15,7 +15,7 @@ final style = StackBoxStyler()
      borderRadius: BorderRadius.circular(12),
    ),
  )
- .alignment(Alignment.center);
+ .alignment(.center);
 
 StackBox(
  children: [
@@ -29,6 +29,13 @@ StackBox(
  style: style,
 )
 ```
+
+## Interactive Preview
+
+<FlutterPreview
+  previewId="widgets/stack.0"
+  height={320}
+/>
 
 ## Constructor
 

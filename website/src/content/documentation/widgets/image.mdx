@@ -7,18 +7,27 @@ images with dimensions, colors, blend modes, filters, and responsive variants.
 You can use `ImageStyler` to create styles with a fluent API. Example:
 
 ```dart
-final style = ImageStyler()
+final style = ImageStyler
  .width(200)
  .height(200)
- .fit(BoxFit.cover)
+ .fit(.cover)
  .color(Colors.blue.withOpacity(0.5))
- .colorBlendMode(BlendMode.overlay);
+ .colorBlendMode(.overlay);
 
 StyledImage(
  image: AssetImage('assets/photo.jpg'),
  style: style,
 )
 ```
+
+The preview below shows a styled image with dimensions, fit, and color blend.
+
+## Interactive Preview
+
+<FlutterPreview
+  previewId="widgets/image.0"
+  height={280}
+/>
 
 ## Constructor
 

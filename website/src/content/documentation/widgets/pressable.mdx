@@ -15,6 +15,13 @@ Pressable(
 );
 ```
 
+## Interactive Preview
+
+<FlutterPreview
+  previewId="widgets/pressable.0"
+  height={320}
+/>
+
 ## Constructor
 
 | Prop | Type | Required / Default Value |
@@ -107,10 +114,10 @@ PressableBox(
       .color(Colors.blue)
       .paddingAll(16)
       .borderRounded(8)
-      .onPressed(BoxStyler().color(Colors.red))
-      .onHovered(BoxStyler().color(Colors.green))
-      .onFocused(BoxStyler().border(Border.all(color: Colors.white, width: 2)))
-      .onDisabled(BoxStyler().color(Colors.grey)),
+      .onPressed(.color(Colors.red))
+      .onHovered(.color(Colors.green))
+      .onFocused(.border(Border.all(color: Colors.white, width: 2)))
+      .onDisabled(.color(Colors.grey)),
   onPress: () => print('Interactive button pressed'),
   child: StyledText('Interactive Button'),
 );
