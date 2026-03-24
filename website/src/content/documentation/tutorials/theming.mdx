@@ -3,23 +3,32 @@
 
 ## Introduction
 
-Mix offers a robust theming system that enables you to style your application consistently and efficiently, providing both scalability and flexibility. The theming system is built on the concept of design tokens, which are key-value pairs defining visual properties such as colors, text styles, spacing, and border radii. These tokens can be uniformly applied across all your widgets, ensuring a consistent aesthetic throughout your application. You can easily alter the appearance of your application by updating the design tokens, without modifying individual widget implementations.
+Mix helps you keep colors, typography, spacing, and radii consistent by referencing **design tokens** instead of scattering literals through your widgets.
+
+A **token** is a typed key (for example `ColorToken('primary')`). You map each token to a concrete value (`Color`, `TextStyle`, `double`, and so on) and provide those maps from a single ancestor, `MixScope`. When you change the maps—light vs dark, brand A vs brand B—everything that reads tokens updates together.
+
+In this tutorial you will build one profile screen and two full themes: **`LightBlueTheme`** (light surface, blue primary, Roboto) and **`DarkPurpleTheme`** (dark surface, purple primary, Courier). You will then swap token maps at runtime.
+
+## Prerequisites
+
+- [Creating a Widget](/documentation/tutorials/creating-a-widget) — `BoxStyler`, `TextStyler`, and callable stylers
+- [Design Tokens](/documentation/guides/design-token) — deeper reference for `MixScope` and token types
 
 ## Getting Started
 
-In this guide, we will create a single-screen, multi-theme application to demonstrate the power of Mix's theming system. The final result will look like this:
+The **interactive preview** below is a compact demo: nested `MixScope` widgets override token values for part of the subtree.
 
-<FlutterPreview previewId="tutorials/theming.0" title="Theme switching with tokens" description="Toggle theme to see tokens update colors and spacing." height={280} />
+The **screenshots** show the profile screen you will build in this tutorial—**`LightBlueTheme`** on the left and **`DarkPurpleTheme`** on the right, with different colors, typefaces, and radii.
+
+<FlutterPreview previewId="tutorials/theming.0" title="Nested MixScope and tokens" description="Outer and inner MixScope supply different token maps to their descendants." height={280} />
 
 ![images](./images/two-themed-app.png)
 
-As depicted in the image above, we have two different themes for the same screen, each using distinct colors, text styles, fonts, and border radii. The left one employs a light theme with blue as the primary color, hence it will be referred to as `LightBlueTheme`. The right one utilizes a dark theme with purple as the primary color, and will therefore be named `DarkPurpleTheme`.
-
 ## Setting Up MixScope
 
-Before we start styling our application with these themes, the initial step is to configure `MixScope`. `MixScope` acts as an ancestor widget that passes down the defined tokens to all its child widgets, ensuring they can access and utilize the same styling information. Properly setting up MixScope is crucial to harnessing the full potential of the Mix package for your application's theming needs.
+`MixScope` is an ancestor that supplies token maps to descendants. Wrap the part of the tree that should share the same theme (often the root, above `MaterialApp`).
 
-Here's how you can initialize and implement `MixScope`:
+Here's how to initialize `MixScope`:
 
 ### Wrapping the Root Widget
 
@@ -46,9 +55,9 @@ class MyApp extends StatelessWidget {
 
 ### Creating Design Tokens
 
-The next crucial step is defining your design tokens. In Mix, there are several types of design tokens: `ColorToken`, `TextStyleToken`, `SpaceToken`, `RadiusToken`, and `BreakpointToken`. Each token type represents a different design property. 
+Define your tokens next. This tutorial uses `ColorToken`, `TextStyleToken`, `SpaceToken`, and `RadiusToken`. Mix also provides **`BreakpointToken`** for responsive layouts; see [Design Tokens](/documentation/guides/design-token).
 
-The recommended way to organize your tokens is using Dart enums. This provides type safety, autocomplete support, and a clean API. Here's how to define your token enums:
+The recommended way to organize tokens is Dart enums: type safety, autocomplete, and a clear API. For example:
 
 ```dart
 enum CustomColorTokens {
@@ -257,11 +266,20 @@ This code demonstrates several key concepts:
 
 ### Creating the ProfilePage
 
-Now that we have built the `ProfileButton`, we can create the `ProfilePage` widget. This page uses a combination of Mix widgets and Flutter's native Scaffold.
+Now that we have built the `ProfileButton`, we can create the `ProfilePage` widget. It combines Mix widgets (`StyledText`, `ColumnBox`, and stylers) with Flutter’s `Scaffold` and `AppBar`. Those Mix types come from `package:mix/mix.dart`.
+
+Optional **`onThemeToggle`** / **`useDarkTheme`** parameters show how to wire a control that lives in the parent `State` (next section).
 
 ```dart
 class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key});
+  const ProfilePage({
+    super.key,
+    this.onThemeToggle,
+    this.useDarkTheme = false,
+  });
+
+  final VoidCallback? onThemeToggle;
+  final bool useDarkTheme;
 
   @override
   Widget build(BuildContext context) {
@@ -282,6 +300,16 @@ class ProfilePage extends StatelessWidget {
         backgroundColor: CustomColorTokens.surface.token.resolve(context),
         title: appBarTitle('Profile'),
         centerTitle: false,
+        actions: [
+          if (onThemeToggle != null)
+            IconButton(
+              tooltip: 'Toggle theme',
+              icon: Icon(
+                useDarkTheme ? Icons.light_mode : Icons.dark_mode,
+              ),
+              onPressed: onThemeToggle,
+            ),
+        ],
       ),
       body: SafeArea(
         child: ColumnBox(
@@ -346,8 +374,9 @@ Key points about this implementation:
 2. **Token resolution**: For native Flutter widgets like Scaffold and AppBar, use `.resolve(context)` to get actual values
 3. **Callable stylers**: Text stylers can be called as functions to create styled text widgets
 4. **Component composition**: Break down complex UIs into smaller, reusable components like `ImagePlaceholder`
+5. **Theme toggle**: When `onThemeToggle` is non-null, the AppBar shows an icon that calls back into the parent `State`—the same place that swaps token maps in [Switching Between Themes](#switching-between-themes)
 
-Now that everything is set up, you can wrap your app with `MixScope` to provide the theme values.
+The app root already supplies tokens through `MixScope` (see [Wrapping the Root Widget](#wrapping-the-root-widget)).
 
 ![images](./images/light-themed-app.png)
 
@@ -387,13 +416,19 @@ class _ThemingTutorialAppState extends State<ThemingTutorialApp> {
       textStyles: textStyles,
       radii: radii,
       spaces: spaces,
-      child: const ProfilePage(),
+      child: ProfilePage(
+        onThemeToggle: () =>
+            setState(() => _isDarkPurpleTheme = !_isDarkPurpleTheme),
+        useDarkTheme: _isDarkPurpleTheme,
+      ),
     );
   }
 }
 ```
 
-To toggle the theme, simply call `setState` to update `_isDarkPurpleTheme`. All widgets using tokens will automatically update to reflect the new theme.
+Call `setState` when the user triggers `onThemeToggle` (here, the AppBar **icon**). Every widget that reads tokens under this `MixScope` rebuilds with the new maps.
+
+For a static app, omit `onThemeToggle` and keep `const ProfilePage()` as in [Wrapping the Root Widget](#wrapping-the-root-widget).
 
 ## Key Takeaways
 
@@ -412,3 +447,8 @@ Mix's theming system provides:
 - **Leverage callable stylers**: Use stylers as functions for concise component code
 - **Compose components**: Break down UIs into smaller, reusable styled components
 - **Mix with Flutter**: Use Mix for your design system components, native Flutter widgets where appropriate
+
+## Next steps
+
+- [Design Tokens](/documentation/guides/design-token) — `MixScope`, breakpoints, and token patterns in depth
+- [Dynamic Styling](/documentation/guides/dynamic-styling) — variants that react to context (dark mode, hover, and more)

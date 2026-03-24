@@ -1,15 +1,22 @@
 
 # Creating a Custom Context Variant
 
-Context variants allow you to apply styles conditionally based on runtime conditions from the `BuildContext`. This is useful for responding to theme changes, media queries, inherited widgets, or any other context-dependent state.
+You will style a widget from **runtime context**—for example data from an `InheritedWidget`, theme, or media query—without splitting your UI into separate widgets for each case.
+
+Context variants apply styles when a condition you define is true for the current `BuildContext`. They complement built-in variants (hover, dark mode, and similar); see [Dynamic Styling](/documentation/guides/dynamic-styling) for those.
+
+## Prerequisites
+
+- Flutter: `InheritedWidget` and how `BuildContext` depends on ancestors
+- Mix: [Styling](/documentation/guides/styling) (`BoxStyler`, chaining) and [Dynamic Styling](/documentation/guides/dynamic-styling) (the `.variant` API and built-in variants)
 
 ## Understanding Context Variants
 
-A `ContextVariant` evaluates a condition at build time using the current `BuildContext`. When the condition is met, the variant's styles are applied to the widget.
+A `ContextVariant` runs its predicate at build time with the current `BuildContext`. When the predicate returns true, the variant’s styles merge into the base style.
 
 ## Creating a Basic Context Variant
 
-Let's create a context variant that responds to a custom `InheritedWidget`:
+Here is a small `InheritedWidget` that exposes a boolean flag:
 
 ```dart
 class CustomInheritedWidget extends InheritedWidget {
@@ -32,7 +39,7 @@ class CustomInheritedWidget extends InheritedWidget {
 }
 ```
 
-Now you can create a `ContextVariant` that checks this inherited widget's state:
+Attach a `ContextVariant` that reads that flag:
 
 ```dart
 BoxStyler()
@@ -48,15 +55,18 @@ BoxStyler()
 ```
 
 In this example:
-- The box is normally red with 100x100 size
-- When `CustomInheritedWidget.flag` is true, the box becomes blue
-- The `ContextVariant` constructor takes a name and a function that evaluates the condition
+
+- The box is red and 100×100 by default.
+- When `CustomInheritedWidget.flag` is true, the box becomes blue.
+- The first argument to `ContextVariant` is a **stable name** (for debugging and internal identification). It should stay consistent for the same logical condition if you reuse the variant.
+
+The live preview below uses the same idea: tap the box to flip the flag and see both colors.
 
 <FlutterPreview previewId="tutorials/creating-context-variants.0" title="Context variant with custom flag" height={200} />
 
 ## Creating Reusable Variant Extensions
 
-For better reusability and a cleaner API, you can create extension methods on `WidgetStateVariantMixin`:
+`BoxStyler` and other Mix stylers use **`WidgetStateVariantMixin`**, which provides the `.variant` method. Extensions on that mixin let you add named helpers (similar to `.onHovered`) and keep call sites readable:
 
 ```dart
 extension WidgetStateVariantMixinX<T extends Style<S>, S extends Spec<S>>
@@ -73,7 +83,7 @@ extension WidgetStateVariantMixinX<T extends Style<S>, S extends Spec<S>>
 }
 ```
 
-Now you can use the extension method for a more readable API:
+Usage:
 
 ```dart
 BoxStyler()
@@ -86,7 +96,7 @@ BoxStyler()
 
 ## Complete Example
 
-Here's a full working example:
+This matches the interactive preview: state toggles the flag, [`Pressable`](/documentation/widgets/pressable) handles the tap, and [`Box`](/documentation/widgets/box) applies the style.
 
 ```dart
 import 'package:flutter/material.dart';
@@ -111,24 +121,41 @@ class CustomInheritedWidget extends InheritedWidget {
   }
 }
 
-class Example extends StatelessWidget {
+class Example extends StatefulWidget {
   const Example({super.key});
 
-  BoxStyler get box =>
-      BoxStyler()
-          .color(Colors.red)
-          .size(100, 100)
-          .variant(
-            ContextVariant('custom_flag', (context) {
-              final flag = CustomInheritedWidget.of(context)?.flag ?? false;
-              return flag;
-            }),
-            BoxStyler().color(Colors.blue),
-          );
+  @override
+  State<Example> createState() => _ExampleState();
+}
+
+class _ExampleState extends State<Example> {
+  bool _flag = false;
 
   @override
   Widget build(BuildContext context) {
-    return CustomInheritedWidget(flag: true, child: box());
+    final boxStyle = BoxStyler()
+        .color(Colors.red)
+        .size(100, 100)
+        .borderRounded(10)
+        .variant(
+          ContextVariant('custom_flag', (context) {
+            return CustomInheritedWidget.of(context)?.flag ?? false;
+          }),
+          BoxStyler().color(Colors.blue),
+        );
+
+    return CustomInheritedWidget(
+      flag: _flag,
+      child: Pressable(
+        onPress: () => setState(() => _flag = !_flag),
+        child: Box(style: boxStyle),
+      ),
+    );
   }
 }
 ```
+
+## Next steps
+
+- [Dynamic Styling](/documentation/guides/dynamic-styling) — built-in context variants (`onDark`, `onHovered`, breakpoints, and more)
+- [Controlling Widget State](/documentation/tutorials/controlling-widget-state) — manual state when automatic variants are not enough

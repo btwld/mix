@@ -1,6 +1,6 @@
 export default {
     "creating-a-widget": "Creating a Widget",
-    "controlling-widget-state": "Controlling Widget State",
+    "controlling-widget-state": "Advanced Widget State Control",
     theming: "Theming",
     "creating-context-variants": "Creating Context Variants"
 };

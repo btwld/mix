@@ -1,11 +1,28 @@
 
 # Building a Design System Widget
 
-This guide walks through creating a design system button with Mix, demonstrating Specs, Stylers, variants, and state handling — using **annotations and code generation** to eliminate boilerplate.
+This tutorial walks through creating a design system button with Mix, demonstrating Specs, Stylers, variants, and state handling — using **annotations and code generation** to eliminate boilerplate.
 
 <FlutterPreview previewId="tutorials/creating-a-widget.0" title="Button gallery (Filled, Outlined, Elevated, Link, Disabled)" height={320} />
 
-![Button Example](./images/button-example.png)
+## Prerequisites
+
+Before starting, make sure you have:
+
+- A Flutter project with `mix` added as a dependency
+- `mix_annotations` in your `dependencies`
+- `mix_generator` and `build_runner` in your `dev_dependencies`
+- Familiarity with basic Mix concepts (`BoxStyler`, `Style`, `Spec`)
+
+```yaml
+dependencies:
+  mix: ^2.0.0
+  mix_annotations: ^2.0.0
+
+dev_dependencies:
+  mix_generator: ^2.0.0
+  build_runner: ^2.4.0
+```
 
 ## Component Overview
 
@@ -27,13 +44,13 @@ This guide walks through creating a design system button with Mix, demonstrating
 - **Pressed**: Actively being pressed
 - **Disabled**: Non-interactive
 
-## Button Structure
+### Button Structure
 
 - **Container**: Box decoration (border radius, background color, spacing)
 - **Icon** (optional): Visual embellishment
 - **Label**: Text content
 
-### Create a Button Spec
+## Step 1: Define the Button Spec
 
 A `Spec` defines resolved visual properties. With `@MixableSpec()`, the generator creates `copyWith()`, `lerp()`, `debugFillProperties()`, and `props` for you:
 
@@ -60,7 +77,9 @@ final class ButtonSpec extends Spec<ButtonSpec>
 }
 ```
 
-That's it — no manual `copyWith`, `lerp`, or `props`. The generated mixin `_$ButtonSpecMethods` provides all of those. Run code generation with:
+That's it — no manual `copyWith`, `lerp`, or `props`. The generated mixin `_$ButtonSpecMethods` provides all of those.
+
+Run code generation now before proceeding to the next step:
 
 ```bash
 dart run build_runner build
@@ -91,11 +110,13 @@ mixin _$ButtonSpecMethods on Spec<ButtonSpec>, Diagnosticable {
 
 </details>
 
-### Create a Button Styler
+## Step 2: Create the Button Styler
 
 `ButtonStyler` provides a fluent interface for styling. With `@MixableStyler()`, the generator creates setters, `merge()`, `resolve()`, `debugFillProperties()`, and `props`.
 
-Use `@MixableField(setterType: ...)` to tell the generator the public type for each setter. Since the fields are `Prop<StyleSpec<T>>` internally but users pass Styler types, `setterType` bridges that gap:
+### Declaring Styler Fields
+
+Use `@MixableField(setterType: ...)` to tell the generator the public type for each setter. Internally, fields are `Prop<StyleSpec<T>>`, but users pass Styler types — `setterType` bridges that gap:
 
 ```dart
 part 'button_style.g.dart';
@@ -112,7 +133,15 @@ class ButtonStyler extends MixStyler<ButtonStyler, ButtonSpec>
   @override
   @MixableField(setterType: TextStyler)
   final Prop<StyleSpec<TextSpec>>? $label;
+```
 
+The `@MixableField(setterType: FlexBoxStyler)` annotation tells the generator to produce `ButtonStyler container(FlexBoxStyler value)` instead of `ButtonStyler container(StyleSpec<FlexBoxSpec> value)`. This gives users the fluent Styler API they expect.
+
+### Constructors
+
+The primary constructor accepts Styler types and wraps them with `Prop.maybeMix()`, which converts a nullable Styler into the internal `Prop<StyleSpec<T>>` representation. The `.create` constructor accepts raw `Prop` values for advanced use:
+
+```dart
   ButtonStyler({
     FlexBoxStyler? container,
     IconStyler? icon,
@@ -134,8 +163,13 @@ class ButtonStyler extends MixStyler<ButtonStyler, ButtonSpec>
   }) : $container = container,
        $icon = icon,
        $label = label;
+```
 
-  // Convenience methods (beyond the generated container/icon/label setters)
+### Convenience Methods
+
+Beyond the generated `container()`, `icon()`, and `label()` setters, you can add domain-specific convenience methods. Each one calls `merge()` to layer the new style on top of the existing one:
+
+```dart
   ButtonStyler backgroundColor(Color value) {
     return merge(ButtonStyler(container: FlexBoxStyler.color(value)));
   }
@@ -172,11 +206,9 @@ class ButtonStyler extends MixStyler<ButtonStyler, ButtonSpec>
 }
 ```
 
-The `@MixableField(setterType: FlexBoxStyler)` annotation tells the generator to produce `ButtonStyler container(FlexBoxStyler value)` instead of `ButtonStyler container(StyleSpec<FlexBoxSpec> value)`. This gives users the fluent Styler API they expect.
-
 `MixStyler` already provides `WidgetStateVariantMixin` (for `onPressed`, `onHovered`, `onDisabled`, etc.), `VariantStyleMixin`, and `AnimationStyleMixin` — so you get state handling for free.
 
-The generated `_$ButtonStylerMixin` handles setters, `merge()`, `resolve()`, `debugFillProperties()`, and `props`:
+Run `dart run build_runner build` again to generate the Styler mixin.
 
 <details>
 <summary>Generated code (`button_style.g.dart`) — key signatures</summary>
@@ -214,9 +246,9 @@ mixin _$ButtonStylerMixin on Style<ButtonSpec>, Diagnosticable {
 
 </details>
 
-### Define Variants
+## Step 3: Define Variants
 
-Use an enum to define button variants with their styles:
+Use an enum to associate each visual variant with its style overrides:
 
 ```dart
 enum ButtonVariant {
@@ -270,7 +302,53 @@ enum ButtonVariant {
 }
 ```
 
-## Create the Button Widget
+## Step 4: Style the Button
+
+The `buttonStyle` function composes everything: base styles shared across all variants, variant-specific overrides, and state handling for pressed and disabled:
+
+```dart
+ButtonStyler buttonStyle(ButtonStyler? style, ButtonVariant? variant) {
+  final container = FlexBoxStyler()
+      .borderRounded(6)
+      .paddingX(8)
+      .paddingY(12)
+      .spacing(8)
+      .mainAxisAlignment(.center)
+      .crossAxisAlignment(.center)
+      .mainAxisSize(.min);
+
+  final label = TextStyler().style(
+    TextStyleMix().fontSize(16).fontWeight(.w500),
+  );
+
+  final icon = IconStyler().size(18);
+
+  return ButtonStyler()
+      .container(container)
+      .label(label)
+      .icon(icon)
+      .merge(variant?.style)
+      .onPressed(
+        ButtonStyler()
+            .container(FlexBoxStyler().scale(0.9)),
+      )
+      .onDisabled(
+        ButtonStyler()
+            .container(FlexBoxStyler().color(Colors.blueGrey.shade100))
+            .label(
+              TextStyler().style(
+                TextStyleMix().color(Colors.blueGrey.shade700),
+              ),
+            )
+            .icon(IconStyler().color(Colors.blueGrey.shade700)),
+      )
+      .merge(style);
+}
+```
+
+Notice the merge order: base styles first, then variant overrides, then state styles, and finally any caller-provided `style` override on top. This lets consumers customize any button instance without forking the style function.
+
+## Step 5: Build the Widget
 
 `CustomButton` uses `Pressable` for interaction states and `StyleBuilder` to resolve styles:
 
@@ -315,54 +393,11 @@ class CustomButton extends StatelessWidget {
 }
 ```
 
-## Styling Your Button
+### Variant Convenience Widgets
 
-The `buttonStyle` function defines base styles, merges variant styles, and adds state handling:
+Create shorthand widgets for each variant. These extend `CustomButton` and lock in the variant:
 
-```dart
-ButtonStyler buttonStyle(ButtonStyler? style, ButtonVariant? variant) {
-  // Base styles shared across all variants
-  final container = FlexBoxStyler()
-      .borderRounded(6)
-      .paddingX(8)
-      .paddingY(12)
-      .spacing(8)
-      .mainAxisAlignment(.center)
-      .crossAxisAlignment(.center)
-      .mainAxisSize(.min);
-
-  final label = TextStyler().style(
-    TextStyleMix().fontSize(16).fontWeight(.w500),
-  );
-
-  final icon = IconStyler().size(18);
-
-  return ButtonStyler()
-      .container(container)
-      .label(label)
-      .icon(icon)
-      .merge(variant?.style)
-      .onPressed(
-        ButtonStyler()
-            .container(FlexBoxStyler().scale(0.9)),
-      )
-      .onDisabled(
-        ButtonStyler()
-            .container(FlexBoxStyler().color(Colors.blueGrey.shade100))
-            .label(
-              TextStyler().style(
-                TextStyleMix().color(Colors.blueGrey.shade700),
-              ),
-            )
-            .icon(IconStyler().color(Colors.blueGrey.shade700)),
-      )
-      .merge(style);
-}
-```
-
-### Button Variant Widgets
-
-Create convenience widgets for each variant:
+> **Note:** These names (`FilledButton`, `OutlinedButton`, `ElevatedButton`) shadow Flutter's built-in Material button widgets. In a real project, use a prefix to avoid import conflicts (e.g., `MixFilledButton`, or your design system's namespace).
 
 ```dart
 final class FilledButton extends CustomButton {
@@ -414,8 +449,10 @@ final class LinkButton extends CustomButton {
 
 ![Button Demo](./images/button-demo.png)
 
+<details>
+<summary>Full example app</summary>
+
 ```dart
-// Main App
 void main() {
   runApp(const MyApp());
 }
@@ -491,6 +528,8 @@ class ButtonExampleScreen extends StatelessWidget {
 }
 ```
 
+</details>
+
 ## Summary
 
 This tutorial covered:
@@ -509,4 +548,11 @@ This tutorial covered:
 | Spec fields and constructor | `copyWith()`, `lerp()`, `debugFillProperties()`, `props` |
 | Styler fields, constructors, convenience methods | Setters (via `@MixableField`), `merge()`, `resolve()`, `debugFillProperties()`, `props` |
 
-This pattern extends to other components: cards, inputs, dialogs, etc. Add `mix_annotations` to your `dependencies` and `mix_generator` + `build_runner` to `dev_dependencies`, then run `dart run build_runner build` to generate code.
+This pattern extends to other components: cards, inputs, dialogs, etc.
+
+## Next Steps
+
+- [Advanced Widget State Control](/documentation/tutorials/controlling-widget-state) — programmatic state control, custom states, and `StyleBuilder`
+- [Theming](/documentation/tutorials/theming) — apply consistent tokens across your design system
+- [Creating Context Variants](/documentation/tutorials/creating-context-variants) — conditionally apply styles based on runtime context
+- [Animations](/documentation/guides/animations) — add implicit, phase, and keyframe animations to your components
