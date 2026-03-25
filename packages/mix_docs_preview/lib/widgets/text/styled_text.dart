@@ -12,14 +12,8 @@ class Example extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = TextStyler.style(
-      TextStyleMix.create(
-        color: .value<Color>(
-          Colors.red,
-        ).directives([OpacityColorDirective(0.2)]),
-      ),
-    ).fontSize(20).fontWeight(.w700).titlecase();
+    final style = TextStyler().fontSize(24).fontWeight(.bold).color(Colors.blue);
 
-    return StyledText('I love Mix', style: style);
+    return StyledText('Hello Mix', style: style);
   }
 }

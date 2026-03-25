@@ -11,8 +11,8 @@ class Example extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = IconStyler.size(30).color(Colors.blueAccent);
+    final style = IconStyler().size(32).color(Colors.blue);
 
-    return StyledIcon(icon: Icons.format_paint_rounded, style: style);
+    return StyledIcon(icon: Icons.favorite, style: style);
   }
 }
