@@ -12,11 +12,13 @@ import 'guides/animations/phase_tap_compress.dart' as guide_phase_tap;
 import 'guides/design_token/theme_switch.dart' as theme_switch;
 import 'guides/design_token/theme_tokens.dart' as theme_tokens;
 import 'guides/directives/text_directives.dart' as text_directives;
+import 'guides/dynamic_styling/composing.dart' as composing;
 import 'guides/dynamic_styling/context_variant_flag.dart'
     as context_variant_flag;
 import 'guides/dynamic_styling/disabled.dart' as disabled;
 import 'guides/dynamic_styling/focused.dart' as focused;
 import 'guides/dynamic_styling/hovered.dart' as hovered;
+import 'guides/dynamic_styling/nesting.dart' as nesting;
 import 'guides/styling/preview_1.dart' as guide_styling_1;
 import 'guides/dynamic_styling/pressed.dart' as pressed;
 import 'guides/dynamic_styling/responsive_size.dart' as responsive_size;
@@ -147,6 +149,20 @@ class PreviewRegistry {
           'packages/mix_docs_preview/lib/guides/dynamic_styling/hovered.dart',
       category: _variants,
       builder: (_) => const hovered.Example(),
+    ),
+    PreviewEntry(
+      previewId: 'guides/dynamic-styling.1',
+      sourcePath:
+          'packages/mix_docs_preview/lib/guides/dynamic_styling/composing.dart',
+      category: _variants,
+      builder: (_) => const composing.Example(),
+    ),
+    PreviewEntry(
+      previewId: 'guides/dynamic-styling.2',
+      sourcePath:
+          'packages/mix_docs_preview/lib/guides/dynamic_styling/nesting.dart',
+      category: _variants,
+      builder: (_) => const nesting.Example(),
     ),
     PreviewEntry(
       previewId: 'guides/animations.0',
