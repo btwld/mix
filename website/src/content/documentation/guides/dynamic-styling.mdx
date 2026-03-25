@@ -6,6 +6,8 @@ title: Dynamic Styling
 
 Mix lets you define state-aware styles in one place instead of scattering conditional logic throughout your widget tree. Styles automatically adapt to hover, press, disabled, dark mode, and other contexts.
 
+This guide builds on the [Styling](/documentation/guides/styling) guide. If you haven't read it yet, start there to learn how `Style` and `Styler` work.
+
 ## Understanding Variants
 
 Suppose you want a `Box` to change its color when hovered. With Mix, you add `.onHovered(...)` to your style definition — no wrapper needed:
@@ -54,6 +56,13 @@ BoxStyler()
   .borderRounded(10);
 ```
 
+Hover over each box below to see the difference — `styleA` turns blue while `styleB` turns green, but both expand to 200 width:
+
+<FlutterPreview
+  previewId="guides/dynamic-styling.1"
+  height={200}
+/>
+
 ## Nesting Variants
 
 You can combine multiple conditions by nesting variants. For example, different hover colors in dark mode vs light mode:
@@ -71,11 +80,18 @@ final style = BoxStyler()
   .onHovered(hoverStyle);
 ```
 
-When hovered in dark mode, the color is blue. When hovered in light mode, the color is green. The base color (red) applies when not hovered.
+When hovered in dark mode, the color is blue. When hovered in light mode, the color is green. The base color (red) applies when not hovered. Toggle the mode and hover to see the difference:
+
+<FlutterPreview
+  previewId="guides/dynamic-styling.2"
+  height={220}
+/>
 
 ## Variant Resolution Order
 
-Context variants are applied **after** all regular style properties. This means a variant will always override a regular property — you cannot override a variant's value by chaining a regular method after it:
+Now that you've seen how variants compose, here's how Mix decides which style wins.
+
+Context variants are applied **after** all regular style properties. This means a variant always overrides a regular property — you cannot override a variant's value by chaining a regular method after it:
 
 ```dart
 // The hover color will be blue, NOT green — the variant wins regardless of order
@@ -104,11 +120,11 @@ final styleB = styleA.onHovered(.color(Colors.green)); // Now hover is green
 
 | Method | Description |
 |--------|-------------|
-| `onHovered(style)` | Applies when the widget is hovered |
-| `onPressed(style)` | Applies when the widget is pressed |
-| `onFocused(style)` | Applies when the widget is focused (requires `Pressable` wrapper) |
-| `onDisabled(style)` | Applies when the widget is disabled |
-| `onEnabled(style)` | Applies when the widget is enabled (not disabled) |
+| `onHovered(style)` | Style changes when the cursor hovers over the widget |
+| `onPressed(style)` | Style changes while the widget is being pressed |
+| `onFocused(style)` | Style changes when the widget receives focus (requires `Pressable` wrapper) |
+| `onDisabled(style)` | Style changes when the widget is disabled |
+| `onEnabled(style)` | Style changes when the widget is not disabled |
 
 Most interaction variants work on any Mix widget automatically. The exception is `onFocused`, which requires wrapping your widget in `Pressable` or using `PressableBox`, because focus tracking needs Flutter's `Focus` widget:
 
@@ -137,49 +153,49 @@ PressableBox(
 
 | Method | Description |
 |--------|-------------|
-| `onDark(style)` | Applies in dark mode |
-| `onLight(style)` | Applies in light mode |
+| `onDark(style)` | Style changes when the app is in dark mode |
+| `onLight(style)` | Style changes when the app is in light mode |
 
 ### Orientation
 
 | Method | Description |
 |--------|-------------|
-| `onPortrait(style)` | Applies in portrait orientation |
-| `onLandscape(style)` | Applies in landscape orientation |
+| `onPortrait(style)` | Style changes when the device is in portrait orientation |
+| `onLandscape(style)` | Style changes when the device is in landscape orientation |
 
 ### Breakpoint
 
 | Method | Description |
 |--------|-------------|
-| `onMobile(style)` | Applies on mobile-sized screens |
-| `onTablet(style)` | Applies on tablet-sized screens |
-| `onDesktop(style)` | Applies on desktop-sized screens |
-| `onBreakpoint(breakpoint, style)` | Applies for a custom breakpoint |
+| `onMobile(style)` | Style changes on screens narrower than the mobile breakpoint |
+| `onTablet(style)` | Style changes on screens within the tablet breakpoint range |
+| `onDesktop(style)` | Style changes on screens wider than the desktop breakpoint |
+| `onBreakpoint(breakpoint, style)` | Style changes for a custom breakpoint |
 
 ### Platform
 
 | Method | Description |
 |--------|-------------|
-| `onIos(style)` | Applies on iOS |
-| `onAndroid(style)` | Applies on Android |
-| `onMacos(style)` | Applies on macOS |
-| `onWindows(style)` | Applies on Windows |
-| `onLinux(style)` | Applies on Linux |
-| `onFuchsia(style)` | Applies on Fuchsia |
-| `onWeb(style)` | Applies on web |
+| `onIos(style)` | Style changes on iOS |
+| `onAndroid(style)` | Style changes on Android |
+| `onMacos(style)` | Style changes on macOS |
+| `onWindows(style)` | Style changes on Windows |
+| `onLinux(style)` | Style changes on Linux |
+| `onFuchsia(style)` | Style changes on Fuchsia |
+| `onWeb(style)` | Style changes on web |
 
 ### Text Direction
 
 | Method | Description |
 |--------|-------------|
-| `onLtr(style)` | Applies for left-to-right text direction |
-| `onRtl(style)` | Applies for right-to-left text direction |
+| `onLtr(style)` | Style changes for left-to-right text direction |
+| `onRtl(style)` | Style changes for right-to-left text direction |
 
 ### Advanced
 
 | Method | Description |
 |--------|-------------|
-| `onNot(contextVariant, style)` | Applies when the given variant is **not** active |
+| `onNot(contextVariant, style)` | Style changes when the given variant is **not** active |
 | `onBuilder((context) => style)` | Builds a style dynamically from `BuildContext` |
 
 #### `onNot` — inverting a condition
@@ -189,8 +205,19 @@ PressableBox(
 ```dart
 final style = BoxStyler()
     .color(Colors.blue)
-    // Apply white text when NOT in dark mode (same as onLight, but works with any variant)
+    // Use white color when NOT in dark mode
     .onNot(ContextVariant.brightness(Brightness.dark), .color(Colors.white));
+```
+
+You can negate any variant — widget states, breakpoints, platforms, and more:
+
+```dart
+// Only apply a shadow when NOT on mobile
+final style = BoxStyler()
+    .onNot(ContextVariant.mobile(), .shadow(
+      color: Colors.black26,
+      blurRadius: 10,
+    ));
 ```
 
 #### `onBuilder` — fully dynamic variants

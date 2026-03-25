@@ -6,44 +6,61 @@ title: Styling
 
 In Flutter, styling lives inside your widget tree — a `Container` owns its color, padding, and border. This makes styles hard to reuse, share, or override without duplicating widget code. Mix solves this by pulling style declarations out of the tree into composable, chainable objects called **stylers**.
 
-## Style and Styler
+## Defining and Applying Styles
 
-`Style` is the abstract base class for all styling in Mix. Concrete implementations follow the naming convention `<Widget>Styler` — for example, `BoxStyler`, `TextStyler`, `IconStyler`. Each styler is a declarative builder that resolves with `BuildContext` at build time, giving it access to theme data, media queries, and other contextual information.
+A **styler** is a declarative builder that describes how a widget should look. Each Mix widget has a matching styler: `BoxStyler` for `Box`, `TextStyler` for `StyledText`, `IconStyler` for `StyledIcon`, and so on.
 
-You define a style, then pass it to the matching Mix widget:
+Define a style with a fluent chain, then pass it to the widget via the `style` parameter:
 
 ```dart
-import 'package:flutter/material.dart';
-import 'package:mix/mix.dart';
-
-final style = BoxStyler()
+final boxStyle = BoxStyler()
     .width(240)
     .height(100)
     .color(Colors.blue)
     .borderRounded(12);
 
-// Pass the style to a Box widget
-Box(style: style, child: Text('Hello'));
+Box(style: boxStyle, child: Text('Hello'));
 ```
 
 <FlutterPreview previewId="guides/styling.0" height={200} />
 
-## Fluent Chaining
-
-Mix provides a chainable API that mirrors Flutter's naming conventions. Each method returns a new styler with the property applied, so you can chain as many as you need:
+The same pattern works across all Mix widgets:
 
 ```dart
-final style = BoxStyler()
-    .color(Colors.blue)
-    .size(100, 100)
+// Text
+final textStyle = TextStyler().fontSize(24).fontWeight(.bold).color(Colors.blue);
+StyledText('Hello Mix', style: textStyle);
+
+// Icon
+final iconStyle = IconStyler().size(32).color(Colors.blue);
+StyledIcon(icon: Icons.favorite, style: iconStyle);
+
+// FlexBox (row/column layout + box decoration)
+final rowStyle = FlexBoxStyler()
+    .direction(.horizontal)
+    .spacing(12)
     .paddingAll(16)
-    .borderRounded(8)
-    .shadow(blurRadius: 10, color: Colors.black26);
+    .color(Colors.grey.shade100);
+FlexBox(style: rowStyle, children: [...]);
 ```
+
+### Callable stylers
+
+Every styler also works as a widget factory. Call it directly instead of passing it to a constructor:
+
+```dart
+final box = BoxStyler().color(Colors.blue).size(100, 100);
+final label = TextStyler().fontSize(18).color(Colors.white);
+
+// Calling the styler creates the widget
+box(child: label('Hello Mix'));
+```
+
+This is equivalent to `Box(style: box, child: StyledText('Hello Mix', style: label))`, but more concise. Use whichever form you prefer.
 
 ## Style Composition and Override
 
-Build new styles on top of existing ones. This keeps your design consistent — define a base once, then create variations by chaining additional properties:
+Build new styles on top of existing ones. Define a base once, then create variations by chaining additional properties:
 
 ```dart
 final base = BoxStyler()
@@ -59,7 +76,24 @@ final soft = base.color(Colors.blue.shade100);
 
 <FlutterPreview previewId="guides/styling.1" height={180} />
 
-**Order matters:** properties are merged in sequence, so later values override earlier ones. In the example above, `base.color(Colors.blue)` replaces the original `Colors.black`.
+### How merging works
+
+Each chained method internally merges a new property into the existing styler. Later values override earlier ones for the same property, while unrelated properties are preserved:
+
+```dart
+final a = BoxStyler().color(Colors.red).padding(.all(16));
+final b = a.color(Colors.blue);
+// b has color: blue (overridden) + padding: 16 (preserved)
+```
+
+You can also merge two separate stylers explicitly:
+
+```dart
+final layout = BoxStyler().padding(.all(16)).borderRounded(12);
+final visual = BoxStyler().color(Colors.blue).shadow(blurRadius: 10);
+
+final card = layout.merge(visual); // combines both
+```
 
 ## Dynamic and Context-Aware Styling
 
@@ -73,3 +107,10 @@ final button = BoxStyler()
 ```
 
 Variants are covered in depth in the [Dynamic Styling](/documentation/guides/dynamic-styling) guide.
+
+## See Also
+
+- [Utility-First Approach](/documentation/overview/utility-first) — the philosophy behind composable stylers
+- [Dynamic Styling](/documentation/guides/dynamic-styling) — variants for hover, press, dark mode, and breakpoints
+- [Design Tokens](/documentation/guides/design-token) — centralized values with `MixScope`
+- [Widget Modifiers](/documentation/guides/widget-modifiers) — widget-level effects like opacity and clipping via `.wrap()`

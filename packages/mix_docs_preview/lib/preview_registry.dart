@@ -9,14 +9,17 @@ import 'guides/animations/implicit_variant_hover.dart' as guide_implicit_hover;
 import 'guides/animations/keyframe_loop.dart' as guide_keyframe_loop;
 import 'guides/animations/keyframe_switch.dart' as guide_keyframe_switch;
 import 'guides/animations/phase_tap_compress.dart' as guide_phase_tap;
+import 'guides/design_token/theme_switch.dart' as theme_switch;
 import 'guides/design_token/theme_tokens.dart' as theme_tokens;
 import 'guides/directives/text_directives.dart' as text_directives;
+import 'guides/dynamic_styling/composing.dart' as composing;
 import 'guides/dynamic_styling/context_variant_flag.dart'
     as context_variant_flag;
 import 'guides/dynamic_styling/disabled.dart' as disabled;
 import 'guides/dynamic_styling/focused.dart' as focused;
 import 'guides/dynamic_styling/hovered.dart' as hovered;
-import 'guides/dynamic_styling/on_dark_light.dart' as dark_light;
+import 'guides/dynamic_styling/nesting.dart' as nesting;
+import 'guides/styling/preview_1.dart' as guide_styling_1;
 import 'guides/dynamic_styling/pressed.dart' as pressed;
 import 'guides/dynamic_styling/responsive_size.dart' as responsive_size;
 import 'guides/dynamic_styling/selected.dart' as selected;
@@ -120,13 +123,6 @@ class PreviewRegistry {
       category: _variants,
       builder: (_) => const comparison_0.Example(),
     ),
-    PreviewEntry(
-      previewId: 'overview/comparison.1',
-      sourcePath:
-          'packages/mix_docs_preview/lib/overview/comparison/preview_1.dart',
-      category: _variants,
-      builder: (_) => const dark_light.Example(),
-    ),
     // guides
     PreviewEntry(
       previewId: 'guides/widget-modifiers.0',
@@ -145,7 +141,7 @@ class PreviewRegistry {
       previewId: 'guides/styling.1',
       sourcePath: 'packages/mix_docs_preview/lib/guides/styling/preview_1.dart',
       category: _widgets,
-      builder: (_) => const simple_box.Example(),
+      builder: (_) => const guide_styling_1.Example(),
     ),
     PreviewEntry(
       previewId: 'guides/dynamic-styling.0',
@@ -153,6 +149,20 @@ class PreviewRegistry {
           'packages/mix_docs_preview/lib/guides/dynamic_styling/hovered.dart',
       category: _variants,
       builder: (_) => const hovered.Example(),
+    ),
+    PreviewEntry(
+      previewId: 'guides/dynamic-styling.1',
+      sourcePath:
+          'packages/mix_docs_preview/lib/guides/dynamic_styling/composing.dart',
+      category: _variants,
+      builder: (_) => const composing.Example(),
+    ),
+    PreviewEntry(
+      previewId: 'guides/dynamic-styling.2',
+      sourcePath:
+          'packages/mix_docs_preview/lib/guides/dynamic_styling/nesting.dart',
+      category: _variants,
+      builder: (_) => const nesting.Example(),
     ),
     PreviewEntry(
       previewId: 'guides/animations.0',
@@ -196,6 +206,13 @@ class PreviewRegistry {
           'packages/mix_docs_preview/lib/guides/design_token/theme_tokens.dart',
       category: _tokens,
       builder: (_) => const theme_tokens.Example(),
+    ),
+    PreviewEntry(
+      previewId: 'guides/design-token.1',
+      sourcePath:
+          'packages/mix_docs_preview/lib/guides/design_token/theme_switch.dart',
+      category: _tokens,
+      builder: (_) => const theme_switch.Example(),
     ),
     PreviewEntry(
       previewId: 'guides/directives.0',
