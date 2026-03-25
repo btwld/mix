@@ -65,20 +65,18 @@ jobs:
       packages_folder_path: "packages"
       # packages: ${{ needs.prepare-packages.outputs.packages }}
       packages: |
-        mix_annotations
-        mix_generator
         mix
     permissions:
       id-token: write
       contents: read
 
-  publish_mix_tailwinds:
-    if: startsWith(github.ref_name, 'mix_tailwinds-v')
-    uses: btwld/dart-actions/.github/workflows/publish.yml@main
-    with:
-      packages_folder_path: "packages"
-      packages: |
-        mix_tailwinds
-    permissions:
-      id-token: write
-      contents: read
+  # publish_mix_tailwinds:
+  #   if: startsWith(github.ref_name, 'mix_tailwinds-v')
+  #   uses: btwld/dart-actions/.github/workflows/publish.yml@main
+  #   with:
+  #     packages_folder_path: "packages"
+  #     packages: |
+  #       mix_tailwinds
+  #   permissions:
+  #     id-token: write
+  #     contents: read
