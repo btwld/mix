@@ -24,10 +24,10 @@ mixin ValueRef<T> {
     return '''Cannot access '$memberNameStr' on a $typeName token reference.
 
 This is a context-dependent $typeName token that needs to be resolved through BuildContext before use.
-Token references can only be passed directly to Mix styling utilities (e.g., \$box.color).
+Token references can only be passed directly to Mix styling utilities (e.g., BoxStyler().color(myColorToken())).
 
 To use as an actual $typeName value:
-- Pass it to Mix utilities: \$box.color.token(myColorToken)  
+- Pass it to Mix utilities: BoxStyler().color(myColorToken())
 - Or resolve it first: myColorToken.resolve(context)''';
   }
 

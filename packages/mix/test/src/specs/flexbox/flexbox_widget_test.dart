@@ -71,9 +71,9 @@ void main() {
     });
   });
 
-  group('Default parameters for HBox matches Row', () {
+  group('Default parameters for RowBox matches Row', () {
     testWidgets('should have the same default parameters', (tester) async {
-      const hBoxKey = Key('hbox');
+      const rowBoxKey = Key('rowbox');
       const rowKey = Key('row');
 
       await tester.pumpWidget(
@@ -81,7 +81,7 @@ void main() {
           home: Scaffold(
             body: Column(
               children: [
-                RowBox(key: hBoxKey),
+                RowBox(key: rowBoxKey),
                 Row(key: rowKey, children: const []),
               ],
             ),
@@ -90,12 +90,12 @@ void main() {
       );
 
       /// Get widgets by key
-      final hBoxFinder = find.byKey(hBoxKey);
+      final rowBoxFinder = find.byKey(rowBoxKey);
       final rowFinder = find.byKey(rowKey);
 
-      /// Find the Flex widget inside the HBox widget
+      /// Find the Flex widget inside the RowBox widget
       final styledFlex = tester.widget<Flex>(
-        find.descendant(of: hBoxFinder, matching: find.byType(Flex)),
+        find.descendant(of: rowBoxFinder, matching: find.byType(Flex)),
       );
       final row = tester.widget<Flex>(rowFinder);
 
@@ -111,9 +111,9 @@ void main() {
     });
   });
 
-  group('Default parameters for VBox matches Column', () {
+  group('Default parameters for ColumnBox matches Column', () {
     testWidgets('should have the same default parameters', (tester) async {
-      const vBoxKey = Key('vbox');
+      const columnBoxKey = Key('columnbox');
       const columnKey = Key('column');
 
       await tester.pumpWidget(
@@ -121,7 +121,7 @@ void main() {
           home: Scaffold(
             body: Row(
               children: [
-                ColumnBox(key: vBoxKey),
+                ColumnBox(key: columnBoxKey),
                 Column(key: columnKey, children: const []),
               ],
             ),
@@ -130,12 +130,12 @@ void main() {
       );
 
       /// Get widgets by key
-      final vBoxFinder = find.byKey(vBoxKey);
+      final columnBoxFinder = find.byKey(columnBoxKey);
       final columnFinder = find.byKey(columnKey);
 
-      /// Find the Flex widget inside the VBox widget
+      /// Find the Flex widget inside the ColumnBox widget
       final styledFlex = tester.widget<Flex>(
-        find.descendant(of: vBoxFinder, matching: find.byType(Flex)),
+        find.descendant(of: columnBoxFinder, matching: find.byType(Flex)),
       );
       final column = tester.widget<Flex>(columnFinder);
 

@@ -91,10 +91,6 @@ void main() {
       test('matchTextDirection is now a method', () {
         expect(util.matchTextDirection, isA<Function>());
       });
-
-      test('wrap utility is WidgetModifierUtility', () {
-        expect(util.wrap, isA<WidgetModifierUtility<ImageStyler>>());
-      });
     });
 
     group('Image property utilities', () {
@@ -247,16 +243,6 @@ void main() {
         final result = util.animate(animationConfig);
 
         expect(result.$animation, animationConfig);
-      });
-    });
-
-    group('Modifier utilities', () {
-      test('', () {
-        final result = util.wrap.opacity(0.5);
-
-        expect(result, isA<ImageStyler>());
-        expect(result.$modifier, isNotNull);
-        expect(result.$modifier!.$modifiers!.length, 1);
       });
     });
 

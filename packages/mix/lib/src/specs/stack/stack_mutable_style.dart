@@ -8,17 +8,14 @@ import '../../core/style_spec.dart';
 import '../../core/utility.dart';
 import '../../core/utility_variant_mixin.dart';
 import '../../core/utility_widget_state_variant_mixin.dart';
-import '../../modifiers/widget_modifier_config.dart';
-import '../../modifiers/widget_modifier_util.dart';
 import '../../variants/variant.dart';
-import '../../variants/variant_util.dart';
 import 'stack_spec.dart';
 import 'stack_style.dart';
 
 /// Provides mutable utility for stack styling with cascade notation support.
 ///
 /// Supports the same API as [StackStyler] but maintains mutable internal state
-/// enabling fluid styling: `$stack..alignment(Alignment.center)..fit(StackFit.expand)`.
+/// enabling fluid styling: `StackMutableStyler()..alignment(Alignment.center)..fit(StackFit.expand)`.
 class StackMutableStyler extends StyleMutableBuilder<StackSpec>
     with
         UtilityVariantMixin<StackStyler, StackSpec>,
@@ -30,22 +27,6 @@ class StackMutableStyler extends StyleMutableBuilder<StackSpec>
   late final textDirection = MixUtility(mutable.textDirection);
 
   late final clipBehavior = MixUtility(mutable.clipBehavior);
-
-  @Deprecated(
-    'Use StackStyler().onHovered() and similar methods directly instead. '
-    'This property was deprecated after Mix v2.0.0.',
-  )
-  late final on = OnContextVariantUtility<StackSpec, StackStyler>(
-    (v) => mutable.variants([v]),
-  );
-
-  @Deprecated(
-    'Use StackStyler().wrap() method directly instead. '
-    'This property was deprecated after Mix v2.0.0.',
-  )
-  late final wrap = WidgetModifierUtility(
-    (prop) => mutable.wrap(WidgetModifierConfig(modifiers: [prop])),
-  );
 
   /// Internal mutable state for accumulating stack styling properties.
   @override

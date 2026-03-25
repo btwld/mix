@@ -16,9 +16,6 @@ import 'icon_widget.dart';
 
 part 'icon_style.g.dart';
 
-@Deprecated('Use IconStyler instead')
-typedef IconMix = IconStyler;
-
 @mixableStyler
 class IconStyler extends MixStyler<IconStyler, IconSpec>
     with _$IconStylerMixin {

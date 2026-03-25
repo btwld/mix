@@ -112,18 +112,6 @@ final class ColorUtility<T extends Style<Object?>>
     with ColorDirectiveMixin<T>, ColorsUtilityMixin<T>, BasicColorsMixin<T> {
   ColorUtility(super.utilityBuilder);
 
-  /// @deprecated Use [token] instead
-  ///
-  /// Migration example:
-  /// ```dart
-  /// // Before
-  /// $box.color.ref(colorToken)
-  ///
-  /// // After
-  /// $box.color.token(colorToken)
-  /// ```
-  T ref(MixToken<Color> ref) => token(ref);
-
   T token(MixToken<Color> token) => utilityBuilder(Prop.token(token));
 
   T call(Color color) => utilityBuilder(Prop.value(color));
