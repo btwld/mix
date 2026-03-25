@@ -9,6 +9,7 @@ import 'guides/animations/implicit_variant_hover.dart' as guide_implicit_hover;
 import 'guides/animations/keyframe_loop.dart' as guide_keyframe_loop;
 import 'guides/animations/keyframe_switch.dart' as guide_keyframe_switch;
 import 'guides/animations/phase_tap_compress.dart' as guide_phase_tap;
+import 'guides/design_token/theme_switch.dart' as theme_switch;
 import 'guides/design_token/theme_tokens.dart' as theme_tokens;
 import 'guides/directives/text_directives.dart' as text_directives;
 import 'guides/dynamic_styling/context_variant_flag.dart'
@@ -189,6 +190,13 @@ class PreviewRegistry {
           'packages/mix_docs_preview/lib/guides/design_token/theme_tokens.dart',
       category: _tokens,
       builder: (_) => const theme_tokens.Example(),
+    ),
+    PreviewEntry(
+      previewId: 'guides/design-token.1',
+      sourcePath:
+          'packages/mix_docs_preview/lib/guides/design_token/theme_switch.dart',
+      category: _tokens,
+      builder: (_) => const theme_switch.Example(),
     ),
     PreviewEntry(
       previewId: 'guides/directives.0',
