@@ -5,7 +5,7 @@ import 'package:mix/mix.dart';
 void main() {
   group('Default parameters for StackBox matches Container+Stack', () {
     testWidgets('should have the same default parameters', (tester) async {
-      const zBoxKey = Key('stackbox');
+      const stackBoxKey = Key('stackbox');
       const containerKey = Key('container');
       const stackKey = Key('stack');
 
@@ -15,7 +15,7 @@ void main() {
             body: Column(
               children: [
                 StackBox(
-                  key: zBoxKey,
+                  key: stackBoxKey,
                   style: StackBoxStyler(), // Use default empty StackBoxStyle
                   children: const [],
                 ),
@@ -30,16 +30,16 @@ void main() {
       );
 
       /// Get widgets by key
-      final zBoxFinder = find.byKey(zBoxKey);
+      final stackBoxFinder = find.byKey(stackBoxKey);
       final containerFinder = find.byKey(containerKey);
       final stackFinder = find.byKey(stackKey);
 
       /// Find the Container and Stack widgets inside the StackBox widget
       final styledContainer = tester.widget<Container>(
-        find.descendant(of: zBoxFinder, matching: find.byType(Container)),
+        find.descendant(of: stackBoxFinder, matching: find.byType(Container)),
       );
       final styledStack = tester.widget<Stack>(
-        find.descendant(of: zBoxFinder, matching: find.byType(Stack)),
+        find.descendant(of: stackBoxFinder, matching: find.byType(Stack)),
       );
 
       final container = tester.widget<Container>(containerFinder);
@@ -89,7 +89,7 @@ void main() {
     testWidgets('should verify Stack defaults match Flutter Stack defaults', (
       tester,
     ) async {
-      const zBoxKey = Key('stackbox');
+      const stackBoxKey = Key('stackbox');
       const stackKey = Key('stack');
 
       await tester.pumpWidget(
@@ -97,7 +97,7 @@ void main() {
           home: Scaffold(
             body: Column(
               children: [
-                StackBox(key: zBoxKey, children: const []),
+                StackBox(key: stackBoxKey, children: const []),
                 Stack(key: stackKey, children: const []),
               ],
             ),
@@ -106,12 +106,12 @@ void main() {
       );
 
       /// Get widgets by key
-      final zBoxFinder = find.byKey(zBoxKey);
+      final stackBoxFinder = find.byKey(stackBoxKey);
       final stackFinder = find.byKey(stackKey);
 
       /// Find the Stack widget inside the StackBox widget
       final styledStack = tester.widget<Stack>(
-        find.descendant(of: zBoxFinder, matching: find.byType(Stack)),
+        find.descendant(of: stackBoxFinder, matching: find.byType(Stack)),
       );
       final stack = tester.widget<Stack>(stackFinder);
 

@@ -16,9 +16,6 @@ class StyleProvider<S extends Spec<S>> extends InheritedWidget {
 
   const StyleProvider({super.key, required this.style, required super.child});
 
-  /// The style provided to descendant widgets.
-  final Style<S> style;
-
   @override
   bool updateShouldNotify(StyleProvider<S> oldWidget) {
     return style != oldWidget.style;
