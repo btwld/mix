@@ -23,7 +23,7 @@ mixin UtilityVariantMixin<T extends Style<S>, S extends Spec<S>> {
   ///
   /// Example:
   /// ```dart
-  /// $box.onDark($box.color.white())
+  /// BoxStyler().onDark(.color(Colors.white))
   /// ```
   T onDark(T style) {
     return withVariant(ContextVariant.brightness(.dark), style);
@@ -33,7 +33,7 @@ mixin UtilityVariantMixin<T extends Style<S>, S extends Spec<S>> {
   ///
   /// Example:
   /// ```dart
-  /// $box.onLight($box.color.black())
+  /// BoxStyler().onLight(.color(Colors.black))
   /// ```
   T onLight(T style) {
     return withVariant(ContextVariant.brightness(.light), style);
@@ -46,21 +46,14 @@ mixin UtilityVariantMixin<T extends Style<S>, S extends Spec<S>> {
   ///
   /// Example:
   /// ```dart
-  /// $box.onBuilder((context) {
+  /// BoxStyler().onBuilder((context) {
   ///   final theme = Theme.of(context);
-  ///   return $box.color(theme.primaryColor);
+  ///   return BoxStyler().color(theme.primaryColor);
   /// })
   /// ```
   T onBuilder(T Function(BuildContext context) fn) {
     return withVariants([
       VariantStyle<S>(ContextVariantBuilder<T>(fn), currentValue),
     ]);
-  }
-
-  @Deprecated(
-    'Use onBuilder instead. This method will be removed in a future version.',
-  )
-  T builder(T Function(BuildContext context) fn) {
-    return onBuilder(fn);
   }
 }

@@ -6,7 +6,7 @@ import '../../helpers/testing_utils.dart';
 
 void main() {
   group('Style Merge Parameters', () {
-    group('BoxMix merge', () {
+    group('BoxStyler merge', () {
       test('merges orderOfModifiers correctly', () {
         final first = BoxStyler(
           constraints: BoxConstraintsMix.width(100.0),

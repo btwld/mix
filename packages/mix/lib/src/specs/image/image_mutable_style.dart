@@ -7,18 +7,15 @@ import '../../core/style_spec.dart';
 import '../../core/utility.dart';
 import '../../core/utility_variant_mixin.dart';
 import '../../core/utility_widget_state_variant_mixin.dart';
-import '../../modifiers/widget_modifier_config.dart';
-import '../../modifiers/widget_modifier_util.dart';
 import '../../properties/painting/color_util.dart';
 import '../../variants/variant.dart';
-import '../../variants/variant_util.dart';
 import 'image_spec.dart';
 import 'image_style.dart';
 
 /// Provides mutable utility for image styling with cascade notation support.
 ///
 /// Supports the same API as [ImageStyler] but maintains mutable internal state
-/// enabling fluid styling: `$image..width(100)..height(100)..fit(BoxFit.cover)`.
+/// enabling fluid styling: `ImageMutableStyler()..width(100)..height(100)..fit(BoxFit.cover)`.
 class ImageMutableStyler extends StyleMutableBuilder<ImageSpec>
     with
         UtilityVariantMixin<ImageStyler, ImageSpec>,
@@ -38,22 +35,6 @@ class ImageMutableStyler extends StyleMutableBuilder<ImageSpec>
   late final filterQuality = MixUtility(mutable.filterQuality);
 
   late final colorBlendMode = MixUtility(mutable.colorBlendMode);
-
-  @Deprecated(
-    'Use ImageStyler().onHovered() and similar methods directly instead. '
-    'This property was deprecated after Mix v2.0.0.',
-  )
-  late final on = OnContextVariantUtility<ImageSpec, ImageStyler>(
-    (v) => mutable.variants([v]),
-  );
-
-  @Deprecated(
-    'Use ImageStyler().wrap() method directly instead. '
-    'This property was deprecated after Mix v2.0.0.',
-  )
-  late final wrap = WidgetModifierUtility(
-    (prop) => mutable.wrap(WidgetModifierConfig(modifiers: [prop])),
-  );
 
   /// Internal mutable state for accumulating image styling properties.
   @override

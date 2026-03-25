@@ -7,21 +7,18 @@ import '../../core/style_spec.dart';
 import '../../core/utility.dart';
 import '../../core/utility_variant_mixin.dart';
 import '../../core/utility_widget_state_variant_mixin.dart';
-import '../../modifiers/widget_modifier_config.dart';
-import '../../modifiers/widget_modifier_util.dart';
 import '../../properties/painting/color_util.dart';
 import '../../properties/typography/strut_style_util.dart';
 import '../../properties/typography/text_height_behavior_util.dart';
 import '../../properties/typography/text_style_util.dart';
 import '../../variants/variant.dart';
-import '../../variants/variant_util.dart';
 import 'text_spec.dart';
 import 'text_style.dart';
 
 /// Provides mutable utility for text styling with cascade notation support.
 ///
 /// Supports the same API as [TextStyler] but maintains mutable internal state
-/// enabling fluid styling: `$text..color.red()..fontSize(16)`.
+/// enabling fluid styling: `TextMutableStyler()..color.red()..fontSize(16)`.
 class TextMutableStyler extends StyleMutableBuilder<TextSpec>
     with
         UtilityVariantMixin<TextStyler, TextSpec>,
@@ -47,21 +44,6 @@ class TextMutableStyler extends StyleMutableBuilder<TextSpec>
     (prop) => mutable.merge(TextStyler.create(selectionColor: prop)),
   );
   late final locale = MixUtility(mutable.locale);
-  @Deprecated(
-    'Use TextStyler().onHovered() and similar methods directly instead. '
-    'This property was deprecated after Mix v2.0.0.',
-  )
-  late final on = OnContextVariantUtility<TextSpec, TextStyler>(
-    (v) => mutable.variants([v]),
-  );
-  @Deprecated(
-    'Use TextStyler().wrap() method directly instead. '
-    'This property was deprecated after Mix v2.0.0.',
-  )
-  late final wrap = WidgetModifierUtility(
-    (prop) => mutable.wrap(WidgetModifierConfig(modifiers: [prop])),
-  );
-
   // Direct access to commonly used style properties
   late final color = style.color;
   late final fontFamily = style.fontFamily;

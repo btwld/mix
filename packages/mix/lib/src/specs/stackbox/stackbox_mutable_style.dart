@@ -8,20 +8,17 @@ import '../../core/style_spec.dart';
 import '../../core/utility.dart';
 import '../../core/utility_variant_mixin.dart';
 import '../../core/utility_widget_state_variant_mixin.dart';
-import '../../modifiers/widget_modifier_config.dart';
-import '../../modifiers/widget_modifier_util.dart';
 import '../../properties/layout/constraints_util.dart';
 import '../../properties/layout/edge_insets_geometry_util.dart';
 import '../../properties/painting/decoration_util.dart';
 import '../../variants/variant.dart';
-import '../../variants/variant_util.dart';
 import 'stackbox_spec.dart';
 import 'stackbox_style.dart';
 
 /// Provides mutable utility for stackbox styling with cascade notation support.
 ///
 /// Combines box and stack styling capabilities. Supports the same API as [StackBoxStyler]
-/// but maintains mutable internal state enabling fluid styling: `$stackbox..color.red()..width(100)`.
+/// but maintains mutable internal state enabling fluid styling: `StackBoxMutableStyler()..color.red()..width(100)`.
 class StackBoxMutableStyler extends StyleMutableBuilder<StackBoxSpec>
     with
         UtilityVariantMixin<StackBoxStyler, StackBoxSpec>,
@@ -40,22 +37,6 @@ class StackBoxMutableStyler extends StyleMutableBuilder<StackBoxSpec>
 
   late final decoration = DecorationUtility(
     (prop) => mutable.merge(StackBoxStyler(decoration: prop)),
-  );
-
-  @Deprecated(
-    'Use StackBoxStyler().onHovered() and similar methods directly instead. '
-    'This property was deprecated after Mix v2.0.0.',
-  )
-  late final on = OnContextVariantUtility<StackBoxSpec, StackBoxStyler>(
-    (v) => mutable.variants([v]),
-  );
-
-  @Deprecated(
-    'Use StackBoxStyler().wrap() method directly instead. '
-    'This property was deprecated after Mix v2.0.0.',
-  )
-  late final wrap = WidgetModifierUtility(
-    (prop) => mutable.wrap(WidgetModifierConfig(modifiers: [prop])),
   );
 
   /// Container decoration convenience accessors.
