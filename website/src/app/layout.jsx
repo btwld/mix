@@ -1,6 +1,6 @@
 import { Footer, Layout, Navbar } from 'nextra-theme-docs'
 import 'nextra-theme-docs/style.css'
-import { Banner, Head } from 'nextra/components'
+import { Head } from 'nextra/components'
 import { getPageMap } from 'nextra/page-map'
 
 export const metadata = {
@@ -9,12 +9,6 @@ export const metadata = {
 }
 
 const description = "An expressive way to build design systems in Flutter.";
-
-const banner = (
-    <Banner storageKey="mix-banner">
-        Mix 2.0 is in development! You can access the <a href="https://mix-docs-gosljkd74-fluttertools.vercel.app/" target="_blank" rel="noopener noreferrer" style={{ color: "var(--color-purple-400)" }}>Mix 1.0 docs here</a>.
-    </Banner>
-)
 const navbar = (
     <Navbar
         logo={
@@ -63,7 +57,6 @@ export default async function RootLayout({ children }) {
             </Head>
             <body>
                 <Layout
-                    banner={banner}
                     navbar={navbar}
                     pageMap={await getPageMap()}
                     docsRepositoryBase="https://github.com/btwld/mix/tree/main/docs"
