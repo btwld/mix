@@ -12,7 +12,10 @@ class Example extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = TextStyler().fontSize(24).fontWeight(.bold).color(Colors.blue);
+    final style = TextStyler()
+        .fontSize(24)
+        .fontWeight(.bold)
+        .color(Colors.blue);
 
     return StyledText('Hello Mix', style: style);
   }

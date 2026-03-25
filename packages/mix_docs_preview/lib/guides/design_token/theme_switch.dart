@@ -46,10 +46,8 @@ class _ExampleState extends State<Example> {
       .borderAll(color: $border(), width: 2)
       .animate(.easeInOut(200.ms));
 
-  TextStyler get _label => TextStyler()
-      .color($fg())
-      .fontSize(16)
-      .fontWeight(.w600);
+  TextStyler get _label =>
+      TextStyler().color($fg()).fontSize(16).fontWeight(.w600);
 
   @override
   Widget build(BuildContext context) {
