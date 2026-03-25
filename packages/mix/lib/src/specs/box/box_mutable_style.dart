@@ -8,20 +8,17 @@ import '../../core/style_spec.dart';
 import '../../core/utility.dart';
 import '../../core/utility_variant_mixin.dart';
 import '../../core/utility_widget_state_variant_mixin.dart';
-import '../../modifiers/widget_modifier_config.dart';
-import '../../modifiers/widget_modifier_util.dart';
 import '../../properties/layout/constraints_util.dart';
 import '../../properties/layout/edge_insets_geometry_util.dart';
 import '../../properties/painting/decoration_util.dart';
 import '../../variants/variant.dart';
-import '../../variants/variant_util.dart';
 import 'box_spec.dart';
 import 'box_style.dart';
 
 /// Provides mutable utility for box styling with cascade notation support.
 ///
 /// Supports the same API as [BoxStyler] but maintains mutable internal state
-/// enabling fluid styling: `$box..color.red()..width(100)`.
+/// enabling fluid styling: `BoxMutableStyler()..color.red()..width(100)`.
 class BoxMutableStyler extends StyleMutableBuilder<BoxSpec>
     with
         UtilityVariantMixin<BoxStyler, BoxSpec>,
@@ -40,22 +37,6 @@ class BoxMutableStyler extends StyleMutableBuilder<BoxSpec>
 
   late final decoration = DecorationUtility(
     (prop) => mutable.merge(BoxStyler.create(decoration: Prop.mix(prop))),
-  );
-
-  @Deprecated(
-    'Use BoxStyler().onHovered() and similar methods directly instead. '
-    'This property was deprecated after Mix v2.0.0.',
-  )
-  late final on = OnContextVariantUtility<BoxSpec, BoxStyler>(
-    (v) => mutable.variants([v]),
-  );
-
-  @Deprecated(
-    'Use BoxStyler().wrap() method directly instead. '
-    'This property was deprecated after Mix v2.0.0.',
-  )
-  late final wrap = WidgetModifierUtility(
-    (prop) => mutable.wrap(WidgetModifierConfig(modifiers: [prop])),
   );
 
   /// Convenience accessors for commonly used decoration properties.

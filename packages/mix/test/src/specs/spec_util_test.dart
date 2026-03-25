@@ -3,114 +3,89 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
 void main() {
-  group('Spec Utilities Global Getters', () {
-    test('\$box returns BoxMutableStyler instance', () {
-      expect($box, isA<BoxMutableStyler>());
-      // Each call returns a new instance
-      expect($box, isNot(same($box)));
+  group('Styler Chain Getters', () {
+    test('BoxStyler.chain returns BoxMutableStyler instance', () {
+      expect(BoxStyler.chain, isA<BoxMutableStyler>());
+      expect(BoxStyler.chain, isNot(same(BoxStyler.chain)));
     });
 
-    test('\$flexbox returns FlexBoxMutableStyler instance', () {
-      expect($flexbox, isA<FlexBoxMutableStyler>());
-      expect($flexbox, isNot(same($flexbox))); // New instance each time
+    test('FlexBoxStyler.chain returns FlexBoxMutableStyler instance', () {
+      expect(FlexBoxStyler.chain, isA<FlexBoxMutableStyler>());
+      expect(FlexBoxStyler.chain, isNot(same(FlexBoxStyler.chain)));
     });
 
-    test('\$flex returns FlexMutableStyler instance', () {
-      expect($flex, isA<FlexMutableStyler>());
-      // Each call returns a new instance
-      expect($flex, isNot(same($flex)));
+    test('FlexStyler.chain returns FlexMutableStyler instance', () {
+      expect(FlexStyler.chain, isA<FlexMutableStyler>());
+      expect(FlexStyler.chain, isNot(same(FlexStyler.chain)));
     });
 
-    test('\$image returns ImageMutableStyler instance', () {
-      expect($image, isA<ImageMutableStyler>());
-      // Each call returns a new instance
-      expect($image, isNot(same($image)));
+    test('ImageStyler.chain returns ImageMutableStyler instance', () {
+      expect(ImageStyler.chain, isA<ImageMutableStyler>());
+      expect(ImageStyler.chain, isNot(same(ImageStyler.chain)));
     });
 
-    test('\$icon returns IconMutableStyler instance', () {
-      expect($icon, isA<IconMutableStyler>());
-      // Each call returns a new instance
-      expect($icon, isNot(same($icon)));
+    test('IconStyler.chain returns IconMutableStyler instance', () {
+      expect(IconStyler.chain, isA<IconMutableStyler>());
+      expect(IconStyler.chain, isNot(same(IconStyler.chain)));
     });
 
-    test('\$text returns TextMutableStyler instance', () {
-      expect($text, isA<TextMutableStyler>());
-      // Each call returns a new instance
-      expect($text, isNot(same($text)));
+    test('TextStyler.chain returns TextMutableStyler instance', () {
+      expect(TextStyler.chain, isA<TextMutableStyler>());
+      expect(TextStyler.chain, isNot(same(TextStyler.chain)));
     });
 
-    test('\$stack returns StackMutableStyler instance', () {
-      expect($stack, isA<StackMutableStyler>());
-      // Each call returns a new instance
-      expect($stack, isNot(same($stack)));
+    test('StackStyler.chain returns StackMutableStyler instance', () {
+      expect(StackStyler.chain, isA<StackMutableStyler>());
+      expect(StackStyler.chain, isNot(same(StackStyler.chain)));
+    });
+
+    test('StackBoxStyler.chain returns StackBoxMutableStyler instance', () {
+      expect(StackBoxStyler.chain, isA<StackBoxMutableStyler>());
+      expect(StackBoxStyler.chain, isNot(same(StackBoxStyler.chain)));
     });
   });
 
-  group('Utility Functionality', () {
-    test('box getter can be used to create attributes', () {
-      final box = $box
+  group('Chain Functionality', () {
+    test('BoxStyler.chain can be used to build styles', () {
+      final box = BoxStyler.chain
         ..width(100)
         ..height(200);
       expect(box, isA<BoxMutableStyler>());
     });
 
-    test('flex getter can be used to create attributes', () {
-      final flex = $flex..direction(Axis.horizontal);
+    test('FlexStyler.chain can be used to build styles', () {
+      final flex = FlexStyler.chain..direction(Axis.horizontal);
       expect(flex, isA<FlexMutableStyler>());
     });
 
-    test('flexbox getter provides utility methods', () {
-      expect($flexbox, isA<FlexBoxMutableStyler>());
-      // Verify it can be used to create attributes
-      final flexbox = $flexbox..direction(Axis.vertical);
-      expect(flexbox, isA<FlexBoxMutableStyler>());
+    test('FlexBoxStyler.chain can be used to build styles', () {
+      final flexBox = FlexBoxStyler.chain..direction(Axis.vertical);
+      expect(flexBox, isA<FlexBoxMutableStyler>());
     });
 
-    test('image getter can be used to create attributes', () {
-      final image = $image..fit(BoxFit.cover);
+    test('ImageStyler.chain can be used to build styles', () {
+      final image = ImageStyler.chain..fit(BoxFit.cover);
       expect(image, isA<ImageMutableStyler>());
     });
 
-    test('icon getter can be used to create attributes', () {
-      final icon = $icon..size(24);
+    test('IconStyler.chain can be used to build styles', () {
+      final icon = IconStyler.chain..size(24);
       expect(icon, isA<IconMutableStyler>());
     });
 
-    test('text getter can be used to create attributes', () {
-      final text = $text..style.fontSize(16);
+    test('TextStyler.chain can be used to build styles', () {
+      final text = TextStyler.chain..style.fontSize(16);
       expect(text, isA<TextMutableStyler>());
     });
 
-    test('stack getter can be used to create attributes', () {
-      final stack = $stack..alignment(Alignment.center);
+    test('StackStyler.chain can be used to build styles', () {
+      final stack = StackStyler.chain..alignment(Alignment.center);
       expect(stack, isA<StackMutableStyler>());
     });
-  });
 
-  group('Global getters behavior', () {
-    test('utility getters return new instances each time', () {
-      // Test that utility getters return new instances (not cached)
-      expect($box, isNot(same($box)));
-      expect($flex, isNot(same($flex)));
-      expect($image, isNot(same($image)));
-      expect($icon, isNot(same($icon)));
-      expect($text, isNot(same($text)));
-      expect($stack, isNot(same($stack)));
-    });
-
-    test('utility getters behave consistently', () {
-      // Test that utility getters return new instances consistently
-      expect($flexbox, isNot(same($flexbox)));
-    });
-
-    test('all getters return correct types', () {
-      expect($box, isA<BoxMutableStyler>());
-      expect($flex, isA<FlexMutableStyler>());
-      expect($flexbox, isA<FlexBoxMutableStyler>());
-      expect($image, isA<ImageMutableStyler>());
-      expect($icon, isA<IconMutableStyler>());
-      expect($text, isA<TextMutableStyler>());
-      expect($stack, isA<StackMutableStyler>());
+    test('StackBoxStyler.chain can be used to build styles', () {
+      final stackBox = StackBoxStyler.chain..alignment(Alignment.center);
+      expect(stackBox, isA<StackBoxMutableStyler>());
     });
   });
 }

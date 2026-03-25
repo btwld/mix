@@ -15,9 +15,6 @@ import 'image_widget.dart';
 
 part 'image_style.g.dart';
 
-@Deprecated('Use ImageStyler instead')
-typedef ImageMix = ImageStyler;
-
 @MixableStyler()
 class ImageStyler extends MixStyler<ImageStyler, ImageSpec>
     with _$ImageStylerMixin {

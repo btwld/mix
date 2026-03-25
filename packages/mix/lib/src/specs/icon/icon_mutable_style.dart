@@ -7,20 +7,17 @@ import '../../core/style_spec.dart';
 import '../../core/utility.dart';
 import '../../core/utility_variant_mixin.dart';
 import '../../core/utility_widget_state_variant_mixin.dart';
-import '../../modifiers/widget_modifier_config.dart';
-import '../../modifiers/widget_modifier_util.dart';
 import '../../properties/painting/color_util.dart';
 import '../../properties/painting/shadow_mix.dart';
 import '../../properties/painting/shadow_util.dart';
 import '../../variants/variant.dart';
-import '../../variants/variant_util.dart';
 import 'icon_spec.dart';
 import 'icon_style.dart';
 
 /// Provides mutable utility for icon styling with cascade notation support.
 ///
 /// Supports the same API as [IconStyler] but maintains mutable internal state
-/// enabling fluid styling: `$icon..color(Colors.blue)..size(24)..weight(400)`.
+/// enabling fluid styling: `IconMutableStyler()..color(Colors.blue)..size(24)..weight(400)`.
 class IconMutableStyler extends StyleMutableBuilder<IconSpec>
     with
         UtilityVariantMixin<IconStyler, IconSpec>,
@@ -32,22 +29,6 @@ class IconMutableStyler extends StyleMutableBuilder<IconSpec>
   late final shadow = ShadowUtility((v) => mutable.shadows([v]));
 
   late final textDirection = MixUtility(mutable.textDirection);
-
-  @Deprecated(
-    'Use IconStyler().onHovered() and similar methods directly instead. '
-    'This property was deprecated after Mix v2.0.0.',
-  )
-  late final on = OnContextVariantUtility<IconSpec, IconStyler>(
-    (v) => mutable.variants([v]),
-  );
-
-  @Deprecated(
-    'Use IconStyler().wrap() method directly instead. '
-    'This property was deprecated after Mix v2.0.0.',
-  )
-  late final wrap = WidgetModifierUtility(
-    (prop) => mutable.wrap(WidgetModifierConfig(modifiers: [prop])),
-  );
 
   /// Internal mutable state for accumulating icon styling properties.
   @override

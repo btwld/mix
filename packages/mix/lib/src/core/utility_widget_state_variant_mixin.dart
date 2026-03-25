@@ -15,7 +15,7 @@ mixin UtilityWidgetStateVariantMixin<T extends Style<S>, S extends Spec<S>> {
   ///
   /// Example:
   /// ```dart
-  /// $box.onHovered($box.color.red())
+  /// BoxStyler().onHovered(.color(Colors.red))
   /// ```
   T onHovered(T style) {
     return withVariant(ContextVariant.widgetState(.hovered), style);
@@ -25,7 +25,7 @@ mixin UtilityWidgetStateVariantMixin<T extends Style<S>, S extends Spec<S>> {
   ///
   /// Example:
   /// ```dart
-  /// $box.onPressed($box.color.blue())
+  /// BoxStyler().onPressed(.color(Colors.blue))
   /// ```
   T onPressed(T style) {
     return withVariant(ContextVariant.widgetState(.pressed), style);
@@ -61,7 +61,7 @@ mixin UtilityWidgetStateVariantMixin<T extends Style<S>, S extends Spec<S>> {
   ///
   /// Example:
   /// ```dart
-  /// $box.onDisabled($box.color.grey())
+  /// BoxStyler().onDisabled(.color(Colors.grey))
   /// ```
   T onDisabled(T style) {
     return withVariant(ContextVariant.widgetState(.disabled), style);
@@ -71,7 +71,7 @@ mixin UtilityWidgetStateVariantMixin<T extends Style<S>, S extends Spec<S>> {
   ///
   /// Example:
   /// ```dart
-  /// $box.onEnabled($box.color.blue())
+  /// BoxStyler().onEnabled(.color(Colors.blue))
   /// ```
   T onEnabled(T style) {
     return withVariant(

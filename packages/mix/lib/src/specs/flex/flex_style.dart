@@ -16,9 +16,6 @@ import 'flex_spec.dart';
 
 part 'flex_style.g.dart';
 
-@Deprecated('Use FlexStyler instead')
-typedef FlexMix = FlexStyler;
-
 /// Represents the attributes of a [FlexSpec].
 ///
 /// This class encapsulates properties defining the layout and
@@ -59,11 +56,6 @@ class FlexStyler extends MixStyler<FlexStyler, FlexSpec>
     Prop<TextBaseline>? textBaseline,
     Prop<Clip>? clipBehavior,
     Prop<double>? spacing,
-    @Deprecated(
-      'Use spacing instead. '
-      'This feature was deprecated after Mix v2.0.0.',
-    )
-    Prop<double>? gap,
     super.animation,
     super.modifier,
     super.variants,
@@ -75,7 +67,7 @@ class FlexStyler extends MixStyler<FlexStyler, FlexSpec>
        $textDirection = textDirection,
        $textBaseline = textBaseline,
        $clipBehavior = clipBehavior,
-       $spacing = spacing ?? gap;
+       $spacing = spacing;
 
   FlexStyler({
     Axis? direction,

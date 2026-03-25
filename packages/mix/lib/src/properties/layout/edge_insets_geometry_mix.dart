@@ -8,7 +8,7 @@ import '../../core/prop.dart';
 
 part 'edge_insets_geometry_mix.g.dart';
 
-// Deprecated typedef moved to src/core/deprecated.dart
+// Legacy typedef removed during the Mix 2.0 transition.
 
 /// Base class for Mix edge insets types.
 ///

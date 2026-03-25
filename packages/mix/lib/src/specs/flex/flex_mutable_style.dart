@@ -7,17 +7,14 @@ import '../../core/style_spec.dart';
 import '../../core/utility.dart';
 import '../../core/utility_variant_mixin.dart';
 import '../../core/utility_widget_state_variant_mixin.dart';
-import '../../modifiers/widget_modifier_config.dart';
-import '../../modifiers/widget_modifier_util.dart';
 import '../../variants/variant.dart';
-import '../../variants/variant_util.dart';
 import 'flex_spec.dart';
 import 'flex_style.dart';
 
 /// Provides mutable utility for flex styling with cascade notation support.
 ///
 /// Supports the same API as [FlexStyler] but maintains mutable internal state
-/// enabling fluid styling: `$flex..direction(Axis.horizontal)..spacing(8)`.
+/// enabling fluid styling: `FlexMutableStyler()..direction(Axis.horizontal)..spacing(8)`.
 class FlexMutableStyler extends StyleMutableBuilder<FlexSpec>
     with
         UtilityVariantMixin<FlexStyler, FlexSpec>,
@@ -37,22 +34,6 @@ class FlexMutableStyler extends StyleMutableBuilder<FlexSpec>
   late final textBaseline = MixUtility(mutable.textBaseline);
 
   late final clipBehavior = MixUtility(mutable.clipBehavior);
-
-  @Deprecated(
-    'Use FlexStyler().onHovered() and similar methods directly instead. '
-    'This property was deprecated after Mix v2.0.0.',
-  )
-  late final on = OnContextVariantUtility<FlexSpec, FlexStyler>(
-    (v) => mutable.variants([v]),
-  );
-
-  @Deprecated(
-    'Use FlexStyler().wrap() method directly instead. '
-    'This property was deprecated after Mix v2.0.0.',
-  )
-  late final wrap = WidgetModifierUtility(
-    (prop) => mutable.wrap(WidgetModifierConfig(modifiers: [prop])),
-  );
 
   /// Internal mutable state for accumulating flex styling properties.
   @override

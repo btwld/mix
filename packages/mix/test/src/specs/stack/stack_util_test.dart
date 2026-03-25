@@ -51,10 +51,6 @@ void main() {
       test('clipBehavior utility is MixUtility', () {
         expect(util.clipBehavior, isA<MixUtility<StackStyler, Clip>>());
       });
-
-      test('wrap utility is WidgetModifierUtility', () {
-        expect(util.wrap, isA<WidgetModifierUtility<StackStyler>>());
-      });
     });
 
     group('Stack property utilities', () {
@@ -103,16 +99,6 @@ void main() {
         final result = util.animate(animationConfig);
 
         expect(result.$animation, animationConfig);
-      });
-    });
-
-    group('Modifier utilities', () {
-      test('', () {
-        final result = util.wrap.opacity(0.5);
-
-        expect(result, isA<StackStyler>());
-        expect(result.$modifier, isNotNull);
-        expect(result.$modifier!.$modifiers!.length, 1);
       });
     });
 
