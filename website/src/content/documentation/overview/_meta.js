@@ -3,6 +3,5 @@ export default {
     "getting-started": "Getting started",
     "utility-first": "Utility-First",
     comparison: "Comparative Overview",
-    "best-practices": "Best Practices",
     migration: "Migration"
 };

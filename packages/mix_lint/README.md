@@ -56,7 +56,7 @@ Tokens are meant to be shared across the app. Creating them inline inside a Styl
 ```dart
 // Inline token inside a Styler
 final style = BoxStyler()
-    .color.ref(ColorToken('primary'))
+    .color(ColorToken('primary').call())
     .borderRadiusTopLeft(RadiusToken('rounded')());
 ```
 
@@ -67,7 +67,7 @@ final primary = ColorToken('primary');
 final rounded = RadiusToken('rounded');
 
 final style = BoxStyler()
-    .color.ref(primary)
+    .color(primary())
     .borderRadiusTopLeft(rounded());
 ```
 

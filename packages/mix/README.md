@@ -10,15 +10,21 @@
 [![MIT Licence](https://img.shields.io/github/license/leoafarias/mix?style=for-the-badge&longCache=true)](https://opensource.org/licenses/mit-license.php)
 [![Awesome Flutter](https://img.shields.io/badge/awesome-flutter-purple?longCache=true&style=for-the-badge)](https://github.com/Solido/awesome-flutter)
 
-**Mix** is a styling system for Flutter that separates style definitions from widget structure. It provides a composable, type-safe way to define and apply styles.
+**Mix** is a styling system for Flutter that separates style definitions from widget structure. It provides a composable, type-safe way to define and apply styles using a fluent API, design tokens, and context-aware variants.
 
 - Compose, merge, and apply styles across widgets
 - Write maintainable styling definitions separate from widget code
-- Apply styles conditionally based on `BuildContext`
+- Adapt styles conditionally based on interactions and context
 
 ## Why Mix?
 
-Mix provides utility functions for intuitive, composable styling that stays consistent across widgets and files—without being tied to Material Design.
+Flutter's built-in styling works well for simple widgets, but as your app grows, common pain points emerge:
+
+- **Style duplication**: The same colors, spacing, and borders are repeated across widgets with no easy way to share them.
+- **Tight coupling**: Style logic lives inside `build()` methods, making it hard to reuse or test independently.
+- **No conditional styling**: Adapting styles for hover, press, dark mode, or breakpoints requires manual boilerplate.
+
+Mix solves these by giving you a dedicated styling layer that stays consistent across widgets and files — without being tied to Material Design.
 
 ## Goals
 
@@ -34,9 +40,50 @@ Mix provides utility functions for intuitive, composable styling that stays cons
 - **Composable** — Build complex styles from simple, reusable pieces
 - **Extensible** — Override and extend utilities to fit your needs
 
-## Understanding the Styler Pattern
+## Getting Started
 
-Mix provides two constructor patterns for Styler classes:
+### Prerequisites
+
+- **Dart SDK**: 3.11.0 or higher
+- **Flutter**: 3.41.0 or higher
+
+### Installation
+
+```bash
+flutter pub add mix
+```
+
+Or in `pubspec.yaml`:
+
+```yaml
+dependencies:
+  mix: <latest>
+```
+
+```dart
+import 'package:mix/mix.dart';
+```
+
+### First Widget
+
+```dart
+final cardStyle = BoxStyler()
+    .size(240, 100)
+    .color(Colors.blue)
+    .alignment(.center)
+    .borderRounded(12)
+    .border(.all(.color(Colors.black).width(1).style(.solid)));
+
+Box(
+  style: cardStyle,
+  child: StyledText(
+    'Hello Mix',
+    style: TextStyler().color(Colors.white).fontSize(18),
+  ),
+);
+```
+
+## Understanding the Styler Pattern
 
 ### Fluent API: `BoxStyler()`
 
@@ -68,7 +115,7 @@ Use this when working with design tokens or number directives like `multiply()` 
 
 ### Styling API
 
-Define styles with a fluent, chainable API. Style composition and override are supported—later attributes override earlier ones when chained:
+Define styles with a fluent, chainable API. Style composition and override are supported — later attributes override earlier ones when chained:
 
 ```dart
 import 'package:flutter/material.dart';
@@ -136,15 +183,27 @@ final style = BoxStyler()
 
 ### Animations
 
-- **Implicit** — Values (state or variants) animate smoothly with `.animate(AnimationConfig....)`
+- **Implicit** — Values animate smoothly with `.animate(AnimationConfig....)`
 - **Phase** — Multi-step flows (e.g. tap → compress → expand) with `.phaseAnimation(...)`
 - **Keyframe** — Full control with tracks and keyframes
 
 [Animations guide →](https://fluttermix.com/docs/guides/animations)
 
+### Widget Modifiers
+
+Some visual effects — opacity, clipping, visibility — aren't style properties. Modifiers let you declare widget wrappers inside your style so they stay composable and animatable.
+
+[Widget modifiers guide →](https://fluttermix.com/docs/guides/widget-modifiers)
+
+### Directives
+
+Directives transform values (text casing, number scaling, color adjustments) at resolve time, keeping transformations inside the style so they survive merging.
+
+[Directives guide →](https://fluttermix.com/docs/guides/directives)
+
 ### Utility-First Approach
 
-Stylers expose small, composable utilities you combine (e.g. `color`, `border`, `padding`, `borderRadius`). The API follows Flutter naming so it stays familiar:
+Stylers expose small, composable utilities you combine. The API follows Flutter naming so it stays familiar:
 
 ```dart
 BoxStyler()
@@ -156,50 +215,14 @@ BoxStyler()
 
 [Utility-first overview →](https://fluttermix.com/docs/overview/utility-first)
 
-## Getting Started
+## Ecosystem
 
-### Prerequisites
-
-- **Dart SDK**: 3.11.0 or higher
-- **Flutter**: Latest stable recommended
-
-### Installation
-
-```bash
-flutter pub add mix --pre-release
-```
-
-Or in `pubspec.yaml`:
-
-```yaml
-dependencies:
-  mix: <latest>
-```
-
-```dart
-import 'package:mix/mix.dart';
-```
-
-### First widget
-
-```dart
-final cardStyle = BoxStyler()
-    .height(100)
-    .width(240)
-    .color(Colors.blue)
-    .borderRounded(12)
-    .borderAll(color: Colors.black, width: 1, style: orderStyle.solid);
-
-Box(
-  style: cardStyle,
-  child: StyledText(
-    'Hello Mix',
-    style: TextStyler().color(Colors.white).fontSize(18),
-  ),
-);
-```
-
-[Getting started →](https://fluttermix.com/docs/overview/getting-started)
+| Package | Description |
+|---------|-------------|
+| [mix_annotations](https://pub.dev/packages/mix_annotations) | Annotations for code generation |
+| [mix_generator](https://pub.dev/packages/mix_generator) | build_runner generator for specs |
+| [mix_lint](https://pub.dev/packages/mix_lint) | Custom linter rules |
+| [mix_tailwinds](https://pub.dev/packages/mix_tailwinds) | Utility-first styling inspired by Tailwind CSS |
 
 ## Documentation
 
@@ -209,8 +232,9 @@ Box(
 - [Dynamic styling](https://fluttermix.com/docs/guides/dynamic-styling)
 - [Design tokens](https://fluttermix.com/docs/guides/design-token)
 - [Animations](https://fluttermix.com/docs/guides/animations)
-- [Widgets](https://fluttermix.com/docs/widgets/box) (Box, Text, Icon, Flexbox, Stack, etc.)
-- [Best practices](https://fluttermix.com/docs/overview/best-practices)
+- [Widget modifiers](https://fluttermix.com/docs/guides/widget-modifiers)
+- [Directives](https://fluttermix.com/docs/guides/directives)
+- [Widgets](https://fluttermix.com/docs/widgets/box) (Box, Text, Icon, FlexBox, Stack, etc.)
 
 ## Contributors
 

@@ -5,4 +5,5 @@ export default {
     'widget-modifiers': 'Widget Modifiers',
     animations: 'Animations',
     directives: 'Directives',
+    'common-patterns': 'Common Patterns',
 }

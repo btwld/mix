@@ -1,0 +1,248 @@
+---
+title: mix_lint
+---
+
+import { Callout } from "nextra/components";
+
+# mix_lint
+
+`mix_lint` is an [analysis server plugin](https://dart.dev/tools/analysis-server) that adds Mix-specific diagnostics to your Dart analyzer. It helps teams keep Styler chains readable, tokens reusable, and generated Styler APIs consistent.
+
+## Why use it
+
+- Catches patterns that work but hurt maintainability (inline tokens, huge chains, variants before base style).
+- Nudges you toward idiomatic Mix (dot shorthands, `merge()`, a named `.create` on `@MixableStyler` types).
+- Surfaces issues in the IDE with the same workflow as built-in lints.
+
+<Callout type="info">
+  In this monorepo, `mix_lint` is **not** part of the root [pub workspace](https://dart.dev/tools/pub/workspaces). Use a path dependency or run `dart pub get` inside `packages/mix_lint` when you work on the plugin itself.
+</Callout>
+
+## Setup
+
+### 1. Add the dependency
+
+```bash
+dart pub add -d mix_lint
+```
+
+### 2. Enable the plugin
+
+In `analysis_options.yaml` (Dart ≥ 3.11, Flutter ≥ 3.41 recommended for Mix 2.0):
+
+```yaml
+plugins:
+  mix_lint: any
+```
+
+### 3. Turn on rules
+
+Rules are opt-in via the plugin `diagnostics` map:
+
+```yaml
+plugins:
+  mix_lint:
+    diagnostics:
+      mix_avoid_defining_tokens_within_style: true
+      mix_avoid_defining_tokens_within_scope: true
+      mix_avoid_empty_variants: true
+      mix_max_number_of_attributes_per_style: true
+      mix_variants_last: true
+      mix_mixable_styler_has_create: true
+      mix_prefer_dot_shorthands: true
+```
+
+Restart the analysis server (or your IDE) so the plugin loads.
+
+## Suppressing a diagnostic
+
+Use a standard ignore with the `mix_lint/<rule_id>` prefix:
+
+```dart
+// ignore: mix_lint/mix_variants_last
+final style = BoxStyler().onHovered(x).paddingAll(16);
+```
+
+## Rules overview
+
+| Rule | What it enforces |
+|------|------------------|
+| [`mix_avoid_defining_tokens_within_style`](#mix_avoid_defining_tokens_within_style) | Do not construct `MixToken` values inside Styler chains. |
+| [`mix_avoid_defining_tokens_within_scope`](#mix_avoid_defining_tokens_within_scope) | Do not construct `MixToken` keys inline inside `MixScope` maps. |
+| [`mix_avoid_empty_variants`](#mix_avoid_empty_variants) | Stylers must include base styling, not only `.on*` variants. |
+| [`mix_max_number_of_attributes_per_style`](#mix_max_number_of_attributes_per_style) | Cap how long a single Styler chain can grow (default: 15 calls). |
+| [`mix_variants_last`](#mix_variants_last) | Variant methods come after all base styling in the chain. |
+| [`mix_prefer_dot_shorthands`](#mix_prefer_dot_shorthands) | Prefer context dot shorthands (Dart 3.11+) where applicable. |
+| [`mix_mixable_styler_has_create`](#mix_mixable_styler_has_create) | `@MixableStyler` classes should expose a `const` `.create` constructor. |
+
+### mix_avoid_defining_tokens_within_style
+
+Ensure that `MixToken` instances are not created directly inside Styler method calls. Define tokens outside the style (e.g. top-level or as local constants), then pass them in.
+
+Tokens are meant to be shared across the app. Creating them inline inside a Styler makes them local to that call and harder to reuse or reference elsewhere.
+
+#### Don't
+
+```dart
+// Inline token inside a Styler
+final style = BoxStyler()
+    .color(ColorToken('primary').call())
+    .borderRadiusTopLeft(RadiusToken('rounded')());
+```
+
+#### Do
+
+```dart
+final primary = ColorToken('primary');
+final rounded = RadiusToken('rounded');
+
+final style = BoxStyler()
+    .color(primary())
+    .borderRadiusTopLeft(rounded());
+```
+
+### mix_avoid_defining_tokens_within_scope
+
+**Intent:** `MixScope` maps existing tokens to values. Inline `ColorToken('…')` (and similar) duplicates identity and obscures which token the rest of the app should reference.
+
+**Avoid:**
+
+```dart
+MixScope(
+  colors: {
+    ColorToken('primary'): Colors.blue,
+  },
+  child: child,
+);
+```
+
+**Prefer:**
+
+```dart
+final primary = ColorToken('primary');
+
+MixScope(
+  colors: {
+    primary: Colors.blue,
+  },
+  child: child,
+);
+```
+
+### mix_avoid_empty_variants
+
+**Intent:** A style with only `.onHovered`, `.onDark`, etc. has no default appearance. Base properties define the normal state; variants override.
+
+**Avoid:**
+
+```dart
+final style = BoxStyler()
+    .onHovered(BoxStyler().color(Colors.blue))
+    .onPressed(BoxStyler().color(Colors.green));
+```
+
+**Prefer:**
+
+```dart
+final style = BoxStyler()
+    .color(Colors.grey)
+    .onHovered(BoxStyler().color(Colors.blue))
+    .onPressed(BoxStyler().color(Colors.green));
+```
+
+### mix_max_number_of_attributes_per_style
+
+**Intent:** Very long chains are hard to review. Split them into focused Stylers and compose with `merge()`.
+
+The rule counts method invocations in the chain starting from the Styler constructor. The default maximum is **15**.
+
+**Avoid:** One enormous chain (layout, paint, interaction) in a single expression.
+
+**Prefer:**
+
+```dart
+final layout = BoxStyler()
+    .paddingAll(8)
+    .margin(.all(4))
+    .alignment(.center);
+
+final appearance = BoxStyler()
+    .color(Colors.blue)
+    .borderRounded(8)
+    .width(200)
+    .height(100)
+    .opacity(0.9);
+
+final hovered = BoxStyler()
+    .color(Colors.red)
+    .paddingAll(12)
+    .margin(.all(6))
+    .borderRounded(10)
+    .width(220)
+    .height(120)
+    .opacity(1.0);
+
+final style = layout
+    .merge(appearance)
+    .onHovered(hovered);
+```
+
+### mix_variants_last
+
+**Intent:** Readers should see “base style first, interactive/theme overrides at the end.” Scattered variant calls are harder to scan.
+
+**Avoid:**
+
+```dart
+final style = BoxStyler()
+    .color(Colors.red)
+    .onHovered(.color(Colors.blue))
+    .paddingAll(16)
+    .borderRounded(8)
+    .onPressed(.color(Colors.green));
+```
+
+**Prefer:**
+
+```dart
+final style = BoxStyler()
+    .color(Colors.red)
+    .paddingAll(16)
+    .borderRounded(8)
+    .onHovered(.color(Colors.blue))
+    .onPressed(.color(Colors.green));
+```
+
+### mix_prefer_dot_shorthands
+
+**Intent:** When the type is clear from context, Dart’s leading-dot shorthand keeps Styler code short without losing type safety. Requires **Dart 3.11+**.
+
+This rule includes a **quick fix** in supported clients: apply the suggested rewrite when the analyzer offers it.
+
+**Avoid:**
+
+```dart
+final style = BoxStyler()
+    .padding(EdgeInsetsGeometryMix.all(10));
+```
+
+**Prefer:**
+
+```dart
+final style = BoxStyler()
+    .padding(.all(10));
+```
+
+### mix_mixable_styler_has_create
+
+**Intent:** Code generated for `@MixableStyler` and Mix’s APIs expect a `const` named constructor `.create` for defaults, merging, and patterns like `const BoxStyler.create()`.
+
+**Avoid:** A `@MixableStyler` class with only a non-const constructor and no `.create`.
+
+**Prefer:** A `const MyStyler.create({ … })` plus a forwarding `MyStyler(...)` if you need convenience. See the [mix_generator](/documentation/ecosystem/mix-generator) page and existing Stylers under `packages/mix` for full patterns.
+
+## Related docs
+
+- [mix_generator](/documentation/ecosystem/mix-generator) — annotations and generated Styler/Spec/Mix mixins
+- [Styling guide](/documentation/guides/styling) — Styler, Spec, and widgets
+- [Design tokens](/documentation/guides/design-token) — `MixScope` and tokens

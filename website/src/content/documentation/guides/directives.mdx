@@ -6,6 +6,10 @@ import { Callout } from "nextra/components";
 
 # Directives
 
+<Callout type="info">
+  **Prerequisites:** This is an advanced guide. You should be familiar with [Styling](/documentation/guides/styling) and [Design Tokens](/documentation/guides/design-token) before reading this.
+</Callout>
+
 You could transform text with `toUpperCase()` or compute sizes with `* 2` before passing them to a style — but those transformations live outside the style, so they get lost when styles merge or resolve tokens. Directives keep transformations *inside* the style, making them composable, merge-safe, and token-aware.
 
 Directives transform values (text, numbers, colors) when a style is resolved. Unlike modifiers (which wrap widgets), directives transform the underlying data.
@@ -231,3 +235,9 @@ extension NegateNumberPropExt<T extends num> on Prop<T> {
 - **Number directives for proportional sizing** — pair with tokens (e.g. `Prop.token($base).multiply(2)`) to keep ratios in the style rather than scattered across your code
 - **Color directives for visual states** — `.withOpacity(0.5)` on a disabled variant keeps the color relationship intact when the base color changes
 - **Keep directives simple** — a directive should do one thing. If you need complex logic, compute the value outside the style and pass it in
+
+## See Also
+
+- [Styling](/documentation/guides/styling) — core Styler pattern and fluent chaining
+- [Design Tokens](/documentation/guides/design-token) — tokens work with directives via `Prop.token()`
+- [Widget Modifiers](/documentation/guides/widget-modifiers) — widget wrappers (modifiers transform widgets, directives transform values)

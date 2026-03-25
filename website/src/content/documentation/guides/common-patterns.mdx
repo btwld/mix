@@ -1,0 +1,217 @@
+---
+title: Common Patterns
+---
+
+import { Callout } from "nextra/components";
+
+# Common Patterns
+
+Ready-made recipes you can drop into your project. Each pattern shows how stylers, variants, tokens, and modifiers combine to solve a real UI problem.
+
+---
+
+## Interactive Button with PressableBox
+
+Making a styled container respond to taps, hovers, and focus in plain Flutter means nesting `GestureDetector`, `MouseRegion`, and `Focus`, then tracking each state with a boolean. `PressableBox` replaces all of that with a single widget that pairs `Pressable` (gesture handling) with `Box` (styled container):
+
+```dart
+PressableBox(
+  onPress: () => print('tapped'),
+  style: BoxStyler()
+      .paddingX(24)
+      .paddingY(12)
+      .borderRounded(8)
+      .color(Colors.blue)
+      .onHovered(.color(Colors.blue.shade700))
+      .onPressed(.color(Colors.blue.shade900).scale(0.97))
+      .onDisabled(.color(Colors.grey.shade300))
+      .animate(.ease(150.ms)),
+  child: StyledText(
+    'Submit',
+    style: TextStyler()
+        .color(Colors.white)
+        .fontWeight(.w600)
+        .fontSize(14)
+        .onDisabled(.color(Colors.grey.shade500)),
+  ),
+)
+```
+
+`.onHovered()` and `.onPressed()` work on any Styler. `.onFocused()` and `.onDisabled()` require a `PressableBox` (or a `Pressable` ancestor) to provide focus and disabled state — without that source, they won't activate.
+
+<Callout type="info">
+  `PressableBox` = `Pressable` + `Box`. If you need interaction tracking around a another widget instead of a `Box`, use just `Pressable` directly. See the [Pressable reference](/documentation/widgets/pressable).
+</Callout>
+
+---
+
+## Declaring Styles Outside build
+
+Define styles as top-level or class-level constants, then use the `call()` method to turn them into widgets inside `build`. This keeps your build method clean and your styles reusable:
+
+```dart
+// Declare outside build — reusable across widgets
+final title = TextStyler()
+    .fontSize(24)
+    .fontWeight(.bold)
+    .color(Colors.black);
+
+final card = BoxStyler()
+    .paddingAll(16)
+    .color(Colors.white)
+    .borderRounded(12)
+    .shadow(blurRadius: 8, color: Colors.black12);
+```
+
+```dart
+// Inside build — call() converts the styler into its widget
+@override
+Widget build(BuildContext context) {
+  return card(
+    child: title('Welcome back'),
+  );
+}
+```
+
+Every styler has a `call()` method that creates the matching widget: `BoxStyler.call()` returns a `Box`, `TextStyler.call()` returns a `StyledText`, and so on. Because Dart lets you invoke `call()` implicitly, `card(child: child)` reads like a function call while producing a full widget.
+
+---
+
+## Button Variations from a Base
+
+Define shared structure once, then branch into variations by chaining overrides. Later properties win, so each variation inherits everything from `baseButton` while replacing only what differs:
+
+```dart
+final baseButton = BoxStyler()
+    .paddingX(20)
+    .paddingY(10)
+    .borderRounded(8)
+    .animate(.ease(150.ms));
+
+final primaryButton = baseButton
+    .color(Colors.blue)
+    .onHovered(.color(Colors.blue.shade700));
+
+final outlineButton = baseButton
+    .color(Colors.transparent)
+    .border(.all(.color(Colors.blue).width(1.5)))
+    .onHovered(.color(Colors.blue.withOpacity(0.1)));
+
+final dangerButton = baseButton
+    .color(Colors.red)
+    .onHovered(.color(Colors.red.shade700));
+```
+
+This approach avoids duplicating padding, radius, and animation across every button variant. When you update `baseButton`, all variations pick up the change.
+
+---
+
+## Theming with Design Tokens
+
+Hardcoding `Colors.blue` across dozens of styles works until you need a theme switch. Design tokens let you name a value once and resolve it at build time from `MixScope`:
+
+```dart
+// 1. Declare tokens
+final $primary = ColorToken('primary');
+final $surface = ColorToken('surface');
+final $spacingMd = SpaceToken('spacing.md');
+final $radiusMd = RadiusToken('radius.md');
+
+// 2. Reference tokens in styles — call them like functions
+final cardStyle = BoxStyler()
+    .color($surface())
+    .paddingAll($spacingMd())
+    .borderRadius(.all($radiusMd()));
+
+// 3. Provide values via MixScope
+MixScope(
+  colors: {
+    $primary: Colors.blue,
+    $surface: Colors.white,
+  },
+  spaces: {
+    $spacingMd: 16.0,
+  },
+  radii: {
+    $radiusMd: Radius.circular(8),
+  },
+  child: MyApp(),
+)
+```
+
+Swap the map in `MixScope` to switch themes — every style that references those tokens updates automatically.
+
+<Callout type="info">
+  The `$` prefix is a naming convention, not a language feature. It signals "this is a token that resolves at build time" rather than a concrete value. See the [Design Tokens guide](/documentation/guides/design-token) for custom token types, theme switching patterns, and programmatic resolution.
+</Callout>
+
+---
+
+## Responsive Layout
+
+Breakpoint variants adapt styles to screen size without media-query boilerplate:
+
+```dart
+final containerStyle = BoxStyler()
+    .paddingAll(16)
+    .width(double.infinity)
+    .onTablet(.paddingAll(24).width(720))
+    .onDesktop(.paddingAll(32).width(960));
+
+final gridStyle = FlexBoxStyler()
+    .direction(.column)
+    .gap(16)
+    .onTablet(.direction(.row).gap(24));
+```
+
+```dart
+Box(
+  style: containerStyle,
+  child: FlexBox(
+    style: gridStyle,
+    children: [
+      Box(style: cardStyle, child: StyledText('Card 1')),
+      Box(style: cardStyle, child: StyledText('Card 2')),
+    ],
+  ),
+)
+```
+
+On mobile the cards stack vertically. On tablet and above they sit side by side with wider padding and spacing.
+
+---
+
+## Composing Styles with merge
+
+When a single chain grows long, split it into focused groups and recombine with `.merge()`:
+
+```dart
+final layout = BoxStyler()
+    .paddingAll(16)
+    .width(double.infinity)
+    .alignment(.center);
+
+final appearance = BoxStyler()
+    .color(Colors.white)
+    .borderRounded(12)
+    .shadow(blurRadius: 8, color: Colors.black12);
+
+final interaction = BoxStyler()
+    .onHovered(.shadow(blurRadius: 16, color: Colors.black26))
+    .onPressed(.scale(0.98))
+    .animate(.ease(200.ms));
+
+final cardStyle = layout.merge(appearance).merge(interaction);
+```
+
+Each group owns one concern — layout, appearance, interaction — so you can reuse or swap any piece independently. The `mix_lint` rule `mix_max_number_of_attributes_per_style` nudges you toward this split when chains get too long.
+
+---
+
+## See Also
+
+- [Styling](/documentation/guides/styling) — the Styler pattern and fluent chaining
+- [Dynamic Styling](/documentation/guides/dynamic-styling) — variants for interaction, theme, and context
+- [Design Tokens](/documentation/guides/design-token) — tokens, `MixScope`, and theming
+- [Animations](/documentation/guides/animations) — implicit, phase, and keyframe animations
+- [Widgets](/documentation/widgets/stylewidgets) — full widget reference

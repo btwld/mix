@@ -5,6 +5,12 @@ title: "Animations"
 
 # Animations
 
+import { Callout } from "nextra/components";
+
+<Callout type="info">
+  **Prerequisites:** This guide assumes familiarity with [Styling](/documentation/guides/styling) and [Dynamic Styling](/documentation/guides/dynamic-styling) (variants). Animations build on both concepts.
+</Callout>
+
 Flutter gives you `AnimatedContainer`, `TweenAnimationBuilder`, and explicit `AnimationController` — but wiring them into your styling logic takes boilerplate. Mix lets you attach animations directly to your styles, so motion stays where your design decisions live.
 
 Mix offers three animation types, each suited to a different level of control.
@@ -259,3 +265,9 @@ return box();
 **Forgetting `tweenBuilder` for non-numeric types.** Tracks that animate `Color`, `Offset`, or other non-numeric types need a `tweenBuilder` (e.g. `ColorTween.new`). Without it, the interpolation will fail at runtime.
 
 **Using `.animate()` with `.phaseAnimation()` or `.keyframeAnimation()`.** Implicit animations (`.animate()`) and explicit animations (phase/keyframe) are separate systems. Don't combine them on the same styler — pick one.
+
+## See Also
+
+- [Dynamic Styling](/documentation/guides/dynamic-styling) — variants that animations often drive (hover, press, dark mode)
+- [Widget Modifiers](/documentation/guides/widget-modifiers) — animate modifier properties like opacity and transforms
+- [Styling](/documentation/guides/styling) — core Styler pattern and fluent chaining

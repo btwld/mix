@@ -6,6 +6,10 @@ import { Callout } from "nextra/components";
 
 # Widget Modifiers
 
+<Callout type="info">
+  **Prerequisites:** This guide assumes familiarity with Mix's [Styling](/documentation/guides/styling) patterns. If you're new to Mix, start there first.
+</Callout>
+
 Some visual effects — opacity, clipping, visibility — aren't style properties like color or padding. They work by wrapping your widget in another Flutter widget (`Opacity`, `ClipRRect`, `Visibility`). In plain Flutter, you'd nest these manually. In Mix, modifiers let you declare them inside your style so they stay composable, mergeable, and animatable alongside everything else.
 
 ## How Modifiers Work
@@ -240,3 +244,9 @@ final tokenStyle = BoxStyler()
 - **Use styler methods for style properties** — color, padding, borders, shadows, and transforms (`.scale()`, `.rotate()`) are style properties, not modifiers
 - **Keep modifier chains short** — more than 3-4 modifiers on a single style makes ordering hard to reason about. If you need many wrappers, consider splitting into separate styled widgets
 - **Implement `lerp` for animatable modifiers** — without it, transitions between modifier states will snap instead of animating smoothly
+
+## See Also
+
+- [Styling](/documentation/guides/styling) — core Styler pattern and fluent chaining
+- [Animations](/documentation/guides/animations) — animate modifier transitions with implicit, phase, or keyframe animations
+- [Directives](/documentation/guides/directives) — transform values (text, numbers, colors) at resolve time

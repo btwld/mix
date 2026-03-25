@@ -114,13 +114,6 @@ class PreviewRegistry {
       builder: (_) => const getting_started_hello_mix.Example(),
     ),
     PreviewEntry(
-      previewId: 'overview/best-practices.0',
-      sourcePath:
-          'packages/mix_docs_preview/lib/overview/best_practices/preview.dart',
-      category: _variants,
-      builder: (_) => const hovered.Example(),
-    ),
-    PreviewEntry(
       previewId: 'overview/comparison.0',
       sourcePath:
           'packages/mix_docs_preview/lib/overview/comparison/preview_0.dart',
