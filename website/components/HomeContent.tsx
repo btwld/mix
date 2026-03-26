@@ -58,7 +58,7 @@ export const HomeContent = () => {
             text-align: left;
           }
           :global(.dark) .headline {
-            background-image: linear-gradient(146deg, #fff, #757a7d);
+            background-image: linear-gradient(146deg, #fff, #a78bfa);
           }
           .subtitle {
             font-size: 1.6rem;

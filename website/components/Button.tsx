@@ -19,15 +19,15 @@ function ArrowIcon(props: React.ComponentPropsWithoutRef<"svg">) {
 
 const variantStyles = {
   primary:
-    "rounded-full bg-emerald-400/10 py-1 px-3 text-emerald-400 ring-1 ring-inset ring-emerald-400/20 hover:bg-emerald-400/10 hover:text-emerald-300 hover:ring-emerald-300",
+    "rounded-full bg-purple-400/10 py-1 px-3 text-purple-400 ring-1 ring-inset ring-purple-400/20 hover:bg-purple-400/10 hover:text-purple-300 hover:ring-purple-300",
   secondary:
     "rounded-full bg-zinc-800/40 py-1 px-3 text-zinc-400 ring-1 ring-inset ring-zinc-800 hover:bg-zinc-800 hover:text-zinc-300",
   filled:
-    "rounded-full bg-emerald-500 py-1 px-3 text-white hover:bg-emerald-400",
+    "rounded-full bg-purple-500 py-1 px-3 text-white hover:bg-purple-400",
   outline:
     "rounded-full py-1 px-3 text-zinc-400 ring-1 ring-inset ring-white/10 hover:bg-white/5 hover:text-white",
-  text: "text-emerald-400 hover:text-emerald-500",
-  discord: "rounded-full bg-purple-400/10 py-1 px-3 text-purple-400 ring-1 ring-inset ring-purple-400/20 hover:bg-purple-400/10 hover:text-purple-300 hover:ring-purple-300",
+  text: "text-purple-400 hover:text-purple-500",
+  discord: "rounded-full bg-indigo-400/10 py-1 px-3 text-indigo-400 ring-1 ring-inset ring-indigo-400/20 hover:bg-indigo-400/10 hover:text-indigo-300 hover:ring-indigo-300",
 };
 
 type ButtonProps = {

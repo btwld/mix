@@ -11,6 +11,7 @@ import {
   LayersIcon,
   LucideIcon,
   PaintBucketIcon,
+  SparklesIcon,
   VenetianMaskIcon,
   WrenchIcon,
 } from "lucide-react";
@@ -25,14 +26,14 @@ interface IFeature {
 
 const features: Array<IFeature> = [
   {
-    href: "/documentation/overview/utility-first",
+    href: "/documentation/guides/styling",
     name: "Intuitive Style Semantics",
     description:
       "Transform simple elements into elegant, complex designs, enabling flexible and scalable UIs.",
     icon: HandMetalIcon,
   },
   {
-    href: "/documentation/guides/variants",
+    href: "/documentation/guides/dynamic-styling",
     name: "First-class Variants",
     description:
       "Seamlessly create condition and responsive styling variants, allow you to create reactive styling and variations.",
@@ -51,6 +52,13 @@ const features: Array<IFeature> = [
     description:
       "Craft your styling with simple, reusable functions for easy customization and API extension.",
     icon: WrenchIcon,
+  },
+  {
+    href: "/documentation/guides/animations",
+    name: "Powerful Animations",
+    description:
+      "Build implicit, phase-based, and keyframe animations with a declarative API that integrates with your styles.",
+    icon: SparklesIcon,
   },
   {
     href: "/documentation/ecosystem/mix-schema",
@@ -135,7 +143,7 @@ function Feature({ feature }: { feature: IFeature }) {
 export function Features() {
   return (
     <div className="my-16 xl:max-w-none">
-      <div className="not-prose mt-4 grid grid-cols-1 gap-8 border-t border-white/5 pt-10 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="not-prose mt-4 grid grid-cols-1 gap-8 border-t border-white/5 pt-10 sm:grid-cols-2 lg:grid-cols-3">
         {features.map((feature) => (
           <Feature key={feature.name} feature={feature} />
         ))}
