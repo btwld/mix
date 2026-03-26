@@ -4,13 +4,30 @@
 @import 'nextra-theme-docs/style.css';
 /* or nextra-theme-blog/style.css */
 
+html.dark {
+    /* Nextra primary — vibrant purple (HSL, matching Nextra v4 format) */
+    --nextra-primary-hue: 268deg;
+    --nextra-primary-saturation: 100%;
+    --nextra-primary-lightness: 78%;
+
+    /* Brand surfaces */
+    --mix-surface-code: #161616;
+    --mix-surface-table-body: #191919;
+    --mix-surface-table-head: #212121;
+    --mix-border-table: #303030;
+}
 
 body {
+    font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
     background: linear-gradient(to bottom,
             rgba(255, 255, 255, 0) 0%,
             rgba(255, 255, 255, 1) 300px),
         fixed 0 0 / 20px 20px radial-gradient(#d1d1d1 1px, transparent 0),
         fixed 10px 10px / 20px 20px radial-gradient(#d1d1d1 1px, transparent 0);
+}
+
+code, pre {
+    font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
 }
 
 .dark body {
@@ -19,22 +36,25 @@ body {
 
 body ::selection {
     background: var(--nextra-selection, #402649);
-    /* fallback if var not found */
     color: inherit;
 }
 
 
 pre {
-    background-color: #120d1c !important;
-    border: 1px solid #361E65;
-    border-radius: 12px !important
+    background-color: var(--mix-surface-code) !important;
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 1rem 1.25rem !important;
+    line-height: 1.7 !important;
+    font-size: 0.875rem !important;
 }
 
-html.dark {
-    --nextra-primary-hue: 270;
-    --nextra-primary-saturation: 68;
-    --nextra-primary-brightness: 70;
-    /* orange in dark mode */
+:not(pre) > code {
+    background-color: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    padding: 0.1rem 0.35rem;
+    font-size: 0.875em;
 }
 
 a,
@@ -53,7 +73,7 @@ table {
     border-collapse: separate;
     border-spacing: 0;
     overflow: hidden;
-    border: 1px solid #303030;
+    border: 1px solid var(--mix-border-table);
 }
 
 table th,
@@ -66,18 +86,23 @@ table td {
 }
 
 table tr:not(:last-child) td {
-    border-bottom: 1px solid #303030;
+    border-bottom: 1px solid var(--mix-border-table);
 }
 
 tbody td {
-    background-color: #191919;
+    background-color: var(--mix-surface-table-body);
 }
 
 th {
-    background-color: #212121;
+    background-color: var(--mix-surface-table-head);
 }
 
 table th,
 table td {
     width: 1%;
 }
+
+nav a, aside a, [role="complementary"] a {
+    transition: color 0.15s ease;
+}
+

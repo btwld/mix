@@ -1,14 +1,53 @@
+import { Inter, JetBrains_Mono } from 'next/font/google'
 import { Footer, Layout, Navbar } from 'nextra-theme-docs'
 import 'nextra-theme-docs/style.css'
+import '../../globals.css'
 import { Head } from 'nextra/components'
 import { getPageMap } from 'nextra/page-map'
 
-export const metadata = {
-    // Define your metadata here
-    // For more information on metadata API, see: https://nextjs.org/docs/app/building-your-application/optimizing/metadata
+const inter = Inter({
+    subsets: ['latin'],
+    variable: '--font-inter',
+    display: 'swap',
+})
+
+const jetbrainsMono = JetBrains_Mono({
+    subsets: ['latin'],
+    variable: '--font-jetbrains-mono',
+    display: 'swap',
+})
+
+const description = "An expressive way to build design systems in Flutter."
+
+export const viewport = {
+    themeColor: '#111111',
 }
 
-const description = "An expressive way to build design systems in Flutter.";
+export const metadata = {
+    title: 'Mix',
+    description,
+    applicationName: 'Mix',
+    icons: {
+        icon: '/favicon.ico',
+        shortcut: '/favicon.ico',
+    },
+    openGraph: {
+        title: 'Mix',
+        description,
+        images: ['https://fluttermix.com/og_banner.png'],
+    },
+    twitter: {
+        card: 'summary_large_image',
+        images: ['https://fluttermix.com/og_banner.png'],
+        domain: 'fluttermix.com',
+        url: 'https://fluttermix.com',
+    },
+    other: {
+        'msapplication-TileColor': '#111111',
+        'apple-mobile-web-app-title': 'Mix',
+    },
+}
+
 const navbar = (
     <Navbar
         logo={
@@ -20,46 +59,24 @@ const navbar = (
         }
         chatLink="https://twitter.com/leoafarias"
         projectLink="https://github.com/btwld/mix"
-    // ... Your additional navbar options
     />
 )
-const footer = <Footer>© {new Date().getFullYear()} Concepta Tech.</Footer>
+const footer = <Footer>&copy; 2026 Concepta Tech.</Footer>
 
 export default async function RootLayout({ children }) {
     return (
         <html
-            // Not required, but good for SEO
             lang="en"
-            // Required to be set
             dir="ltr"
-            // Suggested by `next-themes` package https://github.com/pacocoursey/next-themes#with-app
             suppressHydrationWarning
-            // Force dark mode for Tailwind CSS
-            className="dark"
+            className={`dark ${inter.variable} ${jetbrainsMono.variable}`}
         >
-            <Head>
-                <meta name="msapplication-TileColor" content="#fff" />
-                <meta name="theme-color" content="#fff" />
-                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                <meta httpEquiv="Content-Language" content="en" />
-                <meta name="description" content={description} />
-                <meta name="og:description" content={description} />
-                <meta name="twitter:card" content="summary_large_image" />
-                <meta name="twitter:image" content="https://fluttermix.com/og_banner.png" />
-                <meta name="twitter:site:domain" content="fluttermix.com" />
-                <meta name="twitter:url" content="https://fluttermix.com" />
-                <meta name="og:title" content="Mix" />
-                <meta name="og:image" content="https://fluttermix.com/og_banner.png" />
-                <meta name="apple-mobile-web-app-title" content="Mix" />
-                <link rel="icon" href="/favicon.ico" type="image/png" />
-                <link rel="icon" href="/favicon.ico" type="image/png" media="(prefers-color-scheme: dark)" />
-                <link rel="shortcut icon" href="/favicon.ico" />
-            </Head>
+            <Head />
             <body>
                 <Layout
                     navbar={navbar}
                     pageMap={await getPageMap()}
-                    docsRepositoryBase="https://github.com/btwld/mix/tree/main/docs"
+                    docsRepositoryBase="https://github.com/btwld/mix/tree/main/website"
                     footer={footer}
                     darkMode={false}
                     navigation={{ prev: true, next: true }}
@@ -70,12 +87,11 @@ export default async function RootLayout({ children }) {
                         storageKey: "theme"
                     }}
                     sidebar={{
-                        defaultMenuCollapseLevel: 8,
-                        autoCollapse: false,
+                        defaultMenuCollapseLevel: 1,
+                        autoCollapse: true,
                         toggleButton: false,
                         defaultOpen: true,
                     }}
-                // ... Your additional layout options
                 >
                     {children}
                 </Layout>
