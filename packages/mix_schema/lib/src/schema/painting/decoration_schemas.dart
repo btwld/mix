@@ -23,7 +23,7 @@ AckSchema<DecorationImageMix> buildDecorationImageSchema({
     'invertColors': Ack.boolean().optional(),
     'isAntiAlias': Ack.boolean().optional(),
   }).transform<DecorationImageMix>((data) {
-    final map = data!;
+    final map = data;
 
     return DecorationImageMix(
       image: map['image'] as ImageProvider<Object>,
@@ -60,7 +60,7 @@ AckSchema<BoxDecorationMix> buildBoxDecorationSchema({
         return map['shape'] != BoxShape.circle || map['borderRadius'] == null;
       }, message: 'borderRadius is not supported when shape is circle.')
       .transform<BoxDecorationMix>((data) {
-        final map = data!;
+        final map = data;
 
         return BoxDecorationMix(
           border: map['border'] as BoxBorderMix?,
@@ -87,7 +87,7 @@ AckSchema<ShapeDecorationMix> buildShapeDecorationSchema({
     'gradient': gradientSchema.optional(),
     'shadows': Ack.list(boxShadowSchema).optional(),
   }).transform<ShapeDecorationMix>((data) {
-    final map = data!;
+    final map = data;
 
     return ShapeDecorationMix(
       shape: map['shape'] as ShapeBorderMix?,

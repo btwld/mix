@@ -7,7 +7,7 @@ final AckSchema<Offset> offsetSchema =
     Ack.object({'dx': Ack.double(), 'dy': Ack.double()}).transform<Offset>((
       data,
     ) {
-      final map = data!;
+      final map = data;
 
       return Offset(map['dx'] as double, map['dy'] as double);
     });
@@ -17,7 +17,7 @@ final AckSchema<Radius> radiusSchema =
       'x': Ack.double(),
       'y': Ack.double().optional(),
     }).transform<Radius>((data) {
-      final map = data!;
+      final map = data;
       final x = map['x'] as double;
 
       return Radius.elliptical(x, (map['y'] as double?) ?? x);
@@ -28,7 +28,7 @@ final AckSchema<AlignmentGeometry> alignmentSchema =
       'x': Ack.double(),
       'y': Ack.double(),
     }).transform<AlignmentGeometry>((data) {
-      final map = data!;
+      final map = data;
 
       return Alignment(map['x'] as double, map['y'] as double);
     });
@@ -40,7 +40,7 @@ final AckSchema<Rect> rectSchema =
       'right': Ack.double(),
       'bottom': Ack.double(),
     }).transform<Rect>((data) {
-      final map = data!;
+      final map = data;
 
       return Rect.fromLTRB(
         map['left'] as double,
@@ -63,4 +63,4 @@ final AckSchema<Matrix4> matrix4Schema = Ack.list(Ack.double())
       (values) => values.length == 16,
       message: 'Matrix4 requires 16 values.',
     )
-    .transform<Matrix4>((values) => Matrix4.fromList(values!));
+    .transform<Matrix4>((values) => Matrix4.fromList(values));

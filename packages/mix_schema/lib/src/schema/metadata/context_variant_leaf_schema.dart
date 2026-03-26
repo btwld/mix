@@ -55,7 +55,7 @@ final class _ContextVariantLeafDefinition {
 
   AckSchema<ContextVariantLeaf> buildLeafSchema() {
     return _buildDataSchema().transform<ContextVariantLeaf>((data) {
-      return buildLeaf(data!);
+      return buildLeaf(data);
     });
   }
 
@@ -66,7 +66,7 @@ final class _ContextVariantLeafDefinition {
     return _buildDataSchema({'style': styleSchema}).transform<VariantStyle<S>>((
       data,
     ) {
-      final map = data!;
+      final map = data;
 
       return VariantStyle<S>(buildLeaf(map).variant, map['style'] as T);
     });

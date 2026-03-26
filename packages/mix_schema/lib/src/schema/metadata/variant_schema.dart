@@ -44,10 +44,7 @@ _buildVariantBranch<S extends Spec<S>, T extends Style<S>>({
   required RegistryCatalog registries,
 }) {
   if (sharedContextVariantLeafTypes.contains(type)) {
-    return buildContextVariantStyleBranch<S, T>(
-      type: type,
-      styleSchema: styleSchema,
-    );
+    return buildContextVariantStyleBranch(type: type, styleSchema: styleSchema);
   }
 
   switch (type) {
@@ -56,7 +53,7 @@ _buildVariantBranch<S extends Spec<S>, T extends Style<S>>({
         'name': Ack.string(),
         'style': styleSchema,
       }).transform<VariantStyle<S>>((data) {
-        final map = data!;
+        final map = data;
 
         return VariantStyle<S>(
           Variant.named(map['name'] as String),
@@ -71,7 +68,7 @@ _buildVariantBranch<S extends Spec<S>, T extends Style<S>>({
         ),
         'style': styleSchema,
       }).transform<VariantStyle<S>>((data) {
-        final map = data!;
+        final map = data;
         final conditions = ContextConditionSet.compound(
           conditionParser.parseList(
             (map['conditions'] as List<Object?>).toList(growable: false),
@@ -84,7 +81,7 @@ _buildVariantBranch<S extends Spec<S>, T extends Style<S>>({
       return Ack.object({'id': Ack.string()}).transform<VariantStyle<S>>((
         data,
       ) {
-        final map = data!;
+        final map = data;
         final fn = registries.lookup<T Function(BuildContext)>(
           MixSchemaScope.contextVariantBuilder.wireValue,
           map['id'] as String,

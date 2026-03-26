@@ -15,7 +15,7 @@ final AckSchema<BorderSideMix> borderSideSchema =
       'style': borderStyleSchema.optional(),
       'strokeAlign': Ack.double().optional(),
     }).transform<BorderSideMix>((data) {
-      final map = data!;
+      final map = data;
 
       return BorderSideMix(
         color: map['color'] as Color?,
@@ -32,7 +32,7 @@ final AckSchema<BoxShadowMix> boxShadowSchema =
       'blurRadius': Ack.double().optional(),
       'spreadRadius': Ack.double().optional(),
     }).transform<BoxShadowMix>((data) {
-      final map = data!;
+      final map = data;
 
       return BoxShadowMix(
         color: map['color'] as Color?,
@@ -75,7 +75,7 @@ AckSchema<BoxBorderMix> _buildBoxBorderBranch(SchemaBorder type) {
         'left': borderSideSchema.optional(),
         'right': borderSideSchema.optional(),
       }).transform<BoxBorderMix>((data) {
-        final map = data!;
+        final map = data;
 
         return BorderMix(
           top: map['top'] as BorderSideMix?,
@@ -91,7 +91,7 @@ AckSchema<BoxBorderMix> _buildBoxBorderBranch(SchemaBorder type) {
         'start': borderSideSchema.optional(),
         'end': borderSideSchema.optional(),
       }).transform<BoxBorderMix>((data) {
-        final map = data!;
+        final map = data;
 
         return BorderDirectionalMix(
           top: map['top'] as BorderSideMix?,
@@ -114,7 +114,7 @@ AckSchema<BorderRadiusGeometryMix> _buildBorderRadiusBranch(
         'bottomLeft': radiusSchema.optional(),
         'bottomRight': radiusSchema.optional(),
       }).transform<BorderRadiusGeometryMix>((data) {
-        final map = data!;
+        final map = data;
 
         return BorderRadiusMix(
           topLeft: map['topLeft'] as Radius?,
@@ -130,7 +130,7 @@ AckSchema<BorderRadiusGeometryMix> _buildBorderRadiusBranch(
         'bottomStart': radiusSchema.optional(),
         'bottomEnd': radiusSchema.optional(),
       }).transform<BorderRadiusGeometryMix>((data) {
-        final map = data!;
+        final map = data;
 
         return BorderRadiusDirectionalMix(
           topStart: map['topStart'] as Radius?,

@@ -27,13 +27,13 @@ const Map<String, Directive<String>> _textTransformDirectiveByName =
 
 final AckSchema<TextDecoration> textDecorationSchema = Ack.enumString(
   _textDecorationByName.keys.toList(growable: false),
-).transform<TextDecoration>((value) => _textDecorationByName[value!]!);
+).transform<TextDecoration>((value) => _textDecorationByName[value]!);
 
 final AckSchema<Directive<String>> textTransformDirectiveSchema =
     Ack.enumString(
       _textTransformDirectiveByName.keys.toList(growable: false),
     ).transform<Directive<String>>(
-      (value) => _textTransformDirectiveByName[value!]!,
+      (value) => _textTransformDirectiveByName[value]!,
     );
 
 final AckSchema<ShadowMix> shadowSchema =
@@ -42,7 +42,7 @@ final AckSchema<ShadowMix> shadowSchema =
       'offset': offsetSchema.optional(),
       'blurRadius': Ack.double().optional(),
     }).transform<ShadowMix>((data) {
-      final map = data!;
+      final map = data;
 
       return ShadowMix(
         blurRadius: map['blurRadius'] as double?,
@@ -71,7 +71,7 @@ final AckSchema<TextStyleMix> textStyleSchema =
       'inherit': Ack.boolean().optional(),
       'shadows': Ack.list(shadowSchema).optional(),
     }).transform<TextStyleMix>((data) {
-      final map = data!;
+      final map = data;
 
       return TextStyleMix(
         color: map['color'] as Color?,
@@ -105,7 +105,7 @@ final AckSchema<StrutStyleMix> strutStyleSchema =
       'leading': Ack.double().optional(),
       'forceStrutHeight': Ack.boolean().optional(),
     }).transform<StrutStyleMix>((data) {
-      final map = data!;
+      final map = data;
 
       return StrutStyleMix(
         fontFamily: map['fontFamily'] as String?,
@@ -125,7 +125,7 @@ final AckSchema<TextHeightBehaviorMix> textHeightBehaviorSchema =
       'applyHeightToLastDescent': Ack.boolean().optional(),
       'leadingDistribution': textLeadingDistributionSchema.optional(),
     }).transform<TextHeightBehaviorMix>((data) {
-      final map = data!;
+      final map = data;
 
       return TextHeightBehaviorMix(
         applyHeightToFirstAscent: map['applyHeightToFirstAscent'] as bool?,
@@ -140,7 +140,7 @@ final AckSchema<Locale> localeSchema =
       'languageCode': Ack.string(),
       'countryCode': Ack.string().nullable().optional(),
     }).transform<Locale>((data) {
-      final map = data!;
+      final map = data;
       final languageCode = map['languageCode'] as String;
       final countryCode = map['countryCode'] as String?;
 
@@ -167,7 +167,7 @@ AckSchema<TextScaler> _buildTextScalerBranch(SchemaTextScaler type) {
       return Ack.object({'factor': Ack.double().min(0)}).transform<TextScaler>((
         data,
       ) {
-        final map = data!;
+        final map = data;
 
         return TextScaler.linear(map['factor'] as double);
       });

@@ -10,7 +10,7 @@ import '../styler_definition.dart';
 final AckSchema<Object> _unsupportedIconValueSchema = Ack.anyOf([
   Ack.integer(),
   Ack.string(),
-]).transform<Object>((value) => value!);
+]).transform<Object>((value) => value);
 
 StylerDefinition<IconSpec, IconStyler> buildIconStylerDefinition(
   MixSchemaCatalog catalog,

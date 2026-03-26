@@ -42,7 +42,7 @@ final class DiscriminatedBranchRegistry<T extends Object> {
     );
 
     return discriminatedSchema.transform<T>((data) {
-      final value = data!;
+      final value = data;
       final typeValue = value[discriminatorKey];
       final branch = normalizedBranches[typeValue];
 

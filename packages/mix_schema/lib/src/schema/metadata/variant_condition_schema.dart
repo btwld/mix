@@ -26,7 +26,7 @@ VariantConditionParser buildVariantConditionParser() {
       (conditions) => conditions.length >= 2,
       message: 'context_all_of requires at least two conditions.',
     ),
-  }).transform<Map<String, Object?>>((data) => data!);
+  }).transform<Map<String, Object?>>((data) => data);
 
   return VariantConditionParser._(
     leafSchema: registry.freeze(),

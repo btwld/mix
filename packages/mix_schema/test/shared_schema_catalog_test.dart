@@ -17,13 +17,13 @@ void main() {
         'type': 'box_decoration',
         'gradient': {
           'type': 'linear_gradient',
-          'colors': [0xFF000000, 0xFFFFFFFF],
+          'colors': ['#000000', '#FFFFFFFF'],
           'begin': {'x': -1, 'y': 0},
           'end': {'x': 1, 'y': 0},
         },
         'border': {
           'type': 'border',
-          'top': {'color': 0xFF000000, 'width': 2},
+          'top': {'color': 'rgb(0, 0, 0)', 'width': 2},
         },
         'borderRadius': {
           'type': 'border_radius',
@@ -31,7 +31,7 @@ void main() {
         },
         'boxShadow': [
           {
-            'color': 0x33000000,
+            'color': '#00000033',
             'offset': {'dx': 1, 'dy': 2},
             'blurRadius': 4,
           },
@@ -60,7 +60,7 @@ void main() {
         'type': 'box_decoration',
         'gradient': {
           'type': 'linear_gradient',
-          'colors': [0xFF000000, 0xFFFFFFFF],
+          'colors': ['#000000', '#FFFFFFFF'],
           'stops': [0.0],
         },
       });
@@ -86,7 +86,7 @@ void main() {
           },
           'gradient': {
             'type': 'linear_gradient',
-            'colors': [0xFF000000, 0xFFFFFFFF],
+            'colors': ['#000000', '#FFFFFFFF'],
             'transform': {
               'type': 'tailwind_css_angle_rect',
               'direction': 'to-br',

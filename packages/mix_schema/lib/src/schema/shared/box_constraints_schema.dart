@@ -25,7 +25,7 @@ final AckSchema<BoxConstraintsMix> boxConstraintsSchema =
               minHeight <= maxHeight;
         }, message: 'minHeight must be less than or equal to maxHeight.')
         .transform<BoxConstraintsMix>((data) {
-          final map = data!;
+          final map = data;
 
           return BoxConstraintsMix(
             minWidth: map['minWidth'] as double?,

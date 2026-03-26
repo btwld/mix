@@ -132,7 +132,7 @@ AckSchema<GradientTransform> _buildGradientTransformBranch(
     case .rotation:
       return Ack.object({'radians': Ack.double()}).transform<GradientTransform>(
         (data) {
-          final map = data!;
+          final map = data;
 
           return GradientRotation(map['radians'] as double);
         },
@@ -141,7 +141,7 @@ AckSchema<GradientTransform> _buildGradientTransformBranch(
       return Ack.object({
         'direction': Ack.enumString(_tailwindGradientDirections),
       }).transform<GradientTransform>((data) {
-        final map = data!;
+        final map = data;
 
         return TailwindCssAngleRectGradientTransform(
           map['direction'] as String,
@@ -169,7 +169,7 @@ AckSchema<GradientMix> _buildGradientBranch({
             message: 'Gradient stops length must match colors length.',
           )
           .transform<GradientMix>((data) {
-            final map = data!;
+            final map = data;
 
             return LinearGradientMix(
               begin: map['begin'] as AlignmentGeometry?,
@@ -196,7 +196,7 @@ AckSchema<GradientMix> _buildGradientBranch({
             message: 'Gradient stops length must match colors length.',
           )
           .transform<GradientMix>((data) {
-            final map = data!;
+            final map = data;
 
             return RadialGradientMix(
               center: map['center'] as AlignmentGeometry?,
@@ -224,7 +224,7 @@ AckSchema<GradientMix> _buildGradientBranch({
             message: 'Gradient stops length must match colors length.',
           )
           .transform<GradientMix>((data) {
-            final map = data!;
+            final map = data;
 
             return SweepGradientMix(
               center: map['center'] as AlignmentGeometry?,

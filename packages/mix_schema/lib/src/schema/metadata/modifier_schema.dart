@@ -56,7 +56,7 @@ AckSchema<ModifierMix> _buildModifierBranch(SchemaModifier type) {
       return Ack.object({
         'sigma': Ack.double().min(0).optional(),
       }).transform<ModifierMix>((data) {
-        final map = data!;
+        final map = data;
 
         return BlurModifierMix(sigma: map['sigma'] as double?);
       });
@@ -64,7 +64,7 @@ AckSchema<ModifierMix> _buildModifierBranch(SchemaModifier type) {
       return Ack.object({
         'value': Ack.double().min(0).max(1),
       }).transform<ModifierMix>((data) {
-        final map = data!;
+        final map = data;
 
         return OpacityModifierMix(opacity: map['value'] as double);
       });
@@ -72,7 +72,7 @@ AckSchema<ModifierMix> _buildModifierBranch(SchemaModifier type) {
       return Ack.object({'visible': Ack.boolean()}).transform<ModifierMix>((
         data,
       ) {
-        final map = data!;
+        final map = data;
 
         return VisibilityModifierMix(visible: map['visible'] as bool);
       });
@@ -82,7 +82,7 @@ AckSchema<ModifierMix> _buildModifierBranch(SchemaModifier type) {
         'widthFactor': Ack.double().optional(),
         'heightFactor': Ack.double().optional(),
       }).transform<ModifierMix>((data) {
-        final map = data!;
+        final map = data;
 
         return AlignModifierMix(
           alignment: map['alignment'] as AlignmentGeometry?,
@@ -94,7 +94,7 @@ AckSchema<ModifierMix> _buildModifierBranch(SchemaModifier type) {
       return Ack.object({
         'padding': edgeInsetsGeometrySchema.optional(),
       }).transform<ModifierMix>((data) {
-        final map = data!;
+        final map = data;
 
         return PaddingModifierMix(
           padding: map['padding'] as EdgeInsetsGeometryMix?,
@@ -106,7 +106,7 @@ AckSchema<ModifierMix> _buildModifierBranch(SchemaModifier type) {
         'y': Ack.double(),
         'alignment': alignmentSchema.optional(),
       }).transform<ModifierMix>((data) {
-        final map = data!;
+        final map = data;
 
         return ScaleModifierMix(
           x: map['x'] as double,
@@ -119,7 +119,7 @@ AckSchema<ModifierMix> _buildModifierBranch(SchemaModifier type) {
         'radians': Ack.double(),
         'alignment': alignmentSchema.optional(),
       }).transform<ModifierMix>((data) {
-        final map = data!;
+        final map = data;
 
         return RotateModifierMix(
           radians: map['radians'] as double,
@@ -136,7 +136,7 @@ AckSchema<ModifierMix> _buildModifierBranch(SchemaModifier type) {
         'textWidthBasis': textWidthBasisSchema.optional(),
         'textHeightBehavior': textHeightBehaviorSchema.optional(),
       }).transform<ModifierMix>((data) {
-        final map = data!;
+        final map = data;
 
         return DefaultTextStyleModifierMix(
           style: map['style'] as TextStyleMix?,

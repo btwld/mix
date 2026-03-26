@@ -13,7 +13,7 @@ void main() {
           'demo',
           Ack.object({
             'value': Ack.integer(),
-          }).transform<Object>((data) => data!['value'] as int),
+          }).transform<Object>((data) => data['value'] as int),
         )
         ..freeze();
 
@@ -39,7 +39,7 @@ void main() {
           Ack.object({'color': colorSchema.optional()}).transform<BoxStyler>((
             data,
           ) {
-            final map = data!;
+            final map = data;
             return BoxStyler(
               decoration: map['color'] == null
                   ? null
@@ -52,7 +52,7 @@ void main() {
       final decoder = MixSchemaDecoder(stylerRegistry: registry);
       final result = decoder.decode({
         'type': 'custom_box',
-        'color': 0xFF336699,
+        'color': 'rgba(51, 102, 153, 1)',
       });
 
       expect(result.ok, isTrue);
@@ -66,7 +66,7 @@ void main() {
           Ack.object({'color': colorSchema.optional()}).transform<BoxStyler>((
             data,
           ) {
-            final map = data!;
+            final map = data;
             return BoxStyler(
               decoration: map['color'] == null
                   ? null
@@ -80,7 +80,7 @@ void main() {
       final builtInResult = decoder.decode({'type': 'box'});
       final customResult = decoder.decode({
         'type': 'custom_box',
-        'color': 0xFF336699,
+        'color': 'rgba(51, 102, 153, 1)',
       });
 
       expect(builtInResult.ok, isTrue);

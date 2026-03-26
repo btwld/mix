@@ -16,11 +16,39 @@ dependencies:
   ack:
     git:
       url: https://github.com/btwld/ack.git
-      ref: feat/discrim-transformed-branches
+      ref: main
       path: packages/ack
+  ack_annotations:
+    git:
+      url: https://github.com/btwld/ack.git
+      ref: main
+      path: packages/ack_annotations
 
 dev_dependencies:
   flutter_lints: ^6.0.0
   flutter_test:
     sdk: flutter
   dart_code_metrics_presets: ^2.24.0
+  ack_generator:
+    git:
+      url: https://github.com/btwld/ack.git
+      ref: main
+      path: packages/ack_generator
+  build_runner: ^2.11.0
+
+dependency_overrides:
+  ack:
+    git:
+      url: https://github.com/btwld/ack.git
+      ref: main
+      path: packages/ack
+  ack_annotations:
+    git:
+      url: https://github.com/btwld/ack.git
+      ref: main
+      path: packages/ack_annotations
+  ack_generator:
+    git:
+      url: https://github.com/btwld/ack.git
+      ref: main
+      path: packages/ack_generator

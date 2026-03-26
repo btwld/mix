@@ -35,7 +35,7 @@ final AckSchema<FilterQuality> filterQualitySchema = Ack.enumValues(
 final AckSchema<FontStyle> fontStyleSchema = Ack.enumValues(FontStyle.values);
 final AckSchema<FontWeight> fontWeightSchema = Ack.enumString(
   _fontWeightByName.keys.toList(growable: false),
-).transform<FontWeight>((value) => _fontWeightByName[value!]!);
+).transform<FontWeight>((value) => _fontWeightByName[value]!);
 final AckSchema<ImageRepeat> imageRepeatSchema = Ack.enumValues(
   ImageRepeat.values,
 );

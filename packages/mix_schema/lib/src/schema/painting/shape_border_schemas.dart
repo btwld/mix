@@ -9,7 +9,7 @@ final AckSchema<LinearBorderEdgeMix> linearBorderEdgeSchema =
       'size': Ack.double().optional(),
       'alignment': Ack.double().optional(),
     }).transform<LinearBorderEdgeMix>((data) {
-      final map = data!;
+      final map = data;
 
       return LinearBorderEdgeMix(
         size: map['size'] as double?,
@@ -50,7 +50,7 @@ AckSchema<ShapeBorderMix> _buildShapeBorderBranch({
         'borderRadius': borderRadiusSchema.optional(),
         'side': borderSideSchema.optional(),
       }).transform<ShapeBorderMix>((data) {
-        final map = data!;
+        final map = data;
 
         return RoundedRectangleBorderMix(
           borderRadius: map['borderRadius'] as BorderRadiusGeometryMix?,
@@ -62,7 +62,7 @@ AckSchema<ShapeBorderMix> _buildShapeBorderBranch({
         'borderRadius': borderRadiusSchema.optional(),
         'side': borderSideSchema.optional(),
       }).transform<ShapeBorderMix>((data) {
-        final map = data!;
+        final map = data;
 
         return RoundedSuperellipseBorderMix(
           borderRadius: map['borderRadius'] as BorderRadiusGeometryMix?,
@@ -74,7 +74,7 @@ AckSchema<ShapeBorderMix> _buildShapeBorderBranch({
         'borderRadius': borderRadiusSchema.optional(),
         'side': borderSideSchema.optional(),
       }).transform<ShapeBorderMix>((data) {
-        final map = data!;
+        final map = data;
 
         return BeveledRectangleBorderMix(
           borderRadius: map['borderRadius'] as BorderRadiusGeometryMix?,
@@ -86,7 +86,7 @@ AckSchema<ShapeBorderMix> _buildShapeBorderBranch({
         'borderRadius': borderRadiusSchema.optional(),
         'side': borderSideSchema.optional(),
       }).transform<ShapeBorderMix>((data) {
-        final map = data!;
+        final map = data;
 
         return ContinuousRectangleBorderMix(
           borderRadius: map['borderRadius'] as BorderRadiusGeometryMix?,
@@ -98,7 +98,7 @@ AckSchema<ShapeBorderMix> _buildShapeBorderBranch({
         'side': borderSideSchema.optional(),
         'eccentricity': Ack.double().optional(),
       }).transform<ShapeBorderMix>((data) {
-        final map = data!;
+        final map = data;
 
         return CircleBorderMix(
           side: map['side'] as BorderSideMix?,
@@ -115,7 +115,7 @@ AckSchema<ShapeBorderMix> _buildShapeBorderBranch({
         'rotation': Ack.double().optional(),
         'squash': Ack.double().optional(),
       }).transform<ShapeBorderMix>((data) {
-        final map = data!;
+        final map = data;
 
         return StarBorderMix(
           side: map['side'] as BorderSideMix?,
@@ -135,7 +135,7 @@ AckSchema<ShapeBorderMix> _buildShapeBorderBranch({
         'top': linearBorderEdgeSchema.optional(),
         'bottom': linearBorderEdgeSchema.optional(),
       }).transform<ShapeBorderMix>((data) {
-        final map = data!;
+        final map = data;
 
         return LinearBorderMix(
           side: map['side'] as BorderSideMix?,
@@ -149,7 +149,7 @@ AckSchema<ShapeBorderMix> _buildShapeBorderBranch({
       return Ack.object({
         'side': borderSideSchema.optional(),
       }).transform<ShapeBorderMix>((data) {
-        final map = data!;
+        final map = data;
 
         return StadiumBorderMix(side: map['side'] as BorderSideMix?);
       });

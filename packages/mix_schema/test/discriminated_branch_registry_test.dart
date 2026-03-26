@@ -13,7 +13,7 @@ void main() {
         'demo',
         Ack.object({
           'value': Ack.integer(),
-        }).transform<Object>((data) => 'value:${data!['value']}'),
+        }).transform<Object>((data) => 'value:${data['value']}'),
       );
 
       final schema = registry.freeze();
@@ -33,7 +33,7 @@ void main() {
           'demo',
           Ack.object({
             'type': Ack.literal('demo'),
-          }).transform<Object>((data) => data!),
+          }).transform<Object>((data) => data),
         ),
         throwsA(isA<StateError>()),
       );

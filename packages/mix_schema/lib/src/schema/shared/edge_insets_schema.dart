@@ -8,7 +8,7 @@ final AckSchema<EdgeInsetsGeometryMix> edgeInsetsSchema =
       'left': Ack.double().optional(),
       'right': Ack.double().optional(),
     }).transform<EdgeInsetsGeometryMix>((data) {
-      final map = data!;
+      final map = data;
 
       return EdgeInsetsMix(
         top: map['top'] as double?,
@@ -25,7 +25,7 @@ final AckSchema<EdgeInsetsGeometryMix> edgeInsetsDirectionalSchema =
       'start': Ack.double().optional(),
       'end': Ack.double().optional(),
     }).transform<EdgeInsetsGeometryMix>((data) {
-      final map = data!;
+      final map = data;
 
       return EdgeInsetsDirectionalMix(
         top: map['top'] as double?,
@@ -51,7 +51,7 @@ final AckSchema<EdgeInsetsGeometryMix> edgeInsetsGeometrySchema =
           return !(hasAbsolute && hasDirectional);
         }, message: 'Use either left/right or start/end, not both.')
         .transform<EdgeInsetsGeometryMix>((data) {
-          final map = data!;
+          final map = data;
           final usesDirectional = map['start'] != null || map['end'] != null;
 
           return usesDirectional

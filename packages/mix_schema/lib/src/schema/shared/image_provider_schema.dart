@@ -10,7 +10,7 @@ AckSchema<ImageProvider<Object>> buildImageProviderSchema({
   return Ack.string().transform<ImageProvider<Object>>((value) {
     return registries.lookup<ImageProvider<Object>>(
       MixSchemaScope.imageProvider.wireValue,
-      value!,
+      value,
     );
   });
 }

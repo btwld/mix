@@ -44,7 +44,7 @@ buildStylerSchemas<S extends Spec<S>, T extends Style<S>>({
 }) {
   final fields = Map<String, AckSchema>.unmodifiable(definition.fields);
   final fieldsSchema = Ack.object(fields).transform<T>((data) {
-    return definition.build(data!);
+    return definition.build(data);
   });
   final variantStyleSchema =
       Ack.object({
@@ -52,7 +52,7 @@ buildStylerSchemas<S extends Spec<S>, T extends Style<S>>({
         'modifiers': Ack.list(catalog.modifier).optional(),
         'modifierOrder': Ack.list(Ack.string()).optional(),
       }).transform<T>((data) {
-        final map = data!;
+        final map = data;
 
         return definition.build(
           map,
@@ -68,7 +68,7 @@ buildStylerSchemas<S extends Spec<S>, T extends Style<S>>({
           emptyStyle: definition.emptyStyle,
         ),
       }).transform<T>((data) {
-        final map = data!;
+        final map = data;
         final List<VariantStyle<S>>? variants = castListOrNull(map['variants']);
 
         return definition.build(

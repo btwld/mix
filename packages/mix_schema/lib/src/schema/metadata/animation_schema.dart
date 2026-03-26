@@ -60,7 +60,7 @@ AckSchema<CurveAnimationConfig> buildAnimationSchema({
     'delay': Ack.integer().min(0).optional(),
     'onEnd': Ack.string().optional(),
   }).transform<CurveAnimationConfig>((data) {
-    final map = data!;
+    final map = data;
     final onEndId = map['onEnd'] as String?;
 
     return CurveAnimationConfig(
