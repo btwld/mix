@@ -60,7 +60,7 @@ final card = BoxStyler()
     .paddingAll(16)
     .color(Colors.white)
     .borderRounded(12)
-    .shadow(blurRadius: 8, color: Colors.black12);
+    .shadowOnly(blurRadius: 8, color: Colors.black12);
 ```
 
 ```dart
@@ -194,10 +194,10 @@ final layout = BoxStyler()
 final appearance = BoxStyler()
     .color(Colors.white)
     .borderRounded(12)
-    .shadow(blurRadius: 8, color: Colors.black12);
+    .shadowOnly(blurRadius: 8, color: Colors.black12);
 
 final interaction = BoxStyler()
-    .onHovered(.shadow(blurRadius: 16, color: Colors.black26))
+    .onHovered(.shadowOnly(blurRadius: 16, color: Colors.black26))
     .onPressed(.scale(0.98))
     .animate(.ease(200.ms));
 

@@ -21,7 +21,7 @@ class Example extends StatelessWidget {
         .shadowOnly(color: Colors.black.withValues(alpha: 0.2), blurRadius: 20)
         .wrap(
           WidgetModifierConfig.defaultText(
-            TextStyler.fontSize(16).fontWeight(.bold).color(Colors.white),
+            TextStyler().fontSize(16).fontWeight(.bold).color(Colors.white),
           ).align(alignment: .center),
         )
         .animate(.spring(300.ms));

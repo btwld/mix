@@ -90,7 +90,7 @@ You can also merge two separate stylers explicitly:
 
 ```dart
 final layout = BoxStyler().padding(.all(16)).borderRounded(12);
-final visual = BoxStyler().color(Colors.blue).shadow(blurRadius: 10);
+final visual = BoxStyler().color(Colors.blue).shadowOnly(blurRadius: 10);
 
 final card = layout.merge(visual); // combines both
 ```

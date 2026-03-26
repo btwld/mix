@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:mix/mix.dart';
 
-final chipButtonLabel = TextStyler(
-  textAlign: .center,
-  style: TextStyleMix(color: Colors.white, fontSize: 12, fontWeight: .w500),
-);
+final chipButtonLabel =
+    TextStyler().textAlign(.center).color(Colors.white).fontSize(12).fontWeight(.w500);
 
 final chipButtonContainer = BoxStyler()
     .height(40)

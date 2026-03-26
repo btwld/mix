@@ -38,7 +38,7 @@ class Example extends StatelessWidget {
               .alignment(.center),
           child: StyledText(
             'Loading…',
-            style: TextStyler.color(Colors.grey.shade600).fontSize(14),
+            style: TextStyler().color(Colors.grey.shade600).fontSize(14),
           ),
         );
       },
@@ -49,7 +49,7 @@ class Example extends StatelessWidget {
             .alignment(.center),
         child: StyledText(
           'Image unavailable',
-          style: TextStyler.color(Colors.grey.shade600).fontSize(14),
+          style: TextStyler().color(Colors.grey.shade600).fontSize(14),
         ),
       ),
     );

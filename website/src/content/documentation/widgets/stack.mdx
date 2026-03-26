@@ -7,15 +7,11 @@
 You can use the `StackBoxStyler` API to fluently compose your layout and decoration styles. Example:
 
 ```dart
-final style = StackBoxStyler
- .padding(EdgeInsets.all(16))
- .decoration(
-   BoxDecoration(
-     color: Colors.white,
-     borderRadius: BorderRadius.circular(12),
-   ),
- )
- .alignment(.center);
+final style = StackBoxStyler()
+ .paddingAll(16)
+ .color(Colors.white)
+ .borderRounded(12)
+ .stackAlignment(.center);
 
 StackBox(
  children: [

@@ -206,7 +206,7 @@ PressableBox(
 final style = BoxStyler()
     .color(Colors.blue)
     // Use white color when NOT in dark mode
-    .onNot(ContextVariant.brightness(Brightness.dark), .color(Colors.white));
+    .onNot(ContextVariant.brightness(.dark), .color(Colors.white));
 ```
 
 You can negate any variant — widget states, breakpoints, platforms, and more:
@@ -214,7 +214,7 @@ You can negate any variant — widget states, breakpoints, platforms, and more:
 ```dart
 // Only apply a shadow when NOT on mobile
 final style = BoxStyler()
-    .onNot(ContextVariant.mobile(), .shadow(
+    .onNot(ContextVariant.mobile(), .shadowOnly(
       color: Colors.black26,
       blurRadius: 10,
     ));

@@ -12,7 +12,7 @@ class Example extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = BoxStyler.height(50)
+    final style = BoxStyler().height(50)
         .width(100)
         .borderRounded(10)
         .linearGradient(
