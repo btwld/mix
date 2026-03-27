@@ -44,6 +44,14 @@ abstract class StyleAttributeBuilder<S extends Spec<S>> extends Style<S>
   List<VariantStyle<S>>? get $variants => style.$variants;
 
   @override
+  bool get hasBasePayload => style.hasBasePayload;
+
+  @override
+  Style<S> copyWithVariants(List<VariantStyle<S>>? variants) {
+    return style.copyWithVariants(variants);
+  }
+
+  @override
   List<Object?> get props => [style];
 }
 
@@ -82,6 +90,14 @@ abstract class StyleMutableBuilder<S extends Spec<S>> extends Style<S>
   /// Mutable variants from internal attribute
   @override
   List<VariantStyle<S>>? get $variants => value.$variants;
+
+  @override
+  bool get hasBasePayload => value.hasBasePayload;
+
+  @override
+  Style<S> copyWithVariants(List<VariantStyle<S>>? variants) {
+    return value.copyWithVariants(variants);
+  }
 
   @override
   List<Object?> get props => [mutable];

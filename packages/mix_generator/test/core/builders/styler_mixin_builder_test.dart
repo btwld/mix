@@ -57,6 +57,11 @@ void main() {
 
         expect(code, contains('@override'));
         expect(code, contains('BoxStyler merge(BoxStyler? other)'));
+        expect(code, contains('final deferred = deferMerge(other);'));
+        expect(
+          code,
+          contains('if (deferred != null) return deferred as BoxStyler;'),
+        );
         expect(code, contains('return BoxStyler.create('));
       });
 
@@ -151,6 +156,40 @@ void main() {
             'animation: MixOps.mergeAnimation(\$animation, other?.\$animation)',
           ),
         );
+      });
+    });
+
+    group('deferred merge hooks', () {
+      test('generates hasBasePayload with modifier and animation checks', () {
+        final builder = StylerMixinBuilder(
+          stylerName: 'BoxStyler',
+          specName: 'BoxSpec',
+          fields: [],
+          config: defaultConfig,
+        );
+        final code = builder.build();
+
+        expect(code, contains('bool get hasBasePayload =>'));
+        expect(code, contains('\$modifier != null ||'));
+        expect(code, contains('\$animation != null;'));
+      });
+
+      test('generates copyWithVariants', () {
+        final builder = StylerMixinBuilder(
+          stylerName: 'BoxStyler',
+          specName: 'BoxSpec',
+          fields: [],
+          config: defaultConfig,
+        );
+        final code = builder.build();
+
+        expect(
+          code,
+          contains(
+            'BoxStyler copyWithVariants(List<VariantStyle<BoxSpec>>? variants)',
+          ),
+        );
+        expect(code, contains('variants: variants,'));
       });
     });
 
@@ -262,6 +301,7 @@ void main() {
 
         expect(code, isNot(contains('BoxStyler merge(')));
         // Other methods should still be generated
+        expect(code, contains('bool get hasBasePayload =>'));
         expect(code, contains('StyleSpec<BoxSpec> resolve('));
         expect(code, contains('void debugFillProperties('));
         expect(code, contains('List<Object?> get props =>'));
@@ -332,10 +372,17 @@ void main() {
         );
         final code = builder.build();
 
-        // Only mixin declaration and closing brace
+        // Required deferred-merge hooks are still generated.
         expect(
           code,
           contains('mixin _\$BoxStylerMixin on Style<BoxSpec>, Diagnosticable'),
+        );
+        expect(code, contains('bool get hasBasePayload =>'));
+        expect(
+          code,
+          contains(
+            'BoxStyler copyWithVariants(List<VariantStyle<BoxSpec>>? variants)',
+          ),
         );
         expect(code, isNot(contains('BoxStyler merge(')));
         expect(code, isNot(contains('StyleSpec<BoxSpec> resolve(')));

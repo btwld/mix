@@ -268,6 +268,19 @@ class MockStyle<T> extends Style<MockSpec<T>> {
   });
 
   @override
+  bool get hasBasePayload => true;
+
+  @override
+  MockStyle<T> copyWithVariants(List<VariantStyle<MockSpec<T>>>? variants) {
+    return MockStyle<T>(
+      value,
+      variants: variants,
+      modifier: $modifier,
+      animation: $animation,
+    );
+  }
+
+  @override
   MockStyle<T> merge(covariant MockStyle<T>? other) {
     if (other == null) return this;
     // For Prop types, use their merge method
