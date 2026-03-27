@@ -174,9 +174,7 @@ function useShikiHighlight(snippets: Record<string, string>) {
   return highlighted;
 }
 
-export function FeatureShowcase() {
-  const codeSnippets = useShikiHighlight(CODE_SNIPPETS);
-
+export function FeatureShowcaseClient({ codeSnippets }: { codeSnippets: Record<string, string> }) {
   return (
     <div className="not-prose my-20">
       <div className="space-y-32">
@@ -186,7 +184,7 @@ export function FeatureShowcase() {
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.7, ease: [0.25, 0.4, 0.25, 1] }}
+            transition={{ duration: 0.7, ease: [0.25, 0.4, 0.25, 1] as const }}
           >
             <FeatureBlock
               feature={feature}
@@ -198,6 +196,12 @@ export function FeatureShowcase() {
       </div>
     </div>
   );
+}
+
+export function FeatureShowcase() {
+  const codeSnippets = useShikiHighlight(CODE_SNIPPETS);
+
+  return <FeatureShowcaseClient codeSnippets={codeSnippets} />;
 }
 
 function FeatureBlock({
