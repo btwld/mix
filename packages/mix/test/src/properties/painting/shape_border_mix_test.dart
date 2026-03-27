@@ -537,6 +537,75 @@ void main() {
     });
   });
 
+  group('ShapeBorderMix static factories', () {
+    test('roundedRectangle creates RoundedRectangleBorderMix', () {
+      final mix = ShapeBorderMix.roundedRectangle(
+        borderRadius: BorderRadiusMix.circular(8),
+      );
+      expect(mix, isA<RoundedRectangleBorderMix>());
+      expect(mix.$borderRadius, isNotNull);
+    });
+
+    test('beveledRectangle creates BeveledRectangleBorderMix', () {
+      final mix = ShapeBorderMix.beveledRectangle(
+        borderRadius: BorderRadiusMix.circular(4),
+      );
+      expect(mix, isA<BeveledRectangleBorderMix>());
+      expect(mix.$borderRadius, isNotNull);
+    });
+
+    test('continuousRectangle creates ContinuousRectangleBorderMix', () {
+      final mix = ShapeBorderMix.continuousRectangle(
+        borderRadius: BorderRadiusMix.circular(12),
+      );
+      expect(mix, isA<ContinuousRectangleBorderMix>());
+      expect(mix.$borderRadius, isNotNull);
+    });
+
+    test('circle creates CircleBorderMix', () {
+      final mix = ShapeBorderMix.circle(eccentricity: 0.5);
+      expect(mix, isA<CircleBorderMix>());
+      expect(mix.$eccentricity, isNotNull);
+    });
+
+    test('star creates StarBorderMix', () {
+      final mix = ShapeBorderMix.star(points: 5, innerRadiusRatio: 0.4);
+      expect(mix, isA<StarBorderMix>());
+      expect(mix.$points, isNotNull);
+      expect(mix.$innerRadiusRatio, isNotNull);
+    });
+
+    test('linear creates LinearBorderMix', () {
+      final mix = ShapeBorderMix.linear(side: BorderSideMix(color: Colors.red));
+      expect(mix, isA<LinearBorderMix>());
+      expect(mix.$side, isNotNull);
+    });
+
+    test('stadium creates StadiumBorderMix', () {
+      final mix = ShapeBorderMix.stadium(
+        side: BorderSideMix(color: Colors.blue),
+      );
+      expect(mix, isA<StadiumBorderMix>());
+      expect(mix.$side, isNotNull);
+    });
+
+    test('superellipse creates RoundedSuperellipseBorderMix', () {
+      final mix = ShapeBorderMix.superellipse(
+        borderRadius: BorderRadiusMix.circular(10),
+      );
+      expect(mix, isA<RoundedSuperellipseBorderMix>());
+      expect(mix.$borderRadius, isNotNull);
+    });
+
+    test('ShapeBorderMix.value handles RoundedSuperellipseBorder', () {
+      final border = RoundedSuperellipseBorder(
+        borderRadius: BorderRadius.circular(10),
+      );
+      final mix = ShapeBorderMix.value(border);
+      expect(mix, isA<RoundedSuperellipseBorderMix>());
+    });
+  });
+
   // Note: Cross-type merging is not supported for ShapeBorderMix.
   // Different shape border types cannot be merged directly.
   // Cross-type merging should be handled at a higher level through Prop accumulation.

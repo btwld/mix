@@ -63,6 +63,48 @@ void main() {
           equals(ImageStyler(repeat: ImageRepeat.repeat)),
         );
       });
+
+      test('centerSlice', () {
+        expect(
+          ImageStyler.centerSlice(const Rect.fromLTWH(0, 0, 10, 10)),
+          equals(ImageStyler(centerSlice: const Rect.fromLTWH(0, 0, 10, 10))),
+        );
+      });
+
+      test('filterQuality', () {
+        expect(
+          ImageStyler.filterQuality(FilterQuality.high),
+          equals(ImageStyler(filterQuality: FilterQuality.high)),
+        );
+      });
+
+      test('colorBlendMode', () {
+        expect(
+          ImageStyler.colorBlendMode(BlendMode.multiply),
+          equals(ImageStyler(colorBlendMode: BlendMode.multiply)),
+        );
+      });
+
+      test('gaplessPlayback', () {
+        expect(
+          ImageStyler.gaplessPlayback(true),
+          equals(ImageStyler(gaplessPlayback: true)),
+        );
+      });
+
+      test('isAntiAlias', () {
+        expect(
+          ImageStyler.isAntiAlias(true),
+          equals(ImageStyler(isAntiAlias: true)),
+        );
+      });
+
+      test('matchTextDirection', () {
+        expect(
+          ImageStyler.matchTextDirection(true),
+          equals(ImageStyler(matchTextDirection: true)),
+        );
+      });
     });
 
     group('resolved values', () {

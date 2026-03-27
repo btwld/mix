@@ -172,6 +172,109 @@ void main() {
           equals(BoxStyler().animate(animation)),
         );
       });
+
+      test('image', () {
+        final img = DecorationImageMix(image: const AssetImage('test.png'));
+        expect(BoxStyler.image(img), equals(BoxStyler().image(img)));
+      });
+
+      test('shape', () {
+        final s = ShapeBorderMix.roundedRectangle();
+        expect(BoxStyler.shape(s), equals(BoxStyler().shape(s)));
+      });
+
+      test('backgroundImage', () {
+        expect(
+          BoxStyler.backgroundImage(const AssetImage('test.png')),
+          equals(BoxStyler().backgroundImage(const AssetImage('test.png'))),
+        );
+      });
+
+      test('backgroundImageUrl', () {
+        expect(
+          BoxStyler.backgroundImageUrl('https://example.com/img.png'),
+          equals(BoxStyler().backgroundImageUrl('https://example.com/img.png')),
+        );
+      });
+
+      test('backgroundImageAsset', () {
+        expect(
+          BoxStyler.backgroundImageAsset('assets/img.png'),
+          equals(BoxStyler().backgroundImageAsset('assets/img.png')),
+        );
+      });
+
+      test('linearGradient', () {
+        expect(
+          BoxStyler.linearGradient(colors: [Colors.red, Colors.blue]),
+          equals(BoxStyler().linearGradient(colors: [Colors.red, Colors.blue])),
+        );
+      });
+
+      test('radialGradient', () {
+        expect(
+          BoxStyler.radialGradient(colors: [Colors.red, Colors.blue]),
+          equals(BoxStyler().radialGradient(colors: [Colors.red, Colors.blue])),
+        );
+      });
+
+      test('sweepGradient', () {
+        expect(
+          BoxStyler.sweepGradient(colors: [Colors.red, Colors.blue]),
+          equals(BoxStyler().sweepGradient(colors: [Colors.red, Colors.blue])),
+        );
+      });
+
+      test('foregroundLinearGradient', () {
+        expect(
+          BoxStyler.foregroundLinearGradient(colors: [Colors.red, Colors.blue]),
+          equals(
+            BoxStyler().foregroundLinearGradient(
+              colors: [Colors.red, Colors.blue],
+            ),
+          ),
+        );
+      });
+
+      test('foregroundRadialGradient', () {
+        expect(
+          BoxStyler.foregroundRadialGradient(colors: [Colors.red, Colors.blue]),
+          equals(
+            BoxStyler().foregroundRadialGradient(
+              colors: [Colors.red, Colors.blue],
+            ),
+          ),
+        );
+      });
+
+      test('foregroundSweepGradient', () {
+        expect(
+          BoxStyler.foregroundSweepGradient(colors: [Colors.red, Colors.blue]),
+          equals(
+            BoxStyler().foregroundSweepGradient(
+              colors: [Colors.red, Colors.blue],
+            ),
+          ),
+        );
+      });
+
+      test('transform', () {
+        expect(
+          BoxStyler.transform(Matrix4.identity()),
+          equals(BoxStyler().transform(Matrix4.identity())),
+        );
+      });
+
+      test('translate', () {
+        expect(
+          BoxStyler.translate(1.0, 2.0),
+          equals(BoxStyler().translate(1.0, 2.0)),
+        );
+      });
+
+      test('skew', () {
+        expect(BoxStyler.skew(0.1, 0.2), equals(BoxStyler().skew(0.1, 0.2)));
+      });
     });
 
     group('resolved values', () {

@@ -23,7 +23,7 @@ void main() {
       test('alignment', () {
         expect(
           StackBoxStyler.alignment(Alignment.center),
-          equals(StackBoxStyler(alignment: Alignment.center)),
+          equals(StackBoxStyler().alignment(Alignment.center)),
         );
       });
 
@@ -31,20 +31,23 @@ void main() {
         final mix = EdgeInsetsGeometryMix.all(16);
         expect(
           StackBoxStyler.padding(mix),
-          equals(StackBoxStyler(padding: mix)),
+          equals(StackBoxStyler().padding(mix)),
         );
       });
 
       test('margin', () {
         final mix = EdgeInsetsGeometryMix.all(8);
-        expect(StackBoxStyler.margin(mix), equals(StackBoxStyler(margin: mix)));
+        expect(
+          StackBoxStyler.margin(mix),
+          equals(StackBoxStyler().margin(mix)),
+        );
       });
 
       test('constraints', () {
         final mix = BoxConstraintsMix(minWidth: 100, maxWidth: 200);
         expect(
           StackBoxStyler.constraints(mix),
-          equals(StackBoxStyler(constraints: mix)),
+          equals(StackBoxStyler().constraints(mix)),
         );
       });
 
@@ -52,7 +55,7 @@ void main() {
         final mix = DecorationMix.color(Colors.red);
         expect(
           StackBoxStyler.decoration(mix),
-          equals(StackBoxStyler(decoration: mix)),
+          equals(StackBoxStyler().decoration(mix)),
         );
       });
 
@@ -60,28 +63,42 @@ void main() {
         final mix = DecorationMix.color(Colors.blue);
         expect(
           StackBoxStyler.foregroundDecoration(mix),
-          equals(StackBoxStyler(foregroundDecoration: mix)),
+          equals(StackBoxStyler().foregroundDecoration(mix)),
         );
       });
 
       test('clipBehavior', () {
         expect(
           StackBoxStyler.clipBehavior(Clip.hardEdge),
-          equals(StackBoxStyler(clipBehavior: Clip.hardEdge)),
+          equals(StackBoxStyler().clipBehavior(Clip.hardEdge)),
         );
       });
 
       test('stackAlignment', () {
         expect(
           StackBoxStyler.stackAlignment(Alignment.center),
-          equals(StackBoxStyler(stackAlignment: Alignment.center)),
+          equals(StackBoxStyler().stackAlignment(Alignment.center)),
         );
       });
 
       test('fit', () {
         expect(
           StackBoxStyler.fit(StackFit.expand),
-          equals(StackBoxStyler(fit: StackFit.expand)),
+          equals(StackBoxStyler().fit(StackFit.expand)),
+        );
+      });
+
+      test('textDirection', () {
+        expect(
+          StackBoxStyler.textDirection(TextDirection.rtl),
+          equals(StackBoxStyler().textDirection(TextDirection.rtl)),
+        );
+      });
+
+      test('stackClipBehavior', () {
+        expect(
+          StackBoxStyler.stackClipBehavior(Clip.antiAlias),
+          equals(StackBoxStyler().stackClipBehavior(Clip.antiAlias)),
         );
       });
 
@@ -132,6 +149,105 @@ void main() {
           BoxShadowMix(color: Colors.grey, blurRadius: 5),
         ];
         expect(StackBoxStyler.shadows(s), equals(StackBoxStyler().shadows(s)));
+      });
+
+      // Extended decoration convenience factories
+      test('image', () {
+        final img = DecorationImageMix(image: const AssetImage('test.png'));
+        expect(StackBoxStyler.image(img), equals(StackBoxStyler().image(img)));
+      });
+
+      test('shape', () {
+        final s = ShapeBorderMix.roundedRectangle();
+        expect(StackBoxStyler.shape(s), equals(StackBoxStyler().shape(s)));
+      });
+
+      test('linearGradient', () {
+        expect(
+          StackBoxStyler.linearGradient(colors: [Colors.red, Colors.blue]),
+          equals(
+            StackBoxStyler().linearGradient(colors: [Colors.red, Colors.blue]),
+          ),
+        );
+      });
+
+      test('radialGradient', () {
+        expect(
+          StackBoxStyler.radialGradient(colors: [Colors.red, Colors.blue]),
+          equals(
+            StackBoxStyler().radialGradient(colors: [Colors.red, Colors.blue]),
+          ),
+        );
+      });
+
+      test('sweepGradient', () {
+        expect(
+          StackBoxStyler.sweepGradient(colors: [Colors.red, Colors.blue]),
+          equals(
+            StackBoxStyler().sweepGradient(colors: [Colors.red, Colors.blue]),
+          ),
+        );
+      });
+
+      test('foregroundLinearGradient', () {
+        expect(
+          StackBoxStyler.foregroundLinearGradient(
+            colors: [Colors.red, Colors.blue],
+          ),
+          equals(
+            StackBoxStyler().foregroundLinearGradient(
+              colors: [Colors.red, Colors.blue],
+            ),
+          ),
+        );
+      });
+
+      test('foregroundRadialGradient', () {
+        expect(
+          StackBoxStyler.foregroundRadialGradient(
+            colors: [Colors.red, Colors.blue],
+          ),
+          equals(
+            StackBoxStyler().foregroundRadialGradient(
+              colors: [Colors.red, Colors.blue],
+            ),
+          ),
+        );
+      });
+
+      test('foregroundSweepGradient', () {
+        expect(
+          StackBoxStyler.foregroundSweepGradient(
+            colors: [Colors.red, Colors.blue],
+          ),
+          equals(
+            StackBoxStyler().foregroundSweepGradient(
+              colors: [Colors.red, Colors.blue],
+            ),
+          ),
+        );
+      });
+
+      // Extended transform convenience factories
+      test('transform', () {
+        expect(
+          StackBoxStyler.transform(Matrix4.identity()),
+          equals(StackBoxStyler().transform(Matrix4.identity())),
+        );
+      });
+
+      test('translate', () {
+        expect(
+          StackBoxStyler.translate(1.0, 2.0),
+          equals(StackBoxStyler().translate(1.0, 2.0)),
+        );
+      });
+
+      test('skew', () {
+        expect(
+          StackBoxStyler.skew(0.1, 0.2),
+          equals(StackBoxStyler().skew(0.1, 0.2)),
+        );
       });
 
       // Constraints convenience factories
