@@ -257,32 +257,20 @@ void main() {
         // Matrix4 lerp is handled by MixOps.lerp
       });
 
-      test('interpolates from no transform without throwing', () {
-        final transformed = Matrix4.identity()
-          ..scaleByDouble(2.0, 2.0, 1.0, .0);
+      test('snaps transform when one endpoint is null', () {
+        final transform = Matrix4.translationValues(10.0, 20.0, 0.0);
+        final withTransform = BoxSpec(transform: transform);
+        const withoutTransform = BoxSpec();
 
-        final base = const BoxSpec();
-        final hovered = BoxSpec(transform: transformed);
+        final fadeOutBefore = withTransform.lerp(withoutTransform, 0.4);
+        final fadeOutAfter = withTransform.lerp(withoutTransform, 0.6);
+        final fadeInBefore = withoutTransform.lerp(withTransform, 0.4);
+        final fadeInAfter = withoutTransform.lerp(withTransform, 0.6);
 
-        final lerped = base.lerp(hovered, 0.5);
-
-        expect(lerped.transform, isNotNull);
-        expect(lerped.transform!.storage[0], closeTo(1.5, 0.0001));
-        expect(lerped.transform!.storage[5], closeTo(1.5, 0.0001));
-      });
-
-      test('interpolates back to no transform without throwing', () {
-        final transformed = Matrix4.identity()
-          ..scaleByDouble(2.0, 2.0, 1.0, .0);
-
-        final base = BoxSpec(transform: transformed);
-        final idle = const BoxSpec();
-
-        final lerped = base.lerp(idle, 0.5);
-
-        expect(lerped.transform, isNotNull);
-        expect(lerped.transform!.storage[0], closeTo(1.5, 0.0001));
-        expect(lerped.transform!.storage[5], closeTo(1.5, 0.0001));
+        expect(fadeOutBefore.transform, same(transform));
+        expect(fadeOutAfter.transform, isNull);
+        expect(fadeInBefore.transform, isNull);
+        expect(fadeInAfter.transform, same(transform));
       });
     });
 
