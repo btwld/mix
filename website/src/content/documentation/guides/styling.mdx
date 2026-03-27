@@ -31,6 +31,7 @@ final textStyle = TextStyler()
     .fontSize(24)
     .fontWeight(.bold)
     .color(Colors.blue);
+
 StyledText(
   'Hello Mix',
   style: textStyle,
@@ -40,6 +41,7 @@ StyledText(
 final iconStyle = IconStyler()
     .size(32)
     .color(Colors.blue);
+
 StyledIcon(
   icon: Icons.favorite,
   style: iconStyle,
@@ -51,6 +53,7 @@ final rowStyle = FlexBoxStyler()
     .spacing(12)
     .paddingAll(16)
     .color(Colors.grey.shade100);
+
 FlexBox(
   style: rowStyle,
   children: [...],
@@ -65,6 +68,7 @@ Every styler also works as a widget factory. Call it directly instead of passing
 final box = BoxStyler()
     .color(Colors.blue)
     .size(100, 100);
+
 final label = TextStyler()
     .fontSize(18)
     .color(Colors.white);

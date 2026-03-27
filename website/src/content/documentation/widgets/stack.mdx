@@ -8,13 +8,9 @@ You can use the `StackBoxStyler` API to fluently compose your layout and decorat
 
 ```dart
 final style = StackBoxStyler()
-    .padding(EdgeInsets.all(16))
-    .decoration(
-      BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-      ),
-    )
+    .paddingAll(16)
+    .color(Colors.white)
+    .borderRounded(12)
     .alignment(.center);
 
 StackBox(
