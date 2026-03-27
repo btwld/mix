@@ -22,10 +22,7 @@ class Example extends StatelessWidget {
         .color(Colors.cyan)
         .alignment(.center)
         .animate(.easeInOut(220.ms))
-        .onHovered(
-          .color(Colors.cyanAccent)
-          .scale(1.2),
-        );
+        .onHovered(.color(Colors.cyanAccent).scale(1.2));
 
     return Card(
       child: const Text(

@@ -144,9 +144,7 @@ void main() {
             .borderRounded(18)
             .color(Colors.indigo.shade400)
             .animate(.easeInOut(220.ms))
-            .onHovered(
-              BoxStyler().color(Colors.indigo.shade500).scale(1.02),
-            );
+            .onHovered(BoxStyler().color(Colors.indigo.shade500).scale(1.02));
 
         await tester.pumpWidget(
           MaterialApp(
@@ -158,10 +156,14 @@ void main() {
           ),
         );
 
-        final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+        final gesture = await tester.createGesture(
+          kind: PointerDeviceKind.mouse,
+        );
         await gesture.addPointer(location: Offset.zero);
 
-        await gesture.moveTo(tester.getCenter(find.byKey(const Key('hover_card'))));
+        await gesture.moveTo(
+          tester.getCenter(find.byKey(const Key('hover_card'))),
+        );
         await tester.pump();
         await tester.pump(const Duration(milliseconds: 110));
 
