@@ -121,26 +121,26 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
 
   // Direct constructor params (Box + Stack)
   factory StackBoxStyler.alignment(AlignmentGeometry value) =>
-      StackBoxStyler(alignment: value);
+      StackBoxStyler().alignment(value);
   factory StackBoxStyler.padding(EdgeInsetsGeometryMix value) =>
-      StackBoxStyler(padding: value);
+      StackBoxStyler().padding(value);
   factory StackBoxStyler.margin(EdgeInsetsGeometryMix value) =>
-      StackBoxStyler(margin: value);
+      StackBoxStyler().margin(value);
   factory StackBoxStyler.constraints(BoxConstraintsMix value) =>
-      StackBoxStyler(constraints: value);
+      StackBoxStyler().constraints(value);
   factory StackBoxStyler.decoration(DecorationMix value) =>
-      StackBoxStyler(decoration: value);
+      StackBoxStyler().decoration(value);
   factory StackBoxStyler.foregroundDecoration(DecorationMix value) =>
-      StackBoxStyler(foregroundDecoration: value);
+      StackBoxStyler().foregroundDecoration(value);
   factory StackBoxStyler.clipBehavior(Clip value) =>
-      StackBoxStyler(clipBehavior: value);
+      StackBoxStyler().clipBehavior(value);
   factory StackBoxStyler.stackAlignment(AlignmentGeometry value) =>
-      StackBoxStyler(stackAlignment: value);
-  factory StackBoxStyler.fit(StackFit value) => StackBoxStyler(fit: value);
+      StackBoxStyler().stackAlignment(value);
+  factory StackBoxStyler.fit(StackFit value) => StackBoxStyler().fit(value);
   factory StackBoxStyler.textDirection(TextDirection value) =>
-      StackBoxStyler(textDirection: value);
+      StackBoxStyler().textDirection(value);
   factory StackBoxStyler.stackClipBehavior(Clip value) =>
-      StackBoxStyler(stackClipBehavior: value);
+      StackBoxStyler().stackClipBehavior(value);
 
   // Decoration convenience
   factory StackBoxStyler.color(Color value) => StackBoxStyler().color(value);

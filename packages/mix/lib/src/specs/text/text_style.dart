@@ -135,24 +135,25 @@ class TextStyler extends MixStyler<TextStyler, TextSpec>
 
   // Direct constructor params
   factory TextStyler.overflow(TextOverflow value) =>
-      TextStyler(overflow: value);
-  factory TextStyler.textAlign(TextAlign value) => TextStyler(textAlign: value);
-  factory TextStyler.maxLines(int value) => TextStyler(maxLines: value);
-  factory TextStyler.softWrap(bool value) => TextStyler(softWrap: value);
+      TextStyler().overflow(value);
+  factory TextStyler.textAlign(TextAlign value) =>
+      TextStyler().textAlign(value);
+  factory TextStyler.maxLines(int value) => TextStyler().maxLines(value);
+  factory TextStyler.softWrap(bool value) => TextStyler().softWrap(value);
   factory TextStyler.textDirection(TextDirection value) =>
-      TextStyler(textDirection: value);
-  factory TextStyler.style(TextStyleMix value) => TextStyler(style: value);
+      TextStyler().textDirection(value);
+  factory TextStyler.style(TextStyleMix value) => TextStyler().style(value);
   factory TextStyler.strutStyle(StrutStyleMix value) =>
-      TextStyler(strutStyle: value);
+      TextStyler().strutStyle(value);
   factory TextStyler.textWidthBasis(TextWidthBasis value) =>
-      TextStyler(textWidthBasis: value);
+      TextStyler().textWidthBasis(value);
   factory TextStyler.textScaler(TextScaler value) =>
-      TextStyler(textScaler: value);
+      TextStyler().textScaler(value);
   factory TextStyler.textHeightBehavior(TextHeightBehaviorMix value) =>
-      TextStyler(textHeightBehavior: value);
+      TextStyler().textHeightBehavior(value);
   factory TextStyler.selectionColor(Color value) =>
-      TextStyler(selectionColor: value);
-  factory TextStyler.locale(Locale value) => TextStyler(locale: value);
+      TextStyler().selectionColor(value);
+  factory TextStyler.locale(Locale value) => TextStyler().locale(value);
 
   // TextStyleMixin convenience
   factory TextStyler.color(Color value) => TextStyler().color(value);

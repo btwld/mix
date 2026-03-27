@@ -66,12 +66,12 @@ class StackStyler extends MixStyler<StackStyler, StackSpec>
 
   // Factory constructors for dot-shorthand notation
   factory StackStyler.alignment(AlignmentGeometry value) =>
-      StackStyler(alignment: value);
-  factory StackStyler.fit(StackFit value) => StackStyler(fit: value);
+      StackStyler().alignment(value);
+  factory StackStyler.fit(StackFit value) => StackStyler().fit(value);
   factory StackStyler.clipBehavior(Clip value) =>
-      StackStyler(clipBehavior: value);
+      StackStyler().clipBehavior(value);
   factory StackStyler.textDirection(TextDirection value) =>
-      StackStyler(textDirection: value);
+      StackStyler().textDirection(value);
 
   static StackMutableStyler get chain => .new(StackStyler());
 

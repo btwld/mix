@@ -124,18 +124,18 @@ class BoxStyler extends MixStyler<BoxStyler, BoxSpec>
 
   // Direct constructor params
   factory BoxStyler.alignment(AlignmentGeometry value) =>
-      BoxStyler(alignment: value);
+      BoxStyler().alignment(value);
   factory BoxStyler.padding(EdgeInsetsGeometryMix value) =>
-      BoxStyler(padding: value);
+      BoxStyler().padding(value);
   factory BoxStyler.margin(EdgeInsetsGeometryMix value) =>
-      BoxStyler(margin: value);
+      BoxStyler().margin(value);
   factory BoxStyler.constraints(BoxConstraintsMix value) =>
-      BoxStyler(constraints: value);
+      BoxStyler().constraints(value);
   factory BoxStyler.decoration(DecorationMix value) =>
-      BoxStyler(decoration: value);
+      BoxStyler().decoration(value);
   factory BoxStyler.foregroundDecoration(DecorationMix value) =>
-      BoxStyler(foregroundDecoration: value);
-  factory BoxStyler.clipBehavior(Clip value) => BoxStyler(clipBehavior: value);
+      BoxStyler().foregroundDecoration(value);
+  factory BoxStyler.clipBehavior(Clip value) => BoxStyler().clipBehavior(value);
 
   // Decoration convenience
   factory BoxStyler.color(Color value) => BoxStyler().color(value);

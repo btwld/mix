@@ -117,23 +117,24 @@ class IconStyler extends MixStyler<IconStyler, IconSpec>
        );
 
   // Factory constructors for dot-shorthand notation
-  factory IconStyler.icon(IconData value) => IconStyler(icon: value);
-  factory IconStyler.color(Color value) => IconStyler(color: value);
-  factory IconStyler.size(double value) => IconStyler(size: value);
-  factory IconStyler.weight(double value) => IconStyler(weight: value);
-  factory IconStyler.fill(double value) => IconStyler(fill: value);
-  factory IconStyler.opacity(double value) => IconStyler(opacity: value);
+  factory IconStyler.icon(IconData value) => IconStyler().icon(value);
+  factory IconStyler.color(Color value) => IconStyler().color(value);
+  factory IconStyler.size(double value) => IconStyler().size(value);
+  factory IconStyler.weight(double value) => IconStyler().weight(value);
+  factory IconStyler.fill(double value) => IconStyler().fill(value);
+  factory IconStyler.opacity(double value) => IconStyler().opacity(value);
   factory IconStyler.shadows(List<ShadowMix> value) =>
-      IconStyler(shadows: value);
+      IconStyler().shadows(value);
   factory IconStyler.shadow(ShadowMix value) => IconStyler().shadow(value);
-  factory IconStyler.grade(double value) => IconStyler(grade: value);
+  factory IconStyler.grade(double value) => IconStyler().grade(value);
   factory IconStyler.opticalSize(double value) =>
-      IconStyler(opticalSize: value);
+      IconStyler().opticalSize(value);
   factory IconStyler.textDirection(TextDirection value) =>
-      IconStyler(textDirection: value);
+      IconStyler().textDirection(value);
   factory IconStyler.applyTextScaling(bool value) =>
-      IconStyler(applyTextScaling: value);
-  factory IconStyler.blendMode(BlendMode value) => IconStyler(blendMode: value);
+      IconStyler().applyTextScaling(value);
+  factory IconStyler.blendMode(BlendMode value) =>
+      IconStyler().blendMode(value);
 
   static IconMutableStyler get chain => .new(IconStyler());
 

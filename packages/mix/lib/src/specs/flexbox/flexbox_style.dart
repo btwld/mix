@@ -133,34 +133,34 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
 
   // Direct constructor params (Box + Flex)
   factory FlexBoxStyler.alignment(AlignmentGeometry value) =>
-      FlexBoxStyler(alignment: value);
+      FlexBoxStyler().alignment(value);
   factory FlexBoxStyler.padding(EdgeInsetsGeometryMix value) =>
-      FlexBoxStyler(padding: value);
+      FlexBoxStyler().padding(value);
   factory FlexBoxStyler.margin(EdgeInsetsGeometryMix value) =>
-      FlexBoxStyler(margin: value);
+      FlexBoxStyler().margin(value);
   factory FlexBoxStyler.constraints(BoxConstraintsMix value) =>
-      FlexBoxStyler(constraints: value);
+      FlexBoxStyler().constraints(value);
   factory FlexBoxStyler.decoration(DecorationMix value) =>
-      FlexBoxStyler(decoration: value);
+      FlexBoxStyler().decoration(value);
   factory FlexBoxStyler.foregroundDecoration(DecorationMix value) =>
-      FlexBoxStyler(foregroundDecoration: value);
+      FlexBoxStyler().foregroundDecoration(value);
   factory FlexBoxStyler.clipBehavior(Clip value) =>
-      FlexBoxStyler(clipBehavior: value);
+      FlexBoxStyler().clipBehavior(value);
   factory FlexBoxStyler.direction(Axis value) =>
-      FlexBoxStyler(direction: value);
+      FlexBoxStyler().direction(value);
   factory FlexBoxStyler.mainAxisAlignment(MainAxisAlignment value) =>
-      FlexBoxStyler(mainAxisAlignment: value);
+      FlexBoxStyler().mainAxisAlignment(value);
   factory FlexBoxStyler.crossAxisAlignment(CrossAxisAlignment value) =>
-      FlexBoxStyler(crossAxisAlignment: value);
+      FlexBoxStyler().crossAxisAlignment(value);
   factory FlexBoxStyler.mainAxisSize(MainAxisSize value) =>
-      FlexBoxStyler(mainAxisSize: value);
-  factory FlexBoxStyler.spacing(double value) => FlexBoxStyler(spacing: value);
+      FlexBoxStyler().mainAxisSize(value);
+  factory FlexBoxStyler.spacing(double value) => FlexBoxStyler().spacing(value);
   factory FlexBoxStyler.verticalDirection(VerticalDirection value) =>
-      FlexBoxStyler(verticalDirection: value);
+      FlexBoxStyler().verticalDirection(value);
   factory FlexBoxStyler.textDirection(TextDirection value) =>
-      FlexBoxStyler(textDirection: value);
+      FlexBoxStyler().textDirection(value);
   factory FlexBoxStyler.textBaseline(TextBaseline value) =>
-      FlexBoxStyler(textBaseline: value);
+      FlexBoxStyler().textBaseline(value);
 
   // Decoration convenience
   factory FlexBoxStyler.color(Color value) => FlexBoxStyler().color(value);
@@ -202,8 +202,8 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
       FlexBoxStyler().animate(value);
 
   // Flex convenience (zero-param presets)
-  factory FlexBoxStyler.row() => FlexBoxStyler(direction: .horizontal);
-  factory FlexBoxStyler.column() => FlexBoxStyler(direction: .vertical);
+  factory FlexBoxStyler.row() => FlexBoxStyler().row();
+  factory FlexBoxStyler.column() => FlexBoxStyler().column();
 
   // Decoration convenience (extended)
   factory FlexBoxStyler.image(DecorationImageMix value) =>
