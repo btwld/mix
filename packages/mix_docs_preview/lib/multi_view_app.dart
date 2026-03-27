@@ -81,7 +81,7 @@ class _PreviewView extends StatelessWidget {
     final view = View.of(context);
 
     return ColoredBox(
-      color: const Color(0xFF1a1a2e),
+      color: const Color(0x00000000),
       child: Directionality(
         textDirection: ui.TextDirection.ltr,
         child: MediaQuery.fromView(

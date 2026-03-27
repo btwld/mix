@@ -19,16 +19,23 @@ import 'guides/dynamic_styling/disabled.dart' as disabled;
 import 'guides/dynamic_styling/focused.dart' as focused;
 import 'guides/dynamic_styling/hovered.dart' as hovered;
 import 'guides/dynamic_styling/nesting.dart' as nesting;
+import 'guides/styling/preview_0.dart' as guide_styling_0;
 import 'guides/styling/preview_1.dart' as guide_styling_1;
+import 'guides/widget_modifiers/preview.dart' as guide_widget_modifiers;
 import 'guides/dynamic_styling/pressed.dart' as pressed;
 import 'guides/dynamic_styling/responsive_size.dart' as responsive_size;
 import 'guides/dynamic_styling/selected.dart' as selected;
 import 'guides/dynamic_styling/selected_toggle.dart' as selected_toggle;
+import 'homepage/animation_showcase.dart' as homepage_animation;
+import 'homepage/styling_showcase.dart' as homepage_styling;
+import 'homepage/variants_showcase.dart' as homepage_variants;
 import 'guides/gradients/gradient_linear.dart' as gradient_linear;
 import 'guides/gradients/gradient_radial.dart' as gradient_radial;
 import 'guides/gradients/gradient_sweep.dart' as gradient_sweep;
 import 'overview/comparison/preview_0.dart' as comparison_0;
 import 'overview/getting_started/hello_mix.dart' as getting_started_hello_mix;
+import 'overview/introduction/preview.dart' as overview_introduction;
+import 'overview/utility_first/preview.dart' as overview_utility_first;
 import 'tutorials/creating_a_widget/design_system_button.dart'
     as design_system_button;
 import 'widgets/box/gradient_box.dart' as gradient_box;
@@ -36,6 +43,7 @@ import 'widgets/box/simple_box.dart' as simple_box;
 import 'widgets/flexbox/icon_label_chip.dart' as icon_label_chip;
 import 'widgets/icon/styled_icon.dart' as styled_icon;
 import 'widgets/image/styled_image.dart' as styled_image;
+import 'widgets/pressable/preview.dart' as pressable_preview;
 import 'widgets/stack/layered_boxes.dart' as layered_boxes;
 import 'widgets/text/styled_text.dart' as styled_text;
 import 'widgets/vbox/card_layout.dart' as card_layout;
@@ -92,6 +100,7 @@ class PreviewRegistry {
   static const String _tokens = 'Design System';
   static const String _animations = 'Animations';
   static const String _ecosystem = 'Ecosystem';
+  static const String _homepage = 'Homepage';
   static final List<PreviewEntry> _previews = [
     // Documentation embeddings: previewId = doc path (without .mdx) + index
     // overview
@@ -100,14 +109,14 @@ class PreviewRegistry {
       sourcePath:
           'packages/mix_docs_preview/lib/overview/introduction/preview.dart',
       category: _widgets,
-      builder: (_) => const simple_box.Example(),
+      builder: (_) => const overview_introduction.Example(),
     ),
     PreviewEntry(
       previewId: 'overview/utility-first.0',
       sourcePath:
           'packages/mix_docs_preview/lib/overview/utility_first/preview.dart',
       category: _widgets,
-      builder: (_) => const simple_box.Example(),
+      builder: (_) => const overview_utility_first.Example(),
     ),
     PreviewEntry(
       previewId: 'overview/getting-started.0',
@@ -129,13 +138,13 @@ class PreviewRegistry {
       sourcePath:
           'packages/mix_docs_preview/lib/guides/widget_modifiers/preview.dart',
       category: _widgets,
-      builder: (_) => const simple_box.Example(),
+      builder: (_) => const guide_widget_modifiers.Example(),
     ),
     PreviewEntry(
       previewId: 'guides/styling.0',
       sourcePath: 'packages/mix_docs_preview/lib/guides/styling/preview_0.dart',
       category: _widgets,
-      builder: (_) => const simple_box.Example(),
+      builder: (_) => const guide_styling_0.Example(),
     ),
     PreviewEntry(
       previewId: 'guides/styling.1',
@@ -221,6 +230,31 @@ class PreviewRegistry {
       category: _widgets,
       builder: (_) => const text_directives.Example(),
     ),
+    // homepage
+    PreviewEntry(
+      previewId: 'homepage/styling',
+      sourcePath:
+          'packages/mix_docs_preview/lib/homepage/styling_showcase.dart',
+      category: _homepage,
+      builder: (_) => const homepage_styling.Example(),
+      snippetRegion: 'showcase',
+    ),
+    PreviewEntry(
+      previewId: 'homepage/variants',
+      sourcePath:
+          'packages/mix_docs_preview/lib/homepage/variants_showcase.dart',
+      category: _homepage,
+      builder: (_) => const homepage_variants.Example(),
+      snippetRegion: 'showcase',
+    ),
+    PreviewEntry(
+      previewId: 'homepage/animation',
+      sourcePath:
+          'packages/mix_docs_preview/lib/homepage/animation_showcase.dart',
+      category: _homepage,
+      builder: (_) => const homepage_animation.Example(),
+      snippetRegion: 'showcase',
+    ),
     // widgets
     PreviewEntry(
       previewId: 'widgets/box.0',
@@ -266,7 +300,7 @@ class PreviewRegistry {
       sourcePath:
           'packages/mix_docs_preview/lib/widgets/pressable/preview.dart',
       category: _variants,
-      builder: (_) => const hovered.Example(),
+      builder: (_) => const pressable_preview.Example(),
     ),
     // tutorials
     PreviewEntry(
@@ -279,21 +313,21 @@ class PreviewRegistry {
     PreviewEntry(
       previewId: 'tutorials/theming.0',
       sourcePath:
-          'packages/mix_docs_preview/lib/tutorials/theming/preview.dart',
+          'packages/mix_docs_preview/lib/guides/design_token/theme_tokens.dart',
       category: _tokens,
       builder: (_) => const theme_tokens.Example(),
     ),
     PreviewEntry(
       previewId: 'tutorials/controlling-widget-state.0',
       sourcePath:
-          'packages/mix_docs_preview/lib/tutorials/controlling_widget_state/preview.dart',
+          'packages/mix_docs_preview/lib/guides/dynamic_styling/selected_toggle.dart',
       category: _variants,
-      builder: (_) => const hovered.Example(),
+      builder: (_) => const selected_toggle.Example(),
     ),
     PreviewEntry(
       previewId: 'tutorials/creating-context-variants.0',
       sourcePath:
-          'packages/mix_docs_preview/lib/tutorials/creating_context_variants/preview.dart',
+          'packages/mix_docs_preview/lib/guides/dynamic_styling/context_variant_flag.dart',
       category: _variants,
       builder: (_) => const context_variant_flag.Example(),
     ),

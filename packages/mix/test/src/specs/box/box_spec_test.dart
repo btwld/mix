@@ -256,6 +256,34 @@ void main() {
         expect(lerped.transform, isNotNull);
         // Matrix4 lerp is handled by MixOps.lerp
       });
+
+      test('interpolates from no transform without throwing', () {
+        final transformed = Matrix4.identity()
+          ..scaleByDouble(2.0, 2.0, 1.0, .0);
+
+        final base = const BoxSpec();
+        final hovered = BoxSpec(transform: transformed);
+
+        final lerped = base.lerp(hovered, 0.5);
+
+        expect(lerped.transform, isNotNull);
+        expect(lerped.transform!.storage[0], closeTo(1.5, 0.0001));
+        expect(lerped.transform!.storage[5], closeTo(1.5, 0.0001));
+      });
+
+      test('interpolates back to no transform without throwing', () {
+        final transformed = Matrix4.identity()
+          ..scaleByDouble(2.0, 2.0, 1.0, .0);
+
+        final base = BoxSpec(transform: transformed);
+        final idle = const BoxSpec();
+
+        final lerped = base.lerp(idle, 0.5);
+
+        expect(lerped.transform, isNotNull);
+        expect(lerped.transform!.storage[0], closeTo(1.5, 0.0001));
+        expect(lerped.transform!.storage[5], closeTo(1.5, 0.0001));
+      });
     });
 
     group('equality', () {

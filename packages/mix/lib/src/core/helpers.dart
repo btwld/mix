@@ -173,6 +173,15 @@ List<WidgetModifier>? _lerpModifierList(
   return ModifierListTween(begin: a, end: b).lerp(t);
 }
 
+Matrix4? _lerpMatrix4(Matrix4? a, Matrix4? b, double t) {
+  if (a == null && b == null) return null;
+
+  return Matrix4Tween(
+    begin: a ?? Matrix4.identity(),
+    end: b ?? Matrix4.identity(),
+  ).lerp(t);
+}
+
 T? _lerpValue<T>(T? a, T? b, double t) {
   return switch ((a, b)) {
     (Spec? a, Spec? b) => a?.lerp(b, t) as T?,
@@ -244,7 +253,7 @@ T? _lerpValue<T>(T? a, T? b, double t) {
     (IconThemeData? a, IconThemeData? b) => IconThemeData.lerp(a, b, t) as T?,
 
     // Matrix4 - use proper tween instead of snap
-    (Matrix4? a, Matrix4? b) => Matrix4Tween(begin: a, end: b).lerp(t) as T?,
+    (Matrix4? a, Matrix4? b) => _lerpMatrix4(a, b, t) as T?,
 
     // List of Modifiers - use ModifierListTween for proper lerping
     (List<WidgetModifier>? a, List<WidgetModifier>? b) =>

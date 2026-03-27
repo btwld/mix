@@ -131,5 +131,50 @@ void main() {
 
       await gesture.removePointer();
     });
+
+    testWidgets(
+      'homepage hover card example animates scale without a base transform',
+      (tester) async {
+        // Mirrors the homepage showcase pattern:
+        // BoxStyler().animate(...).onHovered(BoxStyler().scale(1.02))
+        final style = BoxStyler()
+            .width(260)
+            .height(120)
+            .paddingAll(20)
+            .borderRounded(18)
+            .color(Colors.indigo.shade400)
+            .animate(.easeInOut(220.ms))
+            .onHovered(
+              BoxStyler().color(Colors.indigo.shade500).scale(1.02),
+            );
+
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: Center(
+                child: Box(key: const Key('hover_card'), style: style),
+              ),
+            ),
+          ),
+        );
+
+        final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+        await gesture.addPointer(location: Offset.zero);
+
+        await gesture.moveTo(tester.getCenter(find.byKey(const Key('hover_card'))));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 110));
+
+        expect(tester.takeException(), isNull);
+
+        await gesture.moveTo(const Offset(-100, -100));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 110));
+
+        expect(tester.takeException(), isNull);
+
+        await gesture.removePointer();
+      },
+    );
   });
 }
