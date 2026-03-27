@@ -23,25 +23,28 @@ void main() {
       test('alignment', () {
         expect(
           FlexBoxStyler.alignment(Alignment.center),
-          equals(FlexBoxStyler(alignment: Alignment.center)),
+          equals(FlexBoxStyler().alignment(Alignment.center)),
         );
       });
 
       test('padding', () {
         final mix = EdgeInsetsGeometryMix.all(16);
-        expect(FlexBoxStyler.padding(mix), equals(FlexBoxStyler(padding: mix)));
+        expect(
+          FlexBoxStyler.padding(mix),
+          equals(FlexBoxStyler().padding(mix)),
+        );
       });
 
       test('margin', () {
         final mix = EdgeInsetsGeometryMix.all(8);
-        expect(FlexBoxStyler.margin(mix), equals(FlexBoxStyler(margin: mix)));
+        expect(FlexBoxStyler.margin(mix), equals(FlexBoxStyler().margin(mix)));
       });
 
       test('constraints', () {
         final mix = BoxConstraintsMix(minWidth: 100, maxWidth: 200);
         expect(
           FlexBoxStyler.constraints(mix),
-          equals(FlexBoxStyler(constraints: mix)),
+          equals(FlexBoxStyler().constraints(mix)),
         );
       });
 
@@ -49,7 +52,7 @@ void main() {
         final mix = DecorationMix.color(Colors.red);
         expect(
           FlexBoxStyler.decoration(mix),
-          equals(FlexBoxStyler(decoration: mix)),
+          equals(FlexBoxStyler().decoration(mix)),
         );
       });
 
@@ -57,67 +60,69 @@ void main() {
         final mix = DecorationMix.color(Colors.blue);
         expect(
           FlexBoxStyler.foregroundDecoration(mix),
-          equals(FlexBoxStyler(foregroundDecoration: mix)),
+          equals(FlexBoxStyler().foregroundDecoration(mix)),
         );
       });
 
       test('clipBehavior', () {
         expect(
           FlexBoxStyler.clipBehavior(Clip.hardEdge),
-          equals(FlexBoxStyler(clipBehavior: Clip.hardEdge)),
+          equals(FlexBoxStyler().clipBehavior(Clip.hardEdge)),
         );
       });
 
       test('direction', () {
         expect(
           FlexBoxStyler.direction(Axis.horizontal),
-          equals(FlexBoxStyler(direction: Axis.horizontal)),
+          equals(FlexBoxStyler().direction(Axis.horizontal)),
         );
       });
 
       test('mainAxisAlignment', () {
         expect(
           FlexBoxStyler.mainAxisAlignment(.center),
-          equals(FlexBoxStyler(mainAxisAlignment: MainAxisAlignment.center)),
+          equals(FlexBoxStyler().mainAxisAlignment(MainAxisAlignment.center)),
         );
       });
 
       test('crossAxisAlignment', () {
         expect(
           FlexBoxStyler.crossAxisAlignment(CrossAxisAlignment.stretch),
-          equals(FlexBoxStyler(crossAxisAlignment: CrossAxisAlignment.stretch)),
+          equals(
+            FlexBoxStyler().crossAxisAlignment(CrossAxisAlignment.stretch),
+          ),
         );
       });
 
       test('mainAxisSize', () {
         expect(
           FlexBoxStyler.mainAxisSize(MainAxisSize.min),
-          equals(FlexBoxStyler(mainAxisSize: MainAxisSize.min)),
+          equals(FlexBoxStyler().mainAxisSize(MainAxisSize.min)),
         );
       });
 
       test('spacing', () {
-        expect(FlexBoxStyler.spacing(8), equals(FlexBoxStyler(spacing: 8)));
+        expect(FlexBoxStyler.spacing(8), equals(FlexBoxStyler().spacing(8)));
       });
 
       test('verticalDirection', () {
         expect(
           FlexBoxStyler.verticalDirection(VerticalDirection.up),
-          equals(FlexBoxStyler(verticalDirection: VerticalDirection.up)),
+          equals(FlexBoxStyler().verticalDirection(VerticalDirection.up)),
         );
       });
 
       test('textDirection', () {
         expect(
           FlexBoxStyler.textDirection(TextDirection.rtl),
-          equals(FlexBoxStyler(textDirection: TextDirection.rtl)),
+          equals(FlexBoxStyler().textDirection(TextDirection.rtl)),
         );
       });
 
       test('textBaseline', () {
         expect(
           FlexBoxStyler.textBaseline(TextBaseline.alphabetic),
-          equals(FlexBoxStyler(textBaseline: TextBaseline.alphabetic)),
+          equals(FlexBoxStyler().textBaseline(TextBaseline.alphabetic)),
         );
       });
 
@@ -348,17 +353,11 @@ void main() {
 
       // Preset factories
       test('row', () {
-        expect(
-          FlexBoxStyler.row(),
-          equals(FlexBoxStyler(direction: Axis.horizontal)),
-        );
+        expect(FlexBoxStyler.row(), equals(FlexBoxStyler().row()));
       });
 
       test('column', () {
-        expect(
-          FlexBoxStyler.column(),
-          equals(FlexBoxStyler(direction: Axis.vertical)),
-        );
+        expect(FlexBoxStyler.column(), equals(FlexBoxStyler().column()));
       });
     });
 

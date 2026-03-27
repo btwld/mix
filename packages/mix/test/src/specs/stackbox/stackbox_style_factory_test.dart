@@ -23,7 +23,7 @@ void main() {
       test('alignment', () {
         expect(
           StackBoxStyler.alignment(Alignment.center),
-          equals(StackBoxStyler(alignment: Alignment.center)),
+          equals(StackBoxStyler().alignment(Alignment.center)),
         );
       });
 
@@ -31,20 +31,23 @@ void main() {
         final mix = EdgeInsetsGeometryMix.all(16);
         expect(
           StackBoxStyler.padding(mix),
-          equals(StackBoxStyler(padding: mix)),
+          equals(StackBoxStyler().padding(mix)),
         );
       });
 
       test('margin', () {
         final mix = EdgeInsetsGeometryMix.all(8);
-        expect(StackBoxStyler.margin(mix), equals(StackBoxStyler(margin: mix)));
+        expect(
+          StackBoxStyler.margin(mix),
+          equals(StackBoxStyler().margin(mix)),
+        );
       });
 
       test('constraints', () {
         final mix = BoxConstraintsMix(minWidth: 100, maxWidth: 200);
         expect(
           StackBoxStyler.constraints(mix),
-          equals(StackBoxStyler(constraints: mix)),
+          equals(StackBoxStyler().constraints(mix)),
         );
       });
 
@@ -52,7 +55,7 @@ void main() {
         final mix = DecorationMix.color(Colors.red);
         expect(
           StackBoxStyler.decoration(mix),
-          equals(StackBoxStyler(decoration: mix)),
+          equals(StackBoxStyler().decoration(mix)),
         );
       });
 
@@ -60,42 +63,42 @@ void main() {
         final mix = DecorationMix.color(Colors.blue);
         expect(
           StackBoxStyler.foregroundDecoration(mix),
-          equals(StackBoxStyler(foregroundDecoration: mix)),
+          equals(StackBoxStyler().foregroundDecoration(mix)),
         );
       });
 
       test('clipBehavior', () {
         expect(
           StackBoxStyler.clipBehavior(Clip.hardEdge),
-          equals(StackBoxStyler(clipBehavior: Clip.hardEdge)),
+          equals(StackBoxStyler().clipBehavior(Clip.hardEdge)),
         );
       });
 
       test('stackAlignment', () {
         expect(
           StackBoxStyler.stackAlignment(Alignment.center),
-          equals(StackBoxStyler(stackAlignment: Alignment.center)),
+          equals(StackBoxStyler().stackAlignment(Alignment.center)),
         );
       });
 
       test('fit', () {
         expect(
           StackBoxStyler.fit(StackFit.expand),
-          equals(StackBoxStyler(fit: StackFit.expand)),
+          equals(StackBoxStyler().fit(StackFit.expand)),
         );
       });
 
       test('textDirection', () {
         expect(
           StackBoxStyler.textDirection(TextDirection.rtl),
-          equals(StackBoxStyler(textDirection: TextDirection.rtl)),
+          equals(StackBoxStyler().textDirection(TextDirection.rtl)),
         );
       });
 
       test('stackClipBehavior', () {
         expect(
           StackBoxStyler.stackClipBehavior(Clip.antiAlias),
-          equals(StackBoxStyler(stackClipBehavior: Clip.antiAlias)),
+          equals(StackBoxStyler().stackClipBehavior(Clip.antiAlias)),
         );
       });
 
