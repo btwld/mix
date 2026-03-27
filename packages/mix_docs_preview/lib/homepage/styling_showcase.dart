@@ -1,4 +1,3 @@
-/// Preview for overview/introduction.
 library;
 
 import 'package:flutter/material.dart';
@@ -15,11 +14,13 @@ class Example extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final boxStyle = BoxStyler()
-        .color(Colors.red)
-        .size(100, 100)
-        .borderRounded(10);
+    // ignore: non_constant_identifier_names
+    final Box = BoxStyler()
+        .width(120)
+        .height(120)
+        .borderRounded(16)
+        .color(Colors.deepPurple);
 
-    return Box(style: boxStyle);
+    return Box();
   }
 }

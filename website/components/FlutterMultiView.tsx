@@ -26,6 +26,8 @@ interface FlutterMultiViewProps {
   onError?: (error: Error) => void;
   /** Whether to lazy load (only load when in viewport) */
   lazyLoad?: boolean;
+  /** Whether to use a transparent background (for overlapping layouts) */
+  transparent?: boolean;
 }
 
 // =============================================================================
@@ -204,6 +206,7 @@ export function FlutterMultiView({
   onReady,
   onError,
   lazyLoad = true,
+  transparent = false,
 }: FlutterMultiViewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const viewIdRef = useRef<number | null>(null);
@@ -378,10 +381,10 @@ export function FlutterMultiView({
   const containerStyles: React.CSSProperties = {
     height,
     width: "100%",
-    backgroundColor: "#1a1a2e",
+    backgroundColor: transparent ? "transparent" : "#1a1a2e",
     borderRadius: bordered ? "8px" : undefined,
     border: bordered ? "1px solid rgba(255, 255, 255, 0.1)" : undefined,
-    overflow: "hidden",
+    overflow: transparent ? undefined : "hidden",
     position: "relative",
   };
 
@@ -399,7 +402,7 @@ export function FlutterMultiView({
             justifyContent: "center",
             gap: "12px",
             zIndex: 10,
-            backgroundColor: "#1a1a2e",
+            backgroundColor: transparent ? "transparent" : "#1a1a2e",
           }}
         >
           <div
@@ -431,7 +434,7 @@ export function FlutterMultiView({
             alignItems: "center",
             justifyContent: "center",
             gap: "12px",
-            backgroundColor: "#1a1a2e",
+            backgroundColor: transparent ? "transparent" : "#1a1a2e",
             color: "#ef4444",
             padding: "16px",
             textAlign: "center",

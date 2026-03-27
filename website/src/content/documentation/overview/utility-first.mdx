@@ -39,7 +39,9 @@ BoxStyler().alignment(.centerRight);
 
 // Spacing helpers
 BoxStyler().padding(.all(16));
-BoxStyler().padding(.symmetric(horizontal: 12, vertical: 8));
+BoxStyler().padding(
+  .symmetric(horizontal: 12, vertical: 8),
+);
 BoxStyler().paddingOnly(left: 12, top: 8);
 ```
 
@@ -61,7 +63,8 @@ You can create your own shorthand by defining helper functions or extending `Box
 
 ```dart
 // Custom helper function
-BoxStyler accentBorder(Color color) => BoxStyler().borderTop(color: color, width: 2);
+BoxStyler accentBorder(Color color) =>
+    BoxStyler().borderTop(color: color, width: 2);
 
 // Use the helper
 accentBorder(Colors.red);

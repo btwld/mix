@@ -171,15 +171,27 @@ Beyond the generated `container()`, `icon()`, and `label()` setters, you can add
 
 ```dart
   ButtonStyler backgroundColor(Color value) {
-    return merge(ButtonStyler(container: FlexBoxStyler.color(value)));
+    return merge(
+      ButtonStyler(
+        container: FlexBoxStyler().color(value),
+      ),
+    );
   }
 
   ButtonStyler textColor(Color value) {
-    return merge(ButtonStyler(label: TextStyler.color(value)));
+    return merge(
+      ButtonStyler(
+        label: TextStyler().color(value),
+      ),
+    );
   }
 
   ButtonStyler iconColor(Color value) {
-    return merge(ButtonStyler(icon: IconStyler.color(value)));
+    return merge(
+      ButtonStyler(
+        icon: IconStyler().color(value),
+      ),
+    );
   }
 
   ButtonStyler borderRadius(double value) {
@@ -201,7 +213,11 @@ Beyond the generated `container()`, `icon()`, and `label()` setters, you can add
   }
 
   ButtonStyler scale(double value) {
-    return merge(ButtonStyler(container: FlexBoxStyler().scale(value)));
+    return merge(
+      ButtonStyler(
+        container: FlexBoxStyler().scale(value),
+      ),
+    );
   }
 }
 ```
@@ -264,7 +280,7 @@ enum ButtonVariant {
             .backgroundColor(Colors.blueAccent)
             .textColor(Colors.white)
             .iconColor(Colors.white);
-      
+
       case ButtonVariant.outlined:
         return ButtonStyler()
             .container(
@@ -274,7 +290,7 @@ enum ButtonVariant {
             )
             .textColor(Colors.blueAccent)
             .iconColor(Colors.blueAccent);
-      
+
       case ButtonVariant.elevated:
         return ButtonStyler()
             .backgroundColor(Colors.blueAccent)
@@ -287,7 +303,7 @@ enum ButtonVariant {
                     .offset(x: 0, y: 5),
               ),
             );
-      
+
       case ButtonVariant.link:
         return ButtonStyler()
             .container(
@@ -321,7 +337,8 @@ ButtonStyler buttonStyle(ButtonStyler? style, ButtonVariant? variant) {
     TextStyleMix().fontSize(16).fontWeight(.w500),
   );
 
-  final icon = IconStyler().size(18);
+  final icon = IconStyler()
+      .size(18);
 
   return ButtonStyler()
       .container(container)
@@ -330,17 +347,23 @@ ButtonStyler buttonStyle(ButtonStyler? style, ButtonVariant? variant) {
       .merge(variant?.style)
       .onPressed(
         ButtonStyler()
-            .container(FlexBoxStyler().scale(0.9)),
+            .container(
+              FlexBoxStyler().scale(0.9),
+            ),
       )
       .onDisabled(
         ButtonStyler()
-            .container(FlexBoxStyler().color(Colors.blueGrey.shade100))
+            .container(
+              FlexBoxStyler().color(Colors.blueGrey.shade100),
+            )
             .label(
               TextStyler().style(
                 TextStyleMix().color(Colors.blueGrey.shade700),
               ),
             )
-            .icon(IconStyler().color(Colors.blueGrey.shade700)),
+            .icon(
+              IconStyler().color(Colors.blueGrey.shade700),
+            ),
       )
       .merge(style);
 }
@@ -382,8 +405,16 @@ class CustomButton extends StatelessWidget {
           return FlexBox(
             styleSpec: spec.container,
             children: [
-              if (icon != null) StyledIcon(icon: icon, styleSpec: spec.icon),
-              if (label.isNotEmpty) StyledText(label, styleSpec: spec.label),
+              if (icon != null)
+                StyledIcon(
+                  icon: icon,
+                  styleSpec: spec.icon,
+                ),
+              if (label.isNotEmpty)
+                StyledText(
+                  label,
+                  styleSpec: spec.label,
+                ),
             ],
           );
         },

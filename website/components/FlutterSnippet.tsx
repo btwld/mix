@@ -17,6 +17,8 @@ interface FlutterSnippetProps {
   maxHeight?: number;
   /** Fallback to full file when a region is missing */
   fallbackToFullFile?: boolean;
+  /** Show snippet metadata like title and region */
+  showMeta?: boolean;
   /** Additional CSS classes */
   className?: string;
 }
@@ -28,6 +30,7 @@ export function FlutterSnippet({
   basePath = "/previews/sources",
   maxHeight = 440,
   fallbackToFullFile = true,
+  showMeta = true,
   className = "",
 }: FlutterSnippetProps) {
   const [status, setStatus] = useState<SnippetStatus>("loading");
@@ -92,7 +95,7 @@ export function FlutterSnippet({
 
   return (
     <div className={`not-prose ${className}`}>
-      {(title || region) && (
+      {showMeta && (title || region) && (
         <div className="mb-2 flex items-center justify-between text-xs text-zinc-500">
           <span className="text-zinc-300">{title || "Source"}</span>
           {region && (
