@@ -536,7 +536,7 @@ void main() {
       });
 
       testWidgets(
-        'updateDriver uses new config duration for looping, not stale old config',
+        'PhaseAnimationDriver updateDriver uses new config duration for looping',
         (tester) async {
           // Start with short durations: 100ms + 100ms = 200ms total
           final oldConfig = PhaseAnimationConfig<MockSpec, MockStyle>(
@@ -583,9 +583,8 @@ void main() {
           driver.updateDriver(newConfig);
           await tester.pump();
 
-          // BUG: controller.duration should be 1000ms (new config)
-          // but is 200ms (old config) because _startLoopingAnimation()
-          // is called before this.config = config assignment
+          // Regression check: previously, controller.duration could remain at
+          // the old total (200ms) after updateDriver, ignoring the new config.
           expect(driver.controller.duration, Duration(milliseconds: 1000));
 
           driver.dispose();
@@ -927,7 +926,7 @@ void main() {
       });
 
       testWidgets(
-        'updateDriver uses new config duration for looping, not stale old config',
+        'KeyframeAnimationDriver updateDriver uses new config duration for looping',
         (tester) async {
           // Start with short timeline: 50ms + 50ms = 100ms
           final oldConfig = KeyframeAnimationConfig<MockSpec>(
@@ -966,9 +965,8 @@ void main() {
           driver.updateDriver(newConfig);
           await tester.pump();
 
-          // BUG: controller.duration should be 700ms (new config)
-          // but is 100ms (old config) because _startLoopingAnimation()
-          // is called before _config = config assignment
+          // Regression check: previously, controller.duration could remain at
+          // the old total (100ms) after updateDriver, ignoring the new config.
           expect(driver.controller.duration, Duration(milliseconds: 700));
 
           driver.dispose();
