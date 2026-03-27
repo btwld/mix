@@ -194,33 +194,33 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
     AlignmentGeometry? alignment,
     ImageRepeat repeat = .noRepeat,
   }) => StackBoxStyler().backgroundImage(
-        image,
-        fit: fit,
-        alignment: alignment,
-        repeat: repeat,
-      );
+    image,
+    fit: fit,
+    alignment: alignment,
+    repeat: repeat,
+  );
   factory StackBoxStyler.backgroundImageUrl(
     String url, {
     BoxFit? fit,
     AlignmentGeometry? alignment,
     ImageRepeat repeat = .noRepeat,
   }) => StackBoxStyler().backgroundImageUrl(
-        url,
-        fit: fit,
-        alignment: alignment,
-        repeat: repeat,
-      );
+    url,
+    fit: fit,
+    alignment: alignment,
+    repeat: repeat,
+  );
   factory StackBoxStyler.backgroundImageAsset(
     String path, {
     BoxFit? fit,
     AlignmentGeometry? alignment,
     ImageRepeat repeat = .noRepeat,
   }) => StackBoxStyler().backgroundImageAsset(
-        path,
-        fit: fit,
-        alignment: alignment,
-        repeat: repeat,
-      );
+    path,
+    fit: fit,
+    alignment: alignment,
+    repeat: repeat,
+  );
   factory StackBoxStyler.linearGradient({
     required List<Color> colors,
     List<double>? stops,
@@ -228,12 +228,12 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
     AlignmentGeometry? end,
     TileMode? tileMode,
   }) => StackBoxStyler().linearGradient(
-        colors: colors,
-        stops: stops,
-        begin: begin,
-        end: end,
-        tileMode: tileMode,
-      );
+    colors: colors,
+    stops: stops,
+    begin: begin,
+    end: end,
+    tileMode: tileMode,
+  );
   factory StackBoxStyler.radialGradient({
     required List<Color> colors,
     List<double>? stops,
@@ -243,14 +243,14 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
     double? focalRadius,
     TileMode? tileMode,
   }) => StackBoxStyler().radialGradient(
-        colors: colors,
-        stops: stops,
-        center: center,
-        radius: radius,
-        focal: focal,
-        focalRadius: focalRadius,
-        tileMode: tileMode,
-      );
+    colors: colors,
+    stops: stops,
+    center: center,
+    radius: radius,
+    focal: focal,
+    focalRadius: focalRadius,
+    tileMode: tileMode,
+  );
   factory StackBoxStyler.sweepGradient({
     required List<Color> colors,
     List<double>? stops,
@@ -259,13 +259,13 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
     double? endAngle,
     TileMode? tileMode,
   }) => StackBoxStyler().sweepGradient(
-        colors: colors,
-        stops: stops,
-        center: center,
-        startAngle: startAngle,
-        endAngle: endAngle,
-        tileMode: tileMode,
-      );
+    colors: colors,
+    stops: stops,
+    center: center,
+    startAngle: startAngle,
+    endAngle: endAngle,
+    tileMode: tileMode,
+  );
   factory StackBoxStyler.foregroundLinearGradient({
     required List<Color> colors,
     List<double>? stops,
@@ -273,12 +273,12 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
     AlignmentGeometry? end,
     TileMode? tileMode,
   }) => StackBoxStyler().foregroundLinearGradient(
-        colors: colors,
-        stops: stops,
-        begin: begin,
-        end: end,
-        tileMode: tileMode,
-      );
+    colors: colors,
+    stops: stops,
+    begin: begin,
+    end: end,
+    tileMode: tileMode,
+  );
   factory StackBoxStyler.foregroundRadialGradient({
     required List<Color> colors,
     List<double>? stops,
@@ -288,14 +288,14 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
     double? focalRadius,
     TileMode? tileMode,
   }) => StackBoxStyler().foregroundRadialGradient(
-        colors: colors,
-        stops: stops,
-        center: center,
-        radius: radius,
-        focal: focal,
-        focalRadius: focalRadius,
-        tileMode: tileMode,
-      );
+    colors: colors,
+    stops: stops,
+    center: center,
+    radius: radius,
+    focal: focal,
+    focalRadius: focalRadius,
+    tileMode: tileMode,
+  );
   factory StackBoxStyler.foregroundSweepGradient({
     required List<Color> colors,
     List<double>? stops,
@@ -304,13 +304,13 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
     double? endAngle,
     TileMode? tileMode,
   }) => StackBoxStyler().foregroundSweepGradient(
-        colors: colors,
-        stops: stops,
-        center: center,
-        startAngle: startAngle,
-        endAngle: endAngle,
-        tileMode: tileMode,
-      );
+    colors: colors,
+    stops: stops,
+    center: center,
+    startAngle: startAngle,
+    endAngle: endAngle,
+    tileMode: tileMode,
+  );
 
   // Transform convenience (extended)
   factory StackBoxStyler.transform(

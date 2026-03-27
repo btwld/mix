@@ -216,33 +216,33 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
     AlignmentGeometry? alignment,
     ImageRepeat repeat = .noRepeat,
   }) => FlexBoxStyler().backgroundImage(
-        image,
-        fit: fit,
-        alignment: alignment,
-        repeat: repeat,
-      );
+    image,
+    fit: fit,
+    alignment: alignment,
+    repeat: repeat,
+  );
   factory FlexBoxStyler.backgroundImageUrl(
     String url, {
     BoxFit? fit,
     AlignmentGeometry? alignment,
     ImageRepeat repeat = .noRepeat,
   }) => FlexBoxStyler().backgroundImageUrl(
-        url,
-        fit: fit,
-        alignment: alignment,
-        repeat: repeat,
-      );
+    url,
+    fit: fit,
+    alignment: alignment,
+    repeat: repeat,
+  );
   factory FlexBoxStyler.backgroundImageAsset(
     String path, {
     BoxFit? fit,
     AlignmentGeometry? alignment,
     ImageRepeat repeat = .noRepeat,
   }) => FlexBoxStyler().backgroundImageAsset(
-        path,
-        fit: fit,
-        alignment: alignment,
-        repeat: repeat,
-      );
+    path,
+    fit: fit,
+    alignment: alignment,
+    repeat: repeat,
+  );
   factory FlexBoxStyler.linearGradient({
     required List<Color> colors,
     List<double>? stops,
@@ -250,12 +250,12 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
     AlignmentGeometry? end,
     TileMode? tileMode,
   }) => FlexBoxStyler().linearGradient(
-        colors: colors,
-        stops: stops,
-        begin: begin,
-        end: end,
-        tileMode: tileMode,
-      );
+    colors: colors,
+    stops: stops,
+    begin: begin,
+    end: end,
+    tileMode: tileMode,
+  );
   factory FlexBoxStyler.radialGradient({
     required List<Color> colors,
     List<double>? stops,
@@ -265,14 +265,14 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
     double? focalRadius,
     TileMode? tileMode,
   }) => FlexBoxStyler().radialGradient(
-        colors: colors,
-        stops: stops,
-        center: center,
-        radius: radius,
-        focal: focal,
-        focalRadius: focalRadius,
-        tileMode: tileMode,
-      );
+    colors: colors,
+    stops: stops,
+    center: center,
+    radius: radius,
+    focal: focal,
+    focalRadius: focalRadius,
+    tileMode: tileMode,
+  );
   factory FlexBoxStyler.sweepGradient({
     required List<Color> colors,
     List<double>? stops,
@@ -281,13 +281,13 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
     double? endAngle,
     TileMode? tileMode,
   }) => FlexBoxStyler().sweepGradient(
-        colors: colors,
-        stops: stops,
-        center: center,
-        startAngle: startAngle,
-        endAngle: endAngle,
-        tileMode: tileMode,
-      );
+    colors: colors,
+    stops: stops,
+    center: center,
+    startAngle: startAngle,
+    endAngle: endAngle,
+    tileMode: tileMode,
+  );
   factory FlexBoxStyler.foregroundLinearGradient({
     required List<Color> colors,
     List<double>? stops,
@@ -295,12 +295,12 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
     AlignmentGeometry? end,
     TileMode? tileMode,
   }) => FlexBoxStyler().foregroundLinearGradient(
-        colors: colors,
-        stops: stops,
-        begin: begin,
-        end: end,
-        tileMode: tileMode,
-      );
+    colors: colors,
+    stops: stops,
+    begin: begin,
+    end: end,
+    tileMode: tileMode,
+  );
   factory FlexBoxStyler.foregroundRadialGradient({
     required List<Color> colors,
     List<double>? stops,
@@ -310,14 +310,14 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
     double? focalRadius,
     TileMode? tileMode,
   }) => FlexBoxStyler().foregroundRadialGradient(
-        colors: colors,
-        stops: stops,
-        center: center,
-        radius: radius,
-        focal: focal,
-        focalRadius: focalRadius,
-        tileMode: tileMode,
-      );
+    colors: colors,
+    stops: stops,
+    center: center,
+    radius: radius,
+    focal: focal,
+    focalRadius: focalRadius,
+    tileMode: tileMode,
+  );
   factory FlexBoxStyler.foregroundSweepGradient({
     required List<Color> colors,
     List<double>? stops,
@@ -326,13 +326,13 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
     double? endAngle,
     TileMode? tileMode,
   }) => FlexBoxStyler().foregroundSweepGradient(
-        colors: colors,
-        stops: stops,
-        center: center,
-        startAngle: startAngle,
-        endAngle: endAngle,
-        tileMode: tileMode,
-      );
+    colors: colors,
+    stops: stops,
+    center: center,
+    startAngle: startAngle,
+    endAngle: endAngle,
+    tileMode: tileMode,
+  );
 
   // Transform convenience (extended)
   factory FlexBoxStyler.transform(

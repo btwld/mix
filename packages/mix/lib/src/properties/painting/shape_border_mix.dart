@@ -55,10 +55,8 @@ sealed class ShapeBorderMix<T extends ShapeBorder> extends Mix<T> {
   }) => ContinuousRectangleBorderMix(borderRadius: borderRadius, side: side);
 
   /// Creates a [CircleBorder] shape.
-  static CircleBorderMix circle({
-    BorderSideMix? side,
-    double? eccentricity,
-  }) => CircleBorderMix(side: side, eccentricity: eccentricity);
+  static CircleBorderMix circle({BorderSideMix? side, double? eccentricity}) =>
+      CircleBorderMix(side: side, eccentricity: eccentricity);
 
   /// Creates a [StarBorder] shape.
   static StarBorderMix star({
@@ -70,14 +68,14 @@ sealed class ShapeBorderMix<T extends ShapeBorder> extends Mix<T> {
     double? rotation,
     double? squash,
   }) => StarBorderMix(
-        side: side,
-        points: points,
-        innerRadiusRatio: innerRadiusRatio,
-        pointRounding: pointRounding,
-        valleyRounding: valleyRounding,
-        rotation: rotation,
-        squash: squash,
-      );
+    side: side,
+    points: points,
+    innerRadiusRatio: innerRadiusRatio,
+    pointRounding: pointRounding,
+    valleyRounding: valleyRounding,
+    rotation: rotation,
+    squash: squash,
+  );
 
   /// Creates a [LinearBorder] shape.
   static LinearBorderMix linear({
@@ -87,12 +85,12 @@ sealed class ShapeBorderMix<T extends ShapeBorder> extends Mix<T> {
     LinearBorderEdgeMix? top,
     LinearBorderEdgeMix? bottom,
   }) => LinearBorderMix(
-        side: side,
-        start: start,
-        end: end,
-        top: top,
-        bottom: bottom,
-      );
+    side: side,
+    start: start,
+    end: end,
+    top: top,
+    bottom: bottom,
+  );
 
   /// Creates a [StadiumBorder] shape.
   static StadiumBorderMix stadium({BorderSideMix? side}) =>
