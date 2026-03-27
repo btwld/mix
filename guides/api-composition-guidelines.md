@@ -1,8 +1,5 @@
 # Mix API Composition Guide (Concise Tutorial)
 
-Related:
-- Styler static factory policy: `guides/styler-api-guidelines.md`
-
 ## 1) Core Principle
 
 Prefer fluent chaining on Styler types for everyday composition.
