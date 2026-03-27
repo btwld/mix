@@ -108,6 +108,12 @@ class FlexStyler extends MixStyler<FlexStyler, FlexSpec>
   factory FlexStyler.spacing(double value) => FlexStyler(spacing: value);
   factory FlexStyler.clipBehavior(Clip value) =>
       FlexStyler(clipBehavior: value);
+  factory FlexStyler.verticalDirection(VerticalDirection value) =>
+      FlexStyler(verticalDirection: value);
+  factory FlexStyler.textDirection(TextDirection value) =>
+      FlexStyler(textDirection: value);
+  factory FlexStyler.textBaseline(TextBaseline value) =>
+      FlexStyler(textBaseline: value);
 
   // FlexStyleMixin convenience (zero-param presets)
   factory FlexStyler.row() => FlexStyler(direction: .horizontal);

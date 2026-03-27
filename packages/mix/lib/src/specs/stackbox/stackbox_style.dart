@@ -12,8 +12,10 @@ import '../../properties/layout/constraints_mix.dart';
 import '../../properties/layout/edge_insets_geometry_mix.dart';
 import '../../properties/painting/border_mix.dart';
 import '../../properties/painting/border_radius_mix.dart';
+import '../../properties/painting/decoration_image_mix.dart';
 import '../../properties/painting/decoration_mix.dart';
 import '../../properties/painting/gradient_mix.dart';
+import '../../properties/painting/shape_border_mix.dart';
 import '../../properties/painting/shadow_mix.dart';
 import '../../style/abstracts/styler.dart';
 import '../../style/mixins/border_radius_style_mixin.dart';
@@ -135,6 +137,10 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
   factory StackBoxStyler.stackAlignment(AlignmentGeometry value) =>
       StackBoxStyler(stackAlignment: value);
   factory StackBoxStyler.fit(StackFit value) => StackBoxStyler(fit: value);
+  factory StackBoxStyler.textDirection(TextDirection value) =>
+      StackBoxStyler(textDirection: value);
+  factory StackBoxStyler.stackClipBehavior(Clip value) =>
+      StackBoxStyler(stackClipBehavior: value);
 
   // Decoration convenience
   factory StackBoxStyler.color(Color value) => StackBoxStyler().color(value);
@@ -177,6 +183,144 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
   factory StackBoxStyler.animate(AnimationConfig value) =>
       StackBoxStyler().animate(value);
 
+  // Decoration convenience (extended)
+  factory StackBoxStyler.image(DecorationImageMix value) =>
+      StackBoxStyler().image(value);
+  factory StackBoxStyler.shape(ShapeBorderMix value) =>
+      StackBoxStyler().shape(value);
+  factory StackBoxStyler.backgroundImage(
+    ImageProvider image, {
+    BoxFit? fit,
+    AlignmentGeometry? alignment,
+    ImageRepeat repeat = .noRepeat,
+  }) => StackBoxStyler().backgroundImage(
+        image,
+        fit: fit,
+        alignment: alignment,
+        repeat: repeat,
+      );
+  factory StackBoxStyler.backgroundImageUrl(
+    String url, {
+    BoxFit? fit,
+    AlignmentGeometry? alignment,
+    ImageRepeat repeat = .noRepeat,
+  }) => StackBoxStyler().backgroundImageUrl(
+        url,
+        fit: fit,
+        alignment: alignment,
+        repeat: repeat,
+      );
+  factory StackBoxStyler.backgroundImageAsset(
+    String path, {
+    BoxFit? fit,
+    AlignmentGeometry? alignment,
+    ImageRepeat repeat = .noRepeat,
+  }) => StackBoxStyler().backgroundImageAsset(
+        path,
+        fit: fit,
+        alignment: alignment,
+        repeat: repeat,
+      );
+  factory StackBoxStyler.linearGradient({
+    required List<Color> colors,
+    List<double>? stops,
+    AlignmentGeometry? begin,
+    AlignmentGeometry? end,
+    TileMode? tileMode,
+  }) => StackBoxStyler().linearGradient(
+        colors: colors,
+        stops: stops,
+        begin: begin,
+        end: end,
+        tileMode: tileMode,
+      );
+  factory StackBoxStyler.radialGradient({
+    required List<Color> colors,
+    List<double>? stops,
+    AlignmentGeometry? center,
+    double? radius,
+    AlignmentGeometry? focal,
+    double? focalRadius,
+    TileMode? tileMode,
+  }) => StackBoxStyler().radialGradient(
+        colors: colors,
+        stops: stops,
+        center: center,
+        radius: radius,
+        focal: focal,
+        focalRadius: focalRadius,
+        tileMode: tileMode,
+      );
+  factory StackBoxStyler.sweepGradient({
+    required List<Color> colors,
+    List<double>? stops,
+    AlignmentGeometry? center,
+    double? startAngle,
+    double? endAngle,
+    TileMode? tileMode,
+  }) => StackBoxStyler().sweepGradient(
+        colors: colors,
+        stops: stops,
+        center: center,
+        startAngle: startAngle,
+        endAngle: endAngle,
+        tileMode: tileMode,
+      );
+  factory StackBoxStyler.foregroundLinearGradient({
+    required List<Color> colors,
+    List<double>? stops,
+    AlignmentGeometry? begin,
+    AlignmentGeometry? end,
+    TileMode? tileMode,
+  }) => StackBoxStyler().foregroundLinearGradient(
+        colors: colors,
+        stops: stops,
+        begin: begin,
+        end: end,
+        tileMode: tileMode,
+      );
+  factory StackBoxStyler.foregroundRadialGradient({
+    required List<Color> colors,
+    List<double>? stops,
+    AlignmentGeometry? center,
+    double? radius,
+    AlignmentGeometry? focal,
+    double? focalRadius,
+    TileMode? tileMode,
+  }) => StackBoxStyler().foregroundRadialGradient(
+        colors: colors,
+        stops: stops,
+        center: center,
+        radius: radius,
+        focal: focal,
+        focalRadius: focalRadius,
+        tileMode: tileMode,
+      );
+  factory StackBoxStyler.foregroundSweepGradient({
+    required List<Color> colors,
+    List<double>? stops,
+    AlignmentGeometry? center,
+    double? startAngle,
+    double? endAngle,
+    TileMode? tileMode,
+  }) => StackBoxStyler().foregroundSweepGradient(
+        colors: colors,
+        stops: stops,
+        center: center,
+        startAngle: startAngle,
+        endAngle: endAngle,
+        tileMode: tileMode,
+      );
+
+  // Transform convenience (extended)
+  factory StackBoxStyler.transform(
+    Matrix4 value, {
+    Alignment alignment = .center,
+  }) => StackBoxStyler().transform(value, alignment: alignment);
+  factory StackBoxStyler.translate(double x, double y, [double z = 0.0]) =>
+      StackBoxStyler().translate(x, y, z);
+  factory StackBoxStyler.skew(double skewX, double skewY) =>
+      StackBoxStyler().skew(skewX, skewY);
   static StackBoxMutableStyler get chain => .new(StackBoxStyler());
 
   // Box-style instance methods

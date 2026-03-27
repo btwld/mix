@@ -134,6 +134,18 @@ class ImageStyler extends MixStyler<ImageStyler, ImageSpec>
   factory ImageStyler.alignment(AlignmentGeometry value) =>
       ImageStyler(alignment: value);
   factory ImageStyler.repeat(ImageRepeat value) => ImageStyler(repeat: value);
+  factory ImageStyler.centerSlice(Rect value) =>
+      ImageStyler(centerSlice: value);
+  factory ImageStyler.filterQuality(FilterQuality value) =>
+      ImageStyler(filterQuality: value);
+  factory ImageStyler.colorBlendMode(BlendMode value) =>
+      ImageStyler(colorBlendMode: value);
+  factory ImageStyler.gaplessPlayback(bool value) =>
+      ImageStyler(gaplessPlayback: value);
+  factory ImageStyler.isAntiAlias(bool value) =>
+      ImageStyler(isAntiAlias: value);
+  factory ImageStyler.matchTextDirection(bool value) =>
+      ImageStyler(matchTextDirection: value);
 
   static ImageMutableStyler get chain => .new(ImageStyler());
 

@@ -126,6 +126,13 @@ class IconStyler extends MixStyler<IconStyler, IconSpec>
   factory IconStyler.shadows(List<ShadowMix> value) =>
       IconStyler(shadows: value);
   factory IconStyler.shadow(ShadowMix value) => IconStyler().shadow(value);
+  factory IconStyler.grade(double value) => IconStyler(grade: value);
+  factory IconStyler.opticalSize(double value) => IconStyler(opticalSize: value);
+  factory IconStyler.textDirection(TextDirection value) =>
+      IconStyler(textDirection: value);
+  factory IconStyler.applyTextScaling(bool value) =>
+      IconStyler(applyTextScaling: value);
+  factory IconStyler.blendMode(BlendMode value) => IconStyler(blendMode: value);
 
   static IconMutableStyler get chain => .new(IconStyler());
 

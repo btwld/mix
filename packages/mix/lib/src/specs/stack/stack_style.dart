@@ -70,6 +70,8 @@ class StackStyler extends MixStyler<StackStyler, StackSpec>
   factory StackStyler.fit(StackFit value) => StackStyler(fit: value);
   factory StackStyler.clipBehavior(Clip value) =>
       StackStyler(clipBehavior: value);
+  factory StackStyler.textDirection(TextDirection value) =>
+      StackStyler(textDirection: value);
 
   static StackMutableStyler get chain => .new(StackStyler());
 
