@@ -85,6 +85,20 @@ void main() {
         );
       });
 
+      test('textDirection', () {
+        expect(
+          StackBoxStyler.textDirection(TextDirection.rtl),
+          equals(StackBoxStyler(textDirection: TextDirection.rtl)),
+        );
+      });
+
+      test('stackClipBehavior', () {
+        expect(
+          StackBoxStyler.stackClipBehavior(Clip.antiAlias),
+          equals(StackBoxStyler(stackClipBehavior: Clip.antiAlias)),
+        );
+      });
+
       // Decoration convenience factories
       test('color', () {
         expect(
@@ -132,6 +146,105 @@ void main() {
           BoxShadowMix(color: Colors.grey, blurRadius: 5),
         ];
         expect(StackBoxStyler.shadows(s), equals(StackBoxStyler().shadows(s)));
+      });
+
+      // Extended decoration convenience factories
+      test('image', () {
+        final img = DecorationImageMix(image: const AssetImage('test.png'));
+        expect(StackBoxStyler.image(img), equals(StackBoxStyler().image(img)));
+      });
+
+      test('shape', () {
+        final s = ShapeBorderMix.roundedRectangle();
+        expect(StackBoxStyler.shape(s), equals(StackBoxStyler().shape(s)));
+      });
+
+      test('linearGradient', () {
+        expect(
+          StackBoxStyler.linearGradient(colors: [Colors.red, Colors.blue]),
+          equals(
+            StackBoxStyler().linearGradient(colors: [Colors.red, Colors.blue]),
+          ),
+        );
+      });
+
+      test('radialGradient', () {
+        expect(
+          StackBoxStyler.radialGradient(colors: [Colors.red, Colors.blue]),
+          equals(
+            StackBoxStyler().radialGradient(colors: [Colors.red, Colors.blue]),
+          ),
+        );
+      });
+
+      test('sweepGradient', () {
+        expect(
+          StackBoxStyler.sweepGradient(colors: [Colors.red, Colors.blue]),
+          equals(
+            StackBoxStyler().sweepGradient(colors: [Colors.red, Colors.blue]),
+          ),
+        );
+      });
+
+      test('foregroundLinearGradient', () {
+        expect(
+          StackBoxStyler.foregroundLinearGradient(
+            colors: [Colors.red, Colors.blue],
+          ),
+          equals(
+            StackBoxStyler().foregroundLinearGradient(
+              colors: [Colors.red, Colors.blue],
+            ),
+          ),
+        );
+      });
+
+      test('foregroundRadialGradient', () {
+        expect(
+          StackBoxStyler.foregroundRadialGradient(
+            colors: [Colors.red, Colors.blue],
+          ),
+          equals(
+            StackBoxStyler().foregroundRadialGradient(
+              colors: [Colors.red, Colors.blue],
+            ),
+          ),
+        );
+      });
+
+      test('foregroundSweepGradient', () {
+        expect(
+          StackBoxStyler.foregroundSweepGradient(
+            colors: [Colors.red, Colors.blue],
+          ),
+          equals(
+            StackBoxStyler().foregroundSweepGradient(
+              colors: [Colors.red, Colors.blue],
+            ),
+          ),
+        );
+      });
+
+      // Extended transform convenience factories
+      test('transform', () {
+        expect(
+          StackBoxStyler.transform(Matrix4.identity()),
+          equals(StackBoxStyler().transform(Matrix4.identity())),
+        );
+      });
+
+      test('translate', () {
+        expect(
+          StackBoxStyler.translate(1.0, 2.0),
+          equals(StackBoxStyler().translate(1.0, 2.0)),
+        );
+      });
+
+      test('skew', () {
+        expect(
+          StackBoxStyler.skew(0.1, 0.2),
+          equals(StackBoxStyler().skew(0.1, 0.2)),
+        );
       });
 
       // Constraints convenience factories

@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
@@ -112,6 +114,149 @@ void main() {
           TextStyler.decoration(TextDecoration.underline),
           equals(TextStyler().decoration(TextDecoration.underline)),
         );
+      });
+
+      // Direct constructor param factories
+      test('strutStyle', () {
+        final mix = StrutStyleMix();
+        expect(TextStyler.strutStyle(mix), equals(TextStyler(strutStyle: mix)));
+      });
+
+      test('textWidthBasis', () {
+        expect(
+          TextStyler.textWidthBasis(TextWidthBasis.longestLine),
+          equals(TextStyler(textWidthBasis: TextWidthBasis.longestLine)),
+        );
+      });
+
+      test('textScaler', () {
+        expect(
+          TextStyler.textScaler(const TextScaler.linear(2.0)),
+          equals(TextStyler(textScaler: const TextScaler.linear(2.0))),
+        );
+      });
+
+      test('textHeightBehavior', () {
+        final mix = TextHeightBehaviorMix();
+        expect(
+          TextStyler.textHeightBehavior(mix),
+          equals(TextStyler(textHeightBehavior: mix)),
+        );
+      });
+
+      test('selectionColor', () {
+        expect(
+          TextStyler.selectionColor(Colors.blue),
+          equals(TextStyler(selectionColor: Colors.blue)),
+        );
+      });
+
+      test('locale', () {
+        expect(
+          TextStyler.locale(const Locale('en')),
+          equals(TextStyler(locale: const Locale('en'))),
+        );
+      });
+
+      // TextStyleMixin convenience factories
+      test('backgroundColor', () {
+        expect(
+          TextStyler.backgroundColor(Colors.red),
+          equals(TextStyler().backgroundColor(Colors.red)),
+        );
+      });
+
+      test('textBaseline', () {
+        expect(
+          TextStyler.textBaseline(TextBaseline.alphabetic),
+          equals(TextStyler().textBaseline(TextBaseline.alphabetic)),
+        );
+      });
+
+      test('decorationColor', () {
+        expect(
+          TextStyler.decorationColor(Colors.red),
+          equals(TextStyler().decorationColor(Colors.red)),
+        );
+      });
+
+      test('decorationStyle', () {
+        expect(
+          TextStyler.decorationStyle(TextDecorationStyle.dashed),
+          equals(TextStyler().decorationStyle(TextDecorationStyle.dashed)),
+        );
+      });
+
+      test('decorationThickness', () {
+        expect(
+          TextStyler.decorationThickness(2.0),
+          equals(TextStyler().decorationThickness(2.0)),
+        );
+      });
+
+      test('fontFamilyFallback', () {
+        expect(
+          TextStyler.fontFamilyFallback(['Arial', 'Helvetica']),
+          equals(TextStyler().fontFamilyFallback(['Arial', 'Helvetica'])),
+        );
+      });
+
+      test('shadows', () {
+        final s = [ShadowMix(color: Colors.black, blurRadius: 4)];
+        expect(TextStyler.shadows(s), equals(TextStyler().shadows(s)));
+      });
+
+      test('fontFeatures', () {
+        expect(
+          TextStyler.fontFeatures([const FontFeature.enable('smcp')]),
+          equals(TextStyler().fontFeatures([const FontFeature.enable('smcp')])),
+        );
+      });
+
+      test('fontVariations', () {
+        expect(
+          TextStyler.fontVariations([const FontVariation('wght', 400)]),
+          equals(
+            TextStyler().fontVariations([const FontVariation('wght', 400)]),
+          ),
+        );
+      });
+
+      test('foreground', () {
+        final paint = Paint()..color = Colors.red;
+        expect(
+          TextStyler.foreground(paint),
+          equals(TextStyler().foreground(paint)),
+        );
+      });
+
+      test('background', () {
+        final paint = Paint()..color = Colors.blue;
+        expect(
+          TextStyler.background(paint),
+          equals(TextStyler().background(paint)),
+        );
+      });
+
+      // Text directive factories
+      test('uppercase', () {
+        expect(TextStyler.uppercase(), equals(TextStyler().uppercase()));
+      });
+
+      test('lowercase', () {
+        expect(TextStyler.lowercase(), equals(TextStyler().lowercase()));
+      });
+
+      test('capitalize', () {
+        expect(TextStyler.capitalize(), equals(TextStyler().capitalize()));
+      });
+
+      test('titlecase', () {
+        expect(TextStyler.titlecase(), equals(TextStyler().titlecase()));
+      });
+
+      test('sentencecase', () {
+        expect(TextStyler.sentencecase(), equals(TextStyler().sentencecase()));
       });
     });
 

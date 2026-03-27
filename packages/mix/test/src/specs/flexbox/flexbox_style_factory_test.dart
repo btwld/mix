@@ -100,6 +100,27 @@ void main() {
         expect(FlexBoxStyler.spacing(8), equals(FlexBoxStyler(spacing: 8)));
       });
 
+      test('verticalDirection', () {
+        expect(
+          FlexBoxStyler.verticalDirection(VerticalDirection.up),
+          equals(FlexBoxStyler(verticalDirection: VerticalDirection.up)),
+        );
+      });
+
+      test('textDirection', () {
+        expect(
+          FlexBoxStyler.textDirection(TextDirection.rtl),
+          equals(FlexBoxStyler(textDirection: TextDirection.rtl)),
+        );
+      });
+
+      test('textBaseline', () {
+        expect(
+          FlexBoxStyler.textBaseline(TextBaseline.alphabetic),
+          equals(FlexBoxStyler(textBaseline: TextBaseline.alphabetic)),
+        );
+      });
+
       // Decoration convenience factories
       test('color', () {
         expect(
@@ -147,6 +168,105 @@ void main() {
           BoxShadowMix(color: Colors.grey, blurRadius: 5),
         ];
         expect(FlexBoxStyler.shadows(s), equals(FlexBoxStyler().shadows(s)));
+      });
+
+      // Extended decoration convenience factories
+      test('image', () {
+        final img = DecorationImageMix(image: const AssetImage('test.png'));
+        expect(FlexBoxStyler.image(img), equals(FlexBoxStyler().image(img)));
+      });
+
+      test('shape', () {
+        final s = ShapeBorderMix.roundedRectangle();
+        expect(FlexBoxStyler.shape(s), equals(FlexBoxStyler().shape(s)));
+      });
+
+      test('linearGradient', () {
+        expect(
+          FlexBoxStyler.linearGradient(colors: [Colors.red, Colors.blue]),
+          equals(
+            FlexBoxStyler().linearGradient(colors: [Colors.red, Colors.blue]),
+          ),
+        );
+      });
+
+      test('radialGradient', () {
+        expect(
+          FlexBoxStyler.radialGradient(colors: [Colors.red, Colors.blue]),
+          equals(
+            FlexBoxStyler().radialGradient(colors: [Colors.red, Colors.blue]),
+          ),
+        );
+      });
+
+      test('sweepGradient', () {
+        expect(
+          FlexBoxStyler.sweepGradient(colors: [Colors.red, Colors.blue]),
+          equals(
+            FlexBoxStyler().sweepGradient(colors: [Colors.red, Colors.blue]),
+          ),
+        );
+      });
+
+      test('foregroundLinearGradient', () {
+        expect(
+          FlexBoxStyler.foregroundLinearGradient(
+            colors: [Colors.red, Colors.blue],
+          ),
+          equals(
+            FlexBoxStyler().foregroundLinearGradient(
+              colors: [Colors.red, Colors.blue],
+            ),
+          ),
+        );
+      });
+
+      test('foregroundRadialGradient', () {
+        expect(
+          FlexBoxStyler.foregroundRadialGradient(
+            colors: [Colors.red, Colors.blue],
+          ),
+          equals(
+            FlexBoxStyler().foregroundRadialGradient(
+              colors: [Colors.red, Colors.blue],
+            ),
+          ),
+        );
+      });
+
+      test('foregroundSweepGradient', () {
+        expect(
+          FlexBoxStyler.foregroundSweepGradient(
+            colors: [Colors.red, Colors.blue],
+          ),
+          equals(
+            FlexBoxStyler().foregroundSweepGradient(
+              colors: [Colors.red, Colors.blue],
+            ),
+          ),
+        );
+      });
+
+      // Extended transform convenience factories
+      test('transform', () {
+        expect(
+          FlexBoxStyler.transform(Matrix4.identity()),
+          equals(FlexBoxStyler().transform(Matrix4.identity())),
+        );
+      });
+
+      test('translate', () {
+        expect(
+          FlexBoxStyler.translate(1.0, 2.0),
+          equals(FlexBoxStyler().translate(1.0, 2.0)),
+        );
+      });
+
+      test('skew', () {
+        expect(
+          FlexBoxStyler.skew(0.1, 0.2),
+          equals(FlexBoxStyler().skew(0.1, 0.2)),
+        );
       });
 
       // Constraints convenience factories

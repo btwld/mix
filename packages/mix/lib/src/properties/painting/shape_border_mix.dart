@@ -25,6 +25,7 @@ sealed class ShapeBorderMix<T extends ShapeBorder> extends Mix<T> {
       LinearBorder b => LinearBorderMix.value(b),
 
       StadiumBorder b => StadiumBorderMix.value(b),
+      RoundedSuperellipseBorder b => RoundedSuperellipseBorderMix.value(b),
       _ => throw ArgumentError(
         'Unsupported ShapeBorder type: ${border.runtimeType}',
       ),

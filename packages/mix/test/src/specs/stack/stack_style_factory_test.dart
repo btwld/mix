@@ -43,6 +43,13 @@ void main() {
           equals(StackStyler(clipBehavior: Clip.hardEdge)),
         );
       });
+
+      test('textDirection', () {
+        expect(
+          StackStyler.textDirection(TextDirection.rtl),
+          equals(StackStyler(textDirection: TextDirection.rtl)),
+        );
+      });
     });
 
     group('resolved values', () {
