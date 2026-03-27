@@ -32,7 +32,10 @@ import 'overview/getting_started/hello_mix.dart' as getting_started_hello_mix;
 import 'tutorials/creating_a_widget/design_system_button.dart'
     as design_system_button;
 import 'widgets/box/gradient_box.dart' as gradient_box;
+import 'guides/widget_modifiers/opacity_box.dart' as opacity_box;
+import 'widgets/box/box_styled.dart' as box_styled;
 import 'widgets/box/simple_box.dart' as simple_box;
+import 'guides/styling/styling_intro.dart' as styling_intro;
 import 'widgets/flexbox/icon_label_chip.dart' as icon_label_chip;
 import 'widgets/icon/styled_icon.dart' as styled_icon;
 import 'widgets/image/styled_image.dart' as styled_image;
@@ -127,15 +130,16 @@ class PreviewRegistry {
     PreviewEntry(
       previewId: 'guides/widget-modifiers.0',
       sourcePath:
-          'packages/mix_docs_preview/lib/guides/widget_modifiers/preview.dart',
+          'packages/mix_docs_preview/lib/guides/widget_modifiers/opacity_box.dart',
       category: _widgets,
-      builder: (_) => const simple_box.Example(),
+      builder: (_) => const opacity_box.Example(),
     ),
     PreviewEntry(
       previewId: 'guides/styling.0',
-      sourcePath: 'packages/mix_docs_preview/lib/guides/styling/preview_0.dart',
+      sourcePath:
+          'packages/mix_docs_preview/lib/guides/styling/styling_intro.dart',
       category: _widgets,
-      builder: (_) => const simple_box.Example(),
+      builder: (_) => const styling_intro.Example(),
     ),
     PreviewEntry(
       previewId: 'guides/styling.1',
@@ -224,9 +228,9 @@ class PreviewRegistry {
     // widgets
     PreviewEntry(
       previewId: 'widgets/box.0',
-      sourcePath: 'packages/mix_docs_preview/lib/widgets/box/simple_box.dart',
+      sourcePath: 'packages/mix_docs_preview/lib/widgets/box/box_styled.dart',
       category: _widgets,
-      builder: (_) => const simple_box.Example(),
+      builder: (_) => const box_styled.Example(),
     ),
     PreviewEntry(
       previewId: 'widgets/icon.0',
