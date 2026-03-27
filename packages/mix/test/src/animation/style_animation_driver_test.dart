@@ -534,6 +534,62 @@ void main() {
         trigger.dispose();
         driver.dispose();
       });
+
+      testWidgets(
+        'PhaseAnimationDriver updateDriver uses new config duration for looping',
+        (tester) async {
+          // Start with short durations: 100ms + 100ms = 200ms total
+          final oldConfig = PhaseAnimationConfig<MockSpec, MockStyle>(
+            styles: [
+              MockStyle(MockSpec(resolvedValue: 0.0).toStyleSpec()),
+              MockStyle(MockSpec(resolvedValue: 1.0).toStyleSpec()),
+            ],
+            curveConfigs: [
+              CurveAnimationConfig(
+                duration: Duration(milliseconds: 100),
+                curve: Curves.linear,
+              ),
+              CurveAnimationConfig(
+                duration: Duration(milliseconds: 100),
+                curve: Curves.linear,
+              ),
+            ],
+            trigger: null, // looping
+          );
+
+          final driver = createDriver(oldConfig);
+          await tester.pump();
+          expect(driver.controller.duration, Duration(milliseconds: 200));
+
+          // Update with longer durations: 500ms + 500ms = 1000ms total
+          final newConfig = PhaseAnimationConfig<MockSpec, MockStyle>(
+            styles: [
+              MockStyle(MockSpec(resolvedValue: 0.0).toStyleSpec()),
+              MockStyle(MockSpec(resolvedValue: 1.0).toStyleSpec()),
+            ],
+            curveConfigs: [
+              CurveAnimationConfig(
+                duration: Duration(milliseconds: 500),
+                curve: Curves.linear,
+              ),
+              CurveAnimationConfig(
+                duration: Duration(milliseconds: 500),
+                curve: Curves.linear,
+              ),
+            ],
+            trigger: null, // still looping
+          );
+
+          driver.updateDriver(newConfig);
+          await tester.pump();
+
+          // Regression check: previously, controller.duration could remain at
+          // the old total (200ms) after updateDriver, ignoring the new config.
+          expect(driver.controller.duration, Duration(milliseconds: 1000));
+
+          driver.dispose();
+        },
+      );
     });
   });
 
@@ -868,6 +924,54 @@ void main() {
         trigger.dispose();
         driver.dispose();
       });
+
+      testWidgets(
+        'KeyframeAnimationDriver updateDriver uses new config duration for looping',
+        (tester) async {
+          // Start with short timeline: 50ms + 50ms = 100ms
+          final oldConfig = KeyframeAnimationConfig<MockSpec>(
+            trigger: null, // looping
+            timeline: [
+              KeyframeTrack<double>('opacity', [
+                Keyframe.linear(0.5, Duration(milliseconds: 50)),
+                Keyframe.linear(1.0, Duration(milliseconds: 50)),
+              ], initial: 0.0),
+            ],
+            styleBuilder: (result, style) {
+              return MockStyle(result.get<double>('opacity'));
+            },
+            initialStyle: MockStyle(0.0),
+          );
+
+          final driver = createLoopingDriver(oldConfig);
+          await tester.pump();
+          expect(driver.controller.duration, Duration(milliseconds: 100));
+
+          // Update with longer timeline: 300ms + 400ms = 700ms
+          final newConfig = KeyframeAnimationConfig<MockSpec>(
+            trigger: null, // still looping
+            timeline: [
+              KeyframeTrack<double>('opacity', [
+                Keyframe.linear(0.5, Duration(milliseconds: 300)),
+                Keyframe.linear(1.0, Duration(milliseconds: 400)),
+              ], initial: 0.0),
+            ],
+            styleBuilder: (result, style) {
+              return MockStyle(result.get<double>('opacity'));
+            },
+            initialStyle: MockStyle(0.0),
+          );
+
+          driver.updateDriver(newConfig);
+          await tester.pump();
+
+          // Regression check: previously, controller.duration could remain at
+          // the old total (100ms) after updateDriver, ignoring the new config.
+          expect(driver.controller.duration, Duration(milliseconds: 700));
+
+          driver.dispose();
+        },
+      );
     });
   });
 
