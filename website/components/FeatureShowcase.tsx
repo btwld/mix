@@ -21,10 +21,11 @@ Box();`,
     .height(120)
     .borderRounded(16)
     .color(Colors.cyan)
+    .alignment(.center)
     .animate(.easeInOut(220.ms))
     .onHovered(
       .color(Colors.cyanAccent)
-      .scale(1.05)
+      .scale(1.2)
       .shadow(
         .color(Colors.cyanAccent)
         .blurRadius(24),
@@ -59,6 +60,48 @@ Card(child: Label('Hover'));`,
         ], initial: 0.0),
       ],
     );`,
+
+  "homepage/buttons": `final Label = TextStyler()
+    .fontSize(14)
+    .fontWeight(.w600)
+    .color(Colors.white);
+
+final Solid = BoxStyler()
+    .paddingX(24)
+    .paddingY(12)
+    .borderRounded(10)
+    .color(Colors.deepPurple)
+    .alignment(.center)
+    .animate(.easeInOut(180.ms))
+    .onPressed(.scale(0.95));
+
+final Outlined = BoxStyler()
+    .paddingX(24)
+    .paddingY(12)
+    .borderRounded(10)
+    .borderAll(color: Colors.deepPurple, width: 1.5)
+    .alignment(.center)
+    .animate(.easeInOut(180.ms))
+    .onPressed(.scale(0.95));
+
+// Use it
+Solid(child: Label('Solid'));
+Outlined(child: Label('Outlined'));`,
+
+  "homepage/directives": `final Title = TextStyler()
+    .fontSize(20)
+    .fontWeight(.w700)
+    .color(Colors.white)
+    .uppercase();
+
+final Subtitle = TextStyler()
+    .fontSize(14)
+    .color(Colors.white70)
+    .capitalize();
+
+// Use it
+Title('hello world');      // HELLO WORLD
+Subtitle('built in');      // Built In`,
 };
 
 interface Feature {
@@ -89,6 +132,20 @@ const FEATURES: Feature[] = [
       "Build motion with implicit, phase-based, and keyframe APIs that live directly inside your styles instead of outside them.",
     learnMoreHref: "/documentation/guides/animations",
     previewId: "homepage/animation",
+  },
+  {
+    title: "Design System Buttons",
+    subtitle:
+      "Build button variants from shared fragments — solid, outlined, elevated — all type-safe and composable.",
+    learnMoreHref: "/documentation/tutorials/creating-a-widget",
+    previewId: "homepage/buttons",
+  },
+  {
+    title: "Text Directives",
+    subtitle:
+      "Transform text with uppercase, capitalize, and titlecase directives that stay inside your styles and survive merges.",
+    learnMoreHref: "/documentation/guides/directives",
+    previewId: "homepage/directives",
   },
 ];
 

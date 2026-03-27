@@ -20,10 +20,11 @@ class Example extends StatelessWidget {
         .height(120)
         .borderRounded(16)
         .color(Colors.cyan)
+        .alignment(.center)
         .animate(.easeInOut(220.ms))
         .onHovered(
           .color(Colors.cyanAccent)
-          .scale(1.05)
+          .scale(1.2)
           .shadow(
             .color(Colors.cyanAccent)
             .blurRadius(24),
@@ -38,6 +39,9 @@ class Example extends StatelessWidget {
           .color(Colors.black),
         );
 
-    return Card(child: Label('Hover'));
+    return Pressable(
+      onPress: () {},
+      child: Card(child: Label('Hover')),
+    );
   }
 }

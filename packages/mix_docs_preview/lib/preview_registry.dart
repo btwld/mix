@@ -27,6 +27,8 @@ import 'guides/dynamic_styling/responsive_size.dart' as responsive_size;
 import 'guides/dynamic_styling/selected.dart' as selected;
 import 'guides/dynamic_styling/selected_toggle.dart' as selected_toggle;
 import 'homepage/animation_showcase.dart' as homepage_animation;
+import 'homepage/buttons_showcase.dart' as homepage_buttons;
+import 'homepage/directives_showcase.dart' as homepage_directives;
 import 'homepage/styling_showcase.dart' as homepage_styling;
 import 'homepage/variants_showcase.dart' as homepage_variants;
 import 'guides/gradients/gradient_linear.dart' as gradient_linear;
@@ -253,6 +255,22 @@ class PreviewRegistry {
           'packages/mix_docs_preview/lib/homepage/animation_showcase.dart',
       category: _homepage,
       builder: (_) => const homepage_animation.Example(),
+      snippetRegion: 'showcase',
+    ),
+    PreviewEntry(
+      previewId: 'homepage/buttons',
+      sourcePath:
+          'packages/mix_docs_preview/lib/homepage/buttons_showcase.dart',
+      category: _homepage,
+      builder: (_) => const homepage_buttons.Example(),
+      snippetRegion: 'showcase',
+    ),
+    PreviewEntry(
+      previewId: 'homepage/directives',
+      sourcePath:
+          'packages/mix_docs_preview/lib/homepage/directives_showcase.dart',
+      category: _homepage,
+      builder: (_) => const homepage_directives.Example(),
       snippetRegion: 'showcase',
     ),
     // widgets
