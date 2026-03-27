@@ -24,24 +24,14 @@ class Example extends StatelessWidget {
         .animate(.easeInOut(220.ms))
         .onHovered(
           .color(Colors.cyanAccent)
-          .scale(1.2)
-          .shadow(
-            .color(Colors.cyanAccent)
-            .blurRadius(24),
-          ),
+          .scale(1.2),
         );
 
-    // ignore: non_constant_identifier_names
-    final Label = TextStyler()
-        .color(Colors.white)
-        .fontSize(16)
-        .onHovered(
-          .color(Colors.black),
-        );
-
-    return Pressable(
-      onPress: () {},
-      child: Card(child: Label('Hover')),
+    return Card(
+      child: const Text(
+        'Hover',
+        style: TextStyle(color: Colors.white, fontSize: 16),
+      ),
     );
   }
 }

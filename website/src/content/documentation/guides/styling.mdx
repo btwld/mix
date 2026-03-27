@@ -27,12 +27,23 @@ The same pattern works across all Mix widgets:
 
 ```dart
 // Text
-final textStyle = TextStyler().fontSize(24).fontWeight(.bold).color(Colors.blue);
-StyledText('Hello Mix', style: textStyle);
+final textStyle = TextStyler()
+    .fontSize(24)
+    .fontWeight(.bold)
+    .color(Colors.blue);
+StyledText(
+  'Hello Mix',
+  style: textStyle,
+);
 
 // Icon
-final iconStyle = IconStyler().size(32).color(Colors.blue);
-StyledIcon(icon: Icons.favorite, style: iconStyle);
+final iconStyle = IconStyler()
+    .size(32)
+    .color(Colors.blue);
+StyledIcon(
+  icon: Icons.favorite,
+  style: iconStyle,
+);
 
 // FlexBox (row/column layout + box decoration)
 final rowStyle = FlexBoxStyler()
@@ -40,7 +51,10 @@ final rowStyle = FlexBoxStyler()
     .spacing(12)
     .paddingAll(16)
     .color(Colors.grey.shade100);
-FlexBox(style: rowStyle, children: [...]);
+FlexBox(
+  style: rowStyle,
+  children: [...],
+);
 ```
 
 ### Callable stylers
@@ -48,8 +62,12 @@ FlexBox(style: rowStyle, children: [...]);
 Every styler also works as a widget factory. Call it directly instead of passing it to a constructor:
 
 ```dart
-final box = BoxStyler().color(Colors.blue).size(100, 100);
-final label = TextStyler().fontSize(18).color(Colors.white);
+final box = BoxStyler()
+    .color(Colors.blue)
+    .size(100, 100);
+final label = TextStyler()
+    .fontSize(18)
+    .color(Colors.white);
 
 // Calling the styler creates the widget
 box(child: label('Hello Mix'));
@@ -80,7 +98,9 @@ final soft = base.color(Colors.blue.shade100);
 Each chained method internally merges a new property into the existing styler. Later values override earlier ones for the same property, while unrelated properties are preserved:
 
 ```dart
-final a = BoxStyler().color(Colors.red).padding(.all(16));
+final a = BoxStyler()
+    .color(Colors.red)
+    .padding(.all(16));
 final b = a.color(Colors.blue);
 // b has color: blue (overridden) + padding: 16 (preserved)
 ```
@@ -88,8 +108,12 @@ final b = a.color(Colors.blue);
 You can also merge two separate stylers explicitly:
 
 ```dart
-final layout = BoxStyler().padding(.all(16)).borderRounded(12);
-final visual = BoxStyler().color(Colors.blue).shadow(blurRadius: 10);
+final layout = BoxStyler()
+    .padding(.all(16))
+    .borderRounded(12);
+final visual = BoxStyler()
+    .color(Colors.blue)
+    .shadow(blurRadius: 10);
 
 final card = layout.merge(visual); // combines both
 ```
@@ -100,9 +124,9 @@ Styles can adapt to user interactions and context using **variants**. Instead of
 
 ```dart
 final button = BoxStyler()
-  .color(Colors.blue)
-  .onHovered(.color(Colors.blue.shade700))
-  .onDark(.color(Colors.blue.shade200));
+    .color(Colors.blue)
+    .onHovered(.color(Colors.blue.shade700))
+    .onDark(.color(Colors.blue.shade200));
 ```
 
 Variants are covered in depth in the [Dynamic Styling](/documentation/guides/dynamic-styling) guide.

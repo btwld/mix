@@ -25,22 +25,11 @@ Box();`,
     .animate(.easeInOut(220.ms))
     .onHovered(
       .color(Colors.cyanAccent)
-      .scale(1.2)
-      .shadow(
-        .color(Colors.cyanAccent)
-        .blurRadius(24),
-      ),
-    );
-
-final Label = TextStyler()
-    .color(Colors.white)
-    .fontSize(16)
-    .onHovered(
-      .color(Colors.black),
+      .scale(1.2),
     );
 
 // Use it
-Card(child: Label('Hover'));`,
+Card(child: Text('Hover'));`,
 
   "homepage/animation": `final heartFrameStyle = BoxStyler()
     .paddingAll(20)
@@ -59,34 +48,38 @@ Card(child: Label('Hover'));`,
           .decelerate(0.0, 280.ms),
         ], initial: 0.0),
       ],
-    );`,
+      styleBuilder: (values, style) => style
+          .scale(values.get('scale'))
+          .translate(0, values.get('y')),
+    );
 
-  "homepage/buttons": `final Label = TextStyler()
-    .fontSize(14)
-    .fontWeight(.w600)
-    .color(Colors.white);
-
-final Solid = BoxStyler()
-    .paddingX(24)
-    .paddingY(12)
-    .borderRounded(10)
-    .color(Colors.deepPurple)
-    .alignment(.center)
-    .animate(.easeInOut(180.ms))
-    .onPressed(.scale(0.95));
-
-final Outlined = BoxStyler()
-    .paddingX(24)
-    .paddingY(12)
-    .borderRounded(10)
-    .borderAll(color: Colors.deepPurple, width: 1.5)
-    .alignment(.center)
-    .animate(.easeInOut(180.ms))
-    .onPressed(.scale(0.95));
+// _trigger is a ValueNotifier<bool>
 
 // Use it
-Solid(child: Label('Solid'));
-Outlined(child: Label('Outlined'));`,
+Box(style: heartFrameStyle, child: heartIcon);`,
+
+  "homepage/buttons": `final Button = BoxStyler()
+    .paddingX(24)
+    .paddingY(12)
+    .borderRounded(10)
+    .alignment(.center)
+    .animate(.easeInOut(180.ms))
+    .onPressed(.scale(0.95))
+    .wrap(.defaultText(
+      TextStyler().fontSize(14).fontWeight(.w600),
+    ));
+
+final Solid = Button
+    .color(Colors.deepPurple)
+    .wrap(.defaultText(.color(Colors.white)));
+
+final Outlined = Button
+    .borderAll(color: Colors.deepPurple, width: 1.5)
+    .wrap(.defaultText(.color(Colors.deepPurple)));
+
+// Use it
+Solid(child: Text('Solid'));
+Outlined(child: Text('Outlined'));`,
 
   "homepage/directives": `final Title = TextStyler()
     .fontSize(20)
@@ -100,8 +93,8 @@ final Subtitle = TextStyler()
     .capitalize();
 
 // Use it
-Title('hello world');      // HELLO WORLD
-Subtitle('built in');      // Built In`,
+Title('hello world');                    // HELLO WORLD
+Subtitle('style transforms built in');   // Style Transforms Built In`,
 };
 
 interface Feature {
@@ -109,43 +102,49 @@ interface Feature {
   subtitle: string;
   learnMoreHref: string;
   previewId: string;
+  previewWidth?: number;
+  previewHeight?: number;
 }
 
 const FEATURES: Feature[] = [
   {
     title: "Intuitive Styling",
     subtitle:
-      "Compose gradients, spacing, and polished surfaces with a fluent chain that stays readable as your design grows.",
+      "Define size, color, and shape in a single fluent chain. Each method returns a new style — readable, composable, and type-safe.",
     learnMoreHref: "/documentation/guides/styling",
     previewId: "homepage/styling",
   },
   {
     title: "Context-Reactive Variants",
     subtitle:
-      "Variants respond to hover and press state without branching your widget tree, so interaction logic stays inside the style.",
+      "Declare hover behavior inline — color, scale, and shadow all react to state without conditional logic.",
     learnMoreHref: "/documentation/guides/dynamic-styling",
     previewId: "homepage/variants",
   },
   {
     title: "Powerful Animations",
     subtitle:
-      "Build motion with implicit, phase-based, and keyframe APIs that live directly inside your styles instead of outside them.",
+      "Define keyframe timelines with multiple property tracks directly inside styles. No external animation controllers needed.",
     learnMoreHref: "/documentation/guides/animations",
     previewId: "homepage/animation",
   },
   {
     title: "Design System Buttons",
     subtitle:
-      "Build button variants from shared fragments — solid, outlined, elevated — all type-safe and composable.",
+      "Define a base button once, then compose variants by adding just what differs. Text styling flows through via inherited defaults.",
     learnMoreHref: "/documentation/tutorials/creating-a-widget",
     previewId: "homepage/buttons",
+    previewWidth: 320,
+    previewHeight: 80,
   },
   {
     title: "Text Directives",
     subtitle:
-      "Transform text with uppercase, capitalize, and titlecase directives that stay inside your styles and survive merges.",
+      "Apply uppercase and capitalize transforms directly in the style. Directives stay attached through merges and composition.",
     learnMoreHref: "/documentation/guides/directives",
     previewId: "homepage/directives",
+    previewWidth: 320,
+    previewHeight: 100,
   },
 ];
 
@@ -283,14 +282,16 @@ function FeatureBlock({
 
         {/* Overlapping Flutter preview */}
         <div
-          className={`absolute -bottom-8 z-10 w-[280px] h-[220px] -right-6 lg:-right-10`}
+          className={`absolute -bottom-8 z-10 -right-6 lg:-right-10`}
           style={{
+            width: feature.previewWidth ?? 280,
+            height: feature.previewHeight ?? 220,
             filter: "drop-shadow(0 20px 40px rgba(0, 0, 0, 0.5))",
           }}
         >
           <FlutterMultiView
             previewId={feature.previewId}
-            height={220}
+            height={feature.previewHeight ?? 220}
             bordered={false}
             transparent
             lazyLoad

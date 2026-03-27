@@ -78,14 +78,14 @@ When `mouseCursor` is null, `Pressable` chooses `SystemMouseCursors.click` when 
 `PressableBox` combines the functionality of `Pressable` with `Box` styling capabilities, providing a pressable area with customizable visual styling.
 
 ```dart
-  PressableBox(
-    style: BoxStyler()
+PressableBox(
+  style: BoxStyler()
       .color(Colors.blue)
       .paddingAll(16)
       .borderRounded(8),
-    onPress: () => print('PressableBox pressed'),
-    child: StyledText('Styled Button'),
-  );
+  onPress: () => print('PressableBox pressed'),
+  child: StyledText('Styled Button'),
+);
 ```
 
 ### PressableBox Constructor

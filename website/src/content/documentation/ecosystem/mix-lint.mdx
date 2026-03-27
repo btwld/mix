@@ -60,7 +60,9 @@ Use a standard ignore with the `mix_lint/<rule_id>` prefix:
 
 ```dart
 // ignore: mix_lint/mix_variants_last
-final style = BoxStyler().onHovered(x).paddingAll(16);
+final style = BoxStyler()
+    .onHovered(x)
+    .paddingAll(16);
 ```
 
 ## Rules overview
@@ -146,8 +148,12 @@ final style = BoxStyler()
 ```dart
 final style = BoxStyler()
     .color(Colors.grey)
-    .onHovered(BoxStyler().color(Colors.blue))
-    .onPressed(BoxStyler().color(Colors.green));
+    .onHovered(
+      BoxStyler().color(Colors.blue),
+    )
+    .onPressed(
+      BoxStyler().color(Colors.green),
+    );
 ```
 
 ### mix_max_number_of_attributes_per_style

@@ -43,15 +43,15 @@ Attach a `ContextVariant` that reads that flag:
 
 ```dart
 BoxStyler()
-  .color(Colors.red)
-  .size(100, 100)
-  .variant(
-    ContextVariant('custom_flag', (context) {
-      final flag = CustomInheritedWidget.of(context)?.flag ?? false;
-      return flag;
-    }),
-    BoxStyler().color(Colors.blue),
-  );
+    .color(Colors.red)
+    .size(100, 100)
+    .variant(
+      ContextVariant('custom_flag', (context) {
+        final flag = CustomInheritedWidget.of(context)?.flag ?? false;
+        return flag;
+      }),
+      BoxStyler().color(Colors.blue),
+    );
 ```
 
 In this example:
@@ -87,11 +87,11 @@ Usage:
 
 ```dart
 BoxStyler()
-  .color(Colors.red)
-  .size(100, 100)
-  .onCustomFlag(
-    BoxStyler().color(Colors.blue),
-  );
+    .color(Colors.red)
+    .size(100, 100)
+    .onCustomFlag(
+      BoxStyler().color(Colors.blue),
+    );
 ```
 
 ## Complete Example
@@ -141,14 +141,17 @@ class _ExampleState extends State<Example> {
           ContextVariant('custom_flag', (context) {
             return CustomInheritedWidget.of(context)?.flag ?? false;
           }),
-          BoxStyler().color(Colors.blue),
+          BoxStyler()
+              .color(Colors.blue),
         );
 
     return CustomInheritedWidget(
       flag: _flag,
       child: Pressable(
         onPress: () => setState(() => _flag = !_flag),
-        child: Box(style: boxStyle),
+        child: Box(
+          style: boxStyle,
+        ),
       ),
     );
   }

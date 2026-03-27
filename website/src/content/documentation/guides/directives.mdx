@@ -40,19 +40,25 @@ Transform strings in `StyledText` widgets. Text directives are called directly o
 // Uppercase text
 StyledText(
   'welcome back',
-  style: TextStyler().uppercase().fontSize(18),
+  style: TextStyler()
+      .uppercase()
+      .fontSize(18),
 )
 
 // Title case for headings
 StyledText(
   'user profile settings',
-  style: TextStyler().titlecase().fontWeight(.bold),
+  style: TextStyler()
+      .titlecase()
+      .fontWeight(.bold),
 )
 
 // Sentence case for descriptions
 StyledText(
   'click here to continue',
-  style: TextStyler().sentencecase().color(Colors.grey),
+  style: TextStyler()
+      .sentencecase()
+      .color(Colors.grey),
 )
 ```
 
@@ -196,7 +202,8 @@ extension ReverseTextDirective on TextStyler {
 // Usage
 StyledText(
   'hello',
-  style: TextStyler().reverse(), // Displays "olleh"
+  style: TextStyler()
+      .reverse(), // Displays "olleh"
 )
 ```
 

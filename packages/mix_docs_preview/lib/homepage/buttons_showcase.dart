@@ -15,45 +15,38 @@ class Example extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // ignore: non_constant_identifier_names
-    final Label = TextStyler()
-        .fontSize(14)
-        .fontWeight(.w600)
-        .color(Colors.white);
-
-    // ignore: non_constant_identifier_names
-    final Solid = BoxStyler()
+    final Button = BoxStyler()
         .paddingX(24)
         .paddingY(12)
         .borderRounded(10)
+        .alignment(.center)
+        .animate(.easeInOut(180.ms))
+        .onPressed(.scale(0.95))
+        .wrap(.defaultText(
+          TextStyler().fontSize(14).fontWeight(.w600),
+        ));
+
+    // ignore: non_constant_identifier_names
+    final Solid = Button
         .color(Colors.deepPurple)
-        .alignment(.center)
-        .animate(.easeInOut(180.ms))
-        .onPressed(.scale(0.95));
+        .wrap(.defaultText(.color(Colors.white)));
 
     // ignore: non_constant_identifier_names
-    final Outlined = BoxStyler()
-        .paddingX(24)
-        .paddingY(12)
-        .borderRounded(10)
+    final Outlined = Button
         .borderAll(color: Colors.deepPurple, width: 1.5)
-        .alignment(.center)
-        .animate(.easeInOut(180.ms))
-        .onPressed(.scale(0.95));
-
-    // ignore: non_constant_identifier_names
-    final OutlinedLabel = Label.color(Colors.deepPurple);
+        .wrap(.defaultText(.color(Colors.deepPurple)));
 
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         Pressable(
           onPress: () {},
-          child: Solid(child: Label('Solid')),
+          child: Solid(child: const Text('Solid')),
         ),
         const SizedBox(width: 12),
         Pressable(
           onPress: () {},
-          child: Outlined(child: OutlinedLabel('Outlined')),
+          child: Outlined(child: const Text('Outlined')),
         ),
       ],
     );
