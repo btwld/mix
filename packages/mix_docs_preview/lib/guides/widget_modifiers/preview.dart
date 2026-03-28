@@ -1,4 +1,5 @@
 /// Preview for guides/widget-modifiers.
 library;
 
-export 'package:mix_docs_preview/widgets/box/simple_box.dart' show Example;
+export 'package:mix_docs_preview/guides/widget_modifiers/opacity_box.dart'
+    show Example;
