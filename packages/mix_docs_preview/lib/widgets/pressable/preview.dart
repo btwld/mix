@@ -1,5 +1,5 @@
 /// Preview for widgets/pressable.
 library;
 
-export 'package:mix_docs_preview/guides/dynamic_styling/hovered.dart'
+export 'package:mix_docs_preview/widgets/pressable/pressable_button.dart'
     show Example;
