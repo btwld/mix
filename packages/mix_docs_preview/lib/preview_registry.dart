@@ -19,6 +19,7 @@ import 'guides/dynamic_styling/disabled.dart' as disabled;
 import 'guides/dynamic_styling/focused.dart' as focused;
 import 'guides/dynamic_styling/hovered.dart' as hovered;
 import 'guides/dynamic_styling/nesting.dart' as nesting;
+import 'guides/styling/styling_basic.dart' as styling_basic;
 import 'guides/styling/preview_1.dart' as guide_styling_1;
 import 'guides/dynamic_styling/pressed.dart' as pressed;
 import 'guides/dynamic_styling/responsive_size.dart' as responsive_size;
@@ -31,6 +32,7 @@ import 'overview/comparison/preview_0.dart' as comparison_0;
 import 'overview/getting_started/hello_mix.dart' as getting_started_hello_mix;
 import 'tutorials/creating_a_widget/design_system_button.dart'
     as design_system_button;
+import 'widgets/pressable/pressable_button.dart' as pressable_button;
 import 'widgets/box/gradient_box.dart' as gradient_box;
 import 'widgets/box/simple_box.dart' as simple_box;
 import 'widgets/flexbox/icon_label_chip.dart' as icon_label_chip;
@@ -133,9 +135,10 @@ class PreviewRegistry {
     ),
     PreviewEntry(
       previewId: 'guides/styling.0',
-      sourcePath: 'packages/mix_docs_preview/lib/guides/styling/preview_0.dart',
+      sourcePath:
+          'packages/mix_docs_preview/lib/guides/styling/styling_basic.dart',
       category: _widgets,
-      builder: (_) => const simple_box.Example(),
+      builder: (_) => const styling_basic.Example(),
     ),
     PreviewEntry(
       previewId: 'guides/styling.1',
@@ -264,9 +267,9 @@ class PreviewRegistry {
     PreviewEntry(
       previewId: 'widgets/pressable.0',
       sourcePath:
-          'packages/mix_docs_preview/lib/widgets/pressable/preview.dart',
+          'packages/mix_docs_preview/lib/widgets/pressable/pressable_button.dart',
       category: _variants,
-      builder: (_) => const hovered.Example(),
+      builder: (_) => const pressable_button.Example(),
     ),
     // tutorials
     PreviewEntry(
