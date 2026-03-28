@@ -20,6 +20,7 @@ import 'guides/dynamic_styling/focused.dart' as focused;
 import 'guides/dynamic_styling/hovered.dart' as hovered;
 import 'guides/dynamic_styling/nesting.dart' as nesting;
 import 'guides/styling/styling_basic.dart' as styling_basic;
+import 'guides/widget_modifiers/opacity_box.dart' as opacity_box;
 import 'guides/styling/preview_1.dart' as guide_styling_1;
 import 'guides/dynamic_styling/pressed.dart' as pressed;
 import 'guides/dynamic_styling/responsive_size.dart' as responsive_size;
@@ -29,6 +30,7 @@ import 'guides/gradients/gradient_linear.dart' as gradient_linear;
 import 'guides/gradients/gradient_radial.dart' as gradient_radial;
 import 'guides/gradients/gradient_sweep.dart' as gradient_sweep;
 import 'overview/comparison/preview_0.dart' as comparison_0;
+import 'overview/introduction/simple_red_box.dart' as simple_red_box;
 import 'overview/getting_started/hello_mix.dart' as getting_started_hello_mix;
 import 'tutorials/creating_a_widget/design_system_button.dart'
     as design_system_button;
@@ -100,16 +102,16 @@ class PreviewRegistry {
     PreviewEntry(
       previewId: 'overview/introduction.0',
       sourcePath:
-          'packages/mix_docs_preview/lib/overview/introduction/preview.dart',
+          'packages/mix_docs_preview/lib/overview/introduction/simple_red_box.dart',
       category: _widgets,
-      builder: (_) => const simple_box.Example(),
+      builder: (_) => const simple_red_box.Example(),
     ),
     PreviewEntry(
       previewId: 'overview/utility-first.0',
       sourcePath:
           'packages/mix_docs_preview/lib/overview/utility_first/preview.dart',
       category: _widgets,
-      builder: (_) => const simple_box.Example(),
+      builder: (_) => const simple_red_box.Example(),
     ),
     PreviewEntry(
       previewId: 'overview/getting-started.0',
@@ -129,9 +131,9 @@ class PreviewRegistry {
     PreviewEntry(
       previewId: 'guides/widget-modifiers.0',
       sourcePath:
-          'packages/mix_docs_preview/lib/guides/widget_modifiers/preview.dart',
+          'packages/mix_docs_preview/lib/guides/widget_modifiers/opacity_box.dart',
       category: _widgets,
-      builder: (_) => const simple_box.Example(),
+      builder: (_) => const opacity_box.Example(),
     ),
     PreviewEntry(
       previewId: 'guides/styling.0',

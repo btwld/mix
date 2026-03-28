@@ -8,11 +8,11 @@ You can use the `StackBoxStyler` API to fluently compose your layout and decorat
 
 ```dart
 final flexStyle = StackBoxStyler(
-  constraints: .new().size(100, 100),
+  constraints: .new().height(100).width(100),
   stackAlignment: .bottomCenter,
 );
 
-final boxStyle = BoxStyler.color(Colors.deepOrange).size(100, 100);
+final boxStyle = BoxStyler.color(Colors.deepOrange).height(100).width(100);
 
 StackBox(
   style: flexStyle,
@@ -27,7 +27,8 @@ StackBox(
     ),
     Box(
       style: BoxStyler.color(Colors.grey.shade100)
-          .size(100, 100)
+          .height(100)
+          .width(100)
           .borderAll(color: Colors.black, width: 20)
           .wrap(.new().scale(0.50, 0.50)),
     ),

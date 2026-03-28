@@ -1,4 +1,5 @@
 /// Preview for overview/introduction — source file for doc snippet.
 library;
 
-export 'package:mix_docs_preview/widgets/box/simple_box.dart' show Example;
+export 'package:mix_docs_preview/overview/introduction/simple_red_box.dart'
+    show Example;
