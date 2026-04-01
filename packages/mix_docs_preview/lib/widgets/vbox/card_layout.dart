@@ -20,7 +20,7 @@ class Example extends StatelessWidget {
         .paddingX(12)
         .paddingY(10)
         .borderRounded(10)
-        .borderAll(color: Colors.blueGrey.shade400, width: 1)
+        .border(.color(Colors.blueGrey.shade400).width(1))
         .height(150)
         .width(120)
         .shadow(.new().color(Colors.black12).blurRadius(10));

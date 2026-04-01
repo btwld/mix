@@ -41,7 +41,7 @@ class _ExampleState extends State<Example> {
         .borderRounded(10)
         .wrap(.new().opacity(0.4))
         .onFocused(
-          .color(Colors.blue).borderAll(color: Colors.blue.shade700, width: 3),
+          .color(Colors.blue).border(.color(Colors.blue.shade700).width(3)),
         );
 
     return Column(

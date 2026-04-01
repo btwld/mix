@@ -17,7 +17,7 @@ class Example extends StatelessWidget {
         .color(Colors.cyan.shade50)
         .padding(.symmetric(horizontal: 10, vertical: 4))
         .borderRadius(.circular(99))
-        .border(.all(.color(Colors.cyan.shade600).width(2)));
+        .border(.color(Colors.cyan.shade600).width(2));
 
     final iconStyle = IconStyler.icon(
       Icons.ac_unit_rounded,
