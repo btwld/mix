@@ -23,7 +23,7 @@ Stack layout
 Composition
 - Reuse fragments: `final card = base.merge(elevated);`
 - Everyday props: use chaining instead of merging multiple Styler instances
-- In typed style arguments, prefer shorthand: `.onHovered(.color(...))`, `.container(.shadow(...))`
+- In typed style arguments, prefer shorthand: `.onHovered(.color(...))`, `.border(.color(...).width(...))`, `.container(.shadow(...))`
 
 ---
 
@@ -79,6 +79,7 @@ final boxFromSize = BoxStyler(constraints: BoxConstraintsMix.size(size));
 Example E — Typed argument shorthand
 ```dart
 final interactive = BoxStyler().color(Colors.blue)
+  .border(.color(Colors.white).width(1))
   .onHovered(.shadow(.color(Colors.black12).blurRadius(8)))
   .onDisabled(.color(Colors.grey));
 ```
