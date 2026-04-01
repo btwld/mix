@@ -13,11 +13,7 @@ class Example extends StatelessWidget {
   Widget build(BuildContext context) {
     final style = BoxStyler.size(150, 150)
         .borderRounded(75)
-        .shadow(
-          .color(Colors.orange.shade400)
-              .blurRadius(30)
-              .spreadRadius(5),
-        )
+        .shadow(.color(Colors.orange.shade400).blurRadius(30).spreadRadius(5))
         .radialGradient(
           colors: [Colors.orange.shade300, Colors.deepOrange.shade600],
           center: Alignment(-0.3, -0.3),

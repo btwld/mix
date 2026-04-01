@@ -22,13 +22,11 @@ class Example extends StatelessWidget {
         .color(Colors.blue)
         .padding(.symmetric(horizontal: 24, vertical: 12))
         .borderRadius(.circular(10))
-        .shadow(
-          .color(Colors.blue.shade200).blurRadius(8).offset(x: 0, y: 2),
-        )
+        .shadow(.color(Colors.blue.shade200).blurRadius(8).offset(x: 0, y: 2))
         .onHovered(
           .color(Colors.blue.shade700).shadow(
-                .color(Colors.blue.shade300).blurRadius(12).offset(x: 0, y: 4),
-              ),
+            .color(Colors.blue.shade300).blurRadius(12).offset(x: 0, y: 4),
+          ),
         )
         .onPressed(.color(Colors.blue.shade900).scale(0.97))
         .animate(.ease(150.ms));

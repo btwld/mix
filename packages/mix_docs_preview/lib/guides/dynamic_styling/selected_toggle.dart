@@ -37,9 +37,7 @@ class _ExampleState extends State<Example> {
           .color(Colors.blue.shade500)
               .border(.color(Colors.blue.shade600).width(2))
               .shadow(
-                .color(Colors.blue.shade200)
-                    .blurRadius(10)
-                    .spreadRadius(2),
+                .color(Colors.blue.shade200).blurRadius(10).spreadRadius(2),
               ),
         );
 

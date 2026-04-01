@@ -22,9 +22,7 @@ class Example extends StatelessWidget {
         .color(Colors.blue)
         .borderRadius(.circular(12))
         .padding(.all(16))
-        .shadow(
-          .color(Colors.blue.shade200).blurRadius(12).offset(x: 0, y: 4),
-        );
+        .shadow(.color(Colors.blue.shade200).blurRadius(12).offset(x: 0, y: 4));
 
     final label = TextStyler()
         .color(Colors.white)

@@ -37,9 +37,7 @@ class CustomMixWidget extends StatelessWidget {
       .animate(.easeInOut(100.ms))
       .scale(1)
       .onHovered(
-        .color(
-          accentColor.withValues(alpha: 0.0),
-        ).border(.color(accentColor)),
+        .color(accentColor.withValues(alpha: 0.0)).border(.color(accentColor)),
       )
       .onPressed(.scale(0.96));
 
