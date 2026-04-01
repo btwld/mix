@@ -51,6 +51,10 @@ void main() {
         expect(util.textBaseline, isA<MixUtility>());
       });
 
+      test('has shadow utility', () {
+        expect(util.shadow, isA<ShadowUtility>());
+      });
+
       test('has fontFamily utility', () {
         expect(util.fontFamily, isA<Function>());
       });
@@ -218,6 +222,40 @@ void main() {
     });
 
     group('advanced properties', () {
+      test('shadow sets a single text shadow', () {
+        final result = util.shadow(
+          color: Colors.black,
+          offset: const Offset(1, 1),
+          blurRadius: 2,
+        );
+
+        expect(
+          result.value,
+          resolvesTo(
+            const TextStyle(
+              shadows: [
+                Shadow(
+                  color: Colors.black,
+                  offset: Offset(1, 1),
+                  blurRadius: 2,
+                ),
+              ],
+            ),
+          ),
+        );
+      });
+
+      test('shadow.as sets a single text shadow from a Shadow value', () {
+        const shadow = Shadow(
+          color: Colors.black,
+          offset: Offset(1, 1),
+          blurRadius: 2,
+        );
+        final result = util.shadow.as(shadow);
+
+        expect(result.value, resolvesTo(const TextStyle(shadows: [shadow])));
+      });
+
       test('shadows sets text shadows', () {
         const shadows = [
           Shadow(color: Colors.black, offset: Offset(1, 1), blurRadius: 2),

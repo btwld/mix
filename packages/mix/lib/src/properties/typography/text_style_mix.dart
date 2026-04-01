@@ -114,6 +114,11 @@ class TextStyleMix extends Mix<TextStyle>
     return TextStyleMix(shadows: value);
   }
 
+  /// Factory for a single text shadow.
+  factory TextStyleMix.shadow(ShadowMix value) {
+    return TextStyleMix(shadows: [value]);
+  }
+
   /// Factory for font features
   factory TextStyleMix.fontFeatures(List<FontFeature> value) {
     return TextStyleMix(fontFeatures: value);
@@ -355,6 +360,11 @@ class TextStyleMix extends Mix<TextStyle>
   /// Sets shadows
   TextStyleMix shadows(List<ShadowMix> value) {
     return merge(TextStyleMix.shadows(value));
+  }
+
+  /// Sets a single shadow.
+  TextStyleMix shadow(ShadowMix value) {
+    return merge(TextStyleMix.shadow(value));
   }
 
   /// Sets font features

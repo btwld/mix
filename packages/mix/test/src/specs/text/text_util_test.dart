@@ -149,6 +149,10 @@ void main() {
         expect(util.fontVariations, isNotNull);
       });
 
+      test('shadow utility provides shadow access', () {
+        expect(util.shadow, isNotNull);
+      });
+
       test('shadows utility provides shadows access', () {
         expect(util.shadows, isNotNull);
       });
@@ -226,6 +230,35 @@ void main() {
         const locale = Locale('en', 'US');
         final result = util.locale(locale);
         expect(result.$locale, resolvesTo(locale));
+      });
+
+      test('shadow utility creates correct TextStyling', () {
+        final result = util.shadow(
+          color: Colors.black,
+          offset: const Offset(1, 1),
+          blurRadius: 4,
+        );
+        final spec = util.resolve(MockBuildContext());
+
+        expect(result, isA<TextStyler>());
+        expect(
+          spec,
+          equals(
+            StyleSpec(
+              spec: const TextSpec(
+                style: TextStyle(
+                  shadows: [
+                    Shadow(
+                      color: Colors.black,
+                      offset: Offset(1, 1),
+                      blurRadius: 4,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
       });
     });
 
@@ -520,6 +553,28 @@ void main() {
         expect(maxLinesResult.$maxLines, resolvesTo(3));
         expect(alignResult.$textAlign, resolvesTo(TextAlign.center));
         expect(wrapResult.$softWrap, resolvesTo(false));
+      });
+
+      test('shadow utility composes with other text properties', () {
+        final utility = TextMutableStyler()
+          ..shadow(color: Colors.black, blurRadius: 4)
+          ..color(Colors.blue)
+          ..fontSize(16);
+
+        expect(
+          utility,
+          resolvesTo(
+            StyleSpec(
+              spec: const TextSpec(
+                style: TextStyle(
+                  color: Colors.blue,
+                  fontSize: 16,
+                  shadows: [Shadow(color: Colors.black, blurRadius: 4)],
+                ),
+              ),
+            ),
+          ),
+        );
       });
 
       test('handles multiple merges correctly', () {

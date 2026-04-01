@@ -89,6 +89,11 @@ mixin TextStyleMixin<T extends Mix<Object?>> {
     return style(TextStyleMix.shadows(value));
   }
 
+  /// Sets a single text shadow.
+  T shadow(ShadowMix value) {
+    return style(TextStyleMix.shadow(value));
+  }
+
   /// Sets font features
   T fontFeatures(List<FontFeature> value) {
     return style(TextStyleMix.fontFeatures(value));
