@@ -7,6 +7,7 @@ import '../layout/enum_util.dart';
 import '../layout/scalar_util.dart';
 import '../painting/color_util.dart';
 import '../painting/shadow_mix.dart';
+import '../painting/shadow_util.dart';
 import 'text_style_mix.dart';
 
 final class TextStyleUtility<T extends Style<Object?>>
@@ -42,6 +43,8 @@ final class TextStyleUtility<T extends Style<Object?>>
   late final textBaseline = MixUtility<T, TextBaseline>(
     (prop) => call(textBaseline: prop),
   );
+
+  late final shadow = ShadowUtility((value) => call(shadows: [value]));
 
   TextStyleUtility(super.utilityBuilder);
 

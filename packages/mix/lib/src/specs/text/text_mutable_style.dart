@@ -59,6 +59,7 @@ class TextMutableStyler extends StyleMutableBuilder<TextSpec>
   late final letterSpacing = style.letterSpacing;
   late final wordSpacing = style.wordSpacing;
   late final fontVariations = style.fontVariations;
+  late final shadow = style.shadow;
   late final shadows = style.shadows;
   late final foreground = style.foreground;
   late final background = style.background;

@@ -206,6 +206,11 @@ void main() {
         expect(TextStyler.shadows(s), equals(TextStyler().shadows(s)));
       });
 
+      test('shadow', () {
+        final s = ShadowMix(color: Colors.black, blurRadius: 4);
+        expect(TextStyler.shadow(s), equals(TextStyler().shadow(s)));
+      });
+
       test('fontFeatures', () {
         expect(
           TextStyler.fontFeatures([const FontFeature.enable('smcp')]),
