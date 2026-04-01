@@ -20,12 +20,10 @@ class Example extends StatelessWidget {
     final style = BoxStyler()
         .size(200, 120)
         .color(Colors.blue)
-        .borderRounded(12)
-        .paddingAll(16)
-        .shadowOnly(
-          color: Colors.blue.shade200,
-          blurRadius: 12,
-          offset: .new(0, 4),
+        .borderRadius(.circular(12))
+        .padding(.all(16))
+        .shadow(
+          .color(Colors.blue.shade200).blurRadius(12).offset(x: 0, y: 4),
         );
 
     final label = TextStyler()

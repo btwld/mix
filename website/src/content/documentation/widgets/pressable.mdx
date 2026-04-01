@@ -13,19 +13,14 @@ Use `PressableBox` to combine pressable interaction with box styling and state-d
 ```dart
 final buttonStyle = BoxStyler()
     .color(Colors.blue)
-    .paddingX(24)
-    .paddingY(12)
-    .borderRounded(10)
-    .shadowOnly(
-      color: Colors.blue.shade200,
-      blurRadius: 8,
-      offset: .new(0, 2),
+    .padding(.symmetric(horizontal: 24, vertical: 12))
+    .borderRadius(.circular(10))
+    .shadow(
+      .color(Colors.blue.shade200).blurRadius(8).offset(x: 0, y: 2),
     )
     .onHovered(
-      .color(Colors.blue.shade700).shadowOnly(
-            color: Colors.blue.shade300,
-            blurRadius: 12,
-            offset: .new(0, 4),
+      .color(Colors.blue.shade700).shadow(
+            .color(Colors.blue.shade300).blurRadius(12).offset(x: 0, y: 4),
           ),
     )
     .onPressed(.color(Colors.blue.shade900).scale(0.97))
