@@ -72,7 +72,7 @@ final cardStyle = BoxStyler()
     .color(Colors.blue)
     .alignment(.center)
     .borderRounded(12)
-    .border(.all(.color(Colors.black).width(1).style(.solid)));
+    .border(.color(Colors.black).width(1).style(.solid));
 
 Box(
   style: cardStyle,

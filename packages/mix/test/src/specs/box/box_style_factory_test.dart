@@ -12,6 +12,20 @@ void main() {
         expect(styler.$alignment, isNotNull);
       });
 
+      test('border supports uniform side shorthand chaining', () {
+        final styler = BoxStyler().border(.color(Colors.red).width(2));
+        final decoration =
+            styler.$decoration!.resolveProp(MockBuildContext())
+                as BoxDecoration;
+        final border = decoration.border! as Border;
+
+        expect(border.top.color, Colors.red);
+        expect(border.right.color, Colors.red);
+        expect(border.bottom.color, Colors.red);
+        expect(border.left.color, Colors.red);
+        expect(border.top.width, 2);
+      });
+
       test('chaining after factory constructor works', () {
         final styler = BoxStyler.color(
           Colors.red,

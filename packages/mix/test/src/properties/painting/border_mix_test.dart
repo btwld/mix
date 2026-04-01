@@ -385,6 +385,16 @@ void main() {
     });
 
     group('Factory Constructors', () {
+      test('forwarding color factory creates a uniform border', () {
+        final borderMix = BoxBorderMix.color(Colors.purple);
+        final resolved = borderMix.resolve(MockBuildContext());
+
+        expect(resolved.top.color, Colors.purple);
+        expect(resolved.right.color, Colors.purple);
+        expect(resolved.bottom.color, Colors.purple);
+        expect(resolved.left.color, Colors.purple);
+      });
+
       test('all factory creates BorderMix with same side for all', () {
         final side = BorderSideMix(color: Colors.purple, width: 3.0);
         final borderMix = BorderMix.all(side);
@@ -429,6 +439,37 @@ void main() {
     });
 
     group('Merge', () {
+      test('uniform shorthand chaining applies to all sides', () {
+        final borderMix = BoxBorderMix.color(
+          Colors.red,
+        ).width(2.0).style(BorderStyle.none).strokeAlign(1.0);
+        final resolved = borderMix.resolve(MockBuildContext());
+
+        expect(resolved.top, resolved.right);
+        expect(resolved.right, resolved.bottom);
+        expect(resolved.bottom, resolved.left);
+        expect(resolved.top.color, Colors.red);
+        expect(resolved.top.width, 2.0);
+        expect(resolved.top.style, BorderStyle.none);
+        expect(resolved.top.strokeAlign, 1.0);
+      });
+
+      test(
+        'per-side overrides after uniform shorthand only replace that side',
+        () {
+          final borderMix = BoxBorderMix.color(
+            Colors.red,
+          ).top(BorderSideMix.color(Colors.blue).width(3.0));
+          final resolved = borderMix.resolve(MockBuildContext());
+
+          expect(resolved.top.color, Colors.blue);
+          expect(resolved.top.width, 3.0);
+          expect(resolved.right.color, Colors.red);
+          expect(resolved.bottom.color, Colors.red);
+          expect(resolved.left.color, Colors.red);
+        },
+      );
+
       test('merges properties correctly', () {
         final first = BorderMix(
           top: BorderSideMix(color: Colors.red, width: 1.0),
@@ -510,6 +551,27 @@ void main() {
         final borderMix = BorderMix();
 
         expect(borderMix.defaultValue, const Border());
+      });
+    });
+  });
+
+  group('BorderDirectionalMix', () {
+    group('Utility Methods', () {
+      test('uniform shorthand chaining applies to all directional sides', () {
+        final borderMix = BorderDirectionalMix()
+            .color(Colors.teal)
+            .width(4.0)
+            .style(BorderStyle.none)
+            .strokeAlign(0.5);
+        final resolved = borderMix.resolve(MockBuildContext());
+
+        expect(resolved.top, resolved.bottom);
+        expect(resolved.bottom, resolved.start);
+        expect(resolved.start, resolved.end);
+        expect(resolved.top.color, Colors.teal);
+        expect(resolved.top.width, 4.0);
+        expect(resolved.top.style, BorderStyle.none);
+        expect(resolved.top.strokeAlign, 0.5);
       });
     });
   });
