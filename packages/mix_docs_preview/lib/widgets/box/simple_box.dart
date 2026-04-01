@@ -25,7 +25,7 @@ class Example extends StatelessWidget {
         .shadowOnly(
           color: Colors.blue.shade200,
           blurRadius: 12,
-          offset: Offset(0, 4),
+          offset: .new(0, 4),
         );
 
     final label = TextStyler()

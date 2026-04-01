@@ -26,13 +26,13 @@ class Example extends StatelessWidget {
         .shadowOnly(
           color: Colors.blue.shade200,
           blurRadius: 8,
-          offset: Offset(0, 2),
+          offset: .new(0, 2),
         )
         .onHovered(
           .color(Colors.blue.shade700).shadowOnly(
                 color: Colors.blue.shade300,
                 blurRadius: 12,
-                offset: Offset(0, 4),
+                offset: .new(0, 4),
               ),
         )
         .onPressed(.color(Colors.blue.shade900).scale(0.97))
