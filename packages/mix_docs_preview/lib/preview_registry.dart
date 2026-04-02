@@ -19,9 +19,9 @@ import 'guides/dynamic_styling/disabled.dart' as disabled;
 import 'guides/dynamic_styling/focused.dart' as focused;
 import 'guides/dynamic_styling/hovered.dart' as hovered;
 import 'guides/dynamic_styling/nesting.dart' as nesting;
-import 'guides/styling/preview_0.dart' as guide_styling_0;
+import 'guides/styling/styling_basic.dart' as styling_basic;
+import 'guides/widget_modifiers/opacity_box.dart' as opacity_box;
 import 'guides/styling/preview_1.dart' as guide_styling_1;
-import 'guides/widget_modifiers/preview.dart' as guide_widget_modifiers;
 import 'guides/dynamic_styling/pressed.dart' as pressed;
 import 'guides/dynamic_styling/responsive_size.dart' as responsive_size;
 import 'guides/dynamic_styling/selected.dart' as selected;
@@ -35,17 +35,16 @@ import 'guides/gradients/gradient_linear.dart' as gradient_linear;
 import 'guides/gradients/gradient_radial.dart' as gradient_radial;
 import 'guides/gradients/gradient_sweep.dart' as gradient_sweep;
 import 'overview/comparison/preview_0.dart' as comparison_0;
+import 'overview/introduction/simple_red_box.dart' as simple_red_box;
 import 'overview/getting_started/hello_mix.dart' as getting_started_hello_mix;
-import 'overview/introduction/preview.dart' as overview_introduction;
-import 'overview/utility_first/preview.dart' as overview_utility_first;
 import 'tutorials/creating_a_widget/design_system_button.dart'
     as design_system_button;
+import 'widgets/pressable/pressable_button.dart' as pressable_button;
 import 'widgets/box/gradient_box.dart' as gradient_box;
 import 'widgets/box/simple_box.dart' as simple_box;
 import 'widgets/flexbox/icon_label_chip.dart' as icon_label_chip;
 import 'widgets/icon/styled_icon.dart' as styled_icon;
 import 'widgets/image/styled_image.dart' as styled_image;
-import 'widgets/pressable/preview.dart' as pressable_preview;
 import 'widgets/stack/layered_boxes.dart' as layered_boxes;
 import 'widgets/text/styled_text.dart' as styled_text;
 import 'widgets/vbox/card_layout.dart' as card_layout;
@@ -109,16 +108,16 @@ class PreviewRegistry {
     PreviewEntry(
       previewId: 'overview/introduction.0',
       sourcePath:
-          'packages/mix_docs_preview/lib/overview/introduction/preview.dart',
+          'packages/mix_docs_preview/lib/overview/introduction/simple_red_box.dart',
       category: _widgets,
-      builder: (_) => const overview_introduction.Example(),
+      builder: (_) => const simple_red_box.Example(),
     ),
     PreviewEntry(
       previewId: 'overview/utility-first.0',
       sourcePath:
           'packages/mix_docs_preview/lib/overview/utility_first/preview.dart',
       category: _widgets,
-      builder: (_) => const overview_utility_first.Example(),
+      builder: (_) => const simple_red_box.Example(),
     ),
     PreviewEntry(
       previewId: 'overview/getting-started.0',
@@ -138,15 +137,16 @@ class PreviewRegistry {
     PreviewEntry(
       previewId: 'guides/widget-modifiers.0',
       sourcePath:
-          'packages/mix_docs_preview/lib/guides/widget_modifiers/preview.dart',
+          'packages/mix_docs_preview/lib/guides/widget_modifiers/opacity_box.dart',
       category: _widgets,
-      builder: (_) => const guide_widget_modifiers.Example(),
+      builder: (_) => const opacity_box.Example(),
     ),
     PreviewEntry(
       previewId: 'guides/styling.0',
-      sourcePath: 'packages/mix_docs_preview/lib/guides/styling/preview_0.dart',
+      sourcePath:
+          'packages/mix_docs_preview/lib/guides/styling/styling_basic.dart',
       category: _widgets,
-      builder: (_) => const guide_styling_0.Example(),
+      builder: (_) => const styling_basic.Example(),
     ),
     PreviewEntry(
       previewId: 'guides/styling.1',
@@ -316,9 +316,9 @@ class PreviewRegistry {
     PreviewEntry(
       previewId: 'widgets/pressable.0',
       sourcePath:
-          'packages/mix_docs_preview/lib/widgets/pressable/preview.dart',
+          'packages/mix_docs_preview/lib/widgets/pressable/pressable_button.dart',
       category: _variants,
-      builder: (_) => const pressable_preview.Example(),
+      builder: (_) => const pressable_button.Example(),
     ),
     // tutorials
     PreviewEntry(
@@ -331,21 +331,21 @@ class PreviewRegistry {
     PreviewEntry(
       previewId: 'tutorials/theming.0',
       sourcePath:
-          'packages/mix_docs_preview/lib/guides/design_token/theme_tokens.dart',
+          'packages/mix_docs_preview/lib/tutorials/theming/preview.dart',
       category: _tokens,
       builder: (_) => const theme_tokens.Example(),
     ),
     PreviewEntry(
       previewId: 'tutorials/controlling-widget-state.0',
       sourcePath:
-          'packages/mix_docs_preview/lib/guides/dynamic_styling/selected_toggle.dart',
+          'packages/mix_docs_preview/lib/tutorials/controlling_widget_state/preview.dart',
       category: _variants,
-      builder: (_) => const selected_toggle.Example(),
+      builder: (_) => const hovered.Example(),
     ),
     PreviewEntry(
       previewId: 'tutorials/creating-context-variants.0',
       sourcePath:
-          'packages/mix_docs_preview/lib/guides/dynamic_styling/context_variant_flag.dart',
+          'packages/mix_docs_preview/lib/tutorials/creating_context_variants/preview.dart',
       category: _variants,
       builder: (_) => const context_variant_flag.Example(),
     ),

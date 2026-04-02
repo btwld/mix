@@ -72,7 +72,7 @@ final cardStyle = BoxStyler()
     .color(Colors.blue)
     .alignment(.center)
     .borderRounded(12)
-    .border(.all(.color(Colors.black).width(1).style(.solid)));
+    .border(.color(Colors.black).width(1).style(.solid));
 
 Box(
   style: cardStyle,
@@ -210,7 +210,7 @@ BoxStyler()
     .paddingAll(20)
     .paddingX(16)
     .paddingY(8)
-    .borderAll(color: Colors.red);
+    .border(.color(Colors.red));
 ```
 
 [Utility-first overview →](https://fluttermix.com/docs/overview/utility-first)

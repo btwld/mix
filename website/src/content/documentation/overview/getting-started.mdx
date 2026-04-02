@@ -55,11 +55,9 @@ class Example extends StatelessWidget {
       .color(Colors.blue)
       .alignment(.center)
       .borderRounded(12)
-      .border(.all(.color(Colors.black).width(1).style(.solid)));
+      .border(.color(Colors.black).width(1).style(.solid));
 
-  TextStyler get _text => TextStyler()
-      .color(Colors.white)
-      .fontSize(18);
+  TextStyler get _text => TextStyler().color(Colors.white).fontSize(18);
 
   @override
   Widget build(BuildContext context) {
@@ -76,13 +74,10 @@ Extract styles into top-level variables and reuse them across widgets. You can a
 
 ```dart
 final primaryCard = BoxStyler()
-    .color(Colors.blue)
-    .borderRounded(12);
+  .color(Colors.blue)
+  .borderRounded(12);
 
-final box = Box(
-  style: primaryCard,
-  child: StyledText('Primary'),
-);
+final box = Box(style: primaryCard, child: StyledText('Primary'));
 
 final box2 = Box(
   style: primaryCard.color(Colors.green),

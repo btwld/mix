@@ -27,10 +27,10 @@ class _ExampleState extends State<Example> {
         .color(Colors.grey.shade200)
         .animate(.easeInOut(600.ms))
         .onDark(.color(Colors.grey.shade800))
-        .shadowOnly(
-          color: Colors.black.withValues(alpha: 0.1),
-          offset: Offset(0, 4),
-          blurRadius: 10,
+        .shadow(
+          .color(
+            Colors.black.withValues(alpha: 0.1),
+          ).offset(x: 0, y: 4).blurRadius(10),
         );
 
     // Icon style that adapts to dark/light mode

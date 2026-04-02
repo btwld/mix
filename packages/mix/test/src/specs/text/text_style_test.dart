@@ -532,6 +532,18 @@ void main() {
         expect(attribute.$style, isNotNull);
       });
 
+      test('shadow utility works correctly', () {
+        final attribute = TextStyler().shadow(
+          ShadowMix(
+            color: Colors.black,
+            offset: const Offset(2, 2),
+            blurRadius: 4,
+          ),
+        );
+
+        expect(attribute.$style, isNotNull);
+      });
+
       test('fontFeatures utility works correctly', () {
         final attribute = TextStyler().fontFeatures([
           FontFeature.enable('liga'),
@@ -671,6 +683,35 @@ void main() {
         expect(textSpec.maxLines, 3);
         expect(textSpec.style, isNotNull);
         expect(textSpec.softWrap, true);
+      });
+
+      test('resolves a single shadow through the text style mixin', () {
+        final attribute = TextStyler().shadow(
+          ShadowMix(
+            color: Colors.black,
+            offset: const Offset(1, 1),
+            blurRadius: 4,
+          ),
+        );
+
+        expect(
+          attribute,
+          resolvesTo(
+            StyleSpec(
+              spec: const TextSpec(
+                style: TextStyle(
+                  shadows: [
+                    Shadow(
+                      color: Colors.black,
+                      offset: Offset(1, 1),
+                      blurRadius: 4,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
       });
 
       test('resolves with null values correctly', () {

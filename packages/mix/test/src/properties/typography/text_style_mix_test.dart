@@ -522,6 +522,24 @@ void main() {
         expect(textStyleMix.$fontFamily, isNull);
       });
 
+      test('shadow factory creates TextStyleMix with a single shadow', () {
+        final shadow = ShadowMix(blurRadius: 5.0, color: Colors.black);
+        final textStyleMix = TextStyleMix.shadow(shadow);
+
+        expect(textStyleMix.$shadows, resolvesTo(hasLength(1)));
+        expect(textStyleMix.$color, isNull);
+        expect(textStyleMix.$backgroundColor, isNull);
+        expect(textStyleMix.$fontSize, isNull);
+        expect(textStyleMix.$fontWeight, isNull);
+        expect(textStyleMix.$fontStyle, isNull);
+        expect(textStyleMix.$letterSpacing, isNull);
+        expect(textStyleMix.$wordSpacing, isNull);
+        expect(textStyleMix.$textBaseline, isNull);
+        expect(textStyleMix.$height, isNull);
+        expect(textStyleMix.$decorationThickness, isNull);
+        expect(textStyleMix.$fontFamily, isNull);
+      });
+
       test('inherit factory creates TextStyleMix with inherit', () {
         final textStyleMix = TextStyleMix.inherit(false);
 
@@ -577,6 +595,31 @@ void main() {
         );
 
         expect(textStyleMix, resolvesTo(resolvedValue));
+      });
+
+      test('resolves with a single shadow', () {
+        final textStyleMix = TextStyleMix.shadow(
+          ShadowMix(
+            blurRadius: 5.0,
+            color: Colors.black,
+            offset: const Offset(1, 1),
+          ),
+        );
+
+        expect(
+          textStyleMix,
+          resolvesTo(
+            const TextStyle(
+              shadows: [
+                Shadow(
+                  blurRadius: 5.0,
+                  color: Colors.black,
+                  offset: Offset(1, 1),
+                ),
+              ],
+            ),
+          ),
+        );
       });
     });
 
@@ -797,6 +840,29 @@ void main() {
         final textStyleMix = TextStyleMix().shadows(shadows);
 
         expect(textStyleMix.$shadows, resolvesTo(hasLength(1)));
+      });
+
+      test('shadow utility works correctly', () {
+        final textStyleMix = TextStyleMix().shadow(
+          ShadowMix(blurRadius: 8.0, color: Colors.grey),
+        );
+
+        expect(textStyleMix.$shadows, resolvesTo(hasLength(1)));
+      });
+
+      test('shadow utility replaces previous shadow list', () {
+        final textStyleMix = TextStyleMix.shadow(
+          ShadowMix(blurRadius: 4.0, color: Colors.black),
+        ).shadow(ShadowMix(blurRadius: 8.0, color: Colors.grey));
+
+        expect(
+          textStyleMix,
+          resolvesTo(
+            const TextStyle(
+              shadows: [Shadow(blurRadius: 8.0, color: Colors.grey)],
+            ),
+          ),
+        );
       });
 
       test('inherit utility works correctly', () {

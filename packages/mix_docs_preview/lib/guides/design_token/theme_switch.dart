@@ -43,7 +43,7 @@ class _ExampleState extends State<Example> {
       .color($bg())
       .shapeStadium()
       .padding(.symmetric(horizontal: 24, vertical: 12))
-      .borderAll(color: $border(), width: 2)
+      .border(.color($border()).width(2))
       .animate(.easeInOut(200.ms));
 
   TextStyler get _label =>

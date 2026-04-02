@@ -75,6 +75,27 @@ void main() {
           equals(FlexStyler(direction: Axis.vertical)),
         );
       });
+
+      test('verticalDirection', () {
+        expect(
+          FlexStyler.verticalDirection(VerticalDirection.up),
+          equals(FlexStyler(verticalDirection: VerticalDirection.up)),
+        );
+      });
+
+      test('textDirection', () {
+        expect(
+          FlexStyler.textDirection(TextDirection.rtl),
+          equals(FlexStyler(textDirection: TextDirection.rtl)),
+        );
+      });
+
+      test('textBaseline', () {
+        expect(
+          FlexStyler.textBaseline(TextBaseline.alphabetic),
+          equals(FlexStyler(textBaseline: TextBaseline.alphabetic)),
+        );
+      });
     });
 
     group('resolved values', () {

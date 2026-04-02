@@ -338,12 +338,12 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
       controller.reset();
     }
 
+    this.config = config;
+    _setUpAnimation();
+
     if (config.isLooping) {
       _startLoopingAnimation();
     }
-
-    this.config = config;
-    _setUpAnimation();
   }
 }
 
@@ -423,12 +423,12 @@ class KeyframeAnimationDriver<S extends Spec<S>>
       controller.reset();
     }
 
+    _config = config;
+    _setUpAnimation();
+
     if (config.isLooping) {
       _startLoopingAnimation();
     }
-
-    _config = config;
-    _setUpAnimation();
   }
 }
 

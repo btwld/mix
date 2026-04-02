@@ -12,6 +12,20 @@ void main() {
         expect(styler.$alignment, isNotNull);
       });
 
+      test('border supports uniform side shorthand chaining', () {
+        final styler = BoxStyler().border(.color(Colors.red).width(2));
+        final decoration =
+            styler.$decoration!.resolveProp(MockBuildContext())
+                as BoxDecoration;
+        final border = decoration.border! as Border;
+
+        expect(border.top.color, Colors.red);
+        expect(border.right.color, Colors.red);
+        expect(border.bottom.color, Colors.red);
+        expect(border.left.color, Colors.red);
+        expect(border.top.width, 2);
+      });
+
       test('chaining after factory constructor works', () {
         final styler = BoxStyler.color(
           Colors.red,
@@ -171,6 +185,109 @@ void main() {
           BoxStyler.animate(animation),
           equals(BoxStyler().animate(animation)),
         );
+      });
+
+      test('image', () {
+        final img = DecorationImageMix(image: const AssetImage('test.png'));
+        expect(BoxStyler.image(img), equals(BoxStyler().image(img)));
+      });
+
+      test('shape', () {
+        final s = ShapeBorderMix.roundedRectangle();
+        expect(BoxStyler.shape(s), equals(BoxStyler().shape(s)));
+      });
+
+      test('backgroundImage', () {
+        expect(
+          BoxStyler.backgroundImage(const AssetImage('test.png')),
+          equals(BoxStyler().backgroundImage(const AssetImage('test.png'))),
+        );
+      });
+
+      test('backgroundImageUrl', () {
+        expect(
+          BoxStyler.backgroundImageUrl('https://example.com/img.png'),
+          equals(BoxStyler().backgroundImageUrl('https://example.com/img.png')),
+        );
+      });
+
+      test('backgroundImageAsset', () {
+        expect(
+          BoxStyler.backgroundImageAsset('assets/img.png'),
+          equals(BoxStyler().backgroundImageAsset('assets/img.png')),
+        );
+      });
+
+      test('linearGradient', () {
+        expect(
+          BoxStyler.linearGradient(colors: [Colors.red, Colors.blue]),
+          equals(BoxStyler().linearGradient(colors: [Colors.red, Colors.blue])),
+        );
+      });
+
+      test('radialGradient', () {
+        expect(
+          BoxStyler.radialGradient(colors: [Colors.red, Colors.blue]),
+          equals(BoxStyler().radialGradient(colors: [Colors.red, Colors.blue])),
+        );
+      });
+
+      test('sweepGradient', () {
+        expect(
+          BoxStyler.sweepGradient(colors: [Colors.red, Colors.blue]),
+          equals(BoxStyler().sweepGradient(colors: [Colors.red, Colors.blue])),
+        );
+      });
+
+      test('foregroundLinearGradient', () {
+        expect(
+          BoxStyler.foregroundLinearGradient(colors: [Colors.red, Colors.blue]),
+          equals(
+            BoxStyler().foregroundLinearGradient(
+              colors: [Colors.red, Colors.blue],
+            ),
+          ),
+        );
+      });
+
+      test('foregroundRadialGradient', () {
+        expect(
+          BoxStyler.foregroundRadialGradient(colors: [Colors.red, Colors.blue]),
+          equals(
+            BoxStyler().foregroundRadialGradient(
+              colors: [Colors.red, Colors.blue],
+            ),
+          ),
+        );
+      });
+
+      test('foregroundSweepGradient', () {
+        expect(
+          BoxStyler.foregroundSweepGradient(colors: [Colors.red, Colors.blue]),
+          equals(
+            BoxStyler().foregroundSweepGradient(
+              colors: [Colors.red, Colors.blue],
+            ),
+          ),
+        );
+      });
+
+      test('transform', () {
+        expect(
+          BoxStyler.transform(Matrix4.identity()),
+          equals(BoxStyler().transform(Matrix4.identity())),
+        );
+      });
+
+      test('translate', () {
+        expect(
+          BoxStyler.translate(1.0, 2.0),
+          equals(BoxStyler().translate(1.0, 2.0)),
+        );
+      });
+
+      test('skew', () {
+        expect(BoxStyler.skew(0.1, 0.2), equals(BoxStyler().skew(0.1, 0.2)));
       });
     });
 

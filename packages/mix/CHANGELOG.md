@@ -1,3 +1,16 @@
+## 2.0.1
+
+This patch release improves day-to-day styling ergonomics and makes looping animations more reliable in edge cases.
+
+### New features
+
+- **Dot shorthand coverage expanded:** Static factory constructors are now available for all Styler instance methods, making Dart 3.11 shorthand syntax available across the full styling surface (#884).
+
+### Fixes
+
+- **Looping animations:** Loop driver updates now use the latest configured duration so repeated animations stay in sync with configuration changes (#885).
+- **Matrix interpolation stability:** Matrix lerp now safely handles null endpoints to prevent snapping artifacts during transitions (#882).
+
 ## 2.0.0
 
 Mix 2.0 is a ground-up rethink of how styling works in Flutter. This release introduces **Styler-first APIs** with fluent chaining, leverages **Dart 3.11+ dot shorthands** for concise syntax, modernizes the **widget modifier** model, and adds full **code generation** for specs and stylers via `mix_annotations` / `mix_generator`.

@@ -33,13 +33,11 @@ class CustomMixWidget extends StatelessWidget {
       .padding(.symmetric(horizontal: 12, vertical: 8))
       .borderRounded(10)
       .color(surfaceColor)
-      .borderAll(color: surfaceColor)
+      .border(.color(surfaceColor))
       .animate(.easeInOut(100.ms))
       .scale(1)
       .onHovered(
-        .color(
-          accentColor.withValues(alpha: 0.0),
-        ).borderAll(color: accentColor),
+        .color(accentColor.withValues(alpha: 0.0)).border(.color(accentColor)),
       )
       .onPressed(.scale(0.96));
 

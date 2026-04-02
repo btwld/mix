@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { FlutterMultiView } from "./FlutterMultiView";
 
@@ -237,7 +237,7 @@ function FeatureBlock({
         </p>
         <Link
           href={feature.learnMoreHref}
-          className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-zinc-500 transition-colors hover:text-violet-400"
+          className="group mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-zinc-500 transition-colors hover:text-violet-400"
         >
           Learn more
           <span aria-hidden className="text-xs transition-transform group-hover:translate-x-0.5">→</span>

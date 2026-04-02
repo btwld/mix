@@ -25,6 +25,22 @@ sealed class BoxBorderMix<T extends BoxBorder> extends Mix<T> {
     return BorderMix(top: side, bottom: side, left: side, right: side);
   }
 
+  static BorderMix color(Color value) {
+    return BorderMix.all(BorderSideMix.color(value));
+  }
+
+  static BorderMix width(double value) {
+    return BorderMix.all(BorderSideMix.width(value));
+  }
+
+  static BorderMix style(BorderStyle value) {
+    return BorderMix.all(BorderSideMix.style(value));
+  }
+
+  static BorderMix strokeAlign(double value) {
+    return BorderMix.all(BorderSideMix.strokeAlign(value));
+  }
+
   static BorderMix left(BorderSideMix side) {
     return BorderMix(left: side);
   }
@@ -264,6 +280,26 @@ final class BorderMix extends BoxBorderMix<Border>
     return merge(BorderMix.right(side));
   }
 
+  /// Returns a copy with the specified color on all sides.
+  BorderMix color(Color value) {
+    return merge(BorderMix.all(BorderSideMix.color(value)));
+  }
+
+  /// Returns a copy with the specified width on all sides.
+  BorderMix width(double value) {
+    return merge(BorderMix.all(BorderSideMix.width(value)));
+  }
+
+  /// Returns a copy with the specified style on all sides.
+  BorderMix style(BorderStyle value) {
+    return merge(BorderMix.all(BorderSideMix.style(value)));
+  }
+
+  /// Returns a copy with the specified stroke alignment on all sides.
+  BorderMix strokeAlign(double value) {
+    return merge(BorderMix.all(BorderSideMix.strokeAlign(value)));
+  }
+
   @override
   bool get isUniform => $top == $bottom && $bottom == $left && $left == $right;
 
@@ -393,6 +429,26 @@ final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
   /// Returns a copy with the specified end border side.
   BorderDirectionalMix end(BorderSideMix side) {
     return merge(BorderDirectionalMix.end(side));
+  }
+
+  /// Returns a copy with the specified color on all sides.
+  BorderDirectionalMix color(Color value) {
+    return merge(BorderDirectionalMix.all(BorderSideMix.color(value)));
+  }
+
+  /// Returns a copy with the specified width on all sides.
+  BorderDirectionalMix width(double value) {
+    return merge(BorderDirectionalMix.all(BorderSideMix.width(value)));
+  }
+
+  /// Returns a copy with the specified style on all sides.
+  BorderDirectionalMix style(BorderStyle value) {
+    return merge(BorderDirectionalMix.all(BorderSideMix.style(value)));
+  }
+
+  /// Returns a copy with the specified stroke alignment on all sides.
+  BorderDirectionalMix strokeAlign(double value) {
+    return merge(BorderDirectionalMix.all(BorderSideMix.strokeAlign(value)));
   }
 
   @override
