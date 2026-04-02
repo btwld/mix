@@ -2,100 +2,11 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 
+import previewsManifest from "../public/previews/previews-manifest.json";
+import { FlutterSnippet } from "./FlutterSnippet";
 import { FlutterMultiView } from "./FlutterMultiView";
-
-const CODE_SNIPPETS: Record<string, string> = {
-  "homepage/styling": `final Box = BoxStyler()
-    .width(120)
-    .height(120)
-    .borderRounded(16)
-    .color(Colors.deepPurple);
-
-// Use it
-Box();`,
-
-  "homepage/variants": `final Card = BoxStyler()
-    .width(120)
-    .height(120)
-    .borderRounded(16)
-    .color(Colors.cyan)
-    .alignment(.center)
-    .animate(.easeInOut(220.ms))
-    .onHovered(
-      .color(Colors.cyanAccent)
-      .scale(1.2),
-    );
-
-// Use it
-Card(child: Text('Hover'));`,
-
-  "homepage/animation": `final heartFrameStyle = BoxStyler()
-    .paddingAll(20)
-    .color(Colors.red)
-    .shapeCircle()
-    .keyframeAnimation(
-      trigger: _trigger,
-      timeline: [
-        KeyframeTrack('scale', [
-          .easeOutSine(0.84, 90.ms),
-          .ease(1.16, 180.ms),
-          .elasticOut(1.0, 500.ms),
-        ], initial: 1.0),
-        KeyframeTrack<double>('y', [
-          .ease(-26.0, 140.ms),
-          .decelerate(0.0, 280.ms),
-        ], initial: 0.0),
-      ],
-      styleBuilder: (values, style) => style
-          .scale(values.get('scale'))
-          .translate(0, values.get('y')),
-    );
-
-// _trigger is a ValueNotifier<bool>
-
-// Use it
-Box(style: heartFrameStyle, child: heartIcon);`,
-
-  "homepage/buttons": `final Button = BoxStyler()
-    .paddingX(24)
-    .paddingY(12)
-    .borderRounded(10)
-    .alignment(.center)
-    .animate(.easeInOut(180.ms))
-    .onPressed(.scale(0.95))
-    .wrap(.defaultText(
-      TextStyler().fontSize(14).fontWeight(.w600),
-    ));
-
-final Solid = Button
-    .color(Colors.deepPurple)
-    .wrap(.defaultText(.color(Colors.white)));
-
-final Outlined = Button
-    .borderAll(color: Colors.deepPurple, width: 1.5)
-    .wrap(.defaultText(.color(Colors.deepPurple)));
-
-// Use it
-Solid(child: Text('Solid'));
-Outlined(child: Text('Outlined'));`,
-
-  "homepage/directives": `final Title = TextStyler()
-    .fontSize(20)
-    .fontWeight(.w700)
-    .color(Colors.white)
-    .uppercase();
-
-final Subtitle = TextStyler()
-    .fontSize(14)
-    .color(Colors.white70)
-    .capitalize();
-
-// Use it
-Title('hello world');                    // HELLO WORLD
-Subtitle('style transforms built in');   // Style Transforms Built In`,
-};
+import { type PreviewManifestEntry } from "./flutter/preview-manifest";
 
 interface Feature {
   title: string;
@@ -148,33 +59,26 @@ const FEATURES: Feature[] = [
   },
 ];
 
-function useShikiHighlight(snippets: Record<string, string>) {
-  const [highlighted, setHighlighted] = useState<Record<string, string>>({});
-
-  useEffect(() => {
-    let cancelled = false;
-    async function highlight() {
-      const { codeToHtml } = await import("shiki");
-      const results: Record<string, string> = {};
-      await Promise.all(
-        Object.entries(snippets).map(async ([id, code]) => {
-          results[id] = await codeToHtml(code.trim(), {
-            lang: "dart",
-            theme: "tokyo-night",
-            structure: "inline",
-          });
-        })
-      );
-      if (!cancelled) setHighlighted(results);
-    }
-    highlight();
-    return () => { cancelled = true; };
-  }, [snippets]);
-
-  return highlighted;
+function normalizeManifestEntry(entry: (typeof previewsManifest.entries)[number]): PreviewManifestEntry {
+  return {
+    previewId: entry.previewId,
+    sourcePath: entry.sourcePath,
+    snippetRegion: entry.snippetRegion ?? undefined,
+    title: entry.title ?? undefined,
+    description: entry.description ?? undefined,
+    category: entry.category ?? undefined,
+    renderable: entry.renderable,
+  };
 }
 
-export function FeatureShowcaseClient({ codeSnippets }: { codeSnippets: Record<string, string> }) {
+const SNIPPET_ENTRIES: Record<string, PreviewManifestEntry> = Object.fromEntries(
+  previewsManifest.entries.map((entry) => [
+    entry.previewId,
+    normalizeManifestEntry(entry),
+  ])
+);
+
+export function FeatureShowcase() {
   return (
     <div className="not-prose my-20">
       <div className="space-y-32">
@@ -189,7 +93,7 @@ export function FeatureShowcaseClient({ codeSnippets }: { codeSnippets: Record<s
             <FeatureBlock
               feature={feature}
               reversed={index % 2 !== 0}
-              codeHtml={codeSnippets[feature.previewId] ?? ""}
+              snippetEntry={SNIPPET_ENTRIES[feature.previewId]}
             />
           </motion.div>
         ))}
@@ -198,20 +102,14 @@ export function FeatureShowcaseClient({ codeSnippets }: { codeSnippets: Record<s
   );
 }
 
-export function FeatureShowcase() {
-  const codeSnippets = useShikiHighlight(CODE_SNIPPETS);
-
-  return <FeatureShowcaseClient codeSnippets={codeSnippets} />;
-}
-
 function FeatureBlock({
   feature,
   reversed,
-  codeHtml,
+  snippetEntry,
 }: {
   feature: Feature;
   reversed: boolean;
-  codeHtml: string;
+  snippetEntry?: PreviewManifestEntry;
 }) {
   return (
     <div
@@ -240,7 +138,12 @@ function FeatureBlock({
           className="group mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-zinc-500 transition-colors hover:text-violet-400"
         >
           Learn more
-          <span aria-hidden className="text-xs transition-transform group-hover:translate-x-0.5">→</span>
+          <span
+            aria-hidden
+            className="text-xs transition-transform group-hover:translate-x-0.5"
+          >
+            →
+          </span>
         </Link>
       </div>
 
@@ -262,18 +165,22 @@ function FeatureBlock({
 
           {/* Code content */}
           <div className="relative">
-            <pre
-              className="m-0 overflow-x-auto px-5 py-4 text-[12.5px] leading-[1.9] font-mono"
-              style={{ background: "transparent" }}
-            >
-              {codeHtml ? (
-                <code dangerouslySetInnerHTML={{ __html: codeHtml }} />
-              ) : (
-                <code className="text-zinc-600">
-                  {CODE_SNIPPETS[feature.previewId]}
-                </code>
-              )}
-            </pre>
+            {snippetEntry ? (
+              <FlutterSnippet
+                sourcePath={snippetEntry.sourcePath}
+                region={snippetEntry.snippetRegion ?? undefined}
+                showMeta={false}
+                maxHeight={230}
+                surfaceClassName="overflow-hidden"
+                codeClassName="overflow-x-auto px-5 py-4 font-mono text-[12.5px] leading-[1.9]"
+                loadingClassName="px-5 py-8 text-zinc-500"
+                errorClassName="px-5 py-4"
+              />
+            ) : (
+              <div className="px-5 py-8 text-sm text-zinc-500">
+                Example source unavailable.
+              </div>
+            )}
             {/* Subtle bottom fade */}
             <div
               className="pointer-events-none absolute bottom-0 left-0 right-0 h-8"

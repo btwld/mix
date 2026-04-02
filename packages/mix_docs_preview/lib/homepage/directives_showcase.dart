@@ -14,15 +14,14 @@ class Example extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // ignore: non_constant_identifier_names
-    final Title = TextStyler()
+    // #docregion showcase
+    final titleStyle = TextStyler()
         .fontSize(20)
         .fontWeight(.w700)
         .color(Colors.white)
         .uppercase();
 
-    // ignore: non_constant_identifier_names
-    final Subtitle = TextStyler()
+    final subtitleStyle = TextStyler()
         .fontSize(14)
         .color(Colors.white70)
         .capitalize();
@@ -31,10 +30,11 @@ class Example extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Title('hello world'),
+        titleStyle('hello world'),
         const SizedBox(height: 4),
-        Subtitle('style transforms built in'),
+        subtitleStyle('style transforms built in'),
       ],
     );
+    // #enddocregion showcase
   }
 }

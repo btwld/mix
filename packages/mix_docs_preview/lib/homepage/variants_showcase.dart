@@ -14,21 +14,21 @@ class Example extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // ignore: non_constant_identifier_names
-    final Card = BoxStyler()
-        .width(120)
-        .height(120)
+    // #docregion showcase
+    final cardStyle = BoxStyler()
+        .size(120, 120)
         .borderRounded(16)
         .color(Colors.cyan)
         .alignment(.center)
         .animate(.easeInOut(220.ms))
         .onHovered(.color(Colors.cyanAccent).scale(1.2));
 
-    return Card(
+    return cardStyle(
       child: const Text(
         'Hover',
         style: TextStyle(color: Colors.white, fontSize: 16),
       ),
     );
+    // #enddocregion showcase
   }
 }

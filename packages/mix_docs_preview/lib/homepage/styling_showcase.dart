@@ -14,13 +14,13 @@ class Example extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // ignore: non_constant_identifier_names
-    final Box = BoxStyler()
-        .width(120)
-        .height(120)
+    // #docregion showcase
+    final boxStyle = BoxStyler()
+        .size(120, 120)
         .borderRounded(16)
         .color(Colors.deepPurple);
 
-    return Box();
+    return boxStyle();
+    // #enddocregion showcase
   }
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 type SnippetStatus = "loading" | "ready" | "error";
 
@@ -21,6 +21,14 @@ interface FlutterSnippetProps {
   showMeta?: boolean;
   /** Additional CSS classes */
   className?: string;
+  /** Class name for the snippet surface wrapper */
+  surfaceClassName?: string;
+  /** Class name for the code block */
+  codeClassName?: string;
+  /** Class name for the loading state */
+  loadingClassName?: string;
+  /** Class name for the error state */
+  errorClassName?: string;
 }
 
 export function FlutterSnippet({
@@ -32,6 +40,10 @@ export function FlutterSnippet({
   fallbackToFullFile = true,
   showMeta = true,
   className = "",
+  surfaceClassName = "overflow-hidden rounded-lg border border-white/10 bg-[#0f1320]",
+  codeClassName = "",
+  loadingClassName = "",
+  errorClassName = "",
 }: FlutterSnippetProps) {
   const [status, setStatus] = useState<SnippetStatus>("loading");
   const [code, setCode] = useState<string>("");
@@ -106,22 +118,24 @@ export function FlutterSnippet({
         </div>
       )}
 
-      <div className="overflow-hidden rounded-lg border border-white/10 bg-[#0f1320]">
+      <div className={surfaceClassName}>
         {status === "loading" && (
-          <div className="flex items-center justify-center p-6 text-sm text-zinc-400">
+          <div
+            className={`flex items-center justify-center p-6 text-sm text-zinc-400 ${loadingClassName}`.trim()}
+          >
             Loading source...
           </div>
         )}
 
         {status === "error" && (
-          <div className="p-4 text-sm text-red-400">
+          <div className={`p-4 text-sm text-red-400 ${errorClassName}`.trim()}>
             Failed to load snippet: {error}
           </div>
         )}
 
         {status === "ready" && (
           <pre
-            className="m-0 overflow-auto p-4 text-xs leading-6 text-zinc-200"
+            className={`m-0 overflow-auto p-4 text-xs leading-6 text-zinc-200 ${codeClassName}`.trim()}
             style={{ maxHeight }}
           >
             <code>{code}</code>
