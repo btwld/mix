@@ -8,11 +8,34 @@ import { Callout } from "nextra/components";
 
 This is equivalent to Flutter's **GestureDetector**, **MouseRegion**, and **Focus** widgets but with enhanced interaction state management and styling capabilities.
 
+Use `PressableBox` to combine pressable interaction with box styling and state-driven variants:
+
 ```dart
-Pressable(
-  onPress: () => print('Pressed!'),
-  child: StyledText('Press Me'),
-);
+final buttonStyle = BoxStyler()
+    .color(Colors.blue)
+    .padding(.symmetric(horizontal: 24, vertical: 12))
+    .borderRadius(.circular(10))
+    .shadow(
+      .color(Colors.blue.shade200).blurRadius(8).offset(x: 0, y: 2),
+    )
+    .onHovered(
+      .color(Colors.blue.shade700).shadow(
+            .color(Colors.blue.shade300).blurRadius(12).offset(x: 0, y: 4),
+          ),
+    )
+    .onPressed(.color(Colors.blue.shade900).scale(0.97))
+    .animate(.ease(150.ms));
+
+final labelStyle = TextStyler()
+    .color(Colors.white)
+    .fontSize(16)
+    .fontWeight(.w600);
+
+PressableBox(
+  onPress: () {},
+  style: buttonStyle,
+  child: StyledText('Press Me', style: labelStyle),
+)
 ```
 
 ## Interactive Preview
@@ -81,7 +104,7 @@ When `mouseCursor` is null, `Pressable` chooses `SystemMouseCursors.click` when 
   PressableBox(
     style: BoxStyler()
       .color(Colors.blue)
-      .paddingAll(16)
+      .padding(.all(16))
       .borderRounded(8),
     onPress: () => print('PressableBox pressed'),
     child: StyledText('Styled Button'),
@@ -112,11 +135,11 @@ When `mouseCursor` is null, `Pressable` chooses `SystemMouseCursors.click` when 
 PressableBox(
   style: BoxStyler()
       .color(Colors.blue)
-      .paddingAll(16)
+      .padding(.all(16))
       .borderRounded(8)
       .onPressed(.color(Colors.red))
       .onHovered(.color(Colors.green))
-      .onFocused(.border(Border.all(color: Colors.white, width: 2)))
+      .onFocused(.border(.color(Colors.white).width(2)))
       .onDisabled(.color(Colors.grey)),
   onPress: () => print('Interactive button pressed'),
   child: StyledText('Interactive Button'),

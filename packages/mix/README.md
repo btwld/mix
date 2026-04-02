@@ -210,7 +210,7 @@ BoxStyler()
     .paddingAll(20)
     .paddingX(16)
     .paddingY(8)
-    .borderAll(color: Colors.red);
+    .border(.color(Colors.red));
 ```
 
 [Utility-first overview →](https://fluttermix.com/docs/overview/utility-first)

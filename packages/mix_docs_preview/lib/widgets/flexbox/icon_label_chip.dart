@@ -15,10 +15,9 @@ class Example extends StatelessWidget {
     final flexStyle = FlexBoxStyler.mainAxisSize(.min)
         .spacing(4)
         .color(Colors.cyan.shade50)
-        .paddingX(10)
-        .paddingY(4)
-        .borderRounded(99)
-        .borderAll(color: Colors.cyan.shade600, width: 2);
+        .padding(.symmetric(horizontal: 10, vertical: 4))
+        .borderRadius(.circular(99))
+        .border(.color(Colors.cyan.shade600).width(2));
 
     final iconStyle = IconStyler.icon(
       Icons.ac_unit_rounded,

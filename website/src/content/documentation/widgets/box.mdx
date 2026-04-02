@@ -9,13 +9,20 @@ You can use `BoxStyler` to create styles with a fluent API. Example:
 
 ```dart
 final style = BoxStyler()
-  .width(200)
-  .height(100)
-  .color(Colors.blue)
-  .borderRounded(12)
-  .paddingAll(16);
+    .size(200, 120)
+    .color(Colors.blue)
+    .borderRadius(.circular(12))
+    .padding(.all(16))
+    .shadow(
+      .color(Colors.blue.shade200).blurRadius(12).offset(x: 0, y: 4),
+    );
 
-Box(style: style, child: Text('Hello Mix'))
+final label = TextStyler()
+    .color(Colors.white)
+    .fontSize(18)
+    .fontWeight(.w600);
+
+Box(style: style, child: StyledText('Hello Mix', style: label))
 ```
 
 The preview below shows this style applied.

@@ -11,22 +11,27 @@ For specific layouts, use `RowBox` for horizontal layouts or `ColumnBox` for ver
 You can use `FlexBoxStyler` to create styles with a fluent API. Example:
 
 ```dart
-final style = FlexBoxStyler
- .direction(.horizontal)
- .mainAxisAlignment(.spaceBetween)
- .crossAxisAlignment(.center)
- .paddingAll(16)
- .spacing(12)
- .color(Colors.grey.shade100)
- .borderRounded(8);
+final flexStyle = FlexBoxStyler.mainAxisSize(.min)
+    .spacing(4)
+    .color(Colors.cyan.shade50)
+    .padding(.symmetric(horizontal: 10, vertical: 4))
+    .borderRadius(.circular(99))
+    .border(.color(Colors.cyan.shade600).width(2));
 
-FlexBox(
- style: style,
- children: [
-   StyledIcon(icon: Icons.star),
-   StyledText('Rating'),
-   StyledText('4.5'),
- ],
+final iconStyle = IconStyler.icon(Icons.ac_unit_rounded)
+    .color(Colors.cyan.shade600)
+    .size(18);
+
+final textStyle = TextStyler.fontSize(16)
+    .fontWeight(.w500)
+    .color(Colors.cyan.shade700);
+
+RowBox(
+  style: flexStyle,
+  children: [
+    StyledIcon(style: iconStyle),
+    StyledText('Snow', style: textStyle),
+  ],
 )
 ```
 

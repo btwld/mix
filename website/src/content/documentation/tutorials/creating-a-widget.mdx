@@ -270,7 +270,7 @@ enum ButtonVariant {
             .container(
               FlexBoxStyler()
                   .color(Colors.transparent)
-                  .borderAll(width: 1.5, color: Colors.blueAccent),
+                  .border(.color(Colors.blueAccent).width(1.5)),
             )
             .textColor(Colors.blueAccent)
             .iconColor(Colors.blueAccent);
@@ -292,7 +292,7 @@ enum ButtonVariant {
         return ButtonStyler()
             .container(
               FlexBoxStyler()
-                  .borderAll(style: BorderStyle.none)
+                  .border(.style(.none))
                   .color(Colors.transparent),
             )
             .textColor(Colors.blueAccent)

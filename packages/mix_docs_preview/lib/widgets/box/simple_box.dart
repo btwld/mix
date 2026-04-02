@@ -1,13 +1,6 @@
 /// Simple Box Example
 ///
-/// This example demonstrates the basic usage of the Box widget with Mix styling.
-/// Shows how to apply color, dimensions, and border radius to create a simple
-/// styled container.
-///
-/// Key concepts:
-/// - Using BoxStyler to create box styles (recommended Mix 2.0 API)
-/// - Setting color, width, height, and border radius properties
-/// - Fluent method chaining for readable styling code
+/// Demonstrates Box styling with color, padding, shadow, and a child widget.
 
 library;
 
@@ -24,11 +17,21 @@ class Example extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final boxStyle = BoxStyler()
-        .color(Colors.red)
-        .size(100, 100)
-        .borderRounded(10);
+    final style = BoxStyler()
+        .size(200, 120)
+        .color(Colors.blue)
+        .borderRadius(.circular(12))
+        .padding(.all(16))
+        .shadow(.color(Colors.blue.shade200).blurRadius(12).offset(x: 0, y: 4));
 
-    return Box(style: boxStyle);
+    final label = TextStyler()
+        .color(Colors.white)
+        .fontSize(18)
+        .fontWeight(.w600);
+
+    return Box(
+      style: style,
+      child: StyledText('Hello Mix', style: label),
+    );
   }
 }

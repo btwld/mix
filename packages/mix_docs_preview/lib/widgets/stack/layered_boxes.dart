@@ -35,7 +35,7 @@ class Example extends StatelessWidget {
           style: BoxStyler.color(Colors.grey.shade100)
               .height(100)
               .width(100)
-              .borderAll(color: Colors.black, width: 20)
+              .border(.color(Colors.black).width(20))
               .wrap(.new().scale(0.50, 0.50)),
         ),
       ],
