@@ -60,10 +60,9 @@ class Example extends StatelessWidget {
               .paddingY(12)
               .borderRounded(8)
               .shadow(
-                BoxShadowMix()
-                    .color(Colors.blueAccent.shade700.withValues(alpha: 0.5))
-                    .offset(x: 0, y: 4)
-                    .blurRadius(8),
+                .color(
+                  Colors.blueAccent.shade700.withValues(alpha: 0.5),
+                ).offset(x: 0, y: 4).blurRadius(8),
               ),
           TextStyler().color(Colors.white).fontSize(16).fontWeight(.w500),
         ),

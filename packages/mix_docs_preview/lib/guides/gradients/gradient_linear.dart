@@ -15,10 +15,7 @@ class Example extends StatelessWidget {
     final style = BoxStyler.size(200, 100)
         .borderRounded(16)
         .shadow(
-          BoxShadowMix()
-              .color(Colors.purple.shade200)
-              .offset(x: 0, y: 8)
-              .blurRadius(20),
+          .color(Colors.purple.shade200).offset(x: 0, y: 8).blurRadius(20),
         )
         .linearGradient(
           colors: [Colors.purple.shade400, Colors.pink.shade300],
