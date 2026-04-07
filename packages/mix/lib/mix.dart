@@ -116,6 +116,9 @@ export 'src/specs/box/box_spec.dart';
 
 /// SPECS
 export 'src/specs/box/box_style.dart';
+
+/// SPECS
+export 'src/specs/box/box_styler_wrapper.dart';
 export 'src/specs/box/box_widget.dart';
 export 'src/specs/flex/flex_mutable_style.dart';
 export 'src/specs/flex/flex_spec.dart';
