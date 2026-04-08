@@ -122,6 +122,15 @@ nav a, aside a, [role="complementary"] a {
     transition: color 0.15s ease;
 }
 
+/* Homepage hero overrides — Nextra forces h1 text-align:center */
+.headline {
+    text-align: left !important;
+}
+
+.subtitle {
+    text-align: left !important;
+}
+
 /* Shiki overrides for inline snippet highlighting */
 .shiki {
     background-color: transparent !important;
