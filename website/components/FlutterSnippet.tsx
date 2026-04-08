@@ -1,8 +1,23 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import type { Highlighter } from "shiki";
 
 type SnippetStatus = "loading" | "ready" | "error";
+
+let highlighterPromise: Promise<Highlighter> | null = null;
+
+function getHighlighter(): Promise<Highlighter> {
+  if (!highlighterPromise) {
+    highlighterPromise = import("shiki").then((shiki) =>
+      shiki.createHighlighter({
+        themes: ["github-dark"],
+        langs: ["dart"],
+      })
+    );
+  }
+  return highlighterPromise;
+}
 
 interface FlutterSnippetProps {
   /** Source file path under /previews/sources (for example: examples/lib/api/widgets/box/simple_box.dart) */
@@ -46,8 +61,9 @@ export function FlutterSnippet({
   errorClassName = "",
 }: FlutterSnippetProps) {
   const [status, setStatus] = useState<SnippetStatus>("loading");
-  const [code, setCode] = useState<string>("");
+  const [highlightedHtml, setHighlightedHtml] = useState<string>("");
   const [error, setError] = useState<string>("");
+  const codeRef = useRef<string>("");
   const normalizedSourcePath = useMemo(
     () => normalizeSourcePath(sourcePath),
     [sourcePath]
@@ -69,7 +85,10 @@ export function FlutterSnippet({
 
       try {
         const sourceUrl = `${basePath.replace(/\/$/, "")}/${normalizedSourcePath}`;
-        const response = await fetch(sourceUrl, { signal: controller.signal });
+        const [response, highlighter] = await Promise.all([
+          fetch(sourceUrl, { signal: controller.signal }),
+          getHighlighter(),
+        ]);
 
         if (!response.ok) {
           throw new Error(`Failed to load source (${response.status})`);
@@ -84,10 +103,19 @@ export function FlutterSnippet({
           throw new Error(`Region "${region}" not found in ${normalizedSourcePath}`);
         }
 
-        const resolvedCode = extracted.found ? extracted.code : fullSource;
+        const resolvedCode = trimEmptyBoundaryLines(
+          extracted.found ? extracted.code : fullSource
+        );
 
         if (!isMounted) return;
-        setCode(trimEmptyBoundaryLines(resolvedCode));
+        codeRef.current = resolvedCode;
+
+        const html = highlighter.codeToHtml(resolvedCode, {
+          lang: "dart",
+          theme: "github-dark",
+        });
+        if (!isMounted) return;
+        setHighlightedHtml(html);
         setStatus("ready");
       } catch (err) {
         if (!isMounted) return;
@@ -134,12 +162,11 @@ export function FlutterSnippet({
         )}
 
         {status === "ready" && (
-          <pre
-            className={`m-0 overflow-auto p-4 text-xs leading-6 text-zinc-200 ${codeClassName}`.trim()}
+          <div
+            className={`m-0 overflow-auto text-xs leading-6 ${codeClassName}`.trim()}
             style={{ maxHeight }}
-          >
-            <code>{code}</code>
-          </pre>
+            dangerouslySetInnerHTML={{ __html: highlightedHtml }}
+          />
         )}
       </div>
     </div>

@@ -99,7 +99,6 @@ export function FeatureShowcase() {
           >
             <FeatureBlock
               feature={feature}
-              reversed={index % 2 !== 0}
               snippetEntry={SNIPPET_ENTRIES[feature.previewId]}
             />
           </motion.div>
@@ -111,30 +110,24 @@ export function FeatureShowcase() {
 
 function FeatureBlock({
   feature,
-  reversed,
   snippetEntry,
 }: {
   feature: Feature;
-  reversed: boolean;
   snippetEntry?: PreviewManifestEntry;
 }) {
   return (
-    <div
-      className={`grid grid-cols-1 items-center gap-10 lg:grid-cols-[1fr_1.2fr] lg:gap-16 ${
-        reversed ? "lg:[direction:rtl]" : ""
-      }`}
-    >
-      {/* Text side */}
-      <div className={reversed ? "[direction:ltr]" : ""}>
+    <div className="space-y-6">
+      {/* Text */}
+      <div>
         <h3 className="text-3xl font-bold tracking-[-0.04em] leading-[1.15] text-zinc-100 sm:text-[2.25rem]">
           {feature.title}
         </h3>
-        <p className="mt-4 max-w-[380px] text-[15px] leading-7 text-zinc-400">
+        <p className="mt-4 max-w-[520px] text-[15px] leading-7 text-zinc-400">
           {feature.subtitle}
         </p>
         <Link
           href={feature.learnMoreHref}
-          className="group mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-zinc-500 transition-colors hover:text-violet-400"
+          className="group mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-zinc-500 transition-colors hover:text-violet-400"
         >
           {feature.learnMoreLabel}
           <span
@@ -146,10 +139,10 @@ function FeatureBlock({
         </Link>
       </div>
 
-      {/* Code card + preview */}
-      <div className={`relative lg:pb-8 ${reversed ? "[direction:ltr]" : ""}`}>
-        {/* Code card — full surface */}
-        <div className="overflow-hidden rounded-xl" style={{ border: "1px solid var(--mix-border-card)", backgroundColor: "var(--mix-surface-card)" }}>
+      {/* Code (left) + Preview (right) */}
+      <div className="grid grid-cols-1 items-stretch gap-4 lg:grid-cols-[1fr_auto]">
+        {/* Code card */}
+        <div className="min-w-0 overflow-hidden rounded-xl" style={{ border: "1px solid var(--mix-border-card)", backgroundColor: "var(--mix-surface-card)" }}>
           {/* File label */}
           <div className="border-b border-white/[0.05] px-5 py-2">
             <span className="text-[11px] tracking-wide text-zinc-600 font-mono uppercase">
@@ -164,7 +157,7 @@ function FeatureBlock({
                 sourcePath={snippetEntry.sourcePath}
                 region={snippetEntry.snippetRegion ?? undefined}
                 showMeta={false}
-                maxHeight={230}
+                maxHeight={320}
                 surfaceClassName="overflow-hidden"
                 codeClassName="overflow-x-auto px-5 py-4 font-mono text-[12.5px] leading-[1.9]"
                 loadingClassName="px-5 py-8 text-zinc-500"
@@ -185,29 +178,21 @@ function FeatureBlock({
           </div>
         </div>
 
-        {/* Flutter preview — stacked on mobile, overlapping on desktop */}
+        {/* Flutter preview */}
         <div
-          className="relative mt-4 flex justify-center lg:absolute lg:mt-0 lg:-bottom-8 lg:right-0 lg:-right-10 lg:z-10"
+          className="flex items-center justify-center"
           style={{
-            width: "100%",
-            height: feature.previewHeight ?? 220,
-            filter: "drop-shadow(0 20px 40px rgba(0, 0, 0, 0.5))",
+            width: feature.previewWidth ?? 280,
+            minHeight: feature.previewHeight ?? 220,
           }}
         >
-          <div
-            style={{
-              width: feature.previewWidth ?? 280,
-              height: feature.previewHeight ?? 220,
-            }}
-          >
-            <FlutterMultiView
-              previewId={feature.previewId}
-              height={feature.previewHeight ?? 220}
-              bordered={false}
-              transparent
-              lazyLoad
-            />
-          </div>
+          <FlutterMultiView
+            previewId={feature.previewId}
+            height={feature.previewHeight ?? 220}
+            bordered={false}
+            transparent
+            lazyLoad
+          />
         </div>
       </div>
     </div>
