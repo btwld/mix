@@ -140,7 +140,7 @@ function FeatureBlock({
       </div>
 
       {/* Code (left) + Preview (right) */}
-      <div className="grid grid-cols-1 items-stretch gap-4 lg:grid-cols-[1fr_auto]">
+      <div className="grid grid-cols-1 items-center gap-4 lg:grid-cols-[1fr_auto]">
         {/* Code card */}
         <div className="min-w-0 overflow-hidden rounded-xl" style={{ border: "1px solid var(--mix-border-card)", backgroundColor: "var(--mix-surface-card)" }}>
           {/* File label */}
@@ -180,10 +180,10 @@ function FeatureBlock({
 
         {/* Flutter preview */}
         <div
-          className="flex items-center justify-center"
+          className="flex items-center justify-center overflow-visible"
           style={{
             width: feature.previewWidth ?? 280,
-            minHeight: feature.previewHeight ?? 220,
+            height: feature.previewHeight ?? 220,
           }}
         >
           <FlutterMultiView

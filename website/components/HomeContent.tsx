@@ -79,6 +79,31 @@ export const HomeContent = () => {
               </Button>
             </motion.div>
             <FeatureShowcase />
+
+            {/* Bottom CTA */}
+            <motion.div
+              className="not-prose mt-32 mb-20 border-t border-white/[0.06] pt-16"
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 0.7, ease: [0.25, 0.4, 0.25, 1] as const }}
+            >
+              <h2 className="text-2xl font-bold tracking-[-0.03em] text-zinc-100 sm:text-3xl">
+                Ready to build?
+              </h2>
+              <p className="mt-3 max-w-[440px] text-[15px] leading-7 text-zinc-400">
+                Explore the full API, learn the patterns, and start
+                building your design system with Mix.
+              </p>
+              <div className="mt-6 flex flex-col sm:flex-row gap-3">
+                <Button href="/documentation/overview/introduction" variant="filled" arrow="right">
+                  <>Read the docs</>
+                </Button>
+                <Button href="/documentation/overview/getting-started" variant="outline">
+                  <>Quick start</>
+                </Button>
+              </div>
+            </motion.div>
           </div>
 
           <style jsx>{`
