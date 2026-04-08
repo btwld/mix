@@ -86,16 +86,15 @@ const SNIPPET_ENTRIES: Record<string, PreviewManifestEntry> = Object.fromEntries
 
 export function FeatureShowcase() {
   return (
-    <div className="not-prose my-20">
-      <div className="flex flex-col">
-        {FEATURES.map((feature, index) => (
+    <div className="not-prose">
+      <div className="flex flex-col gap-24">
+        {FEATURES.map((feature) => (
           <motion.div
             key={feature.previewId}
-            className={index === 0 ? "mt-0" : index <= 2 ? "mt-28" : "mt-24"}
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.7, ease: [0.25, 0.4, 0.25, 1] as const }}
+            transition={{ duration: 0.6, ease: [0.25, 0.4, 0.25, 1] as const }}
           >
             <FeatureBlock
               feature={feature}
@@ -116,18 +115,18 @@ function FeatureBlock({
   snippetEntry?: PreviewManifestEntry;
 }) {
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {/* Text */}
       <div>
-        <h3 className="text-3xl font-bold tracking-[-0.04em] leading-[1.15] text-zinc-100 sm:text-[2.25rem]">
+        <h3 className="text-xl font-semibold tracking-[-0.02em] text-white sm:text-2xl">
           {feature.title}
         </h3>
-        <p className="mt-4 max-w-[520px] text-[15px] leading-7 text-zinc-400">
+        <p className="mt-3 max-w-[520px] text-sm leading-relaxed text-[var(--mix-text-muted)]">
           {feature.subtitle}
         </p>
         <Link
           href={feature.learnMoreHref}
-          className="group mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-zinc-500 transition-colors hover:text-violet-400"
+          className="group mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--mix-text-muted)] transition-colors hover:text-[var(--mix-accent)]"
         >
           {feature.learnMoreLabel}
           <span
@@ -142,10 +141,25 @@ function FeatureBlock({
       {/* Code (left) + Preview (right) */}
       <div className="grid grid-cols-1 items-center gap-4 lg:grid-cols-[1fr_auto]">
         {/* Code card */}
-        <div className="min-w-0 overflow-hidden rounded-xl" style={{ border: "1px solid var(--mix-border-card)", backgroundColor: "var(--mix-surface-card)" }}>
+        <div
+          className="code-card min-w-0 overflow-hidden rounded-xl relative"
+          style={{
+            border: "1px solid var(--mix-border-card)",
+            backgroundColor: "var(--mix-surface)",
+            boxShadow: "0 40px 80px rgba(0, 0, 0, 0.3)",
+          }}
+        >
+          {/* Accent line at top */}
+          <div
+            className="absolute top-0 left-0 right-0 h-px"
+            style={{
+              background: "linear-gradient(90deg, transparent, var(--mix-accent), transparent)",
+            }}
+          />
+
           {/* File label */}
-          <div className="border-b border-white/[0.05] px-5 py-2">
-            <span className="text-[11px] tracking-wide text-zinc-600 font-mono uppercase">
+          <div className="border-b border-white/[0.05] px-5 py-2.5">
+            <span className="text-[11px] tracking-[0.1em] text-[var(--mix-text-muted)] font-mono uppercase">
               example.dart
             </span>
           </div>
@@ -159,20 +173,20 @@ function FeatureBlock({
                 showMeta={false}
                 maxHeight={320}
                 surfaceClassName="overflow-hidden"
-                codeClassName="overflow-x-auto px-5 py-4 font-mono text-[12.5px] leading-[1.9]"
-                loadingClassName="px-5 py-8 text-zinc-500"
+                codeClassName="overflow-x-auto px-5 py-4 font-mono text-[13px] leading-[1.6]"
+                loadingClassName="px-5 py-8 text-[var(--mix-text-muted)]"
                 errorClassName="px-5 py-4"
               />
             ) : (
-              <div className="px-5 py-8 text-sm text-zinc-500">
+              <div className="px-5 py-8 text-sm text-[var(--mix-text-muted)]">
                 Example source unavailable.
               </div>
             )}
-            {/* Subtle bottom fade */}
+            {/* Bottom fade */}
             <div
               className="pointer-events-none absolute bottom-0 left-0 right-0 h-8"
               style={{
-                background: "linear-gradient(to top, var(--mix-surface-card), transparent)",
+                background: "linear-gradient(to top, var(--mix-surface), transparent)",
               }}
             />
           </div>
