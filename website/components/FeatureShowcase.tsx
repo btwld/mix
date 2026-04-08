@@ -16,6 +16,10 @@ interface Feature {
   previewId: string;
   previewWidth?: number;
   previewHeight?: number;
+  /** Grid column span on large screens (out of 2). Default 1. */
+  colSpan?: 1 | 2;
+  /** Layout direction inside the card */
+  layout?: "stacked" | "side-by-side";
 }
 
 const FEATURES: Feature[] = [
@@ -26,6 +30,8 @@ const FEATURES: Feature[] = [
     learnMoreHref: "/documentation/guides/styling",
     learnMoreLabel: "See the styling guide",
     previewId: "homepage/styling",
+    colSpan: 2,
+    layout: "side-by-side",
   },
   {
     title: "Context-Reactive Variants",
@@ -34,6 +40,7 @@ const FEATURES: Feature[] = [
     learnMoreHref: "/documentation/guides/dynamic-styling",
     learnMoreLabel: "Explore variants",
     previewId: "homepage/variants",
+    layout: "stacked",
   },
   {
     title: "Powerful Animations",
@@ -42,6 +49,7 @@ const FEATURES: Feature[] = [
     learnMoreHref: "/documentation/guides/animations",
     learnMoreLabel: "Animation docs",
     previewId: "homepage/animation",
+    layout: "stacked",
   },
   {
     title: "Design System Buttons",
@@ -52,6 +60,8 @@ const FEATURES: Feature[] = [
     previewId: "homepage/buttons",
     previewWidth: 320,
     previewHeight: 80,
+    colSpan: 2,
+    layout: "side-by-side",
   },
   {
     title: "Text Directives",
@@ -62,10 +72,22 @@ const FEATURES: Feature[] = [
     previewId: "homepage/directives",
     previewWidth: 320,
     previewHeight: 100,
+    colSpan: 2,
+    layout: "side-by-side",
   },
 ];
 
-function normalizeManifestEntry(entry: (typeof previewsManifest.entries)[number]): PreviewManifestEntry {
+interface ManifestRawEntry {
+  previewId: string;
+  sourcePath: string;
+  snippetRegion?: string | null;
+  title?: string | null;
+  description?: string | null;
+  category?: string | null;
+  renderable: boolean;
+}
+
+function normalizeManifestEntry(entry: ManifestRawEntry): PreviewManifestEntry {
   return {
     previewId: entry.previewId,
     sourcePath: entry.sourcePath,
@@ -78,135 +100,189 @@ function normalizeManifestEntry(entry: (typeof previewsManifest.entries)[number]
 }
 
 const SNIPPET_ENTRIES: Record<string, PreviewManifestEntry> = Object.fromEntries(
-  previewsManifest.entries.map((entry) => [
+  (previewsManifest.entries as ManifestRawEntry[]).map((entry) => [
     entry.previewId,
     normalizeManifestEntry(entry),
   ])
 );
 
+const cardStagger = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.08,
+    },
+  },
+};
+
+const cardReveal = {
+  hidden: { opacity: 0, y: 24 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.5,
+      ease: [0.25, 0.4, 0.25, 1] as const,
+    },
+  },
+};
+
 export function FeatureShowcase() {
   return (
     <div className="not-prose">
-      <div className="flex flex-col gap-24">
-        {FEATURES.map((feature) => (
-          <motion.div
-            key={feature.previewId}
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.6, ease: [0.25, 0.4, 0.25, 1] as const }}
-          >
-            <FeatureBlock
-              feature={feature}
-              snippetEntry={SNIPPET_ENTRIES[feature.previewId]}
-            />
-          </motion.div>
-        ))}
+      {/* Outer grid wrapper — subtle background like Tailwind's contained grid */}
+      <div
+        className="rounded-3xl p-2"
+        style={{
+          background: "rgba(255, 255, 255, 0.03)",
+          outline: "1px solid rgba(255, 255, 255, 0.06)",
+        }}
+      >
+        <motion.div
+          className="grid grid-cols-1 gap-2 lg:grid-cols-2"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-60px" }}
+          variants={cardStagger}
+        >
+          {FEATURES.map((feature) => (
+            <motion.div
+              key={feature.previewId}
+              className={feature.colSpan === 2 ? "lg:col-span-2" : ""}
+              variants={cardReveal}
+            >
+              <FeatureCard
+                feature={feature}
+                snippetEntry={SNIPPET_ENTRIES[feature.previewId]}
+              />
+            </motion.div>
+          ))}
+        </motion.div>
       </div>
     </div>
   );
 }
 
-function FeatureBlock({
+function FeatureCard({
   feature,
   snippetEntry,
 }: {
   feature: Feature;
   snippetEntry?: PreviewManifestEntry;
 }) {
+  const isSideBySide = feature.layout === "side-by-side";
+
   return (
-    <div className="space-y-5">
-      {/* Text */}
-      <div>
-        <h3 className="text-xl font-semibold tracking-[-0.02em] text-white sm:text-2xl">
-          {feature.title}
-        </h3>
-        <p className="mt-3 max-w-[520px] text-sm leading-relaxed text-[var(--mix-text-muted)]">
-          {feature.subtitle}
-        </p>
-        <Link
-          href={feature.learnMoreHref}
-          className="group mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--mix-text-muted)] transition-colors hover:text-[var(--mix-accent)]"
-        >
-          {feature.learnMoreLabel}
-          <span
-            aria-hidden
-            className="text-xs transition-transform group-hover:translate-x-0.5"
-          >
-            →
-          </span>
-        </Link>
-      </div>
-
-      {/* Code (left) + Preview (right) */}
-      <div className="grid grid-cols-1 items-center gap-4 lg:grid-cols-[1fr_auto]">
-        {/* Code card */}
-        <div
-          className="code-card min-w-0 overflow-hidden rounded-xl relative"
-          style={{
-            border: "1px solid var(--mix-border-card)",
-            backgroundColor: "var(--mix-surface)",
-            boxShadow: "0 40px 80px rgba(0, 0, 0, 0.3)",
-          }}
-        >
-          {/* Accent line at top */}
-          <div
-            className="absolute top-0 left-0 right-0 h-px"
-            style={{
-              background: "linear-gradient(90deg, transparent, var(--mix-accent), transparent)",
-            }}
-          />
-
-          {/* File label */}
-          <div className="border-b border-white/[0.05] px-5 py-2.5">
-            <span className="text-[11px] tracking-[0.1em] text-[var(--mix-text-muted)] font-mono uppercase">
-              example.dart
-            </span>
+    <div
+      className="group relative flex h-full flex-col overflow-hidden rounded-2xl"
+      style={{
+        background: "var(--mix-surface)",
+        outline: "1px solid rgba(255, 255, 255, 0.06)",
+      }}
+    >
+      {/* Card content */}
+      <div className={
+        isSideBySide
+          ? "flex flex-col gap-0 lg:flex-row lg:items-stretch"
+          : "flex flex-col"
+      }>
+        {/* Text + Code section */}
+        <div className={
+          isSideBySide
+            ? "flex min-w-0 flex-1 flex-col"
+            : "flex flex-col"
+        }>
+          {/* Text header */}
+          <div className="px-6 pt-6 pb-4">
+            <h3 className="text-base font-semibold tracking-[-0.01em] text-white">
+              {feature.title}
+            </h3>
+            <p className="mt-2 text-sm leading-relaxed text-[var(--mix-text-muted)]">
+              {feature.subtitle}
+            </p>
+            <Link
+              href={feature.learnMoreHref}
+              className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium text-[var(--mix-accent)] opacity-80 transition-opacity hover:opacity-100"
+            >
+              {feature.learnMoreLabel}
+              <span aria-hidden className="transition-transform group-hover:translate-x-0.5">
+                →
+              </span>
+            </Link>
           </div>
 
-          {/* Code content */}
-          <div className="relative">
-            {snippetEntry ? (
-              <FlutterSnippet
-                sourcePath={snippetEntry.sourcePath}
-                region={snippetEntry.snippetRegion ?? undefined}
-                showMeta={false}
-                maxHeight={320}
-                surfaceClassName="overflow-hidden"
-                codeClassName="overflow-x-auto px-5 py-4 font-mono text-[13px] leading-[1.6]"
-                loadingClassName="px-5 py-8 text-[var(--mix-text-muted)]"
-                errorClassName="px-5 py-4"
-              />
-            ) : (
-              <div className="px-5 py-8 text-sm text-[var(--mix-text-muted)]">
-                Example source unavailable.
-              </div>
-            )}
-            {/* Bottom fade */}
+          {/* Code snippet */}
+          <div className="min-w-0 flex-1 px-2 pb-2">
             <div
-              className="pointer-events-none absolute bottom-0 left-0 right-0 h-8"
+              className="h-full min-w-0 overflow-hidden rounded-xl"
               style={{
-                background: "linear-gradient(to top, var(--mix-surface), transparent)",
+                background: "var(--mix-bg)",
+                border: "1px solid rgba(255, 255, 255, 0.04)",
               }}
-            />
+            >
+              {/* File label */}
+              <div className="border-b border-white/[0.04] px-4 py-2">
+                <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-white/30">
+                  example.dart
+                </span>
+              </div>
+
+              {/* Code */}
+              <div className="relative">
+                {snippetEntry ? (
+                  <FlutterSnippet
+                    sourcePath={snippetEntry.sourcePath}
+                    region={snippetEntry.snippetRegion ?? undefined}
+                    showMeta={false}
+                    maxHeight={isSideBySide ? 280 : 220}
+                    surfaceClassName="overflow-hidden"
+                    codeClassName="overflow-x-auto px-4 py-3 font-mono text-[12px] leading-[1.7]"
+                    loadingClassName="px-4 py-6 text-[var(--mix-text-muted)]"
+                    errorClassName="px-4 py-3"
+                  />
+                ) : (
+                  <div className="px-4 py-6 text-sm text-[var(--mix-text-muted)]">
+                    Example source unavailable.
+                  </div>
+                )}
+                {/* Bottom fade */}
+                <div
+                  className="pointer-events-none absolute bottom-0 left-0 right-0 h-6"
+                  style={{
+                    background: "linear-gradient(to top, var(--mix-bg), transparent)",
+                  }}
+                />
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Flutter preview */}
         <div
-          className="flex items-center justify-center overflow-visible"
+          className={
+            isSideBySide
+              ? "flex shrink-0 items-center justify-center border-t border-white/[0.04] p-6 lg:border-t-0 lg:border-l"
+              : "flex items-center justify-center border-t border-white/[0.04] p-6"
+          }
           style={{
-            width: feature.previewWidth ?? 280,
-            height: feature.previewHeight ?? 220,
+            minWidth: isSideBySide ? Math.max(feature.previewWidth ?? 280, 280) : undefined,
           }}
         >
-          <FlutterMultiView
-            previewId={feature.previewId}
-            height={feature.previewHeight ?? 220}
-            bordered={false}
-            transparent
-            lazyLoad
-          />
+          <div
+            className="flex items-center justify-center overflow-visible"
+            style={{
+              width: feature.previewWidth ?? 240,
+              height: feature.previewHeight ?? 200,
+            }}
+          >
+            <FlutterMultiView
+              previewId={feature.previewId}
+              height={feature.previewHeight ?? 200}
+              bordered={false}
+              transparent
+              lazyLoad
+            />
+          </div>
         </div>
       </div>
     </div>

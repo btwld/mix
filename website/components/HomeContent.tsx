@@ -92,6 +92,10 @@ export const HomeContent = () => {
               >
                 <span className="mono-label">Features</span>
                 <h2 className="section-title">Expressive by design, precise by nature.</h2>
+                <p className="mt-4 max-w-[540px] text-base leading-relaxed text-[var(--mix-text-muted)]">
+                  Mix takes advantage of Dart&apos;s type system and fluent APIs to make
+                  styling composable, reactive, and delightful to write.
+                </p>
               </motion.div>
               <FeatureShowcase />
             </section>
@@ -178,8 +182,8 @@ export const HomeContent = () => {
             }
 
             .section-header {
-              text-align: center;
-              margin-bottom: 60px;
+              text-align: left;
+              margin-bottom: 48px;
             }
 
             .section-title {
