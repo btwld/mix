@@ -12,6 +12,7 @@ interface Feature {
   title: string;
   subtitle: string;
   learnMoreHref: string;
+  learnMoreLabel: string;
   previewId: string;
   previewWidth?: number;
   previewHeight?: number;
@@ -23,6 +24,7 @@ const FEATURES: Feature[] = [
     subtitle:
       "Define size, color, and shape in a single fluent chain. Each method returns a new style — readable, composable, and type-safe.",
     learnMoreHref: "/documentation/guides/styling",
+    learnMoreLabel: "See the styling guide",
     previewId: "homepage/styling",
   },
   {
@@ -30,6 +32,7 @@ const FEATURES: Feature[] = [
     subtitle:
       "Declare hover behavior inline — color, scale, and shadow all react to state without conditional logic.",
     learnMoreHref: "/documentation/guides/dynamic-styling",
+    learnMoreLabel: "Explore variants",
     previewId: "homepage/variants",
   },
   {
@@ -37,6 +40,7 @@ const FEATURES: Feature[] = [
     subtitle:
       "Define keyframe timelines with multiple property tracks directly inside styles. No external animation controllers needed.",
     learnMoreHref: "/documentation/guides/animations",
+    learnMoreLabel: "Animation docs",
     previewId: "homepage/animation",
   },
   {
@@ -44,6 +48,7 @@ const FEATURES: Feature[] = [
     subtitle:
       "Define a base button once, then compose variants by adding just what differs. Text styling flows through via inherited defaults.",
     learnMoreHref: "/documentation/tutorials/creating-a-widget",
+    learnMoreLabel: "Build your own widget",
     previewId: "homepage/buttons",
     previewWidth: 320,
     previewHeight: 80,
@@ -53,6 +58,7 @@ const FEATURES: Feature[] = [
     subtitle:
       "Apply uppercase and capitalize transforms directly in the style. Directives stay attached through merges and composition.",
     learnMoreHref: "/documentation/guides/directives",
+    learnMoreLabel: "Directives guide",
     previewId: "homepage/directives",
     previewWidth: 320,
     previewHeight: 100,
@@ -81,10 +87,11 @@ const SNIPPET_ENTRIES: Record<string, PreviewManifestEntry> = Object.fromEntries
 export function FeatureShowcase() {
   return (
     <div className="not-prose my-20">
-      <div className="space-y-32">
+      <div className="flex flex-col">
         {FEATURES.map((feature, index) => (
           <motion.div
             key={feature.previewId}
+            className={index === 0 ? "mt-0" : index <= 2 ? "mt-28" : "mt-24"}
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
@@ -119,15 +126,7 @@ function FeatureBlock({
     >
       {/* Text side */}
       <div className={reversed ? "[direction:ltr]" : ""}>
-        <h3
-          className="text-3xl font-bold tracking-[-0.04em] leading-[1.15] sm:text-[2.25rem]"
-          style={{
-            backgroundImage: "linear-gradient(146deg, #fff, #a78bfa)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            backgroundClip: "text",
-          }}
-        >
+        <h3 className="text-3xl font-bold tracking-[-0.04em] leading-[1.15] text-zinc-100 sm:text-[2.25rem]">
           {feature.title}
         </h3>
         <p className="mt-4 max-w-[380px] text-[15px] leading-7 text-zinc-400">
@@ -137,7 +136,7 @@ function FeatureBlock({
           href={feature.learnMoreHref}
           className="group mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-zinc-500 transition-colors hover:text-violet-400"
         >
-          Learn more
+          {feature.learnMoreLabel}
           <span
             aria-hidden
             className="text-xs transition-transform group-hover:translate-x-0.5"
@@ -147,18 +146,13 @@ function FeatureBlock({
         </Link>
       </div>
 
-      {/* Code card + overlapping preview */}
-      <div className={`relative pb-8 ${reversed ? "[direction:ltr]" : ""}`}>
+      {/* Code card + preview */}
+      <div className={`relative lg:pb-8 ${reversed ? "[direction:ltr]" : ""}`}>
         {/* Code card — full surface */}
-        <div className="overflow-hidden rounded-xl border border-white/[0.07] bg-[#141417]">
-          {/* Window chrome */}
-          <div className="flex items-center gap-2 border-b border-white/[0.05] px-4 py-2.5">
-            <div className="flex gap-1.5">
-              <span className="h-[9px] w-[9px] rounded-full bg-white/[0.08]" />
-              <span className="h-[9px] w-[9px] rounded-full bg-white/[0.08]" />
-              <span className="h-[9px] w-[9px] rounded-full bg-white/[0.08]" />
-            </div>
-            <span className="ml-2 text-[11px] tracking-wide text-zinc-600 font-mono uppercase">
+        <div className="overflow-hidden rounded-xl" style={{ border: "1px solid var(--mix-border-card)", backgroundColor: "var(--mix-surface-card)" }}>
+          {/* File label */}
+          <div className="border-b border-white/[0.05] px-5 py-2">
+            <span className="text-[11px] tracking-wide text-zinc-600 font-mono uppercase">
               example.dart
             </span>
           </div>
@@ -185,28 +179,35 @@ function FeatureBlock({
             <div
               className="pointer-events-none absolute bottom-0 left-0 right-0 h-8"
               style={{
-                background: "linear-gradient(to top, #141417, transparent)",
+                background: "linear-gradient(to top, var(--mix-surface-card), transparent)",
               }}
             />
           </div>
         </div>
 
-        {/* Overlapping Flutter preview */}
+        {/* Flutter preview — stacked on mobile, overlapping on desktop */}
         <div
-          className={`absolute -bottom-8 z-10 -right-6 lg:-right-10`}
+          className="relative mt-4 flex justify-center lg:absolute lg:mt-0 lg:-bottom-8 lg:right-0 lg:-right-10 lg:z-10"
           style={{
-            width: feature.previewWidth ?? 280,
+            width: "100%",
             height: feature.previewHeight ?? 220,
             filter: "drop-shadow(0 20px 40px rgba(0, 0, 0, 0.5))",
           }}
         >
-          <FlutterMultiView
-            previewId={feature.previewId}
-            height={feature.previewHeight ?? 220}
-            bordered={false}
-            transparent
-            lazyLoad
-          />
+          <div
+            style={{
+              width: feature.previewWidth ?? 280,
+              height: feature.previewHeight ?? 220,
+            }}
+          >
+            <FlutterMultiView
+              previewId={feature.previewId}
+              height={feature.previewHeight ?? 220}
+              bordered={false}
+              transparent
+              lazyLoad
+            />
+          </div>
         </div>
       </div>
     </div>

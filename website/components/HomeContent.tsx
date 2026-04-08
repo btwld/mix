@@ -46,7 +46,7 @@ export const HomeContent = () => {
             >
               <h1 className="headline">
                 An Expressive Styling
-                <br className="" />
+                <br className="hidden sm:inline" />
                 System for Flutter
               </h1>
             </motion.div>
@@ -59,7 +59,7 @@ export const HomeContent = () => {
             >
               <p className="subtitle">
                 Effortlessly style your widgets
-                <br className="" />
+                <br className="hidden sm:inline" />
                 and build design systems.
               </p>
             </motion.div>
@@ -77,9 +77,6 @@ export const HomeContent = () => {
               <Button href="https://discord.com/invite/Ycn6GV3m2k" variant="discord" target="_blank">
                 <>Join our community</>
               </Button>
-              <Button href="/documentation/overview/introduction" variant="outline">
-                <>Documentation</>
-              </Button>
             </motion.div>
             <FeatureShowcase />
           </div>
@@ -96,15 +93,12 @@ export const HomeContent = () => {
               letter-spacing: -0.12rem;
               margin-left: -0.2rem;
               line-height: 1.2;
-              background-image: linear-gradient(146deg, #000, #757a7d);
+              background-image: var(--mix-gradient-heading, linear-gradient(146deg, #000, #757a7d));
               -webkit-background-clip: text;
               -webkit-text-fill-color: transparent;
               background-clip: text;
               font-feature-settings: initial;
               text-align: left;
-            }
-            :global(.dark) .headline {
-              background-image: linear-gradient(146deg, #fff, #a78bfa);
             }
             .subtitle {
               font-size: 1.6rem;

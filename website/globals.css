@@ -12,9 +12,20 @@ html.dark {
 
     /* Brand surfaces */
     --mix-surface-code: #161616;
+    --mix-surface-card: #141417;
     --mix-surface-table-body: #191919;
     --mix-surface-table-head: #212121;
     --mix-border-table: #303030;
+    --mix-border-card: rgba(255, 255, 255, 0.07);
+
+    /* Brand gradients */
+    --mix-gradient-heading: linear-gradient(146deg, #fff, #a78bfa);
+
+    /* Hero blob palette */
+    --mix-blob-1: #7c3aed;
+    --mix-blob-2: #c084fc;
+    --mix-blob-3: #818cf8;
+    --mix-blob-4: #6d28d9;
 }
 
 body {
