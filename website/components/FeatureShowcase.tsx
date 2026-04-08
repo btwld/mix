@@ -121,7 +121,7 @@ const cardReveal = {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.5,
+      duration: 0.6,
       ease: [0.25, 0.4, 0.25, 1] as const,
     },
   },
@@ -130,13 +130,10 @@ const cardReveal = {
 export function FeatureShowcase() {
   return (
     <div className="not-prose">
-      {/* Outer grid wrapper — subtle background like Tailwind's contained grid */}
+      {/* Outer grid wrapper */}
       <div
-        className="rounded-3xl p-2"
-        style={{
-          background: "rgba(255, 255, 255, 0.03)",
-          outline: "1px solid rgba(255, 255, 255, 0.06)",
-        }}
+        className="rounded-3xl ring-1 ring-white/[0.08] p-2"
+        style={{ background: "var(--mix-surface)" }}
       >
         <motion.div
           className="grid grid-cols-1 gap-2 lg:grid-cols-2"
@@ -174,11 +171,8 @@ function FeatureCard({
 
   return (
     <div
-      className="group relative flex h-full flex-col overflow-hidden rounded-2xl"
-      style={{
-        background: "var(--mix-surface)",
-        outline: "1px solid rgba(255, 255, 255, 0.06)",
-      }}
+      className="group relative flex h-full flex-col overflow-hidden rounded-2xl ring-1 ring-inset ring-white/[0.08]"
+      style={{ background: "var(--mix-surface-bright)" }}
     >
       {/* Card content */}
       <div className={
@@ -202,10 +196,10 @@ function FeatureCard({
             </p>
             <Link
               href={feature.learnMoreHref}
-              className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium text-[var(--mix-accent)] opacity-80 transition-opacity hover:opacity-100"
+              className="group/link mt-3 inline-flex items-center gap-1.5 text-xs font-medium text-[var(--mix-text-muted)] transition-colors hover:text-[var(--mix-accent)]"
             >
               {feature.learnMoreLabel}
-              <span aria-hidden className="transition-transform group-hover:translate-x-0.5">
+              <span aria-hidden className="transition-transform group-hover/link:translate-x-0.5">
                 →
               </span>
             </Link>
@@ -214,15 +208,12 @@ function FeatureCard({
           {/* Code snippet */}
           <div className="min-w-0 flex-1 px-2 pb-2">
             <div
-              className="h-full min-w-0 overflow-hidden rounded-xl"
-              style={{
-                background: "var(--mix-bg)",
-                border: "1px solid rgba(255, 255, 255, 0.04)",
-              }}
+              className="h-full min-w-0 overflow-hidden rounded-xl border border-[var(--mix-border-card)]"
+              style={{ background: "var(--mix-bg)" }}
             >
               {/* File label */}
-              <div className="border-b border-white/[0.04] px-4 py-2">
-                <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-white/30">
+              <div className="border-b border-[var(--mix-border-card)] px-4 py-2">
+                <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-[var(--mix-text-muted)]">
                   example.dart
                 </span>
               </div>
@@ -236,7 +227,7 @@ function FeatureCard({
                     showMeta={false}
                     maxHeight={isSideBySide ? 280 : 220}
                     surfaceClassName="overflow-hidden"
-                    codeClassName="overflow-x-auto px-4 py-3 font-mono text-[12px] leading-[1.7]"
+                    codeClassName="overflow-x-auto px-4 py-3 font-mono text-[13px] leading-[1.7]"
                     loadingClassName="px-4 py-6 text-[var(--mix-text-muted)]"
                     errorClassName="px-4 py-3"
                   />
@@ -261,8 +252,8 @@ function FeatureCard({
         <div
           className={
             isSideBySide
-              ? "flex shrink-0 items-center justify-center border-t border-white/[0.04] p-6 lg:border-t-0 lg:border-l"
-              : "flex items-center justify-center border-t border-white/[0.04] p-6"
+              ? "flex shrink-0 items-center justify-center border-t border-[var(--mix-border-card)] p-6 lg:border-t-0 lg:border-l"
+              : "flex items-center justify-center border-t border-[var(--mix-border-card)] p-6"
           }
           style={{
             minWidth: isSideBySide ? Math.max(feature.previewWidth ?? 280, 280) : undefined,
