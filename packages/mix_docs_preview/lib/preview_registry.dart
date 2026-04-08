@@ -26,6 +26,11 @@ import 'guides/dynamic_styling/pressed.dart' as pressed;
 import 'guides/dynamic_styling/responsive_size.dart' as responsive_size;
 import 'guides/dynamic_styling/selected.dart' as selected;
 import 'guides/dynamic_styling/selected_toggle.dart' as selected_toggle;
+import 'homepage/animation_showcase.dart' as homepage_animation;
+import 'homepage/buttons_showcase.dart' as homepage_buttons;
+import 'homepage/directives_showcase.dart' as homepage_directives;
+import 'homepage/styling_showcase.dart' as homepage_styling;
+import 'homepage/variants_showcase.dart' as homepage_variants;
 import 'guides/gradients/gradient_linear.dart' as gradient_linear;
 import 'guides/gradients/gradient_radial.dart' as gradient_radial;
 import 'guides/gradients/gradient_sweep.dart' as gradient_sweep;
@@ -96,6 +101,7 @@ class PreviewRegistry {
   static const String _tokens = 'Design System';
   static const String _animations = 'Animations';
   static const String _ecosystem = 'Ecosystem';
+  static const String _homepage = 'Homepage';
   static final List<PreviewEntry> _previews = [
     // Documentation embeddings: previewId = doc path (without .mdx) + index
     // overview
@@ -225,6 +231,47 @@ class PreviewRegistry {
           'packages/mix_docs_preview/lib/guides/directives/text_directives.dart',
       category: _widgets,
       builder: (_) => const text_directives.Example(),
+    ),
+    // homepage
+    PreviewEntry(
+      previewId: 'homepage/styling',
+      sourcePath:
+          'packages/mix_docs_preview/lib/homepage/styling_showcase.dart',
+      category: _homepage,
+      builder: (_) => const homepage_styling.Example(),
+      snippetRegion: 'showcase',
+    ),
+    PreviewEntry(
+      previewId: 'homepage/variants',
+      sourcePath:
+          'packages/mix_docs_preview/lib/homepage/variants_showcase.dart',
+      category: _homepage,
+      builder: (_) => const homepage_variants.Example(),
+      snippetRegion: 'showcase',
+    ),
+    PreviewEntry(
+      previewId: 'homepage/animation',
+      sourcePath:
+          'packages/mix_docs_preview/lib/homepage/animation_showcase.dart',
+      category: _homepage,
+      builder: (_) => const homepage_animation.Example(),
+      snippetRegion: 'showcase',
+    ),
+    PreviewEntry(
+      previewId: 'homepage/buttons',
+      sourcePath:
+          'packages/mix_docs_preview/lib/homepage/buttons_showcase.dart',
+      category: _homepage,
+      builder: (_) => const homepage_buttons.Example(),
+      snippetRegion: 'showcase',
+    ),
+    PreviewEntry(
+      previewId: 'homepage/directives',
+      sourcePath:
+          'packages/mix_docs_preview/lib/homepage/directives_showcase.dart',
+      category: _homepage,
+      builder: (_) => const homepage_directives.Example(),
+      snippetRegion: 'showcase',
     ),
     // widgets
     PreviewEntry(

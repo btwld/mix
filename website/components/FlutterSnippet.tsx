@@ -1,8 +1,23 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import type { Highlighter } from "shiki";
 
 type SnippetStatus = "loading" | "ready" | "error";
+
+let highlighterPromise: Promise<Highlighter> | null = null;
+
+function getHighlighter(): Promise<Highlighter> {
+  if (!highlighterPromise) {
+    highlighterPromise = import("shiki").then((shiki) =>
+      shiki.createHighlighter({
+        themes: ["github-dark"],
+        langs: ["dart"],
+      })
+    );
+  }
+  return highlighterPromise;
+}
 
 interface FlutterSnippetProps {
   /** Source file path under /previews/sources (for example: examples/lib/api/widgets/box/simple_box.dart) */
@@ -17,8 +32,18 @@ interface FlutterSnippetProps {
   maxHeight?: number;
   /** Fallback to full file when a region is missing */
   fallbackToFullFile?: boolean;
+  /** Show snippet metadata like title and region */
+  showMeta?: boolean;
   /** Additional CSS classes */
   className?: string;
+  /** Class name for the snippet surface wrapper */
+  surfaceClassName?: string;
+  /** Class name for the code block */
+  codeClassName?: string;
+  /** Class name for the loading state */
+  loadingClassName?: string;
+  /** Class name for the error state */
+  errorClassName?: string;
 }
 
 export function FlutterSnippet({
@@ -28,11 +53,17 @@ export function FlutterSnippet({
   basePath = "/previews/sources",
   maxHeight = 440,
   fallbackToFullFile = true,
+  showMeta = true,
   className = "",
+  surfaceClassName = "overflow-hidden rounded-lg border border-white/10 bg-[#0f1320]",
+  codeClassName = "",
+  loadingClassName = "",
+  errorClassName = "",
 }: FlutterSnippetProps) {
   const [status, setStatus] = useState<SnippetStatus>("loading");
-  const [code, setCode] = useState<string>("");
+  const [highlightedHtml, setHighlightedHtml] = useState<string>("");
   const [error, setError] = useState<string>("");
+  const codeRef = useRef<string>("");
   const normalizedSourcePath = useMemo(
     () => normalizeSourcePath(sourcePath),
     [sourcePath]
@@ -54,7 +85,10 @@ export function FlutterSnippet({
 
       try {
         const sourceUrl = `${basePath.replace(/\/$/, "")}/${normalizedSourcePath}`;
-        const response = await fetch(sourceUrl, { signal: controller.signal });
+        const [response, highlighter] = await Promise.all([
+          fetch(sourceUrl, { signal: controller.signal }),
+          getHighlighter(),
+        ]);
 
         if (!response.ok) {
           throw new Error(`Failed to load source (${response.status})`);
@@ -69,10 +103,19 @@ export function FlutterSnippet({
           throw new Error(`Region "${region}" not found in ${normalizedSourcePath}`);
         }
 
-        const resolvedCode = extracted.found ? extracted.code : fullSource;
+        const resolvedCode = trimEmptyBoundaryLines(
+          extracted.found ? extracted.code : fullSource
+        );
 
         if (!isMounted) return;
-        setCode(trimEmptyBoundaryLines(resolvedCode));
+        codeRef.current = resolvedCode;
+
+        const html = highlighter.codeToHtml(resolvedCode, {
+          lang: "dart",
+          theme: "github-dark",
+        });
+        if (!isMounted) return;
+        setHighlightedHtml(html);
         setStatus("ready");
       } catch (err) {
         if (!isMounted) return;
@@ -92,7 +135,7 @@ export function FlutterSnippet({
 
   return (
     <div className={`not-prose ${className}`}>
-      {(title || region) && (
+      {showMeta && (title || region) && (
         <div className="mb-2 flex items-center justify-between text-xs text-zinc-500">
           <span className="text-zinc-300">{title || "Source"}</span>
           {region && (
@@ -103,26 +146,27 @@ export function FlutterSnippet({
         </div>
       )}
 
-      <div className="overflow-hidden rounded-lg border border-white/10 bg-[#0f1320]">
+      <div className={surfaceClassName}>
         {status === "loading" && (
-          <div className="flex items-center justify-center p-6 text-sm text-zinc-400">
+          <div
+            className={`flex items-center justify-center p-6 text-sm text-zinc-400 ${loadingClassName}`.trim()}
+          >
             Loading source...
           </div>
         )}
 
         {status === "error" && (
-          <div className="p-4 text-sm text-red-400">
+          <div className={`p-4 text-sm text-red-400 ${errorClassName}`.trim()}>
             Failed to load snippet: {error}
           </div>
         )}
 
         {status === "ready" && (
-          <pre
-            className="m-0 overflow-auto p-4 text-xs leading-6 text-zinc-200"
+          <div
+            className={`m-0 overflow-auto text-xs leading-6 ${codeClassName}`.trim()}
             style={{ maxHeight }}
-          >
-            <code>{code}</code>
-          </pre>
+            dangerouslySetInnerHTML={{ __html: highlightedHtml }}
+          />
         )}
       </div>
     </div>

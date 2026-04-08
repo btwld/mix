@@ -10,15 +10,30 @@ html.dark {
     --nextra-primary-saturation: 100%;
     --nextra-primary-lightness: 78%;
 
-    /* Brand surfaces */
-    --mix-surface-code: #161616;
-    --mix-surface-table-body: #191919;
-    --mix-surface-table-head: #212121;
-    --mix-border-table: #303030;
+    /* Core palette */
+    --mix-bg: #05040A;
+    --mix-surface: #0D0B14;
+    --mix-surface-bright: #161421;
+    --mix-accent: #8B5CF6;
+    --mix-accent-low: rgba(139, 92, 246, 0.1);
+    --mix-text-main: #FFFFFF;
+    --mix-text-muted: #A1A1AA;
+    --mix-border-card: rgba(255, 255, 255, 0.08);
+
+    /* Legacy compat */
+    --mix-surface-code: #0D0B14;
+    --mix-surface-card: #0D0B14;
+    --mix-surface-table-body: #0D0B14;
+    --mix-surface-table-head: #161421;
+    --mix-border-table: rgba(255, 255, 255, 0.08);
+
+    /* Brand gradients */
+    --mix-gradient-heading: linear-gradient(to bottom right, #fff, #a1a1aa);
 }
 
 body {
     font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
     background: linear-gradient(to bottom,
             rgba(255, 255, 255, 0) 0%,
             rgba(255, 255, 255, 1) 300px),
@@ -31,7 +46,8 @@ code, pre {
 }
 
 .dark body {
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, #111 300px);
+    background-color: var(--mix-bg);
+    background-image: none;
 }
 
 body ::selection {
@@ -106,3 +122,18 @@ nav a, aside a, [role="complementary"] a {
     transition: color 0.15s ease;
 }
 
+/* Homepage hero overrides — Nextra forces h1 text-align:center */
+.headline {
+    text-align: left !important;
+}
+
+.subtitle {
+    text-align: left !important;
+}
+
+/* Shiki overrides for inline snippet highlighting */
+.shiki {
+    background-color: transparent !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
