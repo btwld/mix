@@ -132,7 +132,7 @@ export function FeatureShowcase() {
     <div className="not-prose">
       {/* Outer grid wrapper */}
       <div
-        className="rounded-3xl ring-1 ring-white/[0.08] p-2"
+        className="overflow-visible rounded-3xl ring-1 ring-white/[0.08] p-2"
         style={{ background: "var(--mix-surface)" }}
       >
         <motion.div
@@ -171,7 +171,7 @@ function FeatureCard({
 
   return (
     <div
-      className="group relative flex h-full flex-col overflow-hidden rounded-2xl ring-1 ring-inset ring-white/[0.08]"
+      className="group relative flex h-full flex-col rounded-2xl ring-1 ring-inset ring-white/[0.08]"
       style={{ background: "var(--mix-surface-bright)" }}
     >
       {/* Card content */}
@@ -211,13 +211,6 @@ function FeatureCard({
               className="h-full min-w-0 overflow-hidden rounded-xl border border-[var(--mix-border-card)]"
               style={{ background: "var(--mix-bg)" }}
             >
-              {/* File label */}
-              <div className="border-b border-[var(--mix-border-card)] px-4 py-2">
-                <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-[var(--mix-text-muted)]">
-                  example.dart
-                </span>
-              </div>
-
               {/* Code */}
               <div className="relative">
                 {snippetEntry ? (

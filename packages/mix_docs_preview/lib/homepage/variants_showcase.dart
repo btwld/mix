@@ -2,7 +2,6 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
-
 import 'package:mix_docs_preview/helpers.dart';
 
 void main() {
@@ -21,6 +20,7 @@ class Example extends StatelessWidget {
         .color(Colors.cyan)
         .alignment(.center)
         .animate(.easeInOut(220.ms))
+        .scale(1)
         .onHovered(.color(Colors.cyanAccent).scale(1.2));
 
     return cardStyle(

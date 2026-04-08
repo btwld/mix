@@ -2,7 +2,6 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
-
 import 'package:mix_docs_preview/helpers.dart';
 
 void main() {
@@ -45,12 +44,15 @@ class _ExampleState extends State<Example> {
               .elasticOut(1.0, 500.ms),
             ], initial: 1.0),
             KeyframeTrack<double>('y', [
-              .ease(-26.0, 140.ms),
+              .ease(-56.0, 140.ms),
               .decelerate(0.0, 280.ms),
             ], initial: 0.0),
           ],
-          styleBuilder: (values, style) =>
-              style.scale(values.get('scale')).translate(0, values.get('y')),
+          styleBuilder: (values, style) => style.transform(
+            Matrix4.identity()
+              ..scaleByDouble(values.get('scale'), values.get('scale'), 1.0, 1)
+              ..translateByDouble(0, values.get('y'), 1, 1),
+          ),
         );
 
     final heartStyle = IconStyler().size(80).color(Colors.white);
