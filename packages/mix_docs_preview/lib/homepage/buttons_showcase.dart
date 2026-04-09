@@ -2,7 +2,6 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
-
 import 'package:mix_docs_preview/helpers.dart';
 
 void main() {
@@ -16,21 +15,22 @@ class Example extends StatelessWidget {
   Widget build(BuildContext context) {
     // #docregion showcase
     final buttonStyle = BoxStyler()
-        .paddingX(24)
-        .paddingY(12)
+        .height(40)
+        .paddingX(14)
         .borderRounded(10)
         .alignment(.center)
         .animate(.easeInOut(180.ms))
+        .scale(1)
         .onPressed(.scale(0.95))
         .wrap(.defaultText(TextStyler().fontSize(14).fontWeight(.w600)));
 
     final solidButtonStyle = buttonStyle
-        .color(Colors.deepPurple)
+        .color(Colors.deepPurpleAccent)
         .wrap(.defaultText(.color(Colors.white)));
 
     final outlinedButtonStyle = buttonStyle
-        .border(.color(Colors.deepPurple).width(1.5))
-        .wrap(.defaultText(.color(Colors.deepPurple)));
+        .border(.color(Colors.deepPurpleAccent).width(1.5))
+        .wrap(.defaultText(.color(Colors.deepPurpleAccent)));
 
     return Row(
       mainAxisSize: MainAxisSize.min,

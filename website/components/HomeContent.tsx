@@ -1,6 +1,7 @@
 
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "./Button";
 import { FeatureShowcase } from "./FeatureShowcase";
@@ -28,6 +29,39 @@ const sectionReveal = {
   viewport: { once: true, margin: "-80px" } as const,
   transition: { duration: 0.6, ease: [0.25, 0.4, 0.25, 1] as const },
 };
+
+function CopyTerminal({ command }: { command: string }) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(command);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <div className="terminal">
+      <span className="terminal-prompt">$</span>
+      <span className="terminal-cmd">{command}</span>
+      <button
+        onClick={handleCopy}
+        className="terminal-copy"
+        aria-label="Copy command"
+      >
+        {copied ? (
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+        ) : (
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+          </svg>
+        )}
+      </button>
+    </div>
+  );
+}
 
 export const HomeContent = () => {
   return (
@@ -124,10 +158,7 @@ export const HomeContent = () => {
           >
             <span className="mono-label">Get Started</span>
             <h2 className="section-title">Add Mix to your project.</h2>
-            <div className="terminal">
-              <span className="terminal-prompt">$</span>
-              <span className="terminal-cmd">flutter pub add mix</span>
-            </div>
+            <CopyTerminal command="flutter pub add mix" />
           </motion.section>
 
           {/* Bottom CTA */}
@@ -239,6 +270,24 @@ export const HomeContent = () => {
         }
 
         .terminal-cmd {
+          color: var(--mix-text-main);
+        }
+
+        .terminal-copy {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          background: none;
+          border: none;
+          color: var(--mix-text-muted);
+          cursor: pointer;
+          padding: 4px;
+          margin-left: 4px;
+          border-radius: 4px;
+          transition: color 0.2s;
+        }
+
+        .terminal-copy:hover {
           color: var(--mix-text-main);
         }
 
