@@ -58,8 +58,6 @@ const FEATURES: Feature[] = [
     learnMoreHref: "/documentation/tutorials/creating-a-widget",
     learnMoreLabel: "Build your own widget",
     previewId: "homepage/buttons",
-    previewWidth: 320,
-    previewHeight: 80,
     colSpan: 2,
     layout: "side-by-side",
   },
@@ -70,8 +68,6 @@ const FEATURES: Feature[] = [
     learnMoreHref: "/documentation/guides/directives",
     learnMoreLabel: "Directives guide",
     previewId: "homepage/directives",
-    previewWidth: 320,
-    previewHeight: 100,
     colSpan: 2,
     layout: "side-by-side",
   },
@@ -264,7 +260,6 @@ function FeatureCard({
               height={feature.previewHeight ?? 200}
               bordered={false}
               transparent
-              lazyLoad
             />
           </div>
         </div>

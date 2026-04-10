@@ -32,19 +32,21 @@ class Example extends StatelessWidget {
         .border(.color(Colors.deepPurpleAccent).width(1.5))
         .wrap(.defaultText(.color(Colors.deepPurpleAccent)));
 
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Pressable(
-          onPress: () {},
-          child: solidButtonStyle(child: const Text('Solid')),
-        ),
-        const SizedBox(width: 12),
-        Pressable(
-          onPress: () {},
-          child: outlinedButtonStyle(child: const Text('Outlined')),
-        ),
-      ],
+    return Center(
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Pressable(
+            onPress: () {},
+            child: solidButtonStyle(child: const Text('Solid')),
+          ),
+          const SizedBox(width: 12),
+          Pressable(
+            onPress: () {},
+            child: outlinedButtonStyle(child: const Text('Outlined')),
+          ),
+        ],
+      ),
     );
     // #enddocregion showcase
   }
