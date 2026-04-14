@@ -89,9 +89,9 @@ export const HomeContent = () => {
               variants={fadeUp}
             >
               <h1 className="headline">
-                An Expressive Styling
+                Composable styles that live
                 <br className="hidden sm:inline" />
-                System for Flutter
+                outside your widget tree.
               </h1>
             </motion.div>
 
@@ -102,8 +102,7 @@ export const HomeContent = () => {
               variants={fadeUp}
             >
               <p className="subtitle">
-                Effortlessly style your widgets
-                and build design systems.
+                Build design systems that scale.
               </p>
             </motion.div>
 
@@ -133,10 +132,10 @@ export const HomeContent = () => {
               transition={{ duration: 0.6, ease: [0.25, 0.4, 0.25, 1] as const }}
             >
               <span className="mono-label">Features</span>
-              <h2 className="section-title">Expressive by design, precise by nature.</h2>
+              <h2 className="section-title">Style composition, reactive variants, and design tokens — in one package.</h2>
               <p className="mt-4 max-w-[540px] text-base leading-relaxed text-[var(--mix-text-muted)]">
-                Mix takes advantage of Dart&apos;s type system and fluent APIs to make
-                styling composable, reactive, and delightful to write.
+                Mix uses Dart&apos;s type system to make styles composable and type-safe.
+                Chain methods to build styles, compose them with variants, and let the framework handle the rest.
               </p>
             </motion.div>
           </section>
@@ -168,8 +167,7 @@ export const HomeContent = () => {
           >
             <h2 className="section-title">Ready to build?</h2>
             <p className="mt-4 text-[var(--mix-text-muted)] max-w-[440px] text-base leading-relaxed">
-              Explore the full API, learn the patterns, and start
-              building your design system with Mix.
+              Start building your first Mix-styled widget in under 5 minutes.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-4">
               <Button href="/documentation/overview/introduction" variant="filled" arrow="right">
