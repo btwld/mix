@@ -13,7 +13,6 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
-
 import 'package:mix_docs_preview/helpers.dart';
 
 void main() {
@@ -44,23 +43,27 @@ class _Example extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = BoxStyler()
-        .borderRadiusTopLeft($pill())
-        .color($primaryColor())
-        .height(100)
-        .width(100)
-        .paddingAll(16.0);
+    // final style = BoxStyler()
+    //     .borderRadiusTopLeft($pill())
+    //     .useToken($primaryColor, BoxStyler.color)
+    //     .color($primaryColor())
+    //     .height(100)
+    //     .width(100)
+    //     .paddingAll(16.0);
+
+    final wrapper = BoxStylerWrapper()
+        .wrap(BoxStyler().useToken($pill, BoxStyler().borderRadiusTopLeft))
+        .wrap(BoxStyler().useToken($primaryColor, BoxStyler().color))
+        .wrap(.color(Colors.red))
+        .wrap(.height(100))
+        .wrap(.width(100))
+        .wrap(BoxStyler().paddingAll(16.0));
 
     return Box(
-      style: style,
+      style: wrapper.resolve(context),
       child: MixScope(
         colors: {$primaryColor: Colors.red},
-        child: StyledText(
-          'Hello, World!',
-          style: TextStyler.color(
-            $primaryColor(),
-          ).wrap(.new().padding(.all($spacing()))),
-        ),
+        child: StyledText('Hello, World!'),
       ),
     );
   }

@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../core/breakpoint.dart';
-import '../../core/spec.dart';
-import '../../core/style.dart';
-import '../../variants/variant.dart';
+import '../../../mix.dart';
 
 /// Mixin that provides convenient variant styling methods for spec attributes.
 ///
@@ -68,6 +65,10 @@ mixin VariantStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
     // Create a VariantStyle with ContextVariantBuilder that will be resolved at runtime
     // Use this style as a placeholder; the actual style comes from the builder function
     return variants([VariantStyle<S>(ContextVariantBuilder<T>(fn), this)]);
+  }
+
+  T useToken<V>(MixToken<V> token, T Function(V) fn) {
+    return onBuilder((context) => fn(token.resolve(context)));
   }
 
   /// Creates a variant based on the specified breakpoint.

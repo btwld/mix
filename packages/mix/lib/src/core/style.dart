@@ -79,7 +79,7 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
   /// 1. ContextVariant and NamedVariant (applied first)
   /// 2. StyleVariation (applied second)
   /// 3. WidgetStateVariant (applied last, highest priority)
-  @visibleForTesting
+  @internal
   Style<S> mergeActiveVariants(
     BuildContext context, {
     required Set<NamedVariant> namedVariants,
