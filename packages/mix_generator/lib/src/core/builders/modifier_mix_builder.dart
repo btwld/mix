@@ -54,10 +54,7 @@ class ModifierMixBuilder {
   final String modifierName;
   final List<ModifierFieldModel> fields;
 
-  const ModifierMixBuilder({
-    required this.modifierName,
-    required this.fields,
-  });
+  const ModifierMixBuilder({required this.modifierName, required this.fields});
 
   /// The generated class name (e.g., OpacityModifier -> OpacityModifierMix).
   String get className => '${modifierName}Mix';

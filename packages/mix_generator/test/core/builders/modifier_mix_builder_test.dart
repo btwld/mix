@@ -50,8 +50,7 @@ void main() {
         );
       });
 
-      test('generates public constructor with Prop.maybe for direct types',
-          () {
+      test('generates public constructor with Prop.maybe for direct types', () {
         final builder = ModifierMixBuilder(
           modifierName: 'OpacityModifier',
           fields: [
@@ -107,10 +106,7 @@ void main() {
         final code = builder.build();
 
         expect(code, contains('@override'));
-        expect(
-          code,
-          contains('OpacityModifier resolve(BuildContext context)'),
-        );
+        expect(code, contains('OpacityModifier resolve(BuildContext context)'));
         expect(code, contains('return OpacityModifier('));
         expect(code, contains('opacity: MixOps.resolve(context, opacity)'));
       });
@@ -131,16 +127,11 @@ void main() {
         expect(code, contains('@override'));
         expect(
           code,
-          contains(
-            'OpacityModifierMix merge(OpacityModifierMix? other)',
-          ),
+          contains('OpacityModifierMix merge(OpacityModifierMix? other)'),
         );
         expect(code, contains('if (other == null) return this;'));
         expect(code, contains('return OpacityModifierMix.create('));
-        expect(
-          code,
-          contains('opacity: MixOps.merge(opacity, other.opacity)'),
-        );
+        expect(code, contains('opacity: MixOps.merge(opacity, other.opacity)'));
       });
 
       test('generates debugFillProperties', () {
@@ -205,10 +196,7 @@ void main() {
 
         expect(code, contains('final Prop<CustomClipper<Rect>>? clipper;'));
         expect(code, contains('final Prop<Clip>? clipBehavior;'));
-        expect(
-          code,
-          contains('clipper: MixOps.resolve(context, clipper)'),
-        );
+        expect(code, contains('clipper: MixOps.resolve(context, clipper)'));
         expect(
           code,
           contains('clipBehavior: MixOps.resolve(context, clipBehavior)'),
@@ -224,9 +212,7 @@ void main() {
 
         expect(
           code,
-          contains(
-            'class NoopModifierMix extends ModifierMix<NoopModifier>',
-          ),
+          contains('class NoopModifierMix extends ModifierMix<NoopModifier>'),
         );
         expect(code, contains('const NoopModifierMix.create();'));
         expect(code, contains('List<Object?> get props => [];'));
