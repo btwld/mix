@@ -19,18 +19,18 @@ final class OpacityModifier extends WidgetModifier<OpacityModifier>
     with Diagnosticable {
   /// Opacity value between 0.0 and 1.0 (inclusive).
   final double opacity;
-  const OpacityModifier({double? opacity}) : opacity = opacity ?? 1.0;
+  const OpacityModifier([double? opacity]) : opacity = opacity ?? 1.0;
 
   @override
   OpacityModifier copyWith({double? opacity}) {
-    return OpacityModifier(opacity: opacity ?? this.opacity);
+    return OpacityModifier(opacity ?? this.opacity);
   }
 
   @override
   OpacityModifier lerp(OpacityModifier? other, double t) {
     if (other == null) return this;
 
-    return OpacityModifier(opacity: MixOps.lerp(opacity, other.opacity, t)!);
+    return OpacityModifier(MixOps.lerp(opacity, other.opacity, t)!);
   }
 
   @override

@@ -17,7 +17,7 @@ class OpacityModifierMix extends ModifierMix<OpacityModifier>
 
   @override
   OpacityModifier resolve(BuildContext context) {
-    return OpacityModifier(opacity: MixOps.resolve(context, opacity));
+    return OpacityModifier(MixOps.resolve(context, opacity));
   }
 
   @override

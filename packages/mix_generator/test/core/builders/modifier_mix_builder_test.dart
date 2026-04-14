@@ -108,7 +108,7 @@ void main() {
         expect(code, contains('@override'));
         expect(code, contains('OpacityModifier resolve(BuildContext context)'));
         expect(code, contains('return OpacityModifier('));
-        expect(code, contains('opacity: MixOps.resolve(context, opacity)'));
+        expect(code, contains('MixOps.resolve(context, opacity)'));
       });
 
       test('generates merge method', () {
@@ -196,11 +196,8 @@ void main() {
 
         expect(code, contains('final Prop<CustomClipper<Rect>>? clipper;'));
         expect(code, contains('final Prop<Clip>? clipBehavior;'));
-        expect(code, contains('clipper: MixOps.resolve(context, clipper)'));
-        expect(
-          code,
-          contains('clipBehavior: MixOps.resolve(context, clipBehavior)'),
-        );
+        expect(code, contains('MixOps.resolve(context, clipper)'));
+        expect(code, contains('MixOps.resolve(context, clipBehavior)'));
       });
 
       test('generates empty class when no fields', () {

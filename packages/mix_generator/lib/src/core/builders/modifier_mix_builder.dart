@@ -115,9 +115,7 @@ class ModifierMixBuilder {
     buffer.writeln('    return $modifierName(');
 
     for (final field in fields) {
-      buffer.writeln(
-        '      ${field.name}: MixOps.resolve(context, ${field.name}),',
-      );
+      buffer.writeln('      MixOps.resolve(context, ${field.name}),');
     }
 
     buffer.writeln('    );');
