@@ -9,7 +9,7 @@ void main() {
     group('Constructor', () {
       test('assigns opacity correctly', () {
         const opacity = 0.5;
-        const modifier = OpacityModifier(opacity);
+        const modifier = OpacityModifier(opacity: opacity);
 
         expect(modifier.opacity, opacity);
       });
@@ -17,7 +17,7 @@ void main() {
 
     group('copyWith', () {
       test('returns new instance with updated opacity', () {
-        const original = OpacityModifier(0.5);
+        const original = OpacityModifier(opacity: 0.5);
         final updated = original.copyWith(opacity: 0.8);
 
         expect(updated.opacity, 0.8);
@@ -25,7 +25,7 @@ void main() {
       });
 
       test('preserves original opacity when parameter is null', () {
-        const original = OpacityModifier(0.5);
+        const original = OpacityModifier(opacity: 0.5);
         final updated = original.copyWith();
 
         expect(updated.opacity, 0.5);
@@ -35,23 +35,23 @@ void main() {
 
     group('lerp', () {
       test('interpolates opacity correctly', () {
-        const start = OpacityModifier(0.0);
-        const end = OpacityModifier(1.0);
+        const start = OpacityModifier(opacity: 0.0);
+        const end = OpacityModifier(opacity: 1.0);
         final result = start.lerp(end, 0.5);
 
         expect(result.opacity, 0.5);
       });
 
       test('handles null other parameter', () {
-        const start = OpacityModifier(0.5);
+        const start = OpacityModifier(opacity: 0.5);
         final result = start.lerp(null, 0.5);
 
         expect(result, same(start));
       });
 
       test('handles extreme t values', () {
-        const start = OpacityModifier(0.0);
-        const end = OpacityModifier(1.0);
+        const start = OpacityModifier(opacity: 0.0);
+        const end = OpacityModifier(opacity: 1.0);
 
         final result0 = start.lerp(end, 0.0);
         expect(result0.opacity, 0.0);
@@ -63,16 +63,16 @@ void main() {
 
     group('equality and hashCode', () {
       test('equal when opacity values match', () {
-        const modifier1 = OpacityModifier(0.5);
-        const modifier2 = OpacityModifier(0.5);
+        const modifier1 = OpacityModifier(opacity: 0.5);
+        const modifier2 = OpacityModifier(opacity: 0.5);
 
         expect(modifier1, equals(modifier2));
         expect(modifier1.hashCode, equals(modifier2.hashCode));
       });
 
       test('not equal when opacity differs', () {
-        const modifier1 = OpacityModifier(0.5);
-        const modifier2 = OpacityModifier(0.8);
+        const modifier1 = OpacityModifier(opacity: 0.5);
+        const modifier2 = OpacityModifier(opacity: 0.8);
 
         expect(modifier1, isNot(equals(modifier2)));
       });
@@ -80,7 +80,7 @@ void main() {
 
     group('props', () {
       test('contains opacity value', () {
-        const modifier = OpacityModifier(0.5);
+        const modifier = OpacityModifier(opacity: 0.5);
 
         expect(modifier.props, [0.5]);
       });
@@ -91,7 +91,7 @@ void main() {
         WidgetTester tester,
       ) async {
         const opacity = 0.5;
-        const modifier = OpacityModifier(opacity);
+        const modifier = OpacityModifier(opacity: opacity);
         const child = SizedBox(width: 50, height: 50);
 
         await tester.pumpWidget(modifier.build(child));
@@ -137,7 +137,7 @@ void main() {
       test('resolves to OpacityModifier with resolved opacity', () {
         final attribute = OpacityModifierMix(opacity: 0.7);
 
-        const expectedModifier = OpacityModifier(0.7);
+        const expectedModifier = OpacityModifier(opacity: 0.7);
 
         expect(attribute, resolvesTo(expectedModifier));
       });
@@ -146,7 +146,7 @@ void main() {
         final attribute = OpacityModifierMix();
 
         const expectedModifier = OpacityModifier(
-          1.0,
+          opacity: 1.0,
         ); // OpacityModifier defaults to 1.0
 
         expect(attribute, resolvesTo(expectedModifier));
@@ -233,8 +233,8 @@ void main() {
     });
 
     test('Lerp produces expected intermediate values', () {
-      const start = OpacityModifier(0.0);
-      const end = OpacityModifier(1.0);
+      const start = OpacityModifier(opacity: 0.0);
+      const end = OpacityModifier(opacity: 1.0);
 
       final quarter = start.lerp(end, 0.25);
       final half = start.lerp(end, 0.5);
