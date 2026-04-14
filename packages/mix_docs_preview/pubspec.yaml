@@ -3,6 +3,8 @@ description: Flutter preview widgets and manifest for the Mix documentation site
 publish_to: none
 version: 1.0.0
 
+resolution: workspace
+
 environment:
   sdk: ">=3.11.0 <4.0.0"
   flutter: ">=3.41.0"
