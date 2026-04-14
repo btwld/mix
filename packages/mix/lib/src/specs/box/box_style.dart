@@ -162,8 +162,8 @@ class BoxStyler extends MixStyler<BoxStyler, BoxSpec>
   // Transform convenience
   factory BoxStyler.scale(double scale, {Alignment alignment = .center}) =>
       BoxStyler().scale(scale, alignment: alignment);
-  factory BoxStyler.rotate(double angle, {Alignment alignment = .center}) =>
-      BoxStyler().rotate(angle, alignment: alignment);
+  factory BoxStyler.rotate(double radians, {Alignment alignment = .center}) =>
+      BoxStyler().rotate(radians, alignment: alignment);
 
   // Style metadata convenience
   factory BoxStyler.animate(AnimationConfig value) =>

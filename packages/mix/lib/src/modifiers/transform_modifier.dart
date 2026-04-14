@@ -329,17 +329,19 @@ class TranslateModifierMix extends ModifierMix<TranslateModifier>
 }
 
 class RotateModifier extends _TransformModifier<RotateModifier> {
-  RotateModifier({double radians = 0.0, super.alignment})
-    : super(transform: Matrix4.rotationZ(radians));
+  final double radians;
 
-  RotateModifier._({super.transform, super.alignment});
+  RotateModifier({this.radians = 0.0, super.alignment})
+    : super(transform: Matrix4.rotationZ(radians));
 
   @override
   RotateModifier lerp(RotateModifier? other, double t) {
     if (other == null) return this;
 
-    return RotateModifier._(
-      transform: MixOps.lerp(transform, other.transform, t),
+    final lerpedRadians = MixOps.lerp(radians, other.radians, t) ?? radians;
+
+    return RotateModifier(
+      radians: lerpedRadians,
       alignment: MixOps.lerp(alignment, other.alignment, t)!,
     );
   }
@@ -347,11 +349,14 @@ class RotateModifier extends _TransformModifier<RotateModifier> {
   @override
   // ignore: avoid-incomplete-copy-with
   RotateModifier copyWith({double? radians, Alignment? alignment}) {
-    return RotateModifier._(
-      transform: radians != null ? Matrix4.rotationZ(radians) : transform,
+    return RotateModifier(
+      radians: radians ?? this.radians,
       alignment: alignment ?? this.alignment,
     );
   }
+
+  @override
+  List<Object?> get props => [radians, alignment];
 }
 
 /// ModifierMix for rotation transform (around Z axis).

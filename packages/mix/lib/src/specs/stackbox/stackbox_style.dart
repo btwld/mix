@@ -175,9 +175,9 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
   factory StackBoxStyler.scale(double scale, {Alignment alignment = .center}) =>
       StackBoxStyler().scale(scale, alignment: alignment);
   factory StackBoxStyler.rotate(
-    double angle, {
+    double radians, {
     Alignment alignment = .center,
-  }) => StackBoxStyler().rotate(angle, alignment: alignment);
+  }) => StackBoxStyler().rotate(radians, alignment: alignment);
 
   // Style metadata convenience
   factory StackBoxStyler.animate(AnimationConfig value) =>
