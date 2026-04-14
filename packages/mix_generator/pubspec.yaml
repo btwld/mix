@@ -4,8 +4,6 @@ version: 2.0.0
 homepage: https://github.com/btwld/mix
 repository: https://github.com/btwld/mix/tree/main/packages/mix_generator
 
-resolution: workspace
-
 environment:
   sdk: ">=3.11.0 <4.0.0"
   

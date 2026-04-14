@@ -4,8 +4,6 @@ version: 0.0.1-alpha.1
 homepage: https://github.com/btwld/mix
 repository: https://github.com/btwld/mix/tree/main/packages/mix_tailwinds
 
-resolution: workspace
-
 environment:
   sdk: ">=3.11.0 <4.0.0"
   flutter: ">=3.41.0"

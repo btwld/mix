@@ -1,12 +1,4 @@
-name: mix_workspace
-
-workspace:
-  - packages/mix
-  - packages/mix_annotations
-  - packages/mix_generator
-  - packages/mix_tailwinds
-  - packages/mix_tailwinds/example
-  - packages/mix_docs_preview
+name: mix
 
 environment:
   sdk: ">=3.11.0 <4.0.0"
