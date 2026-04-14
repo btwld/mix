@@ -48,7 +48,11 @@ class _FakeDartType implements DartType {
       _isNullable ? NullabilitySuffix.question : NullabilitySuffix.none;
 
   @override
-  dynamic noSuchMethod(Invocation invocation) => null;
+  dynamic noSuchMethod(Invocation invocation) {
+    throw UnsupportedError(
+      'Unexpected DartType access in test: ${invocation.memberName}',
+    );
+  }
 }
 
 // Minimal fake FieldElement for testing
@@ -59,7 +63,11 @@ class _FakeFieldElement implements FieldElement {
   _FakeFieldElement(this.name);
 
   @override
-  dynamic noSuchMethod(Invocation invocation) => null;
+  dynamic noSuchMethod(Invocation invocation) {
+    throw UnsupportedError(
+      'Unexpected FieldElement access in test: ${invocation.memberName}',
+    );
+  }
 }
 
 void main() {
@@ -100,6 +108,23 @@ void main() {
           code,
           contains('mixin _\$BoxSpecMethods on Spec<BoxSpec>, Diagnosticable'),
         );
+      });
+
+      test('generates abstract getters for fielded specs', () {
+        final builder = SpecMixinBuilder(
+          specName: 'BoxSpec',
+          fields: [
+            createTestFieldModel(
+              name: 'color',
+              effectiveSpecType: 'Color?',
+              isNullable: true,
+            ),
+          ],
+          config: defaultConfig,
+        );
+        final code = builder.build();
+
+        expect(code, contains('Color? get color;'));
       });
 
       test('generates copyWith override', () {

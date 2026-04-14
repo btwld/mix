@@ -9,6 +9,7 @@ import 'package:analyzer/dart/element/type.dart';
 import '../curated/flag_descriptions.dart';
 import '../curated/type_mappings.dart';
 import '../registry/mix_type_registry.dart';
+import 'type_helpers.dart';
 
 /// Represents a Spec field with computed values for generation.
 class FieldModel {
@@ -98,7 +99,7 @@ class FieldModel {
     final isNullable = type.nullabilitySuffix == .question;
 
     // Get base type name
-    final typeName = _getBaseTypeName(type);
+    final typeName = getBaseTypeName(type);
 
     // Check if list
     final isList = _isList(type);
@@ -206,16 +207,6 @@ enum DiagnosticKind {
 
 // Helper functions
 
-String _getBaseTypeName(DartType type) {
-  final displayString = type.getDisplayString();
-  // Remove nullability suffix
-  if (displayString.endsWith('?')) {
-    return displayString.substring(0, displayString.length - 1);
-  }
-
-  return displayString;
-}
-
 bool _isList(DartType type) {
   if (type is! InterfaceType) return false;
 
@@ -227,7 +218,7 @@ String? _getListElementType(DartType type) {
   if (!type.isDartCoreList) return null;
   if (type.typeArguments.isEmpty) return null;
 
-  return _getBaseTypeName(type.typeArguments.first);
+  return getBaseTypeName(type.typeArguments.first);
 }
 
 String _getEffectiveSpecType(DartType type) {
