@@ -7,6 +7,7 @@ import { Button } from "./Button";
 import { FeatureShowcase } from "./FeatureShowcase";
 import { HeroBackground } from "./HeroBackground";
 
+import { HighlightedCode } from "./HighlightedCode";
 import Layout from "./Layout";
 import { Logo } from "./Logo";
 
@@ -89,9 +90,9 @@ export const HomeContent = () => {
               variants={fadeUp}
             >
               <h1 className="headline">
-                Composable styles that live
+                Flutter styling without
                 <br className="hidden sm:inline" />
-                outside your widget tree.
+                the boilerplate.
               </h1>
             </motion.div>
 
@@ -102,7 +103,7 @@ export const HomeContent = () => {
               variants={fadeUp}
             >
               <p className="subtitle">
-                Build design systems that scale.
+                Fluent, chainable styles. Reactive variants. Design tokens. Build design systems that scale.
               </p>
             </motion.div>
 
@@ -116,11 +117,62 @@ export const HomeContent = () => {
               <Button href="/documentation/overview/getting-started" arrow="right">
                 <>Get Started</>
               </Button>
-              <Button href="https://github.com/btwld/mix" variant="secondary" target="_blank">
-                <>GitHub</>
+              <Button href="https://discord.com/invite/Ycn6GV3m2k" variant="secondary" target="_blank">
+                <>Join the community</>
               </Button>
             </motion.div>
           </div>
+
+          {/* Before / After comparison */}
+          <section className="section-gap">
+            <motion.div
+              className="section-header"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 0.6, ease: [0.25, 0.4, 0.25, 1] as const }}
+            >
+              <span className="mono-label">Why Mix</span>
+              <h2 className="section-title">Less nesting. More clarity.</h2>
+            </motion.div>
+
+            <motion.div
+              className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 0.6, delay: 0.1, ease: [0.25, 0.4, 0.25, 1] as const }}
+            >
+              <div className="rounded-2xl ring-1 ring-white/[0.08] bg-[var(--mix-surface)] p-5 overflow-x-auto">
+                <span className="mb-3 block text-xs font-medium uppercase tracking-wider text-[var(--mix-text-muted)]">
+                  Without Mix
+                </span>
+                <HighlightedCode code={`Container(
+  padding: EdgeInsets.all(16),
+  decoration: BoxDecoration(
+    color: Colors.blue,
+    borderRadius:
+      BorderRadius.circular(8),
+  ),
+  child: ...
+)`} />
+              </div>
+
+              <div className="rounded-2xl ring-1 ring-[var(--mix-accent)]/40 bg-[var(--mix-accent)]/[0.06] backdrop-blur-md p-5 overflow-x-auto shadow-[0_0_24px_-4px_var(--mix-accent)]/10">
+                <span className="mb-3 block text-xs font-medium uppercase tracking-wider text-[var(--mix-accent)]">
+                  With Mix
+                </span>
+                <HighlightedCode code={`// Style can live outside the widget
+final cardStyle = BoxStyler()
+    .color(Colors.blue)
+    .paddingAll(16)
+    .borderRounded(8);
+
+// Widget stays clean
+Box(style: cardStyle, child: ...)`} />
+              </div>
+            </motion.div>
+          </section>
 
           {/* Features header */}
           <section className="section-gap">
@@ -170,11 +222,8 @@ export const HomeContent = () => {
               Start building your first Mix-styled widget in under 5 minutes.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-4">
-              <Button href="/documentation/overview/introduction" variant="filled" arrow="right">
-                <>Read the docs</>
-              </Button>
-              <Button href="/documentation/overview/getting-started" variant="outline">
-                <>Quick start</>
+              <Button href="/documentation/overview/getting-started" variant="filled" arrow="right">
+                <>Get started in 5 minutes</>
               </Button>
             </div>
           </motion.section>
