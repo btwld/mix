@@ -308,8 +308,8 @@ void main() {
 
         final props = attribute.props;
         expect(props.length, 2);
-        expect(props[0], attribute.flex);
-        expect(props[1], attribute.fit);
+        expect(props[0], attribute.fit);
+        expect(props[1], attribute.flex);
       });
     });
   });

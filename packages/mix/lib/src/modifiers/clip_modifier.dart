@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
 
 import '../core/helpers.dart';
 import '../core/widget_modifier.dart';
@@ -7,9 +8,12 @@ import '../core/prop.dart';
 import '../core/style.dart';
 import '../properties/painting/border_radius_mix.dart';
 
+part 'clip_modifier.g.dart';
+
 /// Modifier that clips its child to an oval shape.
 ///
 /// Wraps the child in a [ClipOval] widget with the specified clipper and clip behavior.
+@MixableModifier()
 final class ClipOvalModifier extends WidgetModifier<ClipOvalModifier>
     with Diagnosticable {
   final CustomClipper<Rect>? clipper;
@@ -56,46 +60,10 @@ final class ClipOvalModifier extends WidgetModifier<ClipOvalModifier>
   }
 }
 
-/// Mix class for applying clip oval modifications.
-///
-/// This class allows for mixing and resolving clip oval properties.
-class ClipOvalModifierMix extends ModifierMix<ClipOvalModifier> {
-  final Prop<CustomClipper<Rect>>? clipper;
-  final Prop<Clip>? clipBehavior;
-
-  const ClipOvalModifierMix.create({this.clipper, this.clipBehavior});
-
-  ClipOvalModifierMix({CustomClipper<Rect>? clipper, Clip? clipBehavior})
-    : this.create(
-        clipper: Prop.maybe(clipper),
-        clipBehavior: Prop.maybe(clipBehavior),
-      );
-
-  @override
-  ClipOvalModifier resolve(BuildContext context) {
-    return ClipOvalModifier(
-      clipper: MixOps.resolve(context, clipper),
-      clipBehavior: MixOps.resolve(context, clipBehavior),
-    );
-  }
-
-  @override
-  ClipOvalModifierMix merge(ClipOvalModifierMix? other) {
-    if (other == null) return this;
-
-    return ClipOvalModifierMix.create(
-      clipper: MixOps.merge(clipper, other.clipper),
-      clipBehavior: MixOps.merge(clipBehavior, other.clipBehavior),
-    );
-  }
-
-  @override
-  List<Object?> get props => [clipper, clipBehavior];
-}
-
 /// Modifier that clips its child to a rectangular shape.
 ///
 /// Wraps the child in a [ClipRect] widget with the specified clipper and clip behavior.
+@MixableModifier()
 final class ClipRectModifier extends WidgetModifier<ClipRectModifier>
     with Diagnosticable {
   final CustomClipper<Rect>? clipper;
@@ -142,46 +110,10 @@ final class ClipRectModifier extends WidgetModifier<ClipRectModifier>
   }
 }
 
-/// Mix class for applying clip rect modifications.
-///
-/// This class allows for mixing and resolving clip rect properties.
-class ClipRectModifierMix extends ModifierMix<ClipRectModifier> {
-  final Prop<CustomClipper<Rect>>? clipper;
-  final Prop<Clip>? clipBehavior;
-
-  const ClipRectModifierMix.create({this.clipper, this.clipBehavior});
-
-  ClipRectModifierMix({CustomClipper<Rect>? clipper, Clip? clipBehavior})
-    : this.create(
-        clipper: Prop.maybe(clipper),
-        clipBehavior: Prop.maybe(clipBehavior),
-      );
-
-  @override
-  ClipRectModifier resolve(BuildContext context) {
-    return ClipRectModifier(
-      clipper: MixOps.resolve(context, clipper),
-      clipBehavior: MixOps.resolve(context, clipBehavior),
-    );
-  }
-
-  @override
-  ClipRectModifierMix merge(ClipRectModifierMix? other) {
-    if (other == null) return this;
-
-    return ClipRectModifierMix.create(
-      clipper: MixOps.merge(clipper, other.clipper),
-      clipBehavior: MixOps.merge(clipBehavior, other.clipBehavior),
-    );
-  }
-
-  @override
-  List<Object?> get props => [clipper, clipBehavior];
-}
-
 /// Modifier that clips its child to a rounded rectangular shape.
 ///
 /// Wraps the child in a [ClipRRect] widget with the specified border radius.
+@MixableModifier()
 final class ClipRRectModifier extends WidgetModifier<ClipRRectModifier>
     with Diagnosticable {
   final BorderRadiusGeometry borderRadius;
@@ -242,57 +174,10 @@ final class ClipRRectModifier extends WidgetModifier<ClipRRectModifier>
   }
 }
 
-/// Mix class for applying clip rounded rect modifications.
-///
-/// This class allows for mixing and resolving clip rounded rect properties.
-class ClipRRectModifierMix extends ModifierMix<ClipRRectModifier> {
-  final Prop<BorderRadiusGeometry>? borderRadius;
-  final Prop<CustomClipper<RRect>>? clipper;
-  final Prop<Clip>? clipBehavior;
-
-  const ClipRRectModifierMix.create({
-    this.borderRadius,
-    this.clipper,
-    this.clipBehavior,
-  });
-
-  ClipRRectModifierMix({
-    BorderRadiusGeometryMix? borderRadius,
-    CustomClipper<RRect>? clipper,
-    Clip? clipBehavior,
-  }) : this.create(
-         borderRadius: Prop.maybeMix(borderRadius),
-         clipper: Prop.maybe(clipper),
-         clipBehavior: Prop.maybe(clipBehavior),
-       );
-
-  @override
-  ClipRRectModifier resolve(BuildContext context) {
-    return ClipRRectModifier(
-      borderRadius: MixOps.resolve(context, borderRadius),
-      clipper: MixOps.resolve(context, clipper),
-      clipBehavior: MixOps.resolve(context, clipBehavior),
-    );
-  }
-
-  @override
-  ClipRRectModifierMix merge(ClipRRectModifierMix? other) {
-    if (other == null) return this;
-
-    return ClipRRectModifierMix.create(
-      borderRadius: MixOps.merge(borderRadius, other.borderRadius),
-      clipper: MixOps.merge(clipper, other.clipper),
-      clipBehavior: MixOps.merge(clipBehavior, other.clipBehavior),
-    );
-  }
-
-  @override
-  List<Object?> get props => [borderRadius, clipper, clipBehavior];
-}
-
 /// Modifier that clips its child using a custom path.
 ///
 /// Wraps the child in a [ClipPath] widget with the specified clipper.
+@MixableModifier()
 final class ClipPathModifier extends WidgetModifier<ClipPathModifier>
     with Diagnosticable {
   final CustomClipper<Path>? clipper;
@@ -339,46 +224,10 @@ final class ClipPathModifier extends WidgetModifier<ClipPathModifier>
   }
 }
 
-/// Mix class for applying clip path modifications.
-///
-/// This class allows for mixing and resolving clip path properties.
-class ClipPathModifierMix extends ModifierMix<ClipPathModifier> {
-  final Prop<CustomClipper<Path>>? clipper;
-  final Prop<Clip>? clipBehavior;
-
-  const ClipPathModifierMix.create({this.clipper, this.clipBehavior});
-
-  ClipPathModifierMix({CustomClipper<Path>? clipper, Clip? clipBehavior})
-    : this.create(
-        clipper: Prop.maybe(clipper),
-        clipBehavior: Prop.maybe(clipBehavior),
-      );
-
-  @override
-  ClipPathModifier resolve(BuildContext context) {
-    return ClipPathModifier(
-      clipper: MixOps.resolve(context, clipper),
-      clipBehavior: MixOps.resolve(context, clipBehavior),
-    );
-  }
-
-  @override
-  ClipPathModifierMix merge(ClipPathModifierMix? other) {
-    if (other == null) return this;
-
-    return ClipPathModifierMix.create(
-      clipper: MixOps.merge(clipper, other.clipper),
-      clipBehavior: MixOps.merge(clipBehavior, other.clipBehavior),
-    );
-  }
-
-  @override
-  List<Object?> get props => [clipper, clipBehavior];
-}
-
 /// Modifier that clips its child to a triangle shape.
 ///
 /// Wraps the child in a [ClipPath] widget using a triangle clipper.
+@MixableModifier()
 final class ClipTriangleModifier extends WidgetModifier<ClipTriangleModifier>
     with Diagnosticable {
   final Clip clipBehavior;
@@ -419,37 +268,6 @@ final class ClipTriangleModifier extends WidgetModifier<ClipTriangleModifier>
       child: child,
     );
   }
-}
-
-/// Mix class for applying clip triangle modifications.
-///
-/// This class allows for mixing and resolving clip triangle properties.
-class ClipTriangleModifierMix extends ModifierMix<ClipTriangleModifier> {
-  final Prop<Clip>? clipBehavior;
-
-  const ClipTriangleModifierMix.create({this.clipBehavior});
-
-  ClipTriangleModifierMix({Clip? clipBehavior})
-    : this.create(clipBehavior: Prop.maybe(clipBehavior));
-
-  @override
-  ClipTriangleModifier resolve(BuildContext context) {
-    return ClipTriangleModifier(
-      clipBehavior: MixOps.resolve(context, clipBehavior),
-    );
-  }
-
-  @override
-  ClipTriangleModifierMix merge(ClipTriangleModifierMix? other) {
-    if (other == null) return this;
-
-    return ClipTriangleModifierMix.create(
-      clipBehavior: MixOps.merge(clipBehavior, other.clipBehavior),
-    );
-  }
-
-  @override
-  List<Object?> get props => [clipBehavior];
 }
 
 class TriangleClipper extends CustomClipper<Path> {

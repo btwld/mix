@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
 
 import '../core/helpers.dart';
 import '../core/widget_modifier.dart';
@@ -7,9 +8,12 @@ import '../core/prop.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
 
+part 'align_modifier.g.dart';
+
 /// Modifier that aligns its child within the available space.
 ///
 /// Wraps the child in an [Align] widget with the specified alignment and size factors.
+@MixableModifier()
 final class AlignModifier extends WidgetModifier<AlignModifier>
     with Diagnosticable {
   final AlignmentGeometry alignment;
@@ -90,59 +94,3 @@ final class AlignModifierUtility<T extends Style<Object?>>
   }
 }
 
-/// Mix class for applying alignment modifications.
-///
-/// This class allows for mixing and resolving alignment properties.
-class AlignModifierMix extends ModifierMix<AlignModifier> with Diagnosticable {
-  final Prop<AlignmentGeometry>? alignment;
-  final Prop<double>? widthFactor;
-  final Prop<double>? heightFactor;
-
-  const AlignModifierMix.create({
-    this.alignment,
-    this.widthFactor,
-    this.heightFactor,
-  });
-
-  AlignModifierMix({
-    AlignmentGeometry? alignment,
-    double? widthFactor,
-    double? heightFactor,
-  }) : this.create(
-         alignment: Prop.maybe(alignment),
-         widthFactor: Prop.maybe(widthFactor),
-         heightFactor: Prop.maybe(heightFactor),
-       );
-
-  @override
-  AlignModifier resolve(BuildContext context) {
-    return AlignModifier(
-      alignment: MixOps.resolve(context, alignment),
-      widthFactor: MixOps.resolve(context, widthFactor),
-      heightFactor: MixOps.resolve(context, heightFactor),
-    );
-  }
-
-  @override
-  AlignModifierMix merge(AlignModifierMix? other) {
-    if (other == null) return this;
-
-    return AlignModifierMix.create(
-      alignment: MixOps.merge(alignment, other.alignment),
-      widthFactor: MixOps.merge(widthFactor, other.widthFactor),
-      heightFactor: MixOps.merge(heightFactor, other.heightFactor),
-    );
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(DiagnosticsProperty('alignment', alignment))
-      ..add(DiagnosticsProperty('widthFactor', widthFactor))
-      ..add(DiagnosticsProperty('heightFactor', heightFactor));
-  }
-
-  @override
-  List<Object?> get props => [alignment, widthFactor, heightFactor];
-}

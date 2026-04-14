@@ -439,8 +439,8 @@ void main() {
         final props = attribute.props;
         expect(props.length, 3);
         expect(props[0], attribute.alignment);
-        expect(props[1], attribute.widthFactor);
-        expect(props[2], attribute.heightFactor);
+        expect(props[1], attribute.heightFactor);
+        expect(props[2], attribute.widthFactor);
       });
     });
   });

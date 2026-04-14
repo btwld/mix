@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
 
 import '../core/helpers.dart';
 import '../core/widget_modifier.dart';
@@ -9,9 +10,12 @@ import '../core/utility.dart';
 import '../properties/layout/edge_insets_geometry_mix.dart';
 import '../properties/layout/edge_insets_geometry_util.dart';
 
+part 'padding_modifier.g.dart';
+
 /// Modifier that adds padding around its child.
 ///
 /// Wraps the child in a [Padding] widget with the specified padding.
+@MixableModifier()
 final class PaddingModifier extends WidgetModifier<PaddingModifier>
     with Diagnosticable {
   final EdgeInsetsGeometry padding;
@@ -44,42 +48,6 @@ final class PaddingModifier extends WidgetModifier<PaddingModifier>
   Widget build(Widget child) {
     return Padding(padding: padding, child: child);
   }
-}
-
-/// Mix class for applying padding modifications.
-///
-/// This class allows for mixing and resolving padding properties.
-class PaddingModifierMix extends ModifierMix<PaddingModifier>
-    with Diagnosticable {
-  final Prop<EdgeInsetsGeometry>? padding;
-
-  const PaddingModifierMix.create({this.padding});
-
-  PaddingModifierMix({EdgeInsetsGeometryMix? padding})
-    : this.create(padding: Prop.maybeMix(padding));
-
-  @override
-  PaddingModifier resolve(BuildContext context) {
-    return PaddingModifier(MixOps.resolve(context, padding));
-  }
-
-  @override
-  PaddingModifierMix merge(PaddingModifierMix? other) {
-    if (other == null) return this;
-
-    return PaddingModifierMix.create(
-      padding: MixOps.merge(padding, other.padding),
-    );
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('padding', padding));
-  }
-
-  @override
-  List<Object?> get props => [padding];
 }
 
 /// Utility class for applying padding modifications.

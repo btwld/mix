@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
 
 import '../core/helpers.dart';
 import '../core/widget_modifier.dart';
@@ -8,9 +9,12 @@ import '../core/style.dart';
 import '../core/utility.dart';
 import '../theme/tokens/mix_token.dart';
 
+part 'visibility_modifier.g.dart';
+
 /// Modifier that controls the visibility of its child.
 ///
 /// Wraps the child in a [Visibility] widget to show or hide it while maintaining layout space.
+@MixableModifier()
 final class VisibilityModifier extends WidgetModifier<VisibilityModifier>
     with Diagnosticable {
   /// Whether the child widget should be visible.
@@ -52,43 +56,6 @@ final class VisibilityModifier extends WidgetModifier<VisibilityModifier>
   Widget build(Widget child) {
     return Visibility(visible: visible, child: child);
   }
-}
-
-/// Mix class for applying visibility modifications.
-///
-/// This class allows for mixing and resolving visibility properties.
-class VisibilityModifierMix extends ModifierMix<VisibilityModifier>
-    with Diagnosticable {
-  /// Whether the child widget should be visible.
-  final Prop<bool>? visible;
-
-  const VisibilityModifierMix.create({this.visible});
-
-  VisibilityModifierMix({bool? visible})
-    : this.create(visible: Prop.maybe(visible));
-
-  @override
-  VisibilityModifier resolve(BuildContext context) {
-    return VisibilityModifier(MixOps.resolve(context, visible));
-  }
-
-  @override
-  VisibilityModifierMix merge(VisibilityModifierMix? other) {
-    if (other == null) return this;
-
-    return VisibilityModifierMix.create(
-      visible: visible?.mergeProp(other.visible) ?? other.visible,
-    );
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('visible', visible));
-  }
-
-  @override
-  List<Object?> get props => [visible];
 }
 
 /// Utility class for applying visibility modifications.

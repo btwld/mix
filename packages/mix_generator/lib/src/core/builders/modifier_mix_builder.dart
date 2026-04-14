@@ -19,11 +19,15 @@ class ModifierFieldModel {
   /// The Mix type name (only set when propWrapperKind is maybeMix).
   final String? mixTypeName;
 
+  /// Whether this field is a named parameter in the modifier constructor.
+  final bool isNamedParam;
+
   const ModifierFieldModel({
     required this.name,
     required this.typeName,
     required this.propWrapperKind,
     this.mixTypeName,
+    this.isNamedParam = true,
   });
 
   /// The type used in the public constructor parameter.
@@ -86,7 +90,7 @@ class ModifierMixBuilder {
 
   String _buildPublicConstructor() {
     if (fields.isEmpty) {
-      return '  $className() : this.create();\n';
+      return '  const $className() : this.create();\n';
     }
 
     final buffer = StringBuffer();
@@ -115,7 +119,13 @@ class ModifierMixBuilder {
     buffer.writeln('    return $modifierName(');
 
     for (final field in fields) {
-      buffer.writeln('      MixOps.resolve(context, ${field.name}),');
+      if (field.isNamedParam) {
+        buffer.writeln(
+          '      ${field.name}: MixOps.resolve(context, ${field.name}),',
+        );
+      } else {
+        buffer.writeln('      MixOps.resolve(context, ${field.name}),');
+      }
     }
 
     buffer.writeln('    );');
@@ -154,7 +164,12 @@ class ModifierMixBuilder {
     );
     buffer.writeln('    super.debugFillProperties(properties);');
 
-    if (fields.isNotEmpty) {
+    if (fields.length == 1) {
+      final field = fields[0];
+      buffer.writeln(
+        "    properties.add(DiagnosticsProperty('${field.name}', ${field.name}));",
+      );
+    } else if (fields.length > 1) {
       buffer.writeln('    properties');
       for (int i = 0; i < fields.length; i++) {
         final field = fields[i];

@@ -330,8 +330,8 @@ void main() {
 
         final props = attribute.props;
         expect(props.length, 2);
-        expect(props[0], attribute.clipper);
-        expect(props[1], attribute.clipBehavior);
+        expect(props[0], attribute.clipBehavior);
+        expect(props[1], attribute.clipper);
       });
     });
   });

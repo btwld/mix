@@ -563,11 +563,11 @@ void main() {
 
         final props = attribute.props;
         expect(props.length, 5);
-        expect(props[0], attribute.scrollDirection);
-        expect(props[1], attribute.reverse);
-        expect(props[2], attribute.padding);
-        expect(props[3], attribute.physics);
-        expect(props[4], attribute.clipBehavior);
+        expect(props[0], attribute.clipBehavior);
+        expect(props[1], attribute.padding);
+        expect(props[2], attribute.physics);
+        expect(props[3], attribute.reverse);
+        expect(props[4], attribute.scrollDirection);
       });
     });
   });

@@ -35,6 +35,15 @@ class ModifierGenerator extends GeneratorForAnnotation<MixableModifier> {
         .where((f) => !f.isStatic && !f.isSynthetic && f.isFinal)
         .toList();
 
+    // Build a map of constructor param names to their named/positional status
+    final constructor = classElement.unnamedConstructor;
+    final paramMap = <String, bool>{};
+    if (constructor != null) {
+      for (final param in constructor.formalParameters) {
+        paramMap[param.name!] = param.isNamed;
+      }
+    }
+
     // Sort by name for stable ordering
     fields.sort((a, b) => a.name!.compareTo(b.name!));
 
@@ -59,6 +68,7 @@ class ModifierGenerator extends GeneratorForAnnotation<MixableModifier> {
         typeName: typeName,
         propWrapperKind: propWrapperKind,
         mixTypeName: mixTypeName,
+        isNamedParam: paramMap[name] ?? true,
       );
     }).toList();
   }

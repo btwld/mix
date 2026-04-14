@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
 
 import '../core/helpers.dart';
 import '../core/widget_modifier.dart';
@@ -7,9 +8,12 @@ import '../core/prop.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
 
+part 'sized_box_modifier.g.dart';
+
 /// Modifier that constrains its child to a specific size.
 ///
 /// Wraps the child in a [SizedBox] widget with the specified width and height.
+@MixableModifier()
 final class SizedBoxModifier extends WidgetModifier<SizedBoxModifier>
     with Diagnosticable {
   final double? width;
@@ -78,45 +82,3 @@ final class SizedBoxModifierUtility<T extends Style<Object?>>
   T as(Size size) => call(width: size.width, height: size.height);
 }
 
-/// Mix class for applying sized box modifications.
-///
-/// This class allows for mixing and resolving sized box properties.
-class SizedBoxModifierMix extends ModifierMix<SizedBoxModifier>
-    with Diagnosticable {
-  final Prop<double>? width;
-  final Prop<double>? height;
-
-  const SizedBoxModifierMix.create({this.width, this.height});
-
-  SizedBoxModifierMix({double? width, double? height})
-    : this.create(width: Prop.maybe(width), height: Prop.maybe(height));
-
-  @override
-  SizedBoxModifier resolve(BuildContext context) {
-    return SizedBoxModifier(
-      width: MixOps.resolve(context, width),
-      height: MixOps.resolve(context, height),
-    );
-  }
-
-  @override
-  SizedBoxModifierMix merge(SizedBoxModifierMix? other) {
-    if (other == null) return this;
-
-    return SizedBoxModifierMix.create(
-      width: MixOps.merge(width, other.width),
-      height: MixOps.merge(height, other.height),
-    );
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(DiagnosticsProperty('width', width))
-      ..add(DiagnosticsProperty('height', height));
-  }
-
-  @override
-  List<Object?> get props => [width, height];
-}

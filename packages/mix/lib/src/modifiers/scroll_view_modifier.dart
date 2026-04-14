@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
 
 import '../core/helpers.dart';
 import '../core/widget_modifier.dart';
@@ -9,9 +10,12 @@ import '../core/utility.dart';
 import '../properties/layout/edge_insets_geometry_mix.dart';
 import '../properties/layout/edge_insets_geometry_util.dart';
 
+part 'scroll_view_modifier.g.dart';
+
 /// Modifier that applies scroll view properties to its child.
 ///
 /// Wraps the child in a scrollable widget with the specified properties.
+@MixableModifier()
 final class ScrollViewModifier extends WidgetModifier<ScrollViewModifier>
     with Diagnosticable {
   final Axis? scrollDirection;
@@ -167,77 +171,3 @@ final class ScrollViewModifierUtility<T extends Style<Object?>>
   }
 }
 
-class ScrollViewModifierMix extends ModifierMix<ScrollViewModifier>
-    with Diagnosticable {
-  final Prop<Axis>? scrollDirection;
-  final Prop<bool>? reverse;
-  final Prop<EdgeInsetsGeometry>? padding;
-  final Prop<ScrollPhysics>? physics;
-  final Prop<Clip>? clipBehavior;
-
-  const ScrollViewModifierMix.create({
-    this.scrollDirection,
-    this.reverse,
-    this.padding,
-    this.physics,
-    this.clipBehavior,
-  });
-
-  ScrollViewModifierMix({
-    Axis? scrollDirection,
-    bool? reverse,
-    EdgeInsetsGeometryMix? padding,
-    ScrollPhysics? physics,
-    Clip? clipBehavior,
-  }) : this.create(
-         scrollDirection: Prop.maybe(scrollDirection),
-         reverse: Prop.maybe(reverse),
-         padding: Prop.maybeMix(padding),
-         physics: Prop.maybe(physics),
-         clipBehavior: Prop.maybe(clipBehavior),
-       );
-
-  @override
-  ScrollViewModifier resolve(BuildContext context) {
-    return ScrollViewModifier(
-      scrollDirection: MixOps.resolve(context, scrollDirection),
-      reverse: MixOps.resolve(context, reverse),
-      padding: MixOps.resolve(context, padding),
-      physics: MixOps.resolve(context, physics),
-      clipBehavior: MixOps.resolve(context, clipBehavior),
-    );
-  }
-
-  @override
-  ScrollViewModifierMix merge(ScrollViewModifierMix? other) {
-    if (other == null) return this;
-
-    return ScrollViewModifierMix.create(
-      scrollDirection: MixOps.merge(scrollDirection, other.scrollDirection),
-      reverse: MixOps.merge(reverse, other.reverse),
-      padding: MixOps.merge(padding, other.padding),
-      physics: MixOps.merge(physics, other.physics),
-      clipBehavior: MixOps.merge(clipBehavior, other.clipBehavior),
-    );
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(DiagnosticsProperty('scrollDirection', scrollDirection))
-      ..add(DiagnosticsProperty('reverse', reverse))
-      ..add(DiagnosticsProperty('padding', padding))
-      ..add(DiagnosticsProperty('physics', physics))
-      ..add(DiagnosticsProperty('clipBehavior', clipBehavior));
-  }
-
-  @override
-  List<Object?> get props => [
-    scrollDirection,
-    reverse,
-    padding,
-    physics,
-    clipBehavior,
-  ];
-}

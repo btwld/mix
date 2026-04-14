@@ -92,7 +92,30 @@ void main() {
         expect(code, contains('clipBehavior: Prop.maybe(clipBehavior)'));
       });
 
-      test('generates resolve method', () {
+      test('generates resolve method with named params', () {
+        final builder = ModifierMixBuilder(
+          modifierName: 'AlignModifier',
+          fields: [
+            ModifierFieldModel(
+              name: 'alignment',
+              typeName: 'AlignmentGeometry',
+              propWrapperKind: PropWrapperKind.maybe,
+              isNamedParam: true,
+            ),
+          ],
+        );
+        final code = builder.build();
+
+        expect(code, contains('@override'));
+        expect(code, contains('AlignModifier resolve(BuildContext context)'));
+        expect(code, contains('return AlignModifier('));
+        expect(
+          code,
+          contains('alignment: MixOps.resolve(context, alignment)'),
+        );
+      });
+
+      test('generates resolve method with positional params', () {
         final builder = ModifierMixBuilder(
           modifierName: 'OpacityModifier',
           fields: [
@@ -100,6 +123,7 @@ void main() {
               name: 'opacity',
               typeName: 'double',
               propWrapperKind: PropWrapperKind.maybe,
+              isNamedParam: false,
             ),
           ],
         );
@@ -109,6 +133,7 @@ void main() {
         expect(code, contains('OpacityModifier resolve(BuildContext context)'));
         expect(code, contains('return OpacityModifier('));
         expect(code, contains('MixOps.resolve(context, opacity)'));
+        expect(code, isNot(contains('opacity: MixOps.resolve')));
       });
 
       test('generates merge method', () {
@@ -212,6 +237,7 @@ void main() {
           contains('class NoopModifierMix extends ModifierMix<NoopModifier>'),
         );
         expect(code, contains('const NoopModifierMix.create();'));
+        expect(code, contains('const NoopModifierMix() : this.create();'));
         expect(code, contains('List<Object?> get props => [];'));
       });
     });

@@ -32,7 +32,7 @@ class OpacityModifierMix extends ModifierMix<OpacityModifier>
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties..add(DiagnosticsProperty('opacity', opacity));
+    properties.add(DiagnosticsProperty('opacity', opacity));
   }
 
   @override
