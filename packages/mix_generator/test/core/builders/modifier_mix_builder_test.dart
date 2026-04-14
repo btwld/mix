@@ -109,10 +109,7 @@ void main() {
         expect(code, contains('@override'));
         expect(code, contains('AlignModifier resolve(BuildContext context)'));
         expect(code, contains('return AlignModifier('));
-        expect(
-          code,
-          contains('alignment: MixOps.resolve(context, alignment)'),
-        );
+        expect(code, contains('alignment: MixOps.resolve(context, alignment)'));
       });
 
       test('generates resolve method with positional params', () {

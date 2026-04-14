@@ -93,4 +93,3 @@ final class AlignModifierUtility<T extends Style<Object?>>
     );
   }
 }
-

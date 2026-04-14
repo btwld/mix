@@ -81,4 +81,3 @@ final class SizedBoxModifierUtility<T extends Style<Object?>>
   /// from [Size]
   T as(Size size) => call(width: size.width, height: size.height);
 }
-

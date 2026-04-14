@@ -76,4 +76,3 @@ final class IntrinsicWidthModifier
     return IntrinsicWidth(child: child);
   }
 }
-

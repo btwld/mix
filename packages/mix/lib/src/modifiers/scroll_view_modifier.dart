@@ -170,4 +170,3 @@ final class ScrollViewModifierUtility<T extends Style<Object?>>
     );
   }
 }
-
