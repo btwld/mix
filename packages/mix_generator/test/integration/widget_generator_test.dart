@@ -10,8 +10,46 @@ String _severeMessages(Iterable<LogRecord> logs) {
       .join();
 }
 
+String _mixStubWithBoxOverrides({
+  String? boxCallSnippet,
+  String? boxClassDefinition,
+}) {
+  var updated = mixStub;
+
+  if (boxCallSnippet != null) {
+    updated = replaceSnippet(updated, boxStylerCallSnippet, boxCallSnippet);
+  }
+
+  if (boxClassDefinition != null) {
+    updated = replaceSnippet(updated, boxClassSnippet, boxClassDefinition);
+  }
+
+  return updated;
+}
+
 void main() {
   group('MixWidgetGenerator validation', () {
+    test('rejects non-final top-level variables', () async {
+      const source = r'''
+library input;
+
+import 'package:mix/mix.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+
+part 'input.g.dart';
+
+@MixWidget()
+var cardStyle = BoxStyler();
+''';
+
+      final logs = await runMixWidgetWithLogs(source);
+
+      expect(
+        _severeMessages(logs),
+        contains('only supports top-level final variables'),
+      );
+    });
+
     test('rejects private declarations', () async {
       const source = r'''
 library input;
@@ -61,6 +99,76 @@ final customStyle = CustomStyler();
       expect(
         _severeMessages(logs),
         contains('No Mix widget mapping found for CustomStyler'),
+      );
+    });
+
+    test('rejects non-style targets', () async {
+      const source = r'''
+library input;
+
+import 'package:mix/mix.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+
+part 'input.g.dart';
+
+@MixWidget()
+final headingText = 'hello';
+''';
+
+      final logs = await runMixWidgetWithLogs(source);
+
+      expect(_severeMessages(logs), contains('returning a Style<T> subtype'));
+    });
+
+    test('rejects nullable styler targets', () async {
+      const source = r'''
+library input;
+
+import 'package:mix/mix.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+
+part 'input.g.dart';
+
+@MixWidget()
+final BoxStyler? cardStyle = BoxStyler();
+''';
+
+      final logs = await runMixWidgetWithLogs(source);
+
+      expect(
+        _severeMessages(logs),
+        contains('does not support nullable styler types'),
+      );
+    });
+
+    test('rejects style targets without a resolvable spec type', () async {
+      const source = r'''
+library input;
+
+import 'package:mix/mix.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+
+part 'input.g.dart';
+
+class BrokenStyle extends Style<dynamic> {
+  const BrokenStyle();
+
+  BrokenStyle merge(BrokenStyle? other) => this;
+
+  Box call({Widget? child}) {
+    return Box(style: this, child: child);
+  }
+}
+
+@MixWidget(widgetBuilder: MixWidgetBuilder.box())
+final brokenStyle = BrokenStyle();
+''';
+
+      final logs = await runMixWidgetWithLogs(source);
+
+      expect(
+        _severeMessages(logs),
+        contains('Could not determine the Style<T> spec type'),
       );
     });
 
@@ -134,6 +242,27 @@ final toolbarStyle = BoxStyler();
       },
     );
 
+    test('rejects private explicit generated names', () async {
+      const source = r'''
+library input;
+
+import 'package:mix/mix.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+
+part 'input.g.dart';
+
+@MixWidget(name: '_Card')
+final cardStyle = BoxStyler();
+''';
+
+      final logs = await runMixWidgetWithLogs(source);
+
+      expect(
+        _severeMessages(logs),
+        contains('requires a public generated class name'),
+      );
+    });
+
     test(
       'rejects generated names that collide with another declaration in the library',
       () async {
@@ -191,6 +320,27 @@ final myCardStyler = BoxStyler();
       },
     );
 
+    test('rejects declarations whose derived widget name is empty', () async {
+      const source = r'''
+library input;
+
+import 'package:mix/mix.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+
+part 'input.g.dart';
+
+@MixWidget()
+final Styler = BoxStyler();
+''';
+
+      final logs = await runMixWidgetWithLogs(source);
+
+      expect(
+        _severeMessages(logs),
+        contains('could not derive a widget name from `Styler`'),
+      );
+    });
+
     test(
       'rejects parameter collisions between factory and widget params',
       () async {
@@ -214,6 +364,36 @@ BoxStyler chipStyle({required Widget child}) => BoxStyler();
         );
       },
     );
+
+    for (final reservedParameter in [
+      ('key', 'Color'),
+      ('style', 'BoxStyler'),
+      ('styleSpec', 'Widget'),
+    ]) {
+      test('rejects reserved parameter `${reservedParameter.$1}`', () async {
+        final source =
+            '''
+library input;
+
+import 'package:mix/mix.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+
+part 'input.g.dart';
+
+@MixWidget()
+BoxStyler chipStyle({required ${reservedParameter.$2} ${reservedParameter.$1}}) => BoxStyler();
+''';
+
+        final logs = await runMixWidgetWithLogs(source);
+
+        expect(
+          _severeMessages(logs),
+          contains(
+            'Parameter `${reservedParameter.$1}` is reserved by @MixWidget.',
+          ),
+        );
+      });
+    }
 
     test('rejects styler types without a concrete call method', () async {
       const source = r'''
@@ -271,9 +451,141 @@ final brokenStyle = BrokenBoxStyler();
       );
     });
 
-    test('rejects built-in mappings that drift from the styler call return type',
-        () async {
+    test('rejects target widgets without unnamed constructors', () async {
       const source = r'''
+library input;
+
+import 'package:mix/mix.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+
+part 'input.g.dart';
+
+@MixWidget()
+final cardStyle = BoxStyler();
+''';
+
+      final logs = await runMixWidgetWithLogs(
+        source,
+        mixSourceOverride: _mixStubWithBoxOverrides(
+          boxCallSnippet: r'''
+  Box call({Key? key, Widget? child}) {
+    return Box.named(key: key, style: this, child: child);
+  }
+''',
+          boxClassDefinition: r'''
+class Box extends Widget {
+  final Key? key;
+  final Style<BoxSpec> style;
+  final StyleSpec<BoxSpec>? styleSpec;
+  final Widget? child;
+
+  const Box.named({
+    this.key,
+    this.style = const BoxStyler(),
+    this.styleSpec,
+    this.child,
+  });
+}
+''',
+        ),
+      );
+
+      expect(
+        _severeMessages(logs),
+        contains('must expose an unnamed constructor'),
+      );
+    });
+
+    test('rejects target widgets missing key parameters', () async {
+      const source = r'''
+library input;
+
+import 'package:mix/mix.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+
+part 'input.g.dart';
+
+@MixWidget()
+final cardStyle = BoxStyler();
+''';
+
+      final logs = await runMixWidgetWithLogs(
+        source,
+        mixSourceOverride: _mixStubWithBoxOverrides(
+          boxCallSnippet: r'''
+  Box call({Key? key, Widget? child}) {
+    return Box(style: this, child: child);
+  }
+''',
+          boxClassDefinition: r'''
+class Box extends Widget {
+  final Style<BoxSpec> style;
+  final StyleSpec<BoxSpec>? styleSpec;
+  final Widget? child;
+
+  const Box({
+    this.style = const BoxStyler(),
+    this.styleSpec,
+    this.child,
+  });
+}
+''',
+        ),
+      );
+
+      expect(
+        _severeMessages(logs),
+        contains('must expose a `key` constructor parameter'),
+      );
+    });
+
+    test('rejects target widgets missing style parameters', () async {
+      const source = r'''
+library input;
+
+import 'package:mix/mix.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+
+part 'input.g.dart';
+
+@MixWidget()
+final cardStyle = BoxStyler();
+''';
+
+      final logs = await runMixWidgetWithLogs(
+        source,
+        mixSourceOverride: _mixStubWithBoxOverrides(
+          boxCallSnippet: r'''
+  Box call({Key? key, Widget? child}) {
+    return Box(key: key, child: child);
+  }
+''',
+          boxClassDefinition: r'''
+class Box extends Widget {
+  final Key? key;
+  final StyleSpec<BoxSpec>? styleSpec;
+  final Widget? child;
+
+  const Box({
+    this.key,
+    this.styleSpec,
+    this.child,
+  });
+}
+''',
+        ),
+      );
+
+      expect(
+        _severeMessages(logs),
+        contains('must expose a `style` constructor parameter'),
+      );
+    });
+
+    test(
+      'rejects built-in mappings that drift from the styler call return type',
+      () async {
+        const source = r'''
 library input;
 
 import 'package:mix/mix.dart';
@@ -294,14 +606,120 @@ class DriftFlexBoxStyler extends FlexBoxStyler {
 final layoutStyle = DriftFlexBoxStyler();
 ''';
 
-      final logs = await runMixWidgetWithLogs(source);
+        final logs = await runMixWidgetWithLogs(source);
 
-      expect(_severeMessages(logs), contains('mapping drifted from RowBox'));
-    });
+        expect(_severeMessages(logs), contains('mapping drifted from RowBox'));
+      },
+    );
 
-    test('rejects call params missing from the target widget constructor',
-        () async {
-      const source = r'''
+    test(
+      'rejects target widgets with extra required positional params not exposed by call',
+      () async {
+        const source = r'''
+library input;
+
+import 'package:mix/mix.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+
+part 'input.g.dart';
+
+@MixWidget()
+final cardStyle = BoxStyler();
+''';
+
+        final logs = await runMixWidgetWithLogs(
+          source,
+          mixSourceOverride: _mixStubWithBoxOverrides(
+            boxCallSnippet: r'''
+  Box call({Key? key, Widget? child}) {
+    return Box(const Widget(), key: key, style: this, child: child);
+  }
+''',
+            boxClassDefinition: r'''
+class Box extends Widget {
+  final Widget extra;
+  final Key? key;
+  final Style<BoxSpec> style;
+  final StyleSpec<BoxSpec>? styleSpec;
+  final Widget? child;
+
+  const Box(
+    this.extra, {
+    this.key,
+    this.style = const BoxStyler(),
+    this.styleSpec,
+    this.child,
+  });
+}
+''',
+          ),
+        );
+
+        expect(
+          _severeMessages(logs),
+          contains(
+            'requires constructor parameter `extra` that is not exposed by Box.call()',
+          ),
+        );
+      },
+    );
+
+    test(
+      'rejects target widgets with extra required named params not exposed by call',
+      () async {
+        const source = r'''
+library input;
+
+import 'package:mix/mix.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+
+part 'input.g.dart';
+
+@MixWidget()
+final cardStyle = BoxStyler();
+''';
+
+        final logs = await runMixWidgetWithLogs(
+          source,
+          mixSourceOverride: _mixStubWithBoxOverrides(
+            boxCallSnippet: r'''
+  Box call({Key? key, Widget? child}) {
+    return Box(key: key, style: this, extra: const Widget(), child: child);
+  }
+''',
+            boxClassDefinition: r'''
+class Box extends Widget {
+  final Key? key;
+  final Style<BoxSpec> style;
+  final StyleSpec<BoxSpec>? styleSpec;
+  final Widget extra;
+  final Widget? child;
+
+  const Box({
+    this.key,
+    this.style = const BoxStyler(),
+    this.styleSpec,
+    required this.extra,
+    this.child,
+  });
+}
+''',
+          ),
+        );
+
+        expect(
+          _severeMessages(logs),
+          contains(
+            'requires constructor parameter `extra` that is not exposed by Box.call()',
+          ),
+        );
+      },
+    );
+
+    test(
+      'rejects call params missing from the target widget constructor',
+      () async {
+        const source = r'''
 library input;
 
 import 'package:mix/mix.dart';
@@ -323,13 +741,14 @@ class BoxWithTrailingStyler extends Style<BoxSpec> {
 final cardStyle = BoxWithTrailingStyler();
 ''';
 
-      final logs = await runMixWidgetWithLogs(source);
+        final logs = await runMixWidgetWithLogs(source);
 
-      expect(
-        _severeMessages(logs),
-        contains('Parameter `trailing` from Box.call() is missing from Box'),
-      );
-    });
+        expect(
+          _severeMessages(logs),
+          contains('Parameter `trailing` from Box.call() is missing from Box'),
+        );
+      },
+    );
 
     test('rejects call params with incompatible parameter kinds', () async {
       const source = r'''
@@ -358,7 +777,9 @@ final cardStyle = PositionalBoxStyler();
 
       expect(
         _severeMessages(logs),
-        contains('Parameter `child` is positional in Box.call() but named in Box'),
+        contains(
+          'Parameter `child` is positional in Box.call() but named in Box',
+        ),
       );
     });
 
@@ -389,9 +810,71 @@ final cardStyle = WrongTypeBoxStyler();
 
       expect(
         _severeMessages(logs),
-        contains('Parameter `child` from Box.call() is not compatible with Box.child'),
+        contains(
+          'Parameter `child` from Box.call() is not compatible with Box.child',
+        ),
       );
     });
+
+    test(
+      'rejects positional call params with incompatible parameter types',
+      () async {
+        const source = r'''
+library input;
+
+import 'package:mix/mix.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+
+part 'input.g.dart';
+
+class WrongTypeBoxStyler extends Style<BoxSpec> {
+  const WrongTypeBoxStyler();
+
+  WrongTypeBoxStyler merge(WrongTypeBoxStyler? other) => this;
+
+  Box call(Widget? child) {
+    return Box('fallback', key: const Key(), style: this);
+  }
+}
+
+@MixWidget(widgetBuilder: MixWidgetBuilder.box())
+final cardStyle = WrongTypeBoxStyler();
+''';
+
+        final logs = await runMixWidgetWithLogs(
+          source,
+          mixSourceOverride: _mixStubWithBoxOverrides(
+            boxCallSnippet: r'''
+  Box call({Key? key, Widget? child}) {
+    return Box('fallback', key: key, style: this);
+  }
+''',
+            boxClassDefinition: r'''
+class Box extends Widget {
+  final String child;
+  final Key? key;
+  final Style<BoxSpec> style;
+  final StyleSpec<BoxSpec>? styleSpec;
+
+  const Box(
+    this.child, {
+    this.key,
+    this.style = const BoxStyler(),
+    this.styleSpec,
+  });
+}
+''',
+          ),
+        );
+
+        expect(
+          _severeMessages(logs),
+          contains(
+            'Parameter `child` from Box.call() is not compatible with Box.child',
+          ),
+        );
+      },
+    );
 
     test('resolves imported styler types across files', () async {
       const source = r'''

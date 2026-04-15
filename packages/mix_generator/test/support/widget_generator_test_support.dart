@@ -52,6 +52,28 @@ class MixWidget {
 const mixWidget = MixWidget();
 ''';
 
+const boxStylerCallSnippet = r'''
+  Box call({Key? key, Widget? child}) {
+    return Box(key: key, style: this, child: child);
+  }
+''';
+
+const boxClassSnippet = r'''
+class Box extends Widget {
+  final Key? key;
+  final Style<BoxSpec> style;
+  final StyleSpec<BoxSpec>? styleSpec;
+  final Widget? child;
+
+  const Box({
+    this.key,
+    this.style = const BoxStyler(),
+    this.styleSpec,
+    this.child,
+  });
+}
+''';
+
 const mixStub = r'''
 library mix;
 
@@ -331,18 +353,20 @@ class StackBox extends Widget {
 Map<String, String> mixWidgetBaseSources({
   required String inputSource,
   Map<String, String>? extraSources,
+  String? mixSourceOverride,
 }) {
   return mixWidgetBaseSourcesFromPackageSources({
     mixWidgetInputAssetId: inputSource,
     ...?extraSources,
-  });
+  }, mixSourceOverride: mixSourceOverride);
 }
 
 Map<String, String> mixWidgetBaseSourcesFromPackageSources(
-  Map<String, String> packageSources,
-) {
+  Map<String, String> packageSources, {
+  String? mixSourceOverride,
+}) {
   return {
-    'mix|lib/mix.dart': mixStub,
+    'mix|lib/mix.dart': mixSourceOverride ?? mixStub,
     'mix_annotations|lib/mix_annotations.dart': mixAnnotationsStub,
     ...packageSources,
   };
@@ -351,12 +375,17 @@ Map<String, String> mixWidgetBaseSourcesFromPackageSources(
 Future<List<LogRecord>> runMixWidgetWithLogs(
   String inputSource, {
   Map<String, String>? extraSources,
+  String? mixSourceOverride,
 }) async {
   final logs = <LogRecord>[];
 
   await testBuilder(
     mixWidgetPartBuilder(),
-    mixWidgetBaseSources(inputSource: inputSource, extraSources: extraSources),
+    mixWidgetBaseSources(
+      inputSource: inputSource,
+      extraSources: extraSources,
+      mixSourceOverride: mixSourceOverride,
+    ),
     generateFor: {mixWidgetInputAssetId},
     rootPackage: 'mix_generator',
     onLog: logs.add,
@@ -368,10 +397,15 @@ Future<List<LogRecord>> runMixWidgetWithLogs(
 Future<String> generateMixWidgetOutput({
   required String inputSource,
   Map<String, String>? extraSources,
+  String? mixSourceOverride,
   void Function(LogRecord log)? onLog,
 }) {
   return generateMixWidgetOutputFromPackageSources(
-    mixWidgetBaseSources(inputSource: inputSource, extraSources: extraSources),
+    mixWidgetBaseSources(
+      inputSource: inputSource,
+      extraSources: extraSources,
+      mixSourceOverride: mixSourceOverride,
+    ),
     onLog: onLog,
   );
 }
@@ -406,4 +440,13 @@ Future<String> generateMixWidgetOutputFromPackageSources(
 String normalizeGoldenText(String text) {
   final normalized = text.replaceAll('\r\n', '\n');
   return normalized.endsWith('\n') ? normalized : '$normalized\n';
+}
+
+String replaceSnippet(String source, String from, String to) {
+  final updated = source.replaceFirst(from, to);
+  if (updated == source) {
+    throw StateError('Could not find snippet to replace.');
+  }
+
+  return updated;
 }
