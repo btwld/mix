@@ -195,7 +195,7 @@ Box(style: cardStyle, child: ...)`} />
       </Layout>
 
       {/* Feature showcase — full width to breakpoint */}
-      <div className="relative z-10 mx-auto w-full max-w-7xl px-4 md:px-8">
+      <div className="relative z-10 mx-auto w-full max-w-7xl px-2 sm:px-4 md:px-8">
         <FeatureShowcase />
       </div>
 
