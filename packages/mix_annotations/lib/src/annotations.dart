@@ -76,11 +76,7 @@ class MixWidget {
   final bool styleable;
   final MixWidgetBuilder? widgetBuilder;
 
-  const MixWidget({
-    this.name,
-    this.styleable = false,
-    this.widgetBuilder,
-  });
+  const MixWidget({this.name, this.styleable = false, this.widgetBuilder});
 }
 
 const mixWidget = MixWidget();

@@ -439,7 +439,8 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
     for (var index = 0; index < mirroredPositionalParameters.length; index++) {
       final mirroredParameter = mirroredPositionalParameters[index];
       if (index >= constructorPositionalParameters.length) {
-        final conflictingParameter = constructorParametersByName[mirroredParameter.name];
+        final conflictingParameter =
+            constructorParametersByName[mirroredParameter.name];
         if (conflictingParameter != null && conflictingParameter.isNamed) {
           throw InvalidGenerationSource(
             'Parameter `${mirroredParameter.name}` is positional in ${callReturnType.element.name}.call() but named in ${widgetElement.name}.',
@@ -466,9 +467,11 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
       }
     }
 
-    for (var index = mirroredPositionalParameters.length;
-        index < constructorPositionalParameters.length;
-        index++) {
+    for (
+      var index = mirroredPositionalParameters.length;
+      index < constructorPositionalParameters.length;
+      index++
+    ) {
       final constructorParameter = constructorPositionalParameters[index];
       if (constructorParameter.isRequiredPositional) {
         throw InvalidGenerationSource(
@@ -479,7 +482,8 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
     }
 
     for (final mirroredParameter in mirroredNamedParameters) {
-      final constructorParameter = constructorParametersByName[mirroredParameter.name];
+      final constructorParameter =
+          constructorParametersByName[mirroredParameter.name];
       if (constructorParameter == null) {
         throw InvalidGenerationSource(
           'Parameter `${mirroredParameter.name}` from ${callReturnType.element.name}.call() is missing from ${widgetElement.name}.',
@@ -512,7 +516,9 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
         continue;
       }
 
-      final isMirrored = mirroredParameters.any((parameter) => parameter.name == name);
+      final isMirrored = mirroredParameters.any(
+        (parameter) => parameter.name == name,
+      );
       if (!isMirrored && constructorParameter.isRequiredNamed) {
         throw InvalidGenerationSource(
           '${widgetElement.name} requires constructor parameter `$name` that is not exposed by ${callReturnType.element.name}.call().',
@@ -531,7 +537,11 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
         typeSystem.isSubtypeOf(rightType, leftType);
   }
 
-  bool _isAssignable(TypeSystem typeSystem, DartType fromType, DartType toType) {
+  bool _isAssignable(
+    TypeSystem typeSystem,
+    DartType fromType,
+    DartType toType,
+  ) {
     return typeSystem.isAssignableTo(fromType, toType);
   }
 
