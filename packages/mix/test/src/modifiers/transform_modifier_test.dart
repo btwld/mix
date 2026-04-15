@@ -418,6 +418,5 @@ void main() {
       expect(half.transform, isA<Matrix4>());
       expect(threeQuarter.transform, isA<Matrix4>());
     });
-
   });
 }

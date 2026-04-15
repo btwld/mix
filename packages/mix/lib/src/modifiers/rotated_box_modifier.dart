@@ -93,4 +93,3 @@ class RotatedBoxModifierMix extends ModifierMix<RotatedBoxModifier>
   @override
   List<Object?> get props => [quarterTurns];
 }
-

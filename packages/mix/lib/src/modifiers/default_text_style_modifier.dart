@@ -197,4 +197,3 @@ class DefaultTextStyleModifierMix
     textHeightBehavior,
   ];
 }
-

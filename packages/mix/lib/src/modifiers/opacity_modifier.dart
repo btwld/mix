@@ -77,4 +77,3 @@ class OpacityModifierMix extends ModifierMix<OpacityModifier>
   @override
   List<Object?> get props => [opacity];
 }
-

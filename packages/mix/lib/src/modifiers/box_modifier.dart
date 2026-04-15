@@ -79,4 +79,3 @@ class BoxModifierMix extends ModifierMix<BoxModifier> with Diagnosticable {
   @override
   List<Object?> get props => [spec];
 }
-

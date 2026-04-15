@@ -79,4 +79,3 @@ class PaddingModifierMix extends ModifierMix<PaddingModifier>
   @override
   List<Object?> get props => [padding];
 }
-

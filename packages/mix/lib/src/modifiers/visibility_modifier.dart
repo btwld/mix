@@ -88,4 +88,3 @@ class VisibilityModifierMix extends ModifierMix<VisibilityModifier>
   @override
   List<Object?> get props => [visible];
 }
-

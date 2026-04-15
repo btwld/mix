@@ -78,4 +78,3 @@ class AspectRatioModifierMix extends ModifierMix<AspectRatioModifier>
   @override
   List<Object?> get props => [aspectRatio];
 }
-

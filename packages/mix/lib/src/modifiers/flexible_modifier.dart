@@ -89,4 +89,3 @@ class FlexibleModifierMix extends ModifierMix<FlexibleModifier>
   @override
   List<Object?> get props => [flex, fit];
 }
-

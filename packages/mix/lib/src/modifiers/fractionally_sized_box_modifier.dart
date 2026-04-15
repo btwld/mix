@@ -122,4 +122,3 @@ class FractionallySizedBoxModifierMix
   @override
   List<Object?> get props => [widthFactor, heightFactor, alignment];
 }
-

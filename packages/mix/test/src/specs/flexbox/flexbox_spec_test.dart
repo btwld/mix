@@ -405,7 +405,6 @@ void main() {
           isNotNull,
         ); // Empty FlexBoxStyle resolves to empty FlexSpec
       });
-
     });
   });
 

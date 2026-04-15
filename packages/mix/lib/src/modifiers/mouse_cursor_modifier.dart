@@ -105,4 +105,3 @@ class MouseCursorModifierMix extends ModifierMix<MouseCursorModifier>
   @override
   List<Object?> get props => [mouseCursor];
 }
-

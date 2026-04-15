@@ -161,4 +161,3 @@ class IconThemeModifierMix extends ModifierMix<IconThemeModifier> {
     applyTextScaling,
   ];
 }
-
