@@ -30,7 +30,6 @@ import '../box/box_spec.dart';
 import '../box/box_style.dart';
 import '../flex/flex_spec.dart';
 import '../flex/flex_style.dart';
-import 'flexbox_mutable_style.dart';
 import 'flexbox_spec.dart';
 import 'flexbox_widget.dart';
 
@@ -345,8 +344,6 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
       FlexBoxStyler().translate(x, y, z);
   factory FlexBoxStyler.skew(double skewX, double skewY) =>
       FlexBoxStyler().skew(skewX, skewY);
-  static FlexBoxMutableStyler get chain => .new(FlexBoxStyler());
-
   // Box-style instance methods
 
   /// Sets the alignment property.

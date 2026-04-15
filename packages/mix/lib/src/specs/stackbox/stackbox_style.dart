@@ -29,7 +29,6 @@ import '../box/box_spec.dart';
 import '../box/box_style.dart';
 import '../stack/stack_spec.dart';
 import '../stack/stack_style.dart';
-import 'stackbox_mutable_style.dart';
 import 'stackbox_spec.dart';
 import 'stackbox_widget.dart';
 
@@ -321,8 +320,6 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
       StackBoxStyler().translate(x, y, z);
   factory StackBoxStyler.skew(double skewX, double skewY) =>
       StackBoxStyler().skew(skewX, skewY);
-  static StackBoxMutableStyler get chain => .new(StackBoxStyler());
-
   // Box-style instance methods
 
   /// Sets the alignment for the box.

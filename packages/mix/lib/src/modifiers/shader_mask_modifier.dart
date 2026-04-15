@@ -5,7 +5,6 @@ import '../core/helpers.dart';
 import '../core/widget_modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
-import '../core/utility.dart';
 
 /// Modifier that applies a shader mask to its child.
 ///
@@ -116,26 +115,6 @@ class ShaderMaskModifierMix extends ModifierMix<ShaderMaskModifier>
 
   @override
   List<Object?> get props => [shaderCallback, blendMode];
-}
-
-/// Utility class for applying shader mask modifications.
-///
-/// Provides convenient methods for creating ShaderMaskModifierMix instances.
-final class ShaderMaskModifierUtility<T extends Style<Object?>>
-    extends MixUtility<T, ShaderMaskModifierMix> {
-  const ShaderMaskModifierUtility(super.utilityBuilder);
-
-  T call({
-    required ShaderCallbackBuilder shaderCallback,
-    BlendMode blendMode = .modulate,
-  }) {
-    return utilityBuilder(
-      ShaderMaskModifierMix(
-        shaderCallback: shaderCallback.callback,
-        blendMode: blendMode,
-      ),
-    );
-  }
 }
 
 /// Utility class for common [Shader Function(Rect)] callbacks.

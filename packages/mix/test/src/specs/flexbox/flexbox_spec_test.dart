@@ -5,7 +5,7 @@ import 'package:mix/mix.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
-  group('FlexBoxMutableStyler', () {
+  group('FlexBoxStyler', () {
     group('Constructor', () {
       test('', () {
         final containerAttr = BoxStyler(
@@ -406,38 +406,10 @@ void main() {
         ); // Empty FlexBoxStyle resolves to empty FlexSpec
       });
 
-      test('handles complex nested chaining', () {
-        final utility = FlexBoxMutableStyler();
-
-        // Build complex nested structure using mutable utilities
-        utility.alignment(Alignment.center);
-        utility.padding.all(10.0);
-        utility.margin.horizontal(20.0);
-        utility.color.red();
-        utility.direction(Axis.horizontal);
-        utility.mainAxisAlignment(.spaceBetween);
-        utility.spacing(10.0);
-
-        final context = MockBuildContext();
-        final resolved = utility.resolve(context);
-        final boxSpec = resolved.spec.box?.spec;
-
-        // Verify all properties are resolved correctly
-        expect(boxSpec?.alignment, Alignment.center);
-        expect(boxSpec?.padding, const EdgeInsets.all(10.0));
-        expect(boxSpec?.margin, const EdgeInsets.symmetric(horizontal: 20.0));
-        expect((boxSpec?.decoration as BoxDecoration?)?.color, Colors.red);
-        expect(resolved.spec.flex?.spec.direction, Axis.horizontal);
-        expect(
-          resolved.spec.flex?.spec.mainAxisAlignment,
-          MainAxisAlignment.spaceBetween,
-        );
-        expect(resolved.spec.flex?.spec.spacing, 10.0);
-      });
     });
   });
 
-  group('FlexBoxMutableStyler', () {
+  group('FlexBoxSpec', () {
     test('', () {
       final spec = FlexBoxSpec();
 

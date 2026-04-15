@@ -10,7 +10,6 @@ import '../../core/style_spec.dart';
 import '../../modifiers/widget_modifier_config.dart';
 import '../../properties/painting/shadow_mix.dart';
 import '../../style/abstracts/styler.dart';
-import 'icon_mutable_style.dart';
 import 'icon_spec.dart';
 import 'icon_widget.dart';
 
@@ -135,8 +134,6 @@ class IconStyler extends MixStyler<IconStyler, IconSpec>
       IconStyler().applyTextScaling(value);
   factory IconStyler.blendMode(BlendMode value) =>
       IconStyler().blendMode(value);
-
-  static IconMutableStyler get chain => .new(IconStyler());
 
   /// Sets single icon shadow
   IconStyler shadow(ShadowMix value) {

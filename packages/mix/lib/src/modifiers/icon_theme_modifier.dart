@@ -4,7 +4,6 @@ import 'package:flutter/widgets.dart';
 import '../core/helpers.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
-import '../core/utility.dart';
 import '../core/widget_modifier.dart';
 import '../properties/painting/shadow_mix.dart';
 
@@ -163,66 +162,3 @@ class IconThemeModifierMix extends ModifierMix<IconThemeModifier> {
   ];
 }
 
-/// Utility class for configuring [IconThemeModifier] properties.
-///
-/// This class provides methods to set individual properties of a [IconThemeModifier].
-/// Use the methods of this class to configure specific properties of a [IconThemeModifier].
-final class IconThemeModifierUtility<T extends Style<Object?>>
-    extends MixUtility<T, IconThemeModifierMix> {
-  const IconThemeModifierUtility(super.utilityBuilder);
-
-  /// Creates an [IconThemeModifierMix] with the specified properties.
-  T call({
-    Color? color,
-    double? size,
-    double? fill,
-    double? weight,
-    double? grade,
-    double? opticalSize,
-    double? opacity,
-    List<ShadowMix>? shadows,
-    bool? applyTextScaling,
-  }) {
-    return utilityBuilder(
-      IconThemeModifierMix(
-        color: color,
-        size: size,
-        fill: fill,
-        weight: weight,
-        grade: grade,
-        opticalSize: opticalSize,
-        opacity: opacity,
-        shadows: shadows,
-        applyTextScaling: applyTextScaling,
-      ),
-    );
-  }
-
-  /// Sets the default icon color.
-  T color(Color color) => call(color: color);
-
-  /// Sets the default icon size.
-  T size(double size) => call(size: size);
-
-  /// Sets the default icon fill.
-  T fill(double fill) => call(fill: fill);
-
-  /// Sets the default icon weight.
-  T weight(double weight) => call(weight: weight);
-
-  /// Sets the default icon grade.
-  T grade(double grade) => call(grade: grade);
-
-  /// Sets the default icon optical size.
-  T opticalSize(double opticalSize) => call(opticalSize: opticalSize);
-
-  /// Sets the default icon opacity.
-  T opacity(double opacity) => call(opacity: opacity);
-
-  /// Sets the default icon shadows.
-  T shadows(List<ShadowMix> shadows) => call(shadows: shadows);
-
-  /// Sets the default icon text scaling behavior.
-  T applyTextScaling(bool applyTextScaling) =>
-      call(applyTextScaling: applyTextScaling);
-}
