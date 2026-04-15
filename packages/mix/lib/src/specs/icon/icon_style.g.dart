@@ -101,9 +101,52 @@ mixin _$IconStylerMixin on Style<IconSpec>, Diagnosticable {
     return merge(IconStyler(modifier: value));
   }
 
+  @override
+  bool get hasBasePayload =>
+      $applyTextScaling != null ||
+      $blendMode != null ||
+      $color != null ||
+      $fill != null ||
+      $grade != null ||
+      $icon != null ||
+      $opacity != null ||
+      $opticalSize != null ||
+      $semanticsLabel != null ||
+      $shadows != null ||
+      $size != null ||
+      $textDirection != null ||
+      $weight != null ||
+      $modifier != null ||
+      $animation != null;
+
+  @override
+  IconStyler copyWithVariants(List<VariantStyle<IconSpec>>? variants) {
+    return IconStyler.create(
+      applyTextScaling: $applyTextScaling,
+      blendMode: $blendMode,
+      color: $color,
+      fill: $fill,
+      grade: $grade,
+      icon: $icon,
+      opacity: $opacity,
+      opticalSize: $opticalSize,
+      semanticsLabel: $semanticsLabel,
+      shadows: $shadows,
+      size: $size,
+      textDirection: $textDirection,
+      weight: $weight,
+      variants: variants,
+      modifier: $modifier,
+      animation: $animation,
+    );
+  }
+
   /// Merges with another [IconStyler].
   @override
   IconStyler merge(IconStyler? other) {
+    final deferred = deferMerge(other);
+    if (deferred != null) return deferred as IconStyler;
+
     return IconStyler.create(
       applyTextScaling: MixOps.merge(
         $applyTextScaling,

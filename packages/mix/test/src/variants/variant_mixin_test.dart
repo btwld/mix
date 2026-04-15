@@ -12,6 +12,18 @@ class TestVariantAttribute extends Style<BoxSpec>
   const TestVariantAttribute({super.variants, super.modifier, super.animation});
 
   @override
+  bool get hasBasePayload => $modifier != null || $animation != null;
+
+  @override
+  TestVariantAttribute copyWithVariants(List<VariantStyle<BoxSpec>>? variants) {
+    return TestVariantAttribute(
+      variants: variants,
+      modifier: $modifier,
+      animation: $animation,
+    );
+  }
+
+  @override
   TestVariantAttribute variant(Variant variant, TestVariantAttribute style) {
     return TestVariantAttribute(
       variants: [...?$variants, VariantStyle(variant, style)],

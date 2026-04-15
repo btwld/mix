@@ -174,6 +174,26 @@ class ContextVariantBuilder<S extends Style<Object?>> extends Variant {
   S build(BuildContext context) => fn(context);
 }
 
+/// Internal variant carrying a deferred base-merge payload.
+///
+/// Uses identity-based keys to prevent merge-key collisions when multiple
+/// deferred merges are queued.
+@internal
+final class DeferredVariant<S extends Spec<S>> extends Variant {
+  final Style<S> payload;
+
+  const DeferredVariant(this.payload);
+
+  @override
+  String get key => 'deferred_${identityHashCode(this)}';
+
+  @override
+  bool operator ==(Object other) => identical(this, other);
+
+  @override
+  int get hashCode => identityHashCode(this);
+}
+
 // Helper functions for cleaner variant checking
 bool hasVariant(List<NamedVariant> activeVariants, NamedVariant variant) =>
     activeVariants.contains(variant);

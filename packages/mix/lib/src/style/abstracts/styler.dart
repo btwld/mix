@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import '../../core/spec.dart';
 import '../../core/style.dart';
 import '../mixins/animation_style_mixin.dart';
+import '../mixins/token_style_mixin.dart';
 import '../mixins/variant_style_mixin.dart';
 import '../mixins/widget_modifier_style_mixin.dart';
 import '../mixins/widget_state_variant_mixin.dart';
@@ -13,6 +14,7 @@ abstract class MixStyler<ST extends Style<SP>, SP extends Spec<SP>>
         Diagnosticable,
         WidgetModifierStyleMixin<ST, SP>,
         VariantStyleMixin<ST, SP>,
+        TokenStyleMixin<ST, SP>,
         WidgetStateVariantMixin<ST, SP>,
         AnimationStyleMixin<ST, SP> {
   const MixStyler({

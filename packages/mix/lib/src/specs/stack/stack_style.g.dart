@@ -47,9 +47,34 @@ mixin _$StackStylerMixin on Style<StackSpec>, Diagnosticable {
     return merge(StackStyler(modifier: value));
   }
 
+  @override
+  bool get hasBasePayload =>
+      $alignment != null ||
+      $clipBehavior != null ||
+      $fit != null ||
+      $textDirection != null ||
+      $modifier != null ||
+      $animation != null;
+
+  @override
+  StackStyler copyWithVariants(List<VariantStyle<StackSpec>>? variants) {
+    return StackStyler.create(
+      alignment: $alignment,
+      clipBehavior: $clipBehavior,
+      fit: $fit,
+      textDirection: $textDirection,
+      variants: variants,
+      modifier: $modifier,
+      animation: $animation,
+    );
+  }
+
   /// Merges with another [StackStyler].
   @override
   StackStyler merge(StackStyler? other) {
+    final deferred = deferMerge(other);
+    if (deferred != null) return deferred as StackStyler;
+
     return StackStyler.create(
       alignment: MixOps.merge($alignment, other?.$alignment),
       clipBehavior: MixOps.merge($clipBehavior, other?.$clipBehavior),
