@@ -72,10 +72,7 @@ void main() {
 
         expect(code, contains('AlignModifier copyWith({'));
         expect(code, contains('AlignmentGeometry? alignment,'));
-        expect(
-          code,
-          contains('alignment: alignment ?? this.alignment,'),
-        );
+        expect(code, contains('alignment: alignment ?? this.alignment,'));
       });
 
       test('generates copyWith with positional params', () {
@@ -135,10 +132,7 @@ void main() {
         );
         final code = builder.build();
 
-        expect(
-          code,
-          contains('fit: MixOps.lerpSnap(fit, other.fit, t),'),
-        );
+        expect(code, contains('fit: MixOps.lerpSnap(fit, other.fit, t),'));
       });
 
       test('generates lerp with null assertion for non-nullable fields', () {
@@ -181,10 +175,7 @@ void main() {
         );
         final code = builder.build();
 
-        expect(
-          code,
-          contains('width: MixOps.lerp(width, other.width, t),'),
-        );
+        expect(code, contains('width: MixOps.lerp(width, other.width, t),'));
         expect(
           code,
           isNot(contains('width: MixOps.lerp(width, other.width, t)!')),
@@ -316,10 +307,7 @@ void main() {
         );
         final code = builder.build();
 
-        expect(
-          code,
-          contains('MixOps.lerp(opacity, other.opacity, t)!,'),
-        );
+        expect(code, contains('MixOps.lerp(opacity, other.opacity, t)!,'));
         expect(
           code,
           isNot(contains('opacity: MixOps.lerp(opacity, other.opacity, t)!')),
