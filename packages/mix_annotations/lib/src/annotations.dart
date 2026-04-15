@@ -47,6 +47,44 @@ class MixableStyler {
 
 const mixableStyler = MixableStyler();
 
+enum MixWidgetBuilderKind {
+  box,
+  text,
+  flexBox,
+  rowBox,
+  columnBox,
+  icon,
+  image,
+  stackBox,
+}
+
+class MixWidgetBuilder {
+  final MixWidgetBuilderKind kind;
+
+  const MixWidgetBuilder.box() : kind = MixWidgetBuilderKind.box;
+  const MixWidgetBuilder.text() : kind = MixWidgetBuilderKind.text;
+  const MixWidgetBuilder.flexBox() : kind = MixWidgetBuilderKind.flexBox;
+  const MixWidgetBuilder.rowBox() : kind = MixWidgetBuilderKind.rowBox;
+  const MixWidgetBuilder.columnBox() : kind = MixWidgetBuilderKind.columnBox;
+  const MixWidgetBuilder.icon() : kind = MixWidgetBuilderKind.icon;
+  const MixWidgetBuilder.image() : kind = MixWidgetBuilderKind.image;
+  const MixWidgetBuilder.stackBox() : kind = MixWidgetBuilderKind.stackBox;
+}
+
+class MixWidget {
+  final String? name;
+  final bool styleable;
+  final MixWidgetBuilder? widgetBuilder;
+
+  const MixWidget({
+    this.name,
+    this.styleable = false,
+    this.widgetBuilder,
+  });
+}
+
+const mixWidget = MixWidget();
+
 /// Annotation for configuring individual fields in Styler classes.
 ///
 /// [ignoreSetter] when true, no setter method will be generated for this field.
@@ -65,7 +103,7 @@ class MixableField {
   final bool ignoreSetter;
 
   /// Optional type override for the setter parameter.
-  /// If not specified, the type is inferred from the field's Prop<T> type argument.
+  /// If not specified, the type is inferred from the field's `Prop<T>` type argument.
   final Type? setterType;
 
   const MixableField({this.ignoreSetter = false, this.setterType});

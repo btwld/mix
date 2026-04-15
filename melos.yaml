@@ -140,6 +140,10 @@ scripts:
   exports:
     run: melos exec --scope="mix" dart run ../../scripts/exports.dart .
     description: Generate exports for the mix package
+
+  goldens:mix_widget:update:
+    run: melos exec --scope="mix_generator" -- dart run tool/update_mix_widget_goldens.dart
+    description: Refresh MixWidget generator golden snapshots
   
   verify_version_pubspec_changelog:
     run: ./scripts/verify_changelogs.sh packages

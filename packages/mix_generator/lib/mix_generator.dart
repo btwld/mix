@@ -15,6 +15,7 @@ import 'package:source_gen/source_gen.dart';
 import 'src/mix_generator.dart';
 import 'src/mixable_generator.dart';
 import 'src/styler_generator.dart';
+import 'src/widget_generator.dart';
 
 // Export core components for testing
 export 'src/core/builders/index.dart';
@@ -27,6 +28,7 @@ export 'src/core/resolvers/index.dart';
 export 'src/mix_generator.dart';
 export 'src/mixable_generator.dart';
 export 'src/styler_generator.dart';
+export 'src/widget_generator.dart';
 
 /// Entry point for the mix_generator builder.
 ///
@@ -64,6 +66,19 @@ Builder mixableGenerator(BuilderOptions _) {
   return SharedPartBuilder(
     [MixableGenerator()],
     'mixable_generator',
+    formatOutput: (code, version) {
+      return DartFormatter(languageVersion: version).format(code);
+    },
+  );
+}
+
+/// Entry point for the mix_widget_generator builder.
+///
+/// Triggers on @MixWidget annotations and generates widget wrappers.
+Builder mixWidgetGenerator(BuilderOptions _) {
+  return SharedPartBuilder(
+    [MixWidgetGenerator()],
+    'mix_widget_generator',
     formatOutput: (code, version) {
       return DartFormatter(languageVersion: version).format(code);
     },

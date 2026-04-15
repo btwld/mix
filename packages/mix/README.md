@@ -83,6 +83,28 @@ Box(
 );
 ```
 
+### Generated Wrapper Widgets
+
+`package:mix/mix.dart` also re-exports the `MixWidget` annotation API, so you can generate wrapper widgets without adding a second import:
+
+```dart
+import 'package:mix/mix.dart';
+
+part 'card_styles.g.dart';
+
+@MixWidget(styleable: true)
+final cardStyle = BoxStyler()
+    .paddingAll(16)
+    .borderRounded(12);
+```
+
+The generated wrapper constructs the mapped Mix widget directly and passes the resolved `style:` into it. Use `widgetBuilder` when a styler family supports multiple widget targets:
+
+```dart
+@MixWidget(widgetBuilder: MixWidgetBuilder.rowBox())
+final toolbarStyle = FlexBoxStyler();
+```
+
 ## Understanding the Styler Pattern
 
 ### Fluent API: `BoxStyler()`

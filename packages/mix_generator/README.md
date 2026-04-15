@@ -103,6 +103,28 @@ final class BoxConstraintsMix extends ConstraintsMix<BoxConstraints>
 }
 ```
 
+### From `@MixWidget` — Generated widget wrapper
+
+Generates a thin public `StatelessWidget` wrapper from a top-level Mix styler declaration.
+
+```dart
+import 'package:mix/mix.dart';
+
+part 'card_styles.g.dart';
+
+@MixWidget(styleable: true)
+BoxStyler cardStyle({required Color color}) => BoxStyler.color(color);
+```
+
+The generated widget mirrors the styler's `call()` signature, then constructs the mapped Mix widget directly under the hood. When enabled, it also merges an optional `style` override. For style families with multiple valid widget targets, use `widgetBuilder`:
+
+```dart
+@MixWidget(widgetBuilder: MixWidgetBuilder.rowBox())
+final toolbarStyle = FlexBoxStyler();
+```
+
+`@MixWidget` supports top-level `final` variables and top-level functions. Function-backed declarations prepend their own factory parameters before the mirrored `call()` parameters, so inputs like `color` can shape the generated base style. Unsupported styler families fail generation unless a compatible `widgetBuilder` override is provided.
+
 ### Field-level control with `@MixableField`
 
 ```dart
@@ -118,7 +140,7 @@ final Prop<List<Shadow>>? $shadows;
 ## Running the Generator
 
 ```bash
-dart run build_runner build
+dart run build_runner build --delete-conflicting-outputs
 ```
 
 Or within the Mix monorepo:
@@ -128,6 +150,12 @@ melos run gen:build
 ```
 
 Generated files use the `.g.dart` extension and should be committed to version control.
+
+To refresh the checked-in `MixWidget` generator goldens in this repository:
+
+```bash
+melos run goldens:mix_widget:update
+```
 
 ## Debugging
 

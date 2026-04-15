@@ -81,6 +81,31 @@ final class BoxConstraintsMix extends ConstraintsMix<BoxConstraints>
 }
 ```
 
+### `@MixWidget`
+
+Generates a thin public `StatelessWidget` wrapper from a top-level Mix styler declaration.
+
+```dart
+import 'package:mix/mix.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+
+part 'card_styles.g.dart';
+
+@MixWidget(styleable: true)
+BoxStyler cardStyle({required Color color}) => BoxStyler.color(color);
+```
+
+This generates a widget wrapper whose public constructor mirrors the styler's `call()` signature while still constructing the target Mix widget directly. A generated `style:` parameter can be added on top of the mirrored `call()` inputs when `styleable: true`.
+
+Use `widgetBuilder` when a style family supports multiple widget targets:
+
+```dart
+@MixWidget(widgetBuilder: MixWidgetBuilder.rowBox())
+final toolbarStyle = FlexBoxStyler();
+```
+
+`@MixWidget` currently supports top-level `final` variables and top-level functions only. Function-backed declarations prepend their own factory parameters before the mirrored `call()` inputs.
+
 ### `@MixableField`
 
 Configures code generation for individual fields in Styler classes.
@@ -118,7 +143,7 @@ GeneratedMixMethods.skipResolve    // all except resolve
 After annotating your classes, run `build_runner` to generate code:
 
 ```bash
-dart run build_runner build
+dart run build_runner build --delete-conflicting-outputs
 ```
 
 Or within the Mix monorepo:

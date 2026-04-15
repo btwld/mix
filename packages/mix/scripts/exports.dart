@@ -3,6 +3,22 @@
 import 'dart:developer';
 import 'dart:io';
 
+class _ExportConfig {
+  final String libraryDirective;
+  final Map<String, List<String>> manualTopLevelDirectives;
+  final Map<String, List<String>> hiddenSymbolsByPath;
+  final List<String> excludedPaths;
+  final List<String> forcedPaths;
+
+  const _ExportConfig({
+    required this.libraryDirective,
+    this.manualTopLevelDirectives = const {},
+    this.hiddenSymbolsByPath = const {},
+    this.excludedPaths = const [],
+    this.forcedPaths = const [],
+  });
+}
+
 final _libDirectory = Directory('lib');
 final _srcDirectory = Directory(_joinPaths(_libDirectory.path, 'src'));
 final _mixFile = File(_joinPaths(_libDirectory.path, 'mix.dart'));
@@ -22,9 +38,19 @@ Future<void> _libraryExport() async {
   final libOutputString = StringBuffer();
   libOutputString.write(_libAsci);
 
-  libOutputString.writeln('library mix;\n');
+  libOutputString.writeln('${_exportConfig.libraryDirective}\n');
 
-  final fileMap = await _getImportedFilesByDirectory();
+  for (final entry in _exportConfig.manualTopLevelDirectives.entries) {
+    libOutputString.writeln('/// ${entry.key}');
+    for (final directive in entry.value) {
+      libOutputString.writeln(directive);
+    }
+  }
+  if (_exportConfig.manualTopLevelDirectives.isNotEmpty) {
+    libOutputString.writeln();
+  }
+
+  final fileMap = await _getImportedFilesByDirectory(_exportConfig);
 
   // Traverse the /lib/ directory
   for (final key in fileMap.keys) {
@@ -39,7 +65,12 @@ Future<void> _libraryExport() async {
     final barrelOutput = StringBuffer();
     barrelOutput.write(_generatedMessage);
     for (final import in importList) {
-      libOutputString.writeln('export \'$import\';');
+      libOutputString.writeln(
+        _buildExportDirective(
+          importPath: import,
+          hiddenSymbols: _exportConfig.hiddenSymbolsByPath[import],
+        ),
+      );
     }
   }
 
@@ -97,8 +128,11 @@ String _getRelativePath(String filePath, String fromPath) {
   return relativePath.join('/');
 }
 
-Future<Map<String, List<String>>> _getImportedFilesByDirectory() async {
+Future<Map<String, List<String>>> _getImportedFilesByDirectory(
+  _ExportConfig exportConfig,
+) async {
   final result = <String, List<String>>{};
+  final includedRelativePaths = <String>{};
 
   final filesList = await _getFilesInDirectory(_srcDirectory);
 
@@ -109,7 +143,10 @@ Future<Map<String, List<String>>> _getImportedFilesByDirectory() async {
     if (!_isDartFile(filePath)) {
       continue;
     }
-    if (_isInternal(filePath)) {
+    final relativePath = _getRelativePath(filePath, _libDirectory.path);
+    final isForcedPath = exportConfig.forcedPaths.contains(relativePath);
+
+    if (_isInternal(filePath) && !isForcedPath) {
       continue;
     }
 
@@ -117,7 +154,10 @@ Future<Map<String, List<String>>> _getImportedFilesByDirectory() async {
       continue;
     }
 
-    final relativePath = _getRelativePath(filePath, _libDirectory.path);
+    if (exportConfig.excludedPaths.contains(relativePath)) {
+      continue;
+    }
+
     // file path will like this src/theme/mix_theme.dart, or src/sub1/**/*/*.dart
     // I would like to get sub1 and or the first direcotry and save as a variable
     // so I can use it in the export file.
@@ -126,9 +166,36 @@ Future<Map<String, List<String>>> _getImportedFilesByDirectory() async {
 
     result.putIfAbsent(dirName, () => []);
     result[dirName]!.add(relativePath);
+    includedRelativePaths.add(relativePath);
+  }
+
+  for (final relativePath in exportConfig.forcedPaths) {
+    if (includedRelativePaths.contains(relativePath)) {
+      continue;
+    }
+
+    const dirIndex = 1;
+    final dirName = relativePath.split('/')[dirIndex];
+    result.putIfAbsent(dirName, () => []);
+    result[dirName]!.add(relativePath);
+  }
+
+  for (final importList in result.values) {
+    importList.sort();
   }
 
   return result;
+}
+
+String _buildExportDirective({
+  required String importPath,
+  required List<String>? hiddenSymbols,
+}) {
+  if (hiddenSymbols == null || hiddenSymbols.isEmpty) {
+    return 'export \'$importPath\';';
+  }
+
+  return 'export \'$importPath\' hide ${hiddenSymbols.join(', ')};';
 }
 
 Future<List<String>> _getFilesInDirectory(Directory directory) async {
@@ -179,3 +246,25 @@ const _generatedMessage = r'''
 //     \/////////////////////////////////////////////////
 
 ''';
+
+const _exportConfig = _ExportConfig(
+  libraryDirective: 'library;',
+  manualTopLevelDirectives: {
+    'ANNOTATIONS': [
+      "export 'package:mix_annotations/mix_annotations.dart' show MixWidget, MixWidgetBuilder, MixWidgetBuilderKind, mixWidget;",
+    ],
+  },
+  hiddenSymbolsByPath: {
+    'src/core/style.dart': ['StyleElement'],
+    'src/modifiers/box_modifier.dart': ['BoxModifierUtility'],
+    'src/properties/layout/edge_insets_geometry_util.dart': [
+      'createEdgeInsetsMix',
+    ],
+  },
+  excludedPaths: [
+    'src/core/decoration_merge.dart',
+    'src/core/shape_border_merge.dart',
+    'src/style/abstracts/styler.dart',
+  ],
+  forcedPaths: ['src/modifiers/internal/reset_modifier.dart'],
+);
