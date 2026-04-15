@@ -6,6 +6,29 @@ part of 'intrinsic_modifier.dart';
 // ModifierGenerator
 // **************************************************************************
 
+mixin _$IntrinsicHeightModifierMethods
+    on WidgetModifier<IntrinsicHeightModifier>, Diagnosticable {
+  @override
+  IntrinsicHeightModifier copyWith() {
+    return const IntrinsicHeightModifier();
+  }
+
+  @override
+  IntrinsicHeightModifier lerp(IntrinsicHeightModifier? other, double t) {
+    if (other == null) return this as IntrinsicHeightModifier;
+
+    return const IntrinsicHeightModifier();
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+  }
+
+  @override
+  List<Object?> get props => [];
+}
+
 class IntrinsicHeightModifierMix extends ModifierMix<IntrinsicHeightModifier>
     with Diagnosticable {
   const IntrinsicHeightModifierMix.create();
@@ -22,6 +45,29 @@ class IntrinsicHeightModifierMix extends ModifierMix<IntrinsicHeightModifier>
     if (other == null) return this;
 
     return IntrinsicHeightModifierMix.create();
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+  }
+
+  @override
+  List<Object?> get props => [];
+}
+
+mixin _$IntrinsicWidthModifierMethods
+    on WidgetModifier<IntrinsicWidthModifier>, Diagnosticable {
+  @override
+  IntrinsicWidthModifier copyWith() {
+    return const IntrinsicWidthModifier();
+  }
+
+  @override
+  IntrinsicWidthModifier lerp(IntrinsicWidthModifier? other, double t) {
+    if (other == null) return this as IntrinsicWidthModifier;
+
+    return const IntrinsicWidthModifier();
   }
 
   @override

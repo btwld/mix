@@ -17,32 +17,12 @@ part 'padding_modifier.g.dart';
 /// Wraps the child in a [Padding] widget with the specified padding.
 @MixableModifier()
 final class PaddingModifier extends WidgetModifier<PaddingModifier>
-    with Diagnosticable {
+    with Diagnosticable, _$PaddingModifierMethods {
+  @override
   final EdgeInsetsGeometry padding;
 
   const PaddingModifier([EdgeInsetsGeometry? padding])
     : padding = padding ?? EdgeInsets.zero;
-
-  @override
-  PaddingModifier copyWith({EdgeInsetsGeometry? padding}) {
-    return PaddingModifier(padding ?? this.padding);
-  }
-
-  @override
-  PaddingModifier lerp(PaddingModifier? other, double t) {
-    if (other == null) return this;
-
-    return PaddingModifier(MixOps.lerp(padding, other.padding, t)!);
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('padding', padding));
-  }
-
-  @override
-  List<Object?> get props => [padding];
 
   @override
   Widget build(Widget child) {

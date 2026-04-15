@@ -16,31 +16,11 @@ part 'opacity_modifier.g.dart';
 /// Wraps the child in an [Opacity] widget with the specified opacity value.
 @MixableModifier()
 final class OpacityModifier extends WidgetModifier<OpacityModifier>
-    with Diagnosticable {
+    with Diagnosticable, _$OpacityModifierMethods {
   /// Opacity value between 0.0 and 1.0 (inclusive).
+  @override
   final double opacity;
   const OpacityModifier([double? opacity]) : opacity = opacity ?? 1.0;
-
-  @override
-  OpacityModifier copyWith({double? opacity}) {
-    return OpacityModifier(opacity ?? this.opacity);
-  }
-
-  @override
-  OpacityModifier lerp(OpacityModifier? other, double t) {
-    if (other == null) return this;
-
-    return OpacityModifier(MixOps.lerp(opacity, other.opacity, t)!);
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(PercentProperty('opacity', opacity));
-  }
-
-  @override
-  List<Object?> get props => [opacity];
 
   @override
   Widget build(Widget child) {

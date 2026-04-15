@@ -6,6 +6,87 @@ part of 'default_text_style_modifier.dart';
 // ModifierGenerator
 // **************************************************************************
 
+mixin _$DefaultTextStyleModifierMethods
+    on WidgetModifier<DefaultTextStyleModifier>, Diagnosticable {
+  int? get maxLines;
+  TextOverflow get overflow;
+  bool get softWrap;
+  TextStyle get style;
+  TextAlign? get textAlign;
+  TextHeightBehavior? get textHeightBehavior;
+  TextWidthBasis get textWidthBasis;
+
+  @override
+  DefaultTextStyleModifier copyWith({
+    int? maxLines,
+    TextOverflow? overflow,
+    bool? softWrap,
+    TextStyle? style,
+    TextAlign? textAlign,
+    TextHeightBehavior? textHeightBehavior,
+    TextWidthBasis? textWidthBasis,
+  }) {
+    return DefaultTextStyleModifier(
+      maxLines: maxLines ?? this.maxLines,
+      overflow: overflow ?? this.overflow,
+      softWrap: softWrap ?? this.softWrap,
+      style: style ?? this.style,
+      textAlign: textAlign ?? this.textAlign,
+      textHeightBehavior: textHeightBehavior ?? this.textHeightBehavior,
+      textWidthBasis: textWidthBasis ?? this.textWidthBasis,
+    );
+  }
+
+  @override
+  DefaultTextStyleModifier lerp(DefaultTextStyleModifier? other, double t) {
+    if (other == null) return this as DefaultTextStyleModifier;
+
+    return DefaultTextStyleModifier(
+      maxLines: MixOps.lerp(maxLines, other.maxLines, t),
+      overflow: MixOps.lerpSnap(overflow, other.overflow, t)!,
+      softWrap: MixOps.lerpSnap(softWrap, other.softWrap, t)!,
+      style: MixOps.lerp(style, other.style, t)!,
+      textAlign: MixOps.lerpSnap(textAlign, other.textAlign, t),
+      textHeightBehavior: MixOps.lerpSnap(
+        textHeightBehavior,
+        other.textHeightBehavior,
+        t,
+      ),
+      textWidthBasis: MixOps.lerpSnap(textWidthBasis, other.textWidthBasis, t)!,
+    );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(IntProperty('maxLines', maxLines))
+      ..add(EnumProperty<TextOverflow>('overflow', overflow))
+      ..add(
+        FlagProperty(
+          'softWrap',
+          value: softWrap,
+          ifTrue: 'wrapping at word boundaries',
+        ),
+      )
+      ..add(DiagnosticsProperty('style', style))
+      ..add(EnumProperty<TextAlign>('textAlign', textAlign))
+      ..add(DiagnosticsProperty('textHeightBehavior', textHeightBehavior))
+      ..add(EnumProperty<TextWidthBasis>('textWidthBasis', textWidthBasis));
+  }
+
+  @override
+  List<Object?> get props => [
+    maxLines,
+    overflow,
+    softWrap,
+    style,
+    textAlign,
+    textHeightBehavior,
+    textWidthBasis,
+  ];
+}
+
 class DefaultTextStyleModifierMix extends ModifierMix<DefaultTextStyleModifier>
     with Diagnosticable {
   final Prop<int>? maxLines;

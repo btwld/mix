@@ -15,40 +15,13 @@ part 'sized_box_modifier.g.dart';
 /// Wraps the child in a [SizedBox] widget with the specified width and height.
 @MixableModifier()
 final class SizedBoxModifier extends WidgetModifier<SizedBoxModifier>
-    with Diagnosticable {
+    with Diagnosticable, _$SizedBoxModifierMethods {
+  @override
   final double? width;
+  @override
   final double? height;
 
   const SizedBoxModifier({this.width, this.height});
-
-  @override
-  SizedBoxModifier copyWith({double? width, double? height}) {
-    return SizedBoxModifier(
-      width: width ?? this.width,
-      height: height ?? this.height,
-    );
-  }
-
-  @override
-  SizedBoxModifier lerp(SizedBoxModifier? other, double t) {
-    if (other == null) return this;
-
-    return SizedBoxModifier(
-      width: MixOps.lerp(width, other.width, t),
-      height: MixOps.lerp(height, other.height, t),
-    );
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(DoubleProperty('width', width))
-      ..add(DoubleProperty('height', height));
-  }
-
-  @override
-  List<Object?> get props => [width, height];
 
   @override
   Widget build(Widget child) {

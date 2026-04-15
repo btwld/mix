@@ -6,6 +6,32 @@ part of 'padding_modifier.dart';
 // ModifierGenerator
 // **************************************************************************
 
+mixin _$PaddingModifierMethods
+    on WidgetModifier<PaddingModifier>, Diagnosticable {
+  EdgeInsetsGeometry get padding;
+
+  @override
+  PaddingModifier copyWith({EdgeInsetsGeometry? padding}) {
+    return PaddingModifier(padding ?? this.padding);
+  }
+
+  @override
+  PaddingModifier lerp(PaddingModifier? other, double t) {
+    if (other == null) return this as PaddingModifier;
+
+    return PaddingModifier(MixOps.lerp(padding, other.padding, t)!);
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty('padding', padding));
+  }
+
+  @override
+  List<Object?> get props => [padding];
+}
+
 class PaddingModifierMix extends ModifierMix<PaddingModifier>
     with Diagnosticable {
   final Prop<EdgeInsetsGeometry>? padding;

@@ -6,6 +6,69 @@ part of 'scroll_view_modifier.dart';
 // ModifierGenerator
 // **************************************************************************
 
+mixin _$ScrollViewModifierMethods
+    on WidgetModifier<ScrollViewModifier>, Diagnosticable {
+  Clip? get clipBehavior;
+  EdgeInsetsGeometry? get padding;
+  ScrollPhysics? get physics;
+  bool? get reverse;
+  Axis? get scrollDirection;
+
+  @override
+  ScrollViewModifier copyWith({
+    Clip? clipBehavior,
+    EdgeInsetsGeometry? padding,
+    ScrollPhysics? physics,
+    bool? reverse,
+    Axis? scrollDirection,
+  }) {
+    return ScrollViewModifier(
+      clipBehavior: clipBehavior ?? this.clipBehavior,
+      padding: padding ?? this.padding,
+      physics: physics ?? this.physics,
+      reverse: reverse ?? this.reverse,
+      scrollDirection: scrollDirection ?? this.scrollDirection,
+    );
+  }
+
+  @override
+  ScrollViewModifier lerp(ScrollViewModifier? other, double t) {
+    if (other == null) return this as ScrollViewModifier;
+
+    return ScrollViewModifier(
+      clipBehavior: MixOps.lerpSnap(clipBehavior, other.clipBehavior, t),
+      padding: MixOps.lerp(padding, other.padding, t),
+      physics: MixOps.lerpSnap(physics, other.physics, t),
+      reverse: MixOps.lerpSnap(reverse, other.reverse, t),
+      scrollDirection: MixOps.lerpSnap(
+        scrollDirection,
+        other.scrollDirection,
+        t,
+      ),
+    );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(EnumProperty<Clip>('clipBehavior', clipBehavior))
+      ..add(DiagnosticsProperty('padding', padding))
+      ..add(DiagnosticsProperty('physics', physics))
+      ..add(FlagProperty('reverse', value: reverse, ifTrue: 'reversed'))
+      ..add(EnumProperty<Axis>('scrollDirection', scrollDirection));
+  }
+
+  @override
+  List<Object?> get props => [
+    clipBehavior,
+    padding,
+    physics,
+    reverse,
+    scrollDirection,
+  ];
+}
+
 class ScrollViewModifierMix extends ModifierMix<ScrollViewModifier>
     with Diagnosticable {
   final Prop<Clip>? clipBehavior;

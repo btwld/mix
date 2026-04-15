@@ -14,32 +14,12 @@ part 'blur_modifier.g.dart';
 /// Modifier that applies a Gaussian blur filter to its child.
 @MixableModifier()
 final class BlurModifier extends WidgetModifier<BlurModifier>
-    with Diagnosticable {
+    with Diagnosticable, _$BlurModifierMethods {
   /// Blur sigma for X and Y axis.
+  @override
   final double sigma;
 
   const BlurModifier([double? sigma]) : sigma = sigma ?? 0.0;
-
-  @override
-  BlurModifier copyWith({double? sigma}) {
-    return BlurModifier(sigma ?? this.sigma);
-  }
-
-  @override
-  BlurModifier lerp(BlurModifier? other, double t) {
-    if (other == null) return this;
-
-    return BlurModifier(MixOps.lerp(sigma, other.sigma, t)!);
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(DoubleProperty('sigma', sigma));
-  }
-
-  @override
-  List<Object?> get props => [sigma];
 
   @override
   Widget build(Widget child) {

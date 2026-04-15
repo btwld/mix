@@ -6,6 +6,44 @@ part of 'clip_modifier.dart';
 // ModifierGenerator
 // **************************************************************************
 
+mixin _$ClipOvalModifierMethods
+    on WidgetModifier<ClipOvalModifier>, Diagnosticable {
+  Clip get clipBehavior;
+  CustomClipper<Rect>? get clipper;
+
+  @override
+  ClipOvalModifier copyWith({
+    Clip? clipBehavior,
+    CustomClipper<Rect>? clipper,
+  }) {
+    return ClipOvalModifier(
+      clipBehavior: clipBehavior ?? this.clipBehavior,
+      clipper: clipper ?? this.clipper,
+    );
+  }
+
+  @override
+  ClipOvalModifier lerp(ClipOvalModifier? other, double t) {
+    if (other == null) return this as ClipOvalModifier;
+
+    return ClipOvalModifier(
+      clipBehavior: MixOps.lerpSnap(clipBehavior, other.clipBehavior, t)!,
+      clipper: MixOps.lerpSnap(clipper, other.clipper, t),
+    );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(EnumProperty<Clip>('clipBehavior', clipBehavior))
+      ..add(DiagnosticsProperty('clipper', clipper));
+  }
+
+  @override
+  List<Object?> get props => [clipBehavior, clipper];
+}
+
 class ClipOvalModifierMix extends ModifierMix<ClipOvalModifier>
     with Diagnosticable {
   final Prop<Clip>? clipBehavior;
@@ -42,6 +80,44 @@ class ClipOvalModifierMix extends ModifierMix<ClipOvalModifier>
     super.debugFillProperties(properties);
     properties
       ..add(DiagnosticsProperty('clipBehavior', clipBehavior))
+      ..add(DiagnosticsProperty('clipper', clipper));
+  }
+
+  @override
+  List<Object?> get props => [clipBehavior, clipper];
+}
+
+mixin _$ClipRectModifierMethods
+    on WidgetModifier<ClipRectModifier>, Diagnosticable {
+  Clip get clipBehavior;
+  CustomClipper<Rect>? get clipper;
+
+  @override
+  ClipRectModifier copyWith({
+    Clip? clipBehavior,
+    CustomClipper<Rect>? clipper,
+  }) {
+    return ClipRectModifier(
+      clipBehavior: clipBehavior ?? this.clipBehavior,
+      clipper: clipper ?? this.clipper,
+    );
+  }
+
+  @override
+  ClipRectModifier lerp(ClipRectModifier? other, double t) {
+    if (other == null) return this as ClipRectModifier;
+
+    return ClipRectModifier(
+      clipBehavior: MixOps.lerpSnap(clipBehavior, other.clipBehavior, t)!,
+      clipper: MixOps.lerpSnap(clipper, other.clipper, t),
+    );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(EnumProperty<Clip>('clipBehavior', clipBehavior))
       ..add(DiagnosticsProperty('clipper', clipper));
   }
 
@@ -90,6 +166,49 @@ class ClipRectModifierMix extends ModifierMix<ClipRectModifier>
 
   @override
   List<Object?> get props => [clipBehavior, clipper];
+}
+
+mixin _$ClipRRectModifierMethods
+    on WidgetModifier<ClipRRectModifier>, Diagnosticable {
+  BorderRadiusGeometry get borderRadius;
+  Clip get clipBehavior;
+  CustomClipper<RRect>? get clipper;
+
+  @override
+  ClipRRectModifier copyWith({
+    BorderRadiusGeometry? borderRadius,
+    Clip? clipBehavior,
+    CustomClipper<RRect>? clipper,
+  }) {
+    return ClipRRectModifier(
+      borderRadius: borderRadius ?? this.borderRadius,
+      clipBehavior: clipBehavior ?? this.clipBehavior,
+      clipper: clipper ?? this.clipper,
+    );
+  }
+
+  @override
+  ClipRRectModifier lerp(ClipRRectModifier? other, double t) {
+    if (other == null) return this as ClipRRectModifier;
+
+    return ClipRRectModifier(
+      borderRadius: MixOps.lerp(borderRadius, other.borderRadius, t)!,
+      clipBehavior: MixOps.lerpSnap(clipBehavior, other.clipBehavior, t)!,
+      clipper: MixOps.lerpSnap(clipper, other.clipper, t),
+    );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('borderRadius', borderRadius))
+      ..add(EnumProperty<Clip>('clipBehavior', clipBehavior))
+      ..add(DiagnosticsProperty('clipper', clipper));
+  }
+
+  @override
+  List<Object?> get props => [borderRadius, clipBehavior, clipper];
 }
 
 class ClipRRectModifierMix extends ModifierMix<ClipRRectModifier>
@@ -147,6 +266,44 @@ class ClipRRectModifierMix extends ModifierMix<ClipRRectModifier>
   List<Object?> get props => [borderRadius, clipBehavior, clipper];
 }
 
+mixin _$ClipPathModifierMethods
+    on WidgetModifier<ClipPathModifier>, Diagnosticable {
+  Clip get clipBehavior;
+  CustomClipper<Path>? get clipper;
+
+  @override
+  ClipPathModifier copyWith({
+    Clip? clipBehavior,
+    CustomClipper<Path>? clipper,
+  }) {
+    return ClipPathModifier(
+      clipBehavior: clipBehavior ?? this.clipBehavior,
+      clipper: clipper ?? this.clipper,
+    );
+  }
+
+  @override
+  ClipPathModifier lerp(ClipPathModifier? other, double t) {
+    if (other == null) return this as ClipPathModifier;
+
+    return ClipPathModifier(
+      clipBehavior: MixOps.lerpSnap(clipBehavior, other.clipBehavior, t)!,
+      clipper: MixOps.lerpSnap(clipper, other.clipper, t),
+    );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(EnumProperty<Clip>('clipBehavior', clipBehavior))
+      ..add(DiagnosticsProperty('clipper', clipper));
+  }
+
+  @override
+  List<Object?> get props => [clipBehavior, clipper];
+}
+
 class ClipPathModifierMix extends ModifierMix<ClipPathModifier>
     with Diagnosticable {
   final Prop<Clip>? clipBehavior;
@@ -188,6 +345,36 @@ class ClipPathModifierMix extends ModifierMix<ClipPathModifier>
 
   @override
   List<Object?> get props => [clipBehavior, clipper];
+}
+
+mixin _$ClipTriangleModifierMethods
+    on WidgetModifier<ClipTriangleModifier>, Diagnosticable {
+  Clip get clipBehavior;
+
+  @override
+  ClipTriangleModifier copyWith({Clip? clipBehavior}) {
+    return ClipTriangleModifier(
+      clipBehavior: clipBehavior ?? this.clipBehavior,
+    );
+  }
+
+  @override
+  ClipTriangleModifier lerp(ClipTriangleModifier? other, double t) {
+    if (other == null) return this as ClipTriangleModifier;
+
+    return ClipTriangleModifier(
+      clipBehavior: MixOps.lerpSnap(clipBehavior, other.clipBehavior, t)!,
+    );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(EnumProperty<Clip>('clipBehavior', clipBehavior));
+  }
+
+  @override
+  List<Object?> get props => [clipBehavior];
 }
 
 class ClipTriangleModifierMix extends ModifierMix<ClipTriangleModifier>

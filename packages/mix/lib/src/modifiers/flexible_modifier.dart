@@ -16,36 +16,12 @@ part 'flexible_modifier.g.dart';
 /// Wraps the child in a [Flexible] widget with the specified flex and fit properties.
 @MixableModifier()
 final class FlexibleModifier extends WidgetModifier<FlexibleModifier>
-    with Diagnosticable {
+    with Diagnosticable, _$FlexibleModifierMethods {
+  @override
   final int? flex;
+  @override
   final FlexFit? fit;
   const FlexibleModifier({this.flex, this.fit});
-
-  @override
-  FlexibleModifier copyWith({int? flex, FlexFit? fit}) {
-    return FlexibleModifier(flex: flex ?? this.flex, fit: fit ?? this.fit);
-  }
-
-  @override
-  FlexibleModifier lerp(FlexibleModifier? other, double t) {
-    if (other == null) return this;
-
-    return FlexibleModifier(
-      flex: MixOps.lerpSnap(flex, other.flex, t),
-      fit: MixOps.lerpSnap(fit, other.fit, t),
-    );
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(IntProperty('flex', flex))
-      ..add(EnumProperty<FlexFit>('fit', fit));
-  }
-
-  @override
-  List<Object?> get props => [flex, fit];
 
   @override
   Widget build(Widget child) {

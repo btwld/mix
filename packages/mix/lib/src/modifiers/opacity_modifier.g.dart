@@ -6,6 +6,32 @@ part of 'opacity_modifier.dart';
 // ModifierGenerator
 // **************************************************************************
 
+mixin _$OpacityModifierMethods
+    on WidgetModifier<OpacityModifier>, Diagnosticable {
+  double get opacity;
+
+  @override
+  OpacityModifier copyWith({double? opacity}) {
+    return OpacityModifier(opacity ?? this.opacity);
+  }
+
+  @override
+  OpacityModifier lerp(OpacityModifier? other, double t) {
+    if (other == null) return this as OpacityModifier;
+
+    return OpacityModifier(MixOps.lerp(opacity, other.opacity, t)!);
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DoubleProperty('opacity', opacity));
+  }
+
+  @override
+  List<Object?> get props => [opacity];
+}
+
 class OpacityModifierMix extends ModifierMix<OpacityModifier>
     with Diagnosticable {
   final Prop<double>? opacity;

@@ -6,6 +6,52 @@ part of 'fractionally_sized_box_modifier.dart';
 // ModifierGenerator
 // **************************************************************************
 
+mixin _$FractionallySizedBoxModifierMethods
+    on WidgetModifier<FractionallySizedBoxModifier>, Diagnosticable {
+  AlignmentGeometry get alignment;
+  double? get heightFactor;
+  double? get widthFactor;
+
+  @override
+  FractionallySizedBoxModifier copyWith({
+    AlignmentGeometry? alignment,
+    double? heightFactor,
+    double? widthFactor,
+  }) {
+    return FractionallySizedBoxModifier(
+      alignment: alignment ?? this.alignment,
+      heightFactor: heightFactor ?? this.heightFactor,
+      widthFactor: widthFactor ?? this.widthFactor,
+    );
+  }
+
+  @override
+  FractionallySizedBoxModifier lerp(
+    FractionallySizedBoxModifier? other,
+    double t,
+  ) {
+    if (other == null) return this as FractionallySizedBoxModifier;
+
+    return FractionallySizedBoxModifier(
+      alignment: MixOps.lerp(alignment, other.alignment, t)!,
+      heightFactor: MixOps.lerp(heightFactor, other.heightFactor, t),
+      widthFactor: MixOps.lerp(widthFactor, other.widthFactor, t),
+    );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('alignment', alignment))
+      ..add(DoubleProperty('heightFactor', heightFactor))
+      ..add(DoubleProperty('widthFactor', widthFactor));
+  }
+
+  @override
+  List<Object?> get props => [alignment, heightFactor, widthFactor];
+}
+
 class FractionallySizedBoxModifierMix
     extends ModifierMix<FractionallySizedBoxModifier>
     with Diagnosticable {

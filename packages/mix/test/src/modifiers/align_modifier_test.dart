@@ -222,7 +222,7 @@ void main() {
           heightFactor: 0.8,
         );
 
-        expect(modifier.props, [Alignment.center, 0.5, 0.8]);
+        expect(modifier.props, [Alignment.center, 0.8, 0.5]);
       });
 
       test('contains default alignment and null factors', () {

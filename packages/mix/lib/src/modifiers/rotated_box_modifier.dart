@@ -15,31 +15,11 @@ part 'rotated_box_modifier.g.dart';
 /// Wraps the child in a [RotatedBox] widget with the specified quarter turns.
 @MixableModifier()
 final class RotatedBoxModifier extends WidgetModifier<RotatedBoxModifier>
-    with Diagnosticable {
+    with Diagnosticable, _$RotatedBoxModifierMethods {
+  @override
   final int quarterTurns;
   const RotatedBoxModifier([int? quarterTurns])
     : quarterTurns = quarterTurns ?? 0;
-
-  @override
-  RotatedBoxModifier copyWith({int? quarterTurns}) {
-    return RotatedBoxModifier(quarterTurns ?? this.quarterTurns);
-  }
-
-  @override
-  RotatedBoxModifier lerp(RotatedBoxModifier? other, double t) {
-    if (other == null) return this;
-
-    return RotatedBoxModifier(MixOps.lerp(quarterTurns, other.quarterTurns, t));
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(IntProperty('quarterTurns', quarterTurns));
-  }
-
-  @override
-  List<Object?> get props => [quarterTurns];
 
   @override
   Widget build(Widget child) {

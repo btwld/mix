@@ -6,6 +6,32 @@ part of 'visibility_modifier.dart';
 // ModifierGenerator
 // **************************************************************************
 
+mixin _$VisibilityModifierMethods
+    on WidgetModifier<VisibilityModifier>, Diagnosticable {
+  bool get visible;
+
+  @override
+  VisibilityModifier copyWith({bool? visible}) {
+    return VisibilityModifier(visible ?? this.visible);
+  }
+
+  @override
+  VisibilityModifier lerp(VisibilityModifier? other, double t) {
+    if (other == null) return this as VisibilityModifier;
+
+    return VisibilityModifier(MixOps.lerpSnap(visible, other.visible, t)!);
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(FlagProperty('visible', value: visible, ifTrue: 'visible'));
+  }
+
+  @override
+  List<Object?> get props => [visible];
+}
+
 class VisibilityModifierMix extends ModifierMix<VisibilityModifier>
     with Diagnosticable {
   final Prop<bool>? visible;

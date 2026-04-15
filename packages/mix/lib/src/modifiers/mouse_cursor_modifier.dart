@@ -15,33 +15,11 @@ part 'mouse_cursor_modifier.g.dart';
 /// Wraps the child in a [MouseRegion] widget with the specified cursor.
 @MixableModifier()
 class MouseCursorModifier extends WidgetModifier<MouseCursorModifier>
-    with Diagnosticable {
+    with Diagnosticable, _$MouseCursorModifierMethods {
+  @override
   final MouseCursor? mouseCursor;
 
   const MouseCursorModifier({this.mouseCursor});
-
-  @override
-  MouseCursorModifier copyWith({MouseCursor? mouseCursor}) {
-    return MouseCursorModifier(mouseCursor: mouseCursor ?? this.mouseCursor);
-  }
-
-  @override
-  MouseCursorModifier lerp(MouseCursorModifier? other, double t) {
-    if (other == null) return this;
-
-    return MouseCursorModifier(
-      mouseCursor: MixOps.lerpSnap(mouseCursor, other.mouseCursor, t),
-    );
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('mouseCursor', mouseCursor));
-  }
-
-  @override
-  List<Object?> get props => [mouseCursor];
 
   @override
   Widget build(Widget child) {

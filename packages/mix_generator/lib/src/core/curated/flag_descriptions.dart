@@ -12,6 +12,8 @@ const flagPropertyDescriptions = {
   'isAntiAlias': 'anti-aliased',
   'matchTextDirection': 'matches text direction',
   'applyTextScaling': 'scales with text',
+  'reverse': 'reversed',
+  'visible': 'visible',
 };
 
 /// Gets the ifTrue description for a bool field.

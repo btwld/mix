@@ -16,41 +16,11 @@ part 'visibility_modifier.g.dart';
 /// Wraps the child in a [Visibility] widget to show or hide it while maintaining layout space.
 @MixableModifier()
 final class VisibilityModifier extends WidgetModifier<VisibilityModifier>
-    with Diagnosticable {
+    with Diagnosticable, _$VisibilityModifierMethods {
   /// Whether the child widget should be visible.
+  @override
   final bool visible;
   const VisibilityModifier([bool? visible]) : visible = visible ?? true;
-
-  @override
-  VisibilityModifier copyWith({bool? visible}) {
-    return VisibilityModifier(visible ?? this.visible);
-  }
-
-  @override
-  VisibilityModifier lerp(VisibilityModifier? other, double t) {
-    if (other == null) return this;
-    if (visible == other.visible) return this;
-    if (t == 0) return this;
-    if (t == 1) return other;
-
-    return VisibilityModifier(true);
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(
-      FlagProperty(
-        'visible',
-        value: visible,
-        ifTrue: 'visible',
-        ifFalse: 'hidden',
-      ),
-    );
-  }
-
-  @override
-  List<Object?> get props => [visible];
 
   @override
   Widget build(Widget child) {

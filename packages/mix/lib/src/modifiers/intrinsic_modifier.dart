@@ -13,28 +13,8 @@ part 'intrinsic_modifier.g.dart';
 @MixableModifier()
 final class IntrinsicHeightModifier
     extends WidgetModifier<IntrinsicHeightModifier>
-    with Diagnosticable {
+    with Diagnosticable, _$IntrinsicHeightModifierMethods {
   const IntrinsicHeightModifier();
-
-  @override
-  IntrinsicHeightModifier copyWith() {
-    return const IntrinsicHeightModifier();
-  }
-
-  @override
-  IntrinsicHeightModifier lerp(IntrinsicHeightModifier? other, double t) {
-    if (other == null) return this;
-
-    return const IntrinsicHeightModifier();
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-  }
-
-  @override
-  List<Object?> get props => [];
 
   @override
   Widget build(Widget child) {
@@ -48,28 +28,8 @@ final class IntrinsicHeightModifier
 @MixableModifier()
 final class IntrinsicWidthModifier
     extends WidgetModifier<IntrinsicWidthModifier>
-    with Diagnosticable {
+    with Diagnosticable, _$IntrinsicWidthModifierMethods {
   const IntrinsicWidthModifier();
-
-  @override
-  IntrinsicWidthModifier copyWith() {
-    return const IntrinsicWidthModifier();
-  }
-
-  @override
-  IntrinsicWidthModifier lerp(IntrinsicWidthModifier? other, double t) {
-    if (other == null) return this;
-
-    return const IntrinsicWidthModifier();
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-  }
-
-  @override
-  List<Object?> get props => [];
 
   @override
   Widget build(Widget child) {

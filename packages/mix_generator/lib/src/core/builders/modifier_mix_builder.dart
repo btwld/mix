@@ -22,13 +22,32 @@ class ModifierFieldModel {
   /// Whether this field is a named parameter in the modifier constructor.
   final bool isNamedParam;
 
+  /// Whether this field's type is nullable.
+  final bool isNullable;
+
+  /// Whether this field supports lerp interpolation.
+  final bool isLerpable;
+
+  /// Whether this field's type is an enum.
+  final bool isEnum;
+
+  /// The flag description for bool fields (for FlagProperty diagnostic).
+  final String? flagDescription;
+
   const ModifierFieldModel({
     required this.name,
     required this.typeName,
     required this.propWrapperKind,
     this.mixTypeName,
     this.isNamedParam = true,
+    this.isNullable = false,
+    this.isLerpable = false,
+    this.isEnum = false,
+    this.flagDescription,
   });
+
+  /// The full type name including nullability suffix.
+  String get fullTypeName => isNullable ? '$typeName?' : typeName;
 
   /// The type used in the public constructor parameter.
   String get publicParamType {

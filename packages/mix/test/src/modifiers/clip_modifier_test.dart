@@ -152,13 +152,13 @@ void main() {
           clipBehavior: clipBehavior,
         );
 
-        expect(modifier.props, [clipper, clipBehavior]);
+        expect(modifier.props, [clipBehavior, clipper]);
       });
 
       test('contains null clipper and default clip behavior value', () {
         const modifier = ClipPathModifier();
 
-        expect(modifier.props, [null, Clip.antiAlias]);
+        expect(modifier.props, [Clip.antiAlias, null]);
       });
     });
 

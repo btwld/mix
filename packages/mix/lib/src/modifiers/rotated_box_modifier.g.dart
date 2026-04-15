@@ -6,6 +6,34 @@ part of 'rotated_box_modifier.dart';
 // ModifierGenerator
 // **************************************************************************
 
+mixin _$RotatedBoxModifierMethods
+    on WidgetModifier<RotatedBoxModifier>, Diagnosticable {
+  int get quarterTurns;
+
+  @override
+  RotatedBoxModifier copyWith({int? quarterTurns}) {
+    return RotatedBoxModifier(quarterTurns ?? this.quarterTurns);
+  }
+
+  @override
+  RotatedBoxModifier lerp(RotatedBoxModifier? other, double t) {
+    if (other == null) return this as RotatedBoxModifier;
+
+    return RotatedBoxModifier(
+      MixOps.lerp(quarterTurns, other.quarterTurns, t)!,
+    );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(IntProperty('quarterTurns', quarterTurns));
+  }
+
+  @override
+  List<Object?> get props => [quarterTurns];
+}
+
 class RotatedBoxModifierMix extends ModifierMix<RotatedBoxModifier>
     with Diagnosticable {
   final Prop<int>? quarterTurns;

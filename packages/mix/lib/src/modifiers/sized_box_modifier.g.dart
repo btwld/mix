@@ -6,6 +6,41 @@ part of 'sized_box_modifier.dart';
 // ModifierGenerator
 // **************************************************************************
 
+mixin _$SizedBoxModifierMethods
+    on WidgetModifier<SizedBoxModifier>, Diagnosticable {
+  double? get height;
+  double? get width;
+
+  @override
+  SizedBoxModifier copyWith({double? height, double? width}) {
+    return SizedBoxModifier(
+      height: height ?? this.height,
+      width: width ?? this.width,
+    );
+  }
+
+  @override
+  SizedBoxModifier lerp(SizedBoxModifier? other, double t) {
+    if (other == null) return this as SizedBoxModifier;
+
+    return SizedBoxModifier(
+      height: MixOps.lerp(height, other.height, t),
+      width: MixOps.lerp(width, other.width, t),
+    );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DoubleProperty('height', height))
+      ..add(DoubleProperty('width', width));
+  }
+
+  @override
+  List<Object?> get props => [height, width];
+}
+
 class SizedBoxModifierMix extends ModifierMix<SizedBoxModifier>
     with Diagnosticable {
   final Prop<double>? height;
