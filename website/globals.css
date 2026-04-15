@@ -73,6 +73,11 @@ pre {
     font-size: 0.875em;
 }
 
+/* Hide Nextra's copy button on code blocks */
+pre button {
+    display: none !important;
+}
+
 a,
 button {
     text-decoration: none !important;
