@@ -1,69 +1,167 @@
+import 'package:mix_generator/src/core/models/field_model.dart';
 import 'package:mix_generator/src/core/resolvers/diagnostic_resolver.dart';
 import 'package:test/test.dart';
 
+import '../test_helpers.dart';
+
 void main() {
   group('DiagnosticResolver', () {
-    // Note: Full testing requires FieldModel which needs analyzer types.
-    // These tests validate the diagnostic pattern logic.
+    group('generateSpecDiagnosticCode', () {
+      test('generates ColorProperty for color fields', () {
+        final field = createTestFieldModel(
+          name: 'color',
+          typeName: 'Color',
+          diagnosticKind: DiagnosticKind.color,
+        );
 
-    group('Spec diagnostic patterns', () {
-      test('ColorProperty pattern for Color', () {
-        expect("ColorProperty('color', color)", contains('ColorProperty'));
-      });
-
-      test('DoubleProperty pattern for double', () {
-        expect("DoubleProperty('size', size)", contains('DoubleProperty'));
-      });
-
-      test('IntProperty pattern for int', () {
-        expect("IntProperty('maxLines', maxLines)", contains('IntProperty'));
-      });
-
-      test('StringProperty pattern for String', () {
-        expect("StringProperty('label', label)", contains('StringProperty'));
-      });
-
-      test('EnumProperty pattern for enums', () {
         expect(
-          "EnumProperty<Clip>('clipBehavior', clipBehavior)",
-          contains('EnumProperty'),
+          diagnosticResolver.generateSpecDiagnosticCode(field),
+          equals("ColorProperty('color', color)"),
         );
       });
 
-      test('FlagProperty pattern for bool with description', () {
+      test('generates DoubleProperty for double fields', () {
+        final field = createTestFieldModel(
+          name: 'size',
+          typeName: 'double',
+          diagnosticKind: DiagnosticKind.doubleProperty,
+        );
+
         expect(
-          "FlagProperty('softWrap', value: softWrap, ifTrue: 'wrapping at word boundaries')",
-          contains('FlagProperty'),
+          diagnosticResolver.generateSpecDiagnosticCode(field),
+          equals("DoubleProperty('size', size)"),
         );
       });
 
-      test('IterableProperty pattern for List', () {
+      test('generates IntProperty for int fields', () {
+        final field = createTestFieldModel(
+          name: 'maxLines',
+          typeName: 'int',
+          diagnosticKind: DiagnosticKind.intProperty,
+        );
+
         expect(
-          "IterableProperty<Shadow>('shadows', shadows)",
-          contains('IterableProperty'),
+          diagnosticResolver.generateSpecDiagnosticCode(field),
+          equals("IntProperty('maxLines', maxLines)"),
         );
       });
 
-      test('DiagnosticsProperty pattern for other types', () {
-        expect(
-          "DiagnosticsProperty('alignment', alignment)",
-          contains('DiagnosticsProperty'),
+      test('generates StringProperty for string fields', () {
+        final field = createTestFieldModel(
+          name: 'label',
+          typeName: 'String',
+          diagnosticKind: DiagnosticKind.stringProperty,
         );
-      });
-    });
 
-    group('Styler diagnostic patterns', () {
-      test('Always uses DiagnosticsProperty', () {
         expect(
-          "DiagnosticsProperty('padding', \$padding)",
-          contains('DiagnosticsProperty'),
+          diagnosticResolver.generateSpecDiagnosticCode(field),
+          equals("StringProperty('label', label)"),
         );
       });
 
-      test('Uses \$-prefixed field name', () {
+      test('generates EnumProperty for enum fields', () {
+        final field = createTestFieldModel(
+          name: 'clipBehavior',
+          typeName: 'Clip',
+          diagnosticKind: DiagnosticKind.enumProperty,
+        );
+
         expect(
-          "DiagnosticsProperty('padding', \$padding)",
-          contains('\$padding'),
+          diagnosticResolver.generateSpecDiagnosticCode(field),
+          equals("EnumProperty<Clip>('clipBehavior', clipBehavior)"),
+        );
+      });
+
+      test('generates FlagProperty when a flag description is available', () {
+        final field = createTestFieldModel(
+          name: 'softWrap',
+          typeName: 'bool',
+          diagnosticKind: DiagnosticKind.flagProperty,
+          flagDescription: 'wrapping at word boundaries',
+        );
+
+        expect(
+          diagnosticResolver.generateSpecDiagnosticCode(field),
+          equals(
+            "FlagProperty('softWrap', value: softWrap, ifTrue: 'wrapping at word boundaries')",
+          ),
+        );
+      });
+
+      test(
+        'falls back to DiagnosticsProperty when a flag description is absent',
+        () {
+          final field = createTestFieldModel(
+            name: 'softWrap',
+            typeName: 'bool',
+            diagnosticKind: DiagnosticKind.flagProperty,
+          );
+
+          expect(
+            diagnosticResolver.generateSpecDiagnosticCode(field),
+            equals("DiagnosticsProperty('softWrap', softWrap)"),
+          );
+        },
+      );
+
+      test('generates IterableProperty with the list element type', () {
+        final field = createTestFieldModel(
+          name: 'shadows',
+          typeName: 'List<Shadow>',
+          isList: true,
+          listElementType: 'Shadow',
+          diagnosticKind: DiagnosticKind.iterableProperty,
+        );
+
+        expect(
+          diagnosticResolver.generateSpecDiagnosticCode(field),
+          equals("IterableProperty<Shadow>('shadows', shadows)"),
+        );
+      });
+
+      test('uses diagnosticLabel as the display name when provided', () {
+        final field = createTestFieldModel(
+          name: 'textDirectives',
+          typeName: 'List<String>',
+          isList: true,
+          listElementType: 'String',
+          diagnosticKind: DiagnosticKind.iterableProperty,
+          diagnosticLabel: 'directives',
+        );
+
+        expect(
+          diagnosticResolver.generateSpecDiagnosticCode(field),
+          equals("IterableProperty<String>('directives', textDirectives)"),
+        );
+      });
+
+      test(
+        'falls back to IterableProperty<Object> when element type is absent',
+        () {
+          final field = createTestFieldModel(
+            name: 'items',
+            typeName: 'List<Object>',
+            isList: true,
+            diagnosticKind: DiagnosticKind.iterableProperty,
+          );
+
+          expect(
+            diagnosticResolver.generateSpecDiagnosticCode(field),
+            equals("IterableProperty<Object>('items', items)"),
+          );
+        },
+      );
+
+      test('generates DiagnosticsProperty for unhandled diagnostic kinds', () {
+        final field = createTestFieldModel(
+          name: 'alignment',
+          typeName: 'AlignmentGeometry',
+          diagnosticKind: DiagnosticKind.diagnostics,
+        );
+
+        expect(
+          diagnosticResolver.generateSpecDiagnosticCode(field),
+          equals("DiagnosticsProperty('alignment', alignment)"),
         );
       });
     });

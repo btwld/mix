@@ -135,7 +135,7 @@ class MixableGenerator extends GeneratorForAnnotation<Mixable> {
   ) {
     // Validate element is a class
     if (element is! ClassElement) {
-      throw InvalidGenerationSourceError(
+      throw InvalidGenerationSource(
         '@Mixable can only be applied to classes.',
         element: element,
       );
@@ -144,7 +144,7 @@ class MixableGenerator extends GeneratorForAnnotation<Mixable> {
     final classElement = element;
     final mixName = classElement.name;
     if (mixName == null) {
-      throw InvalidGenerationSourceError(
+      throw InvalidGenerationSource(
         '@Mixable class must have a name.',
         element: element,
       );
@@ -152,7 +152,7 @@ class MixableGenerator extends GeneratorForAnnotation<Mixable> {
 
     // Validate it's a Mix class
     if (!_isMixClass(classElement)) {
-      throw InvalidGenerationSourceError(
+      throw InvalidGenerationSource(
         '@Mixable can only be applied to classes extending Mix<T> or its subclasses.',
         element: element,
       );
@@ -165,7 +165,7 @@ class MixableGenerator extends GeneratorForAnnotation<Mixable> {
     final resolveToType =
         config.resolveToType ?? _extractResolveToType(classElement);
     if (resolveToType == null) {
-      throw InvalidGenerationSourceError(
+      throw InvalidGenerationSource(
         'Could not determine target type for resolve(). '
         'Specify resolveToType in @Mixable annotation or ensure class extends Mix<T>.',
         element: element,
