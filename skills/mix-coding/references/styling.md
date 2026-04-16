@@ -262,8 +262,8 @@ style(icon: Icons.star);
 ## Source Files
 
 For real implementations, read these example files:
-- `examples/lib/api/widgets/box/simple_box.dart` — Basic styled box
-- `examples/lib/api/widgets/box/gradient_box.dart` — Gradient + shadow
-- `examples/lib/api/widgets/text/styled_text.dart` — Styled text with directives
-- `examples/lib/api/widgets/icon/styled_icon.dart` — Styled icon
-- `examples/lib/docs/guides/styling.dart` — Styling guide examples
+- `packages/mix_docs_preview/lib/widgets/box/simple_box.dart` — Basic styled box
+- `packages/mix_docs_preview/lib/widgets/box/gradient_box.dart` — Gradient + shadow
+- `packages/mix_docs_preview/lib/widgets/text/styled_text.dart` — Styled text with directives
+- `packages/mix_docs_preview/lib/widgets/icon/styled_icon.dart` — Styled icon
+- `packages/mix_docs_preview/lib/guides/styling/styling_basic.dart` — Styling guide examples

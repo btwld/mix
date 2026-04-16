@@ -215,6 +215,6 @@ MixScope(
 
 ## Source Files
 
-- `examples/lib/components/tokens.dart` — Simple token definitions
-- `examples/lib/docs/tutorials/theming.dart` — Full theming tutorial with theme switching
+- `packages/mix_docs_preview/lib/guides/design_token/theme_tokens.dart` — Simple token definitions
+- `packages/mix_docs_preview/lib/tutorials/theming/preview.dart` — Full theming tutorial with theme switching
 - `website/src/content/documentation/guides/design-token.mdx` — Complete token documentation

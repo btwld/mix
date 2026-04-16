@@ -9,7 +9,7 @@ This guide covers migrating between major versions of Mix.
 Mix 2.0 introduces a new fluent Styler API that replaces the utility-prefix pattern from v1.x. This change provides better IDE support, more intuitive method chaining, and improved type safety.
 
 <Callout type="warning">
-  **Deprecated Utilities**: The global `$box`, `$text`, `$icon`, `$flex`, `$stack`, `$image`, `$flexbox`, and `$stackbox` accessors are now deprecated. Use the corresponding Styler classes directly (e.g., `BoxStyler`, `TextStyler`).
+  **Removed Utilities**: The global `$box`, `$text`, `$icon`, `$flex`, `$stack`, `$image`, `$flexbox`, and `$stackbox` accessors were removed in Mix 2.0. Use the corresponding Styler classes directly (e.g., `BoxStyler`, `TextStyler`).
 </Callout>
 
 ### Breaking Changes
@@ -26,9 +26,9 @@ The biggest change is moving from the `Style()` constructor with utility prefixe
 | `Style($flexbox.gap(8))` | `FlexBoxStyler.spacing(8)` |
 | `Style($stack.alignment.center())` | `StackBoxStyler.alignment(.center)` |
 
-#### Utility Prefixes Deprecated
+#### Utility Prefixes Removed
 
-The `$box`, `$text`, `$icon`, `$flex`, `$stack`, `$image`, `$flexbox`, and `$stackbox` utility prefixes are deprecated. Use the corresponding Styler class instead:
+The `$box`, `$text`, `$icon`, `$flex`, `$stack`, `$image`, `$flexbox`, and `$stackbox` utility prefixes were removed in Mix 2.0. Use the corresponding Styler class instead:
 
 ```dart
 // v1.x
@@ -152,14 +152,14 @@ BoxStyler().color(primaryColor())
   This section documents migration from legacy versions. If you're upgrading to Mix 2.0, see the section above.
 </Callout>
 
-In our pursuit of API usability and efficiency, we introduced several deprecations in the latest Mix Package versions. If you encounter issues not covered by deprecation notices, please open an issue or send a PR.
+In our pursuit of API usability and efficiency, we introduced several replacements and removals across Mix versions. If you encounter issues not covered by this guide, please open an issue or send a PR.
 
-### Deprecations
+### Legacy Replacements
 
 The major updates are:
 
 #### `Mix` evolved to `Style`
-The `Mix` class is now `Style`. Several methods in the renamed class, including `withVariants`, `withMaybeVariants` among others, are deprecated to boost performance and reduce potential confusion.
+The `Mix` class is now `Style`. Several methods in the renamed class, including `withVariants` and `withMaybeVariants`, were replaced or removed to boost performance and reduce potential confusion.
 
 | before 1.0.0 | 1.0.0+ |
 | ------- | ------ |
@@ -172,11 +172,11 @@ The `Mix` class is now `Style`. Several methods in the renamed class, including 
 Another important change is that the `Style` no longer contains a generic type. Therefore, in the new version, it is no longer possible.
 
 #### `MixContextBuilder` was renamed to `SpecBuilder`
-The `MixContextBuilder` was renamed to `SpecBuilder` to better reflect its purpose. The `MixContextBuilder` is now deprecated.
+The `MixContextBuilder` was renamed to `SpecBuilder` to better reflect its purpose. Use `SpecBuilder` in current code.
 
 #### Widget Updates
 
-`TextMix` and `IconMix` widgets are deprecated. Use `StyledText` and `StyledIcon` respectively.
+`TextMix` and `IconMix` widgets were replaced. Use `StyledText` and `StyledIcon` respectively.
 
 #### Short Aliases
 
@@ -232,10 +232,10 @@ MixTheme(
   )
 )
 ```
-### The use of $ (Deprecated in 2.0)
+### The use of $ (Removed in 2.0)
 
 <Callout type="warning">
-  **Note**: The `$` prefix utilities described below are **deprecated in Mix 2.0**. If you're migrating to Mix 2.0, use the Styler classes directly (e.g., `BoxStyler` instead of `$box`). See the [1.x to 2.0 migration section](#1x-to-20) above.
+  **Note**: The `$` prefix utilities described below were **removed in Mix 2.0**. If you're migrating to Mix 2.0, use the Styler classes directly (e.g., `BoxStyler` instead of `$box`). See the [1.x to 2.0 migration section](#1x-to-20) above.
 </Callout>
 
 In version 1.0.0, the `$` symbol was introduced to access the API from the Mix package. This made it easier to identify the utilities provided by Mix. For example, to access the `box` namespace, you would use `$box`.
@@ -251,10 +251,10 @@ In version 1.0.0, the `$` symbol was introduced to access the API from the Mix p
 | `stack` | `$stack` | `StackStyler()` |
 | `stackbox` | `$stackbox` | `StackBoxStyler()` |
 
-#### The Namespaces `$on` and `$with` (Deprecated in 2.0)
+#### The Namespaces `$on` and `$with` (Removed in 2.0)
 
 <Callout type="warning">
-  **Deprecated**: In Mix 2.0, use the direct methods on Styler classes instead:
+  **Removed**: In Mix 2.0, use the direct methods on Styler classes instead:
   - `$on.hover()` → `.onHovered()`
   - `$with.opacity()` → `.wrap(OpacityModifierMix())`
 </Callout>
@@ -262,7 +262,7 @@ In version 1.0.0, the `$` symbol was introduced to access the API from the Mix p
 Two namespaces were added in 1.0.0: `$on` and `$with`. The `$on` namespace was used to access ContextVariants, and `$with` was used for modifiers.
 
 ```dart
-// v1.x syntax (deprecated)
+// v1.x syntax (removed in Mix 2.0)
 PressableBox(
   onPress: () {},
   style: Style(
