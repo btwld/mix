@@ -11,19 +11,6 @@ mixin WidgetStateVariantMixin<T extends Style<S>, S extends Spec<S>>
   /// Must be implemented by the class using this mixin
   T variant(Variant variant, T style);
 
-  /// Applies a variant using an [EnumVariant] value.
-  ///
-  /// Example:
-  /// ```dart
-  /// enum ButtonVariant with EnumVariant { primary, secondary }
-  ///
-  /// final style = BoxStyler()
-  ///     .enumVariant(ButtonVariant.primary, style: BoxStyler().color(Colors.blue));
-  /// ```
-  T enumVariant<V extends EnumVariant>(V value, {required T style}) {
-    return variant(value, style);
-  }
-
   /// Creates a variant for hover state
   T onHovered(T style) {
     return variant(ContextVariant.widgetState(.hovered), style);
