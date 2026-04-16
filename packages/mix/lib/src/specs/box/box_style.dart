@@ -166,8 +166,7 @@ class BoxStyler extends MixStyler<BoxStyler, BoxSpec>
       BoxStyler().rotate(radians, alignment: alignment);
 
   // Text style convenience
-  factory BoxStyler.textStyle(TextStyler value) =>
-      BoxStyler().textStyle(value);
+  factory BoxStyler.textStyle(TextStyler value) => BoxStyler().textStyle(value);
 
   // Style metadata convenience
   factory BoxStyler.animate(AnimationConfig value) =>

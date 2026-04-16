@@ -24,9 +24,7 @@ void main() {
       final modifier = DefaultTextStylerModifier(style);
       const child = SizedBox(key: Key('child'));
 
-      await tester.pumpWidget(
-        MaterialApp(home: modifier.build(child)),
-      );
+      await tester.pumpWidget(MaterialApp(home: modifier.build(child)));
 
       final provider = tester.widget<StyleProvider<TextSpec>>(
         find.byType(StyleProvider<TextSpec>),
@@ -109,9 +107,9 @@ void main() {
       final merged = mix1.merge(mix2);
 
       expect(merged, isA<DefaultTextStylerModifierMix>());
-      final expectedStyle = TextStyler(style: TextStyleMix(fontSize: 12)).merge(
-        TextStyler(style: TextStyleMix(color: Colors.red)),
-      );
+      final expectedStyle = TextStyler(
+        style: TextStyleMix(fontSize: 12),
+      ).merge(TextStyler(style: TextStyleMix(color: Colors.red)));
       expect(merged.style, equals(expectedStyle));
     });
 
