@@ -7,8 +7,6 @@ Mix is a Flutter/Dart monorepo for a type-safe styling system.
 - `packages/mix_annotations`: annotations used by codegen
 - `packages/mix_generator`: build_runner generator
 - `packages/mix_lint`: custom lint plugin
-- `packages/mix_docs_preview`: doc preview widgets and manifest for the website
-- `website`: docs site
 
 ## Fast path for coding agents
 1. Read `AGENTS.md` and `melos.yaml` first.

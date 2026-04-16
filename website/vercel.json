@@ -1,5 +1,0 @@
-{
-  "buildCommand": "bash scripts/vercel-build.sh",
-  "installCommand": "pnpm install",
-  "outputDirectory": ".next"
-}
