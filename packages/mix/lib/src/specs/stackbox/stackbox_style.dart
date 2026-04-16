@@ -29,6 +29,7 @@ import '../box/box_spec.dart';
 import '../box/box_style.dart';
 import '../stack/stack_spec.dart';
 import '../stack/stack_style.dart';
+import '../text/text_style.dart';
 import 'stackbox_spec.dart';
 import 'stackbox_widget.dart';
 
@@ -177,6 +178,10 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
     double radians, {
     Alignment alignment = .center,
   }) => StackBoxStyler().rotate(radians, alignment: alignment);
+
+  // Text style convenience
+  factory StackBoxStyler.textStyle(TextStyler value) =>
+      StackBoxStyler().textStyle(value);
 
   // Style metadata convenience
   factory StackBoxStyler.animate(AnimationConfig value) =>
@@ -441,5 +446,11 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
   @override
   StackBoxStyler border(BoxBorderMix value) {
     return merge(StackBoxStyler(decoration: DecorationMix.border(value)));
+  }
+
+  /// Propagates the given [TextStyler] to descendant [StyledText] widgets via
+  /// [DefaultTextStylerModifier] (Mix inheritance).
+  StackBoxStyler textStyle(TextStyler value) {
+    return wrap(WidgetModifierConfig.defaultTextStyler(value));
   }
 }
