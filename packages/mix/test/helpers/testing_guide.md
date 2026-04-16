@@ -100,20 +100,17 @@ test('tokens need context with scope data', () {
 });
 ```
 
-### **UtilityTestAttribute**
+### **MockStyle**
 
-Use for testing utilities that need a SpecStyle:
+Use for testing styles that need a simple Style wrapper:
 
 ```dart
-test('utility creates correct attributes', () {
-  // For utility functions that take Style<T> builder
-  final colorUtility = ColorUtility(MockStyle.new);
-  final attr = colorUtility(Colors.red);
-  
-  expect(attr.value, resolvesTo(Colors.red));
+test('MockStyle wraps and resolves Prop values', () {
+  final style = MockStyle(Prop.value<Color>(Colors.red));
+  expect(style.value, resolvesTo(Colors.red));
 });
 
-test('utility attributes merge correctly', () {
+test('MockStyle merges correctly', () {
   final first = MockStyle(Prop.value(Colors.red));
   final second = MockStyle(Prop.value(Colors.blue));
   
@@ -219,15 +216,14 @@ test('Mix resolves to Flutter type', () {
 });
 ```
 
-### **Testing Utilities**
+### **Testing Styler Methods**
 
 ```dart
-test('utility function creates correct Prop and resolves', () {
-  final colorUtility = ColorUtility(MockStyle.new);
-  final attr = colorUtility(Colors.orange);
+test('styler method creates correct style and resolves', () {
+  final style = IconStyler().color(Colors.orange);
   
   // Test that it resolves correctly
-  expect(attr.value, resolvesTo(Colors.orange));
+  expect(style.$color, resolvesTo(Colors.orange));
 });
 ```
 

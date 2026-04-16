@@ -467,60 +467,6 @@ void main() {
     });
   });
 
-  group('FractionallySizedBoxModifierUtility', () {
-    late FractionallySizedBoxModifierUtility<
-      MockStyle<FractionallySizedBoxModifierMix>
-    >
-    utility;
-
-    setUp(() {
-      utility = FractionallySizedBoxModifierUtility(
-        (attribute) => MockStyle(attribute),
-      );
-    });
-
-    test('call() creates attribute with specified values', () {
-      final result = utility.call(
-        widthFactor: 0.5,
-        heightFactor: 0.8,
-        alignment: Alignment.topLeft,
-      );
-      final attribute = result.value;
-
-      expect(attribute.widthFactor, resolvesTo(0.5));
-      expect(attribute.heightFactor, resolvesTo(0.8));
-      expect(attribute.alignment, resolvesTo(Alignment.topLeft));
-    });
-
-    test('call() handles null values', () {
-      final result = utility.call();
-      final attribute = result.value;
-
-      expect(attribute.widthFactor, isNull);
-      expect(attribute.heightFactor, isNull);
-      expect(attribute.alignment, isNull);
-    });
-
-    test('call() handles partial values', () {
-      final result1 = utility.call(widthFactor: 0.7);
-      final attribute1 = result1.value;
-
-      expect(attribute1.widthFactor, resolvesTo(0.7));
-      expect(attribute1.heightFactor, isNull);
-      expect(attribute1.alignment, isNull);
-
-      final result2 = utility.call(
-        heightFactor: 0.3,
-        alignment: Alignment.center,
-      );
-      final attribute2 = result2.value;
-
-      expect(attribute2.widthFactor, isNull);
-      expect(attribute2.heightFactor, resolvesTo(0.3));
-      expect(attribute2.alignment, resolvesTo(Alignment.center));
-    });
-  });
-
   group('Integration tests', () {
     testWidgets(
       'FractionallySizedBoxModifierMix resolves and builds correctly',
