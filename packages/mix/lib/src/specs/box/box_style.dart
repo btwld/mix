@@ -25,6 +25,7 @@ import '../../style/mixins/decoration_style_mixin.dart';
 import '../../style/mixins/shadow_style_mixin.dart';
 import '../../style/mixins/spacing_style_mixin.dart';
 import '../../style/mixins/transform_style_mixin.dart';
+import '../text/text_style.dart';
 import 'box_spec.dart';
 import 'box_widget.dart';
 
@@ -163,6 +164,10 @@ class BoxStyler extends MixStyler<BoxStyler, BoxSpec>
       BoxStyler().scale(scale, alignment: alignment);
   factory BoxStyler.rotate(double radians, {Alignment alignment = .center}) =>
       BoxStyler().rotate(radians, alignment: alignment);
+
+  // Text style convenience
+  factory BoxStyler.textStyle(TextStyler value) =>
+      BoxStyler().textStyle(value);
 
   // Style metadata convenience
   factory BoxStyler.animate(AnimationConfig value) =>
@@ -309,5 +314,11 @@ class BoxStyler extends MixStyler<BoxStyler, BoxSpec>
   @override
   BoxStyler transform(Matrix4 value, {Alignment alignment = .center}) {
     return merge(BoxStyler(transform: value, transformAlignment: alignment));
+  }
+
+  /// Propagates the given [TextStyler] to descendant [StyledText] widgets via
+  /// [DefaultTextStylerModifier] (Mix inheritance).
+  BoxStyler textStyle(TextStyler value) {
+    return wrap(WidgetModifierConfig.defaultTextStyler(value));
   }
 }
