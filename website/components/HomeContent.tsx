@@ -114,10 +114,10 @@ export const HomeContent = () => {
               custom={0.3}
               variants={fadeUp}
             >
-              <Button href="/documentation/overview/getting-started" arrow="right">
+              <Button href="/documentation/overview/getting-started" arrow="right" className="w-full sm:w-auto">
                 <>Get Started</>
               </Button>
-              <Button href="https://discord.com/invite/Ycn6GV3m2k" variant="secondary" target="_blank">
+              <Button href="https://discord.com/invite/Ycn6GV3m2k" variant="secondary" target="_blank" className="w-full sm:w-auto">
                 <>Join the community</>
               </Button>
             </motion.div>
@@ -143,7 +143,7 @@ export const HomeContent = () => {
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.6, delay: 0.1, ease: [0.25, 0.4, 0.25, 1] as const }}
             >
-              <div className="rounded-2xl ring-1 ring-white/[0.08] bg-[var(--mix-surface)] p-5 overflow-x-auto">
+              <div className="rounded-2xl ring-1 ring-white/[0.08] bg-[var(--mix-surface)] p-5 overflow-x-auto min-w-0">
                 <span className="mb-3 block text-xs font-medium uppercase tracking-wider text-[var(--mix-text-muted)]">
                   Without Mix
                 </span>
@@ -158,7 +158,7 @@ export const HomeContent = () => {
 )`} />
               </div>
 
-              <div className="rounded-2xl ring-1 ring-[var(--mix-accent)]/40 bg-[var(--mix-accent)]/[0.06] backdrop-blur-md p-5 overflow-x-auto shadow-[0_0_24px_-4px_var(--mix-accent)]/10">
+              <div className="rounded-2xl ring-1 ring-[var(--mix-accent)]/40 bg-[var(--mix-accent)]/[0.06] backdrop-blur-md p-5 overflow-x-auto min-w-0 shadow-[0_0_24px_-4px_var(--mix-accent)]/10">
                 <span className="mb-3 block text-xs font-medium uppercase tracking-wider text-[var(--mix-accent)]">
                   With Mix
                 </span>
@@ -195,7 +195,7 @@ Box(style: cardStyle, child: ...)`} />
       </Layout>
 
       {/* Feature showcase — full width to breakpoint */}
-      <div className="relative z-10 mx-auto w-full max-w-7xl px-4 md:px-8">
+      <div className="relative z-10 mx-auto w-full max-w-7xl px-2 sm:px-4 md:px-8">
         <FeatureShowcase />
       </div>
 
@@ -222,7 +222,7 @@ Box(style: cardStyle, child: ...)`} />
               Start building your first Mix-styled widget in under 5 minutes.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-4">
-              <Button href="/documentation/overview/getting-started" variant="filled" arrow="right">
+              <Button href="/documentation/overview/getting-started" variant="filled" arrow="right" className="w-full sm:w-auto">
                 <>Get started in 5 minutes</>
               </Button>
             </div>

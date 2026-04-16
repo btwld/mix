@@ -1,6 +1,8 @@
 import 'package:mix_generator/src/core/resolvers/lerp_resolver.dart';
 import 'package:test/test.dart';
 
+import '../test_helpers.dart';
+
 void main() {
   group('LerpResolver', () {
     group('LerpStrategy', () {
@@ -17,33 +19,110 @@ void main() {
       });
     });
 
-    // Note: Full testing of resolveStrategy and generateLerpCode
-    // requires FieldModel which needs analyzer types.
-    // These tests validate the resolver logic with mock data.
+    group('resolveStrategy', () {
+      test('returns interpolate for lerpable fields', () {
+        final field = createTestFieldModel(
+          name: 'padding',
+          typeName: 'EdgeInsetsGeometry',
+          isLerpable: true,
+        );
 
-    group('generateLerpCode output patterns', () {
-      test('interpolate pattern uses MixOps.lerp', () {
-        // This tests the pattern generation logic
+        expect(lerpResolver.resolveStrategy(field), LerpStrategy.interpolate);
+      });
+
+      test('returns snap for non-lerpable fields', () {
+        final field = createTestFieldModel(
+          name: 'clipBehavior',
+          typeName: 'Clip',
+          isLerpable: false,
+        );
+
+        expect(lerpResolver.resolveStrategy(field), LerpStrategy.snap);
+      });
+
+      test('returns delegateToSpec for StyleSpec fields', () {
+        final field = createTestFieldModel(
+          name: 'box',
+          typeName: 'StyleSpec<BoxSpec>',
+          effectiveSpecType: 'StyleSpec<BoxSpec>?',
+          isNullable: true,
+        );
+
         expect(
-          'MixOps.lerp(padding, other?.padding, t)',
-          contains('MixOps.lerp'),
+          lerpResolver.resolveStrategy(field),
+          LerpStrategy.delegateToSpec,
         );
       });
 
-      test('snap pattern uses MixOps.lerpSnap', () {
+      test('prefers delegateToSpec over interpolate for StyleSpec fields', () {
+        final field = createTestFieldModel(
+          name: 'box',
+          typeName: 'StyleSpec<BoxSpec>',
+          effectiveSpecType: 'StyleSpec<BoxSpec>?',
+          isNullable: true,
+          isLerpable: true,
+        );
+
         expect(
-          'MixOps.lerpSnap(clipBehavior, other?.clipBehavior, t)',
-          contains('MixOps.lerpSnap'),
+          lerpResolver.resolveStrategy(field),
+          LerpStrategy.delegateToSpec,
+        );
+      });
+    });
+
+    group('generateLerpCode', () {
+      test('generates MixOps.lerp for interpolate strategy', () {
+        final field = createTestFieldModel(
+          name: 'padding',
+          typeName: 'EdgeInsetsGeometry',
+          isLerpable: true,
+        );
+
+        expect(
+          lerpResolver.generateLerpCode(field),
+          equals('MixOps.lerp(padding, other?.padding, t)'),
         );
       });
 
-      test('delegate pattern for nullable field uses ?. operator', () {
-        expect('box?.lerp(other?.box, t)', contains('?.lerp('));
+      test('generates MixOps.lerpSnap for snap strategy', () {
+        final field = createTestFieldModel(
+          name: 'clipBehavior',
+          typeName: 'Clip',
+          isLerpable: false,
+        );
+
+        expect(
+          lerpResolver.generateLerpCode(field),
+          equals('MixOps.lerpSnap(clipBehavior, other?.clipBehavior, t)'),
+        );
       });
 
-      test('delegate pattern for non-nullable field uses . operator', () {
-        expect('box.lerp(other?.box, t)', isNot(contains('?.lerp(')));
-        expect('box.lerp(other?.box, t)', contains('.lerp('));
+      test('uses ?. for nullable StyleSpec fields', () {
+        final field = createTestFieldModel(
+          name: 'box',
+          typeName: 'StyleSpec<BoxSpec>',
+          effectiveSpecType: 'StyleSpec<BoxSpec>?',
+          isNullable: true,
+        );
+
+        expect(
+          lerpResolver.generateLerpCode(field),
+          equals('box?.lerp(other?.box, t)'),
+        );
+      });
+
+      test('uses . for non-nullable StyleSpec fields', () {
+        final field = createTestFieldModel(
+          name: 'box',
+          typeName: 'StyleSpec<BoxSpec>',
+          effectiveSpecType: 'StyleSpec<BoxSpec>',
+          isNullable: false,
+        );
+
+        expect(
+          lerpResolver.generateLerpCode(field),
+          equals('box.lerp(other?.box, t)'),
+        );
       });
     });
   });

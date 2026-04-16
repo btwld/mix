@@ -91,6 +91,7 @@ export default async function RootLayout({ children }) {
                     docsRepositoryBase="https://github.com/btwld/mix/tree/main/website"
                     footer={footer}
                     darkMode={false}
+                    copyPageButton={false}
                     navigation={{ prev: true, next: true }}
                     toc={{ float: true, backToTop: "Scroll to top" }}
                     nextThemes={{
