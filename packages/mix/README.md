@@ -92,18 +92,86 @@ import 'package:mix/mix.dart';
 
 part 'card_styles.g.dart';
 
-@MixWidget(styleable: true)
+@MixWidget()
 final cardStyle = BoxStyler()
     .paddingAll(16)
     .borderRounded(12);
 ```
 
-The generated wrapper constructs the mapped Mix widget directly and passes the resolved `style:` into it. Use `widgetBuilder` when a styler family supports multiple widget targets:
+The simplest generated wrapper mirrors `BoxStyler.call()`, so it exposes `child` and constructs `Box` directly:
+
+```dart
+class Card extends StatelessWidget {
+  final Widget? child;
+
+  const Card({super.key, this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Box(child: child, key: key, style: cardStyle);
+  }
+}
+```
+
+Text stylers expose a different constructor shape because `TextStyler.call()` takes positional text:
+
+```dart
+@MixWidget()
+final headingStyle = TextStyler()
+    .fontSize(24)
+    .fontWeight(FontWeight.w700);
+```
+
+```dart
+class Heading extends StatelessWidget {
+  final String text;
+
+  const Heading(this.text, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return StyledText(text, key: key, style: headingStyle);
+  }
+}
+```
+
+The generated wrapper API mirrors the styler's `call()` signature, then constructs the mapped Mix widget directly.
+
+Use `styleable: true` when the generated component should accept a style override:
+
+```dart
+@MixWidget(styleable: true)
+final chipStyle = BoxStyler()
+    .paddingAll(8)
+    .borderRounded(999);
+```
+
+This adds one generated `style` parameter and merges it with the base style.
+
+```dart
+class Chip extends StatelessWidget {
+  final Widget? child;
+  final BoxStyler? style;
+
+  const Chip({super.key, this.child, this.style});
+
+  @override
+  Widget build(BuildContext context) {
+    final baseStyle = chipStyle;
+    final effectiveStyle = baseStyle.merge(style);
+    return Box(child: child, key: key, style: effectiveStyle);
+  }
+}
+```
+
+Use `widgetBuilder` when a styler family supports multiple widget targets:
 
 ```dart
 @MixWidget(widgetBuilder: MixWidgetBuilder.rowBox())
 final toolbarStyle = FlexBoxStyler();
 ```
+
+This keeps the `FlexBoxStyler.call()`-shaped API but generates a wrapper that constructs `RowBox`.
 
 ## Understanding the Styler Pattern
 
