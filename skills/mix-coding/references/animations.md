@@ -272,13 +272,10 @@ final style = BoxStyler()
 
 ## Source Files
 
-- `examples/lib/api/animation/implicit.anim.counter.dart` — State-triggered growth
-- `examples/lib/api/animation/implicit.curved.hover.dart` — Hover scale animation
-- `examples/lib/api/animation/keyframe.heart.dart` — Multi-track heart animation
-- `examples/lib/api/animation/keyframe.switch.dart` — Toggle switch keyframes
-- `examples/lib/api/animation/phase.compress.dart` — Tap compress/expand
-- `examples/lib/api/animation/phase.arrow.dart` — Multi-phase arrow animation
-- `examples/lib/api/animation/widget_state_animation.dart` — Simple widget state animation
-- `examples/lib/docs/guides/animations/implicit_state_counter.dart` — State counter
-- `examples/lib/docs/guides/animations/keyframe_loop.dart` — Looping keyframe
-- `examples/lib/docs/guides/animations/phase_tap_compress.dart` — Phase tap animation
+- `packages/mix_docs_preview/lib/guides/animations/implicit_state_counter.dart` — State-triggered growth
+- `packages/mix_docs_preview/lib/guides/animations/implicit_variant_hover.dart` — Hover variant animation
+- `packages/mix_docs_preview/lib/guides/animations/implicit_curved_scale.dart` — Curved scale animation
+- `packages/mix_docs_preview/lib/guides/animations/implicit_spring_translate.dart` — Spring translation animation
+- `packages/mix_docs_preview/lib/guides/animations/keyframe_switch.dart` — Toggle switch keyframes
+- `packages/mix_docs_preview/lib/guides/animations/keyframe_loop.dart` — Looping keyframe
+- `packages/mix_docs_preview/lib/guides/animations/phase_tap_compress.dart` — Phase tap animation

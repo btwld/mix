@@ -27,7 +27,7 @@ class SimpleBox extends StatelessWidget {
 ```
 
 **Concepts:** BoxStyler, fluent chaining, factory constructor
-**Source:** `examples/lib/api/widgets/box/simple_box.dart`
+**Source:** `packages/mix_docs_preview/lib/widgets/box/simple_box.dart`
 
 ### Gradient Box with Shadow
 
@@ -50,7 +50,7 @@ Box(style: style);
 ```
 
 **Concepts:** Gradients, shadows, dot-shorthands
-**Source:** `examples/lib/api/widgets/box/gradient_box.dart`
+**Source:** `packages/mix_docs_preview/lib/widgets/box/gradient_box.dart`
 
 ### Styled Text
 
@@ -65,7 +65,7 @@ StyledText('hello world', style: style);
 ```
 
 **Concepts:** TextStyler, text directives, typography
-**Source:** `examples/lib/api/widgets/text/styled_text.dart`
+**Source:** `packages/mix_docs_preview/lib/widgets/text/styled_text.dart`
 
 ### Styled Icon
 
@@ -75,7 +75,7 @@ StyledIcon(icon: Icons.format_paint_rounded, style: style);
 ```
 
 **Concepts:** IconStyler, factory constructor
-**Source:** `examples/lib/api/widgets/icon/styled_icon.dart`
+**Source:** `packages/mix_docs_preview/lib/widgets/icon/styled_icon.dart`
 
 ---
 
@@ -101,7 +101,7 @@ class HoverBox extends StatelessWidget {
 ```
 
 **Concepts:** Variants, onHovered, callable styler
-**Source:** `examples/lib/api/context_variants/hovered.dart`
+**Source:** `packages/mix_docs_preview/lib/guides/dynamic_styling/hovered.dart`
 
 ### Pressable Button
 
@@ -178,7 +178,7 @@ class _ThemeToggleState extends State<ThemeToggle> {
 ```
 
 **Concepts:** Dark/light variants, animate, PressableBox, IconStyler
-**Source:** `examples/lib/api/context_variants/on_dark_light.dart`
+**Source:** `packages/mix_docs_preview/lib/guides/dynamic_styling/on_dark_light.dart`
 
 ### Horizontal Chip Layout
 
@@ -263,7 +263,7 @@ class _AnimatedToggleState extends State<AnimatedToggle> {
 ```
 
 **Concepts:** KeyframeAnimationBuilder, multiple tracks, playing toggle
-**Source:** `examples/lib/api/animation/keyframe.switch.dart`
+**Source:** `packages/mix_docs_preview/lib/guides/animations/keyframe_switch.dart`
 
 ### Themed Profile Page with Tokens
 
@@ -329,7 +329,7 @@ class ProfilePage extends StatelessWidget {
 ```
 
 **Concepts:** Design tokens, MixScope, TextStyleToken, theme separation
-**Source:** `examples/lib/docs/tutorials/theming.dart`
+**Source:** `packages/mix_docs_preview/lib/tutorials/theming/preview.dart`
 
 ### Custom Context Variant
 
@@ -352,17 +352,17 @@ final style = BoxStyler()
 ```
 
 **Concepts:** Custom ContextVariant, InheritedWidget integration, animate
-**Source:** `examples/lib/api/context_variants/custom_context_variant.dart`
+**Source:** `packages/mix_docs_preview/lib/guides/dynamic_styling/context_variant_flag.dart`
 
 ---
 
 ## Full Example Index
 
 For more examples, browse these directories:
-- `examples/lib/api/widgets/box/` — Box styling patterns
-- `examples/lib/api/context_variants/` — All variant types
-- `examples/lib/api/animation/` — All animation types
-- `examples/lib/api/gradient/` — Gradient examples
-- `examples/lib/docs/guides/` — Documentation guide examples
-- `examples/lib/docs/tutorials/` — Step-by-step tutorials
-- `examples/lib/docs/widgets/` — Widget-specific examples
+- `packages/mix_docs_preview/lib/widgets/box/` — Box styling patterns
+- `packages/mix_docs_preview/lib/guides/dynamic_styling/` — All variant types
+- `packages/mix_docs_preview/lib/guides/animations/` — All animation types
+- `packages/mix_docs_preview/lib/guides/gradients/` — Gradient examples
+- `packages/mix_docs_preview/lib/guides/` — Documentation guide examples
+- `packages/mix_docs_preview/lib/tutorials/` — Step-by-step tutorials
+- `packages/mix_docs_preview/lib/widgets/` — Widget-specific examples

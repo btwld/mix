@@ -199,7 +199,7 @@ void main() {
       });
     });
 
-    group('UtilityTestAttribute', () {
+    group('MockStyle', () {
       test('wraps Prop values', () {
         final attr = MockStyle(Prop.value<Color>(Colors.red));
         expect(attr.value, isA<Prop<Color>>());

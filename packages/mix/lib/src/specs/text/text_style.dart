@@ -15,7 +15,6 @@ import '../../properties/typography/text_height_behavior_mix.dart';
 import '../../properties/typography/text_style_mix.dart';
 import '../../style/abstracts/styler.dart';
 import '../../style/mixins/text_style_mixin.dart';
-import 'text_mutable_style.dart';
 import 'text_spec.dart';
 import 'text_widget.dart';
 
@@ -201,8 +200,6 @@ class TextStyler extends MixStyler<TextStyler, TextSpec>
   factory TextStyler.capitalize() => TextStyler().capitalize();
   factory TextStyler.titlecase() => TextStyler().titlecase();
   factory TextStyler.sentencecase() => TextStyler().sentencecase();
-
-  static TextMutableStyler get chain => .new(TextStyler());
 
   StyledText call(String text) {
     return StyledText(text, style: this);

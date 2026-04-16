@@ -20,7 +20,7 @@ function getHighlighter(): Promise<Highlighter> {
 }
 
 interface FlutterSnippetProps {
-  /** Source file path under /previews/sources (for example: examples/lib/api/widgets/box/simple_box.dart) */
+  /** Source file path under /previews/sources (for example: packages/mix_docs_preview/lib/widgets/box/simple_box.dart) */
   sourcePath: string;
   /** Optional named region to extract from source comments (#docregion / #region) */
   region?: string;

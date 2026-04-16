@@ -25,7 +25,6 @@ import '../../style/mixins/decoration_style_mixin.dart';
 import '../../style/mixins/shadow_style_mixin.dart';
 import '../../style/mixins/spacing_style_mixin.dart';
 import '../../style/mixins/transform_style_mixin.dart';
-import 'box_mutable_style.dart';
 import 'box_spec.dart';
 import 'box_widget.dart';
 
@@ -303,8 +302,6 @@ class BoxStyler extends MixStyler<BoxStyler, BoxSpec>
       BoxStyler().translate(x, y, z);
   factory BoxStyler.skew(double skewX, double skewY) =>
       BoxStyler().skew(skewX, skewY);
-  static BoxMutableStyler get chain => .new(BoxStyler());
-
   Box call({Key? key, Widget? child}) {
     return Box(key: key, style: this, child: child);
   }

@@ -5,8 +5,6 @@ import '../core/helpers.dart';
 import '../core/widget_modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
-import '../core/utility.dart';
-import '../theme/tokens/mix_token.dart';
 
 /// Modifier that makes its child flexible within a flex layout.
 ///
@@ -90,43 +88,4 @@ class FlexibleModifierMix extends ModifierMix<FlexibleModifier>
 
   @override
   List<Object?> get props => [flex, fit];
-}
-
-/// Utility class for applying flexible modifications.
-///
-/// Provides convenient methods for creating FlexibleModifierMix instances.
-final class FlexibleModifierUtility<T extends Style<Object?>>
-    extends MixUtility<T, FlexibleModifierMix> {
-  late final fit = MixUtility<T, FlexFit>(
-    (prop) => utilityBuilder(FlexibleModifierMix(fit: prop)),
-  );
-  FlexibleModifierUtility(super.utilityBuilder);
-  T flex(int v) => utilityBuilder(FlexibleModifierMix(flex: v));
-  T tight({int? flex}) => utilityBuilder(
-    FlexibleModifierMix.create(
-      flex: Prop.maybe(flex),
-      fit: Prop.value(FlexFit.tight),
-    ),
-  );
-
-  T loose({int? flex}) => utilityBuilder(
-    FlexibleModifierMix.create(
-      flex: Prop.maybe(flex),
-      fit: Prop.value(FlexFit.loose),
-    ),
-  );
-
-  T expanded({int? flex}) => tight(flex: flex);
-
-  T call({int? flex, FlexFit? fit}) {
-    return utilityBuilder(FlexibleModifierMix(flex: flex, fit: fit));
-  }
-
-  T flexToken(MixToken<int> token) {
-    return utilityBuilder(FlexibleModifierMix.create(flex: Prop.token(token)));
-  }
-
-  T fitToken(MixToken<FlexFit> token) {
-    return utilityBuilder(FlexibleModifierMix.create(fit: Prop.token(token)));
-  }
 }

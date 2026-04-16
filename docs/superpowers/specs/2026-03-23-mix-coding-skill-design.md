@@ -16,7 +16,7 @@ skills/mix-coding/
 │   ├── animations.md                # Implicit, keyframe, phase
 │   ├── tokens.md                    # Design tokens, MixScope, theming
 │   ├── widgets.md                   # Box, HBox, VBox, Text, Icon, Pressable
-│   └── examples.md                  # Curated code examples from examples/lib/
+│   └── examples.md                  # Curated code examples from packages/mix_docs_preview/lib/
 ```
 
 ## Main File (`mix-coding.md`)
@@ -58,32 +58,32 @@ Multiple references may be loaded for a single request (e.g., styling + variants
 ### `references/styling.md`
 **Patterns:** Creating styles, chaining methods, merging styles, composing multiple stylers.
 **API tables:** BoxStyler methods (color, size, padding, margin, border, shadow, decoration), TextStyler methods (fontSize, fontWeight, color, letterSpacing), IconStyler methods.
-**Source refs:** `examples/lib/api/box/`, `examples/lib/api/text/`, `examples/lib/docs/guides/styling.dart`
+**Source refs:** `packages/mix_docs_preview/lib/widgets/box/`, `packages/mix_docs_preview/lib/widgets/text/`, `packages/mix_docs_preview/lib/guides/styling/`
 
 ### `references/variants.md`
 **Patterns:** Adding hover/press/focus states, dark/light mode, responsive sizing, custom context variants, combining multiple variants.
 **API tables:** Built-in variant methods (`.onHovered()`, `.onPressed()`, `.onFocused()`, `.onSelected()`, `.onDisabled()`, `.onDark()`, `.onLight()`), `ContextVariant` creation.
-**Source refs:** `examples/lib/api/context_variants/`, `examples/lib/docs/guides/variants.dart`
+**Source refs:** `packages/mix_docs_preview/lib/guides/dynamic_styling/`, `website/src/content/documentation/guides/dynamic-styling.mdx`
 
 ### `references/animations.md`
 **Patterns:** Implicit animations (auto-animate on state change), keyframe animations (multi-step sequences), phase animations (tap-triggered multi-phase), spring physics.
 **API tables:** `.animate()` config, `KeyframeAnimation` builder, `PhaseAnimation` builder, curve/duration options.
-**Source refs:** `examples/lib/api/animations/`, `examples/lib/docs/guides/animations/`
+**Source refs:** `packages/mix_docs_preview/lib/guides/animations/`, `website/src/content/documentation/guides/animations.mdx`
 
 ### `references/tokens.md`
 **Patterns:** Defining tokens, providing tokens via `MixScope`, using tokens in styles, creating a theme.
 **API tables:** `MixToken`, `ColorToken`, `SpaceToken`, `RadiusToken`, `MixScope` widget.
-**Source refs:** `examples/lib/api/design_system/theme_tokens.dart`, `examples/lib/docs/tutorials/theming.dart`
+**Source refs:** `packages/mix_docs_preview/lib/guides/design_token/theme_tokens.dart`, `packages/mix_docs_preview/lib/tutorials/theming/preview.dart`
 
 ### `references/widgets.md`
 **Patterns:** When to use Box vs HBox vs VBox vs ZBox, Text vs StyledText, Pressable for interactivity.
 **API tables:** Widget constructors, required/optional parameters, style parameter types.
-**Source refs:** `examples/lib/api/box/`, `examples/lib/api/hbox/`, `examples/lib/api/vbox/`, `examples/lib/docs/widgets/`
+**Source refs:** `packages/mix_docs_preview/lib/widgets/box/`, `packages/mix_docs_preview/lib/widgets/flexbox/`, `packages/mix_docs_preview/lib/widgets/vbox/`, `website/src/content/documentation/widgets/`
 
 ### `references/examples.md`
 **Organization:** Basic → Intermediate → Advanced complexity.
 **Each example:** Description, full code, which concepts it demonstrates.
-**Source refs:** Paths into `examples/lib/` for each example.
+**Source refs:** Paths into `packages/mix_docs_preview/lib/` for each example.
 
 ## Runtime Behavior
 
@@ -96,5 +96,5 @@ Multiple references may be loaded for a single request (e.g., styling + variants
 
 - **Lazy loading:** Only load references needed for the current request
 - **Rigid skill:** Claude must follow documented patterns, not guess at API
-- **Source refs:** Point to `examples/lib/` files so Claude can read real implementations
+- **Source refs:** Point to `packages/mix_docs_preview/lib/` files so Claude can read real implementations
 - **External developer focus:** Patterns show how to USE Mix, not how to extend it
