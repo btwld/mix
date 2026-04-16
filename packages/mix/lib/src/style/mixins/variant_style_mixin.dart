@@ -34,7 +34,7 @@ mixin VariantStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
   /// // Apply and chain:
   /// style.applyVariants([small]).onHovered(BoxStyler().opacity(0.8))
   /// ```
-  T applyVariants(Iterable<NamedVariant> variantsToApply) {
+  T applyVariants(Iterable<Variant> variantsToApply) {
     final variantsSet = variantsToApply.toSet();
 
     var result = this as T;
