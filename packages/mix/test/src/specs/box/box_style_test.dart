@@ -196,11 +196,10 @@ void main() {
         expect(constraints.maxHeight, 150.0);
       });
 
-      test('rotate method sets rotation transform', () {
-        final boxMix = BoxStyler().rotate(1.5);
+      test('rotate method sets rotation modifier', () {
+        final boxMix = BoxStyler().rotate(0.5);
 
-        expect(boxMix.$transform, isNotNull);
-        expect(boxMix.$transform, resolvesTo(isA<Matrix4>()));
+        expect(boxMix.$modifier, isNotNull);
       });
 
       test('scale method sets scale transform', () {

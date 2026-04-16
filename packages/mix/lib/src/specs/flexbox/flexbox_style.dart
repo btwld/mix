@@ -194,8 +194,10 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
   // Transform convenience
   factory FlexBoxStyler.scale(double scale, {Alignment alignment = .center}) =>
       FlexBoxStyler().scale(scale, alignment: alignment);
-  factory FlexBoxStyler.rotate(double angle, {Alignment alignment = .center}) =>
-      FlexBoxStyler().rotate(angle, alignment: alignment);
+  factory FlexBoxStyler.rotate(
+    double radians, {
+    Alignment alignment = .center,
+  }) => FlexBoxStyler().rotate(radians, alignment: alignment);
 
   // Style metadata convenience
   factory FlexBoxStyler.animate(AnimationConfig value) =>

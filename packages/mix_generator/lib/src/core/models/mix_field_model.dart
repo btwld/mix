@@ -6,6 +6,8 @@ library;
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 
+import 'type_helpers.dart' as type_helpers;
+
 /// Represents a Mix field with computed values for generation.
 class MixFieldModel {
   /// The field name (without $ prefix).
@@ -53,8 +55,8 @@ class MixFieldModel {
     final isNullable = type.nullabilitySuffix == .question;
 
     // Check if wrapped in Prop<>
-    final isWrappedInProp = _isWrappedInProp(type);
-    final innerTypeName = _getInnerTypeName(type, isWrappedInProp);
+    final wrappedInProp = type_helpers.isWrappedInProp(type);
+    final innerTypeName = type_helpers.getInnerTypeName(type, wrappedInProp);
 
     return MixFieldModel(
       name: name,
@@ -63,43 +65,10 @@ class MixFieldModel {
       element: element,
       isNullable: isNullable,
       innerTypeName: innerTypeName,
-      isWrappedInProp: isWrappedInProp,
+      isWrappedInProp: wrappedInProp,
     );
   }
 
   @override
   String toString() => 'MixFieldModel($name: $innerTypeName)';
-}
-
-// Helper functions
-
-bool _isWrappedInProp(DartType type) {
-  if (type is! InterfaceType) return false;
-
-  return type.element.name == 'Prop';
-}
-
-String _getInnerTypeName(DartType type, bool isWrappedInProp) {
-  if (!isWrappedInProp) {
-    return _getBaseTypeName(type);
-  }
-
-  if (type is! InterfaceType) return _getBaseTypeName(type);
-
-  // Get the type argument of Prop<T>
-  if (type.typeArguments.isNotEmpty) {
-    return _getBaseTypeName(type.typeArguments.first);
-  }
-
-  return _getBaseTypeName(type);
-}
-
-String _getBaseTypeName(DartType type) {
-  final displayString = type.getDisplayString();
-  // Remove nullability suffix
-  if (displayString.endsWith('?')) {
-    return displayString.substring(0, displayString.length - 1);
-  }
-
-  return displayString;
 }
