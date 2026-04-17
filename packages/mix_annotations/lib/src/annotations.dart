@@ -47,34 +47,61 @@ class MixableStyler {
 
 const mixableStyler = MixableStyler();
 
-enum MixWidgetBuilderKind {
-  box,
-  text,
-  flexBox,
-  rowBox,
-  columnBox,
-  icon,
-  image,
-  stackBox,
-}
-
-class MixWidgetBuilder {
-  final MixWidgetBuilderKind kind;
-
-  const MixWidgetBuilder.box() : kind = MixWidgetBuilderKind.box;
-  const MixWidgetBuilder.text() : kind = MixWidgetBuilderKind.text;
-  const MixWidgetBuilder.flexBox() : kind = MixWidgetBuilderKind.flexBox;
-  const MixWidgetBuilder.rowBox() : kind = MixWidgetBuilderKind.rowBox;
-  const MixWidgetBuilder.columnBox() : kind = MixWidgetBuilderKind.columnBox;
-  const MixWidgetBuilder.icon() : kind = MixWidgetBuilderKind.icon;
-  const MixWidgetBuilder.image() : kind = MixWidgetBuilderKind.image;
-  const MixWidgetBuilder.stackBox() : kind = MixWidgetBuilderKind.stackBox;
-}
-
+/// Generates a `StatelessWidget` wrapper around a Mix styler.
+///
+/// Applies to a top-level final styler instance or a top-level factory
+/// function returning a styler. The generator mirrors the styler's `call(...)`
+/// signature onto the wrapper's constructor, then dispatches to a
+/// `MixWidgetBuilder` subclass to produce the final widget.
+///
+/// ## How the styler's `call()` drives the wrapper
+///
+/// Every Mix styler exposes a `call(...)` method that returns a widget:
+///
+/// ```dart
+/// Box call({Key? key, Widget? child});                        // BoxStyler
+/// FlexBox call({Key? key, required List<Widget> children});   // FlexBoxStyler
+/// StyledText call(String text);                               // TextStyler
+/// ```
+///
+/// The generator uses that signature as the source of truth for the wrapper's
+/// public API: each `call()` parameter becomes a parameter on the generated
+/// wrapper's constructor (positional remains positional, named remains named),
+/// and the generated `build(BuildContext)` forwards them to a
+/// `MixWidgetBuilder.build(style, ...)` invocation.
+///
+/// ## Usage
+///
+/// ```dart
+/// // Inferred: BoxStyler → BoxBuilder → Box
+/// @MixWidget()
+/// final cardStyle = BoxStyler().color(Colors.white).borderRounded(8);
+///
+/// // Explicit builder: FlexBoxStyler → RowBoxBuilder → RowBox
+/// @MixWidget(widgetBuilder: RowBoxBuilder())
+/// final toolbarStyle = FlexBoxStyler();
+///
+/// // Custom builder
+/// @MixWidget(widgetBuilder: GlassCardBuilder())
+/// final popupStyle = BoxStyler();
+/// ```
+///
+/// - [name] overrides the generated class name (defaults to the source name
+///   with a trailing `Styler`/`Style` stripped, PascalCased).
+/// - [styleable] when `true` adds a `style` parameter to the wrapper that is
+///   merged with the base style at build time.
+/// - [widgetBuilder] optionally overrides widget selection. Pass a const
+///   subclass of `MixWidgetBuilder<TSpec>` (from `package:mix`). When omitted,
+///   the generator picks a default builder for the styler's spec type (e.g.
+///   `BoxSpec` → `BoxBuilder`), falling back to the call-return widget when no
+///   default is known.
+///
+/// Typed as [Object] to keep this annotation package Flutter-free; the
+/// generator validates the concrete type is a `MixWidgetBuilder` subtype.
 class MixWidget {
   final String? name;
   final bool styleable;
-  final MixWidgetBuilder? widgetBuilder;
+  final Object? widgetBuilder;
 
   const MixWidget({this.name, this.styleable = false, this.widgetBuilder});
 }

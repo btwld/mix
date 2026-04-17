@@ -14,6 +14,10 @@ class Sidebar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ColumnBox(children: children, key: key, style: sidebarStyle);
+    return const ColumnBoxBuilder().build(
+      sidebarStyle,
+      key: key,
+      children: children,
+    );
   }
 }

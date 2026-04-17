@@ -283,7 +283,7 @@ const _packageExportConfigs = <String, _PackageExportConfig>{
     libraryDirective: 'library;',
     manualTopLevelDirectives: {
       'ANNOTATIONS': [
-        "export 'package:mix_annotations/mix_annotations.dart' show MixWidget, MixWidgetBuilder, MixWidgetBuilderKind, mixWidget;",
+        "export 'package:mix_annotations/mix_annotations.dart' show MixWidget, mixWidget;",
       ],
     },
     hiddenSymbolsByPath: {

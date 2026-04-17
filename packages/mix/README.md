@@ -88,6 +88,7 @@ Box(
 `package:mix/mix.dart` also re-exports the `MixWidget` annotation API, so you can generate wrapper widgets without adding a second import:
 
 ```dart
+import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
 part 'card_styles.g.dart';
@@ -167,11 +168,31 @@ class Chip extends StatelessWidget {
 Use `widgetBuilder` when a styler family supports multiple widget targets:
 
 ```dart
-@MixWidget(widgetBuilder: MixWidgetBuilder.rowBox())
+@MixWidget(widgetBuilder: RowBoxBuilder())
 final toolbarStyle = FlexBoxStyler();
 ```
 
 This keeps the `FlexBoxStyler.call()`-shaped API but generates a wrapper that constructs `RowBox`.
+
+`widgetBuilder` accepts any `MixWidgetBuilder<TSpec>` subclass. Mix ships built-ins (`BoxBuilder`, `RowBoxBuilder`, `ColumnBoxBuilder`, `FlexBoxBuilder`, `StyledTextBuilder`, `StyledIconBuilder`, `StyledImageBuilder`, `StackBoxBuilder`), and you can author your own for custom widgets:
+
+```dart
+class GlassCardBuilder extends MixWidgetBuilder<BoxSpec> {
+  const GlassCardBuilder();
+  @override
+  Widget build(Style<BoxSpec> style, {Key? key, Widget? child, ...}) =>
+      GlassCard(style: style, key: key, child: child);
+}
+
+@MixWidget(widgetBuilder: GlassCardBuilder())
+final popupStyle = BoxStyler();
+```
+
+The generator uses the styler's `call()` method as the source of truth for wrapper parameters: each `call()` parameter is mirrored on the generated wrapper's constructor and forwarded through `MixWidgetBuilder.build(style, ...)`.
+
+For custom design-system stylers, if the styler `call()` method returns a widget whose spec isn't in the built-in default map, `@MixWidget` falls back to instantiating that widget directly — no builder required.
+
+A top-level style function may take `BuildContext context` as its first required positional parameter. The generated wrapper injects the build context from `build()` and does not expose it as a constructor argument.
 
 ## Understanding the Styler Pattern
 

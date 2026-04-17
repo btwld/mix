@@ -86,6 +86,7 @@ final class BoxConstraintsMix extends ConstraintsMix<BoxConstraints>
 Generates a thin public `StatelessWidget` wrapper from a top-level Mix styler declaration.
 
 ```dart
+import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 
@@ -166,13 +167,19 @@ class Chip extends StatelessWidget {
 Use `widgetBuilder` when a style family supports multiple widget targets:
 
 ```dart
-@MixWidget(widgetBuilder: MixWidgetBuilder.rowBox())
+@MixWidget(widgetBuilder: RowBoxBuilder())
 final toolbarStyle = FlexBoxStyler();
 ```
 
-This keeps the `FlexBoxStyler.call()`-shaped API but generates a wrapper that constructs `RowBox`.
+This keeps the `FlexBoxStyler.call()`-shaped API but generates a wrapper that constructs `RowBox`. `widgetBuilder` accepts any const subclass of `MixWidgetBuilder<TSpec>` (from `package:mix`); users can author their own builders for custom widgets.
 
-`@MixWidget` currently supports top-level `final` variables and top-level functions only. Function-backed declarations prepend their own factory parameters before the mirrored `call()` inputs.
+The generator uses the styler's `call()` method as the source of truth for wrapper parameters: each `call()` parameter is mirrored on the generated wrapper's constructor and forwarded through `MixWidgetBuilder.build(style, ...)`.
+
+For custom design-system stylers whose spec isn't covered by a built-in builder, `@MixWidget` falls back to instantiating the `call()`-return widget directly — no builder required.
+
+`@MixWidget` currently supports top-level `final` variables and top-level functions only. Function-backed declarations prepend their own public factory parameters before the mirrored `call()` inputs.
+
+A top-level style function may take `BuildContext context` as its first required positional parameter. The generated wrapper injects the build context from `build()` and does not expose it as a constructor argument.
 
 ### `@MixableField`
 

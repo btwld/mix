@@ -14,6 +14,6 @@ class MyCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Box(child: child, key: key, style: myCardStyle);
+    return const BoxBuilder().build(myCardStyle, key: key, child: child);
   }
 }

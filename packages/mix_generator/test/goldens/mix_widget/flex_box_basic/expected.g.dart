@@ -14,6 +14,10 @@ class Layout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FlexBox(children: children, key: key, style: layoutStyle);
+    return const FlexBoxBuilder().build(
+      layoutStyle,
+      key: key,
+      children: children,
+    );
   }
 }

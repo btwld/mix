@@ -18,6 +18,6 @@ class Chip extends StatelessWidget {
   Widget build(BuildContext context) {
     final baseStyle = chipStyle(color: color);
     final effectiveStyle = baseStyle.merge(style);
-    return Box(child: child, key: key, style: effectiveStyle);
+    return const BoxBuilder().build(effectiveStyle, key: key, child: child);
   }
 }

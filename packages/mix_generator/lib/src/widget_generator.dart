@@ -6,14 +6,30 @@ import 'dart:async';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
-import 'package:analyzer/dart/element/type_system.dart';
 import 'package:build/build.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 import 'package:source_gen/source_gen.dart';
 
-import 'core/registry/mix_widget_descriptor_registry.dart';
-
 const _reservedParameterNames = {'key', 'style', 'styleSpec'};
+const _flutterBuildContextLibraryUri =
+    'package:flutter/src/widgets/framework.dart';
+
+/// Maps a Mix spec type name to the class name of its default
+/// [MixWidgetBuilder] subclass.
+///
+/// When `@MixWidget()` is applied without an explicit `widgetBuilder`, the
+/// generator looks up the target styler's spec in this map. `RowBoxBuilder`
+/// and `ColumnBoxBuilder` are explicit-only (not present) because both map to
+/// [FlexBoxSpec] — defaulting `FlexBoxStyler` to `FlexBoxBuilder` preserves
+/// today's behavior.
+const _defaultBuildersBySpec = <String, String>{
+  'BoxSpec': 'BoxBuilder',
+  'FlexBoxSpec': 'FlexBoxBuilder',
+  'TextSpec': 'StyledTextBuilder',
+  'IconSpec': 'StyledIconBuilder',
+  'ImageSpec': 'StyledImageBuilder',
+  'StackBoxSpec': 'StackBoxBuilder',
+};
 
 class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
   const MixWidgetGenerator();
@@ -24,9 +40,8 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
     ConstantReader annotation,
     BuildStep buildStep,
   ) async {
-    final config = _parseAnnotationConfig(annotation, element);
+    final config = _parseAnnotationConfig(annotation);
     final target = _extractAnnotatedTarget(element);
-    final descriptor = _resolveDescriptor(target, config, element);
     final generatedName =
         config.name ?? _deriveGeneratedName(target.sourceName, element);
 
@@ -37,24 +52,21 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
       generatedName: generatedName,
     );
 
-    final widgetElement = await _resolveWidgetElement(
-      descriptor: descriptor,
-      buildStep: buildStep,
-      element: element,
-    );
     final callSignature = _extractCallSignature(
       stylerType: target.stylerType,
       element: element,
     );
-    _validateWidgetCompatibility(
-      widgetElement: widgetElement,
-      config: config,
-      mirroredParameters: callSignature.parameters,
-      callReturnType: callSignature.returnType,
-      hasExplicitWidgetBuilder: config.widgetBuilderKind != null,
+
+    final resolvedBuilder = _resolveBuilder(
+      annotation: annotation,
+      target: target,
       element: element,
     );
-    final factoryParameters = _extractFactoryParameters(target.factoryElement);
+
+    final factoryParameters = _resolveFactoryParameters(
+      _extractFactoryParameters(target.factoryElement),
+      element,
+    );
 
     _validateParameterCollisions(
       factoryParameters: factoryParameters,
@@ -66,42 +78,18 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
       generatedName: generatedName,
       target: target,
       config: config,
-      widgetElement: widgetElement,
+      resolvedBuilder: resolvedBuilder,
+      callReturnType: callSignature.returnType,
       factoryParameters: factoryParameters,
       mirroredParameters: callSignature.parameters,
     );
   }
 
-  _MixWidgetConfig _parseAnnotationConfig(
-    ConstantReader annotation,
-    Element element,
-  ) {
-    final styleable = annotation.peek('styleable')?.boolValue ?? false;
-    final name = annotation.peek('name')?.stringValue;
-    final widgetBuilder = _extractWidgetBuilderKind(annotation);
-
+  _MixWidgetConfig _parseAnnotationConfig(ConstantReader annotation) {
     return _MixWidgetConfig(
-      name: name,
-      styleable: styleable,
-      widgetBuilderKind: widgetBuilder,
+      name: annotation.peek('name')?.stringValue,
+      styleable: annotation.peek('styleable')?.boolValue ?? false,
     );
-  }
-
-  MixWidgetBuilderKind? _extractWidgetBuilderKind(ConstantReader annotation) {
-    final widgetBuilderReader = annotation.peek('widgetBuilder');
-    if (widgetBuilderReader == null || widgetBuilderReader.isNull) {
-      return null;
-    }
-
-    final kindObject = widgetBuilderReader.objectValue.getField('kind');
-    if (kindObject == null) {
-      return null;
-    }
-
-    final accessor = ConstantReader(kindObject).revive().accessor;
-    final kindName = accessor.split('.').last;
-
-    return MixWidgetBuilderKind.values.byName(kindName);
   }
 
   _AnnotatedTarget _extractAnnotatedTarget(Element element) {
@@ -248,65 +236,100 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
     );
   }
 
-  MixWidgetDescriptor _resolveDescriptor(
-    _AnnotatedTarget target,
-    _MixWidgetConfig config,
-    Element element,
-  ) {
-    if (config.widgetBuilderKind case final kind?) {
-      final descriptor = mixWidgetDescriptorRegistry.descriptorForKind(kind);
-      if (descriptor == null) {
-        throw InvalidGenerationSource(
-          'Unsupported MixWidgetBuilder kind: $kind.',
-          element: element,
-        );
-      }
-
-      final specChecker = TypeChecker.fromUrl(descriptor.specTypeUrl);
-      if (!specChecker.isExactlyType(target.specType)) {
-        throw InvalidGenerationSource(
-          'MixWidgetBuilder.${kind.name} is not compatible with ${target.specType.getDisplayString()}.',
-          element: element,
-        );
-      }
-
-      return descriptor;
+  /// Resolves the widget-construction strategy for a `@MixWidget` target.
+  ///
+  /// Priority:
+  ///   1. If the annotation's `widgetBuilder` argument is non-null, validate
+  ///      it is a subtype of `MixWidgetBuilder<TSpec>` whose `TSpec` matches
+  ///      the target's spec, and use its class name for emission.
+  ///   2. If the target's spec has a default entry in [_defaultBuildersBySpec],
+  ///      use that builder.
+  ///   3. Otherwise return `null` to fall back to direct widget emission using
+  ///      the styler's `call()` return type.
+  _ResolvedBuilder? _resolveBuilder({
+    required ConstantReader annotation,
+    required _AnnotatedTarget target,
+    required Element element,
+  }) {
+    final explicit = _extractExplicitBuilderType(annotation);
+    if (explicit != null) {
+      _validateBuilderType(
+        builderType: explicit,
+        targetSpec: target.specType,
+        element: element,
+      );
+      return _ResolvedBuilder(className: explicit.element.name!);
     }
 
-    for (final descriptor in mixWidgetDescriptorRegistry.defaultDescriptors) {
-      final matchesStyler = descriptor.allowedStylerTypeUrls.any((url) {
-        return TypeChecker.fromUrl(url).isAssignableFromType(target.stylerType);
-      });
-      if (matchesStyler) {
-        return descriptor;
+    final specName = target.specType is InterfaceType
+        ? (target.specType as InterfaceType).element.name
+        : null;
+    if (specName != null) {
+      final defaultBuilder = _defaultBuildersBySpec[specName];
+      if (defaultBuilder != null) {
+        return _ResolvedBuilder(className: defaultBuilder);
       }
+    }
+
+    return null;
+  }
+
+  InterfaceType? _extractExplicitBuilderType(ConstantReader annotation) {
+    final reader = annotation.peek('widgetBuilder');
+    if (reader == null || reader.isNull) {
+      return null;
+    }
+
+    final type = reader.objectValue.type;
+    if (type is! InterfaceType) {
+      return null;
+    }
+
+    return type;
+  }
+
+  void _validateBuilderType({
+    required InterfaceType builderType,
+    required DartType targetSpec,
+    required Element element,
+  }) {
+    InterfaceType? current = builderType;
+    while (current != null) {
+      if (current.element.name == 'MixWidgetBuilder') {
+        if (current.typeArguments.isEmpty) {
+          throw InvalidGenerationSource(
+            '`widgetBuilder` type `${builderType.element.name}` must bind a spec type parameter.',
+            element: element,
+          );
+        }
+
+        final builderSpec = current.typeArguments.first;
+        if (builderSpec is! InterfaceType || targetSpec is! InterfaceType) {
+          throw InvalidGenerationSource(
+            '`widgetBuilder` spec could not be resolved for ${builderType.element.name}.',
+            element: element,
+          );
+        }
+
+        if (builderSpec.element != targetSpec.element) {
+          throw InvalidGenerationSource(
+            '`widgetBuilder` ${builderType.element.name} targets ${builderSpec.getDisplayString()} '
+            'but the styler produces ${targetSpec.getDisplayString()}.',
+            element: element,
+          );
+        }
+
+        return;
+      }
+
+      current = current.superclass;
     }
 
     throw InvalidGenerationSource(
-      'No Mix widget mapping found for ${target.stylerType.getDisplayString()}. '
-      'Provide an explicit widgetBuilder override.',
+      '`widgetBuilder` must be a subtype of MixWidgetBuilder<TSpec>. '
+      'Got ${builderType.getDisplayString()}.',
       element: element,
     );
-  }
-
-  Future<ClassElement> _resolveWidgetElement({
-    required MixWidgetDescriptor descriptor,
-    required BuildStep buildStep,
-    required Element element,
-  }) async {
-    final widgetLibraryUri = descriptor.widgetTypeUrl.split('#').first;
-    final widgetAssetId = AssetId.resolve(Uri.parse(widgetLibraryUri));
-    final widgetLibrary = await buildStep.resolver.libraryFor(widgetAssetId);
-    final widgetElement = widgetLibrary.getClass(descriptor.widgetTypeName);
-
-    if (widgetElement == null) {
-      throw InvalidGenerationSource(
-        'Could not resolve widget type ${descriptor.widgetTypeName}.',
-        element: element,
-      );
-    }
-
-    return widgetElement;
   }
 
   _CallSignature _extractCallSignature({
@@ -373,178 +396,6 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
     return false;
   }
 
-  void _validateWidgetCompatibility({
-    required ClassElement widgetElement,
-    required _MixWidgetConfig config,
-    required List<_ParameterSpec> mirroredParameters,
-    required InterfaceType callReturnType,
-    required bool hasExplicitWidgetBuilder,
-    required Element element,
-  }) {
-    final typeSystem = widgetElement.library.typeSystem;
-    final constructor = widgetElement.unnamedConstructor;
-    if (constructor == null) {
-      throw InvalidGenerationSource(
-        '${widgetElement.name} must expose an unnamed constructor for @MixWidget.',
-        element: element,
-      );
-    }
-
-    final constructorParameters = constructor.formalParameters;
-    final constructorNames = constructorParameters
-        .map((parameter) => parameter.name)
-        .nonNulls
-        .toSet();
-
-    if (!constructorNames.contains('key')) {
-      throw InvalidGenerationSource(
-        '${widgetElement.name} must expose a `key` constructor parameter for @MixWidget.',
-        element: element,
-      );
-    }
-
-    if (!constructorNames.contains('style')) {
-      throw InvalidGenerationSource(
-        '${widgetElement.name} must expose a `style` constructor parameter for @MixWidget.',
-        element: element,
-      );
-    }
-
-    if (!hasExplicitWidgetBuilder &&
-        !_isSameType(typeSystem, callReturnType, widgetElement.thisType)) {
-      throw InvalidGenerationSource(
-        '${widgetElement.name} mapping drifted from ${callReturnType.element.name}. '
-        'Use an explicit widgetBuilder override or update the descriptor mapping.',
-        element: element,
-      );
-    }
-
-    final constructorParametersByName = <String, FormalParameterElement>{
-      for (final parameter in constructorParameters)
-        if (parameter.name != null) parameter.name!: parameter,
-    };
-    final constructorPositionalParameters = [
-      for (final parameter in constructorParameters)
-        if (!parameter.isNamed) parameter,
-    ];
-    final mirroredNamedParameters = [
-      for (final parameter in mirroredParameters)
-        if (parameter.isNamed) parameter,
-    ];
-    final mirroredPositionalParameters = [
-      for (final parameter in mirroredParameters)
-        if (!parameter.isNamed) parameter,
-    ];
-
-    for (var index = 0; index < mirroredPositionalParameters.length; index++) {
-      final mirroredParameter = mirroredPositionalParameters[index];
-      if (index >= constructorPositionalParameters.length) {
-        final conflictingParameter =
-            constructorParametersByName[mirroredParameter.name];
-        if (conflictingParameter != null && conflictingParameter.isNamed) {
-          throw InvalidGenerationSource(
-            'Parameter `${mirroredParameter.name}` is positional in ${callReturnType.element.name}.call() but named in ${widgetElement.name}.',
-            element: element,
-          );
-        }
-
-        throw InvalidGenerationSource(
-          'Parameter `${mirroredParameter.name}` from ${callReturnType.element.name}.call() is missing from ${widgetElement.name}.',
-          element: element,
-        );
-      }
-
-      final constructorParameter = constructorPositionalParameters[index];
-      if (!_isAssignable(
-        typeSystem,
-        mirroredParameter.type,
-        constructorParameter.type,
-      )) {
-        throw InvalidGenerationSource(
-          'Parameter `${mirroredParameter.name}` from ${callReturnType.element.name}.call() is not compatible with ${widgetElement.name}.${constructorParameter.name}.',
-          element: element,
-        );
-      }
-    }
-
-    for (
-      var index = mirroredPositionalParameters.length;
-      index < constructorPositionalParameters.length;
-      index++
-    ) {
-      final constructorParameter = constructorPositionalParameters[index];
-      if (constructorParameter.isRequiredPositional) {
-        throw InvalidGenerationSource(
-          '${widgetElement.name} requires constructor parameter `${constructorParameter.name}` that is not exposed by ${callReturnType.element.name}.call().',
-          element: element,
-        );
-      }
-    }
-
-    for (final mirroredParameter in mirroredNamedParameters) {
-      final constructorParameter =
-          constructorParametersByName[mirroredParameter.name];
-      if (constructorParameter == null) {
-        throw InvalidGenerationSource(
-          'Parameter `${mirroredParameter.name}` from ${callReturnType.element.name}.call() is missing from ${widgetElement.name}.',
-          element: element,
-        );
-      }
-
-      if (!constructorParameter.isNamed) {
-        throw InvalidGenerationSource(
-          'Parameter `${mirroredParameter.name}` is named in ${callReturnType.element.name}.call() but positional in ${widgetElement.name}.',
-          element: element,
-        );
-      }
-
-      if (!_isAssignable(
-        typeSystem,
-        mirroredParameter.type,
-        constructorParameter.type,
-      )) {
-        throw InvalidGenerationSource(
-          'Parameter `${mirroredParameter.name}` from ${callReturnType.element.name}.call() is not compatible with ${widgetElement.name}.${constructorParameter.name}.',
-          element: element,
-        );
-      }
-    }
-
-    for (final constructorParameter in constructorParameters) {
-      final name = constructorParameter.name;
-      if (name == null || _reservedParameterNames.contains(name)) {
-        continue;
-      }
-
-      final isMirrored = mirroredParameters.any(
-        (parameter) => parameter.name == name,
-      );
-      if (!isMirrored && constructorParameter.isRequiredNamed) {
-        throw InvalidGenerationSource(
-          '${widgetElement.name} requires constructor parameter `$name` that is not exposed by ${callReturnType.element.name}.call().',
-          element: element,
-        );
-      }
-    }
-  }
-
-  bool _isSameType(
-    TypeSystem typeSystem,
-    DartType leftType,
-    DartType rightType,
-  ) {
-    return typeSystem.isSubtypeOf(leftType, rightType) &&
-        typeSystem.isSubtypeOf(rightType, leftType);
-  }
-
-  bool _isAssignable(
-    TypeSystem typeSystem,
-    DartType fromType,
-    DartType toType,
-  ) {
-    return typeSystem.isAssignableTo(fromType, toType);
-  }
-
   List<_ParameterSpec> _extractFactoryParameters(
     TopLevelFunctionElement? factoryElement,
   ) {
@@ -557,14 +408,96 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
         .toList();
   }
 
+  _FactoryParameters _resolveFactoryParameters(
+    List<_ParameterSpec> factoryParameters,
+    Element element,
+  ) {
+    if (factoryParameters.isEmpty) {
+      return const _FactoryParameters(
+        publicParameters: [],
+        injectsBuildContext: false,
+      );
+    }
+
+    final publicParameters = <_ParameterSpec>[];
+    var injectsBuildContext = false;
+
+    for (var index = 0; index < factoryParameters.length; index++) {
+      final parameter = factoryParameters[index];
+      final isFlutterBuildContext = _isFlutterBuildContext(parameter.type);
+      final hasBuildContextName = _hasBuildContextTypeName(parameter.type);
+
+      if (_isInjectedBuildContextParameter(parameter, index)) {
+        injectsBuildContext = true;
+        continue;
+      }
+
+      if (isFlutterBuildContext && index == 0) {
+        throw InvalidGenerationSource(
+          '@MixWidget can inject only a first required positional BuildContext parameter named `context`.',
+          element: element,
+        );
+      }
+
+      if (isFlutterBuildContext) {
+        throw InvalidGenerationSource(
+          '@MixWidget does not expose BuildContext factory parameters. Use a first required positional `BuildContext context` parameter.',
+          element: element,
+        );
+      }
+
+      if (hasBuildContextName) {
+        throw InvalidGenerationSource(
+          '@MixWidget BuildContext injection requires Flutter BuildContext from package:flutter/widgets.dart.',
+          element: element,
+        );
+      }
+
+      publicParameters.add(parameter);
+    }
+
+    return _FactoryParameters(
+      publicParameters: publicParameters,
+      injectsBuildContext: injectsBuildContext,
+    );
+  }
+
+  bool _isInjectedBuildContextParameter(_ParameterSpec parameter, int index) {
+    return index == 0 &&
+        parameter.name == 'context' &&
+        parameter.isRequiredPositional &&
+        _isFlutterBuildContext(parameter.type);
+  }
+
+  bool _isFlutterBuildContext(DartType type) {
+    return type is InterfaceType &&
+        type.element.name == 'BuildContext' &&
+        type.element.library.uri.toString() == _flutterBuildContextLibraryUri;
+  }
+
+  bool _hasBuildContextTypeName(DartType type) {
+    return type is InterfaceType && type.element.name == 'BuildContext';
+  }
+
   void _validateParameterCollisions({
-    required List<_ParameterSpec> factoryParameters,
+    required _FactoryParameters factoryParameters,
     required List<_ParameterSpec> mirroredParameters,
     required Element element,
   }) {
+    if (factoryParameters.injectsBuildContext &&
+        mirroredParameters.any((parameter) => parameter.name == 'context')) {
+      throw InvalidGenerationSource(
+        'Parameter `context` conflicts with the injected BuildContext used by @MixWidget.',
+        element: element,
+      );
+    }
+
     final seenNames = <String>{};
 
-    for (final parameter in [...factoryParameters, ...mirroredParameters]) {
+    for (final parameter in [
+      ...factoryParameters.publicParameters,
+      ...mirroredParameters,
+    ]) {
       if (_reservedParameterNames.contains(parameter.name)) {
         throw InvalidGenerationSource(
           'Parameter `${parameter.name}` is reserved by @MixWidget.',
@@ -702,12 +635,16 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
     required String generatedName,
     required _AnnotatedTarget target,
     required _MixWidgetConfig config,
-    required ClassElement widgetElement,
-    required List<_ParameterSpec> factoryParameters,
+    required _ResolvedBuilder? resolvedBuilder,
+    required InterfaceType callReturnType,
+    required _FactoryParameters factoryParameters,
     required List<_ParameterSpec> mirroredParameters,
   }) {
     final buffer = StringBuffer();
-    final allParameters = [...factoryParameters, ...mirroredParameters];
+    final allParameters = [
+      ...factoryParameters.publicParameters,
+      ...mirroredParameters,
+    ];
     final styleTypeName = target.stylerType.getDisplayString();
 
     buffer.writeln('class $generatedName extends StatelessWidget {');
@@ -767,24 +704,54 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
     final styleArgumentExpression = config.styleable
         ? 'effectiveStyle'
         : baseStyleExpression;
-    final invocationArgs = _buildWidgetInvocationArguments(mirroredParameters);
-    final extraNamedArguments = <String>[
-      'key: key',
-      'style: $styleArgumentExpression',
-    ];
-    final widgetInvocationSections = <String>[];
-    if (invocationArgs.positional.isNotEmpty) {
-      widgetInvocationSections.add(invocationArgs.positional.join(', '));
-    }
-    widgetInvocationSections.addAll(invocationArgs.named);
-    widgetInvocationSections.addAll(extraNamedArguments);
-    buffer.writeln(
-      '    return ${widgetElement.name}(${widgetInvocationSections.join(', ')});',
-    );
+
+    final dispatch = resolvedBuilder == null
+        ? _emitDirectWidgetCall(
+            widgetElement: callReturnType.element as ClassElement,
+            mirroredParameters: mirroredParameters,
+            styleArgumentExpression: styleArgumentExpression,
+          )
+        : _emitBuilderCall(
+            builderClassName: resolvedBuilder.className,
+            mirroredParameters: mirroredParameters,
+            styleArgumentExpression: styleArgumentExpression,
+          );
+
+    buffer.writeln('    return $dispatch;');
     buffer.writeln('  }');
     buffer.writeln('}');
 
     return buffer.toString();
+  }
+
+  String _emitBuilderCall({
+    required String builderClassName,
+    required List<_ParameterSpec> mirroredParameters,
+    required String styleArgumentExpression,
+  }) {
+    final namedArgs = <String>['key: key'];
+    for (final parameter in mirroredParameters) {
+      namedArgs.add(
+        '${parameter.name}: ${_buildParameterReference(parameter)}',
+      );
+    }
+    return 'const $builderClassName().build($styleArgumentExpression, ${namedArgs.join(', ')})';
+  }
+
+  String _emitDirectWidgetCall({
+    required ClassElement widgetElement,
+    required List<_ParameterSpec> mirroredParameters,
+    required String styleArgumentExpression,
+  }) {
+    final invocationArgs = _buildWidgetInvocationArguments(mirroredParameters);
+    final sections = <String>[];
+    if (invocationArgs.positional.isNotEmpty) {
+      sections.add(invocationArgs.positional.join(', '));
+    }
+    sections.addAll(invocationArgs.named);
+    sections.add('key: key');
+    sections.add('style: $styleArgumentExpression');
+    return '${widgetElement.name}(${sections.join(', ')})';
   }
 
   String _buildConstructorParameter(_ParameterSpec parameter) {
@@ -810,15 +777,27 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
     return fieldReference;
   }
 
-  String _buildInvocationArguments(List<_ParameterSpec> parameters) {
+  String _buildInvocationArguments(_FactoryParameters factoryParameters) {
     final sections = <String>[];
+    if (factoryParameters.injectsBuildContext) {
+      sections.add('context');
+    }
+
+    for (final parameter in factoryParameters.publicParameters) {
+      if (parameter.isNamed) {
+        continue;
+      }
+
+      sections.add(_buildParameterReference(parameter));
+    }
+
     sections.addAll(
-      parameters.where((p) => !p.isNamed).map((parameter) => parameter.name),
-    );
-    sections.addAll(
-      parameters
+      factoryParameters.publicParameters
           .where((p) => p.isNamed)
-          .map((parameter) => '${parameter.name}: ${parameter.name}'),
+          .map(
+            (parameter) =>
+                '${parameter.name}: ${_buildParameterReference(parameter)}',
+          ),
     );
 
     return sections.join(', ');
@@ -830,13 +809,18 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
     return _InvocationArguments(
       positional: [
         for (final parameter in parameters)
-          if (!parameter.isNamed) parameter.name,
+          if (!parameter.isNamed) _buildParameterReference(parameter),
       ],
       named: [
         for (final parameter in parameters)
-          if (parameter.isNamed) '${parameter.name}: ${parameter.name}',
+          if (parameter.isNamed)
+            '${parameter.name}: ${_buildParameterReference(parameter)}',
       ],
     );
+  }
+
+  String _buildParameterReference(_ParameterSpec parameter) {
+    return parameter.name == 'context' ? 'this.context' : parameter.name;
   }
 }
 
@@ -852,13 +836,8 @@ Iterable<String> _collectElementNames(Iterable<Element> elements) sync* {
 class _MixWidgetConfig {
   final String? name;
   final bool styleable;
-  final MixWidgetBuilderKind? widgetBuilderKind;
 
-  const _MixWidgetConfig({
-    required this.name,
-    required this.styleable,
-    required this.widgetBuilderKind,
-  });
+  const _MixWidgetConfig({required this.name, required this.styleable});
 }
 
 class _AnnotatedTarget {
@@ -880,6 +859,22 @@ class _CallSignature {
   final List<_ParameterSpec> parameters;
 
   const _CallSignature({required this.returnType, required this.parameters});
+}
+
+class _FactoryParameters {
+  final List<_ParameterSpec> publicParameters;
+  final bool injectsBuildContext;
+
+  const _FactoryParameters({
+    required this.publicParameters,
+    required this.injectsBuildContext,
+  });
+}
+
+class _ResolvedBuilder {
+  final String className;
+
+  const _ResolvedBuilder({required this.className});
 }
 
 class _ParameterSpec {

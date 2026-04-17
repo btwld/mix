@@ -1,5 +1,6 @@
 library input;
 
+import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 
@@ -15,5 +16,5 @@ class DefaultCardStyler extends Style<BoxSpec> {
   }
 }
 
-@MixWidget(widgetBuilder: MixWidgetBuilder.box())
+@MixWidget(widgetBuilder: BoxBuilder())
 final defaultCardStyle = DefaultCardStyler();

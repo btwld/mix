@@ -13,34 +13,10 @@ Builder mixWidgetPartBuilder() =>
 const mixAnnotationsStub = r'''
 library mix_annotations;
 
-enum MixWidgetBuilderKind {
-  box,
-  text,
-  flexBox,
-  rowBox,
-  columnBox,
-  icon,
-  image,
-  stackBox,
-}
-
-class MixWidgetBuilder {
-  final MixWidgetBuilderKind kind;
-
-  const MixWidgetBuilder.box() : kind = MixWidgetBuilderKind.box;
-  const MixWidgetBuilder.text() : kind = MixWidgetBuilderKind.text;
-  const MixWidgetBuilder.flexBox() : kind = MixWidgetBuilderKind.flexBox;
-  const MixWidgetBuilder.rowBox() : kind = MixWidgetBuilderKind.rowBox;
-  const MixWidgetBuilder.columnBox() : kind = MixWidgetBuilderKind.columnBox;
-  const MixWidgetBuilder.icon() : kind = MixWidgetBuilderKind.icon;
-  const MixWidgetBuilder.image() : kind = MixWidgetBuilderKind.image;
-  const MixWidgetBuilder.stackBox() : kind = MixWidgetBuilderKind.stackBox;
-}
-
 class MixWidget {
   final String? name;
   final bool styleable;
-  final MixWidgetBuilder? widgetBuilder;
+  final Object? widgetBuilder;
 
   const MixWidget({
     this.name,
@@ -52,30 +28,8 @@ class MixWidget {
 const mixWidget = MixWidget();
 ''';
 
-const boxStylerCallSnippet = r'''
-  Box call({Key? key, Widget? child}) {
-    return Box(key: key, style: this, child: child);
-  }
-''';
-
-const boxClassSnippet = r'''
-class Box extends Widget {
-  final Key? key;
-  final Style<BoxSpec> style;
-  final StyleSpec<BoxSpec>? styleSpec;
-  final Widget? child;
-
-  const Box({
-    this.key,
-    this.style = const BoxStyler(),
-    this.styleSpec,
-    this.child,
-  });
-}
-''';
-
-const mixStub = r'''
-library mix;
+const flutterFrameworkStub = r'''
+library flutter.src.widgets.framework;
 
 class Widget {
   const Widget();
@@ -96,6 +50,12 @@ abstract class StatelessWidget extends Widget {
 
   Widget build(BuildContext context);
 }
+''';
+
+const flutterWidgetsStub = r'''
+library flutter.widgets;
+
+export 'src/widgets/framework.dart';
 
 class Color {
   const Color();
@@ -124,6 +84,12 @@ class ImageErrorWidgetBuilder {
 class Animation<T> {
   const Animation();
 }
+''';
+
+const mixStub = r'''
+library mix;
+
+import 'package:flutter/widgets.dart';
 
 class StyleSpec<T> {
   const StyleSpec();
@@ -348,6 +314,214 @@ class StackBox extends Widget {
     this.children = const <Widget>[],
   });
 }
+
+abstract class MixWidgetBuilder<TSpec> {
+  const MixWidgetBuilder();
+
+  Widget build(
+    Style<TSpec> style, {
+    Key? key,
+    Widget? child,
+    List<Widget> children,
+    String? text,
+    IconData? icon,
+    String? semanticLabel,
+    ImageProvider? image,
+    ImageFrameBuilder? frameBuilder,
+    ImageLoadingBuilder? loadingBuilder,
+    ImageErrorWidgetBuilder? errorBuilder,
+    Animation<double>? opacity,
+  });
+}
+
+class BoxBuilder extends MixWidgetBuilder<BoxSpec> {
+  const BoxBuilder();
+
+  @override
+  Widget build(
+    Style<BoxSpec> style, {
+    Key? key,
+    Widget? child,
+    List<Widget> children = const <Widget>[],
+    String? text,
+    IconData? icon,
+    String? semanticLabel,
+    ImageProvider? image,
+    ImageFrameBuilder? frameBuilder,
+    ImageLoadingBuilder? loadingBuilder,
+    ImageErrorWidgetBuilder? errorBuilder,
+    Animation<double>? opacity,
+  }) {
+    return Box(key: key, style: style, child: child);
+  }
+}
+
+class FlexBoxBuilder extends MixWidgetBuilder<FlexBoxSpec> {
+  const FlexBoxBuilder();
+
+  @override
+  Widget build(
+    Style<FlexBoxSpec> style, {
+    Key? key,
+    Widget? child,
+    List<Widget> children = const <Widget>[],
+    String? text,
+    IconData? icon,
+    String? semanticLabel,
+    ImageProvider? image,
+    ImageFrameBuilder? frameBuilder,
+    ImageLoadingBuilder? loadingBuilder,
+    ImageErrorWidgetBuilder? errorBuilder,
+    Animation<double>? opacity,
+  }) {
+    return FlexBox(key: key, style: style, children: children);
+  }
+}
+
+class RowBoxBuilder extends MixWidgetBuilder<FlexBoxSpec> {
+  const RowBoxBuilder();
+
+  @override
+  Widget build(
+    Style<FlexBoxSpec> style, {
+    Key? key,
+    Widget? child,
+    List<Widget> children = const <Widget>[],
+    String? text,
+    IconData? icon,
+    String? semanticLabel,
+    ImageProvider? image,
+    ImageFrameBuilder? frameBuilder,
+    ImageLoadingBuilder? loadingBuilder,
+    ImageErrorWidgetBuilder? errorBuilder,
+    Animation<double>? opacity,
+  }) {
+    return RowBox(key: key, style: style, children: children);
+  }
+}
+
+class ColumnBoxBuilder extends MixWidgetBuilder<FlexBoxSpec> {
+  const ColumnBoxBuilder();
+
+  @override
+  Widget build(
+    Style<FlexBoxSpec> style, {
+    Key? key,
+    Widget? child,
+    List<Widget> children = const <Widget>[],
+    String? text,
+    IconData? icon,
+    String? semanticLabel,
+    ImageProvider? image,
+    ImageFrameBuilder? frameBuilder,
+    ImageLoadingBuilder? loadingBuilder,
+    ImageErrorWidgetBuilder? errorBuilder,
+    Animation<double>? opacity,
+  }) {
+    return ColumnBox(key: key, style: style, children: children);
+  }
+}
+
+class StyledTextBuilder extends MixWidgetBuilder<TextSpec> {
+  const StyledTextBuilder();
+
+  @override
+  Widget build(
+    Style<TextSpec> style, {
+    Key? key,
+    Widget? child,
+    List<Widget> children = const <Widget>[],
+    String? text,
+    IconData? icon,
+    String? semanticLabel,
+    ImageProvider? image,
+    ImageFrameBuilder? frameBuilder,
+    ImageLoadingBuilder? loadingBuilder,
+    ImageErrorWidgetBuilder? errorBuilder,
+    Animation<double>? opacity,
+  }) {
+    return StyledText(text!, key: key, style: style);
+  }
+}
+
+class StyledIconBuilder extends MixWidgetBuilder<IconSpec> {
+  const StyledIconBuilder();
+
+  @override
+  Widget build(
+    Style<IconSpec> style, {
+    Key? key,
+    Widget? child,
+    List<Widget> children = const <Widget>[],
+    String? text,
+    IconData? icon,
+    String? semanticLabel,
+    ImageProvider? image,
+    ImageFrameBuilder? frameBuilder,
+    ImageLoadingBuilder? loadingBuilder,
+    ImageErrorWidgetBuilder? errorBuilder,
+    Animation<double>? opacity,
+  }) {
+    return StyledIcon(
+      key: key,
+      style: style,
+      icon: icon,
+      semanticLabel: semanticLabel,
+    );
+  }
+}
+
+class StyledImageBuilder extends MixWidgetBuilder<ImageSpec> {
+  const StyledImageBuilder();
+
+  @override
+  Widget build(
+    Style<ImageSpec> style, {
+    Key? key,
+    Widget? child,
+    List<Widget> children = const <Widget>[],
+    String? text,
+    IconData? icon,
+    String? semanticLabel,
+    ImageProvider? image,
+    ImageFrameBuilder? frameBuilder,
+    ImageLoadingBuilder? loadingBuilder,
+    ImageErrorWidgetBuilder? errorBuilder,
+    Animation<double>? opacity,
+  }) {
+    return StyledImage(
+      key: key,
+      style: style,
+      image: image,
+      frameBuilder: frameBuilder,
+      loadingBuilder: loadingBuilder,
+      errorBuilder: errorBuilder,
+      opacity: opacity,
+    );
+  }
+}
+
+class StackBoxBuilder extends MixWidgetBuilder<StackBoxSpec> {
+  const StackBoxBuilder();
+
+  @override
+  Widget build(
+    Style<StackBoxSpec> style, {
+    Key? key,
+    Widget? child,
+    List<Widget> children = const <Widget>[],
+    String? text,
+    IconData? icon,
+    String? semanticLabel,
+    ImageProvider? image,
+    ImageFrameBuilder? frameBuilder,
+    ImageLoadingBuilder? loadingBuilder,
+    ImageErrorWidgetBuilder? errorBuilder,
+    Animation<double>? opacity,
+  }) {
+    return StackBox(key: key, style: style, children: children);
+  }
+}
 ''';
 
 Map<String, String> mixWidgetBaseSources({
@@ -366,6 +540,8 @@ Map<String, String> mixWidgetBaseSourcesFromPackageSources(
   String? mixSourceOverride,
 }) {
   return {
+    'flutter|lib/src/widgets/framework.dart': flutterFrameworkStub,
+    'flutter|lib/widgets.dart': flutterWidgetsStub,
     'mix|lib/mix.dart': mixSourceOverride ?? mixStub,
     'mix_annotations|lib/mix_annotations.dart': mixAnnotationsStub,
     ...packageSources,
@@ -442,11 +618,3 @@ String normalizeGoldenText(String text) {
   return normalized.endsWith('\n') ? normalized : '$normalized\n';
 }
 
-String replaceSnippet(String source, String from, String to) {
-  final updated = source.replaceFirst(from, to);
-  if (updated == source) {
-    throw StateError('Could not find snippet to replace.');
-  }
-
-  return updated;
-}

@@ -14,6 +14,10 @@ class Toolbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RowBox(children: children, key: key, style: toolbarStyle);
+    return const RowBoxBuilder().build(
+      toolbarStyle,
+      key: key,
+      children: children,
+    );
   }
 }

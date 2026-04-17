@@ -14,6 +14,10 @@ class Overlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StackBox(children: children, key: key, style: overlayStyle);
+    return const StackBoxBuilder().build(
+      overlayStyle,
+      key: key,
+      children: children,
+    );
   }
 }

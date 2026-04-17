@@ -15,11 +15,11 @@ class CloseIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StyledIcon(
+    return const StyledIconBuilder().build(
+      closeIconStyle,
+      key: key,
       icon: icon,
       semanticLabel: semanticLabel,
-      key: key,
-      style: closeIconStyle,
     );
   }
 }

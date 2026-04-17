@@ -17,6 +17,6 @@ class Card extends StatelessWidget {
   Widget build(BuildContext context) {
     final baseStyle = cardStyle;
     final effectiveStyle = baseStyle.merge(style);
-    return Box(child: child, key: key, style: effectiveStyle);
+    return const BoxBuilder().build(effectiveStyle, key: key, child: child);
   }
 }

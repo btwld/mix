@@ -25,14 +25,14 @@ class HeroImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StyledImage(
+    return const StyledImageBuilder().build(
+      heroImageStyle,
+      key: key,
       image: image,
       frameBuilder: frameBuilder,
       loadingBuilder: loadingBuilder,
       errorBuilder: errorBuilder,
       opacity: opacity,
-      key: key,
-      style: heroImageStyle,
     );
   }
 }

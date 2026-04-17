@@ -14,6 +14,6 @@ class ImportedCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Box(child: child, key: key, style: importedCardStyle);
+    return const BoxBuilder().build(importedCardStyle, key: key, child: child);
   }
 }

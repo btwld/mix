@@ -108,6 +108,7 @@ final class BoxConstraintsMix extends ConstraintsMix<BoxConstraints>
 Generates a thin public `StatelessWidget` wrapper from a top-level Mix styler declaration.
 
 ```dart
+import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
 part 'card_styles.g.dart';
@@ -189,13 +190,19 @@ class Chip extends StatelessWidget {
 For style families with multiple valid widget targets, use `widgetBuilder`:
 
 ```dart
-@MixWidget(widgetBuilder: MixWidgetBuilder.rowBox())
+@MixWidget(widgetBuilder: RowBoxBuilder())
 final toolbarStyle = FlexBoxStyler();
 ```
 
 This keeps the `FlexBoxStyler.call()`-shaped API but generates a wrapper that constructs `RowBox`.
 
-`@MixWidget` supports top-level `final` variables and top-level functions. Function-backed declarations prepend their own factory parameters before the mirrored `call()` parameters, so inputs can shape the generated base style. Unsupported styler families fail generation unless a compatible `widgetBuilder` override is provided.
+`widgetBuilder` accepts any const subclass of `MixWidgetBuilder<TSpec>`. Mix ships eight built-ins (`BoxBuilder`, `FlexBoxBuilder`, `RowBoxBuilder`, `ColumnBoxBuilder`, `StyledTextBuilder`, `StyledIconBuilder`, `StyledImageBuilder`, `StackBoxBuilder`); users can author their own by overriding `build(Style<TSpec> style, {Key? key, Widget? child, List<Widget> children, ...})`. The generator mirrors the source styler's `call()` signature onto the wrapper and forwards each parameter as a named argument into `build()`.
+
+`@MixWidget` supports top-level `final` variables and top-level functions. Function-backed declarations prepend their own public factory parameters before the mirrored `call()` parameters, so inputs can shape the generated base style.
+
+For custom design-system stylers whose spec isn't covered by a built-in builder, `@MixWidget` falls back to instantiating the `call()`-return widget directly — no builder required.
+
+A top-level style function may take `BuildContext context` as its first required positional parameter. The generated wrapper injects the build context from `build()` and does not expose it as a constructor argument.
 
 ### Field-level control with `@MixableField`
 
