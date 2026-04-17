@@ -7,6 +7,7 @@ import '../../core/schema_wire_types.dart';
 import '../../registry/registry_catalog.dart';
 import '../discriminated_branch_registry.dart';
 import 'context_variant_leaf_schema.dart';
+import 'variant_condition_definition.dart';
 import 'variant_condition_schema.dart';
 
 AckSchema<VariantStyle<S>>

@@ -1,6 +1,7 @@
 // Decode Mix style payloads into strongly typed Mix runtime objects.
 export 'src/core/json_map.dart';
 export 'src/core/mix_schema_scope.dart';
+export 'src/core/schema_wire_types.dart';
 export 'src/decoder/mix_schema_decoder.dart';
 export 'src/errors/mix_schema_decode_result.dart';
 export 'src/errors/mix_schema_error.dart';

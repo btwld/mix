@@ -7,6 +7,7 @@ import '../../errors/schema_error_mapper.dart';
 import '../../errors/schema_transform_exceptions.dart';
 import '../discriminated_branch_registry.dart';
 import 'context_variant_leaf_schema.dart';
+import 'variant_condition_definition.dart';
 
 VariantConditionParser buildVariantConditionParser() {
   final registry = DiscriminatedBranchRegistry<ContextVariantLeaf>(
