@@ -5,7 +5,6 @@ import '../core/helpers.dart';
 import '../core/widget_modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
-import '../core/utility.dart';
 import '../properties/typography/text_height_behavior_mix.dart';
 import '../properties/typography/text_style_mix.dart';
 
@@ -197,35 +196,4 @@ class DefaultTextStyleModifierMix
     textWidthBasis,
     textHeightBehavior,
   ];
-}
-
-/// Utility class for applying default text style modifications.
-///
-/// Provides convenient methods for creating DefaultTextStyleModifierMix instances.
-final class DefaultTextStyleModifierUtility<T extends Style<Object?>>
-    extends MixUtility<T, DefaultTextStyleModifierMix> {
-  const DefaultTextStyleModifierUtility(super.utilityBuilder);
-  T call({
-    TextStyle? style,
-    TextAlign? textAlign,
-    bool? softWrap,
-    TextOverflow? overflow,
-    int? maxLines,
-    TextWidthBasis? textWidthBasis,
-    TextHeightBehavior? textHeightBehavior,
-  }) {
-    return utilityBuilder(
-      DefaultTextStyleModifierMix(
-        style: TextStyleMix.maybeValue(style),
-        textAlign: textAlign,
-        softWrap: softWrap,
-        overflow: overflow,
-        maxLines: maxLines,
-        textWidthBasis: textWidthBasis,
-        textHeightBehavior: TextHeightBehaviorMix.maybeValue(
-          textHeightBehavior,
-        ),
-      ),
-    );
-  }
 }

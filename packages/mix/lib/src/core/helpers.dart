@@ -34,12 +34,6 @@ class MixOps {
 
   const MixOps._();
 
-  @Deprecated('Use resolve(context, Prop<List<V>>?) directly')
-  static List<V>? resolvePropList<T extends Prop<V>, V>(
-    BuildContext context,
-    List<T>? a,
-  ) => _resolveList(context, a);
-
   static List<V>? resolveList<V>(BuildContext context, Prop<List<V>>? prop) {
     return resolve(context, prop);
   }
@@ -138,15 +132,6 @@ class MixOps {
     }
   }
 
-  static List<V>? _resolveList<T extends Prop<V>, V>(
-    BuildContext mix,
-    List<T>? a,
-  ) {
-    if (a == null) return null;
-
-    return a.map((e) => e.resolveProp(mix)).whereType<V>().toList();
-  }
-
   static w.StrutStyle? _lerpStrutStyle(
     w.StrutStyle? a,
     w.StrutStyle? b,
@@ -186,6 +171,12 @@ List<WidgetModifier>? _lerpModifierList(
   double t,
 ) {
   return ModifierListTween(begin: a, end: b).lerp(t);
+}
+
+Matrix4? _lerpMatrix4(Matrix4? a, Matrix4? b, double t) {
+  if (a == null || b == null) return _lerpSnap(a, b, t);
+
+  return Matrix4Tween(begin: a, end: b).lerp(t);
 }
 
 T? _lerpValue<T>(T? a, T? b, double t) {
@@ -258,8 +249,8 @@ T? _lerpValue<T>(T? a, T? b, double t) {
     // Theme data
     (IconThemeData? a, IconThemeData? b) => IconThemeData.lerp(a, b, t) as T?,
 
-    // Matrix4 - use proper tween instead of snap
-    (Matrix4? a, Matrix4? b) => Matrix4Tween(begin: a, end: b).lerp(t) as T?,
+    // Matrix4 - animate real matrix pairs, snap nullable endpoints
+    (Matrix4? a, Matrix4? b) => _lerpMatrix4(a, b, t) as T?,
 
     // List of Modifiers - use ModifierListTween for proper lerping
     (List<WidgetModifier>? a, List<WidgetModifier>? b) =>

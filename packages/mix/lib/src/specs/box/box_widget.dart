@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 
-import '../../core/style_spec.dart';
 import '../../core/style_widget.dart';
 import 'box_spec.dart';
 import 'box_style.dart';
@@ -49,23 +48,5 @@ class Box extends StyleWidget<BoxSpec> {
       clipBehavior: spec.clipBehavior ?? .none,
       child: child,
     );
-  }
-}
-
-/// Alias for [Box] widget for backward compatibility.
-@Deprecated('Use Box instead')
-typedef StyledContainer = Box;
-
-extension BoxSpecWrappedWidget on StyleSpec<BoxSpec> {
-  /// Creates a widget that resolves this [StyleSpec<BoxSpec>] with context.
-  @Deprecated('Use Box(styleSpec: styleSpec, child: child) instead')
-  Widget createWidget({Widget? child}) {
-    return call(child: child);
-  }
-
-  /// Convenient shorthand for creating a Box widget with this StyleSpec.
-  @Deprecated('Use Box(styleSpec: styleSpec, child: child) instead')
-  Widget call({Widget? child}) {
-    return Box(styleSpec: this, child: child);
   }
 }

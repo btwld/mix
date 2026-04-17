@@ -19,10 +19,15 @@ packages/
   mix/              # Core framework (v2.0.0-rc.0)
   mix_annotations/  # Annotations for codegen
   mix_generator/    # build_runner generator
-  mix_lint/         # Custom linter
-examples/           # Interactive widget gallery
-website/            # Documentation site
+  mix_lint/         # Custom linter (not in pub workspace, see below)
 ```
+
+## Pub workspace
+
+The repo uses [Dart pub workspaces](https://dart.dev/tools/pub/workspaces): a single `pubspec.lock` and shared resolution at the root. Run `dart pub get` at the repo root to resolve all workspace packages.
+
+- **In the workspace:** mix, mix_annotations, mix_generator, mix_tailwinds, mix_tailwinds/example.
+- **Excluded:** `mix_lint` (uses analyzer ^7.x for custom_lint_builder; other packages use analyzer >=9). Run `dart pub get` inside `packages/mix_lint` when working on the linter.
 
 ## Commands
 
@@ -80,16 +85,9 @@ final style = BoxStyler()
 **Guides:**
 - `guides/api-composition-guidelines.md` - Fluent chaining, sizing, merge patterns
 
-**Website (comprehensive docs):**
-- `website/src/content/documentation/overview/` - Introduction, getting started
-- `website/src/content/documentation/guides/styling.mdx` - Style/Styler pattern
-- `website/src/content/documentation/guides/dynamic-styling.mdx` - Variants (hover, press, dark)
-- `website/src/content/documentation/guides/design-token.mdx` - MixScope, tokens
-- `website/src/content/documentation/guides/animations.mdx` - Implicit, Phase, Keyframe
-- `website/src/content/documentation/widgets/` - Widget-specific APIs
+**Website (comprehensive docs):** See [btwld/mix-docs](https://github.com/btwld/mix-docs)
 
 **Reference implementations:**
-- `examples/` - Interactive widget examples (Box, HBox, VBox, Text, Icon)
 - `packages/mix/lib/src/specs/box/` - Spec/Style/Widget pattern
 
 ## Critical Rules
@@ -123,7 +121,7 @@ melos run test:coverage   # With coverage report
 <type>(<scope>): <description>
 
 type: feat, fix, chore, docs, refactor, test, ci
-scope: mix, mix_generator, mix_annotations, mix_lint, examples, website
+scope: mix, mix_generator, mix_annotations, mix_lint
 ```
 
 ## Key Files

@@ -4,17 +4,13 @@ on:
   push:
     branches: [main, next]
     paths-ignore:
-      - 'examples/**'
-      - 'website/**'
       - 'assets/**'
       - 'tool/**'
 
   pull_request:
     branches: [main, next]
     paths-ignore:
-      - 'examples/**'
       - 'test_resources/**'
-      - 'website/**'
       - 'assets/**'
       - 'tool/**'
 

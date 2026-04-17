@@ -2,18 +2,11 @@
 
 import 'package:flutter/widgets.dart';
 
-import '../../core/style_spec.dart';
 import '../../core/style_widget.dart';
 import '../box/box_widget.dart';
 import '../flex/flex_spec.dart';
 import 'flexbox_spec.dart';
 import 'flexbox_style.dart';
-
-@Deprecated('Use ColumnBox instead')
-typedef VBox = ColumnBox;
-
-@Deprecated('Use RowBox instead')
-typedef HBox = RowBox;
 
 /// [FlexBox] combines Flutter's [Container] and [Flex] widgets with Mix styling.
 ///
@@ -136,30 +129,4 @@ Flex _createFlexSpecWidget({
     spacing: spec?.spacing ?? 0.0,
     children: children,
   );
-}
-
-extension FlexBoxSpecWrappedWidget on StyleSpec<FlexBoxSpec> {
-  /// Creates a widget that resolves this [StyleSpec<FlexBoxSpec>] with context.
-  @Deprecated(
-    'Use RowBox(children: children, styleSpec: styleSpec) for horizontal or ColumnBox(children: children, styleSpec: styleSpec) for vertical instead',
-  )
-  Widget createWidget({
-    required Axis direction,
-    List<Widget> children = const [],
-  }) {
-    return call(direction: direction, children: children);
-  }
-
-  /// Convenient shorthand for creating a FlexBox widget with this StyleSpec.
-  @Deprecated(
-    'Use RowBox(children: children, styleSpec: styleSpec) for horizontal or ColumnBox(children: children, styleSpec: styleSpec) for vertical instead',
-  )
-  Widget call({required Axis direction, List<Widget> children = const []}) {
-    switch (direction) {
-      case .horizontal:
-        return RowBox(styleSpec: this, children: children);
-      case .vertical:
-        return ColumnBox(styleSpec: this, children: children);
-    }
-  }
 }

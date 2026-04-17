@@ -3,9 +3,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
 void main() {
-  group('Default parameters for ZBox matches Container+Stack', () {
+  group('Default parameters for StackBox matches Container+Stack', () {
     testWidgets('should have the same default parameters', (tester) async {
-      const zBoxKey = Key('zbox');
+      const stackBoxKey = Key('stackbox');
       const containerKey = Key('container');
       const stackKey = Key('stack');
 
@@ -15,7 +15,7 @@ void main() {
             body: Column(
               children: [
                 StackBox(
-                  key: zBoxKey,
+                  key: stackBoxKey,
                   style: StackBoxStyler(), // Use default empty StackBoxStyle
                   children: const [],
                 ),
@@ -30,16 +30,16 @@ void main() {
       );
 
       /// Get widgets by key
-      final zBoxFinder = find.byKey(zBoxKey);
+      final stackBoxFinder = find.byKey(stackBoxKey);
       final containerFinder = find.byKey(containerKey);
       final stackFinder = find.byKey(stackKey);
 
-      /// Find the Container and Stack widgets inside the ZBox widget
+      /// Find the Container and Stack widgets inside the StackBox widget
       final styledContainer = tester.widget<Container>(
-        find.descendant(of: zBoxFinder, matching: find.byType(Container)),
+        find.descendant(of: stackBoxFinder, matching: find.byType(Container)),
       );
       final styledStack = tester.widget<Stack>(
-        find.descendant(of: zBoxFinder, matching: find.byType(Stack)),
+        find.descendant(of: stackBoxFinder, matching: find.byType(Stack)),
       );
 
       final container = tester.widget<Container>(containerFinder);
@@ -64,32 +64,32 @@ void main() {
         styledStack.alignment,
         stack.alignment,
         reason:
-            'ZBox Stack alignment (${styledStack.alignment}) should match Stack alignment (${stack.alignment})',
+            'StackBox Stack alignment (${styledStack.alignment}) should match Stack alignment (${stack.alignment})',
       );
       expect(
         styledStack.textDirection,
         stack.textDirection,
         reason:
-            'ZBox Stack textDirection (${styledStack.textDirection}) should match Stack textDirection (${stack.textDirection})',
+            'StackBox Stack textDirection (${styledStack.textDirection}) should match Stack textDirection (${stack.textDirection})',
       );
       expect(
         styledStack.fit,
         stack.fit,
         reason:
-            'ZBox Stack fit (${styledStack.fit}) should match Stack fit (${stack.fit})',
+            'StackBox Stack fit (${styledStack.fit}) should match Stack fit (${stack.fit})',
       );
       expect(
         styledStack.clipBehavior,
         stack.clipBehavior,
         reason:
-            'ZBox Stack clipBehavior (${styledStack.clipBehavior}) should match Stack clipBehavior (${stack.clipBehavior})',
+            'StackBox Stack clipBehavior (${styledStack.clipBehavior}) should match Stack clipBehavior (${stack.clipBehavior})',
       );
     });
 
     testWidgets('should verify Stack defaults match Flutter Stack defaults', (
       tester,
     ) async {
-      const zBoxKey = Key('zbox');
+      const stackBoxKey = Key('stackbox');
       const stackKey = Key('stack');
 
       await tester.pumpWidget(
@@ -97,7 +97,7 @@ void main() {
           home: Scaffold(
             body: Column(
               children: [
-                StackBox(key: zBoxKey, children: const []),
+                StackBox(key: stackBoxKey, children: const []),
                 Stack(key: stackKey, children: const []),
               ],
             ),
@@ -106,12 +106,12 @@ void main() {
       );
 
       /// Get widgets by key
-      final zBoxFinder = find.byKey(zBoxKey);
+      final stackBoxFinder = find.byKey(stackBoxKey);
       final stackFinder = find.byKey(stackKey);
 
-      /// Find the Stack widget inside the ZBox widget
+      /// Find the Stack widget inside the StackBox widget
       final styledStack = tester.widget<Stack>(
-        find.descendant(of: zBoxFinder, matching: find.byType(Stack)),
+        find.descendant(of: stackBoxFinder, matching: find.byType(Stack)),
       );
       final stack = tester.widget<Stack>(stackFinder);
 
@@ -119,7 +119,8 @@ void main() {
       expect(
         styledStack.alignment,
         AlignmentDirectional.topStart,
-        reason: 'ZBox Stack should default to AlignmentDirectional.topStart',
+        reason:
+            'StackBox Stack should default to AlignmentDirectional.topStart',
       );
       expect(
         stack.alignment,
@@ -130,7 +131,7 @@ void main() {
       expect(
         styledStack.fit,
         StackFit.loose,
-        reason: 'ZBox Stack should default to StackFit.loose',
+        reason: 'StackBox Stack should default to StackFit.loose',
       );
       expect(
         stack.fit,
@@ -141,7 +142,7 @@ void main() {
       expect(
         styledStack.clipBehavior,
         Clip.hardEdge,
-        reason: 'ZBox Stack should default to Clip.hardEdge',
+        reason: 'StackBox Stack should default to Clip.hardEdge',
       );
       expect(
         stack.clipBehavior,

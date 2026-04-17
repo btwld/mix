@@ -63,6 +63,35 @@ void main() {
         final s = ShadowMix(color: Colors.black, blurRadius: 4);
         expect(IconStyler.shadow(s), equals(IconStyler().shadow(s)));
       });
+
+      test('grade', () {
+        expect(IconStyler.grade(0.5), equals(IconStyler(grade: 0.5)));
+      });
+
+      test('opticalSize', () {
+        expect(IconStyler.opticalSize(48), equals(IconStyler(opticalSize: 48)));
+      });
+
+      test('textDirection', () {
+        expect(
+          IconStyler.textDirection(TextDirection.rtl),
+          equals(IconStyler(textDirection: TextDirection.rtl)),
+        );
+      });
+
+      test('applyTextScaling', () {
+        expect(
+          IconStyler.applyTextScaling(true),
+          equals(IconStyler(applyTextScaling: true)),
+        );
+      });
+
+      test('blendMode', () {
+        expect(
+          IconStyler.blendMode(BlendMode.multiply),
+          equals(IconStyler(blendMode: BlendMode.multiply)),
+        );
+      });
     });
 
     group('resolved values', () {

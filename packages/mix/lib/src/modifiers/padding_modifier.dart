@@ -5,9 +5,7 @@ import '../core/helpers.dart';
 import '../core/widget_modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
-import '../core/utility.dart';
 import '../properties/layout/edge_insets_geometry_mix.dart';
-import '../properties/layout/edge_insets_geometry_util.dart';
 
 /// Modifier that adds padding around its child.
 ///
@@ -80,23 +78,4 @@ class PaddingModifierMix extends ModifierMix<PaddingModifier>
 
   @override
   List<Object?> get props => [padding];
-}
-
-/// Utility class for applying padding modifications.
-///
-/// Provides convenient methods for creating PaddingModifierMix instances.
-class PaddingModifierUtility<T extends Style<Object?>>
-    extends MixUtility<T, PaddingModifierMix> {
-  /// Utility for defining [PaddingModifierMix.padding]
-  late final padding = EdgeInsetsGeometryUtility(
-    (v) => utilityBuilder(PaddingModifierMix(padding: v)),
-  );
-
-  PaddingModifierUtility(super.utilityBuilder);
-
-  T call({EdgeInsetsGeometryMix? padding}) {
-    return utilityBuilder(
-      PaddingModifierMix.create(padding: Prop.maybeMix(padding)),
-    );
-  }
 }

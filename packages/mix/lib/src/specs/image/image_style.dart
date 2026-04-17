@@ -9,14 +9,10 @@ import '../../core/style.dart';
 import '../../core/style_spec.dart';
 import '../../modifiers/widget_modifier_config.dart';
 import '../../style/abstracts/styler.dart';
-import 'image_mutable_style.dart';
 import 'image_spec.dart';
 import 'image_widget.dart';
 
 part 'image_style.g.dart';
-
-@Deprecated('Use ImageStyler instead')
-typedef ImageMix = ImageStyler;
 
 @MixableStyler()
 class ImageStyler extends MixStyler<ImageStyler, ImageSpec>
@@ -129,16 +125,26 @@ class ImageStyler extends MixStyler<ImageStyler, ImageSpec>
 
   // Factory constructors for dot-shorthand notation
   factory ImageStyler.image(ImageProvider<Object> value) =>
-      ImageStyler(image: value);
-  factory ImageStyler.width(double value) => ImageStyler(width: value);
-  factory ImageStyler.height(double value) => ImageStyler(height: value);
-  factory ImageStyler.color(Color value) => ImageStyler(color: value);
-  factory ImageStyler.fit(BoxFit value) => ImageStyler(fit: value);
+      ImageStyler().image(value);
+  factory ImageStyler.width(double value) => ImageStyler().width(value);
+  factory ImageStyler.height(double value) => ImageStyler().height(value);
+  factory ImageStyler.color(Color value) => ImageStyler().color(value);
+  factory ImageStyler.fit(BoxFit value) => ImageStyler().fit(value);
   factory ImageStyler.alignment(AlignmentGeometry value) =>
-      ImageStyler(alignment: value);
-  factory ImageStyler.repeat(ImageRepeat value) => ImageStyler(repeat: value);
-
-  static ImageMutableStyler get chain => .new(ImageStyler());
+      ImageStyler().alignment(value);
+  factory ImageStyler.repeat(ImageRepeat value) => ImageStyler().repeat(value);
+  factory ImageStyler.centerSlice(Rect value) =>
+      ImageStyler().centerSlice(value);
+  factory ImageStyler.filterQuality(FilterQuality value) =>
+      ImageStyler().filterQuality(value);
+  factory ImageStyler.colorBlendMode(BlendMode value) =>
+      ImageStyler().colorBlendMode(value);
+  factory ImageStyler.gaplessPlayback(bool value) =>
+      ImageStyler().gaplessPlayback(value);
+  factory ImageStyler.isAntiAlias(bool value) =>
+      ImageStyler().isAntiAlias(value);
+  factory ImageStyler.matchTextDirection(bool value) =>
+      ImageStyler().matchTextDirection(value);
 
   StyledImage call({
     ImageProvider? image,

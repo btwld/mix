@@ -175,10 +175,7 @@ class _GradientAccum {
       }
     }
 
-    final useCssAngleRect =
-        strategy == TwGradientStrategy.cssAngleRect ||
-        strategy == TwGradientStrategy.adaptive;
-    if (useCssAngleRect &&
+    if (strategy == TwGradientStrategy.cssAngleRect &&
         directionKey != null &&
         _tailwindCornerDirections.contains(directionKey)) {
       return LinearGradientMix(
@@ -1214,10 +1211,7 @@ JsonMap? _buildGradientPayload(
     }
   }
 
-  final useCssAngleRect =
-      strategy == TwGradientStrategy.cssAngleRect ||
-      strategy == TwGradientStrategy.adaptive;
-  if (useCssAngleRect &&
+  if (strategy == TwGradientStrategy.cssAngleRect &&
       gradient.directionKey != null &&
       _tailwindCornerDirections.contains(gradient.directionKey)) {
     return {

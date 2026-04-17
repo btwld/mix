@@ -27,6 +27,3 @@ final class StackBoxSpec extends Spec<StackBoxSpec>
 
   const StackBoxSpec({this.box, this.stack});
 }
-
-@Deprecated('Use StackBoxSpec instead')
-typedef ZBoxSpec = StackBoxSpec;

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../core/directive.dart';
-import '../../core/style_spec.dart';
 import '../../core/style_widget.dart';
 import 'text_spec.dart';
 import 'text_style.dart';
@@ -54,19 +53,5 @@ class StyledText extends StyleWidget<TextSpec> {
       textHeightBehavior: spec.textHeightBehavior,
       selectionColor: spec.selectionColor,
     );
-  }
-}
-
-extension TextSpecWrappedWidget on StyleSpec<TextSpec> {
-  /// Creates a widget that resolves this [StyleSpec<TextSpec>] with context.
-  @Deprecated('Use StyledText(text, styleSpec: styleSpec) instead')
-  Widget createWidget(String text) {
-    return call(text);
-  }
-
-  /// Convenient shorthand for creating a StyledText widget with this StyleSpec.
-  @Deprecated('Use StyledText(text, styleSpec: styleSpec) instead')
-  Widget call(String text) {
-    return StyledText(text, styleSpec: this);
   }
 }

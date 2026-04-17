@@ -213,6 +213,24 @@ abstract class StyleVariation<S extends Spec<S>> {
   );
 }
 
+/// Mixin for enums that act as [NamedVariant]s.
+///
+/// Apply this mixin to an enum to use its values as named variants:
+/// ```dart
+/// enum ButtonVariant with EnumVariant { primary, secondary, outlined }
+/// ```
+mixin EnumVariant on Enum implements NamedVariant {
+  @override
+  String get key => _EnumName(this).name;
+
+  @override
+  String get name => _EnumName(this).name;
+}
+
+extension type _EnumName(Enum value) {
+  String get name => value.name;
+}
+
 // Common named variants
 const primary = NamedVariant('primary');
 const secondary = NamedVariant('secondary');

@@ -11,13 +11,9 @@ import '../../core/style_spec.dart';
 import '../../modifiers/widget_modifier_config.dart';
 import '../../style/abstracts/styler.dart';
 import '../../style/mixins/flex_style_mixin.dart';
-import 'flex_mutable_style.dart';
 import 'flex_spec.dart';
 
 part 'flex_style.g.dart';
-
-@Deprecated('Use FlexStyler instead')
-typedef FlexMix = FlexStyler;
 
 /// Represents the attributes of a [FlexSpec].
 ///
@@ -59,11 +55,6 @@ class FlexStyler extends MixStyler<FlexStyler, FlexSpec>
     Prop<TextBaseline>? textBaseline,
     Prop<Clip>? clipBehavior,
     Prop<double>? spacing,
-    @Deprecated(
-      'Use spacing instead. '
-      'This feature was deprecated after Mix v2.0.0.',
-    )
-    Prop<double>? gap,
     super.animation,
     super.modifier,
     super.variants,
@@ -75,7 +66,7 @@ class FlexStyler extends MixStyler<FlexStyler, FlexSpec>
        $textDirection = textDirection,
        $textBaseline = textBaseline,
        $clipBehavior = clipBehavior,
-       $spacing = spacing ?? gap;
+       $spacing = spacing;
 
   FlexStyler({
     Axis? direction,
@@ -106,22 +97,26 @@ class FlexStyler extends MixStyler<FlexStyler, FlexSpec>
        );
 
   // Factory constructors for dot-shorthand notation
-  factory FlexStyler.direction(Axis value) => FlexStyler(direction: value);
+  factory FlexStyler.direction(Axis value) => FlexStyler().direction(value);
   factory FlexStyler.mainAxisAlignment(MainAxisAlignment value) =>
-      FlexStyler(mainAxisAlignment: value);
+      FlexStyler().mainAxisAlignment(value);
   factory FlexStyler.crossAxisAlignment(CrossAxisAlignment value) =>
-      FlexStyler(crossAxisAlignment: value);
+      FlexStyler().crossAxisAlignment(value);
   factory FlexStyler.mainAxisSize(MainAxisSize value) =>
-      FlexStyler(mainAxisSize: value);
-  factory FlexStyler.spacing(double value) => FlexStyler(spacing: value);
+      FlexStyler().mainAxisSize(value);
+  factory FlexStyler.spacing(double value) => FlexStyler().spacing(value);
   factory FlexStyler.clipBehavior(Clip value) =>
-      FlexStyler(clipBehavior: value);
+      FlexStyler().clipBehavior(value);
+  factory FlexStyler.verticalDirection(VerticalDirection value) =>
+      FlexStyler().verticalDirection(value);
+  factory FlexStyler.textDirection(TextDirection value) =>
+      FlexStyler().textDirection(value);
+  factory FlexStyler.textBaseline(TextBaseline value) =>
+      FlexStyler().textBaseline(value);
 
   // FlexStyleMixin convenience (zero-param presets)
-  factory FlexStyler.row() => FlexStyler(direction: .horizontal);
-  factory FlexStyler.column() => FlexStyler(direction: .vertical);
-
-  static FlexMutableStyler get chain => .new(FlexStyler());
+  factory FlexStyler.row() => FlexStyler().row();
+  factory FlexStyler.column() => FlexStyler().column();
 
   /// Sets the widget modifier.
   FlexStyler modifier(WidgetModifierConfig value) {

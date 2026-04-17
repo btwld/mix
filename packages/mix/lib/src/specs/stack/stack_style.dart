@@ -9,13 +9,9 @@ import '../../core/style.dart';
 import '../../core/style_spec.dart';
 import '../../modifiers/widget_modifier_config.dart';
 import '../../style/abstracts/styler.dart';
-import 'stack_mutable_style.dart';
 import 'stack_spec.dart';
 
 part 'stack_style.g.dart';
-
-@Deprecated('Use StackStyler instead')
-typedef StackMix = StackStyler;
 
 /// Represents the attributes of a [StackSpec].
 ///
@@ -69,12 +65,12 @@ class StackStyler extends MixStyler<StackStyler, StackSpec>
 
   // Factory constructors for dot-shorthand notation
   factory StackStyler.alignment(AlignmentGeometry value) =>
-      StackStyler(alignment: value);
-  factory StackStyler.fit(StackFit value) => StackStyler(fit: value);
+      StackStyler().alignment(value);
+  factory StackStyler.fit(StackFit value) => StackStyler().fit(value);
   factory StackStyler.clipBehavior(Clip value) =>
-      StackStyler(clipBehavior: value);
-
-  static StackMutableStyler get chain => .new(StackStyler());
+      StackStyler().clipBehavior(value);
+  factory StackStyler.textDirection(TextDirection value) =>
+      StackStyler().textDirection(value);
 
   /// Sets the widget modifier.
   StackStyler modifier(WidgetModifierConfig value) {

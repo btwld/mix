@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../core/style_spec.dart';
 import '../../core/style_widget.dart';
 import 'icon_spec.dart';
 import 'icon_style.dart';
@@ -50,28 +49,6 @@ class StyledIcon extends StyleWidget<IconSpec> {
       textDirection: spec.textDirection,
       applyTextScaling: spec.applyTextScaling,
       blendMode: spec.blendMode,
-    );
-  }
-}
-
-extension IconSpecWrappedWidget on StyleSpec<IconSpec> {
-  /// Creates a widget that resolves this [StyleSpec<IconSpec>] with context.
-  @Deprecated(
-    'Use StyledIcon(icon: icon, semanticLabel: semanticLabel, styleSpec: styleSpec) instead',
-  )
-  Widget createWidget({IconData? icon, String? semanticLabel}) {
-    return call(icon: icon, semanticLabel: semanticLabel);
-  }
-
-  /// Convenient shorthand for creating a StyledIcon widget with this StyleSpec.
-  @Deprecated(
-    'Use StyledIcon(icon: icon, semanticLabel: semanticLabel, styleSpec: styleSpec) instead',
-  )
-  Widget call({IconData? icon, String? semanticLabel}) {
-    return StyledIcon(
-      icon: icon,
-      semanticLabel: semanticLabel,
-      styleSpec: this,
     );
   }
 }

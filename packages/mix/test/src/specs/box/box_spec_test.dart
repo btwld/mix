@@ -256,6 +256,22 @@ void main() {
         expect(lerped.transform, isNotNull);
         // Matrix4 lerp is handled by MixOps.lerp
       });
+
+      test('snaps transform when one endpoint is null', () {
+        final transform = Matrix4.translationValues(10.0, 20.0, 0.0);
+        final withTransform = BoxSpec(transform: transform);
+        const withoutTransform = BoxSpec();
+
+        final fadeOutBefore = withTransform.lerp(withoutTransform, 0.4);
+        final fadeOutAfter = withTransform.lerp(withoutTransform, 0.6);
+        final fadeInBefore = withoutTransform.lerp(withTransform, 0.4);
+        final fadeInAfter = withoutTransform.lerp(withTransform, 0.6);
+
+        expect(fadeOutBefore.transform, same(transform));
+        expect(fadeOutAfter.transform, isNull);
+        expect(fadeInBefore.transform, isNull);
+        expect(fadeInAfter.transform, same(transform));
+      });
     });
 
     group('equality', () {

@@ -10,14 +10,10 @@ import '../../core/style_spec.dart';
 import '../../modifiers/widget_modifier_config.dart';
 import '../../properties/painting/shadow_mix.dart';
 import '../../style/abstracts/styler.dart';
-import 'icon_mutable_style.dart';
 import 'icon_spec.dart';
 import 'icon_widget.dart';
 
 part 'icon_style.g.dart';
-
-@Deprecated('Use IconStyler instead')
-typedef IconMix = IconStyler;
 
 @mixableStyler
 class IconStyler extends MixStyler<IconStyler, IconSpec>
@@ -120,17 +116,24 @@ class IconStyler extends MixStyler<IconStyler, IconSpec>
        );
 
   // Factory constructors for dot-shorthand notation
-  factory IconStyler.icon(IconData value) => IconStyler(icon: value);
-  factory IconStyler.color(Color value) => IconStyler(color: value);
-  factory IconStyler.size(double value) => IconStyler(size: value);
-  factory IconStyler.weight(double value) => IconStyler(weight: value);
-  factory IconStyler.fill(double value) => IconStyler(fill: value);
-  factory IconStyler.opacity(double value) => IconStyler(opacity: value);
+  factory IconStyler.icon(IconData value) => IconStyler().icon(value);
+  factory IconStyler.color(Color value) => IconStyler().color(value);
+  factory IconStyler.size(double value) => IconStyler().size(value);
+  factory IconStyler.weight(double value) => IconStyler().weight(value);
+  factory IconStyler.fill(double value) => IconStyler().fill(value);
+  factory IconStyler.opacity(double value) => IconStyler().opacity(value);
   factory IconStyler.shadows(List<ShadowMix> value) =>
-      IconStyler(shadows: value);
+      IconStyler().shadows(value);
   factory IconStyler.shadow(ShadowMix value) => IconStyler().shadow(value);
-
-  static IconMutableStyler get chain => .new(IconStyler());
+  factory IconStyler.grade(double value) => IconStyler().grade(value);
+  factory IconStyler.opticalSize(double value) =>
+      IconStyler().opticalSize(value);
+  factory IconStyler.textDirection(TextDirection value) =>
+      IconStyler().textDirection(value);
+  factory IconStyler.applyTextScaling(bool value) =>
+      IconStyler().applyTextScaling(value);
+  factory IconStyler.blendMode(BlendMode value) =>
+      IconStyler().blendMode(value);
 
   /// Sets single icon shadow
   IconStyler shadow(ShadowMix value) {

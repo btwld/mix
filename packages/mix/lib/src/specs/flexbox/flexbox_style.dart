@@ -12,8 +12,10 @@ import '../../properties/layout/constraints_mix.dart';
 import '../../properties/layout/edge_insets_geometry_mix.dart';
 import '../../properties/painting/border_mix.dart';
 import '../../properties/painting/border_radius_mix.dart';
+import '../../properties/painting/decoration_image_mix.dart';
 import '../../properties/painting/decoration_mix.dart';
 import '../../properties/painting/gradient_mix.dart';
+import '../../properties/painting/shape_border_mix.dart';
 import '../../properties/painting/shadow_mix.dart';
 import '../../style/abstracts/styler.dart';
 import '../../style/mixins/border_radius_style_mixin.dart';
@@ -28,14 +30,11 @@ import '../box/box_spec.dart';
 import '../box/box_style.dart';
 import '../flex/flex_spec.dart';
 import '../flex/flex_style.dart';
-import 'flexbox_mutable_style.dart';
+import '../text/text_style.dart';
 import 'flexbox_spec.dart';
 import 'flexbox_widget.dart';
 
 part 'flexbox_style.g.dart';
-
-@Deprecated('Use FlexBoxStyler instead')
-typedef FlexBoxMix = FlexBoxStyler;
 
 /// Represents the attributes of a [FlexBoxSpec].
 ///
@@ -134,28 +133,34 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
 
   // Direct constructor params (Box + Flex)
   factory FlexBoxStyler.alignment(AlignmentGeometry value) =>
-      FlexBoxStyler(alignment: value);
+      FlexBoxStyler().alignment(value);
   factory FlexBoxStyler.padding(EdgeInsetsGeometryMix value) =>
-      FlexBoxStyler(padding: value);
+      FlexBoxStyler().padding(value);
   factory FlexBoxStyler.margin(EdgeInsetsGeometryMix value) =>
-      FlexBoxStyler(margin: value);
+      FlexBoxStyler().margin(value);
   factory FlexBoxStyler.constraints(BoxConstraintsMix value) =>
-      FlexBoxStyler(constraints: value);
+      FlexBoxStyler().constraints(value);
   factory FlexBoxStyler.decoration(DecorationMix value) =>
-      FlexBoxStyler(decoration: value);
+      FlexBoxStyler().decoration(value);
   factory FlexBoxStyler.foregroundDecoration(DecorationMix value) =>
-      FlexBoxStyler(foregroundDecoration: value);
+      FlexBoxStyler().foregroundDecoration(value);
   factory FlexBoxStyler.clipBehavior(Clip value) =>
-      FlexBoxStyler(clipBehavior: value);
+      FlexBoxStyler().clipBehavior(value);
   factory FlexBoxStyler.direction(Axis value) =>
-      FlexBoxStyler(direction: value);
+      FlexBoxStyler().direction(value);
   factory FlexBoxStyler.mainAxisAlignment(MainAxisAlignment value) =>
-      FlexBoxStyler(mainAxisAlignment: value);
+      FlexBoxStyler().mainAxisAlignment(value);
   factory FlexBoxStyler.crossAxisAlignment(CrossAxisAlignment value) =>
-      FlexBoxStyler(crossAxisAlignment: value);
+      FlexBoxStyler().crossAxisAlignment(value);
   factory FlexBoxStyler.mainAxisSize(MainAxisSize value) =>
-      FlexBoxStyler(mainAxisSize: value);
-  factory FlexBoxStyler.spacing(double value) => FlexBoxStyler(spacing: value);
+      FlexBoxStyler().mainAxisSize(value);
+  factory FlexBoxStyler.spacing(double value) => FlexBoxStyler().spacing(value);
+  factory FlexBoxStyler.verticalDirection(VerticalDirection value) =>
+      FlexBoxStyler().verticalDirection(value);
+  factory FlexBoxStyler.textDirection(TextDirection value) =>
+      FlexBoxStyler().textDirection(value);
+  factory FlexBoxStyler.textBaseline(TextBaseline value) =>
+      FlexBoxStyler().textBaseline(value);
 
   // Decoration convenience
   factory FlexBoxStyler.color(Color value) => FlexBoxStyler().color(value);
@@ -189,20 +194,162 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
   // Transform convenience
   factory FlexBoxStyler.scale(double scale, {Alignment alignment = .center}) =>
       FlexBoxStyler().scale(scale, alignment: alignment);
-  factory FlexBoxStyler.rotate(double angle, {Alignment alignment = .center}) =>
-      FlexBoxStyler().rotate(angle, alignment: alignment);
+  factory FlexBoxStyler.rotate(
+    double radians, {
+    Alignment alignment = .center,
+  }) => FlexBoxStyler().rotate(radians, alignment: alignment);
+
+  // Text style convenience
+  factory FlexBoxStyler.textStyle(TextStyler value) =>
+      FlexBoxStyler().textStyle(value);
 
   // Style metadata convenience
   factory FlexBoxStyler.animate(AnimationConfig value) =>
       FlexBoxStyler().animate(value);
 
   // Flex convenience (zero-param presets)
-  factory FlexBoxStyler.row() => FlexBoxStyler(direction: .horizontal);
-  factory FlexBoxStyler.column() => FlexBoxStyler(direction: .vertical);
+  factory FlexBoxStyler.row() => FlexBoxStyler().row();
+  factory FlexBoxStyler.column() => FlexBoxStyler().column();
 
-  static FlexBoxMutableStyler get chain => .new(FlexBoxStyler());
+  // Decoration convenience (extended)
+  factory FlexBoxStyler.image(DecorationImageMix value) =>
+      FlexBoxStyler().image(value);
+  factory FlexBoxStyler.shape(ShapeBorderMix value) =>
+      FlexBoxStyler().shape(value);
+  factory FlexBoxStyler.backgroundImage(
+    ImageProvider image, {
+    BoxFit? fit,
+    AlignmentGeometry? alignment,
+    ImageRepeat repeat = .noRepeat,
+  }) => FlexBoxStyler().backgroundImage(
+    image,
+    fit: fit,
+    alignment: alignment,
+    repeat: repeat,
+  );
+  factory FlexBoxStyler.backgroundImageUrl(
+    String url, {
+    BoxFit? fit,
+    AlignmentGeometry? alignment,
+    ImageRepeat repeat = .noRepeat,
+  }) => FlexBoxStyler().backgroundImageUrl(
+    url,
+    fit: fit,
+    alignment: alignment,
+    repeat: repeat,
+  );
+  factory FlexBoxStyler.backgroundImageAsset(
+    String path, {
+    BoxFit? fit,
+    AlignmentGeometry? alignment,
+    ImageRepeat repeat = .noRepeat,
+  }) => FlexBoxStyler().backgroundImageAsset(
+    path,
+    fit: fit,
+    alignment: alignment,
+    repeat: repeat,
+  );
+  factory FlexBoxStyler.linearGradient({
+    required List<Color> colors,
+    List<double>? stops,
+    AlignmentGeometry? begin,
+    AlignmentGeometry? end,
+    TileMode? tileMode,
+  }) => FlexBoxStyler().linearGradient(
+    colors: colors,
+    stops: stops,
+    begin: begin,
+    end: end,
+    tileMode: tileMode,
+  );
+  factory FlexBoxStyler.radialGradient({
+    required List<Color> colors,
+    List<double>? stops,
+    AlignmentGeometry? center,
+    double? radius,
+    AlignmentGeometry? focal,
+    double? focalRadius,
+    TileMode? tileMode,
+  }) => FlexBoxStyler().radialGradient(
+    colors: colors,
+    stops: stops,
+    center: center,
+    radius: radius,
+    focal: focal,
+    focalRadius: focalRadius,
+    tileMode: tileMode,
+  );
+  factory FlexBoxStyler.sweepGradient({
+    required List<Color> colors,
+    List<double>? stops,
+    AlignmentGeometry? center,
+    double? startAngle,
+    double? endAngle,
+    TileMode? tileMode,
+  }) => FlexBoxStyler().sweepGradient(
+    colors: colors,
+    stops: stops,
+    center: center,
+    startAngle: startAngle,
+    endAngle: endAngle,
+    tileMode: tileMode,
+  );
+  factory FlexBoxStyler.foregroundLinearGradient({
+    required List<Color> colors,
+    List<double>? stops,
+    AlignmentGeometry? begin,
+    AlignmentGeometry? end,
+    TileMode? tileMode,
+  }) => FlexBoxStyler().foregroundLinearGradient(
+    colors: colors,
+    stops: stops,
+    begin: begin,
+    end: end,
+    tileMode: tileMode,
+  );
+  factory FlexBoxStyler.foregroundRadialGradient({
+    required List<Color> colors,
+    List<double>? stops,
+    AlignmentGeometry? center,
+    double? radius,
+    AlignmentGeometry? focal,
+    double? focalRadius,
+    TileMode? tileMode,
+  }) => FlexBoxStyler().foregroundRadialGradient(
+    colors: colors,
+    stops: stops,
+    center: center,
+    radius: radius,
+    focal: focal,
+    focalRadius: focalRadius,
+    tileMode: tileMode,
+  );
+  factory FlexBoxStyler.foregroundSweepGradient({
+    required List<Color> colors,
+    List<double>? stops,
+    AlignmentGeometry? center,
+    double? startAngle,
+    double? endAngle,
+    TileMode? tileMode,
+  }) => FlexBoxStyler().foregroundSweepGradient(
+    colors: colors,
+    stops: stops,
+    center: center,
+    startAngle: startAngle,
+    endAngle: endAngle,
+    tileMode: tileMode,
+  );
 
-  // BoxMix instance methods
+  // Transform convenience (extended)
+  factory FlexBoxStyler.transform(
+    Matrix4 value, {
+    Alignment alignment = .center,
+  }) => FlexBoxStyler().transform(value, alignment: alignment);
+  factory FlexBoxStyler.translate(double x, double y, [double z = 0.0]) =>
+      FlexBoxStyler().translate(x, y, z);
+  factory FlexBoxStyler.skew(double skewX, double skewY) =>
+      FlexBoxStyler().skew(skewX, skewY);
+  // Box-style instance methods
 
   /// Sets the alignment property.
   FlexBoxStyler alignment(AlignmentGeometry value) {
@@ -217,15 +364,6 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
   /// Sets the clip behavior.
   FlexBoxStyler clipBehavior(Clip value) {
     return merge(FlexBoxStyler(clipBehavior: value));
-  }
-
-  /// Sets gap value (deprecated).
-  @Deprecated(
-    'Use spacing instead. '
-    'This feature was deprecated after Mix v2.0.0.',
-  )
-  FlexBoxStyler gap(double value) {
-    return merge(FlexBoxStyler(spacing: value));
   }
 
   /// Sets the widget modifier.
@@ -313,5 +451,11 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
   @override
   FlexBoxStyler border(BoxBorderMix value) {
     return merge(FlexBoxStyler(decoration: DecorationMix.border(value)));
+  }
+
+  /// Propagates the given [TextStyler] to descendant [StyledText] widgets via
+  /// [DefaultTextStylerModifier] (Mix inheritance).
+  FlexBoxStyler textStyle(TextStyler value) {
+    return wrap(WidgetModifierConfig.defaultTextStyler(value));
   }
 }

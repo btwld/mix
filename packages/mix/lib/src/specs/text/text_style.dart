@@ -9,19 +9,16 @@ import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/style_spec.dart';
 import '../../modifiers/widget_modifier_config.dart';
+import '../../properties/painting/shadow_mix.dart';
 import '../../properties/typography/strut_style_mix.dart';
 import '../../properties/typography/text_height_behavior_mix.dart';
 import '../../properties/typography/text_style_mix.dart';
 import '../../style/abstracts/styler.dart';
 import '../../style/mixins/text_style_mixin.dart';
-import 'text_mutable_style.dart';
 import 'text_spec.dart';
 import 'text_widget.dart';
 
 part 'text_style.g.dart';
-
-@Deprecated('Use TextStyler instead')
-typedef TextMix = TextStyler;
 
 /// Represents the attributes of a [TextSpec].
 ///
@@ -137,13 +134,25 @@ class TextStyler extends MixStyler<TextStyler, TextSpec>
 
   // Direct constructor params
   factory TextStyler.overflow(TextOverflow value) =>
-      TextStyler(overflow: value);
-  factory TextStyler.textAlign(TextAlign value) => TextStyler(textAlign: value);
-  factory TextStyler.maxLines(int value) => TextStyler(maxLines: value);
-  factory TextStyler.softWrap(bool value) => TextStyler(softWrap: value);
+      TextStyler().overflow(value);
+  factory TextStyler.textAlign(TextAlign value) =>
+      TextStyler().textAlign(value);
+  factory TextStyler.maxLines(int value) => TextStyler().maxLines(value);
+  factory TextStyler.softWrap(bool value) => TextStyler().softWrap(value);
   factory TextStyler.textDirection(TextDirection value) =>
-      TextStyler(textDirection: value);
-  factory TextStyler.style(TextStyleMix value) => TextStyler(style: value);
+      TextStyler().textDirection(value);
+  factory TextStyler.style(TextStyleMix value) => TextStyler().style(value);
+  factory TextStyler.strutStyle(StrutStyleMix value) =>
+      TextStyler().strutStyle(value);
+  factory TextStyler.textWidthBasis(TextWidthBasis value) =>
+      TextStyler().textWidthBasis(value);
+  factory TextStyler.textScaler(TextScaler value) =>
+      TextStyler().textScaler(value);
+  factory TextStyler.textHeightBehavior(TextHeightBehaviorMix value) =>
+      TextStyler().textHeightBehavior(value);
+  factory TextStyler.selectionColor(Color value) =>
+      TextStyler().selectionColor(value);
+  factory TextStyler.locale(Locale value) => TextStyler().locale(value);
 
   // TextStyleMixin convenience
   factory TextStyler.color(Color value) => TextStyler().color(value);
@@ -160,8 +169,37 @@ class TextStyler extends MixStyler<TextStyler, TextSpec>
   factory TextStyler.fontFamily(String value) => TextStyler().fontFamily(value);
   factory TextStyler.decoration(TextDecoration value) =>
       TextStyler().decoration(value);
-
-  static TextMutableStyler get chain => .new(TextStyler());
+  factory TextStyler.backgroundColor(Color value) =>
+      TextStyler().backgroundColor(value);
+  factory TextStyler.textBaseline(TextBaseline value) =>
+      TextStyler().textBaseline(value);
+  factory TextStyler.decorationColor(Color value) =>
+      TextStyler().decorationColor(value);
+  factory TextStyler.decorationStyle(TextDecorationStyle value) =>
+      TextStyler().decorationStyle(value);
+  factory TextStyler.decorationThickness(double value) =>
+      TextStyler().decorationThickness(value);
+  factory TextStyler.fontFamilyFallback(List<String> value) =>
+      TextStyler().fontFamilyFallback(value);
+  factory TextStyler.shadow(ShadowMix value) => TextStyler().shadow(value);
+  factory TextStyler.shadows(List<ShadowMix> value) =>
+      TextStyler().shadows(value);
+  factory TextStyler.fontFeatures(List<FontFeature> value) =>
+      TextStyler().fontFeatures(value);
+  factory TextStyler.fontVariations(List<FontVariation> value) =>
+      TextStyler().fontVariations(value);
+  factory TextStyler.foreground(Paint value) => TextStyler().foreground(value);
+  factory TextStyler.background(Paint value) => TextStyler().background(value);
+  // Text directives
+  factory TextStyler.textDirective(Directive<String> value) =>
+      TextStyler().textDirective(value);
+  factory TextStyler.directive(Directive<String> value) =>
+      TextStyler().directive(value);
+  factory TextStyler.uppercase() => TextStyler().uppercase();
+  factory TextStyler.lowercase() => TextStyler().lowercase();
+  factory TextStyler.capitalize() => TextStyler().capitalize();
+  factory TextStyler.titlecase() => TextStyler().titlecase();
+  factory TextStyler.sentencecase() => TextStyler().sentencecase();
 
   StyledText call(String text) {
     return StyledText(text, style: this);

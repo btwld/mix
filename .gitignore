@@ -1,5 +1,6 @@
 # Miscellaneous
 *.class
+.superpowers/
 *.log
 *.pyc
 *.swp
@@ -125,7 +126,7 @@ CLAUDE.md
 !packages/mix_tailwinds/CLAUDE.md
 .claude/settings.local.json
 
-# Flutter web previews (generated via: examples/scripts/build_web_previews.sh)
+# Flutter web previews (generated via: packages/mix_docs_preview/scripts/build_web_previews.sh)
 # These are built and deployed separately, not committed to git
 website/public/previews/
 

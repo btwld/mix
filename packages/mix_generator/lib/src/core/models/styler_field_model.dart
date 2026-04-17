@@ -8,6 +8,7 @@ import 'package:analyzer/dart/element/type.dart';
 import 'package:source_gen/source_gen.dart';
 
 import '../curated/type_mappings.dart';
+import 'type_helpers.dart' as type_helpers;
 
 const _mixableFieldChecker = TypeChecker.fromUrl(
   'package:mix_annotations/src/annotations.dart#MixableField',
@@ -91,8 +92,8 @@ class StylerFieldModel {
     final isNullable = type.nullabilitySuffix == .question;
 
     // Check if wrapped in Prop<>
-    final isWrappedInProp = _isWrappedInProp(type);
-    final innerTypeName = _getInnerTypeName(type, isWrappedInProp);
+    final wrappedInProp = type_helpers.isWrappedInProp(type);
+    final innerTypeName = type_helpers.getInnerTypeName(type, wrappedInProp);
 
     // Check if raw list
     final isRawList = rawListTypes.containsKey(name);
@@ -146,7 +147,7 @@ class StylerFieldModel {
       element: element,
       isNullable: isNullable,
       innerTypeName: innerTypeName,
-      isWrappedInProp: isWrappedInProp,
+      isWrappedInProp: wrappedInProp,
       isRawList: isRawList,
       rawListElementType: rawListElementType,
       effectivePublicParamType: effectivePublicParamType,
@@ -162,39 +163,6 @@ class StylerFieldModel {
 
   @override
   String toString() => 'StylerFieldModel($name: $innerTypeName)';
-}
-
-// Helper functions
-
-bool _isWrappedInProp(DartType type) {
-  if (type is! InterfaceType) return false;
-
-  return type.element.name == 'Prop';
-}
-
-String _getInnerTypeName(DartType type, bool isWrappedInProp) {
-  if (!isWrappedInProp) {
-    return _getBaseTypeName(type);
-  }
-
-  if (type is! InterfaceType) return _getBaseTypeName(type);
-
-  // Get the type argument of Prop<T>
-  if (type.typeArguments.isNotEmpty) {
-    return _getBaseTypeName(type.typeArguments.first);
-  }
-
-  return _getBaseTypeName(type);
-}
-
-String _getBaseTypeName(DartType type) {
-  final displayString = type.getDisplayString();
-  // Remove nullability suffix
-  if (displayString.endsWith('?')) {
-    return displayString.substring(0, displayString.length - 1);
-  }
-
-  return displayString;
 }
 
 String _getEffectivePublicParamType(

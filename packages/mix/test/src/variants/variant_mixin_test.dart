@@ -191,29 +191,6 @@ void main() {
       expect(result.$variants!.first.variant, isA<ContextVariantBuilder>());
     });
 
-    test(
-      'builder (deprecated) still works and creates same result as onBuilder',
-      () {
-        const attribute = TestVariantAttribute();
-
-        final onBuilderResult = attribute.onBuilder((context) => attribute);
-        final builderResult = attribute.builder((context) => attribute);
-
-        expect(builderResult.$variants, isNotNull);
-        expect(builderResult.$variants!.length, 1);
-        expect(
-          builderResult.$variants!.first.variant,
-          isA<ContextVariantBuilder>(),
-        );
-
-        // Both should create the same type of variant
-        expect(
-          builderResult.$variants!.first.variant.runtimeType,
-          equals(onBuilderResult.$variants!.first.variant.runtimeType),
-        );
-      },
-    );
-
     test('onBuilder function receives correct context', () {
       const attribute = TestVariantAttribute();
       BuildContext? capturedContext;
