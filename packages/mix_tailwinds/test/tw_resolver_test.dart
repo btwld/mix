@@ -81,19 +81,19 @@ void main() {
       expect(result.value, const TwColorValue(Color(0x80FFFFFF)));
     });
 
-    test('reports unknown variants while parsing valid base token', () {
-      final unknown = <String>[];
-      final parsed = TwResolver(
-        TwConfig.standard(),
-        onUnknownVariant: unknown.add,
-      ).resolveToken('foo:bg-blue-500');
+    test(
+      'rejects unknown variants instead of applying the base token globally',
+      () {
+        final unknown = <String>[];
+        final parsed = TwResolver(
+          TwConfig.standard(),
+          onUnknownVariant: unknown.add,
+        ).resolveToken('foo:bg-blue-500');
 
-      expect(parsed, isNotNull);
-      expect(parsed, hasLength(1));
-      expect(unknown, contains('foo'));
-      expect(parsed!.single.property, TwProperty.backgroundColor);
-      expect(parsed.single.variants, isEmpty);
-    });
+        expect(parsed, isNull);
+        expect(unknown, contains('foo'));
+      },
+    );
   });
 
   group('TwParsedClass', () {

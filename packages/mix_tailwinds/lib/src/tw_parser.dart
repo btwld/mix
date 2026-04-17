@@ -10,6 +10,45 @@ import 'tw_utils.dart';
 
 typedef TokenWarningCallback = void Function(String token);
 
+enum TwDiagnosticCode {
+  unknownToken,
+  unknownVariant,
+  schemaDecodeFailure,
+  schemaTypeMismatch,
+}
+
+final class TwDiagnostic {
+  const TwDiagnostic({
+    required this.code,
+    required this.message,
+    this.token,
+    this.path,
+    this.value,
+  });
+
+  final TwDiagnosticCode code;
+  final String message;
+  final String? token;
+  final String? path;
+  final Object? value;
+}
+
+final class TwParseResult<T extends Object> {
+  const TwParseResult({
+    required this.payload,
+    required this.diagnostics,
+    required this.errors,
+    this.styler,
+  });
+
+  final JsonMap payload;
+  final T? styler;
+  final List<TwDiagnostic> diagnostics;
+  final List<MixSchemaError> errors;
+
+  bool get ok => styler != null && errors.isEmpty;
+}
+
 class _TransformAccum {
   double? scale;
   double? rotateDeg;
@@ -289,6 +328,9 @@ class TwResolver {
 
     // 4. Parse variants
     final variants = _parseVariants(prefix);
+    if (prefix.isNotEmpty && variants.length != prefix.split(':').length) {
+      return null;
+    }
 
     // 5. Check named plugins first
     final namedPlugin = namedPlugins[base];
@@ -766,7 +808,18 @@ String _fontWeightWireName(FontWeight value) {
   };
 }
 
-int _schemaColor(Color color) => color.toARGB32();
+String _schemaColor(Color color) {
+  final value = color.toARGB32();
+  final red = (value >> 16) & 0xFF;
+  final green = (value >> 8) & 0xFF;
+  final blue = value & 0xFF;
+  final alpha = (value >> 24) & 0xFF;
+
+  String hexByte(int byte) => byte.toRadixString(16).padLeft(2, '0');
+
+  return '#${hexByte(red)}${hexByte(green)}${hexByte(blue)}${hexByte(alpha)}'
+      .toUpperCase();
+}
 
 JsonMap _alignmentPayload(AlignmentGeometry alignment) {
   final resolved = alignment.resolve(TextDirection.ltr);
@@ -831,39 +884,74 @@ final class _TwSchemaDecoderAdapter {
   static final MixSchemaDecoder _decoder = MixSchemaDecoder.builtIn();
 
   static BoxStyler decodeBox(JsonMap payload) =>
-      _decodeTyped<BoxStyler>(payload, 'BoxStyler');
+      tryDecodeBox(payload).styler ?? BoxStyler();
 
   static FlexBoxStyler decodeFlexBox(JsonMap payload) =>
-      _decodeTyped<FlexBoxStyler>(payload, 'FlexBoxStyler');
+      tryDecodeFlexBox(payload).styler ?? FlexBoxStyler();
 
   static TextStyler decodeText(JsonMap payload) =>
-      _decodeTyped<TextStyler>(payload, 'TextStyler');
+      tryDecodeText(payload).styler ?? TextStyler();
 
-  static T _decodeTyped<T extends Object>(JsonMap payload, String label) {
+  static TwParseResult<BoxStyler> tryDecodeBox(
+    JsonMap payload, {
+    List<TwDiagnostic> diagnostics = const [],
+  }) => _decodeTyped<BoxStyler>(payload, diagnostics);
+
+  static TwParseResult<FlexBoxStyler> tryDecodeFlexBox(
+    JsonMap payload, {
+    List<TwDiagnostic> diagnostics = const [],
+  }) => _decodeTyped<FlexBoxStyler>(payload, diagnostics);
+
+  static TwParseResult<TextStyler> tryDecodeText(
+    JsonMap payload, {
+    List<TwDiagnostic> diagnostics = const [],
+  }) => _decodeTyped<TextStyler>(payload, diagnostics);
+
+  static TwParseResult<T> _decodeTyped<T extends Object>(
+    JsonMap payload,
+    List<TwDiagnostic> diagnostics,
+  ) {
     final result = _decoder.decode(payload);
     if (!result.ok) {
-      final details = result.errors
-          .map((error) => '${error.path}: ${error.message}')
-          .join('; ');
-      throw StateError('Internal $label schema decode failed: $details');
+      return TwParseResult<T>(
+        payload: payload,
+        diagnostics: List<TwDiagnostic>.unmodifiable([
+          ...diagnostics,
+          for (final error in result.errors)
+            TwDiagnostic(
+              code: TwDiagnosticCode.schemaDecodeFailure,
+              message: error.message,
+              path: error.path,
+              value: error.value,
+            ),
+        ]),
+        errors: result.errors,
+      );
     }
 
     final value = result.value;
-    if (value == null) {
-      throw StateError(
-        'Internal $label schema decode returned no value for payload type '
-        '${payload['type']}.',
+    if (value is T) {
+      return TwParseResult<T>(
+        payload: payload,
+        styler: value,
+        diagnostics: List<TwDiagnostic>.unmodifiable(diagnostics),
+        errors: const [],
       );
     }
 
-    if (value is! T) {
-      throw StateError(
-        'Internal $label schema decode returned ${value.runtimeType} '
-        'for payload type ${payload['type']}.',
-      );
-    }
-
-    return value;
+    return TwParseResult<T>(
+      payload: payload,
+      diagnostics: List<TwDiagnostic>.unmodifiable([
+        ...diagnostics,
+        TwDiagnostic(
+          code: TwDiagnosticCode.schemaTypeMismatch,
+          message:
+              'Decoded ${value.runtimeType} for payload type ${payload['type']}.',
+          value: payload['type'],
+        ),
+      ]),
+      errors: const [],
+    );
   }
 }
 
@@ -875,7 +963,7 @@ final class _BuiltSchemaStyle {
 }
 
 final class _TextStylePayloadBuilder {
-  int? color;
+  String? color;
   double? fontSize;
   String? fontWeight;
   double? height;
@@ -978,7 +1066,7 @@ final class _ModifierPayloadBuilder {
 }
 
 final class _BoxDecorationPayloadBuilder {
-  int? color;
+  String? color;
   JsonMap? gradient;
   final _BorderAccum border = _BorderAccum();
   Radius? topLeft;
@@ -1102,7 +1190,7 @@ JsonMap? _buildGradientPayload(
 ) {
   if (!gradient.hasGradient) return null;
 
-  final colors = <int>[
+  final colors = <String>[
     _schemaColor(gradient.fromColor!),
     if (gradient.viaColor != null) _schemaColor(gradient.viaColor!),
     _schemaColor(gradient.toColor ?? gradient.fromColor!),
@@ -1546,6 +1634,7 @@ final class _TextSchemaState {
   String? overflow;
   int? maxLines;
   bool? softWrap;
+  String? textAlign;
   JsonMap? textHeightBehavior;
   String? textTransform;
 
@@ -1582,6 +1671,9 @@ final class _TextSchemaState {
         break;
       case TwProperty.textTransform:
         textTransform = (value as TwEnumValue<String>).value;
+        break;
+      case TwProperty.textAlign:
+        textAlign = (value as TwEnumValue<TextAlign>).value.name;
         break;
       case TwProperty.textOverflow:
         overflow = TextOverflow.ellipsis.name;
@@ -1643,6 +1735,7 @@ final class _TextSchemaState {
 
     if (style.hasAny) payload['style'] = style.build();
     if (overflow != null) payload['overflow'] = overflow;
+    if (textAlign != null) payload['textAlign'] = textAlign;
     if (maxLines != null) payload['maxLines'] = maxLines;
     if (softWrap != null) payload['softWrap'] = softWrap;
     if (textHeightBehavior != null) {
@@ -1709,7 +1802,13 @@ final class _TwSchemaEmitter {
   final TwResolver resolver;
   final TokenWarningCallback? onUnsupported;
 
-  FlexBoxStyler parseFlex(List<String> tokens) {
+  FlexBoxStyler parseFlex(List<String> tokens) =>
+      parseFlexResult(tokens).styler ?? FlexBoxStyler();
+
+  TwParseResult<FlexBoxStyler> parseFlexResult(
+    List<String> tokens, {
+    List<TwDiagnostic> diagnostics = const [],
+  }) {
     var hasBaseFlex = false;
     final root = _BoxLikeSchemaState(isFlex: true);
 
@@ -1780,13 +1879,19 @@ final class _TwSchemaEmitter {
       config: config,
       inheritedTransform: _TransformAccum(),
     );
-    return _TwSchemaDecoderAdapter.decodeFlexBox({
+    return _TwSchemaDecoderAdapter.tryDecodeFlexBox({
       'type': 'flex_box',
       ...built.payload,
-    });
+    }, diagnostics: diagnostics);
   }
 
-  BoxStyler parseBox(List<String> tokens) {
+  BoxStyler parseBox(List<String> tokens) =>
+      parseBoxResult(tokens).styler ?? BoxStyler();
+
+  TwParseResult<BoxStyler> parseBoxResult(
+    List<String> tokens, {
+    List<TwDiagnostic> diagnostics = const [],
+  }) {
     final root = _BoxLikeSchemaState(isFlex: false);
 
     for (final token in tokens) {
@@ -1845,10 +1950,19 @@ final class _TwSchemaEmitter {
       config: config,
       inheritedTransform: _TransformAccum(),
     );
-    return _TwSchemaDecoderAdapter.decodeBox({'type': 'box', ...built.payload});
+    return _TwSchemaDecoderAdapter.tryDecodeBox({
+      'type': 'box',
+      ...built.payload,
+    }, diagnostics: diagnostics);
   }
 
-  TextStyler parseText(List<String> tokens) {
+  TextStyler parseText(List<String> tokens) =>
+      parseTextResult(tokens).styler ?? TextStyler();
+
+  TwParseResult<TextStyler> parseTextResult(
+    List<String> tokens, {
+    List<TwDiagnostic> diagnostics = const [],
+  }) {
     final root = _TextSchemaState();
     root.style.setHeight(config.textDefaults.lineHeight);
 
@@ -1877,10 +1991,10 @@ final class _TwSchemaEmitter {
       target.applyFallbackToken(baseToken, config, onUnsupported);
     }
 
-    return _TwSchemaDecoderAdapter.decodeText({
+    return _TwSchemaDecoderAdapter.tryDecodeText({
       'type': 'text',
       ...root.buildStylePayload(),
-    });
+    }, diagnostics: diagnostics);
   }
 }
 
@@ -1895,7 +2009,7 @@ class TwParser {
   }
 
   TwParser._({required this.config, this.onUnsupported})
-    : _resolver = TwResolver(config, onUnknownVariant: onUnsupported);
+    : _resolver = TwResolver(config, onUnknownVariant: (_) {});
 
   /// Pre-compiled regex for splitting class names by whitespace.
   static final _whitespaceRegex = RegExp(r'\s+');
@@ -1938,6 +2052,16 @@ class TwParser {
     ).parseFlex(listTokens(classNames));
   }
 
+  TwParseResult<FlexBoxStyler> parseFlexResult(String classNames) {
+    final diagnostics = <TwDiagnostic>[];
+    final emitter = _diagnosticEmitter(diagnostics);
+
+    return emitter.parseFlexResult(
+      listTokens(classNames),
+      diagnostics: diagnostics,
+    );
+  }
+
   BoxStyler parseBox(String classNames) {
     return _TwSchemaEmitter(
       config: config,
@@ -1946,12 +2070,59 @@ class TwParser {
     ).parseBox(listTokens(classNames));
   }
 
+  TwParseResult<BoxStyler> parseBoxResult(String classNames) {
+    final diagnostics = <TwDiagnostic>[];
+    final emitter = _diagnosticEmitter(diagnostics);
+
+    return emitter.parseBoxResult(
+      listTokens(classNames),
+      diagnostics: diagnostics,
+    );
+  }
+
   TextStyler parseText(String classNames) {
     return _TwSchemaEmitter(
       config: config,
       resolver: _resolver,
       onUnsupported: onUnsupported,
     ).parseText(listTokens(classNames));
+  }
+
+  TwParseResult<TextStyler> parseTextResult(String classNames) {
+    final diagnostics = <TwDiagnostic>[];
+    final emitter = _diagnosticEmitter(diagnostics);
+
+    return emitter.parseTextResult(
+      listTokens(classNames),
+      diagnostics: diagnostics,
+    );
+  }
+
+  _TwSchemaEmitter _diagnosticEmitter(List<TwDiagnostic> diagnostics) {
+    final callback = (String token) {
+      final colonIndex = findLastColonOutsideBrackets(token);
+      final prefix = colonIndex > 0 ? token.substring(0, colonIndex) : '';
+      final hasUnknownVariant =
+          prefix.isNotEmpty && !_hasOnlyKnownPrefixParts(prefix, config);
+      diagnostics.add(
+        TwDiagnostic(
+          code: hasUnknownVariant
+              ? TwDiagnosticCode.unknownVariant
+              : TwDiagnosticCode.unknownToken,
+          token: token,
+          message: hasUnknownVariant
+              ? 'Unknown variant prefix in "$token".'
+              : 'Unsupported Tailwind token "$token".',
+        ),
+      );
+      onUnsupported?.call(token);
+    };
+
+    return _TwSchemaEmitter(
+      config: config,
+      resolver: TwResolver(config, onUnknownVariant: (_) {}),
+      onUnsupported: callback,
+    );
   }
 
   CurveAnimationConfig? parseAnimationFromTokens(List<String> tokens) {

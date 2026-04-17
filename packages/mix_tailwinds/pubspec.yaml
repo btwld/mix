@@ -11,8 +11,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  mix: ^2.0.0-dev.5
-  mix_schema: ^0.1.0-dev.0
+  mix:
+    path: ../mix
+  mix_schema:
+    path: ../mix_schema
 
 dev_dependencies:
   flutter_test:

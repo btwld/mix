@@ -27,25 +27,11 @@ final class StylerDefinition<S extends Spec<S>, T extends Style<S>> {
   });
 }
 
-final class StylerSchemaBundle<T extends Object> {
-  final AckSchema<T> fieldsSchema;
-
-  final AckSchema<T> fullSchema;
-  const StylerSchemaBundle({
-    required this.fieldsSchema,
-    required this.fullSchema,
-  });
-}
-
-StylerSchemaBundle<T>
-buildStylerSchemas<S extends Spec<S>, T extends Style<S>>({
+AckSchema<T> buildStylerSchema<S extends Spec<S>, T extends Style<S>>({
   required StylerDefinition<S, T> definition,
   required MixSchemaCatalog catalog,
 }) {
   final fields = Map<String, AckSchema>.unmodifiable(definition.fields);
-  final fieldsSchema = Ack.object(fields).transform<T>((data) {
-    return definition.build(data);
-  });
   final variantStyleSchema =
       Ack.object({
         ...fields,
@@ -60,27 +46,30 @@ buildStylerSchemas<S extends Spec<S>, T extends Style<S>>({
         );
       });
 
-  final fullSchema =
-      Ack.object({
-        ...fields,
-        ...catalog.buildMetadataFields<S, T>(
-          styleSchema: variantStyleSchema,
-          emptyStyle: definition.emptyStyle,
-        ),
-      }).transform<T>((data) {
-        final map = data;
-        final List<VariantStyle<S>>? variants = castListOrNull(map['variants']);
+  return Ack.object({
+    ...fields,
+    ...catalog.buildMetadataFields<S, T>(
+      styleSchema: variantStyleSchema,
+      emptyStyle: definition.emptyStyle,
+    ),
+  }).transform<T>((data) {
+    final map = data;
+    final List<VariantStyle<S>>? variants = castListOrNull(map['variants']);
 
-        return definition.build(
-          map,
-          animation: map['animation'] as AnimationConfig?,
-          modifier: catalog.buildModifierConfig(map),
-          variants: variants,
-        );
-      });
+    return definition.build(
+      map,
+      animation: map['animation'] as AnimationConfig?,
+      modifier: catalog.buildModifierConfig(map),
+      variants: variants,
+    );
+  });
+}
 
-  return StylerSchemaBundle<T>(
-    fieldsSchema: fieldsSchema,
-    fullSchema: fullSchema,
-  );
+AckSchema<Object>
+buildErasedStylerSchema<S extends Spec<S>, T extends Style<S>>({
+  required StylerDefinition<S, T> definition,
+  required MixSchemaCatalog catalog,
+}) {
+  return buildStylerSchema(definition: definition, catalog: catalog)
+      as AckSchema<Object>;
 }

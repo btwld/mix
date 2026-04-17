@@ -884,14 +884,6 @@ final Map<String, TwNamedPlugin> namedPlugins = {
     property: TwProperty.display,
     value: const TwEnumValue('flex'),
   ),
-  'hidden': TwNamedPlugin(
-    property: TwProperty.display,
-    value: const TwEnumValue('none'),
-  ),
-  'block': TwNamedPlugin(
-    property: TwProperty.display,
-    value: const TwEnumValue('block'),
-  ),
   'flex-row': TwNamedPlugin(
     property: TwProperty.flexDirection,
     value: const TwEnumValue(Axis.horizontal),
@@ -899,20 +891,6 @@ final Map<String, TwNamedPlugin> namedPlugins = {
   'flex-col': TwNamedPlugin(
     property: TwProperty.flexDirection,
     value: const TwEnumValue(Axis.vertical),
-  ),
-
-  // Flex wrap
-  'flex-wrap': TwNamedPlugin(
-    property: TwProperty.flexWrap,
-    value: const TwEnumValue(true),
-  ),
-  'flex-nowrap': TwNamedPlugin(
-    property: TwProperty.flexWrap,
-    value: const TwEnumValue(false),
-  ),
-  'flex-wrap-reverse': TwNamedPlugin(
-    property: TwProperty.flexWrap,
-    value: const TwEnumValue('reverse'),
   ),
 
   // Flex item properties

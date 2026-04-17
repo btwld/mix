@@ -11,8 +11,8 @@ import '../schema/builtins/stack_box_schema.dart';
 import '../schema/builtins/stack_schema.dart';
 import '../schema/builtins/text_schema.dart';
 import '../schema/discriminated_branch_registry.dart';
-import '../schema/erased_styler_definition.dart';
 import '../schema/mix_schema_catalog.dart';
+import '../schema/styler_definition.dart';
 import 'frozen_registry.dart';
 import 'registry_catalog.dart';
 
@@ -78,58 +78,49 @@ void _registerBuiltInStylers({
   required MixSchemaCatalog catalog,
 }) {
   for (final type in SchemaStyler.values) {
-    final definition = _selectBuiltInStylerDefinition(
-      catalog: catalog,
-      type: type,
-    );
-
-    _registerBuiltInStyler(
-      registry: registry,
-      catalog: catalog,
-      definition: definition,
-    );
+    _registerBuiltInStyler(registry: registry, catalog: catalog, type: type);
   }
 }
 
 void _registerBuiltInStyler({
   required StylerRegistry registry,
   required MixSchemaCatalog catalog,
-  required ErasedStylerDefinition definition,
-}) {
-  registry.register(
-    definition.type.wireValue,
-    definition.buildFullSchema(catalog),
-  );
-}
-
-ErasedStylerDefinition _selectBuiltInStylerDefinition({
-  required MixSchemaCatalog catalog,
   required SchemaStyler type,
 }) {
-  return switch (type) {
-    .box => ErasedStylerDefinition.fromDefinition(
-      buildBoxStylerDefinition(catalog),
+  final schema = switch (type) {
+    .box => buildErasedStylerSchema(
+      definition: buildBoxStylerDefinition(catalog),
+      catalog: catalog,
     ),
-    .text => ErasedStylerDefinition.fromDefinition(
-      buildTextStylerDefinition(catalog),
+    .text => buildErasedStylerSchema(
+      definition: buildTextStylerDefinition(catalog),
+      catalog: catalog,
     ),
-    .flex => ErasedStylerDefinition.fromDefinition(
-      buildFlexStylerDefinition(catalog),
+    .flex => buildErasedStylerSchema(
+      definition: buildFlexStylerDefinition(catalog),
+      catalog: catalog,
     ),
-    .icon => ErasedStylerDefinition.fromDefinition(
-      buildIconStylerDefinition(catalog),
+    .icon => buildErasedStylerSchema(
+      definition: buildIconStylerDefinition(catalog),
+      catalog: catalog,
     ),
-    .image => ErasedStylerDefinition.fromDefinition(
-      buildImageStylerDefinition(catalog),
+    .image => buildErasedStylerSchema(
+      definition: buildImageStylerDefinition(catalog),
+      catalog: catalog,
     ),
-    .stack => ErasedStylerDefinition.fromDefinition(
-      buildStackStylerDefinition(catalog),
+    .stack => buildErasedStylerSchema(
+      definition: buildStackStylerDefinition(catalog),
+      catalog: catalog,
     ),
-    .flexBox => ErasedStylerDefinition.fromDefinition(
-      buildFlexBoxStylerDefinition(catalog),
+    .flexBox => buildErasedStylerSchema(
+      definition: buildFlexBoxStylerDefinition(catalog),
+      catalog: catalog,
     ),
-    .stackBox => ErasedStylerDefinition.fromDefinition(
-      buildStackBoxStylerDefinition(catalog),
+    .stackBox => buildErasedStylerSchema(
+      definition: buildStackBoxStylerDefinition(catalog),
+      catalog: catalog,
     ),
   };
+
+  registry.register(type.wireValue, schema);
 }
