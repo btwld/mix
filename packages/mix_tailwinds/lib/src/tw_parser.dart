@@ -2,6 +2,16 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
+import 'package:mix_schema/encode.dart'
+    show
+        payloadAlignment,
+        payloadBreakpointCondition,
+        payloadBrightnessCondition,
+        payloadColor,
+        payloadEnabledCondition,
+        payloadOffset,
+        payloadRadius,
+        payloadWidgetStateCondition;
 import 'package:mix_schema/mix_schema.dart';
 
 import 'tw_config.dart';
@@ -805,61 +815,28 @@ String _fontWeightWireName(FontWeight value) {
   };
 }
 
-String _schemaColor(Color color) {
-  final value = color.toARGB32();
-  final red = (value >> 16) & 0xFF;
-  final green = (value >> 8) & 0xFF;
-  final blue = value & 0xFF;
-  final alpha = (value >> 24) & 0xFF;
-
-  String hexByte(int byte) => byte.toRadixString(16).padLeft(2, '0');
-
-  return '#${hexByte(red)}${hexByte(green)}${hexByte(blue)}${hexByte(alpha)}'
-      .toUpperCase();
-}
-
-JsonMap _alignmentPayload(AlignmentGeometry alignment) {
-  final resolved = alignment.resolve(TextDirection.ltr);
-  return {'x': resolved.x, 'y': resolved.y};
-}
-
-JsonMap _offsetPayload(Offset offset) => {'dx': offset.dx, 'dy': offset.dy};
-
-JsonMap _radiusPayload(Radius radius) {
-  return {'x': radius.x, if (radius.y != radius.x) 'y': radius.y};
-}
-
 JsonMap _variantConditionPayload(TwVariantType variant) {
   return switch (variant) {
-    TwInteractionVariant(state: 'hover') => {
-      'type': 'widget_state',
-      'state': 'hovered',
-    },
-    TwInteractionVariant(state: 'focus') => {
-      'type': 'widget_state',
-      'state': 'focused',
-    },
-    TwInteractionVariant(state: 'pressed') => {
-      'type': 'widget_state',
-      'state': 'pressed',
-    },
-    TwInteractionVariant(state: 'disabled') => {
-      'type': 'widget_state',
-      'state': 'disabled',
-    },
-    TwInteractionVariant(state: 'enabled') => {'type': 'enabled'},
-    TwBreakpointVariant(:final minWidth) => {
-      'type': 'context_breakpoint',
-      'minWidth': minWidth,
-    },
-    TwThemeVariant(mode: 'dark') => {
-      'type': 'context_brightness',
-      'brightness': 'dark',
-    },
-    TwThemeVariant(mode: 'light') => {
-      'type': 'context_brightness',
-      'brightness': 'light',
-    },
+    TwInteractionVariant(state: 'hover') => payloadWidgetStateCondition(
+      WidgetState.hovered,
+    ),
+    TwInteractionVariant(state: 'focus') => payloadWidgetStateCondition(
+      WidgetState.focused,
+    ),
+    TwInteractionVariant(state: 'pressed') => payloadWidgetStateCondition(
+      WidgetState.pressed,
+    ),
+    TwInteractionVariant(state: 'disabled') => payloadWidgetStateCondition(
+      WidgetState.disabled,
+    ),
+    TwInteractionVariant(state: 'enabled') => payloadEnabledCondition(),
+    TwBreakpointVariant(:final minWidth) => payloadBreakpointCondition(
+      minWidth: minWidth,
+    ),
+    TwThemeVariant(mode: 'dark') => payloadBrightnessCondition(Brightness.dark),
+    TwThemeVariant(mode: 'light') => payloadBrightnessCondition(
+      Brightness.light,
+    ),
     _ => throw StateError('Unsupported variant payload: $variant'),
   };
 }
@@ -976,7 +953,7 @@ final class _TextStylePayloadBuilder {
       letterSpacing != null ||
       _shadowsSet;
 
-  void setColor(Color value) => color = _schemaColor(value);
+  void setColor(Color value) => color = payloadColor(value);
 
   void setFontSize(double value) => fontSize = value;
 
@@ -992,8 +969,8 @@ final class _TextStylePayloadBuilder {
     shadows = [
       for (final shadow in value)
         {
-          'color': _schemaColor(shadow.color),
-          'offset': _offsetPayload(shadow.offset),
+          'color': payloadColor(shadow.color),
+          'offset': payloadOffset(shadow.offset),
           'blurRadius': shadow.blurRadius,
         },
     ];
@@ -1015,50 +992,48 @@ final class _ModifierPayloadBuilder {
   double? blurSigma;
   bool _blurSet = false;
   final _TextStylePayloadBuilder defaultTextStyle = _TextStylePayloadBuilder();
-  final List<String> _order = <String>[];
+  final List<SchemaModifier> _order = <SchemaModifier>[];
 
   bool get hasAny => _blurSet || defaultTextStyle.hasAny;
 
   void setBlur(double sigma) {
     _blurSet = true;
     blurSigma = sigma;
-    _touch('blur');
+    _touch(SchemaModifier.blur);
   }
 
   void touchDefaultTextStyle() {
-    _touch('default_text_style');
+    _touch(SchemaModifier.defaultTextStyle);
   }
 
-  void _touch(String wireType) {
-    if (_order.contains(wireType)) return;
-    _order.add(wireType);
+  void _touch(SchemaModifier type) {
+    if (_order.contains(type)) return;
+    _order.add(type);
   }
 
   void applyTo(JsonMap payload) {
     final modifiers = <JsonMap>[];
 
-    for (final wireType in _order) {
-      switch (wireType) {
-        case 'blur':
-          if (_blurSet) {
-            modifiers.add({'type': 'blur', 'sigma': blurSigma});
-          }
-          break;
-        case 'default_text_style':
-          if (defaultTextStyle.hasAny) {
-            modifiers.add({
-              'type': 'default_text_style',
-              'style': defaultTextStyle.build(),
-            });
-          }
-          break;
+    for (final type in _order) {
+      if (type == SchemaModifier.blur && _blurSet) {
+        modifiers.add({
+          'type': SchemaModifier.blur.wireValue,
+          'sigma': blurSigma,
+        });
+      }
+
+      if (type == SchemaModifier.defaultTextStyle && defaultTextStyle.hasAny) {
+        modifiers.add({
+          'type': SchemaModifier.defaultTextStyle.wireValue,
+          'style': defaultTextStyle.build(),
+        });
       }
     }
 
     if (modifiers.isEmpty) return;
 
     payload['modifiers'] = modifiers;
-    payload['modifierOrder'] = List<String>.unmodifiable(_order);
+    payload['modifierOrder'] = [for (final type in _order) type.wireValue];
   }
 }
 
@@ -1129,8 +1104,8 @@ final class _BoxDecorationPayloadBuilder {
     boxShadow = [
       for (final shadow in shadows)
         {
-          'color': _schemaColor(shadow.color),
-          'offset': _offsetPayload(shadow.offset),
+          'color': payloadColor(shadow.color),
+          'offset': payloadOffset(shadow.offset),
           'blurRadius': shadow.blurRadius,
           'spreadRadius': shadow.spreadRadius,
         },
@@ -1145,7 +1120,7 @@ final class _BoxDecorationPayloadBuilder {
     if (!hasAny && !hasEffectiveBorder) return null;
 
     return {
-      'type': 'box_decoration',
+      'type': SchemaDecoration.box.wireValue,
       if (color != null) 'color': color,
       if (gradient != null) 'gradient': gradient,
       if (hasEffectiveBorder)
@@ -1155,11 +1130,11 @@ final class _BoxDecorationPayloadBuilder {
           bottomLeft != null ||
           bottomRight != null)
         'borderRadius': {
-          'type': 'border_radius',
-          if (topLeft != null) 'topLeft': _radiusPayload(topLeft!),
-          if (topRight != null) 'topRight': _radiusPayload(topRight!),
-          if (bottomLeft != null) 'bottomLeft': _radiusPayload(bottomLeft!),
-          if (bottomRight != null) 'bottomRight': _radiusPayload(bottomRight!),
+          'type': SchemaBorderRadius.borderRadius.wireValue,
+          if (topLeft != null) 'topLeft': payloadRadius(topLeft!),
+          if (topRight != null) 'topRight': payloadRadius(topRight!),
+          if (bottomLeft != null) 'bottomLeft': payloadRadius(bottomLeft!),
+          if (bottomRight != null) 'bottomRight': payloadRadius(bottomRight!),
         },
       if (_boxShadowSet) 'boxShadow': boxShadow ?? const <JsonMap>[],
     };
@@ -1169,15 +1144,15 @@ final class _BoxDecorationPayloadBuilder {
 JsonMap _buildBorderPayload(_BorderAccum border, TwConfig config) {
   final color = border.color ?? _defaultBorderColor(config);
   return {
-    'type': 'border',
+    'type': SchemaBorder.border.wireValue,
     if (border.topWidth != null)
-      'top': {'color': _schemaColor(color), 'width': border.topWidth},
+      'top': {'color': payloadColor(color), 'width': border.topWidth},
     if (border.bottomWidth != null)
-      'bottom': {'color': _schemaColor(color), 'width': border.bottomWidth},
+      'bottom': {'color': payloadColor(color), 'width': border.bottomWidth},
     if (border.leftWidth != null)
-      'left': {'color': _schemaColor(color), 'width': border.leftWidth},
+      'left': {'color': payloadColor(color), 'width': border.leftWidth},
     if (border.rightWidth != null)
-      'right': {'color': _schemaColor(color), 'width': border.rightWidth},
+      'right': {'color': payloadColor(color), 'width': border.rightWidth},
   };
 }
 
@@ -1188,9 +1163,9 @@ JsonMap? _buildGradientPayload(
   if (!gradient.hasGradient) return null;
 
   final colors = <String>[
-    _schemaColor(gradient.fromColor!),
-    if (gradient.viaColor != null) _schemaColor(gradient.viaColor!),
-    _schemaColor(gradient.toColor ?? gradient.fromColor!),
+    payloadColor(gradient.fromColor!),
+    if (gradient.viaColor != null) payloadColor(gradient.viaColor!),
+    payloadColor(gradient.toColor ?? gradient.fromColor!),
   ];
   final stops = gradient.viaColor != null
       ? const [0.0, 0.5, 1.0]
@@ -1200,13 +1175,16 @@ JsonMap? _buildGradientPayload(
     final angle = _tailwindGradientAngles[gradient.directionKey!];
     if (angle != null) {
       return {
-        'type': 'linear_gradient',
+        'type': SchemaGradient.linear.wireValue,
         'colors': colors,
         'stops': stops,
-        'begin': {'x': -1.0, 'y': 0.0},
-        'end': {'x': 1.0, 'y': 0.0},
+        'begin': payloadAlignment(Alignment.centerLeft),
+        'end': payloadAlignment(Alignment.centerRight),
         if (angle != 0.0)
-          'transform': {'type': 'gradient_rotation', 'radians': angle},
+          'transform': {
+            'type': SchemaGradientTransform.rotation.wireValue,
+            'radians': angle,
+          },
       };
     }
   }
@@ -1215,13 +1193,13 @@ JsonMap? _buildGradientPayload(
       gradient.directionKey != null &&
       _tailwindCornerDirections.contains(gradient.directionKey)) {
     return {
-      'type': 'linear_gradient',
+      'type': SchemaGradient.linear.wireValue,
       'colors': colors,
       'stops': stops,
-      'begin': {'x': -1.0, 'y': 0.0},
-      'end': {'x': 1.0, 'y': 0.0},
+      'begin': payloadAlignment(Alignment.centerLeft),
+      'end': payloadAlignment(Alignment.centerRight),
       'transform': {
-        'type': 'tailwind_css_angle_rect',
+        'type': SchemaGradientTransform.tailwindAngleRect.wireValue,
         'direction': gradient.directionKey!,
       },
     };
@@ -1229,11 +1207,11 @@ JsonMap? _buildGradientPayload(
 
   final (begin, end) = gradient.direction!;
   return {
-    'type': 'linear_gradient',
+    'type': SchemaGradient.linear.wireValue,
     'colors': colors,
     'stops': stops,
-    'begin': _alignmentPayload(begin),
-    'end': _alignmentPayload(end),
+    'begin': payloadAlignment(begin),
+    'end': payloadAlignment(end),
   };
 }
 
@@ -1384,7 +1362,7 @@ final class _BoxLikeSchemaState {
         }
         break;
       case TwProperty.backgroundColor:
-        decoration.color = _schemaColor((value as TwColorValue).color);
+        decoration.color = payloadColor((value as TwColorValue).color);
         break;
       case TwProperty.borderRadius:
         decoration.setAllRadius((value as TwLengthValue).value);
@@ -1604,10 +1582,10 @@ final class _BoxLikeSchemaState {
 
     if (effectiveTransform.hasAnyTransform) {
       payload['transform'] = effectiveTransform.toSchemaValues();
-      payload['transformAlignment'] = const {'x': 0.0, 'y': 0.0};
+      payload['transformAlignment'] = payloadAlignment(Alignment.center);
     } else if (hasTransform) {
       payload['transform'] = Matrix4.identity().storage.toList(growable: false);
-      payload['transformAlignment'] = const {'x': 0.0, 'y': 0.0};
+      payload['transformAlignment'] = payloadAlignment(Alignment.center);
     }
 
     modifiers.applyTo(payload);
@@ -1760,7 +1738,7 @@ JsonMap _wrapVariantStyle(List<TwVariantType> variants, JsonMap style) {
   }
 
   return {
-    'type': 'context_all_of',
+    'type': SchemaVariant.contextAllOf.wireValue,
     'conditions': [
       for (final variant in variants) _variantConditionPayload(variant),
     ],
@@ -1874,7 +1852,7 @@ final class _TwSchemaEmitter {
       inheritedTransform: _TransformAccum(),
     );
     return _TwSchemaDecoderAdapter.tryDecodeFlexBox({
-      'type': 'flex_box',
+      'type': SchemaStyler.flexBox.wireValue,
       ...built.payload,
     }, diagnostics: diagnostics);
   }
@@ -1945,7 +1923,7 @@ final class _TwSchemaEmitter {
       inheritedTransform: _TransformAccum(),
     );
     return _TwSchemaDecoderAdapter.tryDecodeBox({
-      'type': 'box',
+      'type': SchemaStyler.box.wireValue,
       ...built.payload,
     }, diagnostics: diagnostics);
   }
@@ -1986,7 +1964,7 @@ final class _TwSchemaEmitter {
     }
 
     return _TwSchemaDecoderAdapter.tryDecodeText({
-      'type': 'text',
+      'type': SchemaStyler.text.wireValue,
       ...root.buildStylePayload(),
     }, diagnostics: diagnostics);
   }

@@ -6,7 +6,7 @@ import '../../core/json_map.dart';
 import '../../core/schema_wire_types.dart';
 import '../shared/enum_schemas.dart';
 
-const sharedContextVariantLeafTypes = <SchemaVariant>{
+const sharedContextVariantLeafTypes = {
   SchemaVariant.widgetState,
   SchemaVariant.enabled,
   SchemaVariant.brightness,
@@ -50,6 +50,18 @@ final class VariantConditionDefinition {
     required VariantConditionFieldsEncoder encodeFields,
   }) : _encodeFields = encodeFields;
 
+  AckSchema<Map<String, Object?>> _buildDataSchema([
+    Map<String, AckSchema> extraFields = const {},
+  ]) {
+    final allFields = {...fields, ...extraFields};
+
+    if (refine case final refinement?) {
+      return Ack.object(allFields).refine(refinement, message: refineMessage!);
+    }
+
+    return Ack.object(allFields);
+  }
+
   AckSchema<ContextVariantLeaf> buildLeafSchema() {
     return _buildDataSchema().transform<ContextVariantLeaf>((data) {
       return buildLeaf(data);
@@ -72,18 +84,6 @@ final class VariantConditionDefinition {
   JsonMap encode(JsonMap fields) {
     return {'type': type.wireValue, ..._encodeFields(fields)};
   }
-
-  AckSchema<Map<String, Object?>> _buildDataSchema([
-    Map<String, AckSchema> extraFields = const {},
-  ]) {
-    final allFields = {...fields, ...extraFields};
-
-    if (refine case final refinement?) {
-      return Ack.object(allFields).refine(refinement, message: refineMessage!);
-    }
-
-    return Ack.object(allFields);
-  }
 }
 
 final Map<SchemaVariant, VariantConditionDefinition>
@@ -91,14 +91,10 @@ variantConditionDefinitions = _buildVariantConditionDefinitions();
 
 Map<SchemaVariant, VariantConditionDefinition>
 _buildVariantConditionDefinitions() {
-  final definitions = <SchemaVariant, VariantConditionDefinition>{
+  final definitions = {
     SchemaVariant.widgetState: VariantConditionDefinition(
-      type: SchemaVariant.widgetState,
+      type: .widgetState,
       fields: {'state': widgetStateSchema},
-      sampleFields: {'state': WidgetState.hovered},
-      encodeFields: (fields) => {
-        'state': (fields['state'] as WidgetState).name,
-      },
       buildLeaf: (data) {
         final state = data['state'] as WidgetState;
 
@@ -107,26 +103,26 @@ _buildVariantConditionDefinitions() {
           canonicalKey: '${SchemaVariant.widgetState.wireValue}:${state.name}',
         );
       },
+      sampleFields: {'state': WidgetState.hovered},
+      encodeFields: (fields) => {
+        'state': (fields['state'] as WidgetState).name,
+      },
     ),
     SchemaVariant.enabled: VariantConditionDefinition(
-      type: SchemaVariant.enabled,
+      type: .enabled,
       fields: const {},
-      sampleFields: const {},
-      encodeFields: (_) => const {},
       buildLeaf: (_) {
         return ContextVariantLeaf(
           variant: ContextVariant.not(ContextVariant.widgetState(.disabled)),
           canonicalKey: SchemaVariant.enabled.wireValue,
         );
       },
+      sampleFields: const {},
+      encodeFields: (_) => const {},
     ),
     SchemaVariant.brightness: VariantConditionDefinition(
-      type: SchemaVariant.brightness,
+      type: .brightness,
       fields: {'brightness': brightnessSchema},
-      sampleFields: {'brightness': Brightness.dark},
-      encodeFields: (fields) {
-        return {'brightness': (fields['brightness'] as Brightness).name};
-      },
       buildLeaf: (data) {
         final brightness = data['brightness'] as Brightness;
 
@@ -136,9 +132,13 @@ _buildVariantConditionDefinitions() {
               '${SchemaVariant.brightness.wireValue}:${brightness.name}',
         );
       },
+      sampleFields: {'brightness': Brightness.dark},
+      encodeFields: (fields) {
+        return {'brightness': (fields['brightness'] as Brightness).name};
+      },
     ),
     SchemaVariant.breakpoint: VariantConditionDefinition(
-      type: SchemaVariant.breakpoint,
+      type: .breakpoint,
       fields: {
         'minWidth': Ack.double().nullable().optional(),
         'maxWidth': Ack.double().nullable().optional(),
@@ -147,15 +147,6 @@ _buildVariantConditionDefinitions() {
       },
       refine: _hasAnyBreakpointDimension,
       refineMessage: 'At least one dimension constraint required.',
-      sampleFields: const {'minWidth': 768.0},
-      encodeFields: (fields) {
-        return {
-          if (fields['minWidth'] case final minWidth?) 'minWidth': minWidth,
-          if (fields['maxWidth'] case final maxWidth?) 'maxWidth': maxWidth,
-          if (fields['minHeight'] case final minHeight?) 'minHeight': minHeight,
-          if (fields['maxHeight'] case final maxHeight?) 'maxHeight': maxHeight,
-        };
-      },
       buildLeaf: (data) {
         return ContextVariantLeaf(
           variant: ContextVariant.breakpoint(
@@ -169,16 +160,14 @@ _buildVariantConditionDefinitions() {
           canonicalKey: _breakpointCanonicalKey(data),
         );
       },
+      sampleFields: const {'minWidth': 768.0},
+      encodeFields: _encodeBreakpointFields,
     ),
     SchemaVariant.notWidgetState: VariantConditionDefinition(
-      type: SchemaVariant.notWidgetState,
+      type: .notWidgetState,
       fields: {'state': widgetStateSchema},
       refine: (data) => data['state'] != WidgetState.disabled,
       refineMessage: 'Use enabled for not(disabled).',
-      sampleFields: {'state': WidgetState.focused},
-      encodeFields: (fields) => {
-        'state': (fields['state'] as WidgetState).name,
-      },
       buildLeaf: (data) {
         final state = data['state'] as WidgetState;
 
@@ -187,6 +176,10 @@ _buildVariantConditionDefinitions() {
           canonicalKey:
               '${SchemaVariant.notWidgetState.wireValue}:${state.name}',
         );
+      },
+      sampleFields: {'state': WidgetState.focused},
+      encodeFields: (fields) => {
+        'state': (fields['state'] as WidgetState).name,
       },
     ),
   };
@@ -209,47 +202,25 @@ VariantConditionDefinition variantConditionDefinition(SchemaVariant type) {
   return definition;
 }
 
-JsonMap payloadWidgetStateCondition(WidgetState state) {
-  return variantConditionDefinition(
-    SchemaVariant.widgetState,
-  ).encode({'state': state});
-}
-
-JsonMap payloadEnabledCondition() {
-  return variantConditionDefinition(SchemaVariant.enabled).encode(const {});
-}
-
-JsonMap payloadBrightnessCondition(Brightness brightness) {
-  return variantConditionDefinition(
-    SchemaVariant.brightness,
-  ).encode({'brightness': brightness});
-}
-
-JsonMap payloadBreakpointCondition({
-  double? minWidth,
-  double? maxWidth,
-  double? minHeight,
-  double? maxHeight,
-}) {
-  return variantConditionDefinition(SchemaVariant.breakpoint).encode({
-    'minWidth': minWidth,
-    'maxWidth': maxWidth,
-    'minHeight': minHeight,
-    'maxHeight': maxHeight,
-  });
-}
-
-JsonMap payloadNotWidgetStateCondition(WidgetState state) {
-  return variantConditionDefinition(
-    SchemaVariant.notWidgetState,
-  ).encode({'state': state});
-}
-
 bool _hasAnyBreakpointDimension(Map<String, Object?> data) {
   return data['minWidth'] != null ||
       data['maxWidth'] != null ||
       data['minHeight'] != null ||
       data['maxHeight'] != null;
+}
+
+JsonMap _encodeBreakpointFields(JsonMap fields) {
+  const fieldNames = ['minWidth', 'maxWidth', 'minHeight', 'maxHeight'];
+  final payload = <String, Object?>{};
+
+  for (final fieldName in fieldNames) {
+    final value = fields[fieldName];
+    if (value != null) {
+      payload[fieldName] = value;
+    }
+  }
+
+  return payload;
 }
 
 String _breakpointCanonicalKey(Map<String, Object?> data) {

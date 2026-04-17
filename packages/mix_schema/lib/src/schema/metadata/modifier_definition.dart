@@ -14,14 +14,14 @@ typedef ModifierFieldsEncoder = JsonMap Function(ModifierMix modifier);
 
 final class ModifierDefinition {
   final SchemaModifier type;
-  final Type runtimeType;
+  final Type modifierRuntimeType;
   final AckSchema<ModifierMix> schema;
   final ModifierMix Function() sample;
   final ModifierFieldsEncoder _encodeFields;
 
   const ModifierDefinition({
     required this.type,
-    required this.runtimeType,
+    required this.modifierRuntimeType,
     required this.schema,
     required this.sample,
     required ModifierFieldsEncoder encodeFields,
@@ -39,7 +39,7 @@ Map<SchemaModifier, ModifierDefinition> _buildModifierDefinitions() {
   final definitions = <SchemaModifier, ModifierDefinition>{
     SchemaModifier.reset: ModifierDefinition(
       type: SchemaModifier.reset,
-      runtimeType: ResetModifier,
+      modifierRuntimeType: ResetModifier,
       schema: Ack.object(
         const {},
       ).transform<ModifierMix>((_) => const ResetModifierMix()),
@@ -48,7 +48,7 @@ Map<SchemaModifier, ModifierDefinition> _buildModifierDefinitions() {
     ),
     SchemaModifier.blur: ModifierDefinition(
       type: SchemaModifier.blur,
-      runtimeType: BlurModifier,
+      modifierRuntimeType: BlurModifier,
       schema: Ack.object({'sigma': Ack.double().min(0).optional()})
           .transform<ModifierMix>((data) {
             final map = data;
@@ -59,12 +59,12 @@ Map<SchemaModifier, ModifierDefinition> _buildModifierDefinitions() {
       encodeFields: (modifier) {
         final value = modifier as BlurModifierMix;
 
-        return {if (_propValue(value.sigma) case final sigma?) 'sigma': sigma};
+        return _optionalJsonMap([('sigma', _propValue(value.sigma))]);
       },
     ),
     SchemaModifier.opacity: ModifierDefinition(
       type: SchemaModifier.opacity,
-      runtimeType: OpacityModifier,
+      modifierRuntimeType: OpacityModifier,
       schema: Ack.object({'value': Ack.double().min(0).max(1)})
           .transform<ModifierMix>((data) {
             final map = data;
@@ -80,7 +80,7 @@ Map<SchemaModifier, ModifierDefinition> _buildModifierDefinitions() {
     ),
     SchemaModifier.visibility: ModifierDefinition(
       type: SchemaModifier.visibility,
-      runtimeType: VisibilityModifier,
+      modifierRuntimeType: VisibilityModifier,
       schema: Ack.object({'visible': Ack.boolean()}).transform<ModifierMix>((
         data,
       ) {
@@ -97,7 +97,7 @@ Map<SchemaModifier, ModifierDefinition> _buildModifierDefinitions() {
     ),
     SchemaModifier.align: ModifierDefinition(
       type: SchemaModifier.align,
-      runtimeType: AlignModifier,
+      modifierRuntimeType: AlignModifier,
       schema:
           Ack.object({
             'alignment': alignmentSchema.optional(),
@@ -120,19 +120,19 @@ Map<SchemaModifier, ModifierDefinition> _buildModifierDefinitions() {
       encodeFields: (modifier) {
         final value = modifier as AlignModifierMix;
 
-        return {
-          if (_propValue(value.alignment) case final alignment?)
-            'alignment': payloadAlignment(alignment),
-          if (_propValue(value.widthFactor) case final widthFactor?)
-            'widthFactor': widthFactor,
-          if (_propValue(value.heightFactor) case final heightFactor?)
-            'heightFactor': heightFactor,
-        };
+        return _optionalJsonMap([
+          (
+            'alignment',
+            _mapOptional(_propValue(value.alignment), payloadAlignment),
+          ),
+          ('widthFactor', _propValue(value.widthFactor)),
+          ('heightFactor', _propValue(value.heightFactor)),
+        ]);
       },
     ),
     SchemaModifier.padding: ModifierDefinition(
       type: SchemaModifier.padding,
-      runtimeType: PaddingModifier,
+      modifierRuntimeType: PaddingModifier,
       schema: Ack.object({'padding': edgeInsetsGeometrySchema.optional()})
           .transform<ModifierMix>((data) {
             final map = data;
@@ -147,16 +147,20 @@ Map<SchemaModifier, ModifierDefinition> _buildModifierDefinitions() {
       encodeFields: (modifier) {
         final value = modifier as PaddingModifierMix;
 
-        return {
-          if (_propMix<EdgeInsetsGeometryMix>(value.padding)
-              case final padding?)
-            'padding': _encodeEdgeInsetsGeometryMix(padding),
-        };
+        return _optionalJsonMap([
+          (
+            'padding',
+            _mapOptional(
+              _propMix<EdgeInsetsGeometryMix>(value.padding),
+              _encodeEdgeInsetsGeometryMix,
+            ),
+          ),
+        ]);
       },
     ),
     SchemaModifier.scale: ModifierDefinition(
       type: SchemaModifier.scale,
-      runtimeType: ScaleModifier,
+      modifierRuntimeType: ScaleModifier,
       schema:
           Ack.object({
             'x': Ack.double(),
@@ -179,14 +183,18 @@ Map<SchemaModifier, ModifierDefinition> _buildModifierDefinitions() {
         return {
           'x': _requiredPropValue(value.x, 'x'),
           'y': _requiredPropValue(value.y, 'y'),
-          if (_propValue(value.alignment) case final alignment?)
-            'alignment': payloadAlignment(alignment),
+          ..._optionalJsonMap([
+            (
+              'alignment',
+              _mapOptional(_propValue(value.alignment), payloadAlignment),
+            ),
+          ]),
         };
       },
     ),
     SchemaModifier.rotate: ModifierDefinition(
       type: SchemaModifier.rotate,
-      runtimeType: RotateModifier,
+      modifierRuntimeType: RotateModifier,
       schema:
           Ack.object({
             'radians': Ack.double(),
@@ -206,14 +214,18 @@ Map<SchemaModifier, ModifierDefinition> _buildModifierDefinitions() {
 
         return {
           'radians': _requiredPropValue(value.radians, 'radians'),
-          if (_propValue(value.alignment) case final alignment?)
-            'alignment': payloadAlignment(alignment),
+          ..._optionalJsonMap([
+            (
+              'alignment',
+              _mapOptional(_propValue(value.alignment), payloadAlignment),
+            ),
+          ]),
         };
       },
     ),
     SchemaModifier.defaultTextStyle: ModifierDefinition(
       type: SchemaModifier.defaultTextStyle,
-      runtimeType: DefaultTextStyleModifier,
+      modifierRuntimeType: DefaultTextStyleModifier,
       schema:
           Ack.object({
             'style': textStyleSchema.optional(),
@@ -269,25 +281,39 @@ Map<SchemaModifier, ModifierDefinition> _buildModifierDefinitions() {
       encodeFields: (modifier) {
         final value = modifier as DefaultTextStyleModifierMix;
 
-        return {
-          if (_propMix<TextStyleMix>(value.style) case final style?)
-            'style': _encodeTextStyleMix(style),
-          if (_propValue(value.textAlign) case final textAlign?)
-            'textAlign': textAlign.name,
-          if (_propValue(value.softWrap) case final softWrap?)
-            'softWrap': softWrap,
-          if (_propValue(value.overflow) case final overflow?)
-            'overflow': overflow.name,
-          if (_propValue(value.maxLines) case final maxLines?)
-            'maxLines': maxLines,
-          if (_propValue(value.textWidthBasis) case final textWidthBasis?)
-            'textWidthBasis': textWidthBasis.name,
-          if (_propMix<TextHeightBehaviorMix>(value.textHeightBehavior)
-              case final textHeightBehavior?)
-            'textHeightBehavior': _encodeTextHeightBehaviorMix(
-              textHeightBehavior,
+        return _optionalJsonMap([
+          (
+            'style',
+            _mapOptional(
+              _propMix<TextStyleMix>(value.style),
+              _encodeTextStyleMix,
             ),
-        };
+          ),
+          (
+            'textAlign',
+            _mapOptional(_propValue(value.textAlign), (value) => value.name),
+          ),
+          ('softWrap', _propValue(value.softWrap)),
+          (
+            'overflow',
+            _mapOptional(_propValue(value.overflow), (value) => value.name),
+          ),
+          ('maxLines', _propValue(value.maxLines)),
+          (
+            'textWidthBasis',
+            _mapOptional(
+              _propValue(value.textWidthBasis),
+              (value) => value.name,
+            ),
+          ),
+          (
+            'textHeightBehavior',
+            _mapOptional(
+              _propMix<TextHeightBehaviorMix>(value.textHeightBehavior),
+              _encodeTextHeightBehaviorMix,
+            ),
+          ),
+        ]);
       },
     ),
   };
@@ -302,7 +328,7 @@ Map<SchemaModifier, ModifierDefinition> _buildModifierDefinitions() {
 }
 
 Type modifierRuntimeType(SchemaModifier type) {
-  return modifierDefinitions[type]!.runtimeType;
+  return modifierDefinitions[type]!.modifierRuntimeType;
 }
 
 T? _propValue<T>(Prop<T>? prop) {
@@ -328,6 +354,22 @@ T _requiredPropValue<T>(Prop<T>? prop, String field) {
   return value;
 }
 
+JsonMap _optionalJsonMap(Iterable<(String, Object?)> fields) {
+  final payload = <String, Object?>{};
+
+  for (final (key, value) in fields) {
+    if (value != null) {
+      payload[key] = value;
+    }
+  }
+
+  return payload;
+}
+
+Object? _mapOptional<T>(T? value, Object? Function(T value) encode) {
+  return value == null ? null : encode(value);
+}
+
 M? _propMix<M extends Mix>(Prop? prop) {
   if (prop == null) return null;
   if (prop.sources.length != 1) {
@@ -344,79 +386,89 @@ M? _propMix<M extends Mix>(Prop? prop) {
 
 JsonMap _encodeEdgeInsetsGeometryMix(EdgeInsetsGeometryMix value) {
   return switch (value) {
-    EdgeInsetsMix() => {
-      if (_propValue(value.$top) case final top?) 'top': top,
-      if (_propValue(value.$bottom) case final bottom?) 'bottom': bottom,
-      if (_propValue(value.$left) case final left?) 'left': left,
-      if (_propValue(value.$right) case final right?) 'right': right,
-    },
-    EdgeInsetsDirectionalMix() => {
-      if (_propValue(value.$top) case final top?) 'top': top,
-      if (_propValue(value.$bottom) case final bottom?) 'bottom': bottom,
-      if (_propValue(value.$start) case final start?) 'start': start,
-      if (_propValue(value.$end) case final end?) 'end': end,
-    },
+    EdgeInsetsMix() => _optionalJsonMap([
+      ('top', _propValue(value.$top)),
+      ('bottom', _propValue(value.$bottom)),
+      ('left', _propValue(value.$left)),
+      ('right', _propValue(value.$right)),
+    ]),
+    EdgeInsetsDirectionalMix() => _optionalJsonMap([
+      ('top', _propValue(value.$top)),
+      ('bottom', _propValue(value.$bottom)),
+      ('start', _propValue(value.$start)),
+      ('end', _propValue(value.$end)),
+    ]),
   };
 }
 
 JsonMap _encodeTextStyleMix(TextStyleMix value) {
-  return {
-    if (_propValue(value.$color) case final color?)
-      'color': payloadColor(color),
-    if (_propValue(value.$backgroundColor) case final backgroundColor?)
-      'backgroundColor': payloadColor(backgroundColor),
-    if (_propValue(value.$fontSize) case final fontSize?) 'fontSize': fontSize,
-    if (_propValue(value.$fontWeight) case final fontWeight?)
-      'fontWeight': _fontWeightWireName(fontWeight),
-    if (_propValue(value.$fontStyle) case final fontStyle?)
-      'fontStyle': fontStyle.name,
-    if (_propValue(value.$letterSpacing) case final letterSpacing?)
-      'letterSpacing': letterSpacing,
-    if (_propValue(value.$wordSpacing) case final wordSpacing?)
-      'wordSpacing': wordSpacing,
-    if (_propValue(value.$textBaseline) case final textBaseline?)
-      'textBaseline': textBaseline.name,
-    if (_propValue(value.$decoration) case final decoration?)
-      'decoration': _textDecorationWireName(decoration),
-    if (_propValue(value.$decorationColor) case final decorationColor?)
-      'decorationColor': payloadColor(decorationColor),
-    if (_propValue(value.$decorationStyle) case final decorationStyle?)
-      'decorationStyle': decorationStyle.name,
-    if (_propValue(value.$height) case final height?) 'height': height,
-    if (_propValue(value.$decorationThickness) case final decorationThickness?)
-      'decorationThickness': decorationThickness,
-    if (_propValue(value.$fontFamily) case final fontFamily?)
-      'fontFamily': fontFamily,
-    if (_propValue(value.$fontFamilyFallback) case final fontFamilyFallback?)
-      'fontFamilyFallback': fontFamilyFallback,
-    if (_propValue(value.$inherit) case final inherit?) 'inherit': inherit,
-    if (_propMix<ShadowListMix>(value.$shadows) case final shadows?)
-      'shadows': [for (final shadow in shadows.items) _encodeShadowMix(shadow)],
-  };
+  return _optionalJsonMap([
+    ('color', _mapOptional(_propValue(value.$color), payloadColor)),
+    (
+      'backgroundColor',
+      _mapOptional(_propValue(value.$backgroundColor), payloadColor),
+    ),
+    ('fontSize', _propValue(value.$fontSize)),
+    (
+      'fontWeight',
+      _mapOptional(_propValue(value.$fontWeight), _fontWeightWireName),
+    ),
+    (
+      'fontStyle',
+      _mapOptional(_propValue(value.$fontStyle), (value) => value.name),
+    ),
+    ('letterSpacing', _propValue(value.$letterSpacing)),
+    ('wordSpacing', _propValue(value.$wordSpacing)),
+    (
+      'textBaseline',
+      _mapOptional(_propValue(value.$textBaseline), (value) => value.name),
+    ),
+    (
+      'decoration',
+      _mapOptional(_propValue(value.$decoration), _textDecorationWireName),
+    ),
+    (
+      'decorationColor',
+      _mapOptional(_propValue(value.$decorationColor), payloadColor),
+    ),
+    (
+      'decorationStyle',
+      _mapOptional(_propValue(value.$decorationStyle), (value) => value.name),
+    ),
+    ('height', _propValue(value.$height)),
+    ('decorationThickness', _propValue(value.$decorationThickness)),
+    ('fontFamily', _propValue(value.$fontFamily)),
+    ('fontFamilyFallback', _propValue(value.$fontFamilyFallback)),
+    ('inherit', _propValue(value.$inherit)),
+    (
+      'shadows',
+      _mapOptional(_propMix<ShadowListMix>(value.$shadows), (shadows) {
+        return [for (final shadow in shadows.items) _encodeShadowMix(shadow)];
+      }),
+    ),
+  ]);
 }
 
 JsonMap _encodeShadowMix(ShadowMix value) {
-  return {
-    if (_propValue(value.$color) case final color?)
-      'color': payloadColor(color),
-    if (_propValue(value.$offset) case final offset?)
-      'offset': payloadOffset(offset),
-    if (_propValue(value.$blurRadius) case final blurRadius?)
-      'blurRadius': blurRadius,
-  };
+  return _optionalJsonMap([
+    ('color', _mapOptional(_propValue(value.$color), payloadColor)),
+    ('offset', _mapOptional(_propValue(value.$offset), payloadOffset)),
+    ('blurRadius', _propValue(value.$blurRadius)),
+  ]);
 }
 
 JsonMap _encodeTextHeightBehaviorMix(TextHeightBehaviorMix value) {
-  return {
-    if (_propValue(value.$applyHeightToFirstAscent)
-        case final applyHeightToFirstAscent?)
-      'applyHeightToFirstAscent': applyHeightToFirstAscent,
-    if (_propValue(value.$applyHeightToLastDescent)
-        case final applyHeightToLastDescent?)
-      'applyHeightToLastDescent': applyHeightToLastDescent,
-    if (_propValue(value.$leadingDistribution) case final leadingDistribution?)
-      'leadingDistribution': leadingDistribution.name,
-  };
+  return _optionalJsonMap([
+    ('applyHeightToFirstAscent', _propValue(value.$applyHeightToFirstAscent)),
+    ('applyHeightToLastDescent', _propValue(value.$applyHeightToLastDescent)),
+    (
+      'leadingDistribution',
+      _mapOptional(
+        _propValue(value.$leadingDistribution),
+        (value) => value.name,
+      ),
+    ),
+  ]);
 }
 
 String _fontWeightWireName(FontWeight value) {

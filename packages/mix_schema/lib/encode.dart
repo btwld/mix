@@ -13,7 +13,7 @@ export 'mix_schema.dart'
         SchemaTextScaler,
         SchemaVariant;
 export 'src/encoder/payload_encoder.dart';
-export 'src/schema/metadata/variant_condition_definition.dart'
+export 'src/encoder/variant_condition_encoder.dart'
     show
         payloadBreakpointCondition,
         payloadBrightnessCondition,
