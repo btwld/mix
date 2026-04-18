@@ -29,7 +29,7 @@ import '../box/box_spec.dart';
 import '../box/box_style.dart';
 import '../stack/stack_spec.dart';
 import '../stack/stack_style.dart';
-import 'stackbox_mutable_style.dart';
+import '../text/text_style.dart';
 import 'stackbox_spec.dart';
 import 'stackbox_widget.dart';
 
@@ -175,9 +175,13 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
   factory StackBoxStyler.scale(double scale, {Alignment alignment = .center}) =>
       StackBoxStyler().scale(scale, alignment: alignment);
   factory StackBoxStyler.rotate(
-    double angle, {
+    double radians, {
     Alignment alignment = .center,
-  }) => StackBoxStyler().rotate(angle, alignment: alignment);
+  }) => StackBoxStyler().rotate(radians, alignment: alignment);
+
+  // Text style convenience
+  factory StackBoxStyler.textStyle(TextStyler value) =>
+      StackBoxStyler().textStyle(value);
 
   // Style metadata convenience
   factory StackBoxStyler.animate(AnimationConfig value) =>
@@ -321,8 +325,6 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
       StackBoxStyler().translate(x, y, z);
   factory StackBoxStyler.skew(double skewX, double skewY) =>
       StackBoxStyler().skew(skewX, skewY);
-  static StackBoxMutableStyler get chain => .new(StackBoxStyler());
-
   // Box-style instance methods
 
   /// Sets the alignment for the box.
@@ -444,5 +446,11 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
   @override
   StackBoxStyler border(BoxBorderMix value) {
     return merge(StackBoxStyler(decoration: DecorationMix.border(value)));
+  }
+
+  /// Propagates the given [TextStyler] to descendant [StyledText] widgets via
+  /// [DefaultTextStylerModifier] (Mix inheritance).
+  StackBoxStyler textStyle(TextStyler value) {
+    return wrap(WidgetModifierConfig.defaultTextStyler(value));
   }
 }

@@ -1,15 +1,21 @@
 import 'package:flutter/widgets.dart';
 
 import '../../core/mix_element.dart';
+import '../../modifiers/widget_modifier_config.dart';
 
 /// Mixin that provides convenient transform styling methods for styles
 mixin TransformStyleMixin<T extends Mix<Object?>> {
   /// Must be implemented by the class using this mixin
   T transform(Matrix4 value, {Alignment alignment = .center});
 
-  /// Sets rotation transform
-  T rotate(double angle, {Alignment alignment = .center}) {
-    return transform(Matrix4.rotationZ(angle), alignment: alignment);
+  /// Must be implemented by the class using this mixin
+  T wrap(WidgetModifierConfig value);
+
+  /// Sets rotation transform in radians.
+  T rotate(double radians, {Alignment alignment = .center}) {
+    return wrap(
+      WidgetModifierConfig.rotate(radians: radians, alignment: alignment),
+    );
   }
 
   /// Sets scale transform

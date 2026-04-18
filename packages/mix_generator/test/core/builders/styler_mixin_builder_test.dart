@@ -1,7 +1,10 @@
 import 'package:mix_annotations/mix_annotations.dart';
 import 'package:mix_generator/src/core/builders/styler_mixin_builder.dart';
 import 'package:mix_generator/src/core/models/annotation_config.dart';
+import 'package:mix_generator/src/core/models/styler_field_model.dart';
 import 'package:test/test.dart';
+
+import '../test_helpers.dart';
 
 void main() {
   // Default config that generates all methods
@@ -44,6 +47,33 @@ void main() {
           code,
           contains('mixin _\$BoxStylerMixin on Style<BoxSpec>, Diagnosticable'),
         );
+      });
+
+      test('generates abstract getters for fielded stylers', () {
+        final builder = StylerMixinBuilder(
+          stylerName: 'BoxStyler',
+          specName: 'BoxSpec',
+          fields: [
+            StylerFieldModel(
+              name: 'gap',
+              declaredName: r'$gap',
+              dartType: FakeDartType('double?', true),
+              element: FakeFieldElement('gap'),
+              isNullable: true,
+              innerTypeName: 'double',
+              isWrappedInProp: false,
+              isRawList: false,
+              effectivePublicParamType: 'double',
+              generateSetter: true,
+              setterName: 'gap',
+              hasMixType: false,
+            ),
+          ],
+          config: defaultConfig,
+        );
+        final code = builder.build();
+
+        expect(code, contains(r'double? get $gap;'));
       });
 
       test('generates merge override', () {

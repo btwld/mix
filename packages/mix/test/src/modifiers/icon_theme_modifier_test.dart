@@ -151,57 +151,6 @@ void main() {
     });
   });
 
-  group('IconThemeModifierUtility', () {
-    late IconThemeModifierUtility<BoxStyler> utility;
-
-    setUp(() {
-      utility = IconThemeModifierUtility(
-        (attr) => BoxStyler(modifier: WidgetModifierConfig.modifier(attr)),
-      );
-    });
-
-    test('call creates attribute with all properties', () {
-      const color = Color(0xFF000000);
-      const size = 24.0;
-      const opacity = 0.8;
-
-      final result = utility.call(color: color, size: size, opacity: opacity);
-
-      expect(result.$modifier?.$modifiers?.first, isA<IconThemeModifierMix>());
-      final attr = result.$modifier!.$modifiers!.first as IconThemeModifierMix;
-      expect(attr.color, resolvesTo(color));
-      expect(attr.size, resolvesTo(size));
-      expect(attr.opacity, resolvesTo(opacity));
-    });
-
-    test('color convenience method works', () {
-      const color = Color(0xFF000000);
-      final result = utility.color(color);
-
-      expect(result.$modifier?.$modifiers?.first, isA<IconThemeModifierMix>());
-      final attr = result.$modifier!.$modifiers!.first as IconThemeModifierMix;
-      expect(attr.color, resolvesTo(color));
-    });
-
-    test('size convenience method works', () {
-      const size = 24.0;
-      final result = utility.size(size);
-
-      expect(result.$modifier?.$modifiers?.first, isA<IconThemeModifierMix>());
-      final attr = result.$modifier!.$modifiers!.first as IconThemeModifierMix;
-      expect(attr.size, resolvesTo(size));
-    });
-
-    test('opacity convenience method works', () {
-      const opacity = 0.8;
-      final result = utility.opacity(opacity);
-
-      expect(result.$modifier?.$modifiers?.first, isA<IconThemeModifierMix>());
-      final attr = result.$modifier!.$modifiers!.first as IconThemeModifierMix;
-      expect(attr.opacity, resolvesTo(opacity));
-    });
-  });
-
   group('Integration', () {
     testWidgets('attribute resolves and builds correctly', (tester) async {
       final attribute = IconThemeModifierMix(

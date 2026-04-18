@@ -1,12 +1,9 @@
-import 'dart:math' as math;
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../core/helpers.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
-import '../core/utility.dart';
 import '../core/widget_modifier.dart';
 
 abstract class _TransformModifier<T extends _TransformModifier<T>>
@@ -59,62 +56,6 @@ class TransformModifier extends _TransformModifier<TransformModifier> {
       alignment: MixOps.lerp(alignment, other.alignment, t)!,
     );
   }
-}
-
-/// Utility class for applying transform modifications.
-///
-/// Provides convenient methods for creating TransformModifierMix instances.
-final class TransformModifierUtility<T extends Style<Object?>>
-    extends MixUtility<T, TransformModifierMix> {
-  late final rotate = TransformRotateModifierUtility(
-    (value) => utilityBuilder(
-      TransformModifierMix.create(
-        transform: Prop.maybe(value),
-        alignment: Prop.value(Alignment.center),
-      ),
-    ),
-  );
-
-  TransformModifierUtility(super.utilityBuilder);
-
-  T _flip(bool x, bool y) => utilityBuilder(
-    TransformModifierMix.create(
-      transform: Prop.value(
-        Matrix4.diagonal3Values(x ? -1.0 : 1.0, y ? -1.0 : 1.0, 1.0),
-      ),
-      alignment: Prop.value(Alignment.center),
-    ),
-  );
-
-  T flipX() => _flip(true, false);
-  T flipY() => _flip(false, true);
-
-  T call(Matrix4 value) =>
-      utilityBuilder(TransformModifierMix.create(transform: Prop.value(value)));
-
-  T scale(double value) => utilityBuilder(
-    TransformModifierMix.create(
-      transform: Prop.value(Matrix4.diagonal3Values(value, value, 1.0)),
-      alignment: Prop.value(Alignment.center),
-    ),
-  );
-
-  T translate(double x, double y) => utilityBuilder(
-    TransformModifierMix.create(
-      transform: Prop.value(Matrix4.translationValues(x, y, 0.0)),
-      alignment: Prop.value(Alignment.center),
-    ),
-  );
-}
-
-final class TransformRotateModifierUtility<T extends Style<Object?>>
-    extends MixUtility<T, Matrix4> {
-  const TransformRotateModifierUtility(super.utilityBuilder);
-  T d90() => call(math.pi / 2);
-  T d180() => call(math.pi);
-  T d270() => call(3 * math.pi / 2);
-
-  T call(double value) => utilityBuilder(Matrix4.rotationZ(value));
 }
 
 /// Mix class for applying transform modifications.
@@ -329,17 +270,19 @@ class TranslateModifierMix extends ModifierMix<TranslateModifier>
 }
 
 class RotateModifier extends _TransformModifier<RotateModifier> {
-  RotateModifier({double radians = 0.0, super.alignment})
-    : super(transform: Matrix4.rotationZ(radians));
+  final double radians;
 
-  RotateModifier._({super.transform, super.alignment});
+  RotateModifier({this.radians = 0.0, super.alignment})
+    : super(transform: Matrix4.rotationZ(radians));
 
   @override
   RotateModifier lerp(RotateModifier? other, double t) {
     if (other == null) return this;
 
-    return RotateModifier._(
-      transform: MixOps.lerp(transform, other.transform, t),
+    final lerpedRadians = MixOps.lerp(radians, other.radians, t) ?? radians;
+
+    return RotateModifier(
+      radians: lerpedRadians,
       alignment: MixOps.lerp(alignment, other.alignment, t)!,
     );
   }
@@ -347,11 +290,14 @@ class RotateModifier extends _TransformModifier<RotateModifier> {
   @override
   // ignore: avoid-incomplete-copy-with
   RotateModifier copyWith({double? radians, Alignment? alignment}) {
-    return RotateModifier._(
-      transform: radians != null ? Matrix4.rotationZ(radians) : transform,
+    return RotateModifier(
+      radians: radians ?? this.radians,
       alignment: alignment ?? this.alignment,
     );
   }
+
+  @override
+  List<Object?> get props => [radians, alignment];
 }
 
 /// ModifierMix for rotation transform (around Z axis).

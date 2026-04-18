@@ -5,7 +5,7 @@ import 'package:mix/mix.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
-  group('ImageMutableStyler', () {
+  group('ImageStyler', () {
     group('Constructor', () {
       test('', () {
         final attribute = ImageStyler(

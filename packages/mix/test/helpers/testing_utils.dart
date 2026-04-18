@@ -242,20 +242,15 @@ class _MockInheritedElement extends InheritedElement {
 // ADDITIONAL TEST UTILITIES
 // =============================================================================
 
-/// Mock attribute for testing utilities - handles `Prop<T>` values
+/// Mock style for testing - handles `Prop<T>` values
 ///
-/// This is a universal SpecMix that can wrap any prop type for testing purposes.
-/// Used with utilities that expect a SpecMix builder function.
+/// This is a universal Style that can wrap any prop type for testing purposes.
+/// Used in tests that need a simple Style wrapper.
 ///
 /// Usage:
 /// ```dart
-/// // For PropUtility (takes Prop<T>)
-/// final colorUtility = ColorUtility(UtilityTestAttribute.new);
-/// final attr = colorUtility(Colors.red);
-///
-/// // For complex utilities (takes Mix<V>)
-/// final gradientUtility = GradientUtility(UtilityTestAttribute.new);
-/// final attr = gradientUtility.linear(...);
+/// final style = MockStyle(Prop.value<Color>(Colors.red));
+/// expect(style.value, resolvesTo(Colors.red));
 /// ```
 class MockStyle<T> extends Style<MockSpec<T>> {
   final T value;

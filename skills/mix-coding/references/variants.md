@@ -249,11 +249,11 @@ All stylers (`BoxStyler`, `TextStyler`, `IconStyler`, etc.) support these varian
 
 ## Source Files
 
-- `examples/lib/api/context_variants/hovered.dart` — Hover example
-- `examples/lib/api/context_variants/pressed.dart` — Press with Pressable
-- `examples/lib/api/context_variants/on_dark_light.dart` — Dark/light mode toggle
-- `examples/lib/api/context_variants/selected.dart` — Selected state with controller
-- `examples/lib/api/context_variants/disabled.dart` — Disabled state
-- `examples/lib/api/context_variants/custom_context_variant.dart` — Custom variant
-- `examples/lib/api/context_variants/responsive_size.dart` — Responsive breakpoints
-- `examples/lib/docs/guides/variants.dart` — Variants guide examples
+- `packages/mix_docs_preview/lib/guides/dynamic_styling/hovered.dart` — Hover example
+- `packages/mix_docs_preview/lib/guides/dynamic_styling/pressed.dart` — Press with Pressable
+- `packages/mix_docs_preview/lib/guides/dynamic_styling/on_dark_light.dart` — Dark/light mode toggle
+- `packages/mix_docs_preview/lib/guides/dynamic_styling/selected.dart` — Selected state with controller
+- `packages/mix_docs_preview/lib/guides/dynamic_styling/disabled.dart` — Disabled state
+- `packages/mix_docs_preview/lib/guides/dynamic_styling/context_variant_flag.dart` — Custom variant
+- `packages/mix_docs_preview/lib/guides/dynamic_styling/responsive_size.dart` — Responsive breakpoints
+- `website/src/content/documentation/guides/dynamic-styling.mdx` — Variants guide documentation

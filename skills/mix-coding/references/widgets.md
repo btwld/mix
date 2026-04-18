@@ -270,10 +270,9 @@ icon(icon: Icons.star);   // Creates StyledIcon()
 
 ## Source Files
 
-- `examples/lib/docs/widgets/box.dart` — Box examples
-- `examples/lib/docs/widgets/flexbox.dart` — FlexBox layout examples
-- `examples/lib/docs/widgets/pressable.dart` — Pressable interaction examples
-- `examples/lib/docs/widgets/icon.dart` — Icon examples
-- `examples/lib/docs/widgets/image.dart` — Image examples
-- `examples/lib/api/widgets/box/simple_box.dart` — Basic Box
-- `examples/lib/api/widgets/box/gradient_box.dart` — Gradient Box
+- `packages/mix_docs_preview/lib/widgets/box/simple_box.dart` — Basic Box
+- `packages/mix_docs_preview/lib/widgets/box/gradient_box.dart` — Gradient Box
+- `packages/mix_docs_preview/lib/widgets/flexbox/icon_label_chip.dart` — FlexBox layout examples
+- `packages/mix_docs_preview/lib/widgets/pressable/pressable_button.dart` — Pressable interaction examples
+- `packages/mix_docs_preview/lib/widgets/icon/styled_icon.dart` — Icon examples
+- `packages/mix_docs_preview/lib/widgets/image/styled_image.dart` — Image examples

@@ -17,6 +17,7 @@ import 'blur_modifier.dart';
 import 'box_modifier.dart';
 import 'clip_modifier.dart';
 import 'default_text_style_modifier.dart';
+import 'default_text_styler_modifier.dart';
 import 'flexible_modifier.dart';
 import 'fractionally_sized_box_modifier.dart';
 import 'icon_theme_modifier.dart';
@@ -277,6 +278,10 @@ final class WidgetModifierConfig with Equatable {
         textHeightBehavior: textMix.$textHeightBehavior,
       ),
     );
+  }
+
+  factory WidgetModifierConfig.defaultTextStyler(TextStyler style) {
+    return WidgetModifierConfig.modifier(DefaultTextStylerModifierMix(style));
   }
 
   factory WidgetModifierConfig.defaultIcon(IconStyler iconMix) {
@@ -564,6 +569,10 @@ final class WidgetModifierConfig with Equatable {
     return merge(WidgetModifierConfig.defaultText(textMix));
   }
 
+  WidgetModifierConfig defaultTextStyler(TextStyler style) {
+    return merge(WidgetModifierConfig.defaultTextStyler(style));
+  }
+
   WidgetModifierConfig modifier(ModifierMix value) {
     return merge(WidgetModifierConfig.modifier(value));
   }
@@ -641,6 +650,10 @@ const _defaultOrder = [
   // 4. DefaultTextStyleModifier: Provides default text styling context to descendant Text widgets.
   // Applied early alongside IconTheme to establish text theme context before layout.
   DefaultTextStyleModifier,
+
+  // 4b. DefaultTextStylerModifier: Propagates a full TextStyler (variants, modifiers,
+  // merge semantics) to descendant StyledText widgets via Mix inheritance.
+  DefaultTextStylerModifier,
 
   // === PHASE 2: SIZE ESTABLISHMENT ===
 

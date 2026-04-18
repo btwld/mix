@@ -9,7 +9,6 @@ import '../../core/style.dart';
 import '../../core/style_spec.dart';
 import '../../modifiers/widget_modifier_config.dart';
 import '../../style/abstracts/styler.dart';
-import 'stack_mutable_style.dart';
 import 'stack_spec.dart';
 
 part 'stack_style.g.dart';
@@ -72,8 +71,6 @@ class StackStyler extends MixStyler<StackStyler, StackSpec>
       StackStyler().clipBehavior(value);
   factory StackStyler.textDirection(TextDirection value) =>
       StackStyler().textDirection(value);
-
-  static StackMutableStyler get chain => .new(StackStyler());
 
   /// Sets the widget modifier.
   StackStyler modifier(WidgetModifierConfig value) {

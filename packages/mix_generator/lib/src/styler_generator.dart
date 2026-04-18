@@ -104,7 +104,7 @@ class StylerGenerator extends GeneratorForAnnotation<MixableStyler> {
   ) {
     // Validate element is a class
     if (element is! ClassElement) {
-      throw InvalidGenerationSourceError(
+      throw InvalidGenerationSource(
         '@MixableStyler can only be applied to classes.',
         element: element,
       );
@@ -113,7 +113,7 @@ class StylerGenerator extends GeneratorForAnnotation<MixableStyler> {
     final classElement = element;
     final stylerName = classElement.name;
     if (stylerName == null) {
-      throw InvalidGenerationSourceError(
+      throw InvalidGenerationSource(
         '@MixableStyler class must have a name.',
         element: element,
       );
@@ -121,7 +121,7 @@ class StylerGenerator extends GeneratorForAnnotation<MixableStyler> {
 
     // Validate it's a Style class
     if (!_isStyleClass(classElement)) {
-      throw InvalidGenerationSourceError(
+      throw InvalidGenerationSource(
         '@MixableStyler can only be applied to classes extending Style<T>.',
         element: element,
       );
@@ -130,7 +130,7 @@ class StylerGenerator extends GeneratorForAnnotation<MixableStyler> {
     // Extract Spec name from Style<SpecName>
     final specName = _extractSpecName(classElement);
     if (specName == null) {
-      throw InvalidGenerationSourceError(
+      throw InvalidGenerationSource(
         'Could not determine Spec type from Style<T> supertype.',
         element: element,
       );
