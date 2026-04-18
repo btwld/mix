@@ -116,6 +116,7 @@ export 'src/specs/text/text_style.dart';
 export 'src/specs/text/text_widget.dart';
 
 /// STYLE MIXINS
+export 'src/style/abstracts/styler.dart';
 export 'src/style/mixins/animation_style_mixin.dart';
 export 'src/style/mixins/border_radius_style_mixin.dart';
 export 'src/style/mixins/border_style_mixin.dart';
