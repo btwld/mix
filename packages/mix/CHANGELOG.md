@@ -1,3 +1,23 @@
+## 2.0.2
+
+This release completes the 2.0 Styler migration by removing the remaining legacy utility surface, and adds new ergonomic shorthands and variant tooling.
+
+### Removals
+
+- **Legacy utility classes and mutable stylers:** All remaining deprecated utility classes and mutable stylers were removed, finishing the transition to the Styler-first API (#901).
+
+### New features
+
+- **EnumVariant mixin:** Define type-safe enum-based variants without hand-written boilerplate (#894).
+- **DefaultTextStylerModifier:** Propagate default `TextStyler` values down the widget tree via a modifier, matching the pattern used by other default stylers (#905).
+- **Text shadow shorthand:** Dot-shorthand entry point for configuring text shadows (#890).
+- **Uniform border shorthand:** Dot-shorthand for applying a uniform border in one call (#889).
+- **`MixStyler` export:** `MixStyler` is now exported from the public API, matching the documentation (#900).
+
+### Fixes
+
+- **RotateModifier lerp:** Interpolate the rotation angle directly instead of the transform matrix, producing smoother rotation transitions (#898).
+
 ## 2.0.1
 
 This patch release improves day-to-day styling ergonomics and makes looping animations more reliable in edge cases.
