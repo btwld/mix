@@ -1,3 +1,12 @@
+## 2.0.1
+
+ - **REFACTOR**: Tighten field-model validation and shared type-helper extraction across mix/styler generators (#895).
+ - **TEST**: Add generator smoke and validation integration tests plus broader builder coverage (#895).
+
+## 2.0.0
+
+ - Stable release matching the `2.0.0-rc.1` surface, with READMEs refreshed for the 2.0 generator API (#887, #888).
+
 ## 2.0.0-rc.1
 
  - **BREAKING**: The Mix Generator was completely rebuilt to support the architecture and requirements of Mix V2.0.
