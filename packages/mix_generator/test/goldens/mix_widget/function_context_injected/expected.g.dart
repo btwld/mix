@@ -8,12 +8,6 @@ part of 'input.dart';
 // **************************************************************************
 
 class ContextualButton extends StatelessWidget {
-  final bool compact;
-  final String label;
-  final void Function()? onPressed;
-  final bool loading;
-  final ContextButtonStyle? style;
-
   const ContextualButton({
     super.key,
     this.compact = false,
@@ -22,6 +16,16 @@ class ContextualButton extends StatelessWidget {
     this.loading = false,
     this.style,
   });
+
+  final bool compact;
+
+  final String label;
+
+  final void Function()? onPressed;
+
+  final bool loading;
+
+  final ContextButtonStyle? style;
 
   @override
   Widget build(BuildContext context) {

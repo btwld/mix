@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import '../core/internal/compare_mixin.dart';
+import '../core/equatable.dart';
 import '../core/style.dart';
 import '../core/widget_modifier.dart';
 import '../properties/layout/edge_insets_geometry_mix.dart';

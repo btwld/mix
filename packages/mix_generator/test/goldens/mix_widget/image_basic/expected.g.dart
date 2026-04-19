@@ -8,12 +8,6 @@ part of 'input.dart';
 // **************************************************************************
 
 class HeroImage extends StatelessWidget {
-  final ImageProvider? image;
-  final ImageFrameBuilder? frameBuilder;
-  final ImageLoadingBuilder? loadingBuilder;
-  final ImageErrorWidgetBuilder? errorBuilder;
-  final Animation<double>? opacity;
-
   const HeroImage({
     super.key,
     this.image,
@@ -22,6 +16,16 @@ class HeroImage extends StatelessWidget {
     this.errorBuilder,
     this.opacity,
   });
+
+  final ImageProvider? image;
+
+  final ImageFrameBuilder? frameBuilder;
+
+  final ImageLoadingBuilder? loadingBuilder;
+
+  final ImageErrorWidgetBuilder? errorBuilder;
+
+  final Animation<double>? opacity;
 
   @override
   Widget build(BuildContext context) {

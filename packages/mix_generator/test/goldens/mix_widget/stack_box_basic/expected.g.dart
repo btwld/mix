@@ -8,9 +8,9 @@ part of 'input.dart';
 // **************************************************************************
 
 class Overlay extends StatelessWidget {
-  final List<Widget> children;
-
   const Overlay({super.key, required this.children});
+
+  final List<Widget> children;
 
   @override
   Widget build(BuildContext context) {

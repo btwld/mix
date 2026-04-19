@@ -6,7 +6,7 @@ part of 'box_spec.dart';
 // SpecGenerator
 // **************************************************************************
 
-mixin _$BoxSpecMethods on Spec<BoxSpec>, Diagnosticable {
+mixin _$BoxSpec implements Spec<BoxSpec>, Diagnosticable {
   AlignmentGeometry? get alignment;
   EdgeInsetsGeometry? get padding;
   EdgeInsetsGeometry? get margin;
@@ -16,6 +16,9 @@ mixin _$BoxSpecMethods on Spec<BoxSpec>, Diagnosticable {
   Matrix4? get transform;
   AlignmentGeometry? get transformAlignment;
   Clip? get clipBehavior;
+
+  @override
+  Type get type => BoxSpec;
 
   @override
   BoxSpec copyWith({
@@ -66,21 +69,6 @@ mixin _$BoxSpecMethods on Spec<BoxSpec>, Diagnosticable {
   }
 
   @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(DiagnosticsProperty('alignment', alignment))
-      ..add(DiagnosticsProperty('padding', padding))
-      ..add(DiagnosticsProperty('margin', margin))
-      ..add(DiagnosticsProperty('constraints', constraints))
-      ..add(DiagnosticsProperty('decoration', decoration))
-      ..add(DiagnosticsProperty('foregroundDecoration', foregroundDecoration))
-      ..add(DiagnosticsProperty('transform', transform))
-      ..add(DiagnosticsProperty('transformAlignment', transformAlignment))
-      ..add(EnumProperty<Clip>('clipBehavior', clipBehavior));
-  }
-
-  @override
   List<Object?> get props => [
     alignment,
     padding,
@@ -92,4 +80,55 @@ mixin _$BoxSpecMethods on Spec<BoxSpec>, Diagnosticable {
     transformAlignment,
     clipBehavior,
   ];
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        other is BoxSpec &&
+            runtimeType == other.runtimeType &&
+            propsEquals(props, other.props);
+  }
+
+  @override
+  int get hashCode => propsHash(runtimeType, props);
+
+  @override
+  bool get stringify => true;
+
+  @override
+  Map<String, String> getDiff(Equatable other) {
+    if (this == other) return const {};
+
+    return propsDiff(props, other.props);
+  }
+
+  @override
+  String toStringShort() => '$runtimeType';
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) =>
+      toDiagnosticsNode(
+        style: DiagnosticsTreeStyle.singleLine,
+      ).toString(minLevel: minLevel);
+
+  @override
+  DiagnosticsNode toDiagnosticsNode({
+    String? name,
+    DiagnosticsTreeStyle? style,
+  }) =>
+      DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    properties
+      ..add(DiagnosticsProperty('alignment', alignment))
+      ..add(DiagnosticsProperty('padding', padding))
+      ..add(DiagnosticsProperty('margin', margin))
+      ..add(DiagnosticsProperty('constraints', constraints))
+      ..add(DiagnosticsProperty('decoration', decoration))
+      ..add(DiagnosticsProperty('foregroundDecoration', foregroundDecoration))
+      ..add(DiagnosticsProperty('transform', transform))
+      ..add(DiagnosticsProperty('transformAlignment', transformAlignment))
+      ..add(EnumProperty<Clip>('clipBehavior', clipBehavior));
+  }
 }

@@ -10,6 +10,7 @@ import 'package:mix_annotations/mix_annotations.dart';
 import 'package:source_gen/source_gen.dart';
 
 import 'core/builders/mix_mixin_builder.dart';
+import 'core/errors.dart';
 import 'core/models/annotation_config.dart';
 import 'core/models/mix_field_model.dart';
 
@@ -42,18 +43,21 @@ class MixableGenerator extends GeneratorForAnnotation<Mixable> {
     return elementName == 'Mix' || elementName == 'Mixable';
   }
 
+  /// Walks the supertype chain to find the concrete `Mix<T>`/`Mixable<T>`
+  /// binding and returns `T`.
+  ///
+  /// Intermediate classes may introduce their own generic parameters (e.g.
+  /// `class BaseMix<A> extends Mix<BoxConstraints>`). Reading the direct
+  /// supertype's first type argument would incorrectly pick `A`; we must
+  /// locate the actual Mix binding first.
   String? _extractResolveToType(ClassElement classElement) {
-    // First check direct supertype
-    final supertype = classElement.supertype;
-    if (supertype != null && supertype.typeArguments.isNotEmpty) {
-      // ConstraintsMix<BoxConstraints> -> BoxConstraints
-      return supertype.typeArguments.first.getDisplayString();
-    }
-
-    // Fallback: check all supertypes for Mix<T>
-    for (final interface in classElement.allSupertypes) {
-      if (_isMixType(interface) && interface.typeArguments.isNotEmpty) {
-        return interface.typeArguments.first.getDisplayString();
+    for (final supertype in [
+      classElement.supertype,
+      ...classElement.allSupertypes,
+    ]) {
+      if (supertype == null) continue;
+      if (_isMixType(supertype) && supertype.typeArguments.isNotEmpty) {
+        return supertype.typeArguments.first.getDisplayString();
       }
     }
 
@@ -135,26 +139,22 @@ class MixableGenerator extends GeneratorForAnnotation<Mixable> {
   ) {
     // Validate element is a class
     if (element is! ClassElement) {
-      throw InvalidGenerationSource(
-        '@Mixable can only be applied to classes.',
-        element: element,
-      );
+      fail(element, '@Mixable can only be applied to classes.');
     }
 
     final classElement = element;
     final mixName = classElement.name;
     if (mixName == null) {
-      throw InvalidGenerationSource(
-        '@Mixable class must have a name.',
-        element: element,
-      );
+      fail(element, '@Mixable class must have a name.');
     }
 
     // Validate it's a Mix class
     if (!_isMixClass(classElement)) {
-      throw InvalidGenerationSource(
-        '@Mixable can only be applied to classes extending Mix<T> or its subclasses.',
-        element: element,
+      fail(
+        element,
+        '@Mixable can only be applied to classes extending Mix<T> or its '
+        'subclasses.',
+        todo: 'Make the class extend `Mix<YourResolveType>` or a Mix subclass.',
       );
     }
 
@@ -165,10 +165,11 @@ class MixableGenerator extends GeneratorForAnnotation<Mixable> {
     final resolveToType =
         config.resolveToType ?? _extractResolveToType(classElement);
     if (resolveToType == null) {
-      throw InvalidGenerationSource(
-        'Could not determine target type for resolve(). '
-        'Specify resolveToType in @Mixable annotation or ensure class extends Mix<T>.',
-        element: element,
+      fail(
+        element,
+        'Could not determine target type for resolve(). Specify '
+        'resolveToType in @Mixable annotation or ensure class extends '
+        'Mix<T>.',
       );
     }
 

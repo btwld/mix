@@ -27,17 +27,21 @@ dev_dependencies:
 
 ### `@MixableSpec`
 
-Generates `copyWith`, `==`/`hashCode`, and `lerp` methods for Spec classes (immutable style data).
+Generates a self-contained `_$<Name>` mixin for Spec classes (immutable style data). The mixin declares `implements Spec<T>, Diagnosticable` and inlines `type`, `copyWith`, `lerp`, `props`, `==`, `hashCode`, `toString`, `toDiagnosticsNode`, and `debugFillProperties` — so the user class needs a single `with` to be a fully-formed Spec.
 
 ```dart
 @MixableSpec()
-final class BoxSpec extends Spec<BoxSpec> with _$BoxSpec {
+final class BoxSpec with _$BoxSpec {
+  @override
   final Color? color;
+  @override
   final double? width;
 
   const BoxSpec({this.color, this.width});
 }
 ```
+
+The generated mixin `_$BoxSpec` is the only thing the user class mixes in — `Equatable`-style equality (via `propsEquals` / `propsHash` helpers) and `Diagnosticable`'s concrete surface are inlined by the generator, not pushed onto the user.
 
 Control which methods are generated via `GeneratedSpecMethods` flags:
 
@@ -164,14 +168,18 @@ class Chip extends StatelessWidget {
 }
 ```
 
-Use `widgetBuilder` when a style family supports multiple widget targets:
+Built-in Mix widgets are selected automatically for Mix-owned specs. Use
+`widgetBuilder` only for custom widgets that need their own construction logic:
 
 ```dart
-@MixWidget(widgetBuilder: RowBoxBuilder())
-final toolbarStyle = FlexBoxStyler();
+@MixWidget(widgetBuilder: GlassCardBuilder())
+final popupStyle = BoxStyler();
 ```
 
-This keeps the `FlexBoxStyler.call()`-shaped API but generates a wrapper that constructs `RowBox`. `widgetBuilder` accepts any const subclass of `MixWidgetBuilder<TSpec>` (from `package:mix`); users can author their own builders for custom widgets.
+The explicit builder form is intentionally narrow: pass an unprefixed,
+zero-argument custom builder constructor such as `GlassCardBuilder()`. Built-in
+builders are inferred by `@MixWidget()`, and prefixed, named, configured, or
+static builder expressions are not supported.
 
 The generator uses the styler's `call()` method as the source of truth for wrapper parameters: each `call()` parameter is mirrored on the generated wrapper's constructor and forwarded through `MixWidgetBuilder.build(style, ...)`.
 

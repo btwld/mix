@@ -7,17 +7,17 @@ part of 'input.dart';
 // MixWidgetGenerator
 // **************************************************************************
 
-class Sidebar extends StatelessWidget {
-  final List<Widget> children;
+class GlassCard extends StatelessWidget {
+  const GlassCard({super.key, this.child});
 
-  const Sidebar({super.key, required this.children});
+  final Widget? child;
 
   @override
   Widget build(BuildContext context) {
-    return const ColumnBoxBuilder().build(
-      sidebarStyle,
+    return const GlassCardBuilder().build(
+      glassCardStyle,
       key: key,
-      children: children,
+      child: child,
     );
   }
 }

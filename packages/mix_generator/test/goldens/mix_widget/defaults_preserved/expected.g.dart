@@ -8,9 +8,9 @@ part of 'input.dart';
 // **************************************************************************
 
 class DefaultCard extends StatelessWidget {
-  final Widget? child;
-
   const DefaultCard({super.key, this.child = const Widget()});
+
+  final Widget? child;
 
   @override
   Widget build(BuildContext context) {

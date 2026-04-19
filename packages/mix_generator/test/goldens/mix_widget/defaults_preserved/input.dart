@@ -16,5 +16,5 @@ class DefaultCardStyler extends Style<BoxSpec> {
   }
 }
 
-@MixWidget(widgetBuilder: BoxBuilder())
+@MixWidget()
 final defaultCardStyle = DefaultCardStyler();

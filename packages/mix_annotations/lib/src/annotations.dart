@@ -51,8 +51,9 @@ const mixableStyler = MixableStyler();
 ///
 /// Applies to a top-level final styler instance or a top-level factory
 /// function returning a styler. The generator mirrors the styler's `call(...)`
-/// signature onto the wrapper's constructor, then dispatches to a
-/// `MixWidgetBuilder` subclass to produce the final widget.
+/// signature onto the wrapper's constructor, then dispatches to an inferred
+/// built-in builder or a custom `MixWidgetBuilder` subclass to produce the
+/// final widget.
 ///
 /// ## How the styler's `call()` drives the wrapper
 ///
@@ -77,10 +78,6 @@ const mixableStyler = MixableStyler();
 /// @MixWidget()
 /// final cardStyle = BoxStyler().color(Colors.white).borderRounded(8);
 ///
-/// // Explicit builder: FlexBoxStyler → RowBoxBuilder → RowBox
-/// @MixWidget(widgetBuilder: RowBoxBuilder())
-/// final toolbarStyle = FlexBoxStyler();
-///
 /// // Custom builder
 /// @MixWidget(widgetBuilder: GlassCardBuilder())
 /// final popupStyle = BoxStyler();
@@ -90,14 +87,15 @@ const mixableStyler = MixableStyler();
 ///   with a trailing `Styler`/`Style` stripped, PascalCased).
 /// - [styleable] when `true` adds a `style` parameter to the wrapper that is
 ///   merged with the base style at build time.
-/// - [widgetBuilder] optionally overrides widget selection. Pass a const
-///   subclass of `MixWidgetBuilder<TSpec>` (from `package:mix`). When omitted,
-///   the generator picks a default builder for the styler's spec type (e.g.
+/// - [widgetBuilder] optionally selects a custom widget builder. Pass an
+///   unprefixed zero-argument constructor call for a user-authored
+///   `MixWidgetBuilder<TSpec>` subclass, such as `GlassCardBuilder()`. Built-in
+///   Mix builders are inferred automatically when omitted (e.g.
 ///   `BoxSpec` → `BoxBuilder`), falling back to the call-return widget when no
 ///   default is known.
 ///
 /// Typed as [Object] to keep this annotation package Flutter-free; the
-/// generator validates the concrete type is a `MixWidgetBuilder` subtype.
+/// generator validates the concrete type extends `MixWidgetBuilder`.
 class MixWidget {
   final String? name;
   final bool styleable;

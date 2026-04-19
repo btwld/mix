@@ -1,11 +1,21 @@
 import 'package:flutter/widgets.dart';
 
-import 'internal/compare_mixin.dart';
+import 'equatable.dart';
+
+// Re-export the equality helpers so generated `_$XSpec` mixins (which
+// `part of` a file that imports `spec.dart`) can reach `propsEquals`,
+// `propsHash`, and `propsDiff` without leaking the package entrypoint
+// into `lib/src` (DCM rule `avoid-importing-entrypoint-exports`).
+export 'equatable.dart' show Equatable, propsEquals, propsHash, propsDiff;
 
 /// Base class for all resolved specifications that define widget properties.
 ///
 /// Specs are the final resolved form of styling attributes after applying
-/// context-specific values and merging operations.
+/// context-specific values and merging operations. Mixes in [Equatable] so
+/// every Spec — generated or hand-written — carries value equality by
+/// contract. Concrete subclasses either satisfy the Equatable interface via
+/// the `_$XSpec` mixin emitted by `mix_generator` or by supplying `props`
+/// directly.
 @immutable
 abstract class Spec<T extends Spec<T>> with Equatable {
   const Spec();

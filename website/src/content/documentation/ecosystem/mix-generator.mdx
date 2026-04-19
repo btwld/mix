@@ -71,7 +71,7 @@ Contributors working inside the Mix repository often use `melos run gen:build` t
 
 ### `@MixableSpec`
 
-Use on immutable **Spec** classes that extend `Spec<T>`. Controls which **methods** and **components** are generated via integer flags (see `GeneratedSpecMethods` and `GeneratedSpecComponents` in `mix_annotations`).
+Use on immutable **Spec** classes with a single `with _$<Name>` — no `extends Spec<T>`, no separate `Equatable` / `Diagnosticable` mixins. The generated mixin `implements Spec<T>, Diagnosticable` and inlines equality (`propsEquals` / `propsHash`), `toString`, and `toDiagnosticsNode`, so nominal subtyping and debug output are preserved without per-spec ceremony. Controls which **methods** and **components** are generated via integer flags (see `GeneratedSpecMethods` and `GeneratedSpecComponents` in `mix_annotations`).
 
 ```dart
 import 'package:flutter/foundation.dart';
@@ -82,8 +82,10 @@ part 'my_spec.g.dart';
 
 @MixableSpec()
 @immutable
-final class MySpec extends Spec<MySpec> with _$MySpecMethods {
+final class MySpec with _$MySpec {
+  @override
   final String? name;
+  @override
   final int? age;
 
   const MySpec({this.name, this.age});

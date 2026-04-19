@@ -165,16 +165,8 @@ class Chip extends StatelessWidget {
 }
 ```
 
-Use `widgetBuilder` when a styler family supports multiple widget targets:
-
-```dart
-@MixWidget(widgetBuilder: RowBoxBuilder())
-final toolbarStyle = FlexBoxStyler();
-```
-
-This keeps the `FlexBoxStyler.call()`-shaped API but generates a wrapper that constructs `RowBox`.
-
-`widgetBuilder` accepts any `MixWidgetBuilder<TSpec>` subclass. Mix ships built-ins (`BoxBuilder`, `RowBoxBuilder`, `ColumnBoxBuilder`, `FlexBoxBuilder`, `StyledTextBuilder`, `StyledIconBuilder`, `StyledImageBuilder`, `StackBoxBuilder`), and you can author your own for custom widgets:
+Built-in Mix widgets are selected automatically for Mix-owned specs. Use
+`widgetBuilder` only for custom widgets that need their own construction logic:
 
 ```dart
 class GlassCardBuilder extends MixWidgetBuilder<BoxSpec> {
@@ -187,6 +179,11 @@ class GlassCardBuilder extends MixWidgetBuilder<BoxSpec> {
 @MixWidget(widgetBuilder: GlassCardBuilder())
 final popupStyle = BoxStyler();
 ```
+
+The explicit builder form is intentionally narrow: pass an unprefixed,
+zero-argument custom builder constructor such as `GlassCardBuilder()`. Built-in
+builders are inferred by `@MixWidget()`, and prefixed, named, configured, or
+static builder expressions are not supported.
 
 The generator uses the styler's `call()` method as the source of truth for wrapper parameters: each `call()` parameter is mirrored on the generated wrapper's constructor and forwarded through `MixWidgetBuilder.build(style, ...)`.
 

@@ -30,11 +30,16 @@ dev_dependencies:
 
 ### From `@MixableSpec` — Spec mixin
 
-Generates a `_$<Name>` mixin for immutable Spec classes with:
+Generates a self-contained `_$<Name>` mixin (`implements Spec<Name>, Diagnosticable`) for immutable Spec classes. User code declares the spec with a single `with _$<Name>` — Equatable-style equality and Diagnosticable's concrete surface are inlined by the generator:
 
+- `Type get type` — the concrete spec `Type`
 - `copyWith()` — create modified copies
-- `==` / `hashCode` — value equality
 - `lerp()` — smooth interpolation between specs
+- `props`, `==`, `hashCode` — deep equality via `propsEquals` / `propsHash` helpers
+- `toString({DiagnosticLevel minLevel})`, `toStringShort()`, `toDiagnosticsNode()` — Flutter inspector integration
+- `debugFillProperties()` — diagnostic output
+
+No `with Equatable` and no `with Diagnosticable` on the user class — the mixin carries both.
 
 ```dart
 import 'package:mix/mix.dart';
@@ -43,10 +48,14 @@ import 'package:mix_annotations/mix_annotations.dart';
 part 'box_spec.g.dart';
 
 @MixableSpec()
-final class BoxSpec extends Spec<BoxSpec> with _$BoxSpec {
+final class BoxSpec with _$BoxSpec {
+  @override
   final Color? color;
+  @override
   final double? width;
+  @override
   final double? height;
+  @override
   final AlignmentGeometry? alignment;
 
   const BoxSpec({this.color, this.width, this.height, this.alignment});
@@ -187,16 +196,22 @@ class Chip extends StatelessWidget {
 }
 ```
 
-For style families with multiple valid widget targets, use `widgetBuilder`:
+Built-in Mix widgets are selected automatically for Mix-owned specs. Use
+`widgetBuilder` only for custom widgets that need their own construction logic:
 
 ```dart
-@MixWidget(widgetBuilder: RowBoxBuilder())
-final toolbarStyle = FlexBoxStyler();
+@MixWidget(widgetBuilder: GlassCardBuilder())
+final popupStyle = BoxStyler();
 ```
 
-This keeps the `FlexBoxStyler.call()`-shaped API but generates a wrapper that constructs `RowBox`.
-
-`widgetBuilder` accepts any const subclass of `MixWidgetBuilder<TSpec>`. Mix ships eight built-ins (`BoxBuilder`, `FlexBoxBuilder`, `RowBoxBuilder`, `ColumnBoxBuilder`, `StyledTextBuilder`, `StyledIconBuilder`, `StyledImageBuilder`, `StackBoxBuilder`); users can author their own by overriding `build(Style<TSpec> style, {Key? key, Widget? child, List<Widget> children, ...})`. The generator mirrors the source styler's `call()` signature onto the wrapper and forwards each parameter as a named argument into `build()`.
+The explicit builder form is intentionally narrow: pass an unprefixed,
+zero-argument custom builder constructor such as `GlassCardBuilder()`. Built-in
+builders are inferred by `@MixWidget()`, and prefixed, named, configured, or
+static builder expressions are not supported. Custom builders override the full
+`build(Style<TSpec> style, {Key? key, Widget? child, List<Widget> children, ...})`
+signature and ignore parameters that do not apply to their widget. The generator
+mirrors the source styler's `call()` signature onto the wrapper and forwards
+each supported parameter as a named argument into `build()`.
 
 `@MixWidget` supports top-level `final` variables and top-level functions. Function-backed declarations prepend their own public factory parameters before the mirrored `call()` parameters, so inputs can shape the generated base style.
 

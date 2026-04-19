@@ -6,7 +6,7 @@ part of 'flex_spec.dart';
 // SpecGenerator
 // **************************************************************************
 
-mixin _$FlexSpecMethods on Spec<FlexSpec>, Diagnosticable {
+mixin _$FlexSpec implements Spec<FlexSpec>, Diagnosticable {
   Axis? get direction;
   MainAxisAlignment? get mainAxisAlignment;
   CrossAxisAlignment? get crossAxisAlignment;
@@ -16,6 +16,9 @@ mixin _$FlexSpecMethods on Spec<FlexSpec>, Diagnosticable {
   TextBaseline? get textBaseline;
   Clip? get clipBehavior;
   double? get spacing;
+
+  @override
+  Type get type => FlexSpec;
 
   @override
   FlexSpec copyWith({
@@ -70,8 +73,57 @@ mixin _$FlexSpecMethods on Spec<FlexSpec>, Diagnosticable {
   }
 
   @override
+  List<Object?> get props => [
+    direction,
+    mainAxisAlignment,
+    crossAxisAlignment,
+    mainAxisSize,
+    verticalDirection,
+    textDirection,
+    textBaseline,
+    clipBehavior,
+    spacing,
+  ];
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        other is FlexSpec &&
+            runtimeType == other.runtimeType &&
+            propsEquals(props, other.props);
+  }
+
+  @override
+  int get hashCode => propsHash(runtimeType, props);
+
+  @override
+  bool get stringify => true;
+
+  @override
+  Map<String, String> getDiff(Equatable other) {
+    if (this == other) return const {};
+
+    return propsDiff(props, other.props);
+  }
+
+  @override
+  String toStringShort() => '$runtimeType';
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) =>
+      toDiagnosticsNode(
+        style: DiagnosticsTreeStyle.singleLine,
+      ).toString(minLevel: minLevel);
+
+  @override
+  DiagnosticsNode toDiagnosticsNode({
+    String? name,
+    DiagnosticsTreeStyle? style,
+  }) =>
+      DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
+
+  @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
     properties
       ..add(EnumProperty<Axis>('direction', direction))
       ..add(
@@ -92,17 +144,4 @@ mixin _$FlexSpecMethods on Spec<FlexSpec>, Diagnosticable {
       ..add(EnumProperty<Clip>('clipBehavior', clipBehavior))
       ..add(DoubleProperty('spacing', spacing));
   }
-
-  @override
-  List<Object?> get props => [
-    direction,
-    mainAxisAlignment,
-    crossAxisAlignment,
-    mainAxisSize,
-    verticalDirection,
-    textDirection,
-    textBaseline,
-    clipBehavior,
-    spacing,
-  ];
 }

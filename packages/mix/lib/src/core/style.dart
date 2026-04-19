@@ -4,7 +4,6 @@ import 'package:flutter/widgets.dart';
 import '../animation/animation_config.dart';
 import '../modifiers/widget_modifier_config.dart';
 import '../variants/variant.dart';
-import 'internal/compare_mixin.dart';
 import 'mix_element.dart';
 import 'providers/style_provider.dart';
 import 'spec.dart';

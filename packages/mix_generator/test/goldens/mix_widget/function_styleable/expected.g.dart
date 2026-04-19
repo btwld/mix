@@ -8,11 +8,13 @@ part of 'input.dart';
 // **************************************************************************
 
 class Chip extends StatelessWidget {
-  final Color color;
-  final Widget? child;
-  final BoxStyler? style;
-
   const Chip({super.key, required this.color, this.child, this.style});
+
+  final Color color;
+
+  final Widget? child;
+
+  final BoxStyler? style;
 
   @override
   Widget build(BuildContext context) {

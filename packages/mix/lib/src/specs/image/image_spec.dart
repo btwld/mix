@@ -13,8 +13,7 @@ part 'image_spec.g.dart';
 /// alignment, filtering, and semantic properties.
 @MixableSpec()
 @immutable
-final class ImageSpec extends Spec<ImageSpec>
-    with Diagnosticable, _$ImageSpecMethods {
+final class ImageSpec with _$ImageSpec {
   /// The image to display.
   @override
   final ImageProvider<Object>? image;

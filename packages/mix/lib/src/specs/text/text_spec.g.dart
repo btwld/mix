@@ -6,7 +6,7 @@ part of 'text_spec.dart';
 // SpecGenerator
 // **************************************************************************
 
-mixin _$TextSpecMethods on Spec<TextSpec>, Diagnosticable {
+mixin _$TextSpec implements Spec<TextSpec>, Diagnosticable {
   TextOverflow? get overflow;
   StrutStyle? get strutStyle;
   TextAlign? get textAlign;
@@ -21,6 +21,9 @@ mixin _$TextSpecMethods on Spec<TextSpec>, Diagnosticable {
   Color? get selectionColor;
   String? get semanticsLabel;
   Locale? get locale;
+
+  @override
+  Type get type => TextSpec;
 
   @override
   TextSpec copyWith({
@@ -58,8 +61,62 @@ mixin _$TextSpecMethods on Spec<TextSpec>, Diagnosticable {
   }
 
   @override
+  List<Object?> get props => [
+    overflow,
+    strutStyle,
+    textAlign,
+    textScaler,
+    maxLines,
+    style,
+    textWidthBasis,
+    textHeightBehavior,
+    textDirection,
+    softWrap,
+    textDirectives,
+    selectionColor,
+    semanticsLabel,
+    locale,
+  ];
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        other is TextSpec &&
+            runtimeType == other.runtimeType &&
+            propsEquals(props, other.props);
+  }
+
+  @override
+  int get hashCode => propsHash(runtimeType, props);
+
+  @override
+  bool get stringify => true;
+
+  @override
+  Map<String, String> getDiff(Equatable other) {
+    if (this == other) return const {};
+
+    return propsDiff(props, other.props);
+  }
+
+  @override
+  String toStringShort() => '$runtimeType';
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) =>
+      toDiagnosticsNode(
+        style: DiagnosticsTreeStyle.singleLine,
+      ).toString(minLevel: minLevel);
+
+  @override
+  DiagnosticsNode toDiagnosticsNode({
+    String? name,
+    DiagnosticsTreeStyle? style,
+  }) =>
+      DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
+
+  @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
     properties
       ..add(EnumProperty<TextOverflow>('overflow', overflow))
       ..add(DiagnosticsProperty('strutStyle', strutStyle))
@@ -82,22 +139,4 @@ mixin _$TextSpecMethods on Spec<TextSpec>, Diagnosticable {
       ..add(StringProperty('semanticsLabel', semanticsLabel))
       ..add(DiagnosticsProperty('locale', locale));
   }
-
-  @override
-  List<Object?> get props => [
-    overflow,
-    strutStyle,
-    textAlign,
-    textScaler,
-    maxLines,
-    style,
-    textWidthBasis,
-    textHeightBehavior,
-    textDirection,
-    softWrap,
-    textDirectives,
-    selectionColor,
-    semanticsLabel,
-    locale,
-  ];
 }

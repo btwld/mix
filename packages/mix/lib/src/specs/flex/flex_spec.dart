@@ -13,8 +13,7 @@ part 'flex_spec.g.dart';
 /// direction, alignment, and spacing through the Mix framework.
 @MixableSpec()
 @immutable
-final class FlexSpec extends Spec<FlexSpec>
-    with Diagnosticable, _$FlexSpecMethods {
+final class FlexSpec with _$FlexSpec {
   /// The direction to use as the main axis.
   @override
   final Axis? direction;

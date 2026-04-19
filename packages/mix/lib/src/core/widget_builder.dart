@@ -7,9 +7,10 @@ import 'style.dart';
 ///
 /// Subclass this to describe how the `@MixWidget` code generator should
 /// construct the underlying widget when a styler is consumed. Built-in
-/// subclasses ([BoxBuilder], [RowBoxBuilder], [StyledTextBuilder], ...) ship
-/// with Mix; users can subclass this for their own widgets and pass the
-/// subclass to `@MixWidget(widgetBuilder: MyBuilder())`.
+/// subclasses ([BoxBuilder], [FlexBoxBuilder], [StyledTextBuilder], ...) ship
+/// with Mix and are inferred by `@MixWidget()` for Mix-owned specs. Users can
+/// subclass this for their own widgets and pass the subclass to
+/// `@MixWidget(widgetBuilder: MyBuilder())`.
 ///
 /// Typed on the [Spec] (not the styler) to match [StyleWidget]'s own contract:
 /// any `Style<TSpec>` subtype — including custom stylers, merged styles, or
@@ -45,16 +46,14 @@ import 'style.dart';
 ///
 /// ## Superset signature
 ///
-/// [build] declares the *superset* of every named parameter any Mix styler's
-/// `call()` might surface. Each subclass overrides [build] and uses only the
-/// parameters relevant to its widget — unused parameters are ignored. The
-/// generator only forwards the parameters the source styler's `call()`
-/// actually exposes, so subclass overrides that omit irrelevant parameters
-/// are never called with them.
+/// [build] declares the *superset* of every named parameter any builder-backed
+/// Mix styler's `call()` may surface. Each subclass must override the full
+/// signature so that Dart's override contract remains valid, but it should use
+/// only the parameters relevant to its widget and ignore the rest.
 ///
 /// Adding a new Mix widget with a new `call()` parameter requires extending
-/// this base signature. The change is additive: existing subclasses keep
-/// working because every parameter is optional.
+/// this base signature. That is a breaking API change for external builder
+/// subclasses because every override must match the base method shape.
 abstract class MixWidgetBuilder<TSpec extends Spec<TSpec>> {
   const MixWidgetBuilder();
 

@@ -22,14 +22,48 @@ class MixableSpec {
   const MixableSpec({this.methods = 0x01 | 0x02 | 0x04, this.components = 0});
 }
 
-class Spec<T> {
-  const Spec();
+enum DiagnosticLevel { info }
+
+enum DiagnosticsTreeStyle { singleLine }
+
+class DiagnosticPropertiesBuilder {}
+
+class DiagnosticsNode {
+  String toString({DiagnosticLevel? minLevel}) => super.toString();
+}
+
+class DiagnosticableNode<T> extends DiagnosticsNode {
+  DiagnosticableNode({Object? name, Object? value, Object? style});
+}
+
+class IterableProperty<T> {
+  const IterableProperty(String name, Object? value);
+}
+
+abstract class Diagnosticable {
+  const Diagnosticable();
+}
+
+bool propsEquals(List<Object?> a, List<Object?> b) => true;
+int propsHash(Type runtimeType, List<Object?> props) => 0;
+Map<String, String> propsDiff(List<Object?> a, List<Object?> b) => const {};
+
+mixin Equatable {
+  List<Object?> get props;
+  bool get stringify => true;
+  Map<String, String> getDiff(Equatable other) => const {};
+}
+
+abstract class Spec<T extends Spec<T>> with Equatable {
+  Type get type;
+  T copyWith();
+  T lerp(T? other, double t);
 }
 
 class Shadow {}
 
 @MixableSpec()
-class BoxSpec extends Spec<BoxSpec> {
+class BoxSpec with _$BoxSpec {
   final List<Shadow>? shadows;
 
   const BoxSpec({this.shadows});
@@ -42,16 +76,19 @@ class BoxSpec extends Spec<BoxSpec> {
         generateFor: {'mix_generator|lib/spec_case.dart'},
         outputs: {
           'mix_generator|lib/spec_case.g.dart': decodedMatches(
-            allOf(
+            allOf([
               contains(
-                'mixin _\$BoxSpecMethods on Spec<BoxSpec>, Diagnosticable',
+                'mixin _\$BoxSpec implements Spec<BoxSpec>, Diagnosticable',
               ),
+              contains('Type get type => BoxSpec;'),
               contains('List<Shadow>? get shadows;'),
               contains('BoxSpec copyWith({List<Shadow>? shadows})'),
               contains('shadows: shadows ?? this.shadows'),
               contains("IterableProperty<Shadow>('shadows', shadows)"),
               contains('MixOps.lerp(shadows, other?.shadows, t)'),
-            ),
+              contains('propsEquals(props, other.props)'),
+              contains('propsHash(runtimeType, props)'),
+            ]),
           ),
         },
       );
@@ -219,6 +256,70 @@ class BoxConstraintsMix extends Mix<BoxConstraints> with DefaultValue<BoxConstra
                   r'minWidth: MixOps.resolve(context, $minWidth) ?? defaultValue.minWidth,',
                 ),
                 contains(r"DiagnosticsProperty('minWidth', $minWidth)"),
+              ),
+            ),
+          },
+        );
+      },
+    );
+
+    test(
+      'MixableGenerator resolves target through intermediate generic supertype',
+      () async {
+        const source = r'''
+library mix_case;
+
+part 'mix_case.g.dart';
+
+class Mixable {
+  final int methods;
+  final String? resolveToType;
+
+  const Mixable({this.methods = 0x01 | 0x02 | 0x04 | 0x08, this.resolveToType});
+}
+
+class Prop<T> {
+  const Prop();
+}
+
+class Mix<T> {
+  const Mix();
+}
+
+class BoxConstraints {
+  final double? minWidth;
+
+  const BoxConstraints({this.minWidth});
+}
+
+// Intermediate class introduces its own generic parameter `A` while
+// binding `Mix<BoxConstraints>`. The resolve-target must be
+// `BoxConstraints`, not `A`.
+class ConstraintsMix<A> extends Mix<BoxConstraints> {
+  const ConstraintsMix();
+}
+
+@Mixable()
+class BoxConstraintsMix extends ConstraintsMix<int> {
+  final Prop<double>? $minWidth;
+
+  const BoxConstraintsMix({Prop<double>? minWidth}) : $minWidth = minWidth;
+
+  static BoxConstraintsMix create({Prop<double>? minWidth}) =>
+      BoxConstraintsMix(minWidth: minWidth);
+}
+''';
+
+        await testBuilder(
+          _partBuilder(const MixableGenerator()),
+          {'mix_generator|lib/mix_case.dart': source},
+          generateFor: {'mix_generator|lib/mix_case.dart'},
+          outputs: {
+            'mix_generator|lib/mix_case.g.dart': decodedMatches(
+              allOf(
+                // Must resolve to BoxConstraints (the Mix binding), not int.
+                contains('BoxConstraints resolve(BuildContext context)'),
+                contains('return BoxConstraints('),
               ),
             ),
           },

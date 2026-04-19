@@ -295,6 +295,10 @@ const _packageExportConfigs = <String, _PackageExportConfig>{
     },
     excludedPaths: [
       'src/core/decoration_merge.dart',
+      // equatable.dart is re-exported via spec.dart (only `Equatable` is
+      // public). Excluding here prevents `mapPropsToString`/`compareObjects`
+      // from leaking as public Mix API via the barrel.
+      'src/core/equatable.dart',
       'src/core/shape_border_merge.dart',
       'src/style/abstracts/styler.dart',
     ],

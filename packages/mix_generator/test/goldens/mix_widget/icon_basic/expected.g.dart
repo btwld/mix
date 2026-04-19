@@ -8,10 +8,11 @@ part of 'input.dart';
 // **************************************************************************
 
 class CloseIcon extends StatelessWidget {
-  final IconData? icon;
-  final String? semanticLabel;
-
   const CloseIcon({super.key, this.icon, this.semanticLabel});
+
+  final IconData? icon;
+
+  final String? semanticLabel;
 
   @override
   Widget build(BuildContext context) {

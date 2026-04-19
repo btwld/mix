@@ -13,6 +13,12 @@ Builder mixWidgetPartBuilder() =>
 const mixAnnotationsStub = r'''
 library mix_annotations;
 
+export 'src/annotations.dart';
+''';
+
+const mixAnnotationsAnnotationsStub = r'''
+library mix_annotations.src.annotations;
+
 class MixWidget {
   final String? name;
   final bool styleable;
@@ -86,10 +92,8 @@ class Animation<T> {
 }
 ''';
 
-const mixStub = r'''
-library mix;
-
-import 'package:flutter/widgets.dart';
+const mixStyleStub = r'''
+library mix.src.core.style;
 
 class StyleSpec<T> {
   const StyleSpec();
@@ -98,30 +102,105 @@ class StyleSpec<T> {
 class Style<T> {
   const Style();
 }
+''';
+
+const mixWidgetBuilderStub = r'''
+library mix.src.core.widget_builder;
+
+import 'package:flutter/widgets.dart';
+
+import 'style.dart';
+
+abstract class MixWidgetBuilder<TSpec> {
+  const MixWidgetBuilder();
+
+  Widget build(
+    Style<TSpec> style, {
+    Key? key,
+    Widget? child,
+    List<Widget> children,
+    String? text,
+    IconData? icon,
+    String? semanticLabel,
+    ImageProvider? image,
+    ImageFrameBuilder? frameBuilder,
+    ImageLoadingBuilder? loadingBuilder,
+    ImageErrorWidgetBuilder? errorBuilder,
+    Animation<double>? opacity,
+  });
+}
+''';
+
+const mixBoxSpecStub = r'''
+library mix.src.specs.box.box_spec;
 
 class BoxSpec {
   const BoxSpec();
 }
+''';
 
-class TextSpec {
-  const TextSpec();
-}
+const mixFlexBoxSpecStub = r'''
+library mix.src.specs.flexbox.flexbox_spec;
 
 class FlexBoxSpec {
   const FlexBoxSpec();
 }
+''';
+
+const mixTextSpecStub = r'''
+library mix.src.specs.text.text_spec;
+
+class TextSpec {
+  const TextSpec();
+}
+''';
+
+const mixIconSpecStub = r'''
+library mix.src.specs.icon.icon_spec;
 
 class IconSpec {
   const IconSpec();
 }
+''';
+
+const mixImageSpecStub = r'''
+library mix.src.specs.image.image_spec;
 
 class ImageSpec {
   const ImageSpec();
 }
+''';
+
+const mixStackBoxSpecStub = r'''
+library mix.src.specs.stackbox.stackbox_spec;
 
 class StackBoxSpec {
   const StackBoxSpec();
 }
+''';
+
+const mixStub = r'''
+library mix;
+
+import 'package:flutter/widgets.dart';
+
+export 'src/core/style.dart';
+export 'src/core/widget_builder.dart';
+export 'src/specs/box/box_spec.dart';
+export 'src/specs/flexbox/flexbox_spec.dart';
+export 'src/specs/icon/icon_spec.dart';
+export 'src/specs/image/image_spec.dart';
+export 'src/specs/stackbox/stackbox_spec.dart';
+export 'src/specs/text/text_spec.dart';
+
+import 'src/core/style.dart';
+import 'src/core/widget_builder.dart';
+import 'src/specs/box/box_spec.dart';
+import 'src/specs/flexbox/flexbox_spec.dart';
+import 'src/specs/icon/icon_spec.dart';
+import 'src/specs/image/image_spec.dart';
+import 'src/specs/stackbox/stackbox_spec.dart';
+import 'src/specs/text/text_spec.dart';
 
 class BoxStyler extends Style<BoxSpec> {
   const BoxStyler();
@@ -315,25 +394,6 @@ class StackBox extends Widget {
   });
 }
 
-abstract class MixWidgetBuilder<TSpec> {
-  const MixWidgetBuilder();
-
-  Widget build(
-    Style<TSpec> style, {
-    Key? key,
-    Widget? child,
-    List<Widget> children,
-    String? text,
-    IconData? icon,
-    String? semanticLabel,
-    ImageProvider? image,
-    ImageFrameBuilder? frameBuilder,
-    ImageLoadingBuilder? loadingBuilder,
-    ImageErrorWidgetBuilder? errorBuilder,
-    Animation<double>? opacity,
-  });
-}
-
 class BoxBuilder extends MixWidgetBuilder<BoxSpec> {
   const BoxBuilder();
 
@@ -375,50 +435,6 @@ class FlexBoxBuilder extends MixWidgetBuilder<FlexBoxSpec> {
     Animation<double>? opacity,
   }) {
     return FlexBox(key: key, style: style, children: children);
-  }
-}
-
-class RowBoxBuilder extends MixWidgetBuilder<FlexBoxSpec> {
-  const RowBoxBuilder();
-
-  @override
-  Widget build(
-    Style<FlexBoxSpec> style, {
-    Key? key,
-    Widget? child,
-    List<Widget> children = const <Widget>[],
-    String? text,
-    IconData? icon,
-    String? semanticLabel,
-    ImageProvider? image,
-    ImageFrameBuilder? frameBuilder,
-    ImageLoadingBuilder? loadingBuilder,
-    ImageErrorWidgetBuilder? errorBuilder,
-    Animation<double>? opacity,
-  }) {
-    return RowBox(key: key, style: style, children: children);
-  }
-}
-
-class ColumnBoxBuilder extends MixWidgetBuilder<FlexBoxSpec> {
-  const ColumnBoxBuilder();
-
-  @override
-  Widget build(
-    Style<FlexBoxSpec> style, {
-    Key? key,
-    Widget? child,
-    List<Widget> children = const <Widget>[],
-    String? text,
-    IconData? icon,
-    String? semanticLabel,
-    ImageProvider? image,
-    ImageFrameBuilder? frameBuilder,
-    ImageLoadingBuilder? loadingBuilder,
-    ImageErrorWidgetBuilder? errorBuilder,
-    Animation<double>? opacity,
-  }) {
-    return ColumnBox(key: key, style: style, children: children);
   }
 }
 
@@ -542,8 +558,17 @@ Map<String, String> mixWidgetBaseSourcesFromPackageSources(
   return {
     'flutter|lib/src/widgets/framework.dart': flutterFrameworkStub,
     'flutter|lib/widgets.dart': flutterWidgetsStub,
+    'mix|lib/src/core/style.dart': mixStyleStub,
+    'mix|lib/src/core/widget_builder.dart': mixWidgetBuilderStub,
+    'mix|lib/src/specs/box/box_spec.dart': mixBoxSpecStub,
+    'mix|lib/src/specs/flexbox/flexbox_spec.dart': mixFlexBoxSpecStub,
+    'mix|lib/src/specs/text/text_spec.dart': mixTextSpecStub,
+    'mix|lib/src/specs/icon/icon_spec.dart': mixIconSpecStub,
+    'mix|lib/src/specs/image/image_spec.dart': mixImageSpecStub,
+    'mix|lib/src/specs/stackbox/stackbox_spec.dart': mixStackBoxSpecStub,
     'mix|lib/mix.dart': mixSourceOverride ?? mixStub,
     'mix_annotations|lib/mix_annotations.dart': mixAnnotationsStub,
+    'mix_annotations|lib/src/annotations.dart': mixAnnotationsAnnotationsStub,
     ...packageSources,
   };
 }
@@ -617,4 +642,3 @@ String normalizeGoldenText(String text) {
   final normalized = text.replaceAll('\r\n', '\n');
   return normalized.endsWith('\n') ? normalized : '$normalized\n';
 }
-

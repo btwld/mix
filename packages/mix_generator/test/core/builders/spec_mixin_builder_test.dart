@@ -82,7 +82,7 @@ void main() {
           fields: [],
           config: defaultConfig,
         );
-        expect(builder.mixinName, equals('_\$BoxSpecMethods'));
+        expect(builder.mixinName, equals('_\$BoxSpec'));
       });
 
       test('generates correct mixin name for TextSpec', () {
@@ -91,7 +91,7 @@ void main() {
           fields: [],
           config: defaultConfig,
         );
-        expect(builder.mixinName, equals('_\$TextSpecMethods'));
+        expect(builder.mixinName, equals('_\$TextSpec'));
       });
     });
 
@@ -106,8 +106,64 @@ void main() {
 
         expect(
           code,
-          contains('mixin _\$BoxSpecMethods on Spec<BoxSpec>, Diagnosticable'),
+          contains(
+            'mixin _\$BoxSpec implements Spec<BoxSpec>, Diagnosticable',
+          ),
         );
+      });
+
+      test('emits `Type get type` returning the spec class', () {
+        final builder = SpecMixinBuilder(
+          specName: 'BoxSpec',
+          fields: [],
+          config: defaultConfig,
+        );
+        final code = builder.build();
+
+        expect(code, contains('Type get type => BoxSpec;'));
+      });
+
+      test(
+        'inlines `==` and `hashCode` using `propsEquals` / `propsHash` helpers',
+        () {
+          final builder = SpecMixinBuilder(
+            specName: 'BoxSpec',
+            fields: [
+              createTestFieldModel(
+                name: 'color',
+                effectiveSpecType: 'Color?',
+                isNullable: true,
+              ),
+            ],
+            config: defaultConfig,
+          );
+          final code = builder.build();
+
+          // User-facing shape is `class BoxSpec with _$BoxSpec` — the mixin
+          // must carry `==`/`hashCode` itself rather than relying on
+          // `Equatable` being mixed in by the user.
+          expect(code, contains('bool operator ==(Object other)'));
+          expect(code, contains('propsEquals(props, other.props)'));
+          expect(code, contains('int get hashCode => propsHash('));
+        },
+      );
+
+      test('inlines Diagnosticable concrete methods', () {
+        final builder = SpecMixinBuilder(
+          specName: 'BoxSpec',
+          fields: [],
+          config: defaultConfig,
+        );
+        final code = builder.build();
+
+        // `_$BoxSpec implements Diagnosticable` — since the applying class
+        // mixes nothing else in, the mixin must provide concrete bodies.
+        expect(code, contains('String toStringShort()'));
+        expect(
+          code,
+          contains('String toString({DiagnosticLevel minLevel'),
+        );
+        expect(code, contains('DiagnosticsNode toDiagnosticsNode('));
       });
 
       test('generates abstract getters for fielded specs', () {
@@ -168,10 +224,12 @@ void main() {
             'void debugFillProperties(DiagnosticPropertiesBuilder properties)',
           ),
         );
-        expect(code, contains('super.debugFillProperties(properties)'));
+        // The mixin `implements Diagnosticable` — there is no parent
+        // `debugFillProperties` to delegate to, so no `super` call.
+        expect(code, isNot(contains('super.debugFillProperties(properties)')));
       });
 
-      test('generates props override', () {
+      test('emits Equatable surface (stringify + getDiff) with @override', () {
         final builder = SpecMixinBuilder(
           specName: 'BoxSpec',
           fields: [],
@@ -179,8 +237,12 @@ void main() {
         );
         final code = builder.build();
 
-        expect(code, contains('@override'));
-        expect(code, contains('List<Object?> get props =>'));
+        // `Spec<T> with Equatable` pulls the Equatable contract in via
+        // `implements Spec<X>` — the mixin inlines concrete bodies because
+        // `implements` doesn't carry over Equatable's concrete impls.
+        expect(code, contains('bool get stringify => true;'));
+        expect(code, contains('Map<String, String> getDiff(Equatable other)'));
+        expect(code, contains('propsDiff(props, other.props)'));
       });
 
       test('closes mixin with brace', () {

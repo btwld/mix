@@ -5,14 +5,10 @@ library;
 
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
-import 'package:source_gen/source_gen.dart';
 
+import '../checkers.dart';
 import '../curated/type_mappings.dart';
 import 'type_helpers.dart' as type_helpers;
-
-const _mixableFieldChecker = TypeChecker.fromUrl(
-  'package:mix_annotations/src/annotations.dart#MixableField',
-);
 
 /// Represents a Styler field with computed values for generation.
 class StylerFieldModel {
@@ -103,9 +99,8 @@ class StylerFieldModel {
     final hasMixType = mixTypeMap.containsKey(innerTypeName);
 
     // Check for @MixableField annotation
-    final mixableFieldAnnotation = _mixableFieldChecker.firstAnnotationOf(
-      element,
-    );
+    final mixableFieldAnnotation = mixableFieldAnnotationChecker
+        .firstAnnotationOf(element);
     final ignoreSetter =
         mixableFieldAnnotation?.getField('ignoreSetter')?.toBoolValue() ??
         false;

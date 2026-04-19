@@ -10,6 +10,7 @@ import 'package:mix_annotations/mix_annotations.dart';
 import 'package:source_gen/source_gen.dart';
 
 import 'core/builders/styler_mixin_builder.dart';
+import 'core/errors.dart';
 import 'core/models/annotation_config.dart';
 import 'core/models/styler_field_model.dart';
 
@@ -104,36 +105,29 @@ class StylerGenerator extends GeneratorForAnnotation<MixableStyler> {
   ) {
     // Validate element is a class
     if (element is! ClassElement) {
-      throw InvalidGenerationSource(
-        '@MixableStyler can only be applied to classes.',
-        element: element,
-      );
+      fail(element, '@MixableStyler can only be applied to classes.');
     }
 
     final classElement = element;
     final stylerName = classElement.name;
     if (stylerName == null) {
-      throw InvalidGenerationSource(
-        '@MixableStyler class must have a name.',
-        element: element,
-      );
+      fail(element, '@MixableStyler class must have a name.');
     }
 
     // Validate it's a Style class
     if (!_isStyleClass(classElement)) {
-      throw InvalidGenerationSource(
+      fail(
+        element,
         '@MixableStyler can only be applied to classes extending Style<T>.',
-        element: element,
+        todo: 'Make the class extend a concrete Style subclass such as '
+            '`Style<YourSpec>` or `MixStyler<YourStyler, YourSpec>`.',
       );
     }
 
     // Extract Spec name from Style<SpecName>
     final specName = _extractSpecName(classElement);
     if (specName == null) {
-      throw InvalidGenerationSource(
-        'Could not determine Spec type from Style<T> supertype.',
-        element: element,
-      );
+      fail(element, 'Could not determine Spec type from Style<T> supertype.');
     }
 
     // Extract field models

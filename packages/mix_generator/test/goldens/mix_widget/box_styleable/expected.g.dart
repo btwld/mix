@@ -8,10 +8,11 @@ part of 'input.dart';
 // **************************************************************************
 
 class Card extends StatelessWidget {
-  final Widget? child;
-  final BoxStyler? style;
-
   const Card({super.key, this.child, this.style});
+
+  final Widget? child;
+
+  final BoxStyler? style;
 
   @override
   Widget build(BuildContext context) {

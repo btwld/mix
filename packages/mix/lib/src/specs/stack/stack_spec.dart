@@ -13,8 +13,7 @@ part 'stack_spec.g.dart';
 /// alignment, fit, text direction, and clipping behavior.
 @MixableSpec()
 @immutable
-final class StackSpec extends Spec<StackSpec>
-    with Diagnosticable, _$StackSpecMethods {
+final class StackSpec with _$StackSpec {
   /// How to align the non-positioned children.
   @override
   final AlignmentGeometry? alignment;

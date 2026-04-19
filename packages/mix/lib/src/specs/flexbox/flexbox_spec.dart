@@ -15,8 +15,7 @@ part 'flexbox_spec.g.dart';
 /// [FlexSpec] into a unified specification.
 @MixableSpec()
 @immutable
-final class FlexBoxSpec extends Spec<FlexBoxSpec>
-    with Diagnosticable, _$FlexBoxSpecMethods {
+final class FlexBoxSpec with _$FlexBoxSpec {
   /// Box styling properties for decoration, padding, constraints, etc.
   @override
   final StyleSpec<BoxSpec>? box;

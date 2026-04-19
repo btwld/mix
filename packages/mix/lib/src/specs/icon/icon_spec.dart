@@ -13,8 +13,7 @@ part 'icon_spec.g.dart';
 /// text direction, scaling behavior, and shadow effects.
 @MixableSpec()
 @immutable
-final class IconSpec extends Spec<IconSpec>
-    with Diagnosticable, _$IconSpecMethods {
+final class IconSpec with _$IconSpec {
   /// The color to use when drawing the icon.
   @override
   final Color? color;

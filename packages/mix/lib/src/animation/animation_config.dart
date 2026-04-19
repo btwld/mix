@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 
-import '../core/internal/compare_mixin.dart';
 import '../core/internal/constants.dart';
 import '../core/spec.dart';
 import '../core/style.dart';
