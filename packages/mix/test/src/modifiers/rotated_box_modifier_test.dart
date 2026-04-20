@@ -250,66 +250,6 @@ void main() {
     });
   });
 
-  group('RotatedBoxModifierUtility', () {
-    late RotatedBoxModifierUtility<MockStyle<RotatedBoxModifierMix>> utility;
-
-    setUp(() {
-      utility = RotatedBoxModifierUtility((attribute) => MockStyle(attribute));
-    });
-
-    test('call() creates attribute with specified quarter turns', () {
-      final result = utility.call(3);
-      final attribute = result.value;
-
-      expect(attribute.quarterTurns, isNotNull);
-      expect(attribute.quarterTurns!, resolvesTo(3));
-    });
-
-    test('d90() creates attribute with 1 quarter turn', () {
-      final result = utility.d90();
-      final attribute = result.value;
-
-      expect(attribute.quarterTurns!, resolvesTo(1));
-
-      // Verify it creates 90-degree rotation
-      expect(attribute, resolvesTo(const RotatedBoxModifier(1)));
-    });
-
-    test('d180() creates attribute with 2 quarter turns', () {
-      final result = utility.d180();
-      final attribute = result.value;
-
-      expect(attribute.quarterTurns!, resolvesTo(2));
-
-      // Verify it creates 180-degree rotation
-      expect(attribute, resolvesTo(const RotatedBoxModifier(2)));
-    });
-
-    test('d270() creates attribute with 3 quarter turns', () {
-      final result = utility.d270();
-      final attribute = result.value;
-
-      expect(attribute.quarterTurns!, resolvesTo(3));
-
-      // Verify it creates 270-degree rotation
-      expect(attribute, resolvesTo(const RotatedBoxModifier(3)));
-    });
-
-    test('utility methods are convenience for call()', () {
-      final d90Result = utility.d90();
-
-      expect(d90Result.value.quarterTurns!, resolvesTo(1));
-
-      final d180Result = utility.d180();
-
-      expect(d180Result.value.quarterTurns!, resolvesTo(2));
-
-      final d270Result = utility.d270();
-
-      expect(d270Result.value.quarterTurns!, resolvesTo(3));
-    });
-  });
-
   group('Integration tests', () {
     testWidgets('RotatedBoxModifierMix resolves and builds correctly', (
       WidgetTester tester,

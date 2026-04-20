@@ -44,22 +44,8 @@ jobs:
             console.log(newLabels)
             console.log('##########################')
             
-            // verify documentation 
-            const wasDocModified = files.filter(file => file.startsWith('website/')).length > 0
-            if (wasDocModified) {
-              newLabels.push('documentation')
-              console.log('documentation label was added')
-            }
-
-            // verify docs preview
-            const wasDocsPreviewModified = files.filter(file => file.startsWith('packages/mix_docs_preview/')).length > 0
-            if (wasDocsPreviewModified) {
-              newLabels.push('docs-preview')
-              console.log('docs-preview label was added')
-            }
-
             // verify repo
-            const wasRepoModified = files.filter(file => !file.startsWith('website/') && !file.startsWith('packages/')).length > 0
+            const wasRepoModified = files.filter(file => !file.startsWith('packages/')).length > 0
             if (wasRepoModified) {
               newLabels.push('repo')
               console.log('rep label was added')

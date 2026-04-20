@@ -288,10 +288,6 @@ const _packageExportConfigs = <String, _PackageExportConfig>{
     },
     hiddenSymbolsByPath: {
       'src/core/style.dart': ['StyleElement'],
-      'src/modifiers/box_modifier.dart': ['BoxModifierUtility'],
-      'src/properties/layout/edge_insets_geometry_util.dart': [
-        'createEdgeInsetsMix',
-      ],
     },
     excludedPaths: [
       'src/core/decoration_merge.dart',

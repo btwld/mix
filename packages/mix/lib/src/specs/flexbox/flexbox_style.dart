@@ -30,7 +30,7 @@ import '../box/box_spec.dart';
 import '../box/box_style.dart';
 import '../flex/flex_spec.dart';
 import '../flex/flex_style.dart';
-import 'flexbox_mutable_style.dart';
+import '../text/text_style.dart';
 import 'flexbox_spec.dart';
 import 'flexbox_widget.dart';
 
@@ -199,6 +199,10 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
     Alignment alignment = .center,
   }) => FlexBoxStyler().rotate(radians, alignment: alignment);
 
+  // Text style convenience
+  factory FlexBoxStyler.textStyle(TextStyler value) =>
+      FlexBoxStyler().textStyle(value);
+
   // Style metadata convenience
   factory FlexBoxStyler.animate(AnimationConfig value) =>
       FlexBoxStyler().animate(value);
@@ -345,8 +349,6 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
       FlexBoxStyler().translate(x, y, z);
   factory FlexBoxStyler.skew(double skewX, double skewY) =>
       FlexBoxStyler().skew(skewX, skewY);
-  static FlexBoxMutableStyler get chain => .new(FlexBoxStyler());
-
   // Box-style instance methods
 
   /// Sets the alignment property.
@@ -449,5 +451,11 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
   @override
   FlexBoxStyler border(BoxBorderMix value) {
     return merge(FlexBoxStyler(decoration: DecorationMix.border(value)));
+  }
+
+  /// Propagates the given [TextStyler] to descendant [StyledText] widgets via
+  /// [DefaultTextStylerModifier] (Mix inheritance).
+  FlexBoxStyler textStyle(TextStyler value) {
+    return wrap(WidgetModifierConfig.defaultTextStyler(value));
   }
 }
