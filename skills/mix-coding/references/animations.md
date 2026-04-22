@@ -1,281 +1,118 @@
 # Animations Reference
 
-Mix provides three animation approaches, from simple to full control:
-
-1. **Implicit** — easiest, auto-animate when state or variant changes
-2. **Phase** — multi-step flows triggered by events
-3. **Keyframe** — full timeline control with tracks
+Mix animation is configured on Stylers. Prefer style-level APIs for new app code:
+`.animate(...)`, `.keyframeAnimation(...)`, and `.phaseAnimation(...)`.
 
 ## Implicit Animations
 
-Add `.animate()` to any style — Mix auto-animates between states when variant conditions change.
-
-### Basic Implicit Animation
+Use `.animate(...)` when a style changes because of state, variants, or rebuilds.
 
 ```dart
 final style = BoxStyler()
     .color(Colors.blue)
     .size(100, 100)
-    .animate(.easeInOut(300.ms))
-    .onHovered(.color(Colors.red).size(120, 120));
-```
-
-### Animation Configs
-
-The `.animate()` method takes an `AnimationConfig`:
-
-| Config | Description |
-|--------|-------------|
-| `.easeInOut(Duration)` | Ease in and out curve |
-| `.ease(Duration)` | Standard ease curve |
-| `.linear(Duration)` | Linear interpolation |
-| `.spring(Duration)` | Spring physics |
-| `.decelerate(Duration)` | Decelerate curve |
-| `.bounceIn(Duration)` | Bounce in curve |
-| `.bounceOut(Duration)` | Bounce out curve |
-| `.elasticIn(Duration)` | Elastic in curve |
-| `.elasticOut(Duration)` | Elastic out curve |
-
-Duration uses the `.ms` extension (e.g., `300.ms`, `600.ms`).
-
-### State-Triggered Implicit Animation
-
-When state changes cause style differences, Mix interpolates automatically:
-
-```dart
-class Counter extends StatefulWidget { ... }
-
-class _CounterState extends State<Counter> {
-  int count = 0;
-
-  @override
-  Widget build(BuildContext context) {
-    final style = BoxStyler()
-        .color(Colors.blue)
-        .size(100 + count * 20, 100 + count * 20)
-        .borderRounded(10 + count * 5)
-        .animate(.spring(600.ms));
-
-    return GestureDetector(
-      onTap: () => setState(() => count++),
-      child: Box(style: style),
-    );
-  }
-}
-```
-
-### Variant-Triggered Implicit Animation
-
-```dart
-final style = BoxStyler()
-    .color(Colors.blue)
-    .size(100, 100)
-    .borderRounded(10)
-    .animate(.easeInOut(200.ms))
+    .borderRounded(12)
+    .animate(.easeInOut(220.ms))
     .onHovered(
-      .color(Colors.deepPurple)
-          .size(120, 120)
-          .borderRounded(20),
-    );
+      .color(Colors.blue.shade700)
+          .size(112, 112),
+    )
+    .onPressed(.scale(0.96));
 ```
 
----
+Common configs from `animation_config.dart`:
 
-## Phase Animations
+| Config | Use |
+|---|---|
+| `AnimationConfig.linear(duration)` or `.linear(duration)` | constant speed |
+| `AnimationConfig.ease(duration)` or `.ease(duration)` | default ease |
+| `AnimationConfig.easeInOut(duration)` or `.easeInOut(duration)` | balanced transition |
+| `AnimationConfig.decelerate(duration)` or `.decelerate(duration)` | slow finish |
+| `AnimationConfig.bounceOut(duration)` or `.bounceOut(duration)` | playful exit |
+| `AnimationConfig.elasticOut(duration)` or `.elasticOut(duration)` | elastic movement |
+| `AnimationConfig.spring(...)` | spring physics |
 
-Multi-step animations triggered by events. Each phase runs in sequence.
+Durations can use extension getters such as `180.ms`.
 
-### Basic Phase Animation
+## Keyframe Animation
 
-```dart
-class CompressExample extends StatefulWidget { ... }
-
-class _CompressExampleState extends State<CompressExample> {
-  final controller = PhaseAnimationController();
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final style = BoxStyler()
-        .color(Colors.blue)
-        .size(100, 100)
-        .borderRounded(12);
-
-    return GestureDetector(
-      onTap: () => controller.forward(),
-      child: PhaseAnimationBuilder(
-        controller: controller,
-        phases: [
-          // Phase 1: Compress
-          PhaseConfig(
-            style.size(80, 80).borderRounded(20),
-            duration: 150.ms,
-            curve: .easeIn,
-          ),
-          // Phase 2: Expand
-          PhaseConfig(
-            style.size(120, 120),
-            duration: 300.ms,
-            curve: .bounceOut,
-          ),
-          // Phase 3: Return to original
-          PhaseConfig(
-            style,
-            duration: 200.ms,
-            curve: .easeOut,
-          ),
-        ],
-        builder: (context, phaseStyle) {
-          return Box(style: phaseStyle);
-        },
-      ),
-    );
-  }
-}
-```
-
-### PhaseConfig
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `style` | Styler | The target style for this phase |
-| `duration` | `Duration` | How long this phase takes |
-| `curve` | `Curve` | Animation curve for this phase |
-
-### PhaseAnimationController
-
-| Method | Description |
-|--------|-------------|
-| `.forward()` | Start/restart the animation sequence |
-| `.dispose()` | Clean up resources |
-
----
-
-## Keyframe Animations
-
-Full timeline control with multiple tracks animating different properties.
-
-### Basic Keyframe Animation
+Use `.keyframeAnimation(...)` for timeline values. The `styleBuilder` receives
+computed keyframe values and returns a new Styler.
 
 ```dart
-class HeartAnimation extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final baseStyle = IconStyler()
-        .icon(Icons.favorite)
-        .size(40)
-        .color(Colors.red);
+final pulseTrigger = ValueNotifier(0);
 
-    return KeyframeAnimationBuilder(
-      duration: 1200.ms,
-      repeat: true,
-      keyframes: {
-        // Scale track
-        KeyframeTrack<double>(
-          property: KeyframeProperty.iconSize,
-          keyframes: [
-            Keyframe(0.0, 40),     // Start at size 40
-            Keyframe(0.3, 56),     // Grow to 56 at 30%
-            Keyframe(0.5, 40),     // Return to 40 at 50%
-            Keyframe(0.7, 52),     // Second beat at 70%
-            Keyframe(1.0, 40),     // Return to 40
-          ],
-        ),
-        // Color track
-        KeyframeTrack<Color>(
-          property: KeyframeProperty.iconColor,
-          keyframes: [
-            Keyframe(0.0, Colors.red),
-            Keyframe(0.3, Colors.red.shade900),
-            Keyframe(0.5, Colors.red),
-            Keyframe(0.7, Colors.red.shade800),
-            Keyframe(1.0, Colors.red),
-          ],
-        ),
-      },
-      builder: (context, keyframeStyle) {
-        return StyledIcon(style: baseStyle.merge(keyframeStyle));
-      },
-    );
-  }
-}
-```
-
-### Keyframe Toggle (e.g., Switch)
-
-```dart
-KeyframeAnimationBuilder(
-  duration: 400.ms,
-  playing: isOn,          // Animate forward when true, reverse when false
-  keyframes: {
-    KeyframeTrack<double>(
-      property: KeyframeProperty.width,
-      keyframes: [
-        Keyframe(0.0, 24),
-        Keyframe(0.5, 40),   // Stretch in the middle
-        Keyframe(1.0, 24),
-      ],
-    ),
-    KeyframeTrack<double>(
-      property: KeyframeProperty.translateX,
-      keyframes: [
-        Keyframe(0.0, 0),
-        Keyframe(1.0, 20),   // Slide to the right
-      ],
-    ),
-  },
-  builder: (context, style) => Box(style: baseStyle.merge(style)),
-);
-```
-
-### Looping Animation
-
-```dart
-KeyframeAnimationBuilder(
-  duration: 2000.ms,
-  repeat: true,           // Loop forever
-  keyframes: { ... },
-  builder: (context, style) => widget,
-);
-```
-
-### KeyframeAnimationBuilder
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `duration` | `Duration` | Total animation duration |
-| `keyframes` | `Set<KeyframeTrack>` | Set of animation tracks |
-| `builder` | `(context, style) => Widget` | Build widget with animated style |
-| `repeat` | `bool` | Loop animation (default: false) |
-| `playing` | `bool?` | Control play/reverse (null = auto-play) |
-| `curve` | `Curve?` | Overall animation curve |
-
-### Widget State Animation (Simplest)
-
-For simple hover/press animations without explicit animation builders:
-
-```dart
 final style = BoxStyler()
-    .size(100, 100)
-    .color(Colors.blue)
-    .borderRounded(8)
-    .animate(.spring(300.ms))
-    .onHovered(.size(110, 110).color(Colors.blue.shade700));
+    .color(Colors.pink)
+    .size(80, 80)
+    .shapeCircle()
+    .keyframeAnimation(
+      trigger: pulseTrigger,
+      timeline: [
+        KeyframeTrack<double>(
+          'scale',
+          [
+            Keyframe.easeOut(1.12, 120.ms),
+            Keyframe.easeIn(1.0, 160.ms),
+          ],
+          initial: 1.0,
+        ),
+      ],
+      styleBuilder: (values, style) {
+        return style.scale(values.get<double>('scale'));
+      },
+    );
 ```
 
----
+If `trigger` is omitted in the underlying config, keyframe animation is treated
+as looping. Prefer explicit triggers for event-based examples.
+
+## Phase Animation
+
+Use `.phaseAnimation(...)` for named or indexed steps where each phase maps to a target style.
+
+```dart
+enum ButtonPhase { compress, expand, settle }
+
+final trigger = ValueNotifier(0);
+
+final style = BoxStyler()
+    .color(Colors.blue)
+    .size(96, 48)
+    .borderRounded(12)
+    .phaseAnimation<ButtonPhase>(
+      trigger: trigger,
+      phases: ButtonPhase.values,
+      styleBuilder: (phase, style) {
+        return switch (phase) {
+          ButtonPhase.compress => style.scale(0.94),
+          ButtonPhase.expand => style.scale(1.04),
+          ButtonPhase.settle => style.scale(1.0),
+        };
+      },
+      configBuilder: (phase) {
+        return CurveAnimationConfig(
+          duration: 120.ms,
+          curve: Curves.easeInOut,
+        );
+      },
+    );
+```
+
+## Practical Guidance
+
+- Use `.animate(...)` for hover/press/theme transitions.
+- Use `.keyframeAnimation(...)` when one or more numeric values need a timeline.
+- Use `.phaseAnimation(...)` when the animation is a sequence of named states.
+- Dispose or own any external `Listenable` such as `ValueNotifier` in the
+  surrounding stateful widget.
+- Do not use builder-class examples for new app code unless source/docs specifically require them.
 
 ## Source Files
 
-- `packages/mix_docs_preview/lib/guides/animations/implicit_state_counter.dart` — State-triggered growth
-- `packages/mix_docs_preview/lib/guides/animations/implicit_variant_hover.dart` — Hover variant animation
-- `packages/mix_docs_preview/lib/guides/animations/implicit_curved_scale.dart` — Curved scale animation
-- `packages/mix_docs_preview/lib/guides/animations/implicit_spring_translate.dart` — Spring translation animation
-- `packages/mix_docs_preview/lib/guides/animations/keyframe_switch.dart` — Toggle switch keyframes
-- `packages/mix_docs_preview/lib/guides/animations/keyframe_loop.dart` — Looping keyframe
-- `packages/mix_docs_preview/lib/guides/animations/phase_tap_compress.dart` — Phase tap animation
+- `packages/mix/lib/src/style/mixins/animation_style_mixin.dart`
+- `packages/mix/lib/src/animation/animation_config.dart`
+- `packages/mix/lib/src/core/extensions/extensions.dart`
+- `packages/mix/test/src/style/styler_mixin_conformance_test.dart`
+- `packages/mix/test/src/animation/animation_config_test.dart`
+- `packages/mix/test/src/animation/style_animation_driver_test.dart`

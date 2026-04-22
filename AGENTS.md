@@ -16,18 +16,18 @@ This installs FVM, Flutter SDK (3.41.2), DCM, and melos, then bootstraps all pac
 
 ```
 packages/
-  mix/              # Core framework (v2.0.0-rc.0)
+  mix/              # Core framework (see packages/mix/pubspec.yaml for version)
   mix_annotations/  # Annotations for codegen
   mix_generator/    # build_runner generator
-  mix_lint/         # Custom linter (not in pub workspace, see below)
+  mix_lint/         # Custom linter
 ```
 
-## Pub workspace
+## Package management
 
-The repo uses [Dart pub workspaces](https://dart.dev/tools/pub/workspaces): a single `pubspec.lock` and shared resolution at the root. Run `dart pub get` at the repo root to resolve all workspace packages.
+The repo is a Melos-managed monorepo. Package membership is declared in [`melos.yaml`](melos.yaml). Run `melos bootstrap` at the repo root to resolve dependencies for all packages.
 
-- **In the workspace:** mix, mix_annotations, mix_generator, mix_tailwinds, mix_tailwinds/example.
-- **Excluded:** `mix_lint` (uses analyzer ^7.x for custom_lint_builder; other packages use analyzer >=9). Run `dart pub get` inside `packages/mix_lint` when working on the linter.
+- **Managed by `melos bootstrap`:** `mix`, `mix_annotations`, `mix_generator`, `mix_tailwinds`, `mix_tailwinds/example`, and `mix_lint`.
+- **Why `mix_lint` is called out separately:** it uses `analysis_server_plugin` with a broader analyzer range (`>=8.4.0 <12.0.0`), while generator-facing packages use `analyzer >=9`. `melos.yaml` includes it via a dedicated entry so dependency resolution stays clean.
 
 ## Commands
 
@@ -121,7 +121,7 @@ melos run test:coverage   # With coverage report
 <type>(<scope>): <description>
 
 type: feat, fix, chore, docs, refactor, test, ci
-scope: mix, mix_generator, mix_annotations, mix_lint
+scope: mix, mix_generator, mix_annotations, mix_lint, mix_tailwinds
 ```
 
 ## Key Files

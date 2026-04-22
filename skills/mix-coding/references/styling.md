@@ -1,269 +1,203 @@
 # Styling Reference
 
-## Patterns
+Use Stylers to describe visual intent, then pass them to Mix widgets. Keep app
+code on `BoxStyler`, `TextStyler`, `IconStyler`, `ImageStyler`,
+`FlexBoxStyler`, and `StackBoxStyler`; do not construct Specs directly.
 
-### Creating a Style
-
-```dart
-// Start from constructor
-final style = BoxStyler()
-    .color(Colors.blue)
-    .size(100, 100)
-    .borderRounded(12);
-
-// Start from factory (equivalent)
-final style = BoxStyler.color(Colors.blue)
-    .size(100, 100)
-    .borderRounded(12);
-```
-
-### Composing Styles
-
-Build new styles on top of existing ones. Later values override earlier ones:
+## Basic Box Styling
 
 ```dart
-final base = BoxStyler()
-    .paddingX(16)
-    .paddingY(8)
-    .borderRounded(8)
-    .color(Colors.black);
-
-final solid = base.color(Colors.blue);        // Override color only
-final soft = base.color(Colors.blue.shade100); // Different override
-```
-
-### Merging Styles
-
-Use `.merge()` to combine two stylers:
-
-```dart
-final layout = BoxStyler().paddingAll(16).size(200, 200);
-final visual = BoxStyler().color(Colors.blue).borderRounded(12);
-final combined = layout.merge(visual);
-```
-
-### Applying to Widgets
-
-```dart
-// Explicit style parameter
-Box(style: style, child: child);
-
-// Callable shorthand
-final box = BoxStyler().color(Colors.blue).size(100, 100);
-box(child: child);  // Creates a Box widget
-```
-
-### Widget Modifiers (wrap)
-
-Add widget-level behavior without nesting widgets:
-
-```dart
-final style = BoxStyler()
-    .color(Colors.blue)
-    .wrap(
-      .new().defaultTextStyle(
-        style: TextStyleMix().color(Colors.white).fontWeight(.bold),
-      ),
+final cardStyle = BoxStyler()
+    .color(Colors.white)
+    .paddingAll(16)
+    .borderRounded(12)
+    .shadow(
+      .color(Colors.black.withValues(alpha: 0.12))
+          .offset(y: 4)
+          .blurRadius(12),
     );
+
+Box(style: cardStyle, child: child);
 ```
 
----
-
-## BoxStyler API
-
-### Color & Background
-
-| Method | Description |
-|--------|-------------|
-| `.color(Color)` | Background color |
-| `.linearGradient({colors, begin, end, stops, tileMode})` | Linear gradient background |
-| `.radialGradient({center, radius, colors, stops, tileMode})` | Radial gradient background |
-| `.sweepGradient({center, startAngle, endAngle, colors, stops, tileMode})` | Sweep gradient background |
-| `.backgroundImage(ImageProvider, {fit, alignment, repeat})` | Background image |
-| `.backgroundImageUrl(String, {fit, alignment, repeat})` | Background image from URL |
-| `.backgroundImageAsset(String, {fit, alignment, repeat})` | Background image from asset |
-
-### Sizing & Constraints
-
-| Method | Description |
-|--------|-------------|
-| `.width(double)` | Fixed width |
-| `.height(double)` | Fixed height |
-| `.size(double w, double h)` | Fixed width and height |
-| `.minWidth(double)` | Minimum width |
-| `.maxWidth(double)` | Maximum width |
-| `.minHeight(double)` | Minimum height |
-| `.maxHeight(double)` | Maximum height |
-
-### Spacing
-
-| Method | Description |
-|--------|-------------|
-| `.paddingAll(double)` | Padding on all sides |
-| `.paddingX(double)` | Horizontal padding (left + right) |
-| `.paddingY(double)` | Vertical padding (top + bottom) |
-| `.paddingTop(double)` | Top padding |
-| `.paddingBottom(double)` | Bottom padding |
-| `.paddingLeft(double)` | Left padding |
-| `.paddingRight(double)` | Right padding |
-| `.paddingStart(double)` | Start padding (RTL-aware) |
-| `.paddingEnd(double)` | End padding (RTL-aware) |
-| `.paddingOnly({top, bottom, left, right})` | Individual padding |
-| `.marginAll(double)` | Margin on all sides |
-| `.marginX(double)` | Horizontal margin |
-| `.marginY(double)` | Vertical margin |
-| `.marginTop(double)` / `.marginBottom(double)` / `.marginLeft(double)` / `.marginRight(double)` | Directional margin |
-| `.marginStart(double)` / `.marginEnd(double)` | RTL-aware margin |
-
-### Border
-
-| Method | Description |
-|--------|-------------|
-| `.borderAll({color, width, style, strokeAlign})` | Border on all sides |
-| `.borderTop({color, width, style, strokeAlign})` | Top border |
-| `.borderBottom({color, width, style, strokeAlign})` | Bottom border |
-| `.borderLeft({color, width, style, strokeAlign})` | Left border |
-| `.borderRight({color, width, style, strokeAlign})` | Right border |
-| `.borderStart({color, width, style, strokeAlign})` | Start border (RTL-aware) |
-| `.borderEnd({color, width, style, strokeAlign})` | End border (RTL-aware) |
-| `.borderVertical({color, width, style, strokeAlign})` | Top + bottom borders |
-| `.borderHorizontal({color, width, style, strokeAlign})` | Left + right borders |
-
-### Border Radius
-
-| Method | Description |
-|--------|-------------|
-| `.borderRounded(double)` | Uniform circular radius |
-| `.borderRadiusAll(Radius)` | Uniform custom radius |
-| `.borderRoundedTop(double)` | Top corners |
-| `.borderRoundedBottom(double)` | Bottom corners |
-| `.borderRoundedLeft(double)` | Left corners |
-| `.borderRoundedRight(double)` | Right corners |
-| `.borderRoundedTopLeft(double)` / `.borderRoundedTopRight(double)` | Individual corners |
-| `.borderRoundedBottomLeft(double)` / `.borderRoundedBottomRight(double)` | Individual corners |
-
-### Shadows
-
-| Method | Description |
-|--------|-------------|
-| `.shadowOnly({color, offset, blurRadius, spreadRadius})` | Single box shadow |
-| `.elevation(ElevationShadow)` | Material elevation shadow |
-
-### Shape
-
-| Method | Description |
-|--------|-------------|
-| `.shapeCircle({side})` | Circular shape |
-| `.shapeStadium({side})` | Stadium/pill shape |
-| `.shapeRoundedRectangle({side, borderRadius})` | Rounded rectangle |
-| `.shapeBeveledRectangle({side, borderRadius})` | Beveled rectangle |
-| `.shapeSuperellipse({side, borderRadius})` | Superellipse shape |
-
-### Layout
-
-| Method | Description |
-|--------|-------------|
-| `.alignment(AlignmentGeometry)` | Child alignment |
-| `.clipBehavior(Clip)` | Clip behavior |
-
-### Transform
-
-| Method | Description |
-|--------|-------------|
-| `.rotate(double angle, {alignment})` | Rotation |
-| `.scale(double, {alignment})` | Scale |
-| `.translate(double x, double y)` | Translation |
-| `.skew(double skewX, double skewY)` | Skew |
-
----
-
-## TextStyler API
-
-### Typography
-
-| Method | Description |
-|--------|-------------|
-| `.fontSize(double)` | Font size |
-| `.fontWeight(FontWeight)` | Font weight (e.g., `.bold`, `.w700`) |
-| `.fontStyle(FontStyle)` | Italic/normal |
-| `.fontFamily(String)` | Font family |
-| `.letterSpacing(double)` | Letter spacing |
-| `.wordSpacing(double)` | Word spacing |
-| `.height(double)` | Line height multiplier |
-| `.color(Color)` | Text color |
-| `.backgroundColor(Color)` | Text background color |
-
-### Text Layout
-
-| Method | Description |
-|--------|-------------|
-| `.textAlign(TextAlign)` | Alignment (`.center`, `.left`, `.right`) |
-| `.maxLines(int)` | Maximum line count |
-| `.overflow(TextOverflow)` | Overflow behavior |
-| `.softWrap(bool)` | Enable/disable soft wrapping |
-
-### Text Decoration
-
-| Method | Description |
-|--------|-------------|
-| `.decoration(TextDecoration)` | Underline, strikethrough, etc. |
-| `.decorationColor(Color)` | Decoration color |
-| `.decorationStyle(TextDecorationStyle)` | Decoration style |
-
-### Text Directives (transforms)
-
-| Method | Description |
-|--------|-------------|
-| `.uppercase()` | ALL CAPS |
-| `.lowercase()` | all lowercase |
-| `.capitalize()` | First letter uppercase |
-| `.titlecase()` | Title Case |
-| `.sentencecase()` | Sentence case |
-
-### Using TextStyler
+Factory constructors are available for many first properties:
 
 ```dart
-final style = TextStyler()
-    .fontSize(20)
-    .fontWeight(.w700)
-    .color(Colors.red)
-    .titlecase();
-
-StyledText('hello world', style: style);
-// Or shorthand:
-style('hello world');
+final badgeStyle = BoxStyler.color(Colors.green)
+    .paddingX(10)
+    .paddingY(4)
+    .shapeStadium();
 ```
 
----
+## Composition
 
-## IconStyler API
-
-| Method | Description |
-|--------|-------------|
-| `.icon(IconData)` | Icon data |
-| `.size(double)` | Icon size |
-| `.color(Color)` | Icon color |
-| `.weight(double)` | Icon weight |
-| `.fill(double)` | Icon fill |
-| `.opacity(double)` | Icon opacity |
-| `.shadows(List<ShadowMix>)` | Icon shadows |
-
-### Using IconStyler
+Stylers are immutable. Chain methods or merge smaller Stylers.
 
 ```dart
-final style = IconStyler.size(30).color(Colors.blueAccent);
-StyledIcon(icon: Icons.star, style: style);
-// Or shorthand:
-style(icon: Icons.star);
+final baseCard = BoxStyler()
+    .paddingAll(16)
+    .borderRounded(12);
+
+final elevated = BoxStyler().shadow(
+  .color(Colors.black26).offset(y: 6).blurRadius(16),
+);
+
+final selectedCard = baseCard
+    .merge(elevated)
+    .color(Colors.blue.shade50);
 ```
 
----
+Use variant styles to override only what changes:
+
+```dart
+final buttonStyle = BoxStyler()
+    .color(Colors.blue)
+    .paddingX(20)
+    .paddingY(12)
+    .borderRounded(8)
+    .onHovered(.color(Colors.blue.shade700));
+```
+
+## BoxStyler Surface
+
+Common methods from `packages/mix/lib/src/specs/box/box_style.dart` and mixins:
+
+- Color and decoration: `.color(...)`, `.gradient(...)`, `.linearGradient(...)`,
+  `.radialGradient(...)`, `.sweepGradient(...)`, `.image(...)`,
+  `.backgroundImage(...)`, `.backgroundImageUrl(...)`,
+  `.backgroundImageAsset(...)`
+- Spacing: `.paddingAll(...)`, `.paddingX(...)`, `.paddingY(...)`,
+  `.paddingOnly(...)`, `.marginAll(...)`, `.marginX(...)`, `.marginY(...)`,
+  `.marginOnly(...)`
+- Constraints: `.width(...)`, `.height(...)`, `.size(width, height)`,
+  `.minWidth(...)`, `.maxWidth(...)`, `.minHeight(...)`, `.maxHeight(...)`
+- Border: `.border(...)`, `.borderAll(...)`, `.borderTop(...)`,
+  `.borderBottom(...)`, `.borderLeft(...)`, `.borderRight(...)`,
+  `.borderHorizontal(...)`, `.borderVertical(...)`
+- Radius: `.borderRadius(...)`, `.borderRounded(...)`,
+  `.borderRoundedTop(...)`, `.borderRoundedBottom(...)`,
+  `.borderRoundedLeft(...)`, `.borderRoundedRight(...)`
+- Shadows: `.shadow(.color(...).blurRadius(...))`, `.shadow(BoxShadowMix(...))`,
+  `.shadows([...])`, `.boxShadows([...])`, `.shadowOnly(...)`,
+  `.elevation(...)`, `.boxElevation(...)`
+- Shape: `.shape(...)`, `.shapeCircle(...)`, `.shapeStadium(...)`,
+  `.shapeRoundedRectangle(...)`, `.shapeSuperellipse(...)`
+- Transform: `.scale(value)`, `.rotate(radians)`, `.translate(x, y, [z])`,
+  `.skew(x, y)`
+- Layout/modifiers: `.alignment(...)`, `.clipBehavior(...)`, `.wrap(...)`,
+  `.modifier(...)`
+
+For generated examples, prefer typed dot shorthand for one-off shadows:
+`.shadow(.color(...).offset(y: ...).blurRadius(...))`. Use `.shadowOnly(...)`
+only when explicitly showing the named-argument convenience fallback. Never call
+`.shadow(color: ...)`; `.shadow(...)` takes a `BoxShadowMix`.
+
+For simple named borders, use helpers such as
+`.borderAll(color: ..., width: ...)`, `.borderTop(...)`, or `.borderBottom(...)`.
+Never call `.border(color: ...)`; `.border(...)` takes a `BoxBorderMix`.
+
+Transform helpers use positional arguments from `transform_style_mixin.dart`;
+for a hover lift use `.translate(0, -1)`, not `.translate(y: -1)` or
+`.translateY(...)`.
+
+```dart
+final style = BoxStyler()
+    .shadow(.color(Colors.black26).offset(y: 4).blurRadius(8))
+    .boxShadows([
+      BoxShadowMix.color(Colors.black12).offset(y: 6).blurRadius(12),
+    ]);
+```
+
+## TextStyler
+
+`TextStyler` styles `StyledText`.
+
+```dart
+final titleStyle = TextStyler()
+    .fontSize(22)
+    .fontWeight(.bold)
+    .color(Colors.black)
+    .letterSpacing(0.2);
+
+StyledText('Revenue', style: titleStyle);
+```
+
+Common methods:
+
+- Typography: `.fontSize(...)`, `.fontWeight(...)`, `.fontStyle(...)`,
+  `.fontFamily(...)`, `.fontFamilyFallback(...)`, `.letterSpacing(...)`,
+  `.wordSpacing(...)`, `.height(...)`
+- Color: `.color(...)`, `.backgroundColor(...)`, `.selectionColor(...)`
+- Layout: `.textAlign(...)`, `.maxLines(...)`, `.overflow(...)`,
+  `.softWrap(...)`, `.textDirection(...)`
+- Decoration: `.decoration(...)`, `.decorationColor(...)`,
+  `.decorationStyle(...)`, `.decorationThickness(...)`
+- Text transforms: `.uppercase()`, `.lowercase()`, `.capitalize()`,
+  `.titlecase()`, `.sentencecase()`
+- Shadows: `.shadow(...)`, `.shadows(...)`
+
+Callable shorthand:
+
+```dart
+final label = TextStyler.fontSize(14).color(Colors.grey.shade700);
+
+label('Updated today');
+```
+
+## IconStyler
+
+```dart
+final iconStyle = IconStyler()
+    .icon(Icons.check_circle)
+    .size(20)
+    .color(Colors.green);
+
+StyledIcon(style: iconStyle);
+```
+
+Common methods:
+`.icon(...)`, `.size(...)`, `.color(...)`, `.weight(...)`, `.grade(...)`,
+`.opticalSize(...)`, `.fill(...)`, `.opacity(...)`, `.shadow(...)`,
+`.shadows(...)`.
+
+## ImageStyler
+
+```dart
+final imageStyle = ImageStyler()
+    .width(96)
+    .height(96)
+    .fit(BoxFit.cover)
+    .alignment(.center);
+
+StyledImage(
+  image: const NetworkImage('https://example.com/avatar.png'),
+  style: imageStyle,
+);
+```
+
+Common methods:
+`.image(...)`, `.width(...)`, `.height(...)`, `.color(...)`, `.fit(...)`,
+`.alignment(...)`, `.repeat(...)`, `.filterQuality(...)`,
+`.colorBlendMode(...)`.
+
+## Widget Modifiers
+
+Prefer Mix style methods to extra Flutter wrapper widgets when Mix provides the
+behavior. Use `.wrap(...)` or `.modifier(...)` for widget-level behavior.
+
+```dart
+final style = BoxStyler()
+    .color(Colors.blue)
+    .wrap(.new().opacity(0.92));
+```
 
 ## Source Files
 
-For real implementations, read these example files:
-- `packages/mix_docs_preview/lib/widgets/box/simple_box.dart` — Basic styled box
-- `packages/mix_docs_preview/lib/widgets/box/gradient_box.dart` — Gradient + shadow
-- `packages/mix_docs_preview/lib/widgets/text/styled_text.dart` — Styled text with directives
-- `packages/mix_docs_preview/lib/widgets/icon/styled_icon.dart` — Styled icon
-- `packages/mix_docs_preview/lib/guides/styling/styling_basic.dart` — Styling guide examples
+- `packages/mix/lib/src/specs/box/box_style.dart`
+- `packages/mix/lib/src/specs/text/text_style.dart`
+- `packages/mix/lib/src/specs/icon/icon_style.dart`
+- `packages/mix/lib/src/specs/image/image_style.dart`
+- `packages/mix/lib/src/style/mixins/spacing_style_mixin.dart`
+- `packages/mix/lib/src/style/mixins/decoration_style_mixin.dart`
+- `packages/mix/lib/src/style/mixins/shadow_style_mixin.dart`
+- `packages/mix/lib/src/style/mixins/text_style_mixin.dart`

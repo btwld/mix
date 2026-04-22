@@ -1,0 +1,82 @@
+{
+  "skill_name": "mix-coding",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Build me a reusable Flutter widget called AccountSummaryCard using Mix. It should be a white card with rounded corners, padding, a subtle shadow, a title, a balance, and a small status row with an icon. Use current Mix 2.0 patterns.",
+      "expected_output": "A complete app-level Flutter snippet using current Mix widgets and Stylers.",
+      "files": [],
+      "expectations": [
+        "Uses import 'package:mix/mix.dart'.",
+        "The primary Dart snippet uses Box, ColumnBox, or RowBox rather than Container for the styled surface.",
+        "Defines named BoxStyler/TextStyler/IconStyler variables instead of one large inline style.",
+        "If the card includes a shadow, it prefers typed dot shorthand such as .shadow(.color(...).blurRadius(...)) rather than defaulting to .shadowOnly(...).",
+        "The primary Dart snippet does not use packages/mix_docs_preview, website/src, HBox, VBox, or ZBox."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Write a Mix PressableBox button that has default, hover, pressed, focused, and disabled visual states. It should animate between states and use StyledText for the label.",
+      "expected_output": "A PressableBox example with current widget-state variants and animation.",
+      "files": [],
+      "expectations": [
+        "Uses PressableBox with onPress and enabled or disabled handling.",
+        "Uses .onHovered, .onPressed, .onFocused, and .onDisabled.",
+        "Uses .animate with an AnimationConfig or dot-shorthand animation config.",
+        "When showing BoxStyler shadows, prefers typed dot shorthand such as .shadow(.color(...).blurRadius(...).offset(y: ...)); does not use .shadow(color: ...) and avoids .shadowOnly(...) unless explicitly explaining it as a fallback.",
+        "Uses source-aligned Mix border APIs if borders are shown, such as .borderAll(color: ..., width: ...) or .border(.color(...).width(...)), not .border(color: ...).",
+        "Uses source-aligned Mix transform APIs if transforms are shown, such as .translate(0, -1), not .translate(y: ...) or .translateY(...).",
+        "Does not invent .onSelected for this button."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Show me how to create a small tokenized theme in Mix with ColorToken, SpaceToken, RadiusToken, and TextStyleToken, then consume it in a card style.",
+      "expected_output": "A MixScope example with typed token maps and token refs consumed by Stylers.",
+      "files": [],
+      "expectations": [
+        "Uses MixScope, not MixScopeConfig.",
+        "Uses ColorToken, SpaceToken, RadiusToken, and TextStyleToken.",
+        "Uses token call syntax such as $token() inside Stylers.",
+        "Uses TextStyleToken.mix() when passing a text style token into TextStyler.style."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "I need a responsive settings shell with navigation and content. Use Mix so it is a vertical layout on mobile and horizontal on desktop. Pick the right current Mix widgets.",
+      "expected_output": "A responsive layout using FlexBox or RowBox/ColumnBox and current breakpoint variants.",
+      "files": [],
+      "expectations": [
+        "The primary Dart snippet uses FlexBox, RowBox, or ColumnBox.",
+        "Uses .onMobile, .onDesktop, or .onBreakpoint for responsive behavior.",
+        "The primary Dart snippet does not use old layout names HBox, VBox, or ZBox.",
+        "Keeps layout styling in FlexBoxStyler or related current Stylers.",
+        "Prefers typed dot shorthand in responsive variant arguments, such as .onDesktop(.direction(...).spacing(...)), rather than .onDesktop(FlexBoxStyler()...) or .onDesktop(BoxStyler()...)."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Create a Mix example for an animated pulse badge. Use a style-level animation approach, not a separate animation builder widget. Include enough code that I can adapt it.",
+      "expected_output": "A current Mix animation example using .animate, .keyframeAnimation, or .phaseAnimation.",
+      "files": [],
+      "expectations": [
+        "Uses .animate, .keyframeAnimation, or .phaseAnimation on a Styler.",
+        "Does not use KeyframeAnimationBuilder or PhaseAnimationBuilder.",
+        "Uses KeyframeTrack/Keyframe or phase styleBuilder/configBuilder only if needed.",
+        "Uses current Mix widgets such as Box or PressableBox."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Can you modernize this old Mix snippet? It uses HBox, MixScopeConfig, and KeyframeAnimationBuilder. Rewrite it for current Mix 2.0 and explain the replacements briefly.",
+      "expected_output": "A modernization answer that replaces stale APIs with current source-aligned patterns.",
+      "files": [],
+      "expectations": [
+        "The final Dart snippet uses RowBox or FlexBox in place of HBox.",
+        "The final Dart snippet uses MixScope in place of MixScopeConfig.",
+        "The final Dart snippet uses a style-level animation API such as .keyframeAnimation in place of KeyframeAnimationBuilder.",
+        "Brief prose may name the old APIs only to explain the replacements, and should not cite unavailable docs-preview paths."
+      ]
+    }
+  ]
+}

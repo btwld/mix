@@ -132,8 +132,12 @@ final $cardShadow = BoxShadowToken('shadow.card');
 final style = BoxStyler()
   .color($primary())
   .padding(.all($spacing()));
-  // For APIs that take lists of shadows/boxShadows
-  // .boxShadow($cardShadow())
+
+// Shadow tokens are list-based. Resolve them before converting to BoxShadowMix
+// for APIs that take lists of box shadows.
+final shadowStyle = BoxStyler().shadows(
+  $cardShadow.resolve(context).map(BoxShadowMix.value).toList(),
+);
 ```
 
 ## Modifier Ordering

@@ -57,7 +57,7 @@ class SpaceToken extends MixToken<double> {
   const SpaceToken(super.name);
   
   @override
-  double call() => SpaceRef.token(this);  // Extension type
+  double call() => DoubleRef.token(this);  // Extension type
 }
 ```
 
@@ -93,21 +93,27 @@ class BreakpointToken extends MixToken<Breakpoint> {
 
 ### BoxShadowToken
 ```dart
-class BoxShadowToken extends MixToken<BoxShadow> {
+class BoxShadowToken extends MixToken<List<BoxShadow>> {
   const BoxShadowToken(super.name);
   
+  /// Returns a Mix framework compatible reference for use with Mix styling utilities.
+  BoxShadowListMixRef mix() => BoxShadowListMixRef(Prop.token(this));
+
   @override
-  BoxShadowRef call() => BoxShadowRef(Prop.token(this));
+  BoxShadowListRef call() => BoxShadowListRef(Prop.token(this));
 }
 ```
 
 ### ShadowToken
 ```dart
-class ShadowToken extends MixToken<Shadow> {
+class ShadowToken extends MixToken<List<Shadow>> {
   const ShadowToken(super.name);
   
+  /// Returns a Mix framework compatible reference for use with Mix styling utilities.
+  ShadowListMixRef mix() => ShadowListMixRef(Prop.token(this));
+
   @override
-  ShadowRef call() => ShadowRef(Prop.token(this));
+  ShadowListRef call() => ShadowListRef(Prop.token(this));
 }
 ```
 
@@ -119,22 +125,24 @@ Each token type has a corresponding reference type that implements the target in
 - **ColorRef**: Implements `Color` interface
 - **RadiusRef**: Implements `Radius` interface  
 - **TextStyleRef**: Implements `TextStyle` interface
-- **BoxShadowRef**: Implements `BoxShadow` interface
-- **ShadowRef**: Implements `Shadow` interface
+- **BoxShadowListRef**: Implements `List<BoxShadow>` interface
+- **ShadowListRef**: Implements `List<Shadow>` interface
 - **BreakpointRef**: Implements `Breakpoint` interface
+
+For list-based shadow tokens, `.mix()` returns `BoxShadowListMixRef` or `ShadowListMixRef` for Mix framework APIs that accept `BoxShadowListMix` or `ShadowListMix`.
 
 ### Extension Type Refs (Primitives)
 For primitive types, extension types are used:
 
-- **SpaceRef**: Extension type for `double` values (spacing, sizing)
+- **DoubleRef**: Extension type for `double` values (spacing, sizing, and numeric tokens)
 
 ```dart
 // Extension type example
-extension type const SpaceRef(double _value) implements double {
-  static SpaceRef token(MixToken<double> token) {
+extension type const DoubleRef(double _value) implements double {
+  static DoubleRef token(MixToken<double> token) {
     // Creates unique reference value and registers token
     final hash = token.hashCode.abs() % 100000;
-    final ref = SpaceRef(-(0.000001 + hash * 0.000001));
+    final ref = DoubleRef(-(0.000001 + hash * 0.000001));
     _tokenRegistry[ref] = token;
     return ref;
   }
@@ -259,7 +267,7 @@ final textStyle = TextStyler().style(headingStyle.mix());
 ```dart
 // Token call() method returns refs for styling
 final colorRef = primaryColor(); // Returns ColorRef
-final spaceRef = largeSpace();   // Returns SpaceRef
+final spaceRef = largeSpace();   // Returns DoubleRef
 final textStyleMixRef = headingStyle.mix(); // Returns TextStyleMixRef
 final flutterTextStyleRef = headingStyle(); // Returns TextStyleRef
 
@@ -271,8 +279,8 @@ final textStyle = TextStyler().style(textStyleMixRef);
 ### 4. Using Tokens in Properties
 
 ```dart
-// SpaceDto with tokens
-final spacing = SpaceDto.token(largeSpace);
+// Prop<T> with tokens
+final spacingProp = Prop.token(largeSpace);
 
 // Prop<T> with tokens  
 final colorProp = Prop.token(primaryColor);
