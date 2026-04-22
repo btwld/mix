@@ -177,7 +177,9 @@ Code _buildMethodBody({
       ? '$styleSource(${_factoryInvocationArguments(factoryParameters)})'
       : styleSource;
 
-  final styleArgument = config.styleable ? 'effectiveStyle' : baseStyleExpression;
+  final styleArgument = config.styleable
+      ? 'effectiveStyle'
+      : baseStyleExpression;
   final dispatch = switch (resolvedBuilder) {
     NamedBuilder(:final className) => _emitBuilderCall(
       builderClassName: className,

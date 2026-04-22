@@ -262,7 +262,8 @@ InterfaceType _extractStylerType(DartType type, Element element) {
       element,
       '@MixWidget can only be applied to declarations returning a Style<T> '
       'subtype.',
-      todo: 'Return a concrete Mix styler such as BoxStyler(), TextStyler(), '
+      todo:
+          'Return a concrete Mix styler such as BoxStyler(), TextStyler(), '
           'or FlexBoxStyler().',
     );
   }
@@ -287,8 +288,7 @@ DartType _extractSpecType(InterfaceType stylerType, Element element) {
   final styleType = _findStyleSupertype(stylerType);
   if (styleType != null && styleType.typeArguments.isNotEmpty) {
     final specType = styleType.typeArguments.first;
-    if (specType is InterfaceType &&
-        specType.nullabilitySuffix != .question) {
+    if (specType is InterfaceType && specType.nullabilitySuffix != .question) {
       return specType;
     }
   }
@@ -346,10 +346,8 @@ CallSignature _extractCallSignature({
   );
 }
 
-bool _isWidgetType(InterfaceType type) => [
-  type,
-  ...type.allSupertypes,
-].any(flutterWidgetChecker.isExactlyType);
+bool _isWidgetType(InterfaceType type) =>
+    [type, ...type.allSupertypes].any(flutterWidgetChecker.isExactlyType);
 
 // ─── Factory parameter resolution ───────────────────────────────────────
 
@@ -447,10 +445,7 @@ void _validateParameterCollisions({
     ...mirroredParameters,
   ]) {
     if (_reservedParameterNames.contains(parameter.name)) {
-      fail(
-        element,
-        'Parameter `${parameter.name}` is reserved by @MixWidget.',
-      );
+      fail(element, 'Parameter `${parameter.name}` is reserved by @MixWidget.');
     }
 
     if (!seenNames.add(parameter.name)) {
@@ -506,10 +501,7 @@ void _validateGeneratedName({
   }
 
   if (generatedName.startsWith('_')) {
-    fail(
-      currentElement,
-      '@MixWidget requires a public generated class name.',
-    );
+    fail(currentElement, '@MixWidget requires a public generated class name.');
   }
 
   if (!_classIdentifier.hasMatch(generatedName)) {

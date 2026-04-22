@@ -1868,10 +1868,7 @@ final optStyle = OptPositionalStyler();
 
       final logs = await runMixWidgetWithLogs(source);
 
-      expect(
-        _severeMessages(logs),
-        contains('optional-positional parameter'),
-      );
+      expect(_severeMessages(logs), contains('optional-positional parameter'));
     });
 
     test(

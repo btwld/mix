@@ -119,7 +119,8 @@ class StylerGenerator extends GeneratorForAnnotation<MixableStyler> {
       fail(
         element,
         '@MixableStyler can only be applied to classes extending Style<T>.',
-        todo: 'Make the class extend a concrete Style subclass such as '
+        todo:
+            'Make the class extend a concrete Style subclass such as '
             '`Style<YourSpec>` or `MixStyler<YourStyler, YourSpec>`.',
       );
     }

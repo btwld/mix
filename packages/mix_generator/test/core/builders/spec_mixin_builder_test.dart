@@ -106,9 +106,7 @@ void main() {
 
         expect(
           code,
-          contains(
-            'mixin _\$BoxSpec implements Spec<BoxSpec>, Diagnosticable',
-          ),
+          contains('mixin _\$BoxSpec implements Spec<BoxSpec>, Diagnosticable'),
         );
       });
 
@@ -159,10 +157,7 @@ void main() {
         // `_$BoxSpec implements Diagnosticable` — since the applying class
         // mixes nothing else in, the mixin must provide concrete bodies.
         expect(code, contains('String toStringShort()'));
-        expect(
-          code,
-          contains('String toString({DiagnosticLevel minLevel'),
-        );
+        expect(code, contains('String toString({DiagnosticLevel minLevel'));
         expect(code, contains('DiagnosticsNode toDiagnosticsNode('));
       });
 
