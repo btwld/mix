@@ -1,368 +1,221 @@
 # Examples Reference
 
-Curated code examples organized by complexity. Each example is a complete, runnable snippet.
+Use these examples as source-aligned starting points. Adapt names and colors to the user's app.
 
----
-
-## Basic
-
-### Styled Box
-
-A simple colored box with rounded corners.
+## Card
 
 ```dart
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
-class SimpleBox extends StatelessWidget {
+class AccountCard extends StatelessWidget {
+  const AccountCard({super.key});
+
   @override
   Widget build(BuildContext context) {
-    final style = BoxStyler.color(Colors.red)
-        .size(100, 100)
-        .borderRounded(10);
-
-    return Box(style: style);
-  }
-}
-```
-
-**Concepts:** BoxStyler, fluent chaining, factory constructor
-**Source:** `packages/mix_docs_preview/lib/widgets/box/simple_box.dart`
-
-### Gradient Box with Shadow
-
-```dart
-final style = BoxStyler.height(50)
-    .width(100)
-    .borderRounded(10)
-    .linearGradient(
-      colors: [Colors.deepPurple.shade700, Colors.deepPurple.shade200],
-      begin: .topLeft,
-      end: .bottomRight,
-    )
-    .shadowOnly(
-      color: Colors.deepPurple.shade700,
-      offset: Offset(0, 4),
-      blurRadius: 10,
-    );
-
-Box(style: style);
-```
-
-**Concepts:** Gradients, shadows, dot-shorthands
-**Source:** `packages/mix_docs_preview/lib/widgets/box/gradient_box.dart`
-
-### Styled Text
-
-```dart
-final style = TextStyler()
-    .fontSize(20)
-    .fontWeight(.w700)
-    .color(Colors.red)
-    .titlecase();
-
-StyledText('hello world', style: style);
-```
-
-**Concepts:** TextStyler, text directives, typography
-**Source:** `packages/mix_docs_preview/lib/widgets/text/styled_text.dart`
-
-### Styled Icon
-
-```dart
-final style = IconStyler.size(30).color(Colors.blueAccent);
-StyledIcon(icon: Icons.format_paint_rounded, style: style);
-```
-
-**Concepts:** IconStyler, factory constructor
-**Source:** `packages/mix_docs_preview/lib/widgets/icon/styled_icon.dart`
-
----
-
-## Intermediate
-
-### Interactive Hover Box
-
-A box that changes color on hover:
-
-```dart
-class HoverBox extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final style = BoxStyler()
-        .color(Colors.red)
-        .size(100, 100)
-        .borderRounded(10)
-        .onHovered(.color(Colors.blue));
-
-    return style();  // Callable shorthand
-  }
-}
-```
-
-**Concepts:** Variants, onHovered, callable styler
-**Source:** `packages/mix_docs_preview/lib/guides/dynamic_styling/hovered.dart`
-
-### Pressable Button
-
-```dart
-class PressableButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final boxStyle = BoxStyler()
-        .color(Colors.blue)
-        .paddingX(24)
-        .paddingY(12)
-        .borderRounded(8)
-        .onHovered(.color(Colors.blue.shade700))
-        .onPressed(.color(Colors.blue.shade900));
-
-    final textStyle = TextStyler()
+    final cardStyle = BoxStyler()
         .color(Colors.white)
-        .fontSize(16)
-        .fontWeight(.bold);
-
-    return PressableBox(
-      style: boxStyle,
-      onPress: () => print('pressed'),
-      child: StyledText('Click Me', style: textStyle),
-    );
-  }
-}
-```
-
-**Concepts:** PressableBox, multiple stylers, hover + press variants
-
-### Dark/Light Mode Toggle
-
-```dart
-class ThemeToggle extends StatefulWidget { ... }
-
-class _ThemeToggleState extends State<ThemeToggle> {
-  bool isDark = false;
-
-  @override
-  Widget build(BuildContext context) {
-    final buttonStyle = BoxStyler()
-        .height(60)
-        .width(60)
-        .borderRounded(30)
-        .color(Colors.grey.shade200)
-        .animate(.easeInOut(600.ms))
-        .onDark(.color(Colors.grey.shade800))
-        .shadowOnly(
-          color: Colors.black.withValues(alpha: 0.1),
-          offset: Offset(0, 4),
-          blurRadius: 10,
+        .paddingAll(16)
+        .borderRounded(12)
+        .shadow(
+          .color(Colors.black.withValues(alpha: 0.12))
+              .offset(y: 4)
+              .blurRadius(12),
         );
 
-    final iconStyle = IconStyler()
-        .color(Colors.grey.shade800)
-        .size(28)
-        .icon(Icons.dark_mode)
-        .animate(.easeInOut(200.ms))
-        .onDark(.icon(Icons.light_mode).color(Colors.yellow));
+    final titleStyle = TextStyler()
+        .fontSize(18)
+        .fontWeight(.bold)
+        .color(Colors.black);
 
-    return MediaQuery(
-      data: MediaQuery.of(context).copyWith(
-        platformBrightness: isDark ? .dark : .light,
-      ),
-      child: PressableBox(
-        style: buttonStyle,
-        onPress: () => setState(() => isDark = !isDark),
-        child: StyledIcon(style: iconStyle),
+    final subtitleStyle = TextStyler()
+        .fontSize(13)
+        .color(Colors.grey.shade700);
+
+    return Box(
+      style: cardStyle,
+      child: ColumnBox(
+        style: FlexBoxStyler().spacing(4),
+        children: [
+          StyledText('Checking', style: titleStyle),
+          StyledText('Updated today', style: subtitleStyle),
+        ],
       ),
     );
   }
 }
 ```
 
-**Concepts:** Dark/light variants, animate, PressableBox, IconStyler
-**Source:** `packages/mix_docs_preview/lib/guides/dynamic_styling/on_dark_light.dart`
+Concepts: `Box`, `ColumnBox`, `BoxStyler`, `TextStyler`, shadows, spacing.
 
-### Horizontal Chip Layout
+Source anchors:
+- `packages/mix/lib/src/specs/box/box_style.dart`
+- `packages/mix/lib/src/specs/flexbox/flexbox_widget.dart`
+- `packages/mix/lib/src/specs/text/text_widget.dart`
+
+## Pressable Button
 
 ```dart
-final chipStyle = BoxStyler()
-    .shapeStadium(side: .new().color(Colors.blue.shade200))
-    .color(Colors.blue.shade50)
-    .padding(.horizontal(12).vertical(6));
+final buttonStyle = BoxStyler()
+    .color(Colors.blue)
+    .paddingX(20)
+    .paddingY(12)
+    .borderRounded(8)
+    .animate(.easeInOut(180.ms))
+    .onHovered(.color(Colors.blue.shade700))
+    .onPressed(.color(Colors.blue.shade900))
+    .onFocused(.borderAll(color: Colors.white, width: 2))
+    .onDisabled(.color(Colors.grey));
 
-final iconStyle = IconStyler.size(16).color(Colors.blue);
-final labelStyle = TextStyler.fontSize(14).color(Colors.blue);
+final labelStyle = TextStyler()
+    .color(Colors.white)
+    .fontWeight(.bold);
 
-RowBox(
-  style: FlexBoxStyler().spacing(8).crossAxisAlignment(.center),
+PressableBox(
+  style: buttonStyle,
+  enabled: isEnabled,
+  onPress: onPress,
+  child: StyledText('Save', style: labelStyle),
+);
+```
+
+Concepts: `PressableBox`, widget state variants, animation.
+
+Source anchors:
+- `packages/mix/lib/src/specs/pressable/pressable_widget.dart`
+- `packages/mix/lib/src/style/mixins/widget_state_variant_mixin.dart`
+- `packages/mix/test/src/core/style_builder_hover_test.dart`
+
+## Responsive Layout
+
+```dart
+final shellStyle = FlexBoxStyler()
+    .direction(.vertical)
+    .spacing(16)
+    .paddingAll(16)
+    .onDesktop(
+      .direction(.horizontal)
+          .spacing(24)
+          .paddingAll(24),
+    );
+
+FlexBox(
+  style: shellStyle,
   children: [
-    StyledIcon(icon: Icons.check, style: iconStyle),
-    StyledText('Complete', style: labelStyle),
+    Box(style: sidebarStyle, child: sidebar),
+    Box(style: contentStyle, child: content),
   ],
 );
 ```
 
-**Concepts:** RowBox, FlexBoxStyler, shapeStadium, multiple stylers
+Concepts: `FlexBox`, breakpoint variants, direction changes.
 
----
+Source anchors:
+- `packages/mix/lib/src/specs/flexbox/flexbox_style.dart`
+- `packages/mix/lib/src/style/mixins/variant_style_mixin.dart`
 
-## Advanced
-
-### Animated Toggle with Keyframes
-
-```dart
-class AnimatedToggle extends StatefulWidget { ... }
-
-class _AnimatedToggleState extends State<AnimatedToggle> {
-  bool isOn = false;
-
-  @override
-  Widget build(BuildContext context) {
-    final trackStyle = BoxStyler()
-        .width(56)
-        .height(32)
-        .shapeStadium()
-        .color(isOn ? Colors.green : Colors.grey.shade300);
-
-    final thumbStyle = BoxStyler()
-        .size(24, 24)
-        .shapeCircle()
-        .color(Colors.white)
-        .shadowOnly(blurRadius: 4, color: Colors.black26);
-
-    return GestureDetector(
-      onTap: () => setState(() => isOn = !isOn),
-      child: Box(
-        style: trackStyle,
-        child: KeyframeAnimationBuilder(
-          duration: 400.ms,
-          playing: isOn,
-          keyframes: {
-            KeyframeTrack<double>(
-              property: KeyframeProperty.width,
-              keyframes: [
-                Keyframe(0.0, 24),
-                Keyframe(0.5, 32),  // Stretch
-                Keyframe(1.0, 24),
-              ],
-            ),
-            KeyframeTrack<double>(
-              property: KeyframeProperty.translateX,
-              keyframes: [
-                Keyframe(0.0, 0),
-                Keyframe(1.0, 24),  // Slide right
-              ],
-            ),
-          },
-          builder: (context, animStyle) {
-            return Box(style: thumbStyle.merge(animStyle));
-          },
-        ),
-      ),
-    );
-  }
-}
-```
-
-**Concepts:** KeyframeAnimationBuilder, multiple tracks, playing toggle
-**Source:** `packages/mix_docs_preview/lib/guides/animations/keyframe_switch.dart`
-
-### Themed Profile Page with Tokens
+## Tokenized Theme
 
 ```dart
-// tokens.dart
-final $primary = ColorToken('primary');
-final $surface = ColorToken('surface');
-final $onSurface = ColorToken('on.surface');
-final $heading = TextStyleToken('heading');
-final $body = TextStyleToken('body');
-final $radiusMd = RadiusToken('radius.md');
+final $primary = ColorToken('color.primary');
+final $surface = ColorToken('color.surface');
+final $onSurface = ColorToken('color.on_surface');
 final $spaceMd = SpaceToken('space.md');
+final $heading = TextStyleToken('text.heading');
 
-// theme.dart
-final lightTheme = MixScopeConfig(
+MixScope(
   colors: {
     $primary: Colors.blue,
     $surface: Colors.white,
     $onSurface: Colors.black,
   },
-  textStyles: {
-    $heading: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-    $body: TextStyle(fontSize: 16),
+  spaces: {
+    $spaceMd: 16,
   },
-  radii: {$radiusMd: Radius.circular(12)},
-  spaces: {$spaceMd: 16.0},
+  textStyles: {
+    $heading: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+  },
+  child: Builder(
+    builder: (context) {
+      final cardStyle = BoxStyler()
+          .color($surface())
+          .paddingAll($spaceMd());
+
+      final titleStyle = TextStyler()
+          .style($heading.mix())
+          .color($onSurface());
+
+      return Box(
+        style: cardStyle,
+        child: StyledText('Dashboard', style: titleStyle),
+      );
+    },
+  ),
 );
-
-// profile_page.dart
-class ProfilePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final cardStyle = BoxStyler()
-        .color($surface())
-        .paddingAll($spaceMd())
-        .borderRadiusAll($radiusMd());
-
-    final titleStyle = TextStyler()
-        .style($heading.mix())
-        .color($onSurface());
-
-    final bodyStyle = TextStyler()
-        .style($body.mix())
-        .color($onSurface());
-
-    return ColumnBox(
-      style: FlexBoxStyler().spacing($spaceMd()).marginAll($spaceMd()),
-      children: [
-        Box(
-          style: cardStyle,
-          child: Column(
-            crossAxisAlignment: .start,
-            children: [
-              StyledText('Profile', style: titleStyle),
-              StyledText('Welcome back!', style: bodyStyle),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
 ```
 
-**Concepts:** Design tokens, MixScope, TextStyleToken, theme separation
-**Source:** `packages/mix_docs_preview/lib/tutorials/theming/preview.dart`
+Concepts: `MixScope`, typed token maps, token call refs, `TextStyleToken.mix()`.
 
-### Custom Context Variant
+Source anchors:
+- `packages/mix/lib/src/theme/mix_theme.dart`
+- `packages/mix/lib/src/theme/tokens/value_tokens.dart`
+- `packages/mix/doc/mix-scope-and-theming.md`
+
+## Keyframe Animation
 
 ```dart
-// Define variant based on InheritedWidget
-class ShiftPressedVariant extends ContextVariant {
-  ShiftPressedVariant()
-    : super('shift_pressed', (context) {
-        return ShiftPressedWidget.of(context)?.isShiftPressed ?? false;
-      });
-}
+final trigger = ValueNotifier(0);
 
-// Use in style
-final style = BoxStyler()
-    .color(Colors.grey)
-    .paddingAll(8)
-    .shapeStadium()
-    .variant(ShiftPressedVariant(), .color(Colors.purple))
-    .animate(.ease(300.ms));
+final pulseStyle = BoxStyler()
+    .color(Colors.pink)
+    .size(80, 80)
+    .shapeCircle()
+    .keyframeAnimation(
+      trigger: trigger,
+      timeline: [
+        KeyframeTrack<double>(
+          'scale',
+          [
+            Keyframe.easeOut(1.12, 120.ms),
+            Keyframe.easeIn(1.0, 160.ms),
+          ],
+          initial: 1.0,
+        ),
+      ],
+      styleBuilder: (values, style) {
+        return style.scale(values.get<double>('scale'));
+      },
+    );
+
+Box(style: pulseStyle);
 ```
 
-**Concepts:** Custom ContextVariant, InheritedWidget integration, animate
-**Source:** `packages/mix_docs_preview/lib/guides/dynamic_styling/context_variant_flag.dart`
+Concepts: `.keyframeAnimation(...)`, `KeyframeTrack`, `Keyframe`, `ValueNotifier`.
 
----
+Source anchors:
+- `packages/mix/lib/src/style/mixins/animation_style_mixin.dart`
+- `packages/mix/test/src/style/styler_mixin_conformance_test.dart`
 
-## Full Example Index
+## Modernizing Stale Mix Code
 
-For more examples, browse these directories:
-- `packages/mix_docs_preview/lib/widgets/box/` — Box styling patterns
-- `packages/mix_docs_preview/lib/guides/dynamic_styling/` — All variant types
-- `packages/mix_docs_preview/lib/guides/animations/` — All animation types
-- `packages/mix_docs_preview/lib/guides/gradients/` — Gradient examples
-- `packages/mix_docs_preview/lib/guides/` — Documentation guide examples
-- `packages/mix_docs_preview/lib/tutorials/` — Step-by-step tutorials
-- `packages/mix_docs_preview/lib/widgets/` — Widget-specific examples
+When a prompt contains old names, rewrite to current names before explaining.
+
+```dart
+final $spaceMd = SpaceToken('space.md');
+
+// Stale idea: horizontal layout alias and old theme config.
+// Current app-level shape:
+MixScope(
+  tokens: {
+    $spaceMd: 16.0,
+  },
+  child: RowBox(
+    style: FlexBoxStyler().spacing($spaceMd()),
+    children: children,
+  ),
+);
+```
+
+Source anchors:
+- `packages/mix/lib/src/specs/flexbox/flexbox_widget.dart`
+- `packages/mix/lib/src/theme/mix_theme.dart`

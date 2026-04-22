@@ -1,114 +1,130 @@
 ---
 name: mix-coding
-description: "Use when the user asks to write Flutter code using Mix, or mentions Mix styling, BoxStyler, TextStyler, IconStyler, variants, animations, design tokens, or Mix widgets like Box, HBox, VBox, StyledText, StyledIcon, Pressable. Also trigger when user references 'package:mix' or fluent styling in Flutter. This skill ensures Claude writes correct, idiomatic Mix 2.0 code instead of guessing at the API."
+description: >
+  Use this skill whenever the user asks to write, review, debug, fix, migrate,
+  or modernize Flutter code using Mix; mentions package:mix, Mix 2.0,
+  BoxStyler, TextStyler, IconStyler, ImageStyler, MixScope, design tokens,
+  variants, animations, Box, FlexBox, RowBox, ColumnBox, StackBox, StyledText,
+  StyledIcon, StyledImage, Pressable, PressableBox, or stale examples with HBox,
+  VBox, ZBox, docs preview APIs, MixScopeConfig, KeyframeAnimationBuilder, or
+  PhaseAnimationBuilder. This skill helps produce source-aligned Mix code
+  instead of guessing at API names.
 ---
 
-# Mix 2.0 — Correct Code Patterns
+# Mix Coding
 
-This skill ensures you write correct Mix 2.0 code. Mix separates style semantics from widgets using a **Spec/Style/Widget** pattern with a fluent chaining API.
+Use this skill to write or review app-level Flutter code that consumes Mix 2.0.
+Mix separates widget semantics from style semantics through Specs, Stylers, and
+styled widgets.
 
-**This is a rigid skill.** Follow the documented patterns exactly. Do not guess at method names or API shapes — read the relevant reference file first.
+This is a source-aligned skill. Before giving non-trivial Mix code, load the
+smallest relevant reference file and follow its examples.
 
-## Core Principles
+## Core Rules
 
-These rules apply to ALL Mix code you write:
-
-1. **Always import Mix:**
+1. Import Mix and Flutter material/widgets as needed:
    ```dart
+   import 'package:flutter/material.dart';
    import 'package:mix/mix.dart';
    ```
 
-2. **Use fluent chaining** — styles are built by chaining methods on Stylers:
+2. Use Stylers, not Specs, in application code.
    ```dart
-   final style = BoxStyler()
-       .color(Colors.blue)
-       .size(100, 100)
+   final cardStyle = BoxStyler()
+       .color(Colors.white)
        .paddingAll(16)
-       .borderRounded(8);
+       .borderRounded(12);
    ```
 
-3. **Specs are immutable, Stylers are builders.** Never construct a Spec directly — always use the corresponding Styler (`BoxStyler`, `TextStyler`, `IconStyler`).
+3. Prefer fluent chaining and named style variables. Inline one short style is
+   fine, but move multi-property styles into variables so variants and
+   composition stay readable.
 
-4. **Define styles as variables**, not inline:
-   ```dart
-   // Correct
-   final cardStyle = BoxStyler().color(Colors.white).paddingAll(16);
-   Box(style: cardStyle, child: content);
+4. Use dot shorthands where they make code clearer. The repo targets Dart
+   `>=3.11.0`, so values like `.center`, `.bold`, `.horizontal`, `.dark`, and
+   `.easeInOut(220.ms)` are valid when the target type is known.
 
-   // Wrong — don't inline complex styles
-   Box(style: BoxStyler().color(Colors.white).paddingAll(16), child: content);
-   ```
+5. Use current widget names:
+   - Box/container: `Box`
+   - Flex layout: `FlexBox`, `RowBox`, `ColumnBox`
+   - Stack layout: `StackBox`
+   - Text/icon/image: `StyledText`, `StyledIcon`, `StyledImage`
+   - Interaction: `Pressable`, `PressableBox`
 
-5. **Dart SDK >=3.11.0** — dot-shorthands are enabled (e.g., `.center`, `.bold`, `.topLeft`).
-
-6. **Stylers can be called directly** to create their widget:
-   ```dart
-   final box = BoxStyler().color(Colors.blue).size(100, 100);
-   // These are equivalent:
-   Box(style: box);
-   box();  // Shorthand — calls the styler to produce a Box
-   ```
-
-7. **Factory constructors** allow starting with a property:
-   ```dart
-   // These are equivalent:
-   BoxStyler().color(Colors.blue)
-   BoxStyler.color(Colors.blue)
-   ```
-
-## Common Mistakes
-
-Avoid these patterns — they are the most frequent errors:
-
-| Wrong | Correct | Why |
-|-------|---------|-----|
-| `Container(color: ...)` | `Box(style: BoxStyler().color(...))` | Use Mix widgets, not Flutter primitives |
-| `Text(style: TextStyle(...))` | `StyledText('...', style: TextStyler().fontSize(...))` | Use StyledText with TextStyler |
-| `Icon(Icons.star, size: 30)` | `StyledIcon(icon: Icons.star, style: IconStyler.size(30))` | Use StyledIcon with IconStyler |
-| Mutating a styler in place | Chain returns a new styler | Stylers are immutable builders |
-| `Theme.of(context).colorScheme` | Use `ColorToken` with `MixScope` | Don't mix Flutter theming with Mix tokens |
-| Nesting `Padding`/`Align` widgets | Use `.paddingAll()`, `.alignment()` on styler | Mix handles spacing/alignment via style |
+6. Do not invent aliases or old docs-preview APIs. If a prompt contains stale
+   names, modernize them before answering.
 
 ## Reference Routing
 
-Before writing Mix code, **read the relevant reference file(s)** based on what the user needs. Load 1-2 references per request — don't load them all.
+Load only the reference files needed for the user's task.
 
-| User is asking about... | Read this reference |
+| User needs | Read |
 |---|---|
-| Styling a widget: colors, padding, borders, sizing, gradients, shadows | `references/styling.md` |
-| Hover, press, focus, dark/light mode, responsive, disabled, selected | `references/variants.md` |
-| Animations, transitions, keyframes, spring physics, phases | `references/animations.md` |
-| Design tokens, theming, MixScope, token types | `references/tokens.md` |
-| Which widget to use, Box vs FlexBox, layout, Pressable | `references/widgets.md` |
-| Need a full working example or pattern reference | `references/examples.md` |
+| Box/Text/Icon/Image styling, spacing, borders, shadows, gradients | `references/styling.md` |
+| Hover, press, focus, disabled, dark/light, responsive, platform variants | `references/variants.md` |
+| `MixScope`, tokens, semantic colors/spacing/typography | `references/tokens.md` |
+| Choosing widgets or constructor shapes | `references/widgets.md` |
+| `.animate`, `.keyframeAnimation`, `.phaseAnimation` | `references/animations.md` |
+| Full patterns to copy or adapt | `references/examples.md` |
 
-**How to use references:** Read the file with the Read tool, then follow the patterns and API tables in it. The references contain real, verified method signatures and code examples extracted from the Mix codebase.
+When a request spans more than one area, read 1-2 references. Example: a themed
+hover button usually needs `styling.md`, `variants.md`, and maybe `tokens.md`;
+prefer the two most relevant and inspect source if details remain unclear.
 
-## Style Composition
+## Output Habits
 
-Styles compose by merging — later values override earlier ones:
+- Provide complete snippets when the user asks to build something.
+- Keep examples app-level unless the user explicitly asks to extend Mix internals.
+- Explain only the Mix-specific choices that matter: which widget, which
+  Styler, which variant or token mechanism.
+- If the user asks to edit this repo, inspect current source before changing docs or code.
+
+## Common Corrections
+
+| Stale or risky pattern | Current pattern |
+|---|---|
+| `Container(...)` for Mix-styled surfaces | `Box(style: BoxStyler(...))` |
+| `Text(...)` with manual `TextStyle` when Mix styling is requested | `StyledText(..., style: TextStyler(...))` |
+| `Icon(...)` with manual size/color when Mix styling is requested | `StyledIcon(icon: ..., style: IconStyler(...))` |
+| Old flex aliases | `RowBox`, `ColumnBox`, `FlexBox`, or `StackBox` |
+| Old scope configuration helper examples | `MixScope(...)` |
+| Animation builder classes for new app examples | Style-level animation APIs |
+| Single shadow token references | list-based `ShadowToken` / `BoxShadowToken` refs |
+
+## Quick Pattern
 
 ```dart
-final base = BoxStyler()
-    .paddingX(16)
-    .paddingY(8)
+final buttonStyle = BoxStyler()
+    .color(Colors.blue)
+    .paddingX(20)
+    .paddingY(12)
     .borderRounded(8)
-    .color(Colors.black);
+    .animate(.easeInOut(180.ms))
+    .onHovered(.color(Colors.blue.shade700))
+    .onPressed(.color(Colors.blue.shade900));
 
-// Override just the color — everything else carries over
-final solid = base.color(Colors.blue);
-final soft = base.color(Colors.blue.shade100);
+final labelStyle = TextStyler()
+    .color(Colors.white)
+    .fontWeight(.bold);
+
+PressableBox(
+  style: buttonStyle,
+  onPress: onPress,
+  child: StyledText('Save', style: labelStyle),
+);
 ```
 
-## Quick Reference: Widget ↔ Styler Mapping
+## Source Anchors
 
-| Widget | Styler | Use for |
-|--------|--------|---------|
-| `Box` | `BoxStyler` | Container, card, background |
-| `RowBox` / `HBox` | `FlexBoxStyler` | Horizontal layout |
-| `ColumnBox` / `VBox` | `FlexBoxStyler` | Vertical layout |
-| `ZBox` | `FlexBoxStyler` | Stack/overlay layout |
-| `StyledText` | `TextStyler` | Styled text |
-| `StyledIcon` | `IconStyler` | Styled icon |
-| `StyledImage` | `ImageStyler` | Styled image |
-| `Pressable` / `PressableBox` | (wraps other styles) | Interactive/tappable |
+Use these source paths when the references are not enough:
+
+- `packages/mix/lib/src/specs/box/`
+- `packages/mix/lib/src/specs/flexbox/`
+- `packages/mix/lib/src/specs/stackbox/`
+- `packages/mix/lib/src/specs/text/`
+- `packages/mix/lib/src/specs/icon/`
+- `packages/mix/lib/src/specs/image/`
+- `packages/mix/lib/src/specs/pressable/`
+- `packages/mix/lib/src/style/mixins/`
+- `packages/mix/lib/src/theme/`
+- `packages/mix/test/src/`

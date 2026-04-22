@@ -1,220 +1,150 @@
-# Design Tokens Reference
+# Tokens and Theming Reference
 
-Design tokens centralize visual properties (colors, spacing, typography) so styles reference semantic names instead of hardcoded values. Swap token values to switch themes.
+Use Mix tokens for semantic values that should change by theme, brand,
+platform, or scope. Tokens are provided by `MixScope` and consumed through
+Stylers.
 
-## Patterns
-
-### Define Tokens
+## Define Tokens
 
 ```dart
-import 'package:mix/mix.dart';
-
-// Color tokens
-final $primary = ColorToken('primary');
-final $surface = ColorToken('surface');
-final $onPrimary = ColorToken('on.primary');
-final $onSurface = ColorToken('on.surface');
-
-// Spacing tokens
-final $spaceSm = SpaceToken('space.sm');
+final $primary = ColorToken('color.primary');
+final $surface = ColorToken('color.surface');
+final $onSurface = ColorToken('color.on_surface');
 final $spaceMd = SpaceToken('space.md');
-final $spaceLg = SpaceToken('space.lg');
-
-// Radius tokens
-final $radiusSm = RadiusToken('radius.sm');
 final $radiusMd = RadiusToken('radius.md');
+final $heading = TextStyleToken('text.heading');
 ```
 
-### Provide Token Values with MixScope
+Use stable semantic names rather than raw visual names when possible.
 
-`MixScope` provides token values to all descendant widgets, similar to Flutter's `Theme`:
+## Provide Tokens with MixScope
 
 ```dart
 MixScope(
   colors: {
     $primary: Colors.blue,
     $surface: Colors.white,
-    $onPrimary: Colors.white,
     $onSurface: Colors.black,
   },
   spaces: {
-    $spaceSm: 8.0,
-    $spaceMd: 16.0,
-    $spaceLg: 24.0,
+    $spaceMd: 16,
   },
   radii: {
-    $radiusSm: Radius.circular(4),
-    $radiusMd: Radius.circular(8),
+    $radiusMd: const Radius.circular(12),
   },
-  child: MyApp(),
+  textStyles: {
+    $heading: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+  },
+  child: child,
 );
 ```
 
-### Use Tokens in Styles
-
-Use the call syntax `$token()` to reference a token in a style:
+You can also use the generic `tokens:` map:
 
 ```dart
-final style = BoxStyler()
-    .color($primary())
+MixScope(
+  tokens: {
+    $primary: Colors.blue,
+    $spaceMd: 16.0,
+  },
+  child: child,
+);
+```
+
+## Use Tokens in Styles
+
+Call the token to create a style reference.
+
+```dart
+final cardStyle = BoxStyler()
+    .color($surface())
     .paddingAll($spaceMd())
     .borderRadiusAll($radiusMd());
+
+final titleStyle = TextStyler()
+    .style($heading.mix())
+    .color($onSurface());
 ```
 
-### Use Token Mix Reference
-
-For `TextStyleToken`, use `.mix()` to get a `TextStyleMix`:
+Resolve tokens only when you need concrete Flutter values outside a Mix style:
 
 ```dart
-final $heading = TextStyleToken('heading');
-
-// Provide the value
-MixScope(
-  textStyles: {
-    $heading: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-  },
-  child: app,
-);
-
-// Use in a style
-final style = TextStyler.style($heading.mix()).color($onSurface());
+final primaryColor = $primary.resolve(context);
 ```
-
-### Resolve Tokens Programmatically
-
-Use `.resolve(context)` to get the concrete value outside of styles:
-
-```dart
-@override
-Widget build(BuildContext context) {
-  final primaryColor = $primary.resolve(context);
-  final spacing = $spaceMd.resolve(context);
-  // Use with Flutter widgets if needed
-}
-```
-
----
-
-## Theme Switching
-
-Define separate token maps and swap them:
-
-```dart
-final lightColors = {
-  $primary: Colors.blue,
-  $surface: Colors.white,
-  $onSurface: Colors.black,
-};
-
-final darkColors = {
-  $primary: Color(0xFF617AFA),
-  $surface: Color(0xFF1C1C21),
-  $onSurface: Colors.white,
-};
-
-class ThemedApp extends StatefulWidget { ... }
-
-class _ThemedAppState extends State<ThemedApp> {
-  bool isDark = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return MixScope(
-      colors: isDark ? darkColors : lightColors,
-      child: MaterialApp(home: MyPage()),
-    );
-  }
-}
-```
-
-### Enum-Based Tokens
-
-For organized token management, use enums:
-
-```dart
-enum AppColor {
-  primary('primary'),
-  onPrimary('on-primary'),
-  surface('surface'),
-  onSurface('on-surface');
-
-  final String name;
-  const AppColor(this.name);
-  ColorToken get token => ColorToken(name);
-}
-
-// Usage
-final style = BoxStyler().color(AppColor.primary.token());
-```
-
-### Theme Classes
-
-Group token maps into theme classes:
-
-```dart
-class LightTheme {
-  static Map<ColorToken, Color> get colors => {
-    AppColor.primary.token: Colors.blue,
-    AppColor.surface.token: Colors.white,
-  };
-
-  static Map<SpaceToken, double> get spaces => {
-    $spaceMd: 16.0,
-    $spaceLg: 24.0,
-  };
-}
-
-// Apply
-MixScope(
-  colors: LightTheme.colors,
-  spaces: LightTheme.spaces,
-  child: app,
-);
-```
-
----
 
 ## Built-in Token Types
 
-| Token Class | Value Type | Use Case |
-|-------------|-----------|----------|
-| `ColorToken` | `Color` | Colors and backgrounds |
-| `SpaceToken` | `double` | Spacing (padding, margin) |
-| `DoubleToken` | `double` | Any numeric value |
-| `RadiusToken` | `Radius` | Border radii |
-| `TextStyleToken` | `TextStyle` | Typography styles |
-| `BorderSideToken` | `BorderSide` | Border definitions |
-| `ShadowToken` | `List<Shadow>` | Text shadows |
-| `BoxShadowToken` | `List<BoxShadow>` | Box shadows |
-| `FontWeightToken` | `FontWeight` | Font weights |
-| `DurationToken` | `Duration` | Animation durations |
-| `BreakpointToken` | `Breakpoint` | Responsive breakpoints |
+| Token | Value type | Notes |
+|---|---|---|
+| `ColorToken` | `Color` | background, foreground, border colors |
+| `SpaceToken` | `double` | spacing and sizing; call returns a `DoubleRef` |
+| `DoubleToken` | `double` | generic numeric values; call returns a `DoubleRef` |
+| `RadiusToken` | `Radius` | corner radius values |
+| `TextStyleToken` | `TextStyle` | use `.mix()` for `TextStyler.style(...)` |
+| `BorderSideToken` | `BorderSide` | border side values |
+| `ShadowToken` | `List<Shadow>` | text/icon shadow lists |
+| `BoxShadowToken` | `List<BoxShadow>` | box shadow lists |
+| `FontWeightToken` | `FontWeight` | font weight values |
+| `DurationToken` | `Duration` | animation timing |
+| `BreakpointToken` | `Breakpoint` | responsive variants |
 
-## MixScope Parameters
+`ShadowToken` and `BoxShadowToken` are list-based in current source. Their
+`.mix()` methods return list mix refs for APIs that accept `ShadowListMix` or
+`BoxShadowListMix`.
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `colors` | `Map<ColorToken, Color>` | Color token values |
-| `spaces` | `Map<SpaceToken, double>` | Space token values |
-| `radii` | `Map<RadiusToken, Radius>` | Radius token values |
-| `textStyles` | `Map<TextStyleToken, TextStyle>` | Text style token values |
-| `tokens` | `Map<MixToken, dynamic>` | Generic/custom tokens |
-| `child` | `Widget` | Child widget tree |
+## Shadow Tokens
 
----
+When an API needs `List<BoxShadowMix>`, resolve a `BoxShadowToken` and convert values.
 
-## Best Practices
+```dart
+final $cardShadow = BoxShadowToken('shadow.card');
 
-- Use descriptive, hierarchical names: `$colorPrimary`, `$spacingMd`
-- Group related tokens in separate files (`tokens/colors.dart`, `tokens/spacing.dart`)
-- Replace hardcoded values with semantic tokens for consistency
-- Define tokens as top-level `final` variables
-- Use enums for structured token sets in larger apps
+final shadowStyle = BoxStyler().shadows(
+  $cardShadow.resolve(context).map(BoxShadowMix.value).toList(),
+);
+```
 
----
+For common app code, a direct style is often simpler:
+
+```dart
+final cardStyle = BoxStyler().shadow(
+  .color(Colors.black26).offset(y: 4).blurRadius(12),
+);
+```
+
+## Theme Organization
+
+Group related tokens in files and provide values near app root.
+
+```dart
+class AppTokens {
+  static const primary = ColorToken('color.primary');
+  static const surface = ColorToken('color.surface');
+  static const spaceMd = SpaceToken('space.md');
+}
+
+final lightTokens = <MixToken, Object>{
+  AppTokens.primary: Colors.blue,
+  AppTokens.surface: Colors.white,
+  AppTokens.spaceMd: 16.0,
+};
+```
+
+Then scope them:
+
+```dart
+MixScope(
+  tokens: lightTokens,
+  child: const App(),
+);
+```
 
 ## Source Files
 
-- `packages/mix_docs_preview/lib/guides/design_token/theme_tokens.dart` — Simple token definitions
-- `packages/mix_docs_preview/lib/tutorials/theming/preview.dart` — Full theming tutorial with theme switching
-- `website/src/content/documentation/guides/design-token.mdx` — Complete token documentation
+- `packages/mix/lib/src/theme/mix_theme.dart`
+- `packages/mix/lib/src/theme/tokens/mix_token.dart`
+- `packages/mix/lib/src/theme/tokens/value_tokens.dart`
+- `packages/mix/lib/src/theme/tokens/token_refs.dart`
+- `packages/mix/doc/mix-scope-and-theming.md`
+- `packages/mix/doc/token-migration-guide.md`
+- `packages/mix/test/src/theme/tokens/shadow_list_token_integration_test.dart`

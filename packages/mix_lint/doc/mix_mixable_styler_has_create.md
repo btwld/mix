@@ -1,4 +1,4 @@
-iml### mix_mixable_styler_has_create
+### mix_mixable_styler_has_create
 
 Ensures that every class annotated with `@MixableStyler` defines a named constructor `.create`. The generated Styler mixin and the rest of the Mix API expect this constructor for const instantiation, merging, and default styles (e.g. `const BoxStyler.create()`).
 

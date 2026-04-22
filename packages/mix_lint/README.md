@@ -10,7 +10,7 @@ Add `mix_lint` as a dev dependency:
 dart pub add -d mix_lint
 ```
 
-Enable the plugin in `analysis_options.yaml` (requires Dart ≥ 3.10 / Flutter ≥ 3.38):
+Enable the plugin in `analysis_options.yaml` (requires Dart ≥ 3.11; Flutter apps using Mix should follow Mix's Flutter SDK constraint):
 
 ```yaml
 plugins:
@@ -127,12 +127,12 @@ final style = BoxStyler()
 
 Limit the number of attributes per style. The default value is 15. This rule encourages keeping styles concise and focused; split large styles into smaller, reusable Stylers and compose with `merge()`.
 
-The rule reports when a `Styler` constructor or a variant-style invocation has more than `max_number` arguments.
+The rule reports when a Styler chain has more than `max_number` chained method calls.
 
 #### Don't
 
 ```dart
-// One large style with too many arguments (exceeds max_number)
+// One large style chain with too many method calls (exceeds max_number)
 final style = BoxStyler()
     .color(Colors.blue)
     .paddingAll(8)
@@ -185,7 +185,7 @@ final style = layout
 
 ##### max_number (int)
 
-The maximum number of attributes allowed per style (or per variant invocation). The default value is 15.
+The maximum number of chained method calls allowed per style. The default value is 15.
 
 ### mix_variants_last
 
