@@ -25,6 +25,7 @@ export 'src/core/models/styler_field_model.dart';
 export 'src/core/registry/mix_type_registry.dart';
 export 'src/core/resolvers/index.dart';
 export 'src/mix_generator.dart';
+export 'src/mix_widget_generator.dart';
 export 'src/mixable_generator.dart';
 export 'src/styler_generator.dart';
 
