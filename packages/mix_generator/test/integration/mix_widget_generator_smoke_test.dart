@@ -151,5 +151,28 @@ final card = BoxStyler().paddingAll(16);
         },
       );
     });
+
+    test('required nullable named parameter keeps required keyword', () async {
+      const source = '''
+$_baseSource
+
+@MixWidget('RequiredCard')
+BoxStyler makeRequiredCard({required Widget? child}) => BoxStyler();
+''';
+
+      await testBuilder(
+        _partBuilder(const MixWidgetGenerator()),
+        {'mix_generator|lib/mix_widget_case.dart': source},
+        generateFor: {'mix_generator|lib/mix_widget_case.dart'},
+        outputs: {
+          'mix_generator|lib/mix_widget_case.g.dart': decodedMatches(
+            allOf(
+              contains('final Widget? child;'),
+              contains('required this.child'),
+            ),
+          ),
+        },
+      );
+    });
   });
 }

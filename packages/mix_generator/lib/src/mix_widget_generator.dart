@@ -134,14 +134,11 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
   }
 
   MixWidgetParam _convertFormalParam(FormalParameterElement p) {
-    final typeStr = p.type.getDisplayString();
-    final nullable = typeStr.endsWith('?');
-    final hasDefault = p.defaultValueCode != null;
     return MixWidgetParam(
       name: p.name!,
-      typeDisplay: typeStr,
+      typeDisplay: p.type.getDisplayString(),
       isPositional: p.isPositional,
-      isRequired: !nullable && !hasDefault && !p.isOptional,
+      isRequired: p.isRequired,
       defaultValueCode: p.defaultValueCode,
     );
   }
