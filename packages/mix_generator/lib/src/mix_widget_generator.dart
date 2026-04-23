@@ -49,15 +49,23 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
     final stylerClass = _resolveStyleClass(stylerType, element);
 
     final callMethod = _findCall(stylerClass, element);
-    final (callParams, callHasPositional) = _convertCallParams(callMethod);
+    final callParams = _convertCallParams(callMethod);
+    const sourceParams = <MixWidgetParam>[];
+
+    if (stylable &&
+        [...sourceParams, ...callParams].any((p) => p.name == 'style')) {
+      throw InvalidGenerationSource(
+        '@MixWidget(stylable: true) reserves the `style` parameter name.',
+        element: element,
+      );
+    }
 
     return MixWidgetBuilder(
       widgetName: widgetName,
       sourceKind: MixWidgetSourceKind.variable,
       sourceName: sourceName,
-      sourceParams: const <MixWidgetParam>[],
+      sourceParams: sourceParams,
       callParams: callParams,
-      callHasPositional: callHasPositional,
       stylable: stylable,
       stylerTypeDisplay: stylerType.getDisplayString(),
     ).build();
@@ -72,13 +80,14 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
     final returnType = element.returnType;
     final stylerClass = _resolveStyleClass(returnType, element);
     final callMethod = _findCall(stylerClass, element);
-    final (callParams, callHasPositional) = _convertCallParams(callMethod);
+    final callParams = _convertCallParams(callMethod);
 
     final sourceParams = element.formalParameters
         .map(_convertFormalParam)
         .toList(growable: false);
 
-    if (stylable && sourceParams.any((p) => p.name == 'style')) {
+    if (stylable &&
+        [...sourceParams, ...callParams].any((p) => p.name == 'style')) {
       throw InvalidGenerationSource(
         '@MixWidget(stylable: true) reserves the `style` parameter name.',
         element: element,
@@ -91,7 +100,6 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
       sourceName: sourceName,
       sourceParams: sourceParams,
       callParams: callParams,
-      callHasPositional: callHasPositional,
       stylable: stylable,
       stylerTypeDisplay: returnType.getDisplayString(),
     ).build();
@@ -127,10 +135,8 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
     );
   }
 
-  (List<MixWidgetParam>, bool) _convertCallParams(MethodElement m) {
-    final params = m.formalParameters.map(_convertFormalParam).toList();
-    final hasPositional = params.any((p) => p.isPositional);
-    return (params, hasPositional);
+  List<MixWidgetParam> _convertCallParams(MethodElement m) {
+    return m.formalParameters.map(_convertFormalParam).toList();
   }
 
   MixWidgetParam _convertFormalParam(FormalParameterElement p) {

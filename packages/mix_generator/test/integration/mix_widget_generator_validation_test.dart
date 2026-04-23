@@ -84,5 +84,28 @@ BoxStyler build({required BoxStyler style}) => style;
 ''';
       await _expectInvalid(source, 'reserves the `style`');
     });
+
+    test('rejects stylable when Styler call has a style param', () async {
+      const source = r'''
+library c;
+part 'case.g.dart';
+class MixWidget { final String name; final bool stylable; const MixWidget(this.name, {this.stylable = false}); }
+class Style<T> { const Style(); }
+class BoxSpec {}
+class Key { const Key(); }
+class BuildContext {}
+abstract class Widget { const Widget({Key? key}); }
+abstract class StatelessWidget extends Widget { const StatelessWidget({Key? key}) : super(key: key); Widget build(BuildContext context); }
+class SizedBox extends StatelessWidget { const SizedBox({Key? key}) : super(key: key); @override Widget build(BuildContext context) => this; }
+class BoxStyler extends Style<BoxSpec> {
+  const BoxStyler();
+  BoxStyler merge(BoxStyler? other) => this;
+  SizedBox call({Key? key, BoxStyler? style}) => const SizedBox();
+}
+@MixWidget('Bad', stylable: true)
+final bad = const BoxStyler();
+''';
+      await _expectInvalid(source, 'reserves the `style`');
+    });
   });
 }

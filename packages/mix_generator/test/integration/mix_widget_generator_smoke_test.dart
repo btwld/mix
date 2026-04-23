@@ -67,6 +67,13 @@ class BoxStyler extends Style<BoxSpec> {
   BoxStyler merge(BoxStyler? other) => this;
   Box call({Key? key, Widget? child}) => Box(style: this, key: key, child: child);
 }
+
+class TextStyler extends Style<BoxSpec> {
+  const TextStyler();
+  TextStyler size(double v) => this;
+  TextStyler merge(TextStyler? other) => this;
+  SizedBox call(String text) => const SizedBox();
+}
 ''';
 
 void main() {
@@ -117,7 +124,7 @@ BoxStyler createCard(Widget child, {Color color = const Color(0xFFFFFFFF)}) =>
               contains('class Card1 extends StatelessWidget'),
               contains('final Widget child;'),
               contains('final Color color;'),
-              contains('required this.child'),
+              contains('const Card1(this.child, {super.key,'),
               contains('this.color = const Color(0xFFFFFFFF)'),
               contains(
                 'createCard(child, color: color)(child: child)',
@@ -151,6 +158,36 @@ final card = BoxStyler().paddingAll(16);
         },
       );
     });
+
+    test(
+      'positional call method keeps positional on widget constructor',
+      () async {
+        const source = '''
+$_baseSource
+
+@MixWidget('Heading')
+final heading = TextStyler().size(24);
+''';
+
+        await testBuilder(
+          _partBuilder(const MixWidgetGenerator()),
+          {'mix_generator|lib/mix_widget_case.dart': source},
+          generateFor: {'mix_generator|lib/mix_widget_case.dart'},
+          outputs: {
+            'mix_generator|lib/mix_widget_case.g.dart': decodedMatches(
+              allOf(
+                contains('class Heading extends StatelessWidget'),
+                contains('final String text;'),
+                contains('const Heading(this.text, {super.key});'),
+                contains(
+                  'Widget build(BuildContext context) => heading(text);',
+                ),
+              ),
+            ),
+          },
+        );
+      },
+    );
 
     test('required nullable named parameter keeps required keyword', () async {
       const source = '''

@@ -19,7 +19,6 @@ void main() {
             defaultValueCode: null,
           ),
         ],
-        callHasPositional: false,
         stylable: false,
         stylerTypeDisplay: 'BoxStyler',
       ).build();
@@ -63,7 +62,6 @@ void main() {
             defaultValueCode: null,
           ),
         ],
-        callHasPositional: false,
         stylable: false,
         stylerTypeDisplay: 'BoxStyler',
       ).build();
@@ -74,7 +72,7 @@ void main() {
       expect(
         out,
         contains(
-          'const Card1({super.key, required this.child, this.color = Colors.white});',
+          'const Card1(this.child, {super.key, this.color = Colors.white});',
         ),
       );
       expect(
@@ -100,7 +98,6 @@ void main() {
             defaultValueCode: null,
           ),
         ],
-        callHasPositional: false,
         stylable: true,
         stylerTypeDisplay: 'BoxStyler',
       ).build();
@@ -130,7 +127,6 @@ void main() {
             defaultValueCode: null,
           ),
         ],
-        callHasPositional: true,
         stylable: false,
         stylerTypeDisplay: 'TextStyler',
       ).build();
@@ -138,7 +134,7 @@ void main() {
       expect(out, contains('final String text;'));
       expect(
         out,
-        contains('const Heading({super.key, required this.text});'),
+        contains('const Heading(this.text, {super.key});'),
       );
       expect(
         out,
