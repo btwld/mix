@@ -1,5 +1,8 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mix/src/core/directive.dart';
 import 'package:mix/src/core/prop.dart';
 import 'package:mix/src/theme/tokens/token_refs.dart';
 
@@ -90,6 +93,145 @@ void main() {
         expect(ref, PropMatcher.isToken(token));
         expect(ref, PropMatcher.hasTokens);
         expect(ref, isNot(PropMatcher.hasValues));
+      });
+    });
+
+    group('ColorRef Color method overrides', () {
+      final baseToken = TestToken<Color>('base-color');
+
+      test('withAlpha returns ColorRef with AlphaColorDirective', () {
+        final ref = ColorRef(Prop.token(baseToken));
+
+        final result = ref.withAlpha(128);
+
+        expect(result, isA<ColorRef>());
+        expect((result as ColorRef).$directives, [
+          const AlphaColorDirective(128),
+        ]);
+        expect(result, PropMatcher.isToken(baseToken));
+      });
+
+      test('withRed returns ColorRef with WithRedColorDirective', () {
+        final ref = ColorRef(Prop.token(baseToken));
+
+        final result = ref.withRed(200);
+
+        expect(result, isA<ColorRef>());
+        expect((result as ColorRef).$directives, [
+          const WithRedColorDirective(200),
+        ]);
+        expect(result, PropMatcher.isToken(baseToken));
+      });
+
+      test('withGreen returns ColorRef with WithGreenColorDirective', () {
+        final ref = ColorRef(Prop.token(baseToken));
+
+        final result = ref.withGreen(150);
+
+        expect(result, isA<ColorRef>());
+        expect((result as ColorRef).$directives, [
+          const WithGreenColorDirective(150),
+        ]);
+        expect(result, PropMatcher.isToken(baseToken));
+      });
+
+      test('withBlue returns ColorRef with WithBlueColorDirective', () {
+        final ref = ColorRef(Prop.token(baseToken));
+
+        final result = ref.withBlue(75);
+
+        expect(result, isA<ColorRef>());
+        expect((result as ColorRef).$directives, [
+          const WithBlueColorDirective(75),
+        ]);
+        expect(result, PropMatcher.isToken(baseToken));
+      });
+
+      test('withOpacity returns ColorRef with OpacityColorDirective', () {
+        final ref = ColorRef(Prop.token(baseToken));
+
+        // ignore: deprecated_member_use
+        final result = ref.withOpacity(0.5);
+
+        expect(result, isA<ColorRef>());
+        expect((result as ColorRef).$directives, [
+          const OpacityColorDirective(0.5),
+        ]);
+        expect(result, PropMatcher.isToken(baseToken));
+      });
+
+      test(
+        'withValues returns ColorRef with WithValuesColorDirective carrying all args',
+        () {
+          final ref = ColorRef(Prop.token(baseToken));
+
+          final result = ref.withValues(
+            alpha: 0.5,
+            red: 0.1,
+            green: 0.2,
+            blue: 0.3,
+            colorSpace: ColorSpace.sRGB,
+          );
+
+          expect(result, isA<ColorRef>());
+          expect((result as ColorRef).$directives, [
+            const WithValuesColorDirective(
+              alpha: 0.5,
+              red: 0.1,
+              green: 0.2,
+              blue: 0.3,
+              colorSpace: ColorSpace.sRGB,
+            ),
+          ]);
+          expect(result, PropMatcher.isToken(baseToken));
+        },
+      );
+
+      test('chained calls accumulate directives in call order', () {
+        final ref = ColorRef(Prop.token(baseToken));
+
+        final result =
+            ref.withAlpha(10).withRed(20).withBlue(30) as ColorRef;
+
+        expect(result.$directives, [
+          const AlphaColorDirective(10),
+          const WithRedColorDirective(20),
+          const WithBlueColorDirective(30),
+        ]);
+        expect(result, PropMatcher.isToken(baseToken));
+      });
+
+      test('resolution applies directives after the token resolves', () {
+        final ref = ColorRef(Prop.token(baseToken));
+        const baseColor = Color(0xFF808080);
+        final context = MockBuildContext(tokens: {baseToken: baseColor});
+
+        final chained = ref.withAlpha(64).withRed(10) as ColorRef;
+
+        final resolved = chained.resolveProp(context);
+        final expected = const WithRedColorDirective(
+          10,
+        ).apply(const AlphaColorDirective(64).apply(baseColor));
+
+        expect(resolved, equals(expected));
+      });
+
+      test('accessors still throw via noSuchMethod (regression guard)', () {
+        final ref = ColorRef(Prop.token(baseToken));
+
+        expect(
+          () => (ref as dynamic).alpha,
+          throwsA(isA<UnimplementedError>()),
+        );
+        expect(() => (ref as dynamic).red, throwsA(isA<UnimplementedError>()));
+        expect(
+          () => (ref as dynamic).opacity,
+          throwsA(isA<UnimplementedError>()),
+        );
+        expect(
+          () => (ref as dynamic).value,
+          throwsA(isA<UnimplementedError>()),
+        );
       });
     });
 
