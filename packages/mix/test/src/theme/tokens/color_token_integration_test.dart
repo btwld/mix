@@ -55,33 +55,34 @@ void main() {
       expect(decoration.color, expected);
     });
 
-    testWidgets(
-      'withValues applies at render time with multiple channels',
-      (tester) async {
-        const token = ColorToken('primary');
-        const baseColor = Color(0xFF336699);
+    testWidgets('withValues applies at render time with multiple channels', (
+      tester,
+    ) async {
+      const token = ColorToken('primary');
+      const baseColor = Color(0xFF336699);
 
-        final style = BoxStyler().color(
-          token().withValues(alpha: 0.25, red: 0.5),
-        );
+      final style = BoxStyler().color(
+        token().withValues(alpha: 0.25, red: 0.5),
+      );
 
-        await tester.pumpWidget(
-          MixScope(
-            tokens: {token: baseColor},
-            child: Directionality(
-              textDirection: TextDirection.ltr,
-              child: Box(style: style),
-            ),
+      await tester.pumpWidget(
+        MixScope(
+          tokens: {token: baseColor},
+          child: Directionality(
+            textDirection: TextDirection.ltr,
+            child: Box(style: style),
           ),
-        );
+        ),
+      );
 
-        final container = tester.widget<Container>(find.byType(Container));
-        final decoration = container.decoration! as BoxDecoration;
-        expect(decoration.color, baseColor.withValues(alpha: 0.25, red: 0.5));
-      },
-    );
+      final container = tester.widget<Container>(find.byType(Container));
+      final decoration = container.decoration! as BoxDecoration;
+      expect(decoration.color, baseColor.withValues(alpha: 0.25, red: 0.5));
+    });
 
-    testWidgets('withOpacity applies via OpacityColorDirective', (tester) async {
+    testWidgets('withOpacity applies via OpacityColorDirective', (
+      tester,
+    ) async {
       const token = ColorToken('primary');
       const baseColor = Color(0xFFFF0000);
 

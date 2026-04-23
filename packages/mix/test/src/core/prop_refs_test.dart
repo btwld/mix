@@ -190,8 +190,7 @@ void main() {
       test('chained calls accumulate directives in call order', () {
         final ref = ColorRef(Prop.token(baseToken));
 
-        final result =
-            ref.withAlpha(10).withRed(20).withBlue(30) as ColorRef;
+        final result = ref.withAlpha(10).withRed(20).withBlue(30) as ColorRef;
 
         expect(result.$directives, [
           const AlphaColorDirective(10),
