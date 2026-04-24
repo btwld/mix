@@ -1,8 +1,11 @@
 // ABOUTME: Token references for types used by MixToken classes in the Mix theme.
 // ABOUTME: Contains refs, extension types and utilities specifically for design tokens.
+import 'dart:ui';
+
 import 'package:flutter/widgets.dart';
 
 import '../../core/breakpoint.dart';
+import '../../core/directive.dart';
 import '../../core/equatable.dart';
 import '../../core/prop.dart';
 import '../../core/prop_refs.dart';
@@ -40,6 +43,41 @@ To use as an actual $typeName value:
 /// Token reference for [Color] values with directive support.
 final class ColorRef extends Prop<Color> with ValueRef<Color> implements Color {
   ColorRef(super.prop) : super.fromProp();
+
+  @override
+  Color withValues({
+    double? alpha,
+    double? red,
+    double? green,
+    double? blue,
+    ColorSpace? colorSpace,
+  }) => ColorRef(
+    directives([
+      WithValuesColorDirective(
+        alpha: alpha,
+        red: red,
+        green: green,
+        blue: blue,
+        colorSpace: colorSpace,
+      ),
+    ]),
+  );
+
+  @override
+  Color withAlpha(int a) => ColorRef(directives([AlphaColorDirective(a)]));
+
+  @override
+  Color withRed(int r) => ColorRef(directives([WithRedColorDirective(r)]));
+
+  @override
+  Color withGreen(int g) => ColorRef(directives([WithGreenColorDirective(g)]));
+
+  @override
+  Color withBlue(int b) => ColorRef(directives([WithBlueColorDirective(b)]));
+
+  @override
+  Color withOpacity(double opacity) =>
+      ColorRef(directives([OpacityColorDirective(opacity)]));
 }
 
 /// Token reference for [Radius] values
