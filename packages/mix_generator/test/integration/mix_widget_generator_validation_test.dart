@@ -7,10 +7,15 @@ import 'package:test/test.dart';
 Builder _partBuilder(Generator generator) =>
     PartBuilder([generator], '.g.dart');
 
+const _mixStubSource = r'''
+library mix;
+class Style<T> { const Style(); }
+''';
+
 Future<void> _expectInvalid(String source, String messageFragment) async {
   final result = await testBuilder(
     _partBuilder(const MixWidgetGenerator()),
-    {'mix_generator|lib/case.dart': source},
+    {'mix|lib/mix.dart': _mixStubSource, 'mix_generator|lib/case.dart': source},
     generateFor: {'mix_generator|lib/case.dart'},
     onLog: (_) {},
   );
@@ -46,9 +51,9 @@ final bad = const NotAStyler();
     test('rejects styler without call()', () async {
       const source = r'''
 library c;
+import 'package:mix/mix.dart';
 part 'case.g.dart';
 class MixWidget { final String name; final bool stylable; const MixWidget(this.name, {this.stylable = false}); }
-class Style<T> { const Style(); }
 class BoxSpec {}
 class NoCallStyler extends Style<BoxSpec> { const NoCallStyler(); }
 @MixWidget('Bad')
@@ -60,9 +65,9 @@ final bad = const NoCallStyler();
     test('rejects stylable with style parameter on function', () async {
       const source = r'''
 library c;
+import 'package:mix/mix.dart';
 part 'case.g.dart';
 class MixWidget { final String name; final bool stylable; const MixWidget(this.name, {this.stylable = false}); }
-class Style<T> { const Style(); }
 class BoxSpec {}
 class Key { const Key(); }
 class BuildContext {}
@@ -88,9 +93,9 @@ BoxStyler build({required BoxStyler style}) => style;
     test('rejects stylable when Styler call has a style param', () async {
       const source = r'''
 library c;
+import 'package:mix/mix.dart';
 part 'case.g.dart';
 class MixWidget { final String name; final bool stylable; const MixWidget(this.name, {this.stylable = false}); }
-class Style<T> { const Style(); }
 class BoxSpec {}
 class Key { const Key(); }
 class BuildContext {}

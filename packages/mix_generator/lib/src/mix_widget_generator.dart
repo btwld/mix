@@ -114,7 +114,7 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
     }
     InterfaceType? current = type;
     while (current != null) {
-      if (current.element.name == 'Style') {
+      if (_isMixStyle(current.element)) {
         return type.element;
       }
       current = current.superclass;
@@ -123,6 +123,14 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
       '@MixWidget target must resolve to a Style<T> subtype.',
       element: element,
     );
+  }
+
+  bool _isMixStyle(InterfaceElement element) {
+    if (element.name != 'Style') return false;
+    final uri = element.library.uri;
+    return uri.scheme == 'package' &&
+        uri.pathSegments.isNotEmpty &&
+        uri.pathSegments.first == 'mix';
   }
 
   MethodElement _findCall(InterfaceElement styler, Element annotated) {

@@ -7,8 +7,15 @@ import 'package:test/test.dart';
 Builder _partBuilder(Generator generator) =>
     PartBuilder([generator], '.g.dart');
 
+const _mixStubSource = r'''
+library mix;
+class Style<T> { const Style(); }
+''';
+
 const _baseSource = r'''
 library mix_widget_case;
+
+import 'package:mix/mix.dart';
 
 part 'mix_widget_case.g.dart';
 
@@ -16,10 +23,6 @@ class MixWidget {
   final String name;
   final bool stylable;
   const MixWidget(this.name, {this.stylable = false});
-}
-
-class Style<T> {
-  const Style();
 }
 
 class BoxSpec {
@@ -89,7 +92,10 @@ final card = BoxStyler().paddingAll(16).borderRounded(8).color(Color(0xFFFFFFFF)
 
       await testBuilder(
         _partBuilder(const MixWidgetGenerator()),
-        {'mix_generator|lib/mix_widget_case.dart': source},
+        {
+          'mix|lib/mix.dart': _mixStubSource,
+          'mix_generator|lib/mix_widget_case.dart': source,
+        },
         generateFor: {'mix_generator|lib/mix_widget_case.dart'},
         outputs: {
           'mix_generator|lib/mix_widget_case.g.dart': decodedMatches(
@@ -118,7 +124,10 @@ BoxStyler createCard(Widget child, {Color color = const Color(0xFFFFFFFF)}) =>
 
       await testBuilder(
         _partBuilder(const MixWidgetGenerator()),
-        {'mix_generator|lib/mix_widget_case.dart': source},
+        {
+          'mix|lib/mix.dart': _mixStubSource,
+          'mix_generator|lib/mix_widget_case.dart': source,
+        },
         generateFor: {'mix_generator|lib/mix_widget_case.dart'},
         outputs: {
           'mix_generator|lib/mix_widget_case.g.dart': decodedMatches(
@@ -146,7 +155,10 @@ final card = BoxStyler().paddingAll(16);
 
       await testBuilder(
         _partBuilder(const MixWidgetGenerator()),
-        {'mix_generator|lib/mix_widget_case.dart': source},
+        {
+          'mix|lib/mix.dart': _mixStubSource,
+          'mix_generator|lib/mix_widget_case.dart': source,
+        },
         generateFor: {'mix_generator|lib/mix_widget_case.dart'},
         outputs: {
           'mix_generator|lib/mix_widget_case.g.dart': decodedMatches(
@@ -173,7 +185,10 @@ final heading = TextStyler().size(24);
 
         await testBuilder(
           _partBuilder(const MixWidgetGenerator()),
-          {'mix_generator|lib/mix_widget_case.dart': source},
+          {
+            'mix|lib/mix.dart': _mixStubSource,
+            'mix_generator|lib/mix_widget_case.dart': source,
+          },
           generateFor: {'mix_generator|lib/mix_widget_case.dart'},
           outputs: {
             'mix_generator|lib/mix_widget_case.g.dart': decodedMatches(
@@ -206,7 +221,10 @@ final subCard = const SubStyler();
 
       await testBuilder(
         _partBuilder(const MixWidgetGenerator()),
-        {'mix_generator|lib/mix_widget_case.dart': source},
+        {
+          'mix|lib/mix.dart': _mixStubSource,
+          'mix_generator|lib/mix_widget_case.dart': source,
+        },
         generateFor: {'mix_generator|lib/mix_widget_case.dart'},
         outputs: {
           'mix_generator|lib/mix_widget_case.g.dart': decodedMatches(
@@ -233,7 +251,10 @@ BoxStyler makeRequiredCard({required Widget? child}) => BoxStyler();
 
       await testBuilder(
         _partBuilder(const MixWidgetGenerator()),
-        {'mix_generator|lib/mix_widget_case.dart': source},
+        {
+          'mix|lib/mix.dart': _mixStubSource,
+          'mix_generator|lib/mix_widget_case.dart': source,
+        },
         generateFor: {'mix_generator|lib/mix_widget_case.dart'},
         outputs: {
           'mix_generator|lib/mix_widget_case.g.dart': decodedMatches(
