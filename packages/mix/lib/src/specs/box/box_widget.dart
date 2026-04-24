@@ -1,8 +1,9 @@
 import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
 
-import '../../core/style_widget.dart';
-import 'box_spec.dart';
-import 'box_style.dart';
+import '../../../mix.dart';
+
+part 'box_widget.g.dart';
 
 /// [Box] is equivalent to Flutter's [Container], it provides
 /// styling capabilities through the Mix framework. It can be used to
@@ -50,3 +51,37 @@ class Box extends StyleWidget<BoxSpec> {
     );
   }
 }
+
+@MixWidget('Card')
+final _style = BoxStyler()
+    .width(200)
+    .height(100)
+    .color(Color.fromARGB(255, 255, 251, 251));
+
+@MixWidget('CardV')
+final _styleV = FlexBoxStyler()
+    .width(200)
+    .height(100)
+    .color(Color.fromARGB(255, 255, 251, 251));
+
+@MixWidget('CardH')
+final _styleH = FlexBoxStyler()
+    .width(200)
+    .height(100)
+    .color(Color.fromARGB(255, 255, 251, 251));
+
+@MixWidget('H1', stylable: true)
+final _styleH1 = TextStyler()
+    .fontSize(24)
+    .fontWeight(.bold)
+    .color(Color(0xFF000000));
+
+@MixWidget('Badge', stylable: true)
+BoxStyler badge(String label, {Color color = const Color(0xFF000000)}) =>
+    BoxStyler()
+        .padding(.all(8))
+        .borderRadius(.circular(4))
+        .color(color)
+        .textStyle(
+          TextStyler().fontSize(12).fontWeight(.bold).color(Color(0xFFFFFFFF)),
+        );
