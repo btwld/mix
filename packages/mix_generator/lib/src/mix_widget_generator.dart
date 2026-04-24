@@ -126,8 +126,12 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
   }
 
   MethodElement _findCall(InterfaceElement styler, Element annotated) {
-    for (final m in styler.methods) {
-      if (m.name == 'call') return m;
+    InterfaceElement? current = styler;
+    while (current != null) {
+      for (final m in current.methods) {
+        if (m.name == 'call') return m;
+      }
+      current = current.supertype?.element;
     }
     throw InvalidGenerationSource(
       '@MixWidget Styler ${styler.name} must declare a `call(...)` method.',

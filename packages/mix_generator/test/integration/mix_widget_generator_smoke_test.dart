@@ -191,6 +191,37 @@ final heading = TextStyler().size(24);
       },
     );
 
+    test('inherits call from superclass styler', () async {
+      const source =
+          '''
+$_baseSource
+
+class SubStyler extends BoxStyler {
+  const SubStyler();
+}
+
+@MixWidget('SubCard')
+final subCard = const SubStyler();
+''';
+
+      await testBuilder(
+        _partBuilder(const MixWidgetGenerator()),
+        {'mix_generator|lib/mix_widget_case.dart': source},
+        generateFor: {'mix_generator|lib/mix_widget_case.dart'},
+        outputs: {
+          'mix_generator|lib/mix_widget_case.g.dart': decodedMatches(
+            allOf(
+              contains('class SubCard extends StatelessWidget'),
+              contains('final Widget? child;'),
+              contains(
+                'Widget build(BuildContext context) => subCard(child: child);',
+              ),
+            ),
+          ),
+        },
+      );
+    });
+
     test('required nullable named parameter keeps required keyword', () async {
       const source =
           '''
