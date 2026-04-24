@@ -352,7 +352,7 @@ void main() {
           colorBlendMode: BlendMode.multiply,
         );
 
-        expect(attribute.props.length, 18);
+        expect(attribute.props.length, 19);
         expect(attribute.props, contains(attribute.$width));
         expect(attribute.props, contains(attribute.$height));
         expect(attribute.props, contains(attribute.$color));

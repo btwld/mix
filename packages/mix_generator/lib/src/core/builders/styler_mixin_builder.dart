@@ -83,6 +83,17 @@ class StylerMixinBuilder {
     buffer.writeln('  }');
     buffer.writeln();
 
+    // inlineBuilder method
+    buffer.writeln('  /// Sets the inline style builder.');
+    buffer.writeln(
+      '  $stylerName inlineBuilder(InlineStyleBuilder<$specName> value) {',
+    );
+    buffer.writeln(
+      '    return merge($stylerName.create(inlineBuilder: value));',
+    );
+    buffer.writeln('  }');
+    buffer.writeln();
+
     return buffer.toString();
   }
 
@@ -94,27 +105,48 @@ class StylerMixinBuilder {
     buffer.writeln('  /// Merges with another [$stylerName].');
     buffer.writeln('  @override');
     buffer.writeln('  $stylerName merge($stylerName? other) {');
-    buffer.writeln('    return $stylerName.create(');
 
-    // Field merge assignments
+    // Inline-builder append branch:
+    // When this style carries an inline builder AND `other` is non-null, later
+    // merges (from fluent chain calls after `.onBuilder(...)`) must be
+    // appended to the builder's tail rather than collapsed into the root
+    // fields. This preserves original fluent-call order during resolution.
+    buffer.writeln('    if (other != null && \$inlineBuilder != null) {');
+    buffer.writeln('      return $stylerName.create(');
+    for (final field in fields) {
+      final fieldName = field.declaredName;
+      final name = field.name;
+      buffer.writeln('        $name: $fieldName,');
+    }
+    buffer.writeln('        variants: \$variants,');
+    buffer.writeln('        modifier: \$modifier,');
+    buffer.writeln('        animation: \$animation,');
+    buffer.writeln(
+      '        inlineBuilder: \$inlineBuilder!.append(other),',
+    );
+    buffer.writeln('      );');
+    buffer.writeln('    }');
+    buffer.writeln();
+
+    // Normal merge branch — also handles `other == null` by producing a fresh
+    // copy (preserves the invariant that `merge` always returns a new
+    // instance).
+    buffer.writeln('    return $stylerName.create(');
     for (final field in fields) {
       final fieldName = field.declaredName;
       final name = field.name;
 
       if (field.isRawList) {
-        // Raw lists use MixOps.mergeList
         buffer.writeln(
           '      $name: MixOps.mergeList($fieldName, other?.$fieldName),',
         );
       } else {
-        // Regular fields use MixOps.merge
         buffer.writeln(
           '      $name: MixOps.merge($fieldName, other?.$fieldName),',
         );
       }
     }
 
-    // Base fields
     buffer.writeln(
       '      variants: MixOps.mergeVariants(\$variants, other?.\$variants),',
     );
@@ -124,7 +156,36 @@ class StylerMixinBuilder {
     buffer.writeln(
       '      animation: MixOps.mergeAnimation(\$animation, other?.\$animation),',
     );
+    buffer.writeln(
+      '      inlineBuilder: other?.\$inlineBuilder ?? \$inlineBuilder,',
+    );
 
+    buffer.writeln('    );');
+    buffer.writeln('  }');
+
+    return buffer.toString();
+  }
+
+  String _buildCopyWithoutInlineBuilder() {
+    if (!config.generateMerge) return '';
+
+    final buffer = StringBuffer();
+
+    buffer.writeln(
+      '  /// Returns a copy of this style with `\$inlineBuilder` cleared.',
+    );
+    buffer.writeln('  @override');
+    buffer.writeln('  $stylerName copyWithoutInlineBuilder() {');
+    buffer.writeln('    return $stylerName.create(');
+    for (final field in fields) {
+      final fieldName = field.declaredName;
+      final name = field.name;
+      buffer.writeln('      $name: $fieldName,');
+    }
+    buffer.writeln('      variants: \$variants,');
+    buffer.writeln('      modifier: \$modifier,');
+    buffer.writeln('      animation: \$animation,');
+    buffer.writeln('      inlineBuilder: null,');
     buffer.writeln('    );');
     buffer.writeln('  }');
 
@@ -185,11 +246,17 @@ class StylerMixinBuilder {
         final field = fields[i];
         final displayName = field.displayName;
         final fieldName = field.declaredName;
-        final separator = i == fields.length - 1 ? ';' : '';
         buffer.writeln(
-          "      ..add(DiagnosticsProperty('$displayName', $fieldName))$separator",
+          "      ..add(DiagnosticsProperty('$displayName', $fieldName))",
         );
       }
+      buffer.writeln(
+        "      ..add(DiagnosticsProperty('inlineBuilder', \$inlineBuilder));",
+      );
+    } else {
+      buffer.writeln(
+        "    properties.add(DiagnosticsProperty('inlineBuilder', \$inlineBuilder));",
+      );
     }
 
     buffer.writeln('  }');
@@ -210,6 +277,7 @@ class StylerMixinBuilder {
       buffer.writeln('    \$animation,');
       buffer.writeln('    \$modifier,');
       buffer.writeln('    \$variants,');
+      buffer.writeln('    \$inlineBuilder,');
       buffer.writeln('  ];');
     } else {
       buffer.writeln();
@@ -221,6 +289,7 @@ class StylerMixinBuilder {
       buffer.writeln('    \$animation,');
       buffer.writeln('    \$modifier,');
       buffer.writeln('    \$variants,');
+      buffer.writeln('    \$inlineBuilder,');
       buffer.writeln('  ];');
     }
 
@@ -252,6 +321,7 @@ class StylerMixinBuilder {
     // Generate merge
     if (config.generateMerge) {
       buffer.writeln(_buildMerge());
+      buffer.writeln(_buildCopyWithoutInlineBuilder());
     }
 
     // Generate resolve

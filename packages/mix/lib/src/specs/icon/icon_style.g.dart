@@ -101,9 +101,36 @@ mixin _$IconStylerMixin on Style<IconSpec>, Diagnosticable {
     return merge(IconStyler(modifier: value));
   }
 
+  /// Sets the inline style builder.
+  IconStyler inlineBuilder(InlineStyleBuilder<IconSpec> value) {
+    return merge(IconStyler.create(inlineBuilder: value));
+  }
+
   /// Merges with another [IconStyler].
   @override
   IconStyler merge(IconStyler? other) {
+    if (other != null && $inlineBuilder != null) {
+      return IconStyler.create(
+        applyTextScaling: $applyTextScaling,
+        blendMode: $blendMode,
+        color: $color,
+        fill: $fill,
+        grade: $grade,
+        icon: $icon,
+        opacity: $opacity,
+        opticalSize: $opticalSize,
+        semanticsLabel: $semanticsLabel,
+        shadows: $shadows,
+        size: $size,
+        textDirection: $textDirection,
+        weight: $weight,
+        variants: $variants,
+        modifier: $modifier,
+        animation: $animation,
+        inlineBuilder: $inlineBuilder!.append(other),
+      );
+    }
+
     return IconStyler.create(
       applyTextScaling: MixOps.merge(
         $applyTextScaling,
@@ -124,6 +151,31 @@ mixin _$IconStylerMixin on Style<IconSpec>, Diagnosticable {
       variants: MixOps.mergeVariants($variants, other?.$variants),
       modifier: MixOps.mergeModifier($modifier, other?.$modifier),
       animation: MixOps.mergeAnimation($animation, other?.$animation),
+      inlineBuilder: other?.$inlineBuilder ?? $inlineBuilder,
+    );
+  }
+
+  /// Returns a copy of this style with `$inlineBuilder` cleared.
+  @override
+  IconStyler copyWithoutInlineBuilder() {
+    return IconStyler.create(
+      applyTextScaling: $applyTextScaling,
+      blendMode: $blendMode,
+      color: $color,
+      fill: $fill,
+      grade: $grade,
+      icon: $icon,
+      opacity: $opacity,
+      opticalSize: $opticalSize,
+      semanticsLabel: $semanticsLabel,
+      shadows: $shadows,
+      size: $size,
+      textDirection: $textDirection,
+      weight: $weight,
+      variants: $variants,
+      modifier: $modifier,
+      animation: $animation,
+      inlineBuilder: null,
     );
   }
 
@@ -169,7 +221,8 @@ mixin _$IconStylerMixin on Style<IconSpec>, Diagnosticable {
       ..add(DiagnosticsProperty('shadows', $shadows))
       ..add(DiagnosticsProperty('size', $size))
       ..add(DiagnosticsProperty('textDirection', $textDirection))
-      ..add(DiagnosticsProperty('weight', $weight));
+      ..add(DiagnosticsProperty('weight', $weight))
+      ..add(DiagnosticsProperty('inlineBuilder', $inlineBuilder));
   }
 
   @override
@@ -190,5 +243,6 @@ mixin _$IconStylerMixin on Style<IconSpec>, Diagnosticable {
     $animation,
     $modifier,
     $variants,
+    $inlineBuilder,
   ];
 }

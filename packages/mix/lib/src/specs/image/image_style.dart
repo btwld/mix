@@ -67,6 +67,7 @@ class ImageStyler extends MixStyler<ImageStyler, ImageSpec>
     super.animation,
     super.modifier,
     super.variants,
+    super.inlineBuilder,
   }) : $image = image,
        $width = width,
        $height = height,

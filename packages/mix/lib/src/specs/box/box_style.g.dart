@@ -67,9 +67,32 @@ mixin _$BoxStylerMixin on Style<BoxSpec>, Diagnosticable {
     return merge(BoxStyler(modifier: value));
   }
 
+  /// Sets the inline style builder.
+  BoxStyler inlineBuilder(InlineStyleBuilder<BoxSpec> value) {
+    return merge(BoxStyler.create(inlineBuilder: value));
+  }
+
   /// Merges with another [BoxStyler].
   @override
   BoxStyler merge(BoxStyler? other) {
+    if (other != null && $inlineBuilder != null) {
+      return BoxStyler.create(
+        alignment: $alignment,
+        clipBehavior: $clipBehavior,
+        constraints: $constraints,
+        decoration: $decoration,
+        foregroundDecoration: $foregroundDecoration,
+        margin: $margin,
+        padding: $padding,
+        transform: $transform,
+        transformAlignment: $transformAlignment,
+        variants: $variants,
+        modifier: $modifier,
+        animation: $animation,
+        inlineBuilder: $inlineBuilder!.append(other),
+      );
+    }
+
     return BoxStyler.create(
       alignment: MixOps.merge($alignment, other?.$alignment),
       clipBehavior: MixOps.merge($clipBehavior, other?.$clipBehavior),
@@ -89,6 +112,27 @@ mixin _$BoxStylerMixin on Style<BoxSpec>, Diagnosticable {
       variants: MixOps.mergeVariants($variants, other?.$variants),
       modifier: MixOps.mergeModifier($modifier, other?.$modifier),
       animation: MixOps.mergeAnimation($animation, other?.$animation),
+      inlineBuilder: other?.$inlineBuilder ?? $inlineBuilder,
+    );
+  }
+
+  /// Returns a copy of this style with `$inlineBuilder` cleared.
+  @override
+  BoxStyler copyWithoutInlineBuilder() {
+    return BoxStyler.create(
+      alignment: $alignment,
+      clipBehavior: $clipBehavior,
+      constraints: $constraints,
+      decoration: $decoration,
+      foregroundDecoration: $foregroundDecoration,
+      margin: $margin,
+      padding: $padding,
+      transform: $transform,
+      transformAlignment: $transformAlignment,
+      variants: $variants,
+      modifier: $modifier,
+      animation: $animation,
+      inlineBuilder: null,
     );
   }
 
@@ -126,7 +170,8 @@ mixin _$BoxStylerMixin on Style<BoxSpec>, Diagnosticable {
       ..add(DiagnosticsProperty('margin', $margin))
       ..add(DiagnosticsProperty('padding', $padding))
       ..add(DiagnosticsProperty('transform', $transform))
-      ..add(DiagnosticsProperty('transformAlignment', $transformAlignment));
+      ..add(DiagnosticsProperty('transformAlignment', $transformAlignment))
+      ..add(DiagnosticsProperty('inlineBuilder', $inlineBuilder));
   }
 
   @override
@@ -143,5 +188,6 @@ mixin _$BoxStylerMixin on Style<BoxSpec>, Diagnosticable {
     $animation,
     $modifier,
     $variants,
+    $inlineBuilder,
   ];
 }

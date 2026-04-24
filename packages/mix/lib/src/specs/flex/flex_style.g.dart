@@ -77,9 +77,32 @@ mixin _$FlexStylerMixin on Style<FlexSpec>, Diagnosticable {
     return merge(FlexStyler(modifier: value));
   }
 
+  /// Sets the inline style builder.
+  FlexStyler inlineBuilder(InlineStyleBuilder<FlexSpec> value) {
+    return merge(FlexStyler.create(inlineBuilder: value));
+  }
+
   /// Merges with another [FlexStyler].
   @override
   FlexStyler merge(FlexStyler? other) {
+    if (other != null && $inlineBuilder != null) {
+      return FlexStyler.create(
+        clipBehavior: $clipBehavior,
+        crossAxisAlignment: $crossAxisAlignment,
+        direction: $direction,
+        mainAxisAlignment: $mainAxisAlignment,
+        mainAxisSize: $mainAxisSize,
+        spacing: $spacing,
+        textBaseline: $textBaseline,
+        textDirection: $textDirection,
+        verticalDirection: $verticalDirection,
+        variants: $variants,
+        modifier: $modifier,
+        animation: $animation,
+        inlineBuilder: $inlineBuilder!.append(other),
+      );
+    }
+
     return FlexStyler.create(
       clipBehavior: MixOps.merge($clipBehavior, other?.$clipBehavior),
       crossAxisAlignment: MixOps.merge(
@@ -102,6 +125,27 @@ mixin _$FlexStylerMixin on Style<FlexSpec>, Diagnosticable {
       variants: MixOps.mergeVariants($variants, other?.$variants),
       modifier: MixOps.mergeModifier($modifier, other?.$modifier),
       animation: MixOps.mergeAnimation($animation, other?.$animation),
+      inlineBuilder: other?.$inlineBuilder ?? $inlineBuilder,
+    );
+  }
+
+  /// Returns a copy of this style with `$inlineBuilder` cleared.
+  @override
+  FlexStyler copyWithoutInlineBuilder() {
+    return FlexStyler.create(
+      clipBehavior: $clipBehavior,
+      crossAxisAlignment: $crossAxisAlignment,
+      direction: $direction,
+      mainAxisAlignment: $mainAxisAlignment,
+      mainAxisSize: $mainAxisSize,
+      spacing: $spacing,
+      textBaseline: $textBaseline,
+      textDirection: $textDirection,
+      verticalDirection: $verticalDirection,
+      variants: $variants,
+      modifier: $modifier,
+      animation: $animation,
+      inlineBuilder: null,
     );
   }
 
@@ -139,7 +183,8 @@ mixin _$FlexStylerMixin on Style<FlexSpec>, Diagnosticable {
       ..add(DiagnosticsProperty('spacing', $spacing))
       ..add(DiagnosticsProperty('textBaseline', $textBaseline))
       ..add(DiagnosticsProperty('textDirection', $textDirection))
-      ..add(DiagnosticsProperty('verticalDirection', $verticalDirection));
+      ..add(DiagnosticsProperty('verticalDirection', $verticalDirection))
+      ..add(DiagnosticsProperty('inlineBuilder', $inlineBuilder));
   }
 
   @override
@@ -156,5 +201,6 @@ mixin _$FlexStylerMixin on Style<FlexSpec>, Diagnosticable {
     $animation,
     $modifier,
     $variants,
+    $inlineBuilder,
   ];
 }

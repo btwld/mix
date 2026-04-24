@@ -65,6 +65,7 @@ class IconStyler extends MixStyler<IconStyler, IconSpec>
     super.animation,
     super.modifier,
     super.variants,
+    super.inlineBuilder,
   }) : $color = color,
        $size = size,
        $weight = weight,

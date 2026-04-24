@@ -244,7 +244,7 @@ void main() {
           clipBehavior: Clip.antiAlias,
         );
 
-        expect(attribute.props.length, 7);
+        expect(attribute.props.length, 8);
         expect(attribute.props, contains(attribute.$alignment));
         expect(attribute.props, contains(attribute.$fit));
         expect(attribute.props, contains(attribute.$textDirection));

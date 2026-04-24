@@ -291,6 +291,9 @@ class MockStyle<T> extends Style<MockSpec<T>> {
   }
 
   @override
+  MockStyle<T> copyWithoutInlineBuilder() => MockStyle(value);
+
+  @override
   List<Object?> get props => [value];
 }
 

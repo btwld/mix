@@ -102,9 +102,37 @@ mixin _$TextStylerMixin on Style<TextSpec>, Diagnosticable {
     return merge(TextStyler(modifier: value));
   }
 
+  /// Sets the inline style builder.
+  TextStyler inlineBuilder(InlineStyleBuilder<TextSpec> value) {
+    return merge(TextStyler.create(inlineBuilder: value));
+  }
+
   /// Merges with another [TextStyler].
   @override
   TextStyler merge(TextStyler? other) {
+    if (other != null && $inlineBuilder != null) {
+      return TextStyler.create(
+        locale: $locale,
+        maxLines: $maxLines,
+        overflow: $overflow,
+        selectionColor: $selectionColor,
+        semanticsLabel: $semanticsLabel,
+        softWrap: $softWrap,
+        strutStyle: $strutStyle,
+        style: $style,
+        textAlign: $textAlign,
+        textDirection: $textDirection,
+        textDirectives: $textDirectives,
+        textHeightBehavior: $textHeightBehavior,
+        textScaler: $textScaler,
+        textWidthBasis: $textWidthBasis,
+        variants: $variants,
+        modifier: $modifier,
+        animation: $animation,
+        inlineBuilder: $inlineBuilder!.append(other),
+      );
+    }
+
     return TextStyler.create(
       locale: MixOps.merge($locale, other?.$locale),
       maxLines: MixOps.merge($maxLines, other?.$maxLines),
@@ -126,6 +154,32 @@ mixin _$TextStylerMixin on Style<TextSpec>, Diagnosticable {
       variants: MixOps.mergeVariants($variants, other?.$variants),
       modifier: MixOps.mergeModifier($modifier, other?.$modifier),
       animation: MixOps.mergeAnimation($animation, other?.$animation),
+      inlineBuilder: other?.$inlineBuilder ?? $inlineBuilder,
+    );
+  }
+
+  /// Returns a copy of this style with `$inlineBuilder` cleared.
+  @override
+  TextStyler copyWithoutInlineBuilder() {
+    return TextStyler.create(
+      locale: $locale,
+      maxLines: $maxLines,
+      overflow: $overflow,
+      selectionColor: $selectionColor,
+      semanticsLabel: $semanticsLabel,
+      softWrap: $softWrap,
+      strutStyle: $strutStyle,
+      style: $style,
+      textAlign: $textAlign,
+      textDirection: $textDirection,
+      textDirectives: $textDirectives,
+      textHeightBehavior: $textHeightBehavior,
+      textScaler: $textScaler,
+      textWidthBasis: $textWidthBasis,
+      variants: $variants,
+      modifier: $modifier,
+      animation: $animation,
+      inlineBuilder: null,
     );
   }
 
@@ -173,7 +227,8 @@ mixin _$TextStylerMixin on Style<TextSpec>, Diagnosticable {
       ..add(DiagnosticsProperty('directives', $textDirectives))
       ..add(DiagnosticsProperty('textHeightBehavior', $textHeightBehavior))
       ..add(DiagnosticsProperty('textScaler', $textScaler))
-      ..add(DiagnosticsProperty('textWidthBasis', $textWidthBasis));
+      ..add(DiagnosticsProperty('textWidthBasis', $textWidthBasis))
+      ..add(DiagnosticsProperty('inlineBuilder', $inlineBuilder));
   }
 
   @override
@@ -195,5 +250,6 @@ mixin _$TextStylerMixin on Style<TextSpec>, Diagnosticable {
     $animation,
     $modifier,
     $variants,
+    $inlineBuilder,
   ];
 }

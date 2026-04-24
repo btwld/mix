@@ -47,9 +47,27 @@ mixin _$StackStylerMixin on Style<StackSpec>, Diagnosticable {
     return merge(StackStyler(modifier: value));
   }
 
+  /// Sets the inline style builder.
+  StackStyler inlineBuilder(InlineStyleBuilder<StackSpec> value) {
+    return merge(StackStyler.create(inlineBuilder: value));
+  }
+
   /// Merges with another [StackStyler].
   @override
   StackStyler merge(StackStyler? other) {
+    if (other != null && $inlineBuilder != null) {
+      return StackStyler.create(
+        alignment: $alignment,
+        clipBehavior: $clipBehavior,
+        fit: $fit,
+        textDirection: $textDirection,
+        variants: $variants,
+        modifier: $modifier,
+        animation: $animation,
+        inlineBuilder: $inlineBuilder!.append(other),
+      );
+    }
+
     return StackStyler.create(
       alignment: MixOps.merge($alignment, other?.$alignment),
       clipBehavior: MixOps.merge($clipBehavior, other?.$clipBehavior),
@@ -58,6 +76,22 @@ mixin _$StackStylerMixin on Style<StackSpec>, Diagnosticable {
       variants: MixOps.mergeVariants($variants, other?.$variants),
       modifier: MixOps.mergeModifier($modifier, other?.$modifier),
       animation: MixOps.mergeAnimation($animation, other?.$animation),
+      inlineBuilder: other?.$inlineBuilder ?? $inlineBuilder,
+    );
+  }
+
+  /// Returns a copy of this style with `$inlineBuilder` cleared.
+  @override
+  StackStyler copyWithoutInlineBuilder() {
+    return StackStyler.create(
+      alignment: $alignment,
+      clipBehavior: $clipBehavior,
+      fit: $fit,
+      textDirection: $textDirection,
+      variants: $variants,
+      modifier: $modifier,
+      animation: $animation,
+      inlineBuilder: null,
     );
   }
 
@@ -85,7 +119,8 @@ mixin _$StackStylerMixin on Style<StackSpec>, Diagnosticable {
       ..add(DiagnosticsProperty('alignment', $alignment))
       ..add(DiagnosticsProperty('clipBehavior', $clipBehavior))
       ..add(DiagnosticsProperty('fit', $fit))
-      ..add(DiagnosticsProperty('textDirection', $textDirection));
+      ..add(DiagnosticsProperty('textDirection', $textDirection))
+      ..add(DiagnosticsProperty('inlineBuilder', $inlineBuilder));
   }
 
   @override
@@ -97,5 +132,6 @@ mixin _$StackStylerMixin on Style<StackSpec>, Diagnosticable {
     $animation,
     $modifier,
     $variants,
+    $inlineBuilder,
   ];
 }

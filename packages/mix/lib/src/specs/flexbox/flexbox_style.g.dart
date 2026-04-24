@@ -13,12 +13,37 @@ mixin _$FlexBoxStylerMixin on Style<FlexBoxSpec>, Diagnosticable {
   /// Merges with another [FlexBoxStyler].
   @override
   FlexBoxStyler merge(FlexBoxStyler? other) {
+    if (other != null && $inlineBuilder != null) {
+      return FlexBoxStyler.create(
+        box: $box,
+        flex: $flex,
+        variants: $variants,
+        modifier: $modifier,
+        animation: $animation,
+        inlineBuilder: $inlineBuilder!.append(other),
+      );
+    }
+
     return FlexBoxStyler.create(
       box: MixOps.merge($box, other?.$box),
       flex: MixOps.merge($flex, other?.$flex),
       variants: MixOps.mergeVariants($variants, other?.$variants),
       modifier: MixOps.mergeModifier($modifier, other?.$modifier),
       animation: MixOps.mergeAnimation($animation, other?.$animation),
+      inlineBuilder: other?.$inlineBuilder ?? $inlineBuilder,
+    );
+  }
+
+  /// Returns a copy of this style with `$inlineBuilder` cleared.
+  @override
+  FlexBoxStyler copyWithoutInlineBuilder() {
+    return FlexBoxStyler.create(
+      box: $box,
+      flex: $flex,
+      variants: $variants,
+      modifier: $modifier,
+      animation: $animation,
+      inlineBuilder: null,
     );
   }
 
@@ -42,9 +67,17 @@ mixin _$FlexBoxStylerMixin on Style<FlexBoxSpec>, Diagnosticable {
     super.debugFillProperties(properties);
     properties
       ..add(DiagnosticsProperty('box', $box))
-      ..add(DiagnosticsProperty('flex', $flex));
+      ..add(DiagnosticsProperty('flex', $flex))
+      ..add(DiagnosticsProperty('inlineBuilder', $inlineBuilder));
   }
 
   @override
-  List<Object?> get props => [$box, $flex, $animation, $modifier, $variants];
+  List<Object?> get props => [
+    $box,
+    $flex,
+    $animation,
+    $modifier,
+    $variants,
+    $inlineBuilder,
+  ];
 }

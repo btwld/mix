@@ -13,12 +13,37 @@ mixin _$StackBoxStylerMixin on Style<StackBoxSpec>, Diagnosticable {
   /// Merges with another [StackBoxStyler].
   @override
   StackBoxStyler merge(StackBoxStyler? other) {
+    if (other != null && $inlineBuilder != null) {
+      return StackBoxStyler.create(
+        box: $box,
+        stack: $stack,
+        variants: $variants,
+        modifier: $modifier,
+        animation: $animation,
+        inlineBuilder: $inlineBuilder!.append(other),
+      );
+    }
+
     return StackBoxStyler.create(
       box: MixOps.merge($box, other?.$box),
       stack: MixOps.merge($stack, other?.$stack),
       variants: MixOps.mergeVariants($variants, other?.$variants),
       modifier: MixOps.mergeModifier($modifier, other?.$modifier),
       animation: MixOps.mergeAnimation($animation, other?.$animation),
+      inlineBuilder: other?.$inlineBuilder ?? $inlineBuilder,
+    );
+  }
+
+  /// Returns a copy of this style with `$inlineBuilder` cleared.
+  @override
+  StackBoxStyler copyWithoutInlineBuilder() {
+    return StackBoxStyler.create(
+      box: $box,
+      stack: $stack,
+      variants: $variants,
+      modifier: $modifier,
+      animation: $animation,
+      inlineBuilder: null,
     );
   }
 
@@ -42,9 +67,17 @@ mixin _$StackBoxStylerMixin on Style<StackBoxSpec>, Diagnosticable {
     super.debugFillProperties(properties);
     properties
       ..add(DiagnosticsProperty('box', $box))
-      ..add(DiagnosticsProperty('stack', $stack));
+      ..add(DiagnosticsProperty('stack', $stack))
+      ..add(DiagnosticsProperty('inlineBuilder', $inlineBuilder));
   }
 
   @override
-  List<Object?> get props => [$box, $stack, $animation, $modifier, $variants];
+  List<Object?> get props => [
+    $box,
+    $stack,
+    $animation,
+    $modifier,
+    $variants,
+    $inlineBuilder,
+  ];
 }

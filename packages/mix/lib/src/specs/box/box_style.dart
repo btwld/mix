@@ -81,6 +81,7 @@ class BoxStyler extends MixStyler<BoxStyler, BoxSpec>
     super.variants,
     super.modifier,
     super.animation,
+    super.inlineBuilder,
   }) : $alignment = alignment,
        $padding = padding,
        $margin = margin,

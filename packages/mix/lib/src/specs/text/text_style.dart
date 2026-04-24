@@ -77,6 +77,7 @@ class TextStyler extends MixStyler<TextStyler, TextSpec>
     super.animation,
     super.modifier,
     super.variants,
+    super.inlineBuilder,
   }) : $overflow = overflow,
        $strutStyle = strutStyle,
        $textAlign = textAlign,

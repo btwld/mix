@@ -26,14 +26,17 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
 
   final WidgetModifierConfig? $modifier;
   final AnimationConfig? $animation;
+  final InlineStyleBuilder<S>? $inlineBuilder;
 
   const Style({
     required List<VariantStyle<S>>? variants,
     required WidgetModifierConfig? modifier,
     required AnimationConfig? animation,
+    InlineStyleBuilder<S>? inlineBuilder,
   }) : $modifier = modifier,
        $animation = animation,
-       $variants = variants;
+       $variants = variants,
+       $inlineBuilder = inlineBuilder;
 
   /// Gets the closest [Style] from the widget tree.
   ///
@@ -62,10 +65,41 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
 
   @internal
   Set<WidgetState> get widgetStates {
-    return ($variants ?? [])
-        .where((v) => v.variant is WidgetStateVariant)
-        .map((v) => (v.variant as WidgetStateVariant).state)
-        .toSet();
+    return {
+      ...($variants ?? [])
+          .where((v) => v.variant is WidgetStateVariant)
+          .map((v) => (v.variant as WidgetStateVariant).state),
+      ...?$inlineBuilder?.tail?.widgetStates,
+    };
+  }
+
+  /// Rebuilds this style with `$inlineBuilder` cleared.
+  ///
+  /// Used by [resolveInlineBuilders] to produce the "root" style that precedes
+  /// the inline builder's output. Concrete stylers generate this via the
+  /// `_$XStylerMixin` (see `styler_mixin_builder.dart`).
+  @protected
+  Style<S> copyWithoutInlineBuilder();
+
+  /// Expands any [InlineStyleBuilder] attached to this style (and to any
+  /// nested variant styles) so that the final merge order reflects the
+  /// original fluent-call order.
+  ///
+  /// Must be called before [mergeActiveVariants] so the expanded styles
+  /// participate in normal variant resolution.
+  @visibleForTesting
+  Style<S> resolveInlineBuilders(BuildContext context) {
+    final inline = $inlineBuilder;
+    if (inline == null) return this;
+
+    final base = copyWithoutInlineBuilder();
+    final built = inline.build(context).resolveInlineBuilders(context);
+    final tail = inline.tail?.resolveInlineBuilders(context);
+
+    var result = base.merge(built);
+    if (tail != null) result = result.merge(tail);
+
+    return result;
   }
 
   /// Merges all active variants with their nested variants recursively.
@@ -143,11 +177,11 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
           // since StyleVariation.styleBuilder should handle its own variant logic
           // and return a final style. This prevents infinite recursion.
           ? variantStyle
-          // For regular variants, recursively resolve any nested variants
-          : variantStyle.mergeActiveVariants(
-              context,
-              namedVariants: namedVariants,
-            );
+          // For regular variants, expand inline builders then recursively
+          // resolve any nested variants.
+          : variantStyle
+                .resolveInlineBuilders(context)
+                .mergeActiveVariants(context, namedVariants: namedVariants);
       mergedStyle = mergedStyle.merge(fullyResolvedStyle);
     }
 
@@ -173,12 +207,34 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
     BuildContext context, {
     Set<NamedVariant> namedVariants = const {},
   }) {
-    final styleData = mergeActiveVariants(
+    final expanded = resolveInlineBuilders(context);
+    final styleData = expanded.mergeActiveVariants(
       context,
       namedVariants: namedVariants,
     );
 
     return styleData.resolve(context);
+  }
+}
+
+/// Carries a lazy, context-dependent style plus any styles that should be
+/// merged *after* the builder's result.
+///
+/// This is what powers in-place `.onBuilder(...)` resolution: chain calls that
+/// follow an `.onBuilder` accumulate into [tail], so the final merge order is
+/// preserved as `baseRoot -> builder(context) -> tail`.
+@immutable
+final class InlineStyleBuilder<S extends Spec<S>> {
+  final Style<S> Function(BuildContext context) build;
+  final Style<S>? tail;
+
+  const InlineStyleBuilder(this.build, {this.tail});
+
+  InlineStyleBuilder<S> append(Style<S> other) {
+    return InlineStyleBuilder(
+      build,
+      tail: tail == null ? other : tail!.merge(other),
+    );
   }
 }
 

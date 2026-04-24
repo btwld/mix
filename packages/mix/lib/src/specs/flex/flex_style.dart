@@ -58,6 +58,7 @@ class FlexStyler extends MixStyler<FlexStyler, FlexSpec>
     super.animation,
     super.modifier,
     super.variants,
+    super.inlineBuilder,
   }) : $direction = direction,
        $mainAxisAlignment = mainAxisAlignment,
        $crossAxisAlignment = crossAxisAlignment,

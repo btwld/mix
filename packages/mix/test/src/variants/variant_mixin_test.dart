@@ -9,7 +9,12 @@ class TestVariantAttribute extends Style<BoxSpec>
     with
         VariantStyleMixin<TestVariantAttribute, BoxSpec>,
         WidgetStateVariantMixin<TestVariantAttribute, BoxSpec> {
-  const TestVariantAttribute({super.variants, super.modifier, super.animation});
+  const TestVariantAttribute({
+    super.variants,
+    super.modifier,
+    super.animation,
+    super.inlineBuilder,
+  });
 
   @override
   TestVariantAttribute variant(Variant variant, TestVariantAttribute style) {
@@ -24,20 +29,46 @@ class TestVariantAttribute extends Style<BoxSpec>
   }
 
   @override
+  TestVariantAttribute inlineBuilder(InlineStyleBuilder<BoxSpec> value) {
+    return merge(TestVariantAttribute(inlineBuilder: value));
+  }
+
+  @override
   StyleSpec<BoxSpec> resolve(BuildContext context) =>
       const StyleSpec(spec: BoxSpec());
 
   @override
   TestVariantAttribute merge(TestVariantAttribute? other) {
+    if (other == null) return this;
+
+    if ($inlineBuilder != null) {
+      return TestVariantAttribute(
+        variants: $variants,
+        modifier: $modifier,
+        animation: $animation,
+        inlineBuilder: $inlineBuilder!.append(other),
+      );
+    }
+
     return TestVariantAttribute(
-      variants: MixOps.mergeVariants($variants, other?.$variants),
-      modifier: $modifier?.merge(other?.$modifier) ?? other?.$modifier,
-      animation: other?.$animation ?? $animation,
+      variants: MixOps.mergeVariants($variants, other.$variants),
+      modifier: $modifier?.merge(other.$modifier) ?? other.$modifier,
+      animation: other.$animation ?? $animation,
+      inlineBuilder: other.$inlineBuilder,
     );
   }
 
   @override
-  List<Object?> get props => [$variants, $modifier, $animation];
+  TestVariantAttribute copyWithoutInlineBuilder() {
+    return TestVariantAttribute(
+      variants: $variants,
+      modifier: $modifier,
+      animation: $animation,
+    );
+  }
+
+  @override
+  List<Object?> get props => [$variants, $modifier, $animation, $inlineBuilder];
 }
 
 void main() {
@@ -182,13 +213,12 @@ void main() {
       expect(result.$variants!.first.variant, isA<ContextVariant>());
     });
 
-    test('onBuilder creates correct variant', () {
+    test('onBuilder populates \$inlineBuilder, not \$variants', () {
       const attribute = TestVariantAttribute();
       final result = attribute.onBuilder((context) => attribute);
 
-      expect(result.$variants, isNotNull);
-      expect(result.$variants!.length, 1);
-      expect(result.$variants!.first.variant, isA<ContextVariantBuilder>());
+      expect(result.$inlineBuilder, isNotNull);
+      expect(result.$variants, isNull);
     });
 
     test('onBuilder function receives correct context', () {
@@ -200,12 +230,8 @@ void main() {
         return attribute;
       });
 
-      // Get the variant builder and execute it
-      final variantBuilder =
-          result.$variants!.first.variant
-              as ContextVariantBuilder<TestVariantAttribute>;
       final mockContext = MockBuildContext();
-      variantBuilder.build(mockContext);
+      result.$inlineBuilder!.build(mockContext);
 
       expect(capturedContext, same(mockContext));
     });

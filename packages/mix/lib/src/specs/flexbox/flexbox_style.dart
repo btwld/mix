@@ -125,6 +125,7 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
     super.animation,
     super.modifier,
     super.variants,
+    super.inlineBuilder,
   }) : $box = box,
        $flex = flex;
 
@@ -439,6 +440,12 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
   @override
   FlexBoxStyler variants(List<VariantStyle<FlexBoxSpec>> variants) {
     return merge(FlexBoxStyler(variants: variants));
+  }
+
+  /// Sets the inline style builder.
+  @override
+  FlexBoxStyler inlineBuilder(InlineStyleBuilder<FlexBoxSpec> value) {
+    return merge(FlexBoxStyler.create(inlineBuilder: value));
   }
 
   /// Sets the border radius property via decoration.

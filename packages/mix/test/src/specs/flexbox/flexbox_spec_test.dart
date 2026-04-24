@@ -240,7 +240,7 @@ void main() {
         );
 
         // Guard: If a field is added/removed, this count will fail
-        expect(styler.props.length, 5);
+        expect(styler.props.length, 6);
 
         // Verify all expected fields are present
         expect(styler.props, contains(styler.$box));

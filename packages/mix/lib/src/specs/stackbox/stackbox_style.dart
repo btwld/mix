@@ -113,6 +113,7 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
     super.animation,
     super.modifier,
     super.variants,
+    super.inlineBuilder,
   }) : $box = box,
        $stack = stack;
 
@@ -434,6 +435,12 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
   @override
   StackBoxStyler variants(List<VariantStyle<StackBoxSpec>> variants) {
     return merge(StackBoxStyler(variants: variants));
+  }
+
+  /// Sets the inline style builder.
+  @override
+  StackBoxStyler inlineBuilder(InlineStyleBuilder<StackBoxSpec> value) {
+    return merge(StackBoxStyler.create(inlineBuilder: value));
   }
 
   /// Sets the border radius property via decoration.

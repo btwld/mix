@@ -331,5 +331,12 @@ class _MockSpecAttribute extends Style<MockSpec<Map<String, dynamic>>> {
   }
 
   @override
+  _MockSpecAttribute copyWithoutInlineBuilder() => _MockSpecAttribute(
+        width: width,
+        height: height,
+        variants: $variants,
+      );
+
+  @override
   List<Object?> get props => [width, height, $variants];
 }

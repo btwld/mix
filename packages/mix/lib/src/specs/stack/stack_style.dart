@@ -40,6 +40,7 @@ class StackStyler extends MixStyler<StackStyler, StackSpec>
     super.animation,
     super.modifier,
     super.variants,
+    super.inlineBuilder,
   }) : $alignment = alignment,
        $fit = fit,
        $textDirection = textDirection,

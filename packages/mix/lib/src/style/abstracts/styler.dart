@@ -19,5 +19,6 @@ abstract class MixStyler<ST extends Style<SP>, SP extends Spec<SP>>
     required super.variants,
     required super.modifier,
     required super.animation,
+    super.inlineBuilder,
   });
 }

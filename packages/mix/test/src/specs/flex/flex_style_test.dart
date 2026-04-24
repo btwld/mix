@@ -247,7 +247,7 @@ void main() {
         );
 
         final props = flexMix.props;
-        expect(props.length, 12); // All properties including inherited ones
+        expect(props.length, 13); // All properties including inherited ones
         expect(props, contains(flexMix.$direction));
         expect(props, contains(flexMix.$mainAxisAlignment));
         expect(props, contains(flexMix.$spacing));

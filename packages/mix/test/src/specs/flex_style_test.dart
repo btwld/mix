@@ -423,7 +423,7 @@ void main() {
         spacing: 16.0,
       );
 
-      expect(attribute.props.length, 12);
+      expect(attribute.props.length, 13);
       expect(attribute.props, contains(attribute.$direction));
       expect(attribute.props, contains(attribute.$mainAxisAlignment));
       expect(attribute.props, contains(attribute.$crossAxisAlignment));

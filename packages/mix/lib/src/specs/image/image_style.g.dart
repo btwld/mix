@@ -113,9 +113,38 @@ mixin _$ImageStylerMixin on Style<ImageSpec>, Diagnosticable {
     return merge(ImageStyler(modifier: value));
   }
 
+  /// Sets the inline style builder.
+  ImageStyler inlineBuilder(InlineStyleBuilder<ImageSpec> value) {
+    return merge(ImageStyler.create(inlineBuilder: value));
+  }
+
   /// Merges with another [ImageStyler].
   @override
   ImageStyler merge(ImageStyler? other) {
+    if (other != null && $inlineBuilder != null) {
+      return ImageStyler.create(
+        alignment: $alignment,
+        centerSlice: $centerSlice,
+        color: $color,
+        colorBlendMode: $colorBlendMode,
+        excludeFromSemantics: $excludeFromSemantics,
+        filterQuality: $filterQuality,
+        fit: $fit,
+        gaplessPlayback: $gaplessPlayback,
+        height: $height,
+        image: $image,
+        isAntiAlias: $isAntiAlias,
+        matchTextDirection: $matchTextDirection,
+        repeat: $repeat,
+        semanticLabel: $semanticLabel,
+        width: $width,
+        variants: $variants,
+        modifier: $modifier,
+        animation: $animation,
+        inlineBuilder: $inlineBuilder!.append(other),
+      );
+    }
+
     return ImageStyler.create(
       alignment: MixOps.merge($alignment, other?.$alignment),
       centerSlice: MixOps.merge($centerSlice, other?.$centerSlice),
@@ -141,6 +170,33 @@ mixin _$ImageStylerMixin on Style<ImageSpec>, Diagnosticable {
       variants: MixOps.mergeVariants($variants, other?.$variants),
       modifier: MixOps.mergeModifier($modifier, other?.$modifier),
       animation: MixOps.mergeAnimation($animation, other?.$animation),
+      inlineBuilder: other?.$inlineBuilder ?? $inlineBuilder,
+    );
+  }
+
+  /// Returns a copy of this style with `$inlineBuilder` cleared.
+  @override
+  ImageStyler copyWithoutInlineBuilder() {
+    return ImageStyler.create(
+      alignment: $alignment,
+      centerSlice: $centerSlice,
+      color: $color,
+      colorBlendMode: $colorBlendMode,
+      excludeFromSemantics: $excludeFromSemantics,
+      filterQuality: $filterQuality,
+      fit: $fit,
+      gaplessPlayback: $gaplessPlayback,
+      height: $height,
+      image: $image,
+      isAntiAlias: $isAntiAlias,
+      matchTextDirection: $matchTextDirection,
+      repeat: $repeat,
+      semanticLabel: $semanticLabel,
+      width: $width,
+      variants: $variants,
+      modifier: $modifier,
+      animation: $animation,
+      inlineBuilder: null,
     );
   }
 
@@ -190,7 +246,8 @@ mixin _$ImageStylerMixin on Style<ImageSpec>, Diagnosticable {
       ..add(DiagnosticsProperty('matchTextDirection', $matchTextDirection))
       ..add(DiagnosticsProperty('repeat', $repeat))
       ..add(DiagnosticsProperty('semanticLabel', $semanticLabel))
-      ..add(DiagnosticsProperty('width', $width));
+      ..add(DiagnosticsProperty('width', $width))
+      ..add(DiagnosticsProperty('inlineBuilder', $inlineBuilder));
   }
 
   @override
@@ -213,5 +270,6 @@ mixin _$ImageStylerMixin on Style<ImageSpec>, Diagnosticable {
     $animation,
     $modifier,
     $variants,
+    $inlineBuilder,
   ];
 }

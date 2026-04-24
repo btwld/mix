@@ -18,6 +18,10 @@ mixin VariantStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
   /// Sets the list of variant styles. Must be implemented by the class using this mixin.
   T variants(List<VariantStyle<S>> value);
 
+  /// Sets the inline style builder. Must be implemented by the class using
+  /// this mixin (generated in `_$XStylerMixin`).
+  T inlineBuilder(InlineStyleBuilder<S> value);
+
   /// Applies the specified named variants by merging their styles into this style.
   ///
   /// This method finds all [VariantStyle]s matching the given [NamedVariant]s
@@ -63,11 +67,15 @@ mixin VariantStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
     return variant(ContextVariant.brightness(.light), style);
   }
 
-  /// Creates a variant using a builder function that receives the build context.
+  /// Creates an inline builder that resolves at build time.
+  ///
+  /// Unlike a normal variant, `.onBuilder` is resolved *in place* in the
+  /// fluent chain: styles chained after `.onBuilder` override the builder's
+  /// output for fields they share, and styles chained before are overridden
+  /// by it. Internally the builder is stored on `Style.$inlineBuilder` and
+  /// later merges accumulate into its tail.
   T onBuilder(T Function(BuildContext context) fn) {
-    // Create a VariantStyle with ContextVariantBuilder that will be resolved at runtime
-    // Use this style as a placeholder; the actual style comes from the builder function
-    return variants([VariantStyle<S>(ContextVariantBuilder<T>(fn), this)]);
+    return inlineBuilder(InlineStyleBuilder<S>((context) => fn(context)));
   }
 
   /// Creates a variant based on the specified breakpoint.
