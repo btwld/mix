@@ -132,10 +132,7 @@ void main() {
       ).build();
 
       expect(out, contains('final String text;'));
-      expect(
-        out,
-        contains('const Heading(this.text, {super.key});'),
-      );
+      expect(out, contains('const Heading(this.text, {super.key});'));
       expect(
         out,
         contains('Widget build(BuildContext context) => heading(text);'),

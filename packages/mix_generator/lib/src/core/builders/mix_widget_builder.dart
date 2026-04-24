@@ -48,9 +48,7 @@ class MixWidgetBuilder {
       }
     }
 
-    final ctorSegments = <String>[
-      for (final p in positional) 'this.${p.name}',
-    ];
+    final ctorSegments = <String>[for (final p in positional) 'this.${p.name}'];
     final namedBuffer = StringBuffer('super.key');
     for (final p in named) {
       namedBuffer.write(', ');

@@ -79,7 +79,8 @@ class TextStyler extends Style<BoxSpec> {
 void main() {
   group('MixWidgetGenerator smoke', () {
     test('variable form emits widget class and build body', () async {
-      const source = '''
+      const source =
+          '''
 $_baseSource
 
 @MixWidget('Card')
@@ -106,7 +107,8 @@ final card = BoxStyler().paddingAll(16).borderRounded(8).color(Color(0xFFFFFFFF)
     });
 
     test('function form overlaps collapse to one field', () async {
-      const source = '''
+      const source =
+          '''
 $_baseSource
 
 @MixWidget('Card1')
@@ -126,9 +128,7 @@ BoxStyler createCard(Widget child, {Color color = const Color(0xFFFFFFFF)}) =>
               contains('final Color color;'),
               contains('const Card1(this.child, {super.key,'),
               contains('this.color = const Color(0xFFFFFFFF)'),
-              contains(
-                'createCard(child, color: color)(child: child)',
-              ),
+              contains('createCard(child, color: color)(child: child)'),
             ),
           ),
         },
@@ -136,7 +136,8 @@ BoxStyler createCard(Widget child, {Color color = const Color(0xFFFFFFFF)}) =>
     });
 
     test('stylable: true injects style field and merge call', () async {
-      const source = '''
+      const source =
+          '''
 $_baseSource
 
 @MixWidget('Card', stylable: true)
@@ -162,7 +163,8 @@ final card = BoxStyler().paddingAll(16);
     test(
       'positional call method keeps positional on widget constructor',
       () async {
-        const source = '''
+        const source =
+            '''
 $_baseSource
 
 @MixWidget('Heading')
@@ -190,7 +192,8 @@ final heading = TextStyler().size(24);
     );
 
     test('required nullable named parameter keeps required keyword', () async {
-      const source = '''
+      const source =
+          '''
 $_baseSource
 
 @MixWidget('RequiredCard')
