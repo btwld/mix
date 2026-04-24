@@ -6,7 +6,6 @@ import '../core/helpers.dart';
 import '../core/widget_modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
-import '../core/utility.dart';
 
 part 'rotated_box_modifier.g.dart';
 
@@ -25,16 +24,4 @@ final class RotatedBoxModifier extends WidgetModifier<RotatedBoxModifier>
   Widget build(Widget child) {
     return RotatedBox(quarterTurns: quarterTurns, child: child);
   }
-}
-
-final class RotatedBoxModifierUtility<T extends Style<Object?>>
-    extends MixUtility<T, RotatedBoxModifierMix> {
-  const RotatedBoxModifierUtility(super.utilityBuilder);
-  T d90() => call(1);
-  T d180() => call(2);
-  T d270() => call(3);
-
-  T call(int value) => utilityBuilder(
-    RotatedBoxModifierMix.create(quarterTurns: Prop.value(value)),
-  );
 }

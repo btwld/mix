@@ -6,8 +6,6 @@ import '../core/helpers.dart';
 import '../core/widget_modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
-import '../core/utility.dart';
-import '../theme/tokens/mix_token.dart';
 
 part 'visibility_modifier.g.dart';
 
@@ -26,26 +24,4 @@ final class VisibilityModifier extends WidgetModifier<VisibilityModifier>
   Widget build(Widget child) {
     return Visibility(visible: visible, child: child);
   }
-}
-
-/// Utility class for applying visibility modifications.
-///
-/// Provides convenient methods for creating VisibilityModifierMix instances.
-final class VisibilityModifierUtility<T extends Style<Object?>>
-    extends MixUtility<T, VisibilityModifierMix> {
-  const VisibilityModifierUtility(super.utilityBuilder);
-
-  /// Sets the visibility to true.
-  T on() => call(true);
-
-  /// Sets the visibility to false.
-  T off() => call(false);
-
-  /// Creates a [VisibilityModifierMix] with the specified visibility state.
-  T call(bool value) =>
-      utilityBuilder(VisibilityModifierMix.create(visible: Prop.value(value)));
-
-  /// Creates a [VisibilityModifierMix] with the specified visibility token.
-  T token(MixToken<bool> token) =>
-      utilityBuilder(VisibilityModifierMix.create(visible: Prop.token(token)));
 }

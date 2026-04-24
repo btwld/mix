@@ -6,7 +6,6 @@ import '../core/helpers.dart';
 import '../core/widget_modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
-import '../core/utility.dart';
 
 part 'align_modifier.g.dart';
 
@@ -36,27 +35,6 @@ final class AlignModifier extends WidgetModifier<AlignModifier>
       widthFactor: widthFactor,
       heightFactor: heightFactor,
       child: child,
-    );
-  }
-}
-
-/// Utility class for applying alignment modifications.
-///
-/// Provides convenient methods for creating AlignModifierMix instances.
-final class AlignModifierUtility<T extends Style<Object?>>
-    extends MixUtility<T, AlignModifierMix> {
-  const AlignModifierUtility(super.utilityBuilder);
-  T call({
-    AlignmentGeometry? alignment,
-    double? widthFactor,
-    double? heightFactor,
-  }) {
-    return utilityBuilder(
-      AlignModifierMix(
-        alignment: alignment,
-        widthFactor: widthFactor,
-        heightFactor: heightFactor,
-      ),
     );
   }
 }

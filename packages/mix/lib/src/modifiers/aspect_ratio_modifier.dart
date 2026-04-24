@@ -6,8 +6,6 @@ import '../core/helpers.dart';
 import '../core/widget_modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
-import '../core/utility.dart';
-import '../theme/tokens/mix_token.dart';
 
 part 'aspect_ratio_modifier.g.dart';
 
@@ -26,25 +24,5 @@ final class AspectRatioModifier extends WidgetModifier<AspectRatioModifier>
   @override
   Widget build(Widget child) {
     return AspectRatio(aspectRatio: aspectRatio, child: child);
-  }
-}
-
-/// Utility class for applying aspect ratio modifications.
-///
-/// Provides convenient methods for creating AspectRatioModifierMix instances.
-final class AspectRatioModifierUtility<T extends Style<Object?>>
-    extends MixUtility<T, AspectRatioModifierMix> {
-  const AspectRatioModifierUtility(super.utilityBuilder);
-
-  T call(double value) {
-    return utilityBuilder(
-      AspectRatioModifierMix.create(aspectRatio: Prop.value(value)),
-    );
-  }
-
-  T token(MixToken<double> token) {
-    return utilityBuilder(
-      AspectRatioModifierMix.create(aspectRatio: Prop.token(token)),
-    );
   }
 }

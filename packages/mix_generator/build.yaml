@@ -5,14 +5,10 @@ targets:
         enabled: true
         generate_for:
           - lib/src/specs/**/*.dart  # Narrowed scope for specs only
-        options:
-          debug: false
       styler_generator:
         enabled: true
         generate_for:
           - lib/src/specs/**/*.dart  # Narrowed scope for specs only
-        options:
-          debug: false
       mixable_generator:
         enabled: true
         generate_for:

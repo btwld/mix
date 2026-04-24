@@ -45,7 +45,7 @@ class SpecGenerator extends GeneratorForAnnotation<MixableSpec> {
       final paramName = p.name!;
       final field = classElement.getField(paramName);
       if (field == null) {
-        throw InvalidGenerationSourceError(
+        throw InvalidGenerationSource(
           'Field $paramName not found in ${specName ?? 'unknown'}',
           element: classElement,
         );
@@ -84,7 +84,7 @@ class SpecGenerator extends GeneratorForAnnotation<MixableSpec> {
   ) {
     // Validate element is a class
     if (element is! ClassElement) {
-      throw InvalidGenerationSourceError(
+      throw InvalidGenerationSource(
         '@MixableSpec can only be applied to classes.',
         element: element,
       );
@@ -93,7 +93,7 @@ class SpecGenerator extends GeneratorForAnnotation<MixableSpec> {
     final classElement = element;
     final specName = classElement.name;
     if (specName == null) {
-      throw InvalidGenerationSourceError(
+      throw InvalidGenerationSource(
         '@MixableSpec class must have a name.',
         element: element,
       );
@@ -101,7 +101,7 @@ class SpecGenerator extends GeneratorForAnnotation<MixableSpec> {
 
     // Validate it's a Spec class
     if (!_isSpecClass(classElement)) {
-      throw InvalidGenerationSourceError(
+      throw InvalidGenerationSource(
         '@MixableSpec can only be applied to classes extending Spec<$specName>.',
         element: element,
       );
@@ -110,7 +110,7 @@ class SpecGenerator extends GeneratorForAnnotation<MixableSpec> {
     // Validate constructor exists
     final constructor = classElement.unnamedConstructor;
     if (constructor == null) {
-      throw InvalidGenerationSourceError(
+      throw InvalidGenerationSource(
         '$specName must have an unnamed constructor.',
         element: element,
       );

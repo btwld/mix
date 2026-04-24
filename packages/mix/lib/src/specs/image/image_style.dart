@@ -9,7 +9,6 @@ import '../../core/style.dart';
 import '../../core/style_spec.dart';
 import '../../modifiers/widget_modifier_config.dart';
 import '../../style/abstracts/styler.dart';
-import 'image_mutable_style.dart';
 import 'image_spec.dart';
 import 'image_widget.dart';
 
@@ -146,8 +145,6 @@ class ImageStyler extends MixStyler<ImageStyler, ImageSpec>
       ImageStyler().isAntiAlias(value);
   factory ImageStyler.matchTextDirection(bool value) =>
       ImageStyler().matchTextDirection(value);
-
-  static ImageMutableStyler get chain => .new(ImageStyler());
 
   StyledImage call({
     ImageProvider? image,

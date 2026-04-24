@@ -20,7 +20,6 @@ library;
 
 /// ANIMATION
 export 'src/animation/animation_config.dart';
-export 'src/animation/animation_util.dart';
 export 'src/animation/spring_curves.dart';
 export 'src/animation/style_animation_builder.dart';
 export 'src/animation/style_animation_driver.dart';
@@ -42,21 +41,18 @@ export 'src/core/providers/style_provider.dart';
 export 'src/core/providers/style_spec_provider.dart';
 export 'src/core/providers/widget_state_provider.dart';
 export 'src/core/spec.dart';
-export 'src/core/spec_utility.dart';
 export 'src/core/style.dart' hide StyleElement;
 export 'src/core/style_builder.dart';
 export 'src/core/style_spec.dart';
 export 'src/core/style_widget.dart';
-export 'src/core/utility.dart';
-export 'src/core/utility_variant_mixin.dart';
-export 'src/core/utility_widget_state_variant_mixin.dart';
 export 'src/core/widget_modifier.dart';
 export 'src/modifiers/align_modifier.dart';
 export 'src/modifiers/aspect_ratio_modifier.dart';
 export 'src/modifiers/blur_modifier.dart';
-export 'src/modifiers/box_modifier.dart' hide BoxModifierUtility;
+export 'src/modifiers/box_modifier.dart';
 export 'src/modifiers/clip_modifier.dart';
 export 'src/modifiers/default_text_style_modifier.dart';
+export 'src/modifiers/default_text_styler_modifier.dart';
 export 'src/modifiers/flexible_modifier.dart';
 export 'src/modifiers/fractionally_sized_box_modifier.dart';
 export 'src/modifiers/icon_theme_modifier.dart';
@@ -74,79 +70,53 @@ export 'src/modifiers/visibility_modifier.dart';
 
 /// PROPERTIES
 export 'src/modifiers/widget_modifier_config.dart';
-export 'src/modifiers/widget_modifier_util.dart';
 
 /// ICONOGRAPHY
 export 'src/properties/layout/constraints_mix.dart';
-export 'src/properties/layout/constraints_util.dart';
 export 'src/properties/layout/edge_insets_geometry_mix.dart';
-export 'src/properties/layout/edge_insets_geometry_util.dart'
-    hide createEdgeInsetsMix;
-export 'src/properties/layout/enum_util.dart';
-export 'src/properties/layout/scalar_util.dart';
 export 'src/properties/layout/stack_mix.dart';
 export 'src/properties/painting/border_mix.dart';
 export 'src/properties/painting/border_radius_mix.dart';
-export 'src/properties/painting/border_radius_util.dart';
-export 'src/properties/painting/border_util.dart';
-export 'src/properties/painting/color_util.dart';
 export 'src/properties/painting/decoration_image_mix.dart';
-export 'src/properties/painting/decoration_image_util.dart';
 export 'src/properties/painting/decoration_mix.dart';
-export 'src/properties/painting/decoration_util.dart';
 export 'src/properties/painting/gradient_mix.dart';
-export 'src/properties/painting/gradient_util.dart';
-export 'src/properties/painting/material_colors_util.dart';
 export 'src/properties/painting/shadow_mix.dart';
-export 'src/properties/painting/shadow_util.dart';
 export 'src/properties/painting/shape_border_mix.dart';
-export 'src/properties/painting/shape_border_util.dart';
 export 'src/properties/typography/strut_style_mix.dart';
-export 'src/properties/typography/strut_style_util.dart';
 export 'src/properties/typography/text_height_behavior_mix.dart';
-export 'src/properties/typography/text_height_behavior_util.dart';
 export 'src/properties/typography/text_style_mix.dart';
-export 'src/properties/typography/text_style_util.dart';
 
 /// TYPOGRAPHY
 export 'src/providers/icon_scope.dart';
 export 'src/providers/text_scope.dart';
-export 'src/specs/box/box_mutable_style.dart';
 export 'src/specs/box/box_spec.dart';
 
 /// SPECS
 export 'src/specs/box/box_style.dart';
 export 'src/specs/box/box_widget.dart';
-export 'src/specs/flex/flex_mutable_style.dart';
 export 'src/specs/flex/flex_spec.dart';
 export 'src/specs/flex/flex_style.dart';
-export 'src/specs/flexbox/flexbox_mutable_style.dart';
 export 'src/specs/flexbox/flexbox_spec.dart';
 export 'src/specs/flexbox/flexbox_style.dart';
 export 'src/specs/flexbox/flexbox_widget.dart';
-export 'src/specs/icon/icon_mutable_style.dart';
 export 'src/specs/icon/icon_spec.dart';
 export 'src/specs/icon/icon_style.dart';
 export 'src/specs/icon/icon_widget.dart';
-export 'src/specs/image/image_mutable_style.dart';
 export 'src/specs/image/image_spec.dart';
 export 'src/specs/image/image_style.dart';
 export 'src/specs/image/image_widget.dart';
-export 'src/specs/mutable_stylers.dart';
 export 'src/specs/pressable/pressable_widget.dart';
-export 'src/specs/stack/stack_mutable_style.dart';
 export 'src/specs/stack/stack_spec.dart';
 export 'src/specs/stack/stack_style.dart';
-export 'src/specs/stackbox/stackbox_mutable_style.dart';
 export 'src/specs/stackbox/stackbox_spec.dart';
 export 'src/specs/stackbox/stackbox_style.dart';
 export 'src/specs/stackbox/stackbox_widget.dart';
-export 'src/specs/text/text_mutable_style.dart';
 export 'src/specs/text/text_spec.dart';
 export 'src/specs/text/text_style.dart';
 export 'src/specs/text/text_widget.dart';
 
 /// STYLE MIXINS
+export 'src/style/abstracts/styler.dart';
 export 'src/style/mixins/animation_style_mixin.dart';
 export 'src/style/mixins/border_radius_style_mixin.dart';
 export 'src/style/mixins/border_style_mixin.dart';
@@ -172,4 +142,3 @@ export 'src/theme/tokens/value_tokens.dart';
 
 /// VARIANTS
 export 'src/variants/variant.dart';
-export 'src/variants/variant_util.dart';

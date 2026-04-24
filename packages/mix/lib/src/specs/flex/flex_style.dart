@@ -11,7 +11,6 @@ import '../../core/style_spec.dart';
 import '../../modifiers/widget_modifier_config.dart';
 import '../../style/abstracts/styler.dart';
 import '../../style/mixins/flex_style_mixin.dart';
-import 'flex_mutable_style.dart';
 import 'flex_spec.dart';
 
 part 'flex_style.g.dart';
@@ -118,8 +117,6 @@ class FlexStyler extends MixStyler<FlexStyler, FlexSpec>
   // FlexStyleMixin convenience (zero-param presets)
   factory FlexStyler.row() => FlexStyler().row();
   factory FlexStyler.column() => FlexStyler().column();
-
-  static FlexMutableStyler get chain => .new(FlexStyler());
 
   /// Sets the widget modifier.
   FlexStyler modifier(WidgetModifierConfig value) {

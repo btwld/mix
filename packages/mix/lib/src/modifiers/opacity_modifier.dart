@@ -6,8 +6,6 @@ import '../core/helpers.dart';
 import '../core/widget_modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
-import '../core/utility.dart';
-import '../theme/tokens/mix_token.dart';
 
 part 'opacity_modifier.g.dart';
 
@@ -26,18 +24,4 @@ final class OpacityModifier extends WidgetModifier<OpacityModifier>
   Widget build(Widget child) {
     return Opacity(opacity: opacity, child: child);
   }
-}
-
-/// Utility class for applying opacity modifications.
-///
-/// Provides convenient methods for creating OpacityModifierMix instances.
-final class OpacityModifierUtility<T extends Style<Object?>>
-    extends MixUtility<T, OpacityModifierMix> {
-  const OpacityModifierUtility(super.utilityBuilder);
-
-  T call(double value) =>
-      utilityBuilder(OpacityModifierMix.create(opacity: Prop.value(value)));
-
-  T token(MixToken<double> token) =>
-      utilityBuilder(OpacityModifierMix.create(opacity: Prop.token(token)));
 }

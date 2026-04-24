@@ -6,7 +6,6 @@ import '../core/helpers.dart';
 import '../core/widget_modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
-import '../core/utility.dart';
 
 part 'fractionally_sized_box_modifier.g.dart';
 
@@ -37,28 +36,6 @@ final class FractionallySizedBoxModifier
       widthFactor: widthFactor,
       heightFactor: heightFactor,
       child: child,
-    );
-  }
-}
-
-/// Utility class for applying fractionally sized box modifications.
-///
-/// Provides convenient methods for creating FractionallySizedBoxModifierMix instances.
-final class FractionallySizedBoxModifierUtility<T extends Style<Object?>>
-    extends MixUtility<T, FractionallySizedBoxModifierMix> {
-  const FractionallySizedBoxModifierUtility(super.utilityBuilder);
-
-  T call({
-    AlignmentGeometry? alignment,
-    double? widthFactor,
-    double? heightFactor,
-  }) {
-    return utilityBuilder(
-      FractionallySizedBoxModifierMix(
-        widthFactor: widthFactor,
-        heightFactor: heightFactor,
-        alignment: alignment,
-      ),
     );
   }
 }
