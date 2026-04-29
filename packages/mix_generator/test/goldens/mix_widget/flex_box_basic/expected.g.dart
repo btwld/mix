@@ -8,16 +8,12 @@ part of 'input.dart';
 // **************************************************************************
 
 class Layout extends StatelessWidget {
-  const Layout({super.key, required this.children});
+  const Layout({super.key, this.children = const <Widget>[]});
 
   final List<Widget> children;
 
   @override
   Widget build(BuildContext context) {
-    return const FlexBoxBuilder().build(
-      layoutStyle,
-      key: key,
-      children: children,
-    );
+    return FlexBox(key: key, style: layoutStyle, children: children);
   }
 }

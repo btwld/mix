@@ -6,5 +6,7 @@ import 'package:mix_annotations/mix_annotations.dart';
 
 part 'input.g.dart';
 
-@MixWidget(styleable: true)
-BoxStyler chipStyle({required Color color}) => BoxStyler.color(color);
+@MixWidget()
+BoxStyler chipStyle({required Color color, BoxStyler? style}) {
+  return BoxStyler.color(color).merge(style);
+}

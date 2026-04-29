@@ -7,22 +7,15 @@
 library;
 
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
-
-/// Flags parsed from the `@MixWidget(...)` annotation arguments.
-class MixWidgetConfig {
-  final String? name;
-  final bool styleable;
-
-  const MixWidgetConfig({required this.name, required this.styleable});
-}
 
 /// A resolved `@MixWidget` target: a top-level styler declaration or factory.
 class AnnotatedTarget {
   /// The declared name of the annotated element (variable or function name).
   final String sourceName;
 
-  /// The concrete `Style<TSpec>` subtype of the target.
+  /// The concrete `Style<TSpec>` subtype produced by the target.
   final InterfaceType stylerType;
 
   /// The `TSpec` type argument of [stylerType].
@@ -40,8 +33,7 @@ class AnnotatedTarget {
   });
 }
 
-/// A single parameter mirrored from a styler's `call()` method (or a factory
-/// function's parameter list) onto the generated wrapper widget.
+/// A single parameter surfaced on the generated wrapper widget.
 class ParameterSpec {
   final String name;
   final DartType type;
@@ -49,7 +41,6 @@ class ParameterSpec {
   final bool isNamed;
   final bool isRequiredNamed;
   final bool isRequiredPositional;
-  final bool isOptionalPositional;
   final String? defaultValueCode;
 
   const ParameterSpec({
@@ -59,33 +50,80 @@ class ParameterSpec {
     required this.isNamed,
     required this.isRequiredNamed,
     required this.isRequiredPositional,
-    required this.isOptionalPositional,
     required this.defaultValueCode,
   });
 
-  factory ParameterSpec.fromParameter(FormalParameterElement parameter) {
+  factory ParameterSpec.fromParameter(
+    FormalParameterElement parameter, {
+    LibraryElement? visibleFrom,
+  }) {
     return ParameterSpec(
       name: parameter.name!,
       type: parameter.type,
-      typeCode: parameter.type.getDisplayString(),
+      typeCode: _typeCode(parameter.type, visibleFrom: visibleFrom),
       isNamed: parameter.isNamed,
       isRequiredNamed: parameter.isRequiredNamed,
       isRequiredPositional: parameter.isRequiredPositional,
-      isOptionalPositional: parameter.isOptionalPositional,
       defaultValueCode: parameter.defaultValueCode,
     );
   }
 }
 
-/// The shape of a styler's `call()` method — its return widget type plus the
-/// public (non-reserved) parameters that are mirrored onto the generated
-/// wrapper's constructor.
-class CallSignature {
-  final InterfaceType returnType;
-  final List<ParameterSpec> parameters;
+String _typeCode(DartType type, {LibraryElement? visibleFrom}) {
+  final alias = type.alias;
+  if (alias != null) {
+    final name =
+        _visibleElementReference(alias.element, visibleFrom) ??
+        alias.element.name;
+    final typeArguments = alias.typeArguments;
+    final nullableSuffix = type.nullabilitySuffix == NullabilitySuffix.question
+        ? '?'
+        : '';
 
-  const CallSignature({required this.returnType, required this.parameters});
+    if (typeArguments.isEmpty) {
+      return '$name$nullableSuffix';
+    }
+
+    final arguments = typeArguments
+        .map((argument) => _typeCode(argument, visibleFrom: visibleFrom))
+        .join(', ');
+
+    return '$name<$arguments>$nullableSuffix';
+  }
+
+  return type.getDisplayString();
 }
+
+String? _visibleElementReference(Element expected, LibraryElement? library) {
+  final name = expected.name;
+  if (name == null || library == null) {
+    return null;
+  }
+
+  for (final fragment in library.fragments) {
+    final result = fragment.scope.lookup(name).getter;
+    if (_isSameElement(result, expected)) {
+      return name;
+    }
+  }
+
+  for (final fragment in library.fragments) {
+    for (final prefix in fragment.prefixes) {
+      final result = prefix.scope.lookup(name).getter;
+      if (_isSameElement(result, expected)) {
+        final prefixName = prefix.name;
+        if (prefixName != null) {
+          return '$prefixName.$name';
+        }
+      }
+    }
+  }
+
+  return null;
+}
+
+bool _isSameElement(Element? left, Element right) =>
+    left?.baseElement == right.baseElement;
 
 /// Factory-function parameters split between the user-visible wrapper
 /// constructor params and the optional injected `BuildContext`.
@@ -104,28 +142,18 @@ class FactoryParameters {
   });
 }
 
-/// The builder to dispatch through when emitting the widget class.
-///
-/// - [ResolvedBuilder.named] dispatches to a `const BuilderName().build(...)`
-///   emission (either a Mix built-in inferred by spec or a user-authored
-///   custom builder).
-/// - [ResolvedBuilder.direct] emits the call-return widget constructor
-///   directly (fallback for custom user widgets outside the built-in map).
-sealed class ResolvedBuilder {
-  const ResolvedBuilder();
+/// The renderer widget and wrapper parameters used to emit the widget class.
+class ResolvedWidgetRenderer {
+  /// The renderer widget reference as it should appear in generated code,
+  /// optionally prefixed (e.g. `Box`, `mix.Box`, `RemixButton`).
+  final String widgetReference;
 
-  const factory ResolvedBuilder.named(String className) = NamedBuilder;
-  const factory ResolvedBuilder.direct() = DirectBuilder;
-}
+  /// Parameters mirrored from the renderer widget's unnamed constructor,
+  /// excluding `key`, `style`, and `styleSpec`.
+  final List<ParameterSpec> parameters;
 
-/// Dispatch through a concrete `MixWidgetBuilder` subclass by name.
-class NamedBuilder extends ResolvedBuilder {
-  final String className;
-
-  const NamedBuilder(this.className);
-}
-
-/// Fallback: emit the styler's `call()` return widget constructor directly.
-class DirectBuilder extends ResolvedBuilder {
-  const DirectBuilder();
+  const ResolvedWidgetRenderer({
+    required this.widgetReference,
+    required this.parameters,
+  });
 }

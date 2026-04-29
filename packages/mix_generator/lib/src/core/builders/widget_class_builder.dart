@@ -6,11 +6,8 @@
 /// import prefixes are inherited from the annotated library.
 library;
 
-import 'package:analyzer/dart/element/element.dart';
-import 'package:analyzer/dart/element/type.dart';
 import 'package:code_builder/code_builder.dart';
 
-import '../errors.dart';
 import '../models/widget_target.dart';
 
 /// Renders the generated wrapper class as Dart source.
@@ -20,18 +17,13 @@ import '../models/widget_target.dart';
 String buildWidgetClass({
   required String generatedName,
   required AnnotatedTarget target,
-  required MixWidgetConfig config,
-  required ResolvedBuilder resolvedBuilder,
-  required InterfaceType callReturnType,
+  required ResolvedWidgetRenderer resolvedRenderer,
   required FactoryParameters factoryParameters,
-  required List<ParameterSpec> mirroredParameters,
-  required Element element,
 }) {
   final allParameters = [
     ...factoryParameters.publicParameters,
-    ...mirroredParameters,
+    ...resolvedRenderer.parameters,
   ];
-  final styleTypeName = target.stylerType.getDisplayString();
 
   final classSpec = Class((c) {
     c.name = generatedName;
@@ -40,26 +32,14 @@ String buildWidgetClass({
     for (final parameter in allParameters) {
       c.fields.add(_buildField(parameter.name, parameter.typeCode));
     }
-    if (config.styleable) {
-      c.fields.add(_buildField('style', '$styleTypeName?'));
-    }
 
-    c.constructors.add(
-      _buildConstructor(
-        allParameters: allParameters,
-        addsStyleField: config.styleable,
-      ),
-    );
+    c.constructors.add(_buildConstructor(allParameters: allParameters));
 
     c.methods.add(
       _buildBuildMethod(
         target: target,
-        config: config,
-        resolvedBuilder: resolvedBuilder,
-        callReturnType: callReturnType,
+        resolvedRenderer: resolvedRenderer,
         factoryParameters: factoryParameters,
-        mirroredParameters: mirroredParameters,
-        element: element,
       ),
     );
   });
@@ -77,10 +57,7 @@ Field _buildField(String name, String typeCode) => Field(
     ..modifier = .final$,
 );
 
-Constructor _buildConstructor({
-  required List<ParameterSpec> allParameters,
-  required bool addsStyleField,
-}) {
+Constructor _buildConstructor({required List<ParameterSpec> allParameters}) {
   final requiredPositional = <Parameter>[];
   final namedOrOptional = [
     Parameter(
@@ -97,17 +74,6 @@ Constructor _buildConstructor({
     } else {
       namedOrOptional.add(_parameter(parameter));
     }
-  }
-
-  if (addsStyleField) {
-    namedOrOptional.add(
-      Parameter(
-        (p) => p
-          ..name = 'style'
-          ..toThis = true
-          ..named = true,
-      ),
-    );
   }
 
   return Constructor(
@@ -132,12 +98,8 @@ Parameter _parameter(ParameterSpec parameter) => Parameter((p) {
 
 Method _buildBuildMethod({
   required AnnotatedTarget target,
-  required MixWidgetConfig config,
-  required ResolvedBuilder resolvedBuilder,
-  required InterfaceType callReturnType,
+  required ResolvedWidgetRenderer resolvedRenderer,
   required FactoryParameters factoryParameters,
-  required List<ParameterSpec> mirroredParameters,
-  required Element element,
 }) {
   return Method(
     (m) => m
@@ -153,88 +115,49 @@ Method _buildBuildMethod({
       )
       ..body = _buildMethodBody(
         target: target,
-        config: config,
-        resolvedBuilder: resolvedBuilder,
-        callReturnType: callReturnType,
+        resolvedRenderer: resolvedRenderer,
         factoryParameters: factoryParameters,
-        mirroredParameters: mirroredParameters,
-        element: element,
       ),
   );
 }
 
 Code _buildMethodBody({
   required AnnotatedTarget target,
-  required MixWidgetConfig config,
-  required ResolvedBuilder resolvedBuilder,
-  required InterfaceType callReturnType,
+  required ResolvedWidgetRenderer resolvedRenderer,
   required FactoryParameters factoryParameters,
-  required List<ParameterSpec> mirroredParameters,
-  required Element element,
 }) {
   final styleSource = target.factoryElement?.name ?? target.sourceName;
-  final baseStyleExpression = target.factoryElement != null
+  final styleExpression = target.factoryElement != null
       ? '$styleSource(${_factoryInvocationArguments(factoryParameters)})'
       : styleSource;
 
-  final styleArgument = config.styleable
-      ? 'effectiveStyle'
-      : baseStyleExpression;
-  final dispatch = switch (resolvedBuilder) {
-    NamedBuilder(:final className) => _emitBuilderCall(
-      builderClassName: className,
-      mirroredParameters: mirroredParameters,
-      styleArgument: styleArgument,
-    ),
-    DirectBuilder() => _emitDirectWidgetCall(
-      widgetReference: _resolveWidgetReference(
-        callReturnType.element as ClassElement,
-        element.library!,
-        element,
-      ),
-      mirroredParameters: mirroredParameters,
-      styleArgument: styleArgument,
-    ),
-  };
+  final dispatch = _emitDirectWidgetCall(
+    widgetReference: resolvedRenderer.widgetReference,
+    widgetParameters: resolvedRenderer.parameters,
+    styleArgument: styleExpression,
+  );
 
   final buffer = StringBuffer();
-  if (config.styleable) {
-    buffer.writeln('final baseStyle = $baseStyleExpression;');
-    buffer.writeln('final effectiveStyle = baseStyle.merge(style);');
-  }
   buffer.writeln('return $dispatch;');
 
   return Code(buffer.toString());
 }
 
-String _emitBuilderCall({
-  required String builderClassName,
-  required List<ParameterSpec> mirroredParameters,
-  required String styleArgument,
-}) {
-  final namedArgs = <String>['key: key'];
-  for (final parameter in mirroredParameters) {
-    namedArgs.add('${parameter.name}: ${_parameterReference(parameter)}');
-  }
-
-  return 'const $builderClassName().build($styleArgument, ${namedArgs.join(', ')})';
-}
-
 String _emitDirectWidgetCall({
   required String widgetReference,
-  required List<ParameterSpec> mirroredParameters,
+  required List<ParameterSpec> widgetParameters,
   required String styleArgument,
 }) {
   final positional = [
-    for (final parameter in mirroredParameters)
+    for (final parameter in widgetParameters)
       if (!parameter.isNamed) _parameterReference(parameter),
   ];
   final named = [
-    for (final parameter in mirroredParameters)
-      if (parameter.isNamed)
-        '${parameter.name}: ${_parameterReference(parameter)}',
     'key: key',
     'style: $styleArgument',
+    for (final parameter in widgetParameters)
+      if (parameter.isNamed)
+        '${parameter.name}: ${_parameterReference(parameter)}',
   ];
 
   final sections = [if (positional.isNotEmpty) positional.join(', '), ...named];
@@ -266,64 +189,3 @@ String _factoryInvocationArguments(FactoryParameters factoryParameters) {
 
 String _parameterReference(ParameterSpec parameter) =>
     parameter.name == 'context' ? 'this.context' : parameter.name;
-
-/// Finds the identifier (optionally prefixed) that references
-/// [widgetElement] from [library]'s imports.
-///
-/// The generated file is a `part of` contribution: it inherits the annotated
-/// library's import prefixes. A widget imported via
-/// `import 'package:foo/foo.dart' as foo;` must be referenced as `foo.Widget`.
-String _resolveWidgetReference(
-  ClassElement widgetElement,
-  LibraryElement library,
-  Element element,
-) {
-  final name = widgetElement.name;
-  if (name == null) {
-    fail(
-      element,
-      '@MixWidget direct widget fallback requires a named widget class.',
-    );
-  }
-
-  if (_isElementVisibleUnprefixed(library, name, widgetElement)) {
-    return name;
-  }
-
-  for (final fragment in library.fragments) {
-    for (final prefix in fragment.prefixes) {
-      final result = prefix.scope.lookup(name).getter;
-      if (_isSameElement(result, widgetElement)) {
-        final prefixName = prefix.name;
-        if (prefixName != null) {
-          return '$prefixName.$name';
-        }
-      }
-    }
-  }
-
-  fail(
-    element,
-    '@MixWidget direct widget fallback could not reference widget `$name`. '
-    'Import the widget without a prefix, or ensure the prefix is visible to '
-    'the annotated library.',
-  );
-}
-
-bool _isElementVisibleUnprefixed(
-  LibraryElement library,
-  String name,
-  Element expected,
-) {
-  for (final fragment in library.fragments) {
-    final result = fragment.scope.lookup(name).getter;
-    if (_isSameElement(result, expected)) {
-      return true;
-    }
-  }
-
-  return false;
-}
-
-bool _isSameElement(Element? left, Element right) =>
-    left?.baseElement == right.baseElement;

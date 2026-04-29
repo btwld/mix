@@ -16,9 +16,9 @@ class CloseIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const StyledIconBuilder().build(
-      closeIconStyle,
+    return StyledIcon(
       key: key,
+      style: closeIconStyle,
       icon: icon,
       semanticLabel: semanticLabel,
     );

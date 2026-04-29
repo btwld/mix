@@ -1,3 +1,17 @@
+## Unreleased
+
+ - **BREAKING**: `@MixWidget` codegen now resolves the renderer widget from
+   the spec class via the new `@MixWidgetRenderer` annotation. The
+   hardcoded internal renderer registry, the `MixWidgetBuilder` adapter
+   path, and the `widgetBuilder:` field on `@MixWidget` were removed.
+   AST re-parsing of annotation source is also gone — the generator now
+   reads the renderer `Type` directly via `ConstantReader.typeValue`.
+ - **MIGRATION**: Downstream packages annotate their `Spec` classes with
+   `@MixWidgetRenderer(YourWidget)` and drop `widgetBuilder:` from
+   `@MixWidget`. Adapter classes that extended `MixWidgetBuilder` should be
+   deleted; the renderer widget's constructor is now the source of truth
+   for wrapper parameters.
+
 ## 2.0.1
 
  - **REFACTOR**: Tighten field-model validation and shared type-helper extraction across mix/styler generators (#895).

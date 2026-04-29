@@ -6,5 +6,5 @@ import 'package:mix_annotations/mix_annotations.dart';
 
 part 'input.g.dart';
 
-@MixWidget(styleable: true)
-final cardStyle = BoxStyler();
+@MixWidget()
+BoxStyler cardStyle({BoxStyler? style}) => BoxStyler().merge(style);

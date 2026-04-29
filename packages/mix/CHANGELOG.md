@@ -1,3 +1,20 @@
+## Unreleased
+
+### Breaking
+
+- **`@MixWidget` redesign:** Removed the `widgetBuilder:` field and the
+  `MixWidgetBuilder` marker class. Custom rendering is now declared once on
+  the spec class via `@MixWidgetRenderer(YourWidget)`. The generator reads
+  that annotation, validates the renderer widget, and mirrors its
+  constructor onto the generated wrapper. Mix's own specs ship with
+  `@MixWidgetRenderer` annotations, so `@MixWidget()` on built-in stylers
+  continues to work without changes.
+- **Migration:** Replace `@MixWidget(widgetBuilder: SomeBuilder())` with
+  `@MixWidget()` and add `@MixWidgetRenderer(SomeWidget)` to your spec
+  class. Delete adapter classes that extend `MixWidgetBuilder`. Existing
+  widgets only need a `style:` parameter on their constructor — they do not
+  need to extend `StyleWidget`.
+
 ## 2.0.2
 
 This release completes the 2.0 Styler migration by removing the remaining legacy utility surface, and adds new ergonomic shorthands and variant tooling.

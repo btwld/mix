@@ -13,6 +13,11 @@ const mixWidgetAnnotationChecker = TypeChecker.fromUrl(
   'package:mix_annotations/src/annotations.dart#MixWidget',
 );
 
+/// `MixWidgetRenderer` annotation from `package:mix_annotations`.
+const mixWidgetRendererAnnotationChecker = TypeChecker.fromUrl(
+  'package:mix_annotations/src/annotations.dart#MixWidgetRenderer',
+);
+
 /// `MixableField` annotation from `package:mix_annotations`.
 const mixableFieldAnnotationChecker = TypeChecker.fromUrl(
   'package:mix_annotations/src/annotations.dart#MixableField',
@@ -23,14 +28,14 @@ const styleChecker = TypeChecker.fromUrl(
   'package:mix/src/core/style.dart#Style',
 );
 
-/// `MixWidgetBuilder<TSpec>` abstract class from `package:mix`.
-const mixWidgetBuilderChecker = TypeChecker.fromUrl(
-  'package:mix/src/core/widget_builder.dart#MixWidgetBuilder',
-);
-
 /// Flutter's `Widget` base class.
 const flutterWidgetChecker = TypeChecker.fromUrl(
   'package:flutter/src/widgets/framework.dart#Widget',
+);
+
+/// Flutter's `Key` base class.
+const flutterKeyChecker = TypeChecker.fromUrl(
+  'package:flutter/src/foundation/key.dart#Key',
 );
 
 /// Flutter's `BuildContext` interface.

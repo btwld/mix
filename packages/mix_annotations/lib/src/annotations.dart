@@ -50,61 +50,81 @@ const mixableStyler = MixableStyler();
 /// Generates a `StatelessWidget` wrapper around a Mix styler.
 ///
 /// Applies to a top-level final styler instance or a top-level factory
-/// function returning a styler. The generator mirrors the styler's `call(...)`
-/// signature onto the wrapper's constructor, then dispatches to an inferred
-/// built-in builder or a custom `MixWidgetBuilder` subclass to produce the
-/// final widget.
+/// function returning a styler. The generator resolves the styler's
+/// `Style<TSpec>` spec, looks up `@MixWidgetRenderer` on that spec class to
+/// find the renderer widget, then mirrors the renderer's constructor onto the
+/// generated wrapper.
 ///
-/// ## How the styler's `call()` drives the wrapper
+/// ## How wrapper parameters are chosen
 ///
-/// Every Mix styler exposes a `call(...)` method that returns a widget:
-///
-/// ```dart
-/// Box call({Key? key, Widget? child});                        // BoxStyler
-/// FlexBox call({Key? key, required List<Widget> children});   // FlexBoxStyler
-/// StyledText call(String text);                               // TextStyler
-/// ```
-///
-/// The generator uses that signature as the source of truth for the wrapper's
-/// public API: each `call()` parameter becomes a parameter on the generated
-/// wrapper's constructor (positional remains positional, named remains named),
-/// and the generated `build(BuildContext)` forwards them to a
-/// `MixWidgetBuilder.build(style, ...)` invocation.
+/// The renderer widget's unnamed constructor is the source of truth. The
+/// generator excludes `key`, `style`, and `styleSpec`, and mirrors every other
+/// constructor parameter onto the generated wrapper. Function-backed
+/// declarations also expose their public factory parameters, which shape the
+/// generated base style.
 ///
 /// ## Usage
 ///
 /// ```dart
-/// // Inferred: BoxStyler → BoxBuilder → Box
+/// // BoxSpec is annotated with @MixWidgetRenderer(Box) inside package:mix.
 /// @MixWidget()
 /// final cardStyle = BoxStyler().color(Colors.white).borderRounded(8);
 ///
-/// // Custom builder
-/// @MixWidget(widgetBuilder: GlassCardBuilder())
-/// final popupStyle = BoxStyler();
+/// // For custom specs, declare the renderer once on the spec class:
+/// @MixWidgetRenderer(RemixButton)
+/// class RemixButtonSpec extends Spec<RemixButtonSpec> { /* ... */ }
+///
+/// @MixWidget()
+/// RemixButtonStyle primaryButton({Color color = Colors.blue}) {
+///   return RemixButtonStyle().color(color);
+/// }
 /// ```
 ///
 /// - [name] overrides the generated class name (defaults to the source name
 ///   with a trailing `Styler`/`Style` stripped, PascalCased).
-/// - [styleable] when `true` adds a `style` parameter to the wrapper that is
-///   merged with the base style at build time.
-/// - [widgetBuilder] optionally selects a custom widget builder. Pass an
-///   unprefixed zero-argument constructor call for a user-authored
-///   `MixWidgetBuilder<TSpec>` subclass, such as `GlassCardBuilder()`. Built-in
-///   Mix builders are inferred automatically when omitted (e.g.
-///   `BoxSpec` → `BoxBuilder`), falling back to the call-return widget when no
-///   default is known.
-///
-/// Typed as [Object] to keep this annotation package Flutter-free; the
-/// generator validates the concrete type extends `MixWidgetBuilder`.
+/// - Function-backed declarations expose their public parameters on the
+///   wrapper constructor, so style inputs can be modeled explicitly in the
+///   factory signature.
+/// - The spec class must be annotated with [MixWidgetRenderer] so the
+///   generator can locate the renderer widget. Specs without that annotation
+///   produce a clear codegen error.
 class MixWidget {
   final String? name;
-  final bool styleable;
-  final Object? widgetBuilder;
 
-  const MixWidget({this.name, this.styleable = false, this.widgetBuilder});
+  const MixWidget({this.name});
 }
 
 const mixWidget = MixWidget();
+
+/// Declares the widget that renders a `Spec<TSpec>` for `@MixWidget` codegen.
+///
+/// Apply to a `Spec` subclass to register its renderer widget once. Any
+/// `@MixWidget` declaration whose styler resolves to this spec then generates
+/// a wrapper that delegates to [widget].
+///
+/// The renderer widget must:
+/// - Have an unnamed constructor.
+/// - Declare a `style:` named parameter assignable from the corresponding
+///   `Style<TSpec>`.
+/// - Be a Flutter `Widget` subtype.
+///
+/// `key`, `style`, and `styleSpec` are reserved on the renderer constructor;
+/// every other parameter is mirrored onto the generated wrapper.
+///
+/// Example:
+/// ```dart
+/// @MixWidgetRenderer(Box)
+/// final class BoxSpec extends Spec<BoxSpec> { /* ... */ }
+/// ```
+///
+/// [widget] holds the renderer widget's [Type] literal. The generator reads it
+/// via the analyzer's constant value API; no runtime reflection is involved.
+class MixWidgetRenderer {
+  /// The widget class that renders the annotated spec.
+  final Type widget;
+
+  const MixWidgetRenderer(this.widget);
+}
 
 /// Annotation for configuring individual fields in Styler classes.
 ///

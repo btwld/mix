@@ -3,21 +3,17 @@
 /// `@MixWidget` applies to a top-level `final` styler declaration or a
 /// top-level factory function returning a styler. The generator:
 ///
-/// 1. Reads annotation flags (`name`, `styleable`, `widgetBuilder`).
+/// 1. Reads the `name` override from the annotation.
 /// 2. Resolves the target styler type and its spec type.
-/// 3. Mirrors the styler's `call(...)` signature onto a generated wrapper
-///    `StatelessWidget` constructor.
-/// 4. Dispatches construction through a `MixWidgetBuilder` — either an
-///    inferred Mix built-in (for Mix-owned specs) or a user-authored
-///    custom builder. Custom user widgets outside the built-in map fall
-///    through to direct-widget emission using the styler's `call()`
-///    return type.
+/// 3. Reads `@MixWidgetRenderer` on the spec class to find the renderer
+///    widget, then mirrors its constructor onto the generated wrapper.
+/// 4. Emits a direct constructor call to the renderer widget.
 ///
 /// The pipeline is split across four modules:
 ///
 ///   * `core/models/widget_target.dart` — data types carried between phases.
-///   * `core/resolvers/widget_builder_resolver.dart` — custom-vs-built-in
-///     builder selection and validation.
+///   * `core/resolvers/widget_builder_resolver.dart` — renderer lookup and
+///     parameter validation against the spec annotation.
 ///   * `core/builders/widget_class_builder.dart` — `code_builder`-driven
 ///     emission of the generated class.
 ///   * `core/errors.dart` + `core/checkers.dart` — shared primitives.
@@ -38,7 +34,7 @@ import 'core/errors.dart';
 import 'core/models/widget_target.dart';
 import 'core/resolvers/widget_builder_resolver.dart';
 
-const _reservedParameterNames = {'key', 'style', 'styleSpec'};
+const _reservedParameterNames = {'key', 'styleSpec'};
 const _mixAnnotationsPackagePrefix = 'package:mix_annotations/';
 
 class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
@@ -54,10 +50,10 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
       return '';
     }
 
-    final config = _parseAnnotationConfig(annotation);
+    final nameOverride = _parseGeneratedNameOverride(annotation);
     final target = _extractAnnotatedTarget(element);
     final generatedName =
-        config.name ?? _deriveGeneratedName(target.sourceName, element);
+        nameOverride ?? _deriveGeneratedName(target.sourceName, element);
 
     final inputLibrary = await buildStep.inputLibrary;
     _validateGeneratedName(
@@ -66,52 +62,27 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
       generatedName: generatedName,
     );
 
-    final callSignature = _extractCallSignature(
-      stylerType: target.stylerType,
-      element: element,
-    );
-
-    final resolvedBuilder = resolveWidgetBuilder(
-      annotation: annotation,
+    final resolvedRenderer = await resolveWidgetRenderer(
       target: target,
       element: element,
     );
-    if (resolvedBuilder is NamedBuilder) {
-      final buildParameterTypes = await resolveBuilderBuildParameterTypes(
-        element,
-      );
-      validateBuilderForwardedParameters(
-        mirroredParameters: callSignature.parameters,
-        buildParameterTypes: buildParameterTypes,
-        element: element,
-      );
-    } else {
-      validateDirectFallbackWidget(
-        callReturnType: callSignature.returnType,
-        element: element,
-      );
-    }
 
     final factoryParameters = _resolveFactoryParameters(
-      _extractFactoryParameters(target.factoryElement),
+      _extractFactoryParameters(target.factoryElement, inputLibrary),
       element,
     );
 
     _validateParameterCollisions(
       factoryParameters: factoryParameters,
-      mirroredParameters: callSignature.parameters,
+      widgetParameters: resolvedRenderer.parameters,
       element: element,
     );
 
     return buildWidgetClass(
       generatedName: generatedName,
       target: target,
-      config: config,
-      resolvedBuilder: resolvedBuilder,
-      callReturnType: callSignature.returnType,
+      resolvedRenderer: resolvedRenderer,
       factoryParameters: factoryParameters,
-      mirroredParameters: callSignature.parameters,
-      element: element,
     );
   }
 
@@ -125,12 +96,8 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
 
 // ─── Annotation parsing ─────────────────────────────────────────────────
 
-MixWidgetConfig _parseAnnotationConfig(ConstantReader annotation) {
-  return MixWidgetConfig(
-    name: annotation.peek('name')?.stringValue,
-    styleable: annotation.peek('styleable')?.boolValue ?? false,
-  );
-}
+String? _parseGeneratedNameOverride(ConstantReader annotation) =>
+    annotation.peek('name')?.stringValue;
 
 /// Matches `MixWidget` annotation objects originating from
 /// `package:mix_annotations`, whether the `TypeChecker.fromUrl` canonical
@@ -296,70 +263,21 @@ DartType _extractSpecType(InterfaceType stylerType, Element element) {
   fail(element, 'Could not determine the Style<T> spec type for @MixWidget.');
 }
 
-// ─── Call signature extraction ──────────────────────────────────────────
-
-CallSignature _extractCallSignature({
-  required InterfaceType stylerType,
-  required Element element,
-}) {
-  final stylerName = stylerType.element.name ?? stylerType.getDisplayString();
-  final method = stylerType.lookUpMethod(
-    'call',
-    element.library!,
-    concrete: true,
-  );
-  if (method == null || method.isStatic || method.isAbstract) {
-    fail(
-      element,
-      '$stylerName must expose a concrete instance `call()` method for '
-      '@MixWidget.',
-    );
-  }
-
-  final returnType = method.returnType;
-  if (returnType is! InterfaceType || !_isWidgetType(returnType)) {
-    fail(
-      element,
-      '$stylerName.call() must return a Widget subtype for @MixWidget.',
-    );
-  }
-
-  for (final parameter in method.formalParameters) {
-    if (parameter.isOptionalPositional) {
-      fail(
-        element,
-        '$stylerName.call() has optional-positional parameter '
-        '`${parameter.name ?? '?'}`. @MixWidget mirrors parameters onto the '
-        'generated wrapper constructor and does not support optional '
-        'positionals. Use named parameters instead.',
-      );
-    }
-  }
-
-  return CallSignature(
-    returnType: returnType,
-    parameters: [
-      for (final parameter in method.formalParameters)
-        if (!_reservedParameterNames.contains(parameter.name))
-          ParameterSpec.fromParameter(parameter),
-    ],
-  );
-}
-
-bool _isWidgetType(InterfaceType type) =>
-    [type, ...type.allSupertypes].any(flutterWidgetChecker.isExactlyType);
-
 // ─── Factory parameter resolution ───────────────────────────────────────
 
 List<ParameterSpec> _extractFactoryParameters(
   TopLevelFunctionElement? factoryElement,
+  LibraryElement library,
 ) {
   if (factoryElement == null) {
     return const [];
   }
 
   return factoryElement.formalParameters
-      .map(ParameterSpec.fromParameter)
+      .map(
+        (parameter) =>
+            ParameterSpec.fromParameter(parameter, visibleFrom: library),
+      )
       .toList();
 }
 
@@ -426,11 +344,11 @@ FactoryParameters _resolveFactoryParameters(
 
 void _validateParameterCollisions({
   required FactoryParameters factoryParameters,
-  required List<ParameterSpec> mirroredParameters,
+  required List<ParameterSpec> widgetParameters,
   required Element element,
 }) {
   if (factoryParameters.injectsBuildContext &&
-      mirroredParameters.any((parameter) => parameter.name == 'context')) {
+      widgetParameters.any((parameter) => parameter.name == 'context')) {
     fail(
       element,
       'Parameter `context` conflicts with the injected BuildContext used by '
@@ -442,7 +360,7 @@ void _validateParameterCollisions({
 
   for (final parameter in [
     ...factoryParameters.publicParameters,
-    ...mirroredParameters,
+    ...widgetParameters,
   ]) {
     if (_reservedParameterNames.contains(parameter.name)) {
       fail(element, 'Parameter `${parameter.name}` is reserved by @MixWidget.');
