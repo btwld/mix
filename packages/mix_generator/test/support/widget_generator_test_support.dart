@@ -85,7 +85,7 @@ class IconData {
   const IconData();
 }
 
-class ImageProvider {
+class ImageProvider<T extends Object> {
   const ImageProvider();
 }
 
@@ -268,7 +268,7 @@ class ImageStyler extends Style<ImageSpec> {
   ImageStyler merge(ImageStyler? other) => this;
 
   StyledImage call({
-    ImageProvider? image,
+    ImageProvider<Object>? image,
     ImageFrameBuilder? frameBuilder,
     ImageLoadingBuilder? loadingBuilder,
     ImageErrorWidgetBuilder? errorBuilder,
@@ -372,7 +372,7 @@ class StyledIcon extends Widget {
 }
 
 class StyledImage extends Widget {
-  final ImageProvider? image;
+  final ImageProvider<Object>? image;
   final ImageFrameBuilder? frameBuilder;
   final ImageLoadingBuilder? loadingBuilder;
   final ImageErrorWidgetBuilder? errorBuilder;

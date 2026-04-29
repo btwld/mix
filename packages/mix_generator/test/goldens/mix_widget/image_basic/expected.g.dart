@@ -17,7 +17,7 @@ class HeroImage extends StatelessWidget {
     this.opacity,
   });
 
-  final ImageProvider? image;
+  final ImageProvider<Object>? image;
 
   final ImageFrameBuilder? frameBuilder;
 
