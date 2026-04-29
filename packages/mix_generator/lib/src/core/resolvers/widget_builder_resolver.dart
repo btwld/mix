@@ -180,6 +180,17 @@ void _validateRendererIsWidget({
       'Widget subclass. Got $rendererName.',
     );
   }
+
+  if (rendererElement.typeParameters.isNotEmpty) {
+    final specName = specElement.name ?? '<unknown>';
+    final rendererName = rendererElement.name ?? '<unknown>';
+    fail(
+      element,
+      '@MixWidgetRenderer on $specName references generic class '
+      '`$rendererName<...>`. Generic renderers are not yet supported. '
+      'Use a non-generic concrete subclass as the renderer.',
+    );
+  }
 }
 
 void _validateStyleParameter({

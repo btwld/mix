@@ -755,6 +755,47 @@ final customStyle = CustomStyle();
       );
     });
 
+    test('rejects generic renderer classes', () async {
+      const source = r'''
+library input;
+
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+
+part 'input.g.dart';
+
+class GenericRenderer<T> extends Widget {
+  final Key? key;
+  final Style<CustomSpec> style;
+  final T value;
+
+  const GenericRenderer({this.key, required this.style, required this.value});
+}
+
+@MixWidgetRenderer(GenericRenderer)
+class CustomSpec extends Spec<CustomSpec> {
+  const CustomSpec();
+}
+
+class CustomStyle extends Style<CustomSpec> {
+  const CustomStyle();
+
+  CustomStyle merge(CustomStyle? other) => this;
+}
+
+@MixWidget()
+final customStyle = CustomStyle();
+''';
+
+      final logs = await runMixWidgetWithLogs(source);
+
+      expect(
+        _severeMessages(logs),
+        contains('Generic renderers are not yet supported'),
+      );
+    });
+
     test('rejects invalid annotation target kinds', () async {
       const source = r'''
 library input;
