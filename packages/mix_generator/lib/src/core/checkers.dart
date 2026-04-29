@@ -28,6 +28,21 @@ const styleChecker = TypeChecker.fromUrl(
   'package:mix/src/core/style.dart#Style',
 );
 
+/// `Mix<T>` abstract class from `package:mix`.
+const mixChecker = TypeChecker.fromUrl(
+  'package:mix/src/core/mix_element.dart#Mix',
+);
+
+/// `Mixable<T>` abstract class from `package:mix`.
+const mixableChecker = TypeChecker.fromUrl(
+  'package:mix/src/core/mix_element.dart#Mixable',
+);
+
+/// `DefaultValue<T>` mixin from `package:mix`.
+const defaultValueChecker = TypeChecker.fromUrl(
+  'package:mix/src/core/mix_element.dart#DefaultValue',
+);
+
 /// Flutter's `Widget` base class.
 const flutterWidgetChecker = TypeChecker.fromUrl(
   'package:flutter/src/widgets/framework.dart#Widget',

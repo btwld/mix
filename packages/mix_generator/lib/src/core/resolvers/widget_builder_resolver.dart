@@ -7,43 +7,30 @@
 /// wrapper.
 library;
 
+import 'package:analyzer/dart/analysis/utilities.dart';
+import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:logging/logging.dart';
 
 import '../checkers.dart';
 import '../errors.dart';
+import '../helpers/library_scope.dart';
 import '../models/widget_target.dart';
 
 final _log = Logger('mix_generator.widget_builder');
 
 const _reservedRendererParameterNames = {'key', 'style', 'styleSpec'};
-const _dartDefaultValueIdentifiers = {
-  'const',
-  'false',
-  'null',
-  'true',
-  'bool',
-  'double',
-  'Duration',
-  'int',
-  'Iterable',
-  'List',
-  'Map',
-  'num',
-  'Object',
-  'Set',
-  'String',
-};
 
 /// Resolves the rendering strategy for [target].
 ///
 /// The renderer is declared once on the spec class via `@MixWidgetRenderer`.
 /// Specs without that annotation produce a clear codegen error.
-Future<ResolvedWidgetRenderer> resolveWidgetRenderer({
+ResolvedWidgetRenderer resolveWidgetRenderer({
   required AnnotatedTarget target,
   required Element element,
-}) async {
+}) {
   final specType = target.specType;
   final specElement = specType is InterfaceType ? specType.element : null;
   if (specElement == null) {
@@ -67,10 +54,11 @@ Future<ResolvedWidgetRenderer> resolveWidgetRenderer({
   final constructor = rendererElement.unnamedConstructor;
   final rendererName = rendererElement.name ?? '<unknown>';
   if (constructor == null) {
+    final specName = specElement.name ?? '<unknown>';
     fail(
       element,
       'Renderer `$rendererName` declared on '
-      '${specElement.name} via @MixWidgetRenderer must expose an unnamed '
+      '$specName via @MixWidgetRenderer must expose an unnamed '
       'constructor.',
     );
   }
@@ -129,17 +117,19 @@ InterfaceElement _readRendererFromSpec({
 
     final widgetType = value.getField('widget')?.toTypeValue();
     if (widgetType == null) {
+      final specName = specElement.name ?? '<unknown>';
       fail(
         element,
-        '@MixWidgetRenderer on ${specElement.name} did not provide a widget '
+        '@MixWidgetRenderer on $specName did not provide a widget '
         'type.',
       );
     }
 
     if (widgetType is! InterfaceType) {
+      final specName = specElement.name ?? '<unknown>';
       fail(
         element,
-        '@MixWidgetRenderer on ${specElement.name} must reference a class, '
+        '@MixWidgetRenderer on $specName must reference a class, '
         'got ${widgetType.getDisplayString()}.',
       );
     }
@@ -149,7 +139,8 @@ InterfaceElement _readRendererFromSpec({
 
   fail(
     element,
-    'No renderer found for ${specElement.name}. Annotate the spec class with '
+    'No renderer found for ${specElement.name ?? '<unknown>'}. '
+    'Annotate the spec class with '
     '@MixWidgetRenderer(YourWidget) to declare its renderer.',
   );
 }
@@ -160,19 +151,33 @@ void _validateRendererIsWidget({
   required Element element,
 }) {
   if (rendererElement is! ClassElement) {
+    final specName = specElement.name ?? '<unknown>';
+    final rendererName = rendererElement.name ?? '<unknown>';
     fail(
       element,
-      '@MixWidgetRenderer on ${specElement.name} must reference a class. Got '
-      '${rendererElement.name ?? '<unknown>'}.',
+      '@MixWidgetRenderer on $specName must reference a class. Got '
+      '$rendererName.',
+    );
+  }
+
+  if (rendererElement.isAbstract) {
+    final specName = specElement.name ?? '<unknown>';
+    final rendererName = rendererElement.name ?? '<unknown>';
+    fail(
+      element,
+      '@MixWidgetRenderer on $specName must reference a concrete widget '
+      'class. Got abstract class $rendererName.',
     );
   }
 
   final rendererInterface = rendererElement.thisType;
   if (!flutterWidgetChecker.isAssignableFromType(rendererInterface)) {
+    final specName = specElement.name ?? '<unknown>';
+    final rendererName = rendererElement.name ?? '<unknown>';
     fail(
       element,
-      '@MixWidgetRenderer on ${specElement.name} must reference a Flutter '
-      'Widget subclass. Got ${rendererElement.name}.',
+      '@MixWidgetRenderer on $specName must reference a Flutter '
+      'Widget subclass. Got $rendererName.',
     );
   }
 }
@@ -218,6 +223,17 @@ void _validateKeyParameter({
     fail(
       element,
       'Renderer `$rendererName` must declare a named `Key? key` parameter.',
+    );
+  }
+
+  final keyType = keyParameter.type;
+  final isKey = flutterKeyChecker.isExactlyType(keyType);
+  final isNullable = keyType.nullabilitySuffix == .question;
+  if (!isKey || !isNullable) {
+    fail(
+      element,
+      'Renderer `$rendererName.key` is '
+      '${keyType.getDisplayString()}, but must be `Key?`.',
     );
   }
 }
@@ -270,10 +286,11 @@ void _validateForwardedRendererParameter({
   required Element element,
 }) {
   if (parameter.isOptionalPositional) {
+    final parameterName = parameter.name ?? '?';
     fail(
       element,
       'Renderer `$rendererName` constructor parameter '
-      '`${parameter.name ?? '?'}` is optional positional. Use a required '
+      '`$parameterName` is optional positional. Use a required '
       'positional or named parameter instead.',
     );
   }
@@ -295,14 +312,15 @@ void _validateParameterTypeVisible({
   required String rendererName,
   required Element element,
 }) {
-  final hiddenType = _firstInvisibleTypeName(parameter.type, element.library!);
+  final hiddenType = firstInvisibleTypeName(parameter.type, element.library!);
   if (hiddenType == null) {
     return;
   }
 
+  final parameterName = parameter.name ?? '<unknown>';
   fail(
     element,
-    'Renderer `$rendererName` parameter `${parameter.name}` has type '
+    'Renderer `$rendererName` parameter `$parameterName` has type '
     '${parameter.type.getDisplayString()}, which is not visible to the '
     'annotated library. Import or re-export `$hiddenType` where @MixWidget '
     'is used.',
@@ -327,89 +345,50 @@ void _validateParameterDefaultVisible({
     return;
   }
 
+  final parameterName = parameter.name ?? '<unknown>';
   fail(
     element,
-    'Renderer `$rendererName` parameter `${parameter.name}` has default '
+    'Renderer `$rendererName` parameter `$parameterName` has default '
     'value `$defaultValueCode`, which references `$hiddenName` that is not '
     'visible to the annotated library. Import or re-export `$hiddenName` '
     'where @MixWidget is used.',
   );
 }
 
-String? _firstInvisibleTypeName(DartType type, LibraryElement library) {
-  final alias = type.alias;
-  if (alias != null) {
-    final name = alias.element.name;
-    if (name != null &&
-        !_isElementVisibleUnprefixed(library, name, alias.element)) {
-      return name;
-    }
-
-    for (final argument in alias.typeArguments) {
-      final hiddenName = _firstInvisibleTypeName(argument, library);
-      if (hiddenName != null) {
-        return hiddenName;
-      }
-    }
-  }
-
-  if (type is InterfaceType) {
-    final name = type.element.name;
-    if (name != null &&
-        !_isElementVisibleUnprefixed(library, name, type.element)) {
-      return name;
-    }
-
-    for (final argument in type.typeArguments) {
-      final hiddenName = _firstInvisibleTypeName(argument, library);
-      if (hiddenName != null) {
-        return hiddenName;
-      }
-    }
-  }
-
-  if (type is FunctionType) {
-    final hiddenReturnType = _firstInvisibleTypeName(type.returnType, library);
-    if (hiddenReturnType != null) {
-      return hiddenReturnType;
-    }
-
-    for (final parameter in type.formalParameters) {
-      final hiddenName = _firstInvisibleTypeName(parameter.type, library);
-      if (hiddenName != null) {
-        return hiddenName;
-      }
-    }
-  }
-
-  return null;
-}
-
 String? _firstInvisibleDefaultName(
   String defaultValueCode,
   LibraryElement library,
 ) {
-  final identifiers = RegExp(r'\b[A-Za-z_]\w*\b')
-      .allMatches(defaultValueCode)
-      .map((match) => match.group(0)!)
-      .where(
-        (identifier) => !_dartDefaultValueIdentifiers.contains(identifier),
-      );
+  final result = parseString(
+    content: 'dynamic __mix_default__ = $defaultValueCode;',
+    throwIfDiagnostics: false,
+  );
 
-  for (final identifier in identifiers) {
-    if (identifier.startsWith('_')) {
-      return identifier;
-    }
+  final declaration =
+      result.unit.declarations.first as TopLevelVariableDeclaration;
+  final initializer = declaration.variables.variables.first.initializer;
+  if (initializer == null) {
+    return null;
+  }
 
-    final startsLikeType = RegExp(r'^[A-Z]').hasMatch(identifier);
-    if (!startsLikeType) {
-      continue;
-    }
+  final collector = _FreeIdentifierCollector();
+  initializer.accept(collector);
 
+  for (final identifier in collector.identifiers) {
     var isVisible = false;
     for (final fragment in library.fragments) {
-      if (fragment.scope.lookup(identifier).getter != null) {
+      final lookup = fragment.scope.lookup(identifier);
+      if (lookup.getter != null || lookup.setter != null) {
         isVisible = true;
+        break;
+      }
+      for (final prefix in fragment.prefixes) {
+        if (prefix.name == identifier) {
+          isVisible = true;
+          break;
+        }
+      }
+      if (isVisible) {
         break;
       }
     }
@@ -422,11 +401,38 @@ String? _firstInvisibleDefaultName(
   return null;
 }
 
-/// Finds the identifier (optionally prefixed) that references
-/// [widgetElement] from [library]'s imports.
-///
-/// Generated widgets are emitted as `part of` contributions, so they inherit
-/// the annotated library's visible imports and prefixes.
+/// Collects identifiers used as the head of an expression — direct references,
+/// constructor receivers, prefixes — while skipping member-access RHS
+/// (`Foo.bar` skips `bar`) and named-argument labels.
+class _FreeIdentifierCollector extends RecursiveAstVisitor<void> {
+  final List<String> identifiers = [];
+
+  @override
+  void visitSimpleIdentifier(SimpleIdentifier node) {
+    final parent = node.parent;
+
+    if (parent is PrefixedIdentifier && identical(parent.identifier, node)) {
+      return;
+    }
+    if (parent is PropertyAccess && identical(parent.propertyName, node)) {
+      return;
+    }
+    if (parent is MethodInvocation &&
+        identical(parent.methodName, node) &&
+        parent.target != null) {
+      return;
+    }
+    if (parent is ConstructorName && identical(parent.name, node)) {
+      return;
+    }
+    if (parent is Label) {
+      return;
+    }
+
+    identifiers.add(node.name);
+  }
+}
+
 String _resolveWidgetReference({
   required InterfaceElement widgetElement,
   required LibraryElement library,
@@ -437,20 +443,9 @@ String _resolveWidgetReference({
     fail(element, '@MixWidget requires a named renderer widget.');
   }
 
-  if (_isElementVisibleUnprefixed(library, name, widgetElement)) {
-    return name;
-  }
-
-  for (final fragment in library.fragments) {
-    for (final prefix in fragment.prefixes) {
-      final result = prefix.scope.lookup(name).getter;
-      if (_isSameElement(result, widgetElement)) {
-        final prefixName = prefix.name;
-        if (prefixName != null) {
-          return '$prefixName.$name';
-        }
-      }
-    }
+  final reference = referenceFor(widgetElement, library);
+  if (reference != null) {
+    return reference;
   }
 
   fail(
@@ -460,21 +455,3 @@ String _resolveWidgetReference({
     'visible prefix.',
   );
 }
-
-bool _isElementVisibleUnprefixed(
-  LibraryElement library,
-  String name,
-  Element expected,
-) {
-  for (final fragment in library.fragments) {
-    final result = fragment.scope.lookup(name).getter;
-    if (_isSameElement(result, expected)) {
-      return true;
-    }
-  }
-
-  return false;
-}
-
-bool _isSameElement(Element? left, Element right) =>
-    left?.baseElement == right.baseElement;

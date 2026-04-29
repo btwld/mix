@@ -7,6 +7,39 @@ import 'package:test/test.dart';
 Builder _partBuilder(Generator generator) =>
     PartBuilder([generator], '.g.dart');
 
+const _styleStub = r'''
+library mix_style;
+
+class Style<T> {
+  final Object? $variants;
+  final Object? $modifier;
+  final Object? $animation;
+
+  const Style({Object? variants, Object? modifier, Object? animation})
+    : $variants = variants,
+      $modifier = modifier,
+      $animation = animation;
+}
+''';
+
+const _mixElementStub = r'''
+library mix_element;
+
+class Mix<T> {
+  const Mix();
+}
+
+mixin DefaultValue<T> {
+  T get defaultValue;
+}
+''';
+
+const _visibleTypeStub = r'''
+library visible;
+
+class VisibleType {}
+''';
+
 void main() {
   group('generator smoke', () {
     test('SpecGenerator handles nullable list fields end-to-end', () async {
@@ -100,6 +133,8 @@ class BoxSpec with _$BoxSpec {
         const source = r'''
 library styler_case;
 
+import 'package:mix/src/core/style.dart';
+
 part 'styler_case.g.dart';
 
 class MixableStyler {
@@ -112,17 +147,6 @@ class MixableStyler {
 
 class Prop<T> {
   const Prop();
-}
-
-class Style<T> {
-  final Object? $variants;
-  final Object? $modifier;
-  final Object? $animation;
-
-  const Style({Object? variants, Object? modifier, Object? animation})
-    : $variants = variants,
-      $modifier = modifier,
-      $animation = animation;
 }
 
 class EdgeInsetsGeometry {}
@@ -169,7 +193,10 @@ class BoxStyler extends Style<BoxSpec> {
 
         await testBuilder(
           _partBuilder(const StylerGenerator()),
-          {'mix_generator|lib/styler_case.dart': source},
+          {
+            'mix_generator|lib/styler_case.dart': source,
+            'mix|lib/src/core/style.dart': _styleStub,
+          },
           generateFor: {'mix_generator|lib/styler_case.dart'},
           outputs: {
             'mix_generator|lib/styler_case.g.dart': decodedMatches(
@@ -191,10 +218,87 @@ class BoxStyler extends Style<BoxSpec> {
     );
 
     test(
+      'StylerGenerator preserves prefixes in generated field types',
+      () async {
+        const source = r'''
+library styler_case;
+
+import 'package:mix/src/core/style.dart';
+import 'visible.dart' as v;
+
+part 'styler_case.g.dart';
+
+class MixableStyler {
+  final int methods;
+
+  const MixableStyler({
+    this.methods = 0x01 | 0x02 | 0x04 | 0x08 | 0x10 | 0x20,
+  });
+}
+
+class Prop<T> {
+  const Prop();
+}
+
+class BoxSpec {
+  final v.VisibleType? value;
+
+  const BoxSpec({this.value});
+}
+
+@MixableStyler()
+class BoxStyler extends Style<BoxSpec> {
+  final Prop<v.VisibleType>? $value;
+
+  const BoxStyler({
+    Prop<v.VisibleType>? value,
+    Object? variants,
+    Object? modifier,
+    Object? animation,
+  }) : $value = value,
+       super(variants: variants, modifier: modifier, animation: animation);
+
+  static BoxStyler create({
+    Prop<v.VisibleType>? value,
+    Object? variants,
+    Object? modifier,
+    Object? animation,
+  }) => BoxStyler(
+    value: value,
+    variants: variants,
+    modifier: modifier,
+    animation: animation,
+  );
+}
+''';
+
+        await testBuilder(
+          _partBuilder(const StylerGenerator()),
+          {
+            'mix_generator|lib/styler_case.dart': source,
+            'mix_generator|lib/visible.dart': _visibleTypeStub,
+            'mix|lib/src/core/style.dart': _styleStub,
+          },
+          generateFor: {'mix_generator|lib/styler_case.dart'},
+          outputs: {
+            'mix_generator|lib/styler_case.g.dart': decodedMatches(
+              allOf(
+                contains(r'Prop<v.VisibleType>? get $value;'),
+                contains('BoxStyler value(v.VisibleType value)'),
+              ),
+            ),
+          },
+        );
+      },
+    );
+
+    test(
       'MixableGenerator emits declared getters and defaultValue fallback',
       () async {
         const source = r'''
 library mix_case;
+
+import 'package:mix/src/core/mix_element.dart';
 
 part 'mix_case.g.dart';
 
@@ -207,14 +311,6 @@ class Mixable {
 
 class Prop<T> {
   const Prop();
-}
-
-class Mix<T> {
-  const Mix();
-}
-
-mixin DefaultValue<T> {
-  T get defaultValue;
 }
 
 class BoxConstraints {
@@ -239,7 +335,10 @@ class BoxConstraintsMix extends Mix<BoxConstraints> with DefaultValue<BoxConstra
 
         await testBuilder(
           _partBuilder(const MixableGenerator()),
-          {'mix_generator|lib/mix_case.dart': source},
+          {
+            'mix_generator|lib/mix_case.dart': source,
+            'mix|lib/src/core/mix_element.dart': _mixElementStub,
+          },
           generateFor: {'mix_generator|lib/mix_case.dart'},
           outputs: {
             'mix_generator|lib/mix_case.g.dart': decodedMatches(
@@ -264,10 +363,13 @@ class BoxConstraintsMix extends Mix<BoxConstraints> with DefaultValue<BoxConstra
     );
 
     test(
-      'MixableGenerator resolves target through intermediate generic supertype',
+      'MixableGenerator preserves prefixes in generated field types',
       () async {
         const source = r'''
 library mix_case;
+
+import 'package:mix/src/core/mix_element.dart';
+import 'visible.dart' as v;
 
 part 'mix_case.g.dart';
 
@@ -282,8 +384,59 @@ class Prop<T> {
   const Prop();
 }
 
-class Mix<T> {
-  const Mix();
+class Target {
+  final v.VisibleType? value;
+
+  const Target({this.value});
+}
+
+@Mixable()
+class TargetMix extends Mix<Target> {
+  final Prop<v.VisibleType>? $value;
+
+  const TargetMix({Prop<v.VisibleType>? value}) : $value = value;
+
+  static TargetMix create({Prop<v.VisibleType>? value}) =>
+      TargetMix(value: value);
+}
+''';
+
+        await testBuilder(
+          _partBuilder(const MixableGenerator()),
+          {
+            'mix_generator|lib/mix_case.dart': source,
+            'mix_generator|lib/visible.dart': _visibleTypeStub,
+            'mix|lib/src/core/mix_element.dart': _mixElementStub,
+          },
+          generateFor: {'mix_generator|lib/mix_case.dart'},
+          outputs: {
+            'mix_generator|lib/mix_case.g.dart': decodedMatches(
+              contains(r'Prop<v.VisibleType>? get $value;'),
+            ),
+          },
+        );
+      },
+    );
+
+    test(
+      'MixableGenerator resolves target through intermediate generic supertype',
+      () async {
+        const source = r'''
+library mix_case;
+
+import 'package:mix/src/core/mix_element.dart';
+
+part 'mix_case.g.dart';
+
+class Mixable {
+  final int methods;
+  final String? resolveToType;
+
+  const Mixable({this.methods = 0x01 | 0x02 | 0x04 | 0x08, this.resolveToType});
+}
+
+class Prop<T> {
+  const Prop();
 }
 
 class BoxConstraints {
@@ -312,7 +465,10 @@ class BoxConstraintsMix extends ConstraintsMix<int> {
 
         await testBuilder(
           _partBuilder(const MixableGenerator()),
-          {'mix_generator|lib/mix_case.dart': source},
+          {
+            'mix_generator|lib/mix_case.dart': source,
+            'mix|lib/src/core/mix_element.dart': _mixElementStub,
+          },
           generateFor: {'mix_generator|lib/mix_case.dart'},
           outputs: {
             'mix_generator|lib/mix_case.g.dart': decodedMatches(

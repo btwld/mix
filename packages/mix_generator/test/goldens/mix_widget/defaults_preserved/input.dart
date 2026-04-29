@@ -13,4 +13,6 @@ class DefaultCardStyler extends Style<BoxSpec> {
 }
 
 @MixWidget()
-final defaultCardStyle = DefaultCardStyler();
+DefaultCardStyler defaultCardStyle({bool compact = false, int padding = 16}) {
+  return const DefaultCardStyler();
+}

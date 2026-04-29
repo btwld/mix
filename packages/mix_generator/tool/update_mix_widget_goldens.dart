@@ -26,6 +26,7 @@ Future<void> main() async {
       stderr.writeln(error);
       stderr.writeln(stackTrace);
       exitCode = 1;
+
       return;
     }
   }

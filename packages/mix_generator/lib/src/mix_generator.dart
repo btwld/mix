@@ -60,11 +60,10 @@ class SpecGenerator extends GeneratorForAnnotation<MixableSpec> {
   MixableSpecAnnotationConfig _extractAnnotationConfig(
     ConstantReader annotation,
   ) {
-    final methodsReader = annotation.peek('methods');
     final componentsReader = annotation.peek('components');
 
     return MixableSpecAnnotationConfig(
-      methods: methodsReader?.intValue ?? GeneratedSpecMethods.all,
+      methods: peekMethodsBitmask(annotation, GeneratedSpecMethods.all),
       components: componentsReader?.intValue ?? GeneratedSpecComponents.all,
     );
   }

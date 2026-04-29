@@ -16,6 +16,7 @@ library;
 
 import '../models/annotation_config.dart';
 import '../models/field_model.dart';
+import '../helpers/field_emitter.dart';
 import '../resolvers/diagnostic_resolver.dart';
 import '../resolvers/lerp_resolver.dart';
 
@@ -31,16 +32,13 @@ class SpecMixinBuilder {
     required this.config,
   });
 
+  FieldEmitter<FieldModel> _fieldEmitter() => .new(fields);
+
   String _buildAbstractGetters() {
-    if (fields.isEmpty) return '';
-
-    final buffer = StringBuffer();
-    for (final field in fields) {
-      buffer.writeln('  ${field.effectiveSpecType} get ${field.name};');
-    }
-    buffer.writeln();
-
-    return buffer.toString();
+    return _fieldEmitter().abstractGetters(
+      typeCode: (field) => field.effectiveSpecType,
+      getterName: (field) => field.name,
+    );
   }
 
   String _buildCopyWith() {
@@ -77,10 +75,11 @@ class SpecMixinBuilder {
     buffer.writeln('  $specName lerp($specName? other, double t) {');
     buffer.writeln('    return $specName(');
 
-    for (final field in fields) {
-      final lerpCode = lerpResolver.generateLerpCode(field);
-      buffer.writeln('      ${field.name}: $lerpCode,');
-    }
+    _fieldEmitter().linesInto(buffer, (field) {
+      final lerpCode = generateLerpCode(field);
+
+      return '      ${field.name}: $lerpCode,';
+    });
 
     buffer.writeln('    );');
     buffer.writeln('  }');
@@ -92,29 +91,10 @@ class SpecMixinBuilder {
   /// `implements Diagnosticable` rather than extending it, so there is no
   /// parent `debugFillProperties` to delegate to.
   String _buildDebugFillProperties() {
-    final buffer = StringBuffer();
-
-    buffer.writeln('  @override');
-    buffer.writeln(
-      '  void debugFillProperties(DiagnosticPropertiesBuilder properties) {',
+    return _fieldEmitter().debugFillProperties(
+      callSuper: false,
+      propertyCode: generateSpecDiagnosticCode,
     );
-
-    if (fields.isNotEmpty) {
-      buffer.writeln('    properties');
-
-      for (int i = 0; i < fields.length; i++) {
-        final field = fields[i];
-        final diagnosticCode = diagnosticResolver.generateSpecDiagnosticCode(
-          field,
-        );
-        final separator = i == fields.length - 1 ? ';' : '';
-        buffer.writeln('      ..add($diagnosticCode)$separator');
-      }
-    }
-
-    buffer.writeln('  }');
-
-    return buffer.toString();
   }
 
   String _buildProps() {

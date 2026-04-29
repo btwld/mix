@@ -8,6 +8,12 @@ library;
 import 'package:analyzer/dart/element/element.dart';
 import 'package:source_gen/source_gen.dart';
 
+/// Reads a generated-method bitmask from an annotation, falling back to
+/// [fallback] when the annotation leaves it unset.
+int peekMethodsBitmask(ConstantReader reader, int fallback) {
+  return reader.peek('methods')?.intValue ?? fallback;
+}
+
 /// Throws an [InvalidGenerationSource] with [message] anchored to [element].
 ///
 /// Use this in place of `throw InvalidGenerationSource(...)` at every call

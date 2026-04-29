@@ -7,7 +7,7 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 
 import '../checkers.dart';
-import '../curated/type_mappings.dart';
+import '../curated/type_metadata.dart';
 import 'type_helpers.dart' as type_helpers;
 
 /// Represents a Styler field with computed values for generation.
@@ -18,26 +18,11 @@ class StylerFieldModel {
   /// The field name as declared (with $ prefix).
   final String declaredName;
 
-  /// The Dart type of the field.
-  final DartType dartType;
-
-  /// The field element from analyzer.
-  final FieldElement element;
-
-  /// Whether the field is nullable.
-  final bool isNullable;
-
-  /// The inner type name (inside Prop<>).
-  final String innerTypeName;
-
-  /// Whether this field is wrapped in Prop<>.
-  final bool isWrappedInProp;
+  /// The Dart code for this field's type from the annotated library.
+  final String fieldTypeCode;
 
   /// Whether this is a raw list field (not wrapped in Prop).
   final bool isRawList;
-
-  /// The raw list element type (if isRawList is true).
-  final String? rawListElementType;
 
   /// The effective public parameter type (for setter methods).
   final String effectivePublicParamType;
@@ -51,24 +36,15 @@ class StylerFieldModel {
   /// Optional diagnostic label override.
   final String? diagnosticLabel;
 
-  /// Whether this field has a Mix type variant.
-  final bool hasMixType;
-
   const StylerFieldModel({
     required this.name,
     required this.declaredName,
-    required this.dartType,
-    required this.element,
-    required this.isNullable,
-    required this.innerTypeName,
-    required this.isWrappedInProp,
+    required this.fieldTypeCode,
     required this.isRawList,
-    this.rawListElementType,
     required this.effectivePublicParamType,
     required this.generateSetter,
     this.setterName,
     this.diagnosticLabel,
-    required this.hasMixType,
   });
 
   /// Creates a StylerFieldModel from a FieldElement.
@@ -76,27 +52,22 @@ class StylerFieldModel {
     FieldElement element, {
     required String stylerName,
   }) {
-    final type = element.type;
-    // FieldElement.name is String? in analyzer 10.x, but fields always have names
-    final declaredName = element.name!;
-
-    // Field name without $ prefix
-    final name = declaredName.startsWith(r'$')
-        ? declaredName.substring(1)
-        : declaredName;
-
-    final isNullable = type.nullabilitySuffix == .question;
+    final field = type_helpers.extractField(element, stripDollar: true);
+    final type = field.type;
+    final name = field.name;
 
     // Check if wrapped in Prop<>
     final wrappedInProp = type_helpers.isWrappedInProp(type);
-    final innerTypeName = type_helpers.getInnerTypeName(type, wrappedInProp);
+    final innerType = type_helpers.getInnerType(type, isWrapped: wrappedInProp);
+    final innerTypeName = type_helpers.getBaseTypeName(innerType);
+    final fieldTypeCode = type_helpers.visibleTypeCodeForField(
+      element,
+      visibleFrom: element.library,
+    );
 
     // Check if raw list
-    final isRawList = rawListTypes.containsKey(name);
-    final rawListElementType = rawListTypes[name];
-
-    // Check if has Mix type
-    final hasMixType = mixTypeMap.containsKey(innerTypeName);
+    final isRawList = isRawListField(name);
+    final rawListElementType = rawListElementTypeFor(name);
 
     // Check for @MixableField annotation
     final mixableFieldAnnotation = mixableFieldAnnotationChecker
@@ -107,18 +78,26 @@ class StylerFieldModel {
 
     // Get setterType override from annotation if specified
     final setterTypeValue = mixableFieldAnnotation?.getField('setterType');
-    final setterTypeOverride = setterTypeValue
-        ?.toTypeValue()
-        ?.getDisplayString();
+    final setterType = setterTypeValue?.toTypeValue();
+    final setterTypeOverride = setterType == null
+        ? null
+        : type_helpers.visibleTypeCodeForField(
+            element,
+            visibleFrom: element.library,
+            type: setterType,
+            usage: 'setter type',
+          );
 
     // Determine effective public param type
     // Use @MixableField(setterType:) override if provided, otherwise compute from type
     final effectivePublicParamType =
         setterTypeOverride ??
         _getEffectivePublicParamType(
+          innerType,
           innerTypeName,
           isRawList,
           rawListElementType,
+          element,
         );
 
     // Get field alias config
@@ -128,7 +107,7 @@ class StylerFieldModel {
 
     // Setter is generated unless:
     // 1. @MixableField(ignoreSetter: true) is present, OR
-    // 2. aliasConfig explicitly sets setterName to empty string
+    // 2. aliasConfig explicitly sets setterName to null
     final generateSetter =
         !ignoreSetter && (setterNameOverride != null || aliasConfig == null);
     final setterName = generateSetter
@@ -137,19 +116,13 @@ class StylerFieldModel {
 
     return StylerFieldModel(
       name: name,
-      declaredName: declaredName,
-      dartType: type,
-      element: element,
-      isNullable: isNullable,
-      innerTypeName: innerTypeName,
-      isWrappedInProp: wrappedInProp,
+      declaredName: field.declaredName,
+      fieldTypeCode: fieldTypeCode,
       isRawList: isRawList,
-      rawListElementType: rawListElementType,
       effectivePublicParamType: effectivePublicParamType,
       generateSetter: generateSetter,
       setterName: setterName,
       diagnosticLabel: diagnosticLabel,
-      hasMixType: hasMixType,
     );
   }
 
@@ -157,25 +130,38 @@ class StylerFieldModel {
   String get displayName => diagnosticLabel ?? name;
 
   @override
-  String toString() => 'StylerFieldModel($name: $innerTypeName)';
+  String toString() => 'StylerFieldModel($name: $fieldTypeCode)';
 }
 
 String _getEffectivePublicParamType(
+  DartType innerType,
   String innerTypeName,
   bool isRawList,
   String? rawListElementType,
+  FieldElement element,
 ) {
   // Raw list fields keep their original type
   if (isRawList && rawListElementType != null) {
     return 'List<$rawListElementType>';
   }
 
-  // Check for direct Mix type mapping
-  final mixType = mixTypeMap[innerTypeName];
+  // Check for a Mix type mapping
+  final mixType = mixTypeFor(innerTypeName);
   if (mixType != null) {
     return mixType;
   }
 
   // Use original type
-  return innerTypeName;
+  return _stripNullableSuffix(
+    type_helpers.visibleTypeCodeForField(
+      element,
+      visibleFrom: element.library,
+      type: innerType,
+      usage: 'setter type',
+    ),
+  );
 }
+
+String _stripNullableSuffix(String typeCode) => typeCode.endsWith('?')
+    ? typeCode.substring(0, typeCode.length - 1)
+    : typeCode;

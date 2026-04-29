@@ -7,8 +7,9 @@
 library;
 
 import 'package:analyzer/dart/element/element.dart';
-import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
+
+import '../helpers/library_scope.dart' as library_scope;
 
 /// A resolved `@MixWidget` target: a top-level styler declaration or factory.
 class AnnotatedTarget {
@@ -60,7 +61,10 @@ class ParameterSpec {
     return ParameterSpec(
       name: parameter.name!,
       type: parameter.type,
-      typeCode: _typeCode(parameter.type, visibleFrom: visibleFrom),
+      typeCode: library_scope.typeCode(
+        parameter.type,
+        visibleFrom: visibleFrom,
+      ),
       isNamed: parameter.isNamed,
       isRequiredNamed: parameter.isRequiredNamed,
       isRequiredPositional: parameter.isRequiredPositional,
@@ -68,62 +72,6 @@ class ParameterSpec {
     );
   }
 }
-
-String _typeCode(DartType type, {LibraryElement? visibleFrom}) {
-  final alias = type.alias;
-  if (alias != null) {
-    final name =
-        _visibleElementReference(alias.element, visibleFrom) ??
-        alias.element.name;
-    final typeArguments = alias.typeArguments;
-    final nullableSuffix = type.nullabilitySuffix == NullabilitySuffix.question
-        ? '?'
-        : '';
-
-    if (typeArguments.isEmpty) {
-      return '$name$nullableSuffix';
-    }
-
-    final arguments = typeArguments
-        .map((argument) => _typeCode(argument, visibleFrom: visibleFrom))
-        .join(', ');
-
-    return '$name<$arguments>$nullableSuffix';
-  }
-
-  return type.getDisplayString();
-}
-
-String? _visibleElementReference(Element expected, LibraryElement? library) {
-  final name = expected.name;
-  if (name == null || library == null) {
-    return null;
-  }
-
-  for (final fragment in library.fragments) {
-    final result = fragment.scope.lookup(name).getter;
-    if (_isSameElement(result, expected)) {
-      return name;
-    }
-  }
-
-  for (final fragment in library.fragments) {
-    for (final prefix in fragment.prefixes) {
-      final result = prefix.scope.lookup(name).getter;
-      if (_isSameElement(result, expected)) {
-        final prefixName = prefix.name;
-        if (prefixName != null) {
-          return '$prefixName.$name';
-        }
-      }
-    }
-  }
-
-  return null;
-}
-
-bool _isSameElement(Element? left, Element right) =>
-    left?.baseElement == right.baseElement;
 
 /// Factory-function parameters split between the user-visible wrapper
 /// constructor params and the optional injected `BuildContext`.

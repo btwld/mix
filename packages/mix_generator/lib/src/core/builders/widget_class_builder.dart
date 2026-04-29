@@ -50,7 +50,7 @@ String buildWidgetClass({
   return buffer.toString();
 }
 
-Field _buildField(String name, String typeCode) => Field(
+Field _buildField(String name, String typeCode) => .new(
   (f) => f
     ..name = name
     ..type = refer(typeCode)
@@ -84,7 +84,7 @@ Constructor _buildConstructor({required List<ParameterSpec> allParameters}) {
   );
 }
 
-Parameter _parameter(ParameterSpec parameter) => Parameter((p) {
+Parameter _parameter(ParameterSpec parameter) => .new((p) {
   p
     ..name = parameter.name
     ..toThis = true
@@ -101,6 +101,17 @@ Method _buildBuildMethod({
   required ResolvedWidgetRenderer resolvedRenderer,
   required FactoryParameters factoryParameters,
 }) {
+  final styleSource = target.factoryElement?.name ?? target.sourceName;
+  final styleExpression = target.factoryElement != null
+      ? '$styleSource(${_factoryInvocationArguments(factoryParameters)})'
+      : styleSource;
+
+  final dispatch = _emitDirectWidgetCall(
+    widgetReference: resolvedRenderer.widgetReference,
+    widgetParameters: resolvedRenderer.parameters,
+    styleArgument: styleExpression,
+  );
+
   return Method(
     (m) => m
       ..annotations.add(refer('override'))
@@ -113,34 +124,8 @@ Method _buildBuildMethod({
             ..type = refer('BuildContext'),
         ),
       )
-      ..body = _buildMethodBody(
-        target: target,
-        resolvedRenderer: resolvedRenderer,
-        factoryParameters: factoryParameters,
-      ),
+      ..body = Code('return $dispatch;'),
   );
-}
-
-Code _buildMethodBody({
-  required AnnotatedTarget target,
-  required ResolvedWidgetRenderer resolvedRenderer,
-  required FactoryParameters factoryParameters,
-}) {
-  final styleSource = target.factoryElement?.name ?? target.sourceName;
-  final styleExpression = target.factoryElement != null
-      ? '$styleSource(${_factoryInvocationArguments(factoryParameters)})'
-      : styleSource;
-
-  final dispatch = _emitDirectWidgetCall(
-    widgetReference: resolvedRenderer.widgetReference,
-    widgetParameters: resolvedRenderer.parameters,
-    styleArgument: styleExpression,
-  );
-
-  final buffer = StringBuffer();
-  buffer.writeln('return $dispatch;');
-
-  return Code(buffer.toString());
 }
 
 String _emitDirectWidgetCall({

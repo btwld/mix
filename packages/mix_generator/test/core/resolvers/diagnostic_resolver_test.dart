@@ -5,7 +5,7 @@ import 'package:test/test.dart';
 import '../test_helpers.dart';
 
 void main() {
-  group('DiagnosticResolver', () {
+  group('diagnostic_resolver', () {
     group('generateSpecDiagnosticCode', () {
       test('generates ColorProperty for color fields', () {
         final field = createTestFieldModel(
@@ -15,7 +15,7 @@ void main() {
         );
 
         expect(
-          diagnosticResolver.generateSpecDiagnosticCode(field),
+          generateSpecDiagnosticCode(field),
           equals("ColorProperty('color', color)"),
         );
       });
@@ -28,7 +28,7 @@ void main() {
         );
 
         expect(
-          diagnosticResolver.generateSpecDiagnosticCode(field),
+          generateSpecDiagnosticCode(field),
           equals("DoubleProperty('size', size)"),
         );
       });
@@ -41,7 +41,7 @@ void main() {
         );
 
         expect(
-          diagnosticResolver.generateSpecDiagnosticCode(field),
+          generateSpecDiagnosticCode(field),
           equals("IntProperty('maxLines', maxLines)"),
         );
       });
@@ -54,7 +54,7 @@ void main() {
         );
 
         expect(
-          diagnosticResolver.generateSpecDiagnosticCode(field),
+          generateSpecDiagnosticCode(field),
           equals("StringProperty('label', label)"),
         );
       });
@@ -67,7 +67,7 @@ void main() {
         );
 
         expect(
-          diagnosticResolver.generateSpecDiagnosticCode(field),
+          generateSpecDiagnosticCode(field),
           equals("EnumProperty<Clip>('clipBehavior', clipBehavior)"),
         );
       });
@@ -81,7 +81,7 @@ void main() {
         );
 
         expect(
-          diagnosticResolver.generateSpecDiagnosticCode(field),
+          generateSpecDiagnosticCode(field),
           equals(
             "FlagProperty('softWrap', value: softWrap, ifTrue: 'wrapping at word boundaries')",
           ),
@@ -98,7 +98,7 @@ void main() {
           );
 
           expect(
-            diagnosticResolver.generateSpecDiagnosticCode(field),
+            generateSpecDiagnosticCode(field),
             equals("DiagnosticsProperty('softWrap', softWrap)"),
           );
         },
@@ -114,7 +114,7 @@ void main() {
         );
 
         expect(
-          diagnosticResolver.generateSpecDiagnosticCode(field),
+          generateSpecDiagnosticCode(field),
           equals("IterableProperty<Shadow>('shadows', shadows)"),
         );
       });
@@ -130,7 +130,7 @@ void main() {
         );
 
         expect(
-          diagnosticResolver.generateSpecDiagnosticCode(field),
+          generateSpecDiagnosticCode(field),
           equals("IterableProperty<String>('directives', textDirectives)"),
         );
       });
@@ -146,7 +146,7 @@ void main() {
           );
 
           expect(
-            diagnosticResolver.generateSpecDiagnosticCode(field),
+            generateSpecDiagnosticCode(field),
             equals("IterableProperty<Object>('items', items)"),
           );
         },
@@ -160,15 +160,9 @@ void main() {
         );
 
         expect(
-          diagnosticResolver.generateSpecDiagnosticCode(field),
+          generateSpecDiagnosticCode(field),
           equals("DiagnosticsProperty('alignment', alignment)"),
         );
-      });
-    });
-
-    group('diagnosticResolver instance', () {
-      test('is accessible as const', () {
-        expect(diagnosticResolver, isA<DiagnosticResolver>());
       });
     });
   });

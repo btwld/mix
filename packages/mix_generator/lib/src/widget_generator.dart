@@ -31,6 +31,7 @@ import 'package:source_gen/source_gen.dart';
 import 'core/builders/widget_class_builder.dart';
 import 'core/checkers.dart';
 import 'core/errors.dart';
+import 'core/helpers/type_hierarchy.dart';
 import 'core/models/widget_target.dart';
 import 'core/resolvers/widget_builder_resolver.dart';
 
@@ -62,7 +63,7 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
       generatedName: generatedName,
     );
 
-    final resolvedRenderer = await resolveWidgetRenderer(
+    final resolvedRenderer = resolveWidgetRenderer(
       target: target,
       element: element,
     );
@@ -239,16 +240,7 @@ InterfaceType _extractStylerType(DartType type, Element element) {
 }
 
 InterfaceType? _findStyleSupertype(InterfaceType type) {
-  InterfaceType? current = type;
-  while (current != null) {
-    if (styleChecker.isExactlyType(current)) {
-      return current;
-    }
-
-    current = current.superclass;
-  }
-
-  return null;
+  return findSupertypeMatching(type, styleChecker);
 }
 
 DartType _extractSpecType(InterfaceType stylerType, Element element) {

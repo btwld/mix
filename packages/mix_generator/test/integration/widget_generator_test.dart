@@ -419,6 +419,229 @@ ButtonStyler primaryButtonStyle({Color color = Colors.blue}) {
       expect(output, contains('child: child'));
     });
 
+    test('rejects abstract renderer classes', () async {
+      const source = r'''
+library input;
+
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+
+part 'input.g.dart';
+
+abstract class AbstractButton extends Widget {
+  const AbstractButton();
+}
+
+@MixWidgetRenderer(AbstractButton)
+class CustomSpec extends Spec<CustomSpec> {
+  const CustomSpec();
+}
+
+class CustomStyle extends Style<CustomSpec> {
+  const CustomStyle();
+
+  CustomStyle merge(CustomStyle? other) => this;
+}
+
+@MixWidget()
+final customStyle = CustomStyle();
+''';
+
+      final logs = await runMixWidgetWithLogs(source);
+
+      expect(
+        _severeMessages(logs),
+        contains('must reference a concrete widget class'),
+      );
+    });
+
+    test('rejects renderers whose key parameter is not Key?', () async {
+      const source = r'''
+library input;
+
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+
+part 'input.g.dart';
+
+class WrongKeyWidget extends Widget {
+  final String? key;
+  final Style<CustomSpec> style;
+
+  const WrongKeyWidget({this.key, required this.style});
+}
+
+@MixWidgetRenderer(WrongKeyWidget)
+class CustomSpec extends Spec<CustomSpec> {
+  const CustomSpec();
+}
+
+class CustomStyle extends Style<CustomSpec> {
+  const CustomStyle();
+
+  CustomStyle merge(CustomStyle? other) => this;
+}
+
+@MixWidget()
+final customStyle = CustomStyle();
+''';
+
+      final logs = await runMixWidgetWithLogs(source);
+
+      expect(_severeMessages(logs), contains('must be `Key?`'));
+    });
+
+    test(
+      'rejects renderer parameter defaults that reference invisible identifiers',
+      () async {
+        const source = r'''
+library input;
+
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+
+import 'banner_renderer.dart';
+
+part 'input.g.dart';
+
+class BannerStyle extends Style<BannerSpec> {
+  const BannerStyle();
+
+  BannerStyle merge(BannerStyle? other) => this;
+}
+
+@MixWidget()
+final bannerStyle = BannerStyle();
+''';
+
+        final logs = await runMixWidgetWithLogs(
+          source,
+          extraSources: {
+            'mix_generator|lib/banner_renderer.dart': r'''
+library banner_renderer;
+
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+
+import 'hidden_defaults.dart';
+
+class Banner extends Widget {
+  final Key? key;
+  final Style<BannerSpec> style;
+  final String label;
+
+  const Banner({this.key, required this.style, this.label = defaultLabel});
+}
+
+@MixWidgetRenderer(Banner)
+class BannerSpec extends Spec<BannerSpec> {
+  const BannerSpec();
+}
+''',
+            'mix_generator|lib/hidden_defaults.dart': r'''
+library hidden_defaults;
+
+const defaultLabel = 'banner';
+''',
+          },
+        );
+
+        expect(
+          _severeMessages(logs),
+          contains('references `defaultLabel`'),
+        );
+      },
+    );
+
+    test('forwards renderer constructor context parameters via this.context',
+        () async {
+      const source = r'''
+library input;
+
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+
+part 'input.g.dart';
+
+class ContextWidget extends Widget {
+  final Key? key;
+  final Style<ContextSpec> style;
+  final String context;
+
+  const ContextWidget({
+    this.key,
+    required this.style,
+    required this.context,
+  });
+}
+
+@MixWidgetRenderer(ContextWidget)
+class ContextSpec extends Spec<ContextSpec> {
+  const ContextSpec();
+}
+
+class ContextStyler extends Style<ContextSpec> {
+  const ContextStyler();
+
+  ContextStyler merge(ContextStyler? other) => this;
+}
+
+@MixWidget()
+final contextStyle = ContextStyler();
+''';
+
+      final output = await generateMixWidgetOutput(inputSource: source);
+
+      expect(output, contains('final String context;'));
+      expect(output, contains('context: this.context'));
+    });
+
+    test('ignores annotations not from the mix_annotations package', () async {
+      const source = r'''
+library input;
+
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+import 'package:mix_annotations/mix_annotations.dart' as mix_annotations;
+
+part 'input.g.dart';
+
+class MixWidgetRenderer {
+  final Type widget;
+  const MixWidgetRenderer(this.widget);
+}
+
+@MixWidgetRenderer(Box)
+class CustomSpec extends Spec<CustomSpec> {
+  const CustomSpec();
+}
+
+class CustomStyle extends Style<CustomSpec> {
+  const CustomStyle();
+
+  CustomStyle merge(CustomStyle? other) => this;
+}
+
+@mix_annotations.MixWidget()
+final customStyle = CustomStyle();
+''';
+
+      final logs = await runMixWidgetWithLogs(source);
+
+      expect(
+        _severeMessages(logs),
+        allOf(
+          contains('No renderer found for CustomSpec'),
+          contains('@MixWidgetRenderer'),
+        ),
+      );
+    });
+
     test('rejects renderer types that are not widgets', () async {
       const source = r'''
 library input;

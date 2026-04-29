@@ -8,12 +8,25 @@ part of 'input.dart';
 // **************************************************************************
 
 class DefaultCard extends StatelessWidget {
-  const DefaultCard({super.key, this.child});
+  const DefaultCard({
+    super.key,
+    this.compact = false,
+    this.padding = 16,
+    this.child,
+  });
+
+  final bool compact;
+
+  final int padding;
 
   final Widget? child;
 
   @override
   Widget build(BuildContext context) {
-    return Box(key: key, style: defaultCardStyle, child: child);
+    return Box(
+      key: key,
+      style: defaultCardStyle(compact: compact, padding: padding),
+      child: child,
+    );
   }
 }

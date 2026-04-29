@@ -4,8 +4,6 @@ import 'package:mix_generator/src/core/models/annotation_config.dart';
 import 'package:mix_generator/src/core/models/styler_field_model.dart';
 import 'package:test/test.dart';
 
-import '../test_helpers.dart';
-
 void main() {
   // Default config that generates all methods
   const defaultConfig = MixableStylerAnnotationConfig();
@@ -57,16 +55,11 @@ void main() {
             StylerFieldModel(
               name: 'gap',
               declaredName: r'$gap',
-              dartType: FakeDartType('double?', true),
-              element: FakeFieldElement('gap'),
-              isNullable: true,
-              innerTypeName: 'double',
-              isWrappedInProp: false,
+              fieldTypeCode: 'double?',
               isRawList: false,
               effectivePublicParamType: 'double',
               generateSetter: true,
               setterName: 'gap',
-              hasMixType: false,
             ),
           ],
           config: defaultConfig,
