@@ -364,8 +364,8 @@ void _validateParameterDefaultVisible({
       'Renderer `$rendererName` parameter `$parameterName` has default '
       'value `$defaultValueCode`, where `${issue.identifier}` resolves to a '
       'different declaration in the annotated library than in the renderer '
-      'library. Re-export `${issue.identifier}` from the renderer library, '
-      'or rename the conflicting symbol.',
+      'library. Rename the conflicting symbol in the annotated library, or '
+      "restructure imports so it sees the renderer's `${issue.identifier}`.",
     );
   }
 
