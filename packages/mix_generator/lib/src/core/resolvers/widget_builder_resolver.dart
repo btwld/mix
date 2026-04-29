@@ -348,28 +348,41 @@ void _validateParameterDefaultVisible({
     return;
   }
 
-  final hiddenName = _firstInvisibleDefaultName(
+  final issue = _firstDefaultVisibilityIssue(
     defaultValueCode,
-    element.library!,
+    annotatedLibrary: element.library!,
+    rendererLibrary: parameter.library!,
   );
-  if (hiddenName == null) {
+  if (issue == null) {
     return;
   }
 
   final parameterName = parameter.name ?? '<unknown>';
+  if (issue.shadowed) {
+    fail(
+      element,
+      'Renderer `$rendererName` parameter `$parameterName` has default '
+      'value `$defaultValueCode`, where `${issue.identifier}` resolves to a '
+      'different declaration in the annotated library than in the renderer '
+      'library. Re-export `${issue.identifier}` from the renderer library, '
+      'or rename the conflicting symbol.',
+    );
+  }
+
   fail(
     element,
     'Renderer `$rendererName` parameter `$parameterName` has default '
-    'value `$defaultValueCode`, which references `$hiddenName` that is not '
-    'visible to the annotated library. Import or re-export `$hiddenName` '
-    'where @MixWidget is used.',
+    'value `$defaultValueCode`, which references `${issue.identifier}` that '
+    'is not visible to the annotated library. Import or re-export '
+    '`${issue.identifier}` where @MixWidget is used.',
   );
 }
 
-String? _firstInvisibleDefaultName(
-  String defaultValueCode,
-  LibraryElement library,
-) {
+({String identifier, bool shadowed})? _firstDefaultVisibilityIssue(
+  String defaultValueCode, {
+  required LibraryElement annotatedLibrary,
+  required LibraryElement rendererLibrary,
+}) {
   final result = parseString(
     content: 'dynamic __mix_default__ = $defaultValueCode;',
     throwIfDiagnostics: false,
@@ -386,30 +399,46 @@ String? _firstInvisibleDefaultName(
   initializer.accept(collector);
 
   for (final identifier in collector.identifiers) {
-    var isVisible = false;
-    for (final fragment in library.fragments) {
-      final lookup = fragment.scope.lookup(identifier);
-      if (lookup.getter != null || lookup.setter != null) {
-        isVisible = true;
-        break;
-      }
-      for (final prefix in fragment.prefixes) {
-        if (prefix.name == identifier) {
-          isVisible = true;
-          break;
-        }
-      }
-      if (isVisible) {
-        break;
-      }
+    final annotatedElement = _resolveTopLevel(annotatedLibrary, identifier);
+    final hasAnnotatedPrefix = _hasPrefixNamed(annotatedLibrary, identifier);
+
+    if (annotatedElement == null && !hasAnnotatedPrefix) {
+      return (identifier: identifier, shadowed: false);
     }
 
-    if (!isVisible) {
-      return identifier;
+    final rendererElement = _resolveTopLevel(rendererLibrary, identifier);
+    if (annotatedElement != null &&
+        rendererElement != null &&
+        annotatedElement.baseElement != rendererElement.baseElement) {
+      return (identifier: identifier, shadowed: true);
     }
   }
 
   return null;
+}
+
+Element? _resolveTopLevel(LibraryElement library, String identifier) {
+  for (final fragment in library.fragments) {
+    final lookup = fragment.scope.lookup(identifier);
+    final element = lookup.getter ?? lookup.setter;
+    if (element != null) {
+      return element;
+    }
+  }
+
+  return null;
+}
+
+bool _hasPrefixNamed(LibraryElement library, String identifier) {
+  for (final fragment in library.fragments) {
+    for (final prefix in fragment.prefixes) {
+      if (prefix.name == identifier) {
+        return true;
+      }
+    }
+  }
+
+  return false;
 }
 
 /// Collects identifiers used as the head of an expression — direct references,

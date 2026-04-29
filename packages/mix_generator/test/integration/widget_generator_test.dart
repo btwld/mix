@@ -557,6 +557,68 @@ const defaultLabel = 'banner';
       },
     );
 
+    test(
+      'rejects renderer parameter defaults shadowed by a same-named '
+      'declaration in the annotated library',
+      () async {
+        const source = r'''
+library input;
+
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+
+import 'banner_renderer.dart';
+
+part 'input.g.dart';
+
+const defaultLabel = 'wrong banner';
+
+class BannerStyle extends Style<BannerSpec> {
+  const BannerStyle();
+
+  BannerStyle merge(BannerStyle? other) => this;
+}
+
+@MixWidget()
+final bannerStyle = BannerStyle();
+''';
+
+        final logs = await runMixWidgetWithLogs(
+          source,
+          extraSources: {
+            'mix_generator|lib/banner_renderer.dart': r'''
+library banner_renderer;
+
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+
+const defaultLabel = 'renderer banner';
+
+class Banner extends Widget {
+  final Key? key;
+  final Style<BannerSpec> style;
+  final String label;
+
+  const Banner({this.key, required this.style, this.label = defaultLabel});
+}
+
+@MixWidgetRenderer(Banner)
+class BannerSpec extends Spec<BannerSpec> {
+  const BannerSpec();
+}
+''',
+          },
+        );
+
+        expect(
+          _severeMessages(logs),
+          contains('resolves to a different declaration'),
+        );
+      },
+    );
+
     test('forwards renderer constructor context parameters via this.context',
         () async {
       const source = r'''
