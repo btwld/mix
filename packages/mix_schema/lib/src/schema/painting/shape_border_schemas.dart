@@ -2,7 +2,7 @@ import 'package:ack/ack.dart';
 import 'package:mix/mix.dart';
 
 import '../../core/schema_wire_types.dart';
-import '../discriminated_branch_registry.dart';
+import '../discriminated_schema_builder.dart';
 
 final AckSchema<LinearBorderEdgeMix> linearBorderEdgeSchema =
     Ack.object({
@@ -21,22 +21,20 @@ AckSchema<ShapeBorderMix> buildShapeBorderSchema({
   required AckSchema<BorderSideMix> borderSideSchema,
   required AckSchema<BorderRadiusGeometryMix> borderRadiusSchema,
 }) {
-  final registry = DiscriminatedBranchRegistry<ShapeBorderMix>(
+  return buildDiscriminatedSchema<ShapeBorderMix>(
     discriminatorKey: 'type',
+    branches: [
+      for (final type in SchemaShapeBorder.values)
+        discriminatedBranch<ShapeBorderMix, ShapeBorderMix>(
+          type: type.wireValue,
+          schema: _buildShapeBorderBranch(
+            type: type,
+            borderSideSchema: borderSideSchema,
+            borderRadiusSchema: borderRadiusSchema,
+          ),
+        ),
+    ],
   );
-
-  for (final type in SchemaShapeBorder.values) {
-    registry.register(
-      type.wireValue,
-      _buildShapeBorderBranch(
-        type: type,
-        borderSideSchema: borderSideSchema,
-        borderRadiusSchema: borderRadiusSchema,
-      ),
-    );
-  }
-
-  return registry.freeze();
 }
 
 AckSchema<ShapeBorderMix> _buildShapeBorderBranch({

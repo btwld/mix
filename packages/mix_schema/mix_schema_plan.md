@@ -1,23 +1,45 @@
 # mix_schema v1 Redesign Plan
 
-**Version:** 15.1.0
-**Date:** 2026-03-06  
+**Version:** 15.1.1
+**Date:** 2026-04-17  
 **Owner:** Mix 2.0 team
 
 ## 1) Purpose
 
-`mix_schema` decodes external UI payloads into Mix runtime styling objects
- through a strict, deterministic pipeline:
+`mix_schema` defines a durable payload contract for building Mix interfaces.
+It exposes Ack-backed validation, runtime decode, and minimal metadata export
+for future producers and tooling through a strict, deterministic pipeline:
 
 `payload -> Ack validation -> transform -> Mix types`
 
-The redesign keeps the package decode-only and keeps the built-in styler set
- fixed, but replaces the internal schema architecture with a cleaner
- catalog-backed design.
+The redesign keeps the built-in styler set fixed, but shifts the package from
+decode-first framing toward a contract-first surface with a clearer split
+between root contract APIs and producer-side payload helpers.
 
 ## 2) Contract Decisions
 
-- The package remains decode-only.
+- The package is contract-first, not decode-only.
+- `MixSchemaContract` is the primary contract-facing surface for validation,
+  decode, and metadata export.
+- `MixSchemaExportMetadata` should expose stable contract vocabularies first:
+  stylers, modifiers, variants, compound-condition types, metadata field
+  scopes, per-styler field ownership, and built-in registry scopes, before any
+  fuller Ack-derived constraint-level or JSON Schema export.
+- Current export metadata is intentionally vocabulary-first. It is not yet a
+  full producer-ready constraint artifact for external generators or AI
+  tooling.
+- `MixSchemaContractBuilder` is the preferred custom-registration entry point
+  for composing frozen contracts.
+- Custom top-level styler registration currently declares both the `AckSchema`
+  and the exported field list. Treat that as a temporary metadata limitation
+  until richer Ack-derived export becomes available.
+- `MixSchemaDecoder` remains a runtime convenience wrapper around
+  `MixSchemaContract`, typically via `MixSchemaDecoder.fromContract(...)`.
+- `encode.dart` remains an intentionally limited producer surface for wire
+  identifiers and low-level payload helpers, not a full contract builder.
+- Producer-side wire identifiers and payload helpers live in `encode.dart`,
+  while richer producer discovery should come from `MixSchemaContract`
+  export metadata rather than the root contract export.
 - The built-in stylers remain:
   - `box`
   - `text`
@@ -27,14 +49,20 @@ The redesign keeps the package decode-only and keeps the built-in styler set
   - `stack`
   - `flex_box`
   - `stack_box`
-- The public package surface remains intentionally small:
+- The root package surface remains intentionally small:
+  - `MixSchemaContractBuilder`
+  - `MixSchemaContract`
   - `MixSchemaDecoder`
+  - `MixSchemaValidationResult`
+  - `MixSchemaExportMetadata`
   - `RegistryBuilder`
   - `FrozenRegistry`
-  - `StylerRegistry`
   - `MixSchemaScope`
   - decode result types
   - error types and codes
+- `StylerRegistry` remains a lower-level internal seam, but it is no longer
+  part of the root contract export and should not be the contract-facing
+  construction path.
 - The redesign replaces the previous plan in place.
 - No backward-compat shim is added for old payload shapes introduced during
   exploratory implementation.
@@ -107,8 +135,9 @@ Rules:
 - Compound condition leaves reuse the same wire ids and shared internal leaf
   definitions as their top-level context-variant counterparts; there is no
   separate condition enum.
-- Compound variant styles still use the active styler's fields-only schema, so
-  nested `animation`, `modifiers`, and `variants` remain rejected there.
+- Compound variant styles use the active styler fields plus nested
+  variant-style metadata. Nested `modifiers` and `modifierOrder` are allowed,
+  while nested `animation` and recursive `variants` remain rejected there.
 - Condition trees support only context-capable leaves:
   - `widget_state`
   - `enabled`
@@ -237,7 +266,7 @@ Rules:
 
 - standalone stylers declare their field map once
 - one helper composes:
-  - fields-only schema
+  - variant-style schema with styler fields plus nested variant-style metadata
   - full schema with metadata
 - composite stylers remain explicit where key collisions exist
 - no built-in file may duplicate the same `Ack.object({...})` field list twice
@@ -279,8 +308,10 @@ The discriminated branch registry stays as a dedicated internal helper under
 ### Variants
 
 - Variants remain a discriminated list.
-- Variant nested styles validate against the fields-only schema for the active
-  styler family.
+- Variant nested styles validate against the active styler fields plus
+  `modifiers` and `modifierOrder`.
+- Variant nested styles still reject nested `animation` and recursive
+  `variants`.
 - `context_all_of` composes multiple context conditions into a single runtime
   variant while preserving Mix's widget-state priority tier.
 - Compound condition parsing is recursive, but the public style payload remains
@@ -407,7 +438,8 @@ For every built-in styler:
 
 ## 12) Guardrails
 
-- No encode path.
+- No full encoder or fluent payload builder. Keep `encode.dart` limited to
+  stable wire identifiers and small payload-fragment helpers.
 - No fluent API work.
 - No factory-compatibility work.
 - No migration shim for the old `modifier` payload shape.

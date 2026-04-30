@@ -1,9 +1,9 @@
-import 'package:ack/ack.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
 import '../mix_schema_catalog.dart';
 import '../styler_definition.dart';
+import 'built_in_field_groups.dart';
 
 StylerDefinition<FlexBoxSpec, FlexBoxStyler> buildFlexBoxStylerDefinition(
   MixSchemaCatalog catalog,
@@ -11,26 +11,7 @@ StylerDefinition<FlexBoxSpec, FlexBoxStyler> buildFlexBoxStylerDefinition(
   return StylerDefinition(
     type: .flexBox,
     emptyStyle: FlexBoxStyler(),
-    fields: {
-      'decoration': catalog.decoration.optional(),
-      'foregroundDecoration': catalog.decoration.optional(),
-      'padding': catalog.edgeInsetsGeometry.optional(),
-      'margin': catalog.edgeInsetsGeometry.optional(),
-      'alignment': catalog.alignment.optional(),
-      'constraints': catalog.boxConstraints.optional(),
-      'transform': catalog.matrix4.optional(),
-      'transformAlignment': catalog.alignment.optional(),
-      'clipBehavior': catalog.clip.optional(),
-      'direction': catalog.axis.optional(),
-      'mainAxisAlignment': catalog.mainAxisAlignment.optional(),
-      'crossAxisAlignment': catalog.crossAxisAlignment.optional(),
-      'mainAxisSize': catalog.mainAxisSize.optional(),
-      'verticalDirection': catalog.verticalDirection.optional(),
-      'textDirection': catalog.textDirection.optional(),
-      'textBaseline': catalog.textBaseline.optional(),
-      'flexClipBehavior': catalog.clip.optional(),
-      'spacing': Ack.double().optional(),
-    },
+    fields: buildFlexBoxStylerFields(catalog),
     build: (data, {animation, modifier, variants}) {
       return FlexBoxStyler(
         decoration: data['decoration'] as DecorationMix?,

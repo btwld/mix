@@ -6,15 +6,15 @@ import 'package:mix_schema/mix_schema.dart';
 void main() {
   group('compound context variants', () {
     test('decodes context_all_of and canonicalizes condition ordering', () {
-      final decoder = MixSchemaDecoder.builtIn();
+      final contract = MixSchemaContract.builtIn();
 
-      final firstResult = decoder.decode(
+      final firstResult = contract.decode(
         _boxPayloadWithConditions([
           {'type': 'context_breakpoint', 'minWidth': 768.0},
           {'type': 'widget_state', 'state': 'hovered'},
         ]),
       );
-      final secondResult = decoder.decode(
+      final secondResult = contract.decode(
         _boxPayloadWithConditions([
           {'type': 'widget_state', 'state': 'hovered'},
           {'type': 'context_breakpoint', 'minWidth': 768.0},
@@ -56,9 +56,9 @@ void main() {
     test(
       'flattens nested context_all_of conditions into one canonical key',
       () {
-        final decoder = MixSchemaDecoder.builtIn();
+        final contract = MixSchemaContract.builtIn();
 
-        final nestedResult = decoder.decode(
+        final nestedResult = contract.decode(
           _boxPayloadWithConditions([
             {
               'type': 'context_all_of',
@@ -70,7 +70,7 @@ void main() {
             {'type': 'widget_state', 'state': 'hovered'},
           ]),
         );
-        final flatResult = decoder.decode(
+        final flatResult = contract.decode(
           _boxPayloadWithConditions([
             {'type': 'context_brightness', 'brightness': 'dark'},
             {'type': 'widget_state', 'state': 'hovered'},
@@ -109,9 +109,9 @@ void main() {
       },
     );
 
-    test('rejects invalid compound condition payloads with stable paths', () {
-      final decoder = MixSchemaDecoder.builtIn();
-      final result = decoder.decode({
+    test('rejects unknown compound condition types with stable paths', () {
+      final contract = MixSchemaContract.builtIn();
+      final result = contract.decode({
         'type': 'box',
         'variants': [
           {
@@ -119,7 +119,6 @@ void main() {
             'conditions': [
               {'type': 'named', 'name': 'primary'},
               {'type': 'context_variant_builder', 'id': 'builder'},
-              {'type': 'context_brightness', 'brightness': 'missing'},
             ],
             'style': _widthStyle(200),
           },
@@ -132,10 +131,77 @@ void main() {
         containsAll(<(MixSchemaErrorCode, String)>[
           (MixSchemaErrorCode.unknownType, '#/variants/0/conditions/0/type'),
           (MixSchemaErrorCode.unknownType, '#/variants/0/conditions/1/type'),
-          (
-            MixSchemaErrorCode.invalidEnum,
-            '#/variants/0/conditions/2/brightness',
-          ),
+        ]),
+      );
+    });
+
+    test('rejects non-object compound condition items with stable paths', () {
+      final contract = MixSchemaContract.builtIn();
+      final result = contract.decode({
+        'type': 'box',
+        'variants': [
+          {
+            'type': 'context_all_of',
+            'conditions': [
+              'hovered',
+              {'type': 'widget_state', 'state': 'hovered'},
+            ],
+            'style': _widthStyle(200),
+          },
+        ],
+      });
+
+      expect(result.ok, isFalse);
+      expect(result.errors.single.code, MixSchemaErrorCode.typeMismatch);
+      expect(result.errors.single.path, '#/variants/0/conditions/0');
+    });
+
+    test('rejects missing condition types with stable paths', () {
+      final contract = MixSchemaContract.builtIn();
+      final result = contract.decode({
+        'type': 'box',
+        'variants': [
+          {
+            'type': 'context_all_of',
+            'conditions': [
+              {'state': 'hovered'},
+              {'type': 'widget_state', 'state': 'hovered'},
+            ],
+            'style': _widthStyle(200),
+          },
+        ],
+      });
+
+      expect(result.ok, isFalse);
+      expect(
+        result.errors.map((error) => (error.code, error.path)).toList(),
+        containsAll(<(MixSchemaErrorCode, String)>[
+          (MixSchemaErrorCode.requiredField, '#/variants/0/conditions/0/type'),
+        ]),
+      );
+    });
+
+    test('rejects non-string condition types with stable paths', () {
+      final contract = MixSchemaContract.builtIn();
+      final result = contract.decode({
+        'type': 'box',
+        'variants': [
+          {
+            'type': 'context_all_of',
+            'conditions': [
+              {'type': 7},
+              {'type': 'widget_state', 'state': 'hovered'},
+            ],
+            'style': _widthStyle(200),
+          },
+        ],
+      });
+
+      expect(result.ok, isFalse);
+      expect(
+        result.errors.map((error) => (error.code, error.path)).toList(),
+        containsAll(<(MixSchemaErrorCode, String)>[
+          (MixSchemaErrorCode.unknownType, '#/variants/0/conditions/0/type'),
         ]),
       );
     });
@@ -143,8 +209,8 @@ void main() {
     test(
       'allows modifiers but rejects other metadata inside compound styles',
       () {
-        final decoder = MixSchemaDecoder.builtIn();
-        final result = decoder.decode({
+        final contract = MixSchemaContract.builtIn();
+        final result = contract.decode({
           'type': 'box',
           'modifiers': [
             {'type': 'opacity', 'value': 0.9},
@@ -189,10 +255,10 @@ void main() {
     );
 
     test('requires at least two conditions', () {
-      final decoder = MixSchemaDecoder.builtIn();
+      final contract = MixSchemaContract.builtIn();
 
-      final emptyResult = decoder.decode(_boxPayloadWithConditions([]));
-      final singleResult = decoder.decode(
+      final emptyResult = contract.decode(_boxPayloadWithConditions([]));
+      final singleResult = contract.decode(
         _boxPayloadWithConditions([
           {'type': 'widget_state', 'state': 'hovered'},
         ]),
@@ -216,16 +282,16 @@ void main() {
     test(
       'accepts sparse breakpoint payloads at top level and inside conditions',
       () {
-        final decoder = MixSchemaDecoder.builtIn();
+        final contract = MixSchemaContract.builtIn();
 
-        final topLevelResult = decoder.decode(
+        final topLevelResult = contract.decode(
           _boxPayloadWithVariant({
             'type': 'context_breakpoint',
             'maxWidth': 640.0,
             'style': _widthStyle(120),
           }),
         );
-        final compoundResult = decoder.decode(
+        final compoundResult = contract.decode(
           _boxPayloadWithConditions([
             {'type': 'context_breakpoint', 'maxWidth': 640.0},
             {'type': 'widget_state', 'state': 'hovered'},
@@ -258,16 +324,16 @@ void main() {
     test(
       'rejects not(disabled) the same way at top level and inside conditions',
       () {
-        final decoder = MixSchemaDecoder.builtIn();
+        final contract = MixSchemaContract.builtIn();
 
-        final topLevelResult = decoder.decode(
+        final topLevelResult = contract.decode(
           _boxPayloadWithVariant({
             'type': 'context_not_widget_state',
             'state': 'disabled',
             'style': _widthStyle(120),
           }),
         );
-        final compoundResult = decoder.decode(
+        final compoundResult = contract.decode(
           _boxPayloadWithConditions([
             {'type': 'context_not_widget_state', 'state': 'disabled'},
             {'type': 'widget_state', 'state': 'hovered'},
@@ -292,16 +358,16 @@ void main() {
     test(
       'surfaces matching invalid enum errors at top level and inside conditions',
       () {
-        final decoder = MixSchemaDecoder.builtIn();
+        final contract = MixSchemaContract.builtIn();
 
-        final topLevelResult = decoder.decode(
+        final topLevelResult = contract.decode(
           _boxPayloadWithVariant({
             'type': 'widget_state',
             'state': 'missing',
             'style': _widthStyle(120),
           }),
         );
-        final compoundResult = decoder.decode(
+        final compoundResult = contract.decode(
           _boxPayloadWithConditions([
             {'type': 'widget_state', 'state': 'missing'},
             {'type': 'enabled'},
@@ -324,8 +390,8 @@ void main() {
     testWidgets('applies compound style only when every condition is active', (
       tester,
     ) async {
-      final decoder = MixSchemaDecoder.builtIn();
-      final result = decoder.decode(
+      final contract = MixSchemaContract.builtIn();
+      final result = contract.decode(
         _boxPayloadWithConditions([
           {'type': 'context_breakpoint', 'minWidth': 768.0},
           {'type': 'widget_state', 'state': 'hovered'},
@@ -367,8 +433,8 @@ void main() {
     testWidgets(
       'compound variants keep widget state precedence with simple variants',
       (tester) async {
-        final decoder = MixSchemaDecoder.builtIn();
-        final result = decoder.decode({
+        final contract = MixSchemaContract.builtIn();
+        final result = contract.decode({
           'type': 'box',
           'variants': [
             {

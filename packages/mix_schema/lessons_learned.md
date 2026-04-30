@@ -121,3 +121,19 @@ intentionally addressed by the 2026-03-06 redesign completion work below.
   scopes into an enum-shaped API.
 - Public behavior tests should use literal wire strings unless the symbol being
   referenced is itself part of the intended public API.
+
+## 2026-04-17 — Follow-up Hygiene
+
+- The plan has to describe the shipped contract, not the earlier simplification
+  story. Once nested variant styles started allowing `modifiers` and
+  `modifierOrder`, the plan needed to say that explicitly.
+- `encode.dart` is a valid producer seam as long as it stays narrow. The real
+  guardrail is "no full encoder/fluent payload builder," not "no encode path."
+- Vocabulary-first export metadata is a good v1 floor, but it is not the same
+  thing as full producer readiness. Constraint-level Ack-derived export is
+  still later work.
+- When custom registration duplicates schema and field ownership, that needs to
+  be called out as a temporary limitation instead of being implied away.
+- Validation gates are part of the contract story. If DCM regresses, the docs
+  should stop calling the package fully complete until that gate is green
+  again.

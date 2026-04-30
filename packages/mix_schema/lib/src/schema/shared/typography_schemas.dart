@@ -4,7 +4,7 @@ import 'package:mix/mix.dart';
 
 import '../../core/json_casts.dart';
 import '../../core/schema_wire_types.dart';
-import '../discriminated_branch_registry.dart';
+import '../discriminated_schema_builder.dart';
 import 'color_schema.dart';
 import 'enum_schemas.dart';
 import 'primitive_schemas.dart';
@@ -150,15 +150,16 @@ final AckSchema<Locale> localeSchema =
     });
 
 AckSchema<TextScaler> buildTextScalerSchema() {
-  final registry = DiscriminatedBranchRegistry<TextScaler>(
+  return buildDiscriminatedSchema<TextScaler>(
     discriminatorKey: 'type',
+    branches: [
+      for (final type in SchemaTextScaler.values)
+        discriminatedBranch<TextScaler, TextScaler>(
+          type: type.wireValue,
+          schema: _buildTextScalerBranch(type),
+        ),
+    ],
   );
-
-  for (final type in SchemaTextScaler.values) {
-    registry.register(type.wireValue, _buildTextScalerBranch(type));
-  }
-
-  return registry.freeze();
 }
 
 AckSchema<TextScaler> _buildTextScalerBranch(SchemaTextScaler type) {

@@ -5,9 +5,8 @@ import 'package:mix/mix.dart';
 import '../../core/mix_schema_scope.dart';
 import '../../core/schema_wire_types.dart';
 import '../../registry/registry_catalog.dart';
-import '../discriminated_branch_registry.dart';
+import '../discriminated_schema_builder.dart';
 import 'context_variant_leaf_schema.dart';
-import 'variant_condition_definition.dart';
 import 'variant_condition_schema.dart';
 
 AckSchema<VariantStyle<S>>
@@ -17,23 +16,23 @@ buildVariantSchema<S extends Spec<S>, T extends Style<S>>({
   required RegistryCatalog registries,
 }) {
   final conditionParser = buildVariantConditionParser();
-  final registry = DiscriminatedBranchRegistry<VariantStyle<S>>(
+
+  return buildDiscriminatedSchema<VariantStyle<S>>(
     discriminatorKey: 'type',
+    branches: [
+      for (final type in SchemaVariant.values)
+        discriminatedBranch<VariantStyle<S>, VariantStyle<S>>(
+          type: type.wireValue,
+          schema: _buildVariantBranch(
+            type: type,
+            styleSchema: styleSchema,
+            emptyStyle: emptyStyle,
+            conditionParser: conditionParser,
+            registries: registries,
+          ),
+        ),
+    ],
   );
-
-  for (final type in SchemaVariant.values) {
-    final AckSchema<VariantStyle<S>> branch = _buildVariantBranch(
-      type: type,
-      styleSchema: styleSchema,
-      emptyStyle: emptyStyle,
-      conditionParser: conditionParser,
-      registries: registries,
-    );
-
-    registry.register(type.wireValue, branch);
-  }
-
-  return registry.freeze();
 }
 
 AckSchema<VariantStyle<S>>
@@ -44,11 +43,16 @@ _buildVariantBranch<S extends Spec<S>, T extends Style<S>>({
   required VariantConditionParser conditionParser,
   required RegistryCatalog registries,
 }) {
-  if (sharedContextVariantLeafTypes.contains(type)) {
-    return buildContextVariantStyleBranch(type: type, styleSchema: styleSchema);
-  }
-
   switch (type) {
+    case .widgetState ||
+        .enabled ||
+        .brightness ||
+        .breakpoint ||
+        .notWidgetState:
+      return buildContextVariantStyleBranch(
+        type: type,
+        styleSchema: styleSchema,
+      );
     case .named:
       return Ack.object({
         'name': Ack.string(),
@@ -63,10 +67,7 @@ _buildVariantBranch<S extends Spec<S>, T extends Style<S>>({
       });
     case .contextAllOf:
       return Ack.object({
-        'conditions': Ack.list(Ack.any()).refine(
-          (conditions) => conditions.length >= 2,
-          message: 'context_all_of requires at least two conditions.',
-        ),
+        'conditions': buildContextConditionListSchema(),
         'style': styleSchema,
       }).transform<VariantStyle<S>>((data) {
         final map = data;
@@ -90,13 +91,5 @@ _buildVariantBranch<S extends Spec<S>, T extends Style<S>>({
 
         return VariantStyle<S>(ContextVariantBuilder<T>(fn), emptyStyle);
       });
-    case .widgetState ||
-        .enabled ||
-        .brightness ||
-        .breakpoint ||
-        .notWidgetState:
-      throw StateError(
-        'Shared context variant type should be handled earlier.',
-      );
   }
 }

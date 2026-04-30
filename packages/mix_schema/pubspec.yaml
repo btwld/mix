@@ -1,5 +1,5 @@
 name: mix_schema
-description: Decode external UI payloads into Mix-powered Flutter UI.
+description: Schema-first contract for validating, decoding, and exporting Mix UI payloads.
 publish_to: none
 version: 0.1.0-dev.0
 repository: https://github.com/btwld/mix/tree/main/packages/mix_schema

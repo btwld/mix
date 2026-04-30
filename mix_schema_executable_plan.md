@@ -6,6 +6,15 @@ tags:
 updated: 2026-02-26
 ---
 
+> Superseded document.
+>
+> This AST/adapter/renderer execution plan is retained for historical context
+> only. It is not the current source of truth for `mix_schema`.
+>
+> Use [packages/mix_schema/mix_schema_plan.md](packages/mix_schema/mix_schema_plan.md)
+> and [CURRENT_GOAL.md](CURRENT_GOAL.md) for the active Ack-backed
+> payload-to-Mix contract direction.
+
 # mix_schema — Implementation Plan
 
 Self-contained blueprint for building the `mix_schema` Dart/Flutter package. An implementing agent needs only this document and access to the Mix 2.0 codebase in this repository (`packages/mix/` and `packages/mix_tailwinds/`).

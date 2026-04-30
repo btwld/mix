@@ -12,7 +12,7 @@ void main() {
         scope: MixSchemaScope.imageProvider,
       )..register('hero', MemoryImage(Uint8List.fromList([0, 0, 0, 0])));
 
-      final decoder = MixSchemaDecoder.builtIn(registries: [images.freeze()]);
+      final contract = MixSchemaContract.builtIn(registries: [images.freeze()]);
 
       final payloads = <String, Map<String, Object?>>{
         'box': {'type': 'box'},
@@ -37,7 +37,7 @@ void main() {
       };
 
       for (final entry in payloads.entries) {
-        final result = decoder.decode(entry.value);
+        final result = contract.decode(entry.value);
 
         expect(result.ok, isTrue, reason: 'Expected ${entry.key} to decode');
         expect(result.value, isA<Object>());
@@ -56,16 +56,16 @@ void main() {
               (_) => BoxStyler(margin: EdgeInsetsMix.all(6)),
             );
 
-        final decoder = MixSchemaDecoder.builtIn(
+        final contract = MixSchemaContract.builtIn(
           registries: [builders.freeze()],
         );
-        final result = decoder.decode({
+        final result = contract.decode({
           'type': 'box',
           'modifiers': [
             {'type': 'blur', 'sigma': 2.0},
             {'type': 'opacity', 'value': 0.4},
           ],
-          'modifierOrder': ['opacity', 'blur', 'missing'],
+          'modifierOrder': ['opacity', 'blur'],
           'variants': [
             {
               'type': 'named',
@@ -133,9 +133,24 @@ void main() {
       },
     );
 
+    test('rejects unknown modifierOrder entries', () {
+      final contract = MixSchemaContract.builtIn();
+      final result = contract.decode({
+        'type': 'box',
+        'modifiers': [
+          {'type': 'opacity', 'value': 0.4},
+        ],
+        'modifierOrder': ['opacity', 'missing'],
+      });
+
+      expect(result.ok, isFalse);
+      expect(result.errors.single.code, MixSchemaErrorCode.invalidEnum);
+      expect(result.errors.single.path, '#/modifierOrder/1');
+    });
+
     test('returns unsupported_value_type for icon payloads', () {
-      final decoder = MixSchemaDecoder.builtIn();
-      final result = decoder.decode({'type': 'icon', 'icon': 'home'});
+      final contract = MixSchemaContract.builtIn();
+      final result = contract.decode({'type': 'icon', 'icon': 'home'});
 
       expect(result.ok, isFalse);
       expect(
@@ -150,8 +165,8 @@ void main() {
         scope: MixSchemaScope.imageProvider,
       )..register('broken', 'not-an-image');
 
-      final decoder = MixSchemaDecoder.builtIn(registries: [images.freeze()]);
-      final result = decoder.decode({'type': 'image', 'image': 'broken'});
+      final contract = MixSchemaContract.builtIn(registries: [images.freeze()]);
+      final result = contract.decode({'type': 'image', 'image': 'broken'});
 
       expect(result.ok, isFalse);
       expect(result.errors.single.code, MixSchemaErrorCode.transformFailed);

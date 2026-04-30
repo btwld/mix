@@ -11,6 +11,14 @@ import 'package:mix_schema/encode.dart'
         payloadEnabledCondition,
         payloadOffset,
         payloadRadius,
+  SchemaBorder,
+  SchemaBorderRadius,
+  SchemaDecoration,
+  SchemaGradient,
+  SchemaGradientTransform,
+  SchemaModifier,
+  SchemaStyler,
+  SchemaVariant,
         payloadWidgetStateCondition;
 import 'package:mix_schema/mix_schema.dart';
 
@@ -855,16 +863,7 @@ List<Shadow>? _resolveTextShadowMixes(TwValue value) {
 }
 
 final class _TwSchemaDecoderAdapter {
-  static final MixSchemaDecoder _decoder = MixSchemaDecoder.builtIn();
-
-  static BoxStyler decodeBox(JsonMap payload) =>
-      tryDecodeBox(payload).styler ?? BoxStyler();
-
-  static FlexBoxStyler decodeFlexBox(JsonMap payload) =>
-      tryDecodeFlexBox(payload).styler ?? FlexBoxStyler();
-
-  static TextStyler decodeText(JsonMap payload) =>
-      tryDecodeText(payload).styler ?? TextStyler();
+  static final MixSchemaContract _contract = MixSchemaContract.builtIn();
 
   static TwParseResult<BoxStyler> tryDecodeBox(
     JsonMap payload, {
@@ -885,7 +884,7 @@ final class _TwSchemaDecoderAdapter {
     JsonMap payload,
     List<TwDiagnostic> diagnostics,
   ) {
-    final result = _decoder.decode(payload);
+    final result = _contract.decode(payload);
     if (!result.ok) {
       return TwParseResult<T>(
         payload: payload,

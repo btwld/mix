@@ -1,8 +1,26 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mix_schema/mix_schema.dart';
 import 'package:mix_tailwinds/mix_tailwinds.dart';
 
 void main() {
   group('schema payload contract', () {
+    test('contract export covers the box and text fields the parser emits', () {
+      final metadata = MixSchemaContract.builtIn().exportMetadata();
+
+      expect(
+        metadata.stylerFields['box'],
+        containsAll(['padding', 'decoration']),
+      );
+      expect(
+        metadata.stylerFields['text'],
+        containsAll(['style', 'textAlign']),
+      );
+      expect(
+        metadata.topLevelMetadataFields,
+        containsAll(['variants', 'modifiers', 'modifierOrder']),
+      );
+    });
+
     test('box utilities emit CSS-color payloads and decode successfully', () {
       final result = TwParser().parseBoxResult('bg-blue-500 p-4 rounded-md');
 

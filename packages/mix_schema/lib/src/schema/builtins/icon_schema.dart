@@ -33,6 +33,7 @@ StylerDefinition<IconSpec, IconStyler> buildIconStylerDefinition(
       'blendMode': catalog.blendMode.optional(),
       'icon': _unsupportedIconValueSchema.optional(),
     },
+    unsupportedFields: const ['icon'],
     build: (data, {animation, modifier, variants}) {
       if (data.containsKey('icon') && data['icon'] != null) {
         throw const UnsupportedValueError(

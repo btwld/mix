@@ -1,5 +1,10 @@
 ## 0.1.0-dev.0
 
+- Add contract-facing `MixSchemaContract`, `MixSchemaContractBuilder`,
+  `MixSchemaValidationResult`, and export metadata for stable styler,
+  modifier, variant, compound-condition, and field-ownership metadata.
+- Keep producer-only wire identifiers and payload helpers on `encode.dart`,
+  and keep internal `StylerRegistry` off the root contract export.
 - Add `StylerRegistry.builtIn(...)` for extending the built-in styler set with
   custom branches, and decode language-only locales plus decoration images.
 - Add public compound context variant decoding with the `context_all_of`

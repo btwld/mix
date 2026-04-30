@@ -1,7 +1,12 @@
-// Encode Mix schema payload fragments.
-export 'mix_schema.dart'
+// Low-level producer-facing APIs for building Mix schema payload fragments.
+//
+// This surface intentionally exposes wire identifiers plus a small set of
+// primitive and condition helpers. It does not try to be a full payload
+// builder for the entire contract; richer producer discovery should go through
+// MixSchemaContract.exportMetadata().
+export 'src/core/json_map.dart' show JsonMap;
+export 'src/core/schema_wire_types.dart'
     show
-        JsonMap,
         SchemaBorder,
         SchemaBorderRadius,
         SchemaDecoration,

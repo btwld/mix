@@ -71,7 +71,7 @@ final class SchemaErrorMapper {
       case RegistryLookupError():
         return [
           MixSchemaError(
-            code: MixSchemaErrorCode.unknownRegistryId,
+            code: .unknownRegistryId,
             path: error.path,
             message: cause.toString(),
             value: error.value,
@@ -80,7 +80,7 @@ final class SchemaErrorMapper {
       case RegistryTypeMismatchError():
         return [
           MixSchemaError(
-            code: MixSchemaErrorCode.transformFailed,
+            code: .transformFailed,
             path: error.path,
             message: cause.toString(),
             value: error.value,
@@ -89,7 +89,7 @@ final class SchemaErrorMapper {
       case UnsupportedValueError():
         return [
           MixSchemaError(
-            code: MixSchemaErrorCode.unsupportedValueType,
+            code: .unsupportedValueType,
             path: error.path,
             message: cause.toString(),
             value: error.value,
@@ -98,7 +98,7 @@ final class SchemaErrorMapper {
       default:
         return [
           MixSchemaError(
-            code: MixSchemaErrorCode.transformFailed,
+            code: .transformFailed,
             path: error.path,
             message: cause?.toString() ?? error.message,
             value: error.value,

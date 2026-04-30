@@ -18,11 +18,14 @@ final class StylerDefinition<S extends Spec<S>, T extends Style<S>> {
 
   final T emptyStyle;
   final Map<String, AckSchema> fields;
+  final List<String> unsupportedFields;
   final StylerBuilder<S, T> build;
+
   const StylerDefinition({
     required this.type,
     required this.emptyStyle,
     required this.fields,
+    this.unsupportedFields = const [],
     required this.build,
   });
 }
@@ -35,8 +38,7 @@ AckSchema<T> buildStylerSchema<S extends Spec<S>, T extends Style<S>>({
   final variantStyleSchema =
       Ack.object({
         ...fields,
-        'modifiers': Ack.list(catalog.modifier).optional(),
-        'modifierOrder': Ack.list(Ack.string()).optional(),
+        ...catalog.buildVariantStyleMetadataFields(),
       }).transform<T>((data) {
         final map = data;
 
@@ -63,13 +65,4 @@ AckSchema<T> buildStylerSchema<S extends Spec<S>, T extends Style<S>>({
       variants: variants,
     );
   });
-}
-
-AckSchema<Object>
-buildErasedStylerSchema<S extends Spec<S>, T extends Style<S>>({
-  required StylerDefinition<S, T> definition,
-  required MixSchemaCatalog catalog,
-}) {
-  return buildStylerSchema(definition: definition, catalog: catalog)
-      as AckSchema<Object>;
 }

@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 import 'package:mix_schema/mix_schema.dart';
+import 'package:mix_schema/src/registry/styler_registry.dart';
 import 'package:mix_schema/src/schema/shared/color_schema.dart';
 
 void main() {
@@ -14,6 +15,7 @@ void main() {
           Ack.object({
             'value': Ack.integer(),
           }).transform<Object>((data) => data['value'] as int),
+          fields: const ['value'],
         )
         ..freeze();
 
@@ -33,7 +35,7 @@ void main() {
     });
 
     test('supports developer-registered styler schemas', () {
-      final registry = StylerRegistry()
+      final builder = MixSchemaContractBuilder()
         ..register(
           'custom_box',
           Ack.object({'color': colorSchema.optional()}).transform<BoxStyler>((
@@ -46,11 +48,11 @@ void main() {
                   : BoxDecorationMix(color: map['color'] as Color),
             );
           }),
-        )
-        ..freeze();
+          fields: const ['color'],
+        );
 
-      final decoder = MixSchemaDecoder(stylerRegistry: registry);
-      final result = decoder.decode({
+      final contract = builder.freeze();
+      final result = contract.decode({
         'type': 'custom_box',
         'color': 'rgba(51, 102, 153, 1)',
       });
@@ -59,8 +61,60 @@ void main() {
       expect(result.value, isA<BoxStyler>());
     });
 
+    test('preserves outer refinements on registered transformed schemas', () {
+      final builder = MixSchemaContractBuilder()
+        ..register(
+          'demo',
+          Ack.object({'value': Ack.integer()})
+              .transform<Object>((data) => data['value'] as int)
+              .refine((value) => value == 7, message: 'Demo value must be 7.'),
+          fields: const ['value'],
+        );
+      final contract = builder.freeze();
+
+      final validResult = contract.validate({'type': 'demo', 'value': 7});
+      final invalidResult = contract.validate({'type': 'demo', 'value': 42});
+
+      expect(validResult.ok, isTrue);
+      expect(invalidResult.ok, isFalse);
+      expect(
+        invalidResult.errors.single.code,
+        MixSchemaErrorCode.validationFailed,
+      );
+      expect(invalidResult.errors.single.message, 'Demo value must be 7.');
+    });
+
+    test('rejects custom field metadata that drifts from the schema shape', () {
+      expect(
+        () => MixSchemaContractBuilder()
+          ..register(
+            'demo',
+            Ack.object({
+              'value': Ack.integer(),
+            }).transform<Object>((data) => data['value'] as int),
+            fields: const ['wrong'],
+          ),
+        throwsA(isA<ArgumentError>()),
+      );
+    });
+
+    test('rejects unsupported fields outside the declared field set', () {
+      expect(
+        () => MixSchemaContractBuilder()
+          ..register(
+            'demo',
+            Ack.object({
+              'value': Ack.integer(),
+            }).transform<Object>((data) => data['value'] as int),
+            fields: const ['value'],
+            unsupportedFields: const ['missing'],
+          ),
+        throwsA(isA<ArgumentError>()),
+      );
+    });
+
     test('extends the built-in styler set with custom schemas', () {
-      final registry = StylerRegistry.builtIn()
+      final builder = MixSchemaContractBuilder.builtIn()
         ..register(
           'custom_box',
           Ack.object({'color': colorSchema.optional()}).transform<BoxStyler>((
@@ -73,12 +127,12 @@ void main() {
                   : BoxDecorationMix(color: map['color'] as Color),
             );
           }),
-        )
-        ..freeze();
+          fields: const ['color'],
+        );
 
-      final decoder = MixSchemaDecoder(stylerRegistry: registry);
-      final builtInResult = decoder.decode({'type': 'box'});
-      final customResult = decoder.decode({
+      final contract = builder.freeze();
+      final builtInResult = contract.decode({'type': 'box'});
+      final customResult = contract.decode({
         'type': 'custom_box',
         'color': 'rgba(51, 102, 153, 1)',
       });

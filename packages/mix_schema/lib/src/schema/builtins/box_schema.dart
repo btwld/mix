@@ -1,9 +1,9 @@
-import 'package:ack/ack.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
 import '../mix_schema_catalog.dart';
 import '../styler_definition.dart';
+import 'built_in_field_groups.dart';
 
 StylerDefinition<BoxSpec, BoxStyler> buildBoxStylerDefinition(
   MixSchemaCatalog catalog,
@@ -11,17 +11,7 @@ StylerDefinition<BoxSpec, BoxStyler> buildBoxStylerDefinition(
   return StylerDefinition(
     type: .box,
     emptyStyle: BoxStyler(),
-    fields: {
-      'alignment': catalog.alignment.optional(),
-      'padding': catalog.edgeInsetsGeometry.optional(),
-      'margin': catalog.edgeInsetsGeometry.optional(),
-      'constraints': catalog.boxConstraints.optional(),
-      'decoration': catalog.decoration.optional(),
-      'foregroundDecoration': catalog.decoration.optional(),
-      'transform': catalog.matrix4.optional(),
-      'transformAlignment': catalog.alignment.optional(),
-      'clipBehavior': catalog.clip.optional(),
-    },
+    fields: buildBoxStylerFields(catalog),
     build: (data, {animation, modifier, variants}) {
       return BoxStyler(
         alignment: data['alignment'] as AlignmentGeometry?,

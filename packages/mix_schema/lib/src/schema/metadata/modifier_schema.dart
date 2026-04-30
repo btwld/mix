@@ -3,19 +3,20 @@ import 'package:mix/mix.dart';
 
 import '../../core/json_casts.dart';
 import '../../core/schema_wire_types.dart';
-import '../discriminated_branch_registry.dart';
+import '../discriminated_schema_builder.dart';
 import 'modifier_definition.dart';
 
 AckSchema<ModifierMix> buildModifierSchema() {
-  final registry = DiscriminatedBranchRegistry<ModifierMix>(
+  return buildDiscriminatedSchema<ModifierMix>(
     discriminatorKey: 'type',
+    branches: [
+      for (final definition in modifierDefinitions.values)
+        discriminatedBranch<ModifierMix, ModifierMix>(
+          type: definition.type.wireValue,
+          schema: definition.schema,
+        ),
+    ],
   );
-
-  for (final definition in modifierDefinitions.values) {
-    registry.register(definition.type.wireValue, definition.schema);
-  }
-
-  return registry.freeze();
 }
 
 WidgetModifierConfig? buildWidgetModifierConfigFromFields(

@@ -3,21 +3,9 @@ import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
 import '../registry/registry_catalog.dart';
-import 'metadata/animation_schema.dart';
-import 'metadata/metadata_field_schemas.dart';
-import 'metadata/modifier_schema.dart';
-import 'metadata/variant_schema.dart';
-import 'painting/border_schemas.dart';
-import 'painting/decoration_schemas.dart';
-import 'painting/gradient_schemas.dart';
-import 'painting/shape_border_schemas.dart';
-import 'shared/box_constraints_schema.dart';
-import 'shared/color_schema.dart';
-import 'shared/edge_insets_schema.dart';
-import 'shared/enum_schemas.dart';
-import 'shared/image_provider_schema.dart';
-import 'shared/primitive_schemas.dart';
-import 'shared/typography_schemas.dart';
+import 'metadata/metadata_schemas.dart';
+import 'painting/painting_schemas.dart';
+import 'shared/shared_schemas.dart';
 
 final class MixSchemaCatalog {
   final RegistryCatalog registries;
@@ -114,6 +102,10 @@ final class MixSchemaCatalog {
       modifierSchema: modifier,
       variantSchema: variantSchema,
     );
+  }
+
+  Map<String, AckSchema> buildVariantStyleMetadataFields() {
+    return buildVariantStyleMetadataFieldSchemas(modifierSchema: modifier);
   }
 
   WidgetModifierConfig? buildModifierConfig(Map<String, Object?> data) {

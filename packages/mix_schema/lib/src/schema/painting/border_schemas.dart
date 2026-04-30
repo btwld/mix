@@ -3,10 +3,8 @@ import 'package:flutter/painting.dart';
 import 'package:mix/mix.dart';
 
 import '../../core/schema_wire_types.dart';
-import '../discriminated_branch_registry.dart';
-import '../shared/color_schema.dart';
-import '../shared/enum_schemas.dart';
-import '../shared/primitive_schemas.dart';
+import '../discriminated_schema_builder.dart';
+import '../shared/shared_schemas.dart';
 
 final AckSchema<BorderSideMix> borderSideSchema =
     Ack.object({
@@ -43,27 +41,29 @@ final AckSchema<BoxShadowMix> boxShadowSchema =
     });
 
 AckSchema<BoxBorderMix> buildBoxBorderSchema() {
-  final registry = DiscriminatedBranchRegistry<BoxBorderMix>(
+  return buildDiscriminatedSchema<BoxBorderMix>(
     discriminatorKey: 'type',
+    branches: [
+      for (final type in SchemaBorder.values)
+        discriminatedBranch<BoxBorderMix, BoxBorderMix>(
+          type: type.wireValue,
+          schema: _buildBoxBorderBranch(type),
+        ),
+    ],
   );
-
-  for (final type in SchemaBorder.values) {
-    registry.register(type.wireValue, _buildBoxBorderBranch(type));
-  }
-
-  return registry.freeze();
 }
 
 AckSchema<BorderRadiusGeometryMix> buildBorderRadiusSchema() {
-  final registry = DiscriminatedBranchRegistry<BorderRadiusGeometryMix>(
+  return buildDiscriminatedSchema<BorderRadiusGeometryMix>(
     discriminatorKey: 'type',
+    branches: [
+      for (final type in SchemaBorderRadius.values)
+        discriminatedBranch<BorderRadiusGeometryMix, BorderRadiusGeometryMix>(
+          type: type.wireValue,
+          schema: _buildBorderRadiusBranch(type),
+        ),
+    ],
   );
-
-  for (final type in SchemaBorderRadius.values) {
-    registry.register(type.wireValue, _buildBorderRadiusBranch(type));
-  }
-
-  return registry.freeze();
 }
 
 AckSchema<BoxBorderMix> _buildBoxBorderBranch(SchemaBorder type) {

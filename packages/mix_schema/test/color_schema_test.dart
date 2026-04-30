@@ -41,10 +41,7 @@ void main() {
       final exponent = colorSchema.safeParse('rgba(59, 130, 246, 5e-1)');
 
       expect(leadingDot.isOk, isTrue);
-      expect(
-        leadingDot.getOrNull(),
-        const Color.fromRGBO(59, 130, 246, 0.5),
-      );
+      expect(leadingDot.getOrNull(), const Color.fromRGBO(59, 130, 246, 0.5));
       expect(trailingDot.isOk, isTrue);
       expect(trailingDot.getOrNull(), const Color(0xFF3B82F6));
       expect(exponent.isOk, isTrue);

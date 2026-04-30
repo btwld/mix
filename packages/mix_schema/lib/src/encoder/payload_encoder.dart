@@ -17,7 +17,7 @@ String payloadColor(Color color) {
 
 JsonMap payloadAlignment(
   AlignmentGeometry alignment, {
-  TextDirection textDirection = TextDirection.ltr,
+  TextDirection textDirection = .ltr,
 }) {
   final resolved = alignment.resolve(textDirection);
 

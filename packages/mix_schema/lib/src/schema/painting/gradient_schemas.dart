@@ -6,9 +6,8 @@ import 'package:mix/mix.dart';
 
 import '../../core/json_casts.dart';
 import '../../core/schema_wire_types.dart';
-import '../discriminated_branch_registry.dart';
-import '../shared/enum_schemas.dart';
-import '../shared/primitive_schemas.dart';
+import '../discriminated_schema_builder.dart';
+import '../shared/shared_schemas.dart';
 
 const List<String> _tailwindGradientDirections = [
   'to-r',
@@ -94,35 +93,34 @@ bool _hasMatchingGradientStops(Map<String, Object?> map) {
 }
 
 AckSchema<GradientTransform> buildGradientTransformSchema() {
-  final registry = DiscriminatedBranchRegistry<GradientTransform>(
+  return buildDiscriminatedSchema<GradientTransform>(
     discriminatorKey: 'type',
+    branches: [
+      for (final type in SchemaGradientTransform.values)
+        discriminatedBranch<GradientTransform, GradientTransform>(
+          type: type.wireValue,
+          schema: _buildGradientTransformBranch(type),
+        ),
+    ],
   );
-
-  for (final type in SchemaGradientTransform.values) {
-    registry.register(type.wireValue, _buildGradientTransformBranch(type));
-  }
-
-  return registry.freeze();
 }
 
 AckSchema<GradientMix> buildGradientSchema({
   required AckSchema<GradientTransform> gradientTransformSchema,
 }) {
-  final registry = DiscriminatedBranchRegistry<GradientMix>(
+  return buildDiscriminatedSchema<GradientMix>(
     discriminatorKey: 'type',
+    branches: [
+      for (final type in SchemaGradient.values)
+        discriminatedBranch<GradientMix, GradientMix>(
+          type: type.wireValue,
+          schema: _buildGradientBranch(
+            type: type,
+            gradientTransformSchema: gradientTransformSchema,
+          ),
+        ),
+    ],
   );
-
-  for (final type in SchemaGradient.values) {
-    registry.register(
-      type.wireValue,
-      _buildGradientBranch(
-        type: type,
-        gradientTransformSchema: gradientTransformSchema,
-      ),
-    );
-  }
-
-  return registry.freeze();
 }
 
 AckSchema<GradientTransform> _buildGradientTransformBranch(

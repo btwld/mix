@@ -4,10 +4,8 @@ import 'package:mix/mix.dart';
 
 import '../../core/json_casts.dart';
 import '../../core/schema_wire_types.dart';
-import '../discriminated_branch_registry.dart';
-import '../shared/color_schema.dart';
-import '../shared/enum_schemas.dart';
-import '../shared/primitive_schemas.dart';
+import '../discriminated_schema_builder.dart';
+import '../shared/shared_schemas.dart';
 import 'border_schemas.dart';
 
 AckSchema<DecorationImageMix> buildDecorationImageSchema({
@@ -103,18 +101,20 @@ AckSchema<DecorationMix> buildDecorationSchema({
   required AckSchema<BoxDecorationMix> boxDecorationSchema,
   required AckSchema<ShapeDecorationMix> shapeDecorationSchema,
 }) {
-  final registry = DiscriminatedBranchRegistry<DecorationMix>(
+  return buildDiscriminatedSchema<DecorationMix>(
     discriminatorKey: 'type',
+    branches: [
+      for (final type in SchemaDecoration.values)
+        switch (type) {
+          .box => discriminatedBranch<DecorationMix, BoxDecorationMix>(
+            type: type.wireValue,
+            schema: boxDecorationSchema,
+          ),
+          .shape => discriminatedBranch<DecorationMix, ShapeDecorationMix>(
+            type: type.wireValue,
+            schema: shapeDecorationSchema,
+          ),
+        },
+    ],
   );
-
-  for (final type in SchemaDecoration.values) {
-    switch (type) {
-      case .box:
-        registry.register(type.wireValue, boxDecorationSchema);
-      case .shape:
-        registry.register(type.wireValue, shapeDecorationSchema);
-    }
-  }
-
-  return registry.freeze();
 }

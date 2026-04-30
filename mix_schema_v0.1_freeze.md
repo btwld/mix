@@ -1,5 +1,14 @@
 # mix_schema v0.1 Freeze
 
+> Superseded document.
+>
+> This canonical AST freeze captured an earlier `mix_schema` direction and is
+> retained for historical context only. It is not the current source of truth.
+>
+> Use [packages/mix_schema/mix_schema_plan.md](packages/mix_schema/mix_schema_plan.md)
+> and [CURRENT_GOAL.md](CURRENT_GOAL.md) for the active Ack-backed
+> payload-to-Mix contract direction.
+
 Date: 2026-02-06
 Status: Frozen execution contract for Track B foundation work.
 

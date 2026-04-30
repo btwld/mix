@@ -15,12 +15,21 @@ before the plan document is updated.
 
 - Added package-local test/dev setup and workspace integration so `mix_schema`
   participates in the normal Flutter package test category.
-- Added the first public package surface:
+- Added the initial public package surface:
   - `RegistryBuilder<T>`
   - `FrozenRegistry<T>`
   - `StylerRegistry`
   - `MixSchemaDecoder`
   - stable decode error/result types
+- Later reshaped the public contract surface around:
+  - `MixSchemaContractBuilder`
+  - `MixSchemaContract`
+  - `MixSchemaDecoder`
+  - `MixSchemaValidationResult`
+  - `MixSchemaExportMetadata`
+  - `RegistryBuilder<T>` and `FrozenRegistry<T>` as the runtime-value bridge
+- Removed internal wire identifiers and `StylerRegistry` from the root
+  `mix_schema.dart` export.
 - Implemented the first end-to-end decode path for `box` payloads.
 - Implemented registry-backed runtime lookup for `animation.onEnd`.
 - Implemented strict error mapping from Ack errors into stable v1 codes.
@@ -194,8 +203,8 @@ Ack/discriminated behavior proven by M1.
   - gradient transform decoding for `gradient_rotation` and
     `tailwind_css_angle_rect`
   - matrix and rect primitives needed by the built-in styler field matrix
-- Proved custom styler registration through the public `StylerRegistry`
-  registration surface.
+- Proved custom styler registration through the contract-facing
+  `MixSchemaContractBuilder` surface.
 - Added hardening coverage for:
   - all built-in styler ids
   - metadata decode/runtime behavior
@@ -318,15 +327,16 @@ architecture.
 
 1. The public API stayed small.
 
-   `mix_schema.dart` exports only the contract surfaces that matter:
-   decoder, errors, registries, and constants. Internal schema assembly stayed
-   under `src/`, which was the right decision.
+  `mix_schema.dart` now exports the contract surfaces that matter:
+  contract, decoder, runtime registry bridge types, and error results.
+  Producer payload helpers and wire identifiers moved to `encode.dart`, and
+  internal schema assembly stayed under `src/`, which was the right decision.
 
 2. The lifecycle is easy to reason about.
 
-   `RegistryBuilder`, `FrozenRegistry`, `StylerRegistry`, and
-   `MixSchemaDecoder` establish a straightforward bootstrap flow. This is one
-   of the clearest parts of the package.
+  `RegistryBuilder`, `FrozenRegistry`, `MixSchemaContractBuilder`,
+  `MixSchemaContract`, and `MixSchemaDecoder` establish a straightforward
+  bootstrap flow. This is one of the clearest parts of the package.
 
 3. Error handling is explicit and centralized.
 
@@ -590,3 +600,34 @@ No functional drift was found. This pass tightened the public API and internal
 
 This keeps exhaustive handling where it matters in the implementation without
  widening the public package contract.
+
+## 2026-04-17 — Contract Documentation and Validation Status Correction
+
+### Current Status Correction
+
+- The current contract direction is still the right one: contract-first,
+  Ack-backed validation/transform, narrow `encode.dart` producer helpers,
+  and `mix_tailwinds` as a proof-of-concept consumer.
+- The written plan needed cleanup to match the implemented behavior for nested
+  variant styles. Nested variant styles allow styler fields plus
+  `modifiers`/`modifierOrder`, while still rejecting nested `animation` and
+  recursive `variants`.
+- `MixSchemaExportMetadata` remains useful but vocabulary-first. It exposes
+  styler/variant/modifier vocabularies and field ownership, not full
+  constraint-level producer guidance.
+- Custom top-level styler metadata export still has a temporary duplication:
+  callers provide both an `AckSchema` and an explicit `fields` list.
+
+### Validation Correction
+
+- A fresh package-level DCM run on 2026-04-17 failed:
+  `dcm analyze . --fatal-style --fatal-warnings`
+- Current result: 75 style issues, exit code 2.
+- That means the plan's validation gate is not fully satisfied in the current
+  working tree, even though format/analyzer/tests remain a strong baseline.
+
+### Assessment
+
+- The implementation direction is still correct.
+- The package should not be described as fully complete while the DCM gate is
+  failing and constraint-level export is still deferred.

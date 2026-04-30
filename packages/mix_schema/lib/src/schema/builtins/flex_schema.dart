@@ -1,9 +1,9 @@
-import 'package:ack/ack.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
 import '../mix_schema_catalog.dart';
 import '../styler_definition.dart';
+import 'built_in_field_groups.dart';
 
 StylerDefinition<FlexSpec, FlexStyler> buildFlexStylerDefinition(
   MixSchemaCatalog catalog,
@@ -11,17 +11,7 @@ StylerDefinition<FlexSpec, FlexStyler> buildFlexStylerDefinition(
   return StylerDefinition(
     type: .flex,
     emptyStyle: FlexStyler(),
-    fields: {
-      'direction': catalog.axis.optional(),
-      'mainAxisAlignment': catalog.mainAxisAlignment.optional(),
-      'crossAxisAlignment': catalog.crossAxisAlignment.optional(),
-      'mainAxisSize': catalog.mainAxisSize.optional(),
-      'verticalDirection': catalog.verticalDirection.optional(),
-      'textDirection': catalog.textDirection.optional(),
-      'textBaseline': catalog.textBaseline.optional(),
-      'clipBehavior': catalog.clip.optional(),
-      'spacing': Ack.double().optional(),
-    },
+    fields: buildFlexStylerFields(catalog),
     build: (data, {animation, modifier, variants}) {
       return FlexStyler(
         direction: data['direction'] as Axis?,

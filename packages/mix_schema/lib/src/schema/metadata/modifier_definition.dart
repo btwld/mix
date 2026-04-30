@@ -5,10 +5,7 @@ import 'package:mix/mix.dart';
 import '../../core/json_map.dart';
 import '../../core/schema_wire_types.dart';
 import '../../encoder/payload_encoder.dart';
-import '../shared/edge_insets_schema.dart';
-import '../shared/enum_schemas.dart';
-import '../shared/primitive_schemas.dart';
-import '../shared/typography_schemas.dart';
+import '../shared/shared_schemas.dart';
 
 typedef ModifierFieldsEncoder = JsonMap Function(ModifierMix modifier);
 
@@ -36,9 +33,9 @@ final Map<SchemaModifier, ModifierDefinition> modifierDefinitions =
     _buildModifierDefinitions();
 
 Map<SchemaModifier, ModifierDefinition> _buildModifierDefinitions() {
-  final definitions = <SchemaModifier, ModifierDefinition>{
+  final definitions = {
     SchemaModifier.reset: ModifierDefinition(
-      type: SchemaModifier.reset,
+      type: .reset,
       modifierRuntimeType: ResetModifier,
       schema: Ack.object(
         const {},
@@ -47,7 +44,7 @@ Map<SchemaModifier, ModifierDefinition> _buildModifierDefinitions() {
       encodeFields: (_) => const {},
     ),
     SchemaModifier.blur: ModifierDefinition(
-      type: SchemaModifier.blur,
+      type: .blur,
       modifierRuntimeType: BlurModifier,
       schema: Ack.object({'sigma': Ack.double().min(0).optional()})
           .transform<ModifierMix>((data) {
@@ -63,7 +60,7 @@ Map<SchemaModifier, ModifierDefinition> _buildModifierDefinitions() {
       },
     ),
     SchemaModifier.opacity: ModifierDefinition(
-      type: SchemaModifier.opacity,
+      type: .opacity,
       modifierRuntimeType: OpacityModifier,
       schema: Ack.object({'value': Ack.double().min(0).max(1)})
           .transform<ModifierMix>((data) {
@@ -79,7 +76,7 @@ Map<SchemaModifier, ModifierDefinition> _buildModifierDefinitions() {
       },
     ),
     SchemaModifier.visibility: ModifierDefinition(
-      type: SchemaModifier.visibility,
+      type: .visibility,
       modifierRuntimeType: VisibilityModifier,
       schema: Ack.object({'visible': Ack.boolean()}).transform<ModifierMix>((
         data,
@@ -96,7 +93,7 @@ Map<SchemaModifier, ModifierDefinition> _buildModifierDefinitions() {
       },
     ),
     SchemaModifier.align: ModifierDefinition(
-      type: SchemaModifier.align,
+      type: .align,
       modifierRuntimeType: AlignModifier,
       schema:
           Ack.object({
@@ -131,7 +128,7 @@ Map<SchemaModifier, ModifierDefinition> _buildModifierDefinitions() {
       },
     ),
     SchemaModifier.padding: ModifierDefinition(
-      type: SchemaModifier.padding,
+      type: .padding,
       modifierRuntimeType: PaddingModifier,
       schema: Ack.object({'padding': edgeInsetsGeometrySchema.optional()})
           .transform<ModifierMix>((data) {
@@ -146,20 +143,15 @@ Map<SchemaModifier, ModifierDefinition> _buildModifierDefinitions() {
       ),
       encodeFields: (modifier) {
         final value = modifier as PaddingModifierMix;
+        final EdgeInsetsGeometryMix? padding = _propMix(value.padding);
 
         return _optionalJsonMap([
-          (
-            'padding',
-            _mapOptional(
-              _propMix<EdgeInsetsGeometryMix>(value.padding),
-              _encodeEdgeInsetsGeometryMix,
-            ),
-          ),
+          ('padding', _mapOptional(padding, _encodeEdgeInsetsGeometryMix)),
         ]);
       },
     ),
     SchemaModifier.scale: ModifierDefinition(
-      type: SchemaModifier.scale,
+      type: .scale,
       modifierRuntimeType: ScaleModifier,
       schema:
           Ack.object({
@@ -175,8 +167,7 @@ Map<SchemaModifier, ModifierDefinition> _buildModifierDefinitions() {
               alignment: map['alignment'] as Alignment?,
             );
           }),
-      sample: () =>
-          ScaleModifierMix(x: 1.25, y: 0.75, alignment: Alignment.topLeft),
+      sample: () => ScaleModifierMix(x: 1.25, y: 0.75, alignment: .topLeft),
       encodeFields: (modifier) {
         final value = modifier as ScaleModifierMix;
 
@@ -193,7 +184,7 @@ Map<SchemaModifier, ModifierDefinition> _buildModifierDefinitions() {
       },
     ),
     SchemaModifier.rotate: ModifierDefinition(
-      type: SchemaModifier.rotate,
+      type: .rotate,
       modifierRuntimeType: RotateModifier,
       schema:
           Ack.object({
@@ -207,8 +198,7 @@ Map<SchemaModifier, ModifierDefinition> _buildModifierDefinitions() {
               alignment: map['alignment'] as Alignment?,
             );
           }),
-      sample: () =>
-          RotateModifierMix(radians: 0.25, alignment: Alignment.bottomRight),
+      sample: () => RotateModifierMix(radians: 0.25, alignment: .bottomRight),
       encodeFields: (modifier) {
         final value = modifier as RotateModifierMix;
 
@@ -224,7 +214,7 @@ Map<SchemaModifier, ModifierDefinition> _buildModifierDefinitions() {
       },
     ),
     SchemaModifier.defaultTextStyle: ModifierDefinition(
-      type: SchemaModifier.defaultTextStyle,
+      type: .defaultTextStyle,
       modifierRuntimeType: DefaultTextStyleModifier,
       schema:
           Ack.object({
@@ -253,42 +243,40 @@ Map<SchemaModifier, ModifierDefinition> _buildModifierDefinitions() {
         style: TextStyleMix(
           color: const Color(0xFF112233),
           fontSize: 14,
-          fontWeight: FontWeight.w700,
-          fontStyle: FontStyle.italic,
+          fontWeight: .w700,
+          fontStyle: .italic,
           letterSpacing: 0.5,
           wordSpacing: 1.5,
-          textBaseline: TextBaseline.alphabetic,
-          decoration: TextDecoration.underline,
+          textBaseline: .alphabetic,
+          decoration: .underline,
           decorationColor: const Color(0xFF445566),
-          decorationStyle: TextDecorationStyle.dashed,
+          decorationStyle: .dashed,
           height: 1.25,
           decorationThickness: 2,
           fontFamily: 'Inter',
           fontFamilyFallback: const ['Roboto', 'Arial'],
           inherit: false,
         ),
-        textAlign: TextAlign.center,
+        textAlign: .center,
         softWrap: false,
-        overflow: TextOverflow.ellipsis,
+        overflow: .ellipsis,
         maxLines: 2,
-        textWidthBasis: TextWidthBasis.longestLine,
+        textWidthBasis: .longestLine,
         textHeightBehavior: TextHeightBehaviorMix(
           applyHeightToFirstAscent: false,
           applyHeightToLastDescent: true,
-          leadingDistribution: TextLeadingDistribution.even,
+          leadingDistribution: .even,
         ),
       ),
       encodeFields: (modifier) {
         final value = modifier as DefaultTextStyleModifierMix;
+        final TextStyleMix? style = _propMix(value.style);
+        final TextHeightBehaviorMix? textHeightBehavior = _propMix(
+          value.textHeightBehavior,
+        );
 
         return _optionalJsonMap([
-          (
-            'style',
-            _mapOptional(
-              _propMix<TextStyleMix>(value.style),
-              _encodeTextStyleMix,
-            ),
-          ),
+          ('style', _mapOptional(style, _encodeTextStyleMix)),
           (
             'textAlign',
             _mapOptional(_propValue(value.textAlign), (value) => value.name),
@@ -308,10 +296,7 @@ Map<SchemaModifier, ModifierDefinition> _buildModifierDefinitions() {
           ),
           (
             'textHeightBehavior',
-            _mapOptional(
-              _propMix<TextHeightBehaviorMix>(value.textHeightBehavior),
-              _encodeTextHeightBehaviorMix,
-            ),
+            _mapOptional(textHeightBehavior, _encodeTextHeightBehaviorMix),
           ),
         ]);
       },
@@ -402,6 +387,8 @@ JsonMap _encodeEdgeInsetsGeometryMix(EdgeInsetsGeometryMix value) {
 }
 
 JsonMap _encodeTextStyleMix(TextStyleMix value) {
+  final ShadowListMix? shadows = _propMix(value.$shadows);
+
   return _optionalJsonMap([
     ('color', _mapOptional(_propValue(value.$color), payloadColor)),
     (
@@ -442,7 +429,7 @@ JsonMap _encodeTextStyleMix(TextStyleMix value) {
     ('inherit', _propValue(value.$inherit)),
     (
       'shadows',
-      _mapOptional(_propMix<ShadowListMix>(value.$shadows), (shadows) {
+      _mapOptional(shadows, (shadows) {
         return [for (final shadow in shadows.items) _encodeShadowMix(shadow)];
       }),
     ),
@@ -473,24 +460,24 @@ JsonMap _encodeTextHeightBehaviorMix(TextHeightBehaviorMix value) {
 
 String _fontWeightWireName(FontWeight value) {
   return switch (value) {
-    FontWeight.w100 => 'w100',
-    FontWeight.w200 => 'w200',
-    FontWeight.w300 => 'w300',
-    FontWeight.w400 => 'w400',
-    FontWeight.w500 => 'w500',
-    FontWeight.w600 => 'w600',
-    FontWeight.w700 => 'w700',
-    FontWeight.w800 => 'w800',
-    FontWeight.w900 => 'w900',
+    .w100 => 'w100',
+    .w200 => 'w200',
+    .w300 => 'w300',
+    .w400 => 'w400',
+    .w500 => 'w500',
+    .w600 => 'w600',
+    .w700 => 'w700',
+    .w800 => 'w800',
+    .w900 => 'w900',
     _ => throw StateError('Unsupported font weight: $value'),
   };
 }
 
 String _textDecorationWireName(TextDecoration value) {
-  if (value == TextDecoration.none) return 'none';
-  if (value == TextDecoration.underline) return 'underline';
-  if (value == TextDecoration.overline) return 'overline';
-  if (value == TextDecoration.lineThrough) return 'lineThrough';
+  if (value == .none) return 'none';
+  if (value == .underline) return 'underline';
+  if (value == .overline) return 'overline';
+  if (value == .lineThrough) return 'lineThrough';
 
   throw StateError('Unsupported text decoration: $value');
 }

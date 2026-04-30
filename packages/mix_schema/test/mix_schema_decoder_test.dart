@@ -6,7 +6,7 @@ import 'package:mix/mix.dart';
 import 'package:mix_schema/mix_schema.dart';
 
 void main() {
-  group('MixSchemaDecoder', () {
+  group('MixSchemaContract decode', () {
     testWidgets('decodes a box payload into Mix runtime objects', (
       tester,
     ) async {
@@ -18,11 +18,11 @@ void main() {
             didComplete = true;
           });
 
-      final decoder = MixSchemaDecoder.builtIn(
+      final contract = MixSchemaContract.builtIn(
         registries: [callbacks.freeze()],
       );
 
-      final result = decoder.decode({
+      final result = contract.decode({
         'type': 'box',
         'alignment': {'x': -1, 'y': 0},
         'padding': {'top': 8, 'left': 16},
@@ -121,8 +121,8 @@ void main() {
     });
 
     testWidgets('decodes text locales without countryCode', (tester) async {
-      final decoder = MixSchemaDecoder.builtIn();
-      final result = decoder.decode({
+      final contract = MixSchemaContract.builtIn();
+      final result = contract.decode({
         'type': 'text',
         'locale': {'languageCode': 'en'},
       });
@@ -156,8 +156,8 @@ void main() {
         scope: MixSchemaScope.imageProvider,
       )..register('hero', heroImage);
 
-      final decoder = MixSchemaDecoder.builtIn(registries: [images.freeze()]);
-      final result = decoder.decode({
+      final contract = MixSchemaContract.builtIn(registries: [images.freeze()]);
+      final result = contract.decode({
         'type': 'box',
         'decoration': {
           'type': 'box_decoration',
@@ -202,8 +202,8 @@ void main() {
     });
 
     test('returns required_field when type is missing', () {
-      final decoder = MixSchemaDecoder.builtIn();
-      final result = decoder.decode({});
+      final contract = MixSchemaContract.builtIn();
+      final result = contract.decode({});
 
       expect(result.ok, isFalse);
       expect(result.errors.single.code, MixSchemaErrorCode.requiredField);
@@ -211,8 +211,8 @@ void main() {
     });
 
     test('returns unknown_type for unregistered styler ids', () {
-      final decoder = MixSchemaDecoder.builtIn();
-      final result = decoder.decode({'type': 'missing'});
+      final contract = MixSchemaContract.builtIn();
+      final result = contract.decode({'type': 'missing'});
 
       expect(result.ok, isFalse);
       expect(result.errors.single.code, MixSchemaErrorCode.unknownType);
@@ -220,8 +220,8 @@ void main() {
     });
 
     test('returns unknown_field for unexpected root fields', () {
-      final decoder = MixSchemaDecoder.builtIn();
-      final result = decoder.decode({'type': 'box', 'unknown': true});
+      final contract = MixSchemaContract.builtIn();
+      final result = contract.decode({'type': 'box', 'unknown': true});
 
       expect(result.ok, isFalse);
       expect(result.errors.single.code, MixSchemaErrorCode.unknownField);
@@ -229,8 +229,8 @@ void main() {
     });
 
     test('returns type_mismatch for invalid field types', () {
-      final decoder = MixSchemaDecoder.builtIn();
-      final result = decoder.decode({'type': 'box', 'padding': 'invalid'});
+      final contract = MixSchemaContract.builtIn();
+      final result = contract.decode({'type': 'box', 'padding': 'invalid'});
 
       expect(result.ok, isFalse);
       expect(result.errors.single.code, MixSchemaErrorCode.typeMismatch);
@@ -238,8 +238,8 @@ void main() {
     });
 
     test('returns constraint_violation for invalid constrained values', () {
-      final decoder = MixSchemaDecoder.builtIn();
-      final result = decoder.decode({
+      final contract = MixSchemaContract.builtIn();
+      final result = contract.decode({
         'type': 'box',
         'animation': {'duration': -1, 'curve': 'ease'},
       });
@@ -250,8 +250,8 @@ void main() {
     });
 
     test('returns unknown_registry_id for missing runtime references', () {
-      final decoder = MixSchemaDecoder.builtIn();
-      final result = decoder.decode({
+      final contract = MixSchemaContract.builtIn();
+      final result = contract.decode({
         'type': 'box',
         'animation': {'duration': 200, 'curve': 'linear', 'onEnd': 'missing'},
       });
@@ -262,8 +262,8 @@ void main() {
     });
 
     test('returns nested errors with stable paths', () {
-      final decoder = MixSchemaDecoder.builtIn();
-      final result = decoder.decode({
+      final contract = MixSchemaContract.builtIn();
+      final result = contract.decode({
         'type': 'box',
         'decoration': {
           'type': 'box_decoration',
@@ -280,8 +280,8 @@ void main() {
     });
 
     test('returns validation_failed for invalid shared schema refinements', () {
-      final decoder = MixSchemaDecoder.builtIn();
-      final result = decoder.decode({
+      final contract = MixSchemaContract.builtIn();
+      final result = contract.decode({
         'type': 'box',
         'constraints': {'minWidth': 200, 'maxWidth': 100},
       });
