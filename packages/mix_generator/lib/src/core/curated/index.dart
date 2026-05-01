@@ -1,5 +1,4 @@
-/// Re-exports all curated maps.
+/// Re-exports curated generator metadata.
 library;
 
-export 'flag_descriptions.dart';
-export 'type_mappings.dart';
+export 'type_metadata.dart';

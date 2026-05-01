@@ -1,3 +1,13 @@
+## Unreleased
+
+ - **BREAKING**: Removed `MixWidget.widgetBuilder` field. Custom rendering
+   is now declared on the `Spec` class via the new `MixWidgetRenderer`
+   annotation: `@MixWidgetRenderer(YourWidget)`.
+ - **FEAT**: Added `MixWidgetRenderer` annotation. Apply it to a `Spec`
+   class to declare which widget renders that spec. The annotation takes
+   the widget `Type` literal and is read by `mix_generator` at codegen
+   time.
+
 ## 2.0.0-rc.1
 
  - **BREAKING**: The Mix Generator was completely rebuilt to support the architecture and requirements of Mix V2.0.

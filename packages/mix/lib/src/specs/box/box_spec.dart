@@ -5,6 +5,7 @@ import 'package:mix_annotations/mix_annotations.dart';
 
 import '../../core/helpers.dart';
 import '../../core/spec.dart';
+import 'box_widget.dart';
 
 part 'box_spec.g.dart';
 
@@ -14,9 +15,9 @@ part 'box_spec.g.dart';
 /// decoration, transformation, and clipping behavior. Used as the resolved form
 /// of [BoxStyle] styling attributes.
 @MixableSpec()
+@MixWidgetRenderer(Box)
 @immutable
-final class BoxSpec extends Spec<BoxSpec>
-    with Diagnosticable, _$BoxSpecMethods {
+final class BoxSpec with _$BoxSpec {
   /// Aligns the child within the box.
   @override
   final AlignmentGeometry? alignment;

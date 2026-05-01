@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mix/src/core/internal/compare_mixin.dart';
+import 'package:mix/src/core/equatable.dart';
 
 void main() {
-  group('EquatableMixin', () {
+  group('Equatable', () {
     test('Should have correct equality', () {
       final instance1 = TestClass(1, "A");
       final instance2 = TestClass(1, "A");

@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import 'internal/compare_mixin.dart';
+import 'equatable.dart';
 
 /// Mixin for types that can be resolved to a value using a [BuildContext].
 ///

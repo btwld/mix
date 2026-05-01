@@ -4,8 +4,14 @@ import 'package:test/test.dart';
 
 void main() {
   group('generator validation', () {
+    // NOTE: The SpecGenerator no longer rejects classes that don't
+    // `extends Spec<X>` — the generated mixin's
+    // `implements Spec<X>, Diagnosticable` header enforces the shape at
+    // the type level, and the Dart analyzer reports any violation at
+    // compile time. We instead verify the one remaining runtime guard:
+    // the class must have an unnamed constructor.
     test(
-      'SpecGenerator throws InvalidGenerationSource for non-Spec classes',
+      'SpecGenerator throws InvalidGenerationSource when no unnamed constructor',
       () async {
         final libraryReader = await initializeLibraryReader({
           'spec_validation.dart': r'''
@@ -15,7 +21,7 @@ import 'package:mix_annotations/mix_annotations.dart';
 
 @MixableSpec()
 class BoxSpec {
-  const BoxSpec();
+  BoxSpec.named();
 }
 ''',
         }, 'spec_validation.dart');
@@ -27,7 +33,7 @@ class BoxSpec {
             'BoxSpec',
           ),
           throwsInvalidGenerationSourceError(
-            '@MixableSpec can only be applied to classes extending Spec<BoxSpec>.',
+            'BoxSpec must have an unnamed constructor.',
             elementMatcher: isNotNull,
           ),
         );

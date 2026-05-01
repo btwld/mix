@@ -6,7 +6,7 @@ part of 'icon_spec.dart';
 // SpecGenerator
 // **************************************************************************
 
-mixin _$IconSpecMethods on Spec<IconSpec>, Diagnosticable {
+mixin _$IconSpec implements Spec<IconSpec>, Diagnosticable {
   Color? get color;
   double? get size;
   double? get weight;
@@ -20,6 +20,9 @@ mixin _$IconSpecMethods on Spec<IconSpec>, Diagnosticable {
   double? get opacity;
   BlendMode? get blendMode;
   IconData? get icon;
+
+  @override
+  Type get type => IconSpec;
 
   @override
   IconSpec copyWith({
@@ -78,8 +81,61 @@ mixin _$IconSpecMethods on Spec<IconSpec>, Diagnosticable {
   }
 
   @override
+  List<Object?> get props => [
+    color,
+    size,
+    weight,
+    grade,
+    opticalSize,
+    shadows,
+    textDirection,
+    applyTextScaling,
+    fill,
+    semanticsLabel,
+    opacity,
+    blendMode,
+    icon,
+  ];
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        other is IconSpec &&
+            runtimeType == other.runtimeType &&
+            propsEquals(props, other.props);
+  }
+
+  @override
+  int get hashCode => propsHash(runtimeType, props);
+
+  @override
+  bool get stringify => true;
+
+  @override
+  Map<String, String> getDiff(Equatable other) {
+    if (this == other) return const {};
+
+    return propsDiff(props, other.props);
+  }
+
+  @override
+  String toStringShort() => '$runtimeType';
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) =>
+      toDiagnosticsNode(
+        style: DiagnosticsTreeStyle.singleLine,
+      ).toString(minLevel: minLevel);
+
+  @override
+  DiagnosticsNode toDiagnosticsNode({
+    String? name,
+    DiagnosticsTreeStyle? style,
+  }) =>
+      DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
+
+  @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
     properties
       ..add(ColorProperty('color', color))
       ..add(DoubleProperty('size', size))
@@ -101,21 +157,4 @@ mixin _$IconSpecMethods on Spec<IconSpec>, Diagnosticable {
       ..add(EnumProperty<BlendMode>('blendMode', blendMode))
       ..add(DiagnosticsProperty('icon', icon));
   }
-
-  @override
-  List<Object?> get props => [
-    color,
-    size,
-    weight,
-    grade,
-    opticalSize,
-    shadows,
-    textDirection,
-    applyTextScaling,
-    fill,
-    semanticsLabel,
-    opacity,
-    blendMode,
-    icon,
-  ];
 }

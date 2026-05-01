@@ -3,6 +3,22 @@
 import 'dart:developer';
 import 'dart:io';
 
+class _PackageExportConfig {
+  final String? libraryDirective;
+  final Map<String, List<String>> manualTopLevelDirectives;
+  final Map<String, List<String>> hiddenSymbolsByPath;
+  final List<String> excludedPaths;
+  final List<String> forcedPaths;
+
+  const _PackageExportConfig({
+    this.libraryDirective,
+    this.manualTopLevelDirectives = const {},
+    this.hiddenSymbolsByPath = const {},
+    this.excludedPaths = const [],
+    this.forcedPaths = const [],
+  });
+}
+
 void main(List<String> args) {
   if (args.isEmpty) {
     throw Exception('Please provide the directory path as an argument.');
@@ -33,15 +49,34 @@ Future<void> _libraryExport({
   required File mixFile,
   required String packageName,
 }) async {
+  final exportConfig =
+      _packageExportConfigs[packageName] ?? const _PackageExportConfig();
+
   if (mixFile.existsSync()) {
     mixFile.deleteSync();
   }
   final libOutputString = StringBuffer();
   libOutputString.write(_libAsci);
 
-  libOutputString.writeln('library $packageName;\n');
+  libOutputString.writeln(
+    '${exportConfig.libraryDirective ?? 'library $packageName;'}\n',
+  );
 
-  final fileMap = await _getImportedFilesByDirectory(src: src, lib: lib);
+  for (final entry in exportConfig.manualTopLevelDirectives.entries) {
+    libOutputString.writeln('/// ${entry.key}');
+    for (final directive in entry.value) {
+      libOutputString.writeln(directive);
+    }
+  }
+  if (exportConfig.manualTopLevelDirectives.isNotEmpty) {
+    libOutputString.writeln();
+  }
+
+  final fileMap = await _getImportedFilesByDirectory(
+    src: src,
+    lib: lib,
+    exportConfig: exportConfig,
+  );
 
   // Traverse the /lib/ directory
   for (final key in fileMap.keys) {
@@ -56,7 +91,12 @@ Future<void> _libraryExport({
     final barrelOutput = StringBuffer();
     barrelOutput.write(_generatedMessage);
     for (final import in importList) {
-      libOutputString.writeln('export \'$import\';');
+      libOutputString.writeln(
+        _buildExportDirective(
+          importPath: import,
+          hiddenSymbols: exportConfig.hiddenSymbolsByPath[import],
+        ),
+      );
     }
   }
 
@@ -120,8 +160,10 @@ String _getRelativePath(String filePath, String fromPath) {
 Future<Map<String, List<String>>> _getImportedFilesByDirectory({
   required Directory src,
   required Directory lib,
+  required _PackageExportConfig exportConfig,
 }) async {
   final result = <String, List<String>>{};
+  final includedRelativePaths = <String>{};
 
   final filesList = await _getFilesInDirectory(src);
 
@@ -132,7 +174,10 @@ Future<Map<String, List<String>>> _getImportedFilesByDirectory({
     if (!_isDartFile(filePath)) {
       continue;
     }
-    if (_isInternal(filePath)) {
+    final relativePath = _getRelativePath(filePath, lib.path);
+    final isForcedPath = exportConfig.forcedPaths.contains(relativePath);
+
+    if (_isInternal(filePath) && !isForcedPath) {
       continue;
     }
 
@@ -140,7 +185,10 @@ Future<Map<String, List<String>>> _getImportedFilesByDirectory({
       continue;
     }
 
-    final relativePath = _getRelativePath(filePath, lib.path);
+    if (exportConfig.excludedPaths.contains(relativePath)) {
+      continue;
+    }
+
     // file path will like this src/theme/mix_theme.dart, or src/sub1/**/*/*.dart
     // I would like to get sub1 and or the first direcotry and save as a variable
     // so I can use it in the export file.
@@ -149,9 +197,36 @@ Future<Map<String, List<String>>> _getImportedFilesByDirectory({
 
     result.putIfAbsent(dirName, () => []);
     result[dirName]!.add(relativePath);
+    includedRelativePaths.add(relativePath);
+  }
+
+  for (final relativePath in exportConfig.forcedPaths) {
+    if (includedRelativePaths.contains(relativePath)) {
+      continue;
+    }
+
+    const dirIndex = 1;
+    final dirName = relativePath.split('/')[dirIndex];
+    result.putIfAbsent(dirName, () => []);
+    result[dirName]!.add(relativePath);
+  }
+
+  for (final importList in result.values) {
+    importList.sort();
   }
 
   return result;
+}
+
+String _buildExportDirective({
+  required String importPath,
+  required List<String>? hiddenSymbols,
+}) {
+  if (hiddenSymbols == null || hiddenSymbols.isEmpty) {
+    return 'export \'$importPath\';';
+  }
+
+  return 'export \'$importPath\' hide ${hiddenSymbols.join(', ')};';
 }
 
 Future<List<String>> _getFilesInDirectory(Directory directory) async {
@@ -174,18 +249,18 @@ bool _isPartOfFile(String filePath) {
 }
 
 const _libAsci = r'''
-///   /\\\\            /\\\\  /\\\\\\\\\\\  /\\\       /\\\              
-///   \/\\\\\\        /\\\\\\ \/////\\\///  \///\\\   /\\\/  
-///    \/\\\//\\\    /\\\//\\\     \/\\\       \///\\\\\\/    
-///     \/\\\\///\\\/\\\/ \/\\\     \/\\\         \//\\\\      
-///      \/\\\  \///\\\/   \/\\\     \/\\\          \/\\\\      
-///       \/\\\    \///     \/\\\     \/\\\          /\\\\\\     
-///        \/\\\             \/\\\     \/\\\        /\\\////\\\   
-///         \/\\\             \/\\\  /\\\\\\\\\\\  /\\\/   \///\\\ 
-///          \///              \///  \///////////  \///       \/// 
+///   /\\\\            /\\\\  /\\\\\\\\\\\  /\\\       /\\\
+///   \/\\\\\\        /\\\\\\ \/////\\\///  \///\\\   /\\\/
+///    \/\\\//\\\    /\\\//\\\     \/\\\       \///\\\\\\/
+///     \/\\\\///\\\/\\\/ \/\\\     \/\\\         \//\\\\
+///      \/\\\  \///\\\/   \/\\\     \/\\\          \/\\\\
+///       \/\\\    \///     \/\\\     \/\\\          /\\\\\\
+///        \/\\\             \/\\\     \/\\\        /\\\////\\\
+///         \/\\\             \/\\\  /\\\\\\\\\\\  /\\\/   \///\\\
+///          \///              \///  \///////////  \///       \///
 ///
-///                        https://fluttermix.com 
-/// 
+///                        https://fluttermix.com
+///
 ///             /\///////////////////////////////////////////////////\
 ///             \/\           ***** GENERATED CODE *****            \ \
 ///              \/\            ** DO NOT EDIT THIS FILE **          \ \
@@ -202,3 +277,27 @@ const _generatedMessage = r'''
 //     \/////////////////////////////////////////////////
 
 ''';
+
+const _packageExportConfigs = <String, _PackageExportConfig>{
+  'mix': _PackageExportConfig(
+    libraryDirective: 'library;',
+    manualTopLevelDirectives: {
+      'ANNOTATIONS': [
+        "export 'package:mix_annotations/mix_annotations.dart' show MixWidget, mixWidget;",
+      ],
+    },
+    hiddenSymbolsByPath: {
+      'src/core/style.dart': ['StyleElement'],
+    },
+    excludedPaths: [
+      'src/core/decoration_merge.dart',
+      // equatable.dart is re-exported via spec.dart (only `Equatable` is
+      // public). Excluding here prevents `mapPropsToString`/`compareObjects`
+      // from leaking as public Mix API via the barrel.
+      'src/core/equatable.dart',
+      'src/core/shape_border_merge.dart',
+      'src/style/abstracts/styler.dart',
+    ],
+    forcedPaths: ['src/modifiers/internal/reset_modifier.dart'],
+  ),
+};
