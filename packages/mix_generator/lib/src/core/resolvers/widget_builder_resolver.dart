@@ -1,426 +1,497 @@
-/// Resolves which `MixWidgetBuilder` subclass a `@MixWidget` target
-/// dispatches through.
+/// Resolves how a `@MixWidget` target renders.
 ///
-/// Two resolution paths:
-///   1. If the annotation provides `widgetBuilder: CustomBuilder()`, the
-///      expression is validated (unprefixed, unnamed, zero-arg const
-///      constructor), its type is validated as a `MixWidgetBuilder<TSpec>`
-///      subtype from a library outside `package:mix`, and its `TSpec` is
-///      confirmed to match the target's spec. On success the class name is
-///      returned.
-///   2. Otherwise, if the target's spec is declared in `package:mix` and
-///      has an entry in [defaultBuildersBySpec], the default Mix built-in
-///      is used.
-///
-/// Targets whose spec is not Mix-owned and have no explicit
-/// `widgetBuilder` fall through to direct-widget emission (represented as
-/// [ResolvedBuilder.direct]).
+/// Looks up `@MixWidgetRenderer` on the spec class for the target's
+/// `Style<TSpec>`, validates the renderer is a Flutter widget with a
+/// compatible `style:` parameter, and mirrors the renderer's unnamed
+/// constructor (excluding `key`, `style`, `styleSpec`) onto the generated
+/// wrapper.
 library;
 
-import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/analysis/utilities.dart';
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:logging/logging.dart';
-import 'package:source_gen/source_gen.dart';
 
 import '../checkers.dart';
 import '../errors.dart';
+import '../helpers/library_scope.dart';
 import '../models/widget_target.dart';
 
 final _log = Logger('mix_generator.widget_builder');
 
-const _mixPackageUriPrefix = 'package:mix/';
+const _reservedRendererParameterNames = {'key', 'style', 'styleSpec'};
 
-const _customBuilderShapeMessage =
-    '`widgetBuilder` must be an unprefixed zero-argument unnamed const '
-    'constructor call for a custom MixWidgetBuilder subclass, such as '
-    'GlassCardBuilder().';
-
-const _builtInBuilderMessage =
-    'Built-in Mix widget builders are inferred automatically. `widgetBuilder` '
-    'is only for custom MixWidgetBuilder subclasses.';
-
-/// Names of Mix-owned spec types mapped to their default built-in builder
-/// class names.
+/// Resolves the rendering strategy for [target].
 ///
-/// Keep `RowBoxBuilder` / `ColumnBoxBuilder` out — both map to
-/// `FlexBoxSpec` and the default resolves to `FlexBoxBuilder`.
-const defaultBuildersBySpec = {
-  'BoxSpec': 'BoxBuilder',
-  'FlexBoxSpec': 'FlexBoxBuilder',
-  'TextSpec': 'StyledTextBuilder',
-  'IconSpec': 'StyledIconBuilder',
-  'ImageSpec': 'StyledImageBuilder',
-  'StackBoxSpec': 'StackBoxBuilder',
-};
-
-/// Resolves the dispatch strategy for [target] using the `@MixWidget`
-/// [annotation].
-///
-/// Validates custom builders, infers Mix-owned defaults, or falls back to
-/// [ResolvedBuilder.direct] when no builder applies.
-ResolvedBuilder resolveWidgetBuilder({
-  required ConstantReader annotation,
+/// The renderer is declared once on the spec class via `@MixWidgetRenderer`.
+/// Specs without that annotation produce a clear codegen error.
+ResolvedWidgetRenderer resolveWidgetRenderer({
   required AnnotatedTarget target,
   required Element element,
 }) {
-  final explicit = _extractExplicitBuilder(
-    annotation: annotation,
+  final specType = target.specType;
+  final specElement = specType is InterfaceType ? specType.element : null;
+  if (specElement == null) {
+    fail(
+      element,
+      'Could not resolve spec class for ${specType.getDisplayString()}.',
+    );
+  }
+
+  final rendererElement = _readRendererFromSpec(
+    specElement: specElement,
     element: element,
   );
-  if (explicit != null) {
-    _validateCustomBuilderType(
-      builderType: explicit.type,
-      targetSpec: target.specType,
-      element: element,
-    );
-    _log.info(
-      '${target.sourceName}: using custom widgetBuilder '
-      '${explicit.className}.',
-    );
 
-    return ResolvedBuilder.named(explicit.className);
-  }
-
-  final defaultName = _resolveDefaultBuilder(target.specType);
-  if (defaultName != null) {
-    _log.info(
-      '${target.sourceName}: inferred $defaultName for '
-      '${target.specType.getDisplayString()}.',
-    );
-
-    return ResolvedBuilder.named(defaultName);
-  }
-
-  _log.info(
-    '${target.sourceName}: no builder inferred; falling back to direct '
-    'widget emission.',
+  _validateRendererIsWidget(
+    rendererElement: rendererElement,
+    specElement: specElement,
+    element: element,
   );
 
-  return const ResolvedBuilder.direct();
-}
-
-String? _resolveDefaultBuilder(DartType specType) {
-  if (specType is! InterfaceType || !_isFromMixPackage(specType.element)) {
-    return null;
+  final constructor = rendererElement.unnamedConstructor;
+  final rendererName = rendererElement.name ?? '<unknown>';
+  if (constructor == null) {
+    final specName = specElement.name ?? '<unknown>';
+    fail(
+      element,
+      'Renderer `$rendererName` declared on '
+      '$specName via @MixWidgetRenderer must expose an unnamed '
+      'constructor.',
+    );
   }
 
-  return defaultBuildersBySpec[specType.element.name];
+  _validateStyleParameter(
+    constructor: constructor,
+    rendererName: rendererName,
+    target: target,
+    element: element,
+  );
+
+  _validateKeyParameter(
+    constructor: constructor,
+    rendererName: rendererName,
+    element: element,
+  );
+
+  final wrapperParameters = _extractRendererParameters(
+    constructor: constructor,
+    rendererName: rendererName,
+    element: element,
+  );
+
+  final widgetReference = _resolveWidgetReference(
+    widgetElement: rendererElement,
+    library: element.library!,
+    element: element,
+  );
+
+  _log.info(
+    '${target.sourceName}: rendering via $widgetReference for '
+    '${specType.getDisplayString()}.',
+  );
+
+  return ResolvedWidgetRenderer(
+    widgetReference: widgetReference,
+    parameters: wrapperParameters,
+  );
 }
 
-bool _isFromMixPackage(InterfaceElement element) {
-  return element.library.uri.toString().startsWith(_mixPackageUriPrefix);
-}
-
-/// A `widgetBuilder:` value the user supplied, after shape and type checks.
-class _ExplicitBuilder {
-  final InterfaceType type;
-  final String className;
-
-  const _ExplicitBuilder({required this.type, required this.className});
-}
-
-_ExplicitBuilder? _extractExplicitBuilder({
-  required ConstantReader annotation,
+InterfaceElement _readRendererFromSpec({
+  required InterfaceElement specElement,
   required Element element,
 }) {
-  final reader = annotation.peek('widgetBuilder');
-  if (reader == null || reader.isNull) {
-    return null;
-  }
-
-  final expression = _extractExplicitBuilderExpression(element);
-  if (!_isSupportedExplicitBuilderExpression(expression)) {
-    fail(element, _customBuilderShapeMessage);
-  }
-
-  final type = reader.objectValue.type;
-  if (type is! InterfaceType) {
-    fail(element, _customBuilderShapeMessage);
-  }
-
-  final className = type.element.name;
-  if (className == null) {
-    fail(element, _customBuilderShapeMessage);
-  }
-
-  return _ExplicitBuilder(type: type, className: className);
-}
-
-void _validateCustomBuilderType({
-  required InterfaceType builderType,
-  required DartType targetSpec,
-  required Element element,
-}) {
-  final builderElement = builderType.element;
-  if (_isFromMixPackage(builderElement)) {
-    fail(element, _builtInBuilderMessage);
-  }
-
-  final constructor = builderElement.unnamedConstructor;
-  if (constructor == null ||
-      !constructor.isConst ||
-      constructor.formalParameters.isNotEmpty) {
-    fail(element, _customBuilderShapeMessage);
-  }
-
-  final builderName = builderElement.name ?? builderType.getDisplayString();
-  final mixBuilderType = _findSupertype(builderType, mixWidgetBuilderChecker);
-  if (mixBuilderType == null) {
-    fail(
-      element,
-      '`widgetBuilder` must extend package:mix\'s MixWidgetBuilder<TSpec>. '
-      'Got ${builderType.getDisplayString()}.',
-    );
-  }
-
-  if (mixBuilderType.typeArguments.isEmpty) {
-    fail(
-      element,
-      '`widgetBuilder` type `$builderName` must bind a spec type parameter.',
-    );
-  }
-
-  final builderSpec = mixBuilderType.typeArguments.first;
-  if (builderSpec is! InterfaceType || targetSpec is! InterfaceType) {
-    fail(
-      element,
-      '`widgetBuilder` spec could not be resolved for $builderName.',
-    );
-  }
-
-  if (!_isSameSpec(builderSpec, targetSpec, element.library!)) {
-    fail(
-      element,
-      '`widgetBuilder` $builderName targets '
-      '${builderSpec.getDisplayString()} but the styler produces '
-      '${targetSpec.getDisplayString()}.',
-    );
-  }
-}
-
-/// Walks the class-extension chain (not `implements`/`with`) so that callers
-/// can enforce the difference between `extends` and structural conformance
-/// — callers reject builders that merely implement `MixWidgetBuilder`.
-InterfaceType? _findSupertype(InterfaceType type, TypeChecker checker) {
-  InterfaceType? current = type;
-  while (current != null) {
-    if (checker.isExactlyType(current)) {
-      return current;
-    }
-
-    current = current.superclass;
-  }
-
-  return null;
-}
-
-bool _isSameSpec(DartType left, DartType right, LibraryElement library) {
-  final typeSystem = library.typeSystem;
-
-  return typeSystem.isAssignableTo(left, right, strictCasts: false) &&
-      typeSystem.isAssignableTo(right, left, strictCasts: false);
-}
-
-/// Locates the `widgetBuilder:` argument expression in the annotation's AST.
-///
-/// `ConstantReader` exposes the constant value but not the raw AST. Re-parse
-/// the annotation's source text to extract the named argument expression so
-/// shape checks (`_isSupportedExplicitBuilderExpression`) can run.
-Expression _extractExplicitBuilderExpression(Element element) {
-  for (final annotation in element.metadata.annotations) {
+  for (final annotation in specElement.metadata.annotations) {
     final value = annotation.computeConstantValue();
     if (value == null) {
       continue;
     }
 
     final type = value.type;
-    if (type == null || !mixWidgetAnnotationChecker.isExactlyType(type)) {
+    if (type == null ||
+        !mixWidgetRendererAnnotationChecker.isExactlyType(type)) {
       continue;
     }
 
-    final expression = _tryExtractExplicitBuilderExpression(
-      annotation.toSource(),
-    );
-    if (expression != null) {
-      return expression;
+    final widgetType = value.getField('widget')?.toTypeValue();
+    if (widgetType == null) {
+      final specName = specElement.name ?? '<unknown>';
+      fail(
+        element,
+        '@MixWidgetRenderer on $specName did not provide a widget '
+        'type.',
+      );
     }
+
+    if (widgetType is! InterfaceType) {
+      final specName = specElement.name ?? '<unknown>';
+      fail(
+        element,
+        '@MixWidgetRenderer on $specName must reference a class, '
+        'got ${widgetType.getDisplayString()}.',
+      );
+    }
+
+    return widgetType.element;
   }
 
-  fail(element, 'Could not inspect the `widgetBuilder` annotation argument.');
+  fail(
+    element,
+    'No renderer found for ${specElement.name ?? '<unknown>'}. '
+    'Annotate the spec class with '
+    '@MixWidgetRenderer(YourWidget) to declare its renderer.',
+  );
 }
 
-Expression? _tryExtractExplicitBuilderExpression(String annotationSource) {
-  if (!annotationSource.contains('MixWidget')) {
-    return null;
+void _validateRendererIsWidget({
+  required InterfaceElement rendererElement,
+  required InterfaceElement specElement,
+  required Element element,
+}) {
+  if (rendererElement is! ClassElement) {
+    final specName = specElement.name ?? '<unknown>';
+    final rendererName = rendererElement.name ?? '<unknown>';
+    fail(
+      element,
+      '@MixWidgetRenderer on $specName must reference a class. Got '
+      '$rendererName.',
+    );
   }
 
-  final result = parseString(
-    content: '$annotationSource\nclass _MixWidgetAnnotationTarget {}',
-  );
-  final declaration = result.unit.declarations.first;
-  final parsedAnnotation = declaration.metadata.first;
-  final arguments = parsedAnnotation.arguments?.arguments ?? const [];
+  if (rendererElement.isAbstract) {
+    final specName = specElement.name ?? '<unknown>';
+    final rendererName = rendererElement.name ?? '<unknown>';
+    fail(
+      element,
+      '@MixWidgetRenderer on $specName must reference a concrete widget '
+      'class. Got abstract class $rendererName.',
+    );
+  }
 
-  for (final argument in arguments) {
-    if (argument is NamedExpression &&
-        argument.name.label.name == 'widgetBuilder') {
-      return argument.expression;
+  final rendererInterface = rendererElement.thisType;
+  if (!flutterWidgetChecker.isAssignableFromType(rendererInterface)) {
+    final specName = specElement.name ?? '<unknown>';
+    final rendererName = rendererElement.name ?? '<unknown>';
+    fail(
+      element,
+      '@MixWidgetRenderer on $specName must reference a Flutter '
+      'Widget subclass. Got $rendererName.',
+    );
+  }
+
+  if (rendererElement.typeParameters.isNotEmpty) {
+    final specName = specElement.name ?? '<unknown>';
+    final rendererName = rendererElement.name ?? '<unknown>';
+    fail(
+      element,
+      '@MixWidgetRenderer on $specName references generic class '
+      '`$rendererName<...>`. Generic renderers are not yet supported. '
+      'Use a non-generic concrete subclass as the renderer.',
+    );
+  }
+}
+
+void _validateStyleParameter({
+  required ConstructorElement constructor,
+  required String rendererName,
+  required AnnotatedTarget target,
+  required Element element,
+}) {
+  final styleParameter = _findNamedParameter(constructor, 'style');
+  if (styleParameter == null) {
+    fail(
+      element,
+      'Renderer `$rendererName` must declare a named `style:` parameter '
+      'compatible with ${target.stylerType.getDisplayString()}.',
+    );
+  }
+
+  final typeSystem = element.library!.typeSystem;
+  if (!typeSystem.isAssignableTo(
+    target.stylerType,
+    styleParameter.type,
+    strictCasts: false,
+  )) {
+    fail(
+      element,
+      'Renderer `$rendererName.style` is '
+      '${styleParameter.type.getDisplayString()}, but the styler returns '
+      '${target.stylerType.getDisplayString()}. The style parameter must '
+      'accept the styler type.',
+    );
+  }
+}
+
+void _validateKeyParameter({
+  required ConstructorElement constructor,
+  required String rendererName,
+  required Element element,
+}) {
+  final keyParameter = _findNamedParameter(constructor, 'key');
+  if (keyParameter == null) {
+    fail(
+      element,
+      'Renderer `$rendererName` must declare a named `Key? key` parameter.',
+    );
+  }
+
+  final keyType = keyParameter.type;
+  final isKey = flutterKeyChecker.isExactlyType(keyType);
+  final isNullable = keyType.nullabilitySuffix == .question;
+  if (!isKey || !isNullable) {
+    fail(
+      element,
+      'Renderer `$rendererName.key` is '
+      '${keyType.getDisplayString()}, but must be `Key?`.',
+    );
+  }
+}
+
+FormalParameterElement? _findNamedParameter(
+  ConstructorElement constructor,
+  String name,
+) {
+  for (final parameter in constructor.formalParameters) {
+    if (parameter.isNamed && parameter.name == name) {
+      return parameter;
     }
   }
 
   return null;
 }
 
-bool _isSupportedExplicitBuilderExpression(Expression expression) {
-  if (expression is InstanceCreationExpression) {
-    final constructorName = expression.constructorName;
-    final typeName = constructorName.type;
+List<ParameterSpec> _extractRendererParameters({
+  required ConstructorElement constructor,
+  required String rendererName,
+  required Element element,
+}) {
+  final parameters = <ParameterSpec>[];
+  for (final parameter in constructor.formalParameters) {
+    final name = parameter.name;
+    if (name == null) {
+      continue;
+    }
+    if (_reservedRendererParameterNames.contains(name)) {
+      continue;
+    }
 
-    return typeName.importPrefix == null &&
-        constructorName.name == null &&
-        constructorName.period == null &&
-        typeName.typeArguments == null &&
-        expression.argumentList.arguments.isEmpty;
+    _validateForwardedRendererParameter(
+      parameter: parameter,
+      rendererName: rendererName,
+      element: element,
+    );
+
+    parameters.add(
+      ParameterSpec.fromParameter(parameter, visibleFrom: element.library),
+    );
   }
 
-  if (expression is MethodInvocation) {
-    return expression.target == null &&
-        expression.operator == null &&
-        expression.typeArguments == null &&
-        expression.argumentList.arguments.isEmpty;
+  return parameters;
+}
+
+void _validateForwardedRendererParameter({
+  required FormalParameterElement parameter,
+  required String rendererName,
+  required Element element,
+}) {
+  if (parameter.isOptionalPositional) {
+    final parameterName = parameter.name ?? '?';
+    fail(
+      element,
+      'Renderer `$rendererName` constructor parameter '
+      '`$parameterName` is optional positional. Use a required '
+      'positional or named parameter instead.',
+    );
+  }
+
+  _validateParameterTypeVisible(
+    parameter: parameter,
+    rendererName: rendererName,
+    element: element,
+  );
+  _validateParameterDefaultVisible(
+    parameter: parameter,
+    rendererName: rendererName,
+    element: element,
+  );
+}
+
+void _validateParameterTypeVisible({
+  required FormalParameterElement parameter,
+  required String rendererName,
+  required Element element,
+}) {
+  final hiddenType = firstInvisibleTypeName(parameter.type, element.library!);
+  if (hiddenType == null) {
+    return;
+  }
+
+  final parameterName = parameter.name ?? '<unknown>';
+  fail(
+    element,
+    'Renderer `$rendererName` parameter `$parameterName` has type '
+    '${parameter.type.getDisplayString()}, which is not visible to the '
+    'annotated library. Import or re-export `$hiddenType` where @MixWidget '
+    'is used.',
+  );
+}
+
+void _validateParameterDefaultVisible({
+  required FormalParameterElement parameter,
+  required String rendererName,
+  required Element element,
+}) {
+  final defaultValueCode = parameter.defaultValueCode;
+  if (defaultValueCode == null) {
+    return;
+  }
+
+  final issue = _firstDefaultVisibilityIssue(
+    defaultValueCode,
+    annotatedLibrary: element.library!,
+    rendererLibrary: parameter.library!,
+  );
+  if (issue == null) {
+    return;
+  }
+
+  final parameterName = parameter.name ?? '<unknown>';
+  if (issue.shadowed) {
+    fail(
+      element,
+      'Renderer `$rendererName` parameter `$parameterName` has default '
+      'value `$defaultValueCode`, where `${issue.identifier}` resolves to a '
+      'different declaration in the annotated library than in the renderer '
+      'library. Rename the conflicting symbol in the annotated library, or '
+      "restructure imports so it sees the renderer's `${issue.identifier}`.",
+    );
+  }
+
+  fail(
+    element,
+    'Renderer `$rendererName` parameter `$parameterName` has default '
+    'value `$defaultValueCode`, which references `${issue.identifier}` that '
+    'is not visible to the annotated library. Import or re-export '
+    '`${issue.identifier}` where @MixWidget is used.',
+  );
+}
+
+({String identifier, bool shadowed})? _firstDefaultVisibilityIssue(
+  String defaultValueCode, {
+  required LibraryElement annotatedLibrary,
+  required LibraryElement rendererLibrary,
+}) {
+  final result = parseString(
+    content: 'dynamic __mix_default__ = $defaultValueCode;',
+    throwIfDiagnostics: false,
+  );
+
+  final declaration =
+      result.unit.declarations.first as TopLevelVariableDeclaration;
+  final initializer = declaration.variables.variables.first.initializer;
+  if (initializer == null) {
+    return null;
+  }
+
+  final collector = _FreeIdentifierCollector();
+  initializer.accept(collector);
+
+  for (final identifier in collector.identifiers) {
+    final annotatedElement = _resolveTopLevel(annotatedLibrary, identifier);
+    final hasAnnotatedPrefix = _hasPrefixNamed(annotatedLibrary, identifier);
+
+    if (annotatedElement == null && !hasAnnotatedPrefix) {
+      return (identifier: identifier, shadowed: false);
+    }
+
+    final rendererElement = _resolveTopLevel(rendererLibrary, identifier);
+    if (annotatedElement != null &&
+        rendererElement != null &&
+        annotatedElement.baseElement != rendererElement.baseElement) {
+      return (identifier: identifier, shadowed: true);
+    }
+  }
+
+  return null;
+}
+
+Element? _resolveTopLevel(LibraryElement library, String identifier) {
+  for (final fragment in library.fragments) {
+    final lookup = fragment.scope.lookup(identifier);
+    final element = lookup.getter ?? lookup.setter;
+    if (element != null) {
+      return element;
+    }
+  }
+
+  return null;
+}
+
+bool _hasPrefixNamed(LibraryElement library, String identifier) {
+  for (final fragment in library.fragments) {
+    for (final prefix in fragment.prefixes) {
+      if (prefix.name == identifier) {
+        return true;
+      }
+    }
   }
 
   return false;
 }
 
-/// Reads the `MixWidgetBuilder.build()` method's named parameter types from
-/// `package:mix`, keyed by parameter name. Used by the caller to assert that
-/// every `call()` parameter forwarded to a builder is assignable to its
-/// counterpart on `build()`.
-Future<Map<String, DartType>> resolveBuilderBuildParameterTypes(
-  Element element,
-) async {
-  const reservedNames = {'key', 'style', 'styleSpec'};
-  final result = await element.library!.session.getLibraryByUri(
-    'package:mix/src/core/widget_builder.dart',
-  );
-  if (result is! LibraryElementResult) {
-    fail(
-      element,
-      'Could not resolve package:mix\'s MixWidgetBuilder.build() signature.',
-    );
-  }
+/// Collects identifiers used as the head of an expression — direct references,
+/// constructor receivers, prefixes — while skipping member-access RHS
+/// (`Foo.bar` skips `bar`) and named-argument labels.
+class _FreeIdentifierCollector extends RecursiveAstVisitor<void> {
+  final List<String> identifiers = [];
 
-  final builderElement = result.element.exportNamespace.get2(
-    'MixWidgetBuilder',
-  );
-  if (builderElement is! InterfaceElement) {
-    fail(
-      element,
-      'Could not resolve package:mix\'s MixWidgetBuilder.build() signature.',
-    );
-  }
+  @override
+  void visitSimpleIdentifier(SimpleIdentifier node) {
+    final parent = node.parent;
 
-  final buildMethod = builderElement.getMethod('build');
-  if (buildMethod == null) {
-    fail(
-      element,
-      'Could not resolve package:mix\'s MixWidgetBuilder.build() signature.',
-    );
-  }
-
-  return {
-    for (final parameter in buildMethod.formalParameters)
-      if (parameter.isNamed && !reservedNames.contains(parameter.name))
-        parameter.name!: parameter.type,
-  };
-}
-
-/// Confirms every mirrored `call()` parameter forwarded through a named
-/// builder is assignable to the matching `MixWidgetBuilder.build()`
-/// parameter.
-void validateBuilderForwardedParameters({
-  required List<ParameterSpec> mirroredParameters,
-  required Map<String, DartType> buildParameterTypes,
-  required Element element,
-}) {
-  final typeSystem = element.library!.typeSystem;
-
-  for (final parameter in mirroredParameters) {
-    final buildParameterType = buildParameterTypes[parameter.name];
-    if (buildParameterType == null) {
-      fail(
-        element,
-        '`call()` parameter `${parameter.name}` cannot be forwarded through '
-        'MixWidgetBuilder.build(). Add it to MixWidgetBuilder.build() or use '
-        'direct widget fallback.',
-      );
+    if (parent is PrefixedIdentifier && identical(parent.identifier, node)) {
+      return;
+    }
+    if (parent is PropertyAccess && identical(parent.propertyName, node)) {
+      return;
+    }
+    if (parent is MethodInvocation &&
+        identical(parent.methodName, node) &&
+        parent.target != null) {
+      return;
+    }
+    if (parent is ConstructorName && identical(parent.name, node)) {
+      return;
+    }
+    if (parent is Label) {
+      return;
     }
 
-    if (!typeSystem.isAssignableTo(
-      parameter.type,
-      buildParameterType,
-      strictCasts: false,
-    )) {
-      fail(
-        element,
-        '`call()` parameter `${parameter.name}` has type '
-        '${parameter.typeCode}, which cannot be forwarded through '
-        'MixWidgetBuilder.build(). Expected '
-        '${buildParameterType.getDisplayString()}.',
-      );
-    }
+    identifiers.add(node.name);
   }
 }
 
-/// Confirms the direct-fallback widget can accept the generator's emitted
-/// `key:` and `style:` named arguments.
-///
-/// When `@MixWidget` has no `widgetBuilder` and the target spec is not in the
-/// built-in default map, the generator emits the styler's `call()` return
-/// widget directly and forwards `key:` and `style:` to it. The widget must
-/// therefore expose both as named constructor parameters.
-void validateDirectFallbackWidget({
-  required InterfaceType callReturnType,
+String _resolveWidgetReference({
+  required InterfaceElement widgetElement,
+  required LibraryElement library,
   required Element element,
 }) {
-  final widgetElement = callReturnType.element;
-  final widgetName = widgetElement.name ?? callReturnType.getDisplayString();
-
-  if (widgetElement is! ClassElement) {
-    fail(
-      element,
-      '@MixWidget direct-widget fallback requires `$widgetName` to be a '
-      'concrete class. Either provide a `widgetBuilder` or ensure the '
-      'styler `call()` returns a standard widget class.',
-    );
+  final name = widgetElement.name;
+  if (name == null) {
+    fail(element, '@MixWidget requires a named renderer widget.');
   }
 
-  final constructor = widgetElement.unnamedConstructor;
-  if (constructor == null) {
-    fail(
-      element,
-      '@MixWidget direct-widget fallback requires `$widgetName` to expose an '
-      'unnamed constructor.',
-    );
+  final reference = referenceFor(widgetElement, library);
+  if (reference != null) {
+    return reference;
   }
 
-  final namedParameters = {
-    for (final parameter in constructor.formalParameters)
-      if (parameter.isNamed && parameter.name != null) parameter.name!,
-  };
-  for (final required in const {'key', 'style'}) {
-    if (!namedParameters.contains(required)) {
-      fail(
-        element,
-        '@MixWidget direct-widget fallback requires `$widgetName` to accept a '
-        'named `$required` constructor parameter. Either add it, or supply a '
-        'custom `widgetBuilder: MyBuilder()` so the wrapper can dispatch '
-        'through MixWidgetBuilder.build().',
-      );
-    }
-  }
+  fail(
+    element,
+    '@MixWidget could not reference renderer widget `$name`. Import the '
+    'library that exports `$name` without hiding it, or import it with a '
+    'visible prefix.',
+  );
 }

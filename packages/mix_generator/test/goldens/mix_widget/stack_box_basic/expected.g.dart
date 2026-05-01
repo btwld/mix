@@ -8,16 +8,12 @@ part of 'input.dart';
 // **************************************************************************
 
 class Overlay extends StatelessWidget {
-  const Overlay({super.key, required this.children});
+  const Overlay({super.key, this.children = const <Widget>[]});
 
   final List<Widget> children;
 
   @override
   Widget build(BuildContext context) {
-    return const StackBoxBuilder().build(
-      overlayStyle,
-      key: key,
-      children: children,
-    );
+    return StackBox(key: key, style: overlayStyle, children: children);
   }
 }

@@ -1,11 +1,7 @@
-import 'package:analyzer/dart/element/element.dart';
-import 'package:analyzer/dart/element/nullability_suffix.dart';
-import 'package:analyzer/dart/element/type.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 import 'package:mix_generator/src/core/builders/spec_mixin_builder.dart';
 import 'package:mix_generator/src/core/models/annotation_config.dart';
 import 'package:mix_generator/src/core/models/field_model.dart';
-import 'package:mix_generator/src/core/registry/mix_type_registry.dart';
 import 'package:test/test.dart';
 
 // Test helper to create FieldModel instances for testing
@@ -18,56 +14,12 @@ FieldModel createTestFieldModel({
 }) {
   return FieldModel(
     name: name,
-    dartType: _FakeDartType(effectiveSpecType, isNullable),
-    element: _FakeFieldElement(name),
-    isNullable: isNullable,
     typeName: typeName ?? effectiveSpecType.replaceAll('?', ''),
     isList: false,
     effectiveSpecType: effectiveSpecType,
-    effectivePublicParamType: effectiveSpecType,
     isLerpable: isLerpable,
-    propWrapperKind: PropWrapperKind.none,
-    isWrappedInProp: false,
     diagnosticKind: DiagnosticKind.diagnostics,
-    generateSetter: true,
   );
-}
-
-// Minimal fake DartType for testing
-class _FakeDartType implements DartType {
-  final String _displayString;
-  final bool _isNullable;
-
-  _FakeDartType(this._displayString, this._isNullable);
-
-  @override
-  String getDisplayString({bool withNullability = true}) => _displayString;
-
-  @override
-  NullabilitySuffix get nullabilitySuffix =>
-      _isNullable ? NullabilitySuffix.question : NullabilitySuffix.none;
-
-  @override
-  dynamic noSuchMethod(Invocation invocation) {
-    throw UnsupportedError(
-      'Unexpected DartType access in test: ${invocation.memberName}',
-    );
-  }
-}
-
-// Minimal fake FieldElement for testing
-class _FakeFieldElement implements FieldElement {
-  @override
-  final String name;
-
-  _FakeFieldElement(this.name);
-
-  @override
-  dynamic noSuchMethod(Invocation invocation) {
-    throw UnsupportedError(
-      'Unexpected FieldElement access in test: ${invocation.memberName}',
-    );
-  }
 }
 
 void main() {

@@ -11,32 +11,22 @@ class ContextualButton extends StatelessWidget {
   const ContextualButton({
     super.key,
     this.compact = false,
-    required this.label,
-    required this.onPressed,
-    this.loading = false,
     this.style,
+    this.child,
   });
 
   final bool compact;
 
-  final String label;
-
-  final void Function()? onPressed;
-
-  final bool loading;
-
   final ContextButtonStyle? style;
+
+  final Widget? child;
 
   @override
   Widget build(BuildContext context) {
-    final baseStyle = contextualButtonStyle(context, compact: compact);
-    final effectiveStyle = baseStyle.merge(style);
-    return ContextButton(
-      label: label,
-      onPressed: onPressed,
-      loading: loading,
+    return Box(
       key: key,
-      style: effectiveStyle,
+      style: contextualButtonStyle(context, compact: compact, style: style),
+      child: child,
     );
   }
 }

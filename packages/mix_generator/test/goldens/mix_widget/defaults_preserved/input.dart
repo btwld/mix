@@ -10,11 +10,9 @@ class DefaultCardStyler extends Style<BoxSpec> {
   const DefaultCardStyler();
 
   DefaultCardStyler merge(DefaultCardStyler? other) => this;
-
-  Box call({Widget? child = const Widget()}) {
-    return Box(style: this, child: child);
-  }
 }
 
 @MixWidget()
-final defaultCardStyle = DefaultCardStyler();
+DefaultCardStyler defaultCardStyle({bool compact = false, int padding = 16}) {
+  return const DefaultCardStyler();
+}

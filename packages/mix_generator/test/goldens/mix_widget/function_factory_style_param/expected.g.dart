@@ -7,17 +7,21 @@ part of 'input.dart';
 // MixWidgetGenerator
 // **************************************************************************
 
-class Card extends StatelessWidget {
-  const Card({super.key, this.child, this.style});
+class Chip extends StatelessWidget {
+  const Chip({super.key, required this.color, this.style, this.child});
 
-  final Widget? child;
+  final Color color;
 
   final BoxStyler? style;
 
+  final Widget? child;
+
   @override
   Widget build(BuildContext context) {
-    final baseStyle = cardStyle;
-    final effectiveStyle = baseStyle.merge(style);
-    return const BoxBuilder().build(effectiveStyle, key: key, child: child);
+    return Box(
+      key: key,
+      style: chipStyle(color: color, style: style),
+      child: child,
+    );
   }
 }

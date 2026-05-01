@@ -10,7 +10,10 @@ import 'package:mix_annotations/mix_annotations.dart';
 import 'package:source_gen/source_gen.dart';
 
 import 'core/builders/mix_mixin_builder.dart';
+import 'core/checkers.dart';
 import 'core/errors.dart';
+import 'core/helpers/library_scope.dart';
+import 'core/helpers/type_hierarchy.dart';
 import 'core/models/annotation_config.dart';
 import 'core/models/mix_field_model.dart';
 
@@ -22,25 +25,22 @@ class MixableGenerator extends GeneratorForAnnotation<Mixable> {
   const MixableGenerator();
 
   bool _isMixClass(ClassElement element) {
-    // Check if class extends Mix<T> or a subclass of Mix<T>
-    final supertype = element.supertype;
-    if (supertype == null) return false;
-
-    // Check direct supertype
-    if (_isMixType(supertype)) return true;
-
-    // Check if any supertype in hierarchy is Mix<T>
-    for (final interface in element.allSupertypes) {
-      if (_isMixType(interface)) return true;
-    }
-
-    return false;
+    return _findMixBinding(element) != null;
   }
 
-  bool _isMixType(InterfaceType type) {
-    final elementName = type.element.name;
+  InterfaceType? _findMixBinding(ClassElement element) {
+    final mixType = findSupertypeMatching(element.supertype, mixChecker);
+    if (mixType != null) {
+      return mixType;
+    }
 
-    return elementName == 'Mix' || elementName == 'Mixable';
+    for (final supertype in element.allSupertypes) {
+      if (mixableChecker.isExactlyType(supertype)) {
+        return supertype;
+      }
+    }
+
+    return null;
   }
 
   /// Walks the supertype chain to find the concrete `Mix<T>`/`Mixable<T>`
@@ -51,23 +51,33 @@ class MixableGenerator extends GeneratorForAnnotation<Mixable> {
   /// supertype's first type argument would incorrectly pick `A`; we must
   /// locate the actual Mix binding first.
   String? _extractResolveToType(ClassElement classElement) {
-    for (final supertype in [
-      classElement.supertype,
-      ...classElement.allSupertypes,
-    ]) {
-      if (supertype == null) continue;
-      if (_isMixType(supertype) && supertype.typeArguments.isNotEmpty) {
-        return supertype.typeArguments.first.getDisplayString();
-      }
+    final mixType = _findMixBinding(classElement);
+    if (mixType == null || mixType.typeArguments.isEmpty) {
+      return null;
     }
 
-    return null;
+    final resolveType = mixType.typeArguments.first;
+    final hiddenType = firstInvisibleTypeName(
+      resolveType,
+      classElement.library,
+    );
+    if (hiddenType != null) {
+      final className = classElement.name ?? '<unknown>';
+      fail(
+        classElement,
+        'Resolve type `$hiddenType` is used but not imported into the '
+        'annotated library. Import or re-export `$hiddenType` where '
+        '$className is declared.',
+      );
+    }
+
+    return typeCode(resolveType, visibleFrom: classElement.library);
   }
 
   bool _hasDefaultValueMixin(ClassElement classElement) {
     // Check if the class uses DefaultValue<T> mixin
     for (final mixin in classElement.mixins) {
-      if (mixin.element.name == 'DefaultValue') {
+      if (defaultValueChecker.isExactlyType(mixin)) {
         return true;
       }
     }
@@ -89,7 +99,12 @@ class MixableGenerator extends GeneratorForAnnotation<Mixable> {
     // Sort by name for stable ordering
     dollarFields.sort((a, b) => a.name!.compareTo(b.name!));
 
-    return dollarFields.map(MixFieldModel.fromElement).toList();
+    return dollarFields.map((field) {
+      return MixFieldModel.fromElement(
+        field,
+        visibleFrom: classElement.library,
+      );
+    }).toList();
   }
 
   void _collectFieldsFromHierarchy(
@@ -100,13 +115,11 @@ class MixableGenerator extends GeneratorForAnnotation<Mixable> {
     if (classElement is ClassElement) {
       final supertype = classElement.supertype;
       if (supertype != null) {
-        final superElement = supertype.element;
-        final superName = superElement.name;
-
         // Stop at Mix, Mixable, or Object
-        if (superName != 'Mix' &&
-            superName != 'Mixable' &&
-            superName != 'Object') {
+        if (!mixChecker.isExactlyType(supertype) &&
+            !mixableChecker.isExactlyType(supertype) &&
+            !supertype.isDartCoreObject) {
+          final superElement = supertype.element;
           _collectFieldsFromHierarchy(superElement, fields);
         }
       }
@@ -122,11 +135,10 @@ class MixableGenerator extends GeneratorForAnnotation<Mixable> {
   }
 
   MixableAnnotationConfig _extractAnnotationConfig(ConstantReader annotation) {
-    final methodsReader = annotation.peek('methods');
     final resolveToTypeReader = annotation.peek('resolveToType');
 
     return MixableAnnotationConfig(
-      methods: methodsReader?.intValue ?? GeneratedMixMethods.all,
+      methods: peekMethodsBitmask(annotation, GeneratedMixMethods.all),
       resolveToType: resolveToTypeReader?.stringValue,
     );
   }

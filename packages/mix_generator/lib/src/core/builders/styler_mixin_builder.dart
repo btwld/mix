@@ -1,10 +1,11 @@
 /// Styler mixin builder for generating _$XStylerMixin.
 ///
-/// Generates abstract getters, setters, merge(), resolve(),
-/// debugFillProperties(), props, and call() methods.
+/// Generates abstract getters, setters, base methods (animate, variants,
+/// wrap), merge(), resolve(), debugFillProperties(), and props.
 library;
 
 import '../models/annotation_config.dart';
+import '../helpers/field_emitter.dart';
 import '../models/styler_field_model.dart';
 
 /// Builds the _$XStylerMixin for a Styler class.
@@ -21,22 +22,16 @@ class StylerMixinBuilder {
     required this.config,
   });
 
+  FieldEmitter<StylerFieldModel> _fieldEmitter() => .new(fields);
+
   String _buildAbstractGetters() {
-    if (fields.isEmpty) return '';
-
-    final buffer = StringBuffer();
-    for (final field in fields) {
-      final typeStr = field.dartType.getDisplayString();
-      buffer.writeln('  $typeStr get ${field.declaredName};');
-    }
-    buffer.writeln();
-
-    return buffer.toString();
+    return _fieldEmitter().abstractGetters(
+      typeCode: (field) => field.fieldTypeCode,
+      getterName: (field) => field.declaredName,
+    );
   }
 
   String _buildSetters() {
-    if (!config.generateSetters) return '';
-
     final buffer = StringBuffer();
 
     for (final field in fields) {
@@ -56,8 +51,6 @@ class StylerMixinBuilder {
   }
 
   String _buildBaseMethods() {
-    if (!config.generateSetters) return '';
-
     final buffer = StringBuffer();
 
     // animate method
@@ -87,8 +80,6 @@ class StylerMixinBuilder {
   }
 
   String _buildMerge() {
-    if (!config.generateMerge) return '';
-
     final buffer = StringBuffer();
 
     buffer.writeln('  /// Merges with another [$stylerName].');
@@ -96,23 +87,17 @@ class StylerMixinBuilder {
     buffer.writeln('  $stylerName merge($stylerName? other) {');
     buffer.writeln('    return $stylerName.create(');
 
-    // Field merge assignments
-    for (final field in fields) {
+    _fieldEmitter().linesInto(buffer, (field) {
       final fieldName = field.declaredName;
       final name = field.name;
-
       if (field.isRawList) {
         // Raw lists use MixOps.mergeList
-        buffer.writeln(
-          '      $name: MixOps.mergeList($fieldName, other?.$fieldName),',
-        );
-      } else {
-        // Regular fields use MixOps.merge
-        buffer.writeln(
-          '      $name: MixOps.merge($fieldName, other?.$fieldName),',
-        );
+        return '      $name: MixOps.mergeList($fieldName, other?.$fieldName),';
       }
-    }
+
+      // Regular fields use MixOps.merge
+      return '      $name: MixOps.merge($fieldName, other?.$fieldName),';
+    });
 
     // Base fields
     buffer.writeln(
@@ -132,8 +117,6 @@ class StylerMixinBuilder {
   }
 
   String _buildResolve() {
-    if (!config.generateResolve) return '';
-
     final buffer = StringBuffer();
 
     buffer.writeln('  /// Resolves to [StyleSpec<$specName>] using context.');
@@ -141,19 +124,17 @@ class StylerMixinBuilder {
     buffer.writeln('  StyleSpec<$specName> resolve(BuildContext context) {');
     buffer.writeln('    final spec = $specName(');
 
-    // Field resolve assignments
-    for (final field in fields) {
+    _fieldEmitter().linesInto(buffer, (field) {
       final fieldName = field.declaredName;
       final name = field.name;
-
       if (field.isRawList) {
         // Raw lists pass through directly
-        buffer.writeln('      $name: $fieldName,');
-      } else {
-        // Regular fields use MixOps.resolve
-        buffer.writeln('      $name: MixOps.resolve(context, $fieldName),');
+        return '      $name: $fieldName,';
       }
-    }
+
+      // Regular fields use MixOps.resolve
+      return '      $name: MixOps.resolve(context, $fieldName),';
+    });
 
     buffer.writeln('    );');
     buffer.writeln();
@@ -168,63 +149,19 @@ class StylerMixinBuilder {
   }
 
   String _buildDebugFillProperties() {
-    if (!config.generateDebugFillProperties) return '';
-
-    final buffer = StringBuffer();
-
-    buffer.writeln('  @override');
-    buffer.writeln(
-      '  void debugFillProperties(DiagnosticPropertiesBuilder properties) {',
+    return _fieldEmitter().debugFillProperties(
+      callSuper: true,
+      propertyCode: (field) {
+        return "DiagnosticsProperty('${field.displayName}', ${field.declaredName})";
+      },
     );
-    buffer.writeln('    super.debugFillProperties(properties);');
-
-    if (fields.isNotEmpty) {
-      buffer.writeln('    properties');
-
-      for (int i = 0; i < fields.length; i++) {
-        final field = fields[i];
-        final displayName = field.displayName;
-        final fieldName = field.declaredName;
-        final separator = i == fields.length - 1 ? ';' : '';
-        buffer.writeln(
-          "      ..add(DiagnosticsProperty('$displayName', $fieldName))$separator",
-        );
-      }
-    }
-
-    buffer.writeln('  }');
-
-    return buffer.toString();
   }
 
   String _buildProps() {
-    if (!config.generateProps) return '';
-
-    final buffer = StringBuffer();
-
-    buffer.writeln('  @override');
-    buffer.write('  List<Object?> get props => [');
-
-    if (fields.isEmpty) {
-      buffer.writeln();
-      buffer.writeln('    \$animation,');
-      buffer.writeln('    \$modifier,');
-      buffer.writeln('    \$variants,');
-      buffer.writeln('  ];');
-    } else {
-      buffer.writeln();
-      // Domain fields
-      for (final field in fields) {
-        buffer.writeln('    ${field.declaredName},');
-      }
-      // Base fields
-      buffer.writeln('    \$animation,');
-      buffer.writeln('    \$modifier,');
-      buffer.writeln('    \$variants,');
-      buffer.writeln('  ];');
-    }
-
-    return buffer.toString();
+    return _fieldEmitter().multilineProps(
+      propCode: (field) => field.declaredName,
+      trailingProps: const [r'$animation', r'$modifier', r'$variants'],
+    );
   }
 
   /// The mixin name.

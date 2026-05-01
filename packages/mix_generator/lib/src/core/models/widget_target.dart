@@ -9,20 +9,14 @@ library;
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 
-/// Flags parsed from the `@MixWidget(...)` annotation arguments.
-class MixWidgetConfig {
-  final String? name;
-  final bool styleable;
-
-  const MixWidgetConfig({required this.name, required this.styleable});
-}
+import '../helpers/library_scope.dart' as library_scope;
 
 /// A resolved `@MixWidget` target: a top-level styler declaration or factory.
 class AnnotatedTarget {
   /// The declared name of the annotated element (variable or function name).
   final String sourceName;
 
-  /// The concrete `Style<TSpec>` subtype of the target.
+  /// The concrete `Style<TSpec>` subtype produced by the target.
   final InterfaceType stylerType;
 
   /// The `TSpec` type argument of [stylerType].
@@ -40,8 +34,7 @@ class AnnotatedTarget {
   });
 }
 
-/// A single parameter mirrored from a styler's `call()` method (or a factory
-/// function's parameter list) onto the generated wrapper widget.
+/// A single parameter surfaced on the generated wrapper widget.
 class ParameterSpec {
   final String name;
   final DartType type;
@@ -49,7 +42,6 @@ class ParameterSpec {
   final bool isNamed;
   final bool isRequiredNamed;
   final bool isRequiredPositional;
-  final bool isOptionalPositional;
   final String? defaultValueCode;
 
   const ParameterSpec({
@@ -59,32 +51,26 @@ class ParameterSpec {
     required this.isNamed,
     required this.isRequiredNamed,
     required this.isRequiredPositional,
-    required this.isOptionalPositional,
     required this.defaultValueCode,
   });
 
-  factory ParameterSpec.fromParameter(FormalParameterElement parameter) {
+  factory ParameterSpec.fromParameter(
+    FormalParameterElement parameter, {
+    LibraryElement? visibleFrom,
+  }) {
     return ParameterSpec(
       name: parameter.name!,
       type: parameter.type,
-      typeCode: parameter.type.getDisplayString(),
+      typeCode: library_scope.typeCode(
+        parameter.type,
+        visibleFrom: visibleFrom,
+      ),
       isNamed: parameter.isNamed,
       isRequiredNamed: parameter.isRequiredNamed,
       isRequiredPositional: parameter.isRequiredPositional,
-      isOptionalPositional: parameter.isOptionalPositional,
       defaultValueCode: parameter.defaultValueCode,
     );
   }
-}
-
-/// The shape of a styler's `call()` method — its return widget type plus the
-/// public (non-reserved) parameters that are mirrored onto the generated
-/// wrapper's constructor.
-class CallSignature {
-  final InterfaceType returnType;
-  final List<ParameterSpec> parameters;
-
-  const CallSignature({required this.returnType, required this.parameters});
 }
 
 /// Factory-function parameters split between the user-visible wrapper
@@ -104,28 +90,18 @@ class FactoryParameters {
   });
 }
 
-/// The builder to dispatch through when emitting the widget class.
-///
-/// - [ResolvedBuilder.named] dispatches to a `const BuilderName().build(...)`
-///   emission (either a Mix built-in inferred by spec or a user-authored
-///   custom builder).
-/// - [ResolvedBuilder.direct] emits the call-return widget constructor
-///   directly (fallback for custom user widgets outside the built-in map).
-sealed class ResolvedBuilder {
-  const ResolvedBuilder();
+/// The renderer widget and wrapper parameters used to emit the widget class.
+class ResolvedWidgetRenderer {
+  /// The renderer widget reference as it should appear in generated code,
+  /// optionally prefixed (e.g. `Box`, `mix.Box`, `RemixButton`).
+  final String widgetReference;
 
-  const factory ResolvedBuilder.named(String className) = NamedBuilder;
-  const factory ResolvedBuilder.direct() = DirectBuilder;
-}
+  /// Parameters mirrored from the renderer widget's unnamed constructor,
+  /// excluding `key`, `style`, and `styleSpec`.
+  final List<ParameterSpec> parameters;
 
-/// Dispatch through a concrete `MixWidgetBuilder` subclass by name.
-class NamedBuilder extends ResolvedBuilder {
-  final String className;
-
-  const NamedBuilder(this.className);
-}
-
-/// Fallback: emit the styler's `call()` return widget constructor directly.
-class DirectBuilder extends ResolvedBuilder {
-  const DirectBuilder();
+  const ResolvedWidgetRenderer({
+    required this.widgetReference,
+    required this.parameters,
+  });
 }

@@ -14,6 +14,6 @@ class Heading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const StyledTextBuilder().build(headingStyle, key: key, text: text);
+    return StyledText(text, key: key, style: headingStyle);
   }
 }
