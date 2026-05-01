@@ -1,0 +1,504 @@
+{
+  "$schema": "https://mix.dev/schema/prop-registry/v1.json",
+  "version": "1.0.0-draft",
+  "note": "Machine-readable prop registry for the Mix JSON Schema. Source of truth for per-prop typing. Accompanies guides/mix_schema/spec.md.",
+
+  "tokenNamespaces": {
+    "color":      { "type": "Color" },
+    "radius":     { "type": "Radius" },
+    "space":      { "type": "double" },
+    "double":     { "type": "double" },
+    "breakpoint": { "type": "Breakpoint" },
+    "text":       { "type": "TextStyle" },
+    "borderSide": { "type": "BorderSide" },
+    "shadow":     { "type": "List<Shadow>" }
+  },
+
+  "enums": {
+    "Clip":               ["none", "hardEdge", "antiAlias", "antiAliasWithSaveLayer"],
+    "Axis":               ["horizontal", "vertical"],
+    "MainAxisAlignment":  ["start", "end", "center", "spaceBetween", "spaceAround", "spaceEvenly"],
+    "CrossAxisAlignment": ["start", "end", "center", "stretch", "baseline"],
+    "MainAxisSize":       ["min", "max"],
+    "VerticalDirection":  ["up", "down"],
+    "TextDirection":      ["ltr", "rtl"],
+    "TextBaseline":       ["alphabetic", "ideographic"],
+    "TextAlign":          ["left", "right", "center", "justify", "start", "end"],
+    "TextOverflow":       ["clip", "fade", "ellipsis", "visible"],
+    "TextWidthBasis":     ["parent", "longestLine"],
+    "TextDecoration":     ["none", "underline", "overline", "lineThrough"],
+    "TextDecorationStyle":["solid", "double", "dotted", "dashed", "wavy"],
+    "FontWeight":         ["w100", "w200", "w300", "w400", "w500", "w600", "w700", "w800", "w900"],
+    "FontStyle":          ["normal", "italic"],
+    "StackFit":           ["loose", "expand", "passthrough"],
+    "BoxFit":             ["fill", "contain", "cover", "fitWidth", "fitHeight", "none", "scaleDown"],
+    "ImageRepeat":        ["repeat", "repeatX", "repeatY", "noRepeat"],
+    "FilterQuality":      ["none", "low", "medium", "high"],
+    "BoxShape":           ["rectangle", "circle"],
+    "BorderStyle":        ["none", "solid"],
+    "FlexFit":            ["tight", "loose"],
+    "MouseCursor": [
+      "none", "basic", "click", "forbidden", "wait", "progress",
+      "contextMenu", "help", "text", "verticalText", "cell", "precise",
+      "move", "grab", "grabbing", "noDrop", "alias", "copy", "disallowed",
+      "allScroll", "resizeLeftRight", "resizeUpDown",
+      "resizeUpLeftDownRight", "resizeUpRightDownLeft",
+      "resizeUp", "resizeDown", "resizeLeft", "resizeRight",
+      "resizeColumn", "resizeRow", "zoomIn", "zoomOut"
+    ],
+    "BlendMode": [
+      "clear", "src", "dst", "srcOver", "dstOver", "srcIn", "dstIn",
+      "srcOut", "dstOut", "srcATop", "dstATop", "xor", "plus", "modulate",
+      "screen", "overlay", "darken", "lighten", "colorDodge", "colorBurn",
+      "hardLight", "softLight", "difference", "exclusion", "multiply",
+      "hue", "saturation", "color", "luminosity"
+    ]
+  },
+
+  "enumAliases": {
+    "FontWeight": {
+      "normal": "w400",
+      "bold":   "w700"
+    }
+  },
+
+  "literals": {
+    "EdgeInsets": {
+      "fields": {
+        "top":    { "type": "double", "tokens": ["space", "double"] },
+        "left":   { "type": "double", "tokens": ["space", "double"] },
+        "right":  { "type": "double", "tokens": ["space", "double"] },
+        "bottom": { "type": "double", "tokens": ["space", "double"] }
+      },
+      "sugar": {
+        "all":        "expands to { top, left, right, bottom } with same value",
+        "horizontal": "expands to { left, right }",
+        "vertical":   "expands to { top, bottom }"
+      }
+    },
+
+    "BorderRadius": {
+      "fields": {
+        "topLeft":     { "type": "Radius", "tokens": ["radius"] },
+        "topRight":    { "type": "Radius", "tokens": ["radius"] },
+        "bottomLeft":  { "type": "Radius", "tokens": ["radius"] },
+        "bottomRight": { "type": "Radius", "tokens": ["radius"] }
+      },
+      "sugar": { "all": "expands to all four corners" }
+    },
+
+    "BoxConstraints": {
+      "fields": {
+        "minWidth":  { "type": "double", "tokens": ["double"] },
+        "maxWidth":  { "type": "double", "tokens": ["double"] },
+        "minHeight": { "type": "double", "tokens": ["double"] },
+        "maxHeight": { "type": "double", "tokens": ["double"] }
+      }
+    },
+
+    "Size": {
+      "fields": {
+        "width":  { "type": "double", "tokens": ["double"] },
+        "height": { "type": "double", "tokens": ["double"] }
+      }
+    },
+
+    "Offset": {
+      "fields": {
+        "dx": { "type": "double" },
+        "dy": { "type": "double" }
+      }
+    },
+
+    "Rect": {
+      "fields": {
+        "left":   { "type": "double" },
+        "top":    { "type": "double" },
+        "right":  { "type": "double" },
+        "bottom": { "type": "double" }
+      }
+    },
+
+    "Alignment": {
+      "presets": [
+        "topLeft", "topCenter", "topRight",
+        "centerLeft", "center", "centerRight",
+        "bottomLeft", "bottomCenter", "bottomRight"
+      ],
+      "fields": {
+        "x": { "type": "double" },
+        "y": { "type": "double" }
+      },
+      "note": "Canonical form is { x, y }. Preset strings are sugar."
+    },
+
+    "Matrix4": {
+      "shape": "ordered-ops",
+      "form":  "{ ops: [ { op: <opName>, ...params }, ... ] }",
+      "discriminator": "op",
+      "ops": {
+        "identity":  { "fields": {} },
+        "translate": { "fields": { "x": { "type": "double" }, "y": { "type": "double" } } },
+        "scale":     { "fields": { "x": { "type": "double" }, "y": { "type": "double" } } },
+        "rotateZ":   { "fields": { "radians": { "type": "double" } } }
+      },
+      "note": "v1.0 ops: identity, translate, scale, rotateZ. Angles canonical in radians. Raw 16-value matrices, rotateX/Y, skewX/Y, and perspective are deferred."
+    },
+
+    "Shadow": {
+      "fields": {
+        "color":      { "type": "color",   "tokens": ["color"] },
+        "offset":     { "kind": "literal", "literal": "Offset" },
+        "blurRadius": { "type": "double" }
+      }
+    },
+
+    "BorderSide": {
+      "fields": {
+        "color":  { "type": "color",  "tokens": ["color"] },
+        "width":  { "type": "double", "tokens": ["double"] },
+        "style":  { "kind": "enum",   "enum": "BorderStyle" }
+      }
+    },
+
+    "Border": {
+      "fields": {
+        "top":    { "kind": "literal", "literal": "BorderSide", "tokens": ["borderSide"] },
+        "left":   { "kind": "literal", "literal": "BorderSide", "tokens": ["borderSide"] },
+        "right":  { "kind": "literal", "literal": "BorderSide", "tokens": ["borderSide"] },
+        "bottom": { "kind": "literal", "literal": "BorderSide", "tokens": ["borderSide"] }
+      },
+      "sugar": { "all": "expands to all four sides" }
+    },
+
+    "Gradient": {
+      "discriminator": "kind",
+      "kinds": {
+        "linear": {
+          "fields": {
+            "begin":  { "kind": "literal", "literal": "Alignment" },
+            "end":    { "kind": "literal", "literal": "Alignment" },
+            "colors": { "kind": "array",   "items": { "type": "color", "tokens": ["color"] } },
+            "stops":  { "kind": "array",   "items": { "type": "double" } }
+          }
+        },
+        "radial": {
+          "fields": {
+            "center": { "kind": "literal", "literal": "Alignment" },
+            "radius": { "type": "double" },
+            "colors": { "kind": "array",   "items": { "type": "color", "tokens": ["color"] } },
+            "stops":  { "kind": "array",   "items": { "type": "double" } }
+          }
+        },
+        "sweep": {
+          "fields": {
+            "center":     { "kind": "literal", "literal": "Alignment" },
+            "startAngle": { "type": "double" },
+            "endAngle":   { "type": "double" },
+            "colors":     { "kind": "array",   "items": { "type": "color", "tokens": ["color"] } },
+            "stops":      { "kind": "array",   "items": { "type": "double" } }
+          }
+        }
+      }
+    },
+
+    "Decoration": {
+      "fields": {
+        "color":        { "type": "color",   "tokens": ["color"] },
+        "borderRadius": { "kind": "literal", "literal": "BorderRadius" },
+        "border":       { "kind": "literal", "literal": "Border" },
+        "gradient":     { "kind": "literal", "literal": "Gradient" },
+        "boxShadow":    { "kind": "array",   "items": { "kind": "literal", "literal": "Shadow" }, "tokens": ["shadow"] },
+        "shape":        { "kind": "enum",    "enum": "BoxShape" }
+      }
+    },
+
+    "TextStyle": {
+      "fields": {
+        "color":               { "type": "color",  "tokens": ["color"] },
+        "backgroundColor":     { "type": "color",  "tokens": ["color"] },
+        "fontFamily":          { "type": "string" },
+        "fontSize":            { "type": "double", "tokens": ["double"] },
+        "fontWeight":          { "kind": "enum",   "enum": "FontWeight" },
+        "fontStyle":           { "kind": "enum",   "enum": "FontStyle" },
+        "letterSpacing":       { "type": "double" },
+        "wordSpacing":         { "type": "double" },
+        "height":              { "type": "double" },
+        "decoration":          { "kind": "enum",   "enum": "TextDecoration" },
+        "decorationColor":     { "type": "color",  "tokens": ["color"] },
+        "decorationStyle":     { "kind": "enum",   "enum": "TextDecorationStyle" },
+        "decorationThickness": { "type": "double" },
+        "shadows":             { "kind": "array",  "items": { "kind": "literal", "literal": "Shadow" }, "tokens": ["shadow"] }
+      }
+    },
+
+    "StrutStyle": {
+      "fields": {
+        "fontFamily":       { "type": "string" },
+        "fontSize":         { "type": "double" },
+        "height":           { "type": "double" },
+        "leading":          { "type": "double" },
+        "forceStrutHeight": { "type": "bool" }
+      }
+    },
+
+    "TextScaler": {
+      "discriminator": "kind",
+      "kinds": {
+        "linear":    { "fields": { "scaleFactor": { "type": "double" } } },
+        "noScaling": { "fields": {} }
+      }
+    },
+
+    "TextHeightBehavior": {
+      "fields": {
+        "applyHeightToFirstAscent": { "type": "bool" },
+        "applyHeightToLastDescent": { "type": "bool" }
+      }
+    },
+
+    "Icon": {
+      "discriminator": "source",
+      "kinds": {
+        "material":  { "fields": { "name":      { "type": "string" } } },
+        "cupertino": { "fields": { "name":      { "type": "string" } } },
+        "custom":    { "fields": {
+          "family":    { "type": "string" },
+          "codePoint": { "type": "int" }
+        } }
+      }
+    },
+
+    "Image": {
+      "discriminator": "source",
+      "kinds": {
+        "asset":   { "fields": { "path": { "type": "string" } } },
+        "network": { "fields": { "url":  { "type": "string" } } },
+        "host":    { "fields": { "id":   { "type": "string" } } }
+      }
+    }
+  },
+
+  "specs": {
+    "box": {
+      "widget": "Box",
+      "props": {
+        "alignment":            { "kind": "literal", "literal": "Alignment" },
+        "padding":              { "kind": "literal", "literal": "EdgeInsets",     "merge": "structured", "tokens": ["space"] },
+        "margin":               { "kind": "literal", "literal": "EdgeInsets",     "merge": "structured", "tokens": ["space"] },
+        "constraints":          { "kind": "literal", "literal": "BoxConstraints", "merge": "structured" },
+        "decoration":           { "kind": "literal", "literal": "Decoration",     "merge": "structured" },
+        "foregroundDecoration": { "kind": "literal", "literal": "Decoration",     "merge": "structured" },
+        "transform":            { "kind": "literal", "literal": "Matrix4" },
+        "transformAlignment":   { "kind": "literal", "literal": "Alignment" },
+        "clipBehavior":         { "kind": "enum",    "enum": "Clip" }
+      }
+    },
+
+    "flex": {
+      "widget": null,
+      "note": "Leaf spec used by FlexBox via flexbox composite.",
+      "props": {
+        "direction":          { "kind": "enum",   "enum": "Axis" },
+        "mainAxisAlignment":  { "kind": "enum",   "enum": "MainAxisAlignment" },
+        "crossAxisAlignment": { "kind": "enum",   "enum": "CrossAxisAlignment" },
+        "mainAxisSize":       { "kind": "enum",   "enum": "MainAxisSize" },
+        "verticalDirection":  { "kind": "enum",   "enum": "VerticalDirection" },
+        "textDirection":      { "kind": "enum",   "enum": "TextDirection" },
+        "textBaseline":       { "kind": "enum",   "enum": "TextBaseline" },
+        "clipBehavior":       { "kind": "enum",   "enum": "Clip" },
+        "spacing":            { "kind": "scalar", "type": "double", "tokens": ["space", "double"] }
+      }
+    },
+
+    "text": {
+      "widget": "StyledText",
+      "props": {
+        "style":              { "kind": "literal", "literal": "TextStyle",          "merge": "structured", "tokens": ["text"] },
+        "overflow":           { "kind": "enum",    "enum": "TextOverflow" },
+        "strutStyle":         { "kind": "literal", "literal": "StrutStyle",         "merge": "structured" },
+        "textAlign":          { "kind": "enum",    "enum": "TextAlign" },
+        "maxLines":           { "kind": "scalar",  "type": "int" },
+        "textWidthBasis":     { "kind": "enum",    "enum": "TextWidthBasis" },
+        "textScaler":         { "kind": "literal", "literal": "TextScaler" },
+        "textDirection":      { "kind": "enum",    "enum": "TextDirection" },
+        "softWrap":           { "kind": "scalar",  "type": "bool" },
+        "textHeightBehavior": { "kind": "literal", "literal": "TextHeightBehavior", "merge": "structured" },
+        "selectionColor":     { "kind": "scalar",  "type": "color",  "tokens": ["color"] },
+        "semanticsLabel":     { "kind": "scalar",  "type": "string" },
+        "locale":             { "kind": "scalar",  "type": "string", "note": "BCP 47 language tag, e.g. en-US" }
+      },
+      "specLevel": {
+        "textDirectives": { "kind": "array", "items": "StringDirective" }
+      }
+    },
+
+    "icon": {
+      "widget": "StyledIcon",
+      "props": {
+        "color":            { "kind": "scalar", "type": "color",  "tokens": ["color"] },
+        "size":             { "kind": "scalar", "type": "double", "tokens": ["double"] },
+        "weight":           { "kind": "scalar", "type": "double" },
+        "grade":            { "kind": "scalar", "type": "double" },
+        "opticalSize":      { "kind": "scalar", "type": "double" },
+        "fill":             { "kind": "scalar", "type": "double" },
+        "shadows":          { "kind": "array",  "items": { "kind": "literal", "literal": "Shadow" }, "tokens": ["shadow"] },
+        "textDirection":    { "kind": "enum",   "enum": "TextDirection" },
+        "applyTextScaling": { "kind": "scalar", "type": "bool" },
+        "semanticsLabel":   { "kind": "scalar", "type": "string" },
+        "opacity":          { "kind": "scalar", "type": "double" },
+        "blendMode":        { "kind": "enum",   "enum": "BlendMode" }
+      }
+    },
+
+    "image": {
+      "widget": "StyledImage",
+      "props": {
+        "width":                { "kind": "scalar",  "type": "double" },
+        "height":               { "kind": "scalar",  "type": "double" },
+        "color":                { "kind": "scalar",  "type": "color", "tokens": ["color"] },
+        "repeat":               { "kind": "enum",    "enum": "ImageRepeat" },
+        "fit":                  { "kind": "enum",    "enum": "BoxFit" },
+        "alignment":            { "kind": "literal", "literal": "Alignment" },
+        "filterQuality":        { "kind": "enum",    "enum": "FilterQuality" },
+        "colorBlendMode":       { "kind": "enum",    "enum": "BlendMode" },
+        "centerSlice":          { "kind": "literal", "literal": "Rect" },
+        "semanticLabel":        { "kind": "scalar",  "type": "string" },
+        "excludeFromSemantics": { "kind": "scalar",  "type": "bool" },
+        "gaplessPlayback":      { "kind": "scalar",  "type": "bool" },
+        "isAntiAlias":          { "kind": "scalar",  "type": "bool" },
+        "matchTextDirection":   { "kind": "scalar",  "type": "bool" }
+      }
+    },
+
+    "stack": {
+      "widget": null,
+      "note": "Leaf spec used by StackBox via stackbox composite.",
+      "props": {
+        "alignment":     { "kind": "literal", "literal": "Alignment" },
+        "fit":           { "kind": "enum",    "enum": "StackFit" },
+        "textDirection": { "kind": "enum",    "enum": "TextDirection" },
+        "clipBehavior":  { "kind": "enum",    "enum": "Clip" }
+      }
+    },
+
+    "flexbox": {
+      "widget":     "FlexBox",
+      "composite":  ["box", "flex"],
+      "note":       "Composite spec. Contains box and flex sub-styles, merged independently."
+    },
+
+    "stackbox": {
+      "widget":     "StackBox",
+      "composite":  ["box", "stack"],
+      "note":       "Composite spec. Contains box and stack sub-styles, merged independently."
+    }
+  },
+
+  "modifiers": {
+    "opacity":      { "props": { "opacity":      { "type": "double" } } },
+    "blur":         { "props": { "sigma":        { "type": "double" } } },
+    "aspectRatio":  { "props": { "aspectRatio":  { "type": "double" } } },
+    "sizedBox":     { "props": { "width":        { "type": "double" }, "height": { "type": "double" } } },
+    "padding":      { "props": { "padding":      { "kind": "literal", "literal": "EdgeInsets", "tokens": ["space"] } } },
+    "align":        { "props": { "alignment":    { "kind": "literal", "literal": "Alignment" },
+                                 "widthFactor":  { "type": "double" },
+                                 "heightFactor": { "type": "double" } } },
+    "flexible":     { "props": { "flex":         { "type": "int" }, "fit": { "kind": "enum", "enum": "FlexFit" } } },
+    "rotatedBox":   { "props": { "quarterTurns": { "type": "int" } } },
+    "visibility":   { "props": { "visible":      { "type": "bool" } } },
+    "clipOval":     { "props": { "clipBehavior": { "kind": "enum", "enum": "Clip" } } },
+    "clipRect":     { "props": { "clipBehavior": { "kind": "enum", "enum": "Clip" } } },
+    "clipRRect":    { "props": { "borderRadius": { "kind": "literal", "literal": "BorderRadius", "tokens": ["radius"] },
+                                 "clipBehavior": { "kind": "enum",    "enum": "Clip" } } },
+    "clipPath":     { "props": { "clipper":      { "kind": "host" },
+                                 "clipBehavior": { "kind": "enum", "enum": "Clip" } } },
+    "clipTriangle": { "props": { "clipBehavior": { "kind": "enum", "enum": "Clip" } } },
+    "transform":    { "props": { "transform":    { "kind": "literal", "literal": "Matrix4" },
+                                 "alignment":    { "kind": "literal", "literal": "Alignment" } } },
+    "scale":        { "props": { "x":            { "type": "double" },
+                                 "y":            { "type": "double" },
+                                 "alignment":    { "kind": "literal", "literal": "Alignment" } } },
+    "rotate":       { "props": { "radians":      { "type": "double" },
+                                 "alignment":    { "kind": "literal", "literal": "Alignment" } } },
+    "translate":    { "props": { "x":            { "type": "double" }, "y": { "type": "double" } } },
+    "skew":         { "props": { "skewX":        { "type": "double" }, "skewY": { "type": "double" } } },
+    "shaderMask":   { "props": { "shader":       { "kind": "host" },
+                                 "blendMode":    { "kind": "enum", "enum": "BlendMode" } } },
+    "fractionallySizedBox": {
+      "props": {
+        "widthFactor":  { "type": "double" },
+        "heightFactor": { "type": "double" },
+        "alignment":    { "kind": "literal", "literal": "Alignment" }
+      }
+    },
+    "intrinsicHeight":    { "props": {} },
+    "intrinsicWidth":     { "props": {} },
+    "iconTheme": {
+      "props": {
+        "color":            { "type": "color",  "tokens": ["color"] },
+        "size":             { "type": "double", "tokens": ["double"] },
+        "fill":             { "type": "double" },
+        "weight":           { "type": "double" },
+        "grade":            { "type": "double" },
+        "opticalSize":      { "type": "double" },
+        "applyTextScaling": { "type": "bool" }
+      }
+    },
+    "defaultTextStyle": {
+      "props": {
+        "style":          { "kind": "literal", "literal": "TextStyle", "tokens": ["text"] },
+        "textAlign":      { "kind": "enum",    "enum": "TextAlign" },
+        "softWrap":       { "type": "bool" },
+        "overflow":       { "kind": "enum",    "enum": "TextOverflow" },
+        "maxLines":       { "type": "int" },
+        "textWidthBasis": { "kind": "enum",    "enum": "TextWidthBasis" }
+      }
+    },
+    "defaultTextStyler": { "props": { "style": { "kind": "styleNode", "spec": "text" } } },
+    "box":               { "props": { "style": { "kind": "styleNode", "spec": "box"  } } },
+    "mouseCursor":       { "props": { "cursor": { "kind": "enum", "enum": "MouseCursor" } } },
+    "scrollView":        { "props": { "scrollDirection": { "kind": "enum", "enum": "Axis" } } },
+    "reset":             { "props": {}, "note": "Destructive sentinel; discards all preceding modifiers in the merged list." }
+  },
+
+  "directives": {
+    "color": {
+      "opacity":    { "props": { "value":  { "type": "double" } } },
+      "withValues": { "props": { "alpha":  { "type": "double", "optional": true },
+                                  "red":    { "type": "double", "optional": true },
+                                  "green":  { "type": "double", "optional": true },
+                                  "blue":   { "type": "double", "optional": true } } },
+      "alpha":      { "props": { "value":  { "type": "int" } } },
+      "darken":     { "props": { "amount": { "type": "int" } } },
+      "lighten":    { "props": { "amount": { "type": "int" } } },
+      "saturate":   { "props": { "amount": { "type": "int" } } },
+      "desaturate": { "props": { "amount": { "type": "int" } } },
+      "tint":       { "props": { "amount": { "type": "int" } } },
+      "shade":      { "props": { "amount": { "type": "int" } } },
+      "brighten":   { "props": { "amount": { "type": "int" } } },
+      "withRed":    { "props": { "value":  { "type": "int" } } },
+      "withGreen":  { "props": { "value":  { "type": "int" } } },
+      "withBlue":   { "props": { "value":  { "type": "int" } } }
+    },
+    "string": {
+      "capitalize":   { "props": {} },
+      "uppercase":    { "props": {} },
+      "lowercase":    { "props": {} },
+      "titleCase":    { "props": {} },
+      "sentenceCase": { "props": {} }
+    },
+    "number": {
+      "multiply": { "props": { "factor":     { "type": "num" } } },
+      "add":      { "props": { "addend":     { "type": "num" } } },
+      "subtract": { "props": { "subtrahend": { "type": "num" } } },
+      "divide":   { "props": { "divisor":    { "type": "num", "constraint": "!= 0" } } },
+      "clamp":    { "props": { "min":        { "type": "num" },
+                               "max":        { "type": "num", "constraint": ">= min" } } },
+      "abs":      { "props": {} },
+      "round":    { "props": {} },
+      "floor":    { "props": {} },
+      "ceil":     { "props": {} }
+    }
+  }
+}

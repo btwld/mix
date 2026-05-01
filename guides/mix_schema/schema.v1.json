@@ -1,0 +1,1466 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mix.dev/schema/v1.json",
+  "title": "Mix JSON Schema v1.0",
+  "description": "Public contract for declaring Mix widget trees. Validates documents in canonical form. Scope: structural validity (widget/spec/variant/modifier/directive/animation discriminated unions, token grammar, extension id grammar, host-ref positions, animation discriminators, literal discriminators, directive op catalog). Out of scope: per-prop type shape (e.g. padding's value must be EdgeInsets) and nested Value validation inside structured-literal bodies — both are enforced by the reference validator against guides/mix_schema/registry.json. See guides/mix_schema/spec.md for the normative specification.",
+
+  "type": "object",
+  "required": ["schema", "root"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema":    { "type": "string", "format": "uri" },
+    "schema":     { "type": "string", "pattern": "^1\\.[0-9]+\\.[0-9]+$" },
+    "mixRuntime": { "type": "string" },
+    "tokens":     { "$ref": "#/$defs/TokenBundle" },
+    "root":       { "$ref": "#/$defs/WidgetNode" }
+  },
+
+  "$defs": {
+
+    "TokenBundle": {
+      "type": "object",
+      "description": "Optional inline token bundle. Keys are fully qualified token paths (namespace.name). Values accept the same input sugar as Value primitives.",
+      "propertyNames": { "$ref": "#/$defs/TokenPath" },
+      "additionalProperties": { "$ref": "#/$defs/Value" }
+    },
+
+    "TokenPath": {
+      "description": "Builtin namespaces use a permissive name grammar (Flutter-style camelCase). x: extension tokens require lowercase atom grammar end-to-end (no uppercase, no adjacent dots).",
+      "oneOf": [
+        { "type": "string", "pattern": "^(color|radius|space|double|breakpoint|text|borderSide|shadow)\\.[a-zA-Z0-9_][a-zA-Z0-9_.-]*$" },
+        { "type": "string", "pattern": "^x:[a-z][a-z0-9_-]*(\\.[a-z][a-z0-9_-]*)+$" }
+      ]
+    },
+
+    "ExtensionId": {
+      "type": "string",
+      "pattern": "^x:[a-z][a-z0-9_-]*$"
+    },
+
+    "WidgetNode": {
+      "oneOf": [
+        { "$ref": "#/$defs/Widget_Box" },
+        { "$ref": "#/$defs/Widget_FlexBox" },
+        { "$ref": "#/$defs/Widget_RowBox" },
+        { "$ref": "#/$defs/Widget_ColumnBox" },
+        { "$ref": "#/$defs/Widget_StackBox" },
+        { "$ref": "#/$defs/Widget_StyledText" },
+        { "$ref": "#/$defs/Widget_StyledIcon" },
+        { "$ref": "#/$defs/Widget_StyledImage" },
+        { "$ref": "#/$defs/Widget_Pressable" },
+        { "$ref": "#/$defs/Widget_PressableBox" },
+        { "$ref": "#/$defs/Widget_Extension" }
+      ]
+    },
+
+    "Widget_Box": {
+      "type": "object",
+      "required": ["widget"],
+      "additionalProperties": false,
+      "properties": {
+        "widget": { "const": "Box" },
+        "style":  { "$ref": "#/$defs/Style_box" },
+        "child":  { "$ref": "#/$defs/WidgetNode" }
+      }
+    },
+
+    "Widget_FlexBox": {
+      "type": "object",
+      "required": ["widget", "children"],
+      "additionalProperties": false,
+      "properties": {
+        "widget":   { "const": "FlexBox" },
+        "style":    { "$ref": "#/$defs/Style_flexbox" },
+        "children": { "$ref": "#/$defs/ChildrenArray" }
+      }
+    },
+
+    "Widget_RowBox": {
+      "type": "object",
+      "required": ["widget", "children"],
+      "additionalProperties": false,
+      "properties": {
+        "widget":   { "const": "RowBox" },
+        "style":    { "$ref": "#/$defs/Style_flexbox" },
+        "children": { "$ref": "#/$defs/ChildrenArray" }
+      }
+    },
+
+    "Widget_ColumnBox": {
+      "type": "object",
+      "required": ["widget", "children"],
+      "additionalProperties": false,
+      "properties": {
+        "widget":   { "const": "ColumnBox" },
+        "style":    { "$ref": "#/$defs/Style_flexbox" },
+        "children": { "$ref": "#/$defs/ChildrenArray" }
+      }
+    },
+
+    "Widget_StackBox": {
+      "type": "object",
+      "required": ["widget", "children"],
+      "additionalProperties": false,
+      "properties": {
+        "widget":   { "const": "StackBox" },
+        "style":    { "$ref": "#/$defs/Style_stackbox" },
+        "children": { "$ref": "#/$defs/ChildrenArray" }
+      }
+    },
+
+    "Widget_StyledText": {
+      "type": "object",
+      "required": ["widget", "text"],
+      "additionalProperties": false,
+      "properties": {
+        "widget": { "const": "StyledText" },
+        "text":   { "type": "string" },
+        "style":  { "$ref": "#/$defs/Style_text" }
+      }
+    },
+
+    "Widget_StyledIcon": {
+      "type": "object",
+      "required": ["widget", "icon"],
+      "additionalProperties": false,
+      "properties": {
+        "widget": { "const": "StyledIcon" },
+        "icon":   { "$ref": "#/$defs/Literal_Icon" },
+        "style":  { "$ref": "#/$defs/Style_icon" }
+      }
+    },
+
+    "Widget_StyledImage": {
+      "type": "object",
+      "required": ["widget", "image"],
+      "additionalProperties": false,
+      "properties": {
+        "widget": { "const": "StyledImage" },
+        "image":  { "$ref": "#/$defs/Literal_Image" },
+        "style":  { "$ref": "#/$defs/Style_image" }
+      }
+    },
+
+    "Widget_Pressable": {
+      "type": "object",
+      "description": "Pure behavior wrapper; no style field (per v1 decision #19). Styling a pressable container uses PressableBox.",
+      "required": ["widget", "child"],
+      "additionalProperties": false,
+      "properties": {
+        "widget": { "const": "Pressable" },
+        "child":  { "$ref": "#/$defs/WidgetNode" }
+      }
+    },
+
+    "Widget_PressableBox": {
+      "type": "object",
+      "required": ["widget"],
+      "additionalProperties": false,
+      "properties": {
+        "widget": { "const": "PressableBox" },
+        "style":  { "$ref": "#/$defs/Style_box" },
+        "child":  { "$ref": "#/$defs/WidgetNode" }
+      }
+    },
+
+    "Widget_Extension": {
+      "type": "object",
+      "description": "Custom widget via x: prefix. Host registry binds rendering.",
+      "required": ["widget"],
+      "additionalProperties": true,
+      "properties": {
+        "widget": { "$ref": "#/$defs/ExtensionId" }
+      }
+    },
+
+    "ChildrenArray": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/WidgetNode" },
+      "minItems": 1
+    },
+
+    "Style_box": {
+      "type": "object",
+      "required": ["spec"],
+      "additionalProperties": false,
+      "properties": {
+        "spec":      { "const": "box" },
+        "props":     { "$ref": "#/$defs/Props_box" },
+        "variants":  { "$ref": "#/$defs/VariantArray_box" },
+        "modifiers": { "$ref": "#/$defs/ModifierArray" },
+        "animation": { "$ref": "#/$defs/AnimationNode" }
+      }
+    },
+
+    "Style_flex": {
+      "type": "object",
+      "required": ["spec"],
+      "additionalProperties": false,
+      "properties": {
+        "spec":      { "const": "flex" },
+        "props":     { "$ref": "#/$defs/Props_flex" },
+        "variants":  { "$ref": "#/$defs/VariantArray_flex" },
+        "modifiers": { "$ref": "#/$defs/ModifierArray" },
+        "animation": { "$ref": "#/$defs/AnimationNode" }
+      }
+    },
+
+    "Style_text": {
+      "type": "object",
+      "required": ["spec"],
+      "additionalProperties": false,
+      "properties": {
+        "spec":            { "const": "text" },
+        "props":           { "$ref": "#/$defs/Props_text" },
+        "variants":        { "$ref": "#/$defs/VariantArray_text" },
+        "modifiers":       { "$ref": "#/$defs/ModifierArray" },
+        "animation":       { "$ref": "#/$defs/AnimationNode" },
+        "textDirectives":  {
+          "type": "array",
+          "items": { "$ref": "#/$defs/StringDirective" },
+          "minItems": 1
+        }
+      }
+    },
+
+    "Style_icon": {
+      "type": "object",
+      "required": ["spec"],
+      "additionalProperties": false,
+      "properties": {
+        "spec":      { "const": "icon" },
+        "props":     { "$ref": "#/$defs/Props_icon" },
+        "variants":  { "$ref": "#/$defs/VariantArray_icon" },
+        "modifiers": { "$ref": "#/$defs/ModifierArray" },
+        "animation": { "$ref": "#/$defs/AnimationNode" }
+      }
+    },
+
+    "Style_image": {
+      "type": "object",
+      "required": ["spec"],
+      "additionalProperties": false,
+      "properties": {
+        "spec":      { "const": "image" },
+        "props":     { "$ref": "#/$defs/Props_image" },
+        "variants":  { "$ref": "#/$defs/VariantArray_image" },
+        "modifiers": { "$ref": "#/$defs/ModifierArray" },
+        "animation": { "$ref": "#/$defs/AnimationNode" }
+      }
+    },
+
+    "Style_stack": {
+      "type": "object",
+      "required": ["spec"],
+      "additionalProperties": false,
+      "properties": {
+        "spec":      { "const": "stack" },
+        "props":     { "$ref": "#/$defs/Props_stack" },
+        "variants":  { "$ref": "#/$defs/VariantArray_stack" },
+        "modifiers": { "$ref": "#/$defs/ModifierArray" },
+        "animation": { "$ref": "#/$defs/AnimationNode" }
+      }
+    },
+
+    "Style_flexbox": {
+      "type": "object",
+      "required": ["spec"],
+      "additionalProperties": false,
+      "properties": {
+        "spec":      { "const": "flexbox" },
+        "box":       { "$ref": "#/$defs/SubStyle_box" },
+        "flex":      { "$ref": "#/$defs/SubStyle_flex" },
+        "variants":  { "$ref": "#/$defs/VariantArray_flexbox" },
+        "modifiers": { "$ref": "#/$defs/ModifierArray" },
+        "animation": { "$ref": "#/$defs/AnimationNode" }
+      }
+    },
+
+    "Style_stackbox": {
+      "type": "object",
+      "required": ["spec"],
+      "additionalProperties": false,
+      "properties": {
+        "spec":      { "const": "stackbox" },
+        "box":       { "$ref": "#/$defs/SubStyle_box" },
+        "stack":     { "$ref": "#/$defs/SubStyle_stack" },
+        "variants":  { "$ref": "#/$defs/VariantArray_stackbox" },
+        "modifiers": { "$ref": "#/$defs/ModifierArray" },
+        "animation": { "$ref": "#/$defs/AnimationNode" }
+      }
+    },
+
+    "Style_Extension": {
+      "type": "object",
+      "description": "Custom spec via x: prefix.",
+      "required": ["spec"],
+      "additionalProperties": true,
+      "properties": {
+        "spec": { "$ref": "#/$defs/ExtensionId" }
+      }
+    },
+
+    "SubStyle_box": {
+      "type": "object",
+      "description": "Restricted StyleNode for composite sub-styles. No nested variants/modifiers/animation/textDirectives.",
+      "required": ["spec"],
+      "additionalProperties": false,
+      "properties": {
+        "spec":  { "const": "box" },
+        "props": { "$ref": "#/$defs/Props_box" }
+      }
+    },
+
+    "SubStyle_flex": {
+      "type": "object",
+      "required": ["spec"],
+      "additionalProperties": false,
+      "properties": {
+        "spec":  { "const": "flex" },
+        "props": { "$ref": "#/$defs/Props_flex" }
+      }
+    },
+
+    "SubStyle_stack": {
+      "type": "object",
+      "required": ["spec"],
+      "additionalProperties": false,
+      "properties": {
+        "spec":  { "const": "stack" },
+        "props": { "$ref": "#/$defs/Props_stack" }
+      }
+    },
+
+    "Props_box": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "alignment":            { "$ref": "#/$defs/Value" },
+        "padding":              { "$ref": "#/$defs/Value" },
+        "margin":               { "$ref": "#/$defs/Value" },
+        "constraints":          { "$ref": "#/$defs/Value" },
+        "decoration":           { "$ref": "#/$defs/Value" },
+        "foregroundDecoration": { "$ref": "#/$defs/Value" },
+        "transform":            { "$ref": "#/$defs/Value" },
+        "transformAlignment":   { "$ref": "#/$defs/Value" },
+        "clipBehavior":         { "$ref": "#/$defs/Value" }
+      }
+    },
+
+    "Props_flex": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "direction":          { "$ref": "#/$defs/Value" },
+        "mainAxisAlignment":  { "$ref": "#/$defs/Value" },
+        "crossAxisAlignment": { "$ref": "#/$defs/Value" },
+        "mainAxisSize":       { "$ref": "#/$defs/Value" },
+        "verticalDirection":  { "$ref": "#/$defs/Value" },
+        "textDirection":      { "$ref": "#/$defs/Value" },
+        "textBaseline":       { "$ref": "#/$defs/Value" },
+        "clipBehavior":       { "$ref": "#/$defs/Value" },
+        "spacing":            { "$ref": "#/$defs/Value" }
+      }
+    },
+
+    "Props_text": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "style":              { "$ref": "#/$defs/Value" },
+        "overflow":           { "$ref": "#/$defs/Value" },
+        "strutStyle":         { "$ref": "#/$defs/Value" },
+        "textAlign":          { "$ref": "#/$defs/Value" },
+        "maxLines":           { "$ref": "#/$defs/Value" },
+        "textWidthBasis":     { "$ref": "#/$defs/Value" },
+        "textScaler":         { "$ref": "#/$defs/Value" },
+        "textDirection":      { "$ref": "#/$defs/Value" },
+        "softWrap":           { "$ref": "#/$defs/Value" },
+        "textHeightBehavior": { "$ref": "#/$defs/Value" }
+      }
+    },
+
+    "Props_icon": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "color":            { "$ref": "#/$defs/Value" },
+        "size":             { "$ref": "#/$defs/Value" },
+        "weight":           { "$ref": "#/$defs/Value" },
+        "grade":            { "$ref": "#/$defs/Value" },
+        "opticalSize":      { "$ref": "#/$defs/Value" },
+        "fill":             { "$ref": "#/$defs/Value" },
+        "shadows":          { "$ref": "#/$defs/Value" },
+        "textDirection":    { "$ref": "#/$defs/Value" },
+        "applyTextScaling": { "$ref": "#/$defs/Value" },
+        "semanticsLabel":   { "$ref": "#/$defs/Value" },
+        "opacity":          { "$ref": "#/$defs/Value" }
+      }
+    },
+
+    "Props_image": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "width":                { "$ref": "#/$defs/Value" },
+        "height":               { "$ref": "#/$defs/Value" },
+        "color":                { "$ref": "#/$defs/Value" },
+        "repeat":               { "$ref": "#/$defs/Value" },
+        "fit":                  { "$ref": "#/$defs/Value" },
+        "alignment":            { "$ref": "#/$defs/Value" },
+        "filterQuality":        { "$ref": "#/$defs/Value" },
+        "colorBlendMode":       { "$ref": "#/$defs/Value" },
+        "semanticLabel":        { "$ref": "#/$defs/Value" },
+        "excludeFromSemantics": { "$ref": "#/$defs/Value" },
+        "gaplessPlayback":      { "$ref": "#/$defs/Value" },
+        "isAntiAlias":          { "$ref": "#/$defs/Value" },
+        "matchTextDirection":   { "$ref": "#/$defs/Value" }
+      }
+    },
+
+    "Props_stack": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "alignment":     { "$ref": "#/$defs/Value" },
+        "fit":           { "$ref": "#/$defs/Value" },
+        "textDirection": { "$ref": "#/$defs/Value" },
+        "clipBehavior":  { "$ref": "#/$defs/Value" }
+      }
+    },
+
+    "Value": {
+      "description": "Core Value primitive. Accepts both canonical form (object with value/token/directives) and input sugar (bare scalar). The validator precedes the canonicalizer in the pipeline, so both are legal at input. Canonical rules: at least one of value/token/directives; value and token are mutually exclusive; directives apply left-to-right at leaf values only. Per-value type matching (e.g. padding must contain an EdgeInsets shape) is enforced by the reference validator.",
+      "oneOf": [
+        { "$ref": "#/$defs/ValueObject" },
+        { "type": ["string", "number", "boolean"] }
+      ]
+    },
+
+    "ValueObject": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "value":      { "not": { "type": "null" } },
+        "token":      { "$ref": "#/$defs/TokenPath" },
+        "directives": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Directive" },
+          "minItems": 1
+        }
+      },
+      "anyOf": [
+        { "required": ["value"] },
+        { "required": ["token"] },
+        { "required": ["directives"] }
+      ],
+      "not": { "required": ["value", "token"] }
+    },
+
+    "HostRef": {
+      "description": "Runtime-resolved indirection. Legal only in explicitly permitted positions (shaderMask.shader, clipPath.clipper). A HostRef is structurally distinct from a Value.",
+      "type": "object",
+      "required": ["host"],
+      "additionalProperties": false,
+      "properties": {
+        "host": { "type": "string", "minLength": 1 }
+      }
+    },
+
+    "Directive": {
+      "oneOf": [
+        { "$ref": "#/$defs/ColorDirective" },
+        { "$ref": "#/$defs/StringDirective" },
+        { "$ref": "#/$defs/NumberDirective" }
+      ]
+    },
+
+    "ColorDirective": {
+      "oneOf": [
+        { "$ref": "#/$defs/Directive_opacity" },
+        { "$ref": "#/$defs/Directive_withValues" },
+        { "$ref": "#/$defs/Directive_alpha" },
+        { "$ref": "#/$defs/Directive_darken" },
+        { "$ref": "#/$defs/Directive_lighten" },
+        { "$ref": "#/$defs/Directive_saturate" },
+        { "$ref": "#/$defs/Directive_desaturate" },
+        { "$ref": "#/$defs/Directive_tint" },
+        { "$ref": "#/$defs/Directive_shade" },
+        { "$ref": "#/$defs/Directive_brighten" },
+        { "$ref": "#/$defs/Directive_withRed" },
+        { "$ref": "#/$defs/Directive_withGreen" },
+        { "$ref": "#/$defs/Directive_withBlue" }
+      ]
+    },
+
+    "StringDirective": {
+      "oneOf": [
+        { "$ref": "#/$defs/Directive_capitalize" },
+        { "$ref": "#/$defs/Directive_uppercase" },
+        { "$ref": "#/$defs/Directive_lowercase" },
+        { "$ref": "#/$defs/Directive_titleCase" },
+        { "$ref": "#/$defs/Directive_sentenceCase" }
+      ]
+    },
+
+    "NumberDirective": {
+      "oneOf": [
+        { "$ref": "#/$defs/Directive_multiply" },
+        { "$ref": "#/$defs/Directive_add" },
+        { "$ref": "#/$defs/Directive_subtract" },
+        { "$ref": "#/$defs/Directive_divide" },
+        { "$ref": "#/$defs/Directive_clamp" },
+        { "$ref": "#/$defs/Directive_abs" },
+        { "$ref": "#/$defs/Directive_round" },
+        { "$ref": "#/$defs/Directive_floor" },
+        { "$ref": "#/$defs/Directive_ceil" }
+      ]
+    },
+
+    "Directive_opacity": {
+      "type": "object",
+      "required": ["op", "value"],
+      "additionalProperties": false,
+      "properties": {
+        "op":    { "const": "opacity" },
+        "value": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+
+    "Directive_withValues": {
+      "type": "object",
+      "required": ["op"],
+      "additionalProperties": false,
+      "properties": {
+        "op":    { "const": "withValues" },
+        "alpha": { "type": "number", "minimum": 0, "maximum": 1 },
+        "red":   { "type": "number", "minimum": 0, "maximum": 1 },
+        "green": { "type": "number", "minimum": 0, "maximum": 1 },
+        "blue":  { "type": "number", "minimum": 0, "maximum": 1 }
+      },
+      "anyOf": [
+        { "required": ["alpha"] },
+        { "required": ["red"] },
+        { "required": ["green"] },
+        { "required": ["blue"] }
+      ]
+    },
+
+    "Directive_alpha": {
+      "type": "object",
+      "required": ["op", "value"],
+      "additionalProperties": false,
+      "properties": {
+        "op":    { "const": "alpha" },
+        "value": { "type": "integer", "minimum": 0, "maximum": 255 }
+      }
+    },
+
+    "Directive_darken":     { "type": "object", "required": ["op","amount"], "additionalProperties": false, "properties": { "op": {"const":"darken"},     "amount": {"type":"integer"} } },
+    "Directive_lighten":    { "type": "object", "required": ["op","amount"], "additionalProperties": false, "properties": { "op": {"const":"lighten"},    "amount": {"type":"integer"} } },
+    "Directive_saturate":   { "type": "object", "required": ["op","amount"], "additionalProperties": false, "properties": { "op": {"const":"saturate"},   "amount": {"type":"integer"} } },
+    "Directive_desaturate": { "type": "object", "required": ["op","amount"], "additionalProperties": false, "properties": { "op": {"const":"desaturate"}, "amount": {"type":"integer"} } },
+    "Directive_tint":       { "type": "object", "required": ["op","amount"], "additionalProperties": false, "properties": { "op": {"const":"tint"},       "amount": {"type":"integer"} } },
+    "Directive_shade":      { "type": "object", "required": ["op","amount"], "additionalProperties": false, "properties": { "op": {"const":"shade"},      "amount": {"type":"integer"} } },
+    "Directive_brighten":   { "type": "object", "required": ["op","amount"], "additionalProperties": false, "properties": { "op": {"const":"brighten"},   "amount": {"type":"integer"} } },
+
+    "Directive_withRed":   { "type": "object", "required": ["op","value"], "additionalProperties": false, "properties": { "op": {"const":"withRed"},   "value": {"type":"integer","minimum":0,"maximum":255} } },
+    "Directive_withGreen": { "type": "object", "required": ["op","value"], "additionalProperties": false, "properties": { "op": {"const":"withGreen"}, "value": {"type":"integer","minimum":0,"maximum":255} } },
+    "Directive_withBlue":  { "type": "object", "required": ["op","value"], "additionalProperties": false, "properties": { "op": {"const":"withBlue"},  "value": {"type":"integer","minimum":0,"maximum":255} } },
+
+    "Directive_capitalize":   { "type": "object", "required": ["op"], "additionalProperties": false, "properties": { "op": {"const":"capitalize"} } },
+    "Directive_uppercase":    { "type": "object", "required": ["op"], "additionalProperties": false, "properties": { "op": {"const":"uppercase"} } },
+    "Directive_lowercase":    { "type": "object", "required": ["op"], "additionalProperties": false, "properties": { "op": {"const":"lowercase"} } },
+    "Directive_titleCase":    { "type": "object", "required": ["op"], "additionalProperties": false, "properties": { "op": {"const":"titleCase"} } },
+    "Directive_sentenceCase": { "type": "object", "required": ["op"], "additionalProperties": false, "properties": { "op": {"const":"sentenceCase"} } },
+
+    "Directive_multiply": {
+      "type": "object",
+      "required": ["op", "factor"],
+      "additionalProperties": false,
+      "properties": {
+        "op":     { "const": "multiply" },
+        "factor": { "type": "number" }
+      }
+    },
+
+    "Directive_add": {
+      "type": "object",
+      "required": ["op", "addend"],
+      "additionalProperties": false,
+      "properties": {
+        "op":     { "const": "add" },
+        "addend": { "type": "number" }
+      }
+    },
+
+    "Directive_subtract": {
+      "type": "object",
+      "required": ["op", "subtrahend"],
+      "additionalProperties": false,
+      "properties": {
+        "op":         { "const": "subtract" },
+        "subtrahend": { "type": "number" }
+      }
+    },
+
+    "Directive_divide": {
+      "type": "object",
+      "required": ["op", "divisor"],
+      "additionalProperties": false,
+      "properties": {
+        "op":      { "const": "divide" },
+        "divisor": { "type": "number", "not": { "const": 0 } }
+      }
+    },
+
+    "Directive_clamp": {
+      "type": "object",
+      "required": ["op", "min", "max"],
+      "additionalProperties": false,
+      "properties": {
+        "op":  { "const": "clamp" },
+        "min": { "type": "number" },
+        "max": { "type": "number" }
+      }
+    },
+
+    "Directive_abs":   { "type": "object", "required": ["op"], "additionalProperties": false, "properties": { "op": {"const":"abs"} } },
+    "Directive_round": { "type": "object", "required": ["op"], "additionalProperties": false, "properties": { "op": {"const":"round"} } },
+    "Directive_floor": { "type": "object", "required": ["op"], "additionalProperties": false, "properties": { "op": {"const":"floor"} } },
+    "Directive_ceil":  { "type": "object", "required": ["op"], "additionalProperties": false, "properties": { "op": {"const":"ceil"} } },
+
+    "VariantArray_box":      { "type": "array", "items": { "$ref": "#/$defs/Variant_box"      }, "minItems": 1 },
+    "VariantArray_flex":     { "type": "array", "items": { "$ref": "#/$defs/Variant_flex"     }, "minItems": 1 },
+    "VariantArray_text":     { "type": "array", "items": { "$ref": "#/$defs/Variant_text"     }, "minItems": 1 },
+    "VariantArray_icon":     { "type": "array", "items": { "$ref": "#/$defs/Variant_icon"     }, "minItems": 1 },
+    "VariantArray_image":    { "type": "array", "items": { "$ref": "#/$defs/Variant_image"    }, "minItems": 1 },
+    "VariantArray_stack":    { "type": "array", "items": { "$ref": "#/$defs/Variant_stack"    }, "minItems": 1 },
+    "VariantArray_flexbox":  { "type": "array", "items": { "$ref": "#/$defs/Variant_flexbox"  }, "minItems": 1 },
+    "VariantArray_stackbox": { "type": "array", "items": { "$ref": "#/$defs/Variant_stackbox" }, "minItems": 1 },
+
+    "Variant_box": {
+      "description": "Variant on a Style_box. Decision #25: variant style MUST match enclosing spec.",
+      "type": "object",
+      "required": ["when", "style"],
+      "additionalProperties": false,
+      "properties": {
+        "when":  { "$ref": "#/$defs/WhenExpr" },
+        "style": { "$ref": "#/$defs/Style_box" }
+      }
+    },
+    "Variant_flex": {
+      "type": "object",
+      "required": ["when", "style"],
+      "additionalProperties": false,
+      "properties": {
+        "when":  { "$ref": "#/$defs/WhenExpr" },
+        "style": { "$ref": "#/$defs/Style_flex" }
+      }
+    },
+    "Variant_text": {
+      "type": "object",
+      "required": ["when", "style"],
+      "additionalProperties": false,
+      "properties": {
+        "when":  { "$ref": "#/$defs/WhenExpr" },
+        "style": { "$ref": "#/$defs/Style_text" }
+      }
+    },
+    "Variant_icon": {
+      "type": "object",
+      "required": ["when", "style"],
+      "additionalProperties": false,
+      "properties": {
+        "when":  { "$ref": "#/$defs/WhenExpr" },
+        "style": { "$ref": "#/$defs/Style_icon" }
+      }
+    },
+    "Variant_image": {
+      "type": "object",
+      "required": ["when", "style"],
+      "additionalProperties": false,
+      "properties": {
+        "when":  { "$ref": "#/$defs/WhenExpr" },
+        "style": { "$ref": "#/$defs/Style_image" }
+      }
+    },
+    "Variant_stack": {
+      "type": "object",
+      "required": ["when", "style"],
+      "additionalProperties": false,
+      "properties": {
+        "when":  { "$ref": "#/$defs/WhenExpr" },
+        "style": { "$ref": "#/$defs/Style_stack" }
+      }
+    },
+    "Variant_flexbox": {
+      "type": "object",
+      "required": ["when", "style"],
+      "additionalProperties": false,
+      "properties": {
+        "when":  { "$ref": "#/$defs/WhenExpr" },
+        "style": { "$ref": "#/$defs/Style_flexbox" }
+      }
+    },
+    "Variant_stackbox": {
+      "type": "object",
+      "required": ["when", "style"],
+      "additionalProperties": false,
+      "properties": {
+        "when":  { "$ref": "#/$defs/WhenExpr" },
+        "style": { "$ref": "#/$defs/Style_stackbox" }
+      }
+    },
+
+    "WhenExpr": {
+      "oneOf": [
+        { "$ref": "#/$defs/When_state" },
+        { "$ref": "#/$defs/When_named" },
+        { "$ref": "#/$defs/When_enum" },
+        { "$ref": "#/$defs/When_context" },
+        { "$ref": "#/$defs/When_not" },
+        { "$ref": "#/$defs/When_Extension" }
+      ]
+    },
+
+    "When_state": {
+      "type": "string",
+      "enum": [
+        "onHovered", "onPressed", "onFocused", "onDisabled",
+        "onEnabled", "onSelected", "onError",
+        "onDark", "onLight"
+      ]
+    },
+
+    "When_named": {
+      "type": "object",
+      "required": ["named"],
+      "additionalProperties": false,
+      "properties": {
+        "named": { "type": "string", "minLength": 1 }
+      }
+    },
+
+    "When_enum": {
+      "type": "object",
+      "required": ["enum"],
+      "additionalProperties": false,
+      "properties": {
+        "enum": { "type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_]*\\.[A-Za-z_][A-Za-z0-9_]*$" }
+      }
+    },
+
+    "When_context": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["context", "token"],
+          "additionalProperties": false,
+          "properties": {
+            "context": { "const": "breakpoint" },
+            "token":   { "type": "string", "pattern": "^breakpoint\\..+|^x:[a-z][a-z0-9_-]*\\..+" }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["context", "value"],
+          "additionalProperties": false,
+          "properties": {
+            "context": { "const": "orientation" },
+            "value":   { "enum": ["portrait", "landscape"] }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["context", "value"],
+          "additionalProperties": false,
+          "properties": {
+            "context": { "const": "brightness" },
+            "value":   { "enum": ["light", "dark"] }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["context", "value"],
+          "additionalProperties": false,
+          "properties": {
+            "context": { "const": "platform" },
+            "value":   { "enum": ["android", "iOS", "fuchsia", "linux", "macOS", "windows"] }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["context", "value"],
+          "additionalProperties": false,
+          "properties": {
+            "context": { "const": "directionality" },
+            "value":   { "enum": ["ltr", "rtl"] }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["context", "value"],
+          "additionalProperties": false,
+          "properties": {
+            "context": { "const": "preset" },
+            "value":   { "enum": ["mobile", "tablet", "desktop", "web"] }
+          }
+        }
+      ]
+    },
+
+    "When_not": {
+      "type": "object",
+      "required": ["not"],
+      "additionalProperties": false,
+      "properties": {
+        "not": { "$ref": "#/$defs/WhenExpr" }
+      }
+    },
+
+    "When_Extension": {
+      "type": "object",
+      "description": "Custom when expression via x: key.",
+      "minProperties": 1,
+      "maxProperties": 1,
+      "propertyNames": { "$ref": "#/$defs/ExtensionId" }
+    },
+
+    "ModifierArray": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/ModifierNode" },
+      "minItems": 1
+    },
+
+    "ModifierNode": {
+      "oneOf": [
+        { "$ref": "#/$defs/Modifier_opacity" },
+        { "$ref": "#/$defs/Modifier_blur" },
+        { "$ref": "#/$defs/Modifier_aspectRatio" },
+        { "$ref": "#/$defs/Modifier_sizedBox" },
+        { "$ref": "#/$defs/Modifier_padding" },
+        { "$ref": "#/$defs/Modifier_align" },
+        { "$ref": "#/$defs/Modifier_flexible" },
+        { "$ref": "#/$defs/Modifier_rotatedBox" },
+        { "$ref": "#/$defs/Modifier_visibility" },
+        { "$ref": "#/$defs/Modifier_clipOval" },
+        { "$ref": "#/$defs/Modifier_clipRect" },
+        { "$ref": "#/$defs/Modifier_clipRRect" },
+        { "$ref": "#/$defs/Modifier_clipPath" },
+        { "$ref": "#/$defs/Modifier_clipTriangle" },
+        { "$ref": "#/$defs/Modifier_transform" },
+        { "$ref": "#/$defs/Modifier_scale" },
+        { "$ref": "#/$defs/Modifier_rotate" },
+        { "$ref": "#/$defs/Modifier_translate" },
+        { "$ref": "#/$defs/Modifier_skew" },
+        { "$ref": "#/$defs/Modifier_shaderMask" },
+        { "$ref": "#/$defs/Modifier_fractionallySizedBox" },
+        { "$ref": "#/$defs/Modifier_intrinsicHeight" },
+        { "$ref": "#/$defs/Modifier_intrinsicWidth" },
+        { "$ref": "#/$defs/Modifier_iconTheme" },
+        { "$ref": "#/$defs/Modifier_defaultTextStyle" },
+        { "$ref": "#/$defs/Modifier_defaultTextStyler" },
+        { "$ref": "#/$defs/Modifier_box" },
+        { "$ref": "#/$defs/Modifier_mouseCursor" },
+        { "$ref": "#/$defs/Modifier_scrollView" },
+        { "$ref": "#/$defs/Modifier_reset" },
+        { "$ref": "#/$defs/Modifier_Extension" }
+      ]
+    },
+
+    "Modifier_opacity": {
+      "type": "object",
+      "required": ["modifier", "props"],
+      "additionalProperties": false,
+      "properties": {
+        "modifier": { "const": "opacity" },
+        "props": {
+          "type": "object",
+          "required": ["opacity"],
+          "additionalProperties": false,
+          "properties": { "opacity": { "$ref": "#/$defs/Value" } }
+        }
+      }
+    },
+
+    "Modifier_blur": {
+      "type": "object",
+      "required": ["modifier", "props"],
+      "additionalProperties": false,
+      "properties": {
+        "modifier": { "const": "blur" },
+        "props": {
+          "type": "object",
+          "required": ["sigma"],
+          "additionalProperties": false,
+          "properties": { "sigma": { "$ref": "#/$defs/Value" } }
+        }
+      }
+    },
+
+    "Modifier_aspectRatio": {
+      "type": "object",
+      "required": ["modifier", "props"],
+      "additionalProperties": false,
+      "properties": {
+        "modifier": { "const": "aspectRatio" },
+        "props": {
+          "type": "object",
+          "required": ["aspectRatio"],
+          "additionalProperties": false,
+          "properties": { "aspectRatio": { "$ref": "#/$defs/Value" } }
+        }
+      }
+    },
+
+    "Modifier_sizedBox": {
+      "type": "object",
+      "required": ["modifier", "props"],
+      "additionalProperties": false,
+      "properties": {
+        "modifier": { "const": "sizedBox" },
+        "props": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "width":  { "$ref": "#/$defs/Value" },
+            "height": { "$ref": "#/$defs/Value" }
+          }
+        }
+      }
+    },
+
+    "Modifier_padding": {
+      "type": "object",
+      "required": ["modifier", "props"],
+      "additionalProperties": false,
+      "properties": {
+        "modifier": { "const": "padding" },
+        "props": {
+          "type": "object",
+          "required": ["padding"],
+          "additionalProperties": false,
+          "properties": { "padding": { "$ref": "#/$defs/Value" } }
+        }
+      }
+    },
+
+    "Modifier_align": {
+      "type": "object",
+      "required": ["modifier", "props"],
+      "additionalProperties": false,
+      "properties": {
+        "modifier": { "const": "align" },
+        "props": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "alignment":    { "$ref": "#/$defs/Value" },
+            "widthFactor":  { "$ref": "#/$defs/Value" },
+            "heightFactor": { "$ref": "#/$defs/Value" }
+          }
+        }
+      }
+    },
+
+    "Modifier_flexible": {
+      "type": "object",
+      "required": ["modifier", "props"],
+      "additionalProperties": false,
+      "properties": {
+        "modifier": { "const": "flexible" },
+        "props": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "flex": { "$ref": "#/$defs/Value" },
+            "fit":  { "$ref": "#/$defs/Value" }
+          }
+        }
+      }
+    },
+
+    "Modifier_rotatedBox": {
+      "type": "object",
+      "required": ["modifier", "props"],
+      "additionalProperties": false,
+      "properties": {
+        "modifier": { "const": "rotatedBox" },
+        "props": {
+          "type": "object",
+          "required": ["quarterTurns"],
+          "additionalProperties": false,
+          "properties": { "quarterTurns": { "$ref": "#/$defs/Value" } }
+        }
+      }
+    },
+
+    "Modifier_visibility": {
+      "type": "object",
+      "required": ["modifier", "props"],
+      "additionalProperties": false,
+      "properties": {
+        "modifier": { "const": "visibility" },
+        "props": {
+          "type": "object",
+          "required": ["visible"],
+          "additionalProperties": false,
+          "properties": { "visible": { "$ref": "#/$defs/Value" } }
+        }
+      }
+    },
+
+    "Modifier_clipOval": {
+      "type": "object",
+      "required": ["modifier"],
+      "additionalProperties": false,
+      "properties": {
+        "modifier": { "const": "clipOval" },
+        "props": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": { "clipBehavior": { "$ref": "#/$defs/Value" } }
+        }
+      }
+    },
+
+    "Modifier_clipRect": {
+      "type": "object",
+      "required": ["modifier"],
+      "additionalProperties": false,
+      "properties": {
+        "modifier": { "const": "clipRect" },
+        "props": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": { "clipBehavior": { "$ref": "#/$defs/Value" } }
+        }
+      }
+    },
+
+    "Modifier_clipRRect": {
+      "type": "object",
+      "required": ["modifier", "props"],
+      "additionalProperties": false,
+      "properties": {
+        "modifier": { "const": "clipRRect" },
+        "props": {
+          "type": "object",
+          "required": ["borderRadius"],
+          "additionalProperties": false,
+          "properties": {
+            "borderRadius": { "$ref": "#/$defs/Value" },
+            "clipBehavior": { "$ref": "#/$defs/Value" }
+          }
+        }
+      }
+    },
+
+    "Modifier_clipPath": {
+      "type": "object",
+      "required": ["modifier", "props"],
+      "additionalProperties": false,
+      "properties": {
+        "modifier": { "const": "clipPath" },
+        "props": {
+          "type": "object",
+          "required": ["clipper"],
+          "additionalProperties": false,
+          "properties": {
+            "clipper":      { "$ref": "#/$defs/HostRef" },
+            "clipBehavior": { "$ref": "#/$defs/Value" }
+          }
+        }
+      }
+    },
+
+    "Modifier_clipTriangle": {
+      "type": "object",
+      "required": ["modifier"],
+      "additionalProperties": false,
+      "properties": {
+        "modifier": { "const": "clipTriangle" },
+        "props": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": { "clipBehavior": { "$ref": "#/$defs/Value" } }
+        }
+      }
+    },
+
+    "Modifier_transform": {
+      "type": "object",
+      "required": ["modifier", "props"],
+      "additionalProperties": false,
+      "properties": {
+        "modifier": { "const": "transform" },
+        "props": {
+          "type": "object",
+          "required": ["transform"],
+          "additionalProperties": false,
+          "properties": {
+            "transform": { "$ref": "#/$defs/Value" },
+            "alignment": { "$ref": "#/$defs/Value" }
+          }
+        }
+      }
+    },
+
+    "Modifier_scale": {
+      "type": "object",
+      "required": ["modifier", "props"],
+      "additionalProperties": false,
+      "properties": {
+        "modifier": { "const": "scale" },
+        "props": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "x":         { "$ref": "#/$defs/Value" },
+            "y":         { "$ref": "#/$defs/Value" },
+            "alignment": { "$ref": "#/$defs/Value" }
+          }
+        }
+      }
+    },
+
+    "Modifier_rotate": {
+      "type": "object",
+      "required": ["modifier", "props"],
+      "additionalProperties": false,
+      "properties": {
+        "modifier": { "const": "rotate" },
+        "props": {
+          "type": "object",
+          "required": ["radians"],
+          "additionalProperties": false,
+          "properties": {
+            "radians":   { "$ref": "#/$defs/Value" },
+            "alignment": { "$ref": "#/$defs/Value" }
+          }
+        }
+      }
+    },
+
+    "Modifier_translate": {
+      "type": "object",
+      "required": ["modifier", "props"],
+      "additionalProperties": false,
+      "properties": {
+        "modifier": { "const": "translate" },
+        "props": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "x": { "$ref": "#/$defs/Value" },
+            "y": { "$ref": "#/$defs/Value" }
+          }
+        }
+      }
+    },
+
+    "Modifier_skew": {
+      "type": "object",
+      "required": ["modifier", "props"],
+      "additionalProperties": false,
+      "properties": {
+        "modifier": { "const": "skew" },
+        "props": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "skewX": { "$ref": "#/$defs/Value" },
+            "skewY": { "$ref": "#/$defs/Value" }
+          }
+        }
+      }
+    },
+
+    "Modifier_shaderMask": {
+      "type": "object",
+      "required": ["modifier", "props"],
+      "additionalProperties": false,
+      "properties": {
+        "modifier": { "const": "shaderMask" },
+        "props": {
+          "type": "object",
+          "required": ["shader"],
+          "additionalProperties": false,
+          "properties": {
+            "shader":    { "$ref": "#/$defs/HostRef" },
+            "blendMode": { "$ref": "#/$defs/Value" }
+          }
+        }
+      }
+    },
+
+    "Modifier_fractionallySizedBox": {
+      "type": "object",
+      "required": ["modifier", "props"],
+      "additionalProperties": false,
+      "properties": {
+        "modifier": { "const": "fractionallySizedBox" },
+        "props": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "widthFactor":  { "$ref": "#/$defs/Value" },
+            "heightFactor": { "$ref": "#/$defs/Value" },
+            "alignment":    { "$ref": "#/$defs/Value" }
+          }
+        }
+      }
+    },
+
+    "Modifier_intrinsicHeight": {
+      "type": "object",
+      "required": ["modifier"],
+      "additionalProperties": false,
+      "properties": {
+        "modifier": { "const": "intrinsicHeight" }
+      }
+    },
+
+    "Modifier_intrinsicWidth": {
+      "type": "object",
+      "required": ["modifier"],
+      "additionalProperties": false,
+      "properties": {
+        "modifier": { "const": "intrinsicWidth" }
+      }
+    },
+
+    "Modifier_iconTheme": {
+      "type": "object",
+      "required": ["modifier", "props"],
+      "additionalProperties": false,
+      "properties": {
+        "modifier": { "const": "iconTheme" },
+        "props": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "color":            { "$ref": "#/$defs/Value" },
+            "size":             { "$ref": "#/$defs/Value" },
+            "fill":             { "$ref": "#/$defs/Value" },
+            "weight":           { "$ref": "#/$defs/Value" },
+            "grade":            { "$ref": "#/$defs/Value" },
+            "opticalSize":      { "$ref": "#/$defs/Value" },
+            "applyTextScaling": { "$ref": "#/$defs/Value" }
+          }
+        }
+      }
+    },
+
+    "Modifier_defaultTextStyle": {
+      "type": "object",
+      "required": ["modifier", "props"],
+      "additionalProperties": false,
+      "properties": {
+        "modifier": { "const": "defaultTextStyle" },
+        "props": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "style":          { "$ref": "#/$defs/Value" },
+            "textAlign":      { "$ref": "#/$defs/Value" },
+            "softWrap":       { "$ref": "#/$defs/Value" },
+            "overflow":       { "$ref": "#/$defs/Value" },
+            "maxLines":       { "$ref": "#/$defs/Value" },
+            "textWidthBasis": { "$ref": "#/$defs/Value" }
+          }
+        }
+      }
+    },
+
+    "Modifier_defaultTextStyler": {
+      "type": "object",
+      "required": ["modifier", "props"],
+      "additionalProperties": false,
+      "properties": {
+        "modifier": { "const": "defaultTextStyler" },
+        "props": {
+          "type": "object",
+          "required": ["style"],
+          "additionalProperties": false,
+          "properties": {
+            "style": { "$ref": "#/$defs/Style_text" }
+          }
+        }
+      }
+    },
+
+    "Modifier_box": {
+      "type": "object",
+      "required": ["modifier", "props"],
+      "additionalProperties": false,
+      "properties": {
+        "modifier": { "const": "box" },
+        "props": {
+          "type": "object",
+          "required": ["style"],
+          "additionalProperties": false,
+          "properties": {
+            "style": { "$ref": "#/$defs/Style_box" }
+          }
+        }
+      }
+    },
+
+    "Modifier_mouseCursor": {
+      "type": "object",
+      "required": ["modifier", "props"],
+      "additionalProperties": false,
+      "properties": {
+        "modifier": { "const": "mouseCursor" },
+        "props": {
+          "type": "object",
+          "required": ["cursor"],
+          "additionalProperties": false,
+          "properties": { "cursor": { "$ref": "#/$defs/Value" } }
+        }
+      }
+    },
+
+    "Modifier_scrollView": {
+      "type": "object",
+      "required": ["modifier", "props"],
+      "additionalProperties": false,
+      "properties": {
+        "modifier": { "const": "scrollView" },
+        "props": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": { "scrollDirection": { "$ref": "#/$defs/Value" } }
+        }
+      }
+    },
+
+    "Modifier_reset": {
+      "type": "object",
+      "required": ["modifier"],
+      "additionalProperties": false,
+      "properties": {
+        "modifier": { "const": "reset" }
+      }
+    },
+
+    "Modifier_Extension": {
+      "type": "object",
+      "description": "Custom modifier via x: prefix.",
+      "required": ["modifier"],
+      "additionalProperties": true,
+      "properties": {
+        "modifier": { "$ref": "#/$defs/ExtensionId" }
+      }
+    },
+
+    "AnimationNode": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["kind", "duration", "curve"],
+          "additionalProperties": false,
+          "properties": {
+            "kind":     { "const": "curve" },
+            "duration": { "type": "integer", "minimum": 0 },
+            "curve":    { "$ref": "#/$defs/CurveName" },
+            "delay":    { "type": "integer", "minimum": 0 }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["kind", "duration"],
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "enum": [
+                "decelerate", "ease", "easeIn", "easeInSine",
+                "easeInQuad", "easeInCubic", "easeInQuart", "easeInQuint",
+                "easeInToLinear", "fastLinearToSlowEaseIn",
+                "fastEaseInToSlowEaseOut"
+              ]
+            },
+            "duration": { "type": "integer", "minimum": 0 },
+            "delay":    { "type": "integer", "minimum": 0 }
+          }
+        }
+      ]
+    },
+
+    "CurveName": {
+      "type": "string",
+      "description": "Named Flutter curve. Non-exhaustive; reference validator maintains the full list.",
+      "enum": [
+        "linear",
+        "decelerate",
+        "fastLinearToSlowEaseIn",
+        "fastEaseInToSlowEaseOut",
+        "ease", "easeIn", "easeInToLinear", "easeInSine", "easeInQuad",
+        "easeInCubic", "easeInQuart", "easeInQuint", "easeInExpo", "easeInCirc", "easeInBack",
+        "easeOut", "easeOutSine", "easeOutQuad", "easeOutCubic", "easeOutQuart",
+        "easeOutQuint", "easeOutExpo", "easeOutCirc", "easeOutBack",
+        "easeInOut", "easeInOutSine", "easeInOutQuad", "easeInOutCubic", "easeInOutQuart",
+        "easeInOutQuint", "easeInOutExpo", "easeInOutCirc", "easeInOutBack",
+        "bounceIn", "bounceOut", "bounceInOut",
+        "elasticIn", "elasticOut", "elasticInOut"
+      ]
+    },
+
+    "Literal_Icon": {
+      "type": "object",
+      "required": ["source"],
+      "oneOf": [
+        {
+          "required": ["source", "name"],
+          "additionalProperties": false,
+          "properties": {
+            "source": { "enum": ["material", "cupertino"] },
+            "name":   { "type": "string", "minLength": 1 }
+          }
+        },
+        {
+          "required": ["source", "family", "codePoint"],
+          "additionalProperties": false,
+          "properties": {
+            "source":    { "const": "custom" },
+            "family":    { "type": "string", "minLength": 1 },
+            "codePoint": { "type": "integer", "minimum": 0 }
+          }
+        }
+      ]
+    },
+
+    "Literal_Image": {
+      "type": "object",
+      "required": ["source"],
+      "oneOf": [
+        {
+          "required": ["source", "path"],
+          "additionalProperties": false,
+          "properties": {
+            "source": { "const": "asset" },
+            "path":   { "type": "string", "minLength": 1 }
+          }
+        },
+        {
+          "required": ["source", "url"],
+          "additionalProperties": false,
+          "properties": {
+            "source": { "const": "network" },
+            "url":    { "type": "string", "minLength": 1 }
+          }
+        },
+        {
+          "required": ["source", "id"],
+          "additionalProperties": false,
+          "properties": {
+            "source": { "const": "host" },
+            "id":     { "type": "string", "minLength": 1 }
+          }
+        }
+      ]
+    }
+  }
+}
