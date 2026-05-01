@@ -1110,6 +1110,31 @@ BoxStyler chipStyle({BoxStyler? style}) {
 
       expect(output, contains('final BoxStyler? style;'));
       expect(output, contains('style: chipStyle(style: style)'));
+      expect(output, isNot(contains('.merge(style)')));
+    });
+
+    test('does not synthesize style parameters for variables', () async {
+      const source = r'''
+library input;
+
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+
+part 'input.g.dart';
+
+@MixWidget()
+final chipStyle = BoxStyler();
+''';
+
+      final output = await generateMixWidgetOutput(inputSource: source);
+
+      expect(output, contains('class Chip extends StatelessWidget'));
+      expect(output, isNot(contains('final BoxStyler? style;')));
+      expect(output, isNot(contains('this.style')));
+      expect(output, isNot(contains('chipStyle(style: style)')));
+      expect(output, isNot(contains('.merge(style)')));
+      expect(output, contains('style: chipStyle'));
     });
 
     test('emits prefixed built-in widget references', () async {
