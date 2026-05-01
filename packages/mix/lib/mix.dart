@@ -19,13 +19,15 @@
 library;
 
 /// ANNOTATIONS
-export 'package:mix_annotations/mix_annotations.dart' show MixWidget, MixWidgetRenderer, mixWidget;
+export 'package:mix_annotations/mix_annotations.dart'
+    show MixWidget, MixWidgetRenderer, mixWidget;
 
 /// ANIMATION
 export 'src/animation/animation_config.dart';
 export 'src/animation/spring_curves.dart';
 export 'src/animation/style_animation_builder.dart';
 export 'src/animation/style_animation_driver.dart';
+
 /// CORE
 export 'src/core/breakpoint.dart';
 export 'src/core/converter_registry.dart';
@@ -48,6 +50,7 @@ export 'src/core/style_builder.dart';
 export 'src/core/style_spec.dart';
 export 'src/core/style_widget.dart';
 export 'src/core/widget_modifier.dart';
+
 /// MODIFIERS
 export 'src/modifiers/align_modifier.dart';
 export 'src/modifiers/aspect_ratio_modifier.dart';
@@ -71,6 +74,7 @@ export 'src/modifiers/sized_box_modifier.dart';
 export 'src/modifiers/transform_modifier.dart';
 export 'src/modifiers/visibility_modifier.dart';
 export 'src/modifiers/widget_modifier_config.dart';
+
 /// PROPERTIES
 export 'src/properties/layout/constraints_mix.dart';
 export 'src/properties/layout/edge_insets_geometry_mix.dart';
@@ -85,9 +89,11 @@ export 'src/properties/painting/shape_border_mix.dart';
 export 'src/properties/typography/strut_style_mix.dart';
 export 'src/properties/typography/text_height_behavior_mix.dart';
 export 'src/properties/typography/text_style_mix.dart';
+
 /// PROVIDERS
 export 'src/providers/icon_scope.dart';
 export 'src/providers/text_scope.dart';
+
 /// SPECS
 export 'src/specs/box/box_spec.dart';
 export 'src/specs/box/box_style.dart';
@@ -112,6 +118,7 @@ export 'src/specs/stackbox/stackbox_widget.dart';
 export 'src/specs/text/text_spec.dart';
 export 'src/specs/text/text_style.dart';
 export 'src/specs/text/text_widget.dart';
+
 /// STYLE
 export 'src/style/mixins/animation_style_mixin.dart';
 export 'src/style/mixins/border_radius_style_mixin.dart';
@@ -126,6 +133,7 @@ export 'src/style/mixins/transform_style_mixin.dart';
 export 'src/style/mixins/variant_style_mixin.dart';
 export 'src/style/mixins/widget_modifier_style_mixin.dart';
 export 'src/style/mixins/widget_state_variant_mixin.dart';
+
 /// THEME
 export 'src/theme/material/material_theme.dart';
 export 'src/theme/material/material_tokens.dart';
@@ -134,5 +142,6 @@ export 'src/theme/mix_theme.dart';
 export 'src/theme/tokens/mix_token.dart';
 export 'src/theme/tokens/token_refs.dart';
 export 'src/theme/tokens/value_tokens.dart';
+
 /// VARIANTS
 export 'src/variants/variant.dart';

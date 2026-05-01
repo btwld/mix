@@ -251,4 +251,3 @@ DiagnosticKind diagnosticKindFor(String typeName, {required bool isList}) {
     _ => .diagnostics,
   };
 }
-

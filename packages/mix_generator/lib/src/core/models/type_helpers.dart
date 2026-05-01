@@ -80,10 +80,9 @@ String visibleTypeCodeForField(
   final hiddenType = firstInvisibleTypeName(resolvedType, visibleFrom);
   if (hiddenType != null) {
     final fieldName = element.name ?? '<unknown>';
-    final libraryName =
-        visibleFrom.uri.pathSegments.isEmpty
-            ? visibleFrom.uri.toString()
-            : visibleFrom.uri.pathSegments.last;
+    final libraryName = visibleFrom.uri.pathSegments.isEmpty
+        ? visibleFrom.uri.toString()
+        : visibleFrom.uri.pathSegments.last;
     fail(
       element,
       'Field `$fieldName` uses $usage `$hiddenType`, but that type is '

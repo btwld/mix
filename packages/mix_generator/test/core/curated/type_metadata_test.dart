@@ -113,6 +113,5 @@ void main() {
         expect(alias.setterName, isNull);
       });
     });
-
   });
 }

@@ -550,18 +550,13 @@ const defaultLabel = 'banner';
           },
         );
 
-        expect(
-          _severeMessages(logs),
-          contains('references `defaultLabel`'),
-        );
+        expect(_severeMessages(logs), contains('references `defaultLabel`'));
       },
     );
 
-    test(
-      'rejects renderer parameter defaults shadowed by a same-named '
-      'declaration in the annotated library',
-      () async {
-        const source = r'''
+    test('rejects renderer parameter defaults shadowed by a same-named '
+        'declaration in the annotated library', () async {
+      const source = r'''
 library input;
 
 import 'package:flutter/widgets.dart';
@@ -584,10 +579,10 @@ class BannerStyle extends Style<BannerSpec> {
 final bannerStyle = BannerStyle();
 ''';
 
-        final logs = await runMixWidgetWithLogs(
-          source,
-          extraSources: {
-            'mix_generator|lib/banner_renderer.dart': r'''
+      final logs = await runMixWidgetWithLogs(
+        source,
+        extraSources: {
+          'mix_generator|lib/banner_renderer.dart': r'''
 library banner_renderer;
 
 import 'package:flutter/widgets.dart';
@@ -609,19 +604,19 @@ class BannerSpec extends Spec<BannerSpec> {
   const BannerSpec();
 }
 ''',
-          },
-        );
+        },
+      );
 
-        expect(
-          _severeMessages(logs),
-          contains('resolves to a different declaration'),
-        );
-      },
-    );
+      expect(
+        _severeMessages(logs),
+        contains('resolves to a different declaration'),
+      );
+    });
 
-    test('forwards renderer constructor context parameters via this.context',
-        () async {
-      const source = r'''
+    test(
+      'forwards renderer constructor context parameters via this.context',
+      () async {
+        const source = r'''
 library input;
 
 import 'package:flutter/widgets.dart';
@@ -657,11 +652,12 @@ class ContextStyler extends Style<ContextSpec> {
 final contextStyle = ContextStyler();
 ''';
 
-      final output = await generateMixWidgetOutput(inputSource: source);
+        final output = await generateMixWidgetOutput(inputSource: source);
 
-      expect(output, contains('final String context;'));
-      expect(output, contains('context: this.context'));
-    });
+        expect(output, contains('final String context;'));
+        expect(output, contains('context: this.context'));
+      },
+    );
 
     test('ignores annotations not from the mix_annotations package', () async {
       const source = r'''
