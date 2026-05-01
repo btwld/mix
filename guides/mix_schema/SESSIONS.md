@@ -190,6 +190,28 @@ Canonical mirror of the guides folder + Dart code:
 
 ---
 
+## 2026-05-01 — Execution runbook landed in repo
+
+**Goal:** make the locked architecture (`IMPLEMENTATION.md`) actionable by a fresh executing agent — without requiring access to the multi-round brainstorm history.
+
+**Outcome**
+- Added [`EXECUTION.md`](./EXECUTION.md) — a phased build runbook covering pre-flight, workspace integration (melos categories, pubspec contents for both new packages, analysis_options), and 7 implementation phases (Foundations → Types → Canonicalizer → Validator → Parser/Serializer pure → Parser/Serializer Flutter → Polish). Each phase lists files to create with absolute paths, scope per file, LOC estimates, acceptance criteria, and verification commands. Includes a verification matrix and per-phase risk callouts.
+- Phase 2 carries the explicit ambiguity-surfacing note from `IMPLEMENTATION.md` plus 9 enumerated likely-ambiguity sites that should round-trip to `spec.md` review rather than be improvised.
+- Validator strategy locked: hand-rolled Draft 2020-12 subset (~950 LOC core). Reasoning: `json_schema` (pub.dev) is Draft 7 only; `json_schema_builder` is Draft 2020-12 but its error model can't cleanly map to the 52 normative codes — wrapping a library's internal rule names is brittle.
+- Asset-loading strategy locked: copy `schema.v1.json` + `registry.json` + `error-codes.json` into `packages/mix_schema/lib/src/assets/`; provide `MixSchemaAssets.embedded(...)` for embedded use and `MixSchemaAssets.fromFiles(...)` (CLI) for `dart:io`-backed loading. The pure core never imports `dart:io`.
+- README updated to point implementers at both `IMPLEMENTATION.md` (architecture) and `EXECUTION.md` (runbook).
+
+**State at end**
+- Schema spec: v1.0 Draft, locked.
+- Architecture: locked in `IMPLEMENTATION.md`.
+- Runbook: in `EXECUTION.md`, ready for Phase 0 pre-flight.
+- Total estimated work: ~16k–22k LOC, 13–20 days, with Phase 5 as the pure-package ship checkpoint.
+
+**Next**
+- Phase 0 pre-flight, then Phase 1 (Foundations).
+
+---
+
 ## 2026-05-01 — Reference implementation architecture locked
 
 **Goal:** settle the reference implementation plan for `packages/mix_schema/` before any Dart code is written. Output is a design doc the independent second implementation (Candidate promotion gate) can verify against.

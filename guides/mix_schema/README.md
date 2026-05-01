@@ -13,7 +13,8 @@ Producers (AI agents, design tools, CMS, backends) emit JSON that conforms to th
 | [`registry.json`](./registry.json) | Prop registry — per-spec/per-modifier/per-directive/per-literal typing. |
 | [`error-codes.json`](./error-codes.json) | Language-neutral registry of validator/parser/serializer error codes. |
 | [`examples.md`](./examples.md) | 5 normative examples (sugar + canonical); double as conformance fixtures. |
-| [`IMPLEMENTATION.md`](./IMPLEMENTATION.md) | Reference Dart implementation plan — package layout, module ownership, validator pipeline, build order. Non-normative. |
+| [`IMPLEMENTATION.md`](./IMPLEMENTATION.md) | Reference Dart implementation **architecture** — package layout, module ownership, validator pipeline, build order. Non-normative. |
+| [`EXECUTION.md`](./EXECUTION.md) | Reference Dart implementation **runbook** — phased build plan with file paths, LOC estimates, acceptance criteria, verification commands. Non-normative. |
 | [`SESSIONS.md`](./SESSIONS.md) | Append-only log of design iterations and progress. |
 
 ## Status
