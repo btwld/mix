@@ -24,14 +24,16 @@ command:
       pre: melos run gen:build
 
 categories:
-  flutter_projects: 
+  flutter_projects:
     - packages/mix
     - packages/mix/example
     - packages/mix_lint_test
     - packages/annotations
+    - packages/mix_schema_flutter
   dart_projects:
     - packages/mix_generator
     - packages/mix_lint
+    - packages/mix_schema
 
 scripts:
   # ANALYSIS

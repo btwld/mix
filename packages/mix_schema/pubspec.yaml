@@ -1,0 +1,16 @@
+name: mix_schema
+description: Reference Dart implementation of the Mix JSON Schema (validator, canonicalizer, parser, serializer). Pure Dart; no Flutter dependency.
+version: 1.0.0-draft
+homepage: https://github.com/btwld/mix
+repository: https://github.com/btwld/mix/tree/main/packages/mix_schema
+
+environment:
+  sdk: ">=3.11.0 <4.0.0"
+
+dependencies:
+  meta: ^1.15.0
+
+dev_dependencies:
+  test: ^1.24.4
+  dart_code_metrics_presets: ^2.24.0
+  flutter_lints: ^6.0.0

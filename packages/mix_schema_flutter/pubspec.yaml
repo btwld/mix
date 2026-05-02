@@ -1,0 +1,21 @@
+name: mix_schema_flutter
+description: Flutter runtime bindings for the Mix JSON Schema reference implementation. Bridges parsed Mix JSON documents to the Mix runtime.
+version: 1.0.0-draft
+homepage: https://github.com/btwld/mix
+repository: https://github.com/btwld/mix/tree/main/packages/mix_schema_flutter
+
+environment:
+  sdk: ">=3.11.0 <4.0.0"
+  flutter: ">=3.41.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  mix_schema: 1.0.0-draft
+  mix: ^2.0.0-dev.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  dart_code_metrics_presets: ^2.24.0
+  flutter_lints: ^6.0.0
