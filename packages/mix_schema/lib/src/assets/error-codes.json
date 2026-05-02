@@ -1,0 +1,256 @@
+{
+  "$schema": "https://mix.dev/schema/error-codes/v1.json",
+  "version": "1.0.0-draft",
+  "note": "Language-neutral registry of error codes emitted by Mix JSON Schema validators, canonicalizers, parsers, and serializers. Source of truth; language implementations mirror this file.",
+
+  "conventions": {
+    "codeFormat": "<category>.<short-kebab>",
+    "categories": [
+      "envelope",
+      "widget",
+      "style",
+      "spec",
+      "value",
+      "literal",
+      "directive",
+      "variant",
+      "modifier",
+      "animation",
+      "token",
+      "extension",
+      "host",
+      "canonical",
+      "resolve"
+    ],
+    "messageTemplate": "Short sentence describing what is wrong. Use $path for the JSON Pointer. Use $found / $expected for observed-vs-expected values when useful.",
+    "hintTemplate": "Short, actionable sentence. Optional."
+  },
+
+  "codes": {
+    "envelope.document-too-large": {
+      "message": "Document exceeds maximum size of $max bytes.",
+      "severity": "error"
+    },
+
+    "envelope.schema-unsupported": {
+      "message": "Document targets schema version $found; this validator supports $expected.",
+      "severity": "error"
+    },
+    "envelope.mixruntime-mismatch": {
+      "message": "Document requires mixRuntime $found; host reports $expected.",
+      "severity": "warning"
+    },
+    "envelope.field-missing": {
+      "message": "Envelope requires field '$field'.",
+      "severity": "error"
+    },
+    "envelope.field-forbidden": {
+      "message": "Envelope forbids field '$field'.",
+      "severity": "error"
+    },
+
+    "widget.unknown": {
+      "message": "Unknown widget '$found'. Expected one of: $expected.",
+      "severity": "error"
+    },
+    "widget.field-forbidden": {
+      "message": "Widget '$widget' forbids field '$field'.",
+      "severity": "error"
+    },
+    "widget.field-missing": {
+      "message": "Widget '$widget' requires field '$field'.",
+      "severity": "error"
+    },
+    "widget.child-and-children-exclusive": {
+      "message": "A widget MUST NOT declare both 'child' and 'children'.",
+      "severity": "error"
+    },
+
+    "style.spec-missing": {
+      "message": "StyleNode requires 'spec'.",
+      "severity": "error"
+    },
+    "style.spec-forbidden-field": {
+      "message": "Spec '$spec' forbids field '$field'.",
+      "severity": "error"
+    },
+    "style.substyle-forbids-nesting": {
+      "message": "Composite sub-style must contain only { spec, props }.",
+      "severity": "error"
+    },
+
+    "spec.unknown": {
+      "message": "Unknown spec '$found'.",
+      "severity": "error"
+    },
+    "spec.prop-unknown": {
+      "message": "Spec '$spec' has no prop named '$prop'.",
+      "severity": "error"
+    },
+
+    "value.shape-invalid": {
+      "message": "Value must have at least one of: value, token, directives.",
+      "severity": "error"
+    },
+    "value.value-token-exclusive": {
+      "message": "A Value must not declare both 'value' and 'token'.",
+      "severity": "error"
+    },
+    "value.type-mismatch": {
+      "message": "Value type '$found' does not match expected '$expected' at $path.",
+      "severity": "error"
+    },
+    "value.enum-unknown": {
+      "message": "'$found' is not a member of enum '$enum' for schema version $schema.",
+      "severity": "error",
+      "hint": "Check the registry enums. Unknown values are not auto-inherited from future Flutter releases."
+    },
+    "value.number-not-finite": {
+      "message": "Infinity and NaN are not representable.",
+      "severity": "error"
+    },
+    "value.null-forbidden": {
+      "message": "Null is not a valid Value literal; omit the field to clear it.",
+      "severity": "error"
+    },
+
+    "literal.unknown": {
+      "message": "Unknown structured literal '$found'.",
+      "severity": "error"
+    },
+    "literal.subfield-unknown": {
+      "message": "Literal '$literal' has no sub-field '$field'.",
+      "severity": "error"
+    },
+    "literal.subfield-not-value": {
+      "message": "Literal sub-field must be a Value object in canonical form.",
+      "severity": "error"
+    },
+
+    "directive.unknown": {
+      "message": "Unknown directive op '$found'.",
+      "severity": "error"
+    },
+    "directive.type-mismatch": {
+      "message": "Directive '$op' expects target type '$expected'; leaf is '$found'.",
+      "severity": "error"
+    },
+    "directive.on-literal-root": {
+      "message": "Directives apply only at leaf Values, not at a structured-literal root.",
+      "severity": "error"
+    },
+    "directive.divide-by-zero": {
+      "message": "Directive 'divide' requires divisor != 0.",
+      "severity": "error"
+    },
+    "directive.clamp-invalid-range": {
+      "message": "Directive 'clamp' requires min <= max.",
+      "severity": "error"
+    },
+    "directive.no-base": {
+      "message": "Directives-only Value has no inherited base to transform.",
+      "severity": "error",
+      "hint": "Supply a 'value' or 'token' alongside 'directives', or ensure the base style contributes a value at this position."
+    },
+    "directive.chain-too-long": {
+      "message": "Directive chain at $path has $found entries; maximum is $max.",
+      "severity": "error"
+    },
+
+    "variant.unknown-when": {
+      "message": "Unknown 'when' shape.",
+      "severity": "error"
+    },
+    "variant.spec-mismatch": {
+      "message": "Variant style spec '$found' does not match enclosing spec '$expected'.",
+      "severity": "error"
+    },
+    "variant.state-inapplicable": {
+      "message": "State variant '$state' appears where no state carrier is available.",
+      "severity": "info"
+    },
+    "variant.direction-ignored": {
+      "message": "Explicit 'direction' on $widget is ignored; widget type forces direction.",
+      "severity": "warning"
+    },
+
+    "modifier.unknown": {
+      "message": "Unknown modifier '$found'.",
+      "severity": "error"
+    },
+    "modifier.prop-unknown": {
+      "message": "Modifier '$modifier' has no prop '$prop'.",
+      "severity": "error"
+    },
+
+    "animation.kind-unknown": {
+      "message": "Unknown animation kind '$found'.",
+      "severity": "error"
+    },
+    "animation.curve-required": {
+      "message": "Animation kind 'curve' requires 'curve' field.",
+      "severity": "error"
+    },
+    "animation.curve-forbidden": {
+      "message": "Animation kind '$kind' forbids 'curve' field.",
+      "severity": "error"
+    },
+
+    "token.form-invalid": {
+      "message": "Token reference must be 'namespace.name'; got '$found'.",
+      "severity": "error"
+    },
+    "token.namespace-unknown": {
+      "message": "Token namespace '$found' is not a built-in and does not start with 'x:'.",
+      "severity": "error"
+    },
+    "token.unresolved": {
+      "message": "Token '$token' is not defined in the inline bundle or host MixScope.",
+      "severity": "error"
+    },
+    "token.type-mismatch": {
+      "message": "Token '$token' resolves to '$found'; expected '$expected' at $path.",
+      "severity": "error"
+    },
+    "token.path-too-long": {
+      "message": "Token path '$token' exceeds $max characters.",
+      "severity": "error"
+    },
+
+    "extension.identifier-invalid": {
+      "message": "Extension identifier '$found' is not a valid atom ([a-z][a-z0-9_-]*).",
+      "severity": "error"
+    },
+    "extension.unknown-handler": {
+      "message": "No host handler registered for extension '$id'.",
+      "severity": "error"
+    },
+    "extension.nested-x-forbidden": {
+      "message": "Nested 'x:' prefixes are forbidden.",
+      "severity": "error"
+    },
+
+    "canonical.not-normalized": {
+      "message": "Document is not in canonical form; run the canonicalizer before semantic operations.",
+      "severity": "error"
+    },
+    "canonical.depth-exceeded": {
+      "message": "Tree nesting depth $found exceeds maximum of $max.",
+      "severity": "error"
+    },
+    "canonical.array-too-long": {
+      "message": "Array at $path has $found elements; maximum is $max.",
+      "severity": "error"
+    },
+
+    "host.unresolved": {
+      "message": "Host reference '$id' was not resolved by the runtime.",
+      "severity": "error"
+    },
+
+    "resolve.unresolved-leaf": {
+      "message": "Leaf at $path could not be resolved to a concrete Flutter value.",
+      "severity": "error"
+    }
+  }
+}

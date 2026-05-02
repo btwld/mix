@@ -7,5 +7,21 @@
 /// See `guides/mix_schema/spec.md` for the normative specification.
 library;
 
-// Public API will be exported here as phases land.
-// See guides/mix_schema/EXECUTION.md for the build plan.
+export 'src/assets.dart' show MixSchemaAssets;
+export 'src/errors.dart'
+    show
+        ErrorCatalog,
+        ErrorCode,
+        ErrorCodeDef,
+        MixSchemaError,
+        Severity,
+        ValidationResult;
+export 'src/registry.dart'
+    show
+        DirectiveDef,
+        FieldDef,
+        LiteralDef,
+        ModifierDef,
+        Registry,
+        SpecDef,
+        TokenNamespaceDef;
