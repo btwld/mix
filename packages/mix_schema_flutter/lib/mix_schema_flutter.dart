@@ -1,10 +1,15 @@
 /// Flutter runtime bindings for the Mix JSON Schema.
 ///
-/// Bridges typed `MixJsonDocument` models from `package:mix_schema` to the
-/// Mix runtime (`BoxStyler`, `TextStyler`, ...) and back.
+/// Bridges typed [MixJsonDocument] models from `package:mix_schema` to
+/// the Mix runtime (`BoxStyler`, `TextStyler`, ...) and back.
 ///
-/// See `guides/mix_schema/spec.md` for the normative specification.
+/// Re-exports the entire `mix_schema` API so most consumers depend on
+/// `mix_schema_flutter` alone.
 library;
 
-// Public API will be exported here as Phase 6 lands.
-// See guides/mix_schema/EXECUTION.md for the build plan.
+export 'package:mix_schema/mix_schema.dart';
+
+export 'src/host_resolver.dart'
+    show AllowlistHostResolver, EmptyHostResolver, HostResolver;
+export 'src/parser_to_runtime.dart' show RuntimeParser;
+export 'src/serializer_from_runtime.dart' show RuntimeSerializer;
