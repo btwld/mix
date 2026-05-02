@@ -9,6 +9,8 @@ library;
 
 export 'src/assets.dart' show MixSchemaAssets;
 export 'src/canonicalizer.dart' show Canonicalizer;
+export 'src/parser.dart' show ParseResult, Parser;
+export 'src/serializer.dart' show Serializer;
 export 'src/validator.dart' show Validator;
 export 'src/errors.dart'
     show
