@@ -9,6 +9,7 @@ library;
 
 export 'src/assets.dart' show MixSchemaAssets;
 export 'src/canonicalizer.dart' show Canonicalizer;
+export 'src/validator.dart' show Validator;
 export 'src/errors.dart'
     show
         ErrorCatalog,
