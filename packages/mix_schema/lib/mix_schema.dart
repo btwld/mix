@@ -8,6 +8,7 @@
 library;
 
 export 'src/assets.dart' show MixSchemaAssets;
+export 'src/canonicalizer.dart' show Canonicalizer;
 export 'src/errors.dart'
     show
         ErrorCatalog,
