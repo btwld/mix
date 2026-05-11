@@ -288,7 +288,6 @@ class RotateModifier extends _TransformModifier<RotateModifier> {
   }
 
   @override
-  // ignore: avoid-incomplete-copy-with
   RotateModifier copyWith({double? radians, Alignment? alignment}) {
     return RotateModifier(
       radians: radians ?? this.radians,

@@ -377,6 +377,12 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
     return merge(StackBoxStyler.create(stack: Prop.maybeMix(value)));
   }
 
+  /// Propagates the given [TextStyler] to descendant [StyledText] widgets via
+  /// [DefaultTextStylerModifier] (Mix inheritance).
+  StackBoxStyler textStyle(TextStyler value) {
+    return wrap(WidgetModifierConfig.defaultTextStyler(value));
+  }
+
   /// Sets animation
   @override
   StackBoxStyler animate(AnimationConfig animation) {
@@ -446,11 +452,5 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
   @override
   StackBoxStyler border(BoxBorderMix value) {
     return merge(StackBoxStyler(decoration: DecorationMix.border(value)));
-  }
-
-  /// Propagates the given [TextStyler] to descendant [StyledText] widgets via
-  /// [DefaultTextStylerModifier] (Mix inheritance).
-  StackBoxStyler textStyle(TextStyler value) {
-    return wrap(WidgetModifierConfig.defaultTextStyler(value));
   }
 }

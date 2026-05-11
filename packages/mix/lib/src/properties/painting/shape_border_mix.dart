@@ -41,23 +41,23 @@ sealed class ShapeBorderMix<T extends ShapeBorder> extends Mix<T> {
   static RoundedRectangleBorderMix roundedRectangle({
     BorderRadiusGeometryMix? borderRadius,
     BorderSideMix? side,
-  }) => RoundedRectangleBorderMix(borderRadius: borderRadius, side: side);
+  }) => .new(borderRadius: borderRadius, side: side);
 
   /// Creates a [BeveledRectangleBorder] shape.
   static BeveledRectangleBorderMix beveledRectangle({
     BorderRadiusGeometryMix? borderRadius,
     BorderSideMix? side,
-  }) => BeveledRectangleBorderMix(borderRadius: borderRadius, side: side);
+  }) => .new(borderRadius: borderRadius, side: side);
 
   /// Creates a [ContinuousRectangleBorder] shape.
   static ContinuousRectangleBorderMix continuousRectangle({
     BorderRadiusGeometryMix? borderRadius,
     BorderSideMix? side,
-  }) => ContinuousRectangleBorderMix(borderRadius: borderRadius, side: side);
+  }) => .new(borderRadius: borderRadius, side: side);
 
   /// Creates a [CircleBorder] shape.
   static CircleBorderMix circle({BorderSideMix? side, double? eccentricity}) =>
-      CircleBorderMix(side: side, eccentricity: eccentricity);
+      .new(side: side, eccentricity: eccentricity);
 
   /// Creates a [StarBorder] shape.
   static StarBorderMix star({
@@ -68,7 +68,7 @@ sealed class ShapeBorderMix<T extends ShapeBorder> extends Mix<T> {
     double? valleyRounding,
     double? rotation,
     double? squash,
-  }) => StarBorderMix(
+  }) => .new(
     side: side,
     points: points,
     innerRadiusRatio: innerRadiusRatio,
@@ -85,23 +85,16 @@ sealed class ShapeBorderMix<T extends ShapeBorder> extends Mix<T> {
     LinearBorderEdgeMix? end,
     LinearBorderEdgeMix? top,
     LinearBorderEdgeMix? bottom,
-  }) => LinearBorderMix(
-    side: side,
-    start: start,
-    end: end,
-    top: top,
-    bottom: bottom,
-  );
+  }) => .new(side: side, start: start, end: end, top: top, bottom: bottom);
 
   /// Creates a [StadiumBorder] shape.
-  static StadiumBorderMix stadium({BorderSideMix? side}) =>
-      StadiumBorderMix(side: side);
+  static StadiumBorderMix stadium({BorderSideMix? side}) => .new(side: side);
 
   /// Creates a [RoundedSuperellipseBorder] shape.
   static RoundedSuperellipseBorderMix superellipse({
     BorderRadiusGeometryMix? borderRadius,
     BorderSideMix? side,
-  }) => RoundedSuperellipseBorderMix(borderRadius: borderRadius, side: side);
+  }) => .new(borderRadius: borderRadius, side: side);
 
   /// Merges instances of the same type.
   @override

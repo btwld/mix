@@ -281,11 +281,6 @@ const _generatedMessage = r'''
 const _packageExportConfigs = <String, _PackageExportConfig>{
   'mix': _PackageExportConfig(
     libraryDirective: 'library;',
-    manualTopLevelDirectives: {
-      'ANNOTATIONS': [
-        "export 'package:mix_annotations/mix_annotations.dart' show MixWidget, mixWidget;",
-      ],
-    },
     hiddenSymbolsByPath: {
       'src/core/style.dart': ['StyleElement'],
     },

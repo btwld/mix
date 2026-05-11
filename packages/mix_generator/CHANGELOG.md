@@ -1,24 +1,3 @@
-## Unreleased
-
- - **BREAKING**: `@MixWidget` codegen now resolves generated wrapper
-   parameters from the styler's concrete `call()` method. The
-   `MixWidgetBuilder` adapter path, the `widgetBuilder:` field on
-   `@MixWidget`, and the previous spec-side rendering annotation were
-   removed.
- - **BREAKING**: Generic styler `call()` methods are rejected at codegen
-   with an actionable error. Use concrete method parameters instead.
- - **FIX**: `@MixWidget` validation now compares element identity (not
-   just name visibility) when checking that forwarded call parameter
-   defaults are reachable from the annotated library. A same-named
-   symbol that resolved to a different declaration in the annotated
-   library would previously cause the generated wrapper to silently bind
-   to the wrong constant.
- - **MIGRATION**: Move rendering parameters to the styler's `call()` method
-   and drop `widgetBuilder:` from `@MixWidget`. Adapter classes that
-   extended `MixWidgetBuilder` and spec-side rendering annotations should be
-   deleted; the styler `call()` method is now the source of truth for
-   wrapper parameters.
-
 ## 2.0.1
 
  - **REFACTOR**: Tighten field-model validation and shared type-helper extraction across mix/styler generators (#895).

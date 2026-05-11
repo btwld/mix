@@ -11,5 +11,3 @@ If you want these guides mirrored privately, keep the source of truth in Notion 
 ## Guide Index
 
 - `api-composition-guidelines.md` - Fluent composition patterns and sizing decisions.
-- `code-generation.md` - Complete Mix code generation API, builder, and workflow guide.
-- `mix-widget-codegen-output.md` - Generated `@MixWidget` wrapper output examples.

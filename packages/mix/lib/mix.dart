@@ -18,9 +18,6 @@
 
 library;
 
-/// ANNOTATIONS
-export 'package:mix_annotations/mix_annotations.dart' show MixWidget, mixWidget;
-
 /// ANIMATION
 export 'src/animation/animation_config.dart';
 export 'src/animation/spring_curves.dart';

@@ -46,48 +46,6 @@ class MixableStyler {
 
 const mixableStyler = MixableStyler();
 
-/// Generates a `StatelessWidget` wrapper around a Mix styler.
-///
-/// Applies to a top-level final styler instance or a top-level factory
-/// function returning a styler. The generator resolves the styler's
-/// concrete `call()` method, then mirrors that method's public parameters
-/// onto the generated wrapper.
-///
-/// ## How wrapper parameters are chosen
-///
-/// The styler `call()` method is the source of truth. The generator excludes
-/// a named `Key? key` parameter, forwards the wrapper key to it, and mirrors
-/// every other `call()` parameter onto the generated wrapper. Function-backed
-/// declarations also expose their public factory parameters, which shape the
-/// generated base style before `call()` is invoked.
-///
-/// ## Usage
-///
-/// ```dart
-/// @MixWidget()
-/// final cardStyle = BoxStyler().color(Colors.white).borderRounded(8);
-///
-/// @MixWidget()
-/// RemixButtonStyle primaryButton({Color color = Colors.blue}) {
-///   return RemixButtonStyle().color(color);
-/// }
-/// ```
-///
-/// - [name] overrides the generated class name (defaults to the source name
-///   with a trailing `Styler`/`Style` stripped, PascalCased).
-/// - Function-backed declarations expose their public parameters on the
-///   wrapper constructor, so style inputs can be modeled explicitly in the
-///   factory signature.
-/// - The styler must expose a concrete `call()` method that returns a Flutter
-///   `Widget`.
-class MixWidget {
-  final String? name;
-
-  const MixWidget({this.name});
-}
-
-const mixWidget = MixWidget();
-
 /// Annotation for configuring individual fields in Styler classes.
 ///
 /// [ignoreSetter] when true, no setter method will be generated for this field.

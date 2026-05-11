@@ -8,11 +8,6 @@ library;
 
 import 'package:source_gen/source_gen.dart';
 
-/// `MixWidget` annotation from `package:mix_annotations`.
-const mixWidgetAnnotationChecker = TypeChecker.fromUrl(
-  'package:mix_annotations/src/annotations.dart#MixWidget',
-);
-
 /// `MixableField` annotation from `package:mix_annotations`.
 const mixableFieldAnnotationChecker = TypeChecker.fromUrl(
   'package:mix_annotations/src/annotations.dart#MixableField',
@@ -36,19 +31,4 @@ const mixableChecker = TypeChecker.fromUrl(
 /// `DefaultValue<T>` mixin from `package:mix`.
 const defaultValueChecker = TypeChecker.fromUrl(
   'package:mix/src/core/mix_element.dart#DefaultValue',
-);
-
-/// Flutter's `Widget` base class.
-const flutterWidgetChecker = TypeChecker.fromUrl(
-  'package:flutter/src/widgets/framework.dart#Widget',
-);
-
-/// Flutter's `Key` base class.
-const flutterKeyChecker = TypeChecker.fromUrl(
-  'package:flutter/src/foundation/key.dart#Key',
-);
-
-/// Flutter's `BuildContext` interface.
-const flutterBuildContextChecker = TypeChecker.fromUrl(
-  'package:flutter/src/widgets/framework.dart#BuildContext',
 );

@@ -376,6 +376,12 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
     return FlexBox(key: key, style: this, children: children);
   }
 
+  /// Propagates the given [TextStyler] to descendant [StyledText] widgets via
+  /// [DefaultTextStylerModifier] (Mix inheritance).
+  FlexBoxStyler textStyle(TextStyler value) {
+    return wrap(WidgetModifierConfig.defaultTextStyler(value));
+  }
+
   /// Sets the animation property.
   @override
   FlexBoxStyler animate(AnimationConfig animation) {
@@ -451,11 +457,5 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
   @override
   FlexBoxStyler border(BoxBorderMix value) {
     return merge(FlexBoxStyler(decoration: DecorationMix.border(value)));
-  }
-
-  /// Propagates the given [TextStyler] to descendant [StyledText] widgets via
-  /// [DefaultTextStylerModifier] (Mix inheritance).
-  FlexBoxStyler textStyle(TextStyler value) {
-    return wrap(WidgetModifierConfig.defaultTextStyler(value));
   }
 }

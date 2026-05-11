@@ -1,8 +1,7 @@
 /// Shared error-reporting utilities for Mix generators.
 ///
-/// All four generators (`mix_generator`, `styler_generator`,
-/// `mixable_generator`, `widget_generator`) use the same helpers so error
-/// shape stays consistent across the package.
+/// The Mix generators use the same helpers so error shape stays consistent
+/// across the package.
 library;
 
 import 'package:analyzer/dart/element/element.dart';

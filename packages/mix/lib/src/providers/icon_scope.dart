@@ -7,12 +7,6 @@ import '../specs/icon/icon_style.dart';
 /// Wraps its child in an [IconTheme] with the resolved icon styling
 /// and makes the icon style available through inheritance.
 class IconScope extends StatelessWidget {
-  /// The icon style to provide to descendant widgets.
-  final IconStyler icon;
-
-  /// The widget below this widget in the tree.
-  final Widget child;
-
   const IconScope({required this.icon, required this.child, super.key});
 
   /// Gets the closest [IconStyler] from the widget tree, or null if not found.
@@ -32,6 +26,12 @@ class IconScope extends StatelessWidget {
 
     return result!;
   }
+
+  /// The icon style to provide to descendant widgets.
+  final IconStyler icon;
+
+  /// The widget below this widget in the tree.
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
@@ -59,9 +59,9 @@ class IconScope extends StatelessWidget {
 }
 
 class _IconInheritedWidget extends InheritedWidget {
-  final IconStyler icon;
-
   const _IconInheritedWidget({required this.icon, required super.child});
+
+  final IconStyler icon;
 
   @override
   bool updateShouldNotify(_IconInheritedWidget oldWidget) {

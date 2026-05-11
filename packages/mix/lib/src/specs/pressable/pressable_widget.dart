@@ -9,6 +9,20 @@ import '../box/box_widget.dart';
 ///
 /// Provides press, long press, and focus interactions.
 class PressableBox extends StatelessWidget {
+  const PressableBox({
+    super.key,
+    this.style,
+    this.onLongPress,
+    this.focusNode,
+    required this.child,
+    this.autofocus = false,
+    this.enableFeedback = false,
+    this.onFocusChange,
+    this.onPress,
+    this.hitTestBehavior = HitTestBehavior.opaque,
+    this.enabled = true,
+  });
+
   /// Enables audible/haptic feedback for gestures.
   final bool enableFeedback;
 
@@ -27,21 +41,6 @@ class PressableBox extends StatelessWidget {
   final Function(bool focus)? onFocusChange;
 
   final HitTestBehavior hitTestBehavior;
-
-  const PressableBox({
-    super.key,
-    this.style,
-    this.onLongPress,
-    this.focusNode,
-    required this.child,
-    this.autofocus = false,
-    this.enableFeedback = false,
-
-    this.onFocusChange,
-    this.onPress,
-    this.hitTestBehavior = HitTestBehavior.opaque,
-    this.enabled = true,
-  });
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +61,27 @@ class PressableBox extends StatelessWidget {
 ///
 /// Manages press, hover, and focus states with configurable behavior.
 class Pressable extends StatefulWidget {
+  const Pressable({
+    super.key,
+    this.enabled = true,
+    this.enableFeedback = false,
+    this.onPress,
+    this.hitTestBehavior = HitTestBehavior.opaque,
+    this.onLongPress,
+    this.onFocusChange,
+    this.autofocus = false,
+    this.focusNode,
+    this.mouseCursor,
+    this.onKey,
+    this.canRequestFocus = true,
+    this.excludeFromSemantics = false,
+    this.semanticButtonLabel,
+    this.onKeyEvent,
+    this.controller,
+    this.actions,
+    required this.child,
+  });
+
   final Widget child;
 
   final bool enabled;
@@ -106,27 +126,6 @@ class Pressable extends StatefulWidget {
 
   final WidgetStatesController? controller;
 
-  const Pressable({
-    super.key,
-    this.enabled = true,
-    this.enableFeedback = false,
-    this.onPress,
-    this.hitTestBehavior = HitTestBehavior.opaque,
-    this.onLongPress,
-    this.onFocusChange,
-    this.autofocus = false,
-    this.focusNode,
-    this.mouseCursor,
-    this.onKey,
-    this.canRequestFocus = true,
-    this.excludeFromSemantics = false,
-    this.semanticButtonLabel,
-    this.onKeyEvent,
-    this.controller,
-    this.actions,
-    required this.child,
-  });
-
   @override
   State createState() => PressableWidgetState();
 }
@@ -134,6 +133,12 @@ class Pressable extends StatefulWidget {
 @visibleForTesting
 class PressableWidgetState extends State<Pressable> {
   late final WidgetStatesController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = widget.controller ?? WidgetStatesController();
+  }
 
   void _onTap() {
     widget.onPress?.call();
@@ -176,12 +181,6 @@ class PressableWidgetState extends State<Pressable> {
       ),
       ...?widget.actions,
     };
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = widget.controller ?? WidgetStatesController();
   }
 
   @override

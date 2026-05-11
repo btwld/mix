@@ -12,13 +12,11 @@ library;
 
 import 'package:build/build.dart';
 import 'package:dart_style/dart_style.dart';
-import 'package:pub_semver/pub_semver.dart';
 import 'package:source_gen/source_gen.dart';
 
 import 'src/mix_generator.dart';
 import 'src/mixable_generator.dart';
 import 'src/styler_generator.dart';
-import 'src/widget_generator.dart';
 
 // Export core components for testing
 export 'src/core/builders/index.dart';
@@ -30,7 +28,6 @@ export 'src/core/resolvers/index.dart';
 export 'src/mix_generator.dart';
 export 'src/mixable_generator.dart';
 export 'src/styler_generator.dart';
-export 'src/widget_generator.dart';
 
 /// Entry point for the mix_generator builder.
 ///
@@ -41,7 +38,9 @@ Builder mixGenerator(BuilderOptions _) {
   return SharedPartBuilder(
     [SpecGenerator()],
     'mix_generator',
-    formatOutput: _formatGeneratorOutput,
+    formatOutput: (code, version) {
+      return DartFormatter(languageVersion: version).format(code);
+    },
   );
 }
 
@@ -53,7 +52,9 @@ Builder stylerGenerator(BuilderOptions _) {
   return SharedPartBuilder(
     [StylerGenerator()],
     'styler_generator',
-    formatOutput: _formatGeneratorOutput,
+    formatOutput: (code, version) {
+      return DartFormatter(languageVersion: version).format(code);
+    },
   );
 }
 
@@ -65,21 +66,8 @@ Builder mixableGenerator(BuilderOptions _) {
   return SharedPartBuilder(
     [MixableGenerator()],
     'mixable_generator',
-    formatOutput: _formatGeneratorOutput,
+    formatOutput: (code, version) {
+      return DartFormatter(languageVersion: version).format(code);
+    },
   );
-}
-
-/// Entry point for the mix_widget_generator builder.
-///
-/// Triggers on @MixWidget annotations and generates widget wrappers.
-Builder mixWidgetGenerator(BuilderOptions _) {
-  return SharedPartBuilder(
-    [MixWidgetGenerator()],
-    'mix_widget_generator',
-    formatOutput: _formatGeneratorOutput,
-  );
-}
-
-String _formatGeneratorOutput(String code, Version version) {
-  return DartFormatter(languageVersion: version).format(code);
 }

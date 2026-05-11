@@ -7,7 +7,3 @@ targets:
           - lib/src/specs/**/*.dart  # Only run on spec files
         options:
           debug: false
-      mix_generator|mix_widget_generator:
-        enabled: true
-        generate_for:
-          - lib/**/*.dart

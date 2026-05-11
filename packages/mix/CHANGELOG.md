@@ -1,16 +1,3 @@
-## Unreleased
-
-### Breaking
-
-- **`@MixWidget` redesign:** Removed the `widgetBuilder:` field and the
-  `MixWidgetBuilder` marker class. Generated wrappers now read the styler's
-  concrete `call()` method, validate that it returns a Flutter `Widget`, and
-  mirror its parameters onto the generated wrapper.
-- **Migration:** Replace `@MixWidget(widgetBuilder: SomeBuilder())` with
-  `@MixWidget()` and move widget parameters to the styler's `call()` method.
-  Delete adapter classes that extend `MixWidgetBuilder` and remove any
-  spec-side rendering annotations.
-
 ## 2.0.2
 
 This release completes the 2.0 Styler migration by removing the remaining legacy utility surface, and adds new ergonomic shorthands and variant tooling.

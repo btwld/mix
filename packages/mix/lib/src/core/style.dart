@@ -40,13 +40,18 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
   static Style<S> of<S extends Spec<S>>(BuildContext context) {
     final style = maybeOf<S>(context);
     if (style == null) {
-      throw FlutterError(
-        'Style.of() called with a context that does not contain a Style of type $S.\n'
-        'No Style<$S> ancestor could be found starting from the context that was passed to Style.of().\n\n'
-        'If you are using StyleBuilder, make sure to set inheritable: true to provide the style to descendant widgets.\n\n'
-        'The context used was:\n'
-        '  $context',
-      );
+      throw FlutterError.fromParts([
+        ErrorSummary(
+          'Style.of() called with a context that does not contain a Style of type $S.',
+        ),
+        ErrorDescription(
+          'No Style<$S> ancestor could be found starting from the context that was passed to Style.of().',
+        ),
+        context.describeElement('The context used was'),
+        ErrorHint(
+          'If you are using StyleBuilder, set inheritable: true to provide the style to descendant widgets.',
+        ),
+      ]);
     }
 
     return style;

@@ -156,11 +156,8 @@ class SpecMixinBuilder {
     return buffer.toString();
   }
 
-  /// Inlines Diagnosticable's concrete surface (`toStringShort`,
-  /// `toString({minLevel})`, `toDiagnosticsNode`). These bodies are
-  /// copies of Flutter's `Diagnosticable` defaults — emitted here so the
-  /// mixin can `implements Diagnosticable` without requiring the applying
-  /// class to itself be a Diagnosticable.
+  /// Emits the Diagnosticable-compatible surface required by the generated
+  /// mixin without requiring the applying class to extend Diagnosticable.
   String _buildDiagnosticableSurface() {
     final buffer = StringBuffer();
 
