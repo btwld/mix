@@ -6,18 +6,17 @@ constructor parameter comes from.
 ## Core Rules
 
 - `key` is always owned by the generated `StatelessWidget`.
-- The renderer widget is declared once on the `Spec` class via
-  `@MixWidgetRenderer(YourWidget)`. The generator looks it up there and
-  mirrors that widget's unnamed constructor onto the wrapper.
-- Mix's own specs (`BoxSpec`, `TextSpec`, `FlexBoxSpec`, `IconSpec`,
-  `ImageSpec`, `StackBoxSpec`) ship with `@MixWidgetRenderer` annotations,
-  so applying `@MixWidget()` to a Mix-built-in styler "just works".
-- Wrapper parameters come from the renderer widget's constructor (excluding
-  `key`, `style`, `styleSpec`).
+- Wrapper parameters come from the styler's concrete `call()` method,
+  excluding a named `Key? key` parameter.
+- If the styler `call()` method accepts `Key? key`, the generated wrapper
+  forwards its own key to it.
 - Function factory parameters become generated wrapper constructor
-  parameters and are passed back to the factory.
+  parameters and are passed back to the factory before `call()` is invoked.
 - Factory parameters shape the style only. They do not automatically become
-  renderer arguments.
+  widget arguments unless the `call()` method also declares matching
+  parameters.
+- A styler used by `@MixWidget` must expose a non-generic `call()` method that
+  returns a Flutter `Widget`.
 
 ## Variable-Backed Built-In Style
 
@@ -46,7 +45,7 @@ class Card extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Box(key: key, style: cardStyle, child: child);
+    return cardStyle.call(key: key, child: child);
   }
 }
 ```
@@ -54,10 +53,8 @@ class Card extends StatelessWidget {
 What happened:
 
 - `Card` comes from `cardStyle` with the trailing `Style` removed.
-- The generator resolved `BoxStyler` → `BoxSpec`, found
-  `@MixWidgetRenderer(Box)` on `BoxSpec`, and mirrored `Box`'s constructor.
-- `child` comes from `Box({Widget? child})`.
-- `style: cardStyle` passes the original top-level styler to `Box`.
+- `child` comes from `BoxStyler.call({Widget? child})`.
+- The generated build method delegates widget creation to `cardStyle.call`.
 
 ## Function-Backed Style With Parameters
 
@@ -98,9 +95,8 @@ class Badge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Box(
+    return badgeStyle(color: color, style: style).call(
       key: key,
-      style: badgeStyle(color: color, style: style),
       child: child,
     );
   }
@@ -110,16 +106,15 @@ class Badge extends StatelessWidget {
 What happened:
 
 - `color` and `style` come from the `badgeStyle(...)` factory signature.
-- `child` still comes from the `Box` renderer constructor.
-- `style` is treated like a normal factory parameter. It is not magic.
-- `badgeStyle(color: color, style: style)` creates the final style passed to
-  `Box`.
+- `child` comes from `BoxStyler.call`.
+- `badgeStyle(color: color, style: style)` creates the final style, then the
+  wrapper calls `.call(...)` on that style.
 
 Factory parameters can be positional, named, required, optional, and
-defaulted. The generated wrapper mirrors that shape before adding renderer
+defaulted. The generated wrapper mirrors that shape before adding call
 parameters.
 
-Example with positional text for the built-in text renderer:
+Example with positional text:
 
 ```dart
 @MixWidget()
@@ -140,18 +135,18 @@ class Label extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StyledText(text, key: key, style: labelStyle(color: color));
+    return labelStyle(color: color).call(text, key: key);
   }
 }
 ```
 
-Here `text` comes from `StyledText(String text)`, while `color` comes from
-the style factory.
+Here `text` comes from `TextStyler.call(String text, {Key? key})`, while
+`color` comes from the style factory.
 
-## Custom Renderer (Spec-Side Annotation)
+## Custom Styler Call
 
-For widgets outside Mix's built-ins, declare the renderer on the spec class.
-That single annotation is enough — no adapter or builder class is required.
+For widgets outside Mix's built-ins, put the rendering contract on the
+styler's `call()` method.
 
 Input:
 
@@ -162,7 +157,6 @@ import 'package:mix_annotations/mix_annotations.dart';
 
 part 'button.g.dart';
 
-@MixWidgetRenderer(Button)
 class ButtonSpec extends Spec<ButtonSpec> {
   const ButtonSpec();
 }
@@ -172,6 +166,19 @@ class ButtonStyler extends Style<ButtonSpec> {
 
   ButtonStyler color(Color value) => this;
   ButtonStyler merge(ButtonStyler? other) => this;
+
+  Button call({
+    Key? key,
+    required VoidCallback onPressed,
+    required Widget child,
+  }) {
+    return Button(
+      key: key,
+      style: this,
+      onPressed: onPressed,
+      child: child,
+    );
+  }
 }
 
 class Button extends StatelessWidget {
@@ -212,9 +219,8 @@ class PrimaryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Button(
+    return primaryButtonStyle(color: color).call(
       key: key,
-      style: primaryButtonStyle(color: color),
       onPressed: onPressed,
       child: child,
     );
@@ -224,51 +230,48 @@ class PrimaryButton extends StatelessWidget {
 
 What happened:
 
-- `color` came from the `primaryButtonStyle` factory, so it's a wrapper
-  param routed back into the factory.
-- `onPressed` and `child` came from `Button`'s constructor.
-- `key` is forwarded automatically.
-- `style:` was constructed by calling the factory — no merge or override
-  parameter is generated.
+- `color` came from the `primaryButtonStyle` factory, so it is routed back
+  into the factory.
+- `onPressed` and `child` came from `ButtonStyler.call`.
+- `key` is forwarded automatically because `ButtonStyler.call` accepts
+  named `Key? key`.
 - Visual variants like primary/secondary or hover/pressed states belong in
-  the styler or factory, not in the renderer's constructor.
+  the styler or factory.
 
-## Renderer Widget Contract
+## Styler Call Contract
 
-A renderer widget must:
+A styler `call()` method used by `@MixWidget` must:
 
-- Have an unnamed constructor.
-- Declare a `style:` named parameter assignable from `Style<TSpec>` (the
-  styler type compatible with the spec).
-- Be a Flutter `Widget` subtype.
+- Return a Flutter `Widget` subtype.
+- Be non-generic.
+- Use required positional parameters and named parameters. Optional
+  positional parameters are rejected.
+- Use named `Key? key` if it wants generated wrapper keys forwarded.
 
 It does **not** need to:
 
-- Extend `StyleWidget<TSpec>`. Any `StatelessWidget` or `StatefulWidget` that
-  takes `style:` works.
-- Declare a `styleSpec` parameter. If present, it's reserved and ignored.
-- Have a special base class or annotation on the widget itself.
+- Match a widget constructor exactly.
+- Treat `style` or `styleSpec` specially. They are normal `call()`
+  parameters if you declare them.
+- Declare anything on the `Spec` class.
 
 ## Parameter Collision Rules
 
 - `key` is reserved by the generated widget.
-- `style` and `styleSpec` are reserved on the renderer constructor (the
-  generator never mirrors them onto the wrapper).
 - Factory parameter `style` is allowed and treated as a normal input.
-- Duplicate generated names are rejected. For example, a `Box` wrapper
-  cannot have both a factory parameter named `child` and a renderer
-  parameter named `child`.
+- Duplicate generated names are rejected. For example, a wrapper cannot have
+  both a factory parameter named `child` and a `call()` parameter named
+  `child`.
 
 ## Mental Model
 
 ```dart
-return Renderer(
+return styleFactory(...factoryParams).call(
   key: key,
-  style: styleFactory(...factoryParams),
-  ...rendererParams,
+  ...callParams,
 );
 ```
 
-Factory parameters create the style. Renderer constructor parameters create
-the widget structure and behavior. The renderer widget is the single source
-of truth for the wrapper's API.
+Factory parameters create the style. Styler `call()` parameters create the
+widget structure and behavior. The styler `call()` method is the single
+source of truth for the wrapper's widget API.

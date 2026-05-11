@@ -23,10 +23,10 @@ class ContextualButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Box(
-      key: key,
-      style: contextualButtonStyle(context, compact: compact, style: style),
-      child: child,
-    );
+    return contextualButtonStyle(
+      context,
+      compact: compact,
+      style: style,
+    ).call(key: key, child: child);
   }
 }

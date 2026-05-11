@@ -1,4 +1,4 @@
-/// Support for doing something awesome.
+/// Annotations and generation flags for Mix code generation.
 
 library;
 

@@ -57,9 +57,6 @@ class MixableStylerAnnotationConfig {
   /// Whether to generate props getter.
   bool get generateProps => (methods & GeneratedStylerMethods.props) != 0;
 
-  /// Whether to generate call() method.
-  bool get generateCall => (methods & GeneratedStylerMethods.call) != 0;
-
   @override
   String toString() => 'MixableStylerAnnotationConfig(methods: $methods)';
 }

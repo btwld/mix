@@ -71,7 +71,6 @@ Generates a `_$<Name>Mixin` for mutable Styler classes with:
 - `resolve()` — resolve to the corresponding Spec
 - `debugFillProperties()` — diagnostics support
 - `props` — equality comparison
-- `call()` — widget creation
 
 ```dart
 part 'box_styler.g.dart';
@@ -128,7 +127,8 @@ final cardStyle = BoxStyler()
     .borderRounded(12);
 ```
 
-This generates a `Card` widget that instantiates Mix's `Box` renderer:
+This generates a `Card` widget that delegates widget creation to
+`BoxStyler.call`:
 
 ```dart
 class Card extends StatelessWidget {
@@ -138,13 +138,13 @@ class Card extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Box(key: key, style: cardStyle, child: child);
+    return cardStyle.call(key: key, child: child);
   }
 }
 ```
 
-Different specs expose different widget inputs. A text styler produces a
-positional `text` parameter because `StyledText` does:
+Different stylers expose different widget inputs. A text styler produces a
+positional `text` parameter because `TextStyler.call` does:
 
 ```dart
 @MixWidget()
@@ -163,14 +163,12 @@ class Heading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StyledText(text, key: key, style: headingStyle);
+    return headingStyle.call(text, key: key);
   }
 }
 ```
 
-The wrapper API comes from Mix renderer widget constructors matched by
-canonical analyzer type identity. The generator does not inspect styler
-`call()` methods for wrapper parameters.
+The wrapper API comes from the concrete styler `call()` method.
 
 Use a function-backed style when the generated component should accept style
 inputs:
@@ -197,21 +195,15 @@ class Chip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Box(key: key, style: chipStyle(style: style), child: child);
+    return chipStyle(style: style).call(key: key, child: child);
   }
 }
 ```
 
-Mix-owned specs (`BoxSpec`, `TextSpec`, `FlexBoxSpec`, `IconSpec`,
-`ImageSpec`, `StackBoxSpec`) ship with `@MixWidgetRenderer` annotations,
-so `@MixWidget()` on built-in stylers picks the right renderer
-automatically.
-
-For custom design-system widgets, declare the renderer once on the spec
-class:
+For custom design-system widgets, put the rendering contract on the styler's
+`call()` method:
 
 ```dart
-@MixWidgetRenderer(Button)
 class ButtonSpec extends Spec<ButtonSpec> {
   const ButtonSpec();
 }
@@ -220,6 +212,19 @@ class ButtonStyler extends Style<ButtonSpec> {
   const ButtonStyler();
   ButtonStyler color(Color value) => this;
   ButtonStyler merge(ButtonStyler? other) => this;
+
+  Button call({
+    Key? key,
+    required VoidCallback onPressed,
+    required Widget child,
+  }) {
+    return Button(
+      key: key,
+      style: this,
+      onPressed: onPressed,
+      child: child,
+    );
+  }
 }
 
 class Button extends StatelessWidget {
@@ -241,17 +246,15 @@ ButtonStyler primaryButtonStyle({Color color = Colors.blue}) {
 }
 ```
 
-The generated `PrimaryButton` constructs `Button(...)` directly. Wrapper
-parameters come from `Button`'s constructor, excluding the reserved names
-`key`, `style`, and `styleSpec`. The renderer needs only a `style:` named
-parameter assignable from the styler's `Style<TSpec>`; it does not have to
-extend `StyleWidget` or carry any annotation of its own.
+The generated `PrimaryButton` calls
+`primaryButtonStyle(color: color).call(...)`. Wrapper parameters come from
+the factory signature plus `ButtonStyler.call`.
 
 `@MixWidget` supports top-level `final` variables and top-level functions.
 Function-backed declarations prepend their own public factory parameters
-before renderer parameters, so inputs can shape the generated base style.
+before call parameters, so inputs can shape the generated base style.
 
-Custom specs without `@MixWidgetRenderer` produce a clear codegen error.
+Stylers without a concrete `call()` method produce a clear codegen error.
 
 A top-level style function may take `BuildContext context` as its first required
 positional parameter. The generated wrapper injects the build context from

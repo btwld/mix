@@ -372,7 +372,7 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
   }
 
   /// Creates a FlexBox widget with children.
-  FlexBox call({Key? key, required List<Widget> children}) {
+  FlexBox call({Key? key, List<Widget> children = const <Widget>[]}) {
     return FlexBox(key: key, style: this, children: children);
   }
 

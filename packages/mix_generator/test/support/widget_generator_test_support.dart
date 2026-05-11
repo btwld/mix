@@ -26,12 +26,6 @@ class MixWidget {
 }
 
 const mixWidget = MixWidget();
-
-class MixWidgetRenderer {
-  final Type widget;
-
-  const MixWidgetRenderer(this.widget);
-}
 ''';
 
 const flutterFrameworkStub = r'''
@@ -125,10 +119,6 @@ class Style<T> {
 const mixBoxSpecStub = r'''
 library mix.src.specs.box.box_spec;
 
-import 'package:mix_annotations/src/annotations.dart';
-import 'package:mix/mix.dart';
-
-@MixWidgetRenderer(Box)
 class BoxSpec {
   const BoxSpec();
 }
@@ -137,10 +127,6 @@ class BoxSpec {
 const mixFlexBoxSpecStub = r'''
 library mix.src.specs.flexbox.flexbox_spec;
 
-import 'package:mix_annotations/src/annotations.dart';
-import 'package:mix/mix.dart';
-
-@MixWidgetRenderer(FlexBox)
 class FlexBoxSpec {
   const FlexBoxSpec();
 }
@@ -149,10 +135,6 @@ class FlexBoxSpec {
 const mixTextSpecStub = r'''
 library mix.src.specs.text.text_spec;
 
-import 'package:mix_annotations/src/annotations.dart';
-import 'package:mix/mix.dart';
-
-@MixWidgetRenderer(StyledText)
 class TextSpec {
   const TextSpec();
 }
@@ -161,10 +143,6 @@ class TextSpec {
 const mixIconSpecStub = r'''
 library mix.src.specs.icon.icon_spec;
 
-import 'package:mix_annotations/src/annotations.dart';
-import 'package:mix/mix.dart';
-
-@MixWidgetRenderer(StyledIcon)
 class IconSpec {
   const IconSpec();
 }
@@ -173,10 +151,6 @@ class IconSpec {
 const mixImageSpecStub = r'''
 library mix.src.specs.image.image_spec;
 
-import 'package:mix_annotations/src/annotations.dart';
-import 'package:mix/mix.dart';
-
-@MixWidgetRenderer(StyledImage)
 class ImageSpec {
   const ImageSpec();
 }
@@ -185,10 +159,6 @@ class ImageSpec {
 const mixStackBoxSpecStub = r'''
 library mix.src.specs.stackbox.stackbox_spec;
 
-import 'package:mix_annotations/src/annotations.dart';
-import 'package:mix/mix.dart';
-
-@MixWidgetRenderer(StackBox)
 class StackBoxSpec {
   const StackBoxSpec();
 }
@@ -232,8 +202,8 @@ class TextStyler extends Style<TextSpec> {
 
   TextStyler merge(TextStyler? other) => this;
 
-  StyledText call(String text) {
-    return StyledText(text, style: this);
+  StyledText call(String text, {Key? key}) {
+    return StyledText(text, key: key, style: this);
   }
 }
 
@@ -242,7 +212,7 @@ class FlexBoxStyler extends Style<FlexBoxSpec> {
 
   FlexBoxStyler merge(FlexBoxStyler? other) => this;
 
-  FlexBox call({Key? key, required List<Widget> children}) {
+  FlexBox call({Key? key, List<Widget> children = const <Widget>[]}) {
     return FlexBox(key: key, style: this, children: children);
   }
 }
@@ -268,6 +238,7 @@ class ImageStyler extends Style<ImageSpec> {
   ImageStyler merge(ImageStyler? other) => this;
 
   StyledImage call({
+    Key? key,
     ImageProvider<Object>? image,
     ImageFrameBuilder? frameBuilder,
     ImageLoadingBuilder? loadingBuilder,
@@ -275,6 +246,7 @@ class ImageStyler extends Style<ImageSpec> {
     Animation<double>? opacity,
   }) {
     return StyledImage(
+      key: key,
       style: this,
       image: image,
       frameBuilder: frameBuilder,
@@ -290,7 +262,7 @@ class StackBoxStyler extends Style<StackBoxSpec> {
 
   StackBoxStyler merge(StackBoxStyler? other) => this;
 
-  StackBox call({Key? key, required List<Widget> children}) {
+  StackBox call({Key? key, List<Widget> children = const <Widget>[]}) {
     return StackBox(key: key, style: this, children: children);
   }
 }

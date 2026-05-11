@@ -51,7 +51,7 @@ Control which methods are generated via `GeneratedSpecMethods` flags:
 
 ### `@MixableStyler`
 
-Generates a mixin for Styler classes (mutable builders) with setter methods, `merge()`, `resolve()`, `debugFillProperties()`, `props`, and `call()`.
+Generates a mixin for Styler classes (mutable builders) with setter methods, `merge()`, `resolve()`, `debugFillProperties()`, and `props`.
 
 ```dart
 @MixableStyler()
@@ -64,11 +64,7 @@ class BoxStyler extends Style<BoxSpec>
 }
 ```
 
-Control which methods are generated via `GeneratedStylerMethods` flags:
-
-```dart
-@MixableStyler(methods: GeneratedStylerMethods.skipCall)
-```
+Control which methods are generated via `GeneratedStylerMethods` flags.
 
 ### `@Mixable`
 
@@ -102,7 +98,8 @@ final cardStyle = BoxStyler()
     .borderRounded(12);
 ```
 
-This generates a `Card` widget that instantiates Mix's `Box` renderer:
+This generates a `Card` widget that delegates widget creation to
+`BoxStyler.call`:
 
 ```dart
 class Card extends StatelessWidget {
@@ -112,12 +109,12 @@ class Card extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Box(key: key, style: cardStyle, child: child);
+    return cardStyle.call(key: key, child: child);
   }
 }
 ```
 
-Text stylers expose positional text because `StyledText` does:
+Text stylers expose positional text because `TextStyler.call` does:
 
 ```dart
 @MixWidget()
@@ -134,14 +131,12 @@ class Heading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StyledText(text, key: key, style: headingStyle);
+    return headingStyle.call(text, key: key);
   }
 }
 ```
 
-The wrapper API comes from Mix renderer widget constructors matched by
-canonical analyzer type identity. The generator does not inspect styler
-`call()` methods for wrapper parameters.
+The wrapper API comes from the concrete styler `call()` method.
 
 Use a function-backed style when the generated component should accept style
 inputs:
@@ -168,21 +163,15 @@ class Chip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Box(key: key, style: chipStyle(style: style), child: child);
+    return chipStyle(style: style).call(key: key, child: child);
   }
 }
 ```
 
-Mix-owned specs (`BoxSpec`, `TextSpec`, `FlexBoxSpec`, `IconSpec`,
-`ImageSpec`, `StackBoxSpec`) ship with `@MixWidgetRenderer` annotations,
-so applying `@MixWidget()` to a built-in styler renders through the right
-widget automatically.
-
-For custom design-system widgets, declare the renderer once on the spec
-class:
+For custom design-system widgets, put the rendering contract on the styler's
+`call()` method:
 
 ```dart
-@MixWidgetRenderer(Button)
 class ButtonSpec extends Spec<ButtonSpec> {
   const ButtonSpec();
 }
@@ -191,6 +180,19 @@ class ButtonStyler extends Style<ButtonSpec> {
   const ButtonStyler();
   ButtonStyler color(Color value) => this;
   ButtonStyler merge(ButtonStyler? other) => this;
+
+  Button call({
+    Key? key,
+    required VoidCallback onPressed,
+    required Widget child,
+  }) {
+    return Button(
+      key: key,
+      style: this,
+      onPressed: onPressed,
+      child: child,
+    );
+  }
 }
 
 class Button extends StatelessWidget {
@@ -212,18 +214,14 @@ ButtonStyler primaryButtonStyle({Color color = Colors.blue}) {
 }
 ```
 
-The generated `PrimaryButton` constructs `Button(...)` directly, mirroring
-`Button`'s constructor (excluding `key`, `style`, `styleSpec`). Visual
-variants belong in the styler or style factory.
-
-The renderer widget needs only a `style:` named parameter assignable from
-the styler's `Style<TSpec>`. It does not need to extend `StyleWidget` or
-carry any annotation of its own. Specs without `@MixWidgetRenderer` produce
-a clear codegen error.
+The generated `PrimaryButton` calls
+`primaryButtonStyle(color: color).call(...)`. Wrapper parameters come from
+the factory signature plus `ButtonStyler.call`. Visual variants belong in
+the styler or style factory.
 
 `@MixWidget` currently supports top-level `final` variables and top-level
 functions only. Function-backed declarations prepend their own public factory
-parameters before renderer parameters so inputs can shape the generated base
+parameters before call parameters so inputs can shape the generated base
 style.
 
 A top-level style function may take `BuildContext context` as its first required
@@ -251,14 +249,13 @@ Each annotation accepts bitwise flags to control which methods or components are
 | Class | Available Flags |
 |---|---|
 | `GeneratedSpecMethods` | `copyWith`, `equals`, `lerp` |
-| `GeneratedStylerMethods` | `setters`, `merge`, `resolve`, `debugFillProperties`, `props`, `call` |
+| `GeneratedStylerMethods` | `setters`, `merge`, `resolve`, `debugFillProperties`, `props` |
 | `GeneratedMixMethods` | `merge`, `resolve`, `props`, `debugFillProperties` |
 
 Use `all` (default) to generate everything, or `skip*` helpers to exclude specific methods:
 
 ```dart
 GeneratedSpecMethods.skipLerp      // all except lerp
-GeneratedStylerMethods.skipCall    // all except call
 GeneratedMixMethods.skipResolve    // all except resolve
 ```
 

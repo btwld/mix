@@ -13,11 +13,6 @@ const mixWidgetAnnotationChecker = TypeChecker.fromUrl(
   'package:mix_annotations/src/annotations.dart#MixWidget',
 );
 
-/// `MixWidgetRenderer` annotation from `package:mix_annotations`.
-const mixWidgetRendererAnnotationChecker = TypeChecker.fromUrl(
-  'package:mix_annotations/src/annotations.dart#MixWidgetRenderer',
-);
-
 /// `MixableField` annotation from `package:mix_annotations`.
 const mixableFieldAnnotationChecker = TypeChecker.fromUrl(
   'package:mix_annotations/src/annotations.dart#MixableField',

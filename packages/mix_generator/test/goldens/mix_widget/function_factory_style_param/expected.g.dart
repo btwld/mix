@@ -18,10 +18,6 @@ class Chip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Box(
-      key: key,
-      style: chipStyle(color: color, style: style),
-      child: child,
-    );
+    return chipStyle(color: color, style: style).call(key: key, child: child);
   }
 }

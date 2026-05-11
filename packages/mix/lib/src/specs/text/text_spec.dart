@@ -5,7 +5,6 @@ import 'package:mix_annotations/mix_annotations.dart';
 import '../../core/directive.dart';
 import '../../core/helpers.dart';
 import '../../core/spec.dart';
-import 'text_widget.dart';
 
 part 'text_spec.g.dart';
 
@@ -14,7 +13,6 @@ part 'text_spec.g.dart';
 /// Provides comprehensive text styling including overflow behavior, structure styling,
 /// alignment, line limits, text direction, and string directive support.
 @MixableSpec(methods: GeneratedSpecMethods.skipLerp)
-@MixWidgetRenderer(StyledText)
 @immutable
 final class TextSpec with _$TextSpec {
   /// How visual overflow should be handled.

@@ -68,18 +68,14 @@ class GeneratedStylerMethods {
   /// Generate `props` getter for equality
   static const int props = 0x10;
 
-  /// Generate `call()` method for widget creation
-  static const int call = 0x20;
-
   static const int all =
-      setters | merge | resolve | debugFillProperties | props | call;
+      setters | merge | resolve | debugFillProperties | props;
 
   static const skipSetters = all & ~setters;
   static const skipMerge = all & ~merge;
   static const skipResolve = all & ~resolve;
   static const skipDebugFillProperties = all & ~debugFillProperties;
   static const skipProps = all & ~props;
-  static const skipCall = all & ~call;
 
   const GeneratedStylerMethods._();
 }

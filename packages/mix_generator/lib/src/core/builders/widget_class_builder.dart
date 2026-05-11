@@ -17,12 +17,12 @@ import '../models/widget_target.dart';
 String buildWidgetClass({
   required String generatedName,
   required AnnotatedTarget target,
-  required ResolvedWidgetRenderer resolvedRenderer,
+  required ResolvedStylerCall resolvedCall,
   required FactoryParameters factoryParameters,
 }) {
   final allParameters = [
     ...factoryParameters.publicParameters,
-    ...resolvedRenderer.parameters,
+    ...resolvedCall.parameters,
   ];
 
   final classSpec = Class((c) {
@@ -38,7 +38,7 @@ String buildWidgetClass({
     c.methods.add(
       _buildBuildMethod(
         target: target,
-        resolvedRenderer: resolvedRenderer,
+        resolvedCall: resolvedCall,
         factoryParameters: factoryParameters,
       ),
     );
@@ -98,18 +98,18 @@ Parameter _parameter(ParameterSpec parameter) => .new((p) {
 
 Method _buildBuildMethod({
   required AnnotatedTarget target,
-  required ResolvedWidgetRenderer resolvedRenderer,
+  required ResolvedStylerCall resolvedCall,
   required FactoryParameters factoryParameters,
 }) {
-  final styleSource = target.factoryElement?.name ?? target.sourceName;
+  final styleSource = target.sourceName;
   final styleExpression = target.factoryElement != null
       ? '$styleSource(${_factoryInvocationArguments(factoryParameters)})'
       : styleSource;
 
-  final dispatch = _emitDirectWidgetCall(
-    widgetReference: resolvedRenderer.widgetReference,
-    widgetParameters: resolvedRenderer.parameters,
-    styleArgument: styleExpression,
+  final dispatch = _emitStylerCall(
+    styleExpression: styleExpression,
+    callParameters: resolvedCall.parameters,
+    forwardsKey: resolvedCall.forwardsKey,
   );
 
   return Method(
@@ -128,26 +128,25 @@ Method _buildBuildMethod({
   );
 }
 
-String _emitDirectWidgetCall({
-  required String widgetReference,
-  required List<ParameterSpec> widgetParameters,
-  required String styleArgument,
+String _emitStylerCall({
+  required String styleExpression,
+  required List<ParameterSpec> callParameters,
+  required bool forwardsKey,
 }) {
   final positional = [
-    for (final parameter in widgetParameters)
+    for (final parameter in callParameters)
       if (!parameter.isNamed) _parameterReference(parameter),
   ];
   final named = [
-    'key: key',
-    'style: $styleArgument',
-    for (final parameter in widgetParameters)
+    if (forwardsKey) 'key: key',
+    for (final parameter in callParameters)
       if (parameter.isNamed)
         '${parameter.name}: ${_parameterReference(parameter)}',
   ];
 
   final sections = [if (positional.isNotEmpty) positional.join(', '), ...named];
 
-  return '$widgetReference(${sections.join(', ')})';
+  return '$styleExpression.call(${sections.join(', ')})';
 }
 
 String _factoryInvocationArguments(FactoryParameters factoryParameters) {

@@ -12,6 +12,10 @@ class ContextButtonStyle extends Style<BoxSpec> {
   const ContextButtonStyle({this.compact = false});
 
   ContextButtonStyle merge(ContextButtonStyle? other) => this;
+
+  Box call({Key? key, Widget? child}) {
+    return Box(key: key, style: this, child: child);
+  }
 }
 
 @MixWidget()

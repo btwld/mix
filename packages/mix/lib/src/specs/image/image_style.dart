@@ -147,13 +147,15 @@ class ImageStyler extends MixStyler<ImageStyler, ImageSpec>
       ImageStyler().matchTextDirection(value);
 
   StyledImage call({
-    ImageProvider? image,
+    Key? key,
+    ImageProvider<Object>? image,
     ImageFrameBuilder? frameBuilder,
     ImageLoadingBuilder? loadingBuilder,
     ImageErrorWidgetBuilder? errorBuilder,
     Animation<double>? opacity,
   }) {
     return StyledImage(
+      key: key,
       style: this,
       frameBuilder: frameBuilder,
       loadingBuilder: loadingBuilder,
