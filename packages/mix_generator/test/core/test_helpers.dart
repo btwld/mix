@@ -1,10 +1,19 @@
+/// Shared test fixtures for the `mix_generator` test suite.
+///
+/// Stub libraries and helper factories used across builder and integration
+/// tests. The stubs intentionally mirror only the minimal surface each
+/// generator inspects (constructor shape, annotation field names, etc.).
+library;
+
 import 'package:build/build.dart';
 import 'package:mix_generator/src/core/models/field_model.dart';
 import 'package:mix_generator/src/core/models/mix_field_model.dart';
 import 'package:source_gen/source_gen.dart';
 
+/// Wraps [generator] in a `PartBuilder` that writes a single `.g.dart` part.
 Builder partBuilder(Generator generator) => PartBuilder([generator], '.g.dart');
 
+/// Stub `Style<T>` library — the minimal shape `StylerGenerator` inspects.
 const styleStub = r'''
 library mix_style;
 
@@ -20,6 +29,8 @@ class Style<T> {
 }
 ''';
 
+/// Stub `Mix<T>` / `Mixable<T>` / `DefaultValue<T>` library used by
+/// `MixableGenerator` tests.
 const mixElementStub = r'''
 library mix_element;
 
@@ -36,6 +47,8 @@ mixin DefaultValue<T> {
 }
 ''';
 
+/// Stub `Prop<T>` library at the canonical Mix import path
+/// (`package:mix/src/core/prop.dart`), exercised by `propChecker`.
 const propStub = r'''
 library prop;
 
@@ -44,12 +57,17 @@ class Prop<T> {
 }
 ''';
 
+/// Stub library that defines a `VisibleType` used to test prefix preservation
+/// in generated field types.
 const visibleTypeStub = r'''
 library visible;
 
 class VisibleType {}
 ''';
 
+/// Stub `mix_annotations` library mirroring just the annotation classes and
+/// flag constants the generators read. Inlined here so tests don't depend on
+/// the real annotation package's transitive imports.
 const mixAnnotationsSources = {
   'mix_annotations|lib/mix_annotations.dart': "export 'src/annotations.dart';",
   'mix_annotations|lib/src/annotations.dart': r'''
@@ -94,6 +112,11 @@ class GeneratedSpecMethods {
 ''',
 };
 
+/// Builds a [FieldModel] for tests with sensible defaults.
+///
+/// Either [typeName] or [effectiveSpecType] must be supplied; the other is
+/// inferred. Defaults match a non-list, non-lerpable, `DiagnosticKind.diagnostics`
+/// field.
 FieldModel createTestFieldModel({
   required String name,
   String? typeName,
@@ -126,6 +149,8 @@ FieldModel createTestFieldModel({
   );
 }
 
+/// Builds a [MixFieldModel] for tests. [declaredName] defaults to
+/// `$<name>` to match the styler/mix field convention.
 MixFieldModel createTestMixFieldModel({
   required String name,
   String? declaredName,

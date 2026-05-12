@@ -217,10 +217,8 @@ class SpecMixinBuilder {
       buffer.writeln(_buildLerp());
     }
 
-    // `props` is opt-out via `GeneratedSpecMethods.skipEquals` so users can
-    // hand-roll a custom `props` (e.g., exclude a non-identity field). The
-    // generated `==`/`hashCode`/`getDiff`/`stringify` always emit — they
-    // reference whichever `props` the class exposes, generated or hand-rolled.
+    // `props` is opt-out via `skipEquals` so users can hand-roll their own.
+    // The equality surface emits unconditionally and delegates to `props`.
     if (config.generateProps) {
       buffer.writeln(_buildProps());
     }
