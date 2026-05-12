@@ -83,8 +83,7 @@ class SpecMixinBuilder {
   String _buildProps() {
     final buffer = StringBuffer();
 
-    // `@override` — `Spec<T> with Equatable` declares `props` abstractly,
-    // so this concrete body overrides the inherited contract.
+    // `@override`: `Equatable` (mixed into `Spec<T>`) declares `props` abstractly.
     buffer.writeln('  @override');
     buffer.write('  List<Object?> get props => [');
 
@@ -169,13 +168,8 @@ class SpecMixinBuilder {
   /// The generated mixin name, e.g. `_$BoxSpec`.
   String get mixinName => '_\$$specName';
 
-  /// Builds the complete mixin code.
-  ///
-  /// User-facing shape: `final class BoxSpec with _$BoxSpec { ... }`.
-  /// The generated mixin is self-contained — it implements `Spec<X>` and
-  /// `Diagnosticable`, inlines `==`/`hashCode`/`toString`, and declares
-  /// abstract field getters that the user class satisfies via
-  /// `@override final` fields.
+  /// Builds the full `mixin _$<SpecName> implements Spec<T>, Diagnosticable`
+  /// so a `class X with _$X` declaration is a complete Spec.
   String build() {
     final buffer = StringBuffer();
 
@@ -194,8 +188,7 @@ class SpecMixinBuilder {
       buffer.writeln(_buildLerp());
     }
 
-    // `props` is opt-out via `skipEquals` so users can hand-roll their own.
-    // The equality surface emits unconditionally and delegates to `props`.
+    // `props` is opt-out (`skipEquals`); the equality surface always emits.
     if (config.generateProps) {
       buffer.writeln(_buildProps());
     }

@@ -59,7 +59,6 @@ class MixableGenerator extends GeneratorForAnnotation<Mixable> {
   }
 
   bool _hasDefaultValueMixin(ClassElement classElement) {
-    // Check if the class uses DefaultValue<T> mixin
     for (final mixin in classElement.mixins) {
       if (defaultValueChecker.isExactlyType(mixin)) {
         return true;
@@ -72,15 +71,14 @@ class MixableGenerator extends GeneratorForAnnotation<Mixable> {
   List<MixFieldModel> _extractFields(ClassElement classElement) {
     final allFields = <String, FieldElement>{};
 
-    // Collect fields from superclass hierarchy first (so subclass fields override)
+    // Walk the hierarchy first so subclass fields override their parents.
     _collectFieldsFromHierarchy(classElement, allFields);
 
-    // Get $ fields only
     final dollarFields = allFields.values
         .where((f) => f.name!.startsWith(r'$'))
         .toList();
 
-    // Sort by name for stable ordering
+    // Stable ordering for deterministic generator output.
     dollarFields.sort((a, b) => a.name!.compareTo(b.name!));
 
     return dollarFields.map((field) {
@@ -95,21 +93,18 @@ class MixableGenerator extends GeneratorForAnnotation<Mixable> {
     InterfaceElement classElement,
     Map<String, FieldElement> fields,
   ) {
-    // First collect from superclass (if it's not Mix or Object)
+    // Recurse into the supertype first so the current class's fields
+    // override inherited entries in [fields]. Stop at Mix/Mixable/Object.
     if (classElement is ClassElement) {
       final supertype = classElement.supertype;
-      if (supertype != null) {
-        // Stop at Mix, Mixable, or Object
-        if (!mixChecker.isExactlyType(supertype) &&
-            !mixableChecker.isExactlyType(supertype) &&
-            !supertype.isDartCoreObject) {
-          final superElement = supertype.element;
-          _collectFieldsFromHierarchy(superElement, fields);
-        }
+      if (supertype != null &&
+          !mixChecker.isExactlyType(supertype) &&
+          !mixableChecker.isExactlyType(supertype) &&
+          !supertype.isDartCoreObject) {
+        _collectFieldsFromHierarchy(supertype.element, fields);
       }
     }
 
-    // Then collect from current class (overrides super fields)
     for (final field in classElement.fields) {
       final name = field.name;
       if (name != null) {
