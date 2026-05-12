@@ -1,3 +1,9 @@
+## 2.0.1
+
+ - **DEPRECATED**: `GeneratedStylerMethods.call` and `GeneratedStylerMethods.skipCall`. Call generation has not been supported since the 2.0 styler API; the flags are now annotated `@Deprecated` and will be removed in a future major release. The bit (`0x20`) remains in `GeneratedStylerMethods.all` for source and value compatibility — the generator already ignores it.
+ - **DOCS**: Spec authoring examples in the README now include `package:flutter/foundation.dart` and `package:flutter/widgets.dart` imports plus the `@immutable` annotation, matching the symbols the generated `_$<Name>` mixin references.
+ - **DOCS**: Note that `GeneratedSpecMethods.skipEquals` suppresses only the generated `props` getter; the surrounding equality surface is always emitted so a user-authored `props` powers a working `==`/`hashCode`/`getDiff`/`stringify`.
+
 ## 2.0.0-rc.1
 
  - **BREAKING**: The Mix Generator was completely rebuilt to support the architecture and requirements of Mix V2.0.

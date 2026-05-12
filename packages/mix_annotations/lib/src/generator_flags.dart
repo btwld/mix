@@ -68,18 +68,28 @@ class GeneratedStylerMethods {
   /// Generate `props` getter for equality
   static const int props = 0x10;
 
-  /// Legacy no-op flag retained for compatibility.
+  @Deprecated(
+    'call generation is no longer supported; define call() manually. This '
+    'flag is ignored and will be removed in a future release.',
+  )
   static const int call = 0x20;
 
+  // Keep the legacy `call` bit in `all` so the published constant value stays
+  // stable. The generator ignores the bit.
   static const int all =
-      setters | merge | resolve | debugFillProperties | props | call;
+      setters | merge | resolve | debugFillProperties | props | 0x20;
 
   static const skipSetters = all & ~setters;
   static const skipMerge = all & ~merge;
   static const skipResolve = all & ~resolve;
   static const skipDebugFillProperties = all & ~debugFillProperties;
   static const skipProps = all & ~props;
-  static const skipCall = all & ~call;
+
+  @Deprecated(
+    'call generation is no longer supported; define call() manually. This '
+    'flag is ignored and will be removed in a future release.',
+  )
+  static const skipCall = all & ~0x20;
 
   const GeneratedStylerMethods._();
 }

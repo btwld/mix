@@ -27,10 +27,18 @@ dev_dependencies:
 
 ### `@MixableSpec`
 
-Generates a self-contained `_$<Name>` mixin for Spec classes (immutable style data). The mixin declares `implements Spec<T>, Diagnosticable` and inlines `type`, `copyWith`, `lerp`, `props`, `==`, `hashCode`, `toString`, `toDiagnosticsNode`, and `debugFillProperties` — so the user class needs a single `with` to be a fully-formed Spec.
+Generates a self-contained `_$<Name>` mixin for Spec classes (immutable style data). The mixin declares `implements Spec<T>, Diagnosticable` and inlines `type`, `copyWith`, `lerp`, generated `props` by default, `==`, `hashCode`, `toString`, `toDiagnosticsNode`, and `debugFillProperties` — so the user class needs a single `with` to be a fully-formed Spec.
 
 ```dart
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+
+part 'box_spec.g.dart';
+
 @MixableSpec()
+@immutable
 final class BoxSpec with _$BoxSpec {
   @override
   final Color? color;
@@ -48,6 +56,9 @@ Control which methods are generated via `GeneratedSpecMethods` flags:
 ```dart
 @MixableSpec(methods: GeneratedSpecMethods.skipLerp)
 ```
+
+`GeneratedSpecMethods.skipEquals` suppresses generated `props` so the class can
+author custom equality inputs while still using the generated equality surface.
 
 ### `@MixableStyler`
 
@@ -109,8 +120,12 @@ Use `all` (default) to generate everything, or `skip*` helpers to exclude specif
 
 ```dart
 GeneratedSpecMethods.skipLerp      // all except lerp
+GeneratedSpecMethods.skipEquals    // user authors props; equality surface still emits
 GeneratedMixMethods.skipResolve    // all except resolve
 ```
+
+`GeneratedStylerMethods.call` / `skipCall` are retained for source
+compatibility, but call generation is no longer supported.
 
 ## Code Generation
 
