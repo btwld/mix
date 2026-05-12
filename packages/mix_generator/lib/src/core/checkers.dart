@@ -32,3 +32,6 @@ const mixableChecker = TypeChecker.fromUrl(
 const defaultValueChecker = TypeChecker.fromUrl(
   'package:mix/src/core/mix_element.dart#DefaultValue',
 );
+
+/// `Prop<T>` from `package:mix`.
+const propChecker = TypeChecker.fromUrl('package:mix/src/core/prop.dart#Prop');

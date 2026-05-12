@@ -1,3 +1,10 @@
+## 2.0.2
+
+ - **FIX**: `GeneratedSpecMethods.skipEquals` now only suppresses `props` generation. The rest of the equality surface (`==`, `hashCode`, `getDiff`, `stringify`) is always emitted, preserving the supported "user authors `props`" flag semantic after the spec-shape refactor.
+ - **FIX**: `Prop<T>` detection now uses a URL-based `TypeChecker` (`package:mix/src/core/prop.dart#Prop`) instead of matching on the simple name `Prop`. Prevents unrelated local classes named `Prop` from being mistaken for Mix's `Prop`.
+ - **FIX**: `@Mixable` validation now requires the annotated class to extend `Mix<T>` (or a subclass) directly. Classes extending `Mixable<T>` without going through `Mix<T>` are rejected with a clear error — the generated mixin's `on Mix<T>` constraint would have failed at apply time anyway.
+ - **TEST**: Consolidate generator test helpers (`partBuilder`, `styleStub`, `mixElementStub`, `propStub`, `mixAnnotationsSources`) into `test/core/test_helpers.dart`. Adds regression tests for `skipEquals`, fake-`Prop<T>` rejection, and `Mixable<T>`-direct-subclass rejection.
+
 ## 2.0.1
 
  - **REFACTOR**: Tighten field-model validation and shared type-helper extraction across mix/styler generators (#895).

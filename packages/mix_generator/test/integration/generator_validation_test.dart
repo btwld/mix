@@ -1,6 +1,9 @@
+import 'package:build_test/build_test.dart';
 import 'package:mix_generator/mix_generator.dart';
 import 'package:source_gen_test/source_gen_test.dart';
 import 'package:test/test.dart';
+
+import '../core/test_helpers.dart';
 
 void main() {
   group('generator validation', () {
@@ -99,5 +102,43 @@ class BoxConstraintsMix {
         );
       },
     );
+
+    test('MixableGenerator rejects direct Mixable subclasses', () async {
+      const source = r'''
+library mix_validation;
+
+import 'package:mix_annotations/mix_annotations.dart';
+import 'package:mix/src/core/mix_element.dart' as mix;
+
+part 'mix_validation.g.dart';
+
+class BoxConstraints {
+  const BoxConstraints();
+}
+
+@Mixable()
+class BoxConstraintsMix extends mix.Mixable<BoxConstraints> {
+  const BoxConstraintsMix();
+}
+''';
+
+      final result = await testBuilder(
+        partBuilder(const MixableGenerator()),
+        {
+          ...mixAnnotationsSources,
+          'mix_generator|lib/mix_validation.dart': source,
+          'mix|lib/src/core/mix_element.dart': mixElementStub,
+        },
+        generateFor: {'mix_generator|lib/mix_validation.dart'},
+      );
+
+      expect(result.succeeded, isFalse);
+      expect(
+        result.errors.join('\n'),
+        contains(
+          '@Mixable can only be applied to classes extending Mix<T> or its subclasses.',
+        ),
+      );
+    });
   });
 }

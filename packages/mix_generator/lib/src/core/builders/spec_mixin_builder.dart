@@ -123,12 +123,16 @@ class SpecMixinBuilder {
     return buffer.toString();
   }
 
-  /// Inlines the full `Equatable` surface: `==`, `hashCode`, `stringify`,
-  /// and `getDiff`. The base `Spec<T>` mixes in `Equatable`, so
-  /// `implements Spec<$specName>` pulls the interface contract in.
-  /// Concrete bodies are emitted here because `implements` doesn't carry
-  /// over `Equatable`'s concrete bodies. `propsEquals` / `propsHash` /
-  /// `propsDiff` live in `mix/src/core/equatable.dart`.
+  /// Emits the concrete `Equatable` surface: `==`, `hashCode`, `stringify`,
+  /// and `getDiff`.
+  ///
+  /// `Spec<T>` mixes in `Equatable`, so `implements Spec<$specName>` pulls in
+  /// the interface contract. `implements` doesn't carry over Equatable's
+  /// concrete bodies, so they are inlined here using `propsEquals`,
+  /// `propsHash`, and `propsDiff` from `mix/src/core/equatable.dart`.
+  ///
+  /// Always emitted — a user-authored `props` (under `skipEquals`) still
+  /// drives a working equality surface that delegates to it.
   String _buildEquatableSurface() {
     final buffer = StringBuffer();
 
@@ -213,12 +217,14 @@ class SpecMixinBuilder {
       buffer.writeln(_buildLerp());
     }
 
-    // `props`, `==`, and `hashCode` travel together under the same flag
-    // (`GeneratedSpecMethods.equals`). Emit all three or none.
-    if (config.generateEquals) {
+    // `props` is opt-out via `GeneratedSpecMethods.skipEquals` so users can
+    // hand-roll a custom `props` (e.g., exclude a non-identity field). The
+    // generated `==`/`hashCode`/`getDiff`/`stringify` always emit — they
+    // reference whichever `props` the class exposes, generated or hand-rolled.
+    if (config.generateProps) {
       buffer.writeln(_buildProps());
-      buffer.writeln(_buildEquatableSurface());
     }
+    buffer.writeln(_buildEquatableSurface());
 
     buffer.writeln(_buildDiagnosticableSurface());
     buffer.writeln(_buildDebugFillProperties());

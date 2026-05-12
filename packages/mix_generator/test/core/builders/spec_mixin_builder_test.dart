@@ -1,25 +1,29 @@
 import 'package:mix_annotations/mix_annotations.dart';
 import 'package:mix_generator/src/core/builders/spec_mixin_builder.dart';
 import 'package:mix_generator/src/core/models/annotation_config.dart';
-import 'package:mix_generator/src/core/models/field_model.dart';
 import 'package:test/test.dart';
 
-// Test helper to create FieldModel instances for testing
-FieldModel createTestFieldModel({
-  required String name,
-  required String effectiveSpecType,
-  bool isNullable = false,
-  String? typeName,
-  bool isLerpable = false,
-}) {
-  return FieldModel(
-    name: name,
-    typeName: typeName ?? effectiveSpecType.replaceAll('?', ''),
-    isList: false,
-    effectiveSpecType: effectiveSpecType,
-    isLerpable: isLerpable,
-    diagnosticKind: DiagnosticKind.diagnostics,
-  );
+import '../test_helpers.dart';
+
+/// The Equatable surface always emits — it references whichever `props`
+/// the class exposes (generated or user-authored under `skipEquals`).
+void expectRequiredSpecEqualitySurface(String code) {
+  expect(code, contains('bool operator ==(Object other)'));
+  expect(code, contains('propsEquals(props, other.props)'));
+  expect(code, contains('int get hashCode => propsHash('));
+  expect(code, contains('bool get stringify => true;'));
+  expect(code, contains('Map<String, String> getDiff(Equatable other)'));
+  expect(code, contains('propsDiff(props, other.props)'));
+}
+
+/// `props` is opt-out via `GeneratedSpecMethods.skipEquals` — assert it
+/// when the equals bit is on (default), refute when it's off.
+void expectGeneratedProps(String code) {
+  expect(code, contains('List<Object?> get props =>'));
+}
+
+void expectNoGeneratedProps(String code) {
+  expect(code, isNot(contains('List<Object?> get props =>')));
 }
 
 void main() {
@@ -92,9 +96,8 @@ void main() {
           // User-facing shape is `class BoxSpec with _$BoxSpec` — the mixin
           // must carry `==`/`hashCode` itself rather than relying on
           // `Equatable` being mixed in by the user.
-          expect(code, contains('bool operator ==(Object other)'));
-          expect(code, contains('propsEquals(props, other.props)'));
-          expect(code, contains('int get hashCode => propsHash('));
+          expectRequiredSpecEqualitySurface(code);
+          expectGeneratedProps(code);
         },
       );
 
@@ -187,9 +190,8 @@ void main() {
         // `Spec<T> with Equatable` pulls the Equatable contract in via
         // `implements Spec<X>` — the mixin inlines concrete bodies because
         // `implements` doesn't carry over Equatable's concrete impls.
-        expect(code, contains('bool get stringify => true;'));
-        expect(code, contains('Map<String, String> getDiff(Equatable other)'));
-        expect(code, contains('propsDiff(props, other.props)'));
+        expectRequiredSpecEqualitySurface(code);
+        expectGeneratedProps(code);
       });
 
       test('closes mixin with brace', () {
@@ -243,7 +245,8 @@ void main() {
         expect(code, isNot(contains('BoxSpec copyWith(')));
         // lerp and props should still be generated
         expect(code, contains('BoxSpec lerp('));
-        expect(code, contains('List<Object?> get props =>'));
+        expectRequiredSpecEqualitySurface(code);
+        expectGeneratedProps(code);
       });
 
       test('skips lerp when flag is disabled', () {
@@ -259,57 +262,84 @@ void main() {
         expect(code, isNot(contains('BoxSpec lerp(')));
         // copyWith and props should still be generated
         expect(code, contains('BoxSpec copyWith('));
-        expect(code, contains('List<Object?> get props =>'));
+        expectRequiredSpecEqualitySurface(code);
+        expectGeneratedProps(code);
       });
 
-      test('skips props when equals flag is disabled', () {
-        final builder = SpecMixinBuilder(
-          specName: 'BoxSpec',
-          fields: [],
-          config: const MixableSpecAnnotationConfig(
-            methods: GeneratedSpecMethods.skipEquals,
-          ),
-        );
-        final code = builder.build();
+      for (final testCase in [
+        (
+          name: 'skipEquals helper',
+          methods: GeneratedSpecMethods.skipEquals,
+          hasCopyWith: true,
+          hasLerp: true,
+        ),
+        (
+          name: 'no optional methods',
+          methods: GeneratedSpecMethods.none,
+          hasCopyWith: false,
+          hasLerp: false,
+        ),
+        (
+          name: 'copyWith only',
+          methods: GeneratedSpecMethods.copyWith,
+          hasCopyWith: true,
+          hasLerp: false,
+        ),
+      ]) {
+        test('keeps equality surface but skips props for ${testCase.name}', () {
+          final builder = SpecMixinBuilder(
+            specName: 'BoxSpec',
+            fields: [],
+            config: MixableSpecAnnotationConfig(methods: testCase.methods),
+          );
+          final code = builder.build();
 
-        expect(code, isNot(contains('List<Object?> get props =>')));
-        // copyWith and lerp should still be generated
-        expect(code, contains('BoxSpec copyWith('));
-        expect(code, contains('BoxSpec lerp('));
-      });
+          // `==`/`hashCode`/`getDiff`/`stringify` always emit so the
+          // user-provided `props` powers a working equality surface.
+          expectRequiredSpecEqualitySurface(code);
+          // `props` itself is suppressed — user authors it.
+          expectNoGeneratedProps(code);
+          expect(code, contains('void debugFillProperties('));
 
-      test('always generates debugFillProperties', () {
-        final builder = SpecMixinBuilder(
-          specName: 'BoxSpec',
-          fields: [],
-          config: const MixableSpecAnnotationConfig(
-            methods: GeneratedSpecMethods.none,
-          ),
-        );
-        final code = builder.build();
+          final copyWithMatcher = contains('BoxSpec copyWith(');
+          final lerpMatcher = contains('BoxSpec lerp(');
+          expect(
+            code,
+            testCase.hasCopyWith ? copyWithMatcher : isNot(copyWithMatcher),
+          );
+          expect(code, testCase.hasLerp ? lerpMatcher : isNot(lerpMatcher));
+        });
+      }
 
-        // debugFillProperties is always generated
-        expect(code, contains('void debugFillProperties('));
-        // But other methods should be skipped
-        expect(code, isNot(contains('BoxSpec copyWith(')));
-        expect(code, isNot(contains('BoxSpec lerp(')));
-        expect(code, isNot(contains('List<Object?> get props =>')));
-      });
+      test(
+        'skipEquals suppresses props but keeps the equality surface intact',
+        () {
+          final builder = SpecMixinBuilder(
+            specName: 'BoxSpec',
+            fields: [
+              createTestFieldModel(
+                name: 'color',
+                effectiveSpecType: 'Color?',
+                isNullable: true,
+              ),
+            ],
+            config: const MixableSpecAnnotationConfig(
+              methods: GeneratedSpecMethods.skipEquals,
+            ),
+          );
+          final code = builder.build();
 
-      test('generates only copyWith when only copyWith flag is set', () {
-        final builder = SpecMixinBuilder(
-          specName: 'BoxSpec',
-          fields: [],
-          config: const MixableSpecAnnotationConfig(
-            methods: GeneratedSpecMethods.copyWith,
-          ),
-        );
-        final code = builder.build();
-
-        expect(code, contains('BoxSpec copyWith('));
-        expect(code, isNot(contains('BoxSpec lerp(')));
-        expect(code, isNot(contains('List<Object?> get props =>')));
-      });
+          // User authors `props` — generator emits no `List<Object?> get props`
+          // body, but still emits abstract field getters and the equality
+          // surface that references `props`.
+          expectNoGeneratedProps(code);
+          expectRequiredSpecEqualitySurface(code);
+          expect(code, contains('Color? get color;'));
+          // copyWith + lerp still emit because skipEquals doesn't touch them.
+          expect(code, contains('BoxSpec copyWith('));
+          expect(code, contains('BoxSpec lerp('));
+        },
+      );
     });
 
     group('copyWith optional parameters', () {

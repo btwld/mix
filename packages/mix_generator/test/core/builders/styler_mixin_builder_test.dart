@@ -254,6 +254,32 @@ void main() {
     });
 
     group('flag-controlled generation', () {
+      test('legacy call bit stays in all for compatibility', () {
+        const legacyCallBit = 0x20;
+
+        expect(GeneratedStylerMethods.all & legacyCallBit, legacyCallBit);
+      });
+
+      test('legacy call-only bit generates no styler behavior', () {
+        final builder = StylerMixinBuilder(
+          stylerName: 'BoxStyler',
+          specName: 'BoxSpec',
+          fields: [],
+          config: const MixableStylerAnnotationConfig(methods: 0x20),
+        );
+        final code = builder.build();
+
+        expect(
+          code,
+          contains('mixin _\$BoxStylerMixin on Style<BoxSpec>, Diagnosticable'),
+        );
+        expect(code, isNot(contains('BoxStyler animate(')));
+        expect(code, isNot(contains('BoxStyler merge(')));
+        expect(code, isNot(contains('StyleSpec<BoxSpec> resolve(')));
+        expect(code, isNot(contains('void debugFillProperties(')));
+        expect(code, isNot(contains('List<Object?> get props =>')));
+      });
+
       test('skips setters when flag is disabled', () {
         final builder = StylerMixinBuilder(
           stylerName: 'BoxStyler',

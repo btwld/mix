@@ -28,6 +28,14 @@ dev_dependencies:
 
 ## What It Generates
 
+The three Mix annotations emit mixins with deliberately different shapes, chosen to match the type they're paired with:
+
+- **`@MixableSpec`** emits a *rich* mixin (`mixin _$<Name> implements Spec<T>, Diagnosticable`) that fully completes the Spec contract on its own. Specs are immutable value types with no shared concrete behavior to inherit, so the generated mixin can be self-contained — user code only writes `with _$<Name>`.
+- **`@MixableStyler`** emits a *slim* mixin (`mixin _$<Name>Mixin on Style<S>, Diagnosticable`) that only fills in the per-field plumbing (setters, `merge`, `resolve`, etc.). The user class still `extends MixStyler<TStyler, TSpec>` because `Style<S>` carries concrete state (`$variants`, `$modifier`, `$animation`) and helper mixins (variants/modifier/animation/widget-state) that don't make sense to duplicate per styler.
+- **`@Mixable`** emits a *slim* mixin (`mixin _$<Name>Mixin on Mix<T>[, DefaultValue<T>][, Diagnosticable]`) for the same reason — Mix subclasses commonly compose intermediate base classes (e.g., `class BoxConstraintsMix extends ConstraintsMix<BoxConstraints>`) and the user keeps that inheritance chain.
+
+If the asymmetry feels surprising, the rule is: rich shape for pure-data types that have nothing meaningful to inherit; slim shape for types whose `extends` chain carries shared state or behavior.
+
 ### From `@MixableSpec` — Spec mixin
 
 Generates a self-contained `_$<Name>` mixin (`implements Spec<Name>, Diagnosticable`) for immutable Spec classes. User code declares the spec with a single `with _$<Name>` — Equatable-style equality and Diagnosticable's concrete surface are inlined by the generator:
@@ -35,19 +43,22 @@ Generates a self-contained `_$<Name>` mixin (`implements Spec<Name>, Diagnostica
 - `Type get type` — the concrete spec `Type`
 - `copyWith()` — create modified copies
 - `lerp()` — smooth interpolation between specs
-- `props`, `==`, `hashCode` — deep equality via `propsEquals` / `propsHash` helpers
+- `props` by default, `==`, `hashCode` — deep equality via `propsEquals` / `propsHash` helpers
 - `toString({DiagnosticLevel minLevel})`, `toStringShort()`, `toDiagnosticsNode()` — Flutter inspector integration
 - `debugFillProperties()` — diagnostic output
 
 No `with Equatable` and no `with Diagnosticable` on the user class — the mixin carries both.
 
 ```dart
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 
 part 'box_spec.g.dart';
 
 @MixableSpec()
+@immutable
 final class BoxSpec with _$BoxSpec {
   @override
   final Color? color;

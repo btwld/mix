@@ -5,12 +5,13 @@ library;
 
 import 'package:mix_annotations/mix_annotations.dart';
 
-/// Configuration extracted from @MixableSpec annotation.
+/// Configuration extracted from a [MixableSpec] annotation.
 class MixableSpecAnnotationConfig {
-  /// Flags indicating which methods to generate within the Spec class.
+  /// Bitmask of method flags from [GeneratedSpecMethods].
   final int methods;
 
-  /// Flags indicating which components to generate (utility, attribute, etc.).
+  /// Bitmask of component flags (utility, attribute, etc.) from
+  /// [GeneratedSpecComponents].
   final int components;
 
   const MixableSpecAnnotationConfig({
@@ -18,13 +19,17 @@ class MixableSpecAnnotationConfig {
     this.components = GeneratedSpecComponents.all,
   });
 
-  /// Whether to generate copyWith method.
+  /// Whether the generator emits a `copyWith` method.
   bool get generateCopyWith => (methods & GeneratedSpecMethods.copyWith) != 0;
 
-  /// Whether to generate equals (props getter).
-  bool get generateEquals => (methods & GeneratedSpecMethods.equals) != 0;
+  /// Whether the generator emits a concrete `props` getter on the mixin.
+  ///
+  /// When false (set via `GeneratedSpecMethods.skipEquals`), the user supplies
+  /// `props` on the class. The surrounding `==`, `hashCode`, `getDiff`, and
+  /// `stringify` bodies always emit and reference whichever `props` is exposed.
+  bool get generateProps => (methods & GeneratedSpecMethods.equals) != 0;
 
-  /// Whether to generate lerp method.
+  /// Whether the generator emits a `lerp` method.
   bool get generateLerp => (methods & GeneratedSpecMethods.lerp) != 0;
 
   @override

@@ -4,6 +4,7 @@ library;
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 
+import '../checkers.dart';
 import '../errors.dart';
 import '../helpers/library_scope.dart';
 
@@ -38,6 +39,7 @@ FieldExtraction extractField(FieldElement element, {bool stripDollar = false}) {
   );
 }
 
+/// Returns the display string of [type] with any trailing `?` stripped.
 String getBaseTypeName(DartType type) {
   final displayString = type.getDisplayString();
 
@@ -48,10 +50,14 @@ String getBaseTypeName(DartType type) {
   return displayString;
 }
 
+/// Whether [type] is exactly `Prop<T>` from `package:mix`.
+///
+/// Uses a URL-based `TypeChecker` so unrelated local classes named `Prop`
+/// are not mistaken for Mix's `Prop`.
 bool isWrappedInProp(DartType type) {
   if (type is! InterfaceType) return false;
 
-  return type.element.name == 'Prop';
+  return propChecker.isExactlyType(type);
 }
 
 /// Returns the public value type inside `Prop<T>`, or [type] when unwrapped.

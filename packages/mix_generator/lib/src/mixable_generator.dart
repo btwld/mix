@@ -29,22 +29,11 @@ class MixableGenerator extends GeneratorForAnnotation<Mixable> {
   }
 
   InterfaceType? _findMixBinding(ClassElement element) {
-    final mixType = findSupertypeMatching(element.supertype, mixChecker);
-    if (mixType != null) {
-      return mixType;
-    }
-
-    for (final supertype in element.allSupertypes) {
-      if (mixableChecker.isExactlyType(supertype)) {
-        return supertype;
-      }
-    }
-
-    return null;
+    return findSupertypeMatching(element.supertype, mixChecker);
   }
 
-  /// Walks the supertype chain to find the concrete `Mix<T>`/`Mixable<T>`
-  /// binding and returns `T`.
+  /// Walks the supertype chain to find the concrete `Mix<T>` binding and
+  /// returns `T`.
   ///
   /// Intermediate classes may introduce their own generic parameters (e.g.
   /// `class BaseMix<A> extends Mix<BoxConstraints>`). Reading the direct
