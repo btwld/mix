@@ -1,19 +1,3 @@
-/// Spec mixin builder for generating the `_$XSpec` mixin.
-///
-/// The mixin is self-contained: user code writes `class BoxSpec with
-/// _$BoxSpec { ... }` — one keyword. `implements Spec<$specName>,
-/// Diagnosticable` brings in the full `Equatable` + `Diagnosticable`
-/// contracts (since `Spec<T> with Equatable` on the base class). Because
-/// `implements` doesn't carry over concrete bodies, the generator inlines
-/// them — `==`, `hashCode`, `stringify`, `getDiff`, `toStringShort`,
-/// `toString({minLevel})`, `toDiagnosticsNode`, `debugFillProperties` —
-/// using `propsEquals` / `propsHash` / `propsDiff` helpers from
-/// `mix/src/core/equatable.dart` for the deep-collection logic.
-///
-/// This matches dart_mappable's pattern: one generated mixin per type,
-/// no user-visible Equatable/Diagnosticable ceremony.
-library;
-
 import '../models/annotation_config.dart';
 import '../models/field_model.dart';
 import '../helpers/field_emitter.dart';
@@ -87,9 +71,8 @@ class SpecMixinBuilder {
     return buffer.toString();
   }
 
-  /// Emits `debugFillProperties` without a `super` call — the mixin
-  /// `implements Diagnosticable` rather than extending it, so there is no
-  /// parent `debugFillProperties` to delegate to.
+  /// Emits `debugFillProperties` without a `super` call — `implements`
+  /// Diagnosticable means there's no parent to delegate to.
   String _buildDebugFillProperties() {
     return _fieldEmitter().debugFillProperties(
       callSuper: false,
@@ -123,16 +106,11 @@ class SpecMixinBuilder {
     return buffer.toString();
   }
 
-  /// Emits the concrete `Equatable` surface: `==`, `hashCode`, `stringify`,
-  /// and `getDiff`.
+  /// Emits the concrete `Equatable` surface (`==`, `hashCode`, `stringify`,
+  /// `getDiff`), inlined via `propsEquals` / `propsHash` / `propsDiff`.
   ///
-  /// `Spec<T>` mixes in `Equatable`, so `implements Spec<$specName>` pulls in
-  /// the interface contract. `implements` doesn't carry over Equatable's
-  /// concrete bodies, so they are inlined here using `propsEquals`,
-  /// `propsHash`, and `propsDiff` from `mix/src/core/equatable.dart`.
-  ///
-  /// Always emitted — a user-authored `props` (under `skipEquals`) still
-  /// drives a working equality surface that delegates to it.
+  /// Always emitted: under `skipEquals`, the user supplies `props` and this
+  /// surface delegates to it.
   String _buildEquatableSurface() {
     final buffer = StringBuffer();
 
@@ -160,8 +138,8 @@ class SpecMixinBuilder {
     return buffer.toString();
   }
 
-  /// Emits the Diagnosticable-compatible surface required by the generated
-  /// mixin without requiring the applying class to extend Diagnosticable.
+  /// Emits Diagnosticable's concrete surface so the applying class doesn't
+  /// need to extend Diagnosticable.
   String _buildDiagnosticableSurface() {
     final buffer = StringBuffer();
 
@@ -188,8 +166,7 @@ class SpecMixinBuilder {
     return buffer.toString();
   }
 
-  /// The mixin name — matches dart_mappable's `{ClassName}Mappable`
-  /// convention in spirit: `_$BoxSpec`, one generated identifier per spec.
+  /// The generated mixin name, e.g. `_$BoxSpec`.
   String get mixinName => '_\$$specName';
 
   /// Builds the complete mixin code.

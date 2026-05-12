@@ -1,6 +1,3 @@
-/// Shared type helpers for field models.
-library;
-
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 

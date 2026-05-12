@@ -1,11 +1,3 @@
-/// Runtime conformance check for every built-in spec under the
-/// `class X with _$X` shape.
-///
-/// Ensures `BoxSpec`/`IconSpec`/`ImageSpec`/`StackSpec`/`TextSpec` still flow
-/// through `Spec<T>`, `StyleSpec<T>`, and `SpecTween<T>` after the move from
-/// `extends Spec<T>` to the generated rich mixin.
-library;
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 

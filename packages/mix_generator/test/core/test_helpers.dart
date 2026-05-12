@@ -1,10 +1,3 @@
-/// Shared test fixtures for the `mix_generator` test suite.
-///
-/// Stub libraries and helper factories used across builder and integration
-/// tests. The stubs intentionally mirror only the minimal surface each
-/// generator inspects (constructor shape, annotation field names, etc.).
-library;
-
 import 'package:build/build.dart';
 import 'package:mix_generator/src/core/models/field_model.dart';
 import 'package:mix_generator/src/core/models/mix_field_model.dart';
@@ -29,8 +22,7 @@ class Style<T> {
 }
 ''';
 
-/// Stub `Mix<T>` / `Mixable<T>` / `DefaultValue<T>` library used by
-/// `MixableGenerator` tests.
+/// Stub `Mix<T>` / `Mixable<T>` / `DefaultValue<T>` for `MixableGenerator` tests.
 const mixElementStub = r'''
 library mix_element;
 
@@ -47,8 +39,7 @@ mixin DefaultValue<T> {
 }
 ''';
 
-/// Stub `Prop<T>` library at the canonical Mix import path
-/// (`package:mix/src/core/prop.dart`), exercised by `propChecker`.
+/// Stub `Prop<T>` at the canonical Mix path so `propChecker` resolves it.
 const propStub = r'''
 library prop;
 
@@ -57,17 +48,15 @@ class Prop<T> {
 }
 ''';
 
-/// Stub library that defines a `VisibleType` used to test prefix preservation
-/// in generated field types.
+/// Stub library defining `VisibleType` for prefix-preservation tests.
 const visibleTypeStub = r'''
 library visible;
 
 class VisibleType {}
 ''';
 
-/// Stub `mix_annotations` library mirroring just the annotation classes and
-/// flag constants the generators read. Inlined here so tests don't depend on
-/// the real annotation package's transitive imports.
+/// Stub `mix_annotations` library with the annotation classes and flag
+/// constants the generators read.
 const mixAnnotationsSources = {
   'mix_annotations|lib/mix_annotations.dart': "export 'src/annotations.dart';",
   'mix_annotations|lib/src/annotations.dart': r'''
@@ -112,11 +101,8 @@ class GeneratedSpecMethods {
 ''',
 };
 
-/// Builds a [FieldModel] for tests with sensible defaults.
-///
-/// Either [typeName] or [effectiveSpecType] must be supplied; the other is
-/// inferred. Defaults match a non-list, non-lerpable, `DiagnosticKind.diagnostics`
-/// field.
+/// Builds a [FieldModel] for tests. Pass [typeName] or [effectiveSpecType];
+/// the other is inferred.
 FieldModel createTestFieldModel({
   required String name,
   String? typeName,

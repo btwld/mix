@@ -1,8 +1,3 @@
-/// Mixable generator for Mix mixin code generation.
-///
-/// Generates _$XMixin from @Mixable annotations.
-library;
-
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';

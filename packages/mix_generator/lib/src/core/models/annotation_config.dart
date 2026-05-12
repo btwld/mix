@@ -1,17 +1,8 @@
-/// Configuration models for annotation flags.
-///
-/// Holds the methods and components flags extracted from annotations.
-library;
-
 import 'package:mix_annotations/mix_annotations.dart';
 
 /// Configuration extracted from a [MixableSpec] annotation.
 class MixableSpecAnnotationConfig {
-  /// Bitmask of method flags from [GeneratedSpecMethods].
   final int methods;
-
-  /// Bitmask of component flags (utility, attribute, etc.) from
-  /// [GeneratedSpecComponents].
   final int components;
 
   const MixableSpecAnnotationConfig({
@@ -19,17 +10,12 @@ class MixableSpecAnnotationConfig {
     this.components = GeneratedSpecComponents.all,
   });
 
-  /// Whether the generator emits a `copyWith` method.
   bool get generateCopyWith => (methods & GeneratedSpecMethods.copyWith) != 0;
 
-  /// Whether the generator emits a concrete `props` getter on the mixin.
-  ///
-  /// When false (set via `GeneratedSpecMethods.skipEquals`), the user supplies
-  /// `props` on the class. The surrounding `==`, `hashCode`, `getDiff`, and
-  /// `stringify` bodies always emit and reference whichever `props` is exposed.
+  /// Whether to emit a `props` getter. When false (via `skipEquals`), the
+  /// user supplies `props`; the equality surface still emits and uses it.
   bool get generateProps => (methods & GeneratedSpecMethods.equals) != 0;
 
-  /// Whether the generator emits a `lerp` method.
   bool get generateLerp => (methods & GeneratedSpecMethods.lerp) != 0;
 
   @override

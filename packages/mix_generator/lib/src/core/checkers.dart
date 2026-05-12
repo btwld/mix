@@ -1,11 +1,3 @@
-/// Centralized [TypeChecker] constants for Mix generators.
-///
-/// Declaring checkers in one place keeps URL literals consistent across
-/// generators and makes it cheap to audit which Mix types the codegen
-/// pipeline depends on. Prefer using these over inline
-/// `TypeChecker.fromUrl(...)` declarations.
-library;
-
 import 'package:source_gen/source_gen.dart';
 
 /// `MixableField` annotation from `package:mix_annotations`.
