@@ -12,10 +12,8 @@ import 'core/helpers/type_hierarchy.dart';
 import 'core/models/annotation_config.dart';
 import 'core/models/mix_field_model.dart';
 
-/// Main generator for Mix class code.
-///
-/// Triggers on @Mixable annotations and generates:
-/// - _$XMixin (Mix method implementations)
+/// Source-gen generator that emits `_$<Name>Mixin` for `@Mixable`-annotated
+/// `Mix<T>` subclasses.
 class MixableGenerator extends GeneratorForAnnotation<Mixable> {
   const MixableGenerator();
 

@@ -105,11 +105,8 @@ class SpecMixinBuilder {
     return buffer.toString();
   }
 
-  /// Emits the concrete `Equatable` surface (`==`, `hashCode`, `stringify`,
-  /// `getDiff`), inlined via `propsEquals` / `propsHash` / `propsDiff`.
-  ///
-  /// Always emitted: under `skipEquals`, the user supplies `props` and this
-  /// surface delegates to it.
+  /// Emits `==`, `hashCode`, `stringify`, and `getDiff` overrides that
+  /// delegate to `propsEquals`, `propsHash`, and `propsDiff`.
   String _buildEquatableSurface() {
     final buffer = StringBuffer();
 
@@ -137,8 +134,8 @@ class SpecMixinBuilder {
     return buffer.toString();
   }
 
-  /// Emits Diagnosticable's concrete surface so the applying class doesn't
-  /// need to extend Diagnosticable.
+  /// Emits Diagnosticable's concrete bodies — the mixin `implements`
+  /// Diagnosticable rather than extending it, so no inheritance covers them.
   String _buildDiagnosticableSurface() {
     final buffer = StringBuffer();
 

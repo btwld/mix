@@ -47,10 +47,7 @@ String getBaseTypeName(DartType type) {
   return displayString;
 }
 
-/// Whether [type] is exactly `Prop<T>` from `package:mix`.
-///
-/// Uses a URL-based `TypeChecker` so unrelated local classes named `Prop`
-/// are not mistaken for Mix's `Prop`.
+/// Whether [type] is exactly Mix's `Prop<T>` (matched by URL, not name).
 bool isWrappedInProp(DartType type) {
   if (type is! InterfaceType) return false;
 

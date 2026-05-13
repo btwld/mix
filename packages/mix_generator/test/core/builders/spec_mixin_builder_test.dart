@@ -27,7 +27,6 @@ void expectNoGeneratedProps(String code) {
 }
 
 void main() {
-  // Default config that generates all methods
   const defaultConfig = MixableSpecAnnotationConfig();
 
   group('SpecMixinBuilder', () {
@@ -243,7 +242,6 @@ void main() {
         final code = builder.build();
 
         expect(code, isNot(contains('BoxSpec copyWith(')));
-        // lerp and props should still be generated
         expect(code, contains('BoxSpec lerp('));
         expectRequiredSpecEqualitySurface(code);
         expectGeneratedProps(code);
@@ -260,7 +258,6 @@ void main() {
         final code = builder.build();
 
         expect(code, isNot(contains('BoxSpec lerp(')));
-        // copyWith and props should still be generated
         expect(code, contains('BoxSpec copyWith('));
         expectRequiredSpecEqualitySurface(code);
         expectGeneratedProps(code);
@@ -364,7 +361,6 @@ void main() {
         );
         final code = builder.build();
 
-        // Nullable types should remain nullable (already optional)
         expect(code, contains('Color? color,'));
         expect(code, contains('double? size,'));
       });
@@ -390,10 +386,8 @@ void main() {
         );
         final code = builder.build();
 
-        // Non-nullable types should become nullable (optional) in copyWith
         expect(code, contains('String? name,'));
         expect(code, contains('int? count,'));
-        // Should NOT contain non-nullable parameters
         expect(code, isNot(contains('String name,')));
         expect(code, isNot(contains('int count,')));
       });
@@ -419,7 +413,6 @@ void main() {
         );
         final code = builder.build();
 
-        // Both should be optional (nullable) in copyWith
         expect(code, contains('String? requiredField,'));
         expect(code, contains('String? optionalField,'));
       });
@@ -445,7 +438,6 @@ void main() {
         );
         final code = builder.build();
 
-        // Non-nullable complex types should become optional
         expect(code, contains('BoxDecoration? decoration,'));
         expect(code, contains('AlignmentGeometry? alignment,'));
       });
@@ -471,9 +463,7 @@ void main() {
         );
         final code = builder.build();
 
-        // Non-nullable list should become optional
         expect(code, contains('List<Shadow>? shadows,'));
-        // Already nullable list stays nullable
         expect(code, contains('List<Shadow>? nullableShadows,'));
       });
 
@@ -493,7 +483,6 @@ void main() {
         );
         final code = builder.build();
 
-        // Should use ?? for fallback to current value
         expect(code, contains('value: value ?? this.value,'));
       });
 
@@ -513,7 +502,6 @@ void main() {
         );
         final code = builder.build();
 
-        // Should NOT have double question marks
         expect(code, isNot(contains('Color?? color')));
         expect(code, contains('Color? color,'));
       });

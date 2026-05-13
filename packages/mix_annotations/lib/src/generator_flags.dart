@@ -74,8 +74,8 @@ class GeneratedStylerMethods {
   )
   static const int call = 0x20;
 
-  // Keep the legacy `call` bit in `all` so the published constant value stays
-  // stable. The generator ignores the bit.
+  // Legacy `call` bit (0x20) kept in `all` for value stability; the
+  // generator ignores it at runtime.
   static const int all =
       setters | merge | resolve | debugFillProperties | props | 0x20;
 
@@ -86,8 +86,8 @@ class GeneratedStylerMethods {
   static const skipProps = all & ~props;
 
   @Deprecated(
-    'call generation is no longer supported; define call() manually. This '
-    'flag is ignored and will be removed in a future release.',
+    'call generation is no longer supported. This flag is ignored and will '
+    'be removed in a future release.',
   )
   static const skipCall = all & ~0x20;
 

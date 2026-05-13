@@ -5,7 +5,6 @@ import 'package:mix_generator/src/core/models/styler_field_model.dart';
 import 'package:test/test.dart';
 
 void main() {
-  // Default config that generates all methods
   const defaultConfig = MixableStylerAnnotationConfig();
 
   group('StylerMixinBuilder', () {
@@ -291,7 +290,6 @@ void main() {
         );
         final code = builder.build();
 
-        // merge, resolve, debugFillProperties, props should still be generated
         expect(code, contains('BoxStyler merge('));
         expect(code, contains('StyleSpec<BoxSpec> resolve('));
         expect(code, contains('void debugFillProperties('));
@@ -328,7 +326,6 @@ void main() {
         final code = builder.build();
 
         expect(code, isNot(contains('StyleSpec<BoxSpec> resolve(')));
-        // Other methods should still be generated
         expect(code, contains('BoxStyler merge('));
         expect(code, contains('void debugFillProperties('));
         expect(code, contains('List<Object?> get props =>'));
@@ -346,7 +343,6 @@ void main() {
         final code = builder.build();
 
         expect(code, isNot(contains('void debugFillProperties(')));
-        // Other methods should still be generated
         expect(code, contains('BoxStyler merge('));
         expect(code, contains('StyleSpec<BoxSpec> resolve('));
         expect(code, contains('List<Object?> get props =>'));
@@ -364,7 +360,6 @@ void main() {
         final code = builder.build();
 
         expect(code, isNot(contains('List<Object?> get props =>')));
-        // Other methods should still be generated
         expect(code, contains('BoxStyler merge('));
         expect(code, contains('StyleSpec<BoxSpec> resolve('));
         expect(code, contains('void debugFillProperties('));
@@ -381,7 +376,6 @@ void main() {
         );
         final code = builder.build();
 
-        // Only mixin declaration and closing brace
         expect(
           code,
           contains('mixin _\$BoxStylerMixin on Style<BoxSpec>, Diagnosticable'),
