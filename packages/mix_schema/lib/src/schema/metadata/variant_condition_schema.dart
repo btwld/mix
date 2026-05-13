@@ -1,6 +1,7 @@
 import 'package:ack/ack.dart';
 import 'package:mix/mix.dart';
 
+import '../../core/json_map.dart';
 import '../../core/schema_wire_types.dart';
 import '../../errors/mix_schema_error.dart';
 import '../../errors/schema_error_mapper.dart';
@@ -183,6 +184,30 @@ final class ContextConditionSet {
 
     return _CompoundContextVariant(leaves);
   }
+}
+
+ContextConditionSet? contextConditionSetFromVariant(Variant variant) {
+  if (variant is _CompoundContextVariant) {
+    return ContextConditionSet._(variant.leaves);
+  }
+
+  return null;
+}
+
+List<JsonMap> encodeContextConditionSet(ContextConditionSet conditionSet) {
+  return [
+    for (final leaf in conditionSet.leaves) _encodeContextConditionLeaf(leaf),
+  ];
+}
+
+JsonMap _encodeContextConditionLeaf(ContextVariantLeaf leaf) {
+  for (final definition in variantConditionDefinitions.values) {
+    if (definition.matchesVariant(leaf.variant)) {
+      return definition.encodeLeaf(leaf);
+    }
+  }
+
+  throw ArgumentError('Context variant condition cannot be encoded.');
 }
 
 List<ContextVariantLeaf> _normalizeConditionLeaves(

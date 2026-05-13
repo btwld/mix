@@ -3,18 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
 import '../../core/json_casts.dart';
+import '../../core/prop_encode.dart';
 import '../../core/schema_wire_types.dart';
 import '../discriminated_schema_builder.dart';
 import 'color_schema.dart';
 import 'enum_schemas.dart';
 import 'primitive_schemas.dart';
-
-const Map<String, TextDecoration> _textDecorationByName = {
-  'none': TextDecoration.none,
-  'underline': TextDecoration.underline,
-  'overline': TextDecoration.overline,
-  'lineThrough': TextDecoration.lineThrough,
-};
 
 const Map<String, Directive<String>> _textTransformDirectiveByName =
     <String, Directive<String>>{
@@ -25,129 +19,206 @@ const Map<String, Directive<String>> _textTransformDirectiveByName =
       'sentenceCase': SentenceCaseStringDirective(),
     };
 
-final AckSchema<TextDecoration> textDecorationSchema = Ack.enumString(
-  _textDecorationByName.keys.toList(growable: false),
-).transform<TextDecoration>((value) => _textDecorationByName[value]!);
-
-final AckSchema<Directive<String>> textTransformDirectiveSchema =
-    Ack.enumString(
-      _textTransformDirectiveByName.keys.toList(growable: false),
-    ).transform<Directive<String>>(
-      (value) => _textTransformDirectiveByName[value]!,
+final CodecSchema<String, TextDecoration> textDecorationCodec =
+    aliasedEnumCodec<TextDecoration>(
+      canonical: {
+        TextDecoration.none: 'none',
+        TextDecoration.underline: 'underline',
+        TextDecoration.overline: 'overline',
+        TextDecoration.lineThrough: 'lineThrough',
+      },
     );
 
-final AckSchema<ShadowMix> shadowSchema =
-    Ack.object({
-      'color': colorSchema.optional(),
-      'offset': offsetSchema.optional(),
-      'blurRadius': Ack.double().optional(),
-    }).transform<ShadowMix>((data) {
-      final map = data;
+final CodecSchema<String, Directive<String>> textTransformDirectiveSchema =
+    Ack.codec<String, Directive<String>>(
+      input: Ack.enumString(
+        _textTransformDirectiveByName.keys.toList(growable: false),
+      ),
+      output: Ack.instance<Directive<String>>(),
+      decoder: (value) => _textTransformDirectiveByName[value]!,
+      encoder: _encodeTextTransformDirective,
+    );
 
-      return ShadowMix(
-        blurRadius: map['blurRadius'] as double?,
-        color: map['color'] as Color?,
-        offset: map['offset'] as Offset?,
-      );
-    });
+String _encodeTextTransformDirective(Directive<String> value) {
+  return switch (value) {
+    UppercaseStringDirective() => 'uppercase',
+    LowercaseStringDirective() => 'lowercase',
+    CapitalizeStringDirective() => 'capitalize',
+    TitleCaseStringDirective() => 'titleCase',
+    SentenceCaseStringDirective() => 'sentenceCase',
+    _ => throw ArgumentError('Unsupported text transform directive.'),
+  };
+}
 
-final AckSchema<TextStyleMix> textStyleSchema =
-    Ack.object({
-      'color': colorSchema.optional(),
-      'backgroundColor': colorSchema.optional(),
-      'fontSize': Ack.double().optional(),
-      'fontWeight': fontWeightSchema.optional(),
-      'fontStyle': fontStyleSchema.optional(),
-      'letterSpacing': Ack.double().optional(),
-      'wordSpacing': Ack.double().optional(),
-      'textBaseline': textBaselineSchema.optional(),
-      'decoration': textDecorationSchema.optional(),
-      'decorationColor': colorSchema.optional(),
-      'decorationStyle': textDecorationStyleSchema.optional(),
-      'height': Ack.double().optional(),
-      'decorationThickness': Ack.double().optional(),
-      'fontFamily': Ack.string().optional(),
-      'fontFamilyFallback': stringListSchema.optional(),
-      'inherit': Ack.boolean().optional(),
-      'shadows': Ack.list(shadowSchema).optional(),
-    }).transform<TextStyleMix>((data) {
-      final map = data;
+final CodecSchema<Map<String, Object?>, ShadowMix> shadowCodec =
+    Ack.codec<Map<String, Object?>, ShadowMix>(
+      input: Ack.object({
+        'color': colorCodec.optional(),
+        'offset': offsetCodec.optional(),
+        'blurRadius': Ack.number().optional(),
+      }),
+      output: Ack.instance<ShadowMix>(),
+      decoder: (data) => ShadowMix(
+        blurRadius: castDoubleOrNull(data['blurRadius']),
+        color: data['color'] as Color?,
+        offset: data['offset'] as Offset?,
+      ),
+      encoder: (value) => optionalJsonMap([
+        ('color', propValue(value.$color)),
+        ('offset', propValue(value.$offset)),
+        ('blurRadius', propValue(value.$blurRadius)),
+      ]),
+    );
 
-      return TextStyleMix(
-        color: map['color'] as Color?,
-        backgroundColor: map['backgroundColor'] as Color?,
-        fontSize: map['fontSize'] as double?,
-        fontWeight: map['fontWeight'] as FontWeight?,
-        fontStyle: map['fontStyle'] as FontStyle?,
-        letterSpacing: map['letterSpacing'] as double?,
-        wordSpacing: map['wordSpacing'] as double?,
-        textBaseline: map['textBaseline'] as TextBaseline?,
-        shadows: castListOrNull(map['shadows']),
-        decoration: map['decoration'] as TextDecoration?,
-        decorationColor: map['decorationColor'] as Color?,
-        decorationStyle: map['decorationStyle'] as TextDecorationStyle?,
-        height: map['height'] as double?,
-        decorationThickness: map['decorationThickness'] as double?,
-        fontFamily: map['fontFamily'] as String?,
-        fontFamilyFallback: castListOrNull(map['fontFamilyFallback']),
-        inherit: map['inherit'] as bool?,
-      );
-    });
+final CodecSchema<Map<String, Object?>, TextStyleMix> textStyleCodec =
+    Ack.codec<Map<String, Object?>, TextStyleMix>(
+      input: Ack.object({
+        'color': colorCodec.optional(),
+        'backgroundColor': colorCodec.optional(),
+        'fontSize': Ack.number().optional(),
+        'fontWeight': fontWeightCodec.optional(),
+        'fontStyle': fontStyleSchema.optional(),
+        'letterSpacing': Ack.number().optional(),
+        'wordSpacing': Ack.number().optional(),
+        'textBaseline': textBaselineSchema.optional(),
+        'decoration': textDecorationCodec.optional(),
+        'decorationColor': colorCodec.optional(),
+        'decorationStyle': textDecorationStyleSchema.optional(),
+        'height': Ack.number().optional(),
+        'decorationThickness': Ack.number().optional(),
+        'fontFamily': Ack.string().optional(),
+        'fontFamilyFallback': stringListSchema.optional(),
+        'inherit': Ack.boolean().optional(),
+        'shadows': Ack.list(shadowCodec).optional(),
+      }),
+      output: Ack.instance<TextStyleMix>(),
+      decoder: (data) => TextStyleMix(
+        color: data['color'] as Color?,
+        backgroundColor: data['backgroundColor'] as Color?,
+        fontSize: castDoubleOrNull(data['fontSize']),
+        fontWeight: data['fontWeight'] as FontWeight?,
+        fontStyle: data['fontStyle'] as FontStyle?,
+        letterSpacing: castDoubleOrNull(data['letterSpacing']),
+        wordSpacing: castDoubleOrNull(data['wordSpacing']),
+        textBaseline: data['textBaseline'] as TextBaseline?,
+        shadows: castListOrNull(data['shadows']),
+        decoration: data['decoration'] as TextDecoration?,
+        decorationColor: data['decorationColor'] as Color?,
+        decorationStyle: data['decorationStyle'] as TextDecorationStyle?,
+        height: castDoubleOrNull(data['height']),
+        decorationThickness: castDoubleOrNull(data['decorationThickness']),
+        fontFamily: data['fontFamily'] as String?,
+        fontFamilyFallback: castListOrNull(data['fontFamilyFallback']),
+        inherit: data['inherit'] as bool?,
+      ),
+      encoder: (value) {
+        final ShadowListMix? shadows = propMix(value.$shadows);
 
-final AckSchema<StrutStyleMix> strutStyleSchema =
-    Ack.object({
-      'fontFamily': Ack.string().optional(),
-      'fontFamilyFallback': stringListSchema.optional(),
-      'fontSize': Ack.double().optional(),
-      'fontWeight': fontWeightSchema.optional(),
-      'fontStyle': fontStyleSchema.optional(),
-      'height': Ack.double().optional(),
-      'leading': Ack.double().optional(),
-      'forceStrutHeight': Ack.boolean().optional(),
-    }).transform<StrutStyleMix>((data) {
-      final map = data;
+        return optionalJsonMap([
+          ('color', propValue(value.$color)),
+          ('backgroundColor', propValue(value.$backgroundColor)),
+          ('fontSize', propValue(value.$fontSize)),
+          ('fontWeight', propValue(value.$fontWeight)),
+          ('fontStyle', propValue(value.$fontStyle)),
+          ('letterSpacing', propValue(value.$letterSpacing)),
+          ('wordSpacing', propValue(value.$wordSpacing)),
+          ('textBaseline', propValue(value.$textBaseline)),
+          ('decoration', propValue(value.$decoration)),
+          ('decorationColor', propValue(value.$decorationColor)),
+          ('decorationStyle', propValue(value.$decorationStyle)),
+          ('height', propValue(value.$height)),
+          ('decorationThickness', propValue(value.$decorationThickness)),
+          ('fontFamily', propValue(value.$fontFamily)),
+          ('fontFamilyFallback', propValue(value.$fontFamilyFallback)),
+          ('inherit', propValue(value.$inherit)),
+          ('shadows', shadows?.items),
+        ]);
+      },
+    );
 
-      return StrutStyleMix(
-        fontFamily: map['fontFamily'] as String?,
-        fontFamilyFallback: castListOrNull(map['fontFamilyFallback']),
-        fontSize: map['fontSize'] as double?,
-        fontWeight: map['fontWeight'] as FontWeight?,
-        fontStyle: map['fontStyle'] as FontStyle?,
-        height: map['height'] as double?,
-        leading: map['leading'] as double?,
-        forceStrutHeight: map['forceStrutHeight'] as bool?,
-      );
-    });
+final CodecSchema<Map<String, Object?>, StrutStyleMix> strutStyleCodec =
+    Ack.codec<Map<String, Object?>, StrutStyleMix>(
+      input: Ack.object({
+        'fontFamily': Ack.string().optional(),
+        'fontFamilyFallback': stringListSchema.optional(),
+        'fontSize': Ack.number().optional(),
+        'fontWeight': fontWeightCodec.optional(),
+        'fontStyle': fontStyleSchema.optional(),
+        'height': Ack.number().optional(),
+        'leading': Ack.number().optional(),
+        'forceStrutHeight': Ack.boolean().optional(),
+      }),
+      output: Ack.instance<StrutStyleMix>(),
+      decoder: (data) => StrutStyleMix(
+        fontFamily: data['fontFamily'] as String?,
+        fontFamilyFallback: castListOrNull(data['fontFamilyFallback']),
+        fontSize: castDoubleOrNull(data['fontSize']),
+        fontWeight: data['fontWeight'] as FontWeight?,
+        fontStyle: data['fontStyle'] as FontStyle?,
+        height: castDoubleOrNull(data['height']),
+        leading: castDoubleOrNull(data['leading']),
+        forceStrutHeight: data['forceStrutHeight'] as bool?,
+      ),
+      encoder: (value) => optionalJsonMap([
+        ('fontFamily', propValue(value.$fontFamily)),
+        ('fontFamilyFallback', propValue(value.$fontFamilyFallback)),
+        ('fontSize', propValue(value.$fontSize)),
+        ('fontWeight', propValue(value.$fontWeight)),
+        ('fontStyle', propValue(value.$fontStyle)),
+        ('height', propValue(value.$height)),
+        ('leading', propValue(value.$leading)),
+        ('forceStrutHeight', propValue(value.$forceStrutHeight)),
+      ]),
+    );
 
-final AckSchema<TextHeightBehaviorMix> textHeightBehaviorSchema =
-    Ack.object({
-      'applyHeightToFirstAscent': Ack.boolean().optional(),
-      'applyHeightToLastDescent': Ack.boolean().optional(),
-      'leadingDistribution': textLeadingDistributionSchema.optional(),
-    }).transform<TextHeightBehaviorMix>((data) {
-      final map = data;
-
-      return TextHeightBehaviorMix(
-        applyHeightToFirstAscent: map['applyHeightToFirstAscent'] as bool?,
-        applyHeightToLastDescent: map['applyHeightToLastDescent'] as bool?,
+final CodecSchema<Map<String, Object?>, TextHeightBehaviorMix>
+textHeightBehaviorCodec =
+    Ack.codec<Map<String, Object?>, TextHeightBehaviorMix>(
+      input: Ack.object({
+        'applyHeightToFirstAscent': Ack.boolean().optional(),
+        'applyHeightToLastDescent': Ack.boolean().optional(),
+        'leadingDistribution': textLeadingDistributionSchema.optional(),
+      }),
+      output: Ack.instance<TextHeightBehaviorMix>(),
+      decoder: (data) => TextHeightBehaviorMix(
+        applyHeightToFirstAscent: data['applyHeightToFirstAscent'] as bool?,
+        applyHeightToLastDescent: data['applyHeightToLastDescent'] as bool?,
         leadingDistribution:
-            map['leadingDistribution'] as TextLeadingDistribution?,
-      );
-    });
+            data['leadingDistribution'] as TextLeadingDistribution?,
+      ),
+      encoder: (value) => optionalJsonMap([
+        (
+          'applyHeightToFirstAscent',
+          propValue(value.$applyHeightToFirstAscent),
+        ),
+        (
+          'applyHeightToLastDescent',
+          propValue(value.$applyHeightToLastDescent),
+        ),
+        ('leadingDistribution', propValue(value.$leadingDistribution)),
+      ]),
+    );
 
-final AckSchema<Locale> localeSchema =
-    Ack.object({
-      'languageCode': Ack.string(),
-      'countryCode': Ack.string().nullable().optional(),
-    }).transform<Locale>((data) {
-      final map = data;
-      final languageCode = map['languageCode'] as String;
-      final countryCode = map['countryCode'] as String?;
+final CodecSchema<Map<String, Object?>, Locale> localeCodec =
+    Ack.codec<Map<String, Object?>, Locale>(
+      input: Ack.object({
+        'languageCode': Ack.string(),
+        'countryCode': Ack.string().nullable().optional(),
+      }),
+      output: Ack.instance<Locale>(),
+      decoder: (data) {
+        final languageCode = data['languageCode'] as String;
+        final countryCode = data['countryCode'] as String?;
 
-      return countryCode == null
-          ? Locale(languageCode)
-          : Locale(languageCode, countryCode);
-    });
+        return countryCode == null
+            ? Locale(languageCode)
+            : Locale(languageCode, countryCode);
+      },
+      encoder: (locale) => optionalJsonMap([
+        ('languageCode', locale.languageCode),
+        ('countryCode', locale.countryCode),
+      ]),
+    );
 
 AckSchema<TextScaler> buildTextScalerSchema() {
   return buildDiscriminatedSchema<TextScaler>(
@@ -165,12 +236,11 @@ AckSchema<TextScaler> buildTextScalerSchema() {
 AckSchema<TextScaler> _buildTextScalerBranch(SchemaTextScaler type) {
   switch (type) {
     case .linear:
-      return Ack.object({'factor': Ack.double().min(0)}).transform<TextScaler>((
-        data,
-      ) {
-        final map = data;
-
-        return TextScaler.linear(map['factor'] as double);
-      });
+      return Ack.codec<Map<String, Object?>, TextScaler>(
+        input: Ack.object({'factor': Ack.number().min(0)}),
+        output: Ack.instance<TextScaler>(),
+        decoder: (data) => TextScaler.linear(castDouble(data['factor'])),
+        encoder: (value) => {'factor': value.scale(1)},
+      );
   }
 }

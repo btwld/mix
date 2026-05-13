@@ -51,28 +51,72 @@ const Map<String, Curve> _curveByName = {
   'elasticInOut': Curves.elasticInOut,
 };
 
-AckSchema<CurveAnimationConfig> buildAnimationSchema({
+final Map<Curve, String> _curveNameByValue = {
+  for (final entry in _curveByName.entries) entry.value: entry.key,
+};
+
+CodecSchema<String, VoidCallback> _buildOnEndCallbackCodec({
   required RegistryCatalog registries,
 }) {
-  return Ack.object({
-    'duration': Ack.integer().min(0),
-    'curve': Ack.enumString(_curveByName.keys.toList(growable: false)),
-    'delay': Ack.integer().min(0).optional(),
-    'onEnd': Ack.string().optional(),
-  }).transform<CurveAnimationConfig>((data) {
-    final map = data;
-    final onEndId = map['onEnd'] as String?;
+  const scope = MixSchemaScope.animationOnEnd;
 
-    return CurveAnimationConfig(
-      duration: Duration(milliseconds: map['duration'] as int),
-      curve: _curveByName[map['curve'] as String]!,
-      delay: Duration(milliseconds: (map['delay'] as int?) ?? 0),
-      onEnd: onEndId == null
-          ? null
-          : registries.lookup<VoidCallback>(
-              MixSchemaScope.animationOnEnd.wireValue,
-              onEndId,
-            ),
-    );
-  });
+  return Ack.codec<String, VoidCallback>(
+    input: Ack.string(),
+    output: Ack.instance<VoidCallback>(),
+    decoder: (value) {
+      return registries.lookup<VoidCallback>(scope.wireValue, value);
+    },
+    encoder: (value) {
+      final key = registries.keyOf<VoidCallback>(scope.wireValue, value);
+
+      if (key == null) {
+        throw ArgumentError('Animation onEnd callback is not registered.');
+      }
+
+      return key;
+    },
+  );
+}
+
+CodecSchema<Map<String, Object?>, CurveAnimationConfig> buildAnimationSchema({
+  required RegistryCatalog registries,
+}) {
+  return Ack.codec<Map<String, Object?>, CurveAnimationConfig>(
+    input: Ack.object({
+      'duration': Ack.integer().min(0),
+      'curve': Ack.enumString(_curveByName.keys.toList(growable: false)),
+      'delay': Ack.integer().min(0).optional(),
+      'onEnd': _buildOnEndCallbackCodec(registries: registries).optional(),
+    }),
+    output: Ack.instance<CurveAnimationConfig>(),
+    decoder: (data) {
+      final map = data;
+
+      return CurveAnimationConfig(
+        duration: Duration(milliseconds: map['duration'] as int),
+        curve: _curveByName[map['curve'] as String]!,
+        delay: Duration(milliseconds: (map['delay'] as int?) ?? 0),
+        onEnd: map['onEnd'] as VoidCallback?,
+      );
+    },
+    encoder: (value) {
+      final curveName = _curveNameByValue[value.curve];
+      if (curveName == null) {
+        throw ArgumentError('Curve is not supported by mix_schema.');
+      }
+
+      final payload = <String, Object?>{
+        'duration': value.duration.inMilliseconds,
+        'curve': curveName,
+      };
+      if (value.delay != .zero) {
+        payload['delay'] = value.delay.inMilliseconds;
+      }
+      if (value.onEnd case final onEnd?) {
+        payload['onEnd'] = onEnd;
+      }
+
+      return payload;
+    },
+  );
 }

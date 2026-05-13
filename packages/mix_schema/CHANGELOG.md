@@ -1,10 +1,14 @@
 ## 0.1.0-dev.0
 
 - Add contract-facing `MixSchemaContract`, `MixSchemaContractBuilder`,
-  `MixSchemaValidationResult`, and export metadata for stable styler,
-  modifier, variant, compound-condition, and field-ownership metadata.
-- Keep producer-only wire identifiers and payload helpers on `encode.dart`,
-  and keep internal `StylerRegistry` off the root contract export.
+  `MixSchemaValidationResult`, `MixSchemaEncodeResult`, and Ack JSON Schema
+  export through `MixSchemaContract.exportJsonSchema()`.
+- Keep only low-level payload helpers on `encode.dart`, and keep internal wire
+  identifiers and `StylerRegistry` off the root contract export.
+- Remove the parallel export metadata surface; producer schema artifacts now
+  come from the Ack root schema.
+- Remove the unsupported `IconStyler.icon` compatibility field so it fails as
+  an unknown field until a producer-representable icon value exists.
 - Add `StylerRegistry.builtIn(...)` for extending the built-in styler set with
   custom branches, and decode language-only locales plus decoration images.
 - Add public compound context variant decoding with the `context_all_of`
@@ -19,7 +23,7 @@
 - Add metadata decoding, full built-in styler coverage, custom styler
   registration support, and hardening tests.
 - Redesign the internal schema architecture around `MixSchemaCatalog` and
-  `StylerDefinition`.
+  codec-owned `StylerContract`.
 - Flatten styler metadata to sibling `modifiers` and `modifierOrder` wire
   fields.
 - Split metadata and painting schemas into smaller domain-focused files.

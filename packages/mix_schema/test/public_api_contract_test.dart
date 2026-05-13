@@ -10,11 +10,13 @@ void main() {
       final contract = MixSchemaContract.builtIn();
       final frozenRegistry = FrozenRegistry<Object>(scope: 'demo', values: {});
       final validation = MixSchemaValidationResult.success();
+      final encode = MixSchemaEncodeResult<JsonMap>.success({'type': 'demo'});
 
       expect(builder, isA<MixSchemaContractBuilder>());
       expect(contract, isA<MixSchemaContract>());
       expect(frozenRegistry, isA<FrozenRegistry<Object>>());
       expect(validation, isA<MixSchemaValidationResult>());
+      expect(encode, isA<MixSchemaEncodeResult<JsonMap>>());
       expect(
         RegistryBuilder<Object>(scope: 'custom'),
         isA<RegistryBuilder<Object>>(),
@@ -24,21 +26,14 @@ void main() {
     test('exposes stable built-in registry scopes', () {
       expect(
         MixSchemaScope.values.map((scope) => scope.wireValue).toList(),
-        const [
-          'animation_on_end',
-          'image_provider',
-          'modifier_shader',
-          'modifier_clipper',
-          'context_variant_builder',
-        ],
+        const ['animation_on_end', 'image_provider', 'context_variant_builder'],
       );
     });
 
     test('exports stable built-in styler types through the contract', () {
       final contract = MixSchemaContract.builtIn();
-      final metadata = contract.exportMetadata();
 
-      expect(metadata.stylerTypes, const [
+      expect(_branchTypes(contract.exportJsonSchema()), const [
         'box',
         'text',
         'flex',
@@ -50,143 +45,26 @@ void main() {
       ]);
     });
 
-    test('exports minimal metadata for producers and tooling', () {
+    test('exports JSON Schema as the producer and tooling artifact', () {
       final contract = MixSchemaContract.builtIn();
-      final metadata = contract.exportMetadata();
+      final schema = contract.exportJsonSchema();
+      final boxProperties = _branchProperties(schema, 'box');
+      final flexProperties = _branchProperties(schema, 'flex');
+      final stackProperties = _branchProperties(schema, 'stack');
+      final flexBoxProperties = _branchProperties(schema, 'flex_box');
+      final stackBoxProperties = _branchProperties(schema, 'stack_box');
+      final iconProperties = _branchProperties(schema, 'icon');
 
-      expect(metadata, isA<MixSchemaExportMetadata>());
-      expect(metadata.stylerTypes, const [
-        'box',
-        'text',
-        'flex',
-        'icon',
-        'image',
-        'stack',
-        'flex_box',
-        'stack_box',
-      ]);
-      expect(metadata.modifierTypes, const [
-        'reset',
-        'blur',
-        'opacity',
-        'visibility',
-        'align',
-        'padding',
-        'scale',
-        'rotate',
-        'default_text_style',
-      ]);
-      expect(metadata.variantTypes, const [
-        'named',
-        'widget_state',
-        'enabled',
-        'context_brightness',
-        'context_breakpoint',
-        'context_all_of',
-        'context_not_widget_state',
-        'context_variant_builder',
-      ]);
-      expect(metadata.contextConditionTypes, const [
-        'widget_state',
-        'enabled',
-        'context_brightness',
-        'context_breakpoint',
-        'context_not_widget_state',
-        'context_all_of',
-      ]);
-      expect(metadata.topLevelMetadataFields, const [
-        'animation',
-        'modifiers',
-        'modifierOrder',
-        'variants',
-      ]);
-      expect(metadata.variantStyleMetadataFields, const [
-        'modifiers',
-        'modifierOrder',
-      ]);
-      expect(metadata.stylerFields['box'], const [
-        'alignment',
-        'padding',
-        'margin',
-        'constraints',
-        'decoration',
-        'foregroundDecoration',
-        'transform',
-        'transformAlignment',
-        'clipBehavior',
-      ]);
-      expect(metadata.stylerFields['flex'], const [
-        'direction',
-        'mainAxisAlignment',
-        'crossAxisAlignment',
-        'mainAxisSize',
-        'verticalDirection',
-        'textDirection',
-        'textBaseline',
-        'clipBehavior',
-        'spacing',
-      ]);
-      expect(metadata.stylerFields['stack'], const [
-        'alignment',
-        'fit',
-        'textDirection',
-        'clipBehavior',
-      ]);
-      expect(metadata.stylerFields['flex_box'], const [
-        'decoration',
-        'foregroundDecoration',
-        'padding',
-        'margin',
-        'alignment',
-        'constraints',
-        'transform',
-        'transformAlignment',
-        'clipBehavior',
-        'direction',
-        'mainAxisAlignment',
-        'crossAxisAlignment',
-        'mainAxisSize',
-        'verticalDirection',
-        'textDirection',
-        'textBaseline',
-        'flexClipBehavior',
-        'spacing',
-      ]);
-      expect(metadata.stylerFields['stack_box'], const [
-        'decoration',
-        'foregroundDecoration',
-        'padding',
-        'margin',
-        'alignment',
-        'constraints',
-        'transform',
-        'transformAlignment',
-        'clipBehavior',
-        'stackAlignment',
-        'fit',
-        'textDirection',
-        'stackClipBehavior',
-      ]);
-      expect(metadata.unsupportedFields, {
-        'icon': ['icon'],
-      });
-      expect(
-        metadata.builtInScopes,
-        MixSchemaScope.values.map((scope) => scope.wireValue).toList(),
-      );
-      expect(metadata.toJson(), {
-        'stylerTypes': metadata.stylerTypes,
-        'modifierTypes': metadata.modifierTypes,
-        'variantTypes': metadata.variantTypes,
-        'contextConditionTypes': metadata.contextConditionTypes,
-        'topLevelMetadataFields': metadata.topLevelMetadataFields,
-        'variantStyleMetadataFields': metadata.variantStyleMetadataFields,
-        'stylerFields': metadata.stylerFields,
-        'unsupportedFields': metadata.unsupportedFields,
-        'builtInScopes': MixSchemaScope.values
-            .map((scope) => scope.wireValue)
-            .toList(),
-      });
+      expect(boxProperties, contains('type'));
+      expect(boxProperties, contains('decoration'));
+      expect(boxProperties, contains('animation'));
+      expect(boxProperties, contains('variants'));
+      expect(flexProperties, contains('direction'));
+      expect(flexProperties, contains('mainAxisAlignment'));
+      expect(stackProperties, contains('fit'));
+      expect(flexBoxProperties, contains('flexClipBehavior'));
+      expect(stackBoxProperties, contains('stackClipBehavior'));
+      expect(iconProperties, isNot(contains('icon')));
     });
 
     test('keeps the stable public error vocabulary', () {
@@ -200,7 +78,6 @@ void main() {
         'transform_failed',
         'unknown_type',
         'unknown_registry_id',
-        'unsupported_value_type',
       });
     });
 
@@ -213,7 +90,8 @@ void main() {
     test('keeps wire-type identifiers on the producer surface', () {
       final source = File('lib/encode.dart').readAsStringSync();
 
-      expect(source, contains('schema_wire_types.dart'));
+      expect(source, isNot(contains('schema_wire_types.dart')));
+      expect(source, contains('primitive_payload_helpers.dart'));
     });
 
     test('keeps styler registry construction off the contract-facing APIs', () {
@@ -237,5 +115,42 @@ void main() {
 
       expect(source, isNot(contains('styler_registry.dart')));
     });
+
+    test('does not expose the removed metadata contract surface', () {
+      final rootExport = File('lib/mix_schema.dart').readAsStringSync();
+      final contractSource = File(
+        'lib/src/contract/mix_schema_contract.dart',
+      ).readAsStringSync();
+
+      expect(rootExport, isNot(contains('mix_schema_export_metadata.dart')));
+      expect(contractSource, isNot(contains('exportMetadata')));
+    });
   });
+}
+
+List<String> _branchTypes(Map<String, Object?> schema) {
+  final branches = schema['anyOf'] as List<Object?>;
+
+  return [
+    for (final branch in branches)
+      (((branch as Map<Object?, Object?>)['properties']!
+                  as Map<Object?, Object?>)['type']!
+              as Map<Object?, Object?>)['const']!
+          as String,
+  ];
+}
+
+Map<Object?, Object?> _branchProperties(
+  Map<String, Object?> schema,
+  String type,
+) {
+  final branches = schema['anyOf'] as List<Object?>;
+  final branch = branches.cast<Map<Object?, Object?>>().singleWhere((branch) {
+    final properties = branch['properties']! as Map<Object?, Object?>;
+    final typeProperty = properties['type']! as Map<Object?, Object?>;
+
+    return typeProperty['const'] == type;
+  });
+
+  return branch['properties']! as Map<Object?, Object?>;
 }

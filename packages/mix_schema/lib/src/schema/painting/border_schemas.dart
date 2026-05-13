@@ -2,43 +2,57 @@ import 'package:ack/ack.dart';
 import 'package:flutter/painting.dart';
 import 'package:mix/mix.dart';
 
+import '../../core/json_casts.dart';
+import '../../core/prop_encode.dart';
 import '../../core/schema_wire_types.dart';
 import '../discriminated_schema_builder.dart';
 import '../shared/shared_schemas.dart';
 
-final AckSchema<BorderSideMix> borderSideSchema =
-    Ack.object({
-      'color': colorSchema.optional(),
-      'width': Ack.double().optional(),
-      'style': borderStyleSchema.optional(),
-      'strokeAlign': Ack.double().optional(),
-    }).transform<BorderSideMix>((data) {
-      final map = data;
+final CodecSchema<Map<String, Object?>, BorderSideMix> borderSideCodec =
+    Ack.codec<Map<String, Object?>, BorderSideMix>(
+      input: Ack.object({
+        'color': colorCodec.optional(),
+        'width': Ack.number().optional(),
+        'style': borderStyleSchema.optional(),
+        'strokeAlign': Ack.number().optional(),
+      }),
+      output: Ack.instance<BorderSideMix>(),
+      decoder: (data) => BorderSideMix(
+        color: data['color'] as Color?,
+        strokeAlign: castDoubleOrNull(data['strokeAlign']),
+        style: data['style'] as BorderStyle?,
+        width: castDoubleOrNull(data['width']),
+      ),
+      encoder: (value) => optionalJsonMap([
+        ('color', propValue(value.$color)),
+        ('width', propValue(value.$width)),
+        ('style', propValue(value.$style)),
+        ('strokeAlign', propValue(value.$strokeAlign)),
+      ]),
+    );
 
-      return BorderSideMix(
-        color: map['color'] as Color?,
-        strokeAlign: map['strokeAlign'] as double?,
-        style: map['style'] as BorderStyle?,
-        width: map['width'] as double?,
-      );
-    });
-
-final AckSchema<BoxShadowMix> boxShadowSchema =
-    Ack.object({
-      'color': colorSchema.optional(),
-      'offset': offsetSchema.optional(),
-      'blurRadius': Ack.double().optional(),
-      'spreadRadius': Ack.double().optional(),
-    }).transform<BoxShadowMix>((data) {
-      final map = data;
-
-      return BoxShadowMix(
-        color: map['color'] as Color?,
-        offset: map['offset'] as Offset?,
-        blurRadius: map['blurRadius'] as double?,
-        spreadRadius: map['spreadRadius'] as double?,
-      );
-    });
+final CodecSchema<Map<String, Object?>, BoxShadowMix> boxShadowCodec =
+    Ack.codec<Map<String, Object?>, BoxShadowMix>(
+      input: Ack.object({
+        'color': colorCodec.optional(),
+        'offset': offsetCodec.optional(),
+        'blurRadius': Ack.number().optional(),
+        'spreadRadius': Ack.number().optional(),
+      }),
+      output: Ack.instance<BoxShadowMix>(),
+      decoder: (data) => BoxShadowMix(
+        color: data['color'] as Color?,
+        offset: data['offset'] as Offset?,
+        blurRadius: castDoubleOrNull(data['blurRadius']),
+        spreadRadius: castDoubleOrNull(data['spreadRadius']),
+      ),
+      encoder: (value) => optionalJsonMap([
+        ('color', propValue(value.$color)),
+        ('offset', propValue(value.$offset)),
+        ('blurRadius', propValue(value.$blurRadius)),
+        ('spreadRadius', propValue(value.$spreadRadius)),
+      ]),
+    );
 
 AckSchema<BoxBorderMix> buildBoxBorderSchema() {
   return buildDiscriminatedSchema<BoxBorderMix>(
@@ -69,37 +83,57 @@ AckSchema<BorderRadiusGeometryMix> buildBorderRadiusSchema() {
 AckSchema<BoxBorderMix> _buildBoxBorderBranch(SchemaBorder type) {
   switch (type) {
     case .border:
-      return Ack.object({
-        'top': borderSideSchema.optional(),
-        'bottom': borderSideSchema.optional(),
-        'left': borderSideSchema.optional(),
-        'right': borderSideSchema.optional(),
-      }).transform<BoxBorderMix>((data) {
-        final map = data;
+      return Ack.codec<Map<String, Object?>, BoxBorderMix>(
+        input: Ack.object({
+          'top': borderSideCodec.optional(),
+          'bottom': borderSideCodec.optional(),
+          'left': borderSideCodec.optional(),
+          'right': borderSideCodec.optional(),
+        }),
+        output: Ack.instance<BoxBorderMix>(),
+        decoder: (data) => BorderMix(
+          top: data['top'] as BorderSideMix?,
+          bottom: data['bottom'] as BorderSideMix?,
+          left: data['left'] as BorderSideMix?,
+          right: data['right'] as BorderSideMix?,
+        ),
+        encoder: (value) {
+          final mix = value as BorderMix;
 
-        return BorderMix(
-          top: map['top'] as BorderSideMix?,
-          bottom: map['bottom'] as BorderSideMix?,
-          left: map['left'] as BorderSideMix?,
-          right: map['right'] as BorderSideMix?,
-        );
-      });
+          return optionalJsonMap([
+            ('top', propMix<BorderSideMix>(mix.$top)),
+            ('bottom', propMix<BorderSideMix>(mix.$bottom)),
+            ('left', propMix<BorderSideMix>(mix.$left)),
+            ('right', propMix<BorderSideMix>(mix.$right)),
+          ]);
+        },
+      );
     case .borderDirectional:
-      return Ack.object({
-        'top': borderSideSchema.optional(),
-        'bottom': borderSideSchema.optional(),
-        'start': borderSideSchema.optional(),
-        'end': borderSideSchema.optional(),
-      }).transform<BoxBorderMix>((data) {
-        final map = data;
+      return Ack.codec<Map<String, Object?>, BoxBorderMix>(
+        input: Ack.object({
+          'top': borderSideCodec.optional(),
+          'bottom': borderSideCodec.optional(),
+          'start': borderSideCodec.optional(),
+          'end': borderSideCodec.optional(),
+        }),
+        output: Ack.instance<BoxBorderMix>(),
+        decoder: (data) => BorderDirectionalMix(
+          top: data['top'] as BorderSideMix?,
+          bottom: data['bottom'] as BorderSideMix?,
+          start: data['start'] as BorderSideMix?,
+          end: data['end'] as BorderSideMix?,
+        ),
+        encoder: (value) {
+          final mix = value as BorderDirectionalMix;
 
-        return BorderDirectionalMix(
-          top: map['top'] as BorderSideMix?,
-          bottom: map['bottom'] as BorderSideMix?,
-          start: map['start'] as BorderSideMix?,
-          end: map['end'] as BorderSideMix?,
-        );
-      });
+          return optionalJsonMap([
+            ('top', propMix<BorderSideMix>(mix.$top)),
+            ('bottom', propMix<BorderSideMix>(mix.$bottom)),
+            ('start', propMix<BorderSideMix>(mix.$start)),
+            ('end', propMix<BorderSideMix>(mix.$end)),
+          ]);
+        },
+      );
   }
 }
 
@@ -108,36 +142,56 @@ AckSchema<BorderRadiusGeometryMix> _buildBorderRadiusBranch(
 ) {
   switch (type) {
     case .borderRadius:
-      return Ack.object({
-        'topLeft': radiusSchema.optional(),
-        'topRight': radiusSchema.optional(),
-        'bottomLeft': radiusSchema.optional(),
-        'bottomRight': radiusSchema.optional(),
-      }).transform<BorderRadiusGeometryMix>((data) {
-        final map = data;
+      return Ack.codec<Map<String, Object?>, BorderRadiusGeometryMix>(
+        input: Ack.object({
+          'topLeft': radiusCodec.optional(),
+          'topRight': radiusCodec.optional(),
+          'bottomLeft': radiusCodec.optional(),
+          'bottomRight': radiusCodec.optional(),
+        }),
+        output: Ack.instance<BorderRadiusGeometryMix>(),
+        decoder: (data) => BorderRadiusMix(
+          topLeft: data['topLeft'] as Radius?,
+          topRight: data['topRight'] as Radius?,
+          bottomLeft: data['bottomLeft'] as Radius?,
+          bottomRight: data['bottomRight'] as Radius?,
+        ),
+        encoder: (value) {
+          final mix = value as BorderRadiusMix;
 
-        return BorderRadiusMix(
-          topLeft: map['topLeft'] as Radius?,
-          topRight: map['topRight'] as Radius?,
-          bottomLeft: map['bottomLeft'] as Radius?,
-          bottomRight: map['bottomRight'] as Radius?,
-        );
-      });
+          return optionalJsonMap([
+            ('topLeft', propValue(mix.$topLeft)),
+            ('topRight', propValue(mix.$topRight)),
+            ('bottomLeft', propValue(mix.$bottomLeft)),
+            ('bottomRight', propValue(mix.$bottomRight)),
+          ]);
+        },
+      );
     case .borderRadiusDirectional:
-      return Ack.object({
-        'topStart': radiusSchema.optional(),
-        'topEnd': radiusSchema.optional(),
-        'bottomStart': radiusSchema.optional(),
-        'bottomEnd': radiusSchema.optional(),
-      }).transform<BorderRadiusGeometryMix>((data) {
-        final map = data;
+      return Ack.codec<Map<String, Object?>, BorderRadiusGeometryMix>(
+        input: Ack.object({
+          'topStart': radiusCodec.optional(),
+          'topEnd': radiusCodec.optional(),
+          'bottomStart': radiusCodec.optional(),
+          'bottomEnd': radiusCodec.optional(),
+        }),
+        output: Ack.instance<BorderRadiusGeometryMix>(),
+        decoder: (data) => BorderRadiusDirectionalMix(
+          topStart: data['topStart'] as Radius?,
+          topEnd: data['topEnd'] as Radius?,
+          bottomStart: data['bottomStart'] as Radius?,
+          bottomEnd: data['bottomEnd'] as Radius?,
+        ),
+        encoder: (value) {
+          final mix = value as BorderRadiusDirectionalMix;
 
-        return BorderRadiusDirectionalMix(
-          topStart: map['topStart'] as Radius?,
-          topEnd: map['topEnd'] as Radius?,
-          bottomStart: map['bottomStart'] as Radius?,
-          bottomEnd: map['bottomEnd'] as Radius?,
-        );
-      });
+          return optionalJsonMap([
+            ('topStart', propValue(mix.$topStart)),
+            ('topEnd', propValue(mix.$topEnd)),
+            ('bottomStart', propValue(mix.$bottomStart)),
+            ('bottomEnd', propValue(mix.$bottomEnd)),
+          ]);
+        },
+      );
   }
 }

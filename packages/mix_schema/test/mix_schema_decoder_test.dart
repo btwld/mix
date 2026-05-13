@@ -258,7 +258,7 @@ void main() {
 
       expect(result.ok, isFalse);
       expect(result.errors.single.code, MixSchemaErrorCode.unknownRegistryId);
-      expect(result.errors.single.path, '#/animation');
+      expect(result.errors.single.path, '#/animation/onEnd');
     });
 
     test('returns nested errors with stable paths', () {

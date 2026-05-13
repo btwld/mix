@@ -16,12 +16,12 @@ dependencies:
   ack:
     git:
       url: https://github.com/btwld/ack.git
-      ref: main
+      ref: 31fcd177acd5b92975505579c27d83916134c161
       path: packages/ack
   ack_annotations:
     git:
       url: https://github.com/btwld/ack.git
-      ref: main
+      ref: 31fcd177acd5b92975505579c27d83916134c161
       path: packages/ack_annotations
 
 dev_dependencies:
@@ -32,7 +32,7 @@ dev_dependencies:
   ack_generator:
     git:
       url: https://github.com/btwld/ack.git
-      ref: main
+      ref: 31fcd177acd5b92975505579c27d83916134c161
       path: packages/ack_generator
   build_runner: ^2.11.0
 
@@ -40,15 +40,15 @@ dependency_overrides:
   ack:
     git:
       url: https://github.com/btwld/ack.git
-      ref: main
+      ref: 31fcd177acd5b92975505579c27d83916134c161
       path: packages/ack
   ack_annotations:
     git:
       url: https://github.com/btwld/ack.git
-      ref: main
+      ref: 31fcd177acd5b92975505579c27d83916134c161
       path: packages/ack_annotations
   ack_generator:
     git:
       url: https://github.com/btwld/ack.git
-      ref: main
+      ref: 31fcd177acd5b92975505579c27d83916134c161
       path: packages/ack_generator

@@ -2,6 +2,8 @@ import 'package:ack/ack.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
+import '../../core/codec_typed_encode.dart';
+import '../../core/json_casts.dart';
 import '../../core/json_map.dart';
 import '../../core/schema_wire_types.dart';
 import '../shared/shared_schemas.dart';
@@ -26,64 +28,99 @@ final class ContextVariantLeaf {
   };
 }
 
-typedef VariantConditionRefinement = bool Function(Map<String, Object?> data);
 typedef VariantConditionLeafBuilder =
     ContextVariantLeaf Function(Map<String, Object?> data);
-typedef VariantConditionFieldsEncoder = JsonMap Function(JsonMap fields);
+typedef VariantConditionLeafEncoder = JsonMap Function(ContextVariantLeaf leaf);
+typedef VariantConditionMatcher = bool Function(Variant variant);
 
 final class VariantConditionDefinition {
   final SchemaVariant type;
-  final Map<String, AckSchema> fields;
-  final VariantConditionRefinement? refine;
-  final String? refineMessage;
+  final CodecSchema<Map<String, Object?>, ContextVariantLeaf> codec;
   final VariantConditionLeafBuilder buildLeaf;
-  final JsonMap sampleFields;
-  final VariantConditionFieldsEncoder _encodeFields;
+  final VariantConditionLeafEncoder _encodeLeaf;
+  final VariantConditionMatcher _matchesVariant;
 
   const VariantConditionDefinition({
     required this.type,
-    required this.fields,
-    this.refine,
-    this.refineMessage,
+    required this.codec,
     required this.buildLeaf,
-    required this.sampleFields,
-    required VariantConditionFieldsEncoder encodeFields,
-  }) : _encodeFields = encodeFields;
-
-  AckSchema<Map<String, Object?>> _buildDataSchema([
-    Map<String, AckSchema> extraFields = const {},
-  ]) {
-    final allFields = {...fields, ...extraFields};
-
-    if (refine case final refinement?) {
-      return Ack.object(allFields).refine(refinement, message: refineMessage!);
-    }
-
-    return Ack.object(allFields);
-  }
+    required VariantConditionLeafEncoder encodeLeaf,
+    required VariantConditionMatcher matchesVariant,
+  }) : _encodeLeaf = encodeLeaf,
+       _matchesVariant = matchesVariant;
 
   AckSchema<ContextVariantLeaf> buildLeafSchema() {
-    return _buildDataSchema().transform<ContextVariantLeaf>((data) {
-      return buildLeaf(data);
-    });
+    return codec;
   }
+
+  bool matchesVariant(Variant variant) => _matchesVariant(variant);
 
   AckSchema<VariantStyle<S>> buildVariantSchema<
     S extends Spec<S>,
     T extends Style<S>
   >(AckSchema<T> styleSchema) {
-    return _buildDataSchema({'style': styleSchema}).transform<VariantStyle<S>>((
-      data,
-    ) {
-      final map = data;
+    final inputSchema = codec.inputSchema;
+    if (inputSchema is! ObjectSchema) {
+      throw StateError('Variant condition codecs must be object-backed.');
+    }
 
-      return VariantStyle<S>(buildLeaf(map).variant, map['style'] as T);
-    });
+    return Ack.codec<Map<String, Object?>, VariantStyle<S>>(
+      input: inputSchema.copyWith(
+        properties: {...inputSchema.properties, 'style': styleSchema},
+      ),
+      output: Ack.instance<VariantStyle<S>>().refine(
+        (value) => _matchesVariant(value.variant),
+        message: 'Variant style does not match ${type.wireValue}.',
+      ),
+      decoder: (data) {
+        final map = data;
+
+        return VariantStyle<S>(codec.decoder(map).variant, map['style'] as T);
+      },
+      encoder: (value) {
+        final variant = value.variant;
+        if (variant is! ContextVariant) {
+          throw ArgumentError('Expected a context variant.');
+        }
+
+        return {
+          ..._encodeLeaf(
+            ContextVariantLeaf(variant: variant, canonicalKey: variant.key),
+          ),
+          'style': value.value as T,
+        };
+      },
+    );
+  }
+
+  JsonMap encodeLeaf(ContextVariantLeaf leaf) {
+    return {'type': type.wireValue, ...codec.encodeTyped(leaf)};
+  }
+
+  JsonMap encodeLeafFields(ContextVariantLeaf leaf) {
+    return _encodeLeaf(leaf);
   }
 
   JsonMap encode(JsonMap fields) {
-    return {'type': type.wireValue, ..._encodeFields(fields)};
+    return encodeLeaf(buildLeaf(fields));
   }
+}
+
+CodecSchema<Map<String, Object?>, ContextVariantLeaf> _leafCodec({
+  required AckSchema<Map<String, Object?>> input,
+  required VariantConditionLeafBuilder decoder,
+  required VariantConditionLeafEncoder encoder,
+  required VariantConditionMatcher matchesVariant,
+}) {
+  return Ack.codec(
+    input: input,
+    output: Ack.instance<ContextVariantLeaf>().refine(
+      (leaf) => matchesVariant(leaf.variant),
+      message: 'Context variant leaf does not match this condition.',
+    ),
+    decoder: decoder,
+    encoder: encoder,
+  );
 }
 
 final Map<SchemaVariant, VariantConditionDefinition>
@@ -110,97 +147,129 @@ VariantConditionDefinition _buildSharedVariantConditionDefinition(
 ) {
   switch (type) {
     case .widgetState:
+      ContextVariantLeaf buildLeaf(Map<String, Object?> data) {
+        final state = data['state'] as WidgetState;
+
+        return ContextVariantLeaf(
+          variant: ContextVariant.widgetState(state),
+          canonicalKey: '${type.wireValue}:${state.name}',
+        );
+      }
+
       return VariantConditionDefinition(
         type: .widgetState,
-        fields: {'state': widgetStateSchema},
-        buildLeaf: (data) {
-          final state = data['state'] as WidgetState;
-
-          return ContextVariantLeaf(
-            variant: ContextVariant.widgetState(state),
-            canonicalKey: '${type.wireValue}:${state.name}',
-          );
-        },
-        sampleFields: {'state': WidgetState.hovered},
-        encodeFields: (fields) => {
-          'state': (fields['state'] as WidgetState).name,
-        },
+        codec: _leafCodec(
+          input: Ack.object({'state': widgetStateSchema}),
+          decoder: buildLeaf,
+          encoder: _encodeWidgetStateLeaf,
+          matchesVariant: (variant) => variant is WidgetStateVariant,
+        ),
+        buildLeaf: buildLeaf,
+        encodeLeaf: _encodeWidgetStateLeaf,
+        matchesVariant: (variant) => variant is WidgetStateVariant,
       );
     case .enabled:
+      ContextVariantLeaf buildLeaf(Map<String, Object?> _) {
+        return ContextVariantLeaf(
+          variant: ContextVariant.not(ContextVariant.widgetState(.disabled)),
+          canonicalKey: type.wireValue,
+        );
+      }
+
       return VariantConditionDefinition(
         type: .enabled,
-        fields: const {},
-        buildLeaf: (_) {
-          return ContextVariantLeaf(
-            variant: ContextVariant.not(ContextVariant.widgetState(.disabled)),
-            canonicalKey: type.wireValue,
-          );
-        },
-        sampleFields: const {},
-        encodeFields: (_) => const {},
+        codec: _leafCodec(
+          input: Ack.object(const {}),
+          decoder: buildLeaf,
+          encoder: (_) => const {},
+          matchesVariant: _isEnabledVariant,
+        ),
+        buildLeaf: buildLeaf,
+        encodeLeaf: (_) => const {},
+        matchesVariant: _isEnabledVariant,
       );
     case .brightness:
+      ContextVariantLeaf buildLeaf(Map<String, Object?> data) {
+        final brightness = data['brightness'] as Brightness;
+
+        return ContextVariantLeaf(
+          variant: ContextVariant.brightness(brightness),
+          canonicalKey: '${type.wireValue}:${brightness.name}',
+        );
+      }
+
       return VariantConditionDefinition(
         type: .brightness,
-        fields: {'brightness': brightnessSchema},
-        buildLeaf: (data) {
-          final brightness = data['brightness'] as Brightness;
-
-          return ContextVariantLeaf(
-            variant: ContextVariant.brightness(brightness),
-            canonicalKey: '${type.wireValue}:${brightness.name}',
-          );
-        },
-        sampleFields: {'brightness': Brightness.dark},
-        encodeFields: (fields) {
-          return {'brightness': (fields['brightness'] as Brightness).name};
-        },
+        codec: _leafCodec(
+          input: Ack.object({'brightness': brightnessSchema}),
+          decoder: buildLeaf,
+          encoder: _encodeBrightnessLeaf,
+          matchesVariant: _isBrightnessVariant,
+        ),
+        buildLeaf: buildLeaf,
+        encodeLeaf: _encodeBrightnessLeaf,
+        matchesVariant: _isBrightnessVariant,
       );
     case .breakpoint:
+      ContextVariantLeaf buildLeaf(Map<String, Object?> data) {
+        return ContextVariantLeaf(
+          variant: ContextVariant.breakpoint(
+            Breakpoint(
+              minWidth: castDoubleOrNull(data['minWidth']),
+              maxWidth: castDoubleOrNull(data['maxWidth']),
+              minHeight: castDoubleOrNull(data['minHeight']),
+              maxHeight: castDoubleOrNull(data['maxHeight']),
+            ),
+          ),
+          canonicalKey: _breakpointCanonicalKey(data),
+        );
+      }
+
       return VariantConditionDefinition(
         type: .breakpoint,
-        fields: {
-          'minWidth': Ack.double().nullable().optional(),
-          'maxWidth': Ack.double().nullable().optional(),
-          'minHeight': Ack.double().nullable().optional(),
-          'maxHeight': Ack.double().nullable().optional(),
-        },
-        refine: _hasAnyBreakpointDimension,
-        refineMessage: 'At least one dimension constraint required.',
-        buildLeaf: (data) {
-          return ContextVariantLeaf(
-            variant: ContextVariant.breakpoint(
-              Breakpoint(
-                minWidth: data['minWidth'] as double?,
-                maxWidth: data['maxWidth'] as double?,
-                minHeight: data['minHeight'] as double?,
-                maxHeight: data['maxHeight'] as double?,
+        codec: _leafCodec(
+          input:
+              Ack.object({
+                'minWidth': Ack.number().nullable().optional(),
+                'maxWidth': Ack.number().nullable().optional(),
+                'minHeight': Ack.number().nullable().optional(),
+                'maxHeight': Ack.number().nullable().optional(),
+              }).refine(
+                _hasAnyBreakpointDimension,
+                message: 'At least one dimension constraint required.',
               ),
-            ),
-            canonicalKey: _breakpointCanonicalKey(data),
-          );
-        },
-        sampleFields: const {'minWidth': 768.0},
-        encodeFields: _encodeBreakpointFields,
+          decoder: buildLeaf,
+          encoder: _encodeBreakpointLeaf,
+          matchesVariant: _isBreakpointVariant,
+        ),
+        buildLeaf: buildLeaf,
+        encodeLeaf: _encodeBreakpointLeaf,
+        matchesVariant: _isBreakpointVariant,
       );
     case .notWidgetState:
+      ContextVariantLeaf buildLeaf(Map<String, Object?> data) {
+        final state = data['state'] as WidgetState;
+
+        return ContextVariantLeaf(
+          variant: ContextVariant.not(ContextVariant.widgetState(state)),
+          canonicalKey: '${type.wireValue}:${state.name}',
+        );
+      }
+
       return VariantConditionDefinition(
         type: .notWidgetState,
-        fields: {'state': widgetStateSchema},
-        refine: (data) => data['state'] != WidgetState.disabled,
-        refineMessage: 'Use enabled for not(disabled).',
-        buildLeaf: (data) {
-          final state = data['state'] as WidgetState;
-
-          return ContextVariantLeaf(
-            variant: ContextVariant.not(ContextVariant.widgetState(state)),
-            canonicalKey: '${type.wireValue}:${state.name}',
-          );
-        },
-        sampleFields: {'state': WidgetState.focused},
-        encodeFields: (fields) => {
-          'state': (fields['state'] as WidgetState).name,
-        },
+        codec: _leafCodec(
+          input: Ack.object({'state': widgetStateSchema}).refine(
+            (data) => data['state'] != WidgetState.disabled,
+            message: 'Use enabled for not(disabled).',
+          ),
+          decoder: buildLeaf,
+          encoder: _encodeNotWidgetStateLeaf,
+          matchesVariant: _isNotWidgetStateVariant,
+        ),
+        buildLeaf: buildLeaf,
+        encodeLeaf: _encodeNotWidgetStateLeaf,
+        matchesVariant: _isNotWidgetStateVariant,
       );
     case .named || .contextAllOf || .contextBuilder:
       throw StateError('Unsupported shared context leaf type: $type');
@@ -216,6 +285,86 @@ VariantConditionDefinition variantConditionDefinition(SchemaVariant type) {
   return definition;
 }
 
+JsonMap _encodeWidgetStateLeaf(ContextVariantLeaf leaf) {
+  final variant = leaf.variant;
+  if (variant is! WidgetStateVariant) {
+    throw ArgumentError('Expected WidgetStateVariant.');
+  }
+
+  return {'state': variant.state};
+}
+
+JsonMap _encodeBrightnessLeaf(ContextVariantLeaf leaf) {
+  return {'brightness': _brightnessFromVariant(leaf.variant)};
+}
+
+JsonMap _encodeNotWidgetStateLeaf(ContextVariantLeaf leaf) {
+  final state = _notWidgetStateFromVariant(leaf.variant);
+  if (state == .disabled) {
+    throw ArgumentError('Use enabled for not(disabled).');
+  }
+
+  return {'state': state};
+}
+
+JsonMap _encodeBreakpointLeaf(ContextVariantLeaf leaf) {
+  final fromCanonical = _breakpointFieldsFromCanonicalKey(leaf.canonicalKey);
+  if (fromCanonical != null) return fromCanonical;
+
+  final fromVariant = _breakpointFieldsFromVariantKey(leaf.variant.key);
+  if (fromVariant == null || fromVariant.isEmpty) {
+    throw ArgumentError('Breakpoint variant cannot be encoded.');
+  }
+
+  return fromVariant;
+}
+
+bool _isEnabledVariant(Variant variant) {
+  return variant is ContextVariant &&
+      variant.key == 'not_widget_state_disabled';
+}
+
+bool _isBrightnessVariant(Variant variant) {
+  return variant is ContextVariant &&
+      Brightness.values.any(
+        (value) =>
+            variant.key == 'media_query_platform_brightness_${value.name}',
+      );
+}
+
+bool _isBreakpointVariant(Variant variant) {
+  return variant is ContextVariant && variant.key.startsWith('breakpoint_');
+}
+
+bool _isNotWidgetStateVariant(Variant variant) {
+  return variant is ContextVariant &&
+      variant.key.startsWith('not_widget_state_') &&
+      variant.key != 'not_widget_state_disabled';
+}
+
+Brightness _brightnessFromVariant(Variant variant) {
+  if (variant is ContextVariant) {
+    for (final value in Brightness.values) {
+      if (variant.key == 'media_query_platform_brightness_${value.name}') {
+        return value;
+      }
+    }
+  }
+
+  throw ArgumentError('Expected brightness context variant.');
+}
+
+WidgetState _notWidgetStateFromVariant(Variant variant) {
+  if (variant is ContextVariant &&
+      variant.key.startsWith('not_widget_state_')) {
+    final stateName = variant.key.substring('not_widget_state_'.length);
+
+    return WidgetState.values.byName(stateName);
+  }
+
+  throw ArgumentError('Expected negated widget state variant.');
+}
+
 bool _hasAnyBreakpointDimension(Map<String, Object?> data) {
   return data['minWidth'] != null ||
       data['maxWidth'] != null ||
@@ -223,18 +372,64 @@ bool _hasAnyBreakpointDimension(Map<String, Object?> data) {
       data['maxHeight'] != null;
 }
 
-JsonMap _encodeBreakpointFields(JsonMap fields) {
-  const fieldNames = ['minWidth', 'maxWidth', 'minHeight', 'maxHeight'];
-  final payload = <String, Object?>{};
+JsonMap _breakpointFieldsFromValues({
+  double? minWidth,
+  double? maxWidth,
+  double? minHeight,
+  double? maxHeight,
+}) {
+  final fields = <String, Object?>{};
 
-  for (final fieldName in fieldNames) {
-    final value = fields[fieldName];
-    if (value != null) {
-      payload[fieldName] = value;
-    }
+  if (minWidth != null) fields['minWidth'] = minWidth;
+  if (maxWidth != null) fields['maxWidth'] = maxWidth;
+  if (minHeight != null) fields['minHeight'] = minHeight;
+  if (maxHeight != null) fields['maxHeight'] = maxHeight;
+
+  return fields;
+}
+
+JsonMap? _breakpointFieldsFromCanonicalKey(String canonicalKey) {
+  final parts = canonicalKey.split(':');
+  if (parts.length != 5 || parts.first != SchemaVariant.breakpoint.wireValue) {
+    return null;
   }
 
-  return payload;
+  final values = <String, double?>{};
+  for (final part in parts.skip(1)) {
+    final separator = part.indexOf('=');
+    if (separator == -1) return null;
+
+    final key = part.substring(0, separator);
+    final value = part.substring(separator + 1);
+    values[key] = _parseNullableDouble(value);
+  }
+
+  return _breakpointFieldsFromValues(
+    minWidth: values['minWidth'],
+    maxWidth: values['maxWidth'],
+    minHeight: values['minHeight'],
+    maxHeight: values['maxHeight'],
+  );
+}
+
+JsonMap? _breakpointFieldsFromVariantKey(String key) {
+  if (!key.startsWith('breakpoint_')) return null;
+
+  final parts = key.substring('breakpoint_'.length).split('_');
+  if (parts.length != 2) return null;
+
+  final minWidth = parts[0] == '0.0' ? null : _parseNullableDouble(parts[0]);
+  final maxWidth = parts[1] == 'infinity'
+      ? null
+      : _parseNullableDouble(parts[1]);
+
+  return _breakpointFieldsFromValues(minWidth: minWidth, maxWidth: maxWidth);
+}
+
+double? _parseNullableDouble(String value) {
+  if (value == 'null' || value == 'infinity') return null;
+
+  return double.parse(value);
 }
 
 String _breakpointCanonicalKey(Map<String, Object?> data) {

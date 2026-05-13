@@ -8,8 +8,7 @@ enum MixSchemaErrorCode {
   validationFailed('validation_failed'),
   transformFailed('transform_failed'),
   unknownType('unknown_type'),
-  unknownRegistryId('unknown_registry_id'),
-  unsupportedValueType('unsupported_value_type');
+  unknownRegistryId('unknown_registry_id');
 
   const MixSchemaErrorCode(this.wireValue);
 

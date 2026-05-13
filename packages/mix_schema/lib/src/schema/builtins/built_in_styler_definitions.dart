@@ -18,15 +18,11 @@ final class BuiltInStylerContractEntry {
   final SchemaStyler type;
   final DiscriminatedSchemaBranch<Object> branch;
   final AckSchema<Object> schema;
-  final List<String> fields;
-  final List<String> unsupportedFields;
 
   const BuiltInStylerContractEntry({
     required this.type,
     required this.branch,
     required this.schema,
-    required this.fields,
-    this.unsupportedFields = const [],
   });
 }
 
@@ -34,19 +30,15 @@ Map<SchemaStyler, BuiltInStylerContractEntry> buildBuiltInStylerDefinitions(
   MixSchemaCatalog catalog,
 ) {
   final definitions = {
-    SchemaStyler.box: _entry(buildBoxStylerDefinition(catalog), catalog),
-    SchemaStyler.text: _entry(buildTextStylerDefinition(catalog), catalog),
-    SchemaStyler.flex: _entry(buildFlexStylerDefinition(catalog), catalog),
-    SchemaStyler.icon: _entry(buildIconStylerDefinition(catalog), catalog),
-    SchemaStyler.image: _entry(buildImageStylerDefinition(catalog), catalog),
-    SchemaStyler.stack: _entry(buildStackStylerDefinition(catalog), catalog),
-    SchemaStyler.flexBox: _entry(
-      buildFlexBoxStylerDefinition(catalog),
-      catalog,
-    ),
-    SchemaStyler.stackBox: _entry(
+    SchemaStyler.box: _contractEntry(buildBoxStylerDefinition(catalog)),
+    SchemaStyler.text: _contractEntry(buildTextStylerDefinition(catalog)),
+    SchemaStyler.flex: _contractEntry(buildFlexStylerDefinition(catalog)),
+    SchemaStyler.icon: _contractEntry(buildIconStylerDefinition(catalog)),
+    SchemaStyler.image: _contractEntry(buildImageStylerDefinition(catalog)),
+    SchemaStyler.stack: _contractEntry(buildStackStylerDefinition(catalog)),
+    SchemaStyler.flexBox: _contractEntry(buildFlexBoxStylerDefinition(catalog)),
+    SchemaStyler.stackBox: _contractEntry(
       buildStackBoxStylerDefinition(catalog),
-      catalog,
     ),
   };
 
@@ -63,20 +55,16 @@ Map<SchemaStyler, BuiltInStylerContractEntry> buildBuiltInStylerDefinitions(
   return Map.unmodifiable(definitions);
 }
 
-BuiltInStylerContractEntry _entry<S extends Spec<S>, T extends Style<S>>(
-  StylerDefinition<S, T> definition,
-  MixSchemaCatalog catalog,
-) {
-  final schema = buildStylerSchema(definition: definition, catalog: catalog);
-
+BuiltInStylerContractEntry _contractEntry<
+  S extends Spec<S>,
+  T extends Style<S>
+>(StylerContract<S, T> contract) {
   return BuiltInStylerContractEntry(
-    type: definition.type,
+    type: contract.type,
     branch: discriminatedBranch(
-      type: definition.type.wireValue,
-      schema: schema,
+      type: contract.type.wireValue,
+      schema: contract.codec,
     ),
-    schema: schema as AckSchema<Object>,
-    fields: definition.fields.keys.toList(growable: false),
-    unsupportedFields: definition.unsupportedFields,
+    schema: contract.codec as AckSchema<Object>,
   );
 }

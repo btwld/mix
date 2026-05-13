@@ -11,14 +11,6 @@ import 'package:mix_schema/encode.dart'
         payloadEnabledCondition,
         payloadOffset,
         payloadRadius,
-  SchemaBorder,
-  SchemaBorderRadius,
-  SchemaDecoration,
-  SchemaGradient,
-  SchemaGradientTransform,
-  SchemaModifier,
-  SchemaStyler,
-  SchemaVariant,
         payloadWidgetStateCondition;
 import 'package:mix_schema/mix_schema.dart';
 
@@ -27,6 +19,19 @@ import 'tw_semantic.dart';
 import 'tw_utils.dart';
 
 typedef TokenWarningCallback = void Function(String token);
+
+const _boxType = 'box';
+const _textType = 'text';
+const _flexBoxType = 'flex_box';
+const _boxDecorationType = 'box_decoration';
+const _borderType = 'border';
+const _borderRadiusType = 'border_radius';
+const _linearGradientType = 'linear_gradient';
+const _gradientRotationType = 'gradient_rotation';
+const _tailwindAngleRectGradientType = 'tailwind_css_angle_rect';
+const _contextAllOfType = 'context_all_of';
+const _blurModifierType = 'blur';
+const _defaultTextStyleModifierType = 'default_text_style';
 
 enum TwDiagnosticCode {
   unknownToken,
@@ -890,13 +895,7 @@ final class _TwSchemaDecoderAdapter {
         payload: payload,
         diagnostics: List<TwDiagnostic>.unmodifiable([
           ...diagnostics,
-          for (final error in result.errors)
-            TwDiagnostic(
-              code: TwDiagnosticCode.schemaDecodeFailure,
-              message: error.message,
-              path: error.path,
-              value: error.value,
-            ),
+          ..._schemaFailureDiagnostics(result.errors),
         ]),
         errors: result.errors,
       );
@@ -904,12 +903,7 @@ final class _TwSchemaDecoderAdapter {
 
     final value = result.value;
     if (value is T) {
-      return TwParseResult<T>(
-        payload: payload,
-        styler: value,
-        diagnostics: List<TwDiagnostic>.unmodifiable(diagnostics),
-        errors: const [],
-      );
+      return _encodeTyped(value, payload, diagnostics);
     }
 
     return TwParseResult<T>(
@@ -925,6 +919,44 @@ final class _TwSchemaDecoderAdapter {
       ]),
       errors: const [],
     );
+  }
+
+  static TwParseResult<T> _encodeTyped<T extends Object>(
+    T value,
+    JsonMap payload,
+    List<TwDiagnostic> diagnostics,
+  ) {
+    final encoded = _contract.encode(value);
+    if (!encoded.ok) {
+      return TwParseResult<T>(
+        payload: payload,
+        diagnostics: List<TwDiagnostic>.unmodifiable([
+          ...diagnostics,
+          ..._schemaFailureDiagnostics(encoded.errors),
+        ]),
+        errors: encoded.errors,
+      );
+    }
+
+    return TwParseResult<T>(
+      payload: encoded.value!,
+      styler: value,
+      diagnostics: List<TwDiagnostic>.unmodifiable(diagnostics),
+      errors: const [],
+    );
+  }
+
+  static Iterable<TwDiagnostic> _schemaFailureDiagnostics(
+    List<MixSchemaError> errors,
+  ) sync* {
+    for (final error in errors) {
+      yield TwDiagnostic(
+        code: TwDiagnosticCode.schemaDecodeFailure,
+        message: error.message,
+        path: error.path,
+        value: error.value,
+      );
+    }
   }
 }
 
@@ -991,21 +1023,21 @@ final class _ModifierPayloadBuilder {
   double? blurSigma;
   bool _blurSet = false;
   final _TextStylePayloadBuilder defaultTextStyle = _TextStylePayloadBuilder();
-  final List<SchemaModifier> _order = <SchemaModifier>[];
+  final List<String> _order = <String>[];
 
   bool get hasAny => _blurSet || defaultTextStyle.hasAny;
 
   void setBlur(double sigma) {
     _blurSet = true;
     blurSigma = sigma;
-    _touch(SchemaModifier.blur);
+    _touch(_blurModifierType);
   }
 
   void touchDefaultTextStyle() {
-    _touch(SchemaModifier.defaultTextStyle);
+    _touch(_defaultTextStyleModifierType);
   }
 
-  void _touch(SchemaModifier type) {
+  void _touch(String type) {
     if (_order.contains(type)) return;
     _order.add(type);
   }
@@ -1014,16 +1046,13 @@ final class _ModifierPayloadBuilder {
     final modifiers = <JsonMap>[];
 
     for (final type in _order) {
-      if (type == SchemaModifier.blur && _blurSet) {
-        modifiers.add({
-          'type': SchemaModifier.blur.wireValue,
-          'sigma': blurSigma,
-        });
+      if (type == _blurModifierType && _blurSet) {
+        modifiers.add({'type': _blurModifierType, 'sigma': blurSigma});
       }
 
-      if (type == SchemaModifier.defaultTextStyle && defaultTextStyle.hasAny) {
+      if (type == _defaultTextStyleModifierType && defaultTextStyle.hasAny) {
         modifiers.add({
-          'type': SchemaModifier.defaultTextStyle.wireValue,
+          'type': _defaultTextStyleModifierType,
           'style': defaultTextStyle.build(),
         });
       }
@@ -1032,7 +1061,7 @@ final class _ModifierPayloadBuilder {
     if (modifiers.isEmpty) return;
 
     payload['modifiers'] = modifiers;
-    payload['modifierOrder'] = [for (final type in _order) type.wireValue];
+    payload['modifierOrder'] = [for (final type in _order) type];
   }
 }
 
@@ -1119,7 +1148,7 @@ final class _BoxDecorationPayloadBuilder {
     if (!hasAny && !hasEffectiveBorder) return null;
 
     return {
-      'type': SchemaDecoration.box.wireValue,
+      'type': _boxDecorationType,
       if (color != null) 'color': color,
       if (gradient != null) 'gradient': gradient,
       if (hasEffectiveBorder)
@@ -1129,7 +1158,7 @@ final class _BoxDecorationPayloadBuilder {
           bottomLeft != null ||
           bottomRight != null)
         'borderRadius': {
-          'type': SchemaBorderRadius.borderRadius.wireValue,
+          'type': _borderRadiusType,
           if (topLeft != null) 'topLeft': payloadRadius(topLeft!),
           if (topRight != null) 'topRight': payloadRadius(topRight!),
           if (bottomLeft != null) 'bottomLeft': payloadRadius(bottomLeft!),
@@ -1143,7 +1172,7 @@ final class _BoxDecorationPayloadBuilder {
 JsonMap _buildBorderPayload(_BorderAccum border, TwConfig config) {
   final color = border.color ?? _defaultBorderColor(config);
   return {
-    'type': SchemaBorder.border.wireValue,
+    'type': _borderType,
     if (border.topWidth != null)
       'top': {'color': payloadColor(color), 'width': border.topWidth},
     if (border.bottomWidth != null)
@@ -1174,16 +1203,13 @@ JsonMap? _buildGradientPayload(
     final angle = _tailwindGradientAngles[gradient.directionKey!];
     if (angle != null) {
       return {
-        'type': SchemaGradient.linear.wireValue,
+        'type': _linearGradientType,
         'colors': colors,
         'stops': stops,
         'begin': payloadAlignment(Alignment.centerLeft),
         'end': payloadAlignment(Alignment.centerRight),
         if (angle != 0.0)
-          'transform': {
-            'type': SchemaGradientTransform.rotation.wireValue,
-            'radians': angle,
-          },
+          'transform': {'type': _gradientRotationType, 'radians': angle},
       };
     }
   }
@@ -1192,13 +1218,13 @@ JsonMap? _buildGradientPayload(
       gradient.directionKey != null &&
       _tailwindCornerDirections.contains(gradient.directionKey)) {
     return {
-      'type': SchemaGradient.linear.wireValue,
+      'type': _linearGradientType,
       'colors': colors,
       'stops': stops,
       'begin': payloadAlignment(Alignment.centerLeft),
       'end': payloadAlignment(Alignment.centerRight),
       'transform': {
-        'type': SchemaGradientTransform.tailwindAngleRect.wireValue,
+        'type': _tailwindAngleRectGradientType,
         'direction': gradient.directionKey!,
       },
     };
@@ -1206,7 +1232,7 @@ JsonMap? _buildGradientPayload(
 
   final (begin, end) = gradient.direction!;
   return {
-    'type': SchemaGradient.linear.wireValue,
+    'type': _linearGradientType,
     'colors': colors,
     'stops': stops,
     'begin': payloadAlignment(begin),
@@ -1737,7 +1763,7 @@ JsonMap _wrapVariantStyle(List<TwVariantType> variants, JsonMap style) {
   }
 
   return {
-    'type': SchemaVariant.contextAllOf.wireValue,
+    'type': _contextAllOfType,
     'conditions': [
       for (final variant in variants) _variantConditionPayload(variant),
     ],
@@ -1851,7 +1877,7 @@ final class _TwSchemaEmitter {
       inheritedTransform: _TransformAccum(),
     );
     return _TwSchemaDecoderAdapter.tryDecodeFlexBox({
-      'type': SchemaStyler.flexBox.wireValue,
+      'type': _flexBoxType,
       ...built.payload,
     }, diagnostics: diagnostics);
   }
@@ -1922,7 +1948,7 @@ final class _TwSchemaEmitter {
       inheritedTransform: _TransformAccum(),
     );
     return _TwSchemaDecoderAdapter.tryDecodeBox({
-      'type': SchemaStyler.box.wireValue,
+      'type': _boxType,
       ...built.payload,
     }, diagnostics: diagnostics);
   }
@@ -1963,7 +1989,7 @@ final class _TwSchemaEmitter {
     }
 
     return _TwSchemaDecoderAdapter.tryDecodeText({
-      'type': SchemaStyler.text.wireValue,
+      'type': _textType,
       ...root.buildStylePayload(),
     }, diagnostics: diagnostics);
   }

@@ -11,19 +11,36 @@ final _rgbPattern = RegExp(
 );
 final _hexPattern = RegExp(r'^#([0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$');
 
-final colorSchema = Ack.string()
-    .describe(
-      'CSS color in rgba(r,g,b,a), rgb(r,g,b), #RRGGBB, or #RRGGBBAA format. '
-      'RGB channels are 0-255, alpha is 0.0-1.0. '
-      'Examples: "rgba(59,130,246,0.5)", "rgb(255,0,0)", "#3B82F6", "#3B82F680".',
-    )
-    .matches(r'^([Rr][Gg][Bb][Aa]?\(.+\)|#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?)$')
-    .refine(
-      (value) => _tryParseCssColor(value) != null,
-      message:
-          'Expected color in rgba(...), rgb(...), #RRGGBB, or #RRGGBBAA format.',
-    )
-    .transform<Color>((value) => _tryParseCssColor(value)!);
+final CodecSchema<String, Color> colorCodec = Ack.codec<String, Color>(
+  input: Ack.string()
+      .describe(
+        'CSS color in rgba(r,g,b,a), rgb(r,g,b), #RRGGBB, or #RRGGBBAA format. '
+        'RGB channels are 0-255, alpha is 0.0-1.0. '
+        'Examples: "rgba(59,130,246,0.5)", "rgb(255,0,0)", "#3B82F6", "#3B82F680".',
+      )
+      .matches(r'^([Rr][Gg][Bb][Aa]?\(.+\)|#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?)$')
+      .refine(
+        (value) => _tryParseCssColor(value) != null,
+        message:
+            'Expected color in rgba(...), rgb(...), #RRGGBB, or #RRGGBBAA format.',
+      ),
+  output: Ack.instance<Color>(),
+  decoder: (value) => _tryParseCssColor(value)!,
+  encoder: _encodeColorHex,
+);
+
+String _encodeColorHex(Color color) {
+  final value = color.toARGB32();
+  final red = (value >> 16) & 0xFF;
+  final green = (value >> 8) & 0xFF;
+  final blue = value & 0xFF;
+  final alpha = (value >> 24) & 0xFF;
+
+  String hexByte(int byte) => byte.toRadixString(16).padLeft(2, '0');
+
+  return '#${hexByte(red)}${hexByte(green)}${hexByte(blue)}${hexByte(alpha)}'
+      .toUpperCase();
+}
 
 Color? _tryParseCssColor(String value) {
   final input = value.trim();

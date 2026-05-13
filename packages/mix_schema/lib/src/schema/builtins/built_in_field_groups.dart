@@ -81,7 +81,7 @@ Map<String, AckSchema> _flexLayoutFields(
     'textDirection': catalog.textDirection.optional(),
     'textBaseline': catalog.textBaseline.optional(),
     clipBehaviorField: catalog.clip.optional(),
-    'spacing': Ack.double().optional(),
+    'spacing': Ack.number().optional(),
   };
 }
 

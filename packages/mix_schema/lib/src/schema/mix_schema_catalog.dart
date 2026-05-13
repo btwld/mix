@@ -10,15 +10,15 @@ import 'shared/shared_schemas.dart';
 final class MixSchemaCatalog {
   final RegistryCatalog registries;
 
-  late final AckSchema<AlignmentGeometry> alignment = alignmentSchema;
+  late final AckSchema<AlignmentGeometry> alignment = alignmentCodec;
 
   late final AckSchema<Axis> axis = axisSchema;
   late final AckSchema<BlendMode> blendMode = blendModeSchema;
-  late final AckSchema<BoxConstraintsMix> boxConstraints = boxConstraintsSchema;
+  late final AckSchema<BoxConstraintsMix> boxConstraints = boxConstraintsCodec;
   late final AckSchema<BoxFit> boxFit = boxFitSchema;
   late final AckSchema<Brightness> brightness = brightnessSchema;
   late final AckSchema<Clip> clip = clipSchema;
-  late final AckSchema<Color> color = colorSchema;
+  late final AckSchema<Color> color = colorCodec;
   late final AckSchema<CrossAxisAlignment> crossAxisAlignment =
       crossAxisAlignmentSchema;
   late final AckSchema<ImageProvider<Object>> imageProvider =
@@ -30,29 +30,29 @@ final class MixSchemaCatalog {
   late final AckSchema<DecorationImageMix> decorationImage =
       buildDecorationImageSchema(imageProviderSchema: imageProvider);
   late final AckSchema<EdgeInsetsGeometryMix> edgeInsetsGeometry =
-      edgeInsetsGeometrySchema;
+      edgeInsetsGeometryCodec;
   late final AckSchema<FilterQuality> filterQuality = filterQualitySchema;
   late final AckSchema<ImageRepeat> imageRepeat = imageRepeatSchema;
   late final AckSchema<MainAxisAlignment> mainAxisAlignment =
       mainAxisAlignmentSchema;
   late final AckSchema<MainAxisSize> mainAxisSize = mainAxisSizeSchema;
-  late final AckSchema<Matrix4> matrix4 = matrix4Schema;
-  late final AckSchema<Rect> rect = rectSchema;
-  late final AckSchema<ShadowMix> shadow = shadowSchema;
+  late final AckSchema<Matrix4> matrix4 = matrix4Codec;
+  late final AckSchema<Rect> rect = rectCodec;
+  late final AckSchema<ShadowMix> shadow = shadowCodec;
   late final AckSchema<StackFit> stackFit = stackFitSchema;
-  late final AckSchema<StrutStyleMix> strutStyle = strutStyleSchema;
+  late final AckSchema<StrutStyleMix> strutStyle = strutStyleCodec;
   late final AckSchema<TextAlign> textAlign = textAlignSchema;
   late final AckSchema<TextBaseline> textBaseline = textBaselineSchema;
   late final AckSchema<TextDirection> textDirection = textDirectionSchema;
   late final AckSchema<TextHeightBehaviorMix> textHeightBehavior =
-      textHeightBehaviorSchema;
+      textHeightBehaviorCodec;
   late final AckSchema<TextOverflow> textOverflow = textOverflowSchema;
   late final AckSchema<TextScaler> textScaler = buildTextScalerSchema();
-  late final AckSchema<TextStyleMix> textStyle = textStyleSchema;
+  late final AckSchema<TextStyleMix> textStyle = textStyleCodec;
   late final AckSchema<TextWidthBasis> textWidthBasis = textWidthBasisSchema;
   late final AckSchema<Directive<String>> textTransformDirective =
       textTransformDirectiveSchema;
-  late final AckSchema<Locale> locale = localeSchema;
+  late final AckSchema<Locale> locale = localeCodec;
   late final AckSchema<VerticalDirection> verticalDirection =
       verticalDirectionSchema;
   late final AckSchema<CurveAnimationConfig> animation = buildAnimationSchema(
@@ -69,7 +69,7 @@ final class MixSchemaCatalog {
     gradientTransformSchema: gradientTransform,
   );
   late final AckSchema<ShapeBorderMix> shapeBorder = buildShapeBorderSchema(
-    borderSideSchema: borderSideSchema,
+    borderSideCodec: borderSideCodec,
     borderRadiusSchema: borderRadius,
   );
   late final AckSchema<BoxDecorationMix> boxDecoration =

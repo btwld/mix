@@ -8,17 +8,6 @@ const modifiersMetadataField = 'modifiers';
 const modifierOrderMetadataField = 'modifierOrder';
 const variantsMetadataField = 'variants';
 
-const variantStyleMetadataFieldNames = [
-  modifiersMetadataField,
-  modifierOrderMetadataField,
-];
-
-const topLevelMetadataFieldNames = [
-  animationMetadataField,
-  ...variantStyleMetadataFieldNames,
-  variantsMetadataField,
-];
-
 Map<String, AckSchema> buildVariantStyleMetadataFieldSchemas({
   required AckSchema<ModifierMix> modifierSchema,
 }) {

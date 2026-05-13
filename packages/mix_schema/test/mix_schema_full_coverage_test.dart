@@ -148,16 +148,13 @@ void main() {
       expect(result.errors.single.path, '#/modifierOrder/1');
     });
 
-    test('returns unsupported_value_type for icon payloads', () {
+    test('rejects icon payload fields as unknown until icon values exist', () {
       final contract = MixSchemaContract.builtIn();
       final result = contract.decode({'type': 'icon', 'icon': 'home'});
 
       expect(result.ok, isFalse);
-      expect(
-        result.errors.single.code,
-        MixSchemaErrorCode.unsupportedValueType,
-      );
-      expect(result.errors.single.path, '#');
+      expect(result.errors.single.code, MixSchemaErrorCode.unknownField);
+      expect(result.errors.single.path, '#/icon');
     });
 
     test('returns transform_failed for registry type mismatches', () {

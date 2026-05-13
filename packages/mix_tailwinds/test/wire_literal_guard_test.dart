@@ -1,47 +1,23 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mix_schema/encode.dart';
 
 void main() {
-  test('tw_parser uses schema wire enums for payload type literals', () {
+  test('tw_parser does not depend on schema wire enums', () {
     final source = File('lib/src/tw_parser.dart').readAsStringSync();
-    final guardedWireValues = <String>{
-      SchemaStyler.box.wireValue,
-      SchemaStyler.text.wireValue,
-      SchemaStyler.flexBox.wireValue,
-      SchemaDecoration.box.wireValue,
-      SchemaBorder.border.wireValue,
-      SchemaBorderRadius.borderRadius.wireValue,
-      SchemaGradient.linear.wireValue,
-      SchemaGradientTransform.rotation.wireValue,
-      SchemaGradientTransform.tailwindAngleRect.wireValue,
-      SchemaVariant.widgetState.wireValue,
-      SchemaVariant.enabled.wireValue,
-      SchemaVariant.brightness.wireValue,
-      SchemaVariant.breakpoint.wireValue,
-      SchemaVariant.contextAllOf.wireValue,
-      SchemaModifier.blur.wireValue,
-      SchemaModifier.defaultTextStyle.wireValue,
-    };
 
-    for (final wireValue in guardedWireValues) {
-      expect(
-        source,
-        isNot(
-          contains(
-            RegExp("'type'\\s*:\\s*['\"]${RegExp.escape(wireValue)}['\"]"),
-          ),
-        ),
-        reason: 'Use Schema*.wireValue instead of raw "$wireValue".',
-      );
-    }
+    expect(source, isNot(contains('schema_wire_types.dart')));
+    expect(source, isNot(contains('SchemaStyler')));
+    expect(source, isNot(contains('SchemaVariant')));
+    expect(source, isNot(contains('SchemaModifier')));
+    expect(source, isNot(contains('SchemaDecoration')));
   });
 
-  test('tw_parser uses MixSchemaContract as the decode seam', () {
+  test('tw_parser uses MixSchemaContract as the decode and encode seams', () {
     final source = File('lib/src/tw_parser.dart').readAsStringSync();
 
     expect(source, contains('MixSchemaContract'));
-    expect(source, isNot(contains('MixSchemaDecoder.builtIn()')));
+    expect(source, contains('.decode(payload)'));
+    expect(source, contains('.encode(value)'));
   });
 }

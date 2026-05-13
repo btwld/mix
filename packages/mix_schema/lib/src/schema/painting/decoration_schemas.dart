@@ -3,98 +3,147 @@ import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
 import '../../core/json_casts.dart';
+import '../../core/prop_encode.dart';
 import '../../core/schema_wire_types.dart';
 import '../discriminated_schema_builder.dart';
 import '../shared/shared_schemas.dart';
 import 'border_schemas.dart';
 
-AckSchema<DecorationImageMix> buildDecorationImageSchema({
+CodecSchema<Map<String, Object?>, DecorationImageMix>
+buildDecorationImageSchema({
   required AckSchema<ImageProvider<Object>> imageProviderSchema,
 }) {
-  return Ack.object({
-    'image': imageProviderSchema,
-    'fit': boxFitSchema.optional(),
-    'alignment': alignmentSchema.optional(),
-    'centerSlice': rectSchema.optional(),
-    'repeat': imageRepeatSchema.optional(),
-    'filterQuality': filterQualitySchema.optional(),
-    'invertColors': Ack.boolean().optional(),
-    'isAntiAlias': Ack.boolean().optional(),
-  }).transform<DecorationImageMix>((data) {
-    final map = data;
+  return Ack.codec<Map<String, Object?>, DecorationImageMix>(
+    input: Ack.object({
+      'image': imageProviderSchema,
+      'fit': boxFitSchema.optional(),
+      'alignment': alignmentCodec.optional(),
+      'centerSlice': rectCodec.optional(),
+      'repeat': imageRepeatSchema.optional(),
+      'filterQuality': filterQualitySchema.optional(),
+      'invertColors': Ack.boolean().optional(),
+      'isAntiAlias': Ack.boolean().optional(),
+    }),
+    output: Ack.instance<DecorationImageMix>(),
+    decoder: (data) {
+      final map = data;
 
-    return DecorationImageMix(
-      image: map['image'] as ImageProvider<Object>,
-      fit: map['fit'] as BoxFit?,
-      alignment: map['alignment'] as AlignmentGeometry?,
-      centerSlice: map['centerSlice'] as Rect?,
-      repeat: map['repeat'] as ImageRepeat?,
-      filterQuality: map['filterQuality'] as FilterQuality?,
-      invertColors: map['invertColors'] as bool?,
-      isAntiAlias: map['isAntiAlias'] as bool?,
-    );
-  });
+      return DecorationImageMix(
+        image: map['image'] as ImageProvider<Object>,
+        fit: map['fit'] as BoxFit?,
+        alignment: map['alignment'] as AlignmentGeometry?,
+        centerSlice: map['centerSlice'] as Rect?,
+        repeat: map['repeat'] as ImageRepeat?,
+        filterQuality: map['filterQuality'] as FilterQuality?,
+        invertColors: map['invertColors'] as bool?,
+        isAntiAlias: map['isAntiAlias'] as bool?,
+      );
+    },
+    encoder: (value) => optionalJsonMap([
+      ('image', requiredPropValue(value.$image, 'image')),
+      ('fit', propValue(value.$fit)),
+      ('alignment', propValue(value.$alignment)),
+      ('centerSlice', propValue(value.$centerSlice)),
+      ('repeat', propValue(value.$repeat)),
+      ('filterQuality', propValue(value.$filterQuality)),
+      ('invertColors', propValue(value.$invertColors)),
+      ('isAntiAlias', propValue(value.$isAntiAlias)),
+    ]),
+  );
 }
 
-AckSchema<BoxDecorationMix> buildBoxDecorationSchema({
+CodecSchema<Map<String, Object?>, BoxDecorationMix> buildBoxDecorationSchema({
   required AckSchema<BoxBorderMix> borderSchema,
   required AckSchema<BorderRadiusGeometryMix> borderRadiusSchema,
   required AckSchema<GradientMix> gradientSchema,
   required AckSchema<DecorationImageMix> imageSchema,
 }) {
-  return Ack.object({
-        'color': colorSchema.optional(),
-        'image': imageSchema.optional(),
-        'gradient': gradientSchema.optional(),
-        'border': borderSchema.optional(),
-        'borderRadius': borderRadiusSchema.optional(),
-        'shape': boxShapeSchema.optional(),
-        'backgroundBlendMode': blendModeSchema.optional(),
-        'boxShadow': Ack.list(boxShadowSchema).optional(),
-      })
-      .refine((data) {
-        final map = data;
+  return Ack.codec<Map<String, Object?>, BoxDecorationMix>(
+    input:
+        Ack.object({
+          'color': colorCodec.optional(),
+          'image': imageSchema.optional(),
+          'gradient': gradientSchema.optional(),
+          'border': borderSchema.optional(),
+          'borderRadius': borderRadiusSchema.optional(),
+          'shape': boxShapeSchema.optional(),
+          'backgroundBlendMode': blendModeSchema.optional(),
+          'boxShadow': Ack.list(boxShadowCodec).optional(),
+        }).refine((data) {
+          final map = data;
 
-        return map['shape'] != BoxShape.circle || map['borderRadius'] == null;
-      }, message: 'borderRadius is not supported when shape is circle.')
-      .transform<BoxDecorationMix>((data) {
-        final map = data;
+          return map['shape'] != BoxShape.circle || map['borderRadius'] == null;
+        }, message: 'borderRadius is not supported when shape is circle.'),
+    output: Ack.instance<BoxDecorationMix>(),
+    decoder: (data) {
+      final map = data;
 
-        return BoxDecorationMix(
-          border: map['border'] as BoxBorderMix?,
-          borderRadius: map['borderRadius'] as BorderRadiusGeometryMix?,
-          shape: map['shape'] as BoxShape?,
-          backgroundBlendMode: map['backgroundBlendMode'] as BlendMode?,
-          color: map['color'] as Color?,
-          image: map['image'] as DecorationImageMix?,
-          gradient: map['gradient'] as GradientMix?,
-          boxShadow: castListOrNull(map['boxShadow']),
-        );
-      });
+      return BoxDecorationMix(
+        border: map['border'] as BoxBorderMix?,
+        borderRadius: map['borderRadius'] as BorderRadiusGeometryMix?,
+        shape: map['shape'] as BoxShape?,
+        backgroundBlendMode: map['backgroundBlendMode'] as BlendMode?,
+        color: map['color'] as Color?,
+        image: map['image'] as DecorationImageMix?,
+        gradient: map['gradient'] as GradientMix?,
+        boxShadow: castListOrNull(map['boxShadow']),
+      );
+    },
+    encoder: (value) {
+      final BoxShadowListMix? boxShadow = propMix(value.$boxShadow);
+
+      return optionalJsonMap([
+        ('color', propValue(value.$color)),
+        ('image', propMix<DecorationImageMix>(value.$image)),
+        ('gradient', propMix<GradientMix>(value.$gradient)),
+        ('border', propMix<BoxBorderMix>(value.$border)),
+        ('borderRadius', propMix<BorderRadiusGeometryMix>(value.$borderRadius)),
+        ('shape', propValue(value.$shape)),
+        ('backgroundBlendMode', propValue(value.$backgroundBlendMode)),
+        ('boxShadow', boxShadow?.items),
+      ]);
+    },
+  );
 }
 
-AckSchema<ShapeDecorationMix> buildShapeDecorationSchema({
+CodecSchema<Map<String, Object?>, ShapeDecorationMix>
+buildShapeDecorationSchema({
   required AckSchema<ShapeBorderMix> shapeBorderSchema,
   required AckSchema<GradientMix> gradientSchema,
   required AckSchema<DecorationImageMix> imageSchema,
 }) {
-  return Ack.object({
-    'shape': shapeBorderSchema.optional(),
-    'color': colorSchema.optional(),
-    'image': imageSchema.optional(),
-    'gradient': gradientSchema.optional(),
-    'shadows': Ack.list(boxShadowSchema).optional(),
-  }).transform<ShapeDecorationMix>((data) {
-    final map = data;
+  return Ack.codec<Map<String, Object?>, ShapeDecorationMix>(
+    input: Ack.object({
+      'shape': shapeBorderSchema.optional(),
+      'color': colorCodec.optional(),
+      'image': imageSchema.optional(),
+      'gradient': gradientSchema.optional(),
+      'shadows': Ack.list(boxShadowCodec).optional(),
+    }),
+    output: Ack.instance<ShapeDecorationMix>(),
+    decoder: (data) {
+      final map = data;
 
-    return ShapeDecorationMix(
-      shape: map['shape'] as ShapeBorderMix?,
-      color: map['color'] as Color?,
-      image: map['image'] as DecorationImageMix?,
-      gradient: map['gradient'] as GradientMix?,
-      shadows: castListOrNull(map['shadows']),
-    );
-  });
+      return ShapeDecorationMix(
+        shape: map['shape'] as ShapeBorderMix?,
+        color: map['color'] as Color?,
+        image: map['image'] as DecorationImageMix?,
+        gradient: map['gradient'] as GradientMix?,
+        shadows: castListOrNull(map['shadows']),
+      );
+    },
+    encoder: (value) {
+      final BoxShadowListMix? shadows = propMix(value.$shadows);
+
+      return optionalJsonMap([
+        ('shape', propMix<ShapeBorderMix>(value.$shape)),
+        ('color', propValue(value.$color)),
+        ('image', propMix<DecorationImageMix>(value.$image)),
+        ('gradient', propMix<GradientMix>(value.$gradient)),
+        ('shadows', shadows?.items),
+      ]);
+    },
+  );
 }
 
 AckSchema<DecorationMix> buildDecorationSchema({

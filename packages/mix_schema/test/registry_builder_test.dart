@@ -7,8 +7,6 @@ void main() {
       expect(MixSchemaScope.values.map((scope) => scope.wireValue), const [
         'animation_on_end',
         'image_provider',
-        'modifier_shader',
-        'modifier_clipper',
         'context_variant_builder',
       ]);
     });

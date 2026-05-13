@@ -1,5 +1,7 @@
 import 'package:ack/ack.dart';
 
+import 'object_backed_schema.dart';
+
 typedef DiscriminatedBranchSchemaBuilder<T extends Object> =
     AckSchema<T> Function({
       required String discriminatorKey,
@@ -65,34 +67,39 @@ AckSchema<T> _injectDiscriminatorIntoBranch<T extends Object>({
         as AckSchema<T>;
   }
 
-  if (schema is TransformedSchema<Map<String, Object?>, T>) {
-    return TransformedSchema<Map<String, Object?>, T>(
-      _injectDiscriminatorIntoObject(
+  if (schema is CodecSchema<Map<String, Object?>, T>) {
+    final originalEncoder = schema.encoder;
+
+    return schema.copyWith(
+      inputSchema: _injectDiscriminatorIntoObject(
         discriminatorKey: discriminatorKey,
         typeValue: typeValue,
-        schema: _requireObjectSchema(schema.schema),
+        schema: requireObjectBackedSchema(
+          schema.inputSchema,
+          'Discriminated branches must be backed by Ack.object(...) before '
+          'transform().',
+        ),
       ),
-      schema.transformer,
-      isNullable: schema.isNullable,
-      isOptional: schema.isOptional,
-      description: schema.description,
-      defaultValue: schema.defaultValue,
-      constraints: schema.constraints,
-      refinements: schema.refinements,
+      encoder: originalEncoder == null
+          ? null
+          : (T value) => {
+              discriminatorKey: typeValue,
+              ...originalEncoder(value),
+            },
     );
   }
 
-  if (schema is TransformedSchema) {
+  if (schema is CodecSchema) {
     throw StateError(
-      'Discriminated transformed branches must be backed by '
-      'Ack.object(...).transform<T>(...) so transform metadata can be '
-      'preserved.',
+      'Discriminated codec branches must be backed by '
+      'Ack.object(...).transform<T>(...) or Ack.codec(input: Ack.object(...), '
+      '...) so the inner object schema can be discovered.',
     );
   }
 
   throw StateError(
     'Discriminated branches must be object-backed schemas with at most one '
-    'transform layer.',
+    'codec layer.',
   );
 }
 
@@ -112,16 +119,5 @@ ObjectSchema _injectDiscriminatorIntoObject({
       discriminatorKey: Ack.literal(typeValue),
       ...schema.properties,
     },
-  );
-}
-
-ObjectSchema _requireObjectSchema(AckSchema<Map<String, Object?>> schema) {
-  if (schema is ObjectSchema) {
-    return schema;
-  }
-
-  throw StateError(
-    'Discriminated branches must be backed by Ack.object(...) before '
-    'transform().',
   );
 }

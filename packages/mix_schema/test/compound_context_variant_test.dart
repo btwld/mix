@@ -201,7 +201,7 @@ void main() {
       expect(
         result.errors.map((error) => (error.code, error.path)).toList(),
         containsAll(<(MixSchemaErrorCode, String)>[
-          (MixSchemaErrorCode.unknownType, '#/variants/0/conditions/0/type'),
+          (MixSchemaErrorCode.typeMismatch, '#/variants/0/conditions/0/type'),
         ]),
       );
     });

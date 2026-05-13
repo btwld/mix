@@ -23,10 +23,9 @@ void main() {
       expect(result.getOrNull(), 'value:7');
     });
 
-    test('preserves transformed branch metadata', () {
+    test('preserves codec branch metadata', () {
       final branch = Ack.object({'value': Ack.string()})
           .transform<Object>((data) => data['value'] as String)
-          .copyWith(defaultValue: 'fallback')
           .refine((value) => value == 'valid', message: 'Must be valid.');
       final schema = buildDiscriminatedSchema<Object>(
         discriminatorKey: 'type',
@@ -37,10 +36,9 @@ void main() {
 
       final storedBranch =
           (schema as DiscriminatedObjectSchema<Object>).schemas['demo']!
-              as TransformedSchema<Map<String, Object?>, Object>;
+              as CodecSchema<Map<String, Object?>, Object>;
       final invalidResult = schema.safeParse({'type': 'demo', 'value': 'bad'});
 
-      expect(storedBranch.defaultValue, 'fallback');
       expect(storedBranch.refinements, hasLength(1));
       expect(invalidResult.isFail, isTrue);
     });

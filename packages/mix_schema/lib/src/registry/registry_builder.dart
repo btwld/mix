@@ -9,6 +9,7 @@ final class RegistryBuilder<T extends Object> {
   final String scope;
 
   final Map<String, T> _values = <String, T>{};
+  final Map<T, String> _reverseIndex = <T, String>{};
   bool _frozen = false;
   RegistryBuilder({required this.scope});
 
@@ -26,7 +27,15 @@ final class RegistryBuilder<T extends Object> {
       throw StateError('Registry "$scope" already contains id "$id".');
     }
 
+    final existingId = _reverseIndex[value];
+    if (existingId != null && existingId != id) {
+      throw StateError(
+        'Registry "$scope" already indexes this value under "$existingId".',
+      );
+    }
+
     _values[id] = value;
+    _reverseIndex[value] = id;
   }
 
   /// Freezes the registry and returns an immutable runtime lookup view.
@@ -37,6 +46,10 @@ final class RegistryBuilder<T extends Object> {
 
     _frozen = true;
 
-    return FrozenRegistry(scope: scope, values: _values);
+    return FrozenRegistry(
+      scope: scope,
+      values: _values,
+      reverseIndex: _reverseIndex,
+    );
   }
 }

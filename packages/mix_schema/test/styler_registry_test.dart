@@ -12,10 +12,12 @@ void main() {
       final registry = StylerRegistry()
         ..register(
           'demo',
-          Ack.object({
-            'value': Ack.integer(),
-          }).transform<Object>((data) => data['value'] as int),
-          fields: const ['value'],
+          Ack.codec<Map<String, Object?>, Object>(
+            input: Ack.object({'value': Ack.integer()}),
+            output: Ack.instance<Object>(),
+            decoder: (data) => data['value'] as int,
+            encoder: (value) => {'value': value as int},
+          ),
         )
         ..freeze();
 
@@ -38,17 +40,18 @@ void main() {
       final builder = MixSchemaContractBuilder()
         ..register(
           'custom_box',
-          Ack.object({'color': colorSchema.optional()}).transform<BoxStyler>((
-            data,
-          ) {
-            final map = data;
-            return BoxStyler(
-              decoration: map['color'] == null
-                  ? null
-                  : BoxDecorationMix(color: map['color'] as Color),
-            );
-          }),
-          fields: const ['color'],
+          Ack.codec<Map<String, Object?>, BoxStyler>(
+            input: Ack.object({'color': colorCodec.optional()}),
+            output: Ack.instance<BoxStyler>(),
+            decoder: (data) {
+              return BoxStyler(
+                decoration: data['color'] == null
+                    ? null
+                    : BoxDecorationMix(color: data['color'] as Color),
+              );
+            },
+            encoder: (_) => const {},
+          ),
         );
 
       final contract = builder.freeze();
@@ -61,14 +64,19 @@ void main() {
       expect(result.value, isA<BoxStyler>());
     });
 
-    test('preserves outer refinements on registered transformed schemas', () {
+    test('preserves output refinements on registered codecs', () {
       final builder = MixSchemaContractBuilder()
         ..register(
           'demo',
-          Ack.object({'value': Ack.integer()})
-              .transform<Object>((data) => data['value'] as int)
-              .refine((value) => value == 7, message: 'Demo value must be 7.'),
-          fields: const ['value'],
+          Ack.codec<Map<String, Object?>, Object>(
+            input: Ack.object({'value': Ack.integer()}),
+            output: Ack.instance<Object>().refine(
+              (value) => value == 7,
+              message: 'Demo value must be 7.',
+            ),
+            decoder: (data) => data['value'] as int,
+            encoder: (value) => {'value': value as int},
+          ),
         );
       final contract = builder.freeze();
 
@@ -84,32 +92,19 @@ void main() {
       expect(invalidResult.errors.single.message, 'Demo value must be 7.');
     });
 
-    test('rejects custom field metadata that drifts from the schema shape', () {
+    test('rejects custom schemas that are not JsonMap-backed codecs', () {
       expect(
         () => MixSchemaContractBuilder()
           ..register(
             'demo',
-            Ack.object({
-              'value': Ack.integer(),
-            }).transform<Object>((data) => data['value'] as int),
-            fields: const ['wrong'],
+            Ack.codec<JsonMap, Object>(
+              input: Ack.string() as dynamic,
+              output: Ack.instance<Object>(),
+              decoder: (value) => value,
+              encoder: (_) => const {},
+            ),
           ),
-        throwsA(isA<ArgumentError>()),
-      );
-    });
-
-    test('rejects unsupported fields outside the declared field set', () {
-      expect(
-        () => MixSchemaContractBuilder()
-          ..register(
-            'demo',
-            Ack.object({
-              'value': Ack.integer(),
-            }).transform<Object>((data) => data['value'] as int),
-            fields: const ['value'],
-            unsupportedFields: const ['missing'],
-          ),
-        throwsA(isA<ArgumentError>()),
+        throwsA(isA<TypeError>()),
       );
     });
 
@@ -117,17 +112,18 @@ void main() {
       final builder = MixSchemaContractBuilder.builtIn()
         ..register(
           'custom_box',
-          Ack.object({'color': colorSchema.optional()}).transform<BoxStyler>((
-            data,
-          ) {
-            final map = data;
-            return BoxStyler(
-              decoration: map['color'] == null
-                  ? null
-                  : BoxDecorationMix(color: map['color'] as Color),
-            );
-          }),
-          fields: const ['color'],
+          Ack.codec<Map<String, Object?>, BoxStyler>(
+            input: Ack.object({'color': colorCodec.optional()}),
+            output: Ack.instance<BoxStyler>(),
+            decoder: (data) {
+              return BoxStyler(
+                decoration: data['color'] == null
+                    ? null
+                    : BoxDecorationMix(color: data['color'] as Color),
+              );
+            },
+            encoder: (_) => const {},
+          ),
         );
 
       final contract = builder.freeze();

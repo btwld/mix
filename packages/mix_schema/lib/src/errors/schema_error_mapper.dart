@@ -86,15 +86,6 @@ final class SchemaErrorMapper {
             value: error.value,
           ),
         ];
-      case UnsupportedValueError():
-        return [
-          MixSchemaError(
-            code: .unsupportedValueType,
-            path: error.path,
-            message: cause.toString(),
-            value: error.value,
-          ),
-        ];
       default:
         return [
           MixSchemaError(

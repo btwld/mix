@@ -1,19 +1,33 @@
 import 'package:ack/ack.dart';
 import 'package:flutter/widgets.dart';
 
-const Map<String, FontWeight> _fontWeightByName = {
-  'w100': FontWeight.w100,
-  'w200': FontWeight.w200,
-  'w300': FontWeight.w300,
-  'w400': FontWeight.w400,
-  'w500': FontWeight.w500,
-  'w600': FontWeight.w600,
-  'w700': FontWeight.w700,
-  'w800': FontWeight.w800,
-  'w900': FontWeight.w900,
-  'normal': FontWeight.w400,
-  'bold': FontWeight.w700,
-};
+/// Builds a bidirectional codec between a wire string and an enum-like type.
+///
+/// [canonical] defines the round-trippable forward direction (`E → wire`) and
+/// the reverse direction used on decode. [aliases] adds extra decode-only
+/// mappings — useful when the wire vocabulary accepts multiple strings for
+/// the same value (e.g. `'normal'` aliasing `FontWeight.w400`).
+///
+/// Encoding always emits the canonical wire name, so round-trips
+/// `decode(encode(value))` stabilize on the canonical form.
+CodecSchema<String, E> aliasedEnumCodec<E extends Object>({
+  required Map<E, String> canonical,
+  Map<String, E> aliases = const {},
+}) {
+  final byName = <String, E>{
+    for (final entry in canonical.entries) entry.value: entry.key,
+    ...aliases,
+  };
+
+  return Ack.codec<String, E>(
+    input: Ack.enumString(byName.keys.toList(growable: false)),
+    output: Ack.instance<E>(),
+    decoder: (value) => byName[value]!,
+    encoder: (value) =>
+        canonical[value] ??
+        (throw ArgumentError('Unsupported value for enum codec: $value')),
+  );
+}
 
 final AckSchema<Axis> axisSchema = Ack.enumValues(Axis.values);
 final AckSchema<BlendMode> blendModeSchema = Ack.enumValues(BlendMode.values);
@@ -33,9 +47,21 @@ final AckSchema<FilterQuality> filterQualitySchema = Ack.enumValues(
   FilterQuality.values,
 );
 final AckSchema<FontStyle> fontStyleSchema = Ack.enumValues(FontStyle.values);
-final AckSchema<FontWeight> fontWeightSchema = Ack.enumString(
-  _fontWeightByName.keys.toList(growable: false),
-).transform<FontWeight>((value) => _fontWeightByName[value]!);
+final CodecSchema<String, FontWeight> fontWeightCodec =
+    aliasedEnumCodec<FontWeight>(
+      canonical: {
+        FontWeight.w100: 'w100',
+        FontWeight.w200: 'w200',
+        FontWeight.w300: 'w300',
+        FontWeight.w400: 'w400',
+        FontWeight.w500: 'w500',
+        FontWeight.w600: 'w600',
+        FontWeight.w700: 'w700',
+        FontWeight.w800: 'w800',
+        FontWeight.w900: 'w900',
+      },
+      aliases: {'normal': FontWeight.w400, 'bold': FontWeight.w700},
+    );
 final AckSchema<ImageRepeat> imageRepeatSchema = Ack.enumValues(
   ImageRepeat.values,
 );

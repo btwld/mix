@@ -37,4 +37,9 @@ final class RegistryCatalog {
 
     return value;
   }
+
+  /// Looks up the registered id for [value] in [scope], if one exists.
+  String? keyOf<T extends Object>(String scope, T value) {
+    return _registries[scope]?.keyOf(value);
+  }
 }

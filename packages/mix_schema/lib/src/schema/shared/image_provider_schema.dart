@@ -4,13 +4,28 @@ import 'package:flutter/widgets.dart';
 import '../../core/mix_schema_scope.dart';
 import '../../registry/registry_catalog.dart';
 
-AckSchema<ImageProvider<Object>> buildImageProviderSchema({
+CodecSchema<String, ImageProvider<Object>> buildImageProviderSchema({
   required RegistryCatalog registries,
 }) {
-  return Ack.string().transform<ImageProvider<Object>>((value) {
-    return registries.lookup<ImageProvider<Object>>(
-      MixSchemaScope.imageProvider.wireValue,
-      value,
-    );
-  });
+  const scope = MixSchemaScope.imageProvider;
+
+  return Ack.codec<String, ImageProvider<Object>>(
+    input: Ack.string(),
+    output: Ack.instance<ImageProvider<Object>>(),
+    decoder: (value) {
+      return registries.lookup<ImageProvider<Object>>(scope.wireValue, value);
+    },
+    encoder: (value) {
+      final key = registries.keyOf<ImageProvider<Object>>(
+        scope.wireValue,
+        value,
+      );
+
+      if (key == null) {
+        throw ArgumentError('ImageProvider is not registered.');
+      }
+
+      return key;
+    },
+  );
 }

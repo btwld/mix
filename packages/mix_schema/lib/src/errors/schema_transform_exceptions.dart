@@ -32,16 +32,6 @@ final class RegistryTypeMismatchError implements Exception {
   }
 }
 
-/// Thrown when a value is intentionally unsupported by the wire contract.
-final class UnsupportedValueError implements Exception {
-  final String reason;
-
-  const UnsupportedValueError(this.reason);
-
-  @override
-  String toString() => reason;
-}
-
 /// Thrown when a transform delegates to nested schema parsing and needs to
 /// preserve the resulting path-specific validation errors.
 final class NestedSchemaErrorsException implements Exception {
