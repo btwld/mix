@@ -92,7 +92,7 @@ final class SchemaErrorMapper {
       case UnsupportedError():
         return [
           MixSchemaError(
-            code: .unsupportedEncodeValue,
+            code: .transformFailed,
             path: error.path,
             message: cause.message ?? cause.toString(),
             value: error.value,
@@ -196,6 +196,7 @@ final class SchemaErrorMapper {
       'object_required_property_missing' => .requiredField,
       'object_additional_properties_disallowed' => .unknownField,
       'string_enum' || 'enum_value' => .invalidEnum,
+      // Current max-length/max-items constraints are owned by MixSchemaLimits.
       'string_max_length' || 'list_max_items' => .payloadLimitExceeded,
       _ => .constraintViolation,
     };

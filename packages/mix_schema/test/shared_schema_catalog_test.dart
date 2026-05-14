@@ -1,3 +1,4 @@
+import 'package:ack/ack.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
@@ -71,6 +72,27 @@ void main() {
       expect(errors.single.code, MixSchemaErrorCode.validationFailed);
       expect(errors.single.path, '#/gradient');
     });
+
+    test(
+      'transform unsupported errors are not reported as encode failures',
+      () {
+        final context = SchemaContext(
+          name: 'demo',
+          schema: Ack.string(),
+          value: 'value',
+        );
+        final errors = const SchemaErrorMapper().map(
+          SchemaTransformError(
+            message: 'Transform failed.',
+            context: context,
+            cause: UnsupportedError('Decode branch is unsupported.'),
+          ),
+        );
+
+        expect(errors.single.code, MixSchemaErrorCode.transformFailed);
+        expect(errors.single.path, '#');
+      },
+    );
 
     testWidgets(
       'buildDecorationSchema decodes shape decorations and gradient transforms',

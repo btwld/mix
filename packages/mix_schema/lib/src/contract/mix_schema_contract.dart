@@ -75,6 +75,8 @@ final class MixSchemaContractBuilder {
 /// This surface keeps the existing decode path while exposing the frozen root
 /// schema and supported built-in styler types for future producer tooling.
 final class MixSchemaContract {
+  static const contractVersion = '0.1.0-dev.0';
+
   final StylerRegistry _stylerRegistry;
   final MixSchemaLimits _limits;
   final SchemaErrorMapper _errorMapper = const SchemaErrorMapper();
@@ -106,11 +108,11 @@ final class MixSchemaContract {
   /// Exports the root Ack JSON Schema artifact.
   Map<String, Object?> exportJsonSchema() {
     return {
+      ...rootSchema.toJsonSchema(),
       '\$schema': 'http://json-schema.org/draft-07/schema#',
       'x-mix-schema-contract': 'mix_schema',
-      'x-mix-schema-version': '0.1.0-dev.0',
+      'x-mix-schema-version': contractVersion,
       'x-mix-schema-limits': _limits.toJson(),
-      ...rootSchema.toJsonSchema(),
     };
   }
 
@@ -183,6 +185,8 @@ final class MixSchemaContract {
 }
 
 List<MixSchemaError> _prioritizedEncodeErrors(List<MixSchemaError> errors) {
+  // Discriminated encode can produce branch noise; surface the primary
+  // representability failure when one is present.
   for (final code in [
     MixSchemaErrorCode.unknownRegistryValue,
     MixSchemaErrorCode.unsupportedEncodeValue,

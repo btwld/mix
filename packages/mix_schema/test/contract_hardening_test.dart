@@ -374,7 +374,7 @@ void main() {
 
       expect(schema['\$schema'], 'http://json-schema.org/draft-07/schema#');
       expect(schema['x-mix-schema-contract'], 'mix_schema');
-      expect(schema['x-mix-schema-version'], '0.1.0-dev.0');
+      expect(schema['x-mix-schema-version'], MixSchemaContract.contractVersion);
       expect(schema['x-mix-schema-limits'], {
         'maxDepth': 32,
         'maxListLength': 256,
