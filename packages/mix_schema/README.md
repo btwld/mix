@@ -122,8 +122,9 @@ final builder = MixSchemaContractBuilder()
   decode as `unknown_registry_id`; unregistered runtime values encode as
   `unknown_registry_value`.
 - Enums use strict string names on the wire. Integer enum indexes are rejected.
-- Structural payload limits run before validation and decode through
-  `MixSchemaLimits`.
+- Structural payload limits run before validation/decode and after encode
+  through `MixSchemaLimits`. Limit failures use `payload_limit_exceeded`, and
+  the active limit values are exported under `x-mix-schema-limits`.
 - Ack `toJsonSchemaModel()` is not used yet because the current discriminated
   branch shape conflicts with model conversion. `exportJsonSchema()` uses raw
   Ack JSON Schema export.

@@ -48,12 +48,15 @@ Enums are strict string wire values based on Dart enum `.name`, except
 intentional aliases such as `FontWeight`. Integer enum indexes are invalid.
 
 Core schema terminology must stay producer-neutral. CSS directional gradient
-keywords use `css_linear_keyword_transform`; Tailwind-specific names belong
-only in `mix_tailwinds`.
+keywords use `css_linear_keyword_transform` with neutral direction values such
+as `to_right` and `to_bottom_right`. Tailwind-specific names belong only in
+`mix_tailwinds`, which maps `to-r`, `to-br`, and related utilities into the
+neutral schema vocabulary.
 
 ## Payload Limits
 
-`MixSchemaLimits` runs before validation and decode.
+`MixSchemaLimits` runs before validation/decode and after encode, so the
+contract never accepts or returns payloads that exceed the configured limits.
 
 Defaults:
 
@@ -64,7 +67,7 @@ Defaults:
 - `maxVariantsPerStyler = 64`
 - `maxModifiersPerStyler = 64`
 
-Limit failures use `constraint_violation`.
+Limit failures use `payload_limit_exceeded`.
 
 ## Error Vocabulary
 
@@ -75,6 +78,7 @@ Stable public codes include:
 - `unknown_field`
 - `invalid_enum`
 - `constraint_violation`
+- `payload_limit_exceeded`
 - `validation_failed`
 - `transform_failed`
 - `unsupported_encode_value`
@@ -83,6 +87,9 @@ Stable public codes include:
 - `unknown_registry_value`
 
 Unsupported non-registry encode cases use `unsupported_encode_value`.
+Encode errors are mapped from structured Ack encode causes when available. A
+small message-prefix bridge remains only for wrapped encoder failures that Ack
+reports as validation messages.
 
 ## JSON Schema Artifact
 
@@ -91,6 +98,7 @@ Unsupported non-registry encode cases use `unsupported_encode_value`.
 - `$schema`
 - `x-mix-schema-contract`
 - `x-mix-schema-version`
+- `x-mix-schema-limits`
 
 Ack `toJsonSchemaModel()` is still follow-up work because the current
 discriminated codec export shape conflicts with model conversion.

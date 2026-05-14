@@ -5,6 +5,7 @@ enum MixSchemaErrorCode {
   unknownField('unknown_field'),
   invalidEnum('invalid_enum'),
   constraintViolation('constraint_violation'),
+  payloadLimitExceeded('payload_limit_exceeded'),
   validationFailed('validation_failed'),
   transformFailed('transform_failed'),
   unsupportedEncodeValue('unsupported_encode_value'),

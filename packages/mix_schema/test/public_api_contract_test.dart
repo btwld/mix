@@ -79,6 +79,7 @@ void main() {
         'unknown_field',
         'invalid_enum',
         'constraint_violation',
+        'payload_limit_exceeded',
         'validation_failed',
         'transform_failed',
         'unsupported_encode_value',

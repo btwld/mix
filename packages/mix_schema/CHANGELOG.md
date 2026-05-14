@@ -12,8 +12,10 @@
   registry values, and stable `unknown_registry_value` encode errors.
 - Add strict string enum codecs so integer enum indexes are rejected.
 - Rename the core CSS directional gradient transform wire type to
-  `css_linear_keyword_transform`.
-- Add `MixSchemaLimits` and exported JSON Schema artifact metadata.
+  `css_linear_keyword_transform`, with neutral direction values such as
+  `to_bottom_right`.
+- Add `MixSchemaLimits`, `payload_limit_exceeded`, and exported JSON Schema
+  artifact metadata including `x-mix-schema-limits`.
 - Add `StylerRegistry.builtIn(...)` for extending the built-in styler set with
   custom branches, and decode language-only locales plus decoration images.
 - Add public compound context variant decoding with the `context_all_of`

@@ -50,6 +50,17 @@ final class RegistryValueLookupError implements Exception {
   }
 }
 
+/// Thrown when a runtime value is intentionally outside the encodable contract.
+final class UnsupportedEncodeValueError implements Exception {
+  final String reason;
+
+  final Object? value;
+  const UnsupportedEncodeValueError(this.reason, {this.value});
+
+  @override
+  String toString() => reason;
+}
+
 /// Thrown when a transform delegates to nested schema parsing and needs to
 /// preserve the resulting path-specific validation errors.
 final class NestedSchemaErrorsException implements Exception {

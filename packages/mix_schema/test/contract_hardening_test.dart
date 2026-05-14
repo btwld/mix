@@ -118,10 +118,30 @@ void main() {
     test('reports unknown_registry_value for unregistered runtime values', () {
       final contract = MixSchemaContract.builtIn();
       final image = MemoryImage(Uint8List.fromList([0, 0, 0, 0]));
+      void onEnd() {}
 
       final imageResult = contract.encode(ImageStyler(image: image));
       final iconResult = contract.encode(
         IconStyler(icon: const IconData(0xe145)),
+      );
+      final animationResult = contract.encode(
+        BoxStyler(
+          animation: AnimationConfig.curve(
+            duration: const Duration(milliseconds: 100),
+            curve: Curves.linear,
+            onEnd: onEnd,
+          ),
+        ),
+      );
+      final contextBuilderResult = contract.encode(
+        BoxStyler(
+          variants: [
+            VariantStyle<BoxSpec>(
+              ContextVariantBuilder<BoxStyler>((_) => BoxStyler()),
+              BoxStyler(),
+            ),
+          ],
+        ),
       );
 
       expect(imageResult.ok, isFalse);
@@ -132,6 +152,16 @@ void main() {
       expect(iconResult.ok, isFalse);
       expect(
         iconResult.errors.single.code,
+        MixSchemaErrorCode.unknownRegistryValue,
+      );
+      expect(animationResult.ok, isFalse);
+      expect(
+        animationResult.errors.single.code,
+        MixSchemaErrorCode.unknownRegistryValue,
+      );
+      expect(contextBuilderResult.ok, isFalse);
+      expect(
+        contextBuilderResult.errors.single.code,
         MixSchemaErrorCode.unknownRegistryValue,
       );
     });
@@ -243,16 +273,36 @@ void main() {
               {'type': 'blur'},
             ],
           });
+      final tooManyColors =
+          MixSchemaContract.builtIn(
+            limits: const MixSchemaLimits(maxListLength: 2),
+          ).validate({
+            'type': 'box',
+            'decoration': {
+              'type': 'box_decoration',
+              'gradient': {
+                'type': 'linear_gradient',
+                'colors': ['#000000FF', '#111111FF', '#FFFFFFFF'],
+              },
+            },
+          });
 
       expect(deep.errors.single.path, '#/decoration/borderRadius/topLeft/x');
       expect(longString.errors.single.path, '#/variants/0/name');
       expect(tooManyVariants.errors.single.path, '#/variants');
       expect(tooManyModifiers.errors.single.path, '#/modifiers');
+      expect(tooManyColors.errors.single.path, '#/decoration/gradient/colors');
       expect(
-        {deep, longString, tooManyVariants, tooManyModifiers}.every(
+        {
+          deep,
+          longString,
+          tooManyVariants,
+          tooManyModifiers,
+          tooManyColors,
+        }.every(
           (result) =>
               result.errors.single.code ==
-              MixSchemaErrorCode.constraintViolation,
+              MixSchemaErrorCode.payloadLimitExceeded,
         ),
         isTrue,
       );
@@ -266,8 +316,55 @@ void main() {
       final result = contract.decode({'type': 'icon', 'icon': 'too-long'});
 
       expect(result.ok, isFalse);
-      expect(result.errors.single.code, MixSchemaErrorCode.constraintViolation);
+      expect(
+        result.errors.single.code,
+        MixSchemaErrorCode.payloadLimitExceeded,
+      );
       expect(result.errors.single.path, '#/icon');
+    });
+
+    test('applies structural limits after encoding runtime styles', () {
+      final longVariantName =
+          MixSchemaContract.builtIn(
+            limits: const MixSchemaLimits(maxStringLength: 8),
+          ).encode(
+            BoxStyler(
+              variants: [
+                VariantStyle<BoxSpec>(Variant.named('long-name'), BoxStyler()),
+              ],
+            ),
+          );
+      final tooManyVariants =
+          MixSchemaContract.builtIn(
+            limits: const MixSchemaLimits(maxVariantsPerStyler: 1),
+          ).encode(
+            BoxStyler(
+              variants: [
+                VariantStyle<BoxSpec>(Variant.named('a'), BoxStyler()),
+                VariantStyle<BoxSpec>(Variant.named('b'), BoxStyler()),
+              ],
+            ),
+          );
+      final tooManyModifiers =
+          MixSchemaContract.builtIn(
+            limits: const MixSchemaLimits(maxModifiersPerStyler: 1),
+          ).encode(
+            BoxStyler(
+              modifier: WidgetModifierConfig(
+                modifiers: [
+                  OpacityModifierMix(opacity: 0.5),
+                  BlurModifierMix(sigma: 2),
+                ],
+              ),
+            ),
+          );
+
+      expect(longVariantName.ok, isFalse);
+      _expectPayloadLimitError(longVariantName.errors, '#/variants/0/name');
+      expect(tooManyVariants.ok, isFalse);
+      _expectPayloadLimitError(tooManyVariants.errors, '#/variants');
+      expect(tooManyModifiers.ok, isFalse);
+      _expectPayloadLimitError(tooManyModifiers.errors, '#/modifiers');
     });
   });
 
@@ -278,7 +375,37 @@ void main() {
       expect(schema['\$schema'], 'http://json-schema.org/draft-07/schema#');
       expect(schema['x-mix-schema-contract'], 'mix_schema');
       expect(schema['x-mix-schema-version'], '0.1.0-dev.0');
+      expect(schema['x-mix-schema-limits'], {
+        'maxDepth': 32,
+        'maxListLength': 256,
+        'maxStringLength': 4096,
+        'maxRegistryIdLength': 256,
+        'maxVariantsPerStyler': 64,
+        'maxModifiersPerStyler': 64,
+      });
       expect(schema['anyOf'], isA<List<Object?>>());
+    });
+
+    test('exports custom limits in JSON Schema metadata', () {
+      final schema = MixSchemaContract.builtIn(
+        limits: const MixSchemaLimits(
+          maxDepth: 4,
+          maxListLength: 5,
+          maxStringLength: 6,
+          maxRegistryIdLength: 7,
+          maxVariantsPerStyler: 8,
+          maxModifiersPerStyler: 9,
+        ),
+      ).exportJsonSchema();
+
+      expect(schema['x-mix-schema-limits'], {
+        'maxDepth': 4,
+        'maxListLength': 5,
+        'maxStringLength': 6,
+        'maxRegistryIdLength': 7,
+        'maxVariantsPerStyler': 8,
+        'maxModifiersPerStyler': 9,
+      });
     });
   });
 
@@ -290,7 +417,7 @@ void main() {
         'colors': ['#000000FF', '#FFFFFFFF'],
         'transform': {
           'type': 'css_linear_keyword_transform',
-          'direction': 'to-br',
+          'direction': 'to_bottom_right',
         },
       };
 
@@ -303,15 +430,39 @@ void main() {
       expect(catalog.gradient.encode(decoded), payload);
     });
 
-    test('rejects the old tailwind-specific transform name', () {
+    test('rejects old tailwind-specific transform and direction names', () {
       final catalog = MixSchemaCatalog(registries: RegistryCatalog(const []));
-      final result = catalog.gradient.safeParse({
+      final oldTransform = catalog.gradient.safeParse({
         'type': 'linear_gradient',
         'colors': ['#000000FF', '#FFFFFFFF'],
         'transform': {'type': 'tailwind_css_angle_rect', 'direction': 'to-br'},
       });
+      final oldDirection = catalog.gradient.safeParse({
+        'type': 'linear_gradient',
+        'colors': ['#000000FF', '#FFFFFFFF'],
+        'transform': {
+          'type': 'css_linear_keyword_transform',
+          'direction': 'to-br',
+        },
+      });
 
-      expect(result.isFail, isTrue);
+      expect(oldTransform.isFail, isTrue);
+      expect(oldDirection.isFail, isTrue);
     });
   });
+}
+
+void _expectPayloadLimitError(Iterable<MixSchemaError> errors, String path) {
+  expect(
+    errors,
+    contains(
+      isA<MixSchemaError>()
+          .having(
+            (error) => error.code,
+            'code',
+            MixSchemaErrorCode.payloadLimitExceeded,
+          )
+          .having((error) => error.path, 'path', path),
+    ),
+  );
 }

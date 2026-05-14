@@ -37,6 +37,8 @@ final class SchemaErrorMapper {
         results.add(_mapValidationError(error));
       case SchemaTransformError():
         results.addAll(_mapTransformErrors(error));
+      case SchemaEncodeError():
+        results.add(_mapEncodeError(error));
       default:
         results.add(
           _mapValidationMessage(
@@ -116,6 +118,42 @@ final class SchemaErrorMapper {
     );
   }
 
+  MixSchemaError _mapEncodeError(SchemaEncodeError error) {
+    final cause = error.cause;
+
+    return switch (cause) {
+      RegistryValueLookupError() => MixSchemaError(
+        code: .unknownRegistryValue,
+        path: error.path,
+        message: cause.toString(),
+        value: cause.value,
+      ),
+      UnsupportedEncodeValueError() => MixSchemaError(
+        code: .unsupportedEncodeValue,
+        path: error.path,
+        message: cause.toString(),
+        value: cause.value ?? error.value,
+      ),
+      UnsupportedError() => MixSchemaError(
+        code: .unsupportedEncodeValue,
+        path: error.path,
+        message: cause.message ?? cause.toString(),
+        value: error.value,
+      ),
+      ArgumentError() => MixSchemaError(
+        code: .unsupportedEncodeValue,
+        path: error.path,
+        message: cause.message ?? cause.toString(),
+        value: error.value,
+      ),
+      _ => _mapValidationMessage(
+        path: error.path,
+        message: error.message,
+        value: error.value,
+      ),
+    };
+  }
+
   MixSchemaError _mapValidationMessage({
     required String path,
     required String message,
@@ -158,6 +196,7 @@ final class SchemaErrorMapper {
       'object_required_property_missing' => .requiredField,
       'object_additional_properties_disallowed' => .unknownField,
       'string_enum' || 'enum_value' => .invalidEnum,
+      'string_max_length' || 'list_max_items' => .payloadLimitExceeded,
       _ => .constraintViolation,
     };
   }

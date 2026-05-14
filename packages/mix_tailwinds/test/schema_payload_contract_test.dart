@@ -62,6 +62,22 @@ void main() {
       expect(style['height'], 1.5);
     });
 
+    test('Tailwind gradient directions map to neutral schema values', () {
+      final result = TwParser().parseBoxResult(
+        'bg-gradient-to-br from-slate-900 to-white',
+      );
+
+      expect(result.ok, isTrue);
+      expect(result.errors, isEmpty);
+
+      final decoration = result.payload['decoration'] as Map<Object?, Object?>;
+      final gradient = decoration['gradient'] as Map<Object?, Object?>;
+      final transform = gradient['transform'] as Map<Object?, Object?>;
+
+      expect(transform['type'], 'css_linear_keyword_transform');
+      expect(transform['direction'], 'to_bottom_right');
+    });
+
     test('unknown variants are diagnostics and do not emit global styles', () {
       final result = TwParser().parseBoxResult('foo:bg-blue-500');
 

@@ -109,6 +109,7 @@ final class MixSchemaContract {
       '\$schema': 'http://json-schema.org/draft-07/schema#',
       'x-mix-schema-contract': 'mix_schema',
       'x-mix-schema-version': '0.1.0-dev.0',
+      'x-mix-schema-limits': _limits.toJson(),
       ...rootSchema.toJsonSchema(),
     };
   }
@@ -163,6 +164,11 @@ final class MixSchemaContract {
               value: encoded,
             ),
           ]);
+        }
+
+        final limitErrors = validatePayloadLimits(payload, _limits);
+        if (limitErrors.isNotEmpty) {
+          return MixSchemaEncodeResult.failure(limitErrors);
         }
 
         return MixSchemaEncodeResult.success(payload);

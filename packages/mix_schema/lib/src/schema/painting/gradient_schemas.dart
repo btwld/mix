@@ -11,14 +11,14 @@ import '../discriminated_schema_builder.dart';
 import '../shared/shared_schemas.dart';
 
 const List<String> _cssLinearGradientDirections = [
-  'to-r',
-  'to-l',
-  'to-t',
-  'to-b',
-  'to-tr',
-  'to-tl',
-  'to-br',
-  'to-bl',
+  'to_right',
+  'to_left',
+  'to_top',
+  'to_bottom',
+  'to_top_right',
+  'to_top_left',
+  'to_bottom_right',
+  'to_bottom_left',
 ];
 
 final class CssLinearKeywordGradientTransform extends GradientTransform {
@@ -32,14 +32,14 @@ final class CssLinearKeywordGradientTransform extends GradientTransform {
     double height,
   ) {
     return switch (directionKey) {
-      'to-r' => (1, 0),
-      'to-l' => (-1, 0),
-      'to-b' => (0, 1),
-      'to-t' => (0, -1),
-      'to-br' => (height, width),
-      'to-tr' => (height, -width),
-      'to-bl' => (-height, width),
-      'to-tl' => (-height, -width),
+      'to_right' => (1, 0),
+      'to_left' => (-1, 0),
+      'to_bottom' => (0, 1),
+      'to_top' => (0, -1),
+      'to_bottom_right' => (height, width),
+      'to_top_right' => (height, -width),
+      'to_bottom_left' => (-height, width),
+      'to_top_left' => (-height, -width),
       _ => (0, 0),
     };
   }

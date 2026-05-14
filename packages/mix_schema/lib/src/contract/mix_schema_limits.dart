@@ -1,7 +1,7 @@
 import '../core/json_map.dart';
 import '../errors/mix_schema_error.dart';
 
-/// Structural safety limits applied before external payload decode.
+/// Structural safety limits applied at the schema contract boundary.
 final class MixSchemaLimits {
   final int maxDepth;
   final int maxListLength;
@@ -18,6 +18,17 @@ final class MixSchemaLimits {
     this.maxVariantsPerStyler = 64,
     this.maxModifiersPerStyler = 64,
   });
+
+  Map<String, int> toJson() {
+    return {
+      'maxDepth': maxDepth,
+      'maxListLength': maxListLength,
+      'maxStringLength': maxStringLength,
+      'maxRegistryIdLength': maxRegistryIdLength,
+      'maxVariantsPerStyler': maxVariantsPerStyler,
+      'maxModifiersPerStyler': maxModifiersPerStyler,
+    };
+  }
 }
 
 List<MixSchemaError> validatePayloadLimits(
@@ -129,7 +140,7 @@ MixSchemaError _limitError({
   required Object? value,
 }) {
   return MixSchemaError(
-    code: .constraintViolation,
+    code: .payloadLimitExceeded,
     path: path,
     message: message,
     value: value,

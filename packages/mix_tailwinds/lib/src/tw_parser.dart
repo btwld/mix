@@ -242,6 +242,17 @@ const Set<String> _tailwindCornerDirections = {
   'to-tl',
 };
 
+const Map<String, String> _schemaCssLinearDirections = {
+  'to-r': 'to_right',
+  'to-l': 'to_left',
+  'to-t': 'to_top',
+  'to-b': 'to_bottom',
+  'to-tr': 'to_top_right',
+  'to-tl': 'to_top_left',
+  'to-br': 'to_bottom_right',
+  'to-bl': 'to_bottom_left',
+};
+
 /// A [GradientTransform] that maps Tailwind/CSS `to-*` keyword directions
 /// using bounds-aware geometry.
 ///
@@ -1217,6 +1228,9 @@ JsonMap? _buildGradientPayload(
   if (strategy == TwGradientStrategy.cssAngleRect &&
       gradient.directionKey != null &&
       _tailwindCornerDirections.contains(gradient.directionKey)) {
+    final schemaDirection = _schemaCssLinearDirections[gradient.directionKey!];
+    if (schemaDirection == null) return null;
+
     return {
       'type': _linearGradientType,
       'colors': colors,
@@ -1225,7 +1239,7 @@ JsonMap? _buildGradientPayload(
       'end': payloadAlignment(Alignment.centerRight),
       'transform': {
         'type': _cssLinearKeywordGradientType,
-        'direction': gradient.directionKey!,
+        'direction': schemaDirection,
       },
     };
   }
