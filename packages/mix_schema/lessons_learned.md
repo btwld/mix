@@ -18,12 +18,19 @@
 - Shared field encoders belong next to the built-in schema definitions. That
   keeps box, flex, stack, text, image, icon, and compound styler payloads
   consistent without creating a mirrored contract tree.
-- Variant encoding is intentionally partial and explicit: named variants,
-  shared context variants, and `context_all_of` can encode; registry-backed
-  `context_variant_builder` values cannot encode until reverse lookup support
-  exists for that boundary.
-- `IconStyler.icon` remains out of the wire schema until there is a stable
-  producer-representable icon value.
+- Variant encoding is intentionally explicit: named variants, shared context
+  variants, `context_all_of`, and registered `context_variant_builder`
+  functions can encode. Missing reverse lookup ids fail as
+  `unknown_registry_value`.
+- Runtime values that need app-owned identity should be registry-backed.
+  `IconStyler.icon`, image providers, animation callbacks, and context variant
+  builders all use registry ids in the schema contract.
+- Wire enums should be strict strings. Integer enum indexes are too easy for
+  producers and AI tooling to misuse, so they are rejected across top-level and
+  nested schemas.
+- Payload limits belong at the contract boundary. `MixSchemaLimits` runs before
+  Ack validation/decode and guards depth, list sizes, string sizes, registry id
+  size, variants, and modifiers.
 - `mix_tailwinds` should prove the contract by using `MixSchemaContract` decode
   and encode seams. It should not own public schema shape or depend on public
   wire enum builders.

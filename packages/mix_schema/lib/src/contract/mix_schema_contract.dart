@@ -1,9 +1,11 @@
 import 'package:ack/ack.dart';
 
 import '../core/json_map.dart';
+import 'mix_schema_limits.dart';
 import '../errors/mix_schema_decode_result.dart';
 import '../errors/mix_schema_encode_result.dart';
 import '../errors/mix_schema_error.dart';
+import '../errors/mix_schema_error_code.dart';
 import '../errors/mix_schema_validation_result.dart';
 import '../errors/schema_error_mapper.dart';
 import '../registry/frozen_registry.dart';
@@ -12,21 +14,35 @@ import '../registry/styler_registry.dart';
 /// Mutable builder for composing a frozen [MixSchemaContract].
 final class MixSchemaContractBuilder {
   final StylerRegistry _stylerRegistry;
+  final MixSchemaLimits _limits;
 
-  const MixSchemaContractBuilder._({required StylerRegistry stylerRegistry})
-    : _stylerRegistry = stylerRegistry;
+  const MixSchemaContractBuilder._({
+    required StylerRegistry stylerRegistry,
+    required MixSchemaLimits limits,
+  }) : _stylerRegistry = stylerRegistry,
+       _limits = limits;
 
   /// Creates an empty builder for custom top-level styler sets.
-  factory MixSchemaContractBuilder() {
-    return MixSchemaContractBuilder._(stylerRegistry: StylerRegistry());
+  factory MixSchemaContractBuilder({
+    MixSchemaLimits limits = const MixSchemaLimits(),
+  }) {
+    return MixSchemaContractBuilder._(
+      stylerRegistry: StylerRegistry(limits: limits),
+      limits: limits,
+    );
   }
 
   /// Creates a builder pre-populated with the built-in styler set.
   factory MixSchemaContractBuilder.builtIn({
     Iterable<FrozenRegistry<Object>> registries = const [],
+    MixSchemaLimits limits = const MixSchemaLimits(),
   }) {
     return MixSchemaContractBuilder._(
-      stylerRegistry: StylerRegistry.builtIn(registries: registries),
+      stylerRegistry: StylerRegistry.builtIn(
+        registries: registries,
+        limits: limits,
+      ),
+      limits: limits,
     );
   }
 
@@ -47,7 +63,10 @@ final class MixSchemaContractBuilder {
   MixSchemaContract freeze() {
     _stylerRegistry.freeze();
 
-    return MixSchemaContract._(stylerRegistry: _stylerRegistry);
+    return MixSchemaContract._(
+      stylerRegistry: _stylerRegistry,
+      limits: _limits,
+    );
   }
 }
 
@@ -57,10 +76,14 @@ final class MixSchemaContractBuilder {
 /// schema and supported built-in styler types for future producer tooling.
 final class MixSchemaContract {
   final StylerRegistry _stylerRegistry;
+  final MixSchemaLimits _limits;
   final SchemaErrorMapper _errorMapper = const SchemaErrorMapper();
 
-  MixSchemaContract._({required StylerRegistry stylerRegistry})
-    : _stylerRegistry = stylerRegistry {
+  MixSchemaContract._({
+    required StylerRegistry stylerRegistry,
+    required MixSchemaLimits limits,
+  }) : _stylerRegistry = stylerRegistry,
+       _limits = limits {
     if (!stylerRegistry.isFrozen) {
       throw StateError('StylerRegistry must be frozen before use.');
     }
@@ -69,8 +92,12 @@ final class MixSchemaContract {
   /// Builds a contract with the built-in styler set and provided registries.
   factory MixSchemaContract.builtIn({
     Iterable<FrozenRegistry<Object>> registries = const [],
+    MixSchemaLimits limits = const MixSchemaLimits(),
   }) {
-    return MixSchemaContractBuilder.builtIn(registries: registries).freeze();
+    return MixSchemaContractBuilder.builtIn(
+      registries: registries,
+      limits: limits,
+    ).freeze();
   }
 
   /// The frozen root Ack schema for the full built-in payload contract.
@@ -78,7 +105,12 @@ final class MixSchemaContract {
 
   /// Exports the root Ack JSON Schema artifact.
   Map<String, Object?> exportJsonSchema() {
-    return rootSchema.toJsonSchema();
+    return {
+      '\$schema': 'http://json-schema.org/draft-07/schema#',
+      'x-mix-schema-contract': 'mix_schema',
+      'x-mix-schema-version': '0.1.0-dev.0',
+      ...rootSchema.toJsonSchema(),
+    };
   }
 
   /// Validates a payload against the current contract.
@@ -86,6 +118,11 @@ final class MixSchemaContract {
   /// Validation currently follows the same Ack-driven path as decode, including
   /// registry-backed transform checks, but does not expose the decoded value.
   MixSchemaValidationResult validate(JsonMap payload) {
+    final limitErrors = validatePayloadLimits(payload, _limits);
+    if (limitErrors.isNotEmpty) {
+      return MixSchemaValidationResult.failure(limitErrors);
+    }
+
     final result = _stylerRegistry.decode(payload);
 
     return result.match(
@@ -97,6 +134,11 @@ final class MixSchemaContract {
 
   /// Validates and decodes a payload into a Mix runtime object.
   MixSchemaDecodeResult<Object> decode(JsonMap payload) {
+    final limitErrors = validatePayloadLimits(payload, _limits);
+    if (limitErrors.isNotEmpty) {
+      return MixSchemaDecodeResult.failure(limitErrors);
+    }
+
     final result = _stylerRegistry.decode(payload);
 
     return result.match(
@@ -125,9 +167,27 @@ final class MixSchemaContract {
 
         return MixSchemaEncodeResult.success(payload);
       },
-      onFail: (error) => MixSchemaEncodeResult.failure(_errorMapper.map(error)),
+      onFail: (error) {
+        return MixSchemaEncodeResult.failure(
+          _prioritizedEncodeErrors(_errorMapper.map(error)),
+        );
+      },
     );
   }
+}
+
+List<MixSchemaError> _prioritizedEncodeErrors(List<MixSchemaError> errors) {
+  for (final code in [
+    MixSchemaErrorCode.unknownRegistryValue,
+    MixSchemaErrorCode.unsupportedEncodeValue,
+  ]) {
+    final matches = errors
+        .where((error) => error.code == code)
+        .toList(growable: false);
+    if (matches.isNotEmpty) return [matches.first];
+  }
+
+  return errors;
 }
 
 JsonMap? _asJsonMap(Object? value) {

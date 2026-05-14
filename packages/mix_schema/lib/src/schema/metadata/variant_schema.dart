@@ -2,8 +2,10 @@ import 'package:ack/ack.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
+import '../../contract/mix_schema_limits.dart';
 import '../../core/mix_schema_scope.dart';
 import '../../core/schema_wire_types.dart';
+import '../../errors/schema_transform_exceptions.dart';
 import '../../registry/registry_catalog.dart';
 import 'context_variant_leaf_schema.dart';
 import 'variant_condition_definition.dart';
@@ -14,6 +16,7 @@ buildVariantSchema<S extends Spec<S>, T extends Style<S>>({
   required AckSchema<T> styleSchema,
   required T emptyStyle,
   required RegistryCatalog registries,
+  required MixSchemaLimits limits,
 }) {
   final conditionParser = buildVariantConditionParser();
   final branchSchemas = {
@@ -24,6 +27,7 @@ buildVariantSchema<S extends Spec<S>, T extends Style<S>>({
         emptyStyle: emptyStyle,
         conditionParser: conditionParser,
         registries: registries,
+        limits: limits,
       ),
   };
   final inputSchema = Ack.discriminated<Map<String, Object?>>(
@@ -50,7 +54,7 @@ buildVariantSchema<S extends Spec<S>, T extends Style<S>>({
       );
     },
     encoder: (value) {
-      return _encodeVariantStyle(value);
+      return _encodeVariantStyle<S, T>(value, registries: registries);
     },
   );
 }
@@ -62,6 +66,7 @@ _buildVariantBranch<S extends Spec<S>, T extends Style<S>>({
   required T emptyStyle,
   required VariantConditionParser conditionParser,
   required RegistryCatalog registries,
+  required MixSchemaLimits limits,
 }) {
   switch (type) {
     case .widgetState ||
@@ -132,7 +137,9 @@ _buildVariantBranch<S extends Spec<S>, T extends Style<S>>({
       );
     case .contextBuilder:
       return Ack.codec<Map<String, Object?>, VariantStyle<S>>(
-        input: Ack.object({'id': Ack.string()}),
+        input: Ack.object({
+          'id': Ack.string().maxLength(limits.maxRegistryIdLength),
+        }),
         output: Ack.instance<VariantStyle<S>>().refine(
           (value) => value.variant is ContextVariantBuilder,
           message: 'Variant style does not match context_variant_builder.',
@@ -146,11 +153,25 @@ _buildVariantBranch<S extends Spec<S>, T extends Style<S>>({
 
           return VariantStyle<S>(ContextVariantBuilder<T>(fn), emptyStyle);
         },
-        encoder: (_) {
-          throw UnsupportedError(
-            'context_variant_builder variants cannot be encoded without a '
-            'registered reverse lookup for the builder function.',
+        encoder: (value) {
+          final variant = value.variant;
+          if (variant is! ContextVariantBuilder) {
+            throw ArgumentError('Expected a context_variant_builder variant.');
+          }
+
+          final key = registries.keyOf<T Function(BuildContext)>(
+            MixSchemaScope.contextVariantBuilder.wireValue,
+            variant.fn as T Function(BuildContext),
           );
+          if (key == null) {
+            throw RegistryValueLookupError(
+              scope: MixSchemaScope.contextVariantBuilder.wireValue,
+              expectedType: '$T Function(BuildContext)',
+              value: variant.fn,
+            );
+          }
+
+          return {'id': key};
         },
       );
   }
@@ -224,9 +245,10 @@ VariantStyle<S> _decodeVariantStyle<S extends Spec<S>, T extends Style<S>>(
   }
 }
 
-Map<String, Object?> _encodeVariantStyle<S extends Spec<S>>(
-  VariantStyle<S> value,
-) {
+Map<String, Object?> _encodeVariantStyle<S extends Spec<S>, T extends Style<S>>(
+  VariantStyle<S> value, {
+  required RegistryCatalog registries,
+}) {
   final variant = value.variant;
 
   if (variant is NamedVariant) {
@@ -247,10 +269,19 @@ Map<String, Object?> _encodeVariantStyle<S extends Spec<S>>(
   }
 
   if (variant is ContextVariantBuilder) {
-    throw UnsupportedError(
-      'context_variant_builder variants cannot be encoded without a '
-      'registered reverse lookup for the builder function.',
+    final key = registries.keyOf<T Function(BuildContext)>(
+      MixSchemaScope.contextVariantBuilder.wireValue,
+      variant.fn as T Function(BuildContext),
     );
+    if (key == null) {
+      throw RegistryValueLookupError(
+        scope: MixSchemaScope.contextVariantBuilder.wireValue,
+        expectedType: '$T Function(BuildContext)',
+        value: variant.fn,
+      );
+    }
+
+    return {'type': SchemaVariant.contextBuilder.wireValue, 'id': key};
   }
 
   if (variant is ContextVariant) {

@@ -2,8 +2,9 @@ import 'package:ack/ack.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-import '../../core/mix_schema_scope.dart';
+import '../../contract/mix_schema_limits.dart';
 import '../../registry/registry_catalog.dart';
+import '../../registry/registry_value_codec.dart';
 
 const Map<String, Curve> _curveByName = {
   'linear': Curves.linear,
@@ -57,36 +58,29 @@ final Map<Curve, String> _curveNameByValue = {
 
 CodecSchema<String, VoidCallback> _buildOnEndCallbackCodec({
   required RegistryCatalog registries,
+  required MixSchemaLimits limits,
 }) {
-  const scope = MixSchemaScope.animationOnEnd;
-
-  return Ack.codec<String, VoidCallback>(
-    input: Ack.string(),
-    output: Ack.instance<VoidCallback>(),
-    decoder: (value) {
-      return registries.lookup<VoidCallback>(scope.wireValue, value);
-    },
-    encoder: (value) {
-      final key = registries.keyOf<VoidCallback>(scope.wireValue, value);
-
-      if (key == null) {
-        throw ArgumentError('Animation onEnd callback is not registered.');
-      }
-
-      return key;
-    },
+  return registryValueCodec(
+    registries: registries,
+    scope: .animationOnEnd,
+    limits: limits,
+    valueLabel: 'VoidCallback',
   );
 }
 
 CodecSchema<Map<String, Object?>, CurveAnimationConfig> buildAnimationSchema({
   required RegistryCatalog registries,
+  required MixSchemaLimits limits,
 }) {
   return Ack.codec<Map<String, Object?>, CurveAnimationConfig>(
     input: Ack.object({
       'duration': Ack.integer().min(0),
       'curve': Ack.enumString(_curveByName.keys.toList(growable: false)),
       'delay': Ack.integer().min(0).optional(),
-      'onEnd': _buildOnEndCallbackCodec(registries: registries).optional(),
+      'onEnd': _buildOnEndCallbackCodec(
+        registries: registries,
+        limits: limits,
+      ).optional(),
     }),
     output: Ack.instance<CurveAnimationConfig>(),
     decoder: (data) {

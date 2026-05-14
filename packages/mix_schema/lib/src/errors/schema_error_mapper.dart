@@ -34,20 +34,12 @@ final class SchemaErrorMapper {
           );
         }
       case SchemaValidationError():
-        results.add(
-          MixSchemaError(
-            code: .validationFailed,
-            path: error.path,
-            message: error.message,
-            value: error.value,
-          ),
-        );
+        results.add(_mapValidationError(error));
       case SchemaTransformError():
         results.addAll(_mapTransformErrors(error));
       default:
         results.add(
-          MixSchemaError(
-            code: .validationFailed,
+          _mapValidationMessage(
             path: error.path,
             message: error.message,
             value: error.value,
@@ -86,6 +78,24 @@ final class SchemaErrorMapper {
             value: error.value,
           ),
         ];
+      case RegistryValueLookupError():
+        return [
+          MixSchemaError(
+            code: .unknownRegistryValue,
+            path: error.path,
+            message: cause.toString(),
+            value: cause.value,
+          ),
+        ];
+      case UnsupportedError():
+        return [
+          MixSchemaError(
+            code: .unsupportedEncodeValue,
+            path: error.path,
+            message: cause.message ?? cause.toString(),
+            value: error.value,
+          ),
+        ];
       default:
         return [
           MixSchemaError(
@@ -96,6 +106,46 @@ final class SchemaErrorMapper {
           ),
         ];
     }
+  }
+
+  MixSchemaError _mapValidationError(SchemaValidationError error) {
+    return _mapValidationMessage(
+      path: error.path,
+      message: error.message,
+      value: error.value,
+    );
+  }
+
+  MixSchemaError _mapValidationMessage({
+    required String path,
+    required String message,
+    required Object? value,
+  }) {
+    if (message.startsWith('Encoder threw: No registry id found')) {
+      return MixSchemaError(
+        code: .unknownRegistryValue,
+        path: path,
+        message: message,
+        value: value,
+      );
+    }
+
+    if (message.startsWith('Encoder threw: Unsupported operation:') ||
+        message.startsWith('Encoder threw: Invalid argument(s):')) {
+      return MixSchemaError(
+        code: .unsupportedEncodeValue,
+        path: path,
+        message: message,
+        value: value,
+      );
+    }
+
+    return MixSchemaError(
+      code: .validationFailed,
+      path: path,
+      message: message,
+      value: value,
+    );
   }
 
   MixSchemaErrorCode _mapConstraint(String path, String constraintKey) {

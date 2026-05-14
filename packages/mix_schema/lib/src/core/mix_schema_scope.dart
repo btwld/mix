@@ -1,6 +1,7 @@
 /// Built-in registry scope identifiers recognized by `mix_schema`.
 enum MixSchemaScope {
   animationOnEnd('animation_on_end'),
+  iconData('icon_data'),
   imageProvider('image_provider'),
   contextVariantBuilder('context_variant_builder');
 

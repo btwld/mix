@@ -10,7 +10,7 @@ import '../../core/schema_wire_types.dart';
 import '../discriminated_schema_builder.dart';
 import '../shared/shared_schemas.dart';
 
-const List<String> _tailwindGradientDirections = [
+const List<String> _cssLinearGradientDirections = [
   'to-r',
   'to-l',
   'to-t',
@@ -21,10 +21,10 @@ const List<String> _tailwindGradientDirections = [
   'to-bl',
 ];
 
-final class TailwindCssAngleRectGradientTransform extends GradientTransform {
+final class CssLinearKeywordGradientTransform extends GradientTransform {
   final String directionKey;
 
-  const TailwindCssAngleRectGradientTransform(this.directionKey);
+  const CssLinearKeywordGradientTransform(this.directionKey);
 
   static (double, double) _directionVector(
     String directionKey,
@@ -74,7 +74,7 @@ final class TailwindCssAngleRectGradientTransform extends GradientTransform {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is TailwindCssAngleRectGradientTransform &&
+      other is CssLinearKeywordGradientTransform &&
           other.directionKey == directionKey;
 
   @override
@@ -142,16 +142,16 @@ AckSchema<GradientTransform> _buildGradientTransformBranch(
           return {'radians': rotation.radians};
         },
       );
-    case .tailwindAngleRect:
+    case .cssLinearKeyword:
       return Ack.codec<Map<String, Object?>, GradientTransform>(
         input: Ack.object({
-          'direction': Ack.enumString(_tailwindGradientDirections),
+          'direction': Ack.enumString(_cssLinearGradientDirections),
         }),
         output: Ack.instance<GradientTransform>(),
         decoder: (data) =>
-            TailwindCssAngleRectGradientTransform(data['direction'] as String),
+            CssLinearKeywordGradientTransform(data['direction'] as String),
         encoder: (value) {
-          final transform = value as TailwindCssAngleRectGradientTransform;
+          final transform = value as CssLinearKeywordGradientTransform;
 
           return {'direction': transform.directionKey};
         },

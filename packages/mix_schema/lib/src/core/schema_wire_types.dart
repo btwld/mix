@@ -43,7 +43,7 @@ enum SchemaGradient {
 
 enum SchemaGradientTransform {
   rotation('gradient_rotation'),
-  tailwindAngleRect('tailwind_css_angle_rect');
+  cssLinearKeyword('css_linear_keyword_transform');
 
   const SchemaGradientTransform(this.wireValue);
 

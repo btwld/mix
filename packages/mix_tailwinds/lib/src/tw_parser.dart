@@ -28,7 +28,7 @@ const _borderType = 'border';
 const _borderRadiusType = 'border_radius';
 const _linearGradientType = 'linear_gradient';
 const _gradientRotationType = 'gradient_rotation';
-const _tailwindAngleRectGradientType = 'tailwind_css_angle_rect';
+const _cssLinearKeywordGradientType = 'css_linear_keyword_transform';
 const _contextAllOfType = 'context_all_of';
 const _blurModifierType = 'blur';
 const _defaultTextStyleModifierType = 'default_text_style';
@@ -1224,7 +1224,7 @@ JsonMap? _buildGradientPayload(
       'begin': payloadAlignment(Alignment.centerLeft),
       'end': payloadAlignment(Alignment.centerRight),
       'transform': {
-        'type': _tailwindAngleRectGradientType,
+        'type': _cssLinearKeywordGradientType,
         'direction': gradient.directionKey!,
       },
     };

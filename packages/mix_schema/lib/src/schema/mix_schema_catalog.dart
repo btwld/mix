@@ -2,6 +2,7 @@ import 'package:ack/ack.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
+import '../contract/mix_schema_limits.dart';
 import '../registry/registry_catalog.dart';
 import 'metadata/metadata_schemas.dart';
 import 'painting/painting_schemas.dart';
@@ -9,9 +10,9 @@ import 'shared/shared_schemas.dart';
 
 final class MixSchemaCatalog {
   final RegistryCatalog registries;
+  final MixSchemaLimits limits;
 
   late final AckSchema<AlignmentGeometry> alignment = alignmentCodec;
-
   late final AckSchema<Axis> axis = axisSchema;
   late final AckSchema<BlendMode> blendMode = blendModeSchema;
   late final AckSchema<BoxConstraintsMix> boxConstraints = boxConstraintsCodec;
@@ -22,7 +23,11 @@ final class MixSchemaCatalog {
   late final AckSchema<CrossAxisAlignment> crossAxisAlignment =
       crossAxisAlignmentSchema;
   late final AckSchema<ImageProvider<Object>> imageProvider =
-      buildImageProviderSchema(registries: registries);
+      buildImageProviderSchema(registries: registries, limits: limits);
+  late final AckSchema<IconData> iconData = buildIconDataSchema(
+    registries: registries,
+    limits: limits,
+  );
   late final AckSchema<DecorationMix> decoration = buildDecorationSchema(
     boxDecorationSchema: boxDecoration,
     shapeDecorationSchema: shapeDecoration,
@@ -57,6 +62,7 @@ final class MixSchemaCatalog {
       verticalDirectionSchema;
   late final AckSchema<CurveAnimationConfig> animation = buildAnimationSchema(
     registries: registries,
+    limits: limits,
   );
 
   late final AckSchema<ModifierMix> modifier = buildModifierSchema();
@@ -85,7 +91,11 @@ final class MixSchemaCatalog {
         gradientSchema: gradient,
         imageSchema: decorationImage,
       );
-  MixSchemaCatalog({required this.registries});
+
+  MixSchemaCatalog({
+    required this.registries,
+    this.limits = const MixSchemaLimits(),
+  });
 
   Map<String, AckSchema> buildMetadataFields<
     S extends Spec<S>,
@@ -95,17 +105,22 @@ final class MixSchemaCatalog {
       styleSchema: styleSchema,
       emptyStyle: emptyStyle,
       registries: registries,
+      limits: limits,
     );
 
     return buildMetadataFieldSchemas(
       animationSchema: animation,
       modifierSchema: modifier,
       variantSchema: variantSchema,
+      limits: limits,
     );
   }
 
   Map<String, AckSchema> buildVariantStyleMetadataFields() {
-    return buildVariantStyleMetadataFieldSchemas(modifierSchema: modifier);
+    return buildVariantStyleMetadataFieldSchemas(
+      modifierSchema: modifier,
+      limits: limits,
+    );
   }
 
   WidgetModifierConfig? buildModifierConfig(Map<String, Object?> data) {

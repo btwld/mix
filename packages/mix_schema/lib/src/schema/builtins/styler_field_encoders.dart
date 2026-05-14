@@ -106,13 +106,10 @@ JsonMap encodeImageFields(ImageStyler value) {
 }
 
 JsonMap encodeIconFields(IconStyler value) {
-  if (value.$icon != null) {
-    throw UnsupportedError('IconData values cannot be encoded by mix_schema.');
-  }
-
   final ShadowListMix? shadows = propMix(value.$shadows);
 
   return optionalJsonMap([
+    ('icon', propValue(value.$icon)),
     ('color', propValue(value.$color)),
     ('size', propValue(value.$size)),
     ('weight', propValue(value.$weight)),

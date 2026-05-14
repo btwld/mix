@@ -23,8 +23,8 @@ Main entry points:
 - `MixSchemaContract`: validate payloads, decode payloads, encode supported
   runtime styles, and export the Ack JSON Schema artifact
 - `RegistryBuilder` and `FrozenRegistry`: runtime-value bridge for built-in
-  registry-backed fields such as image providers, animation callbacks, and
-  context variant builders
+  registry-backed fields such as icon data, image providers, animation
+  callbacks, and context variant builders
 
 ### Producer surface
 
@@ -114,12 +114,16 @@ final builder = MixSchemaContractBuilder()
 
 ## Current v1 limitations
 
-- `IconStyler.icon` has no producer-representable value yet, so the `icon`
-  branch does not accept an `icon` field.
 - Built-in styler branches are codec-backed and can encode direct,
   producer-representable values. Runtime-only values such as token props,
-  multi-source props, derived props, and registry-backed context variant
-  builders return mapped encode errors.
+  multi-source props, derived props, unregistered registry values, and
+  unsupported animation configs return mapped encode errors.
+- Registry-backed runtime values require stable producer ids. Missing ids
+  decode as `unknown_registry_id`; unregistered runtime values encode as
+  `unknown_registry_value`.
+- Enums use strict string names on the wire. Integer enum indexes are rejected.
+- Structural payload limits run before validation and decode through
+  `MixSchemaLimits`.
 - Ack `toJsonSchemaModel()` is not used yet because the current discriminated
   branch shape conflicts with model conversion. `exportJsonSchema()` uses raw
   Ack JSON Schema export.

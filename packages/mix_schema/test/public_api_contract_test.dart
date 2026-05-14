@@ -26,7 +26,12 @@ void main() {
     test('exposes stable built-in registry scopes', () {
       expect(
         MixSchemaScope.values.map((scope) => scope.wireValue).toList(),
-        const ['animation_on_end', 'image_provider', 'context_variant_builder'],
+        const [
+          'animation_on_end',
+          'icon_data',
+          'image_provider',
+          'context_variant_builder',
+        ],
       );
     });
 
@@ -64,7 +69,7 @@ void main() {
       expect(stackProperties, contains('fit'));
       expect(flexBoxProperties, contains('flexClipBehavior'));
       expect(stackBoxProperties, contains('stackClipBehavior'));
-      expect(iconProperties, isNot(contains('icon')));
+      expect(iconProperties, contains('icon'));
     });
 
     test('keeps the stable public error vocabulary', () {
@@ -76,8 +81,10 @@ void main() {
         'constraint_violation',
         'validation_failed',
         'transform_failed',
+        'unsupported_encode_value',
         'unknown_type',
         'unknown_registry_id',
+        'unknown_registry_value',
       });
     });
 

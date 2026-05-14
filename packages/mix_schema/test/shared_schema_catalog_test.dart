@@ -88,7 +88,7 @@ void main() {
             'type': 'linear_gradient',
             'colors': ['#000000', '#FFFFFFFF'],
             'transform': {
-              'type': 'tailwind_css_angle_rect',
+              'type': 'css_linear_keyword_transform',
               'direction': 'to-br',
             },
           },
@@ -112,7 +112,7 @@ void main() {
         expect(resolved.shape, isA<RoundedRectangleBorder>());
         expect(
           gradient.transform,
-          const TailwindCssAngleRectGradientTransform('to-br'),
+          const CssLinearKeywordGradientTransform('to-br'),
         );
       },
     );
@@ -161,7 +161,7 @@ void main() {
             startAngle: 0.25,
             endAngle: 2.5,
             tileMode: TileMode.decal,
-            transform: const TailwindCssAngleRectGradientTransform('to-tr'),
+            transform: const CssLinearKeywordGradientTransform('to-tr'),
           ): {
             'type': 'sweep_gradient',
             'colors': ['#010203FF', '#040506FF'],
@@ -170,7 +170,7 @@ void main() {
             'endAngle': 2.5,
             'tileMode': 'decal',
             'transform': {
-              'type': 'tailwind_css_angle_rect',
+              'type': 'css_linear_keyword_transform',
               'direction': 'to-tr',
             },
           },

@@ -7,8 +7,13 @@
   identifiers and `StylerRegistry` off the root contract export.
 - Remove the parallel export metadata surface; producer schema artifacts now
   come from the Ack root schema.
-- Remove the unsupported `IconStyler.icon` compatibility field so it fails as
-  an unknown field until a producer-representable icon value exists.
+- Add the `IconStyler.icon` wire field as registry-backed `IconData`.
+- Add registry-backed `IconData`, reverse registry encode for supported
+  registry values, and stable `unknown_registry_value` encode errors.
+- Add strict string enum codecs so integer enum indexes are rejected.
+- Rename the core CSS directional gradient transform wire type to
+  `css_linear_keyword_transform`.
+- Add `MixSchemaLimits` and exported JSON Schema artifact metadata.
 - Add `StylerRegistry.builtIn(...)` for extending the built-in styler set with
   custom branches, and decode language-only locales plus decoration images.
 - Add public compound context variant decoding with the `context_all_of`

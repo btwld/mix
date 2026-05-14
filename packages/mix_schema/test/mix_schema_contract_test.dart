@@ -267,7 +267,7 @@ void main() {
       expect(boxProperties, contains('variants'));
       expect(textProperties, contains('style'));
       expect(textProperties, contains('textAlign'));
-      expect(iconProperties, isNot(contains('icon')));
+      expect(iconProperties, contains('icon'));
     });
   });
 }

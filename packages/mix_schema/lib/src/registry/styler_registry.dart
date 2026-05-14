@@ -1,5 +1,6 @@
 import 'package:ack/ack.dart';
 
+import '../contract/mix_schema_limits.dart';
 import '../core/json_map.dart';
 import '../schema/builtins/built_in_styler_definitions.dart';
 import '../schema/discriminated_schema_builder.dart';
@@ -10,12 +11,13 @@ import 'registry_catalog.dart';
 
 /// Mutable registry of styler schemas used to build the payload decoder.
 final class StylerRegistry {
+  final MixSchemaLimits limits;
   final List<DiscriminatedSchemaBranch<Object>> _branches = [];
   final Set<String> _registeredTypes = <String>{};
   AckSchema<Object>? _payloadSchema;
   bool _frozen = false;
 
-  StylerRegistry();
+  StylerRegistry({this.limits = const MixSchemaLimits()});
 
   /// Creates a mutable registry pre-populated with the built-in styler set.
   ///
@@ -23,10 +25,14 @@ final class StylerRegistry {
   /// so they must contain any runtime values those stylers need at decode time.
   factory StylerRegistry.builtIn({
     Iterable<FrozenRegistry<Object>> registries = const [],
+    MixSchemaLimits limits = const MixSchemaLimits(),
   }) {
-    final stylerRegistry = StylerRegistry();
+    final stylerRegistry = StylerRegistry(limits: limits);
     final registryCatalog = RegistryCatalog(registries);
-    final catalog = MixSchemaCatalog(registries: registryCatalog);
+    final catalog = MixSchemaCatalog(
+      registries: registryCatalog,
+      limits: limits,
+    );
 
     _registerBuiltInStylers(registry: stylerRegistry, catalog: catalog);
 

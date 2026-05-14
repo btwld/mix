@@ -29,24 +29,28 @@ CodecSchema<String, E> aliasedEnumCodec<E extends Object>({
   );
 }
 
-final AckSchema<Axis> axisSchema = Ack.enumValues(Axis.values);
-final AckSchema<BlendMode> blendModeSchema = Ack.enumValues(BlendMode.values);
-final AckSchema<Brightness> brightnessSchema = Ack.enumValues(
-  Brightness.values,
-);
-final AckSchema<BorderStyle> borderStyleSchema = Ack.enumValues(
+CodecSchema<String, E> enumNameCodec<E extends Enum>(List<E> values) {
+  return aliasedEnumCodec(
+    canonical: {for (final value in values) value: value.name},
+  );
+}
+
+final AckSchema<Axis> axisSchema = enumNameCodec(Axis.values);
+final AckSchema<BlendMode> blendModeSchema = enumNameCodec(BlendMode.values);
+final AckSchema<Brightness> brightnessSchema = enumNameCodec(Brightness.values);
+final AckSchema<BorderStyle> borderStyleSchema = enumNameCodec(
   BorderStyle.values,
 );
-final AckSchema<BoxFit> boxFitSchema = Ack.enumValues(BoxFit.values);
-final AckSchema<BoxShape> boxShapeSchema = Ack.enumValues(BoxShape.values);
-final AckSchema<CrossAxisAlignment> crossAxisAlignmentSchema = Ack.enumValues(
+final AckSchema<BoxFit> boxFitSchema = enumNameCodec(BoxFit.values);
+final AckSchema<BoxShape> boxShapeSchema = enumNameCodec(BoxShape.values);
+final AckSchema<CrossAxisAlignment> crossAxisAlignmentSchema = enumNameCodec(
   CrossAxisAlignment.values,
 );
-final AckSchema<Clip> clipSchema = Ack.enumValues(Clip.values);
-final AckSchema<FilterQuality> filterQualitySchema = Ack.enumValues(
+final AckSchema<Clip> clipSchema = enumNameCodec(Clip.values);
+final AckSchema<FilterQuality> filterQualitySchema = enumNameCodec(
   FilterQuality.values,
 );
-final AckSchema<FontStyle> fontStyleSchema = Ack.enumValues(FontStyle.values);
+final AckSchema<FontStyle> fontStyleSchema = enumNameCodec(FontStyle.values);
 final CodecSchema<String, FontWeight> fontWeightCodec =
     aliasedEnumCodec<FontWeight>(
       canonical: {
@@ -62,38 +66,38 @@ final CodecSchema<String, FontWeight> fontWeightCodec =
       },
       aliases: {'normal': FontWeight.w400, 'bold': FontWeight.w700},
     );
-final AckSchema<ImageRepeat> imageRepeatSchema = Ack.enumValues(
+final AckSchema<ImageRepeat> imageRepeatSchema = enumNameCodec(
   ImageRepeat.values,
 );
-final AckSchema<MainAxisAlignment> mainAxisAlignmentSchema = Ack.enumValues(
+final AckSchema<MainAxisAlignment> mainAxisAlignmentSchema = enumNameCodec(
   MainAxisAlignment.values,
 );
-final AckSchema<MainAxisSize> mainAxisSizeSchema = Ack.enumValues(
+final AckSchema<MainAxisSize> mainAxisSizeSchema = enumNameCodec(
   MainAxisSize.values,
 );
-final AckSchema<StackFit> stackFitSchema = Ack.enumValues(StackFit.values);
-final AckSchema<TextAlign> textAlignSchema = Ack.enumValues(TextAlign.values);
-final AckSchema<TextBaseline> textBaselineSchema = Ack.enumValues(
+final AckSchema<StackFit> stackFitSchema = enumNameCodec(StackFit.values);
+final AckSchema<TextAlign> textAlignSchema = enumNameCodec(TextAlign.values);
+final AckSchema<TextBaseline> textBaselineSchema = enumNameCodec(
   TextBaseline.values,
 );
-final AckSchema<TextDecorationStyle> textDecorationStyleSchema = Ack.enumValues(
+final AckSchema<TextDecorationStyle> textDecorationStyleSchema = enumNameCodec(
   TextDecorationStyle.values,
 );
-final AckSchema<TextDirection> textDirectionSchema = Ack.enumValues(
+final AckSchema<TextDirection> textDirectionSchema = enumNameCodec(
   TextDirection.values,
 );
 final AckSchema<TextLeadingDistribution> textLeadingDistributionSchema =
-    Ack.enumValues(TextLeadingDistribution.values);
-final AckSchema<TextOverflow> textOverflowSchema = Ack.enumValues(
+    enumNameCodec(TextLeadingDistribution.values);
+final AckSchema<TextOverflow> textOverflowSchema = enumNameCodec(
   TextOverflow.values,
 );
-final AckSchema<TextWidthBasis> textWidthBasisSchema = Ack.enumValues(
+final AckSchema<TextWidthBasis> textWidthBasisSchema = enumNameCodec(
   TextWidthBasis.values,
 );
-final AckSchema<TileMode> tileModeSchema = Ack.enumValues(TileMode.values);
-final AckSchema<VerticalDirection> verticalDirectionSchema = Ack.enumValues(
+final AckSchema<TileMode> tileModeSchema = enumNameCodec(TileMode.values);
+final AckSchema<VerticalDirection> verticalDirectionSchema = enumNameCodec(
   VerticalDirection.values,
 );
-final AckSchema<WidgetState> widgetStateSchema = Ack.enumValues(
+final AckSchema<WidgetState> widgetStateSchema = enumNameCodec(
   WidgetState.values,
 );

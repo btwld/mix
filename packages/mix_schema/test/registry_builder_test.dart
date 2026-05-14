@@ -6,6 +6,7 @@ void main() {
     test('exposes stable built-in scope wire values', () {
       expect(MixSchemaScope.values.map((scope) => scope.wireValue), const [
         'animation_on_end',
+        'icon_data',
         'image_provider',
         'context_variant_builder',
       ]);

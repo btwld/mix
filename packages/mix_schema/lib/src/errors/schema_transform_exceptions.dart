@@ -32,6 +32,24 @@ final class RegistryTypeMismatchError implements Exception {
   }
 }
 
+/// Thrown when a runtime value cannot be encoded because no registry id exists.
+final class RegistryValueLookupError implements Exception {
+  final String scope;
+
+  final String expectedType;
+  final Object value;
+  const RegistryValueLookupError({
+    required this.scope,
+    required this.expectedType,
+    required this.value,
+  });
+
+  @override
+  String toString() {
+    return 'No registry id found in scope "$scope" for $expectedType value.';
+  }
+}
+
 /// Thrown when a transform delegates to nested schema parsing and needs to
 /// preserve the resulting path-specific validation errors.
 final class NestedSchemaErrorsException implements Exception {

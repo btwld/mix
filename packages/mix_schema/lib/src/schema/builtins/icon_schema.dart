@@ -16,6 +16,7 @@ StylerContract<IconSpec, IconStyler> buildIconStylerDefinition(
     type: .icon,
     emptyStyle: IconStyler(),
     fields: {
+      'icon': catalog.iconData.optional(),
       'color': catalog.color.optional(),
       'size': Ack.number().optional(),
       'weight': Ack.number().optional(),
@@ -58,6 +59,7 @@ IconStyler _decodeIconStyler(
     semanticsLabel: data['semanticsLabel'] as String?,
     opacity: castDoubleOrNull(data['opacity']),
     blendMode: data['blendMode'] as BlendMode?,
+    icon: data['icon'] as IconData?,
     animation: animation,
     modifier: modifier,
     variants: variants,

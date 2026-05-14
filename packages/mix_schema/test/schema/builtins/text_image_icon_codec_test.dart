@@ -128,18 +128,22 @@ void main() {
       expect(contract.encode(decoded.value!).value, encoded.value);
     });
 
-    test('reports a mapped encode error when icon data is set', () {
-      final contract = MixSchemaContract.builtIn();
-      final style = IconStyler(icon: const IconData(0xe145));
+    test('encodes and decodes icon data through a registered id', () {
+      const icon = IconData(0xe145, fontFamily: 'MaterialIcons');
+      final icons = RegistryBuilder<IconData>.builtIn(
+        scope: MixSchemaScope.iconData,
+      )..register('add', icon);
+      final contract = MixSchemaContract.builtIn(registries: [icons.freeze()]);
+      final style = IconStyler(icon: icon);
 
       final encoded = contract.encode(style);
 
-      expect(encoded.ok, isFalse);
-      expect(encoded.value, isNull);
-      expect(
-        encoded.errors.map((error) => error.message).join('\n'),
-        contains('IconData values cannot be encoded by mix_schema.'),
-      );
+      expect(encoded.ok, isTrue);
+      expect(encoded.value, {'type': 'icon', 'icon': 'add'});
+
+      final decoded = contract.decode(encoded.value!);
+      expect(decoded.ok, isTrue);
+      expect(contract.encode(decoded.value!).value, encoded.value);
     });
   });
 }
