@@ -56,7 +56,10 @@ class MixFieldModel {
 
     // Check if wrapped in Prop<>
     final wrappedInProp = type_helpers.isWrappedInProp(type);
-    final innerTypeName = type_helpers.getInnerTypeName(type, wrappedInProp);
+    final innerTypeName = type_helpers.getInnerTypeName(
+      type,
+      isWrapped: wrappedInProp,
+    );
 
     return MixFieldModel(
       name: name,

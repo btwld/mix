@@ -19,7 +19,7 @@ bool isWrappedInProp(DartType type) {
   return type.element.name == 'Prop';
 }
 
-String getInnerTypeName(DartType type, bool isWrapped) {
+String getInnerTypeName(DartType type, {required bool isWrapped}) {
   if (!isWrapped) {
     return getBaseTypeName(type);
   }

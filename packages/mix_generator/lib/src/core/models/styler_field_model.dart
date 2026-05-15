@@ -93,7 +93,10 @@ class StylerFieldModel {
 
     // Check if wrapped in Prop<>
     final wrappedInProp = type_helpers.isWrappedInProp(type);
-    final innerTypeName = type_helpers.getInnerTypeName(type, wrappedInProp);
+    final innerTypeName = type_helpers.getInnerTypeName(
+      type,
+      isWrapped: wrappedInProp,
+    );
 
     // Check if raw list
     final isRawList = rawListTypes.containsKey(name);
