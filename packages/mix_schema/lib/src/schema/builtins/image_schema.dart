@@ -5,28 +5,29 @@ import 'package:mix/mix.dart';
 
 import '../../core/json_casts.dart';
 import '../../core/json_map.dart';
-import '../mix_schema_catalog.dart';
+import '../../core/prop_encode.dart';
+import '../shared/shared_schemas.dart';
+import '../styler_catalog.dart';
 import '../styler_definition.dart';
-import 'styler_field_encoders.dart';
 
 StylerContract<ImageSpec, ImageStyler> buildImageStylerDefinition(
-  MixSchemaCatalog catalog,
+  StylerCatalog catalog,
 ) {
   return buildStylerCodecContract(
     catalog: catalog,
     type: .image,
     emptyStyle: ImageStyler(image: _TransparentImageProvider.instance),
     fields: {
-      'image': catalog.imageProvider,
+      'image': catalog.imageProviderCodec,
       'width': Ack.number().optional(),
       'height': Ack.number().optional(),
-      'color': catalog.color.optional(),
-      'repeat': catalog.imageRepeat.optional(),
-      'fit': catalog.boxFit.optional(),
-      'alignment': catalog.alignment.optional(),
-      'centerSlice': catalog.rect.optional(),
-      'filterQuality': catalog.filterQuality.optional(),
-      'colorBlendMode': catalog.blendMode.optional(),
+      'color': colorCodec.optional(),
+      'repeat': imageRepeatSchema.optional(),
+      'fit': boxFitSchema.optional(),
+      'alignment': alignmentCodec.optional(),
+      'centerSlice': rectCodec.optional(),
+      'filterQuality': filterQualitySchema.optional(),
+      'colorBlendMode': blendModeSchema.optional(),
       'semanticLabel': Ack.string().optional(),
       'excludeFromSemantics': Ack.boolean().optional(),
       'gaplessPlayback': Ack.boolean().optional(),
@@ -34,7 +35,7 @@ StylerContract<ImageSpec, ImageStyler> buildImageStylerDefinition(
       'matchTextDirection': Ack.boolean().optional(),
     },
     build: _decodeImageStyler,
-    encodeFields: encodeImageFields,
+    encodeFields: _encodeImageFields,
   );
 }
 
@@ -64,6 +65,28 @@ ImageStyler _decodeImageStyler(
     modifier: modifier,
     variants: variants,
   );
+}
+
+JsonMap _encodeImageFields(ImageStyler value) {
+  return {
+    'image': requiredPropValue(value.$image, 'image'),
+    ...optionalJsonMap([
+      ('width', propValue(value.$width)),
+      ('height', propValue(value.$height)),
+      ('color', propValue(value.$color)),
+      ('repeat', propValue(value.$repeat)),
+      ('fit', propValue(value.$fit)),
+      ('alignment', propValue(value.$alignment)),
+      ('centerSlice', propValue(value.$centerSlice)),
+      ('filterQuality', propValue(value.$filterQuality)),
+      ('colorBlendMode', propValue(value.$colorBlendMode)),
+      ('semanticLabel', propValue(value.$semanticLabel)),
+      ('excludeFromSemantics', propValue(value.$excludeFromSemantics)),
+      ('gaplessPlayback', propValue(value.$gaplessPlayback)),
+      ('isAntiAlias', propValue(value.$isAntiAlias)),
+      ('matchTextDirection', propValue(value.$matchTextDirection)),
+    ]),
+  };
 }
 
 final class _TransparentImageProvider

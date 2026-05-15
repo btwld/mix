@@ -10,9 +10,10 @@ AckSchema<ContextVariantLeaf> buildContextVariantLeafSchema({
   return variantConditionDefinition(type).buildLeafSchema();
 }
 
-AckSchema<VariantStyle<S>> buildContextVariantStyleBranch<
-  S extends Spec<S>,
-  T extends Style<S>
->({required SchemaVariant type, required AckSchema<T> styleSchema}) {
+CodecSchema<Map<String, Object?>, VariantStyle<S>>
+buildContextVariantStyleBranch<S extends Spec<S>, T extends Style<S>>({
+  required SchemaVariant type,
+  required AckSchema<T> styleSchema,
+}) {
   return variantConditionDefinition(type).buildVariantSchema(styleSchema);
 }

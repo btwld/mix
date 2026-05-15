@@ -3,16 +3,16 @@ import 'package:mix/mix.dart';
 
 import '../../core/json_casts.dart';
 import '../../core/json_map.dart';
-import '../mix_schema_catalog.dart';
+import '../styler_catalog.dart';
 import '../styler_definition.dart';
 import 'built_in_field_groups.dart';
 import 'styler_field_encoders.dart';
 
 StylerContract<FlexSpec, FlexStyler> buildFlexStylerDefinition(
-  MixSchemaCatalog catalog,
+  StylerCatalog catalog,
 ) {
   final emptyStyle = FlexStyler();
-  final fields = buildFlexStylerFields(catalog);
+  final fields = buildFlexStylerFields();
 
   return buildStylerCodecContract(
     catalog: catalog,

@@ -4,8 +4,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 import 'package:mix_schema/mix_schema.dart';
-import 'package:mix_schema/src/registry/registry_catalog.dart';
-import 'package:mix_schema/src/schema/mix_schema_catalog.dart';
 import 'package:mix_schema/src/schema/painting/gradient_schemas.dart';
 
 void main() {
@@ -383,7 +381,17 @@ void main() {
         'maxVariantsPerStyler': 64,
         'maxModifiersPerStyler': 64,
       });
-      expect(schema['anyOf'], isA<List<Object?>>());
+      final branches = schema['anyOf'] as List<Object?>;
+      final boxBranch = branches.cast<Map>().singleWhere((branch) {
+        final properties = branch['properties'] as Map;
+        final type = properties['type'] as Map;
+
+        return type['const'] == 'box';
+      });
+      final properties = boxBranch['properties'] as Map;
+
+      expect(properties['type'], {'type': 'string', 'const': 'box'});
+      expect(boxBranch['required'], contains('type'));
     });
 
     test('exports custom limits in JSON Schema metadata', () {
@@ -411,7 +419,6 @@ void main() {
 
   group('neutral gradient transform naming', () {
     test('decodes and encodes css linear keyword transforms', () {
-      final catalog = MixSchemaCatalog(registries: RegistryCatalog(const []));
       final payload = {
         'type': 'linear_gradient',
         'colors': ['#000000FF', '#FFFFFFFF'],
@@ -421,23 +428,22 @@ void main() {
         },
       };
 
-      final decoded = catalog.gradient.parse(payload);
+      final decoded = gradientCodec.parse(payload);
       final source =
           (decoded as LinearGradientMix).$transform!.sources.single
               as ValueSource<GradientTransform>;
 
       expect(source.value, isA<CssLinearKeywordGradientTransform>());
-      expect(catalog.gradient.encode(decoded), payload);
+      expect(gradientCodec.encode(decoded), payload);
     });
 
     test('rejects old tailwind-specific transform and direction names', () {
-      final catalog = MixSchemaCatalog(registries: RegistryCatalog(const []));
-      final oldTransform = catalog.gradient.safeParse({
+      final oldTransform = gradientCodec.safeParse({
         'type': 'linear_gradient',
         'colors': ['#000000FF', '#FFFFFFFF'],
         'transform': {'type': 'tailwind_css_angle_rect', 'direction': 'to-br'},
       });
-      final oldDirection = catalog.gradient.safeParse({
+      final oldDirection = gradientCodec.safeParse({
         'type': 'linear_gradient',
         'colors': ['#000000FF', '#FFFFFFFF'],
         'transform': {

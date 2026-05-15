@@ -6,7 +6,7 @@ import 'package:mix/mix.dart';
 import 'package:mix_schema/src/core/mix_schema_scope.dart';
 import 'package:mix_schema/src/registry/registry_builder.dart';
 import 'package:mix_schema/src/registry/registry_catalog.dart';
-import 'package:mix_schema/src/schema/mix_schema_catalog.dart';
+import 'package:mix_schema/src/schema/styler_catalog.dart';
 
 void main() {
   group('registry reverse lookup', () {
@@ -40,12 +40,12 @@ void main() {
       final images = RegistryBuilder<ImageProvider<Object>>.builtIn(
         scope: MixSchemaScope.imageProvider,
       )..register('hero', image);
-      final catalog = MixSchemaCatalog(
+      final catalog = StylerCatalog(
         registries: RegistryCatalog([images.freeze()]),
       );
 
-      expect(catalog.imageProvider.encode(image), 'hero');
-      expect(catalog.imageProvider.parse('hero'), same(image));
+      expect(catalog.imageProviderCodec.encode(image), 'hero');
+      expect(catalog.imageProviderCodec.parse('hero'), same(image));
     });
 
     test('animation schema encodes registered onEnd callbacks', () {
@@ -54,7 +54,7 @@ void main() {
       final callbacks = RegistryBuilder<VoidCallback>.builtIn(
         scope: MixSchemaScope.animationOnEnd,
       )..register('done', onEnd);
-      final catalog = MixSchemaCatalog(
+      final catalog = StylerCatalog(
         registries: RegistryCatalog([callbacks.freeze()]),
       );
       final config = CurveAnimationConfig(
@@ -70,8 +70,8 @@ void main() {
         'onEnd': 'done',
       };
 
-      expect(catalog.animation.encode(config), wire);
-      expect(catalog.animation.parse(wire), config);
+      expect(catalog.metadata.animationCodec.encode(config), wire);
+      expect(catalog.metadata.animationCodec.parse(wire), config);
     });
   });
 }

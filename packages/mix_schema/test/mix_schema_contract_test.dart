@@ -11,10 +11,13 @@ void main() {
         ..register(
           'demo',
           Ack.codec<Map<String, Object?>, Object>(
-            input: Ack.object({'value': Ack.integer()}),
+            input: Ack.object({
+              'type': Ack.literal('demo'),
+              'value': Ack.integer(),
+            }),
             output: Ack.instance<Object>(),
             decoder: (data) => data['value'] as int,
-            encoder: (value) => {'value': value as int},
+            encoder: (value) => {'type': 'demo', 'value': value as int},
           ),
         );
 
@@ -36,10 +39,13 @@ void main() {
           (MixSchemaContractBuilder()..register(
                 'demo',
                 Ack.codec<Map<String, Object?>, Object>(
-                  input: Ack.object({'value': Ack.integer()}),
+                  input: Ack.object({
+                    'type': Ack.literal('demo'),
+                    'value': Ack.integer(),
+                  }),
                   output: Ack.instance<Object>(),
                   decoder: (data) => data['value'] as int,
-                  encoder: (value) => {'value': value as int},
+                  encoder: (value) => {'type': 'demo', 'value': value as int},
                 ),
               ))
               .freeze();

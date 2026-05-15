@@ -1,99 +1,97 @@
 import 'package:ack/ack.dart';
 
-import '../mix_schema_catalog.dart';
+import '../shared/shared_schemas.dart';
+import '../styler_catalog.dart';
 
-Map<String, AckSchema> buildBoxStylerFields(MixSchemaCatalog catalog) {
+Map<String, AckSchema> buildBoxStylerFields(StylerCatalog catalog) {
   return {
-    'alignment': catalog.alignment.optional(),
-    ..._boxSpacingFields(catalog),
-    'constraints': catalog.boxConstraints.optional(),
+    'alignment': alignmentCodec.optional(),
+    ..._boxSpacingFields(),
+    'constraints': boxConstraintsCodec.optional(),
     ..._boxDecorationFields(catalog),
-    ..._boxTransformAndClipFields(catalog),
+    ..._boxTransformAndClipFields(),
   };
 }
 
-Map<String, AckSchema> buildFlexStylerFields(MixSchemaCatalog catalog) {
-  return _flexLayoutFields(catalog);
+Map<String, AckSchema> buildFlexStylerFields() {
+  return _flexLayoutFields();
 }
 
-Map<String, AckSchema> buildStackStylerFields(MixSchemaCatalog catalog) {
-  return _stackLayoutFields(catalog);
+Map<String, AckSchema> buildStackStylerFields() {
+  return _stackLayoutFields();
 }
 
-Map<String, AckSchema> buildFlexBoxStylerFields(MixSchemaCatalog catalog) {
+Map<String, AckSchema> buildFlexBoxStylerFields(StylerCatalog catalog) {
   return {
     ..._boxDecorationFields(catalog),
-    ..._boxSpacingFields(catalog),
-    'alignment': catalog.alignment.optional(),
-    'constraints': catalog.boxConstraints.optional(),
-    ..._boxTransformAndClipFields(catalog),
-    ..._flexLayoutFields(catalog, clipBehaviorField: 'flexClipBehavior'),
+    ..._boxSpacingFields(),
+    'alignment': alignmentCodec.optional(),
+    'constraints': boxConstraintsCodec.optional(),
+    ..._boxTransformAndClipFields(),
+    ..._flexLayoutFields(clipBehaviorField: 'flexClipBehavior'),
   };
 }
 
-Map<String, AckSchema> buildStackBoxStylerFields(MixSchemaCatalog catalog) {
+Map<String, AckSchema> buildStackBoxStylerFields(StylerCatalog catalog) {
   return {
     ..._boxDecorationFields(catalog),
-    ..._boxSpacingFields(catalog),
-    'alignment': catalog.alignment.optional(),
-    'constraints': catalog.boxConstraints.optional(),
-    ..._boxTransformAndClipFields(catalog),
+    ..._boxSpacingFields(),
+    'alignment': alignmentCodec.optional(),
+    'constraints': boxConstraintsCodec.optional(),
+    ..._boxTransformAndClipFields(),
     ..._stackLayoutFields(
-      catalog,
       alignmentField: 'stackAlignment',
       clipBehaviorField: 'stackClipBehavior',
     ),
   };
 }
 
-Map<String, AckSchema> _boxSpacingFields(MixSchemaCatalog catalog) {
+Map<String, AckSchema> _boxSpacingFields() {
   return {
-    'padding': catalog.edgeInsetsGeometry.optional(),
-    'margin': catalog.edgeInsetsGeometry.optional(),
+    'padding': edgeInsetsGeometryCodec.optional(),
+    'margin': edgeInsetsGeometryCodec.optional(),
   };
 }
 
-Map<String, AckSchema> _boxDecorationFields(MixSchemaCatalog catalog) {
+Map<String, AckSchema> _boxDecorationFields(StylerCatalog catalog) {
   return {
-    'decoration': catalog.decoration.optional(),
-    'foregroundDecoration': catalog.decoration.optional(),
+    'decoration': catalog.decorationCodec.optional(),
+    'foregroundDecoration': catalog.decorationCodec.optional(),
   };
 }
 
-Map<String, AckSchema> _boxTransformAndClipFields(MixSchemaCatalog catalog) {
+Map<String, AckSchema> _boxTransformAndClipFields() {
   return {
-    'transform': catalog.matrix4.optional(),
-    'transformAlignment': catalog.alignment.optional(),
-    'clipBehavior': catalog.clip.optional(),
+    'transform': matrix4Codec.optional(),
+    'transformAlignment': alignmentCodec.optional(),
+    'clipBehavior': clipSchema.optional(),
   };
 }
 
-Map<String, AckSchema> _flexLayoutFields(
-  MixSchemaCatalog catalog, {
+Map<String, AckSchema> _flexLayoutFields({
   String clipBehaviorField = 'clipBehavior',
 }) {
   return {
-    'direction': catalog.axis.optional(),
-    'mainAxisAlignment': catalog.mainAxisAlignment.optional(),
-    'crossAxisAlignment': catalog.crossAxisAlignment.optional(),
-    'mainAxisSize': catalog.mainAxisSize.optional(),
-    'verticalDirection': catalog.verticalDirection.optional(),
-    'textDirection': catalog.textDirection.optional(),
-    'textBaseline': catalog.textBaseline.optional(),
-    clipBehaviorField: catalog.clip.optional(),
+    'direction': axisSchema.optional(),
+    'mainAxisAlignment': mainAxisAlignmentSchema.optional(),
+    'crossAxisAlignment': crossAxisAlignmentSchema.optional(),
+    'mainAxisSize': mainAxisSizeSchema.optional(),
+    'verticalDirection': verticalDirectionSchema.optional(),
+    'textDirection': textDirectionSchema.optional(),
+    'textBaseline': textBaselineSchema.optional(),
+    clipBehaviorField: clipSchema.optional(),
     'spacing': Ack.number().optional(),
   };
 }
 
-Map<String, AckSchema> _stackLayoutFields(
-  MixSchemaCatalog catalog, {
+Map<String, AckSchema> _stackLayoutFields({
   String alignmentField = 'alignment',
   String clipBehaviorField = 'clipBehavior',
 }) {
   return {
-    alignmentField: catalog.alignment.optional(),
-    'fit': catalog.stackFit.optional(),
-    'textDirection': catalog.textDirection.optional(),
-    clipBehaviorField: catalog.clip.optional(),
+    alignmentField: alignmentCodec.optional(),
+    'fit': stackFitSchema.optional(),
+    'textDirection': textDirectionSchema.optional(),
+    clipBehaviorField: clipSchema.optional(),
   };
 }

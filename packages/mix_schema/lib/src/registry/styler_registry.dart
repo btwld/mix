@@ -3,16 +3,14 @@ import 'package:ack/ack.dart';
 import '../contract/mix_schema_limits.dart';
 import '../core/json_map.dart';
 import '../schema/builtins/built_in_styler_definitions.dart';
-import '../schema/discriminated_schema_builder.dart';
-import '../schema/mix_schema_catalog.dart';
-import '../schema/object_backed_schema.dart';
+import '../schema/styler_catalog.dart';
 import 'frozen_registry.dart';
 import 'registry_catalog.dart';
 
 /// Mutable registry of styler schemas used to build the payload decoder.
 final class StylerRegistry {
   final MixSchemaLimits limits;
-  final List<DiscriminatedSchemaBranch<Object>> _branches = [];
+  final Map<String, CodecSchema<JsonMap, Object>> _schemas = {};
   final Set<String> _registeredTypes = <String>{};
   AckSchema<Object>? _payloadSchema;
   bool _frozen = false;
@@ -29,10 +27,7 @@ final class StylerRegistry {
   }) {
     final stylerRegistry = StylerRegistry(limits: limits);
     final registryCatalog = RegistryCatalog(registries);
-    final catalog = MixSchemaCatalog(
-      registries: registryCatalog,
-      limits: limits,
-    );
+    final catalog = StylerCatalog(registries: registryCatalog, limits: limits);
 
     _registerBuiltInStylers(registry: stylerRegistry, catalog: catalog);
 
@@ -41,8 +36,7 @@ final class StylerRegistry {
 
   void _register({
     required String type,
-    required AckSchema<Object> stylerSchema,
-    required DiscriminatedSchemaBranch<Object> branch,
+    required CodecSchema<JsonMap, Object> stylerSchema,
   }) {
     if (_frozen) {
       throw StateError('Registry is frozen.');
@@ -54,7 +48,7 @@ final class StylerRegistry {
 
     _validateStylerRegistration(type: type, stylerSchema: stylerSchema);
 
-    _branches.add(branch);
+    _schemas[type] = stylerSchema;
     _registeredTypes.add(type);
   }
 
@@ -80,8 +74,7 @@ final class StylerRegistry {
   ) {
     _register(
       type: type,
-      stylerSchema: stylerSchema as AckSchema<Object>,
-      branch: discriminatedBranch(type: type, schema: stylerSchema),
+      stylerSchema: stylerSchema as CodecSchema<JsonMap, Object>,
     );
   }
 
@@ -91,9 +84,9 @@ final class StylerRegistry {
       throw StateError('Registry is frozen.');
     }
 
-    _payloadSchema = buildDiscriminatedSchema<Object>(
+    _payloadSchema = Ack.discriminated<Object>(
       discriminatorKey: 'type',
-      branches: _branches,
+      schemas: Map.unmodifiable(_schemas),
     );
     _frozen = true;
   }
@@ -119,34 +112,37 @@ final class StylerRegistry {
 
 void _validateStylerRegistration({
   required String type,
-  required AckSchema<Object> stylerSchema,
+  required CodecSchema<JsonMap, Object> stylerSchema,
 }) {
   if (type.trim().isEmpty) {
     throw ArgumentError.value(type, 'type', 'Styler type must not be empty.');
   }
 
-  final objectSchema = requireObjectBackedSchema(
-    stylerSchema,
-    'Styler schemas must be backed by Ack.object(...).',
-  );
-  if (objectSchema.properties.containsKey('type')) {
+  final inputSchema = stylerSchema.inputSchema;
+  if (inputSchema is! ObjectSchema) {
     throw ArgumentError.value(
       stylerSchema,
       'stylerSchema',
-      'Styler "$type" must not declare `type` inside its Ack object schema.',
+      'Styler "$type" must be backed by Ack.object(...).',
+    );
+  }
+
+  final typeSchema = inputSchema.properties['type'];
+  if (typeSchema == null || typeSchema.toJsonSchema()['const'] != type) {
+    throw ArgumentError.value(
+      stylerSchema,
+      'stylerSchema',
+      'Styler "$type" must declare `type: Ack.literal("$type")` inside its '
+          'Ack object schema.',
     );
   }
 }
 
 void _registerBuiltInStylers({
   required StylerRegistry registry,
-  required MixSchemaCatalog catalog,
+  required StylerCatalog catalog,
 }) {
   for (final entry in buildBuiltInStylerDefinitions(catalog).entries) {
-    registry._register(
-      type: entry.value.type.wireValue,
-      stylerSchema: entry.value.schema,
-      branch: entry.value.branch,
-    );
+    registry._register(type: entry.key.wireValue, stylerSchema: entry.value);
   }
 }

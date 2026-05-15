@@ -5,8 +5,8 @@ import '../../contract/mix_schema_limits.dart';
 import '../../registry/registry_catalog.dart';
 import '../../registry/registry_value_codec.dart';
 
-CodecSchema<String, ImageProvider<Object>> buildImageProviderSchema({
-  required RegistryCatalog registries,
+CodecSchema<String, ImageProvider<Object>> buildImageProviderCodec(
+  RegistryCatalog registries, {
   required MixSchemaLimits limits,
 }) {
   return registryValueCodec(
@@ -17,8 +17,8 @@ CodecSchema<String, ImageProvider<Object>> buildImageProviderSchema({
   );
 }
 
-CodecSchema<String, IconData> buildIconDataSchema({
-  required RegistryCatalog registries,
+CodecSchema<String, IconData> buildIconDataCodec(
+  RegistryCatalog registries, {
   required MixSchemaLimits limits,
 }) {
   return registryValueCodec(

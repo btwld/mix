@@ -6,26 +6,22 @@ import '../../core/schema_wire_types.dart';
 import '../../errors/mix_schema_error.dart';
 import '../../errors/schema_error_mapper.dart';
 import '../../errors/schema_transform_exceptions.dart';
-import '../discriminated_schema_builder.dart';
 import 'context_variant_leaf_schema.dart';
 import 'variant_condition_definition.dart';
 
 VariantConditionParser buildVariantConditionParser() {
-  final leafSchema = buildDiscriminatedSchema<ContextVariantLeaf>(
+  final leafSchema = Ack.discriminated<ContextVariantLeaf>(
     discriminatorKey: 'type',
-    branches: [
+    schemas: {
       for (final type in sharedContextVariantLeafTypes)
-        discriminatedBranch<ContextVariantLeaf, ContextVariantLeaf>(
-          type: type.wireValue,
-          schema: buildContextVariantLeafSchema(type: type),
-        ),
-    ],
+        type.wireValue: buildContextVariantLeafSchema(type: type),
+    },
   );
 
   final compoundShapeSchema = Ack.object({
     'type': Ack.literal(SchemaVariant.contextAllOf.wireValue),
     'conditions': buildContextConditionListSchema(),
-  }).transform<Map<String, Object?>>((data) => data);
+  });
 
   return VariantConditionParser._(
     leafSchema: leafSchema,

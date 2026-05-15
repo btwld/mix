@@ -5,7 +5,6 @@ import 'package:mix/mix.dart';
 import '../../core/json_casts.dart';
 import '../../core/prop_encode.dart';
 import '../../core/schema_wire_types.dart';
-import '../discriminated_schema_builder.dart';
 import '../shared/shared_schemas.dart';
 
 final CodecSchema<Map<String, Object?>, BorderSideMix> borderSideCodec =
@@ -54,37 +53,29 @@ final CodecSchema<Map<String, Object?>, BoxShadowMix> boxShadowCodec =
       ]),
     );
 
-AckSchema<BoxBorderMix> buildBoxBorderSchema() {
-  return buildDiscriminatedSchema<BoxBorderMix>(
-    discriminatorKey: 'type',
-    branches: [
-      for (final type in SchemaBorder.values)
-        discriminatedBranch<BoxBorderMix, BoxBorderMix>(
-          type: type.wireValue,
-          schema: _buildBoxBorderBranch(type),
-        ),
-    ],
-  );
-}
+final AckSchema<BoxBorderMix> boxBorderCodec = Ack.discriminated<BoxBorderMix>(
+  discriminatorKey: 'type',
+  schemas: {
+    for (final type in SchemaBorder.values)
+      type.wireValue: _buildBoxBorderBranch(type),
+  },
+);
 
-AckSchema<BorderRadiusGeometryMix> buildBorderRadiusSchema() {
-  return buildDiscriminatedSchema<BorderRadiusGeometryMix>(
-    discriminatorKey: 'type',
-    branches: [
-      for (final type in SchemaBorderRadius.values)
-        discriminatedBranch<BorderRadiusGeometryMix, BorderRadiusGeometryMix>(
-          type: type.wireValue,
-          schema: _buildBorderRadiusBranch(type),
-        ),
-    ],
-  );
-}
+final AckSchema<BorderRadiusGeometryMix> borderRadiusCodec =
+    Ack.discriminated<BorderRadiusGeometryMix>(
+      discriminatorKey: 'type',
+      schemas: {
+        for (final type in SchemaBorderRadius.values)
+          type.wireValue: _buildBorderRadiusBranch(type),
+      },
+    );
 
 AckSchema<BoxBorderMix> _buildBoxBorderBranch(SchemaBorder type) {
   switch (type) {
     case .border:
       return Ack.codec<Map<String, Object?>, BoxBorderMix>(
         input: Ack.object({
+          'type': Ack.literal(type.wireValue),
           'top': borderSideCodec.optional(),
           'bottom': borderSideCodec.optional(),
           'left': borderSideCodec.optional(),
@@ -101,6 +92,7 @@ AckSchema<BoxBorderMix> _buildBoxBorderBranch(SchemaBorder type) {
           final mix = value as BorderMix;
 
           return optionalJsonMap([
+            ('type', type.wireValue),
             ('top', propMix<BorderSideMix>(mix.$top)),
             ('bottom', propMix<BorderSideMix>(mix.$bottom)),
             ('left', propMix<BorderSideMix>(mix.$left)),
@@ -111,6 +103,7 @@ AckSchema<BoxBorderMix> _buildBoxBorderBranch(SchemaBorder type) {
     case .borderDirectional:
       return Ack.codec<Map<String, Object?>, BoxBorderMix>(
         input: Ack.object({
+          'type': Ack.literal(type.wireValue),
           'top': borderSideCodec.optional(),
           'bottom': borderSideCodec.optional(),
           'start': borderSideCodec.optional(),
@@ -127,6 +120,7 @@ AckSchema<BoxBorderMix> _buildBoxBorderBranch(SchemaBorder type) {
           final mix = value as BorderDirectionalMix;
 
           return optionalJsonMap([
+            ('type', type.wireValue),
             ('top', propMix<BorderSideMix>(mix.$top)),
             ('bottom', propMix<BorderSideMix>(mix.$bottom)),
             ('start', propMix<BorderSideMix>(mix.$start)),
@@ -144,6 +138,7 @@ AckSchema<BorderRadiusGeometryMix> _buildBorderRadiusBranch(
     case .borderRadius:
       return Ack.codec<Map<String, Object?>, BorderRadiusGeometryMix>(
         input: Ack.object({
+          'type': Ack.literal(type.wireValue),
           'topLeft': radiusCodec.optional(),
           'topRight': radiusCodec.optional(),
           'bottomLeft': radiusCodec.optional(),
@@ -160,6 +155,7 @@ AckSchema<BorderRadiusGeometryMix> _buildBorderRadiusBranch(
           final mix = value as BorderRadiusMix;
 
           return optionalJsonMap([
+            ('type', type.wireValue),
             ('topLeft', propValue(mix.$topLeft)),
             ('topRight', propValue(mix.$topRight)),
             ('bottomLeft', propValue(mix.$bottomLeft)),
@@ -170,6 +166,7 @@ AckSchema<BorderRadiusGeometryMix> _buildBorderRadiusBranch(
     case .borderRadiusDirectional:
       return Ack.codec<Map<String, Object?>, BorderRadiusGeometryMix>(
         input: Ack.object({
+          'type': Ack.literal(type.wireValue),
           'topStart': radiusCodec.optional(),
           'topEnd': radiusCodec.optional(),
           'bottomStart': radiusCodec.optional(),
@@ -186,6 +183,7 @@ AckSchema<BorderRadiusGeometryMix> _buildBorderRadiusBranch(
           final mix = value as BorderRadiusDirectionalMix;
 
           return optionalJsonMap([
+            ('type', type.wireValue),
             ('topStart', propValue(mix.$topStart)),
             ('topEnd', propValue(mix.$topEnd)),
             ('bottomStart', propValue(mix.$bottomStart)),

@@ -2,13 +2,13 @@ import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
 import '../../core/json_map.dart';
-import '../mix_schema_catalog.dart';
+import '../styler_catalog.dart';
 import '../styler_definition.dart';
 import 'built_in_field_groups.dart';
 import 'styler_field_encoders.dart';
 
 StylerContract<BoxSpec, BoxStyler> buildBoxStylerDefinition(
-  MixSchemaCatalog catalog,
+  StylerCatalog catalog,
 ) {
   final emptyStyle = BoxStyler();
   final fields = buildBoxStylerFields(catalog);

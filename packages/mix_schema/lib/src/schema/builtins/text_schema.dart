@@ -3,35 +3,36 @@ import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
 import '../../core/json_map.dart';
-import '../mix_schema_catalog.dart';
+import '../../core/prop_encode.dart';
+import '../shared/shared_schemas.dart';
+import '../styler_catalog.dart';
 import '../styler_definition.dart';
-import 'styler_field_encoders.dart';
 
 StylerContract<TextSpec, TextStyler> buildTextStylerDefinition(
-  MixSchemaCatalog catalog,
+  StylerCatalog catalog,
 ) {
   return buildStylerCodecContract(
     catalog: catalog,
     type: .text,
     emptyStyle: TextStyler(),
     fields: {
-      'overflow': catalog.textOverflow.optional(),
-      'strutStyle': catalog.strutStyle.optional(),
-      'textAlign': catalog.textAlign.optional(),
-      'textScaler': catalog.textScaler.optional(),
+      'overflow': textOverflowSchema.optional(),
+      'strutStyle': strutStyleCodec.optional(),
+      'textAlign': textAlignSchema.optional(),
+      'textScaler': textScalerCodec.optional(),
       'maxLines': Ack.integer().min(1).optional(),
-      'style': catalog.textStyle.optional(),
-      'textWidthBasis': catalog.textWidthBasis.optional(),
-      'textHeightBehavior': catalog.textHeightBehavior.optional(),
-      'textDirection': catalog.textDirection.optional(),
+      'style': textStyleCodec.optional(),
+      'textWidthBasis': textWidthBasisSchema.optional(),
+      'textHeightBehavior': textHeightBehaviorCodec.optional(),
+      'textDirection': textDirectionSchema.optional(),
       'softWrap': Ack.boolean().optional(),
-      'textTransform': catalog.textTransformDirective.optional(),
-      'selectionColor': catalog.color.optional(),
+      'textTransform': textTransformDirectiveSchema.optional(),
+      'selectionColor': colorCodec.optional(),
       'semanticsLabel': Ack.string().optional(),
-      'locale': catalog.locale.optional(),
+      'locale': localeCodec.optional(),
     },
     build: _decodeTextStyler,
-    encodeFields: encodeTextFields,
+    encodeFields: _encodeTextFields,
   );
 }
 
@@ -62,4 +63,37 @@ TextStyler _decodeTextStyler(
     modifier: modifier,
     variants: variants,
   );
+}
+
+JsonMap _encodeTextFields(TextStyler value) {
+  final textDirectives = value.$textDirectives;
+  Directive<String>? textTransform;
+  if (textDirectives != null && textDirectives.isNotEmpty) {
+    if (textDirectives.length != 1) {
+      throw UnsupportedError(
+        'Only one text transform directive can be encoded.',
+      );
+    }
+    textTransform = textDirectives.single;
+  }
+
+  return optionalJsonMap([
+    ('overflow', propValue(value.$overflow)),
+    ('strutStyle', propMix<StrutStyleMix>(value.$strutStyle)),
+    ('textAlign', propValue(value.$textAlign)),
+    ('textScaler', propValue(value.$textScaler)),
+    ('maxLines', propValue(value.$maxLines)),
+    ('style', propMix<TextStyleMix>(value.$style)),
+    ('textWidthBasis', propValue(value.$textWidthBasis)),
+    (
+      'textHeightBehavior',
+      propMix<TextHeightBehaviorMix>(value.$textHeightBehavior),
+    ),
+    ('textDirection', propValue(value.$textDirection)),
+    ('softWrap', propValue(value.$softWrap)),
+    ('textTransform', textTransform),
+    ('selectionColor', propValue(value.$selectionColor)),
+    ('semanticsLabel', propValue(value.$semanticsLabel)),
+    ('locale', propValue(value.$locale)),
+  ]);
 }

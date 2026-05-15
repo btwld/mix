@@ -4,26 +4,27 @@ import 'package:mix/mix.dart';
 
 import '../../core/json_casts.dart';
 import '../../core/json_map.dart';
-import '../mix_schema_catalog.dart';
+import '../../core/prop_encode.dart';
+import '../shared/shared_schemas.dart';
+import '../styler_catalog.dart';
 import '../styler_definition.dart';
-import 'styler_field_encoders.dart';
 
 StylerContract<IconSpec, IconStyler> buildIconStylerDefinition(
-  MixSchemaCatalog catalog,
+  StylerCatalog catalog,
 ) {
   return buildStylerCodecContract(
     catalog: catalog,
     type: .icon,
     emptyStyle: IconStyler(),
     fields: {
-      'icon': catalog.iconData.optional(),
-      'color': catalog.color.optional(),
+      'icon': catalog.iconDataCodec.optional(),
+      'color': colorCodec.optional(),
       'size': Ack.number().optional(),
       'weight': Ack.number().optional(),
       'grade': Ack.number().optional(),
       'opticalSize': Ack.number().optional(),
-      'shadows': Ack.list(catalog.shadow).optional(),
-      'textDirection': catalog.textDirection.optional(),
+      'shadows': Ack.list(shadowCodec).optional(),
+      'textDirection': textDirectionSchema.optional(),
       'applyTextScaling': Ack.boolean().optional(),
       'fill': Ack.number().optional(),
       'semanticsLabel': Ack.string().optional(),
@@ -33,10 +34,10 @@ StylerContract<IconSpec, IconStyler> buildIconStylerDefinition(
             message: 'Must be in [0, 1].',
           )
           .optional(),
-      'blendMode': catalog.blendMode.optional(),
+      'blendMode': blendModeSchema.optional(),
     },
     build: _decodeIconStyler,
-    encodeFields: encodeIconFields,
+    encodeFields: _encodeIconFields,
   );
 }
 
@@ -64,4 +65,24 @@ IconStyler _decodeIconStyler(
     modifier: modifier,
     variants: variants,
   );
+}
+
+JsonMap _encodeIconFields(IconStyler value) {
+  final ShadowListMix? shadows = propMix(value.$shadows);
+
+  return optionalJsonMap([
+    ('icon', propValue(value.$icon)),
+    ('color', propValue(value.$color)),
+    ('size', propValue(value.$size)),
+    ('weight', propValue(value.$weight)),
+    ('grade', propValue(value.$grade)),
+    ('opticalSize', propValue(value.$opticalSize)),
+    ('shadows', shadows?.items),
+    ('textDirection', propValue(value.$textDirection)),
+    ('applyTextScaling', propValue(value.$applyTextScaling)),
+    ('fill', propValue(value.$fill)),
+    ('semanticsLabel', propValue(value.$semanticsLabel)),
+    ('opacity', propValue(value.$opacity)),
+    ('blendMode', propValue(value.$blendMode)),
+  ]);
 }

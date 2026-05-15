@@ -5,16 +5,17 @@ import 'package:mix/mix.dart';
 import 'package:mix_schema/src/errors/mix_schema_error_code.dart';
 import 'package:mix_schema/src/errors/schema_error_mapper.dart';
 import 'package:mix_schema/src/registry/registry_catalog.dart';
-import 'package:mix_schema/src/schema/mix_schema_catalog.dart';
 import 'package:mix_schema/src/schema/painting/gradient_schemas.dart';
+import 'package:mix_schema/src/schema/painting/shape_border_schemas.dart';
 import 'package:mix_schema/src/schema/shared/box_constraints_schema.dart';
+import 'package:mix_schema/src/schema/styler_catalog.dart';
 
 void main() {
   group('Shared schema catalog', () {
-    final catalog = MixSchemaCatalog(registries: RegistryCatalog(const []));
+    final catalog = StylerCatalog(registries: RegistryCatalog(const []));
 
     test('buildDecorationSchema decodes reusable painting objects', () {
-      final result = catalog.decoration.safeParse({
+      final result = catalog.decorationCodec.safeParse({
         'type': 'box_decoration',
         'gradient': {
           'type': 'linear_gradient',
@@ -57,7 +58,7 @@ void main() {
     });
 
     test('buildDecorationSchema validates gradient stop counts', () {
-      final result = catalog.decoration.safeParse({
+      final result = catalog.decorationCodec.safeParse({
         'type': 'box_decoration',
         'gradient': {
           'type': 'linear_gradient',
@@ -97,7 +98,7 @@ void main() {
     testWidgets(
       'buildDecorationSchema decodes shape decorations and gradient transforms',
       (tester) async {
-        final result = catalog.decoration.safeParse({
+        final result = catalog.decorationCodec.safeParse({
           'type': 'shape_decoration',
           'shape': {
             'type': 'rounded_rectangle_border',
@@ -199,8 +200,8 @@ void main() {
         };
 
         for (final MapEntry(:key, :value) in cases.entries) {
-          expect(catalog.gradient.encode(key), value);
-          expect(catalog.gradient.parse(value), key);
+          expect(gradientCodec.encode(key), value);
+          expect(gradientCodec.parse(value), key);
         }
       },
     );
@@ -293,8 +294,8 @@ void main() {
       };
 
       for (final MapEntry(:key, :value) in cases.entries) {
-        expect(catalog.shapeBorder.encode(key), value);
-        expect(catalog.shapeBorder.parse(value), key);
+        expect(shapeBorderCodec.encode(key), value);
+        expect(shapeBorderCodec.parse(value), key);
       }
     });
 
@@ -390,10 +391,10 @@ void main() {
           ],
         };
 
-        expect(catalog.decoration.encode(boxDecoration), boxWire);
-        expect(catalog.decoration.parse(boxWire), boxDecoration);
-        expect(catalog.decoration.encode(shapeDecoration), shapeWire);
-        expect(catalog.decoration.parse(shapeWire), shapeDecoration);
+        expect(catalog.decorationCodec.encode(boxDecoration), boxWire);
+        expect(catalog.decorationCodec.parse(boxWire), boxDecoration);
+        expect(catalog.decorationCodec.encode(shapeDecoration), shapeWire);
+        expect(catalog.decorationCodec.parse(shapeWire), shapeDecoration);
       },
     );
   });

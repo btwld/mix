@@ -2,20 +2,28 @@ import 'package:ack/ack.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
+import '../../contract/mix_schema_limits.dart';
 import '../../core/json_casts.dart';
 import '../../core/prop_encode.dart';
 import '../../core/schema_wire_types.dart';
-import '../discriminated_schema_builder.dart';
+import '../../registry/registry_catalog.dart';
 import '../shared/shared_schemas.dart';
 import 'border_schemas.dart';
+import 'gradient_schemas.dart';
+import 'shape_border_schemas.dart';
 
-CodecSchema<Map<String, Object?>, DecorationImageMix>
-buildDecorationImageSchema({
-  required AckSchema<ImageProvider<Object>> imageProviderSchema,
+CodecSchema<Map<String, Object?>, DecorationImageMix> buildDecorationImageCodec(
+  RegistryCatalog registries, {
+  required MixSchemaLimits limits,
 }) {
+  final imageProviderCodec = buildImageProviderCodec(
+    registries,
+    limits: limits,
+  );
+
   return Ack.codec<Map<String, Object?>, DecorationImageMix>(
     input: Ack.object({
-      'image': imageProviderSchema,
+      'image': imageProviderCodec,
       'fit': boxFitSchema.optional(),
       'alignment': alignmentCodec.optional(),
       'centerSlice': rectCodec.optional(),
@@ -52,20 +60,24 @@ buildDecorationImageSchema({
   );
 }
 
-CodecSchema<Map<String, Object?>, BoxDecorationMix> buildBoxDecorationSchema({
-  required AckSchema<BoxBorderMix> borderSchema,
-  required AckSchema<BorderRadiusGeometryMix> borderRadiusSchema,
-  required AckSchema<GradientMix> gradientSchema,
-  required AckSchema<DecorationImageMix> imageSchema,
+CodecSchema<Map<String, Object?>, BoxDecorationMix> buildBoxDecorationCodec(
+  RegistryCatalog registries, {
+  required MixSchemaLimits limits,
 }) {
+  final decorationImageCodec = buildDecorationImageCodec(
+    registries,
+    limits: limits,
+  );
+
   return Ack.codec<Map<String, Object?>, BoxDecorationMix>(
     input:
         Ack.object({
+          'type': Ack.literal(SchemaDecoration.box.wireValue),
           'color': colorCodec.optional(),
-          'image': imageSchema.optional(),
-          'gradient': gradientSchema.optional(),
-          'border': borderSchema.optional(),
-          'borderRadius': borderRadiusSchema.optional(),
+          'image': decorationImageCodec.optional(),
+          'gradient': gradientCodec.optional(),
+          'border': boxBorderCodec.optional(),
+          'borderRadius': borderRadiusCodec.optional(),
           'shape': boxShapeSchema.optional(),
           'backgroundBlendMode': blendModeSchema.optional(),
           'boxShadow': Ack.list(boxShadowCodec).optional(),
@@ -93,6 +105,7 @@ CodecSchema<Map<String, Object?>, BoxDecorationMix> buildBoxDecorationSchema({
       final BoxShadowListMix? boxShadow = propMix(value.$boxShadow);
 
       return optionalJsonMap([
+        ('type', SchemaDecoration.box.wireValue),
         ('color', propValue(value.$color)),
         ('image', propMix<DecorationImageMix>(value.$image)),
         ('gradient', propMix<GradientMix>(value.$gradient)),
@@ -106,18 +119,22 @@ CodecSchema<Map<String, Object?>, BoxDecorationMix> buildBoxDecorationSchema({
   );
 }
 
-CodecSchema<Map<String, Object?>, ShapeDecorationMix>
-buildShapeDecorationSchema({
-  required AckSchema<ShapeBorderMix> shapeBorderSchema,
-  required AckSchema<GradientMix> gradientSchema,
-  required AckSchema<DecorationImageMix> imageSchema,
+CodecSchema<Map<String, Object?>, ShapeDecorationMix> buildShapeDecorationCodec(
+  RegistryCatalog registries, {
+  required MixSchemaLimits limits,
 }) {
+  final decorationImageCodec = buildDecorationImageCodec(
+    registries,
+    limits: limits,
+  );
+
   return Ack.codec<Map<String, Object?>, ShapeDecorationMix>(
     input: Ack.object({
-      'shape': shapeBorderSchema.optional(),
+      'type': Ack.literal(SchemaDecoration.shape.wireValue),
+      'shape': shapeBorderCodec.optional(),
       'color': colorCodec.optional(),
-      'image': imageSchema.optional(),
-      'gradient': gradientSchema.optional(),
+      'image': decorationImageCodec.optional(),
+      'gradient': gradientCodec.optional(),
       'shadows': Ack.list(boxShadowCodec).optional(),
     }),
     output: Ack.instance<ShapeDecorationMix>(),
@@ -136,6 +153,7 @@ buildShapeDecorationSchema({
       final BoxShadowListMix? shadows = propMix(value.$shadows);
 
       return optionalJsonMap([
+        ('type', SchemaDecoration.shape.wireValue),
         ('shape', propMix<ShapeBorderMix>(value.$shape)),
         ('color', propValue(value.$color)),
         ('image', propMix<DecorationImageMix>(value.$image)),
@@ -146,24 +164,21 @@ buildShapeDecorationSchema({
   );
 }
 
-AckSchema<DecorationMix> buildDecorationSchema({
-  required AckSchema<BoxDecorationMix> boxDecorationSchema,
-  required AckSchema<ShapeDecorationMix> shapeDecorationSchema,
+AckSchema<DecorationMix> buildDecorationCodec(
+  RegistryCatalog registries, {
+  required MixSchemaLimits limits,
 }) {
-  return buildDiscriminatedSchema<DecorationMix>(
+  return Ack.discriminated<DecorationMix>(
     discriminatorKey: 'type',
-    branches: [
-      for (final type in SchemaDecoration.values)
-        switch (type) {
-          .box => discriminatedBranch<DecorationMix, BoxDecorationMix>(
-            type: type.wireValue,
-            schema: boxDecorationSchema,
-          ),
-          .shape => discriminatedBranch<DecorationMix, ShapeDecorationMix>(
-            type: type.wireValue,
-            schema: shapeDecorationSchema,
-          ),
-        },
-    ],
+    schemas: {
+      SchemaDecoration.box.wireValue: buildBoxDecorationCodec(
+        registries,
+        limits: limits,
+      ),
+      SchemaDecoration.shape.wireValue: buildShapeDecorationCodec(
+        registries,
+        limits: limits,
+      ),
+    },
   );
 }

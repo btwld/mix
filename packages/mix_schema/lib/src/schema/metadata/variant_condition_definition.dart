@@ -55,7 +55,7 @@ final class VariantConditionDefinition {
 
   bool matchesVariant(Variant variant) => _matchesVariant(variant);
 
-  AckSchema<VariantStyle<S>> buildVariantSchema<
+  CodecSchema<Map<String, Object?>, VariantStyle<S>> buildVariantSchema<
     S extends Spec<S>,
     T extends Style<S>
   >(AckSchema<T> styleSchema) {
@@ -84,6 +84,7 @@ final class VariantConditionDefinition {
         }
 
         return {
+          'type': type.wireValue,
           ..._encodeLeaf(
             ContextVariantLeaf(variant: variant, canonicalKey: variant.key),
           ),
@@ -94,7 +95,7 @@ final class VariantConditionDefinition {
   }
 
   JsonMap encodeLeaf(ContextVariantLeaf leaf) {
-    return {'type': type.wireValue, ...codec.encodeTyped(leaf)};
+    return codec.encodeTyped(leaf);
   }
 
   JsonMap encodeLeafFields(ContextVariantLeaf leaf) {
@@ -107,19 +108,26 @@ final class VariantConditionDefinition {
 }
 
 CodecSchema<Map<String, Object?>, ContextVariantLeaf> _leafCodec({
+  required SchemaVariant type,
   required AckSchema<Map<String, Object?>> input,
   required VariantConditionLeafBuilder decoder,
   required VariantConditionLeafEncoder encoder,
   required VariantConditionMatcher matchesVariant,
 }) {
+  if (input is! ObjectSchema) {
+    throw StateError('Variant condition leaf codecs must be object-backed.');
+  }
+
   return Ack.codec(
-    input: input,
+    input: input.copyWith(
+      properties: {'type': Ack.literal(type.wireValue), ...input.properties},
+    ),
     output: Ack.instance<ContextVariantLeaf>().refine(
       (leaf) => matchesVariant(leaf.variant),
       message: 'Context variant leaf does not match this condition.',
     ),
     decoder: decoder,
-    encoder: encoder,
+    encoder: (leaf) => {'type': type.wireValue, ...encoder(leaf)},
   );
 }
 
@@ -159,6 +167,7 @@ VariantConditionDefinition _buildSharedVariantConditionDefinition(
       return VariantConditionDefinition(
         type: .widgetState,
         codec: _leafCodec(
+          type: .widgetState,
           input: Ack.object({'state': widgetStateSchema}),
           decoder: buildLeaf,
           encoder: _encodeWidgetStateLeaf,
@@ -179,6 +188,7 @@ VariantConditionDefinition _buildSharedVariantConditionDefinition(
       return VariantConditionDefinition(
         type: .enabled,
         codec: _leafCodec(
+          type: .enabled,
           input: Ack.object(const {}),
           decoder: buildLeaf,
           encoder: (_) => const {},
@@ -201,6 +211,7 @@ VariantConditionDefinition _buildSharedVariantConditionDefinition(
       return VariantConditionDefinition(
         type: .brightness,
         codec: _leafCodec(
+          type: .brightness,
           input: Ack.object({'brightness': brightnessSchema}),
           decoder: buildLeaf,
           encoder: _encodeBrightnessLeaf,
@@ -228,6 +239,7 @@ VariantConditionDefinition _buildSharedVariantConditionDefinition(
       return VariantConditionDefinition(
         type: .breakpoint,
         codec: _leafCodec(
+          type: .breakpoint,
           input:
               Ack.object({
                 'minWidth': Ack.number().nullable().optional(),
@@ -259,6 +271,7 @@ VariantConditionDefinition _buildSharedVariantConditionDefinition(
       return VariantConditionDefinition(
         type: .notWidgetState,
         codec: _leafCodec(
+          type: .notWidgetState,
           input: Ack.object({'state': widgetStateSchema}).refine(
             (data) => data['state'] != WidgetState.disabled,
             message: 'Use enabled for not(disabled).',

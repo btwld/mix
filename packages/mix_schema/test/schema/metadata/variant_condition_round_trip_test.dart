@@ -37,9 +37,7 @@ void main() {
           final definition = variantConditionDefinitions[type]!;
           final sampleFields = _sampleConditionFields(type);
           final expected = definition.buildLeaf(sampleFields);
-          final expectedFields = Map<String, Object?>.of(
-            definition.encode(sampleFields),
-          )..remove('type');
+          final expectedFields = definition.encode(sampleFields);
 
           expect(
             buildContextVariantLeafSchema(type: type).encode(expected),

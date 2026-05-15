@@ -68,8 +68,8 @@ CodecSchema<String, VoidCallback> _buildOnEndCallbackCodec({
   );
 }
 
-CodecSchema<Map<String, Object?>, CurveAnimationConfig> buildAnimationSchema({
-  required RegistryCatalog registries,
+CodecSchema<Map<String, Object?>, CurveAnimationConfig> buildAnimationCodec(
+  RegistryCatalog registries, {
   required MixSchemaLimits limits,
 }) {
   return Ack.codec<Map<String, Object?>, CurveAnimationConfig>(

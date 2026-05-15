@@ -13,10 +13,13 @@ void main() {
         ..register(
           'demo',
           Ack.codec<Map<String, Object?>, Object>(
-            input: Ack.object({'value': Ack.integer()}),
+            input: Ack.object({
+              'type': Ack.literal('demo'),
+              'value': Ack.integer(),
+            }),
             output: Ack.instance<Object>(),
             decoder: (data) => data['value'] as int,
-            encoder: (value) => {'value': value as int},
+            encoder: (value) => {'type': 'demo', 'value': value as int},
           ),
         )
         ..freeze();
@@ -41,7 +44,10 @@ void main() {
         ..register(
           'custom_box',
           Ack.codec<Map<String, Object?>, BoxStyler>(
-            input: Ack.object({'color': colorCodec.optional()}),
+            input: Ack.object({
+              'type': Ack.literal('custom_box'),
+              'color': colorCodec.optional(),
+            }),
             output: Ack.instance<BoxStyler>(),
             decoder: (data) {
               return BoxStyler(
@@ -50,7 +56,7 @@ void main() {
                     : BoxDecorationMix(color: data['color'] as Color),
               );
             },
-            encoder: (_) => const {},
+            encoder: (_) => const {'type': 'custom_box'},
           ),
         );
 
@@ -69,13 +75,16 @@ void main() {
         ..register(
           'demo',
           Ack.codec<Map<String, Object?>, Object>(
-            input: Ack.object({'value': Ack.integer()}),
+            input: Ack.object({
+              'type': Ack.literal('demo'),
+              'value': Ack.integer(),
+            }),
             output: Ack.instance<Object>().refine(
               (value) => value == 7,
               message: 'Demo value must be 7.',
             ),
             decoder: (data) => data['value'] as int,
-            encoder: (value) => {'value': value as int},
+            encoder: (value) => {'type': 'demo', 'value': value as int},
           ),
         );
       final contract = builder.freeze();
@@ -113,7 +122,10 @@ void main() {
         ..register(
           'custom_box',
           Ack.codec<Map<String, Object?>, BoxStyler>(
-            input: Ack.object({'color': colorCodec.optional()}),
+            input: Ack.object({
+              'type': Ack.literal('custom_box'),
+              'color': colorCodec.optional(),
+            }),
             output: Ack.instance<BoxStyler>(),
             decoder: (data) {
               return BoxStyler(
@@ -122,7 +134,7 @@ void main() {
                     : BoxDecorationMix(color: data['color'] as Color),
               );
             },
-            encoder: (_) => const {},
+            encoder: (_) => const {'type': 'custom_box'},
           ),
         );
 

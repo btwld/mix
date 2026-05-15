@@ -34,10 +34,7 @@ buildVariantSchema<S extends Spec<S>, T extends Style<S>>({
     discriminatorKey: 'type',
     schemas: {
       for (final entry in branchSchemas.entries)
-        entry.key.wireValue: _buildVariantInputBranch<S>(
-          type: entry.key,
-          schema: entry.value,
-        ),
+        entry.key.wireValue: entry.value.inputSchema,
     },
   );
 
@@ -59,7 +56,7 @@ buildVariantSchema<S extends Spec<S>, T extends Style<S>>({
   );
 }
 
-AckSchema<VariantStyle<S>>
+CodecSchema<Map<String, Object?>, VariantStyle<S>>
 _buildVariantBranch<S extends Spec<S>, T extends Style<S>>({
   required SchemaVariant type,
   required AckSchema<T> styleSchema,
@@ -80,7 +77,11 @@ _buildVariantBranch<S extends Spec<S>, T extends Style<S>>({
       );
     case .named:
       return Ack.codec<Map<String, Object?>, VariantStyle<S>>(
-        input: Ack.object({'name': Ack.string(), 'style': styleSchema}),
+        input: Ack.object({
+          'type': Ack.literal(type.wireValue),
+          'name': Ack.string(),
+          'style': styleSchema,
+        }),
         output: Ack.instance<VariantStyle<S>>().refine(
           (value) => value.variant is NamedVariant,
           message: 'Variant style does not match named.',
@@ -99,12 +100,17 @@ _buildVariantBranch<S extends Spec<S>, T extends Style<S>>({
             throw ArgumentError('Expected a named variant.');
           }
 
-          return {'name': variant.name, 'style': value.value as T};
+          return {
+            'type': type.wireValue,
+            'name': variant.name,
+            'style': value.value as T,
+          };
         },
       );
     case .contextAllOf:
       return Ack.codec<Map<String, Object?>, VariantStyle<S>>(
         input: Ack.object({
+          'type': Ack.literal(type.wireValue),
           'conditions': buildContextConditionListSchema(),
           'style': styleSchema,
         }),
@@ -130,6 +136,7 @@ _buildVariantBranch<S extends Spec<S>, T extends Style<S>>({
           }
 
           return {
+            'type': type.wireValue,
             'conditions': encodeContextConditionSet(conditionSet),
             'style': value.value as T,
           };
@@ -138,6 +145,7 @@ _buildVariantBranch<S extends Spec<S>, T extends Style<S>>({
     case .contextBuilder:
       return Ack.codec<Map<String, Object?>, VariantStyle<S>>(
         input: Ack.object({
+          'type': Ack.literal(type.wireValue),
           'id': Ack.string().maxLength(limits.maxRegistryIdLength),
         }),
         output: Ack.instance<VariantStyle<S>>().refine(
@@ -171,35 +179,10 @@ _buildVariantBranch<S extends Spec<S>, T extends Style<S>>({
             );
           }
 
-          return {'id': key};
+          return {'type': type.wireValue, 'id': key};
         },
       );
   }
-}
-
-AckSchema<Map<String, Object?>> _buildVariantInputBranch<S extends Spec<S>>({
-  required SchemaVariant type,
-  required AckSchema<VariantStyle<S>> schema,
-}) {
-  if (schema is! CodecSchema) {
-    throw StateError('Variant branches must be codec-backed.');
-  }
-
-  final inputSchema = (schema as CodecSchema).inputSchema;
-  if (inputSchema is! ObjectSchema) {
-    throw StateError('Variant branches must be object-backed.');
-  }
-
-  if (inputSchema.properties.containsKey('type')) {
-    throw StateError('Variant branches must not declare "type" manually.');
-  }
-
-  return inputSchema.copyWith(
-    properties: {
-      'type': Ack.literal(type.wireValue),
-      ...inputSchema.properties,
-    },
-  );
 }
 
 VariantStyle<S> _decodeVariantStyle<S extends Spec<S>, T extends Style<S>>(
@@ -217,9 +200,9 @@ VariantStyle<S> _decodeVariantStyle<S extends Spec<S>, T extends Style<S>>(
         .brightness ||
         .breakpoint ||
         .notWidgetState:
-      final branch =
-          variantConditionDefinition(type).buildVariantSchema<S, T>(styleSchema)
-              as CodecSchema<Map<String, Object?>, VariantStyle<S>>;
+      final branch = variantConditionDefinition(
+        type,
+      ).buildVariantSchema<S, T>(styleSchema);
 
       return branch.decoder(data);
     case .named:
