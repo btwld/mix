@@ -65,7 +65,7 @@ class MixableField {
   final bool ignoreSetter;
 
   /// Optional type override for the setter parameter.
-  /// If not specified, the type is inferred from the field's Prop<T> type argument.
+  /// If not specified, the type is inferred from the field's `Prop<T>` type argument.
   final Type? setterType;
 
   const MixableField({this.ignoreSetter = false, this.setterType});

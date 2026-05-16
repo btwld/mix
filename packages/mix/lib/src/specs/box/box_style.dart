@@ -310,14 +310,14 @@ class BoxStyler extends MixStyler<BoxStyler, BoxSpec>
     return Box(key: key, style: this, child: child);
   }
 
-  @override
-  BoxStyler transform(Matrix4 value, {Alignment alignment = .center}) {
-    return merge(BoxStyler(transform: value, transformAlignment: alignment));
-  }
-
   /// Propagates the given [TextStyler] to descendant [StyledText] widgets via
   /// [DefaultTextStylerModifier] (Mix inheritance).
   BoxStyler textStyle(TextStyler value) {
     return wrap(WidgetModifierConfig.defaultTextStyler(value));
+  }
+
+  @override
+  BoxStyler transform(Matrix4 value, {Alignment alignment = .center}) {
+    return merge(BoxStyler(transform: value, transformAlignment: alignment));
   }
 }

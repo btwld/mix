@@ -12,10 +12,6 @@ import 'tokens/value_tokens.dart';
 /// Exposes type-safe design tokens, modifier ordering, and token resolution.
 /// Uses [InheritedModel] with aspects: `tokens` and `modifierOrder`.
 class MixScope extends InheritedModel<String> {
-  final List<Type>? orderOfModifiers;
-
-  final Map<MixToken, Object>? _tokens;
-
   /// Creates a [MixScope] with the provided tokens and modifier ordering.
   factory MixScope({
     Map<MixToken, Object>? tokens,
@@ -167,6 +163,10 @@ class MixScope extends InheritedModel<String> {
       child: child,
     );
   }
+
+  final List<Type>? orderOfModifiers;
+
+  final Map<MixToken, Object>? _tokens;
 
   /// Returns the raw token map provided to this scope.
   Map<MixToken, Object>? get tokens => _tokens;
