@@ -45,13 +45,6 @@ final class FontWeightRef extends Prop<FontWeight>
   FontWeightRef(super.prop) : super.fromProp();
 }
 
-/// Token reference for [TextDecoration] values
-final class TextDecorationRef extends Prop<TextDecoration>
-    with ValueRef<TextDecoration>
-    implements TextDecoration {
-  TextDecorationRef(super.prop) : super.fromProp();
-}
-
 /// Token reference for [Offset] values
 final class OffsetRef extends Prop<Offset>
     with ValueRef<Offset>
@@ -314,7 +307,6 @@ void assertIsRealType(Type value) {
 
     // Text types
     == TextStyleRef => TextStyle,
-    == TextDecorationRef => TextDecoration,
     == StrutStyleRef => StrutStyle,
     == TextHeightBehaviorRef => TextHeightBehavior,
     == TextScalerRef => TextScaler,
