@@ -103,3 +103,20 @@ class Mixable {
 }
 
 const mixable = Mixable();
+
+/// Generates a [StatelessWidget] wrapper around an annotated Styler.
+///
+/// Apply to a top-level variable whose value is a Styler, or to a top-level
+/// function that returns a Styler. The generated widget exposes a constructor
+/// that mirrors the source's parameters merged with the Styler's `call(...)`
+/// signature, and its `build` method invokes that `call(...)` with the
+/// widget's fields.
+///
+/// When [stylable] is true, the generated widget also accepts an optional
+/// `style` parameter of the matching Styler type and merges it into the
+/// annotated Styler before invoking `call(...)`.
+class MixWidget {
+  final String name;
+  final bool stylable;
+  const MixWidget(this.name, {this.stylable = false});
+}

@@ -38,3 +38,11 @@ builders:
     auto_apply: dependents
     build_to: cache
     applies_builders: ['source_gen:combining_builder']
+
+  mix_widget_generator:
+    import: 'package:mix_generator/mix_generator.dart'
+    builder_factories: ['mixWidgetGenerator']
+    build_extensions: {'.dart': ['.mix_widget_generator.g.part']}
+    auto_apply: dependents
+    build_to: cache
+    applies_builders: ['source_gen:combining_builder']

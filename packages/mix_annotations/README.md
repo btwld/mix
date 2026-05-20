@@ -95,6 +95,30 @@ final Prop<Matrix4>? $transform;
 final Prop<List<Shadow>>? $shadows;
 ```
 
+### `@MixWidget`
+
+Generates a `StatelessWidget` wrapper around a Styler. Apply to a top-level variable or function that produces a Styler; the generated widget's constructor mirrors the source's parameters merged with the Styler's `call(...)` signature.
+
+```dart
+// Top-level variable
+@MixWidget('Card')
+final card = BoxStyler().paddingAll(16).borderRounded(8);
+
+// Top-level function — source parameters become widget parameters
+@MixWidget('Card')
+BoxStyler card(Widget child, {Color color = const Color(0xFFFFFFFF)}) =>
+    BoxStyler().color(color).paddingAll(16);
+```
+
+Set `stylable: true` to expose a runtime `style` parameter that is merged into the annotated Styler before `call(...)` is invoked:
+
+```dart
+@MixWidget('H1', stylable: true)
+final _h1 = TextStyler().fontSize(24).fontWeight(FontWeight.bold);
+
+// Usage: H1('Title', style: TextStyler().color(Colors.red));
+```
+
 ## Generator Flags
 
 Each annotation accepts bitwise flags to control which methods or components are generated:
