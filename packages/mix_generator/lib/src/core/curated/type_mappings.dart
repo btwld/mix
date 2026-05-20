@@ -80,6 +80,7 @@ const enumTypes = {
   'FilterQuality',
   'BlendMode',
   'StackFit',
+  'FlexFit',
 };
 
 /// Types that support lerp (interpolation).

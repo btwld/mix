@@ -2,5 +2,6 @@
 library;
 
 export 'mix_mixin_builder.dart';
+export 'modifier_mix_builder.dart';
 export 'spec_mixin_builder.dart';
 export 'styler_mixin_builder.dart';

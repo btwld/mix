@@ -13,6 +13,14 @@ targets:
         enabled: true
         generate_for:
           - lib/src/properties/**/*.dart  # Mix property classes
+        options:
+          debug: false
+      modifier_generator:
+        enabled: true
+        generate_for:
+          - lib/src/modifiers/**/*.dart  # Modifier classes
+        options:
+          debug: false
 
 builders:
   mix_generator:
@@ -35,6 +43,14 @@ builders:
     import: 'package:mix_generator/mix_generator.dart'
     builder_factories: ['mixableGenerator']
     build_extensions: {'.dart': ['.mixable_generator.g.part']}
+    auto_apply: dependents
+    build_to: cache
+    applies_builders: ['source_gen:combining_builder']
+
+  modifier_generator:
+    import: 'package:mix_generator/mix_generator.dart'
+    builder_factories: ['modifierGenerator']
+    build_extensions: {'.dart': ['.modifier_generator.g.part']}
     auto_apply: dependents
     build_to: cache
     applies_builders: ['source_gen:combining_builder']

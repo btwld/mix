@@ -222,7 +222,7 @@ void main() {
           heightFactor: 0.8,
         );
 
-        expect(modifier.props, [Alignment.center, 0.5, 0.8]);
+        expect(modifier.props, [Alignment.center, 0.8, 0.5]);
       });
 
       test('contains default alignment and null factors', () {
@@ -439,8 +439,8 @@ void main() {
         final props = attribute.props;
         expect(props.length, 3);
         expect(props[0], attribute.alignment);
-        expect(props[1], attribute.widthFactor);
-        expect(props[2], attribute.heightFactor);
+        expect(props[1], attribute.heightFactor);
+        expect(props[2], attribute.widthFactor);
       });
     });
   });

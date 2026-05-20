@@ -14,6 +14,7 @@ import 'package:source_gen/source_gen.dart';
 
 import 'src/mix_generator.dart';
 import 'src/mixable_generator.dart';
+import 'src/modifier_generator.dart';
 import 'src/styler_generator.dart';
 
 // Export core components for testing
@@ -26,6 +27,7 @@ export 'src/core/registry/mix_type_registry.dart';
 export 'src/core/resolvers/index.dart';
 export 'src/mix_generator.dart';
 export 'src/mixable_generator.dart';
+export 'src/modifier_generator.dart';
 export 'src/styler_generator.dart';
 
 /// Entry point for the mix_generator builder.
@@ -64,6 +66,20 @@ Builder mixableGenerator(BuilderOptions _) {
   return SharedPartBuilder(
     [MixableGenerator()],
     'mixable_generator',
+    formatOutput: (code, version) {
+      return DartFormatter(languageVersion: version).format(code);
+    },
+  );
+}
+
+/// Entry point for the modifier_generator builder.
+///
+/// Triggers on @MixableModifier annotations and generates:
+/// - Full ModifierMix class (resolve, merge, debugFillProperties, props)
+Builder modifierGenerator(BuilderOptions _) {
+  return SharedPartBuilder(
+    [ModifierGenerator()],
+    'modifier_generator',
     formatOutput: (code, version) {
       return DartFormatter(languageVersion: version).format(code);
     },

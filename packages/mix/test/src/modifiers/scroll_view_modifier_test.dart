@@ -276,11 +276,11 @@ void main() {
         );
 
         expect(modifier.props.length, 5);
-        expect(modifier.props[0], Axis.horizontal);
-        expect(modifier.props[1], true);
-        expect(modifier.props[2], const EdgeInsets.all(16.0));
-        expect(modifier.props[3], isA<BouncingScrollPhysics>());
-        expect(modifier.props[4], Clip.antiAlias);
+        expect(modifier.props[0], Clip.antiAlias);
+        expect(modifier.props[1], const EdgeInsets.all(16.0));
+        expect(modifier.props[2], isA<BouncingScrollPhysics>());
+        expect(modifier.props[3], true);
+        expect(modifier.props[4], Axis.horizontal);
       });
 
       test('contains null values', () {
@@ -563,11 +563,11 @@ void main() {
 
         final props = attribute.props;
         expect(props.length, 5);
-        expect(props[0], attribute.scrollDirection);
-        expect(props[1], attribute.reverse);
-        expect(props[2], attribute.padding);
-        expect(props[3], attribute.physics);
-        expect(props[4], attribute.clipBehavior);
+        expect(props[0], attribute.clipBehavior);
+        expect(props[1], attribute.padding);
+        expect(props[2], attribute.physics);
+        expect(props[3], attribute.reverse);
+        expect(props[4], attribute.scrollDirection);
       });
     });
   });

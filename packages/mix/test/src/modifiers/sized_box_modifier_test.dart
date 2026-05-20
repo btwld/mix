@@ -150,7 +150,7 @@ void main() {
       test('contains all properties', () {
         const modifier = SizedBoxModifier(width: 100.0, height: 200.0);
 
-        expect(modifier.props, [100.0, 200.0]);
+        expect(modifier.props, [200.0, 100.0]);
       });
 
       test('contains null values', () {
@@ -307,8 +307,8 @@ void main() {
 
         final props = attribute.props;
         expect(props.length, 2);
-        expect(props[0], attribute.width);
-        expect(props[1], attribute.height);
+        expect(props[0], attribute.height);
+        expect(props[1], attribute.width);
       });
     });
   });
