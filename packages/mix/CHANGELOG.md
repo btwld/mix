@@ -1,3 +1,16 @@
+## 2.0.3
+
+This release adds finer-grained control over scope inheritance and theming, and restores compatibility with newer Flutter SDKs.
+
+### New features
+
+- **`MixScope.inherit`:** Opt into merging with the nearest ancestor `MixScope` instead of replacing it, so nested scopes can extend tokens and breakpoints without re-declaring them (#914).
+- **`ColorRef` directive overrides:** Non-deprecated `Color` methods on `ColorRef` (e.g. `withValues`) are now overridden to return a ref carrying a directive, keeping color tokens unresolved until rendering (#908).
+
+### Fixes
+
+- **Flutter SDK compatibility:** Removed `TextDecorationRef` so Mix builds against newer Flutter SDKs where `TextDecoration` is no longer extendable (#913).
+
 ## 2.0.2
 
 This release completes the 2.0 Styler migration by removing the remaining legacy utility surface, and adds new ergonomic shorthands and variant tooling.
