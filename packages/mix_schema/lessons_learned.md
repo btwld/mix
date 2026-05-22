@@ -32,8 +32,9 @@
   nested schemas.
 - Payload limits belong at the contract boundary. `MixSchemaLimits` runs before
   Ack validation/decode and after encode. It guards depth, list sizes, string
-  sizes, registry id size, variants, and modifiers, and failures use
-  `payload_limit_exceeded`.
+  sizes, variants, and modifiers, and failures use `payload_limit_exceeded`.
+  Registry id length is enforced by the shared registry wire grammar and
+  `registryValueCodec`'s `maxLength` schema.
 - `mix_tailwinds` should prove the contract by using `MixSchemaContract` decode
   and encode seams. It should not own public schema shape or depend on public
   wire enum builders.

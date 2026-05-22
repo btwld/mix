@@ -17,18 +17,10 @@ JsonMap payloadBrightnessCondition(Brightness brightness) {
   ).encode({'brightness': brightness});
 }
 
-JsonMap payloadBreakpointCondition({
-  double? minWidth,
-  double? maxWidth,
-  double? minHeight,
-  double? maxHeight,
-}) {
-  return variantConditionDefinition(.breakpoint).encode({
-    'minWidth': minWidth,
-    'maxWidth': maxWidth,
-    'minHeight': minHeight,
-    'maxHeight': maxHeight,
-  });
+JsonMap payloadBreakpointCondition({double? minWidth, double? maxWidth}) {
+  return variantConditionDefinition(
+    .breakpoint,
+  ).encode({'minWidth': minWidth, 'maxWidth': maxWidth});
 }
 
 JsonMap payloadNotWidgetStateCondition(WidgetState state) {

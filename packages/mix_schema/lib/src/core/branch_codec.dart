@@ -20,6 +20,8 @@ CodecSchema<JsonMap, T> buildDiscriminatorInjectingCodec<T extends Object>({
   // ignore: avoid-dynamic, matches Ack.codec's `output` parameter type.
   AckSchema<dynamic, T>? output,
 }) {
+  _assertNoDiscriminatorField(input);
+
   return Ack.codec<JsonMap, JsonMap, T>(
     input: input,
     decode: decode,
@@ -57,14 +59,14 @@ discriminatedBranchCodec<B extends Object, T extends B>({
 }) {
   return Ack.codec<JsonMap, JsonMap, B>(
     input: input,
+    decode: (data) => decode(data) as B,
+    encode: (value) => {...encode(value as T), 'type': type},
     output: Ack.instance<B>().refine(
       (value) => value is T,
       message:
           '$kUnsupportedBranchSubtypePrefix expected $T for branch '
           '"$type".',
     ),
-    decode: (data) => decode(data) as B,
-    encode: (value) => {...encode(value as T), 'type': type},
   );
 }
 
@@ -106,15 +108,27 @@ standaloneBranchCodec<B extends Object, T extends Object>({
       ? messageBody
       : '$kUnsupportedBranchSubtypePrefix $messageBody';
 
+  _assertNoDiscriminatorField(input);
+
   return Ack.codec<JsonMap, JsonMap, B>(
     input: input.copyWith(
-      properties: {'type': Ack.literal(type), ...input.properties},
+      properties: {...input.properties, 'type': Ack.literal(type)},
     ),
+    decode: (data) => decode(data) as B,
+    encode: (value) => {...encode(value as T), 'type': type},
     output: Ack.instance<B>().refine(
       outputRefinement ?? (value) => value is T,
       message: message,
     ),
-    decode: (data) => decode(data) as B,
-    encode: (value) => {...encode(value as T), 'type': type},
   );
+}
+
+void _assertNoDiscriminatorField(ObjectSchema input) {
+  if (input.properties.containsKey('type')) {
+    throw ArgumentError.value(
+      input,
+      'input',
+      'Branch input schema must not declare the contract-owned "type" field.',
+    );
+  }
 }

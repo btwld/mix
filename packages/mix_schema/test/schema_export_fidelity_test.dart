@@ -1,6 +1,8 @@
 import 'package:ack/ack.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix_schema/mix_schema.dart';
+// ignore: implementation_imports
+import 'package:mix_schema/src/schema/metadata/variant_condition_definition.dart';
 
 void main() {
   group('schema export fidelity', () {
@@ -110,14 +112,33 @@ void main() {
       expect(icon['maxLength'], 256);
     });
 
+    test('exported breakpoint variant schema is width-only', () {
+      final variantsSchema = _firstVariantsItemSchema(schema, branch: 'box');
+      final breakpointBranch = _branchByType(
+        variantsSchema['anyOf'] as List<Object?>,
+        'context_breakpoint',
+      );
+      final properties =
+          breakpointBranch['properties'] as Map<Object?, Object?>;
+
+      expect(properties, contains('minWidth'));
+      expect(properties, contains('maxWidth'));
+      expect(properties, isNot(contains('minHeight')));
+      expect(properties, isNot(contains('maxHeight')));
+    });
+
     test('variant priority metadata uses canonical wire leaf names', () {
       final metadata =
           schema['x-mix-variant-priority']! as Map<Object?, Object?>;
       final leaves = metadata['leaves']! as Map<Object?, Object?>;
+      final expectedKeys = [
+        for (final type in sharedContextVariantLeafTypes) type.wireValue,
+      ];
 
       // Every leaf key advertised in the metadata must be one of the
       // shared context leaf wire values. Catches future drift where the
       // metadata uses short enum names instead of canonical wire values.
+      expect(leaves.keys.cast<String>(), unorderedEquals(expectedKeys));
       for (final key in leaves.keys.cast<String>()) {
         expect(
           allowedCompoundLeaves,
@@ -126,11 +147,9 @@ void main() {
         );
       }
 
-      expect(leaves['widget_state'], 1);
-      expect(leaves['context_brightness'], 0);
-      expect(leaves['context_breakpoint'], 0);
-      expect(leaves['context_not_widget_state'], 0);
-      expect(leaves['enabled'], 0);
+      for (final type in sharedContextVariantLeafTypes) {
+        expect(leaves[type.wireValue], variantLeafSortPriority(type));
+      }
     });
   });
 }

@@ -139,7 +139,9 @@ final builder = MixSchemaContractBuilder()
 - Built-in styler branches are codec-backed and can encode direct,
   producer-representable values. Runtime-only values such as token props,
   multi-source props, derived props, unregistered registry values, and
-  unsupported animation configs return mapped encode errors.
+  unsupported animation configs return mapped encode errors. Compound stylers
+  intentionally fold their nested Mix props, so multi-source values there are
+  representable only where folding is the defined schema semantic.
 - Registry-backed runtime values require stable producer ids. Missing ids
   decode as `unknown_registry_id`; unregistered runtime values encode as
   `unknown_registry_value`.

@@ -12,11 +12,14 @@ import 'package:ack/ack.dart';
 /// int-to-double coercion on `Ack.double()`, this helper can be replaced.
 CodecSchema<Object, double> doubleFromNum() =>
     Ack.codec<Object, Object, double>(
-      input: Ack.anyOf([Ack.double(), Ack.integer()]),
-      output: Ack.instance<double>().refine(
-        (value) => value.isFinite,
+      input: Ack.anyOf([Ack.double(), Ack.integer()]).refine(
+        (value) => (value as num).isFinite,
         message: 'Numeric values must be finite (NaN and infinity rejected).',
       ),
       decode: (value) => (value as num).toDouble(),
       encode: (value) => value,
+      output: Ack.instance<double>().refine(
+        (value) => value.isFinite,
+        message: 'Numeric values must be finite (NaN and infinity rejected).',
+      ),
     );

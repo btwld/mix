@@ -12,6 +12,7 @@ import '../registry/frozen_registry.dart';
 import '../registry/registry_catalog.dart';
 import '../registry/registry_wire_grammar.dart';
 import '../schema/builtins/built_in_styler_definitions.dart';
+import '../schema/metadata/variant_condition_definition.dart';
 import '../schema/styler_catalog.dart';
 
 final Set<String> _reservedStylerTypes = {
@@ -55,8 +56,31 @@ final class MixSchemaContractBuilder {
     return builder;
   }
 
+  void _register({
+    required String type,
+    required CodecSchema<JsonMap, Object> stylerSchema,
+    bool allowReservedType = false,
+  }) {
+    if (_frozen) {
+      throw StateError('Contract builder is frozen.');
+    }
+
+    if (_registeredTypes.contains(type)) {
+      throw StateError('Type "$type" is already registered.');
+    }
+
+    _validateStylerRegistration(
+      type: type,
+      stylerSchema: stylerSchema,
+      allowReservedType: allowReservedType,
+    );
+
+    _schemas[type] = stylerSchema;
+    _registeredTypes.add(type);
+  }
+
   /// The registered top-level styler `type` values in insertion order.
-  List<String> get registeredTypes => List.unmodifiable(_registeredTypes);
+  List<String> get registeredTypes => .unmodifiable(_registeredTypes);
 
   /// Registers an object-backed codec under a styler wire `type`.
   ///
@@ -83,29 +107,6 @@ final class MixSchemaContractBuilder {
       type: type,
       stylerSchema: stylerSchema as CodecSchema<JsonMap, Object>,
     );
-  }
-
-  void _register({
-    required String type,
-    required CodecSchema<JsonMap, Object> stylerSchema,
-    bool allowReservedType = false,
-  }) {
-    if (_frozen) {
-      throw StateError('Contract builder is frozen.');
-    }
-
-    if (_registeredTypes.contains(type)) {
-      throw StateError('Type "$type" is already registered.');
-    }
-
-    _validateStylerRegistration(
-      type: type,
-      stylerSchema: stylerSchema,
-      allowReservedType: allowReservedType,
-    );
-
-    _schemas[type] = stylerSchema;
-    _registeredTypes.add(type);
   }
 
   /// Freezes the builder and returns an immutable contract.
@@ -249,7 +250,7 @@ final class MixSchemaContract {
 /// priority of their leaves; the priority is a Mix runtime concept that
 /// the wire format does not declare. This metadata documents runtime-derived
 /// behavior — the Mix runtime is the actual source of truth for priority.
-const Map<String, Object?> _variantPriorityMetadata = {
+final Map<String, Object?> _variantPriorityMetadata = {
   'description':
       'Compound context_all_of variants inherit the maximum sortPriority '
       'across their leaves; widget_state contributes priority 1, other '
@@ -257,14 +258,13 @@ const Map<String, Object?> _variantPriorityMetadata = {
       'advertise priority — it is computed by the Mix runtime from the '
       'leaf set.',
   'rule': 'priority(compound) = max(priority(leaf) for leaf in leaves)',
-  'leaves': {
-    'widget_state': 1,
-    'context_brightness': 0,
-    'context_breakpoint': 0,
-    'context_not_widget_state': 0,
-    'enabled': 0,
-  },
+  'leaves': _variantPriorityLeaves,
 };
+
+final Map<String, int> _variantPriorityLeaves = Map.unmodifiable({
+  for (final type in sharedContextVariantLeafTypes)
+    type.wireValue: variantLeafSortPriority(type),
+});
 
 void _validateStylerRegistration({
   required String type,
@@ -297,6 +297,14 @@ void _validateStylerRegistration({
       stylerSchema,
       'stylerSchema',
       'Styler "$type" must be backed by Ack.object(...).',
+    );
+  }
+
+  if (inputSchema.properties.containsKey('type')) {
+    throw ArgumentError.value(
+      stylerSchema,
+      'stylerSchema',
+      'Styler "$type" input must not declare the contract-owned "type" field.',
     );
   }
 }

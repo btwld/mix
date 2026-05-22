@@ -13,8 +13,11 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   test('schema files do not throw raw UnsupportedError', () {
     final root = Directory('lib/src/schema');
-    expect(root.existsSync(), isTrue,
-        reason: 'schema directory not found at ${root.path}');
+    expect(
+      root.existsSync(),
+      isTrue,
+      reason: 'schema directory not found at ${root.path}',
+    );
 
     final offenders = <String>[];
     final pattern = RegExp(r'\bthrow\s+UnsupportedError\b');

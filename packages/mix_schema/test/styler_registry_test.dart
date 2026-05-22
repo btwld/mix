@@ -58,25 +58,22 @@ void main() {
       expect(invalidResult.errors.single.message, 'Demo value must be 7.');
     });
 
-    test(
-      'injects the discriminator even when producer encode omits it',
-      () {
-        final builder = MixSchemaContractBuilder()
-          ..register<int>(
-            'demo',
-            input: Ack.object({'value': Ack.integer()}),
-            decode: (data) => data['value']! as int,
-            // Encoder intentionally omits "type" — the builder must inject it.
-            encode: (value) => {'value': value},
-          );
-        final contract = builder.freeze();
+    test('injects the discriminator even when producer encode omits it', () {
+      final builder = MixSchemaContractBuilder()
+        ..register<int>(
+          'demo',
+          input: Ack.object({'value': Ack.integer()}),
+          decode: (data) => data['value']! as int,
+          // Encoder intentionally omits "type" — the builder must inject it.
+          encode: (value) => {'value': value},
+        );
+      final contract = builder.freeze();
 
-        final encoded = contract.encode(42);
+      final encoded = contract.encode(42);
 
-        expect(encoded.ok, isTrue, reason: encoded.errors.join('\n'));
-        expect(encoded.value, {'type': 'demo', 'value': 42});
-      },
-    );
+      expect(encoded.ok, isTrue, reason: encoded.errors.join('\n'));
+      expect(encoded.value, {'type': 'demo', 'value': 42});
+    });
 
     test('rejects custom styler type names that are not wire ids', () {
       for (final type in [
@@ -101,10 +98,7 @@ void main() {
       final builder = MixSchemaContractBuilder();
       _registerDemo(builder, 'demo');
 
-      expect(
-        () => _registerDemo(builder, 'demo'),
-        throwsA(isA<StateError>()),
-      );
+      expect(() => _registerDemo(builder, 'demo'), throwsA(isA<StateError>()));
     });
 
     test('reserves built-in styler type names for built-in schemas', () {

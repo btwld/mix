@@ -57,6 +57,14 @@ void main() {
   });
 
   group('ImageStyler codec', () {
+    test('requires image at the top level', () {
+      final result = MixSchemaContract.builtIn().decode({'type': 'image'});
+
+      expect(result.ok, isFalse);
+      expect(result.errors.single.code, MixSchemaErrorCode.requiredField);
+      expect(result.errors.single.path, '#/image');
+    });
+
     test('encodes and decodes representative fields with registered image', () {
       final image = MemoryImage(Uint8List.fromList([0, 0, 0, 0]));
       final images = RegistryBuilder<ImageProvider<Object>>.builtIn(
@@ -98,6 +106,72 @@ void main() {
       final decoded = contract.decode(encoded.value!);
       expect(decoded.ok, isTrue);
       expect(contract.encode(decoded.value!).value, encoded.value);
+    });
+
+    test('allows nested variant image styles without image', () {
+      final image = MemoryImage(Uint8List.fromList([0, 0, 0, 0]));
+      final images = RegistryBuilder<ImageProvider<Object>>.builtIn(
+        scope: MixSchemaScope.imageProvider,
+      )..register('hero', image);
+      final contract = MixSchemaContract.builtIn(registries: [images.freeze()]);
+
+      final result = contract.decode({
+        'type': 'image',
+        'image': 'hero',
+        'variants': [
+          {
+            'type': 'context_brightness',
+            'brightness': 'dark',
+            'style': {'width': 100.0},
+          },
+        ],
+      });
+
+      expect(result.ok, isTrue);
+      final style = result.value! as ImageStyler;
+      final variantStyle = style.$variants!.single.value as ImageStyler;
+      expect(variantStyle.$image, isNull);
+      expect(variantStyle.$width, isNotNull);
+    });
+
+    test('encodes nested variant image styles without image', () {
+      final image = MemoryImage(Uint8List.fromList([0, 0, 0, 0]));
+      final images = RegistryBuilder<ImageProvider<Object>>.builtIn(
+        scope: MixSchemaScope.imageProvider,
+      )..register('hero', image);
+      final contract = MixSchemaContract.builtIn(registries: [images.freeze()]);
+
+      final result = contract.encode(
+        ImageStyler(
+          image: image,
+          variants: [
+            VariantStyle<ImageSpec>(
+              ContextVariant.brightness(Brightness.dark),
+              ImageStyler(width: 100),
+            ),
+          ],
+        ),
+      );
+
+      expect(result.ok, isTrue);
+      expect(result.value, {
+        'type': 'image',
+        'image': 'hero',
+        'variants': [
+          {
+            'type': 'context_brightness',
+            'brightness': 'dark',
+            'style': {'width': 100.0},
+          },
+        ],
+      });
+    });
+
+    test('rejects top-level image styles without image on encode', () {
+      final result = MixSchemaContract.builtIn().encode(ImageStyler());
+
+      expect(result.ok, isFalse);
+      expect(result.errors.single.code, MixSchemaErrorCode.requiredField);
     });
   });
 

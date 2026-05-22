@@ -21,6 +21,21 @@ void main() {
       expect(result.isFail, isTrue);
     });
 
+    test('rejects NaN on decode', () {
+      final result = codec.safeParse(double.nan);
+      expect(result.isFail, isTrue);
+    });
+
+    test('rejects positive infinity on decode', () {
+      final result = codec.safeParse(double.infinity);
+      expect(result.isFail, isTrue);
+    });
+
+    test('rejects negative infinity on decode', () {
+      final result = codec.safeParse(double.negativeInfinity);
+      expect(result.isFail, isTrue);
+    });
+
     test('accepts finite doubles on encode', () {
       expect(codec.safeEncode(0.0).getOrThrow(), 0.0);
       expect(codec.safeEncode(-1.5).getOrThrow(), -1.5);

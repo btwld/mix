@@ -45,6 +45,37 @@ void main() {
       expect(result.errors, isEmpty);
     });
 
+    test('rejects custom styler inputs that declare type', () {
+      expect(
+        () => MixSchemaContractBuilder().register<int>(
+          'demo',
+          input: Ack.object({
+            'type': Ack.literal('spoofed'),
+            'value': Ack.integer(),
+          }),
+          decode: (data) => data['value']! as int,
+          encode: (value) => {'value': value},
+        ),
+        throwsArgumentError,
+      );
+    });
+
+    test('custom styler encoders cannot spoof the discriminator', () {
+      final contract =
+          (MixSchemaContractBuilder()..register<int>(
+                'demo',
+                input: Ack.object({'value': Ack.integer()}),
+                decode: (data) => data['value']! as int,
+                encode: (value) => {'type': 'spoofed', 'value': value},
+              ))
+              .freeze();
+
+      final result = contract.encode(42);
+
+      expect(result.ok, isTrue);
+      expect(result.value, {'type': 'demo', 'value': 42});
+    });
+
     test('exports supported built-in styler types through JSON Schema', () {
       final contract = MixSchemaContract.builtIn();
 

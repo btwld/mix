@@ -35,18 +35,27 @@ buildStylerCodecContract<S extends Spec<S>, T extends Style<S>>({
   required SchemaStyler type,
   required T emptyStyle,
   required Map<String, AckSchema<Object, Object>> fields,
+  Map<String, AckSchema<Object, Object>>? variantStyleFields,
   required StylerBuilder<S, T> build,
   required StylerFieldEncoder<S, T> encodeFields,
+  StylerFieldEncoder<S, T>? encodeVariantStyleFields,
 }) {
   final metadata = catalog.metadata;
   final inputFields = Map<String, AckSchema<Object, Object>>.unmodifiable(
     fields,
   );
+  final nestedInputFields = Map<String, AckSchema<Object, Object>>.unmodifiable(
+    variantStyleFields ?? fields,
+  );
+  final encodeNestedFields = encodeVariantStyleFields ?? encodeFields;
   final variantStyleCodec = _buildStylerCodec<S, T>(
-    inputFields: {...inputFields, ...metadata.variantStyleMetadataFields()},
+    inputFields: {
+      ...nestedInputFields,
+      ...metadata.variantStyleMetadataFields(),
+    },
     build: (data) => build(data, modifier: metadata.modifierConfig(data)),
     encode: (value) => {
-      ...encodeFields(value),
+      ...encodeNestedFields(value),
       ...encodeStylerMetadata(value, includeTopLevelMetadata: false),
     },
   );
@@ -88,10 +97,10 @@ _buildStylerCodec<S extends Spec<S>, T extends Style<S>>({
 }) {
   return Ack.codec<JsonMap, JsonMap, T>(
     input: Ack.object(inputFields),
-    output: Ack.instance<T>(),
     decode: build,
     encode: type == null
         ? encode
         : (value) => {'type': type.wireValue, ...encode(value)},
+    output: Ack.instance<T>(),
   );
 }

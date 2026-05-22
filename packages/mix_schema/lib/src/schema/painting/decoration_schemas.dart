@@ -58,18 +58,20 @@ CodecSchema<JsonMap, BoxDecorationMix> buildBoxDecorationCodec({
 
   return buildDiscriminatorInjectingCodec<BoxDecorationMix>(
     type: SchemaDecoration.box.wireValue,
-    input: Ack.object({
-      'color': colorCodec.optional(),
-      'image': decorationImageCodec.optional(),
-      'gradient': gradientCodec.optional(),
-      'border': boxBorderCodec.optional(),
-      'borderRadius': borderRadiusCodec.optional(),
-      'shape': boxShapeSchema.optional(),
-      'backgroundBlendMode': blendModeSchema.optional(),
-      'boxShadow': Ack.list(boxShadowCodec).optional(),
-    }).refine((data) {
-      return data['shape'] != BoxShape.circle || data['borderRadius'] == null;
-    }, message: 'borderRadius is not supported when shape is circle.'),
+    input:
+        Ack.object({
+          'color': colorCodec.optional(),
+          'image': decorationImageCodec.optional(),
+          'gradient': gradientCodec.optional(),
+          'border': boxBorderCodec.optional(),
+          'borderRadius': borderRadiusCodec.optional(),
+          'shape': boxShapeSchema.optional(),
+          'backgroundBlendMode': blendModeSchema.optional(),
+          'boxShadow': Ack.list(boxShadowCodec).optional(),
+        }).refine((data) {
+          return data['shape'] != BoxShape.circle ||
+              data['borderRadius'] == null;
+        }, message: 'borderRadius is not supported when shape is circle.'),
     output: Ack.instance<BoxDecorationMix>(),
     decode: (data) => BoxDecorationMix(
       border: data['border'] as BoxBorderMix?,

@@ -48,6 +48,17 @@ void main() {
         }
       },
     );
+
+    test('rejects breakpoint height constraints the runtime cannot encode', () {
+      final leafSchema = buildContextConditionInputSchema();
+
+      final result = leafSchema.safeParse({
+        'type': 'context_breakpoint',
+        'minHeight': 600.0,
+      });
+
+      expect(result.isFail, isTrue);
+    });
   });
 }
 

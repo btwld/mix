@@ -16,8 +16,9 @@
   `to_bottom_right`.
 - Add `MixSchemaLimits`, `payload_limit_exceeded`, and exported JSON Schema
   artifact metadata including `x-mix-schema-limits`.
-- Add `StylerRegistry.builtIn(...)` for extending the built-in styler set with
-  custom branches, and decode language-only locales plus decoration images.
+- Add `MixSchemaContractBuilder.builtIn(...)` for extending the built-in
+  styler set with custom branches, and decode language-only locales plus
+  decoration images.
 - Add public compound context variant decoding with the `context_all_of`
   branch and nested condition parsing.
 - Preserve deep nested condition error paths during transform failures and

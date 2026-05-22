@@ -1,5 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix_schema/mix_schema.dart';
+// ignore: implementation_imports
+import 'package:mix_schema/src/registry/registry_wire_grammar.dart';
 
 void main() {
   group('RegistryBuilder', () {
@@ -87,6 +89,16 @@ void main() {
       );
     });
 
+    test('rejects ids that exceed the wire length limit', () {
+      final builder = RegistryBuilder<String>(scope: 'demo');
+      final longId = List.filled(kMaxRegistryIdLength + 1, 'a').join();
+
+      expect(
+        () => builder.register(longId, 'value'),
+        throwsA(isA<ArgumentError>()),
+      );
+    });
+
     test('accepts id grammar that includes ., :, -, _', () {
       final builder = RegistryBuilder<String>(scope: 'demo')
         ..register('app.heroImage', 'a')
@@ -123,11 +135,28 @@ void main() {
         throwsA(isA<ArgumentError>()),
       );
       expect(
+        () =>
+            FrozenRegistry<String>(scope: 'demo', values: const {'': 'value'}),
+        throwsA(isA<ArgumentError>()),
+      );
+    });
+
+    test('rejects ids that exceed the wire length limit', () {
+      final longId = List.filled(kMaxRegistryIdLength + 1, 'a').join();
+
+      expect(
+        () => FrozenRegistry<String>(scope: 'demo', values: {longId: 'value'}),
+        throwsA(isA<ArgumentError>()),
+      );
+    });
+
+    test('rejects duplicate runtime values under different ids', () {
+      expect(
         () => FrozenRegistry<String>(
           scope: 'demo',
-          values: const {'': 'value'},
+          values: const {'primary': 'value', 'secondary': 'value'},
         ),
-        throwsA(isA<ArgumentError>()),
+        throwsA(isA<StateError>()),
       );
     });
 

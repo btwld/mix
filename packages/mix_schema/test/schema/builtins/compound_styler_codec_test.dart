@@ -97,30 +97,27 @@ void main() {
       },
     );
 
-    test(
-      'folds multi-source compound props for StackBoxStyler chains',
-      () {
-        final contract = MixSchemaContract.builtIn();
-        final style = StackBoxStyler()
-            .margin(EdgeInsetsMix.all(6))
-            .merge(StackBoxStyler(fit: StackFit.expand));
+    test('folds multi-source compound props for StackBoxStyler chains', () {
+      final contract = MixSchemaContract.builtIn();
+      final style = StackBoxStyler()
+          .margin(EdgeInsetsMix.all(6))
+          .merge(StackBoxStyler(fit: StackFit.expand));
 
-        final encoded = contract.encode(style);
-        expect(encoded.ok, isTrue, reason: encoded.errors.join('\n'));
-        expect(encoded.value, {
-          'type': 'stack_box',
-          'margin': {'top': 6.0, 'bottom': 6.0, 'left': 6.0, 'right': 6.0},
-          'fit': 'expand',
-        });
+      final encoded = contract.encode(style);
+      expect(encoded.ok, isTrue, reason: encoded.errors.join('\n'));
+      expect(encoded.value, {
+        'type': 'stack_box',
+        'margin': {'top': 6.0, 'bottom': 6.0, 'left': 6.0, 'right': 6.0},
+        'fit': 'expand',
+      });
 
-        final decoded = contract.decode(encoded.value!);
-        expect(decoded.ok, isTrue, reason: decoded.errors.join('\n'));
+      final decoded = contract.decode(encoded.value!);
+      expect(decoded.ok, isTrue, reason: decoded.errors.join('\n'));
 
-        final reEncoded = contract.encode(decoded.value!);
-        expect(reEncoded.ok, isTrue, reason: reEncoded.errors.join('\n'));
-        expect(reEncoded.value, encoded.value);
-      },
-    );
+      final reEncoded = contract.encode(decoded.value!);
+      expect(reEncoded.ok, isTrue, reason: reEncoded.errors.join('\n'));
+      expect(reEncoded.value, encoded.value);
+    });
 
     test('foldMixProp preserves source order (A.merge(B), not B.merge(A))', () {
       final boxA = BoxStyler(padding: EdgeInsetsMix.all(8));

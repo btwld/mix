@@ -22,7 +22,8 @@ void main() {
   test('exportJsonSchema() structural fingerprint matches golden', () {
     final schema = MixSchemaContract.builtIn().exportJsonSchema();
     final fingerprint = _fingerprint(schema);
-    final actual = '${const JsonEncoder.withIndent('  ').convert(fingerprint)}\n';
+    final actual =
+        '${const JsonEncoder.withIndent('  ').convert(fingerprint)}\n';
 
     final goldenFile = File(_goldenPath);
     if (Platform.environment['UPDATE_GOLDEN'] == '1' ||
@@ -38,7 +39,7 @@ void main() {
       reason:
           'exportJsonSchema() fingerprint drifted from $_goldenPath. '
           'If the drift is intentional, regenerate with '
-          'UPDATE_GOLDEN=1 flutter test ${_goldenPath.replaceFirst('.json', '_test.dart')}',
+          'UPDATE_GOLDEN=1 flutter test test/schema_export_golden_test.dart',
     );
   });
 }

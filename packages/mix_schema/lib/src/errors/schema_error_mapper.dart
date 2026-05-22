@@ -120,6 +120,14 @@ final class SchemaErrorMapper {
         message: cause.toString(),
         value: cause.value,
       ),
+      UnsupportedEncodeValueError()
+          when _isRequiredEncodeMessage(cause.reason) =>
+        MixSchemaError(
+          code: .requiredField,
+          path: error.path,
+          message: cause.toString(),
+          value: cause.value ?? error.value,
+        ),
       UnsupportedEncodeValueError() => MixSchemaError(
         code: .unsupportedEncodeValue,
         path: error.path,
@@ -162,6 +170,18 @@ final class SchemaErrorMapper {
     if (message.startsWith('Encoder threw: No registry id found')) {
       return MixSchemaError(
         code: .unknownRegistryValue,
+        path: path,
+        message: message,
+        value: value,
+      );
+    }
+
+    if (_isRequiredEncodeMessage(message) ||
+        (message.startsWith('Encoder threw:') &&
+            message.contains('Field "') &&
+            message.contains('" is required.'))) {
+      return MixSchemaError(
+        code: .requiredField,
         path: path,
         message: message,
         value: value,
@@ -231,6 +251,7 @@ final class SchemaErrorMapper {
     // Discriminated encode can produce branch noise; surface the primary
     // representability failure when one is present.
     for (final code in const [
+      MixSchemaErrorCode.requiredField,
       MixSchemaErrorCode.unknownRegistryValue,
       MixSchemaErrorCode.unsupportedEncodeValue,
     ]) {
@@ -248,7 +269,11 @@ final class SchemaErrorMapper {
 }
 
 const MixSchemaError _noMatch = MixSchemaError(
-  code: MixSchemaErrorCode.validationFailed,
+  code: .validationFailed,
   path: '',
   message: '',
 );
+
+bool _isRequiredEncodeMessage(String message) {
+  return message.startsWith('Field "') && message.endsWith('" is required.');
+}

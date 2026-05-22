@@ -15,6 +15,16 @@ const List<SchemaVariant> sharedContextVariantLeafTypes = [
   .notWidgetState,
 ];
 
+int variantLeafSortPriority(SchemaVariant leaf) {
+  return switch (leaf) {
+    .widgetState => 1,
+    .enabled || .brightness || .breakpoint || .notWidgetState => 0,
+    .named || .contextAllOf || .contextBuilder => throw StateError(
+      'Unsupported shared context leaf type: $leaf',
+    ),
+  };
+}
+
 final class ContextVariantLeaf {
   final ContextVariant variant;
   final String canonicalKey;
@@ -66,10 +76,6 @@ final class VariantConditionDefinition {
       input: inputSchema.copyWith(
         properties: {...inputSchema.properties, 'style': styleSchema},
       ),
-      output: Ack.instance<VariantStyle<S>>().refine(
-        (value) => _matchesVariant(value.variant),
-        message: 'Variant style does not match ${type.wireValue}.',
-      ),
       decode: (data) =>
           VariantStyle<S>(buildLeaf(data).variant, data['style']! as T),
       encode: (value) {
@@ -86,6 +92,10 @@ final class VariantConditionDefinition {
           'style': value.value as T,
         };
       },
+      output: Ack.instance<VariantStyle<S>>().refine(
+        (value) => _matchesVariant(value.variant),
+        message: 'Variant style does not match ${type.wireValue}.',
+      ),
     );
   }
 
@@ -213,8 +223,6 @@ VariantConditionDefinition _buildSharedVariantConditionDefinition(
             Breakpoint(
               minWidth: data['minWidth'] as double?,
               maxWidth: data['maxWidth'] as double?,
-              minHeight: data['minHeight'] as double?,
-              maxHeight: data['maxHeight'] as double?,
             ),
           ),
           canonicalKey: _breakpointCanonicalKey(data),
@@ -229,11 +237,9 @@ VariantConditionDefinition _buildSharedVariantConditionDefinition(
               Ack.object({
                 'minWidth': doubleFromNum().nullable().optional(),
                 'maxWidth': doubleFromNum().nullable().optional(),
-                'minHeight': doubleFromNum().nullable().optional(),
-                'maxHeight': doubleFromNum().nullable().optional(),
               }).refine(
                 _hasAnyBreakpointDimension,
-                message: 'At least one dimension constraint required.',
+                message: 'At least one width constraint required.',
               ),
           decode: buildLeaf,
           encode: _encodeBreakpointLeaf,
@@ -364,31 +370,21 @@ WidgetState _notWidgetStateFromVariant(Variant variant) {
 }
 
 bool _hasAnyBreakpointDimension(JsonMap data) {
-  return data['minWidth'] != null ||
-      data['maxWidth'] != null ||
-      data['minHeight'] != null ||
-      data['maxHeight'] != null;
+  return data['minWidth'] != null || data['maxWidth'] != null;
 }
 
-JsonMap _breakpointFieldsFromValues({
-  double? minWidth,
-  double? maxWidth,
-  double? minHeight,
-  double? maxHeight,
-}) {
+JsonMap _breakpointFieldsFromValues({double? minWidth, double? maxWidth}) {
   final fields = <String, Object?>{};
 
   if (minWidth != null) fields['minWidth'] = minWidth;
   if (maxWidth != null) fields['maxWidth'] = maxWidth;
-  if (minHeight != null) fields['minHeight'] = minHeight;
-  if (maxHeight != null) fields['maxHeight'] = maxHeight;
 
   return fields;
 }
 
 JsonMap? _breakpointFieldsFromCanonicalKey(String canonicalKey) {
   final parts = canonicalKey.split(':');
-  if (parts.length != 5 || parts.first != SchemaVariant.breakpoint.wireValue) {
+  if (parts.length != 3 || parts.first != SchemaVariant.breakpoint.wireValue) {
     return null;
   }
 
@@ -405,8 +401,6 @@ JsonMap? _breakpointFieldsFromCanonicalKey(String canonicalKey) {
   return _breakpointFieldsFromValues(
     minWidth: values['minWidth'],
     maxWidth: values['maxWidth'],
-    minHeight: values['minHeight'],
-    maxHeight: values['maxHeight'],
   );
 }
 
@@ -435,7 +429,5 @@ String _breakpointCanonicalKey(JsonMap data) {
     SchemaVariant.breakpoint.wireValue,
     'minWidth=${data['minWidth']?.toString() ?? 'null'}',
     'maxWidth=${data['maxWidth']?.toString() ?? 'null'}',
-    'minHeight=${data['minHeight']?.toString() ?? 'null'}',
-    'maxHeight=${data['maxHeight']?.toString() ?? 'null'}',
   ].join(':');
 }

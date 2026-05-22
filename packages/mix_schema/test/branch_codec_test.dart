@@ -77,6 +77,21 @@ void main() {
   });
 
   group('buildDiscriminatorInjectingCodec', () {
+    test('rejects input schemas that declare the discriminator field', () {
+      expect(
+        () => buildDiscriminatorInjectingCodec<_Dog>(
+          type: 'dog',
+          input: Ack.object({
+            'type': Ack.literal('spoofed'),
+            'breed': Ack.string(),
+          }),
+          decode: (data) => _Dog(data['breed']! as String),
+          encode: (value) => {'breed': value.breed},
+        ),
+        throwsArgumentError,
+      );
+    });
+
     test('user encode cannot override the injected discriminator', () {
       final codec = Ack.discriminated<Object>(
         discriminatorKey: 'type',
@@ -96,6 +111,34 @@ void main() {
   });
 
   group('standaloneBranchCodec', () {
+    test('rejects input schemas that declare the discriminator field', () {
+      expect(
+        () => standaloneBranchCodec<_Animal, _Dog>(
+          type: 'dog',
+          input: Ack.object({
+            'type': Ack.literal('spoofed'),
+            'breed': Ack.string(),
+          }),
+          decode: (data) => _Dog(data['breed']! as String),
+          encode: (value) => {'breed': value.breed},
+        ),
+        throwsArgumentError,
+      );
+    });
+
+    test('rejects payloads whose discriminator does not match the branch', () {
+      final codec = standaloneBranchCodec<_Animal, _Dog>(
+        type: 'dog',
+        input: Ack.object({'breed': Ack.string()}),
+        decode: (data) => _Dog(data['breed']! as String),
+        encode: (value) => {'breed': value.breed},
+      );
+
+      final result = codec.safeParse({'type': 'cat', 'breed': 'beagle'});
+
+      expect(result.isFail, isTrue);
+    });
+
     test('unsupported runtime subtype encodes as unsupported_encode_value', () {
       final codec = standaloneBranchCodec<_Animal, _Dog>(
         type: 'dog',
@@ -133,7 +176,10 @@ void main() {
       expect(mapped, hasLength(1));
       expect(mapped.single.code, MixSchemaErrorCode.unsupportedEncodeValue);
       expect(mapped.single.message, contains('Unsupported encode subtype'));
-      expect(mapped.single.message, contains('Custom message without sentinel.'));
+      expect(
+        mapped.single.message,
+        contains('Custom message without sentinel.'),
+      );
     });
 
     test('user encode cannot override the injected discriminator', () {

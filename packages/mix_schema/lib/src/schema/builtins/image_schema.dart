@@ -11,29 +11,36 @@ import '../styler_definition.dart';
 StylerContract<ImageSpec, ImageStyler> buildImageStylerDefinition(
   StylerCatalog catalog,
 ) {
+  final fields = <String, AckSchema<Object, Object>>{
+    'image': catalog.imageProviderCodec,
+    'width': doubleFromNum().optional(),
+    'height': doubleFromNum().optional(),
+    'color': colorCodec.optional(),
+    'repeat': imageRepeatSchema.optional(),
+    'fit': boxFitSchema.optional(),
+    'alignment': alignmentCodec.optional(),
+    'centerSlice': rectCodec.optional(),
+    'filterQuality': filterQualitySchema.optional(),
+    'colorBlendMode': blendModeSchema.optional(),
+    'semanticLabel': Ack.string().optional(),
+    'excludeFromSemantics': Ack.boolean().optional(),
+    'gaplessPlayback': Ack.boolean().optional(),
+    'isAntiAlias': Ack.boolean().optional(),
+    'matchTextDirection': Ack.boolean().optional(),
+  };
+
   return buildStylerCodecContract(
     catalog: catalog,
     type: .image,
     emptyStyle: ImageStyler(),
-    fields: {
-      'image': catalog.imageProviderCodec,
-      'width': doubleFromNum().optional(),
-      'height': doubleFromNum().optional(),
-      'color': colorCodec.optional(),
-      'repeat': imageRepeatSchema.optional(),
-      'fit': boxFitSchema.optional(),
-      'alignment': alignmentCodec.optional(),
-      'centerSlice': rectCodec.optional(),
-      'filterQuality': filterQualitySchema.optional(),
-      'colorBlendMode': blendModeSchema.optional(),
-      'semanticLabel': Ack.string().optional(),
-      'excludeFromSemantics': Ack.boolean().optional(),
-      'gaplessPlayback': Ack.boolean().optional(),
-      'isAntiAlias': Ack.boolean().optional(),
-      'matchTextDirection': Ack.boolean().optional(),
+    fields: fields,
+    variantStyleFields: {
+      ...fields,
+      'image': catalog.imageProviderCodec.optional(),
     },
     build: _decodeImageStyler,
-    encodeFields: _encodeImageFields,
+    encodeFields: _encodeRequiredImageFields,
+    encodeVariantStyleFields: _encodeOptionalImageFields,
   );
 }
 
@@ -44,7 +51,7 @@ ImageStyler _decodeImageStyler(
   List<VariantStyle<ImageSpec>>? variants,
 }) {
   return ImageStyler(
-    image: data['image']! as ImageProvider<Object>,
+    image: data['image'] as ImageProvider<Object>?,
     width: data['width'] as double?,
     height: data['height'] as double?,
     color: data['color'] as Color?,
@@ -65,10 +72,17 @@ ImageStyler _decodeImageStyler(
   );
 }
 
-JsonMap _encodeImageFields(ImageStyler value) {
+JsonMap _encodeRequiredImageFields(ImageStyler value) {
   return {
     'image': requiredDirectPropValue(value.$image, 'image'),
+    ..._encodeOptionalImageFields(value),
+  };
+}
+
+JsonMap _encodeOptionalImageFields(ImageStyler value) {
+  return {
     ...optionalJsonMap([
+      ('image', directPropValue(value.$image)),
       ('width', directPropValue(value.$width)),
       ('height', directPropValue(value.$height)),
       ('color', directPropValue(value.$color)),
@@ -86,4 +100,3 @@ JsonMap _encodeImageFields(ImageStyler value) {
     ]),
   };
 }
-

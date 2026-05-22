@@ -13,13 +13,7 @@ final class RegistryBuilder<T extends Object> {
   final Map<T, String> _reverseIndex = <T, String>{};
   bool _frozen = false;
   RegistryBuilder({required this.scope}) {
-    if (!kRegistryScopePattern.hasMatch(scope)) {
-      throw ArgumentError.value(
-        scope,
-        'scope',
-        'Registry scope must match ${kRegistryScopePattern.pattern}.',
-      );
-    }
+    assertValidRegistryScope(scope);
   }
 
   /// Convenience constructor for built-in registry scopes.
@@ -32,13 +26,7 @@ final class RegistryBuilder<T extends Object> {
       throw StateError('Registry "$scope" is frozen.');
     }
 
-    if (!kRegistryIdPattern.hasMatch(id)) {
-      throw ArgumentError.value(
-        id,
-        'id',
-        'Registry id must match ${kRegistryIdPattern.pattern}.',
-      );
-    }
+    assertValidRegistryId(id);
 
     if (_values.containsKey(id)) {
       throw StateError('Registry "$scope" already contains id "$id".');
@@ -63,10 +51,6 @@ final class RegistryBuilder<T extends Object> {
 
     _frozen = true;
 
-    return FrozenRegistry(
-      scope: scope,
-      values: _values,
-      reverseIndex: _reverseIndex,
-    );
+    return FrozenRegistry(scope: scope, values: _values);
   }
 }
