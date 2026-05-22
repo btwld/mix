@@ -101,4 +101,44 @@ void main() {
       expect(frozen.lookup('with_underscore'), 'd');
     });
   });
+
+  group('FrozenRegistry direct construction', () {
+    test('rejects scopes that fail the wire grammar', () {
+      expect(
+        () => FrozenRegistry<String>(scope: 'Bad-Scope', values: const {}),
+        throwsA(isA<ArgumentError>()),
+      );
+      expect(
+        () => FrozenRegistry<String>(scope: '', values: const {}),
+        throwsA(isA<ArgumentError>()),
+      );
+    });
+
+    test('rejects ids that fail the wire grammar', () {
+      expect(
+        () => FrozenRegistry<String>(
+          scope: 'demo',
+          values: const {'bad id with spaces': 'value'},
+        ),
+        throwsA(isA<ArgumentError>()),
+      );
+      expect(
+        () => FrozenRegistry<String>(
+          scope: 'demo',
+          values: const {'': 'value'},
+        ),
+        throwsA(isA<ArgumentError>()),
+      );
+    });
+
+    test('accepts valid scope and ids', () {
+      final frozen = FrozenRegistry<String>(
+        scope: 'demo',
+        values: const {'primary': 'a', 'app.image': 'b'},
+      );
+
+      expect(frozen.lookup('primary'), 'a');
+      expect(frozen.lookup('app.image'), 'b');
+    });
+  });
 }
