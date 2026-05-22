@@ -407,7 +407,7 @@ class WidgetVisitor extends RecursiveAstVisitor<void> {
 
   @override
   void visitClassDeclaration(ClassDeclaration node) {
-    if (node.name.lexeme == targetClassName) {
+    if (node.namePart.typeName.lexeme == targetClassName) {
       // Extract class documentation
       final docComment = node.documentationComment;
       if (docComment != null) {
@@ -415,7 +415,7 @@ class WidgetVisitor extends RecursiveAstVisitor<void> {
       }
 
       // First, extract field types
-      for (final member in node.members) {
+      for (final member in (node.body as BlockClassBody).members) {
         if (member is FieldDeclaration) {
           for (final variable in member.fields.variables) {
             final fieldName = variable.name.lexeme;
@@ -426,7 +426,7 @@ class WidgetVisitor extends RecursiveAstVisitor<void> {
       }
 
       // Then find constructor
-      for (final member in node.members) {
+      for (final member in (node.body as BlockClassBody).members) {
         if (member is ConstructorDeclaration) {
           _extractConstructorParams(member);
           break;
@@ -561,7 +561,7 @@ class StylerVisitor extends RecursiveAstVisitor<void> {
 
   @override
   void visitClassDeclaration(ClassDeclaration node) {
-    if (node.name.lexeme == targetClassName) {
+    if (node.namePart.typeName.lexeme == targetClassName) {
       // Set current source to the target class name
       _currentSource = targetClassName;
 
@@ -574,7 +574,7 @@ class StylerVisitor extends RecursiveAstVisitor<void> {
       }
 
       // Extract public methods
-      for (final member in node.members) {
+      for (final member in (node.body as BlockClassBody).members) {
         if (member is MethodDeclaration) {
           if (!member.isStatic &&
               !member.isGetter && // Skip getters
@@ -596,7 +596,7 @@ class StylerVisitor extends RecursiveAstVisitor<void> {
       _currentSource = node.name.lexeme;
 
       // Extract public methods from mixin
-      for (final member in node.members) {
+      for (final member in node.body.members) {
         if (member is MethodDeclaration) {
           if (!member.isStatic &&
               !member.isGetter &&

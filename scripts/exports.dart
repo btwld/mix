@@ -5,14 +5,12 @@ import 'dart:io';
 
 class _PackageExportConfig {
   final String? libraryDirective;
-  final Map<String, List<String>> manualTopLevelDirectives;
   final Map<String, List<String>> hiddenSymbolsByPath;
   final List<String> excludedPaths;
   final List<String> forcedPaths;
 
   const _PackageExportConfig({
     this.libraryDirective,
-    this.manualTopLevelDirectives = const {},
     this.hiddenSymbolsByPath = const {},
     this.excludedPaths = const [],
     this.forcedPaths = const [],
@@ -61,16 +59,6 @@ Future<void> _libraryExport({
   libOutputString.writeln(
     '${exportConfig.libraryDirective ?? 'library $packageName;'}\n',
   );
-
-  for (final entry in exportConfig.manualTopLevelDirectives.entries) {
-    libOutputString.writeln('/// ${entry.key}');
-    for (final directive in entry.value) {
-      libOutputString.writeln(directive);
-    }
-  }
-  if (exportConfig.manualTopLevelDirectives.isNotEmpty) {
-    libOutputString.writeln();
-  }
 
   final fileMap = await _getImportedFilesByDirectory(
     src: src,

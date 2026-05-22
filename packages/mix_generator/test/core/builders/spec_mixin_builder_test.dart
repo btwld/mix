@@ -236,10 +236,7 @@ void main() {
         // typedef — guards against accidentally dropping the deprecation.
         // The `$` in the message is escaped (`\$`) so the analyzer treats
         // it as a literal in the generated Dart string, not interpolation.
-        expect(
-          code,
-          contains(r"@Deprecated('Rename to `_\$BoxSpec`"),
-        );
+        expect(code, contains(r"@Deprecated('Rename to `_\$BoxSpec`"));
         expect(code, contains(r'`_\$BoxSpecMethods` alias'));
         final deprecatedIndex = code.indexOf('@Deprecated(');
         final typedefIndex = code.indexOf('typedef _\$BoxSpecMethods');
