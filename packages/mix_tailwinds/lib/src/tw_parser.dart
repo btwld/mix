@@ -4,6 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 import 'package:mix_schema/encode.dart'
     show
+        SchemaBorder,
+        SchemaBorderRadius,
+        SchemaDecoration,
+        SchemaGradient,
+        SchemaGradientTransform,
+        SchemaModifier,
+        SchemaStyler,
+        SchemaVariant,
         payloadAlignment,
         payloadBreakpointCondition,
         payloadBrightnessCondition,
@@ -20,18 +28,20 @@ import 'tw_utils.dart';
 
 typedef TokenWarningCallback = void Function(String token);
 
-const _boxType = 'box';
-const _textType = 'text';
-const _flexBoxType = 'flex_box';
-const _boxDecorationType = 'box_decoration';
-const _borderType = 'border';
-const _borderRadiusType = 'border_radius';
-const _linearGradientType = 'linear_gradient';
-const _gradientRotationType = 'gradient_rotation';
-const _cssLinearKeywordGradientType = 'css_linear_keyword_transform';
-const _contextAllOfType = 'context_all_of';
-const _blurModifierType = 'blur';
-const _defaultTextStyleModifierType = 'default_text_style';
+final String _boxType = SchemaStyler.box.wireValue;
+final String _textType = SchemaStyler.text.wireValue;
+final String _flexBoxType = SchemaStyler.flexBox.wireValue;
+final String _boxDecorationType = SchemaDecoration.box.wireValue;
+final String _borderType = SchemaBorder.border.wireValue;
+final String _borderRadiusType = SchemaBorderRadius.borderRadius.wireValue;
+final String _linearGradientType = SchemaGradient.linear.wireValue;
+final String _gradientRotationType = SchemaGradientTransform.rotation.wireValue;
+final String _cssLinearKeywordGradientType =
+    SchemaGradientTransform.cssLinearKeyword.wireValue;
+final String _contextAllOfType = SchemaVariant.contextAllOf.wireValue;
+final String _blurModifierType = SchemaModifier.blur.wireValue;
+final String _defaultTextStyleModifierType =
+    SchemaModifier.defaultTextStyle.wireValue;
 
 enum TwDiagnosticCode {
   unknownToken,
