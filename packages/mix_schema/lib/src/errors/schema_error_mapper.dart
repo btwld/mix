@@ -218,7 +218,8 @@ final class SchemaErrorMapper {
       'object_additional_properties_disallowed' => .unknownField,
       'core_invalid_type' => .typeMismatch,
       'string_enum' || 'enum_value' => .invalidEnum,
-      // Current max-length/max-items constraints are owned by MixSchemaLimits.
+      // Max-length/max-items constraints are produced by MixSchemaLimits and
+      // codec-level grammar caps such as registryValueCodec/kMaxRegistryIdLength.
       'string_max_length' || 'list_max_items' => .payloadLimitExceeded,
       _ => .constraintViolation,
     };

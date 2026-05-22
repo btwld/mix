@@ -57,6 +57,8 @@ discriminatedBranchCodec<B extends Object, T extends B>({
   required T Function(JsonMap data) decode,
   required JsonMap Function(T value) encode,
 }) {
+  _assertNoDiscriminatorField(input);
+
   return Ack.codec<JsonMap, JsonMap, B>(
     input: input,
     decode: (data) => decode(data) as B,

@@ -1,6 +1,10 @@
 import 'package:ack/ack.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mix/mix.dart';
 import 'package:mix_schema/mix_schema.dart';
+// ignore: implementation_imports
+import 'package:mix_schema/src/core/schema_wire_types.dart';
 // ignore: implementation_imports
 import 'package:mix_schema/src/schema/metadata/variant_condition_definition.dart';
 
@@ -150,6 +154,13 @@ void main() {
       for (final type in sharedContextVariantLeafTypes) {
         expect(leaves[type.wireValue], variantLeafSortPriority(type));
       }
+    });
+
+    test('widget-state priority mirrors Mix runtime sortPriority', () {
+      expect(
+        variantLeafSortPriority(SchemaVariant.widgetState),
+        equals(WidgetStateVariant(WidgetState.hovered).sortPriority),
+      );
     });
   });
 }

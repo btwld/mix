@@ -409,10 +409,7 @@ class TailwindParityPreview extends StatelessWidget {
 
     return Align(
       alignment: Alignment.topCenter,
-      child: SingleChildScrollView(
-        padding: padding,
-        child: content,
-      ),
+      child: SingleChildScrollView(padding: padding, child: content),
     );
   }
 }

@@ -36,8 +36,10 @@
   Registry id length is enforced by the shared registry wire grammar and
   `registryValueCodec`'s `maxLength` schema.
 - `mix_tailwinds` should prove the contract by using `MixSchemaContract` decode
-  and encode seams. It should not own public schema shape or depend on public
-  wire enum builders.
+  and encode seams. It may use the public producer surface
+  (`mix_schema/encode.dart`) for wire enum builders and primitive payload
+  helpers, but must not depend on internal `mix_schema/src` wire definitions or
+  define schema wire rules itself.
 - `encode.dart` is still useful as a narrow producer helper surface for
   primitive payload fragments and shared variant conditions. It should not grow
   into a second schema DSL.

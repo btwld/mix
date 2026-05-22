@@ -138,6 +138,5 @@ void main() {
       expect(value.value, closeTo(0.666666, 0.000001));
       expect(value, const TwFractionValue(2, 3));
     });
-
   });
 }

@@ -8,6 +8,21 @@ import 'package:mix_schema/src/errors/schema_error_mapper.dart';
 
 void main() {
   group('discriminatedBranchCodec', () {
+    test('rejects input schemas that declare the discriminator field', () {
+      expect(
+        () => discriminatedBranchCodec<_Animal, _Dog>(
+          type: 'dog',
+          input: Ack.object({
+            'type': Ack.literal('spoofed'),
+            'breed': Ack.string(),
+          }),
+          decode: (data) => _Dog(data['breed']! as String),
+          encode: (value) => {'breed': value.breed},
+        ),
+        throwsArgumentError,
+      );
+    });
+
     test('unsupported runtime subtype encodes as unsupported_encode_value', () {
       final codec = Ack.discriminated<_Animal>(
         discriminatorKey: 'type',

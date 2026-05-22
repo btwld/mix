@@ -4,6 +4,9 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 import 'package:mix_schema/mix_schema.dart';
+// ignore: implementation_imports
+import 'package:mix_schema/src/registry/registry_wire_grammar.dart';
+// ignore: implementation_imports
 import 'package:mix_schema/src/schema/painting/gradient_schemas.dart';
 
 void main() {
@@ -111,6 +114,50 @@ void main() {
       expect(result.ok, isFalse);
       expect(result.errors.single.code, MixSchemaErrorCode.unknownRegistryId);
       expect(result.errors.single.path, '#/icon');
+    });
+
+    test('rejects registry ids that fail the wire pattern before lookup', () {
+      expect(kRegistryIdPattern.hasMatch('bad id with spaces'), isFalse);
+
+      final result = MixSchemaContract.builtIn().decode({
+        'type': 'icon',
+        'icon': 'bad id with spaces',
+      });
+
+      expect(result.ok, isFalse);
+      expect(
+        result.errors.single.code,
+        isNot(MixSchemaErrorCode.unknownRegistryId),
+      );
+      expect(result.errors.single.path, '#/icon');
+    });
+
+    test('rejects registry ids that exceed the wire length before lookup', () {
+      final result = MixSchemaContract.builtIn().decode({
+        'type': 'icon',
+        'icon': 'a' * (kMaxRegistryIdLength + 1),
+      });
+
+      expect(result.ok, isFalse);
+      expect(
+        result.errors.single.code,
+        MixSchemaErrorCode.payloadLimitExceeded,
+      );
+      expect(result.errors.single.path, '#/icon');
+    });
+
+    test('registry id grammar errors stay anchored at the registry field', () {
+      final invalidPattern = MixSchemaContract.builtIn().decode({
+        'type': 'icon',
+        'icon': 'bad id with spaces',
+      });
+      final tooLong = MixSchemaContract.builtIn().decode({
+        'type': 'icon',
+        'icon': 'a' * (kMaxRegistryIdLength + 1),
+      });
+
+      expect(invalidPattern.errors.single.path, '#/icon');
+      expect(tooLong.errors.single.path, '#/icon');
     });
 
     test('reports unknown_registry_value for unregistered runtime values', () {
