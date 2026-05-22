@@ -38,7 +38,14 @@ final class ContextConditionSet {
   /// definition for the allowed conditions list), so nested `context_all_of`
   /// rejection happens at schema validation rather than in this constructor.
   factory ContextConditionSet.compound(Iterable<ContextVariantLeaf> leaves) {
-    return ContextConditionSet._(_normalizeConditionLeaves(leaves));
+    final normalized = _normalizeConditionLeaves(leaves);
+    assert(
+      normalized.length >= 2,
+      'ContextConditionSet.compound() requires at least 2 leaves; '
+      'received ${normalized.length}.',
+    );
+
+    return ContextConditionSet._(normalized);
   }
 
   ContextVariant toVariant() {
