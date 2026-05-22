@@ -65,6 +65,39 @@ M? directPropMix<M extends Mix>(Prop? prop) {
   );
 }
 
+/// Folds every `MixSource` in `prop` into a single merged `M` by walking
+/// sources in order and calling `Mix.merge`. Returns `null` for null or
+/// empty props.
+///
+/// Use this in compound styler encoders (e.g. `FlexBoxStyler.$box`) whose
+/// inner styler `Prop` accumulates sources across builder chain calls.
+/// Throws [UnsupportedEncodeValueError] if any source is not a `MixSource`
+/// of type `M` — token and derived sources still require richer codec
+/// support.
+M? foldMixProp<M extends Mix>(Prop? prop) {
+  if (prop == null || prop.sources.isEmpty) return null;
+
+  M? folded;
+  for (final source in prop.sources) {
+    if (source is! MixSource) {
+      throw UnsupportedEncodeValueError(
+        'Only direct mix props can be encoded.',
+        value: prop,
+      );
+    }
+    final mix = source.mix;
+    if (mix is! M) {
+      throw UnsupportedEncodeValueError(
+        'Mix source type ${mix.runtimeType} is not $M.',
+        value: prop,
+      );
+    }
+    folded = folded == null ? mix : folded.merge(mix) as M;
+  }
+
+  return folded;
+}
+
 /// Builds a `JsonMap` from `(key, value)` pairs, omitting entries whose
 /// value is `null`. Use for optional fields where wire absence is the
 /// canonical form for "unset."

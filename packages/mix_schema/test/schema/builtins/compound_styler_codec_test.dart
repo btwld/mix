@@ -65,26 +65,58 @@ void main() {
       });
     });
 
-    test('reports encode errors for nested multi-source compound props', () {
-      final contract = MixSchemaContract.builtIn();
-      final style = FlexBoxStyler(
-        alignment: Alignment.center,
-      ).merge(FlexBoxStyler(alignment: Alignment.topLeft));
+    test(
+      'folds multi-source compound props into a single merged inner styler',
+      () {
+        final contract = MixSchemaContract.builtIn();
+        final style = FlexBoxStyler()
+            .padding(EdgeInsetsMix.all(8))
+            .direction(Axis.horizontal)
+            .merge(FlexBoxStyler(spacing: 4));
 
-      final result = contract.encode(style);
+        final encoded = contract.encode(style);
+        expect(encoded.ok, isTrue, reason: encoded.errors.join('\n'));
+        expect(encoded.value, {
+          'type': 'flex_box',
+          'padding': {'top': 8.0, 'bottom': 8.0, 'left': 8.0, 'right': 8.0},
+          'direction': 'horizontal',
+          'spacing': 4.0,
+        });
 
-      expect(result.ok, isFalse);
-      expect(result.value, isNull);
-      expect(result.errors, hasLength(1));
-      expect(
-        result.errors.single.code,
-        MixSchemaErrorCode.unsupportedEncodeValue,
-      );
-      expect(
-        result.errors.single.message,
-        contains('Only single-source mix props can be encoded.'),
-      );
-    });
+        final decoded = contract.decode(encoded.value!);
+        expect(decoded.ok, isTrue, reason: decoded.errors.join('\n'));
+
+        // Re-encoding the decoded value must match the original payload.
+        final reEncoded = contract.encode(decoded.value!);
+        expect(reEncoded.ok, isTrue, reason: reEncoded.errors.join('\n'));
+        expect(reEncoded.value, encoded.value);
+      },
+    );
+
+    test(
+      'folds multi-source compound props for StackBoxStyler chains',
+      () {
+        final contract = MixSchemaContract.builtIn();
+        final style = StackBoxStyler()
+            .margin(EdgeInsetsMix.all(6))
+            .merge(StackBoxStyler(fit: StackFit.expand));
+
+        final encoded = contract.encode(style);
+        expect(encoded.ok, isTrue, reason: encoded.errors.join('\n'));
+        expect(encoded.value, {
+          'type': 'stack_box',
+          'margin': {'top': 6.0, 'bottom': 6.0, 'left': 6.0, 'right': 6.0},
+          'fit': 'expand',
+        });
+
+        final decoded = contract.decode(encoded.value!);
+        expect(decoded.ok, isTrue, reason: decoded.errors.join('\n'));
+
+        final reEncoded = contract.encode(decoded.value!);
+        expect(reEncoded.ok, isTrue, reason: reEncoded.errors.join('\n'));
+        expect(reEncoded.value, encoded.value);
+      },
+    );
 
     test('reports encode errors for nested non-direct compound props', () {
       final contract = MixSchemaContract.builtIn();

@@ -51,8 +51,8 @@ JsonMap encodeStackFields(
 }
 
 JsonMap encodeFlexBoxFields(FlexBoxStyler value) {
-  final box = directPropMix<BoxStyler>(value.$box);
-  final flex = directPropMix<FlexStyler>(value.$flex);
+  final box = foldMixProp<BoxStyler>(value.$box);
+  final flex = foldMixProp<FlexStyler>(value.$flex);
 
   return {
     if (box != null) ...encodeBoxFields(box),
@@ -62,8 +62,8 @@ JsonMap encodeFlexBoxFields(FlexBoxStyler value) {
 }
 
 JsonMap encodeStackBoxFields(StackBoxStyler value) {
-  final box = directPropMix<BoxStyler>(value.$box);
-  final stack = directPropMix<StackStyler>(value.$stack);
+  final box = foldMixProp<BoxStyler>(value.$box);
+  final stack = foldMixProp<StackStyler>(value.$stack);
 
   return {
     if (box != null) ...encodeBoxFields(box),
