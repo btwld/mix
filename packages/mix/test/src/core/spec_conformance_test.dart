@@ -4,9 +4,12 @@ import 'package:mix/mix.dart';
 void main() {
   test('generated specs satisfy core Spec contracts', () {
     expectGeneratedSpecConforms(const BoxSpec());
+    expectGeneratedSpecConforms(const FlexSpec());
+    expectGeneratedSpecConforms(const FlexBoxSpec());
     expectGeneratedSpecConforms(const IconSpec());
     expectGeneratedSpecConforms(const ImageSpec());
     expectGeneratedSpecConforms(const StackSpec());
+    expectGeneratedSpecConforms(const StackBoxSpec());
     expectGeneratedSpecConforms(const TextSpec());
   });
 }
