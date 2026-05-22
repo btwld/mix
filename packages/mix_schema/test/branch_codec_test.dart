@@ -57,6 +57,42 @@ void main() {
       final decoded = codec.safeParse({'type': 'dog', 'breed': 'beagle'});
       expect(decoded.getOrThrow(), isA<_Dog>());
     });
+
+    test('user encode cannot override the injected discriminator', () {
+      final codec = Ack.discriminated<_Animal>(
+        discriminatorKey: 'type',
+        schemas: {
+          'dog': discriminatedBranchCodec<_Animal, _Dog>(
+            type: 'dog',
+            input: Ack.object({'breed': Ack.string()}),
+            decode: (data) => _Dog(data['breed']! as String),
+            encode: (value) => {'type': 'spoofed', 'breed': value.breed},
+          ),
+        },
+      );
+
+      final encoded = codec.safeEncode(const _Dog('beagle'));
+      expect(encoded.getOrThrow(), {'type': 'dog', 'breed': 'beagle'});
+    });
+  });
+
+  group('buildDiscriminatorInjectingCodec', () {
+    test('user encode cannot override the injected discriminator', () {
+      final codec = Ack.discriminated<Object>(
+        discriminatorKey: 'type',
+        schemas: {
+          'dog': buildDiscriminatorInjectingCodec<_Dog>(
+            type: 'dog',
+            input: Ack.object({'breed': Ack.string()}),
+            decode: (data) => _Dog(data['breed']! as String),
+            encode: (value) => {'type': 'spoofed', 'breed': value.breed},
+          ),
+        },
+      );
+
+      final encoded = codec.safeEncode(const _Dog('beagle'));
+      expect(encoded.getOrThrow(), {'type': 'dog', 'breed': 'beagle'});
+    });
   });
 
   group('standaloneBranchCodec', () {
@@ -76,6 +112,40 @@ void main() {
 
       expect(mapped, hasLength(1));
       expect(mapped.single.code, MixSchemaErrorCode.unsupportedEncodeValue);
+    });
+
+    test('custom outputRefinementMessage is still mapped via sentinel', () {
+      final codec = standaloneBranchCodec<_Animal, _Dog>(
+        type: 'dog',
+        input: Ack.object({'breed': Ack.string()}),
+        decode: (data) => _Dog(data['breed']! as String),
+        encode: (value) => {'breed': value.breed},
+        outputRefinement: (value) => value is _Dog,
+        outputRefinementMessage: 'Custom message without sentinel.',
+      );
+
+      final result = codec.safeEncode(const _Bird('sparrow'));
+      expect(result.isFail, isTrue);
+
+      const mapper = SchemaErrorMapper();
+      final mapped = mapper.mapEncode(result.getError());
+
+      expect(mapped, hasLength(1));
+      expect(mapped.single.code, MixSchemaErrorCode.unsupportedEncodeValue);
+      expect(mapped.single.message, contains('Unsupported encode subtype'));
+      expect(mapped.single.message, contains('Custom message without sentinel.'));
+    });
+
+    test('user encode cannot override the injected discriminator', () {
+      final codec = standaloneBranchCodec<_Animal, _Dog>(
+        type: 'dog',
+        input: Ack.object({'breed': Ack.string()}),
+        decode: (data) => _Dog(data['breed']! as String),
+        encode: (value) => {'type': 'spoofed', 'breed': value.breed},
+      );
+
+      final encoded = codec.safeEncode(const _Dog('beagle'));
+      expect(encoded.getOrThrow(), {'type': 'dog', 'breed': 'beagle'});
     });
   });
 }
