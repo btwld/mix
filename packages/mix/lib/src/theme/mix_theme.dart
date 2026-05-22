@@ -164,6 +164,69 @@ class MixScope extends InheritedModel<String> {
     );
   }
 
+  /// Creates a [MixScope] that inherits from the nearest ancestor [MixScope]
+  /// and merges the provided values on top of it.
+  ///
+  /// Mirrors the [DefaultTextStyle.merge] pattern: values passed here take
+  /// precedence, and anything omitted falls back to the ancestor scope.
+  ///
+  /// Use this for feature- or screen-level overrides. Unlike nesting a plain
+  /// [MixScope] — which fully shadows the ancestor, leaving non-overridden
+  /// tokens unresolvable — this keeps the inherited tokens intact.
+  ///
+  /// ```dart
+  /// MixScope.inherit(
+  ///   colors: {ColorToken('brand.primary'): Colors.green},
+  ///   child: FeatureWidget(),
+  /// )
+  /// ```
+  ///
+  /// Returns a [Widget] rather than a [MixScope] because it wraps a [Builder]
+  /// to obtain a [BuildContext] below the ancestor scope. For that reason it
+  /// is a static method, not a factory constructor.
+  ///
+  /// If no ancestor [MixScope] exists, this behaves like a plain [MixScope].
+  static Widget inherit({
+    Map<MixToken, Object>? tokens,
+    Map<ColorToken, Color>? colors,
+    Map<TextStyleToken, TextStyle>? textStyles,
+    Map<SpaceToken, double>? spaces,
+    Map<DoubleToken, double>? doubles,
+    Map<RadiusToken, Radius>? radii,
+    Map<BreakpointToken, Breakpoint>? breakpoints,
+    Map<ShadowToken, List<Shadow>>? shadows,
+    Map<BoxShadowToken, List<BoxShadow>>? boxShadows,
+    Map<BorderSideToken, BorderSide>? borders,
+    Map<FontWeightToken, FontWeight>? fontWeights,
+    List<Type>? orderOfModifiers,
+    required Widget child,
+    Key? key,
+  }) {
+    return Builder(
+      builder: (BuildContext context) {
+        final MixScope? parent = MixScope.maybeOf(context);
+        final MixScope scope = MixScope(
+          key: key,
+          tokens: tokens,
+          colors: colors,
+          textStyles: textStyles,
+          spaces: spaces,
+          doubles: doubles,
+          radii: radii,
+          breakpoints: breakpoints,
+          shadows: shadows,
+          boxShadows: boxShadows,
+          borders: borders,
+          fontWeights: fontWeights,
+          orderOfModifiers: orderOfModifiers,
+          child: child,
+        );
+
+        return parent == null ? scope : parent.merge(scope);
+      },
+    );
+  }
+
   final List<Type>? orderOfModifiers;
 
   final Map<MixToken, Object>? _tokens;
@@ -188,6 +251,9 @@ class MixScope extends InheritedModel<String> {
   }
 
   /// Returns a new [MixScope] by merging this scope with [other].
+  ///
+  /// Token maps are combined with [other] taking precedence; [other]'s
+  /// [orderOfModifiers], [key], and [child] win when provided.
   MixScope merge(MixScope other) {
     final mergedTokens = _tokens != null || other._tokens != null
         ? <MixToken, Object>{...?_tokens, ...?other._tokens}

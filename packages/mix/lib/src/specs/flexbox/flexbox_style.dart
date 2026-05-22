@@ -349,6 +349,7 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
       FlexBoxStyler().translate(x, y, z);
   factory FlexBoxStyler.skew(double skewX, double skewY) =>
       FlexBoxStyler().skew(skewX, skewY);
+
   // Box-style instance methods
 
   /// Sets the alignment property.

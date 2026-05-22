@@ -69,6 +69,10 @@ DartType getInnerType(DartType type, {required bool isWrapped}) {
   return type;
 }
 
+String getInnerTypeName(DartType type, {required bool isWrapped}) {
+  return getBaseTypeName(getInnerType(type, isWrapped: isWrapped));
+}
+
 /// Returns Dart code for a field-related [type] from [visibleFrom].
 String visibleTypeCodeForField(
   FieldElement element, {

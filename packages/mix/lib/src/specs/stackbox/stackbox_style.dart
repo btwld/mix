@@ -325,6 +325,7 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
       StackBoxStyler().translate(x, y, z);
   factory StackBoxStyler.skew(double skewX, double skewY) =>
       StackBoxStyler().skew(skewX, skewY);
+
   // Box-style instance methods
 
   /// Sets the alignment for the box.

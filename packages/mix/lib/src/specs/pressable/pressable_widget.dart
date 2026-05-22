@@ -33,7 +33,6 @@ class PressableBox extends StatelessWidget {
   final VoidCallback? onLongPress;
 
   final BoxStyler? style;
-
   final Widget child;
   final bool enabled;
   final FocusNode? focusNode;

@@ -24,7 +24,6 @@ class MixInteractionDetector extends StatefulWidget {
   });
 
   final Widget child;
-
   final WidgetStatesController? controller;
   final bool enabled;
   final ValueChanged<bool>? onHoverChange;

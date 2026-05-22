@@ -207,7 +207,6 @@ class _ExternalControllerProvider extends StatelessWidget {
   });
 
   final WidgetStatesController controller;
-
   final Widget child;
 
   @override
