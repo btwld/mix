@@ -5,18 +5,18 @@ import '../../core/prop_encode.dart';
 
 JsonMap encodeBoxFields(BoxStyler value) {
   return optionalJsonMap([
-    ('alignment', propValue(value.$alignment)),
-    ('padding', propMix<EdgeInsetsGeometryMix>(value.$padding)),
-    ('margin', propMix<EdgeInsetsGeometryMix>(value.$margin)),
-    ('constraints', propMix<BoxConstraintsMix>(value.$constraints)),
-    ('decoration', propMix<DecorationMix>(value.$decoration)),
+    ('alignment', directPropValue(value.$alignment)),
+    ('padding', directPropMix<EdgeInsetsGeometryMix>(value.$padding)),
+    ('margin', directPropMix<EdgeInsetsGeometryMix>(value.$margin)),
+    ('constraints', directPropMix<BoxConstraintsMix>(value.$constraints)),
+    ('decoration', directPropMix<DecorationMix>(value.$decoration)),
     (
       'foregroundDecoration',
-      propMix<DecorationMix>(value.$foregroundDecoration),
+      directPropMix<DecorationMix>(value.$foregroundDecoration),
     ),
-    ('transform', propValue(value.$transform)),
-    ('transformAlignment', propValue(value.$transformAlignment)),
-    ('clipBehavior', propValue(value.$clipBehavior)),
+    ('transform', directPropValue(value.$transform)),
+    ('transformAlignment', directPropValue(value.$transformAlignment)),
+    ('clipBehavior', directPropValue(value.$clipBehavior)),
   ]);
 }
 
@@ -25,15 +25,15 @@ JsonMap encodeFlexFields(
   String clipBehaviorField = 'clipBehavior',
 }) {
   return optionalJsonMap([
-    ('direction', propValue(value.$direction)),
-    ('mainAxisAlignment', propValue(value.$mainAxisAlignment)),
-    ('crossAxisAlignment', propValue(value.$crossAxisAlignment)),
-    ('mainAxisSize', propValue(value.$mainAxisSize)),
-    ('verticalDirection', propValue(value.$verticalDirection)),
-    ('textDirection', propValue(value.$textDirection)),
-    ('textBaseline', propValue(value.$textBaseline)),
-    (clipBehaviorField, propValue(value.$clipBehavior)),
-    ('spacing', propValue(value.$spacing)),
+    ('direction', directPropValue(value.$direction)),
+    ('mainAxisAlignment', directPropValue(value.$mainAxisAlignment)),
+    ('crossAxisAlignment', directPropValue(value.$crossAxisAlignment)),
+    ('mainAxisSize', directPropValue(value.$mainAxisSize)),
+    ('verticalDirection', directPropValue(value.$verticalDirection)),
+    ('textDirection', directPropValue(value.$textDirection)),
+    ('textBaseline', directPropValue(value.$textBaseline)),
+    (clipBehaviorField, directPropValue(value.$clipBehavior)),
+    ('spacing', directPropValue(value.$spacing)),
   ]);
 }
 
@@ -43,16 +43,16 @@ JsonMap encodeStackFields(
   String clipBehaviorField = 'clipBehavior',
 }) {
   return optionalJsonMap([
-    (alignmentField, propValue(value.$alignment)),
-    ('fit', propValue(value.$fit)),
-    ('textDirection', propValue(value.$textDirection)),
-    (clipBehaviorField, propValue(value.$clipBehavior)),
+    (alignmentField, directPropValue(value.$alignment)),
+    ('fit', directPropValue(value.$fit)),
+    ('textDirection', directPropValue(value.$textDirection)),
+    (clipBehaviorField, directPropValue(value.$clipBehavior)),
   ]);
 }
 
 JsonMap encodeFlexBoxFields(FlexBoxStyler value) {
-  final box = propMix<BoxStyler>(value.$box);
-  final flex = propMix<FlexStyler>(value.$flex);
+  final box = directPropMix<BoxStyler>(value.$box);
+  final flex = directPropMix<FlexStyler>(value.$flex);
 
   return {
     if (box != null) ...encodeBoxFields(box),
@@ -62,8 +62,8 @@ JsonMap encodeFlexBoxFields(FlexBoxStyler value) {
 }
 
 JsonMap encodeStackBoxFields(StackBoxStyler value) {
-  final box = propMix<BoxStyler>(value.$box);
-  final stack = propMix<StackStyler>(value.$stack);
+  final box = directPropMix<BoxStyler>(value.$box);
+  final stack = directPropMix<StackStyler>(value.$stack);
 
   return {
     if (box != null) ...encodeBoxFields(box),

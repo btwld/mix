@@ -43,6 +43,14 @@ void main() {
       expect(radius['topLeft'], {'x': 6.0});
     });
 
+    test('arbitrary 8-digit hex round-trips as CSS-order #RRGGBBAA', () {
+      final result = TwParser().parseBoxResult('bg-[#3B82F680]');
+
+      expect(result.ok, isTrue);
+      final decoration = result.payload['decoration'] as Map<Object?, Object?>;
+      expect(decoration['color'], '#3B82F680');
+    });
+
     test('text utilities include textAlign in the schema payload', () {
       final result = TwParser().parseTextResult(
         'text-white font-bold text-center',

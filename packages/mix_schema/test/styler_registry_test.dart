@@ -3,29 +3,19 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 import 'package:mix_schema/mix_schema.dart';
-import 'package:mix_schema/src/registry/styler_registry.dart';
 import 'package:mix_schema/src/schema/shared/color_schema.dart';
 
 void main() {
-  group('StylerRegistry', () {
+  group('MixSchemaContractBuilder registration', () {
     test('decodes transformed custom branches', () {
-      final registry = StylerRegistry()
-        ..register('demo', _demoSchema('demo'))
-        ..freeze();
+      final contract =
+          (MixSchemaContractBuilder()..register('demo', _demoSchema('demo')))
+              .freeze();
 
-      final result = registry.decode({'type': 'demo', 'value': 42});
+      final result = contract.decode({'type': 'demo', 'value': 42});
 
-      expect(result.isOk, isTrue);
-      expect(result.getOrNull(), 42);
-    });
-
-    test('rejects decode before freeze', () {
-      final registry = StylerRegistry();
-
-      expect(
-        () => registry.decode({'type': 'demo'}),
-        throwsA(isA<StateError>()),
-      );
+      expect(result.ok, isTrue);
+      expect(result.value, 42);
     });
 
     test('supports developer-registered styler schemas', () {
@@ -94,7 +84,7 @@ void main() {
         'custom ',
       ]) {
         expect(
-          () => StylerRegistry().register(type, _demoSchema(type)),
+          () => MixSchemaContractBuilder().register(type, _demoSchema(type)),
           throwsArgumentError,
           reason: type,
         );
@@ -102,20 +92,21 @@ void main() {
     });
 
     test('rejects duplicate registration of the same type', () {
-      final registry = StylerRegistry()..register('demo', _demoSchema('demo'));
+      final builder = MixSchemaContractBuilder()
+        ..register('demo', _demoSchema('demo'));
 
       expect(
-        () => registry.register('demo', _demoSchema('demo')),
+        () => builder.register('demo', _demoSchema('demo')),
         throwsA(isA<StateError>()),
       );
     });
 
     test('reserves built-in styler type names for built-in schemas', () {
       expect(
-        () => StylerRegistry().register('box', _demoSchema('box')),
+        () => MixSchemaContractBuilder().register('box', _demoSchema('box')),
         throwsArgumentError,
       );
-      expect(StylerRegistry.builtIn, returnsNormally);
+      expect(MixSchemaContractBuilder.builtIn, returnsNormally);
     });
 
     test('extends the built-in styler set with custom schemas', () {

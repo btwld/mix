@@ -23,10 +23,10 @@ final borderSideCodec = Ack.codec<JsonMap, JsonMap, BorderSideMix>(
     width: data['width'] as double?,
   ),
   encode: (value) => optionalJsonMap([
-    ('color', propValue(value.$color)),
-    ('width', propValue(value.$width)),
-    ('style', propValue(value.$style)),
-    ('strokeAlign', propValue(value.$strokeAlign)),
+    ('color', directPropValue(value.$color)),
+    ('width', directPropValue(value.$width)),
+    ('style', directPropValue(value.$style)),
+    ('strokeAlign', directPropValue(value.$strokeAlign)),
   ]),
 );
 
@@ -45,10 +45,10 @@ final boxShadowCodec = Ack.codec<JsonMap, JsonMap, BoxShadowMix>(
     spreadRadius: data['spreadRadius'] as double?,
   ),
   encode: (value) => optionalJsonMap([
-    ('color', propValue(value.$color)),
-    ('offset', propValue(value.$offset)),
-    ('blurRadius', propValue(value.$blurRadius)),
-    ('spreadRadius', propValue(value.$spreadRadius)),
+    ('color', directPropValue(value.$color)),
+    ('offset', directPropValue(value.$offset)),
+    ('blurRadius', directPropValue(value.$blurRadius)),
+    ('spreadRadius', directPropValue(value.$spreadRadius)),
   ]),
 );
 
@@ -86,10 +86,10 @@ AckSchema<JsonMap, BoxBorderMix> _buildBoxBorderBranch(SchemaBorder type) {
           right: data['right'] as BorderSideMix?,
         ),
         encode: (mix) => optionalJsonMap([
-          ('top', propMix<BorderSideMix>(mix.$top)),
-          ('bottom', propMix<BorderSideMix>(mix.$bottom)),
-          ('left', propMix<BorderSideMix>(mix.$left)),
-          ('right', propMix<BorderSideMix>(mix.$right)),
+          ('top', directPropMix<BorderSideMix>(mix.$top)),
+          ('bottom', directPropMix<BorderSideMix>(mix.$bottom)),
+          ('left', directPropMix<BorderSideMix>(mix.$left)),
+          ('right', directPropMix<BorderSideMix>(mix.$right)),
         ]),
       );
     case .borderDirectional:
@@ -108,10 +108,10 @@ AckSchema<JsonMap, BoxBorderMix> _buildBoxBorderBranch(SchemaBorder type) {
           end: data['end'] as BorderSideMix?,
         ),
         encode: (mix) => optionalJsonMap([
-          ('top', propMix<BorderSideMix>(mix.$top)),
-          ('bottom', propMix<BorderSideMix>(mix.$bottom)),
-          ('start', propMix<BorderSideMix>(mix.$start)),
-          ('end', propMix<BorderSideMix>(mix.$end)),
+          ('top', directPropMix<BorderSideMix>(mix.$top)),
+          ('bottom', directPropMix<BorderSideMix>(mix.$bottom)),
+          ('start', directPropMix<BorderSideMix>(mix.$start)),
+          ('end', directPropMix<BorderSideMix>(mix.$end)),
         ]),
       );
   }
@@ -137,10 +137,10 @@ AckSchema<JsonMap, BorderRadiusGeometryMix> _buildBorderRadiusBranch(
           bottomRight: data['bottomRight'] as Radius?,
         ),
         encode: (mix) => optionalJsonMap([
-          ('topLeft', propValue(mix.$topLeft)),
-          ('topRight', propValue(mix.$topRight)),
-          ('bottomLeft', propValue(mix.$bottomLeft)),
-          ('bottomRight', propValue(mix.$bottomRight)),
+          ('topLeft', directPropValue(mix.$topLeft)),
+          ('topRight', directPropValue(mix.$topRight)),
+          ('bottomLeft', directPropValue(mix.$bottomLeft)),
+          ('bottomRight', directPropValue(mix.$bottomRight)),
         ]),
       );
     case .borderRadiusDirectional:
@@ -162,10 +162,10 @@ AckSchema<JsonMap, BorderRadiusGeometryMix> _buildBorderRadiusBranch(
           bottomEnd: data['bottomEnd'] as Radius?,
         ),
         encode: (mix) => optionalJsonMap([
-          ('topStart', propValue(mix.$topStart)),
-          ('topEnd', propValue(mix.$topEnd)),
-          ('bottomStart', propValue(mix.$bottomStart)),
-          ('bottomEnd', propValue(mix.$bottomEnd)),
+          ('topStart', directPropValue(mix.$topStart)),
+          ('topEnd', directPropValue(mix.$topEnd)),
+          ('bottomStart', directPropValue(mix.$bottomStart)),
+          ('bottomEnd', directPropValue(mix.$bottomEnd)),
         ]),
       );
   }

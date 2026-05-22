@@ -5,18 +5,18 @@ import '../../core/numeric_codecs.dart';
 import '../../core/prop_encode.dart';
 
 JsonMap _encodeEdgeInsetsMix(EdgeInsetsMix value) => optionalJsonMap([
-  ('top', propValue(value.$top)),
-  ('bottom', propValue(value.$bottom)),
-  ('left', propValue(value.$left)),
-  ('right', propValue(value.$right)),
+  ('top', directPropValue(value.$top)),
+  ('bottom', directPropValue(value.$bottom)),
+  ('left', directPropValue(value.$left)),
+  ('right', directPropValue(value.$right)),
 ]);
 
 JsonMap _encodeEdgeInsetsDirectionalMix(EdgeInsetsDirectionalMix value) =>
     optionalJsonMap([
-      ('top', propValue(value.$top)),
-      ('bottom', propValue(value.$bottom)),
-      ('start', propValue(value.$start)),
-      ('end', propValue(value.$end)),
+      ('top', directPropValue(value.$top)),
+      ('bottom', directPropValue(value.$bottom)),
+      ('start', directPropValue(value.$start)),
+      ('end', directPropValue(value.$end)),
     ]);
 
 final edgeInsetsCodec = Ack.codec<JsonMap, JsonMap, EdgeInsetsGeometryMix>(

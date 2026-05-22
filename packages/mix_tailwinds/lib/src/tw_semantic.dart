@@ -110,55 +110,6 @@ final class TwFractionValue extends TwValue {
   String toString() => 'TwFractionValue($numerator/$denominator)';
 }
 
-/// A transform matrix value.
-final class TwMatrixValue extends TwValue {
-  const TwMatrixValue(this.matrix);
-
-  final Matrix4 matrix;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is TwMatrixValue &&
-          runtimeType == other.runtimeType &&
-          matrix == other.matrix;
-
-  @override
-  int get hashCode => matrix.hashCode;
-
-  @override
-  String toString() => 'TwMatrixValue($matrix)';
-}
-
-/// A gradient value with direction and colors.
-final class TwGradientValue extends TwValue {
-  const TwGradientValue({
-    required this.begin,
-    required this.end,
-    required this.colors,
-  });
-
-  final Alignment begin;
-  final Alignment end;
-  final List<Color> colors;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is TwGradientValue &&
-          runtimeType == other.runtimeType &&
-          begin == other.begin &&
-          end == other.end &&
-          _listEquals(colors, other.colors);
-
-  @override
-  int get hashCode => Object.hash(begin, end, Object.hashAll(colors));
-
-  @override
-  String toString() =>
-      'TwGradientValue(begin: $begin, end: $end, colors: $colors)';
-}
-
 /// A duration value in milliseconds.
 final class TwDurationValue extends TwValue {
   const TwDurationValue(this.milliseconds);

@@ -167,12 +167,12 @@ AckSchema<JsonMap, GradientMix> _buildGradientBranch({
           stops: _gradientStops(data),
         ),
         encode: (mix) => optionalJsonMap([
-          ('colors', requiredPropValue(mix.$colors, 'colors')),
-          ('stops', propValue(mix.$stops)),
-          ('begin', propValue(mix.$begin)),
-          ('end', propValue(mix.$end)),
-          ('tileMode', propValue(mix.$tileMode)),
-          ('transform', propValue(mix.$transform)),
+          ('colors', requiredDirectPropValue(mix.$colors, 'colors')),
+          ('stops', directPropValue(mix.$stops)),
+          ('begin', directPropValue(mix.$begin)),
+          ('end', directPropValue(mix.$end)),
+          ('tileMode', directPropValue(mix.$tileMode)),
+          ('transform', directPropValue(mix.$transform)),
         ]),
       );
     case .radial:
@@ -203,14 +203,14 @@ AckSchema<JsonMap, GradientMix> _buildGradientBranch({
           stops: _gradientStops(data),
         ),
         encode: (mix) => optionalJsonMap([
-          ('colors', requiredPropValue(mix.$colors, 'colors')),
-          ('stops', propValue(mix.$stops)),
-          ('center', propValue(mix.$center)),
-          ('radius', propValue(mix.$radius)),
-          ('tileMode', propValue(mix.$tileMode)),
-          ('focal', propValue(mix.$focal)),
-          ('focalRadius', propValue(mix.$focalRadius)),
-          ('transform', propValue(mix.$transform)),
+          ('colors', requiredDirectPropValue(mix.$colors, 'colors')),
+          ('stops', directPropValue(mix.$stops)),
+          ('center', directPropValue(mix.$center)),
+          ('radius', directPropValue(mix.$radius)),
+          ('tileMode', directPropValue(mix.$tileMode)),
+          ('focal', directPropValue(mix.$focal)),
+          ('focalRadius', directPropValue(mix.$focalRadius)),
+          ('transform', directPropValue(mix.$transform)),
         ]),
       );
     case .sweep:
@@ -239,13 +239,13 @@ AckSchema<JsonMap, GradientMix> _buildGradientBranch({
           stops: _gradientStops(data),
         ),
         encode: (mix) => optionalJsonMap([
-          ('colors', requiredPropValue(mix.$colors, 'colors')),
-          ('stops', propValue(mix.$stops)),
-          ('center', propValue(mix.$center)),
-          ('startAngle', propValue(mix.$startAngle)),
-          ('endAngle', propValue(mix.$endAngle)),
-          ('tileMode', propValue(mix.$tileMode)),
-          ('transform', propValue(mix.$transform)),
+          ('colors', requiredDirectPropValue(mix.$colors, 'colors')),
+          ('stops', directPropValue(mix.$stops)),
+          ('center', directPropValue(mix.$center)),
+          ('startAngle', directPropValue(mix.$startAngle)),
+          ('endAngle', directPropValue(mix.$endAngle)),
+          ('tileMode', directPropValue(mix.$tileMode)),
+          ('transform', directPropValue(mix.$transform)),
         ]),
       );
   }

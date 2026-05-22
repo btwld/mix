@@ -46,6 +46,26 @@ void main() {
       expect(parsed, isNull);
     });
 
+    test('parses negative arbitrary spacing for supported plugins', () {
+      final config = TwConfig.standard();
+
+      final margin = TwResolver(config).resolveToken('-m-[10px]');
+      expect(margin, isNotNull);
+      expect(margin!.single.value, const TwLengthValue(-10, TwUnit.px));
+      expect(margin.single.negative, isTrue);
+
+      final translate = TwResolver(config).resolveToken('-translate-x-[2rem]');
+      expect(translate, isNotNull);
+      expect(translate!.single.value, const TwLengthValue(-32, TwUnit.px));
+    });
+
+    test('rejects negative arbitrary values for unsupported plugins', () {
+      final parsed = TwResolver(
+        TwConfig.standard(),
+      ).resolveToken('-bg-[#ffffff]');
+      expect(parsed, isNull);
+    });
+
     test('parses arbitrary rem length and marks arbitrary', () {
       final parsed = TwResolver(TwConfig.standard()).resolveToken('w-[10rem]');
 
@@ -70,15 +90,16 @@ void main() {
       expect(parsed, isNull);
     });
 
-    test('parses 8-digit arbitrary hex colors', () {
+    test('parses 8-digit arbitrary hex colors as #RRGGBBAA (CSS order)', () {
       final parsed = TwResolver(
         TwConfig.standard(),
-      ).resolveToken('bg-[#80ffffff]');
+      ).resolveToken('bg-[#3B82F680]');
 
       expect(parsed, isNotNull);
       final result = parsed!.single;
       expect(result.property, TwProperty.backgroundColor);
-      expect(result.value, const TwColorValue(Color(0x80FFFFFF)));
+      // #3B82F680 → rgb 0x3B82F6, alpha 0x80 → Color(0x803B82F6)
+      expect(result.value, const TwColorValue(Color(0x803B82F6)));
     });
 
     test(
@@ -118,24 +139,5 @@ void main() {
       expect(value, const TwFractionValue(2, 3));
     });
 
-    test('TwMatrixValue stores matrix', () {
-      final matrix = Matrix4.identity()..setTranslationRaw(4.0, 8.0, 0.0);
-      final value = TwMatrixValue(matrix);
-
-      expect(value.matrix, same(matrix));
-      expect(value.toString(), contains('TwMatrixValue'));
-    });
-
-    test('TwGradientValue stores direction and colors', () {
-      const value = TwGradientValue(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: [Colors.red, Colors.blue],
-      );
-
-      expect(value.begin, Alignment.topLeft);
-      expect(value.end, Alignment.bottomRight);
-      expect(value.colors, const [Colors.red, Colors.blue]);
-    });
   });
 }

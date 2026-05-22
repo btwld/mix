@@ -2,6 +2,7 @@ import 'package:ack/ack.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
+import '../../core/branch_codec.dart';
 import '../../core/numeric_codecs.dart';
 import '../../core/prop_encode.dart';
 import '../../core/schema_wire_types.dart';
@@ -27,16 +28,11 @@ CodecSchema<JsonMap, ModifierMix> _modifierCodec<T extends Object>({
   required T Function(JsonMap data) decode,
   required JsonMap Function(T value) encode,
 }) {
-  return Ack.codec<JsonMap, JsonMap, ModifierMix>(
-    input: input.copyWith(
-      properties: {'type': Ack.literal(type.wireValue), ...input.properties},
-    ),
-    output: Ack.instance<ModifierMix>().refine(
-      (value) => value is T,
-      message: 'Expected $T.',
-    ),
-    decode: (data) => decode(data) as ModifierMix,
-    encode: (value) => {'type': type.wireValue, ...encode(value as T)},
+  return standaloneBranchCodec<ModifierMix, T>(
+    type: type.wireValue,
+    input: input,
+    decode: decode,
+    encode: encode,
   );
 }
 
@@ -66,7 +62,7 @@ Map<SchemaModifier, ModifierDefinition> _buildModifierDefinitions() {
               .optional(),
         }),
         decode: (data) => BlurModifierMix(sigma: data['sigma'] as double?),
-        encode: (value) => optionalJsonMap([('sigma', propValue(value.sigma))]),
+        encode: (value) => optionalJsonMap([('sigma', directPropValue(value.sigma))]),
       ),
     ),
     SchemaModifier.opacity: ModifierDefinition(
@@ -82,7 +78,7 @@ Map<SchemaModifier, ModifierDefinition> _buildModifierDefinitions() {
         }),
         decode: (data) => OpacityModifierMix(opacity: data['value']! as double),
         encode: (value) => {
-          'value': requiredPropValue(value.opacity, 'opacity'),
+          'value': requiredDirectPropValue(value.opacity, 'opacity'),
         },
       ),
     ),
@@ -95,7 +91,7 @@ Map<SchemaModifier, ModifierDefinition> _buildModifierDefinitions() {
         decode: (data) =>
             VisibilityModifierMix(visible: data['visible']! as bool),
         encode: (value) => {
-          'visible': requiredPropValue(value.visible, 'visible'),
+          'visible': requiredDirectPropValue(value.visible, 'visible'),
         },
       ),
     ),
@@ -115,9 +111,9 @@ Map<SchemaModifier, ModifierDefinition> _buildModifierDefinitions() {
           heightFactor: data['heightFactor'] as double?,
         ),
         encode: (value) => optionalJsonMap([
-          ('alignment', propValue(value.alignment)),
-          ('widthFactor', propValue(value.widthFactor)),
-          ('heightFactor', propValue(value.heightFactor)),
+          ('alignment', directPropValue(value.alignment)),
+          ('widthFactor', directPropValue(value.widthFactor)),
+          ('heightFactor', directPropValue(value.heightFactor)),
         ]),
       ),
     ),
@@ -131,7 +127,7 @@ Map<SchemaModifier, ModifierDefinition> _buildModifierDefinitions() {
           padding: data['padding'] as EdgeInsetsGeometryMix?,
         ),
         encode: (value) => optionalJsonMap([
-          ('padding', propMix<EdgeInsetsGeometryMix>(value.padding)),
+          ('padding', directPropMix<EdgeInsetsGeometryMix>(value.padding)),
         ]),
       ),
     ),
@@ -151,9 +147,9 @@ Map<SchemaModifier, ModifierDefinition> _buildModifierDefinitions() {
           alignment: data['alignment'] as Alignment?,
         ),
         encode: (value) => {
-          'x': requiredPropValue(value.x, 'x'),
-          'y': requiredPropValue(value.y, 'y'),
-          ...optionalJsonMap([('alignment', propValue(value.alignment))]),
+          'x': requiredDirectPropValue(value.x, 'x'),
+          'y': requiredDirectPropValue(value.y, 'y'),
+          ...optionalJsonMap([('alignment', directPropValue(value.alignment))]),
         },
       ),
     ),
@@ -171,8 +167,8 @@ Map<SchemaModifier, ModifierDefinition> _buildModifierDefinitions() {
           alignment: data['alignment'] as Alignment?,
         ),
         encode: (value) => {
-          'radians': requiredPropValue(value.radians, 'radians'),
-          ...optionalJsonMap([('alignment', propValue(value.alignment))]),
+          'radians': requiredDirectPropValue(value.radians, 'radians'),
+          ...optionalJsonMap([('alignment', directPropValue(value.alignment))]),
         },
       ),
     ),
@@ -201,15 +197,15 @@ Map<SchemaModifier, ModifierDefinition> _buildModifierDefinitions() {
               data['textHeightBehavior'] as TextHeightBehaviorMix?,
         ),
         encode: (value) => optionalJsonMap([
-          ('style', propMix<TextStyleMix>(value.style)),
-          ('textAlign', propValue(value.textAlign)),
-          ('softWrap', propValue(value.softWrap)),
-          ('overflow', propValue(value.overflow)),
-          ('maxLines', propValue(value.maxLines)),
-          ('textWidthBasis', propValue(value.textWidthBasis)),
+          ('style', directPropMix<TextStyleMix>(value.style)),
+          ('textAlign', directPropValue(value.textAlign)),
+          ('softWrap', directPropValue(value.softWrap)),
+          ('overflow', directPropValue(value.overflow)),
+          ('maxLines', directPropValue(value.maxLines)),
+          ('textWidthBasis', directPropValue(value.textWidthBasis)),
           (
             'textHeightBehavior',
-            propMix<TextHeightBehaviorMix>(value.textHeightBehavior),
+            directPropMix<TextHeightBehaviorMix>(value.textHeightBehavior),
           ),
         ]),
       ),

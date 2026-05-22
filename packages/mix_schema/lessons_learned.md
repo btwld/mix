@@ -1,5 +1,7 @@
 # mix_schema Lessons Learned
 
+> Decision log. Active contract = README + CURRENT_GOAL.
+
 ## 2026-05-13 — Codec-Owned Contract Migration
 
 - Ack should own the contract boundary. Each styler contract wraps one

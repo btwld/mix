@@ -32,16 +32,12 @@ void main() {
     test('encodes context_all_of variants through shared leaf codecs', () {
       final schema = _buildBoxVariantSchema();
       final conditionSet = ContextConditionSet.compound([
-        ContextConditionSet.leaf(
-          variantConditionDefinition(
-            SchemaVariant.widgetState,
-          ).buildLeaf({'state': WidgetState.hovered}),
-        ),
-        ContextConditionSet.leaf(
-          variantConditionDefinition(
-            SchemaVariant.breakpoint,
-          ).buildLeaf(const {'minWidth': 768.0}),
-        ),
+        variantConditionDefinition(
+          SchemaVariant.widgetState,
+        ).buildLeaf({'state': WidgetState.hovered}),
+        variantConditionDefinition(
+          SchemaVariant.breakpoint,
+        ).buildLeaf(const {'minWidth': 768.0}),
       ]);
 
       expect(

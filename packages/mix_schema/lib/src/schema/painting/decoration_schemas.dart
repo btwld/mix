@@ -44,14 +44,14 @@ CodecSchema<JsonMap, DecorationImageMix> buildDecorationImageCodec(
       isAntiAlias: data['isAntiAlias'] as bool?,
     ),
     encode: (value) => optionalJsonMap([
-      ('image', requiredPropValue(value.$image, 'image')),
-      ('fit', propValue(value.$fit)),
-      ('alignment', propValue(value.$alignment)),
-      ('centerSlice', propValue(value.$centerSlice)),
-      ('repeat', propValue(value.$repeat)),
-      ('filterQuality', propValue(value.$filterQuality)),
-      ('invertColors', propValue(value.$invertColors)),
-      ('isAntiAlias', propValue(value.$isAntiAlias)),
+      ('image', requiredDirectPropValue(value.$image, 'image')),
+      ('fit', directPropValue(value.$fit)),
+      ('alignment', directPropValue(value.$alignment)),
+      ('centerSlice', directPropValue(value.$centerSlice)),
+      ('repeat', directPropValue(value.$repeat)),
+      ('filterQuality', directPropValue(value.$filterQuality)),
+      ('invertColors', directPropValue(value.$invertColors)),
+      ('isAntiAlias', directPropValue(value.$isAntiAlias)),
     ]),
   );
 }
@@ -92,17 +92,17 @@ CodecSchema<JsonMap, BoxDecorationMix> buildBoxDecorationCodec(
       boxShadow: castListOrNull(data['boxShadow']),
     ),
     encode: (value) {
-      final BoxShadowListMix? boxShadow = propMix(value.$boxShadow);
+      final BoxShadowListMix? boxShadow = directPropMix(value.$boxShadow);
 
       return optionalJsonMap([
         ('type', SchemaDecoration.box.wireValue),
-        ('color', propValue(value.$color)),
-        ('image', propMix<DecorationImageMix>(value.$image)),
-        ('gradient', propMix<GradientMix>(value.$gradient)),
-        ('border', propMix<BoxBorderMix>(value.$border)),
-        ('borderRadius', propMix<BorderRadiusGeometryMix>(value.$borderRadius)),
-        ('shape', propValue(value.$shape)),
-        ('backgroundBlendMode', propValue(value.$backgroundBlendMode)),
+        ('color', directPropValue(value.$color)),
+        ('image', directPropMix<DecorationImageMix>(value.$image)),
+        ('gradient', directPropMix<GradientMix>(value.$gradient)),
+        ('border', directPropMix<BoxBorderMix>(value.$border)),
+        ('borderRadius', directPropMix<BorderRadiusGeometryMix>(value.$borderRadius)),
+        ('shape', directPropValue(value.$shape)),
+        ('backgroundBlendMode', directPropValue(value.$backgroundBlendMode)),
         ('boxShadow', boxShadow?.items),
       ]);
     },
@@ -135,14 +135,14 @@ CodecSchema<JsonMap, ShapeDecorationMix> buildShapeDecorationCodec(
       shadows: castListOrNull(data['shadows']),
     ),
     encode: (value) {
-      final BoxShadowListMix? shadows = propMix(value.$shadows);
+      final BoxShadowListMix? shadows = directPropMix(value.$shadows);
 
       return optionalJsonMap([
         ('type', SchemaDecoration.shape.wireValue),
-        ('shape', propMix<ShapeBorderMix>(value.$shape)),
-        ('color', propValue(value.$color)),
-        ('image', propMix<DecorationImageMix>(value.$image)),
-        ('gradient', propMix<GradientMix>(value.$gradient)),
+        ('shape', directPropMix<ShapeBorderMix>(value.$shape)),
+        ('color', directPropValue(value.$color)),
+        ('image', directPropMix<DecorationImageMix>(value.$image)),
+        ('gradient', directPropMix<GradientMix>(value.$gradient)),
         ('shadows', shadows?.items),
       ]);
     },

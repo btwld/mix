@@ -1273,7 +1273,8 @@ void main() {
     final opaque = await _boxDecorationFor(tester, 'bg-[#ffffff]');
     expect(opaque?.color, equals(const Color(0xFFFFFFFF)));
 
-    final alpha = await _boxDecorationFor(tester, 'bg-[#80ffffff]');
+    // 8-digit hex is CSS-order #RRGGBBAA: alpha is the trailing byte.
+    final alpha = await _boxDecorationFor(tester, 'bg-[#ffffff80]');
     expect(alpha?.color, equals(const Color(0x80FFFFFF)));
   });
 

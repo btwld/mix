@@ -34,9 +34,9 @@ final boxConstraintsCodec = Ack.codec<JsonMap, JsonMap, BoxConstraintsMix>(
     maxHeight: data['maxHeight'] as double?,
   ),
   encode: (value) => optionalJsonMap([
-    ('minWidth', propValue(value.$minWidth)),
-    ('maxWidth', propValue(value.$maxWidth)),
-    ('minHeight', propValue(value.$minHeight)),
-    ('maxHeight', propValue(value.$maxHeight)),
+    ('minWidth', directPropValue(value.$minWidth)),
+    ('maxWidth', directPropValue(value.$maxWidth)),
+    ('minHeight', directPropValue(value.$minHeight)),
+    ('maxHeight', directPropValue(value.$maxHeight)),
   ]),
 );

@@ -2,25 +2,8 @@ import 'package:ack/ack.dart';
 import 'package:mix/mix.dart';
 
 import '../../core/schema_wire_types.dart';
-import '../../errors/mix_schema_error.dart';
-import '../../errors/schema_error_mapper.dart';
-import '../../errors/schema_transform_exceptions.dart';
 import 'context_variant_leaf_schema.dart';
 import 'variant_condition_definition.dart';
-
-VariantConditionParser buildVariantConditionParser() {
-  final leafSchema = buildContextConditionInputSchema();
-
-  final compoundShapeSchema = Ack.object({
-    'type': Ack.literal(SchemaVariant.contextAllOf.wireValue),
-    'conditions': buildContextConditionListSchema(),
-  });
-
-  return VariantConditionParser._(
-    leafSchema: leafSchema,
-    compoundShapeSchema: compoundShapeSchema,
-  );
-}
 
 DiscriminatedObjectSchema<ContextVariantLeaf>
 buildContextConditionInputSchema() {
@@ -40,122 +23,6 @@ ListSchema<JsonMap, ContextVariantLeaf> buildContextConditionListSchema() {
   );
 }
 
-final class VariantConditionParser {
-  final AckSchema<JsonMap, ContextVariantLeaf> _leafSchema;
-  final ObjectSchema _compoundShapeSchema;
-  final SchemaErrorMapper _errorMapper = const SchemaErrorMapper();
-
-  VariantConditionParser._({
-    required AckSchema<JsonMap, ContextVariantLeaf> leafSchema,
-    required ObjectSchema compoundShapeSchema,
-  }) : _leafSchema = leafSchema,
-       _compoundShapeSchema = compoundShapeSchema;
-
-  ContextConditionSet? _parseValue(
-    Object? value, {
-    required String path,
-    required List<MixSchemaError> errors,
-  }) {
-    if (value is ContextVariantLeaf) {
-      return ContextConditionSet.leaf(value);
-    }
-
-    if (value is Map<String, Object?> &&
-        value['type'] == SchemaVariant.contextAllOf.wireValue) {
-      final shapeResult = _compoundShapeSchema.safeParse(value);
-      if (shapeResult case Fail(:final error)) {
-        errors.addAll(_prefixErrors(error, path));
-
-        return null;
-      }
-
-      final map = shapeResult.getOrThrow()!;
-      final rawConditions = map['conditions'] as List<Object?>;
-      final beforeChildErrors = errors.length;
-      final conditions = <ContextConditionSet>[];
-
-      for (var index = 0; index < rawConditions.length; index++) {
-        final condition = _parseValue(
-          rawConditions[index],
-          path: '$path/conditions/$index',
-          errors: errors,
-        );
-
-        if (condition != null) {
-          conditions.add(condition);
-        }
-      }
-
-      if (errors.length != beforeChildErrors) {
-        return null;
-      }
-
-      return ContextConditionSet.compound(conditions);
-    }
-
-    final leafResult = _leafSchema.safeParse(value);
-    if (leafResult case Fail(:final error)) {
-      errors.addAll(_prefixErrors(error, path));
-
-      return null;
-    }
-
-    return ContextConditionSet.leaf(leafResult.getOrThrow()!);
-  }
-
-  List<MixSchemaError> _prefixErrors(SchemaError error, String prefix) {
-    return _errorMapper
-        .map(error)
-        .map((mappedError) {
-          return MixSchemaError(
-            code: mappedError.code,
-            path: _prefixPath(prefix, mappedError.path),
-            message: mappedError.message,
-            value: mappedError.value,
-          );
-        })
-        .toList(growable: false);
-  }
-
-  String _prefixPath(String prefix, String nestedPath) {
-    if (nestedPath == '#') {
-      return prefix;
-    }
-
-    if (prefix == '#') {
-      return nestedPath;
-    }
-
-    return '$prefix${nestedPath.substring(1)}';
-  }
-
-  List<ContextConditionSet> parseList(
-    List<Object?> values, {
-    String path = '#/conditions',
-  }) {
-    final errors = <MixSchemaError>[];
-    final conditions = <ContextConditionSet>[];
-
-    for (var index = 0; index < values.length; index++) {
-      final condition = _parseValue(
-        values[index],
-        path: '$path/$index',
-        errors: errors,
-      );
-
-      if (condition != null) {
-        conditions.add(condition);
-      }
-    }
-
-    if (errors.isNotEmpty) {
-      throw NestedSchemaErrorsException(List.unmodifiable(errors));
-    }
-
-    return List.unmodifiable(conditions);
-  }
-}
-
 final class ContextConditionSet {
   final List<ContextVariantLeaf> leaves;
 
@@ -165,15 +32,12 @@ final class ContextConditionSet {
     return ContextConditionSet._(List.unmodifiable([leaf]));
   }
 
-  factory ContextConditionSet.compound(
-    Iterable<ContextConditionSet> conditions,
-  ) {
-    final leaves = <ContextVariantLeaf>[];
-
-    for (final condition in conditions) {
-      leaves.addAll(condition.leaves);
-    }
-
+  /// Builds a compound condition set from a list of pre-validated leaves.
+  ///
+  /// Leaves come from [buildContextConditionListSchema] (the single Ack-owned
+  /// definition for the allowed conditions list), so nested `context_all_of`
+  /// rejection happens at schema validation rather than in this constructor.
+  factory ContextConditionSet.compound(Iterable<ContextVariantLeaf> leaves) {
     return ContextConditionSet._(_normalizeConditionLeaves(leaves));
   }
 

@@ -53,15 +53,6 @@ final class SchemaErrorMapper {
   Iterable<MixSchemaError> _mapTransformErrors(SchemaTransformError error) {
     final cause = error.cause;
     switch (cause) {
-      case NestedSchemaErrorsException():
-        return cause.errors.map((nestedError) {
-          return MixSchemaError(
-            code: nestedError.code,
-            path: _prefixPath(error.path, nestedError.path),
-            message: nestedError.message,
-            value: nestedError.value,
-          );
-        });
       case RegistryLookupError():
         return [
           MixSchemaError(
@@ -207,18 +198,6 @@ final class SchemaErrorMapper {
     return path == '#/type' || path.endsWith('/type');
   }
 
-  String _prefixPath(String prefix, String nestedPath) {
-    if (nestedPath == '#') {
-      return prefix;
-    }
-
-    if (prefix == '#') {
-      return nestedPath;
-    }
-
-    return '$prefix${nestedPath.substring(1)}';
-  }
-
   List<MixSchemaError> map(SchemaError error) {
     final results = <MixSchemaError>[];
     _collect(error, results);
@@ -233,4 +212,33 @@ final class SchemaErrorMapper {
 
     return List<MixSchemaError>.unmodifiable(results);
   }
+
+  /// Maps an encode-path [SchemaError] and surfaces the primary
+  /// representability failure when the discriminated encoder produces noisy
+  /// branch errors.
+  List<MixSchemaError> mapEncode(SchemaError error) {
+    final mapped = map(error);
+    // Discriminated encode can produce branch noise; surface the primary
+    // representability failure when one is present.
+    for (final code in const [
+      MixSchemaErrorCode.unknownRegistryValue,
+      MixSchemaErrorCode.unsupportedEncodeValue,
+    ]) {
+      final match = mapped.firstWhere(
+        (error) => error.code == code,
+        orElse: () => _noMatch,
+      );
+      if (!identical(match, _noMatch)) {
+        return List<MixSchemaError>.unmodifiable([match]);
+      }
+    }
+
+    return mapped;
+  }
 }
+
+const MixSchemaError _noMatch = MixSchemaError(
+  code: MixSchemaErrorCode.validationFailed,
+  path: '',
+  message: '',
+);

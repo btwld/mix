@@ -50,5 +50,55 @@ void main() {
       );
       expect(() => builder.freeze(), throwsA(isA<StateError>()));
     });
+
+    test('rejects scopes that fail the wire grammar', () {
+      expect(
+        () => RegistryBuilder<String>(scope: ''),
+        throwsA(isA<ArgumentError>()),
+      );
+      expect(
+        () => RegistryBuilder<String>(scope: 'Demo'),
+        throwsA(isA<ArgumentError>()),
+      );
+      expect(
+        () => RegistryBuilder<String>(scope: 'demo scope'),
+        throwsA(isA<ArgumentError>()),
+      );
+      expect(
+        () => RegistryBuilder<String>(scope: 'demo-scope'),
+        throwsA(isA<ArgumentError>()),
+      );
+    });
+
+    test('rejects ids that fail the wire grammar', () {
+      final builder = RegistryBuilder<String>(scope: 'demo');
+
+      expect(
+        () => builder.register('', 'value'),
+        throwsA(isA<ArgumentError>()),
+      );
+      expect(
+        () => builder.register(' primary', 'value'),
+        throwsA(isA<ArgumentError>()),
+      );
+      expect(
+        () => builder.register('primary id', 'value'),
+        throwsA(isA<ArgumentError>()),
+      );
+    });
+
+    test('accepts id grammar that includes ., :, -, _', () {
+      final builder = RegistryBuilder<String>(scope: 'demo')
+        ..register('app.heroImage', 'a')
+        ..register('ns:bar', 'b')
+        ..register('with-hyphen', 'c')
+        ..register('with_underscore', 'd');
+
+      final frozen = builder.freeze();
+      expect(frozen.lookup('app.heroImage'), 'a');
+      expect(frozen.lookup('ns:bar'), 'b');
+      expect(frozen.lookup('with-hyphen'), 'c');
+      expect(frozen.lookup('with_underscore'), 'd');
+    });
   });
 }

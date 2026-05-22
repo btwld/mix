@@ -18,8 +18,8 @@ final linearBorderEdgeCodec = Ack.codec<JsonMap, JsonMap, LinearBorderEdgeMix>(
     alignment: data['alignment'] as double?,
   ),
   encode: (value) => optionalJsonMap([
-    ('size', propValue(value.$size)),
-    ('alignment', propValue(value.$alignment)),
+    ('size', directPropValue(value.$size)),
+    ('alignment', directPropValue(value.$alignment)),
   ]),
 );
 
@@ -50,8 +50,8 @@ AckSchema<JsonMap, ShapeBorderMix> _buildShapeBorderBranch({
           side: data['side'] as BorderSideMix?,
         ),
         encode: (mix) => optionalJsonMap([
-          ('borderRadius', propMix<BorderRadiusGeometryMix>(mix.$borderRadius)),
-          ('side', propMix<BorderSideMix>(mix.$side)),
+          ('borderRadius', directPropMix<BorderRadiusGeometryMix>(mix.$borderRadius)),
+          ('side', directPropMix<BorderSideMix>(mix.$side)),
         ]),
       );
     case .roundedSuperellipse:
@@ -69,8 +69,8 @@ AckSchema<JsonMap, ShapeBorderMix> _buildShapeBorderBranch({
           side: data['side'] as BorderSideMix?,
         ),
         encode: (mix) => optionalJsonMap([
-          ('borderRadius', propMix<BorderRadiusGeometryMix>(mix.$borderRadius)),
-          ('side', propMix<BorderSideMix>(mix.$side)),
+          ('borderRadius', directPropMix<BorderRadiusGeometryMix>(mix.$borderRadius)),
+          ('side', directPropMix<BorderSideMix>(mix.$side)),
         ]),
       );
     case .beveledRectangle:
@@ -88,8 +88,8 @@ AckSchema<JsonMap, ShapeBorderMix> _buildShapeBorderBranch({
           side: data['side'] as BorderSideMix?,
         ),
         encode: (mix) => optionalJsonMap([
-          ('borderRadius', propMix<BorderRadiusGeometryMix>(mix.$borderRadius)),
-          ('side', propMix<BorderSideMix>(mix.$side)),
+          ('borderRadius', directPropMix<BorderRadiusGeometryMix>(mix.$borderRadius)),
+          ('side', directPropMix<BorderSideMix>(mix.$side)),
         ]),
       );
     case .continuousRectangle:
@@ -107,8 +107,8 @@ AckSchema<JsonMap, ShapeBorderMix> _buildShapeBorderBranch({
           side: data['side'] as BorderSideMix?,
         ),
         encode: (mix) => optionalJsonMap([
-          ('borderRadius', propMix<BorderRadiusGeometryMix>(mix.$borderRadius)),
-          ('side', propMix<BorderSideMix>(mix.$side)),
+          ('borderRadius', directPropMix<BorderRadiusGeometryMix>(mix.$borderRadius)),
+          ('side', directPropMix<BorderSideMix>(mix.$side)),
         ]),
       );
     case .circle:
@@ -123,8 +123,8 @@ AckSchema<JsonMap, ShapeBorderMix> _buildShapeBorderBranch({
           eccentricity: data['eccentricity'] as double?,
         ),
         encode: (mix) => optionalJsonMap([
-          ('side', propMix<BorderSideMix>(mix.$side)),
-          ('eccentricity', propValue(mix.$eccentricity)),
+          ('side', directPropMix<BorderSideMix>(mix.$side)),
+          ('eccentricity', directPropValue(mix.$eccentricity)),
         ]),
       );
     case .star:
@@ -149,13 +149,13 @@ AckSchema<JsonMap, ShapeBorderMix> _buildShapeBorderBranch({
           squash: data['squash'] as double?,
         ),
         encode: (mix) => optionalJsonMap([
-          ('side', propMix<BorderSideMix>(mix.$side)),
-          ('points', propValue(mix.$points)),
-          ('innerRadiusRatio', propValue(mix.$innerRadiusRatio)),
-          ('pointRounding', propValue(mix.$pointRounding)),
-          ('valleyRounding', propValue(mix.$valleyRounding)),
-          ('rotation', propValue(mix.$rotation)),
-          ('squash', propValue(mix.$squash)),
+          ('side', directPropMix<BorderSideMix>(mix.$side)),
+          ('points', directPropValue(mix.$points)),
+          ('innerRadiusRatio', directPropValue(mix.$innerRadiusRatio)),
+          ('pointRounding', directPropValue(mix.$pointRounding)),
+          ('valleyRounding', directPropValue(mix.$valleyRounding)),
+          ('rotation', directPropValue(mix.$rotation)),
+          ('squash', directPropValue(mix.$squash)),
         ]),
       );
     case .linear:
@@ -176,11 +176,11 @@ AckSchema<JsonMap, ShapeBorderMix> _buildShapeBorderBranch({
           bottom: data['bottom'] as LinearBorderEdgeMix?,
         ),
         encode: (mix) => optionalJsonMap([
-          ('side', propMix<BorderSideMix>(mix.$side)),
-          ('start', propMix<LinearBorderEdgeMix>(mix.$start)),
-          ('end', propMix<LinearBorderEdgeMix>(mix.$end)),
-          ('top', propMix<LinearBorderEdgeMix>(mix.$top)),
-          ('bottom', propMix<LinearBorderEdgeMix>(mix.$bottom)),
+          ('side', directPropMix<BorderSideMix>(mix.$side)),
+          ('start', directPropMix<LinearBorderEdgeMix>(mix.$start)),
+          ('end', directPropMix<LinearBorderEdgeMix>(mix.$end)),
+          ('top', directPropMix<LinearBorderEdgeMix>(mix.$top)),
+          ('bottom', directPropMix<LinearBorderEdgeMix>(mix.$bottom)),
         ]),
       );
     case .stadium:
@@ -190,7 +190,7 @@ AckSchema<JsonMap, ShapeBorderMix> _buildShapeBorderBranch({
         decode: (data) =>
             StadiumBorderMix(side: data['side'] as BorderSideMix?),
         encode: (mix) =>
-            optionalJsonMap([('side', propMix<BorderSideMix>(mix.$side))]),
+            optionalJsonMap([('side', directPropMix<BorderSideMix>(mix.$side))]),
       );
   }
 }

@@ -63,9 +63,9 @@ final shadowCodec = Ack.codec<JsonMap, JsonMap, ShadowMix>(
     offset: data['offset'] as Offset?,
   ),
   encode: (value) => optionalJsonMap([
-    ('color', propValue(value.$color)),
-    ('offset', propValue(value.$offset)),
-    ('blurRadius', propValue(value.$blurRadius)),
+    ('color', directPropValue(value.$color)),
+    ('offset', directPropValue(value.$offset)),
+    ('blurRadius', directPropValue(value.$blurRadius)),
   ]),
 );
 
@@ -110,25 +110,25 @@ final textStyleCodec = Ack.codec<JsonMap, JsonMap, TextStyleMix>(
     inherit: data['inherit'] as bool?,
   ),
   encode: (value) {
-    final ShadowListMix? shadows = propMix(value.$shadows);
+    final ShadowListMix? shadows = directPropMix(value.$shadows);
 
     return optionalJsonMap([
-      ('color', propValue(value.$color)),
-      ('backgroundColor', propValue(value.$backgroundColor)),
-      ('fontSize', propValue(value.$fontSize)),
-      ('fontWeight', propValue(value.$fontWeight)),
-      ('fontStyle', propValue(value.$fontStyle)),
-      ('letterSpacing', propValue(value.$letterSpacing)),
-      ('wordSpacing', propValue(value.$wordSpacing)),
-      ('textBaseline', propValue(value.$textBaseline)),
-      ('decoration', propValue(value.$decoration)),
-      ('decorationColor', propValue(value.$decorationColor)),
-      ('decorationStyle', propValue(value.$decorationStyle)),
-      ('height', propValue(value.$height)),
-      ('decorationThickness', propValue(value.$decorationThickness)),
-      ('fontFamily', propValue(value.$fontFamily)),
-      ('fontFamilyFallback', propValue(value.$fontFamilyFallback)),
-      ('inherit', propValue(value.$inherit)),
+      ('color', directPropValue(value.$color)),
+      ('backgroundColor', directPropValue(value.$backgroundColor)),
+      ('fontSize', directPropValue(value.$fontSize)),
+      ('fontWeight', directPropValue(value.$fontWeight)),
+      ('fontStyle', directPropValue(value.$fontStyle)),
+      ('letterSpacing', directPropValue(value.$letterSpacing)),
+      ('wordSpacing', directPropValue(value.$wordSpacing)),
+      ('textBaseline', directPropValue(value.$textBaseline)),
+      ('decoration', directPropValue(value.$decoration)),
+      ('decorationColor', directPropValue(value.$decorationColor)),
+      ('decorationStyle', directPropValue(value.$decorationStyle)),
+      ('height', directPropValue(value.$height)),
+      ('decorationThickness', directPropValue(value.$decorationThickness)),
+      ('fontFamily', directPropValue(value.$fontFamily)),
+      ('fontFamilyFallback', directPropValue(value.$fontFamilyFallback)),
+      ('inherit', directPropValue(value.$inherit)),
       ('shadows', shadows?.items),
     ]);
   },
@@ -157,14 +157,14 @@ final strutStyleCodec = Ack.codec<JsonMap, JsonMap, StrutStyleMix>(
     forceStrutHeight: data['forceStrutHeight'] as bool?,
   ),
   encode: (value) => optionalJsonMap([
-    ('fontFamily', propValue(value.$fontFamily)),
-    ('fontFamilyFallback', propValue(value.$fontFamilyFallback)),
-    ('fontSize', propValue(value.$fontSize)),
-    ('fontWeight', propValue(value.$fontWeight)),
-    ('fontStyle', propValue(value.$fontStyle)),
-    ('height', propValue(value.$height)),
-    ('leading', propValue(value.$leading)),
-    ('forceStrutHeight', propValue(value.$forceStrutHeight)),
+    ('fontFamily', directPropValue(value.$fontFamily)),
+    ('fontFamilyFallback', directPropValue(value.$fontFamilyFallback)),
+    ('fontSize', directPropValue(value.$fontSize)),
+    ('fontWeight', directPropValue(value.$fontWeight)),
+    ('fontStyle', directPropValue(value.$fontStyle)),
+    ('height', directPropValue(value.$height)),
+    ('leading', directPropValue(value.$leading)),
+    ('forceStrutHeight', directPropValue(value.$forceStrutHeight)),
   ]),
 );
 
@@ -185,13 +185,13 @@ final textHeightBehaviorCodec =
       encode: (value) => optionalJsonMap([
         (
           'applyHeightToFirstAscent',
-          propValue(value.$applyHeightToFirstAscent),
+          directPropValue(value.$applyHeightToFirstAscent),
         ),
         (
           'applyHeightToLastDescent',
-          propValue(value.$applyHeightToLastDescent),
+          directPropValue(value.$applyHeightToLastDescent),
         ),
-        ('leadingDistribution', propValue(value.$leadingDistribution)),
+        ('leadingDistribution', directPropValue(value.$leadingDistribution)),
       ]),
     );
 

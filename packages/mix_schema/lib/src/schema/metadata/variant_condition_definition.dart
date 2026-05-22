@@ -2,6 +2,7 @@ import 'package:ack/ack.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
+import '../../core/branch_codec.dart';
 import '../../core/numeric_codecs.dart';
 import '../../core/schema_wire_types.dart';
 import '../shared/shared_schemas.dart';
@@ -108,16 +109,14 @@ CodecSchema<JsonMap, ContextVariantLeaf> _leafCodec({
   required VariantConditionLeafEncoder encode,
   required VariantConditionMatcher matchesVariant,
 }) {
-  return Ack.codec<JsonMap, JsonMap, ContextVariantLeaf>(
-    input: input.copyWith(
-      properties: {'type': Ack.literal(type.wireValue), ...input.properties},
-    ),
-    output: Ack.instance<ContextVariantLeaf>().refine(
-      (leaf) => matchesVariant(leaf.variant),
-      message: 'Context variant leaf does not match this condition.',
-    ),
+  return standaloneBranchCodec<ContextVariantLeaf, ContextVariantLeaf>(
+    type: type.wireValue,
+    input: input,
     decode: decode,
-    encode: (leaf) => {'type': type.wireValue, ...encode(leaf)},
+    encode: encode,
+    outputRefinement: (leaf) => matchesVariant(leaf.variant),
+    outputRefinementMessage:
+        'Context variant leaf does not match this condition.',
   );
 }
 

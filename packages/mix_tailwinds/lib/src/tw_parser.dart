@@ -173,51 +173,6 @@ class _GradientAccum {
   _GradientAccum();
 
   bool get hasGradient => direction != null && fromColor != null;
-
-  LinearGradientMix? toGradientMix(TwGradientStrategy strategy) {
-    if (!hasGradient) return null;
-    final colors = <Color>[
-      fromColor!,
-      if (viaColor != null) viaColor!,
-      toColor ?? fromColor!,
-    ];
-    // Tailwind anchors via-* at 50% by default; without explicit stops
-    // Flutter interpolates linearly which doesn't match Tailwind's behavior
-    final stops = viaColor != null ? const [0.0, 0.5, 1.0] : const [0.0, 1.0];
-
-    if (strategy == TwGradientStrategy.angle && directionKey != null) {
-      final angle = _tailwindGradientAngles[directionKey!];
-      if (angle != null) {
-        return LinearGradientMix(
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-          transform: angle == 0.0 ? null : GradientRotation(angle),
-          colors: colors,
-          stops: stops,
-        );
-      }
-    }
-
-    if (strategy == TwGradientStrategy.cssAngleRect &&
-        directionKey != null &&
-        _tailwindCornerDirections.contains(directionKey)) {
-      return LinearGradientMix(
-        begin: Alignment.centerLeft,
-        end: Alignment.centerRight,
-        transform: TwCssKeywordLinearTransform(directionKey!),
-        colors: colors,
-        stops: stops,
-      );
-    }
-
-    final (begin, end) = direction!;
-    return LinearGradientMix(
-      begin: begin,
-      end: end,
-      colors: colors,
-      stops: stops,
-    );
-  }
 }
 
 /// Tailwind directional gradient angles (CSS-like "to-*" directions).
@@ -450,7 +405,14 @@ class TwResolver {
 
     // Handle arbitrary values [123px]
     if (_isArbitrary(valueKey)) {
-      return _parseArbitrary(valueKey, plugin.type);
+      final arbitrary = _parseArbitrary(valueKey, plugin.type);
+      if (arbitrary == null) return null;
+      if (!negative) return arbitrary;
+      if (!plugin.supportsNegative) return null;
+      if (arbitrary is TwLengthValue) {
+        return TwLengthValue(-arbitrary.value, arbitrary.unit);
+      }
+      return null;
     }
 
     // Resolve from config scale
@@ -579,10 +541,15 @@ class TwResolver {
       final intVal = int.tryParse(hex, radix: 16);
       if (intVal == null) return null;
 
-      final color = hex.length == 6
-          ? Color(0xFF000000 | intVal)
-          : Color(intVal);
-      return TwColorValue(color);
+      // CSS hex is #RRGGBB or #RRGGBBAA — alpha is the trailing byte. Flutter
+      // Color is 0xAARRGGBB, so 8-digit input needs the alpha byte moved into
+      // the high bits.
+      if (hex.length == 6) {
+        return TwColorValue(Color(0xFF000000 | intVal));
+      }
+      final rgb = intVal >> 8;
+      final alpha = intVal & 0xFF;
+      return TwColorValue(Color((alpha << 24) | rgb));
     }
     return null;
   }
@@ -1840,6 +1807,8 @@ final class _TwSchemaEmitter {
       if (_isGradientToken(baseToken)) {
         if (prefix.isEmpty) {
           _accumulateGradient(root.gradient, baseToken, config);
+        } else {
+          onUnsupported?.call(token);
         }
         continue;
       }
@@ -1915,6 +1884,8 @@ final class _TwSchemaEmitter {
       if (_isGradientToken(baseToken)) {
         if (prefix.isEmpty) {
           _accumulateGradient(root.gradient, baseToken, config);
+        } else {
+          onUnsupported?.call(token);
         }
         continue;
       }
@@ -2055,6 +2026,11 @@ class TwParser {
     return false;
   }
 
+  /// Parses Tailwind class names into a [FlexBoxStyler].
+  ///
+  /// Convenience method: swallows schema validation errors and returns an
+  /// empty styler on failure. Call [parseFlexResult] instead if you need to
+  /// surface diagnostics, schema errors, or the underlying schema payload.
   FlexBoxStyler parseFlex(String classNames) {
     return _TwSchemaEmitter(
       config: config,
@@ -2073,6 +2049,11 @@ class TwParser {
     );
   }
 
+  /// Parses Tailwind class names into a [BoxStyler].
+  ///
+  /// Convenience method: swallows schema validation errors and returns an
+  /// empty styler on failure. Call [parseBoxResult] instead if you need to
+  /// surface diagnostics, schema errors, or the underlying schema payload.
   BoxStyler parseBox(String classNames) {
     return _TwSchemaEmitter(
       config: config,
@@ -2091,6 +2072,11 @@ class TwParser {
     );
   }
 
+  /// Parses Tailwind class names into a [TextStyler].
+  ///
+  /// Convenience method: swallows schema validation errors and returns an
+  /// empty styler on failure. Call [parseTextResult] instead if you need to
+  /// surface diagnostics, schema errors, or the underlying schema payload.
   TextStyler parseText(String classNames) {
     return _TwSchemaEmitter(
       config: config,

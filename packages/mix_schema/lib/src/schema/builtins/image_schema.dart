@@ -68,22 +68,22 @@ ImageStyler _decodeImageStyler(
 
 JsonMap _encodeImageFields(ImageStyler value) {
   return {
-    'image': requiredPropValue(value.$image, 'image'),
+    'image': requiredDirectPropValue(value.$image, 'image'),
     ...optionalJsonMap([
-      ('width', propValue(value.$width)),
-      ('height', propValue(value.$height)),
-      ('color', propValue(value.$color)),
-      ('repeat', propValue(value.$repeat)),
-      ('fit', propValue(value.$fit)),
-      ('alignment', propValue(value.$alignment)),
-      ('centerSlice', propValue(value.$centerSlice)),
-      ('filterQuality', propValue(value.$filterQuality)),
-      ('colorBlendMode', propValue(value.$colorBlendMode)),
-      ('semanticLabel', propValue(value.$semanticLabel)),
-      ('excludeFromSemantics', propValue(value.$excludeFromSemantics)),
-      ('gaplessPlayback', propValue(value.$gaplessPlayback)),
-      ('isAntiAlias', propValue(value.$isAntiAlias)),
-      ('matchTextDirection', propValue(value.$matchTextDirection)),
+      ('width', directPropValue(value.$width)),
+      ('height', directPropValue(value.$height)),
+      ('color', directPropValue(value.$color)),
+      ('repeat', directPropValue(value.$repeat)),
+      ('fit', directPropValue(value.$fit)),
+      ('alignment', directPropValue(value.$alignment)),
+      ('centerSlice', directPropValue(value.$centerSlice)),
+      ('filterQuality', directPropValue(value.$filterQuality)),
+      ('colorBlendMode', directPropValue(value.$colorBlendMode)),
+      ('semanticLabel', directPropValue(value.$semanticLabel)),
+      ('excludeFromSemantics', directPropValue(value.$excludeFromSemantics)),
+      ('gaplessPlayback', directPropValue(value.$gaplessPlayback)),
+      ('isAntiAlias', directPropValue(value.$isAntiAlias)),
+      ('matchTextDirection', directPropValue(value.$matchTextDirection)),
     ]),
   };
 }

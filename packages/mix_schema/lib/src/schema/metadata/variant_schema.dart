@@ -3,11 +3,11 @@ import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
 import '../../contract/mix_schema_limits.dart';
-import '../../core/mix_schema_scope.dart';
 import '../../core/schema_wire_types.dart';
-import '../../errors/schema_transform_exceptions.dart';
 import '../../registry/registry_catalog.dart';
+import '../../registry/registry_value_codec.dart';
 import 'context_variant_leaf_schema.dart';
+import 'variant_condition_definition.dart';
 import 'variant_condition_schema.dart';
 
 DiscriminatedObjectSchema<VariantStyle<S>>
@@ -17,8 +17,6 @@ buildVariantSchema<S extends Spec<S>, T extends Style<S>>({
   required RegistryCatalog registries,
   required MixSchemaLimits limits,
 }) {
-  final conditionParser = buildVariantConditionParser();
-
   return Ack.discriminated<VariantStyle<S>>(
     discriminatorKey: 'type',
     schemas: {
@@ -27,7 +25,6 @@ buildVariantSchema<S extends Spec<S>, T extends Style<S>>({
           type: type,
           styleSchema: styleSchema,
           emptyStyle: emptyStyle,
-          conditionParser: conditionParser,
           registries: registries,
           limits: limits,
         ),
@@ -40,7 +37,6 @@ _buildVariantBranch<S extends Spec<S>, T extends Style<S>>({
   required SchemaVariant type,
   required AckSchema<JsonMap, T> styleSchema,
   required T emptyStyle,
-  required VariantConditionParser conditionParser,
   required RegistryCatalog registries,
   required MixSchemaLimits limits,
 }) {
@@ -90,11 +86,8 @@ _buildVariantBranch<S extends Spec<S>, T extends Style<S>>({
           return conditionSet != null && conditionSet.leaves.length >= 2;
         }, message: 'Variant style does not match context_all_of.'),
         decode: (data) {
-          final conditions = ContextConditionSet.compound(
-            conditionParser.parseList(
-              (data['conditions']! as List<Object?>).toList(growable: false),
-            ),
-          );
+          final leaves = (data['conditions']! as List).cast<ContextVariantLeaf>();
+          final conditions = ContextConditionSet.compound(leaves);
 
           return VariantStyle<S>(conditions.toVariant(), data['style']! as T);
         },
@@ -112,19 +105,21 @@ _buildVariantBranch<S extends Spec<S>, T extends Style<S>>({
         },
       );
     case .contextBuilder:
+      final builderCodec = registryValueCodec<T Function(BuildContext)>(
+        registries: registries,
+        scope: .contextVariantBuilder,
+        limits: limits,
+        valueLabel: '$T Function(BuildContext)',
+      );
+
       return Ack.codec<JsonMap, JsonMap, VariantStyle<S>>(
-        input: Ack.object({
-          'id': Ack.string().maxLength(limits.maxRegistryIdLength),
-        }),
+        input: Ack.object({'id': builderCodec}),
         output: Ack.instance<VariantStyle<S>>().refine(
           (value) => value.variant is ContextVariantBuilder,
           message: 'Variant style does not match context_variant_builder.',
         ),
         decode: (data) {
-          final fn = registries.lookup<T Function(BuildContext)>(
-            MixSchemaScope.contextVariantBuilder.wireValue,
-            data['id']! as String,
-          );
+          final fn = data['id']! as T Function(BuildContext);
 
           return VariantStyle<S>(ContextVariantBuilder<T>(fn), emptyStyle);
         },
@@ -134,19 +129,10 @@ _buildVariantBranch<S extends Spec<S>, T extends Style<S>>({
             throw ArgumentError('Expected a context_variant_builder variant.');
           }
 
-          final key = registries.keyOf<T Function(BuildContext)>(
-            MixSchemaScope.contextVariantBuilder.wireValue,
-            variant.fn as T Function(BuildContext),
-          );
-          if (key == null) {
-            throw RegistryValueLookupError(
-              scope: MixSchemaScope.contextVariantBuilder.wireValue,
-              expectedType: '$T Function(BuildContext)',
-              value: variant.fn,
-            );
-          }
-
-          return {'type': type.wireValue, 'id': key};
+          return {
+            'type': type.wireValue,
+            'id': variant.fn as T Function(BuildContext),
+          };
         },
       );
   }

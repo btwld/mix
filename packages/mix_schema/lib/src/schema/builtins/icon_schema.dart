@@ -68,21 +68,21 @@ IconStyler _decodeIconStyler(
 }
 
 JsonMap _encodeIconFields(IconStyler value) {
-  final ShadowListMix? shadows = propMix(value.$shadows);
+  final ShadowListMix? shadows = directPropMix(value.$shadows);
 
   return optionalJsonMap([
-    ('icon', propValue(value.$icon)),
-    ('color', propValue(value.$color)),
-    ('size', propValue(value.$size)),
-    ('weight', propValue(value.$weight)),
-    ('grade', propValue(value.$grade)),
-    ('opticalSize', propValue(value.$opticalSize)),
+    ('icon', directPropValue(value.$icon)),
+    ('color', directPropValue(value.$color)),
+    ('size', directPropValue(value.$size)),
+    ('weight', directPropValue(value.$weight)),
+    ('grade', directPropValue(value.$grade)),
+    ('opticalSize', directPropValue(value.$opticalSize)),
     ('shadows', shadows?.items),
-    ('textDirection', propValue(value.$textDirection)),
-    ('applyTextScaling', propValue(value.$applyTextScaling)),
-    ('fill', propValue(value.$fill)),
-    ('semanticsLabel', propValue(value.$semanticsLabel)),
-    ('opacity', propValue(value.$opacity)),
-    ('blendMode', propValue(value.$blendMode)),
+    ('textDirection', directPropValue(value.$textDirection)),
+    ('applyTextScaling', directPropValue(value.$applyTextScaling)),
+    ('fill', directPropValue(value.$fill)),
+    ('semanticsLabel', directPropValue(value.$semanticsLabel)),
+    ('opacity', directPropValue(value.$opacity)),
+    ('blendMode', directPropValue(value.$blendMode)),
   ]);
 }

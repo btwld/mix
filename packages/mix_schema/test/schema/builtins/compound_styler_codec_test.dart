@@ -75,8 +75,13 @@ void main() {
 
       expect(result.ok, isFalse);
       expect(result.value, isNull);
+      expect(result.errors, hasLength(1));
       expect(
-        result.errors.map((error) => error.message).join('\n'),
+        result.errors.single.code,
+        MixSchemaErrorCode.unsupportedEncodeValue,
+      );
+      expect(
+        result.errors.single.message,
         contains('Only single-source mix props can be encoded.'),
       );
     });
@@ -91,8 +96,13 @@ void main() {
 
       expect(result.ok, isFalse);
       expect(result.value, isNull);
+      expect(result.errors, hasLength(1));
       expect(
-        result.errors.map((error) => error.message).join('\n'),
+        result.errors.single.code,
+        MixSchemaErrorCode.unsupportedEncodeValue,
+      );
+      expect(
+        result.errors.single.message,
         contains('Only direct mix props can be encoded.'),
       );
     });

@@ -77,22 +77,22 @@ JsonMap _encodeTextFields(TextStyler value) {
   }
 
   return optionalJsonMap([
-    ('overflow', propValue(value.$overflow)),
-    ('strutStyle', propMix<StrutStyleMix>(value.$strutStyle)),
-    ('textAlign', propValue(value.$textAlign)),
-    ('textScaler', propValue(value.$textScaler)),
-    ('maxLines', propValue(value.$maxLines)),
-    ('style', propMix<TextStyleMix>(value.$style)),
-    ('textWidthBasis', propValue(value.$textWidthBasis)),
+    ('overflow', directPropValue(value.$overflow)),
+    ('strutStyle', directPropMix<StrutStyleMix>(value.$strutStyle)),
+    ('textAlign', directPropValue(value.$textAlign)),
+    ('textScaler', directPropValue(value.$textScaler)),
+    ('maxLines', directPropValue(value.$maxLines)),
+    ('style', directPropMix<TextStyleMix>(value.$style)),
+    ('textWidthBasis', directPropValue(value.$textWidthBasis)),
     (
       'textHeightBehavior',
-      propMix<TextHeightBehaviorMix>(value.$textHeightBehavior),
+      directPropMix<TextHeightBehaviorMix>(value.$textHeightBehavior),
     ),
-    ('textDirection', propValue(value.$textDirection)),
-    ('softWrap', propValue(value.$softWrap)),
+    ('textDirection', directPropValue(value.$textDirection)),
+    ('softWrap', directPropValue(value.$softWrap)),
     ('textTransform', textTransform),
-    ('selectionColor', propValue(value.$selectionColor)),
-    ('semanticsLabel', propValue(value.$semanticsLabel)),
-    ('locale', propValue(value.$locale)),
+    ('selectionColor', directPropValue(value.$selectionColor)),
+    ('semanticsLabel', directPropValue(value.$semanticsLabel)),
+    ('locale', directPropValue(value.$locale)),
   ]);
 }
