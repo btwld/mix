@@ -306,21 +306,6 @@ void main() {
       );
     });
 
-    test('applies registry id length limits to registry-backed schemas', () {
-      final contract = MixSchemaContract.builtIn(
-        limits: const MixSchemaLimits(maxRegistryIdLength: 4),
-      );
-
-      final result = contract.decode({'type': 'icon', 'icon': 'too-long'});
-
-      expect(result.ok, isFalse);
-      expect(
-        result.errors.single.code,
-        MixSchemaErrorCode.payloadLimitExceeded,
-      );
-      expect(result.errors.single.path, '#/icon');
-    });
-
     test('applies structural limits after encoding runtime styles', () {
       final longVariantName =
           MixSchemaContract.builtIn(
@@ -377,7 +362,6 @@ void main() {
         'maxDepth': 32,
         'maxListLength': 256,
         'maxStringLength': 4096,
-        'maxRegistryIdLength': 256,
         'maxVariantsPerStyler': 64,
         'maxModifiersPerStyler': 64,
       });
@@ -400,7 +384,6 @@ void main() {
           maxDepth: 4,
           maxListLength: 5,
           maxStringLength: 6,
-          maxRegistryIdLength: 7,
           maxVariantsPerStyler: 8,
           maxModifiersPerStyler: 9,
         ),
@@ -410,7 +393,6 @@ void main() {
         'maxDepth': 4,
         'maxListLength': 5,
         'maxStringLength': 6,
-        'maxRegistryIdLength': 7,
         'maxVariantsPerStyler': 8,
         'maxModifiersPerStyler': 9,
       });

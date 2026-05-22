@@ -3,11 +3,14 @@ import 'package:ack/ack.dart' show JsonMap;
 import '../errors/mix_schema_error.dart';
 
 /// Structural safety limits applied at the schema contract boundary.
+///
+/// Registry id length is enforced per-codec via `registryValueCodec()`'s
+/// `maxLength` constraint; it is not surfaced here so producers see a single
+/// source of truth for that limit through the exported JSON Schema.
 final class MixSchemaLimits {
   final int maxDepth;
   final int maxListLength;
   final int maxStringLength;
-  final int maxRegistryIdLength;
   final int maxVariantsPerStyler;
   final int maxModifiersPerStyler;
 
@@ -15,7 +18,6 @@ final class MixSchemaLimits {
     this.maxDepth = 32,
     this.maxListLength = 256,
     this.maxStringLength = 4096,
-    this.maxRegistryIdLength = 256,
     this.maxVariantsPerStyler = 64,
     this.maxModifiersPerStyler = 64,
   });
@@ -25,7 +27,6 @@ final class MixSchemaLimits {
       'maxDepth': maxDepth,
       'maxListLength': maxListLength,
       'maxStringLength': maxStringLength,
-      'maxRegistryIdLength': maxRegistryIdLength,
       'maxVariantsPerStyler': maxVariantsPerStyler,
       'maxModifiersPerStyler': maxModifiersPerStyler,
     };

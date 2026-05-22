@@ -2,7 +2,6 @@ import 'package:ack/ack.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-import '../../contract/mix_schema_limits.dart';
 import '../../core/schema_wire_types.dart';
 import '../../registry/registry_catalog.dart';
 import '../../registry/registry_value_codec.dart';
@@ -15,7 +14,6 @@ buildVariantSchema<S extends Spec<S>, T extends Style<S>>({
   required AckSchema<JsonMap, T> styleSchema,
   required T emptyStyle,
   required RegistryCatalog registries,
-  required MixSchemaLimits limits,
 }) {
   return Ack.discriminated<VariantStyle<S>>(
     discriminatorKey: 'type',
@@ -26,7 +24,6 @@ buildVariantSchema<S extends Spec<S>, T extends Style<S>>({
           styleSchema: styleSchema,
           emptyStyle: emptyStyle,
           registries: registries,
-          limits: limits,
         ),
     },
   );
@@ -38,7 +35,6 @@ _buildVariantBranch<S extends Spec<S>, T extends Style<S>>({
   required AckSchema<JsonMap, T> styleSchema,
   required T emptyStyle,
   required RegistryCatalog registries,
-  required MixSchemaLimits limits,
 }) {
   switch (type) {
     case .widgetState ||
@@ -109,7 +105,6 @@ _buildVariantBranch<S extends Spec<S>, T extends Style<S>>({
       final builderCodec = registryValueCodec<T Function(BuildContext)>(
         registries: registries,
         scope: .contextVariantBuilder,
-        limits: limits,
         valueLabel: '$T Function(BuildContext)',
       );
 

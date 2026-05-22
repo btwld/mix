@@ -2,7 +2,6 @@ import 'package:ack/ack.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-import '../../contract/mix_schema_limits.dart';
 import '../../registry/registry_catalog.dart';
 import '../../registry/registry_value_codec.dart';
 
@@ -58,29 +57,23 @@ final Map<Curve, String> _curveNameByValue = {
 
 CodecSchema<String, VoidCallback> _buildOnEndCallbackCodec({
   required RegistryCatalog registries,
-  required MixSchemaLimits limits,
 }) {
   return registryValueCodec(
     registries: registries,
     scope: .animationOnEnd,
-    limits: limits,
     valueLabel: 'VoidCallback',
   );
 }
 
 CodecSchema<JsonMap, CurveAnimationConfig> buildAnimationCodec(
-  RegistryCatalog registries, {
-  required MixSchemaLimits limits,
-}) {
+  RegistryCatalog registries,
+) {
   return Ack.codec<JsonMap, JsonMap, CurveAnimationConfig>(
     input: Ack.object({
       'duration': Ack.integer().min(0),
       'curve': Ack.enumString(_curveByName.keys.toList(growable: false)),
       'delay': Ack.integer().min(0).optional(),
-      'onEnd': _buildOnEndCallbackCodec(
-        registries: registries,
-        limits: limits,
-      ).optional(),
+      'onEnd': _buildOnEndCallbackCodec(registries: registries).optional(),
     }),
     output: Ack.instance<CurveAnimationConfig>(),
     decode: (data) => CurveAnimationConfig(

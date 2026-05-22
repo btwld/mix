@@ -3,7 +3,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 import 'package:mix_schema/encode.dart';
-import 'package:mix_schema/src/contract/mix_schema_limits.dart';
 import 'package:mix_schema/src/core/mix_schema_scope.dart';
 import 'package:mix_schema/src/core/schema_wire_types.dart';
 import 'package:mix_schema/src/errors/mix_schema_error_code.dart';
@@ -98,7 +97,6 @@ AckSchema<JsonMap, VariantStyle<BoxSpec>> _buildBoxVariantSchema({
     styleSchema: _boxStyleSchema,
     emptyStyle: BoxStyler(),
     registries: registries ?? RegistryCatalog(const []),
-    limits: const MixSchemaLimits(),
   );
 }
 
