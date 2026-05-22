@@ -10,10 +10,10 @@ import '../errors/mix_schema_validation_result.dart';
 import '../errors/schema_error_mapper.dart';
 import '../registry/frozen_registry.dart';
 import '../registry/registry_catalog.dart';
+import '../registry/registry_wire_grammar.dart';
 import '../schema/builtins/built_in_styler_definitions.dart';
 import '../schema/styler_catalog.dart';
 
-final RegExp _stylerTypePattern = RegExp(r'^[a-z][a-z0-9_]*$');
 final Set<String> _reservedStylerTypes = {
   for (final type in SchemaStyler.values) type.wireValue,
 };
@@ -275,11 +275,11 @@ void _validateStylerRegistration({
     throw ArgumentError.value(type, 'type', 'Styler type must not be empty.');
   }
 
-  if (type != type.trim() || !_stylerTypePattern.hasMatch(type)) {
+  if (type != type.trim() || !kRegistryScopePattern.hasMatch(type)) {
     throw ArgumentError.value(
       type,
       'type',
-      'Styler type must match ${_stylerTypePattern.pattern}.',
+      'Styler type must match ${kRegistryScopePattern.pattern}.',
     );
   }
 
