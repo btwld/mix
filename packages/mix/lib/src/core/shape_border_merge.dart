@@ -37,7 +37,7 @@ class ShapeBorderMerger {
         $borderRadius: b.$borderRadius,
         $side: b.$side,
       ),
-      _ => throw ArgumentError(
+      OutlinedBorderMix() => throw ArgumentError(
         'Expected rectangle variant, got ${border.runtimeType}',
       ),
     };

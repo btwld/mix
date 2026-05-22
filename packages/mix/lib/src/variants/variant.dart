@@ -216,8 +216,8 @@ mixin EnumVariant on Enum implements NamedVariant {
   String get name => _EnumName(this).name;
 }
 
-extension type _EnumName(Enum value) {
-  String get name => value.name;
+extension type const _EnumName(Enum _value) implements Enum {
+  String get name => _value.name;
 }
 
 // Common named variants

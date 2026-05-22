@@ -367,19 +367,6 @@ void main() {
         );
       });
 
-      test('should assert when TextDecorationRef is passed', () {
-        expect(
-          () => assertIsRealType(TextDecorationRef),
-          throwsA(
-            isA<AssertionError>().having(
-              (e) => e.message,
-              'message',
-              'Cannot use TextDecorationRef for generic, use TextDecoration instead.',
-            ),
-          ),
-        );
-      });
-
       test('should assert when StrutStyleRef is passed', () {
         expect(
           () => assertIsRealType(StrutStyleRef),

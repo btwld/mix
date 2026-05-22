@@ -11,10 +11,10 @@ import '../style.dart';
 /// For accessing styles from the widget tree, prefer using [Style.of] or
 /// [Style.maybeOf] static methods.
 class StyleProvider<S extends Spec<S>> extends InheritedWidget {
+  const StyleProvider({super.key, required this.style, required super.child});
+
   /// The style provided to descendant widgets.
   final Style<S> style;
-
-  const StyleProvider({super.key, required this.style, required super.child});
 
   @override
   bool updateShouldNotify(StyleProvider<S> oldWidget) {

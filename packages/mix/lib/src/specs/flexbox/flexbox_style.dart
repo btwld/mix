@@ -349,6 +349,7 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
       FlexBoxStyler().translate(x, y, z);
   factory FlexBoxStyler.skew(double skewX, double skewY) =>
       FlexBoxStyler().skew(skewX, skewY);
+
   // Box-style instance methods
 
   /// Sets the alignment property.
@@ -374,6 +375,12 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
   /// Creates a FlexBox widget with children.
   FlexBox call({Key? key, List<Widget> children = const <Widget>[]}) {
     return FlexBox(key: key, style: this, children: children);
+  }
+
+  /// Propagates the given [TextStyler] to descendant [StyledText] widgets via
+  /// [DefaultTextStylerModifier] (Mix inheritance).
+  FlexBoxStyler textStyle(TextStyler value) {
+    return wrap(WidgetModifierConfig.defaultTextStyler(value));
   }
 
   /// Sets the animation property.
@@ -451,11 +458,5 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
   @override
   FlexBoxStyler border(BoxBorderMix value) {
     return merge(FlexBoxStyler(decoration: DecorationMix.border(value)));
-  }
-
-  /// Propagates the given [TextStyler] to descendant [StyledText] widgets via
-  /// [DefaultTextStylerModifier] (Mix inheritance).
-  FlexBoxStyler textStyle(TextStyler value) {
-    return wrap(WidgetModifierConfig.defaultTextStyler(value));
   }
 }

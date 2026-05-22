@@ -38,15 +38,15 @@ import 'stackbox_style.dart';
 /// )
 /// ```
 class StackBox extends StyleWidget<StackBoxSpec> {
-  /// Child widgets to be arranged in the stack layout.
-  final List<Widget> children;
-
   const StackBox({
     super.style = const StackBoxStyler.create(),
     super.styleSpec,
     super.key,
     this.children = const <Widget>[],
   });
+
+  /// Child widgets to be arranged in the stack layout.
+  final List<Widget> children;
 
   @override
   Widget build(BuildContext context, StackBoxSpec spec) {

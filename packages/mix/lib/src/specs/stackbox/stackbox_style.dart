@@ -325,6 +325,7 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
       StackBoxStyler().translate(x, y, z);
   factory StackBoxStyler.skew(double skewX, double skewY) =>
       StackBoxStyler().skew(skewX, skewY);
+
   // Box-style instance methods
 
   /// Sets the alignment for the box.
@@ -375,6 +376,12 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
   /// Applies a custom StackStyler to the StackBox.
   StackBoxStyler stack(StackStyler value) {
     return merge(StackBoxStyler.create(stack: Prop.maybeMix(value)));
+  }
+
+  /// Propagates the given [TextStyler] to descendant [StyledText] widgets via
+  /// [DefaultTextStylerModifier] (Mix inheritance).
+  StackBoxStyler textStyle(TextStyler value) {
+    return wrap(WidgetModifierConfig.defaultTextStyler(value));
   }
 
   /// Sets animation
@@ -446,11 +453,5 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
   @override
   StackBoxStyler border(BoxBorderMix value) {
     return merge(StackBoxStyler(decoration: DecorationMix.border(value)));
-  }
-
-  /// Propagates the given [TextStyler] to descendant [StyledText] widgets via
-  /// [DefaultTextStylerModifier] (Mix inheritance).
-  StackBoxStyler textStyle(TextStyler value) {
-    return wrap(WidgetModifierConfig.defaultTextStyler(value));
   }
 }

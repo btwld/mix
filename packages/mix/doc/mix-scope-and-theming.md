@@ -149,7 +149,7 @@ MixScope(
 
 ## Combining/Overriding Scopes
 
-You can merge scopes or create nested scopes to override subsets of tokens for parts of the tree.
+You can merge several explicit scopes into one with `MixScope.combine`:
 
 ```dart
 final base = MixScope(
@@ -168,19 +168,31 @@ final combined = MixScope.combine(
 );
 ```
 
-Or simply nest a child scope where needed:
+### Overriding part of the tree with `MixScope.inherit`
+
+To override a subset of tokens for a feature or screen, use `MixScope.inherit`.
+It reads the nearest ancestor `MixScope` and merges the provided values on top
+of it — the same pattern as `DefaultTextStyle.merge` / `IconTheme.merge`:
 
 ```dart
 MixScope(
-  colors: { ColorToken('brand.primary'): Colors.blue },
+  colors: {
+    ColorToken('brand.primary'): Colors.blue,
+    ColorToken('brand.surface'): Colors.white,
+  },
   child: FeatureShell(
-    child: MixScope(
+    // Inherits brand.surface, overrides only brand.primary.
+    child: MixScope.inherit(
       colors: { ColorToken('brand.primary'): Colors.green },
       child: FeatureWidget(),
     ),
   ),
 )
 ```
+
+> **Note:** Nesting a plain `MixScope` does **not** merge — it fully shadows the
+> ancestor, so any token not redefined in the inner scope becomes unresolvable.
+> Use `MixScope.inherit` whenever you only want to override a subset of tokens.
 
 ## Hands‑On Tutorial
 
@@ -244,7 +256,7 @@ void main() {
 - Prefer semantic token names, e.g., `brand.primary`, `layout.content.padding`
 - Keep tokens type-safe using the provided token classes (ColorToken, SpaceToken, DoubleToken, RadiusToken, TextStyleToken, BreakpointToken, ShadowToken, BoxShadowToken, BorderSideToken, FontWeightToken)
 - Centralize token declarations for discoverability
-- Use nested scopes for feature- or screen-level overrides
+- Use `MixScope.inherit` for feature- or screen-level overrides so inherited tokens are preserved
 - Leverage `withMaterial` when you want automatic alignment with Material Theme
 
 ## Troubleshooting
