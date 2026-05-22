@@ -95,10 +95,14 @@ void main() {
       expect(source, isNot(contains('schema_wire_types.dart')));
     });
 
-    test('keeps wire-type identifiers on the producer surface', () {
+    test('exposes wire-type identifiers on the producer surface', () {
       final source = File('lib/encode.dart').readAsStringSync();
 
-      expect(source, isNot(contains('schema_wire_types.dart')));
+      // After D3a the Schema* wire enums are part of the producer-facing
+      // encode.dart surface so consumers (e.g. mix_tailwinds) can reference
+      // SchemaStyler.box.wireValue without reaching into internal src/.
+      expect(source, contains('schema_wire_types.dart'));
+      expect(source, contains('SchemaStyler'));
       expect(source, contains('primitive_payload_helpers.dart'));
     });
 
