@@ -10,15 +10,7 @@ void main() {
   group('StylerRegistry', () {
     test('decodes transformed custom branches', () {
       final registry = StylerRegistry()
-        ..register(
-          'demo',
-          Ack.codec<JsonMap, JsonMap, Object>(
-            input: Ack.object({'value': Ack.integer()}),
-            output: Ack.instance<Object>(),
-            decode: (data) => data['value']! as int,
-            encode: (value) => {'type': 'demo', 'value': value as int},
-          ),
-        )
+        ..register('demo', _demoSchema('demo'))
         ..freeze();
 
       final result = registry.decode({'type': 'demo', 'value': 42});
@@ -90,6 +82,42 @@ void main() {
       expect(invalidResult.errors.single.message, 'Demo value must be 7.');
     });
 
+    test('rejects custom styler type names that are not wire ids', () {
+      for (final type in [
+        '',
+        '   ',
+        'CustomBox',
+        'custom-box',
+        'custom box',
+        '_custom',
+        ' custom',
+        'custom ',
+      ]) {
+        expect(
+          () => StylerRegistry().register(type, _demoSchema(type)),
+          throwsArgumentError,
+          reason: type,
+        );
+      }
+    });
+
+    test('rejects duplicate registration of the same type', () {
+      final registry = StylerRegistry()..register('demo', _demoSchema('demo'));
+
+      expect(
+        () => registry.register('demo', _demoSchema('demo')),
+        throwsA(isA<StateError>()),
+      );
+    });
+
+    test('reserves built-in styler type names for built-in schemas', () {
+      expect(
+        () => StylerRegistry().register('box', _demoSchema('box')),
+        throwsArgumentError,
+      );
+      expect(StylerRegistry.builtIn, returnsNormally);
+    });
+
     test('extends the built-in styler set with custom schemas', () {
       final builder = MixSchemaContractBuilder.builtIn()
         ..register(
@@ -119,4 +147,13 @@ void main() {
       expect(customResult.value, isA<BoxStyler>());
     });
   });
+}
+
+CodecSchema<JsonMap, Object> _demoSchema(String type) {
+  return Ack.codec<JsonMap, JsonMap, Object>(
+    input: Ack.object({'value': Ack.integer()}),
+    output: Ack.instance<Object>(),
+    decode: (data) => data['value']! as int,
+    encode: (value) => {'type': type, 'value': value as int},
+  );
 }

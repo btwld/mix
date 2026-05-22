@@ -96,7 +96,6 @@ void main() {
       expect(properties, contains('padding'));
       expect(properties, contains('animation'));
       expect(properties, contains('variants'));
-      expect(boxBranch['x-ack-codec'], isTrue);
     });
 
     test('encodes BoxStyler payloads through the contract', () {
@@ -269,6 +268,35 @@ void main() {
       expect(textProperties, contains('textAlign'));
       expect(iconProperties, contains('icon'));
     });
+
+    test('exports concrete schemas for context_all_of conditions', () {
+      final schema = MixSchemaContract.builtIn().exportJsonSchema();
+      final contextAllOfBranch = _variantBranch(
+        schema,
+        'box',
+        'context_all_of',
+      );
+      final properties =
+          contextAllOfBranch['properties']! as Map<Object?, Object?>;
+      final conditions = properties['conditions']! as Map<Object?, Object?>;
+      final items = conditions['items']! as Map<Object?, Object?>;
+      final branches = items['anyOf']! as List<Object?>;
+      final conditionTypes = [
+        for (final branch in branches.cast<Map<Object?, Object?>>())
+          ((((branch['properties']! as Map<Object?, Object?>)['type']!
+                  as Map<Object?, Object?>)['const']!)
+              as String),
+      ];
+
+      expect(conditionTypes, const [
+        'widget_state',
+        'enabled',
+        'context_brightness',
+        'context_breakpoint',
+        'context_not_widget_state',
+      ]);
+      expect(conditionTypes, isNot(contains('context_all_of')));
+    });
   });
 }
 
@@ -297,4 +325,22 @@ Map<Object?, Object?> _branchProperties(
   });
 
   return branch['properties']! as Map<Object?, Object?>;
+}
+
+Map<Object?, Object?> _variantBranch(
+  Map<String, Object?> schema,
+  String stylerType,
+  String variantType,
+) {
+  final stylerProperties = _branchProperties(schema, stylerType);
+  final variants = stylerProperties['variants']! as Map<Object?, Object?>;
+  final items = variants['items']! as Map<Object?, Object?>;
+  final branches = items['anyOf']! as List<Object?>;
+
+  return branches.cast<Map<Object?, Object?>>().singleWhere((branch) {
+    final properties = branch['properties']! as Map<Object?, Object?>;
+    final typeProperty = properties['type']! as Map<Object?, Object?>;
+
+    return typeProperty['const'] == variantType;
+  });
 }

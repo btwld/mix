@@ -9,13 +9,7 @@ import 'context_variant_leaf_schema.dart';
 import 'variant_condition_definition.dart';
 
 VariantConditionParser buildVariantConditionParser() {
-  final leafSchema = Ack.discriminated<ContextVariantLeaf>(
-    discriminatorKey: 'type',
-    schemas: {
-      for (final type in sharedContextVariantLeafTypes)
-        type.wireValue: buildContextVariantLeafSchema(type: type),
-    },
-  );
+  final leafSchema = buildContextConditionInputSchema();
 
   final compoundShapeSchema = Ack.object({
     'type': Ack.literal(SchemaVariant.contextAllOf.wireValue),
@@ -28,11 +22,18 @@ VariantConditionParser buildVariantConditionParser() {
   );
 }
 
-ObjectSchema buildContextConditionInputSchema() {
-  return Ack.object({'type': Ack.string()}).passthrough();
+DiscriminatedObjectSchema<ContextVariantLeaf>
+buildContextConditionInputSchema() {
+  return Ack.discriminated(
+    discriminatorKey: 'type',
+    schemas: {
+      for (final type in sharedContextVariantLeafTypes)
+        type.wireValue: buildContextVariantLeafSchema(type: type),
+    },
+  );
 }
 
-ListSchema<JsonMap, JsonMap> buildContextConditionListSchema() {
+ListSchema<JsonMap, ContextVariantLeaf> buildContextConditionListSchema() {
   return Ack.list(buildContextConditionInputSchema()).refine(
     (conditions) => conditions.length >= 2,
     message: 'context_all_of requires at least two conditions.',
@@ -55,6 +56,10 @@ final class VariantConditionParser {
     required String path,
     required List<MixSchemaError> errors,
   }) {
+    if (value is ContextVariantLeaf) {
+      return ContextConditionSet.leaf(value);
+    }
+
     if (value is Map<String, Object?> &&
         value['type'] == SchemaVariant.contextAllOf.wireValue) {
       final shapeResult = _compoundShapeSchema.safeParse(value);
@@ -187,22 +192,6 @@ ContextConditionSet? contextConditionSetFromVariant(Variant variant) {
   }
 
   return null;
-}
-
-List<JsonMap> encodeContextConditionSet(ContextConditionSet conditionSet) {
-  return [
-    for (final leaf in conditionSet.leaves) _encodeContextConditionLeaf(leaf),
-  ];
-}
-
-JsonMap _encodeContextConditionLeaf(ContextVariantLeaf leaf) {
-  for (final definition in variantConditionDefinitions.values) {
-    if (definition.matchesVariant(leaf.variant)) {
-      return definition.encodeLeaf(leaf);
-    }
-  }
-
-  throw ArgumentError('Context variant condition cannot be encoded.');
 }
 
 List<ContextVariantLeaf> _normalizeConditionLeaves(

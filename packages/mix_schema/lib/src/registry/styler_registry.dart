@@ -1,10 +1,16 @@
 import 'package:ack/ack.dart';
 
 import '../contract/mix_schema_limits.dart';
+import '../core/schema_wire_types.dart';
 import '../schema/builtins/built_in_styler_definitions.dart';
 import '../schema/styler_catalog.dart';
 import 'frozen_registry.dart';
 import 'registry_catalog.dart';
+
+final RegExp _stylerTypePattern = RegExp(r'^[a-z][a-z0-9_]*$');
+final Set<String> _reservedStylerTypes = {
+  for (final type in SchemaStyler.values) type.wireValue,
+};
 
 /// Mutable registry of styler schemas used to build the payload decoder.
 final class StylerRegistry {
@@ -36,6 +42,7 @@ final class StylerRegistry {
   void _register({
     required String type,
     required CodecSchema<JsonMap, Object> stylerSchema,
+    bool allowReservedType = false,
   }) {
     if (_frozen) {
       throw StateError('Registry is frozen.');
@@ -45,7 +52,11 @@ final class StylerRegistry {
       throw StateError('Type "$type" is already registered.');
     }
 
-    _validateStylerRegistration(type: type, stylerSchema: stylerSchema);
+    _validateStylerRegistration(
+      type: type,
+      stylerSchema: stylerSchema,
+      allowReservedType: allowReservedType,
+    );
 
     _schemas[type] = stylerSchema;
     _registeredTypes.add(type);
@@ -112,9 +123,26 @@ final class StylerRegistry {
 void _validateStylerRegistration({
   required String type,
   required CodecSchema<JsonMap, Object> stylerSchema,
+  required bool allowReservedType,
 }) {
   if (type.trim().isEmpty) {
     throw ArgumentError.value(type, 'type', 'Styler type must not be empty.');
+  }
+
+  if (type != type.trim() || !_stylerTypePattern.hasMatch(type)) {
+    throw ArgumentError.value(
+      type,
+      'type',
+      'Styler type must match ${_stylerTypePattern.pattern}.',
+    );
+  }
+
+  if (!allowReservedType && _reservedStylerTypes.contains(type)) {
+    throw ArgumentError.value(
+      type,
+      'type',
+      'Styler type "$type" is reserved for a built-in styler.',
+    );
   }
 
   final inputSchema = stylerSchema.inputSchema;
@@ -132,6 +160,10 @@ void _registerBuiltInStylers({
   required StylerCatalog catalog,
 }) {
   for (final entry in buildBuiltInStylerDefinitions(catalog).entries) {
-    registry._register(type: entry.key.wireValue, stylerSchema: entry.value);
+    registry._register(
+      type: entry.key.wireValue,
+      stylerSchema: entry.value,
+      allowReservedType: true,
+    );
   }
 }

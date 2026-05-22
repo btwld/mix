@@ -6,6 +6,8 @@ import 'package:mix_schema/encode.dart';
 import 'package:mix_schema/src/contract/mix_schema_limits.dart';
 import 'package:mix_schema/src/core/mix_schema_scope.dart';
 import 'package:mix_schema/src/core/schema_wire_types.dart';
+import 'package:mix_schema/src/errors/mix_schema_error_code.dart';
+import 'package:mix_schema/src/errors/schema_error_mapper.dart';
 import 'package:mix_schema/src/registry/frozen_registry.dart';
 import 'package:mix_schema/src/registry/registry_catalog.dart';
 import 'package:mix_schema/src/schema/metadata/variant_condition_definition.dart';
@@ -76,17 +78,16 @@ void main() {
     test('fails clearly for unregistered context_variant_builder values', () {
       final schema = _buildBoxVariantSchema();
       final variant = ContextVariantBuilder<BoxStyler>((_) => _style);
+      final result = schema.safeEncode(VariantStyle<BoxSpec>(variant, _style));
 
-      expect(
-        () => schema.encode(VariantStyle<BoxSpec>(variant, _style)),
-        throwsA(
-          isA<AckException>().having(
-            (error) => error.toString(),
-            'error',
-            contains('No registry id found'),
-          ),
-        ),
+      expect(result.isFail, isTrue);
+      final errors = const SchemaErrorMapper().map(result.getError());
+
+      final registryErrors = errors.where(
+        (error) => error.code == MixSchemaErrorCode.unknownRegistryValue,
       );
+      expect(registryErrors, isNotEmpty);
+      expect(registryErrors.first.message, contains('No registry id found'));
     });
   });
 }

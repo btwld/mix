@@ -6,6 +6,7 @@ import '../../core/json_casts.dart';
 import '../../core/numeric_codecs.dart';
 import '../../core/prop_encode.dart';
 import '../../core/schema_wire_types.dart';
+import '../../errors/schema_transform_exceptions.dart';
 import 'color_schema.dart';
 import 'enum_schemas.dart';
 import 'primitive_schemas.dart';
@@ -234,7 +235,29 @@ AckSchema<JsonMap, TextScaler> _buildTextScalerBranch(SchemaTextScaler type) {
         }),
         output: Ack.instance<TextScaler>(),
         decode: (data) => TextScaler.linear(data['factor']! as double),
-        encode: (value) => {'type': type.wireValue, 'factor': value.scale(1)},
+        encode: (value) => {
+          'type': type.wireValue,
+          'factor': _linearTextScaleFactor(value),
+        },
       );
   }
+}
+
+double _linearTextScaleFactor(TextScaler value) {
+  final factor = value.scale(1.0);
+  if (!factor.isFinite || factor < 0) {
+    throw UnsupportedEncodeValueError(
+      'Only finite, non-negative TextScaler.linear values can be encoded.',
+      value: value,
+    );
+  }
+
+  if (value != TextScaler.linear(factor)) {
+    throw UnsupportedEncodeValueError(
+      'Only TextScaler.linear values can be encoded.',
+      value: value,
+    );
+  }
+
+  return factor;
 }

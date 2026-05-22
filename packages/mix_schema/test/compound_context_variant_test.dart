@@ -53,61 +53,31 @@ void main() {
       );
     });
 
-    test(
-      'flattens nested context_all_of conditions into one canonical key',
-      () {
-        final contract = MixSchemaContract.builtIn();
+    test('rejects nested context_all_of conditions', () {
+      final contract = MixSchemaContract.builtIn();
 
-        final nestedResult = contract.decode(
-          _boxPayloadWithConditions([
-            {
-              'type': 'context_all_of',
-              'conditions': [
-                {'type': 'context_breakpoint', 'minWidth': 768.0},
-                {'type': 'context_brightness', 'brightness': 'dark'},
-              ],
-            },
-            {'type': 'widget_state', 'state': 'hovered'},
-          ]),
-        );
-        final flatResult = contract.decode(
-          _boxPayloadWithConditions([
-            {'type': 'context_brightness', 'brightness': 'dark'},
-            {'type': 'widget_state', 'state': 'hovered'},
-            {'type': 'context_breakpoint', 'minWidth': 768.0},
-          ]),
-        );
+      final result = contract.decode(
+        _boxPayloadWithConditions([
+          {
+            'type': 'context_all_of',
+            'conditions': [
+              {'type': 'context_breakpoint', 'minWidth': 768.0},
+              {'type': 'context_brightness', 'brightness': 'dark'},
+            ],
+          },
+          {'type': 'widget_state', 'state': 'hovered'},
+        ]),
+      );
 
-        expect(
-          nestedResult.ok,
-          isTrue,
-          reason: nestedResult.errors
-              .map(
-                (error) =>
-                    '${error.code.wireValue} ${error.path} ${error.message}',
-              )
-              .join('\n'),
-        );
-        expect(
-          flatResult.ok,
-          isTrue,
-          reason: flatResult.errors
-              .map(
-                (error) =>
-                    '${error.code.wireValue} ${error.path} ${error.message}',
-              )
-              .join('\n'),
-        );
-
-        final nestedStyle = nestedResult.value! as BoxStyler;
-        final flatStyle = flatResult.value! as BoxStyler;
-
-        expect(
-          nestedStyle.$variants!.single.variant.key,
-          flatStyle.$variants!.single.variant.key,
-        );
-      },
-    );
+      expect(result.ok, isFalse);
+      expect(
+        result.errors.map((error) => (error.code, error.path)).toList(),
+        contains((
+          MixSchemaErrorCode.unknownType,
+          '#/variants/0/conditions/0/type',
+        )),
+      );
+    });
 
     test('rejects unknown compound condition types with stable paths', () {
       final contract = MixSchemaContract.builtIn();

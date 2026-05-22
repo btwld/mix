@@ -97,17 +97,22 @@ final jsonSchema = MixSchemaContract.builtIn().exportJsonSchema();
 ```
 
 Custom top-level stylers register one object-backed `Ack.codec<JsonMap, T>`.
-Field ownership and JSON Schema export are derived from the codec input schema.
+Custom type ids must match `^[a-z][a-z0-9_]*$` and cannot use built-in styler
+ids. Field ownership and JSON Schema export are derived from the codec input
+schema.
 
 ```dart
+import 'package:ack/ack.dart';
+import 'package:mix_schema/mix_schema.dart';
+
 final builder = MixSchemaContractBuilder()
   ..register(
     'demo',
-    Ack.codec<JsonMap, Object>(
+    Ack.codec<JsonMap, JsonMap, Object>(
       input: Ack.object({'value': Ack.integer()}),
       output: Ack.instance<Object>(),
-      decoder: (data) => data['value'] as int,
-      encoder: (value) => {'value': value as int},
+      decode: (data) => data['value']! as int,
+      encode: (value) => {'type': 'demo', 'value': value as int},
     ),
   );
 ```

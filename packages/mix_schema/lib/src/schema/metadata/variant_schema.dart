@@ -106,7 +106,7 @@ _buildVariantBranch<S extends Spec<S>, T extends Style<S>>({
 
           return {
             'type': type.wireValue,
-            'conditions': encodeContextConditionSet(conditionSet),
+            'conditions': conditionSet.leaves,
             'style': value.value as T,
           };
         },

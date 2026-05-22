@@ -195,6 +195,7 @@ final class SchemaErrorMapper {
     return switch (constraintKey) {
       'object_required_property_missing' => .requiredField,
       'object_additional_properties_disallowed' => .unknownField,
+      'core_invalid_type' => .typeMismatch,
       'string_enum' || 'enum_value' => .invalidEnum,
       // Current max-length/max-items constraints are owned by MixSchemaLimits.
       'string_max_length' || 'list_max_items' => .payloadLimitExceeded,

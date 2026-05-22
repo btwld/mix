@@ -41,6 +41,19 @@ void main() {
       expect(decoded.ok, isTrue);
       expect(contract.encode(decoded.value!).value, encoded.value);
     });
+
+    test('rejects nonlinear text scalers during encode', () {
+      final contract = MixSchemaContract.builtIn();
+      final result = contract.encode(
+        TextStyler(textScaler: const _NonlinearTextScaler()),
+      );
+
+      expect(result.ok, isFalse);
+      expect(
+        result.errors.single.code,
+        MixSchemaErrorCode.unsupportedEncodeValue,
+      );
+    });
   });
 
   group('ImageStyler codec', () {
@@ -146,4 +159,14 @@ void main() {
       expect(contract.encode(decoded.value!).value, encoded.value);
     });
   });
+}
+
+final class _NonlinearTextScaler extends TextScaler {
+  const _NonlinearTextScaler();
+
+  @override
+  double get textScaleFactor => 1.0;
+
+  @override
+  double scale(double fontSize) => fontSize == 1.0 ? 1.0 : fontSize * 1.25;
 }
