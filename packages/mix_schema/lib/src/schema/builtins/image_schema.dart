@@ -1,5 +1,4 @@
 import 'package:ack/ack.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
@@ -15,7 +14,7 @@ StylerContract<ImageSpec, ImageStyler> buildImageStylerDefinition(
   return buildStylerCodecContract(
     catalog: catalog,
     type: .image,
-    emptyStyle: ImageStyler(image: _TransparentImageProvider.instance),
+    emptyStyle: ImageStyler(),
     fields: {
       'image': catalog.imageProviderCodec,
       'width': doubleFromNum().optional(),
@@ -88,25 +87,3 @@ JsonMap _encodeImageFields(ImageStyler value) {
   };
 }
 
-final class _TransparentImageProvider
-    extends ImageProvider<_TransparentImageProvider> {
-  static const _TransparentImageProvider instance =
-      _TransparentImageProvider._();
-
-  const _TransparentImageProvider._();
-
-  @override
-  Future<_TransparentImageProvider> obtainKey(
-    ImageConfiguration configuration,
-  ) {
-    return SynchronousFuture(this);
-  }
-
-  @override
-  ImageStreamCompleter loadImage(
-    _TransparentImageProvider key,
-    ImageDecoderCallback decode,
-  ) {
-    throw UnimplementedError('Placeholder image provider should never load.');
-  }
-}
