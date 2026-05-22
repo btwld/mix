@@ -21,8 +21,9 @@
     "rule": "priority(compound) = max(priority(leaf) for leaf in leaves)",
     "leaves": {
       "widget_state": 1,
-      "brightness": 0,
-      "breakpoint": 0,
+      "context_brightness": 0,
+      "context_breakpoint": 0,
+      "context_not_widget_state": 0,
       "enabled": 0
     }
   },
@@ -189,5 +190,5 @@
       "variants"
     ]
   },
-  "fullExportByteLength": 2711591
+  "fullExportByteLength": 2711636
 }

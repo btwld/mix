@@ -247,8 +247,8 @@ final class MixSchemaContract {
 ///
 /// Compound context variants (`context_all_of`) inherit the maximum sort
 /// priority of their leaves; the priority is a Mix runtime concept that
-/// the wire format does not declare. Producers should treat this metadata
-/// as the canonical contract for the rule.
+/// the wire format does not declare. This metadata documents runtime-derived
+/// behavior — the Mix runtime is the actual source of truth for priority.
 const Map<String, Object?> _variantPriorityMetadata = {
   'description':
       'Compound context_all_of variants inherit the maximum sortPriority '
@@ -259,8 +259,9 @@ const Map<String, Object?> _variantPriorityMetadata = {
   'rule': 'priority(compound) = max(priority(leaf) for leaf in leaves)',
   'leaves': {
     'widget_state': 1,
-    'brightness': 0,
-    'breakpoint': 0,
+    'context_brightness': 0,
+    'context_breakpoint': 0,
+    'context_not_widget_state': 0,
     'enabled': 0,
   },
 };

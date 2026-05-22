@@ -107,6 +107,30 @@ void main() {
 
       expect(icon['type'], 'string');
       expect(icon['pattern'], r'^[A-Za-z0-9._:-]+$');
+      expect(icon['maxLength'], 256);
+    });
+
+    test('variant priority metadata uses canonical wire leaf names', () {
+      final metadata =
+          schema['x-mix-variant-priority']! as Map<Object?, Object?>;
+      final leaves = metadata['leaves']! as Map<Object?, Object?>;
+
+      // Every leaf key advertised in the metadata must be one of the
+      // shared context leaf wire values. Catches future drift where the
+      // metadata uses short enum names instead of canonical wire values.
+      for (final key in leaves.keys.cast<String>()) {
+        expect(
+          allowedCompoundLeaves,
+          contains(key),
+          reason: 'variant-priority leaf "$key" is not a canonical wire name',
+        );
+      }
+
+      expect(leaves['widget_state'], 1);
+      expect(leaves['context_brightness'], 0);
+      expect(leaves['context_breakpoint'], 0);
+      expect(leaves['context_not_widget_state'], 0);
+      expect(leaves['enabled'], 0);
     });
   });
 }
