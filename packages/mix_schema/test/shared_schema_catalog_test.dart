@@ -5,6 +5,7 @@ import 'package:mix/mix.dart';
 import 'package:mix_schema/src/errors/mix_schema_error_code.dart';
 import 'package:mix_schema/src/errors/schema_error_mapper.dart';
 import 'package:mix_schema/src/registry/registry_catalog.dart';
+import 'package:mix_schema/src/schema/painting/border_schemas.dart';
 import 'package:mix_schema/src/schema/painting/gradient_schemas.dart';
 import 'package:mix_schema/src/schema/painting/shape_border_schemas.dart';
 import 'package:mix_schema/src/schema/shared/box_constraints_schema.dart';
@@ -205,6 +206,45 @@ void main() {
         }
       },
     );
+
+    test('box border schema dispatches concrete subtype through encode', () {
+      final side = BorderSideMix(color: const Color(0xFF000000), width: 2);
+      final cases = <BoxBorderMix, Map<String, Object?>>{
+        BorderMix(top: side, bottom: side): {
+          'type': 'border',
+          'top': {'color': '#000000FF', 'width': 2.0},
+          'bottom': {'color': '#000000FF', 'width': 2.0},
+        },
+        BorderDirectionalMix(start: side, end: side): {
+          'type': 'border_directional',
+          'start': {'color': '#000000FF', 'width': 2.0},
+          'end': {'color': '#000000FF', 'width': 2.0},
+        },
+      };
+
+      for (final MapEntry(:key, :value) in cases.entries) {
+        expect(boxBorderCodec.encode(key), value);
+        expect(boxBorderCodec.parse(value), key);
+      }
+    });
+
+    test('border radius schema dispatches concrete subtype through encode', () {
+      final cases = <BorderRadiusGeometryMix, Map<String, Object?>>{
+        BorderRadiusMix(topLeft: const Radius.circular(8)): {
+          'type': 'border_radius',
+          'topLeft': {'x': 8.0},
+        },
+        BorderRadiusDirectionalMix(topStart: const Radius.circular(8)): {
+          'type': 'border_radius_directional',
+          'topStart': {'x': 8.0},
+        },
+      };
+
+      for (final MapEntry(:key, :value) in cases.entries) {
+        expect(borderRadiusCodec.encode(key), value);
+        expect(borderRadiusCodec.parse(value), key);
+      }
+    });
 
     test('shape border schema round-trips all branches through encode', () {
       final side = BorderSideMix(color: const Color(0xFF000000), width: 2);

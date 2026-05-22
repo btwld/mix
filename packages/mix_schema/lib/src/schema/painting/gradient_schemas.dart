@@ -4,6 +4,7 @@ import 'package:ack/ack.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
+import '../../core/branch_codec.dart';
 import '../../core/numeric_codecs.dart';
 import '../../core/prop_encode.dart';
 import '../../core/schema_wire_types.dart';
@@ -115,29 +116,24 @@ AckSchema<JsonMap, GradientTransform> _buildGradientTransformBranch(
 ) {
   switch (type) {
     case .rotation:
-      return Ack.codec<JsonMap, JsonMap, GradientTransform>(
+      return discriminatedBranchCodec<GradientTransform, GradientRotation>(
+        type: type.wireValue,
         input: Ack.object({'radians': doubleFromNum()}),
-        output: Ack.instance<GradientTransform>(),
         decode: (data) => GradientRotation(data['radians']! as double),
-        encode: (value) {
-          final rotation = value as GradientRotation;
-
-          return {'type': type.wireValue, 'radians': rotation.radians};
-        },
+        encode: (value) => {'radians': value.radians},
       );
     case .cssLinearKeyword:
-      return Ack.codec<JsonMap, JsonMap, GradientTransform>(
+      return discriminatedBranchCodec<
+        GradientTransform,
+        CssLinearKeywordGradientTransform
+      >(
+        type: type.wireValue,
         input: Ack.object({
           'direction': Ack.enumString(_cssLinearGradientDirections),
         }),
-        output: Ack.instance<GradientTransform>(),
         decode: (data) =>
             CssLinearKeywordGradientTransform(data['direction']! as String),
-        encode: (value) {
-          final transform = value as CssLinearKeywordGradientTransform;
-
-          return {'type': type.wireValue, 'direction': transform.directionKey};
-        },
+        encode: (value) => {'direction': value.directionKey},
       );
   }
 }
@@ -148,7 +144,8 @@ AckSchema<JsonMap, GradientMix> _buildGradientBranch({
 }) {
   switch (type) {
     case .linear:
-      return Ack.codec<JsonMap, JsonMap, GradientMix>(
+      return discriminatedBranchCodec<GradientMix, LinearGradientMix>(
+        type: type.wireValue,
         input:
             Ack.object({
               'colors': colorListSchema,
@@ -161,33 +158,26 @@ AckSchema<JsonMap, GradientMix> _buildGradientBranch({
               _hasMatchingGradientStops,
               message: 'Gradient stops length must match colors length.',
             ),
-        output: Ack.instance<GradientMix>(),
-        decode: (data) {
-          return LinearGradientMix(
-            begin: data['begin'] as AlignmentGeometry?,
-            end: data['end'] as AlignmentGeometry?,
-            tileMode: data['tileMode'] as TileMode?,
-            transform: data['transform'] as GradientTransform?,
-            colors: _gradientColors(data),
-            stops: _gradientStops(data),
-          );
-        },
-        encode: (value) {
-          final mix = value as LinearGradientMix;
-
-          return optionalJsonMap([
-            ('type', type.wireValue),
-            ('colors', requiredPropValue(mix.$colors, 'colors')),
-            ('stops', propValue(mix.$stops)),
-            ('begin', propValue(mix.$begin)),
-            ('end', propValue(mix.$end)),
-            ('tileMode', propValue(mix.$tileMode)),
-            ('transform', propValue(mix.$transform)),
-          ]);
-        },
+        decode: (data) => LinearGradientMix(
+          begin: data['begin'] as AlignmentGeometry?,
+          end: data['end'] as AlignmentGeometry?,
+          tileMode: data['tileMode'] as TileMode?,
+          transform: data['transform'] as GradientTransform?,
+          colors: _gradientColors(data),
+          stops: _gradientStops(data),
+        ),
+        encode: (mix) => optionalJsonMap([
+          ('colors', requiredPropValue(mix.$colors, 'colors')),
+          ('stops', propValue(mix.$stops)),
+          ('begin', propValue(mix.$begin)),
+          ('end', propValue(mix.$end)),
+          ('tileMode', propValue(mix.$tileMode)),
+          ('transform', propValue(mix.$transform)),
+        ]),
       );
     case .radial:
-      return Ack.codec<JsonMap, JsonMap, GradientMix>(
+      return discriminatedBranchCodec<GradientMix, RadialGradientMix>(
+        type: type.wireValue,
         input:
             Ack.object({
               'colors': colorListSchema,
@@ -202,37 +192,30 @@ AckSchema<JsonMap, GradientMix> _buildGradientBranch({
               _hasMatchingGradientStops,
               message: 'Gradient stops length must match colors length.',
             ),
-        output: Ack.instance<GradientMix>(),
-        decode: (data) {
-          return RadialGradientMix(
-            center: data['center'] as AlignmentGeometry?,
-            radius: data['radius'] as double?,
-            tileMode: data['tileMode'] as TileMode?,
-            focal: data['focal'] as AlignmentGeometry?,
-            focalRadius: data['focalRadius'] as double?,
-            transform: data['transform'] as GradientTransform?,
-            colors: _gradientColors(data),
-            stops: _gradientStops(data),
-          );
-        },
-        encode: (value) {
-          final mix = value as RadialGradientMix;
-
-          return optionalJsonMap([
-            ('type', type.wireValue),
-            ('colors', requiredPropValue(mix.$colors, 'colors')),
-            ('stops', propValue(mix.$stops)),
-            ('center', propValue(mix.$center)),
-            ('radius', propValue(mix.$radius)),
-            ('tileMode', propValue(mix.$tileMode)),
-            ('focal', propValue(mix.$focal)),
-            ('focalRadius', propValue(mix.$focalRadius)),
-            ('transform', propValue(mix.$transform)),
-          ]);
-        },
+        decode: (data) => RadialGradientMix(
+          center: data['center'] as AlignmentGeometry?,
+          radius: data['radius'] as double?,
+          tileMode: data['tileMode'] as TileMode?,
+          focal: data['focal'] as AlignmentGeometry?,
+          focalRadius: data['focalRadius'] as double?,
+          transform: data['transform'] as GradientTransform?,
+          colors: _gradientColors(data),
+          stops: _gradientStops(data),
+        ),
+        encode: (mix) => optionalJsonMap([
+          ('colors', requiredPropValue(mix.$colors, 'colors')),
+          ('stops', propValue(mix.$stops)),
+          ('center', propValue(mix.$center)),
+          ('radius', propValue(mix.$radius)),
+          ('tileMode', propValue(mix.$tileMode)),
+          ('focal', propValue(mix.$focal)),
+          ('focalRadius', propValue(mix.$focalRadius)),
+          ('transform', propValue(mix.$transform)),
+        ]),
       );
     case .sweep:
-      return Ack.codec<JsonMap, JsonMap, GradientMix>(
+      return discriminatedBranchCodec<GradientMix, SweepGradientMix>(
+        type: type.wireValue,
         input:
             Ack.object({
               'colors': colorListSchema,
@@ -246,32 +229,24 @@ AckSchema<JsonMap, GradientMix> _buildGradientBranch({
               _hasMatchingGradientStops,
               message: 'Gradient stops length must match colors length.',
             ),
-        output: Ack.instance<GradientMix>(),
-        decode: (data) {
-          return SweepGradientMix(
-            center: data['center'] as AlignmentGeometry?,
-            startAngle: data['startAngle'] as double?,
-            endAngle: data['endAngle'] as double?,
-            tileMode: data['tileMode'] as TileMode?,
-            transform: data['transform'] as GradientTransform?,
-            colors: _gradientColors(data),
-            stops: _gradientStops(data),
-          );
-        },
-        encode: (value) {
-          final mix = value as SweepGradientMix;
-
-          return optionalJsonMap([
-            ('type', type.wireValue),
-            ('colors', requiredPropValue(mix.$colors, 'colors')),
-            ('stops', propValue(mix.$stops)),
-            ('center', propValue(mix.$center)),
-            ('startAngle', propValue(mix.$startAngle)),
-            ('endAngle', propValue(mix.$endAngle)),
-            ('tileMode', propValue(mix.$tileMode)),
-            ('transform', propValue(mix.$transform)),
-          ]);
-        },
+        decode: (data) => SweepGradientMix(
+          center: data['center'] as AlignmentGeometry?,
+          startAngle: data['startAngle'] as double?,
+          endAngle: data['endAngle'] as double?,
+          tileMode: data['tileMode'] as TileMode?,
+          transform: data['transform'] as GradientTransform?,
+          colors: _gradientColors(data),
+          stops: _gradientStops(data),
+        ),
+        encode: (mix) => optionalJsonMap([
+          ('colors', requiredPropValue(mix.$colors, 'colors')),
+          ('stops', propValue(mix.$stops)),
+          ('center', propValue(mix.$center)),
+          ('startAngle', propValue(mix.$startAngle)),
+          ('endAngle', propValue(mix.$endAngle)),
+          ('tileMode', propValue(mix.$tileMode)),
+          ('transform', propValue(mix.$transform)),
+        ]),
       );
   }
 }

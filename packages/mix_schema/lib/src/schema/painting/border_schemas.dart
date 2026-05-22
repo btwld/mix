@@ -2,6 +2,7 @@ import 'package:ack/ack.dart';
 import 'package:flutter/painting.dart';
 import 'package:mix/mix.dart';
 
+import '../../core/branch_codec.dart';
 import '../../core/numeric_codecs.dart';
 import '../../core/prop_encode.dart';
 import '../../core/schema_wire_types.dart';
@@ -70,58 +71,48 @@ final borderRadiusCodec = Ack.discriminated<BorderRadiusGeometryMix>(
 AckSchema<JsonMap, BoxBorderMix> _buildBoxBorderBranch(SchemaBorder type) {
   switch (type) {
     case .border:
-      return Ack.codec<JsonMap, JsonMap, BoxBorderMix>(
+      return discriminatedBranchCodec<BoxBorderMix, BorderMix>(
+        type: type.wireValue,
         input: Ack.object({
           'top': borderSideCodec.optional(),
           'bottom': borderSideCodec.optional(),
           'left': borderSideCodec.optional(),
           'right': borderSideCodec.optional(),
         }),
-        output: Ack.instance<BoxBorderMix>(),
         decode: (data) => BorderMix(
           top: data['top'] as BorderSideMix?,
           bottom: data['bottom'] as BorderSideMix?,
           left: data['left'] as BorderSideMix?,
           right: data['right'] as BorderSideMix?,
         ),
-        encode: (value) {
-          final mix = value as BorderMix;
-
-          return optionalJsonMap([
-            ('type', type.wireValue),
-            ('top', propMix<BorderSideMix>(mix.$top)),
-            ('bottom', propMix<BorderSideMix>(mix.$bottom)),
-            ('left', propMix<BorderSideMix>(mix.$left)),
-            ('right', propMix<BorderSideMix>(mix.$right)),
-          ]);
-        },
+        encode: (mix) => optionalJsonMap([
+          ('top', propMix<BorderSideMix>(mix.$top)),
+          ('bottom', propMix<BorderSideMix>(mix.$bottom)),
+          ('left', propMix<BorderSideMix>(mix.$left)),
+          ('right', propMix<BorderSideMix>(mix.$right)),
+        ]),
       );
     case .borderDirectional:
-      return Ack.codec<JsonMap, JsonMap, BoxBorderMix>(
+      return discriminatedBranchCodec<BoxBorderMix, BorderDirectionalMix>(
+        type: type.wireValue,
         input: Ack.object({
           'top': borderSideCodec.optional(),
           'bottom': borderSideCodec.optional(),
           'start': borderSideCodec.optional(),
           'end': borderSideCodec.optional(),
         }),
-        output: Ack.instance<BoxBorderMix>(),
         decode: (data) => BorderDirectionalMix(
           top: data['top'] as BorderSideMix?,
           bottom: data['bottom'] as BorderSideMix?,
           start: data['start'] as BorderSideMix?,
           end: data['end'] as BorderSideMix?,
         ),
-        encode: (value) {
-          final mix = value as BorderDirectionalMix;
-
-          return optionalJsonMap([
-            ('type', type.wireValue),
-            ('top', propMix<BorderSideMix>(mix.$top)),
-            ('bottom', propMix<BorderSideMix>(mix.$bottom)),
-            ('start', propMix<BorderSideMix>(mix.$start)),
-            ('end', propMix<BorderSideMix>(mix.$end)),
-          ]);
-        },
+        encode: (mix) => optionalJsonMap([
+          ('top', propMix<BorderSideMix>(mix.$top)),
+          ('bottom', propMix<BorderSideMix>(mix.$bottom)),
+          ('start', propMix<BorderSideMix>(mix.$start)),
+          ('end', propMix<BorderSideMix>(mix.$end)),
+        ]),
       );
   }
 }
@@ -131,58 +122,51 @@ AckSchema<JsonMap, BorderRadiusGeometryMix> _buildBorderRadiusBranch(
 ) {
   switch (type) {
     case .borderRadius:
-      return Ack.codec<JsonMap, JsonMap, BorderRadiusGeometryMix>(
+      return discriminatedBranchCodec<BorderRadiusGeometryMix, BorderRadiusMix>(
+        type: type.wireValue,
         input: Ack.object({
           'topLeft': radiusCodec.optional(),
           'topRight': radiusCodec.optional(),
           'bottomLeft': radiusCodec.optional(),
           'bottomRight': radiusCodec.optional(),
         }),
-        output: Ack.instance<BorderRadiusGeometryMix>(),
         decode: (data) => BorderRadiusMix(
           topLeft: data['topLeft'] as Radius?,
           topRight: data['topRight'] as Radius?,
           bottomLeft: data['bottomLeft'] as Radius?,
           bottomRight: data['bottomRight'] as Radius?,
         ),
-        encode: (value) {
-          final mix = value as BorderRadiusMix;
-
-          return optionalJsonMap([
-            ('type', type.wireValue),
-            ('topLeft', propValue(mix.$topLeft)),
-            ('topRight', propValue(mix.$topRight)),
-            ('bottomLeft', propValue(mix.$bottomLeft)),
-            ('bottomRight', propValue(mix.$bottomRight)),
-          ]);
-        },
+        encode: (mix) => optionalJsonMap([
+          ('topLeft', propValue(mix.$topLeft)),
+          ('topRight', propValue(mix.$topRight)),
+          ('bottomLeft', propValue(mix.$bottomLeft)),
+          ('bottomRight', propValue(mix.$bottomRight)),
+        ]),
       );
     case .borderRadiusDirectional:
-      return Ack.codec<JsonMap, JsonMap, BorderRadiusGeometryMix>(
+      return discriminatedBranchCodec<
+        BorderRadiusGeometryMix,
+        BorderRadiusDirectionalMix
+      >(
+        type: type.wireValue,
         input: Ack.object({
           'topStart': radiusCodec.optional(),
           'topEnd': radiusCodec.optional(),
           'bottomStart': radiusCodec.optional(),
           'bottomEnd': radiusCodec.optional(),
         }),
-        output: Ack.instance<BorderRadiusGeometryMix>(),
         decode: (data) => BorderRadiusDirectionalMix(
           topStart: data['topStart'] as Radius?,
           topEnd: data['topEnd'] as Radius?,
           bottomStart: data['bottomStart'] as Radius?,
           bottomEnd: data['bottomEnd'] as Radius?,
         ),
-        encode: (value) {
-          final mix = value as BorderRadiusDirectionalMix;
-
-          return optionalJsonMap([
-            ('type', type.wireValue),
-            ('topStart', propValue(mix.$topStart)),
-            ('topEnd', propValue(mix.$topEnd)),
-            ('bottomStart', propValue(mix.$bottomStart)),
-            ('bottomEnd', propValue(mix.$bottomEnd)),
-          ]);
-        },
+        encode: (mix) => optionalJsonMap([
+          ('topStart', propValue(mix.$topStart)),
+          ('topEnd', propValue(mix.$topEnd)),
+          ('bottomStart', propValue(mix.$bottomStart)),
+          ('bottomEnd', propValue(mix.$bottomEnd)),
+        ]),
       );
   }
 }

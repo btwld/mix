@@ -6,24 +6,29 @@ import { Callout } from "nextra/components";
 
 # mix_schema
 
-`mix_schema` decodes external UI payloads into Mix runtime styling objects
-through a strict, validated pipeline:
+`mix_schema` is the schema-first contract for Mix UI payloads. It validates,
+decodes, encodes supported runtime values, and exports the Ack JSON Schema
+artifact, all from the same Ack definitions:
 
-`payload -> Ack validation -> transform -> Mix types`
+`payload <-> Ack contract <-> Mix types`
 
-It is a decode-only package. It does not implement a canonical AST, trust-gate
-engine, or action policy layer.
+Ack is the single source of truth: validation, decode, encode, and JSON Schema
+export are derived from the same codec definitions. `mix_schema` is not a
+canonical AST, trust-gate engine, or action policy layer.
 
 ## Architecture
 
 Mix already has a complete resolution pipeline that every developer uses:
-**Styler -> Spec -> Widget**. `mix_schema` feeds payloads into that same path.
+**Styler -> Spec -> Widget**. `mix_schema` feeds payloads into that same path
+and exposes the reverse direction through `MixSchemaContract.encode()` for
+producer-representable runtime styles.
 
 ```mermaid
 flowchart TD
-  Payload["Payload Map"] --> Ack["Ack Validation"]
-  Ack --> Transform["Schema Transform"]
-  Transform --> Styler["Mix Styler"]
+  Payload["Payload Map"] --> Ack["Ack Contract"]
+  Ack -->|decode| Styler["Mix Styler"]
+  Styler -->|encode| Ack
+  Ack -->|exportJsonSchema| Artifact["JSON Schema Artifact"]
 
   subgraph mix ["Mix Pipeline"]
     direction LR
@@ -34,19 +39,22 @@ flowchart TD
 ```
 
 <Callout type="info">
-  `mix_schema` is a strict decoder for Mix stylers and related nested objects.
-  It is not a widget runtime or a policy engine.
+  `mix_schema` is the Ack-owned contract layer for Mix stylers and nested
+  objects. It is not a widget runtime or a policy engine.
 </Callout>
 
 ## What It Supports
 
 - Built-in stylers:
   `box`, `text`, `flex`, `icon`, `image`, `stack`, `flex_box`, `stack_box`
-- Shared nested decode for painting, layout, typography, animation, and
-  modifiers
+- Shared nested decode and encode for painting, layout, typography, animation,
+  and modifiers
 - Registry-backed runtime values through `MixSchemaScope`
 - Variant decoding, including single context variants and compound
   `context_all_of`
+- `MixSchemaContract.encode(value)` for producer-representable runtime styles
+- `MixSchemaContract.exportJsonSchema()` for the producer-facing JSON Schema
+  artifact
 
 Example compound variant payload:
 
@@ -82,7 +90,9 @@ but they are intentionally excluded from `context_all_of.conditions`.
 
 ## What It Does Not Do
 
-- Encode Mix objects back to JSON
+- Encode runtime-only values such as token props, multi-source props, derived
+  props, unregistered registry values, or unsupported animation configs.
+  These return mapped encode errors rather than approximated payloads.
 - Resolve Tailwind or design-token names on its own
 - Replace Mix widgets or widget-layer layout semantics
 - Provide a general-purpose boolean policy DSL beyond `context_all_of`
