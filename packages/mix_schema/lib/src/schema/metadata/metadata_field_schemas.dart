@@ -9,8 +9,8 @@ const modifiersMetadataField = 'modifiers';
 const modifierOrderMetadataField = 'modifierOrder';
 const variantsMetadataField = 'variants';
 
-Map<String, AckSchema> buildVariantStyleMetadataFieldSchemas({
-  required AckSchema<ModifierMix> modifierSchema,
+Map<String, AckSchema<Object, Object>> buildVariantStyleMetadataFieldSchemas({
+  required AckSchema<JsonMap, ModifierMix> modifierSchema,
   required MixSchemaLimits limits,
 }) {
   return {
@@ -23,10 +23,10 @@ Map<String, AckSchema> buildVariantStyleMetadataFieldSchemas({
   };
 }
 
-Map<String, AckSchema> buildMetadataFieldSchemas({
-  required AckSchema<CurveAnimationConfig> animationSchema,
-  required AckSchema<ModifierMix> modifierSchema,
-  required AckSchema variantSchema,
+Map<String, AckSchema<Object, Object>> buildMetadataFieldSchemas({
+  required AckSchema<JsonMap, CurveAnimationConfig> animationSchema,
+  required AckSchema<JsonMap, ModifierMix> modifierSchema,
+  required AckSchema<Object, Object> variantSchema,
   required MixSchemaLimits limits,
 }) {
   return {

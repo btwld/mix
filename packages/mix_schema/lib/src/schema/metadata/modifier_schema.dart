@@ -5,7 +5,7 @@ import '../../core/json_casts.dart';
 import '../../core/schema_wire_types.dart';
 import 'modifier_definition.dart';
 
-AckSchema<ModifierMix> buildModifierSchema() {
+DiscriminatedObjectSchema<ModifierMix> buildModifierSchema() {
   return Ack.discriminated<ModifierMix>(
     discriminatorKey: 'type',
     schemas: {

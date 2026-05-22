@@ -1,6 +1,5 @@
 import 'package:ack/ack.dart';
 
-import '../core/json_map.dart';
 import 'mix_schema_limits.dart';
 import '../errors/mix_schema_decode_result.dart';
 import '../errors/mix_schema_encode_result.dart';
@@ -103,7 +102,7 @@ final class MixSchemaContract {
   }
 
   /// The frozen root Ack schema for the full built-in payload contract.
-  AckSchema<Object> get rootSchema => _stylerRegistry.payloadSchema;
+  AckSchema<JsonMap, Object> get rootSchema => _stylerRegistry.payloadSchema;
 
   /// Exports the root Ack JSON Schema artifact.
   Map<String, Object?> exportJsonSchema() {

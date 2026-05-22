@@ -11,7 +11,7 @@ final _rgbPattern = RegExp(
 );
 final _hexPattern = RegExp(r'^#([0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$');
 
-final CodecSchema<String, Color> colorCodec = Ack.codec<String, Color>(
+final colorCodec = Ack.codec<String, String, Color>(
   input: Ack.string()
       .describe(
         'CSS color in rgba(r,g,b,a), rgb(r,g,b), #RRGGBB, or #RRGGBBAA format. '
@@ -25,8 +25,8 @@ final CodecSchema<String, Color> colorCodec = Ack.codec<String, Color>(
             'Expected color in rgba(...), rgb(...), #RRGGBB, or #RRGGBBAA format.',
       ),
   output: Ack.instance<Color>(),
-  decoder: (value) => _tryParseCssColor(value)!,
-  encoder: _encodeColorHex,
+  decode: (value) => _tryParseCssColor(value)!,
+  encode: _encodeColorHex,
 );
 
 String _encodeColorHex(Color color) {

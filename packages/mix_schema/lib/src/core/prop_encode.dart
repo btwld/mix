@@ -1,6 +1,5 @@
+import 'package:ack/ack.dart' show JsonMap;
 import 'package:mix/mix.dart';
-
-import 'json_map.dart';
 
 /// Reads the raw value from a single-source `Prop<T>`.
 ///

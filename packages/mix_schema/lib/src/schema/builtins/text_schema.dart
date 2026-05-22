@@ -2,7 +2,6 @@ import 'package:ack/ack.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-import '../../core/json_map.dart';
 import '../../core/prop_encode.dart';
 import '../shared/shared_schemas.dart';
 import '../styler_catalog.dart';

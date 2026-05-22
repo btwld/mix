@@ -1,8 +1,7 @@
+import 'package:ack/ack.dart' show JsonMap;
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-import '../../core/json_casts.dart';
-import '../../core/json_map.dart';
 import '../styler_catalog.dart';
 import '../styler_definition.dart';
 import 'built_in_field_groups.dart';
@@ -39,7 +38,7 @@ FlexStyler _decodeFlexStyler(
     textDirection: data['textDirection'] as TextDirection?,
     textBaseline: data['textBaseline'] as TextBaseline?,
     clipBehavior: data['clipBehavior'] as Clip?,
-    spacing: castDoubleOrNull(data['spacing']),
+    spacing: data['spacing'] as double?,
     animation: animation,
     modifier: modifier,
     variants: variants,

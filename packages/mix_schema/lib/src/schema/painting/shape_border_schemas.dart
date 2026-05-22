@@ -1,58 +1,51 @@
 import 'package:ack/ack.dart';
 import 'package:mix/mix.dart';
 
-import '../../core/json_casts.dart';
+import '../../core/numeric_codecs.dart';
 import '../../core/prop_encode.dart';
 import '../../core/schema_wire_types.dart';
 import 'border_schemas.dart';
 
-final CodecSchema<Map<String, Object?>, LinearBorderEdgeMix>
-linearBorderEdgeCodec = Ack.codec<Map<String, Object?>, LinearBorderEdgeMix>(
+final linearBorderEdgeCodec = Ack.codec<JsonMap, JsonMap, LinearBorderEdgeMix>(
   input: Ack.object({
-    'size': Ack.number().optional(),
-    'alignment': Ack.number().optional(),
+    'size': doubleFromNum().optional(),
+    'alignment': doubleFromNum().optional(),
   }),
   output: Ack.instance<LinearBorderEdgeMix>(),
-  decoder: (data) => LinearBorderEdgeMix(
-    size: castDoubleOrNull(data['size']),
-    alignment: castDoubleOrNull(data['alignment']),
+  decode: (data) => LinearBorderEdgeMix(
+    size: data['size'] as double?,
+    alignment: data['alignment'] as double?,
   ),
-  encoder: (value) => optionalJsonMap([
+  encode: (value) => optionalJsonMap([
     ('size', propValue(value.$size)),
     ('alignment', propValue(value.$alignment)),
   ]),
 );
 
-final AckSchema<ShapeBorderMix> shapeBorderCodec =
-    Ack.discriminated<ShapeBorderMix>(
-      discriminatorKey: 'type',
-      schemas: {
-        for (final type in SchemaShapeBorder.values)
-          type.wireValue: _buildShapeBorderBranch(type: type),
-      },
-    );
+final shapeBorderCodec = Ack.discriminated<ShapeBorderMix>(
+  discriminatorKey: 'type',
+  schemas: {
+    for (final type in SchemaShapeBorder.values)
+      type.wireValue: _buildShapeBorderBranch(type: type),
+  },
+);
 
-AckSchema<ShapeBorderMix> _buildShapeBorderBranch({
+AckSchema<JsonMap, ShapeBorderMix> _buildShapeBorderBranch({
   required SchemaShapeBorder type,
 }) {
   switch (type) {
     case .roundedRectangle:
-      return Ack.codec<Map<String, Object?>, ShapeBorderMix>(
+      return Ack.codec<JsonMap, JsonMap, ShapeBorderMix>(
         input: Ack.object({
-          'type': Ack.literal(type.wireValue),
           'borderRadius': borderRadiusCodec.optional(),
           'side': borderSideCodec.optional(),
         }),
         output: Ack.instance<ShapeBorderMix>(),
-        decoder: (data) {
-          final map = data;
-
-          return RoundedRectangleBorderMix(
-            borderRadius: map['borderRadius'] as BorderRadiusGeometryMix?,
-            side: map['side'] as BorderSideMix?,
-          );
-        },
-        encoder: (value) {
+        decode: (data) => RoundedRectangleBorderMix(
+          borderRadius: data['borderRadius'] as BorderRadiusGeometryMix?,
+          side: data['side'] as BorderSideMix?,
+        ),
+        encode: (value) {
           final mix = value as RoundedRectangleBorderMix;
 
           return optionalJsonMap([
@@ -66,22 +59,17 @@ AckSchema<ShapeBorderMix> _buildShapeBorderBranch({
         },
       );
     case .roundedSuperellipse:
-      return Ack.codec<Map<String, Object?>, ShapeBorderMix>(
+      return Ack.codec<JsonMap, JsonMap, ShapeBorderMix>(
         input: Ack.object({
-          'type': Ack.literal(type.wireValue),
           'borderRadius': borderRadiusCodec.optional(),
           'side': borderSideCodec.optional(),
         }),
         output: Ack.instance<ShapeBorderMix>(),
-        decoder: (data) {
-          final map = data;
-
-          return RoundedSuperellipseBorderMix(
-            borderRadius: map['borderRadius'] as BorderRadiusGeometryMix?,
-            side: map['side'] as BorderSideMix?,
-          );
-        },
-        encoder: (value) {
+        decode: (data) => RoundedSuperellipseBorderMix(
+          borderRadius: data['borderRadius'] as BorderRadiusGeometryMix?,
+          side: data['side'] as BorderSideMix?,
+        ),
+        encode: (value) {
           final mix = value as RoundedSuperellipseBorderMix;
 
           return optionalJsonMap([
@@ -95,22 +83,17 @@ AckSchema<ShapeBorderMix> _buildShapeBorderBranch({
         },
       );
     case .beveledRectangle:
-      return Ack.codec<Map<String, Object?>, ShapeBorderMix>(
+      return Ack.codec<JsonMap, JsonMap, ShapeBorderMix>(
         input: Ack.object({
-          'type': Ack.literal(type.wireValue),
           'borderRadius': borderRadiusCodec.optional(),
           'side': borderSideCodec.optional(),
         }),
         output: Ack.instance<ShapeBorderMix>(),
-        decoder: (data) {
-          final map = data;
-
-          return BeveledRectangleBorderMix(
-            borderRadius: map['borderRadius'] as BorderRadiusGeometryMix?,
-            side: map['side'] as BorderSideMix?,
-          );
-        },
-        encoder: (value) {
+        decode: (data) => BeveledRectangleBorderMix(
+          borderRadius: data['borderRadius'] as BorderRadiusGeometryMix?,
+          side: data['side'] as BorderSideMix?,
+        ),
+        encode: (value) {
           final mix = value as BeveledRectangleBorderMix;
 
           return optionalJsonMap([
@@ -124,22 +107,17 @@ AckSchema<ShapeBorderMix> _buildShapeBorderBranch({
         },
       );
     case .continuousRectangle:
-      return Ack.codec<Map<String, Object?>, ShapeBorderMix>(
+      return Ack.codec<JsonMap, JsonMap, ShapeBorderMix>(
         input: Ack.object({
-          'type': Ack.literal(type.wireValue),
           'borderRadius': borderRadiusCodec.optional(),
           'side': borderSideCodec.optional(),
         }),
         output: Ack.instance<ShapeBorderMix>(),
-        decoder: (data) {
-          final map = data;
-
-          return ContinuousRectangleBorderMix(
-            borderRadius: map['borderRadius'] as BorderRadiusGeometryMix?,
-            side: map['side'] as BorderSideMix?,
-          );
-        },
-        encoder: (value) {
+        decode: (data) => ContinuousRectangleBorderMix(
+          borderRadius: data['borderRadius'] as BorderRadiusGeometryMix?,
+          side: data['side'] as BorderSideMix?,
+        ),
+        encode: (value) {
           final mix = value as ContinuousRectangleBorderMix;
 
           return optionalJsonMap([
@@ -153,22 +131,17 @@ AckSchema<ShapeBorderMix> _buildShapeBorderBranch({
         },
       );
     case .circle:
-      return Ack.codec<Map<String, Object?>, ShapeBorderMix>(
+      return Ack.codec<JsonMap, JsonMap, ShapeBorderMix>(
         input: Ack.object({
-          'type': Ack.literal(type.wireValue),
           'side': borderSideCodec.optional(),
-          'eccentricity': Ack.number().optional(),
+          'eccentricity': doubleFromNum().optional(),
         }),
         output: Ack.instance<ShapeBorderMix>(),
-        decoder: (data) {
-          final map = data;
-
-          return CircleBorderMix(
-            side: map['side'] as BorderSideMix?,
-            eccentricity: castDoubleOrNull(map['eccentricity']),
-          );
-        },
-        encoder: (value) {
+        decode: (data) => CircleBorderMix(
+          side: data['side'] as BorderSideMix?,
+          eccentricity: data['eccentricity'] as double?,
+        ),
+        encode: (value) {
           final mix = value as CircleBorderMix;
 
           return optionalJsonMap([
@@ -179,32 +152,27 @@ AckSchema<ShapeBorderMix> _buildShapeBorderBranch({
         },
       );
     case .star:
-      return Ack.codec<Map<String, Object?>, ShapeBorderMix>(
+      return Ack.codec<JsonMap, JsonMap, ShapeBorderMix>(
         input: Ack.object({
-          'type': Ack.literal(type.wireValue),
           'side': borderSideCodec.optional(),
-          'points': Ack.number().optional(),
-          'innerRadiusRatio': Ack.number().optional(),
-          'pointRounding': Ack.number().optional(),
-          'valleyRounding': Ack.number().optional(),
-          'rotation': Ack.number().optional(),
-          'squash': Ack.number().optional(),
+          'points': doubleFromNum().optional(),
+          'innerRadiusRatio': doubleFromNum().optional(),
+          'pointRounding': doubleFromNum().optional(),
+          'valleyRounding': doubleFromNum().optional(),
+          'rotation': doubleFromNum().optional(),
+          'squash': doubleFromNum().optional(),
         }),
         output: Ack.instance<ShapeBorderMix>(),
-        decoder: (data) {
-          final map = data;
-
-          return StarBorderMix(
-            side: map['side'] as BorderSideMix?,
-            points: castDoubleOrNull(map['points']),
-            innerRadiusRatio: castDoubleOrNull(map['innerRadiusRatio']),
-            pointRounding: castDoubleOrNull(map['pointRounding']),
-            valleyRounding: castDoubleOrNull(map['valleyRounding']),
-            rotation: castDoubleOrNull(map['rotation']),
-            squash: castDoubleOrNull(map['squash']),
-          );
-        },
-        encoder: (value) {
+        decode: (data) => StarBorderMix(
+          side: data['side'] as BorderSideMix?,
+          points: data['points'] as double?,
+          innerRadiusRatio: data['innerRadiusRatio'] as double?,
+          pointRounding: data['pointRounding'] as double?,
+          valleyRounding: data['valleyRounding'] as double?,
+          rotation: data['rotation'] as double?,
+          squash: data['squash'] as double?,
+        ),
+        encode: (value) {
           final mix = value as StarBorderMix;
 
           return optionalJsonMap([
@@ -220,9 +188,8 @@ AckSchema<ShapeBorderMix> _buildShapeBorderBranch({
         },
       );
     case .linear:
-      return Ack.codec<Map<String, Object?>, ShapeBorderMix>(
+      return Ack.codec<JsonMap, JsonMap, ShapeBorderMix>(
         input: Ack.object({
-          'type': Ack.literal(type.wireValue),
           'side': borderSideCodec.optional(),
           'start': linearBorderEdgeCodec.optional(),
           'end': linearBorderEdgeCodec.optional(),
@@ -230,18 +197,14 @@ AckSchema<ShapeBorderMix> _buildShapeBorderBranch({
           'bottom': linearBorderEdgeCodec.optional(),
         }),
         output: Ack.instance<ShapeBorderMix>(),
-        decoder: (data) {
-          final map = data;
-
-          return LinearBorderMix(
-            side: map['side'] as BorderSideMix?,
-            start: map['start'] as LinearBorderEdgeMix?,
-            end: map['end'] as LinearBorderEdgeMix?,
-            top: map['top'] as LinearBorderEdgeMix?,
-            bottom: map['bottom'] as LinearBorderEdgeMix?,
-          );
-        },
-        encoder: (value) {
+        decode: (data) => LinearBorderMix(
+          side: data['side'] as BorderSideMix?,
+          start: data['start'] as LinearBorderEdgeMix?,
+          end: data['end'] as LinearBorderEdgeMix?,
+          top: data['top'] as LinearBorderEdgeMix?,
+          bottom: data['bottom'] as LinearBorderEdgeMix?,
+        ),
+        encode: (value) {
           final mix = value as LinearBorderMix;
 
           return optionalJsonMap([
@@ -255,18 +218,12 @@ AckSchema<ShapeBorderMix> _buildShapeBorderBranch({
         },
       );
     case .stadium:
-      return Ack.codec<Map<String, Object?>, ShapeBorderMix>(
-        input: Ack.object({
-          'type': Ack.literal(type.wireValue),
-          'side': borderSideCodec.optional(),
-        }),
+      return Ack.codec<JsonMap, JsonMap, ShapeBorderMix>(
+        input: Ack.object({'side': borderSideCodec.optional()}),
         output: Ack.instance<ShapeBorderMix>(),
-        decoder: (data) {
-          final map = data;
-
-          return StadiumBorderMix(side: map['side'] as BorderSideMix?);
-        },
-        encoder: (value) {
+        decode: (data) =>
+            StadiumBorderMix(side: data['side'] as BorderSideMix?),
+        encode: (value) {
           final mix = value as StadiumBorderMix;
 
           return optionalJsonMap([

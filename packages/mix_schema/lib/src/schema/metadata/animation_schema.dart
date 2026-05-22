@@ -68,11 +68,11 @@ CodecSchema<String, VoidCallback> _buildOnEndCallbackCodec({
   );
 }
 
-CodecSchema<Map<String, Object?>, CurveAnimationConfig> buildAnimationCodec(
+CodecSchema<JsonMap, CurveAnimationConfig> buildAnimationCodec(
   RegistryCatalog registries, {
   required MixSchemaLimits limits,
 }) {
-  return Ack.codec<Map<String, Object?>, CurveAnimationConfig>(
+  return Ack.codec<JsonMap, JsonMap, CurveAnimationConfig>(
     input: Ack.object({
       'duration': Ack.integer().min(0),
       'curve': Ack.enumString(_curveByName.keys.toList(growable: false)),
@@ -83,17 +83,13 @@ CodecSchema<Map<String, Object?>, CurveAnimationConfig> buildAnimationCodec(
       ).optional(),
     }),
     output: Ack.instance<CurveAnimationConfig>(),
-    decoder: (data) {
-      final map = data;
-
-      return CurveAnimationConfig(
-        duration: Duration(milliseconds: map['duration'] as int),
-        curve: _curveByName[map['curve'] as String]!,
-        delay: Duration(milliseconds: (map['delay'] as int?) ?? 0),
-        onEnd: map['onEnd'] as VoidCallback?,
-      );
-    },
-    encoder: (value) {
+    decode: (data) => CurveAnimationConfig(
+      duration: Duration(milliseconds: data['duration']! as int),
+      curve: _curveByName[data['curve']! as String]!,
+      delay: Duration(milliseconds: (data['delay'] as int?) ?? 0),
+      onEnd: data['onEnd'] as VoidCallback?,
+    ),
+    encode: (value) {
       final curveName = _curveNameByValue[value.curve];
       if (curveName == null) {
         throw ArgumentError('Curve is not supported by mix_schema.');

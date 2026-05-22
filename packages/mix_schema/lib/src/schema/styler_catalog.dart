@@ -1,7 +1,3 @@
-import 'package:ack/ack.dart';
-import 'package:flutter/widgets.dart';
-import 'package:mix/mix.dart';
-
 import '../contract/mix_schema_limits.dart';
 import '../registry/registry_catalog.dart';
 import 'builtins/styler_metadata.dart';
@@ -13,17 +9,13 @@ final class StylerCatalog {
   final RegistryCatalog registries;
   final MixSchemaLimits limits;
 
-  late final AckSchema<ImageProvider<Object>> imageProviderCodec =
-      buildImageProviderCodec(registries, limits: limits);
-  late final AckSchema<IconData> iconDataCodec = buildIconDataCodec(
+  late final imageProviderCodec = buildImageProviderCodec(
     registries,
     limits: limits,
   );
-  late final AckSchema<DecorationMix> decorationCodec = buildDecorationCodec(
-    registries,
-    limits: limits,
-  );
-  late final StylerMetadataContext metadata = StylerMetadataContext(
+  late final iconDataCodec = buildIconDataCodec(registries, limits: limits);
+  late final decorationCodec = buildDecorationCodec(registries, limits: limits);
+  late final metadata = StylerMetadataContext(
     registries: registries,
     limits: limits,
     animationCodec: buildAnimationCodec(registries, limits: limits),

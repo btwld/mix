@@ -10,14 +10,11 @@ void main() {
       final builder = MixSchemaContractBuilder.builtIn()
         ..register(
           'demo',
-          Ack.codec<Map<String, Object?>, Object>(
-            input: Ack.object({
-              'type': Ack.literal('demo'),
-              'value': Ack.integer(),
-            }),
+          Ack.codec<JsonMap, JsonMap, Object>(
+            input: Ack.object({'value': Ack.integer()}),
             output: Ack.instance<Object>(),
-            decoder: (data) => data['value'] as int,
-            encoder: (value) => {'type': 'demo', 'value': value as int},
+            decode: (data) => data['value']! as int,
+            encode: (value) => {'type': 'demo', 'value': value as int},
           ),
         );
 
@@ -38,14 +35,11 @@ void main() {
       final contract =
           (MixSchemaContractBuilder()..register(
                 'demo',
-                Ack.codec<Map<String, Object?>, Object>(
-                  input: Ack.object({
-                    'type': Ack.literal('demo'),
-                    'value': Ack.integer(),
-                  }),
+                Ack.codec<JsonMap, JsonMap, Object>(
+                  input: Ack.object({'value': Ack.integer()}),
                   output: Ack.instance<Object>(),
-                  decoder: (data) => data['value'] as int,
-                  encoder: (value) => {'type': 'demo', 'value': value as int},
+                  decode: (data) => data['value']! as int,
+                  encode: (value) => {'type': 'demo', 'value': value as int},
                 ),
               ))
               .freeze();
@@ -75,7 +69,7 @@ void main() {
     test('exposes the frozen root Ack schema', () {
       final contract = MixSchemaContract.builtIn();
 
-      expect(contract.rootSchema, isA<AckSchema<Object>>());
+      expect(contract.rootSchema, isA<AckSchema<JsonMap, Object>>());
 
       final result = contract.rootSchema.safeParse({'type': 'box'});
       expect(result.isOk, isTrue);

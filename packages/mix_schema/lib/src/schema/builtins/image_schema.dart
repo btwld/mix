@@ -3,8 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-import '../../core/json_casts.dart';
-import '../../core/json_map.dart';
+import '../../core/numeric_codecs.dart';
 import '../../core/prop_encode.dart';
 import '../shared/shared_schemas.dart';
 import '../styler_catalog.dart';
@@ -19,8 +18,8 @@ StylerContract<ImageSpec, ImageStyler> buildImageStylerDefinition(
     emptyStyle: ImageStyler(image: _TransparentImageProvider.instance),
     fields: {
       'image': catalog.imageProviderCodec,
-      'width': Ack.number().optional(),
-      'height': Ack.number().optional(),
+      'width': doubleFromNum().optional(),
+      'height': doubleFromNum().optional(),
       'color': colorCodec.optional(),
       'repeat': imageRepeatSchema.optional(),
       'fit': boxFitSchema.optional(),
@@ -46,9 +45,9 @@ ImageStyler _decodeImageStyler(
   List<VariantStyle<ImageSpec>>? variants,
 }) {
   return ImageStyler(
-    image: data['image'] as ImageProvider<Object>,
-    width: castDoubleOrNull(data['width']),
-    height: castDoubleOrNull(data['height']),
+    image: data['image']! as ImageProvider<Object>,
+    width: data['width'] as double?,
+    height: data['height'] as double?,
     color: data['color'] as Color?,
     repeat: data['repeat'] as ImageRepeat?,
     fit: data['fit'] as BoxFit?,

@@ -1,7 +1,6 @@
 import 'package:ack/ack.dart';
 import 'package:mix/mix.dart';
 
-import '../../core/json_map.dart';
 import '../../core/schema_wire_types.dart';
 import '../styler_catalog.dart';
 import '../styler_definition.dart';
@@ -35,12 +34,6 @@ Map<SchemaStyler, CodecSchema<JsonMap, Object>> buildBuiltInStylerDefinitions(
         SchemaStyler.values.every(definitions.containsKey),
     'buildBuiltInStylerDefinitions must cover every built-in SchemaStyler.',
   );
-  assert(
-    definitions.entries.every(
-      (entry) => _hasTopLevelType(entry.value, entry.key),
-    ),
-    'Built-in styler definition map keys must match their definition types.',
-  );
 
   return Map.unmodifiable(definitions);
 }
@@ -50,14 +43,4 @@ CodecSchema<JsonMap, Object> _contractCodec<
   T extends Style<S>
 >(StylerContract<S, T> contract) {
   return contract.codec as CodecSchema<JsonMap, Object>;
-}
-
-bool _hasTopLevelType(CodecSchema<JsonMap, Object> codec, SchemaStyler type) {
-  final inputSchema = codec.inputSchema;
-  final typeSchema = inputSchema is ObjectSchema
-      ? inputSchema.properties['type']
-      : null;
-
-  return typeSchema != null &&
-      typeSchema.toJsonSchema()['const'] == type.wireValue;
 }

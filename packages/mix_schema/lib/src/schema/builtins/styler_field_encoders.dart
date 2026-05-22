@@ -1,6 +1,6 @@
+import 'package:ack/ack.dart' show JsonMap;
 import 'package:mix/mix.dart';
 
-import '../../core/json_map.dart';
 import '../../core/prop_encode.dart';
 
 JsonMap encodeBoxFields(BoxStyler value) {

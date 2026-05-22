@@ -11,11 +11,11 @@ CodecSchema<String, T> registryValueCodec<T extends Object>({
   required MixSchemaLimits limits,
   required String valueLabel,
 }) {
-  return Ack.codec<String, T>(
+  return Ack.codec<String, String, T>(
     input: Ack.string().maxLength(limits.maxRegistryIdLength),
     output: Ack.instance<T>(),
-    decoder: (id) => registries.lookup<T>(scope.wireValue, id),
-    encoder: (value) {
+    decode: (id) => registries.lookup<T>(scope.wireValue, id),
+    encode: (value) {
       final key = registries.keyOf<T>(scope.wireValue, value);
       if (key == null) {
         throw RegistryValueLookupError(

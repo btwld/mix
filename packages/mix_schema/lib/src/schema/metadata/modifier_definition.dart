@@ -2,9 +2,7 @@ import 'package:ack/ack.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-import '../../core/codec_typed_encode.dart';
-import '../../core/json_casts.dart';
-import '../../core/json_map.dart';
+import '../../core/numeric_codecs.dart';
 import '../../core/prop_encode.dart';
 import '../../core/schema_wire_types.dart';
 import '../shared/shared_schemas.dart';
@@ -12,7 +10,7 @@ import '../shared/shared_schemas.dart';
 final class ModifierDefinition {
   final SchemaModifier type;
   final Type modifierRuntimeType;
-  final CodecSchema<Map<String, Object?>, ModifierMix> codec;
+  final CodecSchema<JsonMap, ModifierMix> codec;
 
   const ModifierDefinition({
     required this.type,
@@ -20,17 +18,16 @@ final class ModifierDefinition {
     required this.codec,
   });
 
-  JsonMap encode(ModifierMix modifier) => codec.encodeTyped(modifier);
+  JsonMap encode(ModifierMix modifier) => codec.encode(modifier)!;
 }
 
-CodecSchema<Map<String, Object?>, ModifierMix>
-_modifierCodec<T extends Object>({
+CodecSchema<JsonMap, ModifierMix> _modifierCodec<T extends Object>({
   required SchemaModifier type,
   required ObjectSchema input,
-  required T Function(Map<String, Object?> data) decoder,
-  required JsonMap Function(T value) encoder,
+  required T Function(JsonMap data) decode,
+  required JsonMap Function(T value) encode,
 }) {
-  return Ack.codec<Map<String, Object?>, ModifierMix>(
+  return Ack.codec<JsonMap, JsonMap, ModifierMix>(
     input: input.copyWith(
       properties: {'type': Ack.literal(type.wireValue), ...input.properties},
     ),
@@ -38,8 +35,8 @@ _modifierCodec<T extends Object>({
       (value) => value is T,
       message: 'Expected $T.',
     ),
-    decoder: (data) => decoder(data) as ModifierMix,
-    encoder: (value) => {'type': type.wireValue, ...encoder(value as T)},
+    decode: (data) => decode(data) as ModifierMix,
+    encode: (value) => {'type': type.wireValue, ...encode(value as T)},
   );
 }
 
@@ -54,8 +51,8 @@ Map<SchemaModifier, ModifierDefinition> _buildModifierDefinitions() {
       codec: _modifierCodec<ResetModifierMix>(
         type: .reset,
         input: Ack.object(const {}),
-        decoder: (_) => const ResetModifierMix(),
-        encoder: (_) => const {},
+        decode: (_) => const ResetModifierMix(),
+        encode: (_) => const {},
       ),
     ),
     SchemaModifier.blur: ModifierDefinition(
@@ -63,15 +60,13 @@ Map<SchemaModifier, ModifierDefinition> _buildModifierDefinitions() {
       modifierRuntimeType: BlurModifier,
       codec: _modifierCodec<BlurModifierMix>(
         type: .blur,
-        input: Ack.object({'sigma': Ack.number().min(0).optional()}),
-        decoder: (data) {
-          final map = data;
-
-          return BlurModifierMix(sigma: castDoubleOrNull(map['sigma']));
-        },
-        encoder: (value) {
-          return optionalJsonMap([('sigma', propValue(value.sigma))]);
-        },
+        input: Ack.object({
+          'sigma': doubleFromNum()
+              .refine((v) => v >= 0, message: 'Must be ≥ 0')
+              .optional(),
+        }),
+        decode: (data) => BlurModifierMix(sigma: data['sigma'] as double?),
+        encode: (value) => optionalJsonMap([('sigma', propValue(value.sigma))]),
       ),
     ),
     SchemaModifier.opacity: ModifierDefinition(
@@ -80,18 +75,14 @@ Map<SchemaModifier, ModifierDefinition> _buildModifierDefinitions() {
       codec: _modifierCodec<OpacityModifierMix>(
         type: .opacity,
         input: Ack.object({
-          'value': Ack.number().refine(
+          'value': doubleFromNum().refine(
             (value) => value >= 0 && value <= 1,
             message: 'Must be in [0, 1].',
           ),
         }),
-        decoder: (data) {
-          final map = data;
-
-          return OpacityModifierMix(opacity: castDouble(map['value']));
-        },
-        encoder: (value) {
-          return {'value': requiredPropValue(value.opacity, 'opacity')};
+        decode: (data) => OpacityModifierMix(opacity: data['value']! as double),
+        encode: (value) => {
+          'value': requiredPropValue(value.opacity, 'opacity'),
         },
       ),
     ),
@@ -101,13 +92,10 @@ Map<SchemaModifier, ModifierDefinition> _buildModifierDefinitions() {
       codec: _modifierCodec<VisibilityModifierMix>(
         type: .visibility,
         input: Ack.object({'visible': Ack.boolean()}),
-        decoder: (data) {
-          final map = data;
-
-          return VisibilityModifierMix(visible: map['visible'] as bool);
-        },
-        encoder: (value) {
-          return {'visible': requiredPropValue(value.visible, 'visible')};
+        decode: (data) =>
+            VisibilityModifierMix(visible: data['visible']! as bool),
+        encode: (value) => {
+          'visible': requiredPropValue(value.visible, 'visible'),
         },
       ),
     ),
@@ -118,25 +106,19 @@ Map<SchemaModifier, ModifierDefinition> _buildModifierDefinitions() {
         type: .align,
         input: Ack.object({
           'alignment': alignmentCodec.optional(),
-          'widthFactor': Ack.number().optional(),
-          'heightFactor': Ack.number().optional(),
+          'widthFactor': doubleFromNum().optional(),
+          'heightFactor': doubleFromNum().optional(),
         }),
-        decoder: (data) {
-          final map = data;
-
-          return AlignModifierMix(
-            alignment: map['alignment'] as AlignmentGeometry?,
-            widthFactor: castDoubleOrNull(map['widthFactor']),
-            heightFactor: castDoubleOrNull(map['heightFactor']),
-          );
-        },
-        encoder: (value) {
-          return optionalJsonMap([
-            ('alignment', propValue(value.alignment)),
-            ('widthFactor', propValue(value.widthFactor)),
-            ('heightFactor', propValue(value.heightFactor)),
-          ]);
-        },
+        decode: (data) => AlignModifierMix(
+          alignment: data['alignment'] as AlignmentGeometry?,
+          widthFactor: data['widthFactor'] as double?,
+          heightFactor: data['heightFactor'] as double?,
+        ),
+        encode: (value) => optionalJsonMap([
+          ('alignment', propValue(value.alignment)),
+          ('widthFactor', propValue(value.widthFactor)),
+          ('heightFactor', propValue(value.heightFactor)),
+        ]),
       ),
     ),
     SchemaModifier.padding: ModifierDefinition(
@@ -145,18 +127,12 @@ Map<SchemaModifier, ModifierDefinition> _buildModifierDefinitions() {
       codec: _modifierCodec<PaddingModifierMix>(
         type: .padding,
         input: Ack.object({'padding': edgeInsetsGeometryCodec.optional()}),
-        decoder: (data) {
-          final map = data;
-
-          return PaddingModifierMix(
-            padding: map['padding'] as EdgeInsetsGeometryMix?,
-          );
-        },
-        encoder: (value) {
-          return optionalJsonMap([
-            ('padding', propMix<EdgeInsetsGeometryMix>(value.padding)),
-          ]);
-        },
+        decode: (data) => PaddingModifierMix(
+          padding: data['padding'] as EdgeInsetsGeometryMix?,
+        ),
+        encode: (value) => optionalJsonMap([
+          ('padding', propMix<EdgeInsetsGeometryMix>(value.padding)),
+        ]),
       ),
     ),
     SchemaModifier.scale: ModifierDefinition(
@@ -165,25 +141,19 @@ Map<SchemaModifier, ModifierDefinition> _buildModifierDefinitions() {
       codec: _modifierCodec<ScaleModifierMix>(
         type: .scale,
         input: Ack.object({
-          'x': Ack.number(),
-          'y': Ack.number(),
+          'x': doubleFromNum(),
+          'y': doubleFromNum(),
           'alignment': alignmentCodec.optional(),
         }),
-        decoder: (data) {
-          final map = data;
-
-          return ScaleModifierMix(
-            x: castDouble(map['x']),
-            y: castDouble(map['y']),
-            alignment: map['alignment'] as Alignment?,
-          );
-        },
-        encoder: (value) {
-          return {
-            'x': requiredPropValue(value.x, 'x'),
-            'y': requiredPropValue(value.y, 'y'),
-            ...optionalJsonMap([('alignment', propValue(value.alignment))]),
-          };
+        decode: (data) => ScaleModifierMix(
+          x: data['x']! as double,
+          y: data['y']! as double,
+          alignment: data['alignment'] as Alignment?,
+        ),
+        encode: (value) => {
+          'x': requiredPropValue(value.x, 'x'),
+          'y': requiredPropValue(value.y, 'y'),
+          ...optionalJsonMap([('alignment', propValue(value.alignment))]),
         },
       ),
     ),
@@ -193,22 +163,16 @@ Map<SchemaModifier, ModifierDefinition> _buildModifierDefinitions() {
       codec: _modifierCodec<RotateModifierMix>(
         type: .rotate,
         input: Ack.object({
-          'radians': Ack.number(),
+          'radians': doubleFromNum(),
           'alignment': alignmentCodec.optional(),
         }),
-        decoder: (data) {
-          final map = data;
-
-          return RotateModifierMix(
-            radians: castDouble(map['radians']),
-            alignment: map['alignment'] as Alignment?,
-          );
-        },
-        encoder: (value) {
-          return {
-            'radians': requiredPropValue(value.radians, 'radians'),
-            ...optionalJsonMap([('alignment', propValue(value.alignment))]),
-          };
+        decode: (data) => RotateModifierMix(
+          radians: data['radians']! as double,
+          alignment: data['alignment'] as Alignment?,
+        ),
+        encode: (value) => {
+          'radians': requiredPropValue(value.radians, 'radians'),
+          ...optionalJsonMap([('alignment', propValue(value.alignment))]),
         },
       ),
     ),
@@ -226,34 +190,28 @@ Map<SchemaModifier, ModifierDefinition> _buildModifierDefinitions() {
           'textWidthBasis': textWidthBasisSchema.optional(),
           'textHeightBehavior': textHeightBehaviorCodec.optional(),
         }),
-        decoder: (data) {
-          final map = data;
-
-          return DefaultTextStyleModifierMix(
-            style: map['style'] as TextStyleMix?,
-            textAlign: map['textAlign'] as TextAlign?,
-            softWrap: map['softWrap'] as bool?,
-            overflow: map['overflow'] as TextOverflow?,
-            maxLines: map['maxLines'] as int?,
-            textWidthBasis: map['textWidthBasis'] as TextWidthBasis?,
-            textHeightBehavior:
-                map['textHeightBehavior'] as TextHeightBehaviorMix?,
-          );
-        },
-        encoder: (value) {
-          return optionalJsonMap([
-            ('style', propMix<TextStyleMix>(value.style)),
-            ('textAlign', propValue(value.textAlign)),
-            ('softWrap', propValue(value.softWrap)),
-            ('overflow', propValue(value.overflow)),
-            ('maxLines', propValue(value.maxLines)),
-            ('textWidthBasis', propValue(value.textWidthBasis)),
-            (
-              'textHeightBehavior',
-              propMix<TextHeightBehaviorMix>(value.textHeightBehavior),
-            ),
-          ]);
-        },
+        decode: (data) => DefaultTextStyleModifierMix(
+          style: data['style'] as TextStyleMix?,
+          textAlign: data['textAlign'] as TextAlign?,
+          softWrap: data['softWrap'] as bool?,
+          overflow: data['overflow'] as TextOverflow?,
+          maxLines: data['maxLines'] as int?,
+          textWidthBasis: data['textWidthBasis'] as TextWidthBasis?,
+          textHeightBehavior:
+              data['textHeightBehavior'] as TextHeightBehaviorMix?,
+        ),
+        encode: (value) => optionalJsonMap([
+          ('style', propMix<TextStyleMix>(value.style)),
+          ('textAlign', propValue(value.textAlign)),
+          ('softWrap', propValue(value.softWrap)),
+          ('overflow', propValue(value.overflow)),
+          ('maxLines', propValue(value.maxLines)),
+          ('textWidthBasis', propValue(value.textWidthBasis)),
+          (
+            'textHeightBehavior',
+            propMix<TextHeightBehaviorMix>(value.textHeightBehavior),
+          ),
+        ]),
       ),
     ),
   };

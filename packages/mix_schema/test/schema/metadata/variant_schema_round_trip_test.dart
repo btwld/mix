@@ -94,7 +94,7 @@ void main() {
 const JsonMap _encodedStyle = {'marker': 'encoded'};
 final BoxStyler _style = BoxStyler();
 
-AckSchema<VariantStyle<BoxSpec>> _buildBoxVariantSchema({
+AckSchema<JsonMap, VariantStyle<BoxSpec>> _buildBoxVariantSchema({
   RegistryCatalog? registries,
 }) {
   return buildVariantSchema<BoxSpec, BoxStyler>(
@@ -105,9 +105,9 @@ AckSchema<VariantStyle<BoxSpec>> _buildBoxVariantSchema({
   );
 }
 
-final AckSchema<BoxStyler> _boxStyleSchema = Ack.codec<JsonMap, BoxStyler>(
+final _boxStyleSchema = Ack.codec<JsonMap, JsonMap, BoxStyler>(
   input: Ack.object({'marker': Ack.string()}),
   output: Ack.instance<BoxStyler>(),
-  decoder: (_) => _style,
-  encoder: (_) => _encodedStyle,
+  decode: (_) => _style,
+  encode: (_) => _encodedStyle,
 );

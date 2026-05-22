@@ -1,4 +1,5 @@
-import '../core/json_map.dart';
+import 'package:ack/ack.dart' show JsonMap;
+
 import '../errors/mix_schema_error.dart';
 
 /// Structural safety limits applied at the schema contract boundary.

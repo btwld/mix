@@ -1,7 +1,6 @@
 import 'package:ack/ack.dart';
 
 import '../contract/mix_schema_limits.dart';
-import '../core/json_map.dart';
 import '../schema/builtins/built_in_styler_definitions.dart';
 import '../schema/styler_catalog.dart';
 import 'frozen_registry.dart';
@@ -12,7 +11,7 @@ final class StylerRegistry {
   final MixSchemaLimits limits;
   final Map<String, CodecSchema<JsonMap, Object>> _schemas = {};
   final Set<String> _registeredTypes = <String>{};
-  AckSchema<Object>? _payloadSchema;
+  AckSchema<JsonMap, Object>? _payloadSchema;
   bool _frozen = false;
 
   StylerRegistry({this.limits = const MixSchemaLimits()});
@@ -59,7 +58,7 @@ final class StylerRegistry {
   List<String> get registeredTypes => .unmodifiable(_registeredTypes);
 
   /// The frozen root Ack schema for the full payload contract.
-  AckSchema<Object> get payloadSchema {
+  AckSchema<JsonMap, Object> get payloadSchema {
     if (!_frozen || _payloadSchema == null) {
       throw StateError('Registry must be frozen before accessing schema.');
     }
@@ -101,7 +100,7 @@ final class StylerRegistry {
   }
 
   /// Encodes a runtime value using the frozen discriminated schema.
-  SchemaResult<Object> encode(Object value) {
+  SchemaResult<JsonMap> encode(Object value) {
     if (!_frozen || _payloadSchema == null) {
       throw StateError('Registry must be frozen before encode.');
     }
@@ -124,16 +123,6 @@ void _validateStylerRegistration({
       stylerSchema,
       'stylerSchema',
       'Styler "$type" must be backed by Ack.object(...).',
-    );
-  }
-
-  final typeSchema = inputSchema.properties['type'];
-  if (typeSchema == null || typeSchema.toJsonSchema()['const'] != type) {
-    throw ArgumentError.value(
-      stylerSchema,
-      'stylerSchema',
-      'Styler "$type" must declare `type: Ack.literal("$type")` inside its '
-          'Ack object schema.',
     );
   }
 }

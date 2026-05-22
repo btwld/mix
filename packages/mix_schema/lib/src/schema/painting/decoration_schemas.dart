@@ -12,7 +12,7 @@ import 'border_schemas.dart';
 import 'gradient_schemas.dart';
 import 'shape_border_schemas.dart';
 
-CodecSchema<Map<String, Object?>, DecorationImageMix> buildDecorationImageCodec(
+CodecSchema<JsonMap, DecorationImageMix> buildDecorationImageCodec(
   RegistryCatalog registries, {
   required MixSchemaLimits limits,
 }) {
@@ -21,7 +21,7 @@ CodecSchema<Map<String, Object?>, DecorationImageMix> buildDecorationImageCodec(
     limits: limits,
   );
 
-  return Ack.codec<Map<String, Object?>, DecorationImageMix>(
+  return Ack.codec<JsonMap, JsonMap, DecorationImageMix>(
     input: Ack.object({
       'image': imageProviderCodec,
       'fit': boxFitSchema.optional(),
@@ -33,21 +33,17 @@ CodecSchema<Map<String, Object?>, DecorationImageMix> buildDecorationImageCodec(
       'isAntiAlias': Ack.boolean().optional(),
     }),
     output: Ack.instance<DecorationImageMix>(),
-    decoder: (data) {
-      final map = data;
-
-      return DecorationImageMix(
-        image: map['image'] as ImageProvider<Object>,
-        fit: map['fit'] as BoxFit?,
-        alignment: map['alignment'] as AlignmentGeometry?,
-        centerSlice: map['centerSlice'] as Rect?,
-        repeat: map['repeat'] as ImageRepeat?,
-        filterQuality: map['filterQuality'] as FilterQuality?,
-        invertColors: map['invertColors'] as bool?,
-        isAntiAlias: map['isAntiAlias'] as bool?,
-      );
-    },
-    encoder: (value) => optionalJsonMap([
+    decode: (data) => DecorationImageMix(
+      image: data['image']! as ImageProvider<Object>,
+      fit: data['fit'] as BoxFit?,
+      alignment: data['alignment'] as AlignmentGeometry?,
+      centerSlice: data['centerSlice'] as Rect?,
+      repeat: data['repeat'] as ImageRepeat?,
+      filterQuality: data['filterQuality'] as FilterQuality?,
+      invertColors: data['invertColors'] as bool?,
+      isAntiAlias: data['isAntiAlias'] as bool?,
+    ),
+    encode: (value) => optionalJsonMap([
       ('image', requiredPropValue(value.$image, 'image')),
       ('fit', propValue(value.$fit)),
       ('alignment', propValue(value.$alignment)),
@@ -60,7 +56,7 @@ CodecSchema<Map<String, Object?>, DecorationImageMix> buildDecorationImageCodec(
   );
 }
 
-CodecSchema<Map<String, Object?>, BoxDecorationMix> buildBoxDecorationCodec(
+CodecSchema<JsonMap, BoxDecorationMix> buildBoxDecorationCodec(
   RegistryCatalog registries, {
   required MixSchemaLimits limits,
 }) {
@@ -69,10 +65,9 @@ CodecSchema<Map<String, Object?>, BoxDecorationMix> buildBoxDecorationCodec(
     limits: limits,
   );
 
-  return Ack.codec<Map<String, Object?>, BoxDecorationMix>(
+  return Ack.codec<JsonMap, JsonMap, BoxDecorationMix>(
     input:
         Ack.object({
-          'type': Ack.literal(SchemaDecoration.box.wireValue),
           'color': colorCodec.optional(),
           'image': decorationImageCodec.optional(),
           'gradient': gradientCodec.optional(),
@@ -82,26 +77,21 @@ CodecSchema<Map<String, Object?>, BoxDecorationMix> buildBoxDecorationCodec(
           'backgroundBlendMode': blendModeSchema.optional(),
           'boxShadow': Ack.list(boxShadowCodec).optional(),
         }).refine((data) {
-          final map = data;
-
-          return map['shape'] != BoxShape.circle || map['borderRadius'] == null;
+          return data['shape'] != BoxShape.circle ||
+              data['borderRadius'] == null;
         }, message: 'borderRadius is not supported when shape is circle.'),
     output: Ack.instance<BoxDecorationMix>(),
-    decoder: (data) {
-      final map = data;
-
-      return BoxDecorationMix(
-        border: map['border'] as BoxBorderMix?,
-        borderRadius: map['borderRadius'] as BorderRadiusGeometryMix?,
-        shape: map['shape'] as BoxShape?,
-        backgroundBlendMode: map['backgroundBlendMode'] as BlendMode?,
-        color: map['color'] as Color?,
-        image: map['image'] as DecorationImageMix?,
-        gradient: map['gradient'] as GradientMix?,
-        boxShadow: castListOrNull(map['boxShadow']),
-      );
-    },
-    encoder: (value) {
+    decode: (data) => BoxDecorationMix(
+      border: data['border'] as BoxBorderMix?,
+      borderRadius: data['borderRadius'] as BorderRadiusGeometryMix?,
+      shape: data['shape'] as BoxShape?,
+      backgroundBlendMode: data['backgroundBlendMode'] as BlendMode?,
+      color: data['color'] as Color?,
+      image: data['image'] as DecorationImageMix?,
+      gradient: data['gradient'] as GradientMix?,
+      boxShadow: castListOrNull(data['boxShadow']),
+    ),
+    encode: (value) {
       final BoxShadowListMix? boxShadow = propMix(value.$boxShadow);
 
       return optionalJsonMap([
@@ -119,7 +109,7 @@ CodecSchema<Map<String, Object?>, BoxDecorationMix> buildBoxDecorationCodec(
   );
 }
 
-CodecSchema<Map<String, Object?>, ShapeDecorationMix> buildShapeDecorationCodec(
+CodecSchema<JsonMap, ShapeDecorationMix> buildShapeDecorationCodec(
   RegistryCatalog registries, {
   required MixSchemaLimits limits,
 }) {
@@ -128,9 +118,8 @@ CodecSchema<Map<String, Object?>, ShapeDecorationMix> buildShapeDecorationCodec(
     limits: limits,
   );
 
-  return Ack.codec<Map<String, Object?>, ShapeDecorationMix>(
+  return Ack.codec<JsonMap, JsonMap, ShapeDecorationMix>(
     input: Ack.object({
-      'type': Ack.literal(SchemaDecoration.shape.wireValue),
       'shape': shapeBorderCodec.optional(),
       'color': colorCodec.optional(),
       'image': decorationImageCodec.optional(),
@@ -138,18 +127,14 @@ CodecSchema<Map<String, Object?>, ShapeDecorationMix> buildShapeDecorationCodec(
       'shadows': Ack.list(boxShadowCodec).optional(),
     }),
     output: Ack.instance<ShapeDecorationMix>(),
-    decoder: (data) {
-      final map = data;
-
-      return ShapeDecorationMix(
-        shape: map['shape'] as ShapeBorderMix?,
-        color: map['color'] as Color?,
-        image: map['image'] as DecorationImageMix?,
-        gradient: map['gradient'] as GradientMix?,
-        shadows: castListOrNull(map['shadows']),
-      );
-    },
-    encoder: (value) {
+    decode: (data) => ShapeDecorationMix(
+      shape: data['shape'] as ShapeBorderMix?,
+      color: data['color'] as Color?,
+      image: data['image'] as DecorationImageMix?,
+      gradient: data['gradient'] as GradientMix?,
+      shadows: castListOrNull(data['shadows']),
+    ),
+    encode: (value) {
       final BoxShadowListMix? shadows = propMix(value.$shadows);
 
       return optionalJsonMap([
@@ -164,7 +149,7 @@ CodecSchema<Map<String, Object?>, ShapeDecorationMix> buildShapeDecorationCodec(
   );
 }
 
-AckSchema<DecorationMix> buildDecorationCodec(
+DiscriminatedObjectSchema<DecorationMix> buildDecorationCodec(
   RegistryCatalog registries, {
   required MixSchemaLimits limits,
 }) {

@@ -4,7 +4,7 @@ import 'package:ack/ack.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-import '../../core/json_casts.dart';
+import '../../core/numeric_codecs.dart';
 import '../../core/prop_encode.dart';
 import '../../core/schema_wire_types.dart';
 import '../shared/shared_schemas.dart';
@@ -80,31 +80,26 @@ final class CssLinearKeywordGradientTransform extends GradientTransform {
   int get hashCode => directionKey.hashCode;
 }
 
-List<Color> _gradientColors(Map<String, Object?> map) =>
-    castList(map['colors']);
+List<Color> _gradientColors(JsonMap map) => (map['colors']! as List).cast();
 
-List<double>? _gradientStops(Map<String, Object?> map) {
-  final stops = map['stops'] as List<Object?>?;
+List<double>? _gradientStops(JsonMap map) =>
+    (map['stops'] as List?)?.cast<double>();
 
-  return stops == null ? null : [for (final s in stops) castDouble(s)];
-}
-
-bool _hasMatchingGradientStops(Map<String, Object?> map) {
+bool _hasMatchingGradientStops(JsonMap map) {
   final stops = _gradientStops(map);
 
   return stops == null || stops.length == _gradientColors(map).length;
 }
 
-final AckSchema<GradientTransform> gradientTransformCodec =
-    Ack.discriminated<GradientTransform>(
-      discriminatorKey: 'type',
-      schemas: {
-        for (final type in SchemaGradientTransform.values)
-          type.wireValue: _buildGradientTransformBranch(type),
-      },
-    );
+final gradientTransformCodec = Ack.discriminated<GradientTransform>(
+  discriminatorKey: 'type',
+  schemas: {
+    for (final type in SchemaGradientTransform.values)
+      type.wireValue: _buildGradientTransformBranch(type),
+  },
+);
 
-final AckSchema<GradientMix> gradientCodec = Ack.discriminated<GradientMix>(
+final gradientCodec = Ack.discriminated<GradientMix>(
   discriminatorKey: 'type',
   schemas: {
     for (final type in SchemaGradient.values)
@@ -115,34 +110,30 @@ final AckSchema<GradientMix> gradientCodec = Ack.discriminated<GradientMix>(
   },
 );
 
-AckSchema<GradientTransform> _buildGradientTransformBranch(
+AckSchema<JsonMap, GradientTransform> _buildGradientTransformBranch(
   SchemaGradientTransform type,
 ) {
   switch (type) {
     case .rotation:
-      return Ack.codec<Map<String, Object?>, GradientTransform>(
-        input: Ack.object({
-          'type': Ack.literal(type.wireValue),
-          'radians': Ack.number(),
-        }),
+      return Ack.codec<JsonMap, JsonMap, GradientTransform>(
+        input: Ack.object({'radians': doubleFromNum()}),
         output: Ack.instance<GradientTransform>(),
-        decoder: (data) => GradientRotation(castDouble(data['radians'])),
-        encoder: (value) {
+        decode: (data) => GradientRotation(data['radians']! as double),
+        encode: (value) {
           final rotation = value as GradientRotation;
 
           return {'type': type.wireValue, 'radians': rotation.radians};
         },
       );
     case .cssLinearKeyword:
-      return Ack.codec<Map<String, Object?>, GradientTransform>(
+      return Ack.codec<JsonMap, JsonMap, GradientTransform>(
         input: Ack.object({
-          'type': Ack.literal(type.wireValue),
           'direction': Ack.enumString(_cssLinearGradientDirections),
         }),
         output: Ack.instance<GradientTransform>(),
-        decoder: (data) =>
-            CssLinearKeywordGradientTransform(data['direction'] as String),
-        encoder: (value) {
+        decode: (data) =>
+            CssLinearKeywordGradientTransform(data['direction']! as String),
+        encode: (value) {
           final transform = value as CssLinearKeywordGradientTransform;
 
           return {'type': type.wireValue, 'direction': transform.directionKey};
@@ -151,18 +142,17 @@ AckSchema<GradientTransform> _buildGradientTransformBranch(
   }
 }
 
-AckSchema<GradientMix> _buildGradientBranch({
+AckSchema<JsonMap, GradientMix> _buildGradientBranch({
   required SchemaGradient type,
-  required AckSchema<GradientTransform> gradientTransformCodec,
+  required AckSchema<JsonMap, GradientTransform> gradientTransformCodec,
 }) {
   switch (type) {
     case .linear:
-      return Ack.codec<Map<String, Object?>, GradientMix>(
+      return Ack.codec<JsonMap, JsonMap, GradientMix>(
         input:
             Ack.object({
-              'type': Ack.literal(type.wireValue),
               'colors': colorListSchema,
-              'stops': numListSchema.optional(),
+              'stops': doubleListSchema.optional(),
               'begin': alignmentCodec.optional(),
               'end': alignmentCodec.optional(),
               'tileMode': tileModeSchema.optional(),
@@ -172,7 +162,7 @@ AckSchema<GradientMix> _buildGradientBranch({
               message: 'Gradient stops length must match colors length.',
             ),
         output: Ack.instance<GradientMix>(),
-        decoder: (data) {
+        decode: (data) {
           return LinearGradientMix(
             begin: data['begin'] as AlignmentGeometry?,
             end: data['end'] as AlignmentGeometry?,
@@ -182,7 +172,7 @@ AckSchema<GradientMix> _buildGradientBranch({
             stops: _gradientStops(data),
           );
         },
-        encoder: (value) {
+        encode: (value) {
           final mix = value as LinearGradientMix;
 
           return optionalJsonMap([
@@ -197,36 +187,35 @@ AckSchema<GradientMix> _buildGradientBranch({
         },
       );
     case .radial:
-      return Ack.codec<Map<String, Object?>, GradientMix>(
+      return Ack.codec<JsonMap, JsonMap, GradientMix>(
         input:
             Ack.object({
-              'type': Ack.literal(type.wireValue),
               'colors': colorListSchema,
-              'stops': numListSchema.optional(),
+              'stops': doubleListSchema.optional(),
               'center': alignmentCodec.optional(),
-              'radius': Ack.number().optional(),
+              'radius': doubleFromNum().optional(),
               'tileMode': tileModeSchema.optional(),
               'focal': alignmentCodec.optional(),
-              'focalRadius': Ack.number().optional(),
+              'focalRadius': doubleFromNum().optional(),
               'transform': gradientTransformCodec.optional(),
             }).refine(
               _hasMatchingGradientStops,
               message: 'Gradient stops length must match colors length.',
             ),
         output: Ack.instance<GradientMix>(),
-        decoder: (data) {
+        decode: (data) {
           return RadialGradientMix(
             center: data['center'] as AlignmentGeometry?,
-            radius: castDoubleOrNull(data['radius']),
+            radius: data['radius'] as double?,
             tileMode: data['tileMode'] as TileMode?,
             focal: data['focal'] as AlignmentGeometry?,
-            focalRadius: castDoubleOrNull(data['focalRadius']),
+            focalRadius: data['focalRadius'] as double?,
             transform: data['transform'] as GradientTransform?,
             colors: _gradientColors(data),
             stops: _gradientStops(data),
           );
         },
-        encoder: (value) {
+        encode: (value) {
           final mix = value as RadialGradientMix;
 
           return optionalJsonMap([
@@ -243,15 +232,14 @@ AckSchema<GradientMix> _buildGradientBranch({
         },
       );
     case .sweep:
-      return Ack.codec<Map<String, Object?>, GradientMix>(
+      return Ack.codec<JsonMap, JsonMap, GradientMix>(
         input:
             Ack.object({
-              'type': Ack.literal(type.wireValue),
               'colors': colorListSchema,
-              'stops': numListSchema.optional(),
+              'stops': doubleListSchema.optional(),
               'center': alignmentCodec.optional(),
-              'startAngle': Ack.number().optional(),
-              'endAngle': Ack.number().optional(),
+              'startAngle': doubleFromNum().optional(),
+              'endAngle': doubleFromNum().optional(),
               'tileMode': tileModeSchema.optional(),
               'transform': gradientTransformCodec.optional(),
             }).refine(
@@ -259,18 +247,18 @@ AckSchema<GradientMix> _buildGradientBranch({
               message: 'Gradient stops length must match colors length.',
             ),
         output: Ack.instance<GradientMix>(),
-        decoder: (data) {
+        decode: (data) {
           return SweepGradientMix(
             center: data['center'] as AlignmentGeometry?,
-            startAngle: castDoubleOrNull(data['startAngle']),
-            endAngle: castDoubleOrNull(data['endAngle']),
+            startAngle: data['startAngle'] as double?,
+            endAngle: data['endAngle'] as double?,
             tileMode: data['tileMode'] as TileMode?,
             transform: data['transform'] as GradientTransform?,
             colors: _gradientColors(data),
             stops: _gradientStops(data),
           );
         },
-        encoder: (value) {
+        encode: (value) {
           final mix = value as SweepGradientMix;
 
           return optionalJsonMap([

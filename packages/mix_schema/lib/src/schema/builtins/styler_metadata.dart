@@ -2,7 +2,6 @@ import 'package:ack/ack.dart';
 import 'package:mix/mix.dart';
 
 import '../../contract/mix_schema_limits.dart';
-import '../../core/json_map.dart';
 import '../../registry/registry_catalog.dart';
 import '../metadata/metadata_field_schemas.dart';
 import '../metadata/modifier_definition.dart';
@@ -12,8 +11,8 @@ import '../metadata/variant_schema.dart';
 final class StylerMetadataContext {
   final RegistryCatalog registries;
   final MixSchemaLimits limits;
-  final AckSchema<CurveAnimationConfig> animationCodec;
-  final AckSchema<ModifierMix> modifierCodec;
+  final CodecSchema<JsonMap, CurveAnimationConfig> animationCodec;
+  final AckSchema<JsonMap, ModifierMix> modifierCodec;
 
   const StylerMetadataContext({
     required this.registries,
@@ -22,18 +21,18 @@ final class StylerMetadataContext {
     required this.modifierCodec,
   });
 
-  Map<String, AckSchema> variantStyleMetadataFields() {
+  Map<String, AckSchema<Object, Object>> variantStyleMetadataFields() {
     return buildVariantStyleMetadataFieldSchemas(
       modifierSchema: modifierCodec,
       limits: limits,
     );
   }
 
-  Map<String, AckSchema> topLevelMetadataFields<
+  Map<String, AckSchema<Object, Object>> topLevelMetadataFields<
     S extends Spec<S>,
     T extends Style<S>
-  >({required AckSchema<T> variantStyleCodec, required T emptyStyle}) {
-    final AckSchema<VariantStyle<S>> variantCodec = buildVariantSchema(
+  >({required AckSchema<JsonMap, T> variantStyleCodec, required T emptyStyle}) {
+    final variantCodec = buildVariantSchema<S, T>(
       styleSchema: variantStyleCodec,
       emptyStyle: emptyStyle,
       registries: registries,

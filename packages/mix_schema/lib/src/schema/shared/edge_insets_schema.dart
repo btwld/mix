@@ -1,8 +1,7 @@
 import 'package:ack/ack.dart';
 import 'package:mix/mix.dart';
 
-import '../../core/json_casts.dart';
-import '../../core/json_map.dart';
+import '../../core/numeric_codecs.dart';
 import '../../core/prop_encode.dart';
 
 JsonMap _encodeEdgeInsetsMix(EdgeInsetsMix value) => optionalJsonMap([
@@ -20,55 +19,52 @@ JsonMap _encodeEdgeInsetsDirectionalMix(EdgeInsetsDirectionalMix value) =>
       ('end', propValue(value.$end)),
     ]);
 
-final CodecSchema<Map<String, Object?>, EdgeInsetsGeometryMix> edgeInsetsCodec =
-    Ack.codec<Map<String, Object?>, EdgeInsetsGeometryMix>(
-      input: Ack.object({
-        'top': Ack.number().optional(),
-        'bottom': Ack.number().optional(),
-        'left': Ack.number().optional(),
-        'right': Ack.number().optional(),
-      }),
-      output: Ack.instance<EdgeInsetsGeometryMix>(),
-      decoder: (data) => EdgeInsetsMix(
-        top: castDoubleOrNull(data['top']),
-        bottom: castDoubleOrNull(data['bottom']),
-        left: castDoubleOrNull(data['left']),
-        right: castDoubleOrNull(data['right']),
-      ),
-      encoder: (value) => _encodeEdgeInsetsMix(value as EdgeInsetsMix),
-    );
+final edgeInsetsCodec = Ack.codec<JsonMap, JsonMap, EdgeInsetsGeometryMix>(
+  input: Ack.object({
+    'top': doubleFromNum().optional(),
+    'bottom': doubleFromNum().optional(),
+    'left': doubleFromNum().optional(),
+    'right': doubleFromNum().optional(),
+  }),
+  output: Ack.instance<EdgeInsetsGeometryMix>(),
+  decode: (data) => EdgeInsetsMix(
+    top: data['top'] as double?,
+    bottom: data['bottom'] as double?,
+    left: data['left'] as double?,
+    right: data['right'] as double?,
+  ),
+  encode: (value) => _encodeEdgeInsetsMix(value as EdgeInsetsMix),
+);
 
-final CodecSchema<Map<String, Object?>, EdgeInsetsGeometryMix>
-edgeInsetsDirectionalCodec =
-    Ack.codec<Map<String, Object?>, EdgeInsetsGeometryMix>(
+final edgeInsetsDirectionalCodec =
+    Ack.codec<JsonMap, JsonMap, EdgeInsetsGeometryMix>(
       input: Ack.object({
-        'top': Ack.number().optional(),
-        'bottom': Ack.number().optional(),
-        'start': Ack.number().optional(),
-        'end': Ack.number().optional(),
+        'top': doubleFromNum().optional(),
+        'bottom': doubleFromNum().optional(),
+        'start': doubleFromNum().optional(),
+        'end': doubleFromNum().optional(),
       }),
       output: Ack.instance<EdgeInsetsGeometryMix>(),
-      decoder: (data) => EdgeInsetsDirectionalMix(
-        top: castDoubleOrNull(data['top']),
-        bottom: castDoubleOrNull(data['bottom']),
-        start: castDoubleOrNull(data['start']),
-        end: castDoubleOrNull(data['end']),
+      decode: (data) => EdgeInsetsDirectionalMix(
+        top: data['top'] as double?,
+        bottom: data['bottom'] as double?,
+        start: data['start'] as double?,
+        end: data['end'] as double?,
       ),
-      encoder: (value) =>
+      encode: (value) =>
           _encodeEdgeInsetsDirectionalMix(value as EdgeInsetsDirectionalMix),
     );
 
-final CodecSchema<Map<String, Object?>, EdgeInsetsGeometryMix>
-edgeInsetsGeometryCodec =
-    Ack.codec<Map<String, Object?>, EdgeInsetsGeometryMix>(
+final edgeInsetsGeometryCodec =
+    Ack.codec<JsonMap, JsonMap, EdgeInsetsGeometryMix>(
       input:
           Ack.object({
-            'top': Ack.number().optional(),
-            'bottom': Ack.number().optional(),
-            'left': Ack.number().optional(),
-            'right': Ack.number().optional(),
-            'start': Ack.number().optional(),
-            'end': Ack.number().optional(),
+            'top': doubleFromNum().optional(),
+            'bottom': doubleFromNum().optional(),
+            'left': doubleFromNum().optional(),
+            'right': doubleFromNum().optional(),
+            'start': doubleFromNum().optional(),
+            'end': doubleFromNum().optional(),
           }).refine((data) {
             final hasAbsolute = data['left'] != null || data['right'] != null;
             final hasDirectional = data['start'] != null || data['end'] != null;
@@ -76,24 +72,24 @@ edgeInsetsGeometryCodec =
             return !(hasAbsolute && hasDirectional);
           }, message: 'Use either left/right or start/end, not both.'),
       output: Ack.instance<EdgeInsetsGeometryMix>(),
-      decoder: (data) {
+      decode: (data) {
         final usesDirectional = data['start'] != null || data['end'] != null;
 
         return usesDirectional
             ? EdgeInsetsDirectionalMix(
-                top: castDoubleOrNull(data['top']),
-                bottom: castDoubleOrNull(data['bottom']),
-                start: castDoubleOrNull(data['start']),
-                end: castDoubleOrNull(data['end']),
+                top: data['top'] as double?,
+                bottom: data['bottom'] as double?,
+                start: data['start'] as double?,
+                end: data['end'] as double?,
               )
             : EdgeInsetsMix(
-                top: castDoubleOrNull(data['top']),
-                bottom: castDoubleOrNull(data['bottom']),
-                left: castDoubleOrNull(data['left']),
-                right: castDoubleOrNull(data['right']),
+                top: data['top'] as double?,
+                bottom: data['bottom'] as double?,
+                left: data['left'] as double?,
+                right: data['right'] as double?,
               );
       },
-      encoder: (value) => switch (value) {
+      encode: (value) => switch (value) {
         EdgeInsetsMix() => _encodeEdgeInsetsMix(value),
         EdgeInsetsDirectionalMix() => _encodeEdgeInsetsDirectionalMix(value),
       },

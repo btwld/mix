@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
 import '../../core/json_casts.dart';
-import '../../core/json_map.dart';
+import '../../core/numeric_codecs.dart';
 import '../../core/prop_encode.dart';
 import '../shared/shared_schemas.dart';
 import '../styler_catalog.dart';
@@ -19,16 +19,16 @@ StylerContract<IconSpec, IconStyler> buildIconStylerDefinition(
     fields: {
       'icon': catalog.iconDataCodec.optional(),
       'color': colorCodec.optional(),
-      'size': Ack.number().optional(),
-      'weight': Ack.number().optional(),
-      'grade': Ack.number().optional(),
-      'opticalSize': Ack.number().optional(),
+      'size': doubleFromNum().optional(),
+      'weight': doubleFromNum().optional(),
+      'grade': doubleFromNum().optional(),
+      'opticalSize': doubleFromNum().optional(),
       'shadows': Ack.list(shadowCodec).optional(),
       'textDirection': textDirectionSchema.optional(),
       'applyTextScaling': Ack.boolean().optional(),
-      'fill': Ack.number().optional(),
+      'fill': doubleFromNum().optional(),
       'semanticsLabel': Ack.string().optional(),
-      'opacity': Ack.number()
+      'opacity': doubleFromNum()
           .refine(
             (value) => value >= 0 && value <= 1,
             message: 'Must be in [0, 1].',
@@ -49,16 +49,16 @@ IconStyler _decodeIconStyler(
 }) {
   return IconStyler(
     color: data['color'] as Color?,
-    size: castDoubleOrNull(data['size']),
-    weight: castDoubleOrNull(data['weight']),
-    grade: castDoubleOrNull(data['grade']),
-    opticalSize: castDoubleOrNull(data['opticalSize']),
+    size: data['size'] as double?,
+    weight: data['weight'] as double?,
+    grade: data['grade'] as double?,
+    opticalSize: data['opticalSize'] as double?,
     shadows: castListOrNull(data['shadows']),
     textDirection: data['textDirection'] as TextDirection?,
     applyTextScaling: data['applyTextScaling'] as bool?,
-    fill: castDoubleOrNull(data['fill']),
+    fill: data['fill'] as double?,
     semanticsLabel: data['semanticsLabel'] as String?,
-    opacity: castDoubleOrNull(data['opacity']),
+    opacity: data['opacity'] as double?,
     blendMode: data['blendMode'] as BlendMode?,
     icon: data['icon'] as IconData?,
     animation: animation,

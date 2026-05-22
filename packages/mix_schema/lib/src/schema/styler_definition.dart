@@ -2,14 +2,13 @@ import 'package:ack/ack.dart';
 import 'package:mix/mix.dart';
 
 import '../core/json_casts.dart';
-import '../core/json_map.dart';
 import '../core/schema_wire_types.dart';
 import 'builtins/styler_metadata.dart';
 import 'styler_catalog.dart';
 
 typedef StylerBuilder<S extends Spec<S>, T extends Style<S>> =
     T Function(
-      Map<String, Object?> data, {
+      JsonMap data, {
       AnimationConfig? animation,
       WidgetModifierConfig? modifier,
       List<VariantStyle<S>>? variants,
@@ -35,19 +34,17 @@ buildStylerCodecContract<S extends Spec<S>, T extends Style<S>>({
   required StylerCatalog catalog,
   required SchemaStyler type,
   required T emptyStyle,
-  required Map<String, AckSchema> fields,
+  required Map<String, AckSchema<Object, Object>> fields,
   required StylerBuilder<S, T> build,
   required StylerFieldEncoder<S, T> encodeFields,
 }) {
   final metadata = catalog.metadata;
-  final inputFields = Map<String, AckSchema>.unmodifiable(fields);
+  final inputFields = Map<String, AckSchema<Object, Object>>.unmodifiable(
+    fields,
+  );
   final variantStyleCodec = _buildStylerCodec<S, T>(
     inputFields: {...inputFields, ...metadata.variantStyleMetadataFields()},
-    build: (data) {
-      final map = data;
-
-      return build(map, modifier: metadata.modifierConfig(map));
-    },
+    build: (data) => build(data, modifier: metadata.modifierConfig(data)),
     encode: (value) => {
       ...encodeFields(value),
       ...encodeStylerMetadata(value, includeTopLevelMetadata: false),
@@ -64,13 +61,12 @@ buildStylerCodecContract<S extends Spec<S>, T extends Style<S>>({
       ),
     },
     build: (data) {
-      final map = data;
-      final List<VariantStyle<S>>? variants = castListOrNull(map['variants']);
+      final List<VariantStyle<S>>? variants = castListOrNull(data['variants']);
 
       return build(
-        map,
-        animation: map['animation'] as AnimationConfig?,
-        modifier: metadata.modifierConfig(map),
+        data,
+        animation: data['animation'] as AnimationConfig?,
+        modifier: metadata.modifierConfig(data),
         variants: variants,
       );
     },
@@ -86,18 +82,15 @@ buildStylerCodecContract<S extends Spec<S>, T extends Style<S>>({
 CodecSchema<JsonMap, T>
 _buildStylerCodec<S extends Spec<S>, T extends Style<S>>({
   SchemaStyler? type,
-  required Map<String, AckSchema> inputFields,
+  required Map<String, AckSchema<Object, Object>> inputFields,
   required T Function(JsonMap data) build,
   required JsonMap Function(T value) encode,
 }) {
-  return Ack.codec<JsonMap, T>(
-    input: Ack.object({
-      if (type != null) 'type': Ack.literal(type.wireValue),
-      ...inputFields,
-    }),
+  return Ack.codec<JsonMap, JsonMap, T>(
+    input: Ack.object(inputFields),
     output: Ack.instance<T>(),
-    decoder: build,
-    encoder: type == null
+    decode: build,
+    encode: type == null
         ? encode
         : (value) => {'type': type.wireValue, ...encode(value)},
   );

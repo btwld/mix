@@ -1,7 +1,8 @@
 // Contract-facing APIs for validating and decoding Mix schema payloads.
+export 'package:ack/ack.dart' show JsonMap;
+
 export 'src/contract/mix_schema_contract.dart';
 export 'src/contract/mix_schema_limits.dart' show MixSchemaLimits;
-export 'src/core/json_map.dart';
 export 'src/core/mix_schema_scope.dart';
 export 'src/errors/mix_schema_decode_result.dart';
 export 'src/errors/mix_schema_encode_result.dart';

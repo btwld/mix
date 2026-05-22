@@ -1,7 +1,7 @@
+import 'package:ack/ack.dart' show JsonMap;
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-import '../../core/json_map.dart';
 import '../styler_catalog.dart';
 import '../styler_definition.dart';
 import 'built_in_field_groups.dart';

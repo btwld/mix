@@ -12,14 +12,11 @@ void main() {
       final registry = StylerRegistry()
         ..register(
           'demo',
-          Ack.codec<Map<String, Object?>, Object>(
-            input: Ack.object({
-              'type': Ack.literal('demo'),
-              'value': Ack.integer(),
-            }),
+          Ack.codec<JsonMap, JsonMap, Object>(
+            input: Ack.object({'value': Ack.integer()}),
             output: Ack.instance<Object>(),
-            decoder: (data) => data['value'] as int,
-            encoder: (value) => {'type': 'demo', 'value': value as int},
+            decode: (data) => data['value']! as int,
+            encode: (value) => {'type': 'demo', 'value': value as int},
           ),
         )
         ..freeze();
@@ -43,20 +40,15 @@ void main() {
       final builder = MixSchemaContractBuilder()
         ..register(
           'custom_box',
-          Ack.codec<Map<String, Object?>, BoxStyler>(
-            input: Ack.object({
-              'type': Ack.literal('custom_box'),
-              'color': colorCodec.optional(),
-            }),
+          Ack.codec<JsonMap, JsonMap, BoxStyler>(
+            input: Ack.object({'color': colorCodec.optional()}),
             output: Ack.instance<BoxStyler>(),
-            decoder: (data) {
-              return BoxStyler(
-                decoration: data['color'] == null
-                    ? null
-                    : BoxDecorationMix(color: data['color'] as Color),
-              );
-            },
-            encoder: (_) => const {'type': 'custom_box'},
+            decode: (data) => BoxStyler(
+              decoration: data['color'] == null
+                  ? null
+                  : BoxDecorationMix(color: data['color']! as Color),
+            ),
+            encode: (_) => const {'type': 'custom_box'},
           ),
         );
 
@@ -74,17 +66,14 @@ void main() {
       final builder = MixSchemaContractBuilder()
         ..register(
           'demo',
-          Ack.codec<Map<String, Object?>, Object>(
-            input: Ack.object({
-              'type': Ack.literal('demo'),
-              'value': Ack.integer(),
-            }),
+          Ack.codec<JsonMap, JsonMap, Object>(
+            input: Ack.object({'value': Ack.integer()}),
             output: Ack.instance<Object>().refine(
               (value) => value == 7,
               message: 'Demo value must be 7.',
             ),
-            decoder: (data) => data['value'] as int,
-            encoder: (value) => {'type': 'demo', 'value': value as int},
+            decode: (data) => data['value']! as int,
+            encode: (value) => {'type': 'demo', 'value': value as int},
           ),
         );
       final contract = builder.freeze();
@@ -101,40 +90,19 @@ void main() {
       expect(invalidResult.errors.single.message, 'Demo value must be 7.');
     });
 
-    test('rejects custom schemas that are not JsonMap-backed codecs', () {
-      expect(
-        () => MixSchemaContractBuilder()
-          ..register(
-            'demo',
-            Ack.codec<JsonMap, Object>(
-              input: Ack.string() as dynamic,
-              output: Ack.instance<Object>(),
-              decoder: (value) => value,
-              encoder: (_) => const {},
-            ),
-          ),
-        throwsA(isA<TypeError>()),
-      );
-    });
-
     test('extends the built-in styler set with custom schemas', () {
       final builder = MixSchemaContractBuilder.builtIn()
         ..register(
           'custom_box',
-          Ack.codec<Map<String, Object?>, BoxStyler>(
-            input: Ack.object({
-              'type': Ack.literal('custom_box'),
-              'color': colorCodec.optional(),
-            }),
+          Ack.codec<JsonMap, JsonMap, BoxStyler>(
+            input: Ack.object({'color': colorCodec.optional()}),
             output: Ack.instance<BoxStyler>(),
-            decoder: (data) {
-              return BoxStyler(
-                decoration: data['color'] == null
-                    ? null
-                    : BoxDecorationMix(color: data['color'] as Color),
-              );
-            },
-            encoder: (_) => const {'type': 'custom_box'},
+            decode: (data) => BoxStyler(
+              decoration: data['color'] == null
+                  ? null
+                  : BoxDecorationMix(color: data['color']! as Color),
+            ),
+            encode: (_) => const {'type': 'custom_box'},
           ),
         );
 

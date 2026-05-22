@@ -1,7 +1,6 @@
 import 'package:ack/ack.dart';
 import 'package:mix/mix.dart';
 
-import '../../core/json_map.dart';
 import '../../core/schema_wire_types.dart';
 import '../../errors/mix_schema_error.dart';
 import '../../errors/schema_error_mapper.dart';
@@ -29,11 +28,11 @@ VariantConditionParser buildVariantConditionParser() {
   );
 }
 
-AckSchema<Map<String, Object?>> buildContextConditionInputSchema() {
+ObjectSchema buildContextConditionInputSchema() {
   return Ack.object({'type': Ack.string()}).passthrough();
 }
 
-AckSchema<List<Map<String, Object?>>> buildContextConditionListSchema() {
+ListSchema<JsonMap, JsonMap> buildContextConditionListSchema() {
   return Ack.list(buildContextConditionInputSchema()).refine(
     (conditions) => conditions.length >= 2,
     message: 'context_all_of requires at least two conditions.',
@@ -41,13 +40,13 @@ AckSchema<List<Map<String, Object?>>> buildContextConditionListSchema() {
 }
 
 final class VariantConditionParser {
-  final AckSchema<ContextVariantLeaf> _leafSchema;
-  final AckSchema<Map<String, Object?>> _compoundShapeSchema;
+  final AckSchema<JsonMap, ContextVariantLeaf> _leafSchema;
+  final ObjectSchema _compoundShapeSchema;
   final SchemaErrorMapper _errorMapper = const SchemaErrorMapper();
 
   VariantConditionParser._({
-    required AckSchema<ContextVariantLeaf> leafSchema,
-    required AckSchema<Map<String, Object?>> compoundShapeSchema,
+    required AckSchema<JsonMap, ContextVariantLeaf> leafSchema,
+    required ObjectSchema compoundShapeSchema,
   }) : _leafSchema = leafSchema,
        _compoundShapeSchema = compoundShapeSchema;
 

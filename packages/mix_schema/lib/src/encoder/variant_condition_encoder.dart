@@ -1,6 +1,6 @@
+import 'package:ack/ack.dart' show JsonMap;
 import 'package:flutter/widgets.dart';
 
-import '../core/json_map.dart';
 import '../schema/metadata/variant_condition_definition.dart';
 
 JsonMap payloadWidgetStateCondition(WidgetState state) {
