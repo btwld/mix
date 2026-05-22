@@ -6,17 +6,14 @@ import '../../core/branch_codec.dart';
 import '../../core/json_casts.dart';
 import '../../core/prop_encode.dart';
 import '../../core/schema_wire_types.dart';
-import '../../registry/registry_catalog.dart';
 import '../shared/shared_schemas.dart';
 import 'border_schemas.dart';
 import 'gradient_schemas.dart';
 import 'shape_border_schemas.dart';
 
-CodecSchema<JsonMap, DecorationImageMix> buildDecorationImageCodec(
-  RegistryCatalog registries,
-) {
-  final imageProviderCodec = buildImageProviderCodec(registries);
-
+CodecSchema<JsonMap, DecorationImageMix> buildDecorationImageCodec({
+  required CodecSchema<String, ImageProvider<Object>> imageProviderCodec,
+}) {
   return Ack.codec<JsonMap, JsonMap, DecorationImageMix>(
     input: Ack.object({
       'image': imageProviderCodec,
@@ -52,10 +49,12 @@ CodecSchema<JsonMap, DecorationImageMix> buildDecorationImageCodec(
   );
 }
 
-CodecSchema<JsonMap, BoxDecorationMix> buildBoxDecorationCodec(
-  RegistryCatalog registries,
-) {
-  final decorationImageCodec = buildDecorationImageCodec(registries);
+CodecSchema<JsonMap, BoxDecorationMix> buildBoxDecorationCodec({
+  required CodecSchema<String, ImageProvider<Object>> imageProviderCodec,
+}) {
+  final decorationImageCodec = buildDecorationImageCodec(
+    imageProviderCodec: imageProviderCodec,
+  );
 
   return buildDiscriminatorInjectingCodec<BoxDecorationMix>(
     type: SchemaDecoration.box.wireValue,
@@ -102,10 +101,12 @@ CodecSchema<JsonMap, BoxDecorationMix> buildBoxDecorationCodec(
   );
 }
 
-CodecSchema<JsonMap, ShapeDecorationMix> buildShapeDecorationCodec(
-  RegistryCatalog registries,
-) {
-  final decorationImageCodec = buildDecorationImageCodec(registries);
+CodecSchema<JsonMap, ShapeDecorationMix> buildShapeDecorationCodec({
+  required CodecSchema<String, ImageProvider<Object>> imageProviderCodec,
+}) {
+  final decorationImageCodec = buildDecorationImageCodec(
+    imageProviderCodec: imageProviderCodec,
+  );
 
   return buildDiscriminatorInjectingCodec<ShapeDecorationMix>(
     type: SchemaDecoration.shape.wireValue,
@@ -138,14 +139,18 @@ CodecSchema<JsonMap, ShapeDecorationMix> buildShapeDecorationCodec(
   );
 }
 
-DiscriminatedObjectSchema<DecorationMix> buildDecorationCodec(
-  RegistryCatalog registries,
-) {
+DiscriminatedObjectSchema<DecorationMix> buildDecorationCodec({
+  required CodecSchema<String, ImageProvider<Object>> imageProviderCodec,
+}) {
   return Ack.discriminated<DecorationMix>(
     discriminatorKey: 'type',
     schemas: {
-      SchemaDecoration.box.wireValue: buildBoxDecorationCodec(registries),
-      SchemaDecoration.shape.wireValue: buildShapeDecorationCodec(registries),
+      SchemaDecoration.box.wireValue: buildBoxDecorationCodec(
+        imageProviderCodec: imageProviderCodec,
+      ),
+      SchemaDecoration.shape.wireValue: buildShapeDecorationCodec(
+        imageProviderCodec: imageProviderCodec,
+      ),
     },
   );
 }

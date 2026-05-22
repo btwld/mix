@@ -11,7 +11,9 @@ final class StylerCatalog {
 
   late final imageProviderCodec = buildImageProviderCodec(registries);
   late final iconDataCodec = buildIconDataCodec(registries);
-  late final decorationCodec = buildDecorationCodec(registries);
+  late final decorationCodec = buildDecorationCodec(
+    imageProviderCodec: imageProviderCodec,
+  );
   late final metadata = StylerMetadataContext(
     registries: registries,
     limits: limits,
