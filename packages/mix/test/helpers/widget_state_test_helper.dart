@@ -45,9 +45,6 @@ import 'package:mix/mix.dart';
 /// });
 /// ```
 class WidgetStateTestHelper {
-  /// Default duration to wait for state timers (covers default unpressDelay)
-  static const defaultTimerWait = Duration(milliseconds: 250);
-
   /// Verifies that a controller has the expected state.
   static void expectState(
     WidgetStatesController controller,
@@ -73,11 +70,6 @@ class WidgetStateTestHelper {
   static Future<void> testLongPress(WidgetTester tester, Finder finder) async {
     await tester.longPress(finder);
     await tester.pump();
-  }
-
-  /// Waits for state timers to clear (e.g., unpressDelay).
-  static Future<void> waitForTimers(WidgetTester tester) async {
-    await tester.pump(defaultTimerWait);
   }
 
   /// Tests that disabled widgets don't trigger callbacks.

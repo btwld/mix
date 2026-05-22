@@ -457,42 +457,6 @@ extension WidgetTesterExtension on WidgetTester {
   }
 }
 
-// =============================================================================
-// MOCK CLASSES FOR TESTING
-// =============================================================================
-
-/// Mock directive for testing purposes
-///
-/// A simple directive implementation for testing purposes.
-/// By default, applies identity transformation (returns value unchanged).
-/// Can optionally provide a custom transformer function.
-class MockMixDirective<T> extends Directive<T> {
-  final String name;
-  final T Function(T)? transform;
-
-  const MockMixDirective(this.name, [this.transform]);
-
-  @override
-  String get key => name;
-
-  @override
-  T apply(T value) => transform?.call(value) ?? value;
-
-  @override
-  String toString() => 'MockMixDirective($name)';
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    return other is MockMixDirective<T> &&
-        other.name == name &&
-        other.transform == transform;
-  }
-
-  @override
-  int get hashCode => Object.hash(name, transform);
-}
-
 final blackPixelBytes = base64Decode(
   "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==",
 );
@@ -528,9 +492,6 @@ class PropMatcher {
 
   /// Matches a Prop that has any Mix sources
   static Matcher get hasMixes => const _PropHasMixesMatcher();
-
-  /// Matches a Prop that has directives
-  static Matcher get hasDirectives => const _PropHasDirectivesMatcher();
 }
 
 /// Matcher for Prop values
@@ -765,24 +726,6 @@ extension WrappedBoxSpecAccess on StyleSpec<BoxSpec> {
   BoxConstraints? get constraints => spec.constraints;
 }
 
-extension WrappedFlexBoxSpecAccess on StyleSpec<FlexBoxSpec> {
-  FlexSpec? get flex => spec.flex?.spec;
-  BoxSpec? get container => spec.box?.spec;
-}
-
-extension WrappedIconSpecAccess on StyleSpec<IconSpec> {
-  double? get size => spec.size;
-}
-
-extension WrappedStackSpecAccess on StyleSpec<StackSpec> {
-  AlignmentGeometry? get alignment => spec.alignment;
-}
-
-extension WrappedStackBoxSpecAccess on StyleSpec<StackBoxSpec> {
-  BoxSpec? get box => spec.box?.spec;
-  StackSpec? get stack => spec.stack?.spec;
-}
-
 /// Matcher for Prop that has any Mix sources
 class _PropHasMixesMatcher extends Matcher {
   const _PropHasMixesMatcher();
@@ -814,40 +757,6 @@ class _PropHasMixesMatcher extends Matcher {
     }
 
     return mismatchDescription.add('does not have any Mix sources');
-  }
-}
-
-/// Matcher for Prop that has directives
-class _PropHasDirectivesMatcher extends Matcher {
-  const _PropHasDirectivesMatcher();
-
-  @override
-  bool matches(dynamic item, Map matchState) {
-    if (item is! Prop) {
-      matchState['error'] = 'Expected Prop, got ${item.runtimeType}';
-      return false;
-    }
-
-    return item.$directives != null && item.$directives!.isNotEmpty;
-  }
-
-  @override
-  Description describe(Description description) {
-    return description.add('Prop with directives');
-  }
-
-  @override
-  Description describeMismatch(
-    dynamic item,
-    Description mismatchDescription,
-    Map matchState,
-    bool verbose,
-  ) {
-    if (matchState.containsKey('error')) {
-      return mismatchDescription.add(matchState['error']);
-    }
-
-    return mismatchDescription.add('does not have directives');
   }
 }
 

@@ -31,8 +31,6 @@ final class StyleAnimationDriverTest
     // Test implementation - no-op
   }
 
-  bool get autoAnimateOnUpdate => true;
-
   // Helper method to trigger animation like the old animateTo
   Future<void> triggerAnimation(StyleSpec<MockSpec<double>> targetSpec) async {
     didUpdateSpec(
