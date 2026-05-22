@@ -13,7 +13,10 @@ import 'package:ack/ack.dart';
 CodecSchema<Object, double> doubleFromNum() =>
     Ack.codec<Object, Object, double>(
       input: Ack.anyOf([Ack.double(), Ack.integer()]),
-      output: Ack.instance<double>(),
+      output: Ack.instance<double>().refine(
+        (value) => value.isFinite,
+        message: 'Numeric values must be finite (NaN and infinity rejected).',
+      ),
       decode: (value) => (value as num).toDouble(),
       encode: (value) => value,
     );
