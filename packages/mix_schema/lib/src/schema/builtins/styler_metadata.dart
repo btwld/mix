@@ -2,6 +2,7 @@ import 'package:ack/ack.dart';
 import 'package:mix/mix.dart';
 
 import '../../contract/mix_schema_limits.dart';
+import '../../errors/schema_transform_exceptions.dart';
 import '../../registry/registry_catalog.dart';
 import '../metadata/metadata_field_schemas.dart';
 import '../metadata/modifier_definition.dart';
@@ -36,7 +37,6 @@ final class StylerMetadataContext {
       styleSchema: variantStyleCodec,
       emptyStyle: emptyStyle,
       registries: registries,
-      limits: limits,
     );
 
     return buildMetadataFieldSchemas(
@@ -61,10 +61,16 @@ JsonMap encodeStylerMetadata(
 
   if (!includeTopLevelMetadata) {
     if (value.$animation != null) {
-      throw UnsupportedError('Variant styles cannot encode animation.');
+      throw UnsupportedEncodeValueError(
+        'Variant styles cannot encode animation.',
+        value: value.$animation,
+      );
     }
     if (value.$variants != null && value.$variants!.isNotEmpty) {
-      throw UnsupportedError('Variant styles cannot encode nested variants.');
+      throw UnsupportedEncodeValueError(
+        'Variant styles cannot encode nested variants.',
+        value: value.$variants,
+      );
     }
 
     return payload;
@@ -73,7 +79,10 @@ JsonMap encodeStylerMetadata(
   if (value.$animation case final CurveAnimationConfig animation) {
     payload['animation'] = animation;
   } else if (value.$animation != null) {
-    throw UnsupportedError('Only curve animation configs can be encoded.');
+    throw UnsupportedEncodeValueError(
+      'Only curve animation configs can be encoded.',
+      value: value.$animation,
+    );
   }
 
   if (value.$variants case final variants? when variants.isNotEmpty) {
@@ -102,8 +111,9 @@ void _encodeModifierMetadata(JsonMap payload, WidgetModifierConfig? modifier) {
 String _modifierWireValue(Type runtimeType) {
   final type = schemaModifierForRuntimeType(runtimeType);
   if (type == null) {
-    throw UnsupportedError(
+    throw UnsupportedEncodeValueError(
       'Modifier order type $runtimeType is not supported.',
+      value: runtimeType,
     );
   }
 

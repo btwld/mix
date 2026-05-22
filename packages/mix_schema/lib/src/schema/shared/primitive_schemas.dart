@@ -2,6 +2,7 @@ import 'package:ack/ack.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../core/numeric_codecs.dart';
+import '../../errors/schema_transform_exceptions.dart';
 import 'color_schema.dart';
 
 final offsetCodec = Ack.codec<JsonMap, JsonMap, Offset>(
@@ -29,7 +30,10 @@ final alignmentCodec = Ack.codec<JsonMap, JsonMap, AlignmentGeometry>(
   decode: (data) => Alignment(data['x']! as double, data['y']! as double),
   encode: (alignment) {
     if (alignment is! Alignment) {
-      throw UnsupportedError('Only absolute Alignment values can be encoded.');
+      throw UnsupportedEncodeValueError(
+        'Only absolute Alignment values can be encoded.',
+        value: alignment,
+      );
     }
 
     return {'x': alignment.x, 'y': alignment.y};

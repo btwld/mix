@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
 import '../../core/prop_encode.dart';
+import '../../errors/schema_transform_exceptions.dart';
 import '../shared/shared_schemas.dart';
 import '../styler_catalog.dart';
 import '../styler_definition.dart';
@@ -69,8 +70,9 @@ JsonMap _encodeTextFields(TextStyler value) {
   Directive<String>? textTransform;
   if (textDirectives != null && textDirectives.isNotEmpty) {
     if (textDirectives.length != 1) {
-      throw UnsupportedError(
+      throw UnsupportedEncodeValueError(
         'Only one text transform directive can be encoded.',
+        value: textDirectives,
       );
     }
     textTransform = textDirectives.single;
