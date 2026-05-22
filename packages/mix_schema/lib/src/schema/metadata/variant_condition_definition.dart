@@ -93,10 +93,6 @@ final class VariantConditionDefinition {
     return codec.encode(leaf)!;
   }
 
-  JsonMap encodeLeafFields(ContextVariantLeaf leaf) {
-    return _encodeLeaf(leaf);
-  }
-
   JsonMap encode(JsonMap fields) {
     return encodeLeaf(buildLeaf(fields));
   }
