@@ -31,6 +31,10 @@ class ContextStyle extends Style<BoxSpec> {
   const ContextStyle();
 
   ContextStyle merge(ContextStyle? other) => this;
+
+  Box call({Key? key, Widget? child}) {
+    return Box(key: key, style: this, child: child);
+  }
 }
 
 @MixWidget()
@@ -84,7 +88,7 @@ final _cardStyle = BoxStyler();
       );
     });
 
-    test('rejects custom specs without @MixWidgetRenderer', () async {
+    test('rejects stylers without a call method', () async {
       const source = r'''
 library input;
 
@@ -112,11 +116,77 @@ final solidButtonStyle = CustomButtonStyle();
 
       expect(
         _severeMessages(logs),
-        allOf(
-          contains('No renderer found for CustomSpec'),
-          contains('@MixWidgetRenderer'),
-        ),
+        contains('No callable `call()` method found for CustomButtonStyle'),
       );
+    });
+
+    test('renders custom widgets through styler call methods', () async {
+      const source = r'''
+library input;
+
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+
+part 'input.g.dart';
+
+class ButtonSpec extends Spec<ButtonSpec> {
+  const ButtonSpec();
+}
+
+class ButtonStyler extends Style<ButtonSpec> {
+  const ButtonStyler();
+
+  ButtonStyler color(Color value) => this;
+
+  ButtonStyler merge(ButtonStyler? other) => this;
+
+  Button call({
+    Key? key,
+    required VoidCallback onPressed,
+    required Widget child,
+  }) {
+    return Button(
+      key: key,
+      style: this,
+      onPressed: onPressed,
+      child: child,
+    );
+  }
+}
+
+class Button extends Widget {
+  final Key? key;
+  final ButtonStyler style;
+  final VoidCallback onPressed;
+  final Widget child;
+
+  const Button({
+    this.key,
+    required this.style,
+    required this.onPressed,
+    required this.child,
+  });
+}
+
+@MixWidget()
+ButtonStyler primaryButtonStyle({Color color = Colors.blue}) {
+  return ButtonStyler().color(color);
+}
+''';
+
+      final output = await generateMixWidgetOutput(inputSource: source);
+
+      expect(output, contains('class PrimaryButton extends StatelessWidget'));
+      expect(output, contains('final Color color;'));
+      expect(output, contains('final VoidCallback onPressed;'));
+      expect(output, contains('final Widget child;'));
+      expect(output, contains('return primaryButtonStyle('));
+      expect(output, contains(').call('));
+      expect(output, contains('key: key'));
+      expect(output, contains('onPressed: onPressed'));
+      expect(output, contains('child: child'));
+      expect(output, isNot(contains('return Button(')));
     });
 
     test('injects BuildContext into function-backed style factories', () async {
@@ -147,7 +217,10 @@ ContextStyle contextualButtonStyle(
       expect(output, contains('compact: compact'));
       expect(
         output,
-        contains('style: contextualButtonStyle(context, compact: compact)'),
+        allOf(
+          contains('return contextualButtonStyle('),
+          contains(').call(key: key, child: child);'),
+        ),
       );
       expect(output, contains('child: child'));
     });
@@ -164,7 +237,7 @@ ContextStyle contextualButtonStyle(String context) {
       final output = await generateMixWidgetOutput(inputSource: source);
 
       expect(output, contains('final String context;'));
-      expect(output, contains('style: contextualButtonStyle(this.context)'));
+      expect(output, contains('contextualButtonStyle(this.context).call('));
     });
 
     test('rejects BuildContext factory parameters with wrong names', () async {
@@ -263,7 +336,8 @@ ContextStyle contextualButtonStyle(BuildContext context) {
       expect(
         _severeMessages(logs),
         contains(
-          'BuildContext injection requires Flutter BuildContext from package:flutter/widgets.dart',
+          'requires `Widget`, `StatelessWidget`, and `BuildContext` to be '
+          'available without an import prefix',
         ),
       );
     });
@@ -364,8 +438,10 @@ final brokenStyle = BrokenStyle();
       );
     });
 
-    test('renders custom widgets via @MixWidgetRenderer on the spec', () async {
-      const source = r'''
+    test(
+      'rejects base Style declarations without a concrete styler type',
+      () async {
+        const source = r'''
 library input;
 
 import 'package:flutter/widgets.dart';
@@ -373,53 +449,23 @@ import 'package:mix/mix.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 
 part 'input.g.dart';
-
-@MixWidgetRenderer(Button)
-class ButtonSpec extends Spec<ButtonSpec> {
-  const ButtonSpec();
-}
-
-class ButtonStyler extends Style<ButtonSpec> {
-  const ButtonStyler();
-
-  ButtonStyler color(Color value) => this;
-
-  ButtonStyler merge(ButtonStyler? other) => this;
-}
-
-class Button extends Widget {
-  final Key? key;
-  final ButtonStyler style;
-  final VoidCallback onPressed;
-  final Widget child;
-
-  const Button({
-    this.key,
-    required this.style,
-    required this.onPressed,
-    required this.child,
-  });
-}
 
 @MixWidget()
-ButtonStyler primaryButtonStyle({Color color = Colors.blue}) {
-  return ButtonStyler().color(color);
-}
+final Style<BoxSpec> cardStyle = BoxStyler();
 ''';
 
-      final output = await generateMixWidgetOutput(inputSource: source);
+        final logs = await runMixWidgetWithLogs(source);
 
-      expect(output, contains('class PrimaryButton extends StatelessWidget'));
-      expect(output, contains('final Color color;'));
-      expect(output, contains('final VoidCallback onPressed;'));
-      expect(output, contains('final Widget child;'));
-      expect(output, contains('return Button('));
-      expect(output, contains('style: primaryButtonStyle(color: color)'));
-      expect(output, contains('onPressed: onPressed'));
-      expect(output, contains('child: child'));
-    });
+        expect(
+          _severeMessages(logs),
+          contains(
+            'requires a concrete styler type with a callable `call()` method',
+          ),
+        );
+      },
+    );
 
-    test('rejects abstract renderer classes', () async {
+    test('rejects call methods that do not return widgets', () async {
       const source = r'''
 library input;
 
@@ -429,11 +475,6 @@ import 'package:mix_annotations/mix_annotations.dart';
 
 part 'input.g.dart';
 
-abstract class AbstractButton extends Widget {
-  const AbstractButton();
-}
-
-@MixWidgetRenderer(AbstractButton)
 class CustomSpec extends Spec<CustomSpec> {
   const CustomSpec();
 }
@@ -442,6 +483,8 @@ class CustomStyle extends Style<CustomSpec> {
   const CustomStyle();
 
   CustomStyle merge(CustomStyle? other) => this;
+
+  String call() => 'no widget';
 }
 
 @MixWidget()
@@ -450,13 +493,10 @@ final customStyle = CustomStyle();
 
       final logs = await runMixWidgetWithLogs(source);
 
-      expect(
-        _severeMessages(logs),
-        contains('must reference a concrete widget class'),
-      );
+      expect(_severeMessages(logs), contains('must return a Flutter Widget'));
     });
 
-    test('rejects renderers whose key parameter is not Key?', () async {
+    test('rejects call methods whose key parameter is not Key?', () async {
       const source = r'''
 library input;
 
@@ -466,14 +506,6 @@ import 'package:mix_annotations/mix_annotations.dart';
 
 part 'input.g.dart';
 
-class WrongKeyWidget extends Widget {
-  final String? key;
-  final Style<CustomSpec> style;
-
-  const WrongKeyWidget({this.key, required this.style});
-}
-
-@MixWidgetRenderer(WrongKeyWidget)
 class CustomSpec extends Spec<CustomSpec> {
   const CustomSpec();
 }
@@ -482,6 +514,8 @@ class CustomStyle extends Style<CustomSpec> {
   const CustomStyle();
 
   CustomStyle merge(CustomStyle? other) => this;
+
+  Widget call({String? key}) => const Widget();
 }
 
 @MixWidget()
@@ -494,7 +528,7 @@ final customStyle = CustomStyle();
     });
 
     test(
-      'rejects renderer parameter defaults that reference invisible identifiers',
+      'omits key forwarding when the call method has no key parameter',
       () async {
         const source = r'''
 library input;
@@ -503,15 +537,114 @@ import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 
-import 'banner_renderer.dart';
+part 'input.g.dart';
+
+class PlainSpec extends Spec<PlainSpec> {
+  const PlainSpec();
+}
+
+class PlainStyle extends Style<PlainSpec> {
+  const PlainStyle();
+
+  PlainStyle merge(PlainStyle? other) => this;
+
+  Widget call({Widget? child}) => child ?? const Widget();
+}
+
+@MixWidget()
+final plainStyle = PlainStyle();
+''';
+
+        final output = await generateMixWidgetOutput(inputSource: source);
+
+        expect(output, contains('return plainStyle.call(child: child);'));
+        expect(output, isNot(contains('key: key')));
+      },
+    );
+
+    test('rejects private call parameters', () async {
+      const source = r'''
+library input;
+
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+import 'package:mix_annotations/mix_annotations.dart';
 
 part 'input.g.dart';
 
-class BannerStyle extends Style<BannerSpec> {
-  const BannerStyle();
-
-  BannerStyle merge(BannerStyle? other) => this;
+class PrivateParamSpec extends Spec<PrivateParamSpec> {
+  const PrivateParamSpec();
 }
+
+class PrivateParamStyle extends Style<PrivateParamSpec> {
+  const PrivateParamStyle();
+
+  PrivateParamStyle merge(PrivateParamStyle? other) => this;
+
+  Widget call({String? _label}) => const Widget();
+}
+
+@MixWidget()
+final privateParamStyle = PrivateParamStyle();
+''';
+
+      final logs = await runMixWidgetWithLogs(source);
+
+      expect(
+        _severeMessages(logs),
+        contains(
+          'Parameter `_label` cannot be private in a generated @MixWidget wrapper',
+        ),
+      );
+    });
+
+    test('rejects optional positional call parameters', () async {
+      const source = r'''
+library input;
+
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+
+part 'input.g.dart';
+
+class LabelSpec extends Spec<LabelSpec> {
+  const LabelSpec();
+}
+
+class LabelStyle extends Style<LabelSpec> {
+  const LabelStyle();
+
+  LabelStyle merge(LabelStyle? other) => this;
+
+  Widget call([String label = 'x']) => const Widget();
+}
+
+@MixWidget()
+final labelStyle = LabelStyle();
+''';
+
+      final logs = await runMixWidgetWithLogs(source);
+
+      expect(
+        _severeMessages(logs),
+        contains('parameter `label` is optional positional'),
+      );
+    });
+
+    test(
+      'rejects call parameter defaults that reference invisible identifiers',
+      () async {
+        const source = r'''
+library input;
+
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+
+import 'banner_style.dart';
+
+part 'input.g.dart';
 
 @MixWidget()
 final bannerStyle = BannerStyle();
@@ -520,26 +653,30 @@ final bannerStyle = BannerStyle();
         final logs = await runMixWidgetWithLogs(
           source,
           extraSources: {
-            'mix_generator|lib/banner_renderer.dart': r'''
-library banner_renderer;
+            'mix_generator|lib/banner_style.dart': r'''
+library banner_style;
 
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
-import 'package:mix_annotations/mix_annotations.dart';
 
 import 'hidden_defaults.dart';
 
-class Banner extends Widget {
-  final Key? key;
-  final Style<BannerSpec> style;
-  final String label;
-
-  const Banner({this.key, required this.style, this.label = defaultLabel});
-}
-
-@MixWidgetRenderer(Banner)
 class BannerSpec extends Spec<BannerSpec> {
   const BannerSpec();
+}
+
+class BannerStyle extends Style<BannerSpec> {
+  const BannerStyle();
+
+  BannerStyle merge(BannerStyle? other) => this;
+
+  Banner call({String label = defaultLabel}) => Banner(label: label);
+}
+
+class Banner extends Widget {
+  final String label;
+
+  const Banner({this.label = defaultLabel});
 }
 ''',
             'mix_generator|lib/hidden_defaults.dart': r'''
@@ -554,7 +691,7 @@ const defaultLabel = 'banner';
       },
     );
 
-    test('rejects renderer parameter defaults shadowed by a same-named '
+    test('rejects call parameter defaults shadowed by a same-named '
         'declaration in the annotated library', () async {
       const source = r'''
 library input;
@@ -563,17 +700,11 @@ import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 
-import 'banner_renderer.dart';
+import 'banner_style.dart';
 
 part 'input.g.dart';
 
 const defaultLabel = 'wrong banner';
-
-class BannerStyle extends Style<BannerSpec> {
-  const BannerStyle();
-
-  BannerStyle merge(BannerStyle? other) => this;
-}
 
 @MixWidget()
 final bannerStyle = BannerStyle();
@@ -582,26 +713,30 @@ final bannerStyle = BannerStyle();
       final logs = await runMixWidgetWithLogs(
         source,
         extraSources: {
-          'mix_generator|lib/banner_renderer.dart': r'''
-library banner_renderer;
+          'mix_generator|lib/banner_style.dart': r'''
+library banner_style;
 
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
-import 'package:mix_annotations/mix_annotations.dart';
 
-const defaultLabel = 'renderer banner';
+const defaultLabel = 'style banner';
 
-class Banner extends Widget {
-  final Key? key;
-  final Style<BannerSpec> style;
-  final String label;
-
-  const Banner({this.key, required this.style, this.label = defaultLabel});
-}
-
-@MixWidgetRenderer(Banner)
 class BannerSpec extends Spec<BannerSpec> {
   const BannerSpec();
+}
+
+class BannerStyle extends Style<BannerSpec> {
+  const BannerStyle();
+
+  BannerStyle merge(BannerStyle? other) => this;
+
+  Banner call({String label = defaultLabel}) => Banner(label: label);
+}
+
+class Banner extends Widget {
+  final String label;
+
+  const Banner({this.label = defaultLabel});
 }
 ''',
         },
@@ -613,10 +748,8 @@ class BannerSpec extends Spec<BannerSpec> {
       );
     });
 
-    test(
-      'forwards renderer constructor context parameters via this.context',
-      () async {
-        const source = r'''
+    test('forwards call method context parameters via this.context', () async {
+      const source = r'''
 library input;
 
 import 'package:flutter/widgets.dart';
@@ -626,81 +759,36 @@ import 'package:mix_annotations/mix_annotations.dart';
 part 'input.g.dart';
 
 class ContextWidget extends Widget {
-  final Key? key;
-  final Style<ContextSpec> style;
   final String context;
 
-  const ContextWidget({
-    this.key,
-    required this.style,
-    required this.context,
-  });
-}
-
-@MixWidgetRenderer(ContextWidget)
-class ContextSpec extends Spec<ContextSpec> {
-  const ContextSpec();
+  const ContextWidget({required this.context});
 }
 
 class ContextStyler extends Style<ContextSpec> {
   const ContextStyler();
 
   ContextStyler merge(ContextStyler? other) => this;
+
+  ContextWidget call({required String context}) {
+    return ContextWidget(context: context);
+  }
+}
+
+class ContextSpec extends Spec<ContextSpec> {
+  const ContextSpec();
 }
 
 @MixWidget()
 final contextStyle = ContextStyler();
 ''';
 
-        final output = await generateMixWidgetOutput(inputSource: source);
+      final output = await generateMixWidgetOutput(inputSource: source);
 
-        expect(output, contains('final String context;'));
-        expect(output, contains('context: this.context'));
-      },
-    );
-
-    test('ignores annotations not from the mix_annotations package', () async {
-      const source = r'''
-library input;
-
-import 'package:flutter/widgets.dart';
-import 'package:mix/mix.dart';
-import 'package:mix_annotations/mix_annotations.dart' as mix_annotations;
-
-part 'input.g.dart';
-
-class MixWidgetRenderer {
-  final Type widget;
-  const MixWidgetRenderer(this.widget);
-}
-
-@MixWidgetRenderer(Box)
-class CustomSpec extends Spec<CustomSpec> {
-  const CustomSpec();
-}
-
-class CustomStyle extends Style<CustomSpec> {
-  const CustomStyle();
-
-  CustomStyle merge(CustomStyle? other) => this;
-}
-
-@mix_annotations.MixWidget()
-final customStyle = CustomStyle();
-''';
-
-      final logs = await runMixWidgetWithLogs(source);
-
-      expect(
-        _severeMessages(logs),
-        allOf(
-          contains('No renderer found for CustomSpec'),
-          contains('@MixWidgetRenderer'),
-        ),
-      );
+      expect(output, contains('final String context;'));
+      expect(output, contains('context: this.context'));
     });
 
-    test('rejects renderer types that are not widgets', () async {
+    test('rejects generic call methods', () async {
       const source = r'''
 library input;
 
@@ -710,11 +798,6 @@ import 'package:mix_annotations/mix_annotations.dart';
 
 part 'input.g.dart';
 
-class NotAWidget {
-  const NotAWidget();
-}
-
-@MixWidgetRenderer(NotAWidget)
 class CustomSpec extends Spec<CustomSpec> {
   const CustomSpec();
 }
@@ -723,6 +806,8 @@ class CustomStyle extends Style<CustomSpec> {
   const CustomStyle();
 
   CustomStyle merge(CustomStyle? other) => this;
+
+  Widget call<T>() => const Widget();
 }
 
 @MixWidget()
@@ -731,127 +816,7 @@ final customStyle = CustomStyle();
 
       final logs = await runMixWidgetWithLogs(source);
 
-      expect(
-        _severeMessages(logs),
-        contains('must reference a Flutter Widget subclass'),
-      );
-    });
-
-    test('rejects renderers without a style: parameter', () async {
-      const source = r'''
-library input;
-
-import 'package:flutter/widgets.dart';
-import 'package:mix/mix.dart';
-import 'package:mix_annotations/mix_annotations.dart';
-
-part 'input.g.dart';
-
-class StylelessWidget extends Widget {
-  const StylelessWidget();
-}
-
-@MixWidgetRenderer(StylelessWidget)
-class CustomSpec extends Spec<CustomSpec> {
-  const CustomSpec();
-}
-
-class CustomStyle extends Style<CustomSpec> {
-  const CustomStyle();
-
-  CustomStyle merge(CustomStyle? other) => this;
-}
-
-@MixWidget()
-final customStyle = CustomStyle();
-''';
-
-      final logs = await runMixWidgetWithLogs(source);
-
-      expect(
-        _severeMessages(logs),
-        contains('must declare a named `style:` parameter'),
-      );
-    });
-
-    test('rejects renderers with incompatible style: parameter type', () async {
-      const source = r'''
-library input;
-
-import 'package:flutter/widgets.dart';
-import 'package:mix/mix.dart';
-import 'package:mix_annotations/mix_annotations.dart';
-
-part 'input.g.dart';
-
-class WrongStyleWidget extends Widget {
-  final Style<BoxSpec> style;
-
-  const WrongStyleWidget({required this.style});
-}
-
-@MixWidgetRenderer(WrongStyleWidget)
-class CustomSpec extends Spec<CustomSpec> {
-  const CustomSpec();
-}
-
-class CustomStyle extends Style<CustomSpec> {
-  const CustomStyle();
-
-  CustomStyle merge(CustomStyle? other) => this;
-}
-
-@MixWidget()
-final customStyle = CustomStyle();
-''';
-
-      final logs = await runMixWidgetWithLogs(source);
-
-      expect(
-        _severeMessages(logs),
-        contains('style parameter must accept the styler type'),
-      );
-    });
-
-    test('rejects generic renderer classes', () async {
-      const source = r'''
-library input;
-
-import 'package:flutter/widgets.dart';
-import 'package:mix/mix.dart';
-import 'package:mix_annotations/mix_annotations.dart';
-
-part 'input.g.dart';
-
-class GenericRenderer<T> extends Widget {
-  final Key? key;
-  final Style<CustomSpec> style;
-  final T value;
-
-  const GenericRenderer({this.key, required this.style, required this.value});
-}
-
-@MixWidgetRenderer(GenericRenderer)
-class CustomSpec extends Spec<CustomSpec> {
-  const CustomSpec();
-}
-
-class CustomStyle extends Style<CustomSpec> {
-  const CustomStyle();
-
-  CustomStyle merge(CustomStyle? other) => this;
-}
-
-@MixWidget()
-final customStyle = CustomStyle();
-''';
-
-      final logs = await runMixWidgetWithLogs(source);
-
-      expect(
-        _severeMessages(logs),
-        contains('Generic renderers are not yet supported'),
-      );
+      expect(_severeMessages(logs), contains('must not be generic'));
     });
 
     test('rejects invalid annotation target kinds', () async {
@@ -1060,13 +1025,8 @@ BoxStyler chipStyle({required Widget child}) => BoxStyler();
       },
     );
 
-    for (final reservedParameter in [
-      ('key', 'Color'),
-      ('styleSpec', 'Widget'),
-    ]) {
-      test('rejects reserved parameter `${reservedParameter.$1}`', () async {
-        final source =
-            '''
+    test('rejects reserved parameter `key`', () async {
+      const source = r'''
 library input;
 
 import 'package:flutter/widgets.dart';
@@ -1076,19 +1036,38 @@ import 'package:mix_annotations/mix_annotations.dart';
 part 'input.g.dart';
 
 @MixWidget()
-BoxStyler chipStyle({required ${reservedParameter.$2} ${reservedParameter.$1}}) => BoxStyler();
+BoxStyler chipStyle({required Color key}) => BoxStyler();
 ''';
 
-        final logs = await runMixWidgetWithLogs(source);
+      final logs = await runMixWidgetWithLogs(source);
 
-        expect(
-          _severeMessages(logs),
-          contains(
-            'Parameter `${reservedParameter.$1}` is reserved by @MixWidget.',
-          ),
-        );
-      });
-    }
+      expect(
+        _severeMessages(logs),
+        contains('Parameter `key` is reserved by @MixWidget.'),
+      );
+    });
+
+    test('rejects reserved parameter `build`', () async {
+      const source = r'''
+library input;
+
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+
+part 'input.g.dart';
+
+@MixWidget()
+BoxStyler chipStyle({required Widget build}) => BoxStyler();
+''';
+
+      final logs = await runMixWidgetWithLogs(source);
+
+      expect(
+        _severeMessages(logs),
+        contains('Parameter `build` is reserved by @MixWidget.'),
+      );
+    });
 
     test('allows factory parameters named style', () async {
       const source = r'''
@@ -1109,7 +1088,7 @@ BoxStyler chipStyle({BoxStyler? style}) {
       final output = await generateMixWidgetOutput(inputSource: source);
 
       expect(output, contains('final BoxStyler? style;'));
-      expect(output, contains('style: chipStyle(style: style)'));
+      expect(output, contains('return chipStyle(style: style).call('));
       expect(output, isNot(contains('.merge(style)')));
     });
 
@@ -1134,10 +1113,10 @@ final chipStyle = BoxStyler();
       expect(output, isNot(contains('this.style')));
       expect(output, isNot(contains('chipStyle(style: style)')));
       expect(output, isNot(contains('.merge(style)')));
-      expect(output, contains('style: chipStyle'));
+      expect(output, contains('return chipStyle.call('));
     });
 
-    test('emits prefixed built-in widget references', () async {
+    test('does not need prefixed built-in widget references', () async {
       const source = r'''
 library input;
 
@@ -1157,13 +1136,11 @@ final prefixedCardStyle = mix.BoxStyler();
       expect(output, contains('final Widget? child;'));
       expect(
         output,
-        contains(
-          'return mix.Box(key: key, style: prefixedCardStyle, child: child);',
-        ),
+        contains('return prefixedCardStyle.call(key: key, child: child);'),
       );
     });
 
-    test('rejects hidden built-in renderer widgets', () async {
+    test('allows hidden built-in widget classes', () async {
       const source = r'''
 library input;
 
@@ -1179,16 +1156,11 @@ final hiddenBoxStyle = BoxStyler();
 
       final logs = await runMixWidgetWithLogs(source);
 
-      expect(
-        _severeMessages(logs),
-        contains('could not reference renderer widget `Box`'),
-      );
+      expect(logs.where((record) => record.level == Level.SEVERE), isEmpty);
     });
 
-    test(
-      'generates Mix-owned wrappers without a concrete call method',
-      () async {
-        const source = r'''
+    test('rejects Mix-owned wrappers without a concrete call method', () async {
+      const source = r'''
 library input;
 
 import 'package:flutter/widgets.dart';
@@ -1207,18 +1179,13 @@ class NoCallBoxStyle extends Style<BoxSpec> {
 final noCallBoxStyle = NoCallBoxStyle();
 ''';
 
-        final output = await generateMixWidgetOutput(inputSource: source);
+      final logs = await runMixWidgetWithLogs(source);
 
-        expect(output, contains('class NoCallBox extends StatelessWidget'));
-        expect(output, contains('final Widget? child;'));
-        expect(
-          output,
-          contains(
-            'return Box(key: key, style: noCallBoxStyle, child: child);',
-          ),
-        );
-      },
-    );
+      expect(
+        _severeMessages(logs),
+        contains('No callable `call()` method found for NoCallBoxStyle'),
+      );
+    });
 
     test('resolves imported styler types across files', () async {
       const source = r'''
@@ -1253,7 +1220,110 @@ final sharedCardStyle = BoxStyler();
       expect(logs.where((record) => record.level == Level.SEVERE), isEmpty);
     });
 
-    test('uses built-in renderer for styler subclasses', () async {
+    test('rejects optional positional factory parameters', () async {
+      const source = r'''
+library input;
+
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+
+part 'input.g.dart';
+
+@MixWidget()
+BoxStyler pillStyle([double padding = 8]) => BoxStyler();
+''';
+
+      final logs = await runMixWidgetWithLogs(source);
+
+      expect(
+        _severeMessages(logs),
+        contains(
+          'factory parameter `padding` is optional positional. Use a '
+          'required positional or named parameter instead.',
+        ),
+      );
+    });
+
+    test('rejects generic style factory functions', () async {
+      const source = r'''
+library input;
+
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+
+part 'input.g.dart';
+
+@MixWidget()
+BoxStyler tokenStyle<T>(T value) => BoxStyler();
+''';
+
+      final logs = await runMixWidgetWithLogs(source);
+
+      expect(
+        _severeMessages(logs),
+        contains('does not support generic style factories'),
+      );
+    });
+
+    test(
+      'rejects libraries without an unprefixed Flutter widgets import',
+      () async {
+        const source = r'''
+library input;
+
+import 'package:flutter/widgets.dart' as fw;
+import 'package:mix/mix.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+
+part 'input.g.dart';
+
+@MixWidget()
+final cardStyle = BoxStyler();
+''';
+
+        final logs = await runMixWidgetWithLogs(source);
+
+        expect(
+          _severeMessages(logs),
+          contains(
+            'requires `Widget`, `StatelessWidget`, and `BuildContext` to be '
+            'available without an import prefix',
+          ),
+        );
+      },
+    );
+
+    test(
+      'rejects partial Flutter widget imports that hide generated base types',
+      () async {
+        const source = r'''
+library input;
+
+import 'package:flutter/widgets.dart' show Widget;
+import 'package:mix/mix.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+
+part 'input.g.dart';
+
+@MixWidget()
+final cardStyle = BoxStyler();
+''';
+
+        final logs = await runMixWidgetWithLogs(source);
+
+        expect(
+          _severeMessages(logs),
+          contains(
+            'requires `Widget`, `StatelessWidget`, and `BuildContext` to be '
+            'available without an import prefix',
+          ),
+        );
+      },
+    );
+
+    test('uses inherited call methods for styler subclasses', () async {
       const source = r'''
 library input;
 
@@ -1277,7 +1347,7 @@ final subCardStyle = SubStyler();
       expect(output, contains('final Widget? child;'));
       expect(
         output,
-        contains('return Box(key: key, style: subCardStyle, child: child);'),
+        contains('return subCardStyle.call(key: key, child: child);'),
       );
     });
   });

@@ -14,6 +14,6 @@ class PromoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Box(key: key, style: heroStyle, child: child);
+    return heroStyle.call(key: key, child: child);
   }
 }

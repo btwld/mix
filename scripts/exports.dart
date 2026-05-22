@@ -296,7 +296,6 @@ const _packageExportConfigs = <String, _PackageExportConfig>{
       // from leaking as public Mix API via the barrel.
       'src/core/equatable.dart',
       'src/core/shape_border_merge.dart',
-      'src/style/abstracts/styler.dart',
     ],
     forcedPaths: ['src/modifiers/internal/reset_modifier.dart'],
   ),

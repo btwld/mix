@@ -5,15 +5,15 @@
 ///
 /// 1. Reads the `name` override from the annotation.
 /// 2. Resolves the target styler type and its spec type.
-/// 3. Reads `@MixWidgetRenderer` on the spec class to find the renderer
-///    widget, then mirrors its constructor onto the generated wrapper.
-/// 4. Emits a direct constructor call to the renderer widget.
+/// 3. Resolves the styler's `call()` method and mirrors its public
+///    parameters onto the generated wrapper.
+/// 4. Emits a direct `style.call(...)` invocation.
 ///
 /// The pipeline is split across four modules:
 ///
 ///   * `core/models/widget_target.dart` — data types carried between phases.
-///   * `core/resolvers/widget_builder_resolver.dart` — renderer lookup and
-///     parameter validation against the spec annotation.
+///   * `core/resolvers/widget_builder_resolver.dart` — styler call lookup and
+///     parameter validation.
 ///   * `core/builders/widget_class_builder.dart` — `code_builder`-driven
 ///     emission of the generated class.
 ///   * `core/errors.dart` + `core/checkers.dart` — shared primitives.
@@ -35,7 +35,7 @@ import 'core/helpers/type_hierarchy.dart';
 import 'core/models/widget_target.dart';
 import 'core/resolvers/widget_builder_resolver.dart';
 
-const _reservedParameterNames = {'key', 'styleSpec'};
+const _reservedParameterNames = {'key', 'build'};
 const _mixAnnotationsPackagePrefix = 'package:mix_annotations/';
 
 class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
@@ -63,10 +63,7 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
       generatedName: generatedName,
     );
 
-    final resolvedRenderer = resolveWidgetRenderer(
-      target: target,
-      element: element,
-    );
+    final resolvedCall = resolveStylerCall(target: target, element: element);
 
     final factoryParameters = _resolveFactoryParameters(
       _extractFactoryParameters(target.factoryElement, inputLibrary),
@@ -75,14 +72,14 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
 
     _validateParameterCollisions(
       factoryParameters: factoryParameters,
-      widgetParameters: resolvedRenderer.parameters,
+      widgetParameters: resolvedCall.parameters,
       element: element,
     );
 
     return buildWidgetClass(
       generatedName: generatedName,
       target: target,
-      resolvedRenderer: resolvedRenderer,
+      resolvedCall: resolvedCall,
       factoryParameters: factoryParameters,
     );
   }
@@ -171,6 +168,15 @@ AnnotatedTarget _extractAnnotatedTarget(Element element) {
 
   if (element is TopLevelFunctionElement) {
     _validateTopLevelElement(element);
+    if (element.typeParameters.isNotEmpty) {
+      fail(
+        element,
+        '@MixWidget does not support generic style factories.',
+        todo:
+            'Move the generic value into a concrete named parameter or '
+            'create a non-generic factory.',
+      );
+    }
     final sourceName = _requireName(element);
     final stylerType = _extractStylerType(element.returnType, element);
 
@@ -225,7 +231,8 @@ InterfaceType _extractStylerType(DartType type, Element element) {
     );
   }
 
-  if (_findStyleSupertype(type) == null) {
+  final styleType = _findStyleSupertype(type);
+  if (styleType == null) {
     fail(
       element,
       '@MixWidget can only be applied to declarations returning a Style<T> '
@@ -233,6 +240,17 @@ InterfaceType _extractStylerType(DartType type, Element element) {
       todo:
           'Return a concrete Mix styler such as BoxStyler(), TextStyler(), '
           'or FlexBoxStyler().',
+    );
+  }
+
+  if (styleChecker.isExactlyType(type)) {
+    fail(
+      element,
+      '@MixWidget requires a concrete styler type with a callable `call()` '
+      'method.',
+      todo:
+          'Declare the target as a concrete styler such as BoxStyler instead '
+          'of Style<T>.',
     );
   }
 
@@ -292,6 +310,19 @@ FactoryParameters _resolveFactoryParameters(
     final isNamedBuildContext =
         parameter.type is InterfaceType &&
         (parameter.type as InterfaceType).element.name == 'BuildContext';
+
+    if (parameter.isOptionalPositional &&
+        !isFlutterBuildContext &&
+        !isNamedBuildContext) {
+      fail(
+        element,
+        '@MixWidget factory parameter `${parameter.name}` is optional '
+        'positional. Use a required positional or named parameter instead.',
+        todo:
+            'Make the parameter named (and `required` if needed) or '
+            'required positional.',
+      );
+    }
 
     if (index == 0 &&
         parameter.name == 'context' &&
@@ -354,6 +385,14 @@ void _validateParameterCollisions({
     ...factoryParameters.publicParameters,
     ...widgetParameters,
   ]) {
+    if (parameter.name.startsWith('_')) {
+      fail(
+        element,
+        'Parameter `${parameter.name}` cannot be private in a generated '
+        '@MixWidget wrapper.',
+      );
+    }
+
     if (_reservedParameterNames.contains(parameter.name)) {
       fail(element, 'Parameter `${parameter.name}` is reserved by @MixWidget.');
     }

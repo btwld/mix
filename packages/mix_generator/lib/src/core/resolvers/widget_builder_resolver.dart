@@ -1,10 +1,7 @@
 /// Resolves how a `@MixWidget` target renders.
 ///
-/// Looks up `@MixWidgetRenderer` on the spec class for the target's
-/// `Style<TSpec>`, validates the renderer is a Flutter widget with a
-/// compatible `style:` parameter, and mirrors the renderer's unnamed
-/// constructor (excluding `key`, `style`, `styleSpec`) onto the generated
-/// wrapper.
+/// The styler's concrete `call()` method is the source of truth for generated
+/// wrapper parameters and widget creation.
 library;
 
 import 'package:analyzer/dart/analysis/utilities.dart';
@@ -21,265 +18,104 @@ import '../models/widget_target.dart';
 
 final _log = Logger('mix_generator.widget_builder');
 
-const _reservedRendererParameterNames = {'key', 'style', 'styleSpec'};
-
-/// Resolves the rendering strategy for [target].
-///
-/// The renderer is declared once on the spec class via `@MixWidgetRenderer`.
-/// Specs without that annotation produce a clear codegen error.
-ResolvedWidgetRenderer resolveWidgetRenderer({
+/// Resolves the styler `call()` contract for [target].
+ResolvedStylerCall resolveStylerCall({
   required AnnotatedTarget target,
   required Element element,
 }) {
-  final specType = target.specType;
-  final specElement = specType is InterfaceType ? specType.element : null;
-  if (specElement == null) {
+  final callMethod = target.stylerType.lookUpMethod(
+    MethodElement.CALL_METHOD_NAME,
+    element.library!,
+  );
+  final stylerName = target.stylerType.getDisplayString();
+  if (callMethod == null) {
+    fail(element, 'No callable `call()` method found for $stylerName.');
+  }
+
+  if (callMethod.typeParameters.isNotEmpty) {
     fail(
       element,
-      'Could not resolve spec class for ${specType.getDisplayString()}.',
+      'Styler `$stylerName.call` must not be generic. Move generic values '
+      'into concrete method parameters.',
     );
   }
 
-  final rendererElement = _readRendererFromSpec(
-    specElement: specElement,
+  _validateCallReturnsWidget(
+    callMethod: callMethod,
+    stylerName: stylerName,
     element: element,
   );
 
-  _validateRendererIsWidget(
-    rendererElement: rendererElement,
-    specElement: specElement,
-    element: element,
-  );
-
-  final constructor = rendererElement.unnamedConstructor;
-  final rendererName = rendererElement.name ?? '<unknown>';
-  if (constructor == null) {
-    final specName = specElement.name ?? '<unknown>';
-    fail(
-      element,
-      'Renderer `$rendererName` declared on '
-      '$specName via @MixWidgetRenderer must expose an unnamed '
-      'constructor.',
-    );
-  }
-
-  _validateStyleParameter(
-    constructor: constructor,
-    rendererName: rendererName,
-    target: target,
-    element: element,
-  );
-
-  _validateKeyParameter(
-    constructor: constructor,
-    rendererName: rendererName,
-    element: element,
-  );
-
-  final wrapperParameters = _extractRendererParameters(
-    constructor: constructor,
-    rendererName: rendererName,
-    element: element,
-  );
-
-  final widgetReference = _resolveWidgetReference(
-    widgetElement: rendererElement,
+  _validateFlutterFrameworkVisibility(
+    returnType: callMethod.returnType,
     library: element.library!,
     element: element,
   );
 
-  _log.info(
-    '${target.sourceName}: rendering via $widgetReference for '
-    '${specType.getDisplayString()}.',
+  final (:parameters, :forwardsKey) = _extractCallParameters(
+    callMethod: callMethod,
+    stylerName: stylerName,
+    element: element,
   );
 
-  return ResolvedWidgetRenderer(
-    widgetReference: widgetReference,
-    parameters: wrapperParameters,
+  _log.info(
+    '${target.sourceName}: rendering via $stylerName.call for '
+    '${target.specType.getDisplayString()}.',
   );
+
+  return ResolvedStylerCall(parameters: parameters, forwardsKey: forwardsKey);
 }
 
-InterfaceElement _readRendererFromSpec({
-  required InterfaceElement specElement,
+void _validateCallReturnsWidget({
+  required MethodElement callMethod,
+  required String stylerName,
   required Element element,
 }) {
-  for (final annotation in specElement.metadata.annotations) {
-    final value = annotation.computeConstantValue();
-    if (value == null) {
-      continue;
-    }
-
-    final type = value.type;
-    if (type == null ||
-        !mixWidgetRendererAnnotationChecker.isExactlyType(type)) {
-      continue;
-    }
-
-    final widgetType = value.getField('widget')?.toTypeValue();
-    if (widgetType == null) {
-      final specName = specElement.name ?? '<unknown>';
-      fail(
-        element,
-        '@MixWidgetRenderer on $specName did not provide a widget '
-        'type.',
-      );
-    }
-
-    if (widgetType is! InterfaceType) {
-      final specName = specElement.name ?? '<unknown>';
-      fail(
-        element,
-        '@MixWidgetRenderer on $specName must reference a class, '
-        'got ${widgetType.getDisplayString()}.',
-      );
-    }
-
-    return widgetType.element;
+  final returnType = callMethod.returnType;
+  if (flutterWidgetChecker.isAssignableFromType(returnType)) {
+    return;
   }
 
   fail(
     element,
-    'No renderer found for ${specElement.name ?? '<unknown>'}. '
-    'Annotate the spec class with '
-    '@MixWidgetRenderer(YourWidget) to declare its renderer.',
+    'Styler `$stylerName.call` returns ${returnType.getDisplayString()}, '
+    'but must return a Flutter Widget.',
   );
 }
 
-void _validateRendererIsWidget({
-  required InterfaceElement rendererElement,
-  required InterfaceElement specElement,
-  required Element element,
-}) {
-  if (rendererElement is! ClassElement) {
-    final specName = specElement.name ?? '<unknown>';
-    final rendererName = rendererElement.name ?? '<unknown>';
-    fail(
-      element,
-      '@MixWidgetRenderer on $specName must reference a class. Got '
-      '$rendererName.',
-    );
-  }
-
-  if (rendererElement.isAbstract) {
-    final specName = specElement.name ?? '<unknown>';
-    final rendererName = rendererElement.name ?? '<unknown>';
-    fail(
-      element,
-      '@MixWidgetRenderer on $specName must reference a concrete widget '
-      'class. Got abstract class $rendererName.',
-    );
-  }
-
-  final rendererInterface = rendererElement.thisType;
-  if (!flutterWidgetChecker.isAssignableFromType(rendererInterface)) {
-    final specName = specElement.name ?? '<unknown>';
-    final rendererName = rendererElement.name ?? '<unknown>';
-    fail(
-      element,
-      '@MixWidgetRenderer on $specName must reference a Flutter '
-      'Widget subclass. Got $rendererName.',
-    );
-  }
-
-  if (rendererElement.typeParameters.isNotEmpty) {
-    final specName = specElement.name ?? '<unknown>';
-    final rendererName = rendererElement.name ?? '<unknown>';
-    fail(
-      element,
-      '@MixWidgetRenderer on $specName references generic class '
-      '`$rendererName<...>`. Generic renderers are not yet supported. '
-      'Use a non-generic concrete subclass as the renderer.',
-    );
-  }
-}
-
-void _validateStyleParameter({
-  required ConstructorElement constructor,
-  required String rendererName,
-  required AnnotatedTarget target,
-  required Element element,
-}) {
-  final styleParameter = _findNamedParameter(constructor, 'style');
-  if (styleParameter == null) {
-    fail(
-      element,
-      'Renderer `$rendererName` must declare a named `style:` parameter '
-      'compatible with ${target.stylerType.getDisplayString()}.',
-    );
-  }
-
-  final typeSystem = element.library!.typeSystem;
-  if (!typeSystem.isAssignableTo(
-    target.stylerType,
-    styleParameter.type,
-    strictCasts: false,
-  )) {
-    fail(
-      element,
-      'Renderer `$rendererName.style` is '
-      '${styleParameter.type.getDisplayString()}, but the styler returns '
-      '${target.stylerType.getDisplayString()}. The style parameter must '
-      'accept the styler type.',
-    );
-  }
-}
-
-void _validateKeyParameter({
-  required ConstructorElement constructor,
-  required String rendererName,
-  required Element element,
-}) {
-  final keyParameter = _findNamedParameter(constructor, 'key');
-  if (keyParameter == null) {
-    fail(
-      element,
-      'Renderer `$rendererName` must declare a named `Key? key` parameter.',
-    );
-  }
-
-  final keyType = keyParameter.type;
-  final isKey = flutterKeyChecker.isExactlyType(keyType);
-  final isNullable = keyType.nullabilitySuffix == .question;
-  if (!isKey || !isNullable) {
-    fail(
-      element,
-      'Renderer `$rendererName.key` is '
-      '${keyType.getDisplayString()}, but must be `Key?`.',
-    );
-  }
-}
-
-FormalParameterElement? _findNamedParameter(
-  ConstructorElement constructor,
-  String name,
-) {
-  for (final parameter in constructor.formalParameters) {
-    if (parameter.isNamed && parameter.name == name) {
-      return parameter;
-    }
-  }
-
-  return null;
-}
-
-List<ParameterSpec> _extractRendererParameters({
-  required ConstructorElement constructor,
-  required String rendererName,
+({List<ParameterSpec> parameters, bool forwardsKey}) _extractCallParameters({
+  required MethodElement callMethod,
+  required String stylerName,
   required Element element,
 }) {
   final parameters = <ParameterSpec>[];
-  for (final parameter in constructor.formalParameters) {
+  var forwardsKey = false;
+
+  for (final parameter in callMethod.formalParameters) {
     final name = parameter.name;
     if (name == null) {
       continue;
     }
-    if (_reservedRendererParameterNames.contains(name)) {
+
+    if (name == 'key') {
+      if (!parameter.isNamed) {
+        fail(
+          element,
+          'Styler `$stylerName.call` parameter `key` must be named `Key? key`.',
+        );
+      }
+      _validateKeyParameter(
+        parameter: parameter,
+        stylerName: stylerName,
+        element: element,
+      );
+      forwardsKey = true;
       continue;
     }
 
-    _validateForwardedRendererParameter(
+    _validateForwardedCallParameter(
       parameter: parameter,
-      rendererName: rendererName,
+      stylerName: stylerName,
       element: element,
     );
 
@@ -288,39 +124,55 @@ List<ParameterSpec> _extractRendererParameters({
     );
   }
 
-  return parameters;
+  return (parameters: parameters, forwardsKey: forwardsKey);
 }
 
-void _validateForwardedRendererParameter({
+void _validateKeyParameter({
   required FormalParameterElement parameter,
-  required String rendererName,
+  required String stylerName,
+  required Element element,
+}) {
+  final keyType = parameter.type;
+  final isKey = flutterKeyChecker.isExactlyType(keyType);
+  final isNullable = keyType.nullabilitySuffix == .question;
+  if (!isKey || !isNullable) {
+    fail(
+      element,
+      'Styler `$stylerName.call` parameter `key` is '
+      '${keyType.getDisplayString()}, but must be `Key?`.',
+    );
+  }
+}
+
+void _validateForwardedCallParameter({
+  required FormalParameterElement parameter,
+  required String stylerName,
   required Element element,
 }) {
   if (parameter.isOptionalPositional) {
     final parameterName = parameter.name ?? '?';
     fail(
       element,
-      'Renderer `$rendererName` constructor parameter '
-      '`$parameterName` is optional positional. Use a required '
-      'positional or named parameter instead.',
+      'Styler `$stylerName.call` parameter `$parameterName` is optional '
+      'positional. Use a required positional or named parameter instead.',
     );
   }
 
   _validateParameterTypeVisible(
     parameter: parameter,
-    rendererName: rendererName,
+    stylerName: stylerName,
     element: element,
   );
   _validateParameterDefaultVisible(
     parameter: parameter,
-    rendererName: rendererName,
+    stylerName: stylerName,
     element: element,
   );
 }
 
 void _validateParameterTypeVisible({
   required FormalParameterElement parameter,
-  required String rendererName,
+  required String stylerName,
   required Element element,
 }) {
   final hiddenType = firstInvisibleTypeName(parameter.type, element.library!);
@@ -331,7 +183,7 @@ void _validateParameterTypeVisible({
   final parameterName = parameter.name ?? '<unknown>';
   fail(
     element,
-    'Renderer `$rendererName` parameter `$parameterName` has type '
+    'Styler `$stylerName.call` parameter `$parameterName` has type '
     '${parameter.type.getDisplayString()}, which is not visible to the '
     'annotated library. Import or re-export `$hiddenType` where @MixWidget '
     'is used.',
@@ -340,7 +192,7 @@ void _validateParameterTypeVisible({
 
 void _validateParameterDefaultVisible({
   required FormalParameterElement parameter,
-  required String rendererName,
+  required String stylerName,
   required Element element,
 }) {
   final defaultValueCode = parameter.defaultValueCode;
@@ -351,7 +203,7 @@ void _validateParameterDefaultVisible({
   final issue = _firstDefaultVisibilityIssue(
     defaultValueCode,
     annotatedLibrary: element.library!,
-    rendererLibrary: parameter.library!,
+    callLibrary: parameter.library!,
   );
   if (issue == null) {
     return;
@@ -361,17 +213,18 @@ void _validateParameterDefaultVisible({
   if (issue.shadowed) {
     fail(
       element,
-      'Renderer `$rendererName` parameter `$parameterName` has default '
+      'Styler `$stylerName.call` parameter `$parameterName` has default '
       'value `$defaultValueCode`, where `${issue.identifier}` resolves to a '
-      'different declaration in the annotated library than in the renderer '
-      'library. Rename the conflicting symbol in the annotated library, or '
-      "restructure imports so it sees the renderer's `${issue.identifier}`.",
+      'different declaration in the annotated library than in the call '
+      'method library. Rename the conflicting symbol in the annotated '
+      "library, or restructure imports so it sees the call method's "
+      '`${issue.identifier}`.',
     );
   }
 
   fail(
     element,
-    'Renderer `$rendererName` parameter `$parameterName` has default '
+    'Styler `$stylerName.call` parameter `$parameterName` has default '
     'value `$defaultValueCode`, which references `${issue.identifier}` that '
     'is not visible to the annotated library. Import or re-export '
     '`${issue.identifier}` where @MixWidget is used.',
@@ -381,7 +234,7 @@ void _validateParameterDefaultVisible({
 ({String identifier, bool shadowed})? _firstDefaultVisibilityIssue(
   String defaultValueCode, {
   required LibraryElement annotatedLibrary,
-  required LibraryElement rendererLibrary,
+  required LibraryElement callLibrary,
 }) {
   final result = parseString(
     content: 'dynamic __mix_default__ = $defaultValueCode;',
@@ -406,10 +259,10 @@ void _validateParameterDefaultVisible({
       return (identifier: identifier, shadowed: false);
     }
 
-    final rendererElement = _resolveTopLevel(rendererLibrary, identifier);
+    final callElement = _resolveTopLevel(callLibrary, identifier);
     if (annotatedElement != null &&
-        rendererElement != null &&
-        annotatedElement.baseElement != rendererElement.baseElement) {
+        callElement != null &&
+        annotatedElement.baseElement != callElement.baseElement) {
       return (identifier: identifier, shadowed: true);
     }
   }
@@ -473,25 +326,69 @@ class _FreeIdentifierCollector extends RecursiveAstVisitor<void> {
   }
 }
 
-String _resolveWidgetReference({
-  required InterfaceElement widgetElement,
+/// The generated wrapper emits bare `StatelessWidget`, `Widget`, and
+/// `BuildContext` references in a `part of` contribution. They must be
+/// visible without a prefix in the annotated library; otherwise the
+/// generated code does not compile.
+void _validateFlutterFrameworkVisibility({
+  required DartType returnType,
   required LibraryElement library,
   required Element element,
 }) {
-  final name = widgetElement.name;
-  if (name == null) {
-    fail(element, '@MixWidget requires a named renderer widget.');
+  final widgetElement = _flutterWidgetElement(returnType);
+  if (widgetElement == null) {
+    return;
   }
 
-  final reference = referenceFor(widgetElement, library);
-  if (reference != null) {
-    return reference;
+  final frameworkLibrary = widgetElement.library;
+  final requiredElements = [
+    widgetElement,
+    _interfaceElementNamed(frameworkLibrary, 'StatelessWidget'),
+    _interfaceElementNamed(frameworkLibrary, 'BuildContext'),
+  ];
+
+  for (final requiredElement in requiredElements) {
+    final reference = requiredElement == null
+        ? null
+        : referenceFor(requiredElement, library);
+    if (reference == null || reference.contains('.')) {
+      fail(
+        element,
+        '@MixWidget requires `Widget`, `StatelessWidget`, and `BuildContext` '
+        'to be available without an import prefix in this library.',
+        todo:
+            "Add an unprefixed `import 'package:flutter/widgets.dart';` (or "
+            '`material.dart`/`cupertino.dart`) so the generated wrapper '
+            'compiles.',
+      );
+    }
+  }
+}
+
+InterfaceElement? _interfaceElementNamed(LibraryElement library, String name) {
+  for (final element in library.classes) {
+    if (element.name == name) {
+      return element;
+    }
   }
 
-  fail(
-    element,
-    '@MixWidget could not reference renderer widget `$name`. Import the '
-    'library that exports `$name` without hiding it, or import it with a '
-    'visible prefix.',
-  );
+  return null;
+}
+
+InterfaceElement? _flutterWidgetElement(DartType returnType) {
+  if (returnType is! InterfaceType) {
+    return null;
+  }
+
+  if (flutterWidgetChecker.isExactlyType(returnType)) {
+    return returnType.element;
+  }
+
+  for (final supertype in returnType.allSupertypes) {
+    if (flutterWidgetChecker.isExactlyType(supertype)) {
+      return supertype.element;
+    }
+  }
+
+  return null;
 }

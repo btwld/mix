@@ -71,6 +71,8 @@ class ParameterSpec {
       defaultValueCode: parameter.defaultValueCode,
     );
   }
+
+  bool get isOptionalPositional => !isRequiredPositional && !isNamed;
 }
 
 /// Factory-function parameters split between the user-visible wrapper
@@ -90,18 +92,16 @@ class FactoryParameters {
   });
 }
 
-/// The renderer widget and wrapper parameters used to emit the widget class.
-class ResolvedWidgetRenderer {
-  /// The renderer widget reference as it should appear in generated code,
-  /// optionally prefixed (e.g. `Box`, `mix.Box`, `RemixButton`).
-  final String widgetReference;
-
-  /// Parameters mirrored from the renderer widget's unnamed constructor,
-  /// excluding `key`, `style`, and `styleSpec`.
+/// The styler call signature used to emit the widget class.
+class ResolvedStylerCall {
+  /// Parameters mirrored from the styler's `call()` method, excluding `key`.
   final List<ParameterSpec> parameters;
 
-  const ResolvedWidgetRenderer({
-    required this.widgetReference,
+  /// Whether `call()` accepts a named `Key? key` parameter.
+  final bool forwardsKey;
+
+  const ResolvedStylerCall({
     required this.parameters,
+    required this.forwardsKey,
   });
 }

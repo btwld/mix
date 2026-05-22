@@ -99,8 +99,8 @@ final cardStyle = BoxStyler()
     .borderRounded(12);
 ```
 
-The simplest generated wrapper mirrors the `Box` renderer constructor, so it
-exposes `child` and constructs `Box` directly:
+The simplest generated wrapper mirrors the styler's `call()` method, so it
+exposes `child` and delegates widget creation back to the styler:
 
 ```dart
 class Card extends StatelessWidget {
@@ -110,13 +110,13 @@ class Card extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Box(key: key, style: cardStyle, child: child);
+    return cardStyle.call(key: key, child: child);
   }
 }
 ```
 
-Text wrappers expose a different constructor shape because `StyledText` takes
-positional text:
+Text wrappers expose a different constructor shape because `TextStyler.call`
+takes positional text:
 
 ```dart
 @MixWidget()
@@ -133,13 +133,12 @@ class Heading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StyledText(text, key: key, style: headingStyle);
+    return headingStyle.call(text, key: key);
   }
 }
 ```
 
-The generated wrapper API comes from Mix renderer widget constructors, not
-styler `call()` methods.
+The generated wrapper API comes from the styler `call()` method.
 
 Use a function-backed style when the generated component should accept style
 inputs:
@@ -166,20 +165,15 @@ class Chip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Box(key: key, style: chipStyle(style: style), child: child);
+    return chipStyle(style: style).call(key: key, child: child);
   }
 }
 ```
 
-Mix-owned specs (`BoxSpec`, `TextSpec`, `FlexBoxSpec`, `IconSpec`,
-`ImageSpec`, `StackBoxSpec`) ship with `@MixWidgetRenderer` annotations, so
-applying `@MixWidget()` to a built-in styler "just works".
-
-For custom design-system widgets, declare the renderer once on the spec
-class with `@MixWidgetRenderer`:
+For custom design-system widgets, define the rendering surface on the styler's
+`call()` method:
 
 ```dart
-@MixWidgetRenderer(Button)
 class ButtonSpec extends Spec<ButtonSpec> {
   const ButtonSpec();
 }
@@ -188,6 +182,19 @@ class ButtonStyler extends Style<ButtonSpec> {
   const ButtonStyler();
   ButtonStyler color(Color value) => this;
   ButtonStyler merge(ButtonStyler? other) => this;
+
+  Button call({
+    Key? key,
+    required VoidCallback onPressed,
+    required Widget child,
+  }) {
+    return Button(
+      key: key,
+      style: this,
+      onPressed: onPressed,
+      child: child,
+    );
+  }
 }
 
 class Button extends StatelessWidget {
@@ -211,13 +218,10 @@ ButtonStyler primaryButtonStyle({Color color = Colors.blue}) {
 }
 ```
 
-The generated `PrimaryButton` constructs `Button(...)` directly. Wrapper
-parameters come from `Button`'s constructor (excluding `key`, `style`,
-`styleSpec`); visual variants belong in the styler or style factory.
-
-The renderer widget needs only a `style:` named parameter assignable from
-the styler's `Style<TSpec>`. It does not need to extend `StyleWidget` or
-carry any annotation of its own.
+The generated `PrimaryButton` calls
+`primaryButtonStyle(color: color).call(...)`. Wrapper parameters come from
+the style factory plus `ButtonStyler.call`; visual variants belong in the
+styler or style factory.
 
 A top-level style function may take `BuildContext context` as its first required
 positional parameter. The generated wrapper injects the build context from

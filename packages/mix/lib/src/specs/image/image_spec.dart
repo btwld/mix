@@ -4,7 +4,6 @@ import 'package:mix_annotations/mix_annotations.dart';
 
 import '../../core/helpers.dart';
 import '../../core/spec.dart';
-import 'image_widget.dart';
 
 part 'image_spec.g.dart';
 
@@ -13,7 +12,6 @@ part 'image_spec.g.dart';
 /// Provides comprehensive image styling including dimensions, color, fit,
 /// alignment, filtering, and semantic properties.
 @MixableSpec()
-@MixWidgetRenderer(StyledImage)
 @immutable
 final class ImageSpec with _$ImageSpec {
   /// The image to display.

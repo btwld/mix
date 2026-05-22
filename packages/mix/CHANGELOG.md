@@ -3,17 +3,13 @@
 ### Breaking
 
 - **`@MixWidget` redesign:** Removed the `widgetBuilder:` field and the
-  `MixWidgetBuilder` marker class. Custom rendering is now declared once on
-  the spec class via `@MixWidgetRenderer(YourWidget)`. The generator reads
-  that annotation, validates the renderer widget, and mirrors its
-  constructor onto the generated wrapper. Mix's own specs ship with
-  `@MixWidgetRenderer` annotations, so `@MixWidget()` on built-in stylers
-  continues to work without changes.
+  `MixWidgetBuilder` marker class. Generated wrappers now read the styler's
+  concrete `call()` method, validate that it returns a Flutter `Widget`, and
+  mirror its parameters onto the generated wrapper.
 - **Migration:** Replace `@MixWidget(widgetBuilder: SomeBuilder())` with
-  `@MixWidget()` and add `@MixWidgetRenderer(SomeWidget)` to your spec
-  class. Delete adapter classes that extend `MixWidgetBuilder`. Existing
-  widgets only need a `style:` parameter on their constructor — they do not
-  need to extend `StyleWidget`.
+  `@MixWidget()` and move widget parameters to the styler's `call()` method.
+  Delete adapter classes that extend `MixWidgetBuilder` and remove any
+  spec-side rendering annotations.
 
 ## 2.0.2
 

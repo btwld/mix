@@ -23,10 +23,9 @@ class DefaultCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Box(
-      key: key,
-      style: defaultCardStyle(compact: compact, padding: padding),
-      child: child,
-    );
+    return defaultCardStyle(
+      compact: compact,
+      padding: padding,
+    ).call(key: key, child: child);
   }
 }

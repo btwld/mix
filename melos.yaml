@@ -138,7 +138,7 @@ scripts:
     run: melos exec --depends-on="mix_lint" dart pub run custom_lint
 
   exports:
-    run: melos exec --scope="mix" dart run ../../scripts/exports.dart .
+    run: melos exec --scope="mix" -- "dart run ../../scripts/exports.dart . && dart format lib/mix.dart"
     description: Generate exports for the mix package
 
   goldens:mix_widget:update:
