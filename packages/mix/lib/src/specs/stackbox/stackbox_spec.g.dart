@@ -76,3 +76,8 @@ mixin _$StackBoxSpec implements Spec<StackBoxSpec>, Diagnosticable {
       ..add(DiagnosticsProperty('stack', stack));
   }
 }
+
+@Deprecated(
+  'Rename to `_\$StackBoxSpec` and migrate the class declaration to `class StackBoxSpec with _\$StackBoxSpec`. The `_\$StackBoxSpecMethods` alias will be removed in mix_generator 3.0.',
+)
+typedef _$StackBoxSpecMethods = _$StackBoxSpec; // ignore: unused_element

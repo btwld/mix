@@ -158,3 +158,8 @@ mixin _$IconSpec implements Spec<IconSpec>, Diagnosticable {
       ..add(DiagnosticsProperty('icon', icon));
   }
 }
+
+@Deprecated(
+  'Rename to `_\$IconSpec` and migrate the class declaration to `class IconSpec with _\$IconSpec`. The `_\$IconSpecMethods` alias will be removed in mix_generator 3.0.',
+)
+typedef _$IconSpecMethods = _$IconSpec; // ignore: unused_element

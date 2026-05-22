@@ -162,6 +162,34 @@ class SpecMixinBuilder {
     return buffer.toString();
   }
 
+  /// Emits a deprecated typedef from the pre-2.0 mixin name to the
+  /// current rich mixin. The new mixin has no `on` constraint, so the
+  /// legacy host shape resolves cleanly through the alias.
+  ///
+  /// `\$` escapes are required: the emitted message lives inside a Dart
+  /// string literal in the `.g.dart` file, so a bare `$` would re-trigger
+  /// interpolation and fail to resolve (`BoxSpecMethods` is not a symbol).
+  String _buildLegacyTypedef() {
+    final buffer = StringBuffer();
+    buffer.writeln(
+      "@Deprecated('Rename to `_\\\$$specName` and migrate the class "
+      "declaration to `class $specName with _\\\$$specName`. The "
+      "`_\\\$${specName}Methods` alias will be removed in mix_generator 3.0.')",
+    );
+    // Suppress `unused_element`: callers on the new host shape never
+    // reference the alias, so the hint would fire on every spec.
+    buffer.writeln(
+      'typedef $_legacyMixinName = $mixinName; // ignore: unused_element',
+    );
+
+    return buffer.toString();
+  }
+
+  /// Pre-2.0 generator name, kept as a deprecated alias so legacy
+  /// `class X extends Spec<X> with Diagnosticable, _$XSpecMethods`
+  /// declarations keep compiling against the 2.0+ generator.
+  String get _legacyMixinName => '_\$${specName}Methods';
+
   /// The generated mixin name, e.g. `_$BoxSpec`.
   String get mixinName => '_\$$specName';
 
@@ -195,6 +223,8 @@ class SpecMixinBuilder {
     buffer.writeln(_buildDebugFillProperties());
 
     buffer.writeln('}');
+    buffer.writeln();
+    buffer.write(_buildLegacyTypedef());
 
     return buffer.toString();
   }

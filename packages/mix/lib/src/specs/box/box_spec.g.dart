@@ -132,3 +132,8 @@ mixin _$BoxSpec implements Spec<BoxSpec>, Diagnosticable {
       ..add(EnumProperty<Clip>('clipBehavior', clipBehavior));
   }
 }
+
+@Deprecated(
+  'Rename to `_\$BoxSpec` and migrate the class declaration to `class BoxSpec with _\$BoxSpec`. The `_\$BoxSpecMethods` alias will be removed in mix_generator 3.0.',
+)
+typedef _$BoxSpecMethods = _$BoxSpec; // ignore: unused_element

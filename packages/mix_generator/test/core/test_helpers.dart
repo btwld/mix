@@ -1,10 +1,82 @@
+import 'package:analyzer/dart/analysis/results.dart';
+import 'package:analyzer/diagnostic/diagnostic.dart';
 import 'package:build/build.dart';
+import 'package:build_test/build_test.dart';
 import 'package:mix_generator/src/core/models/field_model.dart';
 import 'package:mix_generator/src/core/models/mix_field_model.dart';
 import 'package:source_gen/source_gen.dart';
+import 'package:test/test.dart';
 
 /// Wraps [generator] in a `PartBuilder` that writes a single `.g.dart` part.
 Builder partBuilder(Generator generator) => PartBuilder([generator], '.g.dart');
+
+/// Asserts that running [builder] over [sources] produces a generated part
+/// file that, when re-resolved together with its host library, surfaces no
+/// analyzer errors.
+///
+/// `contains(...)` matchers in `testBuilder` outputs happily pass syntactically
+/// or semantically broken code (e.g., a generated string literal that
+/// interpolates an undefined identifier). This helper closes that gap: it
+/// captures the generated source, re-feeds the library through
+/// `resolveSources`, and fails if any unit reports an error-severity
+/// diagnostic. Warnings and infos are ignored.
+///
+/// The [sources] map must contain everything the *generated output* references
+/// (e.g., `MixOps`), not just what the *input* needs to type-check.
+Future<void> expectGeneratorOutputResolves({
+  required Builder builder,
+  required Map<String, String> sources,
+  required String inputAsset,
+  required String outputAsset,
+}) async {
+  String? generated;
+  await testBuilder(
+    builder,
+    sources,
+    generateFor: {inputAsset},
+    outputs: {
+      outputAsset: decodedMatches(
+        predicate<String>((value) {
+          generated = value;
+          return true;
+        }, 'captured generator output'),
+      ),
+    },
+  );
+
+  if (generated == null) {
+    fail('Generator produced no output for $outputAsset.');
+  }
+
+  await resolveSources({...sources, outputAsset: generated!}, (resolver) async {
+    final library = await resolver.libraryFor(AssetId.parse(inputAsset));
+    final libPath = library.firstFragment.source.fullName;
+    final result = await library.session.getResolvedLibrary(libPath);
+    if (result is! ResolvedLibraryResult) {
+      fail('Could not resolve library at $libPath: $result');
+    }
+
+    final errors = <String>[];
+    for (final unit in result.units) {
+      for (final diagnostic in unit.diagnostics) {
+        if (diagnostic.severity != Severity.error) continue;
+        final pos = unit.lineInfo.getLocation(diagnostic.offset);
+        errors.add(
+          '${unit.path}:${pos.lineNumber}:${pos.columnNumber}: '
+          '${diagnostic.message} '
+          '(${diagnostic.diagnosticCode.name})',
+        );
+      }
+    }
+
+    if (errors.isNotEmpty) {
+      fail(
+        'Generated output produced ${errors.length} analyzer error(s):\n'
+        '  ${errors.join('\n  ')}',
+      );
+    }
+  });
+}
 
 /// Stub `Style<T>` library — the minimal shape `StylerGenerator` inspects.
 const styleStub = r'''

@@ -192,3 +192,8 @@ mixin _$ImageSpec implements Spec<ImageSpec>, Diagnosticable {
       );
   }
 }
+
+@Deprecated(
+  'Rename to `_\$ImageSpec` and migrate the class declaration to `class ImageSpec with _\$ImageSpec`. The `_\$ImageSpecMethods` alias will be removed in mix_generator 3.0.',
+)
+typedef _$ImageSpecMethods = _$ImageSpec; // ignore: unused_element

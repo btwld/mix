@@ -80,11 +80,89 @@ class BoxSpec with _$BoxSpec {
               contains('MixOps.lerp(shadows, other?.shadows, t)'),
               contains('propsEquals(props, other.props)'),
               contains('propsHash(runtimeType, props)'),
+              contains('typedef _\$BoxSpecMethods = _\$BoxSpec;'),
             ]),
           ),
         },
       );
     });
+
+    test(
+      'SpecGenerator output re-resolves cleanly against its host library',
+      () async {
+        // Self-contained fixture: declares every symbol the generated `.g.dart`
+        // references (Spec, Diagnosticable, MixOps, propsX helpers, etc.).
+        // The analyzer-smoke helper would catch e.g. the `_$BoxSpecMethods`
+        // interpolation bug that bare `contains(...)` matchers happily ship.
+        const source = r'''
+library spec_case;
+
+import 'package:mix_annotations/mix_annotations.dart';
+
+part 'spec_case.g.dart';
+
+enum DiagnosticLevel { info }
+enum DiagnosticsTreeStyle { singleLine }
+
+class DiagnosticPropertiesBuilder {
+  void add(Object? property) {}
+}
+
+class DiagnosticsNode {
+  String toString({DiagnosticLevel? minLevel}) => super.toString();
+}
+
+class DiagnosticableNode<T> extends DiagnosticsNode {
+  DiagnosticableNode({Object? name, Object? value, Object? style});
+}
+
+class IntProperty {
+  const IntProperty(String name, Object? value);
+}
+
+abstract class Diagnosticable {
+  const Diagnosticable();
+}
+
+bool propsEquals(List<Object?> a, List<Object?> b) => true;
+int propsHash(Type runtimeType, List<Object?> props) => 0;
+Map<String, String> propsDiff(List<Object?> a, List<Object?> b) => const {};
+
+mixin Equatable {
+  List<Object?> get props;
+  bool get stringify => true;
+  Map<String, String> getDiff(Equatable other) => const {};
+}
+
+abstract class Spec<T extends Spec<T>> with Equatable {
+  Type get type;
+  T copyWith();
+  T lerp(T? other, double t);
+}
+
+class MixOps {
+  static T? lerp<T>(T? a, T? b, double t) => a;
+}
+
+@MixableSpec()
+class TinySpec with _$TinySpec {
+  final int? n;
+
+  const TinySpec({this.n});
+}
+''';
+
+        await expectGeneratorOutputResolves(
+          builder: partBuilder(const SpecGenerator()),
+          sources: {
+            ...mixAnnotationsSources,
+            'mix_generator|lib/spec_case.dart': source,
+          },
+          inputAsset: 'mix_generator|lib/spec_case.dart',
+          outputAsset: 'mix_generator|lib/spec_case.g.dart',
+        );
+      },
+    );
 
     test(
       'SpecGenerator with skipEquals lets user author props end-to-end',

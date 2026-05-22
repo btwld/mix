@@ -193,7 +193,7 @@ void main() {
         expectGeneratedProps(code);
       });
 
-      test('closes mixin with brace', () {
+      test('closes mixin with brace before the legacy typedef', () {
         final builder = SpecMixinBuilder(
           specName: 'BoxSpec',
           fields: [],
@@ -201,7 +201,55 @@ void main() {
         );
         final code = builder.build();
 
-        expect(code, endsWith('}\n'));
+        // The mixin block must close with `}` even though the file now
+        // continues with the legacy typedef alias.
+        expect(code, contains('}\n\n@Deprecated('));
+        // Trailing `// ignore: unused_element` suppresses the analyzer
+        // hint when callers stay on the new host shape.
+        expect(code, endsWith('; // ignore: unused_element\n'));
+      });
+
+      test('emits legacy SpecMethods typedef alias', () {
+        final builder = SpecMixinBuilder(
+          specName: 'BoxSpec',
+          fields: [],
+          config: defaultConfig,
+        );
+        final code = builder.build();
+
+        // Backwards compat: pre-2.0 generator emitted `_$BoxSpecMethods`.
+        // The typedef keeps legacy host shapes
+        // (`class BoxSpec extends Spec<BoxSpec> with Diagnosticable, _$BoxSpecMethods`)
+        // compiling against the rich mixin.
+        expect(code, contains('typedef _\$BoxSpecMethods = _\$BoxSpec;'));
+      });
+
+      test('marks legacy SpecMethods typedef @Deprecated', () {
+        final builder = SpecMixinBuilder(
+          specName: 'BoxSpec',
+          fields: [],
+          config: defaultConfig,
+        );
+        final code = builder.build();
+
+        // The `@Deprecated(...)` annotation must sit immediately above the
+        // typedef — guards against accidentally dropping the deprecation.
+        // The `$` in the message is escaped (`\$`) so the analyzer treats
+        // it as a literal in the generated Dart string, not interpolation.
+        expect(
+          code,
+          contains(r"@Deprecated('Rename to `_\$BoxSpec`"),
+        );
+        expect(code, contains(r'`_\$BoxSpecMethods` alias'));
+        final deprecatedIndex = code.indexOf('@Deprecated(');
+        final typedefIndex = code.indexOf('typedef _\$BoxSpecMethods');
+        expect(deprecatedIndex, greaterThanOrEqualTo(0));
+        expect(typedefIndex, greaterThan(deprecatedIndex));
+        // Nothing else between the annotation and the typedef.
+        expect(
+          code.substring(deprecatedIndex, typedefIndex),
+          isNot(contains('\n\n')),
+        );
       });
     });
 

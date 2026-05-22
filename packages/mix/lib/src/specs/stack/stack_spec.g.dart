@@ -89,3 +89,8 @@ mixin _$StackSpec implements Spec<StackSpec>, Diagnosticable {
       ..add(EnumProperty<Clip>('clipBehavior', clipBehavior));
   }
 }
+
+@Deprecated(
+  'Rename to `_\$StackSpec` and migrate the class declaration to `class StackSpec with _\$StackSpec`. The `_\$StackSpecMethods` alias will be removed in mix_generator 3.0.',
+)
+typedef _$StackSpecMethods = _$StackSpec; // ignore: unused_element

@@ -73,6 +73,8 @@ final class BoxSpec with _$BoxSpec {
 }
 ```
 
+**Legacy declaration shape.** Pre-2.0 generators emitted a slim `_$<Name>SpecMethods` mixin and required `class <Name> extends Spec<<Name>> with Diagnosticable, _$<Name>SpecMethods`. The generator now emits a `@Deprecated typedef _$<Name>SpecMethods = _$<Name>;` alongside every spec mixin so those legacy declarations keep compiling — you'll just see a deprecation warning. Migrate to `class <Name> with _$<Name>` to silence it; the alias is scheduled for removal in `mix_generator` 3.0. One observable change for legacy callers: `toString()` now routes through `Diagnosticable.toDiagnosticsNode`, replacing Equatable's `Name(field: …)` output with Flutter's diagnostic-node format.
+
 ### From `@MixableStyler` — Styler mixin
 
 Generates a `_$<Name>Mixin` for mutable Styler classes with:

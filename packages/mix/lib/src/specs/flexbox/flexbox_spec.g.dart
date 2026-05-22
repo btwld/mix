@@ -73,3 +73,8 @@ mixin _$FlexBoxSpec implements Spec<FlexBoxSpec>, Diagnosticable {
       ..add(DiagnosticsProperty('flex', flex));
   }
 }
+
+@Deprecated(
+  'Rename to `_\$FlexBoxSpec` and migrate the class declaration to `class FlexBoxSpec with _\$FlexBoxSpec`. The `_\$FlexBoxSpecMethods` alias will be removed in mix_generator 3.0.',
+)
+typedef _$FlexBoxSpecMethods = _$FlexBoxSpec; // ignore: unused_element

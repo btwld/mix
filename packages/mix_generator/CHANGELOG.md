@@ -1,3 +1,9 @@
+## 2.0.3
+
+ - **FEAT**: Emit a `@Deprecated typedef _$<Name>SpecMethods = _$<Name>;` alongside every `@MixableSpec` mixin so legacy `class X extends Spec<X> with Diagnosticable, _$XSpecMethods` declarations keep compiling against the 2.0+ generator. Removal scheduled for `mix_generator` 3.0.
+ - **CHANGED**: Under the legacy declaration shape, `toString()` now routes through `Diagnosticable.toDiagnosticsNode`, replacing Equatable's `X(field: …)` format with Flutter's diagnostic-node format. Update any tests that pinned the old string.
+ - **CHORE**: Drop unused direct dependencies (`collection`, `build_config`, `logging`, `path`); the generator no longer references them.
+
 ## 2.0.2
 
  - **FIX**: `GeneratedSpecMethods.skipEquals` now only suppresses `props` generation. The rest of the equality surface (`==`, `hashCode`, `getDiff`, `stringify`) is always emitted, preserving the supported "user authors `props`" flag semantic after the spec-shape refactor.

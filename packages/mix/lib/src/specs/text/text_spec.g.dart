@@ -140,3 +140,8 @@ mixin _$TextSpec implements Spec<TextSpec>, Diagnosticable {
       ..add(DiagnosticsProperty('locale', locale));
   }
 }
+
+@Deprecated(
+  'Rename to `_\$TextSpec` and migrate the class declaration to `class TextSpec with _\$TextSpec`. The `_\$TextSpecMethods` alias will be removed in mix_generator 3.0.',
+)
+typedef _$TextSpecMethods = _$TextSpec; // ignore: unused_element

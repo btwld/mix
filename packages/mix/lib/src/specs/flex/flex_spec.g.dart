@@ -145,3 +145,8 @@ mixin _$FlexSpec implements Spec<FlexSpec>, Diagnosticable {
       ..add(DoubleProperty('spacing', spacing));
   }
 }
+
+@Deprecated(
+  'Rename to `_\$FlexSpec` and migrate the class declaration to `class FlexSpec with _\$FlexSpec`. The `_\$FlexSpecMethods` alias will be removed in mix_generator 3.0.',
+)
+typedef _$FlexSpecMethods = _$FlexSpec; // ignore: unused_element
