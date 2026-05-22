@@ -9,16 +9,13 @@ final class StylerCatalog {
   final RegistryCatalog registries;
   final MixSchemaLimits limits;
 
-  late final imageProviderCodec = buildImageProviderCodec(
-    registries,
-    limits: limits,
-  );
-  late final iconDataCodec = buildIconDataCodec(registries, limits: limits);
-  late final decorationCodec = buildDecorationCodec(registries, limits: limits);
+  late final imageProviderCodec = buildImageProviderCodec(registries);
+  late final iconDataCodec = buildIconDataCodec(registries);
+  late final decorationCodec = buildDecorationCodec(registries);
   late final metadata = StylerMetadataContext(
     registries: registries,
     limits: limits,
-    animationCodec: buildAnimationCodec(registries, limits: limits),
+    animationCodec: buildAnimationCodec(registries),
     modifierCodec: buildModifierSchema(),
   );
 
