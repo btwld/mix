@@ -83,10 +83,11 @@ Inside compound conditions, supported leaves are:
 - `context_brightness`
 - `context_breakpoint`
 - `context_not_widget_state`
-- nested `context_all_of`
 
-`named` and `context_variant_builder` remain valid top-level variant branches,
-but they are intentionally excluded from `context_all_of.conditions`.
+`context_all_of` is flat-only — nested `context_all_of` is rejected at schema
+validation. `named` and `context_variant_builder` remain valid top-level
+variant branches, but they are intentionally excluded from
+`context_all_of.conditions`.
 
 ## What It Does Not Do
 
