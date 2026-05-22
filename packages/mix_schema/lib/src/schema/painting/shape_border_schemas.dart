@@ -50,7 +50,10 @@ AckSchema<JsonMap, ShapeBorderMix> _buildShapeBorderBranch({
           side: data['side'] as BorderSideMix?,
         ),
         encode: (mix) => optionalJsonMap([
-          ('borderRadius', directPropMix<BorderRadiusGeometryMix>(mix.$borderRadius)),
+          (
+            'borderRadius',
+            directPropMix<BorderRadiusGeometryMix>(mix.$borderRadius),
+          ),
           ('side', directPropMix<BorderSideMix>(mix.$side)),
         ]),
       );
@@ -69,7 +72,10 @@ AckSchema<JsonMap, ShapeBorderMix> _buildShapeBorderBranch({
           side: data['side'] as BorderSideMix?,
         ),
         encode: (mix) => optionalJsonMap([
-          ('borderRadius', directPropMix<BorderRadiusGeometryMix>(mix.$borderRadius)),
+          (
+            'borderRadius',
+            directPropMix<BorderRadiusGeometryMix>(mix.$borderRadius),
+          ),
           ('side', directPropMix<BorderSideMix>(mix.$side)),
         ]),
       );
@@ -88,7 +94,10 @@ AckSchema<JsonMap, ShapeBorderMix> _buildShapeBorderBranch({
           side: data['side'] as BorderSideMix?,
         ),
         encode: (mix) => optionalJsonMap([
-          ('borderRadius', directPropMix<BorderRadiusGeometryMix>(mix.$borderRadius)),
+          (
+            'borderRadius',
+            directPropMix<BorderRadiusGeometryMix>(mix.$borderRadius),
+          ),
           ('side', directPropMix<BorderSideMix>(mix.$side)),
         ]),
       );
@@ -107,7 +116,10 @@ AckSchema<JsonMap, ShapeBorderMix> _buildShapeBorderBranch({
           side: data['side'] as BorderSideMix?,
         ),
         encode: (mix) => optionalJsonMap([
-          ('borderRadius', directPropMix<BorderRadiusGeometryMix>(mix.$borderRadius)),
+          (
+            'borderRadius',
+            directPropMix<BorderRadiusGeometryMix>(mix.$borderRadius),
+          ),
           ('side', directPropMix<BorderSideMix>(mix.$side)),
         ]),
       );
@@ -189,8 +201,9 @@ AckSchema<JsonMap, ShapeBorderMix> _buildShapeBorderBranch({
         input: Ack.object({'side': borderSideCodec.optional()}),
         decode: (data) =>
             StadiumBorderMix(side: data['side'] as BorderSideMix?),
-        encode: (mix) =>
-            optionalJsonMap([('side', directPropMix<BorderSideMix>(mix.$side))]),
+        encode: (mix) => optionalJsonMap([
+          ('side', directPropMix<BorderSideMix>(mix.$side)),
+        ]),
       );
   }
 }

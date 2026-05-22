@@ -62,7 +62,8 @@ Map<SchemaModifier, ModifierDefinition> _buildModifierDefinitions() {
               .optional(),
         }),
         decode: (data) => BlurModifierMix(sigma: data['sigma'] as double?),
-        encode: (value) => optionalJsonMap([('sigma', directPropValue(value.sigma))]),
+        encode: (value) =>
+            optionalJsonMap([('sigma', directPropValue(value.sigma))]),
       ),
     ),
     SchemaModifier.opacity: ModifierDefinition(

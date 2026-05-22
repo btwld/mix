@@ -100,7 +100,10 @@ CodecSchema<JsonMap, BoxDecorationMix> buildBoxDecorationCodec(
         ('image', directPropMix<DecorationImageMix>(value.$image)),
         ('gradient', directPropMix<GradientMix>(value.$gradient)),
         ('border', directPropMix<BoxBorderMix>(value.$border)),
-        ('borderRadius', directPropMix<BorderRadiusGeometryMix>(value.$borderRadius)),
+        (
+          'borderRadius',
+          directPropMix<BorderRadiusGeometryMix>(value.$borderRadius),
+        ),
         ('shape', directPropValue(value.$shape)),
         ('backgroundBlendMode', directPropValue(value.$backgroundBlendMode)),
         ('boxShadow', boxShadow?.items),

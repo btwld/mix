@@ -86,7 +86,8 @@ _buildVariantBranch<S extends Spec<S>, T extends Style<S>>({
           return conditionSet != null && conditionSet.leaves.length >= 2;
         }, message: 'Variant style does not match context_all_of.'),
         decode: (data) {
-          final leaves = (data['conditions']! as List).cast<ContextVariantLeaf>();
+          final leaves = (data['conditions']! as List)
+              .cast<ContextVariantLeaf>();
           final conditions = ContextConditionSet.compound(leaves);
 
           return VariantStyle<S>(conditions.toVariant(), data['style']! as T);

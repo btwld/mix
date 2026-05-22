@@ -63,6 +63,21 @@ final result = contract.decode({
 final box = result.value;
 ```
 
+### Compound context variants
+
+`context_all_of` accepts two or more leaf conditions. The schema deliberately
+restricts the allowed leaf set to the following shared context branches:
+
+- `widget_state`
+- `enabled`
+- `context_brightness`
+- `context_breakpoint`
+- `context_not_widget_state`
+
+Nested `context_all_of` is intentionally rejected by both the schema and the
+runtime. Compound conditions stay flat — flatten them into the leaf list above
+when composing producer payloads.
+
 ## Registry-backed values
 
 Some built-in fields resolve values from registries at decode time.
@@ -100,6 +115,12 @@ Custom top-level stylers register one object-backed `Ack.codec<JsonMap, T>`.
 Custom type ids must match `^[a-z][a-z0-9_]*$` and cannot use built-in styler
 ids. Field ownership and JSON Schema export are derived from the codec input
 schema.
+
+**Required:** custom encoders must emit the registered `type` discriminator
+themselves (`encode: (value) => {'type': '<your-id>', ...fields}`). The
+contract uses `Ack.discriminated(...)` for dispatch and Ack does not inject
+the discriminator key automatically. The registered id and the emitted
+`type` must match — a mismatch fails at encode.
 
 ```dart
 import 'package:ack/ack.dart';

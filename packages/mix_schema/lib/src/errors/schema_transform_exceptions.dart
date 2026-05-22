@@ -58,4 +58,3 @@ final class UnsupportedEncodeValueError implements Exception {
   @override
   String toString() => reason;
 }
-

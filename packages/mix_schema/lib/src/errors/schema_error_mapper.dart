@@ -1,5 +1,6 @@
 import 'package:ack/ack.dart';
 
+import '../core/branch_codec.dart' show kUnsupportedBranchSubtypePrefix;
 import 'mix_schema_error.dart';
 import 'mix_schema_error_code.dart';
 import 'schema_transform_exceptions.dart';
@@ -145,6 +146,14 @@ final class SchemaErrorMapper {
     };
   }
 
+  // Bridge for Ack `SchemaValidationError`s whose `message` carries an
+  // encoder failure that was not surfaced as a typed `SchemaEncodeError.cause`.
+  // The typed encode-path already covers `RegistryValueLookupError`,
+  // `UnsupportedEncodeValueError`, `UnsupportedError`, and `ArgumentError`; the
+  // string prefixes below stay as defensive carve-outs for nested encoders
+  // whose throws Ack re-wraps as validation messages during input revalidation,
+  // plus the [kUnsupportedBranchSubtypePrefix] sentinel from `branch_codec.dart`
+  // for failed branch refinements on the encode path.
   MixSchemaError _mapValidationMessage({
     required String path,
     required String message,
@@ -160,7 +169,8 @@ final class SchemaErrorMapper {
     }
 
     if (message.startsWith('Encoder threw: Unsupported operation:') ||
-        message.startsWith('Encoder threw: Invalid argument(s):')) {
+        message.startsWith('Encoder threw: Invalid argument(s):') ||
+        message.startsWith(kUnsupportedBranchSubtypePrefix)) {
       return MixSchemaError(
         code: .unsupportedEncodeValue,
         path: path,

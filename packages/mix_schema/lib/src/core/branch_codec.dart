@@ -1,13 +1,25 @@
 import 'package:ack/ack.dart';
 
+/// Sentinel prefix used by branch-codec output refinements to signal a
+/// subtype rejection that should surface as `unsupported_encode_value`.
+///
+/// `SchemaErrorMapper._mapValidationMessage` recognizes this prefix and
+/// routes the wire error code accordingly. Without the sentinel, Ack would
+/// surface the failure as a generic `validation_failed`, which understates
+/// the contract guarantee that unsupported runtime subtypes are not
+/// representable on the wire.
+const String kUnsupportedBranchSubtypePrefix = 'Unsupported encode subtype:';
+
 /// Builds a typed branch codec for use inside `Ack.discriminated(...)`.
 ///
 /// `B` is the base runtime type advertised by the discriminator; `T` is the
 /// concrete subtype this branch decodes and encodes. The output schema is
-/// refined to `T` so unsupported subtypes surface as a schema-level
-/// `unsupported_encode_value` error during discriminator dispatch rather than
-/// a Dart cast error inside the encoder. The discriminator key `type` is
-/// injected into the encoded payload automatically.
+/// refined to `T` so Ack's discriminated dispatch can pick the right branch
+/// on encode. When a runtime value is not a `T`, every branch's refinement
+/// fails and the schema error mapper surfaces a single
+/// `unsupported_encode_value` error via [kUnsupportedBranchSubtypePrefix].
+/// The discriminator key `type` is injected into the encoded payload
+/// automatically.
 CodecSchema<JsonMap, B>
 discriminatedBranchCodec<B extends Object, T extends B>({
   required String type,
@@ -19,7 +31,9 @@ discriminatedBranchCodec<B extends Object, T extends B>({
     input: input,
     output: Ack.instance<B>().refine(
       (value) => value is T,
-      message: 'Expected $T.',
+      message:
+          '$kUnsupportedBranchSubtypePrefix expected $T for branch '
+          '"$type".',
     ),
     decode: (data) => decode(data) as B,
     encode: (value) => {'type': type, ...encode(value as T)},
@@ -35,9 +49,17 @@ discriminatedBranchCodec<B extends Object, T extends B>({
 /// this for codecs that are exported standalone (e.g. modifier and context
 /// variant leaf codecs) and reused inside a higher-level discriminator.
 ///
-/// [outputRefinement] is the predicate that gates encode of supported runtime
-/// subtypes. It defaults to `value is T`; callers that need a richer check
-/// (e.g. variant kind matching) can supply their own.
+/// The output schema is refined to `T` so encode fails for runtime values
+/// that are not representable by this branch. Failed refinements use the
+/// [kUnsupportedBranchSubtypePrefix] sentinel so the schema error mapper
+/// surfaces them as `unsupported_encode_value`. [outputRefinement] overrides
+/// the default `value is T` check; callers that need a richer test (e.g.
+/// variant kind matching) supply their own predicate and [outputRefinementMessage].
+///
+/// The `T extends Object` bound (rather than `T extends B`) is intentional:
+/// callers that branch on covariant generic types — e.g. `ModifierMix<S>`
+/// where each subclass parameterizes over a different `S` — cannot satisfy
+/// `T extends B` because Dart treats `ModifierMix` generics as invariant.
 CodecSchema<JsonMap, B>
 standaloneBranchCodec<B extends Object, T extends Object>({
   required String type,
@@ -53,7 +75,9 @@ standaloneBranchCodec<B extends Object, T extends Object>({
     ),
     output: Ack.instance<B>().refine(
       outputRefinement ?? (value) => value is T,
-      message: outputRefinementMessage ?? 'Expected $T.',
+      message:
+          outputRefinementMessage ??
+          '$kUnsupportedBranchSubtypePrefix expected $T for branch "$type".',
     ),
     decode: (data) => decode(data) as B,
     encode: (value) => {'type': type, ...encode(value as T)},
