@@ -2,6 +2,10 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 import 'package:mix_schema/mix_schema.dart';
+// ignore: implementation_imports
+import 'package:mix_schema/src/core/prop_encode.dart';
+// ignore: implementation_imports
+import 'package:mix_schema/src/errors/schema_transform_exceptions.dart';
 
 void main() {
   group('compound built-in styler codecs', () {
@@ -117,6 +121,35 @@ void main() {
         expect(reEncoded.value, encoded.value);
       },
     );
+
+    test('foldMixProp preserves source order (A.merge(B), not B.merge(A))', () {
+      final boxA = BoxStyler(padding: EdgeInsetsMix.all(8));
+      final boxB = BoxStyler(padding: EdgeInsetsMix.all(16));
+
+      final propAB = Prop.mix(boxA).mergeProp(Prop.mix(boxB));
+      final propBA = Prop.mix(boxB).mergeProp(Prop.mix(boxA));
+
+      final foldedAB = foldMixProp<BoxStyler>(propAB);
+      final foldedBA = foldMixProp<BoxStyler>(propBA);
+
+      expect(foldedAB, isNotNull);
+      expect(foldedBA, isNotNull);
+      expect(foldedAB, boxA.merge(boxB));
+      expect(foldedBA, boxB.merge(boxA));
+      // Sanity: order matters for last-wins padding semantics.
+      expect(foldedAB, isNot(equals(foldedBA)));
+    });
+
+    test('directPropMix still rejects multi-source props', () {
+      final boxA = BoxStyler(padding: EdgeInsetsMix.all(8));
+      final boxB = BoxStyler(padding: EdgeInsetsMix.all(16));
+      final multiSource = Prop.mix(boxA).mergeProp(Prop.mix(boxB));
+
+      expect(
+        () => directPropMix<BoxStyler>(multiSource),
+        throwsA(isA<UnsupportedEncodeValueError>()),
+      );
+    });
 
     test('reports encode errors for nested non-direct compound props', () {
       final contract = MixSchemaContract.builtIn();
