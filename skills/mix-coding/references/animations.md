@@ -272,10 +272,4 @@ final style = BoxStyler()
 
 ## Source Files
 
-- `packages/mix_docs_preview/lib/guides/animations/implicit_state_counter.dart` — State-triggered growth
-- `packages/mix_docs_preview/lib/guides/animations/implicit_variant_hover.dart` — Hover variant animation
-- `packages/mix_docs_preview/lib/guides/animations/implicit_curved_scale.dart` — Curved scale animation
-- `packages/mix_docs_preview/lib/guides/animations/implicit_spring_translate.dart` — Spring translation animation
-- `packages/mix_docs_preview/lib/guides/animations/keyframe_switch.dart` — Toggle switch keyframes
-- `packages/mix_docs_preview/lib/guides/animations/keyframe_loop.dart` — Looping keyframe
-- `packages/mix_docs_preview/lib/guides/animations/phase_tap_compress.dart` — Phase tap animation
+For implementation details, read `packages/mix/lib/src/animation/` and animation tests under `packages/mix/test/src/animation/`.

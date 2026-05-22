@@ -7,9 +7,9 @@ Mix provides styled widget equivalents for common Flutter widgets. Each Mix widg
 | Need | Use | Styler |
 |------|-----|--------|
 | Container/card/background | `Box` | `BoxStyler` |
-| Horizontal layout | `RowBox` (alias: `HBox`) | `FlexBoxStyler` |
-| Vertical layout | `ColumnBox` (alias: `VBox`) | `FlexBoxStyler` |
-| Stack/overlay | `ZBox` | `FlexBoxStyler` |
+| Horizontal layout | `RowBox` | `FlexBoxStyler` |
+| Vertical layout | `ColumnBox` | `FlexBoxStyler` |
+| Stack/overlay | `StackBox` | `StackBoxStyler` |
 | Text | `StyledText` | `TextStyler` |
 | Icon | `StyledIcon` | `IconStyler` |
 | Image | `StyledImage` | `ImageStyler` |
@@ -42,11 +42,11 @@ Box(style: style, child: content);
 
 ---
 
-## FlexBox (RowBox, ColumnBox, ZBox)
+## FlexBox (RowBox, ColumnBox)
 
-`FlexBox` combines Flutter's `Flex` + `Container`. Use the directional aliases:
+`FlexBox` combines Flutter's `Flex` + `Container`. Use the directional widgets:
 
-### RowBox / HBox — Horizontal Layout
+### RowBox — Horizontal Layout
 
 ```dart
 final style = FlexBoxStyler()
@@ -62,7 +62,7 @@ RowBox(
 );
 ```
 
-### ColumnBox / VBox — Vertical Layout
+### ColumnBox — Vertical Layout
 
 ```dart
 final style = FlexBoxStyler()
@@ -80,11 +80,11 @@ ColumnBox(
 );
 ```
 
-### ZBox — Stack/Overlay Layout
+## StackBox
 
 ```dart
-ZBox(
-  style: FlexBoxStyler().alignment(.center),
+StackBox(
+  style: StackBoxStyler().stackAlignment(.center),
   children: [
     Box(style: backgroundStyle),
     Box(style: foregroundStyle),
@@ -116,6 +116,17 @@ All `BoxStyler` methods are available plus:
 | `children` | `List<Widget>` | Child widgets |
 | `direction` | `Axis` | Main axis (RowBox=horizontal, ColumnBox=vertical) |
 | `inherit` | `bool` | Inherit parent style (default: false) |
+
+### StackBoxStyler API
+
+`StackBoxStyler` combines box styling with stack-specific controls:
+
+| Method | Description |
+|--------|-------------|
+| `.stackAlignment(AlignmentGeometry)` | Alignment for stack children |
+| `.fit(StackFit)` | How non-positioned children fit |
+| `.textDirection(TextDirection)` | Text direction |
+| `.stackClipBehavior(Clip)` | Stack clipping behavior |
 
 ---
 
@@ -270,9 +281,4 @@ icon(icon: Icons.star);   // Creates StyledIcon()
 
 ## Source Files
 
-- `packages/mix_docs_preview/lib/widgets/box/simple_box.dart` — Basic Box
-- `packages/mix_docs_preview/lib/widgets/box/gradient_box.dart` — Gradient Box
-- `packages/mix_docs_preview/lib/widgets/flexbox/icon_label_chip.dart` — FlexBox layout examples
-- `packages/mix_docs_preview/lib/widgets/pressable/pressable_button.dart` — Pressable interaction examples
-- `packages/mix_docs_preview/lib/widgets/icon/styled_icon.dart` — Icon examples
-- `packages/mix_docs_preview/lib/widgets/image/styled_image.dart` — Image examples
+For implementation details, read the corresponding files under `packages/mix/lib/src/specs/` and focused tests under `packages/mix/test/src/specs/`.

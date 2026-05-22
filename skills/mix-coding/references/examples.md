@@ -27,7 +27,6 @@ class SimpleBox extends StatelessWidget {
 ```
 
 **Concepts:** BoxStyler, fluent chaining, factory constructor
-**Source:** `packages/mix_docs_preview/lib/widgets/box/simple_box.dart`
 
 ### Gradient Box with Shadow
 
@@ -50,7 +49,6 @@ Box(style: style);
 ```
 
 **Concepts:** Gradients, shadows, dot-shorthands
-**Source:** `packages/mix_docs_preview/lib/widgets/box/gradient_box.dart`
 
 ### Styled Text
 
@@ -65,7 +63,6 @@ StyledText('hello world', style: style);
 ```
 
 **Concepts:** TextStyler, text directives, typography
-**Source:** `packages/mix_docs_preview/lib/widgets/text/styled_text.dart`
 
 ### Styled Icon
 
@@ -75,7 +72,6 @@ StyledIcon(icon: Icons.format_paint_rounded, style: style);
 ```
 
 **Concepts:** IconStyler, factory constructor
-**Source:** `packages/mix_docs_preview/lib/widgets/icon/styled_icon.dart`
 
 ---
 
@@ -101,7 +97,6 @@ class HoverBox extends StatelessWidget {
 ```
 
 **Concepts:** Variants, onHovered, callable styler
-**Source:** `packages/mix_docs_preview/lib/guides/dynamic_styling/hovered.dart`
 
 ### Pressable Button
 
@@ -178,7 +173,6 @@ class _ThemeToggleState extends State<ThemeToggle> {
 ```
 
 **Concepts:** Dark/light variants, animate, PressableBox, IconStyler
-**Source:** `packages/mix_docs_preview/lib/guides/dynamic_styling/on_dark_light.dart`
 
 ### Horizontal Chip Layout
 
@@ -263,7 +257,6 @@ class _AnimatedToggleState extends State<AnimatedToggle> {
 ```
 
 **Concepts:** KeyframeAnimationBuilder, multiple tracks, playing toggle
-**Source:** `packages/mix_docs_preview/lib/guides/animations/keyframe_switch.dart`
 
 ### Themed Profile Page with Tokens
 
@@ -278,19 +271,19 @@ final $radiusMd = RadiusToken('radius.md');
 final $spaceMd = SpaceToken('space.md');
 
 // theme.dart
-final lightTheme = MixScopeConfig(
-  colors: {
-    $primary: Colors.blue,
-    $surface: Colors.white,
-    $onSurface: Colors.black,
-  },
-  textStyles: {
-    $heading: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-    $body: TextStyle(fontSize: 16),
-  },
-  radii: {$radiusMd: Radius.circular(12)},
-  spaces: {$spaceMd: 16.0},
-);
+final lightColors = {
+  $primary: Colors.blue,
+  $surface: Colors.white,
+  $onSurface: Colors.black,
+};
+
+final lightTextStyles = {
+  $heading: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+  $body: TextStyle(fontSize: 16),
+};
+
+final lightRadii = {$radiusMd: Radius.circular(12)};
+final lightSpaces = {$spaceMd: 16.0};
 
 // profile_page.dart
 class ProfilePage extends StatelessWidget {
@@ -309,27 +302,32 @@ class ProfilePage extends StatelessWidget {
         .style($body.mix())
         .color($onSurface());
 
-    return ColumnBox(
-      style: FlexBoxStyler().spacing($spaceMd()).marginAll($spaceMd()),
-      children: [
-        Box(
-          style: cardStyle,
-          child: Column(
-            crossAxisAlignment: .start,
-            children: [
-              StyledText('Profile', style: titleStyle),
-              StyledText('Welcome back!', style: bodyStyle),
-            ],
+    return MixScope(
+      colors: lightColors,
+      textStyles: lightTextStyles,
+      radii: lightRadii,
+      spaces: lightSpaces,
+      child: ColumnBox(
+        style: FlexBoxStyler().spacing($spaceMd()).marginAll($spaceMd()),
+        children: [
+          Box(
+            style: cardStyle,
+            child: Column(
+              crossAxisAlignment: .start,
+              children: [
+                StyledText('Profile', style: titleStyle),
+                StyledText('Welcome back!', style: bodyStyle),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
 ```
 
 **Concepts:** Design tokens, MixScope, TextStyleToken, theme separation
-**Source:** `packages/mix_docs_preview/lib/tutorials/theming/preview.dart`
 
 ### Custom Context Variant
 
@@ -352,17 +350,9 @@ final style = BoxStyler()
 ```
 
 **Concepts:** Custom ContextVariant, InheritedWidget integration, animate
-**Source:** `packages/mix_docs_preview/lib/guides/dynamic_styling/context_variant_flag.dart`
 
 ---
 
 ## Full Example Index
 
-For more examples, browse these directories:
-- `packages/mix_docs_preview/lib/widgets/box/` — Box styling patterns
-- `packages/mix_docs_preview/lib/guides/dynamic_styling/` — All variant types
-- `packages/mix_docs_preview/lib/guides/animations/` — All animation types
-- `packages/mix_docs_preview/lib/guides/gradients/` — Gradient examples
-- `packages/mix_docs_preview/lib/guides/` — Documentation guide examples
-- `packages/mix_docs_preview/lib/tutorials/` — Step-by-step tutorials
-- `packages/mix_docs_preview/lib/widgets/` — Widget-specific examples
+For more examples, browse the package tests in `packages/mix/test/src/` and the implementation files in `packages/mix/lib/src/specs/`.

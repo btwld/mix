@@ -1,6 +1,6 @@
 ---
 name: mix-coding
-description: "Use when the user asks to write Flutter code using Mix, or mentions Mix styling, BoxStyler, TextStyler, IconStyler, variants, animations, design tokens, or Mix widgets like Box, HBox, VBox, StyledText, StyledIcon, Pressable. Also trigger when user references 'package:mix' or fluent styling in Flutter. This skill ensures Claude writes correct, idiomatic Mix 2.0 code instead of guessing at the API."
+description: "Use when the user asks to write Flutter code using Mix, or mentions Mix styling, BoxStyler, TextStyler, IconStyler, variants, animations, design tokens, or Mix widgets like Box, RowBox, ColumnBox, StackBox, StyledText, StyledIcon, Pressable. Also trigger when user references 'package:mix' or fluent styling in Flutter. This skill ensures Claude writes correct, idiomatic Mix 2.0 code instead of guessing at the API."
 ---
 
 # Mix 2.0 — Correct Code Patterns
@@ -105,9 +105,9 @@ final soft = base.color(Colors.blue.shade100);
 | Widget | Styler | Use for |
 |--------|--------|---------|
 | `Box` | `BoxStyler` | Container, card, background |
-| `RowBox` / `HBox` | `FlexBoxStyler` | Horizontal layout |
-| `ColumnBox` / `VBox` | `FlexBoxStyler` | Vertical layout |
-| `ZBox` | `FlexBoxStyler` | Stack/overlay layout |
+| `RowBox` | `FlexBoxStyler` | Horizontal layout |
+| `ColumnBox` | `FlexBoxStyler` | Vertical layout |
+| `StackBox` | `StackBoxStyler` | Stack/overlay layout |
 | `StyledText` | `TextStyler` | Styled text |
 | `StyledIcon` | `IconStyler` | Styled icon |
 | `StyledImage` | `ImageStyler` | Styled image |

@@ -249,11 +249,4 @@ All stylers (`BoxStyler`, `TextStyler`, `IconStyler`, etc.) support these varian
 
 ## Source Files
 
-- `packages/mix_docs_preview/lib/guides/dynamic_styling/hovered.dart` — Hover example
-- `packages/mix_docs_preview/lib/guides/dynamic_styling/pressed.dart` — Press with Pressable
-- `packages/mix_docs_preview/lib/guides/dynamic_styling/on_dark_light.dart` — Dark/light mode toggle
-- `packages/mix_docs_preview/lib/guides/dynamic_styling/selected.dart` — Selected state with controller
-- `packages/mix_docs_preview/lib/guides/dynamic_styling/disabled.dart` — Disabled state
-- `packages/mix_docs_preview/lib/guides/dynamic_styling/context_variant_flag.dart` — Custom variant
-- `packages/mix_docs_preview/lib/guides/dynamic_styling/responsive_size.dart` — Responsive breakpoints
-- `website/src/content/documentation/guides/dynamic-styling.mdx` — Variants guide documentation
+For implementation details, read `packages/mix/lib/src/variants/`, `packages/mix/lib/src/style/mixins/`, and variant-related tests under `packages/mix/test/src/`.
