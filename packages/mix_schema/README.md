@@ -111,30 +111,26 @@ import 'package:mix_schema/mix_schema.dart';
 final jsonSchema = MixSchemaContract.builtIn().exportJsonSchema();
 ```
 
-Custom top-level stylers register one object-backed `Ack.codec<JsonMap, T>`.
+Custom top-level stylers are registered through
+`MixSchemaContractBuilder.register<T>(type, input:, decode:, encode:, output:)`.
 Custom type ids must match `^[a-z][a-z0-9_]*$` and cannot use built-in styler
-ids. Field ownership and JSON Schema export are derived from the codec input
-schema.
+ids. Field ownership and JSON Schema export are derived from the supplied
+`input` object schema.
 
-**Required:** custom encoders must emit the registered `type` discriminator
-themselves (`encode: (value) => {'type': '<your-id>', ...fields}`). The
-contract uses `Ack.discriminated(...)` for dispatch and Ack does not inject
-the discriminator key automatically. The registered id and the emitted
-`type` must match — a mismatch fails at encode.
+The discriminator `{'type': <id>}` is injected on encode automatically —
+producers must **not** emit `type` themselves. The optional `output` schema
+attaches runtime-side refinements.
 
 ```dart
 import 'package:ack/ack.dart';
 import 'package:mix_schema/mix_schema.dart';
 
 final builder = MixSchemaContractBuilder()
-  ..register(
+  ..register<int>(
     'demo',
-    Ack.codec<JsonMap, JsonMap, Object>(
-      input: Ack.object({'value': Ack.integer()}),
-      output: Ack.instance<Object>(),
-      decode: (data) => data['value']! as int,
-      encode: (value) => {'type': 'demo', 'value': value as int},
-    ),
+    input: Ack.object({'value': Ack.integer()}),
+    decode: (data) => data['value']! as int,
+    encode: (value) => {'value': value},
   );
 ```
 

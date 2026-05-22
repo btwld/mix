@@ -1,6 +1,7 @@
 import 'package:ack/ack.dart';
 
 import 'mix_schema_limits.dart';
+import '../core/branch_codec.dart';
 import '../core/schema_wire_types.dart';
 import '../errors/mix_schema_decode_result.dart';
 import '../errors/mix_schema_encode_result.dart';
@@ -59,11 +60,25 @@ final class MixSchemaContractBuilder {
 
   /// Registers an object-backed codec under a styler wire `type`.
   ///
-  /// Exportable field metadata is derived from the codec input schema.
+  /// Accepts the same building blocks as `Ack.codec(...)`. The builder wraps
+  /// them so the discriminator `{'type': type}` is always prepended on encode
+  /// — producers do not (and must not) emit `type` from [encode] themselves.
+  /// The optional [output] schema attaches runtime-side refinements.
   void register<T extends Object>(
-    String type,
-    CodecSchema<JsonMap, T> stylerSchema,
-  ) {
+    String type, {
+    required ObjectSchema input,
+    required T Function(JsonMap data) decode,
+    required JsonMap Function(T value) encode,
+    // ignore: avoid-dynamic, matches Ack.codec's `output` parameter type.
+    AckSchema<dynamic, T>? output,
+  }) {
+    final stylerSchema = buildDiscriminatorInjectingCodec<T>(
+      type: type,
+      input: input,
+      decode: decode,
+      encode: encode,
+      output: output,
+    );
     _register(
       type: type,
       stylerSchema: stylerSchema as CodecSchema<JsonMap, Object>,
@@ -158,6 +173,7 @@ final class MixSchemaContract {
       'x-mix-schema-contract': 'mix_schema',
       'x-mix-schema-version': contractVersion,
       'x-mix-schema-limits': _limits.toJson(),
+      'x-mix-variant-priority': _variantPriorityMetadata,
     };
   }
 
@@ -226,6 +242,28 @@ final class MixSchemaContract {
     );
   }
 }
+
+/// Producer-facing documentation for compound context variant priority.
+///
+/// Compound context variants (`context_all_of`) inherit the maximum sort
+/// priority of their leaves; the priority is a Mix runtime concept that
+/// the wire format does not declare. Producers should treat this metadata
+/// as the canonical contract for the rule.
+const Map<String, Object?> _variantPriorityMetadata = {
+  'description':
+      'Compound context_all_of variants inherit the maximum sortPriority '
+      'across their leaves; widget_state contributes priority 1, other '
+      'context leaves contribute priority 0. The wire format does not '
+      'advertise priority — it is computed by the Mix runtime from the '
+      'leaf set.',
+  'rule': 'priority(compound) = max(priority(leaf) for leaf in leaves)',
+  'leaves': {
+    'widget_state': 1,
+    'brightness': 0,
+    'breakpoint': 0,
+    'enabled': 0,
+  },
+};
 
 void _validateStylerRegistration({
   required String type,

@@ -1,5 +1,29 @@
 import 'package:ack/ack.dart';
 
+/// Builds a discriminated-branch codec from primitive building blocks and
+/// guarantees the discriminator `{'type': type}` is prepended on encode.
+///
+/// Use this when registering external styler codecs through
+/// `MixSchemaContractBuilder.register`. The decoder is forwarded as-is —
+/// Ack's `DiscriminatedObjectSchema` pre-routes by `type` before dispatching
+/// to the branch. The `output` schema is forwarded when supplied so callers
+/// can attach runtime-side refinements.
+CodecSchema<JsonMap, T> buildDiscriminatorInjectingCodec<T extends Object>({
+  required String type,
+  required ObjectSchema input,
+  required T Function(JsonMap data) decode,
+  required JsonMap Function(T value) encode,
+  // ignore: avoid-dynamic, matches Ack.codec's `output` parameter type.
+  AckSchema<dynamic, T>? output,
+}) {
+  return Ack.codec<JsonMap, JsonMap, T>(
+    input: input,
+    decode: decode,
+    encode: (value) => {'type': type, ...encode(value)},
+    output: output,
+  );
+}
+
 /// Sentinel prefix used by branch-codec output refinements to signal a
 /// subtype rejection that should surface as `unsupported_encode_value`.
 ///

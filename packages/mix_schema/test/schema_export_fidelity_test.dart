@@ -75,14 +75,11 @@ void main() {
 
     test('custom styler types must match the wire grammar', () {
       expect(
-        () => MixSchemaContractBuilder().register(
+        () => MixSchemaContractBuilder().register<int>(
           'BadName',
-          Ack.codec<JsonMap, JsonMap, Object>(
-            input: Ack.object({'value': Ack.integer()}),
-            output: Ack.instance<Object>(),
-            decode: (data) => data['value']! as int,
-            encode: (value) => {'type': 'BadName', 'value': value as int},
-          ),
+          input: Ack.object({'value': Ack.integer()}),
+          decode: (data) => data['value']! as int,
+          encode: (value) => {'value': value},
         ),
         throwsArgumentError,
       );

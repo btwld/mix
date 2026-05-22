@@ -8,14 +8,11 @@ void main() {
   group('MixSchemaContract', () {
     test('builder can extend the built-in styler set before freeze', () {
       final builder = MixSchemaContractBuilder.builtIn()
-        ..register(
+        ..register<int>(
           'demo',
-          Ack.codec<JsonMap, JsonMap, Object>(
-            input: Ack.object({'value': Ack.integer()}),
-            output: Ack.instance<Object>(),
-            decode: (data) => data['value']! as int,
-            encode: (value) => {'type': 'demo', 'value': value as int},
-          ),
+          input: Ack.object({'value': Ack.integer()}),
+          decode: (data) => data['value']! as int,
+          encode: (value) => {'value': value},
         );
 
       expect(builder.registeredTypes, containsAll(const ['box', 'demo']));
@@ -33,14 +30,11 @@ void main() {
 
     test('encodes custom object-backed codec branches', () {
       final contract =
-          (MixSchemaContractBuilder()..register(
+          (MixSchemaContractBuilder()..register<int>(
                 'demo',
-                Ack.codec<JsonMap, JsonMap, Object>(
-                  input: Ack.object({'value': Ack.integer()}),
-                  output: Ack.instance<Object>(),
-                  decode: (data) => data['value']! as int,
-                  encode: (value) => {'type': 'demo', 'value': value as int},
-                ),
+                input: Ack.object({'value': Ack.integer()}),
+                decode: (data) => data['value']! as int,
+                encode: (value) => {'value': value},
               ))
               .freeze();
 
