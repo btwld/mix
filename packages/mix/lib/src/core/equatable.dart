@@ -4,8 +4,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/widgets.dart';
 
-import 'deep_collection_equality.dart';
-import 'internal_extensions.dart';
+import 'internal/deep_collection_equality.dart';
+import 'internal/internal_extensions.dart';
 
 /// Instance of DeepCollectionEquality used for deep comparison of collections.
 const _equality = DeepCollectionEquality();
@@ -35,6 +35,54 @@ bool _equals(List list1, List list2) {
 /// Checks if the given object implements [Equatable].
 bool _isEquatable(dynamic object) {
   return object is Equatable;
+}
+
+/// Deep equality for prop lists. Public so generated spec mixins can
+/// inline `==` without mixing in [Equatable]. Mirrors the semantics used
+/// by [Equatable.==].
+bool propsEquals(List<Object?> a, List<Object?> b) => _equals(a, b);
+
+/// Deep hash for prop lists, combined with [runtimeType]. Paired with
+/// [propsEquals] so generated `==` and `hashCode` stay consistent.
+int propsHash(Type runtimeType, List<Object?> props) {
+  var hash = runtimeType.hashCode;
+  for (final prop in props) {
+    hash = Object.hash(hash, _equality.hash(prop));
+  }
+
+  return hash;
+}
+
+/// Per-index structural diff between two prop lists. Backs the generated
+/// `getDiff` override emitted by `mix_generator`. Test-only semantics —
+/// [Equatable.getDiff] is `@visibleForTesting`.
+Map<String, String> propsDiff(
+  List<Object?> thisProps,
+  List<Object?> otherProps,
+) {
+  final diff = <String, String>{};
+
+  if (thisProps.length != otherProps.length) {
+    diff['props.length'] =
+        'this: ${thisProps.length}, other: ${otherProps.length}';
+
+    return diff;
+  }
+
+  for (int i = 0; i < thisProps.length; i++) {
+    final unit1 = thisProps[i];
+    final unit2 = otherProps[i];
+    final differences = compareObjects(unit1, unit2);
+    if (differences.isNotEmpty) {
+      final propName =
+          unit1?.runtimeType.toString() ??
+          unit2?.runtimeType.toString() ??
+          'N/A';
+      diff[propName] = differences.toString();
+    }
+  }
+
+  return diff;
 }
 
 /// Returns a string representation of [props] for debugging purposes.
@@ -72,56 +120,19 @@ mixin Equatable {
     return identical(this, other) ||
         other is Equatable &&
             runtimeType == other.runtimeType &&
-            _equals(props, other.props);
+            propsEquals(props, other.props);
   }
 
   /// Overrides the hash code getter to compute hash code based on properties.
   @override
-  int get hashCode {
-    // Combine runtimeType hash with deep hashes of props for consistency with deep equality
-    var hash = runtimeType.hashCode;
-    for (final prop in props) {
-      hash = Object.hash(hash, _equality.hash(prop));
-    }
-
-    return hash;
-  }
+  int get hashCode => propsHash(runtimeType, props);
 
   /// Returns a map of properties that differ between this object and another.
   @visibleForTesting
   Map<String, String> getDiff(Equatable other) {
-    final diff = <String, String>{};
+    if (this == other) return const {};
 
-    // Return empty map if no differences
-    if (this == other) return diff;
-
-    final otherProps = other.props;
-
-    // Handle different props lengths
-    if (props.length != otherProps.length) {
-      diff['props.length'] =
-          'this: ${props.length}, other: ${otherProps.length}';
-
-      return diff;
-    }
-
-    final length = props.length;
-
-    for (int i = 0; i < length; i++) {
-      final unit1 = props[i];
-      final unit2 = otherProps[i];
-
-      final differences = compareObjects(unit1, unit2);
-      if (differences.isNotEmpty) {
-        final propName =
-            unit1?.runtimeType.toString() ??
-            unit2?.runtimeType.toString() ??
-            'N/A';
-        diff[propName] = differences.toString();
-      }
-    }
-
-    return diff;
+    return propsDiff(props, other.props);
   }
 
   /// Overrides string representation for debugging and logging.

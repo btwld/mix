@@ -45,7 +45,7 @@ sealed class EdgeInsetsGeometryMix<T extends EdgeInsetsGeometry>
     double? top,
     double? bottom,
   }) {
-    return EdgeInsetsMix(top: top, bottom: bottom, left: left, right: right);
+    return .new(top: top, bottom: bottom, left: left, right: right);
   }
 
   /// Creates directional insets with only specified values.
@@ -86,9 +86,7 @@ sealed class EdgeInsetsGeometryMix<T extends EdgeInsetsGeometry>
   static EdgeInsetsGeometryMix<T>? maybeValue<T extends EdgeInsetsGeometry>(
     T? edgeInsetsGeometry,
   ) {
-    return edgeInsetsGeometry == null
-        ? null
-        : EdgeInsetsGeometryMix.value(edgeInsetsGeometry);
+    return edgeInsetsGeometry == null ? null : .value(edgeInsetsGeometry);
   }
 
   /// Top offset only.

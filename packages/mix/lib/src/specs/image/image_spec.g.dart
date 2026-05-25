@@ -6,7 +6,7 @@ part of 'image_spec.dart';
 // SpecGenerator
 // **************************************************************************
 
-mixin _$ImageSpecMethods on Spec<ImageSpec>, Diagnosticable {
+mixin _$ImageSpec implements Spec<ImageSpec>, Diagnosticable {
   ImageProvider<Object>? get image;
   double? get width;
   double? get height;
@@ -22,6 +22,9 @@ mixin _$ImageSpecMethods on Spec<ImageSpec>, Diagnosticable {
   bool? get gaplessPlayback;
   bool? get isAntiAlias;
   bool? get matchTextDirection;
+
+  @override
+  Type get type => ImageSpec;
 
   @override
   ImageSpec copyWith({
@@ -94,8 +97,63 @@ mixin _$ImageSpecMethods on Spec<ImageSpec>, Diagnosticable {
   }
 
   @override
+  List<Object?> get props => [
+    image,
+    width,
+    height,
+    color,
+    repeat,
+    fit,
+    alignment,
+    centerSlice,
+    filterQuality,
+    colorBlendMode,
+    semanticLabel,
+    excludeFromSemantics,
+    gaplessPlayback,
+    isAntiAlias,
+    matchTextDirection,
+  ];
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        other is ImageSpec &&
+            runtimeType == other.runtimeType &&
+            propsEquals(props, other.props);
+  }
+
+  @override
+  int get hashCode => propsHash(runtimeType, props);
+
+  @override
+  bool get stringify => true;
+
+  @override
+  Map<String, String> getDiff(Equatable other) {
+    if (this == other) return const {};
+
+    return propsDiff(props, other.props);
+  }
+
+  @override
+  String toStringShort() => '$runtimeType';
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) =>
+      toDiagnosticsNode(
+        style: DiagnosticsTreeStyle.singleLine,
+      ).toString(minLevel: minLevel);
+
+  @override
+  DiagnosticsNode toDiagnosticsNode({
+    String? name,
+    DiagnosticsTreeStyle? style,
+  }) =>
+      DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
+
+  @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
     properties
       ..add(DiagnosticsProperty('image', image))
       ..add(DoubleProperty('width', width))
@@ -133,23 +191,9 @@ mixin _$ImageSpecMethods on Spec<ImageSpec>, Diagnosticable {
         ),
       );
   }
-
-  @override
-  List<Object?> get props => [
-    image,
-    width,
-    height,
-    color,
-    repeat,
-    fit,
-    alignment,
-    centerSlice,
-    filterQuality,
-    colorBlendMode,
-    semanticLabel,
-    excludeFromSemantics,
-    gaplessPlayback,
-    isAntiAlias,
-    matchTextDirection,
-  ];
 }
+
+@Deprecated(
+  'Rename to `_\$ImageSpec` and migrate the class declaration to `class ImageSpec with _\$ImageSpec`. The `_\$ImageSpecMethods` alias will be removed in mix_generator 3.0.',
+)
+typedef _$ImageSpecMethods = _$ImageSpec; // ignore: unused_element

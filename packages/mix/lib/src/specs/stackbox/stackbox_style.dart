@@ -348,7 +348,7 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
     return merge(StackBoxStyler(modifier: value));
   }
 
-  StackBox call({Key? key, required List<Widget> children}) {
+  StackBox call({Key? key, List<Widget> children = const <Widget>[]}) {
     return StackBox(key: key, style: this, children: children);
   }
 

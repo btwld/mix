@@ -6,7 +6,7 @@ import 'package:flutter/widgets.dart';
 
 import '../../core/breakpoint.dart';
 import '../../core/directive.dart';
-import '../../core/internal/compare_mixin.dart';
+import '../../core/equatable.dart';
 import '../../core/prop.dart';
 import '../../core/prop_refs.dart';
 import '../../core/prop_source.dart';

@@ -350,6 +350,4 @@ class TestSpec extends Spec<TestSpec> {
 
   @override
   List<Object?> get props => [color];
-
-  Widget build(BuildContext context) => Container(color: color);
 }

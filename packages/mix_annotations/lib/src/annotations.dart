@@ -27,7 +27,6 @@ const mixableSpec = MixableSpec();
 /// - `resolve()` method for resolving to StyleSpec
 /// - `debugFillProperties()` for diagnostics
 /// - `props` getter for equality comparison
-/// - `call()` method for widget creation (optional)
 ///
 /// Example usage:
 /// ```dart
@@ -57,7 +56,7 @@ const mixableStyler = MixableStyler();
 /// @MixableField(ignoreSetter: true)
 /// final Prop<Matrix4>? $transform;
 ///
-/// @MixableField(setterType: 'List<Shadow>')
+/// @MixableField(setterType: List<ShadowMix>)
 /// final Prop<List<Shadow>>? $shadows;
 /// ```
 class MixableField {

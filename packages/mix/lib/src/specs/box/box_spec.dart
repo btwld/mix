@@ -15,8 +15,7 @@ part 'box_spec.g.dart';
 /// of [BoxStyle] styling attributes.
 @MixableSpec()
 @immutable
-final class BoxSpec extends Spec<BoxSpec>
-    with Diagnosticable, _$BoxSpecMethods {
+final class BoxSpec with _$BoxSpec {
   /// Aligns the child within the box.
   @override
   final AlignmentGeometry? alignment;

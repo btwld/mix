@@ -81,12 +81,10 @@ void main() {
             createTestMixFieldModel(
               name: 'minWidth',
               dartTypeDisplayString: 'double?',
-              isNullable: true,
             ),
             createTestMixFieldModel(
               name: 'maxWidth',
               dartTypeDisplayString: 'double?',
-              isNullable: true,
             ),
           ],
           config: defaultConfig,
@@ -118,16 +116,11 @@ void main() {
               name: 'minWidth',
               dartTypeDisplayString: 'Prop<double>?',
               declaredName: r'$minWidth',
-              isNullable: true,
-              innerTypeName: 'double',
-              isWrappedInProp: true,
             ),
             createTestMixFieldModel(
               name: 'maxWidth',
               dartTypeDisplayString: 'Prop<double>',
               declaredName: r'$maxWidth',
-              innerTypeName: 'double',
-              isWrappedInProp: true,
             ),
           ],
           config: defaultConfig,
@@ -148,12 +141,10 @@ void main() {
             createTestMixFieldModel(
               name: 'minWidth',
               dartTypeDisplayString: 'double?',
-              isNullable: true,
             ),
             createTestMixFieldModel(
               name: 'maxWidth',
               dartTypeDisplayString: 'double?',
-              isNullable: true,
             ),
           ],
           config: defaultConfig,
@@ -180,7 +171,6 @@ void main() {
             createTestMixFieldModel(
               name: 'minWidth',
               dartTypeDisplayString: 'double?',
-              isNullable: true,
             ),
           ],
           config: defaultConfig,
@@ -203,12 +193,10 @@ void main() {
             createTestMixFieldModel(
               name: 'minWidth',
               dartTypeDisplayString: 'double?',
-              isNullable: true,
             ),
             createTestMixFieldModel(
               name: 'maxWidth',
               dartTypeDisplayString: 'double?',
-              isNullable: true,
             ),
           ],
           config: defaultConfig,
@@ -232,12 +220,10 @@ void main() {
               createTestMixFieldModel(
                 name: 'minWidth',
                 dartTypeDisplayString: 'double?',
-                isNullable: true,
               ),
               createTestMixFieldModel(
                 name: 'maxWidth',
                 dartTypeDisplayString: 'double?',
-                isNullable: true,
               ),
             ],
             config: defaultConfig,

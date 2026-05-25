@@ -37,6 +37,10 @@ class ShapeBorderMerger {
         $borderRadius: b.$borderRadius,
         $side: b.$side,
       ),
+      CircleBorderMix() ||
+      StarBorderMix() ||
+      LinearBorderMix() ||
+      StadiumBorderMix() ||
       OutlinedBorderMix() => throw ArgumentError(
         'Expected rectangle variant, got ${border.runtimeType}',
       ),

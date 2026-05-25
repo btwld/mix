@@ -15,8 +15,7 @@ part 'stackbox_spec.g.dart';
 /// [StackSpec] into a unified specification.
 @MixableSpec()
 @immutable
-final class StackBoxSpec extends Spec<StackBoxSpec>
-    with Diagnosticable, _$StackBoxSpecMethods {
+final class StackBoxSpec with _$StackBoxSpec {
   /// Box styling properties for decoration, padding, constraints, etc.
   @override
   final StyleSpec<BoxSpec>? box;

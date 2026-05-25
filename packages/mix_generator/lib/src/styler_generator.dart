@@ -4,12 +4,15 @@
 library;
 
 import 'package:analyzer/dart/element/element.dart';
-import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 import 'package:source_gen/source_gen.dart';
 
 import 'core/builders/styler_mixin_builder.dart';
+import 'core/checkers.dart';
+import 'core/errors.dart';
+import 'core/helpers/library_scope.dart';
+import 'core/helpers/type_hierarchy.dart';
 import 'core/models/annotation_config.dart';
 import 'core/models/styler_field_model.dart';
 
@@ -21,45 +24,31 @@ class StylerGenerator extends GeneratorForAnnotation<MixableStyler> {
   const StylerGenerator();
 
   bool _isStyleClass(ClassElement element) {
-    // Check if class extends Style<T> directly or through inheritance
-    InterfaceType? currentType = element.supertype;
-
-    while (currentType != null) {
-      final supertypeName = currentType.element.name;
-      if (supertypeName == 'Style') {
-        return true;
-      }
-
-      // Move up the hierarchy using superclass (preserves type substitution)
-      currentType = currentType.superclass;
-    }
-
-    return false;
+    return findSupertypeMatching(element.supertype, styleChecker) != null;
   }
 
   String? _extractSpecName(ClassElement classElement) {
-    // Traverse the hierarchy to find Style<T>
-    InterfaceType? currentType = classElement.supertype;
-
-    while (currentType != null) {
-      final supertypeName = currentType.element.name;
-
-      // Found Style<T>, extract the type argument
-      if (supertypeName == 'Style') {
-        if (currentType.typeArguments.isNotEmpty) {
-          final specType = currentType.typeArguments.first;
-
-          return specType.getDisplayString();
-        }
-
-        return null;
-      }
-
-      // Move up the hierarchy using superclass (preserves type substitution)
-      currentType = currentType.superclass;
+    final styleType = findSupertypeMatching(
+      classElement.supertype,
+      styleChecker,
+    );
+    if (styleType == null || styleType.typeArguments.isEmpty) {
+      return null;
     }
 
-    return null;
+    final specType = styleType.typeArguments.first;
+    final hiddenType = firstInvisibleTypeName(specType, classElement.library);
+    if (hiddenType != null) {
+      final className = classElement.name ?? '<unknown>';
+      fail(
+        classElement,
+        'Style type `$hiddenType` is used but not imported into the '
+        'annotated library. Import or re-export `$hiddenType` where '
+        '$className is declared.',
+      );
+    }
+
+    return typeCode(specType, visibleFrom: classElement.library);
   }
 
   List<StylerFieldModel> _extractFields(ClassElement classElement) {
@@ -89,10 +78,8 @@ class StylerGenerator extends GeneratorForAnnotation<MixableStyler> {
   MixableStylerAnnotationConfig _extractAnnotationConfig(
     ConstantReader annotation,
   ) {
-    final methodsReader = annotation.peek('methods');
-
     return MixableStylerAnnotationConfig(
-      methods: methodsReader?.intValue ?? GeneratedStylerMethods.all,
+      methods: peekMethodsBitmask(annotation, GeneratedStylerMethods.all),
     );
   }
 
@@ -104,36 +91,30 @@ class StylerGenerator extends GeneratorForAnnotation<MixableStyler> {
   ) {
     // Validate element is a class
     if (element is! ClassElement) {
-      throw InvalidGenerationSource(
-        '@MixableStyler can only be applied to classes.',
-        element: element,
-      );
+      fail(element, '@MixableStyler can only be applied to classes.');
     }
 
     final classElement = element;
     final stylerName = classElement.name;
     if (stylerName == null) {
-      throw InvalidGenerationSource(
-        '@MixableStyler class must have a name.',
-        element: element,
-      );
+      fail(element, '@MixableStyler class must have a name.');
     }
 
     // Validate it's a Style class
     if (!_isStyleClass(classElement)) {
-      throw InvalidGenerationSource(
+      fail(
+        element,
         '@MixableStyler can only be applied to classes extending Style<T>.',
-        element: element,
+        todo:
+            'Make the class extend a concrete Style subclass such as '
+            '`Style<YourSpec>` or `MixStyler<YourStyler, YourSpec>`.',
       );
     }
 
     // Extract Spec name from Style<SpecName>
     final specName = _extractSpecName(classElement);
     if (specName == null) {
-      throw InvalidGenerationSource(
-        'Could not determine Spec type from Style<T> supertype.',
-        element: element,
-      );
+      fail(element, 'Could not determine Spec type from Style<T> supertype.');
     }
 
     // Extract field models

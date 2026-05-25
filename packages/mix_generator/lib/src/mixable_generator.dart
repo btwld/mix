@@ -1,8 +1,3 @@
-/// Mixable generator for Mix mixin code generation.
-///
-/// Generates _$XMixin from @Mixable annotations.
-library;
-
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
@@ -10,60 +5,60 @@ import 'package:mix_annotations/mix_annotations.dart';
 import 'package:source_gen/source_gen.dart';
 
 import 'core/builders/mix_mixin_builder.dart';
+import 'core/checkers.dart';
+import 'core/errors.dart';
+import 'core/helpers/library_scope.dart';
+import 'core/helpers/type_hierarchy.dart';
 import 'core/models/annotation_config.dart';
 import 'core/models/mix_field_model.dart';
 
-/// Main generator for Mix class code.
-///
-/// Triggers on @Mixable annotations and generates:
-/// - _$XMixin (Mix method implementations)
+/// Source-gen generator that emits `_$<Name>Mixin` for `@Mixable`-annotated
+/// `Mix<T>` subclasses.
 class MixableGenerator extends GeneratorForAnnotation<Mixable> {
   const MixableGenerator();
 
   bool _isMixClass(ClassElement element) {
-    // Check if class extends Mix<T> or a subclass of Mix<T>
-    final supertype = element.supertype;
-    if (supertype == null) return false;
-
-    // Check direct supertype
-    if (_isMixType(supertype)) return true;
-
-    // Check if any supertype in hierarchy is Mix<T>
-    for (final interface in element.allSupertypes) {
-      if (_isMixType(interface)) return true;
-    }
-
-    return false;
+    return _findMixBinding(element) != null;
   }
 
-  bool _isMixType(InterfaceType type) {
-    final elementName = type.element.name;
-
-    return elementName == 'Mix' || elementName == 'Mixable';
+  InterfaceType? _findMixBinding(ClassElement element) {
+    return findSupertypeMatching(element.supertype, mixChecker);
   }
 
+  /// Walks the supertype chain to find the concrete `Mix<T>` binding and
+  /// returns `T`.
+  ///
+  /// Intermediate classes may introduce their own generic parameters (e.g.
+  /// `class BaseMix<A> extends Mix<BoxConstraints>`). Reading the direct
+  /// supertype's first type argument would incorrectly pick `A`; we must
+  /// locate the actual Mix binding first.
   String? _extractResolveToType(ClassElement classElement) {
-    // First check direct supertype
-    final supertype = classElement.supertype;
-    if (supertype != null && supertype.typeArguments.isNotEmpty) {
-      // ConstraintsMix<BoxConstraints> -> BoxConstraints
-      return supertype.typeArguments.first.getDisplayString();
+    final mixType = _findMixBinding(classElement);
+    if (mixType == null || mixType.typeArguments.isEmpty) {
+      return null;
     }
 
-    // Fallback: check all supertypes for Mix<T>
-    for (final interface in classElement.allSupertypes) {
-      if (_isMixType(interface) && interface.typeArguments.isNotEmpty) {
-        return interface.typeArguments.first.getDisplayString();
-      }
+    final resolveType = mixType.typeArguments.first;
+    final hiddenType = firstInvisibleTypeName(
+      resolveType,
+      classElement.library,
+    );
+    if (hiddenType != null) {
+      final className = classElement.name ?? '<unknown>';
+      fail(
+        classElement,
+        'Resolve type `$hiddenType` is used but not imported into the '
+        'annotated library. Import or re-export `$hiddenType` where '
+        '$className is declared.',
+      );
     }
 
-    return null;
+    return typeCode(resolveType, visibleFrom: classElement.library);
   }
 
   bool _hasDefaultValueMixin(ClassElement classElement) {
-    // Check if the class uses DefaultValue<T> mixin
     for (final mixin in classElement.mixins) {
-      if (mixin.element.name == 'DefaultValue') {
+      if (defaultValueChecker.isExactlyType(mixin)) {
         return true;
       }
     }
@@ -74,41 +69,40 @@ class MixableGenerator extends GeneratorForAnnotation<Mixable> {
   List<MixFieldModel> _extractFields(ClassElement classElement) {
     final allFields = <String, FieldElement>{};
 
-    // Collect fields from superclass hierarchy first (so subclass fields override)
+    // Walk the hierarchy first so subclass fields override their parents.
     _collectFieldsFromHierarchy(classElement, allFields);
 
-    // Get $ fields only
     final dollarFields = allFields.values
         .where((f) => f.name!.startsWith(r'$'))
         .toList();
 
-    // Sort by name for stable ordering
+    // Stable ordering for deterministic generator output.
     dollarFields.sort((a, b) => a.name!.compareTo(b.name!));
 
-    return dollarFields.map(MixFieldModel.fromElement).toList();
+    return dollarFields.map((field) {
+      return MixFieldModel.fromElement(
+        field,
+        visibleFrom: classElement.library,
+      );
+    }).toList();
   }
 
   void _collectFieldsFromHierarchy(
     InterfaceElement classElement,
     Map<String, FieldElement> fields,
   ) {
-    // First collect from superclass (if it's not Mix or Object)
+    // Recurse into the supertype first so the current class's fields
+    // override inherited entries in [fields]. Stop at Mix/Mixable/Object.
     if (classElement is ClassElement) {
       final supertype = classElement.supertype;
-      if (supertype != null) {
-        final superElement = supertype.element;
-        final superName = superElement.name;
-
-        // Stop at Mix, Mixable, or Object
-        if (superName != 'Mix' &&
-            superName != 'Mixable' &&
-            superName != 'Object') {
-          _collectFieldsFromHierarchy(superElement, fields);
-        }
+      if (supertype != null &&
+          !mixChecker.isExactlyType(supertype) &&
+          !mixableChecker.isExactlyType(supertype) &&
+          !supertype.isDartCoreObject) {
+        _collectFieldsFromHierarchy(supertype.element, fields);
       }
     }
 
-    // Then collect from current class (overrides super fields)
     for (final field in classElement.fields) {
       final name = field.name;
       if (name != null) {
@@ -118,11 +112,10 @@ class MixableGenerator extends GeneratorForAnnotation<Mixable> {
   }
 
   MixableAnnotationConfig _extractAnnotationConfig(ConstantReader annotation) {
-    final methodsReader = annotation.peek('methods');
     final resolveToTypeReader = annotation.peek('resolveToType');
 
     return MixableAnnotationConfig(
-      methods: methodsReader?.intValue ?? GeneratedMixMethods.all,
+      methods: peekMethodsBitmask(annotation, GeneratedMixMethods.all),
       resolveToType: resolveToTypeReader?.stringValue,
     );
   }
@@ -135,26 +128,22 @@ class MixableGenerator extends GeneratorForAnnotation<Mixable> {
   ) {
     // Validate element is a class
     if (element is! ClassElement) {
-      throw InvalidGenerationSource(
-        '@Mixable can only be applied to classes.',
-        element: element,
-      );
+      fail(element, '@Mixable can only be applied to classes.');
     }
 
     final classElement = element;
     final mixName = classElement.name;
     if (mixName == null) {
-      throw InvalidGenerationSource(
-        '@Mixable class must have a name.',
-        element: element,
-      );
+      fail(element, '@Mixable class must have a name.');
     }
 
     // Validate it's a Mix class
     if (!_isMixClass(classElement)) {
-      throw InvalidGenerationSource(
-        '@Mixable can only be applied to classes extending Mix<T> or its subclasses.',
-        element: element,
+      fail(
+        element,
+        '@Mixable can only be applied to classes extending Mix<T> or its '
+        'subclasses.',
+        todo: 'Make the class extend `Mix<YourResolveType>` or a Mix subclass.',
       );
     }
 
@@ -165,10 +154,11 @@ class MixableGenerator extends GeneratorForAnnotation<Mixable> {
     final resolveToType =
         config.resolveToType ?? _extractResolveToType(classElement);
     if (resolveToType == null) {
-      throw InvalidGenerationSource(
-        'Could not determine target type for resolve(). '
-        'Specify resolveToType in @Mixable annotation or ensure class extends Mix<T>.',
-        element: element,
+      fail(
+        element,
+        'Could not determine target type for resolve(). Specify '
+        'resolveToType in @Mixable annotation or ensure class extends '
+        'Mix<T>.',
       );
     }
 

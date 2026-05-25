@@ -27,17 +27,29 @@ dev_dependencies:
 
 ### `@MixableSpec`
 
-Generates `copyWith`, `==`/`hashCode`, and `lerp` methods for Spec classes (immutable style data).
+Generates a self-contained `_$<Name>` mixin for Spec classes (immutable style data). The mixin declares `implements Spec<T>, Diagnosticable` and inlines `type`, `copyWith`, `lerp`, generated `props` by default, `==`, `hashCode`, `toString`, `toDiagnosticsNode`, and `debugFillProperties` — so the user class needs a single `with` to be a fully-formed Spec.
 
 ```dart
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+
+part 'box_spec.g.dart';
+
 @MixableSpec()
-final class BoxSpec extends Spec<BoxSpec> with _$BoxSpec {
+@immutable
+final class BoxSpec with _$BoxSpec {
+  @override
   final Color? color;
+  @override
   final double? width;
 
   const BoxSpec({this.color, this.width});
 }
 ```
+
+The generated mixin `_$BoxSpec` is the only thing the user class mixes in — `Equatable`-style equality (via `propsEquals` / `propsHash` helpers) and `Diagnosticable`'s concrete surface are inlined by the generator, not pushed onto the user.
 
 Control which methods are generated via `GeneratedSpecMethods` flags:
 
@@ -45,9 +57,12 @@ Control which methods are generated via `GeneratedSpecMethods` flags:
 @MixableSpec(methods: GeneratedSpecMethods.skipLerp)
 ```
 
+`GeneratedSpecMethods.skipEquals` suppresses generated `props` so the class can
+author custom equality inputs while still using the generated equality surface.
+
 ### `@MixableStyler`
 
-Generates a mixin for Styler classes (mutable builders) with setter methods, `merge()`, `resolve()`, `debugFillProperties()`, `props`, and `call()`.
+Generates a mixin for Styler classes (mutable builders) with setter methods, `merge()`, `resolve()`, `debugFillProperties()`, and `props`.
 
 ```dart
 @MixableStyler()
@@ -60,11 +75,7 @@ class BoxStyler extends Style<BoxSpec>
 }
 ```
 
-Control which methods are generated via `GeneratedStylerMethods` flags:
-
-```dart
-@MixableStyler(methods: GeneratedStylerMethods.skipCall)
-```
+Control which methods are generated via `GeneratedStylerMethods` flags.
 
 ### `@Mixable`
 
@@ -102,23 +113,26 @@ Each annotation accepts bitwise flags to control which methods or components are
 | Class | Available Flags |
 |---|---|
 | `GeneratedSpecMethods` | `copyWith`, `equals`, `lerp` |
-| `GeneratedStylerMethods` | `setters`, `merge`, `resolve`, `debugFillProperties`, `props`, `call` |
+| `GeneratedStylerMethods` | `setters`, `merge`, `resolve`, `debugFillProperties`, `props` |
 | `GeneratedMixMethods` | `merge`, `resolve`, `props`, `debugFillProperties` |
 
 Use `all` (default) to generate everything, or `skip*` helpers to exclude specific methods:
 
 ```dart
 GeneratedSpecMethods.skipLerp      // all except lerp
-GeneratedStylerMethods.skipCall    // all except call
+GeneratedSpecMethods.skipEquals    // user authors props; equality surface still emits
 GeneratedMixMethods.skipResolve    // all except resolve
 ```
+
+`GeneratedStylerMethods.call` / `skipCall` are retained for source
+compatibility, but call generation is no longer supported.
 
 ## Code Generation
 
 After annotating your classes, run `build_runner` to generate code:
 
 ```bash
-dart run build_runner build
+dart run build_runner build --delete-conflicting-outputs
 ```
 
 Or within the Mix monorepo:

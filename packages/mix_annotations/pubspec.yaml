@@ -1,12 +1,11 @@
 name: mix_annotations
 description: Annotations for mix and mix_generator
-version: 2.0.0
+version: 2.0.1
 repository: https://github.com/btwld/mix/tree/main/packages/mix_annotations
 
 environment:
   sdk: ">=3.11.0 <4.0.0"
 
 dev_dependencies:
-  test: ^1.21.0
   dart_code_metrics_presets: ^2.24.0
   flutter_lints: ^6.0.0

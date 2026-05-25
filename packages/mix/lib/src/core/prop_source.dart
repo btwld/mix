@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import '../theme/tokens/mix_token.dart';
-import 'internal/compare_mixin.dart';
+import 'equatable.dart';
 import 'mix_element.dart';
 
 /// Represents the origin of a property value.

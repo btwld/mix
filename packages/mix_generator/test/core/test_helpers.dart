@@ -1,13 +1,183 @@
-import 'package:analyzer/dart/element/element.dart';
-import 'package:analyzer/dart/element/nullability_suffix.dart';
-import 'package:analyzer/dart/element/type.dart';
+import 'package:analyzer/dart/analysis/results.dart';
+import 'package:analyzer/diagnostic/diagnostic.dart';
+import 'package:build/build.dart';
+import 'package:build_test/build_test.dart';
 import 'package:mix_generator/src/core/models/field_model.dart';
 import 'package:mix_generator/src/core/models/mix_field_model.dart';
-import 'package:mix_generator/src/core/registry/mix_type_registry.dart';
+import 'package:source_gen/source_gen.dart';
+import 'package:test/test.dart';
 
+/// Wraps [generator] in a `PartBuilder` that writes a single `.g.dart` part.
+Builder partBuilder(Generator generator) => PartBuilder([generator], '.g.dart');
+
+/// Asserts that running [builder] over [sources] produces a generated part
+/// file that, when re-resolved together with its host library, surfaces no
+/// analyzer errors.
+///
+/// `contains(...)` matchers in `testBuilder` outputs happily pass syntactically
+/// or semantically broken code (e.g., a generated string literal that
+/// interpolates an undefined identifier). This helper closes that gap: it
+/// captures the generated source, re-feeds the library through
+/// `resolveSources`, and fails if any unit reports an error-severity
+/// diagnostic. Warnings and infos are ignored.
+///
+/// The [sources] map must contain everything the *generated output* references
+/// (e.g., `MixOps`), not just what the *input* needs to type-check.
+Future<void> expectGeneratorOutputResolves({
+  required Builder builder,
+  required Map<String, String> sources,
+  required String inputAsset,
+  required String outputAsset,
+}) async {
+  String? generated;
+  await testBuilder(
+    builder,
+    sources,
+    generateFor: {inputAsset},
+    outputs: {
+      outputAsset: decodedMatches(
+        predicate<String>((value) {
+          generated = value;
+          return true;
+        }, 'captured generator output'),
+      ),
+    },
+  );
+
+  if (generated == null) {
+    fail('Generator produced no output for $outputAsset.');
+  }
+
+  await resolveSources({...sources, outputAsset: generated!}, (resolver) async {
+    final library = await resolver.libraryFor(AssetId.parse(inputAsset));
+    final libPath = library.firstFragment.source.fullName;
+    final result = await library.session.getResolvedLibrary(libPath);
+    if (result is! ResolvedLibraryResult) {
+      fail('Could not resolve library at $libPath: $result');
+    }
+
+    final errors = <String>[];
+    for (final unit in result.units) {
+      for (final diagnostic in unit.diagnostics) {
+        if (diagnostic.severity != Severity.error) continue;
+        final pos = unit.lineInfo.getLocation(diagnostic.offset);
+        errors.add(
+          '${unit.path}:${pos.lineNumber}:${pos.columnNumber}: '
+          '${diagnostic.message} '
+          '(${diagnostic.diagnosticCode.name})',
+        );
+      }
+    }
+
+    if (errors.isNotEmpty) {
+      fail(
+        'Generated output produced ${errors.length} analyzer error(s):\n'
+        '  ${errors.join('\n  ')}',
+      );
+    }
+  });
+}
+
+/// Stub `Style<T>` library — the minimal shape `StylerGenerator` inspects.
+const styleStub = r'''
+library mix_style;
+
+class Style<T> {
+  final Object? $variants;
+  final Object? $modifier;
+  final Object? $animation;
+
+  const Style({Object? variants, Object? modifier, Object? animation})
+    : $variants = variants,
+      $modifier = modifier,
+      $animation = animation;
+}
+''';
+
+/// Stub `Mix<T>` / `Mixable<T>` / `DefaultValue<T>` for `MixableGenerator` tests.
+const mixElementStub = r'''
+library mix_element;
+
+abstract class Mixable<T> {
+  const Mixable();
+}
+
+class Mix<T> extends Mixable<T> {
+  const Mix();
+}
+
+mixin DefaultValue<T> {
+  T get defaultValue;
+}
+''';
+
+/// Stub `Prop<T>` at the canonical Mix path so `propChecker` resolves it.
+const propStub = r'''
+library prop;
+
+class Prop<T> {
+  const Prop();
+}
+''';
+
+/// Stub library defining `VisibleType` for prefix-preservation tests.
+const visibleTypeStub = r'''
+library visible;
+
+class VisibleType {}
+''';
+
+/// Stub `mix_annotations` library with the annotation classes and flag
+/// constants the generators read.
+const mixAnnotationsSources = {
+  'mix_annotations|lib/mix_annotations.dart': "export 'src/annotations.dart';",
+  'mix_annotations|lib/src/annotations.dart': r'''
+library annotations;
+
+class MixableSpec {
+  final int methods;
+  final int components;
+
+  const MixableSpec({this.methods = 0x01 | 0x02 | 0x04, this.components = 0});
+}
+
+class MixableStyler {
+  final int methods;
+
+  const MixableStyler({
+    this.methods = 0x01 | 0x02 | 0x04 | 0x08 | 0x10 | 0x20,
+  });
+}
+
+class Mixable {
+  final int methods;
+  final String? resolveToType;
+
+  const Mixable({this.methods = 0x01 | 0x02 | 0x04 | 0x08, this.resolveToType});
+}
+
+class MixableField {
+  final bool ignoreSetter;
+  final Type? setterType;
+
+  const MixableField({this.ignoreSetter = false, this.setterType});
+}
+
+class GeneratedSpecMethods {
+  static const int copyWith = 0x01;
+  static const int equals = 0x02;
+  static const int lerp = 0x04;
+  static const int all = copyWith | equals | lerp;
+  static const int skipEquals = all & ~equals;
+}
+''',
+};
+
+/// Builds a [FieldModel] for tests. Pass [typeName] or [effectiveSpecType];
+/// the other is inferred.
 FieldModel createTestFieldModel({
   required String name,
-  required String typeName,
+  String? typeName,
   String? effectiveSpecType,
   bool isNullable = false,
   bool isList = false,
@@ -17,80 +187,36 @@ FieldModel createTestFieldModel({
   String? diagnosticLabel,
   String? flagDescription,
 }) {
+  final resolvedTypeName =
+      typeName ??
+      effectiveSpecType?.replaceAll('?', '') ??
+      (throw ArgumentError('typeName or effectiveSpecType is required'));
   final resolvedSpecType =
-      effectiveSpecType ?? '$typeName${isNullable ? '?' : ''}';
+      effectiveSpecType ?? '$resolvedTypeName${isNullable ? '?' : ''}';
 
   return FieldModel(
     name: name,
-    dartType: FakeDartType(resolvedSpecType, isNullable),
-    element: FakeFieldElement(name),
-    isNullable: isNullable,
-    typeName: typeName,
+    typeName: resolvedTypeName,
     isList: isList,
     listElementType: listElementType,
     effectiveSpecType: resolvedSpecType,
-    effectivePublicParamType: resolvedSpecType,
     isLerpable: isLerpable,
-    propWrapperKind: PropWrapperKind.none,
-    isWrappedInProp: false,
     diagnosticKind: diagnosticKind,
     diagnosticLabel: diagnosticLabel,
-    generateSetter: true,
     flagDescription: flagDescription,
   );
 }
 
+/// Builds a [MixFieldModel] for tests. [declaredName] defaults to
+/// `$<name>` to match the styler/mix field convention.
 MixFieldModel createTestMixFieldModel({
   required String name,
   String? declaredName,
   required String dartTypeDisplayString,
-  bool isNullable = false,
-  String? innerTypeName,
-  bool isWrappedInProp = false,
 }) {
   return MixFieldModel(
     name: name,
     declaredName: declaredName ?? '\$$name',
-    dartType: FakeDartType(dartTypeDisplayString, isNullable),
-    element: FakeFieldElement(name),
-    isNullable: isNullable,
-    innerTypeName:
-        innerTypeName ?? dartTypeDisplayString.replaceFirst(RegExp(r'\?$'), ''),
-    isWrappedInProp: isWrappedInProp,
+    fieldTypeCode: dartTypeDisplayString,
   );
-}
-
-class FakeDartType implements DartType {
-  final String _displayString;
-  final bool _isNullable;
-
-  FakeDartType(this._displayString, this._isNullable);
-
-  @override
-  String getDisplayString({bool withNullability = true}) => _displayString;
-
-  @override
-  NullabilitySuffix get nullabilitySuffix =>
-      _isNullable ? NullabilitySuffix.question : NullabilitySuffix.none;
-
-  @override
-  dynamic noSuchMethod(Invocation invocation) {
-    throw UnsupportedError(
-      'Unexpected DartType access in test: ${invocation.memberName}',
-    );
-  }
-}
-
-class FakeFieldElement implements FieldElement {
-  @override
-  final String name;
-
-  FakeFieldElement(this.name);
-
-  @override
-  dynamic noSuchMethod(Invocation invocation) {
-    throw UnsupportedError(
-      'Unexpected FieldElement access in test: ${invocation.memberName}',
-    );
-  }
 }

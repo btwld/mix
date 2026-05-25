@@ -46,6 +46,8 @@ export 'src/core/style_builder.dart';
 export 'src/core/style_spec.dart';
 export 'src/core/style_widget.dart';
 export 'src/core/widget_modifier.dart';
+
+/// MODIFIERS
 export 'src/modifiers/align_modifier.dart';
 export 'src/modifiers/aspect_ratio_modifier.dart';
 export 'src/modifiers/blur_modifier.dart';
@@ -67,11 +69,9 @@ export 'src/modifiers/shader_mask_modifier.dart';
 export 'src/modifiers/sized_box_modifier.dart';
 export 'src/modifiers/transform_modifier.dart';
 export 'src/modifiers/visibility_modifier.dart';
-
-/// PROPERTIES
 export 'src/modifiers/widget_modifier_config.dart';
 
-/// ICONOGRAPHY
+/// PROPERTIES
 export 'src/properties/layout/constraints_mix.dart';
 export 'src/properties/layout/edge_insets_geometry_mix.dart';
 export 'src/properties/layout/stack_mix.dart';
@@ -86,12 +86,12 @@ export 'src/properties/typography/strut_style_mix.dart';
 export 'src/properties/typography/text_height_behavior_mix.dart';
 export 'src/properties/typography/text_style_mix.dart';
 
-/// TYPOGRAPHY
+/// PROVIDERS
 export 'src/providers/icon_scope.dart';
 export 'src/providers/text_scope.dart';
-export 'src/specs/box/box_spec.dart';
 
 /// SPECS
+export 'src/specs/box/box_spec.dart';
 export 'src/specs/box/box_style.dart';
 export 'src/specs/box/box_widget.dart';
 export 'src/specs/flex/flex_spec.dart';
@@ -115,7 +115,7 @@ export 'src/specs/text/text_spec.dart';
 export 'src/specs/text/text_style.dart';
 export 'src/specs/text/text_widget.dart';
 
-/// STYLE MIXINS
+/// STYLE
 export 'src/style/abstracts/styler.dart';
 export 'src/style/mixins/animation_style_mixin.dart';
 export 'src/style/mixins/border_radius_style_mixin.dart';

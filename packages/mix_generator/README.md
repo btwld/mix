@@ -28,30 +28,52 @@ dev_dependencies:
 
 ## What It Generates
 
+The three Mix annotations emit mixins with deliberately different shapes, chosen to match the type they're paired with:
+
+- **`@MixableSpec`** emits a *rich* mixin (`mixin _$<Name> implements Spec<T>, Diagnosticable`) that fully completes the Spec contract on its own. Specs are immutable value types with no shared concrete behavior to inherit, so the generated mixin can be self-contained — user code only writes `with _$<Name>`.
+- **`@MixableStyler`** emits a *slim* mixin (`mixin _$<Name>Mixin on Style<S>, Diagnosticable`) that only fills in the per-field plumbing (setters, `merge`, `resolve`, etc.). The user class still `extends MixStyler<TStyler, TSpec>` because `Style<S>` carries concrete state (`$variants`, `$modifier`, `$animation`) and helper mixins (variants/modifier/animation/widget-state) that don't make sense to duplicate per styler.
+- **`@Mixable`** emits a *slim* mixin (`mixin _$<Name>Mixin on Mix<T>[, DefaultValue<T>][, Diagnosticable]`) for the same reason — Mix subclasses commonly compose intermediate base classes (e.g., `class BoxConstraintsMix extends ConstraintsMix<BoxConstraints>`) and the user keeps that inheritance chain.
+
+If the asymmetry feels surprising, the rule is: rich shape for pure-data types that have nothing meaningful to inherit; slim shape for types whose `extends` chain carries shared state or behavior.
+
 ### From `@MixableSpec` — Spec mixin
 
-Generates a `_$<Name>` mixin for immutable Spec classes with:
+Generates a self-contained `_$<Name>` mixin (`implements Spec<Name>, Diagnosticable`) for immutable Spec classes. User code declares the spec with a single `with _$<Name>` — Equatable-style equality and Diagnosticable's concrete surface are inlined by the generator:
 
+- `Type get type` — the concrete spec `Type`
 - `copyWith()` — create modified copies
-- `==` / `hashCode` — value equality
 - `lerp()` — smooth interpolation between specs
+- `props` by default, `==`, `hashCode` — deep equality via `propsEquals` / `propsHash` helpers
+- `toString({DiagnosticLevel minLevel})`, `toStringShort()`, `toDiagnosticsNode()` — Flutter inspector integration
+- `debugFillProperties()` — diagnostic output
+
+No `with Equatable` and no `with Diagnosticable` on the user class — the mixin carries both.
 
 ```dart
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 
 part 'box_spec.g.dart';
 
 @MixableSpec()
-final class BoxSpec extends Spec<BoxSpec> with _$BoxSpec {
+@immutable
+final class BoxSpec with _$BoxSpec {
+  @override
   final Color? color;
+  @override
   final double? width;
+  @override
   final double? height;
+  @override
   final AlignmentGeometry? alignment;
 
   const BoxSpec({this.color, this.width, this.height, this.alignment});
 }
 ```
+
+**Legacy declaration shape.** Pre-2.0 generators emitted a slim `_$<Name>SpecMethods` mixin and required `class <Name> extends Spec<<Name>> with Diagnosticable, _$<Name>SpecMethods`. The generator now emits a `@Deprecated typedef _$<Name>SpecMethods = _$<Name>;` alongside every spec mixin so those legacy declarations keep compiling — you'll just see a deprecation warning. Migrate to `class <Name> with _$<Name>` to silence it; the alias is scheduled for removal in `mix_generator` 3.0. One observable change for legacy callers: `toString()` now routes through `Diagnosticable.toDiagnosticsNode`, replacing Equatable's `Name(field: …)` output with Flutter's diagnostic-node format.
 
 ### From `@MixableStyler` — Styler mixin
 
@@ -62,7 +84,6 @@ Generates a `_$<Name>Mixin` for mutable Styler classes with:
 - `resolve()` — resolve to the corresponding Spec
 - `debugFillProperties()` — diagnostics support
 - `props` — equality comparison
-- `call()` — widget creation
 
 ```dart
 part 'box_styler.g.dart';
@@ -118,7 +139,7 @@ final Prop<List<Shadow>>? $shadows;
 ## Running the Generator
 
 ```bash
-dart run build_runner build
+dart run build_runner build --delete-conflicting-outputs
 ```
 
 Or within the Mix monorepo:

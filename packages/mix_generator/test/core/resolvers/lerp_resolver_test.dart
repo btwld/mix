@@ -4,7 +4,7 @@ import 'package:test/test.dart';
 import '../test_helpers.dart';
 
 void main() {
-  group('LerpResolver', () {
+  group('lerp_resolver', () {
     group('LerpStrategy', () {
       test('interpolate is for lerpable types', () {
         expect(LerpStrategy.interpolate.name, equals('interpolate'));
@@ -19,7 +19,7 @@ void main() {
       });
     });
 
-    group('resolveStrategy', () {
+    group('resolveLerpStrategy', () {
       test('returns interpolate for lerpable fields', () {
         final field = createTestFieldModel(
           name: 'padding',
@@ -27,7 +27,7 @@ void main() {
           isLerpable: true,
         );
 
-        expect(lerpResolver.resolveStrategy(field), LerpStrategy.interpolate);
+        expect(resolveLerpStrategy(field), LerpStrategy.interpolate);
       });
 
       test('returns snap for non-lerpable fields', () {
@@ -37,7 +37,7 @@ void main() {
           isLerpable: false,
         );
 
-        expect(lerpResolver.resolveStrategy(field), LerpStrategy.snap);
+        expect(resolveLerpStrategy(field), LerpStrategy.snap);
       });
 
       test('returns delegateToSpec for StyleSpec fields', () {
@@ -48,10 +48,7 @@ void main() {
           isNullable: true,
         );
 
-        expect(
-          lerpResolver.resolveStrategy(field),
-          LerpStrategy.delegateToSpec,
-        );
+        expect(resolveLerpStrategy(field), LerpStrategy.delegateToSpec);
       });
 
       test('prefers delegateToSpec over interpolate for StyleSpec fields', () {
@@ -63,10 +60,7 @@ void main() {
           isLerpable: true,
         );
 
-        expect(
-          lerpResolver.resolveStrategy(field),
-          LerpStrategy.delegateToSpec,
-        );
+        expect(resolveLerpStrategy(field), LerpStrategy.delegateToSpec);
       });
     });
 
@@ -79,7 +73,7 @@ void main() {
         );
 
         expect(
-          lerpResolver.generateLerpCode(field),
+          generateLerpCode(field),
           equals('MixOps.lerp(padding, other?.padding, t)'),
         );
       });
@@ -92,7 +86,7 @@ void main() {
         );
 
         expect(
-          lerpResolver.generateLerpCode(field),
+          generateLerpCode(field),
           equals('MixOps.lerpSnap(clipBehavior, other?.clipBehavior, t)'),
         );
       });
@@ -105,10 +99,7 @@ void main() {
           isNullable: true,
         );
 
-        expect(
-          lerpResolver.generateLerpCode(field),
-          equals('box?.lerp(other?.box, t)'),
-        );
+        expect(generateLerpCode(field), equals('box?.lerp(other?.box, t)'));
       });
 
       test('uses . for non-nullable StyleSpec fields', () {
@@ -119,10 +110,7 @@ void main() {
           isNullable: false,
         );
 
-        expect(
-          lerpResolver.generateLerpCode(field),
-          equals('box.lerp(other?.box, t)'),
-        );
+        expect(generateLerpCode(field), equals('box.lerp(other?.box, t)'));
       });
     });
   });

@@ -1,15 +1,15 @@
 targets:
   $default:
     builders:
-      mix_generator:
+      mix_generator:mix_generator:
         enabled: true
         generate_for:
           - lib/src/specs/**/*.dart  # Narrowed scope for specs only
-      styler_generator:
+      mix_generator:styler_generator:
         enabled: true
         generate_for:
           - lib/src/specs/**/*.dart  # Narrowed scope for specs only
-      mixable_generator:
+      mix_generator:mixable_generator:
         enabled: true
         generate_for:
           - lib/src/properties/**/*.dart  # Mix property classes

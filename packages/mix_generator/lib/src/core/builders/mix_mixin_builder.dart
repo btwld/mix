@@ -4,6 +4,7 @@
 library;
 
 import '../models/annotation_config.dart';
+import '../helpers/field_emitter.dart';
 import '../models/mix_field_model.dart';
 
 /// Builds the _$XMixin for a Mix class.
@@ -22,22 +23,16 @@ class MixMixinBuilder {
     required this.hasDefaultValue,
   });
 
+  FieldEmitter<MixFieldModel> _fieldEmitter() => .new(fields);
+
   String _buildAbstractGetters() {
-    if (fields.isEmpty) return '';
-
-    final buffer = StringBuffer();
-    for (final field in fields) {
-      final typeStr = field.dartType.getDisplayString();
-      buffer.writeln('  $typeStr get ${field.declaredName};');
-    }
-    buffer.writeln();
-
-    return buffer.toString();
+    return _fieldEmitter().abstractGetters(
+      typeCode: (field) => field.fieldTypeCode,
+      getterName: (field) => field.declaredName,
+    );
   }
 
   String _buildMerge() {
-    if (!config.generateMerge) return '';
-
     final buffer = StringBuffer();
 
     buffer.writeln('  /// Merges with another [$mixName].');
@@ -45,15 +40,12 @@ class MixMixinBuilder {
     buffer.writeln('  $mixName merge($mixName? other) {');
     buffer.writeln('    return $mixName.create(');
 
-    // Field merge assignments
-    for (final field in fields) {
+    _fieldEmitter().linesInto(buffer, (field) {
       final fieldName = field.declaredName;
       final name = field.name;
 
-      buffer.writeln(
-        '      $name: MixOps.merge($fieldName, other?.$fieldName),',
-      );
-    }
+      return '      $name: MixOps.merge($fieldName, other?.$fieldName),';
+    });
 
     buffer.writeln('    );');
     buffer.writeln('  }');
@@ -62,8 +54,6 @@ class MixMixinBuilder {
   }
 
   String _buildResolve() {
-    if (!config.generateResolve) return '';
-
     final buffer = StringBuffer();
 
     buffer.writeln('  /// Resolves to [$resolveToType] using context.');
@@ -71,21 +61,17 @@ class MixMixinBuilder {
     buffer.writeln('  $resolveToType resolve(BuildContext context) {');
     buffer.writeln('    return $resolveToType(');
 
-    // Field resolve assignments
-    for (final field in fields) {
+    _fieldEmitter().linesInto(buffer, (field) {
       final fieldName = field.declaredName;
       final name = field.name;
-
       if (hasDefaultValue) {
         // Use defaultValue for fields when resolved value is null
-        buffer.writeln(
-          '      $name: MixOps.resolve(context, $fieldName) ?? defaultValue.$name,',
-        );
-      } else {
-        // No default value, just resolve
-        buffer.writeln('      $name: MixOps.resolve(context, $fieldName),');
+        return '      $name: MixOps.resolve(context, $fieldName) ?? defaultValue.$name,';
       }
-    }
+
+      // No default value, just resolve
+      return '      $name: MixOps.resolve(context, $fieldName),';
+    });
 
     buffer.writeln('    );');
     buffer.writeln('  }');
@@ -94,54 +80,27 @@ class MixMixinBuilder {
   }
 
   String _buildProps() {
-    if (!config.generateProps) return '';
-
-    final buffer = StringBuffer();
-
-    buffer.writeln('  @override');
-    buffer.write('  List<Object?> get props => [');
-
     if (fields.isEmpty) {
+      final buffer = StringBuffer();
+      buffer.writeln('  @override');
+      buffer.write('  List<Object?> get props => [');
       buffer.writeln('];');
-    } else {
-      buffer.writeln();
-      for (final field in fields) {
-        buffer.writeln('    ${field.declaredName},');
-      }
-      buffer.writeln('  ];');
+
+      return buffer.toString();
     }
 
-    return buffer.toString();
+    return _fieldEmitter().multilineProps(
+      propCode: (field) => field.declaredName,
+    );
   }
 
   String _buildDebugFillProperties() {
-    if (!config.generateDebugFillProperties) return '';
-
-    final buffer = StringBuffer();
-
-    buffer.writeln('  @override');
-    buffer.writeln(
-      '  void debugFillProperties(DiagnosticPropertiesBuilder properties) {',
+    return _fieldEmitter().debugFillProperties(
+      callSuper: true,
+      propertyCode: (field) {
+        return "DiagnosticsProperty('${field.name}', ${field.declaredName})";
+      },
     );
-    buffer.writeln('    super.debugFillProperties(properties);');
-
-    if (fields.isNotEmpty) {
-      buffer.writeln('    properties');
-
-      for (int i = 0; i < fields.length; i++) {
-        final field = fields[i];
-        final displayName = field.name;
-        final fieldName = field.declaredName;
-        final separator = i == fields.length - 1 ? ';' : '';
-        buffer.writeln(
-          "      ..add(DiagnosticsProperty('$displayName', $fieldName))$separator",
-        );
-      }
-    }
-
-    buffer.writeln('  }');
-
-    return buffer.toString();
   }
 
   /// The mixin name.

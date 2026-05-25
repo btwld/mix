@@ -1,11 +1,13 @@
 /// Mix Generator - Auto-generates Spec, Styler, and Mix class bodies.
 ///
 /// This package generates:
-/// - Spec mixin (_$XSpecMethods): copyWith(), lerp(), debugFillProperties(), props
-/// - Styler mixin (_$XStylerMixin): setters, merge(), resolve(), debugFillProperties(), props
-/// - Mix mixin (_$XMixin): merge(), resolve(), props
-///
-/// See PLAN.md for the implementation plan.
+/// - Spec mixin `_$XSpec`: self-contained — implements `Spec<X>` and
+///   `Diagnosticable`; inlines `==`, `hashCode`, `toString`, `getDiff`,
+///   `toDiagnosticsNode`, `debugFillProperties`, plus `copyWith`, `lerp`,
+///   `props`, and `type`.
+/// - Styler mixin `_$XStylerMixin`: setters, base methods (`animate`,
+///   `variants`, `wrap`), `merge`, `resolve`, `debugFillProperties`, `props`.
+/// - Mix mixin `_$XMixin`: `merge`, `resolve`, `props`.
 library;
 
 import 'package:build/build.dart';
@@ -22,7 +24,6 @@ export 'src/core/curated/index.dart';
 export 'src/core/models/field_model.dart';
 export 'src/core/models/mix_field_model.dart';
 export 'src/core/models/styler_field_model.dart';
-export 'src/core/registry/mix_type_registry.dart';
 export 'src/core/resolvers/index.dart';
 export 'src/mix_generator.dart';
 export 'src/mixable_generator.dart';
@@ -30,8 +31,9 @@ export 'src/styler_generator.dart';
 
 /// Entry point for the mix_generator builder.
 ///
-/// Triggers on @MixableSpec annotations and generates:
-/// - _$XSpecMethods mixin (Spec method overrides)
+/// Triggers on `@MixableSpec` annotations and generates the `_$XSpec` mixin
+/// (Spec method overrides: `type`, `copyWith`, `lerp`, `props`,
+/// `debugFillProperties`).
 Builder mixGenerator(BuilderOptions _) {
   return SharedPartBuilder(
     [SpecGenerator()],

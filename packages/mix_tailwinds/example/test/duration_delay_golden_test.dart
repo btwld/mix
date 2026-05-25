@@ -95,9 +95,8 @@ void main() {
 }
 
 class _AnimatedColorBox extends StatefulWidget {
-  const _AnimatedColorBox({required this.label, required this.timingClass});
+  const _AnimatedColorBox({required this.timingClass});
 
-  final String label;
   final String timingClass;
 
   @override
@@ -143,14 +142,8 @@ class _DurationSample extends StatelessWidget {
         const Div(
           classNames: 'flex gap-4',
           children: [
-            _AnimatedColorBox(
-              label: 'duration-1000',
-              timingClass: 'duration-1000',
-            ),
-            _AnimatedColorBox(
-              label: 'duration-200',
-              timingClass: 'duration-200',
-            ),
+            _AnimatedColorBox(timingClass: 'duration-1000'),
+            _AnimatedColorBox(timingClass: 'duration-200'),
           ],
         ),
       ],
@@ -173,14 +166,8 @@ class _DelaySample extends StatelessWidget {
         const Div(
           classNames: 'flex gap-4',
           children: [
-            _AnimatedColorBox(
-              label: 'delay-0',
-              timingClass: 'duration-200 delay-0',
-            ),
-            _AnimatedColorBox(
-              label: 'delay-500',
-              timingClass: 'duration-200 delay-500',
-            ),
+            _AnimatedColorBox(timingClass: 'duration-200 delay-0'),
+            _AnimatedColorBox(timingClass: 'duration-200 delay-500'),
           ],
         ),
       ],

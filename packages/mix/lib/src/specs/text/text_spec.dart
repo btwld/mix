@@ -14,8 +14,7 @@ part 'text_spec.g.dart';
 /// alignment, line limits, text direction, and string directive support.
 @MixableSpec(methods: GeneratedSpecMethods.skipLerp)
 @immutable
-final class TextSpec extends Spec<TextSpec>
-    with Diagnosticable, _$TextSpecMethods {
+final class TextSpec with _$TextSpec {
   /// How visual overflow should be handled.
   @override
   final TextOverflow? overflow;

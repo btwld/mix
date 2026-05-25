@@ -17,7 +17,6 @@ class PressableBox extends StatelessWidget {
     required this.child,
     this.autofocus = false,
     this.enableFeedback = false,
-
     this.onFocusChange,
     this.onPress,
     this.hitTestBehavior = HitTestBehavior.opaque,
@@ -38,7 +37,6 @@ class PressableBox extends StatelessWidget {
   final bool enabled;
   final FocusNode? focusNode;
   final bool autofocus;
-
   final Function(bool focus)? onFocusChange;
 
   final HitTestBehavior hitTestBehavior;

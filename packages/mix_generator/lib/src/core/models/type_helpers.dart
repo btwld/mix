@@ -1,8 +1,42 @@
-/// Shared type helpers for field models.
-library;
-
+import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 
+import '../checkers.dart';
+import '../errors.dart';
+import '../helpers/library_scope.dart';
+
+/// Common analyzer-derived field facts used by all field model factories.
+class FieldExtraction {
+  final DartType type;
+  final String declaredName;
+  final String name;
+  final String typeName;
+
+  const FieldExtraction({
+    required this.type,
+    required this.declaredName,
+    required this.name,
+    required this.typeName,
+  });
+}
+
+/// Extracts common field metadata.
+FieldExtraction extractField(FieldElement element, {bool stripDollar = false}) {
+  final type = element.type;
+  final declaredName = element.name!;
+  final name = stripDollar && declaredName.startsWith(r'$')
+      ? declaredName.substring(1)
+      : declaredName;
+
+  return FieldExtraction(
+    type: type,
+    declaredName: declaredName,
+    name: name,
+    typeName: getBaseTypeName(type),
+  );
+}
+
+/// Returns the display string of [type] with any trailing `?` stripped.
 String getBaseTypeName(DartType type) {
   final displayString = type.getDisplayString();
 
@@ -13,22 +47,53 @@ String getBaseTypeName(DartType type) {
   return displayString;
 }
 
+/// Whether [type] is exactly Mix's `Prop<T>` (matched by URL, not name).
 bool isWrappedInProp(DartType type) {
   if (type is! InterfaceType) return false;
 
-  return type.element.name == 'Prop';
+  return propChecker.isExactlyType(type);
+}
+
+/// Returns the public value type inside `Prop<T>`, or [type] when unwrapped.
+DartType getInnerType(DartType type, {required bool isWrapped}) {
+  if (!isWrapped) {
+    return type;
+  }
+
+  if (type is! InterfaceType) return type;
+
+  if (type.typeArguments.isNotEmpty) {
+    return type.typeArguments.first;
+  }
+
+  return type;
 }
 
 String getInnerTypeName(DartType type, {required bool isWrapped}) {
-  if (!isWrapped) {
-    return getBaseTypeName(type);
+  return getBaseTypeName(getInnerType(type, isWrapped: isWrapped));
+}
+
+/// Returns Dart code for a field-related [type] from [visibleFrom].
+String visibleTypeCodeForField(
+  FieldElement element, {
+  required LibraryElement visibleFrom,
+  DartType? type,
+  String usage = 'type',
+}) {
+  final resolvedType = type ?? element.type;
+  final hiddenType = firstInvisibleTypeName(resolvedType, visibleFrom);
+  if (hiddenType != null) {
+    final fieldName = element.name ?? '<unknown>';
+    final libraryName = visibleFrom.uri.pathSegments.isEmpty
+        ? visibleFrom.uri.toString()
+        : visibleFrom.uri.pathSegments.last;
+    fail(
+      element,
+      'Field `$fieldName` uses $usage `$hiddenType`, but that type is '
+      'not visible from `$libraryName` (where generation runs). Import or '
+      're-export `$hiddenType` from that library.',
+    );
   }
 
-  if (type is! InterfaceType) return getBaseTypeName(type);
-
-  if (type.typeArguments.isNotEmpty) {
-    return getBaseTypeName(type.typeArguments.first);
-  }
-
-  return getBaseTypeName(type);
+  return typeCode(resolvedType, visibleFrom: visibleFrom);
 }
