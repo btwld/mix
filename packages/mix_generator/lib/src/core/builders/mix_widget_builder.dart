@@ -41,7 +41,8 @@ class MixWidgetBuilder {
   }
 
   /// Emits one parameter inside the constructor's parameter list.
-  /// `required` precedes the `this.<name>` for required named params.
+  ///
+  /// `required` precedes `this.<name>` for required named parameters.
   String _constructorParam(MixWidgetParam param) {
     final required = param.isRequired && !param.isPositional ? 'required ' : '';
     final defaultClause = param.defaultValueCode != null
@@ -83,26 +84,27 @@ class MixWidgetBuilder {
   }
 
   /// Renders the comma-separated argument list passed to the factory function.
-  /// Positionals are forwarded by reference; named by `name: name`.
+  /// Positionals and named params are read through `this` so generated field
+  /// names cannot be shadowed by locals in `build`.
   String _factoryArgs() {
     final positional = model.factoryParams
         .where((p) => p.isPositional)
-        .map((p) => p.name);
+        .map((p) => 'this.${p.name}');
     final named = model.factoryParams
         .where((p) => !p.isPositional)
-        .map((p) => '${p.name}: ${p.name}');
+        .map((p) => '${p.name}: this.${p.name}');
 
     return [...positional, ...named].join(', ');
   }
 
-  /// Renders the lines passed to `.call(...)`. `key: key` leads when the
-  /// styler `call()` forwards keys.
+  /// Renders the lines passed to `.call(...)`.
   List<String> _callArgs() {
     return [
-      if (model.stylerCallForwardsKey) 'key: key',
-      for (final p in model.callParams.where((p) => p.isPositional)) p.name,
+      for (final p in model.callParams.where((p) => p.isPositional))
+        'this.${p.name}',
+      if (model.stylerCallForwardsKey) 'key: this.key',
       for (final p in model.callParams.where((p) => !p.isPositional))
-        '${p.name}: ${p.name}',
+        '${p.name}: this.${p.name}',
     ];
   }
 

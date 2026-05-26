@@ -1,6 +1,6 @@
-/// Mix generator for Spec code generation.
+/// Generator for `@MixableSpec` classes.
 ///
-/// Generates `_$XSpec` mixins from `@MixableSpec` annotations.
+/// Emits self-contained `_$XSpec` mixins from `@MixableSpec` annotations.
 library;
 
 import 'package:analyzer/dart/element/element.dart';
@@ -13,7 +13,7 @@ import 'core/errors.dart';
 import 'core/models/annotation_config.dart';
 import 'core/models/field_model.dart';
 
-/// Main generator for Mix Spec code.
+/// Source-gen generator for Mix Spec code.
 ///
 /// Triggers on `@MixableSpec` annotations and generates a self-contained
 /// `_$XSpec` mixin with header `implements Spec<XSpec>, Diagnosticable`.
@@ -25,9 +25,11 @@ import 'core/models/field_model.dart';
 class SpecGenerator extends GeneratorForAnnotation<MixableSpec> {
   const SpecGenerator();
 
-  /// Extracts field models from [classElement]. [specName] must be the
-  /// validated non-null class name — `generateForAnnotatedElement` fails
-  /// before this is called so nullability is not handled defensively here.
+  /// Extracts field models from [classElement].
+  ///
+  /// [specName] must be the validated non-null class name:
+  /// `generateForAnnotatedElement` fails before this is called, so nullability
+  /// is not handled defensively here.
   List<FieldModel> _extractFields(ClassElement classElement, String specName) {
     final stylerName = _deriveStylerName(specName);
 
@@ -89,16 +91,9 @@ class SpecGenerator extends GeneratorForAnnotation<MixableSpec> {
       fail(element, '$specName must have an unnamed constructor.');
     }
 
-    // Extract field models
     final fields = _extractFields(classElement, specName);
-
-    // Extract annotation configuration (methods and components flags)
     final config = _extractAnnotationConfig(annotation);
-
-    // Build output
     final buffer = StringBuffer();
-
-    // Generate Spec mixin
     final specMixinBuilder = SpecMixinBuilder(
       specName: specName,
       fields: fields,

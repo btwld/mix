@@ -1,6 +1,4 @@
-/// Field model for Spec fields.
-///
-/// Represents a field with computed effective values for code generation.
+/// Computed metadata for `@MixableSpec` constructor fields.
 library;
 
 import 'package:analyzer/dart/element/element.dart';
@@ -11,7 +9,7 @@ import 'type_helpers.dart';
 
 export '../curated/type_metadata.dart' show DiagnosticKind;
 
-/// Represents a Spec field with computed values for generation.
+/// A Spec field with derived type, interpolation, and diagnostic metadata.
 class FieldModel {
   /// The field name.
   final String name;
@@ -19,13 +17,13 @@ class FieldModel {
   /// The base type name (without nullability).
   final String typeName;
 
-  /// Whether this is a List type.
+  /// Whether the field type is `List`.
   final bool isList;
 
-  /// The list element type (if isList is true).
+  /// The list element type when [isList] is true.
   final String? listElementType;
 
-  /// The effective Spec type (for copyWith/lerp).
+  /// The type emitted in generated `copyWith` and `lerp` methods.
   final String effectiveSpecType;
 
   /// Whether this field can be lerped.
@@ -34,7 +32,7 @@ class FieldModel {
   /// The diagnostic property type to use.
   final DiagnosticKind diagnosticKind;
 
-  /// Optional diagnostic label override.
+  /// The diagnostic label override, or `null` to use [name].
   final String? diagnosticLabel;
 
   /// The flag description for bool fields.
@@ -52,7 +50,7 @@ class FieldModel {
     this.flagDescription,
   });
 
-  /// Creates a FieldModel from a FieldElement.
+  /// Creates a [FieldModel] from an analyzer [FieldElement].
   factory FieldModel.fromElement(
     FieldElement element, {
     required String stylerName,
@@ -62,24 +60,16 @@ class FieldModel {
     final name = field.name;
     final typeName = field.typeName;
 
-    // Check if list
     final isList = _isList(type);
     final listElementType = isList ? _getListElementType(type) : null;
 
-    // Determine effective types
     final effectiveSpecType = _getEffectiveSpecType(element);
-
-    // Determine lerp strategy
     final isLerpable = _isLerpable(typeName, isList, listElementType);
-
-    // Determine diagnostic kind
     final diagnosticKind = diagnosticKindFor(typeName, isList: isList);
 
-    // Get field alias config
     final aliasConfig = fieldAliasMap['$stylerName.$name'];
     final diagnosticLabel = aliasConfig?.diagnosticLabel;
 
-    // Get flag description for bool fields
     final flagDescription = typeName == 'bool'
         ? flagDescriptionFor(name)
         : null;
@@ -97,17 +87,15 @@ class FieldModel {
     );
   }
 
-  /// Gets the display name for diagnostics.
+  /// The field name to show in generated diagnostics.
   String get displayName => diagnosticLabel ?? name;
 
-  /// Gets the Styler field name (with $ prefix).
+  /// The corresponding Styler field name, with the `$` prefix.
   String get stylerFieldName => '\$$name';
 
   @override
   String toString() => 'FieldModel($name: $typeName)';
 }
-
-// Helper functions
 
 bool _isList(DartType type) {
   if (type is! InterfaceType) return false;
@@ -128,28 +116,24 @@ String _getEffectiveSpecType(FieldElement element) {
 }
 
 bool _isLerpable(String typeName, bool isList, String? listElementType) {
-  // Check enum types first (always snap)
   if (isEnumType(typeName)) {
     return false;
   }
 
-  // Check snappable types
   if (isSnappableType(typeName)) {
     return false;
   }
 
-  // Check lerpable types
   if (isLerpableType(typeName)) {
     return true;
   }
 
-  // Handle list types
   if (isList && listElementType != null) {
     final mixElementType = listElementMixTypeFor(listElementType);
 
     return mixElementType != null && listMixTypeFor(mixElementType) != null;
   }
 
-  // Default to snap for unknown types
+  // Unknown types snap instead of interpolating.
   return false;
 }

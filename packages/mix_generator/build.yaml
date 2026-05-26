@@ -4,19 +4,19 @@ targets:
       mix_generator:mix_generator:
         enabled: true
         generate_for:
-          - lib/src/specs/**/*.dart  # Narrowed scope for specs only
+          - lib/src/specs/**/*.dart  # Narrowed scope for specs only.
       mix_generator:styler_generator:
         enabled: true
         generate_for:
-          - lib/src/specs/**/*.dart  # Narrowed scope for specs only
+          - lib/src/specs/**/*.dart  # Narrowed scope for specs only.
       mix_generator:mixable_generator:
         enabled: true
         generate_for:
-          - lib/src/properties/**/*.dart  # Mix property classes
+          - lib/src/properties/**/*.dart  # Mix property classes.
       mix_generator:mix_widget_generator:
         enabled: true
         generate_for:
-          - lib/**/*.dart            # Broader: users annotate anywhere
+          - lib/**/*.dart            # Broader because users annotate anywhere.
 
 builders:
   mix_generator:

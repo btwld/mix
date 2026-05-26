@@ -308,7 +308,7 @@ void main() {
         final code = builder.build();
 
         expect(code, isNot(contains('BoxStyler merge(')));
-        // Other methods should still be generated
+        // Other methods should still be generated.
         expect(code, contains('StyleSpec<BoxSpec> resolve('));
         expect(code, contains('void debugFillProperties('));
         expect(code, contains('List<Object?> get props =>'));

@@ -132,7 +132,6 @@ class MixableGenerator extends GeneratorForAnnotation<Mixable> {
       orFailWith: '@Mixable class must have a name.',
     );
 
-    // Validate it's a Mix class
     if (!_isMixClass(classElement)) {
       fail(
         element,
@@ -142,10 +141,8 @@ class MixableGenerator extends GeneratorForAnnotation<Mixable> {
       );
     }
 
-    // Extract annotation configuration
     final config = _extractAnnotationConfig(annotation);
 
-    // Extract resolve-to type from annotation or infer from supertype
     final resolveToType =
         config.resolveToType ?? _extractResolveToType(classElement);
     if (resolveToType == null) {
@@ -157,16 +154,9 @@ class MixableGenerator extends GeneratorForAnnotation<Mixable> {
       );
     }
 
-    // Check for DefaultValue mixin
     final hasDefaultValue = _hasDefaultValueMixin(classElement);
-
-    // Extract field models
     final fields = _extractFields(classElement);
-
-    // Build output
     final buffer = StringBuffer();
-
-    // Generate Mix mixin
     final mixMixinBuilder = MixMixinBuilder(
       mixName: mixName,
       resolveToType: resolveToType,

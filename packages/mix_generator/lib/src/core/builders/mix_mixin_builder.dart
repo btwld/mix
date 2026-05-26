@@ -1,13 +1,14 @@
-/// Mix mixin builder for generating _$XMixin.
+/// Builder for generated `_$XMixin` code.
 ///
-/// Generates abstract getters, merge(), resolve(), debugFillProperties(), and props methods.
+/// Emits abstract getters, `merge`, `resolve`, `debugFillProperties`, and
+/// `props` members.
 library;
 
 import '../models/annotation_config.dart';
 import '../helpers/field_emitter.dart';
 import '../models/mix_field_model.dart';
 
-/// Builds the _$XMixin for a Mix class.
+/// Builds the `_$XMixin` for a Mix class.
 class MixMixinBuilder {
   final String mixName;
   final String resolveToType;
@@ -56,7 +57,7 @@ class MixMixinBuilder {
   String _buildResolve() {
     final buffer = StringBuffer();
 
-    buffer.writeln('  /// Resolves to [$resolveToType] using context.');
+    buffer.writeln('  /// Resolves to [$resolveToType] using [context].');
     buffer.writeln('  @override');
     buffer.writeln('  $resolveToType resolve(BuildContext context) {');
     buffer.writeln('    return $resolveToType(');
@@ -65,11 +66,10 @@ class MixMixinBuilder {
       final fieldName = field.declaredName;
       final name = field.name;
       if (hasDefaultValue) {
-        // Use defaultValue for fields when resolved value is null
+        // `DefaultValue<T>` supplies fallbacks for unresolved fields.
         return '      $name: MixOps.resolve(context, $fieldName) ?? defaultValue.$name,';
       }
 
-      // No default value, just resolve
       return '      $name: MixOps.resolve(context, $fieldName),';
     });
 
@@ -110,7 +110,6 @@ class MixMixinBuilder {
   String build() {
     final buffer = StringBuffer();
 
-    // Build mixin declaration with appropriate constraints
     final constraints = ['Mix<$resolveToType>'];
     if (hasDefaultValue) {
       constraints.add('DefaultValue<$resolveToType>');
@@ -121,25 +120,20 @@ class MixMixinBuilder {
 
     buffer.writeln('mixin $generatedMixinName on ${constraints.join(', ')} {');
 
-    // Generate abstract getters
     buffer.writeln(_buildAbstractGetters());
 
-    // Generate merge
     if (config.generateMerge) {
       buffer.writeln(_buildMerge());
     }
 
-    // Generate resolve
     if (config.generateResolve) {
       buffer.writeln(_buildResolve());
     }
 
-    // Generate debugFillProperties
     if (config.generateDebugFillProperties) {
       buffer.writeln(_buildDebugFillProperties());
     }
 
-    // Generate props
     if (config.generateProps) {
       buffer.writeln(_buildProps());
     }

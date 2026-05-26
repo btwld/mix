@@ -21,6 +21,11 @@ Builder partBuilder(Generator generator) => PartBuilder([generator], '.g.dart');
 /// `resolveSources`, and fails if any unit reports an error-severity
 /// diagnostic. Warnings and infos are ignored.
 ///
+/// Pass [outputMatcher] (typically `allOf([contains(...), ...])`) to also
+/// assert on the emitted source shape in the same build run. Useful for
+/// scenarios where substring checks document the expected shape while the
+/// analyzer resolve check guards against semantic bugs.
+///
 /// The [sources] map must contain everything the *generated output* references
 /// (e.g., `MixOps`), not just what the *input* needs to type-check.
 Future<void> expectGeneratorOutputResolves({
@@ -28,20 +33,21 @@ Future<void> expectGeneratorOutputResolves({
   required Map<String, String> sources,
   required String inputAsset,
   required String outputAsset,
+  Matcher? outputMatcher,
 }) async {
   String? generated;
+  final capture = predicate<String>((value) {
+    generated = value;
+    return true;
+  }, 'captured generator output');
+  final combined = outputMatcher == null
+      ? capture
+      : allOf([outputMatcher, capture]);
   await testBuilder(
     builder,
     sources,
     generateFor: {inputAsset},
-    outputs: {
-      outputAsset: decodedMatches(
-        predicate<String>((value) {
-          generated = value;
-          return true;
-        }, 'captured generator output'),
-      ),
-    },
+    outputs: {outputAsset: decodedMatches(combined)},
   );
 
   if (generated == null) {

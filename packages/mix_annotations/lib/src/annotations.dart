@@ -95,11 +95,11 @@ class MixableField {
 /// // `color` (factory param) plus `child` (from `BoxStyler.call`).
 /// ```
 ///
-/// The naming algorithm strips a trailing `Style` from the annotated element's
-/// name and PascalCases the rest (`cardStyle` → `Card`,
-/// `primaryButtonStyle` → `PrimaryButton`). A leading underscore is
-/// preserved (`_internalCardStyle` → `_InternalCard`). Use [name] to
-/// override entirely.
+/// For idiomatic output, name the annotated element `lowerCamelCase` ending in
+/// `Style` (for example, `cardStyle`, `primaryButtonStyle`, or
+/// `_internalCardStyle`). The generator strips a trailing `Style` and
+/// uppercases the first character to derive the widget class name. Use [name]
+/// to override entirely.
 class MixWidget {
   /// Optional override for the generated widget's class name. When `null`,
   /// the name is derived from the annotated element's name.

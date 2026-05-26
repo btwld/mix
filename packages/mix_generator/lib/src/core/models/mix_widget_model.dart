@@ -1,6 +1,7 @@
 /// Model for `@MixWidget`-driven `StatelessWidget` generation.
 ///
 /// Encapsulates the inputs the builder needs to emit the widget class.
+///
 /// The generator does all element-level inspection; this model is the
 /// dependency surface the builder reads from — no analyzer types leak past
 /// this boundary, which makes the builder unit-testable with a hand-rolled
@@ -58,21 +59,24 @@ class MixWidgetModel {
   final String factoryReference;
 
   /// `true` when the factory is a top-level function; `false` when it's a
-  /// top-level variable. Drives whether `build()` emits
-  /// `factory(args).call(...)` or `factory.call(...)`.
+  /// top-level variable.
+  ///
+  /// Drives whether `build()` emits `factory(args).call(...)` or
+  /// `factory.call(...)`.
   final bool isFunctionFactory;
 
   /// Factory function parameters (empty for variable-backed styles), in
   /// declaration order.
   final List<MixWidgetParam> factoryParams;
 
-  /// Styler `call()` parameters, excluding `Key? key` which is handled
-  /// separately via [stylerCallForwardsKey]. Ordered: positionals first,
-  /// then named.
+  /// Styler `call()` parameters, excluding `Key? key`.
+  ///
+  /// [stylerCallForwardsKey] handles `key` separately. Ordering preserves
+  /// positionals first, then named parameters.
   final List<MixWidgetParam> callParams;
 
   /// `true` when the styler's `call()` declares a `Key? key` named parameter
-  /// — the generated `build()` then forwards `key: key`.
+  /// and the generated `build()` forwards `key: this.key`.
   final bool stylerCallForwardsKey;
 
   /// Doc comment carried over from the annotated element (with leading

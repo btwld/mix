@@ -1,19 +1,19 @@
-/// Lerp resolver for determining interpolation strategy.
+/// Interpolation strategy selection for Spec fields.
 ///
-/// Maps DartType → lerp strategy (MixOps.lerp vs MixOps.lerpSnap).
+/// Maps field metadata to `MixOps.lerp`, `MixOps.lerpSnap`, or delegation.
 library;
 
 import '../models/field_model.dart';
 
 /// Lerp strategy for a field.
 enum LerpStrategy {
-  /// Use MixOps.lerp for interpolatable types.
+  /// Use `MixOps.lerp` for interpolatable types.
   interpolate,
 
-  /// Use MixOps.lerpSnap for discrete types.
+  /// Use `MixOps.lerpSnap` for discrete types.
   snap,
 
-  /// Delegate to nested spec's lerp method.
+  /// Delegate to the nested spec's `lerp` method.
   delegateToSpec,
 }
 
@@ -23,12 +23,11 @@ bool _isStyleSpecField(String typeName) {
 
 /// Resolves the lerp strategy for a field.
 LerpStrategy resolveLerpStrategy(FieldModel field) {
-  // Check if it's a StyleSpec<T> field (composite specs)
+  // Composite `StyleSpec<T>` fields delegate interpolation to the nested spec.
   if (_isStyleSpecField(field.typeName)) {
     return .delegateToSpec;
   }
 
-  // Use field's computed lerpable value
   if (field.isLerpable) {
     return .interpolate;
   }
@@ -45,7 +44,7 @@ String generateLerpCode(FieldModel field) {
   return switch (strategy) {
     .interpolate => 'MixOps.lerp($name, other?.$name, t)',
     .snap => 'MixOps.lerpSnap($name, other?.$name, t)',
-    // Use ?. for nullable fields, . for non-nullable fields
+    // Use `?.` for nullable fields and `.` for non-nullable fields.
     .delegateToSpec =>
       isNullable
           ? '$name?.lerp(other?.$name, t)'

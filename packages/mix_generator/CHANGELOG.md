@@ -5,9 +5,12 @@
    `build()` delegates to that styler's `call()`. Constructor parameters mirror
    the styler's `call()` signature, with `Key? key` forwarded via `super.key`.
  - **CHORE**: Match Flutter's canonical `Key` type via `TypeChecker` instead of
-   comparing parameter type names. User stylers whose `call()` declares `Key? key`
-   continue to forward it as `super.key`; subclasses such as `LocalKey?` or
-   `GlobalKey?` are emitted as regular constructor parameters.
+   comparing parameter type names. The styler `call()` may declare exactly
+   `Key? key` (named, nullable, no default, not `required`) to opt into
+   `super.key` forwarding. Any other `key`-named parameter — subclasses such as
+   `LocalKey?` / `GlobalKey?`, non-nullable `Key`, positional, defaulted, or a
+   `key` parameter on the factory function — is rejected with an
+   `InvalidGenerationSource` error.
 
 ## 2.0.3
 

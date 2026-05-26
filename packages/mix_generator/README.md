@@ -127,11 +127,11 @@ final class BoxConstraintsMix extends ConstraintsMix<BoxConstraints>
 ### Field-level control with `@MixableField`
 
 ```dart
-// Skip setter generation
+// Skip setter generation.
 @MixableField(ignoreSetter: true)
 final Prop<Matrix4>? $transform;
 
-// Override the setter parameter type
+// Override the setter parameter type.
 @MixableField(setterType: List<Shadow>)
 final Prop<List<Shadow>>? $shadows;
 ```

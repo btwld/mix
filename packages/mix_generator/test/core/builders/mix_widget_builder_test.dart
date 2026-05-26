@@ -30,8 +30,8 @@ void main() {
       expect(code, contains('const Card({super.key, this.child});'));
       expect(code, contains('final Widget? child;'));
       expect(code, contains('return cardStyle.call('));
-      expect(code, contains('key: key,'));
-      expect(code, contains('child: child,'));
+      expect(code, contains('key: this.key,'));
+      expect(code, contains('child: this.child,'));
     });
 
     test('function-backed style threads factory args before call', () {
@@ -75,7 +75,12 @@ void main() {
       expect(code, contains('this.color'));
       expect(code, contains('this.style'));
       expect(code, contains('this.child'));
-      expect(code, contains('return badgeStyle(color: color, style: style).call('));
+      expect(
+        code,
+        contains(
+          'return badgeStyle(color: this.color, style: this.style).call(',
+        ),
+      );
     });
 
     test('positional call param emits first in constructor', () {
@@ -109,8 +114,12 @@ void main() {
       final code = builder.build();
 
       expect(code, contains('class Label extends StatelessWidget'));
-      expect(code, contains('const Label(this.text, {super.key, this.color});'));
-      expect(code, contains('return labelStyle(color: color).call('));
+      expect(
+        code,
+        contains('const Label(this.text, {super.key, this.color});'),
+      );
+      expect(code, contains('return labelStyle(color: this.color).call('));
+      expect(code, contains('      this.text,\n      key: this.key,'));
     });
 
     test('required call params surface required keyword', () {
@@ -154,8 +163,8 @@ void main() {
       expect(code, contains('required this.onPressed'));
       expect(code, contains('required this.child'));
       expect(code, contains('this.color = const Color(0xFF0000FF)'));
-      expect(code, contains('onPressed: onPressed,'));
-      expect(code, contains('child: child,'));
+      expect(code, contains('onPressed: this.onPressed,'));
+      expect(code, contains('child: this.child,'));
     });
 
     test('no Key? key on styler call → no key forwarding in build', () {
@@ -173,7 +182,7 @@ void main() {
       final code = builder.build();
 
       expect(code, contains('return keyLessStyle.call();'));
-      expect(code, isNot(contains('key: key')));
+      expect(code, isNot(contains('key: this.key')));
     });
 
     test('doc comment carries over to the generated class', () {

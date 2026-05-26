@@ -28,17 +28,21 @@ const defaultValueChecker = TypeChecker.fromUrl(
 /// `Prop<T>` from `package:mix`.
 const propChecker = TypeChecker.fromUrl('package:mix/src/core/prop.dart#Prop');
 
-/// Flutter's `Widget` base class. The URL is the canonical location in
-/// `package:flutter`; the `@MixWidget` generator uses it to validate that a
-/// styler's `call()` returns a `Widget` subtype.
+/// Flutter's `Widget` base class.
+///
+/// The URL is the canonical location in `package:flutter`; the `@MixWidget`
+/// generator uses it to validate that a styler's `call()` returns a `Widget`
+/// subtype.
 const widgetChecker = TypeChecker.fromUrl(
   'package:flutter/src/widgets/framework.dart#Widget',
 );
 
 /// Flutter's `Key` class at its canonical `package:flutter/src/foundation`
-/// location. The `@MixWidget` generator uses it to recognize `Key? key`
-/// named parameters on a styler's `call()` so they get forwarded via
-/// `super.key` instead of surfacing as a generated constructor parameter.
+/// location.
+///
+/// The `@MixWidget` generator uses it to recognize `Key? key` named parameters
+/// on a styler's `call()` so they get forwarded via `super.key` instead of
+/// surfacing as a generated constructor parameter.
 const keyChecker = TypeChecker.fromUrl(
   'package:flutter/src/foundation/key.dart#Key',
 );

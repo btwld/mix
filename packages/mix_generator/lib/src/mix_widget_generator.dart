@@ -1,5 +1,7 @@
-/// MixWidget generator: emits a `StatelessWidget` wrapper for a top-level
-/// variable or function that produces a `Style<S>`.
+/// Generator for `@MixWidget` factories.
+///
+/// Emits a `StatelessWidget` wrapper for a top-level variable or function
+/// that produces a `Style<S>`.
 ///
 /// Triggers on `@MixWidget` annotations applied to a top-level variable or
 /// top-level function. The styler's `call()` method drives the wrapper's
@@ -22,6 +24,88 @@ import 'core/models/mix_widget_model.dart';
 const _annotationLabel = '@MixWidget';
 
 class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
+  static final _identifierPattern = RegExp(r'^_*[A-Za-z][A-Za-z0-9_]*$');
+
+  static const _reservedParamNames = {
+    'build',
+    'createElement',
+    'runtimeType',
+    'hashCode',
+    'toString',
+    'noSuchMethod',
+  };
+
+  static const _dartReservedWords = {
+    'abstract',
+    'as',
+    'assert',
+    'async',
+    'await',
+    'base',
+    'break',
+    'case',
+    'catch',
+    'class',
+    'const',
+    'continue',
+    'covariant',
+    'default',
+    'deferred',
+    'do',
+    'dynamic',
+    'else',
+    'enum',
+    'export',
+    'extends',
+    'extension',
+    'external',
+    'factory',
+    'false',
+    'final',
+    'finally',
+    'for',
+    'Function',
+    'get',
+    'hide',
+    'if',
+    'implements',
+    'import',
+    'in',
+    'interface',
+    'is',
+    'late',
+    'library',
+    'mixin',
+    'new',
+    'null',
+    'of',
+    'on',
+    'operator',
+    'part',
+    'required',
+    'rethrow',
+    'return',
+    'sealed',
+    'set',
+    'show',
+    'static',
+    'super',
+    'switch',
+    'sync',
+    'this',
+    'throw',
+    'true',
+    'try',
+    'type',
+    'typedef',
+    'var',
+    'void',
+    'when',
+    'while',
+    'with',
+    'yield',
+  };
+
   const MixWidgetGenerator();
 
   MixWidgetModel _modelForVariable(
@@ -40,7 +124,13 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
       stylerType,
       library: library,
     );
-    final call = _extractCallParams(callMethod, library: library);
+    _requireUnprefixedFlutterSymbols(variable, callMethod, library);
+    final call = _extractCallParams(
+      callMethod,
+      anchor: variable,
+      library: library,
+      factoryReference: variableName,
+    );
 
     return MixWidgetModel(
       widgetName: _resolveWidgetName(variable, annotation, variableName),
@@ -78,8 +168,19 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
       library: library,
     );
 
-    final factoryParams = _extractFactoryParams(function, library: library);
-    final call = _extractCallParams(callMethod, library: library);
+    _requireUnprefixedFlutterSymbols(function, callMethod, library);
+
+    final factoryParams = _extractFactoryParams(
+      function,
+      library: library,
+      factoryReference: functionName,
+    );
+    final call = _extractCallParams(
+      callMethod,
+      anchor: function,
+      library: library,
+      factoryReference: functionName,
+    );
 
     _rejectCollisions(function, factoryParams, call.params);
 
@@ -122,7 +223,7 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
   }
 
   /// Looks up the styler's `call()` method (including inherited members) and
-  /// validates the contract: non-generic, returns a Widget, no optional
+  /// validates the contract: non-generic, returns a `Widget`, no optional
   /// positional parameters.
   MethodElement _requireCallMethod(
     Element anchor,
@@ -185,36 +286,150 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
   List<MixWidgetParam> _extractFactoryParams(
     TopLevelFunctionElement function, {
     required LibraryElement library,
+    required String factoryReference,
   }) {
-    return function.formalParameters.map((p) {
-      return _paramFor(p, library: library, source: .factory_);
-    }).toList();
+    final optionalPositional = function.formalParameters
+        .where((p) => p.isOptionalPositional)
+        .toList();
+    if (optionalPositional.isNotEmpty) {
+      final names = optionalPositional
+          .map((p) => p.name ?? '<unnamed>')
+          .join(', ');
+      fail(
+        function,
+        '$_annotationLabel does not support optional positional factory '
+        'parameters: [$names].',
+        todo: 'Convert these parameters to required positional or named.',
+      );
+    }
+
+    final params = <MixWidgetParam>[];
+    for (final p in function.formalParameters) {
+      _rejectFactoryKeyParam(p, function);
+      _rejectReservedName(p, function);
+      _rejectFactoryReferenceCollision(p, function, factoryReference);
+      params.add(_paramFor(p, library: library, source: .factory_));
+    }
+
+    return params;
   }
 
   ({List<MixWidgetParam> params, bool forwardsKey}) _extractCallParams(
     MethodElement callMethod, {
+    required Element anchor,
     required LibraryElement library,
+    required String factoryReference,
   }) {
     var forwardsKey = false;
     final params = <MixWidgetParam>[];
 
     for (final p in callMethod.formalParameters) {
-      if (_isKeyParameter(p)) {
+      if (_validateAndDetectCallKey(p, anchor)) {
         forwardsKey = true;
         continue;
       }
+      _rejectReservedName(p, anchor);
+      _rejectFactoryReferenceCollision(p, anchor, factoryReference);
       params.add(_paramFor(p, library: library, source: .call));
     }
 
     return (params: params, forwardsKey: forwardsKey);
   }
 
-  /// Identifies the named `Key? key` parameter that gets forwarded via
-  /// `super.key` instead of becoming a generated constructor parameter.
-  bool _isKeyParameter(FormalParameterElement p) {
-    if (p.name != 'key' || !p.isNamed) return false;
+  void _rejectReservedName(FormalParameterElement parameter, Element anchor) {
+    final name = parameter.name;
+    if (name == null || !_reservedParamNames.contains(name)) return;
 
-    return keyChecker.isExactlyType(p.type);
+    fail(
+      anchor,
+      '$_annotationLabel reserves the parameter name `$name` because the '
+      'generated widget declares or inherits a member with that name. Dart '
+      "doesn't allow a subclass field to share a name with an inherited "
+      'method/getter, so the generated class would not compile.',
+      todo: 'Rename the parameter to avoid clashing with `$name`.',
+    );
+  }
+
+  void _rejectFactoryReferenceCollision(
+    FormalParameterElement parameter,
+    Element anchor,
+    String factoryReference,
+  ) {
+    if (parameter.name != factoryReference) return;
+
+    fail(
+      anchor,
+      '$_annotationLabel reserves the parameter name `$factoryReference` '
+      "because it matches the factory's identifier; once a field with that "
+      'name exists on the generated widget, the bare `$factoryReference(...)` '
+      'call inside `build()` resolves to the field rather than the top-level '
+      'factory.',
+      todo: 'Rename the parameter to avoid clashing with the factory name.',
+    );
+  }
+
+  /// Reserves the parameter name `key` on factory functions. The forwarded
+  /// `super.key` always comes from the styler's `call()`; a factory-level
+  /// `key` would collide with that.
+  void _rejectFactoryKeyParam(
+    FormalParameterElement parameter,
+    Element anchor,
+  ) {
+    if (parameter.name != 'key') return;
+    fail(
+      anchor,
+      '$_annotationLabel reserves the parameter name `key` for the styler '
+      "`call()`'s `Key? key`. Factory functions must not declare a parameter "
+      'named `key`.',
+      todo: 'Rename the factory parameter to something other than `key`.',
+    );
+  }
+
+  /// Returns `true` when [parameter] is the forwarded `Key? key` on a
+  /// styler's `call()` — in that case it is dropped from the generated
+  /// constructor and surfaced via `super.key` instead.
+  ///
+  /// Any other shape of a `key`-named parameter fails with a clear error:
+  /// the generated constructor unconditionally exposes `super.key`, so
+  /// allowing a divergent `key` parameter would either silently change its
+  /// contract (e.g. `required Key key` → optional `Key?`) or emit a
+  /// duplicate `key` field that won't compile.
+  bool _validateAndDetectCallKey(
+    FormalParameterElement parameter,
+    Element anchor,
+  ) {
+    if (parameter.name != 'key') return false;
+
+    final issues = <String>[];
+    if (!parameter.isNamed) issues.add('must be a named parameter');
+    if (parameter.isRequired) issues.add('must not be `required`');
+    if (parameter.defaultValueCode != null) {
+      issues.add('must not have a default value');
+    }
+    if (parameter.type.nullabilitySuffix != .question) {
+      issues.add('must be nullable');
+    }
+    if (!keyChecker.isExactlyType(parameter.type)) {
+      issues.add(
+        'must use the exact `Key` type (subtypes like `LocalKey` or '
+        '`GlobalKey` are not allowed)',
+      );
+    }
+
+    if (issues.isNotEmpty) {
+      final typeDisplay = parameter.type.getDisplayString();
+      fail(
+        anchor,
+        '$_annotationLabel only forwards a `key` parameter when it is '
+        'declared as `Key? key` on the styler `call()`. Found '
+        '`$typeDisplay key` which ${issues.join(' and ')}.',
+        todo:
+            'Use `Key? key` (named, nullable, no default, not `required`) or '
+            'rename the parameter.',
+      );
+    }
+
+    return true;
   }
 
   MixWidgetParam _paramFor(
@@ -251,9 +466,11 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
   }
 
   /// Disallows reusing the same name for a factory parameter and a non-`key`
-  /// call parameter. Without this check the generated constructor would have
-  /// two fields with the same name and fail to compile — the precise error
-  /// is more actionable than the resulting Dart compiler diagnostic.
+  /// call parameter.
+  ///
+  /// Without this check the generated constructor would have two fields with
+  /// the same name and fail to compile; this error is more actionable than
+  /// the resulting Dart compiler diagnostic.
   void _rejectCollisions(
     Element anchor,
     List<MixWidgetParam> factoryParams,
@@ -273,9 +490,59 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
     }
   }
 
+  void _requireUnprefixedFlutterSymbols(
+    Element anchor,
+    MethodElement callMethod,
+    LibraryElement hostLibrary,
+  ) {
+    final returnType = callMethod.returnType;
+    if (returnType is! InterfaceType) return;
+
+    final widgetType = findSupertypeMatching(returnType, widgetChecker);
+    if (widgetType == null) return;
+
+    final framework = widgetType.element.library;
+    final widget = framework.getClass('Widget');
+    final statelessWidget = framework.getClass('StatelessWidget');
+    final buildContext = framework.getClass('BuildContext');
+
+    if (widget == null || statelessWidget == null || buildContext == null) {
+      fail(
+        anchor,
+        '$_annotationLabel could not locate Flutter base classes (Widget, '
+        'StatelessWidget, BuildContext) on `${framework.uri}`.',
+        todo:
+            "Add `import 'package:flutter/widgets.dart';` to the annotated "
+            'library.',
+      );
+    }
+
+    final invisible = <String>[
+      if (referenceFor(widget, hostLibrary) != 'Widget') 'Widget',
+      if (referenceFor(statelessWidget, hostLibrary) != 'StatelessWidget')
+        'StatelessWidget',
+      if (referenceFor(buildContext, hostLibrary) != 'BuildContext')
+        'BuildContext',
+    ];
+
+    if (invisible.isEmpty) return;
+
+    fail(
+      anchor,
+      '$_annotationLabel requires the Flutter base types '
+      '${invisible.map((n) => '`$n`').join(', ')} to be visible unprefixed '
+      'in the annotated library. The generated widget extends '
+      '`StatelessWidget` and overrides `build(BuildContext context)` using '
+      'bare names.',
+      todo:
+          "Import `package:flutter/widgets.dart` without an `as` prefix "
+          '(or re-export it without a prefix from a barrel file).',
+    );
+  }
+
   /// Resolves the generated widget name. `@MixWidget(name: 'X')` wins;
-  /// otherwise strip a trailing `Style` and PascalCase, preserving leading
-  /// underscores for privacy.
+  /// otherwise strips a trailing `Style` and uppercases the first character,
+  /// preserving leading underscores for privacy.
   String _resolveWidgetName(
     Element anchor,
     ConstantReader annotation,
@@ -283,10 +550,24 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
   ) {
     final override = annotation.peek('name')?.stringValue;
     if (override != null && override.isNotEmpty) {
+      if (!_isValidDartTypeIdentifier(override)) {
+        fail(
+          anchor,
+          "$_annotationLabel(name: '$override') is not a valid Dart class "
+          'identifier.',
+          todo: 'Use a valid Dart class name for the override.',
+        );
+      }
+
       return override;
     }
 
     return _deriveWidgetName(anchor, elementName);
+  }
+
+  bool _isValidDartTypeIdentifier(String value) {
+    return _identifierPattern.hasMatch(value) &&
+        !_dartReservedWords.contains(value);
   }
 
   String _deriveWidgetName(Element anchor, String name) {

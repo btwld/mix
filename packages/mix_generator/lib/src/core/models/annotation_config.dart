@@ -12,8 +12,10 @@ class MixableSpecAnnotationConfig {
 
   bool get generateCopyWith => (methods & GeneratedSpecMethods.copyWith) != 0;
 
-  /// Whether to emit a `props` getter. When false (via `skipEquals`), the
-  /// user supplies `props`; the equality surface still emits and uses it.
+  /// Whether to emit a `props` getter.
+  ///
+  /// When false (via `skipEquals`), the user supplies `props`; the equality
+  /// surface still emits and uses it.
   bool get generateProps => (methods & GeneratedSpecMethods.equals) != 0;
 
   bool get generateLerp => (methods & GeneratedSpecMethods.lerp) != 0;
