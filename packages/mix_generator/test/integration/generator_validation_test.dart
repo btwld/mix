@@ -132,19 +132,10 @@ class NotAFactory {
 }
 ''';
 
-      final result = await testBuilder(
-        partBuilder(const MixWidgetGenerator()),
-        {
-          ...mixAnnotationsSources,
-          ...widgetStub,
-          'mix_generator|lib/widget_validation.dart': libSource,
-        },
-        generateFor: {'mix_generator|lib/widget_validation.dart'},
-      );
+      final errors = await _expectMixWidgetValidationError(libSource);
 
-      expect(result.succeeded, isFalse);
       expect(
-        result.errors.join('\n'),
+        errors,
         contains(
           '@MixWidget can only be applied to top-level variables or '
           'top-level functions.',
@@ -162,18 +153,9 @@ import 'package:mix_annotations/mix_annotations.dart';
 int notAStyle() => 42;
 ''';
 
-      final result = await testBuilder(
-        partBuilder(const MixWidgetGenerator()),
-        {
-          ...mixAnnotationsSources,
-          ...widgetStub,
-          'mix_generator|lib/widget_validation.dart': libSource,
-        },
-        generateFor: {'mix_generator|lib/widget_validation.dart'},
-      );
+      final errors = await _expectMixWidgetValidationError(libSource);
 
-      expect(result.succeeded, isFalse);
-      expect(result.errors.join('\n'), contains('does not extend Style<S>'));
+      expect(errors, contains('does not extend Style<S>'));
     });
 
     test('MixWidgetGenerator rejects a styler with no call() method', () async {
@@ -194,20 +176,10 @@ class CallLessStyler extends Style<BoxSpec> {
 final brokenStyle = const CallLessStyler();
 ''';
 
-      final result = await testBuilder(
-        partBuilder(const MixWidgetGenerator()),
-        {
-          ...mixAnnotationsSources,
-          ...widgetStub,
-          'mix|lib/src/core/style.dart': styleStub,
-          'mix_generator|lib/widget_validation.dart': libSource,
-        },
-        generateFor: {'mix_generator|lib/widget_validation.dart'},
-      );
+      final errors = await _expectMixWidgetValidationError(libSource);
 
-      expect(result.succeeded, isFalse);
       expect(
-        result.errors.join('\n'),
+        errors,
         contains('requires CallLessStyler to declare a `call()` method'),
       );
     });
@@ -239,20 +211,10 @@ class _S extends StatelessWidget {
 final brokenStyle = const BadStyler();
 ''';
 
-        final result = await testBuilder(
-          partBuilder(const MixWidgetGenerator()),
-          {
-            ...mixAnnotationsSources,
-            ...widgetStub,
-            'mix|lib/src/core/style.dart': styleStub,
-            'mix_generator|lib/widget_validation.dart': libSource,
-          },
-          generateFor: {'mix_generator|lib/widget_validation.dart'},
-        );
+        final errors = await _expectMixWidgetValidationError(libSource);
 
-        expect(result.succeeded, isFalse);
         expect(
-          result.errors.join('\n'),
+          errors,
           contains('does not support optional positional `call()` parameters'),
         );
       },
@@ -285,20 +247,10 @@ class _S extends StatelessWidget {
 BoxStyler badgeStyle([Color? color]) => const BoxStyler();
 ''';
 
-        final result = await testBuilder(
-          partBuilder(const MixWidgetGenerator()),
-          {
-            ...mixAnnotationsSources,
-            ...widgetStub,
-            'mix|lib/src/core/style.dart': styleStub,
-            'mix_generator|lib/widget_validation.dart': libSource,
-          },
-          generateFor: {'mix_generator|lib/widget_validation.dart'},
-        );
+        final errors = await _expectMixWidgetValidationError(libSource);
 
-        expect(result.succeeded, isFalse);
         expect(
-          result.errors.join('\n'),
+          errors,
           contains('does not support optional positional factory parameters'),
         );
       },
@@ -331,22 +283,9 @@ class _S extends StatelessWidget {
 BoxStyler badgeStyle({String? key}) => const BoxStyler();
 ''';
 
-        final result = await testBuilder(
-          partBuilder(const MixWidgetGenerator()),
-          {
-            ...mixAnnotationsSources,
-            ...widgetStub,
-            'mix|lib/src/core/style.dart': styleStub,
-            'mix_generator|lib/widget_validation.dart': libSource,
-          },
-          generateFor: {'mix_generator|lib/widget_validation.dart'},
-        );
+        final errors = await _expectMixWidgetValidationError(libSource);
 
-        expect(result.succeeded, isFalse);
-        expect(
-          result.errors.join('\n'),
-          contains('reserves the parameter name `key`'),
-        );
+        expect(errors, contains('reserves the parameter name `key`'));
       },
     );
 
@@ -377,19 +316,8 @@ class _S extends StatelessWidget {
 final brokenStyle = const BoxStyler();
 ''';
 
-        final result = await testBuilder(
-          partBuilder(const MixWidgetGenerator()),
-          {
-            ...mixAnnotationsSources,
-            ...widgetStub,
-            'mix|lib/src/core/style.dart': styleStub,
-            'mix_generator|lib/widget_validation.dart': libSource,
-          },
-          generateFor: {'mix_generator|lib/widget_validation.dart'},
-        );
+        final errors = await _expectMixWidgetValidationError(libSource);
 
-        expect(result.succeeded, isFalse);
-        final errors = result.errors.join('\n');
         expect(errors, contains('only forwards a `key` parameter'));
         expect(errors, contains('must not be `required`'));
         expect(errors, contains('must be nullable'));
@@ -425,22 +353,9 @@ class _S extends StatelessWidget {
 final brokenStyle = const BoxStyler();
 ''';
 
-        final result = await testBuilder(
-          partBuilder(const MixWidgetGenerator()),
-          {
-            ...mixAnnotationsSources,
-            ...widgetStub,
-            'mix|lib/src/core/style.dart': styleStub,
-            'mix_generator|lib/widget_validation.dart': libSource,
-          },
-          generateFor: {'mix_generator|lib/widget_validation.dart'},
-        );
+        final errors = await _expectMixWidgetValidationError(libSource);
 
-        expect(result.succeeded, isFalse);
-        expect(
-          result.errors.join('\n'),
-          contains('must use the exact `Key` type'),
-        );
+        expect(errors, contains('must use the exact `Key` type'));
       },
     );
 
@@ -469,22 +384,9 @@ class _S extends StatelessWidget {
 final brokenStyle = const BoxStyler();
 ''';
 
-      final result = await testBuilder(
-        partBuilder(const MixWidgetGenerator()),
-        {
-          ...mixAnnotationsSources,
-          ...widgetStub,
-          'mix|lib/src/core/style.dart': styleStub,
-          'mix_generator|lib/widget_validation.dart': libSource,
-        },
-        generateFor: {'mix_generator|lib/widget_validation.dart'},
-      );
+      final errors = await _expectMixWidgetValidationError(libSource);
 
-      expect(result.succeeded, isFalse);
-      expect(
-        result.errors.join('\n'),
-        contains('must use the exact `Key` type'),
-      );
+      expect(errors, contains('must use the exact `Key` type'));
     });
 
     test('MixWidgetGenerator rejects factory/call name collisions', () async {
@@ -512,22 +414,9 @@ class _S extends StatelessWidget {
 BoxStyler collidingStyle({Widget? child}) => const BoxStyler();
 ''';
 
-      final result = await testBuilder(
-        partBuilder(const MixWidgetGenerator()),
-        {
-          ...mixAnnotationsSources,
-          ...widgetStub,
-          'mix|lib/src/core/style.dart': styleStub,
-          'mix_generator|lib/widget_validation.dart': libSource,
-        },
-        generateFor: {'mix_generator|lib/widget_validation.dart'},
-      );
+      final errors = await _expectMixWidgetValidationError(libSource);
 
-      expect(result.succeeded, isFalse);
-      expect(
-        result.errors.join('\n'),
-        contains('parameter name collision: `child`'),
-      );
+      expect(errors, contains('parameter name collision: `child`'));
     });
 
     test('MixWidgetGenerator rejects call params named build', () async {

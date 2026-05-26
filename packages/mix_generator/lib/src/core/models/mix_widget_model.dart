@@ -80,7 +80,10 @@ class MixWidgetModel {
     this.doc,
   });
 
-  /// All constructor parameters in emission order: factory params first
-  /// (mirrors the factory signature shape), then named call params.
+  /// All constructor parameters in source-group order: factory params first,
+  /// then styler `call()` params.
+  ///
+  /// The builder applies Dart constructor syntax ordering when emitting code:
+  /// all positional params first, then named params.
   List<MixWidgetParam> get allParams => [...factoryParams, ...callParams];
 }
