@@ -5,12 +5,16 @@ import 'package:test/test.dart';
 
 import '../core/test_helpers.dart';
 
-Future<String> _expectMixWidgetValidationError(String libSource) async {
+Future<String> _expectMixWidgetValidationError(
+  String libSource, {
+  Map<String, String> extraSources = const {},
+}) async {
   final result = await testBuilder(
     partBuilder(const MixWidgetGenerator()),
     {
       ...mixAnnotationsSources,
       ...widgetStub,
+      ...extraSources,
       'mix|lib/src/core/style.dart': styleStub,
       'mix_generator|lib/widget_validation.dart': libSource,
     },
@@ -846,11 +850,9 @@ class _S extends StatelessWidget {
 final cardStyle = const BoxStyler();
 ''';
 
-        final result = await testBuilder(
-          partBuilder(const MixWidgetGenerator()),
-          {
-            ...mixAnnotationsSources,
-            ...widgetStub,
+        final errors = await _expectMixWidgetValidationError(
+          libSource,
+          extraSources: {
             'flutter|lib/material.dart': r'''
 export 'widgets.dart';
 
@@ -860,14 +862,9 @@ class Card extends Widget {
   const Card({super.key});
 }
 ''',
-            'mix|lib/src/core/style.dart': styleStub,
-            'mix_generator|lib/widget_validation.dart': libSource,
           },
-          generateFor: {'mix_generator|lib/widget_validation.dart'},
         );
 
-        expect(result.succeeded, isFalse);
-        final errors = result.errors.join('\n');
         expect(errors, contains('generated class `Card`'));
         expect(errors, contains('visible symbol'));
       },
