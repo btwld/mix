@@ -25,6 +25,7 @@ const _annotationLabel = '@MixWidget';
 
 class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
   static final _identifierPattern = RegExp(r'^_*[A-Za-z][A-Za-z0-9_]*$');
+  static final _derivedNamePattern = RegExp(r'^_*[a-z][A-Za-z0-9]*Style$');
 
   static const _reservedParamNames = {
     'build',
@@ -571,6 +572,18 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
   }
 
   String _deriveWidgetName(Element anchor, String name) {
+    if (!_derivedNamePattern.hasMatch(name)) {
+      fail(
+        anchor,
+        '$_annotationLabel expects the annotated element to be lowerCamelCase '
+        'ending in `Style` (e.g. `cardStyle`, `primaryButtonStyle`). Got '
+        '`$name`.',
+        todo:
+            "Rename the element or use @MixWidget(name: 'YourWidget') to "
+            'override the derived name.',
+      );
+    }
+
     var leadingUnderscores = 0;
     while (leadingUnderscores < name.length &&
         name[leadingUnderscores] == '_') {

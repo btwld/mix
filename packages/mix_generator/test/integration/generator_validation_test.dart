@@ -862,6 +862,44 @@ final cardStyle = const BoxStyler();
       }
     });
 
+    for (final testCase in [
+      (name: 'snake_case derived names', elementName: 'primary_button_style'),
+      (name: 'lowercase style suffixes', elementName: 'cardstyle'),
+      (name: 'names without Style suffixes', elementName: 'someOther'),
+    ]) {
+      test('MixWidgetGenerator rejects ${testCase.name}', () async {
+        final libSource =
+            '''
+library widget_validation;
+
+import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+import 'package:mix/src/core/style.dart';
+
+class BoxSpec { const BoxSpec(); }
+
+class BoxStyler extends Style<BoxSpec> {
+  const BoxStyler();
+  Widget call({Key? key, Widget? child}) => const _S();
+}
+
+class _S extends StatelessWidget {
+  const _S();
+  @override
+  Widget build(BuildContext context) => const _S();
+}
+
+@MixWidget()
+final ${testCase.elementName} = const BoxStyler();
+''';
+
+        final errors = await _expectMixWidgetValidationError(libSource);
+
+        expect(errors, contains('lowerCamelCase'));
+        expect(errors, contains(testCase.elementName));
+      });
+    }
+
     test('MixableGenerator rejects direct Mixable subclasses', () async {
       const source = r'''
 library mix_validation;
