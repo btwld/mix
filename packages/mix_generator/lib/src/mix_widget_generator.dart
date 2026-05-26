@@ -134,7 +134,12 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
     );
 
     return MixWidgetModel(
-      widgetName: _resolveWidgetName(variable, annotation, variableName),
+      widgetName: _resolveWidgetName(
+        variable,
+        annotation,
+        variableName,
+        library,
+      ),
       factoryReference: variableName,
       isFunctionFactory: false,
       factoryParams: const [],
@@ -186,7 +191,12 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
     _rejectCollisions(function, factoryParams, call.params);
 
     return MixWidgetModel(
-      widgetName: _resolveWidgetName(function, annotation, functionName),
+      widgetName: _resolveWidgetName(
+        function,
+        annotation,
+        functionName,
+        library,
+      ),
       factoryReference: functionName,
       isFunctionFactory: true,
       factoryParams: factoryParams,
@@ -231,14 +241,11 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
     InterfaceType stylerType, {
     required LibraryElement library,
   }) {
-    final stylerElement = stylerType.element;
     final call =
-        stylerElement.getMethod('call') ??
-        stylerElement.lookUpInheritedMethod(
-          methodName: 'call',
-          library: library,
-        );
+        stylerType.getMethod('call') ??
+        stylerType.lookUpMethod('call', library, inherited: true);
 
+    final stylerElement = stylerType.element;
     final stylerName = stylerElement.name ?? stylerType.getDisplayString();
     if (call == null) {
       fail(
@@ -266,17 +273,12 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
       );
     }
 
-    final optionalPositional = call.formalParameters
-        .where((p) => p.isOptionalPositional)
-        .toList();
+    final optionalPositional = _optionalPositionalNames(call.formalParameters);
     if (optionalPositional.isNotEmpty) {
-      final names = optionalPositional
-          .map((p) => p.name ?? '<unnamed>')
-          .join(', ');
       fail(
         anchor,
         '$_annotationLabel does not support optional positional `call()` '
-        'parameters on $stylerName: [$names].',
+        'parameters on $stylerName: [${optionalPositional.join(', ')}].',
         todo: 'Convert these parameters to required positional or named.',
       );
     }
@@ -284,22 +286,30 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
     return call;
   }
 
+  /// Returns display names of optional positional parameters in declaration
+  /// order, with `<unnamed>` substituted for nameless parameters.
+  List<String> _optionalPositionalNames(
+    Iterable<FormalParameterElement> parameters,
+  ) {
+    return parameters
+        .where((p) => p.isOptionalPositional)
+        .map((p) => p.name ?? '<unnamed>')
+        .toList();
+  }
+
   List<MixWidgetParam> _extractFactoryParams(
     TopLevelFunctionElement function, {
     required LibraryElement library,
     required String factoryReference,
   }) {
-    final optionalPositional = function.formalParameters
-        .where((p) => p.isOptionalPositional)
-        .toList();
+    final optionalPositional = _optionalPositionalNames(
+      function.formalParameters,
+    );
     if (optionalPositional.isNotEmpty) {
-      final names = optionalPositional
-          .map((p) => p.name ?? '<unnamed>')
-          .join(', ');
       fail(
         function,
         '$_annotationLabel does not support optional positional factory '
-        'parameters: [$names].',
+        'parameters: [${optionalPositional.join(', ')}].',
         todo: 'Convert these parameters to required positional or named.',
       );
     }
@@ -309,7 +319,7 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
       _rejectFactoryKeyParam(p, function);
       _rejectReservedName(p, function);
       _rejectFactoryReferenceCollision(p, function, factoryReference);
-      params.add(_paramFor(p, library: library, source: .factory_));
+      params.add(_paramFor(p, library: library));
     }
 
     return params;
@@ -331,7 +341,7 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
       }
       _rejectReservedName(p, anchor);
       _rejectFactoryReferenceCollision(p, anchor, factoryReference);
-      params.add(_paramFor(p, library: library, source: .call));
+      params.add(_paramFor(p, library: library));
     }
 
     return (params: params, forwardsKey: forwardsKey);
@@ -436,7 +446,6 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
   MixWidgetParam _paramFor(
     FormalParameterElement parameter, {
     required LibraryElement library,
-    required ParamSource source,
   }) {
     final name = parameter.name;
     if (name == null) {
@@ -461,7 +470,6 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
       typeCode: typeCode(parameter.type, visibleFrom: library),
       isPositional: parameter.isPositional,
       isRequired: parameter.isRequired,
-      source: source,
       defaultValueCode: parameter.defaultValueCode,
     );
   }
@@ -548,6 +556,7 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
     Element anchor,
     ConstantReader annotation,
     String elementName,
+    LibraryElement library,
   ) {
     final override = annotation.peek('name')?.stringValue;
     if (override != null && override.isNotEmpty) {
@@ -560,10 +569,32 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
         );
       }
 
+      _rejectWidgetNameCollision(anchor, override, library);
+
       return override;
     }
 
-    return _deriveWidgetName(anchor, elementName);
+    final derived = _deriveWidgetName(anchor, elementName);
+    _rejectWidgetNameCollision(anchor, derived, library);
+
+    return derived;
+  }
+
+  void _rejectWidgetNameCollision(
+    Element anchor,
+    String widgetName,
+    LibraryElement library,
+  ) {
+    if (!hasUnprefixedVisibleName(widgetName, library)) return;
+
+    fail(
+      anchor,
+      '$_annotationLabel generated class `$widgetName` would shadow or '
+      'collide with an existing visible symbol in the annotated library.',
+      todo:
+          'Use @MixWidget(name: ...) with a class name that is not already '
+          'visible unprefixed, or hide/rename the existing symbol.',
+    );
   }
 
   bool _isValidDartTypeIdentifier(String value) {

@@ -105,7 +105,7 @@ mixin _$FlexStylerMixin on Style<FlexSpec>, Diagnosticable {
     );
   }
 
-  /// Resolves to [StyleSpec<FlexSpec>] using context.
+  /// Resolves to [StyleSpec<FlexSpec>] using [context].
   @override
   StyleSpec<FlexSpec> resolve(BuildContext context) {
     final spec = FlexSpec(

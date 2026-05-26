@@ -22,7 +22,7 @@ mixin _$StackBoxStylerMixin on Style<StackBoxSpec>, Diagnosticable {
     );
   }
 
-  /// Resolves to [StyleSpec<StackBoxSpec>] using context.
+  /// Resolves to [StyleSpec<StackBoxSpec>] using [context].
   @override
   StyleSpec<StackBoxSpec> resolve(BuildContext context) {
     final spec = StackBoxSpec(

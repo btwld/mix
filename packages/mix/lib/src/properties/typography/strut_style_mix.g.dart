@@ -37,7 +37,7 @@ mixin _$StrutStyleMixMixin on Mix<StrutStyle>, Diagnosticable {
     );
   }
 
-  /// Resolves to [StrutStyle] using context.
+  /// Resolves to [StrutStyle] using [context].
   @override
   StrutStyle resolve(BuildContext context) {
     return StrutStyle(

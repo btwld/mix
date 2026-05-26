@@ -22,7 +22,7 @@ mixin _$FlexBoxStylerMixin on Style<FlexBoxSpec>, Diagnosticable {
     );
   }
 
-  /// Resolves to [StyleSpec<FlexBoxSpec>] using context.
+  /// Resolves to [StyleSpec<FlexBoxSpec>] using [context].
   @override
   StyleSpec<FlexBoxSpec> resolve(BuildContext context) {
     final spec = FlexBoxSpec(

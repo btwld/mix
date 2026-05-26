@@ -129,7 +129,7 @@ mixin _$TextStylerMixin on Style<TextSpec>, Diagnosticable {
     );
   }
 
-  /// Resolves to [StyleSpec<TextSpec>] using context.
+  /// Resolves to [StyleSpec<TextSpec>] using [context].
   @override
   StyleSpec<TextSpec> resolve(BuildContext context) {
     final spec = TextSpec(

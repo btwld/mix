@@ -762,6 +762,114 @@ BoxStyler badgeStyle({Color? color, BoxStyler? style}) => const BoxStyler();
       },
     );
 
+    test('generic styler call params use concrete type arguments', () async {
+      const source = r'''
+library widget_case;
+
+import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+import 'package:mix/src/core/style.dart';
+
+part 'widget_case.g.dart';
+
+class BoxSpec { const BoxSpec(); }
+
+class GenericStyler<T> extends Style<BoxSpec> {
+  const GenericStyler();
+
+  Widget call({
+    Key? key,
+    required T value,
+    required List<T> values,
+  }) => const _Stub();
+}
+
+class _Stub extends StatelessWidget {
+  const _Stub();
+  @override
+  Widget build(BuildContext context) => const _Stub();
+}
+
+@MixWidget()
+final genericStyle = const GenericStyler<String>();
+''';
+
+      await expectGeneratorOutputResolves(
+        builder: partBuilder(const MixWidgetGenerator()),
+        sources: {
+          ...mixAnnotationsSources,
+          ...widgetStub,
+          'mix|lib/src/core/style.dart': styleStub,
+          'mix_generator|lib/widget_case.dart': source,
+        },
+        inputAsset: 'mix_generator|lib/widget_case.dart',
+        outputAsset: 'mix_generator|lib/widget_case.g.dart',
+        outputMatcher: allOf([
+          contains('class Generic extends StatelessWidget'),
+          contains('final String value;'),
+          contains('final List<String> values;'),
+          isNot(contains('final T value;')),
+          isNot(contains('final List<T> values;')),
+        ]),
+      );
+    });
+
+    test('inherited generic call params use concrete type arguments', () async {
+      const source = r'''
+library widget_case;
+
+import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+import 'package:mix/src/core/style.dart';
+
+part 'widget_case.g.dart';
+
+class BoxSpec { const BoxSpec(); }
+
+class BaseStyler<T> extends Style<BoxSpec> {
+  const BaseStyler();
+
+  Widget call({
+    Key? key,
+    required T value,
+    required List<T> values,
+  }) => const _Stub();
+}
+
+class StringStyler extends BaseStyler<String> {
+  const StringStyler();
+}
+
+class _Stub extends StatelessWidget {
+  const _Stub();
+  @override
+  Widget build(BuildContext context) => const _Stub();
+}
+
+@MixWidget()
+final inheritedStyle = const StringStyler();
+''';
+
+      await expectGeneratorOutputResolves(
+        builder: partBuilder(const MixWidgetGenerator()),
+        sources: {
+          ...mixAnnotationsSources,
+          ...widgetStub,
+          'mix|lib/src/core/style.dart': styleStub,
+          'mix_generator|lib/widget_case.dart': source,
+        },
+        inputAsset: 'mix_generator|lib/widget_case.dart',
+        outputAsset: 'mix_generator|lib/widget_case.g.dart',
+        outputMatcher: allOf([
+          contains('class Inherited extends StatelessWidget'),
+          contains('final String value;'),
+          contains('final List<String> values;'),
+          isNot(contains('final T value;')),
+          isNot(contains('final List<T> values;')),
+        ]),
+      );
+    });
+
     test('positional call param surfaces as a positional widget arg', () async {
       const source = r'''
 library widget_case;

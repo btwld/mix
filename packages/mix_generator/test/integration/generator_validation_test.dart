@@ -862,6 +862,128 @@ final cardStyle = const BoxStyler();
       }
     });
 
+    test(
+      'MixWidgetGenerator rejects names derived from visible symbols',
+      () async {
+        const libSource = r'''
+library widget_validation;
+
+import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+import 'package:mix/src/core/style.dart';
+
+class BoxSpec { const BoxSpec(); }
+
+class BoxStyler extends Style<BoxSpec> {
+  const BoxStyler();
+  Widget call({Key? key, Widget? child}) => const _S();
+}
+
+class _S extends StatelessWidget {
+  const _S();
+  @override
+  Widget build(BuildContext context) => const _S();
+}
+
+@MixWidget()
+final widgetStyle = const BoxStyler();
+''';
+
+        final errors = await _expectMixWidgetValidationError(libSource);
+
+        expect(errors, contains('generated class `Widget`'));
+        expect(errors, contains('visible symbol'));
+      },
+    );
+
+    test(
+      'MixWidgetGenerator rejects name overrides for visible symbols',
+      () async {
+        const libSource = r'''
+library widget_validation;
+
+import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+import 'package:mix/src/core/style.dart';
+
+class BoxSpec { const BoxSpec(); }
+
+class BoxStyler extends Style<BoxSpec> {
+  const BoxStyler();
+  Widget call({Key? key, Widget? child}) => const _S();
+}
+
+class _S extends StatelessWidget {
+  const _S();
+  @override
+  Widget build(BuildContext context) => const _S();
+}
+
+@MixWidget(name: 'Widget')
+final cardStyle = const BoxStyler();
+''';
+
+        final errors = await _expectMixWidgetValidationError(libSource);
+
+        expect(errors, contains('generated class `Widget`'));
+        expect(errors, contains('visible symbol'));
+      },
+    );
+
+    test(
+      'MixWidgetGenerator rejects derived names matching material symbols',
+      () async {
+        const libSource = r'''
+library widget_validation;
+
+import 'package:flutter/material.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+import 'package:mix/src/core/style.dart';
+
+class BoxSpec { const BoxSpec(); }
+
+class BoxStyler extends Style<BoxSpec> {
+  const BoxStyler();
+  Widget call({Key? key, Widget? child}) => const _S();
+}
+
+class _S extends StatelessWidget {
+  const _S();
+  @override
+  Widget build(BuildContext context) => const _S();
+}
+
+@MixWidget()
+final cardStyle = const BoxStyler();
+''';
+
+        final result = await testBuilder(
+          partBuilder(const MixWidgetGenerator()),
+          {
+            ...mixAnnotationsSources,
+            ...widgetStub,
+            'flutter|lib/material.dart': r'''
+export 'widgets.dart';
+
+import 'widgets.dart';
+
+class Card extends Widget {
+  const Card({super.key});
+}
+''',
+            'mix|lib/src/core/style.dart': styleStub,
+            'mix_generator|lib/widget_validation.dart': libSource,
+          },
+          generateFor: {'mix_generator|lib/widget_validation.dart'},
+        );
+
+        expect(result.succeeded, isFalse);
+        final errors = result.errors.join('\n');
+        expect(errors, contains('generated class `Card`'));
+        expect(errors, contains('visible symbol'));
+      },
+    );
+
     for (final testCase in [
       (name: 'snake_case derived names', elementName: 'primary_button_style'),
       (name: 'lowercase style suffixes', elementName: 'cardstyle'),

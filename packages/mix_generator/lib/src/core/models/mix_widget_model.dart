@@ -8,15 +8,6 @@
 /// [MixWidgetModel].
 library;
 
-/// Where a [MixWidgetParam] originated.
-enum ParamSource {
-  /// The parameter comes from a top-level function factory's signature.
-  factory_,
-
-  /// The parameter comes from the styler's `call()` method.
-  call,
-}
-
 /// One parameter on the generated widget's constructor.
 class MixWidgetParam {
   /// The parameter name.
@@ -36,15 +27,11 @@ class MixWidgetParam {
   /// Source code for a default value, if any (verbatim from the user's source).
   final String? defaultValueCode;
 
-  /// Where this parameter came from. Drives how `build()` forwards it.
-  final ParamSource source;
-
   const MixWidgetParam({
     required this.name,
     required this.typeCode,
     required this.isPositional,
     required this.isRequired,
-    required this.source,
     this.defaultValueCode,
   });
 }

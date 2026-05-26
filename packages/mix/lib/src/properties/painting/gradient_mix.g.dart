@@ -28,7 +28,7 @@ mixin _$LinearGradientMixMixin
     );
   }
 
-  /// Resolves to [LinearGradient] using context.
+  /// Resolves to [LinearGradient] using [context].
   @override
   LinearGradient resolve(BuildContext context) {
     return LinearGradient(
@@ -90,7 +90,7 @@ mixin _$RadialGradientMixMixin
     );
   }
 
-  /// Resolves to [RadialGradient] using context.
+  /// Resolves to [RadialGradient] using [context].
   @override
   RadialGradient resolve(BuildContext context) {
     return RadialGradient(
@@ -157,7 +157,7 @@ mixin _$SweepGradientMixMixin
     );
   }
 
-  /// Resolves to [SweepGradient] using context.
+  /// Resolves to [SweepGradient] using [context].
   @override
   SweepGradient resolve(BuildContext context) {
     return SweepGradient(

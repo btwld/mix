@@ -127,7 +127,7 @@ mixin _$IconStylerMixin on Style<IconSpec>, Diagnosticable {
     );
   }
 
-  /// Resolves to [StyleSpec<IconSpec>] using context.
+  /// Resolves to [StyleSpec<IconSpec>] using [context].
   @override
   StyleSpec<IconSpec> resolve(BuildContext context) {
     final spec = IconSpec(
