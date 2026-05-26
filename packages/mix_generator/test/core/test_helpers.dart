@@ -127,6 +127,51 @@ library visible;
 class VisibleType {}
 ''';
 
+/// Stub Flutter `widgets.dart` library — the minimal shape
+/// `MixWidgetGenerator` inspects. Defines `Widget`, `StatelessWidget`,
+/// `BuildContext`, `Key`, plus a `Color` and `VoidCallback` typedef used
+/// by the spec's button example.
+///
+/// `Key` lives at `package:flutter/src/foundation/key.dart` and `Widget`
+/// at `package:flutter/src/widgets/framework.dart` — both match the
+/// canonical Flutter URLs the `keyChecker` and `widgetChecker` constants
+/// in `checkers.dart` look at. The public `widgets.dart` re-exports the
+/// framework library so user code importing `package:flutter/widgets.dart`
+/// resolves to the same elements.
+const widgetStub = {
+  'flutter|lib/widgets.dart': "export 'src/widgets/framework.dart';",
+  'flutter|lib/src/foundation/key.dart': r'''
+library key;
+
+class Key {
+  const Key();
+}
+''',
+  'flutter|lib/src/widgets/framework.dart': r'''
+library framework;
+
+export '../foundation/key.dart';
+
+class BuildContext {}
+
+abstract class Widget {
+  const Widget({this.key});
+  final Key? key;
+}
+
+abstract class StatelessWidget extends Widget {
+  const StatelessWidget({super.key});
+  Widget build(BuildContext context);
+}
+
+typedef VoidCallback = void Function();
+
+class Color {
+  const Color(int value);
+}
+''',
+};
+
 /// Stub `mix_annotations` library with the annotation classes and flag
 /// constants the generators read.
 const mixAnnotationsSources = {
@@ -161,6 +206,12 @@ class MixableField {
   final Type? setterType;
 
   const MixableField({this.ignoreSetter = false, this.setterType});
+}
+
+class MixWidget {
+  final String? name;
+
+  const MixWidget({this.name});
 }
 
 class GeneratedSpecMethods {

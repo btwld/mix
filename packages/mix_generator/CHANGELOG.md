@@ -1,3 +1,14 @@
+## 2.0.4
+
+ - **FEAT**: Add `@MixWidget` generator. Annotate a top-level `final` styler variable
+   or a styler-returning function; the generator emits a `StatelessWidget` whose
+   `build()` delegates to that styler's `call()`. Constructor parameters mirror
+   the styler's `call()` signature, with `Key? key` forwarded via `super.key`.
+ - **CHORE**: Match Flutter's canonical `Key` type via `TypeChecker` instead of
+   comparing parameter type names. User stylers whose `call()` declares `Key? key`
+   continue to forward it as `super.key`; subclasses such as `LocalKey?` or
+   `GlobalKey?` are emitted as regular constructor parameters.
+
 ## 2.0.3
 
  - **FEAT**: Emit a `@Deprecated typedef _$<Name>SpecMethods = _$<Name>;` alongside every `@MixableSpec` mixin so legacy `class X extends Spec<X> with Diagnosticable, _$XSpecMethods` declarations keep compiling against the 2.0+ generator. Removal scheduled for `mix_generator` 3.0.

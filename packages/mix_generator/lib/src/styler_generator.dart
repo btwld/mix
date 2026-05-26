@@ -89,16 +89,11 @@ class StylerGenerator extends GeneratorForAnnotation<MixableStyler> {
     ConstantReader annotation,
     BuildStep buildStep,
   ) {
-    // Validate element is a class
-    if (element is! ClassElement) {
-      fail(element, '@MixableStyler can only be applied to classes.');
-    }
-
-    final classElement = element;
-    final stylerName = classElement.name;
-    if (stylerName == null) {
-      fail(element, '@MixableStyler class must have a name.');
-    }
+    final classElement = requireClassElement(element, '@MixableStyler');
+    final stylerName = requireName(
+      classElement,
+      orFailWith: '@MixableStyler class must have a name.',
+    );
 
     // Validate it's a Style class
     if (!_isStyleClass(classElement)) {

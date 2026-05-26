@@ -126,16 +126,11 @@ class MixableGenerator extends GeneratorForAnnotation<Mixable> {
     ConstantReader annotation,
     BuildStep buildStep,
   ) {
-    // Validate element is a class
-    if (element is! ClassElement) {
-      fail(element, '@Mixable can only be applied to classes.');
-    }
-
-    final classElement = element;
-    final mixName = classElement.name;
-    if (mixName == null) {
-      fail(element, '@Mixable class must have a name.');
-    }
+    final classElement = requireClassElement(element, '@Mixable');
+    final mixName = requireName(
+      classElement,
+      orFailWith: '@Mixable class must have a name.',
+    );
 
     // Validate it's a Mix class
     if (!_isMixClass(classElement)) {
