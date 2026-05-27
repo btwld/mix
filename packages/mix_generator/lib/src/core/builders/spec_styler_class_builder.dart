@@ -97,6 +97,17 @@ class SpecStylerClassBuilder {
     buffer.writeln('         modifier: modifier,');
     buffer.writeln('         animation: animation,');
     buffer.writeln('       );');
+    buffer.writeln();
+
+    for (final field in fields) {
+      if (_isOwnedByMixin(field)) continue;
+
+      final paramType = _publicParamType(field);
+      buffer.writeln('  $stylerName ${field.name}($paramType value) {');
+      buffer.writeln('    return merge($stylerName(${field.name}: value));');
+      buffer.writeln('  }');
+      buffer.writeln();
+    }
 
     buffer.writeln('}');
 
@@ -142,5 +153,13 @@ class SpecStylerClassBuilder {
 
     final annotation = mixableFieldAnnotationChecker.firstAnnotationOf(field);
     return annotation == null ? null : ConstantReader(annotation);
+  }
+
+  bool _isOwnedByMixin(FieldModel field) {
+    final reader = _mixableFieldReader(field.name);
+    if (reader?.peek('skipMixin')?.boolValue ?? false) return false;
+    if (reader?.peek('mixin')?.typeValue.element != null) return true;
+
+    return ownerMixinsFor(field.typeName).isNotEmpty;
   }
 }

@@ -175,5 +175,37 @@ void main() {
         },
       );
     });
+
+    test('emits setter for fields without owner mixin; skips fields owned by mixin', () async {
+      const input = '''
+        library spike;
+        import 'package:mix_annotations/mix_annotations.dart';
+
+        part 'spike.spec_styler.g.part';
+
+        class EdgeInsetsGeometry {}
+        enum Clip { hardEdge }
+
+        @MixableSpec()
+        final class BoxLikeSpec {
+          final EdgeInsetsGeometry? padding;
+          final Clip? clipBehavior;
+          const BoxLikeSpec({this.padding, this.clipBehavior});
+        }
+      ''';
+
+      await testBuilder(
+        PartBuilder([const SpecStylerGenerator()], '.spec_styler.g.part'),
+        {...mixAnnotationsSources, 'mix|lib/spike.dart': input},
+        outputs: {
+          'mix|lib/spike.spec_styler.g.part': decodedMatches(
+            allOf(
+              contains('BoxLikeStyler clipBehavior(Clip value)'),
+              isNot(contains('BoxLikeStyler padding(')),
+            ),
+          ),
+        },
+      );
+    });
   });
 }
