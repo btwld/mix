@@ -219,19 +219,13 @@ void main() {
       test('accessors still throw via noSuchMethod (regression guard)', () {
         final ref = ColorRef(Prop.token(baseToken));
 
-        expect(
-          () => (ref as dynamic).alpha,
-          throwsA(isA<UnsupportedError>()),
-        );
+        expect(() => (ref as dynamic).alpha, throwsA(isA<UnsupportedError>()));
         expect(() => (ref as dynamic).red, throwsA(isA<UnsupportedError>()));
         expect(
           () => (ref as dynamic).opacity,
           throwsA(isA<UnsupportedError>()),
         );
-        expect(
-          () => (ref as dynamic).value,
-          throwsA(isA<UnsupportedError>()),
-        );
+        expect(() => (ref as dynamic).value, throwsA(isA<UnsupportedError>()));
       });
     });
 
@@ -316,8 +310,10 @@ void main() {
           final friend = _CollidingToken('collider-b');
 
           // Sanity check: both tokens hash to the same bucket modulo 100000.
-          expect(hostile.hashCode.abs() % 100000,
-              equals(friend.hashCode.abs() % 100000));
+          expect(
+            hostile.hashCode.abs() % 100000,
+            equals(friend.hashCode.abs() % 100000),
+          );
 
           final hostileRef = DoubleRef.token(hostile);
           final friendRef = DoubleRef.token(friend);
@@ -461,10 +457,7 @@ void main() {
             isA<UnsupportedError>().having(
               (e) => e.message,
               'message',
-              allOf(
-                contains('EdgeInsets'),
-                contains('layout.edge-insets'),
-              ),
+              allOf(contains('EdgeInsets'), contains('layout.edge-insets')),
             ),
           ),
         );
@@ -501,6 +494,11 @@ void main() {
 /// share a sentinel bucket — exercising the registry's collision handling.
 class _CollidingToken extends MixToken<double> {
   const _CollidingToken(super.name);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is _CollidingToken && other.name == name);
 
   @override
   int get hashCode => 42; // forced collision across all instances

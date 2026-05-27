@@ -160,9 +160,9 @@ extension NumberPropDirectiveExt<T extends num> on Prop<T> {
         ValueSource<T>(:final value) => Prop.value<num>(value),
         TokenSource<T>(:final token) => Prop.token(token as MixToken<num>),
         _ => throw UnsupportedError(
-            'Source ${source.runtimeType} is not supported by numeric '
-            'directives — num values cannot be wrapped as Mix<num>.',
-          ),
+          'Source ${source.runtimeType} is not supported by numeric '
+          'directives — num values cannot be wrapped as Mix<num>.',
+        ),
       };
       acc = acc == null ? next : acc.mergeProp(next);
     }

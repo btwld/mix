@@ -1,3 +1,44 @@
+## Unreleased
+
+This release hardens the token-reference system: it fixes correctness gaps
+around `DoubleRef` sentinels, breakpoint resolution, and numeric directives,
+and tightens public API around the internal token registry.
+
+### Fixes
+
+- **`DoubleRef` sentinel collisions:** Two distinct `MixToken<double>`
+  instances whose hashes landed in the same bucket previously aliased to the
+  same sentinel. The registry now probes for a free slot on collision and
+  caches `token → sentinel` so repeated calls return the same ref.
+- **`BreakpointToken.resolve` no longer masks type errors:** the built-in
+  `mobile`/`tablet`/`desktop` defaults are only used when the scope is
+  absent or omits the entry. A scope entry of the wrong type now surfaces
+  the underlying `StateError` from `MixScope.getToken`.
+- **Numeric directives on multi-source props:** `Prop.value(x).mergeProp(
+  Prop.token(t)).multiply(2)` and similar chains now resolve instead of
+  throwing — `_asPropNum` rebuilds every source as `Prop<num>` and merges
+  in order.
+- **`Prop.value` null safety:** the token-ref detection branch no longer
+  crashes when `V` is nullable and the supplied value is `null`.
+
+### API changes
+
+- **`ValueRef.noSuchMethod` throws `UnsupportedError`** (was
+  `UnimplementedError`). The detailed message is unchanged; only the error
+  type differs. Any user code that catches the specific class needs to
+  switch.
+- **`getReferenceValue` no longer silently casts** an unsupported token
+  type — it now throws `UnsupportedError` naming the token and `T`. All
+  concrete `MixToken` subclasses override `call()` and never hit this path;
+  the change only affects custom `MixToken` authors who relied on the cast.
+- **Deprecations:** `clearTokenRegistry`, `getTokenFromValue`, and the
+  public `DoubleRef` constructor are deprecated and will move out of the
+  public API in the next major release. Use `Prop.token(token)` for an
+  explicit, type-safe token handle.
+- **`isAnyTokenRef`** drops the brittle `runtimeType.toString().endsWith(...)`
+  check; a `Prop` carrying a `TokenSource` is now the sole class-based
+  invariant.
+
 ## 2.0.3
 
 This release adds finer-grained control over scope inheritance and theming, and restores compatibility with newer Flutter SDKs.

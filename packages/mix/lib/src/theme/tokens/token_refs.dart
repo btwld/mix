@@ -206,6 +206,10 @@ const int _kSentinelProbeLimit = 1000;
 
 /// Clears the token registry.
 @visibleForTesting
+@Deprecated(
+  'Internal test helper — the DoubleRef registry will move out of the '
+  'public API in the next major release.',
+)
 void clearTokenRegistry() {
   _doubleTokenRegistry.clear();
   _doubleSentinelByToken.clear();
@@ -214,6 +218,10 @@ void clearTokenRegistry() {
 /// Returns the token associated with a token reference value.
 ///
 /// Returns null if the value is not a registered token reference.
+@Deprecated(
+  'Internal — the DoubleRef registry will move out of the public API in '
+  'the next major release. Use Prop.token(token) for explicit token props.',
+)
 MixToken<T>? getTokenFromValue<T>(Object value) {
   return _doubleTokenRegistry[value] as MixToken<T>?;
 }
@@ -227,14 +235,26 @@ MixToken<T>? getTokenFromValue<T>(Object value) {
 /// [_doubleTokenRegistry] — direct construction (`DoubleRef(42.0)`) never
 /// registers and will not be recognised as a token. For guaranteed safety,
 /// prefer `Prop.token(token)`.
-extension type const DoubleRef(double _value) implements double {
+extension type const DoubleRef._(double _value) implements double {
+  /// Direct construction is not supported as part of the public API.
+  ///
+  /// Use a [MixToken<double>] (e.g. `SpaceToken`, `DoubleToken`) and call it
+  /// to obtain a registered ref. Constructing a `DoubleRef` from an arbitrary
+  /// `double` cannot be detected as a token at runtime because extension
+  /// types are erased.
+  @Deprecated(
+    'Use a MixToken<double> (SpaceToken/DoubleToken) and call it. The '
+    'public DoubleRef constructor will be removed in the next major.',
+  )
+  const DoubleRef(double value) : this._(value);
+
   /// Creates a token reference and registers it in the global registry.
   ///
   /// Re-issues the same sentinel for the same token. If two distinct tokens
   /// produce the same hash bucket, probes nearby sentinels to avoid aliasing.
   static DoubleRef token(MixToken<double> token) {
     final existing = _doubleSentinelByToken[token];
-    if (existing != null) return DoubleRef(existing);
+    if (existing != null) return DoubleRef._(existing);
 
     final base = token.hashCode.abs() % 100000;
     for (var probe = 0; probe < _kSentinelProbeLimit; probe++) {
@@ -244,12 +264,12 @@ extension type const DoubleRef(double _value) implements double {
         _doubleTokenRegistry[candidate] = token;
         _doubleSentinelByToken[token] = candidate;
 
-        return DoubleRef(candidate);
+        return DoubleRef._(candidate);
       }
       if (occupant == token) {
         _doubleSentinelByToken[token] = candidate;
 
-        return DoubleRef(candidate);
+        return DoubleRef._(candidate);
       }
     }
 

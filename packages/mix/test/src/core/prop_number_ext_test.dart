@@ -330,8 +330,9 @@ void main() {
 
       test('preserves source order — last source still wins', () {
         final token = TestToken<num>('order-token');
-        final tokenFirst =
-            Prop.token(token).mergeProp(Prop.value<num>(3)).multiply(10);
+        final tokenFirst = Prop.token(
+          token,
+        ).mergeProp(Prop.value<num>(3)).multiply(10);
 
         final context = MockBuildContext(tokens: {token: 99});
 
@@ -341,8 +342,9 @@ void main() {
 
       test('keeps existing directive chain when promoting to Prop<num>', () {
         final token = TestToken<num>('chain-token');
-        final prop =
-            Prop.value<num>(2).multiply(3).mergeProp(Prop.token(token));
+        final prop = Prop.value<num>(
+          2,
+        ).multiply(3).mergeProp(Prop.token(token));
 
         // multiply(3) directive is on the value-only base; merging the token
         // accumulates the source. We then chain another directive.

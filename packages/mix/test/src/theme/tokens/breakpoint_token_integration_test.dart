@@ -150,8 +150,7 @@ void main() {
         await tester.pumpWidget(
           MixScope(
             tokens: <MixToken, Object>{
-              const BreakpointToken('some.other.bp'):
-                  Breakpoint.maxWidth(100),
+              const BreakpointToken('some.other.bp'): Breakpoint.maxWidth(100),
             },
             child: Builder(
               builder: (context) {

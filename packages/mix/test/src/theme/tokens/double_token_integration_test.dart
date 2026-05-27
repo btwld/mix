@@ -80,17 +80,14 @@ void main() {
       expect(getTokenFromValue<double>(spaceRef), equals(spaceToken));
     });
 
-    test(
-      'a plain double that is not registered stays a ValueSource',
-      () {
-        const ordinary = 42.0;
+    test('a plain double that is not registered stays a ValueSource', () {
+      const ordinary = 42.0;
 
-        expect(isAnyTokenRef(ordinary), isFalse);
+      expect(isAnyTokenRef(ordinary), isFalse);
 
-        final prop = Prop.value(ordinary);
-        expect(prop, PropMatcher.hasValues);
-        expect(prop, isNot(PropMatcher.hasTokens));
-      },
-    );
+      final prop = Prop.value(ordinary);
+      expect(prop, PropMatcher.hasValues);
+      expect(prop, isNot(PropMatcher.hasTokens));
+    });
   });
 }
