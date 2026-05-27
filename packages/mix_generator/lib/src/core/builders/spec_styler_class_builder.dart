@@ -220,7 +220,11 @@ class SpecStylerClassBuilder {
       final type = parameter.type.getDisplayString();
       final name = parameter.name;
       final requiredPrefix = parameter.isRequiredNamed ? 'required ' : '';
-      final code = name == null ? '$requiredPrefix$type' : '$requiredPrefix$type $name';
+      final defaultValue = parameter.defaultValueCode;
+      final defaultClause = defaultValue == null ? '' : ' = $defaultValue';
+      final code = name == null
+          ? '$requiredPrefix$type$defaultClause'
+          : '$requiredPrefix$type $name$defaultClause';
 
       if (parameter.isNamed) {
         named.add(code);

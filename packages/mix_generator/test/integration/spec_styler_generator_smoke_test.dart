@@ -283,5 +283,102 @@ void main() {
         },
       );
     });
+
+    test('generated BoxSpec-shaped styler is semantically valid', () async {
+      const input = r'''
+        library spike;
+        import 'package:mix_annotations/mix_annotations.dart';
+
+        part 'spike.g.dart';
+
+        class BuildContext {}
+        class DiagnosticPropertiesBuilder {
+          void add(Object? property) {}
+        }
+        class DiagnosticsProperty<T> {
+          const DiagnosticsProperty(String name, T value);
+        }
+        mixin Diagnosticable {
+          void debugFillProperties(DiagnosticPropertiesBuilder properties) {}
+        }
+
+        abstract class Spec<T extends Spec<T>> {
+          const Spec();
+        }
+        class StyleSpec<S extends Spec<S>> {
+          const StyleSpec({required S spec, Object? animation, Object? widgetModifiers});
+        }
+        abstract class Style<S extends Spec<S>> with Diagnosticable {
+          final List<VariantStyle<S>>? $variants;
+          final WidgetModifierConfig? $modifier;
+          final AnimationConfig? $animation;
+          const Style({
+            List<VariantStyle<S>>? variants,
+            WidgetModifierConfig? modifier,
+            AnimationConfig? animation,
+          })
+              : $variants = variants,
+                $modifier = modifier,
+                $animation = animation;
+          dynamic merge(covariant dynamic other);
+          StyleSpec<S> resolve(BuildContext context);
+          List<Object?> get props;
+        }
+        abstract class MixStyler<ST extends Style<SP>, SP extends Spec<SP>>
+            extends Style<SP> {
+          const MixStyler({super.variants, super.modifier, super.animation});
+        }
+        class AnimationConfig {}
+        class WidgetModifierConfig {
+          Object? resolve(BuildContext context) => null;
+        }
+        class VariantStyle<S extends Spec<S>> {}
+        class Prop<T> {
+          static Prop<T>? maybe<T>(T? value) => null;
+          static Prop<T>? maybeMix<T>(Object? value) => null;
+        }
+        class MixOps {
+          static Prop<T>? merge<T>(Prop<T>? a, Prop<T>? b) => null;
+          static List<VariantStyle<S>>? mergeVariants<S extends Spec<S>>(
+            List<VariantStyle<S>>? a,
+            List<VariantStyle<S>>? b,
+          ) => null;
+          static WidgetModifierConfig? mergeModifier(
+            WidgetModifierConfig? a,
+            WidgetModifierConfig? b,
+          ) => null;
+          static AnimationConfig? mergeAnimation(
+            AnimationConfig? a,
+            AnimationConfig? b,
+          ) => null;
+          static T? resolve<T>(BuildContext context, Prop<T>? prop) => null;
+        }
+
+        class EdgeInsetsGeometry {}
+        class EdgeInsetsGeometryMix {}
+        enum Clip { hardEdge }
+        mixin SpacingStyleMixin<T> {
+          T padding(EdgeInsetsGeometryMix value);
+          T paddingAll(double v) => padding(EdgeInsetsGeometryMix());
+        }
+
+        @MixableSpec()
+        final class TinyBoxSpec extends Spec<TinyBoxSpec> {
+          final EdgeInsetsGeometry? padding;
+          final Clip? clipBehavior;
+          const TinyBoxSpec({this.padding, this.clipBehavior});
+        }
+      ''';
+
+      await expectGeneratorOutputResolves(
+        builder: PartBuilder([const SpecStylerGenerator()], '.g.dart'),
+        sources: {
+          ...mixAnnotationsSources,
+          'mix|lib/spike.dart': input,
+        },
+        inputAsset: 'mix|lib/spike.dart',
+        outputAsset: 'mix|lib/spike.g.dart',
+      );
+    });
   });
 }
