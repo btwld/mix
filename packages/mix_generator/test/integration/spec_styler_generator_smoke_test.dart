@@ -176,7 +176,7 @@ void main() {
       );
     });
 
-    test('emits setter for fields without owner mixin; skips fields owned by mixin', () async {
+    test('emits styler mixin setters for unowned fields and owner anchors', () async {
       const input = '''
         library spike;
         import 'package:mix_annotations/mix_annotations.dart';
@@ -201,7 +201,7 @@ void main() {
           'mix|lib/spike.spec_styler.g.part': decodedMatches(
             allOf(
               contains('BoxLikeStyler clipBehavior(Clip value)'),
-              isNot(contains('BoxLikeStyler padding(')),
+              contains('BoxLikeStyler padding(EdgeInsetsGeometryMix value)'),
             ),
           ),
         },
@@ -248,6 +248,36 @@ void main() {
               contains('factory BoxLikeStyler.width(double value)'),
               contains('factory BoxLikeStyler.height(double value)'),
               contains('factory BoxLikeStyler.clipBehavior(Clip value)'),
+            ),
+          ),
+        },
+      );
+    });
+
+    test(r'emits with-clause that includes _$XStylerMixin and emits the mixin', () async {
+      const input = r'''
+        library spike;
+        import 'package:mix_annotations/mix_annotations.dart';
+
+        part 'spike.spec_styler.g.part';
+
+        enum Clip { hardEdge }
+
+        @MixableSpec()
+        final class TinySpec {
+          final Clip? clipBehavior;
+          const TinySpec({this.clipBehavior});
+        }
+      ''';
+
+      await testBuilder(
+        PartBuilder([const SpecStylerGenerator()], '.spec_styler.g.part'),
+        {...mixAnnotationsSources, 'mix|lib/spike.dart': input},
+        outputs: {
+          'mix|lib/spike.spec_styler.g.part': decodedMatches(
+            allOf(
+              contains(r'_$TinyStylerMixin'),
+              contains(r'mixin _$TinyStylerMixin on Style<TinySpec>'),
             ),
           ),
         },

@@ -5,10 +5,13 @@ import 'package:build/build.dart';
 import 'package:source_gen/source_gen.dart';
 
 import '../checkers.dart';
+import '../models/annotation_config.dart';
 import '../curated/type_metadata.dart';
 import '../errors.dart';
 import '../helpers/mixin_method_collector.dart';
 import '../models/field_model.dart';
+import '../models/styler_field_model.dart';
+import 'styler_mixin_builder.dart';
 
 class SpecStylerClassBuilder {
   final ClassElement specElement;
@@ -49,9 +52,14 @@ class SpecStylerClassBuilder {
   String build() {
     final fields = _extractFields();
     final mixins = _collectOwnerMixins(fields);
+    final stylerMixinName = '_\$${stylerName}Mixin';
+    final allMixins = [...mixins, stylerMixinName];
     final mixinClause = mixins.isEmpty
-        ? ''
-        : ' with ${mixins.map((m) => '$m<$stylerName>').join(', ')}';
+        ? ' with $stylerMixinName'
+        : ' with ${[
+            ...mixins.map((m) => '$m<$stylerName>'),
+            stylerMixinName,
+          ].join(', ')}';
     final buffer = StringBuffer();
     buffer.writeln(
       'class $stylerName extends MixStyler<$stylerName, $specName>$mixinClause {',
@@ -125,21 +133,13 @@ class SpecStylerClassBuilder {
       );
       buffer.writeln('      $stylerName().${field.name}(value);');
     }
-    if (mixins.isNotEmpty || fields.any((f) => !_isOwnedByMixin(f))) {
-      buffer.writeln();
-    }
-
-    for (final field in fields) {
-      if (_isOwnedByMixin(field)) continue;
-
-      final paramType = _publicParamType(field);
-      buffer.writeln('  $stylerName ${field.name}($paramType value) {');
-      buffer.writeln('    return merge($stylerName(${field.name}: value));');
-      buffer.writeln('  }');
+    if (allMixins.isNotEmpty || fields.any((f) => !_isOwnedByMixin(f))) {
       buffer.writeln();
     }
 
     buffer.writeln('}');
+    buffer.writeln();
+    buffer.writeln(_buildStylerMixin(fields));
 
     return buffer.toString();
   }
@@ -260,5 +260,29 @@ class SpecStylerClassBuilder {
     if (reader?.peek('skipFactory')?.boolValue ?? false) return null;
 
     return reader?.peek('factoryName')?.stringValue ?? field.name;
+  }
+
+  String _buildStylerMixin(List<FieldModel> fields) {
+    final stylerFields = fields
+        .map(
+          (field) => StylerFieldModel(
+            name: field.name,
+            declaredName: field.stylerFieldName,
+            fieldTypeCode: 'Prop<${field.typeName}>?',
+            isRawList: isRawListField(field.name),
+            effectivePublicParamType: _publicParamType(field),
+            generateSetter: true,
+            setterName: field.name,
+            diagnosticLabel: field.diagnosticLabel,
+          ),
+        )
+        .toList();
+
+    return StylerMixinBuilder(
+      stylerName: stylerName,
+      specName: specName,
+      fields: stylerFields,
+      config: const MixableStylerAnnotationConfig(),
+    ).build();
   }
 }
