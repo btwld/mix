@@ -64,5 +64,36 @@ void main() {
         contains('@MixableSpec'),
       );
     });
+
+    test('emits Prop<T>? fields matching spec constructor parameters', () async {
+      const input = '''
+        library spike;
+        import 'package:mix_annotations/mix_annotations.dart';
+
+        part 'spike.spec_styler.g.part';
+
+        class EdgeInsetsGeometry {}
+
+        @MixableSpec()
+        final class TrivialSpec {
+          final EdgeInsetsGeometry? padding;
+          final int? count;
+          const TrivialSpec({this.padding, this.count});
+        }
+      ''';
+
+      await testBuilder(
+        PartBuilder([const SpecStylerGenerator()], '.spec_styler.g.part'),
+        {...mixAnnotationsSources, 'mix|lib/spike.dart': input},
+        outputs: {
+          'mix|lib/spike.spec_styler.g.part': decodedMatches(
+            allOf(
+              contains(r'Prop<EdgeInsetsGeometry>? $padding'),
+              contains(r'Prop<int>? $count'),
+            ),
+          ),
+        },
+      );
+    });
   });
 }
