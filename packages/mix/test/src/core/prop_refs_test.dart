@@ -451,6 +451,26 @@ void main() {
       });
     });
 
+    group('getReferenceValue unsupported types', () {
+      test('throws UnsupportedError naming the token and type', () {
+        const token = _UnsupportedToken('layout.edge-insets');
+
+        expect(
+          () => getReferenceValue(token),
+          throwsA(
+            isA<UnsupportedError>().having(
+              (e) => e.message,
+              'message',
+              allOf(
+                contains('EdgeInsets'),
+                contains('layout.edge-insets'),
+              ),
+            ),
+          ),
+        );
+      });
+    });
+
     group('Token reference edge cases', () {
       test('handles empty string token names', () {
         final emptyNameToken = TestToken<double>('');
@@ -484,4 +504,10 @@ class _CollidingToken extends MixToken<double> {
 
   @override
   int get hashCode => 42; // forced collision across all instances
+}
+
+/// Token type that intentionally targets a value type not covered by the
+/// reference dispatch table in [getReferenceValue].
+class _UnsupportedToken extends MixToken<EdgeInsets> {
+  const _UnsupportedToken(super.name);
 }

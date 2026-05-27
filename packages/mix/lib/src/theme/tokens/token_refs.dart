@@ -291,6 +291,11 @@ bool isAnyTokenRef(Object? value) {
 ///
 /// Returns a reference that implements the target type, allowing the token
 /// to be used wherever the type is expected.
+///
+/// Throws [UnsupportedError] if [T] is not in the supported reference set.
+/// Concrete [MixToken] subclasses (`ColorToken`, `SpaceToken`, etc.) override
+/// `call()` directly and never hit this fallback; custom token authors must
+/// either pick one of the supported types or override `call()` themselves.
 T getReferenceValue<T>(MixToken<T> token) {
   final prop = Prop.token(token);
   if (T == Color) {
@@ -319,5 +324,11 @@ T getReferenceValue<T>(MixToken<T> token) {
     return BoxShadowListRef(prop as Prop<List<BoxShadow>>) as T;
   }
 
-  return prop as T;
+  throw UnsupportedError(
+    'No token reference is registered for MixToken<$T> "${token.name}". '
+    'Either pick one of the supported token value types (Color, double, '
+    'Radius, Shadow, BoxShadow, TextStyle, Breakpoint, BorderSide, '
+    'FontWeight, Duration, List<Shadow>, List<BoxShadow>) or override '
+    'MixToken<$T>.call() in your subclass to return a custom reference.',
+  );
 }

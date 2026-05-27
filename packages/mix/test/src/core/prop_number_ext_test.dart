@@ -309,5 +309,49 @@ void main() {
         expect(prop, resolvesTo(10.0));
       });
     });
+
+    group('multi-source directive support', () {
+      test(
+        'applies directive after token resolution when value + token were merged',
+        () {
+          final token = TestToken<num>('size-token');
+          final merged = Prop.value<num>(1).mergeProp(Prop.token(token));
+
+          // Sanity: the merge accumulated both sources.
+          expect(merged.sources, hasLength(2));
+
+          final scaled = merged.multiply(2);
+          final context = MockBuildContext(tokens: {token: 7});
+
+          // Last source wins under replacement strategy (token = 7), then *2.
+          expect(scaled.resolveProp(context), equals(14));
+        },
+      );
+
+      test('preserves source order — last source still wins', () {
+        final token = TestToken<num>('order-token');
+        final tokenFirst =
+            Prop.token(token).mergeProp(Prop.value<num>(3)).multiply(10);
+
+        final context = MockBuildContext(tokens: {token: 99});
+
+        // The plain value (3) was merged last, so it wins. 3 * 10 = 30.
+        expect(tokenFirst.resolveProp(context), equals(30));
+      });
+
+      test('keeps existing directive chain when promoting to Prop<num>', () {
+        final token = TestToken<num>('chain-token');
+        final prop =
+            Prop.value<num>(2).multiply(3).mergeProp(Prop.token(token));
+
+        // multiply(3) directive is on the value-only base; merging the token
+        // accumulates the source. We then chain another directive.
+        final chained = prop.add(1);
+        final context = MockBuildContext(tokens: {token: 5});
+
+        // Last source: token = 5. Directives apply in order: (5 * 3) + 1.
+        expect(chained.resolveProp(context), equals(16));
+      });
+    });
   });
 }

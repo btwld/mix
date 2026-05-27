@@ -143,31 +143,32 @@ extension NumberPropDirectiveExt<T extends num> on Prop<T> {
   ///
   /// Required to work around Dart's type invariance - we can't directly apply
   /// `Directive<num>` to `Prop<T>` even though T extends num.
+  ///
+  /// Reconstructs every source as `Prop<num>` and merges in order, preserving
+  /// the existing source ordering. `MixSource<T>` is not supported by numeric
+  /// directives — a num itself is not a Mix value.
   Prop<num> _asPropNum() {
-    // Edge case: prop with only directives (no sources)
     if (sources.isEmpty) {
-      return Prop.directives([]);
+      return ($directives == null || $directives!.isEmpty)
+          ? Prop.directives([])
+          : Prop.directives($directives!.cast());
     }
 
-    // Fail fast on unsupported multiple sources
-    if (sources.length > 1) {
-      throw UnimplementedError(
-        'Multiple sources not yet supported for number directives. '
-        'This is a rare case - please report if you need this.',
-      );
+    Prop<num>? acc;
+    for (final source in sources) {
+      final Prop<num> next = switch (source) {
+        ValueSource<T>(:final value) => Prop.value<num>(value),
+        TokenSource<T>(:final token) => Prop.token(token as MixToken<num>),
+        _ => throw UnsupportedError(
+            'Source ${source.runtimeType} is not supported by numeric '
+            'directives — num values cannot be wrapped as Mix<num>.',
+          ),
+      };
+      acc = acc == null ? next : acc.mergeProp(next);
     }
 
-    // Reconstruct single source as Prop<num>
-    final source = sources.first;
-    final Prop<num> base = source is ValueSource<T>
-        ? Prop.value<num>((source).value)
-        : source is TokenSource<T>
-        ? Prop.token((source).token as MixToken<num>)
-        : throw UnimplementedError(
-            'Source type ${source.runtimeType} not supported',
-          );
+    final base = acc!;
 
-    // Preserve existing directives for chaining (e.g., multiply().add().round())
     return ($directives == null || $directives!.isEmpty)
         ? base
         : base.mergeProp(Prop.directives($directives!.cast()));
