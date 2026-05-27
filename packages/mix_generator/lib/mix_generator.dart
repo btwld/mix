@@ -19,6 +19,7 @@ import 'package:source_gen/source_gen.dart';
 import 'src/mix_generator.dart';
 import 'src/mix_widget_generator.dart';
 import 'src/mixable_generator.dart';
+import 'src/spec_styler_generator.dart';
 import 'src/styler_generator.dart';
 
 // Expose internals for generator unit tests.
@@ -32,6 +33,7 @@ export 'src/core/resolvers/index.dart';
 export 'src/mix_generator.dart';
 export 'src/mix_widget_generator.dart';
 export 'src/mixable_generator.dart';
+export 'src/spec_styler_generator.dart';
 export 'src/styler_generator.dart';
 
 /// Builder factory for `mix_generator`.
@@ -42,6 +44,19 @@ Builder mixGenerator(BuilderOptions _) {
   return SharedPartBuilder(
     [SpecGenerator()],
     'mix_generator',
+    formatOutput: (code, version) {
+      return DartFormatter(languageVersion: version).format(code);
+    },
+  );
+}
+
+/// Builder factory for `spec_styler_generator`.
+///
+/// Generates full Styler classes from `@MixableSpec` classes.
+Builder specStylerGenerator(BuilderOptions _) {
+  return SharedPartBuilder(
+    [const SpecStylerGenerator()],
+    'spec_styler_generator',
     formatOutput: (code, version) {
       return DartFormatter(languageVersion: version).format(code);
     },
