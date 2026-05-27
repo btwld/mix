@@ -15,9 +15,7 @@ final class BoxSpecForSpike with _$BoxSpecForSpike {
   final BoxConstraints? constraints;
   final Decoration? decoration;
   final Decoration? foregroundDecoration;
-  @MixableField(skipMixin: true)
   final Matrix4? transform;
-  @MixableField(skipMixin: true)
   final AlignmentGeometry? transformAlignment;
   final Clip? clipBehavior;
 

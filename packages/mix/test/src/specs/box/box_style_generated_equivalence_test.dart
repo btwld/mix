@@ -21,15 +21,15 @@ void main() {
       expect(() => generated.paddingAll(8), returnsNormally);
     });
 
-    test('factories exist on both', () {
-      expect(() => BoxStyler.color(const Color(0xFF000000)), returnsNormally);
+    test('direct field factories exist on both', () {
+      expect(() => BoxStyler.padding(.all(8)), returnsNormally);
+      expect(() => BoxSpecForSpikeStyler.padding(.all(8)), returnsNormally);
+
+      expect(() => BoxStyler.constraints(.width(100)), returnsNormally);
       expect(
-        () => BoxSpecForSpikeStyler.color(const Color(0xFF000000)),
+        () => BoxSpecForSpikeStyler.constraints(.width(100)),
         returnsNormally,
       );
-
-      expect(() => BoxStyler.width(100), returnsNormally);
-      expect(() => BoxSpecForSpikeStyler.width(100), returnsNormally);
     });
 
     test('merge composes the generated styler field shape', () {

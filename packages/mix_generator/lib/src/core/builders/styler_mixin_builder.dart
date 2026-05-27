@@ -42,7 +42,7 @@ class StylerMixinBuilder {
 
       buffer.writeln('  /// Sets the ${field.name}.');
       buffer.writeln('  $stylerName $setterName($paramType value) {');
-      buffer.writeln('    return merge($stylerName($setterName: value));');
+      buffer.writeln('    return merge($stylerName(${field.name}: value));');
       buffer.writeln('  }');
       buffer.writeln();
     }

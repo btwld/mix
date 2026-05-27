@@ -34,6 +34,7 @@ Future<void> expectGeneratorOutputResolves({
   required String inputAsset,
   required String outputAsset,
   Matcher? outputMatcher,
+  String? resolveAsset,
 }) async {
   String? generated;
   final capture = predicate<String>((value) {
@@ -55,7 +56,9 @@ Future<void> expectGeneratorOutputResolves({
   }
 
   await resolveSources({...sources, outputAsset: generated!}, (resolver) async {
-    final library = await resolver.libraryFor(AssetId.parse(inputAsset));
+    final library = await resolver.libraryFor(
+      AssetId.parse(resolveAsset ?? inputAsset),
+    );
     final libPath = library.firstFragment.source.fullName;
     final result = await library.session.getResolvedLibrary(libPath);
     if (result is! ResolvedLibraryResult) {

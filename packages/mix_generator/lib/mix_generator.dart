@@ -56,10 +56,10 @@ Builder mixGenerator(BuilderOptions _) {
 Builder specStylerGenerator(BuilderOptions _) {
   return LibraryBuilder(
     const SpecStylerGenerator(),
-    generatedExtension: '.styler.g.dart',
     formatOutput: (code, version) {
       return DartFormatter(languageVersion: version).format(code);
     },
+    generatedExtension: '.styler.g.dart',
   );
 }
 

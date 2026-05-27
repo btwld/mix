@@ -68,6 +68,33 @@ void main() {
         expect(code, contains(r'double? get $gap;'));
       });
 
+      test(
+        'renamed setters pass the underlying field into the constructor',
+        () {
+          final builder = StylerMixinBuilder(
+            stylerName: 'BoxStyler',
+            specName: 'BoxSpec',
+            fields: [
+              StylerFieldModel(
+                name: 'renamed',
+                declaredName: r'$renamed',
+                fieldTypeCode: 'Prop<int>?',
+                isRawList: false,
+                effectivePublicParamType: 'int',
+                generateSetter: true,
+                setterName: 'aliasRenamed',
+              ),
+            ],
+            config: defaultConfig,
+          );
+          final code = builder.build();
+
+          expect(code, contains('BoxStyler aliasRenamed(int value)'));
+          expect(code, contains('return merge(BoxStyler(renamed: value));'));
+          expect(code, isNot(contains('BoxStyler(aliasRenamed: value)')));
+        },
+      );
+
       test('generates merge override', () {
         final builder = StylerMixinBuilder(
           stylerName: 'BoxStyler',
