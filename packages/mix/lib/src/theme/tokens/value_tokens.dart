@@ -68,18 +68,14 @@ class BreakpointToken extends MixToken<Breakpoint> {
       return super.resolve(context);
     }
 
-    switch (this) {
-      case mobile:
-        return Breakpoint.maxWidth(767);
-      case tablet:
-        return Breakpoint.widthRange(768, 1023);
-      case desktop:
-        return Breakpoint.minWidth(1024);
-      default:
-        // Custom breakpoint without a scope entry: defer to the underlying
-        // resolution so callers see the standard "token not found" error.
-        return super.resolve(context);
-    }
+    // Custom breakpoints without a scope entry fall through to super.resolve
+    // so callers see the standard "token not found" error.
+    return switch (this) {
+      mobile => Breakpoint.maxWidth(767),
+      tablet => Breakpoint.widthRange(768, 1023),
+      desktop => Breakpoint.minWidth(1024),
+      _ => super.resolve(context),
+    };
   }
 }
 
