@@ -8,8 +8,9 @@ and tightens public API around the internal token registry.
 
 - **`DoubleRef` sentinel collisions:** Two distinct `MixToken<double>`
   instances whose hashes landed in the same bucket previously aliased to the
-  same sentinel. The registry now probes for a free slot on collision and
-  caches `token → sentinel` so repeated calls return the same ref.
+  same sentinel. The registry now hands out sentinels from a monotonic
+  counter, so distinct tokens are guaranteed distinct sentinels; a reverse
+  cache re-issues the same sentinel for the same token.
 - **`BreakpointToken.resolve` no longer masks type errors:** the built-in
   `mobile`/`tablet`/`desktop` defaults are only used when the scope is
   absent or omits the entry. A scope entry of the wrong type now surfaces

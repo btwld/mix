@@ -194,16 +194,15 @@ final class BoxShadowListMixRef extends Prop<List<BoxShadow>>
 // =============================================================================
 
 /// Maps sentinel values to their source [MixToken]. Sentinels are negative
-/// nano-doubles chosen to avoid colliding with ordinary user-supplied doubles.
-final Map<Object, MixToken> _doubleTokenRegistry = <Object, MixToken>{};
+/// nano-doubles handed out monotonically by [DoubleRef.token] — they cannot
+/// collide with user-supplied doubles or with each other.
+final Map<double, MixToken> _doubleTokenRegistry = <double, MixToken>{};
 
-/// Reverse lookup: stable token → sentinel mapping. Re-issues the same
-/// sentinel for the same token instead of creating a new one.
+/// Reverse lookup: re-issues the same sentinel for the same token.
 final Map<MixToken, double> _doubleSentinelByToken = <MixToken, double>{};
 
-/// Maximum number of probe attempts when resolving a sentinel collision
-/// between two distinct tokens whose hashes happen to coincide.
-const int _kSentinelProbeLimit = 1000;
+/// Next sentinel to hand out. Counts down from -1e-6 by 1e-6 per token.
+double _nextSentinel = 0;
 
 /// Clears the [DoubleRef] sentinel registry. Internal test helper.
 @internal
@@ -211,6 +210,7 @@ const int _kSentinelProbeLimit = 1000;
 void clearTokenRegistry() {
   _doubleTokenRegistry.clear();
   _doubleSentinelByToken.clear();
+  _nextSentinel = 0;
 }
 
 /// Returns the token associated with a registered [DoubleRef] sentinel, or
@@ -220,6 +220,8 @@ void clearTokenRegistry() {
 /// should use [Prop.token] to construct an explicit token-backed prop.
 @internal
 MixToken<T>? getTokenFromValue<T>(Object value) {
+  if (value is! double) return null;
+
   return _doubleTokenRegistry[value] as MixToken<T>?;
 }
 
@@ -233,36 +235,18 @@ MixToken<T>? getTokenFromValue<T>(Object value) {
 /// only ever obtained through [DoubleRef.token]. For an explicit, type-safe
 /// token handle, use `Prop.token(token)` instead.
 extension type const DoubleRef._(double _value) implements double {
-  /// Creates a token reference and registers it in the global registry.
-  ///
-  /// Re-issues the same sentinel for the same token. If two distinct tokens
-  /// produce the same hash bucket, probes nearby sentinels to avoid aliasing.
+  /// Returns a registered sentinel for [token], re-issuing the same one on
+  /// repeated calls. Sentinels are unique by construction — no collisions
+  /// between distinct tokens are possible.
   static DoubleRef token(MixToken<double> token) {
     final existing = _doubleSentinelByToken[token];
     if (existing != null) return DoubleRef._(existing);
 
-    final base = token.hashCode.abs() % 100000;
-    for (var probe = 0; probe < _kSentinelProbeLimit; probe++) {
-      final candidate = -(0.000001 + (base + probe) * 0.000001);
-      final occupant = _doubleTokenRegistry[candidate];
-      if (occupant == null) {
-        _doubleTokenRegistry[candidate] = token;
-        _doubleSentinelByToken[token] = candidate;
+    _nextSentinel -= 0.000001;
+    _doubleTokenRegistry[_nextSentinel] = token;
+    _doubleSentinelByToken[token] = _nextSentinel;
 
-        return DoubleRef._(candidate);
-      }
-      if (occupant == token) {
-        _doubleSentinelByToken[token] = candidate;
-
-        return DoubleRef._(candidate);
-      }
-    }
-
-    throw StateError(
-      'DoubleRef registry exhausted while assigning a sentinel for '
-      'token "${token.name}". This indicates an unusually dense hash '
-      'collision; consider renaming one of the colliding tokens.',
-    );
+    return DoubleRef._(_nextSentinel);
   }
 }
 

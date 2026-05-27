@@ -302,27 +302,19 @@ void main() {
           expect(getTokenFromValue<double>(ref2), same(token));
         });
 
-        test('avoids aliasing when two tokens collide in the hash bucket', () {
-          // Manually construct two distinct tokens that share a sentinel
-          // bucket by manipulating their hashes.
-          final hostile = _CollidingToken('collider-a');
-          final friend = _CollidingToken('collider-b');
+        test('distinct tokens always receive distinct sentinels', () {
+          // The sentinel allocator is a monotonic counter, so no two
+          // distinct MixToken<double> instances can ever alias — regardless
+          // of how their hashes line up.
+          final a = TestToken<double>('alloc-a');
+          final b = TestToken<double>('alloc-b');
 
-          // Sanity check: both tokens hash to the same bucket modulo 100000.
-          expect(
-            hostile.hashCode.abs() % 100000,
-            equals(friend.hashCode.abs() % 100000),
-          );
+          final aRef = DoubleRef.token(a);
+          final bRef = DoubleRef.token(b);
 
-          final hostileRef = DoubleRef.token(hostile);
-          final friendRef = DoubleRef.token(friend);
-
-          // Distinct sentinels — no aliasing.
-          expect(hostileRef, isNot(equals(friendRef)));
-
-          // Round-trip lookup returns the correct token.
-          expect(getTokenFromValue<double>(hostileRef), same(hostile));
-          expect(getTokenFromValue<double>(friendRef), same(friend));
+          expect(aRef, isNot(equals(bRef)));
+          expect(getTokenFromValue<double>(aRef), same(a));
+          expect(getTokenFromValue<double>(bRef), same(b));
         });
       });
     });
@@ -482,20 +474,6 @@ void main() {
       });
     });
   });
-}
-
-/// A test token with a deliberately controlled hash so two distinct instances
-/// share a sentinel bucket — exercising the registry's collision handling.
-class _CollidingToken extends MixToken<double> {
-  const _CollidingToken(super.name);
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is _CollidingToken && other.name == name);
-
-  @override
-  int get hashCode => 42; // forced collision across all instances
 }
 
 /// Token type that intentionally targets a value type not covered by the
