@@ -128,5 +128,52 @@ void main() {
         },
       );
     });
+
+    test('emits dedup with-clause from ownerMixins of all field types', () async {
+      const input = '''
+        library spike;
+        import 'package:mix_annotations/mix_annotations.dart';
+
+        part 'spike.spec_styler.g.part';
+
+        class EdgeInsetsGeometry {}
+        class BoxConstraints {}
+        class Decoration {}
+        enum Clip { hardEdge }
+
+        @MixableSpec()
+        final class BoxLikeSpec {
+          final EdgeInsetsGeometry? padding;
+          final EdgeInsetsGeometry? margin;
+          final BoxConstraints? constraints;
+          final Decoration? decoration;
+          final Clip? clipBehavior;
+          const BoxLikeSpec({
+            this.padding,
+            this.margin,
+            this.constraints,
+            this.decoration,
+            this.clipBehavior,
+          });
+        }
+      ''';
+
+      await testBuilder(
+        PartBuilder([const SpecStylerGenerator()], '.spec_styler.g.part'),
+        {...mixAnnotationsSources, 'mix|lib/spike.dart': input},
+        outputs: {
+          'mix|lib/spike.spec_styler.g.part': decodedMatches(
+            allOf(
+              contains('SpacingStyleMixin<BoxLikeStyler>'),
+              contains('ConstraintStyleMixin<BoxLikeStyler>'),
+              contains('DecorationStyleMixin<BoxLikeStyler>'),
+              contains('BorderStyleMixin<BoxLikeStyler>'),
+              contains('BorderRadiusStyleMixin<BoxLikeStyler>'),
+              contains('ShadowStyleMixin<BoxLikeStyler>'),
+            ),
+          ),
+        },
+      );
+    });
   });
 }

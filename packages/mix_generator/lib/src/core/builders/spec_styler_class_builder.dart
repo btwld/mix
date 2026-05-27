@@ -4,6 +4,7 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
 import 'package:source_gen/source_gen.dart';
 
+import '../checkers.dart';
 import '../curated/type_metadata.dart';
 import '../errors.dart';
 import '../models/field_model.dart';
@@ -46,9 +47,13 @@ class SpecStylerClassBuilder {
 
   String build() {
     final fields = _extractFields();
+    final mixins = _collectOwnerMixins(fields);
+    final mixinClause = mixins.isEmpty
+        ? ''
+        : ' with ${mixins.map((m) => '$m<$stylerName>').join(', ')}';
     final buffer = StringBuffer();
     buffer.writeln(
-      'class $stylerName extends MixStyler<$stylerName, $specName> {',
+      'class $stylerName extends MixStyler<$stylerName, $specName>$mixinClause {',
     );
 
     for (final field in fields) {
@@ -103,4 +108,39 @@ class SpecStylerClassBuilder {
 
   String _propFactory(FieldModel field) =>
       mixTypeFor(field.typeName) == null ? 'Prop.maybe' : 'Prop.maybeMix';
+
+  Set<String> _collectOwnerMixins(List<FieldModel> fields) {
+    final mixins = <String>{};
+
+    for (final field in fields) {
+      final reader = _mixableFieldReader(field.name);
+      if (reader?.peek('skipMixin')?.boolValue ?? false) continue;
+
+      final overrideType = reader?.peek('mixin')?.typeValue;
+      final overrideName = overrideType?.element?.name;
+      if (overrideName != null) {
+        mixins.add(overrideName);
+        continue;
+      }
+
+      mixins.addAll(ownerMixinsFor(field.typeName));
+    }
+
+    final extra = annotation.peek('extraStylerMixins')?.listValue ?? const [];
+    for (final object in extra) {
+      final type = object.toTypeValue();
+      final name = type?.element?.name;
+      if (name != null) mixins.add(name);
+    }
+
+    return mixins;
+  }
+
+  ConstantReader? _mixableFieldReader(String fieldName) {
+    final field = specElement.getField(fieldName);
+    if (field == null) return null;
+
+    final annotation = mixableFieldAnnotationChecker.firstAnnotationOf(field);
+    return annotation == null ? null : ConstantReader(annotation);
+  }
 }
