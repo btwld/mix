@@ -207,5 +207,51 @@ void main() {
         },
       );
     });
+
+    test('emits factory per mixin method and per unowned field setter', () async {
+      const input = '''
+        library spike;
+        import 'package:mix_annotations/mix_annotations.dart';
+        import 'src/constraint_style_mixin.dart';
+
+        part 'spike.spec_styler.g.part';
+
+        class BoxConstraints {}
+        enum Clip { hardEdge }
+
+        @MixableSpec()
+        final class BoxLikeSpec {
+          final BoxConstraints? constraints;
+          final Clip? clipBehavior;
+          const BoxLikeSpec({this.constraints, this.clipBehavior});
+        }
+      ''';
+
+      await testBuilder(
+        PartBuilder([const SpecStylerGenerator()], '.spec_styler.g.part'),
+        {
+          ...mixAnnotationsSources,
+          'mix|lib/src/constraint_style_mixin.dart': '''
+            class BoxConstraintsMix {}
+
+            mixin ConstraintStyleMixin<T> {
+              T constraints(BoxConstraintsMix value);
+              T width(double value) => constraints(BoxConstraintsMix());
+              T height(double value) => constraints(BoxConstraintsMix());
+            }
+          ''',
+          'mix|lib/spike.dart': input,
+        },
+        outputs: {
+          'mix|lib/spike.spec_styler.g.part': decodedMatches(
+            allOf(
+              contains('factory BoxLikeStyler.width(double value)'),
+              contains('factory BoxLikeStyler.height(double value)'),
+              contains('factory BoxLikeStyler.clipBehavior(Clip value)'),
+            ),
+          ),
+        },
+      );
+    });
   });
 }

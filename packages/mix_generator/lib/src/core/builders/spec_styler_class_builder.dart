@@ -7,6 +7,7 @@ import 'package:source_gen/source_gen.dart';
 import '../checkers.dart';
 import '../curated/type_metadata.dart';
 import '../errors.dart';
+import '../helpers/mixin_method_collector.dart';
 import '../models/field_model.dart';
 
 class SpecStylerClassBuilder {
@@ -99,6 +100,35 @@ class SpecStylerClassBuilder {
     buffer.writeln('       );');
     buffer.writeln();
 
+    for (final mixinName in mixins) {
+      final mixinElement = _resolveMixinElement(mixinName);
+      if (mixinElement == null) continue;
+
+      for (final method in MixinMethodCollector.collect(mixinElement)) {
+        buffer.writeln(
+          '  factory $stylerName.${method.name}(${_parameterList(method.parameters)}) =>',
+        );
+        buffer.writeln(
+          '      $stylerName().${method.name}(${_argumentList(method.parameters)});',
+        );
+      }
+    }
+
+    for (final field in fields) {
+      if (_isOwnedByMixin(field)) continue;
+      final factoryName = _fieldFactoryName(field);
+      if (factoryName == null) continue;
+
+      final paramType = _publicParamType(field);
+      buffer.writeln(
+        '  factory $stylerName.$factoryName($paramType value) =>',
+      );
+      buffer.writeln('      $stylerName().${field.name}(value);');
+    }
+    if (mixins.isNotEmpty || fields.any((f) => !_isOwnedByMixin(f))) {
+      buffer.writeln();
+    }
+
     for (final field in fields) {
       if (_isOwnedByMixin(field)) continue;
 
@@ -161,5 +191,74 @@ class SpecStylerClassBuilder {
     if (reader?.peek('mixin')?.typeValue.element != null) return true;
 
     return ownerMixinsFor(field.typeName).isNotEmpty;
+  }
+
+  InterfaceElement? _resolveMixinElement(String mixinName) {
+    final localMixin = specElement.library.getMixin(mixinName);
+    if (localMixin != null) return localMixin;
+
+    final localClass = specElement.library.getClass(mixinName);
+    if (localClass != null) return localClass;
+
+    for (final import in specElement.library.firstFragment.libraryImports) {
+      final imported = import.importedLibrary;
+      if (imported == null) continue;
+
+      final element = imported.exportNamespace.get2(mixinName);
+      if (element is InterfaceElement) return element;
+    }
+
+    return null;
+  }
+
+  String _parameterList(List<FormalParameterElement> parameters) {
+    final required = <String>[];
+    final optional = <String>[];
+    final named = <String>[];
+
+    for (final parameter in parameters) {
+      final type = parameter.type.getDisplayString();
+      final name = parameter.name;
+      final requiredPrefix = parameter.isRequiredNamed ? 'required ' : '';
+      final code = name == null ? '$requiredPrefix$type' : '$requiredPrefix$type $name';
+
+      if (parameter.isNamed) {
+        named.add(code);
+      } else if (parameter.isOptionalPositional) {
+        optional.add(code);
+      } else {
+        required.add(code);
+      }
+    }
+
+    return [
+      ...required,
+      if (optional.isNotEmpty) '[${optional.join(', ')}]',
+      if (named.isNotEmpty) '{${named.join(', ')}}',
+    ].join(', ');
+  }
+
+  String _argumentList(List<FormalParameterElement> parameters) {
+    final positional = <String>[];
+    final named = <String>[];
+
+    for (final parameter in parameters) {
+      final name = parameter.name;
+      if (name == null) continue;
+      if (parameter.isNamed) {
+        named.add('$name: $name');
+      } else {
+        positional.add(name);
+      }
+    }
+
+    return [...positional, ...named].join(', ');
+  }
+
+  String? _fieldFactoryName(FieldModel field) {
+    final reader = _mixableFieldReader(field.name);
+    if (reader?.peek('skipFactory')?.boolValue ?? false) return null;
+
+    return reader?.peek('factoryName')?.stringValue ?? field.name;
   }
 }
