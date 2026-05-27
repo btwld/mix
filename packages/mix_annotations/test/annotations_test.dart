@@ -13,4 +13,22 @@ void main() {
       expect(annotation.extraStylerMixins, [String, int]);
     });
   });
+
+  group('MixableField', () {
+    test('defaults skipMixin to false', () {
+      const annotation = MixableField();
+      expect(annotation.skipMixin, isFalse);
+    });
+
+    test('defaults skipFactory to false', () {
+      const annotation = MixableField();
+      expect(annotation.skipFactory, isFalse);
+    });
+
+    test('preserves mixin and factoryName overrides', () {
+      const annotation = MixableField(mixin: String, factoryName: 'foo');
+      expect(annotation.mixin, String);
+      expect(annotation.factoryName, 'foo');
+    });
+  });
 }

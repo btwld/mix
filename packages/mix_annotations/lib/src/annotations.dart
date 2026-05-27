@@ -52,6 +52,10 @@ const mixableStyler = MixableStyler();
 ///
 /// [ignoreSetter] when true, no setter method will be generated for this field.
 /// [setterType] optionally overrides the parameter type for the generated setter.
+/// [mixin] optionally overrides the inferred owner mixin for spec-driven stylers.
+/// [skipMixin] prevents spec-driven stylers from inferring an owner mixin.
+/// [factoryName] optionally overrides the generated field factory name.
+/// [skipFactory] prevents spec-driven stylers from generating a field factory.
 ///
 /// Example usage:
 /// ```dart
@@ -69,7 +73,26 @@ class MixableField {
   /// If not specified, the type is inferred from the field's `Prop<T>` type argument.
   final Type? setterType;
 
-  const MixableField({this.ignoreSetter = false, this.setterType});
+  /// Optional owner mixin override for spec-driven stylers.
+  final Type? mixin;
+
+  /// Whether to skip owner mixin inference for spec-driven stylers.
+  final bool skipMixin;
+
+  /// Optional field factory name override for spec-driven stylers.
+  final String? factoryName;
+
+  /// Whether to skip field factory generation for spec-driven stylers.
+  final bool skipFactory;
+
+  const MixableField({
+    this.ignoreSetter = false,
+    this.setterType,
+    this.mixin,
+    this.skipMixin = false,
+    this.factoryName,
+    this.skipFactory = false,
+  });
 }
 
 /// Annotation that drives generation of a `StatelessWidget` wrapper for a

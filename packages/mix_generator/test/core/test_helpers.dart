@@ -215,8 +215,19 @@ class Mixable {
 class MixableField {
   final bool ignoreSetter;
   final Type? setterType;
+  final Type? mixin;
+  final bool skipMixin;
+  final String? factoryName;
+  final bool skipFactory;
 
-  const MixableField({this.ignoreSetter = false, this.setterType});
+  const MixableField({
+    this.ignoreSetter = false,
+    this.setterType,
+    this.mixin,
+    this.skipMixin = false,
+    this.factoryName,
+    this.skipFactory = false,
+  });
 }
 
 class MixWidget {
