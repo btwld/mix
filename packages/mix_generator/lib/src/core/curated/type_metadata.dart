@@ -52,7 +52,14 @@ class TypeMetadata {
   /// The Mix counterpart, when the type supports `Prop.maybeMix`.
   final String? mixType;
 
-  const TypeMetadata({required this.category, this.mixType});
+  /// Styler mixins that own fluent methods for this field type.
+  final List<String> ownerMixins;
+
+  const TypeMetadata({
+    required this.category,
+    this.mixType,
+    this.ownerMixins = const [],
+  });
 
   /// Whether this type uses `MixOps.lerp`.
   bool get isLerpable => category == .lerpable;
@@ -70,16 +77,30 @@ const Map<String, TypeMetadata> typeMetadata = {
   'EdgeInsetsGeometry': TypeMetadata(
     category: .lerpable,
     mixType: 'EdgeInsetsGeometryMix',
+    ownerMixins: ['SpacingStyleMixin'],
   ),
   'BoxConstraints': TypeMetadata(
     category: .lerpable,
     mixType: 'BoxConstraintsMix',
+    ownerMixins: ['ConstraintStyleMixin'],
   ),
   'AlignmentGeometry': TypeMetadata(category: .lerpable),
-  'Matrix4': TypeMetadata(category: .lerpable),
+  'Matrix4': TypeMetadata(
+    category: .lerpable,
+    ownerMixins: ['TransformStyleMixin'],
+  ),
 
   // Painting types.
-  'Decoration': TypeMetadata(category: .lerpable, mixType: 'DecorationMix'),
+  'Decoration': TypeMetadata(
+    category: .lerpable,
+    mixType: 'DecorationMix',
+    ownerMixins: [
+      'DecorationStyleMixin',
+      'BorderStyleMixin',
+      'BorderRadiusStyleMixin',
+      'ShadowStyleMixin',
+    ],
+  ),
   'TextStyle': TypeMetadata(category: .lerpable, mixType: 'TextStyleMix'),
   'StrutStyle': TypeMetadata(category: .lerpable, mixType: 'StrutStyleMix'),
   'TextHeightBehavior': TypeMetadata(
@@ -205,6 +226,10 @@ TypeMetadata? _metadataFor(String typeName) => typeMetadata[typeName];
 
 /// The Mix counterpart for [typeName], if one exists.
 String? mixTypeFor(String typeName) => _metadataFor(typeName)?.mixType;
+
+/// The styler mixins that own fluent methods for [typeName].
+List<String> ownerMixinsFor(String typeName) =>
+    _metadataFor(typeName)?.ownerMixins ?? const [];
 
 /// The Mix element type for a Flutter list element type.
 String? listElementMixTypeFor(String typeName) =>

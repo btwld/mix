@@ -113,5 +113,39 @@ void main() {
         expect(alias.setterName, isNull);
       });
     });
+
+    group('ownerMixinsFor', () {
+      test('returns SpacingStyleMixin for EdgeInsetsGeometry', () {
+        expect(ownerMixinsFor('EdgeInsetsGeometry'), ['SpacingStyleMixin']);
+      });
+
+      test('returns ConstraintStyleMixin for BoxConstraints', () {
+        expect(ownerMixinsFor('BoxConstraints'), ['ConstraintStyleMixin']);
+      });
+
+      test('returns Decoration mixin fan-out for Decoration', () {
+        expect(
+          ownerMixinsFor('Decoration'),
+          containsAll([
+            'DecorationStyleMixin',
+            'BorderStyleMixin',
+            'BorderRadiusStyleMixin',
+            'ShadowStyleMixin',
+          ]),
+        );
+      });
+
+      test('returns TransformStyleMixin for Matrix4', () {
+        expect(ownerMixinsFor('Matrix4'), ['TransformStyleMixin']);
+      });
+
+      test('returns empty for Clip', () {
+        expect(ownerMixinsFor('Clip'), isEmpty);
+      });
+
+      test('returns empty for unknown type', () {
+        expect(ownerMixinsFor('NoSuchType'), isEmpty);
+      });
+    });
   });
 }
