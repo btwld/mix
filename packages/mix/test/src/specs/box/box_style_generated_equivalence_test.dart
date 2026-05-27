@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
-import '../../../fixtures/box_spec_for_spike.dart';
+import '../../../fixtures/box_spec_for_spike.styler.g.dart';
 
 void main() {
   group('BoxStyler vs BoxSpecForSpikeStyler equivalence', () {
