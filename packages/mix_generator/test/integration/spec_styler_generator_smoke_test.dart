@@ -450,7 +450,9 @@ void main() {
         builder: _specStylerLibraryBuilder(),
         sources: {
           ...mixAnnotationsSources,
-          'mix|lib/mix.dart': "export 'spike.dart';",
+          'flutter|lib/foundation.dart': '',
+          'flutter|lib/widgets.dart': '',
+          'mix|lib/mix.dart': '',
           'mix|lib/spike.dart': input,
         },
         inputAsset: 'mix|lib/spike.dart',
@@ -485,6 +487,7 @@ void main() {
               allOf(
                 contains('// GENERATED CODE - DO NOT MODIFY BY HAND'),
                 contains("import 'package:mix/mix.dart';"),
+                contains("import 'spike.dart';"),
                 isNot(contains('part of')),
                 contains(
                   'class TinyStyler extends MixStyler<TinyStyler, TinySpec>',

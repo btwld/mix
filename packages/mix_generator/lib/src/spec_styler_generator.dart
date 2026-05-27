@@ -29,13 +29,23 @@ class SpecStylerGenerator extends GeneratorForAnnotation<MixableSpec> {
       specName: specName,
       annotation: annotation,
     ).build();
+    final sourceImport = _sourceImportFor(buildStep);
 
     return '''
-// GENERATED CODE - DO NOT MODIFY BY HAND
-
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
+
+import '$sourceImport';
 
 $body
 ''';
   }
+}
+
+String _sourceImportFor(BuildStep buildStep) {
+  final path = buildStep.inputId.path;
+  final lastSlash = path.lastIndexOf('/');
+
+  return lastSlash == -1 ? path : path.substring(lastSlash + 1);
 }
