@@ -31,10 +31,13 @@ and tightens public API around the internal token registry.
   type — it now throws `UnsupportedError` naming the token and `T`. All
   concrete `MixToken` subclasses override `call()` and never hit this path;
   the change only affects custom `MixToken` authors who relied on the cast.
-- **Deprecations:** `clearTokenRegistry`, `getTokenFromValue`, and the
-  public `DoubleRef` constructor are deprecated and will move out of the
-  public API in the next major release. Use `Prop.token(token)` for an
-  explicit, type-safe token handle.
+- **Removed from the public API:** `clearTokenRegistry` and
+  `getTokenFromValue` are no longer re-exported from `package:mix/mix.dart`
+  (both are now `@internal`; tests reach them via `package:mix/src/...`).
+  The public `DoubleRef(double)` constructor was removed — `DoubleRef`
+  instances are only ever obtained through `MixToken<double>.call()`.
+  For an explicit, type-safe handle to a double token, use
+  `Prop.token(token)`.
 - **`isAnyTokenRef`** drops the brittle `runtimeType.toString().endsWith(...)`
   check; a `Prop` carrying a `TokenSource` is now the sole class-based
   invariant.

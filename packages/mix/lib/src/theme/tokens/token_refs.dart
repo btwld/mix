@@ -2,6 +2,7 @@
 // ABOUTME: Contains refs, extension types and utilities specifically for design tokens.
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../core/breakpoint.dart';
@@ -204,24 +205,20 @@ final Map<MixToken, double> _doubleSentinelByToken = <MixToken, double>{};
 /// between two distinct tokens whose hashes happen to coincide.
 const int _kSentinelProbeLimit = 1000;
 
-/// Clears the token registry.
+/// Clears the [DoubleRef] sentinel registry. Internal test helper.
+@internal
 @visibleForTesting
-@Deprecated(
-  'Internal test helper — the DoubleRef registry will move out of the '
-  'public API in the next major release.',
-)
 void clearTokenRegistry() {
   _doubleTokenRegistry.clear();
   _doubleSentinelByToken.clear();
 }
 
-/// Returns the token associated with a token reference value.
+/// Returns the token associated with a registered [DoubleRef] sentinel, or
+/// `null` if [value] is not a registered sentinel.
 ///
-/// Returns null if the value is not a registered token reference.
-@Deprecated(
-  'Internal — the DoubleRef registry will move out of the public API in '
-  'the next major release. Use Prop.token(token) for explicit token props.',
-)
+/// Internal — used by [Prop.value] to detect token refs. External callers
+/// should use [Prop.token] to construct an explicit token-backed prop.
+@internal
 MixToken<T>? getTokenFromValue<T>(Object value) {
   return _doubleTokenRegistry[value] as MixToken<T>?;
 }
@@ -231,23 +228,11 @@ MixToken<T>? getTokenFromValue<T>(Object value) {
 /// `DoubleRef` is a sentinel-backed ergonomic shim: it lets a [MixToken<double>]
 /// flow through APIs that accept a plain `double` and still be detected as a
 /// token during [Prop.value] construction. Because extension types are erased
-/// at runtime, the only durable identity is the entry in
-/// [_doubleTokenRegistry] — direct construction (`DoubleRef(42.0)`) never
-/// registers and will not be recognised as a token. For guaranteed safety,
-/// prefer `Prop.token(token)`.
+/// at runtime, the only durable identity is the entry in the sentinel
+/// registry, so the representation constructor is private — instances are
+/// only ever obtained through [DoubleRef.token]. For an explicit, type-safe
+/// token handle, use `Prop.token(token)` instead.
 extension type const DoubleRef._(double _value) implements double {
-  /// Direct construction is not supported as part of the public API.
-  ///
-  /// Use a [MixToken<double>] (e.g. `SpaceToken`, `DoubleToken`) and call it
-  /// to obtain a registered ref. Constructing a `DoubleRef` from an arbitrary
-  /// `double` cannot be detected as a token at runtime because extension
-  /// types are erased.
-  @Deprecated(
-    'Use a MixToken<double> (SpaceToken/DoubleToken) and call it. The '
-    'public DoubleRef constructor will be removed in the next major.',
-  )
-  const DoubleRef(double value) : this._(value);
-
   /// Creates a token reference and registers it in the global registry.
   ///
   /// Re-issues the same sentinel for the same token. If two distinct tokens

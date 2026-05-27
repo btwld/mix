@@ -285,11 +285,10 @@ void main() {
           expect(getTokenFromValue<double>(ref)?.name, equals('registry-test'));
         });
 
-        test('throws when token not found in registry', () {
-          // Create a DoubleRef manually without registering it
-          final manualRef = DoubleRef(42.0);
-
-          expect(getTokenFromValue<double>(manualRef), isNull);
+        test('returns null for an arbitrary double that is not a sentinel', () {
+          // 42.0 was never returned by DoubleRef.token, so it must not be
+          // mistakenly identified as a registered token sentinel.
+          expect(getTokenFromValue<double>(42.0), isNull);
         });
 
         test('re-issues the same sentinel for the same token instance', () {
@@ -380,11 +379,11 @@ void main() {
         }
       });
 
-      test('does not detect manually created refs', () {
-        // Create refs manually without using .token() method
-        final manualDoubleRef = DoubleRef(42.0);
-
-        expect(isAnyTokenRef(manualDoubleRef), isFalse);
+      test('does not detect arbitrary double values as token refs', () {
+        // Any plain double that was never returned by DoubleRef.token must
+        // not be misclassified as a token ref.
+        expect(isAnyTokenRef(42.0), isFalse);
+        expect(isAnyTokenRef(-0.0000001), isFalse);
       });
 
       test('detects any Prop carrying a TokenSource', () {
@@ -413,17 +412,12 @@ void main() {
         expect(getTokenFromValue(doubleRef), equals(doubleToken));
       });
 
-      test('returns null for manually created refs', () {
-        // Create refs manually without using .token() method
-        final manualDoubleRef = DoubleRef(42.0);
-
-        expect(getTokenFromValue(manualDoubleRef), isNull);
-      });
-
-      test('handles edge cases', () {
+      test('returns null for arbitrary values that are not sentinels', () {
+        // Plain doubles, ints, strings — anything that wasn't issued by
+        // DoubleRef.token must round-trip to null.
+        expect(getTokenFromValue(42.0), isNull);
         expect(getTokenFromValue(42), isNull);
         expect(getTokenFromValue('string'), isNull);
-        // Note: getTokenFromValue doesn't accept null, so we skip that test
       });
     });
 

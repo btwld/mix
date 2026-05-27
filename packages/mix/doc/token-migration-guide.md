@@ -310,7 +310,7 @@ final textStyle = TextStyler().style(headingStyle.mix());
 ```dart
 // Token call() method returns refs for styling
 final colorRef = primaryColor(); // Returns ColorRef
-final spaceRef = largeSpace();   // Returns SpaceRef
+final spaceRef = largeSpace();   // Returns DoubleRef (as a double)
 final textStyleMixRef = headingStyle.mix(); // Returns TextStyleMixRef
 final flutterTextStyleRef = headingStyle(); // Returns TextStyleRef
 
