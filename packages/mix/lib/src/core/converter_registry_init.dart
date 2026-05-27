@@ -7,6 +7,7 @@ import '../properties/painting/border_radius_mix.dart';
 import '../properties/painting/decoration_mix.dart';
 import '../properties/painting/gradient_mix.dart';
 import '../properties/painting/shadow_mix.dart';
+import '../properties/painting/shape_border_mix.dart';
 import '../properties/typography/strut_style_mix.dart';
 import '../properties/typography/text_height_behavior_mix.dart';
 import '../properties/typography/text_style_mix.dart';
@@ -179,18 +180,17 @@ class BorderRadiusGeometryConverter
 
 /// Converts [ShapeBorder] to its corresponding Mix type.
 ///
-/// Currently throws [UnimplementedError] for all types as
-/// ShapeBorder has many subtypes that need specific handling.
+/// Supports all built-in [ShapeBorder] subtypes: [RoundedRectangleBorder],
+/// [BeveledRectangleBorder], [ContinuousRectangleBorder], [CircleBorder],
+/// [StarBorder], [LinearBorder], [StadiumBorder], and
+/// [RoundedSuperellipseBorder]. Unsupported subtypes will throw
+/// [ArgumentError].
 class ShapeBorderConverter implements MixConverter<ShapeBorder> {
   const ShapeBorderConverter();
 
   @override
   Mix<ShapeBorder> toMix(ShapeBorder value, ConversionContext context) {
-    // ShapeBorder is complex with many subtypes (RoundedRectangleBorder, CircleBorder, etc.)
-    // For now, we'll need to handle specific types or throw
-    throw UnimplementedError(
-      'ShapeBorder converter needs implementation for ${value.runtimeType}',
-    );
+    return ShapeBorderMix.value(value);
   }
 }
 
@@ -339,9 +339,7 @@ void initializeMixConverters() {
   registry.register<BorderRadiusGeometry>(
     const BorderRadiusGeometryConverter(),
   );
-  // TODO: ShapeBorder converter needs implementation for specific subtypes
-  // Disabled until implemented - currently always throws UnimplementedError
-  // registry.register<ShapeBorder>(const ShapeBorderConverter());
+  registry.register<ShapeBorder>(const ShapeBorderConverter());
   registry.register<Gradient>(const GradientConverter());
   registry.register<LinearGradient>(const LinearGradientConverter());
   registry.register<RadialGradient>(const RadialGradientConverter());
