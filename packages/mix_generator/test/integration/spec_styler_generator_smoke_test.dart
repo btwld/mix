@@ -95,5 +95,38 @@ void main() {
         },
       );
     });
+
+    test('emits .create() const constructor and default constructor', () async {
+      const input = '''
+        library spike;
+        import 'package:mix_annotations/mix_annotations.dart';
+
+        part 'spike.spec_styler.g.part';
+
+        class EdgeInsetsGeometry {}
+
+        @MixableSpec()
+        final class TrivialSpec {
+          final EdgeInsetsGeometry? padding;
+          const TrivialSpec({this.padding});
+        }
+      ''';
+
+      await testBuilder(
+        PartBuilder([const SpecStylerGenerator()], '.spec_styler.g.part'),
+        {...mixAnnotationsSources, 'mix|lib/spike.dart': input},
+        outputs: {
+          'mix|lib/spike.spec_styler.g.part': decodedMatches(
+            allOf(
+              contains('const TrivialStyler.create('),
+              contains('Prop<EdgeInsetsGeometry>? padding'),
+              contains('TrivialStyler({'),
+              contains('EdgeInsetsGeometryMix? padding'),
+              contains('Prop.maybeMix(padding)'),
+            ),
+          ),
+        },
+      );
+    });
   });
 }
