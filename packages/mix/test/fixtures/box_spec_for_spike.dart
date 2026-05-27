@@ -1,6 +1,5 @@
 // ignore_for_file: annotate_overrides
 
-import 'package:flutter/painting.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';

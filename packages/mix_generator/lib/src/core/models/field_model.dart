@@ -5,9 +5,46 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 
 import '../curated/type_metadata.dart';
+import '../errors.dart';
 import 'type_helpers.dart';
 
 export '../curated/type_metadata.dart' show DiagnosticKind;
+
+/// Derives the canonical Styler name for [specName].
+///
+/// Strips a trailing `Spec` (e.g. `BoxSpec` -> `BoxStyler`) and falls back to
+/// appending `Styler` when the spec name does not end in `Spec`.
+String deriveStylerName(String specName) {
+  if (specName.endsWith('Spec')) {
+    return '${specName.substring(0, specName.length - 4)}Styler';
+  }
+
+  return '${specName}Styler';
+}
+
+/// Extracts [FieldModel]s from the unnamed constructor of [classElement].
+///
+/// Returns an empty list when the class has no unnamed constructor. Fails via
+/// [fail] when a named parameter is missing a matching field declaration.
+List<FieldModel> extractSpecFields(ClassElement classElement, String specName) {
+  final constructor = classElement.unnamedConstructor;
+  if (constructor == null) return [];
+
+  final stylerName = deriveStylerName(specName);
+  final namedParams = constructor.formalParameters
+      .where((p) => p.isNamed)
+      .toList();
+
+  return namedParams.map((p) {
+    final paramName = p.name!;
+    final field = classElement.getField(paramName);
+    if (field == null) {
+      fail(classElement, 'Field $paramName not found in $specName');
+    }
+
+    return FieldModel.fromElement(field, stylerName: stylerName);
+  }).toList();
+}
 
 /// A Spec field with derived type, interpolation, and diagnostic metadata.
 class FieldModel {

@@ -152,14 +152,23 @@ class BoxSpecForSpikeStyler
         BorderRadiusStyleMixin<BoxSpecForSpikeStyler>,
         ShadowStyleMixin<BoxSpecForSpikeStyler>,
         _$BoxSpecForSpikeStylerMixin {
+  @override
   final Prop<AlignmentGeometry>? $alignment;
+  @override
   final Prop<EdgeInsetsGeometry>? $padding;
+  @override
   final Prop<EdgeInsetsGeometry>? $margin;
+  @override
   final Prop<BoxConstraints>? $constraints;
+  @override
   final Prop<Decoration>? $decoration;
+  @override
   final Prop<Decoration>? $foregroundDecoration;
+  @override
   final Prop<Matrix4>? $transform;
+  @override
   final Prop<AlignmentGeometry>? $transformAlignment;
+  @override
   final Prop<Clip>? $clipBehavior;
 
   const BoxSpecForSpikeStyler.create({

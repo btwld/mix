@@ -1,14 +1,13 @@
 library;
 
 import 'package:analyzer/dart/element/element.dart';
-import 'package:build/build.dart';
 import 'package:source_gen/source_gen.dart';
 
 import '../checkers.dart';
-import '../models/annotation_config.dart';
 import '../curated/type_metadata.dart';
 import '../errors.dart';
 import '../helpers/mixin_method_collector.dart';
+import '../models/annotation_config.dart';
 import '../models/field_model.dart';
 import '../models/styler_field_model.dart';
 import 'styler_mixin_builder.dart';
@@ -17,55 +16,31 @@ class SpecStylerClassBuilder {
   final ClassElement specElement;
   final String specName;
   final ConstantReader annotation;
-  final BuildStep buildStep;
 
   const SpecStylerClassBuilder({
     required this.specElement,
     required this.specName,
     required this.annotation,
-    required this.buildStep,
   });
 
-  String get stylerName => specName.endsWith('Spec')
-      ? '${specName.substring(0, specName.length - 4)}Styler'
-      : '${specName}Styler';
+  String get stylerName => deriveStylerName(specName);
 
-  List<FieldModel> _extractFields() {
-    final constructor = specElement.unnamedConstructor;
-    if (constructor == null) return [];
-
-    final namedParams = constructor.formalParameters
-        .where((p) => p.isNamed)
-        .toList();
-
-    return namedParams.map((p) {
-      final paramName = p.name!;
-      final field = specElement.getField(paramName);
-      if (field == null) {
-        fail(specElement, 'Field $paramName not found in $specName');
-      }
-
-      return FieldModel.fromElement(field, stylerName: stylerName);
-    }).toList();
-  }
+  String get _stylerMixinName => '_\$${stylerName}Mixin';
 
   String build() {
-    final fields = _extractFields();
+    final fields = extractSpecFields(specElement, specName);
     final mixins = _collectOwnerMixins(fields);
-    final stylerMixinName = '_\$${stylerName}Mixin';
-    final allMixins = [...mixins, stylerMixinName];
-    final mixinClause = mixins.isEmpty
-        ? ' with $stylerMixinName'
-        : ' with ${[
-            ...mixins.map((m) => '$m<$stylerName>'),
-            stylerMixinName,
-          ].join(', ')}';
+    final mixinClause = ' with ${[
+      ...mixins.map((m) => '$m<$stylerName>'),
+      _stylerMixinName,
+    ].join(', ')}';
     final buffer = StringBuffer();
     buffer.writeln(
       'class $stylerName extends MixStyler<$stylerName, $specName>$mixinClause {',
     );
 
     for (final field in fields) {
+      buffer.writeln('  @override');
       buffer.writeln('  final Prop<${field.typeName}>? \$${field.name};');
     }
     buffer.writeln();
@@ -109,8 +84,7 @@ class SpecStylerClassBuilder {
     buffer.writeln();
 
     for (final mixinName in mixins) {
-      final mixinElement = _resolveMixinElement(mixinName);
-      if (mixinElement == null) continue;
+      final mixinElement = _requireMixinElement(mixinName);
 
       for (final method in MixinMethodCollector.collect(mixinElement)) {
         buffer.writeln(
@@ -133,9 +107,7 @@ class SpecStylerClassBuilder {
       );
       buffer.writeln('      $stylerName().${field.name}(value);');
     }
-    if (allMixins.isNotEmpty || fields.any((f) => !_isOwnedByMixin(f))) {
-      buffer.writeln();
-    }
+    buffer.writeln();
 
     buffer.writeln('}');
     buffer.writeln();
@@ -150,31 +122,41 @@ class SpecStylerClassBuilder {
   String _propFactory(FieldModel field) =>
       mixTypeFor(field.typeName) == null ? 'Prop.maybe' : 'Prop.maybeMix';
 
+  /// Returns the owner-mixin names contributed by [field], or `null` when the
+  /// field explicitly opts out via `@MixableField(skipMixin: true)`.
+  ///
+  /// A `mixin: X` override resolves to a single-element list; otherwise the
+  /// curated mapping from [ownerMixinsFor] is used.
+  List<String>? _ownerMixinsForField(FieldModel field) {
+    final reader = _mixableFieldReader(field.name);
+    if (reader?.peek('skipMixin')?.boolValue ?? false) return null;
+
+    final overrideName = reader?.peek('mixin')?.typeValue.element?.name;
+    if (overrideName != null) return [overrideName];
+
+    return ownerMixinsFor(field.typeName);
+  }
+
   Set<String> _collectOwnerMixins(List<FieldModel> fields) {
     final mixins = <String>{};
 
     for (final field in fields) {
-      final reader = _mixableFieldReader(field.name);
-      if (reader?.peek('skipMixin')?.boolValue ?? false) continue;
-
-      final overrideType = reader?.peek('mixin')?.typeValue;
-      final overrideName = overrideType?.element?.name;
-      if (overrideName != null) {
-        mixins.add(overrideName);
-        continue;
-      }
-
-      mixins.addAll(ownerMixinsFor(field.typeName));
+      mixins.addAll(_ownerMixinsForField(field) ?? const []);
     }
 
     final extra = annotation.peek('extraStylerMixins')?.listValue ?? const [];
     for (final object in extra) {
-      final type = object.toTypeValue();
-      final name = type?.element?.name;
+      final name = object.toTypeValue()?.element?.name;
       if (name != null) mixins.add(name);
     }
 
     return mixins;
+  }
+
+  bool _isOwnedByMixin(FieldModel field) {
+    final owners = _ownerMixinsForField(field);
+
+    return owners != null && owners.isNotEmpty;
   }
 
   ConstantReader? _mixableFieldReader(String fieldName) {
@@ -185,15 +167,12 @@ class SpecStylerClassBuilder {
     return annotation == null ? null : ConstantReader(annotation);
   }
 
-  bool _isOwnedByMixin(FieldModel field) {
-    final reader = _mixableFieldReader(field.name);
-    if (reader?.peek('skipMixin')?.boolValue ?? false) return false;
-    if (reader?.peek('mixin')?.typeValue.element != null) return true;
-
-    return ownerMixinsFor(field.typeName).isNotEmpty;
-  }
-
-  InterfaceElement? _resolveMixinElement(String mixinName) {
+  /// Resolves [mixinName] from the spec's own library or any of its imports.
+  ///
+  /// Throws [InvalidGenerationSource] anchored to the spec class when the
+  /// mixin can't be found — silent skips were hiding the spec author missing
+  /// an import for a mixin that the registry or annotation requires.
+  InterfaceElement _requireMixinElement(String mixinName) {
     final localMixin = specElement.library.getMixin(mixinName);
     if (localMixin != null) return localMixin;
 
@@ -208,7 +187,16 @@ class SpecStylerClassBuilder {
       if (element is InterfaceElement) return element;
     }
 
-    return null;
+    fail(
+      specElement,
+      'SpecStylerGenerator could not resolve mixin `$mixinName` from '
+      '`$specName`. Import the library that exports `$mixinName` into the '
+      'spec library, or remove it from `extraStylerMixins` / the curated '
+      'ownerMixins registry.',
+      todo:
+          'Add `import \'package:.../$mixinName-providing-library.dart\';` '
+          'to ${specElement.library.uri.toString()}.',
+    );
   }
 
   String _parameterList(List<FormalParameterElement> parameters) {

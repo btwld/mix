@@ -22,18 +22,19 @@ class CollectedMethod {
 class MixinMethodCollector {
   /// Returns concrete public methods declared on [mixinElement].
   static List<CollectedMethod> collect(InterfaceElement mixinElement) {
-    return mixinElement.methods
-        .where((m) => !m.isAbstract)
-        .where((m) => !(m.name?.startsWith('_') ?? true))
-        .where((m) => !m.isOperator)
-        .map(
-          (m) => CollectedMethod(
-            name: m.name!,
-            parameters: m.formalParameters,
-            returnTypeDisplay: m.returnType.getDisplayString(),
-          ),
-        )
-        .toList()
-      ..sort((a, b) => a.name.compareTo(b.name));
+    return mixinElement.methods.where(_isConcretePublicMethod).map((m) {
+      return CollectedMethod(
+        name: m.name!,
+        parameters: m.formalParameters,
+        returnTypeDisplay: m.returnType.getDisplayString(),
+      );
+    }).toList()..sort((a, b) => a.name.compareTo(b.name));
+  }
+
+  static bool _isConcretePublicMethod(MethodElement method) {
+    if (method.isAbstract || method.isOperator) return false;
+    final name = method.name;
+
+    return name != null && !name.startsWith('_');
   }
 }
