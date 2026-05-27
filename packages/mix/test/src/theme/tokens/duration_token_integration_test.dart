@@ -46,13 +46,13 @@ void main() {
       // DurationRef should throw error when trying to access properties directly
       expect(
         () => durationRef.inMilliseconds,
-        throwsA(isA<UnimplementedError>()),
+        throwsA(isA<UnsupportedError>()),
         reason: 'DurationRef should prevent direct property access',
       );
 
       expect(
         () => durationRef.inSeconds,
-        throwsA(isA<UnimplementedError>()),
+        throwsA(isA<UnsupportedError>()),
         reason: 'DurationRef should prevent direct property access',
       );
     });

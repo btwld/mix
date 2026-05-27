@@ -36,7 +36,7 @@ To use as an actual $typeName value:
 
   @override
   Never noSuchMethod(Invocation invocation) {
-    throw UnimplementedError(_buildTokenReferenceError(invocation.memberName));
+    throw UnsupportedError(_buildTokenReferenceError(invocation.memberName));
   }
 }
 
@@ -237,18 +237,13 @@ final class BoxShadowListRef extends Prop<List<BoxShadow>>
 
 /// Returns true if the value is a token reference.
 ///
-/// Detects both class-based token references (Prop with ValueRef)
-/// and extension type token references.
-bool isAnyTokenRef(Object value) {
-  // Check for class-based token references
-  if (value is Prop && value.sources.any((s) => s is TokenSource)) {
-    final typeName = value.runtimeType.toString();
-    if (typeName.endsWith('Ref') || typeName.endsWith('Prop')) {
-      return true;
-    }
-  }
+/// Detects both class-based token references (any [Prop] carrying a
+/// [TokenSource]) and extension type token references registered via
+/// [DoubleRef.token].
+bool isAnyTokenRef(Object? value) {
+  if (value == null) return false;
+  if (value is Prop) return value.hasToken;
 
-  // Check for extension type token references
   return _tokenRegistry.containsKey(value);
 }
 

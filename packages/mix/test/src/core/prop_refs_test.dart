@@ -60,7 +60,7 @@ void main() {
         expect(
           () => (ref as dynamic).alpha,
           throwsA(
-            isA<UnimplementedError>().having(
+            isA<UnsupportedError>().having(
               (e) => e.message,
               'message',
               contains('Cannot access'),
@@ -220,16 +220,16 @@ void main() {
 
         expect(
           () => (ref as dynamic).alpha,
-          throwsA(isA<UnimplementedError>()),
+          throwsA(isA<UnsupportedError>()),
         );
-        expect(() => (ref as dynamic).red, throwsA(isA<UnimplementedError>()));
+        expect(() => (ref as dynamic).red, throwsA(isA<UnsupportedError>()));
         expect(
           () => (ref as dynamic).opacity,
-          throwsA(isA<UnimplementedError>()),
+          throwsA(isA<UnsupportedError>()),
         );
         expect(
           () => (ref as dynamic).value,
-          throwsA(isA<UnimplementedError>()),
+          throwsA(isA<UnsupportedError>()),
         );
       });
     });
@@ -356,6 +356,16 @@ void main() {
         final manualDoubleRef = DoubleRef(42.0);
 
         expect(isAnyTokenRef(manualDoubleRef), isFalse);
+      });
+
+      test('detects any Prop carrying a TokenSource', () {
+        final token = TestToken<int>('plain-prop-token');
+
+        expect(isAnyTokenRef(Prop.token(token)), isTrue);
+      });
+
+      test('does not detect a plain Prop.value', () {
+        expect(isAnyTokenRef(Prop.value(42)), isFalse);
       });
     });
 

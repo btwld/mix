@@ -52,13 +52,13 @@ void main() {
         // TextStyleRef should throw error when trying to access properties directly
         expect(
           () => textStyleRef.fontSize,
-          throwsA(isA<UnimplementedError>()),
+          throwsA(isA<UnsupportedError>()),
           reason: 'TextStyleRef should prevent direct property access',
         );
 
         expect(
           () => textStyleRef.color,
-          throwsA(isA<UnimplementedError>()),
+          throwsA(isA<UnsupportedError>()),
           reason: 'TextStyleRef should prevent direct property access',
         );
       });
@@ -189,17 +189,17 @@ void main() {
       });
 
       test(
-        'TextStyleMixRef throws UnimplementedError when accessing methods directly',
+        'TextStyleMixRef throws UnsupportedError when accessing methods directly',
         () {
           final token = TextStyleToken('test-style');
           final mixRef = TextStyleMixRef(Prop.token(token));
 
           expect(
             () => mixRef.color(Colors.red),
-            throwsA(isA<UnimplementedError>()),
+            throwsA(isA<UnsupportedError>()),
           );
 
-          expect(() => mixRef.fontSize(16), throwsA(isA<UnimplementedError>()));
+          expect(() => mixRef.fontSize(16), throwsA(isA<UnsupportedError>()));
         },
       );
 
@@ -346,10 +346,10 @@ void main() {
 
         expect(
           () => mixRef.color(Colors.red),
-          throwsA(isA<UnimplementedError>()),
+          throwsA(isA<UnsupportedError>()),
         );
 
-        expect(() => mixRef.fontSize(16), throwsA(isA<UnimplementedError>()));
+        expect(() => mixRef.fontSize(16), throwsA(isA<UnsupportedError>()));
       });
 
       test('error messages are helpful for token reference misuse', () {
@@ -358,9 +358,9 @@ void main() {
 
         try {
           mixRef.color(Colors.red);
-          fail('Expected UnimplementedError');
+          fail('Expected UnsupportedError');
         } catch (e) {
-          expect(e, isA<UnimplementedError>());
+          expect(e, isA<UnsupportedError>());
           expect(e.toString(), contains('TextStyle'));
           expect(e.toString(), contains('token reference'));
           expect(e.toString(), contains('context'));

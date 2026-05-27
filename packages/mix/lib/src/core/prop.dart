@@ -82,9 +82,9 @@ class Prop<V> {
   static Prop<V> value<V>(V value) {
     if (value is Prop<V>) return value;
 
-    // Handle extension type token references
-    if (isAnyTokenRef(value as Object)) {
-      final token = getTokenFromValue(value as Object) as MixToken<V>?;
+    // Detect token references without crashing when V is nullable and null.
+    if (value case final Object object when isAnyTokenRef(object)) {
+      final token = getTokenFromValue(object) as MixToken<V>?;
       if (token != null) {
         return Prop._(sources: [TokenSource(token)]);
       }
