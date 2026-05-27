@@ -192,32 +192,72 @@ final class BoxShadowListMixRef extends Prop<List<BoxShadow>>
 // EXTENSION TYPE TOKEN REFERENCES FOR PRIMITIVES
 // =============================================================================
 
-/// Global registry that maps extension type values to their source tokens.
-final Map<Object, MixToken> _tokenRegistry = <Object, MixToken>{};
+/// Maps sentinel values to their source [MixToken]. Sentinels are negative
+/// nano-doubles chosen to avoid colliding with ordinary user-supplied doubles.
+final Map<Object, MixToken> _doubleTokenRegistry = <Object, MixToken>{};
+
+/// Reverse lookup: stable token → sentinel mapping. Re-issues the same
+/// sentinel for the same token instead of creating a new one.
+final Map<MixToken, double> _doubleSentinelByToken = <MixToken, double>{};
+
+/// Maximum number of probe attempts when resolving a sentinel collision
+/// between two distinct tokens whose hashes happen to coincide.
+const int _kSentinelProbeLimit = 1000;
 
 /// Clears the token registry.
 @visibleForTesting
 void clearTokenRegistry() {
-  _tokenRegistry.clear();
+  _doubleTokenRegistry.clear();
+  _doubleSentinelByToken.clear();
 }
 
 /// Returns the token associated with a token reference value.
 ///
 /// Returns null if the value is not a registered token reference.
 MixToken<T>? getTokenFromValue<T>(Object value) {
-  return _tokenRegistry[value] as MixToken<T>?;
+  return _doubleTokenRegistry[value] as MixToken<T>?;
 }
 
 /// Token reference for [double] values that implements the double interface.
+///
+/// `DoubleRef` is a sentinel-backed ergonomic shim: it lets a [MixToken<double>]
+/// flow through APIs that accept a plain `double` and still be detected as a
+/// token during [Prop.value] construction. Because extension types are erased
+/// at runtime, the only durable identity is the entry in
+/// [_doubleTokenRegistry] — direct construction (`DoubleRef(42.0)`) never
+/// registers and will not be recognised as a token. For guaranteed safety,
+/// prefer `Prop.token(token)`.
 extension type const DoubleRef(double _value) implements double {
   /// Creates a token reference and registers it in the global registry.
+  ///
+  /// Re-issues the same sentinel for the same token. If two distinct tokens
+  /// produce the same hash bucket, probes nearby sentinels to avoid aliasing.
   static DoubleRef token(MixToken<double> token) {
-    // Generate unique negative nano-value to avoid collisions with real values
-    final hash = token.hashCode.abs() % 100000;
-    final ref = DoubleRef(-(0.000001 + hash * 0.000001));
-    _tokenRegistry[ref] = token;
+    final existing = _doubleSentinelByToken[token];
+    if (existing != null) return DoubleRef(existing);
 
-    return ref;
+    final base = token.hashCode.abs() % 100000;
+    for (var probe = 0; probe < _kSentinelProbeLimit; probe++) {
+      final candidate = -(0.000001 + (base + probe) * 0.000001);
+      final occupant = _doubleTokenRegistry[candidate];
+      if (occupant == null) {
+        _doubleTokenRegistry[candidate] = token;
+        _doubleSentinelByToken[token] = candidate;
+
+        return DoubleRef(candidate);
+      }
+      if (occupant == token) {
+        _doubleSentinelByToken[token] = candidate;
+
+        return DoubleRef(candidate);
+      }
+    }
+
+    throw StateError(
+      'DoubleRef registry exhausted while assigning a sentinel for '
+      'token "${token.name}". This indicates an unusually dense hash '
+      'collision; consider renaming one of the colliding tokens.',
+    );
   }
 }
 
@@ -244,7 +284,7 @@ bool isAnyTokenRef(Object? value) {
   if (value == null) return false;
   if (value is Prop) return value.hasToken;
 
-  return _tokenRegistry.containsKey(value);
+  return _doubleTokenRegistry.containsKey(value);
 }
 
 /// Creates the appropriate token reference for the given token.

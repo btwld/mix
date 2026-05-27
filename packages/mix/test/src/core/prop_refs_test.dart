@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/src/core/directive.dart';
 import 'package:mix/src/core/prop.dart';
+import 'package:mix/src/theme/tokens/mix_token.dart';
 import 'package:mix/src/theme/tokens/token_refs.dart';
 
 import '../../helpers/testing_utils.dart';
@@ -296,6 +297,38 @@ void main() {
 
           expect(getTokenFromValue<double>(manualRef), isNull);
         });
+
+        test('re-issues the same sentinel for the same token instance', () {
+          final token = TestToken<double>('idempotent-token');
+
+          final ref1 = DoubleRef.token(token);
+          final ref2 = DoubleRef.token(token);
+
+          expect(ref1, equals(ref2));
+          expect(getTokenFromValue<double>(ref1), same(token));
+          expect(getTokenFromValue<double>(ref2), same(token));
+        });
+
+        test('avoids aliasing when two tokens collide in the hash bucket', () {
+          // Manually construct two distinct tokens that share a sentinel
+          // bucket by manipulating their hashes.
+          final hostile = _CollidingToken('collider-a');
+          final friend = _CollidingToken('collider-b');
+
+          // Sanity check: both tokens hash to the same bucket modulo 100000.
+          expect(hostile.hashCode.abs() % 100000,
+              equals(friend.hashCode.abs() % 100000));
+
+          final hostileRef = DoubleRef.token(hostile);
+          final friendRef = DoubleRef.token(friend);
+
+          // Distinct sentinels — no aliasing.
+          expect(hostileRef, isNot(equals(friendRef)));
+
+          // Round-trip lookup returns the correct token.
+          expect(getTokenFromValue<double>(hostileRef), same(hostile));
+          expect(getTokenFromValue<double>(friendRef), same(friend));
+        });
       });
     });
 
@@ -442,4 +475,13 @@ void main() {
       });
     });
   });
+}
+
+/// A test token with a deliberately controlled hash so two distinct instances
+/// share a sentinel bucket — exercising the registry's collision handling.
+class _CollidingToken extends MixToken<double> {
+  const _CollidingToken(super.name);
+
+  @override
+  int get hashCode => 42; // forced collision across all instances
 }
