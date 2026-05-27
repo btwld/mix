@@ -7,10 +7,12 @@ import 'generator_flags.dart';
 class MixableSpec {
   final int methods;
   final int components;
+  final List<Type> extraStylerMixins;
 
   const MixableSpec({
     this.methods = GeneratedSpecMethods.all,
     this.components = GeneratedSpecComponents.all,
+    this.extraStylerMixins = const [],
   });
 }
 
