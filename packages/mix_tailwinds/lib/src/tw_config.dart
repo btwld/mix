@@ -143,8 +143,8 @@ class TwConfig {
     required Map<String, double> scales,
     required Map<String, double> rotations,
     required Map<String, double> blurs,
-    TwTextDefaults textDefaults = const TwTextDefaults.tailwindSans(),
-    TwGradientStrategy gradientStrategy = TwGradientStrategy.cssAngleRect,
+    this.textDefaults = const TwTextDefaults.tailwindSans(),
+    this.gradientStrategy = TwGradientStrategy.cssAngleRect,
   }) : space = Map.unmodifiable(space),
        radii = Map.unmodifiable(radii),
        borderWidths = Map.unmodifiable(borderWidths),
@@ -155,9 +155,7 @@ class TwConfig {
        delays = Map.unmodifiable(delays),
        scales = Map.unmodifiable(scales),
        rotations = Map.unmodifiable(rotations),
-       blurs = Map.unmodifiable(blurs),
-       textDefaults = textDefaults,
-       gradientStrategy = gradientStrategy;
+       blurs = Map.unmodifiable(blurs);
 
   final Map<String, double> space;
   final Map<String, double> radii;

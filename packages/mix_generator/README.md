@@ -28,10 +28,11 @@ dev_dependencies:
 
 ## What It Generates
 
-Two mixin annotations emit mixins with deliberately different shapes, chosen to match the type they're paired with:
+The generator emits several surfaces with deliberately different shapes, chosen to match the type they're paired with:
 
 - **`@MixableSpec`** emits a *rich* mixin (`mixin _$<Name> implements Spec<T>, Diagnosticable`) that fully completes the Spec contract on its own. Specs are immutable value types with no shared concrete behavior to inherit, so the generated mixin can be self-contained — user code only writes `with _$<Name>`.
 - **`@MixableSpec(target: Widget.new)`** also emits a full generated Styler class in a standalone `.styler.g.dart` library. The generated class owns fields, constructors, factories, fluent methods, `call()`, merge, resolve, diagnostics, and props.
+- **`@MixableStyler`** emits a legacy *slim* mixin (`mixin _$<Name>Mixin on Style<S>, Diagnosticable`) that fills in per-field plumbing for handwritten styler classes.
 - **`@Mixable`** emits a *slim* mixin (`mixin _$<Name>Mixin on Mix<T>[, DefaultValue<T>][, Diagnosticable]`) for the same reason — Mix subclasses commonly compose intermediate base classes (e.g., `class BoxConstraintsMix extends ConstraintsMix<BoxConstraints>`) and the user keeps that inheritance chain.
 
 If the asymmetry feels surprising, the rule is: rich/full shape for pure-data specs and their generated stylers; slim shape for types whose `extends` chain carries shared state or behavior.
@@ -76,6 +77,31 @@ final class BoxSpec with _$BoxSpec {
 ```
 
 **Legacy declaration shape.** Pre-2.0 generators emitted a slim `_$<Name>SpecMethods` mixin and required `class <Name> extends Spec<<Name>> with Diagnosticable, _$<Name>SpecMethods`. The generator now emits a `@Deprecated typedef _$<Name>SpecMethods = _$<Name>;` alongside every spec mixin so those legacy declarations keep compiling — you'll just see a deprecation warning. Migrate to `class <Name> with _$<Name>` to silence it; the alias is scheduled for removal in `mix_generator` 3.0. One observable change for legacy callers: `toString()` now routes through `Diagnosticable.toDiagnosticsNode`, replacing Equatable's `Name(field: …)` output with Flutter's diagnostic-node format.
+
+### From `@MixableStyler` — legacy Styler mixin
+
+Generates a `_$<Name>Mixin` for handwritten Styler classes with:
+
+- Setter methods for each `$`-prefixed field
+- `merge()` — combine styles
+- `resolve()` — resolve to the corresponding Spec
+- `debugFillProperties()` — diagnostics support
+- `props` — equality comparison
+
+```dart
+part 'box_styler.g.dart';
+
+@MixableStyler()
+class BoxStyler extends Style<BoxSpec>
+    with Diagnosticable, _$BoxStylerMixin {
+  final Prop<Color>? $color;
+  final Prop<double>? $width;
+  final Prop<double>? $height;
+  final Prop<AlignmentGeometry>? $alignment;
+
+  // ...
+}
+```
 
 ### From `@Mixable` — Mix mixin
 

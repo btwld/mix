@@ -1,4 +1,4 @@
-library mix_tailwinds;
+library;
 
 export 'src/tw_config.dart';
 export 'src/tw_parser.dart';
