@@ -43,6 +43,8 @@ class PressableBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final style = this.style;
+
     return Pressable(
       enabled: enabled,
       onPress: onPress,
@@ -51,7 +53,9 @@ class PressableBox extends StatelessWidget {
       onFocusChange: onFocusChange,
       autofocus: autofocus,
       focusNode: focusNode,
-      child: Box(style: style ?? const BoxStyler.create(), child: child),
+      child: style == null
+          ? Box(child: child)
+          : Box(style: style, child: child),
     );
   }
 }
