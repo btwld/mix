@@ -35,7 +35,7 @@ mixin _$BoxDecorationMixMixin
     );
   }
 
-  /// Resolves to [BoxDecoration] using context.
+  /// Resolves to [BoxDecoration] using [context].
   @override
   BoxDecoration resolve(BuildContext context) {
     return BoxDecoration(

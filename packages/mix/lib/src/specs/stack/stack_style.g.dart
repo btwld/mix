@@ -61,7 +61,7 @@ mixin _$StackStylerMixin on Style<StackSpec>, Diagnosticable {
     );
   }
 
-  /// Resolves to [StyleSpec<StackSpec>] using context.
+  /// Resolves to [StyleSpec<StackSpec>] using [context].
   @override
   StyleSpec<StackSpec> resolve(BuildContext context) {
     final spec = StackSpec(

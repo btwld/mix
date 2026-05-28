@@ -23,7 +23,7 @@ mixin _$StackMixMixin on Mix<StackSpec>, Diagnosticable {
     );
   }
 
-  /// Resolves to [StackSpec] using context.
+  /// Resolves to [StackSpec] using [context].
   @override
   StackSpec resolve(BuildContext context) {
     return StackSpec(

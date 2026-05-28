@@ -70,6 +70,46 @@ class MixableField {
   const MixableField({this.ignoreSetter = false, this.setterType});
 }
 
+/// Annotation that drives generation of a `StatelessWidget` wrapper for a
+/// `Style<S>` factory.
+///
+/// Apply to a top-level variable whose static type extends `Style<S>`, or to
+/// a top-level function whose return type extends `Style<S>`. The generated
+/// widget's constructor mirrors the factory's parameters plus the styler's
+/// `call()` method parameters, and its `build()` delegates to that styler's
+/// `call()`.
+///
+/// Example — variable-backed:
+/// ```dart
+/// @MixWidget()
+/// final cardStyle = BoxStyler().paddingAll(16).borderRounded(12);
+/// // Generates `class Card extends StatelessWidget { ... }`.
+/// ```
+///
+/// Example — function-backed with factory parameters:
+/// ```dart
+/// @MixWidget()
+/// BoxStyler badgeStyle({Color? color}) =>
+///     BoxStyler().color(color ?? const Color(0xFF006ADC));
+/// // Generates `class Badge extends StatelessWidget` whose constructor takes
+/// // `color` (factory param) plus `child` (from `BoxStyler.call`).
+/// ```
+///
+/// Requires the annotated element's name to be `lowerCamelCase` ending in
+/// `Style` (for example, `cardStyle`, `primaryButtonStyle`, or
+/// `_internalCardStyle`). The generator strips a trailing `Style` and
+/// uppercases the first character to derive the widget class name. Names that
+/// don't match this shape are rejected; use [name] to override entirely.
+class MixWidget {
+  /// Optional override for the generated widget's class name. When `null`,
+  /// the name is derived from the annotated element's name.
+  final String? name;
+
+  const MixWidget({this.name});
+}
+
+const mixWidget = MixWidget();
+
 /// Annotation for configuring generated mixin for Mix classes.
 ///
 /// [methods] specifies which methods to generate in the mixin.

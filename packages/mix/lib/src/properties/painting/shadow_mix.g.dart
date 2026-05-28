@@ -21,7 +21,7 @@ mixin _$ShadowMixMixin on Mix<Shadow>, DefaultValue<Shadow>, Diagnosticable {
     );
   }
 
-  /// Resolves to [Shadow] using context.
+  /// Resolves to [Shadow] using [context].
   @override
   Shadow resolve(BuildContext context) {
     return Shadow(
@@ -63,7 +63,7 @@ mixin _$BoxShadowMixMixin
     );
   }
 
-  /// Resolves to [BoxShadow] using context.
+  /// Resolves to [BoxShadow] using [context].
   @override
   BoxShadow resolve(BuildContext context) {
     return BoxShadow(

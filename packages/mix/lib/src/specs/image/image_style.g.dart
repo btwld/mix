@@ -144,7 +144,7 @@ mixin _$ImageStylerMixin on Style<ImageSpec>, Diagnosticable {
     );
   }
 
-  /// Resolves to [StyleSpec<ImageSpec>] using context.
+  /// Resolves to [StyleSpec<ImageSpec>] using [context].
   @override
   StyleSpec<ImageSpec> resolve(BuildContext context) {
     final spec = ImageSpec(

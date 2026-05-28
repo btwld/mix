@@ -217,7 +217,7 @@ void main() {
         );
         final code = builder.build();
 
-        // Backwards compat: pre-2.0 generator emitted `_$BoxSpecMethods`.
+        // Backward compatibility: pre-2.0 generator emitted `_$BoxSpecMethods`.
         // The typedef keeps legacy host shapes
         // (`class BoxSpec extends Spec<BoxSpec> with Diagnosticable, _$BoxSpecMethods`)
         // compiling against the rich mixin.
@@ -377,7 +377,8 @@ void main() {
           expectNoGeneratedProps(code);
           expectRequiredSpecEqualitySurface(code);
           expect(code, contains('Color? get color;'));
-          // copyWith + lerp still emit because skipEquals doesn't touch them.
+          // `copyWith` and `lerp` still emit because `skipEquals` doesn't
+          // touch them.
           expect(code, contains('BoxSpec copyWith('));
           expect(code, contains('BoxSpec lerp('));
         },

@@ -163,8 +163,10 @@ class SpecMixinBuilder {
   }
 
   /// Emits a deprecated typedef from the pre-2.0 mixin name to the
-  /// current rich mixin. The new mixin has no `on` constraint, so the
-  /// legacy host shape resolves cleanly through the alias.
+  /// current rich mixin.
+  ///
+  /// The new mixin has no `on` constraint, so the legacy host shape resolves
+  /// cleanly through the alias.
   ///
   /// `\$` escapes are required: the emitted message lives inside a Dart
   /// string literal in the `.g.dart` file, so a bare `$` would re-trigger

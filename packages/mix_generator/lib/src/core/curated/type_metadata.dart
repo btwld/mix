@@ -1,35 +1,34 @@
 /// Curated type metadata for the Mix generator.
 ///
-/// The generator uses this registry for three related decisions:
-/// - whether a Flutter type has a Mix counterpart;
-/// - how lerp/diagnostic code should treat a type;
-/// - curated diagnostic labels for generated `FlagProperty` instances.
+/// The generator uses this registry to find Mix counterparts, choose
+/// interpolation and diagnostic behavior, and label generated `FlagProperty`
+/// instances.
 library;
 
 /// Kind of diagnostic property to use.
 enum DiagnosticKind {
-  /// DiagnosticsProperty (default)
+  /// `DiagnosticsProperty`, the default diagnostic wrapper.
   diagnostics,
 
-  /// ColorProperty
+  /// `ColorProperty`.
   color,
 
-  /// DoubleProperty
+  /// `DoubleProperty`.
   doubleProperty,
 
-  /// IntProperty
+  /// `IntProperty`.
   intProperty,
 
-  /// StringProperty
+  /// `StringProperty`.
   stringProperty,
 
-  /// `EnumProperty<T>`
+  /// `EnumProperty<T>`.
   enumProperty,
 
-  /// FlagProperty (for bool with ifTrue)
+  /// `FlagProperty`, used for booleans with `ifTrue` labels.
   flagProperty,
 
-  /// `IterableProperty<T>`
+  /// `IterableProperty<T>`.
   iterableProperty,
 }
 
@@ -67,7 +66,7 @@ class TypeMetadata {
 
 /// Type metadata keyed by analyzer display name.
 const Map<String, TypeMetadata> typeMetadata = {
-  // Geometry
+  // Geometry types.
   'EdgeInsetsGeometry': TypeMetadata(
     category: .lerpable,
     mixType: 'EdgeInsetsGeometryMix',
@@ -79,7 +78,7 @@ const Map<String, TypeMetadata> typeMetadata = {
   'AlignmentGeometry': TypeMetadata(category: .lerpable),
   'Matrix4': TypeMetadata(category: .lerpable),
 
-  // Painting
+  // Painting types.
   'Decoration': TypeMetadata(category: .lerpable, mixType: 'DecorationMix'),
   'TextStyle': TypeMetadata(category: .lerpable, mixType: 'TextStyleMix'),
   'StrutStyle': TypeMetadata(category: .lerpable, mixType: 'StrutStyleMix'),
@@ -93,11 +92,11 @@ const Map<String, TypeMetadata> typeMetadata = {
   ),
   'BoxBorder': TypeMetadata(category: .lerpable, mixType: 'BoxBorderMix'),
 
-  // Shadows
+  // Shadow types.
   'Shadow': TypeMetadata(category: .lerpable, mixType: 'ShadowMix'),
   'BoxShadow': TypeMetadata(category: .lerpable, mixType: 'BoxShadowMix'),
 
-  // Primitives and common direct values
+  // Primitives and common direct values.
   'double': TypeMetadata(category: .lerpable),
   'int': TypeMetadata(category: .lerpable),
   'num': TypeMetadata(category: .lerpable),
@@ -155,13 +154,13 @@ const Map<String, TypeMetadata> typeMetadata = {
   'StackFit': TypeMetadata(category: .enumType),
 };
 
-/// Mix element type -> ListMix type mapping.
+/// Map from Mix element types to their generated list-mix types.
 const listMixTypeMap = {
   'ShadowMix': 'ShadowListMix',
   'BoxShadowMix': 'BoxShadowListMix',
 };
 
-/// Flutter element type -> Mix element type mapping for List fields.
+/// Map from Flutter list element types to Mix element types.
 const listElementMixTypeMap = {
   'Shadow': 'ShadowMix',
   'BoxShadow': 'BoxShadowMix',
@@ -184,7 +183,7 @@ class FieldAliasConfig {
   const FieldAliasConfig({this.diagnosticLabel, this.setterName});
 }
 
-/// Key format: `StylerName.fieldName`.
+/// Field aliases keyed by `StylerName.fieldName`.
 const fieldAliasMap = {
   'TextStyler.textDirectives': FieldAliasConfig(
     diagnosticLabel: 'directives',
@@ -204,23 +203,23 @@ const flagPropertyDescriptions = {
 
 TypeMetadata? _metadataFor(String typeName) => typeMetadata[typeName];
 
-/// Returns the Mix counterpart for [typeName], if one exists.
+/// The Mix counterpart for [typeName], if one exists.
 String? mixTypeFor(String typeName) => _metadataFor(typeName)?.mixType;
 
-/// Returns the Mix element type for a Flutter list element type.
+/// The Mix element type for a Flutter list element type.
 String? listElementMixTypeFor(String typeName) =>
     listElementMixTypeMap[typeName];
 
-/// Returns the ListMix type for a Mix element type.
+/// The list-mix type for a Mix element type.
 String? listMixTypeFor(String typeName) => listMixTypeMap[typeName];
 
-/// Returns the raw list element type for [fieldName], if curated.
+/// The raw list element type for [fieldName], if curated.
 String? rawListElementTypeFor(String fieldName) => rawListTypes[fieldName];
 
 /// Whether [fieldName] is emitted as a raw list instead of `Prop<>`.
 bool isRawListField(String fieldName) => rawListTypes.containsKey(fieldName);
 
-/// Returns the curated bool flag description for [fieldName], if one exists.
+/// The curated bool flag description for [fieldName], if one exists.
 String? flagDescriptionFor(String fieldName) =>
     flagPropertyDescriptions[fieldName];
 

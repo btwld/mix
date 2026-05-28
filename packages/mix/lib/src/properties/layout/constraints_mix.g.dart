@@ -24,7 +24,7 @@ mixin _$BoxConstraintsMixMixin
     );
   }
 
-  /// Resolves to [BoxConstraints] using context.
+  /// Resolves to [BoxConstraints] using [context].
   @override
   BoxConstraints resolve(BuildContext context) {
     return BoxConstraints(

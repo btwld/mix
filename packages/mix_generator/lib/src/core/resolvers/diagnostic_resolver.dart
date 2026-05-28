@@ -1,6 +1,6 @@
-/// Diagnostic resolver for determining DiagnosticsProperty type.
+/// Diagnostic property selection for Spec fields.
 ///
-/// Maps DartType → DiagnosticsProperty subclass.
+/// Maps a field model to the generated `DiagnosticsProperty` subclass.
 library;
 
 import '../models/field_model.dart';
@@ -13,7 +13,7 @@ String _generateFlagProperty(FieldModel field) {
     return "FlagProperty('$displayName', value: $name, ifTrue: '${field.flagDescription}')";
   }
 
-  // Fallback to DiagnosticsProperty if no flag description
+  // Fall back to `DiagnosticsProperty` when no flag description is curated.
   return "DiagnosticsProperty('$displayName', $name)";
 }
 

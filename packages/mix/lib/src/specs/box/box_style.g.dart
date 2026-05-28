@@ -92,7 +92,7 @@ mixin _$BoxStylerMixin on Style<BoxSpec>, Diagnosticable {
     );
   }
 
-  /// Resolves to [StyleSpec<BoxSpec>] using context.
+  /// Resolves to [StyleSpec<BoxSpec>] using [context].
   @override
   StyleSpec<BoxSpec> resolve(BuildContext context) {
     final spec = BoxSpec(

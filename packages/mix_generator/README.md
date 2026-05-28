@@ -3,7 +3,7 @@
 [![Pub Version](https://img.shields.io/pub/v/mix_generator?label=version&style=for-the-badge)](https://pub.dev/packages/mix_generator/changelog)
 [![MIT Licence](https://img.shields.io/github/license/leoafarias/mix?style=for-the-badge&longCache=true)](https://opensource.org/licenses/mit-license.php)
 
-Code generator for the [Mix](https://pub.dev/packages/mix) styling framework. Processes [mix_annotations](https://pub.dev/packages/mix_annotations) to generate boilerplate code for Spec, Styler, and Mix classes.
+Code generator for the [Mix](https://pub.dev/packages/mix) styling framework. Processes [mix_annotations](https://pub.dev/packages/mix_annotations) to generate boilerplate code for Spec, Styler, Mix, and widget-wrapper classes.
 
 ## Installation
 
@@ -28,13 +28,15 @@ dev_dependencies:
 
 ## What It Generates
 
-The three Mix annotations emit mixins with deliberately different shapes, chosen to match the type they're paired with:
+Three mixin annotations emit mixins with deliberately different shapes, chosen to match the type they're paired with:
 
 - **`@MixableSpec`** emits a *rich* mixin (`mixin _$<Name> implements Spec<T>, Diagnosticable`) that fully completes the Spec contract on its own. Specs are immutable value types with no shared concrete behavior to inherit, so the generated mixin can be self-contained — user code only writes `with _$<Name>`.
 - **`@MixableStyler`** emits a *slim* mixin (`mixin _$<Name>Mixin on Style<S>, Diagnosticable`) that only fills in the per-field plumbing (setters, `merge`, `resolve`, etc.). The user class still `extends MixStyler<TStyler, TSpec>` because `Style<S>` carries concrete state (`$variants`, `$modifier`, `$animation`) and helper mixins (variants/modifier/animation/widget-state) that don't make sense to duplicate per styler.
 - **`@Mixable`** emits a *slim* mixin (`mixin _$<Name>Mixin on Mix<T>[, DefaultValue<T>][, Diagnosticable]`) for the same reason — Mix subclasses commonly compose intermediate base classes (e.g., `class BoxConstraintsMix extends ConstraintsMix<BoxConstraints>`) and the user keeps that inheritance chain.
 
 If the asymmetry feels surprising, the rule is: rich shape for pure-data types that have nothing meaningful to inherit; slim shape for types whose `extends` chain carries shared state or behavior.
+
+A fourth annotation, **`@MixWidget`**, generates a full `StatelessWidget` class (not a mixin) that wraps a top-level `Style<S>` factory — see the [`@MixWidget`](#from-mixwidget--widget-wrapper) section below.
 
 ### From `@MixableSpec` — Spec mixin
 
@@ -124,14 +126,40 @@ final class BoxConstraintsMix extends ConstraintsMix<BoxConstraints>
 }
 ```
 
+### From `@MixWidget` — widget wrapper
+
+Generates a `StatelessWidget` wrapper around a top-level `Style<S>` variable or function. The wrapper's constructor mirrors the factory's parameters (for function-backed styles) plus the styler's `call()` parameters; `build()` invokes the factory and forwards the parameters through to the resulting widget.
+
+```dart
+part 'card.g.dart';
+
+@mixWidget
+final cardStyle = BoxStyler()
+    .color(Colors.white)
+    .borderRounded(8)
+    .paddingAll(16);
+
+// Generates:
+//   class Card extends StatelessWidget {
+//     const Card({super.key, this.child});
+//     final Widget? child;
+//     @override Widget build(BuildContext context) =>
+//         cardStyle.call(key: this.key, child: this.child);
+//   }
+```
+
+The widget name is derived from a lower-camel-case `*Style` identifier (`cardStyle` → `Card`); pass `@MixWidget(name: 'X')` to override. Function-backed factories thread their args before the styler `call()`: `@MixWidget Style<S> badge({Color? color}) => ...` generates a `Badge({this.color, this.child})` constructor.
+
+See [`mix_annotations`](https://pub.dev/packages/mix_annotations) for the full annotation contract (parameter rules, `Key? key` forwarding, naming/visibility constraints).
+
 ### Field-level control with `@MixableField`
 
 ```dart
-// Skip setter generation
+// Skip setter generation.
 @MixableField(ignoreSetter: true)
 final Prop<Matrix4>? $transform;
 
-// Override the setter parameter type
+// Override the setter parameter type.
 @MixableField(setterType: List<Shadow>)
 final Prop<List<Shadow>>? $shadows;
 ```

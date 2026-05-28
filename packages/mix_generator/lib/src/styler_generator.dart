@@ -1,6 +1,6 @@
-/// Styler generator for Styler mixin code generation.
+/// Generator for `@MixableStyler` classes.
 ///
-/// Generates _$XStylerMixin from @MixableStyler annotations.
+/// Emits `_$XStylerMixin` implementations from `@MixableStyler` annotations.
 library;
 
 import 'package:analyzer/dart/element/element.dart';
@@ -16,10 +16,7 @@ import 'core/helpers/type_hierarchy.dart';
 import 'core/models/annotation_config.dart';
 import 'core/models/styler_field_model.dart';
 
-/// Main generator for Mix Styler code.
-///
-/// Triggers on @MixableStyler annotations and generates:
-/// - _$XStylerMixin (Styler method implementations)
+/// Source-gen generator for Mix Styler code.
 class StylerGenerator extends GeneratorForAnnotation<MixableStyler> {
   const StylerGenerator();
 
@@ -52,17 +49,15 @@ class StylerGenerator extends GeneratorForAnnotation<MixableStyler> {
   }
 
   List<StylerFieldModel> _extractFields(ClassElement classElement) {
-    // ClassElement.name is String? in analyzer 10.x, but classes always have names
+    // `requireClassElement` guarantees a named class before this is called.
     final stylerName = classElement.name!;
 
-    // Get all fields that start with $
-    // FieldElement.name is String? but fields always have names
     final dollarFields = classElement.fields
         .where((f) => f.name!.startsWith(r'$'))
         .where((f) => !_isBaseField(f.name!))
         .toList();
 
-    // Sort by name for stable ordering
+    // Stable ordering keeps generated output deterministic.
     dollarFields.sort((a, b) => a.name!.compareTo(b.name!));
 
     return dollarFields.map((f) {
@@ -71,7 +66,7 @@ class StylerGenerator extends GeneratorForAnnotation<MixableStyler> {
   }
 
   bool _isBaseField(String name) {
-    // Base fields from Style<T>
+    // Base fields come from `Style<T>` and are handled separately.
     return const {r'$variants', r'$modifier', r'$animation'}.contains(name);
   }
 
@@ -89,18 +84,12 @@ class StylerGenerator extends GeneratorForAnnotation<MixableStyler> {
     ConstantReader annotation,
     BuildStep buildStep,
   ) {
-    // Validate element is a class
-    if (element is! ClassElement) {
-      fail(element, '@MixableStyler can only be applied to classes.');
-    }
+    final classElement = requireClassElement(element, '@MixableStyler');
+    final stylerName = requireName(
+      classElement,
+      orFailWith: '@MixableStyler class must have a name.',
+    );
 
-    final classElement = element;
-    final stylerName = classElement.name;
-    if (stylerName == null) {
-      fail(element, '@MixableStyler class must have a name.');
-    }
-
-    // Validate it's a Style class
     if (!_isStyleClass(classElement)) {
       fail(
         element,
@@ -111,22 +100,14 @@ class StylerGenerator extends GeneratorForAnnotation<MixableStyler> {
       );
     }
 
-    // Extract Spec name from Style<SpecName>
     final specName = _extractSpecName(classElement);
     if (specName == null) {
       fail(element, 'Could not determine Spec type from Style<T> supertype.');
     }
 
-    // Extract field models
     final fields = _extractFields(classElement);
-
-    // Extract annotation configuration
     final config = _extractAnnotationConfig(annotation);
-
-    // Build output
     final buffer = StringBuffer();
-
-    // Generate Styler mixin
     final stylerMixinBuilder = StylerMixinBuilder(
       stylerName: stylerName,
       specName: specName,

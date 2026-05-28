@@ -37,6 +37,18 @@ String? referenceFor(Element target, LibraryElement from) {
   return null;
 }
 
+/// Returns whether [name] is already visible without an import prefix from
+/// [from].
+bool hasUnprefixedVisibleName(String name, LibraryElement from) {
+  for (final fragment in from.fragments) {
+    if (fragment.scope.lookup(name).getter != null) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 /// Returns Dart code for [type] as it should be written from [visibleFrom].
 String typeCode(DartType type, {LibraryElement? visibleFrom}) {
   final alias = type.alias;

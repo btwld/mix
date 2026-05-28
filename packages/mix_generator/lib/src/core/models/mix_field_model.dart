@@ -1,18 +1,16 @@
-/// Field model for Mix fields.
-///
-/// Represents a Mix field with computed values for code generation.
+/// Computed metadata for `@Mixable` fields.
 library;
 
 import 'package:analyzer/dart/element/element.dart';
 
 import 'type_helpers.dart' as type_helpers;
 
-/// Represents a Mix field with computed values for generation.
+/// A Mix field with names and type code ready for generated output.
 class MixFieldModel {
-  /// The field name (without $ prefix).
+  /// The public field name, without the `$` prefix.
   final String name;
 
-  /// The field name as declared (with $ prefix).
+  /// The field name as declared, including the `$` prefix.
   final String declaredName;
 
   /// The Dart code for this field's type from the annotated library.
@@ -24,7 +22,7 @@ class MixFieldModel {
     required this.fieldTypeCode,
   });
 
-  /// Creates a MixFieldModel from a FieldElement.
+  /// Creates a [MixFieldModel] from an analyzer [FieldElement].
   factory MixFieldModel.fromElement(
     FieldElement element, {
     required LibraryElement visibleFrom,

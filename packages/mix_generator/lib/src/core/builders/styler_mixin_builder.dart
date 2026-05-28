@@ -1,14 +1,14 @@
-/// Styler mixin builder for generating _$XStylerMixin.
+/// Builder for generated `_$XStylerMixin` code.
 ///
-/// Generates abstract getters, setters, base methods (animate, variants,
-/// wrap), merge(), resolve(), debugFillProperties(), and props.
+/// Emits abstract getters, setters, base methods, `merge`, `resolve`,
+/// `debugFillProperties`, and `props` members.
 library;
 
 import '../models/annotation_config.dart';
 import '../helpers/field_emitter.dart';
 import '../models/styler_field_model.dart';
 
-/// Builds the _$XStylerMixin for a Styler class.
+/// Builds the `_$XStylerMixin` for a Styler class.
 class StylerMixinBuilder {
   final String stylerName;
   final String specName;
@@ -53,14 +53,12 @@ class StylerMixinBuilder {
   String _buildBaseMethods() {
     final buffer = StringBuffer();
 
-    // animate method
     buffer.writeln('  /// Sets the animation configuration.');
     buffer.writeln('  $stylerName animate(AnimationConfig value) {');
     buffer.writeln('    return merge($stylerName(animation: value));');
     buffer.writeln('  }');
     buffer.writeln();
 
-    // variants method
     buffer.writeln('  /// Sets the style variants.');
     buffer.writeln(
       '  $stylerName variants(List<VariantStyle<$specName>> value) {',
@@ -69,7 +67,6 @@ class StylerMixinBuilder {
     buffer.writeln('  }');
     buffer.writeln();
 
-    // wrap method
     buffer.writeln('  /// Wraps with a widget modifier.');
     buffer.writeln('  $stylerName wrap(WidgetModifierConfig value) {');
     buffer.writeln('    return merge($stylerName(modifier: value));');
@@ -91,15 +88,14 @@ class StylerMixinBuilder {
       final fieldName = field.declaredName;
       final name = field.name;
       if (field.isRawList) {
-        // Raw lists use MixOps.mergeList
+        // Raw list fields need list-aware merging.
         return '      $name: MixOps.mergeList($fieldName, other?.$fieldName),';
       }
 
-      // Regular fields use MixOps.merge
       return '      $name: MixOps.merge($fieldName, other?.$fieldName),';
     });
 
-    // Base fields
+    // Base fields come from `Style<T>` rather than per-styler fields.
     buffer.writeln(
       '      variants: MixOps.mergeVariants(\$variants, other?.\$variants),',
     );
@@ -119,7 +115,7 @@ class StylerMixinBuilder {
   String _buildResolve() {
     final buffer = StringBuffer();
 
-    buffer.writeln('  /// Resolves to [StyleSpec<$specName>] using context.');
+    buffer.writeln('  /// Resolves to [StyleSpec<$specName>] using [context].');
     buffer.writeln('  @override');
     buffer.writeln('  StyleSpec<$specName> resolve(BuildContext context) {');
     buffer.writeln('    final spec = $specName(');
@@ -128,11 +124,10 @@ class StylerMixinBuilder {
       final fieldName = field.declaredName;
       final name = field.name;
       if (field.isRawList) {
-        // Raw lists pass through directly
+        // Raw list fields are already concrete values.
         return '      $name: $fieldName,';
       }
 
-      // Regular fields use MixOps.resolve
       return '      $name: MixOps.resolve(context, $fieldName),';
     });
 
@@ -173,35 +168,28 @@ class StylerMixinBuilder {
 
     buffer.writeln('mixin $mixinName on Style<$specName>, Diagnosticable {');
 
-    // Generate abstract getters
     buffer.writeln(_buildAbstractGetters());
 
-    // Generate setters
     if (config.generateSetters) {
       buffer.writeln(_buildSetters());
     }
 
-    // Generate base methods (animate, variants, wrap)
     if (config.generateSetters) {
       buffer.writeln(_buildBaseMethods());
     }
 
-    // Generate merge
     if (config.generateMerge) {
       buffer.writeln(_buildMerge());
     }
 
-    // Generate resolve
     if (config.generateResolve) {
       buffer.writeln(_buildResolve());
     }
 
-    // Generate debugFillProperties
     if (config.generateDebugFillProperties) {
       buffer.writeln(_buildDebugFillProperties());
     }
 
-    // Generate props
     if (config.generateProps) {
       buffer.writeln(_buildProps());
     }

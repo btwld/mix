@@ -23,7 +23,7 @@ mixin _$BorderMixMixin on Mix<Border>, DefaultValue<Border>, Diagnosticable {
     );
   }
 
-  /// Resolves to [Border] using context.
+  /// Resolves to [Border] using [context].
   @override
   Border resolve(BuildContext context) {
     return Border(
@@ -66,7 +66,7 @@ mixin _$BorderDirectionalMixMixin
     );
   }
 
-  /// Resolves to [BorderDirectional] using context.
+  /// Resolves to [BorderDirectional] using [context].
   @override
   BorderDirectional resolve(BuildContext context) {
     return BorderDirectional(
@@ -109,7 +109,7 @@ mixin _$BorderSideMixMixin
     );
   }
 
-  /// Resolves to [BorderSide] using context.
+  /// Resolves to [BorderSide] using [context].
   @override
   BorderSide resolve(BuildContext context) {
     return BorderSide(

@@ -1,6 +1,6 @@
-/// Mix Generator - Auto-generates Spec, Styler, and Mix class bodies.
+/// Code generators for Mix specs, stylers, mix values, and widget wrappers.
 ///
-/// This package generates:
+/// This package generates the following artifacts:
 /// - Spec mixin `_$XSpec`: self-contained — implements `Spec<X>` and
 ///   `Diagnosticable`; inlines `==`, `hashCode`, `toString`, `getDiff`,
 ///   `toDiagnosticsNode`, `debugFillProperties`, plus `copyWith`, `lerp`,
@@ -8,6 +8,8 @@
 /// - Styler mixin `_$XStylerMixin`: setters, base methods (`animate`,
 ///   `variants`, `wrap`), `merge`, `resolve`, `debugFillProperties`, `props`.
 /// - Mix mixin `_$XMixin`: `merge`, `resolve`, `props`.
+/// - Widget wrapper `class X extends StatelessWidget` for a `Style<S>`
+///   factory annotated with `@MixWidget`.
 library;
 
 import 'package:build/build.dart';
@@ -15,25 +17,27 @@ import 'package:dart_style/dart_style.dart';
 import 'package:source_gen/source_gen.dart';
 
 import 'src/mix_generator.dart';
+import 'src/mix_widget_generator.dart';
 import 'src/mixable_generator.dart';
 import 'src/styler_generator.dart';
 
-// Export core components for testing
+// Expose internals for generator unit tests.
 export 'src/core/builders/index.dart';
 export 'src/core/curated/index.dart';
 export 'src/core/models/field_model.dart';
 export 'src/core/models/mix_field_model.dart';
+export 'src/core/models/mix_widget_model.dart';
 export 'src/core/models/styler_field_model.dart';
 export 'src/core/resolvers/index.dart';
 export 'src/mix_generator.dart';
+export 'src/mix_widget_generator.dart';
 export 'src/mixable_generator.dart';
 export 'src/styler_generator.dart';
 
-/// Entry point for the mix_generator builder.
+/// Builder factory for `mix_generator`.
 ///
-/// Triggers on `@MixableSpec` annotations and generates the `_$XSpec` mixin
-/// (Spec method overrides: `type`, `copyWith`, `lerp`, `props`,
-/// `debugFillProperties`).
+/// Generates `_$XSpec` mixins for `@MixableSpec` classes, including `type`,
+/// `copyWith`, `lerp`, `props`, and `debugFillProperties` overrides.
 Builder mixGenerator(BuilderOptions _) {
   return SharedPartBuilder(
     [SpecGenerator()],
@@ -44,10 +48,9 @@ Builder mixGenerator(BuilderOptions _) {
   );
 }
 
-/// Entry point for the styler_generator builder.
+/// Builder factory for `styler_generator`.
 ///
-/// Triggers on @MixableStyler annotations and generates:
-/// - _$XStylerMixin (Styler method implementations)
+/// Generates `_$XStylerMixin` implementations for `@MixableStyler` classes.
 Builder stylerGenerator(BuilderOptions _) {
   return SharedPartBuilder(
     [StylerGenerator()],
@@ -58,14 +61,26 @@ Builder stylerGenerator(BuilderOptions _) {
   );
 }
 
-/// Entry point for the mixable_generator builder.
+/// Builder factory for `mixable_generator`.
 ///
-/// Triggers on @Mixable annotations and generates:
-/// - _$XMixin (Mix method implementations: merge, resolve, props)
+/// Generates `_$XMixin` implementations for `@Mixable` classes.
 Builder mixableGenerator(BuilderOptions _) {
   return SharedPartBuilder(
     [MixableGenerator()],
     'mixable_generator',
+    formatOutput: (code, version) {
+      return DartFormatter(languageVersion: version).format(code);
+    },
+  );
+}
+
+/// Builder factory for `mix_widget_generator`.
+///
+/// Generates `StatelessWidget` wrappers for `@MixWidget` top-level factories.
+Builder mixWidgetGenerator(BuilderOptions _) {
+  return SharedPartBuilder(
+    [MixWidgetGenerator()],
+    'mix_widget_generator',
     formatOutput: (code, version) {
       return DartFormatter(languageVersion: version).format(code);
     },

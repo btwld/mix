@@ -1,6 +1,4 @@
-/// Field model for Styler fields.
-///
-/// Represents a Styler field with computed values for code generation.
+/// Computed metadata for `@MixableStyler` fields.
 library;
 
 import 'package:analyzer/dart/element/element.dart';
@@ -10,30 +8,30 @@ import '../checkers.dart';
 import '../curated/type_metadata.dart';
 import 'type_helpers.dart' as type_helpers;
 
-/// Represents a Styler field with computed values for generation.
+/// A Styler field with derived setter, type, and diagnostic metadata.
 class StylerFieldModel {
-  /// The field name (without $ prefix).
+  /// The public field name, without the `$` prefix.
   final String name;
 
-  /// The field name as declared (with $ prefix).
+  /// The field name as declared, including the `$` prefix.
   final String declaredName;
 
   /// The Dart code for this field's type from the annotated library.
   final String fieldTypeCode;
 
-  /// Whether this is a raw list field (not wrapped in Prop).
+  /// Whether this is a raw list field, not wrapped in `Prop`.
   final bool isRawList;
 
-  /// The effective public parameter type (for setter methods).
+  /// The public parameter type emitted for generated setter methods.
   final String effectivePublicParamType;
 
   /// Whether to generate a setter for this field.
   final bool generateSetter;
 
-  /// The setter name (may differ from field name).
+  /// The setter name, which may differ from [name].
   final String? setterName;
 
-  /// Optional diagnostic label override.
+  /// The diagnostic label override, or `null` to use [name].
   final String? diagnosticLabel;
 
   const StylerFieldModel({
@@ -47,7 +45,7 @@ class StylerFieldModel {
     this.diagnosticLabel,
   });
 
-  /// Creates a StylerFieldModel from a FieldElement.
+  /// Creates a [StylerFieldModel] from an analyzer [FieldElement].
   factory StylerFieldModel.fromElement(
     FieldElement element, {
     required String stylerName,
@@ -56,7 +54,6 @@ class StylerFieldModel {
     final type = field.type;
     final name = field.name;
 
-    // Check if wrapped in Prop<>
     final wrappedInProp = type_helpers.isWrappedInProp(type);
     final innerType = type_helpers.getInnerType(type, isWrapped: wrappedInProp);
     final innerTypeName = type_helpers.getBaseTypeName(innerType);
@@ -65,18 +62,15 @@ class StylerFieldModel {
       visibleFrom: element.library,
     );
 
-    // Check if raw list
     final isRawList = isRawListField(name);
     final rawListElementType = rawListElementTypeFor(name);
 
-    // Check for @MixableField annotation
     final mixableFieldAnnotation = mixableFieldAnnotationChecker
         .firstAnnotationOf(element);
     final ignoreSetter =
         mixableFieldAnnotation?.getField('ignoreSetter')?.toBoolValue() ??
         false;
 
-    // Get setterType override from annotation if specified
     final setterTypeValue = mixableFieldAnnotation?.getField('setterType');
     final setterType = setterTypeValue?.toTypeValue();
     final setterTypeOverride = setterType == null
@@ -88,8 +82,6 @@ class StylerFieldModel {
             usage: 'setter type',
           );
 
-    // Determine effective public param type
-    // Use @MixableField(setterType:) override if provided, otherwise compute from type
     final effectivePublicParamType =
         setterTypeOverride ??
         _getEffectivePublicParamType(
@@ -100,14 +92,11 @@ class StylerFieldModel {
           element,
         );
 
-    // Get field alias config
     final aliasConfig = fieldAliasMap['$stylerName.$name'];
     final diagnosticLabel = aliasConfig?.diagnosticLabel;
     final setterNameOverride = aliasConfig?.setterName;
 
-    // Setter is generated unless:
-    // 1. @MixableField(ignoreSetter: true) is present, OR
-    // 2. aliasConfig explicitly sets setterName to null
+    // A mapped `null` setter name explicitly disables generation.
     final generateSetter =
         !ignoreSetter && (setterNameOverride != null || aliasConfig == null);
     final setterName = generateSetter
@@ -126,7 +115,7 @@ class StylerFieldModel {
     );
   }
 
-  /// Gets the display name for diagnostics.
+  /// The field name to show in generated diagnostics.
   String get displayName => diagnosticLabel ?? name;
 
   @override
@@ -140,18 +129,16 @@ String _getEffectivePublicParamType(
   String? rawListElementType,
   FieldElement element,
 ) {
-  // Raw list fields keep their original type
+  // Raw list fields keep their original type.
   if (isRawList && rawListElementType != null) {
     return 'List<$rawListElementType>';
   }
 
-  // Check for a Mix type mapping
   final mixType = mixTypeFor(innerTypeName);
   if (mixType != null) {
     return mixType;
   }
 
-  // Use original type
   return _stripNullableSuffix(
     type_helpers.visibleTypeCodeForField(
       element,

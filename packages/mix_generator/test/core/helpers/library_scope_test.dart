@@ -48,6 +48,38 @@ void main() {
     );
   });
 
+  group('hasUnprefixedVisibleName', () {
+    test('returns true when a name is visible without a prefix', () async {
+      final libraries = await _resolveLibraryScope('''
+        import 'visible.dart';
+      ''');
+
+      expect(hasUnprefixedVisibleName('VisibleType', libraries.input), isTrue);
+    });
+
+    test(
+      'returns false when a name is visible only through a prefix',
+      () async {
+        final libraries = await _resolveLibraryScope('''
+        import 'visible.dart' as v;
+      ''');
+
+        expect(
+          hasUnprefixedVisibleName('VisibleType', libraries.input),
+          isFalse,
+        );
+      },
+    );
+
+    test('returns true for local declarations', () async {
+      final libraries = await _resolveLibraryScope('''
+        class LocalType {}
+      ''');
+
+      expect(hasUnprefixedVisibleName('LocalType', libraries.input), isTrue);
+    });
+  });
+
   group('typeCode', () {
     test('uses the visible prefix for generic type aliases', () async {
       final libraries = await _resolveLibraryScope('''

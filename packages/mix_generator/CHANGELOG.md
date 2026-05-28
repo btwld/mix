@@ -1,3 +1,31 @@
+## 2.0.4
+
+ - **FEAT**: Add `@MixWidget` generator. Annotate a top-level `final` styler variable
+   or a styler-returning function; the generator emits a `StatelessWidget` whose
+   `build()` delegates to that styler's `call()`. Constructor parameters mirror
+   the styler's `call()` signature, with `Key? key` forwarded via `super.key`.
+ - **CHORE**: Match Flutter's canonical `Key` type via `TypeChecker` instead of
+   comparing parameter type names. The styler `call()` may declare exactly
+   `Key? key` (named, nullable, no default, not `required`) to opt into
+   `super.key` forwarding. Any other `key`-named parameter — subclasses such as
+   `LocalKey?` / `GlobalKey?`, non-nullable `Key`, positional, defaulted, or a
+   `key` parameter on the factory function — is rejected with an
+   `InvalidGenerationSource` error.
+ - **CHORE**: Generated `build()` now forwards every constructor field as
+   `this.<name>` so user parameter names cannot be shadowed by `build()`'s local
+   `context` or by the factory reference. Parameter names matching the factory
+   identifier or inherited `StatelessWidget` / `Widget` / `Object` members
+   (`build`, `createElement`, `runtimeType`, `hashCode`, `toString`,
+   `noSuchMethod`) are now rejected with `InvalidGenerationSource`.
+ - **CHORE**: `@MixWidget(name: '...')` overrides are validated as Dart class
+   identifiers; non-identifier shapes and Dart reserved words are rejected.
+ - **CHORE**: The annotated library must import `package:flutter/widgets.dart`
+   without a prefix. Prefixed Flutter imports are rejected with a clear error
+   pointing to the unprefixed import (or a barrel re-export).
+ - **CHORE**: `@MixWidget` requires the annotated element's name to be
+   `lowerCamelCase` ending in `Style`. Names that don't match are rejected; use
+   `@MixWidget(name: '...')` to override.
+
 ## 2.0.3
 
  - **FEAT**: Emit a `@Deprecated typedef _$<Name>SpecMethods = _$<Name>;` alongside every `@MixableSpec` mixin so legacy `class X extends Spec<X> with Diagnosticable, _$XSpecMethods` declarations keep compiling against the 2.0+ generator. Removal scheduled for `mix_generator` 3.0.
