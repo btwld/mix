@@ -253,9 +253,11 @@ class SpecStylerClassBuilder {
     return field.name;
   }
 
-  String _buildStylerMixin(List<FieldModel> fields) {
-    final mixins = _collectOwnerMixins(fields);
-    final stylerFields = fields
+  List<StylerFieldModel> _stylerFields(
+    List<FieldModel> fields,
+    List<_OwnerMixinReference> mixins,
+  ) {
+    return fields
         .map(
           (field) => StylerFieldModel(
             name: field.name,
@@ -269,13 +271,28 @@ class SpecStylerClassBuilder {
           ),
         )
         .toList();
+  }
 
-    return StylerMixinBuilder(
-      stylerName: stylerName,
-      specName: specName,
-      fields: stylerFields,
-      config: const MixableStylerAnnotationConfig(),
-    ).build();
+  Set<String> _memberOverrideNames(
+    List<_OwnerMixinReference> mixins,
+    List<StylerFieldModel> stylerFields,
+  ) {
+    final generatedSetterNames = stylerFields
+        .where((field) => field.generateSetter)
+        .map((field) => field.setterName)
+        .nonNulls
+        .toSet();
+
+    return {
+      'animate',
+      'variants',
+      'wrap',
+      for (final mixin in mixins)
+        for (final method in mixin.element.methods)
+          if (method.name != null &&
+              (method.isAbstract || generatedSetterNames.contains(method.name)))
+            method.name!,
+    };
   }
 
   StylerApiPlan _buildApiPlan(
@@ -634,22 +651,21 @@ class SpecStylerClassBuilder {
     buffer.writeln();
   }
 
-  String get _stylerMixinName => '_\$${stylerName}Mixin';
-
   String get stylerName => deriveStylerName(specName);
 
   String build() {
     final fields = extractSpecFields(specElement, specName);
     final mixins = _collectOwnerMixins(fields);
-    final mixinClause =
-        ' with ${[...mixins.map((m) => '${m.name}<$stylerName>'), _stylerMixinName].join(', ')}';
+    final mixinNames = mixins.map((m) => '${m.name}<$stylerName>').toList();
+    final mixinClause = mixinNames.isEmpty
+        ? ''
+        : ' with ${mixinNames.join(', ')}';
     final buffer = StringBuffer();
     buffer.writeln(
       'class $stylerName extends MixStyler<$stylerName, $specName>$mixinClause {',
     );
 
     for (final field in fields) {
-      buffer.writeln('  @override');
       buffer.writeln('  final ${_fieldStorageType(field)} \$${field.name};');
     }
     buffer.writeln();
@@ -677,15 +693,17 @@ class SpecStylerClassBuilder {
 
     _writeApiMembers(buffer, _buildApiPlan(fields, mixins));
 
-    final callMethod = _buildCallMethod();
-    if (callMethod != null) {
-      _writeIndentedCode(buffer, callMethod);
-      buffer.writeln();
-    }
+    final stylerFields = _stylerFields(fields, mixins);
+    final members = StylerMixinBuilder(
+      stylerName: stylerName,
+      specName: specName,
+      fields: stylerFields,
+      config: const MixableStylerAnnotationConfig(),
+      callMethodCode: _buildCallMethod(),
+    ).buildMembers(methodOverrides: _memberOverrideNames(mixins, stylerFields));
+    buffer.writeln(members);
 
     buffer.writeln('}');
-    buffer.writeln();
-    buffer.writeln(_buildStylerMixin(fields));
 
     return buffer.toString();
   }

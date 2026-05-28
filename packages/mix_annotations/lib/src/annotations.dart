@@ -42,6 +42,9 @@ const mixableSpec = MixableSpec();
 ///   // ... fields and constructors
 /// }
 /// ```
+@Deprecated(
+  'Use @MixableSpec(target: Widget.new) instead; will be removed in a future major version.',
+)
 class MixableStyler {
   /// Flags indicating which methods to generate in the mixin.
   final int methods;
@@ -49,6 +52,9 @@ class MixableStyler {
   const MixableStyler({this.methods = GeneratedStylerMethods.all});
 }
 
+@Deprecated(
+  'Use @MixableSpec(target: Widget.new) instead; will be removed in a future major version.',
+)
 const mixableStyler = MixableStyler();
 
 /// Annotation for configuring individual fields in Styler classes.

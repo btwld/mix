@@ -137,6 +137,22 @@ void main() {
         final decoration = resolved.spec.box?.spec.decoration as BoxDecoration?;
         expect(decoration?.color, Colors.blue);
       });
+
+      test('fluent chain resolves stack and box properties', () {
+        final attribute = StackBoxStyler()
+            .stackAlignment(Alignment.center)
+            .padding(EdgeInsetsMix.all(12.0))
+            .color(Colors.teal);
+
+        final context = MockBuildContext();
+        final resolved = attribute.resolve(context);
+        final boxSpec = resolved.spec.box?.spec;
+        final decoration = boxSpec?.decoration as BoxDecoration?;
+
+        expect(resolved.spec.stack?.spec.alignment, Alignment.center);
+        expect(boxSpec?.padding, const EdgeInsets.all(12.0));
+        expect(decoration?.color, Colors.teal);
+      });
     });
 
     group('Merge', () {

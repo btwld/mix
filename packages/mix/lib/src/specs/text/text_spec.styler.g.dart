@@ -17,34 +17,20 @@ import 'text_widget.dart';
 import 'text_spec.dart';
 
 class TextStyler extends MixStyler<TextStyler, TextSpec>
-    with TextStyleMixin<TextStyler>, _$TextStylerMixin {
-  @override
+    with TextStyleMixin<TextStyler> {
   final Prop<TextOverflow>? $overflow;
-  @override
   final Prop<StrutStyle>? $strutStyle;
-  @override
   final Prop<TextAlign>? $textAlign;
-  @override
   final Prop<TextScaler>? $textScaler;
-  @override
   final Prop<int>? $maxLines;
-  @override
   final Prop<TextStyle>? $style;
-  @override
   final Prop<TextWidthBasis>? $textWidthBasis;
-  @override
   final Prop<TextHeightBehavior>? $textHeightBehavior;
-  @override
   final Prop<TextDirection>? $textDirection;
-  @override
   final Prop<bool>? $softWrap;
-  @override
   final List<Directive<String>>? $textDirectives;
-  @override
   final Prop<Color>? $selectionColor;
-  @override
   final Prop<String>? $semanticsLabel;
-  @override
   final Prop<Locale>? $locale;
 
   const TextStyler.create({
@@ -221,27 +207,6 @@ class TextStyler extends MixStyler<TextStyler, TextSpec>
     );
   }
 
-  StyledText call(String text, {Key? key}) {
-    return StyledText(text, key: key, style: this);
-  }
-}
-
-mixin _$TextStylerMixin on Style<TextSpec>, Diagnosticable {
-  Prop<TextOverflow>? get $overflow;
-  Prop<StrutStyle>? get $strutStyle;
-  Prop<TextAlign>? get $textAlign;
-  Prop<TextScaler>? get $textScaler;
-  Prop<int>? get $maxLines;
-  Prop<TextStyle>? get $style;
-  Prop<TextWidthBasis>? get $textWidthBasis;
-  Prop<TextHeightBehavior>? get $textHeightBehavior;
-  Prop<TextDirection>? get $textDirection;
-  Prop<bool>? get $softWrap;
-  List<Directive<String>>? get $textDirectives;
-  Prop<Color>? get $selectionColor;
-  Prop<String>? get $semanticsLabel;
-  Prop<Locale>? get $locale;
-
   /// Sets the overflow.
   TextStyler overflow(TextOverflow value) {
     return merge(TextStyler(overflow: value));
@@ -268,6 +233,7 @@ mixin _$TextStylerMixin on Style<TextSpec>, Diagnosticable {
   }
 
   /// Sets the style.
+  @override
   TextStyler style(TextStyleMix value) {
     return merge(TextStyler(style: value));
   }
@@ -308,16 +274,19 @@ mixin _$TextStylerMixin on Style<TextSpec>, Diagnosticable {
   }
 
   /// Sets the animation configuration.
+  @override
   TextStyler animate(AnimationConfig value) {
     return merge(TextStyler(animation: value));
   }
 
   /// Sets the style variants.
+  @override
   TextStyler variants(List<VariantStyle<TextSpec>> value) {
     return merge(TextStyler(variants: value));
   }
 
   /// Wraps with a widget modifier.
+  @override
   TextStyler wrap(WidgetModifierConfig value) {
     return merge(TextStyler(modifier: value));
   }
@@ -325,6 +294,10 @@ mixin _$TextStylerMixin on Style<TextSpec>, Diagnosticable {
   /// Sets the widget modifier.
   TextStyler modifier(WidgetModifierConfig value) {
     return merge(TextStyler(modifier: value));
+  }
+
+  StyledText call(String text, {Key? key}) {
+    return StyledText(text, key: key, style: this);
   }
 
   /// Merges with another [TextStyler].

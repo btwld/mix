@@ -15,33 +15,19 @@ import 'icon_widget.dart';
 
 import 'icon_spec.dart';
 
-class IconStyler extends MixStyler<IconStyler, IconSpec>
-    with _$IconStylerMixin {
-  @override
+class IconStyler extends MixStyler<IconStyler, IconSpec> {
   final Prop<Color>? $color;
-  @override
   final Prop<double>? $size;
-  @override
   final Prop<double>? $weight;
-  @override
   final Prop<double>? $grade;
-  @override
   final Prop<double>? $opticalSize;
-  @override
   final Prop<List<Shadow>>? $shadows;
-  @override
   final Prop<TextDirection>? $textDirection;
-  @override
   final Prop<bool>? $applyTextScaling;
-  @override
   final Prop<double>? $fill;
-  @override
   final Prop<String>? $semanticsLabel;
-  @override
   final Prop<double>? $opacity;
-  @override
   final Prop<BlendMode>? $blendMode;
-  @override
   final Prop<IconData>? $icon;
 
   const IconStyler.create({
@@ -134,31 +120,6 @@ class IconStyler extends MixStyler<IconStyler, IconSpec>
     return merge(IconStyler(shadows: [value]));
   }
 
-  StyledIcon call({Key? key, IconData? icon, String? semanticLabel}) {
-    return StyledIcon(
-      key: key,
-      style: this,
-      icon: icon,
-      semanticLabel: semanticLabel,
-    );
-  }
-}
-
-mixin _$IconStylerMixin on Style<IconSpec>, Diagnosticable {
-  Prop<Color>? get $color;
-  Prop<double>? get $size;
-  Prop<double>? get $weight;
-  Prop<double>? get $grade;
-  Prop<double>? get $opticalSize;
-  Prop<List<Shadow>>? get $shadows;
-  Prop<TextDirection>? get $textDirection;
-  Prop<bool>? get $applyTextScaling;
-  Prop<double>? get $fill;
-  Prop<String>? get $semanticsLabel;
-  Prop<double>? get $opacity;
-  Prop<BlendMode>? get $blendMode;
-  Prop<IconData>? get $icon;
-
   /// Sets the color.
   IconStyler color(Color value) {
     return merge(IconStyler(color: value));
@@ -225,16 +186,19 @@ mixin _$IconStylerMixin on Style<IconSpec>, Diagnosticable {
   }
 
   /// Sets the animation configuration.
+  @override
   IconStyler animate(AnimationConfig value) {
     return merge(IconStyler(animation: value));
   }
 
   /// Sets the style variants.
+  @override
   IconStyler variants(List<VariantStyle<IconSpec>> value) {
     return merge(IconStyler(variants: value));
   }
 
   /// Wraps with a widget modifier.
+  @override
   IconStyler wrap(WidgetModifierConfig value) {
     return merge(IconStyler(modifier: value));
   }
@@ -242,6 +206,15 @@ mixin _$IconStylerMixin on Style<IconSpec>, Diagnosticable {
   /// Sets the widget modifier.
   IconStyler modifier(WidgetModifierConfig value) {
     return merge(IconStyler(modifier: value));
+  }
+
+  StyledIcon call({Key? key, IconData? icon, String? semanticLabel}) {
+    return StyledIcon(
+      key: key,
+      style: this,
+      icon: icon,
+      semanticLabel: semanticLabel,
+    );
   }
 
   /// Merges with another [IconStyler].

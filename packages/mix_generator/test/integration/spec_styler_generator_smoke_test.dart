@@ -305,6 +305,38 @@ void main() {
       );
     });
 
+    test('emits full styler members without legacy mixin getters', () async {
+      const input = '''
+        library spike;
+        import 'package:mix_annotations/mix_annotations.dart';
+        @MixableSpec()
+        final class TrivialSpec {
+          final int? count;
+          const TrivialSpec({this.count});
+        }
+      ''';
+
+      await testBuilder(
+        _specStylerLibraryBuilder(),
+        {...mixAnnotationsSources, ..._mixSources, 'mix|lib/spike.dart': input},
+        outputs: {
+          'mix|lib/spike.styler.g.dart': decodedMatches(
+            allOf([
+              contains(
+                'class TrivialStyler extends MixStyler<TrivialStyler, TrivialSpec>',
+              ),
+              contains(r'final Prop<int>? $count;'),
+              contains('TrivialStyler count(int value)'),
+              contains('TrivialStyler merge(TrivialStyler? other)'),
+              isNot(contains('_\$TrivialStylerMixin')),
+              isNot(contains(r'Prop<int>? get $count;')),
+              isNot(contains('@override\n  final Prop<int>? \$count;')),
+            ]),
+          ),
+        },
+      );
+    });
+
     test('omits call method when target is not configured', () async {
       const input = '''
         library spike;
@@ -1128,6 +1160,7 @@ void main() {
               contains('factory FlexStyler.column() => FlexStyler().column();'),
               contains('FlexStyler flex(FlexStyler value)'),
               contains('return merge(value);'),
+              contains('@override\n  FlexStyler direction(Axis value)'),
             ]),
           ),
         },
@@ -1521,10 +1554,8 @@ void main() {
       },
     );
 
-    test(
-      r'emits with-clause that includes _$XStylerMixin and emits the mixin',
-      () async {
-        const input = r'''
+    test('emits generated styler members directly on the class', () async {
+      const input = r'''
         library spike;
         import 'package:mix_annotations/mix_annotations.dart';
         enum Clip { hardEdge }
@@ -1536,24 +1567,25 @@ void main() {
         }
       ''';
 
-        await testBuilder(
-          _specStylerLibraryBuilder(),
-          {
-            ...mixAnnotationsSources,
-            ..._mixSources,
-            'mix|lib/spike.dart': input,
-          },
-          outputs: {
-            'mix|lib/spike.styler.g.dart': decodedMatches(
-              allOf(
-                contains(r'_$TinyStylerMixin'),
-                contains(r'mixin _$TinyStylerMixin on Style<TinySpec>'),
+      await testBuilder(
+        _specStylerLibraryBuilder(),
+        {...mixAnnotationsSources, ..._mixSources, 'mix|lib/spike.dart': input},
+        outputs: {
+          'mix|lib/spike.styler.g.dart': decodedMatches(
+            allOf(
+              contains(
+                'class TinyStyler extends MixStyler<TinyStyler, TinySpec>',
               ),
+              contains(r'final Prop<Clip>? $clipBehavior;'),
+              contains('TinyStyler clipBehavior(Clip value)'),
+              contains('TinyStyler merge(TinyStyler? other)'),
+              isNot(contains(r'_$TinyStylerMixin')),
+              isNot(contains(r'Prop<Clip>? get $clipBehavior;')),
             ),
-          },
-        );
-      },
-    );
+          ),
+        },
+      );
+    });
 
     test('generated BoxSpec-shaped styler is semantically valid', () async {
       const input = r'''

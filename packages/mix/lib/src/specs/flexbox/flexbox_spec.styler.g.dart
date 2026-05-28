@@ -26,11 +26,8 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
         BorderRadiusStyleMixin<FlexBoxStyler>,
         ShadowStyleMixin<FlexBoxStyler>,
         TransformStyleMixin<FlexBoxStyler>,
-        FlexStyleMixin<FlexBoxStyler>,
-        _$FlexBoxStylerMixin {
-  @override
+        FlexStyleMixin<FlexBoxStyler> {
   final Prop<StyleSpec<BoxSpec>>? $box;
-  @override
   final Prop<StyleSpec<FlexSpec>>? $flex;
 
   const FlexBoxStyler.create({
@@ -354,26 +351,20 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
     return merge(FlexBoxStyler.create(flex: Prop.maybeMix(value)));
   }
 
-  FlexBox call({Key? key, List<Widget> children = const <Widget>[]}) {
-    return FlexBox(key: key, style: this, children: children);
-  }
-}
-
-mixin _$FlexBoxStylerMixin on Style<FlexBoxSpec>, Diagnosticable {
-  Prop<StyleSpec<BoxSpec>>? get $box;
-  Prop<StyleSpec<FlexSpec>>? get $flex;
-
   /// Sets the animation configuration.
+  @override
   FlexBoxStyler animate(AnimationConfig value) {
     return merge(FlexBoxStyler(animation: value));
   }
 
   /// Sets the style variants.
+  @override
   FlexBoxStyler variants(List<VariantStyle<FlexBoxSpec>> value) {
     return merge(FlexBoxStyler(variants: value));
   }
 
   /// Wraps with a widget modifier.
+  @override
   FlexBoxStyler wrap(WidgetModifierConfig value) {
     return merge(FlexBoxStyler(modifier: value));
   }
@@ -381,6 +372,10 @@ mixin _$FlexBoxStylerMixin on Style<FlexBoxSpec>, Diagnosticable {
   /// Sets the widget modifier.
   FlexBoxStyler modifier(WidgetModifierConfig value) {
     return merge(FlexBoxStyler(modifier: value));
+  }
+
+  FlexBox call({Key? key, List<Widget> children = const <Widget>[]}) {
+    return FlexBox(key: key, style: this, children: children);
   }
 
   /// Merges with another [FlexBoxStyler].

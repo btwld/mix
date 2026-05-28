@@ -93,6 +93,22 @@ void main() {
           MainAxisAlignment.spaceBetween,
         );
       });
+
+      test('fluent chain resolves flex and box properties', () {
+        final attribute = FlexBoxStyler()
+            .row()
+            .padding(EdgeInsetsMix.all(12.0))
+            .color(Colors.teal);
+
+        final context = MockBuildContext();
+        final resolved = attribute.resolve(context);
+        final boxSpec = resolved.spec.box?.spec;
+        final decoration = boxSpec?.decoration as BoxDecoration?;
+
+        expect(resolved.spec.flex?.spec.direction, Axis.horizontal);
+        expect(boxSpec?.padding, const EdgeInsets.all(12.0));
+        expect(decoration?.color, Colors.teal);
+      });
     });
 
     group('Merge', () {

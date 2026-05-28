@@ -14,15 +14,10 @@ import '../../core/spec.dart';
 
 import 'stack_spec.dart';
 
-class StackStyler extends MixStyler<StackStyler, StackSpec>
-    with _$StackStylerMixin {
-  @override
+class StackStyler extends MixStyler<StackStyler, StackSpec> {
   final Prop<AlignmentGeometry>? $alignment;
-  @override
   final Prop<StackFit>? $fit;
-  @override
   final Prop<TextDirection>? $textDirection;
-  @override
   final Prop<Clip>? $clipBehavior;
 
   const StackStyler.create({
@@ -63,13 +58,6 @@ class StackStyler extends MixStyler<StackStyler, StackSpec>
       StackStyler().textDirection(value);
   factory StackStyler.clipBehavior(Clip value) =>
       StackStyler().clipBehavior(value);
-}
-
-mixin _$StackStylerMixin on Style<StackSpec>, Diagnosticable {
-  Prop<AlignmentGeometry>? get $alignment;
-  Prop<StackFit>? get $fit;
-  Prop<TextDirection>? get $textDirection;
-  Prop<Clip>? get $clipBehavior;
 
   /// Sets the alignment.
   StackStyler alignment(AlignmentGeometry value) {
@@ -92,16 +80,19 @@ mixin _$StackStylerMixin on Style<StackSpec>, Diagnosticable {
   }
 
   /// Sets the animation configuration.
+  @override
   StackStyler animate(AnimationConfig value) {
     return merge(StackStyler(animation: value));
   }
 
   /// Sets the style variants.
+  @override
   StackStyler variants(List<VariantStyle<StackSpec>> value) {
     return merge(StackStyler(variants: value));
   }
 
   /// Wraps with a widget modifier.
+  @override
   StackStyler wrap(WidgetModifierConfig value) {
     return merge(StackStyler(modifier: value));
   }

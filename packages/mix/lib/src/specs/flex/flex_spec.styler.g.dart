@@ -15,24 +15,15 @@ import '../../core/spec.dart';
 import 'flex_spec.dart';
 
 class FlexStyler extends MixStyler<FlexStyler, FlexSpec>
-    with FlexStyleMixin<FlexStyler>, _$FlexStylerMixin {
-  @override
+    with FlexStyleMixin<FlexStyler> {
   final Prop<Axis>? $direction;
-  @override
   final Prop<MainAxisAlignment>? $mainAxisAlignment;
-  @override
   final Prop<CrossAxisAlignment>? $crossAxisAlignment;
-  @override
   final Prop<MainAxisSize>? $mainAxisSize;
-  @override
   final Prop<VerticalDirection>? $verticalDirection;
-  @override
   final Prop<TextDirection>? $textDirection;
-  @override
   final Prop<TextBaseline>? $textBaseline;
-  @override
   final Prop<Clip>? $clipBehavior;
-  @override
   final Prop<double>? $spacing;
 
   const FlexStyler.create({
@@ -109,50 +100,45 @@ class FlexStyler extends MixStyler<FlexStyler, FlexSpec>
   FlexStyler flex(FlexStyler value) {
     return merge(value);
   }
-}
-
-mixin _$FlexStylerMixin on Style<FlexSpec>, Diagnosticable {
-  Prop<Axis>? get $direction;
-  Prop<MainAxisAlignment>? get $mainAxisAlignment;
-  Prop<CrossAxisAlignment>? get $crossAxisAlignment;
-  Prop<MainAxisSize>? get $mainAxisSize;
-  Prop<VerticalDirection>? get $verticalDirection;
-  Prop<TextDirection>? get $textDirection;
-  Prop<TextBaseline>? get $textBaseline;
-  Prop<Clip>? get $clipBehavior;
-  Prop<double>? get $spacing;
 
   /// Sets the direction.
+  @override
   FlexStyler direction(Axis value) {
     return merge(FlexStyler(direction: value));
   }
 
   /// Sets the mainAxisAlignment.
+  @override
   FlexStyler mainAxisAlignment(MainAxisAlignment value) {
     return merge(FlexStyler(mainAxisAlignment: value));
   }
 
   /// Sets the crossAxisAlignment.
+  @override
   FlexStyler crossAxisAlignment(CrossAxisAlignment value) {
     return merge(FlexStyler(crossAxisAlignment: value));
   }
 
   /// Sets the mainAxisSize.
+  @override
   FlexStyler mainAxisSize(MainAxisSize value) {
     return merge(FlexStyler(mainAxisSize: value));
   }
 
   /// Sets the verticalDirection.
+  @override
   FlexStyler verticalDirection(VerticalDirection value) {
     return merge(FlexStyler(verticalDirection: value));
   }
 
   /// Sets the textDirection.
+  @override
   FlexStyler textDirection(TextDirection value) {
     return merge(FlexStyler(textDirection: value));
   }
 
   /// Sets the textBaseline.
+  @override
   FlexStyler textBaseline(TextBaseline value) {
     return merge(FlexStyler(textBaseline: value));
   }
@@ -163,21 +149,25 @@ mixin _$FlexStylerMixin on Style<FlexSpec>, Diagnosticable {
   }
 
   /// Sets the spacing.
+  @override
   FlexStyler spacing(double value) {
     return merge(FlexStyler(spacing: value));
   }
 
   /// Sets the animation configuration.
+  @override
   FlexStyler animate(AnimationConfig value) {
     return merge(FlexStyler(animation: value));
   }
 
   /// Sets the style variants.
+  @override
   FlexStyler variants(List<VariantStyle<FlexSpec>> value) {
     return merge(FlexStyler(variants: value));
   }
 
   /// Wraps with a widget modifier.
+  @override
   FlexStyler wrap(WidgetModifierConfig value) {
     return merge(FlexStyler(modifier: value));
   }

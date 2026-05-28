@@ -94,6 +94,34 @@ class BoxConstraintsMix {
       },
     );
 
+    test(
+      'StylerGenerator throws InvalidGenerationSource for non-Style classes',
+      () async {
+        final libraryReader = await initializeLibraryReader({
+          'styler_validation.dart': r'''
+library styler_validation;
+
+import 'package:mix_annotations/mix_annotations.dart';
+
+@MixableStyler()
+class NotAStyle {}
+''',
+        }, 'styler_validation.dart');
+
+        await expectLater(
+          () => generateForElement(
+            const StylerGenerator(),
+            libraryReader,
+            'NotAStyle',
+          ),
+          throwsInvalidGenerationSourceError(
+            '@MixableStyler can only be applied to classes extending Style<T>.',
+            elementMatcher: isNotNull,
+          ),
+        );
+      },
+    );
+
     test('MixWidgetGenerator rejects annotation on a class', () async {
       const libSource = r'''
 library widget_validation;

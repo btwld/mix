@@ -15,37 +15,21 @@ import 'image_widget.dart';
 
 import 'image_spec.dart';
 
-class ImageStyler extends MixStyler<ImageStyler, ImageSpec>
-    with _$ImageStylerMixin {
-  @override
+class ImageStyler extends MixStyler<ImageStyler, ImageSpec> {
   final Prop<ImageProvider<Object>>? $image;
-  @override
   final Prop<double>? $width;
-  @override
   final Prop<double>? $height;
-  @override
   final Prop<Color>? $color;
-  @override
   final Prop<ImageRepeat>? $repeat;
-  @override
   final Prop<BoxFit>? $fit;
-  @override
   final Prop<AlignmentGeometry>? $alignment;
-  @override
   final Prop<Rect>? $centerSlice;
-  @override
   final Prop<FilterQuality>? $filterQuality;
-  @override
   final Prop<BlendMode>? $colorBlendMode;
-  @override
   final Prop<String>? $semanticLabel;
-  @override
   final Prop<bool>? $excludeFromSemantics;
-  @override
   final Prop<bool>? $gaplessPlayback;
-  @override
   final Prop<bool>? $isAntiAlias;
-  @override
   final Prop<bool>? $matchTextDirection;
 
   const ImageStyler.create({
@@ -145,43 +129,6 @@ class ImageStyler extends MixStyler<ImageStyler, ImageSpec>
   factory ImageStyler.matchTextDirection(bool value) =>
       ImageStyler().matchTextDirection(value);
 
-  StyledImage call({
-    Key? key,
-    ImageProvider<Object>? image,
-    ImageFrameBuilder? frameBuilder,
-    ImageLoadingBuilder? loadingBuilder,
-    ImageErrorWidgetBuilder? errorBuilder,
-    Animation<double>? opacity,
-  }) {
-    return StyledImage(
-      key: key,
-      style: this,
-      image: image,
-      frameBuilder: frameBuilder,
-      loadingBuilder: loadingBuilder,
-      errorBuilder: errorBuilder,
-      opacity: opacity,
-    );
-  }
-}
-
-mixin _$ImageStylerMixin on Style<ImageSpec>, Diagnosticable {
-  Prop<ImageProvider<Object>>? get $image;
-  Prop<double>? get $width;
-  Prop<double>? get $height;
-  Prop<Color>? get $color;
-  Prop<ImageRepeat>? get $repeat;
-  Prop<BoxFit>? get $fit;
-  Prop<AlignmentGeometry>? get $alignment;
-  Prop<Rect>? get $centerSlice;
-  Prop<FilterQuality>? get $filterQuality;
-  Prop<BlendMode>? get $colorBlendMode;
-  Prop<String>? get $semanticLabel;
-  Prop<bool>? get $excludeFromSemantics;
-  Prop<bool>? get $gaplessPlayback;
-  Prop<bool>? get $isAntiAlias;
-  Prop<bool>? get $matchTextDirection;
-
   /// Sets the image.
   ImageStyler image(ImageProvider<Object> value) {
     return merge(ImageStyler(image: value));
@@ -258,16 +205,19 @@ mixin _$ImageStylerMixin on Style<ImageSpec>, Diagnosticable {
   }
 
   /// Sets the animation configuration.
+  @override
   ImageStyler animate(AnimationConfig value) {
     return merge(ImageStyler(animation: value));
   }
 
   /// Sets the style variants.
+  @override
   ImageStyler variants(List<VariantStyle<ImageSpec>> value) {
     return merge(ImageStyler(variants: value));
   }
 
   /// Wraps with a widget modifier.
+  @override
   ImageStyler wrap(WidgetModifierConfig value) {
     return merge(ImageStyler(modifier: value));
   }
@@ -275,6 +225,25 @@ mixin _$ImageStylerMixin on Style<ImageSpec>, Diagnosticable {
   /// Sets the widget modifier.
   ImageStyler modifier(WidgetModifierConfig value) {
     return merge(ImageStyler(modifier: value));
+  }
+
+  StyledImage call({
+    Key? key,
+    ImageProvider<Object>? image,
+    ImageFrameBuilder? frameBuilder,
+    ImageLoadingBuilder? loadingBuilder,
+    ImageErrorWidgetBuilder? errorBuilder,
+    Animation<double>? opacity,
+  }) {
+    return StyledImage(
+      key: key,
+      style: this,
+      image: image,
+      frameBuilder: frameBuilder,
+      loadingBuilder: loadingBuilder,
+      errorBuilder: errorBuilder,
+      opacity: opacity,
+    );
   }
 
   /// Merges with another [ImageStyler].

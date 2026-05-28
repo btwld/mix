@@ -24,25 +24,15 @@ class BoxStyler extends MixStyler<BoxStyler, BoxSpec>
         BorderStyleMixin<BoxStyler>,
         BorderRadiusStyleMixin<BoxStyler>,
         ShadowStyleMixin<BoxStyler>,
-        TransformStyleMixin<BoxStyler>,
-        _$BoxStylerMixin {
-  @override
+        TransformStyleMixin<BoxStyler> {
   final Prop<AlignmentGeometry>? $alignment;
-  @override
   final Prop<EdgeInsetsGeometry>? $padding;
-  @override
   final Prop<EdgeInsetsGeometry>? $margin;
-  @override
   final Prop<BoxConstraints>? $constraints;
-  @override
   final Prop<Decoration>? $decoration;
-  @override
   final Prop<Decoration>? $foregroundDecoration;
-  @override
   final Prop<Matrix4>? $transform;
-  @override
   final Prop<AlignmentGeometry>? $transformAlignment;
-  @override
   final Prop<Clip>? $clipBehavior;
 
   const BoxStyler.create({
@@ -275,48 +265,37 @@ class BoxStyler extends MixStyler<BoxStyler, BoxSpec>
     return merge(BoxStyler(transform: value, transformAlignment: alignment));
   }
 
-  Box call({Key? key, Widget? child}) {
-    return Box(key: key, style: this, child: child);
-  }
-}
-
-mixin _$BoxStylerMixin on Style<BoxSpec>, Diagnosticable {
-  Prop<AlignmentGeometry>? get $alignment;
-  Prop<EdgeInsetsGeometry>? get $padding;
-  Prop<EdgeInsetsGeometry>? get $margin;
-  Prop<BoxConstraints>? get $constraints;
-  Prop<Decoration>? get $decoration;
-  Prop<Decoration>? get $foregroundDecoration;
-  Prop<Matrix4>? get $transform;
-  Prop<AlignmentGeometry>? get $transformAlignment;
-  Prop<Clip>? get $clipBehavior;
-
   /// Sets the alignment.
   BoxStyler alignment(AlignmentGeometry value) {
     return merge(BoxStyler(alignment: value));
   }
 
   /// Sets the padding.
+  @override
   BoxStyler padding(EdgeInsetsGeometryMix value) {
     return merge(BoxStyler(padding: value));
   }
 
   /// Sets the margin.
+  @override
   BoxStyler margin(EdgeInsetsGeometryMix value) {
     return merge(BoxStyler(margin: value));
   }
 
   /// Sets the constraints.
+  @override
   BoxStyler constraints(BoxConstraintsMix value) {
     return merge(BoxStyler(constraints: value));
   }
 
   /// Sets the decoration.
+  @override
   BoxStyler decoration(DecorationMix value) {
     return merge(BoxStyler(decoration: value));
   }
 
   /// Sets the foregroundDecoration.
+  @override
   BoxStyler foregroundDecoration(DecorationMix value) {
     return merge(BoxStyler(foregroundDecoration: value));
   }
@@ -327,16 +306,19 @@ mixin _$BoxStylerMixin on Style<BoxSpec>, Diagnosticable {
   }
 
   /// Sets the animation configuration.
+  @override
   BoxStyler animate(AnimationConfig value) {
     return merge(BoxStyler(animation: value));
   }
 
   /// Sets the style variants.
+  @override
   BoxStyler variants(List<VariantStyle<BoxSpec>> value) {
     return merge(BoxStyler(variants: value));
   }
 
   /// Wraps with a widget modifier.
+  @override
   BoxStyler wrap(WidgetModifierConfig value) {
     return merge(BoxStyler(modifier: value));
   }
@@ -344,6 +326,10 @@ mixin _$BoxStylerMixin on Style<BoxSpec>, Diagnosticable {
   /// Sets the widget modifier.
   BoxStyler modifier(WidgetModifierConfig value) {
     return merge(BoxStyler(modifier: value));
+  }
+
+  Box call({Key? key, Widget? child}) {
+    return Box(key: key, style: this, child: child);
   }
 
   /// Merges with another [BoxStyler].

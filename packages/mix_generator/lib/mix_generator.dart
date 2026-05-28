@@ -21,6 +21,7 @@ import 'src/mix_generator.dart';
 import 'src/mix_widget_generator.dart';
 import 'src/mixable_generator.dart';
 import 'src/spec_styler_generator.dart';
+import 'src/styler_generator.dart';
 
 // Expose internals for generator unit tests.
 export 'src/core/builders/index.dart';
@@ -34,6 +35,7 @@ export 'src/mix_generator.dart';
 export 'src/mix_widget_generator.dart';
 export 'src/mixable_generator.dart';
 export 'src/spec_styler_generator.dart';
+export 'src/styler_generator.dart';
 
 /// Builder factory for `mix_generator`.
 ///
@@ -59,6 +61,20 @@ Builder specStylerGenerator(BuilderOptions _) {
       return DartFormatter(languageVersion: version).format(code);
     },
     generatedExtension: '.styler.g.dart',
+  );
+}
+
+/// Builder factory for `styler_generator`.
+///
+/// Generates legacy `_$XStylerMixin` implementations for handwritten
+/// `@MixableStyler` classes.
+Builder stylerGenerator(BuilderOptions _) {
+  return SharedPartBuilder(
+    [StylerGenerator()],
+    'styler_generator',
+    formatOutput: (code, version) {
+      return DartFormatter(languageVersion: version).format(code);
+    },
   );
 }
 

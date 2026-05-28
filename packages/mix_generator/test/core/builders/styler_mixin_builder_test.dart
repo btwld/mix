@@ -159,6 +159,27 @@ void main() {
         expect(code, contains('List<Object?> get props =>'));
       });
 
+      test('emits optional call method before merge', () {
+        final builder = StylerMixinBuilder(
+          stylerName: 'BoxStyler',
+          specName: 'BoxSpec',
+          fields: [],
+          config: defaultConfig,
+          callMethodCode: '''
+  Box call({Widget? child}) {
+    return Box(style: this, child: child);
+  }
+''',
+        );
+        final code = builder.build();
+
+        expect(code, contains('Box call({Widget? child})'));
+        expect(
+          code.indexOf('Box call({Widget? child})'),
+          lessThan(code.indexOf('BoxStyler merge(BoxStyler? other)')),
+        );
+      });
+
       test('closes mixin with brace', () {
         final builder = StylerMixinBuilder(
           stylerName: 'BoxStyler',
@@ -169,6 +190,46 @@ void main() {
         final code = builder.build();
 
         expect(code, endsWith('}\n'));
+      });
+    });
+
+    group('buildMembers', () {
+      test('emits styler members without a mixin contract', () {
+        final builder = StylerMixinBuilder(
+          stylerName: 'BoxStyler',
+          specName: 'BoxSpec',
+          fields: [
+            StylerFieldModel(
+              name: 'gap',
+              declaredName: r'$gap',
+              fieldTypeCode: 'double?',
+              isRawList: false,
+              effectivePublicParamType: 'double',
+              generateSetter: true,
+              setterName: 'gap',
+            ),
+          ],
+          config: defaultConfig,
+        );
+        final code = builder.buildMembers();
+
+        expect(code, isNot(contains('mixin _\$BoxStylerMixin')));
+        expect(code, isNot(contains(r'double? get $gap;')));
+        expect(code, contains('BoxStyler gap(double value)'));
+        expect(code, contains('BoxStyler merge(BoxStyler? other)'));
+      });
+
+      test('only configured base methods get override annotations', () {
+        final builder = StylerMixinBuilder(
+          stylerName: 'BoxStyler',
+          specName: 'BoxSpec',
+          fields: [],
+          config: defaultConfig,
+        );
+        final code = builder.buildMembers(methodOverrides: const {'animate'});
+
+        expect(code, contains('@override\n  BoxStyler animate('));
+        expect(code, isNot(contains('@override\n  BoxStyler modifier(')));
       });
     });
 

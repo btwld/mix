@@ -25,11 +25,8 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
         BorderStyleMixin<StackBoxStyler>,
         BorderRadiusStyleMixin<StackBoxStyler>,
         ShadowStyleMixin<StackBoxStyler>,
-        TransformStyleMixin<StackBoxStyler>,
-        _$StackBoxStylerMixin {
-  @override
+        TransformStyleMixin<StackBoxStyler> {
   final Prop<StyleSpec<BoxSpec>>? $box;
-  @override
   final Prop<StyleSpec<StackSpec>>? $stack;
 
   const StackBoxStyler.create({
@@ -348,26 +345,20 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
     return merge(StackBoxStyler(stackClipBehavior: value));
   }
 
-  StackBox call({Key? key, List<Widget> children = const <Widget>[]}) {
-    return StackBox(key: key, style: this, children: children);
-  }
-}
-
-mixin _$StackBoxStylerMixin on Style<StackBoxSpec>, Diagnosticable {
-  Prop<StyleSpec<BoxSpec>>? get $box;
-  Prop<StyleSpec<StackSpec>>? get $stack;
-
   /// Sets the animation configuration.
+  @override
   StackBoxStyler animate(AnimationConfig value) {
     return merge(StackBoxStyler(animation: value));
   }
 
   /// Sets the style variants.
+  @override
   StackBoxStyler variants(List<VariantStyle<StackBoxSpec>> value) {
     return merge(StackBoxStyler(variants: value));
   }
 
   /// Wraps with a widget modifier.
+  @override
   StackBoxStyler wrap(WidgetModifierConfig value) {
     return merge(StackBoxStyler(modifier: value));
   }
@@ -375,6 +366,10 @@ mixin _$StackBoxStylerMixin on Style<StackBoxSpec>, Diagnosticable {
   /// Sets the widget modifier.
   StackBoxStyler modifier(WidgetModifierConfig value) {
     return merge(StackBoxStyler(modifier: value));
+  }
+
+  StackBox call({Key? key, List<Widget> children = const <Widget>[]}) {
+    return StackBox(key: key, style: this, children: children);
   }
 
   /// Merges with another [StackBoxStyler].
