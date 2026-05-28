@@ -64,26 +64,6 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
     return provider?.style;
   }
 
-  /// Merges [other] into [current] while treating [IdentityStyle] as a no-op.
-  ///
-  /// This preserves the normal [merge] precedence where [other] wins, without
-  /// passing an [IdentityStyle] into generated styler merge methods.
-  @internal
-  static Style<S> mergeStyles<S extends Spec<S>>(
-    Style<S>? current,
-    Style<S> other,
-  ) {
-    if (current == null || current is IdentityStyle<S>) {
-      return other;
-    }
-
-    if (other is IdentityStyle<S>) {
-      return current;
-    }
-
-    return current.merge(other);
-  }
-
   @internal
   Set<WidgetState> get widgetStates {
     return ($variants ?? [])
@@ -172,7 +152,7 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
               context,
               namedVariants: namedVariants,
             );
-      mergedStyle = Style.mergeStyles(mergedStyle, fullyResolvedStyle);
+      mergedStyle = _mergeStyles(mergedStyle, fullyResolvedStyle);
     }
 
     return mergedStyle;
@@ -204,6 +184,18 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
 
     return styleData.resolve(context);
   }
+}
+
+Style<S> _mergeStyles<S extends Spec<S>>(Style<S> current, Style<S> other) {
+  if (current is IdentityStyle<S>) {
+    return other;
+  }
+
+  if (other is IdentityStyle<S>) {
+    return current;
+  }
+
+  return current.merge(other);
 }
 
 /// A no-op [Style] that resolves to a provided [Spec].
@@ -288,7 +280,7 @@ final class VariantStyle<S extends Spec<S>> extends Mixable<StyleSpec<S>>
       );
     }
 
-    return VariantStyle(variant, Style.mergeStyles(_style, other._style));
+    return VariantStyle(variant, _mergeStyles(_style, other._style));
   }
 
   @override
