@@ -77,9 +77,9 @@ String renderWidgetCall({
   final positional = params.where((p) => p.isPositional).toList();
   final named = params.where((p) => !p.isPositional).toList();
   final signatureParams = [
-    ...positional.map(_callParameterCode),
+    ...positional.map(renderCallParameter),
     if (forwardsKey || named.isNotEmpty)
-      '{${[if (forwardsKey) 'Key? key', ...named.map(_callParameterCode)].join(', ')}}',
+      '{${[if (forwardsKey) 'Key? key', ...named.map(renderCallParameter)].join(', ')}}',
   ];
   final invocationArgs = [
     ...positional.map((p) => p.name),
@@ -95,7 +95,7 @@ $indent}
 ''';
 }
 
-String _callParameterCode(WidgetCallParam param) {
+String renderCallParameter(WidgetCallParam param) {
   final required = param.isRequired && !param.isPositional ? 'required ' : '';
   final defaultClause = param.defaultValueCode != null
       ? ' = ${param.defaultValueCode}'

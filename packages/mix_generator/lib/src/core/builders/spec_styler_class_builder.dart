@@ -15,6 +15,7 @@ import '../models/field_model.dart';
 import '../models/styler_field_model.dart';
 import '../resolvers/known_mix_symbol_resolver.dart';
 import 'styler_api_planner.dart';
+import 'styler_forwarder_factory.dart';
 import 'styler_mixin_builder.dart';
 
 class SpecStylerClassBuilder {
@@ -215,13 +216,12 @@ class SpecStylerClassBuilder {
   }
 
   bool _needsTransformAnchor(
-    FieldModel field,
     List<FieldModel> fields,
     List<_OwnerMixinReference> mixins,
   ) {
-    return (field.name == 'transform' || field.name == 'transformAlignment') &&
-        _hasFieldNamed(fields, 'transformAlignment') &&
-        _usesTransformOwnerMixin(mixins);
+    return _usesTransformOwnerMixin(mixins) &&
+        _hasFieldNamed(fields, 'transform') &&
+        _hasFieldNamed(fields, 'transformAlignment');
   }
 
   bool _shouldGenerateSetter(
@@ -231,7 +231,11 @@ class SpecStylerClassBuilder {
   ) {
     final reader = _mixableFieldReader(field.name);
     if (reader?.peek('ignoreSetter')?.boolValue ?? false) return false;
-    if (_needsTransformAnchor(field, fields, mixins)) return false;
+    final hasTransformAnchor = _needsTransformAnchor(fields, mixins);
+    if (hasTransformAnchor &&
+        (field.name == 'transform' || field.name == 'transformAlignment')) {
+      return false;
+    }
     if (_isCompoundNestedField(field, fields)) return false;
 
     final alias = _fieldAlias(field);
@@ -295,7 +299,7 @@ class SpecStylerClassBuilder {
     };
   }
 
-  StylerApiPlan _buildApiPlan(
+  ({List<String> factoryCodes, List<String> methodCodes}) _buildApiPlan(
     List<FieldModel> fields,
     List<_OwnerMixinReference> mixins,
   ) {
@@ -318,13 +322,15 @@ class SpecStylerClassBuilder {
         ..._surfaceFactories(
           surface,
           fieldNames,
+          mixins: mixins,
           ignoreRequiredFields: compound != null,
         ),
-      if (_needsTransformAnchorForStyler(fields, mixins) && compound == null)
+      if (_needsTransformAnchor(fields, mixins) && compound == null)
         transformAnchorFactoryDescriptor(),
       if (_hasFieldNamed(fields, 'textDirectives'))
         ...textDirectiveFactoryDescriptors(),
-      if (stylerName == 'IconStyler' && _hasFieldNamed(fields, 'shadows'))
+      if (surface?.generatesSingleShadowConvenience == true &&
+          _hasFieldNamed(fields, 'shadows'))
         iconShadowFactoryDescriptor(),
       ...?compound?.surface.factoryDescriptors,
       if (useSurface && surface.generatesAnimateFactory)
@@ -337,16 +343,18 @@ class SpecStylerClassBuilder {
           fieldNames,
           ignoreRequiredFields: compound != null,
         ),
-      if (_needsTransformAnchorForStyler(fields, mixins) && compound == null)
+      if (_needsTransformAnchor(fields, mixins) && compound == null)
         transformAnchorMethodDescriptor(),
       if (_hasFieldNamed(fields, 'textDirectives'))
         ...textDirectiveMethodDescriptors(),
-      if (stylerName == 'IconStyler' && _hasFieldNamed(fields, 'shadows'))
+      if (surface?.generatesSingleShadowConvenience == true &&
+          _hasFieldNamed(fields, 'shadows'))
         iconShadowMethodDescriptor(),
       ...?compound?.surface.methodDescriptors,
     ];
 
-    return StylerApiPlanner(stylerName: stylerName).build(
+    return planStylerApi(
+      stylerName: stylerName,
       fieldFactories: fieldFactories,
       curatedFactories: curatedFactories,
       curatedMethods: curatedMethods,
@@ -357,13 +365,55 @@ class SpecStylerClassBuilder {
   List<StylerFactoryDescriptor> _surfaceFactories(
     StylerSurface surface,
     Set<String> fieldNames, {
+    required List<_OwnerMixinReference> mixins,
     required bool ignoreRequiredFields,
   }) {
-    if (ignoreRequiredFields) return surface.factoryDescriptors;
+    final descriptors = <StylerFactoryDescriptor>[];
+    for (final entry in surface.factoryEntries) {
+      if (entry is StylerFactoryDescriptor) {
+        if (ignoreRequiredFields || entry.isAvailableFor(fieldNames)) {
+          descriptors.add(entry);
+        }
+      } else if (entry is ForwarderGroup) {
+        if (!ignoreRequiredFields && !entry.isAvailableFor(fieldNames)) {
+          continue;
+        }
+        final mixin = _requireOwnerMixin(mixins, entry.mixinName);
+        descriptors.addAll(
+          deriveForwarderFactories(
+            mixinElement: mixin.element,
+            orderedMethodNames: entry.methodNames,
+            requiredFieldNames: entry.requiredFieldNames,
+            libraryScope: mixin.element.library,
+            anchor: specElement,
+          ),
+        );
+      } else {
+        throw UnsupportedError(
+          'Unsupported styler factory entry `${entry.runtimeType}`.',
+        );
+      }
+    }
 
-    return surface.factoryDescriptors
-        .where((descriptor) => descriptor.isAvailableFor(fieldNames))
-        .toList();
+    return descriptors;
+  }
+
+  _OwnerMixinReference _requireOwnerMixin(
+    List<_OwnerMixinReference> mixins,
+    String mixinName,
+  ) {
+    for (final mixin in mixins) {
+      if (mixin.name == mixinName) return mixin;
+    }
+
+    fail(
+      specElement,
+      'SpecStylerGenerator could not derive factories from `$mixinName` '
+      'because the styler does not include that owner mixin.',
+      todo:
+          'Add `$mixinName` to the styler surface owner mixins or remove its '
+          'forwarder group.',
+    );
   }
 
   List<StylerMethodDescriptor> _surfaceMethods(
@@ -378,12 +428,12 @@ class SpecStylerClassBuilder {
         .toList();
   }
 
-  List<StylerApiMember> _fieldFactoryMembers(
+  List<ApiMember> _fieldFactoryMembers(
     List<FieldModel> fields,
     List<_OwnerMixinReference> mixins,
     Set<String> suppressedFieldFactoryNames,
   ) {
-    final members = <StylerApiMember>[];
+    final members = <ApiMember>[];
     for (final field in fields) {
       final factoryName = _fieldFactoryName(field, fields, mixins);
       if (factoryName == null) continue;
@@ -393,13 +443,11 @@ class SpecStylerClassBuilder {
       if (setterName == null) continue;
 
       final paramType = _publicParamType(field);
-      members.add(
-        StylerApiMember(
-          name: factoryName,
-          code:
-              'factory $stylerName.$factoryName($paramType value) => $stylerName().$setterName(value);',
-        ),
-      );
+      members.add((
+        name: factoryName,
+        code:
+            'factory $stylerName.$factoryName($paramType value) => $stylerName().$setterName(value);',
+      ));
     }
 
     return members;
@@ -417,16 +465,10 @@ class SpecStylerClassBuilder {
     };
   }
 
-  bool _needsTransformAnchorForStyler(
-    List<FieldModel> fields,
-    List<_OwnerMixinReference> mixins,
+  void _writeApiMembers(
+    StringBuffer buffer,
+    ({List<String> factoryCodes, List<String> methodCodes}) plan,
   ) {
-    return _usesTransformOwnerMixin(mixins) &&
-        _hasFieldNamed(fields, 'transform') &&
-        _hasFieldNamed(fields, 'transformAlignment');
-  }
-
-  void _writeApiMembers(StringBuffer buffer, StylerApiPlan plan) {
     for (final code in plan.factoryCodes) {
       _writeIndentedCode(buffer, code);
     }

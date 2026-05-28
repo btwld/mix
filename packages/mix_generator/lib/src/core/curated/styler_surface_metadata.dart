@@ -1,8 +1,15 @@
 /// Curated public API surface metadata for generated stylers.
 library;
 
+const _stylerToken = '%STYLER%';
+
+/// One ordered factory entry in a styler surface.
+abstract class StylerFactorySurfaceEntry {
+  const StylerFactorySurfaceEntry();
+}
+
 /// A generated named factory constructor descriptor.
-class StylerFactoryDescriptor {
+class StylerFactoryDescriptor extends StylerFactorySurfaceEntry {
   /// Factory name, without the styler class prefix.
   final String name;
 
@@ -30,6 +37,29 @@ class StylerFactoryDescriptor {
   /// Emits the complete factory constructor for [stylerName].
   String codeFor(String stylerName) {
     return 'factory $stylerName.$signature => $stylerName().$invocation;';
+  }
+}
+
+/// A group of named factories derived from owner mixin methods.
+class ForwarderGroup extends StylerFactorySurfaceEntry {
+  /// Owner mixin that declares the source methods.
+  final String mixinName;
+
+  /// Fields that must be present before this group can be emitted.
+  final Set<String> requiredFieldNames;
+
+  /// Mixin method names to promote, in generated factory order.
+  final List<String> methodNames;
+
+  const ForwarderGroup({
+    required this.mixinName,
+    required this.requiredFieldNames,
+    required this.methodNames,
+  });
+
+  /// Whether all required fields are available.
+  bool isAvailableFor(Set<String> fieldNames) {
+    return fieldNames.containsAll(requiredFieldNames);
   }
 }
 
@@ -71,7 +101,7 @@ class StylerMethodDescriptor {
     }
     buffer.writeln('$stylerName $signature {');
     for (final line in bodyLines) {
-      buffer.writeln('  ${line.replaceAll('%STYLER%', stylerName)}');
+      buffer.writeln('  ${line.replaceAll(_stylerToken, stylerName)}');
     }
     buffer.writeln('}');
 
@@ -179,14 +209,17 @@ class StylerSurface {
   /// Additional owner mixins required by this surface.
   final List<String> ownerMixinNames;
 
-  /// Curated named factory constructors.
-  final List<StylerFactoryDescriptor> factoryDescriptors;
+  /// Ordered factory entries: curated descriptors and derived forwarder groups.
+  final List<StylerFactorySurfaceEntry> factoryEntries;
 
   /// Curated instance methods.
   final List<StylerMethodDescriptor> methodDescriptors;
 
   /// Whether to emit the static `animate` convenience factory.
   final bool generatesAnimateFactory;
+
+  /// Whether to emit the icon-style single-shadow convenience API.
+  final bool generatesSingleShadowConvenience;
 
   /// Direct field factories intentionally suppressed for parity.
   final Set<String> suppressedFieldFactoryNames;
@@ -197,16 +230,30 @@ class StylerSurface {
   const StylerSurface({
     required this.stylerName,
     this.ownerMixinNames = const [],
-    this.factoryDescriptors = const [],
+    this.factoryEntries = const [],
     this.methodDescriptors = const [],
     this.generatesAnimateFactory = false,
+    this.generatesSingleShadowConvenience = false,
     this.suppressedFieldFactoryNames = const {},
     this.requiredFieldNames = const {},
   });
 
   /// Factory names.
   List<String> get factoryNames {
-    return factoryDescriptors.map((factory) => factory.name).toList();
+    final names = <String>[];
+    for (final entry in factoryEntries) {
+      if (entry is StylerFactoryDescriptor) {
+        names.add(entry.name);
+      } else if (entry is ForwarderGroup) {
+        names.addAll(entry.methodNames);
+      } else {
+        throw UnsupportedError(
+          'Unsupported styler factory entry `${entry.runtimeType}`.',
+        );
+      }
+    }
+
+    return names;
   }
 
   /// Method names.
@@ -231,319 +278,102 @@ const _boxOwnerMixinNames = [
 ];
 
 const _boxConvenienceFactories = [
-  StylerFactoryDescriptor(
-    name: 'color',
-    signature: 'color(Color value)',
-    invocation: 'color(value)',
+  ForwarderGroup(
+    mixinName: 'DecorationStyleMixin',
     requiredFieldNames: {'decoration'},
+    methodNames: [
+      'color',
+      'gradient',
+      'border',
+      'borderRadius',
+      'elevation',
+      'shadow',
+      'shadows',
+    ],
   ),
-  StylerFactoryDescriptor(
-    name: 'gradient',
-    signature: 'gradient(GradientMix value)',
-    invocation: 'gradient(value)',
-    requiredFieldNames: {'decoration'},
-  ),
-  StylerFactoryDescriptor(
-    name: 'border',
-    signature: 'border(BoxBorderMix value)',
-    invocation: 'border(value)',
-    requiredFieldNames: {'decoration'},
-  ),
-  StylerFactoryDescriptor(
-    name: 'borderRadius',
-    signature: 'borderRadius(BorderRadiusGeometryMix value)',
-    invocation: 'borderRadius(value)',
-    requiredFieldNames: {'decoration'},
-  ),
-  StylerFactoryDescriptor(
-    name: 'elevation',
-    signature: 'elevation(ElevationShadow value)',
-    invocation: 'elevation(value)',
-    requiredFieldNames: {'decoration'},
-  ),
-  StylerFactoryDescriptor(
-    name: 'shadow',
-    signature: 'shadow(BoxShadowMix value)',
-    invocation: 'shadow(value)',
-    requiredFieldNames: {'decoration'},
-  ),
-  StylerFactoryDescriptor(
-    name: 'shadows',
-    signature: 'shadows(List<BoxShadowMix> value)',
-    invocation: 'shadows(value)',
-    requiredFieldNames: {'decoration'},
-  ),
-  StylerFactoryDescriptor(
-    name: 'width',
-    signature: 'width(double value)',
-    invocation: 'width(value)',
+  ForwarderGroup(
+    mixinName: 'ConstraintStyleMixin',
     requiredFieldNames: {'constraints'},
+    methodNames: [
+      'width',
+      'height',
+      'size',
+      'minWidth',
+      'maxWidth',
+      'minHeight',
+      'maxHeight',
+    ],
   ),
-  StylerFactoryDescriptor(
-    name: 'height',
-    signature: 'height(double value)',
-    invocation: 'height(value)',
-    requiredFieldNames: {'constraints'},
-  ),
-  StylerFactoryDescriptor(
-    name: 'size',
-    signature: 'size(double width, double height)',
-    invocation: 'size(width, height)',
-    requiredFieldNames: {'constraints'},
-  ),
-  StylerFactoryDescriptor(
-    name: 'minWidth',
-    signature: 'minWidth(double value)',
-    invocation: 'minWidth(value)',
-    requiredFieldNames: {'constraints'},
-  ),
-  StylerFactoryDescriptor(
-    name: 'maxWidth',
-    signature: 'maxWidth(double value)',
-    invocation: 'maxWidth(value)',
-    requiredFieldNames: {'constraints'},
-  ),
-  StylerFactoryDescriptor(
-    name: 'minHeight',
-    signature: 'minHeight(double value)',
-    invocation: 'minHeight(value)',
-    requiredFieldNames: {'constraints'},
-  ),
-  StylerFactoryDescriptor(
-    name: 'maxHeight',
-    signature: 'maxHeight(double value)',
-    invocation: 'maxHeight(value)',
-    requiredFieldNames: {'constraints'},
-  ),
-  StylerFactoryDescriptor(
-    name: 'scale',
-    signature: 'scale(double scale, {Alignment alignment = .center})',
-    invocation: 'scale(scale, alignment: alignment)',
+  ForwarderGroup(
+    mixinName: 'TransformStyleMixin',
     requiredFieldNames: {'transform', 'transformAlignment'},
-  ),
-  StylerFactoryDescriptor(
-    name: 'rotate',
-    signature: 'rotate(double radians, {Alignment alignment = .center})',
-    invocation: 'rotate(radians, alignment: alignment)',
-    requiredFieldNames: {'transform', 'transformAlignment'},
-  ),
-  StylerFactoryDescriptor(
-    name: 'translate',
-    signature: 'translate(double x, double y, [double z = 0.0])',
-    invocation: 'translate(x, y, z)',
-    requiredFieldNames: {'transform', 'transformAlignment'},
-  ),
-  StylerFactoryDescriptor(
-    name: 'skew',
-    signature: 'skew(double skewX, double skewY)',
-    invocation: 'skew(skewX, skewY)',
-    requiredFieldNames: {'transform', 'transformAlignment'},
+    methodNames: ['scale', 'rotate', 'translate', 'skew'],
   ),
   StylerFactoryDescriptor(
     name: 'textStyle',
     signature: 'textStyle(TextStyler value)',
     invocation: 'textStyle(value)',
   ),
-  StylerFactoryDescriptor(
-    name: 'image',
-    signature: 'image(DecorationImageMix value)',
-    invocation: 'image(value)',
+  ForwarderGroup(
+    mixinName: 'DecorationStyleMixin',
     requiredFieldNames: {'decoration'},
+    methodNames: [
+      'image',
+      'shape',
+      'backgroundImage',
+      'backgroundImageUrl',
+      'backgroundImageAsset',
+      'linearGradient',
+      'radialGradient',
+      'sweepGradient',
+    ],
   ),
-  StylerFactoryDescriptor(
-    name: 'shape',
-    signature: 'shape(ShapeBorderMix value)',
-    invocation: 'shape(value)',
-    requiredFieldNames: {'decoration'},
-  ),
-  StylerFactoryDescriptor(
-    name: 'backgroundImage',
-    signature:
-        'backgroundImage(ImageProvider image, {BoxFit? fit, AlignmentGeometry? alignment, ImageRepeat repeat = .noRepeat})',
-    invocation:
-        'backgroundImage(image, fit: fit, alignment: alignment, repeat: repeat)',
-    requiredFieldNames: {'decoration'},
-  ),
-  StylerFactoryDescriptor(
-    name: 'backgroundImageUrl',
-    signature:
-        'backgroundImageUrl(String url, {BoxFit? fit, AlignmentGeometry? alignment, ImageRepeat repeat = .noRepeat})',
-    invocation:
-        'backgroundImageUrl(url, fit: fit, alignment: alignment, repeat: repeat)',
-    requiredFieldNames: {'decoration'},
-  ),
-  StylerFactoryDescriptor(
-    name: 'backgroundImageAsset',
-    signature:
-        'backgroundImageAsset(String path, {BoxFit? fit, AlignmentGeometry? alignment, ImageRepeat repeat = .noRepeat})',
-    invocation:
-        'backgroundImageAsset(path, fit: fit, alignment: alignment, repeat: repeat)',
-    requiredFieldNames: {'decoration'},
-  ),
-  StylerFactoryDescriptor(
-    name: 'linearGradient',
-    signature:
-        'linearGradient({required List<Color> colors, List<double>? stops, AlignmentGeometry? begin, AlignmentGeometry? end, TileMode? tileMode})',
-    invocation:
-        'linearGradient(colors: colors, stops: stops, begin: begin, end: end, tileMode: tileMode)',
-    requiredFieldNames: {'decoration'},
-  ),
-  StylerFactoryDescriptor(
-    name: 'radialGradient',
-    signature:
-        'radialGradient({required List<Color> colors, List<double>? stops, AlignmentGeometry? center, double? radius, AlignmentGeometry? focal, double? focalRadius, TileMode? tileMode})',
-    invocation:
-        'radialGradient(colors: colors, stops: stops, center: center, radius: radius, focal: focal, focalRadius: focalRadius, tileMode: tileMode)',
-    requiredFieldNames: {'decoration'},
-  ),
-  StylerFactoryDescriptor(
-    name: 'sweepGradient',
-    signature:
-        'sweepGradient({required List<Color> colors, List<double>? stops, AlignmentGeometry? center, double? startAngle, double? endAngle, TileMode? tileMode})',
-    invocation:
-        'sweepGradient(colors: colors, stops: stops, center: center, startAngle: startAngle, endAngle: endAngle, tileMode: tileMode)',
-    requiredFieldNames: {'decoration'},
-  ),
-  StylerFactoryDescriptor(
-    name: 'foregroundLinearGradient',
-    signature:
-        'foregroundLinearGradient({required List<Color> colors, List<double>? stops, AlignmentGeometry? begin, AlignmentGeometry? end, TileMode? tileMode})',
-    invocation:
-        'foregroundLinearGradient(colors: colors, stops: stops, begin: begin, end: end, tileMode: tileMode)',
+  ForwarderGroup(
+    mixinName: 'DecorationStyleMixin',
     requiredFieldNames: {'foregroundDecoration'},
-  ),
-  StylerFactoryDescriptor(
-    name: 'foregroundRadialGradient',
-    signature:
-        'foregroundRadialGradient({required List<Color> colors, List<double>? stops, AlignmentGeometry? center, double? radius, AlignmentGeometry? focal, double? focalRadius, TileMode? tileMode})',
-    invocation:
-        'foregroundRadialGradient(colors: colors, stops: stops, center: center, radius: radius, focal: focal, focalRadius: focalRadius, tileMode: tileMode)',
-    requiredFieldNames: {'foregroundDecoration'},
-  ),
-  StylerFactoryDescriptor(
-    name: 'foregroundSweepGradient',
-    signature:
-        'foregroundSweepGradient({required List<Color> colors, List<double>? stops, AlignmentGeometry? center, double? startAngle, double? endAngle, TileMode? tileMode})',
-    invocation:
-        'foregroundSweepGradient(colors: colors, stops: stops, center: center, startAngle: startAngle, endAngle: endAngle, tileMode: tileMode)',
-    requiredFieldNames: {'foregroundDecoration'},
+    methodNames: [
+      'foregroundLinearGradient',
+      'foregroundRadialGradient',
+      'foregroundSweepGradient',
+    ],
   ),
 ];
 
 const _textStyleFactories = [
-  StylerFactoryDescriptor(
-    name: 'color',
-    signature: 'color(Color value)',
-    invocation: 'color(value)',
-  ),
-  StylerFactoryDescriptor(
-    name: 'fontSize',
-    signature: 'fontSize(double value)',
-    invocation: 'fontSize(value)',
-  ),
-  StylerFactoryDescriptor(
-    name: 'fontWeight',
-    signature: 'fontWeight(FontWeight value)',
-    invocation: 'fontWeight(value)',
-  ),
-  StylerFactoryDescriptor(
-    name: 'fontStyle',
-    signature: 'fontStyle(FontStyle value)',
-    invocation: 'fontStyle(value)',
-  ),
-  StylerFactoryDescriptor(
-    name: 'letterSpacing',
-    signature: 'letterSpacing(double value)',
-    invocation: 'letterSpacing(value)',
-  ),
-  StylerFactoryDescriptor(
-    name: 'wordSpacing',
-    signature: 'wordSpacing(double value)',
-    invocation: 'wordSpacing(value)',
-  ),
-  StylerFactoryDescriptor(
-    name: 'height',
-    signature: 'height(double value)',
-    invocation: 'height(value)',
-  ),
-  StylerFactoryDescriptor(
-    name: 'fontFamily',
-    signature: 'fontFamily(String value)',
-    invocation: 'fontFamily(value)',
-  ),
-  StylerFactoryDescriptor(
-    name: 'decoration',
-    signature: 'decoration(TextDecoration value)',
-    invocation: 'decoration(value)',
-  ),
-  StylerFactoryDescriptor(
-    name: 'backgroundColor',
-    signature: 'backgroundColor(Color value)',
-    invocation: 'backgroundColor(value)',
-  ),
-  StylerFactoryDescriptor(
-    name: 'textBaseline',
-    signature: 'textBaseline(TextBaseline value)',
-    invocation: 'textBaseline(value)',
-  ),
-  StylerFactoryDescriptor(
-    name: 'decorationColor',
-    signature: 'decorationColor(Color value)',
-    invocation: 'decorationColor(value)',
-  ),
-  StylerFactoryDescriptor(
-    name: 'decorationStyle',
-    signature: 'decorationStyle(TextDecorationStyle value)',
-    invocation: 'decorationStyle(value)',
-  ),
-  StylerFactoryDescriptor(
-    name: 'decorationThickness',
-    signature: 'decorationThickness(double value)',
-    invocation: 'decorationThickness(value)',
-  ),
-  StylerFactoryDescriptor(
-    name: 'fontFamilyFallback',
-    signature: 'fontFamilyFallback(List<String> value)',
-    invocation: 'fontFamilyFallback(value)',
-  ),
-  StylerFactoryDescriptor(
-    name: 'shadow',
-    signature: 'shadow(ShadowMix value)',
-    invocation: 'shadow(value)',
-  ),
-  StylerFactoryDescriptor(
-    name: 'shadows',
-    signature: 'shadows(List<ShadowMix> value)',
-    invocation: 'shadows(value)',
-  ),
-  StylerFactoryDescriptor(
-    name: 'fontFeatures',
-    signature: 'fontFeatures(List<FontFeature> value)',
-    invocation: 'fontFeatures(value)',
-  ),
-  StylerFactoryDescriptor(
-    name: 'fontVariations',
-    signature: 'fontVariations(List<FontVariation> value)',
-    invocation: 'fontVariations(value)',
-  ),
-  StylerFactoryDescriptor(
-    name: 'foreground',
-    signature: 'foreground(Paint value)',
-    invocation: 'foreground(value)',
-  ),
-  StylerFactoryDescriptor(
-    name: 'background',
-    signature: 'background(Paint value)',
-    invocation: 'background(value)',
+  ForwarderGroup(
+    mixinName: 'TextStyleMixin',
+    requiredFieldNames: {'style'},
+    methodNames: [
+      'color',
+      'fontSize',
+      'fontWeight',
+      'fontStyle',
+      'letterSpacing',
+      'wordSpacing',
+      'height',
+      'fontFamily',
+      'decoration',
+      'backgroundColor',
+      'textBaseline',
+      'decorationColor',
+      'decorationStyle',
+      'decorationThickness',
+      'fontFamilyFallback',
+      'shadow',
+      'shadows',
+      'fontFeatures',
+      'fontVariations',
+      'foreground',
+      'background',
+    ],
   ),
 ];
 
 const _flexFactories = [
-  StylerFactoryDescriptor(name: 'row', signature: 'row()', invocation: 'row()'),
-  StylerFactoryDescriptor(
-    name: 'column',
-    signature: 'column()',
-    invocation: 'column()',
+  ForwarderGroup(
+    mixinName: 'FlexStyleMixin',
+    requiredFieldNames: {'direction'},
+    methodNames: ['row', 'column'],
   ),
 ];
 
@@ -563,19 +393,20 @@ const _flexAnchorMethod = StylerMethodDescriptor(
 const _surfaces = {
   'BoxStyler': StylerSurface(
     stylerName: 'BoxStyler',
-    factoryDescriptors: _boxConvenienceFactories,
+    factoryEntries: _boxConvenienceFactories,
     methodDescriptors: [_textStyleMethod],
     generatesAnimateFactory: true,
   ),
   'FlexStyler': StylerSurface(
     stylerName: 'FlexStyler',
     ownerMixinNames: ['FlexStyleMixin'],
-    factoryDescriptors: _flexFactories,
+    factoryEntries: _flexFactories,
     methodDescriptors: [_flexAnchorMethod],
     requiredFieldNames: {'direction'},
   ),
   'IconStyler': StylerSurface(
     stylerName: 'IconStyler',
+    generatesSingleShadowConvenience: true,
     suppressedFieldFactoryNames: {'semanticsLabel'},
   ),
   'ImageStyler': StylerSurface(
@@ -586,24 +417,27 @@ const _surfaces = {
   'TextStyler': StylerSurface(
     stylerName: 'TextStyler',
     ownerMixinNames: ['TextStyleMixin'],
-    factoryDescriptors: _textStyleFactories,
+    factoryEntries: _textStyleFactories,
     suppressedFieldFactoryNames: {'semanticsLabel'},
     requiredFieldNames: {'style'},
   ),
   'FlexBoxStyler': StylerSurface(
     stylerName: 'FlexBoxStyler',
-    factoryDescriptors: [..._boxConvenienceFactories, ..._flexFactories],
+    factoryEntries: [..._boxConvenienceFactories, ..._flexFactories],
     methodDescriptors: [_textStyleMethod],
     generatesAnimateFactory: true,
   ),
   'StackBoxStyler': StylerSurface(
     stylerName: 'StackBoxStyler',
-    factoryDescriptors: _boxConvenienceFactories,
+    factoryEntries: _boxConvenienceFactories,
     methodDescriptors: [_textStyleMethod],
     generatesAnimateFactory: true,
   ),
 };
 
+// Compound constructor params and arguments are deliberately separate: param
+// order is public API, argument order follows nested styler constructors, and
+// renamed entries avoid Box/Flex/Stack collisions.
 const _boxConstructorParams = [
   StylerConstructorParamDescriptor(type: 'DecorationMix', name: 'decoration'),
   StylerConstructorParamDescriptor(
@@ -722,7 +556,7 @@ StylerMethodDescriptor _directMergeMethod(
   return StylerMethodDescriptor(
     name: name,
     signature: '$name($parameterType value)',
-    bodyLines: ['return merge(%STYLER%($constructorArg: value));'],
+    bodyLines: ['return merge($_stylerToken($constructorArg: value));'],
     isOverride: isOverride,
   );
 }
@@ -786,7 +620,7 @@ final _boxDirectMethods = [
     signature:
         'transform(Matrix4 value, {AlignmentGeometry alignment = Alignment.center})',
     bodyLines: [
-      'return merge(%STYLER%(transform: value, transformAlignment: alignment));',
+      'return merge($_stylerToken(transform: value, transformAlignment: alignment));',
     ],
     isOverride: true,
   ),
@@ -808,7 +642,9 @@ final _flexDirectMethods = [
   const StylerMethodDescriptor(
     name: 'flex',
     signature: 'flex(FlexStyler value)',
-    bodyLines: ['return merge(%STYLER%.create(flex: Prop.maybeMix(value)));'],
+    bodyLines: [
+      'return merge($_stylerToken.create(flex: Prop.maybeMix(value)));',
+    ],
     isOverride: true,
   ),
 ];
@@ -817,27 +653,29 @@ final _stackDirectMethods = [
   const StylerMethodDescriptor(
     name: 'stack',
     signature: 'stack(StackStyler value)',
-    bodyLines: ['return merge(%STYLER%.create(stack: Prop.maybeMix(value)));'],
+    bodyLines: [
+      'return merge($_stylerToken.create(stack: Prop.maybeMix(value)));',
+    ],
   ),
   StylerMethodDescriptor(
     name: 'stackAlignment',
     signature: 'stackAlignment(AlignmentGeometry value)',
-    bodyLines: ['return merge(%STYLER%(stackAlignment: value));'],
+    bodyLines: ['return merge($_stylerToken(stackAlignment: value));'],
   ),
   StylerMethodDescriptor(
     name: 'fit',
     signature: 'fit(StackFit value)',
-    bodyLines: ['return merge(%STYLER%(fit: value));'],
+    bodyLines: ['return merge($_stylerToken(fit: value));'],
   ),
   StylerMethodDescriptor(
     name: 'textDirection',
     signature: 'textDirection(TextDirection value)',
-    bodyLines: ['return merge(%STYLER%(textDirection: value));'],
+    bodyLines: ['return merge($_stylerToken(textDirection: value));'],
   ),
   StylerMethodDescriptor(
     name: 'stackClipBehavior',
     signature: 'stackClipBehavior(Clip value)',
-    bodyLines: ['return merge(%STYLER%(stackClipBehavior: value));'],
+    bodyLines: ['return merge($_stylerToken(stackClipBehavior: value));'],
   ),
 ];
 
@@ -958,46 +796,46 @@ List<StylerMethodDescriptor> textDirectiveMethodDescriptors() {
     StylerMethodDescriptor(
       name: 'textDirective',
       signature: 'textDirective(Directive<String> value)',
-      bodyLines: ['return merge(%STYLER%(textDirectives: [value]));'],
+      bodyLines: ['return merge($_stylerToken(textDirectives: [value]));'],
     ),
     StylerMethodDescriptor(
       name: 'directive',
       signature: 'directive(Directive<String> value)',
-      bodyLines: ['return merge(%STYLER%(textDirectives: [value]));'],
+      bodyLines: ['return merge($_stylerToken(textDirectives: [value]));'],
     ),
     StylerMethodDescriptor(
       name: 'uppercase',
       signature: 'uppercase()',
       bodyLines: [
-        'return merge(%STYLER%(textDirectives: [const UppercaseStringDirective()]));',
+        'return merge($_stylerToken(textDirectives: [const UppercaseStringDirective()]));',
       ],
     ),
     StylerMethodDescriptor(
       name: 'lowercase',
       signature: 'lowercase()',
       bodyLines: [
-        'return merge(%STYLER%(textDirectives: [const LowercaseStringDirective()]));',
+        'return merge($_stylerToken(textDirectives: [const LowercaseStringDirective()]));',
       ],
     ),
     StylerMethodDescriptor(
       name: 'capitalize',
       signature: 'capitalize()',
       bodyLines: [
-        'return merge(%STYLER%(textDirectives: [const CapitalizeStringDirective()]));',
+        'return merge($_stylerToken(textDirectives: [const CapitalizeStringDirective()]));',
       ],
     ),
     StylerMethodDescriptor(
       name: 'titlecase',
       signature: 'titlecase()',
       bodyLines: [
-        'return merge(%STYLER%(textDirectives: [const TitleCaseStringDirective()]));',
+        'return merge($_stylerToken(textDirectives: [const TitleCaseStringDirective()]));',
       ],
     ),
     StylerMethodDescriptor(
       name: 'sentencecase',
       signature: 'sentencecase()',
       bodyLines: [
-        'return merge(%STYLER%(textDirectives: [const SentenceCaseStringDirective()]));',
+        'return merge($_stylerToken(textDirectives: [const SentenceCaseStringDirective()]));',
       ],
     ),
   ];
@@ -1017,7 +855,7 @@ StylerMethodDescriptor iconShadowMethodDescriptor() {
   return const StylerMethodDescriptor(
     name: 'shadow',
     signature: 'shadow(ShadowMix value)',
-    bodyLines: ['return merge(%STYLER%(shadows: [value]));'],
+    bodyLines: ['return merge($_stylerToken(shadows: [value]));'],
   );
 }
 
@@ -1036,7 +874,7 @@ StylerMethodDescriptor transformAnchorMethodDescriptor() {
     name: 'transform',
     signature: 'transform(Matrix4 value, {Alignment alignment = .center})',
     bodyLines: [
-      'return merge(%STYLER%(transform: value, transformAlignment: alignment));',
+      'return merge($_stylerToken(transform: value, transformAlignment: alignment));',
     ],
     isOverride: true,
   );

@@ -99,6 +99,7 @@ const _mixStub = '''
   class BoxBorderMix {}
   class BorderRadiusGeometryMix {}
   class BoxShadowMix {}
+  class ElevationShadow {}
   class ShadowMix {}
   class TextStyleMix {}
   class TextStyler {}
@@ -116,6 +117,7 @@ const _mixStub = '''
   class FontStyle {}
   class TextDecoration {}
   class TextDecorationStyle {}
+  class TextBaseline {}
   class FontFeature {}
   class FontVariation {}
   class Paint {}
@@ -136,23 +138,105 @@ const _mixStub = '''
     T width(double value) => constraints(BoxConstraintsMix());
     T height(double value) => constraints(BoxConstraintsMix());
     T size(double width, double height) => constraints(BoxConstraintsMix());
+    T minWidth(double value) => constraints(BoxConstraintsMix());
+    T maxWidth(double value) => constraints(BoxConstraintsMix());
+    T minHeight(double value) => constraints(BoxConstraintsMix());
+    T maxHeight(double value) => constraints(BoxConstraintsMix());
   }
 
   mixin DecorationStyleMixin<T> {
     T decoration(DecorationMix value);
+    T foregroundDecoration(DecorationMix value);
     T color(Color value) => decoration(DecorationMix());
     T gradient(GradientMix value) => decoration(DecorationMix());
+    T border(BoxBorderMix value) => decoration(DecorationMix());
+    T borderRadius(BorderRadiusGeometryMix value) => decoration(DecorationMix());
+    T elevation(ElevationShadow value) => decoration(DecorationMix());
+    T shadow(BoxShadowMix value) => decoration(DecorationMix());
+    T shadows(List<BoxShadowMix> value) => decoration(DecorationMix());
+    T image(DecorationImageMix value);
+    T shape(ShapeBorderMix value);
+    T backgroundImage(
+      ImageProvider image, {
+      BoxFit? fit,
+      AlignmentGeometry? alignment,
+      ImageRepeat repeat = .noRepeat,
+    });
+    T backgroundImageUrl(
+      String url, {
+      BoxFit? fit,
+      AlignmentGeometry? alignment,
+      ImageRepeat repeat = .noRepeat,
+    });
+    T backgroundImageAsset(
+      String path, {
+      BoxFit? fit,
+      AlignmentGeometry? alignment,
+      ImageRepeat repeat = .noRepeat,
+    });
+    T linearGradient({
+      required List<Color> colors,
+      List<double>? stops,
+      AlignmentGeometry? begin,
+      AlignmentGeometry? end,
+      TileMode? tileMode,
+    });
+    T radialGradient({
+      required List<Color> colors,
+      List<double>? stops,
+      AlignmentGeometry? center,
+      double? radius,
+      AlignmentGeometry? focal,
+      double? focalRadius,
+      TileMode? tileMode,
+    });
+    T sweepGradient({
+      required List<Color> colors,
+      List<double>? stops,
+      AlignmentGeometry? center,
+      double? startAngle,
+      double? endAngle,
+      TileMode? tileMode,
+    });
+    T foregroundLinearGradient({
+      required List<Color> colors,
+      List<double>? stops,
+      AlignmentGeometry? begin,
+      AlignmentGeometry? end,
+      TileMode? tileMode,
+    });
+    T foregroundRadialGradient({
+      required List<Color> colors,
+      List<double>? stops,
+      AlignmentGeometry? center,
+      double? radius,
+      AlignmentGeometry? focal,
+      double? focalRadius,
+      TileMode? tileMode,
+    });
+    T foregroundSweepGradient({
+      required List<Color> colors,
+      List<double>? stops,
+      AlignmentGeometry? center,
+      double? startAngle,
+      double? endAngle,
+      TileMode? tileMode,
+    });
   }
 
   mixin BorderStyleMixin<T> {}
   mixin BorderRadiusStyleMixin<T> {}
   mixin ShadowStyleMixin<T> {}
   mixin TransformStyleMixin<T> {
-    T transform(Matrix4 value, {Alignment alignment = Alignment.center});
-    T scale(double value, {Alignment alignment = Alignment.center}) {
+    T transform(Matrix4 value, {Alignment alignment = .center});
+    T rotate(double radians, {Alignment alignment = .center}) {
+      return transform(Matrix4(), alignment: alignment);
+    }
+    T scale(double scale, {Alignment alignment = .center}) {
       return transform(Matrix4(), alignment: alignment);
     }
     T translate(double x, double y, [double z = 0.0]) => transform(Matrix4());
+    T skew(double skewX, double skewY) => transform(Matrix4());
   }
 
   mixin FlexStyleMixin<T> {
@@ -205,7 +289,26 @@ const _mixStub = '''
   mixin TextStyleMixin<T> {
     T style(TextStyleMix value);
     T color(Color value) => style(TextStyleMix());
+    T backgroundColor(Color value) => style(TextStyleMix());
     T fontSize(double value) => style(TextStyleMix());
+    T fontWeight(FontWeight value) => style(TextStyleMix());
+    T fontStyle(FontStyle value) => style(TextStyleMix());
+    T letterSpacing(double value) => style(TextStyleMix());
+    T wordSpacing(double value) => style(TextStyleMix());
+    T height(double value) => style(TextStyleMix());
+    T textBaseline(TextBaseline value) => style(TextStyleMix());
+    T decoration(TextDecoration value) => style(TextStyleMix());
+    T decorationColor(Color value) => style(TextStyleMix());
+    T decorationStyle(TextDecorationStyle value) => style(TextStyleMix());
+    T decorationThickness(double value) => style(TextStyleMix());
+    T fontFamily(String value) => style(TextStyleMix());
+    T fontFamilyFallback(List<String> value) => style(TextStyleMix());
+    T shadows(List<ShadowMix> value) => style(TextStyleMix());
+    T shadow(ShadowMix value) => style(TextStyleMix());
+    T fontFeatures(List<FontFeature> value) => style(TextStyleMix());
+    T fontVariations(List<FontVariation> value) => style(TextStyleMix());
+    T foreground(Paint value) => style(TextStyleMix());
+    T background(Paint value) => style(TextStyleMix());
   }
 
   mixin StackStyleMixin<T> {

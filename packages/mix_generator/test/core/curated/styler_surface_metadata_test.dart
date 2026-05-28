@@ -44,6 +44,29 @@ void main() {
       expect(stylerSurfaceFor('TextStyler')!.generatesAnimateFactory, isFalse);
     });
 
+    test('gates icon single-shadow convenience to IconStyler only', () {
+      expect(
+        stylerSurfaceFor('IconStyler')!.generatesSingleShadowConvenience,
+        isTrue,
+      );
+
+      for (final stylerName in [
+        'BoxStyler',
+        'FlexStyler',
+        'ImageStyler',
+        'StackStyler',
+        'TextStyler',
+        'FlexBoxStyler',
+        'StackBoxStyler',
+      ]) {
+        expect(
+          stylerSurfaceFor(stylerName)!.generatesSingleShadowConvenience,
+          isFalse,
+          reason: stylerName,
+        );
+      }
+    });
+
     test('documents generated-only direct factories that are suppressed', () {
       expect(
         suppressedFieldFactoryNamesFor('IconStyler'),
