@@ -4,6 +4,7 @@ import 'package:mix_annotations/mix_annotations.dart';
 
 import '../../core/helpers.dart';
 import '../../core/spec.dart';
+import 'icon_widget.dart';
 
 part 'icon_spec.g.dart';
 
@@ -11,7 +12,7 @@ part 'icon_spec.g.dart';
 ///
 /// Provides comprehensive icon styling including color, size, weight, optical properties,
 /// text direction, scaling behavior, and shadow effects.
-@MixableSpec()
+@MixableSpec(target: StyledIcon.new)
 @immutable
 final class IconSpec with _$IconSpec {
   /// The color to use when drawing the icon.

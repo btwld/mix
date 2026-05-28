@@ -43,7 +43,7 @@ class MixWidgetBuilder {
   /// Emits one parameter inside the constructor's parameter list.
   ///
   /// `required` precedes `this.<name>` for required named parameters.
-  String _constructorParam(MixWidgetParam param) {
+  String _constructorParam(WidgetCallParam param) {
     final required = param.isRequired && !param.isPositional ? 'required ' : '';
     final defaultClause = param.defaultValueCode != null
         ? ' = ${param.defaultValueCode}'

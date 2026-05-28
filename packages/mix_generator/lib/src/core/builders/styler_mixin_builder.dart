@@ -14,12 +14,14 @@ class StylerMixinBuilder {
   final String specName;
   final List<StylerFieldModel> fields;
   final MixableStylerAnnotationConfig config;
+  final String? callMethodCode;
 
   const StylerMixinBuilder({
     required this.stylerName,
     required this.specName,
     required this.fields,
     required this.config,
+    this.callMethodCode,
   });
 
   FieldEmitter<StylerFieldModel> _fieldEmitter() => .new(fields);
@@ -182,6 +184,10 @@ class StylerMixinBuilder {
 
     if (config.generateSetters) {
       buffer.writeln(_buildBaseMethods());
+    }
+
+    if (callMethodCode != null) {
+      buffer.writeln(callMethodCode);
     }
 
     if (config.generateMerge) {

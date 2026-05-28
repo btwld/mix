@@ -348,10 +348,6 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
     return merge(StackBoxStyler(modifier: value));
   }
 
-  StackBox call({Key? key, List<Widget> children = const <Widget>[]}) {
-    return StackBox(key: key, style: this, children: children);
-  }
-
   // Stack property methods
   /// Sets the alignment for the Stack widget.
   StackBoxStyler stackAlignment(AlignmentGeometry value) {

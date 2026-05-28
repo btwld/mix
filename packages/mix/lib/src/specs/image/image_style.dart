@@ -146,25 +146,6 @@ class ImageStyler extends MixStyler<ImageStyler, ImageSpec>
   factory ImageStyler.matchTextDirection(bool value) =>
       ImageStyler().matchTextDirection(value);
 
-  StyledImage call({
-    Key? key,
-    ImageProvider<Object>? image,
-    ImageFrameBuilder? frameBuilder,
-    ImageLoadingBuilder? loadingBuilder,
-    ImageErrorWidgetBuilder? errorBuilder,
-    Animation<double>? opacity,
-  }) {
-    return StyledImage(
-      key: key,
-      style: this,
-      frameBuilder: frameBuilder,
-      loadingBuilder: loadingBuilder,
-      errorBuilder: errorBuilder,
-      image: image,
-      opacity: opacity,
-    );
-  }
-
   /// Sets the widget modifier.
   @override
   ImageStyler modifier(WidgetModifierConfig value) {

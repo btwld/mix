@@ -201,10 +201,6 @@ class TextStyler extends MixStyler<TextStyler, TextSpec>
   factory TextStyler.titlecase() => TextStyler().titlecase();
   factory TextStyler.sentencecase() => TextStyler().sentencecase();
 
-  StyledText call(String text, {Key? key}) {
-    return StyledText(text, key: key, style: this);
-  }
-
   /// Sets a text directive. It will be applied to the text before it is displayed.
   TextStyler textDirective(Directive<String> value) {
     return merge(TextStyler(textDirectives: [value]));

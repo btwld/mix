@@ -72,6 +72,10 @@ mixin _$BoxStylerMixin on Style<BoxSpec>, Diagnosticable {
     return merge(BoxStyler(modifier: value));
   }
 
+  Box call({Key? key, Widget? child}) {
+    return Box(key: key, style: this, child: child);
+  }
+
   /// Merges with another [BoxStyler].
   @override
   BoxStyler merge(BoxStyler? other) {

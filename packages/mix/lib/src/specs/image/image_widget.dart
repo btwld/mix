@@ -28,10 +28,10 @@ class StyledImage extends StyleWidget<ImageSpec> {
     super.key,
     super.style = const IdentityStyle(ImageSpec()),
     super.styleSpec,
+    this.image,
     this.frameBuilder,
     this.loadingBuilder,
     this.errorBuilder,
-    this.image,
     this.opacity,
   });
 

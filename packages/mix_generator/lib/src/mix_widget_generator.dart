@@ -4,8 +4,9 @@
 /// that produces a `Style<S>`.
 ///
 /// Triggers on `@MixWidget` annotations applied to a top-level variable or
-/// top-level function. The styler's `call()` method drives the wrapper's
-/// widget-level API (parameters + delegation in `build`).
+/// top-level function. The styler's `call()` method usually drives the
+/// wrapper's widget-level API (parameters + delegation in `build`); for
+/// spec-generated stylers, that `call()` can come from `SpecStylerGenerator`.
 library;
 
 import 'package:analyzer/dart/element/element.dart';
@@ -19,6 +20,7 @@ import 'core/checkers.dart';
 import 'core/errors.dart';
 import 'core/helpers/library_scope.dart';
 import 'core/helpers/type_hierarchy.dart';
+import 'core/helpers/widget_call_planner.dart';
 import 'core/models/mix_widget_model.dart';
 
 const _annotationLabel = '@MixWidget';
@@ -26,15 +28,6 @@ const _annotationLabel = '@MixWidget';
 class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
   static final _identifierPattern = RegExp(r'^_*[A-Za-z][A-Za-z0-9_]*$');
   static final _derivedNamePattern = RegExp(r'^_*[a-z][A-Za-z0-9]*Style$');
-
-  static const _reservedParamNames = {
-    'build',
-    'createElement',
-    'runtimeType',
-    'hashCode',
-    'toString',
-    'noSuchMethod',
-  };
 
   static const _dartReservedWords = {
     'abstract',
@@ -126,7 +119,7 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
       library: library,
     );
     _requireUnprefixedFlutterSymbols(variable, callMethod, library);
-    final call = _extractCallParams(
+    final call = extractCallParams(
       callMethod,
       anchor: variable,
       library: library,
@@ -181,7 +174,7 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
       library: library,
       factoryReference: functionName,
     );
-    final call = _extractCallParams(
+    final call = extractCallParams(
       callMethod,
       anchor: function,
       library: library,
@@ -273,7 +266,7 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
       );
     }
 
-    final optionalPositional = _optionalPositionalNames(call.formalParameters);
+    final optionalPositional = optionalPositionalNames(call.formalParameters);
     if (optionalPositional.isNotEmpty) {
       fail(
         anchor,
@@ -286,23 +279,12 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
     return call;
   }
 
-  /// Returns display names of optional positional parameters in declaration
-  /// order, with `<unnamed>` substituted for nameless parameters.
-  List<String> _optionalPositionalNames(
-    Iterable<FormalParameterElement> parameters,
-  ) {
-    return parameters
-        .where((p) => p.isOptionalPositional)
-        .map((p) => p.name ?? '<unnamed>')
-        .toList();
-  }
-
-  List<MixWidgetParam> _extractFactoryParams(
+  List<WidgetCallParam> _extractFactoryParams(
     TopLevelFunctionElement function, {
     required LibraryElement library,
     required String factoryReference,
   }) {
-    final optionalPositional = _optionalPositionalNames(
+    final optionalPositional = optionalPositionalNames(
       function.formalParameters,
     );
     if (optionalPositional.isNotEmpty) {
@@ -314,69 +296,15 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
       );
     }
 
-    final params = <MixWidgetParam>[];
+    final params = <WidgetCallParam>[];
     for (final p in function.formalParameters) {
       _rejectFactoryKeyParam(p, function);
-      _rejectReservedName(p, function);
-      _rejectFactoryReferenceCollision(p, function, factoryReference);
-      params.add(_paramFor(p, library: library));
+      rejectReservedName(p, function);
+      rejectFactoryReferenceCollision(p, function, factoryReference);
+      params.add(paramFor(p, library: library));
     }
 
     return params;
-  }
-
-  ({List<MixWidgetParam> params, bool forwardsKey}) _extractCallParams(
-    MethodElement callMethod, {
-    required Element anchor,
-    required LibraryElement library,
-    required String factoryReference,
-  }) {
-    var forwardsKey = false;
-    final params = <MixWidgetParam>[];
-
-    for (final p in callMethod.formalParameters) {
-      if (_validateAndDetectCallKey(p, anchor)) {
-        forwardsKey = true;
-        continue;
-      }
-      _rejectReservedName(p, anchor);
-      _rejectFactoryReferenceCollision(p, anchor, factoryReference);
-      params.add(_paramFor(p, library: library));
-    }
-
-    return (params: params, forwardsKey: forwardsKey);
-  }
-
-  void _rejectReservedName(FormalParameterElement parameter, Element anchor) {
-    final name = parameter.name;
-    if (name == null || !_reservedParamNames.contains(name)) return;
-
-    fail(
-      anchor,
-      '$_annotationLabel reserves the parameter name `$name` because the '
-      'generated widget declares or inherits a member with that name. Dart '
-      "doesn't allow a subclass field to share a name with an inherited "
-      'method/getter, so the generated class would not compile.',
-      todo: 'Rename the parameter to avoid clashing with `$name`.',
-    );
-  }
-
-  void _rejectFactoryReferenceCollision(
-    FormalParameterElement parameter,
-    Element anchor,
-    String factoryReference,
-  ) {
-    if (parameter.name != factoryReference) return;
-
-    fail(
-      anchor,
-      '$_annotationLabel reserves the parameter name `$factoryReference` '
-      "because it matches the factory's identifier; once a field with that "
-      'name exists on the generated widget, the bare `$factoryReference(...)` '
-      'call inside `build()` resolves to the field rather than the top-level '
-      'factory.',
-      todo: 'Rename the parameter to avoid clashing with the factory name.',
-    );
   }
 
   /// Reserves the parameter name `key` on factory functions. The forwarded
@@ -396,84 +324,6 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
     );
   }
 
-  /// Returns `true` when [parameter] is the forwarded `Key? key` on a
-  /// styler's `call()` — in that case it is dropped from the generated
-  /// constructor and surfaced via `super.key` instead.
-  ///
-  /// Any other shape of a `key`-named parameter fails with a clear error:
-  /// the generated constructor unconditionally exposes `super.key`, so
-  /// allowing a divergent `key` parameter would either silently change its
-  /// contract (e.g. `required Key key` → optional `Key?`) or emit a
-  /// duplicate `key` field that won't compile.
-  bool _validateAndDetectCallKey(
-    FormalParameterElement parameter,
-    Element anchor,
-  ) {
-    if (parameter.name != 'key') return false;
-
-    final issues = <String>[];
-    if (!parameter.isNamed) issues.add('must be a named parameter');
-    if (parameter.isRequired) issues.add('must not be `required`');
-    if (parameter.defaultValueCode != null) {
-      issues.add('must not have a default value');
-    }
-    if (parameter.type.nullabilitySuffix != .question) {
-      issues.add('must be nullable');
-    }
-    if (!keyChecker.isExactlyType(parameter.type)) {
-      issues.add(
-        'must use the exact `Key` type (subtypes like `LocalKey` or '
-        '`GlobalKey` are not allowed)',
-      );
-    }
-
-    if (issues.isNotEmpty) {
-      final typeDisplay = parameter.type.getDisplayString();
-      fail(
-        anchor,
-        '$_annotationLabel only forwards a `key` parameter when it is '
-        'declared as `Key? key` on the styler `call()`. Found '
-        '`$typeDisplay key` which ${issues.join(' and ')}.',
-        todo:
-            'Use `Key? key` (named, nullable, no default, not `required`) or '
-            'rename the parameter.',
-      );
-    }
-
-    return true;
-  }
-
-  MixWidgetParam _paramFor(
-    FormalParameterElement parameter, {
-    required LibraryElement library,
-  }) {
-    final name = parameter.name;
-    if (name == null) {
-      fail(
-        parameter,
-        '$_annotationLabel cannot route a parameter with no name.',
-      );
-    }
-
-    final hiddenType = firstInvisibleTypeName(parameter.type, library);
-    if (hiddenType != null) {
-      fail(
-        parameter,
-        'Parameter `$name` uses type `$hiddenType`, but that type is not '
-        'visible from the annotated library.',
-        todo: 'Import or re-export `$hiddenType` where the annotation lives.',
-      );
-    }
-
-    return MixWidgetParam(
-      name: name,
-      typeCode: typeCode(parameter.type, visibleFrom: library),
-      isPositional: parameter.isPositional,
-      isRequired: parameter.isRequired,
-      defaultValueCode: parameter.defaultValueCode,
-    );
-  }
-
   /// Disallows reusing the same name for a factory parameter and a non-`key`
   /// call parameter.
   ///
@@ -482,8 +332,8 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
   /// the resulting Dart compiler diagnostic.
   void _rejectCollisions(
     Element anchor,
-    List<MixWidgetParam> factoryParams,
-    List<MixWidgetParam> callParams,
+    List<WidgetCallParam> factoryParams,
+    List<WidgetCallParam> callParams,
   ) {
     final factoryNames = factoryParams.map((p) => p.name).toSet();
     for (final callParam in callParams) {

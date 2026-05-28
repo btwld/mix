@@ -12,7 +12,7 @@ void main() {
           isFunctionFactory: false,
           factoryParams: [],
           callParams: [
-            MixWidgetParam(
+            WidgetCallParam(
               name: 'child',
               typeCode: 'Widget?',
               isPositional: false,
@@ -40,13 +40,13 @@ void main() {
           factoryReference: 'badgeStyle',
           isFunctionFactory: true,
           factoryParams: [
-            MixWidgetParam(
+            WidgetCallParam(
               name: 'color',
               typeCode: 'Color?',
               isPositional: false,
               isRequired: false,
             ),
-            MixWidgetParam(
+            WidgetCallParam(
               name: 'style',
               typeCode: 'BoxStyler?',
               isPositional: false,
@@ -54,7 +54,7 @@ void main() {
             ),
           ],
           callParams: [
-            MixWidgetParam(
+            WidgetCallParam(
               name: 'child',
               typeCode: 'Widget?',
               isPositional: false,
@@ -86,7 +86,7 @@ void main() {
           factoryReference: 'labelStyle',
           isFunctionFactory: true,
           factoryParams: [
-            MixWidgetParam(
+            WidgetCallParam(
               name: 'color',
               typeCode: 'Color?',
               isPositional: false,
@@ -94,7 +94,7 @@ void main() {
             ),
           ],
           callParams: [
-            MixWidgetParam(
+            WidgetCallParam(
               name: 'text',
               typeCode: 'String',
               isPositional: true,
@@ -123,7 +123,7 @@ void main() {
           factoryReference: 'primaryButtonStyle',
           isFunctionFactory: true,
           factoryParams: [
-            MixWidgetParam(
+            WidgetCallParam(
               name: 'color',
               typeCode: 'Color',
               isPositional: false,
@@ -132,13 +132,13 @@ void main() {
             ),
           ],
           callParams: [
-            MixWidgetParam(
+            WidgetCallParam(
               name: 'onPressed',
               typeCode: 'VoidCallback',
               isPositional: false,
               isRequired: true,
             ),
-            MixWidgetParam(
+            WidgetCallParam(
               name: 'child',
               typeCode: 'Widget',
               isPositional: false,

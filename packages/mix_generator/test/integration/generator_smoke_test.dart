@@ -344,6 +344,76 @@ class BoxStyler extends Style<BoxSpec> {
       },
     );
 
+    test('StylerGenerator emits call from the spec target', () async {
+      const source = r'''
+library styler_case;
+
+import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+import 'package:mix/src/core/prop.dart';
+import 'package:mix/src/core/style.dart';
+import 'package:mix/src/core/style_widget.dart';
+
+part 'styler_case.g.dart';
+
+@MixableSpec(target: Box.new)
+class BoxSpec {
+  const BoxSpec();
+}
+
+class Box extends StyleWidget<BoxSpec> {
+  const Box({Key? key, required super.style, this.child}) : super(key: key);
+
+  final Widget? child;
+}
+
+@MixableStyler()
+class BoxStyler extends Style<BoxSpec> {
+  const BoxStyler({Object? variants, Object? modifier, Object? animation})
+    : super(variants: variants, modifier: modifier, animation: animation);
+
+  static BoxStyler create({
+    Object? variants,
+    Object? modifier,
+    Object? animation,
+  }) => BoxStyler(
+    variants: variants,
+    modifier: modifier,
+    animation: animation,
+  );
+}
+''';
+
+      await testBuilder(
+        partBuilder(const StylerGenerator()),
+        {
+          ...mixAnnotationsSources,
+          ...widgetStub,
+          'mix_generator|lib/styler_case.dart': source,
+          'mix|lib/src/core/prop.dart': propStub,
+          'mix|lib/src/core/style.dart': styleStub,
+          'mix|lib/src/core/style_widget.dart': r'''
+import 'package:flutter/widgets.dart';
+import 'style.dart';
+
+abstract class StyleWidget<S> extends Widget {
+  final Style<S> style;
+  const StyleWidget({required this.style, super.key});
+}
+''',
+        },
+        generateFor: {'mix_generator|lib/styler_case.dart'},
+        outputs: {
+          'mix_generator|lib/styler_case.g.dart': decodedMatches(
+            allOf(
+              contains('Box call({Key? key, Widget? child})'),
+              contains('return Box(key: key, style: this, child: child);'),
+            ),
+          ),
+        },
+      );
+    });
+
     test('StylerGenerator does not unwrap local Prop lookalikes', () async {
       const source = r'''
 library styler_case;

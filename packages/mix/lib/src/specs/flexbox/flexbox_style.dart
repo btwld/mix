@@ -372,11 +372,6 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
     return merge(FlexBoxStyler(modifier: value));
   }
 
-  /// Creates a FlexBox widget with children.
-  FlexBox call({Key? key, List<Widget> children = const <Widget>[]}) {
-    return FlexBox(key: key, style: this, children: children);
-  }
-
   /// Propagates the given [TextStyler] to descendant [StyledText] widgets via
   /// [DefaultTextStylerModifier] (Mix inheritance).
   FlexBoxStyler textStyle(TextStyler value) {

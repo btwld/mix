@@ -140,15 +140,6 @@ class IconStyler extends MixStyler<IconStyler, IconSpec>
     return merge(IconStyler(shadows: [value]));
   }
 
-  StyledIcon call({Key? key, IconData? icon, String? semanticLabel}) {
-    return StyledIcon(
-      key: key,
-      icon: icon,
-      semanticLabel: semanticLabel,
-      style: this,
-    );
-  }
-
   /// Sets the widget modifier.
   @override
   IconStyler modifier(WidgetModifierConfig value) {

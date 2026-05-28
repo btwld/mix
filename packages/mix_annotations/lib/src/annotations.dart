@@ -8,11 +8,14 @@ class MixableSpec {
   final int methods;
   final int components;
   final List<Type> extraStylerMixins;
+  // ignore: prefer-explicit-function-type
+  final Function? target;
 
   const MixableSpec({
     this.methods = GeneratedSpecMethods.all,
     this.components = GeneratedSpecComponents.all,
     this.extraStylerMixins = const [],
+    this.target,
   });
 }
 

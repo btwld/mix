@@ -5,6 +5,7 @@ import '../../core/spec.dart';
 import '../../core/style_spec.dart';
 import '../box/box_spec.dart';
 import '../stack/stack_spec.dart';
+import 'stackbox_widget.dart';
 
 part 'stackbox_spec.g.dart';
 
@@ -13,7 +14,7 @@ part 'stackbox_spec.g.dart';
 /// Provides comprehensive styling for widgets that need both
 /// box decoration and stack layout capabilities. Merges [BoxSpec] and
 /// [StackSpec] into a unified specification.
-@MixableSpec()
+@MixableSpec(target: StackBox.new)
 @immutable
 final class StackBoxSpec with _$StackBoxSpec {
   /// Box styling properties for decoration, padding, constraints, etc.

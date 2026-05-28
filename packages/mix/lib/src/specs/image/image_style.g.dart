@@ -118,6 +118,25 @@ mixin _$ImageStylerMixin on Style<ImageSpec>, Diagnosticable {
     return merge(ImageStyler(modifier: value));
   }
 
+  StyledImage call({
+    Key? key,
+    ImageProvider<Object>? image,
+    ImageFrameBuilder? frameBuilder,
+    ImageLoadingBuilder? loadingBuilder,
+    ImageErrorWidgetBuilder? errorBuilder,
+    Animation<double>? opacity,
+  }) {
+    return StyledImage(
+      key: key,
+      style: this,
+      image: image,
+      frameBuilder: frameBuilder,
+      loadingBuilder: loadingBuilder,
+      errorBuilder: errorBuilder,
+      opacity: opacity,
+    );
+  }
+
   /// Merges with another [ImageStyler].
   @override
   ImageStyler merge(ImageStyler? other) {

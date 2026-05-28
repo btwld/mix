@@ -7,6 +7,24 @@ import 'package:test/test.dart';
 import '../core/test_helpers.dart';
 
 const _mixSources = {'mix|lib/mix.dart': _mixStub};
+const _mixSourcesWithStyleWidget = {
+  ..._mixSources,
+  'mix|lib/src/core/style_widget.dart': '''
+    import 'package:flutter/widgets.dart';
+    import 'package:mix/mix.dart';
+
+    abstract class StyleWidget<S extends Spec<S>> extends Widget {
+      final Style<S> style;
+      final StyleSpec<S>? styleSpec;
+
+      const StyleWidget({
+        required this.style,
+        this.styleSpec,
+        super.key,
+      });
+    }
+  ''',
+};
 
 /// Minimal `package:mix/mix.dart` surface used by the
 /// standalone styler tests.
@@ -214,10 +232,25 @@ const _flutterResolveStubs = {
       void debugFillProperties(DiagnosticPropertiesBuilder properties) {}
     }
   ''',
-  'flutter|lib/widgets.dart': '''
-    export 'foundation.dart';
+  'flutter|lib/src/foundation/key.dart': '''
+    class Key {
+      const Key();
+    }
+  ''',
+  'flutter|lib/src/widgets/framework.dart': '''
+    import '../foundation/key.dart';
+    export '../foundation/key.dart';
+
+    abstract class Widget {
+      const Widget({this.key});
+      final Key? key;
+    }
 
     class BuildContext {}
+  ''',
+  'flutter|lib/widgets.dart': '''
+    export 'foundation.dart';
+    export 'src/widgets/framework.dart';
   ''',
 };
 
@@ -226,6 +259,24 @@ LibraryBuilder _specStylerLibraryBuilder() {
     const SpecStylerGenerator(),
     generatedExtension: '.styler.g.dart',
   );
+}
+
+Future<String> _expectSpecStylerValidationError(
+  Map<String, String> sources, {
+  String inputAsset = 'mix|lib/spike.dart',
+}) async {
+  final logs = <LogRecord>[];
+  await testBuilder(
+    _specStylerLibraryBuilder(),
+    sources,
+    generateFor: {inputAsset},
+    onLog: logs.add,
+  );
+
+  return logs
+      .where((r) => r.level == Level.SEVERE)
+      .map((r) => r.message)
+      .join('\n');
 }
 
 void main() {
@@ -253,6 +304,305 @@ void main() {
         },
       );
     });
+
+    test('omits call method when target is not configured', () async {
+      const input = '''
+        library spike;
+        import 'package:mix_annotations/mix_annotations.dart';
+        @MixableSpec()
+        final class PlainSpec {
+          const PlainSpec();
+        }
+      ''';
+
+      await testBuilder(
+        _specStylerLibraryBuilder(),
+        {...mixAnnotationsSources, ..._mixSources, 'mix|lib/spike.dart': input},
+        outputs: {
+          'mix|lib/spike.styler.g.dart': decodedMatches(
+            isNot(contains('Plain call(')),
+          ),
+        },
+      );
+    });
+
+    test('emits widget call methods from MixableSpec targets', () async {
+      const boxInput = '''
+        library box_shape;
+        import 'package:flutter/widgets.dart';
+        import 'package:mix/mix.dart';
+        import 'package:mix/src/core/style_widget.dart';
+        import 'package:mix_annotations/mix_annotations.dart';
+
+        @MixableSpec(target: Box.new)
+        final class BoxSpec extends Spec<BoxSpec> {
+          const BoxSpec();
+        }
+
+        class Box extends StyleWidget<BoxSpec> {
+          const Box({
+            super.key,
+            required super.style,
+            super.styleSpec,
+            this.child,
+          });
+
+          final Widget? child;
+        }
+      ''';
+      const textInput = '''
+        library text_shape;
+        import 'package:flutter/widgets.dart';
+        import 'package:mix/mix.dart';
+        import 'package:mix/src/core/style_widget.dart';
+        import 'package:mix_annotations/mix_annotations.dart';
+
+        @MixableSpec(target: StyledText.new)
+        final class TextSpec extends Spec<TextSpec> {
+          const TextSpec();
+        }
+
+        class StyledText extends StyleWidget<TextSpec> {
+          const StyledText(this.text, {super.key, required super.style});
+
+          final String text;
+        }
+      ''';
+      const flexInput = '''
+        library flex_shape;
+        import 'package:flutter/widgets.dart';
+        import 'package:mix/mix.dart';
+        import 'package:mix/src/core/style_widget.dart';
+        import 'package:mix_annotations/mix_annotations.dart';
+
+        @MixableSpec(target: FlexBox.new)
+        final class FlexBoxSpec extends Spec<FlexBoxSpec> {
+          const FlexBoxSpec();
+        }
+
+        class FlexBox extends StyleWidget<FlexBoxSpec> {
+          const FlexBox({
+            super.key,
+            required super.style,
+            this.children = const <Widget>[],
+          });
+
+          final List<Widget> children;
+        }
+      ''';
+
+      await expectGeneratorOutputResolves(
+        builder: _specStylerLibraryBuilder(),
+        sources: {
+          ...mixAnnotationsSources,
+          ..._flutterResolveStubs,
+          ..._mixSourcesWithStyleWidget,
+          'mix|lib/box_shape.dart': boxInput,
+        },
+        inputAsset: 'mix|lib/box_shape.dart',
+        outputAsset: 'mix|lib/box_shape.styler.g.dart',
+        outputMatcher: allOf(
+          contains('Box call({Key? key, Widget? child})'),
+          contains('return Box(key: key, style: this, child: child);'),
+        ),
+      );
+
+      await expectGeneratorOutputResolves(
+        builder: _specStylerLibraryBuilder(),
+        sources: {
+          ...mixAnnotationsSources,
+          ..._flutterResolveStubs,
+          ..._mixSourcesWithStyleWidget,
+          'mix|lib/text_shape.dart': textInput,
+        },
+        inputAsset: 'mix|lib/text_shape.dart',
+        outputAsset: 'mix|lib/text_shape.styler.g.dart',
+        outputMatcher: allOf(
+          contains('StyledText call(String text, {Key? key})'),
+          contains('return StyledText(text, key: key, style: this);'),
+        ),
+      );
+
+      await expectGeneratorOutputResolves(
+        builder: _specStylerLibraryBuilder(),
+        sources: {
+          ...mixAnnotationsSources,
+          ..._flutterResolveStubs,
+          ..._mixSourcesWithStyleWidget,
+          'mix|lib/flex_shape.dart': flexInput,
+        },
+        inputAsset: 'mix|lib/flex_shape.dart',
+        outputAsset: 'mix|lib/flex_shape.styler.g.dart',
+        outputMatcher: allOf(
+          contains(
+            'FlexBox call({Key? key, List<Widget> children = const <Widget>[]})',
+          ),
+          contains(
+            'return FlexBox(key: key, style: this, children: children);',
+          ),
+        ),
+      );
+    });
+
+    test('preserves source imports needed by target widgets', () async {
+      const specInput = '''
+        library box_spec;
+        import 'package:flutter/widgets.dart';
+        import 'package:mix/mix.dart';
+        import 'package:mix_annotations/mix_annotations.dart';
+        import 'box_widget.dart';
+
+        @MixableSpec(target: Box.new)
+        final class BoxSpec extends Spec<BoxSpec> {
+          const BoxSpec();
+        }
+      ''';
+      const widgetInput = '''
+        import 'package:flutter/widgets.dart';
+        import 'package:mix/src/core/style_widget.dart';
+        import 'box_spec.dart';
+
+        class Box extends StyleWidget<BoxSpec> {
+          const Box({super.key, required super.style, this.child});
+
+          final Widget? child;
+        }
+      ''';
+
+      await expectGeneratorOutputResolves(
+        builder: _specStylerLibraryBuilder(),
+        sources: {
+          ...mixAnnotationsSources,
+          ..._flutterResolveStubs,
+          ..._mixSourcesWithStyleWidget,
+          'mix|lib/box_spec.dart': specInput,
+          'mix|lib/box_widget.dart': widgetInput,
+        },
+        inputAsset: 'mix|lib/box_spec.dart',
+        outputAsset: 'mix|lib/box_spec.styler.g.dart',
+        outputMatcher: contains("import 'box_widget.dart';"),
+      );
+    });
+
+    test('rejects target values that are not constructor tear-offs', () async {
+      const input = '''
+        library spike;
+        import 'package:mix/mix.dart';
+        import 'package:mix_annotations/mix_annotations.dart';
+
+        Object notAConstructor() => Object();
+
+        @MixableSpec(target: notAConstructor)
+        final class BoxSpec extends Spec<BoxSpec> {
+          const BoxSpec();
+        }
+      ''';
+
+      final errors = await _expectSpecStylerValidationError({
+        ...mixAnnotationsSources,
+        ..._flutterResolveStubs,
+        ..._mixSourcesWithStyleWidget,
+        'mix|lib/spike.dart': input,
+      });
+
+      expect(errors, contains('must be a constructor tear-off'));
+    });
+
+    test('rejects target widgets that do not extend StyleWidget', () async {
+      const input = '''
+        library spike;
+        import 'package:flutter/widgets.dart';
+        import 'package:mix/mix.dart';
+        import 'package:mix_annotations/mix_annotations.dart';
+
+        class PlainWidget extends Widget {
+          const PlainWidget({super.key});
+        }
+
+        @MixableSpec(target: PlainWidget.new)
+        final class BoxSpec extends Spec<BoxSpec> {
+          const BoxSpec();
+        }
+      ''';
+
+      final errors = await _expectSpecStylerValidationError({
+        ...mixAnnotationsSources,
+        ..._flutterResolveStubs,
+        ..._mixSourcesWithStyleWidget,
+        'mix|lib/spike.dart': input,
+      });
+
+      expect(errors, contains('must extend StyleWidget<BoxSpec>'));
+    });
+
+    test('rejects StyleWidget targets for a different spec type', () async {
+      const input = '''
+        library spike;
+        import 'package:mix/mix.dart';
+        import 'package:mix/src/core/style_widget.dart';
+        import 'package:mix_annotations/mix_annotations.dart';
+
+        final class OtherSpec extends Spec<OtherSpec> {
+          const OtherSpec();
+        }
+
+        class MismatchedWidget extends StyleWidget<OtherSpec> {
+          const MismatchedWidget({required super.style});
+        }
+
+        @MixableSpec(target: MismatchedWidget.new)
+        final class BoxSpec extends Spec<BoxSpec> {
+          const BoxSpec();
+        }
+      ''';
+
+      final errors = await _expectSpecStylerValidationError({
+        ...mixAnnotationsSources,
+        ..._flutterResolveStubs,
+        ..._mixSourcesWithStyleWidget,
+        'mix|lib/spike.dart': input,
+      });
+
+      expect(errors, contains('Spec generic mismatch'));
+      expect(errors, contains('StyleWidget<OtherSpec>'));
+    });
+
+    test(
+      'rejects target constructors with optional positional params',
+      () async {
+        const input = '''
+        library spike;
+        import 'package:flutter/widgets.dart';
+        import 'package:mix/mix.dart';
+        import 'package:mix/src/core/style_widget.dart';
+        import 'package:mix_annotations/mix_annotations.dart';
+
+        class _Style extends Style<BoxSpec> {
+          const _Style();
+        }
+
+        class BadWidget extends StyleWidget<BoxSpec> {
+          const BadWidget([this.child]) : super(style: const _Style());
+
+          final Widget? child;
+        }
+
+        @MixableSpec(target: BadWidget.new)
+        final class BoxSpec extends Spec<BoxSpec> {
+          const BoxSpec();
+        }
+      ''';
+
+        final errors = await _expectSpecStylerValidationError({
+          ...mixAnnotationsSources,
+          ..._flutterResolveStubs,
+          ..._mixSourcesWithStyleWidget,
+          'mix|lib/spike.dart': input,
+        });
+
+        expect(errors, contains('does not support optional positional'));
+      },
+    );
 
     test('resolves curated owner mixins from public Mix library', () async {
       const input = '''

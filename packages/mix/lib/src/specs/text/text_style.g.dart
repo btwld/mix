@@ -107,6 +107,10 @@ mixin _$TextStylerMixin on Style<TextSpec>, Diagnosticable {
     return merge(TextStyler(modifier: value));
   }
 
+  StyledText call(String text, {Key? key}) {
+    return StyledText(text, key: key, style: this);
+  }
+
   /// Merges with another [TextStyler].
   @override
   TextStyler merge(TextStyler? other) {

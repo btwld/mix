@@ -10,6 +10,10 @@ mixin _$StackBoxStylerMixin on Style<StackBoxSpec>, Diagnosticable {
   Prop<StyleSpec<BoxSpec>>? get $box;
   Prop<StyleSpec<StackSpec>>? get $stack;
 
+  StackBox call({Key? key, List<Widget> children = const <Widget>[]}) {
+    return StackBox(key: key, style: this, children: children);
+  }
+
   /// Merges with another [StackBoxStyler].
   @override
   StackBoxStyler merge(StackBoxStyler? other) {

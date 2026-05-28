@@ -10,6 +10,10 @@ mixin _$FlexBoxStylerMixin on Style<FlexBoxSpec>, Diagnosticable {
   Prop<StyleSpec<BoxSpec>>? get $box;
   Prop<StyleSpec<FlexSpec>>? get $flex;
 
+  FlexBox call({Key? key, List<Widget> children = const <Widget>[]}) {
+    return FlexBox(key: key, style: this, children: children);
+  }
+
   /// Merges with another [FlexBoxStyler].
   @override
   FlexBoxStyler merge(FlexBoxStyler? other) {

@@ -192,11 +192,13 @@ class MixableSpec {
   final int methods;
   final int components;
   final List<Type> extraStylerMixins;
+  final Function? target;
 
   const MixableSpec({
     this.methods = 0x01 | 0x02 | 0x04,
     this.components = 0,
     this.extraStylerMixins = const [],
+    this.target,
   });
 }
 

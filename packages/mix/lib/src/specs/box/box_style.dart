@@ -306,9 +306,6 @@ class BoxStyler extends MixStyler<BoxStyler, BoxSpec>
       BoxStyler().translate(x, y, z);
   factory BoxStyler.skew(double skewX, double skewY) =>
       BoxStyler().skew(skewX, skewY);
-  Box call({Key? key, Widget? child}) {
-    return Box(key: key, style: this, child: child);
-  }
 
   /// Propagates the given [TextStyler] to descendant [StyledText] widgets via
   /// [DefaultTextStylerModifier] (Mix inheritance).

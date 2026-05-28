@@ -4,6 +4,49 @@ import 'package:mix/mix.dart';
 
 void main() {
   group('Default parameters for Box matches Container', () {
+    testWidgets('styler call builds the same box as explicit style', (
+      tester,
+    ) async {
+      final style = BoxStyler().color(Colors.blue).paddingAll(8);
+      const calledKey = Key('called');
+      const explicitKey = Key('explicit');
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Column(
+              children: [
+                style(key: calledKey, child: const Text('called')),
+                Box(
+                  key: explicitKey,
+                  style: style,
+                  child: const Text('explicit'),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+
+      final calledContainer = tester.widget<Container>(
+        find.descendant(
+          of: find.byKey(calledKey),
+          matching: find.byType(Container),
+        ),
+      );
+      final explicitContainer = tester.widget<Container>(
+        find.descendant(
+          of: find.byKey(explicitKey),
+          matching: find.byType(Container),
+        ),
+      );
+
+      expect(calledContainer.padding, explicitContainer.padding);
+      expect(calledContainer.decoration, explicitContainer.decoration);
+      expect(find.text('called'), findsOneWidget);
+      expect(find.text('explicit'), findsOneWidget);
+    });
+
     testWidgets('should have the same default parameters', (tester) async {
       const boxKey = Key('box');
       const containerKey = Key('container');

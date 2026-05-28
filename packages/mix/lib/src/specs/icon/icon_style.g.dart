@@ -106,6 +106,15 @@ mixin _$IconStylerMixin on Style<IconSpec>, Diagnosticable {
     return merge(IconStyler(modifier: value));
   }
 
+  StyledIcon call({Key? key, IconData? icon, String? semanticLabel}) {
+    return StyledIcon(
+      key: key,
+      style: this,
+      icon: icon,
+      semanticLabel: semanticLabel,
+    );
+  }
+
   /// Merges with another [IconStyler].
   @override
   IconStyler merge(IconStyler? other) {
