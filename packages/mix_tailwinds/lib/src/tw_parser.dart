@@ -185,11 +185,7 @@ class _GradientAccum {
 
   LinearGradientMix? toGradientMix(TwGradientStrategy strategy) {
     if (!hasGradient) return null;
-    final colors = <Color>[
-      fromColor!,
-      ?viaColor,
-      toColor ?? fromColor!,
-    ];
+    final colors = <Color>[fromColor!, ?viaColor, toColor ?? fromColor!];
     // Tailwind anchors via-* at 50% by default; without explicit stops
     // Flutter interpolates linearly which doesn't match Tailwind's behavior
     final stops = viaColor != null ? const [0.0, 0.5, 1.0] : const [0.0, 1.0];
