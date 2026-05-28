@@ -152,7 +152,7 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
               context,
               namedVariants: namedVariants,
             );
-      mergedStyle = mergedStyle.merge(fullyResolvedStyle);
+      mergedStyle = _mergeStyles(mergedStyle, fullyResolvedStyle);
     }
 
     return mergedStyle;
@@ -184,6 +184,51 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
 
     return styleData.resolve(context);
   }
+}
+
+Style<S> _mergeStyles<S extends Spec<S>>(Style<S> current, Style<S> other) {
+  if (current is IdentityStyle<S>) {
+    return other;
+  }
+
+  if (other is IdentityStyle<S>) {
+    return current;
+  }
+
+  return current.merge(other);
+}
+
+/// A no-op [Style] that resolves to a provided [Spec].
+///
+/// This is useful for widget defaults where a concrete generated styler should
+/// not be required just to identify the default resolved spec.
+final class IdentityStyle<S extends Spec<S>> extends Style<S>
+    with Diagnosticable {
+  /// The spec used when this identity style is resolved.
+  final S spec;
+
+  /// Creates an identity style that resolves to [spec].
+  const IdentityStyle(this.spec)
+    : super(variants: null, modifier: null, animation: null);
+
+  @override
+  Style<S> merge(covariant Style<S>? other) {
+    return other ?? this;
+  }
+
+  @override
+  StyleSpec<S> resolve(BuildContext context) {
+    return StyleSpec(spec: spec);
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty<S>('spec', spec));
+  }
+
+  @override
+  List<Object?> get props => [spec];
 }
 
 abstract class ModifierMix<S extends WidgetModifier<S>> extends Mix<S>
@@ -235,7 +280,7 @@ final class VariantStyle<S extends Spec<S>> extends Mixable<StyleSpec<S>>
       );
     }
 
-    return VariantStyle(variant, _style.merge(other._style));
+    return VariantStyle(variant, _mergeStyles(_style, other._style));
   }
 
   @override

@@ -88,8 +88,17 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
 
   Style<S> _buildStyle(BuildContext context) {
     final inheritedStyle = Style.maybeOf<S>(context);
+    final style = widget.style;
 
-    return inheritedStyle?.merge(widget.style) ?? widget.style;
+    if (inheritedStyle == null || inheritedStyle is IdentityStyle<S>) {
+      return style;
+    }
+
+    if (style is IdentityStyle<S>) {
+      return inheritedStyle;
+    }
+
+    return inheritedStyle.merge(style);
   }
 
   @override

@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 
+import '../../core/style.dart';
 import '../../core/style_widget.dart';
 import 'box_spec.dart';
-import 'box_style.dart';
 
 /// [Box] is equivalent to Flutter's [Container], it provides
 /// styling capabilities through the Mix framework. It can be used to
@@ -10,7 +10,7 @@ import 'box_style.dart';
 /// and constraints.
 ///
 ///
-/// You can use [BoxStyler] to create styles with a fluent API. Example:
+/// You can use `BoxStyler` to create styles with a fluent API. Example:
 ///
 /// ```dart
 /// final style = BoxStyler()
@@ -25,7 +25,7 @@ import 'box_style.dart';
 ///
 class Box extends StyleWidget<BoxSpec> {
   const Box({
-    super.style = const BoxStyler.create(),
+    super.style = const IdentityStyle(BoxSpec()),
     super.styleSpec,
     super.key,
     this.child,
