@@ -2,11 +2,11 @@
 
 import 'package:flutter/widgets.dart';
 
+import '../../core/style.dart';
 import '../../core/style_widget.dart';
 import '../box/box_widget.dart';
 import '../flex/flex_spec.dart';
 import 'flexbox_spec.dart';
-import 'flexbox_style.dart';
 
 /// [FlexBox] combines Flutter's [Container] and [Flex] widgets with Mix styling.
 ///
@@ -16,7 +16,7 @@ import 'flexbox_style.dart';
 ///
 /// For specific layouts, use [RowBox] for horizontal layouts or [ColumnBox] for vertical layouts.
 ///
-/// You can use [FlexBoxStyler] to create styles with a fluent API. Example:
+/// You can use `FlexBoxStyler` to create styles with a fluent API. Example:
 ///
 /// ```dart
 /// final style = FlexBoxStyler()
@@ -40,7 +40,7 @@ import 'flexbox_style.dart';
 ///
 class FlexBox extends StyleWidget<FlexBoxSpec> {
   const FlexBox({
-    super.style = const FlexBoxStyler.create(),
+    super.style = const IdentityStyle(FlexBoxSpec()),
     super.styleSpec,
     super.key,
     this.children = const <Widget>[],

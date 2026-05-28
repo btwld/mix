@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../core/style.dart';
 import '../../core/style_widget.dart';
 import 'icon_spec.dart';
-import 'icon_style.dart';
 
 /// `StyledIcon` is equivalent to Flutter's `Icon` widget, but provides styling capabilities through the Mix framework.
 /// It allows you to create visually styled icons with color, size, shadows, and responsive variants.
@@ -23,7 +23,7 @@ class StyledIcon extends StyleWidget<IconSpec> {
   const StyledIcon({
     this.icon,
     this.semanticLabel,
-    super.style = const IconStyler.create(),
+    super.style = const IdentityStyle(IconSpec()),
     super.styleSpec,
     super.key,
   });
