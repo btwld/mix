@@ -12,8 +12,8 @@ import '../helpers/type_hierarchy.dart';
 import '../helpers/widget_call_planner.dart';
 import '../models/annotation_config.dart';
 import '../models/field_model.dart';
-import '../resolvers/known_mix_symbol_resolver.dart';
 import '../models/styler_field_model.dart';
+import '../resolvers/known_mix_symbol_resolver.dart';
 import 'styler_api_planner.dart';
 import 'styler_mixin_builder.dart';
 
@@ -55,23 +55,24 @@ class SpecStylerClassBuilder {
     return mixTypeFor(field.typeName) == null ? 'Prop.maybe' : 'Prop.maybeMix';
   }
 
-  String? _listMixParamType(FieldModel field) {
+  String? _listElementMixType(FieldModel field) {
     if (!field.isList) return null;
 
-    final elementMixType = field.listElementType == null
-        ? null
-        : listElementMixTypeFor(field.listElementType!);
+    final elementType = field.listElementType;
+    if (elementType == null) return null;
+
+    return listElementMixTypeFor(elementType);
+  }
+
+  String? _listMixParamType(FieldModel field) {
+    final elementMixType = _listElementMixType(field);
     if (elementMixType == null) return null;
 
     return 'List<$elementMixType>';
   }
 
   String? _listMixWrapperType(FieldModel field) {
-    if (!field.isList) return null;
-
-    final elementMixType = field.listElementType == null
-        ? null
-        : listElementMixTypeFor(field.listElementType!);
+    final elementMixType = _listElementMixType(field);
     if (elementMixType == null) return null;
 
     return listMixTypeFor(elementMixType);
@@ -403,11 +404,9 @@ class SpecStylerClassBuilder {
     List<FieldModel> fields,
     List<_OwnerMixinReference> mixins,
   ) {
-    if (!_usesTransformOwnerMixin(mixins)) return false;
-    if (!_hasFieldNamed(fields, 'transform')) return false;
-    if (!_hasFieldNamed(fields, 'transformAlignment')) return false;
-
-    return true;
+    return _usesTransformOwnerMixin(mixins) &&
+        _hasFieldNamed(fields, 'transform') &&
+        _hasFieldNamed(fields, 'transformAlignment');
   }
 
   void _writeApiMembers(StringBuffer buffer, StylerApiPlan plan) {
@@ -540,11 +539,8 @@ class SpecStylerClassBuilder {
     if (type.typeArguments.length != 1) return false;
 
     final specType = type.typeArguments.single;
-    if (specType is InterfaceType) {
-      return specType.element.name == part.specName;
-    }
 
-    return false;
+    return specType is InterfaceType && specType.element.name == part.specName;
   }
 
   String _createArgument(FieldModel field) {
