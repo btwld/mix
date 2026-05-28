@@ -11,6 +11,6 @@ targets:
       mix_generator:spec_styler_generator:
         enabled: true
         generate_for:
-          - test/fixtures/box_spec_for_spike.dart
+          - lib/src/specs/**/*.dart
         options:
           debug: false
