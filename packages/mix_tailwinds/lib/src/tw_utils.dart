@@ -1,4 +1,5 @@
 /// Shared helpers for Tailwind token parsing.
+library;
 
 /// Finds the first colon that's not inside square brackets.
 ///

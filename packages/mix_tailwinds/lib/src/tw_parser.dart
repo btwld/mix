@@ -187,7 +187,7 @@ class _GradientAccum {
     if (!hasGradient) return null;
     final colors = <Color>[
       fromColor!,
-      if (viaColor != null) viaColor!,
+      ?viaColor,
       toColor ?? fromColor!,
     ];
     // Tailwind anchors via-* at 50% by default; without explicit stops
