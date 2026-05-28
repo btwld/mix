@@ -60,9 +60,9 @@ Control which methods are generated via `GeneratedSpecMethods` flags:
 `GeneratedSpecMethods.skipEquals` suppresses generated `props` so the class can
 author custom equality inputs while still using the generated equality surface.
 
-### `@MixableStyler`
+### `@MixableStyler` legacy marker
 
-Generates a mixin for Styler classes (mutable builders) with setter methods, `merge()`, `resolve()`, `debugFillProperties()`, and `props`.
+Retained for compatibility with older code and shared generated styler method flags. New Mix stylers are generated from `@MixableSpec(target: Widget.new)`.
 
 ```dart
 @MixableStyler()
@@ -75,7 +75,7 @@ class BoxStyler extends Style<BoxSpec>
 }
 ```
 
-Control which methods are generated via `GeneratedStylerMethods` flags.
+`GeneratedStylerMethods` flags remain available for generator internals and compatibility.
 
 ### `@Mixable`
 

@@ -5,14 +5,10 @@ targets:
         enabled: true
         generate_for:
           - lib/src/specs/**/*.dart  # Narrowed scope for specs only.
-      mix_generator:styler_generator:
-        enabled: true
-        generate_for:
-          - lib/src/specs/**/*.dart  # Narrowed scope for specs only.
       mix_generator:spec_styler_generator:
         enabled: true
         generate_for:
-          - lib/src/specs/**/*.dart  # Spec-driven styler spike.
+          - lib/src/specs/**/*.dart  # Full styler classes from specs.
       mix_generator:mixable_generator:
         enabled: true
         generate_for:
@@ -31,17 +27,6 @@ builders:
     build_to: cache
     applies_builders: ['source_gen:combining_builder']
 
-  styler_generator:
-    import: 'package:mix_generator/mix_generator.dart'
-    builder_factories: ['stylerGenerator']
-    build_extensions: {'.dart': ['.styler_generator.g.part']}
-    auto_apply: dependents
-    build_to: cache
-    applies_builders: ['source_gen:combining_builder']
-
-  # Opt-in only during the spec-driven styler spike. Consumers must
-  # explicitly enable this builder in their own build.yaml (see
-  # packages/mix/build.yaml for the fixture-scoped enablement).
   spec_styler_generator:
     import: 'package:mix_generator/mix_generator.dart'
     builder_factories: ['specStylerGenerator']

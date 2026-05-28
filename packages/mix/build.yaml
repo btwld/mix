@@ -5,7 +5,6 @@ targets:
         enabled: true
         generate_for:
           - lib/src/specs/**/*.dart  # Only run on spec files
-          - test/fixtures/box_spec_for_spike.dart
         options:
           debug: false
       mix_generator:spec_styler_generator:

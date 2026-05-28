@@ -87,7 +87,7 @@ Future<void> expectGeneratorOutputResolves({
   });
 }
 
-/// Stub `Style<T>` library — the minimal shape `StylerGenerator` inspects.
+/// Stub `Style<T>` library — the minimal shape styler builder tests inspect.
 const styleStub = r'''
 library mix_style;
 

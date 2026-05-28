@@ -89,9 +89,9 @@ String renderWidgetCall({
   ];
 
   return '''
-${indent}$widgetName call(${signatureParams.join(', ')}) {
-${indent}  return $widgetName(${invocationArgs.join(', ')});
-${indent}}
+$indent$widgetName call(${signatureParams.join(', ')}) {
+$indent  return $widgetName(${invocationArgs.join(', ')});
+$indent}
 ''';
 }
 
