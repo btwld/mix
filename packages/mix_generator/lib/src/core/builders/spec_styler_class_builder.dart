@@ -1,15 +1,18 @@
 library;
 
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/type.dart';
 import 'package:source_gen/source_gen.dart';
 
 import '../checkers.dart';
+import '../curated/styler_surface_metadata.dart';
 import '../curated/type_metadata.dart';
 import '../errors.dart';
 import '../models/annotation_config.dart';
 import '../models/field_model.dart';
 import '../models/styler_field_model.dart';
 import '../resolvers/known_mix_symbol_resolver.dart';
+import 'styler_api_planner.dart';
 import 'styler_mixin_builder.dart';
 
 class SpecStylerClassBuilder {
@@ -38,12 +41,38 @@ class SpecStylerClassBuilder {
   }
 
   String _publicParamType(FieldModel field) =>
-      mixTypeFor(field.typeName) ?? _fieldValueType(field);
+      _listMixParamType(field) ??
+      mixTypeFor(field.typeName) ??
+      _fieldValueType(field);
 
   String? _propFactory(FieldModel field) {
     if (isRawListField(field.name)) return null;
 
+    if (_listMixParamType(field) != null) return null;
+
     return mixTypeFor(field.typeName) == null ? 'Prop.maybe' : 'Prop.maybeMix';
+  }
+
+  String? _listMixParamType(FieldModel field) {
+    if (!field.isList) return null;
+
+    final elementMixType = field.listElementType == null
+        ? null
+        : listElementMixTypeFor(field.listElementType!);
+    if (elementMixType == null) return null;
+
+    return 'List<$elementMixType>';
+  }
+
+  String? _listMixWrapperType(FieldModel field) {
+    if (!field.isList) return null;
+
+    final elementMixType = field.listElementType == null
+        ? null
+        : listElementMixTypeFor(field.listElementType!);
+    if (elementMixType == null) return null;
+
+    return listMixTypeFor(elementMixType);
   }
 
   /// Returns the owner-mixin names contributed by [field], or `null` when the
@@ -83,6 +112,10 @@ class SpecStylerClassBuilder {
       }
     }
 
+    for (final mixinName in _curatedOwnerMixinNames(fields)) {
+      addMixin(_ownerMixinFromSupportLibrary(mixinName));
+    }
+
     final extra = annotation.peek('extraStylerMixins')?.listValue ?? const [];
     for (final object in extra) {
       final element = object.toTypeValue()?.element;
@@ -90,6 +123,23 @@ class SpecStylerClassBuilder {
     }
 
     return mixins;
+  }
+
+  List<String> _curatedOwnerMixinNames(List<FieldModel> fields) {
+    final names = <String>{};
+    final fieldNames = _fieldNames(fields);
+
+    final surface = stylerSurfaceFor(stylerName);
+    if (surface != null &&
+        compoundStylerSurfaceFor(stylerName) == null &&
+        surface.isAvailableFor(fieldNames)) {
+      names.addAll(surface.ownerMixinNames);
+    }
+
+    final compound = _compoundConfig(fields);
+    if (compound != null) names.addAll(compound.ownerMixinNames);
+
+    return names.toList();
   }
 
   ConstantReader? _mixableFieldReader(String fieldName) {
@@ -153,6 +203,10 @@ class SpecStylerClassBuilder {
     return fields.any((field) => field.name == name);
   }
 
+  Set<String> _fieldNames(List<FieldModel> fields) {
+    return fields.map((field) => field.name).toSet();
+  }
+
   bool _usesTransformOwnerMixin(List<_OwnerMixinReference> mixins) {
     return mixins.any((mixin) => mixin.name == 'TransformStyleMixin');
   }
@@ -175,10 +229,18 @@ class SpecStylerClassBuilder {
     final reader = _mixableFieldReader(field.name);
     if (reader?.peek('ignoreSetter')?.boolValue ?? false) return false;
     if (_needsTransformAnchor(field, fields, mixins)) return false;
+    if (_isCompoundNestedField(field, fields)) return false;
 
     final alias = _fieldAlias(field);
 
     return alias == null || alias.setterName != null;
+  }
+
+  bool _isCompoundNestedField(FieldModel field, List<FieldModel> fields) {
+    final compound = _compoundConfig(fields);
+    if (compound == null) return false;
+
+    return compound.fieldNames.contains(field.name);
   }
 
   String? _setterNameFor(FieldModel field) {
@@ -213,48 +275,279 @@ class SpecStylerClassBuilder {
     ).build();
   }
 
-  void _writeTransformFactory(
-    StringBuffer buffer,
+  StylerApiPlan _buildApiPlan(
     List<FieldModel> fields,
     List<_OwnerMixinReference> mixins,
   ) {
-    if (!_usesTransformOwnerMixin(mixins)) return;
-    if (!_hasFieldNamed(fields, 'transform')) return;
-    if (!_hasFieldNamed(fields, 'transformAlignment')) return;
-
-    buffer.writeln(
-      '  factory $stylerName.transform(Matrix4 value, {Alignment alignment = .center}) =>',
+    final compound = _compoundConfig(fields);
+    final fieldNames = _fieldNames(fields);
+    final surface = stylerSurfaceFor(stylerName);
+    final usesCompoundSurface = compoundStylerSurfaceFor(stylerName) != null;
+    final useSurface =
+        surface != null &&
+        (usesCompoundSurface
+            ? compound != null
+            : surface.isAvailableFor(fieldNames));
+    final fieldFactories = _fieldFactoryMembers(
+      fields,
+      mixins,
+      surface?.suppressedFieldFactoryNames ?? const {},
     );
-    buffer.writeln(
-      '      $stylerName().transform(value, alignment: alignment);',
+    final curatedFactories = <StylerFactoryDescriptor>[
+      if (useSurface)
+        ..._surfaceFactories(
+          surface,
+          fieldNames,
+          ignoreRequiredFields: compound != null,
+        ),
+      if (_needsTransformAnchorForStyler(fields, mixins) && compound == null)
+        transformAnchorFactoryDescriptor(),
+      if (_hasFieldNamed(fields, 'textDirectives'))
+        ...textDirectiveFactoryDescriptors(),
+      if (stylerName == 'IconStyler' && _hasFieldNamed(fields, 'shadows'))
+        iconShadowFactoryDescriptor(),
+      ...?compound?.surface.factoryDescriptors,
+      if (useSurface && surface.generatesAnimateFactory)
+        animateFactoryDescriptor(),
+    ];
+    final curatedMethods = <StylerMethodDescriptor>[
+      if (useSurface)
+        ..._surfaceMethods(
+          surface,
+          fieldNames,
+          ignoreRequiredFields: compound != null,
+        ),
+      if (_needsTransformAnchorForStyler(fields, mixins) && compound == null)
+        transformAnchorMethodDescriptor(),
+      if (_hasFieldNamed(fields, 'textDirectives'))
+        ...textDirectiveMethodDescriptors(),
+      if (stylerName == 'IconStyler' && _hasFieldNamed(fields, 'shadows'))
+        iconShadowMethodDescriptor(),
+      ...?compound?.surface.methodDescriptors,
+    ];
+
+    return StylerApiPlanner(stylerName: stylerName).build(
+      fieldFactories: fieldFactories,
+      curatedFactories: curatedFactories,
+      curatedMethods: curatedMethods,
+      generatedSetterNames: _generatedSetterNames(fields, mixins),
     );
   }
 
-  void _writeTransformAnchor(
-    StringBuffer buffer,
+  List<StylerFactoryDescriptor> _surfaceFactories(
+    StylerSurface surface,
+    Set<String> fieldNames, {
+    required bool ignoreRequiredFields,
+  }) {
+    if (ignoreRequiredFields) return surface.factoryDescriptors;
+
+    return surface.factoryDescriptors
+        .where((descriptor) => descriptor.isAvailableFor(fieldNames))
+        .toList();
+  }
+
+  List<StylerMethodDescriptor> _surfaceMethods(
+    StylerSurface surface,
+    Set<String> fieldNames, {
+    required bool ignoreRequiredFields,
+  }) {
+    if (ignoreRequiredFields) return surface.methodDescriptors;
+
+    return surface.methodDescriptors
+        .where((descriptor) => descriptor.isAvailableFor(fieldNames))
+        .toList();
+  }
+
+  List<StylerApiMember> _fieldFactoryMembers(
+    List<FieldModel> fields,
+    List<_OwnerMixinReference> mixins,
+    Set<String> suppressedFieldFactoryNames,
+  ) {
+    final members = <StylerApiMember>[];
+    for (final field in fields) {
+      final factoryName = _fieldFactoryName(field, fields, mixins);
+      if (factoryName == null) continue;
+      if (suppressedFieldFactoryNames.contains(factoryName)) continue;
+
+      final setterName = _setterNameFor(field);
+      if (setterName == null) continue;
+
+      final paramType = _publicParamType(field);
+      members.add(
+        StylerApiMember(
+          name: factoryName,
+          code:
+              'factory $stylerName.$factoryName($paramType value) => $stylerName().$setterName(value);',
+        ),
+      );
+    }
+
+    return members;
+  }
+
+  Set<String> _generatedSetterNames(
     List<FieldModel> fields,
     List<_OwnerMixinReference> mixins,
   ) {
-    if (!_usesTransformOwnerMixin(mixins)) return;
-    if (!_hasFieldNamed(fields, 'transform')) return;
-    if (!_hasFieldNamed(fields, 'transformAlignment')) return;
+    return {
+      for (final field in fields)
+        if (_shouldGenerateSetter(field, fields, mixins) &&
+            _setterNameFor(field) != null)
+          _setterNameFor(field)!,
+    };
+  }
 
-    buffer.writeln('  @override');
-    buffer.writeln(
-      '  $stylerName transform(Matrix4 value, {Alignment alignment = .center}) {',
-    );
-    buffer.writeln(
-      '    return merge($stylerName(transform: value, transformAlignment: alignment));',
-    );
-    buffer.writeln('  }');
-    buffer.writeln();
+  bool _needsTransformAnchorForStyler(
+    List<FieldModel> fields,
+    List<_OwnerMixinReference> mixins,
+  ) {
+    if (!_usesTransformOwnerMixin(mixins)) return false;
+    if (!_hasFieldNamed(fields, 'transform')) return false;
+    if (!_hasFieldNamed(fields, 'transformAlignment')) return false;
+
+    return true;
+  }
+
+  void _writeApiMembers(StringBuffer buffer, StylerApiPlan plan) {
+    for (final code in plan.factoryCodes) {
+      _writeIndentedCode(buffer, code);
+    }
+    if (plan.factoryCodes.isNotEmpty) buffer.writeln();
+
+    for (final code in plan.methodCodes) {
+      _writeIndentedCode(buffer, code);
+      buffer.writeln();
+    }
+  }
+
+  void _writeIndentedCode(StringBuffer buffer, String code) {
+    for (final line in code.trimRight().split('\n')) {
+      buffer.writeln('  $line');
+    }
+  }
+
+  _CompoundConfig? _compoundConfig(List<FieldModel> fields) {
+    final surface = compoundStylerSurfaceFor(stylerName);
+    if (surface == null) return null;
+
+    final matchedFieldNames = <String>{};
+    for (final part in surface.parts) {
+      for (final field in fields) {
+        if (field.name == part.fieldName && _isStyleSpecField(field, part)) {
+          matchedFieldNames.add(field.name);
+        }
+      }
+    }
+
+    if (matchedFieldNames.length != surface.parts.length) return null;
+
+    return _CompoundConfig(surface: surface, fieldNames: matchedFieldNames);
+  }
+
+  bool _isStyleSpecField(FieldModel field, CompoundStylerPartDescriptor part) {
+    final fieldElement = specElement.getField(field.name);
+    final type = fieldElement?.type;
+    if (type is! InterfaceType) return false;
+    if (type.element.name != 'StyleSpec') return false;
+    if (type.typeArguments.length != 1) return false;
+
+    final specType = type.typeArguments.single;
+    if (specType is InterfaceType) {
+      return specType.element.name == part.specName;
+    }
+
+    return false;
   }
 
   String _createArgument(FieldModel field) {
+    final listMixWrapperType = _listMixWrapperType(field);
+    if (listMixWrapperType != null) {
+      return '         ${field.name}: ${field.name} != null ? Prop.mix($listMixWrapperType(${field.name})) : null,';
+    }
+
     final propFactory = _propFactory(field);
     if (propFactory == null) return '         ${field.name}: ${field.name},';
 
     return '         ${field.name}: $propFactory(${field.name}),';
+  }
+
+  List<FieldModel> _nonCompoundFields(
+    List<FieldModel> fields,
+    _CompoundConfig compound,
+  ) {
+    return [
+      for (final field in fields)
+        if (!compound.fieldNames.contains(field.name)) field,
+    ];
+  }
+
+  void _writeConstructor(StringBuffer buffer, List<FieldModel> fields) {
+    final compound = _compoundConfig(fields);
+    if (compound == null) {
+      buffer.writeln('  $stylerName({');
+      for (final field in fields) {
+        buffer.writeln('    ${_publicParamType(field)}? ${field.name},');
+      }
+      buffer.writeln('    AnimationConfig? animation,');
+      buffer.writeln('    WidgetModifierConfig? modifier,');
+      buffer.writeln('    List<VariantStyle<$specName>>? variants,');
+      buffer.writeln('  }) : this.create(');
+      for (final field in fields) {
+        buffer.writeln(_createArgument(field));
+      }
+      buffer.writeln('         variants: variants,');
+      buffer.writeln('         modifier: modifier,');
+      buffer.writeln('         animation: animation,');
+      buffer.writeln('       );');
+      buffer.writeln();
+
+      return;
+    }
+
+    buffer.writeln('  $stylerName({');
+    final emittedParams = <String>{};
+    for (final part in compound.activeParts) {
+      for (final param in part.constructorParams) {
+        if (!emittedParams.add(param.name)) continue;
+        buffer.writeln('    ${param.code}');
+      }
+    }
+    final extraFields = _nonCompoundFields(fields, compound);
+    for (final field in extraFields) {
+      if (!emittedParams.add(field.name)) {
+        fail(
+          specElement,
+          'SpecStylerGenerator cannot flatten compound styler `$stylerName` '
+          'because `${field.name}` conflicts with a curated constructor '
+          'parameter.',
+          todo:
+              'Rename the spec field or add an explicit curated compound '
+              'constructor mapping.',
+        );
+      }
+      buffer.writeln('    ${_publicParamType(field)}? ${field.name},');
+    }
+    buffer.writeln('    AnimationConfig? animation,');
+    buffer.writeln('    WidgetModifierConfig? modifier,');
+    buffer.writeln('    List<VariantStyle<$specName>>? variants,');
+    buffer.writeln('  }) : this.create(');
+    for (final part in compound.activeParts) {
+      buffer.writeln('         ${part.fieldName}: Prop.maybeMix(');
+      buffer.writeln('           ${part.stylerName}(');
+      for (final argument in part.constructorArguments) {
+        buffer.writeln('             $argument');
+      }
+      buffer.writeln('           ),');
+      buffer.writeln('         ),');
+    }
+    for (final field in extraFields) {
+      buffer.writeln(_createArgument(field));
+    }
+    buffer.writeln('         variants: variants,');
+    buffer.writeln('         modifier: modifier,');
+    buffer.writeln('         animation: animation,');
+    buffer.writeln('       );');
+    buffer.writeln();
   }
 
   String get _stylerMixinName => '_\$${stylerName}Mixin';
@@ -296,36 +589,9 @@ class SpecStylerClassBuilder {
     }
     buffer.writeln();
 
-    buffer.writeln('  $stylerName({');
-    for (final field in fields) {
-      buffer.writeln('    ${_publicParamType(field)}? ${field.name},');
-    }
-    buffer.writeln('    AnimationConfig? animation,');
-    buffer.writeln('    WidgetModifierConfig? modifier,');
-    buffer.writeln('    List<VariantStyle<$specName>>? variants,');
-    buffer.writeln('  }) : this.create(');
-    for (final field in fields) {
-      buffer.writeln(_createArgument(field));
-    }
-    buffer.writeln('         variants: variants,');
-    buffer.writeln('         modifier: modifier,');
-    buffer.writeln('         animation: animation,');
-    buffer.writeln('       );');
-    buffer.writeln();
+    _writeConstructor(buffer, fields);
 
-    _writeTransformFactory(buffer, fields, mixins);
-
-    for (final field in fields) {
-      final factoryName = _fieldFactoryName(field, fields, mixins);
-      if (factoryName == null) continue;
-
-      final paramType = _publicParamType(field);
-      buffer.writeln('  factory $stylerName.$factoryName($paramType value) =>');
-      buffer.writeln('      $stylerName().${_setterNameFor(field)}(value);');
-    }
-    buffer.writeln();
-
-    _writeTransformAnchor(buffer, fields, mixins);
+    _writeApiMembers(buffer, _buildApiPlan(fields, mixins));
 
     buffer.writeln('}');
     buffer.writeln();
@@ -344,4 +610,22 @@ class _OwnerMixinReference {
   final InterfaceElement element;
 
   const _OwnerMixinReference({required this.name, required this.element});
+}
+
+class _CompoundConfig {
+  final CompoundStylerSurface surface;
+  final Set<String> fieldNames;
+
+  const _CompoundConfig({required this.surface, required this.fieldNames});
+
+  List<CompoundStylerPartDescriptor> get activeParts {
+    return [
+      for (final part in surface.parts)
+        if (fieldNames.contains(part.fieldName)) part,
+    ];
+  }
+
+  List<String> get ownerMixinNames {
+    return activeParts.expand((part) => part.ownerMixinNames).toSet().toList();
+  }
 }

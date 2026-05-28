@@ -442,7 +442,7 @@ void main() {
       expect(identical(original, updated), isFalse);
     });
 
-    test('', () {
+    test('lerp delegates to nested StyleSpec fields', () {
       final spec1 = FlexBoxSpec(
         box: StyleSpec(spec: BoxSpec(padding: EdgeInsets.all(10.0))),
         flex: StyleSpec(spec: FlexSpec(spacing: 10.0)),
@@ -459,6 +459,19 @@ void main() {
 
       expect(boxSpec?.padding, const EdgeInsets.all(15.0));
       expect(flexSpec?.spacing, 15.0);
+    });
+
+    test('lerp keeps null current StyleSpec fields null', () {
+      const spec1 = FlexBoxSpec();
+      final spec2 = FlexBoxSpec(
+        box: StyleSpec(spec: BoxSpec(alignment: Alignment.center)),
+        flex: StyleSpec(spec: FlexSpec(direction: Axis.horizontal)),
+      );
+
+      final result = spec1.lerp(spec2, 0.5);
+
+      expect(result.box, isNull);
+      expect(result.flex, isNull);
     });
 
     test('lerp interpolates properly when other is null', () {

@@ -119,6 +119,7 @@ class FlexStyler extends MixStyler<FlexStyler, FlexSpec>
   factory FlexStyler.column() => FlexStyler().column();
 
   /// Sets the widget modifier.
+  @override
   FlexStyler modifier(WidgetModifierConfig value) {
     return merge(FlexStyler(modifier: value));
   }

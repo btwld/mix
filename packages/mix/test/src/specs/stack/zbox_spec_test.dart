@@ -188,6 +188,19 @@ void main() {
           Alignment(-0.5, -0.5),
         ); // lerped from topLeft to null at t=0.5
       });
+
+      test('keeps null current StyleSpec fields null', () {
+        const spec1 = StackBoxSpec();
+        final spec2 = StackBoxSpec(
+          box: wrapBoxSpec(const BoxSpec(alignment: Alignment.center)),
+          stack: wrapStackSpec(const StackSpec(alignment: Alignment.center)),
+        );
+
+        final result = spec1.lerp(spec2, 0.5);
+
+        expect(result.box, isNull);
+        expect(result.stack, isNull);
+      });
     });
 
     group('equality', () {

@@ -77,6 +77,11 @@ mixin _$FlexStylerMixin on Style<FlexSpec>, Diagnosticable {
     return merge(FlexStyler(modifier: value));
   }
 
+  /// Sets the widget modifier.
+  FlexStyler modifier(WidgetModifierConfig value) {
+    return merge(FlexStyler(modifier: value));
+  }
+
   /// Merges with another [FlexStyler].
   @override
   FlexStyler merge(FlexStyler? other) {

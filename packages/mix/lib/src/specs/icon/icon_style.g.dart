@@ -101,6 +101,11 @@ mixin _$IconStylerMixin on Style<IconSpec>, Diagnosticable {
     return merge(IconStyler(modifier: value));
   }
 
+  /// Sets the widget modifier.
+  IconStyler modifier(WidgetModifierConfig value) {
+    return merge(IconStyler(modifier: value));
+  }
+
   /// Merges with another [IconStyler].
   @override
   IconStyler merge(IconStyler? other) {

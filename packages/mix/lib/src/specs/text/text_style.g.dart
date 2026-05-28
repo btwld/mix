@@ -102,6 +102,11 @@ mixin _$TextStylerMixin on Style<TextSpec>, Diagnosticable {
     return merge(TextStyler(modifier: value));
   }
 
+  /// Sets the widget modifier.
+  TextStyler modifier(WidgetModifierConfig value) {
+    return merge(TextStyler(modifier: value));
+  }
+
   /// Merges with another [TextStyler].
   @override
   TextStyler merge(TextStyler? other) {

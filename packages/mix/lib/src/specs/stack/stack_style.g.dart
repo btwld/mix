@@ -47,6 +47,11 @@ mixin _$StackStylerMixin on Style<StackSpec>, Diagnosticable {
     return merge(StackStyler(modifier: value));
   }
 
+  /// Sets the widget modifier.
+  StackStyler modifier(WidgetModifierConfig value) {
+    return merge(StackStyler(modifier: value));
+  }
+
   /// Merges with another [StackStyler].
   @override
   StackStyler merge(StackStyler? other) {

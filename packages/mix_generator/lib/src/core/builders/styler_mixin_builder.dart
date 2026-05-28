@@ -73,6 +73,12 @@ class StylerMixinBuilder {
     buffer.writeln('  }');
     buffer.writeln();
 
+    buffer.writeln('  /// Sets the widget modifier.');
+    buffer.writeln('  $stylerName modifier(WidgetModifierConfig value) {');
+    buffer.writeln('    return merge($stylerName(modifier: value));');
+    buffer.writeln('  }');
+    buffer.writeln();
+
     return buffer.toString();
   }
 

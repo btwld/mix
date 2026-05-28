@@ -42,6 +42,7 @@ const _mixStub = '''
 
   class AnimationConfig {}
   class WidgetModifierConfig {
+    static WidgetModifierConfig defaultTextStyler(Object value) => WidgetModifierConfig();
     Object? resolve(Object context) => null;
   }
   class VariantStyle<S extends Spec<S>> {}
@@ -50,6 +51,7 @@ const _mixStub = '''
   class Prop<T> {
     static Prop<T>? maybe<T>(T? value) => null;
     static Prop<T>? maybeMix<T>(Object? value) => null;
+    static Prop<T>? mix<T>(Object value) => null;
   }
 
   class MixOps {
@@ -73,8 +75,34 @@ const _mixStub = '''
   class EdgeInsetsGeometryMix {}
   class BoxConstraintsMix {}
   class DecorationMix {}
+  class DecorationImageMix {}
+  class ShapeBorderMix {}
+  class GradientMix {}
+  class BoxBorderMix {}
+  class BorderRadiusGeometryMix {}
+  class BoxShadowMix {}
+  class ShadowMix {}
+  class TextStyleMix {}
+  class TextStyler {}
+  class ImageProvider<T> {}
+  class Color {}
+  class BoxFit {}
+  class ImageRepeat {
+    static const noRepeat = ImageRepeat();
+    const ImageRepeat();
+  }
+  class AlignmentGeometry {}
+  class TileMode {}
+  class ShapeBorder {}
+  class FontWeight {}
+  class FontStyle {}
+  class TextDecoration {}
+  class TextDecorationStyle {}
+  class FontFeature {}
+  class FontVariation {}
+  class Paint {}
   class Matrix4 {}
-  class Alignment {
+  class Alignment extends AlignmentGeometry {
     static const center = Alignment();
     const Alignment();
   }
@@ -89,10 +117,13 @@ const _mixStub = '''
     T constraints(BoxConstraintsMix value);
     T width(double value) => constraints(BoxConstraintsMix());
     T height(double value) => constraints(BoxConstraintsMix());
+    T size(double width, double height) => constraints(BoxConstraintsMix());
   }
 
   mixin DecorationStyleMixin<T> {
     T decoration(DecorationMix value);
+    T color(Color value) => decoration(DecorationMix());
+    T gradient(GradientMix value) => decoration(DecorationMix());
   }
 
   mixin BorderStyleMixin<T> {}
@@ -103,6 +134,64 @@ const _mixStub = '''
     T scale(double value, {Alignment alignment = Alignment.center}) {
       return transform(Matrix4(), alignment: alignment);
     }
+    T translate(double x, double y, [double z = 0.0]) => transform(Matrix4());
+  }
+
+  mixin FlexStyleMixin<T> {
+    T flex(FlexStyler value);
+    T direction(Axis value) => flex(FlexStyler(direction: value));
+    T row() => direction(Axis.horizontal);
+    T column() => direction(Axis.vertical);
+  }
+
+  class FlexStyler {
+    FlexStyler({
+      Axis? direction,
+      Object? mainAxisAlignment,
+      Object? crossAxisAlignment,
+      Object? mainAxisSize,
+      Object? verticalDirection,
+      Object? textDirection,
+      Object? textBaseline,
+      Object? clipBehavior,
+      double? spacing,
+    });
+
+    FlexStyler direction(Axis value) => this;
+    FlexStyler mainAxisAlignment(Object value) => this;
+    FlexStyler crossAxisAlignment(Object value) => this;
+    FlexStyler mainAxisSize(Object value) => this;
+    FlexStyler verticalDirection(Object value) => this;
+    FlexStyler textDirection(Object value) => this;
+    FlexStyler textBaseline(Object value) => this;
+    FlexStyler clipBehavior(Object value) => this;
+    FlexStyler spacing(double value) => this;
+  }
+
+  enum Axis { horizontal, vertical }
+
+  class StackStyler {
+    StackStyler({
+      AlignmentGeometry? alignment,
+      Object? fit,
+      Object? textDirection,
+      Object? clipBehavior,
+    });
+
+    StackStyler alignment(AlignmentGeometry value) => this;
+    StackStyler fit(Object value) => this;
+    StackStyler textDirection(Object value) => this;
+    StackStyler clipBehavior(Object value) => this;
+  }
+
+  mixin TextStyleMixin<T> {
+    T style(TextStyleMix value);
+    T color(Color value) => style(TextStyleMix());
+    T fontSize(double value) => style(TextStyleMix());
+  }
+
+  mixin StackStyleMixin<T> {
+    T alignment(AlignmentGeometry value);
   }
 ''';
 
@@ -303,13 +392,19 @@ void main() {
         {...mixAnnotationsSources, ..._mixSources, 'mix|lib/spike.dart': input},
         outputs: {
           'mix|lib/spike.styler.g.dart': decodedMatches(
-            allOf(
+            allOf([
               contains('const TrivialStyler.create('),
               contains('Prop<EdgeInsetsGeometry>? padding'),
               contains('TrivialStyler({'),
               contains('EdgeInsetsGeometryMix? padding'),
               contains('Prop.maybeMix(padding)'),
-            ),
+              contains('TrivialStyler animate(AnimationConfig value)'),
+              contains(
+                'TrivialStyler variants(List<VariantStyle<TrivialSpec>> value)',
+              ),
+              contains('TrivialStyler wrap(WidgetModifierConfig value)'),
+              contains('TrivialStyler modifier(WidgetModifierConfig value)'),
+            ]),
           ),
         },
       );
@@ -605,6 +700,426 @@ void main() {
         );
       },
     );
+
+    test('emits curated Box convenience factories', () async {
+      const input = '''
+        library spike;
+        import 'package:mix/mix.dart'
+            show Alignment, AlignmentGeometry, Matrix4, TextStyler;
+        import 'package:mix_annotations/mix_annotations.dart';
+
+        class EdgeInsetsGeometry {}
+        class BoxConstraints {}
+        class Decoration {}
+        enum Clip { hardEdge }
+
+        @MixableSpec()
+        final class BoxSpec {
+          final EdgeInsetsGeometry? padding;
+          final BoxConstraints? constraints;
+          final Decoration? decoration;
+          final Matrix4? transform;
+          final AlignmentGeometry? transformAlignment;
+          final Clip? clipBehavior;
+          const BoxSpec({
+            this.padding,
+            this.constraints,
+            this.decoration,
+            this.transform,
+            this.transformAlignment,
+            this.clipBehavior,
+          });
+        }
+      ''';
+
+      await testBuilder(
+        _specStylerLibraryBuilder(),
+        {...mixAnnotationsSources, ..._mixSources, 'mix|lib/spike.dart': input},
+        outputs: {
+          'mix|lib/spike.styler.g.dart': decodedMatches(
+            allOf([
+              contains('factory BoxStyler.color(Color value)'),
+              contains('factory BoxStyler.width(double value)'),
+              contains('factory BoxStyler.size(double width, double height)'),
+              contains(
+                'factory BoxStyler.scale(double scale, {Alignment alignment = .center})',
+              ),
+              contains('factory BoxStyler.translate(double x, double y'),
+              contains('factory BoxStyler.textStyle(TextStyler value)'),
+              contains('factory BoxStyler.animate(AnimationConfig value)'),
+            ]),
+          ),
+        },
+      );
+    });
+
+    test('emits curated Flex zero-argument factories', () async {
+      const input = '''
+        library spike;
+        import 'package:mix_annotations/mix_annotations.dart';
+
+        enum Axis { horizontal, vertical }
+
+        @MixableSpec()
+        final class FlexSpec {
+          final Axis? direction;
+          const FlexSpec({this.direction});
+        }
+      ''';
+
+      await testBuilder(
+        _specStylerLibraryBuilder(),
+        {...mixAnnotationsSources, ..._mixSources, 'mix|lib/spike.dart': input},
+        outputs: {
+          'mix|lib/spike.styler.g.dart': decodedMatches(
+            allOf([
+              contains('FlexStyleMixin<FlexStyler>'),
+              contains('factory FlexStyler.row() => FlexStyler().row();'),
+              contains('factory FlexStyler.column() => FlexStyler().column();'),
+              contains('FlexStyler flex(FlexStyler value)'),
+              contains('return merge(value);'),
+            ]),
+          ),
+        },
+      );
+    });
+
+    test('emits curated Text factories and directive methods', () async {
+      const input = '''
+        library spike;
+        import 'package:mix/mix.dart' show Directive;
+        import 'package:mix_annotations/mix_annotations.dart';
+
+        class TextStyle {}
+
+        @MixableSpec()
+        final class TextSpec {
+          final TextStyle? style;
+          final List<Directive<String>>? textDirectives;
+          final String? semanticsLabel;
+          const TextSpec({this.style, this.textDirectives, this.semanticsLabel});
+        }
+      ''';
+
+      await testBuilder(
+        _specStylerLibraryBuilder(),
+        {...mixAnnotationsSources, ..._mixSources, 'mix|lib/spike.dart': input},
+        outputs: {
+          'mix|lib/spike.styler.g.dart': decodedMatches(
+            allOf([
+              contains('TextStyleMixin<TextStyler>'),
+              contains('factory TextStyler.color(Color value)'),
+              contains('factory TextStyler.fontSize(double value)'),
+              contains(
+                'factory TextStyler.fontFamilyFallback(List<String> value)',
+              ),
+              contains(
+                'factory TextStyler.fontFeatures(List<FontFeature> value)',
+              ),
+              contains(
+                'factory TextStyler.fontVariations(List<FontVariation> value)',
+              ),
+              contains('factory TextStyler.foreground(Paint value)'),
+              contains('factory TextStyler.background(Paint value)'),
+              contains('factory TextStyler.directive(Directive<String> value)'),
+              contains('factory TextStyler.uppercase()'),
+              contains('TextStyler directive(Directive<String> value)'),
+              contains('TextStyler uppercase()'),
+              contains('UppercaseStringDirective'),
+              isNot(
+                contains('factory TextStyler.semanticsLabel(String value)'),
+              ),
+              isNot(
+                contains('factory TextStyler.animate(AnimationConfig value)'),
+              ),
+            ]),
+          ),
+        },
+      );
+    });
+
+    test('emits curated Icon single-shadow convenience', () async {
+      const input = '''
+        library spike;
+        import 'package:mix_annotations/mix_annotations.dart';
+
+        class Shadow {}
+
+        @MixableSpec()
+        final class IconSpec {
+          final List<Shadow>? shadows;
+          final String? semanticsLabel;
+          const IconSpec({this.shadows, this.semanticsLabel});
+        }
+      ''';
+
+      await testBuilder(
+        _specStylerLibraryBuilder(),
+        {...mixAnnotationsSources, ..._mixSources, 'mix|lib/spike.dart': input},
+        outputs: {
+          'mix|lib/spike.styler.g.dart': decodedMatches(
+            allOf([
+              contains('factory IconStyler.shadows(List<ShadowMix> value)'),
+              contains('factory IconStyler.shadow(ShadowMix value)'),
+              contains('IconStyler shadow(ShadowMix value)'),
+              isNot(
+                contains('factory IconStyler.semanticsLabel(String value)'),
+              ),
+              isNot(
+                contains('factory IconStyler.animate(AnimationConfig value)'),
+              ),
+            ]),
+          ),
+        },
+      );
+    });
+
+    test('gates curated simple surface APIs on required fields', () async {
+      const boxInput = '''
+        library spike_box;
+        import 'package:mix_annotations/mix_annotations.dart';
+
+        enum Clip { hardEdge }
+
+        @MixableSpec()
+        final class BoxSpec {
+          final Clip? clipBehavior;
+          const BoxSpec({this.clipBehavior});
+        }
+      ''';
+      const textInput = '''
+        library spike_text;
+        import 'package:mix/mix.dart' show Directive;
+        import 'package:mix_annotations/mix_annotations.dart';
+
+        @MixableSpec()
+        final class TextSpec {
+          final List<Directive<String>>? textDirectives;
+          const TextSpec({this.textDirectives});
+        }
+      ''';
+
+      await testBuilder(
+        _specStylerLibraryBuilder(),
+        {
+          ...mixAnnotationsSources,
+          ..._mixSources,
+          'mix|lib/box_spec.dart': boxInput,
+          'mix|lib/text_spec.dart': textInput,
+        },
+        outputs: {
+          'mix|lib/box_spec.styler.g.dart': decodedMatches(
+            allOf([
+              contains('factory BoxStyler.clipBehavior(Clip value)'),
+              contains('factory BoxStyler.animate(AnimationConfig value)'),
+              isNot(contains('factory BoxStyler.color(Color value)')),
+              isNot(contains('factory BoxStyler.width(double value)')),
+              isNot(contains('factory BoxStyler.scale(double scale')),
+            ]),
+          ),
+          'mix|lib/text_spec.styler.g.dart': decodedMatches(
+            allOf([
+              contains('factory TextStyler.directive(Directive<String> value)'),
+              isNot(contains('TextStyleMixin<TextStyler>')),
+              isNot(contains('factory TextStyler.color(Color value)')),
+              isNot(contains('factory TextStyler.fontSize(double value)')),
+            ]),
+          ),
+        },
+      );
+    });
+
+    test('does not activate compound surface for partial matches', () async {
+      const boxSpec = '''
+          import 'package:mix/mix.dart';
+
+          final class BoxSpec extends Spec<BoxSpec> {
+            const BoxSpec();
+          }
+        ''';
+      const input = '''
+          library combo;
+          import 'package:mix/mix.dart' show Spec, StyleSpec;
+          import 'package:mix_annotations/mix_annotations.dart';
+
+          import '../box/box_spec.dart';
+
+          @MixableSpec()
+          final class FlexBoxSpec extends Spec<FlexBoxSpec> {
+            final StyleSpec<BoxSpec>? box;
+            const FlexBoxSpec({this.box});
+          }
+        ''';
+
+      await testBuilder(
+        _specStylerLibraryBuilder(),
+        {
+          ...mixAnnotationsSources,
+          ..._mixSources,
+          'mix|lib/src/box/box_spec.dart': boxSpec,
+          'mix|lib/src/combo/flexbox_spec.dart': input,
+        },
+        outputs: {
+          'mix|lib/src/combo/flexbox_spec.styler.g.dart': decodedMatches(
+            allOf([
+              contains('class FlexBoxStyler'),
+              isNot(contains('factory FlexBoxStyler.direction(Axis value)')),
+              isNot(contains('factory FlexBoxStyler.row()')),
+              isNot(contains('FlexStyleMixin<FlexBoxStyler>')),
+              isNot(contains('box: Prop.maybeMix(')),
+              isNot(contains('FlexStyler(')),
+            ]),
+          ),
+        },
+      );
+    });
+
+    test('emits compound nested styler delegation', () async {
+      const boxSpec = '''
+          import 'package:mix/mix.dart';
+
+          final class BoxSpec extends Spec<BoxSpec> {
+            const BoxSpec();
+          }
+        ''';
+      const flexSpec = '''
+          import 'package:mix/mix.dart';
+
+          final class FlexSpec extends Spec<FlexSpec> {
+            const FlexSpec();
+          }
+        ''';
+      const input = '''
+          library combo;
+          import 'package:mix/mix.dart' show Spec, StyleSpec;
+          import 'package:mix_annotations/mix_annotations.dart';
+
+          import '../box/box_spec.dart';
+          import '../flex/flex_spec.dart';
+
+          @MixableSpec()
+          final class FlexBoxSpec extends Spec<FlexBoxSpec> {
+            final StyleSpec<BoxSpec>? box;
+            final StyleSpec<FlexSpec>? flex;
+            const FlexBoxSpec({this.box, this.flex});
+          }
+        ''';
+
+      await testBuilder(
+        _specStylerLibraryBuilder(),
+        {
+          ...mixAnnotationsSources,
+          ..._mixSources,
+          'mix|lib/src/box/box_spec.dart': boxSpec,
+          'mix|lib/src/flex/flex_spec.dart': flexSpec,
+          'mix|lib/src/combo/flexbox_spec.dart': input,
+        },
+        outputs: {
+          'mix|lib/src/combo/flexbox_spec.styler.g.dart': decodedMatches(
+            allOf([
+              contains('EdgeInsetsGeometryMix? padding,'),
+              contains('Axis? direction,'),
+              contains('Clip? flexClipBehavior,'),
+              contains('box: Prop.maybeMix('),
+              contains('BoxStyler('),
+              contains('flex: Prop.maybeMix('),
+              contains('FlexStyler('),
+              contains(
+                'factory FlexBoxStyler.alignment(AlignmentGeometry value)',
+              ),
+              contains(
+                'factory FlexBoxStyler.padding(EdgeInsetsGeometryMix value)',
+              ),
+              contains('factory FlexBoxStyler.direction(Axis value)'),
+              contains(
+                'factory FlexBoxStyler.mainAxisAlignment(MainAxisAlignment value)',
+              ),
+              contains('FlexStyleMixin<FlexBoxStyler>'),
+              contains('FlexBoxStyler flex(FlexStyler value)'),
+              contains('FlexBoxStyler padding(EdgeInsetsGeometryMix value)'),
+              contains('return merge(FlexBoxStyler(padding: value));'),
+              contains(
+                'FlexBoxStyler transformAlignment(AlignmentGeometry value)',
+              ),
+              contains('AlignmentGeometry alignment = Alignment.center'),
+              contains('factory FlexBoxStyler.row()'),
+              contains('factory FlexBoxStyler.color(Color value)'),
+              isNot(contains('FlexBoxStyler box(BoxStyler value)')),
+              isNot(contains('FlexBoxStyler flexClipBehavior(Clip value)')),
+            ]),
+          ),
+        },
+      );
+    });
+
+    test('emits StackBox compound nested styler parity', () async {
+      const boxSpec = '''
+          import 'package:mix/mix.dart';
+
+          final class BoxSpec extends Spec<BoxSpec> {
+            const BoxSpec();
+          }
+        ''';
+      const stackSpec = '''
+          import 'package:mix/mix.dart';
+
+          final class StackSpec extends Spec<StackSpec> {
+            const StackSpec();
+          }
+        ''';
+      const input = '''
+          library combo;
+          import 'package:mix/mix.dart' show Spec, StyleSpec;
+          import 'package:mix_annotations/mix_annotations.dart';
+
+          import '../box/box_spec.dart';
+          import '../stack/stack_spec.dart';
+
+          enum StackFit { loose }
+          enum Clip { hardEdge }
+          enum TextDirection { ltr }
+
+          @MixableSpec()
+          final class StackBoxSpec extends Spec<StackBoxSpec> {
+            final StyleSpec<BoxSpec>? box;
+            final StyleSpec<StackSpec>? stack;
+            const StackBoxSpec({this.box, this.stack});
+          }
+        ''';
+
+      await testBuilder(
+        _specStylerLibraryBuilder(),
+        {
+          ...mixAnnotationsSources,
+          ..._mixSources,
+          'mix|lib/src/box/box_spec.dart': boxSpec,
+          'mix|lib/src/stack/stack_spec.dart': stackSpec,
+          'mix|lib/src/combo/stackbox_spec.dart': input,
+        },
+        outputs: {
+          'mix|lib/src/combo/stackbox_spec.styler.g.dart': decodedMatches(
+            allOf([
+              contains(
+                'factory StackBoxStyler.alignment(AlignmentGeometry value)',
+              ),
+              contains(
+                'factory StackBoxStyler.padding(EdgeInsetsGeometryMix value)',
+              ),
+              contains(
+                'factory StackBoxStyler.stackAlignment(AlignmentGeometry value)',
+              ),
+              contains('factory StackBoxStyler.fit(StackFit value)'),
+              contains('factory StackBoxStyler.stackClipBehavior(Clip value)'),
+              contains(
+                'StackBoxStyler transformAlignment(AlignmentGeometry value)',
+              ),
+              contains('StackBoxStyler stack(StackStyler value)'),
+              isNot(contains('StackBoxStyler box(BoxStyler value)')),
+            ]),
+          ),
+        },
+      );
+    });
 
     test(
       'uses annotation-provided owner mixin element for custom mixins',

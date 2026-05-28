@@ -150,6 +150,7 @@ class IconStyler extends MixStyler<IconStyler, IconSpec>
   }
 
   /// Sets the widget modifier.
+  @override
   IconStyler modifier(WidgetModifierConfig value) {
     return merge(IconStyler(modifier: value));
   }

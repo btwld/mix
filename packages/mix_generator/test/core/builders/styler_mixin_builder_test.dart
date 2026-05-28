@@ -262,6 +262,22 @@ void main() {
         expect(code, contains('return merge(BoxStyler(modifier: value))'));
       });
 
+      test('generates modifier method for handwritten parity', () {
+        final builder = StylerMixinBuilder(
+          stylerName: 'BoxStyler',
+          specName: 'BoxSpec',
+          fields: [],
+          config: defaultConfig,
+        );
+        final code = builder.build();
+
+        expect(
+          code,
+          contains('BoxStyler modifier(WidgetModifierConfig value)'),
+        );
+        expect(code, contains('return merge(BoxStyler(modifier: value))'));
+      });
+
       test('skips base methods when setters flag is disabled', () {
         final builder = StylerMixinBuilder(
           stylerName: 'BoxStyler',
@@ -276,6 +292,7 @@ void main() {
         expect(code, isNot(contains('BoxStyler animate(')));
         expect(code, isNot(contains('BoxStyler variants(')));
         expect(code, isNot(contains('BoxStyler wrap(')));
+        expect(code, isNot(contains('BoxStyler modifier(')));
       });
     });
 

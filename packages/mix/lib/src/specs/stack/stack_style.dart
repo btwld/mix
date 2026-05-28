@@ -73,6 +73,7 @@ class StackStyler extends MixStyler<StackStyler, StackSpec>
       StackStyler().textDirection(value);
 
   /// Sets the widget modifier.
+  @override
   StackStyler modifier(WidgetModifierConfig value) {
     return merge(StackStyler(modifier: value));
   }

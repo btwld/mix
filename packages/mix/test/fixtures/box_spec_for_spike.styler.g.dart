@@ -93,10 +93,6 @@ class BoxSpecForSpikeStyler
          animation: animation,
        );
 
-  factory BoxSpecForSpikeStyler.transform(
-    Matrix4 value, {
-    Alignment alignment = .center,
-  }) => BoxSpecForSpikeStyler().transform(value, alignment: alignment);
   factory BoxSpecForSpikeStyler.alignment(AlignmentGeometry value) =>
       BoxSpecForSpikeStyler().alignment(value);
   factory BoxSpecForSpikeStyler.padding(EdgeInsetsGeometryMix value) =>
@@ -111,6 +107,10 @@ class BoxSpecForSpikeStyler
       BoxSpecForSpikeStyler().foregroundDecoration(value);
   factory BoxSpecForSpikeStyler.clipBehavior(Clip value) =>
       BoxSpecForSpikeStyler().clipBehavior(value);
+  factory BoxSpecForSpikeStyler.transform(
+    Matrix4 value, {
+    Alignment alignment = .center,
+  }) => BoxSpecForSpikeStyler().transform(value, alignment: alignment);
 
   @override
   BoxSpecForSpikeStyler transform(
@@ -181,6 +181,11 @@ mixin _$BoxSpecForSpikeStylerMixin on Style<BoxSpecForSpike>, Diagnosticable {
 
   /// Wraps with a widget modifier.
   BoxSpecForSpikeStyler wrap(WidgetModifierConfig value) {
+    return merge(BoxSpecForSpikeStyler(modifier: value));
+  }
+
+  /// Sets the widget modifier.
+  BoxSpecForSpikeStyler modifier(WidgetModifierConfig value) {
     return merge(BoxSpecForSpikeStyler(modifier: value));
   }
 

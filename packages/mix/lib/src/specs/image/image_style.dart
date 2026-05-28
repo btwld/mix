@@ -166,6 +166,7 @@ class ImageStyler extends MixStyler<ImageStyler, ImageSpec>
   }
 
   /// Sets the widget modifier.
+  @override
   ImageStyler modifier(WidgetModifierConfig value) {
     return merge(ImageStyler(modifier: value));
   }

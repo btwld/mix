@@ -251,6 +251,7 @@ class TextStyler extends MixStyler<TextStyler, TextSpec>
   }
 
   /// Sets the widget modifier.
+  @override
   TextStyler modifier(WidgetModifierConfig value) {
     return merge(TextStyler(modifier: value));
   }

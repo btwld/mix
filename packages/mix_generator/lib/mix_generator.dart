@@ -6,7 +6,8 @@
 ///   `toDiagnosticsNode`, `debugFillProperties`, plus `copyWith`, `lerp`,
 ///   `props`, and `type`.
 /// - Styler mixin `_$XStylerMixin`: setters, base methods (`animate`,
-///   `variants`, `wrap`), `merge`, `resolve`, `debugFillProperties`, `props`.
+///   `variants`, `wrap`, `modifier`), `merge`, `resolve`,
+///   `debugFillProperties`, `props`.
 /// - Mix mixin `_$XMixin`: `merge`, `resolve`, `props`.
 /// - Widget wrapper `class X extends StatelessWidget` for a `Style<S>`
 ///   factory annotated with `@MixWidget`.

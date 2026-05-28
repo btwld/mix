@@ -113,6 +113,11 @@ mixin _$ImageStylerMixin on Style<ImageSpec>, Diagnosticable {
     return merge(ImageStyler(modifier: value));
   }
 
+  /// Sets the widget modifier.
+  ImageStyler modifier(WidgetModifierConfig value) {
+    return merge(ImageStyler(modifier: value));
+  }
+
   /// Merges with another [ImageStyler].
   @override
   ImageStyler merge(ImageStyler? other) {
