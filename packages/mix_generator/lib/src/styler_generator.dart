@@ -16,7 +16,6 @@ import 'core/helpers/library_scope.dart';
 import 'core/helpers/type_hierarchy.dart';
 import 'core/helpers/widget_call_planner.dart';
 import 'core/models/annotation_config.dart';
-import 'core/models/mix_widget_model.dart';
 import 'core/models/styler_field_model.dart';
 
 /// Source-gen generator for Mix Styler code.
@@ -133,10 +132,11 @@ class StylerGenerator extends GeneratorForAnnotation<MixableStyler> {
       keyOwner: 'the target constructor',
     );
 
-    return _renderCallMethod(
+    return renderWidgetCall(
       widgetName: widgetName,
       params: result.params,
       forwardsKey: result.forwardsKey,
+      indent: '  ',
     );
   }
 
@@ -155,41 +155,6 @@ class StylerGenerator extends GeneratorForAnnotation<MixableStyler> {
       '`style` constructor parameter so the generated call() can pass '
       '`style: this`.',
     );
-  }
-
-  String _renderCallMethod({
-    required String widgetName,
-    required List<WidgetCallParam> params,
-    required bool forwardsKey,
-  }) {
-    final positional = params.where((p) => p.isPositional).toList();
-    final named = params.where((p) => !p.isPositional).toList();
-    final signatureParams = [
-      ...positional.map(_callParameterCode),
-      if (forwardsKey || named.isNotEmpty)
-        '{${[if (forwardsKey) 'Key? key', ...named.map(_callParameterCode)].join(', ')}}',
-    ];
-    final invocationArgs = [
-      ...positional.map((p) => p.name),
-      if (forwardsKey) 'key: key',
-      'style: this',
-      ...named.map((p) => '${p.name}: ${p.name}'),
-    ];
-
-    return '''
-  $widgetName call(${signatureParams.join(', ')}) {
-    return $widgetName(${invocationArgs.join(', ')});
-  }
-''';
-  }
-
-  String _callParameterCode(WidgetCallParam param) {
-    final required = param.isRequired && !param.isPositional ? 'required ' : '';
-    final defaultClause = param.defaultValueCode != null
-        ? ' = ${param.defaultValueCode}'
-        : '';
-
-    return '$required${param.typeCode} ${param.name}$defaultClause';
   }
 
   List<StylerFieldModel> _extractFields(ClassElement classElement) {

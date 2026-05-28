@@ -12,9 +12,8 @@ import '../helpers/type_hierarchy.dart';
 import '../helpers/widget_call_planner.dart';
 import '../models/annotation_config.dart';
 import '../models/field_model.dart';
-import '../models/styler_field_model.dart';
-import '../models/mix_widget_model.dart';
 import '../resolvers/known_mix_symbol_resolver.dart';
+import '../models/styler_field_model.dart';
 import 'styler_api_planner.dart';
 import 'styler_mixin_builder.dart';
 
@@ -492,7 +491,7 @@ class SpecStylerClassBuilder {
       keyOwner: 'the target constructor',
     );
 
-    return _renderCallMethod(
+    return renderWidgetCall(
       widgetName: widgetName,
       params: result.params,
       forwardsKey: result.forwardsKey,
@@ -513,41 +512,6 @@ class SpecStylerClassBuilder {
       '`style` constructor parameter so the generated call() can pass '
       '`style: this`.',
     );
-  }
-
-  String _renderCallMethod({
-    required String widgetName,
-    required List<WidgetCallParam> params,
-    required bool forwardsKey,
-  }) {
-    final positional = params.where((p) => p.isPositional).toList();
-    final named = params.where((p) => !p.isPositional).toList();
-    final signatureParams = [
-      ...positional.map(_callParameterCode),
-      if (forwardsKey || named.isNotEmpty)
-        '{${[if (forwardsKey) 'Key? key', ...named.map(_callParameterCode)].join(', ')}}',
-    ];
-    final invocationArgs = [
-      ...positional.map((p) => p.name),
-      if (forwardsKey) 'key: key',
-      'style: this',
-      ...named.map((p) => '${p.name}: ${p.name}'),
-    ];
-
-    return '''
-$widgetName call(${signatureParams.join(', ')}) {
-  return $widgetName(${invocationArgs.join(', ')});
-}
-''';
-  }
-
-  String _callParameterCode(WidgetCallParam param) {
-    final required = param.isRequired && !param.isPositional ? 'required ' : '';
-    final defaultClause = param.defaultValueCode != null
-        ? ' = ${param.defaultValueCode}'
-        : '';
-
-    return '$required${param.typeCode} ${param.name}$defaultClause';
   }
 
   _CompoundConfig? _compoundConfig(List<FieldModel> fields) {

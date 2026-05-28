@@ -68,6 +68,42 @@ List<String> optionalPositionalNames(
   return (params: params, forwardsKey: forwardsKey);
 }
 
+String renderWidgetCall({
+  required String widgetName,
+  required List<WidgetCallParam> params,
+  required bool forwardsKey,
+  String indent = '',
+}) {
+  final positional = params.where((p) => p.isPositional).toList();
+  final named = params.where((p) => !p.isPositional).toList();
+  final signatureParams = [
+    ...positional.map(_callParameterCode),
+    if (forwardsKey || named.isNotEmpty)
+      '{${[if (forwardsKey) 'Key? key', ...named.map(_callParameterCode)].join(', ')}}',
+  ];
+  final invocationArgs = [
+    ...positional.map((p) => p.name),
+    if (forwardsKey) 'key: key',
+    'style: this',
+    ...named.map((p) => '${p.name}: ${p.name}'),
+  ];
+
+  return '''
+${indent}$widgetName call(${signatureParams.join(', ')}) {
+${indent}  return $widgetName(${invocationArgs.join(', ')});
+${indent}}
+''';
+}
+
+String _callParameterCode(WidgetCallParam param) {
+  final required = param.isRequired && !param.isPositional ? 'required ' : '';
+  final defaultClause = param.defaultValueCode != null
+      ? ' = ${param.defaultValueCode}'
+      : '';
+
+  return '$required${param.typeCode} ${param.name}$defaultClause';
+}
+
 void rejectReservedName(
   FormalParameterElement parameter,
   Element anchor, {

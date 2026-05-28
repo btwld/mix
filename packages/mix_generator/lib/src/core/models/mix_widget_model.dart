@@ -36,8 +36,6 @@ class WidgetCallParam {
   });
 }
 
-typedef MixWidgetParam = WidgetCallParam;
-
 /// The complete shape of a generated `@MixWidget` class.
 class MixWidgetModel {
   /// The generated `StatelessWidget` class name (e.g. `Card`).
