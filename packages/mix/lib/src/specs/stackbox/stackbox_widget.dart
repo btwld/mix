@@ -2,17 +2,17 @@
 
 import 'package:flutter/widgets.dart';
 
+import '../../core/style.dart';
 import '../../core/style_widget.dart';
 import '../box/box_widget.dart';
 import '../stack/stack_spec.dart';
 import 'stackbox_spec.dart';
-import 'stackbox_style.dart';
 
 /// [StackBox] is equivalent to Flutter's [Stack] and [Container] widgets combined, but provides powerful styling capabilities through the Mix framework.
 ///
 /// [StackBox] enables you to create stacked layouts with visual styles such as decoration, padding, margin, constraints, and box/stack behaviors—all customizable and responsive.
 ///
-/// You can use the [StackBoxStyler] API to fluently compose your layout and decoration styles. Example:
+/// You can use the `StackBoxStyler` API to fluently compose your layout and decoration styles. Example:
 ///
 /// ```dart
 /// final style = StackBoxStyler()
@@ -39,7 +39,7 @@ import 'stackbox_style.dart';
 /// ```
 class StackBox extends StyleWidget<StackBoxSpec> {
   const StackBox({
-    super.style = const StackBoxStyler.create(),
+    super.style = const IdentityStyle(StackBoxSpec()),
     super.styleSpec,
     super.key,
     this.children = const <Widget>[],
