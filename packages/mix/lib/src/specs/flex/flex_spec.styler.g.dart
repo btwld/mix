@@ -105,6 +105,7 @@ class FlexStyler extends MixStyler<FlexStyler, FlexSpec>
   factory FlexStyler.row() => FlexStyler().row();
   factory FlexStyler.column() => FlexStyler().column();
 
+  @override
   FlexStyler flex(FlexStyler value) {
     return merge(value);
   }

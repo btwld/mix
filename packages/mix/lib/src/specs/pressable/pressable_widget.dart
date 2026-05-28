@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 
 import '../../core/internal/mix_interaction_detector.dart';
 import '../../core/providers/widget_state_provider.dart';
-import '../box/box_style.dart';
+import '../box/box_spec.styler.g.dart';
 import '../box/box_widget.dart';
 
 /// Combines [Box] styling with gesture handling.

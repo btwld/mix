@@ -6,7 +6,7 @@ import '../core/style.dart';
 import '../core/style_spec.dart';
 import '../core/widget_modifier.dart';
 import '../specs/box/box_spec.dart';
-import '../specs/box/box_style.dart';
+import '../specs/box/box_spec.styler.g.dart';
 import '../specs/box/box_widget.dart';
 
 /// Modifier that wraps its child in a styled Container using BoxSpec styling.

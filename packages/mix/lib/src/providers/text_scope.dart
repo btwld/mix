@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../specs/text/text_style.dart';
+import '../specs/text/text_spec.styler.g.dart';
 
 /// Provides text styling context to descendant widgets.
 ///

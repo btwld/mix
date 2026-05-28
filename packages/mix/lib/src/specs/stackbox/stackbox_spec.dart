@@ -1,4 +1,6 @@
 import 'package:flutter/foundation.dart';
+// Used by generated styler code for constructor parameter types.
+// ignore: unnecessary_import
 import 'package:flutter/widgets.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 

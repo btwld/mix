@@ -557,6 +557,7 @@ const _flexAnchorMethod = StylerMethodDescriptor(
   name: 'flex',
   signature: 'flex(FlexStyler value)',
   bodyLines: ['return merge(value);'],
+  isOverride: true,
 );
 
 const _surfaces = {

@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../../core/mix_element.dart';
-import '../../specs/flex/flex_style.dart';
+import '../../specs/flex/flex_spec.styler.g.dart';
 
 /// Provides convenient flex layout styling methods for spec attributes.
 mixin FlexStyleMixin<T extends Mix<Object?>> {
