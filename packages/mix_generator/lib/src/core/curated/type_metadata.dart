@@ -220,6 +220,8 @@ const flagPropertyDescriptions = {
   'isAntiAlias': 'anti-aliased',
   'matchTextDirection': 'matches text direction',
   'applyTextScaling': 'scales with text',
+  'reverse': 'reversed',
+  'visible': 'visible',
 };
 
 TypeMetadata? _metadataFor(String typeName) => typeMetadata[typeName];

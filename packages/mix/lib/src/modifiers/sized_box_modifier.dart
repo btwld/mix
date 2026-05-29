@@ -1,95 +1,29 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
 
 import '../core/helpers.dart';
 import '../core/widget_modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
 
+part 'sized_box_modifier.g.dart';
+
 /// Modifier that constrains its child to a specific size.
 ///
 /// Wraps the child in a [SizedBox] widget with the specified width and height.
+@MixableModifier()
 final class SizedBoxModifier extends WidgetModifier<SizedBoxModifier>
-    with Diagnosticable {
+    with Diagnosticable, _$SizedBoxModifierMethods {
+  @override
   final double? width;
+  @override
   final double? height;
 
   const SizedBoxModifier({this.width, this.height});
 
   @override
-  SizedBoxModifier copyWith({double? width, double? height}) {
-    return SizedBoxModifier(
-      width: width ?? this.width,
-      height: height ?? this.height,
-    );
-  }
-
-  @override
-  SizedBoxModifier lerp(SizedBoxModifier? other, double t) {
-    if (other == null) return this;
-
-    return SizedBoxModifier(
-      width: MixOps.lerp(width, other.width, t),
-      height: MixOps.lerp(height, other.height, t),
-    );
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(DoubleProperty('width', width))
-      ..add(DoubleProperty('height', height));
-  }
-
-  @override
-  List<Object?> get props => [width, height];
-
-  @override
   Widget build(Widget child) {
     return SizedBox(width: width, height: height, child: child);
   }
-}
-
-/// Mix class for applying sized box modifications.
-///
-/// This class allows for mixing and resolving sized box properties.
-class SizedBoxModifierMix extends ModifierMix<SizedBoxModifier>
-    with Diagnosticable {
-  final Prop<double>? width;
-  final Prop<double>? height;
-
-  const SizedBoxModifierMix.create({this.width, this.height});
-
-  SizedBoxModifierMix({double? width, double? height})
-    : this.create(width: Prop.maybe(width), height: Prop.maybe(height));
-
-  @override
-  SizedBoxModifier resolve(BuildContext context) {
-    return SizedBoxModifier(
-      width: MixOps.resolve(context, width),
-      height: MixOps.resolve(context, height),
-    );
-  }
-
-  @override
-  SizedBoxModifierMix merge(SizedBoxModifierMix? other) {
-    if (other == null) return this;
-
-    return SizedBoxModifierMix.create(
-      width: MixOps.merge(width, other.width),
-      height: MixOps.merge(height, other.height),
-    );
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(DiagnosticsProperty('width', width))
-      ..add(DiagnosticsProperty('height', height));
-  }
-
-  @override
-  List<Object?> get props => [width, height];
 }

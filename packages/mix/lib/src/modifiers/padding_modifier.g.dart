@@ -1,0 +1,66 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of 'padding_modifier.dart';
+
+// **************************************************************************
+// ModifierGenerator
+// **************************************************************************
+
+mixin _$PaddingModifierMethods
+    on WidgetModifier<PaddingModifier>, Diagnosticable {
+  EdgeInsetsGeometry get padding;
+
+  @override
+  PaddingModifier copyWith({EdgeInsetsGeometry? padding}) {
+    return PaddingModifier(padding ?? this.padding);
+  }
+
+  @override
+  PaddingModifier lerp(PaddingModifier? other, double t) {
+    if (other == null) return this as PaddingModifier;
+
+    return PaddingModifier(MixOps.lerp(padding, other.padding, t)!);
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty('padding', padding));
+  }
+
+  @override
+  List<Object?> get props => [padding];
+}
+
+class PaddingModifierMix extends ModifierMix<PaddingModifier>
+    with Diagnosticable {
+  final Prop<EdgeInsetsGeometry>? padding;
+
+  const PaddingModifierMix.create({this.padding});
+
+  PaddingModifierMix({EdgeInsetsGeometryMix? padding})
+    : this.create(padding: Prop.maybeMix(padding));
+
+  @override
+  PaddingModifier resolve(BuildContext context) {
+    return PaddingModifier(MixOps.resolve(context, padding));
+  }
+
+  @override
+  PaddingModifierMix merge(PaddingModifierMix? other) {
+    if (other == null) return this;
+
+    return PaddingModifierMix.create(
+      padding: MixOps.merge(padding, other.padding),
+    );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty('padding', padding));
+  }
+
+  @override
+  List<Object?> get props => [padding];
+}

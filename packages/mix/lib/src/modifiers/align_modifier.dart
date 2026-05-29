@@ -1,18 +1,25 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
 
 import '../core/helpers.dart';
 import '../core/widget_modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
 
+part 'align_modifier.g.dart';
+
 /// Modifier that aligns its child within the available space.
 ///
 /// Wraps the child in an [Align] widget with the specified alignment and size factors.
+@MixableModifier()
 final class AlignModifier extends WidgetModifier<AlignModifier>
-    with Diagnosticable {
+    with Diagnosticable, _$AlignModifierMethods {
+  @override
   final AlignmentGeometry alignment;
+  @override
   final double? widthFactor;
+  @override
   final double? heightFactor;
 
   const AlignModifier({
@@ -20,42 +27,6 @@ final class AlignModifier extends WidgetModifier<AlignModifier>
     this.widthFactor,
     this.heightFactor,
   }) : alignment = alignment ?? Alignment.center;
-
-  @override
-  AlignModifier copyWith({
-    AlignmentGeometry? alignment,
-    double? widthFactor,
-    double? heightFactor,
-  }) {
-    return AlignModifier(
-      alignment: alignment ?? this.alignment,
-      widthFactor: widthFactor ?? this.widthFactor,
-      heightFactor: heightFactor ?? this.heightFactor,
-    );
-  }
-
-  @override
-  AlignModifier lerp(AlignModifier? other, double t) {
-    if (other == null) return this;
-
-    return AlignModifier(
-      alignment: MixOps.lerp(alignment, other.alignment, t)!,
-      widthFactor: MixOps.lerp(widthFactor, other.widthFactor, t),
-      heightFactor: MixOps.lerp(heightFactor, other.heightFactor, t),
-    );
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(DiagnosticsProperty('alignment', alignment))
-      ..add(DoubleProperty('widthFactor', widthFactor))
-      ..add(DoubleProperty('heightFactor', heightFactor));
-  }
-
-  @override
-  List<Object?> get props => [alignment, widthFactor, heightFactor];
 
   @override
   Widget build(Widget child) {
@@ -66,61 +37,4 @@ final class AlignModifier extends WidgetModifier<AlignModifier>
       child: child,
     );
   }
-}
-
-/// Mix class for applying alignment modifications.
-///
-/// This class allows for mixing and resolving alignment properties.
-class AlignModifierMix extends ModifierMix<AlignModifier> with Diagnosticable {
-  final Prop<AlignmentGeometry>? alignment;
-  final Prop<double>? widthFactor;
-  final Prop<double>? heightFactor;
-
-  const AlignModifierMix.create({
-    this.alignment,
-    this.widthFactor,
-    this.heightFactor,
-  });
-
-  AlignModifierMix({
-    AlignmentGeometry? alignment,
-    double? widthFactor,
-    double? heightFactor,
-  }) : this.create(
-         alignment: Prop.maybe(alignment),
-         widthFactor: Prop.maybe(widthFactor),
-         heightFactor: Prop.maybe(heightFactor),
-       );
-
-  @override
-  AlignModifier resolve(BuildContext context) {
-    return AlignModifier(
-      alignment: MixOps.resolve(context, alignment),
-      widthFactor: MixOps.resolve(context, widthFactor),
-      heightFactor: MixOps.resolve(context, heightFactor),
-    );
-  }
-
-  @override
-  AlignModifierMix merge(AlignModifierMix? other) {
-    if (other == null) return this;
-
-    return AlignModifierMix.create(
-      alignment: MixOps.merge(alignment, other.alignment),
-      widthFactor: MixOps.merge(widthFactor, other.widthFactor),
-      heightFactor: MixOps.merge(heightFactor, other.heightFactor),
-    );
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(DiagnosticsProperty('alignment', alignment))
-      ..add(DiagnosticsProperty('widthFactor', widthFactor))
-      ..add(DiagnosticsProperty('heightFactor', heightFactor));
-  }
-
-  @override
-  List<Object?> get props => [alignment, widthFactor, heightFactor];
 }
