@@ -119,7 +119,7 @@ const Map<String, TypeMetadata> typeMetadata = {
 
   // Primitives and common direct values.
   'double': TypeMetadata(category: .lerpable),
-  'int': TypeMetadata(category: .lerpable),
+  'int': TypeMetadata(category: .snappable),
   'num': TypeMetadata(category: .lerpable),
   'bool': TypeMetadata(category: .snappable),
   'String': TypeMetadata(category: .snappable),

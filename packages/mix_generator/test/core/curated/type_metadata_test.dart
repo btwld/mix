@@ -49,6 +49,7 @@ void main() {
 
       test('identifies lerpable types', () {
         expect(isLerpableType('double'), isTrue);
+        expect(isLerpableType('int'), isFalse);
         expect(isLerpableType('Color'), isTrue);
         expect(isLerpableType('EdgeInsetsGeometry'), isTrue);
         expect(isLerpableType('Matrix4'), isTrue);
@@ -56,6 +57,7 @@ void main() {
       });
 
       test('identifies snappable types', () {
+        expect(isSnappableType('int'), isTrue);
         expect(isSnappableType('bool'), isTrue);
         expect(isSnappableType('String'), isTrue);
         expect(isSnappableType('IconData'), isTrue);

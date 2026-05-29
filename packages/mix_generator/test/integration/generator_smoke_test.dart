@@ -266,6 +266,7 @@ abstract class Spec<T extends Spec<T>> with Equatable {
 
 class MixOps {
   static T? lerp<T>(T? a, T? b, double t) => a;
+  static T? lerpSnap<T>(T? a, T? b, double t) => a;
 }
 
 @MixableSpec()
@@ -284,6 +285,10 @@ class TinySpec with _$TinySpec {
           },
           inputAsset: 'mix_generator|lib/spec_case.dart',
           outputAsset: 'mix_generator|lib/spec_case.g.dart',
+          outputMatcher: allOf([
+            contains('MixOps.lerpSnap(n, other?.n, t)'),
+            isNot(contains('MixOps.lerp(n, other?.n, t)')),
+          ]),
         );
       },
     );
