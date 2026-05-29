@@ -34,9 +34,10 @@ builders:
   spec_styler_generator:
     import: 'package:mix_generator/mix_generator.dart'
     builder_factories: ['specStylerGenerator']
-    build_extensions: {'.dart': ['.styler.g.dart']}
+    build_extensions: {'.dart': ['.spec_styler_generator.g.part']}
     auto_apply: none
-    build_to: source
+    build_to: cache
+    applies_builders: ['source_gen:combining_builder']
 
   styler_generator:
     import: 'package:mix_generator/mix_generator.dart'

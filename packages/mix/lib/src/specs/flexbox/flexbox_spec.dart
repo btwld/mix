@@ -4,10 +4,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 
-import '../../core/spec.dart';
-import '../../core/style_spec.dart';
+import '../../generated_styler_support.dart';
+
 import '../box/box_spec.dart';
 import '../flex/flex_spec.dart';
+import '../text/text_spec.dart';
 import 'flexbox_widget.dart';
 
 part 'flexbox_spec.g.dart';

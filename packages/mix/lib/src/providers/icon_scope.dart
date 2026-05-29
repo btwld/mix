@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../specs/icon/icon_spec.styler.g.dart';
+import '../specs/icon/icon_spec.dart';
 
 /// Provides icon styling context to descendant widgets.
 ///

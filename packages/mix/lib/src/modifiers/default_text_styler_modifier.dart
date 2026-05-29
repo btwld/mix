@@ -5,7 +5,6 @@ import '../core/providers/style_provider.dart';
 import '../core/style.dart';
 import '../core/widget_modifier.dart';
 import '../specs/text/text_spec.dart';
-import '../specs/text/text_spec.styler.g.dart';
 
 /// Modifier that propagates a [TextStyler] to descendant [StyledText] widgets.
 ///

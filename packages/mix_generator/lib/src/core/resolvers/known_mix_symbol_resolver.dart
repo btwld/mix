@@ -30,7 +30,7 @@ final class KnownMixSymbolResolver {
       fail(
         errorElement,
         'SpecStylerGenerator could not resolve `$mixPublicImport` '
-        'while generating a standalone styler.',
+        'while deriving generated styler support metadata.',
         todo:
             'Ensure `lib/mix.dart` exports the Mix runtime surface needed by '
             'generated stylers. Original resolver error: $error',

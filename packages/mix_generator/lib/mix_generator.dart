@@ -55,12 +55,12 @@ Builder mixGenerator(BuilderOptions _) {
 ///
 /// Generates full Styler classes from `@MixableSpec` classes.
 Builder specStylerGenerator(BuilderOptions _) {
-  return LibraryBuilder(
-    const SpecStylerGenerator(),
+  return SharedPartBuilder(
+    [const SpecStylerGenerator()],
+    'spec_styler_generator',
     formatOutput: (code, version) {
       return DartFormatter(languageVersion: version).format(code);
     },
-    generatedExtension: '.styler.g.dart',
   );
 }
 

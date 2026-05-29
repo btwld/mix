@@ -1,3 +1,4 @@
+import 'package:build/build.dart';
 import 'package:build_test/build_test.dart';
 import 'package:logging/logging.dart';
 import 'package:mix_generator/mix_generator.dart';
@@ -27,7 +28,7 @@ const _mixSourcesWithStyleWidget = {
 };
 
 /// Minimal `package:mix/mix.dart` surface used by the
-/// standalone styler tests.
+/// part styler tests.
 const _mixStub = '''
   import 'package:flutter/foundation.dart';
 
@@ -357,11 +358,8 @@ const _flutterResolveStubs = {
   ''',
 };
 
-LibraryBuilder _specStylerLibraryBuilder() {
-  return LibraryBuilder(
-    const SpecStylerGenerator(),
-    generatedExtension: '.styler.g.dart',
-  );
+Builder _specStylerPartBuilder() {
+  return PartBuilder([const SpecStylerGenerator()], '.g.dart');
 }
 
 Future<String> _expectSpecStylerValidationError(
@@ -370,7 +368,7 @@ Future<String> _expectSpecStylerValidationError(
 }) async {
   final logs = <LogRecord>[];
   await testBuilder(
-    _specStylerLibraryBuilder(),
+    _specStylerPartBuilder(),
     sources,
     generateFor: {inputAsset},
     onLog: logs.add,
@@ -388,6 +386,7 @@ void main() {
       const input = '''
         library spike;
         import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
         @MixableSpec()
         final class TrivialSpec {
           final int? count;
@@ -396,10 +395,10 @@ void main() {
       ''';
 
       await testBuilder(
-        _specStylerLibraryBuilder(),
+        _specStylerPartBuilder(),
         {...mixAnnotationsSources, ..._mixSources, 'mix|lib/spike.dart': input},
         outputs: {
-          'mix|lib/spike.styler.g.dart': decodedMatches(
+          'mix|lib/spike.g.dart': decodedMatches(
             contains(
               'class TrivialStyler extends MixStyler<TrivialStyler, TrivialSpec>',
             ),
@@ -408,10 +407,51 @@ void main() {
       );
     });
 
+    test(
+      'combines spec mixin and generated styler in one .g.dart part',
+      () async {
+        const input = '''
+        library combined;
+        import 'package:mix/mix.dart';
+        import 'package:mix_annotations/mix_annotations.dart';
+        part 'combined.g.dart';
+
+        @MixableSpec()
+        final class CombinedSpec extends Spec<CombinedSpec> {
+          final int? count;
+          const CombinedSpec({this.count});
+        }
+      ''';
+
+        await testBuilder(
+          PartBuilder([
+            SpecGenerator(),
+            const SpecStylerGenerator(),
+          ], '.g.dart'),
+          {
+            ...mixAnnotationsSources,
+            ..._mixSources,
+            'mix|lib/combined.dart': input,
+          },
+          outputs: {
+            'mix|lib/combined.g.dart': decodedMatches(
+              allOf([
+                contains('mixin _\$CombinedSpec implements Spec<CombinedSpec>'),
+                contains(
+                  'class CombinedStyler extends MixStyler<CombinedStyler, CombinedSpec>',
+                ),
+              ]),
+            ),
+          },
+        );
+      },
+    );
+
     test('emits full styler members without legacy mixin getters', () async {
       const input = '''
         library spike;
         import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
         @MixableSpec()
         final class TrivialSpec {
           final int? count;
@@ -420,10 +460,10 @@ void main() {
       ''';
 
       await testBuilder(
-        _specStylerLibraryBuilder(),
+        _specStylerPartBuilder(),
         {...mixAnnotationsSources, ..._mixSources, 'mix|lib/spike.dart': input},
         outputs: {
-          'mix|lib/spike.styler.g.dart': decodedMatches(
+          'mix|lib/spike.g.dart': decodedMatches(
             allOf([
               contains(
                 'class TrivialStyler extends MixStyler<TrivialStyler, TrivialSpec>',
@@ -444,6 +484,7 @@ void main() {
       const input = '''
         library spike;
         import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
         @MixableSpec()
         final class PlainSpec {
           const PlainSpec();
@@ -451,10 +492,10 @@ void main() {
       ''';
 
       await testBuilder(
-        _specStylerLibraryBuilder(),
+        _specStylerPartBuilder(),
         {...mixAnnotationsSources, ..._mixSources, 'mix|lib/spike.dart': input},
         outputs: {
-          'mix|lib/spike.styler.g.dart': decodedMatches(
+          'mix|lib/spike.g.dart': decodedMatches(
             isNot(contains('Plain call(')),
           ),
         },
@@ -468,6 +509,7 @@ void main() {
         import 'package:mix/mix.dart';
         import 'package:mix/src/core/style_widget.dart';
         import 'package:mix_annotations/mix_annotations.dart';
+        part 'box_shape.g.dart';
 
         @MixableSpec(target: Box.new)
         final class BoxSpec extends Spec<BoxSpec> {
@@ -491,6 +533,7 @@ void main() {
         import 'package:mix/mix.dart';
         import 'package:mix/src/core/style_widget.dart';
         import 'package:mix_annotations/mix_annotations.dart';
+        part 'text_shape.g.dart';
 
         @MixableSpec(target: StyledText.new)
         final class TextSpec extends Spec<TextSpec> {
@@ -509,6 +552,7 @@ void main() {
         import 'package:mix/mix.dart';
         import 'package:mix/src/core/style_widget.dart';
         import 'package:mix_annotations/mix_annotations.dart';
+        part 'flex_shape.g.dart';
 
         @MixableSpec(target: FlexBox.new)
         final class FlexBoxSpec extends Spec<FlexBoxSpec> {
@@ -527,7 +571,7 @@ void main() {
       ''';
 
       await expectGeneratorOutputResolves(
-        builder: _specStylerLibraryBuilder(),
+        builder: _specStylerPartBuilder(),
         sources: {
           ...mixAnnotationsSources,
           ..._flutterResolveStubs,
@@ -535,7 +579,7 @@ void main() {
           'mix|lib/box_shape.dart': boxInput,
         },
         inputAsset: 'mix|lib/box_shape.dart',
-        outputAsset: 'mix|lib/box_shape.styler.g.dart',
+        outputAsset: 'mix|lib/box_shape.g.dart',
         outputMatcher: allOf(
           contains('Box call({Key? key, Widget? child})'),
           contains('return Box(key: key, style: this, child: child);'),
@@ -543,7 +587,7 @@ void main() {
       );
 
       await expectGeneratorOutputResolves(
-        builder: _specStylerLibraryBuilder(),
+        builder: _specStylerPartBuilder(),
         sources: {
           ...mixAnnotationsSources,
           ..._flutterResolveStubs,
@@ -551,7 +595,7 @@ void main() {
           'mix|lib/text_shape.dart': textInput,
         },
         inputAsset: 'mix|lib/text_shape.dart',
-        outputAsset: 'mix|lib/text_shape.styler.g.dart',
+        outputAsset: 'mix|lib/text_shape.g.dart',
         outputMatcher: allOf(
           contains('StyledText call(String text, {Key? key})'),
           contains('return StyledText(text, key: key, style: this);'),
@@ -559,7 +603,7 @@ void main() {
       );
 
       await expectGeneratorOutputResolves(
-        builder: _specStylerLibraryBuilder(),
+        builder: _specStylerPartBuilder(),
         sources: {
           ...mixAnnotationsSources,
           ..._flutterResolveStubs,
@@ -567,7 +611,7 @@ void main() {
           'mix|lib/flex_shape.dart': flexInput,
         },
         inputAsset: 'mix|lib/flex_shape.dart',
-        outputAsset: 'mix|lib/flex_shape.styler.g.dart',
+        outputAsset: 'mix|lib/flex_shape.g.dart',
         outputMatcher: allOf(
           contains(
             'FlexBox call({Key? key, List<Widget> children = const <Widget>[]})',
@@ -579,20 +623,23 @@ void main() {
       );
     });
 
-    test('preserves source imports needed by target widgets', () async {
-      const specInput = '''
+    test(
+      'uses source imports needed by target widgets from the host part',
+      () async {
+        const specInput = '''
         library box_spec;
         import 'package:flutter/widgets.dart';
         import 'package:mix/mix.dart';
         import 'package:mix_annotations/mix_annotations.dart';
         import 'box_widget.dart';
+        part 'box_spec.g.dart';
 
         @MixableSpec(target: Box.new)
         final class BoxSpec extends Spec<BoxSpec> {
           const BoxSpec();
         }
       ''';
-      const widgetInput = '''
+        const widgetInput = '''
         import 'package:flutter/widgets.dart';
         import 'package:mix/src/core/style_widget.dart';
         import 'box_spec.dart';
@@ -604,26 +651,31 @@ void main() {
         }
       ''';
 
-      await expectGeneratorOutputResolves(
-        builder: _specStylerLibraryBuilder(),
-        sources: {
-          ...mixAnnotationsSources,
-          ..._flutterResolveStubs,
-          ..._mixSourcesWithStyleWidget,
-          'mix|lib/box_spec.dart': specInput,
-          'mix|lib/box_widget.dart': widgetInput,
-        },
-        inputAsset: 'mix|lib/box_spec.dart',
-        outputAsset: 'mix|lib/box_spec.styler.g.dart',
-        outputMatcher: contains("import 'box_widget.dart';"),
-      );
-    });
+        await expectGeneratorOutputResolves(
+          builder: _specStylerPartBuilder(),
+          sources: {
+            ...mixAnnotationsSources,
+            ..._flutterResolveStubs,
+            ..._mixSourcesWithStyleWidget,
+            'mix|lib/box_spec.dart': specInput,
+            'mix|lib/box_widget.dart': widgetInput,
+          },
+          inputAsset: 'mix|lib/box_spec.dart',
+          outputAsset: 'mix|lib/box_spec.g.dart',
+          outputMatcher: allOf([
+            contains('Box call({Key? key, Widget? child})'),
+            isNot(contains("import 'box_widget.dart';")),
+          ]),
+        );
+      },
+    );
 
     test('rejects target values that are not constructor tear-offs', () async {
       const input = '''
         library spike;
         import 'package:mix/mix.dart';
         import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
 
         Object notAConstructor() => Object();
 
@@ -649,6 +701,7 @@ void main() {
         import 'package:flutter/widgets.dart';
         import 'package:mix/mix.dart';
         import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
 
         class PlainWidget extends Widget {
           const PlainWidget({super.key});
@@ -676,6 +729,7 @@ void main() {
         import 'package:mix/mix.dart';
         import 'package:mix/src/core/style_widget.dart';
         import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
 
         final class OtherSpec extends Spec<OtherSpec> {
           const OtherSpec();
@@ -711,6 +765,7 @@ void main() {
         import 'package:mix/mix.dart';
         import 'package:mix/src/core/style_widget.dart';
         import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
 
         class _Style extends Style<BoxSpec> {
           const _Style();
@@ -743,6 +798,7 @@ void main() {
       const input = '''
         library spike;
         import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
         class EdgeInsetsGeometry {}
 
         @MixableSpec()
@@ -753,10 +809,10 @@ void main() {
       ''';
 
       await testBuilder(
-        _specStylerLibraryBuilder(),
+        _specStylerPartBuilder(),
         {...mixAnnotationsSources, ..._mixSources, 'mix|lib/spike.dart': input},
         outputs: {
-          'mix|lib/spike.styler.g.dart': decodedMatches(
+          'mix|lib/spike.g.dart': decodedMatches(
             allOf(
               contains('SpacingStyleMixin<SupportedStyler>'),
               contains(
@@ -777,6 +833,7 @@ void main() {
         const input = '''
         library spike;
         import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
         class EdgeInsetsGeometry {}
 
         @MixableSpec()
@@ -787,7 +844,7 @@ void main() {
       ''';
 
         final logs = <LogRecord>[];
-        await testBuilder(_specStylerLibraryBuilder(), {
+        await testBuilder(_specStylerPartBuilder(), {
           ...mixAnnotationsSources,
           'mix|lib/mix.dart': _mixWithoutSpacingMixin,
           'mix|lib/spike.dart': input,
@@ -807,12 +864,13 @@ void main() {
       const input = '''
         library spike;
         import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
         @MixableSpec()
         void notAClass() {}
       ''';
 
       final logs = <LogRecord>[];
-      await testBuilder(_specStylerLibraryBuilder(), {
+      await testBuilder(_specStylerPartBuilder(), {
         ...mixAnnotationsSources,
         'mix|lib/spike.dart': input,
       }, onLog: logs.add);
@@ -832,6 +890,7 @@ void main() {
         const input = '''
         library spike;
         import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
         class EdgeInsetsGeometry {}
         @MixableSpec()
         final class TrivialSpec {
@@ -842,14 +901,14 @@ void main() {
       ''';
 
         await testBuilder(
-          _specStylerLibraryBuilder(),
+          _specStylerPartBuilder(),
           {
             ...mixAnnotationsSources,
             ..._mixSources,
             'mix|lib/spike.dart': input,
           },
           outputs: {
-            'mix|lib/spike.styler.g.dart': decodedMatches(
+            'mix|lib/spike.g.dart': decodedMatches(
               allOf(
                 contains(r'Prop<EdgeInsetsGeometry>? $padding'),
                 contains(r'Prop<int>? $count'),
@@ -864,6 +923,7 @@ void main() {
       const input = '''
         library spike;
         import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
         class EdgeInsetsGeometry {}
         @MixableSpec()
         final class TrivialSpec {
@@ -873,10 +933,10 @@ void main() {
       ''';
 
       await testBuilder(
-        _specStylerLibraryBuilder(),
+        _specStylerPartBuilder(),
         {...mixAnnotationsSources, ..._mixSources, 'mix|lib/spike.dart': input},
         outputs: {
-          'mix|lib/spike.styler.g.dart': decodedMatches(
+          'mix|lib/spike.g.dart': decodedMatches(
             allOf([
               contains('const TrivialStyler.create('),
               contains('Prop<EdgeInsetsGeometry>? padding'),
@@ -901,6 +961,7 @@ void main() {
         const input = '''
         library spike;
         import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
         class EdgeInsetsGeometry {}
         class BoxConstraints {}
         class Decoration {}
@@ -924,14 +985,14 @@ void main() {
       ''';
 
         await testBuilder(
-          _specStylerLibraryBuilder(),
+          _specStylerPartBuilder(),
           {
             ...mixAnnotationsSources,
             ..._mixSources,
             'mix|lib/spike.dart': input,
           },
           outputs: {
-            'mix|lib/spike.styler.g.dart': decodedMatches(
+            'mix|lib/spike.g.dart': decodedMatches(
               allOf(
                 contains('SpacingStyleMixin<BoxLikeStyler>'),
                 contains('ConstraintStyleMixin<BoxLikeStyler>'),
@@ -952,6 +1013,7 @@ void main() {
         const input = '''
         library spike;
         import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
         class EdgeInsetsGeometry {}
         enum Clip { hardEdge }
 
@@ -964,14 +1026,14 @@ void main() {
       ''';
 
         await testBuilder(
-          _specStylerLibraryBuilder(),
+          _specStylerPartBuilder(),
           {
             ...mixAnnotationsSources,
             ..._mixSources,
             'mix|lib/spike.dart': input,
           },
           outputs: {
-            'mix|lib/spike.styler.g.dart': decodedMatches(
+            'mix|lib/spike.g.dart': decodedMatches(
               allOf(
                 contains('BoxLikeStyler clipBehavior(Clip value)'),
                 contains('BoxLikeStyler padding(EdgeInsetsGeometryMix value)'),
@@ -987,6 +1049,7 @@ void main() {
         library spike;
         import 'package:mix/mix.dart' show Directive;
         import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
 
         @MixableSpec()
         final class TextSpec {
@@ -996,10 +1059,10 @@ void main() {
       ''';
 
       await testBuilder(
-        _specStylerLibraryBuilder(),
+        _specStylerPartBuilder(),
         {...mixAnnotationsSources, ..._mixSources, 'mix|lib/spike.dart': input},
         outputs: {
-          'mix|lib/spike.styler.g.dart': decodedMatches(
+          'mix|lib/spike.g.dart': decodedMatches(
             allOf(
               contains(r'final List<Directive<String>>? $textDirectives;'),
               contains('List<Directive<String>>? textDirectives,'),
@@ -1018,6 +1081,7 @@ void main() {
       const input = '''
         library spike;
         import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
 
         enum Clip { hardEdge }
 
@@ -1037,10 +1101,10 @@ void main() {
       ''';
 
       await testBuilder(
-        _specStylerLibraryBuilder(),
+        _specStylerPartBuilder(),
         {...mixAnnotationsSources, ..._mixSources, 'mix|lib/spike.dart': input},
         outputs: {
-          'mix|lib/spike.styler.g.dart': decodedMatches(
+          'mix|lib/spike.g.dart': decodedMatches(
             allOf([
               contains('ControlStyler clipped(Clip value)'),
               isNot(contains('factory ControlStyler.clipped(Clip value)')),
@@ -1055,7 +1119,7 @@ void main() {
       );
     });
 
-    test('copies source imports needed by field type arguments', () async {
+    test('uses host imports needed by field type arguments', () async {
       const boxSpec = '''
           import 'package:mix/mix.dart';
 
@@ -1072,11 +1136,14 @@ void main() {
         ''';
       const input = '''
           library combo;
-          import 'package:mix/mix.dart' show Spec, StyleSpec;
+          import 'package:flutter/foundation.dart';
+          import 'package:flutter/widgets.dart';
+          import 'package:mix/mix.dart';
           import 'package:mix_annotations/mix_annotations.dart';
 
           import '../box/box_spec.dart';
           import '../flex/flex_spec.dart';
+          part 'combo_spec.g.dart';
 
           @MixableSpec()
           final class ComboSpec extends Spec<ComboSpec> {
@@ -1087,7 +1154,7 @@ void main() {
         ''';
 
       await expectGeneratorOutputResolves(
-        builder: _specStylerLibraryBuilder(),
+        builder: _specStylerPartBuilder(),
         sources: {
           ...mixAnnotationsSources,
           ..._mixSources,
@@ -1097,8 +1164,7 @@ void main() {
           'mix|lib/src/combo/combo_spec.dart': input,
         },
         inputAsset: 'mix|lib/src/combo/combo_spec.dart',
-        outputAsset: 'mix|lib/src/combo/combo_spec.styler.g.dart',
-        resolveAsset: 'mix|lib/src/combo/combo_spec.styler.g.dart',
+        outputAsset: 'mix|lib/src/combo/combo_spec.g.dart',
       );
     });
 
@@ -1107,6 +1173,7 @@ void main() {
         library spike;
         import 'package:mix/mix.dart' show Alignment, Matrix4;
         import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
 
         @MixableSpec()
         final class TransformSpec {
@@ -1117,10 +1184,10 @@ void main() {
       ''';
 
       await testBuilder(
-        _specStylerLibraryBuilder(),
+        _specStylerPartBuilder(),
         {...mixAnnotationsSources, ..._mixSources, 'mix|lib/spike.dart': input},
         outputs: {
-          'mix|lib/spike.styler.g.dart': decodedMatches(
+          'mix|lib/spike.g.dart': decodedMatches(
             allOf([
               contains('TransformStyleMixin<TransformStyler>'),
               contains('factory TransformStyler.transform('),
@@ -1152,6 +1219,7 @@ void main() {
         const input = '''
         library spike;
         import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
         class BoxConstraints {}
         enum Clip { hardEdge }
 
@@ -1164,14 +1232,14 @@ void main() {
       ''';
 
         await testBuilder(
-          _specStylerLibraryBuilder(),
+          _specStylerPartBuilder(),
           {
             ...mixAnnotationsSources,
             ..._mixSources,
             'mix|lib/spike.dart': input,
           },
           outputs: {
-            'mix|lib/spike.styler.g.dart': decodedMatches(
+            'mix|lib/spike.g.dart': decodedMatches(
               allOf(
                 contains(
                   'factory BoxLikeStyler.constraints(BoxConstraintsMix value)',
@@ -1192,6 +1260,7 @@ void main() {
         import 'package:mix/mix.dart'
             show Alignment, AlignmentGeometry, Matrix4, TextStyler;
         import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
 
         class EdgeInsetsGeometry {}
         class BoxConstraints {}
@@ -1218,10 +1287,10 @@ void main() {
       ''';
 
       await testBuilder(
-        _specStylerLibraryBuilder(),
+        _specStylerPartBuilder(),
         {...mixAnnotationsSources, ..._mixSources, 'mix|lib/spike.dart': input},
         outputs: {
-          'mix|lib/spike.styler.g.dart': decodedMatches(
+          'mix|lib/spike.g.dart': decodedMatches(
             allOf([
               contains('factory BoxStyler.color(Color value)'),
               contains('factory BoxStyler.width(double value)'),
@@ -1242,6 +1311,7 @@ void main() {
       const input = '''
         library spike;
         import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
 
         enum Axis { horizontal, vertical }
 
@@ -1253,10 +1323,10 @@ void main() {
       ''';
 
       await testBuilder(
-        _specStylerLibraryBuilder(),
+        _specStylerPartBuilder(),
         {...mixAnnotationsSources, ..._mixSources, 'mix|lib/spike.dart': input},
         outputs: {
-          'mix|lib/spike.styler.g.dart': decodedMatches(
+          'mix|lib/spike.g.dart': decodedMatches(
             allOf([
               contains('FlexStyleMixin<FlexStyler>'),
               contains('factory FlexStyler.row() => FlexStyler().row();'),
@@ -1275,6 +1345,7 @@ void main() {
         library spike;
         import 'package:mix/mix.dart' show Directive;
         import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
 
         class TextStyle {}
 
@@ -1288,10 +1359,10 @@ void main() {
       ''';
 
       await testBuilder(
-        _specStylerLibraryBuilder(),
+        _specStylerPartBuilder(),
         {...mixAnnotationsSources, ..._mixSources, 'mix|lib/spike.dart': input},
         outputs: {
-          'mix|lib/spike.styler.g.dart': decodedMatches(
+          'mix|lib/spike.g.dart': decodedMatches(
             allOf([
               contains('TextStyleMixin<TextStyler>'),
               contains('factory TextStyler.color(Color value)'),
@@ -1328,6 +1399,7 @@ void main() {
       const input = '''
         library spike;
         import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
 
         class Shadow {}
 
@@ -1340,10 +1412,10 @@ void main() {
       ''';
 
       await testBuilder(
-        _specStylerLibraryBuilder(),
+        _specStylerPartBuilder(),
         {...mixAnnotationsSources, ..._mixSources, 'mix|lib/spike.dart': input},
         outputs: {
-          'mix|lib/spike.styler.g.dart': decodedMatches(
+          'mix|lib/spike.g.dart': decodedMatches(
             allOf([
               contains('factory IconStyler.shadows(List<ShadowMix> value)'),
               contains('factory IconStyler.shadow(ShadowMix value)'),
@@ -1362,8 +1434,9 @@ void main() {
 
     test('gates curated simple surface APIs on required fields', () async {
       const boxInput = '''
-        library spike_box;
+        library box_spec;
         import 'package:mix_annotations/mix_annotations.dart';
+        part 'box_spec.g.dart';
 
         enum Clip { hardEdge }
 
@@ -1374,9 +1447,10 @@ void main() {
         }
       ''';
       const textInput = '''
-        library spike_text;
+        library text_spec;
         import 'package:mix/mix.dart' show Directive;
         import 'package:mix_annotations/mix_annotations.dart';
+        part 'text_spec.g.dart';
 
         @MixableSpec()
         final class TextSpec {
@@ -1386,7 +1460,7 @@ void main() {
       ''';
 
       await testBuilder(
-        _specStylerLibraryBuilder(),
+        _specStylerPartBuilder(),
         {
           ...mixAnnotationsSources,
           ..._mixSources,
@@ -1394,7 +1468,7 @@ void main() {
           'mix|lib/text_spec.dart': textInput,
         },
         outputs: {
-          'mix|lib/box_spec.styler.g.dart': decodedMatches(
+          'mix|lib/box_spec.g.dart': decodedMatches(
             allOf([
               contains('factory BoxStyler.clipBehavior(Clip value)'),
               contains('factory BoxStyler.animate(AnimationConfig value)'),
@@ -1403,7 +1477,7 @@ void main() {
               isNot(contains('factory BoxStyler.scale(double scale')),
             ]),
           ),
-          'mix|lib/text_spec.styler.g.dart': decodedMatches(
+          'mix|lib/text_spec.g.dart': decodedMatches(
             allOf([
               contains('factory TextStyler.directive(Directive<String> value)'),
               isNot(contains('TextStyleMixin<TextStyler>')),
@@ -1429,6 +1503,7 @@ void main() {
           import 'package:mix_annotations/mix_annotations.dart';
 
           import '../box/box_spec.dart';
+          part 'flexbox_spec.g.dart';
 
           @MixableSpec()
           final class FlexBoxSpec extends Spec<FlexBoxSpec> {
@@ -1438,7 +1513,7 @@ void main() {
         ''';
 
       await testBuilder(
-        _specStylerLibraryBuilder(),
+        _specStylerPartBuilder(),
         {
           ...mixAnnotationsSources,
           ..._mixSources,
@@ -1446,7 +1521,7 @@ void main() {
           'mix|lib/src/combo/flexbox_spec.dart': input,
         },
         outputs: {
-          'mix|lib/src/combo/flexbox_spec.styler.g.dart': decodedMatches(
+          'mix|lib/src/combo/flexbox_spec.g.dart': decodedMatches(
             allOf([
               contains('class FlexBoxStyler'),
               isNot(contains('factory FlexBoxStyler.direction(Axis value)')),
@@ -1482,6 +1557,7 @@ void main() {
 
           import '../box/box_spec.dart';
           import '../flex/flex_spec.dart';
+          part 'flexbox_spec.g.dart';
 
           @MixableSpec()
           final class FlexBoxSpec extends Spec<FlexBoxSpec> {
@@ -1492,7 +1568,7 @@ void main() {
         ''';
 
       await testBuilder(
-        _specStylerLibraryBuilder(),
+        _specStylerPartBuilder(),
         {
           ...mixAnnotationsSources,
           ..._mixSources,
@@ -1501,7 +1577,7 @@ void main() {
           'mix|lib/src/combo/flexbox_spec.dart': input,
         },
         outputs: {
-          'mix|lib/src/combo/flexbox_spec.styler.g.dart': decodedMatches(
+          'mix|lib/src/combo/flexbox_spec.g.dart': decodedMatches(
             allOf([
               contains('EdgeInsetsGeometryMix? padding,'),
               contains('Axis? direction,'),
@@ -1560,6 +1636,7 @@ void main() {
 
           import '../box/box_spec.dart';
           import '../stack/stack_spec.dart';
+          part 'stackbox_spec.g.dart';
 
           enum StackFit { loose }
           enum Clip { hardEdge }
@@ -1574,7 +1651,7 @@ void main() {
         ''';
 
       await testBuilder(
-        _specStylerLibraryBuilder(),
+        _specStylerPartBuilder(),
         {
           ...mixAnnotationsSources,
           ..._mixSources,
@@ -1583,7 +1660,7 @@ void main() {
           'mix|lib/src/combo/stackbox_spec.dart': input,
         },
         outputs: {
-          'mix|lib/src/combo/stackbox_spec.styler.g.dart': decodedMatches(
+          'mix|lib/src/combo/stackbox_spec.g.dart': decodedMatches(
             allOf([
               contains(
                 'factory StackBoxStyler.alignment(AlignmentGeometry value)',
@@ -1614,6 +1691,7 @@ void main() {
         library spike;
         import 'package:mix/mix.dart' show EdgeInsetsGeometryMix;
         import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
 
         class EdgeInsetsGeometry {}
 
@@ -1631,14 +1709,14 @@ void main() {
       ''';
 
         await testBuilder(
-          _specStylerLibraryBuilder(),
+          _specStylerPartBuilder(),
           {
             ...mixAnnotationsSources,
             ..._mixSources,
             'mix|lib/spike.dart': input,
           },
           outputs: {
-            'mix|lib/spike.styler.g.dart': decodedMatches(
+            'mix|lib/spike.g.dart': decodedMatches(
               allOf(
                 contains('CustomSpacingMixin<CustomStyler>'),
                 contains(
@@ -1661,6 +1739,7 @@ void main() {
       const input = r'''
         library spike;
         import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
         enum Clip { hardEdge }
 
         @MixableSpec()
@@ -1671,10 +1750,10 @@ void main() {
       ''';
 
       await testBuilder(
-        _specStylerLibraryBuilder(),
+        _specStylerPartBuilder(),
         {...mixAnnotationsSources, ..._mixSources, 'mix|lib/spike.dart': input},
         outputs: {
-          'mix|lib/spike.styler.g.dart': decodedMatches(
+          'mix|lib/spike.g.dart': decodedMatches(
             allOf(
               contains(
                 'class TinyStyler extends MixStyler<TinyStyler, TinySpec>',
@@ -1693,8 +1772,11 @@ void main() {
     test('generated BoxSpec-shaped styler is semantically valid', () async {
       const input = r'''
         library spike;
-        import 'package:mix/mix.dart' show Spec;
+        import 'package:flutter/foundation.dart';
+        import 'package:flutter/widgets.dart';
+        import 'package:mix/mix.dart';
         import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
 
         class EdgeInsetsGeometry {}
         enum Clip { hardEdge }
@@ -1709,7 +1791,7 @@ void main() {
       ''';
 
       await expectGeneratorOutputResolves(
-        builder: _specStylerLibraryBuilder(),
+        builder: _specStylerPartBuilder(),
         sources: {
           ...mixAnnotationsSources,
           ..._mixSources,
@@ -1717,59 +1799,15 @@ void main() {
           'mix|lib/spike.dart': input,
         },
         inputAsset: 'mix|lib/spike.dart',
-        outputAsset: 'mix|lib/spike.styler.g.dart',
-        resolveAsset: 'mix|lib/spike.styler.g.dart',
+        outputAsset: 'mix|lib/spike.g.dart',
       );
     });
 
-    test(
-      'emits a standalone library with package:mix/mix.dart import',
-      () async {
-        const input = '''
-        library spike;
-        import 'package:mix_annotations/mix_annotations.dart';
-
-        enum Clip { hardEdge }
-
-        @MixableSpec()
-        final class TinySpec {
-          final Clip? clipBehavior;
-          const TinySpec({this.clipBehavior});
-        }
-      ''';
-
-        await testBuilder(
-          LibraryBuilder(
-            const SpecStylerGenerator(),
-            generatedExtension: '.styler.g.dart',
-          ),
-          {
-            ...mixAnnotationsSources,
-            ..._mixSources,
-            'mix|lib/spike.dart': input,
-          },
-          outputs: {
-            'mix|lib/spike.styler.g.dart': decodedMatches(
-              allOf(
-                contains('// GENERATED CODE - DO NOT MODIFY BY HAND'),
-                contains("import 'package:mix/mix.dart';"),
-                contains("import 'spike.dart';"),
-                isNot(contains('part of')),
-                contains(
-                  'class TinyStyler extends MixStyler<TinyStyler, TinySpec>',
-                ),
-              ),
-            ),
-          },
-        );
-      },
-    );
-
-    test('does not duplicate source package:mix/mix.dart imports', () async {
+    test('emits part-safe output without imports', () async {
       const input = '''
         library spike;
-        import 'package:mix/mix.dart';
         import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
 
         enum Clip { hardEdge }
 
@@ -1781,21 +1819,59 @@ void main() {
       ''';
 
       await testBuilder(
-        _specStylerLibraryBuilder(),
+        _specStylerPartBuilder(),
         {...mixAnnotationsSources, ..._mixSources, 'mix|lib/spike.dart': input},
         outputs: {
-          'mix|lib/spike.styler.g.dart': decodedMatches(
-            predicate<String>(
-              (source) =>
-                  RegExp(
-                    RegExp.escape("import 'package:mix/mix.dart';"),
-                  ).allMatches(source).length ==
-                  1,
-              "contains exactly one import 'package:mix/mix.dart';",
+          'mix|lib/spike.g.dart': decodedMatches(
+            allOf(
+              contains('// GENERATED CODE - DO NOT MODIFY BY HAND'),
+              contains("part of 'spike.dart';"),
+              isNot(contains("import 'package:mix/mix.dart';")),
+              isNot(contains("import 'spike.dart';")),
+              contains(
+                'class TinyStyler extends MixStyler<TinyStyler, TinySpec>',
+              ),
             ),
           ),
         },
       );
     });
+
+    test(
+      'does not emit imports when source imports package:mix/mix.dart',
+      () async {
+        const input = '''
+        library spike;
+        import 'package:mix/mix.dart';
+        import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
+
+        enum Clip { hardEdge }
+
+        @MixableSpec()
+        final class TinySpec {
+          final Clip? clipBehavior;
+          const TinySpec({this.clipBehavior});
+        }
+      ''';
+
+        await testBuilder(
+          _specStylerPartBuilder(),
+          {
+            ...mixAnnotationsSources,
+            ..._mixSources,
+            'mix|lib/spike.dart': input,
+          },
+          outputs: {
+            'mix|lib/spike.g.dart': decodedMatches(
+              allOf(
+                contains("part of 'spike.dart';"),
+                isNot(contains("import 'package:mix/mix.dart';")),
+              ),
+            ),
+          },
+        );
+      },
+    );
   });
 }

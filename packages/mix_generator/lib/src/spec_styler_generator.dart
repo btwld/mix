@@ -1,7 +1,6 @@
-/// Generator for `@MixableSpec` classes that emits a standalone Styler library.
+/// Generator for `@MixableSpec` classes that emits generated Styler classes.
 library;
 
-import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
 import 'package:mix_annotations/mix_annotations.dart';
@@ -30,55 +29,11 @@ class SpecStylerGenerator extends GeneratorForAnnotation<MixableSpec> {
       classElement,
     );
 
-    final body = SpecStylerClassBuilder(
+    return SpecStylerClassBuilder(
       specElement: classElement,
       specName: specName,
       annotation: annotation,
       symbolResolver: symbolResolver,
     ).build();
-    final sourceImport = _sourceImportFor(buildStep);
-    final sourceImports = await _sourceImportsFor(buildStep);
-
-    return '''
-// ignore_for_file: prefer_relative_imports, unnecessary_import, unused_import
-
-import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
-import '$mixPublicImport';
-${sourceImports.join('\n')}
-
-import '$sourceImport';
-
-$body
-''';
   }
-}
-
-String _sourceImportFor(BuildStep buildStep) {
-  final path = buildStep.inputId.path;
-  final lastSlash = path.lastIndexOf('/');
-
-  return lastSlash == -1 ? path : path.substring(lastSlash + 1);
-}
-
-Future<List<String>> _sourceImportsFor(BuildStep buildStep) async {
-  final unit = await buildStep.resolver.compilationUnitFor(buildStep.inputId);
-  final imports = <String>{};
-
-  for (final directive in unit.directives.whereType<ImportDirective>()) {
-    final uri = directive.uri.stringValue;
-    if (uri == null) continue;
-    if (_isRedundantGeneratedImport(uri)) continue;
-
-    imports.add(directive.toSource());
-  }
-
-  return imports.toList();
-}
-
-bool _isRedundantGeneratedImport(String uri) {
-  return uri == 'package:flutter/foundation.dart' ||
-      uri == 'package:flutter/widgets.dart' ||
-      uri == 'package:mix/mix.dart' ||
-      uri == 'package:mix_annotations/mix_annotations.dart';
 }

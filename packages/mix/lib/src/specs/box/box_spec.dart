@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 
-import '../../core/helpers.dart';
-import '../../core/spec.dart';
+import '../../generated_styler_support.dart';
+
+import '../text/text_spec.dart';
 import 'box_widget.dart';
 
 part 'box_spec.g.dart';
