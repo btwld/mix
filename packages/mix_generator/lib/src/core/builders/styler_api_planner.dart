@@ -6,12 +6,7 @@ import '../curated/styler_surface_metadata.dart';
 /// Concrete generated API member code keyed by public member name.
 typedef ApiMember = ({String name, String code});
 
-const _reservedBaseMethodNames = {
-  'animate',
-  'variants',
-  'wrap',
-  'modifier',
-};
+const _reservedBaseMethodNames = {'animate', 'variants', 'wrap', 'modifier'};
 
 void _validateUniqueFactories(String stylerName, List<ApiMember> factories) {
   final seen = <String>{};
