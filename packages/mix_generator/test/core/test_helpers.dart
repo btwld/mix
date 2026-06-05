@@ -34,6 +34,7 @@ Future<void> expectGeneratorOutputResolves({
   required String inputAsset,
   required String outputAsset,
   Matcher? outputMatcher,
+  String? resolveAsset,
 }) async {
   String? generated;
   final capture = predicate<String>((value) {
@@ -55,7 +56,9 @@ Future<void> expectGeneratorOutputResolves({
   }
 
   await resolveSources({...sources, outputAsset: generated!}, (resolver) async {
-    final library = await resolver.libraryFor(AssetId.parse(inputAsset));
+    final library = await resolver.libraryFor(
+      AssetId.parse(resolveAsset ?? inputAsset),
+    );
     final libPath = library.firstFragment.source.fullName;
     final result = await library.session.getResolvedLibrary(libPath);
     if (result is! ResolvedLibraryResult) {
@@ -84,7 +87,7 @@ Future<void> expectGeneratorOutputResolves({
   });
 }
 
-/// Stub `Style<T>` library — the minimal shape `StylerGenerator` inspects.
+/// Stub `Style<T>` library — the minimal shape styler builder tests inspect.
 const styleStub = r'''
 library mix_style;
 
@@ -188,8 +191,15 @@ library annotations;
 class MixableSpec {
   final int methods;
   final int components;
+  final List<Type> extraStylerMixins;
+  final Function? target;
 
-  const MixableSpec({this.methods = 0x01 | 0x02 | 0x04, this.components = 0});
+  const MixableSpec({
+    this.methods = 0x01 | 0x02 | 0x04,
+    this.components = 0,
+    this.extraStylerMixins = const [],
+    this.target,
+  });
 }
 
 class MixableStyler {
@@ -210,8 +220,19 @@ class Mixable {
 class MixableField {
   final bool ignoreSetter;
   final Type? setterType;
+  final Type? mixin;
+  final bool skipMixin;
+  final String? factoryName;
+  final bool skipFactory;
 
-  const MixableField({this.ignoreSetter = false, this.setterType});
+  const MixableField({
+    this.ignoreSetter = false,
+    this.setterType,
+    this.mixin,
+    this.skipMixin = false,
+    this.factoryName,
+    this.skipFactory = false,
+  });
 }
 
 class MixWidget {

@@ -2,8 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 
-import '../../core/helpers.dart';
-import '../../core/spec.dart';
+import '../../generated_styler_support.dart';
 
 part 'flex_spec.g.dart';
 

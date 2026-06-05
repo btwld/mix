@@ -1,9 +1,15 @@
 targets:
   $default:
     builders:
-      mix_generator:
+      mix_generator:mix_generator:
         enabled: true
         generate_for:
           - lib/src/specs/**/*.dart  # Only run on spec files
+        options:
+          debug: false
+      mix_generator:spec_styler_generator:
+        enabled: true
+        generate_for:
+          - lib/src/specs/**/*.dart
         options:
           debug: false

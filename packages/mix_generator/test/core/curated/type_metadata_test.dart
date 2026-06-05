@@ -49,6 +49,7 @@ void main() {
 
       test('identifies lerpable types', () {
         expect(isLerpableType('double'), isTrue);
+        expect(isLerpableType('int'), isFalse);
         expect(isLerpableType('Color'), isTrue);
         expect(isLerpableType('EdgeInsetsGeometry'), isTrue);
         expect(isLerpableType('Matrix4'), isTrue);
@@ -56,6 +57,7 @@ void main() {
       });
 
       test('identifies snappable types', () {
+        expect(isSnappableType('int'), isTrue);
         expect(isSnappableType('bool'), isTrue);
         expect(isSnappableType('String'), isTrue);
         expect(isSnappableType('IconData'), isTrue);
@@ -111,6 +113,40 @@ void main() {
         expect(alias, isNotNull);
         expect(alias!.diagnosticLabel, 'directives');
         expect(alias.setterName, isNull);
+      });
+    });
+
+    group('ownerMixinsFor', () {
+      test('returns SpacingStyleMixin for EdgeInsetsGeometry', () {
+        expect(ownerMixinsFor('EdgeInsetsGeometry'), ['SpacingStyleMixin']);
+      });
+
+      test('returns ConstraintStyleMixin for BoxConstraints', () {
+        expect(ownerMixinsFor('BoxConstraints'), ['ConstraintStyleMixin']);
+      });
+
+      test('returns Decoration mixin fan-out for Decoration', () {
+        expect(
+          ownerMixinsFor('Decoration'),
+          containsAll([
+            'DecorationStyleMixin',
+            'BorderStyleMixin',
+            'BorderRadiusStyleMixin',
+            'ShadowStyleMixin',
+          ]),
+        );
+      });
+
+      test('returns TransformStyleMixin for Matrix4', () {
+        expect(ownerMixinsFor('Matrix4'), ['TransformStyleMixin']);
+      });
+
+      test('returns empty for Clip', () {
+        expect(ownerMixinsFor('Clip'), isEmpty);
+      });
+
+      test('returns empty for unknown type', () {
+        expect(ownerMixinsFor('NoSuchType'), isEmpty);
       });
     });
   });

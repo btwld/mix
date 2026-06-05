@@ -2,9 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 
-import '../../core/directive.dart';
-import '../../core/helpers.dart';
-import '../../core/spec.dart';
+import '../../generated_styler_support.dart';
+
+import 'text_widget.dart';
 
 part 'text_spec.g.dart';
 
@@ -12,7 +12,7 @@ part 'text_spec.g.dart';
 ///
 /// Provides comprehensive text styling including overflow behavior, structure styling,
 /// alignment, line limits, text direction, and string directive support.
-@MixableSpec(methods: GeneratedSpecMethods.skipLerp)
+@MixableSpec(target: StyledText.new)
 @immutable
 final class TextSpec with _$TextSpec {
   /// How visual overflow should be handled.
@@ -87,28 +87,4 @@ final class TextSpec with _$TextSpec {
     this.semanticsLabel,
     this.locale,
   });
-
-  @override
-  TextSpec lerp(TextSpec? other, double t) {
-    return TextSpec(
-      overflow: MixOps.lerpSnap(overflow, other?.overflow, t),
-      strutStyle: MixOps.lerp(strutStyle, other?.strutStyle, t),
-      textAlign: MixOps.lerpSnap(textAlign, other?.textAlign, t),
-      textScaler: MixOps.lerpSnap(textScaler, other?.textScaler, t),
-      maxLines: MixOps.lerpSnap(maxLines, other?.maxLines, t),
-      style: MixOps.lerp(style, other?.style, t),
-      textWidthBasis: MixOps.lerpSnap(textWidthBasis, other?.textWidthBasis, t),
-      textHeightBehavior: MixOps.lerpSnap(
-        textHeightBehavior,
-        other?.textHeightBehavior,
-        t,
-      ),
-      textDirection: MixOps.lerpSnap(textDirection, other?.textDirection, t),
-      softWrap: MixOps.lerpSnap(softWrap, other?.softWrap, t),
-      textDirectives: MixOps.lerpSnap(textDirectives, other?.textDirectives, t),
-      selectionColor: MixOps.lerp(selectionColor, other?.selectionColor, t),
-      semanticsLabel: MixOps.lerpSnap(semanticsLabel, other?.semanticsLabel, t),
-      locale: MixOps.lerpSnap(locale, other?.locale, t),
-    );
-  }
 }

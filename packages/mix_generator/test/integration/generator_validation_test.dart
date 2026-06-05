@@ -65,36 +65,6 @@ class BoxSpec {
     );
 
     test(
-      'StylerGenerator throws InvalidGenerationSource for non-Style classes',
-      () async {
-        final libraryReader = await initializeLibraryReader({
-          'styler_validation.dart': r'''
-library styler_validation;
-
-import 'package:mix_annotations/mix_annotations.dart';
-
-@MixableStyler()
-class BoxStyler {
-  const BoxStyler();
-}
-''',
-        }, 'styler_validation.dart');
-
-        await expectLater(
-          () => generateForElement(
-            const StylerGenerator(),
-            libraryReader,
-            'BoxStyler',
-          ),
-          throwsInvalidGenerationSourceError(
-            '@MixableStyler can only be applied to classes extending Style<T>.',
-            elementMatcher: isNotNull,
-          ),
-        );
-      },
-    );
-
-    test(
       'MixableGenerator throws InvalidGenerationSource for non-Mix classes',
       () async {
         final libraryReader = await initializeLibraryReader({
@@ -118,6 +88,34 @@ class BoxConstraintsMix {
           ),
           throwsInvalidGenerationSourceError(
             '@Mixable can only be applied to classes extending Mix<T> or its subclasses.',
+            elementMatcher: isNotNull,
+          ),
+        );
+      },
+    );
+
+    test(
+      'StylerGenerator throws InvalidGenerationSource for non-Style classes',
+      () async {
+        final libraryReader = await initializeLibraryReader({
+          'styler_validation.dart': r'''
+library styler_validation;
+
+import 'package:mix_annotations/mix_annotations.dart';
+
+@MixableStyler()
+class NotAStyle {}
+''',
+        }, 'styler_validation.dart');
+
+        await expectLater(
+          () => generateForElement(
+            const StylerGenerator(),
+            libraryReader,
+            'NotAStyle',
+          ),
+          throwsInvalidGenerationSourceError(
+            '@MixableStyler can only be applied to classes extending Style<T>.',
             elementMatcher: isNotNull,
           ),
         );

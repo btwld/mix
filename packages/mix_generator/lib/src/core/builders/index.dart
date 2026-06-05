@@ -4,4 +4,5 @@ library;
 export 'mix_mixin_builder.dart';
 export 'mix_widget_builder.dart';
 export 'spec_mixin_builder.dart';
+export 'styler_api_planner.dart';
 export 'styler_mixin_builder.dart';

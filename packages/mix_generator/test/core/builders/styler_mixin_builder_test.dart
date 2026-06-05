@@ -68,6 +68,33 @@ void main() {
         expect(code, contains(r'double? get $gap;'));
       });
 
+      test(
+        'renamed setters pass the underlying field into the constructor',
+        () {
+          final builder = StylerMixinBuilder(
+            stylerName: 'BoxStyler',
+            specName: 'BoxSpec',
+            fields: [
+              StylerFieldModel(
+                name: 'renamed',
+                declaredName: r'$renamed',
+                fieldTypeCode: 'Prop<int>?',
+                isRawList: false,
+                effectivePublicParamType: 'int',
+                generateSetter: true,
+                setterName: 'aliasRenamed',
+              ),
+            ],
+            config: defaultConfig,
+          );
+          final code = builder.build();
+
+          expect(code, contains('BoxStyler aliasRenamed(int value)'));
+          expect(code, contains('return merge(BoxStyler(renamed: value));'));
+          expect(code, isNot(contains('BoxStyler(aliasRenamed: value)')));
+        },
+      );
+
       test('generates merge override', () {
         final builder = StylerMixinBuilder(
           stylerName: 'BoxStyler',
@@ -132,6 +159,27 @@ void main() {
         expect(code, contains('List<Object?> get props =>'));
       });
 
+      test('emits optional call method before merge', () {
+        final builder = StylerMixinBuilder(
+          stylerName: 'BoxStyler',
+          specName: 'BoxSpec',
+          fields: [],
+          config: defaultConfig,
+          callMethodCode: '''
+  Box call({Widget? child}) {
+    return Box(style: this, child: child);
+  }
+''',
+        );
+        final code = builder.build();
+
+        expect(code, contains('Box call({Widget? child})'));
+        expect(
+          code.indexOf('Box call({Widget? child})'),
+          lessThan(code.indexOf('BoxStyler merge(BoxStyler? other)')),
+        );
+      });
+
       test('closes mixin with brace', () {
         final builder = StylerMixinBuilder(
           stylerName: 'BoxStyler',
@@ -142,6 +190,46 @@ void main() {
         final code = builder.build();
 
         expect(code, endsWith('}\n'));
+      });
+    });
+
+    group('buildMembers', () {
+      test('emits styler members without a mixin contract', () {
+        final builder = StylerMixinBuilder(
+          stylerName: 'BoxStyler',
+          specName: 'BoxSpec',
+          fields: [
+            StylerFieldModel(
+              name: 'gap',
+              declaredName: r'$gap',
+              fieldTypeCode: 'double?',
+              isRawList: false,
+              effectivePublicParamType: 'double',
+              generateSetter: true,
+              setterName: 'gap',
+            ),
+          ],
+          config: defaultConfig,
+        );
+        final code = builder.buildMembers();
+
+        expect(code, isNot(contains('mixin _\$BoxStylerMixin')));
+        expect(code, isNot(contains(r'double? get $gap;')));
+        expect(code, contains('BoxStyler gap(double value)'));
+        expect(code, contains('BoxStyler merge(BoxStyler? other)'));
+      });
+
+      test('only configured base methods get override annotations', () {
+        final builder = StylerMixinBuilder(
+          stylerName: 'BoxStyler',
+          specName: 'BoxSpec',
+          fields: [],
+          config: defaultConfig,
+        );
+        final code = builder.buildMembers(methodOverrides: const {'animate'});
+
+        expect(code, contains('@override\n  BoxStyler animate('));
+        expect(code, isNot(contains('@override\n  BoxStyler modifier(')));
       });
     });
 
@@ -235,6 +323,22 @@ void main() {
         expect(code, contains('return merge(BoxStyler(modifier: value))'));
       });
 
+      test('generates modifier method for handwritten parity', () {
+        final builder = StylerMixinBuilder(
+          stylerName: 'BoxStyler',
+          specName: 'BoxSpec',
+          fields: [],
+          config: defaultConfig,
+        );
+        final code = builder.build();
+
+        expect(
+          code,
+          contains('BoxStyler modifier(WidgetModifierConfig value)'),
+        );
+        expect(code, contains('return merge(BoxStyler(modifier: value))'));
+      });
+
       test('skips base methods when setters flag is disabled', () {
         final builder = StylerMixinBuilder(
           stylerName: 'BoxStyler',
@@ -249,6 +353,7 @@ void main() {
         expect(code, isNot(contains('BoxStyler animate(')));
         expect(code, isNot(contains('BoxStyler variants(')));
         expect(code, isNot(contains('BoxStyler wrap(')));
+        expect(code, isNot(contains('BoxStyler modifier(')));
       });
     });
 

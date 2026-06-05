@@ -1,9 +1,10 @@
-/// Generator for `@MixableStyler` classes.
+/// Legacy generator for `@MixableStyler` classes.
 ///
-/// Emits `_$XStylerMixin` implementations from `@MixableStyler` annotations.
+/// Emits only `_$XStylerMixin` implementations for handwritten styler classes.
 library;
 
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 import 'package:source_gen/source_gen.dart';
@@ -13,27 +14,23 @@ import 'core/checkers.dart';
 import 'core/errors.dart';
 import 'core/helpers/library_scope.dart';
 import 'core/helpers/type_hierarchy.dart';
+import 'core/helpers/widget_call_planner.dart';
 import 'core/models/annotation_config.dart';
 import 'core/models/styler_field_model.dart';
 
-/// Source-gen generator for Mix Styler code.
+/// Source-gen generator for legacy handwritten Mix Styler code.
 class StylerGenerator extends GeneratorForAnnotation<MixableStyler> {
   const StylerGenerator();
 
-  bool _isStyleClass(ClassElement element) {
-    return findSupertypeMatching(element.supertype, styleChecker) != null;
-  }
-
-  String? _extractSpecName(ClassElement classElement) {
-    final styleType = findSupertypeMatching(
-      classElement.supertype,
-      styleChecker,
-    );
-    if (styleType == null || styleType.typeArguments.isEmpty) {
-      return null;
-    }
+  InterfaceType? _extractSpecType(InterfaceType styleType) {
+    if (styleType.typeArguments.isEmpty) return null;
 
     final specType = styleType.typeArguments.first;
+
+    return specType is InterfaceType ? specType : null;
+  }
+
+  String _specNameFor(InterfaceType specType, ClassElement classElement) {
     final hiddenType = firstInvisibleTypeName(specType, classElement.library);
     if (hiddenType != null) {
       final className = classElement.name ?? '<unknown>';
@@ -48,21 +45,17 @@ class StylerGenerator extends GeneratorForAnnotation<MixableStyler> {
     return typeCode(specType, visibleFrom: classElement.library);
   }
 
-  List<StylerFieldModel> _extractFields(ClassElement classElement) {
-    // `requireClassElement` guarantees a named class before this is called.
-    final stylerName = classElement.name!;
-
-    final dollarFields = classElement.fields
-        .where((f) => f.name!.startsWith(r'$'))
+  List<StylerFieldModel> _extractFields(
+    ClassElement classElement,
+    String stylerName,
+  ) {
+    return classElement.fields
+        .where((f) => f.name?.startsWith(r'$') ?? false)
         .where((f) => !_isBaseField(f.name!))
+        .map((field) {
+          return StylerFieldModel.fromElement(field, stylerName: stylerName);
+        })
         .toList();
-
-    // Stable ordering keeps generated output deterministic.
-    dollarFields.sort((a, b) => a.name!.compareTo(b.name!));
-
-    return dollarFields.map((f) {
-      return StylerFieldModel.fromElement(f, stylerName: stylerName);
-    }).toList();
   }
 
   bool _isBaseField(String name) {
@@ -78,6 +71,118 @@ class StylerGenerator extends GeneratorForAnnotation<MixableStyler> {
     );
   }
 
+  String? _buildCallMethod({
+    required ClassElement stylerElement,
+    required String stylerName,
+    required InterfaceElement specElement,
+    required String specName,
+  }) {
+    final specAnnotation = mixableSpecAnnotationChecker.firstAnnotationOf(
+      specElement,
+    );
+    if (specAnnotation == null) return null;
+
+    final reader = ConstantReader(specAnnotation).peek('target');
+    if (reader == null || reader.isNull) return null;
+
+    final fn = reader.objectValue.toFunctionValue();
+    if (fn is! ConstructorElement) {
+      fail(
+        specElement,
+        '@MixableSpec(target:) must be a constructor tear-off '
+        '(e.g., Box.new).',
+      );
+    }
+
+    final widgetClass = fn.enclosingElement;
+    final widgetName = requireName(
+      widgetClass,
+      orFailWith: '@MixableSpec(target:) widget class must have a name.',
+    );
+    final hiddenWidgetType = firstInvisibleTypeName(
+      widgetClass.thisType,
+      stylerElement.library,
+    );
+    if (hiddenWidgetType != null) {
+      fail(
+        stylerElement,
+        'Target widget `$hiddenWidgetType` is used by @MixableSpec(target:) '
+        'but is not visible from the @MixableStyler library.',
+        todo:
+            'Import or re-export `$hiddenWidgetType` where the styler is declared.',
+      );
+    }
+
+    final styleWidgetSupertype = findSupertypeMatching(
+      widgetClass.thisType,
+      styleWidgetChecker,
+    );
+    if (styleWidgetSupertype == null) {
+      fail(
+        specElement,
+        'Widget $widgetName must extend StyleWidget<$specName> '
+        'to be used as @MixableSpec(target:).',
+      );
+    }
+
+    final widgetSpecArg = styleWidgetSupertype.typeArguments.first;
+    if (widgetSpecArg is! InterfaceType ||
+        widgetSpecArg.element != specElement) {
+      fail(
+        specElement,
+        'Spec generic mismatch: $specName annotated, but '
+        '$widgetName extends StyleWidget<${widgetSpecArg.getDisplayString()}>.',
+      );
+    }
+
+    final optionalPositional = optionalPositionalNames(fn.formalParameters);
+    if (optionalPositional.isNotEmpty) {
+      fail(
+        specElement,
+        '@MixableSpec(target:) does not support optional positional target '
+        'constructor parameters on $widgetName: '
+        '[${optionalPositional.join(', ')}].',
+        todo: 'Convert these parameters to required positional or named.',
+      );
+    }
+
+    _requireStyleParameter(fn, widgetName, specElement);
+
+    final result = extractCallParams(
+      fn,
+      anchor: stylerElement,
+      library: stylerElement.library,
+      factoryReference: stylerName,
+      excludeNames: const {'style', 'styleSpec'},
+      annotationLabel: '@MixableSpec(target:)',
+      keyOwner: 'the target constructor',
+    );
+
+    return renderWidgetCall(
+      widgetName: widgetName,
+      params: result.params,
+      forwardsKey: result.forwardsKey,
+      indent: '  ',
+    );
+  }
+
+  void _requireStyleParameter(
+    ConstructorElement constructor,
+    String widgetName,
+    Element anchor,
+  ) {
+    for (final parameter in constructor.formalParameters) {
+      if (parameter.name == 'style' && parameter.isNamed) return;
+    }
+
+    fail(
+      anchor,
+      '@MixableSpec(target:) requires $widgetName to expose a named '
+      '`style` constructor parameter so the generated call() can pass '
+      '`style: this`.',
+    );
+  }
+
   @override
   String generateForAnnotatedElement(
     Element element,
@@ -90,7 +195,11 @@ class StylerGenerator extends GeneratorForAnnotation<MixableStyler> {
       orFailWith: '@MixableStyler class must have a name.',
     );
 
-    if (!_isStyleClass(classElement)) {
+    final styleType = findSupertypeMatching(
+      classElement.supertype,
+      styleChecker,
+    );
+    if (styleType == null) {
       fail(
         element,
         '@MixableStyler can only be applied to classes extending Style<T>.',
@@ -100,22 +209,27 @@ class StylerGenerator extends GeneratorForAnnotation<MixableStyler> {
       );
     }
 
-    final specName = _extractSpecName(classElement);
-    if (specName == null) {
+    final specType = _extractSpecType(styleType);
+    if (specType == null) {
       fail(element, 'Could not determine Spec type from Style<T> supertype.');
     }
 
-    final fields = _extractFields(classElement);
+    final specName = _specNameFor(specType, classElement);
+    final callMethodCode = _buildCallMethod(
+      stylerElement: classElement,
+      stylerName: stylerName,
+      specElement: specType.element,
+      specName: specName,
+    );
+    final fields = _extractFields(classElement, stylerName);
     final config = _extractAnnotationConfig(annotation);
-    final buffer = StringBuffer();
-    final stylerMixinBuilder = StylerMixinBuilder(
+
+    return StylerMixinBuilder(
       stylerName: stylerName,
       specName: specName,
       fields: fields,
       config: config,
-    );
-    buffer.writeln(stylerMixinBuilder.build());
-
-    return buffer.toString();
+      callMethodCode: callMethodCode,
+    ).build();
   }
 }

@@ -8,8 +8,8 @@
 /// [MixWidgetModel].
 library;
 
-/// One parameter on the generated widget's constructor.
-class MixWidgetParam {
+/// One parameter forwarded through generated widget/call APIs.
+class WidgetCallParam {
   /// The parameter name.
   final String name;
 
@@ -27,7 +27,7 @@ class MixWidgetParam {
   /// Source code for a default value, if any (verbatim from the user's source).
   final String? defaultValueCode;
 
-  const MixWidgetParam({
+  const WidgetCallParam({
     required this.name,
     required this.typeCode,
     required this.isPositional,
@@ -54,13 +54,13 @@ class MixWidgetModel {
 
   /// Factory function parameters (empty for variable-backed styles), in
   /// declaration order.
-  final List<MixWidgetParam> factoryParams;
+  final List<WidgetCallParam> factoryParams;
 
   /// Styler `call()` parameters, excluding `Key? key`.
   ///
   /// [stylerCallForwardsKey] handles `key` separately. Ordering preserves
   /// positionals first, then named parameters.
-  final List<MixWidgetParam> callParams;
+  final List<WidgetCallParam> callParams;
 
   /// `true` when the styler's `call()` declares a `Key? key` named parameter
   /// and the generated `build()` forwards `key: this.key`.
@@ -85,5 +85,5 @@ class MixWidgetModel {
   ///
   /// The builder applies Dart constructor syntax ordering when emitting code:
   /// all positional params first, then named params.
-  List<MixWidgetParam> get allParams => [...factoryParams, ...callParams];
+  List<WidgetCallParam> get allParams => [...factoryParams, ...callParams];
 }

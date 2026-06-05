@@ -25,40 +25,6 @@ import 'core/models/field_model.dart';
 class SpecGenerator extends GeneratorForAnnotation<MixableSpec> {
   const SpecGenerator();
 
-  /// Extracts field models from [classElement].
-  ///
-  /// [specName] must be the validated non-null class name:
-  /// `generateForAnnotatedElement` fails before this is called, so nullability
-  /// is not handled defensively here.
-  List<FieldModel> _extractFields(ClassElement classElement, String specName) {
-    final stylerName = _deriveStylerName(specName);
-
-    final constructor = classElement.unnamedConstructor;
-    if (constructor == null) return [];
-
-    final namedParams = constructor.formalParameters
-        .where((p) => p.isNamed)
-        .toList();
-
-    return namedParams.map((p) {
-      final paramName = p.name!;
-      final field = classElement.getField(paramName);
-      if (field == null) {
-        fail(classElement, 'Field $paramName not found in $specName');
-      }
-
-      return FieldModel.fromElement(field, stylerName: stylerName);
-    }).toList();
-  }
-
-  String _deriveStylerName(String specName) {
-    if (specName.endsWith('Spec')) {
-      return '${specName.substring(0, specName.length - 4)}Styler';
-    }
-
-    return '${specName}Styler';
-  }
-
   MixableSpecAnnotationConfig _extractAnnotationConfig(
     ConstantReader annotation,
   ) {
@@ -91,7 +57,7 @@ class SpecGenerator extends GeneratorForAnnotation<MixableSpec> {
       fail(element, '$specName must have an unnamed constructor.');
     }
 
-    final fields = _extractFields(classElement, specName);
+    final fields = extractSpecFields(classElement, specName);
     final config = _extractAnnotationConfig(annotation);
     final buffer = StringBuffer();
     final specMixinBuilder = SpecMixinBuilder(

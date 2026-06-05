@@ -132,6 +132,43 @@ void main() {
       expect(attribute.$fill, resolvesTo(0.5));
     });
 
+    test('shadow utility resolves to a single shadow', () {
+      final attribute = IconStyler().shadow(
+        ShadowMix(
+          color: Colors.black,
+          offset: const Offset(1.0, 2.0),
+          blurRadius: 3.0,
+        ),
+      );
+
+      final spec = attribute.resolve(MockBuildContext());
+
+      expect(spec.spec.shadows, hasLength(1));
+      expect(spec.spec.shadows!.single.color, Colors.black);
+      expect(spec.spec.shadows!.single.offset, const Offset(1.0, 2.0));
+      expect(spec.spec.shadows!.single.blurRadius, 3.0);
+    });
+
+    test('shadows utility resolves to the full shadow list', () {
+      final attribute = IconStyler().shadows([
+        ShadowMix(color: Colors.black, blurRadius: 3.0),
+        ShadowMix(
+          color: Colors.red,
+          offset: const Offset(2.0, 4.0),
+          blurRadius: 6.0,
+        ),
+      ]);
+
+      final spec = attribute.resolve(MockBuildContext());
+
+      expect(spec.spec.shadows, hasLength(2));
+      expect(spec.spec.shadows![0].color, Colors.black);
+      expect(spec.spec.shadows![0].blurRadius, 3.0);
+      expect(spec.spec.shadows![1].color, Colors.red);
+      expect(spec.spec.shadows![1].offset, const Offset(2.0, 4.0));
+      expect(spec.spec.shadows![1].blurRadius, 6.0);
+    });
+
     test('animate method sets animation config', () {
       final animation = AnimationConfig.linear(Duration(milliseconds: 500));
       final attribute = IconStyler().animate(animation);

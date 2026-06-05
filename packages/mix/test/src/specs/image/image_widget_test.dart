@@ -61,4 +61,59 @@ void main() {
       expect(styledImage.image, image.image);
     });
   });
+
+  group('ImageStyler.call', () {
+    testWidgets('forwards image widget parameters', (tester) async {
+      final imageProvider = mockImageProvider();
+      final widgetImageProvider = mockImageProvider();
+      final opacity = AlwaysStoppedAnimation(0.5);
+
+      Widget frameBuilder(
+        BuildContext context,
+        Widget child,
+        int? frame,
+        bool wasSynchronouslyLoaded,
+      ) {
+        return child;
+      }
+
+      Widget loadingBuilder(
+        BuildContext context,
+        Widget child,
+        ImageChunkEvent? loadingProgress,
+      ) {
+        return child;
+      }
+
+      Widget errorBuilder(
+        BuildContext context,
+        Object error,
+        StackTrace? stackTrace,
+      ) {
+        return const SizedBox();
+      }
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: ImageStyler(image: imageProvider).call(
+              image: widgetImageProvider,
+              frameBuilder: frameBuilder,
+              loadingBuilder: loadingBuilder,
+              errorBuilder: errorBuilder,
+              opacity: opacity,
+            ),
+          ),
+        ),
+      );
+
+      final image = tester.widget<Image>(find.byType(Image));
+
+      expect(image.image, widgetImageProvider);
+      expect(image.frameBuilder, same(frameBuilder));
+      expect(image.loadingBuilder, same(loadingBuilder));
+      expect(image.errorBuilder, same(errorBuilder));
+      expect(image.opacity, opacity);
+    });
+  });
 }

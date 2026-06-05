@@ -4,6 +4,130 @@ import 'package:test/test.dart';
 
 import '../core/test_helpers.dart';
 
+const legacyFlutterSources = {
+  'flutter|lib/foundation.dart': r'''
+class DiagnosticPropertiesBuilder {
+  void add(Object? property) {}
+}
+
+class DiagnosticsProperty<T> {
+  const DiagnosticsProperty(String name, Object? value);
+}
+
+mixin Diagnosticable {
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {}
+}
+''',
+};
+
+const legacyMixSources = {
+  'mix|lib/mix.dart': r'''
+export 'src/animation/animation_config.dart';
+export 'src/core/prop.dart';
+export 'src/core/spec.dart';
+export 'src/core/style.dart';
+export 'src/core/style_spec.dart';
+export 'src/core/style_widget.dart';
+export 'src/modifiers/widget_modifier_config.dart';
+export 'src/variants/variant.dart';
+
+class MixOps {
+  static T? merge<T>(T? a, T? b) => b ?? a;
+  static List<T>? mergeList<T>(List<T>? a, List<T>? b) => b ?? a;
+  static List<VariantStyle<S>>? mergeVariants<S extends Spec<S>>(
+    List<VariantStyle<S>>? a,
+    List<VariantStyle<S>>? b,
+  ) => b ?? a;
+  static WidgetModifierConfig? mergeModifier(
+    WidgetModifierConfig? a,
+    WidgetModifierConfig? b,
+  ) => b ?? a;
+  static AnimationConfig? mergeAnimation(
+    AnimationConfig? a,
+    AnimationConfig? b,
+  ) => b ?? a;
+  static T? resolve<T>(Object context, Prop<T>? prop) => null;
+}
+''',
+  'mix|lib/src/animation/animation_config.dart': r'''
+class AnimationConfig {}
+''',
+  'mix|lib/src/core/prop.dart': r'''
+class Prop<T> {
+  const Prop();
+}
+''',
+  'mix|lib/src/core/spec.dart': r'''
+abstract class Spec<T extends Spec<T>> {
+  const Spec();
+}
+''',
+  'mix|lib/src/core/style.dart': r'''
+import 'package:flutter/widgets.dart';
+
+import '../animation/animation_config.dart';
+import '../modifiers/widget_modifier_config.dart';
+import '../variants/variant.dart';
+import 'spec.dart';
+import 'style_spec.dart';
+
+abstract class Style<S extends Spec<S>> {
+  final List<VariantStyle<S>>? $variants;
+  final WidgetModifierConfig? $modifier;
+  final AnimationConfig? $animation;
+
+  const Style({
+    required List<VariantStyle<S>>? variants,
+    required WidgetModifierConfig? modifier,
+    required AnimationConfig? animation,
+  }) : $variants = variants,
+       $modifier = modifier,
+       $animation = animation;
+
+  StyleSpec<S> resolve(BuildContext context);
+  Style<S> merge(covariant Style<S>? other);
+}
+''',
+  'mix|lib/src/core/style_spec.dart': r'''
+import 'spec.dart';
+
+class StyleSpec<S extends Spec<S>> {
+  const StyleSpec({required S spec, Object? animation, Object? widgetModifiers});
+}
+''',
+  'mix|lib/src/core/style_widget.dart': r'''
+import 'package:flutter/widgets.dart';
+
+import 'spec.dart';
+import 'style.dart';
+import 'style_spec.dart';
+
+abstract class StyleWidget<S extends Spec<S>> extends Widget {
+  final Style<S> style;
+  final StyleSpec<S>? styleSpec;
+
+  const StyleWidget({
+    required this.style,
+    this.styleSpec,
+    super.key,
+  });
+}
+''',
+  'mix|lib/src/modifiers/widget_modifier_config.dart': r'''
+class WidgetModifierConfig {
+  const WidgetModifierConfig();
+  Object? resolve(Object context) => null;
+}
+''',
+  'mix|lib/src/variants/variant.dart': r'''
+import '../core/spec.dart';
+
+class VariantStyle<S extends Spec<S>> {
+  const VariantStyle();
+}
+''',
+};
+
 void main() {
   group('generator smoke', () {
     test('SpecGenerator handles nullable list fields end-to-end', () async {
@@ -142,6 +266,7 @@ abstract class Spec<T extends Spec<T>> with Equatable {
 
 class MixOps {
   static T? lerp<T>(T? a, T? b, double t) => a;
+  static T? lerpSnap<T>(T? a, T? b, double t) => a;
 }
 
 @MixableSpec()
@@ -160,6 +285,10 @@ class TinySpec with _$TinySpec {
           },
           inputAsset: 'mix_generator|lib/spec_case.dart',
           outputAsset: 'mix_generator|lib/spec_case.g.dart',
+          outputMatcher: allOf([
+            contains('MixOps.lerpSnap(n, other?.n, t)'),
+            isNot(contains('MixOps.lerp(n, other?.n, t)')),
+          ]),
         );
       },
     );
@@ -256,222 +385,6 @@ class BoxSpec with _$BoxSpec {
                 contains('BoxSpec copyWith('),
                 contains('BoxSpec lerp(BoxSpec? other, double t)'),
               ]),
-            ),
-          },
-        );
-      },
-    );
-
-    test(
-      'StylerGenerator unwraps Prop<T> and preserves nested generics',
-      () async {
-        const source = r'''
-library styler_case;
-
-import 'package:mix_annotations/mix_annotations.dart';
-import 'package:mix/src/core/prop.dart';
-import 'package:mix/src/core/style.dart';
-
-part 'styler_case.g.dart';
-
-class EdgeInsetsGeometry {}
-
-class Shadow {}
-
-class BoxSpec {
-  final EdgeInsetsGeometry? padding;
-  final List<Shadow>? shadows;
-
-  const BoxSpec({this.padding, this.shadows});
-}
-
-@MixableStyler()
-class BoxStyler extends Style<BoxSpec> {
-  final Prop<EdgeInsetsGeometry>? $padding;
-  final Prop<List<Shadow>>? $shadows;
-
-  const BoxStyler({
-    Prop<EdgeInsetsGeometry>? padding,
-    Prop<List<Shadow>>? shadows,
-    Object? variants,
-    Object? modifier,
-    Object? animation,
-  }) : $padding = padding,
-       $shadows = shadows,
-       super(variants: variants, modifier: modifier, animation: animation);
-
-  static BoxStyler create({
-    Prop<EdgeInsetsGeometry>? padding,
-    Prop<List<Shadow>>? shadows,
-    Object? variants,
-    Object? modifier,
-    Object? animation,
-  }) => BoxStyler(
-    padding: padding,
-    shadows: shadows,
-    variants: variants,
-    modifier: modifier,
-    animation: animation,
-  );
-}
-''';
-
-        await testBuilder(
-          partBuilder(const StylerGenerator()),
-          {
-            ...mixAnnotationsSources,
-            'mix_generator|lib/styler_case.dart': source,
-            'mix|lib/src/core/prop.dart': propStub,
-            'mix|lib/src/core/style.dart': styleStub,
-          },
-          generateFor: {'mix_generator|lib/styler_case.dart'},
-          outputs: {
-            'mix_generator|lib/styler_case.g.dart': decodedMatches(
-              allOf(
-                contains(
-                  'mixin _\$BoxStylerMixin on Style<BoxSpec>, Diagnosticable',
-                ),
-                contains(r'Prop<EdgeInsetsGeometry>? get $padding;'),
-                contains(r'Prop<List<Shadow>>? get $shadows;'),
-                contains('BoxStyler padding(EdgeInsetsGeometryMix value)'),
-                contains('BoxStyler shadows(List<Shadow> value)'),
-                contains(r'padding: MixOps.resolve(context, $padding),'),
-                contains(r'shadows: MixOps.resolve(context, $shadows),'),
-              ),
-            ),
-          },
-        );
-      },
-    );
-
-    test('StylerGenerator does not unwrap local Prop lookalikes', () async {
-      const source = r'''
-library styler_case;
-
-import 'package:mix_annotations/mix_annotations.dart';
-import 'package:mix/src/core/style.dart';
-
-part 'styler_case.g.dart';
-
-class Prop<T> {
-  const Prop();
-}
-
-class EdgeInsetsGeometry {}
-
-class BoxSpec {
-  final EdgeInsetsGeometry? padding;
-
-  const BoxSpec({this.padding});
-}
-
-@MixableStyler()
-class BoxStyler extends Style<BoxSpec> {
-  final Prop<EdgeInsetsGeometry>? $padding;
-
-  const BoxStyler({
-    Prop<EdgeInsetsGeometry>? padding,
-    Object? variants,
-    Object? modifier,
-    Object? animation,
-  }) : $padding = padding,
-       super(variants: variants, modifier: modifier, animation: animation);
-
-  static BoxStyler create({
-    Prop<EdgeInsetsGeometry>? padding,
-    Object? variants,
-    Object? modifier,
-    Object? animation,
-  }) => BoxStyler(
-    padding: padding,
-    variants: variants,
-    modifier: modifier,
-    animation: animation,
-  );
-}
-''';
-
-      await testBuilder(
-        partBuilder(const StylerGenerator()),
-        {
-          ...mixAnnotationsSources,
-          'mix_generator|lib/styler_case.dart': source,
-          'mix|lib/src/core/style.dart': styleStub,
-        },
-        generateFor: {'mix_generator|lib/styler_case.dart'},
-        outputs: {
-          'mix_generator|lib/styler_case.g.dart': decodedMatches(
-            allOf(
-              contains(r'Prop<EdgeInsetsGeometry>? get $padding;'),
-              contains('BoxStyler padding(Prop<EdgeInsetsGeometry> value)'),
-              isNot(contains('BoxStyler padding(EdgeInsetsGeometryMix value)')),
-            ),
-          ),
-        },
-      );
-    });
-
-    test(
-      'StylerGenerator preserves prefixes in generated field types',
-      () async {
-        const source = r'''
-library styler_case;
-
-import 'package:mix_annotations/mix_annotations.dart';
-import 'package:mix/src/core/prop.dart' as mix_prop;
-import 'package:mix/src/core/style.dart';
-import 'visible.dart' as v;
-
-part 'styler_case.g.dart';
-
-class BoxSpec {
-  final v.VisibleType? value;
-
-  const BoxSpec({this.value});
-}
-
-@MixableStyler()
-class BoxStyler extends Style<BoxSpec> {
-  final mix_prop.Prop<v.VisibleType>? $value;
-
-  const BoxStyler({
-    mix_prop.Prop<v.VisibleType>? value,
-    Object? variants,
-    Object? modifier,
-    Object? animation,
-  }) : $value = value,
-       super(variants: variants, modifier: modifier, animation: animation);
-
-  static BoxStyler create({
-    mix_prop.Prop<v.VisibleType>? value,
-    Object? variants,
-    Object? modifier,
-    Object? animation,
-  }) => BoxStyler(
-    value: value,
-    variants: variants,
-    modifier: modifier,
-    animation: animation,
-  );
-}
-''';
-
-        await testBuilder(
-          partBuilder(const StylerGenerator()),
-          {
-            ...mixAnnotationsSources,
-            'mix_generator|lib/styler_case.dart': source,
-            'mix_generator|lib/visible.dart': visibleTypeStub,
-            'mix|lib/src/core/prop.dart': propStub,
-            'mix|lib/src/core/style.dart': styleStub,
-          },
-          generateFor: {'mix_generator|lib/styler_case.dart'},
-          outputs: {
-            'mix_generator|lib/styler_case.g.dart': decodedMatches(
-              allOf(
-                contains(r'mix_prop.Prop<v.VisibleType>? get $value;'),
-                contains('BoxStyler value(v.VisibleType value)'),
-              ),
             ),
           },
         );
@@ -654,6 +567,140 @@ class BoxConstraintsMix extends ConstraintsMix<int> {
         );
       },
     );
+  });
+
+  group('StylerGenerator legacy smoke', () {
+    test('emits legacy styler mixin from handwritten @MixableStyler', () async {
+      const source = r'''
+library styler_case;
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+
+part 'styler_case.g.dart';
+
+@MixableSpec()
+class BoxSpec extends Spec<BoxSpec> {
+  final Color? color;
+
+  const BoxSpec({this.color});
+}
+
+@MixableStyler()
+class BoxStyler extends Style<BoxSpec>
+    with Diagnosticable, _$BoxStylerMixin {
+  final Prop<Color>? $color;
+
+  const BoxStyler({Color? color})
+      : $color = null,
+        super(variants: null, modifier: null, animation: null);
+
+  const BoxStyler.create({
+    Prop<Color>? color,
+    super.variants,
+    super.modifier,
+    super.animation,
+  }) : $color = color;
+}
+''';
+
+      await testBuilder(
+        partBuilder(const StylerGenerator()),
+        {
+          ...mixAnnotationsSources,
+          ...legacyFlutterSources,
+          ...widgetStub,
+          ...legacyMixSources,
+          'mix_generator|lib/styler_case.dart': source,
+        },
+        generateFor: {'mix_generator|lib/styler_case.dart'},
+        outputs: {
+          'mix_generator|lib/styler_case.g.dart': decodedMatches(
+            allOf([
+              contains(
+                'mixin _\$BoxStylerMixin on Style<BoxSpec>, Diagnosticable',
+              ),
+              contains(r'Prop<Color>? get $color;'),
+              contains('BoxStyler color(Color value)'),
+              contains('return merge(BoxStyler(color: value));'),
+              contains(r'color: MixOps.merge($color, other?.$color),'),
+              contains(
+                r'final spec = BoxSpec(color: MixOps.resolve(context, $color));',
+              ),
+              contains(r"DiagnosticsProperty('color', $color)"),
+              contains('List<Object?> get props =>'),
+              isNot(contains(r'get $variants;')),
+              isNot(contains(r'get $modifier;')),
+              isNot(contains(r'get $animation;')),
+            ]),
+          ),
+        },
+      );
+    });
+
+    test('emits legacy call method from MixableSpec target', () async {
+      const source = r'''
+library styler_case;
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+import 'package:mix/src/core/style_widget.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+
+part 'styler_case.g.dart';
+
+@MixableSpec(target: Box.new)
+class BoxSpec extends Spec<BoxSpec> {
+  const BoxSpec();
+}
+
+class Box extends StyleWidget<BoxSpec> {
+  const Box({
+    Key? key,
+    required super.style,
+    this.child,
+  }) : super(key: key);
+
+  final Widget? child;
+}
+
+@MixableStyler()
+class BoxStyler extends Style<BoxSpec>
+    with Diagnosticable, _$BoxStylerMixin {
+  const BoxStyler()
+      : super(variants: null, modifier: null, animation: null);
+
+  const BoxStyler.create({
+    super.variants,
+    super.modifier,
+    super.animation,
+  });
+}
+''';
+
+      await testBuilder(
+        partBuilder(const StylerGenerator()),
+        {
+          ...mixAnnotationsSources,
+          ...legacyFlutterSources,
+          ...widgetStub,
+          ...legacyMixSources,
+          'mix_generator|lib/styler_case.dart': source,
+        },
+        generateFor: {'mix_generator|lib/styler_case.dart'},
+        outputs: {
+          'mix_generator|lib/styler_case.g.dart': decodedMatches(
+            allOf([
+              contains('Box call({Key? key, Widget? child})'),
+              contains('return Box(key: key, style: this, child: child);'),
+            ]),
+          ),
+        },
+      );
+    });
   });
 
   group('MixWidgetGenerator smoke', () {

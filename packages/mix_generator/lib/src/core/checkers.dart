@@ -5,9 +5,19 @@ const mixableFieldAnnotationChecker = TypeChecker.fromUrl(
   'package:mix_annotations/src/annotations.dart#MixableField',
 );
 
+/// `MixableSpec` annotation from `package:mix_annotations`.
+const mixableSpecAnnotationChecker = TypeChecker.fromUrl(
+  'package:mix_annotations/src/annotations.dart#MixableSpec',
+);
+
 /// `Style<S>` abstract class from `package:mix`.
 const styleChecker = TypeChecker.fromUrl(
   'package:mix/src/core/style.dart#Style',
+);
+
+/// `StyleWidget<S>` abstract class from `package:mix`.
+const styleWidgetChecker = TypeChecker.fromUrl(
+  'package:mix/src/core/style_widget.dart#StyleWidget',
 );
 
 /// `Mix<T>` abstract class from `package:mix`.

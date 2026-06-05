@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 
-import '../../core/helpers.dart';
-import '../../core/spec.dart';
+import '../../generated_styler_support.dart';
+
+import '../text/text_spec.dart';
+import 'box_widget.dart';
 
 part 'box_spec.g.dart';
 
@@ -13,7 +15,7 @@ part 'box_spec.g.dart';
 /// Provides comprehensive box styling including alignment, padding, margin, constraints,
 /// decoration, transformation, and clipping behavior. Used as the resolved form
 /// of [BoxStyle] styling attributes.
-@MixableSpec()
+@MixableSpec(target: Box.new)
 @immutable
 final class BoxSpec with _$BoxSpec {
   /// Aligns the child within the box.

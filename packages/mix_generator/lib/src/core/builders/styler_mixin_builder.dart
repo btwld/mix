@@ -14,12 +14,14 @@ class StylerMixinBuilder {
   final String specName;
   final List<StylerFieldModel> fields;
   final MixableStylerAnnotationConfig config;
+  final String? callMethodCode;
 
   const StylerMixinBuilder({
     required this.stylerName,
     required this.specName,
     required this.fields,
     required this.config,
+    this.callMethodCode,
   });
 
   FieldEmitter<StylerFieldModel> _fieldEmitter() => .new(fields);
@@ -31,7 +33,17 @@ class StylerMixinBuilder {
     );
   }
 
-  String _buildSetters() {
+  void _writeMethodOverride(
+    StringBuffer buffer,
+    String methodName,
+    Set<String> methodOverrides,
+  ) {
+    if (methodOverrides.contains(methodName)) {
+      buffer.writeln('  @override');
+    }
+  }
+
+  String _buildSetters({Set<String> methodOverrides = const {}}) {
     final buffer = StringBuffer();
 
     for (final field in fields) {
@@ -41,8 +53,9 @@ class StylerMixinBuilder {
       final paramType = field.effectivePublicParamType;
 
       buffer.writeln('  /// Sets the ${field.name}.');
+      _writeMethodOverride(buffer, setterName, methodOverrides);
       buffer.writeln('  $stylerName $setterName($paramType value) {');
-      buffer.writeln('    return merge($stylerName($setterName: value));');
+      buffer.writeln('    return merge($stylerName(${field.name}: value));');
       buffer.writeln('  }');
       buffer.writeln();
     }
@@ -50,16 +63,18 @@ class StylerMixinBuilder {
     return buffer.toString();
   }
 
-  String _buildBaseMethods() {
+  String _buildBaseMethods({Set<String> methodOverrides = const {}}) {
     final buffer = StringBuffer();
 
     buffer.writeln('  /// Sets the animation configuration.');
+    _writeMethodOverride(buffer, 'animate', methodOverrides);
     buffer.writeln('  $stylerName animate(AnimationConfig value) {');
     buffer.writeln('    return merge($stylerName(animation: value));');
     buffer.writeln('  }');
     buffer.writeln();
 
     buffer.writeln('  /// Sets the style variants.');
+    _writeMethodOverride(buffer, 'variants', methodOverrides);
     buffer.writeln(
       '  $stylerName variants(List<VariantStyle<$specName>> value) {',
     );
@@ -68,7 +83,15 @@ class StylerMixinBuilder {
     buffer.writeln();
 
     buffer.writeln('  /// Wraps with a widget modifier.');
+    _writeMethodOverride(buffer, 'wrap', methodOverrides);
     buffer.writeln('  $stylerName wrap(WidgetModifierConfig value) {');
+    buffer.writeln('    return merge($stylerName(modifier: value));');
+    buffer.writeln('  }');
+    buffer.writeln();
+
+    buffer.writeln('  /// Sets the widget modifier.');
+    _writeMethodOverride(buffer, 'modifier', methodOverrides);
+    buffer.writeln('  $stylerName modifier(WidgetModifierConfig value) {');
     buffer.writeln('    return merge($stylerName(modifier: value));');
     buffer.writeln('  }');
     buffer.writeln();
@@ -162,20 +185,20 @@ class StylerMixinBuilder {
   /// The mixin name.
   String get mixinName => '_\$${stylerName}Mixin';
 
-  /// Builds the complete mixin code.
-  String build() {
+  /// Builds styler members without a surrounding mixin declaration.
+  String buildMembers({Set<String> methodOverrides = const {}}) {
     final buffer = StringBuffer();
 
-    buffer.writeln('mixin $mixinName on Style<$specName>, Diagnosticable {');
-
-    buffer.writeln(_buildAbstractGetters());
-
     if (config.generateSetters) {
-      buffer.writeln(_buildSetters());
+      buffer.writeln(_buildSetters(methodOverrides: methodOverrides));
     }
 
     if (config.generateSetters) {
-      buffer.writeln(_buildBaseMethods());
+      buffer.writeln(_buildBaseMethods(methodOverrides: methodOverrides));
+    }
+
+    if (callMethodCode != null) {
+      buffer.writeln(callMethodCode);
     }
 
     if (config.generateMerge) {
@@ -193,6 +216,19 @@ class StylerMixinBuilder {
     if (config.generateProps) {
       buffer.writeln(_buildProps());
     }
+
+    return buffer.toString();
+  }
+
+  /// Builds the complete mixin code.
+  String build() {
+    final buffer = StringBuffer();
+
+    buffer.writeln('mixin $mixinName on Style<$specName>, Diagnosticable {');
+
+    buffer.writeln(_buildAbstractGetters());
+
+    buffer.writeln(buildMembers());
 
     buffer.writeln('}');
 
