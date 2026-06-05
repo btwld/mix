@@ -9,6 +9,7 @@ import 'directive.dart';
 import 'helpers.dart';
 import 'mix_element.dart';
 import 'prop_source.dart';
+import 'style.dart';
 
 /// A property that can hold values, tokens, or Mix types.
 ///
@@ -269,7 +270,18 @@ class Prop<V> {
         for (int i = 1; i < mixValues.length; i++) {
           mergedMix = PropOps.mergeMixes(context, mergedMix, mixValues[i]);
         }
-        resolvedValue = mergedMix.resolve(context);
+        // A [Style] nested inside another [Style]'s [Prop] (e.g. a component
+        // sub-style) carries its own context variants — widget states
+        // (hovered/pressed/disabled), brightness, breakpoints, etc. Those are
+        // applied by [Style.build], not by [Style.resolve], so resolving a
+        // nested style directly would silently drop them. Build styles instead
+        // so their variants resolve against the current context.
+        //
+        // Named variants are not propagated here (build uses the default empty
+        // set), matching how the top-level StyleBuilder builds styles.
+        resolvedValue = mergedMix is Style
+            ? (mergedMix as Style).build(context) as V
+            : mergedMix.resolve(context);
       }
     } else {
       // Simple values - use last one (replacement strategy)
