@@ -174,7 +174,7 @@ final class MixSchemaContract {
       'x-mix-schema-contract': 'mix_schema',
       'x-mix-schema-version': contractVersion,
       'x-mix-schema-limits': _limits.toJson(),
-      'x-mix-variant-priority': _variantPriorityMetadata,
+      'x-mix-variant-priority': _buildVariantPriorityMetadata(),
     };
   }
 
@@ -250,21 +250,24 @@ final class MixSchemaContract {
 /// priority of their leaves; the priority is a Mix runtime concept that
 /// the wire format does not declare. This metadata documents runtime-derived
 /// behavior — the Mix runtime is the actual source of truth for priority.
-final Map<String, Object?> _variantPriorityMetadata = {
-  'description':
-      'Compound context_all_of variants inherit the maximum sortPriority '
-      'across their leaves; widget_state contributes priority 1, other '
-      'context leaves contribute priority 0. The wire format does not '
-      'advertise priority — it is computed by the Mix runtime from the '
-      'leaf set.',
-  'rule': 'priority(compound) = max(priority(leaf) for leaf in leaves)',
-  'leaves': _variantPriorityLeaves,
-};
-
-final Map<String, int> _variantPriorityLeaves = Map.unmodifiable({
-  for (final type in sharedContextVariantLeafTypes)
-    type.wireValue: variantLeafSortPriority(type),
-});
+///
+/// Returns a fresh map on every call so callers mutating one export do not
+/// affect later exports.
+Map<String, Object?> _buildVariantPriorityMetadata() {
+  return {
+    'description':
+        'Compound context_all_of variants inherit the maximum sortPriority '
+        'across their leaves; widget_state contributes priority 1, other '
+        'context leaves contribute priority 0. The wire format does not '
+        'advertise priority — it is computed by the Mix runtime from the '
+        'leaf set.',
+    'rule': 'priority(compound) = max(priority(leaf) for leaf in leaves)',
+    'leaves': <String, int>{
+      for (final type in sharedContextVariantLeafTypes)
+        type.wireValue: variantLeafSortPriority(type),
+    },
+  };
+}
 
 void _validateStylerRegistration({
   required String type,

@@ -75,28 +75,32 @@ ImageStyler _decodeImageStyler(
 JsonMap _encodeRequiredImageFields(ImageStyler value) {
   return {
     'image': requiredDirectPropValue(value.$image, 'image'),
-    ..._encodeOptionalImageFields(value),
+    ..._encodeNonImageFields(value),
   };
 }
 
 JsonMap _encodeOptionalImageFields(ImageStyler value) {
   return {
-    ...optionalJsonMap([
-      ('image', directPropValue(value.$image)),
-      ('width', directPropValue(value.$width)),
-      ('height', directPropValue(value.$height)),
-      ('color', directPropValue(value.$color)),
-      ('repeat', directPropValue(value.$repeat)),
-      ('fit', directPropValue(value.$fit)),
-      ('alignment', directPropValue(value.$alignment)),
-      ('centerSlice', directPropValue(value.$centerSlice)),
-      ('filterQuality', directPropValue(value.$filterQuality)),
-      ('colorBlendMode', directPropValue(value.$colorBlendMode)),
-      ('semanticLabel', directPropValue(value.$semanticLabel)),
-      ('excludeFromSemantics', directPropValue(value.$excludeFromSemantics)),
-      ('gaplessPlayback', directPropValue(value.$gaplessPlayback)),
-      ('isAntiAlias', directPropValue(value.$isAntiAlias)),
-      ('matchTextDirection', directPropValue(value.$matchTextDirection)),
-    ]),
+    ...optionalJsonMap([('image', directPropValue(value.$image))]),
+    ..._encodeNonImageFields(value),
   };
+}
+
+JsonMap _encodeNonImageFields(ImageStyler value) {
+  return optionalJsonMap([
+    ('width', directPropValue(value.$width)),
+    ('height', directPropValue(value.$height)),
+    ('color', directPropValue(value.$color)),
+    ('repeat', directPropValue(value.$repeat)),
+    ('fit', directPropValue(value.$fit)),
+    ('alignment', directPropValue(value.$alignment)),
+    ('centerSlice', directPropValue(value.$centerSlice)),
+    ('filterQuality', directPropValue(value.$filterQuality)),
+    ('colorBlendMode', directPropValue(value.$colorBlendMode)),
+    ('semanticLabel', directPropValue(value.$semanticLabel)),
+    ('excludeFromSemantics', directPropValue(value.$excludeFromSemantics)),
+    ('gaplessPlayback', directPropValue(value.$gaplessPlayback)),
+    ('isAntiAlias', directPropValue(value.$isAntiAlias)),
+    ('matchTextDirection', directPropValue(value.$matchTextDirection)),
+  ]);
 }

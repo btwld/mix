@@ -1,13 +1,22 @@
 import 'dart:typed_data';
 
+import 'package:ack/ack.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 import 'package:mix_schema/mix_schema.dart';
 // ignore: implementation_imports
+import 'package:mix_schema/src/core/schema_wire_types.dart';
+// ignore: implementation_imports
+import 'package:mix_schema/src/registry/registry_catalog.dart';
+// ignore: implementation_imports
 import 'package:mix_schema/src/registry/registry_wire_grammar.dart';
 // ignore: implementation_imports
 import 'package:mix_schema/src/schema/painting/gradient_schemas.dart';
+// ignore: implementation_imports
+import 'package:mix_schema/src/schema/styler_catalog.dart';
+// ignore: implementation_imports
+import 'package:mix_schema/src/schema/styler_definition.dart';
 
 void main() {
   group('strict enum wire contract', () {
@@ -483,6 +492,63 @@ void main() {
 
       expect(oldTransform.isFail, isTrue);
       expect(oldDirection.isFail, isTrue);
+    });
+  });
+
+  group('built-in styler discriminator ownership', () {
+    test(
+      'encoder emitting "type" cannot override the registered styler type',
+      () {
+        final catalog = StylerCatalog(registries: RegistryCatalog(const []));
+        final SchemaStyler iconType = .icon;
+        final stylerContract = buildStylerCodecContract<IconSpec, IconStyler>(
+          catalog: catalog,
+          type: iconType,
+          emptyStyle: IconStyler(),
+          fields: {},
+          build: (data, {animation, modifier, variants}) => IconStyler(
+            animation: animation,
+            modifier: modifier,
+            variants: variants,
+          ),
+          encodeFields: (value) => {'type': 'spoofed'},
+        );
+        final discriminated = Ack.discriminated<Object>(
+          discriminatorKey: 'type',
+          schemas: {iconType.wireValue: stylerContract.codec},
+        );
+
+        final encoded = discriminated.safeEncode(IconStyler()).getOrThrow();
+
+        expect(encoded!['type'], 'icon');
+      },
+    );
+  });
+
+  group('exported variant priority metadata', () {
+    test('mutating one export does not leak into later exports', () {
+      final contract = MixSchemaContract.builtIn();
+      final metadata1 =
+          contract.exportJsonSchema()['x-mix-variant-priority']!
+              as Map<String, Object?>;
+      final leaves1 = metadata1['leaves']! as Map<String, Object?>;
+      final originalLeaves = Map<String, Object?>.of(leaves1);
+      final originalDescription = metadata1['description'];
+
+      metadata1['description'] = 'mutated';
+      metadata1.remove('rule');
+      leaves1['injected'] = 999;
+      leaves1.remove(leaves1.keys.first);
+
+      final schema2 = contract.exportJsonSchema();
+      final metadata2 =
+          schema2['x-mix-variant-priority']! as Map<String, Object?>;
+      final leaves2 = metadata2['leaves']! as Map<String, Object?>;
+
+      expect(metadata2['description'], originalDescription);
+      expect(metadata2.containsKey('rule'), isTrue);
+      expect(leaves2, originalLeaves);
+      expect(leaves2.containsKey('injected'), isFalse);
     });
   });
 }

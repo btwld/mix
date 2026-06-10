@@ -4,9 +4,10 @@ import '../errors/mix_schema_error.dart';
 
 /// Structural safety limits applied at the schema contract boundary.
 ///
-/// Registry id length is enforced per-codec via `registryValueCodec()`'s
-/// `maxLength` constraint; it is not surfaced here so producers see a single
-/// source of truth for that limit through the exported JSON Schema.
+/// Registry id length is owned by the shared registry wire grammar and is
+/// surfaced through registry codecs and the exported JSON Schema, not via
+/// [MixSchemaLimits], so producers see a single source of truth for that
+/// limit.
 final class MixSchemaLimits {
   final int maxDepth;
   final int maxListLength;

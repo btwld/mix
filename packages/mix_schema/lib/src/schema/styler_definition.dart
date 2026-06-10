@@ -100,7 +100,7 @@ _buildStylerCodec<S extends Spec<S>, T extends Style<S>>({
     decode: build,
     encode: type == null
         ? encode
-        : (value) => {'type': type.wireValue, ...encode(value)},
+        : (value) => {...encode(value), 'type': type.wireValue},
     output: Ack.instance<T>(),
   );
 }
