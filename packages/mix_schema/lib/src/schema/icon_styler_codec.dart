@@ -2,7 +2,6 @@ import 'package:ack/ack.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-import '../errors/mix_schema_error.dart';
 import '../registry/registry.dart';
 import '../registry/registry_value_codec.dart';
 import 'animation_codec.dart';
@@ -22,18 +21,12 @@ AckSchema<JsonMap, IconStyler> iconStylerCodec({
     'weight': numberAsDoubleCodec().optional(),
     'grade': numberAsDoubleCodec().optional(),
     'opticalSize': numberAsDoubleCodec().optional(),
-    'textDirection': enumNameCodec(
-      TextDirection.values,
-      debugName: 'TextDirection',
-    ).optional(),
+    'textDirection': enumNameCodec(TextDirection.values).optional(),
     'applyTextScaling': Ack.boolean().optional(),
     'fill': numberAsDoubleCodec().optional(),
     'semanticsLabel': Ack.string().optional(),
     'opacity': numberAsDoubleCodec().optional(),
-    'blendMode': enumNameCodec(
-      BlendMode.values,
-      debugName: 'BlendMode',
-    ).optional(),
+    'blendMode': enumNameCodec(BlendMode.values).optional(),
     'modifiers': modifierConfigCodec().optional(),
     'animation': animationConfigCodec(registry: registry).optional(),
   }).codec<IconStyler>(
@@ -58,8 +51,8 @@ AckSchema<JsonMap, IconStyler> iconStylerCodec({
 }
 
 JsonMap _encodeIconStyler(IconStyler value) {
-  _failIfPresent(value.$variants, 'variants');
-  _failIfPresent(value.$shadows, 'shadows');
+  failIfPresent(value.$variants, 'variants');
+  failIfPresent(value.$shadows, 'shadows');
 
   return {
     'icon': singleValueProp(value.$icon, 'icon'),
@@ -80,13 +73,4 @@ JsonMap _encodeIconStyler(IconStyler value) {
     'modifiers': value.$modifier,
     'animation': value.$animation,
   };
-}
-
-void _failIfPresent(Object? value, String fieldName) {
-  if (value == null) return;
-
-  throw UnsupportedEncodeValueError(
-    value,
-    'Field "$fieldName" is not representable by this schema.',
-  );
 }

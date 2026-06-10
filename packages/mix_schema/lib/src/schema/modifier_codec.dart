@@ -78,11 +78,11 @@ Object _encodeModifierConfig(WidgetModifierConfig value) {
 }
 
 JsonMap _encodeDefaultTextStyleModifier(DefaultTextStyleModifierMix value) {
-  _failIfPresent(
+  failIfPresent(
     value.textWidthBasis,
     'modifiers.defaultTextStyle.textWidthBasis',
   );
-  _failIfPresent(
+  failIfPresent(
     value.textHeightBehavior,
     'modifiers.defaultTextStyle.textHeightBehavior',
   );
@@ -109,13 +109,4 @@ JsonMap _encodeDefaultTextStyleModifier(DefaultTextStyleModifierMix value) {
       'modifiers.defaultTextStyle.maxLines',
     ),
   };
-}
-
-void _failIfPresent(Object? value, String fieldName) {
-  if (value == null) return;
-
-  throw UnsupportedEncodeValueError(
-    value,
-    'Field "$fieldName" is not representable by this schema.',
-  );
 }

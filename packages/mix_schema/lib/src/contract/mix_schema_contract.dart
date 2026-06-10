@@ -32,11 +32,13 @@ final class MixSchemaContractBuilder {
   late final AckSchema<JsonMap, Object> _rootSchemaRef;
   late AckSchema<JsonMap, Object> _rootSchema;
   late FrozenRegistry _frozenRegistry;
+  bool _isFrozen = false;
 
   MixSchemaLimits get limits => _limits;
   RegistryBuilder get registry => _registryBuilder;
 
   MixSchemaContractBuilder withLimits(MixSchemaLimits limits) {
+    _ensureMutable();
     _limits = limits;
 
     return this;
@@ -46,12 +48,14 @@ final class MixSchemaContractBuilder {
     String wireType,
     AckSchema<JsonMap, T> schema,
   ) {
+    _ensureMutable();
     _branches[wireType] = widenStylerBranch(schema, debugName: wireType);
 
     return this;
   }
 
   MixSchemaContractBuilder builtIn() {
+    _ensureMutable();
     addStyler(
       'box',
       boxStylerCodec(
@@ -74,7 +78,9 @@ final class MixSchemaContractBuilder {
   }
 
   MixSchemaContract freeze() {
+    _ensureMutable();
     final registry = _registryBuilder.freeze();
+    _isFrozen = true;
     _frozenRegistry = registry;
     final root = Ack.discriminated<Object>(
       discriminatorKey: 'type',
@@ -86,8 +92,14 @@ final class MixSchemaContractBuilder {
       rootSchema: root,
       limits: _limits,
       registry: registry,
-      registeredTypes: _branches.keys.toList(growable: false),
+      registeredTypes: List.unmodifiable(_branches.keys),
     );
+  }
+
+  void _ensureMutable() {
+    if (_isFrozen) {
+      throw StateError('MixSchemaContractBuilder cannot be used after freeze.');
+    }
   }
 }
 

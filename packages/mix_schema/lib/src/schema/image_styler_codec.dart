@@ -2,7 +2,6 @@ import 'package:ack/ack.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-import '../errors/mix_schema_error.dart';
 import '../registry/registry.dart';
 import '../registry/registry_value_codec.dart';
 import 'animation_codec.dart';
@@ -20,20 +19,11 @@ AckSchema<JsonMap, ImageStyler> imageStylerCodec({
     'width': numberAsDoubleCodec().optional(),
     'height': numberAsDoubleCodec().optional(),
     'color': colorCodec().optional(),
-    'repeat': enumNameCodec(
-      ImageRepeat.values,
-      debugName: 'ImageRepeat',
-    ).optional(),
-    'fit': enumNameCodec(BoxFit.values, debugName: 'BoxFit').optional(),
+    'repeat': enumNameCodec(ImageRepeat.values).optional(),
+    'fit': enumNameCodec(BoxFit.values).optional(),
     'alignment': alignmentCodec().optional(),
-    'filterQuality': enumNameCodec(
-      FilterQuality.values,
-      debugName: 'FilterQuality',
-    ).optional(),
-    'colorBlendMode': enumNameCodec(
-      BlendMode.values,
-      debugName: 'BlendMode',
-    ).optional(),
+    'filterQuality': enumNameCodec(FilterQuality.values).optional(),
+    'colorBlendMode': enumNameCodec(BlendMode.values).optional(),
     'semanticLabel': Ack.string().optional(),
     'excludeFromSemantics': Ack.boolean().optional(),
     'gaplessPlayback': Ack.boolean().optional(),
@@ -65,8 +55,8 @@ AckSchema<JsonMap, ImageStyler> imageStylerCodec({
 }
 
 JsonMap _encodeImageStyler(ImageStyler value) {
-  _failIfPresent(value.$variants, 'variants');
-  _failIfPresent(value.$centerSlice, 'centerSlice');
+  failIfPresent(value.$variants, 'variants');
+  failIfPresent(value.$centerSlice, 'centerSlice');
 
   return {
     'image': singleValueProp(value.$image, 'image'),
@@ -95,13 +85,4 @@ JsonMap _encodeImageStyler(ImageStyler value) {
     'modifiers': value.$modifier,
     'animation': value.$animation,
   };
-}
-
-void _failIfPresent(Object? value, String fieldName) {
-  if (value == null) return;
-
-  throw UnsupportedEncodeValueError(
-    value,
-    'Field "$fieldName" is not representable by this schema.',
-  );
 }

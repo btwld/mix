@@ -21,19 +21,10 @@ CodecSchema<num, double> nonNegativeDoubleCodec() {
       );
 }
 
-CodecSchema<Object, Color> colorCodec() {
-  return Ack.codec<Object, Object, Color>(
-    input: Ack.anyOf([
-      Ack.string().matches(r'^#[0-9A-Fa-f]{6}$'),
-      Ack.string().matches(r'^#[0-9A-Fa-f]{8}$'),
-      Ack.string().matches(
-        r'^rgb\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*\)$',
-      ),
-      Ack.string().matches(
-        r'^rgba\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*(?:0|1|0?\.\d+|1\.0+)\s*\)$',
-      ),
-    ]),
-    decode: (value) => _decodeColor(value as String),
+CodecSchema<String, Color> colorCodec() {
+  return Ack.codec<String, String, Color>(
+    input: _colorWireCodec(),
+    decode: _decodeColor,
     encode: encodeColorWire,
   );
 }
@@ -144,11 +135,17 @@ CodecSchema<String, T> strictEnumCodec<T extends Object>(
   );
 }
 
-CodecSchema<String, T> enumNameCodec<T extends Enum>(
-  List<T> values, {
-  String? debugName,
-}) {
+CodecSchema<String, T> enumNameCodec<T extends Enum>(List<T> values) {
   return Ack.enumCodec(values);
+}
+
+void failIfPresent(Object? value, String fieldName) {
+  if (value == null) return;
+
+  throw UnsupportedEncodeValueError(
+    value,
+    'Field "$fieldName" is not representable by this schema.',
+  );
 }
 
 Alignment? singleAlignmentProp(
@@ -224,6 +221,46 @@ T? singleMixProp<T extends Object, V extends Object>(
     prop,
     'Field "$fieldName" is ${source.runtimeType}; expected $T.',
   );
+}
+
+AckSchema<String, String> _colorWireCodec() {
+  return Ack.string()
+      .matches(
+        r'^(?:#[0-9A-Fa-f]{6}|#[0-9A-Fa-f]{8}|rgb\(\s*-?\d+\s*,\s*-?\d+\s*,\s*-?\d+\s*\)|rgba\(\s*-?\d+\s*,\s*-?\d+\s*,\s*-?\d+\s*,\s*-?(?:\d+(?:\.\d+)?|\.\d+)\s*\))$',
+      )
+      .constrain(
+        _PredicateConstraint<String>(
+          constraintKey: 'mix_schema_color_wire_range',
+          description: 'Color wire values must use in-range CSS channels.',
+          isValidValue: _isColorWireInRange,
+          message:
+              'RGB channels must be between 0 and 255; alpha must be between 0 and 1.',
+        ),
+      );
+}
+
+bool _isColorWireInRange(String value) {
+  if (value.startsWith('#')) return true;
+  final prefix = value.startsWith('rgb(')
+      ? 'rgb('
+      : value.startsWith('rgba(')
+      ? 'rgba('
+      : null;
+  if (prefix == null) return false;
+
+  final parts = value.substring(prefix.length, value.length - 1).split(',');
+  final expectedCount = prefix == 'rgb(' ? 3 : 4;
+  if (parts.length != expectedCount) return false;
+
+  for (final part in parts.take(3)) {
+    final channel = int.tryParse(part.trim());
+    if (channel == null || channel < 0 || channel > 255) return false;
+  }
+  if (expectedCount == 3) return true;
+
+  final alpha = double.tryParse(parts[3].trim());
+
+  return alpha != null && alpha >= 0 && alpha <= 1;
 }
 
 Color _decodeColor(String value) {
@@ -381,4 +418,23 @@ Object _encodeBorderRadiusMix(BorderRadiusMix value) {
     'bottomLeft': bottomLeft,
     'bottomRight': bottomRight,
   };
+}
+
+final class _PredicateConstraint<T extends Object> extends Constraint<T>
+    with Validator<T> {
+  const _PredicateConstraint({
+    required super.constraintKey,
+    required super.description,
+    required this.isValidValue,
+    required this.message,
+  });
+
+  final bool Function(T value) isValidValue;
+  final String message;
+
+  @override
+  bool isValid(T value) => isValidValue(value);
+
+  @override
+  String buildMessage(T value) => message;
 }

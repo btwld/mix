@@ -67,4 +67,20 @@ void main() {
       throwsA(isA<UnknownRegistryValueError>()),
     );
   });
+
+  test('R-6 registry builder cannot register or freeze twice after freeze', () {
+    const icon = IconData(0xe145, fontFamily: 'MaterialIcons');
+    final builder = RegistryBuilder().iconData('add', icon);
+    final registry = builder.freeze();
+
+    expect(registry.lookup<IconData>(MixSchemaScope.iconData, 'add'), icon);
+    expect(
+      () => builder.iconData(
+        'remove',
+        const IconData(0xe15b, fontFamily: 'MaterialIcons'),
+      ),
+      throwsStateError,
+    );
+    expect(builder.freeze, throwsStateError);
+  });
 }

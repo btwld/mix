@@ -104,6 +104,54 @@ void main() {
     expect(nested, isA<MixSchemaValidationFailure>());
   });
 
+  test('R-11 breakpoint variants without bounds fail as constraints', () {
+    for (final payload in [
+      {
+        'type': 'box',
+        'variants': [
+          {
+            'kind': 'context_breakpoint',
+            'style': {'type': 'box'},
+          },
+        ],
+      },
+      {
+        'type': 'box',
+        'variants': [
+          {
+            'kind': 'context_all_of',
+            'conditions': [
+              {'kind': 'context_breakpoint'},
+            ],
+            'style': {'type': 'box'},
+          },
+        ],
+      },
+    ]) {
+      final errors = _validationErrors(contract().validate(payload));
+      final codes = errors.map((error) => error.code);
+
+      expect(codes, contains(MixSchemaErrorCode.constraintViolation));
+      expect(codes, isNot(contains(MixSchemaErrorCode.transformFailed)));
+      expect(codes, isNot(contains(MixSchemaErrorCode.unsupportedEncodeValue)));
+    }
+  });
+
+  test('non-box variants remain explicitly unsupported', () {
+    final result = contract().encode(
+      TextStyler().variant(const NamedVariant('body'), TextStyler(maxLines: 1)),
+    );
+    final errors = switch (result) {
+      MixSchemaEncodeFailure(:final errors) => errors,
+      MixSchemaEncodeSuccess() => fail('expected encode failure'),
+    };
+
+    expect(
+      errors.map((error) => error.code),
+      contains(MixSchemaErrorCode.unsupportedEncodeValue),
+    );
+  });
+
   test('R-11 encodes variants through lazy nested style', () {
     final style = BoxStyler().variant(
       const NamedVariant('primary'),
@@ -157,4 +205,11 @@ void main() {
       {'kind': 'context_variant_builder', 'builder': 'responsive_box'},
     ]);
   });
+}
+
+List<MixSchemaError> _validationErrors(MixSchemaValidationResult result) {
+  return switch (result) {
+    MixSchemaValidationFailure(:final errors) => errors,
+    MixSchemaValidationSuccess() => fail('expected validation failure'),
+  };
 }

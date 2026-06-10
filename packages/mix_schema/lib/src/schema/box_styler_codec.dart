@@ -2,7 +2,6 @@ import 'package:ack/ack.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-import '../errors/mix_schema_error.dart';
 import '../registry/registry.dart';
 import 'animation_codec.dart';
 import 'common_codecs.dart';
@@ -18,7 +17,7 @@ AckSchema<JsonMap, BoxStyler> boxStylerCodec({
     'padding': edgeInsetsCodec().optional(),
     'margin': edgeInsetsCodec().optional(),
     'constraints': boxConstraintsCodec().optional(),
-    'clipBehavior': enumNameCodec(Clip.values, debugName: 'Clip').optional(),
+    'clipBehavior': enumNameCodec(Clip.values).optional(),
     'decoration': boxDecorationCodec().optional(),
     if (rootStyleSchema != null)
       'variants': Ack.list(
@@ -46,9 +45,9 @@ JsonMap encodeBoxStylerFields(
   BoxStyler value, {
   bool includeStylerMetadata = true,
 }) {
-  _failIfPresent(value.$foregroundDecoration, 'foregroundDecoration');
-  _failIfPresent(value.$transform, 'transform');
-  _failIfPresent(value.$transformAlignment, 'transformAlignment');
+  failIfPresent(value.$foregroundDecoration, 'foregroundDecoration');
+  failIfPresent(value.$transform, 'transform');
+  failIfPresent(value.$transformAlignment, 'transformAlignment');
 
   final encoded = {
     'alignment': singleAlignmentProp(value.$alignment, 'alignment'),
@@ -86,27 +85,18 @@ CodecSchema<JsonMap, BoxDecorationMix> boxDecorationCodec() {
   return Ack.object({'color': colorCodec().optional()}).codec<BoxDecorationMix>(
     decode: (data) => BoxDecorationMix(color: data['color'] as Color?),
     encode: (value) {
-      _failIfPresent(value.$border, 'decoration.border');
-      _failIfPresent(value.$borderRadius, 'decoration.borderRadius');
-      _failIfPresent(value.$shape, 'decoration.shape');
-      _failIfPresent(
+      failIfPresent(value.$border, 'decoration.border');
+      failIfPresent(value.$borderRadius, 'decoration.borderRadius');
+      failIfPresent(value.$shape, 'decoration.shape');
+      failIfPresent(
         value.$backgroundBlendMode,
         'decoration.backgroundBlendMode',
       );
-      _failIfPresent(value.$image, 'decoration.image');
-      _failIfPresent(value.$gradient, 'decoration.gradient');
-      _failIfPresent(value.$boxShadow, 'decoration.boxShadow');
+      failIfPresent(value.$image, 'decoration.image');
+      failIfPresent(value.$gradient, 'decoration.gradient');
+      failIfPresent(value.$boxShadow, 'decoration.boxShadow');
 
       return {'color': singleValueProp(value.$color, 'decoration.color')};
     },
-  );
-}
-
-void _failIfPresent(Object? value, String fieldName) {
-  if (value == null) return;
-
-  throw UnsupportedEncodeValueError(
-    value,
-    'Field "$fieldName" is not representable by this schema.',
   );
 }

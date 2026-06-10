@@ -2,7 +2,6 @@ import 'package:ack/ack.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-import '../errors/mix_schema_error.dart';
 import '../registry/registry.dart';
 import 'animation_codec.dart';
 import 'box_styler_codec.dart';
@@ -18,18 +17,12 @@ AckSchema<JsonMap, StackBoxStyler> stackBoxStylerCodec({
     'padding': edgeInsetsCodec().optional(),
     'margin': edgeInsetsCodec().optional(),
     'constraints': boxConstraintsCodec().optional(),
-    'clipBehavior': enumNameCodec(Clip.values, debugName: 'Clip').optional(),
+    'clipBehavior': enumNameCodec(Clip.values).optional(),
     'decoration': boxDecorationCodec().optional(),
     'stackAlignment': alignmentCodec().optional(),
-    'fit': enumNameCodec(StackFit.values, debugName: 'StackFit').optional(),
-    'textDirection': enumNameCodec(
-      TextDirection.values,
-      debugName: 'TextDirection',
-    ).optional(),
-    'stackClipBehavior': enumNameCodec(
-      Clip.values,
-      debugName: 'Clip',
-    ).optional(),
+    'fit': enumNameCodec(StackFit.values).optional(),
+    'textDirection': enumNameCodec(TextDirection.values).optional(),
+    'stackClipBehavior': enumNameCodec(Clip.values).optional(),
     'modifiers': modifierConfigCodec().optional(),
     'animation': animationConfigCodec(registry: registry).optional(),
   }).codec<StackBoxStyler>(
@@ -52,7 +45,7 @@ AckSchema<JsonMap, StackBoxStyler> stackBoxStylerCodec({
 }
 
 JsonMap _encodeStackBoxStyler(StackBoxStyler value) {
-  _failIfPresent(value.$variants, 'variants');
+  failIfPresent(value.$variants, 'variants');
 
   final box = singleMixProp<BoxStyler, StyleSpec<BoxSpec>>(value.$box, 'box');
   final stack = singleMixProp<StackStyler, StyleSpec<StackSpec>>(
@@ -75,13 +68,4 @@ JsonMap _encodeStackBoxStyler(StackBoxStyler value) {
     'modifiers': value.$modifier,
     'animation': value.$animation,
   };
-}
-
-void _failIfPresent(Object? value, String fieldName) {
-  if (value == null) return;
-
-  throw UnsupportedEncodeValueError(
-    value,
-    'Field "$fieldName" is not representable by this schema.',
-  );
 }

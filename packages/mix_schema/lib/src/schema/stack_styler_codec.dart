@@ -2,7 +2,6 @@ import 'package:ack/ack.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-import '../errors/mix_schema_error.dart';
 import '../registry/registry.dart';
 import 'animation_codec.dart';
 import 'common_codecs.dart';
@@ -13,12 +12,9 @@ AckSchema<JsonMap, StackStyler> stackStylerCodec({
 }) {
   return Ack.object({
     'alignment': alignmentCodec().optional(),
-    'fit': enumNameCodec(StackFit.values, debugName: 'StackFit').optional(),
-    'textDirection': enumNameCodec(
-      TextDirection.values,
-      debugName: 'TextDirection',
-    ).optional(),
-    'clipBehavior': enumNameCodec(Clip.values, debugName: 'Clip').optional(),
+    'fit': enumNameCodec(StackFit.values).optional(),
+    'textDirection': enumNameCodec(TextDirection.values).optional(),
+    'clipBehavior': enumNameCodec(Clip.values).optional(),
     'modifiers': modifierConfigCodec().optional(),
     'animation': animationConfigCodec(registry: registry).optional(),
   }).codec<StackStyler>(
@@ -38,7 +34,7 @@ JsonMap encodeStackStylerFields(
   StackStyler value, {
   bool includeStylerMetadata = true,
 }) {
-  _failIfPresent(value.$variants, 'variants');
+  failIfPresent(value.$variants, 'variants');
 
   final encoded = {
     'alignment': singleAlignmentProp(value.$alignment, 'alignment'),
@@ -54,13 +50,4 @@ JsonMap encodeStackStylerFields(
   return Map<String, Object?>.from(encoded)
     ..remove('modifiers')
     ..remove('animation');
-}
-
-void _failIfPresent(Object? value, String fieldName) {
-  if (value == null) return;
-
-  throw UnsupportedEncodeValueError(
-    value,
-    'Field "$fieldName" is not representable by this schema.',
-  );
 }

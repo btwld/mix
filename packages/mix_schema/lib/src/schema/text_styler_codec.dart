@@ -2,7 +2,6 @@ import 'package:ack/ack.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-import '../errors/mix_schema_error.dart';
 import '../registry/registry.dart';
 import 'animation_codec.dart';
 import 'common_codecs.dart';
@@ -40,13 +39,13 @@ AckSchema<JsonMap, TextStyler> textStylerCodec({
 }
 
 JsonMap _encodeTextStyler(TextStyler value) {
-  _failIfPresent(value.$strutStyle, 'strutStyle');
-  _failIfPresent(value.$textScaler, 'textScaler');
-  _failIfPresent(value.$textWidthBasis, 'textWidthBasis');
-  _failIfPresent(value.$textHeightBehavior, 'textHeightBehavior');
-  _failIfPresent(value.$textDirectives, 'textDirectives');
-  _failIfPresent(value.$locale, 'locale');
-  _failIfPresent(value.$variants, 'variants');
+  failIfPresent(value.$strutStyle, 'strutStyle');
+  failIfPresent(value.$textScaler, 'textScaler');
+  failIfPresent(value.$textWidthBasis, 'textWidthBasis');
+  failIfPresent(value.$textHeightBehavior, 'textHeightBehavior');
+  failIfPresent(value.$textDirectives, 'textDirectives');
+  failIfPresent(value.$locale, 'locale');
+  failIfPresent(value.$variants, 'variants');
 
   return {
     'overflow': singleValueProp(value.$overflow, 'overflow'),
@@ -98,15 +97,15 @@ CodecSchema<JsonMap, TextStyleMix> textStyleMixCodec() {
 }
 
 JsonMap _encodeTextStyle(TextStyleMix value) {
-  _failIfPresent(value.$debugLabel, 'style.debugLabel');
-  _failIfPresent(value.$textBaseline, 'style.textBaseline');
-  _failIfPresent(value.$foreground, 'style.foreground');
-  _failIfPresent(value.$background, 'style.background');
-  _failIfPresent(value.$inherit, 'style.inherit');
-  _failIfPresent(value.$fontFamilyFallback, 'style.fontFamilyFallback');
-  _failIfPresent(value.$fontFeatures, 'style.fontFeatures');
-  _failIfPresent(value.$fontVariations, 'style.fontVariations');
-  _failIfPresent(value.$shadows, 'style.shadows');
+  failIfPresent(value.$debugLabel, 'style.debugLabel');
+  failIfPresent(value.$textBaseline, 'style.textBaseline');
+  failIfPresent(value.$foreground, 'style.foreground');
+  failIfPresent(value.$background, 'style.background');
+  failIfPresent(value.$inherit, 'style.inherit');
+  failIfPresent(value.$fontFamilyFallback, 'style.fontFamilyFallback');
+  failIfPresent(value.$fontFeatures, 'style.fontFeatures');
+  failIfPresent(value.$fontVariations, 'style.fontVariations');
+  failIfPresent(value.$shadows, 'style.shadows');
 
   return {
     'color': singleValueProp(value.$color, 'style.color'),
@@ -205,13 +204,4 @@ CodecSchema<String, TextDecorationStyle> textDecorationStyleCodec() {
     'dashed': TextDecorationStyle.dashed,
     'wavy': TextDecorationStyle.wavy,
   }, debugName: 'TextDecorationStyle');
-}
-
-void _failIfPresent(Object? value, String fieldName) {
-  if (value == null) return;
-
-  throw UnsupportedEncodeValueError(
-    value,
-    'Field "$fieldName" is not representable by this schema.',
-  );
 }

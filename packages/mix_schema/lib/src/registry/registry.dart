@@ -23,12 +23,14 @@ final class RegistryBuilder {
   final Map<MixSchemaScope, Map<String, Object>> _values = {
     for (final scope in MixSchemaScope.values) scope: <String, Object>{},
   };
+  bool _isFrozen = false;
 
   RegistryBuilder register<T extends Object>(
     MixSchemaScope scope,
     String id,
     T value,
   ) {
+    _ensureMutable();
     if (!isValidRegistryId(id)) {
       throw ArgumentError.value(id, 'id', 'Invalid mix_schema registry id.');
     }
@@ -54,10 +56,22 @@ final class RegistryBuilder {
   }
 
   FrozenRegistry freeze() {
-    return FrozenRegistry._({
+    _ensureMutable();
+    _isFrozen = true;
+    final values = <MixSchemaScope, Map<String, Object>>{
       for (final entry in _values.entries)
-        entry.key: Map.unmodifiable(entry.value),
-    });
+        entry.key: Map<String, Object>.unmodifiable(entry.value),
+    };
+
+    return FrozenRegistry._(
+      Map<MixSchemaScope, Map<String, Object>>.unmodifiable(values),
+    );
+  }
+
+  void _ensureMutable() {
+    if (_isFrozen) {
+      throw StateError('RegistryBuilder cannot be used after freeze.');
+    }
   }
 }
 

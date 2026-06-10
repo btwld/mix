@@ -2,7 +2,6 @@ import 'package:ack/ack.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-import '../errors/mix_schema_error.dart';
 import '../registry/registry.dart';
 import 'animation_codec.dart';
 import 'box_styler_codec.dart';
@@ -18,37 +17,16 @@ AckSchema<JsonMap, FlexBoxStyler> flexBoxStylerCodec({
     'padding': edgeInsetsCodec().optional(),
     'margin': edgeInsetsCodec().optional(),
     'constraints': boxConstraintsCodec().optional(),
-    'clipBehavior': enumNameCodec(Clip.values, debugName: 'Clip').optional(),
+    'clipBehavior': enumNameCodec(Clip.values).optional(),
     'decoration': boxDecorationCodec().optional(),
-    'direction': enumNameCodec(Axis.values, debugName: 'Axis').optional(),
-    'mainAxisAlignment': enumNameCodec(
-      MainAxisAlignment.values,
-      debugName: 'MainAxisAlignment',
-    ).optional(),
-    'crossAxisAlignment': enumNameCodec(
-      CrossAxisAlignment.values,
-      debugName: 'CrossAxisAlignment',
-    ).optional(),
-    'mainAxisSize': enumNameCodec(
-      MainAxisSize.values,
-      debugName: 'MainAxisSize',
-    ).optional(),
-    'verticalDirection': enumNameCodec(
-      VerticalDirection.values,
-      debugName: 'VerticalDirection',
-    ).optional(),
-    'textDirection': enumNameCodec(
-      TextDirection.values,
-      debugName: 'TextDirection',
-    ).optional(),
-    'textBaseline': enumNameCodec(
-      TextBaseline.values,
-      debugName: 'TextBaseline',
-    ).optional(),
-    'flexClipBehavior': enumNameCodec(
-      Clip.values,
-      debugName: 'Clip',
-    ).optional(),
+    'direction': enumNameCodec(Axis.values).optional(),
+    'mainAxisAlignment': enumNameCodec(MainAxisAlignment.values).optional(),
+    'crossAxisAlignment': enumNameCodec(CrossAxisAlignment.values).optional(),
+    'mainAxisSize': enumNameCodec(MainAxisSize.values).optional(),
+    'verticalDirection': enumNameCodec(VerticalDirection.values).optional(),
+    'textDirection': enumNameCodec(TextDirection.values).optional(),
+    'textBaseline': enumNameCodec(TextBaseline.values).optional(),
+    'flexClipBehavior': enumNameCodec(Clip.values).optional(),
     'spacing': numberAsDoubleCodec().optional(),
     'modifiers': modifierConfigCodec().optional(),
     'animation': animationConfigCodec(registry: registry).optional(),
@@ -77,7 +55,7 @@ AckSchema<JsonMap, FlexBoxStyler> flexBoxStylerCodec({
 }
 
 JsonMap _encodeFlexBoxStyler(FlexBoxStyler value) {
-  _failIfPresent(value.$variants, 'variants');
+  failIfPresent(value.$variants, 'variants');
 
   final box = singleMixProp<BoxStyler, StyleSpec<BoxSpec>>(value.$box, 'box');
   final flex = singleMixProp<FlexStyler, StyleSpec<FlexSpec>>(
@@ -90,22 +68,15 @@ JsonMap _encodeFlexBoxStyler(FlexBoxStyler value) {
   final flexFields = flex == null
       ? <String, Object?>{}
       : encodeFlexStylerFields(flex, includeStylerMetadata: false);
+  final boxClipBehavior = boxFields.remove('clipBehavior');
+  final flexClipBehavior = flexFields.remove('clipBehavior');
 
   return {
     ...boxFields,
     ...flexFields,
-    'clipBehavior': boxFields['clipBehavior'],
-    'flexClipBehavior': flexFields['clipBehavior'],
+    'clipBehavior': boxClipBehavior,
+    'flexClipBehavior': flexClipBehavior,
     'modifiers': value.$modifier,
     'animation': value.$animation,
   };
-}
-
-void _failIfPresent(Object? value, String fieldName) {
-  if (value == null) return;
-
-  throw UnsupportedEncodeValueError(
-    value,
-    'Field "$fieldName" is not representable by this schema.',
-  );
 }

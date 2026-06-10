@@ -1,7 +1,16 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
-import 'package:mix_schema/src/errors/mix_schema_error.dart';
+import 'package:mix_schema/mix_schema.dart'
+    show
+        MixSchemaContractBuilder,
+        MixSchemaError,
+        MixSchemaErrorCode,
+        MixSchemaValidationFailure,
+        MixSchemaValidationResult,
+        MixSchemaValidationSuccess;
+import 'package:mix_schema/src/errors/mix_schema_error.dart'
+    show UnsupportedEncodeValueError;
 import 'package:mix_schema/src/schema/common_codecs.dart';
 
 void main() {
@@ -32,6 +41,30 @@ void main() {
     final result = colorCodec().safeParse('336699');
 
     expect(result.isFail, isTrue);
+  });
+
+  test('R-7 color channel bounds fail as constraint violations', () {
+    final contract = MixSchemaContractBuilder().builtIn().freeze();
+
+    for (final color in [
+      'rgb(999,0,0)',
+      'rgb(-1,0,0)',
+      'rgb(1000,0,0)',
+      'rgba(0,0,0,1.5)',
+      'rgba(0,0,0,-0.1)',
+    ]) {
+      final errors = _validationErrors(
+        contract.validate({
+          'type': 'box',
+          'decoration': {'color': color},
+        }),
+      );
+      final codes = errors.map((error) => error.code);
+
+      expect(codes, contains(MixSchemaErrorCode.constraintViolation));
+      expect(codes, isNot(contains(MixSchemaErrorCode.transformFailed)));
+      expect(codes, isNot(contains(MixSchemaErrorCode.unsupportedEncodeValue)));
+    }
   });
 
   test('R-4 alignment codec round-trips named and arbitrary alignments', () {
@@ -75,4 +108,11 @@ void main() {
       throwsA(isA<UnsupportedEncodeValueError>()),
     );
   });
+}
+
+List<MixSchemaError> _validationErrors(MixSchemaValidationResult result) {
+  return switch (result) {
+    MixSchemaValidationFailure(:final errors) => errors,
+    MixSchemaValidationSuccess() => fail('expected validation failure'),
+  };
 }

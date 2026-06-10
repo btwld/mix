@@ -125,43 +125,41 @@ AckSchema<JsonMap, VariantStyle<BoxSpec>> _breakpointVariantCodec(
   AckSchema<JsonMap, Object> rootStyleSchema,
 ) {
   return Ack.object({
-    'minWidth': numberAsDoubleCodec().optional(),
-    'maxWidth': numberAsDoubleCodec().optional(),
-    'style': rootStyleSchema,
-  }).codec<VariantStyle<BoxSpec>>(
-    decode: (data) {
-      final minWidth = data['minWidth'] as double?;
-      final maxWidth = data['maxWidth'] as double?;
-      if (minWidth == null && maxWidth == null) {
-        throw const UnsupportedEncodeValueError(
-          null,
-          'A context_breakpoint variant requires minWidth or maxWidth.',
-        );
-      }
+        'minWidth': numberAsDoubleCodec().optional(),
+        'maxWidth': numberAsDoubleCodec().optional(),
+        'style': rootStyleSchema,
+      })
+      .constrain(
+        const _BreakpointBoundsConstraint('context_breakpoint variant'),
+      )
+      .codec<VariantStyle<BoxSpec>>(
+        decode: (data) {
+          final minWidth = data['minWidth'] as double?;
+          final maxWidth = data['maxWidth'] as double?;
 
-      return VariantStyle<BoxSpec>(
-        ContextVariant.breakpoint(
-          Breakpoint(minWidth: minWidth, maxWidth: maxWidth),
-        ),
-        _boxStyle(data['style']!),
+          return VariantStyle<BoxSpec>(
+            ContextVariant.breakpoint(
+              Breakpoint(minWidth: minWidth, maxWidth: maxWidth),
+            ),
+            _boxStyle(data['style']!),
+          );
+        },
+        encode: (value) {
+          final breakpoint = _breakpointFromKey(value.variant.key);
+          if (breakpoint == null) {
+            throw UnsupportedEncodeValueError(
+              value.variant,
+              'Expected breakpoint context variant.',
+            );
+          }
+
+          return {
+            'minWidth': breakpoint.minWidth,
+            'maxWidth': breakpoint.maxWidth,
+            'style': value.value,
+          };
+        },
       );
-    },
-    encode: (value) {
-      final breakpoint = _breakpointFromKey(value.variant.key);
-      if (breakpoint == null) {
-        throw UnsupportedEncodeValueError(
-          value.variant,
-          'Expected breakpoint context variant.',
-        );
-      }
-
-      return {
-        'minWidth': breakpoint.minWidth,
-        'maxWidth': breakpoint.maxWidth,
-        'style': value.value,
-      };
-    },
-  );
 }
 
 AckSchema<JsonMap, VariantStyle<BoxSpec>> _notWidgetStateVariantCodec(
@@ -322,53 +320,42 @@ AckSchema<JsonMap, _ContextCondition> _contextConditionCodec() {
           ),
       'context_breakpoint':
           Ack.object({
-            'minWidth': numberAsDoubleCodec().optional(),
-            'maxWidth': numberAsDoubleCodec().optional(),
-          }).codec<_ContextCondition>(
-            decode: (data) {
-              final minWidth = data['minWidth'] as double?;
-              final maxWidth = data['maxWidth'] as double?;
-              if (minWidth == null && maxWidth == null) {
-                throw const UnsupportedEncodeValueError(
-                  null,
-                  'A breakpoint condition requires minWidth or maxWidth.',
-                );
-              }
+                'minWidth': numberAsDoubleCodec().optional(),
+                'maxWidth': numberAsDoubleCodec().optional(),
+              })
+              .constrain(
+                const _BreakpointBoundsConstraint('breakpoint condition'),
+              )
+              .codec<_ContextCondition>(
+                decode: (data) {
+                  final minWidth = data['minWidth'] as double?;
+                  final maxWidth = data['maxWidth'] as double?;
 
-              return _ContextCondition.breakpoint(
-                Breakpoint(minWidth: minWidth, maxWidth: maxWidth),
-              );
-            },
-            encode: (value) {
-              final breakpoint = value.breakpoint;
-              if (breakpoint == null) {
-                throw UnsupportedEncodeValueError(
-                  value,
-                  'Expected breakpoint condition.',
-                );
-              }
+                  return _ContextCondition.breakpoint(
+                    Breakpoint(minWidth: minWidth, maxWidth: maxWidth),
+                  );
+                },
+                encode: (value) {
+                  final breakpoint = value.breakpoint;
+                  if (breakpoint == null) {
+                    throw UnsupportedEncodeValueError(
+                      value,
+                      'Expected breakpoint condition.',
+                    );
+                  }
 
-              return {
-                'minWidth': breakpoint.minWidth,
-                'maxWidth': breakpoint.maxWidth,
-              };
-            },
-          ),
+                  return {
+                    'minWidth': breakpoint.minWidth,
+                    'maxWidth': breakpoint.maxWidth,
+                  };
+                },
+              ),
     },
   );
 }
 
 CodecSchema<String, WidgetState> _widgetStateCodec() {
-  return strictEnumCodec({
-    'hovered': WidgetState.hovered,
-    'focused': WidgetState.focused,
-    'pressed': WidgetState.pressed,
-    'dragged': WidgetState.dragged,
-    'selected': WidgetState.selected,
-    'scrolled_under': WidgetState.scrolledUnder,
-    'disabled': WidgetState.disabled,
-    'error': WidgetState.error,
-  }, debugName: 'WidgetState');
+  return strictEnumCodec(_widgetStateByWire, debugName: 'WidgetState');
 }
 
 CodecSchema<String, Brightness> _brightnessCodec() {
@@ -415,7 +402,7 @@ WidgetState? _notWidgetStateFromKey(String key) {
   return _widgetStateByWire[wire];
 }
 
-final Map<String, WidgetState> _widgetStateByWire = {
+const Map<String, WidgetState> _widgetStateByWire = {
   'hovered': WidgetState.hovered,
   'focused': WidgetState.focused,
   'pressed': WidgetState.pressed,
@@ -568,4 +555,25 @@ String _widgetStateWire(WidgetState state) {
   }
 
   throw UnsupportedEncodeValueError(state, 'Unknown widget state.');
+}
+
+final class _BreakpointBoundsConstraint extends Constraint<JsonMap>
+    with Validator<JsonMap> {
+  const _BreakpointBoundsConstraint(this.subject)
+    : super(
+        constraintKey: 'mix_schema_breakpoint_bounds',
+        description: 'Breakpoint variants require at least one width bound.',
+      );
+
+  final String subject;
+
+  @override
+  bool isValid(JsonMap value) {
+    return value['minWidth'] != null || value['maxWidth'] != null;
+  }
+
+  @override
+  String buildMessage(JsonMap value) {
+    return 'A $subject requires minWidth or maxWidth.';
+  }
 }
