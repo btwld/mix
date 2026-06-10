@@ -26,6 +26,8 @@ command:
 categories:
   flutter_projects: 
     - packages/mix
+    - packages/mix_schema
+    - packages/mix_tailwinds
     - packages/mix/example
     - packages/mix_lint_test
     - packages/annotations

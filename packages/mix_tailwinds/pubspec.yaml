@@ -1,6 +1,7 @@
 name: mix_tailwinds
 description: Tailwind-like class utilities mapped to Mix 2.0 stylers.
 version: 0.0.1-alpha.1
+publish_to: none
 homepage: https://github.com/btwld/mix
 repository: https://github.com/btwld/mix/tree/main/packages/mix_tailwinds
 
@@ -11,7 +12,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  mix: ^2.0.0-dev.5
+  mix:
+    path: ../mix
+  mix_schema:
+    path: ../mix_schema
 
 dev_dependencies:
   flutter_test:
