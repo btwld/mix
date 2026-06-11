@@ -96,7 +96,7 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
     } else {
       animationDriver.dispose();
       animationDriver = _createAnimationDriver(
-        config: config,
+        config: config ?? oldConfig,
         initialSpec: oldWidget.spec,
       );
     }
