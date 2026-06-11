@@ -170,6 +170,22 @@ class _BorderAccum {
   }
 }
 
+/// Co-evolving accumulator state threaded through the per-token classify
+/// phase of the flex/box orchestrators: the base gradient, the base border,
+/// and the per-variant borders all accumulate together across the token loop
+/// and are finalized together afterwards. Grouping them keeps the shared
+/// [TwParser._classifyTokens] helper within a small parameter budget.
+class _Accumulators {
+  _Accumulators()
+    : baseGradient = _GradientAccum(),
+      baseBorder = _BorderAccum(),
+      variantBorders = <String, _BorderAccum>{};
+
+  final _GradientAccum baseGradient;
+  final _BorderAccum baseBorder;
+  final Map<String, _BorderAccum> variantBorders;
+}
+
 // =============================================================================
 // Gradient Accumulator
 // =============================================================================
@@ -1478,17 +1494,27 @@ class TwParser {
     return _schemaPayload.encodeFlexPayload(_parseFlexDirect(classNames));
   }
 
-  FlexBoxStyler _parseFlexDirect(String classNames) {
-    final tokens = listTokens(classNames);
-
-    _transformTracker.clear();
-
-    var hasBaseFlex = false;
-    final baseBorder = _BorderAccum();
-    final baseGradient = _GradientAccum();
-    final variantBorders = <String, _BorderAccum>{};
-
-    var styler = FlexBoxStyler();
+  /// Shared per-token classify+accumulate phase for the flex and box
+  /// orchestrators.
+  ///
+  /// For each token: classify into gradient / border / else. Gradient and
+  /// border tokens accumulate into [accums] (rejecting border tokens whose
+  /// prefix is not a known variant via [onUnsupported]); everything else is
+  /// applied through [applyToken]. The (possibly updated) styler is returned.
+  ///
+  /// [onToken] is an optional hook invoked with each token's (prefix, base)
+  /// BEFORE classification — flex uses it to track whether a base flex token
+  /// is present, keeping that flex-only concern explicit at the call site
+  /// rather than hidden behind a flag inside this shared loop.
+  S _classifyTokens<S>(
+    List<String> tokens,
+    S styler,
+    _Accumulators accums,
+    Map<String, _VariantApplier<S>> variants,
+    S Function(S styler, String token) applyToken, {
+    void Function(String prefix, String base)? onToken,
+  }) {
+    var result = styler;
 
     for (final token in tokens) {
       // Use bracket-aware colon finding to handle arbitrary values like bg-[color:red]
@@ -1496,36 +1522,58 @@ class TwParser {
       final prefix = colonIndex > 0 ? token.substring(0, colonIndex) : '';
       final base = colonIndex > 0 ? token.substring(colonIndex + 1) : token;
 
-      // Track base flex
-      if (prefix.isEmpty &&
-          (base == 'flex' || base == 'flex-row' || base == 'flex-col')) {
-        hasBaseFlex = true;
-      }
+      onToken?.call(prefix, base);
 
       // Accumulate gradient tokens
       if (_isGradientToken(base)) {
         if (prefix.isEmpty) {
-          _accumulateGradient(baseGradient, base, config);
+          _accumulateGradient(accums.baseGradient, base, config);
         }
         continue;
       }
 
       // Accumulate border tokens
       if (_isBorderToken(base, config)) {
-        if (!_hasOnlyKnownPrefixParts(prefix, _flexVariants)) {
+        if (!_hasOnlyKnownPrefixParts(prefix, variants)) {
           onUnsupported?.call(token);
           continue;
         }
         final accum = prefix.isEmpty
-            ? baseBorder
-            : variantBorders.putIfAbsent(prefix, _BorderAccum.new);
+            ? accums.baseBorder
+            : accums.variantBorders.putIfAbsent(prefix, _BorderAccum.new);
         _accumulateBorder(accum, base, config);
         continue;
       }
 
       // Apply via resolver + applier
-      styler = _applyFlexToken(styler, token);
+      result = applyToken(result, token);
     }
+
+    return result;
+  }
+
+  FlexBoxStyler _parseFlexDirect(String classNames) {
+    final tokens = listTokens(classNames);
+
+    _transformTracker.clear();
+
+    var hasBaseFlex = false;
+    final accums = _Accumulators();
+
+    var styler = _classifyTokens(
+      tokens,
+      FlexBoxStyler(),
+      accums,
+      _flexVariants,
+      _applyFlexToken,
+      onToken: (prefix, base) {
+        // Track base flex (flex-only concern, kept explicit here).
+        if (prefix.isEmpty &&
+            (base == 'flex' || base == 'flex-row' || base == 'flex-col')) {
+          hasBaseFlex = true;
+        }
+      },
+    );
 
     // Default to column when only prefixed flex
     if (!hasBaseFlex) {
@@ -1533,7 +1581,9 @@ class TwParser {
     }
 
     // Apply accumulated gradient
-    final gradientMix = baseGradient.toGradientMix(config.gradientStrategy);
+    final gradientMix = accums.baseGradient.toGradientMix(
+      config.gradientStrategy,
+    );
     if (gradientMix != null) {
       styler = _carryTransforms(styler, styler.gradient(gradientMix));
     }
@@ -1543,8 +1593,8 @@ class TwParser {
       styler,
       _applyAccumulatedBorders(
         styler,
-        baseBorder,
-        variantBorders,
+        accums.baseBorder,
+        accums.variantBorders,
         variants: _flexVariants,
         newStyler: FlexBoxStyler.new,
         merge: (a, b) => a.merge(b),
@@ -1560,13 +1610,7 @@ class TwParser {
       ),
     );
 
-    final baseMatrix = _transformTracker.flush(styler);
-    if (baseMatrix != null) {
-      styler = _applyTransformMatrix(styler, baseMatrix);
-    }
-    _transformTracker.clear();
-
-    return styler;
+    return _flushBaseTransforms(styler);
   }
 
   BoxStyler parseBox(String classNames) {
@@ -1588,45 +1632,20 @@ class TwParser {
 
     _transformTracker.clear();
 
-    final baseBorder = _BorderAccum();
-    final baseGradient = _GradientAccum();
-    final variantBorders = <String, _BorderAccum>{};
+    final accums = _Accumulators();
 
-    var styler = BoxStyler();
-
-    for (final token in tokens) {
-      // Use bracket-aware colon finding to handle arbitrary values like bg-[color:red]
-      final colonIndex = _findFirstPrefixColon(token);
-      final prefix = colonIndex > 0 ? token.substring(0, colonIndex) : '';
-      final base = colonIndex > 0 ? token.substring(colonIndex + 1) : token;
-
-      // Accumulate gradient tokens
-      if (_isGradientToken(base)) {
-        if (prefix.isEmpty) {
-          _accumulateGradient(baseGradient, base, config);
-        }
-        continue;
-      }
-
-      // Accumulate border tokens
-      if (_isBorderToken(base, config)) {
-        if (!_hasOnlyKnownPrefixParts(prefix, _boxVariants)) {
-          onUnsupported?.call(token);
-          continue;
-        }
-        final accum = prefix.isEmpty
-            ? baseBorder
-            : variantBorders.putIfAbsent(prefix, _BorderAccum.new);
-        _accumulateBorder(accum, base, config);
-        continue;
-      }
-
-      // Apply via resolver + applier
-      styler = _applyBoxToken(styler, token);
-    }
+    var styler = _classifyTokens(
+      tokens,
+      BoxStyler(),
+      accums,
+      _boxVariants,
+      _applyBoxToken,
+    );
 
     // Apply accumulated gradient
-    final gradientMix = baseGradient.toGradientMix(config.gradientStrategy);
+    final gradientMix = accums.baseGradient.toGradientMix(
+      config.gradientStrategy,
+    );
     if (gradientMix != null) {
       styler = _carryTransforms(styler, styler.gradient(gradientMix));
     }
@@ -1636,8 +1655,8 @@ class TwParser {
       styler,
       _applyAccumulatedBorders(
         styler,
-        baseBorder,
-        variantBorders,
+        accums.baseBorder,
+        accums.variantBorders,
         variants: _boxVariants,
         newStyler: BoxStyler.new,
         merge: (a, b) => a.merge(b),
@@ -1653,13 +1672,7 @@ class TwParser {
       ),
     );
 
-    final baseMatrix = _transformTracker.flush(styler);
-    if (baseMatrix != null) {
-      styler = _applyTransformMatrix(styler, baseMatrix);
-    }
-    _transformTracker.clear();
-
-    return styler;
+    return _flushBaseTransforms(styler);
   }
 
   TextStyler parseText(String classNames) {
@@ -1803,6 +1816,20 @@ class TwParser {
     return _applyTransformMatrix(styler, matrix);
   }
 
+  /// Finalize-transforms phase shared by the flex and box orchestrators:
+  /// flush the accumulated base matrix onto [styler] (if any) and reset the
+  /// tracker for the next parse. Behavior matches the previous inlined tail.
+  S _flushBaseTransforms<S>(S styler) {
+    var result = styler;
+    final baseMatrix = _transformTracker.flush(styler);
+    if (baseMatrix != null) {
+      result = _applyTransformMatrix(styler, baseMatrix);
+    }
+    _transformTracker.clear();
+
+    return result;
+  }
+
   S _applyPrefixedToken<S>(
     S base,
     String token,
@@ -1822,7 +1849,7 @@ class TwParser {
 
     if (_isBreakpoint(head)) {
       final min = config.breakpointOf(head);
-      var childStyler = _applyPrefixedToken(
+      final childStyler = _applyPrefixedToken(
         newStyler(),
         tail,
         variants,
@@ -1830,27 +1857,16 @@ class TwParser {
         applyAtomic,
         applyBreakpoint,
       );
-      // Copy base transforms to child BEFORE flushing so variant gets both
-      // Use copyTo (not transfer) to preserve base transforms for final flush
-      _transformTracker.copyTo(base, childStyler);
-      // If child has transforms but base doesn't, mark base as needing identity for animation
-      final childHasTransforms = _transformTracker.hasTransforms(childStyler);
-      final baseHasTransforms = _transformTracker.hasTransforms(base);
-      if (childHasTransforms && !baseHasTransforms) {
-        _transformTracker.forStyler(base).needsIdentity = true;
-      }
-      childStyler = _flushTransforms(childStyler);
-      final result = applyBreakpoint(
+      return _applyChildWithTransforms(
         base,
-        Breakpoint(minWidth: min),
         childStyler,
+        (b, child) => applyBreakpoint(b, Breakpoint(minWidth: min), child),
       );
-      return _carryTransforms(base, result);
     }
 
     final variantFn = variants[head];
     if (variantFn != null) {
-      var childStyler = _applyPrefixedToken(
+      final childStyler = _applyPrefixedToken(
         newStyler(),
         tail,
         variants,
@@ -1858,21 +1874,40 @@ class TwParser {
         applyAtomic,
         applyBreakpoint,
       );
-      // Copy base transforms to child BEFORE flushing so variant gets both
-      // Use copyTo (not transfer) to preserve base transforms for final flush
-      _transformTracker.copyTo(base, childStyler);
-      // If child has transforms but base doesn't, mark base as needing identity for animation
-      final childHasTransforms = _transformTracker.hasTransforms(childStyler);
-      final baseHasTransforms = _transformTracker.hasTransforms(base);
-      if (childHasTransforms && !baseHasTransforms) {
-        _transformTracker.forStyler(base).needsIdentity = true;
-      }
-      childStyler = _flushTransforms(childStyler);
-      final result = variantFn(base, childStyler);
-      return _carryTransforms(base, result);
+      return _applyChildWithTransforms(base, childStyler, variantFn);
     }
 
     final result = applyAtomic(base, token);
+    return _carryTransforms(base, result);
+  }
+
+  /// Propagates accumulated transforms from [base] into a prefixed [child]
+  /// styler, then merges the child back into [base] via [combine].
+  ///
+  /// This is the shared propagation rule for breakpoint and variant children:
+  /// the ONLY difference between the two call sites is [combine] (breakpoint
+  /// wrap vs variant apply). Behavior is identical to the previous inlined
+  /// branches — copy base transforms to the child first (preserving base for
+  /// the final flush), mark the base as needing an identity matrix when the
+  /// child carries a transform but the base does not (so animations can
+  /// interpolate), flush the child's transform, then combine.
+  S _applyChildWithTransforms<S>(
+    S base,
+    S childStyler,
+    S Function(S base, S child) combine,
+  ) {
+    // Copy base transforms to child BEFORE flushing so variant gets both.
+    // Use copyTo (not transfer) to preserve base transforms for final flush.
+    _transformTracker.copyTo(base, childStyler);
+    // If child has transforms but base doesn't, mark base as needing identity
+    // for animation.
+    final childHasTransforms = _transformTracker.hasTransforms(childStyler);
+    final baseHasTransforms = _transformTracker.hasTransforms(base);
+    if (childHasTransforms && !baseHasTransforms) {
+      _transformTracker.forStyler(base).needsIdentity = true;
+    }
+    final flushedChild = _flushTransforms(childStyler);
+    final result = combine(base, flushedChild);
     return _carryTransforms(base, result);
   }
 
