@@ -40,6 +40,28 @@ CodecSchema<Object, Alignment> alignmentCodec() {
   );
 }
 
+CodecSchema<JsonMap, Offset> offsetCodec() {
+  return Ack.object({
+    'x': numberAsDoubleCodec(),
+    'y': numberAsDoubleCodec(),
+  }).codec<Offset>(
+    decode: (data) => Offset(data['x']! as double, data['y']! as double),
+    encode: (value) => {'x': value.dx, 'y': value.dy},
+  );
+}
+
+CodecSchema<List<num>, Matrix4> matrix4Codec() {
+  return Ack.list(numberAsDoubleCodec())
+      .refine(
+        (value) => value.length == 16,
+        message: 'Matrix4 payloads must contain exactly 16 numbers.',
+      )
+      .codec<Matrix4>(
+        decode: (value) => Matrix4.fromList(value),
+        encode: (value) => value.storage.toList(growable: false),
+      );
+}
+
 CodecSchema<Object, Radius> radiusCodec() {
   return Ack.codec<Object, Object, Radius>(
     input: Ack.anyOf([
@@ -51,6 +73,65 @@ CodecSchema<Object, Radius> radiusCodec() {
     ]),
     decode: _decodeRadius,
     encode: _encodeRadius,
+  );
+}
+
+CodecSchema<JsonMap, BorderSideMix> borderSideCodec() {
+  return Ack.object({
+    'color': colorCodec().optional(),
+    'width': numberAsDoubleCodec().optional(),
+    'style': strictEnumCodec({
+      'none': BorderStyle.none,
+      'solid': BorderStyle.solid,
+    }, debugName: 'BorderStyle').optional(),
+    'strokeAlign': numberAsDoubleCodec().optional(),
+  }).codec<BorderSideMix>(
+    decode: (data) => BorderSideMix(
+      color: data['color'] as Color?,
+      width: data['width'] as double?,
+      style: data['style'] as BorderStyle?,
+      strokeAlign: data['strokeAlign'] as double?,
+    ),
+    encode: (value) => {
+      'color': singleValueProp(value.$color, 'borderSide.color'),
+      'width': singleValueProp(value.$width, 'borderSide.width'),
+      'style': singleValueProp(value.$style, 'borderSide.style'),
+      'strokeAlign': singleValueProp(
+        value.$strokeAlign,
+        'borderSide.strokeAlign',
+      ),
+    },
+  );
+}
+
+CodecSchema<JsonMap, BorderMix> borderCodec() {
+  return Ack.object({
+    'top': borderSideCodec().optional(),
+    'right': borderSideCodec().optional(),
+    'bottom': borderSideCodec().optional(),
+    'left': borderSideCodec().optional(),
+  }).codec<BorderMix>(
+    decode: (data) => BorderMix(
+      top: data['top'] as BorderSideMix?,
+      right: data['right'] as BorderSideMix?,
+      bottom: data['bottom'] as BorderSideMix?,
+      left: data['left'] as BorderSideMix?,
+    ),
+    encode: (value) => {
+      'top': singleMixProp<BorderSideMix, BorderSide>(value.$top, 'border.top'),
+      'right': singleMixProp<BorderSideMix, BorderSide>(
+        value.$right,
+        'border.right',
+      ),
+      'bottom': singleMixProp<BorderSideMix, BorderSide>(
+        value.$bottom,
+        'border.bottom',
+      ),
+      'left': singleMixProp<BorderSideMix, BorderSide>(
+        value.$left,
+        'border.left',
+      ),
+    },
   );
 }
 
@@ -70,34 +151,108 @@ CodecSchema<Object, EdgeInsetsMix> edgeInsetsCodec() {
   );
 }
 
-CodecSchema<JsonMap, BoxConstraintsMix> boxConstraintsCodec() {
+CodecSchema<JsonMap, BoxShadowMix> boxShadowCodec() {
   return Ack.object({
-    'minWidth': nonNegativeDoubleCodec().nullable().optional(),
-    'maxWidth': nonNegativeDoubleCodec().nullable().optional(),
-    'minHeight': nonNegativeDoubleCodec().nullable().optional(),
-    'maxHeight': nonNegativeDoubleCodec().nullable().optional(),
-  }).codec<BoxConstraintsMix>(
-    decode: (data) => BoxConstraintsMix(
-      minWidth: _readOptionalConstraintBound(data, 'minWidth'),
-      maxWidth: _readOptionalConstraintBound(data, 'maxWidth'),
-      minHeight: _readOptionalConstraintBound(data, 'minHeight'),
-      maxHeight: _readOptionalConstraintBound(data, 'maxHeight'),
+    'color': colorCodec().optional(),
+    'offset': offsetCodec().optional(),
+    'blurRadius': numberAsDoubleCodec().optional(),
+    'spreadRadius': numberAsDoubleCodec().optional(),
+  }).codec<BoxShadowMix>(
+    decode: (data) => BoxShadowMix(
+      color: data['color'] as Color?,
+      offset: data['offset'] as Offset?,
+      blurRadius: data['blurRadius'] as double?,
+      spreadRadius: data['spreadRadius'] as double?,
     ),
     encode: (value) => {
-      'minWidth': _encodeConstraintBound(
-        singleValueProp(value.$minWidth, 'minWidth'),
-      ),
-      'maxWidth': _encodeConstraintBound(
-        singleValueProp(value.$maxWidth, 'maxWidth'),
-      ),
-      'minHeight': _encodeConstraintBound(
-        singleValueProp(value.$minHeight, 'minHeight'),
-      ),
-      'maxHeight': _encodeConstraintBound(
-        singleValueProp(value.$maxHeight, 'maxHeight'),
+      'color': singleValueProp(value.$color, 'boxShadow.color'),
+      'offset': singleValueProp(value.$offset, 'boxShadow.offset'),
+      'blurRadius': singleValueProp(value.$blurRadius, 'boxShadow.blurRadius'),
+      'spreadRadius': singleValueProp(
+        value.$spreadRadius,
+        'boxShadow.spreadRadius',
       ),
     },
   );
+}
+
+CodecSchema<JsonMap, ShadowMix> shadowCodec() {
+  return Ack.object({
+    'color': colorCodec().optional(),
+    'offset': offsetCodec().optional(),
+    'blurRadius': numberAsDoubleCodec().optional(),
+  }).codec<ShadowMix>(
+    decode: (data) => ShadowMix(
+      color: data['color'] as Color?,
+      offset: data['offset'] as Offset?,
+      blurRadius: data['blurRadius'] as double?,
+    ),
+    encode: (value) => {
+      'color': singleValueProp(value.$color, 'shadow.color'),
+      'offset': singleValueProp(value.$offset, 'shadow.offset'),
+      'blurRadius': singleValueProp(value.$blurRadius, 'shadow.blurRadius'),
+    },
+  );
+}
+
+CodecSchema<JsonMap, TextHeightBehaviorMix> textHeightBehaviorCodec() {
+  return Ack.object({
+    'applyHeightToFirstAscent': Ack.boolean().optional(),
+    'applyHeightToLastDescent': Ack.boolean().optional(),
+    'leadingDistribution': enumNameCodec(
+      TextLeadingDistribution.values,
+    ).optional(),
+  }).codec<TextHeightBehaviorMix>(
+    decode: (data) => TextHeightBehaviorMix(
+      applyHeightToFirstAscent: data['applyHeightToFirstAscent'] as bool?,
+      applyHeightToLastDescent: data['applyHeightToLastDescent'] as bool?,
+      leadingDistribution:
+          data['leadingDistribution'] as TextLeadingDistribution?,
+    ),
+    encode: (value) => {
+      'applyHeightToFirstAscent': singleValueProp(
+        value.$applyHeightToFirstAscent,
+        'textHeightBehavior.applyHeightToFirstAscent',
+      ),
+      'applyHeightToLastDescent': singleValueProp(
+        value.$applyHeightToLastDescent,
+        'textHeightBehavior.applyHeightToLastDescent',
+      ),
+      'leadingDistribution': singleValueProp(
+        value.$leadingDistribution,
+        'textHeightBehavior.leadingDistribution',
+      ),
+    },
+  );
+}
+
+CodecSchema<String, Directive<String>> textDirectiveCodec() {
+  return strictEnumCodec({
+    'uppercase': const UppercaseStringDirective(),
+    'lowercase': const LowercaseStringDirective(),
+    'capitalize': const CapitalizeStringDirective(),
+    'title_case': const TitleCaseStringDirective(),
+    'sentence_case': const SentenceCaseStringDirective(),
+  }, debugName: 'TextDirective');
+}
+
+CodecSchema<JsonMap, BoxConstraintsMix> boxConstraintsCodec() {
+  return Ack.object({
+        'minWidth': nonNegativeDoubleCodec().optional(),
+        'maxWidth': nonNegativeDoubleCodec().nullable().optional(),
+        'minHeight': nonNegativeDoubleCodec().optional(),
+        'maxHeight': nonNegativeDoubleCodec().nullable().optional(),
+      })
+      .constrain(const _BoxConstraintsBoundsConstraint())
+      .codec<BoxConstraintsMix>(
+        decode: (data) => BoxConstraintsMix(
+          minWidth: _readOptionalMinConstraintBound(data, 'minWidth'),
+          maxWidth: _readOptionalMaxConstraintBound(data, 'maxWidth'),
+          minHeight: _readOptionalMinConstraintBound(data, 'minHeight'),
+          maxHeight: _readOptionalMaxConstraintBound(data, 'maxHeight'),
+        ),
+        encode: _encodeBoxConstraintsMix,
+      );
 }
 
 CodecSchema<Object, BorderRadiusMix> borderRadiusCodec() {
@@ -371,19 +526,58 @@ Object _encodeEdgeInsetsMix(EdgeInsetsMix value) {
   );
 }
 
-double? _readOptionalConstraintBound(JsonMap data, String key) {
+double? _readOptionalMinConstraintBound(JsonMap data, String key) {
   if (!data.containsKey(key)) return null;
 
-  final value = data[key];
-  if (value == null) return double.infinity;
-
-  return value as double;
+  return data[key] as double;
 }
 
-double? _encodeConstraintBound(double? value) {
-  if (value == null) return null;
+double? _readOptionalMaxConstraintBound(JsonMap data, String key) {
+  if (!data.containsKey(key)) return null;
 
+  return data[key] == null ? double.infinity : data[key] as double;
+}
+
+JsonMap _encodeBoxConstraintsMix(BoxConstraintsMix value) {
+  final minWidth = singleValueProp(value.$minWidth, 'minWidth');
+  final maxWidth = singleValueProp(value.$maxWidth, 'maxWidth');
+  final minHeight = singleValueProp(value.$minHeight, 'minHeight');
+  final maxHeight = singleValueProp(value.$maxHeight, 'maxHeight');
+
+  _assertEncodableConstraintBounds(minWidth, maxWidth, 'width');
+  _assertEncodableConstraintBounds(minHeight, maxHeight, 'height');
+
+  return {
+    if (minWidth != null) 'minWidth': _encodeMinConstraintBound(minWidth),
+    if (maxWidth != null) 'maxWidth': _encodeMaxConstraintBound(maxWidth),
+    if (minHeight != null) 'minHeight': _encodeMinConstraintBound(minHeight),
+    if (maxHeight != null) 'maxHeight': _encodeMaxConstraintBound(maxHeight),
+  };
+}
+
+double _encodeMinConstraintBound(double value) {
+  if (value == double.infinity) {
+    throw UnsupportedEncodeValueError(
+      value,
+      'Minimum constraint bounds cannot be unbounded.',
+    );
+  }
+
+  return value;
+}
+
+double? _encodeMaxConstraintBound(double value) {
   return value == double.infinity ? null : value;
+}
+
+void _assertEncodableConstraintBounds(double? min, double? max, String axis) {
+  if (min == null || max == null || max == double.infinity) return;
+  if (min <= max) return;
+
+  throw UnsupportedEncodeValueError({
+    'min': min,
+    'max': max,
+  }, 'Minimum $axis constraint must be less than or equal to maximum $axis.');
 }
 
 BorderRadiusMix _decodeBorderRadiusMix(Object value) {
@@ -437,4 +631,34 @@ final class _PredicateConstraint<T extends Object> extends Constraint<T>
 
   @override
   String buildMessage(T value) => message;
+}
+
+final class _BoxConstraintsBoundsConstraint extends Constraint<JsonMap>
+    with Validator<JsonMap> {
+  const _BoxConstraintsBoundsConstraint()
+    : super(
+        constraintKey: 'mix_schema_box_constraints_bounds',
+        description:
+            'Box constraint minimum bounds must not exceed maximum bounds.',
+      );
+
+  @override
+  bool isValid(JsonMap value) {
+    return _isAxisValid(value, 'minWidth', 'maxWidth') &&
+        _isAxisValid(value, 'minHeight', 'maxHeight');
+  }
+
+  @override
+  String buildMessage(JsonMap value) {
+    return 'Minimum box constraint bounds must be less than or equal to '
+        'their maximum bounds.';
+  }
+
+  static bool _isAxisValid(JsonMap value, String minKey, String maxKey) {
+    final min = value[minKey] as double?;
+    final max = value[maxKey] as double?;
+    if (min == null || max == null) return true;
+
+    return min <= max;
+  }
 }

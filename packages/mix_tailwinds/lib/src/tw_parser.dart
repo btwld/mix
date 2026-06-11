@@ -2,9 +2,11 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
+import 'package:mix_schema/mix_schema.dart';
 
 import 'tw_config.dart';
 import 'tw_semantic.dart';
+import 'tw_schema_payload.dart';
 import 'tw_utils.dart';
 
 typedef TokenWarningCallback = void Function(String token);
@@ -1378,6 +1380,9 @@ TextStyler _applyPropertyToText(
     TwProperty.fontWeight => styler.fontWeight(
       (value as TwEnumValue<FontWeight>).value,
     ),
+    TwProperty.textAlign => styler.textAlign(
+      (value as TwEnumValue<TextAlign>).value,
+    ),
     TwProperty.textShadow => _applyTextShadow(styler, value),
     TwProperty.lineHeight => styler.height((value as TwLengthValue).value),
     TwProperty.letterSpacing => styler.letterSpacing(
@@ -1413,7 +1418,16 @@ class TwParser {
   }
 
   TwParser._({required this.config, this.onUnsupported})
-    : _resolver = TwResolver(config, onUnknownVariant: onUnsupported);
+    : _resolver = TwResolver(config, onUnknownVariant: onUnsupported) {
+    _schemaPayload = TwSchemaPayloadBuilder(
+      config: config,
+      listTokens: listTokens,
+      resolveToken: _resolver.resolveToken,
+      isBoxLikeDirectOnlyPayloadToken: _isBoxLikeDirectOnlyPayloadToken,
+      isAnimationToken: _isAnimationToken,
+      resolveTextShadowMixes: _resolveTextShadowMixes,
+    );
+  }
 
   /// Pre-compiled regex for splitting class names by whitespace.
   static final _whitespaceRegex = RegExp(r'\s+');
@@ -1421,6 +1435,7 @@ class TwParser {
   final TwConfig config;
   final TokenWarningCallback? onUnsupported;
   final TwResolver _resolver;
+  late final TwSchemaPayloadBuilder _schemaPayload;
   final _TransformAccumTracker _transformTracker = _TransformAccumTracker();
 
   List<String> listTokens(String classNames) {
@@ -1450,6 +1465,20 @@ class TwParser {
   }
 
   FlexBoxStyler parseFlex(String classNames) {
+    final payload = _schemaPayload.tryBuildFlexPayload(classNames);
+    if (payload == null) return _parseFlexDirect(classNames);
+
+    return _schemaPayload.decodePayload<FlexBoxStyler>(payload);
+  }
+
+  JsonMap parseFlexPayload(String classNames) {
+    final payload = _schemaPayload.tryBuildFlexPayload(classNames);
+    if (payload != null) return payload;
+
+    return _schemaPayload.encodeFlexPayload(_parseFlexDirect(classNames));
+  }
+
+  FlexBoxStyler _parseFlexDirect(String classNames) {
     final tokens = listTokens(classNames);
 
     _transformTracker.clear();
@@ -1541,6 +1570,20 @@ class TwParser {
   }
 
   BoxStyler parseBox(String classNames) {
+    final payload = _schemaPayload.tryBuildBoxPayload(classNames);
+    if (payload == null) return _parseBoxDirect(classNames);
+
+    return _schemaPayload.decodePayload<BoxStyler>(payload);
+  }
+
+  JsonMap parseBoxPayload(String classNames) {
+    final payload = _schemaPayload.tryBuildBoxPayload(classNames);
+    if (payload != null) return payload;
+
+    return _schemaPayload.encodeBoxPayload(_parseBoxDirect(classNames));
+  }
+
+  BoxStyler _parseBoxDirect(String classNames) {
     final tokens = listTokens(classNames);
 
     _transformTracker.clear();
@@ -1620,11 +1663,29 @@ class TwParser {
   }
 
   TextStyler parseText(String classNames) {
+    final payload = _schemaPayload.tryBuildTextPayload(classNames);
+    if (payload == null) return _parseTextDirect(classNames);
+
+    return _schemaPayload.decodePayload<TextStyler>(payload);
+  }
+
+  JsonMap parseTextPayload(String classNames) {
+    final payload = _schemaPayload.tryBuildTextPayload(classNames);
+    if (payload != null) return payload;
+
+    return _schemaPayload.encodeTextPayload(_parseTextDirect(classNames));
+  }
+
+  TextStyler _parseTextDirect(String classNames) {
     var styler = TextStyler().height(config.textDefaults.lineHeight);
     for (final token in listTokens(classNames)) {
       styler = _applyTextToken(styler, token);
     }
     return styler;
+  }
+
+  bool _isBoxLikeDirectOnlyPayloadToken(String token) {
+    return _isGradientToken(token) || _isBorderToken(token, config);
   }
 
   CurveAnimationConfig? parseAnimationFromTokens(List<String> tokens) {

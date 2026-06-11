@@ -19,6 +19,8 @@ AckSchema<JsonMap, TextStyler> textStylerCodec({
     'softWrap': Ack.boolean().optional(),
     'selectionColor': colorCodec().optional(),
     'semanticsLabel': Ack.string().optional(),
+    'textHeightBehavior': textHeightBehaviorCodec().optional(),
+    'textDirectives': Ack.list(textDirectiveCodec()).optional(),
     'modifiers': modifierConfigCodec().optional(),
     'animation': animationConfigCodec(registry: registry).optional(),
   }).codec<TextStyler>(
@@ -31,6 +33,8 @@ AckSchema<JsonMap, TextStyler> textStylerCodec({
       softWrap: data['softWrap'] as bool?,
       selectionColor: data['selectionColor'] as Color?,
       semanticsLabel: data['semanticsLabel'] as String?,
+      textHeightBehavior: data['textHeightBehavior'] as TextHeightBehaviorMix?,
+      textDirectives: data['textDirectives'] as List<Directive<String>>?,
       modifier: data['modifiers'] as WidgetModifierConfig?,
       animation: data['animation'] as AnimationConfig?,
     ),
@@ -42,8 +46,6 @@ JsonMap _encodeTextStyler(TextStyler value) {
   failIfPresent(value.$strutStyle, 'strutStyle');
   failIfPresent(value.$textScaler, 'textScaler');
   failIfPresent(value.$textWidthBasis, 'textWidthBasis');
-  failIfPresent(value.$textHeightBehavior, 'textHeightBehavior');
-  failIfPresent(value.$textDirectives, 'textDirectives');
   failIfPresent(value.$locale, 'locale');
   failIfPresent(value.$variants, 'variants');
 
@@ -56,6 +58,12 @@ JsonMap _encodeTextStyler(TextStyler value) {
     'softWrap': singleValueProp(value.$softWrap, 'softWrap'),
     'selectionColor': singleValueProp(value.$selectionColor, 'selectionColor'),
     'semanticsLabel': singleValueProp(value.$semanticsLabel, 'semanticsLabel'),
+    'textHeightBehavior':
+        singleMixProp<TextHeightBehaviorMix, TextHeightBehavior>(
+          value.$textHeightBehavior,
+          'textHeightBehavior',
+        ),
+    'textDirectives': value.$textDirectives,
     'modifiers': value.$modifier,
     'animation': value.$animation,
   };
@@ -76,6 +84,7 @@ CodecSchema<JsonMap, TextStyleMix> textStyleMixCodec() {
     'decorationColor': colorCodec().optional(),
     'decorationStyle': textDecorationStyleCodec().optional(),
     'decorationThickness': numberAsDoubleCodec().optional(),
+    'shadows': Ack.list(shadowCodec()).optional(),
   }).codec<TextStyleMix>(
     decode: (data) => TextStyleMix(
       color: data['color'] as Color?,
@@ -91,6 +100,7 @@ CodecSchema<JsonMap, TextStyleMix> textStyleMixCodec() {
       decorationColor: data['decorationColor'] as Color?,
       decorationStyle: data['decorationStyle'] as TextDecorationStyle?,
       decorationThickness: data['decorationThickness'] as double?,
+      shadows: data['shadows'] as List<ShadowMix>?,
     ),
     encode: _encodeTextStyle,
   );
@@ -105,7 +115,6 @@ JsonMap _encodeTextStyle(TextStyleMix value) {
   failIfPresent(value.$fontFamilyFallback, 'style.fontFamilyFallback');
   failIfPresent(value.$fontFeatures, 'style.fontFeatures');
   failIfPresent(value.$fontVariations, 'style.fontVariations');
-  failIfPresent(value.$shadows, 'style.shadows');
 
   return {
     'color': singleValueProp(value.$color, 'style.color'),
@@ -136,7 +145,17 @@ JsonMap _encodeTextStyle(TextStyleMix value) {
       value.$decorationThickness,
       'style.decorationThickness',
     ),
+    'shadows': _singleShadowList(value),
   };
+}
+
+List<ShadowMix>? _singleShadowList(TextStyleMix value) {
+  final shadows = singleMixProp<ShadowListMix, List<Shadow>>(
+    value.$shadows,
+    'style.shadows',
+  );
+
+  return shadows?.items;
 }
 
 CodecSchema<String, TextOverflow> textOverflowCodec() {

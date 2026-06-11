@@ -18,6 +18,8 @@ AckSchema<JsonMap, BoxStyler> boxStylerCodec({
     'margin': edgeInsetsCodec().optional(),
     'constraints': boxConstraintsCodec().optional(),
     'clipBehavior': enumNameCodec(Clip.values).optional(),
+    'transform': matrix4Codec().optional(),
+    'transformAlignment': alignmentCodec().optional(),
     'decoration': boxDecorationCodec().optional(),
     if (rootStyleSchema != null)
       'variants': Ack.list(
@@ -32,6 +34,8 @@ AckSchema<JsonMap, BoxStyler> boxStylerCodec({
       margin: data['margin'] as EdgeInsetsMix?,
       constraints: data['constraints'] as BoxConstraintsMix?,
       clipBehavior: data['clipBehavior'] as Clip?,
+      transform: data['transform'] as Matrix4?,
+      transformAlignment: data['transformAlignment'] as Alignment?,
       decoration: data['decoration'] as BoxDecorationMix?,
       variants: data['variants'] as List<VariantStyle<BoxSpec>>?,
       modifier: data['modifiers'] as WidgetModifierConfig?,
@@ -46,9 +50,6 @@ JsonMap encodeBoxStylerFields(
   bool includeStylerMetadata = true,
 }) {
   failIfPresent(value.$foregroundDecoration, 'foregroundDecoration');
-  failIfPresent(value.$transform, 'transform');
-  failIfPresent(value.$transformAlignment, 'transformAlignment');
-
   final encoded = {
     'alignment': singleAlignmentProp(value.$alignment, 'alignment'),
     'padding': singleMixProp<EdgeInsetsMix, EdgeInsetsGeometry>(
@@ -64,6 +65,11 @@ JsonMap encodeBoxStylerFields(
       'constraints',
     ),
     'clipBehavior': singleValueProp(value.$clipBehavior, 'clipBehavior'),
+    'transform': singleValueProp(value.$transform, 'transform'),
+    'transformAlignment': singleAlignmentProp(
+      value.$transformAlignment,
+      'transformAlignment',
+    ),
     'decoration': singleMixProp<BoxDecorationMix, Decoration>(
       value.$decoration,
       'decoration',
@@ -82,21 +88,52 @@ JsonMap encodeBoxStylerFields(
 }
 
 CodecSchema<JsonMap, BoxDecorationMix> boxDecorationCodec() {
-  return Ack.object({'color': colorCodec().optional()}).codec<BoxDecorationMix>(
-    decode: (data) => BoxDecorationMix(color: data['color'] as Color?),
+  return Ack.object({
+    'color': colorCodec().optional(),
+    'border': borderCodec().optional(),
+    'borderRadius': borderRadiusCodec().optional(),
+    'shape': enumNameCodec(BoxShape.values).optional(),
+    'backgroundBlendMode': enumNameCodec(BlendMode.values).optional(),
+    'boxShadow': Ack.list(boxShadowCodec()).optional(),
+  }).codec<BoxDecorationMix>(
+    decode: (data) => BoxDecorationMix(
+      color: data['color'] as Color?,
+      border: data['border'] as BorderMix?,
+      borderRadius: data['borderRadius'] as BorderRadiusMix?,
+      shape: data['shape'] as BoxShape?,
+      backgroundBlendMode: data['backgroundBlendMode'] as BlendMode?,
+      boxShadow: data['boxShadow'] as List<BoxShadowMix>?,
+    ),
     encode: (value) {
-      failIfPresent(value.$border, 'decoration.border');
-      failIfPresent(value.$borderRadius, 'decoration.borderRadius');
-      failIfPresent(value.$shape, 'decoration.shape');
-      failIfPresent(
-        value.$backgroundBlendMode,
-        'decoration.backgroundBlendMode',
-      );
       failIfPresent(value.$image, 'decoration.image');
       failIfPresent(value.$gradient, 'decoration.gradient');
-      failIfPresent(value.$boxShadow, 'decoration.boxShadow');
 
-      return {'color': singleValueProp(value.$color, 'decoration.color')};
+      return {
+        'color': singleValueProp(value.$color, 'decoration.color'),
+        'border': singleMixProp<BorderMix, BoxBorder>(
+          value.$border,
+          'decoration.border',
+        ),
+        'borderRadius': singleMixProp<BorderRadiusMix, BorderRadiusGeometry>(
+          value.$borderRadius,
+          'decoration.borderRadius',
+        ),
+        'shape': singleValueProp(value.$shape, 'decoration.shape'),
+        'backgroundBlendMode': singleValueProp(
+          value.$backgroundBlendMode,
+          'decoration.backgroundBlendMode',
+        ),
+        'boxShadow': _singleBoxShadowList(value),
+      };
     },
   );
+}
+
+List<BoxShadowMix>? _singleBoxShadowList(BoxDecorationMix value) {
+  final boxShadow = singleMixProp<BoxShadowListMix, List<BoxShadow>>(
+    value.$boxShadow,
+    'decoration.boxShadow',
+  );
+
+  return boxShadow?.items;
 }

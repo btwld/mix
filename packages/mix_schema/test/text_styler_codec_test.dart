@@ -66,29 +66,17 @@ void main() {
     });
   });
 
-  test('text styler unsupported runtime values fail encode explicitly', () {
+  test('text styler encodes supported text directives', () {
     final result = contract().encode(TextStyler.uppercase());
 
-    final errors = switch (result) {
-      MixSchemaEncodeFailure(:final errors) => errors,
-      MixSchemaEncodeSuccess() => fail('expected failure'),
+    final payload = switch (result) {
+      MixSchemaEncodeSuccess(:final value) => value,
+      MixSchemaEncodeFailure(:final errors) => fail('$errors'),
     };
 
-    expect(
-      errors,
-      contains(
-        isA<MixSchemaError>()
-            .having(
-              (error) => error.code,
-              'code',
-              MixSchemaErrorCode.unsupportedEncodeValue,
-            )
-            .having(
-              (error) => error.message,
-              'message',
-              contains('textDirectives'),
-            ),
-      ),
-    );
+    expect(payload, {
+      'type': 'text',
+      'textDirectives': ['uppercase'],
+    });
   });
 }

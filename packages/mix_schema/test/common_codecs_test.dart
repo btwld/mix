@@ -3,7 +3,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 import 'package:mix_schema/mix_schema.dart'
     show
+        JsonMap,
         MixSchemaContractBuilder,
+        MixSchemaDecodeFailure,
+        MixSchemaDecodeSuccess,
+        MixSchemaEncodeFailure,
+        MixSchemaEncodeSuccess,
         MixSchemaError,
         MixSchemaErrorCode,
         MixSchemaValidationFailure,
@@ -100,6 +105,104 @@ void main() {
     expect(schema.safeParse(0).isFail, isTrue);
   });
 
+  test('R-10 box constraints preserve absent payload fields', () {
+    final payload = _encodeBox(
+      BoxStyler(constraints: BoxConstraintsMix.minWidth(12)),
+    );
+
+    expect(payload['constraints'], {'minWidth': 12.0});
+
+    final constraints = _decodeBoxConstraints({
+      'type': 'box',
+      'constraints': {'minWidth': 12},
+    });
+
+    expect(singleValueProp(constraints.$minWidth, 'minWidth'), 12);
+    expect(constraints.$maxWidth, isNull);
+    expect(constraints.$minHeight, isNull);
+    expect(constraints.$maxHeight, isNull);
+  });
+
+  test('R-10 box constraints support max-only and fixed dimensions', () {
+    expect(
+      _encodeBox(
+        BoxStyler(constraints: BoxConstraintsMix.maxWidth(48)),
+      )['constraints'],
+      {'maxWidth': 48.0},
+    );
+    expect(
+      _encodeBox(
+        BoxStyler(constraints: BoxConstraintsMix.width(32)),
+      )['constraints'],
+      {'minWidth': 32.0, 'maxWidth': 32.0},
+    );
+
+    final constraints = _decodeBoxConstraints({
+      'type': 'box',
+      'constraints': {'minWidth': 32, 'maxWidth': 32},
+    });
+
+    expect(singleValueProp(constraints.$minWidth, 'minWidth'), 32);
+    expect(singleValueProp(constraints.$maxWidth, 'maxWidth'), 32);
+  });
+
+  test(
+    'R-10 unbounded max constraints use explicit null only when present',
+    () {
+      final payload = _encodeBox(
+        BoxStyler(constraints: BoxConstraintsMix.maxWidth(double.infinity)),
+      );
+
+      expect(payload['constraints'], {'maxWidth': null});
+
+      final constraints = _decodeBoxConstraints({
+        'type': 'box',
+        'constraints': {'maxWidth': null, 'maxHeight': null},
+      });
+
+      expect(
+        singleValueProp(constraints.$maxWidth, 'maxWidth'),
+        double.infinity,
+      );
+      expect(
+        singleValueProp(constraints.$maxHeight, 'maxHeight'),
+        double.infinity,
+      );
+      expect(constraints.$minWidth, isNull);
+      expect(constraints.$minHeight, isNull);
+    },
+  );
+
+  test('R-10 min constraints cannot decode to infinity', () {
+    final result = MixSchemaContractBuilder()
+        .builtIn()
+        .freeze()
+        .decode<BoxStyler>({
+          'type': 'box',
+          'constraints': {'minWidth': null},
+        });
+
+    expect(result, isA<MixSchemaDecodeFailure<BoxStyler>>());
+  });
+
+  test('R-7 box constraints reject invalid min and max ordering', () {
+    final contract = MixSchemaContractBuilder().builtIn().freeze();
+
+    for (final constraints in [
+      {'minWidth': 20, 'maxWidth': 10},
+      {'minHeight': 20, 'maxHeight': 10},
+    ]) {
+      final errors = _validationErrors(
+        contract.validate({'type': 'box', 'constraints': constraints}),
+      );
+
+      expect(
+        errors.map((error) => error.code),
+        contains(MixSchemaErrorCode.constraintViolation),
+      );
+    }
+  });
+
   test('R-5 token and multi-source props fail encode explicitly', () {
     final prop = Prop.value(1.0).mergeProp(Prop.value(2.0));
 
@@ -115,4 +218,29 @@ List<MixSchemaError> _validationErrors(MixSchemaValidationResult result) {
     MixSchemaValidationFailure(:final errors) => errors,
     MixSchemaValidationSuccess() => fail('expected validation failure'),
   };
+}
+
+JsonMap _encodeBox(BoxStyler style) {
+  final result = MixSchemaContractBuilder().builtIn().freeze().encode(style);
+
+  return switch (result) {
+    MixSchemaEncodeSuccess(:final value) => value,
+    MixSchemaEncodeFailure(:final errors) => fail('$errors'),
+  };
+}
+
+BoxConstraintsMix _decodeBoxConstraints(JsonMap payload) {
+  final result = MixSchemaContractBuilder()
+      .builtIn()
+      .freeze()
+      .decode<BoxStyler>(payload);
+  final box = switch (result) {
+    MixSchemaDecodeSuccess<BoxStyler>(:final value) => value,
+    MixSchemaDecodeFailure<BoxStyler>(:final errors) => fail('$errors'),
+  };
+
+  return singleMixProp<BoxConstraintsMix, BoxConstraints>(
+    box.$constraints,
+    'constraints',
+  )!;
 }

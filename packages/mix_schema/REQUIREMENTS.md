@@ -6,9 +6,7 @@ Pinned Ack: `btwld/ack` `8daaadace3e0c9969e05eb0fe5633a51c2bb124b`, path `packag
 
 Flutter primitive payloads mirror Ack `flutter_codec` branch shapes where they do not erase Mix semantics. Local mirrors must be replaced by `flutter_codec` imports once that package is merged and available to this workspace.
 
-Current variant support is intentionally Box-only. All-styler variant payloads remain deferred and must fail explicitly rather than silently accepting a shape whose runtime semantics are not represented yet.
-
-Tailwinds checks in this package assert that parser output can be encoded when it is schema-representable. They do not mean Tailwinds emits schema payloads directly.
+Tailwinds emits accepted utility classes as `mix_schema` payloads, validates/decodes them through `MixSchemaContract`, and then returns Mix stylers from its existing parser APIs. Parser diagnostics remain responsible for unsupported Tailwinds utilities; accepted utilities must not bypass the schema contract with direct styler mutation.
 
 | Rule | Requirement | Implementation | Tests |
 | --- | --- | --- | --- |
@@ -20,7 +18,7 @@ Tailwinds checks in this package assert that parser output can be encoded when i
 | R-6 | App-owned identity uses scoped registries. | `src/registry/` | `registry_*_test.dart` |
 | R-7 | Public errors expose stable code, path, message, and offending value. | `schema_error_mapper.dart` | `error_mapper_test.dart` |
 | R-8 | Payload limits run before decode and after encode. | `validatePayloadLimits` | `mix_schema_contract_test.dart` |
-| R-9 | Tailwinds depends only on public `mix_schema.dart` and `encode.dart`. | `packages/mix_tailwinds` imports | guard tests |
+| R-9 | Tailwinds production code depends only on public `mix_schema.dart` and `encode.dart` and routes accepted utilities through schema payloads. | `packages/mix_tailwinds` imports and parser payload APIs | guard tests, Tailwinds payload contract tests |
 | R-10 | Missing payload fields are not filled with Mix runtime defaults. | no schema `withDefault` for runtime defaults | styler tests |
 | R-11 | Recursive nested styles use `Ack.lazy`. | `variant_codec.dart` | `variant_codec_test.dart` |
 | R-12 | `encode.dart` is a narrow producer helper surface and exports no schema internals. | `lib/encode.dart` only | guard tests |
@@ -33,4 +31,4 @@ Registry scopes: `animation_on_end`, `icon_data`, `image_provider`, `context_var
 
 Encode policy: only values that can be represented without losing semantics are encoded. Tokens, directives, multi-source props, closures without registry ids, arbitrary `Curve`s, spring/phase/keyframe animations, and unsupported modifiers fail with stable public errors.
 
-Acceptance gate: `melos bootstrap`, package tests for `mix_schema` and `mix_tailwinds`, `melos run analyze`, `melos run ci`, and guard searches for forbidden imports/discriminator helpers must pass before completion.
+Acceptance gate: `melos bootstrap`, package tests for `mix_schema` and `mix_tailwinds`, `melos run analyze`, `melos run ci`, and guard searches for forbidden imports/discriminator helpers/default-value codecs must pass before completion.
