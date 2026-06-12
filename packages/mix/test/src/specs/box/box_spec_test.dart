@@ -257,20 +257,29 @@ void main() {
         // Matrix4 lerp is handled by MixOps.lerp
       });
 
-      test('snaps transform when one endpoint is null', () {
+      test('treats null transform as identity when only one endpoint is set', () {
+        // Issue #927: previously this case snapped at t=0.5, so e.g. a hover
+        // variant adding .scale(1.1) on a base style with no transform would
+        // jump rather than tween. Treat the missing endpoint as identity so
+        // the matrix interpolates from / to the real one.
         final transform = Matrix4.translationValues(10.0, 20.0, 0.0);
         final withTransform = BoxSpec(transform: transform);
         const withoutTransform = BoxSpec();
 
-        final fadeOutBefore = withTransform.lerp(withoutTransform, 0.4);
-        final fadeOutAfter = withTransform.lerp(withoutTransform, 0.6);
-        final fadeInBefore = withoutTransform.lerp(withTransform, 0.4);
-        final fadeInAfter = withoutTransform.lerp(withTransform, 0.6);
+        Matrix4 expectedAt(Matrix4 a, Matrix4 b, double t) =>
+            Matrix4Tween(begin: a, end: b).lerp(t);
 
-        expect(fadeOutBefore.transform, same(transform));
-        expect(fadeOutAfter.transform, isNull);
-        expect(fadeInBefore.transform, isNull);
-        expect(fadeInAfter.transform, same(transform));
+        final fadeOut = withTransform.lerp(withoutTransform, 0.4);
+        final fadeIn = withoutTransform.lerp(withTransform, 0.4);
+
+        expect(
+          fadeOut.transform,
+          expectedAt(transform, Matrix4.identity(), 0.4),
+        );
+        expect(
+          fadeIn.transform,
+          expectedAt(Matrix4.identity(), transform, 0.4),
+        );
       });
     });
 
