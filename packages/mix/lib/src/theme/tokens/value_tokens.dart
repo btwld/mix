@@ -61,10 +61,10 @@ class BreakpointToken extends MixToken<Breakpoint> {
   /// surfaced — defaults only apply on absence, not on misconfiguration.
   @override
   Breakpoint resolve(BuildContext context) {
-    final scope = MixScope.maybeOf(context);
-    final hasEntry = scope?.tokens?.containsKey(this) ?? false;
+    final hasEntry =
+        MixScope.maybeOf(context)?.tokens?.containsKey(this) ?? false;
 
-    if (scope != null && hasEntry) {
+    if (hasEntry) {
       return super.resolve(context);
     }
 

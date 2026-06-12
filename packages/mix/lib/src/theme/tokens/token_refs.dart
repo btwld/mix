@@ -201,8 +201,8 @@ final Map<double, MixToken> _doubleTokenRegistry = <double, MixToken>{};
 /// Reverse lookup: re-issues the same sentinel for the same token.
 final Map<MixToken, double> _doubleSentinelByToken = <MixToken, double>{};
 
-/// Next sentinel to hand out. Counts down from -1e-6 by 1e-6 per token.
-double _nextSentinel = 0;
+/// Number of sentinels handed out; the n-th sentinel is `-(n * 1e-6)`.
+int _sentinelCount = 0;
 
 /// Clears the [DoubleRef] sentinel registry. Internal test helper.
 @internal
@@ -210,7 +210,7 @@ double _nextSentinel = 0;
 void clearTokenRegistry() {
   _doubleTokenRegistry.clear();
   _doubleSentinelByToken.clear();
-  _nextSentinel = 0;
+  _sentinelCount = 0;
 }
 
 /// Returns the token associated with a registered [DoubleRef] sentinel, or
@@ -242,11 +242,11 @@ extension type const DoubleRef._(double _value) implements double {
     final existing = _doubleSentinelByToken[token];
     if (existing != null) return DoubleRef._(existing);
 
-    _nextSentinel -= 0.000001;
-    _doubleTokenRegistry[_nextSentinel] = token;
-    _doubleSentinelByToken[token] = _nextSentinel;
+    final sentinel = -(++_sentinelCount) * 0.000001;
+    _doubleTokenRegistry[sentinel] = token;
+    _doubleSentinelByToken[token] = sentinel;
 
-    return DoubleRef._(_nextSentinel);
+    return DoubleRef._(sentinel);
   }
 }
 
@@ -287,37 +287,28 @@ bool isAnyTokenRef(Object? value) {
 /// either pick one of the supported types or override `call()` themselves.
 T getReferenceValue<T>(MixToken<T> token) {
   final prop = Prop.token(token);
-  if (T == Color) {
-    return ColorRef(prop as Prop<Color>) as T;
-  } else if (T == double) {
-    return DoubleRef.token(token as MixToken<double>) as T;
-  } else if (T == Radius) {
-    return RadiusRef(prop as Prop<Radius>) as T;
-  } else if (T == Shadow) {
-    return ShadowRef(prop as Prop<Shadow>) as T;
-  } else if (T == BoxShadow) {
-    return BoxShadowRef(prop as Prop<BoxShadow>) as T;
-  } else if (T == TextStyle) {
-    return TextStyleRef(prop as Prop<TextStyle>) as T;
-  } else if (T == Breakpoint) {
-    return BreakpointRef(token as BreakpointToken) as T;
-  } else if (T == BorderSide) {
-    return BorderSideRef(prop as Prop<BorderSide>) as T;
-  } else if (T == FontWeight) {
-    return FontWeightRef(prop as Prop<FontWeight>) as T;
-  } else if (T == Duration) {
-    return DurationRef(prop as Prop<Duration>) as T;
-  } else if (T == List<Shadow>) {
-    return ShadowListRef(prop as Prop<List<Shadow>>) as T;
-  } else if (T == List<BoxShadow>) {
-    return BoxShadowListRef(prop as Prop<List<BoxShadow>>) as T;
-  }
 
-  throw UnsupportedError(
-    'No token reference is registered for MixToken<$T> "${token.name}". '
-    'Either pick one of the supported token value types (Color, double, '
-    'Radius, Shadow, BoxShadow, TextStyle, Breakpoint, BorderSide, '
-    'FontWeight, Duration, List<Shadow>, List<BoxShadow>) or override '
-    'MixToken<$T>.call() in your subclass to return a custom reference.',
-  );
+  final Object ref = switch (T) {
+    const (Color) => ColorRef(prop as Prop<Color>),
+    const (double) => DoubleRef.token(token as MixToken<double>),
+    const (Radius) => RadiusRef(prop as Prop<Radius>),
+    const (Shadow) => ShadowRef(prop as Prop<Shadow>),
+    const (BoxShadow) => BoxShadowRef(prop as Prop<BoxShadow>),
+    const (TextStyle) => TextStyleRef(prop as Prop<TextStyle>),
+    const (Breakpoint) => BreakpointRef(token as BreakpointToken),
+    const (BorderSide) => BorderSideRef(prop as Prop<BorderSide>),
+    const (FontWeight) => FontWeightRef(prop as Prop<FontWeight>),
+    const (Duration) => DurationRef(prop as Prop<Duration>),
+    const (List<Shadow>) => ShadowListRef(prop as Prop<List<Shadow>>),
+    const (List<BoxShadow>) => BoxShadowListRef(prop as Prop<List<BoxShadow>>),
+    _ => throw UnsupportedError(
+      'No token reference is registered for MixToken<$T> "${token.name}". '
+      'Either pick one of the supported token value types (Color, double, '
+      'Radius, Shadow, BoxShadow, TextStyle, Breakpoint, BorderSide, '
+      'FontWeight, Duration, List<Shadow>, List<BoxShadow>) or override '
+      'MixToken<$T>.call() in your subclass to return a custom reference.',
+    ),
+  };
+
+  return ref as T;
 }

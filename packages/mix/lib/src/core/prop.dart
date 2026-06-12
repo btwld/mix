@@ -82,9 +82,10 @@ class Prop<V> {
   static Prop<V> value<V>(V value) {
     if (value is Prop<V>) return value;
 
-    // Detect token references without crashing when V is nullable and null.
-    if (value case final Object object when isAnyTokenRef(object)) {
-      final token = getTokenFromValue(object) as MixToken<V>?;
+    // Detect sentinel-backed token refs (DoubleRef) without crashing when V
+    // is nullable and value is null.
+    if (value case final Object object) {
+      final token = getTokenFromValue<V>(object);
       if (token != null) {
         return Prop._(sources: [TokenSource(token)]);
       }
