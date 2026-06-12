@@ -37,3 +37,58 @@ abstract class MixToken<T> {
   @override
   int get hashCode => Object.hash(name, T);
 }
+
+/// A token that computes its value from [BuildContext].
+///
+/// Unlike scope-provided tokens, a [ContextToken] does not require a
+/// [MixScope] entry: [resolver] runs at resolution time against the
+/// consuming widget's context. Providing a value for this token in a
+/// [MixScope] overrides the resolver, making the resolver a
+/// context-derived default.
+///
+/// Values flow through the standard token reference pipeline, so they keep
+/// exact fluent-chain ordering like any other value:
+///
+/// ```dart
+/// final primary = ContextToken<Color>(
+///   (context) => Theme.of(context).colorScheme.primary,
+/// );
+///
+/// BoxStyler().color(primary()).color(Colors.red); // red wins
+/// BoxStyler().color(Colors.red).color(primary()); // primary wins
+/// ```
+///
+/// Declare context tokens as top-level or static finals: equality is based
+/// on resolver identity, so a closure created inline produces a new token
+/// on every rebuild.
+class ContextToken<T> extends MixToken<T> {
+  /// Computes the token's value from the given context.
+  final T Function(BuildContext context) resolver;
+
+  const ContextToken(this.resolver, [String name = 'context']) : super(name);
+
+  @override
+  T resolve(BuildContext context) {
+    final scope = MixScope.maybeOf(context, 'tokens');
+    if (scope != null && (scope.tokens?.containsKey(this) ?? false)) {
+      return scope.getToken(this, context);
+    }
+
+    return resolver(context);
+  }
+
+  @override
+  operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is ContextToken<T> &&
+        other.resolver == resolver &&
+        other.name == name;
+  }
+
+  @override
+  String toString() => 'ContextToken<$T>($name)';
+
+  @override
+  int get hashCode => Object.hash(name, T, resolver);
+}

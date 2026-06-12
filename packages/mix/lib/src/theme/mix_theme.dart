@@ -235,10 +235,27 @@ class MixScope extends InheritedModel<String> {
   Map<MixToken, Object>? get tokens => _tokens;
 
   /// Resolves [token] to its concrete value.
-  T getToken<T>(MixToken<T> token, BuildContext _) {
+  ///
+  /// A scope entry may hold the value itself or a `T Function(BuildContext)`
+  /// resolver, which is invoked with [context] at resolution time:
+  ///
+  /// ```dart
+  /// MixScope(
+  ///   tokens: {
+  ///     $primary: (BuildContext context) =>
+  ///         Theme.of(context).colorScheme.primary,
+  ///   },
+  ///   child: app,
+  /// )
+  /// ```
+  T getToken<T>(MixToken<T> token, BuildContext context) {
     final value = _tokens?[token];
     if (value == null) {
       throw StateError('Token "${token.name}" not found in scope');
+    }
+
+    if (value is T Function(BuildContext)) {
+      return value(context);
     }
 
     if (value is T) {

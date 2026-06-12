@@ -35,17 +35,26 @@ Under this model the `onBuilder` ordering question dissolves rather than gets so
 
 Three small, independent pieces — none touches `merge`, the generator's merge emission, or variant resolution:
 
-**(a) `BuilderSource<V>` — the missing 4th `PropSource`.** `prop_source.dart` gains `BuilderSource<V>(V Function(BuildContext) fn)`; `Prop.resolveProp`'s switch (`prop.dart:220-224`) gains one case: `BuilderSource(:final fn) => fn(context)`. `PropSource` is switched in exactly one place, so the change is ~20 lines. Public surface: typed helpers that reuse the existing ref wrappers — refs already wrap *any* `Prop<V>`, not just token props: `Color contextColor(Color Function(BuildContext) fn) => ColorRef(Prop.builder(fn))`, same for the other ref-supported types. Usage:
+**(a) Resolvable tokens — context values ride the existing token pipeline. *(Implemented.)*** An earlier draft of this piece proposed a new `BuilderSource` `PropSource` plus `contextColor()`-family helpers. Reviewing the prior report's findings against the codebase produced a strictly leaner shape that needs **no new `PropSource`, no helper family, and no new public call pattern** — it reuses the token-ref approach users already know:
+
+- The prior report proved tokens already obey exact chain order at the Prop level (`TokenSource` keeps its list position; option E's validation).
+- `BreakpointToken.resolve` (`value_tokens.dart:55-71`) is existing in-repo precedent for a token that *computes* its value — but `Prop.resolveProp` bypassed that virtual hook by calling `MixScope.tokenOf` directly (`prop.dart:222`), while `variant.dart:73` already used the virtual path. A latent inconsistency, and the fix *is* the feature.
+- `MixScope.getToken` already received a `BuildContext` it never used — the seam was sitting there.
+
+Three small changes:
+
+1. `prop.dart`: `TokenSource` resolution routes through the virtual `token.resolve(context)` (one line; also fixes the `BreakpointToken` inconsistency).
+2. `ContextToken<T>` (`mix_token.dart`): a token carrying a `T Function(BuildContext)` resolver. Needs no `MixScope` entry; providing one *overrides* the resolver, so it degrades gracefully into a normal themeable token. Inherits `call()` → typed refs via `getReferenceValue`.
+3. `MixScope.getToken` accepts `T Function(BuildContext)` map values — `MixScope(tokens: {$primary: (c) => Theme.of(c).colorScheme.primary}, ...)` makes every existing `$primary()` call site context-derived with zero style-side changes.
 
 ```dart
-BoxStyler()
-    .color(contextColor((c) => Theme.of(c).colorScheme.primary))
-    .color(Colors.red)   // red wins — it's later in the chain. Exact, today’s Prop semantics.
+final primary = ContextToken((c) => Theme.of(c).colorScheme.primary);
+
+BoxStyler().color(primary()).color(Colors.red);  // red wins — later in the chain
+BoxStyler().color(Colors.red).color(primary());  // primary wins
 ```
 
-How this typechecks (it is the existing ref mechanism, deliberately): `contextColor` does **not** return a real `Color`. It returns a `ColorRef` — `ColorRef extends Prop<Color> ... implements Color` (`token_refs.dart`) — carrying the closure as a `BuilderSource` in its sources list; refs already wrap *any* `Prop<Color>`, not just token props. The setter path then rides the same hop tokens use today: `Prop.value` returns any incoming `Prop` unchanged (`prop.dart:84`), `mergeProp` concatenates its source at chain position, and the closure runs only in `resolveProp`'s new `BuilderSource(:final fn) => fn(context)` case.
-
-The crucial difference from the failed eager-`useToken` branch: there, the *user's callback received a fake value* and ran arbitrary logic on it (DoubleRef arithmetic silently corrupts). Here the fake is an inert carrier traveling one hop from helper to setter; the user's closure receives a **real** `BuildContext` and returns a **real** value — full Dart, no fake-value lies. Ordering is exact because it's literally the existing source-list ordering.
+`primary()` returns exactly what `$token()` returns today — a typed ref carrying a `TokenSource` — so there is no new mechanism to explain: the value is deferred, the chain position is exact, and the resolver receives a **real** `BuildContext` and returns a **real** value at resolve time. The crucial difference from the failed eager-`useToken` branch holds: there, the *user's callback received a fake value* and ran arbitrary logic on it; here the ref is an inert carrier and user code never touches a fake.
 
 **(b) Honest tiers for structural builders — wrapper first, no generator.** Split the ambiguous `onBuilder` into two named tiers:
 
@@ -60,15 +69,27 @@ Both tiers are priority-based and *named for it*. The chain itself stays purely 
 
 - No interleaved structural builders. If a real sandwich use case emerges, the tail design remains the known (costly) answer — nothing here forecloses it.
 - Animation/modifier-from-context stays tier-based (defaults or override), not chain-positioned. Rare enough to accept.
-- Closure equality: `BuilderSource` and defaults wrappers compare by closure identity across rebuilds — exactly like today's `ContextVariantBuilder`, no regression.
-- Primitive-typed setters (`double`) can't carry a `BuilderSource` through the public API — Dart forbids `implements double`, and the `DoubleRef` sentinel-registry hack would be *worse* here than for tokens: token sentinels are bounded by declared tokens, but closure sentinels would grow the global registry on every rebuild. Do not extend the sentinel pattern; primitives are out of (a)'s v1 scope.
-- The ref hazard window is inherited from tokens: between `contextColor(fn)` and the setter, the value is a ref, not a real `Color`. Through Mix setters (the supported path) it unwraps; embedded in a raw Flutter object (`BoxDecoration(color: contextColor(...))`) it never unwraps and reaches paint as a fake — exactly like `$primary()` today.
+- Closure equality: `ContextToken` and defaults wrappers compare by resolver identity across rebuilds — declare context tokens as top-level/static finals (the existing convention for all tokens); an inline closure mints a new token every rebuild. Same profile as today's `ContextVariantBuilder`, no regression.
+- `double` works through the existing `DoubleRef` sentinel because the registry is keyed per *token* (a hoisted `ContextToken<double>` overwrites its single entry per call). Inline-created double tokens would grow the registry per rebuild — covered by the hoisting rule above, not a new hazard class.
+- The ref hazard window is inherited from tokens: between `primary()` and the setter, the value is a ref, not a real `Color`. Through Mix setters (the supported path) it unwraps; embedded in a raw Flutter object (`BoxDecoration(color: primary())`) it never unwraps and reaches paint as a fake — exactly like `$primary()` today.
+- `T` is limited to the ref-supported types (`getReferenceValue`'s dispatch) — same boundary all tokens have; an unsupported `T` fails on a cast at the `call()` site (prior report's open question 3 still stands).
 
 ## Recommendation
 
-1. Ship **(a)** `BuilderSource` + `contextColor`-family helpers — the one true ordering mechanism, ~1 file of core change.
+1. **(a) is implemented** as resolvable tokens (see status below) — the one true ordering mechanism, with the token-call UX users already have.
 2. Ship **(b)** `withDefaults` as a wrapper — covers the dominant "theme-derived base" need with trivially explainable semantics.
 3. Keep `onBuilder` as-is, documented as the override tier; consider renaming only after (a)+(b) absorb most usage.
-4. Drop the style-producing `useToken` API entirely.
+4. Drop the style-producing `useToken` API entirely — `ContextToken` also covers the "derive a value from theme/tokens with real logic" case (`ContextToken((c) => $primary.resolve(c).withValues(alpha: .5))` runs full Dart on real values).
 
-Net: zero behavior changes, zero generator changes, zero merge-algebra changes — and the ordering story becomes a sentence: *"values are ordered by the chain; conditions and builders are layers."*
+Net: zero behavior changes (one latent-bug fix), zero generator changes, zero merge-algebra changes — and the ordering story becomes a sentence: *"values are ordered by the chain; conditions and builders are layers."*
+
+## Implementation status (a)
+
+| Change | File |
+|---|---|
+| `TokenSource` resolves via virtual `token.resolve(context)` | `packages/mix/lib/src/core/prop.dart` (1 line + import cleanup) |
+| `ContextToken<T>` with resolver, scope-override, identity equality | `packages/mix/lib/src/theme/tokens/mix_token.dart` |
+| `MixScope.getToken` accepts `T Function(BuildContext)` values | `packages/mix/lib/src/theme/mix_theme.dart` |
+| 12 integration tests: chain order both directions (Color + double), no-scope resolution, scope override, theme-change reactivity via dependency, ref directives, scope resolvers, equality | `packages/mix/test/src/theme/tokens/context_token_integration_test.dart` |
+
+Verified: new tests pass, full mix suite green (2731 tests), `dart analyze` and DCM clean. Test shapes reuse the prior report's plan (items 1–3, 7, 10 adapted from option E's validation).
