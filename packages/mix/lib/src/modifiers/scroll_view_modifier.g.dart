@@ -6,107 +6,147 @@ part of 'scroll_view_modifier.dart';
 // ModifierGenerator
 // **************************************************************************
 
-mixin _$ScrollViewModifierMethods
-    on WidgetModifier<ScrollViewModifier>, Diagnosticable {
-  Clip? get clipBehavior;
+mixin _$ScrollViewModifier
+    implements WidgetModifier<ScrollViewModifier>, Diagnosticable {
+  Axis? get scrollDirection;
+  bool? get reverse;
   EdgeInsetsGeometry? get padding;
   ScrollPhysics? get physics;
-  bool? get reverse;
-  Axis? get scrollDirection;
+  Clip? get clipBehavior;
+
+  @override
+  Type get type => ScrollViewModifier;
 
   @override
   ScrollViewModifier copyWith({
-    Clip? clipBehavior,
+    Axis? scrollDirection,
+    bool? reverse,
     EdgeInsetsGeometry? padding,
     ScrollPhysics? physics,
-    bool? reverse,
-    Axis? scrollDirection,
+    Clip? clipBehavior,
   }) {
     return ScrollViewModifier(
-      clipBehavior: clipBehavior ?? this.clipBehavior,
+      scrollDirection: scrollDirection ?? this.scrollDirection,
+      reverse: reverse ?? this.reverse,
       padding: padding ?? this.padding,
       physics: physics ?? this.physics,
-      reverse: reverse ?? this.reverse,
-      scrollDirection: scrollDirection ?? this.scrollDirection,
+      clipBehavior: clipBehavior ?? this.clipBehavior,
     );
   }
 
   @override
   ScrollViewModifier lerp(ScrollViewModifier? other, double t) {
-    if (other == null) return this as ScrollViewModifier;
-
     return ScrollViewModifier(
-      clipBehavior: MixOps.lerpSnap(clipBehavior, other.clipBehavior, t),
-      padding: MixOps.lerp(padding, other.padding, t),
-      physics: MixOps.lerpSnap(physics, other.physics, t),
-      reverse: MixOps.lerpSnap(reverse, other.reverse, t),
       scrollDirection: MixOps.lerpSnap(
         scrollDirection,
-        other.scrollDirection,
+        other?.scrollDirection,
         t,
       ),
+      reverse: MixOps.lerpSnap(reverse, other?.reverse, t),
+      padding: MixOps.lerp(padding, other?.padding, t),
+      physics: MixOps.lerpSnap(physics, other?.physics, t),
+      clipBehavior: MixOps.lerpSnap(clipBehavior, other?.clipBehavior, t),
     );
   }
 
   @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(EnumProperty<Clip>('clipBehavior', clipBehavior))
-      ..add(DiagnosticsProperty('padding', padding))
-      ..add(DiagnosticsProperty('physics', physics))
-      ..add(FlagProperty('reverse', value: reverse, ifTrue: 'reversed'))
-      ..add(EnumProperty<Axis>('scrollDirection', scrollDirection));
+  List<Object?> get props => [
+    scrollDirection,
+    reverse,
+    padding,
+    physics,
+    clipBehavior,
+  ];
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        other is ScrollViewModifier &&
+            runtimeType == other.runtimeType &&
+            propsEquals(props, other.props);
   }
 
   @override
-  List<Object?> get props => [
-    clipBehavior,
-    padding,
-    physics,
-    reverse,
-    scrollDirection,
-  ];
+  int get hashCode => propsHash(runtimeType, props);
+
+  @override
+  bool get stringify => true;
+
+  @override
+  Map<String, String> getDiff(Equatable other) {
+    if (this == other) return const {};
+
+    return propsDiff(props, other.props);
+  }
+
+  @override
+  String toStringShort() => '$runtimeType';
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) =>
+      toDiagnosticsNode(
+        style: DiagnosticsTreeStyle.singleLine,
+      ).toString(minLevel: minLevel);
+
+  @override
+  DiagnosticsNode toDiagnosticsNode({
+    String? name,
+    DiagnosticsTreeStyle? style,
+  }) =>
+      DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
+
+  @override
+  Widget build(Widget child);
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    properties
+      ..add(EnumProperty<Axis>('scrollDirection', scrollDirection))
+      ..add(FlagProperty('reverse', value: reverse, ifTrue: 'reversed'))
+      ..add(DiagnosticsProperty('padding', padding))
+      ..add(DiagnosticsProperty('physics', physics))
+      ..add(EnumProperty<Clip>('clipBehavior', clipBehavior));
+  }
 }
 
 class ScrollViewModifierMix extends ModifierMix<ScrollViewModifier>
     with Diagnosticable {
-  final Prop<Clip>? clipBehavior;
+  final Prop<Axis>? scrollDirection;
+  final Prop<bool>? reverse;
   final Prop<EdgeInsetsGeometry>? padding;
   final Prop<ScrollPhysics>? physics;
-  final Prop<bool>? reverse;
-  final Prop<Axis>? scrollDirection;
+  final Prop<Clip>? clipBehavior;
 
   const ScrollViewModifierMix.create({
-    this.clipBehavior,
+    this.scrollDirection,
+    this.reverse,
     this.padding,
     this.physics,
-    this.reverse,
-    this.scrollDirection,
+    this.clipBehavior,
   });
 
   ScrollViewModifierMix({
-    Clip? clipBehavior,
+    Axis? scrollDirection,
+    bool? reverse,
     EdgeInsetsGeometryMix? padding,
     ScrollPhysics? physics,
-    bool? reverse,
-    Axis? scrollDirection,
+    Clip? clipBehavior,
   }) : this.create(
-         clipBehavior: Prop.maybe(clipBehavior),
+         scrollDirection: Prop.maybe(scrollDirection),
+         reverse: Prop.maybe(reverse),
          padding: Prop.maybeMix(padding),
          physics: Prop.maybe(physics),
-         reverse: Prop.maybe(reverse),
-         scrollDirection: Prop.maybe(scrollDirection),
+         clipBehavior: Prop.maybe(clipBehavior),
        );
 
   @override
   ScrollViewModifier resolve(BuildContext context) {
     return ScrollViewModifier(
-      clipBehavior: MixOps.resolve(context, clipBehavior),
+      scrollDirection: MixOps.resolve(context, scrollDirection),
+      reverse: MixOps.resolve(context, reverse),
       padding: MixOps.resolve(context, padding),
       physics: MixOps.resolve(context, physics),
-      reverse: MixOps.resolve(context, reverse),
-      scrollDirection: MixOps.resolve(context, scrollDirection),
+      clipBehavior: MixOps.resolve(context, clipBehavior),
     );
   }
 
@@ -115,11 +155,11 @@ class ScrollViewModifierMix extends ModifierMix<ScrollViewModifier>
     if (other == null) return this;
 
     return ScrollViewModifierMix.create(
-      clipBehavior: MixOps.merge(clipBehavior, other.clipBehavior),
+      scrollDirection: MixOps.merge(scrollDirection, other.scrollDirection),
+      reverse: MixOps.merge(reverse, other.reverse),
       padding: MixOps.merge(padding, other.padding),
       physics: MixOps.merge(physics, other.physics),
-      reverse: MixOps.merge(reverse, other.reverse),
-      scrollDirection: MixOps.merge(scrollDirection, other.scrollDirection),
+      clipBehavior: MixOps.merge(clipBehavior, other.clipBehavior),
     );
   }
 
@@ -127,19 +167,19 @@ class ScrollViewModifierMix extends ModifierMix<ScrollViewModifier>
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties
-      ..add(DiagnosticsProperty('clipBehavior', clipBehavior))
+      ..add(DiagnosticsProperty('scrollDirection', scrollDirection))
+      ..add(DiagnosticsProperty('reverse', reverse))
       ..add(DiagnosticsProperty('padding', padding))
       ..add(DiagnosticsProperty('physics', physics))
-      ..add(DiagnosticsProperty('reverse', reverse))
-      ..add(DiagnosticsProperty('scrollDirection', scrollDirection));
+      ..add(DiagnosticsProperty('clipBehavior', clipBehavior));
   }
 
   @override
   List<Object?> get props => [
-    clipBehavior,
+    scrollDirection,
+    reverse,
     padding,
     physics,
-    reverse,
-    scrollDirection,
+    clipBehavior,
   ];
 }

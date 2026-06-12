@@ -13,8 +13,7 @@ part 'flexible_modifier.g.dart';
 ///
 /// Wraps the child in a [Flexible] widget with the specified flex and fit properties.
 @MixableModifier(lerp: false)
-final class FlexibleModifier extends WidgetModifier<FlexibleModifier>
-    with Diagnosticable, _$FlexibleModifierMethods {
+final class FlexibleModifier with _$FlexibleModifier {
   @override
   final int? flex;
   @override

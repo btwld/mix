@@ -6,56 +6,96 @@ part of 'sized_box_modifier.dart';
 // ModifierGenerator
 // **************************************************************************
 
-mixin _$SizedBoxModifierMethods
-    on WidgetModifier<SizedBoxModifier>, Diagnosticable {
-  double? get height;
+mixin _$SizedBoxModifier
+    implements WidgetModifier<SizedBoxModifier>, Diagnosticable {
   double? get width;
+  double? get height;
 
   @override
-  SizedBoxModifier copyWith({double? height, double? width}) {
+  Type get type => SizedBoxModifier;
+
+  @override
+  SizedBoxModifier copyWith({double? width, double? height}) {
     return SizedBoxModifier(
-      height: height ?? this.height,
       width: width ?? this.width,
+      height: height ?? this.height,
     );
   }
 
   @override
   SizedBoxModifier lerp(SizedBoxModifier? other, double t) {
-    if (other == null) return this as SizedBoxModifier;
-
     return SizedBoxModifier(
-      height: MixOps.lerp(height, other.height, t),
-      width: MixOps.lerp(width, other.width, t),
+      width: MixOps.lerp(width, other?.width, t),
+      height: MixOps.lerp(height, other?.height, t),
     );
   }
 
   @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(DoubleProperty('height', height))
-      ..add(DoubleProperty('width', width));
+  List<Object?> get props => [width, height];
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        other is SizedBoxModifier &&
+            runtimeType == other.runtimeType &&
+            propsEquals(props, other.props);
   }
 
   @override
-  List<Object?> get props => [height, width];
+  int get hashCode => propsHash(runtimeType, props);
+
+  @override
+  bool get stringify => true;
+
+  @override
+  Map<String, String> getDiff(Equatable other) {
+    if (this == other) return const {};
+
+    return propsDiff(props, other.props);
+  }
+
+  @override
+  String toStringShort() => '$runtimeType';
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) =>
+      toDiagnosticsNode(
+        style: DiagnosticsTreeStyle.singleLine,
+      ).toString(minLevel: minLevel);
+
+  @override
+  DiagnosticsNode toDiagnosticsNode({
+    String? name,
+    DiagnosticsTreeStyle? style,
+  }) =>
+      DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
+
+  @override
+  Widget build(Widget child);
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    properties
+      ..add(DoubleProperty('width', width))
+      ..add(DoubleProperty('height', height));
+  }
 }
 
 class SizedBoxModifierMix extends ModifierMix<SizedBoxModifier>
     with Diagnosticable {
-  final Prop<double>? height;
   final Prop<double>? width;
+  final Prop<double>? height;
 
-  const SizedBoxModifierMix.create({this.height, this.width});
+  const SizedBoxModifierMix.create({this.width, this.height});
 
-  SizedBoxModifierMix({double? height, double? width})
-    : this.create(height: Prop.maybe(height), width: Prop.maybe(width));
+  SizedBoxModifierMix({double? width, double? height})
+    : this.create(width: Prop.maybe(width), height: Prop.maybe(height));
 
   @override
   SizedBoxModifier resolve(BuildContext context) {
     return SizedBoxModifier(
-      height: MixOps.resolve(context, height),
       width: MixOps.resolve(context, width),
+      height: MixOps.resolve(context, height),
     );
   }
 
@@ -64,8 +104,8 @@ class SizedBoxModifierMix extends ModifierMix<SizedBoxModifier>
     if (other == null) return this;
 
     return SizedBoxModifierMix.create(
-      height: MixOps.merge(height, other.height),
       width: MixOps.merge(width, other.width),
+      height: MixOps.merge(height, other.height),
     );
   }
 
@@ -73,10 +113,10 @@ class SizedBoxModifierMix extends ModifierMix<SizedBoxModifier>
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties
-      ..add(DiagnosticsProperty('height', height))
-      ..add(DiagnosticsProperty('width', width));
+      ..add(DiagnosticsProperty('width', width))
+      ..add(DiagnosticsProperty('height', height));
   }
 
   @override
-  List<Object?> get props => [height, width];
+  List<Object?> get props => [width, height];
 }

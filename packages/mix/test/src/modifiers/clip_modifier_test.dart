@@ -100,7 +100,8 @@ void main() {
         );
         final result = start.lerp(null, 0.5);
 
-        expect(result, same(start));
+        expect(result.clipper, isNull);
+        expect(result.clipBehavior, Clip.antiAlias);
       });
 
       test('handles extreme t values', () {
@@ -152,13 +153,13 @@ void main() {
           clipBehavior: clipBehavior,
         );
 
-        expect(modifier.props, [clipBehavior, clipper]);
+        expect(modifier.props, [clipper, clipBehavior]);
       });
 
       test('contains null clipper and default clip behavior value', () {
         const modifier = ClipPathModifier();
 
-        expect(modifier.props, [Clip.antiAlias, null]);
+        expect(modifier.props, [null, Clip.antiAlias]);
       });
     });
 
@@ -330,8 +331,8 @@ void main() {
 
         final props = attribute.props;
         expect(props.length, 2);
-        expect(props[0], attribute.clipBehavior);
-        expect(props[1], attribute.clipper);
+        expect(props[0], attribute.clipper);
+        expect(props[1], attribute.clipBehavior);
       });
     });
   });

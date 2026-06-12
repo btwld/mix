@@ -1,12 +1,15 @@
-/// Modifier mixin builder for generating the `_$XModifierMethods` mixin.
+/// Modifier mixin builder for generating the `_$XModifier` mixin.
 ///
-/// Generates copyWith(), lerp(), debugFillProperties(), and props
-/// for `@MixableModifier` annotated classes.
+/// Generates the full WidgetModifier, Spec, Diagnosticable, and Equatable
+/// contract for `@MixableModifier` annotated classes.
 library;
 
 import 'modifier_mix_builder.dart';
+import '../helpers/field_emitter.dart';
+import '../resolvers/diagnostic_resolver.dart';
+import '../resolvers/lerp_resolver.dart';
 
-/// Builds the `_$XModifierMethods` mixin for a WidgetModifier class.
+/// Builds the `_$XModifier` mixin for a WidgetModifier class.
 class ModifierMixinBuilder {
   final String modifierName;
   final List<ModifierFieldModel> fields;
@@ -18,17 +21,27 @@ class ModifierMixinBuilder {
     this.generateLerp = true,
   });
 
-  /// The mixin name (e.g., AlignModifier -> _$AlignModifierMethods).
-  String get mixinName => '_\$${modifierName}Methods';
+  FieldEmitter<ModifierFieldModel> _fieldEmitter() => .new(fields);
 
   String _buildAbstractGetters() {
-    if (fields.isEmpty) return '';
+    return _fieldEmitter().abstractGetters(
+      typeCode: (field) => field.fullTypeName,
+      getterName: (field) => field.name,
+    );
+  }
 
+  String _buildTypeGetter() {
     final buffer = StringBuffer();
-    for (final field in fields) {
-      buffer.writeln('  ${field.fullTypeName} get ${field.name};');
-    }
-    buffer.writeln();
+    buffer.writeln('  @override');
+    buffer.writeln('  Type get type => $modifierName;');
+
+    return buffer.toString();
+  }
+
+  String _buildBuildContract() {
+    final buffer = StringBuffer();
+    buffer.writeln('  @override');
+    buffer.writeln('  Widget build(Widget child);');
 
     return buffer.toString();
   }
@@ -75,8 +88,6 @@ class ModifierMixinBuilder {
 
     buffer.writeln('  @override');
     buffer.writeln('  $modifierName lerp($modifierName? other, double t) {');
-    buffer.writeln('    if (other == null) return this as $modifierName;');
-    buffer.writeln();
 
     if (fields.isEmpty) {
       buffer.writeln('    return const $modifierName();');
@@ -87,16 +98,11 @@ class ModifierMixinBuilder {
 
     buffer.writeln('    return $modifierName(');
     for (final field in fields) {
-      final lerpFn = field.isLerpable ? 'MixOps.lerp' : 'MixOps.lerpSnap';
-      final nullAssert = field.isNullable ? '' : '!';
+      final lerpCode = generateLerpCode(field.field);
       if (field.isNamedParam) {
-        buffer.writeln(
-          '      ${field.name}: $lerpFn(${field.name}, other.${field.name}, t)$nullAssert,',
-        );
+        buffer.writeln('      ${field.name}: $lerpCode,');
       } else {
-        buffer.writeln(
-          '      $lerpFn(${field.name}, other.${field.name}, t)$nullAssert,',
-        );
+        buffer.writeln('      $lerpCode,');
       }
     }
     buffer.writeln('    );');
@@ -106,60 +112,10 @@ class ModifierMixinBuilder {
   }
 
   String _buildDebugFillProperties() {
-    final buffer = StringBuffer();
-
-    buffer.writeln('  @override');
-    buffer.writeln(
-      '  void debugFillProperties(DiagnosticPropertiesBuilder properties) {',
+    return _fieldEmitter().debugFillProperties(
+      callSuper: false,
+      propertyCode: (field) => generateSpecDiagnosticCode(field.field),
     );
-    buffer.writeln('    super.debugFillProperties(properties);');
-
-    if (fields.length == 1) {
-      final field = fields[0];
-      final diagnosticCode = _getDiagnosticCode(field);
-      buffer.writeln('    properties.add($diagnosticCode);');
-    } else if (fields.length > 1) {
-      buffer.writeln('    properties');
-      for (int i = 0; i < fields.length; i++) {
-        final field = fields[i];
-        final diagnosticCode = _getDiagnosticCode(field);
-        final separator = i == fields.length - 1 ? ';' : '';
-        buffer.writeln('      ..add($diagnosticCode)$separator');
-      }
-    }
-
-    buffer.writeln('  }');
-
-    return buffer.toString();
-  }
-
-  String _getDiagnosticCode(ModifierFieldModel field) {
-    final name = field.name;
-
-    if (field.typeName == 'double') {
-      return "DoubleProperty('$name', $name)";
-    }
-    if (field.typeName == 'int') {
-      return "IntProperty('$name', $name)";
-    }
-    if (field.typeName == 'String') {
-      return "StringProperty('$name', $name)";
-    }
-    if (field.typeName == 'Color') {
-      return "ColorProperty('$name', $name)";
-    }
-    if (field.typeName == 'bool') {
-      if (field.flagDescription != null) {
-        return "FlagProperty('$name', value: $name, ifTrue: '${field.flagDescription}')";
-      }
-
-      return "DiagnosticsProperty('$name', $name)";
-    }
-    if (field.isEnum) {
-      return "EnumProperty<${field.typeName}>('$name', $name)";
-    }
-
-    return "DiagnosticsProperty('$name', $name)";
   }
 
   String _buildProps() {
@@ -178,16 +134,77 @@ class ModifierMixinBuilder {
     return buffer.toString();
   }
 
+  /// Emits `==`, `hashCode`, `stringify`, and `getDiff` overrides that
+  /// delegate to the shared Equatable helpers.
+  String _buildEquatableSurface() {
+    final buffer = StringBuffer();
+
+    buffer.writeln('  @override');
+    buffer.writeln('  bool operator ==(Object other) {');
+    buffer.writeln('    return identical(this, other) ||');
+    buffer.writeln('        other is $modifierName &&');
+    buffer.writeln('            runtimeType == other.runtimeType &&');
+    buffer.writeln('            propsEquals(props, other.props);');
+    buffer.writeln('  }');
+    buffer.writeln();
+    buffer.writeln('  @override');
+    buffer.writeln('  int get hashCode => propsHash(runtimeType, props);');
+    buffer.writeln();
+    buffer.writeln('  @override');
+    buffer.writeln('  bool get stringify => true;');
+    buffer.writeln();
+    buffer.writeln('  @override');
+    buffer.writeln('  Map<String, String> getDiff(Equatable other) {');
+    buffer.writeln('    if (this == other) return const {};');
+    buffer.writeln();
+    buffer.writeln('    return propsDiff(props, other.props);');
+    buffer.writeln('  }');
+
+    return buffer.toString();
+  }
+
+  /// Emits Diagnosticable's concrete bodies because the mixin implements
+  /// Diagnosticable rather than inheriting from it.
+  String _buildDiagnosticableSurface() {
+    final buffer = StringBuffer();
+
+    buffer.writeln('  @override');
+    buffer.writeln("  String toStringShort() => '\$runtimeType';");
+    buffer.writeln();
+    buffer.writeln('  @override');
+    buffer.writeln(
+      '  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) =>',
+    );
+    buffer.writeln(
+      '      toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine)',
+    );
+    buffer.writeln('          .toString(minLevel: minLevel);');
+    buffer.writeln();
+    buffer.writeln('  @override');
+    buffer.writeln(
+      '  DiagnosticsNode toDiagnosticsNode({String? name, DiagnosticsTreeStyle? style}) =>',
+    );
+    buffer.writeln(
+      '      DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);',
+    );
+
+    return buffer.toString();
+  }
+
+  /// The mixin name (e.g., AlignModifier -> _$AlignModifier).
+  String get mixinName => '_\$$modifierName';
+
   /// Builds the complete mixin code.
   String build() {
     final buffer = StringBuffer();
 
     buffer.writeln(
-      'mixin $mixinName on WidgetModifier<$modifierName>, Diagnosticable {',
+      'mixin $mixinName implements WidgetModifier<$modifierName>, Diagnosticable {',
     );
 
     // Abstract getters
     buffer.write(_buildAbstractGetters());
+    buffer.writeln(_buildTypeGetter());
 
     // copyWith
     buffer.writeln(_buildCopyWith());
@@ -197,11 +214,14 @@ class ModifierMixinBuilder {
       buffer.writeln(_buildLerp());
     }
 
-    // debugFillProperties
-    buffer.writeln(_buildDebugFillProperties());
-
     // props
     buffer.writeln(_buildProps());
+    buffer.writeln(_buildEquatableSurface());
+    buffer.writeln(_buildDiagnosticableSurface());
+    buffer.writeln(_buildBuildContract());
+
+    // debugFillProperties
+    buffer.writeln(_buildDebugFillProperties());
 
     buffer.writeln('}');
 

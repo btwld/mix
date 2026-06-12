@@ -13,8 +13,7 @@ part 'rotated_box_modifier.g.dart';
 ///
 /// Wraps the child in a [RotatedBox] widget with the specified quarter turns.
 @MixableModifier(lerp: false)
-final class RotatedBoxModifier extends WidgetModifier<RotatedBoxModifier>
-    with Diagnosticable, _$RotatedBoxModifierMethods {
+final class RotatedBoxModifier with _$RotatedBoxModifier {
   @override
   final int quarterTurns;
   const RotatedBoxModifier([int? quarterTurns])

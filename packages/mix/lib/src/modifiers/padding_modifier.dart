@@ -14,8 +14,7 @@ part 'padding_modifier.g.dart';
 ///
 /// Wraps the child in a [Padding] widget with the specified padding.
 @MixableModifier()
-final class PaddingModifier extends WidgetModifier<PaddingModifier>
-    with Diagnosticable, _$PaddingModifierMethods {
+final class PaddingModifier with _$PaddingModifier {
   @override
   final EdgeInsetsGeometry padding;
 

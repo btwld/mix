@@ -15,9 +15,7 @@ part 'default_text_style_modifier.g.dart';
 ///
 /// Wraps the child in a [DefaultTextStyle] widget with the specified text properties.
 @MixableModifier(lerp: false)
-final class DefaultTextStyleModifier
-    extends WidgetModifier<DefaultTextStyleModifier>
-    with Diagnosticable, _$DefaultTextStyleModifierMethods {
+final class DefaultTextStyleModifier with _$DefaultTextStyleModifier {
   @override
   final TextStyle style;
   @override

@@ -13,8 +13,7 @@ part 'blur_modifier.g.dart';
 
 /// Modifier that applies a Gaussian blur filter to its child.
 @MixableModifier()
-final class BlurModifier extends WidgetModifier<BlurModifier>
-    with Diagnosticable, _$BlurModifierMethods {
+final class BlurModifier with _$BlurModifier {
   /// Blur sigma for X and Y axis.
   @override
   final double sigma;

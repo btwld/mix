@@ -1,13 +1,13 @@
-/// Annotation for generating ModifierMix classes from WidgetModifier subclasses.
+/// Annotation for generating WidgetModifier mixins and ModifierMix classes.
 ///
-/// Annotate a class extending `WidgetModifier<T>` to generate the corresponding
-/// `ModifierMix` class with resolve, merge, debugFillProperties, and props.
+/// Annotate a class that mixes in the generated `_$T` modifier mixin to
+/// generate the corresponding `ModifierMix` class with resolve, merge,
+/// debugFillProperties, and props.
 ///
 /// Example usage:
 /// ```dart
 /// @MixableModifier()
-/// final class OpacityModifier extends WidgetModifier<OpacityModifier>
-///     with Diagnosticable, _$OpacityModifierMethods {
+/// final class OpacityModifier with _$OpacityModifier {
 ///   @override
 ///   final double opacity;
 ///   const OpacityModifier([double? opacity]) : opacity = opacity ?? 1.0;
@@ -15,9 +15,9 @@
 /// }
 /// ```
 ///
-/// This generates a `_$OpacityModifierMethods` mixin (with `copyWith`, `lerp`,
-/// `debugFillProperties`, and `props`) and the `OpacityModifierMix` class in the
-/// `.g.dart` part file.
+/// This generates a `_$OpacityModifier` mixin with the full
+/// `WidgetModifier`/`Spec`/`Diagnosticable` contract and the
+/// `OpacityModifierMix` class in the `.g.dart` part file.
 ///
 /// Set [lerp] to `false` to skip generation of the `lerp` method and implement
 /// it manually on the modifier class. Useful when interpolation needs custom

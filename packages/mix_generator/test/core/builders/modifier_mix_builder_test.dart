@@ -221,6 +221,38 @@ void main() {
         expect(code, contains('MixOps.resolve(context, clipBehavior)'));
       });
 
+      test('preserves incoming field order for params, resolve, and props', () {
+        final builder = ModifierMixBuilder(
+          modifierName: 'OrderedModifier',
+          fields: [
+            ModifierFieldModel(
+              name: 'first',
+              typeName: 'double',
+              isNamedParam: false,
+            ),
+            ModifierFieldModel(
+              name: 'second',
+              typeName: 'int',
+              isNamedParam: true,
+            ),
+          ],
+        );
+        final code = builder.build();
+
+        expect(
+          code.indexOf('double? first,'),
+          lessThan(code.indexOf('int? second,')),
+        );
+        expect(
+          code.indexOf('MixOps.resolve(context, first),'),
+          lessThan(code.indexOf('second: MixOps.resolve(context, second),')),
+        );
+        expect(
+          code.indexOf('    first,'),
+          lessThan(code.indexOf('    second,')),
+        );
+      });
+
       test('generates empty class when no fields', () {
         final builder = ModifierMixBuilder(
           modifierName: 'NoopModifier',

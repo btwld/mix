@@ -6,43 +6,85 @@ part of 'flexible_modifier.dart';
 // ModifierGenerator
 // **************************************************************************
 
-mixin _$FlexibleModifierMethods
-    on WidgetModifier<FlexibleModifier>, Diagnosticable {
-  FlexFit? get fit;
+mixin _$FlexibleModifier
+    implements WidgetModifier<FlexibleModifier>, Diagnosticable {
   int? get flex;
+  FlexFit? get fit;
 
   @override
-  FlexibleModifier copyWith({FlexFit? fit, int? flex}) {
-    return FlexibleModifier(fit: fit ?? this.fit, flex: flex ?? this.flex);
+  Type get type => FlexibleModifier;
+
+  @override
+  FlexibleModifier copyWith({int? flex, FlexFit? fit}) {
+    return FlexibleModifier(flex: flex ?? this.flex, fit: fit ?? this.fit);
   }
+
+  @override
+  List<Object?> get props => [flex, fit];
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        other is FlexibleModifier &&
+            runtimeType == other.runtimeType &&
+            propsEquals(props, other.props);
+  }
+
+  @override
+  int get hashCode => propsHash(runtimeType, props);
+
+  @override
+  bool get stringify => true;
+
+  @override
+  Map<String, String> getDiff(Equatable other) {
+    if (this == other) return const {};
+
+    return propsDiff(props, other.props);
+  }
+
+  @override
+  String toStringShort() => '$runtimeType';
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) =>
+      toDiagnosticsNode(
+        style: DiagnosticsTreeStyle.singleLine,
+      ).toString(minLevel: minLevel);
+
+  @override
+  DiagnosticsNode toDiagnosticsNode({
+    String? name,
+    DiagnosticsTreeStyle? style,
+  }) =>
+      DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
+
+  @override
+  Widget build(Widget child);
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
     properties
-      ..add(EnumProperty<FlexFit>('fit', fit))
-      ..add(IntProperty('flex', flex));
+      ..add(IntProperty('flex', flex))
+      ..add(EnumProperty<FlexFit>('fit', fit));
   }
-
-  @override
-  List<Object?> get props => [fit, flex];
 }
 
 class FlexibleModifierMix extends ModifierMix<FlexibleModifier>
     with Diagnosticable {
-  final Prop<FlexFit>? fit;
   final Prop<int>? flex;
+  final Prop<FlexFit>? fit;
 
-  const FlexibleModifierMix.create({this.fit, this.flex});
+  const FlexibleModifierMix.create({this.flex, this.fit});
 
-  FlexibleModifierMix({FlexFit? fit, int? flex})
-    : this.create(fit: Prop.maybe(fit), flex: Prop.maybe(flex));
+  FlexibleModifierMix({int? flex, FlexFit? fit})
+    : this.create(flex: Prop.maybe(flex), fit: Prop.maybe(fit));
 
   @override
   FlexibleModifier resolve(BuildContext context) {
     return FlexibleModifier(
-      fit: MixOps.resolve(context, fit),
       flex: MixOps.resolve(context, flex),
+      fit: MixOps.resolve(context, fit),
     );
   }
 
@@ -51,8 +93,8 @@ class FlexibleModifierMix extends ModifierMix<FlexibleModifier>
     if (other == null) return this;
 
     return FlexibleModifierMix.create(
-      fit: MixOps.merge(fit, other.fit),
       flex: MixOps.merge(flex, other.flex),
+      fit: MixOps.merge(fit, other.fit),
     );
   }
 
@@ -60,10 +102,10 @@ class FlexibleModifierMix extends ModifierMix<FlexibleModifier>
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties
-      ..add(DiagnosticsProperty('fit', fit))
-      ..add(DiagnosticsProperty('flex', flex));
+      ..add(DiagnosticsProperty('flex', flex))
+      ..add(DiagnosticsProperty('fit', fit));
   }
 
   @override
-  List<Object?> get props => [fit, flex];
+  List<Object?> get props => [flex, fit];
 }

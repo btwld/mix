@@ -13,8 +13,7 @@ part 'align_modifier.g.dart';
 ///
 /// Wraps the child in an [Align] widget with the specified alignment and size factors.
 @MixableModifier()
-final class AlignModifier extends WidgetModifier<AlignModifier>
-    with Diagnosticable, _$AlignModifierMethods {
+final class AlignModifier with _$AlignModifier {
   @override
   final AlignmentGeometry alignment;
   @override

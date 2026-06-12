@@ -11,9 +11,7 @@ part 'intrinsic_modifier.g.dart';
 ///
 /// Wraps the child in an [IntrinsicHeight] widget.
 @MixableModifier()
-final class IntrinsicHeightModifier
-    extends WidgetModifier<IntrinsicHeightModifier>
-    with Diagnosticable, _$IntrinsicHeightModifierMethods {
+final class IntrinsicHeightModifier with _$IntrinsicHeightModifier {
   const IntrinsicHeightModifier();
 
   @override
@@ -26,9 +24,7 @@ final class IntrinsicHeightModifier
 ///
 /// Wraps the child in an [IntrinsicWidth] widget.
 @MixableModifier()
-final class IntrinsicWidthModifier
-    extends WidgetModifier<IntrinsicWidthModifier>
-    with Diagnosticable, _$IntrinsicWidthModifierMethods {
+final class IntrinsicWidthModifier with _$IntrinsicWidthModifier {
   const IntrinsicWidthModifier();
 
   @override

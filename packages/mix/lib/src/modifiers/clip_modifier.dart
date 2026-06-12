@@ -14,8 +14,7 @@ part 'clip_modifier.g.dart';
 ///
 /// Wraps the child in a [ClipOval] widget with the specified clipper and clip behavior.
 @MixableModifier()
-final class ClipOvalModifier extends WidgetModifier<ClipOvalModifier>
-    with Diagnosticable, _$ClipOvalModifierMethods {
+final class ClipOvalModifier with _$ClipOvalModifier {
   @override
   final CustomClipper<Rect>? clipper;
   @override
@@ -34,8 +33,7 @@ final class ClipOvalModifier extends WidgetModifier<ClipOvalModifier>
 ///
 /// Wraps the child in a [ClipRect] widget with the specified clipper and clip behavior.
 @MixableModifier()
-final class ClipRectModifier extends WidgetModifier<ClipRectModifier>
-    with Diagnosticable, _$ClipRectModifierMethods {
+final class ClipRectModifier with _$ClipRectModifier {
   @override
   final CustomClipper<Rect>? clipper;
   @override
@@ -54,8 +52,7 @@ final class ClipRectModifier extends WidgetModifier<ClipRectModifier>
 ///
 /// Wraps the child in a [ClipRRect] widget with the specified border radius.
 @MixableModifier()
-final class ClipRRectModifier extends WidgetModifier<ClipRRectModifier>
-    with Diagnosticable, _$ClipRRectModifierMethods {
+final class ClipRRectModifier with _$ClipRRectModifier {
   @override
   final BorderRadiusGeometry borderRadius;
   @override
@@ -85,8 +82,7 @@ final class ClipRRectModifier extends WidgetModifier<ClipRRectModifier>
 ///
 /// Wraps the child in a [ClipPath] widget with the specified clipper.
 @MixableModifier()
-final class ClipPathModifier extends WidgetModifier<ClipPathModifier>
-    with Diagnosticable, _$ClipPathModifierMethods {
+final class ClipPathModifier with _$ClipPathModifier {
   @override
   final CustomClipper<Path>? clipper;
   @override
@@ -105,8 +101,7 @@ final class ClipPathModifier extends WidgetModifier<ClipPathModifier>
 ///
 /// Wraps the child in a [ClipPath] widget using a triangle clipper.
 @MixableModifier()
-final class ClipTriangleModifier extends WidgetModifier<ClipTriangleModifier>
-    with Diagnosticable, _$ClipTriangleModifierMethods {
+final class ClipTriangleModifier with _$ClipTriangleModifier {
   @override
   final Clip clipBehavior;
 

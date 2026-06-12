@@ -14,8 +14,7 @@ part 'scroll_view_modifier.g.dart';
 ///
 /// Wraps the child in a scrollable widget with the specified properties.
 @MixableModifier()
-final class ScrollViewModifier extends WidgetModifier<ScrollViewModifier>
-    with Diagnosticable, _$ScrollViewModifierMethods {
+final class ScrollViewModifier with _$ScrollViewModifier {
   @override
   final Axis? scrollDirection;
   @override

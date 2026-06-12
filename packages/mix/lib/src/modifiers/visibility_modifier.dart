@@ -13,8 +13,7 @@ part 'visibility_modifier.g.dart';
 ///
 /// Wraps the child in a [Visibility] widget to show or hide it while maintaining layout space.
 @MixableModifier(lerp: false)
-final class VisibilityModifier extends WidgetModifier<VisibilityModifier>
-    with Diagnosticable, _$VisibilityModifierMethods {
+final class VisibilityModifier with _$VisibilityModifier {
   /// Whether the child widget should be visible.
   @override
   final bool visible;

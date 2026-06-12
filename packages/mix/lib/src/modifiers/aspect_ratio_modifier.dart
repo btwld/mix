@@ -13,8 +13,7 @@ part 'aspect_ratio_modifier.g.dart';
 ///
 /// Wraps the child in an [AspectRatio] widget with the specified ratio.
 @MixableModifier()
-final class AspectRatioModifier extends WidgetModifier<AspectRatioModifier>
-    with Diagnosticable, _$AspectRatioModifierMethods {
+final class AspectRatioModifier with _$AspectRatioModifier {
   @override
   final double aspectRatio;
 

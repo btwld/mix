@@ -13,8 +13,7 @@ part 'opacity_modifier.g.dart';
 ///
 /// Wraps the child in an [Opacity] widget with the specified opacity value.
 @MixableModifier()
-final class OpacityModifier extends WidgetModifier<OpacityModifier>
-    with Diagnosticable, _$OpacityModifierMethods {
+final class OpacityModifier with _$OpacityModifier {
   /// Opacity value between 0.0 and 1.0 (inclusive).
   @override
   final double opacity;

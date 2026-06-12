@@ -6,9 +6,12 @@ part of 'opacity_modifier.dart';
 // ModifierGenerator
 // **************************************************************************
 
-mixin _$OpacityModifierMethods
-    on WidgetModifier<OpacityModifier>, Diagnosticable {
+mixin _$OpacityModifier
+    implements WidgetModifier<OpacityModifier>, Diagnosticable {
   double get opacity;
+
+  @override
+  Type get type => OpacityModifier;
 
   @override
   OpacityModifier copyWith({double? opacity}) {
@@ -17,19 +20,56 @@ mixin _$OpacityModifierMethods
 
   @override
   OpacityModifier lerp(OpacityModifier? other, double t) {
-    if (other == null) return this as OpacityModifier;
-
-    return OpacityModifier(MixOps.lerp(opacity, other.opacity, t)!);
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(DoubleProperty('opacity', opacity));
+    return OpacityModifier(MixOps.lerp(opacity, other?.opacity, t));
   }
 
   @override
   List<Object?> get props => [opacity];
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        other is OpacityModifier &&
+            runtimeType == other.runtimeType &&
+            propsEquals(props, other.props);
+  }
+
+  @override
+  int get hashCode => propsHash(runtimeType, props);
+
+  @override
+  bool get stringify => true;
+
+  @override
+  Map<String, String> getDiff(Equatable other) {
+    if (this == other) return const {};
+
+    return propsDiff(props, other.props);
+  }
+
+  @override
+  String toStringShort() => '$runtimeType';
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) =>
+      toDiagnosticsNode(
+        style: DiagnosticsTreeStyle.singleLine,
+      ).toString(minLevel: minLevel);
+
+  @override
+  DiagnosticsNode toDiagnosticsNode({
+    String? name,
+    DiagnosticsTreeStyle? style,
+  }) =>
+      DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
+
+  @override
+  Widget build(Widget child);
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    properties.add(DoubleProperty('opacity', opacity));
+  }
 }
 
 class OpacityModifierMix extends ModifierMix<OpacityModifier>

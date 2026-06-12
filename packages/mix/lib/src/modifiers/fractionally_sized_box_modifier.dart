@@ -13,9 +13,7 @@ part 'fractionally_sized_box_modifier.g.dart';
 ///
 /// Wraps the child in a [FractionallySizedBox] widget with the specified factors.
 @MixableModifier()
-final class FractionallySizedBoxModifier
-    extends WidgetModifier<FractionallySizedBoxModifier>
-    with Diagnosticable, _$FractionallySizedBoxModifierMethods {
+final class FractionallySizedBoxModifier with _$FractionallySizedBoxModifier {
   @override
   final double? widthFactor;
   @override

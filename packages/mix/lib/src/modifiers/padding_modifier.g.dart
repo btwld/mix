@@ -6,9 +6,12 @@ part of 'padding_modifier.dart';
 // ModifierGenerator
 // **************************************************************************
 
-mixin _$PaddingModifierMethods
-    on WidgetModifier<PaddingModifier>, Diagnosticable {
+mixin _$PaddingModifier
+    implements WidgetModifier<PaddingModifier>, Diagnosticable {
   EdgeInsetsGeometry get padding;
+
+  @override
+  Type get type => PaddingModifier;
 
   @override
   PaddingModifier copyWith({EdgeInsetsGeometry? padding}) {
@@ -17,19 +20,56 @@ mixin _$PaddingModifierMethods
 
   @override
   PaddingModifier lerp(PaddingModifier? other, double t) {
-    if (other == null) return this as PaddingModifier;
-
-    return PaddingModifier(MixOps.lerp(padding, other.padding, t)!);
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('padding', padding));
+    return PaddingModifier(MixOps.lerp(padding, other?.padding, t));
   }
 
   @override
   List<Object?> get props => [padding];
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        other is PaddingModifier &&
+            runtimeType == other.runtimeType &&
+            propsEquals(props, other.props);
+  }
+
+  @override
+  int get hashCode => propsHash(runtimeType, props);
+
+  @override
+  bool get stringify => true;
+
+  @override
+  Map<String, String> getDiff(Equatable other) {
+    if (this == other) return const {};
+
+    return propsDiff(props, other.props);
+  }
+
+  @override
+  String toStringShort() => '$runtimeType';
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) =>
+      toDiagnosticsNode(
+        style: DiagnosticsTreeStyle.singleLine,
+      ).toString(minLevel: minLevel);
+
+  @override
+  DiagnosticsNode toDiagnosticsNode({
+    String? name,
+    DiagnosticsTreeStyle? style,
+  }) =>
+      DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
+
+  @override
+  Widget build(Widget child);
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    properties.add(DiagnosticsProperty('padding', padding));
+  }
 }
 
 class PaddingModifierMix extends ModifierMix<PaddingModifier>

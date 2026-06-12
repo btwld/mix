@@ -145,7 +145,7 @@ void main() {
       test('contains all properties', () {
         const modifier = FlexibleModifier(flex: 3, fit: FlexFit.tight);
 
-        expect(modifier.props, [FlexFit.tight, 3]);
+        expect(modifier.props, [3, FlexFit.tight]);
       });
 
       test('contains null values', () {
@@ -308,8 +308,8 @@ void main() {
 
         final props = attribute.props;
         expect(props.length, 2);
-        expect(props[0], attribute.fit);
-        expect(props[1], attribute.flex);
+        expect(props[0], attribute.flex);
+        expect(props[1], attribute.fit);
       });
     });
   });

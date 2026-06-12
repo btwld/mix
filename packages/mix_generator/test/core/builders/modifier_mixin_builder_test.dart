@@ -5,17 +5,18 @@ import 'package:test/test.dart';
 void main() {
   group('ModifierMixinBuilder', () {
     group('mixinName', () {
-      test('generates correct mixin name from modifier name', () {
+      test('generates spec-style mixin name from modifier name', () {
         final builder = ModifierMixinBuilder(
           modifierName: 'AlignModifier',
           fields: [],
         );
-        expect(builder.mixinName, equals('_\$AlignModifierMethods'));
+
+        expect(builder.mixinName, equals('_\$AlignModifier'));
       });
     });
 
     group('build', () {
-      test('generates mixin with WidgetModifier constraint', () {
+      test('generates self-contained WidgetModifier mixin', () {
         final builder = ModifierMixinBuilder(
           modifierName: 'AlignModifier',
           fields: [],
@@ -25,9 +26,12 @@ void main() {
         expect(
           code,
           contains(
-            'mixin _\$AlignModifierMethods on WidgetModifier<AlignModifier>, Diagnosticable',
+            'mixin _\$AlignModifier implements WidgetModifier<AlignModifier>, Diagnosticable',
           ),
         );
+        expect(code, isNot(contains('Methods')));
+        expect(code, isNot(contains('typedef')));
+        expect(code, isNot(contains('on WidgetModifier')));
       });
 
       test('generates abstract getters for fields', () {
@@ -37,13 +41,11 @@ void main() {
             ModifierFieldModel(
               name: 'alignment',
               typeName: 'AlignmentGeometry',
-              propWrapperKind: PropWrapperKind.maybe,
               isLerpable: true,
             ),
             ModifierFieldModel(
               name: 'widthFactor',
               typeName: 'double',
-              propWrapperKind: PropWrapperKind.maybe,
               isNullable: true,
               isLerpable: true,
             ),
@@ -55,6 +57,17 @@ void main() {
         expect(code, contains('double? get widthFactor;'));
       });
 
+      test('generates type getter and build contract', () {
+        final builder = ModifierMixinBuilder(
+          modifierName: 'OpacityModifier',
+          fields: [],
+        );
+        final code = builder.build();
+
+        expect(code, contains('Type get type => OpacityModifier;'));
+        expect(code, contains('Widget build(Widget child);'));
+      });
+
       test('generates copyWith with named params', () {
         final builder = ModifierMixinBuilder(
           modifierName: 'AlignModifier',
@@ -62,7 +75,6 @@ void main() {
             ModifierFieldModel(
               name: 'alignment',
               typeName: 'AlignmentGeometry',
-              propWrapperKind: PropWrapperKind.maybe,
               isNamedParam: true,
             ),
           ],
@@ -81,7 +93,6 @@ void main() {
             ModifierFieldModel(
               name: 'opacity',
               typeName: 'double',
-              propWrapperKind: PropWrapperKind.maybe,
               isNamedParam: false,
               isLerpable: true,
             ),
@@ -94,14 +105,13 @@ void main() {
         expect(code, isNot(contains('opacity: opacity ?? this.opacity,')));
       });
 
-      test('generates lerp with MixOps.lerp for lerpable types', () {
+      test('generates spec-style lerp for lerpable types', () {
         final builder = ModifierMixinBuilder(
           modifierName: 'AlignModifier',
           fields: [
             ModifierFieldModel(
               name: 'alignment',
               typeName: 'AlignmentGeometry',
-              propWrapperKind: PropWrapperKind.maybe,
               isNamedParam: true,
               isLerpable: true,
             ),
@@ -111,136 +121,66 @@ void main() {
 
         expect(
           code,
-          contains('alignment: MixOps.lerp(alignment, other.alignment, t)!'),
+          contains('alignment: MixOps.lerp(alignment, other?.alignment, t),'),
         );
+        expect(code, isNot(contains('if (other == null) return this')));
+        expect(code, isNot(contains('other.alignment')));
+        expect(code, isNot(contains(')!')));
       });
 
-      test('generates lerp with MixOps.lerpSnap for non-lerpable types', () {
-        final builder = ModifierMixinBuilder(
-          modifierName: 'FlexibleModifier',
-          fields: [
-            ModifierFieldModel(
-              name: 'fit',
-              typeName: 'FlexFit',
-              propWrapperKind: PropWrapperKind.maybe,
-              isNamedParam: true,
-              isNullable: true,
-              isEnum: true,
-            ),
-          ],
-        );
-        final code = builder.build();
-
-        expect(code, contains('fit: MixOps.lerpSnap(fit, other.fit, t),'));
-      });
-
-      test('generates lerp with null assertion for non-nullable fields', () {
-        final builder = ModifierMixinBuilder(
-          modifierName: 'ClipOvalModifier',
-          fields: [
-            ModifierFieldModel(
-              name: 'clipBehavior',
-              typeName: 'Clip',
-              propWrapperKind: PropWrapperKind.maybe,
-              isNamedParam: true,
-              isNullable: false,
-              isEnum: true,
-            ),
-          ],
-        );
-        final code = builder.build();
-
-        expect(
-          code,
-          contains(
-            'clipBehavior: MixOps.lerpSnap(clipBehavior, other.clipBehavior, t)!',
-          ),
-        );
-      });
-
-      test('generates lerp without null assertion for nullable fields', () {
-        final builder = ModifierMixinBuilder(
-          modifierName: 'SizedBoxModifier',
-          fields: [
-            ModifierFieldModel(
-              name: 'width',
-              typeName: 'double',
-              propWrapperKind: PropWrapperKind.maybe,
-              isNamedParam: true,
-              isNullable: true,
-              isLerpable: true,
-            ),
-          ],
-        );
-        final code = builder.build();
-
-        expect(code, contains('width: MixOps.lerp(width, other.width, t),'));
-        expect(
-          code,
-          isNot(contains('width: MixOps.lerp(width, other.width, t)!')),
-        );
-      });
-
-      test('generates DoubleProperty diagnostic for double fields', () {
+      test('generates spec-style lerp with positional params', () {
         final builder = ModifierMixinBuilder(
           modifierName: 'OpacityModifier',
           fields: [
             ModifierFieldModel(
               name: 'opacity',
               typeName: 'double',
-              propWrapperKind: PropWrapperKind.maybe,
+              isNamedParam: false,
+              isLerpable: true,
             ),
           ],
         );
         final code = builder.build();
 
-        expect(code, contains("DoubleProperty('opacity', opacity)"));
-      });
-
-      test('generates IntProperty diagnostic for int fields', () {
-        final builder = ModifierMixinBuilder(
-          modifierName: 'RotatedBoxModifier',
-          fields: [
-            ModifierFieldModel(
-              name: 'quarterTurns',
-              typeName: 'int',
-              propWrapperKind: PropWrapperKind.maybe,
-            ),
-          ],
+        expect(code, contains('MixOps.lerp(opacity, other?.opacity, t),'));
+        expect(
+          code,
+          isNot(contains('opacity: MixOps.lerp(opacity, other?.opacity, t)')),
         );
-        final code = builder.build();
-
-        expect(code, contains("IntProperty('quarterTurns', quarterTurns)"));
       });
 
-      test('generates EnumProperty diagnostic for enum fields', () {
+      test('generates lerpSnap for non-lerpable types', () {
         final builder = ModifierMixinBuilder(
-          modifierName: 'ClipOvalModifier',
+          modifierName: 'FlexibleModifier',
           fields: [
             ModifierFieldModel(
-              name: 'clipBehavior',
-              typeName: 'Clip',
-              propWrapperKind: PropWrapperKind.maybe,
+              name: 'fit',
+              typeName: 'FlexFit',
+              isNamedParam: true,
+              isNullable: true,
               isEnum: true,
             ),
           ],
         );
         final code = builder.build();
 
-        expect(
-          code,
-          contains("EnumProperty<Clip>('clipBehavior', clipBehavior)"),
-        );
+        expect(code, contains('fit: MixOps.lerpSnap(fit, other?.fit, t),'));
       });
 
-      test('generates FlagProperty for bool with flag description', () {
+      test('generates shared diagnostics for field types', () {
         final builder = ModifierMixinBuilder(
-          modifierName: 'ScrollViewModifier',
+          modifierName: 'MixedModifier',
           fields: [
+            ModifierFieldModel(name: 'opacity', typeName: 'double'),
+            ModifierFieldModel(name: 'quarterTurns', typeName: 'int'),
+            ModifierFieldModel(
+              name: 'clipBehavior',
+              typeName: 'Clip',
+              isEnum: true,
+            ),
             ModifierFieldModel(
               name: 'reverse',
               typeName: 'bool',
-              propWrapperKind: PropWrapperKind.maybe,
               isNullable: true,
               flagDescription: 'reversed',
             ),
@@ -248,35 +188,66 @@ void main() {
         );
         final code = builder.build();
 
+        expect(code, contains("DoubleProperty('opacity', opacity)"));
+        expect(code, contains("IntProperty('quarterTurns', quarterTurns)"));
+        expect(
+          code,
+          contains("EnumProperty<Clip>('clipBehavior', clipBehavior)"),
+        );
         expect(
           code,
           contains(
             "FlagProperty('reverse', value: reverse, ifTrue: 'reversed')",
           ),
         );
+        expect(code, isNot(contains('super.debugFillProperties(properties)')));
       });
 
-      test('generates props getter', () {
+      test('generates props and equality surface', () {
         final builder = ModifierMixinBuilder(
           modifierName: 'SizedBoxModifier',
           fields: [
             ModifierFieldModel(
-              name: 'height',
+              name: 'width',
               typeName: 'double',
-              propWrapperKind: PropWrapperKind.maybe,
               isNullable: true,
             ),
             ModifierFieldModel(
-              name: 'width',
+              name: 'height',
               typeName: 'double',
-              propWrapperKind: PropWrapperKind.maybe,
               isNullable: true,
             ),
           ],
         );
         final code = builder.build();
 
-        expect(code, contains('List<Object?> get props => [height, width];'));
+        expect(code, contains('List<Object?> get props => [width, height];'));
+        expect(code, contains('bool operator ==(Object other)'));
+        expect(code, contains('propsEquals(props, other.props)'));
+        expect(
+          code,
+          contains('int get hashCode => propsHash(runtimeType, props)'),
+        );
+        expect(code, contains('bool get stringify => true;'));
+        expect(code, contains('Map<String, String> getDiff(Equatable other)'));
+      });
+
+      test('generates Diagnosticable surface', () {
+        final builder = ModifierMixinBuilder(
+          modifierName: 'OpacityModifier',
+          fields: [],
+        );
+        final code = builder.build();
+
+        expect(code, contains("String toStringShort() => '\$runtimeType';"));
+        expect(
+          code,
+          contains(
+            'String toString({DiagnosticLevel minLevel = DiagnosticLevel.info})',
+          ),
+        );
+        expect(code, contains('DiagnosticsNode toDiagnosticsNode'));
+        expect(code, contains('DiagnosticableNode<Diagnosticable>'));
       });
 
       test('generates empty methods for zero-field modifier', () {
@@ -298,9 +269,7 @@ void main() {
             ModifierFieldModel(
               name: 'visible',
               typeName: 'bool',
-              propWrapperKind: PropWrapperKind.maybe,
               isNamedParam: false,
-              isLerpable: false,
             ),
           ],
           generateLerp: false,
@@ -311,28 +280,6 @@ void main() {
         expect(code, isNot(contains('MixOps.lerp')));
         expect(code, contains('VisibilityModifier copyWith({'));
         expect(code, contains('List<Object?> get props => [visible];'));
-      });
-
-      test('generates lerp with positional params', () {
-        final builder = ModifierMixinBuilder(
-          modifierName: 'OpacityModifier',
-          fields: [
-            ModifierFieldModel(
-              name: 'opacity',
-              typeName: 'double',
-              propWrapperKind: PropWrapperKind.maybe,
-              isNamedParam: false,
-              isLerpable: true,
-            ),
-          ],
-        );
-        final code = builder.build();
-
-        expect(code, contains('MixOps.lerp(opacity, other.opacity, t)!,'));
-        expect(
-          code,
-          isNot(contains('opacity: MixOps.lerp(opacity, other.opacity, t)!')),
-        );
       });
     });
   });

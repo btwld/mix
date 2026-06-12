@@ -6,8 +6,11 @@ part of 'intrinsic_modifier.dart';
 // ModifierGenerator
 // **************************************************************************
 
-mixin _$IntrinsicHeightModifierMethods
-    on WidgetModifier<IntrinsicHeightModifier>, Diagnosticable {
+mixin _$IntrinsicHeightModifier
+    implements WidgetModifier<IntrinsicHeightModifier>, Diagnosticable {
+  @override
+  Type get type => IntrinsicHeightModifier;
+
   @override
   IntrinsicHeightModifier copyWith() {
     return const IntrinsicHeightModifier();
@@ -15,18 +18,54 @@ mixin _$IntrinsicHeightModifierMethods
 
   @override
   IntrinsicHeightModifier lerp(IntrinsicHeightModifier? other, double t) {
-    if (other == null) return this as IntrinsicHeightModifier;
-
     return const IntrinsicHeightModifier();
   }
 
   @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
+  List<Object?> get props => [];
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        other is IntrinsicHeightModifier &&
+            runtimeType == other.runtimeType &&
+            propsEquals(props, other.props);
   }
 
   @override
-  List<Object?> get props => [];
+  int get hashCode => propsHash(runtimeType, props);
+
+  @override
+  bool get stringify => true;
+
+  @override
+  Map<String, String> getDiff(Equatable other) {
+    if (this == other) return const {};
+
+    return propsDiff(props, other.props);
+  }
+
+  @override
+  String toStringShort() => '$runtimeType';
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) =>
+      toDiagnosticsNode(
+        style: DiagnosticsTreeStyle.singleLine,
+      ).toString(minLevel: minLevel);
+
+  @override
+  DiagnosticsNode toDiagnosticsNode({
+    String? name,
+    DiagnosticsTreeStyle? style,
+  }) =>
+      DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
+
+  @override
+  Widget build(Widget child);
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {}
 }
 
 class IntrinsicHeightModifierMix extends ModifierMix<IntrinsicHeightModifier>
@@ -56,8 +95,11 @@ class IntrinsicHeightModifierMix extends ModifierMix<IntrinsicHeightModifier>
   List<Object?> get props => [];
 }
 
-mixin _$IntrinsicWidthModifierMethods
-    on WidgetModifier<IntrinsicWidthModifier>, Diagnosticable {
+mixin _$IntrinsicWidthModifier
+    implements WidgetModifier<IntrinsicWidthModifier>, Diagnosticable {
+  @override
+  Type get type => IntrinsicWidthModifier;
+
   @override
   IntrinsicWidthModifier copyWith() {
     return const IntrinsicWidthModifier();
@@ -65,18 +107,54 @@ mixin _$IntrinsicWidthModifierMethods
 
   @override
   IntrinsicWidthModifier lerp(IntrinsicWidthModifier? other, double t) {
-    if (other == null) return this as IntrinsicWidthModifier;
-
     return const IntrinsicWidthModifier();
   }
 
   @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
+  List<Object?> get props => [];
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        other is IntrinsicWidthModifier &&
+            runtimeType == other.runtimeType &&
+            propsEquals(props, other.props);
   }
 
   @override
-  List<Object?> get props => [];
+  int get hashCode => propsHash(runtimeType, props);
+
+  @override
+  bool get stringify => true;
+
+  @override
+  Map<String, String> getDiff(Equatable other) {
+    if (this == other) return const {};
+
+    return propsDiff(props, other.props);
+  }
+
+  @override
+  String toStringShort() => '$runtimeType';
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) =>
+      toDiagnosticsNode(
+        style: DiagnosticsTreeStyle.singleLine,
+      ).toString(minLevel: minLevel);
+
+  @override
+  DiagnosticsNode toDiagnosticsNode({
+    String? name,
+    DiagnosticsTreeStyle? style,
+  }) =>
+      DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
+
+  @override
+  Widget build(Widget child);
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {}
 }
 
 class IntrinsicWidthModifierMix extends ModifierMix<IntrinsicWidthModifier>

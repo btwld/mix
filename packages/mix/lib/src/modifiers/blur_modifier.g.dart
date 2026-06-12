@@ -6,8 +6,11 @@ part of 'blur_modifier.dart';
 // ModifierGenerator
 // **************************************************************************
 
-mixin _$BlurModifierMethods on WidgetModifier<BlurModifier>, Diagnosticable {
+mixin _$BlurModifier implements WidgetModifier<BlurModifier>, Diagnosticable {
   double get sigma;
+
+  @override
+  Type get type => BlurModifier;
 
   @override
   BlurModifier copyWith({double? sigma}) {
@@ -16,19 +19,56 @@ mixin _$BlurModifierMethods on WidgetModifier<BlurModifier>, Diagnosticable {
 
   @override
   BlurModifier lerp(BlurModifier? other, double t) {
-    if (other == null) return this as BlurModifier;
-
-    return BlurModifier(MixOps.lerp(sigma, other.sigma, t)!);
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(DoubleProperty('sigma', sigma));
+    return BlurModifier(MixOps.lerp(sigma, other?.sigma, t));
   }
 
   @override
   List<Object?> get props => [sigma];
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        other is BlurModifier &&
+            runtimeType == other.runtimeType &&
+            propsEquals(props, other.props);
+  }
+
+  @override
+  int get hashCode => propsHash(runtimeType, props);
+
+  @override
+  bool get stringify => true;
+
+  @override
+  Map<String, String> getDiff(Equatable other) {
+    if (this == other) return const {};
+
+    return propsDiff(props, other.props);
+  }
+
+  @override
+  String toStringShort() => '$runtimeType';
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) =>
+      toDiagnosticsNode(
+        style: DiagnosticsTreeStyle.singleLine,
+      ).toString(minLevel: minLevel);
+
+  @override
+  DiagnosticsNode toDiagnosticsNode({
+    String? name,
+    DiagnosticsTreeStyle? style,
+  }) =>
+      DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
+
+  @override
+  Widget build(Widget child);
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    properties.add(DoubleProperty('sigma', sigma));
+  }
 }
 
 class BlurModifierMix extends ModifierMix<BlurModifier> with Diagnosticable {

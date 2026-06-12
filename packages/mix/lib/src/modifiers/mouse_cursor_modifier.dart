@@ -13,8 +13,7 @@ part 'mouse_cursor_modifier.g.dart';
 ///
 /// Wraps the child in a [MouseRegion] widget with the specified cursor.
 @MixableModifier()
-class MouseCursorModifier extends WidgetModifier<MouseCursorModifier>
-    with Diagnosticable, _$MouseCursorModifierMethods {
+class MouseCursorModifier with _$MouseCursorModifier {
   @override
   final MouseCursor? mouseCursor;
 

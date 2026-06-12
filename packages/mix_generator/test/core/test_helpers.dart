@@ -241,6 +241,12 @@ class MixWidget {
   const MixWidget({this.name});
 }
 
+class MixableModifier {
+  final bool lerp;
+
+  const MixableModifier({this.lerp = true});
+}
+
 class GeneratedSpecMethods {
   static const int copyWith = 0x01;
   static const int equals = 0x02;

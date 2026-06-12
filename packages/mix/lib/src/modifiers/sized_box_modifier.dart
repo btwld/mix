@@ -13,8 +13,7 @@ part 'sized_box_modifier.g.dart';
 ///
 /// Wraps the child in a [SizedBox] widget with the specified width and height.
 @MixableModifier()
-final class SizedBoxModifier extends WidgetModifier<SizedBoxModifier>
-    with Diagnosticable, _$SizedBoxModifierMethods {
+final class SizedBoxModifier with _$SizedBoxModifier {
   @override
   final double? width;
   @override
