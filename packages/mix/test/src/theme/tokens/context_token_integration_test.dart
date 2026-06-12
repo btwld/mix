@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
+Color _resolvePrimary(BuildContext context) {
+  return Theme.of(context).colorScheme.primary;
+}
+
+Color _resolveBlack(BuildContext _) => const Color(0xFF000000);
+
 /// End-to-end tests for [ContextToken] and resolver values in [MixScope]:
 /// context-derived token values resolve through the standard token ref
 /// pipeline, so they follow exact fluent-chain ordering.
@@ -9,10 +15,7 @@ void main() {
   const themePrimary = Color(0xFF123456);
   const explicitColor = Color(0xFFFF0000);
 
-  final primary = ContextToken(
-    (context) => Theme.of(context).colorScheme.primary,
-    'context.primary',
-  );
+  final primary = ContextToken(_resolvePrimary);
 
   Widget wrapWithTheme(Widget child) {
     return Theme(
@@ -38,15 +41,15 @@ void main() {
     });
 
     test('equality is based on resolver identity', () {
-      Color resolveBlack(BuildContext _) => const .new(0xFF000000);
-
-      final a = ContextToken(resolveBlack);
-      final b = ContextToken(resolveBlack);
+      final a = ContextToken(_resolveBlack);
+      final b = ContextToken(_resolveBlack);
       final c = ContextToken((_) => const Color(0xFF000000));
+      final d = ContextToken((_) => const Color(0xFF000000));
 
       expect(a, equals(b));
       expect(a.hashCode, equals(b.hashCode));
       expect(a == c, isFalse);
+      expect(c == d, isFalse);
     });
 
     testWidgets('resolves from context without a MixScope', (tester) async {
@@ -93,6 +96,43 @@ void main() {
       expect(decorationOf(tester).color, scopeColor);
     });
 
+    testWidgets('MixScope resolver overrides the resolver', (tester) async {
+      const scopeColor = Color(0xFF00FF00);
+      final style = BoxStyler().color(primary());
+
+      await tester.pumpWidget(
+        wrapWithTheme(
+          MixScope(
+            tokens: {primary: (BuildContext _) => scopeColor},
+            child: Box(style: style),
+          ),
+        ),
+      );
+
+      expect(decorationOf(tester).color, scopeColor);
+    });
+
+    testWidgets(
+      'MixScope override uses resolver identity across token instances',
+      (tester) async {
+        const scopeColor = Color(0xFF00FF00);
+        final scopedPrimary = ContextToken(_resolvePrimary);
+        final styledPrimary = ContextToken(_resolvePrimary);
+        final style = BoxStyler().color(styledPrimary());
+
+        await tester.pumpWidget(
+          wrapWithTheme(
+            MixScope(
+              tokens: {scopedPrimary: scopeColor},
+              child: Box(style: style),
+            ),
+          ),
+        );
+
+        expect(decorationOf(tester).color, scopeColor);
+      },
+    );
+
     testWidgets('directives apply to the context-resolved color', (
       tester,
     ) async {
@@ -135,7 +175,7 @@ void main() {
     });
 
     testWidgets('double context token follows chain order', (tester) async {
-      final spacing = ContextToken((_) => 42.0, 'context.spacing');
+      final spacing = ContextToken((_) => 42.0);
 
       final tokenLast = BoxStyler().paddingAll(10).paddingAll(spacing());
       final explicitLast = BoxStyler().paddingAll(spacing()).paddingAll(10);
@@ -193,6 +233,27 @@ void main() {
       );
 
       expect(decorationOf(tester).color, explicitColor);
+    });
+
+    testWidgets('resolver-backed token after an explicit value wins', (
+      tester,
+    ) async {
+      const token = ColorToken('app.primary');
+      final style = BoxStyler().color(explicitColor).color(token());
+
+      await tester.pumpWidget(
+        wrapWithTheme(
+          MixScope(
+            tokens: {
+              token: (BuildContext context) =>
+                  Theme.of(context).colorScheme.primary,
+            },
+            child: Box(style: style),
+          ),
+        ),
+      );
+
+      expect(decorationOf(tester).color, themePrimary);
     });
 
     testWidgets('resolve() invokes the resolver with the consuming context', (

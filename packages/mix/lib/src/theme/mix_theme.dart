@@ -248,6 +248,10 @@ class MixScope extends InheritedModel<String> {
   ///   child: app,
   /// )
   /// ```
+  ///
+  /// Resolver entries affect token resolution. Token calls, such as
+  /// `$primary()`, still use Mix's existing token-reference support and are
+  /// limited to the same supported value types.
   T getToken<T>(MixToken<T> token, BuildContext context) {
     final value = _tokens?[token];
     if (value == null) {

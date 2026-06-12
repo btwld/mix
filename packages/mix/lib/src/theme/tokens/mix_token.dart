@@ -58,14 +58,19 @@ abstract class MixToken<T> {
 /// BoxStyler().color(Colors.red).color(primary()); // primary wins
 /// ```
 ///
-/// Declare context tokens as top-level or static finals: equality is based
-/// on resolver identity, so a closure created inline produces a new token
-/// on every rebuild.
+/// Equality is based on [T] and resolver identity. Reusing the same top-level
+/// or static function resolver creates matching tokens, while same-looking
+/// inline closures create distinct tokens. Prefer declaring context tokens as
+/// top-level or static finals unless you intentionally want a new token.
+///
+/// Calling a token, such as `primary()`, uses the same token-reference support
+/// as other [MixToken]s. If [T] is not one of the supported reference types,
+/// use [resolve] with a [BuildContext] instead.
 class ContextToken<T> extends MixToken<T> {
   /// Computes the token's value from the given context.
   final T Function(BuildContext context) resolver;
 
-  const ContextToken(this.resolver, [String name = 'context']) : super(name);
+  const ContextToken(this.resolver) : super('context');
 
   @override
   T resolve(BuildContext context) {
@@ -81,14 +86,12 @@ class ContextToken<T> extends MixToken<T> {
   operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is ContextToken<T> &&
-        other.resolver == resolver &&
-        other.name == name;
+    return other is ContextToken<T> && other.resolver == resolver;
   }
 
   @override
-  String toString() => 'ContextToken<$T>($name)';
+  String toString() => 'ContextToken<$T>(${resolver.toString()})';
 
   @override
-  int get hashCode => Object.hash(name, T, resolver);
+  int get hashCode => Object.hash(T, resolver);
 }
