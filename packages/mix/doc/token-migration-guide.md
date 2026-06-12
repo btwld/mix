@@ -180,10 +180,10 @@ extension type const DoubleRef._(double _value) implements double {
 **Important caveats.** Extension types are erased at runtime, so `DoubleRef`
 is a sentinel-backed ergonomic shim — `DoubleRef.token(t)` returns a unique
 negative nano-double that the `Prop.value` constructor recognises and converts
-back to a `TokenSource`. The collision-free guarantee only holds for refs
-obtained through `MixToken<double>.call()` (i.e. via `SpaceToken` or
-`DoubleToken`); manually constructed `DoubleRef` instances are not registered
-and will be treated as ordinary doubles.
+back to a `TokenSource`. The representation constructor is private, so the only
+way to obtain a `DoubleRef` is through `MixToken<double>.call()` (i.e. via
+`SpaceToken` or `DoubleToken`); an ordinary `double` that happens to be passed
+where a token is expected is treated as a plain value, never as a token.
 
 If you need an explicit, type-safe handle to a double token without going
 through the sentinel registry, use `Prop.token(token)` directly:
