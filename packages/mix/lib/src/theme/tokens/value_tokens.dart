@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import '../../core/breakpoint.dart';
 import '../../core/prop.dart';
 import '../../core/prop_refs.dart';
+import '../mix_theme.dart';
 import 'mix_token.dart';
 import 'token_refs.dart';
 
@@ -52,22 +53,29 @@ class BreakpointToken extends MixToken<Breakpoint> {
   @override
   BreakpointRef call() => .new(this);
 
+  /// Resolves this breakpoint via [MixScope], with built-in defaults for the
+  /// canonical [mobile], [tablet], and [desktop] tokens when no scope is
+  /// present or the scope does not declare them.
+  ///
+  /// A type mismatch (a scope entry that exists but is not a [Breakpoint]) is
+  /// surfaced — defaults only apply on absence, not on misconfiguration.
   @override
   Breakpoint resolve(BuildContext context) {
-    try {
+    final hasEntry =
+        MixScope.maybeOf(context)?.tokens?.containsKey(this) ?? false;
+
+    if (hasEntry) {
       return super.resolve(context);
-    } catch (e) {
-      switch (this) {
-        case mobile:
-          return Breakpoint.maxWidth(767);
-        case tablet:
-          return Breakpoint.widthRange(768, 1023);
-        case desktop:
-          return Breakpoint.minWidth(1024);
-        default:
-          rethrow;
-      }
     }
+
+    // Custom breakpoints without a scope entry fall through to super.resolve
+    // so callers see the standard "token not found" error.
+    return switch (this) {
+      mobile => Breakpoint.maxWidth(767),
+      tablet => Breakpoint.widthRange(768, 1023),
+      desktop => Breakpoint.minWidth(1024),
+      _ => super.resolve(context),
+    };
   }
 }
 

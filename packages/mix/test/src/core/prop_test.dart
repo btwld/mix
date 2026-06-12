@@ -76,6 +76,14 @@ void main() {
         throwsA(isA<FlutterError>()),
       );
     });
+
+    test('value handles null without crashing token-ref detection', () {
+      final prop = Prop.value<int?>(null);
+
+      expect(prop, PropMatcher.hasValues);
+      expect(prop, isNot(PropMatcher.hasTokens));
+      expect(prop.resolveProp(MockBuildContext()), isNull);
+    });
   });
 
   group('Prop with Mix values', () {

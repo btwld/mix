@@ -116,5 +116,55 @@ void main() {
       expect(ref1, equals(ref2));
       expect(ref1, isNot(equals(ref3)));
     });
+
+    testWidgets(
+      'surfaces type-mismatch errors instead of silently falling back to defaults',
+      (tester) async {
+        // Scope declares the canonical mobile breakpoint but with a value of
+        // the wrong type. The fallback path must NOT swallow the type error,
+        // otherwise misconfigurations are invisible.
+        await tester.pumpWidget(
+          MixScope(
+            tokens: <MixToken, Object>{
+              BreakpointToken.mobile: 'not-a-breakpoint',
+            },
+            child: Builder(
+              builder: (context) {
+                expect(
+                  () => BreakpointToken.mobile.resolve(context),
+                  throwsA(isA<StateError>()),
+                );
+
+                return const SizedBox.shrink();
+              },
+            ),
+          ),
+        );
+      },
+    );
+
+    testWidgets(
+      'falls back to default mobile breakpoint when scope omits the entry',
+      (tester) async {
+        // Scope exists, but does NOT declare BreakpointToken.mobile.
+        await tester.pumpWidget(
+          MixScope(
+            tokens: <MixToken, Object>{
+              const BreakpointToken('some.other.bp'): Breakpoint.maxWidth(100),
+            },
+            child: Builder(
+              builder: (context) {
+                expect(
+                  BreakpointToken.mobile.resolve(context),
+                  equals(Breakpoint.maxWidth(767)),
+                );
+
+                return const SizedBox.shrink();
+              },
+            ),
+          ),
+        );
+      },
+    );
   });
 }

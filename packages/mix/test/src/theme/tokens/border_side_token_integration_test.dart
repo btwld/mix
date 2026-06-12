@@ -46,13 +46,13 @@ void main() {
       // BorderSideRef should throw error when trying to access properties directly
       expect(
         () => borderSideRef.color,
-        throwsA(isA<UnimplementedError>()),
+        throwsA(isA<UnsupportedError>()),
         reason: 'BorderSideRef should prevent direct property access',
       );
 
       expect(
         () => borderSideRef.width,
-        throwsA(isA<UnimplementedError>()),
+        throwsA(isA<UnsupportedError>()),
         reason: 'BorderSideRef should prevent direct property access',
       );
     });

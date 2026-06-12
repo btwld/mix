@@ -2,6 +2,7 @@
 // ABOUTME: Contains refs, extension types and utilities specifically for design tokens.
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../core/breakpoint.dart';
@@ -36,7 +37,7 @@ To use as an actual $typeName value:
 
   @override
   Never noSuchMethod(Invocation invocation) {
-    throw UnimplementedError(_buildTokenReferenceError(invocation.memberName));
+    throw UnsupportedError(_buildTokenReferenceError(invocation.memberName));
   }
 }
 
@@ -192,32 +193,62 @@ final class BoxShadowListMixRef extends Prop<List<BoxShadow>>
 // EXTENSION TYPE TOKEN REFERENCES FOR PRIMITIVES
 // =============================================================================
 
-/// Global registry that maps extension type values to their source tokens.
-final Map<Object, MixToken> _tokenRegistry = <Object, MixToken>{};
+/// Maps sentinel values to their source [MixToken]. Sentinels are negative
+/// nano-doubles handed out monotonically by [DoubleRef.token].
+///
+/// The sentinel range is reserved because extension-type values are represented
+/// as `double` at runtime: a plain double equal to a registered sentinel is
+/// indistinguishable from a [DoubleRef].
+final Map<double, MixToken> _doubleTokenRegistry = <double, MixToken>{};
 
-/// Clears the token registry.
+/// Reverse lookup: re-issues the same sentinel for the same token.
+final Map<MixToken, double> _doubleSentinelByToken = <MixToken, double>{};
+
+/// Number of sentinels handed out; the n-th sentinel is `-(n * 1e-6)`.
+int _sentinelCount = 0;
+
+/// Clears the [DoubleRef] sentinel registry. Internal test helper.
+@internal
 @visibleForTesting
 void clearTokenRegistry() {
-  _tokenRegistry.clear();
+  _doubleTokenRegistry.clear();
+  _doubleSentinelByToken.clear();
+  _sentinelCount = 0;
 }
 
-/// Returns the token associated with a token reference value.
+/// Returns the token associated with a registered [DoubleRef] sentinel, or
+/// `null` if [value] is not a registered sentinel.
 ///
-/// Returns null if the value is not a registered token reference.
+/// Internal — used by [Prop.value] to detect token refs. External callers
+/// should use [Prop.token] to construct an explicit token-backed prop.
+@internal
 MixToken<T>? getTokenFromValue<T>(Object value) {
-  return _tokenRegistry[value] as MixToken<T>?;
+  if (value is! double) return null;
+
+  return _doubleTokenRegistry[value] as MixToken<T>?;
 }
 
 /// Token reference for [double] values that implements the double interface.
-extension type const DoubleRef(double _value) implements double {
-  /// Creates a token reference and registers it in the global registry.
+///
+/// `DoubleRef` is a sentinel-backed ergonomic shim: it lets a [MixToken<double>]
+/// flow through APIs that accept a plain `double` and still be detected as a
+/// token during [Prop.value] construction. Because extension types are erased
+/// at runtime, the only durable identity is the entry in the sentinel
+/// registry, so the representation constructor is private — instances are
+/// only ever obtained through [DoubleRef.token]. For an explicit, type-safe
+/// token handle, use `Prop.token(token)` instead.
+extension type const DoubleRef._(double _value) implements double {
+  /// Returns a registered sentinel for [token], re-issuing the same one on
+  /// repeated calls. Sentinels are unique among registered tokens.
   static DoubleRef token(MixToken<double> token) {
-    // Generate unique negative nano-value to avoid collisions with real values
-    final hash = token.hashCode.abs() % 100000;
-    final ref = DoubleRef(-(0.000001 + hash * 0.000001));
-    _tokenRegistry[ref] = token;
+    final existing = _doubleSentinelByToken[token];
+    if (existing != null) return DoubleRef._(existing);
 
-    return ref;
+    final sentinel = -(++_sentinelCount) * 0.000001;
+    _doubleTokenRegistry[sentinel] = token;
+    _doubleSentinelByToken[token] = sentinel;
+
+    return DoubleRef._(sentinel);
   }
 }
 
@@ -237,52 +268,49 @@ final class BoxShadowListRef extends Prop<List<BoxShadow>>
 
 /// Returns true if the value is a token reference.
 ///
-/// Detects both class-based token references (Prop with ValueRef)
-/// and extension type token references.
-bool isAnyTokenRef(Object value) {
-  // Check for class-based token references
-  if (value is Prop && value.sources.any((s) => s is TokenSource)) {
-    final typeName = value.runtimeType.toString();
-    if (typeName.endsWith('Ref') || typeName.endsWith('Prop')) {
-      return true;
-    }
-  }
+/// Detects both class-based token references (any [Prop] carrying a
+/// [TokenSource]) and extension type token references registered via
+/// [DoubleRef.token].
+bool isAnyTokenRef(Object? value) {
+  if (value == null) return false;
+  if (value is Prop) return value.hasToken;
 
-  // Check for extension type token references
-  return _tokenRegistry.containsKey(value);
+  return _doubleTokenRegistry.containsKey(value);
 }
 
 /// Creates the appropriate token reference for the given token.
 ///
 /// Returns a reference that implements the target type, allowing the token
 /// to be used wherever the type is expected.
+///
+/// Throws [UnsupportedError] if [T] is not in the supported reference set.
+/// Concrete [MixToken] subclasses (`ColorToken`, `SpaceToken`, etc.) override
+/// `call()` directly and never hit this fallback; custom token authors must
+/// either pick one of the supported types or override `call()` themselves.
 T getReferenceValue<T>(MixToken<T> token) {
   final prop = Prop.token(token);
-  if (T == Color) {
-    return ColorRef(prop as Prop<Color>) as T;
-  } else if (T == double) {
-    return DoubleRef.token(token as MixToken<double>) as T;
-  } else if (T == Radius) {
-    return RadiusRef(prop as Prop<Radius>) as T;
-  } else if (T == Shadow) {
-    return ShadowRef(prop as Prop<Shadow>) as T;
-  } else if (T == BoxShadow) {
-    return BoxShadowRef(prop as Prop<BoxShadow>) as T;
-  } else if (T == TextStyle) {
-    return TextStyleRef(prop as Prop<TextStyle>) as T;
-  } else if (T == Breakpoint) {
-    return BreakpointRef(token as BreakpointToken) as T;
-  } else if (T == BorderSide) {
-    return BorderSideRef(prop as Prop<BorderSide>) as T;
-  } else if (T == FontWeight) {
-    return FontWeightRef(prop as Prop<FontWeight>) as T;
-  } else if (T == Duration) {
-    return DurationRef(prop as Prop<Duration>) as T;
-  } else if (T == List<Shadow>) {
-    return ShadowListRef(prop as Prop<List<Shadow>>) as T;
-  } else if (T == List<BoxShadow>) {
-    return BoxShadowListRef(prop as Prop<List<BoxShadow>>) as T;
-  }
 
-  return prop as T;
+  final Object ref = switch (T) {
+    const (Color) => ColorRef(prop as Prop<Color>),
+    const (double) => DoubleRef.token(token as MixToken<double>),
+    const (Radius) => RadiusRef(prop as Prop<Radius>),
+    const (Shadow) => ShadowRef(prop as Prop<Shadow>),
+    const (BoxShadow) => BoxShadowRef(prop as Prop<BoxShadow>),
+    const (TextStyle) => TextStyleRef(prop as Prop<TextStyle>),
+    const (Breakpoint) => BreakpointRef(token as BreakpointToken),
+    const (BorderSide) => BorderSideRef(prop as Prop<BorderSide>),
+    const (FontWeight) => FontWeightRef(prop as Prop<FontWeight>),
+    const (Duration) => DurationRef(prop as Prop<Duration>),
+    const (List<Shadow>) => ShadowListRef(prop as Prop<List<Shadow>>),
+    const (List<BoxShadow>) => BoxShadowListRef(prop as Prop<List<BoxShadow>>),
+    _ => throw UnsupportedError(
+      'No token reference is registered for MixToken<$T> "${token.name}". '
+      'Either pick one of the supported token value types (Color, double, '
+      'Radius, Shadow, BoxShadow, TextStyle, Breakpoint, BorderSide, '
+      'FontWeight, Duration, List<Shadow>, List<BoxShadow>) or override '
+      'MixToken<$T>.call() in your subclass to return a custom reference.',
+    ),
+  };
+
+  return ref as T;
 }

@@ -1,5 +1,7 @@
 # Fresh Perspective: Defer Values, Not Structure
 
+Status: current branch recommendation. This document supersedes `onbuilder-ordering-report.md` and `onbuilder-previous-analysis.md`, which are retained as historical analyses.
+
 Premise: both prior branches failed, and the earlier report's "port the tail design + eager useToken" recommendation inherits their shared mistake. This document sets prior art aside and re-derives the design from first principles.
 
 ## Why prior art failed (diagnosis)

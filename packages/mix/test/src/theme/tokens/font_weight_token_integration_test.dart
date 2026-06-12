@@ -46,7 +46,7 @@ void main() {
       // FontWeightRef should throw error when trying to access properties directly
       expect(
         () => fontWeightRef.value,
-        throwsA(isA<UnimplementedError>()),
+        throwsA(isA<UnsupportedError>()),
         reason: 'FontWeightRef should prevent direct property access',
       );
     });

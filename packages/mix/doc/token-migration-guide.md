@@ -55,9 +55,19 @@ class ColorToken extends MixToken<Color> {
 ```dart
 class SpaceToken extends MixToken<double> {
   const SpaceToken(super.name);
-  
+
   @override
-  double call() => SpaceRef.token(this);  // Extension type
+  double call() => DoubleRef.token(this);  // Sentinel-backed extension type
+}
+```
+
+### DoubleToken (for arbitrary double-valued tokens)
+```dart
+class DoubleToken extends MixToken<double> {
+  const DoubleToken(super.name);
+
+  @override
+  double call() => DoubleRef.token(this);
 }
 ```
 
@@ -103,11 +113,41 @@ class BoxShadowToken extends MixToken<BoxShadow> {
 
 ### ShadowToken
 ```dart
-class ShadowToken extends MixToken<Shadow> {
+class ShadowToken extends MixToken<List<Shadow>> {
   const ShadowToken(super.name);
-  
+
   @override
-  ShadowRef call() => ShadowRef(Prop.token(this));
+  ShadowListRef call() => ShadowListRef(Prop.token(this));
+}
+```
+
+### BorderSideToken
+```dart
+class BorderSideToken extends MixToken<BorderSide> {
+  const BorderSideToken(super.name);
+
+  @override
+  BorderSideRef call() => BorderSideRef(Prop.token(this));
+}
+```
+
+### FontWeightToken
+```dart
+class FontWeightToken extends MixToken<FontWeight> {
+  const FontWeightToken(super.name);
+
+  @override
+  FontWeightRef call() => FontWeightRef(Prop.token(this));
+}
+```
+
+### DurationToken
+```dart
+class DurationToken extends MixToken<Duration> {
+  const DurationToken(super.name);
+
+  @override
+  DurationRef call() => DurationRef(Prop.token(this));
 }
 ```
 
@@ -126,19 +166,32 @@ Each token type has a corresponding reference type that implements the target in
 ### Extension Type Refs (Primitives)
 For primitive types, extension types are used:
 
-- **SpaceRef**: Extension type for `double` values (spacing, sizing)
+- **DoubleRef**: Extension type for `double` values, used by both `SpaceToken`
+  and `DoubleToken`.
 
 ```dart
-// Extension type example
-extension type const SpaceRef(double _value) implements double {
-  static SpaceRef token(MixToken<double> token) {
-    // Creates unique reference value and registers token
-    final hash = token.hashCode.abs() % 100000;
-    final ref = SpaceRef(-(0.000001 + hash * 0.000001));
-    _tokenRegistry[ref] = token;
-    return ref;
-  }
+// Extension type example (representation; constructor is private).
+extension type const DoubleRef._(double _value) implements double {
+  /// Creates a token reference and registers it in the internal registry.
+  static DoubleRef token(MixToken<double> token) { ... }
 }
+```
+
+**Important caveats.** Extension types are erased at runtime, so `DoubleRef`
+is a sentinel-backed ergonomic shim — `DoubleRef.token(t)` returns a unique
+negative nano-double that the `Prop.value` constructor recognises and converts
+back to a `TokenSource`. The representation constructor is private, so the only
+way to obtain a `DoubleRef` is through `MixToken<double>.call()` (i.e. via
+`SpaceToken` or `DoubleToken`). Sentinel numeric values are reserved internal
+values; a plain `double` equal to a registered sentinel is indistinguishable at
+runtime and will be treated as that token sentinel. Unregistered ordinary
+numbers, such as `42.0`, remain plain values.
+
+If you need an explicit, type-safe handle to a double token without going
+through the sentinel registry, use `Prop.token(token)` directly:
+
+```dart
+final Prop<double> prop = Prop.token(const SpaceToken('space.md'));
 ```
 
 ## Theme System - MixScope
@@ -259,7 +312,7 @@ final textStyle = TextStyler().style(headingStyle.mix());
 ```dart
 // Token call() method returns refs for styling
 final colorRef = primaryColor(); // Returns ColorRef
-final spaceRef = largeSpace();   // Returns SpaceRef
+final spaceRef = largeSpace();   // Returns DoubleRef (as a double)
 final textStyleMixRef = headingStyle.mix(); // Returns TextStyleMixRef
 final flutterTextStyleRef = headingStyle(); // Returns TextStyleRef
 
@@ -523,15 +576,26 @@ const sectionSpacing = SpaceToken('layout.section.spacing');
 
 ## Supported Token Types
 
-The current system supports tokens for:
+Concrete token classes in `value_tokens.dart`:
 
-- **`Color`** - Colors and color values
-- **`double`** - Spacing, sizing, and numeric values (via SpaceToken)
-- **`TextStyle`** - Typography styles
-- **`Radius`** - Border radius values
-- **`Breakpoint`** - Responsive breakpoints
-- **`List<BoxShadow>`** - Box shadow effects (list-based)
-- **`List<Shadow>`** - Text/paint shadow effects (list-based)
+- **`ColorToken`** → `Color`
+- **`SpaceToken`** → `double` (spacing/sizing)
+- **`DoubleToken`** → `double` (general-purpose numeric tokens)
+- **`RadiusToken`** → `Radius`
+- **`TextStyleToken`** → `TextStyle`
+- **`BreakpointToken`** → `Breakpoint` (with built-in defaults for the
+  canonical `mobile`/`tablet`/`desktop` tokens when the surrounding scope
+  does not declare them)
+- **`BorderSideToken`** → `BorderSide`
+- **`FontWeightToken`** → `FontWeight`
+- **`DurationToken`** → `Duration`
+- **`ShadowToken`** → `List<Shadow>`
+- **`BoxShadowToken`** → `List<BoxShadow>`
+
+Custom `MixToken<T>` subclasses are supported as long as `T` is one of the
+types above (`getReferenceValue` dispatch table) or the subclass overrides
+`call()` to return a custom reference shape. Otherwise, calling the token
+throws `UnsupportedError` rather than failing with a cast error.
 
 ## Migration from Old System
 

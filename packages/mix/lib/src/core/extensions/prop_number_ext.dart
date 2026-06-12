@@ -143,31 +143,28 @@ extension NumberPropDirectiveExt<T extends num> on Prop<T> {
   ///
   /// Required to work around Dart's type invariance - we can't directly apply
   /// `Directive<num>` to `Prop<T>` even though T extends num.
+  ///
+  /// Reconstructs every source as `Prop<num>` and merges in order, preserving
+  /// the existing source ordering. `MixSource<T>` is not supported by numeric
+  /// directives — a num itself is not a Mix value.
   Prop<num> _asPropNum() {
-    // Edge case: prop with only directives (no sources)
     if (sources.isEmpty) {
-      return Prop.directives([]);
+      return Prop.directives($directives?.cast() ?? const []);
     }
 
-    // Fail fast on unsupported multiple sources
-    if (sources.length > 1) {
-      throw UnimplementedError(
-        'Multiple sources not yet supported for number directives. '
-        'This is a rare case - please report if you need this.',
-      );
-    }
+    final base = sources
+        .map(
+          (source) => switch (source) {
+            ValueSource<T>(:final value) => Prop.value<num>(value),
+            TokenSource<T>(:final token) => Prop.token(token as MixToken<num>),
+            MixSource<T>() => throw UnsupportedError(
+              'Source ${source.runtimeType} is not supported by numeric '
+              'directives — num values cannot be wrapped as Mix<num>.',
+            ),
+          },
+        )
+        .reduce((acc, next) => acc.mergeProp(next));
 
-    // Reconstruct single source as Prop<num>
-    final source = sources.first;
-    final Prop<num> base = source is ValueSource<T>
-        ? Prop.value<num>((source).value)
-        : source is TokenSource<T>
-        ? Prop.token((source).token as MixToken<num>)
-        : throw UnimplementedError(
-            'Source type ${source.runtimeType} not supported',
-          );
-
-    // Preserve existing directives for chaining (e.g., multiply().add().round())
     return ($directives == null || $directives!.isEmpty)
         ? base
         : base.mergeProp(Prop.directives($directives!.cast()));
