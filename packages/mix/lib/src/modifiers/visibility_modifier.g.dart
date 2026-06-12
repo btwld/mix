@@ -16,13 +16,6 @@ mixin _$VisibilityModifierMethods
   }
 
   @override
-  VisibilityModifier lerp(VisibilityModifier? other, double t) {
-    if (other == null) return this as VisibilityModifier;
-
-    return VisibilityModifier(MixOps.lerpSnap(visible, other.visible, t)!);
-  }
-
-  @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties.add(FlagProperty('visible', value: visible, ifTrue: 'visible'));

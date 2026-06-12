@@ -18,8 +18,18 @@
 /// This generates a `_$OpacityModifierMethods` mixin (with `copyWith`, `lerp`,
 /// `debugFillProperties`, and `props`) and the `OpacityModifierMix` class in the
 /// `.g.dart` part file.
+///
+/// Set [lerp] to `false` to skip generation of the `lerp` method and implement
+/// it manually on the modifier class. Useful when interpolation needs custom
+/// semantics (e.g. snapping at a specific threshold, keeping a child visible
+/// through a transition) that the generator's per-field lerp can't express.
 class MixableModifier {
-  const MixableModifier();
+  /// Whether to generate the `lerp` method. Defaults to `true`.
+  ///
+  /// When `false`, the host class must implement `lerp` itself.
+  final bool lerp;
+
+  const MixableModifier({this.lerp = true});
 }
 
 const mixableModifier = MixableModifier();

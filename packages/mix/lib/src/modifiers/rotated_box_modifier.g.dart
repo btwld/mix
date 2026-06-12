@@ -16,15 +16,6 @@ mixin _$RotatedBoxModifierMethods
   }
 
   @override
-  RotatedBoxModifier lerp(RotatedBoxModifier? other, double t) {
-    if (other == null) return this as RotatedBoxModifier;
-
-    return RotatedBoxModifier(
-      MixOps.lerp(quarterTurns, other.quarterTurns, t)!,
-    );
-  }
-
-  @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties.add(IntProperty('quarterTurns', quarterTurns));

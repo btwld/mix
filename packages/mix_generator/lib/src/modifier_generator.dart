@@ -121,9 +121,12 @@ class ModifierGenerator extends GeneratorForAnnotation<MixableModifier> {
 
     final fields = _extractFields(classElement);
 
+    final generateLerp = annotation.read('lerp').boolValue;
+
     final mixinBuilder = ModifierMixinBuilder(
       modifierName: modifierName,
       fields: fields,
+      generateLerp: generateLerp,
     );
 
     final mixBuilder = ModifierMixBuilder(

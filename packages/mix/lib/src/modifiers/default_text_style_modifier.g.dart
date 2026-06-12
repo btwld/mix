@@ -38,25 +38,6 @@ mixin _$DefaultTextStyleModifierMethods
   }
 
   @override
-  DefaultTextStyleModifier lerp(DefaultTextStyleModifier? other, double t) {
-    if (other == null) return this as DefaultTextStyleModifier;
-
-    return DefaultTextStyleModifier(
-      maxLines: MixOps.lerp(maxLines, other.maxLines, t),
-      overflow: MixOps.lerpSnap(overflow, other.overflow, t)!,
-      softWrap: MixOps.lerpSnap(softWrap, other.softWrap, t)!,
-      style: MixOps.lerp(style, other.style, t)!,
-      textAlign: MixOps.lerpSnap(textAlign, other.textAlign, t),
-      textHeightBehavior: MixOps.lerpSnap(
-        textHeightBehavior,
-        other.textHeightBehavior,
-        t,
-      ),
-      textWidthBasis: MixOps.lerpSnap(textWidthBasis, other.textWidthBasis, t)!,
-    );
-  }
-
-  @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties

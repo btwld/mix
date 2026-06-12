@@ -12,7 +12,7 @@ part 'flexible_modifier.g.dart';
 /// Modifier that makes its child flexible within a flex layout.
 ///
 /// Wraps the child in a [Flexible] widget with the specified flex and fit properties.
-@MixableModifier()
+@MixableModifier(lerp: false)
 final class FlexibleModifier extends WidgetModifier<FlexibleModifier>
     with Diagnosticable, _$FlexibleModifierMethods {
   @override
@@ -20,6 +20,16 @@ final class FlexibleModifier extends WidgetModifier<FlexibleModifier>
   @override
   final FlexFit? fit;
   const FlexibleModifier({this.flex, this.fit});
+
+  @override
+  FlexibleModifier lerp(FlexibleModifier? other, double t) {
+    if (other == null) return this;
+
+    return FlexibleModifier(
+      flex: MixOps.lerpSnap(flex, other.flex, t),
+      fit: MixOps.lerpSnap(fit, other.fit, t),
+    );
+  }
 
   @override
   Widget build(Widget child) {

@@ -17,16 +17,6 @@ mixin _$FlexibleModifierMethods
   }
 
   @override
-  FlexibleModifier lerp(FlexibleModifier? other, double t) {
-    if (other == null) return this as FlexibleModifier;
-
-    return FlexibleModifier(
-      fit: MixOps.lerpSnap(fit, other.fit, t),
-      flex: MixOps.lerp(flex, other.flex, t),
-    );
-  }
-
-  @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties

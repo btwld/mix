@@ -291,6 +291,28 @@ void main() {
         expect(code, contains('List<Object?> get props => [];'));
       });
 
+      test('skips lerp emission when generateLerp is false', () {
+        final builder = ModifierMixinBuilder(
+          modifierName: 'VisibilityModifier',
+          fields: [
+            ModifierFieldModel(
+              name: 'visible',
+              typeName: 'bool',
+              propWrapperKind: PropWrapperKind.maybe,
+              isNamedParam: false,
+              isLerpable: false,
+            ),
+          ],
+          generateLerp: false,
+        );
+        final code = builder.build();
+
+        expect(code, isNot(contains('lerp(')));
+        expect(code, isNot(contains('MixOps.lerp')));
+        expect(code, contains('VisibilityModifier copyWith({'));
+        expect(code, contains('List<Object?> get props => [visible];'));
+      });
+
       test('generates lerp with positional params', () {
         final builder = ModifierMixinBuilder(
           modifierName: 'OpacityModifier',

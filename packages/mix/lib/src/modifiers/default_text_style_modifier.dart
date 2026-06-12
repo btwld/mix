@@ -14,7 +14,7 @@ part 'default_text_style_modifier.g.dart';
 /// Modifier that applies default text styling to its descendants.
 ///
 /// Wraps the child in a [DefaultTextStyle] widget with the specified text properties.
-@MixableModifier()
+@MixableModifier(lerp: false)
 final class DefaultTextStyleModifier
     extends WidgetModifier<DefaultTextStyleModifier>
     with Diagnosticable, _$DefaultTextStyleModifierMethods {
@@ -45,6 +45,25 @@ final class DefaultTextStyleModifier
        softWrap = softWrap ?? true,
        overflow = overflow ?? .clip,
        textWidthBasis = textWidthBasis ?? .parent;
+
+  @override
+  DefaultTextStyleModifier lerp(DefaultTextStyleModifier? other, double t) {
+    if (other == null) return this;
+
+    return DefaultTextStyleModifier(
+      style: MixOps.lerp(style, other.style, t)!,
+      textAlign: MixOps.lerpSnap(textAlign, other.textAlign, t),
+      softWrap: MixOps.lerpSnap(softWrap, other.softWrap, t)!,
+      overflow: MixOps.lerpSnap(overflow, other.overflow, t)!,
+      maxLines: MixOps.lerpSnap(maxLines, other.maxLines, t),
+      textWidthBasis: MixOps.lerpSnap(textWidthBasis, other.textWidthBasis, t)!,
+      textHeightBehavior: MixOps.lerpSnap(
+        textHeightBehavior,
+        other.textHeightBehavior,
+        t,
+      ),
+    );
+  }
 
   @override
   Widget build(Widget child) {

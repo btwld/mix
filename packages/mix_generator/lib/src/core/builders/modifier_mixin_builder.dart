@@ -10,10 +10,12 @@ import 'modifier_mix_builder.dart';
 class ModifierMixinBuilder {
   final String modifierName;
   final List<ModifierFieldModel> fields;
+  final bool generateLerp;
 
   const ModifierMixinBuilder({
     required this.modifierName,
     required this.fields,
+    this.generateLerp = true,
   });
 
   /// The mixin name (e.g., AlignModifier -> _$AlignModifierMethods).
@@ -190,8 +192,10 @@ class ModifierMixinBuilder {
     // copyWith
     buffer.writeln(_buildCopyWith());
 
-    // lerp
-    buffer.writeln(_buildLerp());
+    // lerp (opt-out via @MixableModifier(lerp: false))
+    if (generateLerp) {
+      buffer.writeln(_buildLerp());
+    }
 
     // debugFillProperties
     buffer.writeln(_buildDebugFillProperties());

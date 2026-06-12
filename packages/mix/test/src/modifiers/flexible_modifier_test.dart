@@ -59,14 +59,13 @@ void main() {
     });
 
     group('lerp', () {
-      test('interpolates flex using lerpDouble + round', () {
+      test('uses step function for flex', () {
         const start = FlexibleModifier(flex: 1);
         const end = FlexibleModifier(flex: 3);
 
-        // MixOps.lerp for int: lerpDouble(a, b, t).round()
         expect(start.lerp(end, 0.0).flex, 1);
-        expect(start.lerp(end, 0.25).flex, 2); // 1 + 0.25 * 2 = 1.5 → 2
-        expect(start.lerp(end, 0.5).flex, 2); // 1 + 0.5 * 2 = 2.0 → 2
+        expect(start.lerp(end, 0.49).flex, 1);
+        expect(start.lerp(end, 0.5).flex, 3);
         expect(start.lerp(end, 1.0).flex, 3);
       });
 
@@ -85,11 +84,11 @@ void main() {
         const end = FlexibleModifier(flex: 5, fit: FlexFit.tight);
 
         final result = start.lerp(end, 0.3);
-        expect(result.flex, 2); // lerpDouble(1, 5, 0.3).round() = 2.2 → 2
+        expect(result.flex, 1);
         expect(result.fit, FlexFit.loose);
 
         final result2 = start.lerp(end, 0.7);
-        expect(result2.flex, 4); // lerpDouble(1, 5, 0.7).round() = 3.8 → 4
+        expect(result2.flex, 5);
         expect(result2.fit, FlexFit.tight);
       });
 
@@ -105,9 +104,7 @@ void main() {
         const end = FlexibleModifier(fit: FlexFit.tight);
         final result = start.lerp(end, 0.5);
 
-        // MixOps.lerp(1, null, 0.5): lerpDouble treats null as 0
-        // lerpDouble(1, 0, 0.5) = 0.5, round() = 1
-        expect(result.flex, 1);
+        expect(result.flex, isNull);
         expect(result.fit, FlexFit.tight);
       });
     });
@@ -357,7 +354,7 @@ void main() {
       expect(result.fit, resolvesTo(FlexFit.tight));
     });
 
-    test('Lerp interpolates flex and snaps fit', () {
+    test('Lerp with step function behavior', () {
       const start = FlexibleModifier(flex: 1, fit: FlexFit.loose);
       const end = FlexibleModifier(flex: 5, fit: FlexFit.tight);
 
@@ -365,14 +362,14 @@ void main() {
       final half = start.lerp(end, 0.5);
       final threeQuarter = start.lerp(end, 0.75);
 
-      // flex: lerpDouble(1, 5, t).round()
-      expect(quarter.flex, 2); // 1 + 1.0 = 2.0 → 2
+      // Step function behavior
+      expect(quarter.flex, 1);
       expect(quarter.fit, FlexFit.loose);
 
-      expect(half.flex, 3); // 1 + 2.0 = 3.0 → 3
+      expect(half.flex, 5);
       expect(half.fit, FlexFit.tight);
 
-      expect(threeQuarter.flex, 4); // 1 + 3.0 = 4.0 → 4
+      expect(threeQuarter.flex, 5);
       expect(threeQuarter.fit, FlexFit.tight);
     });
   });
