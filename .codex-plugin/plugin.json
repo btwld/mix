@@ -1,0 +1,29 @@
+{
+  "name": "mix",
+  "version": "1.0.0",
+  "description": "Mix Flutter styling framework guidance for Codex.",
+  "author": {
+    "name": "Leo Farias",
+    "url": "https://github.com/leoafarias"
+  },
+  "homepage": "https://fluttermix.com",
+  "repository": "https://github.com/btwld/mix",
+  "license": "BSD-3-Clause",
+  "keywords": ["dart", "flutter", "mix", "styling", "design-systems"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Mix",
+    "shortDescription": "Work with Mix Flutter styles, specs, and codegen.",
+    "longDescription": "Use the Mix plugin to work on the Mix Flutter styling framework and projects that use the mix package. It provides version-aware guidance for Stylers, Specs, widgets, variants, animations, design tokens, code generation, and monorepo workflows.",
+    "developerName": "Leo Farias",
+    "category": "Productivity",
+    "capabilities": ["Code", "Flutter", "Design Systems"],
+    "websiteURL": "https://fluttermix.com",
+    "defaultPrompt": [
+      "Use Mix to build a responsive Flutter card style.",
+      "Review this Mix style for API correctness.",
+      "Help add a new Mix Spec with code generation."
+    ],
+    "brandColor": "#13B9FD"
+  }
+}
