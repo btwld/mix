@@ -1063,7 +1063,8 @@ FlexBoxStyler _applyFlexShadow(FlexBoxStyler styler, TwValue value) {
     styler,
     value,
     applyElevation: (style, elevation) => style.elevation(elevation),
-    applyBoxShadows: (style, shadows) => style.boxShadows(shadows),
+    applyBoxShadows: (style, shadows) =>
+        style.boxShadows(BoxShadowListMix(shadows)),
   );
 }
 
@@ -1211,7 +1212,8 @@ BoxStyler _applyBoxShadow(BoxStyler styler, TwValue value) {
     styler,
     value,
     applyElevation: (style, elevation) => style.elevation(elevation),
-    applyBoxShadows: (style, shadows) => style.boxShadows(shadows),
+    applyBoxShadows: (style, shadows) =>
+        style.boxShadows(BoxShadowListMix(shadows)),
   );
 }
 
@@ -1363,7 +1365,7 @@ BoxStyler _applyBoxTextShadow(BoxStyler styler, TwValue value) {
 TextStyler _applyTextShadow(TextStyler styler, TwValue value) {
   final shadows = _resolveTextShadowMixes(value);
   if (shadows == null) return styler;
-  return styler.shadows(shadows);
+  return styler.shadows(ShadowListMix(shadows));
 }
 
 TextStyler _applyPropertyToText(
