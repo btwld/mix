@@ -294,9 +294,75 @@ void main() {
 
       // Should update immediately (no animation)
       await tester.pump();
+      await tester.pumpAndSettle();
 
       expect(find.byKey(const Key('test-container')), findsOneWidget);
     });
+
+    testWidgets(
+      'animates with previous config when transitioning to null animation',
+      (tester) async {
+        const curveConfig = CurveAnimationConfig(
+          duration: Duration(milliseconds: 200),
+          curve: Curves.linear,
+        );
+
+        const specWithAnimation = StyleSpec<TestSpec>(
+          spec: TestSpec(color: Colors.red),
+          animation: curveConfig,
+        );
+        const specWithoutAnimation = StyleSpec<TestSpec>(
+          spec: TestSpec(color: Colors.blue),
+          animation: null,
+        );
+
+        Color? capturedColor;
+
+        Widget buildSubject(StyleSpec<TestSpec> spec) {
+          return MaterialApp(
+            home: StyleAnimationBuilder<TestSpec>(
+              spec: spec,
+              builder: (context, resolved) {
+                capturedColor = resolved.spec.color;
+
+                return Container(color: resolved.spec.color);
+              },
+            ),
+          );
+        }
+
+        // Start with the animated spec and let it settle on red.
+        await tester.pumpWidget(buildSubject(specWithAnimation));
+        await tester.pumpAndSettle();
+
+        expect(capturedColor, Colors.red);
+
+        // Switch to a spec with a null animation config. The builder should
+        // fall back to the previous config and keep animating instead of
+        // jumping straight to the new target value.
+        await tester.pumpWidget(buildSubject(specWithoutAnimation));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 100));
+
+        expect(
+          capturedColor,
+          isNot(Colors.red),
+          reason: 'animation should have progressed past the start value',
+        );
+        expect(
+          capturedColor,
+          isNot(Colors.blue),
+          reason:
+              'animation should not have jumped to the target value instantly',
+        );
+
+        // After the previous config's duration completes, the spec lands
+        // on the new target.
+        await tester.pumpAndSettle();
+
+        expect(capturedColor, Colors.blue);
+      },
+    );
 
     testWidgets('handles null animation value gracefully', (tester) async {
       // Create spec with animation that produces null value
