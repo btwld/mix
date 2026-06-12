@@ -46,24 +46,28 @@ scripts:
     description: Run Dart static analysis checks.
 
   analyze:dcm:
-    run: melos exec -c 4 -- dcm analyze . --fatal-style --fatal-warnings
+    run: melos exec -c 4 --depends-on="dart_code_metrics_presets" -- dcm analyze . --fatal-style --fatal-warnings
     description: Run DCM static analysis checks.
-    packageFilters:
-      dependsOn: "dart_code_metrics_presets"
+
+  format:
+    run: melos exec -c 4 -- dart format . && dart format scripts
+    description: Format Dart files in all packages and root scripts.
+
+  format:check:
+    run: melos exec -c 4 -- dart format . --set-exit-if-changed && dart format scripts --set-exit-if-changed
+    description: Check Dart formatting in all packages and root scripts.
 
   lint:fix:all:
-    run: melos run lint:dart:fix && melos run lint:dcm:fix
-    description: Run all static analysis checks and apply fixes.
+    run: melos run lint:dart:fix && melos run lint:dcm:fix && melos run format
+    description: Apply Dart and DCM fixes, then format all Dart files.
 
   lint:dart:fix:
     run: melos exec -- dart fix --apply .
-    description: Run Dart static analysis checks.
+    description: Apply Dart analysis fixes.
 
   lint:dcm:fix:
-    run: melos exec -- dcm fix .
-    description: Run DCM static analysis checks.
-    packageFilters:
-      dependsOn: "dart_code_metrics_presets"
+    run: melos exec --depends-on="dart_code_metrics_presets" -- dcm fix .
+    description: Apply DCM fixes.
 
   gen:watch:
     run: melos exec --order-dependents -- dart run build_runner watch --delete-conflicting-outputs
@@ -134,6 +138,7 @@ scripts:
     run: melos run gen:clean
   fix:
     run: melos run lint:fix:all
+    description: Apply Dart fix, DCM fix, and Dart formatting.
   custom_lint_analyze:
     run: melos exec --depends-on="mix_lint" dart pub run custom_lint
 
