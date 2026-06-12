@@ -301,6 +301,21 @@ void main() {
           expect(getTokenFromValue<double>(ref2), same(token));
         });
 
+        test('reuses sentinels for equivalent name-based tokens', () {
+          final token1 = TestToken<double>('semantic-token');
+          final token2 = TestToken<double>('semantic-token');
+
+          expect(identical(token1, token2), isFalse);
+          expect(token1, equals(token2));
+
+          final ref1 = DoubleRef.token(token1);
+          final ref2 = DoubleRef.token(token2);
+
+          expect(ref1, equals(ref2));
+          expect(getTokenFromValue<double>(ref1), same(token1));
+          expect(getTokenFromValue<double>(ref2), same(token1));
+        });
+
         test('distinct tokens always receive distinct sentinels', () {
           final a = TestToken<double>('alloc-a');
           final b = TestToken<double>('alloc-b');
@@ -311,6 +326,19 @@ void main() {
           expect(aRef, isNot(equals(bRef)));
           expect(getTokenFromValue<double>(aRef), same(a));
           expect(getTokenFromValue<double>(bRef), same(b));
+        });
+
+        test('registered sentinel numeric values are reserved', () {
+          const firstSentinel = -0.000001;
+
+          expect(getTokenFromValue<double>(firstSentinel), isNull);
+
+          final token = TestToken<double>('reserved-sentinel');
+          final ref = DoubleRef.token(token);
+
+          expect(ref, equals(firstSentinel));
+          expect(getTokenFromValue<double>(firstSentinel), same(token));
+          expect(Prop.value(firstSentinel), PropMatcher.isToken(token));
         });
 
         test(
