@@ -30,8 +30,12 @@ jobs:
         with:
           flutter-version: ${{ steps.fvm-config-action.outputs.FLUTTER_VERSION }}
           channel: ${{ steps.fvm-config-action.outputs.FLUTTER_CHANNEL }}
+      - name: Setup Melos
+        run: |
+          dart pub global activate melos 6.3.3
+          melos bootstrap
       - name: Check formatting
-        run: dart format --set-exit-if-changed .
+        run: melos run format:check
 
   test:
     name: Test
