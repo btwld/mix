@@ -257,30 +257,33 @@ void main() {
         // Matrix4 lerp is handled by MixOps.lerp
       });
 
-      test('treats null transform as identity when only one endpoint is set', () {
-        // Issue #927: previously this case snapped at t=0.5, so e.g. a hover
-        // variant adding .scale(1.1) on a base style with no transform would
-        // jump rather than tween. Treat the missing endpoint as identity so
-        // the matrix interpolates from / to the real one.
-        final transform = Matrix4.translationValues(10.0, 20.0, 0.0);
-        final withTransform = BoxSpec(transform: transform);
-        const withoutTransform = BoxSpec();
+      test(
+        'treats null transform as identity when only one endpoint is set',
+        () {
+          // Issue #927: previously this case snapped at t=0.5, so e.g. a hover
+          // variant adding .scale(1.1) on a base style with no transform would
+          // jump rather than tween. Treat the missing endpoint as identity so
+          // the matrix interpolates from / to the real one.
+          final transform = Matrix4.translationValues(10.0, 20.0, 0.0);
+          final withTransform = BoxSpec(transform: transform);
+          const withoutTransform = BoxSpec();
 
-        Matrix4 expectedAt(Matrix4 a, Matrix4 b, double t) =>
-            Matrix4Tween(begin: a, end: b).lerp(t);
+          Matrix4 expectedAt(Matrix4 a, Matrix4 b, double t) =>
+              Matrix4Tween(begin: a, end: b).lerp(t);
 
-        final fadeOut = withTransform.lerp(withoutTransform, 0.4);
-        final fadeIn = withoutTransform.lerp(withTransform, 0.4);
+          final fadeOut = withTransform.lerp(withoutTransform, 0.4);
+          final fadeIn = withoutTransform.lerp(withTransform, 0.4);
 
-        expect(
-          fadeOut.transform,
-          expectedAt(transform, Matrix4.identity(), 0.4),
-        );
-        expect(
-          fadeIn.transform,
-          expectedAt(Matrix4.identity(), transform, 0.4),
-        );
-      });
+          expect(
+            fadeOut.transform,
+            expectedAt(transform, Matrix4.identity(), 0.4),
+          );
+          expect(
+            fadeIn.transform,
+            expectedAt(Matrix4.identity(), transform, 0.4),
+          );
+        },
+      );
     });
 
     group('equality', () {
