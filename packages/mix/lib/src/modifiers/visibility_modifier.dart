@@ -1,24 +1,23 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
 
 import '../core/helpers.dart';
 import '../core/widget_modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
 
+part 'visibility_modifier.g.dart';
+
 /// Modifier that controls the visibility of its child.
 ///
 /// Wraps the child in a [Visibility] widget to show or hide it while maintaining layout space.
-final class VisibilityModifier extends WidgetModifier<VisibilityModifier>
-    with Diagnosticable {
+@MixableModifier(lerp: false)
+final class VisibilityModifier with _$VisibilityModifier {
   /// Whether the child widget should be visible.
+  @override
   final bool visible;
   const VisibilityModifier([bool? visible]) : visible = visible ?? true;
-
-  @override
-  VisibilityModifier copyWith({bool? visible}) {
-    return VisibilityModifier(visible ?? this.visible);
-  }
 
   @override
   VisibilityModifier lerp(VisibilityModifier? other, double t) {
@@ -31,60 +30,7 @@ final class VisibilityModifier extends WidgetModifier<VisibilityModifier>
   }
 
   @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(
-      FlagProperty(
-        'visible',
-        value: visible,
-        ifTrue: 'visible',
-        ifFalse: 'hidden',
-      ),
-    );
-  }
-
-  @override
-  List<Object?> get props => [visible];
-
-  @override
   Widget build(Widget child) {
     return Visibility(visible: visible, child: child);
   }
-}
-
-/// Mix class for applying visibility modifications.
-///
-/// This class allows for mixing and resolving visibility properties.
-class VisibilityModifierMix extends ModifierMix<VisibilityModifier>
-    with Diagnosticable {
-  /// Whether the child widget should be visible.
-  final Prop<bool>? visible;
-
-  const VisibilityModifierMix.create({this.visible});
-
-  VisibilityModifierMix({bool? visible})
-    : this.create(visible: Prop.maybe(visible));
-
-  @override
-  VisibilityModifier resolve(BuildContext context) {
-    return VisibilityModifier(MixOps.resolve(context, visible));
-  }
-
-  @override
-  VisibilityModifierMix merge(VisibilityModifierMix? other) {
-    if (other == null) return this;
-
-    return VisibilityModifierMix.create(
-      visible: visible?.mergeProp(other.visible) ?? other.visible,
-    );
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('visible', visible));
-  }
-
-  @override
-  List<Object?> get props => [visible];
 }

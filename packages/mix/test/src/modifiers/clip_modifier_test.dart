@@ -100,7 +100,8 @@ void main() {
         );
         final result = start.lerp(null, 0.5);
 
-        expect(result, same(start));
+        expect(result.clipper, isNull);
+        expect(result.clipBehavior, Clip.antiAlias);
       });
 
       test('handles extreme t values', () {

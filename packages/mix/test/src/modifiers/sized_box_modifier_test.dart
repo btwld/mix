@@ -88,7 +88,8 @@ void main() {
         const start = SizedBoxModifier(width: 100.0, height: 100.0);
         final result = start.lerp(null, 0.5);
 
-        expect(result, same(start));
+        expect(result.width, 50.0);
+        expect(result.height, 50.0);
       });
 
       test('handles null values in properties', () {

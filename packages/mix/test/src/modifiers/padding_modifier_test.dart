@@ -66,7 +66,7 @@ void main() {
         const start = PaddingModifier(EdgeInsets.all(10.0));
         final result = start.lerp(null, 0.5);
 
-        expect(result, same(start));
+        expect(result.padding, const EdgeInsets.all(5.0));
       });
 
       test('handles extreme t values', () {

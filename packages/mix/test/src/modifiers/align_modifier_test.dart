@@ -143,7 +143,9 @@ void main() {
         );
         final result = start.lerp(null, 0.5);
 
-        expect(result, same(start));
+        expect(result.alignment, Alignment.center);
+        expect(result.widthFactor, 0.25);
+        expect(result.heightFactor, 0.25);
       });
 
       test('handles null values in properties', () {
