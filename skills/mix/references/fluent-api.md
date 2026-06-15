@@ -127,7 +127,86 @@ Decoration, color, gradient, border, shadow, shape, background image:
 | `fontFamily(v)`, `fontFamilyFallback(v)` | Font selection |
 | `shadows(v)`, `fontFeatures(v)`, `fontVariations(v)` | Advanced |
 
-`IconStyler` and `ImageStyler` expose their common generated field setters too; see the `IconStyler` and `ImageStyler` rows in [`styler-api-policy.md`](styler-api-policy.md).
+### IconStyler
+
+Generated fluent setters from `IconSpec`:
+
+| Method | Description |
+|--------|-------------|
+| `icon(v)` | Icon glyph data |
+| `color(v)` | Icon color |
+| `size(v)` | Icon size |
+| `weight(v)` | Variable-font weight axis |
+| `grade(v)` | Variable-font grade axis |
+| `opticalSize(v)` | Variable-font optical size axis |
+| `fill(v)` | Variable-font fill axis |
+| `opacity(v)` | Icon opacity |
+| `shadow(v)` / `shadows(v)` | One shadow or a shadow list |
+| `blendMode(v)` | Color blend mode |
+| `applyTextScaling(v)` | Whether text scaling affects the icon |
+| `textDirection(v)` | Text direction for directional icons |
+| `semanticsLabel(v)` | Accessibility label |
+
+### ImageStyler
+
+Generated fluent setters from `ImageSpec`:
+
+| Method | Description |
+|--------|-------------|
+| `image(v)` | Image provider |
+| `width(v)` / `height(v)` | Display dimensions |
+| `color(v)` | Color filter color |
+| `fit(v)` | Box fit |
+| `alignment(v)` | Image alignment |
+| `repeat(v)` | Image repeat mode |
+| `centerSlice(v)` | Nine-patch center slice |
+| `filterQuality(v)` | Sampling quality |
+| `colorBlendMode(v)` | Color filter blend mode |
+| `semanticLabel(v)` | Accessibility label |
+| `gaplessPlayback(v)` | Keep old image while new image loads |
+| `isAntiAlias(v)` | Anti-alias image edges |
+| `matchTextDirection(v)` | Flip in RTL contexts |
+
+See also [`styler-api-policy.md`](styler-api-policy.md) for top-level factory and dot-shorthand guidance.
+
+## Interaction Widgets
+
+Use `Pressable` for interaction state around any child, and `PressableBox` when the interactive surface is also a `Box`.
+
+### Pressable
+
+| Parameter | Description |
+|-----------|-------------|
+| `child` | Required child widget |
+| `onPress` / `onLongPress` | Tap and long-press callbacks |
+| `enabled` | Enables interaction; defaults to `true` |
+| `enableFeedback` | Enables haptic/audio feedback; defaults to `false` |
+| `onFocusChange` | Focus change callback |
+| `autofocus` | Requests focus automatically; defaults to `false` |
+| `focusNode` | Optional focus node |
+| `mouseCursor` | Cursor override |
+| `hitTestBehavior` | Gesture hit-test behavior; defaults to `HitTestBehavior.opaque` |
+| `canRequestFocus` | Whether focus can be requested; defaults to `true` |
+| `controller` | Optional `WidgetStatesController` |
+| `actions` | Additional focus actions |
+
+`Pressable` also exposes keyboard and semantics parameters such as `onKey`, `onKeyEvent`, `excludeFromSemantics`, and `semanticButtonLabel`; check `pressable_widget.dart` for the full constructor.
+
+### PressableBox
+
+| Parameter | Description |
+|-----------|-------------|
+| `style` | Optional `BoxStyler` for the surface |
+| `child` | Required child widget |
+| `onPress` / `onLongPress` | Tap and long-press callbacks |
+| `enabled` | Enables interaction; defaults to `true` |
+| `focusNode` | Optional focus node |
+| `onFocusChange` | Focus change callback |
+| `autofocus` | Requests focus automatically; defaults to `false` |
+| `enableFeedback` | Enables haptic/audio feedback; defaults to `false` |
+| `hitTestBehavior` | Gesture hit-test behavior; defaults to `HitTestBehavior.opaque` |
+
+`PressableBox` forwards interaction handling to `Pressable` and renders the child through `Box(style: style, child: child)`.
 
 ## Sizing Decision Tree
 

@@ -5,8 +5,9 @@ description: >
   framework or any project using the mix package. Applies when the user
   mentions Mix specs, Mix styles, BoxStyler, TextStyler, Pressable,
   PressableBox, StyleWidget, MixStyler, fluent chaining, Prop values, Mix types,
-  Mix annotations (@MixableSpec, @MixWidget, legacy @MixableStyler, @Mixable),
-  code generation with mix_generator, dot-shorthand policy, style variants (NamedVariant,
+  Mix annotations (@MixableSpec, @MixWidget, @MixableModifier, legacy
+  @MixableStyler, @Mixable), code generation with mix_generator,
+  dot-shorthand policy, style variants (NamedVariant,
   ContextVariant, WidgetStateVariant, onHovered, onPressed, onDark), implicit
   animations with .animate(), Phase animations, Keyframe animations, design
   tokens (MixScope, tokens), widget modifiers (.wrap()), directives, style
@@ -56,6 +57,19 @@ Resolution pipeline: `StyleWidget` → `StyleBuilder` → merge active variants 
 Interactive: `Pressable` (gesture + focus + mouse), `PressableBox` (Pressable + Box).
 
 ## Key Patterns
+
+### Write Mix, Not Raw Flutter
+
+When styling a Mix surface, keep visual semantics in Stylers instead of nesting raw Flutter widgets for styling concerns.
+
+| Instead of | Write |
+|------------|-------|
+| `Container(color: ..., padding: ..., child: ...)` | `Box(style: BoxStyler().color(...).paddingAll(...), child: ...)` |
+| `Text('Label', style: TextStyle(...))` | `StyledText('Label', style: TextStyler().fontSize(...).color(...))` |
+| `Icon(Icons.star, color: ..., size: ...)` | `StyledIcon(icon: Icons.star, style: IconStyler().color(...).size(...))` |
+| `Theme.of(context).colorScheme.primary` in styles | `ColorToken` values from `MixScope`, then `BoxStyler().color($primary())` |
+| `Theme.of(context).textTheme.bodyMedium` in styles | `TextStyleToken` values from `MixScope`, then `TextStyler().style($body.mix())` |
+| Nested `Padding` / `Align` for a styled widget | Styler methods such as `.paddingAll(16)` and `.alignment(Alignment.center)` |
 
 ### Top-Level Rule
 
@@ -107,6 +121,7 @@ final combined = base.merge(elevated);
 - **Generated Stylers have `.create()` and default constructors** — many also expose generated factory constructors
 - **Prefer `@MixableSpec(target: Widget.new)`** — `@MixableStyler` is legacy/deprecated
 - **Use `@MixWidget` for generated widgets from style factories** — it wraps top-level `Style<S>` variables or functions
+- **Use `@MixableModifier` for generated modifiers** — it emits the modifier contract mixin and `ModifierMix` class
 - **`mix.dart` is generated** — never edit directly; run `melos run exports`
 - **Run codegen after spec changes** — `melos run gen:build`
 - **Prop merge semantics** — regular values: last wins (replacement); Mix values: accumulated merge
@@ -133,7 +148,7 @@ melos run gen:build && melos run ci && melos run analyze
 | Package | Purpose |
 |---------|---------|
 | `mix` | Core framework |
-| `mix_annotations` | `@MixableSpec`, `@MixWidget`, `@MixableStyler`, `@Mixable`, `@MixableField` |
+| `mix_annotations` | `@MixableSpec`, `@MixWidget`, `@MixableModifier`, `@MixableStyler`, `@Mixable`, `@MixableField` |
 | `mix_generator` | `build_runner` generator producing `*.g.dart` mixins |
 | `mix_lint` | Analysis server plugin with Mix-specific lint rules |
 | `mix_tailwinds` | Tailwind-style utility layer (experimental) |
@@ -146,6 +161,7 @@ Consult these for detailed guidance:
 - **[`references/styler-api-policy.md`](references/styler-api-policy.md)** — Top-level rule, dot-shorthand policy, factory constructor table, chain-only methods
 - **[`references/fluent-api.md`](references/fluent-api.md)** — Chaining, style mixins, sizing decision tree, composition
 - **[`references/code-generation.md`](references/code-generation.md)** — Annotations, generated output, BoxSpec reference impl
+- **[`references/examples.md`](references/examples.md)** — Worked end-to-end examples
 - **[`references/variants.md`](references/variants.md)** — NamedVariant, ContextVariant, WidgetStateVariant, built-in methods
 - **[`references/animations.md`](references/animations.md)** — Implicit, Phase, Keyframe animations
 - **[`references/design-tokens.md`](references/design-tokens.md)** — MixScope, token types, theming

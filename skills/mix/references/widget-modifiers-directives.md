@@ -45,6 +45,27 @@ final style = BoxStyler()
 | `.defaultTextStyler(style)` | `DefaultTextStylerModifier` | Inherited Mix text style |
 | `.iconTheme(...)` | `IconThemeModifier` | Icon theme |
 
+### Authoring Modifiers
+
+Use `@MixableModifier()` from `mix_annotations` for new generated modifier APIs. Annotate the modifier class, include the generated `part`, and mix in `_$NameModifier`; the generator emits the `WidgetModifier` contract methods plus the matching `NameModifierMix`.
+
+```dart
+part 'opacity_modifier.g.dart';
+
+@MixableModifier()
+final class OpacityModifier with _$OpacityModifier {
+  @override
+  final double opacity;
+
+  const OpacityModifier([double? opacity]) : opacity = opacity ?? 1.0;
+
+  @override
+  Widget build(Widget child) => Opacity(opacity: opacity, child: child);
+}
+```
+
+Set `@MixableModifier(lerp: false)` when the modifier needs a custom `lerp()` implementation.
+
 ### Modifier Ordering
 
 `WidgetModifierConfig` resolves modifiers in an outermost-to-innermost order. `RenderModifiers` reverses that list while building wrappers so the first configured type becomes the outside wrapper.

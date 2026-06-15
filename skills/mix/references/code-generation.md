@@ -68,6 +68,27 @@ By default, the widget name is derived from a lowerCamelCase element name ending
 
 `@MixWidget` complements `@MixableSpec(target:)`; it wraps a style factory after a Styler exists, while `@MixableSpec(target:)` generates the Styler and its `call()` support. Mix's own specs use `@MixableSpec(target:)`; `@MixWidget` is mainly a downstream-author convenience.
 
+### `@MixableModifier()`
+
+Applied to `WidgetModifier` classes. The modifier class mixes in the generated `_$FooModifier` mixin, and the generator emits both the modifier contract implementation and the matching `FooModifierMix` class.
+
+```dart
+part 'opacity_modifier.g.dart';
+
+@MixableModifier()
+final class OpacityModifier with _$OpacityModifier {
+  @override
+  final double opacity;
+
+  const OpacityModifier([double? opacity]) : opacity = opacity ?? 1.0;
+
+  @override
+  Widget build(Widget child) => Opacity(opacity: opacity, child: child);
+}
+```
+
+Use `@MixableModifier(lerp: false)` when interpolation needs custom behavior and the modifier class implements `lerp()` manually. Current built-in generated modifiers live under `packages/mix/lib/src/modifiers/`.
+
 ### `@Mixable()`
 
 Applied to Mix/DTO classes. Generates `_$FooMixin` with:
@@ -128,6 +149,14 @@ specs/box/
 ```
 
 There is no handwritten `box_style.dart` for the current `Box` implementation; `BoxStyler` is generated from `box_spec.dart`.
+
+Current generated modifier shape:
+
+```text
+modifiers/
+├── opacity_modifier.dart     # Hand-written: @MixableModifier(), fields, build()
+└── opacity_modifier.g.dart   # Generated: _$OpacityModifier + OpacityModifierMix
+```
 
 ## Type Metadata Registry
 

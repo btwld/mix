@@ -65,12 +65,12 @@ final style = BoxStyler()
 
 | Constructor / helper | Signature Notes |
 |---------|-----------------|
-| `.curve(duration:, curve:, delay:, onEnd:)` | Custom `CurveAnimationConfig` |
-| `.linear(duration)` | Linear curve |
-| `.ease(duration)` / `.easeIn(duration)` / `.easeOut(duration)` / `.easeInOut(duration)` | Common Flutter curves |
-| `.decelerate(duration)` | Decelerate curve |
-| `.spring(duration, bounce:, onEnd:)` | Duration-based spring physics |
-| `.springWithDampingRatio(mass:, stiffness:, dampingRatio:, onEnd:)` | Physics spring without an explicit duration |
+| `.curve(duration:, curve:, delay:, onEnd:)` | Custom `CurveAnimationConfig` factory |
+| `.linear(duration)` | Linear curve factory |
+| `.ease(duration)` / `.easeIn(duration)` / `.easeOut(duration)` / `.easeInOut(duration)` | Common Flutter curve factories |
+| `.decelerate(duration)` | Decelerate curve factory |
+| `.spring(duration, bounce:, onEnd:)` | Duration-based spring physics (static helper) |
+| `.springWithDampingRatio(mass:, stiffness:, dampingRatio:, onEnd:)` | Physics spring without an explicit duration (static helper) |
 
 For phase animations, `configBuilder` must return `CurveAnimationConfig`; use `CurveAnimationConfig.springWithDampingRatio(duration, ratio: ...)` when a duration is required.
 
@@ -161,7 +161,7 @@ Parameters:
 Each track represents one animatable property:
 - `id` — positional identifier for `values.get<T>(key)`
 - `segments` — positional list of keyframe values with duration and easing
-- `initial` — starting value
+- `initial` — required starting value
 - `tweenBuilder` — optional custom tween (e.g., `ColorTween.new`)
 
 `values.get<T>(key)` reads by the track `id`.
