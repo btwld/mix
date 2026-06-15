@@ -54,6 +54,20 @@ With `target: Widget.new`, it also drives generated Styler and `call()` support 
 
 Use legacy `@MixableStyler()` only when maintaining an existing handwritten Styler whose fields are already `$`-prefixed `Prop<V>?` values.
 
+### `@MixWidget()`
+
+Applied to a top-level variable or function returning a `Style<S>`. It generates a `StatelessWidget` wrapper whose `build()` delegates to the styler's `call()`.
+
+```dart
+@MixWidget()
+final cardStyle = BoxStyler().paddingAll(16).borderRounded(12);
+// Generates `class Card extends StatelessWidget { ... }`.
+```
+
+By default, the widget name is derived from a lowerCamelCase element name ending in `Style`: `cardStyle` becomes `Card`, and leading underscores are preserved. Override the name with `@MixWidget(name: 'X')`.
+
+`@MixWidget` complements `@MixableSpec(target:)`; it wraps a style factory after a Styler exists, while `@MixableSpec(target:)` generates the Styler and its `call()` support. Mix's own specs use `@MixableSpec(target:)`; `@MixWidget` is mainly a downstream-author convenience.
+
 ### `@Mixable()`
 
 Applied to Mix/DTO classes. Generates `_$FooMixin` with:

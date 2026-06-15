@@ -2,4 +2,4 @@ interface:
   display_name: "Mix"
   short_description: "Work with Mix Flutter styles, specs, and codegen."
   brand_color: "#13B9FD"
-  default_prompt: "Use $mix to write idiomatic Mix Flutter styles."
+  default_prompt: "Use Mix to build a responsive Flutter card style."

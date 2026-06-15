@@ -63,7 +63,7 @@ final style = BoxStyler()
 
 `AnimationConfig` is a sealed class with curve-based factories and spring helpers:
 
-| Factory | Signature Notes |
+| Constructor / helper | Signature Notes |
 |---------|-----------------|
 | `.curve(duration:, curve:, delay:, onEnd:)` | Custom `CurveAnimationConfig` |
 | `.linear(duration)` | Linear curve |
@@ -159,10 +159,12 @@ Parameters:
 ### KeyframeTrack
 
 Each track represents one animatable property:
-- `name` — identifier for `values.get<T>(name)`
-- `keyframes` — list of keyframe values with duration and easing
+- `id` — positional identifier for `values.get<T>(key)`
+- `segments` — positional list of keyframe values with duration and easing
 - `initial` — starting value
 - `tweenBuilder` — optional custom tween (e.g., `ColorTween.new`)
+
+`values.get<T>(key)` reads by the track `id`.
 
 Keyframes within a track run in sequence; tracks run in parallel.
 

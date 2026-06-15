@@ -1,7 +1,7 @@
 {
   "name": "mix",
   "version": "1.0.0",
-  "description": "Mix Flutter styling framework guidance for Codex.",
+  "description": "Mix Flutter styling framework guidance for agents working on Mix code, projects using package:mix, and the Mix monorepo.",
   "author": {
     "name": "Leo Farias",
     "url": "https://github.com/leoafarias"

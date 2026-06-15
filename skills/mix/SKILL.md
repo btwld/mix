@@ -5,8 +5,8 @@ description: >
   framework or any project using the mix package. Applies when the user
   mentions Mix specs, Mix styles, BoxStyler, TextStyler, Pressable,
   PressableBox, StyleWidget, MixStyler, fluent chaining, Prop values, Mix types,
-  Mix annotations (@MixableSpec, legacy @MixableStyler, @Mixable), code generation
-  with mix_generator, dot-shorthand policy, style variants (NamedVariant,
+  Mix annotations (@MixableSpec, @MixWidget, legacy @MixableStyler, @Mixable),
+  code generation with mix_generator, dot-shorthand policy, style variants (NamedVariant,
   ContextVariant, WidgetStateVariant, onHovered, onPressed, onDark), implicit
   animations with .animate(), Phase animations, Keyframe animations, design
   tokens (MixScope, tokens), widget modifiers (.wrap()), directives, style
@@ -106,6 +106,7 @@ final combined = base.merge(elevated);
 - **Styler value fields generally use `$` prefix** — `$padding`, `$alignment`, etc. with `Prop<V>?`; exceptions include directives, variants, modifier, and animation metadata
 - **Generated Stylers have `.create()` and default constructors** — many also expose generated factory constructors
 - **Prefer `@MixableSpec(target: Widget.new)`** — `@MixableStyler` is legacy/deprecated
+- **Use `@MixWidget` for generated widgets from style factories** — it wraps top-level `Style<S>` variables or functions
 - **`mix.dart` is generated** — never edit directly; run `melos run exports`
 - **Run codegen after spec changes** — `melos run gen:build`
 - **Prop merge semantics** — regular values: last wins (replacement); Mix values: accumulated merge
@@ -132,7 +133,7 @@ melos run gen:build && melos run ci && melos run analyze
 | Package | Purpose |
 |---------|---------|
 | `mix` | Core framework |
-| `mix_annotations` | `@MixableSpec`, `@MixableStyler`, `@Mixable`, `@MixableField` |
+| `mix_annotations` | `@MixableSpec`, `@MixWidget`, `@MixableStyler`, `@Mixable`, `@MixableField` |
 | `mix_generator` | `build_runner` generator producing `*.g.dart` mixins |
 | `mix_lint` | Analysis server plugin with Mix-specific lint rules |
 | `mix_tailwinds` | Tailwind-style utility layer (experimental) |

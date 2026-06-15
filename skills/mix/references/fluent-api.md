@@ -127,29 +127,15 @@ Decoration, color, gradient, border, shadow, shape, background image:
 | `fontFamily(v)`, `fontFamilyFallback(v)` | Font selection |
 | `shadows(v)`, `fontFeatures(v)`, `fontVariations(v)` | Advanced |
 
+`IconStyler` and `ImageStyler` expose their common generated field setters too; see the `IconStyler` and `ImageStyler` rows in [`styler-api-policy.md`](styler-api-policy.md).
+
 ## Sizing Decision Tree
 
-From `guides/api-composition-guidelines.md`:
-
-1. **Fixed size?** → `BoxStyler().size(w, h)` or `.width(w)` / `.height(h)`
-2. **Min/max bounds?** → `BoxStyler().minWidth(v)` / `.maxWidth(v)` etc.
-3. **Complex constraints?** → `BoxStyler().constraintsOnly(minWidth: ..., maxHeight: ...)`
-4. **Square?** → `BoxStyler(constraints: BoxConstraintsMix.square(size))`
+See [`styler-api-policy.md`](styler-api-policy.md) for the canonical sizing and composition decision tree.
 
 ## Composition via Merge
 
-Combine reusable style fragments:
-
-```dart
-final base = BoxStyler().paddingAll(16).borderRounded(8);
-final elevated = BoxStyler().elevation(ElevationShadow(4));
-final primary = BoxStyler().color(Colors.blue);
-
-// Merge produces a new Styler with all properties combined
-final combined = base.merge(elevated).merge(primary);
-```
-
-Later replacement values override earlier ones. `Prop` sources accumulate internally, and Mix values merge field-by-field before resolving.
+Use `merge()` for combining reusable style fragments; see [`styler-api-policy.md`](styler-api-policy.md) for the reference example. Later replacement values override earlier ones, while Mix values merge field-by-field before resolving.
 
 ## Callable Stylers
 
