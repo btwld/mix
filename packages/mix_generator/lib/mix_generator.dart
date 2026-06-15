@@ -20,6 +20,7 @@ import 'package:source_gen/source_gen.dart';
 import 'src/mix_generator.dart';
 import 'src/mix_widget_generator.dart';
 import 'src/mixable_generator.dart';
+import 'src/modifier_generator.dart';
 import 'src/spec_styler_generator.dart';
 import 'src/styler_generator.dart';
 
@@ -34,6 +35,7 @@ export 'src/core/resolvers/index.dart';
 export 'src/mix_generator.dart';
 export 'src/mix_widget_generator.dart';
 export 'src/mixable_generator.dart';
+export 'src/modifier_generator.dart';
 export 'src/spec_styler_generator.dart';
 export 'src/styler_generator.dart';
 
@@ -98,6 +100,20 @@ Builder mixWidgetGenerator(BuilderOptions _) {
   return SharedPartBuilder(
     [MixWidgetGenerator()],
     'mix_widget_generator',
+    formatOutput: (code, version) {
+      return DartFormatter(languageVersion: version).format(code);
+    },
+  );
+}
+
+/// Builder factory for `modifier_generator`.
+///
+/// Generates `_$XModifierMethods` mixins and `XModifierMix` classes for
+/// `@MixableModifier` `WidgetModifier` subclasses.
+Builder modifierGenerator(BuilderOptions _) {
+  return SharedPartBuilder(
+    [ModifierGenerator()],
+    'modifier_generator',
     formatOutput: (code, version) {
       return DartFormatter(languageVersion: version).format(code);
     },

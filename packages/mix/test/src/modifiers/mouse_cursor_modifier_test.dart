@@ -84,7 +84,7 @@ void main() {
         );
         final result = start.lerp(null, 0.5);
 
-        expect(result, same(start));
+        expect(result.mouseCursor, isNull);
       });
 
       test('handles null mouseCursor values', () {

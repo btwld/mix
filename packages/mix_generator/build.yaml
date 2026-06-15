@@ -21,6 +21,10 @@ targets:
         enabled: true
         generate_for:
           - lib/**/*.dart            # Broader because users annotate anywhere.
+      mix_generator:modifier_generator:
+        enabled: true
+        generate_for:
+          - lib/src/modifiers/**/*.dart  # WidgetModifier classes.
 
 builders:
   mix_generator:
@@ -59,6 +63,14 @@ builders:
     import: 'package:mix_generator/mix_generator.dart'
     builder_factories: ['mixWidgetGenerator']
     build_extensions: {'.dart': ['.mix_widget_generator.g.part']}
+    auto_apply: dependents
+    build_to: cache
+    applies_builders: ['source_gen:combining_builder']
+
+  modifier_generator:
+    import: 'package:mix_generator/mix_generator.dart'
+    builder_factories: ['modifierGenerator']
+    build_extensions: {'.dart': ['.modifier_generator.g.part']}
     auto_apply: dependents
     build_to: cache
     applies_builders: ['source_gen:combining_builder']

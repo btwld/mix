@@ -52,7 +52,7 @@ void main() {
         const start = BlurModifier(5.0);
         final result = start.lerp(null, 0.5);
 
-        expect(result, same(start));
+        expect(result.sigma, 2.5);
       });
 
       test('handles extreme t values', () {

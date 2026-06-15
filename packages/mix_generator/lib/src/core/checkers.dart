@@ -38,6 +38,11 @@ const defaultValueChecker = TypeChecker.fromUrl(
 /// `Prop<T>` from `package:mix`.
 const propChecker = TypeChecker.fromUrl('package:mix/src/core/prop.dart#Prop');
 
+/// `WidgetModifier<T>` from `package:mix`.
+const widgetModifierChecker = TypeChecker.fromUrl(
+  'package:mix/src/core/widget_modifier.dart#WidgetModifier',
+);
+
 /// Flutter's `Widget` base class.
 ///
 /// The URL is the canonical location in `package:flutter`; the `@MixWidget`

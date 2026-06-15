@@ -159,7 +159,11 @@ void main() {
         );
         final result = start.lerp(null, 0.5);
 
-        expect(result, same(start));
+        expect(result.scrollDirection, isNull);
+        expect(result.reverse, isNull);
+        expect(result.padding, const EdgeInsets.all(5.0));
+        expect(result.physics, isNull);
+        expect(result.clipBehavior, isNull);
       });
 
       test('interpolates all properties together', () {
