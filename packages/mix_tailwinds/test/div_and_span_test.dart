@@ -3217,6 +3217,98 @@ void main() {
   });
 
   // ===========================================================================
+  // P/H Margin Utilities — arbitrary values & negative-margin safety
+  // Regression coverage for resolver-backed _extractMargin (feedback Finding 5).
+  // ===========================================================================
+
+  group('P/H margin utilities — arbitrary & negative', () {
+    testWidgets('P with mb-[10px] applies arbitrary bottom margin', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        const Directionality(
+          textDirection: TextDirection.ltr,
+          child: P(text: 'Arb', classNames: 'text-sm mb-[10px]'),
+        ),
+      );
+
+      expect(find.byType(Padding), findsOneWidget);
+      final padding = tester.widget<Padding>(find.byType(Padding));
+      final edgeInsets = padding.padding as EdgeInsets;
+      expect(edgeInsets.bottom, 10);
+      expect(edgeInsets.top, 0);
+      expect(edgeInsets.left, 0);
+      expect(edgeInsets.right, 0);
+    });
+
+    testWidgets('P with mb-[1rem] applies arbitrary rem margin (16px)', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        const Directionality(
+          textDirection: TextDirection.ltr,
+          child: P(text: 'Arb', classNames: 'mb-[1rem]'),
+        ),
+      );
+
+      expect(find.byType(Padding), findsOneWidget);
+      final padding = tester.widget<Padding>(find.byType(Padding));
+      final edgeInsets = padding.padding as EdgeInsets;
+      expect(edgeInsets.bottom, 16);
+    });
+
+    testWidgets('H1 with mx-[12px] applies arbitrary horizontal margin', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        const Directionality(
+          textDirection: TextDirection.ltr,
+          child: H1(text: 'Heading', classNames: 'text-4xl mx-[12px]'),
+        ),
+      );
+
+      expect(find.byType(Padding), findsOneWidget);
+      final padding = tester.widget<Padding>(find.byType(Padding));
+      final edgeInsets = padding.padding as EdgeInsets;
+      expect(edgeInsets.left, 12);
+      expect(edgeInsets.right, 12);
+    });
+
+    testWidgets('P with -mb-4 does not crash and applies no Padding', (
+      tester,
+    ) async {
+      // Negative margins cannot render through Padding (RenderPadding asserts
+      // non-negative insets), so they must be skipped, not applied.
+      await tester.pumpWidget(
+        const Directionality(
+          textDirection: TextDirection.ltr,
+          child: P(text: 'Neg', classNames: '-mb-4'),
+        ),
+      );
+
+      expect(tester.takeException(), isNull);
+      expect(find.byType(Padding), findsNothing);
+    });
+
+    testWidgets('P with -mb-4 mt-2 applies only the positive side', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        const Directionality(
+          textDirection: TextDirection.ltr,
+          child: P(text: 'Mixed', classNames: '-mb-4 mt-2'),
+        ),
+      );
+
+      expect(find.byType(Padding), findsOneWidget);
+      final padding = tester.widget<Padding>(find.byType(Padding));
+      final edgeInsets = padding.padding as EdgeInsets;
+      expect(edgeInsets.top, 8); // mt-2 applied
+      expect(edgeInsets.bottom, 0); // -mb-4 skipped, not -16
+    });
+  });
+
+  // ===========================================================================
   // H1-H6 Margin Utilities Tests
   // ===========================================================================
 

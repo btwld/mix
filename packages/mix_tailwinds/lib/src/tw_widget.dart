@@ -4,6 +4,7 @@ import 'package:mix/mix.dart';
 
 import 'tw_config.dart';
 import 'tw_parser.dart';
+import 'tw_semantic.dart';
 import 'tw_utils.dart';
 
 // =============================================================================
@@ -37,49 +38,53 @@ bool _hasBoxUtilities(String classNames) {
   return false;
 }
 
-/// Extract margin value from tokens for a given prefix (e.g., 'mb-').
-/// Returns null if not found.
+/// Extracts the margin [EdgeInsets] from [classNames] using the shared
+/// [TwResolver], so text-element margins match the parser's handling of scale
+/// (`mb-4`), prefixed (`md:mb-4`), and arbitrary (`mb-[10px]`) values.
+///
+/// Returns null when no positive margin token is present.
+///
+/// Limitations (intentional, see feedback Finding 5):
+/// - Negative margins (`-mb-4`) are skipped. They are applied via [Padding],
+///   whose `RenderPadding` asserts non-negative insets, so emitting them would
+///   crash. True CSS negative-margin parity needs a transform-based strategy at
+///   the box layer and is tracked separately.
+/// - Variant prefixes are flattened — the margin applies unconditionally
+///   regardless of `hover:`/`dark:`/breakpoint. Proper responsive/interaction
+///   margin semantics are not yet modeled in the widget layer.
 EdgeInsets? _extractMargin(String classNames, TwConfig cfg) {
   final tokens = classNames.split(_whitespaceRegex);
+  final resolver = TwResolver(cfg);
   double? top, right, bottom, left;
 
   for (final token in tokens) {
-    final base = baseTokenOutsideBrackets(token);
+    final parsed = resolver.resolveToken(token);
+    if (parsed == null) continue;
 
-    if (base.startsWith('m-')) {
-      final value = cfg.spaceOf(base.substring(2), fallback: double.nan);
-      if (!value.isNaN) {
-        top = right = bottom = left = value;
-      }
-    } else if (base.startsWith('mx-')) {
-      final value = cfg.spaceOf(base.substring(3), fallback: double.nan);
-      if (!value.isNaN) {
-        left = right = value;
-      }
-    } else if (base.startsWith('my-')) {
-      final value = cfg.spaceOf(base.substring(3), fallback: double.nan);
-      if (!value.isNaN) {
-        top = bottom = value;
-      }
-    } else if (base.startsWith('mt-')) {
-      final value = cfg.spaceOf(base.substring(3), fallback: double.nan);
-      if (!value.isNaN) {
-        top = value;
-      }
-    } else if (base.startsWith('mr-')) {
-      final value = cfg.spaceOf(base.substring(3), fallback: double.nan);
-      if (!value.isNaN) {
-        right = value;
-      }
-    } else if (base.startsWith('mb-')) {
-      final value = cfg.spaceOf(base.substring(3), fallback: double.nan);
-      if (!value.isNaN) {
-        bottom = value;
-      }
-    } else if (base.startsWith('ml-')) {
-      final value = cfg.spaceOf(base.substring(3), fallback: double.nan);
-      if (!value.isNaN) {
-        left = value;
+    for (final cls in parsed) {
+      final value = cls.value;
+      // Only positive length-valued margin properties map to Padding insets.
+      // Negative values cannot render through Padding and are skipped.
+      if (value is! TwLengthValue || value.value < 0) continue;
+      final v = value.value;
+
+      switch (cls.property) {
+        case TwProperty.margin:
+          top = right = bottom = left = v;
+        case TwProperty.marginX:
+          left = right = v;
+        case TwProperty.marginY:
+          top = bottom = v;
+        case TwProperty.marginTop:
+          top = v;
+        case TwProperty.marginRight:
+          right = v;
+        case TwProperty.marginBottom:
+          bottom = v;
+        case TwProperty.marginLeft:
+          left = v;
+        default:
+          break;
       }
     }
   }
@@ -89,10 +94,10 @@ EdgeInsets? _extractMargin(String classNames, TwConfig cfg) {
   }
 
   return EdgeInsets.only(
+    left: left ?? 0,
     top: top ?? 0,
     right: right ?? 0,
     bottom: bottom ?? 0,
-    left: left ?? 0,
   );
 }
 
