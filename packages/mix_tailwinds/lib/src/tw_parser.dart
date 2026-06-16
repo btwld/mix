@@ -898,104 +898,273 @@ S _accumulateTranslateY<S>(
   return styler;
 }
 
-FlexBoxStyler _applyPropertyToFlex(
-  FlexBoxStyler styler,
+typedef _LengthStylerApplier<S> = S Function(S styler, double value);
+typedef _ColorStylerApplier<S> = S Function(S styler, Color value);
+typedef _ClipStylerApplier<S> = S Function(S styler, Clip value);
+typedef _ModifierStylerApplier<S> =
+    S Function(S styler, WidgetModifierConfig value);
+typedef _TextStyleStylerApplier<S> = S Function(S styler, TextStyleMix value);
+typedef _ElevationStylerApplier<S> =
+    S Function(S styler, ElevationShadow value);
+typedef _BoxShadowsStylerApplier<S> =
+    S Function(S styler, List<BoxShadowMix> value);
+
+final class _BoxLikeStylerOps<S> {
+  const _BoxLikeStylerOps({
+    required this.paddingAll,
+    required this.paddingX,
+    required this.paddingY,
+    required this.paddingTop,
+    required this.paddingRight,
+    required this.paddingBottom,
+    required this.paddingLeft,
+    required this.marginAll,
+    required this.marginX,
+    required this.marginY,
+    required this.marginTop,
+    required this.marginRight,
+    required this.marginBottom,
+    required this.marginLeft,
+    required this.width,
+    required this.height,
+    required this.minWidth,
+    required this.minHeight,
+    required this.maxWidth,
+    required this.maxHeight,
+    required this.color,
+    required this.borderRounded,
+    required this.borderRoundedTop,
+    required this.borderRoundedBottom,
+    required this.borderRoundedLeft,
+    required this.borderRoundedRight,
+    required this.borderRoundedTopLeft,
+    required this.borderRoundedTopRight,
+    required this.borderRoundedBottomLeft,
+    required this.borderRoundedBottomRight,
+    required this.wrap,
+    required this.clipBehavior,
+    required this.defaultTextStyle,
+    required this.elevation,
+    required this.boxShadows,
+  });
+
+  final _LengthStylerApplier<S> paddingAll;
+  final _LengthStylerApplier<S> paddingX;
+  final _LengthStylerApplier<S> paddingY;
+  final _LengthStylerApplier<S> paddingTop;
+  final _LengthStylerApplier<S> paddingRight;
+  final _LengthStylerApplier<S> paddingBottom;
+  final _LengthStylerApplier<S> paddingLeft;
+  final _LengthStylerApplier<S> marginAll;
+  final _LengthStylerApplier<S> marginX;
+  final _LengthStylerApplier<S> marginY;
+  final _LengthStylerApplier<S> marginTop;
+  final _LengthStylerApplier<S> marginRight;
+  final _LengthStylerApplier<S> marginBottom;
+  final _LengthStylerApplier<S> marginLeft;
+  final _LengthStylerApplier<S> width;
+  final _LengthStylerApplier<S> height;
+  final _LengthStylerApplier<S> minWidth;
+  final _LengthStylerApplier<S> minHeight;
+  final _LengthStylerApplier<S> maxWidth;
+  final _LengthStylerApplier<S> maxHeight;
+  final _ColorStylerApplier<S> color;
+  final _LengthStylerApplier<S> borderRounded;
+  final _LengthStylerApplier<S> borderRoundedTop;
+  final _LengthStylerApplier<S> borderRoundedBottom;
+  final _LengthStylerApplier<S> borderRoundedLeft;
+  final _LengthStylerApplier<S> borderRoundedRight;
+  final _LengthStylerApplier<S> borderRoundedTopLeft;
+  final _LengthStylerApplier<S> borderRoundedTopRight;
+  final _LengthStylerApplier<S> borderRoundedBottomLeft;
+  final _LengthStylerApplier<S> borderRoundedBottomRight;
+  final _ModifierStylerApplier<S> wrap;
+  final _ClipStylerApplier<S> clipBehavior;
+  final _TextStyleStylerApplier<S> defaultTextStyle;
+  final _ElevationStylerApplier<S> elevation;
+  final _BoxShadowsStylerApplier<S> boxShadows;
+}
+
+final _flexBoxOps = _BoxLikeStylerOps<FlexBoxStyler>(
+  paddingAll: (style, value) => style.paddingAll(value),
+  paddingX: (style, value) => style.paddingX(value),
+  paddingY: (style, value) => style.paddingY(value),
+  paddingTop: (style, value) => style.paddingTop(value),
+  paddingRight: (style, value) => style.paddingRight(value),
+  paddingBottom: (style, value) => style.paddingBottom(value),
+  paddingLeft: (style, value) => style.paddingLeft(value),
+  marginAll: (style, value) => style.marginAll(value),
+  marginX: (style, value) => style.marginX(value),
+  marginY: (style, value) => style.marginY(value),
+  marginTop: (style, value) => style.marginTop(value),
+  marginRight: (style, value) => style.marginRight(value),
+  marginBottom: (style, value) => style.marginBottom(value),
+  marginLeft: (style, value) => style.marginLeft(value),
+  width: (style, value) => style.width(value),
+  height: (style, value) => style.height(value),
+  minWidth: (style, value) => style.minWidth(value),
+  minHeight: (style, value) => style.minHeight(value),
+  maxWidth: (style, value) => style.maxWidth(value),
+  maxHeight: (style, value) => style.maxHeight(value),
+  color: (style, value) => style.color(value),
+  borderRounded: (style, value) => style.borderRounded(value),
+  borderRoundedTop: (style, value) => style.borderRoundedTop(value),
+  borderRoundedBottom: (style, value) => style.borderRoundedBottom(value),
+  borderRoundedLeft: (style, value) => style.borderRoundedLeft(value),
+  borderRoundedRight: (style, value) => style.borderRoundedRight(value),
+  borderRoundedTopLeft: (style, value) => style.borderRoundedTopLeft(value),
+  borderRoundedTopRight: (style, value) => style.borderRoundedTopRight(value),
+  borderRoundedBottomLeft: (style, value) =>
+      style.borderRoundedBottomLeft(value),
+  borderRoundedBottomRight: (style, value) =>
+      style.borderRoundedBottomRight(value),
+  wrap: (style, value) => style.wrap(value),
+  clipBehavior: (style, value) => style.clipBehavior(value),
+  defaultTextStyle: (style, value) => style.wrapDefaultTextStyle(value),
+  elevation: (style, value) => style.elevation(value),
+  boxShadows: (style, value) => style.boxShadows(value),
+);
+
+final _boxOps = _BoxLikeStylerOps<BoxStyler>(
+  paddingAll: (style, value) => style.paddingAll(value),
+  paddingX: (style, value) => style.paddingX(value),
+  paddingY: (style, value) => style.paddingY(value),
+  paddingTop: (style, value) => style.paddingTop(value),
+  paddingRight: (style, value) => style.paddingRight(value),
+  paddingBottom: (style, value) => style.paddingBottom(value),
+  paddingLeft: (style, value) => style.paddingLeft(value),
+  marginAll: (style, value) => style.marginAll(value),
+  marginX: (style, value) => style.marginX(value),
+  marginY: (style, value) => style.marginY(value),
+  marginTop: (style, value) => style.marginTop(value),
+  marginRight: (style, value) => style.marginRight(value),
+  marginBottom: (style, value) => style.marginBottom(value),
+  marginLeft: (style, value) => style.marginLeft(value),
+  width: (style, value) => style.width(value),
+  height: (style, value) => style.height(value),
+  minWidth: (style, value) => style.minWidth(value),
+  minHeight: (style, value) => style.minHeight(value),
+  maxWidth: (style, value) => style.maxWidth(value),
+  maxHeight: (style, value) => style.maxHeight(value),
+  color: (style, value) => style.color(value),
+  borderRounded: (style, value) => style.borderRounded(value),
+  borderRoundedTop: (style, value) => style.borderRoundedTop(value),
+  borderRoundedBottom: (style, value) => style.borderRoundedBottom(value),
+  borderRoundedLeft: (style, value) => style.borderRoundedLeft(value),
+  borderRoundedRight: (style, value) => style.borderRoundedRight(value),
+  borderRoundedTopLeft: (style, value) => style.borderRoundedTopLeft(value),
+  borderRoundedTopRight: (style, value) => style.borderRoundedTopRight(value),
+  borderRoundedBottomLeft: (style, value) =>
+      style.borderRoundedBottomLeft(value),
+  borderRoundedBottomRight: (style, value) =>
+      style.borderRoundedBottomRight(value),
+  wrap: (style, value) => style.wrap(value),
+  clipBehavior: (style, value) => style.clipBehavior(value),
+  defaultTextStyle: (style, value) => style.wrapDefaultTextStyle(value),
+  elevation: (style, value) => style.elevation(value),
+  boxShadows: (style, value) => style.boxShadows(value),
+);
+
+S _applySharedBoxLikeProperty<S>(
+  S styler,
   TwProperty property,
   TwValue value,
-  TwConfig config,
   _TransformAccumTracker transformTracker,
+  _BoxLikeStylerOps<S> ops,
 ) {
   return switch (property) {
     // Spacing
-    TwProperty.padding => styler.paddingAll((value as TwLengthValue).value),
-    TwProperty.paddingX => styler.paddingX((value as TwLengthValue).value),
-    TwProperty.paddingY => styler.paddingY((value as TwLengthValue).value),
-    TwProperty.paddingTop => styler.paddingTop((value as TwLengthValue).value),
-    TwProperty.paddingRight => styler.paddingRight(
+    TwProperty.padding => ops.paddingAll(
+      styler,
       (value as TwLengthValue).value,
     ),
-    TwProperty.paddingBottom => styler.paddingBottom(
+    TwProperty.paddingX => ops.paddingX(styler, (value as TwLengthValue).value),
+    TwProperty.paddingY => ops.paddingY(styler, (value as TwLengthValue).value),
+    TwProperty.paddingTop => ops.paddingTop(
+      styler,
       (value as TwLengthValue).value,
     ),
-    TwProperty.paddingLeft => styler.paddingLeft(
+    TwProperty.paddingRight => ops.paddingRight(
+      styler,
       (value as TwLengthValue).value,
     ),
-    TwProperty.margin => styler.marginAll((value as TwLengthValue).value),
-    TwProperty.marginX => styler.marginX((value as TwLengthValue).value),
-    TwProperty.marginY => styler.marginY((value as TwLengthValue).value),
-    TwProperty.marginTop => styler.marginTop((value as TwLengthValue).value),
-    TwProperty.marginRight => styler.marginRight(
+    TwProperty.paddingBottom => ops.paddingBottom(
+      styler,
       (value as TwLengthValue).value,
     ),
-    TwProperty.marginBottom => styler.marginBottom(
+    TwProperty.paddingLeft => ops.paddingLeft(
+      styler,
       (value as TwLengthValue).value,
     ),
-    TwProperty.marginLeft => styler.marginLeft((value as TwLengthValue).value),
-    TwProperty.gap => styler.spacing((value as TwLengthValue).value),
+    TwProperty.margin => ops.marginAll(styler, (value as TwLengthValue).value),
+    TwProperty.marginX => ops.marginX(styler, (value as TwLengthValue).value),
+    TwProperty.marginY => ops.marginY(styler, (value as TwLengthValue).value),
+    TwProperty.marginTop => ops.marginTop(
+      styler,
+      (value as TwLengthValue).value,
+    ),
+    TwProperty.marginRight => ops.marginRight(
+      styler,
+      (value as TwLengthValue).value,
+    ),
+    TwProperty.marginBottom => ops.marginBottom(
+      styler,
+      (value as TwLengthValue).value,
+    ),
+    TwProperty.marginLeft => ops.marginLeft(
+      styler,
+      (value as TwLengthValue).value,
+    ),
 
     // Sizing (only apply length values with px unit; enum values and % handled by widget layer)
-    TwProperty.width =>
-      value is TwLengthValue && value.unit == TwUnit.px
-          ? styler.width(value.value)
-          : styler,
-    TwProperty.height =>
-      value is TwLengthValue && value.unit == TwUnit.px
-          ? styler.height(value.value)
-          : styler,
-    TwProperty.minWidth =>
-      value is TwLengthValue && value.unit == TwUnit.px
-          ? styler.minWidth(value.value)
-          : styler,
-    TwProperty.minHeight =>
-      value is TwLengthValue && value.unit == TwUnit.px
-          ? styler.minHeight(value.value)
-          : styler,
-    TwProperty.maxWidth =>
-      value is TwLengthValue && value.unit == TwUnit.px
-          ? styler.maxWidth(value.value)
-          : styler,
-    TwProperty.maxHeight =>
-      value is TwLengthValue && value.unit == TwUnit.px
-          ? styler.maxHeight(value.value)
-          : styler,
-
-    // Layout
-    TwProperty.display => _applyFlexDisplay(styler, value),
-    TwProperty.flexDirection => _applyFlexDirection(styler, value),
-    TwProperty.alignItems => _applyAlignItems(styler, value),
-    TwProperty.justifyContent => styler.mainAxisAlignment(
-      (value as TwEnumValue<MainAxisAlignment>).value,
-    ),
+    TwProperty.width => _applyPxLength(styler, value, ops.width),
+    TwProperty.height => _applyPxLength(styler, value, ops.height),
+    TwProperty.minWidth => _applyPxLength(styler, value, ops.minWidth),
+    TwProperty.minHeight => _applyPxLength(styler, value, ops.minHeight),
+    TwProperty.maxWidth => _applyPxLength(styler, value, ops.maxWidth),
+    TwProperty.maxHeight => _applyPxLength(styler, value, ops.maxHeight),
 
     // Background
-    TwProperty.backgroundColor => styler.color((value as TwColorValue).color),
+    TwProperty.backgroundColor => ops.color(
+      styler,
+      (value as TwColorValue).color,
+    ),
 
     // Border radius
-    TwProperty.borderRadius => styler.borderRounded(
+    TwProperty.borderRadius => ops.borderRounded(
+      styler,
       (value as TwLengthValue).value,
     ),
-    TwProperty.borderRadiusTop => styler.borderRoundedTop(
+    TwProperty.borderRadiusTop => ops.borderRoundedTop(
+      styler,
       (value as TwLengthValue).value,
     ),
-    TwProperty.borderRadiusBottom => styler.borderRoundedBottom(
+    TwProperty.borderRadiusBottom => ops.borderRoundedBottom(
+      styler,
       (value as TwLengthValue).value,
     ),
-    TwProperty.borderRadiusLeft => styler.borderRoundedLeft(
+    TwProperty.borderRadiusLeft => ops.borderRoundedLeft(
+      styler,
       (value as TwLengthValue).value,
     ),
-    TwProperty.borderRadiusRight => styler.borderRoundedRight(
+    TwProperty.borderRadiusRight => ops.borderRoundedRight(
+      styler,
       (value as TwLengthValue).value,
     ),
-    TwProperty.borderRadiusTopLeft => styler.borderRoundedTopLeft(
+    TwProperty.borderRadiusTopLeft => ops.borderRoundedTopLeft(
+      styler,
       (value as TwLengthValue).value,
     ),
-    TwProperty.borderRadiusTopRight => styler.borderRoundedTopRight(
+    TwProperty.borderRadiusTopRight => ops.borderRoundedTopRight(
+      styler,
       (value as TwLengthValue).value,
     ),
-    TwProperty.borderRadiusBottomLeft => styler.borderRoundedBottomLeft(
+    TwProperty.borderRadiusBottomLeft => ops.borderRoundedBottomLeft(
+      styler,
       (value as TwLengthValue).value,
     ),
-    TwProperty.borderRadiusBottomRight => styler.borderRoundedBottomRight(
+    TwProperty.borderRadiusBottomRight => ops.borderRoundedBottomRight(
+      styler,
       (value as TwLengthValue).value,
     ),
 
@@ -1022,27 +1191,69 @@ FlexBoxStyler _applyPropertyToFlex(
     ),
 
     // Effects
-    TwProperty.blur => styler.wrap(
+    TwProperty.blur => ops.wrap(
+      styler,
       WidgetModifierConfig.blur((value as TwLengthValue).value),
     ),
-    TwProperty.boxShadow => _applyFlexShadow(styler, value),
-    TwProperty.clipBehavior => styler.clipBehavior(
+    TwProperty.boxShadow => _applyShadowValue(
+      styler,
+      value,
+      applyElevation: ops.elevation,
+      applyBoxShadows: ops.boxShadows,
+    ),
+    TwProperty.clipBehavior => ops.clipBehavior(
+      styler,
       (value as TwEnumValue<Clip>).value,
     ),
 
     // Typography (propagates via DefaultTextStyle)
-    TwProperty.textColor => styler.wrapDefaultTextStyle(
+    TwProperty.textColor => ops.defaultTextStyle(
+      styler,
       TextStyleMix().color((value as TwColorValue).color),
     ),
-    TwProperty.fontSize => styler.wrapDefaultTextStyle(
+    TwProperty.fontSize => ops.defaultTextStyle(
+      styler,
       TextStyleMix().fontSize((value as TwLengthValue).value),
     ),
-    TwProperty.fontWeight => styler.wrapDefaultTextStyle(
+    TwProperty.fontWeight => ops.defaultTextStyle(
+      styler,
       TextStyleMix().fontWeight((value as TwEnumValue<FontWeight>).value),
     ),
-    TwProperty.textShadow => _applyFlexTextShadow(styler, value),
+    TwProperty.textShadow => _applyDefaultTextShadow(styler, value, ops),
 
     _ => styler,
+  };
+}
+
+S _applyPxLength<S>(S styler, TwValue value, _LengthStylerApplier<S> apply) {
+  if (value is TwLengthValue && value.unit == TwUnit.px) {
+    return apply(styler, value.value);
+  }
+
+  return styler;
+}
+
+FlexBoxStyler _applyPropertyToFlex(
+  FlexBoxStyler styler,
+  TwProperty property,
+  TwValue value,
+  _TransformAccumTracker transformTracker,
+) {
+  return switch (property) {
+    TwProperty.gap => styler.spacing((value as TwLengthValue).value),
+    TwProperty.display => _applyFlexDisplay(styler, value),
+    TwProperty.flexDirection => _applyFlexDirection(styler, value),
+    TwProperty.alignItems => _applyAlignItems(styler, value),
+    TwProperty.justifyContent => styler.mainAxisAlignment(
+      (value as TwEnumValue<MainAxisAlignment>).value,
+    ),
+    _ => _applySharedBoxLikeProperty(
+      styler,
+      property,
+      value,
+      transformTracker,
+      _flexBoxOps,
+    ),
   };
 }
 
@@ -1076,160 +1287,18 @@ FlexBoxStyler _applyAlignItems(FlexBoxStyler styler, TwValue value) {
   return styler;
 }
 
-FlexBoxStyler _applyFlexShadow(FlexBoxStyler styler, TwValue value) {
-  return _applyShadowValue(
-    styler,
-    value,
-    applyElevation: (style, elevation) => style.elevation(elevation),
-    applyBoxShadows: (style, shadows) => style.boxShadows(shadows),
-  );
-}
-
 BoxStyler _applyPropertyToBox(
   BoxStyler styler,
   TwProperty property,
   TwValue value,
-  TwConfig config,
   _TransformAccumTracker transformTracker,
 ) {
-  return switch (property) {
-    // Spacing
-    TwProperty.padding => styler.paddingAll((value as TwLengthValue).value),
-    TwProperty.paddingX => styler.paddingX((value as TwLengthValue).value),
-    TwProperty.paddingY => styler.paddingY((value as TwLengthValue).value),
-    TwProperty.paddingTop => styler.paddingTop((value as TwLengthValue).value),
-    TwProperty.paddingRight => styler.paddingRight(
-      (value as TwLengthValue).value,
-    ),
-    TwProperty.paddingBottom => styler.paddingBottom(
-      (value as TwLengthValue).value,
-    ),
-    TwProperty.paddingLeft => styler.paddingLeft(
-      (value as TwLengthValue).value,
-    ),
-    TwProperty.margin => styler.marginAll((value as TwLengthValue).value),
-    TwProperty.marginX => styler.marginX((value as TwLengthValue).value),
-    TwProperty.marginY => styler.marginY((value as TwLengthValue).value),
-    TwProperty.marginTop => styler.marginTop((value as TwLengthValue).value),
-    TwProperty.marginRight => styler.marginRight(
-      (value as TwLengthValue).value,
-    ),
-    TwProperty.marginBottom => styler.marginBottom(
-      (value as TwLengthValue).value,
-    ),
-    TwProperty.marginLeft => styler.marginLeft((value as TwLengthValue).value),
-
-    // Sizing (only apply length values with px unit; enum values and % handled by widget layer)
-    TwProperty.width =>
-      value is TwLengthValue && value.unit == TwUnit.px
-          ? styler.width(value.value)
-          : styler,
-    TwProperty.height =>
-      value is TwLengthValue && value.unit == TwUnit.px
-          ? styler.height(value.value)
-          : styler,
-    TwProperty.minWidth =>
-      value is TwLengthValue && value.unit == TwUnit.px
-          ? styler.minWidth(value.value)
-          : styler,
-    TwProperty.minHeight =>
-      value is TwLengthValue && value.unit == TwUnit.px
-          ? styler.minHeight(value.value)
-          : styler,
-    TwProperty.maxWidth =>
-      value is TwLengthValue && value.unit == TwUnit.px
-          ? styler.maxWidth(value.value)
-          : styler,
-    TwProperty.maxHeight =>
-      value is TwLengthValue && value.unit == TwUnit.px
-          ? styler.maxHeight(value.value)
-          : styler,
-
-    // Background
-    TwProperty.backgroundColor => styler.color((value as TwColorValue).color),
-
-    // Border radius
-    TwProperty.borderRadius => styler.borderRounded(
-      (value as TwLengthValue).value,
-    ),
-    TwProperty.borderRadiusTop => styler.borderRoundedTop(
-      (value as TwLengthValue).value,
-    ),
-    TwProperty.borderRadiusBottom => styler.borderRoundedBottom(
-      (value as TwLengthValue).value,
-    ),
-    TwProperty.borderRadiusLeft => styler.borderRoundedLeft(
-      (value as TwLengthValue).value,
-    ),
-    TwProperty.borderRadiusRight => styler.borderRoundedRight(
-      (value as TwLengthValue).value,
-    ),
-    TwProperty.borderRadiusTopLeft => styler.borderRoundedTopLeft(
-      (value as TwLengthValue).value,
-    ),
-    TwProperty.borderRadiusTopRight => styler.borderRoundedTopRight(
-      (value as TwLengthValue).value,
-    ),
-    TwProperty.borderRadiusBottomLeft => styler.borderRoundedBottomLeft(
-      (value as TwLengthValue).value,
-    ),
-    TwProperty.borderRadiusBottomRight => styler.borderRoundedBottomRight(
-      (value as TwLengthValue).value,
-    ),
-
-    // Transform
-    TwProperty.scale => _accumulateScale(
-      styler,
-      (value as TwLengthValue).value,
-      transformTracker,
-    ),
-    TwProperty.rotate => _accumulateRotate(
-      styler,
-      (value as TwLengthValue).value,
-      transformTracker,
-    ),
-    TwProperty.translateX => _accumulateTranslateX(
-      styler,
-      (value as TwLengthValue).value,
-      transformTracker,
-    ),
-    TwProperty.translateY => _accumulateTranslateY(
-      styler,
-      (value as TwLengthValue).value,
-      transformTracker,
-    ),
-
-    // Effects
-    TwProperty.blur => styler.wrap(
-      WidgetModifierConfig.blur((value as TwLengthValue).value),
-    ),
-    TwProperty.boxShadow => _applyBoxShadow(styler, value),
-    TwProperty.clipBehavior => styler.clipBehavior(
-      (value as TwEnumValue<Clip>).value,
-    ),
-
-    // Typography (propagates via DefaultTextStyle)
-    TwProperty.textColor => styler.wrapDefaultTextStyle(
-      TextStyleMix().color((value as TwColorValue).color),
-    ),
-    TwProperty.fontSize => styler.wrapDefaultTextStyle(
-      TextStyleMix().fontSize((value as TwLengthValue).value),
-    ),
-    TwProperty.fontWeight => styler.wrapDefaultTextStyle(
-      TextStyleMix().fontWeight((value as TwEnumValue<FontWeight>).value),
-    ),
-    TwProperty.textShadow => _applyBoxTextShadow(styler, value),
-
-    _ => styler,
-  };
-}
-
-BoxStyler _applyBoxShadow(BoxStyler styler, TwValue value) {
-  return _applyShadowValue(
+  return _applySharedBoxLikeProperty(
     styler,
+    property,
     value,
-    applyElevation: (style, elevation) => style.elevation(elevation),
-    applyBoxShadows: (style, shadows) => style.boxShadows(shadows),
+    transformTracker,
+    _boxOps,
   );
 }
 
@@ -1366,16 +1435,14 @@ List<ShadowMix>? _resolveTextShadowMixes(TwValue value) {
   return null;
 }
 
-FlexBoxStyler _applyFlexTextShadow(FlexBoxStyler styler, TwValue value) {
+S _applyDefaultTextShadow<S>(
+  S styler,
+  TwValue value,
+  _BoxLikeStylerOps<S> ops,
+) {
   final shadows = _resolveTextShadowMixes(value);
   if (shadows == null) return styler;
-  return styler.wrapDefaultTextStyle(TextStyleMix().shadows(shadows));
-}
-
-BoxStyler _applyBoxTextShadow(BoxStyler styler, TwValue value) {
-  final shadows = _resolveTextShadowMixes(value);
-  if (shadows == null) return styler;
-  return styler.wrapDefaultTextStyle(TextStyleMix().shadows(shadows));
+  return ops.defaultTextStyle(styler, TextStyleMix().shadows(shadows));
 }
 
 TextStyler _applyTextShadow(TextStyler styler, TwValue value) {
@@ -1934,13 +2001,8 @@ class TwParser {
       return _applyResolvedProperties(
         styler,
         parsed,
-        (current, property, value) => _applyPropertyToFlex(
-          current,
-          property,
-          value,
-          config,
-          _transformTracker,
-        ),
+        (current, property, value) =>
+            _applyPropertyToFlex(current, property, value, _transformTracker),
       );
     }
 
@@ -1966,13 +2028,8 @@ class TwParser {
       return _applyResolvedProperties(
         styler,
         parsed,
-        (current, property, value) => _applyPropertyToBox(
-          current,
-          property,
-          value,
-          config,
-          _transformTracker,
-        ),
+        (current, property, value) =>
+            _applyPropertyToBox(current, property, value, _transformTracker),
       );
     }
 

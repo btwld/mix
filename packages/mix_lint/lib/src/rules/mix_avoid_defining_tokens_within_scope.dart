@@ -5,6 +5,7 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
+import '../utils/ast_helpers.dart';
 import '../utils/type_helpers.dart';
 
 class MixAvoidDefiningTokensWithinScope extends AnalysisRule {
@@ -46,19 +47,13 @@ class _Visitor extends SimpleAstVisitor<void> {
   void visitInstanceCreationExpression(InstanceCreationExpression node) {
     if (!isMixTokenType(node.staticType)) return;
 
-    // Walk up the AST to find a MixScope ancestor.
-    // Stop at statement/declaration boundaries.
-    AstNode? current = node.parent;
-    while (current != null &&
-        current is! Statement &&
-        current is! Declaration) {
-      if (current is InstanceCreationExpression &&
-          isMixScopeType(current.staticType)) {
+    for (final ancestor in ancestorsBeforeStatementOrDeclaration(node)) {
+      if (ancestor is InstanceCreationExpression &&
+          isMixScopeType(ancestor.staticType)) {
         rule.reportAtNode(node);
 
         return;
       }
-      current = current.parent;
     }
   }
 }
