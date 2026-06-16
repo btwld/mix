@@ -30,7 +30,7 @@ class FieldEmitter<T> {
     }
   }
 
-  /// Emits a `properties..add(...)` cascade for diagnostics.
+  /// Emits diagnostic property additions.
   String debugFillProperties({
     required bool callSuper,
     required String Function(T field) propertyCode,
@@ -46,7 +46,9 @@ class FieldEmitter<T> {
       buffer.writeln('    super.debugFillProperties(properties);');
     }
 
-    if (fields.isNotEmpty) {
+    if (fields.length == 1) {
+      buffer.writeln('    properties.add(${propertyCode(fields.single)});');
+    } else if (fields.isNotEmpty) {
       buffer.writeln('    properties');
 
       for (var i = 0; i < fields.length; i++) {

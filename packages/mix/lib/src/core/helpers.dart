@@ -174,9 +174,12 @@ List<WidgetModifier>? _lerpModifierList(
 }
 
 Matrix4? _lerpMatrix4(Matrix4? a, Matrix4? b, double t) {
-  if (a == null || b == null) return _lerpSnap(a, b, t);
+  if (a == null && b == null) return null;
 
-  return Matrix4Tween(begin: a, end: b).lerp(t);
+  return Matrix4Tween(
+    begin: a ?? Matrix4.identity(),
+    end: b ?? Matrix4.identity(),
+  ).lerp(t);
 }
 
 T? _lerpValue<T>(T? a, T? b, double t) {
@@ -249,7 +252,7 @@ T? _lerpValue<T>(T? a, T? b, double t) {
     // Theme data
     (IconThemeData? a, IconThemeData? b) => IconThemeData.lerp(a, b, t) as T?,
 
-    // Matrix4 - animate real matrix pairs, snap nullable endpoints
+    // Matrix4 - animate using identity as the implicit endpoint when null
     (Matrix4? a, Matrix4? b) => _lerpMatrix4(a, b, t) as T?,
 
     // List of Modifiers - use ModifierListTween for proper lerping

@@ -46,7 +46,7 @@ void main() {
         const start = OpacityModifier(0.5);
         final result = start.lerp(null, 0.5);
 
-        expect(result, same(start));
+        expect(result.opacity, 0.25);
       });
 
       test('handles extreme t values', () {

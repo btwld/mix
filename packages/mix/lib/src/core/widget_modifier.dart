@@ -2,6 +2,8 @@ import 'package:flutter/widgets.dart';
 
 import 'spec.dart';
 
+export 'spec.dart' show Equatable, propsDiff, propsEquals, propsHash;
+
 /// Unified base class for widget modifiers.
 ///
 /// Provides a common interface for widget modifications that can be applied

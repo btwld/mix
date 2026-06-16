@@ -1,0 +1,14 @@
+{
+  "name": "mix",
+  "version": "1.0.0",
+  "displayName": "Mix",
+  "description": "Mix Flutter styling framework guidance for agents working on Mix code, projects using package:mix, and the Mix monorepo.",
+  "author": {
+    "name": "Leo Farias",
+    "url": "https://github.com/leoafarias"
+  },
+  "homepage": "https://fluttermix.com",
+  "repository": "https://github.com/btwld/mix",
+  "license": "BSD-3-Clause",
+  "keywords": ["dart", "flutter", "mix", "styling", "design-systems"]
+}

@@ -165,6 +165,7 @@ const Map<String, TypeMetadata> typeMetadata = {
   'MainAxisAlignment': TypeMetadata(category: .enumType),
   'CrossAxisAlignment': TypeMetadata(category: .enumType),
   'MainAxisSize': TypeMetadata(category: .enumType),
+  'FlexFit': TypeMetadata(category: .enumType),
   'VerticalDirection': TypeMetadata(category: .enumType),
   'TextOverflow': TypeMetadata(category: .enumType),
   'TextWidthBasis': TypeMetadata(category: .enumType),
@@ -220,6 +221,8 @@ const flagPropertyDescriptions = {
   'isAntiAlias': 'anti-aliased',
   'matchTextDirection': 'matches text direction',
   'applyTextScaling': 'scales with text',
+  'reverse': 'reversed',
+  'visible': 'visible',
 };
 
 TypeMetadata? _metadataFor(String typeName) => typeMetadata[typeName];
