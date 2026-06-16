@@ -120,10 +120,10 @@ void main() {
       });
 
       test('shadows', () {
-        final s = [
+        final s = BoxShadowListMix([
           BoxShadowMix(color: Colors.black, blurRadius: 10),
           BoxShadowMix(color: Colors.grey, blurRadius: 5),
-        ];
+        ]);
         expect(BoxStyler.shadows(s), equals(BoxStyler().shadows(s)));
       });
 

@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../../core/mix_element.dart';
+import '../../core/prop.dart';
 import '../../properties/painting/border_mix.dart';
 import '../../properties/painting/border_radius_mix.dart';
 import '../../properties/painting/decoration_image_mix.dart';
@@ -39,9 +40,13 @@ mixin DecorationStyleMixin<T extends Mix<Object?>> {
     return decoration(BoxDecorationMix.boxShadow([value]));
   }
 
-  /// Sets multiple shadows
-  T shadows(List<BoxShadowMix> value) {
-    return decoration(BoxDecorationMix.boxShadow(value));
+  /// Sets multiple shadows.
+  ///
+  /// Accepts a [BoxShadowListMix] so that both literal lists
+  /// (`BoxShadowListMix([shadow1, shadow2])`) and design-token references
+  /// (`boxShadowToken.mix()`) can be passed.
+  T shadows(BoxShadowListMix value) {
+    return decoration(BoxDecorationMix.create(boxShadow: Prop.mix(value)));
   }
 
   /// Sets elevation shadow

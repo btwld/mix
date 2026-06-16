@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/mix_element.dart';
+import '../../core/prop.dart';
 import '../../properties/painting/decoration_mix.dart';
 import '../../properties/painting/shadow_mix.dart';
 
@@ -26,9 +27,13 @@ mixin ShadowStyleMixin<T extends Mix<Object?>> {
     return decoration(BoxDecorationMix.boxShadow([shadow]));
   }
 
-  /// Creates multiple box shadows from a list of BoxShadowMix
-  T boxShadows(List<BoxShadowMix> value) {
-    return decoration(BoxDecorationMix.boxShadow(value));
+  /// Sets multiple box shadows.
+  ///
+  /// Accepts a [BoxShadowListMix] so that both literal lists
+  /// (`BoxShadowListMix([shadow1, shadow2])`) and design-token references
+  /// (`boxShadowToken.mix()`) can be passed.
+  T boxShadows(BoxShadowListMix value) {
+    return decoration(BoxDecorationMix.create(boxShadow: Prop.mix(value)));
   }
 
   /// Creates box shadows from Material Design elevation level

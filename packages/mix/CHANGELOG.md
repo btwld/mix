@@ -1,3 +1,13 @@
+## Unreleased
+
+### Fixes
+
+- **Box / text shadow tokens through styler methods:** `BoxStyler.boxShadows`, `BoxStyler.shadows`, `FlexBoxStyler.shadows`, `StackBoxStyler.shadows`, and `TextStyler.shadows` now accept the `BoxShadowListMix` / `ShadowListMix` wrapper so design-token references (`BoxShadowToken('x').mix()`, `ShadowToken('y').mix()`) can be passed directly (#925).
+
+### Breaking changes
+
+- **Shadow styler methods now take a Mix wrapper instead of a raw list.** Update call sites that pass a literal list to wrap it: `BoxStyler().boxShadows([s1, s2])` → `BoxStyler().boxShadows(BoxShadowListMix([s1, s2]))`. The same applies to `.shadows(...)` on `BoxStyler` / `FlexBoxStyler` / `StackBoxStyler` and to `TextStyler.shadows(...)`.
+
 ## 2.0.3
 
 This release adds finer-grained control over scope inheritance and theming, and restores compatibility with newer Flutter SDKs.

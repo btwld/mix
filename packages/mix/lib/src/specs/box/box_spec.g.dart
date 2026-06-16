@@ -233,7 +233,7 @@ class BoxStyler extends MixStyler<BoxStyler, BoxSpec>
   factory BoxStyler.elevation(ElevationShadow value) =>
       BoxStyler().elevation(value);
   factory BoxStyler.shadow(BoxShadowMix value) => BoxStyler().shadow(value);
-  factory BoxStyler.shadows(List<BoxShadowMix> value) =>
+  factory BoxStyler.shadows(BoxShadowListMix value) =>
       BoxStyler().shadows(value);
   factory BoxStyler.width(double value) => BoxStyler().width(value);
   factory BoxStyler.height(double value) => BoxStyler().height(value);

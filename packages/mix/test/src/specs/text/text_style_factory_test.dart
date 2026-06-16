@@ -200,7 +200,9 @@ void main() {
       });
 
       test('shadows', () {
-        final s = [ShadowMix(color: Colors.black, blurRadius: 4)];
+        final s = ShadowListMix([
+          ShadowMix(color: Colors.black, blurRadius: 4),
+        ]);
         expect(TextStyler.shadows(s), equals(TextStyler().shadows(s)));
       });
 

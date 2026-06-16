@@ -525,9 +525,9 @@ void main() {
       });
 
       test('shadows utility works correctly', () {
-        final attribute = TextStyler().shadows([
-          ShadowMix(color: Colors.black, offset: Offset(2, 2)),
-        ]);
+        final attribute = TextStyler().shadows(
+          ShadowListMix([ShadowMix(color: Colors.black, offset: Offset(2, 2))]),
+        );
 
         expect(attribute.$style, isNotNull);
       });

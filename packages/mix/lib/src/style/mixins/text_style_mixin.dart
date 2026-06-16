@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../../core/mix_element.dart';
+import '../../core/prop.dart';
 import '../../properties/painting/shadow_mix.dart';
 import '../../properties/typography/text_style_mix.dart';
 
@@ -84,9 +85,13 @@ mixin TextStyleMixin<T extends Mix<Object?>> {
     return style(TextStyleMix.fontFamilyFallback(value));
   }
 
-  /// Sets text shadows
-  T shadows(List<ShadowMix> value) {
-    return style(TextStyleMix.shadows(value));
+  /// Sets text shadows.
+  ///
+  /// Accepts a [ShadowListMix] so that both literal lists
+  /// (`ShadowListMix([shadow1, shadow2])`) and design-token references
+  /// (`shadowToken.mix()`) can be passed.
+  T shadows(ShadowListMix value) {
+    return style(TextStyleMix.create(shadows: Prop.mix(value)));
   }
 
   /// Sets a single text shadow.

@@ -309,7 +309,7 @@ class TextStyler extends MixStyler<TextStyler, TextSpec>
   factory TextStyler.fontFamilyFallback(List<String> value) =>
       TextStyler().fontFamilyFallback(value);
   factory TextStyler.shadow(ShadowMix value) => TextStyler().shadow(value);
-  factory TextStyler.shadows(List<ShadowMix> value) =>
+  factory TextStyler.shadows(ShadowListMix value) =>
       TextStyler().shadows(value);
   factory TextStyler.fontFeatures(List<FontFeature> value) =>
       TextStyler().fontFeatures(value);

@@ -162,7 +162,7 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
       StackBoxStyler().elevation(value);
   factory StackBoxStyler.shadow(BoxShadowMix value) =>
       StackBoxStyler().shadow(value);
-  factory StackBoxStyler.shadows(List<BoxShadowMix> value) =>
+  factory StackBoxStyler.shadows(BoxShadowListMix value) =>
       StackBoxStyler().shadows(value);
   factory StackBoxStyler.width(double value) => StackBoxStyler().width(value);
   factory StackBoxStyler.height(double value) => StackBoxStyler().height(value);
