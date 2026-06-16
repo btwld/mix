@@ -107,5 +107,72 @@ void main() {
       final decoration = container.decoration! as BoxDecoration;
       expect(decoration.color, baseColor.withValues(alpha: 0.5));
     });
+
+    // Regression test for https://github.com/btwld/mix/issues/935
+    //
+    // Base color uses `token.withOpacity(0)`; a hover variant overrides with
+    // `token` (no directives). Before the fix the base layer's
+    // [OpacityColorDirective] leaked onto the hover layer's value, so the
+    // resolved hover color stayed transparent and animations never ran.
+    testWidgets(
+      'hover variant clears base directives so the new value applies',
+      (tester) async {
+        const token = ColorToken('primary');
+        const baseColor = Color(0xFF00FF00);
+
+        final style = BoxStyler()
+            // ignore: deprecated_member_use
+            .color(token().withOpacity(0))
+            .onHovered(BoxStyler().color(token()));
+
+        await tester.pumpWidget(
+          MixScope(
+            tokens: {token: baseColor},
+            child: Directionality(
+              textDirection: TextDirection.ltr,
+              child: WidgetStateProvider(
+                states: const {WidgetState.hovered},
+                child: Box(style: style),
+              ),
+            ),
+          ),
+        );
+
+        final container = tester.widget<Container>(find.byType(Container));
+        final decoration = container.decoration! as BoxDecoration;
+        // Hover overrides the base, so we expect the fully opaque token color.
+        expect(decoration.color, baseColor);
+      },
+    );
+
+    testWidgets(
+      'resting state still respects directives when no override is active',
+      (tester) async {
+        const token = ColorToken('primary');
+        const baseColor = Color(0xFF00FF00);
+
+        final style = BoxStyler()
+            // ignore: deprecated_member_use
+            .color(token().withOpacity(0))
+            .onHovered(BoxStyler().color(token()));
+
+        await tester.pumpWidget(
+          MixScope(
+            tokens: {token: baseColor},
+            child: Directionality(
+              textDirection: TextDirection.ltr,
+              child: WidgetStateProvider(
+                states: const {},
+                child: Box(style: style),
+              ),
+            ),
+          ),
+        );
+
+        final container = tester.widget<Container>(find.byType(Container));
+        final decoration = container.decoration! as BoxDecoration;
+        expect(decoration.color, baseColor.withValues(alpha: 0));
+      },
+    );
   });
 }

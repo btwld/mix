@@ -185,14 +185,26 @@ class Prop<V> {
   /// - Mix sources: merged using accumulation strategy
   /// - Regular values: last value wins during resolution
   ///
-  /// Directives are merged from both properties.
+  /// Directives are handled in two modes:
+  /// - When [other] provides its own value/token source, its directives
+  ///   represent the new complete state and replace this property's
+  ///   directives. This prevents directives that were attached to a prior
+  ///   value (e.g. `token.withOpacity(0)` on a base style) from leaking onto
+  ///   a value supplied by a higher-priority layer (e.g. a hover variant).
+  /// - When [other] only carries directives (a directive-only [Prop], such as
+  ///   the ones produced by chained helpers like `withOpacity` or `scale`),
+  ///   its directives are appended to this property's directives.
   Prop<V> mergeProp(covariant Prop<V>? other) {
     if (other == null) return this;
+
+    final mergedDirectives = other.sources.isEmpty
+        ? PropOps.mergeDirectives($directives, other.$directives)
+        : other.$directives;
 
     // Always accumulate all sources - no conditional logic
     return Prop._(
       sources: [...sources, ...other.sources],
-      directives: PropOps.mergeDirectives($directives, other.$directives),
+      directives: mergedDirectives,
     );
   }
 

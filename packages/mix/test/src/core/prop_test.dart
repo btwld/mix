@@ -59,15 +59,59 @@ void main() {
       expect(merged, resolvesTo(42, context: context));
     });
 
-    test('merges directives', () {
-      // Intentionally pass an empty directives list to 'a' and verify it is preserved
-      final a = Prop.value(1).directives(<Directive<int>>[]);
-      final b = Prop.value(2);
+    test(
+      'accumulates directives when other carries no sources',
+      () {
+        final a = Prop.value('hello').directives(<Directive<String>>[]);
+        final b = const Prop<String>.directives([UppercaseStringDirective()]);
 
-      final merged = a.mergeProp(b);
+        final merged = a.mergeProp(b);
 
-      expect(merged.$directives, a.$directives); // preserved from a
-    });
+        expect(
+          merged.$directives,
+          equals(const [UppercaseStringDirective()]),
+        );
+      },
+    );
+
+    test(
+      'replaces directives when other supplies a value source',
+      () {
+        // Base layer's directive belongs to its value; when a higher-priority
+        // layer supplies a new value, the base's directives must not stick.
+        final base = Prop.value(
+          'hello',
+        ).directives(const [UppercaseStringDirective()]);
+        final override = Prop.value('world');
+
+        final merged = base.mergeProp(override);
+
+        // Both sources are preserved, but only override's directives apply.
+        expect(merged.$directives, isNull);
+        expect(merged, resolvesTo('world'));
+      },
+    );
+
+    test(
+      "replaces directives with other's directives when other has both source and directives",
+      () {
+        final base = Prop.value(
+          'hello',
+        ).directives(const [UppercaseStringDirective()]);
+        final override = Prop.value(
+          'world',
+        ).directives(const [CapitalizeStringDirective()]);
+
+        final merged = base.mergeProp(override);
+
+        expect(
+          merged.$directives,
+          equals(const [CapitalizeStringDirective()]),
+        );
+        // 'world' -> capitalize = 'World'; UppercaseStringDirective is not applied.
+        expect(merged, resolvesTo('World'));
+      },
+    );
 
     test('throws when resolving without value or token', () {
       final p = const Prop<int>.directives([]);
