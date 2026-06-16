@@ -1464,9 +1464,7 @@ class TwParser {
 
   bool wantsFlex(Set<String> tokens) {
     for (final token in tokens) {
-      // Use bracket-aware colon finding to handle arbitrary values like bg-[color:red]
-      final colonIdx = findLastColonOutsideBrackets(token);
-      final base = colonIdx >= 0 ? token.substring(colonIdx + 1) : token;
+      final base = baseTokenOutsideBrackets(token);
       if (base == 'flex' || base == 'flex-row' || base == 'flex-col') {
         return true;
       }
@@ -1552,6 +1550,46 @@ class TwParser {
     return result;
   }
 
+  S _applyAccumulatedBoxLikeDecorations<S>(
+    S styler,
+    _Accumulators accums, {
+    required Map<String, _VariantApplier<S>> variants,
+    required S Function() newStyler,
+    required _StylerMerge<S> merge,
+    required _BreakpointApplier<S> applyBreakpoint,
+    required S Function(S styler, LinearGradientMix gradient) applyGradient,
+    required _BorderSideApplier<S> top,
+    required _BorderSideApplier<S> bottom,
+    required _BorderSideApplier<S> left,
+    required _BorderSideApplier<S> right,
+  }) {
+    var result = styler;
+
+    final gradientMix = accums.baseGradient.toGradientMix(
+      config.gradientStrategy,
+    );
+    if (gradientMix != null) {
+      result = _carryTransforms(result, applyGradient(result, gradientMix));
+    }
+
+    return _carryTransforms(
+      result,
+      _applyAccumulatedBorders(
+        result,
+        accums.baseBorder,
+        accums.variantBorders,
+        variants: variants,
+        newStyler: newStyler,
+        merge: merge,
+        applyBreakpoint: applyBreakpoint,
+        top: top,
+        bottom: bottom,
+        left: left,
+        right: right,
+      ),
+    );
+  }
+
   FlexBoxStyler _parseFlexDirect(String classNames) {
     final tokens = listTokens(classNames);
 
@@ -1580,34 +1618,22 @@ class TwParser {
       styler = _carryTransforms(styler, styler.column());
     }
 
-    // Apply accumulated gradient
-    final gradientMix = accums.baseGradient.toGradientMix(
-      config.gradientStrategy,
-    );
-    if (gradientMix != null) {
-      styler = _carryTransforms(styler, styler.gradient(gradientMix));
-    }
-
-    // Apply accumulated borders
-    styler = _carryTransforms(
+    styler = _applyAccumulatedBoxLikeDecorations(
       styler,
-      _applyAccumulatedBorders(
-        styler,
-        accums.baseBorder,
-        accums.variantBorders,
-        variants: _flexVariants,
-        newStyler: FlexBoxStyler.new,
-        merge: (a, b) => a.merge(b),
-        applyBreakpoint: (b, bp, s) => b.onBreakpoint(bp, s),
-        top: (s, {required color, required width}) =>
-            s.borderTop(color: color, width: width),
-        bottom: (s, {required color, required width}) =>
-            s.borderBottom(color: color, width: width),
-        left: (s, {required color, required width}) =>
-            s.borderLeft(color: color, width: width),
-        right: (s, {required color, required width}) =>
-            s.borderRight(color: color, width: width),
-      ),
+      accums,
+      variants: _flexVariants,
+      newStyler: FlexBoxStyler.new,
+      merge: (a, b) => a.merge(b),
+      applyBreakpoint: (b, bp, s) => b.onBreakpoint(bp, s),
+      applyGradient: (s, gradient) => s.gradient(gradient),
+      top: (s, {required color, required width}) =>
+          s.borderTop(color: color, width: width),
+      bottom: (s, {required color, required width}) =>
+          s.borderBottom(color: color, width: width),
+      left: (s, {required color, required width}) =>
+          s.borderLeft(color: color, width: width),
+      right: (s, {required color, required width}) =>
+          s.borderRight(color: color, width: width),
     );
 
     return _flushBaseTransforms(styler);
@@ -1642,34 +1668,22 @@ class TwParser {
       _applyBoxToken,
     );
 
-    // Apply accumulated gradient
-    final gradientMix = accums.baseGradient.toGradientMix(
-      config.gradientStrategy,
-    );
-    if (gradientMix != null) {
-      styler = _carryTransforms(styler, styler.gradient(gradientMix));
-    }
-
-    // Apply accumulated borders
-    styler = _carryTransforms(
+    styler = _applyAccumulatedBoxLikeDecorations(
       styler,
-      _applyAccumulatedBorders(
-        styler,
-        accums.baseBorder,
-        accums.variantBorders,
-        variants: _boxVariants,
-        newStyler: BoxStyler.new,
-        merge: (a, b) => a.merge(b),
-        applyBreakpoint: (b, bp, s) => b.onBreakpoint(bp, s),
-        top: (s, {required color, required width}) =>
-            s.borderTop(color: color, width: width),
-        bottom: (s, {required color, required width}) =>
-            s.borderBottom(color: color, width: width),
-        left: (s, {required color, required width}) =>
-            s.borderLeft(color: color, width: width),
-        right: (s, {required color, required width}) =>
-            s.borderRight(color: color, width: width),
-      ),
+      accums,
+      variants: _boxVariants,
+      newStyler: BoxStyler.new,
+      merge: (a, b) => a.merge(b),
+      applyBreakpoint: (b, bp, s) => b.onBreakpoint(bp, s),
+      applyGradient: (s, gradient) => s.gradient(gradient),
+      top: (s, {required color, required width}) =>
+          s.borderTop(color: color, width: width),
+      bottom: (s, {required color, required width}) =>
+          s.borderBottom(color: color, width: width),
+      left: (s, {required color, required width}) =>
+          s.borderLeft(color: color, width: width),
+      right: (s, {required color, required width}) =>
+          s.borderRight(color: color, width: width),
     );
 
     return _flushBaseTransforms(styler);
@@ -1709,9 +1723,7 @@ class TwParser {
     var delay = Duration.zero;
 
     for (final token in tokens) {
-      // Use bracket-aware colon finding to handle arbitrary values like bg-[color:red]
-      final colonIdx = findLastColonOutsideBrackets(token);
-      final base = colonIdx >= 0 ? token.substring(colonIdx + 1) : token;
+      final base = baseTokenOutsideBrackets(token);
 
       if (_transitionTriggerTokens.contains(base)) {
         hasTransition = true;

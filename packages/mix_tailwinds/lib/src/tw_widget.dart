@@ -26,9 +26,7 @@ final _whitespaceRegex = RegExp(r'\s+');
 bool _hasBoxUtilities(String classNames) {
   final tokens = classNames.split(_whitespaceRegex);
   for (final token in tokens) {
-    // Strip variant prefixes (hover:, md:, etc.) to get base token
-    final colonIdx = findLastColonOutsideBrackets(token);
-    final base = colonIdx >= 0 ? token.substring(colonIdx + 1) : token;
+    final base = baseTokenOutsideBrackets(token);
 
     for (final prefix in _boxUtilityPrefixes) {
       if (base.startsWith(prefix) || base == prefix.replaceAll('-', '')) {
@@ -46,8 +44,7 @@ EdgeInsets? _extractMargin(String classNames, TwConfig cfg) {
   double? top, right, bottom, left;
 
   for (final token in tokens) {
-    final colonIdx = findLastColonOutsideBrackets(token);
-    final base = colonIdx >= 0 ? token.substring(colonIdx + 1) : token;
+    final base = baseTokenOutsideBrackets(token);
 
     if (base.startsWith('m-')) {
       final value = cfg.spaceOf(base.substring(2), fallback: double.nan);
@@ -788,9 +785,7 @@ Widget _wrapWithFlexItemDecorators({
 
 bool _needsFlexItemDecorators(Set<String> tokens) {
   for (final token in tokens) {
-    // Use bracket-aware colon finding to handle arbitrary values like bg-[color:red]
-    final colonIdx = findLastColonOutsideBrackets(token);
-    final base = colonIdx >= 0 ? token.substring(colonIdx + 1) : token;
+    final base = baseTokenOutsideBrackets(token);
     if (base == 'w-full' || base == 'h-full') {
       return true;
     }
