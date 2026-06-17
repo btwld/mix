@@ -127,7 +127,7 @@ If you want visual parity, align **global defaults** first, then compare utility
 | `theme.extend.borderRadius` | `TwConfig.copyWith(radii: {...})` |
 | `theme.extend.screens` | `TwConfig.copyWith(breakpoints: {...})` |
 | `theme.extend.fontSize` | `TwConfig.copyWith(fontSizes: {...})` |
-| `theme.extend.fontWeight` | Update parser semantic mapping (currently from `tw_semantic.dart`) or use `MixScope(fontWeights: ...)` for non-tailwind Mix styles |
+| `theme.extend.fontWeight` | Update translator typography mapping or use `MixScope(fontWeights: ...)` for non-tailwind Mix styles |
 | `theme.extend.fontFamily` / base `font-sans` stack | `TwConfig.copyWith(textDefaults: config.textDefaults.copyWith(...))` |
 | Use native platform font defaults | `TwConfig.copyWith(textDefaults: const TwTextDefaults.platformDefault())` |
 | `@layer base { body { font-size / letter-spacing / line-height } }` | `TwConfig.textDefaults.copyWith(fontSize: ..., letterSpacing: ..., lineHeight: ...)` |
@@ -216,6 +216,24 @@ mix_tailwinds now automatically applies `min-w-0` semantics for `flex-1` to matc
 ## Known Limitations
 
 The following Tailwind utilities have limited or no support in mix_tailwinds due to fundamental differences between CSS and Flutter's layout system.
+
+### Parser and Variant Adaptations
+
+`mix_tailwinds` parses Tailwind candidates with a registry generated from the Tailwind spec lab, then routes supported values through `mix_schema` before composing Mix runtime variants.
+
+Current adaptation policy:
+
+| Tailwind feature | mix_tailwinds behavior | Reason |
+|---|---|---|
+| `group-*`, `peer-*` variants | Parsed, ignored | Flutter has no selector-relative group/peer state equivalent in this widget API. |
+| Arbitrary selector variants like `[&_p]:mt-4` | Parsed, ignored | Flutter widgets cannot target descendants by CSS selector. |
+| Container query variants like `@...` | Parsed, ignored | Container-query semantics remain in the widget/layout layer, not schema payloads. |
+| `!important` prefix/suffix | Parsed, ignored and reported through `onUnsupported` | Flutter/Mix has no CSS cascade priority model. |
+| Arbitrary properties like `[color:red]` | Parsed, ignored | They do not map safely to typed Mix schema fields. |
+| `from`/`via`/`to` gradients | Applied after schema decode | `mix_schema` intentionally does not encode/decode box gradients today. |
+| `bg-*/50` alpha modifiers | Approximated with Flutter alpha | Flutter has no `color-mix()`/OKLAB equivalent for Tailwind's CSS output. |
+
+Responsive layout utilities such as `w-full`, `w-screen`, fractions, external margin, negative margin handling, flex item parent data, axis, and gap remain in `tw_widget.dart` because they depend on live Flutter constraints.
 
 ### Percent-Based Sizing
 

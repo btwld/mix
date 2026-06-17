@@ -22,8 +22,12 @@ import 'package:mix_tailwinds/mix_tailwinds.dart';
 // Resolve helpers — turn a parsed styler into a concrete resolved spec.
 // ===========================================================================
 
-Future<BoxSpec> _resolveBox(WidgetTester tester, String classNames) async {
-  final style = TwParser().parseBox(classNames);
+Future<BoxSpec> _resolveBox(
+  WidgetTester tester,
+  String classNames, {
+  TwParser? parser,
+}) async {
+  final style = (parser ?? TwParser()).parseBox(classNames);
   late BoxSpec spec;
   await tester.pumpWidget(
     MaterialApp(
@@ -78,9 +82,10 @@ Future<TextSpec> _resolveText(WidgetTester tester, String classNames) async {
 Future<BoxSpec> _resolveBoxStates(
   WidgetTester tester,
   String classNames,
-  Set<WidgetState> states,
-) async {
-  final style = TwParser().parseBox(classNames);
+  Set<WidgetState> states, {
+  TwParser? parser,
+}) async {
+  final style = (parser ?? TwParser()).parseBox(classNames);
   final controller = WidgetStatesController(states);
   addTearDown(controller.dispose);
   late BoxSpec spec;
@@ -140,6 +145,7 @@ Future<Container> _divContainer(
 // Tailwind reference colors used throughout (sRGB hex).
 const _blue500 = Color(0xFF3B82F6);
 const _red500 = Color(0xFFEF4444);
+const _emerald400 = Color(0xFF34D399);
 const _gray200 = Color(0xFFE5E7EB);
 const _white = Color(0xFFFFFFFF);
 
@@ -230,9 +236,42 @@ void main() {
       expect(_decoOf(spec)?.color, const Color(0xFF112233));
     });
 
-    testWidgets('arbitrary 8-digit hex bg', (tester) async {
-      final spec = await _resolveBox(tester, 'bg-[#80ffffff]');
-      expect(_decoOf(spec)?.color, const Color(0x80FFFFFF));
+    testWidgets('arbitrary CSS hex bg', (tester) async {
+      final shortRgb = await _resolveBox(tester, 'bg-[#fff]');
+      expect(_decoOf(shortRgb)?.color, const Color(0xFFFFFFFF));
+
+      final shortRgba = await _resolveBox(tester, 'bg-[#ffff]');
+      expect(_decoOf(shortRgba)?.color, const Color(0xFFFFFFFF));
+
+      final longRgba = await _resolveBox(tester, 'bg-[#ffffff80]');
+      expect(_decoOf(longRgba)?.color, const Color(0x80FFFFFF));
+
+      final cssOrdered = await _resolveBox(tester, 'bg-[#80ffffff]');
+      expect(_decoOf(cssOrdered)?.color, const Color(0xFF80FFFF));
+    });
+
+    testWidgets('valid arbitrary opacity modifier applies alpha', (
+      tester,
+    ) async {
+      final spec = await _resolveBox(tester, 'bg-red-500/[50%]');
+      expect(_decoOf(spec)?.color, const Color(0x80EF4444));
+    });
+
+    testWidgets('invalid color opacity modifiers warn and skip token', (
+      tester,
+    ) async {
+      final seen = <String>[];
+      final parser = TwParser(onUnsupported: seen.add);
+      final spec = await _resolveBox(
+        tester,
+        'bg-red-500/[bad] bg-red-500/200 bg-red-500/(--v)',
+        parser: parser,
+      );
+
+      expect(_decoOf(spec)?.color, isNull);
+      expect(seen, contains('bg-red-500/[bad]'));
+      expect(seen, contains('bg-red-500/200'));
+      expect(seen, contains('bg-red-500/(--v)'));
     });
   });
 
@@ -375,6 +414,22 @@ void main() {
       expect(style.fontWeight, FontWeight.w700);
       expect(text, isNotNull);
     });
+
+    testWidgets('arbitrary text size propagates via DefaultTextStyle', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: Div(classNames: 'text-[13px]', child: const Text('hello')),
+        ),
+      );
+
+      final style = DefaultTextStyle.of(
+        tester.element(find.text('hello')),
+      ).style;
+      expect(style.fontSize, 13);
+    });
   });
 
   // =========================================================================
@@ -484,6 +539,32 @@ void main() {
       expect(b.left.width, 0);
       expect(b.right.width, 0);
     });
+
+    testWidgets('hover border color inherits base top width', (tester) async {
+      final inactive = await _resolveBoxStates(
+        tester,
+        'border-t hover:border-red-500',
+        const {},
+      );
+      final inactiveBorder = _decoOf(inactive)?.border as Border?;
+      expect(inactiveBorder, isNotNull);
+      expect(inactiveBorder!.top.width, 1);
+      expect(inactiveBorder.top.color, _gray200);
+      expect(inactiveBorder.bottom.width, 0);
+
+      final hovered = await _resolveBoxStates(
+        tester,
+        'border-t hover:border-red-500',
+        {WidgetState.hovered},
+      );
+      final hoveredBorder = _decoOf(hovered)?.border as Border?;
+      expect(hoveredBorder, isNotNull);
+      expect(hoveredBorder!.top.width, 1);
+      expect(hoveredBorder.top.color, _red500);
+      expect(hoveredBorder.bottom.width, 0);
+      expect(hoveredBorder.left.width, 0);
+      expect(hoveredBorder.right.width, 0);
+    });
   });
 
   // =========================================================================
@@ -535,6 +616,74 @@ void main() {
       expect(g, isNotNull);
       expect(g!.colors.first, _blue500);
       expect(g.colors.last, _red500);
+    });
+
+    testWidgets('hover gradient stop inherits base direction and to stop', (
+      tester,
+    ) async {
+      final inactive = await _resolveBoxStates(
+        tester,
+        'bg-gradient-to-r from-blue-500 to-red-500 hover:from-emerald-400',
+        const {},
+      );
+      final baseGradient = _decoOf(inactive)?.gradient as LinearGradient?;
+      expect(baseGradient, isNotNull);
+      expect(baseGradient!.colors, [_blue500, _red500]);
+
+      final hovered = await _resolveBoxStates(
+        tester,
+        'bg-gradient-to-r from-blue-500 to-red-500 hover:from-emerald-400',
+        {WidgetState.hovered},
+      );
+      final hoveredGradient = _decoOf(hovered)?.gradient as LinearGradient?;
+      expect(hoveredGradient, isNotNull);
+      expect(hoveredGradient!.begin, Alignment.centerLeft);
+      expect(hoveredGradient.end, Alignment.centerRight);
+      expect(hoveredGradient.colors, [_emerald400, _red500]);
+      expect(hoveredGradient.stops, const [0.0, 1.0]);
+    });
+
+    testWidgets('important gradient tokens warn and do not apply', (
+      tester,
+    ) async {
+      final seen = <String>[];
+      final parser = TwParser(onUnsupported: seen.add);
+      final base = await _resolveBox(
+        tester,
+        'bg-white !bg-gradient-to-r !from-red-500',
+        parser: parser,
+      );
+
+      expect(_decoOf(base)?.color, _white);
+      expect(_decoOf(base)?.gradient, isNull);
+      expect(seen, contains('!bg-gradient-to-r'));
+      expect(seen, contains('!from-red-500'));
+
+      final hovered = await _resolveBoxStates(
+        tester,
+        'bg-gradient-to-r from-blue-500 to-red-500 hover:!from-red-500',
+        {WidgetState.hovered},
+        parser: parser,
+      );
+      final gradient = _decoOf(hovered)?.gradient as LinearGradient?;
+      expect(gradient, isNotNull);
+      expect(gradient!.colors, [_blue500, _red500]);
+      expect(seen, contains('hover:!from-red-500'));
+    });
+
+    testWidgets('invalid gradient opacity modifier warns and skips stop', (
+      tester,
+    ) async {
+      final seen = <String>[];
+      final parser = TwParser(onUnsupported: seen.add);
+      final spec = await _resolveBox(
+        tester,
+        'bg-gradient-to-r from-red-500/[bad] to-blue-500',
+        parser: parser,
+      );
+
+      expect(_decoOf(spec)?.gradient, isNull);
+      expect(seen, contains('from-red-500/[bad]'));
     });
   });
 
@@ -660,6 +809,11 @@ void main() {
       expect(spec.style?.height, isNotNull);
     });
 
+    testWidgets('arbitrary text size sets font size', (tester) async {
+      final spec = await _resolveText(tester, 'text-[13px]');
+      expect(spec.style?.fontSize, 13);
+    });
+
     testWidgets('tracking-wide letter spacing', (tester) async {
       final spec = await _resolveText(tester, 'tracking-wide');
       expect(spec.style?.letterSpacing, 0.4);
@@ -697,17 +851,17 @@ void main() {
   });
 
   // =========================================================================
-  // !important — must still apply the underlying property
+  // !important — ignored because Flutter/Mix has no CSS cascade priority model.
   // =========================================================================
   group('characterization: important', () {
-    testWidgets('!bg-blue-500 still sets color', (tester) async {
+    testWidgets('!bg-blue-500 is ignored', (tester) async {
       final spec = await _resolveBox(tester, '!bg-blue-500');
-      expect(_decoOf(spec)?.color, _blue500);
+      expect(_decoOf(spec)?.color, isNull);
     });
 
-    testWidgets('!p-4 still sets padding', (tester) async {
+    testWidgets('!p-4 is ignored', (tester) async {
       final spec = await _resolveBox(tester, '!p-4');
-      expect((spec.padding! as EdgeInsets).top, 16);
+      expect(spec.padding, isNull);
     });
   });
 
@@ -950,7 +1104,7 @@ void main() {
       expect(_decoOf(notHovered)?.color, _white);
     });
 
-    testWidgets('dark:!bg-red-500 important variant under dark (widget)', (
+    testWidgets('dark:!bg-red-500 is ignored under dark (widget)', (
       tester,
     ) async {
       await tester.pumpWidget(
@@ -967,7 +1121,7 @@ void main() {
       );
       await tester.pump();
       final container = tester.widget<Container>(find.byType(Container));
-      expect((container.decoration as BoxDecoration?)?.color, _red500);
+      expect((container.decoration as BoxDecoration?)?.color, _white);
     });
   });
 

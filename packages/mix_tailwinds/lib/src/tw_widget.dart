@@ -2,49 +2,22 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
+import 'translate/tw_target.dart' as tw_target;
 import 'tw_config.dart';
 import 'tw_parser.dart';
-import 'tw_semantic.dart';
+import 'tw_types.dart';
 import 'tw_utils.dart';
 
 // =============================================================================
 // Box/Margin Utility Detection
 // =============================================================================
 
-/// Tokens that indicate box-level styling (padding, background, border, etc.)
-/// When present on Span, we need to wrap text in a Box container.
-const _boxUtilityPrefixes = [
-  'p-', 'px-', 'py-', 'pt-', 'pr-', 'pb-', 'pl-', // padding
-  'bg-', // background
-  'border', // border (includes border-*, rounded-*)
-  'rounded', // border radius
-  'shadow', // box shadow
-  // Note: 'ring' and 'opacity-' removed until implemented
-];
 final _whitespaceRegex = RegExp(r'\s+');
 
-/// Check if classNames contain any box utilities that require wrapping.
-bool _hasBoxUtilities(String classNames) {
-  final tokens = classNames.split(_whitespaceRegex);
-  for (final token in tokens) {
-    final base = baseTokenOutsideBrackets(token);
-
-    for (final prefix in _boxUtilityPrefixes) {
-      if (base.startsWith(prefix) || base == prefix.replaceAll('-', '')) {
-        return true;
-      }
-    }
-  }
-  return false;
-}
-
-/// Extracts the margin [EdgeInsets] from [classNames] using the shared
-/// [TwResolver], so text-element margins match the parser's handling of scale
-/// (`mb-4`), prefixed (`md:mb-4`), and arbitrary (`mb-[10px]`) values.
+/// Extracts positive margin [EdgeInsets] from [classNames].
 ///
 /// Returns null when no positive margin token is present.
 ///
-/// Limitations (intentional, see feedback Finding 5):
 /// - Negative margins (`-mb-4`) are skipped. They are applied via [Padding],
 ///   whose `RenderPadding` asserts non-negative insets, so emitting them would
 ///   crash. True CSS negative-margin parity needs a transform-based strategy at
@@ -54,38 +27,37 @@ bool _hasBoxUtilities(String classNames) {
 ///   margin semantics are not yet modeled in the widget layer.
 EdgeInsets? _extractMargin(String classNames, TwConfig cfg) {
   final tokens = classNames.split(_whitespaceRegex);
-  final resolver = TwResolver(cfg);
   double? top, right, bottom, left;
 
   for (final token in tokens) {
-    final parsed = resolver.resolveToken(token);
-    if (parsed == null) continue;
+    var base = baseTokenOutsideBrackets(token);
+    if (base.startsWith('-')) continue;
 
-    for (final cls in parsed) {
-      final value = cls.value;
-      // Only positive length-valued margin properties map to Padding insets.
-      // Negative values cannot render through Padding and are skipped.
-      if (value is! TwLengthValue || value.value < 0) continue;
-      final v = value.value;
+    final dash = base.indexOf('-');
+    if (dash <= 0) continue;
+    final root = base.substring(0, dash);
+    if (!{'m', 'mx', 'my', 'mt', 'mr', 'mb', 'ml'}.contains(root)) {
+      continue;
+    }
+    final key = base.substring(dash + 1);
+    final value = _marginLength(key, cfg);
+    if (value == null || value < 0) continue;
 
-      switch (cls.property) {
-        case TwProperty.margin:
-          top = right = bottom = left = v;
-        case TwProperty.marginX:
-          left = right = v;
-        case TwProperty.marginY:
-          top = bottom = v;
-        case TwProperty.marginTop:
-          top = v;
-        case TwProperty.marginRight:
-          right = v;
-        case TwProperty.marginBottom:
-          bottom = v;
-        case TwProperty.marginLeft:
-          left = v;
-        default:
-          break;
-      }
+    switch (root) {
+      case 'm':
+        top = right = bottom = left = value;
+      case 'mx':
+        left = right = value;
+      case 'my':
+        top = bottom = value;
+      case 'mt':
+        top = value;
+      case 'mr':
+        right = value;
+      case 'mb':
+        bottom = value;
+      case 'ml':
+        left = value;
     }
   }
 
@@ -99,6 +71,19 @@ EdgeInsets? _extractMargin(String classNames, TwConfig cfg) {
     right: right ?? 0,
     bottom: bottom ?? 0,
   );
+}
+
+double? _marginLength(String key, TwConfig cfg) {
+  final scale = cfg.space[key];
+  if (scale != null) return scale;
+  if (!key.startsWith('[') || !key.endsWith(']')) return null;
+  final inner = key.substring(1, key.length - 1);
+  final match = RegExp(r'^(\d+\.?\d*)(px|rem|em)?$').firstMatch(inner);
+  if (match == null) return null;
+  var value = double.parse(match.group(1)!);
+  final unit = match.group(2) ?? 'px';
+  if (unit == 'rem' || unit == 'em') value *= 16;
+  return value;
 }
 
 // =============================================================================
@@ -436,7 +421,7 @@ class Span extends StatelessWidget {
     final parser = TwParser(config: cfg);
 
     // Check if we need box styling (padding, background, border, etc.)
-    if (_hasBoxUtilities(classNames)) {
+    if (tw_target.hasBoxUtilities(classNames)) {
       // Parse as box to get padding, background, border, etc.
       // parseBox also handles text styling via DefaultTextStyle wrapper
       final boxStyle = parser.parseBox(classNames);

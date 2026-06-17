@@ -1,0 +1,1787 @@
+{
+  "meta": {
+    "generatedAt": "2026-06-16T18:50:10.297Z",
+    "tailwindInstalledVersion": "4.3.1",
+    "tailwindGitTag": "v4.3.1",
+    "tailwindGitSha": "8a14a710102cae195f6811e8578bef9477bc6be9",
+    "cssEntry": "fixtures/app.css"
+  },
+  "summary": {
+    "total": 44,
+    "valid": 39,
+    "invalid": 5
+  },
+  "probes": [
+    {
+      "input": "flex",
+      "valid": true,
+      "parsed": [
+        {
+          "kind": "static",
+          "root": "flex",
+          "variants": [],
+          "important": false,
+          "raw": "flex"
+        },
+        {
+          "kind": "functional",
+          "root": "flex",
+          "modifier": null,
+          "value": null,
+          "variants": [],
+          "important": false,
+          "raw": "flex"
+        }
+      ],
+      "canonical": [
+        "flex"
+      ],
+      "css": ".flex {\n  display: flex;\n}\n",
+      "declarations": [
+        {
+          "property": "display",
+          "value": "flex"
+        }
+      ],
+      "variantKinds": [],
+      "utilityKind": "static",
+      "utilityRoot": "flex",
+      "parseCount": 2,
+      "astNodeCount": 1
+    },
+    {
+      "input": "inline-flex",
+      "valid": true,
+      "parsed": [
+        {
+          "kind": "static",
+          "root": "inline-flex",
+          "variants": [],
+          "important": false,
+          "raw": "inline-flex"
+        },
+        {
+          "kind": "functional",
+          "root": "inline",
+          "modifier": null,
+          "value": {
+            "kind": "named",
+            "value": "flex",
+            "fraction": null
+          },
+          "variants": [],
+          "important": false,
+          "raw": "inline-flex"
+        }
+      ],
+      "canonical": [
+        "inline-flex"
+      ],
+      "css": ".inline-flex {\n  display: inline-flex;\n}\n",
+      "declarations": [
+        {
+          "property": "display",
+          "value": "inline-flex"
+        }
+      ],
+      "variantKinds": [],
+      "utilityKind": "static",
+      "utilityRoot": "inline-flex",
+      "parseCount": 2,
+      "astNodeCount": 1
+    },
+    {
+      "input": "grid",
+      "valid": true,
+      "parsed": [
+        {
+          "kind": "static",
+          "root": "grid",
+          "variants": [],
+          "important": false,
+          "raw": "grid"
+        }
+      ],
+      "canonical": [
+        "grid"
+      ],
+      "css": ".grid {\n  display: grid;\n}\n",
+      "declarations": [
+        {
+          "property": "display",
+          "value": "grid"
+        }
+      ],
+      "variantKinds": [],
+      "utilityKind": "static",
+      "utilityRoot": "grid",
+      "parseCount": 1,
+      "astNodeCount": 1
+    },
+    {
+      "input": "hidden",
+      "valid": true,
+      "parsed": [
+        {
+          "kind": "static",
+          "root": "hidden",
+          "variants": [],
+          "important": false,
+          "raw": "hidden"
+        }
+      ],
+      "canonical": [
+        "hidden"
+      ],
+      "css": ".hidden {\n  display: none;\n}\n",
+      "declarations": [
+        {
+          "property": "display",
+          "value": "none"
+        }
+      ],
+      "variantKinds": [],
+      "utilityKind": "static",
+      "utilityRoot": "hidden",
+      "parseCount": 1,
+      "astNodeCount": 1
+    },
+    {
+      "input": "pointer-events-none",
+      "valid": true,
+      "parsed": [
+        {
+          "kind": "static",
+          "root": "pointer-events-none",
+          "variants": [],
+          "important": false,
+          "raw": "pointer-events-none"
+        }
+      ],
+      "canonical": [
+        "pointer-events-none"
+      ],
+      "css": ".pointer-events-none {\n  pointer-events: none;\n}\n",
+      "declarations": [
+        {
+          "property": "pointer-events",
+          "value": "none"
+        }
+      ],
+      "variantKinds": [],
+      "utilityKind": "static",
+      "utilityRoot": "pointer-events-none",
+      "parseCount": 1,
+      "astNodeCount": 1
+    },
+    {
+      "input": "static",
+      "valid": true,
+      "parsed": [
+        {
+          "kind": "static",
+          "root": "static",
+          "variants": [],
+          "important": false,
+          "raw": "static"
+        }
+      ],
+      "canonical": [
+        "static"
+      ],
+      "css": ".static {\n  position: static;\n}\n",
+      "declarations": [
+        {
+          "property": "position",
+          "value": "static"
+        }
+      ],
+      "variantKinds": [],
+      "utilityKind": "static",
+      "utilityRoot": "static",
+      "parseCount": 1,
+      "astNodeCount": 1
+    },
+    {
+      "input": "absolute",
+      "valid": true,
+      "parsed": [
+        {
+          "kind": "static",
+          "root": "absolute",
+          "variants": [],
+          "important": false,
+          "raw": "absolute"
+        }
+      ],
+      "canonical": [
+        "absolute"
+      ],
+      "css": ".absolute {\n  position: absolute;\n}\n",
+      "declarations": [
+        {
+          "property": "position",
+          "value": "absolute"
+        }
+      ],
+      "variantKinds": [],
+      "utilityKind": "static",
+      "utilityRoot": "absolute",
+      "parseCount": 1,
+      "astNodeCount": 1
+    },
+    {
+      "input": "sr-only",
+      "valid": true,
+      "parsed": [
+        {
+          "kind": "static",
+          "root": "sr-only",
+          "variants": [],
+          "important": false,
+          "raw": "sr-only"
+        }
+      ],
+      "canonical": [
+        "sr-only"
+      ],
+      "css": ".sr-only {\n  position: absolute;\n  width: 1px;\n  height: 1px;\n  padding: 0;\n  margin: -1px;\n  overflow: hidden;\n  clip-path: inset(50%);\n  white-space: nowrap;\n  border-width: 0;\n}\n",
+      "declarations": [
+        {
+          "property": "position",
+          "value": "absolute"
+        },
+        {
+          "property": "width",
+          "value": "1px"
+        },
+        {
+          "property": "height",
+          "value": "1px"
+        },
+        {
+          "property": "padding",
+          "value": "0"
+        },
+        {
+          "property": "margin",
+          "value": "-1px"
+        },
+        {
+          "property": "overflow",
+          "value": "hidden"
+        },
+        {
+          "property": "clip-path",
+          "value": "inset(50%)"
+        },
+        {
+          "property": "white-space",
+          "value": "nowrap"
+        },
+        {
+          "property": "border-width",
+          "value": "0"
+        }
+      ],
+      "variantKinds": [],
+      "utilityKind": "static",
+      "utilityRoot": "sr-only",
+      "parseCount": 1,
+      "astNodeCount": 1
+    },
+    {
+      "input": "not-sr-only",
+      "valid": true,
+      "parsed": [
+        {
+          "kind": "static",
+          "root": "not-sr-only",
+          "variants": [],
+          "important": false,
+          "raw": "not-sr-only"
+        }
+      ],
+      "canonical": [
+        "not-sr-only"
+      ],
+      "css": ".not-sr-only {\n  position: static;\n  width: auto;\n  height: auto;\n  padding: 0;\n  margin: 0;\n  overflow: visible;\n  clip-path: none;\n  white-space: normal;\n}\n",
+      "declarations": [
+        {
+          "property": "position",
+          "value": "static"
+        },
+        {
+          "property": "width",
+          "value": "auto"
+        },
+        {
+          "property": "height",
+          "value": "auto"
+        },
+        {
+          "property": "padding",
+          "value": "0"
+        },
+        {
+          "property": "margin",
+          "value": "0"
+        },
+        {
+          "property": "overflow",
+          "value": "visible"
+        },
+        {
+          "property": "clip-path",
+          "value": "none"
+        },
+        {
+          "property": "white-space",
+          "value": "normal"
+        }
+      ],
+      "variantKinds": [],
+      "utilityKind": "static",
+      "utilityRoot": "not-sr-only",
+      "parseCount": 1,
+      "astNodeCount": 1
+    },
+    {
+      "input": "p-4",
+      "valid": true,
+      "parsed": [
+        {
+          "kind": "functional",
+          "root": "p",
+          "modifier": null,
+          "value": {
+            "kind": "named",
+            "value": "4",
+            "fraction": null
+          },
+          "variants": [],
+          "important": false,
+          "raw": "p-4"
+        }
+      ],
+      "canonical": [
+        "p-4"
+      ],
+      "css": ".p-4 {\n  padding: calc(var(--spacing) * 4);\n}\n",
+      "declarations": [
+        {
+          "property": "padding",
+          "value": "calc(var(--spacing) * 4)"
+        }
+      ],
+      "variantKinds": [],
+      "utilityKind": "functional",
+      "utilityRoot": "p",
+      "parseCount": 1,
+      "astNodeCount": 1
+    },
+    {
+      "input": "p-card",
+      "valid": true,
+      "parsed": [
+        {
+          "kind": "functional",
+          "root": "p",
+          "modifier": null,
+          "value": {
+            "kind": "named",
+            "value": "card",
+            "fraction": null
+          },
+          "variants": [],
+          "important": false,
+          "raw": "p-card"
+        }
+      ],
+      "canonical": [
+        "p-card"
+      ],
+      "css": ".p-card {\n  padding: var(--spacing-card);\n}\n",
+      "declarations": [
+        {
+          "property": "padding",
+          "value": "var(--spacing-card)"
+        }
+      ],
+      "variantKinds": [],
+      "utilityKind": "functional",
+      "utilityRoot": "p",
+      "parseCount": 1,
+      "astNodeCount": 1
+    },
+    {
+      "input": "-px",
+      "valid": false,
+      "parsed": [],
+      "canonical": [
+        "-px"
+      ],
+      "css": null,
+      "declarations": [],
+      "variantKinds": [],
+      "notes": [
+        "Tailwind parseCandidate returned no candidate objects.",
+        "Tailwind candidatesToCss returned null."
+      ],
+      "parseCount": 0,
+      "astNodeCount": 0
+    },
+    {
+      "input": "w-1/2",
+      "valid": true,
+      "parsed": [
+        {
+          "kind": "functional",
+          "root": "w",
+          "modifier": {
+            "kind": "named",
+            "value": "2",
+            "fraction": null
+          },
+          "value": {
+            "kind": "named",
+            "value": "1",
+            "fraction": "1/2"
+          },
+          "variants": [],
+          "important": false,
+          "raw": "w-1/2"
+        }
+      ],
+      "canonical": [
+        "w-1/2"
+      ],
+      "css": ".w-1\\/2 {\n  width: calc(1 / 2 * 100%);\n}\n",
+      "declarations": [
+        {
+          "property": "width",
+          "value": "calc(1 / 2 * 100%)"
+        }
+      ],
+      "variantKinds": [],
+      "utilityKind": "functional",
+      "utilityRoot": "w",
+      "parseCount": 1,
+      "astNodeCount": 1
+    },
+    {
+      "input": "w-[37px]",
+      "valid": true,
+      "parsed": [
+        {
+          "kind": "functional",
+          "root": "w",
+          "modifier": null,
+          "value": {
+            "kind": "arbitrary",
+            "dataType": null,
+            "value": "37px"
+          },
+          "variants": [],
+          "important": false,
+          "raw": "w-[37px]"
+        }
+      ],
+      "canonical": [
+        "w-[37px]"
+      ],
+      "css": ".w-\\[37px\\] {\n  width: 37px;\n}\n",
+      "declarations": [
+        {
+          "property": "width",
+          "value": "37px"
+        }
+      ],
+      "variantKinds": [],
+      "utilityKind": "functional",
+      "utilityRoot": "w",
+      "parseCount": 1,
+      "astNodeCount": 1
+    },
+    {
+      "input": "bg-red-500",
+      "valid": true,
+      "parsed": [
+        {
+          "kind": "functional",
+          "root": "bg",
+          "modifier": null,
+          "value": {
+            "kind": "named",
+            "value": "red-500",
+            "fraction": null
+          },
+          "variants": [],
+          "important": false,
+          "raw": "bg-red-500"
+        }
+      ],
+      "canonical": [
+        "bg-red-500"
+      ],
+      "css": ".bg-red-500 {\n  background-color: var(--color-red-500);\n}\n",
+      "declarations": [
+        {
+          "property": "background-color",
+          "value": "var(--color-red-500)"
+        }
+      ],
+      "variantKinds": [],
+      "utilityKind": "functional",
+      "utilityRoot": "bg",
+      "parseCount": 1,
+      "astNodeCount": 1
+    },
+    {
+      "input": "bg-red-500/50",
+      "valid": true,
+      "parsed": [
+        {
+          "kind": "functional",
+          "root": "bg",
+          "modifier": {
+            "kind": "named",
+            "value": "50"
+          },
+          "value": {
+            "kind": "named",
+            "value": "red-500",
+            "fraction": "red-500/50"
+          },
+          "variants": [],
+          "important": false,
+          "raw": "bg-red-500/50"
+        }
+      ],
+      "canonical": [
+        "bg-red-500/50"
+      ],
+      "css": ".bg-red-500\\/50 {\n  background-color: color-mix(in oklab, var(--color-red-500) 50%, transparent);\n}\n",
+      "declarations": [
+        {
+          "property": "background-color",
+          "value": "color-mix(in oklab, var(--color-red-500) 50%, transparent)"
+        }
+      ],
+      "variantKinds": [],
+      "utilityKind": "functional",
+      "utilityRoot": "bg",
+      "parseCount": 1,
+      "astNodeCount": 1
+    },
+    {
+      "input": "bg-brand-500",
+      "valid": true,
+      "parsed": [
+        {
+          "kind": "functional",
+          "root": "bg",
+          "modifier": null,
+          "value": {
+            "kind": "named",
+            "value": "brand-500",
+            "fraction": null
+          },
+          "variants": [],
+          "important": false,
+          "raw": "bg-brand-500"
+        }
+      ],
+      "canonical": [
+        "bg-brand-500"
+      ],
+      "css": ".bg-brand-500 {\n  background-color: var(--color-brand-500);\n}\n",
+      "declarations": [
+        {
+          "property": "background-color",
+          "value": "var(--color-brand-500)"
+        }
+      ],
+      "variantKinds": [],
+      "utilityKind": "functional",
+      "utilityRoot": "bg",
+      "parseCount": 1,
+      "astNodeCount": 1
+    },
+    {
+      "input": "bg-brand-500/50",
+      "valid": true,
+      "parsed": [
+        {
+          "kind": "functional",
+          "root": "bg",
+          "modifier": {
+            "kind": "named",
+            "value": "50"
+          },
+          "value": {
+            "kind": "named",
+            "value": "brand-500",
+            "fraction": "brand-500/50"
+          },
+          "variants": [],
+          "important": false,
+          "raw": "bg-brand-500/50"
+        }
+      ],
+      "canonical": [
+        "bg-brand-500/50"
+      ],
+      "css": ".bg-brand-500\\/50 {\n  background-color: color-mix(in oklab, var(--color-brand-500) 50%, transparent);\n}\n",
+      "declarations": [
+        {
+          "property": "background-color",
+          "value": "color-mix(in oklab, var(--color-brand-500) 50%, transparent)"
+        }
+      ],
+      "variantKinds": [],
+      "utilityKind": "functional",
+      "utilityRoot": "bg",
+      "parseCount": 1,
+      "astNodeCount": 1
+    },
+    {
+      "input": "bg-[#0088cc]",
+      "valid": true,
+      "parsed": [
+        {
+          "kind": "functional",
+          "root": "bg",
+          "modifier": null,
+          "value": {
+            "kind": "arbitrary",
+            "dataType": null,
+            "value": "#0088cc"
+          },
+          "variants": [],
+          "important": false,
+          "raw": "bg-[#0088cc]"
+        }
+      ],
+      "canonical": [
+        "bg-[#0088cc]"
+      ],
+      "css": ".bg-\\[\\#0088cc\\] {\n  background-color: #0088cc;\n}\n",
+      "declarations": [
+        {
+          "property": "background-color",
+          "value": "#0088cc"
+        }
+      ],
+      "variantKinds": [],
+      "utilityKind": "functional",
+      "utilityRoot": "bg",
+      "parseCount": 1,
+      "astNodeCount": 1
+    },
+    {
+      "input": "bg-[color:var(--brand)]",
+      "valid": true,
+      "parsed": [
+        {
+          "kind": "functional",
+          "root": "bg",
+          "modifier": null,
+          "value": {
+            "kind": "arbitrary",
+            "dataType": "color",
+            "value": "var(--brand)"
+          },
+          "variants": [],
+          "important": false,
+          "raw": "bg-[color:var(--brand)]"
+        }
+      ],
+      "canonical": [
+        "bg-(--brand)"
+      ],
+      "css": ".bg-\\[color\\:var\\(--brand\\)\\] {\n  background-color: var(--brand);\n}\n",
+      "declarations": [
+        {
+          "property": "background-color",
+          "value": "var(--brand)"
+        }
+      ],
+      "variantKinds": [],
+      "utilityKind": "functional",
+      "utilityRoot": "bg",
+      "parseCount": 1,
+      "astNodeCount": 1
+    },
+    {
+      "input": "bg-(--brand-color)",
+      "valid": true,
+      "parsed": [
+        {
+          "kind": "functional",
+          "root": "bg",
+          "modifier": null,
+          "value": {
+            "kind": "arbitrary",
+            "dataType": null,
+            "value": "var(--brand-color)"
+          },
+          "variants": [],
+          "important": false,
+          "raw": "bg-(--brand-color)"
+        }
+      ],
+      "canonical": [
+        "bg-(--brand-color)"
+      ],
+      "css": ".bg-\\(--brand-color\\) {\n  background-color: var(--brand-color);\n}\n",
+      "declarations": [
+        {
+          "property": "background-color",
+          "value": "var(--brand-color)"
+        }
+      ],
+      "variantKinds": [],
+      "utilityKind": "functional",
+      "utilityRoot": "bg",
+      "parseCount": 1,
+      "astNodeCount": 1
+    },
+    {
+      "input": "text-xl",
+      "valid": true,
+      "parsed": [
+        {
+          "kind": "functional",
+          "root": "text",
+          "modifier": null,
+          "value": {
+            "kind": "named",
+            "value": "xl",
+            "fraction": null
+          },
+          "variants": [],
+          "important": false,
+          "raw": "text-xl"
+        }
+      ],
+      "canonical": [
+        "text-xl"
+      ],
+      "css": ".text-xl {\n  font-size: var(--text-xl);\n  line-height: var(--tw-leading, var(--text-xl--line-height));\n}\n",
+      "declarations": [
+        {
+          "property": "font-size",
+          "value": "var(--text-xl)"
+        },
+        {
+          "property": "line-height",
+          "value": "var(--tw-leading, var(--text-xl--line-height))"
+        }
+      ],
+      "variantKinds": [],
+      "utilityKind": "functional",
+      "utilityRoot": "text",
+      "parseCount": 1,
+      "astNodeCount": 1
+    },
+    {
+      "input": "text-[13px]",
+      "valid": true,
+      "parsed": [
+        {
+          "kind": "functional",
+          "root": "text",
+          "modifier": null,
+          "value": {
+            "kind": "arbitrary",
+            "dataType": null,
+            "value": "13px"
+          },
+          "variants": [],
+          "important": false,
+          "raw": "text-[13px]"
+        }
+      ],
+      "canonical": [
+        "text-[13px]"
+      ],
+      "css": ".text-\\[13px\\] {\n  font-size: 13px;\n}\n",
+      "declarations": [
+        {
+          "property": "font-size",
+          "value": "13px"
+        }
+      ],
+      "variantKinds": [],
+      "utilityKind": "functional",
+      "utilityRoot": "text",
+      "parseCount": 1,
+      "astNodeCount": 1
+    },
+    {
+      "input": "rounded-card",
+      "valid": true,
+      "parsed": [
+        {
+          "kind": "functional",
+          "root": "rounded",
+          "modifier": null,
+          "value": {
+            "kind": "named",
+            "value": "card",
+            "fraction": null
+          },
+          "variants": [],
+          "important": false,
+          "raw": "rounded-card"
+        }
+      ],
+      "canonical": [
+        "rounded-card"
+      ],
+      "css": ".rounded-card {\n  border-radius: var(--radius-card);\n}\n",
+      "declarations": [
+        {
+          "property": "border-radius",
+          "value": "var(--radius-card)"
+        }
+      ],
+      "variantKinds": [],
+      "utilityKind": "functional",
+      "utilityRoot": "rounded",
+      "parseCount": 1,
+      "astNodeCount": 1
+    },
+    {
+      "input": "shadow-card",
+      "valid": true,
+      "parsed": [
+        {
+          "kind": "functional",
+          "root": "shadow",
+          "modifier": null,
+          "value": {
+            "kind": "named",
+            "value": "card",
+            "fraction": null
+          },
+          "variants": [],
+          "important": false,
+          "raw": "shadow-card"
+        }
+      ],
+      "canonical": [
+        "shadow-card"
+      ],
+      "css": ".shadow-card {\n  --tw-shadow: 0 8px 24px var(--tw-shadow-color, rgb(0 0 0 / 0.12));\n  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);\n}\n@property --tw-shadow {\n  syntax: \"*\";\n  inherits: false;\n  initial-value: 0 0 #0000;\n}\n@property --tw-shadow-color {\n  syntax: \"*\";\n  inherits: false;\n}\n@property --tw-shadow-alpha {\n  syntax: \"<percentage>\";\n  inherits: false;\n  initial-value: 100%;\n}\n@property --tw-inset-shadow {\n  syntax: \"*\";\n  inherits: false;\n  initial-value: 0 0 #0000;\n}\n@property --tw-inset-shadow-color {\n  syntax: \"*\";\n  inherits: false;\n}\n@property --tw-inset-shadow-alpha {\n  syntax: \"<percentage>\";\n  inherits: false;\n  initial-value: 100%;\n}\n@property --tw-ring-color {\n  syntax: \"*\";\n  inherits: false;\n}\n@property --tw-ring-shadow {\n  syntax: \"*\";\n  inherits: false;\n  initial-value: 0 0 #0000;\n}\n@property --tw-inset-ring-color {\n  syntax: \"*\";\n  inherits: false;\n}\n@property --tw-inset-ring-shadow {\n  syntax: \"*\";\n  inherits: false;\n  initial-value: 0 0 #0000;\n}\n@property --tw-ring-inset {\n  syntax: \"*\";\n  inherits: false;\n}\n@property --tw-ring-offset-width {\n  syntax: \"<length>\";\n  inherits: false;\n  initial-value: 0px;\n}\n@property --tw-ring-offset-color {\n  syntax: \"*\";\n  inherits: false;\n  initial-value: #fff;\n}\n@property --tw-ring-offset-shadow {\n  syntax: \"*\";\n  inherits: false;\n  initial-value: 0 0 #0000;\n}\n",
+      "declarations": [
+        {
+          "property": "--tw-shadow",
+          "value": "0 8px 24px var(--tw-shadow-color, rgb(0 0 0 / 0.12))"
+        },
+        {
+          "property": "box-shadow",
+          "value": "var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow)"
+        },
+        {
+          "property": "syntax",
+          "value": "\"*\""
+        },
+        {
+          "property": "inherits",
+          "value": "false"
+        },
+        {
+          "property": "initial-value",
+          "value": "0 0 #0000"
+        },
+        {
+          "property": "syntax",
+          "value": "\"*\""
+        },
+        {
+          "property": "inherits",
+          "value": "false"
+        },
+        {
+          "property": "syntax",
+          "value": "\"<percentage>\""
+        },
+        {
+          "property": "inherits",
+          "value": "false"
+        },
+        {
+          "property": "initial-value",
+          "value": "100%"
+        },
+        {
+          "property": "syntax",
+          "value": "\"*\""
+        },
+        {
+          "property": "inherits",
+          "value": "false"
+        },
+        {
+          "property": "initial-value",
+          "value": "0 0 #0000"
+        },
+        {
+          "property": "syntax",
+          "value": "\"*\""
+        },
+        {
+          "property": "inherits",
+          "value": "false"
+        },
+        {
+          "property": "syntax",
+          "value": "\"<percentage>\""
+        },
+        {
+          "property": "inherits",
+          "value": "false"
+        },
+        {
+          "property": "initial-value",
+          "value": "100%"
+        },
+        {
+          "property": "syntax",
+          "value": "\"*\""
+        },
+        {
+          "property": "inherits",
+          "value": "false"
+        },
+        {
+          "property": "syntax",
+          "value": "\"*\""
+        },
+        {
+          "property": "inherits",
+          "value": "false"
+        },
+        {
+          "property": "initial-value",
+          "value": "0 0 #0000"
+        },
+        {
+          "property": "syntax",
+          "value": "\"*\""
+        },
+        {
+          "property": "inherits",
+          "value": "false"
+        },
+        {
+          "property": "syntax",
+          "value": "\"*\""
+        },
+        {
+          "property": "inherits",
+          "value": "false"
+        },
+        {
+          "property": "initial-value",
+          "value": "0 0 #0000"
+        },
+        {
+          "property": "syntax",
+          "value": "\"*\""
+        },
+        {
+          "property": "inherits",
+          "value": "false"
+        },
+        {
+          "property": "syntax",
+          "value": "\"<length>\""
+        },
+        {
+          "property": "inherits",
+          "value": "false"
+        },
+        {
+          "property": "initial-value",
+          "value": "0px"
+        },
+        {
+          "property": "syntax",
+          "value": "\"*\""
+        },
+        {
+          "property": "inherits",
+          "value": "false"
+        },
+        {
+          "property": "initial-value",
+          "value": "#fff"
+        },
+        {
+          "property": "syntax",
+          "value": "\"*\""
+        },
+        {
+          "property": "inherits",
+          "value": "false"
+        },
+        {
+          "property": "initial-value",
+          "value": "0 0 #0000"
+        }
+      ],
+      "variantKinds": [],
+      "utilityKind": "functional",
+      "utilityRoot": "shadow",
+      "parseCount": 1,
+      "astNodeCount": 15
+    },
+    {
+      "input": "hover:bg-brand-500/50",
+      "valid": true,
+      "parsed": [
+        {
+          "kind": "functional",
+          "root": "bg",
+          "modifier": {
+            "kind": "named",
+            "value": "50"
+          },
+          "value": {
+            "kind": "named",
+            "value": "brand-500",
+            "fraction": "brand-500/50"
+          },
+          "variants": [
+            {
+              "kind": "static",
+              "root": "hover"
+            }
+          ],
+          "important": false,
+          "raw": "hover:bg-brand-500/50"
+        }
+      ],
+      "canonical": [
+        "hover:bg-brand-500/50"
+      ],
+      "css": ".hover\\:bg-brand-500\\/50 {\n  &:hover {\n    @media (hover: hover) {\n      background-color: color-mix(in oklab, var(--color-brand-500) 50%, transparent);\n    }\n  }\n}\n",
+      "declarations": [
+        {
+          "property": "background-color",
+          "value": "color-mix(in oklab, var(--color-brand-500) 50%, transparent)"
+        }
+      ],
+      "variantKinds": [
+        "static"
+      ],
+      "utilityKind": "functional",
+      "utilityRoot": "bg",
+      "parseCount": 1,
+      "astNodeCount": 1
+    },
+    {
+      "input": "focus-visible:outline-2",
+      "valid": true,
+      "parsed": [
+        {
+          "kind": "functional",
+          "root": "outline",
+          "modifier": null,
+          "value": {
+            "kind": "named",
+            "value": "2",
+            "fraction": null
+          },
+          "variants": [
+            {
+              "kind": "static",
+              "root": "focus-visible"
+            }
+          ],
+          "important": false,
+          "raw": "focus-visible:outline-2"
+        }
+      ],
+      "canonical": [
+        "focus-visible:outline-2"
+      ],
+      "css": ".focus-visible\\:outline-2 {\n  &:focus-visible {\n    outline-style: var(--tw-outline-style);\n    outline-width: 2px;\n  }\n}\n@property --tw-outline-style {\n  syntax: \"*\";\n  inherits: false;\n  initial-value: solid;\n}\n",
+      "declarations": [
+        {
+          "property": "outline-style",
+          "value": "var(--tw-outline-style)"
+        },
+        {
+          "property": "outline-width",
+          "value": "2px"
+        },
+        {
+          "property": "syntax",
+          "value": "\"*\""
+        },
+        {
+          "property": "inherits",
+          "value": "false"
+        },
+        {
+          "property": "initial-value",
+          "value": "solid"
+        }
+      ],
+      "variantKinds": [
+        "static"
+      ],
+      "utilityKind": "functional",
+      "utilityRoot": "outline",
+      "parseCount": 1,
+      "astNodeCount": 2
+    },
+    {
+      "input": "sm:grid-cols-2",
+      "valid": true,
+      "parsed": [
+        {
+          "kind": "functional",
+          "root": "grid-cols",
+          "modifier": null,
+          "value": {
+            "kind": "named",
+            "value": "2",
+            "fraction": null
+          },
+          "variants": [
+            {
+              "kind": "static",
+              "root": "sm"
+            }
+          ],
+          "important": false,
+          "raw": "sm:grid-cols-2"
+        }
+      ],
+      "canonical": [
+        "sm:grid-cols-2"
+      ],
+      "css": ".sm\\:grid-cols-2 {\n  @media (width >= 40rem) {\n    grid-template-columns: repeat(2, minmax(0, 1fr));\n  }\n}\n",
+      "declarations": [
+        {
+          "property": "grid-template-columns",
+          "value": "repeat(2, minmax(0, 1fr))"
+        }
+      ],
+      "variantKinds": [
+        "static"
+      ],
+      "utilityKind": "functional",
+      "utilityRoot": "grid-cols",
+      "parseCount": 1,
+      "astNodeCount": 1
+    },
+    {
+      "input": "3xl:grid-cols-6",
+      "valid": true,
+      "parsed": [
+        {
+          "kind": "functional",
+          "root": "grid-cols",
+          "modifier": null,
+          "value": {
+            "kind": "named",
+            "value": "6",
+            "fraction": null
+          },
+          "variants": [
+            {
+              "kind": "static",
+              "root": "3xl"
+            }
+          ],
+          "important": false,
+          "raw": "3xl:grid-cols-6"
+        }
+      ],
+      "canonical": [
+        "3xl:grid-cols-6"
+      ],
+      "css": ".\\33 xl\\:grid-cols-6 {\n  @media (width >= 120rem) {\n    grid-template-columns: repeat(6, minmax(0, 1fr));\n  }\n}\n",
+      "declarations": [
+        {
+          "property": "grid-template-columns",
+          "value": "repeat(6, minmax(0, 1fr))"
+        }
+      ],
+      "variantKinds": [
+        "static"
+      ],
+      "utilityKind": "functional",
+      "utilityRoot": "grid-cols",
+      "parseCount": 1,
+      "astNodeCount": 1
+    },
+    {
+      "input": "@sm:flex",
+      "valid": true,
+      "parsed": [
+        {
+          "kind": "static",
+          "root": "flex",
+          "variants": [
+            {
+              "kind": "functional",
+              "root": "@",
+              "modifier": null,
+              "value": {
+                "kind": "named",
+                "value": "sm"
+              }
+            }
+          ],
+          "important": false,
+          "raw": "@sm:flex"
+        },
+        {
+          "kind": "functional",
+          "root": "flex",
+          "modifier": null,
+          "value": null,
+          "variants": [
+            {
+              "kind": "functional",
+              "root": "@",
+              "modifier": null,
+              "value": {
+                "kind": "named",
+                "value": "sm"
+              }
+            }
+          ],
+          "important": false,
+          "raw": "@sm:flex"
+        }
+      ],
+      "canonical": [
+        "@sm:flex"
+      ],
+      "css": ".\\@sm\\:flex {\n  @container (width >= 24rem) {\n    display: flex;\n  }\n}\n",
+      "declarations": [
+        {
+          "property": "display",
+          "value": "flex"
+        }
+      ],
+      "variantKinds": [
+        "functional"
+      ],
+      "utilityKind": "static",
+      "utilityRoot": "flex",
+      "parseCount": 2,
+      "astNodeCount": 1
+    },
+    {
+      "input": "@max-md:hidden",
+      "valid": true,
+      "parsed": [
+        {
+          "kind": "static",
+          "root": "hidden",
+          "variants": [
+            {
+              "kind": "functional",
+              "root": "@max",
+              "modifier": null,
+              "value": {
+                "kind": "named",
+                "value": "md"
+              }
+            }
+          ],
+          "important": false,
+          "raw": "@max-md:hidden"
+        }
+      ],
+      "canonical": [
+        "@max-md:hidden"
+      ],
+      "css": ".\\@max-md\\:hidden {\n  @container (width < 28rem) {\n    display: none;\n  }\n}\n",
+      "declarations": [
+        {
+          "property": "display",
+          "value": "none"
+        }
+      ],
+      "variantKinds": [
+        "functional"
+      ],
+      "utilityKind": "static",
+      "utilityRoot": "hidden",
+      "parseCount": 1,
+      "astNodeCount": 1
+    },
+    {
+      "input": "group-hover:flex",
+      "valid": true,
+      "parsed": [
+        {
+          "kind": "static",
+          "root": "flex",
+          "variants": [
+            {
+              "kind": "compound",
+              "root": "group",
+              "modifier": null,
+              "variant": {
+                "kind": "static",
+                "root": "hover"
+              }
+            }
+          ],
+          "important": false,
+          "raw": "group-hover:flex"
+        },
+        {
+          "kind": "functional",
+          "root": "flex",
+          "modifier": null,
+          "value": null,
+          "variants": [
+            {
+              "kind": "compound",
+              "root": "group",
+              "modifier": null,
+              "variant": {
+                "kind": "static",
+                "root": "hover"
+              }
+            }
+          ],
+          "important": false,
+          "raw": "group-hover:flex"
+        }
+      ],
+      "canonical": [
+        "group-hover:flex"
+      ],
+      "css": ".group-hover\\:flex {\n  &:is(:where(.group):hover *) {\n    @media (hover: hover) {\n      display: flex;\n    }\n  }\n}\n",
+      "declarations": [
+        {
+          "property": "display",
+          "value": "flex"
+        }
+      ],
+      "variantKinds": [
+        "compound",
+        "static"
+      ],
+      "utilityKind": "static",
+      "utilityRoot": "flex",
+      "parseCount": 2,
+      "astNodeCount": 1
+    },
+    {
+      "input": "peer-focus:text-blue-500",
+      "valid": true,
+      "parsed": [
+        {
+          "kind": "functional",
+          "root": "text",
+          "modifier": null,
+          "value": {
+            "kind": "named",
+            "value": "blue-500",
+            "fraction": null
+          },
+          "variants": [
+            {
+              "kind": "compound",
+              "root": "peer",
+              "modifier": null,
+              "variant": {
+                "kind": "static",
+                "root": "focus"
+              }
+            }
+          ],
+          "important": false,
+          "raw": "peer-focus:text-blue-500"
+        }
+      ],
+      "canonical": [
+        "peer-focus:text-blue-500"
+      ],
+      "css": ".peer-focus\\:text-blue-500 {\n  &:is(:where(.peer):focus ~ *) {\n    color: var(--color-blue-500);\n  }\n}\n",
+      "declarations": [
+        {
+          "property": "color",
+          "value": "var(--color-blue-500)"
+        }
+      ],
+      "variantKinds": [
+        "compound",
+        "static"
+      ],
+      "utilityKind": "functional",
+      "utilityRoot": "text",
+      "parseCount": 1,
+      "astNodeCount": 1
+    },
+    {
+      "input": "has-[img]:p-4",
+      "valid": true,
+      "parsed": [
+        {
+          "kind": "functional",
+          "root": "p",
+          "modifier": null,
+          "value": {
+            "kind": "named",
+            "value": "4",
+            "fraction": null
+          },
+          "variants": [
+            {
+              "kind": "compound",
+              "root": "has",
+              "modifier": null,
+              "variant": {
+                "kind": "arbitrary",
+                "selector": "&:is(img)",
+                "relative": false
+              }
+            }
+          ],
+          "important": false,
+          "raw": "has-[img]:p-4"
+        }
+      ],
+      "canonical": [
+        "has-[img]:p-4"
+      ],
+      "css": ".has-\\[img\\]\\:p-4 {\n  &:has(*:is(img)) {\n    padding: calc(var(--spacing) * 4);\n  }\n}\n",
+      "declarations": [
+        {
+          "property": "padding",
+          "value": "calc(var(--spacing) * 4)"
+        }
+      ],
+      "variantKinds": [
+        "arbitrary",
+        "compound"
+      ],
+      "utilityKind": "functional",
+      "utilityRoot": "p",
+      "parseCount": 1,
+      "astNodeCount": 1
+    },
+    {
+      "input": "not-hover:opacity-50",
+      "valid": true,
+      "parsed": [
+        {
+          "kind": "functional",
+          "root": "opacity",
+          "modifier": null,
+          "value": {
+            "kind": "named",
+            "value": "50",
+            "fraction": null
+          },
+          "variants": [
+            {
+              "kind": "compound",
+              "root": "not",
+              "modifier": null,
+              "variant": {
+                "kind": "static",
+                "root": "hover"
+              }
+            }
+          ],
+          "important": false,
+          "raw": "not-hover:opacity-50"
+        }
+      ],
+      "canonical": [
+        "not-hover:opacity-50"
+      ],
+      "css": ".not-hover\\:opacity-50 {\n  &:not(*:hover) {\n    opacity: 50%;\n  }\n  @media not (hover: hover) {\n    opacity: 50%;\n  }\n}\n",
+      "declarations": [
+        {
+          "property": "opacity",
+          "value": "50%"
+        },
+        {
+          "property": "opacity",
+          "value": "50%"
+        }
+      ],
+      "variantKinds": [
+        "compound",
+        "static"
+      ],
+      "utilityKind": "functional",
+      "utilityRoot": "opacity",
+      "parseCount": 1,
+      "astNodeCount": 1
+    },
+    {
+      "input": "[&_p]:mt-4",
+      "valid": true,
+      "parsed": [
+        {
+          "kind": "functional",
+          "root": "mt",
+          "modifier": null,
+          "value": {
+            "kind": "named",
+            "value": "4",
+            "fraction": null
+          },
+          "variants": [
+            {
+              "kind": "arbitrary",
+              "selector": "& p",
+              "relative": false
+            }
+          ],
+          "important": false,
+          "raw": "[&_p]:mt-4"
+        }
+      ],
+      "canonical": [
+        "[&_p]:mt-4"
+      ],
+      "css": ".\\[\\&_p\\]\\:mt-4 {\n  & p {\n    margin-top: calc(var(--spacing) * 4);\n  }\n}\n",
+      "declarations": [
+        {
+          "property": "margin-top",
+          "value": "calc(var(--spacing) * 4)"
+        }
+      ],
+      "variantKinds": [
+        "arbitrary"
+      ],
+      "utilityKind": "functional",
+      "utilityRoot": "mt",
+      "parseCount": 1,
+      "astNodeCount": 1
+    },
+    {
+      "input": "[color:red]",
+      "valid": true,
+      "parsed": [
+        {
+          "kind": "arbitrary",
+          "property": "color",
+          "value": "red",
+          "modifier": null,
+          "variants": [],
+          "important": false,
+          "raw": "[color:red]"
+        }
+      ],
+      "canonical": [
+        "text-[red]"
+      ],
+      "css": ".\\[color\\:red\\] {\n  color: red;\n}\n",
+      "declarations": [
+        {
+          "property": "color",
+          "value": "red"
+        }
+      ],
+      "variantKinds": [],
+      "utilityKind": "arbitrary",
+      "utilityRoot": "color",
+      "parseCount": 1,
+      "astNodeCount": 1
+    },
+    {
+      "input": "[color:red]/50!",
+      "valid": true,
+      "parsed": [
+        {
+          "kind": "arbitrary",
+          "property": "color",
+          "value": "red",
+          "modifier": {
+            "kind": "named",
+            "value": "50"
+          },
+          "variants": [],
+          "important": true,
+          "raw": "[color:red]/50!"
+        }
+      ],
+      "canonical": [
+        "text-[red]/50!"
+      ],
+      "css": ".\\[color\\:red\\]\\/50\\! {\n  color: color-mix(in oklab, red 50%, transparent) !important;\n}\n",
+      "declarations": [
+        {
+          "property": "color",
+          "value": "color-mix(in oklab, red 50%, transparent)",
+          "important": true
+        }
+      ],
+      "variantKinds": [],
+      "utilityKind": "arbitrary",
+      "utilityRoot": "color",
+      "parseCount": 1,
+      "astNodeCount": 1
+    },
+    {
+      "input": "theme-midnight:bg-black",
+      "valid": true,
+      "parsed": [
+        {
+          "kind": "functional",
+          "root": "bg",
+          "modifier": null,
+          "value": {
+            "kind": "named",
+            "value": "black",
+            "fraction": null
+          },
+          "variants": [
+            {
+              "kind": "static",
+              "root": "theme-midnight"
+            }
+          ],
+          "important": false,
+          "raw": "theme-midnight:bg-black"
+        }
+      ],
+      "canonical": [
+        "theme-midnight:bg-black"
+      ],
+      "css": ".theme-midnight\\:bg-black {\n  &:where([data-theme=\"midnight\"] *) {\n    background-color: var(--color-black);\n  }\n}\n",
+      "declarations": [
+        {
+          "property": "background-color",
+          "value": "var(--color-black)"
+        }
+      ],
+      "variantKinds": [
+        "static"
+      ],
+      "utilityKind": "functional",
+      "utilityRoot": "bg",
+      "parseCount": 1,
+      "astNodeCount": 1
+    },
+    {
+      "input": "content-auto",
+      "valid": true,
+      "parsed": [
+        {
+          "kind": "static",
+          "root": "content-auto",
+          "variants": [],
+          "important": false,
+          "raw": "content-auto"
+        },
+        {
+          "kind": "functional",
+          "root": "content",
+          "modifier": null,
+          "value": {
+            "kind": "named",
+            "value": "auto",
+            "fraction": null
+          },
+          "variants": [],
+          "important": false,
+          "raw": "content-auto"
+        }
+      ],
+      "canonical": [
+        "content-auto"
+      ],
+      "css": ".content-auto {\n  content-visibility: auto;\n}\n",
+      "declarations": [
+        {
+          "property": "content-visibility",
+          "value": "auto"
+        }
+      ],
+      "variantKinds": [],
+      "utilityKind": "static",
+      "utilityRoot": "content-auto",
+      "parseCount": 2,
+      "astNodeCount": 1
+    },
+    {
+      "input": "not-a-tailwind-class",
+      "valid": false,
+      "parsed": [],
+      "canonical": [
+        "not-a-tailwind-class"
+      ],
+      "css": null,
+      "declarations": [],
+      "variantKinds": [],
+      "notes": [
+        "Tailwind parseCandidate returned no candidate objects.",
+        "Tailwind candidatesToCss returned null."
+      ],
+      "parseCount": 0,
+      "astNodeCount": 0
+    },
+    {
+      "input": "bg-red-500/50/50",
+      "valid": false,
+      "parsed": [],
+      "canonical": [
+        "bg-red-500/50/50"
+      ],
+      "css": null,
+      "declarations": [],
+      "variantKinds": [],
+      "notes": [
+        "Tailwind parseCandidate returned no candidate objects.",
+        "Tailwind candidatesToCss returned null."
+      ],
+      "parseCount": 0,
+      "astNodeCount": 0
+    },
+    {
+      "input": "p-[]",
+      "valid": false,
+      "parsed": [],
+      "canonical": [
+        "p-[]"
+      ],
+      "css": null,
+      "declarations": [],
+      "variantKinds": [],
+      "notes": [
+        "Tailwind parseCandidate returned no candidate objects.",
+        "Tailwind candidatesToCss returned null."
+      ],
+      "parseCount": 0,
+      "astNodeCount": 0
+    },
+    {
+      "input": "[broken]",
+      "valid": false,
+      "parsed": [],
+      "canonical": [
+        "[broken]"
+      ],
+      "css": null,
+      "declarations": [],
+      "variantKinds": [],
+      "notes": [
+        "Tailwind parseCandidate returned no candidate objects.",
+        "Tailwind candidatesToCss returned null."
+      ],
+      "parseCount": 0,
+      "astNodeCount": 0
+    }
+  ]
+}

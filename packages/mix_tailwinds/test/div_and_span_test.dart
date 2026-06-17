@@ -75,15 +75,20 @@ CurveAnimationConfig? _parseAnimation(String classNames, {TwParser? parser}) {
   return p.parseAnimationFromTokens(p.listTokens(classNames));
 }
 
-TwParsedClass _resolveSingle(String token, {TokenWarningCallback? onUnknown}) {
-  final parsed = TwResolver(
-    TwConfig.standard(),
-    onUnknownVariant: onUnknown,
-  ).resolveToken(token);
+Future<Text> _renderedTextFor(
+  WidgetTester tester,
+  String classNames, {
+  String value = 'sample',
+}) async {
+  await tester.pumpWidget(
+    Directionality(
+      textDirection: TextDirection.ltr,
+      child: StyledText(value, style: TwParser().parseText(classNames)),
+    ),
+  );
+  await tester.pump();
 
-  expect(parsed, isNotNull);
-  expect(parsed, hasLength(1));
-  return parsed!.single;
+  return tester.widget<Text>(find.text(value));
 }
 
 Future<void> _pumpSized(
@@ -1241,7 +1246,8 @@ void main() {
     final seen = <String>[];
     TwParser(onUnsupported: seen.add).parseBox('z-10 opacity-50');
 
-    expect(seen, containsAll(['z-10', 'opacity-50']));
+    expect(seen, contains('z-10'));
+    expect(seen, isNot(contains('opacity-50')));
   });
 
   test('Prefix chains parse without warnings', () {
@@ -1259,22 +1265,23 @@ void main() {
     expect(() => parser.parseBox('h-1/'), returnsNormally);
   });
 
-  test('Arbitrary 3/4-digit hex colors are rejected', () {
-    final seen = <String>[];
-    final parser = TwParser(onUnsupported: seen.add);
+  testWidgets('Arbitrary 3/4-digit hex colors are applied', (tester) async {
+    final rgb = await _boxDecorationFor(tester, 'bg-[#fff]');
+    expect(rgb?.color, equals(const Color(0xFFFFFFFF)));
 
-    parser.parseBox('bg-[#fff] bg-[#ffff]');
-
-    expect(seen, contains('bg-[#fff]'));
-    expect(seen, contains('bg-[#ffff]'));
+    final rgba = await _boxDecorationFor(tester, 'bg-[#ffff]');
+    expect(rgba?.color, equals(const Color(0xFFFFFFFF)));
   });
 
-  testWidgets('Arbitrary 6/8-digit hex colors are applied', (tester) async {
+  testWidgets('Arbitrary 6/8-digit CSS hex colors are applied', (tester) async {
     final opaque = await _boxDecorationFor(tester, 'bg-[#ffffff]');
     expect(opaque?.color, equals(const Color(0xFFFFFFFF)));
 
-    final alpha = await _boxDecorationFor(tester, 'bg-[#80ffffff]');
+    final alpha = await _boxDecorationFor(tester, 'bg-[#ffffff80]');
     expect(alpha?.color, equals(const Color(0x80FFFFFF)));
+
+    final cssOrdered = await _boxDecorationFor(tester, 'bg-[#80ffffff]');
+    expect(cssOrdered?.color, equals(const Color(0xFF80FFFF)));
   });
 
   // ==========================================================================
@@ -1335,40 +1342,34 @@ void main() {
   // Line Height (leading-*) Tests
   // ==========================================================================
 
-  test('leading-none applies line height 1.0', () {
-    final parsed = _resolveSingle('leading-none');
-    expect(parsed.property, TwProperty.lineHeight);
-    expect(parsed.value, const TwLengthValue(1.0, TwUnit.none));
+  testWidgets('leading-none applies line height 1.0', (tester) async {
+    final text = await _renderedTextFor(tester, 'leading-none');
+    expect(text.style?.height, 1.0);
   });
 
-  test('leading-tight applies line height 1.25', () {
-    final parsed = _resolveSingle('leading-tight');
-    expect(parsed.property, TwProperty.lineHeight);
-    expect(parsed.value, const TwLengthValue(1.25, TwUnit.none));
+  testWidgets('leading-tight applies line height 1.25', (tester) async {
+    final text = await _renderedTextFor(tester, 'leading-tight');
+    expect(text.style?.height, 1.25);
   });
 
-  test('leading-snug applies line height 1.375', () {
-    final parsed = _resolveSingle('leading-snug');
-    expect(parsed.property, TwProperty.lineHeight);
-    expect(parsed.value, const TwLengthValue(1.375, TwUnit.none));
+  testWidgets('leading-snug applies line height 1.375', (tester) async {
+    final text = await _renderedTextFor(tester, 'leading-snug');
+    expect(text.style?.height, 1.375);
   });
 
-  test('leading-normal applies line height 1.5', () {
-    final parsed = _resolveSingle('leading-normal');
-    expect(parsed.property, TwProperty.lineHeight);
-    expect(parsed.value, const TwLengthValue(1.5, TwUnit.none));
+  testWidgets('leading-normal applies line height 1.5', (tester) async {
+    final text = await _renderedTextFor(tester, 'leading-normal');
+    expect(text.style?.height, 1.5);
   });
 
-  test('leading-relaxed applies line height 1.625', () {
-    final parsed = _resolveSingle('leading-relaxed');
-    expect(parsed.property, TwProperty.lineHeight);
-    expect(parsed.value, const TwLengthValue(1.625, TwUnit.none));
+  testWidgets('leading-relaxed applies line height 1.625', (tester) async {
+    final text = await _renderedTextFor(tester, 'leading-relaxed');
+    expect(text.style?.height, 1.625);
   });
 
-  test('leading-loose applies line height 2.0', () {
-    final parsed = _resolveSingle('leading-loose');
-    expect(parsed.property, TwProperty.lineHeight);
-    expect(parsed.value, const TwLengthValue(2.0, TwUnit.none));
+  testWidgets('leading-loose applies line height 2.0', (tester) async {
+    final text = await _renderedTextFor(tester, 'leading-loose');
+    expect(text.style?.height, 2.0);
   });
 
   testWidgets('leading-even applies even leading distribution', (tester) async {
@@ -1424,40 +1425,34 @@ void main() {
   // Letter Spacing (tracking-*) Tests
   // ==========================================================================
 
-  test('tracking-tighter applies -0.8 letter spacing', () {
-    final parsed = _resolveSingle('tracking-tighter');
-    expect(parsed.property, TwProperty.letterSpacing);
-    expect(parsed.value, const TwLengthValue(-0.8));
+  testWidgets('tracking-tighter applies -0.8 letter spacing', (tester) async {
+    final text = await _renderedTextFor(tester, 'tracking-tighter');
+    expect(text.style?.letterSpacing, -0.8);
   });
 
-  test('tracking-tight applies -0.4 letter spacing', () {
-    final parsed = _resolveSingle('tracking-tight');
-    expect(parsed.property, TwProperty.letterSpacing);
-    expect(parsed.value, const TwLengthValue(-0.4));
+  testWidgets('tracking-tight applies -0.4 letter spacing', (tester) async {
+    final text = await _renderedTextFor(tester, 'tracking-tight');
+    expect(text.style?.letterSpacing, -0.4);
   });
 
-  test('tracking-normal applies 0 letter spacing', () {
-    final parsed = _resolveSingle('tracking-normal');
-    expect(parsed.property, TwProperty.letterSpacing);
-    expect(parsed.value, const TwLengthValue(0));
+  testWidgets('tracking-normal applies 0 letter spacing', (tester) async {
+    final text = await _renderedTextFor(tester, 'tracking-normal');
+    expect(text.style?.letterSpacing, 0);
   });
 
-  test('tracking-wide applies 0.4 letter spacing', () {
-    final parsed = _resolveSingle('tracking-wide');
-    expect(parsed.property, TwProperty.letterSpacing);
-    expect(parsed.value, const TwLengthValue(0.4));
+  testWidgets('tracking-wide applies 0.4 letter spacing', (tester) async {
+    final text = await _renderedTextFor(tester, 'tracking-wide');
+    expect(text.style?.letterSpacing, 0.4);
   });
 
-  test('tracking-wider applies 0.8 letter spacing', () {
-    final parsed = _resolveSingle('tracking-wider');
-    expect(parsed.property, TwProperty.letterSpacing);
-    expect(parsed.value, const TwLengthValue(0.8));
+  testWidgets('tracking-wider applies 0.8 letter spacing', (tester) async {
+    final text = await _renderedTextFor(tester, 'tracking-wider');
+    expect(text.style?.letterSpacing, 0.8);
   });
 
-  test('tracking-widest applies 1.6 letter spacing', () {
-    final parsed = _resolveSingle('tracking-widest');
-    expect(parsed.property, TwProperty.letterSpacing);
-    expect(parsed.value, const TwLengthValue(1.6));
+  testWidgets('tracking-widest applies 1.6 letter spacing', (tester) async {
+    final text = await _renderedTextFor(tester, 'tracking-widest');
+    expect(text.style?.letterSpacing, 1.6);
   });
 
   // ==========================================================================
@@ -3077,7 +3072,7 @@ void main() {
       expect(find.byType(Container), findsOneWidget);
     });
 
-    testWidgets('Span with opacity does not wrap in Box', (tester) async {
+    testWidgets('Span with opacity wraps and applies Opacity', (tester) async {
       await tester.pumpWidget(
         const Directionality(
           textDirection: TextDirection.ltr,
@@ -3085,9 +3080,9 @@ void main() {
         ),
       );
 
-      // opacity- is not in box utility prefixes (not yet implemented for Box)
-      // so Span should not wrap in a Container
-      expect(find.byType(Container), findsNothing);
+      expect(find.byType(Container), findsOneWidget);
+      final opacity = tester.widget<Opacity>(find.byType(Opacity));
+      expect(opacity.opacity, 0.5);
     });
   });
 

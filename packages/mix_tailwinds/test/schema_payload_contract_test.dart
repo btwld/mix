@@ -3,8 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 import 'package:mix_schema/mix_schema.dart';
 import 'package:mix_tailwinds/mix_tailwinds.dart';
-import 'package:mix_tailwinds/src/tw_schema_payload_policy.dart'
-    as payload_policy;
 
 void main() {
   test('box parser emits schema payloads that decode through mix_schema', () {
@@ -135,41 +133,6 @@ void main() {
 
     final text = tester.widget<Text>(find.text(value));
     expect(text.textAlign, TextAlign.center);
-  });
-
-  test('schema payload policy classifies every Tailwind property', () {
-    final classified = payload_policy.twSchemaPayloadPolicy.keys
-        .map((value) => value.toString())
-        .toSet();
-    final properties = TwProperty.values
-        .map((value) => value.toString())
-        .toSet();
-
-    expect(classified, properties);
-    expect(
-      payload_policy.twSchemaPayloadPolicy.values,
-      everyElement(isA<payload_policy.TwSchemaPayloadPolicy>()),
-    );
-    expect(
-      payload_policy.twSchemaPayloadPolicy.values.map(
-        (policy) => policy.reason,
-      ),
-      everyElement(isNotEmpty),
-    );
-  });
-
-  test('direct-only tokens have explicit internal policy decisions', () {
-    final policy = payload_policy.twSchemaPayloadPolicy;
-    final directOnly = payload_policy.TwSchemaPayloadDecision.directOnly;
-    final widgetLayer = payload_policy.TwSchemaPayloadDecision.widgetLayer;
-
-    expect(policy[TwProperty.backgroundGradient]?.decision, directOnly);
-    expect(policy[TwProperty.borderWidth]?.decision, directOnly);
-    expect(policy[TwProperty.borderColor]?.decision, directOnly);
-    expect(policy[TwProperty.scale]?.decision, directOnly);
-    expect(policy[TwProperty.rotate]?.decision, directOnly);
-    expect(policy[TwProperty.flexGrow]?.decision, widgetLayer);
-    expect(policy[TwProperty.transition]?.decision, widgetLayer);
   });
 
   test(
