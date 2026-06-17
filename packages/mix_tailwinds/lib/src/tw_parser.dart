@@ -44,6 +44,9 @@ class TwParser {
   TextStyler parseText(String classNames) =>
       _translator.translateText(classNames);
 
+  IconStyler parseIcon(String classNames) =>
+      _translator.translateIcon(classNames);
+
   CurveAnimationConfig? parseAnimationFromTokens(List<String> tokens) =>
       _translator.parseAnimationFromTokens(tokens);
 }

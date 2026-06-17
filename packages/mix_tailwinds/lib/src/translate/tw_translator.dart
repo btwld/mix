@@ -28,9 +28,6 @@ final class TwTranslator {
   final TwConfig config;
   final TokenWarningCallback? onUnsupported;
   final TailwindCandidateParser _parser;
-  final MixSchemaContract _schema = MixSchemaContractBuilder()
-      .builtIn()
-      .freeze();
 
   List<String> listTokens(String classNames) {
     final trimmed = classNames.trim();
@@ -60,7 +57,9 @@ final class TwTranslator {
       wrapVariant: _wrapFlexVariant,
       applyGradient: (style, gradient) => style.gradient(gradient),
       afterBasePayload: (payload, context) {
-        if (!context.hasBaseFlex) payload['direction'] = Axis.vertical.name;
+        if (!context.hasBaseFlex) {
+          payload['direction'] = payloadEnum(Axis.vertical);
+        }
       },
     );
   }
@@ -74,10 +73,9 @@ final class TwTranslator {
       merge: (base, other) => base.merge(other),
       wrapVariant: _wrapTextVariant,
       applyGradient: (style, _) => style,
-      seedPayload: () => {
-        'type': SchemaStyler.text.wireValue,
-        'style': <String, Object?>{'height': config.textDefaults.lineHeight},
-      },
+      seedPayload: () => payloadStyler(SchemaStyler.text, {
+        'style': payloadTextStyle(height: config.textDefaults.lineHeight),
+      }),
     );
   }
 
@@ -91,6 +89,57 @@ final class TwTranslator {
 
   JsonMap payloadText(String classNames) {
     return _payloadFor(classNames, target: TwTarget.text);
+  }
+
+  IconStyler translateIcon(String classNames) {
+    return _decodePayload<IconStyler>(payloadIcon(classNames));
+  }
+
+  /// Builds an `icon` styler payload from base, schema-supported utilities.
+  ///
+  /// Only `w-*`/`h-*` (size), `text-<color>` (color), and `opacity-*` map onto
+  /// [IconStyler]. Variant-prefixed icon utilities are ignored because non-box
+  /// schema variants are not yet supported; widget-layer utilities (e.g.
+  /// margins) are handled separately by [TwIcon].
+  JsonMap payloadIcon(String classNames) {
+    final payload = payloadStyler(SchemaStyler.icon);
+    double? width;
+    double? height;
+
+    for (final token in listTokens(classNames)) {
+      final parsed = _parser.parseCandidate(token);
+      if (parsed is! TailwindParseSuccess) continue;
+      final candidate = parsed.candidate;
+      if (candidate.variants.isNotEmpty) continue;
+
+      final route = routeCandidate(candidate, breakpoints: config.breakpoints);
+      if (route.kind != TwRouteKind.schemaValue) continue;
+
+      final utility = candidate.utility;
+      if (_utilityNegative(utility)) continue;
+      final root = _utilityRoot(utility);
+      final value = _utilityValue(utility);
+
+      switch (root) {
+        case 'w':
+          width = _sizingLength('w', value) ?? width;
+        case 'h':
+          height = _sizingLength('h', value) ?? height;
+        case 'text':
+          final color = _color(value, _utilityModifier(utility));
+          if (color != null) payload['color'] = payloadColor(color);
+        case 'opacity':
+          final opacity = _opacity(value);
+          if (opacity != null) payload['opacity'] = opacity;
+      }
+    }
+
+    final size = (width != null && height != null)
+        ? (width < height ? width : height)
+        : (width ?? height);
+    if (size != null) payload['size'] = size;
+
+    return payload;
   }
 
   CurveAnimationConfig? parseAnimationFromTokens(List<String> tokens) {
@@ -149,6 +198,42 @@ final class TwTranslator {
   JsonMap _payloadFor(String classNames, {required TwTarget target}) {
     final groups = _buildGroups(classNames, target);
     final base = groups[_VariantPath.base] ?? _GroupContext(target);
+
+    if (target == TwTarget.box) {
+      final hasVariantTransform = groups.entries.any(
+        (entry) =>
+            entry.key != _VariantPath.base &&
+            entry.value.transform.hasAnyTransform,
+      );
+      if (hasVariantTransform && !base.transform.hasAnyTransform) {
+        base.transform.needsIdentity = true;
+      }
+
+      _finalizeGroupPayload(base);
+      final variants = <JsonMap>[];
+      for (final entry in groups.entries) {
+        if (entry.key == _VariantPath.base) continue;
+
+        final context = entry.value;
+        if (context.transform.hasAnyTransform &&
+            base.transform.hasAnyTransform) {
+          context.transform.inheritUnsetFrom(base.transform);
+        }
+        if (context.border.hasStructure && base.border.hasStructure) {
+          context.border.inheritUnsetFrom(base.border);
+        }
+
+        _finalizeGroupPayload(context);
+        if (_isEmptyPayload(context.payload)) continue;
+        variants.add(_boxVariantPayload(entry.key.parts, context.payload));
+      }
+      if (variants.isNotEmpty) {
+        base.payload['variants'] = variants;
+      }
+
+      return base.payload;
+    }
+
     _finalizeGroupPayload(base);
     return base.payload;
   }
@@ -297,52 +382,60 @@ final class TwTranslator {
     final payload = group.payload;
     switch (raw) {
       case 'inline-flex':
-        payload['direction'] = Axis.horizontal.name;
-        payload['mainAxisSize'] = MainAxisSize.min.name;
+        payload['direction'] = payloadEnum(Axis.horizontal);
+        payload['mainAxisSize'] = payloadEnum(MainAxisSize.min);
         group.hasBaseFlex = true;
         return true;
       case 'flex':
       case 'flex-row':
-        payload['direction'] = Axis.horizontal.name;
+        payload['direction'] = payloadEnum(Axis.horizontal);
         group.hasBaseFlex = true;
         return true;
       case 'flex-col':
-        payload['direction'] = Axis.vertical.name;
+        payload['direction'] = payloadEnum(Axis.vertical);
         group.hasBaseFlex = true;
         return true;
       case 'items-start':
-        payload['crossAxisAlignment'] = CrossAxisAlignment.start.name;
+        payload['crossAxisAlignment'] = payloadEnum(CrossAxisAlignment.start);
         return true;
       case 'items-center':
-        payload['crossAxisAlignment'] = CrossAxisAlignment.center.name;
+        payload['crossAxisAlignment'] = payloadEnum(CrossAxisAlignment.center);
         return true;
       case 'items-end':
-        payload['crossAxisAlignment'] = CrossAxisAlignment.end.name;
+        payload['crossAxisAlignment'] = payloadEnum(CrossAxisAlignment.end);
         return true;
       case 'items-stretch':
-        payload['crossAxisAlignment'] = CrossAxisAlignment.stretch.name;
+        payload['crossAxisAlignment'] = payloadEnum(CrossAxisAlignment.stretch);
         return true;
       case 'items-baseline':
-        payload['crossAxisAlignment'] = CrossAxisAlignment.baseline.name;
-        payload['textBaseline'] = TextBaseline.alphabetic.name;
+        payload['crossAxisAlignment'] = payloadEnum(
+          CrossAxisAlignment.baseline,
+        );
+        payload['textBaseline'] = payloadEnum(TextBaseline.alphabetic);
         return true;
       case 'justify-start':
-        payload['mainAxisAlignment'] = MainAxisAlignment.start.name;
+        payload['mainAxisAlignment'] = payloadEnum(MainAxisAlignment.start);
         return true;
       case 'justify-center':
-        payload['mainAxisAlignment'] = MainAxisAlignment.center.name;
+        payload['mainAxisAlignment'] = payloadEnum(MainAxisAlignment.center);
         return true;
       case 'justify-end':
-        payload['mainAxisAlignment'] = MainAxisAlignment.end.name;
+        payload['mainAxisAlignment'] = payloadEnum(MainAxisAlignment.end);
         return true;
       case 'justify-between':
-        payload['mainAxisAlignment'] = MainAxisAlignment.spaceBetween.name;
+        payload['mainAxisAlignment'] = payloadEnum(
+          MainAxisAlignment.spaceBetween,
+        );
         return true;
       case 'justify-around':
-        payload['mainAxisAlignment'] = MainAxisAlignment.spaceAround.name;
+        payload['mainAxisAlignment'] = payloadEnum(
+          MainAxisAlignment.spaceAround,
+        );
         return true;
       case 'justify-evenly':
-        payload['mainAxisAlignment'] = MainAxisAlignment.spaceEvenly.name;
+        payload['mainAxisAlignment'] = payloadEnum(
+          MainAxisAlignment.spaceEvenly,
+        );
         return true;
     }
 
@@ -376,22 +469,26 @@ final class TwTranslator {
       case 'bg':
         final color = _color(value, modifier);
         if (color == null) return false;
-        _decoration(payload)['color'] = payloadColor(color);
+        _decoration(payload).addAll(payloadDecoration(color: color));
         return true;
       case 'opacity':
         final opacity = _opacity(value);
         if (opacity == null) return false;
-        _modifiers(payload).add({'type': 'opacity', 'opacity': opacity});
+        _modifiers(
+          payload,
+        ).add(payloadModifier(SchemaModifier.opacity, {'opacity': opacity}));
         return true;
       case 'blur':
         final sigma = _blur(value);
         if (sigma == null) return false;
-        _modifiers(payload).add({'type': 'blur', 'sigma': sigma});
+        _modifiers(
+          payload,
+        ).add(payloadModifier(SchemaModifier.blur, {'sigma': sigma}));
         return true;
       case 'shadow':
         final shadows = _boxShadowPayload(raw, value);
         if (shadows == null) return false;
-        _decoration(payload)['boxShadow'] = shadows;
+        _decoration(payload).addAll(payloadDecoration(boxShadow: shadows));
         return true;
       case 'text':
       case 'size':
@@ -400,11 +497,11 @@ final class TwTranslator {
 
     if (raw == 'overflow-hidden' || raw == 'overflow-clip') {
       _decoration(payload);
-      payload['clipBehavior'] = Clip.hardEdge.name;
+      payload['clipBehavior'] = payloadEnum(Clip.hardEdge);
       return true;
     }
     if (raw == 'overflow-visible') {
-      payload['clipBehavior'] = Clip.none.name;
+      payload['clipBehavior'] = payloadEnum(Clip.none);
       return true;
     }
     if (_applyDefaultTextStatic(payload, raw)) return true;
@@ -427,22 +524,22 @@ final class TwTranslator {
 
     switch (raw) {
       case 'text-left':
-        payload['textAlign'] = TextAlign.left.name;
+        payload['textAlign'] = payloadEnum(TextAlign.left);
         return true;
       case 'text-center':
-        payload['textAlign'] = TextAlign.center.name;
+        payload['textAlign'] = payloadEnum(TextAlign.center);
         return true;
       case 'text-right':
-        payload['textAlign'] = TextAlign.right.name;
+        payload['textAlign'] = payloadEnum(TextAlign.right);
         return true;
       case 'text-justify':
-        payload['textAlign'] = TextAlign.justify.name;
+        payload['textAlign'] = payloadEnum(TextAlign.justify);
         return true;
       case 'text-start':
-        payload['textAlign'] = TextAlign.start.name;
+        payload['textAlign'] = payloadEnum(TextAlign.start);
         return true;
       case 'text-end':
-        payload['textAlign'] = TextAlign.end.name;
+        payload['textAlign'] = payloadEnum(TextAlign.end);
         return true;
       case 'uppercase':
       case 'lowercase':
@@ -450,21 +547,21 @@ final class TwTranslator {
         _textDirectives(payload).add(raw);
         return true;
       case 'truncate':
-        payload['overflow'] = TextOverflow.ellipsis.name;
+        payload['overflow'] = payloadEnum(TextOverflow.ellipsis);
         payload['maxLines'] = 1;
         payload['softWrap'] = false;
         return true;
       case 'leading-even':
-        payload['textHeightBehavior'] = {
-          'leadingDistribution': TextLeadingDistribution.even.name,
-        };
+        payload['textHeightBehavior'] = payloadTextHeightBehavior(
+          leadingDistribution: TextLeadingDistribution.even,
+        );
         return true;
       case 'leading-trim':
-        payload['textHeightBehavior'] = {
-          'leadingDistribution': TextLeadingDistribution.even.name,
-          'applyHeightToFirstAscent': false,
-          'applyHeightToLastDescent': false,
-        };
+        payload['textHeightBehavior'] = payloadTextHeightBehavior(
+          leadingDistribution: TextLeadingDistribution.even,
+          applyHeightToFirstAscent: false,
+          applyHeightToLastDescent: false,
+        );
         return true;
     }
 
@@ -501,22 +598,20 @@ final class TwTranslator {
     final key = _valueKey(value);
     final size = key == null ? null : config.fontSizes[key];
     if (size != null) {
-      final target = style();
-      target['fontSize'] = size;
       final lineHeight = twDefaultLineHeights[key];
-      if (lineHeight != null) target['height'] = lineHeight;
+      style().addAll(payloadTextStyle(fontSize: size, height: lineHeight));
       return true;
     }
 
     final arbitraryLength = _arbitraryLength(value);
     if (arbitraryLength != null) {
-      style()['fontSize'] = arbitraryLength;
+      style().addAll(payloadTextStyle(fontSize: arbitraryLength));
       return true;
     }
 
     final color = _color(value, modifier);
     if (color != null) {
-      style()['color'] = payloadColor(color);
+      style().addAll(payloadTextStyle(color: color));
       return true;
     }
 
@@ -560,31 +655,19 @@ final class TwTranslator {
     final length = _sizingLength(root, value);
     if (length == null) return _isWidgetLayerSize(value);
 
-    final constraints = _objectField(payload, 'constraints');
-    switch (root) {
-      case 'w':
-        constraints['minWidth'] = length;
-        constraints['maxWidth'] = length;
-        return true;
-      case 'h':
-        constraints['minHeight'] = length;
-        constraints['maxHeight'] = length;
-        return true;
-      case 'min-w':
-        constraints['minWidth'] = length;
-        return true;
-      case 'min-h':
-        constraints['minHeight'] = length;
-        return true;
-      case 'max-w':
-        constraints['maxWidth'] = length;
-        return true;
-      case 'max-h':
-        constraints['maxHeight'] = length;
-        return true;
-    }
+    final delta = switch (root) {
+      'w' => payloadConstraints(minWidth: length, maxWidth: length),
+      'h' => payloadConstraints(minHeight: length, maxHeight: length),
+      'min-w' => payloadConstraints(minWidth: length),
+      'min-h' => payloadConstraints(minHeight: length),
+      'max-w' => payloadConstraints(maxWidth: length),
+      'max-h' => payloadConstraints(maxHeight: length),
+      _ => null,
+    };
+    if (delta == null) return false;
+    _objectField(payload, 'constraints').addAll(delta);
 
-    return false;
+    return true;
   }
 
   bool _applyRadius(JsonMap payload, String root, TailwindValue? value) {
@@ -592,41 +675,29 @@ final class TwTranslator {
     final key = _valueKey(value) ?? '';
     final radius = config.radii[key];
     if (radius == null) return false;
-    final borderRadius = _objectField(_decoration(payload), 'borderRadius');
-    switch (root) {
-      case 'rounded':
-        borderRadius
-          ..['topLeft'] = radius
-          ..['topRight'] = radius
-          ..['bottomLeft'] = radius
-          ..['bottomRight'] = radius;
-      case 'rounded-t':
-        borderRadius
-          ..['topLeft'] = radius
-          ..['topRight'] = radius;
-      case 'rounded-b':
-        borderRadius
-          ..['bottomLeft'] = radius
-          ..['bottomRight'] = radius;
-      case 'rounded-l':
-        borderRadius
-          ..['topLeft'] = radius
-          ..['bottomLeft'] = radius;
-      case 'rounded-r':
-        borderRadius
-          ..['topRight'] = radius
-          ..['bottomRight'] = radius;
-      case 'rounded-tl':
-        borderRadius['topLeft'] = radius;
-      case 'rounded-tr':
-        borderRadius['topRight'] = radius;
-      case 'rounded-bl':
-        borderRadius['bottomLeft'] = radius;
-      case 'rounded-br':
-        borderRadius['bottomRight'] = radius;
-      default:
-        return false;
-    }
+    final delta = switch (root) {
+      'rounded' => payloadBorderRadius(
+        topLeft: radius,
+        topRight: radius,
+        bottomLeft: radius,
+        bottomRight: radius,
+      ),
+      'rounded-t' => payloadBorderRadius(topLeft: radius, topRight: radius),
+      'rounded-b' => payloadBorderRadius(
+        bottomLeft: radius,
+        bottomRight: radius,
+      ),
+      'rounded-l' => payloadBorderRadius(topLeft: radius, bottomLeft: radius),
+      'rounded-r' => payloadBorderRadius(topRight: radius, bottomRight: radius),
+      'rounded-tl' => payloadBorderRadius(topLeft: radius),
+      'rounded-tr' => payloadBorderRadius(topRight: radius),
+      'rounded-bl' => payloadBorderRadius(bottomLeft: radius),
+      'rounded-br' => payloadBorderRadius(bottomRight: radius),
+      _ => null,
+    };
+    if (delta == null) return false;
+    _objectField(_decoration(payload), 'borderRadius').addAll(delta);
+
     return true;
   }
 
@@ -746,14 +817,18 @@ final class TwTranslator {
       group.payload['transform'] = group.transform.toPayload();
     }
     if (group.border.hasStructure) {
-      _decoration(group.payload)['border'] = group.border.toPayload(
-        defaultColor: config.colorOf('gray-200') ?? const Color(0xFFE5E7EB),
+      _decoration(group.payload).addAll(
+        payloadDecoration(
+          border: group.border.toPayload(
+            defaultColor: config.colorOf('gray-200') ?? const Color(0xFFE5E7EB),
+          ),
+        ),
       );
     }
   }
 
   T _decodePayload<T extends Object>(JsonMap payload) {
-    final result = _schema.decode<T>(payload);
+    final result = builtInMixSchemaContract.decode<T>(payload);
     return switch (result) {
       MixSchemaDecodeSuccess<T>(:final value) => value,
       MixSchemaDecodeFailure<T>(:final errors) => throw StateError(
@@ -844,6 +919,53 @@ final class TwTranslator {
         style,
       ),
     };
+  }
+
+  JsonMap _boxVariantPayload(List<_VariantPart> path, JsonMap payload) {
+    var current = payload;
+    for (final part in path.reversed) {
+      current = payloadStyler(SchemaStyler.box, {
+        'variants': [_boxVariantPartPayload(part, current)],
+      });
+    }
+
+    final variants = current['variants']! as List;
+    return variants.single! as JsonMap;
+  }
+
+  JsonMap _boxVariantPartPayload(_VariantPart part, JsonMap style) {
+    return switch (part.kind) {
+      _VariantKind.hover => _widgetStateVariant(WidgetState.hovered, style),
+      _VariantKind.focus => _widgetStateVariant(WidgetState.focused, style),
+      _VariantKind.pressed => _widgetStateVariant(WidgetState.pressed, style),
+      _VariantKind.disabled => _widgetStateVariant(WidgetState.disabled, style),
+      _VariantKind.enabled => payloadVariant(SchemaVariant.enabled, {
+        'style': style,
+      }),
+      _VariantKind.dark => payloadVariant(SchemaVariant.contextBrightness, {
+        'brightness': payloadEnum(Brightness.dark),
+        'style': style,
+      }),
+      _VariantKind.light => payloadVariant(SchemaVariant.contextBrightness, {
+        'brightness': payloadEnum(Brightness.light),
+        'style': style,
+      }),
+      _VariantKind.breakpoint => payloadVariant(
+        SchemaVariant.contextBreakpoint,
+        {'minWidth': part.breakpoint, 'style': style},
+      ),
+      _VariantKind.notHover => payloadVariant(
+        SchemaVariant.contextNotWidgetState,
+        {'state': payloadWidgetState(WidgetState.hovered), 'style': style},
+      ),
+    };
+  }
+
+  JsonMap _widgetStateVariant(WidgetState state, JsonMap style) {
+    return payloadVariant(SchemaVariant.widgetState, {
+      'state': payloadWidgetState(state),
+      'style': style,
+    });
   }
 
   _VariantPath? _variantPath(List<TailwindVariant> variants) {
@@ -1013,31 +1135,35 @@ final class TwTranslator {
         ? const <BoxShadowMix>[]
         : kTailwindBoxShadowPresets[key];
     if (shadows == null) return null;
-    final encoded = _schema.encode(BoxStyler().boxShadows(shadows));
+    final encoded = builtInMixSchemaContract.encode(
+      BoxStyler().boxShadows(shadows),
+    );
     final payload = switch (encoded) {
       MixSchemaEncodeSuccess(:final value) => value,
-      MixSchemaEncodeFailure() => null,
+      MixSchemaEncodeFailure(:final errors) => throw StateError(
+        'Tailwinds failed to encode box shadows for "$raw": $errors',
+      ),
     };
-    final decoration = payload?['decoration'] as JsonMap?;
+    final decoration = payload['decoration'] as JsonMap?;
     return (decoration?['boxShadow'] as List?)?.cast<JsonMap>() ??
         const <JsonMap>[];
   }
 
   bool _applyFontWeight(JsonMap style, String raw) {
     final weight = switch (raw) {
-      'font-thin' => 'w100',
-      'font-extralight' => 'w200',
-      'font-light' => 'w300',
-      'font-normal' => 'w400',
-      'font-medium' => 'w500',
-      'font-semibold' => 'w600',
-      'font-bold' => 'w700',
-      'font-extrabold' => 'w800',
-      'font-black' => 'w900',
+      'font-thin' => FontWeight.w100,
+      'font-extralight' => FontWeight.w200,
+      'font-light' => FontWeight.w300,
+      'font-normal' => FontWeight.w400,
+      'font-medium' => FontWeight.w500,
+      'font-semibold' => FontWeight.w600,
+      'font-bold' => FontWeight.w700,
+      'font-extrabold' => FontWeight.w800,
+      'font-black' => FontWeight.w900,
       _ => null,
     };
     if (weight == null) return false;
-    style['fontWeight'] = weight;
+    style.addAll(payloadTextStyle(fontWeight: weight));
     return true;
   }
 
@@ -1052,7 +1178,7 @@ final class TwTranslator {
       _ => null,
     };
     if (height == null) return false;
-    style['height'] = height;
+    style.addAll(payloadTextStyle(height: height));
     return true;
   }
 
@@ -1067,7 +1193,7 @@ final class TwTranslator {
       _ => null,
     };
     if (tracking == null) return false;
-    style['letterSpacing'] = tracking;
+    style.addAll(payloadTextStyle(letterSpacing: tracking));
     return true;
   }
 
@@ -1093,12 +1219,16 @@ final class TwTranslator {
                 ),
               )
               .toList();
-    final encoded = _schema.encode(TextStyler().shadows(shadows));
+    final encoded = builtInMixSchemaContract.encode(
+      TextStyler().shadows(shadows),
+    );
     final payload = switch (encoded) {
       MixSchemaEncodeSuccess(:final value) => value,
-      MixSchemaEncodeFailure() => null,
+      MixSchemaEncodeFailure(:final errors) => throw StateError(
+        'Tailwinds failed to encode text shadows for "$raw": $errors',
+      ),
     };
-    final encodedStyle = payload?['style'] as JsonMap?;
+    final encodedStyle = payload['style'] as JsonMap?;
     style['shadows'] =
         (encodedStyle?['shadows'] as List?)?.cast<JsonMap>() ??
         const <JsonMap>[];
@@ -1159,14 +1289,13 @@ final class TwTranslator {
   JsonMap _defaultTextStyle(JsonMap payload) {
     final modifiers = _modifiers(payload);
     for (final modifier in modifiers) {
-      if (modifier['type'] == 'default_text_style') {
+      if (modifier['type'] == SchemaModifier.defaultTextStyle.wireValue) {
         return _objectField(modifier, 'style');
       }
     }
-    final modifier = <String, Object?>{
-      'type': 'default_text_style',
+    final modifier = payloadModifier(SchemaModifier.defaultTextStyle, {
       'style': <String, Object?>{},
-    };
+    });
     modifiers.add(modifier);
     return modifier['style']! as JsonMap;
   }
@@ -1216,13 +1345,11 @@ final class _GroupContext {
   bool hasBaseFlex = false;
 
   static JsonMap _payloadForTarget(TwTarget target) {
-    return {
-      'type': switch (target) {
-        TwTarget.box => SchemaStyler.box.wireValue,
-        TwTarget.flexBox => SchemaStyler.flexBox.wireValue,
-        TwTarget.text => SchemaStyler.text.wireValue,
-      },
-    };
+    return payloadStyler(switch (target) {
+      TwTarget.box => SchemaStyler.box,
+      TwTarget.flexBox => SchemaStyler.flexBox,
+      TwTarget.text => SchemaStyler.text,
+    });
   }
 }
 
@@ -1282,4 +1409,16 @@ bool _partsEqual(List<_VariantPart> a, List<_VariantPart> b) {
     if (a[i] != b[i]) return false;
   }
   return true;
+}
+
+bool _isEmptyPayload(JsonMap payload) {
+  return payload.entries.every((entry) {
+    return entry.key == 'type' || _isEmptySchemaValue(entry.value);
+  });
+}
+
+bool _isEmptySchemaValue(Object? value) {
+  return value == null ||
+      (value is Map && value.isEmpty) ||
+      (value is List && value.isEmpty);
 }

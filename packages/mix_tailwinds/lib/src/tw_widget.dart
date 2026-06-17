@@ -491,18 +491,15 @@ class TwIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cfg = config ?? TwConfigProvider.of(context);
-    final iconSize = _extractIconSize(classNames, cfg);
-    final iconColor =
-        _extractTextColor(classNames, cfg) ??
-        DefaultTextStyle.of(context).style.color;
+    final parsedStyle = TwParser(config: cfg).parseIcon(classNames);
 
-    var style = IconStyler();
-    if (iconSize != null) {
-      style = style.size(iconSize);
-    }
-    if (iconColor != null) {
-      style = style.color(iconColor);
-    }
+    // Preserve the inherited text color as a fallback; the parsed icon style
+    // overrides it when the class names include a `text-<color>` utility.
+    final fallbackColor = DefaultTextStyle.of(context).style.color;
+    var style = fallbackColor != null
+        ? IconStyler().color(fallbackColor)
+        : IconStyler();
+    style = style.merge(parsedStyle);
 
     Widget current = StyledIcon(
       icon: icon,
@@ -519,41 +516,12 @@ class TwIcon extends StatelessWidget {
   }
 }
 
-double? _extractIconSize(String classNames, TwConfig cfg) {
-  double? width;
-  double? height;
-
-  for (final rawToken in classNames.trim().split(_whitespaceRegex)) {
-    if (rawToken.isEmpty) continue;
-    final token = baseTokenOutsideBrackets(rawToken);
-    if (token.startsWith('-')) continue;
-
-    if (token.startsWith('w-')) {
-      width = _spacingTokenLength(token.substring(2), cfg);
-    } else if (token.startsWith('h-')) {
-      height = _spacingTokenLength(token.substring(2), cfg);
-    }
-  }
-
-  if (width != null && height != null) {
-    return width < height ? width : height;
-  }
-  return width ?? height;
-}
-
-Color? _extractTextColor(String classNames, TwConfig cfg) {
-  for (final rawToken in classNames.trim().split(_whitespaceRegex)) {
-    if (rawToken.isEmpty) continue;
-    final token = baseTokenOutsideBrackets(rawToken);
-    if (!token.startsWith('text-')) continue;
-
-    final color = cfg.colorOf(token.substring(5));
-    if (color != null) return color;
-  }
-
-  return null;
-}
-
+/// Extracts logical/physical icon margins (`ms-*`, `me-*`, `ml-*`, `mr-*`).
+///
+/// Parses each token through the candidate parser so variant-prefixed margins
+/// (e.g. `hover:me-1`) and negatives do not apply as base styles. `ms`/`me` are
+/// not schema-routed utility roots, so sides are matched on the unprefixed
+/// utility text rather than via [routeCandidate].
 EdgeInsetsGeometry? _extractLogicalMargin(String classNames, TwConfig cfg) {
   var start = 0.0;
   var end = 0.0;
@@ -561,27 +529,33 @@ EdgeInsetsGeometry? _extractLogicalMargin(String classNames, TwConfig cfg) {
   var right = 0.0;
   var hasMargin = false;
 
-  for (final rawToken in classNames.trim().split(_whitespaceRegex)) {
-    if (rawToken.isEmpty) continue;
-    final token = baseTokenOutsideBrackets(rawToken);
-    if (token.startsWith('-')) continue;
+  final tokens = classNames.trim().isEmpty
+      ? const <String>[]
+      : classNames.trim().split(_whitespaceRegex);
+  for (final token in tokens) {
+    final candidate = _parseCandidate(token);
+    if (candidate == null || candidate.variants.isNotEmpty) continue;
 
-    void setMargin(String key, void Function(double value) setter) {
-      final length = _spacingTokenLength(key, cfg);
-      if (length == null) return;
-      setter(length);
-      hasMargin = true;
-    }
+    final utility = candidate.utility;
+    if (tailwindUtilityNegative(utility)) continue;
 
-    if (token.startsWith('ms-')) {
-      setMargin(token.substring(3), (value) => start = value);
-    } else if (token.startsWith('me-')) {
-      setMargin(token.substring(3), (value) => end = value);
-    } else if (token.startsWith('ml-')) {
-      setMargin(token.substring(3), (value) => left = value);
-    } else if (token.startsWith('mr-')) {
-      setMargin(token.substring(3), (value) => right = value);
+    final raw = utility.raw;
+    void Function(double value)? setter;
+    if (raw.startsWith('ms-')) {
+      setter = (value) => start = value;
+    } else if (raw.startsWith('me-')) {
+      setter = (value) => end = value;
+    } else if (raw.startsWith('ml-')) {
+      setter = (value) => left = value;
+    } else if (raw.startsWith('mr-')) {
+      setter = (value) => right = value;
     }
+    if (setter == null) continue;
+
+    final length = _spacingTokenLength(raw.substring(3), cfg);
+    if (length == null) continue;
+    setter(length);
+    hasMargin = true;
   }
 
   if (!hasMargin) return null;

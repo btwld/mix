@@ -1,16 +1,17 @@
+import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
+import 'package:mix_schema/encode.dart';
 import 'package:mix_schema/mix_schema.dart';
-
-final MixSchemaContract _schema = MixSchemaContractBuilder().builtIn().freeze();
 
 FlexibleModifierMix? twFlexibleModifierForFlexItem(String utility) {
   final payload = _flexibleModifierPayload(utility);
   if (payload == null) return null;
 
-  final decoded = _schema.decode<BoxStyler>({
-    'type': 'box',
-    'modifiers': [payload],
-  });
+  final decoded = builtInMixSchemaContract.decode<BoxStyler>(
+    payloadStyler(SchemaStyler.box, {
+      'modifiers': [payload],
+    }),
+  );
 
   final style = switch (decoded) {
     MixSchemaDecodeSuccess<BoxStyler>(:final value) => value,
@@ -27,17 +28,23 @@ FlexibleModifierMix? twFlexibleModifierForFlexItem(String utility) {
 }
 
 JsonMap? _flexibleModifierPayload(String utility) {
-  return switch (utility) {
+  final ({int flex, FlexFit fit})? spec = switch (utility) {
     'flex-1' ||
     'flex-shrink' ||
     'shrink' ||
-    'grow' => const {'type': 'flexible', 'flex': 1, 'fit': 'tight'},
-    'flex-auto' => const {'type': 'flexible', 'flex': 1, 'fit': 'loose'},
+    'grow' => (flex: 1, fit: FlexFit.tight),
+    'flex-auto' => (flex: 1, fit: FlexFit.loose),
     'flex-initial' ||
     'flex-none' ||
     'flex-shrink-0' ||
     'shrink-0' ||
-    'grow-0' => const {'type': 'flexible', 'flex': 0, 'fit': 'loose'},
+    'grow-0' => (flex: 0, fit: FlexFit.loose),
     _ => null,
   };
+  if (spec == null) return null;
+
+  return payloadModifier(SchemaModifier.flexible, {
+    'flex': spec.flex,
+    'fit': payloadEnum(spec.fit),
+  });
 }

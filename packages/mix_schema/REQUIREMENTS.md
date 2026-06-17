@@ -6,7 +6,9 @@ Pinned Ack: `btwld/ack` `8daaadace3e0c9969e05eb0fe5633a51c2bb124b`, path `packag
 
 Flutter primitive payloads mirror Ack `flutter_codec` branch shapes where they do not erase Mix semantics. Local mirrors must be replaced by `flutter_codec` imports once that package is merged and available to this workspace.
 
-Tailwinds emits accepted utility classes as `mix_schema` payloads, validates/decodes them through `MixSchemaContract`, and then returns Mix stylers from its existing parser APIs. Parser diagnostics remain responsible for unsupported Tailwinds utilities; accepted utilities must not bypass the schema contract with direct styler mutation.
+Tailwinds emits accepted, schema-representable utility classes as `mix_schema` payloads, validates/decodes them through `MixSchemaContract`, and then returns Mix stylers from its existing parser APIs. Parser diagnostics remain responsible for unsupported Tailwinds utilities; accepted utilities must not bypass the schema contract with direct styler mutation.
+
+Current variant payload support is Box-only. `box` payloads may carry recursive `variants`; non-box styler variants are deferred and fail encode explicitly until their schema codecs can represent them without losing semantics.
 
 | Rule | Requirement | Implementation | Tests |
 | --- | --- | --- | --- |
