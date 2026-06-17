@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
-import 'package:mix/src/animation/animation_config.dart';
 
 import '../../helpers/testing_utils.dart';
 
@@ -346,119 +345,182 @@ void main() {
       });
 
       group('AnimationConfig factory wrappers', () {
-        test('spring creates SpringAnimationConfig', () {
-          final config = AnimationConfig.spring(
-            const Duration(milliseconds: 500),
-          );
-
-          expect(config, isA<SpringAnimationConfig>());
-        });
-
-        test('springWithDampingRatio creates SpringAnimationConfig', () {
-          final config = AnimationConfig.springWithDampingRatio(
-            dampingRatio: 0.5,
-          );
-
-          expect(config, isA<SpringAnimationConfig>());
-        });
-
-        test('springDurationBased creates CurveAnimationConfig', () {
-          final config = AnimationConfig.springDurationBased(
-            const Duration(milliseconds: 500),
-            bounce: 0.6,
-          );
-
-          expect(config, isA<CurveAnimationConfig>());
-        });
-
-        test('curveSpring creates CurveAnimationConfig', () {
-          final config = AnimationConfig.curveSpring(
-            const Duration(milliseconds: 500),
-          );
-
-          expect(config, isA<CurveAnimationConfig>());
-        });
-
-        test('curveSpringWithDampingRatio creates CurveAnimationConfig', () {
-          final config = AnimationConfig.curveSpringWithDampingRatio(
-            const Duration(milliseconds: 500),
-          );
-
-          expect(config, isA<CurveAnimationConfig>());
-        });
-
-        test('springStandard creates SpringAnimationConfig', () {
-          final config = AnimationConfig.springStandard();
-
-          expect(config, isA<SpringAnimationConfig>());
-        });
-
-        test('springWithDurationAndBounce creates SpringAnimationConfig', () {
-          final config = AnimationConfig.springWithDurationAndBounce();
-
-          expect(config, isA<SpringAnimationConfig>());
-        });
-
-        test('springCriticallyDamped creates SpringAnimationConfig', () {
-          final config = AnimationConfig.springCriticallyDamped();
-
-          expect(config, isA<SpringAnimationConfig>());
-        });
-
-        test('springUnderdamped creates SpringAnimationConfig', () {
-          final config = AnimationConfig.springUnderdamped();
-
-          expect(config, isA<SpringAnimationConfig>());
-        });
-
-        test('spring propagates duration and bounce parameters', () {
+        test('spring forwards duration, bounce, and onEnd', () {
+          var called = false;
           final config =
               AnimationConfig.spring(
                     const Duration(milliseconds: 750),
                     bounce: 0.4,
+                    onEnd: () => called = true,
                   )
                   as SpringAnimationConfig;
 
-          expect(config.spring, isNotNull);
-          expect(config.spring.mass, isPositive);
-          expect(config.spring.stiffness, isPositive);
+          final expected = SpringDescription.withDurationAndBounce(
+            duration: const Duration(milliseconds: 750),
+            bounce: 0.4,
+          );
+          expect(config.spring.mass, expected.mass);
+          expect(config.spring.stiffness, expected.stiffness);
+          expect(config.spring.damping, expected.damping);
+          config.onEnd!();
+          expect(called, true);
         });
 
-        test('springWithDampingRatio propagates parameters', () {
+        test('springWithDampingRatio forwards parameters and onEnd', () {
+          var called = false;
           final config =
               AnimationConfig.springWithDampingRatio(
                     mass: 2.0,
                     stiffness: 300.0,
                     dampingRatio: 0.5,
+                    onEnd: () => called = true,
                   )
                   as SpringAnimationConfig;
 
+          final expected = SpringDescription.withDampingRatio(
+            mass: 2.0,
+            stiffness: 300.0,
+            ratio: 0.5,
+          );
           expect(config.spring.mass, 2.0);
           expect(config.spring.stiffness, 300.0);
+          expect(config.spring.damping, expected.damping);
+          config.onEnd!();
+          expect(called, true);
         });
 
-        test('springDurationBased propagates duration', () {
+        test('springDurationBased forwards duration, delay, and onEnd', () {
+          var called = false;
           final config =
               AnimationConfig.springDurationBased(
                     const Duration(milliseconds: 600),
                     bounce: 0.3,
+                    delay: const Duration(milliseconds: 50),
+                    onEnd: () => called = true,
                   )
                   as CurveAnimationConfig;
 
           expect(config.duration, const Duration(milliseconds: 600));
+          expect(config.delay, const Duration(milliseconds: 50));
+          expect(config.curve, isA<SpringCurve>());
+          config.onEnd!();
+          expect(called, true);
         });
 
-        test('curveSpring propagates duration and physics params', () {
+        test('curveSpring forwards duration, physics params, and onEnd', () {
+          var called = false;
           final config =
               AnimationConfig.curveSpring(
                     const Duration(milliseconds: 400),
                     mass: 2.0,
                     stiffness: 200.0,
                     damping: 15.0,
+                    delay: const Duration(milliseconds: 25),
+                    onEnd: () => called = true,
                   )
                   as CurveAnimationConfig;
 
           expect(config.duration, const Duration(milliseconds: 400));
+          expect(config.delay, const Duration(milliseconds: 25));
+          expect(
+            config.curve,
+            equals(
+              SpringCurve(mass: 2.0, stiffness: 200.0, damping: 15.0),
+            ),
+          );
+          config.onEnd!();
+          expect(called, true);
+        });
+
+        test(
+          'curveSpringWithDampingRatio forwards duration, params, and onEnd',
+          () {
+            var called = false;
+            final config =
+                AnimationConfig.curveSpringWithDampingRatio(
+                      const Duration(milliseconds: 350),
+                      mass: 2.0,
+                      stiffness: 250.0,
+                      ratio: 0.6,
+                      delay: const Duration(milliseconds: 10),
+                      onEnd: () => called = true,
+                    )
+                    as CurveAnimationConfig;
+
+            expect(config.duration, const Duration(milliseconds: 350));
+            expect(config.delay, const Duration(milliseconds: 10));
+            expect(
+              config.curve,
+              equals(
+                SpringCurve.withDampingRatio(
+                  mass: 2.0,
+                  stiffness: 250.0,
+                  ratio: 0.6,
+                ),
+              ),
+            );
+            config.onEnd!();
+            expect(called, true);
+          },
+        );
+
+        test('springCriticallyDamped forwards parameters and onEnd', () {
+          var called = false;
+          final config =
+              AnimationConfig.springCriticallyDamped(
+                    mass: 2.0,
+                    stiffness: 200.0,
+                    onEnd: () => called = true,
+                  )
+                  as SpringAnimationConfig;
+
+          final expected = SpringDescription.withDampingRatio(
+            mass: 2.0,
+            stiffness: 200.0,
+            ratio: 1.0,
+          );
+          expect(config.spring.mass, 2.0);
+          expect(config.spring.stiffness, 200.0);
+          expect(config.spring.damping, expected.damping);
+          config.onEnd!();
+          expect(called, true);
+        });
+
+        test('springUnderdamped forwards parameters and onEnd', () {
+          var called = false;
+          final config =
+              AnimationConfig.springUnderdamped(
+                    mass: 2.0,
+                    stiffness: 200.0,
+                    ratio: 0.4,
+                    onEnd: () => called = true,
+                  )
+                  as SpringAnimationConfig;
+
+          final expected = SpringDescription.withDampingRatio(
+            mass: 2.0,
+            stiffness: 200.0,
+            ratio: 0.4,
+          );
+          expect(config.spring.mass, 2.0);
+          expect(config.spring.stiffness, 200.0);
+          expect(config.spring.damping, expected.damping);
+          config.onEnd!();
+          expect(called, true);
+        });
+
+        test('curve-spring configs with identical args are equal', () {
+          final a = AnimationConfig.springDurationBased(
+            const Duration(milliseconds: 600),
+            bounce: 0.3,
+          );
+          final b = AnimationConfig.springDurationBased(
+            const Duration(milliseconds: 600),
+            bounce: 0.3,
+          );
+
+          expect(a, equals(b));
+          expect(a.hashCode, equals(b.hashCode));
         });
       });
     });

@@ -402,30 +402,6 @@ sealed class AnimationConfig {
     onEnd: onEnd,
   );
 
-  /// Creates a spring animation with standard physics parameters.
-  factory AnimationConfig.springStandard({
-    double mass = 1.0,
-    double stiffness = 180.0,
-    double damping = 12.0,
-    VoidCallback? onEnd,
-  }) => SpringAnimationConfig.standard(
-    mass: mass,
-    stiffness: stiffness,
-    damping: damping,
-    onEnd: onEnd,
-  );
-
-  /// Creates a spring animation with duration and bounce.
-  factory AnimationConfig.springWithDurationAndBounce({
-    Duration duration = const Duration(milliseconds: 500),
-    double bounce = 0.0,
-    VoidCallback? onEnd,
-  }) => SpringAnimationConfig.withDurationAndBounce(
-    duration: duration,
-    bounce: bounce,
-    onEnd: onEnd,
-  );
-
   /// Creates a critically damped spring animation.
   factory AnimationConfig.springCriticallyDamped({
     double mass = 1.0,
