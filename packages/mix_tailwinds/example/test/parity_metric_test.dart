@@ -23,11 +23,11 @@ void main() {
     });
 
     await tester.pumpWidget(
-      TwScope(
-        config: TwConfig.standard(),
-        child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          home: Scaffold(backgroundColor: background, body: child),
+      MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: Scaffold(
+          backgroundColor: background,
+          body: TwScope(config: TwConfig.standard(), child: child),
         ),
       ),
     );
@@ -83,6 +83,12 @@ void main() {
     final buttonRow = rectForKey(tester, 'card-alert-button-row');
     final cancel = rectForKey(tester, 'card-alert-cancel-button');
     final save = rectForKey(tester, 'card-alert-save-button');
+    final cancelTextStyle = DefaultTextStyle.of(
+      tester.element(find.text('Cancel')),
+    ).style;
+    final saveTextStyle = DefaultTextStyle.of(
+      tester.element(find.text('Save Changes')),
+    ).style;
 
     expect(content.width, closeTo(614, 0.1));
     expect(message.left, closeTo(content.left, 0.1));
@@ -96,6 +102,10 @@ void main() {
     expect(buttonRow.width, closeTo(content.width, 0.1));
     expect(buttonRow.top, closeTo(warning.bottom, 0.1));
     expect(cancel.width, closeTo(save.width, 1));
+    expect(cancelTextStyle.fontSize, 16);
+    expect(cancelTextStyle.fontWeight, FontWeight.w500);
+    expect(saveTextStyle.fontSize, 16);
+    expect(saveTextStyle.fontWeight, FontWeight.w500);
   });
 
   testWidgets('dashboard 768px keeps flex metrics and top-only separators', (

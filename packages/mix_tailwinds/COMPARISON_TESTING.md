@@ -102,12 +102,14 @@ These values are useful when checking whether a new change regresses the existin
 
 | Example | 480px | 768px | 1024px | Main known issue |
 |---------|-------|-------|--------|------------------|
-| `dashboard` | 4.40% | 3.42% | 2.90% | Remaining text anti-aliasing and minor shadow/background rendering noise |
-| `card-alert` | 8.13% | 6.13% | 4.70% | Remaining text/background rendering noise |
+| `dashboard` | 1.20% | 1.14% | 0.89% | Remaining text anti-aliasing and minor shadow/background rendering noise |
+| `card-alert` | 4.86% | 3.94% | 3.36% | Remaining text baseline/anti-aliasing and minor background rendering noise |
 
 Before treating a diff as a regression, compare against the previous commit or saved baseline artifacts. If current and baseline Flutter screenshots are byte-identical, the issue is existing parity drift, not a regression from the latest patch.
 
 `card-alert` 768px note: the comparison harness pins both the Tailwind HTML pages and Flutter screenshot mode to the bundled `TwParityRoboto` font. This keeps glyph metrics deterministic without changing canonical Tailwind sizes; `TwConfig.standard()` still uses the standard Tailwind font scale and system sans stack.
+
+`card-alert` button note: button labels rely on inherited `font-medium` plus Tailwind's base 16px text size. Screenshot previews use a `WidgetsApp` shell with `TwScope` around the captured content so Material text defaults cannot shadow Tailwind defaults; keep default text modifiers merging with the ambient style so partial overrides do not reset base font metrics.
 
 `dashboard` note: the Tailwind reference body uses `py-10`, which places `main` at `y=40`. The visual comparison tool reuses Tailwind's expanded clip for Flutter, so Flutter screenshot mode must include the same vertical frame before rendering the dashboard preview.
 
