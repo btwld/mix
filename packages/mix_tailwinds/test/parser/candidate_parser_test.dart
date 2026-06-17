@@ -54,12 +54,29 @@ void main() {
         expect(candidate.raw, input);
         expect(
           candidate.important,
-          input.endsWith('!') || input.contains(':!'),
+          input.endsWith('!') || input.startsWith('!') || input.contains(':!'),
         );
         expect(_root(candidate.utility), probe['utilityRoot'], reason: input);
       }
     },
   );
+
+  test('candidate probe fixture is in sync with candidate list fixture', () {
+    final fixture =
+        jsonDecode(
+              File('test/fixtures/candidate-probes.json').readAsStringSync(),
+            )
+            as Map<String, Object?>;
+    final probeInputs = (fixture['probes'] as List)
+        .cast<Map<String, Object?>>()
+        .map((probe) => probe['input'] as String)
+        .toSet();
+    final candidateInputs = File(
+      'test/fixtures/candidates.txt',
+    ).readAsLinesSync().where((line) => line.trim().isNotEmpty).toSet();
+
+    expect(probeInputs, containsAll(candidateInputs));
+  });
 
   test('parses contract examples', () {
     final cases = <String, Type>{
@@ -107,6 +124,89 @@ void main() {
     expect(color.modifier, isA<TailwindArbitraryModifier>());
   });
 
+  test('keeps root-aware fractions separate from opacity modifiers', () {
+    final width =
+        (parser.parseCandidate('w-1/2') as TailwindParseSuccess)
+                .candidate
+                .utility
+            as TailwindFunctionalUtility;
+    expect(width.root, 'w');
+    expect((width.value as TailwindNamedValue).raw, '1/2');
+    expect(width.modifier, isNull);
+
+    final color =
+        (parser.parseCandidate('bg-red-500/50') as TailwindParseSuccess)
+                .candidate
+                .utility
+            as TailwindFunctionalUtility;
+    expect(color.root, 'bg');
+    expect((color.value as TailwindNamedValue).raw, 'red-500');
+    expect(color.modifier, isA<TailwindNamedModifier>());
+    expect((color.modifier as TailwindNamedModifier).raw, '50');
+  });
+
+  test('parses explicit parser fidelity cases', () {
+    final bgArbitraryModifier =
+        (parser.parseCandidate('bg-red-500/[50%]') as TailwindParseSuccess)
+                .candidate
+                .utility
+            as TailwindFunctionalUtility;
+    expect(bgArbitraryModifier.root, 'bg');
+    expect((bgArbitraryModifier.value as TailwindNamedValue).raw, 'red-500');
+    expect(bgArbitraryModifier.modifier, isA<TailwindArbitraryModifier>());
+
+    final bgVariableModifier =
+        (parser.parseCandidate('bg-red-500/(--v)') as TailwindParseSuccess)
+                .candidate
+                .utility
+            as TailwindFunctionalUtility;
+    expect(bgVariableModifier.root, 'bg');
+    expect((bgVariableModifier.value as TailwindNamedValue).raw, 'red-500');
+    expect(bgVariableModifier.modifier, isA<TailwindCssVariableModifier>());
+
+    final textLength =
+        (parser.parseCandidate('text-[length:12px]') as TailwindParseSuccess)
+                .candidate
+                .utility
+            as TailwindFunctionalUtility;
+    final textValue = textLength.value as TailwindArbitraryValue;
+    expect(textLength.root, 'text');
+    expect(textValue.raw, '[length:12px]');
+    expect(textValue.typeHint, 'length');
+    expect(textValue.value, '12px');
+  });
+
+  test('parses @max as longest functional variant root', () {
+    final candidate =
+        (parser.parseCandidate('@max-md:hidden') as TailwindParseSuccess)
+            .candidate;
+    final variant = candidate.variants.single as TailwindFunctionalVariant;
+    expect(variant.root, '@max');
+    expect((variant.value as TailwindNamedValue).raw, 'md');
+  });
+
+  test('allows important characters inside arbitrary values', () {
+    final candidate =
+        (parser.parseCandidate('bg-[color:var(--bang!)]')
+                as TailwindParseSuccess)
+            .candidate;
+    final utility = candidate.utility as TailwindFunctionalUtility;
+    final value = utility.value as TailwindArbitraryValue;
+
+    expect(candidate.important, isFalse);
+    expect(value.typeHint, 'color');
+    expect(value.value, 'var(--bang!)');
+  });
+
+  test('parses suffix important markers outside arbitrary values', () {
+    for (final token in ['mx-4!', 'hover:bg-red-500!', '[color:red]/50!']) {
+      final candidate =
+          (parser.parseCandidate(token) as TailwindParseSuccess).candidate;
+      expect(candidate.important, isTrue, reason: token);
+      expect(candidate.utility.raw, isNot(contains('!')), reason: token);
+    }
+  });
+
   test('malformed arbitrary values and modifiers fail with diagnostics', () {
     final cases = {
       'bg-red-500/50/50': TailwindParseErrorCode.invalidModifier,
@@ -123,6 +223,15 @@ void main() {
         reason: entry.key,
       );
     }
+  });
+
+  test('invalid important marker span is relative to full candidate', () {
+    final result = parser.parseCandidate('hover:bg!red');
+    expect(result, isA<TailwindParseFailure>());
+    final error = (result as TailwindParseFailure).errors.single;
+
+    expect(error.code, TailwindParseErrorCode.invalidImportantPosition);
+    expect(error.span, const SourceSpan(8, 9));
   });
 
   test('semantic invalid utilities parse as unresolved syntax successes', () {

@@ -3084,6 +3084,61 @@ void main() {
       final opacity = tester.widget<Opacity>(find.byType(Opacity));
       expect(opacity.opacity, 0.5);
     });
+
+    testWidgets('Span with transform wraps in Box', (tester) async {
+      await tester.pumpWidget(
+        const Directionality(
+          textDirection: TextDirection.ltr,
+          child: Span(text: 'Moved', classNames: 'translate-x-2'),
+        ),
+      );
+
+      expect(find.byType(Container), findsOneWidget);
+      final container = tester.widget<Container>(find.byType(Container));
+      expect(container.transform, isNotNull);
+    });
+
+    testWidgets('Span with overflow wraps in Box', (tester) async {
+      await tester.pumpWidget(
+        const Directionality(
+          textDirection: TextDirection.ltr,
+          child: Span(text: 'Clipped', classNames: 'overflow-hidden'),
+        ),
+      );
+
+      expect(find.byType(Container), findsOneWidget);
+      final container = tester.widget<Container>(find.byType(Container));
+      expect(container.clipBehavior, Clip.hardEdge);
+    });
+
+    testWidgets('Span with blur wraps in Box', (tester) async {
+      await tester.pumpWidget(
+        const Directionality(
+          textDirection: TextDirection.ltr,
+          child: Span(text: 'Blurred', classNames: 'blur-sm'),
+        ),
+      );
+
+      expect(find.byType(Container), findsOneWidget);
+      expect(find.byType(ImageFiltered), findsOneWidget);
+    });
+
+    testWidgets('Span with gradient wraps in Box', (tester) async {
+      await tester.pumpWidget(
+        const Directionality(
+          textDirection: TextDirection.ltr,
+          child: Span(
+            text: 'Gradient',
+            classNames: 'bg-gradient-to-r from-blue-500 to-red-500',
+          ),
+        ),
+      );
+
+      expect(find.byType(Container), findsOneWidget);
+      final container = tester.widget<Container>(find.byType(Container));
+      final decoration = container.decoration as BoxDecoration?;
+      expect(decoration?.gradient, isA<LinearGradient>());
+    });
   });
 
   // ===========================================================================
@@ -3300,6 +3355,34 @@ void main() {
       final edgeInsets = padding.padding as EdgeInsets;
       expect(edgeInsets.top, 8); // mt-2 applied
       expect(edgeInsets.bottom, 0); // -mb-4 skipped, not -16
+    });
+
+    testWidgets('variant margins do not apply as base P/H margins', (
+      tester,
+    ) async {
+      for (final classNames in [
+        'hover:mb-4',
+        'group-hover:mb-4',
+        'peer-focus:mt-2',
+        '@md:mb-4',
+        '[&_p]:mt-4',
+      ]) {
+        await tester.pumpWidget(
+          Directionality(
+            textDirection: TextDirection.ltr,
+            child: P(text: 'Paragraph', classNames: classNames),
+          ),
+        );
+        expect(find.byType(Padding), findsNothing, reason: classNames);
+
+        await tester.pumpWidget(
+          Directionality(
+            textDirection: TextDirection.ltr,
+            child: H1(text: 'Heading', classNames: classNames),
+          ),
+        );
+        expect(find.byType(Padding), findsNothing, reason: classNames);
+      }
     });
   });
 

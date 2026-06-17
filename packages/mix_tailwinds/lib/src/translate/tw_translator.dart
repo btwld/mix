@@ -13,7 +13,6 @@ import '../parser/model.dart';
 import '../theme/data/default_theme.g.dart';
 import '../tw_config.dart';
 import '../tw_types.dart';
-import '../tw_utils.dart';
 import 'tw_accumulators.dart';
 import 'tw_gradient.dart';
 import 'tw_presets.dart';
@@ -102,7 +101,24 @@ final class TwTranslator {
     var delay = Duration.zero;
 
     for (final token in tokens) {
-      final base = baseTokenOutsideBrackets(token);
+      final parsed = _parser.parseCandidate(token);
+      if (parsed is TailwindParseFailure) {
+        onUnsupported?.call(token);
+        continue;
+      }
+
+      final candidate = (parsed as TailwindParseSuccess).candidate;
+      final route = routeCandidate(candidate, breakpoints: config.breakpoints);
+      if (route.kind == TwRouteKind.ignored) {
+        if (route.reason == 'important modifier') onUnsupported?.call(token);
+        continue;
+      }
+      if (route.kind == TwRouteKind.unsupported) {
+        onUnsupported?.call(token);
+        continue;
+      }
+
+      final base = candidate.utility.raw;
       if (_transitionTriggerTokens.contains(base)) {
         hasTransition = true;
       } else if (base == 'transition-none') {
@@ -214,13 +230,16 @@ final class TwTranslator {
       }
 
       final candidate = (parsed as TailwindParseSuccess).candidate;
-      final route = routeCandidate(candidate);
+      final route = routeCandidate(candidate, breakpoints: config.breakpoints);
       if (route.kind == TwRouteKind.ignored) {
         if (route.reason == 'important modifier') onUnsupported?.call(token);
         continue;
       }
       if (route.kind == TwRouteKind.unsupported) {
-        if (!_applyWidgetLayerToken(token, target)) onUnsupported?.call(token);
+        onUnsupported?.call(token);
+        continue;
+      }
+      if (route.kind == TwRouteKind.widgetLayer) {
         continue;
       }
 
@@ -236,9 +255,7 @@ final class TwTranslator {
       }
 
       final handled = _applySchemaCandidate(group, candidate, target);
-      if (!handled && !_applyWidgetLayerToken(token, target)) {
-        onUnsupported?.call(token);
-      }
+      if (!handled) onUnsupported?.call(token);
     }
 
     return groups;
@@ -377,6 +394,7 @@ final class TwTranslator {
     }
 
     if (raw == 'overflow-hidden' || raw == 'overflow-clip') {
+      _decoration(payload);
       payload['clipBehavior'] = Clip.hardEdge.name;
       return true;
     }
@@ -835,104 +853,72 @@ final class TwTranslator {
   }
 
   _VariantPart? _variantPart(TailwindVariant variant) {
-    if (variant is TailwindStaticVariant) {
-      final breakpoint = config.breakpoints[variant.root];
-      if (breakpoint != null) {
-        return _VariantPart.breakpoint(variant.root, breakpoint);
-      }
-      return switch (variant.root) {
-        'hover' => const _VariantPart(_VariantKind.hover, 'hover'),
-        'focus' ||
-        'focus-visible' => const _VariantPart(_VariantKind.focus, 'focus'),
-        'active' ||
-        'pressed' => const _VariantPart(_VariantKind.pressed, 'pressed'),
-        'disabled' => const _VariantPart(_VariantKind.disabled, 'disabled'),
-        'enabled' => const _VariantPart(_VariantKind.enabled, 'enabled'),
-        'dark' ||
-        'theme-midnight' => const _VariantPart(_VariantKind.dark, 'dark'),
-        'light' => const _VariantPart(_VariantKind.light, 'light'),
-        _ => null,
-      };
-    }
-    if (variant is TailwindCompoundVariant && variant.root == 'not') {
-      final child = variant.variant;
-      if (child is TailwindStaticVariant && child.root == 'hover') {
-        return const _VariantPart(_VariantKind.notHover, 'not-hover');
-      }
-    }
-    return null;
-  }
+    final runtime = runtimeVariantFor(variant, breakpoints: config.breakpoints);
+    if (runtime == null) return null;
 
-  bool _applyWidgetLayerToken(String token, TwTarget target) {
-    final base = baseTokenOutsideBrackets(token);
-    if (_transitionTriggerTokens.contains(base) ||
-        base == 'transition-none' ||
-        _easeTokens.containsKey(base) ||
-        base.startsWith('duration-') ||
-        base.startsWith('delay-')) {
-      return true;
-    }
-    if (base.startsWith('flex-') ||
-        base.startsWith('basis-') ||
-        base.startsWith('self-') ||
-        base.startsWith('shrink') ||
-        base.startsWith('grow')) {
-      return true;
-    }
-    if (base.startsWith('gap-x-') || base.startsWith('gap-y-')) return true;
-    if (base.startsWith('w-') || base.startsWith('h-')) {
-      final key = base.substring(2);
-      return key == 'full' ||
-          key == 'screen' ||
-          key == 'auto' ||
-          key.contains('/');
-    }
-    return target == TwTarget.flexBox && base == 'block';
+    return switch (runtime.kind) {
+      TwRuntimeVariantKind.hover => _VariantPart(
+        _VariantKind.hover,
+        runtime.key,
+      ),
+      TwRuntimeVariantKind.focus => _VariantPart(
+        _VariantKind.focus,
+        runtime.key,
+      ),
+      TwRuntimeVariantKind.pressed => _VariantPart(
+        _VariantKind.pressed,
+        runtime.key,
+      ),
+      TwRuntimeVariantKind.disabled => _VariantPart(
+        _VariantKind.disabled,
+        runtime.key,
+      ),
+      TwRuntimeVariantKind.enabled => _VariantPart(
+        _VariantKind.enabled,
+        runtime.key,
+      ),
+      TwRuntimeVariantKind.dark => _VariantPart(_VariantKind.dark, runtime.key),
+      TwRuntimeVariantKind.light => _VariantPart(
+        _VariantKind.light,
+        runtime.key,
+      ),
+      TwRuntimeVariantKind.breakpoint => _VariantPart.breakpoint(
+        runtime.key,
+        runtime.breakpoint!,
+      ),
+      TwRuntimeVariantKind.notHover => _VariantPart(
+        _VariantKind.notHover,
+        runtime.key,
+      ),
+    };
   }
 
   String _utilityRoot(TailwindUtility utility) {
-    return switch (utility) {
-      TailwindStaticUtility(:final root) => root,
-      TailwindFunctionalUtility(:final root) => root,
-      TailwindUnresolvedUtility(:final segments) =>
-        segments.isEmpty ? utility.raw : segments.first,
-      TailwindArbitraryProperty(:final property) => property,
-    };
+    return tailwindUtilityRoot(utility);
   }
 
   TailwindValue? _utilityValue(TailwindUtility utility) {
-    return switch (utility) {
-      TailwindFunctionalUtility(:final value) => value,
-      _ => null,
-    };
+    return tailwindUtilityValue(utility);
   }
 
   TailwindModifier? _utilityModifier(TailwindUtility utility) {
-    return switch (utility) {
-      TailwindFunctionalUtility(:final modifier) => modifier,
-      TailwindUnresolvedUtility(:final modifier) => modifier,
-      TailwindArbitraryProperty(:final modifier) => modifier,
-      _ => null,
-    };
+    return tailwindUtilityModifier(utility);
   }
 
   bool _utilityNegative(TailwindUtility utility) {
-    return switch (utility) {
-      TailwindFunctionalUtility(:final negative) => negative,
-      TailwindUnresolvedUtility(:final negative) => negative,
-      _ => false,
-    };
+    return tailwindUtilityNegative(utility);
   }
 
   String? _valueKey(TailwindValue? value) {
-    return value is TailwindNamedValue ? value.raw : null;
+    return tailwindValueKey(value);
   }
 
   double? _spaceLength(TailwindValue? value, {required bool negative}) {
     final key = _valueKey(value);
     final resolved = key == null ? null : config.space[key];
-    if (resolved == null) return _arbitraryLength(value);
-    return negative ? -resolved : resolved;
+    final length = resolved ?? _arbitraryLength(value);
+    if (length == null) return null;
+    return negative ? -length : length;
   }
 
   double? _arbitraryLength(TailwindValue? value) {

@@ -2,7 +2,12 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
+import 'parser/candidate_parser.dart';
+import 'parser/data/parser_registry.g.dart';
+import 'parser/diagnostics.dart';
+import 'parser/model.dart';
 import 'translate/tw_target.dart' as tw_target;
+import 'translate/tw_routing.dart';
 import 'tw_config.dart';
 import 'tw_parser.dart';
 import 'tw_types.dart';
@@ -13,6 +18,9 @@ import 'tw_utils.dart';
 // =============================================================================
 
 final _whitespaceRegex = RegExp(r'\s+');
+final _candidateParser = TailwindCandidateParser(
+  registry: defaultTailwindParserRegistry,
+);
 
 /// Extracts positive margin [EdgeInsets] from [classNames].
 ///
@@ -22,25 +30,27 @@ final _whitespaceRegex = RegExp(r'\s+');
 ///   whose `RenderPadding` asserts non-negative insets, so emitting them would
 ///   crash. True CSS negative-margin parity needs a transform-based strategy at
 ///   the box layer and is tracked separately.
-/// - Variant prefixes are flattened — the margin applies unconditionally
-///   regardless of `hover:`/`dark:`/breakpoint. Proper responsive/interaction
+/// - Variant-prefixed margins are skipped because responsive/interaction
 ///   margin semantics are not yet modeled in the widget layer.
 EdgeInsets? _extractMargin(String classNames, TwConfig cfg) {
-  final tokens = classNames.split(_whitespaceRegex);
+  final tokens = classNames.trim().isEmpty
+      ? const <String>[]
+      : classNames.trim().split(_whitespaceRegex);
   double? top, right, bottom, left;
 
   for (final token in tokens) {
-    var base = baseTokenOutsideBrackets(token);
-    if (base.startsWith('-')) continue;
+    final candidate = _parseCandidate(token);
+    if (candidate == null || candidate.variants.isNotEmpty) continue;
 
-    final dash = base.indexOf('-');
-    if (dash <= 0) continue;
-    final root = base.substring(0, dash);
-    if (!{'m', 'mx', 'my', 'mt', 'mr', 'mb', 'ml'}.contains(root)) {
-      continue;
-    }
-    final key = base.substring(dash + 1);
-    final value = _marginLength(key, cfg);
+    final route = routeCandidate(candidate, breakpoints: cfg.breakpoints);
+    if (route.kind != TwRouteKind.schemaValue) continue;
+
+    final utility = candidate.utility;
+    final root = tailwindUtilityRoot(utility);
+    if (!_marginRoots.contains(root)) continue;
+    if (tailwindUtilityNegative(utility)) continue;
+
+    final value = _marginLength(tailwindUtilityValue(utility), cfg);
     if (value == null || value < 0) continue;
 
     switch (root) {
@@ -73,17 +83,27 @@ EdgeInsets? _extractMargin(String classNames, TwConfig cfg) {
   );
 }
 
-double? _marginLength(String key, TwConfig cfg) {
+double? _marginLength(TailwindValue? value, TwConfig cfg) {
+  final key = tailwindValueKey(value);
   final scale = cfg.space[key];
   if (scale != null) return scale;
-  if (!key.startsWith('[') || !key.endsWith(']')) return null;
-  final inner = key.substring(1, key.length - 1);
-  final match = RegExp(r'^(\d+\.?\d*)(px|rem|em)?$').firstMatch(inner);
+  if (value is! TailwindArbitraryValue) return null;
+  final match = RegExp(r'^(-?\d+\.?\d*)(px|rem|em)?$').firstMatch(value.value);
   if (match == null) return null;
-  var value = double.parse(match.group(1)!);
+  var length = double.parse(match.group(1)!);
   final unit = match.group(2) ?? 'px';
-  if (unit == 'rem' || unit == 'em') value *= 16;
-  return value;
+  if (unit == 'rem' || unit == 'em') length *= 16;
+  return length;
+}
+
+const _marginRoots = {'m', 'mx', 'my', 'mt', 'mr', 'mb', 'ml'};
+
+TailwindCandidate? _parseCandidate(String token) {
+  final parsed = _candidateParser.parseCandidate(token);
+  return switch (parsed) {
+    TailwindParseSuccess(:final candidate) => candidate,
+    TailwindParseFailure() => null,
+  };
 }
 
 // =============================================================================
@@ -421,7 +441,7 @@ class Span extends StatelessWidget {
     final parser = TwParser(config: cfg);
 
     // Check if we need box styling (padding, background, border, etc.)
-    if (tw_target.hasBoxUtilities(classNames)) {
+    if (tw_target.hasBoxUtilities(classNames, breakpoints: cfg.breakpoints)) {
       // Parse as box to get padding, background, border, etc.
       // parseBox also handles text styling via DefaultTextStyle wrapper
       final boxStyle = parser.parseBox(classNames);
@@ -612,7 +632,7 @@ List<Widget> _applyCrossAxisGap(List<Widget> input, Axis axis, double? gap) {
 bool _hasResponsiveAlignItems(Set<String> tokens, TwConfig cfg, double width) {
   for (final token in tokens) {
     final info = _parseResponsiveToken(token, cfg);
-    if (info.minWidth > width) {
+    if (info == null || info.minWidth > width) {
       continue;
     }
     if (info.base.startsWith('items-')) {
@@ -626,7 +646,7 @@ bool _hasResponsiveWidthToken(String classNames, TwConfig cfg, double width) {
   final tokens = classNames.split(_whitespaceRegex);
   for (final token in tokens) {
     final info = _parseResponsiveToken(token, cfg);
-    if (info.minWidth > width) {
+    if (info == null || info.minWidth > width) {
       continue;
     }
     if (info.base.startsWith('w-')) {
@@ -763,7 +783,7 @@ Widget _wrapWithFlexItemDecorators({
   required TwConfig cfg,
   required double viewportWidth,
 }) {
-  if (!_needsFlexItemDecorators(tokens)) {
+  if (!_needsFlexItemDecorators(tokens, cfg)) {
     return child;
   }
 
@@ -773,16 +793,19 @@ Widget _wrapWithFlexItemDecorators({
   );
 }
 
-bool _needsFlexItemDecorators(Set<String> tokens) {
+bool _needsFlexItemDecorators(Set<String> tokens, TwConfig cfg) {
   for (final token in tokens) {
-    final base = baseTokenOutsideBrackets(token);
+    final info = _parseResponsiveToken(token, cfg);
+    if (info == null) continue;
+    final base = info.base;
     if (base == 'w-full' || base == 'h-full') {
       return true;
     }
     if (base.startsWith('flex-') ||
         base.startsWith('basis-') ||
         base.startsWith('self-') ||
-        base.startsWith('shrink')) {
+        base.startsWith('shrink') ||
+        base.startsWith('grow')) {
       return true;
     }
   }
@@ -902,7 +925,7 @@ bool _resolveMinScreenIntent(
 
   for (final token in tokens) {
     final info = _parseResponsiveToken(token, cfg);
-    if (info.minWidth > width) {
+    if (info == null || info.minWidth > width) {
       continue;
     }
     if (info.base == target) {
@@ -1036,7 +1059,7 @@ Axis _resolveFlexAxisResponsive(
 
   for (final token in tokens) {
     final info = _parseResponsiveToken(token, cfg);
-    if (info.minWidth > width) {
+    if (info == null || info.minWidth > width) {
       continue;
     }
     if (info.base == 'flex-col') {
@@ -1075,7 +1098,7 @@ double? _resolveResponsiveGap(
 
   for (final token in tokens) {
     final info = _parseResponsiveToken(token, cfg);
-    if (info.minWidth > width) {
+    if (info == null || info.minWidth > width) {
       continue;
     }
     if (!info.base.startsWith(prefix)) {
@@ -1108,7 +1131,7 @@ double? _resolveResponsiveFraction(
 
   for (final token in tokens) {
     final info = _parseResponsiveToken(token, cfg);
-    if (info.minWidth > width) {
+    if (info == null || info.minWidth > width) {
       continue;
     }
     if (!info.base.startsWith(prefix)) {
@@ -1139,7 +1162,7 @@ _DimensionIntent _resolveDimensionIntent(
 
   for (final token in tokens) {
     final info = _parseResponsiveToken(token, cfg);
-    if (info.minWidth > width) {
+    if (info == null || info.minWidth > width) {
       continue;
     }
 
@@ -1189,28 +1212,28 @@ class _ResponsiveToken {
   final double minWidth;
 }
 
-_ResponsiveToken _parseResponsiveToken(String token, TwConfig cfg) {
-  var remaining = token;
-  double minWidth = 0;
+_ResponsiveToken? _parseResponsiveToken(String token, TwConfig cfg) {
+  final candidate = _parseCandidate(token);
+  if (candidate == null) return null;
 
-  while (true) {
-    // Use bracket-aware colon finding to handle arbitrary values like bg-[color:red]
-    final index = findFirstColonOutsideBrackets(remaining);
-    if (index <= 0) {
-      break;
-    }
-
-    final head = remaining.substring(0, index);
-    final tail = remaining.substring(index + 1);
-    if (cfg.breakpoints.containsKey(head)) {
-      minWidth = cfg.breakpointOf(head);
-      remaining = tail;
-      continue;
-    }
-    break;
+  final route = routeCandidate(candidate, breakpoints: cfg.breakpoints);
+  if (route.kind == TwRouteKind.ignored ||
+      route.kind == TwRouteKind.unsupported) {
+    return null;
   }
 
-  return _ResponsiveToken(remaining, minWidth);
+  double minWidth = 0;
+
+  for (final variant in candidate.variants) {
+    if (variant is TailwindStaticVariant &&
+        cfg.breakpoints.containsKey(variant.root)) {
+      minWidth = cfg.breakpointOf(variant.root);
+    } else {
+      return null;
+    }
+  }
+
+  return _ResponsiveToken(candidate.utility.raw, minWidth);
 }
 
 enum _DimensionIntent { none, full, screen }
@@ -1244,7 +1267,7 @@ _FlexItemBehavior? _resolveFlexItemBehavior(
   var hasMinWidthAuto = false;
   for (final token in tokens) {
     final info = _parseResponsiveToken(token, cfg);
-    if (info.minWidth <= width && info.base == 'min-w-auto') {
+    if (info != null && info.minWidth <= width && info.base == 'min-w-auto') {
       hasMinWidthAuto = true;
       break;
     }
@@ -1255,7 +1278,7 @@ _FlexItemBehavior? _resolveFlexItemBehavior(
 
   for (final token in tokens) {
     final info = _parseResponsiveToken(token, cfg);
-    if (info.minWidth > width) {
+    if (info == null || info.minWidth > width) {
       continue;
     }
 
@@ -1300,7 +1323,7 @@ _BasisValue? _resolveBasisValue(
 
   for (final token in tokens) {
     final info = _parseResponsiveToken(token, cfg);
-    if (info.minWidth > width) {
+    if (info == null || info.minWidth > width) {
       continue;
     }
 
@@ -1362,7 +1385,7 @@ _SelfAlignment? _resolveSelfAlignment(
 
   for (final token in tokens) {
     final info = _parseResponsiveToken(token, cfg);
-    if (info.minWidth > width) {
+    if (info == null || info.minWidth > width) {
       continue;
     }
 

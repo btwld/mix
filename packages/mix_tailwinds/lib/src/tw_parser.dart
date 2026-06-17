@@ -1,5 +1,4 @@
 import 'package:mix/mix.dart';
-import 'package:mix_schema/mix_schema.dart';
 
 import 'translate/tw_target.dart' as target;
 import 'translate/tw_translator.dart';
@@ -34,24 +33,16 @@ class TwParser {
 
   Set<String> setTokens(String classNames) => listTokens(classNames).toSet();
 
-  bool wantsFlex(Set<String> tokens) => target.wantsFlex(tokens);
+  bool wantsFlex(Set<String> tokens) =>
+      target.wantsFlex(tokens, breakpoints: config.breakpoints);
 
   FlexBoxStyler parseFlex(String classNames) =>
       _translator.translateFlex(classNames);
 
-  JsonMap parseFlexPayload(String classNames) =>
-      _translator.payloadFlex(classNames);
-
   BoxStyler parseBox(String classNames) => _translator.translateBox(classNames);
-
-  JsonMap parseBoxPayload(String classNames) =>
-      _translator.payloadBox(classNames);
 
   TextStyler parseText(String classNames) =>
       _translator.translateText(classNames);
-
-  JsonMap parseTextPayload(String classNames) =>
-      _translator.payloadText(classNames);
 
   CurveAnimationConfig? parseAnimationFromTokens(List<String> tokens) =>
       _translator.parseAnimationFromTokens(tokens);

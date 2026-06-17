@@ -3,11 +3,21 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 import 'package:mix_schema/mix_schema.dart';
 import 'package:mix_tailwinds/mix_tailwinds.dart';
+import 'package:mix_tailwinds/src/translate/tw_translator.dart';
+
+JsonMap _boxPayload(String classNames) =>
+    TwTranslator(config: TwConfig.standard()).payloadBox(classNames);
+
+JsonMap _flexPayload(String classNames) =>
+    TwTranslator(config: TwConfig.standard()).payloadFlex(classNames);
+
+JsonMap _textPayload(String classNames) =>
+    TwTranslator(config: TwConfig.standard()).payloadText(classNames);
 
 void main() {
   test('box parser emits schema payloads that decode through mix_schema', () {
     final contract = MixSchemaContractBuilder().builtIn().freeze();
-    final payload = TwParser().parseBoxPayload('bg-blue-500 p-4 rounded-md');
+    final payload = _boxPayload('bg-blue-500 p-4 rounded-md');
 
     expect(payload['type'], 'box');
     expect(contract.validate(payload), isA<MixSchemaValidationSuccess>());
@@ -16,7 +26,7 @@ void main() {
 
   test('box parser emits shadow payloads through mix_schema', () {
     final contract = MixSchemaContractBuilder().builtIn().freeze();
-    final payload = TwParser().parseBoxPayload('shadow-md');
+    final payload = _boxPayload('shadow-md');
     final decoration = payload['decoration'] as JsonMap;
     final shadows = decoration['boxShadow'] as List;
 
@@ -60,7 +70,7 @@ void main() {
 
   test('flex parser emits schema payloads that decode through mix_schema', () {
     final contract = MixSchemaContractBuilder().builtIn().freeze();
-    final payload = TwParser().parseFlexPayload('flex flex-col gap-4 p-4');
+    final payload = _flexPayload('flex flex-col gap-4 p-4');
 
     expect(payload['type'], 'flex_box');
     expect(contract.validate(payload), isA<MixSchemaValidationSuccess>());
@@ -72,7 +82,7 @@ void main() {
 
   test('flex parser emits default text shadow payloads through mix_schema', () {
     final contract = MixSchemaContractBuilder().builtIn().freeze();
-    final payload = TwParser().parseFlexPayload('flex text-shadow-md');
+    final payload = _flexPayload('flex text-shadow-md');
     final modifiers = payload['modifiers'] as List;
     final defaultTextStyle = modifiers.single as JsonMap;
     final style = defaultTextStyle['style'] as JsonMap;
@@ -88,7 +98,7 @@ void main() {
 
   test('text parser emits schema payloads that decode through mix_schema', () {
     final contract = MixSchemaContractBuilder().builtIn().freeze();
-    final payload = TwParser().parseTextPayload(
+    final payload = _textPayload(
       'text-lg font-bold text-center leading-tight tracking-wide uppercase text-shadow-sm',
     );
 

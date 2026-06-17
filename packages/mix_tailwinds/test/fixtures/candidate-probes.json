@@ -1716,6 +1716,81 @@
       "astNodeCount": 1
     },
     {
+      "input": "!mx-4",
+      "valid": true,
+      "parsed": [],
+      "canonical": [
+        "!mx-4"
+      ],
+      "css": "",
+      "declarations": [],
+      "variantKinds": [],
+      "utilityKind": "functional",
+      "utilityRoot": "mx",
+      "parseCount": 1,
+      "astNodeCount": 1
+    },
+    {
+      "input": "mx-4!",
+      "valid": true,
+      "parsed": [],
+      "canonical": [
+        "mx-4!"
+      ],
+      "css": "",
+      "declarations": [],
+      "variantKinds": [],
+      "utilityKind": "functional",
+      "utilityRoot": "mx",
+      "parseCount": 1,
+      "astNodeCount": 1
+    },
+    {
+      "input": "bg-red-500/[50%]",
+      "valid": true,
+      "parsed": [],
+      "canonical": [
+        "bg-red-500/[50%]"
+      ],
+      "css": "",
+      "declarations": [],
+      "variantKinds": [],
+      "utilityKind": "functional",
+      "utilityRoot": "bg",
+      "parseCount": 1,
+      "astNodeCount": 1
+    },
+    {
+      "input": "bg-red-500/(--v)",
+      "valid": true,
+      "parsed": [],
+      "canonical": [
+        "bg-red-500/(--v)"
+      ],
+      "css": "",
+      "declarations": [],
+      "variantKinds": [],
+      "utilityKind": "functional",
+      "utilityRoot": "bg",
+      "parseCount": 1,
+      "astNodeCount": 1
+    },
+    {
+      "input": "text-[length:12px]",
+      "valid": true,
+      "parsed": [],
+      "canonical": [
+        "text-[length:12px]"
+      ],
+      "css": "",
+      "declarations": [],
+      "variantKinds": [],
+      "utilityKind": "functional",
+      "utilityRoot": "text",
+      "parseCount": 1,
+      "astNodeCount": 1
+    },
+    {
       "input": "not-a-tailwind-class",
       "valid": false,
       "parsed": [],

@@ -660,7 +660,6 @@ const generatedStaticVariantRoots = <String>{
   'last',
   'last-of-type',
   'lg',
-  'light',
   'ltr',
   'marker',
   'md',
@@ -720,5 +719,6 @@ final defaultTailwindParserRegistry = TailwindParserRegistry(
   staticVariantRoots: generatedStaticVariantRoots,
   functionalVariantRoots: generatedFunctionalVariantRoots,
   compoundVariantRoots: generatedCompoundVariantRoots,
+  customVariantRoots: const {'light'},
   meta: generatedTailwindRegistryMeta,
 );

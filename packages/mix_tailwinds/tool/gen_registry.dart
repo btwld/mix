@@ -47,8 +47,6 @@ void main(List<String> args) {
       staticVariantRoots.add(name);
     }
   }
-  staticVariantRoots.add('light');
-
   final meta =
       ((probes['meta'] ?? classList['meta'] ?? variants['meta']) as Map)
           .cast<String, Object?>();
@@ -92,6 +90,7 @@ void main(List<String> args) {
     ..writeln('  staticVariantRoots: generatedStaticVariantRoots,')
     ..writeln('  functionalVariantRoots: generatedFunctionalVariantRoots,')
     ..writeln('  compoundVariantRoots: generatedCompoundVariantRoots,')
+    ..writeln("  customVariantRoots: const {'light'},")
     ..writeln('  meta: generatedTailwindRegistryMeta,')
     ..writeln(');');
 

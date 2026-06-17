@@ -339,6 +339,14 @@ void main() {
       expect(spec.transform![13], closeTo(16, 1e-6));
     });
 
+    testWidgets('-translate-x-[10px] resolves to negative pixels', (
+      tester,
+    ) async {
+      final spec = await _resolveBox(tester, '-translate-x-[10px]');
+      expect(spec.transform, isNotNull);
+      expect(spec.transform![12], closeTo(-10, 1e-6));
+    });
+
     testWidgets('combined scale+rotate+translate composes', (tester) async {
       final spec = await _resolveBox(
         tester,
@@ -863,6 +871,41 @@ void main() {
       final spec = await _resolveBox(tester, '!p-4');
       expect(spec.padding, isNull);
     });
+
+    testWidgets('suffix important tokens are reported and ignored', (
+      tester,
+    ) async {
+      final seen = <String>[];
+      final parser = TwParser(onUnsupported: seen.add);
+
+      final bg = await _resolveBox(tester, 'bg-blue-500!', parser: parser);
+      expect(_decoOf(bg)?.color, isNull);
+
+      final margin = await _resolveBox(tester, 'mx-4!', parser: parser);
+      expect(margin.margin, isNull);
+
+      final hovered = await _resolveBoxStates(tester, 'hover:bg-red-500!', {
+        WidgetState.hovered,
+      }, parser: parser);
+      expect(_decoOf(hovered)?.color, isNull);
+
+      final arbitrary = await _resolveBox(
+        tester,
+        '[color:red]/50!',
+        parser: parser,
+      );
+      expect(_decoOf(arbitrary)?.color, isNull);
+
+      expect(
+        seen,
+        containsAll([
+          'bg-blue-500!',
+          'mx-4!',
+          'hover:bg-red-500!',
+          '[color:red]/50!',
+        ]),
+      );
+    });
   });
 
   // =========================================================================
@@ -1315,6 +1358,17 @@ void main() {
       final seen = <String>[];
       TwParser(onUnsupported: seen.add).parseBox('weird:border-t');
       expect(seen, contains('weird:border-t'));
+    });
+
+    test('recognized unsupported variants warn', () {
+      final seen = <String>[];
+      TwParser(
+        onUnsupported: seen.add,
+      ).parseBox('first:bg-blue-500 odd:p-4 visited:text-red-500');
+      expect(
+        seen,
+        containsAll(['first:bg-blue-500', 'odd:p-4', 'visited:text-red-500']),
+      );
     });
   });
 }

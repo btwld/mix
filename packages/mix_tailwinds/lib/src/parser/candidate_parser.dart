@@ -53,6 +53,7 @@ final class TailwindCandidateParser {
     }
 
     var utilityRaw = parts.last;
+    var utilityStart = trimmed.length - utilityRaw.length;
     var important = false;
     if (utilityRaw.endsWith('!')) {
       important = true;
@@ -61,15 +62,18 @@ final class TailwindCandidateParser {
     if (options.allowLegacyImportantPrefix && utilityRaw.startsWith('!')) {
       important = true;
       utilityRaw = utilityRaw.substring(1);
+      utilityStart++;
     }
-    if (utilityRaw.contains('!')) {
+    final invalidImportant = _indexOutsideDelimiters(utilityRaw, '!');
+    if (invalidImportant != -1) {
+      final spanStart = utilityStart + invalidImportant;
       return TailwindParseFailure(
         input: input,
         errors: [
           TailwindParseError(
             code: TailwindParseErrorCode.invalidImportantPosition,
             message: 'Important marker is only allowed at the start or end.',
-            span: SourceSpan(trimmed.indexOf('!'), trimmed.indexOf('!') + 1),
+            span: SourceSpan(spanStart, spanStart + 1),
           ),
         ],
       );
@@ -141,29 +145,40 @@ final class TailwindCandidateParser {
       body = body.substring(1);
     }
 
-    final (base, modifier) = _splitModifier(body);
-    if (base == null) {
-      return TailwindUnresolvedUtility(
-        raw: raw,
-        segments: const [],
-        negative: negative,
-      );
+    if (registry.isStaticUtility(body)) {
+      return TailwindStaticUtility(raw: raw, root: body);
     }
 
-    if (registry.isStaticUtility(base)) {
-      return TailwindStaticUtility(raw: raw, root: base);
-    }
-
-    final root = _findFunctionalRoot(base, registry.functionalUtilityRoots);
+    final root = _findFunctionalRoot(body, registry.functionalUtilityRoots);
     if (root != null) {
-      final valueRaw = base.length == root.length
+      final valueAndModifierRaw = body.length == root.length
           ? ''
-          : base.substring(root.length + 1);
+          : body.substring(root.length + 1);
+      final (valueRaw, modifier) = _splitUtilityValueModifier(
+        root,
+        valueAndModifierRaw,
+      );
+      if (valueRaw == null) {
+        return TailwindUnresolvedUtility(
+          raw: raw,
+          segments: const [],
+          negative: negative,
+        );
+      }
       return TailwindFunctionalUtility(
         raw: raw,
         root: root,
         value: _parseValue(valueRaw),
         modifier: modifier,
+        negative: negative,
+      );
+    }
+
+    final (base, modifier) = _splitModifier(body);
+    if (base == null) {
+      return TailwindUnresolvedUtility(
+        raw: raw,
+        segments: const [],
         negative: negative,
       );
     }
@@ -292,6 +307,43 @@ final class TailwindCandidateParser {
     return TailwindNamedModifier(raw);
   }
 
+  (String?, TailwindModifier?) _splitUtilityValueModifier(
+    String root,
+    String raw,
+  ) {
+    final slash = _indexOutsideDelimiters(raw, '/');
+    if (slash == -1) return (raw, null);
+
+    if (_isFractionValueRoot(root) && _isFractionValue(raw)) {
+      return (raw, null);
+    }
+
+    if (slash == 0 || slash == raw.length - 1) return (null, null);
+
+    final base = raw.substring(0, slash);
+    final modifierRaw = raw.substring(slash + 1);
+    if (_indexOutsideDelimiters(modifierRaw, '/') != -1) return (null, null);
+
+    return (base, _parseModifier(modifierRaw));
+  }
+
+  bool _isFractionValueRoot(String root) {
+    return const {
+      'basis',
+      'flex',
+      'h',
+      'max-h',
+      'max-w',
+      'min-h',
+      'min-w',
+      'w',
+    }.contains(root);
+  }
+
+  bool _isFractionValue(String raw) {
+    return RegExp(r'^\d+(?:\.\d+)?/\d+(?:\.\d+)?$').hasMatch(raw);
+  }
+
   String? _findFunctionalRoot(String body, Set<String> roots) {
     if (roots.contains(body)) return body;
 
@@ -316,10 +368,15 @@ final class TailwindCandidateParser {
 
   String? _findVariantFunctionalRoot(String body) {
     final roots = registry.functionalVariantRoots;
+    final longest = _findFunctionalRoot(
+      body,
+      roots.where((root) => root != '@').toSet(),
+    );
+    if (longest != null) return longest;
     if (roots.contains('@') && body.startsWith('@') && body.length > 1) {
       return '@';
     }
-    return _findFunctionalRoot(body, roots);
+    return null;
   }
 }
 
