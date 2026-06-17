@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'theme/data/default_theme.g.dart';
@@ -288,7 +287,7 @@ class TwConfig {
     radii: twDefaultRadii,
     borderWidths: twDefaultBorderWidths,
     breakpoints: twDefaultBreakpoints,
-    fontSizes: _standardFontSizes(),
+    fontSizes: twDefaultFontSizes,
     colors: twDefaultColors,
     durations: twDefaultDurations,
     delays: twDefaultDelays,
@@ -299,18 +298,6 @@ class TwConfig {
   );
 
   factory TwConfig.standard() => _standard;
-}
-
-Map<String, double> _standardFontSizes() {
-  if (!kIsWeb) return twDefaultFontSizes;
-
-  return {
-    ...twDefaultFontSizes,
-    // Flutter web renders the browser system sans stack slightly narrower than
-    // Chromium's Tailwind reference. This keeps text-sm wrapping aligned in the
-    // visual parity examples without changing native/widget-test rendering.
-    'sm': 14.5,
-  };
 }
 
 /// Provides [TwConfig] to descendant widgets via the widget tree.

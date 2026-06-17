@@ -66,9 +66,7 @@ class TailwindParityApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final twConfig = TwConfig.standard().copyWith(
-      gradientStrategy: ScreenshotConfig.gradientStrategy,
-    );
+    final twConfig = _twConfigForCurrentMode();
 
     // Screenshot mode: render clean preview without UI chrome
     if (ScreenshotConfig.isScreenshotMode) {
@@ -139,6 +137,24 @@ class TailwindParityApp extends StatelessWidget {
       ),
     );
   }
+}
+
+TwConfig _twConfigForCurrentMode() {
+  final baseConfig = TwConfig.standard().copyWith(
+    gradientStrategy: ScreenshotConfig.gradientStrategy,
+  );
+
+  if (!ScreenshotConfig.isScreenshotMode) return baseConfig;
+
+  return baseConfig.copyWith(
+    fontSizes: {
+      ...baseConfig.fontSizes,
+      // Flutter web renders the browser system sans stack slightly narrower
+      // than Chromium's Tailwind reference. Keep this compensation local to
+      // visual screenshots so TwConfig.standard remains canonical Tailwind.
+      'sm': 14.5,
+    },
+  );
 }
 
 class TailwindParityScreen extends StatefulWidget {

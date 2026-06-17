@@ -10,6 +10,13 @@ void main() {
         equals(TwGradientStrategy.cssAngleRect),
       );
     });
+
+    test('standard uses canonical Tailwind font sizes', () {
+      final config = TwConfig.standard();
+
+      expect(config.fontSizeOf('sm'), equals(14));
+      expect(config.fontSizeOf('base'), equals(16));
+    });
   });
 
   group('TwConfig.copyWith', () {

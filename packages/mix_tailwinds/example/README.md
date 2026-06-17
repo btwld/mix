@@ -71,5 +71,5 @@ The outputs live under `packages/mix_tailwinds/example/test/goldens/`.
 
 ## Notes
 
-- All color, spacing, radius, and typography tokens come from `TwConfig.standard()`, so helping parity means updating a single config map.
+- The example starts from `TwConfig.standard()`; screenshot mode may apply local visual-test overrides documented in `../COMPARISON_TESTING.md`.
 - The components intentionally stick to utilities we already support (layout, spacing, border, radius, typography, responsive prefixes, and hover states on the buttons). If you add more classes to the Flutter example, mirror the change in `real_tailwind/index.html` so comparisons stay 1:1.
