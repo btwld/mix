@@ -20,6 +20,8 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - "assets/images/flowbite-card-hero.png"
   fonts:
     - family: TwParityRoboto
       fonts:

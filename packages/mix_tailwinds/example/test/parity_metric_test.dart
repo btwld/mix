@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix_tailwinds/mix_tailwinds.dart';
 import 'package:mix_tailwinds_example/card_alert_preview.dart';
+import 'package:mix_tailwinds_example/flowbite_card_preview.dart';
 import 'package:mix_tailwinds_example/main.dart';
 
 void main() {
@@ -14,6 +15,7 @@ void main() {
     WidgetTester tester,
     Widget child, {
     Color background = const Color(0xFFF3F4F6),
+    TwConfig? config,
   }) async {
     tester.view.devicePixelRatio = 1;
     tester.view.physicalSize = const Size(width, height);
@@ -27,7 +29,7 @@ void main() {
         debugShowCheckedModeBanner: false,
         home: Scaffold(
           backgroundColor: background,
-          body: TwScope(config: TwConfig.standard(), child: child),
+          body: TwScope(config: config ?? TwConfig.standard(), child: child),
         ),
       ),
     );
@@ -129,5 +131,38 @@ void main() {
     expectTopOnlyBorder(borderForKey(tester, 'dashboard-metric-row'));
     expectTopOnlyBorder(borderForKey(tester, 'dashboard-activity-Jalen Ruiz'));
     expectTopOnlyBorder(borderForKey(tester, 'dashboard-activity-Mara Singh'));
+  });
+
+  testWidgets('flowbite-card 768px keeps card layout metrics', (tester) async {
+    await pumpAt768(
+      tester,
+      const Align(alignment: Alignment.topCenter, child: FlowbiteCardPreview()),
+      background: const Color(0xFFF9FAFB),
+      config: flowbiteCardTwConfig(TwConfig.standard()),
+    );
+
+    final root = rectForKey(tester, 'flowbite-card-root');
+    final hero = rectForKey(tester, 'flowbite-card-hero');
+    final content = rectForKey(tester, 'flowbite-card-content');
+    final badge = rectForKey(tester, 'flowbite-card-badge');
+    final button = rectForKey(tester, 'flowbite-card-read-more');
+    final badgeTextStyle = DefaultTextStyle.of(
+      tester.element(find.text('Trending')),
+    ).style;
+    final buttonTextStyle = DefaultTextStyle.of(
+      tester.element(find.text('Read more')),
+    ).style;
+    final innerWidth = root.width - 2;
+
+    expect(root.width, closeTo(384, 0.1));
+    expect(hero.width, closeTo(innerWidth, 0.1));
+    expect(hero.height, closeTo(256, 0.1));
+    expect(content.width, closeTo(innerWidth, 0.1));
+    expect(badge.center.dx, closeTo(root.center.dx, 1));
+    expect(button.center.dx, closeTo(root.center.dx, 1));
+    expect(badgeTextStyle.fontSize, 12);
+    expect(badgeTextStyle.fontWeight, FontWeight.w500);
+    expect(buttonTextStyle.fontSize, 14);
+    expect(buttonTextStyle.fontWeight, FontWeight.w500);
   });
 }

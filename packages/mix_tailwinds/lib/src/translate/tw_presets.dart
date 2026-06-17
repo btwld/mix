@@ -31,6 +31,14 @@ const kTextShadowPresets = <TextShadowPreset, List<Shadow>>{
 };
 
 final kTailwindBoxShadowPresets = <String, List<BoxShadowMix>>{
+  'shadow-xs': [
+    BoxShadowMix(
+      offset: const Offset(0, 1),
+      blurRadius: 2,
+      spreadRadius: 0,
+      color: const Color(0x0D000000),
+    ),
+  ],
   'shadow-sm': [
     BoxShadowMix(
       offset: const Offset(0, 1),
@@ -111,4 +119,18 @@ final kTailwindBoxShadowPresets = <String, List<BoxShadowMix>>{
       color: const Color(0x1F000000),
     ),
   ],
+};
+
+const kTailwindMaxWidthPresets = <String, double>{
+  'xs': 320,
+  'sm': 384,
+  'md': 448,
+  'lg': 512,
+  'xl': 576,
+  '2xl': 672,
+  '3xl': 768,
+  '4xl': 896,
+  '5xl': 1024,
+  '6xl': 1152,
+  '7xl': 1280,
 };

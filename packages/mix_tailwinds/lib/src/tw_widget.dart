@@ -469,6 +469,133 @@ class Span extends StatelessWidget {
   }
 }
 
+/// Icon element with Tailwind-style size and color utilities.
+///
+/// This is a small bridge between Tailwind SVG icon classes and Mix's
+/// [StyledIcon]. It supports the icon classes used by common inline SVGs:
+/// `w-*`, `h-*`, `text-*`, and positive logical/physical margin tokens.
+class TwIcon extends StatelessWidget {
+  const TwIcon(
+    this.icon, {
+    super.key,
+    this.classNames = '',
+    this.config,
+    this.semanticLabel,
+  });
+
+  final IconData icon;
+  final String classNames;
+  final TwConfig? config;
+  final String? semanticLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    final cfg = config ?? TwConfigProvider.of(context);
+    final iconSize = _extractIconSize(classNames, cfg);
+    final iconColor =
+        _extractTextColor(classNames, cfg) ??
+        DefaultTextStyle.of(context).style.color;
+
+    var style = IconStyler();
+    if (iconSize != null) {
+      style = style.size(iconSize);
+    }
+    if (iconColor != null) {
+      style = style.color(iconColor);
+    }
+
+    Widget current = StyledIcon(
+      icon: icon,
+      semanticLabel: semanticLabel,
+      style: style,
+    );
+
+    final margin = _extractLogicalMargin(classNames, cfg);
+    if (margin != null) {
+      current = Padding(padding: margin, child: current);
+    }
+
+    return current;
+  }
+}
+
+double? _extractIconSize(String classNames, TwConfig cfg) {
+  double? width;
+  double? height;
+
+  for (final rawToken in classNames.trim().split(_whitespaceRegex)) {
+    if (rawToken.isEmpty) continue;
+    final token = baseTokenOutsideBrackets(rawToken);
+    if (token.startsWith('-')) continue;
+
+    if (token.startsWith('w-')) {
+      width = _spacingTokenLength(token.substring(2), cfg);
+    } else if (token.startsWith('h-')) {
+      height = _spacingTokenLength(token.substring(2), cfg);
+    }
+  }
+
+  if (width != null && height != null) {
+    return width < height ? width : height;
+  }
+  return width ?? height;
+}
+
+Color? _extractTextColor(String classNames, TwConfig cfg) {
+  for (final rawToken in classNames.trim().split(_whitespaceRegex)) {
+    if (rawToken.isEmpty) continue;
+    final token = baseTokenOutsideBrackets(rawToken);
+    if (!token.startsWith('text-')) continue;
+
+    final color = cfg.colorOf(token.substring(5));
+    if (color != null) return color;
+  }
+
+  return null;
+}
+
+EdgeInsetsGeometry? _extractLogicalMargin(String classNames, TwConfig cfg) {
+  var start = 0.0;
+  var end = 0.0;
+  var left = 0.0;
+  var right = 0.0;
+  var hasMargin = false;
+
+  for (final rawToken in classNames.trim().split(_whitespaceRegex)) {
+    if (rawToken.isEmpty) continue;
+    final token = baseTokenOutsideBrackets(rawToken);
+    if (token.startsWith('-')) continue;
+
+    void setMargin(String key, void Function(double value) setter) {
+      final length = _spacingTokenLength(key, cfg);
+      if (length == null) return;
+      setter(length);
+      hasMargin = true;
+    }
+
+    if (token.startsWith('ms-')) {
+      setMargin(token.substring(3), (value) => start = value);
+    } else if (token.startsWith('me-')) {
+      setMargin(token.substring(3), (value) => end = value);
+    } else if (token.startsWith('ml-')) {
+      setMargin(token.substring(3), (value) => left = value);
+    } else if (token.startsWith('mr-')) {
+      setMargin(token.substring(3), (value) => right = value);
+    }
+  }
+
+  if (!hasMargin) return null;
+  return EdgeInsetsDirectional.only(
+    start: start,
+    end: end,
+  ).add(EdgeInsets.only(left: left, right: right));
+}
+
+double? _spacingTokenLength(String key, TwConfig cfg) {
+  if (key == 'px') return 1;
+  return cfg.hasSpace(key) ? cfg.spaceOf(key) : null;
+}
+
 /// Heading level 1 element with Tailwind styling.
 ///
 /// Equivalent to HTML `<h1>`. Note: Like Tailwind's Preflight, headings have

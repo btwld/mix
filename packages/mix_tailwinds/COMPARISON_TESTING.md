@@ -47,7 +47,7 @@ npm run compare
 ```
 
 This script automatically:
-1. Captures Tailwind screenshots from `real_tailwind/index.html`
+1. Captures Tailwind screenshots from the configured `real_tailwind/*.html` fixture
 2. Captures Flutter screenshots from `localhost:8089`
 3. Generates pixel-diff, amplified absolute-diff, and blink-GIF images
 4. Writes `summary.json` with image dimensions and diff percentages
@@ -72,7 +72,12 @@ visual-comparison/
 │       ├── diff-480.png
 │       ├── diff-768.png
 │       └── diff-1024.png
-└── card-alert/
+├── card-alert/
+│   ├── flutter-480.png
+│   ├── ... (same structure)
+│   └── diff/
+│       └── ...
+└── flowbite-card/
     ├── flutter-480.png
     ├── ... (same structure)
     └── diff/
@@ -83,6 +88,7 @@ To run a specific example:
 ```bash
 npm run compare -- --example=dashboard
 npm run compare -- --example=card-alert
+npm run compare -- --example=flowbite-card
 ```
 
 ### Interpreting Results
@@ -96,7 +102,7 @@ npm run compare -- --example=card-alert
 
 Use percentages as a trend signal, not as the only pass/fail rule. A large region can be caused by one structural shift, such as a text line wrapping differently and moving every row below it.
 
-### Current Dashboard/Card-Alert Baseline
+### Current Visual Baseline
 
 These values are useful when checking whether a new change regresses the existing examples:
 
@@ -104,6 +110,7 @@ These values are useful when checking whether a new change regresses the existin
 |---------|-------|-------|--------|------------------|
 | `dashboard` | 1.20% | 1.14% | 0.89% | Remaining text anti-aliasing and minor shadow/background rendering noise |
 | `card-alert` | 4.86% | 3.94% | 3.36% | Remaining text baseline/anti-aliasing and minor background rendering noise |
+| `flowbite-card` | 1.43% | 1.43% | 1.43% | Remaining text rendering noise and Material icon equivalents differing from Flowbite SVG paths |
 
 Before treating a diff as a regression, compare against the previous commit or saved baseline artifacts. If current and baseline Flutter screenshots are byte-identical, the issue is existing parity drift, not a regression from the latest patch.
 

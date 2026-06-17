@@ -296,6 +296,11 @@ final class TwTranslator {
   ) {
     final payload = group.payload;
     switch (raw) {
+      case 'inline-flex':
+        payload['direction'] = Axis.horizontal.name;
+        payload['mainAxisSize'] = MainAxisSize.min.name;
+        group.hasBaseFlex = true;
+        return true;
       case 'flex':
       case 'flex-row':
         payload['direction'] = Axis.horizontal.name;
@@ -552,8 +557,7 @@ final class TwTranslator {
   }) {
     if (!_sizingRoots.contains(root)) return false;
     if (negative) return false;
-    final length =
-        _spaceLength(value, negative: false) ?? _arbitraryLength(value);
+    final length = _sizingLength(root, value);
     if (length == null) return _isWidgetLayerSize(value);
 
     final constraints = _objectField(payload, 'constraints');
@@ -919,6 +923,16 @@ final class TwTranslator {
     final length = resolved ?? _arbitraryLength(value);
     if (length == null) return null;
     return negative ? -length : length;
+  }
+
+  double? _sizingLength(String root, TailwindValue? value) {
+    final key = _valueKey(value);
+    if (root == 'max-w' && key != null) {
+      final maxWidth = kTailwindMaxWidthPresets[key];
+      if (maxWidth != null) return maxWidth;
+    }
+
+    return _spaceLength(value, negative: false);
   }
 
   double? _arbitraryLength(TailwindValue? value) {

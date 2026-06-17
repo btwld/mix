@@ -11,6 +11,7 @@ This example renders the same UI twice: once with `mix_tailwinds` (Flutter) and 
 
 - `lib/main.dart` – Flutter app that drives the Mix `Div`/`Span` widgets. A width slider lets you exercise the responsive tokens (e.g., `md:flex-row`).
 - `real_tailwind/index.html` – Standalone CDN-powered Tailwind page that reuses the exact same class strings.
+- `real_tailwind/flowbite-card.html` – Flowbite-style card fixture using semantic Tailwind aliases plus a matching `FlowbiteCardPreview` Flutter implementation.
 
 ## Run the Flutter preview
 
@@ -54,6 +55,7 @@ A Playwright-based tool captures screenshots of both the Flutter and Tailwind ve
    cd packages/mix_tailwinds/tool/visual-comparison
    npm install   # first time only
    npm run compare
+   npm run compare -- --example=flowbite-card
    ```
 
 Screenshots and diff images are saved to `packages/mix_tailwinds/visual-comparison/`.
@@ -72,4 +74,6 @@ The outputs live under `packages/mix_tailwinds/example/test/goldens/`.
 ## Notes
 
 - The example starts from `TwConfig.standard()`. Screenshot mode pins both the Flutter and Tailwind reference screenshots to the bundled `TwParityRoboto` font so pixel comparisons do not depend on platform system-font metrics.
-- The components intentionally stick to utilities we already support (layout, spacing, border, radius, typography, responsive prefixes, and hover states on the buttons). If you add more classes to the Flutter example, mirror the change in `real_tailwind/index.html` so comparisons stay 1:1.
+- `flowbite-card` extends `TwConfig.standard()` locally for Flowbite semantic aliases such as `bg-neutral-primary-soft`, `rounded-base`, and `text-heading`.
+- `flowbite-card` maps Flowbite inline SVGs to `TwIcon` with Material icon equivalents. This keeps the Flutter side in the `mix_tailwinds` widget model while avoiding a separate SVG/path renderer.
+- The components intentionally stick to utilities we already support (layout, spacing, border, radius, typography, responsive prefixes, and hover states on the buttons). If you add more classes to a Flutter example, mirror the change in its matching `real_tailwind/*.html` fixture so comparisons stay 1:1.

@@ -7,6 +7,7 @@
  *   npm install  # first time only
  *   npm run compare
  *   npm run compare -- --example=card-alert
+ *   npm run compare -- --example=flowbite-card
  *
  * Prerequisites:
  *   - Flutter web server running: flutter run -d web-server --web-port=8089 --profile
@@ -44,6 +45,13 @@ const EXAMPLES = {
     margin: 16,
     moderateDiffThreshold: 7,
     highDiffThreshold: 16,
+  },
+  'flowbite-card': {
+    htmlFile: 'example/real_tailwind/flowbite-card.html',
+    selector: 'body > div',
+    margin: 16,
+    moderateDiffThreshold: 8,
+    highDiffThreshold: 18,
   },
   'gradient-debug': {
     htmlFile: 'example/real_tailwind/gradient-debug.html',

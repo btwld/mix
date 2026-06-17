@@ -240,6 +240,7 @@ bool isFlexContainerCandidate(TailwindCandidate candidate) {
   final raw = candidate.utility.raw;
   final root = tailwindUtilityRoot(candidate.utility);
   return raw == 'flex' ||
+      raw == 'inline-flex' ||
       raw == 'flex-row' ||
       raw == 'flex-col' ||
       raw.startsWith('items-') ||

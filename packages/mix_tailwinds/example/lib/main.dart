@@ -4,6 +4,7 @@ import 'package:flutter/rendering.dart';
 import 'package:mix_tailwinds/mix_tailwinds.dart';
 
 import 'card_alert_preview.dart';
+import 'flowbite_card_preview.dart';
 import 'gradient_debug_preview.dart';
 
 const _screenshotParityFontFamily = 'TwParityRoboto';
@@ -37,6 +38,7 @@ class ScreenshotConfig {
   /// Supported values:
   /// - `dashboard` (default)
   /// - `card-alert`
+  /// - `flowbite-card`
   /// - `gradient-debug`
   static String get example {
     if (!kIsWeb) return 'dashboard';
@@ -93,6 +95,25 @@ class TailwindParityApp extends StatelessWidget {
         return _ScreenshotWidgetsApp(
           backgroundColor: slate900,
           child: TwScope(config: twConfig, child: const CardAlertPreview()),
+        );
+      }
+
+      if (example == 'flowbite-card') {
+        const gray50 = Color(0xFFF9FAFB);
+        return _ScreenshotWidgetsApp(
+          backgroundColor: gray50,
+          child: TwScope(
+            config: flowbiteCardTwConfig(twConfig),
+            child: const SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.all(16),
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: FlowbiteCardPreview(),
+                ),
+              ),
+            ),
+          ),
         );
       }
 

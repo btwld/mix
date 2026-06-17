@@ -476,6 +476,11 @@ void main() {
     expect(boxSize.height, closeTo(120, 0.0001));
   });
 
+  testWidgets('max-w-sm uses Tailwind named max-width scale', (tester) async {
+    final container = await _boxContainerFor(tester, 'max-w-sm');
+    expect(container.constraints?.maxWidth, 384);
+  });
+
   testWidgets('items-stretch expands cross axis when explicitly requested', (
     tester,
   ) async {
@@ -789,6 +794,17 @@ void main() {
     final decoration = await _boxDecorationFor(tester, 'shadow-none');
     final shadows = decoration?.boxShadow;
     expect(shadows, anyOf(isNull, isEmpty));
+  });
+
+  testWidgets('shadow-xs matches Tailwind preset', (tester) async {
+    await _expectBoxShadows(tester, 'shadow-xs', const [
+      BoxShadow(
+        offset: Offset(0, 1),
+        blurRadius: 2,
+        spreadRadius: 0,
+        color: Color(0x0D000000),
+      ),
+    ]);
   });
 
   testWidgets('shadow-sm matches Tailwind preset', (tester) async {
@@ -1246,6 +1262,7 @@ void main() {
 
   test('wantsFlex detects prefixed flex tokens', () {
     final parser = TwParser();
+    expect(parser.wantsFlex({'inline-flex'}), isTrue);
     expect(parser.wantsFlex({'sm:flex'}), isTrue);
     expect(parser.wantsFlex({'md:flex-row'}), isTrue);
     expect(parser.wantsFlex({'lg:flex-col'}), isTrue);
@@ -1271,6 +1288,47 @@ void main() {
     // Non-flex tokens should still return false
     expect(parser.wantsFlex({'p-4'}), isFalse);
     expect(parser.wantsFlex({'text-center'}), isFalse);
+  });
+
+  testWidgets('inline-flex renders horizontal shrink-wrap flex', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      const Directionality(
+        textDirection: TextDirection.ltr,
+        child: Center(
+          child: Div(
+            classNames: 'inline-flex items-center',
+            children: [SizedBox(width: 10, height: 8), SizedBox(width: 14)],
+          ),
+        ),
+      ),
+    );
+
+    final flex = tester.widget<Flex>(find.byType(Flex));
+    expect(flex.direction, Axis.horizontal);
+    expect(flex.mainAxisSize, MainAxisSize.min);
+    expect(tester.getSize(find.byType(Flex)).width, closeTo(24, 0.1));
+  });
+
+  testWidgets('TwIcon maps Tailwind size, color, and logical margin', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      const Directionality(
+        textDirection: TextDirection.ltr,
+        child: TwScope(
+          child: TwIcon(Icons.add, classNames: 'w-3 h-3 text-blue-700 me-1'),
+        ),
+      ),
+    );
+
+    final icon = tester.widget<Icon>(find.byIcon(Icons.add));
+    expect(icon.size, 12);
+    expect(icon.color, const Color(0xFF1D4ED8));
+
+    final padding = tester.widget<Padding>(find.byType(Padding));
+    expect(padding.padding.resolve(TextDirection.ltr).right, 4);
   });
 
   test('wantsFlex handles arbitrary values with colons correctly', () {
