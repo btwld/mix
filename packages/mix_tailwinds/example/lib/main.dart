@@ -117,7 +117,10 @@ class TailwindParityApp extends StatelessWidget {
           home: Scaffold(
             backgroundColor: const Color(0xFFF3F4F6),
             body: SingleChildScrollView(
-              child: TailwindParityPreview(width: width, scrollable: false),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 40),
+                child: TailwindParityPreview(width: width, scrollable: false),
+              ),
             ),
           ),
         ),
@@ -233,7 +236,7 @@ class _ComparisonStack extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Div(
-      classNames: 'flex flex-col gap-6 w-full',
+      classNames: 'flex w-full flex-col gap-6',
       children: const [_CampaignOverviewCard(), _TeamActivityCard()],
     );
   }
@@ -445,7 +448,7 @@ class _ActivityRow extends StatelessWidget {
 
     return Div(
       key: ValueKey('dashboard-activity-$name'),
-      classNames: 'flex items-center justify-between gap-4 py-4 $borderClass',
+      classNames: 'flex items-center justify-between gap-4 $borderClass py-4',
       children: [
         Div(
           classNames: 'flex flex-1 items-center gap-4',

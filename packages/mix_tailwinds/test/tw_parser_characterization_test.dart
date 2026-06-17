@@ -824,6 +824,15 @@ void main() {
       expect(spec.style?.height, isNotNull);
     });
 
+    testWidgets('text-sm keeps canonical Tailwind size outside web', (
+      tester,
+    ) async {
+      final spec = await _resolveText(tester, 'text-sm');
+      // TwConfig.standard applies a web-only visual compensation for Flutter
+      // web. VM/widget-test rendering keeps Tailwind's canonical 14px size.
+      expect(spec.style?.fontSize, 14);
+    });
+
     testWidgets('arbitrary text size sets font size', (tester) async {
       final spec = await _resolveText(tester, 'text-[13px]');
       expect(spec.style?.fontSize, 13);

@@ -14,6 +14,16 @@ The visual output should be identical (or as close as possible given platform di
 
 ## Quick Start: Run Visual Comparison
 
+### Step 0: Verify Source Class Parity
+
+Before changing translator or renderer behavior, compare Tailwind HTML `class` strings against Flutter `classNames` strings:
+
+- Confirm corresponding elements use the same utility tokens in the same order.
+- Expand reusable Flutter components when comparing against repeated HTML nodes, such as metric tiles and activity rows.
+- Expand dynamic Flutter class fragments before comparing, such as `borderClass` and `badgeColor`.
+
+If class strings differ, fix example drift first. If class strings match, continue to layout metrics and pixel comparison; the bug is then in translation, widget placement, or renderer behavior.
+
 ### Step 1: Start Flutter Web Server
 
 ```bash
@@ -92,12 +102,14 @@ These values are useful when checking whether a new change regresses the existin
 
 | Example | 480px | 768px | 1024px | Main known issue |
 |---------|-------|-------|--------|------------------|
-| `dashboard` | 10.13% | 8.33% | 7.75% | Text metrics and spacing drift; separator rectangles are fixed |
-| `card-alert` | 7.88% | 15.64% | 5.49% | 768px profile message wraps in Tailwind but not Flutter profile web |
+| `dashboard` | 4.40% | 3.42% | 2.90% | Remaining text anti-aliasing and minor shadow/background rendering noise |
+| `card-alert` | 8.13% | 6.13% | 4.70% | Remaining text/background rendering noise |
 
 Before treating a diff as a regression, compare against the previous commit or saved baseline artifacts. If current and baseline Flutter screenshots are byte-identical, the issue is existing parity drift, not a regression from the latest patch.
 
-`card-alert` 768px note: Chromium Tailwind measures the profile message at about 621px in its `system-ui` stack, so it wraps inside the 614px content column. Flutter profile web keeps the line narrower even when `mix_tailwinds` emits `fontFamily: system-ui`, and `.SF Pro Text` produced byte-identical output in local A/B testing. Treat this remaining wrap mismatch as renderer font availability/metrics drift unless a future Flutter web renderer exposes the browser system font stack.
+`card-alert` 768px note: Chromium Tailwind measures the profile message wider than the 614px content column, so it wraps. Flutter web rendered `text-sm` too narrowly at 14 logical px; `mix_tailwinds` uses a small `text-sm` compensation so the same line wraps in the Flutter reference.
+
+`dashboard` note: the Tailwind reference body uses `py-10`, which places `main` at `y=40`. The visual comparison tool reuses Tailwind's expanded clip for Flutter, so Flutter screenshot mode must include the same vertical frame before rendering the dashboard preview.
 
 ---
 
