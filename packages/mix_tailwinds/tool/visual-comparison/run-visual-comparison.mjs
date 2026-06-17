@@ -112,6 +112,7 @@ async function main() {
     await page.setViewportSize(viewport);
     await page.goto(`file://${tailwindPath}`);
     await page.waitForLoadState('networkidle');
+    await waitForFonts(page);
     const element = await page.$(elementSelector);
     if (!element) {
       console.error(`  ERROR: Could not find <${elementSelector}> element for ${width}px`);
@@ -145,6 +146,7 @@ async function main() {
       // Use state: 'attached' since the element may be transparent/hidden
       await page.waitForSelector('flt-glass-pane', { timeout: 10000, state: 'attached' });
       await page.waitForLoadState('networkidle');
+      await waitForFonts(page);
       // Additional delay for Flutter to finish painting
       await page.waitForTimeout(1000);
       const clip = clipByWidth.get(width) ?? fullViewportClip(viewport);
@@ -323,6 +325,14 @@ function cropToSize(png, targetWidth, targetHeight) {
     }
   }
   return cropped;
+}
+
+async function waitForFonts(page) {
+  await page.evaluate(async () => {
+    if (document.fonts) {
+      await document.fonts.ready;
+    }
+  });
 }
 
 function fullViewportClip(viewport) {

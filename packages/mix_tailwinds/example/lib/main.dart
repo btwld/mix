@@ -6,6 +6,8 @@ import 'package:mix_tailwinds/mix_tailwinds.dart';
 import 'card_alert_preview.dart';
 import 'gradient_debug_preview.dart';
 
+const _screenshotParityFontFamily = 'TwParityRoboto';
+
 void main() {
   // Ensure debug paint overlays are disabled for parity screenshots.
   debugPaintBaselinesEnabled = false;
@@ -147,13 +149,10 @@ TwConfig _twConfigForCurrentMode() {
   if (!ScreenshotConfig.isScreenshotMode) return baseConfig;
 
   return baseConfig.copyWith(
-    fontSizes: {
-      ...baseConfig.fontSizes,
-      // Flutter web renders the browser system sans stack slightly narrower
-      // than Chromium's Tailwind reference. Keep this compensation local to
-      // visual screenshots so TwConfig.standard remains canonical Tailwind.
-      'sm': 14.5,
-    },
+    textDefaults: baseConfig.textDefaults.copyWith(
+      fontFamily: _screenshotParityFontFamily,
+      fontFamilyFallback: const [],
+    ),
   );
 }
 

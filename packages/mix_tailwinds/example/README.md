@@ -71,5 +71,5 @@ The outputs live under `packages/mix_tailwinds/example/test/goldens/`.
 
 ## Notes
 
-- The example starts from `TwConfig.standard()`; screenshot mode may apply local visual-test overrides documented in `../COMPARISON_TESTING.md`.
+- The example starts from `TwConfig.standard()`. Screenshot mode pins both the Flutter and Tailwind reference screenshots to the bundled `TwParityRoboto` font so pixel comparisons do not depend on platform system-font metrics.
 - The components intentionally stick to utilities we already support (layout, spacing, border, radius, typography, responsive prefixes, and hover states on the buttons). If you add more classes to the Flutter example, mirror the change in `real_tailwind/index.html` so comparisons stay 1:1.

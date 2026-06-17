@@ -107,7 +107,7 @@ These values are useful when checking whether a new change regresses the existin
 
 Before treating a diff as a regression, compare against the previous commit or saved baseline artifacts. If current and baseline Flutter screenshots are byte-identical, the issue is existing parity drift, not a regression from the latest patch.
 
-`card-alert` 768px note: Chromium Tailwind measures the profile message wider than the 614px content column, so it wraps. Flutter web rendered `text-sm` too narrowly at 14 logical px; the example's screenshot config uses a small local `text-sm` compensation so the same line wraps in the Flutter reference. `TwConfig.standard()` remains canonical Tailwind.
+`card-alert` 768px note: the comparison harness pins both the Tailwind HTML pages and Flutter screenshot mode to the bundled `TwParityRoboto` font. This keeps glyph metrics deterministic without changing canonical Tailwind sizes; `TwConfig.standard()` still uses the standard Tailwind font scale and system sans stack.
 
 `dashboard` note: the Tailwind reference body uses `py-10`, which places `main` at `y=40`. The visual comparison tool reuses Tailwind's expanded clip for Flutter, so Flutter screenshot mode must include the same vertical frame before rendering the dashboard preview.
 

@@ -20,3 +20,14 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  fonts:
+    - family: TwParityRoboto
+      fonts:
+        - asset: "assets/fonts/roboto/Roboto[wdth,wght].ttf"
+          weight: 400
+        - asset: "assets/fonts/roboto/Roboto[wdth,wght].ttf"
+          weight: 500
+        - asset: "assets/fonts/roboto/Roboto[wdth,wght].ttf"
+          weight: 600
+        - asset: "assets/fonts/roboto/Roboto[wdth,wght].ttf"
+          weight: 700
