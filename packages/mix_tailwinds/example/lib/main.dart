@@ -262,6 +262,7 @@ class _CampaignOverviewCard extends StatelessWidget {
           classNames: 'text-base text-gray-500',
         ),
         Div(
+          key: const ValueKey('dashboard-metric-row'),
           classNames:
               'flex flex-col gap-4 border-t border-gray-200 pt-4 md:flex-row',
           children: const [
@@ -279,14 +280,17 @@ class _CampaignOverviewCard extends StatelessWidget {
           ],
         ),
         Div(
+          key: const ValueKey('dashboard-button-row'),
           classNames: 'flex flex-col gap-3 md:flex-row',
           children: [
             Div(
+              key: const ValueKey('dashboard-view-button'),
               classNames:
                   'flex flex-1 items-center justify-center rounded-full bg-blue-600 px-4 py-3 text-base font-semibold text-white hover:bg-blue-700',
               child: const Span(text: 'View live dashboard'),
             ),
             Div(
+              key: const ValueKey('dashboard-download-button'),
               classNames:
                   'flex flex-1 items-center justify-center rounded-full border border-blue-600 px-4 py-3 text-base font-semibold text-blue-600 hover:bg-blue-50',
               child: const Span(text: 'Download CSV'),
@@ -312,6 +316,7 @@ class _MetricTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Div(
+      key: ValueKey('dashboard-metric-$label'),
       classNames: 'flex flex-1 flex-col gap-2 rounded-xl bg-blue-50 p-4',
       children: [
         P(
@@ -439,6 +444,7 @@ class _ActivityRow extends StatelessWidget {
     };
 
     return Div(
+      key: ValueKey('dashboard-activity-$name'),
       classNames: 'flex items-center justify-between gap-4 py-4 $borderClass',
       children: [
         Div(

@@ -39,8 +39,9 @@ npm run compare
 This script automatically:
 1. Captures Tailwind screenshots from `real_tailwind/index.html`
 2. Captures Flutter screenshots from `localhost:8089`
-3. Generates pixel-diff images
-4. Reports diff percentages
+3. Generates pixel-diff, amplified absolute-diff, and blink-GIF images
+4. Writes `summary.json` with image dimensions and diff percentages
+5. Reports diff percentages
 
 ### Output
 
@@ -54,7 +55,10 @@ visual-comparison/
 │   ├── tailwind-480.png
 │   ├── tailwind-768.png
 │   ├── tailwind-1024.png
+│   ├── summary.json
 │   └── diff/
+│       ├── absdiff-480.png
+│       ├── blink-480.gif
 │       ├── diff-480.png
 │       ├── diff-768.png
 │       └── diff-1024.png
@@ -88,10 +92,12 @@ These values are useful when checking whether a new change regresses the existin
 
 | Example | 480px | 768px | 1024px | Main known issue |
 |---------|-------|-------|--------|------------------|
-| `dashboard` | 10.13% | 8.33% | 7.75% | Text metrics, spacing drift, separator/border rendering |
-| `card-alert` | 7.88% | 15.64% | 5.49% | 768px profile message wraps in Tailwind but not Flutter |
+| `dashboard` | 10.13% | 8.33% | 7.75% | Text metrics and spacing drift; separator rectangles are fixed |
+| `card-alert` | 7.88% | 15.64% | 5.49% | 768px profile message wraps in Tailwind but not Flutter profile web |
 
 Before treating a diff as a regression, compare against the previous commit or saved baseline artifacts. If current and baseline Flutter screenshots are byte-identical, the issue is existing parity drift, not a regression from the latest patch.
+
+`card-alert` 768px note: Chromium Tailwind measures the profile message at about 621px in its `system-ui` stack, so it wraps inside the 614px content column. Flutter profile web keeps the line narrower even when `mix_tailwinds` emits `fontFamily: system-ui`, and `.SF Pro Text` produced byte-identical output in local A/B testing. Treat this remaining wrap mismatch as renderer font availability/metrics drift unless a future Flutter web renderer exposes the browser system font stack.
 
 ---
 
@@ -165,32 +171,20 @@ Red pixels in diff images indicate differences between Flutter and Tailwind:
 
 ### Clearer Local Diff Artifacts
 
-The default red pixelmatch image is useful, but it can be hard to interpret. For review-heavy work, create extra local artifacts:
+The comparison tool writes extra artifacts next to each `diff-*.png`:
 
-- **Blink GIF**: alternates Tailwind and Flutter frames so layout shifts are obvious.
-- **Amplified difference PNG**: makes subtle text, color, and border drift easier to see.
-- **Triptych PNG**: places Tailwind, Flutter, and diff side by side.
+- `diff/absdiff-<width>.png` amplifies raw channel differences so subtle text, color, and border drift is easier to see.
+- `diff/blink-<width>.gif` alternates Tailwind and Flutter frames so layout shifts are obvious.
+- `summary.json` records dimensions, diff percentages, thresholds, and generated artifact paths.
 
-Keep these under `.context/visual-review/` or `visual-comparison/`. Do not commit generated screenshots, GIFs, or diff images.
+Do not commit generated screenshots, GIFs, summaries, or diff images. If you need additional review composites such as triptychs, keep them under `.context/visual-review/`.
 
-Manual 768px amplified-difference examples:
+For example:
 
 ```bash
-mkdir -p .context/visual-review/clear-diffs
-
-ffmpeg -y \
-  -i packages/mix_tailwinds/visual-comparison/card-alert/tailwind-768.png \
-  -i packages/mix_tailwinds/visual-comparison/card-alert/flutter-768.png \
-  -filter_complex "[0:v][1:v]blend=all_mode=difference,lutrgb=r='min(val*8,255)':g='min(val*8,255)':b='min(val*8,255)'" \
-  -frames:v 1 \
-  .context/visual-review/clear-diffs/card-alert-768-amplified-difference.png
-
-ffmpeg -y \
-  -i packages/mix_tailwinds/visual-comparison/dashboard/tailwind-768.png \
-  -i packages/mix_tailwinds/visual-comparison/dashboard/flutter-768.png \
-  -filter_complex "[0:v][1:v]blend=all_mode=difference,lutrgb=r='min(val*8,255)':g='min(val*8,255)':b='min(val*8,255)'" \
-  -frames:v 1 \
-  .context/visual-review/clear-diffs/dashboard-768-amplified-difference.png
+npm run compare -- --example=card-alert
+open ../../visual-comparison/card-alert/diff/blink-768.gif
+open ../../visual-comparison/card-alert/diff/absdiff-768.png
 ```
 
 ---

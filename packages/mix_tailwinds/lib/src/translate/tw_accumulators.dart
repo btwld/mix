@@ -121,21 +121,25 @@ final class BorderAccum {
   }
 
   JsonMap toPayload({required Color defaultColor}) {
-    JsonMap side(double width, Color? color) => {
-      'color': payloadColor(color ?? defaultColor),
-      'width': width,
-      'style': BorderStyle.solid.name,
-    };
+    JsonMap side(double? width, Color? color) {
+      final resolvedWidth = width ?? 0;
+      return {
+        'color': payloadColor(color ?? defaultColor),
+        'width': resolvedWidth,
+        'style': resolvedWidth > 0
+            ? BorderStyle.solid.name
+            : BorderStyle.none.name,
+      };
+    }
 
     return {
-      if (topWidth != null || topColor != null)
-        'top': side(topWidth ?? 0, topColor),
+      if (topWidth != null || topColor != null) 'top': side(topWidth, topColor),
       if (rightWidth != null || rightColor != null)
-        'right': side(rightWidth ?? 0, rightColor),
+        'right': side(rightWidth, rightColor),
       if (bottomWidth != null || bottomColor != null)
-        'bottom': side(bottomWidth ?? 0, bottomColor),
+        'bottom': side(bottomWidth, bottomColor),
       if (leftWidth != null || leftColor != null)
-        'left': side(leftWidth ?? 0, leftColor),
+        'left': side(leftWidth, leftColor),
     };
   }
 }

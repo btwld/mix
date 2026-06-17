@@ -47,8 +47,9 @@ class TwTextDefaults {
 
   /// Tailwind-compatible defaults using a system sans stack.
   const TwTextDefaults.tailwindSans()
-    : fontFamily = 'sans-serif',
+    : fontFamily = 'system-ui',
       fontFamilyFallback = const [
+        'ui-sans-serif',
         '.SF Pro Text',
         'SF Pro Text',
         '-apple-system',

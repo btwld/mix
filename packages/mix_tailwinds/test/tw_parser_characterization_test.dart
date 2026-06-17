@@ -494,6 +494,9 @@ void main() {
       expect(b!.top.width, 1);
       expect(b.top.color, _gray200);
       expect(b.bottom.width, 0);
+      expect(b.bottom.style, BorderStyle.none);
+      expect(b.left.style, BorderStyle.none);
+      expect(b.right.style, BorderStyle.none);
     });
 
     testWidgets('color-only border produces no visible width', (tester) async {
@@ -503,6 +506,10 @@ void main() {
       expect(b?.bottom.width ?? 0, 0);
       expect(b?.left.width ?? 0, 0);
       expect(b?.right.width ?? 0, 0);
+      expect(b?.top.style, BorderStyle.none);
+      expect(b?.bottom.style, BorderStyle.none);
+      expect(b?.left.style, BorderStyle.none);
+      expect(b?.right.style, BorderStyle.none);
     });
 
     testWidgets('border-x-2 + border-blue-500 width and color', (tester) async {

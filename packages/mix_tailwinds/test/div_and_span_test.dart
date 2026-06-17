@@ -1099,6 +1099,10 @@ void main() {
     expect(border?.bottom.width ?? 0, 0);
     expect(border?.left.width ?? 0, 0);
     expect(border?.right.width ?? 0, 0);
+    expect(border?.top.style, BorderStyle.none);
+    expect(border?.bottom.style, BorderStyle.none);
+    expect(border?.left.style, BorderStyle.none);
+    expect(border?.right.style, BorderStyle.none);
   });
 
   testWidgets('border-t border-gray-200 applies color to top only', (
@@ -1115,6 +1119,9 @@ void main() {
     expect(border.bottom.width, 0);
     expect(border.left.width, 0);
     expect(border.right.width, 0);
+    expect(border.bottom.style, BorderStyle.none);
+    expect(border.left.style, BorderStyle.none);
+    expect(border.right.style, BorderStyle.none);
   });
 
   testWidgets('border border-red-500 applies color to all sides', (
