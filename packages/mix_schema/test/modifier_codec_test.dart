@@ -76,6 +76,65 @@ void main() {
     });
   });
 
+  test('R-5 flexible modifier decodes flex parent-data intent', () {
+    final decoded = contract().decode<BoxStyler>({
+      'type': 'box',
+      'modifiers': [
+        {'type': 'flexible', 'flex': 1, 'fit': 'tight'},
+      ],
+    });
+
+    final style = switch (decoded) {
+      MixSchemaDecodeSuccess<BoxStyler>(:final value) => value,
+      MixSchemaDecodeFailure<BoxStyler>(:final errors) => fail('$errors'),
+    };
+    final modifier = style.$modifier!.$modifiers!.single;
+
+    expect(modifier, isA<FlexibleModifierMix>());
+    final flexible = modifier as FlexibleModifierMix;
+    expect(singleValueProp(flexible.flex, 'flex'), 1);
+    expect(singleValueProp(flexible.fit, 'fit'), FlexFit.tight);
+  });
+
+  test('R-5 flexible modifier encodes flex parent-data intent', () {
+    final encoded = contract().encode(
+      BoxStyler(
+        modifier: WidgetModifierConfig.flexible(flex: 1, fit: FlexFit.tight),
+      ),
+    );
+
+    final payload = switch (encoded) {
+      MixSchemaEncodeSuccess(:final value) => value,
+      MixSchemaEncodeFailure(:final errors) => fail('$errors'),
+    };
+
+    expect(payload, {
+      'type': 'box',
+      'modifiers': [
+        {'type': 'flexible', 'flex': 1, 'fit': 'tight'},
+      ],
+    });
+  });
+
+  test('R-5 flexible modifier rejects invalid fit', () {
+    final result = contract().validate({
+      'type': 'box',
+      'modifiers': [
+        {'type': 'flexible', 'fit': 'fixed'},
+      ],
+    });
+
+    final errors = switch (result) {
+      MixSchemaValidationFailure(:final errors) => errors,
+      MixSchemaValidationSuccess() => fail('expected failure'),
+    };
+
+    expect(
+      errors.map((error) => error.code),
+      contains(MixSchemaErrorCode.invalidEnum),
+    );
+  });
+
   test('R-5 custom modifier order fails encode explicitly', () {
     final result = contract().encode(
       BoxStyler(

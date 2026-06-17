@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 import 'package:mix_schema/mix_schema.dart';
 import 'package:mix_tailwinds/mix_tailwinds.dart';
+import 'package:mix_tailwinds/src/tw_flex_item.dart';
 import 'package:mix_tailwinds/src/translate/tw_translator.dart';
 
 JsonMap _boxPayload(String classNames) =>
@@ -94,6 +95,46 @@ void main() {
       contract.decode<FlexBoxStyler>(payload),
       isA<MixSchemaDecodeSuccess>(),
     );
+  });
+
+  testWidgets('flex item helper maps supported tokens through mix_schema', (
+    tester,
+  ) async {
+    final cases = <String, ({int flex, FlexFit fit})>{
+      'flex-1': (flex: 1, fit: FlexFit.tight),
+      'flex-auto': (flex: 1, fit: FlexFit.loose),
+      'flex-initial': (flex: 0, fit: FlexFit.loose),
+      'flex-none': (flex: 0, fit: FlexFit.loose),
+      'flex-shrink': (flex: 1, fit: FlexFit.tight),
+      'flex-shrink-0': (flex: 0, fit: FlexFit.loose),
+      'shrink': (flex: 1, fit: FlexFit.tight),
+      'shrink-0': (flex: 0, fit: FlexFit.loose),
+      'grow': (flex: 1, fit: FlexFit.tight),
+      'grow-0': (flex: 0, fit: FlexFit.loose),
+    };
+
+    for (final entry in cases.entries) {
+      final modifier = twFlexibleModifierForFlexItem(entry.key);
+      expect(modifier, isNotNull, reason: entry.key);
+
+      FlexibleModifier? resolved;
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: Builder(
+            builder: (context) {
+              resolved = modifier!.resolve(context);
+              return const SizedBox();
+            },
+          ),
+        ),
+      );
+
+      expect(resolved!.flex, entry.value.flex, reason: entry.key);
+      expect(resolved!.fit, entry.value.fit, reason: entry.key);
+    }
+
+    expect(twFlexibleModifierForFlexItem('basis-4'), isNull);
   });
 
   test('text parser emits schema payloads that decode through mix_schema', () {

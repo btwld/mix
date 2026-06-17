@@ -21,6 +21,7 @@ AckSchema<JsonMap, ModifierMix> modifierCodec() {
     schemas: {
       'opacity': _opacityModifierCodec(),
       'blur': _blurModifierCodec(),
+      'flexible': _flexibleModifierCodec(),
       'default_text_style': _defaultTextStyleModifierCodec(),
     },
   );
@@ -42,6 +43,25 @@ AckSchema<JsonMap, BlurModifierMix> _blurModifierCodec() {
     decode: (data) => BlurModifierMix(sigma: data['sigma']! as double),
     encode: (value) => {
       'sigma': singleValueProp(value.sigma, 'modifiers.blur.sigma'),
+    },
+  );
+}
+
+AckSchema<JsonMap, FlexibleModifierMix> _flexibleModifierCodec() {
+  return Ack.object({
+    'flex': Ack.integer().optional(),
+    'fit': strictEnumCodec({
+      'tight': FlexFit.tight,
+      'loose': FlexFit.loose,
+    }, debugName: 'FlexFit').optional(),
+  }).codec<FlexibleModifierMix>(
+    decode: (data) => FlexibleModifierMix(
+      flex: data['flex'] as int?,
+      fit: data['fit'] as FlexFit?,
+    ),
+    encode: (value) => {
+      'flex': singleValueProp(value.flex, 'modifiers.flexible.flex'),
+      'fit': singleValueProp(value.fit, 'modifiers.flexible.fit'),
     },
   );
 }

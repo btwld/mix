@@ -9,6 +9,7 @@ import 'parser/model.dart';
 import 'translate/tw_target.dart' as tw_target;
 import 'translate/tw_routing.dart';
 import 'tw_config.dart';
+import 'tw_flex_item.dart';
 import 'tw_parser.dart';
 import 'tw_types.dart';
 import 'tw_utils.dart';
@@ -324,8 +325,16 @@ class Div extends StatelessWidget {
       'Provide either child or children, not both.',
     );
     final cfg = config ?? TwConfigProvider.of(context);
-    final parser = TwParser(config: cfg, onUnsupported: onUnsupported);
+    final reportedUnsupported = <String>{};
+    void reportUnsupported(String token) {
+      if (reportedUnsupported.add(token)) {
+        onUnsupported?.call(token);
+      }
+    }
+
+    final parser = TwParser(config: cfg, onUnsupported: reportUnsupported);
     final tokens = parser.setTokens(classNames);
+    _reportUnsupportedWidgetLayerVariants(tokens, cfg, reportUnsupported);
     final shouldUseFlex = isFlex ?? parser.wantsFlex(tokens);
     final animationConfig = parser.parseAnimationFromTokens(tokens.toList());
 
@@ -812,6 +821,76 @@ bool _needsFlexItemDecorators(Set<String> tokens, TwConfig cfg) {
   return false;
 }
 
+void _reportUnsupportedWidgetLayerVariants(
+  Set<String> tokens,
+  TwConfig cfg,
+  TokenWarningCallback onUnsupported,
+) {
+  for (final token in tokens) {
+    final candidate = _parseCandidate(token);
+    if (candidate == null || candidate.variants.isEmpty) {
+      continue;
+    }
+    if (!_isRootLayoutWidgetUtility(candidate.utility)) {
+      continue;
+    }
+    if (_hasOnlyBreakpointVariants(candidate.variants, cfg)) {
+      continue;
+    }
+
+    onUnsupported(token);
+  }
+}
+
+bool _hasOnlyBreakpointVariants(List<TailwindVariant> variants, TwConfig cfg) {
+  for (final variant in variants) {
+    if (variant is! TailwindStaticVariant ||
+        !cfg.breakpoints.containsKey(variant.root)) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+bool _isRootLayoutWidgetUtility(TailwindUtility utility) {
+  final raw = utility.raw;
+  final root = tailwindUtilityRoot(utility);
+  final valueKey = tailwindValueKey(tailwindUtilityValue(utility));
+
+  if (raw.startsWith('flex-') ||
+      raw.startsWith('basis-') ||
+      raw.startsWith('self-') ||
+      raw.startsWith('shrink') ||
+      raw.startsWith('grow')) {
+    return true;
+  }
+
+  if (root == 'basis' ||
+      root == 'self' ||
+      root == 'grow' ||
+      root == 'shrink' ||
+      root == 'gap-x' ||
+      root == 'gap-y' ||
+      raw == 'block') {
+    return true;
+  }
+
+  if (root == 'w' ||
+      root == 'h' ||
+      root == 'min-w' ||
+      root == 'min-h' ||
+      root == 'max-w' ||
+      root == 'max-h') {
+    return valueKey == 'full' ||
+        valueKey == 'screen' ||
+        valueKey == 'auto' ||
+        valueKey?.contains('/') == true;
+  }
+
+  return false;
+}
+
 Widget _applyContainerSizingResponsive(
   Widget child,
   Set<String> tokens,
@@ -998,7 +1077,12 @@ Widget _applyFlexItemDecorators(
     current = _applySelfAlignment(current, selfAlignment, axis);
   }
 
-  final behavior = _resolveFlexItemBehavior(tokens, cfg, viewportWidth);
+  final behavior = _resolveFlexItemBehavior(
+    tokens,
+    cfg,
+    viewportWidth,
+    context,
+  );
 
   // Handle w-full/h-full when used as a direct child of a Flex.
   //
@@ -1262,6 +1346,7 @@ _FlexItemBehavior? _resolveFlexItemBehavior(
   Set<String> tokens,
   TwConfig cfg,
   double width,
+  BuildContext context,
 ) {
   // Check for min-w-auto escape hatch (respects breakpoint prefixes)
   var hasMinWidthAuto = false;
@@ -1282,27 +1367,15 @@ _FlexItemBehavior? _resolveFlexItemBehavior(
       continue;
     }
 
-    final candidate = switch (info.base) {
-      // flex-1: auto-apply min constraint for CSS flex: 1 1 0% parity
-      'flex-1' => _FlexItemBehavior(
-        flex: 1,
-        fit: FlexFit.tight,
-        applyMinConstraint: !hasMinWidthAuto,
-      ),
-      'flex-auto' => const _FlexItemBehavior(flex: 1, fit: FlexFit.loose),
-      'flex-initial' => const _FlexItemBehavior(flex: 0, fit: FlexFit.loose),
-      // flex-none / shrink-0: maintain intrinsic size (don't shrink)
-      'flex-none' ||
-      'flex-shrink-0' ||
-      'shrink-0' => const _FlexItemBehavior(flex: 0, fit: FlexFit.loose),
-      // shrink: allow item to shrink below intrinsic size when constrained
-      'flex-shrink' || 'shrink' => _FlexItemBehavior(
-        flex: 1,
-        fit: FlexFit.tight,
-        applyMinConstraint: !hasMinWidthAuto,
-      ),
-      _ => null,
-    };
+    final modifier = twFlexibleModifierForFlexItem(info.base);
+    final candidate = modifier == null
+        ? null
+        : _flexItemBehaviorFromModifier(
+            modifier,
+            context,
+            utility: info.base,
+            hasMinWidthAuto: hasMinWidthAuto,
+          );
 
     if (candidate != null && info.minWidth >= chosenMin) {
       behavior = candidate;
@@ -1311,6 +1384,27 @@ _FlexItemBehavior? _resolveFlexItemBehavior(
   }
 
   return behavior;
+}
+
+_FlexItemBehavior _flexItemBehaviorFromModifier(
+  FlexibleModifierMix modifier,
+  BuildContext context, {
+  required String utility,
+  required bool hasMinWidthAuto,
+}) {
+  final resolved = modifier.resolve(context);
+
+  return _FlexItemBehavior(
+    flex: resolved.flex ?? 1,
+    fit: resolved.fit ?? FlexFit.loose,
+    applyMinConstraint: _appliesAutoMinConstraint(utility, hasMinWidthAuto),
+  );
+}
+
+bool _appliesAutoMinConstraint(String utility, bool hasMinWidthAuto) {
+  if (hasMinWidthAuto) return false;
+
+  return utility == 'flex-1' || utility == 'flex-shrink' || utility == 'shrink';
 }
 
 _BasisValue? _resolveBasisValue(

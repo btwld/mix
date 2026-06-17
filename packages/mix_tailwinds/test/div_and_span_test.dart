@@ -114,6 +114,35 @@ Future<void> _pumpSized(
   await tester.pump();
 }
 
+Future<FlexParentData> _rowParentDataForDiv(
+  WidgetTester tester,
+  String classNames, {
+  TokenWarningCallback? onUnsupported,
+}) async {
+  await tester.pumpWidget(
+    Directionality(
+      textDirection: TextDirection.ltr,
+      child: SizedBox(
+        width: 200,
+        child: Row(
+          children: [
+            Div(
+              classNames: classNames,
+              onUnsupported: onUnsupported,
+              child: const SizedBox(width: 10, height: 10),
+            ),
+            const SizedBox(width: 20, height: 20),
+          ],
+        ),
+      ),
+    ),
+  );
+
+  final renderFlex = tester.renderObject<RenderFlex>(find.byType(Row));
+  final firstChild = renderFlex.firstChild!;
+  return firstChild.parentData as FlexParentData;
+}
+
 void main() {
   testWidgets('Div picks flex layout when flex token is present', (
     tester,
@@ -519,29 +548,82 @@ void main() {
   testWidgets('flex-1 applies flex parent data when used inside Row', (
     tester,
   ) async {
+    final parentData = await _rowParentDataForDiv(tester, 'flex-1 bg-blue-500');
+
+    expect(parentData.flex, 1);
+    expect(parentData.fit, FlexFit.tight);
+  });
+
+  testWidgets('grow applies flex parent data when used inside Row', (
+    tester,
+  ) async {
+    final parentData = await _rowParentDataForDiv(tester, 'grow bg-blue-500');
+
+    expect(parentData.flex, 1);
+    expect(parentData.fit, FlexFit.tight);
+  });
+
+  testWidgets('grow-0 applies loose zero-flex parent data inside Row', (
+    tester,
+  ) async {
+    final parentData = await _rowParentDataForDiv(tester, 'grow-0 bg-blue-500');
+
+    expect(parentData.flex, 0);
+    expect(parentData.fit, FlexFit.loose);
+  });
+
+  testWidgets('hover:flex-1 reports once without base parent data', (
+    tester,
+  ) async {
+    final seen = <String>[];
+
+    final parentData = await _rowParentDataForDiv(
+      tester,
+      'hover:flex-1 bg-blue-500',
+      onUnsupported: seen.add,
+    );
+
+    expect(parentData.flex, isNull);
+    expect(seen, ['hover:flex-1']);
+  });
+
+  testWidgets('hover:w-full reports once without base parent data', (
+    tester,
+  ) async {
+    final seen = <String>[];
+
+    final parentData = await _rowParentDataForDiv(
+      tester,
+      'hover:w-full bg-blue-500',
+      onUnsupported: seen.add,
+    );
+
+    expect(parentData.flex, isNull);
+    expect(seen, ['hover:w-full']);
+  });
+
+  testWidgets('hover:gap-x-4 reports once without base spacing', (
+    tester,
+  ) async {
+    final seen = <String>[];
+
     await tester.pumpWidget(
       Directionality(
         textDirection: TextDirection.ltr,
-        child: SizedBox(
-          width: 200,
-          child: Row(
-            children: [
-              Div(
-                classNames: 'flex-1 bg-blue-500',
-                child: const SizedBox(width: 10, height: 10),
-              ),
-              const SizedBox(width: 20, height: 20),
-            ],
-          ),
+        child: Div(
+          classNames: 'flex hover:gap-x-4',
+          onUnsupported: seen.add,
+          children: const [
+            SizedBox(width: 20, height: 20),
+            SizedBox(width: 20, height: 20),
+          ],
         ),
       ),
     );
 
-    final renderFlex = tester.renderObject<RenderFlex>(find.byType(Row));
-    final firstChild = renderFlex.firstChild!;
-    final parentData = firstChild.parentData as FlexParentData;
-    expect(parentData.flex, 1);
-    expect(parentData.fit, FlexFit.tight);
+    final flex = tester.widget<Flex>(find.byType(Flex));
+    expect(flex.spacing, 0);
+    expect(seen, ['hover:gap-x-4']);
   });
 
   testWidgets('flex-1 auto-applies min-w-0 constraint', (tester) async {
@@ -1134,6 +1216,26 @@ void main() {
     ).parseFlex('flex flex-1 basis-1/2 self-end');
     expect(seen, isEmpty);
   });
+
+  testWidgets(
+    'Div reports unsupported tokens once across animation and translation',
+    (tester) async {
+      final seen = <String>[];
+
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: Div(
+            classNames: 'unknown-token',
+            onUnsupported: seen.add,
+            child: const SizedBox(),
+          ),
+        ),
+      );
+
+      expect(seen, ['unknown-token']);
+    },
+  );
 
   test('wantsFlex detects prefixed flex tokens', () {
     final parser = TwParser();
