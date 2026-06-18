@@ -424,9 +424,7 @@ void main() {
           expect(config.delay, const Duration(milliseconds: 25));
           expect(
             config.curve,
-            equals(
-              SpringCurve(mass: 2.0, stiffness: 200.0, damping: 15.0),
-            ),
+            equals(SpringCurve(mass: 2.0, stiffness: 200.0, damping: 15.0)),
           );
           config.onEnd!();
           expect(called, true);
