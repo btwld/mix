@@ -25,6 +25,7 @@ plugins:
     diagnostics:
       mix_avoid_defining_tokens_within_style: true
       mix_avoid_defining_tokens_within_scope: true
+      mix_avoid_token_ref_outside_mix: true
       mix_avoid_empty_variants: true
       mix_max_number_of_attributes_per_style: true
       mix_variants_last: true
@@ -99,6 +100,39 @@ MixScope(
   },
   child: child,
 );
+```
+
+### mix_avoid_token_ref_outside_mix
+
+Ensure that a `MixToken` reference is only passed to Mix styling APIs.
+
+Calling a token — `token()` (or `token.mix()` on the tokens that expose it) — does not return a concrete value. It returns a *reference* sentinel (e.g. `ColorRef`, `RadiusRef`) that only resolves later inside Mix's pipeline, against the surrounding `MixScope`. Pass that sentinel to a non-Mix API — a plain Flutter widget, a `dart:core` function — and it never resolves, producing a silent bug.
+
+The rule allows the reference when it is an argument to anything whose receiver/constructed type descends from `Mix` (all Stylers and `*Mix` value utilities, whether shipped in Mix or generated in your package via `@MixableType`/`@MixableSpec`); it flags the reference when the consuming API is provably not Mix. To read a concrete value outside Mix, use `token.resolve(context)` instead.
+
+This is a warning rather than a hint: a misrouted reference is a correctness bug, not a style preference.
+
+> Note: the check is syntactic. A reference first stored in a variable (`final c = token(); Container(color: c);`) is not detected.
+
+#### Don't
+
+```dart
+final primary = ColorToken('primary');
+
+// Reference escapes into a non-Mix API and never resolves.
+Container(color: primary());
+```
+
+#### Do
+
+```dart
+final primary = ColorToken('primary');
+
+// Pass the reference to a Mix styling API…
+Box(style: BoxStyler().color(primary()));
+
+// …or resolve it to a concrete value for non-Mix APIs.
+Container(color: primary.resolve(context));
 ```
 
 ### mix_avoid_empty_variants
