@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/src/core/directive.dart';
 import 'package:mix/src/core/prop.dart';
+import 'package:mix/src/theme/tokens/mix_token.dart';
 import 'package:mix/src/theme/tokens/token_refs.dart';
 
 import '../../helpers/testing_utils.dart';
@@ -60,7 +61,7 @@ void main() {
         expect(
           () => (ref as dynamic).alpha,
           throwsA(
-            isA<UnimplementedError>().having(
+            isA<UnsupportedError>().having(
               (e) => e.message,
               'message',
               contains('Cannot access'),
@@ -218,31 +219,24 @@ void main() {
       test('accessors still throw via noSuchMethod (regression guard)', () {
         final ref = ColorRef(Prop.token(baseToken));
 
-        expect(
-          () => (ref as dynamic).alpha,
-          throwsA(isA<UnimplementedError>()),
-        );
-        expect(() => (ref as dynamic).red, throwsA(isA<UnimplementedError>()));
+        expect(() => (ref as dynamic).alpha, throwsA(isA<UnsupportedError>()));
+        expect(() => (ref as dynamic).red, throwsA(isA<UnsupportedError>()));
         expect(
           () => (ref as dynamic).opacity,
-          throwsA(isA<UnimplementedError>()),
+          throwsA(isA<UnsupportedError>()),
         );
-        expect(
-          () => (ref as dynamic).value,
-          throwsA(isA<UnimplementedError>()),
-        );
+        expect(() => (ref as dynamic).value, throwsA(isA<UnsupportedError>()));
       });
     });
 
     group('Extension Type Token References', () {
       group('DoubleRef', () {
-        test('creates from token using hybrid hashing', () {
+        test('creates from token using monotonic sentinel registry', () {
           final token = TestToken<double>('test-double');
           final ref = DoubleRef.token(token);
 
           expect(ref, isA<double>());
           expect(getTokenFromValue<double>(ref), equals(token));
-          // Value is based on token's hash code
         });
 
         test('can be used as double', () {
@@ -290,12 +284,80 @@ void main() {
           expect(getTokenFromValue<double>(ref)?.name, equals('registry-test'));
         });
 
-        test('throws when token not found in registry', () {
-          // Create a DoubleRef manually without registering it
-          final manualRef = DoubleRef(42.0);
-
-          expect(getTokenFromValue<double>(manualRef), isNull);
+        test('returns null for an arbitrary double that is not a sentinel', () {
+          // 42.0 was never returned by DoubleRef.token, so it must not be
+          // mistakenly identified as a registered token sentinel.
+          expect(getTokenFromValue<double>(42.0), isNull);
         });
+
+        test('re-issues the same sentinel for the same token instance', () {
+          final token = TestToken<double>('idempotent-token');
+
+          final ref1 = DoubleRef.token(token);
+          final ref2 = DoubleRef.token(token);
+
+          expect(ref1, equals(ref2));
+          expect(getTokenFromValue<double>(ref1), same(token));
+          expect(getTokenFromValue<double>(ref2), same(token));
+        });
+
+        test('reuses sentinels for equivalent name-based tokens', () {
+          final token1 = TestToken<double>('semantic-token');
+          final token2 = TestToken<double>('semantic-token');
+
+          expect(identical(token1, token2), isFalse);
+          expect(token1, equals(token2));
+
+          final ref1 = DoubleRef.token(token1);
+          final ref2 = DoubleRef.token(token2);
+
+          expect(ref1, equals(ref2));
+          expect(getTokenFromValue<double>(ref1), same(token1));
+          expect(getTokenFromValue<double>(ref2), same(token1));
+        });
+
+        test('distinct tokens always receive distinct sentinels', () {
+          final a = TestToken<double>('alloc-a');
+          final b = TestToken<double>('alloc-b');
+
+          final aRef = DoubleRef.token(a);
+          final bRef = DoubleRef.token(b);
+
+          expect(aRef, isNot(equals(bRef)));
+          expect(getTokenFromValue<double>(aRef), same(a));
+          expect(getTokenFromValue<double>(bRef), same(b));
+        });
+
+        test('registered sentinel numeric values are reserved', () {
+          const firstSentinel = -0.000001;
+
+          expect(getTokenFromValue<double>(firstSentinel), isNull);
+
+          final token = TestToken<double>('reserved-sentinel');
+          final ref = DoubleRef.token(token);
+
+          expect(ref, equals(firstSentinel));
+          expect(getTokenFromValue<double>(firstSentinel), same(token));
+          expect(Prop.value(firstSentinel), PropMatcher.isToken(token));
+        });
+
+        test(
+          'distinct tokens with colliding hashes receive distinct sentinels',
+          () {
+            final a = _HashCollidingDoubleToken('alloc-a');
+            final b = _HashCollidingDoubleToken('alloc-b');
+
+            expect(a, isNot(equals(b)));
+            expect(a.hashCode, equals(b.hashCode));
+
+            final aRef = DoubleRef.token(a);
+            final bRef = DoubleRef.token(b);
+
+            expect(aRef, isNot(equals(bRef)));
+            expect(getTokenFromValue<double>(aRef), same(a));
+            expect(getTokenFromValue<double>(bRef), same(b));
+          },
+        );
       });
     });
 
@@ -351,11 +413,21 @@ void main() {
         }
       });
 
-      test('does not detect manually created refs', () {
-        // Create refs manually without using .token() method
-        final manualDoubleRef = DoubleRef(42.0);
+      test('does not detect arbitrary double values as token refs', () {
+        // Any plain double that was never returned by DoubleRef.token must
+        // not be misclassified as a token ref.
+        expect(isAnyTokenRef(42.0), isFalse);
+        expect(isAnyTokenRef(-0.0000001), isFalse);
+      });
 
-        expect(isAnyTokenRef(manualDoubleRef), isFalse);
+      test('detects any Prop carrying a TokenSource', () {
+        final token = TestToken<int>('plain-prop-token');
+
+        expect(isAnyTokenRef(Prop.token(token)), isTrue);
+      });
+
+      test('does not detect a plain Prop.value', () {
+        expect(isAnyTokenRef(Prop.value(42)), isFalse);
       });
     });
 
@@ -374,17 +446,12 @@ void main() {
         expect(getTokenFromValue(doubleRef), equals(doubleToken));
       });
 
-      test('returns null for manually created refs', () {
-        // Create refs manually without using .token() method
-        final manualDoubleRef = DoubleRef(42.0);
-
-        expect(getTokenFromValue(manualDoubleRef), isNull);
-      });
-
-      test('handles edge cases', () {
+      test('returns null for arbitrary values that are not sentinels', () {
+        // Plain doubles, ints, strings — anything that wasn't issued by
+        // DoubleRef.token must round-trip to null.
+        expect(getTokenFromValue(42.0), isNull);
         expect(getTokenFromValue(42), isNull);
         expect(getTokenFromValue('string'), isNull);
-        // Note: getTokenFromValue doesn't accept null, so we skip that test
       });
     });
 
@@ -405,6 +472,23 @@ void main() {
         for (final ref in refs) {
           expect(getTokenFromValue(ref), isNull);
         }
+      });
+    });
+
+    group('getReferenceValue unsupported types', () {
+      test('throws UnsupportedError naming the token and type', () {
+        const token = _UnsupportedToken('layout.edge-insets');
+
+        expect(
+          () => getReferenceValue(token),
+          throwsA(
+            isA<UnsupportedError>().having(
+              (e) => e.message,
+              'message',
+              allOf(contains('EdgeInsets'), contains('layout.edge-insets')),
+            ),
+          ),
+        );
       });
     });
 
@@ -432,4 +516,23 @@ void main() {
       });
     });
   });
+}
+
+/// Token type that intentionally targets a value type not covered by the
+/// reference dispatch table in [getReferenceValue].
+class _UnsupportedToken extends MixToken<EdgeInsets> {
+  const _UnsupportedToken(super.name);
+}
+
+class _HashCollidingDoubleToken extends MixToken<double> {
+  const _HashCollidingDoubleToken(super.name);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        other is _HashCollidingDoubleToken && other.name == name;
+  }
+
+  @override
+  int get hashCode => 1;
 }
