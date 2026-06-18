@@ -379,8 +379,10 @@ class BoxStyler extends MixStyler<BoxStyler, BoxSpec>
   );
   factory BoxStyler.transform(Matrix4 value, {Alignment alignment = .center}) =>
       BoxStyler().transform(value, alignment: alignment);
-  factory BoxStyler.animate(AnimationConfig value) =>
-      BoxStyler().animate(value);
+  factory BoxStyler.animate(
+    AnimationConfig value, {
+    AnimationConfig? reverse,
+  }) => BoxStyler().animate(value, reverse: reverse);
 
   BoxStyler textStyle(TextStyler value) {
     return wrap(WidgetModifierConfig.defaultTextStyler(value));
@@ -432,9 +434,16 @@ class BoxStyler extends MixStyler<BoxStyler, BoxSpec>
   }
 
   /// Sets the animation configuration.
+  ///
+  /// When [reverse] is provided, it is used as the exit transition
+  /// config when leaving this style.
   @override
-  BoxStyler animate(AnimationConfig value) {
-    return merge(BoxStyler(animation: value));
+  BoxStyler animate(AnimationConfig value, {AnimationConfig? reverse}) {
+    final config = reverse == null
+        ? value
+        : ReversibleAnimationConfig(forward: value, reverse: reverse);
+
+    return merge(BoxStyler(animation: config));
   }
 
   /// Sets the style variants.

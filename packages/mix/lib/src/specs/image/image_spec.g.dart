@@ -392,9 +392,16 @@ class ImageStyler extends MixStyler<ImageStyler, ImageSpec> {
   }
 
   /// Sets the animation configuration.
+  ///
+  /// When [reverse] is provided, it is used as the exit transition
+  /// config when leaving this style.
   @override
-  ImageStyler animate(AnimationConfig value) {
-    return merge(ImageStyler(animation: value));
+  ImageStyler animate(AnimationConfig value, {AnimationConfig? reverse}) {
+    final config = reverse == null
+        ? value
+        : ReversibleAnimationConfig(forward: value, reverse: reverse);
+
+    return merge(ImageStyler(animation: config));
   }
 
   /// Sets the style variants.

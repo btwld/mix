@@ -427,6 +427,28 @@ sealed class AnimationConfig {
   );
 }
 
+/// Animation configuration that pairs a forward (enter) config with a reverse
+/// (exit) config.
+///
+/// This wrapper lets a single style own both its enter and exit transition
+/// timing. When a style becomes active, Mix uses [forward]; when the style is
+/// no longer active, Mix uses the leaving style's [reverse].
+///
+/// `reverse` is an exit transition config. It does not mean calling
+/// `AnimationController.reverse()`.
+final class ReversibleAnimationConfig extends AnimationConfig with Equatable {
+  final AnimationConfig forward;
+  final AnimationConfig reverse;
+
+  const ReversibleAnimationConfig({
+    required this.forward,
+    required this.reverse,
+  });
+
+  @override
+  List<Object?> get props => [forward, reverse];
+}
+
 /// Curve-based animation configuration with fixed duration.
 ///
 /// This configuration provides duration, curve, and optional completion callback
