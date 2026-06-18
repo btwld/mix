@@ -67,9 +67,22 @@ class StylerMixinBuilder {
     final buffer = StringBuffer();
 
     buffer.writeln('  /// Sets the animation configuration.');
+    buffer.writeln('  ///');
+    buffer.writeln(
+      '  /// When [reverse] is provided, it is used as the exit transition',
+    );
+    buffer.writeln('  /// config when leaving this style.');
     _writeMethodOverride(buffer, 'animate', methodOverrides);
-    buffer.writeln('  $stylerName animate(AnimationConfig value) {');
-    buffer.writeln('    return merge($stylerName(animation: value));');
+    buffer.writeln(
+      '  $stylerName animate(AnimationConfig value, {AnimationConfig? reverse}) {',
+    );
+    buffer.writeln('    final config = reverse == null');
+    buffer.writeln('        ? value');
+    buffer.writeln(
+      '        : ReversibleAnimationConfig(forward: value, reverse: reverse);',
+    );
+    buffer.writeln();
+    buffer.writeln('    return merge($stylerName(animation: config));');
     buffer.writeln('  }');
     buffer.writeln();
 

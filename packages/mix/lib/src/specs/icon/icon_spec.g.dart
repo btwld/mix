@@ -339,9 +339,16 @@ class IconStyler extends MixStyler<IconStyler, IconSpec> {
   }
 
   /// Sets the animation configuration.
+  ///
+  /// When [reverse] is provided, it is used as the exit transition
+  /// config when leaving this style.
   @override
-  IconStyler animate(AnimationConfig value) {
-    return merge(IconStyler(animation: value));
+  IconStyler animate(AnimationConfig value, {AnimationConfig? reverse}) {
+    final config = reverse == null
+        ? value
+        : ReversibleAnimationConfig(forward: value, reverse: reverse);
+
+    return merge(IconStyler(animation: config));
   }
 
   /// Sets the style variants.

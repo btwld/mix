@@ -655,4 +655,135 @@ void main() {
       trigger2.dispose();
     });
   });
+
+  group('ReversibleAnimationConfig', () {
+    test('exposes forward and reverse configs', () {
+      const forward = CurveAnimationConfig(
+        duration: Duration(milliseconds: 200),
+        curve: Curves.easeIn,
+      );
+      const reverse = CurveAnimationConfig(
+        duration: Duration(milliseconds: 100),
+        curve: Curves.easeOut,
+      );
+
+      const config = ReversibleAnimationConfig(
+        forward: forward,
+        reverse: reverse,
+      );
+
+      expect(config.forward, forward);
+      expect(config.reverse, reverse);
+      expect(config, isA<AnimationConfig>());
+    });
+
+    test('supports equality on forward and reverse', () {
+      const forward = CurveAnimationConfig(
+        duration: Duration(milliseconds: 200),
+        curve: Curves.easeIn,
+      );
+      const reverse = CurveAnimationConfig(
+        duration: Duration(milliseconds: 100),
+        curve: Curves.easeOut,
+      );
+
+      const config1 = ReversibleAnimationConfig(
+        forward: forward,
+        reverse: reverse,
+      );
+      const config2 = ReversibleAnimationConfig(
+        forward: forward,
+        reverse: reverse,
+      );
+
+      expect(config1, equals(config2));
+    });
+
+    test('differs when reverse config differs', () {
+      const forward = CurveAnimationConfig(
+        duration: Duration(milliseconds: 200),
+        curve: Curves.easeIn,
+      );
+
+      const config1 = ReversibleAnimationConfig(
+        forward: forward,
+        reverse: CurveAnimationConfig(
+          duration: Duration(milliseconds: 100),
+          curve: Curves.easeOut,
+        ),
+      );
+      const config2 = ReversibleAnimationConfig(
+        forward: forward,
+        reverse: CurveAnimationConfig(
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        ),
+      );
+
+      expect(config1, isNot(equals(config2)));
+    });
+
+    test('allows forward and reverse with different driver kinds', () {
+      final config = ReversibleAnimationConfig(
+        forward: SpringAnimationConfig.standard(),
+        reverse: const CurveAnimationConfig(
+          duration: Duration(milliseconds: 100),
+          curve: Curves.easeOut,
+        ),
+      );
+
+      expect(config.forward, isA<SpringAnimationConfig>());
+      expect(config.reverse, isA<CurveAnimationConfig>());
+    });
+  });
+
+  group('animate(reverse:)', () {
+    test('wraps in ReversibleAnimationConfig when reverse is provided', () {
+      const forward = CurveAnimationConfig(
+        duration: Duration(milliseconds: 200),
+        curve: Curves.easeIn,
+      );
+      const reverse = CurveAnimationConfig(
+        duration: Duration(milliseconds: 100),
+        curve: Curves.easeOut,
+      );
+
+      final styler = BoxStyler().animate(forward, reverse: reverse);
+
+      expect(
+        styler.$animation,
+        const ReversibleAnimationConfig(forward: forward, reverse: reverse),
+      );
+    });
+
+    test('keeps the raw config when reverse is omitted', () {
+      const forward = CurveAnimationConfig(
+        duration: Duration(milliseconds: 200),
+        curve: Curves.easeIn,
+      );
+
+      final styler = BoxStyler().animate(forward);
+
+      expect(styler.$animation, forward);
+      expect(styler.$animation, isNot(isA<ReversibleAnimationConfig>()));
+    });
+
+    test('static factory supports reverse', () {
+      const forward = CurveAnimationConfig(
+        duration: Duration(milliseconds: 200),
+        curve: Curves.easeIn,
+      );
+      const reverse = CurveAnimationConfig(
+        duration: Duration(milliseconds: 100),
+        curve: Curves.easeOut,
+      );
+
+      final styler = BoxStyler.animate(forward, reverse: reverse);
+
+      expect(
+        styler.$animation,
+        const ReversibleAnimationConfig(forward: forward, reverse: reverse),
+      );
+    });
+  });
 }

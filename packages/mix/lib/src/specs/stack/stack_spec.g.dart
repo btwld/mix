@@ -165,9 +165,16 @@ class StackStyler extends MixStyler<StackStyler, StackSpec> {
   }
 
   /// Sets the animation configuration.
+  ///
+  /// When [reverse] is provided, it is used as the exit transition
+  /// config when leaving this style.
   @override
-  StackStyler animate(AnimationConfig value) {
-    return merge(StackStyler(animation: value));
+  StackStyler animate(AnimationConfig value, {AnimationConfig? reverse}) {
+    final config = reverse == null
+        ? value
+        : ReversibleAnimationConfig(forward: value, reverse: reverse);
+
+    return merge(StackStyler(animation: config));
   }
 
   /// Sets the style variants.

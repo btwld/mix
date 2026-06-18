@@ -432,9 +432,16 @@ class TextStyler extends MixStyler<TextStyler, TextSpec>
   }
 
   /// Sets the animation configuration.
+  ///
+  /// When [reverse] is provided, it is used as the exit transition
+  /// config when leaving this style.
   @override
-  TextStyler animate(AnimationConfig value) {
-    return merge(TextStyler(animation: value));
+  TextStyler animate(AnimationConfig value, {AnimationConfig? reverse}) {
+    final config = reverse == null
+        ? value
+        : ReversibleAnimationConfig(forward: value, reverse: reverse);
+
+    return merge(TextStyler(animation: config));
   }
 
   /// Sets the style variants.

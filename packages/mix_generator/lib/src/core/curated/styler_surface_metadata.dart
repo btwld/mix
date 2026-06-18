@@ -884,7 +884,7 @@ StylerMethodDescriptor transformAnchorMethodDescriptor() {
 StylerFactoryDescriptor animateFactoryDescriptor() {
   return const StylerFactoryDescriptor(
     name: 'animate',
-    signature: 'animate(AnimationConfig value)',
-    invocation: 'animate(value)',
+    signature: 'animate(AnimationConfig value, {AnimationConfig? reverse})',
+    invocation: 'animate(value, reverse: reverse)',
   );
 }
