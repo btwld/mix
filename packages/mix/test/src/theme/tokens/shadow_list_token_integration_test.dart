@@ -166,14 +166,17 @@ void main() {
       expect(styler.$decoration, isNotNull);
     });
 
-    test('BoxStyler.boxShadows still accepts a literal list (non-breaking)', () {
-      final styler = BoxStyler().boxShadows([
-        BoxShadowMix(color: Colors.black, blurRadius: 5),
-        BoxShadowMix(color: Colors.grey, blurRadius: 10),
-      ]);
+    test(
+      'BoxStyler.boxShadows still accepts a literal list (non-breaking)',
+      () {
+        final styler = BoxStyler().boxShadows([
+          BoxShadowMix(color: Colors.black, blurRadius: 5),
+          BoxShadowMix(color: Colors.grey, blurRadius: 10),
+        ]);
 
-      expect(styler.$decoration, isNotNull);
-    });
+        expect(styler.$decoration, isNotNull);
+      },
+    );
 
     testWidgets(
       'BoxStyler.boxShadows resolves BoxShadowToken.mix() through MixScope',
@@ -223,29 +226,34 @@ void main() {
       expect(styler.$style, isNotNull);
     });
 
-    testWidgets('TextStyler.shadows resolves ShadowToken.mix() through MixScope', (
-      tester,
-    ) async {
-      const shadowToken = ShadowToken('text.shadows.token-mix.resolved');
-      final testShadows = [
-        const Shadow(color: Colors.black, offset: Offset(2, 2), blurRadius: 4),
-      ];
-
-      await tester.pumpWidget(
-        MixScope(
-          tokens: {shadowToken: testShadows},
-          child: Builder(
-            builder: (context) {
-              final styler = TextStyler().shadows(shadowToken.mix());
-              final styleSpec = styler.resolve(context);
-
-              expect(styleSpec.spec.style?.shadows, equals(testShadows));
-
-              return const SizedBox.shrink();
-            },
+    testWidgets(
+      'TextStyler.shadows resolves ShadowToken.mix() through MixScope',
+      (tester) async {
+        const shadowToken = ShadowToken('text.shadows.token-mix.resolved');
+        final testShadows = [
+          const Shadow(
+            color: Colors.black,
+            offset: Offset(2, 2),
+            blurRadius: 4,
           ),
-        ),
-      );
-    });
+        ];
+
+        await tester.pumpWidget(
+          MixScope(
+            tokens: {shadowToken: testShadows},
+            child: Builder(
+              builder: (context) {
+                final styler = TextStyler().shadows(shadowToken.mix());
+                final styleSpec = styler.resolve(context);
+
+                expect(styleSpec.spec.style?.shadows, equals(testShadows));
+
+                return const SizedBox.shrink();
+              },
+            ),
+          ),
+        );
+      },
+    );
   });
 }
