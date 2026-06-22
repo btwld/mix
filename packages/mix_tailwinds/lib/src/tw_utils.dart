@@ -85,3 +85,18 @@ double? parseFractionToken(String value) {
 
   return numerator / denominator;
 }
+
+final _cssLengthRegex = RegExp(r'^(-?\d+\.?\d*)(px|rem|em)?$');
+
+/// Parses a raw CSS length string into logical pixels.
+///
+/// A bare number is treated as `px`; `rem`/`em` are converted at 16px. Returns
+/// null when [raw] is not a plain numeric length (e.g. `50%`, `full`, `auto`).
+double? parseCssLength(String raw) {
+  final match = _cssLengthRegex.firstMatch(raw);
+  if (match == null) return null;
+  var length = double.parse(match.group(1)!);
+  final unit = match.group(2) ?? 'px';
+  if (unit == 'rem' || unit == 'em') length *= 16;
+  return length;
+}

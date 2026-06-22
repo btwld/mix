@@ -257,6 +257,13 @@ void main() {
       expect(_decoOf(spec)?.color, const Color(0x80EF4444));
     });
 
+    testWidgets('arbitrary bare-fraction opacity modifier applies alpha', (
+      tester,
+    ) async {
+      final spec = await _resolveBox(tester, 'bg-red-500/[0.5]');
+      expect(_decoOf(spec)?.color, const Color(0x80EF4444));
+    });
+
     testWidgets('invalid color opacity modifiers warn and skip token', (
       tester,
     ) async {

@@ -193,7 +193,7 @@ bool isWidgetLayerUtility(TailwindUtility utility) {
   final root = tailwindUtilityRoot(utility);
   final valueKey = tailwindValueKey(tailwindUtilityValue(utility));
 
-  if (_transitionTriggerTokens.contains(raw) ||
+  if (transitionTriggerTokens.contains(raw) ||
       raw == 'transition-none' ||
       _easeTokens.contains(raw) ||
       root == 'duration' ||
@@ -212,7 +212,7 @@ bool isWidgetLayerUtility(TailwindUtility utility) {
 
   if (root == 'gap-x' || root == 'gap-y') return true;
 
-  if (_sizingRoots.contains(root)) {
+  if (sizingRoots.contains(root)) {
     return valueKey == 'full' ||
         valueKey == 'screen' ||
         valueKey == 'auto' ||
@@ -288,7 +288,7 @@ String? tailwindValueKey(TailwindValue? value) {
   return value is TailwindNamedValue ? value.raw : null;
 }
 
-const _transitionTriggerTokens = {
+const transitionTriggerTokens = {
   'transition',
   'transition-all',
   'transition-colors',
@@ -312,7 +312,7 @@ const _flexItemTokens = {
   'grow-0',
 };
 
-const _sizingRoots = {'w', 'h', 'min-w', 'min-h', 'max-w', 'max-h'};
+const sizingRoots = {'w', 'h', 'min-w', 'min-h', 'max-w', 'max-h'};
 
 const _boxStylingRoots = {
   'p',

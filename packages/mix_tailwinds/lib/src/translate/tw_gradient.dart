@@ -74,9 +74,7 @@ final class GradientAccum {
       }
     }
 
-    final useCssAngleRect =
-        strategy == TwGradientStrategy.cssAngleRect ||
-        strategy.name == 'adaptive';
+    final useCssAngleRect = strategy == TwGradientStrategy.cssAngleRect;
     if (useCssAngleRect &&
         directionKey != null &&
         _tailwindCornerDirections.contains(directionKey)) {

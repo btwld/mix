@@ -178,9 +178,6 @@ class TwConfig {
 
   double radiusOf(String key, {double fallback = 0}) => radii[key] ?? fallback;
 
-  double borderWidthOf(String key, {double fallback = 1}) =>
-      borderWidths[key] ?? fallback;
-
   double breakpointOf(String key, {double fallback = 0}) =>
       breakpoints[key] ?? fallback;
 
@@ -217,27 +214,8 @@ class TwConfig {
 
   double? blurOf(String key) => blurs[key];
 
-  // Key existence checks for strict validation
+  /// Whether the spacing scale contains [key].
   bool hasSpace(String key) => space.containsKey(key);
-  bool hasRadius(String key) => radii.containsKey(key);
-  bool hasBorderWidth(String key) => borderWidths.containsKey(key);
-  bool hasBreakpoint(String key) => breakpoints.containsKey(key);
-  bool hasFontSize(String key) => fontSizes.containsKey(key);
-  bool hasDuration(String key) => durations.containsKey(key);
-  bool hasDelay(String key) => delays.containsKey(key);
-  bool hasScale(String key) => scales.containsKey(key);
-  bool hasRotation(String key) => rotations.containsKey(key);
-  bool hasBlur(String key) => blurs.containsKey(key);
-
-  bool hasColor(String key) {
-    // Handle opacity modifiers like 'white/10', 'purple-500/30'
-    final slashIndex = key.indexOf('/');
-    if (slashIndex > 0) {
-      final colorKey = key.substring(0, slashIndex);
-      return colors.containsKey(colorKey);
-    }
-    return colors.containsKey(key);
-  }
 
   /// Creates a copy of this config with the given fields replaced.
   ///

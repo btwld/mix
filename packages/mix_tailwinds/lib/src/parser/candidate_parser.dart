@@ -118,23 +118,6 @@ final class TailwindCandidateParser {
     );
   }
 
-  List<TailwindParseResult> parseCandidates(
-    String input, {
-    TailwindCandidateSeparator separator =
-        TailwindCandidateSeparator.whitespace,
-  }) {
-    final trimmed = input.trim();
-    if (trimmed.isEmpty) return const [];
-    final tokens = switch (separator) {
-      TailwindCandidateSeparator.whitespace => trimmed.split(RegExp(r'\s+')),
-      TailwindCandidateSeparator.htmlClassAttribute => trimmed.split(
-        RegExp(r'\s+'),
-      ),
-    };
-
-    return [for (final token in tokens) parseCandidate(token)];
-  }
-
   TailwindUtility? _parseUtility(String raw) {
     if (raw.startsWith('[')) return _parseArbitraryProperty(raw);
 
@@ -389,8 +372,6 @@ final class TailwindParserOptions {
   final bool allowLegacyImportantPrefix;
   final bool preserveSourceSpans;
 }
-
-enum TailwindCandidateSeparator { whitespace, htmlClassAttribute }
 
 TailwindParseError? _balancedDelimiterError(String input) {
   final stack = <String>[];

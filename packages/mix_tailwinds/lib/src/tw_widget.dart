@@ -88,13 +88,7 @@ double? _marginLength(TailwindValue? value, TwConfig cfg) {
   final key = tailwindValueKey(value);
   final scale = cfg.space[key];
   if (scale != null) return scale;
-  if (value is! TailwindArbitraryValue) return null;
-  final match = RegExp(r'^(-?\d+\.?\d*)(px|rem|em)?$').firstMatch(value.value);
-  if (match == null) return null;
-  var length = double.parse(match.group(1)!);
-  final unit = match.group(2) ?? 'px';
-  if (unit == 'rem' || unit == 'em') length *= 16;
-  return length;
+  return value is TailwindArbitraryValue ? parseCssLength(value.value) : null;
 }
 
 const _marginRoots = {'m', 'mx', 'my', 'mt', 'mr', 'mb', 'ml'};

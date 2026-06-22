@@ -13,6 +13,7 @@ import '../parser/model.dart';
 import '../theme/data/default_theme.g.dart';
 import '../tw_config.dart';
 import '../tw_types.dart';
+import '../tw_utils.dart';
 import 'tw_accumulators.dart';
 import 'tw_gradient.dart';
 import 'tw_presets.dart';
@@ -168,7 +169,7 @@ final class TwTranslator {
       }
 
       final base = candidate.utility.raw;
-      if (_transitionTriggerTokens.contains(base)) {
+      if (transitionTriggerTokens.contains(base)) {
         hasTransition = true;
       } else if (base == 'transition-none') {
         hasTransitionNone = true;
@@ -650,7 +651,7 @@ final class TwTranslator {
     TailwindValue? value, {
     required bool negative,
   }) {
-    if (!_sizingRoots.contains(root)) return false;
+    if (!sizingRoots.contains(root)) return false;
     if (negative) return false;
     final length = _sizingLength(root, value);
     if (length == null) return _isWidgetLayerSize(value);
@@ -1058,14 +1059,7 @@ final class TwTranslator {
   }
 
   double? _arbitraryLength(TailwindValue? value) {
-    if (value is! TailwindArbitraryValue) return null;
-    final raw = value.value;
-    final match = RegExp(r'^(-?\d+\.?\d*)(px|rem|em)?$').firstMatch(raw);
-    if (match == null) return null;
-    var number = double.parse(match.group(1)!);
-    final unit = match.group(2) ?? 'px';
-    if (unit == 'rem' || unit == 'em') number *= 16;
-    return number;
+    return value is TailwindArbitraryValue ? parseCssLength(value.value) : null;
   }
 
   Color? _color(TailwindValue? value, TailwindModifier? modifier) {
@@ -1081,15 +1075,21 @@ final class TwTranslator {
 
   Color? _applyOpacity(Color? color, TailwindModifier? modifier) {
     if (color == null || modifier == null) return color;
-    final raw = switch (modifier) {
-      TailwindNamedModifier(:final raw) => raw,
-      TailwindArbitraryModifier(:final value) => value.replaceAll('%', ''),
+    final percent = switch (modifier) {
+      TailwindNamedModifier(:final raw) => double.tryParse(raw),
+      TailwindArbitraryModifier(:final value) => _arbitraryOpacityPercent(value),
       TailwindCssVariableModifier() => null,
     };
-    if (raw == null) return null;
-    final opacity = double.tryParse(raw);
-    if (opacity == null || opacity < 0 || opacity > 100) return null;
-    return color.withAlpha((opacity * 255 / 100).round());
+    if (percent == null || percent < 0 || percent > 100) return null;
+    return color.withAlpha((percent * 255 / 100).round());
+  }
+
+  /// Tailwind arbitrary opacity modifiers: `[50%]` is a 0–100 percentage,
+  /// while `[0.5]` is a 0–1 alpha fraction. Both normalize to the 0–100 scale.
+  double? _arbitraryOpacityPercent(String value) {
+    if (value.contains('%')) return double.tryParse(value.replaceAll('%', ''));
+    final fraction = double.tryParse(value);
+    return fraction == null ? null : fraction * 100;
   }
 
   Color? _hexColor(String value) {
@@ -1312,17 +1312,6 @@ final class TwTranslator {
     return (payload[field] ??= <String, Object?>{}) as JsonMap;
   }
 }
-
-const _transitionTriggerTokens = {
-  'transition',
-  'transition-all',
-  'transition-colors',
-  'transition-opacity',
-  'transition-shadow',
-  'transition-transform',
-};
-
-const _sizingRoots = {'w', 'h', 'min-w', 'min-h', 'max-w', 'max-h'};
 
 const _easeTokens = {
   'ease-linear': Curves.linear,

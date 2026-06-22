@@ -15,8 +15,8 @@ void main() {
 
       for (var id = 1; id <= 12; id++) {
         expect(
-          testText,
-          contains('R-$id'),
+          RegExp('R-$id\\b').hasMatch(testText),
+          isTrue,
           reason: 'Missing R-$id test marker.',
         );
       }
