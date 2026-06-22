@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../../core/mix_element.dart';
+import '../../core/prop.dart';
 import '../../properties/painting/shadow_mix.dart';
 import '../../properties/typography/text_style_mix.dart';
 
@@ -84,8 +85,17 @@ mixin TextStyleMixin<T extends Mix<Object?>> {
     return style(TextStyleMix.fontFamilyFallback(value));
   }
 
-  /// Sets text shadows
+  /// Sets text shadows.
+  ///
+  /// A design-token reference (`shadowToken.mix()`) arrives here as a
+  /// [ShadowListMix] (it implements both `List<ShadowMix>` and [ShadowListMix]);
+  /// it is routed as a Mix so its token source is preserved. A literal list is
+  /// wrapped as usual.
   T shadows(List<ShadowMix> value) {
+    if (value case final ShadowListMix ref) {
+      return style(TextStyleMix.create(shadows: Prop.mix(ref)));
+    }
+
     return style(TextStyleMix.shadows(value));
   }
 
