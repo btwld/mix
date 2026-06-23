@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/mix_element.dart';
+import '../../core/prop.dart';
 import '../../properties/painting/decoration_mix.dart';
 import '../../properties/painting/shadow_mix.dart';
 
@@ -26,12 +27,7 @@ mixin ShadowStyleMixin<T extends Mix<Object?>> {
     return decoration(BoxDecorationMix.boxShadow([shadow]));
   }
 
-  /// Creates multiple box shadows from a list of BoxShadowMix.
-  ///
-  /// A design-token reference (`boxShadowToken.mix()`) arrives here as a
-  /// [BoxShadowListMix] (it implements both `List<BoxShadowMix>` and
-  /// [BoxShadowListMix]); [BoxDecorationMix] passes it through to [Prop.mix]
-  /// unwrapped so its token source is preserved. A literal list is wrapped.
+  /// Creates multiple box shadows from a list of BoxShadowMix
   T boxShadows(List<BoxShadowMix> value) {
     return decoration(BoxDecorationMix.boxShadow(value));
   }
