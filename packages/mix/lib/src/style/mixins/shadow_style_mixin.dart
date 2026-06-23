@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../core/mix_element.dart';
-import '../../core/prop.dart';
 import '../../properties/painting/decoration_mix.dart';
 import '../../properties/painting/shadow_mix.dart';
 
@@ -34,10 +33,6 @@ mixin ShadowStyleMixin<T extends Mix<Object?>> {
   /// [BoxShadowListMix]); it is routed as a Mix so its token source is
   /// preserved. A literal list is wrapped as usual.
   T boxShadows(List<BoxShadowMix> value) {
-    if (value case final BoxShadowListMix ref) {
-      return decoration(BoxDecorationMix.create(boxShadow: Prop.mix(ref)));
-    }
-
     return decoration(BoxDecorationMix.boxShadow(value));
   }
 
