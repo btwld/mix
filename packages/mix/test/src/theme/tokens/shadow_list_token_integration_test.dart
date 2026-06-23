@@ -128,4 +128,132 @@ void main() {
       expect(boxShadowRef.runtimeType, equals(BoxShadowListRef));
     });
   });
+
+  group('Shadow token .mix() through styler methods (non-breaking)', () {
+    test('BoxShadowToken.mix() also implements List<BoxShadowMix>', () {
+      const boxShadowToken = BoxShadowToken('test.box.shadows.mix');
+      final mixRef = boxShadowToken.mix();
+
+      // The ref satisfies the raw list parameter type AND is a Mix.
+      expect(mixRef, isA<List<BoxShadowMix>>());
+      expect(mixRef, isA<BoxShadowListMix>());
+      expect(isAnyTokenRef(mixRef), isTrue);
+    });
+
+    test('ShadowToken.mix() also implements List<ShadowMix>', () {
+      const shadowToken = ShadowToken('test.shadows.mix');
+      final mixRef = shadowToken.mix();
+
+      expect(mixRef, isA<List<ShadowMix>>());
+      expect(mixRef, isA<ShadowListMix>());
+      expect(isAnyTokenRef(mixRef), isTrue);
+    });
+
+    test('BoxStyler.boxShadows accepts BoxShadowToken.mix()', () {
+      const boxShadowToken = BoxShadowToken('test.box.shadows.boxShadows');
+
+      // Compiles against the unchanged List<BoxShadowMix> signature.
+      final styler = BoxStyler().boxShadows(boxShadowToken.mix());
+
+      expect(styler.$decoration, isNotNull);
+    });
+
+    test('BoxStyler.shadows accepts BoxShadowToken.mix()', () {
+      const boxShadowToken = BoxShadowToken('test.box.shadows.shadows');
+
+      final styler = BoxStyler().shadows(boxShadowToken.mix());
+
+      expect(styler.$decoration, isNotNull);
+    });
+
+    test(
+      'BoxStyler.boxShadows still accepts a literal list (non-breaking)',
+      () {
+        final styler = BoxStyler().boxShadows([
+          BoxShadowMix(color: Colors.black, blurRadius: 5),
+          BoxShadowMix(color: Colors.grey, blurRadius: 10),
+        ]);
+
+        expect(styler.$decoration, isNotNull);
+      },
+    );
+
+    testWidgets(
+      'BoxStyler.boxShadows resolves BoxShadowToken.mix() through MixScope',
+      (tester) async {
+        const boxShadowToken = BoxShadowToken('box.shadows.token-mix.resolved');
+        final testBoxShadows = [
+          const BoxShadow(color: Colors.black, blurRadius: 4),
+          const BoxShadow(color: Colors.grey, blurRadius: 2),
+        ];
+
+        await tester.pumpWidget(
+          MixScope(
+            tokens: {boxShadowToken: testBoxShadows},
+            child: Builder(
+              builder: (context) {
+                final styler = BoxStyler().boxShadows(boxShadowToken.mix());
+                final styleSpec = styler.resolve(context);
+                final decoration = styleSpec.spec.decoration;
+
+                expect(decoration, isA<BoxDecoration>());
+                expect(
+                  (decoration as BoxDecoration).boxShadow,
+                  equals(testBoxShadows),
+                );
+
+                return const SizedBox.shrink();
+              },
+            ),
+          ),
+        );
+      },
+    );
+
+    test('TextStyler.shadows accepts ShadowToken.mix()', () {
+      const shadowToken = ShadowToken('text.shadows.mix');
+
+      final styler = TextStyler().shadows(shadowToken.mix());
+
+      expect(styler.$style, isNotNull);
+    });
+
+    test('TextStyler.shadows still accepts a literal list (non-breaking)', () {
+      final styler = TextStyler().shadows([
+        ShadowMix(color: Colors.black, offset: const Offset(1, 1)),
+      ]);
+
+      expect(styler.$style, isNotNull);
+    });
+
+    testWidgets(
+      'TextStyler.shadows resolves ShadowToken.mix() through MixScope',
+      (tester) async {
+        const shadowToken = ShadowToken('text.shadows.token-mix.resolved');
+        final testShadows = [
+          const Shadow(
+            color: Colors.black,
+            offset: Offset(2, 2),
+            blurRadius: 4,
+          ),
+        ];
+
+        await tester.pumpWidget(
+          MixScope(
+            tokens: {shadowToken: testShadows},
+            child: Builder(
+              builder: (context) {
+                final styler = TextStyler().shadows(shadowToken.mix());
+                final styleSpec = styler.resolve(context);
+
+                expect(styleSpec.spec.style?.shadows, equals(testShadows));
+
+                return const SizedBox.shrink();
+              },
+            ),
+          ),
+        );
+      },
+    );
+  });
 }

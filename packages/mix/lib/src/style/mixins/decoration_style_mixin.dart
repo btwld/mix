@@ -43,8 +43,8 @@ mixin DecorationStyleMixin<T extends Mix<Object?>> {
   ///
   /// A design-token reference (`boxShadowToken.mix()`) arrives here as a
   /// [BoxShadowListMix] (it implements both `List<BoxShadowMix>` and
-  /// [BoxShadowListMix]); it is routed as a Mix so its token source is
-  /// preserved. A literal list is wrapped as usual.
+  /// [BoxShadowListMix]); [BoxDecorationMix] passes it through to [Prop.mix]
+  /// unwrapped so its token source is preserved. A literal list is wrapped.
   T shadows(List<BoxShadowMix> value) {
     return decoration(BoxDecorationMix.boxShadow(value));
   }

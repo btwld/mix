@@ -102,6 +102,9 @@ class BorderSideToken extends MixToken<BorderSide> {
 class ShadowToken extends MixToken<List<Shadow>> {
   const ShadowToken(super.name);
 
+  /// Returns a Mix framework compatible reference for use with Mix styling utilities.
+  ShadowListMixRef mix() => .new(Prop.token(this));
+
   @override
   ShadowListRef call() => .new(Prop.token(this));
 }
@@ -109,6 +112,9 @@ class ShadowToken extends MixToken<List<Shadow>> {
 /// Design token for box shadow lists.
 class BoxShadowToken extends MixToken<List<BoxShadow>> {
   const BoxShadowToken(super.name);
+
+  /// Returns a Mix framework compatible reference for use with Mix styling utilities.
+  BoxShadowListMixRef mix() => .new(Prop.token(this));
 
   @override
   BoxShadowListRef call() => .new(Prop.token(this));

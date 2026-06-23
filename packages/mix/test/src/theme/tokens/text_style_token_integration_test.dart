@@ -135,6 +135,48 @@ void main() {
       });
     });
 
+    group('Other Token Types mix() Methods', () {
+      test('ShadowToken.mix() returns ShadowListMixRef', () {
+        final token = ShadowToken('test-shadow');
+        final mixRef = token.mix();
+
+        expect(mixRef, isA<ShadowListMixRef>());
+        expect(mixRef, isA<ShadowListMix>());
+        expect(mixRef, isA<Prop<List<Shadow>>>());
+        expect(mixRef, PropMatcher.isToken(token));
+      });
+
+      test('BoxShadowToken.mix() returns BoxShadowListMixRef', () {
+        final token = BoxShadowToken('test-boxshadow');
+        final mixRef = token.mix();
+
+        expect(mixRef, isA<BoxShadowListMixRef>());
+        expect(mixRef, isA<BoxShadowListMix>());
+        expect(mixRef, isA<Prop<List<BoxShadow>>>());
+        expect(mixRef, PropMatcher.isToken(token));
+      });
+
+      test('ShadowToken.mix() returns ShadowListMixRef', () {
+        final token = ShadowToken('test-shadows');
+        final mixRef = token.mix();
+
+        expect(mixRef, isA<ShadowListMixRef>());
+        expect(mixRef, isA<ShadowListMix>());
+        expect(mixRef, isA<Prop<List<Shadow>>>());
+        expect(mixRef, PropMatcher.isToken(token));
+      });
+
+      test('BoxShadowToken.mix() returns BoxShadowListMixRef', () {
+        final token = BoxShadowToken('test-boxshadows');
+        final mixRef = token.mix();
+
+        expect(mixRef, isA<BoxShadowListMixRef>());
+        expect(mixRef, isA<BoxShadowListMix>());
+        expect(mixRef, isA<Prop<List<BoxShadow>>>());
+        expect(mixRef, PropMatcher.isToken(token));
+      });
+    });
+
     group('MixRef Classes', () {
       test('TextStyleMixRef can be created with a token prop', () {
         final token = TextStyleToken('test-style');
@@ -201,10 +243,17 @@ void main() {
     group('Token Registry Integration', () {
       test('token registry works correctly for all mix() refs', () {
         final textToken = TextStyleToken('test-style');
+        final shadowToken = ShadowToken('test-shadow');
+        final boxShadowToken = BoxShadowToken('test-boxshadow');
+
         final textMixRef = textToken.mix();
+        final shadowMixRef = shadowToken.mix();
+        final boxShadowMixRef = boxShadowToken.mix();
 
         // All should be detected as token references
         expect(isAnyTokenRef(textMixRef), isTrue);
+        expect(isAnyTokenRef(shadowMixRef), isTrue);
+        expect(isAnyTokenRef(boxShadowMixRef), isTrue);
       });
 
       test('mix() and call() refs are both detected as token references', () {
@@ -331,14 +380,18 @@ void main() {
         TextStyleMixRef textMixRef = textToken.mix();
 
         ShadowListRef shadowRef = shadowToken.call();
+        ShadowListMixRef shadowMixRef = shadowToken.mix();
 
         BoxShadowListRef boxShadowRef = boxShadowToken.call();
+        BoxShadowListMixRef boxShadowMixRef = boxShadowToken.mix();
 
         // Runtime verification
         expect(textRef, isA<TextStyle>());
         expect(textMixRef, isA<TextStyleMix>());
         expect(shadowRef, isA<List<Shadow>>());
+        expect(shadowMixRef, isA<ShadowListMix>());
         expect(boxShadowRef, isA<List<BoxShadow>>());
+        expect(boxShadowMixRef, isA<BoxShadowListMix>());
       });
 
       test('mix() vs call() return different but compatible types', () {

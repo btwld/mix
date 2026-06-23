@@ -88,8 +88,8 @@ mixin TextStyleMixin<T extends Mix<Object?>> {
   ///
   /// A design-token reference (`shadowToken.mix()`) arrives here as a
   /// [ShadowListMix] (it implements both `List<ShadowMix>` and [ShadowListMix]);
-  /// it is routed as a Mix so its token source is preserved. A literal list is
-  /// wrapped as usual.
+  /// [TextStyleMix] passes it through to [Prop.mix] unwrapped so its token
+  /// source is preserved. A literal list is wrapped as usual.
   T shadows(List<ShadowMix> value) {
     return style(TextStyleMix.shadows(value));
   }
