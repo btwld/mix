@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 
 import '../../core/mix_element.dart';
-import '../../core/prop.dart';
 import '../../properties/painting/shadow_mix.dart';
 import '../../properties/typography/text_style_mix.dart';
 
