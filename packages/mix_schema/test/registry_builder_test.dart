@@ -16,7 +16,7 @@ final class _EqualValue {
 }
 
 void main() {
-  test('R-6 registry builder freezes scoped identity values', () {
+  test('registry builder freezes scoped identity values', () {
     void callback() {}
 
     final registry = RegistryBuilder()
@@ -31,7 +31,7 @@ void main() {
     expect(registry.idFor(MixSchemaScope.animationOnEnd, callback), 'done');
   });
 
-  test('R-6 registry reverse lookup requires registered identity', () {
+  test('registry reverse lookup requires registered identity', () {
     final registered = _EqualValue(1);
     final equalButDifferent = _EqualValue(1);
     final registry = RegistryBuilder()
@@ -44,7 +44,7 @@ void main() {
     );
   });
 
-  test('R-6 invalid registry ids are rejected by the builder', () {
+  test('invalid registry ids are rejected by the builder', () {
     expect(
       () => RegistryBuilder().register(
         MixSchemaScope.iconData,
@@ -55,7 +55,7 @@ void main() {
     );
   });
 
-  test('R-6 unknown ids and values throw typed exceptions', () {
+  test('unknown ids and values throw typed exceptions', () {
     final registry = RegistryBuilder().freeze();
 
     expect(
@@ -68,7 +68,7 @@ void main() {
     );
   });
 
-  test('R-6 registry builder cannot register or freeze twice after freeze', () {
+  test('registry builder cannot register or freeze twice after freeze', () {
     const icon = IconData(0xe145, fontFamily: 'MaterialIcons');
     final builder = RegistryBuilder().iconData('add', icon);
     final registry = builder.freeze();

@@ -1,21 +1,14 @@
-import 'dart:convert';
-
 import 'package:ack/ack.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
 import '../errors/mix_schema_error.dart';
-import '../registry/registry.dart';
-import '../registry/registry_value_codec.dart';
 import 'common_codecs.dart';
 
-const _allOfPrefix = 'mix_schema_all_of:';
-
-AckSchema<JsonMap, VariantStyle<BoxSpec>> boxVariantCodec(
+AckSchema<JsonMap, VariantStyle<S>> variantCodec<S extends Spec<S>>(
   AckSchema<JsonMap, Object> rootStyleSchema,
-  FrozenRegistry Function() registry,
 ) {
-  return Ack.discriminated<VariantStyle<BoxSpec>>(
+  return Ack.discriminated<VariantStyle<S>>(
     discriminatorKey: 'kind',
     schemas: {
       'named': _namedVariantCodec(rootStyleSchema),
@@ -24,22 +17,20 @@ AckSchema<JsonMap, VariantStyle<BoxSpec>> boxVariantCodec(
       'context_brightness': _brightnessVariantCodec(rootStyleSchema),
       'context_breakpoint': _breakpointVariantCodec(rootStyleSchema),
       'context_not_widget_state': _notWidgetStateVariantCodec(rootStyleSchema),
-      'context_all_of': _allOfVariantCodec(rootStyleSchema),
-      'context_variant_builder': _contextVariantBuilderCodec(registry),
     },
   );
 }
 
-AckSchema<JsonMap, VariantStyle<BoxSpec>> _namedVariantCodec(
+AckSchema<JsonMap, VariantStyle<S>> _namedVariantCodec<S extends Spec<S>>(
   AckSchema<JsonMap, Object> rootStyleSchema,
 ) {
   return Ack.object({
     'name': Ack.string().notEmpty(),
     'style': rootStyleSchema,
-  }).codec<VariantStyle<BoxSpec>>(
-    decode: (data) => VariantStyle<BoxSpec>(
+  }).codec<VariantStyle<S>>(
+    decode: (data) => VariantStyle<S>(
       NamedVariant(data['name']! as String),
-      _boxStyle(data['style']!),
+      _typedStyle<S>(data['style']!),
     ),
     encode: (value) {
       final variant = value.variant;
@@ -52,16 +43,16 @@ AckSchema<JsonMap, VariantStyle<BoxSpec>> _namedVariantCodec(
   );
 }
 
-AckSchema<JsonMap, VariantStyle<BoxSpec>> _widgetStateVariantCodec(
+AckSchema<JsonMap, VariantStyle<S>> _widgetStateVariantCodec<S extends Spec<S>>(
   AckSchema<JsonMap, Object> rootStyleSchema,
 ) {
   return Ack.object({
     'state': _widgetStateCodec(),
     'style': rootStyleSchema,
-  }).codec<VariantStyle<BoxSpec>>(
-    decode: (data) => VariantStyle<BoxSpec>(
+  }).codec<VariantStyle<S>>(
+    decode: (data) => VariantStyle<S>(
       ContextVariant.widgetState(data['state']! as WidgetState),
-      _boxStyle(data['style']!),
+      _typedStyle<S>(data['style']!),
     ),
     encode: (value) {
       final variant = value.variant;
@@ -77,18 +68,21 @@ AckSchema<JsonMap, VariantStyle<BoxSpec>> _widgetStateVariantCodec(
   );
 }
 
-AckSchema<JsonMap, VariantStyle<BoxSpec>> _enabledVariantCodec(
+AckSchema<JsonMap, VariantStyle<S>> _enabledVariantCodec<S extends Spec<S>>(
   AckSchema<JsonMap, Object> rootStyleSchema,
 ) {
-  return Ack.object({'style': rootStyleSchema}).codec<VariantStyle<BoxSpec>>(
-    decode: (data) => VariantStyle<BoxSpec>(
+  return Ack.object({'style': rootStyleSchema}).codec<VariantStyle<S>>(
+    decode: (data) => VariantStyle<S>(
       ContextVariant.not(ContextVariant.widgetState(WidgetState.disabled)),
-      _boxStyle(data['style']!),
+      _typedStyle<S>(data['style']!),
     ),
     encode: (value) {
-      final variant = value.variant;
-      if (variant.key != 'not_widget_state_disabled') {
-        throw UnsupportedEncodeValueError(variant, 'Expected enabled variant.');
+      final state = _notWidgetState(value.variant);
+      if (state != WidgetState.disabled) {
+        throw UnsupportedEncodeValueError(
+          value.variant,
+          'Expected enabled variant.',
+        );
       }
 
       return {'style': value.value};
@@ -96,32 +90,32 @@ AckSchema<JsonMap, VariantStyle<BoxSpec>> _enabledVariantCodec(
   );
 }
 
-AckSchema<JsonMap, VariantStyle<BoxSpec>> _brightnessVariantCodec(
+AckSchema<JsonMap, VariantStyle<S>> _brightnessVariantCodec<S extends Spec<S>>(
   AckSchema<JsonMap, Object> rootStyleSchema,
 ) {
   return Ack.object({
     'brightness': _brightnessCodec(),
     'style': rootStyleSchema,
-  }).codec<VariantStyle<BoxSpec>>(
-    decode: (data) => VariantStyle<BoxSpec>(
+  }).codec<VariantStyle<S>>(
+    decode: (data) => VariantStyle<S>(
       ContextVariant.brightness(data['brightness']! as Brightness),
-      _boxStyle(data['style']!),
+      _typedStyle<S>(data['style']!),
     ),
     encode: (value) {
-      final brightness = _brightnessFromKey(value.variant.key);
-      if (brightness == null) {
+      final variant = value.variant;
+      if (variant is! BrightnessVariant) {
         throw UnsupportedEncodeValueError(
-          value.variant,
+          variant,
           'Expected brightness context variant.',
         );
       }
 
-      return {'brightness': brightness, 'style': value.value};
+      return {'brightness': variant.brightness, 'style': value.value};
     },
   );
 }
 
-AckSchema<JsonMap, VariantStyle<BoxSpec>> _breakpointVariantCodec(
+AckSchema<JsonMap, VariantStyle<S>> _breakpointVariantCodec<S extends Spec<S>>(
   AckSchema<JsonMap, Object> rootStyleSchema,
 ) {
   return Ack.object({
@@ -132,24 +126,34 @@ AckSchema<JsonMap, VariantStyle<BoxSpec>> _breakpointVariantCodec(
       .constrain(
         const _BreakpointBoundsConstraint('context_breakpoint variant'),
       )
-      .codec<VariantStyle<BoxSpec>>(
+      .codec<VariantStyle<S>>(
         decode: (data) {
           final minWidth = data['minWidth'] as double?;
           final maxWidth = data['maxWidth'] as double?;
 
-          return VariantStyle<BoxSpec>(
+          return VariantStyle<S>(
             ContextVariant.breakpoint(
               Breakpoint(minWidth: minWidth, maxWidth: maxWidth),
             ),
-            _boxStyle(data['style']!),
+            _typedStyle<S>(data['style']!),
           );
         },
         encode: (value) {
-          final breakpoint = _breakpointFromKey(value.variant.key);
-          if (breakpoint == null) {
+          final variant = value.variant;
+          if (variant is! BreakpointVariant) {
             throw UnsupportedEncodeValueError(
-              value.variant,
+              variant,
               'Expected breakpoint context variant.',
+            );
+          }
+          final breakpoint = variant.breakpoint;
+          if (breakpoint is BreakpointRef ||
+              breakpoint.minHeight != null ||
+              breakpoint.maxHeight != null ||
+              (breakpoint.minWidth == null && breakpoint.maxWidth == null)) {
+            throw UnsupportedEncodeValueError(
+              breakpoint,
+              'Only concrete width breakpoint variants are representable.',
             );
           }
 
@@ -162,23 +166,23 @@ AckSchema<JsonMap, VariantStyle<BoxSpec>> _breakpointVariantCodec(
       );
 }
 
-AckSchema<JsonMap, VariantStyle<BoxSpec>> _notWidgetStateVariantCodec(
-  AckSchema<JsonMap, Object> rootStyleSchema,
-) {
+AckSchema<JsonMap, VariantStyle<S>> _notWidgetStateVariantCodec<
+  S extends Spec<S>
+>(AckSchema<JsonMap, Object> rootStyleSchema) {
   return Ack.object({
     'state': _widgetStateCodec(),
     'style': rootStyleSchema,
-  }).codec<VariantStyle<BoxSpec>>(
+  }).codec<VariantStyle<S>>(
     decode: (data) {
       final state = data['state']! as WidgetState;
 
-      return VariantStyle<BoxSpec>(
+      return VariantStyle<S>(
         ContextVariant.not(ContextVariant.widgetState(state)),
-        _boxStyle(data['style']!),
+        _typedStyle<S>(data['style']!),
       );
     },
     encode: (value) {
-      final state = _notWidgetStateFromKey(value.variant.key);
+      final state = _notWidgetState(value.variant);
       if (state == null || state == WidgetState.disabled) {
         throw UnsupportedEncodeValueError(
           value.variant,
@@ -191,215 +195,31 @@ AckSchema<JsonMap, VariantStyle<BoxSpec>> _notWidgetStateVariantCodec(
   );
 }
 
-AckSchema<JsonMap, VariantStyle<BoxSpec>> _allOfVariantCodec(
-  AckSchema<JsonMap, Object> rootStyleSchema,
-) {
-  return Ack.object({
-    'conditions': Ack.list(_contextConditionCodec()),
-    'style': rootStyleSchema,
-  }).codec<VariantStyle<BoxSpec>>(
-    decode: (data) {
-      final conditions = data['conditions']! as List<_ContextCondition>;
-
-      return VariantStyle<BoxSpec>(
-        _allOfVariant(conditions),
-        _boxStyle(data['style']!),
-      );
-    },
-    encode: (value) {
-      final conditions = _conditionsFromAllOfKey(value.variant.key);
-      if (conditions == null) {
-        throw UnsupportedEncodeValueError(
-          value.variant,
-          'Expected context_all_of variant.',
-        );
-      }
-
-      return {'conditions': conditions, 'style': value.value};
-    },
-  );
-}
-
-AckSchema<JsonMap, VariantStyle<BoxSpec>> _contextVariantBuilderCodec(
-  FrozenRegistry Function() registry,
-) {
-  return Ack.object({
-    'builder': registryValueCodecFrom<BoxStyler Function(BuildContext)>(
-      registry,
-      MixSchemaScope.contextVariantBuilder,
-    ),
-  }).codec<VariantStyle<BoxSpec>>(
-    decode: (data) {
-      final builder = data['builder']! as BoxStyler Function(BuildContext);
-
-      return VariantStyle<BoxSpec>(
-        ContextVariantBuilder<BoxStyler>(builder),
-        BoxStyler(),
-      );
-    },
-    encode: (value) {
-      final variant = value.variant;
-      if (variant is! ContextVariantBuilder) {
-        throw UnsupportedEncodeValueError(
-          variant,
-          'Expected context variant builder.',
-        );
-      }
-
-      return {'builder': variant.fn};
-    },
-  );
-}
-
-AckSchema<JsonMap, _ContextCondition> _contextConditionCodec() {
-  return Ack.discriminated<_ContextCondition>(
-    discriminatorKey: 'kind',
-    schemas: {
-      'widget_state': Ack.object({'state': _widgetStateCodec()})
-          .codec<_ContextCondition>(
-            decode: (data) =>
-                _ContextCondition.widgetState(data['state']! as WidgetState),
-            encode: (value) {
-              final state = value.widgetState;
-              if (state == null || value.negated) {
-                throw UnsupportedEncodeValueError(
-                  value,
-                  'Expected widget_state condition.',
-                );
-              }
-
-              return {'state': state};
-            },
-          ),
-      'enabled': Ack.object({}).codec<_ContextCondition>(
-        decode: (_) => _ContextCondition.notWidgetState(WidgetState.disabled),
-        encode: (value) {
-          if (value.widgetState != WidgetState.disabled || !value.negated) {
-            throw UnsupportedEncodeValueError(
-              value,
-              'Expected enabled condition.',
-            );
-          }
-
-          return const {};
-        },
-      ),
-      'context_not_widget_state': Ack.object({'state': _widgetStateCodec()})
-          .codec<_ContextCondition>(
-            decode: (data) =>
-                _ContextCondition.notWidgetState(data['state']! as WidgetState),
-            encode: (value) {
-              final state = value.widgetState;
-              if (state == null ||
-                  !value.negated ||
-                  state == WidgetState.disabled) {
-                throw UnsupportedEncodeValueError(
-                  value,
-                  'Expected not-widget-state condition.',
-                );
-              }
-
-              return {'state': state};
-            },
-          ),
-      'context_brightness': Ack.object({'brightness': _brightnessCodec()})
-          .codec<_ContextCondition>(
-            decode: (data) =>
-                _ContextCondition.brightness(data['brightness']! as Brightness),
-            encode: (value) {
-              final brightness = value.brightness;
-              if (brightness == null) {
-                throw UnsupportedEncodeValueError(
-                  value,
-                  'Expected brightness condition.',
-                );
-              }
-
-              return {'brightness': brightness};
-            },
-          ),
-      'context_breakpoint':
-          Ack.object({
-                'minWidth': numberAsDoubleCodec().optional(),
-                'maxWidth': numberAsDoubleCodec().optional(),
-              })
-              .constrain(
-                const _BreakpointBoundsConstraint('breakpoint condition'),
-              )
-              .codec<_ContextCondition>(
-                decode: (data) {
-                  final minWidth = data['minWidth'] as double?;
-                  final maxWidth = data['maxWidth'] as double?;
-
-                  return _ContextCondition.breakpoint(
-                    Breakpoint(minWidth: minWidth, maxWidth: maxWidth),
-                  );
-                },
-                encode: (value) {
-                  final breakpoint = value.breakpoint;
-                  if (breakpoint == null) {
-                    throw UnsupportedEncodeValueError(
-                      value,
-                      'Expected breakpoint condition.',
-                    );
-                  }
-
-                  return {
-                    'minWidth': breakpoint.minWidth,
-                    'maxWidth': breakpoint.maxWidth,
-                  };
-                },
-              ),
-    },
-  );
-}
-
 CodecSchema<String, WidgetState> _widgetStateCodec() {
-  return strictEnumCodec(_widgetStateByWire, debugName: 'WidgetState');
+  return enumCodec(_widgetStateByWire, debugName: 'WidgetState');
 }
 
 CodecSchema<String, Brightness> _brightnessCodec() {
-  return strictEnumCodec({
+  return enumCodec({
     'light': Brightness.light,
     'dark': Brightness.dark,
   }, debugName: 'Brightness');
 }
 
-Style<BoxSpec> _boxStyle(Object value) {
-  if (value is Style<BoxSpec>) return value;
+Style<S> _typedStyle<S extends Spec<S>>(Object value) {
+  if (value is Style<S>) return value;
 
   throw UnsupportedEncodeValueError(
     value,
-    'Nested variant style must decode to a Box style.',
+    'Nested variant style must decode to a $S style.',
   );
 }
 
-Brightness? _brightnessFromKey(String key) {
-  return switch (key) {
-    'media_query_platform_brightness_light' => Brightness.light,
-    'media_query_platform_brightness_dark' => Brightness.dark,
-    _ => null,
-  };
-}
+WidgetState? _notWidgetState(Variant variant) {
+  if (variant is! NotVariant) return null;
+  final inner = variant.inner;
 
-Breakpoint? _breakpointFromKey(String key) {
-  final match = RegExp(r'^breakpoint_(.+)_(.+)$').firstMatch(key);
-  if (match == null) return null;
-  final min = match.group(1)!;
-  final max = match.group(2)!;
-
-  return Breakpoint(
-    minWidth: min == '0.0' ? null : double.tryParse(min),
-    maxWidth: max == 'infinity' ? null : double.tryParse(max),
-  );
-}
-
-WidgetState? _notWidgetStateFromKey(String key) {
-  const prefix = 'not_widget_state_';
-  if (!key.startsWith(prefix)) return null;
-  final wire = key.substring(prefix.length);
-
-  return _widgetStateByWire[wire];
+  return inner is WidgetStateVariant ? inner.state : null;
 }
 
 const Map<String, WidgetState> _widgetStateByWire = {
@@ -412,150 +232,6 @@ const Map<String, WidgetState> _widgetStateByWire = {
   'disabled': WidgetState.disabled,
   'error': WidgetState.error,
 };
-
-ContextVariant _allOfVariant(List<_ContextCondition> conditions) {
-  if (conditions.any((condition) => condition.kind == 'context_all_of')) {
-    throw const UnsupportedEncodeValueError(
-      null,
-      'Nested context_all_of variants are not supported.',
-    );
-  }
-
-  final encoded = jsonEncode(conditions.map((c) => c.toJson()).toList());
-
-  return ContextVariant('$_allOfPrefix$encoded', (context) {
-    return conditions.every((condition) => condition.variant.when(context));
-  });
-}
-
-List<_ContextCondition>? _conditionsFromAllOfKey(String key) {
-  if (!key.startsWith(_allOfPrefix)) return null;
-  final raw = jsonDecode(key.substring(_allOfPrefix.length));
-  if (raw is! List) return null;
-
-  return raw
-      .map((item) {
-        if (item is! JsonMap) {
-          throw UnsupportedEncodeValueError(
-            item,
-            'Invalid all_of condition key.',
-          );
-        }
-
-        return _ContextCondition.fromJson(item);
-      })
-      .toList(growable: false);
-}
-
-final class _ContextCondition {
-  const _ContextCondition._({
-    required this.kind,
-    required this.variant,
-    this.widgetState,
-    this.brightness,
-    this.breakpoint,
-    this.negated = false,
-  });
-
-  factory _ContextCondition.widgetState(WidgetState state) {
-    return _ContextCondition._(
-      kind: 'widget_state',
-      variant: ContextVariant.widgetState(state),
-      widgetState: state,
-    );
-  }
-
-  factory _ContextCondition.notWidgetState(WidgetState state) {
-    return _ContextCondition._(
-      kind: state == WidgetState.disabled
-          ? 'enabled'
-          : 'context_not_widget_state',
-      variant: ContextVariant.not(ContextVariant.widgetState(state)),
-      widgetState: state,
-      negated: true,
-    );
-  }
-
-  factory _ContextCondition.brightness(Brightness brightness) {
-    return _ContextCondition._(
-      kind: 'context_brightness',
-      variant: ContextVariant.brightness(brightness),
-      brightness: brightness,
-    );
-  }
-
-  factory _ContextCondition.breakpoint(Breakpoint breakpoint) {
-    return _ContextCondition._(
-      kind: 'context_breakpoint',
-      variant: ContextVariant.breakpoint(breakpoint),
-      breakpoint: breakpoint,
-    );
-  }
-
-  factory _ContextCondition.fromJson(JsonMap json) {
-    return switch (json['kind']) {
-      'widget_state' => _ContextCondition.widgetState(
-        _widgetStateByWire[json['state']]!,
-      ),
-      'enabled' => _ContextCondition.notWidgetState(WidgetState.disabled),
-      'context_not_widget_state' => _ContextCondition.notWidgetState(
-        _widgetStateByWire[json['state']]!,
-      ),
-      'context_brightness' => _ContextCondition.brightness(
-        json['brightness'] == 'dark' ? Brightness.dark : Brightness.light,
-      ),
-      'context_breakpoint' => _ContextCondition.breakpoint(
-        Breakpoint(
-          minWidth: json['minWidth'] as double?,
-          maxWidth: json['maxWidth'] as double?,
-        ),
-      ),
-      _ => throw UnsupportedEncodeValueError(
-        json,
-        'Unknown all_of condition kind.',
-      ),
-    };
-  }
-
-  final String kind;
-  final ContextVariant variant;
-  final WidgetState? widgetState;
-  final Brightness? brightness;
-  final Breakpoint? breakpoint;
-  final bool negated;
-
-  JsonMap toJson() {
-    return switch (kind) {
-      'widget_state' => {'kind': kind, 'state': _widgetStateWire(widgetState!)},
-      'enabled' => {'kind': kind},
-      'context_not_widget_state' => {
-        'kind': kind,
-        'state': _widgetStateWire(widgetState!),
-      },
-      'context_brightness' => {
-        'kind': kind,
-        'brightness': brightness == Brightness.dark ? 'dark' : 'light',
-      },
-      'context_breakpoint' => {
-        'kind': kind,
-        'minWidth': breakpoint!.minWidth,
-        'maxWidth': breakpoint!.maxWidth,
-      },
-      _ => throw UnsupportedEncodeValueError(
-        this,
-        'Unknown all_of condition kind.',
-      ),
-    };
-  }
-}
-
-String _widgetStateWire(WidgetState state) {
-  for (final entry in _widgetStateByWire.entries) {
-    if (entry.value == state) return entry.key;
-  }
-
-  throw UnsupportedEncodeValueError(state, 'Unknown widget state.');
-}
 
 final class _BreakpointBoundsConstraint extends Constraint<JsonMap>
     with Validator<JsonMap> {

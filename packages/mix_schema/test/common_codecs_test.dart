@@ -19,36 +19,30 @@ import 'package:mix_schema/src/errors/mix_schema_error.dart'
 import 'package:mix_schema/src/schema/common_codecs.dart';
 
 void main() {
-  test('R-4 numberAsDouble parses ints and encodes doubles', () {
+  test('numberAsDouble parses ints and encodes doubles', () {
     final schema = numberAsDoubleCodec();
 
     expect(schema.safeParse(2).getOrThrow(), 2.0);
     expect(schema.safeEncode(2.5).getOrThrow(), 2.5);
   });
 
-  test(
-    'R-4 color codec parses CSS-like input and encodes Ack canonical hex',
-    () {
-      final schema = colorCodec();
+  test('color codec parses CSS-like input and encodes Ack canonical hex', () {
+    final schema = colorCodec();
 
-      final color = schema.safeParse('rgba(51, 102, 153, 0.8)').getOrThrow()!;
+    final color = schema.safeParse('rgba(51, 102, 153, 0.8)').getOrThrow()!;
 
-      expect(color.toARGB32(), 0xCC336699);
-      expect(schema.safeEncode(color).getOrThrow(), '#CC336699');
-      expect(
-        schema.safeEncode(const Color(0xFF336699)).getOrThrow(),
-        '#336699',
-      );
-    },
-  );
+    expect(color.toARGB32(), 0xCC336699);
+    expect(schema.safeEncode(color).getOrThrow(), '#CC336699');
+    expect(schema.safeEncode(const Color(0xFF336699)).getOrThrow(), '#336699');
+  });
 
-  test('R-4 color codec rejects malformed color strings', () {
+  test('color codec rejects malformed color strings', () {
     final result = colorCodec().safeParse('336699');
 
     expect(result.isFail, isTrue);
   });
 
-  test('R-7 color channel bounds fail as constraint violations', () {
+  test('color channel bounds fail as constraint violations', () {
     final contract = MixSchemaContractBuilder().builtIn().freeze();
 
     for (final color in [
@@ -72,7 +66,7 @@ void main() {
     }
   });
 
-  test('R-4 alignment codec round-trips named and arbitrary alignments', () {
+  test('alignment codec round-trips named and arbitrary alignments', () {
     final schema = alignmentCodec();
     final value = schema.safeParse({'x': -1, 'y': 0.5}).getOrThrow()!;
 
@@ -83,7 +77,7 @@ void main() {
   });
 
   test(
-    'R-4 edgeInsets codec supports scalar shorthand without defaulting sides',
+    'edgeInsets codec supports scalar shorthand without defaulting sides',
     () {
       final schema = edgeInsetsCodec();
       final value = schema.safeParse({'top': 8}).getOrThrow()!;
@@ -98,14 +92,14 @@ void main() {
     },
   );
 
-  test('R-4 strict string enum rejects integer indexes', () {
-    final schema = strictEnumCodec({'clip': Clip.hardEdge});
+  test('wire enum codec rejects integer indexes', () {
+    final schema = enumCodec({'clip': Clip.hardEdge});
 
     expect(schema.safeParse('clip').getOrThrow(), Clip.hardEdge);
     expect(schema.safeParse(0).isFail, isTrue);
   });
 
-  test('R-10 box constraints preserve absent payload fields', () {
+  test('box constraints preserve absent payload fields', () {
     final payload = _encodeBox(
       BoxStyler(constraints: BoxConstraintsMix.minWidth(12)),
     );
@@ -123,7 +117,7 @@ void main() {
     expect(constraints.$maxHeight, isNull);
   });
 
-  test('R-10 box constraints support max-only and fixed dimensions', () {
+  test('box constraints support max-only and fixed dimensions', () {
     expect(
       _encodeBox(
         BoxStyler(constraints: BoxConstraintsMix.maxWidth(48)),
@@ -146,34 +140,28 @@ void main() {
     expect(singleValueProp(constraints.$maxWidth, 'maxWidth'), 32);
   });
 
-  test(
-    'R-10 unbounded max constraints use explicit null only when present',
-    () {
-      final payload = _encodeBox(
-        BoxStyler(constraints: BoxConstraintsMix.maxWidth(double.infinity)),
-      );
+  test('unbounded max constraints use explicit null only when present', () {
+    final payload = _encodeBox(
+      BoxStyler(constraints: BoxConstraintsMix.maxWidth(double.infinity)),
+    );
 
-      expect(payload['constraints'], {'maxWidth': null});
+    expect(payload['constraints'], {'maxWidth': null});
 
-      final constraints = _decodeBoxConstraints({
-        'type': 'box',
-        'constraints': {'maxWidth': null, 'maxHeight': null},
-      });
+    final constraints = _decodeBoxConstraints({
+      'type': 'box',
+      'constraints': {'maxWidth': null, 'maxHeight': null},
+    });
 
-      expect(
-        singleValueProp(constraints.$maxWidth, 'maxWidth'),
-        double.infinity,
-      );
-      expect(
-        singleValueProp(constraints.$maxHeight, 'maxHeight'),
-        double.infinity,
-      );
-      expect(constraints.$minWidth, isNull);
-      expect(constraints.$minHeight, isNull);
-    },
-  );
+    expect(singleValueProp(constraints.$maxWidth, 'maxWidth'), double.infinity);
+    expect(
+      singleValueProp(constraints.$maxHeight, 'maxHeight'),
+      double.infinity,
+    );
+    expect(constraints.$minWidth, isNull);
+    expect(constraints.$minHeight, isNull);
+  });
 
-  test('R-10 min constraints cannot decode to infinity', () {
+  test('min constraints cannot decode to infinity', () {
     final result = MixSchemaContractBuilder()
         .builtIn()
         .freeze()
@@ -185,7 +173,7 @@ void main() {
     expect(result, isA<MixSchemaDecodeFailure<BoxStyler>>());
   });
 
-  test('R-7 box constraints reject invalid min and max ordering', () {
+  test('box constraints reject invalid min and max ordering', () {
     final contract = MixSchemaContractBuilder().builtIn().freeze();
 
     for (final constraints in [
@@ -203,7 +191,7 @@ void main() {
     }
   });
 
-  test('R-5 token and multi-source props fail encode explicitly', () {
+  test('token and multi-source props fail encode explicitly', () {
     final prop = Prop.value(1.0).mergeProp(Prop.value(2.0));
 
     expect(

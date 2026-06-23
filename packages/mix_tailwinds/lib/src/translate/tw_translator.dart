@@ -99,9 +99,9 @@ final class TwTranslator {
   /// Builds an `icon` styler payload from base, schema-supported utilities.
   ///
   /// Only `w-*`/`h-*` (size), `text-<color>` (color), and `opacity-*` map onto
-  /// [IconStyler]. Variant-prefixed icon utilities are ignored because non-box
-  /// schema variants are not yet supported; widget-layer utilities (e.g.
-  /// margins) are handled separately by [TwIcon].
+  /// [IconStyler]. This Tailwinds icon path ignores variant-prefixed utilities
+  /// as base icon fields; widget-layer utilities (e.g. margins) are handled
+  /// separately by [TwIcon].
   JsonMap payloadIcon(String classNames) {
     final payload = payloadStyler(SchemaStyler.icon);
     double? width;
@@ -1077,7 +1077,9 @@ final class TwTranslator {
     if (color == null || modifier == null) return color;
     final percent = switch (modifier) {
       TailwindNamedModifier(:final raw) => double.tryParse(raw),
-      TailwindArbitraryModifier(:final value) => _arbitraryOpacityPercent(value),
+      TailwindArbitraryModifier(:final value) => _arbitraryOpacityPercent(
+        value,
+      ),
       TailwindCssVariableModifier() => null,
     };
     if (percent == null || percent < 0 || percent > 100) return null;
@@ -1132,21 +1134,10 @@ final class TwTranslator {
   List<JsonMap>? _boxShadowPayload(String raw, TailwindValue? value) {
     final key = raw == 'shadow' ? 'shadow' : 'shadow-${_valueKey(value)}';
     final shadows = raw == 'shadow-none'
-        ? const <BoxShadowMix>[]
+        ? const <BoxShadow>[]
         : kTailwindBoxShadowPresets[key];
     if (shadows == null) return null;
-    final encoded = builtInMixSchemaContract.encode(
-      BoxStyler().boxShadows(shadows),
-    );
-    final payload = switch (encoded) {
-      MixSchemaEncodeSuccess(:final value) => value,
-      MixSchemaEncodeFailure(:final errors) => throw StateError(
-        'Tailwinds failed to encode box shadows for "$raw": $errors',
-      ),
-    };
-    final decoration = payload['decoration'] as JsonMap?;
-    return (decoration?['boxShadow'] as List?)?.cast<JsonMap>() ??
-        const <JsonMap>[];
+    return shadows.map(payloadBoxShadow).toList(growable: false);
   }
 
   bool _applyFontWeight(JsonMap style, String raw) {
@@ -1209,29 +1200,9 @@ final class TwTranslator {
     };
     if (identical(preset, _missingTextShadowPreset)) return false;
     final shadows = preset == null
-        ? const <ShadowMix>[]
-        : kTextShadowPresets[preset]!
-              .map(
-                (shadow) => ShadowMix(
-                  color: shadow.color,
-                  offset: shadow.offset,
-                  blurRadius: shadow.blurRadius,
-                ),
-              )
-              .toList();
-    final encoded = builtInMixSchemaContract.encode(
-      TextStyler().shadows(shadows),
-    );
-    final payload = switch (encoded) {
-      MixSchemaEncodeSuccess(:final value) => value,
-      MixSchemaEncodeFailure(:final errors) => throw StateError(
-        'Tailwinds failed to encode text shadows for "$raw": $errors',
-      ),
-    };
-    final encodedStyle = payload['style'] as JsonMap?;
-    style['shadows'] =
-        (encodedStyle?['shadows'] as List?)?.cast<JsonMap>() ??
-        const <JsonMap>[];
+        ? const <Shadow>[]
+        : kTextShadowPresets[preset]!;
+    style['shadows'] = shadows.map(payloadShadow).toList(growable: false);
     return true;
   }
 

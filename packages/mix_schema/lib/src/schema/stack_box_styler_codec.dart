@@ -7,69 +7,161 @@ import 'animation_codec.dart';
 import 'box_styler_codec.dart';
 import 'common_codecs.dart';
 import 'modifier_codec.dart';
+import 'schema_field.dart';
 import 'stack_styler_codec.dart';
+import 'variant_codec.dart';
 
 AckSchema<JsonMap, StackBoxStyler> stackBoxStylerCodec({
+  AckSchema<JsonMap, Object>? rootStyleSchema,
   required FrozenRegistry Function() registry,
 }) {
-  return Ack.object({
-    'alignment': alignmentCodec().optional(),
-    'padding': edgeInsetsCodec().optional(),
-    'margin': edgeInsetsCodec().optional(),
-    'constraints': boxConstraintsCodec().optional(),
-    'clipBehavior': enumNameCodec(Clip.values).optional(),
-    'transform': matrix4Codec().optional(),
-    'transformAlignment': alignmentCodec().optional(),
-    'decoration': boxDecorationCodec().optional(),
-    'stackAlignment': alignmentCodec().optional(),
-    'fit': enumNameCodec(StackFit.values).optional(),
-    'textDirection': enumNameCodec(TextDirection.values).optional(),
-    'stackClipBehavior': enumNameCodec(Clip.values).optional(),
-    'modifiers': modifierConfigCodec().optional(),
-    'animation': animationConfigCodec(registry: registry).optional(),
-  }).codec<StackBoxStyler>(
-    decode: (data) => StackBoxStyler(
-      alignment: data['alignment'] as Alignment?,
-      padding: data['padding'] as EdgeInsetsMix?,
-      margin: data['margin'] as EdgeInsetsMix?,
-      constraints: data['constraints'] as BoxConstraintsMix?,
-      clipBehavior: data['clipBehavior'] as Clip?,
-      transform: data['transform'] as Matrix4?,
-      transformAlignment: data['transformAlignment'] as Alignment?,
-      decoration: data['decoration'] as BoxDecorationMix?,
-      stackAlignment: data['stackAlignment'] as Alignment?,
-      fit: data['fit'] as StackFit?,
-      textDirection: data['textDirection'] as TextDirection?,
-      stackClipBehavior: data['stackClipBehavior'] as Clip?,
-      modifier: data['modifiers'] as WidgetModifierConfig?,
-      animation: data['animation'] as AnimationConfig?,
+  return _stackBoxStylerSchemaType(rootStyleSchema, registry).codec();
+}
+
+SchemaObject<StackBoxStyler> _stackBoxStylerSchemaType(
+  AckSchema<JsonMap, Object>? rootStyleSchema,
+  FrozenRegistry Function() registry,
+) {
+  final alignment = derivedField<StackBoxStyler, Alignment>(
+    'alignment',
+    alignmentCodec(),
+    _boxField,
+  );
+  final padding = derivedField<StackBoxStyler, EdgeInsetsMix>(
+    'padding',
+    edgeInsetsCodec(),
+    _boxField,
+  );
+  final margin = derivedField<StackBoxStyler, EdgeInsetsMix>(
+    'margin',
+    edgeInsetsCodec(),
+    _boxField,
+  );
+  final constraints = derivedField<StackBoxStyler, BoxConstraintsMix>(
+    'constraints',
+    boxConstraintsCodec(),
+    _boxField,
+  );
+  final clipBehavior = derivedField<StackBoxStyler, Clip>(
+    'clipBehavior',
+    enumCodec(enumNames(Clip.values)),
+    _boxField,
+  );
+  final transform = derivedField<StackBoxStyler, Matrix4>(
+    'transform',
+    matrix4Codec(),
+    _boxField,
+  );
+  final transformAlignment = derivedField<StackBoxStyler, Alignment>(
+    'transformAlignment',
+    alignmentCodec(),
+    _boxField,
+  );
+  final decoration = derivedField<StackBoxStyler, BoxDecorationMix>(
+    'decoration',
+    boxDecorationCodec(),
+    _boxField,
+  );
+  final stackAlignment = derivedField<StackBoxStyler, Alignment>(
+    'stackAlignment',
+    alignmentCodec(),
+    _stackField,
+    readWire: 'alignment',
+  );
+  final fit = derivedField<StackBoxStyler, StackFit>(
+    'fit',
+    enumCodec(enumNames(StackFit.values)),
+    _stackField,
+  );
+  final textDirection = derivedField<StackBoxStyler, TextDirection>(
+    'textDirection',
+    enumCodec(enumNames(TextDirection.values)),
+    _stackField,
+  );
+  final stackClipBehavior = derivedField<StackBoxStyler, Clip>(
+    'stackClipBehavior',
+    enumCodec(enumNames(Clip.values)),
+    _stackField,
+    readWire: 'clipBehavior',
+  );
+  final variants = rootStyleSchema == null
+      ? null
+      : directField<StackBoxStyler, List<VariantStyle<StackBoxSpec>>>(
+          'variants',
+          Ack.list(variantCodec<StackBoxSpec>(rootStyleSchema)),
+          (value) => value.$variants,
+        );
+  final modifiers = directField<StackBoxStyler, WidgetModifierConfig>(
+    'modifiers',
+    modifierConfigCodec(),
+    (value) => value.$modifier,
+  );
+  final animation = directField<StackBoxStyler, AnimationConfig>(
+    'animation',
+    animationConfigCodec(registry: registry),
+    (value) => value.$animation,
+  );
+
+  return SchemaObject<StackBoxStyler>(
+    fields: [
+      alignment,
+      padding,
+      margin,
+      constraints,
+      clipBehavior,
+      transform,
+      transformAlignment,
+      decoration,
+      stackAlignment,
+      fit,
+      textDirection,
+      stackClipBehavior,
+      ?variants,
+      modifiers,
+      animation,
+    ],
+    unsupportedFields: [
+      if (variants == null)
+        UnsupportedSchemaField<StackBoxStyler>(
+          'variants',
+          (value) => value.$variants,
+        ),
+    ],
+    build: (data) => StackBoxStyler(
+      alignment: alignment.value(data),
+      padding: padding.value(data),
+      margin: margin.value(data),
+      constraints: constraints.value(data),
+      clipBehavior: clipBehavior.value(data),
+      transform: transform.value(data),
+      transformAlignment: transformAlignment.value(data),
+      decoration: decoration.value(data),
+      stackAlignment: stackAlignment.value(data),
+      fit: fit.value(data),
+      textDirection: textDirection.value(data),
+      stackClipBehavior: stackClipBehavior.value(data),
+      variants: variants?.value(data),
+      modifier: modifiers.value(data),
+      animation: animation.value(data),
     ),
-    encode: _encodeStackBoxStyler,
   );
 }
 
-JsonMap _encodeStackBoxStyler(StackBoxStyler value) {
-  failIfPresent(value.$variants, 'variants');
+Object? _boxField(StackBoxStyler value, String wire) {
+  final box = readProp<BoxStyler, StyleSpec<BoxSpec>>(value.$box, 'box');
 
-  final box = singleMixProp<BoxStyler, StyleSpec<BoxSpec>>(value.$box, 'box');
-  final stack = singleMixProp<StackStyler, StyleSpec<StackSpec>>(
+  return box == null
+      ? null
+      : encodeBoxStylerFields(box, includeStylerMetadata: false)[wire];
+}
+
+Object? _stackField(StackBoxStyler value, String wire) {
+  final stack = readProp<StackStyler, StyleSpec<StackSpec>>(
     value.$stack,
     'stack',
   );
-  final boxFields = box == null
-      ? <String, Object?>{}
-      : encodeBoxStylerFields(box, includeStylerMetadata: false);
-  final stackFields = stack == null
-      ? <String, Object?>{}
-      : encodeStackStylerFields(stack, includeStylerMetadata: false);
 
-  return {
-    ...boxFields,
-    'stackAlignment': stackFields['alignment'],
-    'fit': stackFields['fit'],
-    'textDirection': stackFields['textDirection'],
-    'stackClipBehavior': stackFields['clipBehavior'],
-    'modifiers': value.$modifier,
-    'animation': value.$animation,
-  };
+  return stack == null
+      ? null
+      : encodeStackStylerFields(stack, includeStylerMetadata: false)[wire];
 }

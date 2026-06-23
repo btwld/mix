@@ -6,7 +6,7 @@ import 'package:mix/mix.dart';
 import 'package:mix_schema/mix_schema.dart';
 
 void main() {
-  test('Phase 10 registeredTypes includes all built-in styler branches', () {
+  test('registeredTypes includes all built-in styler branches', () {
     final contract = MixSchemaContractBuilder().builtIn().freeze();
 
     expect(contract.registeredTypes, [
@@ -21,7 +21,7 @@ void main() {
     ]);
   });
 
-  test('Phase 10 minimal payloads decode for every remaining styler', () {
+  test('minimal payloads decode for every remaining styler', () {
     final contract = MixSchemaContractBuilder().builtIn().freeze();
 
     expect(
@@ -50,7 +50,7 @@ void main() {
     );
   });
 
-  test('Phase 10 flex and stack encode representative layout fields', () {
+  test('flex and stack encode representative layout fields', () {
     final contract = MixSchemaContractBuilder().builtIn().freeze();
 
     expect(
@@ -96,7 +96,7 @@ void main() {
     );
   });
 
-  test('Phase 10 icon and image use scoped registries for identity fields', () {
+  test('icon and image use scoped registries for identity fields', () {
     const icon = IconData(0xe88a, fontFamily: 'MaterialIcons');
     final image = MemoryImage(Uint8List.fromList([0, 1, 2, 3]));
     final builder = MixSchemaContractBuilder()
@@ -143,7 +143,7 @@ void main() {
     );
   });
 
-  test('Phase 10 flex_box and stack_box encode combined fields', () {
+  test('flex_box and stack_box encode combined fields', () {
     final contract = MixSchemaContractBuilder().builtIn().freeze();
 
     expect(

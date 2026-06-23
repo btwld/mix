@@ -6,94 +6,135 @@ import '../registry/registry.dart';
 import 'animation_codec.dart';
 import 'common_codecs.dart';
 import 'modifier_codec.dart';
+import 'schema_field.dart';
 import 'variant_codec.dart';
 
 AckSchema<JsonMap, BoxStyler> boxStylerCodec({
   AckSchema<JsonMap, Object>? rootStyleSchema,
   required FrozenRegistry Function() registry,
 }) {
-  return Ack.object({
-    'alignment': alignmentCodec().optional(),
-    'padding': edgeInsetsCodec().optional(),
-    'margin': edgeInsetsCodec().optional(),
-    'constraints': boxConstraintsCodec().optional(),
-    'clipBehavior': enumNameCodec(Clip.values).optional(),
-    'transform': matrix4Codec().optional(),
-    'transformAlignment': alignmentCodec().optional(),
-    'decoration': boxDecorationCodec().optional(),
-    if (rootStyleSchema != null)
-      'variants': Ack.list(
-        boxVariantCodec(rootStyleSchema, registry),
-      ).optional(),
-    'modifiers': modifierConfigCodec().optional(),
-    'animation': animationConfigCodec(registry: registry).optional(),
-  }).codec<BoxStyler>(
-    decode: (data) => BoxStyler(
-      alignment: data['alignment'] as Alignment?,
-      padding: data['padding'] as EdgeInsetsMix?,
-      margin: data['margin'] as EdgeInsetsMix?,
-      constraints: data['constraints'] as BoxConstraintsMix?,
-      clipBehavior: data['clipBehavior'] as Clip?,
-      transform: data['transform'] as Matrix4?,
-      transformAlignment: data['transformAlignment'] as Alignment?,
-      decoration: data['decoration'] as BoxDecorationMix?,
-      variants: data['variants'] as List<VariantStyle<BoxSpec>>?,
-      modifier: data['modifiers'] as WidgetModifierConfig?,
-      animation: data['animation'] as AnimationConfig?,
-    ),
-    encode: encodeBoxStylerFields,
-  );
+  return _boxStylerSchemaType(rootStyleSchema, registry).codec();
 }
 
 JsonMap encodeBoxStylerFields(
   BoxStyler value, {
   bool includeStylerMetadata = true,
 }) {
-  failIfPresent(value.$foregroundDecoration, 'foregroundDecoration');
-  final encoded = {
-    'alignment': singleAlignmentProp(value.$alignment, 'alignment'),
-    'padding': singleMixProp<EdgeInsetsMix, EdgeInsetsGeometry>(
-      value.$padding,
-      'padding',
-    ),
-    'margin': singleMixProp<EdgeInsetsMix, EdgeInsetsGeometry>(
-      value.$margin,
-      'margin',
-    ),
-    'constraints': singleMixProp<BoxConstraintsMix, BoxConstraints>(
-      value.$constraints,
-      'constraints',
-    ),
-    'clipBehavior': singleValueProp(value.$clipBehavior, 'clipBehavior'),
-    'transform': singleValueProp(value.$transform, 'transform'),
-    'transformAlignment': singleAlignmentProp(
-      value.$transformAlignment,
-      'transformAlignment',
-    ),
-    'decoration': singleMixProp<BoxDecorationMix, Decoration>(
-      value.$decoration,
-      'decoration',
-    ),
-    'variants': value.$variants,
-    'modifiers': value.$modifier,
-    'animation': value.$animation,
-  };
-
-  if (includeStylerMetadata) return encoded;
-
-  return Map<String, Object?>.from(encoded)
-    ..remove('variants')
-    ..remove('modifiers')
-    ..remove('animation');
+  return _boxStylerSchemaType(null, null).encodeFields(
+    value,
+    omit: includeStylerMetadata ? const {} : _stylerMetadataFields,
+  );
 }
+
+SchemaObject<BoxStyler> _boxStylerSchemaType(
+  AckSchema<JsonMap, Object>? rootStyleSchema,
+  FrozenRegistry Function()? registry,
+) {
+  final alignment = mixField<BoxStyler, Alignment, AlignmentGeometry>(
+    'alignment',
+    alignmentCodec(),
+    (value) => value.$alignment,
+  );
+  final padding = mixField<BoxStyler, EdgeInsetsMix, EdgeInsetsGeometry>(
+    'padding',
+    edgeInsetsCodec(),
+    (value) => value.$padding,
+  );
+  final margin = mixField<BoxStyler, EdgeInsetsMix, EdgeInsetsGeometry>(
+    'margin',
+    edgeInsetsCodec(),
+    (value) => value.$margin,
+  );
+  final constraints = mixField<BoxStyler, BoxConstraintsMix, BoxConstraints>(
+    'constraints',
+    boxConstraintsCodec(),
+    (value) => value.$constraints,
+  );
+  final clipBehavior = valueField<BoxStyler, Clip>(
+    'clipBehavior',
+    enumCodec(enumNames(Clip.values)),
+    (value) => value.$clipBehavior,
+  );
+  final transform = valueField<BoxStyler, Matrix4>(
+    'transform',
+    matrix4Codec(),
+    (value) => value.$transform,
+  );
+  final transformAlignment = mixField<BoxStyler, Alignment, AlignmentGeometry>(
+    'transformAlignment',
+    alignmentCodec(),
+    (value) => value.$transformAlignment,
+  );
+  final decoration = mixField<BoxStyler, BoxDecorationMix, Decoration>(
+    'decoration',
+    boxDecorationCodec(),
+    (value) => value.$decoration,
+  );
+  final variants = rootStyleSchema == null || registry == null
+      ? null
+      : directField<BoxStyler, List<VariantStyle<BoxSpec>>>(
+          'variants',
+          Ack.list(variantCodec<BoxSpec>(rootStyleSchema)),
+          (value) => value.$variants,
+        );
+  final modifiers = directField<BoxStyler, WidgetModifierConfig>(
+    'modifiers',
+    modifierConfigCodec(),
+    (value) => value.$modifier,
+  );
+  final animation = directField<BoxStyler, AnimationConfig>(
+    'animation',
+    animationConfigCodec(registry: registry ?? _emptyRegistry),
+    (value) => value.$animation,
+  );
+
+  return SchemaObject<BoxStyler>(
+    fields: [
+      alignment,
+      padding,
+      margin,
+      constraints,
+      clipBehavior,
+      transform,
+      transformAlignment,
+      decoration,
+      ?variants,
+      modifiers,
+      animation,
+    ],
+    unsupportedFields: [
+      UnsupportedSchemaField<BoxStyler>(
+        'foregroundDecoration',
+        (value) => value.$foregroundDecoration,
+      ),
+    ],
+    build: (data) => BoxStyler(
+      alignment: alignment.value(data),
+      padding: padding.value(data),
+      margin: margin.value(data),
+      constraints: constraints.value(data),
+      clipBehavior: clipBehavior.value(data),
+      transform: transform.value(data),
+      transformAlignment: transformAlignment.value(data),
+      decoration: decoration.value(data),
+      variants: variants?.value(data),
+      modifier: modifiers.value(data),
+      animation: animation.value(data),
+    ),
+  );
+}
+
+const _stylerMetadataFields = {'variants', 'modifiers', 'animation'};
+
+FrozenRegistry _emptyRegistry() => RegistryBuilder().freeze();
 
 CodecSchema<JsonMap, BoxDecorationMix> boxDecorationCodec() {
   return Ack.object({
     'color': colorCodec().optional(),
     'border': borderCodec().optional(),
     'borderRadius': borderRadiusCodec().optional(),
-    'shape': enumNameCodec(BoxShape.values).optional(),
-    'backgroundBlendMode': enumNameCodec(BlendMode.values).optional(),
+    'shape': enumCodec(enumNames(BoxShape.values)).optional(),
+    'backgroundBlendMode': enumCodec(enumNames(BlendMode.values)).optional(),
     'boxShadow': Ack.list(boxShadowCodec()).optional(),
   }).codec<BoxDecorationMix>(
     decode: (data) => BoxDecorationMix(

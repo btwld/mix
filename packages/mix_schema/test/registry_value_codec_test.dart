@@ -1,27 +1,27 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter/widgets.dart';
 import 'package:mix_schema/mix_schema.dart';
 import 'package:mix_schema/src/errors/schema_error_mapper.dart';
 import 'package:mix_schema/src/registry/registry_value_codec.dart';
 
 void main() {
-  test('R-6 registry value codec decodes and encodes registered values', () {
-    final value = Object();
-    final registry = RegistryBuilder()
-        .register(MixSchemaScope.contextVariantBuilder, 'ctx_builder', value)
-        .freeze();
-    final schema = registryValueCodec<Object>(
-      registry,
-      MixSchemaScope.contextVariantBuilder,
+  test('registry value codec decodes and encodes registered values', () {
+    const value = IconData(0xe145, fontFamily: 'MaterialIcons');
+    final registry = RegistryBuilder().iconData('add', value).freeze();
+    final schema = registryValueCodec<IconData>(
+      () => registry,
+      MixSchemaScope.iconData,
     );
 
-    expect(schema.safeParse('ctx_builder').getOrThrow(), same(value));
-    expect(schema.safeEncode(value).getOrThrow(), 'ctx_builder');
+    expect(schema.safeParse('add').getOrThrow(), value);
+    expect(schema.safeEncode(value).getOrThrow(), 'add');
   });
 
-  test('R-6 bad grammar fails before lookup', () {
-    final schema = registryValueCodec<Object>(
-      RegistryBuilder().freeze(),
-      MixSchemaScope.contextVariantBuilder,
+  test('bad grammar fails before lookup', () {
+    final registry = RegistryBuilder().freeze();
+    final schema = registryValueCodec<IconData>(
+      () => registry,
+      MixSchemaScope.iconData,
     );
     final result = schema.safeParse('bad id');
 
@@ -32,10 +32,11 @@ void main() {
     );
   });
 
-  test('R-6 unknown id maps to unknown_registry_id', () {
-    final schema = registryValueCodec<Object>(
-      RegistryBuilder().freeze(),
-      MixSchemaScope.contextVariantBuilder,
+  test('unknown id maps to unknown_registry_id', () {
+    final registry = RegistryBuilder().freeze();
+    final schema = registryValueCodec<IconData>(
+      () => registry,
+      MixSchemaScope.iconData,
     );
     final result = schema.safeParse('missing');
 
@@ -46,12 +47,15 @@ void main() {
     );
   });
 
-  test('R-6 unregistered value maps to unknown_registry_value', () {
-    final schema = registryValueCodec<Object>(
-      RegistryBuilder().freeze(),
-      MixSchemaScope.contextVariantBuilder,
+  test('unregistered value maps to unknown_registry_value', () {
+    final registry = RegistryBuilder().freeze();
+    final schema = registryValueCodec<IconData>(
+      () => registry,
+      MixSchemaScope.iconData,
     );
-    final result = schema.safeEncode(Object());
+    final result = schema.safeEncode(
+      const IconData(0xe15b, fontFamily: 'MaterialIcons'),
+    );
 
     expect(result.isFail, isTrue);
     expect(

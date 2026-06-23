@@ -61,30 +61,15 @@ class ContextVariant extends Variant {
   }
 
   static ContextVariant not(ContextVariant variant) {
-    return ContextVariant(
-      'not_${variant.key}',
-      (context) => !variant.when(context),
-    );
+    return NotVariant(variant);
   }
 
   static ContextVariant breakpoint(Breakpoint breakpoint) {
-    if (breakpoint case final BreakpointRef ref) {
-      return ContextVariant('breakpoint_${ref.token.name}', (context) {
-        return ref.token.resolve(context).matches(MediaQuery.sizeOf(context));
-      });
-    }
-
-    return ContextVariant(
-      'breakpoint_${breakpoint.minWidth ?? '0.0'}_${breakpoint.maxWidth ?? 'infinity'}',
-      (context) => breakpoint.matches(MediaQuery.sizeOf(context)),
-    );
+    return BreakpointVariant(breakpoint);
   }
 
   static ContextVariant brightness(Brightness brightness) {
-    return ContextVariant(
-      'media_query_platform_brightness_${brightness.name}',
-      (context) => MediaQuery.platformBrightnessOf(context) == brightness,
-    );
+    return BrightnessVariant(brightness);
   }
 
   static ContextVariant size(String name, bool Function(Size) condition) {
@@ -134,6 +119,62 @@ class ContextVariant extends Variant {
   }
 }
 
+/// Context variant that applies for a platform brightness.
+final class BrightnessVariant extends ContextVariant {
+  final Brightness brightness;
+
+  BrightnessVariant(this.brightness)
+    : super(
+        'media_query_platform_brightness_${brightness.name}',
+        (context) => MediaQuery.platformBrightnessOf(context) == brightness,
+      );
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BrightnessVariant && other.brightness == brightness;
+
+  @override
+  int get hashCode => brightness.hashCode;
+}
+
+/// Context variant that applies for a concrete or token-backed breakpoint.
+final class BreakpointVariant extends ContextVariant {
+  final Breakpoint breakpoint;
+
+  BreakpointVariant(this.breakpoint)
+    : super(_breakpointKey(breakpoint), (context) {
+        if (breakpoint case final BreakpointRef ref) {
+          return ref.token.resolve(context).matches(MediaQuery.sizeOf(context));
+        }
+
+        return breakpoint.matches(MediaQuery.sizeOf(context));
+      });
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BreakpointVariant && other.breakpoint == breakpoint;
+
+  @override
+  int get hashCode => breakpoint.hashCode;
+}
+
+/// Context variant that applies when another context variant does not.
+final class NotVariant extends ContextVariant {
+  final ContextVariant inner;
+
+  NotVariant(this.inner)
+    : super('not_${inner.key}', (context) => !inner.when(context));
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) || other is NotVariant && other.inner == inner;
+
+  @override
+  int get hashCode => inner.hashCode;
+}
+
 final class WidgetStateVariant extends ContextVariant {
   final WidgetState state;
 
@@ -149,6 +190,14 @@ final class WidgetStateVariant extends ContextVariant {
 
   @override
   int get hashCode => state.hashCode;
+}
+
+String _breakpointKey(Breakpoint breakpoint) {
+  if (breakpoint case final BreakpointRef ref) {
+    return 'breakpoint_${ref.token.name}';
+  }
+
+  return 'breakpoint_${breakpoint.minWidth ?? '0.0'}_${breakpoint.maxWidth ?? 'infinity'}';
 }
 
 /// Variant that dynamically builds a Style based on build context.

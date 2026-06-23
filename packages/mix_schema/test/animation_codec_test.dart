@@ -4,7 +4,7 @@ import 'package:mix/mix.dart';
 import 'package:mix_schema/mix_schema.dart';
 
 void main() {
-  test('R-6/R-9 animation decodes registry-backed onEnd callbacks', () {
+  test('animation decodes registry-backed onEnd callbacks', () {
     void onEnd() {}
     final builder = MixSchemaContractBuilder();
     builder.registry.animationOnEnd('done', onEnd);
@@ -32,7 +32,7 @@ void main() {
     expect(animation.onEnd, same(onEnd));
   });
 
-  test('R-10 animation delay is explicit and not defaulted', () {
+  test('animation delay is explicit and not defaulted', () {
     final result = MixSchemaContractBuilder().builtIn().freeze().validate({
       'type': 'box',
       'animation': {'duration': 250, 'curve': 'easeInOut'},
@@ -49,7 +49,7 @@ void main() {
     );
   });
 
-  test('R-5/R-6 animation encodes named curves and registry callbacks', () {
+  test('animation encodes named curves and registry callbacks', () {
     void onEnd() {}
     final builder = MixSchemaContractBuilder();
     builder.registry.animationOnEnd('done', onEnd);
@@ -81,7 +81,7 @@ void main() {
     });
   });
 
-  test('R-5 spring animations fail encode explicitly', () {
+  test('spring animations fail encode explicitly', () {
     final result = MixSchemaContractBuilder().builtIn().freeze().encode(
       BoxStyler(
         animation: AnimationConfig.spring(const Duration(milliseconds: 250)),
@@ -99,7 +99,7 @@ void main() {
     );
   });
 
-  test('R-5 arbitrary curves fail encode explicitly', () {
+  test('arbitrary curves fail encode explicitly', () {
     final result = MixSchemaContractBuilder().builtIn().freeze().encode(
       BoxStyler(
         animation: const CurveAnimationConfig(
@@ -120,7 +120,7 @@ void main() {
     );
   });
 
-  test('R-6 unregistered animation callbacks do not serialize closures', () {
+  test('unregistered animation callbacks do not serialize closures', () {
     void onEnd() {}
     final result = MixSchemaContractBuilder().builtIn().freeze().encode(
       BoxStyler(

@@ -53,9 +53,7 @@ enum SchemaVariant {
   enabled('enabled'),
   contextBrightness('context_brightness'),
   contextBreakpoint('context_breakpoint'),
-  contextNotWidgetState('context_not_widget_state'),
-  contextAllOf('context_all_of'),
-  contextVariantBuilder('context_variant_builder');
+  contextNotWidgetState('context_not_widget_state');
 
   const SchemaVariant(this.wireValue);
 
@@ -103,6 +101,10 @@ String payloadColor(Color value) {
 
 Object payloadAlignment(Alignment value) {
   return encodeAlignmentWire(value);
+}
+
+JsonMap payloadOffset(Offset value) {
+  return {'x': value.dx, 'y': value.dy};
 }
 
 Object payloadEdgeInsets({
@@ -205,6 +207,23 @@ String payloadFontWeight(FontWeight value) {
       'value',
       'No FontWeight wire value is registered.',
     ),
+  };
+}
+
+JsonMap payloadShadow(Shadow value) {
+  return {
+    'color': payloadColor(value.color),
+    'offset': payloadOffset(value.offset),
+    'blurRadius': value.blurRadius,
+  };
+}
+
+JsonMap payloadBoxShadow(BoxShadow value) {
+  return {
+    'color': payloadColor(value.color),
+    'offset': payloadOffset(value.offset),
+    'blurRadius': value.blurRadius,
+    'spreadRadius': value.spreadRadius,
   };
 }
 

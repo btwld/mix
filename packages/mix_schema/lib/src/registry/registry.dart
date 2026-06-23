@@ -5,8 +5,7 @@ import '../errors/mix_schema_error.dart';
 enum MixSchemaScope {
   animationOnEnd('animation_on_end'),
   iconData('icon_data'),
-  imageProvider('image_provider'),
-  contextVariantBuilder('context_variant_builder');
+  imageProvider('image_provider');
 
   const MixSchemaScope(this.wireValue);
 
@@ -47,13 +46,6 @@ final class RegistryBuilder {
 
   RegistryBuilder imageProvider(String id, ImageProvider value) =>
       register(MixSchemaScope.imageProvider, id, value);
-
-  RegistryBuilder contextVariantBuilder<T extends Object>(
-    String id,
-    T Function(BuildContext) value,
-  ) {
-    return register(MixSchemaScope.contextVariantBuilder, id, value);
-  }
 
   FrozenRegistry freeze() {
     _ensureMutable();

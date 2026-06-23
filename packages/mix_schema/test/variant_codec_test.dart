@@ -15,7 +15,7 @@ void main() {
     };
   }
 
-  test('R-11 decodes named variant with lazy nested style', () {
+  test('decodes named variant with lazy nested style', () {
     final box = decodeBox({
       'type': 'box',
       'variants': [
@@ -35,7 +35,7 @@ void main() {
     expect(box.$variants!.single.value, isA<BoxStyler>());
   });
 
-  test('R-11 decodes widget state, enabled, brightness, and breakpoint', () {
+  test('decodes widget state, enabled, brightness, and breakpoint', () {
     final box = decodeBox({
       'type': 'box',
       'variants': [
@@ -72,41 +72,27 @@ void main() {
     ]);
   });
 
-  test('R-11 decodes flat context_all_of and rejects nested all_of', () {
-    final ok = contract().validate({
-      'type': 'box',
-      'variants': [
-        {
-          'kind': 'context_all_of',
-          'conditions': [
-            {'kind': 'enabled'},
-            {'kind': 'context_brightness', 'brightness': 'light'},
+  test('removed context variant hacks fail as unknown variant kinds', () {
+    for (final kind in ['context_all_of', 'context_variant_builder']) {
+      final errors = _validationErrors(
+        contract().validate({
+          'type': 'box',
+          'variants': [
+            {
+              'kind': kind,
+              'style': {'type': 'box'},
+            },
           ],
-          'style': {'type': 'box'},
-        },
-      ],
-    });
-    expect(ok, isA<MixSchemaValidationSuccess>());
+        }),
+      );
 
-    final nested = contract().validate({
-      'type': 'box',
-      'variants': [
-        {
-          'kind': 'context_all_of',
-          'conditions': [
-            {'kind': 'context_all_of', 'conditions': []},
-          ],
-          'style': {'type': 'box'},
-        },
-      ],
-    });
-
-    expect(nested, isA<MixSchemaValidationFailure>());
+      expect(errors.single.code, MixSchemaErrorCode.invalidEnum);
+    }
   });
 
-  test('R-11 breakpoint variants without bounds fail as constraints', () {
-    for (final payload in [
-      {
+  test('breakpoint variants without bounds fail as constraints', () {
+    final errors = _validationErrors(
+      contract().validate({
         'type': 'box',
         'variants': [
           {
@@ -114,45 +100,34 @@ void main() {
             'style': {'type': 'box'},
           },
         ],
-      },
-      {
-        'type': 'box',
-        'variants': [
-          {
-            'kind': 'context_all_of',
-            'conditions': [
-              {'kind': 'context_breakpoint'},
-            ],
-            'style': {'type': 'box'},
-          },
-        ],
-      },
-    ]) {
-      final errors = _validationErrors(contract().validate(payload));
-      final codes = errors.map((error) => error.code);
+      }),
+    );
+    final codes = errors.map((error) => error.code);
 
-      expect(codes, contains(MixSchemaErrorCode.constraintViolation));
-      expect(codes, isNot(contains(MixSchemaErrorCode.transformFailed)));
-      expect(codes, isNot(contains(MixSchemaErrorCode.unsupportedEncodeValue)));
-    }
+    expect(codes, contains(MixSchemaErrorCode.constraintViolation));
+    expect(codes, isNot(contains(MixSchemaErrorCode.transformFailed)));
+    expect(codes, isNot(contains(MixSchemaErrorCode.unsupportedEncodeValue)));
   });
 
-  test('non-box variants remain explicitly unsupported', () {
+  test('non-box variants encode through lazy nested style', () {
     final result = contract().encode(
       TextStyler().variant(const NamedVariant('body'), TextStyler(maxLines: 1)),
     );
-    final errors = switch (result) {
-      MixSchemaEncodeFailure(:final errors) => errors,
-      MixSchemaEncodeSuccess() => fail('expected encode failure'),
+    final payload = switch (result) {
+      MixSchemaEncodeSuccess(:final value) => value,
+      MixSchemaEncodeFailure(:final errors) => fail('$errors'),
     };
 
-    expect(
-      errors.map((error) => error.code),
-      contains(MixSchemaErrorCode.unsupportedEncodeValue),
-    );
+    expect(payload['variants'], [
+      {
+        'kind': 'named',
+        'name': 'body',
+        'style': {'type': 'text', 'maxLines': 1},
+      },
+    ]);
   });
 
-  test('R-11 encodes variants through lazy nested style', () {
+  test('encodes variants through lazy nested style', () {
     final style = BoxStyler().variant(
       const NamedVariant('primary'),
       BoxStyler(clipBehavior: Clip.hardEdge),
@@ -173,36 +148,46 @@ void main() {
     ]);
   });
 
-  test('R-6/R-11 context variant builders use registry ids', () {
-    BoxStyler responsiveBox(BuildContext context) {
-      return BoxStyler(clipBehavior: Clip.hardEdge);
-    }
-
-    final builder = MixSchemaContractBuilder()
-      ..registry.contextVariantBuilder('responsive_box', responsiveBox);
-    final contract = builder.builtIn().freeze();
-
-    final decoded = contract.decode<BoxStyler>({
-      'type': 'box',
-      'variants': [
-        {'kind': 'context_variant_builder', 'builder': 'responsive_box'},
+  test('encodes typed context variants without parsing keys', () {
+    final style = BoxStyler(
+      variants: [
+        VariantStyle(
+          ContextVariant.brightness(Brightness.light),
+          BoxStyler(clipBehavior: Clip.hardEdge),
+        ),
+        VariantStyle(
+          ContextVariant.breakpoint(const Breakpoint(maxWidth: 600)),
+          BoxStyler(clipBehavior: Clip.antiAlias),
+        ),
+        VariantStyle(
+          ContextVariant.not(ContextVariant.widgetState(WidgetState.pressed)),
+          BoxStyler(clipBehavior: Clip.antiAliasWithSaveLayer),
+        ),
       ],
-    });
-    final style = switch (decoded) {
-      MixSchemaDecodeSuccess<BoxStyler>(:final value) => value,
-      MixSchemaDecodeFailure<BoxStyler>(:final errors) => fail('$errors'),
-    };
+    );
 
-    expect(style.$variants!.single.variant, isA<ContextVariantBuilder>());
-
-    final encoded = contract.encode(style);
+    final encoded = contract().encode(style);
     final payload = switch (encoded) {
       MixSchemaEncodeSuccess(:final value) => value,
       MixSchemaEncodeFailure(:final errors) => fail('$errors'),
     };
 
     expect(payload['variants'], [
-      {'kind': 'context_variant_builder', 'builder': 'responsive_box'},
+      {
+        'kind': 'context_brightness',
+        'brightness': 'light',
+        'style': {'type': 'box', 'clipBehavior': 'hardEdge'},
+      },
+      {
+        'kind': 'context_breakpoint',
+        'maxWidth': 600.0,
+        'style': {'type': 'box', 'clipBehavior': 'antiAlias'},
+      },
+      {
+        'kind': 'context_not_widget_state',
+        'state': 'pressed',
+        'style': {'type': 'box', 'clipBehavior': 'antiAliasWithSaveLayer'},
+      },
     ]);
   });
 }

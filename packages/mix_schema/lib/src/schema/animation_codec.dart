@@ -14,7 +14,7 @@ AckSchema<JsonMap, AnimationConfig> animationConfigCodec({
     'duration': _durationMillisCodec(),
     'curve': curveCodec(),
     'delay': _durationMillisCodec(),
-    'onEnd': registryValueCodecFrom<VoidCallback>(
+    'onEnd': registryValueCodec<VoidCallback>(
       registry,
       MixSchemaScope.animationOnEnd,
     ).optional(),
@@ -30,7 +30,7 @@ AckSchema<JsonMap, AnimationConfig> animationConfigCodec({
 }
 
 CodecSchema<String, Curve> curveCodec() {
-  return strictEnumCodec(_namedCurves, debugName: 'Curve');
+  return enumCodec(_namedCurves, debugName: 'Curve');
 }
 
 AckSchema<int, int> _durationMillisCodec() {

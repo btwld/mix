@@ -14,7 +14,7 @@ final class _B {
 }
 
 void main() {
-  test('R-3 widens a typed branch without changing its boundary shape', () {
+  test('widens a typed branch without changing its boundary shape', () {
     final branch = widenStylerBranch<_A>(
       Ack.object({'value': Ack.string()}).codec<_A>(
         decode: (data) => _A(data['value']! as String),
@@ -26,7 +26,7 @@ void main() {
     expect(branch.safeEncode(const _A('x')).getOrThrow(), {'value': 'x'});
   });
 
-  test('R-3 wrong runtime subtype fails through a typed exception', () {
+  test('wrong runtime subtype fails through a typed exception', () {
     final branch = widenStylerBranch<_A>(
       Ack.object({'value': Ack.string()}).codec<_A>(
         decode: (data) => _A(data['value']! as String),

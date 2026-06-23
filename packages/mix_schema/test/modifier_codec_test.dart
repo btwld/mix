@@ -7,7 +7,7 @@ import 'package:mix_schema/src/schema/common_codecs.dart';
 void main() {
   MixSchemaContract contract() => MixSchemaContractBuilder().builtIn().freeze();
 
-  test('R-5 modifiers decode in payload order', () {
+  test('modifiers decode in payload order', () {
     final decoded = contract().decode<BoxStyler>({
       'type': 'box',
       'modifiers': [
@@ -41,7 +41,7 @@ void main() {
     );
   });
 
-  test('R-5 modifiers encode in config order', () {
+  test('modifiers encode in config order', () {
     final encoded = contract().encode(
       BoxStyler(
         modifier: WidgetModifierConfig.modifiers([
@@ -76,7 +76,7 @@ void main() {
     });
   });
 
-  test('R-5 flexible modifier decodes flex parent-data intent', () {
+  test('flexible modifier decodes flex parent-data intent', () {
     final decoded = contract().decode<BoxStyler>({
       'type': 'box',
       'modifiers': [
@@ -96,7 +96,7 @@ void main() {
     expect(singleValueProp(flexible.fit, 'fit'), FlexFit.tight);
   });
 
-  test('R-5 flexible modifier encodes flex parent-data intent', () {
+  test('flexible modifier encodes flex parent-data intent', () {
     final encoded = contract().encode(
       BoxStyler(
         modifier: WidgetModifierConfig.flexible(flex: 1, fit: FlexFit.tight),
@@ -116,7 +116,7 @@ void main() {
     });
   });
 
-  test('R-5 flexible modifier rejects invalid fit', () {
+  test('flexible modifier rejects invalid fit', () {
     final result = contract().validate({
       'type': 'box',
       'modifiers': [
@@ -135,7 +135,7 @@ void main() {
     );
   });
 
-  test('R-5 custom modifier order fails encode explicitly', () {
+  test('custom modifier order fails encode explicitly', () {
     final result = contract().encode(
       BoxStyler(
         modifier: WidgetModifierConfig.orderOfModifiers([BlurModifier]),

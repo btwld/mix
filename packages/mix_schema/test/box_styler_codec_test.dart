@@ -7,7 +7,7 @@ import 'package:mix_schema/src/schema/common_codecs.dart';
 void main() {
   MixSchemaContract contract() => MixSchemaContractBuilder().builtIn().freeze();
 
-  test('R-2/R-10 decodes box without branch-owned type field', () {
+  test('decodes box without branch-owned type field', () {
     final result = contract().decode<BoxStyler>({
       'type': 'box',
       'padding': {'top': 8},
@@ -26,7 +26,7 @@ void main() {
     expect(box.$margin, isNull);
   });
 
-  test('R-2 Ack root injects box discriminator on encode', () {
+  test('Ack root injects box discriminator on encode', () {
     final encoded = contract().encode(
       BoxStyler(
         alignment: Alignment.center,
@@ -50,7 +50,7 @@ void main() {
     });
   });
 
-  test('R-5 unsupported box runtime values fail encode explicitly', () {
+  test('unsupported box runtime values fail encode explicitly', () {
     final style = BoxStyler(
       padding: EdgeInsetsMix(top: 4),
     ).merge(BoxStyler(padding: EdgeInsetsMix(top: 8)));

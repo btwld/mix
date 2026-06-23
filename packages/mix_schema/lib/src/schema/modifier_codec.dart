@@ -50,7 +50,7 @@ AckSchema<JsonMap, BlurModifierMix> _blurModifierCodec() {
 AckSchema<JsonMap, FlexibleModifierMix> _flexibleModifierCodec() {
   return Ack.object({
     'flex': Ack.integer().optional(),
-    'fit': strictEnumCodec({
+    'fit': enumCodec({
       'tight': FlexFit.tight,
       'loose': FlexFit.loose,
     }, debugName: 'FlexFit').optional(),

@@ -6,72 +6,132 @@ import '../registry/registry.dart';
 import 'animation_codec.dart';
 import 'common_codecs.dart';
 import 'modifier_codec.dart';
+import 'schema_field.dart';
+import 'variant_codec.dart';
 
 AckSchema<JsonMap, FlexStyler> flexStylerCodec({
+  AckSchema<JsonMap, Object>? rootStyleSchema,
   required FrozenRegistry Function() registry,
 }) {
-  return Ack.object({
-    'direction': enumNameCodec(Axis.values).optional(),
-    'mainAxisAlignment': enumNameCodec(MainAxisAlignment.values).optional(),
-    'crossAxisAlignment': enumNameCodec(CrossAxisAlignment.values).optional(),
-    'mainAxisSize': enumNameCodec(MainAxisSize.values).optional(),
-    'verticalDirection': enumNameCodec(VerticalDirection.values).optional(),
-    'textDirection': enumNameCodec(TextDirection.values).optional(),
-    'textBaseline': enumNameCodec(TextBaseline.values).optional(),
-    'clipBehavior': enumNameCodec(Clip.values).optional(),
-    'spacing': numberAsDoubleCodec().optional(),
-    'modifiers': modifierConfigCodec().optional(),
-    'animation': animationConfigCodec(registry: registry).optional(),
-  }).codec<FlexStyler>(
-    decode: (data) => FlexStyler(
-      direction: data['direction'] as Axis?,
-      mainAxisAlignment: data['mainAxisAlignment'] as MainAxisAlignment?,
-      crossAxisAlignment: data['crossAxisAlignment'] as CrossAxisAlignment?,
-      mainAxisSize: data['mainAxisSize'] as MainAxisSize?,
-      verticalDirection: data['verticalDirection'] as VerticalDirection?,
-      textDirection: data['textDirection'] as TextDirection?,
-      textBaseline: data['textBaseline'] as TextBaseline?,
-      clipBehavior: data['clipBehavior'] as Clip?,
-      spacing: data['spacing'] as double?,
-      modifier: data['modifiers'] as WidgetModifierConfig?,
-      animation: data['animation'] as AnimationConfig?,
-    ),
-    encode: encodeFlexStylerFields,
-  );
+  return _flexStylerSchemaType(rootStyleSchema, registry).codec();
 }
 
 JsonMap encodeFlexStylerFields(
   FlexStyler value, {
   bool includeStylerMetadata = true,
 }) {
-  failIfPresent(value.$variants, 'variants');
-
-  final encoded = {
-    'direction': singleValueProp(value.$direction, 'direction'),
-    'mainAxisAlignment': singleValueProp(
-      value.$mainAxisAlignment,
-      'mainAxisAlignment',
-    ),
-    'crossAxisAlignment': singleValueProp(
-      value.$crossAxisAlignment,
-      'crossAxisAlignment',
-    ),
-    'mainAxisSize': singleValueProp(value.$mainAxisSize, 'mainAxisSize'),
-    'verticalDirection': singleValueProp(
-      value.$verticalDirection,
-      'verticalDirection',
-    ),
-    'textDirection': singleValueProp(value.$textDirection, 'textDirection'),
-    'textBaseline': singleValueProp(value.$textBaseline, 'textBaseline'),
-    'clipBehavior': singleValueProp(value.$clipBehavior, 'clipBehavior'),
-    'spacing': singleValueProp(value.$spacing, 'spacing'),
-    'modifiers': value.$modifier,
-    'animation': value.$animation,
-  };
-
-  if (includeStylerMetadata) return encoded;
-
-  return Map<String, Object?>.from(encoded)
-    ..remove('modifiers')
-    ..remove('animation');
+  return _flexStylerSchemaType(null, _emptyRegistry).encodeFields(
+    value,
+    omit: includeStylerMetadata ? const {} : _stylerMetadataFields,
+  );
 }
+
+SchemaObject<FlexStyler> _flexStylerSchemaType(
+  AckSchema<JsonMap, Object>? rootStyleSchema,
+  FrozenRegistry Function() registry,
+) {
+  final direction = valueField<FlexStyler, Axis>(
+    'direction',
+    enumCodec(enumNames(Axis.values)),
+    (value) => value.$direction,
+  );
+  final mainAxisAlignment = valueField<FlexStyler, MainAxisAlignment>(
+    'mainAxisAlignment',
+    enumCodec(enumNames(MainAxisAlignment.values)),
+    (value) => value.$mainAxisAlignment,
+  );
+  final crossAxisAlignment = valueField<FlexStyler, CrossAxisAlignment>(
+    'crossAxisAlignment',
+    enumCodec(enumNames(CrossAxisAlignment.values)),
+    (value) => value.$crossAxisAlignment,
+  );
+  final mainAxisSize = valueField<FlexStyler, MainAxisSize>(
+    'mainAxisSize',
+    enumCodec(enumNames(MainAxisSize.values)),
+    (value) => value.$mainAxisSize,
+  );
+  final verticalDirection = valueField<FlexStyler, VerticalDirection>(
+    'verticalDirection',
+    enumCodec(enumNames(VerticalDirection.values)),
+    (value) => value.$verticalDirection,
+  );
+  final textDirection = valueField<FlexStyler, TextDirection>(
+    'textDirection',
+    enumCodec(enumNames(TextDirection.values)),
+    (value) => value.$textDirection,
+  );
+  final textBaseline = valueField<FlexStyler, TextBaseline>(
+    'textBaseline',
+    enumCodec(enumNames(TextBaseline.values)),
+    (value) => value.$textBaseline,
+  );
+  final clipBehavior = valueField<FlexStyler, Clip>(
+    'clipBehavior',
+    enumCodec(enumNames(Clip.values)),
+    (value) => value.$clipBehavior,
+  );
+  final spacing = valueField<FlexStyler, double>(
+    'spacing',
+    numberAsDoubleCodec(),
+    (value) => value.$spacing,
+  );
+  final variants = rootStyleSchema == null
+      ? null
+      : directField<FlexStyler, List<VariantStyle<FlexSpec>>>(
+          'variants',
+          Ack.list(variantCodec<FlexSpec>(rootStyleSchema)),
+          (value) => value.$variants,
+        );
+  final modifiers = directField<FlexStyler, WidgetModifierConfig>(
+    'modifiers',
+    modifierConfigCodec(),
+    (value) => value.$modifier,
+  );
+  final animation = directField<FlexStyler, AnimationConfig>(
+    'animation',
+    animationConfigCodec(registry: registry),
+    (value) => value.$animation,
+  );
+
+  return SchemaObject<FlexStyler>(
+    fields: [
+      direction,
+      mainAxisAlignment,
+      crossAxisAlignment,
+      mainAxisSize,
+      verticalDirection,
+      textDirection,
+      textBaseline,
+      clipBehavior,
+      spacing,
+      ?variants,
+      modifiers,
+      animation,
+    ],
+    unsupportedFields: [
+      if (variants == null)
+        UnsupportedSchemaField<FlexStyler>(
+          'variants',
+          (value) => value.$variants,
+        ),
+    ],
+    build: (data) => FlexStyler(
+      direction: direction.value(data),
+      mainAxisAlignment: mainAxisAlignment.value(data),
+      crossAxisAlignment: crossAxisAlignment.value(data),
+      mainAxisSize: mainAxisSize.value(data),
+      verticalDirection: verticalDirection.value(data),
+      textDirection: textDirection.value(data),
+      textBaseline: textBaseline.value(data),
+      clipBehavior: clipBehavior.value(data),
+      spacing: spacing.value(data),
+      variants: variants?.value(data),
+      modifier: modifiers.value(data),
+      animation: animation.value(data),
+    ),
+  );
+}
+
+const _stylerMetadataFields = {'modifiers', 'animation'};
+
+FrozenRegistry _emptyRegistry() => RegistryBuilder().freeze();

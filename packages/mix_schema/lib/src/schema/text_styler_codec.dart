@@ -6,67 +6,141 @@ import '../registry/registry.dart';
 import 'animation_codec.dart';
 import 'common_codecs.dart';
 import 'modifier_codec.dart';
+import 'schema_field.dart';
+import 'variant_codec.dart';
 
 AckSchema<JsonMap, TextStyler> textStylerCodec({
+  AckSchema<JsonMap, Object>? rootStyleSchema,
   required FrozenRegistry Function() registry,
 }) {
-  return Ack.object({
-    'overflow': textOverflowCodec().optional(),
-    'textAlign': textAlignCodec().optional(),
-    'maxLines': Ack.integer().optional(),
-    'style': textStyleMixCodec().optional(),
-    'textDirection': textDirectionCodec().optional(),
-    'softWrap': Ack.boolean().optional(),
-    'selectionColor': colorCodec().optional(),
-    'semanticsLabel': Ack.string().optional(),
-    'textHeightBehavior': textHeightBehaviorCodec().optional(),
-    'textDirectives': Ack.list(textDirectiveCodec()).optional(),
-    'modifiers': modifierConfigCodec().optional(),
-    'animation': animationConfigCodec(registry: registry).optional(),
-  }).codec<TextStyler>(
-    decode: (data) => TextStyler(
-      overflow: data['overflow'] as TextOverflow?,
-      textAlign: data['textAlign'] as TextAlign?,
-      maxLines: data['maxLines'] as int?,
-      style: data['style'] as TextStyleMix?,
-      textDirection: data['textDirection'] as TextDirection?,
-      softWrap: data['softWrap'] as bool?,
-      selectionColor: data['selectionColor'] as Color?,
-      semanticsLabel: data['semanticsLabel'] as String?,
-      textHeightBehavior: data['textHeightBehavior'] as TextHeightBehaviorMix?,
-      textDirectives: data['textDirectives'] as List<Directive<String>>?,
-      modifier: data['modifiers'] as WidgetModifierConfig?,
-      animation: data['animation'] as AnimationConfig?,
-    ),
-    encode: _encodeTextStyler,
-  );
+  return _textStylerSchemaType(rootStyleSchema, registry).codec();
 }
 
-JsonMap _encodeTextStyler(TextStyler value) {
-  failIfPresent(value.$strutStyle, 'strutStyle');
-  failIfPresent(value.$textScaler, 'textScaler');
-  failIfPresent(value.$textWidthBasis, 'textWidthBasis');
-  failIfPresent(value.$locale, 'locale');
-  failIfPresent(value.$variants, 'variants');
+SchemaObject<TextStyler> _textStylerSchemaType(
+  AckSchema<JsonMap, Object>? rootStyleSchema,
+  FrozenRegistry Function() registry,
+) {
+  final overflow = valueField<TextStyler, TextOverflow>(
+    'overflow',
+    textOverflowCodec(),
+    (value) => value.$overflow,
+  );
+  final textAlign = valueField<TextStyler, TextAlign>(
+    'textAlign',
+    textAlignCodec(),
+    (value) => value.$textAlign,
+  );
+  final maxLines = valueField<TextStyler, int>(
+    'maxLines',
+    Ack.integer(),
+    (value) => value.$maxLines,
+  );
+  final style = mixField<TextStyler, TextStyleMix, TextStyle>(
+    'style',
+    textStyleMixCodec(),
+    (value) => value.$style,
+  );
+  final textDirection = valueField<TextStyler, TextDirection>(
+    'textDirection',
+    textDirectionCodec(),
+    (value) => value.$textDirection,
+  );
+  final softWrap = valueField<TextStyler, bool>(
+    'softWrap',
+    Ack.boolean(),
+    (value) => value.$softWrap,
+  );
+  final selectionColor = valueField<TextStyler, Color>(
+    'selectionColor',
+    colorCodec(),
+    (value) => value.$selectionColor,
+  );
+  final semanticsLabel = valueField<TextStyler, String>(
+    'semanticsLabel',
+    Ack.string(),
+    (value) => value.$semanticsLabel,
+  );
+  final textHeightBehavior =
+      mixField<TextStyler, TextHeightBehaviorMix, TextHeightBehavior>(
+        'textHeightBehavior',
+        textHeightBehaviorCodec(),
+        (value) => value.$textHeightBehavior,
+      );
+  final textDirectives = directField<TextStyler, List<Directive<String>>>(
+    'textDirectives',
+    Ack.list(textDirectiveCodec()),
+    (value) => value.$textDirectives,
+  );
+  final variants = rootStyleSchema == null
+      ? null
+      : directField<TextStyler, List<VariantStyle<TextSpec>>>(
+          'variants',
+          Ack.list(variantCodec<TextSpec>(rootStyleSchema)),
+          (value) => value.$variants,
+        );
+  final modifiers = directField<TextStyler, WidgetModifierConfig>(
+    'modifiers',
+    modifierConfigCodec(),
+    (value) => value.$modifier,
+  );
+  final animation = directField<TextStyler, AnimationConfig>(
+    'animation',
+    animationConfigCodec(registry: registry),
+    (value) => value.$animation,
+  );
 
-  return {
-    'overflow': singleValueProp(value.$overflow, 'overflow'),
-    'textAlign': singleValueProp(value.$textAlign, 'textAlign'),
-    'maxLines': singleValueProp(value.$maxLines, 'maxLines'),
-    'style': singleMixProp<TextStyleMix, TextStyle>(value.$style, 'style'),
-    'textDirection': singleValueProp(value.$textDirection, 'textDirection'),
-    'softWrap': singleValueProp(value.$softWrap, 'softWrap'),
-    'selectionColor': singleValueProp(value.$selectionColor, 'selectionColor'),
-    'semanticsLabel': singleValueProp(value.$semanticsLabel, 'semanticsLabel'),
-    'textHeightBehavior':
-        singleMixProp<TextHeightBehaviorMix, TextHeightBehavior>(
-          value.$textHeightBehavior,
-          'textHeightBehavior',
+  return SchemaObject<TextStyler>(
+    fields: [
+      overflow,
+      textAlign,
+      maxLines,
+      style,
+      textDirection,
+      softWrap,
+      selectionColor,
+      semanticsLabel,
+      textHeightBehavior,
+      textDirectives,
+      ?variants,
+      modifiers,
+      animation,
+    ],
+    unsupportedFields: [
+      UnsupportedSchemaField<TextStyler>(
+        'strutStyle',
+        (value) => value.$strutStyle,
+      ),
+      UnsupportedSchemaField<TextStyler>(
+        'textScaler',
+        (value) => value.$textScaler,
+      ),
+      UnsupportedSchemaField<TextStyler>(
+        'textWidthBasis',
+        (value) => value.$textWidthBasis,
+      ),
+      UnsupportedSchemaField<TextStyler>('locale', (value) => value.$locale),
+      if (variants == null)
+        UnsupportedSchemaField<TextStyler>(
+          'variants',
+          (value) => value.$variants,
         ),
-    'textDirectives': value.$textDirectives,
-    'modifiers': value.$modifier,
-    'animation': value.$animation,
-  };
+    ],
+    build: (data) => TextStyler(
+      overflow: overflow.value(data),
+      textAlign: textAlign.value(data),
+      maxLines: maxLines.value(data),
+      style: style.value(data),
+      textDirection: textDirection.value(data),
+      softWrap: softWrap.value(data),
+      selectionColor: selectionColor.value(data),
+      semanticsLabel: semanticsLabel.value(data),
+      textHeightBehavior: textHeightBehavior.value(data),
+      textDirectives: textDirectives.value(data),
+      variants: variants?.value(data),
+      modifier: modifiers.value(data),
+      animation: animation.value(data),
+    ),
+  );
 }
 
 CodecSchema<JsonMap, TextStyleMix> textStyleMixCodec() {
@@ -159,7 +233,7 @@ List<ShadowMix>? _singleShadowList(TextStyleMix value) {
 }
 
 CodecSchema<String, TextOverflow> textOverflowCodec() {
-  return strictEnumCodec({
+  return enumCodec({
     'clip': TextOverflow.clip,
     'fade': TextOverflow.fade,
     'ellipsis': TextOverflow.ellipsis,
@@ -168,7 +242,7 @@ CodecSchema<String, TextOverflow> textOverflowCodec() {
 }
 
 CodecSchema<String, TextAlign> textAlignCodec() {
-  return strictEnumCodec({
+  return enumCodec({
     'left': TextAlign.left,
     'right': TextAlign.right,
     'center': TextAlign.center,
@@ -179,14 +253,14 @@ CodecSchema<String, TextAlign> textAlignCodec() {
 }
 
 CodecSchema<String, TextDirection> textDirectionCodec() {
-  return strictEnumCodec({
+  return enumCodec({
     'ltr': TextDirection.ltr,
     'rtl': TextDirection.rtl,
   }, debugName: 'TextDirection');
 }
 
 CodecSchema<String, FontWeight> fontWeightCodec() {
-  return strictEnumCodec({
+  return enumCodec({
     'w100': FontWeight.w100,
     'w200': FontWeight.w200,
     'w300': FontWeight.w300,
@@ -200,14 +274,14 @@ CodecSchema<String, FontWeight> fontWeightCodec() {
 }
 
 CodecSchema<String, FontStyle> fontStyleCodec() {
-  return strictEnumCodec({
+  return enumCodec({
     'normal': FontStyle.normal,
     'italic': FontStyle.italic,
   }, debugName: 'FontStyle');
 }
 
 CodecSchema<String, TextDecoration> textDecorationCodec() {
-  return strictEnumCodec({
+  return enumCodec({
     'none': TextDecoration.none,
     'underline': TextDecoration.underline,
     'overline': TextDecoration.overline,
@@ -216,7 +290,7 @@ CodecSchema<String, TextDecoration> textDecorationCodec() {
 }
 
 CodecSchema<String, TextDecorationStyle> textDecorationStyleCodec() {
-  return strictEnumCodec({
+  return enumCodec({
     'solid': TextDecorationStyle.solid,
     'double': TextDecorationStyle.double,
     'dotted': TextDecorationStyle.dotted,

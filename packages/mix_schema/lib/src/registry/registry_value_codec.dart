@@ -3,13 +3,6 @@ import 'package:ack/ack.dart';
 import 'registry.dart';
 
 CodecSchema<String, T> registryValueCodec<T extends Object>(
-  FrozenRegistry registry,
-  MixSchemaScope scope,
-) {
-  return registryValueCodecFrom(() => registry, scope);
-}
-
-CodecSchema<String, T> registryValueCodecFrom<T extends Object>(
   FrozenRegistry Function() registry,
   MixSchemaScope scope,
 ) {

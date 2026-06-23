@@ -80,7 +80,7 @@ CodecSchema<JsonMap, BorderSideMix> borderSideCodec() {
   return Ack.object({
     'color': colorCodec().optional(),
     'width': numberAsDoubleCodec().optional(),
-    'style': strictEnumCodec({
+    'style': enumCodec({
       'none': BorderStyle.none,
       'solid': BorderStyle.solid,
     }, debugName: 'BorderStyle').optional(),
@@ -199,8 +199,8 @@ CodecSchema<JsonMap, TextHeightBehaviorMix> textHeightBehaviorCodec() {
   return Ack.object({
     'applyHeightToFirstAscent': Ack.boolean().optional(),
     'applyHeightToLastDescent': Ack.boolean().optional(),
-    'leadingDistribution': enumNameCodec(
-      TextLeadingDistribution.values,
+    'leadingDistribution': enumCodec(
+      enumNames(TextLeadingDistribution.values),
     ).optional(),
   }).codec<TextHeightBehaviorMix>(
     decode: (data) => TextHeightBehaviorMix(
@@ -227,7 +227,7 @@ CodecSchema<JsonMap, TextHeightBehaviorMix> textHeightBehaviorCodec() {
 }
 
 CodecSchema<String, Directive<String>> textDirectiveCodec() {
-  return strictEnumCodec({
+  return enumCodec({
     'uppercase': const UppercaseStringDirective(),
     'lowercase': const LowercaseStringDirective(),
     'capitalize': const CapitalizeStringDirective(),
@@ -271,7 +271,7 @@ CodecSchema<Object, BorderRadiusMix> borderRadiusCodec() {
   );
 }
 
-CodecSchema<String, T> strictEnumCodec<T extends Object>(
+CodecSchema<String, T> enumCodec<T extends Object>(
   Map<String, T> values, {
   String? debugName,
 }) {
@@ -290,8 +290,8 @@ CodecSchema<String, T> strictEnumCodec<T extends Object>(
   );
 }
 
-CodecSchema<String, T> enumNameCodec<T extends Enum>(List<T> values) {
-  return Ack.enumCodec(values);
+Map<String, T> enumNames<T extends Enum>(List<T> values) {
+  return {for (final value in values) value.name: value};
 }
 
 void failIfPresent(Object? value, String fieldName) {
@@ -307,46 +307,21 @@ Alignment? singleAlignmentProp(
   Prop<AlignmentGeometry>? prop,
   String fieldName,
 ) {
-  final value = singleValueProp(prop, fieldName);
-  if (value == null) return null;
-  if (value is Alignment) return value;
-
-  throw UnsupportedEncodeValueError(
-    value,
-    'Field "$fieldName" uses ${value.runtimeType}; only Alignment is supported.',
-  );
+  return readProp<Alignment, AlignmentGeometry>(prop, fieldName);
 }
 
 T? singleValueProp<T extends Object>(Prop<T>? prop, String fieldName) {
-  if (prop == null) return null;
-  if (prop.$directives?.isNotEmpty == true) {
-    throw UnsupportedEncodeValueError(
-      prop,
-      'Field "$fieldName" has directives and cannot be represented.',
-    );
-  }
-  if (prop.sources.length != 1) {
-    throw UnsupportedEncodeValueError(
-      prop,
-      'Field "$fieldName" has ${prop.sources.length} sources; expected one.',
-    );
-  }
-  final source = prop.sources.single;
-
-  return switch (source) {
-    ValueSource<T>(:final value) => value,
-    TokenSource<T>() => throw UnsupportedEncodeValueError(
-      prop,
-      'Field "$fieldName" uses a token value.',
-    ),
-    MixSource<T>() => throw UnsupportedEncodeValueError(
-      prop,
-      'Field "$fieldName" uses a nested Mix value.',
-    ),
-  };
+  return readProp<T, T>(prop, fieldName);
 }
 
 T? singleMixProp<T extends Object, V extends Object>(
+  Prop<V>? prop,
+  String fieldName,
+) {
+  return readProp<T, V>(prop, fieldName);
+}
+
+T? readProp<T extends Object, V extends Object>(
   Prop<V>? prop,
   String fieldName,
 ) {

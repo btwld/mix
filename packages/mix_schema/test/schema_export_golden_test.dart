@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix_schema/mix_schema.dart';
 
 void main() {
-  test('R-2 schema export structurally describes every built-in branch', () {
+  test('schema export structurally describes every built-in branch', () {
     final contract = MixSchemaContractBuilder().builtIn().freeze();
     final schema = contract.exportJsonSchema();
     final encoded = jsonEncode(schema);
@@ -16,7 +16,6 @@ void main() {
     expect(schema[r'$schema'], 'http://json-schema.org/draft-07/schema#');
     expect(schema['x-mix-schema-contract'], 'mix_schema');
     expect(schema['x-mix-schema-version'], isA<String>());
-    expect(schema['x-mix-schema-limits'], isA<Map>());
     expect(branches, hasLength(contract.registeredTypes.length));
     expect(branchesByType.keys.toSet(), contract.registeredTypes.toSet());
 
@@ -29,16 +28,15 @@ void main() {
       expect(required, contains('type'), reason: type);
       expect(discriminator['type'], 'string', reason: type);
       expect(discriminator['const'], type, reason: type);
-      expect(
-        properties.keys.toSet(),
-        containsAll({'type', ..._expectedBranchProperties[type]!}),
-        reason: type,
-      );
+      expect(properties.keys.toSet(), {
+        'type',
+        ..._expectedBranchProperties[type]!,
+      }, reason: type);
       expect(_expectedBranchProperties[type], isNot(contains('type')));
     }
 
     expect(encoded, isNot(contains('x-ack-codec')));
-    expect(encoded.length, lessThan(150000));
+    expect(encoded.length, lessThan(180000));
   });
 }
 
@@ -49,6 +47,8 @@ const _expectedBranchProperties = {
     'margin',
     'constraints',
     'clipBehavior',
+    'transform',
+    'transformAlignment',
     'decoration',
     'variants',
     'modifiers',
@@ -63,6 +63,9 @@ const _expectedBranchProperties = {
     'softWrap',
     'selectionColor',
     'semanticsLabel',
+    'textHeightBehavior',
+    'textDirectives',
+    'variants',
     'modifiers',
     'animation',
   },
@@ -76,6 +79,7 @@ const _expectedBranchProperties = {
     'textBaseline',
     'clipBehavior',
     'spacing',
+    'variants',
     'modifiers',
     'animation',
   },
@@ -84,6 +88,7 @@ const _expectedBranchProperties = {
     'fit',
     'textDirection',
     'clipBehavior',
+    'variants',
     'modifiers',
     'animation',
   },
@@ -100,6 +105,7 @@ const _expectedBranchProperties = {
     'semanticsLabel',
     'opacity',
     'blendMode',
+    'variants',
     'modifiers',
     'animation',
   },
@@ -118,6 +124,7 @@ const _expectedBranchProperties = {
     'gaplessPlayback',
     'isAntiAlias',
     'matchTextDirection',
+    'variants',
     'modifiers',
     'animation',
   },
@@ -127,6 +134,8 @@ const _expectedBranchProperties = {
     'margin',
     'constraints',
     'clipBehavior',
+    'transform',
+    'transformAlignment',
     'decoration',
     'direction',
     'mainAxisAlignment',
@@ -137,6 +146,7 @@ const _expectedBranchProperties = {
     'textBaseline',
     'flexClipBehavior',
     'spacing',
+    'variants',
     'modifiers',
     'animation',
   },
@@ -146,11 +156,14 @@ const _expectedBranchProperties = {
     'margin',
     'constraints',
     'clipBehavior',
+    'transform',
+    'transformAlignment',
     'decoration',
     'stackAlignment',
     'fit',
     'textDirection',
     'stackClipBehavior',
+    'variants',
     'modifiers',
     'animation',
   },

@@ -9,7 +9,7 @@ final class _ApiStyle {
 }
 
 void main() {
-  test('R-1 public API exposes contract, JsonMap, and sealed results', () {
+  test('public API exposes contract, JsonMap, and sealed results', () {
     final branch = Ack.object({'value': Ack.string()}).codec<_ApiStyle>(
       decode: (data) => _ApiStyle(data['value']! as String),
       encode: (value) => {'value': value.value},

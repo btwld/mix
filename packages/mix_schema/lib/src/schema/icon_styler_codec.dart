@@ -7,70 +7,140 @@ import '../registry/registry_value_codec.dart';
 import 'animation_codec.dart';
 import 'common_codecs.dart';
 import 'modifier_codec.dart';
+import 'schema_field.dart';
+import 'variant_codec.dart';
 
 AckSchema<JsonMap, IconStyler> iconStylerCodec({
+  AckSchema<JsonMap, Object>? rootStyleSchema,
   required FrozenRegistry Function() registry,
 }) {
-  return Ack.object({
-    'icon': registryValueCodecFrom<IconData>(
-      registry,
-      MixSchemaScope.iconData,
-    ).optional(),
-    'color': colorCodec().optional(),
-    'size': numberAsDoubleCodec().optional(),
-    'weight': numberAsDoubleCodec().optional(),
-    'grade': numberAsDoubleCodec().optional(),
-    'opticalSize': numberAsDoubleCodec().optional(),
-    'textDirection': enumNameCodec(TextDirection.values).optional(),
-    'applyTextScaling': Ack.boolean().optional(),
-    'fill': numberAsDoubleCodec().optional(),
-    'semanticsLabel': Ack.string().optional(),
-    'opacity': numberAsDoubleCodec().optional(),
-    'blendMode': enumNameCodec(BlendMode.values).optional(),
-    'modifiers': modifierConfigCodec().optional(),
-    'animation': animationConfigCodec(registry: registry).optional(),
-  }).codec<IconStyler>(
-    decode: (data) => IconStyler(
-      icon: data['icon'] as IconData?,
-      color: data['color'] as Color?,
-      size: data['size'] as double?,
-      weight: data['weight'] as double?,
-      grade: data['grade'] as double?,
-      opticalSize: data['opticalSize'] as double?,
-      textDirection: data['textDirection'] as TextDirection?,
-      applyTextScaling: data['applyTextScaling'] as bool?,
-      fill: data['fill'] as double?,
-      semanticsLabel: data['semanticsLabel'] as String?,
-      opacity: data['opacity'] as double?,
-      blendMode: data['blendMode'] as BlendMode?,
-      modifier: data['modifiers'] as WidgetModifierConfig?,
-      animation: data['animation'] as AnimationConfig?,
-    ),
-    encode: _encodeIconStyler,
-  );
+  return _iconStylerSchemaType(rootStyleSchema, registry).codec();
 }
 
-JsonMap _encodeIconStyler(IconStyler value) {
-  failIfPresent(value.$variants, 'variants');
-  failIfPresent(value.$shadows, 'shadows');
+SchemaObject<IconStyler> _iconStylerSchemaType(
+  AckSchema<JsonMap, Object>? rootStyleSchema,
+  FrozenRegistry Function() registry,
+) {
+  final icon = valueField<IconStyler, IconData>(
+    'icon',
+    registryValueCodec<IconData>(registry, MixSchemaScope.iconData),
+    (value) => value.$icon,
+  );
+  final color = valueField<IconStyler, Color>(
+    'color',
+    colorCodec(),
+    (value) => value.$color,
+  );
+  final size = valueField<IconStyler, double>(
+    'size',
+    numberAsDoubleCodec(),
+    (value) => value.$size,
+  );
+  final weight = valueField<IconStyler, double>(
+    'weight',
+    numberAsDoubleCodec(),
+    (value) => value.$weight,
+  );
+  final grade = valueField<IconStyler, double>(
+    'grade',
+    numberAsDoubleCodec(),
+    (value) => value.$grade,
+  );
+  final opticalSize = valueField<IconStyler, double>(
+    'opticalSize',
+    numberAsDoubleCodec(),
+    (value) => value.$opticalSize,
+  );
+  final textDirection = valueField<IconStyler, TextDirection>(
+    'textDirection',
+    enumCodec(enumNames(TextDirection.values)),
+    (value) => value.$textDirection,
+  );
+  final applyTextScaling = valueField<IconStyler, bool>(
+    'applyTextScaling',
+    Ack.boolean(),
+    (value) => value.$applyTextScaling,
+  );
+  final fill = valueField<IconStyler, double>(
+    'fill',
+    numberAsDoubleCodec(),
+    (value) => value.$fill,
+  );
+  final semanticsLabel = valueField<IconStyler, String>(
+    'semanticsLabel',
+    Ack.string(),
+    (value) => value.$semanticsLabel,
+  );
+  final opacity = valueField<IconStyler, double>(
+    'opacity',
+    numberAsDoubleCodec(),
+    (value) => value.$opacity,
+  );
+  final blendMode = valueField<IconStyler, BlendMode>(
+    'blendMode',
+    enumCodec(enumNames(BlendMode.values)),
+    (value) => value.$blendMode,
+  );
+  final variants = rootStyleSchema == null
+      ? null
+      : directField<IconStyler, List<VariantStyle<IconSpec>>>(
+          'variants',
+          Ack.list(variantCodec<IconSpec>(rootStyleSchema)),
+          (value) => value.$variants,
+        );
+  final modifiers = directField<IconStyler, WidgetModifierConfig>(
+    'modifiers',
+    modifierConfigCodec(),
+    (value) => value.$modifier,
+  );
+  final animation = directField<IconStyler, AnimationConfig>(
+    'animation',
+    animationConfigCodec(registry: registry),
+    (value) => value.$animation,
+  );
 
-  return {
-    'icon': singleValueProp(value.$icon, 'icon'),
-    'color': singleValueProp(value.$color, 'color'),
-    'size': singleValueProp(value.$size, 'size'),
-    'weight': singleValueProp(value.$weight, 'weight'),
-    'grade': singleValueProp(value.$grade, 'grade'),
-    'opticalSize': singleValueProp(value.$opticalSize, 'opticalSize'),
-    'textDirection': singleValueProp(value.$textDirection, 'textDirection'),
-    'applyTextScaling': singleValueProp(
-      value.$applyTextScaling,
-      'applyTextScaling',
+  return SchemaObject<IconStyler>(
+    fields: [
+      icon,
+      color,
+      size,
+      weight,
+      grade,
+      opticalSize,
+      textDirection,
+      applyTextScaling,
+      fill,
+      semanticsLabel,
+      opacity,
+      blendMode,
+      ?variants,
+      modifiers,
+      animation,
+    ],
+    unsupportedFields: [
+      if (variants == null)
+        UnsupportedSchemaField<IconStyler>(
+          'variants',
+          (value) => value.$variants,
+        ),
+      UnsupportedSchemaField<IconStyler>('shadows', (value) => value.$shadows),
+    ],
+    build: (data) => IconStyler(
+      icon: icon.value(data),
+      color: color.value(data),
+      size: size.value(data),
+      weight: weight.value(data),
+      grade: grade.value(data),
+      opticalSize: opticalSize.value(data),
+      textDirection: textDirection.value(data),
+      applyTextScaling: applyTextScaling.value(data),
+      fill: fill.value(data),
+      semanticsLabel: semanticsLabel.value(data),
+      opacity: opacity.value(data),
+      blendMode: blendMode.value(data),
+      variants: variants?.value(data),
+      modifier: modifiers.value(data),
+      animation: animation.value(data),
     ),
-    'fill': singleValueProp(value.$fill, 'fill'),
-    'semanticsLabel': singleValueProp(value.$semanticsLabel, 'semanticsLabel'),
-    'opacity': singleValueProp(value.$opacity, 'opacity'),
-    'blendMode': singleValueProp(value.$blendMode, 'blendMode'),
-    'modifiers': value.$modifier,
-    'animation': value.$animation,
-  };
+  );
 }

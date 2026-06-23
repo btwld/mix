@@ -7,11 +7,12 @@ The package is schema-first: Ack owns validation, decode, encode, and JSON Schem
 ## Current Surface
 
 - Built-in styler branches: `box`, `text`, `flex`, `stack`, `icon`, `image`, `flex_box`, `stack_box`.
-- Box variants use `Ack.lazy` for nested styles.
-- Modifiers support opacity, blur, and default text style.
-- Animation support is limited to named-curve `CurveAnimationConfig`; callbacks use the `animation_on_end` registry.
-- App-owned identity values use registries for `IconData`, `ImageProvider`, animation callbacks, and context variant builders.
+- Variants use `Ack.lazy` for nested styles.
+- Modifiers support opacity, blur, flexible, and default text style.
+- Animation support is limited to named-curve `CurveAnimationConfig`; optional callbacks use the `animation_on_end` registry.
+- App-owned identity values use registries for `IconData` and `ImageProvider`.
 
 Unsupported runtime values fail encode explicitly instead of being dropped.
 
-See `REQUIREMENTS.md` for the rule table and acceptance gate.
+See `WIRE_CONTRACT.md` for the canonical wire format. `REQUIREMENTS.md` is a
+short orientation note and no longer contains process-governance requirements.

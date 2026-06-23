@@ -6,48 +6,97 @@ import '../registry/registry.dart';
 import 'animation_codec.dart';
 import 'common_codecs.dart';
 import 'modifier_codec.dart';
+import 'schema_field.dart';
+import 'variant_codec.dart';
 
 AckSchema<JsonMap, StackStyler> stackStylerCodec({
+  AckSchema<JsonMap, Object>? rootStyleSchema,
   required FrozenRegistry Function() registry,
 }) {
-  return Ack.object({
-    'alignment': alignmentCodec().optional(),
-    'fit': enumNameCodec(StackFit.values).optional(),
-    'textDirection': enumNameCodec(TextDirection.values).optional(),
-    'clipBehavior': enumNameCodec(Clip.values).optional(),
-    'modifiers': modifierConfigCodec().optional(),
-    'animation': animationConfigCodec(registry: registry).optional(),
-  }).codec<StackStyler>(
-    decode: (data) => StackStyler(
-      alignment: data['alignment'] as Alignment?,
-      fit: data['fit'] as StackFit?,
-      textDirection: data['textDirection'] as TextDirection?,
-      clipBehavior: data['clipBehavior'] as Clip?,
-      modifier: data['modifiers'] as WidgetModifierConfig?,
-      animation: data['animation'] as AnimationConfig?,
-    ),
-    encode: encodeStackStylerFields,
-  );
+  return _stackStylerSchemaType(rootStyleSchema, registry).codec();
 }
 
 JsonMap encodeStackStylerFields(
   StackStyler value, {
   bool includeStylerMetadata = true,
 }) {
-  failIfPresent(value.$variants, 'variants');
-
-  final encoded = {
-    'alignment': singleAlignmentProp(value.$alignment, 'alignment'),
-    'fit': singleValueProp(value.$fit, 'fit'),
-    'textDirection': singleValueProp(value.$textDirection, 'textDirection'),
-    'clipBehavior': singleValueProp(value.$clipBehavior, 'clipBehavior'),
-    'modifiers': value.$modifier,
-    'animation': value.$animation,
-  };
-
-  if (includeStylerMetadata) return encoded;
-
-  return Map<String, Object?>.from(encoded)
-    ..remove('modifiers')
-    ..remove('animation');
+  return _stackStylerSchemaType(null, _emptyRegistry).encodeFields(
+    value,
+    omit: includeStylerMetadata ? const {} : _stylerMetadataFields,
+  );
 }
+
+SchemaObject<StackStyler> _stackStylerSchemaType(
+  AckSchema<JsonMap, Object>? rootStyleSchema,
+  FrozenRegistry Function() registry,
+) {
+  final alignment = mixField<StackStyler, Alignment, AlignmentGeometry>(
+    'alignment',
+    alignmentCodec(),
+    (value) => value.$alignment,
+  );
+  final fit = valueField<StackStyler, StackFit>(
+    'fit',
+    enumCodec(enumNames(StackFit.values)),
+    (value) => value.$fit,
+  );
+  final textDirection = valueField<StackStyler, TextDirection>(
+    'textDirection',
+    enumCodec(enumNames(TextDirection.values)),
+    (value) => value.$textDirection,
+  );
+  final clipBehavior = valueField<StackStyler, Clip>(
+    'clipBehavior',
+    enumCodec(enumNames(Clip.values)),
+    (value) => value.$clipBehavior,
+  );
+  final variants = rootStyleSchema == null
+      ? null
+      : directField<StackStyler, List<VariantStyle<StackSpec>>>(
+          'variants',
+          Ack.list(variantCodec<StackSpec>(rootStyleSchema)),
+          (value) => value.$variants,
+        );
+  final modifiers = directField<StackStyler, WidgetModifierConfig>(
+    'modifiers',
+    modifierConfigCodec(),
+    (value) => value.$modifier,
+  );
+  final animation = directField<StackStyler, AnimationConfig>(
+    'animation',
+    animationConfigCodec(registry: registry),
+    (value) => value.$animation,
+  );
+
+  return SchemaObject<StackStyler>(
+    fields: [
+      alignment,
+      fit,
+      textDirection,
+      clipBehavior,
+      ?variants,
+      modifiers,
+      animation,
+    ],
+    unsupportedFields: [
+      if (variants == null)
+        UnsupportedSchemaField<StackStyler>(
+          'variants',
+          (value) => value.$variants,
+        ),
+    ],
+    build: (data) => StackStyler(
+      alignment: alignment.value(data),
+      fit: fit.value(data),
+      textDirection: textDirection.value(data),
+      clipBehavior: clipBehavior.value(data),
+      variants: variants?.value(data),
+      modifier: modifiers.value(data),
+      animation: animation.value(data),
+    ),
+  );
+}
+
+const _stylerMetadataFields = {'modifiers', 'animation'};
+
+FrozenRegistry _emptyRegistry() => RegistryBuilder().freeze();
