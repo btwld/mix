@@ -44,7 +44,7 @@ SchemaObject<StackBoxStyler> _stackBoxStylerSchemaType(
   );
   final clipBehavior = derivedField<StackBoxStyler, Clip>(
     'clipBehavior',
-    enumCodec(enumNames(Clip.values)),
+    enumNameCodec(Clip.values),
     _boxField,
   );
   final transform = derivedField<StackBoxStyler, Matrix4>(
@@ -70,17 +70,17 @@ SchemaObject<StackBoxStyler> _stackBoxStylerSchemaType(
   );
   final fit = derivedField<StackBoxStyler, StackFit>(
     'fit',
-    enumCodec(enumNames(StackFit.values)),
+    enumNameCodec(StackFit.values),
     _stackField,
   );
   final textDirection = derivedField<StackBoxStyler, TextDirection>(
     'textDirection',
-    enumCodec(enumNames(TextDirection.values)),
+    enumNameCodec(TextDirection.values),
     _stackField,
   );
   final stackClipBehavior = derivedField<StackBoxStyler, Clip>(
     'stackClipBehavior',
-    enumCodec(enumNames(Clip.values)),
+    enumNameCodec(Clip.values),
     _stackField,
     readWire: 'clipBehavior',
   );

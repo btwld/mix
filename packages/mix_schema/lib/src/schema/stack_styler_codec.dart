@@ -37,17 +37,17 @@ SchemaObject<StackStyler> _stackStylerSchemaType(
   );
   final fit = valueField<StackStyler, StackFit>(
     'fit',
-    enumCodec(enumNames(StackFit.values)),
+    enumNameCodec(StackFit.values),
     (value) => value.$fit,
   );
   final textDirection = valueField<StackStyler, TextDirection>(
     'textDirection',
-    enumCodec(enumNames(TextDirection.values)),
+    enumNameCodec(TextDirection.values),
     (value) => value.$textDirection,
   );
   final clipBehavior = valueField<StackStyler, Clip>(
     'clipBehavior',
-    enumCodec(enumNames(Clip.values)),
+    enumNameCodec(Clip.values),
     (value) => value.$clipBehavior,
   );
   final variants = rootStyleSchema == null

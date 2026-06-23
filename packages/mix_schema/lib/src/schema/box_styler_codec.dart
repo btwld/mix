@@ -52,7 +52,7 @@ SchemaObject<BoxStyler> _boxStylerSchemaType(
   );
   final clipBehavior = valueField<BoxStyler, Clip>(
     'clipBehavior',
-    enumCodec(enumNames(Clip.values)),
+    enumNameCodec(Clip.values),
     (value) => value.$clipBehavior,
   );
   final transform = valueField<BoxStyler, Matrix4>(
@@ -133,8 +133,8 @@ CodecSchema<JsonMap, BoxDecorationMix> boxDecorationCodec() {
     'color': colorCodec().optional(),
     'border': borderCodec().optional(),
     'borderRadius': borderRadiusCodec().optional(),
-    'shape': enumCodec(enumNames(BoxShape.values)).optional(),
-    'backgroundBlendMode': enumCodec(enumNames(BlendMode.values)).optional(),
+    'shape': enumNameCodec(BoxShape.values).optional(),
+    'backgroundBlendMode': enumNameCodec(BlendMode.values).optional(),
     'boxShadow': Ack.list(boxShadowCodec()).optional(),
   }).codec<BoxDecorationMix>(
     decode: (data) => BoxDecorationMix(

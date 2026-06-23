@@ -32,42 +32,42 @@ SchemaObject<FlexStyler> _flexStylerSchemaType(
 ) {
   final direction = valueField<FlexStyler, Axis>(
     'direction',
-    enumCodec(enumNames(Axis.values)),
+    enumNameCodec(Axis.values),
     (value) => value.$direction,
   );
   final mainAxisAlignment = valueField<FlexStyler, MainAxisAlignment>(
     'mainAxisAlignment',
-    enumCodec(enumNames(MainAxisAlignment.values)),
+    enumNameCodec(MainAxisAlignment.values),
     (value) => value.$mainAxisAlignment,
   );
   final crossAxisAlignment = valueField<FlexStyler, CrossAxisAlignment>(
     'crossAxisAlignment',
-    enumCodec(enumNames(CrossAxisAlignment.values)),
+    enumNameCodec(CrossAxisAlignment.values),
     (value) => value.$crossAxisAlignment,
   );
   final mainAxisSize = valueField<FlexStyler, MainAxisSize>(
     'mainAxisSize',
-    enumCodec(enumNames(MainAxisSize.values)),
+    enumNameCodec(MainAxisSize.values),
     (value) => value.$mainAxisSize,
   );
   final verticalDirection = valueField<FlexStyler, VerticalDirection>(
     'verticalDirection',
-    enumCodec(enumNames(VerticalDirection.values)),
+    enumNameCodec(VerticalDirection.values),
     (value) => value.$verticalDirection,
   );
   final textDirection = valueField<FlexStyler, TextDirection>(
     'textDirection',
-    enumCodec(enumNames(TextDirection.values)),
+    enumNameCodec(TextDirection.values),
     (value) => value.$textDirection,
   );
   final textBaseline = valueField<FlexStyler, TextBaseline>(
     'textBaseline',
-    enumCodec(enumNames(TextBaseline.values)),
+    enumNameCodec(TextBaseline.values),
     (value) => value.$textBaseline,
   );
   final clipBehavior = valueField<FlexStyler, Clip>(
     'clipBehavior',
-    enumCodec(enumNames(Clip.values)),
+    enumNameCodec(Clip.values),
     (value) => value.$clipBehavior,
   );
   final spacing = valueField<FlexStyler, double>(

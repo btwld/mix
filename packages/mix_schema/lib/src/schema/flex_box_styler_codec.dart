@@ -44,7 +44,7 @@ SchemaObject<FlexBoxStyler> _flexBoxStylerSchemaType(
   );
   final clipBehavior = derivedField<FlexBoxStyler, Clip>(
     'clipBehavior',
-    enumCodec(enumNames(Clip.values)),
+    enumNameCodec(Clip.values),
     _boxField,
   );
   final transform = derivedField<FlexBoxStyler, Matrix4>(
@@ -64,42 +64,42 @@ SchemaObject<FlexBoxStyler> _flexBoxStylerSchemaType(
   );
   final direction = derivedField<FlexBoxStyler, Axis>(
     'direction',
-    enumCodec(enumNames(Axis.values)),
+    enumNameCodec(Axis.values),
     _flexField,
   );
   final mainAxisAlignment = derivedField<FlexBoxStyler, MainAxisAlignment>(
     'mainAxisAlignment',
-    enumCodec(enumNames(MainAxisAlignment.values)),
+    enumNameCodec(MainAxisAlignment.values),
     _flexField,
   );
   final crossAxisAlignment = derivedField<FlexBoxStyler, CrossAxisAlignment>(
     'crossAxisAlignment',
-    enumCodec(enumNames(CrossAxisAlignment.values)),
+    enumNameCodec(CrossAxisAlignment.values),
     _flexField,
   );
   final mainAxisSize = derivedField<FlexBoxStyler, MainAxisSize>(
     'mainAxisSize',
-    enumCodec(enumNames(MainAxisSize.values)),
+    enumNameCodec(MainAxisSize.values),
     _flexField,
   );
   final verticalDirection = derivedField<FlexBoxStyler, VerticalDirection>(
     'verticalDirection',
-    enumCodec(enumNames(VerticalDirection.values)),
+    enumNameCodec(VerticalDirection.values),
     _flexField,
   );
   final textDirection = derivedField<FlexBoxStyler, TextDirection>(
     'textDirection',
-    enumCodec(enumNames(TextDirection.values)),
+    enumNameCodec(TextDirection.values),
     _flexField,
   );
   final textBaseline = derivedField<FlexBoxStyler, TextBaseline>(
     'textBaseline',
-    enumCodec(enumNames(TextBaseline.values)),
+    enumNameCodec(TextBaseline.values),
     _flexField,
   );
   final flexClipBehavior = derivedField<FlexBoxStyler, Clip>(
     'flexClipBehavior',
-    enumCodec(enumNames(Clip.values)),
+    enumNameCodec(Clip.values),
     _flexField,
     readWire: 'clipBehavior',
   );

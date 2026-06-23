@@ -53,7 +53,7 @@ SchemaObject<IconStyler> _iconStylerSchemaType(
   );
   final textDirection = valueField<IconStyler, TextDirection>(
     'textDirection',
-    enumCodec(enumNames(TextDirection.values)),
+    enumNameCodec(TextDirection.values),
     (value) => value.$textDirection,
   );
   final applyTextScaling = valueField<IconStyler, bool>(
@@ -78,7 +78,7 @@ SchemaObject<IconStyler> _iconStylerSchemaType(
   );
   final blendMode = valueField<IconStyler, BlendMode>(
     'blendMode',
-    enumCodec(enumNames(BlendMode.values)),
+    enumNameCodec(BlendMode.values),
     (value) => value.$blendMode,
   );
   final variants = rootStyleSchema == null

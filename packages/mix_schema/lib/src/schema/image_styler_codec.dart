@@ -46,12 +46,12 @@ SchemaObject<ImageStyler> _imageStylerSchemaType(
   );
   final repeat = valueField<ImageStyler, ImageRepeat>(
     'repeat',
-    enumCodec(enumNames(ImageRepeat.values)),
+    enumNameCodec(ImageRepeat.values),
     (value) => value.$repeat,
   );
   final fit = valueField<ImageStyler, BoxFit>(
     'fit',
-    enumCodec(enumNames(BoxFit.values)),
+    enumNameCodec(BoxFit.values),
     (value) => value.$fit,
   );
   final alignment = mixField<ImageStyler, Alignment, AlignmentGeometry>(
@@ -61,12 +61,12 @@ SchemaObject<ImageStyler> _imageStylerSchemaType(
   );
   final filterQuality = valueField<ImageStyler, FilterQuality>(
     'filterQuality',
-    enumCodec(enumNames(FilterQuality.values)),
+    enumNameCodec(FilterQuality.values),
     (value) => value.$filterQuality,
   );
   final colorBlendMode = valueField<ImageStyler, BlendMode>(
     'colorBlendMode',
-    enumCodec(enumNames(BlendMode.values)),
+    enumNameCodec(BlendMode.values),
     (value) => value.$colorBlendMode,
   );
   final semanticLabel = valueField<ImageStyler, String>(

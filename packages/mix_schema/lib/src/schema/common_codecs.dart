@@ -199,8 +199,8 @@ CodecSchema<JsonMap, TextHeightBehaviorMix> textHeightBehaviorCodec() {
   return Ack.object({
     'applyHeightToFirstAscent': Ack.boolean().optional(),
     'applyHeightToLastDescent': Ack.boolean().optional(),
-    'leadingDistribution': enumCodec(
-      enumNames(TextLeadingDistribution.values),
+    'leadingDistribution': enumNameCodec(
+      TextLeadingDistribution.values,
     ).optional(),
   }).codec<TextHeightBehaviorMix>(
     decode: (data) => TextHeightBehaviorMix(
@@ -290,8 +290,8 @@ CodecSchema<String, T> enumCodec<T extends Object>(
   );
 }
 
-Map<String, T> enumNames<T extends Enum>(List<T> values) {
-  return {for (final value in values) value.name: value};
+CodecSchema<String, T> enumNameCodec<T extends Enum>(List<T> values) {
+  return enumCodec({for (final value in values) value.name: value});
 }
 
 void failIfPresent(Object? value, String fieldName) {
