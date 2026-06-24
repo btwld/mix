@@ -386,8 +386,7 @@ void main() {
       );
     });
 
-    // https://github.com/btwld/mix/issues/942
-    group('issue #942: single-field cascade lint', () {
+    group('single-field cascade lint regression', () {
       test(
         'single-field spec uses `properties.add(...)` not a `..add` cascade',
         () {
