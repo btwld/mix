@@ -1,11 +1,30 @@
-## Unreleased
+## 2.1.0
 
-This release hardens the token-reference system: it fixes correctness gaps
-around `DoubleRef` sentinels, breakpoint resolution, and numeric directives,
-and tightens public API around the internal token registry.
+This release adds context-derived token resolution and richer animation
+configuration, fixes variant resolution in nested styles and animation
+interpolation edge cases, and hardens the token-reference system while
+tightening the public API around the internal token registry.
+
+### New features
+
+- **`ContextToken`:** Zero-config token whose value is derived directly from
+  the build context, so context-dependent values resolve without first
+  registering a token in a scope (#938).
+- **Spring animation helpers:** `AnimationConfig` statics are now factories,
+  with added spring-curve wrappers for configuring physics-based transitions
+  (#937).
 
 ### Fixes
 
+- **Variants in nested styles:** A `Style` nested inside another style's `Prop`
+  (a component sub-style) now applies its own context variants — widget states,
+  brightness, breakpoints. Previously `Prop.resolveProp` resolved the merged
+  nested style via `resolve()`, which skips variants. No-op for nested styles
+  without variants (#926).
+- **`Matrix4` interpolation:** Tween a transform against the identity matrix
+  when one endpoint is null, instead of producing a degenerate result (#931).
+- **Animation config fallback:** Fall back to the previous animation config
+  when a transition resolves to null, rather than dropping the animation (#930).
 - **`DoubleRef` sentinel collisions:** Two distinct `MixToken<double>`
   instances whose hashes landed in the same bucket previously aliased to the
   same sentinel. The registry now hands out sentinels from a monotonic
@@ -42,6 +61,11 @@ and tightens public API around the internal token registry.
 - **`isAnyTokenRef`** drops the brittle `runtimeType.toString().endsWith(...)`
   check; a `Prop` carrying a `TokenSource` is now the sole class-based
   invariant.
+
+### Other changes
+
+- **`StyleWidget` defaults to `IdentityStyle<Spec>`**, giving widgets a
+  well-defined no-op style when none is supplied (#921).
 
 ## 2.0.3
 
