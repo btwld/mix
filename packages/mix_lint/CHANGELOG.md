@@ -1,3 +1,17 @@
+## 2.0.0
+
+ - **BREAKING**: Rebuilt `mix_lint` on top of the `analysis_server_plugin` API,
+   replacing the previous `custom_lint` implementation. The plugin now runs
+   directly in the analysis server; remove any `custom_lint` analyzer plugin
+   wiring and enable `mix_lint` per the updated README (#871).
+ - **FEAT**: Add the `mix_avoid_token_ref_outside_mix` rule, flagging token
+   references resolved outside of a `Mix` context (#939).
+ - **FEAT**: Ship the Mix 2.0 rule set: `mix_avoid_empty_variants`,
+   `mix_variants_last`, `mix_max_number_of_attributes_per_style`,
+   `mix_avoid_defining_tokens_within_style`,
+   `mix_avoid_defining_tokens_within_scope`, `mix_mixable_styler_has_create`,
+   and `mix_prefer_dot_shorthands` (with an automated fix).
+
 ## 1.7.0
 
  - No changes in this release.

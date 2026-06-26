@@ -1,5 +1,8 @@
-## 2.0.1
+## 2.1.0
 
+ - **FEAT**: Add `@MixableModifier` annotation. Annotate a `WidgetModifier` subclass to generate its modifier mixin and `ModifierMix` class via `mix_generator` (#924).
+ - **FEAT**: Add `@MixWidget` annotation. Annotate a top-level styler variable or styler-returning function so `mix_generator` emits a matching `StatelessWidget` (#920).
+ - **FEAT**: Add `extraStylerMixins` to control additional mixins applied to generated stylers, and related `generator_flags` updates (#923).
  - **DEPRECATED**: `GeneratedStylerMethods.call` and `GeneratedStylerMethods.skipCall`. Call generation has not been supported since the 2.0 styler API; the flags are now annotated `@Deprecated` and will be removed in a future major release. The bit (`0x20`) remains in `GeneratedStylerMethods.all` for source and value compatibility — the generator already ignores it.
  - **DOCS**: Spec authoring examples in the README now include `package:flutter/foundation.dart` and `package:flutter/widgets.dart` imports plus the `@immutable` annotation, matching the symbols the generated `_$<Name>` mixin references.
  - **DOCS**: Note that `GeneratedSpecMethods.skipEquals` suppresses only the generated `props` getter; the surrounding equality surface is always emitted so a user-authored `props` powers a working `==`/`hashCode`/`getDiff`/`stringify`.
