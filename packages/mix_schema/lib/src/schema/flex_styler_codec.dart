@@ -3,11 +3,9 @@ import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
 import '../registry/registry.dart';
-import 'animation_codec.dart';
 import 'common_codecs.dart';
-import 'modifier_codec.dart';
 import 'schema_field.dart';
-import 'variant_codec.dart';
+import 'styler_codec_helpers.dart';
 
 AckSchema<JsonMap, FlexStyler> flexStylerCodec({
   AckSchema<JsonMap, Object>? rootStyleSchema,
@@ -20,9 +18,9 @@ JsonMap encodeFlexStylerFields(
   FlexStyler value, {
   bool includeStylerMetadata = true,
 }) {
-  return _flexStylerSchemaType(null, _emptyRegistry).encodeFields(
+  return _flexStylerSchemaType(null, emptyFrozenRegistry).encodeFields(
     value,
-    omit: includeStylerMetadata ? const {} : _stylerMetadataFields,
+    omit: includeStylerMetadata ? const {} : stylerMetadataFields,
   );
 }
 
@@ -57,7 +55,7 @@ SchemaObject<FlexStyler> _flexStylerSchemaType(
   );
   final textDirection = valueField<FlexStyler, TextDirection>(
     'textDirection',
-    enumNameCodec(TextDirection.values),
+    textDirectionCodec(),
     (value) => value.$textDirection,
   );
   final textBaseline = valueField<FlexStyler, TextBaseline>(
@@ -75,22 +73,12 @@ SchemaObject<FlexStyler> _flexStylerSchemaType(
     numberAsDoubleCodec(),
     (value) => value.$spacing,
   );
-  final variants = rootStyleSchema == null
-      ? null
-      : directField<FlexStyler, List<VariantStyle<FlexSpec>>>(
-          'variants',
-          Ack.list(variantCodec<FlexSpec>(rootStyleSchema)),
-          (value) => value.$variants,
-        );
-  final modifiers = directField<FlexStyler, WidgetModifierConfig>(
-    'modifiers',
-    modifierConfigCodec(),
-    (value) => value.$modifier,
-  );
-  final animation = directField<FlexStyler, AnimationConfig>(
-    'animation',
-    animationConfigCodec(registry: registry),
-    (value) => value.$animation,
+  final metadata = StylerMetadataFields<FlexStyler, FlexSpec>(
+    rootStyleSchema: rootStyleSchema,
+    registry: registry,
+    readVariants: (value) => value.$variants,
+    readModifier: (value) => value.$modifier,
+    readAnimation: (value) => value.$animation,
   );
 
   return SchemaObject<FlexStyler>(
@@ -104,17 +92,9 @@ SchemaObject<FlexStyler> _flexStylerSchemaType(
       textBaseline,
       clipBehavior,
       spacing,
-      ?variants,
-      modifiers,
-      animation,
+      ...metadata.fields,
     ],
-    unsupportedFields: [
-      if (variants == null)
-        UnsupportedSchemaField<FlexStyler>(
-          'variants',
-          (value) => value.$variants,
-        ),
-    ],
+    unsupportedFields: [...metadata.unsupportedFields()],
     build: (data) => FlexStyler(
       direction: direction.value(data),
       mainAxisAlignment: mainAxisAlignment.value(data),
@@ -125,13 +105,9 @@ SchemaObject<FlexStyler> _flexStylerSchemaType(
       textBaseline: textBaseline.value(data),
       clipBehavior: clipBehavior.value(data),
       spacing: spacing.value(data),
-      variants: variants?.value(data),
-      modifier: modifiers.value(data),
-      animation: animation.value(data),
+      variants: metadata.variants?.value(data),
+      modifier: metadata.modifiers.value(data),
+      animation: metadata.animation.value(data),
     ),
   );
 }
-
-const _stylerMetadataFields = {'modifiers', 'animation'};
-
-FrozenRegistry _emptyRegistry() => RegistryBuilder().freeze();

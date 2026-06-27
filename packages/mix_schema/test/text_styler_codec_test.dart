@@ -79,4 +79,38 @@ void main() {
       'textDirectives': ['uppercase'],
     });
   });
+
+  test('text directives decode and re-encode symmetrically', () {
+    final payload = {
+      'type': 'text',
+      'textDirectives': ['uppercase', 'sentence_case'],
+    };
+    final decoded = switch (contract().decode<TextStyler>(payload)) {
+      MixSchemaDecodeSuccess<TextStyler>(:final value) => value,
+      MixSchemaDecodeFailure<TextStyler>(:final errors) => fail('$errors'),
+    };
+    final encoded = switch (contract().encode(decoded)) {
+      MixSchemaEncodeSuccess(:final value) => value,
+      MixSchemaEncodeFailure(:final errors) => fail('$errors'),
+    };
+
+    expect(encoded, payload);
+  });
+
+  test('lineThrough text decoration uses line_through wire value', () {
+    final payload = {
+      'type': 'text',
+      'style': {'decoration': 'line_through'},
+    };
+    final decoded = switch (contract().decode<TextStyler>(payload)) {
+      MixSchemaDecodeSuccess<TextStyler>(:final value) => value,
+      MixSchemaDecodeFailure<TextStyler>(:final errors) => fail('$errors'),
+    };
+    final encoded = switch (contract().encode(decoded)) {
+      MixSchemaEncodeSuccess(:final value) => value,
+      MixSchemaEncodeFailure(:final errors) => fail('$errors'),
+    };
+
+    expect(encoded, payload);
+  });
 }

@@ -190,6 +190,87 @@ void main() {
       },
     ]);
   });
+
+  test('context_not_widget_state decodes and re-encodes symmetrically', () {
+    final payload = {
+      'type': 'box',
+      'variants': [
+        {
+          'kind': 'context_not_widget_state',
+          'state': 'scrolled_under',
+          'style': {'type': 'box', 'clipBehavior': 'antiAlias'},
+        },
+      ],
+    };
+    final decoded = contract().decode<BoxStyler>(payload);
+    final style = switch (decoded) {
+      MixSchemaDecodeSuccess<BoxStyler>(:final value) => value,
+      MixSchemaDecodeFailure<BoxStyler>(:final errors) => fail('$errors'),
+    };
+    final encoded = contract().encode(style);
+    final result = switch (encoded) {
+      MixSchemaEncodeSuccess(:final value) => value,
+      MixSchemaEncodeFailure(:final errors) => fail('$errors'),
+    };
+
+    expect(result, payload);
+  });
+
+  test('height-based breakpoint variants fail encode explicitly', () {
+    final style = BoxStyler(
+      variants: [
+        VariantStyle(
+          ContextVariant.breakpoint(const Breakpoint(minHeight: 480)),
+          BoxStyler(clipBehavior: Clip.hardEdge),
+        ),
+      ],
+    );
+
+    final result = contract().encode(style);
+    final errors = switch (result) {
+      MixSchemaEncodeFailure(:final errors) => errors,
+      MixSchemaEncodeSuccess() => fail('expected encode failure'),
+    };
+
+    expect(
+      errors.map((error) => error.code),
+      contains(MixSchemaErrorCode.unsupportedEncodeValue),
+    );
+  });
+
+  test('nested variants decode and re-encode through the lazy root schema', () {
+    final payload = {
+      'type': 'box',
+      'variants': [
+        {
+          'kind': 'named',
+          'name': 'outer',
+          'style': {
+            'type': 'box',
+            'variants': [
+              {
+                'kind': 'widget_state',
+                'state': 'hovered',
+                'style': {'type': 'box', 'clipBehavior': 'hardEdge'},
+              },
+            ],
+          },
+        },
+      ],
+    };
+    final decoded = contract().decode<BoxStyler>(payload);
+    final style = switch (decoded) {
+      MixSchemaDecodeSuccess<BoxStyler>(:final value) => value,
+      MixSchemaDecodeFailure<BoxStyler>(:final errors) => fail('$errors'),
+    };
+    final encoded = contract().encode(style);
+    final result = switch (encoded) {
+      MixSchemaEncodeSuccess(:final value) => value,
+      MixSchemaEncodeFailure(:final errors) => fail('$errors'),
+    };
+
+    expect(result, payload);
+  });
 }
 
 List<MixSchemaError> _validationErrors(MixSchemaValidationResult result) {

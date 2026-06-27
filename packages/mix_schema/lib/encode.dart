@@ -167,6 +167,7 @@ JsonMap payloadTextStyle({
   Color? color,
   double? fontSize,
   FontWeight? fontWeight,
+  TextDecoration? decoration,
   double? height,
   double? letterSpacing,
 }) {
@@ -174,6 +175,7 @@ JsonMap payloadTextStyle({
     if (color != null) 'color': payloadColor(color),
     'fontSize': ?fontSize,
     if (fontWeight != null) 'fontWeight': payloadFontWeight(fontWeight),
+    if (decoration != null) 'decoration': payloadTextDecoration(decoration),
     'height': ?height,
     'letterSpacing': ?letterSpacing,
   };
@@ -181,6 +183,10 @@ JsonMap payloadTextStyle({
 
 /// Wire value for the schema's supported [FontWeight] values.
 String payloadFontWeight(FontWeight value) => encodeFontWeightWire(value);
+
+/// Wire value for the schema's supported [TextDecoration] values.
+String payloadTextDecoration(TextDecoration value) =>
+    encodeTextDecorationWire(value);
 
 JsonMap payloadShadow(Shadow value) {
   return {

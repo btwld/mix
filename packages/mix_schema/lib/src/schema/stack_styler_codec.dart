@@ -3,11 +3,9 @@ import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
 import '../registry/registry.dart';
-import 'animation_codec.dart';
 import 'common_codecs.dart';
-import 'modifier_codec.dart';
 import 'schema_field.dart';
-import 'variant_codec.dart';
+import 'styler_codec_helpers.dart';
 
 AckSchema<JsonMap, StackStyler> stackStylerCodec({
   AckSchema<JsonMap, Object>? rootStyleSchema,
@@ -20,9 +18,9 @@ JsonMap encodeStackStylerFields(
   StackStyler value, {
   bool includeStylerMetadata = true,
 }) {
-  return _stackStylerSchemaType(null, _emptyRegistry).encodeFields(
+  return _stackStylerSchemaType(null, emptyFrozenRegistry).encodeFields(
     value,
-    omit: includeStylerMetadata ? const {} : _stylerMetadataFields,
+    omit: includeStylerMetadata ? const {} : stylerMetadataFields,
   );
 }
 
@@ -42,7 +40,7 @@ SchemaObject<StackStyler> _stackStylerSchemaType(
   );
   final textDirection = valueField<StackStyler, TextDirection>(
     'textDirection',
-    enumNameCodec(TextDirection.values),
+    textDirectionCodec(),
     (value) => value.$textDirection,
   );
   final clipBehavior = valueField<StackStyler, Clip>(
@@ -50,53 +48,25 @@ SchemaObject<StackStyler> _stackStylerSchemaType(
     enumNameCodec(Clip.values),
     (value) => value.$clipBehavior,
   );
-  final variants = rootStyleSchema == null
-      ? null
-      : directField<StackStyler, List<VariantStyle<StackSpec>>>(
-          'variants',
-          Ack.list(variantCodec<StackSpec>(rootStyleSchema)),
-          (value) => value.$variants,
-        );
-  final modifiers = directField<StackStyler, WidgetModifierConfig>(
-    'modifiers',
-    modifierConfigCodec(),
-    (value) => value.$modifier,
-  );
-  final animation = directField<StackStyler, AnimationConfig>(
-    'animation',
-    animationConfigCodec(registry: registry),
-    (value) => value.$animation,
+  final metadata = StylerMetadataFields<StackStyler, StackSpec>(
+    rootStyleSchema: rootStyleSchema,
+    registry: registry,
+    readVariants: (value) => value.$variants,
+    readModifier: (value) => value.$modifier,
+    readAnimation: (value) => value.$animation,
   );
 
   return SchemaObject<StackStyler>(
-    fields: [
-      alignment,
-      fit,
-      textDirection,
-      clipBehavior,
-      ?variants,
-      modifiers,
-      animation,
-    ],
-    unsupportedFields: [
-      if (variants == null)
-        UnsupportedSchemaField<StackStyler>(
-          'variants',
-          (value) => value.$variants,
-        ),
-    ],
+    fields: [alignment, fit, textDirection, clipBehavior, ...metadata.fields],
+    unsupportedFields: [...metadata.unsupportedFields()],
     build: (data) => StackStyler(
       alignment: alignment.value(data),
       fit: fit.value(data),
       textDirection: textDirection.value(data),
       clipBehavior: clipBehavior.value(data),
-      variants: variants?.value(data),
-      modifier: modifiers.value(data),
-      animation: animation.value(data),
+      variants: metadata.variants?.value(data),
+      modifier: metadata.modifiers.value(data),
+      animation: metadata.animation.value(data),
     ),
   );
 }
-
-const _stylerMetadataFields = {'modifiers', 'animation'};
-
-FrozenRegistry _emptyRegistry() => RegistryBuilder().freeze();

@@ -5,16 +5,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 import 'package:mix_schema/mix_schema.dart';
 
-/// Canonical-payload round-trip tests for every styler branch (REFACTOR_PLAN.md
-/// Phase 6). The reference property: for a representative styler, encoding to
-/// wire then decoding and re-encoding reproduces the wire byte-for-byte — i.e.
-/// `encode ∘ decode` is the identity on canonical wire. This pins encode/decode
-/// symmetry per branch so the still-pending styler-table consolidation cannot
-/// silently change the wire output.
+/// Canonical-payload round-trip tests for every styler branch. The reference
+/// property: for a representative styler, encoding to wire then decoding and
+/// re-encoding reproduces the wire byte-for-byte — i.e. `encode ∘ decode` is
+/// the identity on canonical wire. This pins encode/decode symmetry per branch
+/// so future codec consolidation cannot silently change the wire output.
 ///
 /// The existing per-styler tests already assert the exact encode snapshot; these
-/// add the decode-side symmetry the audit found missing for flex/stack/icon/
-/// image/flex_box/stack_box.
+/// add decode-side symmetry and metadata fidelity for every built-in branch.
 void main() {
   const icon = IconData(0xe88a, fontFamily: 'MaterialIcons');
   final image = MemoryImage(Uint8List.fromList([0, 1, 2, 3]));
@@ -50,6 +48,17 @@ void main() {
     expect(decode<T>(canonical), styler);
     // And re-encoding the decoded styler is the identity on canonical wire.
     expect(encode(decode<T>(canonical)), canonical);
+  }
+
+  WidgetModifierConfig testModifier() {
+    return WidgetModifierConfig.modifiers([OpacityModifierMix(opacity: 0.5)]);
+  }
+
+  CurveAnimationConfig testAnimation() {
+    return CurveAnimationConfig.easeInOut(
+      const Duration(milliseconds: 120),
+      delay: const Duration(milliseconds: 10),
+    );
   }
 
   test('BoxStyler round-trips through canonical wire with field fidelity', () {
@@ -155,6 +164,186 @@ void main() {
           stackAlignment: Alignment.center,
           fit: StackFit.passthrough,
           stackClipBehavior: Clip.none,
+        ),
+      );
+    },
+  );
+
+  test(
+    'BoxStyler preserves variants, modifiers, and animation across wire',
+    () {
+      expectRoundTrips<BoxStyler>(
+        BoxStyler(
+          variants: [
+            VariantStyle(
+              const NamedVariant('compact'),
+              BoxStyler(clipBehavior: Clip.hardEdge),
+            ),
+          ],
+          modifier: testModifier(),
+          animation: testAnimation(),
+        ),
+      );
+    },
+  );
+
+  test(
+    'TextStyler preserves variants, modifiers, and animation across wire',
+    () {
+      expectRoundTrips<TextStyler>(
+        TextStyler(
+          variants: [
+            VariantStyle(const NamedVariant('label'), TextStyler(maxLines: 1)),
+          ],
+          modifier: testModifier(),
+          animation: testAnimation(),
+        ),
+      );
+    },
+  );
+
+  test(
+    'FlexStyler preserves variants, modifiers, and animation across wire',
+    () {
+      expectRoundTrips<FlexStyler>(
+        FlexStyler(
+          variants: [
+            VariantStyle(const NamedVariant('dense'), FlexStyler(spacing: 2)),
+          ],
+          modifier: testModifier(),
+          animation: testAnimation(),
+        ),
+      );
+    },
+  );
+
+  test(
+    'StackStyler preserves variants, modifiers, and animation across wire',
+    () {
+      expectRoundTrips<StackStyler>(
+        StackStyler(
+          variants: [
+            VariantStyle(
+              const NamedVariant('overlay'),
+              StackStyler(fit: StackFit.expand),
+            ),
+          ],
+          modifier: testModifier(),
+          animation: testAnimation(),
+        ),
+      );
+    },
+  );
+
+  test(
+    'IconStyler preserves variants, modifiers, and animation across wire',
+    () {
+      expectRoundTrips<IconStyler>(
+        IconStyler(
+          variants: [
+            VariantStyle(const NamedVariant('small'), IconStyler(size: 16)),
+          ],
+          modifier: testModifier(),
+          animation: testAnimation(),
+        ),
+      );
+    },
+  );
+
+  test(
+    'ImageStyler preserves variants, modifiers, and animation across wire',
+    () {
+      expectRoundTrips<ImageStyler>(
+        ImageStyler(
+          variants: [
+            VariantStyle(const NamedVariant('thumb'), ImageStyler(width: 32)),
+          ],
+          modifier: testModifier(),
+          animation: testAnimation(),
+        ),
+      );
+    },
+  );
+
+  test(
+    'FlexBoxStyler preserves variants, modifiers, and animation across wire',
+    () {
+      expectRoundTrips<FlexBoxStyler>(
+        FlexBoxStyler(
+          variants: [
+            VariantStyle(
+              const NamedVariant('toolbar'),
+              FlexBoxStyler(spacing: 2),
+            ),
+          ],
+          modifier: testModifier(),
+          animation: testAnimation(),
+        ),
+      );
+    },
+  );
+
+  test(
+    'StackBoxStyler preserves variants, modifiers, and animation across wire',
+    () {
+      expectRoundTrips<StackBoxStyler>(
+        StackBoxStyler(
+          variants: [
+            VariantStyle(
+              const NamedVariant('badge'),
+              StackBoxStyler(fit: StackFit.expand),
+            ),
+          ],
+          modifier: testModifier(),
+          animation: testAnimation(),
+        ),
+      );
+    },
+  );
+
+  test('FlexBoxStyler round-trips combined box, flex, and metadata fields', () {
+    expectRoundTrips<FlexBoxStyler>(
+      FlexBoxStyler(
+        alignment: Alignment.center,
+        padding: EdgeInsetsMix(left: 8, top: 4),
+        decoration: BoxDecorationMix(color: const Color(0xFF112233)),
+        clipBehavior: Clip.hardEdge,
+        direction: Axis.horizontal,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        flexClipBehavior: Clip.antiAlias,
+        spacing: 6,
+        variants: [
+          VariantStyle(
+            const NamedVariant('combined'),
+            FlexBoxStyler(spacing: 2),
+          ),
+        ],
+        modifier: testModifier(),
+        animation: testAnimation(),
+      ),
+    );
+  });
+
+  test(
+    'StackBoxStyler round-trips combined box, stack, and metadata fields',
+    () {
+      expectRoundTrips<StackBoxStyler>(
+        StackBoxStyler(
+          alignment: Alignment.topLeft,
+          margin: EdgeInsetsMix(bottom: 10),
+          clipBehavior: Clip.antiAlias,
+          stackAlignment: Alignment.center,
+          fit: StackFit.expand,
+          textDirection: TextDirection.ltr,
+          stackClipBehavior: Clip.none,
+          variants: [
+            VariantStyle(
+              const NamedVariant('combined'),
+              StackBoxStyler(fit: StackFit.passthrough),
+            ),
+          ],
+          modifier: testModifier(),
+          animation: testAnimation(),
         ),
       );
     },

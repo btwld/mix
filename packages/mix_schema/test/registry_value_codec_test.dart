@@ -63,4 +63,27 @@ void main() {
       MixSchemaErrorCode.unknownRegistryValue,
     );
   });
+
+  test('equal but non-identical values do not match registry ids', () {
+    const registered = IconData(0xe15b, fontFamily: 'MaterialIcons');
+    final equalValue = IconData(0xe15b, fontFamily: 'MaterialIcons');
+    final registry = RegistryBuilder()
+        .iconData('registered', registered)
+        .freeze();
+    final schema = registryValueCodec<IconData>(
+      () => registry,
+      MixSchemaScope.iconData,
+    );
+
+    expect(equalValue, registered);
+    expect(identical(equalValue, registered), isFalse);
+
+    final result = schema.safeEncode(equalValue);
+
+    expect(result.isFail, isTrue);
+    expect(
+      mapSchemaError(result.getError()).single.code,
+      MixSchemaErrorCode.unknownRegistryValue,
+    );
+  });
 }

@@ -4,11 +4,9 @@ import 'package:mix/mix.dart';
 
 import '../registry/registry.dart';
 import '../registry/registry_value_codec.dart';
-import 'animation_codec.dart';
 import 'common_codecs.dart';
-import 'modifier_codec.dart';
 import 'schema_field.dart';
-import 'variant_codec.dart';
+import 'styler_codec_helpers.dart';
 
 AckSchema<JsonMap, ImageStyler> imageStylerCodec({
   AckSchema<JsonMap, Object>? rootStyleSchema,
@@ -94,22 +92,12 @@ SchemaObject<ImageStyler> _imageStylerSchemaType(
     Ack.boolean(),
     (value) => value.$matchTextDirection,
   );
-  final variants = rootStyleSchema == null
-      ? null
-      : directField<ImageStyler, List<VariantStyle<ImageSpec>>>(
-          'variants',
-          Ack.list(variantCodec<ImageSpec>(rootStyleSchema)),
-          (value) => value.$variants,
-        );
-  final modifiers = directField<ImageStyler, WidgetModifierConfig>(
-    'modifiers',
-    modifierConfigCodec(),
-    (value) => value.$modifier,
-  );
-  final animation = directField<ImageStyler, AnimationConfig>(
-    'animation',
-    animationConfigCodec(registry: registry),
-    (value) => value.$animation,
+  final metadata = StylerMetadataFields<ImageStyler, ImageSpec>(
+    rootStyleSchema: rootStyleSchema,
+    registry: registry,
+    readVariants: (value) => value.$variants,
+    readModifier: (value) => value.$modifier,
+    readAnimation: (value) => value.$animation,
   );
 
   return SchemaObject<ImageStyler>(
@@ -128,16 +116,10 @@ SchemaObject<ImageStyler> _imageStylerSchemaType(
       gaplessPlayback,
       isAntiAlias,
       matchTextDirection,
-      ?variants,
-      modifiers,
-      animation,
+      ...metadata.fields,
     ],
     unsupportedFields: [
-      if (variants == null)
-        UnsupportedSchemaField<ImageStyler>(
-          'variants',
-          (value) => value.$variants,
-        ),
+      ...metadata.unsupportedFields(),
       UnsupportedSchemaField<ImageStyler>(
         'centerSlice',
         (value) => value.$centerSlice,
@@ -158,9 +140,9 @@ SchemaObject<ImageStyler> _imageStylerSchemaType(
       gaplessPlayback: gaplessPlayback.value(data),
       isAntiAlias: isAntiAlias.value(data),
       matchTextDirection: matchTextDirection.value(data),
-      variants: variants?.value(data),
-      modifier: modifiers.value(data),
-      animation: animation.value(data),
+      variants: metadata.variants?.value(data),
+      modifier: metadata.modifiers.value(data),
+      animation: metadata.animation.value(data),
     ),
   );
 }

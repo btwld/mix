@@ -66,4 +66,18 @@ void main() {
       isA<MixSchemaDecodeSuccess<BoxStyler>>(),
     );
   });
+
+  test('decode reports typeMismatch when payload type differs from T', () {
+    final result = MixSchemaContractBuilder()
+        .builtIn()
+        .freeze()
+        .decode<TextStyler>({'type': 'box'});
+
+    final errors = switch (result) {
+      MixSchemaDecodeFailure<TextStyler>(:final errors) => errors,
+      MixSchemaDecodeSuccess<TextStyler>() => fail('expected decode failure'),
+    };
+
+    expect(errors.single.code, MixSchemaErrorCode.typeMismatch);
+  });
 }

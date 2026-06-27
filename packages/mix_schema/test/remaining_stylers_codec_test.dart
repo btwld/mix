@@ -186,6 +186,135 @@ void main() {
       },
     );
   });
+
+  test('flex_box keeps box and flex clipBehavior wire fields distinct', () {
+    final contract = MixSchemaContractBuilder().builtIn().freeze();
+    final payload = {
+      'type': 'flex_box',
+      'clipBehavior': 'hardEdge',
+      'flexClipBehavior': 'antiAlias',
+    };
+
+    final decoded = switch (contract.decode<FlexBoxStyler>(payload)) {
+      MixSchemaDecodeSuccess<FlexBoxStyler>(:final value) => value,
+      MixSchemaDecodeFailure<FlexBoxStyler>(:final errors) => fail('$errors'),
+    };
+
+    expect(_encode(contract, decoded), payload);
+  });
+
+  test('stack_box keeps box and stack clipBehavior wire fields distinct', () {
+    final contract = MixSchemaContractBuilder().builtIn().freeze();
+    final payload = {
+      'type': 'stack_box',
+      'clipBehavior': 'antiAlias',
+      'stackClipBehavior': 'none',
+    };
+
+    final decoded = switch (contract.decode<StackBoxStyler>(payload)) {
+      MixSchemaDecodeSuccess<StackBoxStyler>(:final value) => value,
+      MixSchemaDecodeFailure<StackBoxStyler>(:final errors) => fail('$errors'),
+    };
+
+    expect(_encode(contract, decoded), payload);
+  });
+
+  test(
+    'stack_box keeps box alignment and stackAlignment wire fields distinct',
+    () {
+      final contract = MixSchemaContractBuilder().builtIn().freeze();
+      final payload = {
+        'type': 'stack_box',
+        'alignment': 'topLeft',
+        'stackAlignment': 'center',
+      };
+
+      final decoded = switch (contract.decode<StackBoxStyler>(payload)) {
+        MixSchemaDecodeSuccess<StackBoxStyler>(:final value) => value,
+        MixSchemaDecodeFailure<StackBoxStyler>(:final errors) => fail(
+          '$errors',
+        ),
+      };
+
+      expect(_encode(contract, decoded), payload);
+    },
+  );
+
+  test('unsupported runtime styler fields fail encode explicitly', () {
+    final contract = MixSchemaContractBuilder().builtIn().freeze();
+    final cases = <Object>[
+      BoxStyler(
+        foregroundDecoration: BoxDecorationMix(color: const Color(0xFF000000)),
+      ),
+      TextStyler(strutStyle: StrutStyleMix(fontSize: 12)),
+      IconStyler(shadows: [ShadowMix(color: const Color(0xFF000000))]),
+      ImageStyler(centerSlice: const Rect.fromLTRB(1, 1, 2, 2)),
+    ];
+
+    for (final styler in cases) {
+      final result = contract.encode(styler);
+      final errors = switch (result) {
+        MixSchemaEncodeFailure(:final errors) => errors,
+        MixSchemaEncodeSuccess() => fail('expected encode failure for $styler'),
+      };
+
+      expect(
+        errors.map((error) => error.code),
+        contains(MixSchemaErrorCode.unsupportedEncodeValue),
+      );
+    }
+  });
+
+  test(
+    'composite child styler metadata fails encode instead of being dropped',
+    () {
+      final contract = MixSchemaContractBuilder().builtIn().freeze();
+      final cases = <Object>[
+        FlexBoxStyler.create(
+          box: Prop.mix(
+            BoxStyler(
+              variants: [
+                VariantStyle(const NamedVariant('nested'), BoxStyler()),
+              ],
+            ),
+          ),
+        ),
+        FlexBoxStyler.create(
+          flex: Prop.mix(
+            FlexStyler(
+              modifier: WidgetModifierConfig.modifiers([
+                OpacityModifierMix(opacity: 0.5),
+              ]),
+            ),
+          ),
+        ),
+        StackBoxStyler.create(
+          stack: Prop.mix(
+            StackStyler(
+              animation: CurveAnimationConfig.linear(
+                const Duration(milliseconds: 100),
+              ),
+            ),
+          ),
+        ),
+      ];
+
+      for (final styler in cases) {
+        final result = contract.encode(styler);
+        final errors = switch (result) {
+          MixSchemaEncodeFailure(:final errors) => errors,
+          MixSchemaEncodeSuccess() => fail(
+            'expected encode failure for $styler',
+          ),
+        };
+
+        expect(
+          errors.map((error) => error.code),
+          contains(MixSchemaErrorCode.unsupportedEncodeValue),
+        );
+      }
+    },
+  );
 }
 
 JsonMap _encode(MixSchemaContract contract, Object value) {

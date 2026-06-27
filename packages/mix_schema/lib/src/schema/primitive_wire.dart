@@ -81,6 +81,14 @@ const Map<String, FontWeight> fontWeightWireValues = {
   'w900': FontWeight.w900,
 };
 
+/// Canonical wire vocabulary for schema-supported [TextDecoration] values.
+const Map<String, TextDecoration> textDecorationWireValues = {
+  'none': TextDecoration.none,
+  'underline': TextDecoration.underline,
+  'overline': TextDecoration.overline,
+  'line_through': TextDecoration.lineThrough,
+};
+
 /// Reverse lookup for the producer payload API: the wire spelling for [value].
 String encodeWidgetStateWire(WidgetState value) =>
     _wireValueFor(widgetStateWireValues, value, 'WidgetState');
@@ -88,6 +96,10 @@ String encodeWidgetStateWire(WidgetState value) =>
 /// Reverse lookup for the producer payload API: the wire spelling for [value].
 String encodeFontWeightWire(FontWeight value) =>
     _wireValueFor(fontWeightWireValues, value, 'FontWeight');
+
+/// Reverse lookup for the producer payload API: the wire spelling for [value].
+String encodeTextDecorationWire(TextDecoration value) =>
+    _wireValueFor(textDecorationWireValues, value, 'TextDecoration');
 
 /// The wire key in [byWire] whose value equals [value], or null if none match.
 ///

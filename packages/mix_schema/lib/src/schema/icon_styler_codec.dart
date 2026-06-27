@@ -4,11 +4,9 @@ import 'package:mix/mix.dart';
 
 import '../registry/registry.dart';
 import '../registry/registry_value_codec.dart';
-import 'animation_codec.dart';
 import 'common_codecs.dart';
-import 'modifier_codec.dart';
 import 'schema_field.dart';
-import 'variant_codec.dart';
+import 'styler_codec_helpers.dart';
 
 AckSchema<JsonMap, IconStyler> iconStylerCodec({
   AckSchema<JsonMap, Object>? rootStyleSchema,
@@ -53,7 +51,7 @@ SchemaObject<IconStyler> _iconStylerSchemaType(
   );
   final textDirection = valueField<IconStyler, TextDirection>(
     'textDirection',
-    enumNameCodec(TextDirection.values),
+    textDirectionCodec(),
     (value) => value.$textDirection,
   );
   final applyTextScaling = valueField<IconStyler, bool>(
@@ -81,22 +79,12 @@ SchemaObject<IconStyler> _iconStylerSchemaType(
     enumNameCodec(BlendMode.values),
     (value) => value.$blendMode,
   );
-  final variants = rootStyleSchema == null
-      ? null
-      : directField<IconStyler, List<VariantStyle<IconSpec>>>(
-          'variants',
-          Ack.list(variantCodec<IconSpec>(rootStyleSchema)),
-          (value) => value.$variants,
-        );
-  final modifiers = directField<IconStyler, WidgetModifierConfig>(
-    'modifiers',
-    modifierConfigCodec(),
-    (value) => value.$modifier,
-  );
-  final animation = directField<IconStyler, AnimationConfig>(
-    'animation',
-    animationConfigCodec(registry: registry),
-    (value) => value.$animation,
+  final metadata = StylerMetadataFields<IconStyler, IconSpec>(
+    rootStyleSchema: rootStyleSchema,
+    registry: registry,
+    readVariants: (value) => value.$variants,
+    readModifier: (value) => value.$modifier,
+    readAnimation: (value) => value.$animation,
   );
 
   return SchemaObject<IconStyler>(
@@ -113,16 +101,10 @@ SchemaObject<IconStyler> _iconStylerSchemaType(
       semanticsLabel,
       opacity,
       blendMode,
-      ?variants,
-      modifiers,
-      animation,
+      ...metadata.fields,
     ],
     unsupportedFields: [
-      if (variants == null)
-        UnsupportedSchemaField<IconStyler>(
-          'variants',
-          (value) => value.$variants,
-        ),
+      ...metadata.unsupportedFields(),
       UnsupportedSchemaField<IconStyler>('shadows', (value) => value.$shadows),
     ],
     build: (data) => IconStyler(
@@ -138,9 +120,9 @@ SchemaObject<IconStyler> _iconStylerSchemaType(
       semanticsLabel: semanticsLabel.value(data),
       opacity: opacity.value(data),
       blendMode: blendMode.value(data),
-      variants: variants?.value(data),
-      modifier: modifiers.value(data),
-      animation: animation.value(data),
+      variants: metadata.variants?.value(data),
+      modifier: metadata.modifiers.value(data),
+      animation: metadata.animation.value(data),
     ),
   );
 }

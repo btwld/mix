@@ -3,13 +3,11 @@ import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
 import '../registry/registry.dart';
-import 'animation_codec.dart';
 import 'box_styler_codec.dart';
 import 'common_codecs.dart';
-import 'modifier_codec.dart';
 import 'schema_field.dart';
 import 'stack_styler_codec.dart';
-import 'variant_codec.dart';
+import 'styler_codec_helpers.dart';
 
 AckSchema<JsonMap, StackBoxStyler> stackBoxStylerCodec({
   AckSchema<JsonMap, Object>? rootStyleSchema,
@@ -75,7 +73,7 @@ SchemaObject<StackBoxStyler> _stackBoxStylerSchemaType(
   );
   final textDirection = derivedField<StackBoxStyler, TextDirection>(
     'textDirection',
-    enumNameCodec(TextDirection.values),
+    textDirectionCodec(),
     _stackField,
   );
   final stackClipBehavior = derivedField<StackBoxStyler, Clip>(
@@ -84,22 +82,12 @@ SchemaObject<StackBoxStyler> _stackBoxStylerSchemaType(
     _stackField,
     readWire: 'clipBehavior',
   );
-  final variants = rootStyleSchema == null
-      ? null
-      : directField<StackBoxStyler, List<VariantStyle<StackBoxSpec>>>(
-          'variants',
-          Ack.list(variantCodec<StackBoxSpec>(rootStyleSchema)),
-          (value) => value.$variants,
-        );
-  final modifiers = directField<StackBoxStyler, WidgetModifierConfig>(
-    'modifiers',
-    modifierConfigCodec(),
-    (value) => value.$modifier,
-  );
-  final animation = directField<StackBoxStyler, AnimationConfig>(
-    'animation',
-    animationConfigCodec(registry: registry),
-    (value) => value.$animation,
+  final metadata = StylerMetadataFields<StackBoxStyler, StackBoxSpec>(
+    rootStyleSchema: rootStyleSchema,
+    registry: registry,
+    readVariants: (value) => value.$variants,
+    readModifier: (value) => value.$modifier,
+    readAnimation: (value) => value.$animation,
   );
 
   return SchemaObject<StackBoxStyler>(
@@ -116,17 +104,9 @@ SchemaObject<StackBoxStyler> _stackBoxStylerSchemaType(
       fit,
       textDirection,
       stackClipBehavior,
-      ?variants,
-      modifiers,
-      animation,
+      ...metadata.fields,
     ],
-    unsupportedFields: [
-      if (variants == null)
-        UnsupportedSchemaField<StackBoxStyler>(
-          'variants',
-          (value) => value.$variants,
-        ),
-    ],
+    unsupportedFields: [...metadata.unsupportedFields()],
     build: (data) => StackBoxStyler(
       alignment: alignment.value(data),
       padding: padding.value(data),
@@ -140,28 +120,29 @@ SchemaObject<StackBoxStyler> _stackBoxStylerSchemaType(
       fit: fit.value(data),
       textDirection: textDirection.value(data),
       stackClipBehavior: stackClipBehavior.value(data),
-      variants: variants?.value(data),
-      modifier: modifiers.value(data),
-      animation: animation.value(data),
+      variants: metadata.variants?.value(data),
+      modifier: metadata.modifiers.value(data),
+      animation: metadata.animation.value(data),
     ),
   );
 }
 
 Object? _boxField(StackBoxStyler value, String wire) {
-  final box = readProp<BoxStyler, StyleSpec<BoxSpec>>(value.$box, 'box');
-
-  return box == null
-      ? null
-      : encodeBoxStylerFields(box, includeStylerMetadata: false)[wire];
+  return encodedNestedStylerField<StackBoxStyler, BoxStyler, BoxSpec>(
+    value,
+    wire,
+    read: (value) => value.$box,
+    encodeFields: encodeBoxStylerFields,
+    fieldName: 'box',
+  );
 }
 
 Object? _stackField(StackBoxStyler value, String wire) {
-  final stack = readProp<StackStyler, StyleSpec<StackSpec>>(
-    value.$stack,
-    'stack',
+  return encodedNestedStylerField<StackBoxStyler, StackStyler, StackSpec>(
+    value,
+    wire,
+    read: (value) => value.$stack,
+    encodeFields: encodeStackStylerFields,
+    fieldName: 'stack',
   );
-
-  return stack == null
-      ? null
-      : encodeStackStylerFields(stack, includeStylerMetadata: false)[wire];
 }

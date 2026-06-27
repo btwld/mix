@@ -61,6 +61,11 @@ void main() {
     expect(payloadFontWeight(FontWeight.w900), 'w900');
   });
 
+  test('payloadTextDecoration returns schema decoration wire values', () {
+    expect(payloadTextDecoration(TextDecoration.underline), 'underline');
+    expect(payloadTextDecoration(TextDecoration.lineThrough), 'line_through');
+  });
+
   test('opacity/blur modifier payloads decode through the box styler', () {
     _expectDecodes<BoxStyler>(
       payloadStyler(SchemaStyler.box, {
@@ -165,4 +170,130 @@ void main() {
       );
     },
   );
+
+  test('sparse producer helpers match contract encoder output', () {
+    expect(
+      payloadColor(const Color(0x80112233)),
+      (_encodedField(
+            BoxStyler(
+              decoration: BoxDecorationMix(color: const Color(0x80112233)),
+            ),
+            'decoration',
+          )
+          as JsonMap)['color'],
+    );
+
+    expect(
+      payloadAlignment(Alignment.center),
+      _encodedField(BoxStyler(alignment: Alignment.center), 'alignment'),
+    );
+
+    expect(
+      payloadEdgeInsets(left: 8, top: 4),
+      _encodedField(
+        BoxStyler(padding: EdgeInsetsMix(left: 8, top: 4)),
+        'padding',
+      ),
+    );
+
+    final constraints = payloadConstraints(
+      minWidth: 10,
+      maxWidth: 20,
+      minHeight: 5,
+    );
+    expect(
+      constraints,
+      _encodedField(
+        BoxStyler(
+          constraints: BoxConstraintsMix(
+            minWidth: 10,
+            maxWidth: 20,
+            minHeight: 5,
+          ),
+        ),
+        'constraints',
+      ),
+    );
+
+    final topBorder = payloadBorderSide(
+      color: const Color(0xFF445566),
+      width: 2,
+      style: BorderStyle.solid,
+    );
+    final decoration = payloadDecoration(
+      color: const Color(0xFF112233),
+      border: payloadBorder(top: topBorder),
+    );
+    expect(
+      decoration,
+      _encodedField(
+        BoxStyler(
+          decoration: BoxDecorationMix(
+            color: const Color(0xFF112233),
+            border: BorderMix(
+              top: BorderSideMix(
+                color: const Color(0xFF445566),
+                width: 2,
+                style: BorderStyle.solid,
+              ),
+            ),
+          ),
+        ),
+        'decoration',
+      ),
+    );
+
+    final textStyle = payloadTextStyle(
+      color: const Color(0xFF111111),
+      fontSize: 16,
+      fontWeight: FontWeight.w700,
+      decoration: TextDecoration.lineThrough,
+      height: 1.5,
+      letterSpacing: 0.4,
+    );
+    expect(
+      textStyle,
+      _encodedField(
+        TextStyler(
+          style: TextStyleMix(
+            color: const Color(0xFF111111),
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
+            decoration: TextDecoration.lineThrough,
+            height: 1.5,
+            letterSpacing: 0.4,
+          ),
+        ),
+        'style',
+      ),
+    );
+
+    final heightBehavior = payloadTextHeightBehavior(
+      leadingDistribution: TextLeadingDistribution.even,
+      applyHeightToFirstAscent: false,
+      applyHeightToLastDescent: false,
+    );
+    expect(
+      heightBehavior,
+      _encodedField(
+        TextStyler(
+          textHeightBehavior: TextHeightBehaviorMix(
+            leadingDistribution: TextLeadingDistribution.even,
+            applyHeightToFirstAscent: false,
+            applyHeightToLastDescent: false,
+          ),
+        ),
+        'textHeightBehavior',
+      ),
+    );
+  });
+}
+
+Object? _encodedField(Object styler, String field) {
+  final payload = switch (builtInMixSchemaContract.encode(styler)) {
+    MixSchemaEncodeSuccess(:final value) => value,
+    MixSchemaEncodeFailure(:final errors) => throw TestFailure('$errors'),
+  };
+
+  return payload[field];
 }

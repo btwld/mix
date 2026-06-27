@@ -295,6 +295,13 @@ CodecSchema<String, T> enumNameCodec<T extends Enum>(List<T> values) {
   return enumCodec({for (final value in values) value.name: value});
 }
 
+CodecSchema<String, TextDirection> textDirectionCodec() {
+  return enumCodec({
+    'ltr': TextDirection.ltr,
+    'rtl': TextDirection.rtl,
+  }, debugName: 'TextDirection');
+}
+
 void failIfPresent(Object? value, String fieldName) {
   if (value == null) return;
 

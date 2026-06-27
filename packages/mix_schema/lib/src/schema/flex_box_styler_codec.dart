@@ -3,13 +3,11 @@ import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
 import '../registry/registry.dart';
-import 'animation_codec.dart';
 import 'box_styler_codec.dart';
 import 'common_codecs.dart';
 import 'flex_styler_codec.dart';
-import 'modifier_codec.dart';
 import 'schema_field.dart';
-import 'variant_codec.dart';
+import 'styler_codec_helpers.dart';
 
 AckSchema<JsonMap, FlexBoxStyler> flexBoxStylerCodec({
   AckSchema<JsonMap, Object>? rootStyleSchema,
@@ -89,7 +87,7 @@ SchemaObject<FlexBoxStyler> _flexBoxStylerSchemaType(
   );
   final textDirection = derivedField<FlexBoxStyler, TextDirection>(
     'textDirection',
-    enumNameCodec(TextDirection.values),
+    textDirectionCodec(),
     _flexField,
   );
   final textBaseline = derivedField<FlexBoxStyler, TextBaseline>(
@@ -108,22 +106,12 @@ SchemaObject<FlexBoxStyler> _flexBoxStylerSchemaType(
     numberAsDoubleCodec(),
     _flexField,
   );
-  final variants = rootStyleSchema == null
-      ? null
-      : directField<FlexBoxStyler, List<VariantStyle<FlexBoxSpec>>>(
-          'variants',
-          Ack.list(variantCodec<FlexBoxSpec>(rootStyleSchema)),
-          (value) => value.$variants,
-        );
-  final modifiers = directField<FlexBoxStyler, WidgetModifierConfig>(
-    'modifiers',
-    modifierConfigCodec(),
-    (value) => value.$modifier,
-  );
-  final animation = directField<FlexBoxStyler, AnimationConfig>(
-    'animation',
-    animationConfigCodec(registry: registry),
-    (value) => value.$animation,
+  final metadata = StylerMetadataFields<FlexBoxStyler, FlexBoxSpec>(
+    rootStyleSchema: rootStyleSchema,
+    registry: registry,
+    readVariants: (value) => value.$variants,
+    readModifier: (value) => value.$modifier,
+    readAnimation: (value) => value.$animation,
   );
 
   return SchemaObject<FlexBoxStyler>(
@@ -145,17 +133,9 @@ SchemaObject<FlexBoxStyler> _flexBoxStylerSchemaType(
       textBaseline,
       flexClipBehavior,
       spacing,
-      ?variants,
-      modifiers,
-      animation,
+      ...metadata.fields,
     ],
-    unsupportedFields: [
-      if (variants == null)
-        UnsupportedSchemaField<FlexBoxStyler>(
-          'variants',
-          (value) => value.$variants,
-        ),
-    ],
+    unsupportedFields: [...metadata.unsupportedFields()],
     build: (data) => FlexBoxStyler(
       alignment: alignment.value(data),
       padding: padding.value(data),
@@ -174,25 +154,29 @@ SchemaObject<FlexBoxStyler> _flexBoxStylerSchemaType(
       textBaseline: textBaseline.value(data),
       flexClipBehavior: flexClipBehavior.value(data),
       spacing: spacing.value(data),
-      variants: variants?.value(data),
-      modifier: modifiers.value(data),
-      animation: animation.value(data),
+      variants: metadata.variants?.value(data),
+      modifier: metadata.modifiers.value(data),
+      animation: metadata.animation.value(data),
     ),
   );
 }
 
 Object? _boxField(FlexBoxStyler value, String wire) {
-  final box = readProp<BoxStyler, StyleSpec<BoxSpec>>(value.$box, 'box');
-
-  return box == null
-      ? null
-      : encodeBoxStylerFields(box, includeStylerMetadata: false)[wire];
+  return encodedNestedStylerField<FlexBoxStyler, BoxStyler, BoxSpec>(
+    value,
+    wire,
+    read: (value) => value.$box,
+    encodeFields: encodeBoxStylerFields,
+    fieldName: 'box',
+  );
 }
 
 Object? _flexField(FlexBoxStyler value, String wire) {
-  final flex = readProp<FlexStyler, StyleSpec<FlexSpec>>(value.$flex, 'flex');
-
-  return flex == null
-      ? null
-      : encodeFlexStylerFields(flex, includeStylerMetadata: false)[wire];
+  return encodedNestedStylerField<FlexBoxStyler, FlexStyler, FlexSpec>(
+    value,
+    wire,
+    read: (value) => value.$flex,
+    encodeFields: encodeFlexStylerFields,
+    fieldName: 'flex',
+  );
 }

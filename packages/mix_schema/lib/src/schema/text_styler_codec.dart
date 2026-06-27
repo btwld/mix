@@ -3,12 +3,10 @@ import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
 import '../registry/registry.dart';
-import 'animation_codec.dart';
 import 'common_codecs.dart';
-import 'modifier_codec.dart';
 import 'primitive_wire.dart';
 import 'schema_field.dart';
-import 'variant_codec.dart';
+import 'styler_codec_helpers.dart';
 
 AckSchema<JsonMap, TextStyler> textStylerCodec({
   AckSchema<JsonMap, Object>? rootStyleSchema,
@@ -72,22 +70,12 @@ SchemaObject<TextStyler> _textStylerSchemaType(
     Ack.list(textDirectiveCodec()),
     (value) => value.$textDirectives,
   );
-  final variants = rootStyleSchema == null
-      ? null
-      : directField<TextStyler, List<VariantStyle<TextSpec>>>(
-          'variants',
-          Ack.list(variantCodec<TextSpec>(rootStyleSchema)),
-          (value) => value.$variants,
-        );
-  final modifiers = directField<TextStyler, WidgetModifierConfig>(
-    'modifiers',
-    modifierConfigCodec(),
-    (value) => value.$modifier,
-  );
-  final animation = directField<TextStyler, AnimationConfig>(
-    'animation',
-    animationConfigCodec(registry: registry),
-    (value) => value.$animation,
+  final metadata = StylerMetadataFields<TextStyler, TextSpec>(
+    rootStyleSchema: rootStyleSchema,
+    registry: registry,
+    readVariants: (value) => value.$variants,
+    readModifier: (value) => value.$modifier,
+    readAnimation: (value) => value.$animation,
   );
 
   return SchemaObject<TextStyler>(
@@ -102,9 +90,7 @@ SchemaObject<TextStyler> _textStylerSchemaType(
       semanticsLabel,
       textHeightBehavior,
       textDirectives,
-      ?variants,
-      modifiers,
-      animation,
+      ...metadata.fields,
     ],
     unsupportedFields: [
       UnsupportedSchemaField<TextStyler>(
@@ -120,11 +106,7 @@ SchemaObject<TextStyler> _textStylerSchemaType(
         (value) => value.$textWidthBasis,
       ),
       UnsupportedSchemaField<TextStyler>('locale', (value) => value.$locale),
-      if (variants == null)
-        UnsupportedSchemaField<TextStyler>(
-          'variants',
-          (value) => value.$variants,
-        ),
+      ...metadata.unsupportedFields(),
     ],
     build: (data) => TextStyler(
       overflow: overflow.value(data),
@@ -137,9 +119,9 @@ SchemaObject<TextStyler> _textStylerSchemaType(
       semanticsLabel: semanticsLabel.value(data),
       textHeightBehavior: textHeightBehavior.value(data),
       textDirectives: textDirectives.value(data),
-      variants: variants?.value(data),
-      modifier: modifiers.value(data),
-      animation: animation.value(data),
+      variants: metadata.variants?.value(data),
+      modifier: metadata.modifiers.value(data),
+      animation: metadata.animation.value(data),
     ),
   );
 }
@@ -253,13 +235,6 @@ CodecSchema<String, TextAlign> textAlignCodec() {
   }, debugName: 'TextAlign');
 }
 
-CodecSchema<String, TextDirection> textDirectionCodec() {
-  return enumCodec({
-    'ltr': TextDirection.ltr,
-    'rtl': TextDirection.rtl,
-  }, debugName: 'TextDirection');
-}
-
 CodecSchema<String, FontWeight> fontWeightCodec() {
   return enumCodec(fontWeightWireValues, debugName: 'FontWeight');
 }
@@ -272,12 +247,7 @@ CodecSchema<String, FontStyle> fontStyleCodec() {
 }
 
 CodecSchema<String, TextDecoration> textDecorationCodec() {
-  return enumCodec({
-    'none': TextDecoration.none,
-    'underline': TextDecoration.underline,
-    'overline': TextDecoration.overline,
-    'line_through': TextDecoration.lineThrough,
-  }, debugName: 'TextDecoration');
+  return enumCodec(textDecorationWireValues, debugName: 'TextDecoration');
 }
 
 CodecSchema<String, TextDecorationStyle> textDecorationStyleCodec() {

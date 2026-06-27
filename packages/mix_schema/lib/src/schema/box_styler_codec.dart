@@ -3,11 +3,9 @@ import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
 import '../registry/registry.dart';
-import 'animation_codec.dart';
 import 'common_codecs.dart';
-import 'modifier_codec.dart';
 import 'schema_field.dart';
-import 'variant_codec.dart';
+import 'styler_codec_helpers.dart';
 
 AckSchema<JsonMap, BoxStyler> boxStylerCodec({
   AckSchema<JsonMap, Object>? rootStyleSchema,
@@ -22,7 +20,7 @@ JsonMap encodeBoxStylerFields(
 }) {
   return _boxStylerSchemaType(null, null).encodeFields(
     value,
-    omit: includeStylerMetadata ? const {} : _stylerMetadataFields,
+    omit: includeStylerMetadata ? const {} : stylerMetadataFields,
   );
 }
 
@@ -70,22 +68,12 @@ SchemaObject<BoxStyler> _boxStylerSchemaType(
     boxDecorationCodec(),
     (value) => value.$decoration,
   );
-  final variants = rootStyleSchema == null || registry == null
-      ? null
-      : directField<BoxStyler, List<VariantStyle<BoxSpec>>>(
-          'variants',
-          Ack.list(variantCodec<BoxSpec>(rootStyleSchema)),
-          (value) => value.$variants,
-        );
-  final modifiers = directField<BoxStyler, WidgetModifierConfig>(
-    'modifiers',
-    modifierConfigCodec(),
-    (value) => value.$modifier,
-  );
-  final animation = directField<BoxStyler, AnimationConfig>(
-    'animation',
-    animationConfigCodec(registry: registry ?? _emptyRegistry),
-    (value) => value.$animation,
+  final metadata = StylerMetadataFields<BoxStyler, BoxSpec>(
+    rootStyleSchema: rootStyleSchema,
+    registry: registry ?? emptyFrozenRegistry,
+    readVariants: (value) => value.$variants,
+    readModifier: (value) => value.$modifier,
+    readAnimation: (value) => value.$animation,
   );
 
   return SchemaObject<BoxStyler>(
@@ -98,15 +86,14 @@ SchemaObject<BoxStyler> _boxStylerSchemaType(
       transform,
       transformAlignment,
       decoration,
-      ?variants,
-      modifiers,
-      animation,
+      ...metadata.fields,
     ],
     unsupportedFields: [
       UnsupportedSchemaField<BoxStyler>(
         'foregroundDecoration',
         (value) => value.$foregroundDecoration,
       ),
+      ...metadata.unsupportedFields(whenVariantsUnavailable: false),
     ],
     build: (data) => BoxStyler(
       alignment: alignment.value(data),
@@ -117,16 +104,12 @@ SchemaObject<BoxStyler> _boxStylerSchemaType(
       transform: transform.value(data),
       transformAlignment: transformAlignment.value(data),
       decoration: decoration.value(data),
-      variants: variants?.value(data),
-      modifier: modifiers.value(data),
-      animation: animation.value(data),
+      variants: metadata.variants?.value(data),
+      modifier: metadata.modifiers.value(data),
+      animation: metadata.animation.value(data),
     ),
   );
 }
-
-const _stylerMetadataFields = {'variants', 'modifiers', 'animation'};
-
-FrozenRegistry _emptyRegistry() => RegistryBuilder().freeze();
 
 CodecSchema<JsonMap, BoxDecorationMix> boxDecorationCodec() {
   return Ack.object({
