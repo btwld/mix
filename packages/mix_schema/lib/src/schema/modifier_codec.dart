@@ -5,6 +5,7 @@ import 'package:mix/mix.dart';
 import '../errors/mix_schema_error.dart';
 import 'common_codecs.dart';
 import 'text_styler_codec.dart';
+import 'wire_discriminators.dart';
 
 AckSchema<Object, WidgetModifierConfig> modifierConfigCodec() {
   return Ack.codec<Object, Object, WidgetModifierConfig>(
@@ -19,10 +20,10 @@ AckSchema<JsonMap, ModifierMix> modifierCodec() {
   return Ack.discriminated<ModifierMix>(
     discriminatorKey: 'type',
     schemas: {
-      'opacity': _opacityModifierCodec(),
-      'blur': _blurModifierCodec(),
-      'flexible': _flexibleModifierCodec(),
-      'default_text_style': _defaultTextStyleModifierCodec(),
+      modifierTypeOpacity: _opacityModifierCodec(),
+      modifierTypeBlur: _blurModifierCodec(),
+      modifierTypeFlexible: _flexibleModifierCodec(),
+      modifierTypeDefaultTextStyle: _defaultTextStyleModifierCodec(),
     },
   );
 }

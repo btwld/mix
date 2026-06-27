@@ -12,6 +12,7 @@ import '../schema/stack_box_styler_codec.dart';
 import '../schema/stack_styler_codec.dart';
 import '../schema/styler_branch.dart';
 import '../schema/text_styler_codec.dart';
+import '../schema/wire_discriminators.dart';
 
 const mixSchemaVersion = '0.0.1';
 
@@ -45,56 +46,56 @@ final class MixSchemaContractBuilder {
   MixSchemaContractBuilder builtIn() {
     _ensureMutable();
     addStyler(
-      'box',
+      schemaTypeBox,
       boxStylerCodec(
         rootStyleSchema: _rootSchemaRef,
         registry: () => _frozenRegistry,
       ),
     );
     addStyler(
-      'text',
+      schemaTypeText,
       textStylerCodec(
         rootStyleSchema: _rootSchemaRef,
         registry: () => _frozenRegistry,
       ),
     );
     addStyler(
-      'flex',
+      schemaTypeFlex,
       flexStylerCodec(
         rootStyleSchema: _rootSchemaRef,
         registry: () => _frozenRegistry,
       ),
     );
     addStyler(
-      'stack',
+      schemaTypeStack,
       stackStylerCodec(
         rootStyleSchema: _rootSchemaRef,
         registry: () => _frozenRegistry,
       ),
     );
     addStyler(
-      'icon',
+      schemaTypeIcon,
       iconStylerCodec(
         rootStyleSchema: _rootSchemaRef,
         registry: () => _frozenRegistry,
       ),
     );
     addStyler(
-      'image',
+      schemaTypeImage,
       imageStylerCodec(
         rootStyleSchema: _rootSchemaRef,
         registry: () => _frozenRegistry,
       ),
     );
     addStyler(
-      'flex_box',
+      schemaTypeFlexBox,
       flexBoxStylerCodec(
         rootStyleSchema: _rootSchemaRef,
         registry: () => _frozenRegistry,
       ),
     );
     addStyler(
-      'stack_box',
+      schemaTypeStackBox,
       stackBoxStylerCodec(
         rootStyleSchema: _rootSchemaRef,
         registry: () => _frozenRegistry,

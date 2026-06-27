@@ -216,6 +216,73 @@ void main() {
     expect(result, payload);
   });
 
+  test('widget_state and enabled decode and re-encode symmetrically', () {
+    final payload = {
+      'type': 'box',
+      'variants': [
+        {
+          'kind': 'widget_state',
+          'state': 'disabled',
+          'style': {'type': 'box', 'clipBehavior': 'hardEdge'},
+        },
+        {
+          'kind': 'enabled',
+          'style': {'type': 'box', 'clipBehavior': 'antiAlias'},
+        },
+      ],
+    };
+    final decoded = contract().decode<BoxStyler>(payload);
+    final style = switch (decoded) {
+      MixSchemaDecodeSuccess<BoxStyler>(:final value) => value,
+      MixSchemaDecodeFailure<BoxStyler>(:final errors) => fail('$errors'),
+    };
+    final encoded = contract().encode(style);
+    final result = switch (encoded) {
+      MixSchemaEncodeSuccess(:final value) => value,
+      MixSchemaEncodeFailure(:final errors) => fail('$errors'),
+    };
+
+    expect(result, payload);
+  });
+
+  test(
+    'runtime widget_state and enabled variants keep distinct wire kinds',
+    () {
+      final style = BoxStyler(
+        variants: [
+          VariantStyle(
+            ContextVariant.widgetState(WidgetState.disabled),
+            BoxStyler(clipBehavior: Clip.hardEdge),
+          ),
+          VariantStyle(
+            ContextVariant.not(
+              ContextVariant.widgetState(WidgetState.disabled),
+            ),
+            BoxStyler(clipBehavior: Clip.antiAlias),
+          ),
+        ],
+      );
+
+      final encoded = contract().encode(style);
+      final result = switch (encoded) {
+        MixSchemaEncodeSuccess(:final value) => value,
+        MixSchemaEncodeFailure(:final errors) => fail('$errors'),
+      };
+
+      expect(result['variants'], [
+        {
+          'kind': 'widget_state',
+          'state': 'disabled',
+          'style': {'type': 'box', 'clipBehavior': 'hardEdge'},
+        },
+        {
+          'kind': 'enabled',
+          'style': {'type': 'box', 'clipBehavior': 'antiAlias'},
+        },
+      ]);
+    },
+  );
+
   test('height-based breakpoint variants fail encode explicitly', () {
     final style = BoxStyler(
       variants: [

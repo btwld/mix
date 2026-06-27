@@ -62,7 +62,7 @@ are style metadata fields, not spec fields.
 - `crossAxisAlignment`: enum name from `CrossAxisAlignment`
 - `mainAxisSize`: enum name from `MainAxisSize`
 - `verticalDirection`: enum name from `VerticalDirection`
-- `textDirection`: enum name from `TextDirection`
+- `textDirection`: `ltr`, `rtl`
 - `textBaseline`: enum name from `TextBaseline`
 - `clipBehavior`: enum name from `Clip`
 - `spacing`: number
@@ -74,7 +74,7 @@ are style metadata fields, not spec fields.
 
 - `alignment`: alignment
 - `fit`: enum name from `StackFit`
-- `textDirection`: enum name from `TextDirection`
+- `textDirection`: `ltr`, `rtl`
 - `clipBehavior`: enum name from `Clip`
 - `variants`: list of variant payloads
 - `modifiers`: list of modifier payloads
@@ -88,7 +88,7 @@ are style metadata fields, not spec fields.
 - `weight`: number
 - `grade`: number
 - `opticalSize`: number
-- `textDirection`: enum name from `TextDirection`
+- `textDirection`: `ltr`, `rtl`
 - `applyTextScaling`: boolean
 - `fill`: number
 - `semanticsLabel`: string

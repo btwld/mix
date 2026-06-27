@@ -280,6 +280,24 @@ void main() {
           ),
         ),
         FlexBoxStyler.create(
+          box: Prop.mix(
+            BoxStyler(
+              modifier: WidgetModifierConfig.modifiers([
+                OpacityModifierMix(opacity: 0.5),
+              ]),
+            ),
+          ),
+        ),
+        FlexBoxStyler.create(
+          box: Prop.mix(
+            BoxStyler(
+              animation: CurveAnimationConfig.linear(
+                const Duration(milliseconds: 100),
+              ),
+            ),
+          ),
+        ),
+        FlexBoxStyler.create(
           flex: Prop.mix(
             FlexStyler(
               modifier: WidgetModifierConfig.modifiers([

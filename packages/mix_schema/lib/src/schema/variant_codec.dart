@@ -5,6 +5,7 @@ import 'package:mix/mix.dart';
 import '../errors/mix_schema_error.dart';
 import 'common_codecs.dart';
 import 'primitive_wire.dart';
+import 'wire_discriminators.dart';
 
 AckSchema<JsonMap, VariantStyle<S>> variantCodec<S extends Spec<S>>(
   AckSchema<JsonMap, Object> rootStyleSchema,
@@ -12,12 +13,14 @@ AckSchema<JsonMap, VariantStyle<S>> variantCodec<S extends Spec<S>>(
   return Ack.discriminated<VariantStyle<S>>(
     discriminatorKey: 'kind',
     schemas: {
-      'named': _namedVariantCodec(rootStyleSchema),
-      'widget_state': _widgetStateVariantCodec(rootStyleSchema),
-      'enabled': _enabledVariantCodec(rootStyleSchema),
-      'context_brightness': _brightnessVariantCodec(rootStyleSchema),
-      'context_breakpoint': _breakpointVariantCodec(rootStyleSchema),
-      'context_not_widget_state': _notWidgetStateVariantCodec(rootStyleSchema),
+      variantKindNamed: _namedVariantCodec(rootStyleSchema),
+      variantKindWidgetState: _widgetStateVariantCodec(rootStyleSchema),
+      variantKindEnabled: _enabledVariantCodec(rootStyleSchema),
+      variantKindContextBrightness: _brightnessVariantCodec(rootStyleSchema),
+      variantKindContextBreakpoint: _breakpointVariantCodec(rootStyleSchema),
+      variantKindContextNotWidgetState: _notWidgetStateVariantCodec(
+        rootStyleSchema,
+      ),
     },
   );
 }

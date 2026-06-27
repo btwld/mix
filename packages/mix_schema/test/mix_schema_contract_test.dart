@@ -80,4 +80,26 @@ void main() {
 
     expect(errors.single.code, MixSchemaErrorCode.typeMismatch);
   });
+
+  test('decode of minimal styler payload does not inject defaults', () {
+    final contract = MixSchemaContractBuilder().builtIn().freeze();
+    final decoded = switch (contract.decode<BoxStyler>({'type': 'box'})) {
+      MixSchemaDecodeSuccess<BoxStyler>(:final value) => value,
+      MixSchemaDecodeFailure<BoxStyler>(:final errors) => fail('$errors'),
+    };
+
+    expect(decoded.$alignment, isNull);
+    expect(decoded.$clipBehavior, isNull);
+    expect(decoded.$decoration, isNull);
+    expect(decoded.$modifier, isNull);
+    expect(decoded.$variants, isNull);
+    expect(decoded.$animation, isNull);
+
+    final encoded = switch (contract.encode(decoded)) {
+      MixSchemaEncodeSuccess(:final value) => value,
+      MixSchemaEncodeFailure(:final errors) => fail('$errors'),
+    };
+
+    expect(encoded, {'type': 'box'});
+  });
 }

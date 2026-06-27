@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'src/contract/mix_schema_contract.dart'
     show MixSchemaContract, MixSchemaContractBuilder;
 import 'src/schema/primitive_wire.dart';
+import 'src/schema/wire_discriminators.dart';
 
 /// Shared default contract with every built-in styler registered.
 ///
@@ -17,14 +18,14 @@ final MixSchemaContract builtInMixSchemaContract = MixSchemaContractBuilder()
 
 /// Styler discriminator wire values for the `type` field.
 enum SchemaStyler {
-  box('box'),
-  text('text'),
-  flex('flex'),
-  stack('stack'),
-  icon('icon'),
-  image('image'),
-  flexBox('flex_box'),
-  stackBox('stack_box');
+  box(schemaTypeBox),
+  text(schemaTypeText),
+  flex(schemaTypeFlex),
+  stack(schemaTypeStack),
+  icon(schemaTypeIcon),
+  image(schemaTypeImage),
+  flexBox(schemaTypeFlexBox),
+  stackBox(schemaTypeStackBox);
 
   const SchemaStyler(this.wireValue);
 
@@ -36,10 +37,10 @@ enum SchemaStyler {
 /// This is the schema-supported subset of Mix widget modifiers, not every
 /// modifier factory exposed by Mix.
 enum SchemaModifier {
-  opacity('opacity'),
-  blur('blur'),
-  flexible('flexible'),
-  defaultTextStyle('default_text_style');
+  opacity(modifierTypeOpacity),
+  blur(modifierTypeBlur),
+  flexible(modifierTypeFlexible),
+  defaultTextStyle(modifierTypeDefaultTextStyle);
 
   const SchemaModifier(this.wireValue);
 
@@ -48,12 +49,12 @@ enum SchemaModifier {
 
 /// Box variant discriminator wire values currently supported by `mix_schema`.
 enum SchemaVariant {
-  named('named'),
-  widgetState('widget_state'),
-  enabled('enabled'),
-  contextBrightness('context_brightness'),
-  contextBreakpoint('context_breakpoint'),
-  contextNotWidgetState('context_not_widget_state');
+  named(variantKindNamed),
+  widgetState(variantKindWidgetState),
+  enabled(variantKindEnabled),
+  contextBrightness(variantKindContextBrightness),
+  contextBreakpoint(variantKindContextBreakpoint),
+  contextNotWidgetState(variantKindContextNotWidgetState);
 
   const SchemaVariant(this.wireValue);
 
@@ -114,6 +115,9 @@ Object payloadEdgeInsets({
 }
 
 /// Sparse `BoxConstraints` payload; omits unset bounds.
+///
+/// Pass [double.infinity] for an explicit unbounded max constraint; it is
+/// emitted as `null`, matching the runtime codec's canonical wire form.
 JsonMap payloadConstraints({
   double? minWidth,
   double? maxWidth,
@@ -122,10 +126,14 @@ JsonMap payloadConstraints({
 }) {
   return {
     'minWidth': ?minWidth,
-    'maxWidth': ?maxWidth,
+    if (maxWidth != null) 'maxWidth': _payloadMaxConstraintBound(maxWidth),
     'minHeight': ?minHeight,
-    'maxHeight': ?maxHeight,
+    if (maxHeight != null) 'maxHeight': _payloadMaxConstraintBound(maxHeight),
   };
+}
+
+double? _payloadMaxConstraintBound(double value) {
+  return value == double.infinity ? null : value;
 }
 
 /// Single `BorderSide` payload; omits unset fields.

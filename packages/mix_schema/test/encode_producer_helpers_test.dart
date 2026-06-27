@@ -215,6 +215,23 @@ void main() {
       ),
     );
 
+    final unboundedConstraints = payloadConstraints(
+      maxWidth: double.infinity,
+      maxHeight: double.infinity,
+    );
+    expect(
+      unboundedConstraints,
+      _encodedField(
+        BoxStyler(
+          constraints: BoxConstraintsMix(
+            maxWidth: double.infinity,
+            maxHeight: double.infinity,
+          ),
+        ),
+        'constraints',
+      ),
+    );
+
     final topBorder = payloadBorderSide(
       color: const Color(0xFF445566),
       width: 2,
