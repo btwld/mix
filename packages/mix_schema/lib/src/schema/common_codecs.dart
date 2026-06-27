@@ -303,13 +303,6 @@ void failIfPresent(Object? value, String fieldName) {
   );
 }
 
-Alignment? singleAlignmentProp(
-  Prop<AlignmentGeometry>? prop,
-  String fieldName,
-) {
-  return readProp<Alignment, AlignmentGeometry>(prop, fieldName);
-}
-
 T? singleValueProp<T extends Object>(Prop<T>? prop, String fieldName) {
   return readProp<T, T>(prop, fieldName);
 }

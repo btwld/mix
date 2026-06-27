@@ -53,3 +53,53 @@ const namedAlignments = <String, Alignment>{
 };
 
 String _hex(int value) => value.toRadixString(16).padLeft(2, '0').toUpperCase();
+
+/// Canonical wire vocabulary for [WidgetState]. Single owner consumed by both
+/// the variant codec (decode + encode) and the producer payload API, so the
+/// wire spelling never drifts between the two paths.
+const Map<String, WidgetState> widgetStateWireValues = {
+  'hovered': WidgetState.hovered,
+  'focused': WidgetState.focused,
+  'pressed': WidgetState.pressed,
+  'dragged': WidgetState.dragged,
+  'selected': WidgetState.selected,
+  'scrolled_under': WidgetState.scrolledUnder,
+  'disabled': WidgetState.disabled,
+  'error': WidgetState.error,
+};
+
+/// Canonical wire vocabulary for the schema's supported [FontWeight] values.
+const Map<String, FontWeight> fontWeightWireValues = {
+  'w100': FontWeight.w100,
+  'w200': FontWeight.w200,
+  'w300': FontWeight.w300,
+  'w400': FontWeight.w400,
+  'w500': FontWeight.w500,
+  'w600': FontWeight.w600,
+  'w700': FontWeight.w700,
+  'w800': FontWeight.w800,
+  'w900': FontWeight.w900,
+};
+
+/// Reverse lookup for the producer payload API: the wire spelling for [value].
+String encodeWidgetStateWire(WidgetState value) =>
+    _wireValueFor(widgetStateWireValues, value, 'WidgetState');
+
+/// Reverse lookup for the producer payload API: the wire spelling for [value].
+String encodeFontWeightWire(FontWeight value) =>
+    _wireValueFor(fontWeightWireValues, value, 'FontWeight');
+
+String _wireValueFor<T extends Object>(
+  Map<String, T> byWire,
+  T value,
+  String debugName,
+) {
+  for (final entry in byWire.entries) {
+    if (entry.value == value) return entry.key;
+  }
+  throw ArgumentError.value(
+    value,
+    'value',
+    'No $debugName wire value is registered.',
+  );
+}

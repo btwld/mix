@@ -6,6 +6,7 @@ import '../registry/registry.dart';
 import 'animation_codec.dart';
 import 'common_codecs.dart';
 import 'modifier_codec.dart';
+import 'primitive_wire.dart';
 import 'schema_field.dart';
 import 'variant_codec.dart';
 
@@ -260,17 +261,7 @@ CodecSchema<String, TextDirection> textDirectionCodec() {
 }
 
 CodecSchema<String, FontWeight> fontWeightCodec() {
-  return enumCodec({
-    'w100': FontWeight.w100,
-    'w200': FontWeight.w200,
-    'w300': FontWeight.w300,
-    'w400': FontWeight.w400,
-    'w500': FontWeight.w500,
-    'w600': FontWeight.w600,
-    'w700': FontWeight.w700,
-    'w800': FontWeight.w800,
-    'w900': FontWeight.w900,
-  }, debugName: 'FontWeight');
+  return enumCodec(fontWeightWireValues, debugName: 'FontWeight');
 }
 
 CodecSchema<String, FontStyle> fontStyleCodec() {

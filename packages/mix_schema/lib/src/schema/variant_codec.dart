@@ -4,6 +4,7 @@ import 'package:mix/mix.dart';
 
 import '../errors/mix_schema_error.dart';
 import 'common_codecs.dart';
+import 'primitive_wire.dart';
 
 AckSchema<JsonMap, VariantStyle<S>> variantCodec<S extends Spec<S>>(
   AckSchema<JsonMap, Object> rootStyleSchema,
@@ -196,7 +197,7 @@ AckSchema<JsonMap, VariantStyle<S>> _notWidgetStateVariantCodec<
 }
 
 CodecSchema<String, WidgetState> _widgetStateCodec() {
-  return enumCodec(_widgetStateByWire, debugName: 'WidgetState');
+  return enumCodec(widgetStateWireValues, debugName: 'WidgetState');
 }
 
 CodecSchema<String, Brightness> _brightnessCodec() {
@@ -221,17 +222,6 @@ WidgetState? _notWidgetState(Variant variant) {
 
   return inner is WidgetStateVariant ? inner.state : null;
 }
-
-const Map<String, WidgetState> _widgetStateByWire = {
-  'hovered': WidgetState.hovered,
-  'focused': WidgetState.focused,
-  'pressed': WidgetState.pressed,
-  'dragged': WidgetState.dragged,
-  'selected': WidgetState.selected,
-  'scrolled_under': WidgetState.scrolledUnder,
-  'disabled': WidgetState.disabled,
-  'error': WidgetState.error,
-};
 
 final class _BreakpointBoundsConstraint extends Constraint<JsonMap>
     with Validator<JsonMap> {

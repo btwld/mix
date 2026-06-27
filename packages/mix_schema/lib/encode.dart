@@ -82,18 +82,7 @@ JsonMap payloadVariant(SchemaVariant kind, [JsonMap? fields]) {
 String payloadEnum(Enum value) => value.name;
 
 /// Wire value for schema-supported [WidgetState] variant fields.
-String payloadWidgetState(WidgetState value) {
-  return switch (value) {
-    WidgetState.hovered => 'hovered',
-    WidgetState.focused => 'focused',
-    WidgetState.pressed => 'pressed',
-    WidgetState.dragged => 'dragged',
-    WidgetState.selected => 'selected',
-    WidgetState.scrolledUnder => 'scrolled_under',
-    WidgetState.disabled => 'disabled',
-    WidgetState.error => 'error',
-  };
-}
+String payloadWidgetState(WidgetState value) => encodeWidgetStateWire(value);
 
 String payloadColor(Color value) {
   return encodeColorWire(value);
@@ -191,24 +180,7 @@ JsonMap payloadTextStyle({
 }
 
 /// Wire value for the schema's supported [FontWeight] values.
-String payloadFontWeight(FontWeight value) {
-  return switch (value) {
-    FontWeight.w100 => 'w100',
-    FontWeight.w200 => 'w200',
-    FontWeight.w300 => 'w300',
-    FontWeight.w400 => 'w400',
-    FontWeight.w500 => 'w500',
-    FontWeight.w600 => 'w600',
-    FontWeight.w700 => 'w700',
-    FontWeight.w800 => 'w800',
-    FontWeight.w900 => 'w900',
-    _ => throw ArgumentError.value(
-      value,
-      'value',
-      'No FontWeight wire value is registered.',
-    ),
-  };
-}
+String payloadFontWeight(FontWeight value) => encodeFontWeightWire(value);
 
 JsonMap payloadShadow(Shadow value) {
   return {
