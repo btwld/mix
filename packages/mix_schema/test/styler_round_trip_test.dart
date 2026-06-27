@@ -6,10 +6,10 @@ import 'package:mix/mix.dart';
 import 'package:mix_schema/mix_schema.dart';
 
 /// Canonical-payload round-trip tests for every styler branch. The reference
-/// property: for a representative styler, encoding to wire then decoding and
-/// re-encoding reproduces the wire byte-for-byte — i.e. `encode ∘ decode` is
-/// the identity on canonical wire. This pins encode/decode symmetry per branch
-/// so future codec consolidation cannot silently change the wire output.
+/// property: for a representative styler, encoding to wire then decoding
+/// preserves the styler and re-encoding reproduces the wire byte-for-byte. This
+/// pins encode/decode symmetry per branch so future codec consolidation cannot
+/// silently change the wire output.
 ///
 /// The existing per-styler tests already assert the exact encode snapshot; these
 /// add decode-side symmetry and metadata fidelity for every built-in branch.

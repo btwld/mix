@@ -66,6 +66,28 @@ void main() {
     }
   });
 
+  test('CSS color forms decode through the public contract', () {
+    final contract = MixSchemaContractBuilder().builtIn().freeze();
+    final payload = {
+      'type': 'box',
+      'decoration': {'color': 'rgba(51, 102, 153, 0.8)'},
+    };
+
+    final box = switch (contract.decode<BoxStyler>(payload)) {
+      MixSchemaDecodeSuccess<BoxStyler>(:final value) => value,
+      MixSchemaDecodeFailure<BoxStyler>(:final errors) => fail('$errors'),
+    };
+    final encoded = switch (contract.encode(box)) {
+      MixSchemaEncodeSuccess(:final value) => value,
+      MixSchemaEncodeFailure(:final errors) => fail('$errors'),
+    };
+
+    expect(encoded, {
+      'type': 'box',
+      'decoration': {'color': '#CC336699'},
+    });
+  });
+
   test('alignment codec round-trips named and arbitrary alignments', () {
     final schema = alignmentCodec();
     final value = schema.safeParse({'x': -1, 'y': 0.5}).getOrThrow()!;

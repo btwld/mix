@@ -49,6 +49,26 @@ void main() {
     );
   });
 
+  test('animation duration and delay must be non-negative', () {
+    final contract = MixSchemaContractBuilder().builtIn().freeze();
+
+    for (final animation in [
+      {'duration': -1, 'curve': 'easeInOut', 'delay': 0},
+      {'duration': 250, 'curve': 'easeInOut', 'delay': -1},
+    ]) {
+      final result = contract.validate({'type': 'box', 'animation': animation});
+      final errors = switch (result) {
+        MixSchemaValidationFailure(:final errors) => errors,
+        MixSchemaValidationSuccess() => fail('expected failure'),
+      };
+
+      expect(
+        errors.map((error) => error.code),
+        contains(MixSchemaErrorCode.constraintViolation),
+      );
+    }
+  });
+
   test('animation encodes named curves and registry callbacks', () {
     void onEnd() {}
     final builder = MixSchemaContractBuilder();

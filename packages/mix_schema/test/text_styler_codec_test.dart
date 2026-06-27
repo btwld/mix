@@ -83,7 +83,13 @@ void main() {
   test('text directives decode and re-encode symmetrically', () {
     final payload = {
       'type': 'text',
-      'textDirectives': ['uppercase', 'sentence_case'],
+      'textDirectives': [
+        'uppercase',
+        'lowercase',
+        'capitalize',
+        'title_case',
+        'sentence_case',
+      ],
     };
     final decoded = switch (contract().decode<TextStyler>(payload)) {
       MixSchemaDecodeSuccess<TextStyler>(:final value) => value,

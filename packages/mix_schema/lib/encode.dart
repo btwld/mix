@@ -47,7 +47,7 @@ enum SchemaModifier {
   final String wireValue;
 }
 
-/// Box variant discriminator wire values currently supported by `mix_schema`.
+/// Variant discriminator wire values currently supported by `mix_schema`.
 enum SchemaVariant {
   named(variantKindNamed),
   widgetState(variantKindWidgetState),
@@ -71,7 +71,7 @@ JsonMap payloadModifier(SchemaModifier type, [JsonMap? fields]) {
   return {'type': type.wireValue, ...?fields};
 }
 
-/// Builds a Box variant payload with the discriminator already filled in.
+/// Builds a variant payload with the discriminator already filled in.
 JsonMap payloadVariant(SchemaVariant kind, [JsonMap? fields]) {
   return {'kind': kind.wireValue, ...?fields};
 }

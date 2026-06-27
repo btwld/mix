@@ -34,10 +34,7 @@ CodecSchema<String, Curve> curveCodec() {
 }
 
 AckSchema<int, int> _durationMillisCodec() {
-  return Ack.integer().refine(
-    (value) => value >= 0,
-    message: 'Duration must be a non-negative millisecond count.',
-  );
+  return Ack.integer().min(0);
 }
 
 JsonMap _encodeAnimationConfig(AnimationConfig value) {

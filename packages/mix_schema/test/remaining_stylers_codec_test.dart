@@ -143,6 +143,42 @@ void main() {
     );
   });
 
+  test('icon and image registry id failures surface through the contract', () {
+    final contract = MixSchemaContractBuilder().builtIn().freeze();
+
+    for (final payload in [
+      {'type': 'icon', 'icon': 'missing'},
+      {'type': 'image', 'image': 'missing'},
+    ]) {
+      final result = contract.decode<Object>(payload);
+      final errors = switch (result) {
+        MixSchemaDecodeFailure<Object>(:final errors) => errors,
+        MixSchemaDecodeSuccess<Object>() => fail('expected failure'),
+      };
+
+      expect(
+        errors.map((error) => error.code),
+        contains(MixSchemaErrorCode.unknownRegistryId),
+      );
+    }
+
+    for (final payload in [
+      {'type': 'icon', 'icon': 'bad id'},
+      {'type': 'image', 'image': 'bad id'},
+    ]) {
+      final invalidGrammar = contract.validate(payload);
+      final errors = switch (invalidGrammar) {
+        MixSchemaValidationFailure(:final errors) => errors,
+        MixSchemaValidationSuccess() => fail('expected failure'),
+      };
+
+      expect(
+        errors.map((error) => error.code),
+        contains(MixSchemaErrorCode.constraintViolation),
+      );
+    }
+  });
+
   test('flex_box and stack_box encode combined fields', () {
     final contract = MixSchemaContractBuilder().builtIn().freeze();
 

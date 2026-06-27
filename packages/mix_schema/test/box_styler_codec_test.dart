@@ -76,6 +76,65 @@ void main() {
     );
   });
 
+  test('unsupported decoration runtime values fail encode explicitly', () {
+    final cases = [
+      (
+        style: BoxStyler(
+          decoration: BoxDecorationMix(
+            image: DecorationImageMix.image(
+              const NetworkImage('https://example.com/image.png'),
+            ),
+          ),
+        ),
+        field: 'decoration.image',
+      ),
+      (
+        style: BoxStyler(
+          decoration: BoxDecorationMix(
+            gradient: LinearGradientMix(
+              colors: const [Color(0xFF000000), Color(0xFFFFFFFF)],
+            ),
+          ),
+        ),
+        field: 'decoration.gradient',
+      ),
+      (
+        style: BoxStyler.create(
+          decoration: Prop.mix(
+            BoxDecorationMix.create(
+              color: Prop.value(
+                const Color(0xFF000000),
+              ).directives([OpacityColorDirective(0.5)]),
+            ),
+          ),
+        ),
+        field: 'decoration.color',
+      ),
+    ];
+
+    for (final (:style, :field) in cases) {
+      final result = contract().encode(style);
+
+      final errors = switch (result) {
+        MixSchemaEncodeFailure(:final errors) => errors,
+        MixSchemaEncodeSuccess() => fail('expected failure for $style'),
+      };
+
+      expect(
+        errors,
+        contains(
+          isA<MixSchemaError>()
+              .having(
+                (error) => error.code,
+                'code',
+                MixSchemaErrorCode.unsupportedEncodeValue,
+              )
+              .having((error) => error.message, 'message', contains(field)),
+        ),
+      );
+    }
+  });
+
   test('registeredTypes includes box built-in branch', () {
     expect(contract().registeredTypes, contains('box'));
   });

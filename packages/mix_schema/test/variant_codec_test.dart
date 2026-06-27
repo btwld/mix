@@ -36,7 +36,7 @@ void main() {
   });
 
   test('decodes widget state, enabled, brightness, and breakpoint', () {
-    final box = decodeBox({
+    final payload = {
       'type': 'box',
       'variants': [
         {
@@ -55,15 +55,21 @@ void main() {
         },
         {
           'kind': 'context_breakpoint',
-          'minWidth': 768,
-          'maxWidth': 1023,
+          'minWidth': 768.0,
+          'maxWidth': 1023.0,
           'style': {'type': 'box'},
         },
       ],
-    });
+    };
+    final box = decodeBox(payload);
+    final reencoded = switch (contract().encode(box)) {
+      MixSchemaEncodeSuccess(:final value) => value,
+      MixSchemaEncodeFailure(:final errors) => fail('$errors'),
+    };
 
     final keys = box.$variants!.map((variant) => variant.variant.key).toList();
 
+    expect(reencoded, payload);
     expect(keys, [
       'widget_state_hovered',
       'not_widget_state_disabled',
