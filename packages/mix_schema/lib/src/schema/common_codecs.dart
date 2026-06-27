@@ -278,14 +278,15 @@ CodecSchema<String, T> enumCodec<T extends Object>(
   return Ack.enumString(values.keys.toList(growable: false)).codec<T>(
     decode: (wire) => values[wire]!,
     encode: (value) {
-      for (final entry in values.entries) {
-        if (entry.value == value) return entry.key;
+      final wire = reverseWireLookup(values, value);
+      if (wire == null) {
+        throw UnsupportedEncodeValueError(
+          value,
+          'No ${debugName ?? 'enum'} wire value is registered for $value.',
+        );
       }
 
-      throw UnsupportedEncodeValueError(
-        value,
-        'No ${debugName ?? 'enum'} wire value is registered for $value.',
-      );
+      return wire;
     },
   );
 }

@@ -89,17 +89,32 @@ String encodeWidgetStateWire(WidgetState value) =>
 String encodeFontWeightWire(FontWeight value) =>
     _wireValueFor(fontWeightWireValues, value, 'FontWeight');
 
+/// The wire key in [byWire] whose value equals [value], or null if none match.
+///
+/// Single reverse-lookup used by both the producer payload helpers (below) and
+/// the codec encode path (`enumCodec`), so the two resolve a wire spelling the
+/// same way. Callers supply their own error for the no-match case.
+String? reverseWireLookup<T extends Object>(Map<String, T> byWire, T value) {
+  for (final entry in byWire.entries) {
+    if (entry.value == value) return entry.key;
+  }
+
+  return null;
+}
+
 String _wireValueFor<T extends Object>(
   Map<String, T> byWire,
   T value,
   String debugName,
 ) {
-  for (final entry in byWire.entries) {
-    if (entry.value == value) return entry.key;
+  final wire = reverseWireLookup(byWire, value);
+  if (wire == null) {
+    throw ArgumentError.value(
+      value,
+      'value',
+      'No $debugName wire value is registered.',
+    );
   }
-  throw ArgumentError.value(
-    value,
-    'value',
-    'No $debugName wire value is registered.',
-  );
+
+  return wire;
 }

@@ -83,7 +83,7 @@ void main() {
         expect(payloadWidgetState(state), wire);
       });
 
-      test('codec round-trips widget_state "$wire"', () {
+      test('codec decodes "$wire" to $state and re-encodes the token', () {
         final decoded = decodeStyler<BoxStyler>({
           'type': 'box',
           'variants': [
@@ -94,10 +94,14 @@ void main() {
             },
           ],
         });
+        // Decode resolves the wire token to the correct WidgetState...
+        final variant = decoded.$variants!.single.variant;
+        expect((variant as WidgetStateVariant).state, state);
+        // ...and encode emits the same token back.
         final reencoded = encodeStyler(decoded);
-        final variant = (reencoded['variants'] as List).single as Map;
-        expect(variant['kind'], 'widget_state');
-        expect(variant['state'], wire);
+        final encodedVariant = (reencoded['variants'] as List).single as Map;
+        expect(encodedVariant['kind'], 'widget_state');
+        expect(encodedVariant['state'], wire);
       });
     });
   });

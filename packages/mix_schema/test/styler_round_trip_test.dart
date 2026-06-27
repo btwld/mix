@@ -52,7 +52,7 @@ void main() {
     expect(encode(decode<T>(canonical)), canonical);
   }
 
-  test('box', () {
+  test('BoxStyler round-trips through canonical wire with field fidelity', () {
     expectRoundTrips<BoxStyler>(
       BoxStyler(
         alignment: Alignment.center,
@@ -63,7 +63,7 @@ void main() {
     );
   });
 
-  test('text', () {
+  test('TextStyler round-trips through canonical wire with field fidelity', () {
     expectRoundTrips<TextStyler>(
       TextStyler(
         textAlign: TextAlign.end,
@@ -79,7 +79,7 @@ void main() {
     );
   });
 
-  test('flex', () {
+  test('FlexStyler round-trips through canonical wire with field fidelity', () {
     expectRoundTrips<FlexStyler>(
       FlexStyler(
         direction: Axis.horizontal,
@@ -92,18 +92,21 @@ void main() {
     );
   });
 
-  test('stack', () {
-    expectRoundTrips<StackStyler>(
-      StackStyler(
-        alignment: Alignment.center,
-        fit: StackFit.expand,
-        textDirection: TextDirection.ltr,
-        clipBehavior: Clip.antiAlias,
-      ),
-    );
-  });
+  test(
+    'StackStyler round-trips through canonical wire with field fidelity',
+    () {
+      expectRoundTrips<StackStyler>(
+        StackStyler(
+          alignment: Alignment.center,
+          fit: StackFit.expand,
+          textDirection: TextDirection.ltr,
+          clipBehavior: Clip.antiAlias,
+        ),
+      );
+    },
+  );
 
-  test('icon', () {
+  test('IconStyler round-trips through canonical wire with field fidelity', () {
     expectRoundTrips<IconStyler>(
       IconStyler(
         icon: icon,
@@ -114,37 +117,46 @@ void main() {
     );
   });
 
-  test('image', () {
-    expectRoundTrips<ImageStyler>(
-      ImageStyler(
-        image: image as ImageProvider<Object>,
-        width: 64,
-        fit: BoxFit.cover,
-        alignment: Alignment.center,
-      ),
-    );
-  });
+  test(
+    'ImageStyler round-trips through canonical wire with field fidelity',
+    () {
+      expectRoundTrips<ImageStyler>(
+        ImageStyler(
+          image: image as ImageProvider<Object>,
+          width: 64,
+          fit: BoxFit.cover,
+          alignment: Alignment.center,
+        ),
+      );
+    },
+  );
 
-  test('flex_box', () {
-    expectRoundTrips<FlexBoxStyler>(
-      FlexBoxStyler(
-        padding: EdgeInsetsMix.all(8),
-        decoration: BoxDecorationMix(color: const Color(0xFF112233)),
-        direction: Axis.vertical,
-        spacing: 4,
-        flexClipBehavior: Clip.hardEdge,
-      ),
-    );
-  });
+  test(
+    'FlexBoxStyler round-trips through canonical wire with field fidelity',
+    () {
+      expectRoundTrips<FlexBoxStyler>(
+        FlexBoxStyler(
+          padding: EdgeInsetsMix.all(8),
+          decoration: BoxDecorationMix(color: const Color(0xFF112233)),
+          direction: Axis.vertical,
+          spacing: 4,
+          flexClipBehavior: Clip.hardEdge,
+        ),
+      );
+    },
+  );
 
-  test('stack_box', () {
-    expectRoundTrips<StackBoxStyler>(
-      StackBoxStyler(
-        margin: EdgeInsetsMix(top: 4),
-        stackAlignment: Alignment.center,
-        fit: StackFit.passthrough,
-        stackClipBehavior: Clip.none,
-      ),
-    );
-  });
+  test(
+    'StackBoxStyler round-trips through canonical wire with field fidelity',
+    () {
+      expectRoundTrips<StackBoxStyler>(
+        StackBoxStyler(
+          margin: EdgeInsetsMix(top: 4),
+          stackAlignment: Alignment.center,
+          fit: StackFit.passthrough,
+          stackClipBehavior: Clip.none,
+        ),
+      );
+    },
+  );
 }
