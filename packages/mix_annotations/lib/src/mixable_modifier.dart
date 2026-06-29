@@ -25,9 +25,11 @@
 /// through a transition) that the generator's per-field lerp can't express.
 ///
 /// Fields can opt into a Mix-typed setter with `@MixableField(setterType: ...)`
-/// when the field's runtime type has no automatic Mix counterpart (for example
-/// `List<BoxShadow>`). The generated `ModifierMix` constructor then accepts the
-/// Mix type and wraps it with `Prop.maybeMix`:
+/// when the field's runtime type has no automatic Mix counterpart. Modifier
+/// setter types must extend `Mix<T>` for the field's runtime value type; for
+/// example, use `BoxShadowListMix` for a `List<BoxShadow>` field. The generated
+/// `ModifierMix` constructor then accepts the Mix type and wraps it with
+/// `Prop.maybeMix`:
 /// ```dart
 /// @MixableModifier()
 /// final class BoxShadowsModifier with _$BoxShadowsModifier {
