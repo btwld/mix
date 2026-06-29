@@ -41,6 +41,10 @@ class FlagProperty extends DiagnosticsProperty<bool> {
     : super(name, value);
 }
 
+class IterableProperty<T> extends DiagnosticsProperty<Iterable<T>> {
+  const IterableProperty(super.name, super.value);
+}
+
 mixin Diagnosticable {
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {}
 }
@@ -290,6 +294,48 @@ final class ConstructorOrderModifier with _$ConstructorOrderModifier {
         ]),
       );
     });
+
+    test(
+      'uses MixableField setterType for Mix-typed constructor params',
+      () async {
+        const body = r'''
+class ShadowListMix extends Mix<List<int>> {
+  const ShadowListMix();
+
+  @override
+  List<Object?> get props => const [];
+}
+
+@MixableModifier()
+final class ShadowModifier with _$ShadowModifier {
+  @MixableField(setterType: ShadowListMix)
+  @override
+  final List<int> shadows;
+
+  const ShadowModifier({List<int>? shadows}) : shadows = shadows ?? const [];
+
+  @override
+  Widget build(Widget child) => child;
+}
+''';
+
+        await expectGeneratorOutputResolves(
+          builder: partBuilder(const ModifierGenerator()),
+          sources: {
+            ...mixAnnotationsSources,
+            'mix_generator|lib/modifier_case.dart': _modifierSource(body),
+          },
+          inputAsset: 'mix_generator|lib/modifier_case.dart',
+          outputAsset: 'mix_generator|lib/modifier_case.g.dart',
+          outputMatcher: allOf([
+            contains('final Prop<List<int>>? shadows;'),
+            contains('ShadowModifierMix({ShadowListMix? shadows})'),
+            contains('shadows: Prop.maybeMix(shadows)'),
+            isNot(contains('Prop.maybe(shadows)')),
+          ]),
+        );
+      },
+    );
 
     test(
       'fails when an emitted field is not in the unnamed constructor',

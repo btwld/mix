@@ -23,6 +23,20 @@
 /// it manually on the modifier class. Useful when interpolation needs custom
 /// semantics (e.g. snapping at a specific threshold, keeping a child visible
 /// through a transition) that the generator's per-field lerp can't express.
+///
+/// Fields can opt into a Mix-typed setter with `@MixableField(setterType: ...)`
+/// when the field's runtime type has no automatic Mix counterpart (for example
+/// `List<BoxShadow>`). The generated `ModifierMix` constructor then accepts the
+/// Mix type and wraps it with `Prop.maybeMix`:
+/// ```dart
+/// @MixableModifier()
+/// final class BoxShadowsModifier with _$BoxShadowsModifier {
+///   @MixableField(setterType: BoxShadowListMix)
+///   @override
+///   final List<BoxShadow> boxShadows;
+///   // ...
+/// }
+/// ```
 class MixableModifier {
   /// Whether to generate the `lerp` method. Defaults to `true`.
   ///

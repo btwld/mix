@@ -11,8 +11,10 @@ import 'package:source_gen/source_gen.dart';
 
 import 'core/builders/modifier_mix_builder.dart';
 import 'core/builders/modifier_mixin_builder.dart';
+import 'core/checkers.dart';
 import 'core/errors.dart';
 import 'core/models/field_model.dart';
+import 'core/models/type_helpers.dart' as type_helpers;
 
 /// Main generator for `ModifierMix` class code.
 ///
@@ -104,16 +106,40 @@ class ModifierGenerator extends GeneratorForAnnotation<MixableModifier> {
         );
       }
 
+      final mixTypeOverride = _setterTypeOverride(field);
+
       return (
         index: info.index,
         field: ModifierFieldModel.fromField(
           field: FieldModel.fromElement(field, stylerName: modifierName),
           isNamedParam: info.isNamed,
+          propWrapperKind: mixTypeOverride == null ? null : .maybeMix,
+          mixTypeName: mixTypeOverride,
         ),
       );
     }).toList()..sort((a, b) => a.index.compareTo(b.index));
 
     return indexedFields.map((entry) => entry.field).toList();
+  }
+
+  /// Reads `@MixableField(setterType: ...)` on [field] and returns the
+  /// resolved type code, or `null` when no override is present.
+  ///
+  /// A modifier field whose runtime type has no automatic Mix counterpart
+  /// (e.g. `List<BoxShadow>`) can opt into a Mix-typed setter so the generated
+  /// `ModifierMix` constructor accepts the Mix and wraps it with
+  /// `Prop.maybeMix`.
+  String? _setterTypeOverride(FieldElement field) {
+    final annotation = mixableFieldAnnotationChecker.firstAnnotationOf(field);
+    final setterType = annotation?.getField('setterType')?.toTypeValue();
+    if (setterType == null) return null;
+
+    return type_helpers.visibleTypeCodeForField(
+      field,
+      visibleFrom: field.library,
+      type: setterType,
+      usage: 'setter type',
+    );
   }
 
   @override
