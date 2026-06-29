@@ -71,6 +71,9 @@ const mixableStyler = MixableStyler();
 /// can expose its `Styler` so it accepts fluent values (e.g.
 /// `UIAppBarStyler.container(BoxStyler().paddingAll(8))`).
 ///
+/// When used on a `@MixableSpec` field, `setterType` must be a Mix/Styler type
+/// (i.e. assignable to `Mix<...>`), because generated constructors wrap the
+/// argument with `Prop.maybeMix(...)`.
 /// Example usage:
 /// ```dart
 /// @MixableField(ignoreSetter: true)
