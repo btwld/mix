@@ -427,6 +427,20 @@ class ShadowListMix extends Mix<dynamic> {
 ''');
     });
 
+    test(
+      'rejects modifier setterType with nested dynamic Mix value type',
+      () async {
+        await _expectInvalidSetterType(r'''
+class ShadowListMix extends Mix<List<dynamic>> {
+  const ShadowListMix();
+
+  @override
+  List<Object?> get props => const [];
+}
+''');
+      },
+    );
+
     test('rejects raw modifier Mix setterType', () async {
       await _expectInvalidSetterType(r'''
 class ShadowListMix extends Mix {
@@ -435,6 +449,30 @@ class ShadowListMix extends Mix {
   @override
   List<Object?> get props => const [];
 }
+''');
+    });
+
+    test('rejects raw nested modifier Mix value type', () async {
+      await _expectInvalidSetterType(r'''
+class ShadowListMix extends Mix<List> {
+  const ShadowListMix();
+
+  @override
+  List<Object?> get props => const [];
+}
+''');
+    });
+
+    test('rejects raw generic modifier Mix setterType alias', () async {
+      await _expectInvalidSetterType(r'''
+class GenericShadowListMix<T> extends Mix<List<T>> {
+  const GenericShadowListMix();
+
+  @override
+  List<Object?> get props => const [];
+}
+
+typedef ShadowListMix = GenericShadowListMix;
 ''');
     });
 
