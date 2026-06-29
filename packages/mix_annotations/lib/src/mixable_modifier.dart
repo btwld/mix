@@ -26,9 +26,9 @@
 ///
 /// Fields can opt into a Mix-typed setter with `@MixableField(setterType: ...)`
 /// when the field's runtime type has no automatic Mix counterpart. Modifier
-/// setter types must extend `Mix<T>` for the field's runtime value type; for
-/// example, use `BoxShadowListMix` for a `List<BoxShadow>` field. The generated
-/// `ModifierMix` constructor then accepts the Mix type and wraps it with
+/// setter types must extend `Mix<T>` for the field's non-nullable runtime value
+/// type; for example, use `BoxShadowListMix` for a `List<BoxShadow>` field. The
+/// generated `ModifierMix` constructor then accepts the Mix type and wraps it with
 /// `Prop.maybeMix`:
 /// ```dart
 /// @MixableModifier()

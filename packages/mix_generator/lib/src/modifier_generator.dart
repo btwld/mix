@@ -145,9 +145,11 @@ class ModifierGenerator extends GeneratorForAnnotation<MixableModifier> {
       _failInvalidSetterType(field, setterType.typeCode, fieldTypeCode);
     }
 
-    final mixValueType = typeSystem.promoteToNonNull(
-      mixType.typeArguments.first,
-    );
+    final mixValueType = mixType.typeArguments.first;
+    if (_isInvalidMixValueType(mixValueType)) {
+      _failInvalidSetterType(field, setterType.typeCode, fieldTypeCode);
+    }
+
     final typesMatch =
         typeSystem.isAssignableTo(
           fieldType,
@@ -160,6 +162,10 @@ class ModifierGenerator extends GeneratorForAnnotation<MixableModifier> {
     }
 
     return setterType.typeCode;
+  }
+
+  bool _isInvalidMixValueType(DartType type) {
+    return type is DynamicType || type.nullabilitySuffix == .question;
   }
 
   Never _failInvalidSetterType(

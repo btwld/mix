@@ -107,7 +107,7 @@ class Prop<T> {
   const Prop();
 
   static Prop<T>? maybe<T>(T? value) => value == null ? null : Prop<T>();
-  static Prop<T>? maybeMix<T>(Object? value) =>
+  static Prop<T>? maybeMix<T>(Mix<T>? value) =>
       value == null ? null : Prop<T>();
 }
 
@@ -120,6 +120,37 @@ class MixOps {
 
 $body
 ''';
+}
+
+Future<void> _expectInvalidSetterType(String setterTypeSource) async {
+  final result = await testBuilder(
+    partBuilder(const ModifierGenerator()),
+    {
+      ..._modifierSupportSources,
+      'mix_generator|lib/modifier_case.dart': _modifierSource('''
+$setterTypeSource
+
+@MixableModifier()
+final class ShadowModifier with _\$ShadowModifier {
+  @MixableField(setterType: ShadowListMix)
+  @override
+  final List<int> shadows;
+
+  const ShadowModifier({List<int>? shadows}) : shadows = shadows ?? const [];
+
+  @override
+  Widget build(Widget child) => child;
+}
+'''),
+    },
+    generateFor: {'mix_generator|lib/modifier_case.dart'},
+  );
+
+  expect(result.succeeded, isFalse);
+  expect(
+    result.errors.join('\n'),
+    contains('modifier setterType must extend Mix<List<int>>'),
+  );
 }
 
 const _opacityMixinGolden = r'''
@@ -352,76 +383,60 @@ final class ShadowModifier with _$ShadowModifier {
     );
 
     test('rejects modifier setterType that does not extend Mix', () async {
-      final result = await testBuilder(
-        partBuilder(const ModifierGenerator()),
-        {
-          ..._modifierSupportSources,
-          'mix_generator|lib/modifier_case.dart': _modifierSource(r'''
-class NotAMix {
-  const NotAMix();
+      await _expectInvalidSetterType(r'''
+class ShadowListMix {
+  const ShadowListMix();
 }
-
-@MixableModifier()
-final class ShadowModifier with _$ShadowModifier {
-  @MixableField(setterType: NotAMix)
-  @override
-  final List<int> shadows;
-
-  const ShadowModifier({List<int>? shadows}) : shadows = shadows ?? const [];
-
-  @override
-  Widget build(Widget child) => child;
-}
-'''),
-        },
-        generateFor: {'mix_generator|lib/modifier_case.dart'},
-      );
-
-      expect(result.succeeded, isFalse);
-      expect(
-        result.errors.join('\n'),
-        contains('modifier setterType must extend Mix<List<int>>'),
-      );
+''');
     });
 
     test(
       'rejects modifier setterType whose Mix value type does not match field',
       () async {
-        final result = await testBuilder(
-          partBuilder(const ModifierGenerator()),
-          {
-            ..._modifierSupportSources,
-            'mix_generator|lib/modifier_case.dart': _modifierSource(r'''
+        await _expectInvalidSetterType(r'''
 class WrongMix extends Mix<int> {
   const WrongMix();
 
   @override
   List<Object?> get props => const [];
 }
-
-@MixableModifier()
-final class ShadowModifier with _$ShadowModifier {
-  @MixableField(setterType: WrongMix)
-  @override
-  final List<int> shadows;
-
-  const ShadowModifier({List<int>? shadows}) : shadows = shadows ?? const [];
-
-  @override
-  Widget build(Widget child) => child;
-}
-'''),
-          },
-          generateFor: {'mix_generator|lib/modifier_case.dart'},
-        );
-
-        expect(result.succeeded, isFalse);
-        expect(
-          result.errors.join('\n'),
-          contains('modifier setterType must extend Mix<List<int>>'),
-        );
+typedef ShadowListMix = WrongMix;
+''');
       },
     );
+
+    test('rejects modifier setterType with nullable Mix value type', () async {
+      await _expectInvalidSetterType(r'''
+class ShadowListMix extends Mix<List<int>?> {
+  const ShadowListMix();
+
+  @override
+  List<Object?> get props => const [];
+}
+''');
+    });
+
+    test('rejects modifier setterType with dynamic Mix value type', () async {
+      await _expectInvalidSetterType(r'''
+class ShadowListMix extends Mix<dynamic> {
+  const ShadowListMix();
+
+  @override
+  List<Object?> get props => const [];
+}
+''');
+    });
+
+    test('rejects raw modifier Mix setterType', () async {
+      await _expectInvalidSetterType(r'''
+class ShadowListMix extends Mix {
+  const ShadowListMix();
+
+  @override
+  List<Object?> get props => const [];
+}
+''');
+    });
 
     test(
       'fails when an emitted field is not in the unnamed constructor',
