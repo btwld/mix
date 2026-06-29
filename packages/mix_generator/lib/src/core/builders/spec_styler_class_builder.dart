@@ -53,10 +53,7 @@ class SpecStylerClassBuilder {
   String? _propFactory(FieldModel field) {
     if (isRawListField(field.name)) return null;
 
-    // An explicit `setterType` override always denotes a Mix/Styler counterpart
-    // (e.g. `BoxStyler` for a `StyleSpec<BoxSpec>` field), since the field
-    // storage `Prop<X>` only accepts `X` directly or a `Mix<X>`. Wrap it with
-    // `Prop.maybeMix`.
+    // `_setterTypeOverride` validates that overrides are Mix/Styler types.
     if (_hasSetterTypeOverride(field)) return 'Prop.maybeMix';
 
     if (_listMixParamType(field) != null) return null;
@@ -84,12 +81,83 @@ class SpecStylerClassBuilder {
     final element = specElement.getField(field.name);
     if (element == null) return null;
 
-    return type_helpers.visibleTypeCodeForField(
+    final typeCode = type_helpers.visibleTypeCodeForField(
       element,
       visibleFrom: element.library,
       type: type,
       usage: 'setter type',
     );
+
+    _validateSetterTypeOverride(field, element, type, typeCode);
+
+    return typeCode;
+  }
+
+  void _validateSetterTypeOverride(
+    FieldModel field,
+    FieldElement element,
+    DartType setterType,
+    String setterTypeCode,
+  ) {
+    final mixType = _mixBindingFor(setterType);
+    final fieldValueType = element.library.typeSystem.promoteToNonNull(
+      element.type,
+    );
+    final expectedType = type_helpers.visibleTypeCodeForField(
+      element,
+      visibleFrom: element.library,
+      type: fieldValueType,
+      usage: 'field value type',
+    );
+    if (mixType == null) {
+      fail(
+        element,
+        '@MixableField(setterType: $setterTypeCode) on `${field.name}` must '
+        'be assignable to `Mix<$expectedType>` for @MixableSpec fields.',
+        todo:
+            'Use a Mix/Styler type that resolves to `$expectedType`, or '
+            'remove `setterType`.',
+      );
+    }
+
+    final mixValueType = mixType.typeArguments.single;
+    final acceptsFieldType =
+        !_isInvalidMixValueType(mixValueType) &&
+        element.library.typeSystem.isAssignableTo(
+          mixValueType,
+          fieldValueType,
+          strictCasts: false,
+        );
+    if (acceptsFieldType) return;
+
+    final actualType = type_helpers.visibleTypeCodeForField(
+      element,
+      visibleFrom: element.library,
+      type: mixValueType,
+      usage: 'setter type Mix value',
+    );
+    fail(
+      element,
+      '@MixableField(setterType: $setterTypeCode) on `${field.name}` resolves '
+      'to `Mix<$actualType>`, but the field stores `$expectedType`.',
+      todo: 'Use a Mix/Styler type that resolves to `$expectedType`.',
+    );
+  }
+
+  bool _isInvalidMixValueType(DartType type) {
+    return type is DynamicType || type.nullabilitySuffix == .question;
+  }
+
+  InterfaceType? _mixBindingFor(DartType type) {
+    if (type is! InterfaceType) return null;
+
+    if (mixChecker.isExactlyType(type)) return type;
+
+    for (final supertype in type.allSupertypes) {
+      if (mixChecker.isExactlyType(supertype)) return supertype;
+    }
+
+    return null;
   }
 
   String? _listElementMixType(FieldModel field) {
