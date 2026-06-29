@@ -1119,6 +1119,52 @@ void main() {
       );
     });
 
+    test(
+      'uses MixableField setterType for nested styler fields',
+      () async {
+        const input = '''
+        library spike;
+        import 'package:mix/mix.dart';
+        import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
+
+        final class InnerSpec extends Spec<InnerSpec> {
+          const InnerSpec();
+        }
+
+        class InnerStyler {}
+
+        @MixableSpec()
+        final class HostSpec extends Spec<HostSpec> {
+          @MixableField(setterType: InnerStyler)
+          final StyleSpec<InnerSpec>? container;
+          const HostSpec({this.container});
+        }
+      ''';
+
+        await testBuilder(
+          _specStylerPartBuilder(),
+          {
+            ...mixAnnotationsSources,
+            ..._mixSources,
+            'mix|lib/spike.dart': input,
+          },
+          outputs: {
+            'mix|lib/spike.g.dart': decodedMatches(
+              allOf([
+                contains('factory HostStyler.container(InnerStyler value)'),
+                contains('HostStyler container(InnerStyler value)'),
+                contains('InnerStyler? container,'),
+                contains('container: Prop.maybeMix(container)'),
+                isNot(contains('StyleSpec<InnerSpec> value')),
+                isNot(contains('Prop.maybe(container)')),
+              ]),
+            ),
+          },
+        );
+      },
+    );
+
     test('uses host imports needed by field type arguments', () async {
       const boxSpec = '''
           import 'package:mix/mix.dart';

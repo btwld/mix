@@ -13,6 +13,7 @@ import '../helpers/widget_call_planner.dart';
 import '../models/annotation_config.dart';
 import '../models/field_model.dart';
 import '../models/styler_field_model.dart';
+import '../models/type_helpers.dart' as type_helpers;
 import '../resolvers/known_mix_symbol_resolver.dart';
 import 'styler_api_planner.dart';
 import 'styler_forwarder_factory.dart';
@@ -44,6 +45,7 @@ class SpecStylerClassBuilder {
   }
 
   String _publicParamType(FieldModel field) =>
+      _setterTypeOverride(field) ??
       _listMixParamType(field) ??
       mixTypeFor(field.typeName) ??
       _fieldValueType(field);
@@ -51,9 +53,43 @@ class SpecStylerClassBuilder {
   String? _propFactory(FieldModel field) {
     if (isRawListField(field.name)) return null;
 
+    // An explicit `setterType` override always denotes a Mix/Styler counterpart
+    // (e.g. `BoxStyler` for a `StyleSpec<BoxSpec>` field), since the field
+    // storage `Prop<X>` only accepts `X` directly or a `Mix<X>`. Wrap it with
+    // `Prop.maybeMix`.
+    if (_hasSetterTypeOverride(field)) return 'Prop.maybeMix';
+
     if (_listMixParamType(field) != null) return null;
 
     return mixTypeFor(field.typeName) == null ? 'Prop.maybe' : 'Prop.maybeMix';
+  }
+
+  /// Whether [field] declares a `@MixableField(setterType:)` override.
+  bool _hasSetterTypeOverride(FieldModel field) =>
+      _setterTypeValue(field) != null;
+
+  /// The resolved `@MixableField(setterType:)` type for [field], or `null`.
+  DartType? _setterTypeValue(FieldModel field) =>
+      _mixableFieldReader(field.name)?.peek('setterType')?.typeValue;
+
+  /// Dart code for a field's `setterType` override, or `null` when unset.
+  ///
+  /// Lets a field whose runtime type has no automatic Mix counterpart
+  /// (e.g. a nested `StyleSpec<BoxSpec>`) expose its Mix/Styler type
+  /// (`BoxStyler`) in the generated setter, factory, and constructor.
+  String? _setterTypeOverride(FieldModel field) {
+    final type = _setterTypeValue(field);
+    if (type == null) return null;
+
+    final element = specElement.getField(field.name);
+    if (element == null) return null;
+
+    return type_helpers.visibleTypeCodeForField(
+      element,
+      visibleFrom: element.library,
+      type: type,
+      usage: 'setter type',
+    );
   }
 
   String? _listElementMixType(FieldModel field) {
@@ -603,7 +639,10 @@ class SpecStylerClassBuilder {
   }
 
   String _createArgument(FieldModel field) {
-    final listMixWrapperType = _listMixWrapperType(field);
+    // A `setterType` override takes precedence over curated list wrapping.
+    final listMixWrapperType = _hasSetterTypeOverride(field)
+        ? null
+        : _listMixWrapperType(field);
     if (listMixWrapperType != null) {
       return '         ${field.name}: ${field.name} != null ? Prop.mix($listMixWrapperType(${field.name})) : null,';
     }

@@ -66,6 +66,11 @@ const mixableStyler = MixableStyler();
 /// [factoryName] optionally overrides the generated field factory name.
 /// [skipFactory] prevents spec-driven stylers from generating a field factory.
 ///
+/// For spec-driven stylers ([MixableSpec]), [setterType] also drives the
+/// generated field factory and `Prop` wrapping: a nested `StyleSpec<S>` field
+/// can expose its `Styler` so it accepts fluent values (e.g.
+/// `UIAppBarStyler.container(BoxStyler().paddingAll(8))`).
+///
 /// Example usage:
 /// ```dart
 /// @MixableField(ignoreSetter: true)
@@ -73,6 +78,9 @@ const mixableStyler = MixableStyler();
 ///
 /// @MixableField(setterType: List<ShadowMix>)
 /// final Prop<List<Shadow>>? $shadows;
+///
+/// @MixableField(setterType: BoxStyler)
+/// final StyleSpec<BoxSpec>? container;
 /// ```
 class MixableField {
   /// Whether to skip generating a setter for this field.
