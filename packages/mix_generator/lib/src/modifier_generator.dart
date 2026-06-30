@@ -5,14 +5,18 @@
 library;
 
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 import 'package:source_gen/source_gen.dart';
 
 import 'core/builders/modifier_mix_builder.dart';
 import 'core/builders/modifier_mixin_builder.dart';
+import 'core/checkers.dart';
 import 'core/errors.dart';
+import 'core/helpers/type_hierarchy.dart';
 import 'core/models/field_model.dart';
+import 'core/models/type_helpers.dart' as type_helpers;
 
 /// Main generator for `ModifierMix` class code.
 ///
@@ -104,16 +108,80 @@ class ModifierGenerator extends GeneratorForAnnotation<MixableModifier> {
         );
       }
 
+      final mixTypeOverride = _setterTypeOverride(field);
+
       return (
         index: info.index,
         field: ModifierFieldModel.fromField(
           field: FieldModel.fromElement(field, stylerName: modifierName),
           isNamedParam: info.isNamed,
+          mixTypeName: mixTypeOverride,
         ),
       );
     }).toList()..sort((a, b) => a.index.compareTo(b.index));
 
     return indexedFields.map((entry) => entry.field).toList();
+  }
+
+  /// Reads and validates a modifier `@MixableField(setterType: ...)`.
+  String? _setterTypeOverride(FieldElement field) {
+    final setterType = type_helpers.setterTypeOverrideForField(field);
+    if (setterType == null) return null;
+
+    final typeSystem = field.library.typeSystem;
+    final fieldType = typeSystem.promoteToNonNull(field.type);
+    final fieldTypeCode = type_helpers.visibleTypeCodeForField(
+      field,
+      visibleFrom: field.library,
+      type: fieldType,
+      usage: 'field type',
+    );
+    final setterInterfaceType = setterType.type;
+    final mixType = setterInterfaceType is InterfaceType
+        ? findSupertypeMatching(setterInterfaceType, mixChecker)
+        : null;
+
+    if (mixType == null || mixType.typeArguments.isEmpty) {
+      _failInvalidSetterType(field, setterType.typeCode, fieldTypeCode);
+    }
+
+    final mixValueType = mixType.typeArguments.first;
+    if (_isInvalidMixValueType(mixValueType)) {
+      _failInvalidSetterType(field, setterType.typeCode, fieldTypeCode);
+    }
+
+    final typesMatch =
+        typeSystem.isAssignableTo(
+          fieldType,
+          mixValueType,
+          strictCasts: false,
+        ) &&
+        typeSystem.isAssignableTo(mixValueType, fieldType, strictCasts: false);
+    if (!typesMatch) {
+      _failInvalidSetterType(field, setterType.typeCode, fieldTypeCode);
+    }
+
+    return setterType.typeCode;
+  }
+
+  bool _isInvalidMixValueType(DartType type) {
+    return type is DynamicType || type.nullabilitySuffix == .question;
+  }
+
+  Never _failInvalidSetterType(
+    FieldElement field,
+    String setterTypeCode,
+    String expectedTypeCode,
+  ) {
+    final fieldName = field.name ?? '<unknown>';
+    fail(
+      field,
+      '@MixableModifier field `$fieldName` has setterType `$setterTypeCode`, '
+      'but modifier setterType must extend Mix<$expectedTypeCode>.',
+      todo:
+          'Use a Mix<$expectedTypeCode> type for setterType or remove the '
+          'setterType override.',
+    );
   }
 
   @override
