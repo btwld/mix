@@ -1,6 +1,8 @@
 /// Shared helpers for Tailwind token parsing.
 library;
 
+enum _ColonSearch { first, last }
+
 /// Finds the first colon that's not inside square brackets.
 ///
 /// Used for iterative prefix stripping (e.g., parsing `md:hover:flex` one
@@ -14,9 +16,13 @@ library;
 /// - `md:flex` → 2 (index of `:` after `md`)
 /// - `bg-[color:red]` → -1 (colon is inside brackets)
 /// - `md:bg-[color:red]` → 2 (first colon after `md`)
-int findFirstColonOutsideBrackets(String token) {
+int findFirstColonOutsideBrackets(String token) =>
+    _findColonOutsideBrackets(token, _ColonSearch.first);
+
+int _findColonOutsideBrackets(String token, _ColonSearch search) {
   var bracketDepth = 0;
-  var firstColonOutside = -1;
+  var colonOutside = -1;
+
   for (var i = 0; i < token.length; i++) {
     final c = token[i];
     if (c == '[') {
@@ -25,13 +31,18 @@ int findFirstColonOutsideBrackets(String token) {
       bracketDepth--;
       // Extra closing bracket - malformed
       if (bracketDepth < 0) return -1;
-    } else if (c == ':' && bracketDepth == 0 && firstColonOutside == -1) {
-      firstColonOutside = i;
+    } else if (c == ':' && bracketDepth == 0) {
+      if (search == _ColonSearch.first && colonOutside == -1) {
+        colonOutside = i;
+      } else if (search == _ColonSearch.last) {
+        colonOutside = i;
+      }
     }
   }
+
   // Unclosed brackets - malformed, treat as no prefix
   if (bracketDepth != 0) return -1;
-  return firstColonOutside;
+  return colonOutside;
 }
 
 /// Finds the last colon that's not inside square brackets.
@@ -47,24 +58,16 @@ int findFirstColonOutsideBrackets(String token) {
 /// - `md:hover:flex` → 8 (index of last `:` before `flex`)
 /// - `bg-[color:red]` → -1 (colon is inside brackets)
 /// - `md:bg-[color:red]` → 2 (only colon outside brackets)
-int findLastColonOutsideBrackets(String token) {
-  var bracketDepth = 0;
-  var lastColonOutside = -1;
-  for (var i = 0; i < token.length; i++) {
-    final c = token[i];
-    if (c == '[') {
-      bracketDepth++;
-    } else if (c == ']') {
-      bracketDepth--;
-      // Extra closing bracket - malformed
-      if (bracketDepth < 0) return -1;
-    } else if (c == ':' && bracketDepth == 0) {
-      lastColonOutside = i; // Keep updating to get the last one
-    }
-  }
-  // Unclosed brackets - malformed, treat as no prefix
-  if (bracketDepth != 0) return -1;
-  return lastColonOutside;
+int findLastColonOutsideBrackets(String token) =>
+    _findColonOutsideBrackets(token, _ColonSearch.last);
+
+/// Returns the token segment after the last variant prefix.
+///
+/// Colons inside arbitrary-value brackets are ignored. Malformed bracket
+/// structure is treated as having no prefix, matching [findLastColonOutsideBrackets].
+String baseTokenOutsideBrackets(String token) {
+  final colonIndex = findLastColonOutsideBrackets(token);
+  return colonIndex >= 0 ? token.substring(colonIndex + 1) : token;
 }
 
 double? parseFractionToken(String value) {

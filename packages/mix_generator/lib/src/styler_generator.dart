@@ -95,10 +95,7 @@ class StylerGenerator extends GeneratorForAnnotation<MixableStyler> {
     }
 
     final widgetClass = fn.enclosingElement;
-    final widgetName = requireName(
-      widgetClass,
-      orFailWith: '@MixableSpec(target:) widget class must have a name.',
-    );
+    final widgetName = mixableSpecTargetWidgetName(fn);
     final hiddenWidgetType = firstInvisibleTypeName(
       widgetClass.thisType,
       stylerElement.library,
@@ -113,40 +110,13 @@ class StylerGenerator extends GeneratorForAnnotation<MixableStyler> {
       );
     }
 
-    final styleWidgetSupertype = findSupertypeMatching(
-      widgetClass.thisType,
-      styleWidgetChecker,
+    validateMixableSpecTargetConstructor(
+      constructor: fn,
+      widgetName: widgetName,
+      specElement: specElement,
+      specName: specName,
+      anchor: specElement,
     );
-    if (styleWidgetSupertype == null) {
-      fail(
-        specElement,
-        'Widget $widgetName must extend StyleWidget<$specName> '
-        'to be used as @MixableSpec(target:).',
-      );
-    }
-
-    final widgetSpecArg = styleWidgetSupertype.typeArguments.first;
-    if (widgetSpecArg is! InterfaceType ||
-        widgetSpecArg.element != specElement) {
-      fail(
-        specElement,
-        'Spec generic mismatch: $specName annotated, but '
-        '$widgetName extends StyleWidget<${widgetSpecArg.getDisplayString()}>.',
-      );
-    }
-
-    final optionalPositional = optionalPositionalNames(fn.formalParameters);
-    if (optionalPositional.isNotEmpty) {
-      fail(
-        specElement,
-        '@MixableSpec(target:) does not support optional positional target '
-        'constructor parameters on $widgetName: '
-        '[${optionalPositional.join(', ')}].',
-        todo: 'Convert these parameters to required positional or named.',
-      );
-    }
-
-    _requireStyleParameter(fn, widgetName, specElement);
 
     final result = extractCallParams(
       fn,
@@ -163,23 +133,6 @@ class StylerGenerator extends GeneratorForAnnotation<MixableStyler> {
       params: result.params,
       forwardsKey: result.forwardsKey,
       indent: '  ',
-    );
-  }
-
-  void _requireStyleParameter(
-    ConstructorElement constructor,
-    String widgetName,
-    Element anchor,
-  ) {
-    for (final parameter in constructor.formalParameters) {
-      if (parameter.name == 'style' && parameter.isNamed) return;
-    }
-
-    fail(
-      anchor,
-      '@MixableSpec(target:) requires $widgetName to expose a named '
-      '`style` constructor parameter so the generated call() can pass '
-      '`style: this`.',
     );
   }
 

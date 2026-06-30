@@ -26,6 +26,8 @@ command:
 categories:
   flutter_projects: 
     - packages/mix
+    - packages/mix_schema
+    - packages/mix_tailwinds
     - packages/mix/example
     - packages/mix_lint_test
     - packages/annotations
@@ -36,11 +38,9 @@ categories:
 scripts:
   # ANALYSIS
   analyze:
-    run: melos run analyze:dart && melos run analyze:dcm
+    run: melos run analyze:dart --no-select && melos run analyze:dcm --no-select
     description: Run all static analysis checks.
-    exec:
-      failFast: true
-      
+
   analyze:dart:
     run: melos exec -c 4 -- dart analyze .
     description: Run Dart static analysis checks.
@@ -126,10 +126,8 @@ scripts:
       dirExists: test
 
   ci:
-    run: melos run test:flutter && melos run test:dart
+    run: melos run test:flutter --no-select && melos run test:dart --no-select
     description: Run flutter and dart tests
-    packageFilters:
-      dirExists: test
 
   brb:
     run: melos run gen:build

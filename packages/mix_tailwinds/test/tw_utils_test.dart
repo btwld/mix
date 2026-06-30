@@ -36,6 +36,7 @@ void main() {
     test('returns -1 for malformed brackets (extra closing)', () {
       expect(findFirstColonOutsideBrackets('bg-color:red]'), -1);
       expect(findFirstColonOutsideBrackets('md:]bg-red'), -1);
+      expect(findFirstColonOutsideBrackets('md:flex]'), -1);
     });
 
     test('handles nested brackets', () {
@@ -87,10 +88,23 @@ void main() {
     test('returns -1 for malformed brackets (extra closing)', () {
       expect(findLastColonOutsideBrackets('bg-color:red]'), -1);
       expect(findLastColonOutsideBrackets('md:]bg-red'), -1);
+      expect(findLastColonOutsideBrackets('md:flex]'), -1);
     });
 
     test('handles empty string', () {
       expect(findLastColonOutsideBrackets(''), -1);
+    });
+  });
+
+  group('baseTokenOutsideBrackets', () {
+    test('returns the segment after the last outside-bracket colon', () {
+      expect(baseTokenOutsideBrackets('md:hover:flex'), 'flex');
+      expect(baseTokenOutsideBrackets('md:bg-[color:red]'), 'bg-[color:red]');
+    });
+
+    test('ignores bracketed colons and malformed brackets', () {
+      expect(baseTokenOutsideBrackets('bg-[color:red]'), 'bg-[color:red]');
+      expect(baseTokenOutsideBrackets('md:flex]'), 'md:flex]');
     });
   });
 
