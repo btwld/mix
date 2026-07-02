@@ -2,17 +2,32 @@
 // Used by analysis_rule tests that need MixStyler, MixToken, MixScope resolution.
 
 const String mixStubLibContent = r'''
-abstract class MixStyler {}
-abstract class MixToken<T> {}
+abstract class Mixable<T> {}
+abstract class Mix<T> extends Mixable<T> {}
+abstract class MixStyler extends Mix<Object> {}
+abstract class MixToken<T> {
+  const MixToken();
+  T call();
+  T resolve(Object context);
+}
 class MyToken extends MixToken<int> {
   const MyToken();
+  @override
+  int call() => 0;
+  @override
+  int resolve(Object context) => 0;
+  int mix() => 0;
 }
 class MixScope {
   MixScope([Map<Object?, Object?>? tokens]);
 }
-class EdgeInsetsGeometryMix {
+class EdgeInsetsGeometryMix extends Mix<Object> {
   EdgeInsetsGeometryMix();
   static EdgeInsetsGeometryMix all(double value) => EdgeInsetsGeometryMix();
+  static EdgeInsetsGeometryMix value(Object? v) => EdgeInsetsGeometryMix();
+}
+class Container {
+  Container({Object? color, List<Object?>? children});
 }
 class FontWeight {
   FontWeight();

@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../theme/mix_theme.dart';
 import '../theme/tokens/mix_token.dart';
 import '../theme/tokens/token_refs.dart';
 import 'converter_registry.dart';
@@ -59,7 +58,7 @@ class Prop<V> {
 
   /// Creates a property that references a token.
   ///
-  /// The token will be resolved from [MixScope] during resolution.
+  /// The token is resolved via [MixToken.resolve] during resolution.
   /// Optionally accepts [directives] configuration.
   factory Prop.token(MixToken<V> token, {List<Directive<V>>? directives}) {
     return Prop._(sources: [TokenSource(token)], directives: directives);
@@ -83,9 +82,10 @@ class Prop<V> {
   static Prop<V> value<V>(V value) {
     if (value is Prop<V>) return value;
 
-    // Handle extension type token references
-    if (isAnyTokenRef(value as Object)) {
-      final token = getTokenFromValue(value as Object) as MixToken<V>?;
+    // Detect sentinel-backed token refs (DoubleRef) without crashing when V
+    // is nullable and value is null.
+    if (value case final Object object) {
+      final token = getTokenFromValue<V>(object);
       if (token != null) {
         return Prop._(sources: [TokenSource(token)]);
       }
@@ -219,7 +219,7 @@ class Prop<V> {
     for (final source in sources) {
       final value = switch (source) {
         ValueSource<V>(:final value) => value,
-        TokenSource<V>(:final token) => MixScope.tokenOf(token, context),
+        TokenSource<V>(:final token) => token.resolve(context),
         MixSource<V>(:final mix) => mix,
       };
       values.add(value);

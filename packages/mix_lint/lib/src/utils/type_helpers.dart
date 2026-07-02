@@ -6,6 +6,15 @@ bool isMixStylerType(DartType? type) => _isSubtypeByName(type, 'MixStyler');
 /// Returns true if [type] is a subtype of [MixToken] (any token type).
 bool isMixTokenType(DartType? type) => _isSubtypeByName(type, 'MixToken');
 
+/// Returns true if [type] is a subtype of the Mix value base (`Mix`/`Mixable`).
+///
+/// Every ref-consuming Mix API — both Stylers (`MixStyler` → `Style` → `Mix`)
+/// and value utilities (`EdgeInsetsGeometryMix`, `DecorationMix`, ... → `Mix`) —
+/// shares this base, whether shipped in `package:mix` or generated in a user's
+/// package via `@MixableType`/`@MixableSpec`.
+bool isMixType(DartType? type) =>
+    _isSubtypeByName(type, 'Mix') || _isSubtypeByName(type, 'Mixable');
+
 /// Returns true if [type] is exactly [MixScope].
 bool isMixScopeType(DartType? type) => _matchesByName(type, 'MixScope');
 

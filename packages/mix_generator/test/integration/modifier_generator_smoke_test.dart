@@ -4,11 +4,27 @@ import 'package:test/test.dart';
 
 import '../core/test_helpers.dart';
 
+const _mixElementSource = r'''
+library mix_element;
+
+abstract class Mix<T> {
+  const Mix();
+
+  List<Object?> get props;
+}
+''';
+
+const _modifierSupportSources = {
+  ...mixAnnotationsSources,
+  'mix|lib/src/core/mix_element.dart': _mixElementSource,
+};
+
 String _modifierSource(String body) {
   return '''
 library modifier_case;
 
 import 'package:mix_annotations/mix_annotations.dart';
+import 'package:mix/src/core/mix_element.dart';
 
 part 'modifier_case.g.dart';
 
@@ -39,6 +55,10 @@ class DoubleProperty extends DiagnosticsProperty<double> {
 class FlagProperty extends DiagnosticsProperty<bool> {
   const FlagProperty(String name, {bool? value, String? ifTrue})
     : super(name, value);
+}
+
+class IterableProperty<T> extends DiagnosticsProperty<Iterable<T>> {
+  const IterableProperty(super.name, super.value);
 }
 
 mixin Diagnosticable {
@@ -76,10 +96,6 @@ abstract class WidgetModifier<Self extends WidgetModifier<Self>>
   Widget build(Widget child);
 }
 
-abstract class Mix<T> with Equatable {
-  const Mix();
-}
-
 abstract class ModifierMix<S extends WidgetModifier<S>> extends Mix<S> {
   const ModifierMix();
 
@@ -91,7 +107,7 @@ class Prop<T> {
   const Prop();
 
   static Prop<T>? maybe<T>(T? value) => value == null ? null : Prop<T>();
-  static Prop<T>? maybeMix<T>(Object? value) =>
+  static Prop<T>? maybeMix<T>(Mix<T>? value) =>
       value == null ? null : Prop<T>();
 }
 
@@ -104,6 +120,37 @@ class MixOps {
 
 $body
 ''';
+}
+
+Future<void> _expectInvalidSetterType(String setterTypeSource) async {
+  final result = await testBuilder(
+    partBuilder(const ModifierGenerator()),
+    {
+      ..._modifierSupportSources,
+      'mix_generator|lib/modifier_case.dart': _modifierSource('''
+$setterTypeSource
+
+@MixableModifier()
+final class ShadowModifier with _\$ShadowModifier {
+  @MixableField(setterType: ShadowListMix)
+  @override
+  final List<int> shadows;
+
+  const ShadowModifier({List<int>? shadows}) : shadows = shadows ?? const [];
+
+  @override
+  Widget build(Widget child) => child;
+}
+'''),
+    },
+    generateFor: {'mix_generator|lib/modifier_case.dart'},
+  );
+
+  expect(result.succeeded, isFalse);
+  expect(
+    result.errors.join('\n'),
+    contains('modifier setterType must extend Mix<List<int>>'),
+  );
 }
 
 const _opacityMixinGolden = r'''
@@ -163,7 +210,7 @@ final class OpacityModifier with _$OpacityModifier {
       await expectGeneratorOutputResolves(
         builder: partBuilder(const ModifierGenerator()),
         sources: {
-          ...mixAnnotationsSources,
+          ..._modifierSupportSources,
           'mix_generator|lib/modifier_case.dart': _modifierSource(body),
         },
         inputAsset: 'mix_generator|lib/modifier_case.dart',
@@ -201,7 +248,7 @@ final class VisibilityModifier with _$VisibilityModifier {
       await expectGeneratorOutputResolves(
         builder: partBuilder(const ModifierGenerator()),
         sources: {
-          ...mixAnnotationsSources,
+          ..._modifierSupportSources,
           'mix_generator|lib/modifier_case.dart': _modifierSource(body),
         },
         inputAsset: 'mix_generator|lib/modifier_case.dart',
@@ -236,7 +283,7 @@ final class PositionalModifier with _$PositionalModifier {
         await expectGeneratorOutputResolves(
           builder: partBuilder(const ModifierGenerator()),
           sources: {
-            ...mixAnnotationsSources,
+            ..._modifierSupportSources,
             'mix_generator|lib/modifier_case.dart': _modifierSource(body),
           },
           inputAsset: 'mix_generator|lib/modifier_case.dart',
@@ -272,7 +319,7 @@ final class ConstructorOrderModifier with _$ConstructorOrderModifier {
       await expectGeneratorOutputResolves(
         builder: partBuilder(const ModifierGenerator()),
         sources: {
-          ...mixAnnotationsSources,
+          ..._modifierSupportSources,
           'mix_generator|lib/modifier_case.dart': _modifierSource(body),
         },
         inputAsset: 'mix_generator|lib/modifier_case.dart',
@@ -292,12 +339,150 @@ final class ConstructorOrderModifier with _$ConstructorOrderModifier {
     });
 
     test(
+      'uses MixableField setterType for Mix-typed constructor params',
+      () async {
+        const body = r'''
+class ShadowListMix extends Mix<List<int>> {
+  const ShadowListMix();
+
+  @override
+  List<Object?> get props => const [];
+}
+
+@MixableModifier()
+final class ShadowModifier with _$ShadowModifier {
+  @MixableField(setterType: ShadowListMix)
+  @override
+  final List<int> shadows;
+
+  const ShadowModifier({List<int>? shadows}) : shadows = shadows ?? const [];
+
+  @override
+  Widget build(Widget child) => child;
+}
+''';
+
+        await expectGeneratorOutputResolves(
+          builder: partBuilder(const ModifierGenerator()),
+          sources: {
+            ..._modifierSupportSources,
+            'mix_generator|lib/modifier_case.dart': _modifierSource(body),
+          },
+          inputAsset: 'mix_generator|lib/modifier_case.dart',
+          outputAsset: 'mix_generator|lib/modifier_case.g.dart',
+          outputMatcher: allOf([
+            contains('final Prop<List<int>>? shadows;'),
+            contains('ShadowModifierMix({ShadowListMix? shadows})'),
+            contains('shadows: Prop.maybeMix(shadows)'),
+            contains('shadows: MixOps.resolve(context, shadows)'),
+            contains('shadows: MixOps.merge(shadows, other.shadows)'),
+            isNot(contains('Prop.maybe(shadows)')),
+          ]),
+        );
+      },
+    );
+
+    test('rejects modifier setterType that does not extend Mix', () async {
+      await _expectInvalidSetterType(r'''
+class ShadowListMix {
+  const ShadowListMix();
+}
+''');
+    });
+
+    test(
+      'rejects modifier setterType whose Mix value type does not match field',
+      () async {
+        await _expectInvalidSetterType(r'''
+class WrongMix extends Mix<int> {
+  const WrongMix();
+
+  @override
+  List<Object?> get props => const [];
+}
+typedef ShadowListMix = WrongMix;
+''');
+      },
+    );
+
+    test('rejects modifier setterType with nullable Mix value type', () async {
+      await _expectInvalidSetterType(r'''
+class ShadowListMix extends Mix<List<int>?> {
+  const ShadowListMix();
+
+  @override
+  List<Object?> get props => const [];
+}
+''');
+    });
+
+    test('rejects modifier setterType with dynamic Mix value type', () async {
+      await _expectInvalidSetterType(r'''
+class ShadowListMix extends Mix<dynamic> {
+  const ShadowListMix();
+
+  @override
+  List<Object?> get props => const [];
+}
+''');
+    });
+
+    test(
+      'rejects modifier setterType with nested dynamic Mix value type',
+      () async {
+        await _expectInvalidSetterType(r'''
+class ShadowListMix extends Mix<List<dynamic>> {
+  const ShadowListMix();
+
+  @override
+  List<Object?> get props => const [];
+}
+''');
+      },
+    );
+
+    test('rejects raw modifier Mix setterType', () async {
+      await _expectInvalidSetterType(r'''
+class ShadowListMix extends Mix {
+  const ShadowListMix();
+
+  @override
+  List<Object?> get props => const [];
+}
+''');
+    });
+
+    test('rejects raw nested modifier Mix value type', () async {
+      await _expectInvalidSetterType(r'''
+class ShadowListMix extends Mix<List> {
+  const ShadowListMix();
+
+  @override
+  List<Object?> get props => const [];
+}
+''');
+    });
+
+    test('rejects raw generic modifier Mix setterType alias', () async {
+      await _expectInvalidSetterType(r'''
+class GenericShadowListMix<T> extends Mix<List<T>> {
+  const GenericShadowListMix();
+
+  @override
+  List<Object?> get props => const [];
+}
+
+typedef ShadowListMix = GenericShadowListMix;
+''');
+    });
+
+    test(
       'fails when an emitted field is not in the unnamed constructor',
       () async {
         final result = await testBuilder(
           partBuilder(const ModifierGenerator()),
           {
-            ...mixAnnotationsSources,
+            ..._modifierSupportSources,
             'mix_generator|lib/modifier_case.dart': _modifierSource(r'''
 @MixableModifier()
 final class InvalidModifier with _$InvalidModifier {
@@ -328,7 +513,7 @@ final class InvalidModifier with _$InvalidModifier {
       final result = await testBuilder(
         partBuilder(const ModifierGenerator()),
         {
-          ...mixAnnotationsSources,
+          ..._modifierSupportSources,
           'mix_generator|lib/modifier_case.dart': r'''
 library modifier_case;
 

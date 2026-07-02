@@ -8,6 +8,86 @@ import 'package:test/test.dart';
 import '../core/test_helpers.dart';
 
 const _mixSources = {'mix|lib/mix.dart': _mixStub};
+const _setterTypeMixSources = {
+  'mix|lib/src/core/mix_element.dart': '''
+    abstract class Mix<T> {
+      const Mix();
+    }
+  ''',
+  'mix|lib/mix.dart': '''
+    import 'package:flutter/foundation.dart';
+
+    import 'src/core/mix_element.dart';
+
+    export 'src/core/mix_element.dart';
+
+    abstract class Spec<T extends Spec<T>> {
+      const Spec();
+    }
+
+    class StyleSpec<S extends Spec<S>> {
+      const StyleSpec({
+        required S spec,
+        Object? animation,
+        Object? widgetModifiers,
+      });
+    }
+
+    abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>> {
+      final List<VariantStyle<S>>? \$variants;
+      final WidgetModifierConfig? \$modifier;
+      final AnimationConfig? \$animation;
+
+      const Style({
+        List<VariantStyle<S>>? variants,
+        WidgetModifierConfig? modifier,
+        AnimationConfig? animation,
+      }) : \$variants = variants,
+           \$modifier = modifier,
+           \$animation = animation;
+    }
+
+    abstract class MixStyler<ST extends Style<SP>, SP extends Spec<SP>>
+        extends Style<SP> with Diagnosticable {
+      const MixStyler({super.variants, super.modifier, super.animation});
+    }
+
+    class AnimationConfig {}
+
+    class WidgetModifierConfig {
+      Object? resolve(Object context) => null;
+    }
+
+    class VariantStyle<S extends Spec<S>> {}
+
+    class Prop<T> {
+      static Prop<T>? maybe<T>(T? value) => null;
+      static Prop<T>? maybeMix<T>(Mix<T>? value) => null;
+      static Prop<T>? mix<T>(Mix<T> value) => null;
+    }
+
+    class MixOps {
+      static Prop<T>? merge<T>(Prop<T>? a, Prop<T>? b) => null;
+
+      static List<VariantStyle<S>>? mergeVariants<S extends Spec<S>>(
+        List<VariantStyle<S>>? a,
+        List<VariantStyle<S>>? b,
+      ) => null;
+
+      static WidgetModifierConfig? mergeModifier(
+        WidgetModifierConfig? a,
+        WidgetModifierConfig? b,
+      ) => null;
+
+      static AnimationConfig? mergeAnimation(
+        AnimationConfig? a,
+        AnimationConfig? b,
+      ) => null;
+
+      static T? resolve<T>(Object context, Prop<T>? prop) => null;
+    }
+  ''',
+};
 const _mixSourcesWithStyleWidget = {
   ..._mixSources,
   'mix|lib/src/core/style_widget.dart': '''
@@ -1116,6 +1196,243 @@ void main() {
             ]),
           ),
         },
+      );
+    });
+
+    test('uses MixableField setterType for nested styler fields', () async {
+      const input = '''
+        library spike;
+        import 'package:flutter/foundation.dart';
+        import 'package:flutter/widgets.dart';
+        import 'package:mix/mix.dart';
+        import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
+
+        final class InnerSpec extends Spec<InnerSpec> {
+          const InnerSpec();
+        }
+
+        class InnerStyler extends Style<InnerSpec> with Diagnosticable {}
+
+        @MixableSpec()
+        final class HostSpec extends Spec<HostSpec> {
+          @MixableField(setterType: InnerStyler)
+          final StyleSpec<InnerSpec>? container;
+          const HostSpec({this.container});
+        }
+      ''';
+
+      await expectGeneratorOutputResolves(
+        builder: _specStylerPartBuilder(),
+        sources: {
+          ...mixAnnotationsSources,
+          ..._flutterResolveStubs,
+          ..._setterTypeMixSources,
+          'mix|lib/spike.dart': input,
+        },
+        inputAsset: 'mix|lib/spike.dart',
+        outputAsset: 'mix|lib/spike.g.dart',
+        outputMatcher: allOf([
+          contains('factory HostStyler.container(InnerStyler value)'),
+          contains('HostStyler container(InnerStyler value)'),
+          contains('InnerStyler? container,'),
+          contains('container: Prop.maybeMix(container)'),
+          isNot(contains('StyleSpec<InnerSpec> value')),
+          isNot(contains('Prop.maybe(container)')),
+        ]),
+      );
+    });
+
+    test('rejects spec setterType that is not Mix-compatible', () async {
+      const input = '''
+        library spike;
+        import 'package:mix/mix.dart';
+        import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
+
+        final class InnerSpec extends Spec<InnerSpec> {
+          const InnerSpec();
+        }
+
+        class InnerStyler {}
+
+        @MixableSpec()
+        final class HostSpec extends Spec<HostSpec> {
+          @MixableField(setterType: InnerStyler)
+          final StyleSpec<InnerSpec>? container;
+          const HostSpec({this.container});
+        }
+      ''';
+
+      final message = await _expectSpecStylerValidationError({
+        ...mixAnnotationsSources,
+        ..._flutterResolveStubs,
+        ..._setterTypeMixSources,
+        'mix|lib/spike.dart': input,
+      });
+
+      expect(
+        message,
+        allOf([
+          contains('@MixableField(setterType: InnerStyler)'),
+          contains('must be assignable to `Mix<StyleSpec<InnerSpec>>`'),
+        ]),
+      );
+    });
+
+    test('rejects spec setterType with the wrong Mix value type', () async {
+      const input = '''
+        library spike;
+        import 'package:mix/mix.dart';
+        import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
+
+        final class InnerSpec extends Spec<InnerSpec> {
+          const InnerSpec();
+        }
+
+        final class OtherSpec extends Spec<OtherSpec> {
+          const OtherSpec();
+        }
+
+        class OtherStyler extends Style<OtherSpec> {}
+
+        @MixableSpec()
+        final class HostSpec extends Spec<HostSpec> {
+          @MixableField(setterType: OtherStyler)
+          final StyleSpec<InnerSpec>? container;
+          const HostSpec({this.container});
+        }
+      ''';
+
+      final message = await _expectSpecStylerValidationError({
+        ...mixAnnotationsSources,
+        ..._flutterResolveStubs,
+        ..._setterTypeMixSources,
+        'mix|lib/spike.dart': input,
+      });
+
+      expect(
+        message,
+        allOf([
+          contains('@MixableField(setterType: OtherStyler)'),
+          contains('resolves to `Mix<StyleSpec<OtherSpec>>`'),
+          contains('but the field stores `StyleSpec<InnerSpec>`'),
+        ]),
+      );
+    });
+
+    test('rejects spec setterType with a nullable Mix value type', () async {
+      const input = '''
+        library spike;
+        import 'package:mix/mix.dart';
+        import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
+
+        final class InnerSpec extends Spec<InnerSpec> {
+          const InnerSpec();
+        }
+
+        class NullableStyler extends Mix<StyleSpec<InnerSpec>?> {}
+
+        @MixableSpec()
+        final class HostSpec extends Spec<HostSpec> {
+          @MixableField(setterType: NullableStyler)
+          final StyleSpec<InnerSpec>? container;
+          const HostSpec({this.container});
+        }
+      ''';
+
+      final message = await _expectSpecStylerValidationError({
+        ...mixAnnotationsSources,
+        ..._flutterResolveStubs,
+        ..._setterTypeMixSources,
+        'mix|lib/spike.dart': input,
+      });
+
+      expect(
+        message,
+        allOf([
+          contains('@MixableField(setterType: NullableStyler)'),
+          contains('resolves to `Mix<StyleSpec<InnerSpec>?>`'),
+          contains('but the field stores `StyleSpec<InnerSpec>`'),
+        ]),
+      );
+    });
+
+    test('rejects spec setterType with a dynamic Mix value type', () async {
+      const input = '''
+        library spike;
+        import 'package:mix/mix.dart';
+        import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
+
+        final class InnerSpec extends Spec<InnerSpec> {
+          const InnerSpec();
+        }
+
+        class DynamicStyler extends Mix<dynamic> {}
+
+        @MixableSpec()
+        final class HostSpec extends Spec<HostSpec> {
+          @MixableField(setterType: DynamicStyler)
+          final StyleSpec<InnerSpec>? container;
+          const HostSpec({this.container});
+        }
+      ''';
+
+      final message = await _expectSpecStylerValidationError({
+        ...mixAnnotationsSources,
+        ..._flutterResolveStubs,
+        ..._setterTypeMixSources,
+        'mix|lib/spike.dart': input,
+      });
+
+      expect(
+        message,
+        allOf([
+          contains('@MixableField(setterType: DynamicStyler)'),
+          contains('resolves to `Mix<dynamic>`'),
+          contains('but the field stores `StyleSpec<InnerSpec>`'),
+        ]),
+      );
+    });
+
+    test('rejects raw spec Mix setterType', () async {
+      const input = '''
+        library spike;
+        import 'package:mix/mix.dart';
+        import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
+
+        final class InnerSpec extends Spec<InnerSpec> {
+          const InnerSpec();
+        }
+
+        class RawStyler extends Mix {}
+
+        @MixableSpec()
+        final class HostSpec extends Spec<HostSpec> {
+          @MixableField(setterType: RawStyler)
+          final StyleSpec<InnerSpec>? container;
+          const HostSpec({this.container});
+        }
+      ''';
+
+      final message = await _expectSpecStylerValidationError({
+        ...mixAnnotationsSources,
+        ..._flutterResolveStubs,
+        ..._setterTypeMixSources,
+        'mix|lib/spike.dart': input,
+      });
+
+      expect(
+        message,
+        allOf([
+          contains('@MixableField(setterType: RawStyler)'),
+          contains('resolves to `Mix<dynamic>`'),
+          contains('but the field stores `StyleSpec<InnerSpec>`'),
+        ]),
       );
     });
 

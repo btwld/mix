@@ -1,3 +1,72 @@
+## 2.1.0
+
+This release adds context-derived token resolution and richer animation
+configuration, fixes variant resolution in nested styles and animation
+interpolation edge cases, and hardens the token-reference system while
+tightening the public API around the internal token registry.
+
+### New features
+
+- **`ContextToken`:** Zero-config token whose value is derived directly from
+  the build context, so context-dependent values resolve without first
+  registering a token in a scope (#938).
+- **Spring animation helpers:** `AnimationConfig` statics are now factories,
+  with added spring-curve wrappers for configuring physics-based transitions
+  (#937).
+
+### Fixes
+
+- **Variants in nested styles:** A `Style` nested inside another style's `Prop`
+  (a component sub-style) now applies its own context variants — widget states,
+  brightness, breakpoints. Previously `Prop.resolveProp` resolved the merged
+  nested style via `resolve()`, which skips variants. No-op for nested styles
+  without variants (#926).
+- **`Matrix4` interpolation:** Tween a transform against the identity matrix
+  when one endpoint is null, instead of producing a degenerate result (#931).
+- **Animation config fallback:** Fall back to the previous animation config
+  when a transition resolves to null, rather than dropping the animation (#930).
+- **`DoubleRef` sentinel collisions:** Two distinct `MixToken<double>`
+  instances whose hashes landed in the same bucket previously aliased to the
+  same sentinel. The registry now hands out sentinels from a monotonic
+  counter, so sentinels are unique among registered tokens; a reverse cache
+  re-issues the same sentinel for the same token.
+- **`BreakpointToken.resolve` no longer masks type errors:** the built-in
+  `mobile`/`tablet`/`desktop` defaults are only used when the scope is
+  absent or omits the entry. A scope entry of the wrong type now surfaces
+  the underlying `StateError` from `MixScope.getToken`.
+- **Numeric directives on multi-source props:** `Prop.value(x).mergeProp(
+  Prop.token(t)).multiply(2)` and similar chains now resolve instead of
+  throwing — `_asPropNum` rebuilds every source as `Prop<num>` and merges
+  in order.
+- **`Prop.value` null safety:** the token-ref detection branch no longer
+  crashes when `V` is nullable and the supplied value is `null`.
+
+### API changes
+
+- **`ValueRef.noSuchMethod` throws `UnsupportedError`** (was
+  `UnimplementedError`). The detailed message is unchanged; only the error
+  type differs. Any user code that catches the specific class needs to
+  switch.
+- **`getReferenceValue` no longer silently casts** an unsupported token
+  type — it now throws `UnsupportedError` naming the token and `T`. All
+  concrete `MixToken` subclasses override `call()` and never hit this path;
+  the change only affects custom `MixToken` authors who relied on the cast.
+- **Removed from the public API:** `clearTokenRegistry` and
+  `getTokenFromValue` are no longer re-exported from `package:mix/mix.dart`
+  (both are now `@internal`; tests reach them via `package:mix/src/...`).
+  The public `DoubleRef(double)` constructor was removed — `DoubleRef`
+  instances are only ever obtained through `MixToken<double>.call()`.
+  For an explicit, type-safe handle to a double token, use
+  `Prop.token(token)`.
+- **`isAnyTokenRef`** drops the brittle `runtimeType.toString().endsWith(...)`
+  check; a `Prop` carrying a `TokenSource` is now the sole class-based
+  invariant.
+
+### Other changes
+
+- **`StyleWidget` defaults to `IdentityStyle<Spec>`**, giving widgets a
+  well-defined no-op style when none is supplied (#921).
+
 ## 2.0.3
 
 This release adds finer-grained control over scope inheritance and theming, and restores compatibility with newer Flutter SDKs.

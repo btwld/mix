@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
+import 'package:mix/src/theme/tokens/token_refs.dart' show getTokenFromValue;
+
+import '../../../helpers/testing_utils.dart';
 
 void main() {
   group('DoubleToken Integration Tests', () {
@@ -60,37 +63,32 @@ void main() {
       expect(doubleRef < 1, isA<bool>());
     });
 
-    test('DoubleToken and SpaceToken both create DoubleRef', () {
+    test('DoubleToken and SpaceToken both produce token-detectable refs', () {
       const doubleToken = DoubleToken('general.value');
       const spaceToken = SpaceToken('space.value');
 
       final doubleRef = getReferenceValue(doubleToken);
       final spaceRef = getReferenceValue(spaceToken);
 
-      expect(doubleRef, isA<DoubleRef>());
-      expect(spaceRef, isA<DoubleRef>());
+      // Both must satisfy the double interface (call site assignability).
+      expect(doubleRef, isA<double>());
+      expect(spaceRef, isA<double>());
 
-      // Both should be DoubleRef now
-      expect(doubleRef.runtimeType, equals(DoubleRef));
-      expect(spaceRef.runtimeType, equals(DoubleRef));
-      expect(doubleRef.runtimeType, equals(spaceRef.runtimeType));
+      // Both must be recognised as token refs and round-trip to their tokens.
+      expect(isAnyTokenRef(doubleRef), isTrue);
+      expect(isAnyTokenRef(spaceRef), isTrue);
+      expect(getTokenFromValue<double>(doubleRef), equals(doubleToken));
+      expect(getTokenFromValue<double>(spaceRef), equals(spaceToken));
     });
 
-    test(
-      'DoubleRef and SpaceRef are both DoubleRef class-based references',
-      () {
-        const doubleToken = DoubleToken('test.double');
-        const spaceToken = SpaceToken('test.space');
+    test('a plain double that is not registered stays a ValueSource', () {
+      const ordinary = 42.0;
 
-        final doubleRef = doubleToken();
-        final spaceRef = spaceToken();
+      expect(isAnyTokenRef(ordinary), isFalse);
 
-        // Both should be token references and same type
-        expect(isAnyTokenRef(doubleRef), isTrue);
-        expect(isAnyTokenRef(spaceRef), isTrue);
-        expect(doubleRef.runtimeType, equals(DoubleRef));
-        expect(spaceRef.runtimeType, equals(DoubleRef));
-      },
-    );
+      final prop = Prop.value(ordinary);
+      expect(prop, PropMatcher.hasValues);
+      expect(prop, isNot(PropMatcher.hasTokens));
+    });
   });
 }
