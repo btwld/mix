@@ -33,6 +33,14 @@ MixSchemaError _mapSingleSchemaError(SchemaError error) {
       value: cause.value,
     );
   }
+  if (cause is InvalidTokenNameError) {
+    return MixSchemaError(
+      code: MixSchemaErrorCode.invalidTokenName,
+      path: _normalizePath(error.path),
+      message: cause.reason,
+      value: cause.name,
+    );
+  }
   if (cause is SchemaInventorySkewError) {
     return MixSchemaError(
       code: MixSchemaErrorCode.inventorySkew,
@@ -118,6 +126,9 @@ MixSchemaErrorCode _mapConstraintCode(
   }
   if (isEnumConstraint) {
     return MixSchemaErrorCode.invalidEnum;
+  }
+  if (keys.contains('mix_schema_token_name')) {
+    return MixSchemaErrorCode.invalidTokenName;
   }
   if (keys.contains('core_invalid_type')) {
     return MixSchemaErrorCode.typeMismatch;

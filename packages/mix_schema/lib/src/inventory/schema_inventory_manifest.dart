@@ -44,7 +44,6 @@ final class SchemaInventoryEntry {
   final String? reason;
 }
 
-const _phase3Tokens = 'deferred: phase 3 - canonical token wire grammar.';
 const _phase4Coverage = 'deferred: phase 4 - codec coverage backlog.';
 const _phase4Directives = 'deferred: phase 4 - Prop directive grammar.';
 const _phase4Modifiers = 'deferred: phase 4 - modifier codec expansion.';
@@ -283,41 +282,31 @@ const _supportedInventory = <SchemaInventoryEntry>[
   SchemaInventoryEntry.supported('modifier:DefaultTextStyleModifierMix'),
   SchemaInventoryEntry.supported('modifier:FlexibleModifierMix'),
   SchemaInventoryEntry.supported('modifier:OpacityModifierMix'),
+  SchemaInventoryEntry.supported('token:BorderSideToken'),
+  SchemaInventoryEntry.supported('token:BoxShadowToken'),
+  SchemaInventoryEntry.supported('token:BreakpointToken'),
+  SchemaInventoryEntry.supported('token:ColorToken'),
+  SchemaInventoryEntry.supported('token:DoubleToken'),
+  SchemaInventoryEntry.supported('token:DurationToken'),
+  SchemaInventoryEntry.supported('token:FontWeightToken'),
+  SchemaInventoryEntry.supported('token:RadiusToken'),
+  SchemaInventoryEntry.supported('token:ShadowToken'),
+  SchemaInventoryEntry.supported('token:SpaceToken'),
+  SchemaInventoryEntry.supported('token:TextStyleToken'),
   SchemaInventoryEntry.supported('variant:BreakpointVariant'),
   SchemaInventoryEntry.supported('variant:BrightnessVariant'),
   SchemaInventoryEntry.supported('variant:NamedVariant'),
   SchemaInventoryEntry.supported('variant:NotVariant'),
   SchemaInventoryEntry.supported('variant:WidgetStateVariant'),
   SchemaInventoryEntry.supported('variant_factory:ContextVariant.brightness'),
+  SchemaInventoryEntry.supported('variant_factory:ContextVariant.desktop'),
+  SchemaInventoryEntry.supported('variant_factory:ContextVariant.mobile'),
+  SchemaInventoryEntry.supported('variant_factory:ContextVariant.tablet'),
   SchemaInventoryEntry.supported('variant_factory:ContextVariant.widgetState'),
   SchemaInventoryEntry.supported('variant_factory:Variant.named'),
 ];
 
-const _phase3DeferredInventory = <SchemaInventoryEntry>[
-  SchemaInventoryEntry.knownUnsupported('token:BorderSideToken', _phase3Tokens),
-  SchemaInventoryEntry.knownUnsupported('token:BoxShadowToken', _phase3Tokens),
-  SchemaInventoryEntry.knownUnsupported('token:BreakpointToken', _phase3Tokens),
-  SchemaInventoryEntry.knownUnsupported('token:ColorToken', _phase3Tokens),
-  SchemaInventoryEntry.knownUnsupported('token:DoubleToken', _phase3Tokens),
-  SchemaInventoryEntry.knownUnsupported('token:DurationToken', _phase3Tokens),
-  SchemaInventoryEntry.knownUnsupported('token:FontWeightToken', _phase3Tokens),
-  SchemaInventoryEntry.knownUnsupported('token:RadiusToken', _phase3Tokens),
-  SchemaInventoryEntry.knownUnsupported('token:ShadowToken', _phase3Tokens),
-  SchemaInventoryEntry.knownUnsupported('token:SpaceToken', _phase3Tokens),
-  SchemaInventoryEntry.knownUnsupported('token:TextStyleToken', _phase3Tokens),
-  SchemaInventoryEntry.knownUnsupported(
-    'variant_factory:ContextVariant.desktop',
-    _phase3Tokens,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'variant_factory:ContextVariant.mobile',
-    _phase3Tokens,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'variant_factory:ContextVariant.tablet',
-    _phase3Tokens,
-  ),
-];
+const _phase3DeferredInventory = <SchemaInventoryEntry>[];
 
 const _phase4DeferredInventory = <SchemaInventoryEntry>[
   SchemaInventoryEntry.knownUnsupported(

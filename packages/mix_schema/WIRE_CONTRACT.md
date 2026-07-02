@@ -227,6 +227,106 @@ part.
 - `offset`: `{ "x": number, "y": number }`.
 - `matrix4`: exactly 16 numbers.
 
+## Token References
+
+Token-capable field positions accept a token reference object:
+
+```json
+{ "$token": "color.text.primary" }
+```
+
+Token names must match `[A-Za-z0-9_.-]{1,128}`. Invalid names fail with
+`invalid_token_name` at the `$token` path. `$token` is a reserved control
+marker; token reference objects may contain only `$token` and, for double-valued
+references, `kind`. `$merge` is reserved for a future merge grammar and is
+rejected in v1, as are all unknown `$`-prefixed markers.
+
+The field position selects the canonical Mix token class:
+
+- color fields: `ColorToken`
+- radius and border-radius fields: `RadiusToken`
+- double-valued spacing fields: `SpaceToken` by default
+- other double-valued fields: `DoubleToken` when `"kind": "double"` is present
+- text-style fields: `TextStyleToken`
+- font-weight fields: `FontWeightToken`
+- border-side fields: `BorderSideToken`
+- shadow-list fields: `ShadowToken`
+- box-shadow-list fields: `BoxShadowToken`
+- duration fields: `DurationToken`
+- breakpoint variants: `BreakpointToken`
+
+Double-valued token references may include `"kind": "space"` or
+`"kind": "double"`. Decode defaults missing `kind` to `"space"`; canonical
+encode always writes `kind` for `SpaceToken` and `DoubleToken`.
+
+Token references decode to unresolved Mix token references. Unknown token names
+therefore remain a Mix runtime lookup failure rather than a schema decode
+failure. Data-referenced tokens must be registered under the canonical token
+class above; scopes that want Dart-side aliases should register equivalent
+values under both token classes.
+
+## Theme Document
+
+Theme documents use the same version envelope but a dedicated entry point, not
+the styler root union:
+
+```json
+{ "v": 1, "type": "theme" }
+```
+
+The optional token-definition maps mirror `MixScope(tokens:)` groups:
+
+- `colors`: `ColorToken` values
+- `spaces`: `SpaceToken` double values
+- `doubles`: `DoubleToken` double values
+- `radii`: `RadiusToken` values
+- `textStyles`: `TextStyleToken` values
+- `shadows`: `ShadowToken` list values
+- `boxShadows`: `BoxShadowToken` list values
+- `borders`: `BorderSideToken` values
+- `fontWeights`: `FontWeightToken` values
+- `breakpoints`: `BreakpointToken` values
+- `durations`: `DurationToken` values
+
+Map keys use the same token-name grammar as style token references. Values use
+the same canonical wire shapes as style documents for the same value kind.
+Whole-value aliases are allowed only within the same map:
+
+```json
+{
+  "colors": {
+    "color.surface": "#101820",
+    "color.background": { "$token": "color.surface" }
+  }
+}
+```
+
+Aliases are resolved eagerly at theme decode time with cycle detection, so the
+decoded theme exposes a flat `Map<MixToken, Object>` ready for
+`MixScope(tokens:)`. Cross-kind aliases, missing alias targets, alias cycles,
+and nested token references inside concrete theme values fail decode. Encoding a
+decoded theme emits the flattened concrete token values; alias syntax is not
+preserved.
+
+## Token Preflight
+
+Style documents intentionally do not fail decode for unknown token names. Tooling
+that wants to fail before shipping can decode the style and theme documents,
+walk style references, and diff them against the decoded theme:
+
+```dart
+final style = contract.decode<BoxStyler>(stylePayload).value;
+final theme = const MixSchemaThemeCodec().decode(themePayload).value;
+
+final used = tokenReferencesOf(style);
+final declared = theme.tokens.keys.map(MixSchemaTokenReference.fromToken).toSet();
+final missing = used.difference(declared);
+```
+
+`MixSchemaTokenReference.kind` uses the theme document group name (`colors`,
+`spaces`, `doubles`, `radii`, `textStyles`, `shadows`, `boxShadows`, `borders`,
+`fontWeights`, `breakpoints`, or `durations`) and `name` uses the token name.
+
 ## Text Values
 
 `textStyle` supports optional `color`, `backgroundColor`, `fontSize`,
@@ -249,7 +349,9 @@ Variant payloads use a `kind` discriminator:
 - `enabled`: `{ "style": styler }`
 - `context_not_widget_state`: `{ "state": widgetState, "style": styler }`
 - `context_brightness`: `{ "brightness": "light" | "dark", "style": styler }`
-- `context_breakpoint`: `{ "minWidth"?: number, "maxWidth"?: number, "style": styler }`
+- `context_breakpoint`: either
+  `{ "minWidth"?: number, "maxWidth"?: number, "style": styler }` or
+  `{ "token": tokenName, "style": styler }`
 
 Only the context variant forms listed above are part of the canonical wire
 contract. Composite and closure-backed context variants can be added later only
@@ -272,9 +374,9 @@ Modifier payloads use a `type` discriminator:
 
 Animation payloads encode `CurveAnimationConfig`:
 
-- `duration`: non-negative milliseconds
+- `duration`: non-negative milliseconds or `DurationToken` reference
 - `curve`: registered curve name
-- `delay`: non-negative milliseconds
+- `delay`: non-negative milliseconds or `DurationToken` reference
 - `onEnd`: optional registry id if callback encoding is enabled
 
 Unsupported animation config types fail encode.
@@ -293,9 +395,10 @@ canonical contract.
 ## Encode Policy
 
 Styler encode supports fields backed by one value source that can be represented
-by this contract. Tokens, directives on non-directive fields, multi-source
-props, unregistered identity values, and unsupported runtime objects fail encode
-with a public `MixSchemaError`.
+by this contract. Single-source canonical token references encode to token
+reference objects. Directives on non-directive fields, multi-source props,
+unregistered identity values, custom token subclasses, and unsupported runtime
+objects fail encode with a public `MixSchemaError`.
 
 Encode errors use stable public codes. `unsupported_encode_value` reports values
 that the v1 contract intentionally cannot represent. `inventory_skew` reports a

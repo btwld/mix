@@ -615,7 +615,7 @@ String? _schemaFieldInventoryName(Expression? expression) {
 
   final source = expression!.toSource();
   if (!RegExp(
-    r'^(valueField|mixField|directField|derivedField)(<|\()',
+    r'^(valueField|tokenValueField|mixField|tokenMixField|directField|derivedField)(<|\()',
   ).hasMatch(source)) {
     return null;
   }

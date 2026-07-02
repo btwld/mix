@@ -1,4 +1,3 @@
-import 'package:ack/ack.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix_schema/mix_schema.dart';
 
@@ -10,9 +9,11 @@ final class _ApiStyle {
 
 void main() {
   test('public API exposes contract, JsonMap, and sealed results', () {
-    final branch = Ack.object({'value': Ack.string()}).codec<_ApiStyle>(
+    final branch = MixSchemaBranch<_ApiStyle>.json(
       decode: (data) => _ApiStyle(data['value']! as String),
       encode: (value) => {'value': value.value},
+      validate: (data) => data['value'] is String,
+      validationMessage: 'API test branch requires a string value.',
     );
     final contract = MixSchemaContractBuilder()
         .addStyler('api', branch)
@@ -21,6 +22,8 @@ void main() {
     final JsonMap payload = {'type': 'api', 'value': 'ok'};
 
     expect(contract.registeredTypes, ['api']);
+    expect(contract.rootSchema, isA<MixSchemaRootSchema>());
+    expect(contract.rootSchema.toJsonSchema(), isA<JsonMap>());
     expect(contract.validate(payload), isA<MixSchemaValidationSuccess>());
 
     final result = contract.decode<_ApiStyle>(payload);

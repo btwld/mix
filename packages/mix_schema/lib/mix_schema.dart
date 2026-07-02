@@ -18,3 +18,4 @@ export 'src/errors/mix_schema_error.dart'
         MixSchemaValidationResult,
         MixSchemaValidationSuccess;
 export 'src/registry/registry.dart';
+export 'src/tokens/token_reference_walker.dart';

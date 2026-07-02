@@ -61,6 +61,22 @@ valueField<Owner extends Object, Value extends Object>(
 }
 
 SchemaField<Owner, Value>
+tokenValueField<Owner extends Object, Value extends Object>(
+  String wire,
+  AckSchema<Object, Value> codec,
+  Prop<Value>? Function(Owner value) read, {
+  String? fieldName,
+  String? inventoryName,
+}) {
+  return SchemaField<Owner, Value>(
+    wire: wire,
+    codec: codec,
+    inventoryName: inventoryName,
+    read: (value) => readPropWire<Value, Value>(read(value), fieldName ?? wire),
+  );
+}
+
+SchemaField<Owner, Value>
 mixField<Owner extends Object, Value extends Object, PropValue extends Object>(
   String wire,
   AckSchema<Object, Value> codec,
@@ -73,6 +89,26 @@ mixField<Owner extends Object, Value extends Object, PropValue extends Object>(
     codec: codec,
     inventoryName: inventoryName,
     read: (value) => readProp<Value, PropValue>(read(value), fieldName ?? wire),
+  );
+}
+
+SchemaField<Owner, Value> tokenMixField<
+  Owner extends Object,
+  Value extends Object,
+  PropValue extends Object
+>(
+  String wire,
+  AckSchema<Object, Value> codec,
+  Prop<PropValue>? Function(Owner value) read, {
+  String? fieldName,
+  String? inventoryName,
+}) {
+  return SchemaField<Owner, Value>(
+    wire: wire,
+    codec: codec,
+    inventoryName: inventoryName,
+    read: (value) =>
+        readPropWire<Value, PropValue>(read(value), fieldName ?? wire),
   );
 }
 

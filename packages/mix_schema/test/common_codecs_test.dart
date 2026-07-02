@@ -214,7 +214,7 @@ void main() {
     }
   });
 
-  test('token and multi-source props fail encode explicitly', () {
+  test('multi-source props fail encode explicitly', () {
     final prop = Prop.value(1.0).mergeProp(Prop.value(2.0));
 
     expect(

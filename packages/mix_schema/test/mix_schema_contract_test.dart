@@ -1,6 +1,5 @@
 import 'dart:typed_data';
 
-import 'package:ack/ack.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
@@ -15,9 +14,11 @@ final class _CustomStyle {
 
 void main() {
   MixSchemaContract newContract() {
-    final branch = Ack.object({'value': Ack.string()}).codec<_CustomStyle>(
+    final branch = MixSchemaBranch<_CustomStyle>.json(
       decode: (data) => _CustomStyle(data['value']! as String),
       encode: (value) => {'value': value.value},
+      validate: (data) => data['value'] is String,
+      validationMessage: 'Custom branch requires a string value.',
     );
 
     return MixSchemaContractBuilder().addStyler('custom', branch).freeze();
@@ -33,9 +34,11 @@ void main() {
   });
 
   test('contract builder cannot be mutated or frozen twice after freeze', () {
-    final branch = Ack.object({'value': Ack.string()}).codec<_CustomStyle>(
+    final branch = MixSchemaBranch<_CustomStyle>.json(
       decode: (data) => _CustomStyle(data['value']! as String),
       encode: (value) => {'value': value.value},
+      validate: (data) => data['value'] is String,
+      validationMessage: 'Custom branch requires a string value.',
     );
     final builder = MixSchemaContractBuilder().addStyler('custom', branch);
     final contract = builder.freeze();
@@ -72,14 +75,12 @@ void main() {
   test(
     'format version envelope is authoritative over custom branch fields',
     () {
-      final branch =
-          Ack.object({
-            'v': Ack.number().optional(),
-            'value': Ack.string(),
-          }).codec<_CustomStyle>(
-            decode: (data) => _CustomStyle(data['value']! as String),
-            encode: (value) => {'v': 99, 'value': value.value},
-          );
+      final branch = MixSchemaBranch<_CustomStyle>.json(
+        decode: (data) => _CustomStyle(data['value']! as String),
+        encode: (value) => {'v': 99, 'value': value.value},
+        validate: (data) => data['value'] is String,
+        validationMessage: 'Custom branch requires a string value.',
+      );
       final contract = MixSchemaContractBuilder()
           .addStyler('custom', branch)
           .freeze();

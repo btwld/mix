@@ -69,9 +69,9 @@ SchemaObject<FlexStyler> _flexStylerSchemaType(
     enumNameCodec(Clip.values),
     (value) => value.$clipBehavior,
   );
-  final spacing = valueField<FlexStyler, double>(
+  final spacing = tokenValueField<FlexStyler, double>(
     'spacing',
-    numberAsDoubleCodec(),
+    doubleTokenCodec(),
     (value) => value.$spacing,
   );
   final metadata = StylerMetadataFields<FlexStyler, FlexSpec>(

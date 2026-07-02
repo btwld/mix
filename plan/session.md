@@ -15,6 +15,39 @@ Template:
 
 ---
 
+## 2026-07-02 — Codex — Phase 3
+
+**Did:**
+- Completed Phase 3 token-model work: public `MixSchemaBranch` /
+  `MixSchemaRootSchema`, canonical `$token` decode/encode, theme document codec
+  and JSON Schema export, token-reference preflight walker, breakpoint token
+  variant coverage, and MixScope inheritance demos.
+- Added the small public `tokenFromReferenceValue` helper in `packages/mix` so
+  schema/tooling code can inspect unresolved token refs without importing
+  internals, and documented the core changelog entry.
+- Regenerated the coverage backlog after moving Phase 3 token constructs and
+  breakpoint convenience variants to supported.
+- Ran the required closeout review with a fresh delegated reviewer. Addressed
+  all findings: field token reads are now opt-in, theme schema export is
+  concrete-only below the whole-value alias layer, breakpoint variant token
+  encode uses the shared canonical-token policy, and the inventory scanner
+  recognizes the new token field helpers.
+- Verified with fresh final gate output: `melos run gen:build`, `melos run ci`,
+  and `melos run analyze` all reported `SUCCESS`.
+
+**Decisions:**
+- Theme documents remain a dedicated `type: "theme"` entry point outside the
+  styler root union.
+- Token field reads are explicit (`tokenValueField` / `tokenMixField`) instead
+  of global defaults, so literal-only codecs keep failing loudly.
+- Theme aliases are same-kind whole-value aliases only; nested theme token refs
+  stay invalid at runtime and in exported schema.
+
+**Blocked/open:** None for Phase 3.
+
+**Next:** Start Phase 4 with its phase-entry review and open decisions before
+property grammar work.
+
 ## 2026-07-02 — Codex — pre-Phase 3 feature-loss audit
 
 **Did:**

@@ -23,6 +23,9 @@ enum MixSchemaErrorCode {
   /// A string enum value was not in the supported wire vocabulary.
   invalidEnum('invalid_enum'),
 
+  /// A token name did not match the v1 token-name grammar.
+  invalidTokenName('invalid_token_name'),
+
   /// A scalar or structured value violated schema constraints.
   constraintViolation('constraint_violation'),
 
@@ -194,6 +197,26 @@ final class UnsupportedEncodeValueError implements Exception {
 
   @override
   String toString() => 'Unsupported encode value: $reason';
+}
+
+/// Internal sentinel thrown for token names outside the v1 grammar.
+final class InvalidTokenNameError implements Exception {
+  /// Creates an invalid-token-name sentinel.
+  const InvalidTokenNameError(this.name, this.fieldName);
+
+  /// Invalid token name.
+  final String name;
+
+  /// Field where the token reference was found.
+  final String fieldName;
+
+  /// Explanation for why the name is invalid.
+  String get reason =>
+      'Field "$fieldName" references token "$name", which does not match '
+      r'the [A-Za-z0-9_.-]{1,128} token-name grammar.';
+
+  @override
+  String toString() => reason;
 }
 
 /// Internal sentinel thrown when codec coverage drifts from owner fields.

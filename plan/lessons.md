@@ -112,7 +112,20 @@ Things the review itself surfaced that qualify as lessons already:
   opt-in repair cannot become an unbounded parse loop.
 
 ### Phase 3 — Token model
-_(fill when closed)_
+
+- **Token-aware encode must be opt-in at the field boundary.** A generic
+  `readPropWire` path can leak internal double sentinels through literal-only
+  codecs. Pair token-aware reads with tokenized codecs and cover representative
+  double-token fields.
+- **Schema export is part of the runtime contract.** Theme decode rejected
+  nested `$token` values, so theme JSON Schema had to use concrete-only value
+  schemas and reserve `$token` for whole-value aliases only.
+- **Canonical-token checks belong in shared helpers.** Breakpoint variant
+  encoding now routes token refs through the same canonical-class/name encoder
+  as style fields so subclass handling cannot drift by path.
+- **Inventory scanners must track new schema helper names.** Adding
+  `tokenValueField`/`tokenMixField` required updating the manifest truthfulness
+  ratchet, or supported fields looked unimplemented.
 
 ### Phase 4 — Property grammar + coverage
 _(fill when closed)_
@@ -159,6 +172,8 @@ _(fill when closed)_
 | Manifest `supported` must be provably true. | Phase 2.5 | Land the manifest↔codec truthfulness test so a false `supported` entry fails CI; keep it green thereafter. `[review X10]` |
 | Cross-phase reviews complement closeout reviews. | Post-phase-4 milestone | Per-diff closeout reviews missed cross-phase contract drift (X3/X4 survived two closeouts); run the next cross-phase review after phase 4 lands. |
 | Runtime parity does not prove public API compatibility. | Phase 5 | Before tailwinds realignment lands, compare `package:mix_tailwinds/mix_tailwinds.dart` against `origin/main` and explicitly decide the fate of the removed `tw_semantic.dart` symbols. |
+| Token-aware field support is opt-in. | Phase 4 | When expanding field coverage, pair token-aware field reads with tokenized codecs or keep literal-only fields strict; add sentinel-leak and custom-token tests for new token-bearing fields. |
+| Exported schemas must mirror runtime rejection paths. | Phase 4 | New property grammar schemas should reject the same control-marker and nested-token shapes as runtime decode, not just describe the happy path. |
 
 ## Decisions we reversed (and why)
 

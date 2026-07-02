@@ -2,6 +2,7 @@ import 'package:ack/ack.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
+import '../errors/mix_schema_error.dart';
 import '../registry/registry.dart';
 import 'common_codecs.dart';
 import 'primitive_wire.dart';
@@ -35,7 +36,7 @@ SchemaObject<TextStyler> _textStylerSchemaType(
     Ack.integer(),
     (value) => value.$maxLines,
   );
-  final style = mixField<TextStyler, TextStyleMix, TextStyle>(
+  final style = tokenMixField<TextStyler, TextStyleMix, TextStyle>(
     'style',
     textStyleMixCodec(),
     (value) => value.$style,
@@ -50,7 +51,7 @@ SchemaObject<TextStyler> _textStylerSchemaType(
     Ack.boolean(),
     (value) => value.$softWrap,
   );
-  final selectionColor = valueField<TextStyler, Color>(
+  final selectionColor = tokenValueField<TextStyler, Color>(
     'selectionColor',
     colorCodec(),
     (value) => value.$selectionColor,
@@ -130,38 +131,48 @@ SchemaObject<TextStyler> _textStylerSchemaType(
   );
 }
 
-CodecSchema<JsonMap, TextStyleMix> textStyleMixCodec() {
+CodecSchema<Object, TextStyleMix> textStyleMixCodec() {
+  return tokenizedCodec<TextStyle, TextStyleMix>(
+    literal: _textStyleMixObjectCodec(),
+    decodeToken: (data) => TextStyleToken(data[tokenReferenceKey]! as String),
+    reference: (token) => (token as TextStyleToken).mix(),
+  );
+}
+
+CodecSchema<JsonMap, TextStyleMix> _textStyleMixObjectCodec() {
   return Ack.object({
     'color': colorCodec().optional(),
     'backgroundColor': colorCodec().optional(),
-    'fontSize': numberAsDoubleCodec().optional(),
+    'fontSize': doubleTokenCodec().optional(),
     'fontWeight': fontWeightCodec().optional(),
     'fontStyle': fontStyleCodec().optional(),
-    'letterSpacing': numberAsDoubleCodec().optional(),
-    'wordSpacing': numberAsDoubleCodec().optional(),
-    'height': numberAsDoubleCodec().optional(),
+    'letterSpacing': doubleTokenCodec().optional(),
+    'wordSpacing': doubleTokenCodec().optional(),
+    'height': doubleTokenCodec().optional(),
     'fontFamily': Ack.string().optional(),
     'decoration': textDecorationCodec().optional(),
     'decorationColor': colorCodec().optional(),
     'decorationStyle': textDecorationStyleCodec().optional(),
-    'decorationThickness': numberAsDoubleCodec().optional(),
-    'shadows': Ack.list(shadowCodec()).optional(),
+    'decorationThickness': doubleTokenCodec().optional(),
+    'shadows': _shadowListFieldCodec().optional(),
   }).codec<TextStyleMix>(
-    decode: (data) => TextStyleMix(
-      color: data['color'] as Color?,
-      backgroundColor: data['backgroundColor'] as Color?,
-      fontSize: data['fontSize'] as double?,
-      fontWeight: data['fontWeight'] as FontWeight?,
-      fontStyle: data['fontStyle'] as FontStyle?,
-      letterSpacing: data['letterSpacing'] as double?,
-      wordSpacing: data['wordSpacing'] as double?,
-      height: data['height'] as double?,
-      fontFamily: data['fontFamily'] as String?,
-      decoration: data['decoration'] as TextDecoration?,
-      decorationColor: data['decorationColor'] as Color?,
-      decorationStyle: data['decorationStyle'] as TextDecorationStyle?,
-      decorationThickness: data['decorationThickness'] as double?,
-      shadows: data['shadows'] as List<ShadowMix>?,
+    decode: (data) => TextStyleMix.create(
+      color: Prop.maybe(data['color'] as Color?),
+      backgroundColor: Prop.maybe(data['backgroundColor'] as Color?),
+      fontSize: Prop.maybe(data['fontSize'] as double?),
+      fontWeight: Prop.maybe(data['fontWeight'] as FontWeight?),
+      fontStyle: Prop.maybe(data['fontStyle'] as FontStyle?),
+      letterSpacing: Prop.maybe(data['letterSpacing'] as double?),
+      wordSpacing: Prop.maybe(data['wordSpacing'] as double?),
+      height: Prop.maybe(data['height'] as double?),
+      fontFamily: Prop.maybe(data['fontFamily'] as String?),
+      decoration: Prop.maybe(data['decoration'] as TextDecoration?),
+      decorationColor: Prop.maybe(data['decorationColor'] as Color?),
+      decorationStyle: Prop.maybe(
+        data['decorationStyle'] as TextDecorationStyle?,
+      ),
+      decorationThickness: Prop.maybe(data['decorationThickness'] as double?),
+      shadows: _shadowListProp(data['shadows']),
     ),
     encode: _encodeTextStyle,
   );
@@ -178,23 +189,23 @@ JsonMap _encodeTextStyle(TextStyleMix value) {
   failIfPresent(value.$fontVariations, 'style.fontVariations');
 
   return {
-    'color': singleValueProp(value.$color, 'style.color'),
-    'backgroundColor': singleValueProp(
+    'color': singleValuePropWire(value.$color, 'style.color'),
+    'backgroundColor': singleValuePropWire(
       value.$backgroundColor,
       'style.backgroundColor',
     ),
-    'fontSize': singleValueProp(value.$fontSize, 'style.fontSize'),
-    'fontWeight': singleValueProp(value.$fontWeight, 'style.fontWeight'),
+    'fontSize': singleValuePropWire(value.$fontSize, 'style.fontSize'),
+    'fontWeight': singleValuePropWire(value.$fontWeight, 'style.fontWeight'),
     'fontStyle': singleValueProp(value.$fontStyle, 'style.fontStyle'),
-    'letterSpacing': singleValueProp(
+    'letterSpacing': singleValuePropWire(
       value.$letterSpacing,
       'style.letterSpacing',
     ),
-    'wordSpacing': singleValueProp(value.$wordSpacing, 'style.wordSpacing'),
-    'height': singleValueProp(value.$height, 'style.height'),
+    'wordSpacing': singleValuePropWire(value.$wordSpacing, 'style.wordSpacing'),
+    'height': singleValuePropWire(value.$height, 'style.height'),
     'fontFamily': singleValueProp(value.$fontFamily, 'style.fontFamily'),
     'decoration': singleValueProp(value.$decoration, 'style.decoration'),
-    'decorationColor': singleValueProp(
+    'decorationColor': singleValuePropWire(
       value.$decorationColor,
       'style.decorationColor',
     ),
@@ -202,21 +213,30 @@ JsonMap _encodeTextStyle(TextStyleMix value) {
       value.$decorationStyle,
       'style.decorationStyle',
     ),
-    'decorationThickness': singleValueProp(
+    'decorationThickness': singleValuePropWire(
       value.$decorationThickness,
       'style.decorationThickness',
     ),
-    'shadows': _singleShadowList(value),
+    'shadows': _shadowListWire(value),
   };
 }
 
-List<ShadowMix>? _singleShadowList(TextStyleMix value) {
-  final shadows = singleMixProp<ShadowListMix, List<Shadow>>(
+Object? _shadowListWire(TextStyleMix value) {
+  final shadows = singleMixPropWire<ShadowListMix, List<Shadow>>(
     value.$shadows,
     'style.shadows',
   );
 
-  return shadows?.items;
+  return switch (shadows) {
+    null => null,
+    JsonMap() => shadows,
+    Prop<List<Shadow>>() => shadows,
+    ShadowListMix() => shadows.items,
+    _ => throw UnsupportedEncodeValueError(
+      shadows,
+      'Field "style.shadows" decoded to unsupported ${shadows.runtimeType}.',
+    ),
+  };
 }
 
 CodecSchema<String, TextOverflow> textOverflowCodec() {
@@ -239,7 +259,15 @@ CodecSchema<String, TextAlign> textAlignCodec() {
   }, debugName: 'TextAlign');
 }
 
-CodecSchema<String, FontWeight> fontWeightCodec() {
+CodecSchema<Object, FontWeight> fontWeightCodec() {
+  return tokenizedCodec<FontWeight, FontWeight>(
+    literal: fontWeightLiteralCodec(),
+    decodeToken: (data) => FontWeightToken(data[tokenReferenceKey]! as String),
+    reference: (token) => token(),
+  );
+}
+
+CodecSchema<String, FontWeight> fontWeightLiteralCodec() {
   return enumCodec(fontWeightWireValues, debugName: 'FontWeight');
 }
 
@@ -262,4 +290,26 @@ CodecSchema<String, TextDecorationStyle> textDecorationStyleCodec() {
     'dashed': TextDecorationStyle.dashed,
     'wavy': TextDecorationStyle.wavy,
   }, debugName: 'TextDecorationStyle');
+}
+
+AckSchema<Object, Object> _shadowListFieldCodec() {
+  return Ack.anyOf([
+    Ack.list(shadowCodec()),
+    tokenReferenceCodec<List<Shadow>, ShadowListMix>(
+      decodeToken: (data) => ShadowToken(data[tokenReferenceKey]! as String),
+      reference: (token) => (token as ShadowToken).mix(),
+    ),
+  ]);
+}
+
+Prop<List<Shadow>>? _shadowListProp(Object? value) {
+  return switch (value) {
+    null => null,
+    Prop<List<Shadow>>() => value,
+    List<ShadowMix>() => Prop.mix(ShadowListMix(value)),
+    _ => throw UnsupportedEncodeValueError(
+      value,
+      'TextStyle shadows decoded to unsupported ${value.runtimeType}.',
+    ),
+  };
 }

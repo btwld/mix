@@ -43,7 +43,11 @@ void main() {
     }
 
     expect(encoded, isNot(contains('x-ack-codec')));
-    expect(encoded.length, lessThan(180000));
+    expect(encoded, contains(r'"$token"'));
+    expect(encoded, contains(r'[A-Za-z0-9_.-]{1,128}'));
+    expect(encoded, contains(r'"space"'));
+    expect(encoded, contains(r'"double"'));
+    expect(encoded.length, lessThan(320000));
     expect(
       _requiredListsContainingVersion(schema),
       hasLength(contract.registeredTypes.length),

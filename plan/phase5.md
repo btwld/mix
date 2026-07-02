@@ -87,8 +87,9 @@ the direct-styler-construction equivalent.
       `encode.dart` either becomes test-support / is absorbed, per D5.3.
 - [ ] Verify the Phase 3 `AckSchema`-hiding wrapper is still complete after
       token/property grammar work; finish any remaining public-surface cleanup
-      (`rootSchema` non-public or typed as owned) without reintroducing ack as a
-      promised API. (Engine stays ack; the *API* stops promising ack.)
+      (`MixSchemaBranch<T>` for custom branches, `MixSchemaRootSchema` for the
+      root schema handle) without reintroducing ack as a promised API. (Engine
+      stays ack; the *API* stops promising ack.)
 - [ ] Delete the now-orphaned producer helpers (or demote to a
       `mix_schema/testing.dart` support library) — decided by what R5.2/R5.3
       leave alive.

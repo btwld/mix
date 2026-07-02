@@ -120,7 +120,7 @@ SchemaObject<FlexBoxStyler> _flexBoxStylerSchemaType(
   );
   final spacing = derivedField<FlexBoxStyler, double>(
     'spacing',
-    numberAsDoubleCodec(),
+    doubleTokenCodec(),
     _flexField,
     inventoryName: 'flex',
   );

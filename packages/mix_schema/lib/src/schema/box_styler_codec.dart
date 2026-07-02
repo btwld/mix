@@ -2,6 +2,7 @@ import 'package:ack/ack.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
+import '../errors/mix_schema_error.dart';
 import '../registry/registry.dart';
 import 'common_codecs.dart';
 import 'schema_field.dart';
@@ -34,12 +35,12 @@ SchemaObject<BoxStyler> _boxStylerSchemaType(
     alignmentCodec(),
     (value) => value.$alignment,
   );
-  final padding = mixField<BoxStyler, EdgeInsetsMix, EdgeInsetsGeometry>(
+  final padding = tokenMixField<BoxStyler, EdgeInsetsMix, EdgeInsetsGeometry>(
     'padding',
     edgeInsetsCodec(),
     (value) => value.$padding,
   );
-  final margin = mixField<BoxStyler, EdgeInsetsMix, EdgeInsetsGeometry>(
+  final margin = tokenMixField<BoxStyler, EdgeInsetsMix, EdgeInsetsGeometry>(
     'margin',
     edgeInsetsCodec(),
     (value) => value.$margin,
@@ -122,46 +123,81 @@ CodecSchema<JsonMap, BoxDecorationMix> boxDecorationCodec() {
     'borderRadius': borderRadiusCodec().optional(),
     'shape': enumNameCodec(BoxShape.values).optional(),
     'backgroundBlendMode': enumNameCodec(BlendMode.values).optional(),
-    'boxShadow': Ack.list(boxShadowCodec()).optional(),
+    'boxShadow': _boxShadowListFieldCodec().optional(),
   }).codec<BoxDecorationMix>(
-    decode: (data) => BoxDecorationMix(
-      color: data['color'] as Color?,
-      border: data['border'] as BorderMix?,
-      borderRadius: data['borderRadius'] as BorderRadiusMix?,
-      shape: data['shape'] as BoxShape?,
-      backgroundBlendMode: data['backgroundBlendMode'] as BlendMode?,
-      boxShadow: data['boxShadow'] as List<BoxShadowMix>?,
+    decode: (data) => BoxDecorationMix.create(
+      color: Prop.maybe(data['color'] as Color?),
+      border: Prop.maybeMix(data['border'] as BorderMix?),
+      borderRadius: Prop.maybeMix(data['borderRadius'] as BorderRadiusMix?),
+      shape: Prop.maybe(data['shape'] as BoxShape?),
+      backgroundBlendMode: Prop.maybe(
+        data['backgroundBlendMode'] as BlendMode?,
+      ),
+      boxShadow: _boxShadowListProp(data['boxShadow']),
     ),
     encode: (value) {
       failIfPresent(value.$image, 'decoration.image');
       failIfPresent(value.$gradient, 'decoration.gradient');
 
       return {
-        'color': singleValueProp(value.$color, 'decoration.color'),
-        'border': singleMixProp<BorderMix, BoxBorder>(
+        'color': singleValuePropWire(value.$color, 'decoration.color'),
+        'border': singleMixPropWire<BorderMix, BoxBorder>(
           value.$border,
           'decoration.border',
         ),
-        'borderRadius': singleMixProp<BorderRadiusMix, BorderRadiusGeometry>(
-          value.$borderRadius,
-          'decoration.borderRadius',
-        ),
+        'borderRadius':
+            singleMixPropWire<BorderRadiusMix, BorderRadiusGeometry>(
+              value.$borderRadius,
+              'decoration.borderRadius',
+            ),
         'shape': singleValueProp(value.$shape, 'decoration.shape'),
         'backgroundBlendMode': singleValueProp(
           value.$backgroundBlendMode,
           'decoration.backgroundBlendMode',
         ),
-        'boxShadow': _singleBoxShadowList(value),
+        'boxShadow': _boxShadowListWire(value),
       };
     },
   );
 }
 
-List<BoxShadowMix>? _singleBoxShadowList(BoxDecorationMix value) {
-  final boxShadow = singleMixProp<BoxShadowListMix, List<BoxShadow>>(
+Object? _boxShadowListWire(BoxDecorationMix value) {
+  final boxShadow = singleMixPropWire<BoxShadowListMix, List<BoxShadow>>(
     value.$boxShadow,
     'decoration.boxShadow',
   );
 
-  return boxShadow?.items;
+  return switch (boxShadow) {
+    null => null,
+    JsonMap() => boxShadow,
+    Prop<List<BoxShadow>>() => boxShadow,
+    BoxShadowListMix() => boxShadow.items,
+    _ => throw UnsupportedEncodeValueError(
+      boxShadow,
+      'Field "decoration.boxShadow" decoded to unsupported '
+      '${boxShadow.runtimeType}.',
+    ),
+  };
+}
+
+AckSchema<Object, Object> _boxShadowListFieldCodec() {
+  return Ack.anyOf([
+    Ack.list(boxShadowCodec()),
+    tokenReferenceCodec<List<BoxShadow>, BoxShadowListMix>(
+      decodeToken: (data) => BoxShadowToken(data[tokenReferenceKey]! as String),
+      reference: (token) => (token as BoxShadowToken).mix(),
+    ),
+  ]);
+}
+
+Prop<List<BoxShadow>>? _boxShadowListProp(Object? value) {
+  return switch (value) {
+    null => null,
+    Prop<List<BoxShadow>>() => value,
+    List<BoxShadowMix>() => Prop.mix(BoxShadowListMix(value)),
+    _ => throw UnsupportedEncodeValueError(
+      value,
+      'Box decoration shadows decoded to unsupported ${value.runtimeType}.',
+    ),
+  };
 }

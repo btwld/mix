@@ -25,29 +25,29 @@ SchemaObject<IconStyler> _iconStylerSchemaType(
     registryValueCodec<IconData>(registry, MixSchemaScope.iconData),
     (value) => value.$icon,
   );
-  final color = valueField<IconStyler, Color>(
+  final color = tokenValueField<IconStyler, Color>(
     'color',
     colorCodec(),
     (value) => value.$color,
   );
-  final size = valueField<IconStyler, double>(
+  final size = tokenValueField<IconStyler, double>(
     'size',
-    numberAsDoubleCodec(),
+    nonNegativeDoubleTokenCodec(),
     (value) => value.$size,
   );
-  final weight = valueField<IconStyler, double>(
+  final weight = tokenValueField<IconStyler, double>(
     'weight',
-    numberAsDoubleCodec(),
+    doubleTokenCodec(),
     (value) => value.$weight,
   );
-  final grade = valueField<IconStyler, double>(
+  final grade = tokenValueField<IconStyler, double>(
     'grade',
-    numberAsDoubleCodec(),
+    doubleTokenCodec(),
     (value) => value.$grade,
   );
-  final opticalSize = valueField<IconStyler, double>(
+  final opticalSize = tokenValueField<IconStyler, double>(
     'opticalSize',
-    numberAsDoubleCodec(),
+    nonNegativeDoubleTokenCodec(),
     (value) => value.$opticalSize,
   );
   final textDirection = valueField<IconStyler, TextDirection>(
@@ -60,9 +60,9 @@ SchemaObject<IconStyler> _iconStylerSchemaType(
     Ack.boolean(),
     (value) => value.$applyTextScaling,
   );
-  final fill = valueField<IconStyler, double>(
+  final fill = tokenValueField<IconStyler, double>(
     'fill',
-    numberAsDoubleCodec(),
+    doubleTokenCodec(),
     (value) => value.$fill,
   );
   final semanticsLabel = valueField<IconStyler, String>(
@@ -70,9 +70,9 @@ SchemaObject<IconStyler> _iconStylerSchemaType(
     Ack.string(),
     (value) => value.$semanticsLabel,
   );
-  final opacity = valueField<IconStyler, double>(
+  final opacity = tokenValueField<IconStyler, double>(
     'opacity',
-    numberAsDoubleCodec(),
+    doubleTokenCodec(),
     (value) => value.$opacity,
   );
   final blendMode = valueField<IconStyler, BlendMode>(

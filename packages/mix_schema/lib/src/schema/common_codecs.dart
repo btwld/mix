@@ -5,6 +5,14 @@ import 'package:mix/mix.dart';
 import '../errors/mix_schema_error.dart';
 import 'primitive_wire.dart';
 
+const String tokenReferenceKey = r'$token';
+const String tokenKindKey = 'kind';
+const String tokenKindSpace = 'space';
+const String tokenKindDouble = 'double';
+const String _tokenNamePatternSource = r'^[A-Za-z0-9_.-]{1,128}$';
+
+final RegExp _tokenNamePattern = RegExp(_tokenNamePatternSource);
+
 CodecSchema<num, double> numberAsDoubleCodec() {
   return Ack.number().codec<double>(
     decode: (value) => value.toDouble(),
@@ -21,7 +29,57 @@ CodecSchema<num, double> nonNegativeDoubleCodec() {
       );
 }
 
-CodecSchema<String, Color> colorCodec() {
+CodecSchema<Object, double> doubleTokenCodec() {
+  return tokenizedCodec<double, double>(
+    literal: numberAsDoubleCodec(),
+    decodeToken: (data) {
+      final name = data[tokenReferenceKey]! as String;
+      final kind = data[tokenKindKey] as String? ?? tokenKindSpace;
+
+      return switch (kind) {
+        tokenKindDouble => DoubleToken(name),
+        tokenKindSpace => SpaceToken(name),
+        _ => throw UnsupportedEncodeValueError(
+          kind,
+          'Unknown double token kind "$kind".',
+        ),
+      };
+    },
+    reference: (token) => token(),
+    allowDoubleKind: true,
+  );
+}
+
+CodecSchema<Object, double> nonNegativeDoubleTokenCodec() {
+  return tokenizedCodec<double, double>(
+    literal: nonNegativeDoubleCodec(),
+    decodeToken: (data) {
+      final name = data[tokenReferenceKey]! as String;
+      final kind = data[tokenKindKey] as String? ?? tokenKindSpace;
+
+      return switch (kind) {
+        tokenKindDouble => DoubleToken(name),
+        tokenKindSpace => SpaceToken(name),
+        _ => throw UnsupportedEncodeValueError(
+          kind,
+          'Unknown double token kind "$kind".',
+        ),
+      };
+    },
+    reference: (token) => token(),
+    allowDoubleKind: true,
+  );
+}
+
+CodecSchema<Object, Color> colorCodec() {
+  return tokenizedCodec<Color, Color>(
+    literal: colorLiteralCodec(),
+    decodeToken: (data) => ColorToken(data[tokenReferenceKey]! as String),
+    reference: (token) => token(),
+  );
+}
+
+CodecSchema<String, Color> colorLiteralCodec() {
   return Ack.codec<String, String, Color>(
     input: _colorWireCodec(),
     decode: _decodeColor,
@@ -63,6 +121,14 @@ CodecSchema<List<num>, Matrix4> matrix4Codec() {
 }
 
 CodecSchema<Object, Radius> radiusCodec() {
+  return tokenizedCodec<Radius, Radius>(
+    literal: radiusLiteralCodec(),
+    decodeToken: (data) => RadiusToken(data[tokenReferenceKey]! as String),
+    reference: (token) => token(),
+  );
+}
+
+CodecSchema<Object, Radius> radiusLiteralCodec() {
   return Ack.codec<Object, Object, Radius>(
     input: Ack.anyOf([
       nonNegativeDoubleCodec(),
@@ -79,12 +145,12 @@ CodecSchema<Object, Radius> radiusCodec() {
 CodecSchema<JsonMap, BorderSideMix> borderSideCodec() {
   return Ack.object({
     'color': colorCodec().optional(),
-    'width': numberAsDoubleCodec().optional(),
+    'width': nonNegativeDoubleTokenCodec().optional(),
     'style': enumCodec({
       'none': BorderStyle.none,
       'solid': BorderStyle.solid,
     }, debugName: 'BorderStyle').optional(),
-    'strokeAlign': numberAsDoubleCodec().optional(),
+    'strokeAlign': doubleTokenCodec().optional(),
   }).codec<BorderSideMix>(
     decode: (data) => BorderSideMix(
       color: data['color'] as Color?,
@@ -93,10 +159,10 @@ CodecSchema<JsonMap, BorderSideMix> borderSideCodec() {
       strokeAlign: data['strokeAlign'] as double?,
     ),
     encode: (value) => {
-      'color': singleValueProp(value.$color, 'borderSide.color'),
-      'width': singleValueProp(value.$width, 'borderSide.width'),
+      'color': singleValuePropWire(value.$color, 'borderSide.color'),
+      'width': singleValuePropWire(value.$width, 'borderSide.width'),
       'style': singleValueProp(value.$style, 'borderSide.style'),
-      'strokeAlign': singleValueProp(
+      'strokeAlign': singleValuePropWire(
         value.$strokeAlign,
         'borderSide.strokeAlign',
       ),
@@ -106,28 +172,31 @@ CodecSchema<JsonMap, BorderSideMix> borderSideCodec() {
 
 CodecSchema<JsonMap, BorderMix> borderCodec() {
   return Ack.object({
-    'top': borderSideCodec().optional(),
-    'right': borderSideCodec().optional(),
-    'bottom': borderSideCodec().optional(),
-    'left': borderSideCodec().optional(),
+    'top': _borderSideFieldCodec().optional(),
+    'right': _borderSideFieldCodec().optional(),
+    'bottom': _borderSideFieldCodec().optional(),
+    'left': _borderSideFieldCodec().optional(),
   }).codec<BorderMix>(
-    decode: (data) => BorderMix(
-      top: data['top'] as BorderSideMix?,
-      right: data['right'] as BorderSideMix?,
-      bottom: data['bottom'] as BorderSideMix?,
-      left: data['left'] as BorderSideMix?,
+    decode: (data) => BorderMix.create(
+      top: _borderSideProp(data['top']),
+      right: _borderSideProp(data['right']),
+      bottom: _borderSideProp(data['bottom']),
+      left: _borderSideProp(data['left']),
     ),
     encode: (value) => {
-      'top': singleMixProp<BorderSideMix, BorderSide>(value.$top, 'border.top'),
-      'right': singleMixProp<BorderSideMix, BorderSide>(
+      'top': singleMixPropWire<BorderSideMix, BorderSide>(
+        value.$top,
+        'border.top',
+      ),
+      'right': singleMixPropWire<BorderSideMix, BorderSide>(
         value.$right,
         'border.right',
       ),
-      'bottom': singleMixProp<BorderSideMix, BorderSide>(
+      'bottom': singleMixPropWire<BorderSideMix, BorderSide>(
         value.$bottom,
         'border.bottom',
       ),
-      'left': singleMixProp<BorderSideMix, BorderSide>(
+      'left': singleMixPropWire<BorderSideMix, BorderSide>(
         value.$left,
         'border.left',
       ),
@@ -138,12 +207,12 @@ CodecSchema<JsonMap, BorderMix> borderCodec() {
 CodecSchema<Object, EdgeInsetsMix> edgeInsetsCodec() {
   return Ack.codec<Object, Object, EdgeInsetsMix>(
     input: Ack.anyOf([
-      numberAsDoubleCodec(),
+      doubleTokenCodec(),
       Ack.object({
-        'left': numberAsDoubleCodec().optional(),
-        'top': numberAsDoubleCodec().optional(),
-        'right': numberAsDoubleCodec().optional(),
-        'bottom': numberAsDoubleCodec().optional(),
+        'left': doubleTokenCodec().optional(),
+        'top': doubleTokenCodec().optional(),
+        'right': doubleTokenCodec().optional(),
+        'bottom': doubleTokenCodec().optional(),
       }),
     ]),
     decode: _decodeEdgeInsetsMix,
@@ -155,8 +224,8 @@ CodecSchema<JsonMap, BoxShadowMix> boxShadowCodec() {
   return Ack.object({
     'color': colorCodec().optional(),
     'offset': offsetCodec().optional(),
-    'blurRadius': numberAsDoubleCodec().optional(),
-    'spreadRadius': numberAsDoubleCodec().optional(),
+    'blurRadius': doubleTokenCodec().optional(),
+    'spreadRadius': doubleTokenCodec().optional(),
   }).codec<BoxShadowMix>(
     decode: (data) => BoxShadowMix(
       color: data['color'] as Color?,
@@ -165,10 +234,13 @@ CodecSchema<JsonMap, BoxShadowMix> boxShadowCodec() {
       spreadRadius: data['spreadRadius'] as double?,
     ),
     encode: (value) => {
-      'color': singleValueProp(value.$color, 'boxShadow.color'),
+      'color': singleValuePropWire(value.$color, 'boxShadow.color'),
       'offset': singleValueProp(value.$offset, 'boxShadow.offset'),
-      'blurRadius': singleValueProp(value.$blurRadius, 'boxShadow.blurRadius'),
-      'spreadRadius': singleValueProp(
+      'blurRadius': singleValuePropWire(
+        value.$blurRadius,
+        'boxShadow.blurRadius',
+      ),
+      'spreadRadius': singleValuePropWire(
         value.$spreadRadius,
         'boxShadow.spreadRadius',
       ),
@@ -180,7 +252,7 @@ CodecSchema<JsonMap, ShadowMix> shadowCodec() {
   return Ack.object({
     'color': colorCodec().optional(),
     'offset': offsetCodec().optional(),
-    'blurRadius': numberAsDoubleCodec().optional(),
+    'blurRadius': doubleTokenCodec().optional(),
   }).codec<ShadowMix>(
     decode: (data) => ShadowMix(
       color: data['color'] as Color?,
@@ -188,9 +260,9 @@ CodecSchema<JsonMap, ShadowMix> shadowCodec() {
       blurRadius: data['blurRadius'] as double?,
     ),
     encode: (value) => {
-      'color': singleValueProp(value.$color, 'shadow.color'),
+      'color': singleValuePropWire(value.$color, 'shadow.color'),
       'offset': singleValueProp(value.$offset, 'shadow.offset'),
-      'blurRadius': singleValueProp(value.$blurRadius, 'shadow.blurRadius'),
+      'blurRadius': singleValuePropWire(value.$blurRadius, 'shadow.blurRadius'),
     },
   );
 }
@@ -315,8 +387,19 @@ void failIfPresent(Object? value, String fieldName) {
   );
 }
 
+Object? singleValuePropWire<T extends Object>(Prop<T>? prop, String fieldName) {
+  return readPropWire<T, T>(prop, fieldName);
+}
+
 T? singleValueProp<T extends Object>(Prop<T>? prop, String fieldName) {
   return readProp<T, T>(prop, fieldName);
+}
+
+Object? singleMixPropWire<T extends Object, V extends Object>(
+  Prop<V>? prop,
+  String fieldName,
+) {
+  return readPropWire<T, V>(prop, fieldName);
 }
 
 T? singleMixProp<T extends Object, V extends Object>(
@@ -324,6 +407,66 @@ T? singleMixProp<T extends Object, V extends Object>(
   String fieldName,
 ) {
   return readProp<T, V>(prop, fieldName);
+}
+
+Object? readPropWire<T extends Object, V extends Object>(
+  Prop<V>? prop,
+  String fieldName,
+) {
+  if (prop == null) return null;
+  if (prop.$directives?.isNotEmpty == true) {
+    throw UnsupportedEncodeValueError(
+      prop,
+      'Field "$fieldName" has directives and cannot be represented.',
+    );
+  }
+  if (prop.sources.length != 1) {
+    throw UnsupportedEncodeValueError(
+      prop,
+      'Field "$fieldName" has ${prop.sources.length} sources; expected one.',
+    );
+  }
+
+  final source = prop.sources.single;
+  if (source is TokenSource<V>) {
+    return _referenceForToken<T, V>(source.token, fieldName);
+  }
+  if (source is MixSource<V> && source.mix is T) {
+    return source.mix as T;
+  }
+  if (source is ValueSource<V> && source.value is T) {
+    return source.value as T;
+  }
+
+  throw UnsupportedEncodeValueError(
+    prop,
+    'Field "$fieldName" is ${source.runtimeType}; expected $T.',
+  );
+}
+
+Object _referenceForToken<T extends Object, V extends Object>(
+  MixToken<V> token,
+  String fieldName,
+) {
+  if (T == TextStyleMix && token is TextStyleToken) {
+    return (token as TextStyleToken).mix();
+  }
+  if (T == ShadowListMix && token is ShadowToken) {
+    return (token as ShadowToken).mix();
+  }
+  if (T == BoxShadowListMix && token is BoxShadowToken) {
+    return (token as BoxShadowToken).mix();
+  }
+
+  try {
+    return token();
+  } catch (error) {
+    throw UnsupportedEncodeValueError(
+      token,
+      'Field "$fieldName" references token ${token.runtimeType}, which cannot '
+      'be represented as a runtime token reference.',
+    );
+  }
 }
 
 T? readProp<T extends Object, V extends Object>(
@@ -356,6 +499,143 @@ T? readProp<T extends Object, V extends Object>(
     prop,
     'Field "$fieldName" is ${source.runtimeType}; expected $T.',
   );
+}
+
+JsonMap encodeTokenReference(MixToken<dynamic> token, String fieldName) {
+  final name = switch (token) {
+    ColorToken() when token.runtimeType == ColorToken => token.name,
+    RadiusToken() when token.runtimeType == RadiusToken => token.name,
+    SpaceToken() when token.runtimeType == SpaceToken => token.name,
+    DoubleToken() when token.runtimeType == DoubleToken => token.name,
+    BreakpointToken() when token.runtimeType == BreakpointToken => token.name,
+    TextStyleToken() when token.runtimeType == TextStyleToken => token.name,
+    BorderSideToken() when token.runtimeType == BorderSideToken => token.name,
+    ShadowToken() when token.runtimeType == ShadowToken => token.name,
+    BoxShadowToken() when token.runtimeType == BoxShadowToken => token.name,
+    FontWeightToken() when token.runtimeType == FontWeightToken => token.name,
+    DurationToken() when token.runtimeType == DurationToken => token.name,
+    _ => throw UnsupportedEncodeValueError(
+      token,
+      'Field "$fieldName" references custom token ${token.runtimeType}; '
+      'only canonical mix_schema token classes can be encoded.',
+    ),
+  };
+
+  _assertValidTokenName(name, fieldName);
+
+  return {
+    tokenReferenceKey: name,
+    if (token.runtimeType == SpaceToken) tokenKindKey: tokenKindSpace,
+    if (token.runtimeType == DoubleToken) tokenKindKey: tokenKindDouble,
+  };
+}
+
+AckSchema<String, String> tokenNameCodec() {
+  return Ack.string()
+      .matches(_tokenNamePatternSource)
+      .constrain(const _TokenNameConstraint());
+}
+
+bool isValidTokenName(String name) => _tokenNamePattern.hasMatch(name);
+
+void _assertValidTokenName(String name, String fieldName) {
+  if (isValidTokenName(name)) return;
+
+  throw InvalidTokenNameError(name, fieldName);
+}
+
+CodecSchema<JsonMap, Runtime>
+tokenReferenceCodec<TokenValue extends Object, Runtime extends Object>({
+  required MixToken<TokenValue> Function(JsonMap data) decodeToken,
+  required Runtime Function(MixToken<TokenValue> token) reference,
+  bool allowDoubleKind = false,
+}) {
+  return Ack.object({
+    tokenReferenceKey: tokenNameCodec(),
+    if (allowDoubleKind)
+      tokenKindKey: Ack.enumString([
+        tokenKindSpace,
+        tokenKindDouble,
+      ]).optional(),
+  }).codec<Runtime>(
+    decode: (data) => reference(decodeToken(data)),
+    encode: (value) {
+      if (value is double) {
+        final token = tokenFromReferenceValue<TokenValue>(value);
+        if (token != null) {
+          return encodeTokenReference(token, tokenReferenceKey);
+        }
+      }
+
+      final token = tokenFromReference<TokenValue>(value);
+      if (token == null) {
+        throw UnsupportedEncodeValueError(
+          value,
+          'Value is not a token reference.',
+        );
+      }
+
+      return encodeTokenReference(token, tokenReferenceKey);
+    },
+  );
+}
+
+CodecSchema<Object, Runtime>
+tokenizedCodec<TokenValue extends Object, Runtime extends Object>({
+  required AckSchema<Object, Runtime> literal,
+  required MixToken<TokenValue> Function(JsonMap data) decodeToken,
+  required Runtime Function(MixToken<TokenValue> token) reference,
+  bool allowDoubleKind = false,
+}) {
+  final tokenCodec = tokenReferenceCodec<TokenValue, Runtime>(
+    decodeToken: decodeToken,
+    reference: reference,
+    allowDoubleKind: allowDoubleKind,
+  );
+
+  return Ack.codec<Object, Object, Runtime>(
+    input: Ack.anyOf([
+      tokenCodec as AckSchema<Object, Object>,
+      literal as AckSchema<Object, Object>,
+    ]),
+    decode: (value) => value as Runtime,
+    encode: (value) => value,
+  );
+}
+
+MixToken<TokenValue>? tokenFromReference<TokenValue extends Object>(
+  Object value,
+) {
+  if (value is! Prop<TokenValue>) return null;
+  if (value.sources.length != 1) return null;
+
+  final source = value.sources.single;
+  if (source is TokenSource<TokenValue>) return source.token;
+
+  return null;
+}
+
+AckSchema<Object, Object> _borderSideFieldCodec() {
+  return Ack.anyOf([
+    borderSideCodec(),
+    tokenReferenceCodec<BorderSide, BorderSide>(
+      decodeToken: (data) =>
+          BorderSideToken(data[tokenReferenceKey]! as String),
+      reference: (token) => token(),
+    ),
+  ]);
+}
+
+Prop<BorderSide>? _borderSideProp(Object? value) {
+  return switch (value) {
+    null => null,
+    Prop<BorderSide>() => value,
+    BorderSideMix() => Prop.mix(value),
+    _ => throw UnsupportedEncodeValueError(
+      value,
+      'Border side payload decoded to unsupported ${value.runtimeType}.',
+    ),
+  };
 }
 
 AckSchema<String, String> _colorWireCodec() {
@@ -493,10 +773,10 @@ EdgeInsetsMix _decodeEdgeInsetsMix(Object value) {
 }
 
 Object _encodeEdgeInsetsMix(EdgeInsetsMix value) {
-  final left = singleValueProp(value.$left, 'left');
-  final top = singleValueProp(value.$top, 'top');
-  final right = singleValueProp(value.$right, 'right');
-  final bottom = singleValueProp(value.$bottom, 'bottom');
+  final left = singleValuePropWire(value.$left, 'left') as double?;
+  final top = singleValuePropWire(value.$top, 'top') as double?;
+  final right = singleValuePropWire(value.$right, 'right') as double?;
+  final bottom = singleValuePropWire(value.$bottom, 'bottom') as double?;
 
   return encodeEdgeInsetsWire(
     left: left,
@@ -575,10 +855,10 @@ BorderRadiusMix _decodeBorderRadiusMix(Object value) {
 }
 
 Object _encodeBorderRadiusMix(BorderRadiusMix value) {
-  final topLeft = singleValueProp(value.$topLeft, 'topLeft');
-  final topRight = singleValueProp(value.$topRight, 'topRight');
-  final bottomLeft = singleValueProp(value.$bottomLeft, 'bottomLeft');
-  final bottomRight = singleValueProp(value.$bottomRight, 'bottomRight');
+  final topLeft = singleValuePropWire(value.$topLeft, 'topLeft');
+  final topRight = singleValuePropWire(value.$topRight, 'topRight');
+  final bottomLeft = singleValuePropWire(value.$bottomLeft, 'bottomLeft');
+  final bottomRight = singleValuePropWire(value.$bottomRight, 'bottomRight');
 
   if (topLeft != null &&
       topLeft == topRight &&
@@ -645,5 +925,22 @@ final class _BoxConstraintsBoundsConstraint extends Constraint<JsonMap>
     if (min == null || max == null) return true;
 
     return min <= max;
+  }
+}
+
+final class _TokenNameConstraint extends Constraint<String>
+    with Validator<String> {
+  const _TokenNameConstraint()
+    : super(
+        constraintKey: 'mix_schema_token_name',
+        description: 'Token names must match the mix_schema v1 token grammar.',
+      );
+
+  @override
+  bool isValid(String value) => isValidTokenName(value);
+
+  @override
+  String buildMessage(String value) {
+    return 'Token names must match [A-Za-z0-9_.-]{1,128}.';
   }
 }

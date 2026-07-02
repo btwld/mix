@@ -70,6 +70,9 @@ tightening the public API around the internal token registry.
 - **`isAnyTokenRef`** drops the brittle `runtimeType.toString().endsWith(...)`
   check; a `Prop` carrying a `TokenSource` is now the sole class-based
   invariant.
+- **`tokenFromReferenceValue`** is now public for schema/tooling code that needs
+  to identify unresolved token references, including sentinel-backed
+  `DoubleRef` values, without importing Mix internals.
 
 ### Other changes
 

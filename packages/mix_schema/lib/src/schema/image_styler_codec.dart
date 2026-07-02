@@ -28,17 +28,17 @@ SchemaObject<ImageStyler> _imageStylerSchemaType(
     ),
     (value) => value.$image,
   );
-  final width = valueField<ImageStyler, double>(
+  final width = tokenValueField<ImageStyler, double>(
     'width',
-    numberAsDoubleCodec(),
+    nonNegativeDoubleTokenCodec(),
     (value) => value.$width,
   );
-  final height = valueField<ImageStyler, double>(
+  final height = tokenValueField<ImageStyler, double>(
     'height',
-    numberAsDoubleCodec(),
+    nonNegativeDoubleTokenCodec(),
     (value) => value.$height,
   );
-  final color = valueField<ImageStyler, Color>(
+  final color = tokenValueField<ImageStyler, Color>(
     'color',
     colorCodec(),
     (value) => value.$color,

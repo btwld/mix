@@ -11,18 +11,18 @@ AckSchema<JsonMap, AnimationConfig> animationConfigCodec({
   required FrozenRegistry Function() registry,
 }) {
   return Ack.object({
-    'duration': _durationMillisCodec(),
+    'duration': _durationCodec(),
     'curve': curveCodec(),
-    'delay': _durationMillisCodec(),
+    'delay': _durationCodec(),
     'onEnd': registryValueCodec<VoidCallback>(
       registry,
       MixSchemaScope.animationOnEnd,
     ).optional(),
   }).codec<AnimationConfig>(
     decode: (data) => CurveAnimationConfig(
-      duration: Duration(milliseconds: data['duration']! as int),
+      duration: data['duration']! as Duration,
       curve: data['curve']! as Curve,
-      delay: Duration(milliseconds: data['delay']! as int),
+      delay: data['delay']! as Duration,
       onEnd: data['onEnd'] as VoidCallback?,
     ),
     encode: _encodeAnimationConfig,
@@ -33,8 +33,23 @@ CodecSchema<String, Curve> curveCodec() {
   return enumCodec(_namedCurves, debugName: 'Curve');
 }
 
-AckSchema<int, int> _durationMillisCodec() {
-  return Ack.integer().min(0);
+CodecSchema<Object, Duration> _durationCodec() {
+  return Ack.codec<Object, Object, Duration>(
+    input: Ack.anyOf([
+      tokenReferenceCodec<Duration, Duration>(
+        decodeToken: (data) =>
+            DurationToken(data[tokenReferenceKey]! as String),
+        reference: (token) => token(),
+      ),
+      Ack.integer().min(0),
+    ]),
+    decode: (value) {
+      if (value is int) return Duration(milliseconds: value);
+
+      return value as Duration;
+    },
+    encode: _encodeDuration,
+  );
 }
 
 JsonMap _encodeAnimationConfig(AnimationConfig value) {
@@ -46,11 +61,18 @@ JsonMap _encodeAnimationConfig(AnimationConfig value) {
   }
 
   return {
-    'duration': value.duration.inMilliseconds,
+    'duration': value.duration,
     'curve': value.curve,
-    'delay': value.delay.inMilliseconds,
+    'delay': value.delay,
     'onEnd': value.onEnd,
   };
+}
+
+Object _encodeDuration(Duration value) {
+  final token = tokenFromReference<Duration>(value);
+  if (token != null) return value;
+
+  return value.inMilliseconds;
 }
 
 const _namedCurves = <String, Curve>{

@@ -198,6 +198,89 @@ void main() {
     ]);
   });
 
+  test('encodes token-backed breakpoint convenience variants', () {
+    final style = BoxStyler(
+      variants: [
+        VariantStyle(ContextVariant.mobile(), BoxStyler()),
+        VariantStyle(ContextVariant.tablet(), BoxStyler()),
+        VariantStyle(ContextVariant.desktop(), BoxStyler()),
+      ],
+    );
+
+    final encoded = contract().encode(style);
+    final payload = switch (encoded) {
+      MixSchemaEncodeSuccess(:final value) => value,
+      MixSchemaEncodeFailure(:final errors) => fail('$errors'),
+    };
+
+    expect(payload['variants'], [
+      {
+        'kind': 'context_breakpoint',
+        'token': 'mix.breakpoint.mobile',
+        'style': {'type': 'box'},
+      },
+      {
+        'kind': 'context_breakpoint',
+        'token': 'mix.breakpoint.tablet',
+        'style': {'type': 'box'},
+      },
+      {
+        'kind': 'context_breakpoint',
+        'token': 'mix.breakpoint.desktop',
+        'style': {'type': 'box'},
+      },
+    ]);
+
+    final decoded = decodeBox({'v': 1, 'type': 'box', ...payload});
+    final tokens = decoded.$variants!
+        .map((entry) => (entry.variant as BreakpointVariant).breakpoint)
+        .cast<BreakpointRef>()
+        .map((breakpoint) => breakpoint.token)
+        .toList();
+
+    expect(tokens, [
+      BreakpointToken.mobile,
+      BreakpointToken.tablet,
+      BreakpointToken.desktop,
+    ]);
+  });
+
+  test('custom breakpoint token subclasses fail encode explicitly', () {
+    final style = BoxStyler(
+      variants: [
+        VariantStyle(
+          ContextVariant.breakpoint(
+            const _CustomBreakpointToken('breakpoint.custom')(),
+          ),
+          BoxStyler(),
+        ),
+      ],
+    );
+    final result = contract().encode(style);
+    final errors = switch (result) {
+      MixSchemaEncodeFailure(:final errors) => errors,
+      MixSchemaEncodeSuccess() => fail('expected failure'),
+    };
+
+    expect(
+      errors,
+      contains(
+        isA<MixSchemaError>()
+            .having(
+              (error) => error.code,
+              'code',
+              MixSchemaErrorCode.unsupportedEncodeValue,
+            )
+            .having((error) => error.path, 'path', '/variants/0')
+            .having(
+              (error) => error.message,
+              'message',
+              contains('custom token'),
+            ),
+      ),
+    );
+  });
+
   test('context_not_widget_state decodes and re-encodes symmetrically', () {
     final payload = {
       'v': 1,
@@ -348,6 +431,10 @@ void main() {
 
     expect(result, payload);
   });
+}
+
+final class _CustomBreakpointToken extends BreakpointToken {
+  const _CustomBreakpointToken(super.name);
 }
 
 List<MixSchemaError> _validationErrors(MixSchemaValidationResult result) {

@@ -123,6 +123,7 @@ AckSchema<JsonMap, VariantStyle<S>> _breakpointVariantCodec<S extends Spec<S>>(
   AckSchema<JsonMap, Object> rootStyleSchema,
 ) {
   return Ack.object({
+        'token': tokenNameCodec().optional(),
         'minWidth': numberAsDoubleCodec().optional(),
         'maxWidth': numberAsDoubleCodec().optional(),
         'style': rootStyleSchema,
@@ -132,6 +133,14 @@ AckSchema<JsonMap, VariantStyle<S>> _breakpointVariantCodec<S extends Spec<S>>(
       )
       .codec<VariantStyle<S>>(
         decode: (data) {
+          final token = data['token'] as String?;
+          if (token != null) {
+            return VariantStyle<S>(
+              ContextVariant.breakpoint(BreakpointToken(token)()),
+              _typedStyle<S>(data['style']!),
+            );
+          }
+
           final minWidth = data['minWidth'] as double?;
           final maxWidth = data['maxWidth'] as double?;
 
@@ -151,8 +160,18 @@ AckSchema<JsonMap, VariantStyle<S>> _breakpointVariantCodec<S extends Spec<S>>(
             );
           }
           final breakpoint = variant.breakpoint;
-          if (breakpoint is BreakpointRef ||
-              breakpoint.minHeight != null ||
+          if (breakpoint is BreakpointRef) {
+            final tokenReference = encodeTokenReference(
+              breakpoint.token,
+              'variant.token',
+            );
+
+            return {
+              'token': tokenReference[tokenReferenceKey],
+              'style': value.value,
+            };
+          }
+          if (breakpoint.minHeight != null ||
               breakpoint.maxHeight != null ||
               (breakpoint.minWidth == null && breakpoint.maxWidth == null)) {
             throw UnsupportedEncodeValueError(
@@ -238,11 +257,19 @@ final class _BreakpointBoundsConstraint extends Constraint<JsonMap>
 
   @override
   bool isValid(JsonMap value) {
+    if (value['token'] != null) {
+      return value['minWidth'] == null && value['maxWidth'] == null;
+    }
+
     return value['minWidth'] != null || value['maxWidth'] != null;
   }
 
   @override
   String buildMessage(JsonMap value) {
-    return 'A $subject requires minWidth or maxWidth.';
+    if (value['token'] != null) {
+      return 'A $subject cannot mix token and width bounds.';
+    }
+
+    return 'A $subject requires a token or minWidth/maxWidth.';
   }
 }
