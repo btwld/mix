@@ -15,6 +15,40 @@ Template:
 
 ---
 
+## 2026-07-02 — Claude (Fable) — cross-phase review + phase 2.5 planning
+
+**Did:**
+- Reviewed everything since the phase 0 commit (`933bcfd7d..b785f0cc1`): one
+  delegated reviewer per feature commit plus lead verification — fresh
+  mix_schema 195/195 tests, `melos run schema:inventory` green (379 ids), and
+  the PR-CI claim traced into `btwld/dart-actions` `ci.yml` (confirmed real:
+  `melos-commands` runs `melos run analyze` before tests on every PR).
+- Verdict: on plan, architecture sound. Twelve findings (X1–X12) appended to
+  `findings.md` as a dated Addendum — headline items: inventory discovery
+  misses second-level subclasses (public `IdentityStyle` is unclassified),
+  manifest entries contradicting phase 3/4 intent
+  (`$fontFeatures`/`$fontVariations` marked never though they are const data;
+  `$orderOfModifiers` never vs R4.4's planned support), lenient-mode
+  spec deviations (warning paths, quadratic repair loop), and the
+  `unsupported_value` doc/code mismatch.
+- Created `plan/phase2.5.md` (repair phase: R2.5.1–R2.5.7, D2.5.1–D2.5.4) and
+  updated the surrounding plan: README status board, AGENTS.md phase order +
+  key references, lessons.md carry-forwards + theme, phase1/phase2
+  decision-log annotations, phase3/phase4 dependency and acceptance hooks.
+
+**Decisions:**
+- Review findings land as a dedicated phase 2.5 with its own single commit —
+  not an amend of phase 2 (would misattribute phase 1 defects) and not folded
+  into phase 3 (would muddy its diff).
+- No implementation code changed this session; plan docs only. Nothing
+  committed yet.
+
+**Blocked/open:** None. D2.5.1–D2.5.4 to resolve at phase 2.5 entry.
+
+**Next:** Phase 2.5 entry review → resolve D2.5.1–D2.5.4 → execute the
+checklist → standard gate + delegated closeout review → one commit; then
+phase 3.
+
 ## 2026-07-02 — Codex — Phase 2 post-closeout fixes
 
 **Did:**

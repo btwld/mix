@@ -1,6 +1,6 @@
 # Phase 3 — Token model (`$token` grammar + theme document)
 
-**Status:** Not started · **Depends on:** phase 1 (envelope/modes), phase 2 recommended (classification) · **Blocks:** the token-sharing target; parts of phase 4 (token-backed breakpoints)
+**Status:** Not started · **Depends on:** phase 1 (envelope/modes), phase 2 recommended (classification), phase 2.5 (review fixes) · **Blocks:** the token-sharing target; parts of phase 4 (token-backed breakpoints)
 **Scope:** wire grammar for token references, a theme/token-definition document,
 preflight tooling, and the end-to-end inheritance demo.
 
@@ -21,6 +21,11 @@ able: `Prop.token()` is public, 11 typed token classes exist
 refs compose with directives at runtime (`ColorRef.withAlpha` → directive).
 The branch precedent for core cooperation exists (typed variant classes were
 added to core precisely to make variants encodable).
+
+Phase 2.5's D2.5.1 decides whether hiding `AckSchema` behind mix_schema-owned
+extension types happens as this phase's *first* task (before the token grammar
+grows the Ack-typed surface) — apply its recorded outcome at phase entry
+`[review X11]`.
 
 ## Requirements
 

@@ -321,3 +321,40 @@ mix scoped (variants + default_text_style_modifier) 199 passed; `dart test`
 mix_generator 257 passed. `melos run analyze` (dart + DCM): zero issues across
 all 7 packages. Dynamic correctness probes ran in a throwaway `/tmp` package
 against the real path deps; repo tree verified untouched at session end.
+
+---
+
+## Addendum — cross-phase review after phase 2 (2026-07-02)
+
+Review of commits `933bcfd7d..b785f0cc1` (phases 1–2 + process docs) against this
+snapshot and the phase docs. Method: one delegated reviewer per feature commit +
+lead verification. Fresh evidence: mix_schema **195/195** tests, `melos run
+schema:inventory` green (379 ids at HEAD), PR-CI wiring traced into
+`btwld/dart-actions` `ci.yml@main` (the `melos-commands` input exists and runs
+`melos run analyze` before tests on every PR). **Verdict: on plan, architecture
+sound.** The items below are owned by [`phase2.5.md`](phase2.5.md); IDs `X*` are
+stable — don't renumber.
+
+| ID | Finding | Evidence |
+|----|---------|----------|
+| **X1** | Inventory discovery uses name-suffix + direct-superclass matching; only directives get a transitive inheritance closure. Confirmed miss: public `IdentityStyle` (`packages/mix/lib/src/core/style.dart:205`) has no inventory id and no manifest entry — the ratchet never forced a decision. Any future second-level subclass of a tracked base (e.g. `X extends WidgetStateVariant`) is silently invisible: the exact drift the tool exists to catch. | `tool/inventory_check.dart:307-327` |
+| **X2** | Manifest entries contradict plan intent: `TextStyleMix.$fontFeatures`/`$fontVariations` classified `never: runtime-only` though `FontFeature(String, [int])`/`FontVariation(String, double)` are const data and B4 + phase 4 R4.7 name them as gaps; `WidgetModifierConfig.$orderOfModifiers` classified `never` while R4.4 plans `modifierOrder` support. All three silently vanish from phase 4's generated backlog. | `schema_inventory_manifest.dart:836,840`; backlog `Never` group; `phase4.md` R4.4/R4.7 |
+| **X3** | Lenient-mode warnings carry paths into the *partially-cleaned* document (after a list removal, the next warning's index refers to the shifted list), while `WIRE_CONTRACT.md:64` promises the original path. The test masks it by asserting only `endsWith('/kind')`. | `mix_schema_contract.dart:342-350`; `format_v1_contract_test.dart:238-241` |
+| **X4** | `WIRE_CONTRACT.md` documents error code `unsupported_value`; the real public code is `unsupported_encode_value`. A consumer switching on the documented string never matches. | `WIRE_CONTRACT.md:294` vs `mix_schema_error.dart:30` |
+| **X5** | The runtime skew guard covers only the 8 styler roots; nested Mix types (`BoxDecorationMix`, `TextStyleMix`, …) have no guard, so a consumer on a newer `mix` can silently drop a nested field. Also: unknown-future-field detection is count-based (`props.length`), so a simultaneous add+remove (net-zero) is invisible — nowhere documented. The name-level check is sound (two independent declaration sources, not tautological), but `inventoryName` labels are unverified against what the `read` closure actually reads. | `schema_field.dart:165-192`; `styler_field_inventory.dart:119` |
+| **X6** | Lenient decode worst case is quadratic: up to 10,000 full reparse passes (one granule removed per pass) with no removal cap below the node cap. Bounded and opt-in, but a DoS lever if lenient is used on hostile input. | `mix_schema_contract.dart:321` |
+| **X7** | The tool's Flutter-enum allowlist *silently skips* unknown enum-like field types — contradicting phase 2's own lesson "AST ratchets should fail on unclassifiable source, not skip it". | `tool/inventory_check.dart:401-409,474-503` |
+| **X8** | Envelope diagnostics: `{"v": null}` fails as `null_forbidden` though the spec says malformed `v` → `unsupported_version` (version-skew telemetry misses null-`v` docs); and `validate()` failures drop the missing-`v` transition warning that `decode()` carries. | `mix_schema_contract.dart:439,445`; `WIRE_CONTRACT.md:36`; `mix_schema_error.dart:119-125` |
+| **X9** | Backlog provenance stamps `git rev-parse HEAD` even when the worktree is dirty (misreports the source revision); the reusable CI workflow is consumed unpinned (`@main`) so the ratchet's PR guarantee can drift with someone else's default branch. | `tool/inventory_check.dart:534-542`; `.github/workflows/test.yml:42` |
+| **X10** | Test gaps: exact limit boundaries (depth 64 vs 65; 10,000 vs 10,001 nodes); `v: 1.0`/`v: true`; lenient warning indices across multiple list removals; composite-styler (FlexBox/StackBox) skew accounting with real stylers; schema export never asserts nested styles do *not* require `v`; a manifest entry flipped to `supported` without codec backing fails nothing (the decision record can lie). | reviewer reports; `format_v1_contract_test.dart`; `inventory_check_test.dart` |
+| **X11** | Plan inconsistency: the Premortem (#2) claims the extension API was "already hidden behind owned types (phase 0)" as the ack-risk mitigation, but C2 is scheduled for phase 5 and phase 0 didn't do it — phases 3–4 would grow the Ack-typed public surface before it's hidden. | this file: Premortem #2 vs Migration path |
+| **X12** | Checkbox integrity: phase 1's R1.4 "[x] no code/doc conflict" is overstated (X3/X4/X8 are conflicts); phase 2's "dummy-Prop demo demonstrated once manually" has no session record. Design note for phase 4: the lenient granule grammar hard-codes wire-shape names (`'variants'`, `'modifiers'`, `'style'`) far from the codecs that own them — new list-valued fields silently get coarse removal granules. | `phase1.md`; `phase2.md`; `mix_schema_contract.dart:585-630` |
+
+Verified sound in the same review (no action): envelope written last on encode and
+export incl. the custom-branch override test; `"infinity"` confined to constraints
+max bounds; null preflight walks arrays/variants with pointer-correct paths;
+structural errors stay fatal in lenient mode; limits counted pre-Ack and monotone
+under lenient removals; every new error code reachable via public API; manifest's
+four failure modes (missing/stale/conflicting/duplicate) implemented and tested;
+backlog deterministic with accurate provenance; melos `analyze` chain + PR
+workflow wiring real end-to-end.

@@ -122,6 +122,9 @@ _(fill when closed)_
   artifact validation.
 - Ratchets that claim PR coverage must be traced through the actual GitHub
   workflow path, not just local Melos scripts.
+- Checked boxes rot: a doc-lockstep claim verified at one phase close can be
+  invalidated by later edges or missed cases; cross-phase reviews re-verify
+  predecessor claims (phase 2.5 exists because of this).
 
 ## Carry-forward actions
 
@@ -136,6 +139,9 @@ _(fill when closed)_
 | CI ratchets need workflow-level proof. | Every phase | Before marking a check as "runs on every PR", inspect the workflow path and verify it invokes the relevant Melos chain. |
 | Root/control keys are reserved contract boundaries. | Phase 3 / Phase 4 | `$token`, `$merge`, `apply`, and future control markers need collision/unknown-marker tests analogous to the Phase 1 custom-branch `v` test. |
 | Missing `v` is a transition compromise. | Phase 5 / publish checkpoint | Before publishing the v1 contract, explicitly decide whether to flip missing `v` from warning to fatal and update tests/docs together. |
+| Lenient granule grammar lives away from codec owners. | Phase 4 | Every new list-valued wire field gets an explicit lenient-removal granule and a loud test; review `_lenientRemovalPath` when adding families. `[review X12]` |
+| Manifest `supported` must be provably true. | Phase 2.5 | Land the manifest↔codec truthfulness test so a false `supported` entry fails CI; keep it green thereafter. `[review X10]` |
+| Cross-phase reviews complement closeout reviews. | Post-phase-4 milestone | Per-diff closeout reviews missed cross-phase contract drift (X3/X4 survived two closeouts); run the next cross-phase review after phase 4 lands. |
 
 ## Decisions we reversed (and why)
 

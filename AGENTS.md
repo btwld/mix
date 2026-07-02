@@ -42,16 +42,18 @@ and realign the tailwinds consumer.
    into multiple commits unless Leo explicitly asks; if another rule appears to require
    a split, stop and ask.
 
-Phase order: **0 → 1 → 2 → 3 → 4 → 5**. Phase 2's inventory run generates phase 4's
-backlog (`plan/coverage-backlog.md`); phase 4's gradient codec gates phase 5's bypass
-removal; phase 5 starts with a benchmark before deciding.
+Phase order: **0 → 1 → 2 → 2.5 → 3 → 4 → 5**. Phase 2.5 lands the cross-phase
+review fixes (`plan/findings.md` Addendum, X1–X12) before token work; phase 2's
+inventory run generates phase 4's backlog (`plan/coverage-backlog.md`, regenerated
+by 2.5); phase 4's gradient codec gates phase 5's bypass removal; phase 5 starts
+with a benchmark before deciding.
 
 ## Key references
 
 | What | Where |
 |---|---|
 | Plan, status, session log, lessons | `plan/` |
-| Review findings behind the plan (finding IDs `A*`/`B*`/`C*`; prior code-review `S*`/`C*` items reconciled at the bottom) | `plan/findings.md` |
+| Review findings behind the plan (finding IDs `A*`/`B*`/`C*`; prior code-review `S*`/`C*` items reconciled at the bottom; cross-phase review addendum `X*`) | `plan/findings.md` |
 | Wire format spec — keep in lockstep with code | `packages/mix_schema/WIRE_CONTRACT.md` |
 | Packages in scope | `packages/mix_schema`, `packages/mix_tailwinds`; `packages/mix` for minimal core asks only |
 
