@@ -5,6 +5,7 @@ import 'package:mix/mix.dart';
 import '../registry/registry.dart';
 import 'common_codecs.dart';
 import 'schema_field.dart';
+import 'styler_field_inventory.dart';
 import 'styler_codec_helpers.dart';
 
 AckSchema<JsonMap, StackStyler> stackStylerCodec({
@@ -57,6 +58,9 @@ SchemaObject<StackStyler> _stackStylerSchemaType(
   );
 
   return SchemaObject<StackStyler>(
+    inventoryOwner: 'StackStyler',
+    ownerFieldInventory: stackStylerInventory,
+    actualFieldCount: stylerFieldCount,
     fields: [alignment, fit, textDirection, clipBehavior, ...metadata.fields],
     unsupportedFields: [...metadata.unsupportedFields()],
     build: (data) => StackStyler(

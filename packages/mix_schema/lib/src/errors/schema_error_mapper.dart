@@ -33,6 +33,14 @@ MixSchemaError _mapSingleSchemaError(SchemaError error) {
       value: cause.value,
     );
   }
+  if (cause is SchemaInventorySkewError) {
+    return MixSchemaError(
+      code: MixSchemaErrorCode.inventorySkew,
+      path: _normalizePath(error.path),
+      message: cause.toString(),
+      value: cause.toJson(),
+    );
+  }
   if (cause is UnknownRegistryIdError) {
     return MixSchemaError(
       code: MixSchemaErrorCode.unknownRegistryId,

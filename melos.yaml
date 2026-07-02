@@ -38,8 +38,12 @@ categories:
 scripts:
   # ANALYSIS
   analyze:
-    run: melos run analyze:dart --no-select && melos run analyze:dcm --no-select
+    run: melos run schema:inventory --no-select && melos run analyze:dart --no-select && melos run analyze:dcm --no-select
     description: Run all static analysis checks.
+
+  schema:inventory:
+    run: melos exec --scope="mix_schema" -- dart run tool/inventory_check.dart --check
+    description: Verify mix_schema inventory coverage decisions.
 
   analyze:dart:
     run: melos exec -c 4 -- dart analyze .

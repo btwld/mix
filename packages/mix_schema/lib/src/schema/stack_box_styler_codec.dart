@@ -7,6 +7,7 @@ import 'box_styler_codec.dart';
 import 'common_codecs.dart';
 import 'schema_field.dart';
 import 'stack_styler_codec.dart';
+import 'styler_field_inventory.dart';
 import 'styler_codec_helpers.dart';
 
 AckSchema<JsonMap, StackBoxStyler> stackBoxStylerCodec({
@@ -24,63 +25,75 @@ SchemaObject<StackBoxStyler> _stackBoxStylerSchemaType(
     'alignment',
     alignmentCodec(),
     _boxField,
+    inventoryName: 'box',
   );
   final padding = derivedField<StackBoxStyler, EdgeInsetsMix>(
     'padding',
     edgeInsetsCodec(),
     _boxField,
+    inventoryName: 'box',
   );
   final margin = derivedField<StackBoxStyler, EdgeInsetsMix>(
     'margin',
     edgeInsetsCodec(),
     _boxField,
+    inventoryName: 'box',
   );
   final constraints = derivedField<StackBoxStyler, BoxConstraintsMix>(
     'constraints',
     boxConstraintsCodec(),
     _boxField,
+    inventoryName: 'box',
   );
   final clipBehavior = derivedField<StackBoxStyler, Clip>(
     'clipBehavior',
     enumNameCodec(Clip.values),
     _boxField,
+    inventoryName: 'box',
   );
   final transform = derivedField<StackBoxStyler, Matrix4>(
     'transform',
     matrix4Codec(),
     _boxField,
+    inventoryName: 'box',
   );
   final transformAlignment = derivedField<StackBoxStyler, Alignment>(
     'transformAlignment',
     alignmentCodec(),
     _boxField,
+    inventoryName: 'box',
   );
   final decoration = derivedField<StackBoxStyler, BoxDecorationMix>(
     'decoration',
     boxDecorationCodec(),
     _boxField,
+    inventoryName: 'box',
   );
   final stackAlignment = derivedField<StackBoxStyler, Alignment>(
     'stackAlignment',
     alignmentCodec(),
     _stackField,
     readWire: 'alignment',
+    inventoryName: 'stack',
   );
   final fit = derivedField<StackBoxStyler, StackFit>(
     'fit',
     enumNameCodec(StackFit.values),
     _stackField,
+    inventoryName: 'stack',
   );
   final textDirection = derivedField<StackBoxStyler, TextDirection>(
     'textDirection',
     textDirectionCodec(),
     _stackField,
+    inventoryName: 'stack',
   );
   final stackClipBehavior = derivedField<StackBoxStyler, Clip>(
     'stackClipBehavior',
     enumNameCodec(Clip.values),
     _stackField,
     readWire: 'clipBehavior',
+    inventoryName: 'stack',
   );
   final metadata = StylerMetadataFields<StackBoxStyler, StackBoxSpec>(
     rootStyleSchema: rootStyleSchema,
@@ -91,6 +104,9 @@ SchemaObject<StackBoxStyler> _stackBoxStylerSchemaType(
   );
 
   return SchemaObject<StackBoxStyler>(
+    inventoryOwner: 'StackBoxStyler',
+    ownerFieldInventory: stackBoxStylerInventory,
+    actualFieldCount: stylerFieldCount,
     fields: [
       alignment,
       padding,

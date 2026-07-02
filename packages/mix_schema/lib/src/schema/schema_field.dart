@@ -6,6 +6,7 @@ import 'common_codecs.dart';
 
 abstract interface class SchemaFieldBase<Owner extends Object> {
   String get wire;
+  String get inventoryName;
   AckSchema<Object, Object> get ackSchema;
   Object? readObject(Owner value);
 }
@@ -16,11 +17,15 @@ final class SchemaField<Owner extends Object, Value extends Object>
     required this.wire,
     required this.codec,
     required this.read,
+    String? inventoryName,
     this.optional = true,
-  });
+  }) : inventoryName = inventoryName ?? wire;
 
   @override
   final String wire;
+
+  @override
+  final String inventoryName;
 
   final AckSchema<Object, Value> codec;
   final Object? Function(Owner value) read;
@@ -45,10 +50,12 @@ valueField<Owner extends Object, Value extends Object>(
   AckSchema<Object, Value> codec,
   Prop<Value>? Function(Owner value) read, {
   String? fieldName,
+  String? inventoryName,
 }) {
   return SchemaField<Owner, Value>(
     wire: wire,
     codec: codec,
+    inventoryName: inventoryName,
     read: (value) => readProp<Value, Value>(read(value), fieldName ?? wire),
   );
 }
@@ -59,10 +66,12 @@ mixField<Owner extends Object, Value extends Object, PropValue extends Object>(
   AckSchema<Object, Value> codec,
   Prop<PropValue>? Function(Owner value) read, {
   String? fieldName,
+  String? inventoryName,
 }) {
   return SchemaField<Owner, Value>(
     wire: wire,
     codec: codec,
+    inventoryName: inventoryName,
     read: (value) => readProp<Value, PropValue>(read(value), fieldName ?? wire),
   );
 }
@@ -71,9 +80,15 @@ SchemaField<Owner, Value>
 directField<Owner extends Object, Value extends Object>(
   String wire,
   AckSchema<Object, Value> codec,
-  Object? Function(Owner value) read,
-) {
-  return SchemaField<Owner, Value>(wire: wire, codec: codec, read: read);
+  Object? Function(Owner value) read, {
+  String? inventoryName,
+}) {
+  return SchemaField<Owner, Value>(
+    wire: wire,
+    codec: codec,
+    read: read,
+    inventoryName: inventoryName,
+  );
 }
 
 SchemaField<Owner, Value>
@@ -82,10 +97,12 @@ derivedField<Owner extends Object, Value extends Object>(
   AckSchema<Object, Value> codec,
   Object? Function(Owner value, String wire) read, {
   String? readWire,
+  String? inventoryName,
 }) {
   return SchemaField<Owner, Value>(
     wire: wire,
     codec: codec,
+    inventoryName: inventoryName,
     read: (value) => read(value, readWire ?? wire),
   );
 }
@@ -112,11 +129,17 @@ final class SchemaObject<Owner extends Object> {
     required this.fields,
     required this.build,
     this.unsupportedFields = const [],
+    this.inventoryOwner,
+    this.ownerFieldInventory,
+    this.actualFieldCount,
   });
 
   final List<SchemaFieldBase<Owner>> fields;
   final Owner Function(JsonMap data) build;
   final List<UnsupportedSchemaField<Owner>> unsupportedFields;
+  final String? inventoryOwner;
+  final Set<String>? ownerFieldInventory;
+  final int Function(Owner value)? actualFieldCount;
 
   AckSchema<JsonMap, Owner> codec() {
     return Ack.object({
@@ -127,6 +150,8 @@ final class SchemaObject<Owner extends Object> {
   JsonMap encode(Owner value) => encodeFields(value);
 
   JsonMap encodeFields(Owner value, {Set<String> omit = const {}}) {
+    _checkInventory(value);
+
     for (final field in unsupportedFields) {
       field.check(value);
     }
@@ -134,6 +159,35 @@ final class SchemaObject<Owner extends Object> {
     return {
       for (final field in fields)
         if (!omit.contains(field.wire)) field.wire: field.readObject(value),
+    };
+  }
+
+  void _checkInventory(Owner value) {
+    final owner = ownerFieldInventory;
+    if (owner == null) return;
+
+    final consumed = _inferredConsumedFields();
+    final missing = owner.difference(consumed);
+    final stale = consumed.difference(owner);
+
+    final actualCount = actualFieldCount?.call(value);
+    final countSkew = actualCount != null && actualCount != owner.length;
+
+    if (missing.isEmpty && stale.isEmpty && !countSkew) return;
+
+    throw SchemaInventorySkewError(
+      owner: inventoryOwner ?? Owner.toString(),
+      missingFields: missing,
+      staleFields: stale,
+      expectedFieldCount: countSkew ? owner.length : null,
+      actualFieldCount: countSkew ? actualCount : null,
+    );
+  }
+
+  Set<String> _inferredConsumedFields() {
+    return {
+      for (final field in fields) field.inventoryName,
+      for (final field in unsupportedFields) field.name,
     };
   }
 }

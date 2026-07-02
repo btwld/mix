@@ -29,6 +29,9 @@ enum MixSchemaErrorCode {
   /// A runtime value cannot be represented by the wire contract.
   unsupportedEncodeValue('unsupported_encode_value'),
 
+  /// The runtime Mix surface and schema inventory disagree during encode.
+  inventorySkew('inventory_skew'),
+
   /// The root discriminator did not match any registered styler branch.
   unknownType('unknown_type'),
 
@@ -188,6 +191,56 @@ final class UnsupportedEncodeValueError implements Exception {
 
   @override
   String toString() => 'Unsupported encode value: $reason';
+}
+
+/// Internal sentinel thrown when codec coverage drifts from owner fields.
+final class SchemaInventorySkewError implements Exception {
+  /// Creates an inventory-skew sentinel.
+  SchemaInventorySkewError({
+    required this.owner,
+    Iterable<String> missingFields = const [],
+    Iterable<String> staleFields = const [],
+    this.expectedFieldCount,
+    this.actualFieldCount,
+  }) : missingFields = Set.unmodifiable(missingFields),
+       staleFields = Set.unmodifiable(staleFields);
+
+  /// Owner type whose inventory did not match codec coverage.
+  final String owner;
+
+  /// Owner fields not consumed or explicitly marked unsupported by the codec.
+  final Set<String> missingFields;
+
+  /// Codec-declared fields no longer present on the owner inventory.
+  final Set<String> staleFields;
+
+  /// Number of owner fields the schema inventory expected, when known.
+  final int? expectedFieldCount;
+
+  /// Number of runtime owner fields observed, when known.
+  final int? actualFieldCount;
+
+  /// JSON-safe diagnostic value.
+  JsonMap toJson() => {
+    'owner': owner,
+    if (missingFields.isNotEmpty) 'missingFields': missingFields.toList(),
+    if (staleFields.isNotEmpty) 'staleFields': staleFields.toList(),
+    if (expectedFieldCount != null) 'expectedFieldCount': expectedFieldCount,
+    if (actualFieldCount != null) 'actualFieldCount': actualFieldCount,
+  };
+
+  @override
+  String toString() {
+    final parts = <String>[
+      if (missingFields.isNotEmpty)
+        'missing fields: ${missingFields.join(', ')}',
+      if (staleFields.isNotEmpty) 'stale fields: ${staleFields.join(', ')}',
+      if (expectedFieldCount != null && actualFieldCount != null)
+        'field count: expected $expectedFieldCount, actual $actualFieldCount',
+    ];
+
+    return 'Schema inventory skew for $owner (${parts.join('; ')}).';
+  }
 }
 
 /// Internal sentinel thrown when a registry id cannot be resolved.

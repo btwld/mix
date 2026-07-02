@@ -15,6 +15,64 @@ Template:
 
 ---
 
+## 2026-07-02 — Codex — Phase 2 post-closeout fixes
+
+**Did:**
+- Reopened the Phase 2 closeout after review found three remaining issues:
+  PR CI did not invoke `melos run analyze`, duplicate same-status manifest
+  entries were accepted, and runtime count skew pretended an unknown future
+  field name was recoverable.
+- Wired the GitHub PR workflow to pass `melos run analyze` to the reusable CI
+  workflow while keeping D2.2's decision that `schema:inventory` belongs in the
+  analyze chain.
+- Added duplicate manifest diagnostics/tests and changed `inventory_skew` to
+  expose structured `expectedFieldCount` / `actualFieldCount` diagnostics for
+  count-only skew.
+- Updated `WIRE_CONTRACT.md`, `phase2.md`, and `lessons.md` with the corrected
+  CI and skew-diagnostic lessons.
+- Verified with targeted inventory/skew tests, `melos run gen:build`,
+  `melos run ci`, and `melos run analyze`.
+
+**Decisions:**
+- D2.2 stands: the inventory ratchet remains an analyze check, and PR CI now
+  invokes that analyze chain explicitly.
+- R2.5 now distinguishes named inventory mismatches from count-only runtime
+  skew; unknown future field names are not recoverable from `Equatable.props`.
+
+**Blocked/open:** None for Phase 2.
+
+**Next:** Amend and force-with-lease push the existing Phase 2 commit; then
+Phase 3 can start.
+
+## 2026-07-02 — Codex — Phase 2
+
+**Did:**
+- Implemented `packages/mix_schema/tool/inventory_check.dart`, the Dart const
+  inventory manifest, `schema:inventory` Melos wiring, and the generated
+  `plan/coverage-backlog.md` report.
+- Added encode-side inventory skew failures with a public `inventory_skew` error
+  code and per-styler owner-field coverage checks.
+- Added behavior tests for inventory determinism, manifest drift, directive key
+  extraction, backlog validation behavior, and skew error mapping.
+- Ran the closeout review with a delegated reviewer and addressed all findings:
+  inferred consumed fields from declared schema fields, replaced regex directive
+  discovery with analyzer extraction, validated before backlog writes, and
+  documented `inventory_skew`.
+- Verified with `melos run gen:build`, `melos run ci`, and
+  `melos run analyze`.
+
+**Decisions:**
+- D2.1: use a Dart const manifest entry list so duplicate/conflicting
+  classifications can be reported.
+- D2.2: run `schema:inventory` from the static `analyze` chain.
+- D2.3: use an always-on typed encode failure, mapped to `inventory_skew`.
+
+**Blocked/open:** None for Phase 2. Phase 4 owns the deferred coverage items in
+`plan/coverage-backlog.md`.
+
+**Next:** Start Phase 3 with its entry review, open decisions, and the token
+model work.
+
 ## 2026-07-02 — Codex — lesson carry-forward
 
 **Did:** Turned the Phase 0/1 lessons into explicit carry-forward actions with

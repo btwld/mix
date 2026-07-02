@@ -5,6 +5,7 @@ import 'package:mix/mix.dart';
 import '../registry/registry.dart';
 import 'common_codecs.dart';
 import 'schema_field.dart';
+import 'styler_field_inventory.dart';
 import 'styler_codec_helpers.dart';
 
 AckSchema<JsonMap, FlexStyler> flexStylerCodec({
@@ -82,6 +83,9 @@ SchemaObject<FlexStyler> _flexStylerSchemaType(
   );
 
   return SchemaObject<FlexStyler>(
+    inventoryOwner: 'FlexStyler',
+    ownerFieldInventory: flexStylerInventory,
+    actualFieldCount: stylerFieldCount,
     fields: [
       direction,
       mainAxisAlignment,

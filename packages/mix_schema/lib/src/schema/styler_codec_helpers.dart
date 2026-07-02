@@ -34,6 +34,7 @@ final class StylerMetadataFields<
          'modifiers',
          modifierConfigCodec(),
          readModifier,
+         inventoryName: 'modifier',
        ),
        animation = directField<Owner, AnimationConfig>(
          'animation',

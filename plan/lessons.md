@@ -69,7 +69,31 @@ Things the review itself surfaced that qualify as lessons already:
   contract wrapper.
 
 ### Phase 2 — Drift ratchet
-_(fill when closed)_
+
+- **Inventory coverage must compare owner fields, not wire aliases.** Composite
+  stylers flatten `$box`/`$flex`/`$stack` into many wire keys, while simple
+  stylers have metadata aliases such as `$modifier` -> `modifiers`. The skew
+  guard now tracks owner-field names on schema fields and infers coverage from
+  what the encoder actually declares.
+- **AST ratchets should fail on unclassifiable source, not skip it.** Directive
+  keys moved from regex discovery to analyzer extraction of static string
+  getters; dynamic keys fail the inventory run so drift is visible.
+- **Generated backlog writes must validate first.** `--write-backlog` now runs
+  the same manifest exhaustiveness check before writing, so Phase 4 cannot start
+  from a silently incomplete generated file.
+- **Enum coverage needs an explicit source review.** Syntax-only analyzer passes
+  catch local enum declarations, but Flutter enum field types need a maintained
+  allowlist and manifest entries.
+- **CI ratchets must be verified at the workflow boundary.** Adding a Melos
+  script to `analyze` did not put the check on PRs until the GitHub workflow
+  invoked the analyze chain explicitly.
+- **Do not invent field names when runtime metadata cannot provide them.**
+  Known inventory mismatches can name missing/stale fields; future runtime
+  fields discovered only through `props.length` need structured expected/actual
+  count diagnostics.
+- **Entry-list manifests need duplicate tests, not just conflict tests.**
+  Conflicting buckets and duplicate same-status entries are different failure
+  modes and both should be readable in CI output.
 
 ### Phase 3 — Token model
 _(fill when closed)_
@@ -93,6 +117,11 @@ _(fill when closed)_
   explicit stop-and-ask moments, not unilateral splits.
 - Wire-format envelope keys are reserved across built-in and custom branches;
   custom extension points need regression tests for those contract boundaries.
+- Inventory tools need tests for their own blind spots: alias fields, dynamic
+  directive keys, missing/stale/conflicting manifest entries, and generated
+  artifact validation.
+- Ratchets that claim PR coverage must be traced through the actual GitHub
+  workflow path, not just local Melos scripts.
 
 ## Carry-forward actions
 
@@ -104,6 +133,7 @@ _(fill when closed)_
 | Runtime dogfooding has an expiry. | Phase 5 | Benchmark before deciding, then move the schema guarantee to test-time unless data justifies keeping runtime decode. |
 | Generated files need traceable inputs. | Phase 2 / Phase 4 | Generated backlog or schema artifacts need a source/tool header; if the input is missing, record the blocker instead of hand-editing generated output. |
 | Phase boundary checks prevent stale assumptions. | Every phase | Run the lesson/prior-decision entry review before work and the full agent/code review before closeout. |
+| CI ratchets need workflow-level proof. | Every phase | Before marking a check as "runs on every PR", inspect the workflow path and verify it invokes the relevant Melos chain. |
 | Root/control keys are reserved contract boundaries. | Phase 3 / Phase 4 | `$token`, `$merge`, `apply`, and future control markers need collision/unknown-marker tests analogous to the Phase 1 custom-branch `v` test. |
 | Missing `v` is a transition compromise. | Phase 5 / publish checkpoint | Before publishing the v1 contract, explicitly decide whether to flip missing `v` from warning to fatal and update tests/docs together. |
 

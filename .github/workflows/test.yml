@@ -45,3 +45,5 @@ jobs:
     with:
       flutter-version: 'stable'
       run-dcm: true
+      melos-commands: |
+        melos run analyze

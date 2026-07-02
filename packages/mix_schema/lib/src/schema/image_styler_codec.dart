@@ -6,6 +6,7 @@ import '../registry/registry.dart';
 import '../registry/registry_value_codec.dart';
 import 'common_codecs.dart';
 import 'schema_field.dart';
+import 'styler_field_inventory.dart';
 import 'styler_codec_helpers.dart';
 
 AckSchema<JsonMap, ImageStyler> imageStylerCodec({
@@ -101,6 +102,9 @@ SchemaObject<ImageStyler> _imageStylerSchemaType(
   );
 
   return SchemaObject<ImageStyler>(
+    inventoryOwner: 'ImageStyler',
+    ownerFieldInventory: imageStylerInventory,
+    actualFieldCount: stylerFieldCount,
     fields: [
       image,
       width,

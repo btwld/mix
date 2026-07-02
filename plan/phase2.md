@@ -1,6 +1,6 @@
 # Phase 2 — Drift ratchet (core-surface inventory tool)
 
-**Status:** Not started · **Depends on:** phase 0 (clean baseline) · **Blocks:** phase 4 (it generates phase 4's backlog)
+**Status:** Completed · **Depends on:** phase 0 (clean baseline) · **Blocks:** phase 4 (it generates phase 4's backlog)
 **Scope:** dev tooling + CI + one runtime assert. No wire-format changes.
 
 ## Objective
@@ -37,10 +37,10 @@ An analyzer-based script (dev-only, in `packages/mix_schema/tool/`) that parses
 - every `MixToken` subclass (for phase 3);
 - every enum type appearing in a field position.
 **Acceptance:**
-- [ ] Deterministic output (sorted, stable) listing each construct with a stable
+- [x] Deterministic output (sorted, stable) listing each construct with a stable
       id (e.g. `BoxStyler.$foregroundDecoration`, `directive:color_darken`,
       `modifier:ClipOvalModifierMix`).
-- [ ] Runs against the monorepo's `mix` at HEAD (path dep), so drift is caught
+- [x] Runs against the monorepo's `mix` at HEAD (path dep), so drift is caught
       at the source before release.
 
 ### R2.2 — Classification manifest
@@ -50,24 +50,25 @@ every inventory id to exactly one bucket:
 - `knownUnsupported(reason)` — deliberate exclusion with a human-readable reason
   (e.g. `closure-backed, not data`, `deferred: phase 4`).
 **Acceptance:**
-- [ ] The check fails with a readable diff when: (a) a core construct is in
+- [x] The check fails with a readable diff when: (a) a core construct is in
       neither bucket (new core API landed), (b) a manifest entry no longer exists
-      in core (stale), (c) an entry is in both.
-- [ ] Every current gap from the review is classified — the initial manifest IS
+      in core (stale), (c) an entry is in both, (d) an entry is duplicated.
+- [x] Every current gap from the review is classified — the initial manifest IS
       the coverage decision record (gradients: deferred-phase-4; `Paint`
       fields: never; `PhaseAnimationConfig`: never; etc.).
 
 ### R2.3 — CI wiring
-- [ ] `melos.yaml` script (e.g. `schema:inventory`) + included in the `ci`
-      chain (or `analyze` chain — D2.2) so it runs on every PR.
-- [ ] Fast enough not to hurt CI (< ~30s); if analyzer resolution is slow,
+- [x] `melos.yaml` script (e.g. `schema:inventory`) + included in the `ci`
+      chain (or `analyze` chain — D2.2) so it runs on every PR. The GitHub
+      workflow must invoke that chain, not only define it locally.
+- [x] Fast enough not to hurt CI (< ~30s); if analyzer resolution is slow,
       cache or scope the entry points.
 
 ### R2.4 — Coverage backlog artifact
-- [ ] First run's classified output is checked in as `plan/coverage-backlog.md`
+- [x] First run's classified output is checked in as `plan/coverage-backlog.md`
       (grouped: supported / deferred-with-target-phase / never-with-reason).
       Phase 4's checklist is generated from the "deferred" group.
-- [ ] The backlog includes a short provenance header naming the inventory tool,
+- [x] The backlog includes a short provenance header naming the inventory tool,
       command, source package revision, and whether any entries were manually
       curated. Do not hand-edit generated output without recording why.
 
@@ -75,13 +76,16 @@ every inventory id to exactly one bucket:
 Per styler, encode asserts that the set of fields it consumed (covered +
 declared-unsupported) equals the styler's actual field inventory (via the public
 `props`/`$`-field surface). Mismatch — e.g. app upgraded `mix` beyond what this
-`mix_schema` build knows — throws a typed error naming the field, instead of
-silently dropping it.
+`mix_schema` build knows — throws a typed error instead of silently dropping it.
+Known missing/stale fields are named from the schema inventory; unknown future
+runtime fields report expected/actual field counts because `Equatable.props`
+exposes field values, not field names.
 **Acceptance:**
-- [ ] Assert exists on every styler encode path with negligible cost (debug-mode
+- [x] Assert exists on every styler encode path with negligible cost (debug-mode
       `assert` acceptable — D2.3).
-- [ ] Test simulates skew (a locally-declared styler subclass with an extra
-      field, or a hand-built field-list mismatch) and pins the error.
+- [x] Test simulates skew (a locally-declared styler subclass with an extra
+      field/count mismatch, or a hand-built field-list mismatch) and pins the
+      error.
 
 ## Non-goals (this phase)
 
@@ -94,20 +98,28 @@ core — revisit only if the manifest churn rate proves painful).
 **D2.1 — Manifest form.** Dart const map next to the codecs (compile-checked,
 IDE-navigable) vs YAML/JSON data file (diff-friendly, tool-writable).
 Recommendation: Dart const map — the tool reads it via analyzer anyway.
-**Decision:** _(record)_
+**Decision:** Use a Dart const manifest table in `packages/mix_schema/lib/src/inventory/`.
+The checked-in shape is an entry list rather than a raw map so the checker can
+report duplicate/conflicting entries as a first-class manifest error while still
+materializing an exact id -> classification map for normal reads.
 
 **D2.2 — CI placement.** Inside `melos run analyze` chain vs `ci` chain vs both.
 Recommendation: `analyze` (it's a static check).
-**Decision:** _(record)_
+**Decision:** Add `schema:inventory` and run it from `melos run analyze`; the
+GitHub PR workflow passes `melos run analyze` to the reusable CI workflow so the
+ratchet runs before tests on every PR.
 
 **D2.3 — Assert mode.** Always-on throw vs debug-only `assert`. Recommendation:
 throw in encode (encode is not hot-path for consumers; skew must never drop data
 silently even in release — this is the R5 fail-loud promise under version skew).
-**Decision:** _(record)_
+**Decision:** Use an always-on typed encode failure. The public error maps to a
+dedicated inventory-skew code and names missing/stale field ids.
 
 ## Verification / exit criteria
 
 - Deleting any manifest entry → CI fails with a readable diff (demonstrated).
+- Duplicating a manifest entry → CI fails with a readable duplicate-entry diff
+  (tested).
 - Adding a dummy `Prop` field to a local `mix` checkout → CI fails (demonstrated
   once manually; documented in the tool's header).
 - `plan/coverage-backlog.md` is included in the phase commit; phase 4 checklist
@@ -120,4 +132,12 @@ silently even in release — this is the R5 fail-loud promise under version skew
 
 | Date | Decision / lesson | Notes |
 |------|-------------------|-------|
-| | | |
+| 2026-07-02 | Phase-entry review complete | Carry-forward checklist applied: deterministic inventory ids, generated backlog provenance, explicit classification for every reviewed gap, and runtime guard coverage for recommended encode paths. Composite stylers (`FlexBoxStyler`, `StackBoxStyler`) flatten wire fields from nested `$box`/`$flex`/`$stack`; their encode skew guard must compare the actual owner field inventory separately from wire field names. |
+| 2026-07-02 | D2.1: Dart const manifest table | Use a const entry list so the checker can still report duplicate/conflicting bucket entries. |
+| 2026-07-02 | D2.2: analyze gate | `schema:inventory` belongs in the static `analyze` chain; PR CI must invoke that chain explicitly. |
+| 2026-07-02 | D2.3: always-on typed failure | Encode skew must fail loudly in release, not only in debug assertions. |
+| 2026-07-02 | Closeout review fixes applied | Replaced regex directive discovery with analyzer-based static key extraction; made backlog writing validate before emitting; documented the new `inventory_skew` error code; changed the encode guard to infer consumed owner fields from declared fields/unsupported fields instead of tautological predeclared sets. |
+| 2026-07-02 | Post-closeout review findings fixed | Wired PR CI to run `melos run analyze`, added duplicate manifest entry diagnostics, and changed runtime count skew to report expected/actual counts instead of pretending an unknown future field name is recoverable. |
+| 2026-07-02 | Phase 2 carry-forward lessons confirmed | Deterministic inventory ids, generated backlog provenance, and full manifest classification are implemented. Phase 4 now owns the generated `plan/coverage-backlog.md`; Phase 2 has no deferred carry-forward action. |
+| 2026-07-02 | Initial full gate green | `melos run gen:build`, `melos run ci`, and `melos run analyze` all passed after the original closeout review fixes. |
+| 2026-07-02 | Post-closeout full gate green | Targeted inventory/skew tests, `melos run gen:build`, `melos run ci`, and `melos run analyze` all passed after the PR CI, duplicate-manifest, and count-skew fixes. |

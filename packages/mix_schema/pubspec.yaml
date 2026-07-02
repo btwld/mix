@@ -16,6 +16,7 @@ dependencies:
     path: ../mix
 
 dev_dependencies:
+  analyzer: '>=9.0.0 <11.0.0'
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0

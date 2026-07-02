@@ -5,6 +5,7 @@ import 'package:mix/mix.dart';
 import '../registry/registry.dart';
 import 'common_codecs.dart';
 import 'schema_field.dart';
+import 'styler_field_inventory.dart';
 import 'styler_codec_helpers.dart';
 
 AckSchema<JsonMap, BoxStyler> boxStylerCodec({
@@ -77,6 +78,9 @@ SchemaObject<BoxStyler> _boxStylerSchemaType(
   );
 
   return SchemaObject<BoxStyler>(
+    inventoryOwner: 'BoxStyler',
+    ownerFieldInventory: boxStylerInventory,
+    actualFieldCount: stylerFieldCount,
     fields: [
       alignment,
       padding,
@@ -93,7 +97,7 @@ SchemaObject<BoxStyler> _boxStylerSchemaType(
         'foregroundDecoration',
         (value) => value.$foregroundDecoration,
       ),
-      ...metadata.unsupportedFields(whenVariantsUnavailable: false),
+      ...metadata.unsupportedFields(),
     ],
     build: (data) => BoxStyler(
       alignment: alignment.value(data),

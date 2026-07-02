@@ -291,5 +291,12 @@ by this contract. Tokens, directives on non-directive fields, multi-source
 props, unregistered identity values, and unsupported runtime objects fail encode
 with a public `MixSchemaError`.
 
+Encode errors use stable public codes. `unsupported_value` reports values that
+the v1 contract intentionally cannot represent. `inventory_skew` reports a
+developer/runtime mismatch where a Mix styler exposes a field that is not covered
+by the schema encoder inventory. Named missing/stale fields are included when
+the schema inventory can identify them; runtime count-only skew includes
+`expectedFieldCount` and `actualFieldCount`.
+
 Encoded top-level style documents include `v: 1`. Nested style objects emitted
 inside variants do not include `v`.

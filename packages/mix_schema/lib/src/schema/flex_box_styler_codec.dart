@@ -7,6 +7,7 @@ import 'box_styler_codec.dart';
 import 'common_codecs.dart';
 import 'flex_styler_codec.dart';
 import 'schema_field.dart';
+import 'styler_field_inventory.dart';
 import 'styler_codec_helpers.dart';
 
 AckSchema<JsonMap, FlexBoxStyler> flexBoxStylerCodec({
@@ -24,87 +25,104 @@ SchemaObject<FlexBoxStyler> _flexBoxStylerSchemaType(
     'alignment',
     alignmentCodec(),
     _boxField,
+    inventoryName: 'box',
   );
   final padding = derivedField<FlexBoxStyler, EdgeInsetsMix>(
     'padding',
     edgeInsetsCodec(),
     _boxField,
+    inventoryName: 'box',
   );
   final margin = derivedField<FlexBoxStyler, EdgeInsetsMix>(
     'margin',
     edgeInsetsCodec(),
     _boxField,
+    inventoryName: 'box',
   );
   final constraints = derivedField<FlexBoxStyler, BoxConstraintsMix>(
     'constraints',
     boxConstraintsCodec(),
     _boxField,
+    inventoryName: 'box',
   );
   final clipBehavior = derivedField<FlexBoxStyler, Clip>(
     'clipBehavior',
     enumNameCodec(Clip.values),
     _boxField,
+    inventoryName: 'box',
   );
   final transform = derivedField<FlexBoxStyler, Matrix4>(
     'transform',
     matrix4Codec(),
     _boxField,
+    inventoryName: 'box',
   );
   final transformAlignment = derivedField<FlexBoxStyler, Alignment>(
     'transformAlignment',
     alignmentCodec(),
     _boxField,
+    inventoryName: 'box',
   );
   final decoration = derivedField<FlexBoxStyler, BoxDecorationMix>(
     'decoration',
     boxDecorationCodec(),
     _boxField,
+    inventoryName: 'box',
   );
   final direction = derivedField<FlexBoxStyler, Axis>(
     'direction',
     enumNameCodec(Axis.values),
     _flexField,
+    inventoryName: 'flex',
   );
   final mainAxisAlignment = derivedField<FlexBoxStyler, MainAxisAlignment>(
     'mainAxisAlignment',
     enumNameCodec(MainAxisAlignment.values),
     _flexField,
+    inventoryName: 'flex',
   );
   final crossAxisAlignment = derivedField<FlexBoxStyler, CrossAxisAlignment>(
     'crossAxisAlignment',
     enumNameCodec(CrossAxisAlignment.values),
     _flexField,
+    inventoryName: 'flex',
   );
   final mainAxisSize = derivedField<FlexBoxStyler, MainAxisSize>(
     'mainAxisSize',
     enumNameCodec(MainAxisSize.values),
     _flexField,
+    inventoryName: 'flex',
   );
   final verticalDirection = derivedField<FlexBoxStyler, VerticalDirection>(
     'verticalDirection',
     enumNameCodec(VerticalDirection.values),
     _flexField,
+    inventoryName: 'flex',
   );
   final textDirection = derivedField<FlexBoxStyler, TextDirection>(
     'textDirection',
     textDirectionCodec(),
     _flexField,
+    inventoryName: 'flex',
   );
   final textBaseline = derivedField<FlexBoxStyler, TextBaseline>(
     'textBaseline',
     enumNameCodec(TextBaseline.values),
     _flexField,
+    inventoryName: 'flex',
   );
   final flexClipBehavior = derivedField<FlexBoxStyler, Clip>(
     'flexClipBehavior',
     enumNameCodec(Clip.values),
     _flexField,
     readWire: 'clipBehavior',
+    inventoryName: 'flex',
   );
   final spacing = derivedField<FlexBoxStyler, double>(
     'spacing',
     numberAsDoubleCodec(),
     _flexField,
+    inventoryName: 'flex',
   );
   final metadata = StylerMetadataFields<FlexBoxStyler, FlexBoxSpec>(
     rootStyleSchema: rootStyleSchema,
@@ -115,6 +133,9 @@ SchemaObject<FlexBoxStyler> _flexBoxStylerSchemaType(
   );
 
   return SchemaObject<FlexBoxStyler>(
+    inventoryOwner: 'FlexBoxStyler',
+    ownerFieldInventory: flexBoxStylerInventory,
+    actualFieldCount: stylerFieldCount,
     fields: [
       alignment,
       padding,

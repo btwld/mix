@@ -6,6 +6,7 @@ import '../registry/registry.dart';
 import '../registry/registry_value_codec.dart';
 import 'common_codecs.dart';
 import 'schema_field.dart';
+import 'styler_field_inventory.dart';
 import 'styler_codec_helpers.dart';
 
 AckSchema<JsonMap, IconStyler> iconStylerCodec({
@@ -88,6 +89,9 @@ SchemaObject<IconStyler> _iconStylerSchemaType(
   );
 
   return SchemaObject<IconStyler>(
+    inventoryOwner: 'IconStyler',
+    ownerFieldInventory: iconStylerInventory,
+    actualFieldCount: stylerFieldCount,
     fields: [
       icon,
       color,
