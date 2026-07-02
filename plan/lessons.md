@@ -158,6 +158,7 @@ _(fill when closed)_
 | Lenient granule grammar lives away from codec owners. | Phase 4 | Every new list-valued wire field gets an explicit lenient-removal granule and a loud test; review `_lenientRemovalPath` when adding families. `[review X12]` |
 | Manifest `supported` must be provably true. | Phase 2.5 | Land the manifest↔codec truthfulness test so a false `supported` entry fails CI; keep it green thereafter. `[review X10]` |
 | Cross-phase reviews complement closeout reviews. | Post-phase-4 milestone | Per-diff closeout reviews missed cross-phase contract drift (X3/X4 survived two closeouts); run the next cross-phase review after phase 4 lands. |
+| Runtime parity does not prove public API compatibility. | Phase 5 | Before tailwinds realignment lands, compare `package:mix_tailwinds/mix_tailwinds.dart` against `origin/main` and explicitly decide the fate of the removed `tw_semantic.dart` symbols. |
 
 ## Decisions we reversed (and why)
 

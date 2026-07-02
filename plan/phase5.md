@@ -113,6 +113,26 @@ phase): decide whether/when mix_schema publishes.
       compromise: keep missing `v` as a warning for internal branch consumers, or
       flip missing `v` to fatal and update tests/docs together.
 
+### R5.8 — mix_tailwinds public API compatibility checkpoint
+- Before landing the tailwinds realignment, compare the exported
+  `package:mix_tailwinds/mix_tailwinds.dart` surface against `origin/main`.
+  The branch currently replaces the public `tw_semantic.dart` export with
+  `tw_types.dart`; that preserves runtime parser/widget behavior, but removes
+  public semantic-AST symbols such as `TwValue`, `TwProperty`, `TwParsedClass`,
+  plugin registry constants, and Tailwind preset maps unless the phase restores
+  or intentionally breaks them.
+- Decide whether those symbols are supported API, internal implementation detail
+  that can break in the alpha, or compatibility shims to keep through the
+  realignment.
+**Acceptance:**
+- [ ] Public API diff recorded in this doc's Decision log, including the removed
+      `tw_semantic.dart` symbols.
+- [ ] Decision recorded: restore compatibility facade / document breaking
+      alpha cleanup / replace with a new public API.
+- [ ] If breaking, README/CHANGELOG call it out; if restoring, add a compile
+      test that imports `package:mix_tailwinds/mix_tailwinds.dart` and uses the
+      kept compatibility symbols.
+
 ## Non-goals (this phase)
 
 The widget-tree document layer (own package, own plan when it starts — the
@@ -147,6 +167,8 @@ consumers; else (a).
 - Grep-proof: no `package:mix_schema/` imports in tailwinds' runtime widget
   path; guard test enforces it.
 - Benchmark numbers + all D5.x decisions recorded below.
+- mix_tailwinds public API compatibility decision recorded; any breaking alpha
+  cleanup is explicit in README/CHANGELOG or backed by compatibility tests.
 - Phase 5 closeout confirms every carry-forward lesson owned by Phase 5 in
   `plan/lessons.md` was either applied or explicitly deferred with a reason.
 

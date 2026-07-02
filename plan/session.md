@@ -15,6 +15,38 @@ Template:
 
 ---
 
+## 2026-07-02 — Codex — pre-Phase 3 feature-loss audit
+
+**Did:**
+- Reviewed the branch diff against `origin/main` for feature-loss risk before
+  starting Phase 3. Runtime behavior risk is covered by the tailwinds
+  characterization suite; public API surface risk needed an explicit owner.
+- Ran `dart run tool/inventory_check.dart --check` in `packages/mix_schema`
+  after the Phase 2.5 commit; it passed with 380 ids at
+  `642c54fb7c32f48cbe04dfe0cce0bdd5069ee49f`.
+- Ran targeted tailwinds characterization checks:
+  `fvm flutter test test/tw_parser_characterization_test.dart
+  test/schema_payload_contract_test.dart`; 116 tests passed.
+- Found that `origin/main` exported `src/tw_semantic.dart` from
+  `package:mix_tailwinds/mix_tailwinds.dart`, while the branch replaces that
+  with `tw_types.dart`. Runtime semantics are preserved by tests, but public
+  semantic-AST symbols (`TwValue`, `TwProperty`, `TwParsedClass`, plugin
+  registry constants, preset maps, etc.) need an explicit Phase 5 compatibility
+  decision.
+- Updated Phase 5 with R5.8 and added a carry-forward lesson so this cannot be
+  lost during tailwinds realignment.
+
+**Decisions:** No code change needed before Phase 3. Treat the `tw_semantic`
+export removal as a Phase 5 public API compatibility decision, not a blocker for
+the token-model work.
+
+**Blocked/open:** None for Phase 3 entry. Open for Phase 5: restore
+compatibility facade vs document breaking alpha cleanup vs replace with a new
+public API.
+
+**Next:** Start Phase 3 with R3.0 first, then resolve D3.1-D3.3 before token
+grammar work.
+
 ## 2026-07-02 — Codex — Phase 2.5
 
 **Did:**
