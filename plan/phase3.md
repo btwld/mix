@@ -22,12 +22,24 @@ refs compose with directives at runtime (`ColorRef.withAlpha` → directive).
 The branch precedent for core cooperation exists (typed variant classes were
 added to core precisely to make variants encodable).
 
-Phase 2.5's D2.5.1 decides whether hiding `AckSchema` behind mix_schema-owned
+Phase 2.5's D2.5.1 decided that hiding `AckSchema` behind mix_schema-owned
 extension types happens as this phase's *first* task (before the token grammar
-grows the Ack-typed surface) — apply its recorded outcome at phase entry
-`[review X11]`.
+grows the Ack-typed surface) `[review X11]`.
 
 ## Requirements
+
+### R3.0 — Extension API wrapper first `[review X11]`
+- Before adding token grammar surface, hide `AckSchema` from the public extension
+  API: `addStyler` accepts a mix_schema-owned branch type (thin wrapper around
+  the ack-backed implementation), and any publicly exposed root-schema handle is
+  owned by mix_schema rather than typed as `AckSchema`.
+- Keep this change narrowly scoped to the extension boundary; the engine remains
+  Ack and existing built-in branch behavior stays unchanged.
+**Acceptance:**
+- [ ] Public API tests prove custom branch registration works through the owned
+      wrapper and no public extension signature requires `AckSchema`.
+- [ ] Phase 5 R5.5 is updated/kept in sync so it verifies or finishes public
+      surface cleanup rather than re-owning this moved task.
 
 ### R3.1 — Token reference wire form (decode)
 - Grammar: `{"$token": "<name>"}` accepted in any token-capable field position;

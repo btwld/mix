@@ -33,7 +33,9 @@ their identity fields require an app-owned registry; freeze a custom
 
 During the v1 transition window, a missing top-level `v` is decoded as v1 with
 a warning. Encoded output and exported JSON Schema are canonical and include
-`v: 1`. Unsupported or malformed `v` fails with `unsupported_version`.
+`v: 1`. Validation reports the same transition warning even when the document
+has other fatal schema errors. Unsupported or malformed `v` fails with
+`unsupported_version`.
 
 Missing fields stay unset; Mix runtime defaults are not injected by the schema.
 
@@ -63,6 +65,10 @@ named property:
 The skipped item is reported as a warning with the original path. Structural
 problems remain fatal in both modes: bad `v`, unknown root `type`, explicit
 null, malformed known fields, and resource-limit failures.
+
+Lenient cleanup removes at most 256 payload properties or entries per decode.
+If the document still requires more cleanup, decode fails with `limit_exceeded`
+and returns the warnings collected before the cap was hit.
 
 ## Versioning & Evolution
 
@@ -291,12 +297,20 @@ by this contract. Tokens, directives on non-directive fields, multi-source
 props, unregistered identity values, and unsupported runtime objects fail encode
 with a public `MixSchemaError`.
 
-Encode errors use stable public codes. `unsupported_value` reports values that
-the v1 contract intentionally cannot represent. `inventory_skew` reports a
+Encode errors use stable public codes. `unsupported_encode_value` reports values
+that the v1 contract intentionally cannot represent. `inventory_skew` reports a
 developer/runtime mismatch where a Mix styler exposes a field that is not covered
-by the schema encoder inventory. Named missing/stale fields are included when
-the schema inventory can identify them; runtime count-only skew includes
-`expectedFieldCount` and `actualFieldCount`.
+by the schema encoder inventory.
+
+The runtime `inventory_skew` guard is currently scoped to the built-in styler
+roots (`BoxStyler`, `TextStyler`, `FlexStyler`, `StackStyler`, `IconStyler`,
+`ImageStyler`, `FlexBoxStyler`, and `StackBoxStyler`). Nested Mix value types
+are tracked by the inventory manifest and backlog but do not yet have their own
+runtime props-count guard. Named missing/stale fields are included when the
+schema inventory can identify them; runtime count-only skew includes
+`expectedFieldCount` and `actualFieldCount`. A net-zero runtime change that
+removes one field and adds another field with the same total count is not
+detectable by the count-only fallback.
 
 Encoded top-level style documents include `v: 1`. Nested style objects emitted
 inside variants do not include `v`.

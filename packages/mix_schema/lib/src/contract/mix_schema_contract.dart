@@ -23,6 +23,7 @@ const mixSchemaFormatVersion = 1;
 
 const int _defaultMaxDepth = 64;
 const int _defaultMaxNodes = 10000;
+const int _defaultMaxLenientRemovals = 256;
 const String _versionKey = 'v';
 
 /// Decode behavior for forward-compatible payloads.
@@ -218,7 +219,9 @@ final class MixSchemaContract {
       ready.payload,
     );
     if (registryBackedError != null) {
-      return MixSchemaValidationFailure([registryBackedError]);
+      return MixSchemaValidationFailure([
+        registryBackedError,
+      ], warnings: ready.warnings);
     }
 
     final result = rootSchema.safeParse(ready.payload);
@@ -226,7 +229,10 @@ final class MixSchemaContract {
       return MixSchemaValidationSuccess(warnings: ready.warnings);
     }
 
-    return MixSchemaValidationFailure(mapSchemaError(result.getError()));
+    return MixSchemaValidationFailure(
+      mapSchemaError(result.getError()),
+      warnings: ready.warnings,
+    );
   }
 
   /// Decodes [payload] as a Mix styler or custom registered value of type [T].
@@ -317,8 +323,10 @@ final class MixSchemaContract {
   ) {
     final warnings = [...initialWarnings];
     var current = _deepMutableCopy(payload);
+    final journal = _LenientRemovalJournal();
+    var removals = 0;
 
-    for (var attempt = 0; attempt < _defaultMaxNodes; attempt += 1) {
+    while (true) {
       final result = rootSchema.safeParse(current);
       if (result.isOk) {
         final value = result.getOrNull();
@@ -344,8 +352,25 @@ final class MixSchemaContract {
       for (final error in errors) {
         final removalPath = _lenientRemovalPath(error);
         if (removalPath == null) continue;
-        if (!_removePath(current, removalPath)) continue;
-        warnings.add(_asWarning(error));
+        if (removals >= _defaultMaxLenientRemovals) {
+          return MixSchemaDecodeFailure([
+            const MixSchemaError(
+              code: MixSchemaErrorCode.limitExceeded,
+              path: '',
+              message:
+                  'Lenient decode exceeded its cleanup removal limit of '
+                  '$_defaultMaxLenientRemovals.',
+            ),
+          ], warnings: List.unmodifiable(warnings));
+        }
+        final warningPath = journal.originalPathFor(error.path);
+        final removalKind = _removePath(current, removalPath);
+        if (removalKind == null) continue;
+        warnings.add(_asWarning(error, path: warningPath));
+        if (removalKind == _RemovalKind.listEntry) {
+          journal.record(removalPath);
+        }
+        removals += 1;
         changed = true;
         break;
       }
@@ -357,14 +382,6 @@ final class MixSchemaContract {
         );
       }
     }
-
-    return MixSchemaDecodeFailure([
-      const MixSchemaError(
-        code: MixSchemaErrorCode.limitExceeded,
-        path: '',
-        message: 'Lenient decode exceeded its cleanup iteration limit.',
-      ),
-    ], warnings: List.unmodifiable(warnings));
   }
 
   MixSchemaError? _missingRegistryBackedBranchForPayload(Object? payload) {
@@ -436,6 +453,18 @@ final class _PreparedPayloadFailure extends _PreparedPayload {
 }
 
 _PreparedPayload _preparePayload(Object? payload) {
+  if (payload is JsonMap &&
+      payload.containsKey(_versionKey) &&
+      payload[_versionKey] == null) {
+    return const _PreparedPayloadFailure(
+      MixSchemaError(
+        code: MixSchemaErrorCode.unsupportedVersion,
+        path: '/v',
+        message: 'mix_schema format version must be integer 1.',
+      ),
+    );
+  }
+
   final preflightError = _inspectInput(payload);
   if (preflightError != null) return _PreparedPayloadFailure(preflightError);
 
@@ -566,14 +595,55 @@ Object? _deepMutableCopy(Object? value) {
   return value;
 }
 
-MixSchemaError _asWarning(MixSchemaError error) {
+MixSchemaError _asWarning(MixSchemaError error, {String? path}) {
   return MixSchemaError(
     code: error.code,
     severity: MixSchemaDiagnosticSeverity.warning,
-    path: error.path,
+    path: path ?? error.path,
     message: error.message,
     value: error.value,
   );
+}
+
+final class _LenientRemovalJournal {
+  final List<List<String>> _removals = [];
+
+  String originalPathFor(String path) {
+    var segments = _pathSegments(path);
+    for (final removal in _removals.reversed) {
+      segments = _translateAcrossRemoval(segments, removal);
+    }
+
+    return _pathFromSegments(segments);
+  }
+
+  void record(List<String> removalPath) {
+    _removals.add(List.unmodifiable(removalPath));
+  }
+
+  List<String> _translateAcrossRemoval(
+    List<String> segments,
+    List<String> removal,
+  ) {
+    if (removal.isEmpty) return segments;
+    final removedIndex = int.tryParse(removal.last);
+    if (removedIndex == null) return segments;
+
+    final listPath = removal.sublist(0, removal.length - 1);
+    if (segments.length <= listPath.length ||
+        !_startsWithSegments(segments, listPath)) {
+      return segments;
+    }
+
+    final currentIndex = int.tryParse(segments[listPath.length]);
+    if (currentIndex == null || currentIndex < removedIndex) return segments;
+
+    return [
+      ...segments.take(listPath.length),
+      '${currentIndex + 1}',
+      ...segments.skip(listPath.length + 1),
+    ];
+  }
 }
 
 List<String>? _lenientRemovalPath(MixSchemaError error) {
@@ -632,8 +702,10 @@ bool _isLenientSkippable(MixSchemaError error) {
   return null;
 }
 
-bool _removePath(Object? root, List<String> path) {
-  if (path.isEmpty) return false;
+enum _RemovalKind { mapProperty, listEntry }
+
+_RemovalKind? _removePath(Object? root, List<String> path) {
+  if (path.isEmpty) return null;
 
   Object? parent = root;
   for (final segment in path.take(path.length - 1)) {
@@ -642,25 +714,25 @@ bool _removePath(Object? root, List<String> path) {
       List() => _readList(parent, segment),
       _ => null,
     };
-    if (parent == null) return false;
+    if (parent == null) return null;
   }
 
   final last = path.last;
   if (parent is Map<String, Object?>) {
-    if (!parent.containsKey(last)) return false;
+    if (!parent.containsKey(last)) return null;
     parent.remove(last);
 
-    return true;
+    return _RemovalKind.mapProperty;
   }
   if (parent is List) {
     final index = int.tryParse(last);
-    if (index == null || index < 0 || index >= parent.length) return false;
+    if (index == null || index < 0 || index >= parent.length) return null;
     parent.removeAt(index);
 
-    return true;
+    return _RemovalKind.listEntry;
   }
 
-  return false;
+  return null;
 }
 
 Object? _readList(List<Object?> list, String segment) {
@@ -683,8 +755,27 @@ List<String> _pathSegments(String path) {
       .toList(growable: false);
 }
 
+String _pathFromSegments(List<String> segments) {
+  if (segments.isEmpty) return '';
+
+  return '/${segments.map(_escapePathSegment).join('/')}';
+}
+
+String _escapePathSegment(String segment) {
+  return segment.replaceAll('~', '~0').replaceAll('/', '~1');
+}
+
+bool _startsWithSegments(List<String> value, List<String> prefix) {
+  if (value.length < prefix.length) return false;
+  for (var i = 0; i < prefix.length; i += 1) {
+    if (value[i] != prefix[i]) return false;
+  }
+
+  return true;
+}
+
 String _joinPath(String base, String segment) {
-  final encoded = segment.replaceAll('~', '~0').replaceAll('/', '~1');
+  final encoded = _escapePathSegment(segment);
 
   return base.isEmpty ? '/$encoded' : '$base/$encoded';
 }

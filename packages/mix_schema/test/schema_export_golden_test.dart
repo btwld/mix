@@ -44,6 +44,11 @@ void main() {
 
     expect(encoded, isNot(contains('x-ack-codec')));
     expect(encoded.length, lessThan(180000));
+    expect(
+      _requiredListsContainingVersion(schema),
+      hasLength(contract.registeredTypes.length),
+      reason: 'Only top-level branches require the v envelope.',
+    );
   });
 }
 
@@ -196,4 +201,27 @@ List<String> _required(JsonMap branch) {
 
 JsonMap _object(Object? value) {
   return Map<String, Object?>.from(value! as Map);
+}
+
+List<List<String>> _requiredListsContainingVersion(Object? value) {
+  final matches = <List<String>>[];
+  void visit(Object? node) {
+    if (node is Map) {
+      final required = node['required'];
+      if (required is List && required.contains('v')) {
+        matches.add(required.cast<String>());
+      }
+      for (final child in node.values) {
+        visit(child);
+      }
+    } else if (node is List) {
+      for (final child in node) {
+        visit(child);
+      }
+    }
+  }
+
+  visit(value);
+
+  return matches;
 }

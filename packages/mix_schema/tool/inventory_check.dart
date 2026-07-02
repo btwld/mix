@@ -101,7 +101,7 @@ Future<InventorySnapshot> collectMixInventory({
   final mixFiles = _dartFiles(mixSourceRoot);
   final enumDeclarations = _collectEnumDeclarations(mixFiles);
   final classInheritance = _collectClassInheritance(mixFiles);
-  final directiveClassNames = _collectDirectiveClassNames(classInheritance);
+  final trackedClasses = _TrackedClassSets.fromInheritance(classInheritance);
 
   for (final file in mixFiles) {
     final unit = parseString(
@@ -110,12 +110,7 @@ Future<InventorySnapshot> collectMixInventory({
       throwIfDiagnostics: false,
     ).unit;
     unit.accept(
-      _MixInventoryVisitor(
-        ids,
-        enumDeclarations,
-        directiveClassNames,
-        file.path,
-      ),
+      _MixInventoryVisitor(ids, enumDeclarations, trackedClasses, file.path),
     );
   }
 
@@ -164,6 +159,47 @@ InventoryValidationResult validateManifest({
   );
 }
 
+/// Collects styler owner-field ids that have an encode/decode field declared.
+Set<String> collectDeclaredStylerCodecFieldIds({
+  required Directory repositoryRoot,
+}) {
+  final schemaSourceRoot = Directory(
+    '${repositoryRoot.path}/packages/mix_schema/lib/src/schema',
+  );
+  if (!schemaSourceRoot.existsSync()) return const {};
+
+  final ids = SplayTreeSet<String>();
+  for (final file in _dartFiles(schemaSourceRoot)) {
+    if (!file.path.endsWith('_styler_codec.dart')) continue;
+    final unit = parseString(
+      content: file.readAsStringSync(),
+      path: file.path,
+      throwIfDiagnostics: false,
+    ).unit;
+    final visitor = _StylerCodecFieldVisitor();
+    unit.accept(visitor);
+    ids.addAll(visitor.ids);
+  }
+
+  return ids;
+}
+
+/// Supported styler-field manifest ids that do not have a declared codec field.
+List<String> supportedStylerFieldsWithoutCodec({
+  required Iterable<SchemaInventoryEntry> manifestEntries,
+  required Iterable<String> declaredCodecFieldIds,
+}) {
+  final declared = declaredCodecFieldIds.toSet();
+
+  return SplayTreeSet<String>.of(
+    manifestEntries
+        .where((entry) => entry.status == SchemaInventoryStatus.supported)
+        .map((entry) => entry.id)
+        .where(_isStylerFieldId)
+        .where((id) => !declared.contains(id)),
+  ).toList(growable: false);
+}
+
 Future<void> main(List<String> args) async {
   final repositoryRoot = _argumentValue(args, '--repository-root') == null
       ? _findRepositoryRoot(Directory.current)
@@ -173,6 +209,12 @@ Future<void> main(List<String> args) async {
     inventoryIds: snapshot.ids,
     manifestEntries: schemaInventoryManifest,
   );
+  final supportedFieldsWithoutCodec = supportedStylerFieldsWithoutCodec(
+    manifestEntries: schemaInventoryManifest,
+    declaredCodecFieldIds: collectDeclaredStylerCodecFieldIds(
+      repositoryRoot: repositoryRoot,
+    ),
+  );
 
   if (args.contains('--list')) {
     stdout.write(snapshot.ids.join('\n'));
@@ -181,8 +223,8 @@ Future<void> main(List<String> args) async {
 
   final backlogPath = _argumentValue(args, '--write-backlog');
   if (backlogPath != null) {
-    if (!validation.isValid) {
-      stderr.writeln(validation.describe());
+    if (!validation.isValid || supportedFieldsWithoutCodec.isNotEmpty) {
+      _writeValidationFailures(validation, supportedFieldsWithoutCodec);
       exitCode = 1;
       return;
     }
@@ -195,8 +237,8 @@ Future<void> main(List<String> args) async {
 
   if (args.contains('--check') ||
       (!args.contains('--list') && backlogPath == null)) {
-    if (!validation.isValid) {
-      stderr.writeln(validation.describe());
+    if (!validation.isValid || supportedFieldsWithoutCodec.isNotEmpty) {
+      _writeValidationFailures(validation, supportedFieldsWithoutCodec);
       exitCode = 1;
       return;
     }
@@ -205,6 +247,23 @@ Future<void> main(List<String> args) async {
       'schema inventory ok: ${snapshot.ids.length} ids '
       '(${snapshot.sourceRevision})',
     );
+  }
+}
+
+void _writeValidationFailures(
+  InventoryValidationResult validation,
+  List<String> supportedFieldsWithoutCodec,
+) {
+  if (!validation.isValid) {
+    stderr.writeln(validation.describe());
+  }
+  if (supportedFieldsWithoutCodec.isEmpty) return;
+
+  stderr
+    ..writeln('supported styler-field entries without declared codec fields:')
+    ..writeln();
+  for (final id in supportedFieldsWithoutCodec) {
+    stderr.writeln('  - $id');
   }
 }
 
@@ -246,31 +305,12 @@ Map<String, Set<String>> _collectClassInheritance(List<File> files) {
     for (final declaration in unit.declarations) {
       if (declaration is ClassDeclaration) {
         inheritanceByClass[_declarationName(declaration.namePart.toSource())] =
-            _typeNames(_inheritanceSource(declaration)).toSet();
+            _directSupertypeNames(declaration);
       }
     }
   }
 
   return inheritanceByClass;
-}
-
-Set<String> _collectDirectiveClassNames(
-  Map<String, Set<String>> inheritanceByClass,
-) {
-  final directiveClasses = <String>{'Directive'};
-  var changed = true;
-  while (changed) {
-    changed = false;
-    for (final entry in inheritanceByClass.entries) {
-      if (directiveClasses.contains(entry.key)) continue;
-      if (!entry.value.any(directiveClasses.contains)) continue;
-
-      directiveClasses.add(entry.key);
-      changed = true;
-    }
-  }
-
-  return directiveClasses;
 }
 
 void _collectNamedCurves(Directory schemaSourceRoot, Set<String> ids) {
@@ -288,13 +328,13 @@ final class _MixInventoryVisitor extends RecursiveAstVisitor<void> {
   _MixInventoryVisitor(
     this.ids,
     this.enumDeclarations,
-    this.directiveClassNames,
+    this.trackedClasses,
     this.filePath,
   );
 
   final Set<String> ids;
   final Set<String> enumDeclarations;
-  final Set<String> directiveClassNames;
+  final _TrackedClassSets trackedClasses;
   final String filePath;
   final List<String> _classStack = [];
 
@@ -303,29 +343,23 @@ final class _MixInventoryVisitor extends RecursiveAstVisitor<void> {
     final name = _declarationName(node.namePart.toSource());
     if (name.startsWith('_')) return;
 
-    final inheritance = _inheritanceSource(node);
-    final isStyler =
-        name.endsWith('Styler') && inheritance.contains('MixStyler');
+    final isStyler = trackedClasses.mixStylers.contains(name);
     final isMixType =
-        name.endsWith('Mix') &&
-        (inheritance.contains(RegExp(r'\bMix\b')) ||
-            inheritance.contains('Mix<') ||
-            inheritance.contains('ModifierMix'));
-    final isModifierMix =
-        name.endsWith('ModifierMix') && inheritance.contains('ModifierMix');
-    final isAnimationConfig =
-        name != 'AnimationConfig' &&
-        inheritance.contains(RegExp(r'\bAnimationConfig\b'));
-    final isToken = name.endsWith('Token') && inheritance.contains('MixToken');
-    final isVariant =
-        name != 'Variant' &&
-        (inheritance.contains(RegExp(r'\bVariant\b')) ||
-            inheritance.contains('ContextVariant'));
+        name.endsWith('Mix') && trackedClasses.mixTypes.contains(name);
+    final isStyle =
+        !isStyler &&
+        node.abstractKeyword == null &&
+        trackedClasses.styles.contains(name);
+    final isModifierMix = trackedClasses.modifierMixes.contains(name);
+    final isAnimationConfig = trackedClasses.animationConfigs.contains(name);
+    final isToken = trackedClasses.tokens.contains(name);
+    final isVariant = trackedClasses.variants.contains(name);
     final isDirective =
         name != 'Directive' &&
-        directiveClassNames.contains(name) &&
+        trackedClasses.directives.contains(name) &&
         node.abstractKeyword == null;
 
+    if (isStyle) ids.add('style:$name');
     if (isModifierMix) ids.add('modifier:$name');
     if (isAnimationConfig) ids.add('animation:$name');
     if (isToken) ids.add('token:$name');
@@ -404,6 +438,12 @@ final class _MixInventoryVisitor extends RecursiveAstVisitor<void> {
       if (enumDeclarations.contains(typeName) ||
           _flutterEnumFieldTypes.contains(typeName)) {
         ids.add('enum:$typeName');
+      } else if (_looksLikeUnknownEnumType(typeName)) {
+        throw StateError(
+          'Inventory found unknown enum-like type $typeName in $filePath. '
+          'Declare local enums in source, or add Flutter enum types to '
+          '_flutterEnumFieldTypes with a manifest decision.',
+        );
       }
     }
   }
@@ -453,14 +493,188 @@ final class _MixInventoryVisitor extends RecursiveAstVisitor<void> {
   }
 }
 
-String _inheritanceSource(ClassDeclaration node) {
-  final parts = <String>[
-    if (node.extendsClause != null) node.extendsClause!.toSource(),
-    if (node.withClause != null) node.withClause!.toSource(),
-    if (node.implementsClause != null) node.implementsClause!.toSource(),
-  ];
+final class _TrackedClassSets {
+  const _TrackedClassSets({
+    required this.styles,
+    required this.mixStylers,
+    required this.mixTypes,
+    required this.modifierMixes,
+    required this.directives,
+    required this.variants,
+    required this.animationConfigs,
+    required this.tokens,
+  });
 
-  return parts.join(' ');
+  factory _TrackedClassSets.fromInheritance(
+    Map<String, Set<String>> inheritanceByClass,
+  ) {
+    final mixStylers = _subclassesOf(inheritanceByClass, 'MixStyler');
+
+    return _TrackedClassSets(
+      styles: _subclassesOf(inheritanceByClass, 'Style')..removeAll(mixStylers),
+      mixStylers: mixStylers,
+      mixTypes: _subclassesOf(inheritanceByClass, 'Mix'),
+      modifierMixes: _subclassesOf(inheritanceByClass, 'ModifierMix'),
+      directives: _subclassesOf(inheritanceByClass, 'Directive'),
+      variants: _subclassesOf(inheritanceByClass, 'Variant'),
+      animationConfigs: _subclassesOf(inheritanceByClass, 'AnimationConfig'),
+      tokens: _subclassesOf(inheritanceByClass, 'MixToken'),
+    );
+  }
+
+  final Set<String> styles;
+  final Set<String> mixStylers;
+  final Set<String> mixTypes;
+  final Set<String> modifierMixes;
+  final Set<String> directives;
+  final Set<String> variants;
+  final Set<String> animationConfigs;
+  final Set<String> tokens;
+}
+
+Set<String> _subclassesOf(
+  Map<String, Set<String>> inheritanceByClass,
+  String base,
+) {
+  final classes = <String>{base};
+  var changed = true;
+  while (changed) {
+    changed = false;
+    for (final entry in inheritanceByClass.entries) {
+      if (classes.contains(entry.key)) continue;
+      if (!entry.value.any(classes.contains)) continue;
+
+      classes.add(entry.key);
+      changed = true;
+    }
+  }
+
+  return classes..remove(base);
+}
+
+final class _StylerCodecFieldVisitor extends RecursiveAstVisitor<void> {
+  final ids = SplayTreeSet<String>();
+  final _fieldInventoryByVariable = <String, String>{};
+
+  @override
+  void visitVariableDeclaration(VariableDeclaration node) {
+    final inventoryName = _schemaFieldInventoryName(node.initializer);
+    if (inventoryName != null) {
+      _fieldInventoryByVariable[node.name.lexeme] = inventoryName;
+    }
+
+    super.visitVariableDeclaration(node);
+  }
+
+  @override
+  void visitInstanceCreationExpression(InstanceCreationExpression node) {
+    final owner = _schemaObjectOwner(node.constructorName.toSource());
+    if (owner != null) _recordSchemaObjectFields(owner, node.argumentList);
+
+    super.visitInstanceCreationExpression(node);
+  }
+
+  @override
+  void visitFunctionExpressionInvocation(FunctionExpressionInvocation node) {
+    final owner = _schemaObjectOwner(node.toSource());
+    if (owner != null) _recordSchemaObjectFields(owner, node.argumentList);
+
+    super.visitFunctionExpressionInvocation(node);
+  }
+
+  @override
+  void visitMethodInvocation(MethodInvocation node) {
+    final owner = _schemaObjectOwner(node.toSource());
+    if (owner != null) _recordSchemaObjectFields(owner, node.argumentList);
+
+    super.visitMethodInvocation(node);
+  }
+
+  void _recordSchemaObjectFields(String owner, ArgumentList argumentList) {
+    final fields = _namedArgument(argumentList, 'fields');
+    if (fields is ListLiteral) {
+      for (final element in fields.elements) {
+        if (element is SimpleIdentifier) {
+          final inventoryName = _fieldInventoryByVariable[element.name];
+          if (inventoryName != null) ids.add('$owner.\$$inventoryName');
+        } else if (element is SpreadElement &&
+            element.expression.toSource().endsWith('.fields')) {
+          ids
+            ..add('$owner.\$animation')
+            ..add('$owner.\$modifier')
+            ..add('$owner.\$variants');
+        }
+      }
+    }
+  }
+}
+
+String? _schemaFieldInventoryName(Expression? expression) {
+  final arguments = _argumentList(expression);
+  if (arguments == null) return null;
+
+  final source = expression!.toSource();
+  if (!RegExp(
+    r'^(valueField|mixField|directField|derivedField)(<|\()',
+  ).hasMatch(source)) {
+    return null;
+  }
+
+  return _namedStringArgument(arguments, 'inventoryName') ??
+      _firstPositionalStringArgument(arguments);
+}
+
+ArgumentList? _argumentList(Expression? expression) {
+  return switch (expression) {
+    MethodInvocation(:final argumentList) => argumentList,
+    FunctionExpressionInvocation(:final argumentList) => argumentList,
+    _ => null,
+  };
+}
+
+Expression? _namedArgument(ArgumentList argumentList, String name) {
+  for (final argument in argumentList.arguments) {
+    if (argument is NamedExpression && argument.name.label.name == name) {
+      return argument.expression;
+    }
+  }
+
+  return null;
+}
+
+String? _namedStringArgument(ArgumentList argumentList, String name) {
+  final argument = _namedArgument(argumentList, name);
+
+  return argument is StringLiteral ? argument.stringValue : null;
+}
+
+String? _firstPositionalStringArgument(ArgumentList argumentList) {
+  for (final argument in argumentList.arguments) {
+    if (argument is NamedExpression) continue;
+
+    return argument is StringLiteral ? argument.stringValue : null;
+  }
+
+  return null;
+}
+
+String? _schemaObjectOwner(String constructorSource) {
+  final match = RegExp(r'^SchemaObject<([^>]+)>').firstMatch(constructorSource);
+
+  return match?.group(1);
+}
+
+Set<String> _directSupertypeNames(ClassDeclaration node) {
+  return {
+    if (node.extendsClause != null)
+      _declarationName(node.extendsClause!.superclass.toSource()),
+    if (node.withClause != null)
+      for (final type in node.withClause!.mixinTypes)
+        _declarationName(type.toSource()),
+    if (node.implementsClause != null)
+      for (final type in node.implementsClause!.interfaces)
+        _declarationName(type.toSource()),
+  };
 }
 
 String _declarationName(String source) => source.split('<').first.trim();
@@ -470,6 +684,27 @@ Iterable<String> _typeNames(String source) {
     r'\b[A-Z][A-Za-z0-9_]*\b',
   ).allMatches(source).map((match) => match.group(0)!);
 }
+
+bool _looksLikeUnknownEnumType(String typeName) {
+  return typeName != 'Enum' &&
+      (typeName.endsWith('Enum') ||
+          _flutterEnumLikeFieldTypes.contains(typeName));
+}
+
+bool _isStylerFieldId(String id) {
+  return RegExp(r'^[A-Za-z][A-Za-z0-9]*Styler\.\$').hasMatch(id);
+}
+
+const _flutterEnumLikeFieldTypes = <String>{
+  'AutofillContextAction',
+  'FloatingLabelAlignment',
+  'FloatingLabelBehavior',
+  'SmartDashesType',
+  'SmartQuotesType',
+  'TextAffinity',
+  'TextCapitalization',
+  'TextInputAction',
+};
 
 const _flutterEnumFieldTypes = <String>{
   'Axis',
@@ -538,7 +773,15 @@ Future<String> _sourceRevision(Directory repositoryRoot) async {
   ], workingDirectory: repositoryRoot.path);
   if (result.exitCode != 0) return 'unknown';
 
-  return (result.stdout as String).trim();
+  final revision = (result.stdout as String).trim();
+  final status = await Process.run('git', [
+    'status',
+    '--porcelain',
+  ], workingDirectory: repositoryRoot.path);
+  if (status.exitCode != 0) return revision;
+  if ((status.stdout as String).trim().isEmpty) return revision;
+
+  return '$revision+dirty';
 }
 
 String _renderBacklog(

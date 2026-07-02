@@ -1,9 +1,11 @@
 import 'package:ack/ack.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 import 'package:mix_schema/src/errors/mix_schema_error.dart';
 import 'package:mix_schema/src/errors/schema_error_mapper.dart';
 import 'package:mix_schema/src/schema/schema_field.dart';
+import 'package:mix_schema/mix_schema.dart';
 
 final class _InventoryOwner {
   const _InventoryOwner(this.known);
@@ -118,4 +120,24 @@ void main() {
       );
     },
   );
+
+  test('real composite stylers use owner-field skew accounting', () {
+    final contract = MixSchemaContractBuilder().builtIn().freeze();
+
+    for (final styler in [
+      FlexBoxStyler(padding: EdgeInsetsMix.all(4), direction: Axis.horizontal),
+      StackBoxStyler(
+        padding: EdgeInsetsMix.all(4),
+        stackAlignment: Alignment.center,
+      ),
+    ]) {
+      final result = contract.encode(styler);
+
+      expect(
+        result,
+        isA<MixSchemaEncodeSuccess>(),
+        reason: 'expected ${styler.runtimeType} to encode without skew',
+      );
+    }
+  });
 }

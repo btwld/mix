@@ -1,6 +1,6 @@
 # Phase 2.5 — Cross-phase review fixes (ratchet hardening + contract doc lockstep)
 
-**Status:** Not started · **Depends on:** phases 1–2 (repairs their landed output) · **Blocks:** phase 3 start; phase 4's backlog integrity
+**Status:** Completed · **Depends on:** phases 1–2 (repairs their landed output) · **Blocks:** phase 3 start; phase 4's backlog integrity
 **Scope:** the fixes from the 2026-07-02 cross-phase review (`findings.md` Addendum,
 IDs X1–X12): inventory-tool blind spots, manifest reclassification + backlog
 regeneration, WIRE_CONTRACT/code lockstep, lenient-mode repairs, and test-gap
@@ -37,12 +37,12 @@ phase 2's headline sentence (X5). Full detail and evidence: findings.md Addendum
 - Provenance marks dirty worktrees (e.g. `<sha>+dirty`) so a generated backlog
   cannot claim a clean source revision.
 **Acceptance:**
-- [ ] `IdentityStyle` (and anything else the closure newly discovers) appears in
+- [x] `IdentityStyle` (and anything else the closure newly discovers) appears in
       the inventory and fails `--check` until classified in the manifest.
-- [ ] Closure test: a fixture second-level subclass (e.g. locally declared
+- [x] Closure test: a fixture second-level subclass (e.g. locally declared
       `X extends WidgetStateVariant`) is discovered.
-- [ ] Unknown enum type in a field position → loud failure, tested.
-- [ ] Dirty-tree provenance pinned by test or demonstrated + recorded in
+- [x] Unknown enum type in a field position → loud failure, tested.
+- [x] Dirty-tree provenance pinned by test or demonstrated + recorded in
       session.md.
 
 ### R2.5.2 — Manifest reconciliation + backlog regeneration `[review X2, X10]`
@@ -58,9 +58,9 @@ phase 2's headline sentence (X5). Full detail and evidence: findings.md Addendum
   contradictions; fix or justify each.
 - Regenerate `plan/coverage-backlog.md`; phase 4 consumes the regenerated file.
 **Acceptance:**
-- [ ] `--check` green; backlog regenerated with correct provenance; reversals
+- [x] `--check` green; backlog regenerated with correct provenance; reversals
       recorded in lessons.md.
-- [ ] New manifest-truthfulness test: every `supported` styler-field entry has a
+- [x] New manifest-truthfulness test: every `supported` styler-field entry has a
       matching declared codec field, so the decision record cannot silently lie.
 
 ### R2.5.3 — Contract doc lockstep `[review X4, X5]`
@@ -69,23 +69,23 @@ phase 2's headline sentence (X5). Full detail and evidence: findings.md Addendum
   types unguarded until phase 4 grows them), count-based unknown-field detection,
   and the net-zero add+remove blind spot.
 **Acceptance:**
-- [ ] Touched WIRE_CONTRACT sections re-spot-checked against tests; phase1.md
+- [x] Touched WIRE_CONTRACT sections re-spot-checked against tests; phase1.md
       R1.4 annotated as re-verified (the honest redo of that box).
 
 ### R2.5.4 — Lenient-mode repairs `[review X3, X6]`
 - Warning-path policy per D2.5.2, implemented and spec'd.
 - Cap lenient removals per decode (e.g. 256) → `limitExceeded`, spec'd.
 **Acceptance:**
-- [ ] Multi-removal test asserts exact warning paths (no `endsWith` masking).
-- [ ] Removal-cap test green; structural-fatality lenient tests still green.
+- [x] Multi-removal test asserts exact warning paths (no `endsWith` masking).
+- [x] Removal-cap test green; structural-fatality lenient tests still green.
 
 ### R2.5.5 — Envelope diagnostics consistency `[review X8]`
 - `{"v": null}` handling per D2.5.3.
 - `validate()` failures carry the same warnings `decode()` does (additive field
   on the failure type; no breaking change).
 **Acceptance:**
-- [ ] Version-value matrix tested: `null`, `1.0`, `true`, `"1"`, `0`, `2`.
-- [ ] validate-vs-decode warning-parity test.
+- [x] Version-value matrix tested: `null`, `1.0`, `true`, `"1"`, `0`, `2`.
+- [x] validate-vs-decode warning-parity test.
 
 ### R2.5.6 — Test-gap backfill `[review X10]`
 - Exact boundaries: depth 64 accepted / 65 rejected; 10,000 nodes accepted /
@@ -95,14 +95,14 @@ phase 2's headline sentence (X5). Full detail and evidence: findings.md Addendum
 - Schema-export assertion: nested style definitions do **not** require `v`
   (R1.1's nested rule, export side).
 **Acceptance:**
-- [ ] All named tests green in the phase commit.
+- [x] All named tests green in the phase commit.
 
 ### R2.5.7 — Process remediation `[review X12]`
 - Run the dummy-Prop drift demo once for real (scratch field on a local `mix`
   checkout → `--check` fails) and record the output in session.md.
 - Apply the CI-workflow pin decision (D2.5.4).
 **Acceptance:**
-- [ ] session.md records the demo; phase2.md decision log notes it.
+- [x] session.md records the demo; phase2.md decision log notes it.
 
 ## Non-goals (this phase)
 
@@ -119,26 +119,33 @@ actually scheduled for phase 5. (a) Pull the owned-type wrapper forward as
 phase 3's first task, before the token/property grammars grow the Ack-typed
 surface; (b) keep it in phase 5 and accept the larger reshaping diff.
 Recommendation: (a) — cheaper before two grammar phases build on the surface.
-**Decision:** _(record)_
+**Decision:** Option (a). Phase 2.5 records the sequencing fix only; Phase 3
+starts by hiding `AckSchema` behind mix_schema-owned extension types before
+adding token grammar surface.
 
 **D2.5.2 — Lenient warning-path policy `[review X3]`.** (a) Translate warning
 paths back to original-document indices via a removal journal (spec stays as
 promised — most useful to consumers mapping warnings onto the payload they
 sent); (b) amend spec + tests to "path in the partially-cleaned document at
 removal time". Recommendation: (a).
-**Decision:** _(record)_
+**Decision:** Option (a). Lenient warnings report paths in the caller's original
+payload. Implementation uses a removal journal so repeated list-entry removals
+do not shift later warning paths.
 
 **D2.5.3 — Null-`v` classification `[review X8]`.** (a) Special-case `/v` ahead
 of the null preflight → `unsupported_version` (the spec already promises it;
 version-skew telemetry wins); (b) keep `null_forbidden` and amend the spec.
 Recommendation: (a).
-**Decision:** _(record)_
+**Decision:** Option (a). A top-level `v: null` is a malformed version and fails
+as `unsupported_version`; other explicit JSON nulls still fail as
+`null_forbidden`.
 
 **D2.5.4 — Reusable-workflow pin `[review X9]`.** (a) Pin `btwld/dart-actions`
 to a commit SHA and bump deliberately; (b) accept `@main` (same org) with a
 recorded rationale. Recommendation: (a) — the ratchet's PR guarantee should not
 drift with another repo's default branch.
-**Decision:** _(record)_
+**Decision:** Option (a). Pin the reusable `btwld/dart-actions` workflow by
+commit SHA and record the chosen revision in the session log.
 
 ## Verification / exit criteria
 
@@ -157,4 +164,13 @@ drift with another repo's default branch.
 
 | Date | Decision / lesson | Notes |
 |------|-------------------|-------|
-| | | |
+| 2026-07-02 | Phase-entry review complete | Read `README.md`, latest `session.md`, `lessons.md`, Phase 1/2 decision logs, and findings Addendum X1-X12; delegated read-only reviewer agreed Phase 2.5 is the correct next phase and found no checklist blockers beyond resolving D2.5.1-D2.5.4. |
+| 2026-07-02 | D2.5.1: pull AckSchema hiding forward to Phase 3 entry | Sequencing decision only in this phase; no API reshaping lands in Phase 2.5. |
+| 2026-07-02 | D2.5.2: preserve original warning paths | Lenient decode will translate shifted list indices back to the caller's original payload paths. |
+| 2026-07-02 | D2.5.3: `v: null` is `unsupported_version` | Version diagnostics take precedence for the reserved envelope key; the global no-null rule still applies elsewhere. |
+| 2026-07-02 | D2.5.4: pin reusable workflow by SHA | CI ratchet guarantees should not drift with `btwld/dart-actions@main`. |
+| 2026-07-02 | R2.5.1 landed | Inventory discovery now uses transitive tracked-base closure without following generic type arguments; `style:IdentityStyle` is classified as intentionally unsupported; unknown enum-like field types fail loudly; dirty provenance is tested. |
+| 2026-07-02 | R2.5.2 landed | Reclassified `TextStyleMix.$fontFeatures`, `TextStyleMix.$fontVariations`, and `WidgetModifierConfig.$orderOfModifiers` to Phase 4 deferred work; regenerated `coverage-backlog.md`; added the supported-styler-field truthfulness test. Remaining `never` entries were swept and kept as closure-backed, runtime-only, or internal. |
+| 2026-07-02 | R2.5.3-R2.5.6 landed | WIRE_CONTRACT and tests now agree on `unsupported_encode_value`, styler-root skew scope, original lenient warning paths, the 256-removal cap, null-version diagnostics, validate warning parity, exact limit boundaries, composite skew, and nested schema export behavior. |
+| 2026-07-02 | R2.5.7 landed | Dummy drift demo failed as expected with missing entries for `Phase25ProbeStyler.$animation`, `$modifier`, `$phase25Probe`, and `$variants`; reusable workflow pinned to `9075ce1232ec77b8747953f2ff4a349190e5a805`. |
+| 2026-07-02 | Closeout review findings addressed | Fresh reviewer found enum-like detection, D2.5.1 checklist enforcement, session/status logging, and numeric-key lenient path gaps. Added non-`Enum` enum-like fixture coverage, list-only removal journaling, explicit Phase 3/Phase 5 ownership, and this closeout documentation. |

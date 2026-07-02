@@ -15,6 +15,48 @@ Template:
 
 ---
 
+## 2026-07-02 — Codex — Phase 2.5
+
+**Did:**
+- Resolved D2.5.1-D2.5.4 after phase-entry review: Phase 3 owns AckSchema
+  hiding first; lenient warnings preserve original payload paths; `v: null`
+  fails as `unsupported_version`; `btwld/dart-actions` is pinned by SHA.
+- Hardened `inventory_check.dart`: transitive tracked-base closure finds
+  `style:IdentityStyle`, unknown enum-like field types fail loudly, dirty
+  worktrees stamp `<sha>+dirty`, and supported styler-field manifest entries
+  must have declared codec fields.
+- Reclassified `TextStyleMix.$fontFeatures`, `TextStyleMix.$fontVariations`,
+  and `WidgetModifierConfig.$orderOfModifiers` to Phase 4 deferred backlog;
+  regenerated `plan/coverage-backlog.md`.
+- Repaired contract/doc lockstep: `unsupported_encode_value`, styler-root-only
+  skew guard guarantee, original lenient warning paths, 256-removal cap,
+  null-version diagnostics, validate/decode warning parity, exact limit
+  boundaries, composite-skew tests, and nested schema export `v` coverage.
+- Ran the dummy drift demo with a temporary `Phase25ProbeStyler`; `dart run
+  tool/inventory_check.dart --check` failed as expected with missing entries for
+  `Phase25ProbeStyler.$animation`, `$modifier`, `$phase25Probe`, and
+  `$variants`, then passed again after removing the probe.
+- Pinned the reusable workflow to
+  `btwld/dart-actions@9075ce1232ec77b8747953f2ff4a349190e5a805`.
+- Full gate passed: `melos run gen:build && melos run ci && melos run analyze`
+  (environment emitted pub cache kernel-format warnings, but each Melos step
+  reported `SUCCESS` and the command exited 0).
+- Fresh closeout review found four issues; all were addressed before phase
+  close: broader enum-like detection, explicit Phase 3/Phase 5 AckSchema wrapper
+  ownership, session/status logging, and numeric-key lenient path handling.
+
+**Decisions:**
+- `IdentityStyle` is classified `never`: resolved-spec identity style, not a
+  serializable styler document.
+- `orderOfModifiers` stays visible in Phase 4 as modifier codec expansion work.
+- Dirty provenance is expected for phase-local regenerated backlog files before
+  the phase commit exists.
+
+**Blocked/open:** None for Phase 2.5.
+
+**Next:** Start Phase 3 with R3.0 first: hide AckSchema behind mix_schema-owned
+extension wrapper types before adding token grammar.
+
 ## 2026-07-02 — Claude (Fable) — cross-phase review + phase 2.5 planning
 
 **Did:**

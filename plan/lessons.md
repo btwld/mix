@@ -95,6 +95,22 @@ Things the review itself surfaced that qualify as lessons already:
   Conflicting buckets and duplicate same-status entries are different failure
   modes and both should be readable in CI output.
 
+### Phase 2.5 — Cross-phase review fixes
+
+- **Inheritance closure must follow declarations, not generic arguments.** The
+  inventory ratchet now walks direct supertypes transitively so second-level
+  tracked subclasses are visible without mistaking generic type arguments for
+  inheritance.
+- **Generated provenance should admit dirtiness.** Regenerated backlogs now stamp
+  `<sha>+dirty` when the worktree is dirty, which is honest for phase work that
+  regenerates files before the phase commit exists.
+- **Manifest truthfulness needs its own ratchet.** A `supported` styler-field
+  entry now has to correspond to a declared codec field, so the manifest cannot
+  silently overstate coverage.
+- **Lenient diagnostics are consumer-facing coordinates.** Warning paths now map
+  back to the original payload, and lenient cleanup has a 256-removal cap so
+  opt-in repair cannot become an unbounded parse loop.
+
 ### Phase 3 — Token model
 _(fill when closed)_
 
@@ -147,4 +163,5 @@ _(fill when closed)_
 
 | Date | Original decision | Reversal | Why |
 |------|-------------------|----------|-----|
-| | | | |
+| 2026-07-02 | `TextStyleMix.$fontFeatures` / `$fontVariations` were classified `never: runtime-only`. | Reclassified as `deferred: phase 4 - codec coverage backlog`. | `FontFeature(String, [int])` and `FontVariation(String, double)` are const data and already named by Phase 4 coverage work, so hiding them from the backlog was wrong. |
+| 2026-07-02 | `WidgetModifierConfig.$orderOfModifiers` was classified `never: internal or merge-control implementation detail`. | Reclassified as `deferred: phase 4 - modifier codec expansion`. | Phase 4 R4.4 plans `modifierOrder` support, so the inventory backlog must keep this visible until that decision is implemented or explicitly revised. |

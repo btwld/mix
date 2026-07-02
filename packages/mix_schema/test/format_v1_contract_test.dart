@@ -61,8 +61,12 @@ void main() {
       'rejects unsupported and malformed versions with a dedicated code',
       () {
         for (final payload in [
+          {'v': null, 'type': 'box'},
+          {'v': 1.0, 'type': 'box'},
+          {'v': true, 'type': 'box'},
           {'v': 2, 'type': 'box'},
           {'v': '1', 'type': 'box'},
+          {'v': 0, 'type': 'box'},
         ]) {
           final errors = decodeErrors<BoxStyler>(payload);
 
@@ -235,10 +239,10 @@ void main() {
       final variants = reencoded['variants']! as List;
 
       expect(success.warnings, hasLength(2));
-      expect(
-        success.warnings.map((warning) => warning.path),
-        everyElement(endsWith('/kind')),
-      );
+      expect(success.warnings.map((warning) => warning.path), [
+        '/variants/0/kind',
+        '/variants/1/kind',
+      ]);
       expect(variants, hasLength(1));
       expect((variants.single! as JsonMap)['kind'], 'named');
     });
@@ -297,9 +301,90 @@ void main() {
       expect(errors.single.code, MixSchemaErrorCode.unknownType);
       expect(errors.single.path, '/type');
     });
+
+    test('lenient mode caps skipped payload removals', () {
+      final result = contract().decode<BoxStyler>({
+        'v': 1,
+        'type': 'box',
+        'variants': [
+          for (var i = 0; i < 257; i += 1)
+            {
+              'kind': 'future_$i',
+              'style': {'type': 'box'},
+            },
+        ],
+      }, options: lenient);
+
+      final failure = switch (result) {
+        MixSchemaDecodeFailure<BoxStyler>() => result,
+        MixSchemaDecodeSuccess<BoxStyler>() => fail('expected failure'),
+      };
+
+      expect(failure.errors.single.code, MixSchemaErrorCode.limitExceeded);
+      expect(failure.warnings, hasLength(256));
+      expect(failure.warnings.last.path, '/variants/255/kind');
+    });
+
+    test('lenient warning paths preserve numeric object keys', () {
+      final payload = {
+        'v': 1,
+        'type': 'box',
+        'variants': [
+          {
+            'kind': 'named',
+            'name': 'ok',
+            'style': {'type': 'box', 'padding': 2, '0': true, '1': true},
+          },
+        ],
+      };
+
+      final success = decodeSuccess<BoxStyler>(payload, options: lenient);
+      final reencoded = encode(success.value);
+      final variants = reencoded['variants']! as List;
+      final style = (variants.single! as JsonMap)['style']! as JsonMap;
+
+      expect(success.warnings.map((warning) => warning.path), [
+        '/variants/0/style/0',
+        '/variants/0/style/1',
+      ]);
+      expect(style['padding'], 2.0);
+    });
   });
 
   group('resource limits', () {
+    test('accepts depth 64 but rejects depth 65 during preflight', () {
+      JsonMap deepPayload(int depth) {
+        Object value = 'leaf';
+        for (var i = depth - 1; i >= 1; i -= 1) {
+          value = {'level_$i': value};
+        }
+
+        return {'v': 1, 'type': 'box', 'future': value};
+      }
+
+      final depth64Errors = decodeErrors<BoxStyler>(deepPayload(63));
+      expect(depth64Errors.single.code, MixSchemaErrorCode.unknownField);
+
+      final depth65Errors = decodeErrors<BoxStyler>(deepPayload(64));
+      expect(depth65Errors.single.code, MixSchemaErrorCode.limitExceeded);
+    });
+
+    test('accepts 10000 nodes but rejects 10001 during preflight', () {
+      JsonMap widePayload(int itemCount) {
+        return {
+          'v': 1,
+          'type': 'box',
+          'future': List<int>.generate(itemCount, (index) => index),
+        };
+      }
+
+      final node10000Errors = decodeErrors<BoxStyler>(widePayload(9996));
+      expect(node10000Errors.single.code, MixSchemaErrorCode.unknownField);
+
+      final node10001Errors = decodeErrors<BoxStyler>(widePayload(9997));
+      expect(node10001Errors.single.code, MixSchemaErrorCode.limitExceeded);
+    });
+
     test('rejects deep nested variants before Ack traversal', () {
       var style = <String, Object?>{'type': 'box'};
       for (var i = 0; i < 70; i += 1) {
@@ -331,6 +416,31 @@ void main() {
 
       expect(errors.single.code, MixSchemaErrorCode.limitExceeded);
       expect(errors.single.path, startsWith('/modifiers/'));
+    });
+  });
+
+  group('validation diagnostics', () {
+    test('validate carries transition warnings on failures like decode', () {
+      final payload = {'type': 'box', 'future': true};
+      final decode = contract().decode<BoxStyler>(payload);
+      final validation = contract().validate(payload);
+
+      final decodeFailure = switch (decode) {
+        MixSchemaDecodeFailure<BoxStyler>() => decode,
+        MixSchemaDecodeSuccess<BoxStyler>() => fail('expected decode failure'),
+      };
+      final validationFailure = switch (validation) {
+        MixSchemaValidationFailure() => validation,
+        MixSchemaValidationSuccess() => fail('expected validation failure'),
+      };
+
+      expect(decodeFailure.warnings.map((warning) => warning.toJson()), [
+        for (final warning in validationFailure.warnings) warning.toJson(),
+      ]);
+      expect(
+        validationFailure.errors.single.code,
+        MixSchemaErrorCode.unknownField,
+      );
     });
   });
 }

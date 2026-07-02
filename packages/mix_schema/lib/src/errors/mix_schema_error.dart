@@ -118,10 +118,13 @@ final class MixSchemaValidationSuccess extends MixSchemaValidationResult {
 /// Validation failed with one or more path-qualified errors.
 final class MixSchemaValidationFailure extends MixSchemaValidationResult {
   /// Creates a validation failure result.
-  const MixSchemaValidationFailure(this.errors);
+  const MixSchemaValidationFailure(this.errors, {this.warnings = const []});
 
   /// Collected validation errors.
   final List<MixSchemaError> errors;
+
+  /// Non-fatal diagnostics collected before a fatal validation error.
+  final List<MixSchemaError> warnings;
 }
 
 /// Result returned by [MixSchemaContract.decode].

@@ -350,6 +350,10 @@ const _phase4DeferredInventory = <SchemaInventoryEntry>[
     _phase4Coverage,
   ),
   SchemaInventoryEntry.knownUnsupported(
+    r'config:WidgetModifierConfig.$orderOfModifiers',
+    _phase4Modifiers,
+  ),
+  SchemaInventoryEntry.knownUnsupported(
     'directive:color_alpha',
     _phase4Directives,
   ),
@@ -694,6 +698,14 @@ const _phase4DeferredInventory = <SchemaInventoryEntry>[
     _phase4Coverage,
   ),
   SchemaInventoryEntry.knownUnsupported(
+    r'mix:TextStyleMix.$fontFeatures',
+    _phase4Coverage,
+  ),
+  SchemaInventoryEntry.knownUnsupported(
+    r'mix:TextStyleMix.$fontVariations',
+    _phase4Coverage,
+  ),
+  SchemaInventoryEntry.knownUnsupported(
     r'mix:TextStyleMix.$textBaseline',
     _phase4Coverage,
   ),
@@ -821,24 +833,12 @@ const _neverUnsupportedInventory = <SchemaInventoryEntry>[
     _neverClosureBacked,
   ),
   SchemaInventoryEntry.knownUnsupported(
-    r'config:WidgetModifierConfig.$orderOfModifiers',
-    _neverInternal,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
     'enum:ListMergeStrategy',
     _neverInternal,
   ),
   SchemaInventoryEntry.knownUnsupported(
     r'mix:TextStyleMix.$background',
     'never: Paint is runtime-only and not JSON representable.',
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    r'mix:TextStyleMix.$fontFeatures',
-    _neverRuntimeOnly,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    r'mix:TextStyleMix.$fontVariations',
-    _neverRuntimeOnly,
   ),
   SchemaInventoryEntry.knownUnsupported(
     r'mix:TextStyleMix.$foreground',
@@ -863,6 +863,10 @@ const _neverUnsupportedInventory = <SchemaInventoryEntry>[
   SchemaInventoryEntry.knownUnsupported(
     'modifier:ShaderMaskModifierMix',
     _neverClosureBacked,
+  ),
+  SchemaInventoryEntry.knownUnsupported(
+    'style:IdentityStyle',
+    'never: resolved-spec identity style, not a serializable styler document.',
   ),
   SchemaInventoryEntry.knownUnsupported(
     'token:ContextToken',

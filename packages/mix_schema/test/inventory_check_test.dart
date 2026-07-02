@@ -22,6 +22,7 @@ void main() {
         'animation:SpringAnimationConfig',
         'curve:easeInOut',
         'token:ColorToken',
+        'style:IdentityStyle',
         'enum:Clip',
       ]),
     );
@@ -76,6 +77,125 @@ void main() {
     expect(result.conflictingIds, isEmpty);
     expect(result.describe(), contains('Duplicate manifest entries:'));
     expect(result.describe(), contains('duplicate:id'));
+  });
+
+  test(
+    'inventory discovers second-level subclasses of tracked bases',
+    () async {
+      final root = Directory.systemTemp.createTempSync(
+        'mix_schema_inventory_closure_',
+      );
+      addTearDown(() => root.deleteSync(recursive: true));
+      _writeFile(root, 'packages/mix/lib/src/core/style.dart', '''
+abstract class Mix<T> {}
+abstract class Style<S> extends Mix<S> {}
+class BaseStyle<S> extends Style<S> {}
+final class DefaultStyle extends BaseStyle<Object> {}
+''');
+      _writeFile(root, 'packages/mix/lib/src/variants/variant.dart', '''
+class Variant {}
+class ContextVariant extends Variant {}
+class WidgetStateVariant extends ContextVariant {}
+final class PressedVariant extends WidgetStateVariant {}
+''');
+
+      final snapshot = await inventory.collectMixInventory(
+        repositoryRoot: root,
+      );
+
+      expect(
+        snapshot.ids,
+        containsAll(['style:DefaultStyle', 'variant:PressedVariant']),
+      );
+    },
+  );
+
+  test('inventory rejects unknown enum-like field types', () async {
+    final root = Directory.systemTemp.createTempSync(
+      'mix_schema_inventory_unknown_enum_',
+    );
+    addTearDown(() => root.deleteSync(recursive: true));
+    _writeFile(root, 'packages/mix/lib/src/properties/probe_mix.dart', r'''
+class Mix<T> {}
+class Prop<T> {}
+class MysteryEnum {}
+
+final class ProbeMix extends Mix<Object> {
+  final Prop<MysteryEnum>? $mode;
+  const ProbeMix({Prop<MysteryEnum>? mode}) : $mode = mode;
+}
+''');
+
+    await expectLater(
+      inventory.collectMixInventory(repositoryRoot: root),
+      throwsA(
+        isA<StateError>().having(
+          (error) => error.toString(),
+          'message',
+          allOf(contains('MysteryEnum'), contains('unknown enum-like type')),
+        ),
+      ),
+    );
+  });
+
+  test('inventory rejects unknown Flutter-style enum field types', () async {
+    final root = Directory.systemTemp.createTempSync(
+      'mix_schema_inventory_unknown_flutter_enum_',
+    );
+    addTearDown(() => root.deleteSync(recursive: true));
+    _writeFile(root, 'packages/mix/lib/src/properties/probe_mix.dart', r'''
+class Mix<T> {}
+class Prop<T> {}
+
+final class ProbeMix extends Mix<Object> {
+  final Prop<TextCapitalization>? $capitalization;
+  const ProbeMix({Prop<TextCapitalization>? capitalization})
+    : $capitalization = capitalization;
+}
+''');
+
+    await expectLater(
+      inventory.collectMixInventory(repositoryRoot: root),
+      throwsA(
+        isA<StateError>().having(
+          (error) => error.toString(),
+          'message',
+          allOf(
+            contains('TextCapitalization'),
+            contains('unknown enum-like type'),
+          ),
+        ),
+      ),
+    );
+  });
+
+  test('dirty git worktrees are marked in generated provenance', () async {
+    final root = Directory.systemTemp.createTempSync(
+      'mix_schema_inventory_dirty_',
+    );
+    addTearDown(() => root.deleteSync(recursive: true));
+    _writeFile(root, 'packages/mix/lib/src/core/directive.dart', '''
+class Plain {}
+''');
+    _runGit(root, ['init']);
+    _runGit(root, ['add', '.']);
+    _runGit(root, [
+      '-c',
+      'user.email=test@example.com',
+      '-c',
+      'user.name=Test User',
+      'commit',
+      '-m',
+      'initial',
+    ]);
+    _writeFile(root, 'packages/mix/lib/src/core/directive.dart', '''
+class Plain {}
+class Later {}
+''');
+
+    final snapshot = await inventory.collectMixInventory(repositoryRoot: root);
+
+    expect(snapshot.sourceRevision, endsWith('+dirty'));
   });
 
   test('directive inventory reads static keys from analyzer AST', () async {
@@ -148,6 +268,35 @@ final class DynamicDirective extends Directive<String> {
       ),
     );
   });
+
+  test(
+    'supported styler-field manifest entries match declared codec fields',
+    () {
+      final declared = inventory.collectDeclaredStylerCodecFieldIds(
+        repositoryRoot: _repositoryRoot(),
+      );
+      final unsupported = inventory.supportedStylerFieldsWithoutCodec(
+        manifestEntries: schemaInventoryManifest,
+        declaredCodecFieldIds: declared,
+      );
+
+      expect(unsupported, isEmpty);
+    },
+  );
+
+  test(
+    'manifest truthfulness rejects supported styler fields without codecs',
+    () {
+      final unsupported = inventory.supportedStylerFieldsWithoutCodec(
+        manifestEntries: const [
+          SchemaInventoryEntry.supported(r'TextStyler.$strutStyle'),
+        ],
+        declaredCodecFieldIds: const {r'TextStyler.$style'},
+      );
+
+      expect(unsupported, [r'TextStyler.$strutStyle']);
+    },
+  );
 }
 
 Directory _repositoryRoot() {
@@ -169,4 +318,11 @@ void _writeFile(Directory root, String relativePath, String content) {
   final file = File('${root.path}/$relativePath');
   file.parent.createSync(recursive: true);
   file.writeAsStringSync(content);
+}
+
+void _runGit(Directory root, List<String> args) {
+  final result = Process.runSync('git', args, workingDirectory: root.path);
+  if (result.exitCode != 0) {
+    throw StateError('git ${args.join(' ')} failed: ${result.stderr}');
+  }
 }
