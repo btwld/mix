@@ -1,6 +1,6 @@
 # Phase 0 — Land the branch honestly (pre-merge fixes)
 
-**Status:** Not started · **Depends on:** nothing · **Blocks:** merge of `feat/mix_schema`
+**Status:** In progress · **Depends on:** nothing · **Blocks:** merge of `feat/mix_schema`
 **Scope:** small, correctness + hygiene only. No new format features in this phase.
 
 ## Objective
@@ -113,7 +113,10 @@ tailwinds realignment, registry redesign beyond what D0.1 decides.
    failure, rewrite docs to require a custom contract for icon/image. Smallest
    diff, weakest fix.
    Recommendation from the review: (1) if phase 5 is near-term, else (2).
-   **Decision:** _(record here)_
+   **Decision:** Option 2. Keep `builtIn()` as the complete branch set, but make
+   `builtInMixSchemaContract` expose only registry-free branches. Icon and image
+   payloads require a custom contract with a populated registry until phase 5
+   introduces the fuller per-call resolver API.
 
 ## Verification / exit criteria
 
@@ -125,4 +128,4 @@ tailwinds realignment, registry redesign beyond what D0.1 decides.
 
 | Date | Decision / lesson | Notes |
 |------|-------------------|-------|
-| | | |
+| 2026-07-02 | D0.1: use Option 2 for icon/image singleton behavior. | This keeps Phase 0 scoped to correctness/hygiene while removing the misleading empty-registry trap from the shared singleton. |

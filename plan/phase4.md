@@ -147,10 +147,12 @@ verbatim. Confirm against core's actual keys before freezing.
 phase-1 policy. Recommendation: yes.
 **Decision:** _(record)_
 
-**D4.3 — ack `flutter_codec` coordination.** Before growing `common_codecs.dart`
-further, decide with the ack maintainers (same org) whether Flutter-primitive
-codecs upstream into ack (`.context/ack-flutter-codec/` overlap) or stay here.
-Affects R4.3–R4.7 implementation placement, not their wire shape.
+**D4.3 — ack `flutter_codec` coordination.** The `btwld/ack` org has an
+in-progress `flutter_codec` effort covering Flutter-primitive codecs (color,
+alignment, edge insets, etc.) that overlaps `common_codecs.dart`. Before growing
+that file further, check upstream ack for its current state and decide with the
+maintainers (same org) whether these codecs should upstream into ack or stay
+here. Affects R4.3–R4.7 implementation placement, not their wire shape.
 **Decision:** _(record)_
 
 ## Verification / exit criteria

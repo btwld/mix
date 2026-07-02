@@ -18,17 +18,18 @@ Template:
 ## 2026-07-02 — Claude (Fable, clean-sheet review session) — planning
 
 **Did:**
-- Completed the clean-sheet review of `feat/mix_schema` (multi-agent: 3 explorers,
+- Completed a clean-sheet review of `feat/mix_schema` (multi-agent: 3 explorers,
   baseline verification, 4 evidence probes on Sonnet, 1 isolated clean-sheet
-  designer on Fable, synthesis by lead). Report:
-  `.context/reviews/mix_schema-clean-sheet-review.md`.
+  designer on Fable, synthesis by lead). Findings snapshot committed to
+  `plan/findings.md` (the working session's original scratch copy lived in a
+  gitignored `.context/` path and is not otherwise available).
 - Baseline verified green before judging: mix_schema 163/163, mix_tailwinds
   477/477, mix scoped 199/199, mix_generator 257/257; `dart analyze` + DCM clean.
 - Verdict: **Redesign at the contract level** — keep skeleton/engine/tests,
   replace policies (tokens, versioning, single-source encode, frozen registry),
   realign tailwinds' runtime payload round-trip to test-time.
-- Created this `plan/` folder: README, phase0–phase5 requirement docs with
-  checklists, lessons.md, session.md.
+- Created this `plan/` folder: README, findings.md, phase0–phase5 requirement
+  docs with checklists, lessons.md, session.md.
 
 **Decisions (from the review, carried into the plan):**
 - Keep ack as the engine (stable 1.0.0 exists on pub.dev; swap the git-SHA pin);

@@ -11,8 +11,8 @@ Execute the **mix_schema evolution plan** in [`plan/`](plan/README.md): make
 packages (`mix_tailwinds`), server-driven styling, and shared design tokens, and composing
 under a future widget-tree layer.
 
-Everything derives from the clean-sheet review at
-`.context/reviews/mix_schema-clean-sheet-review.md` — verdict: **keep the skeleton**
+Everything derives from the review findings snapshotted in
+[`plan/findings.md`](plan/findings.md) — verdict: **keep the skeleton**
 (Ack codecs decoding into real Mix stylers, fail-loud encode, canonical forms),
 **replace the policies** (tokens, versioning, single-source encode, frozen registry),
 and realign the tailwinds consumer.
@@ -42,9 +42,8 @@ removal; phase 5 starts with a benchmark before deciding.
 | What | Where |
 |---|---|
 | Plan, status, session log, lessons | `plan/` |
-| Review behind the plan (finding IDs `A*`/`B*`/`C*`) | `.context/reviews/mix_schema-clean-sheet-review.md` |
+| Review findings behind the plan (finding IDs `A*`/`B*`/`C*`; prior code-review `S*`/`C*` items reconciled at the bottom) | `plan/findings.md` |
 | Wire format spec — keep in lockstep with code | `packages/mix_schema/WIRE_CONTRACT.md` |
-| Earlier code-level review (`S*`/`C*` item IDs) | `.context/review-mix-schema/REVIEW.md` |
 | Packages in scope | `packages/mix_schema`, `packages/mix_tailwinds`; `packages/mix` for minimal core asks only |
 
 ## Environment & commands
