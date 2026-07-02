@@ -17,6 +17,11 @@ Every styler payload is an object with a `type` discriminator plus styler fields
 - `flex_box`
 - `stack_box`
 
+The full built-in contract accepts all branches above. The shared
+`builtInMixSchemaContract` intentionally excludes `icon` and `image` because
+their identity fields require an app-owned registry; freeze a custom
+`MixSchemaContractBuilder().builtIn()` contract when those branches are needed.
+
 Unknown fields are rejected by Ack. Missing fields stay unset; Mix runtime
 defaults are not injected by the schema.
 
@@ -175,9 +180,9 @@ Variant payloads use a `kind` discriminator:
 - `context_brightness`: `{ "brightness": "light" | "dark", "style": styler }`
 - `context_breakpoint`: `{ "minWidth"?: number, "maxWidth"?: number, "style": styler }`
 
-`context_all_of` and `context_variant_builder` are not part of the canonical
-wire contract. Composite and closure-backed variants can be added later only if
-Mix exposes typed runtime data that can be encoded without key parsing.
+Only the context variant forms listed above are part of the canonical wire
+contract. Composite and closure-backed context variants can be added later only
+if Mix exposes typed runtime data that can be encoded without key parsing.
 
 Widget state values are `hovered`, `focused`, `pressed`, `dragged`, `selected`,
 `scrolled_under`, `disabled`, and `error`.

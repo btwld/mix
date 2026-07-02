@@ -1,6 +1,6 @@
 # Phase 0 — Land the branch honestly (pre-merge fixes)
 
-**Status:** In progress · **Depends on:** nothing · **Blocks:** merge of `feat/mix_schema`
+**Status:** Completed · **Depends on:** nothing · **Blocks:** merge of `feat/mix_schema`
 **Scope:** small, correctness + hygiene only. No new format features in this phase.
 
 ## Objective
@@ -24,10 +24,10 @@ fails decode (`unknown_registry_id`) and any `IconStyler`/`ImageStyler` fails
 encode — while `lib/encode.dart:11-14` recommends producers use exactly this
 singleton. Resolve the contradiction (see Open decisions D0.1 for the options).
 **Acceptance:**
-- [ ] A test exists that exercises icon and image payloads **through
+- [x] A test exists that exercises icon and image payloads **through
       `builtInMixSchemaContract`** and pins the chosen behavior (working
       round-trip via resolvers, or an explicit typed failure with guidance).
-- [ ] No doc (README, doc comments, WIRE_CONTRACT.md) recommends a pattern that
+- [x] No doc (README, doc comments, WIRE_CONTRACT.md) recommends a pattern that
       cannot work for icon/image.
 
 ### R0.2 — Domain error for empty contract freeze `[review A2]`
@@ -35,7 +35,7 @@ singleton. Resolve the contradiction (see Open decisions D0.1 for the options).
 throws ack's raw `ArgumentError` ("Invalid argument (schemas): must not be
 empty").
 **Acceptance:**
-- [ ] `freeze()` on an empty builder throws a mix_schema-owned error
+- [x] `freeze()` on an empty builder throws a mix_schema-owned error
       (`StateError` with actionable message naming `builtIn()`/`addStyler()`),
       before ack is reached. Unit test pins message shape.
 
@@ -44,45 +44,45 @@ empty").
 `NotVariant`, and the equality semantics of `ContextVariant.brightness/breakpoint/not`
 changed from identity to value-based — undocumented on a published stable package.
 **Acceptance:**
-- [ ] `packages/mix/CHANGELOG.md` documents both the additions and the equality
+- [x] `packages/mix/CHANGELOG.md` documents both the additions and the equality
       change under the next unreleased version heading.
 
 ### R0.4 — Sync with `origin/main` `[review C6]`
 Main has moved (mix `2.1.0` vs branch `2.0.3`).
 **Acceptance:**
-- [ ] `origin/main` merged into `feat/mix_schema`; conflicts resolved; full gate
+- [x] `origin/main` merged into `feat/mix_schema`; conflicts resolved; full gate
       green (`melos run gen:build && melos run ci && melos run analyze`).
-- [ ] Re-check R0.3's CHANGELOG placement against main's new version headings.
+- [x] Re-check R0.3's CHANGELOG placement against main's new version headings.
 
 ### R0.5 — Un-pin ack `[review C6]`
 `ack` is a git-SHA dependency; a stable `ack 1.0.0` exists on pub.dev. Git deps
 also block any future pub publish.
 **Acceptance:**
-- [ ] `packages/mix_schema/pubspec.yaml` depends on `ack: ^1.0.0` (or the newest
+- [x] `packages/mix_schema/pubspec.yaml` depends on `ack: ^1.0.0` (or the newest
       stable), no git ref. Full test suite green against the published version.
-- [ ] Any API drift between the pinned SHA and 1.0.0 is fixed or documented.
+- [x] Any API drift between the pinned SHA and 1.0.0 is fixed or documented.
 
 ### R0.6 — Document the consumer surface `[review A7]`
 Zero `///` doc comments on `mix_schema_contract.dart`, `mix_schema_error.dart`,
 `registry.dart` — the entire surface a consumer touches.
 **Acceptance:**
-- [ ] Every public declaration in those three files has a doc comment
+- [x] Every public declaration in those three files has a doc comment
       (contract lifecycle, each error code's meaning, result-type usage).
-- [ ] `dart analyze` / DCM still clean.
+- [x] `dart analyze` / DCM still clean.
 
 ### R0.7 — Hygiene sweep `[review C6, C7]`
-- [ ] Delete `packages/mix_schema/melos_mix_schema.iml` (no sibling package
+- [x] Delete `packages/mix_schema/melos_mix_schema.iml` (no sibling package
       commits per-package .iml files).
-- [ ] Remove the unused `'card'` spacing/radius keys from the tailwinds theme
+- [x] Remove the unused `'card'` spacing/radius keys from the tailwinds theme
       generator input (or regenerate without them), or record why they stay.
-- [ ] Fix stale `context_all_of` prose in `WIRE_CONTRACT.md` (no such core type
+- [x] Fix stale `context_all_of` prose in `WIRE_CONTRACT.md` (no such core type
       exists — reword the exclusion in terms of real core types).
-- [ ] Add `dart_code_metrics_presets` dev-dep to `mix_schema` and `mix_tailwinds`
+- [x] Add `dart_code_metrics_presets` dev-dep to `mix_schema` and `mix_tailwinds`
       so `melos analyze:dcm` covers them like the core packages — or record the
       explicit decision not to.
 
 ### R0.8 — Version constant guard `[review A4]`
-- [ ] A test asserts `mixSchemaVersion` equals the version in
+- [x] A test asserts `mixSchemaVersion` equals the version in
       `packages/mix_schema/pubspec.yaml` (read the pubspec in the test), so the
       hand-maintained constant cannot silently desync. (Superseded in phase 1 by
       the format-version split — keep the test until then.)
@@ -129,3 +129,5 @@ tailwinds realignment, registry redesign beyond what D0.1 decides.
 | Date | Decision / lesson | Notes |
 |------|-------------------|-------|
 | 2026-07-02 | D0.1: use Option 2 for icon/image singleton behavior. | This keeps Phase 0 scoped to correctness/hygiene while removing the misleading empty-registry trap from the shared singleton. |
+| 2026-07-02 | Leave generated tailwinds `card` spacing/radius keys for now. | The only remaining keys are in `default_theme.g.dart`; the generator input is not present in this workspace, and generated files should not be hand-edited. |
+| 2026-07-02 | Do not add `dart_code_metrics_presets` to `mix_schema`/`mix_tailwinds` in Phase 0. | Trial enablement made DCM scan both packages and surfaced hundreds of pre-existing style findings, which is outside this phase's correctness/hygiene scope. Keep the existing `melos analyze:dcm` filter and defer package-wide DCM cleanup. |

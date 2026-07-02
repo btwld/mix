@@ -20,7 +20,11 @@ void main() {
   test('builtInMixSchemaContract registers the built-in stylers', () {
     expect(
       builtInMixSchemaContract.registeredTypes,
-      containsAll(<String>['box', 'text', 'flex_box', 'icon']),
+      containsAll(<String>['box', 'text', 'flex_box']),
+    );
+    expect(
+      builtInMixSchemaContract.registeredTypes,
+      isNot(contains(anyOf('icon', 'image'))),
     );
   });
 

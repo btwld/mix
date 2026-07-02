@@ -41,7 +41,17 @@ Things the review itself surfaced that qualify as lessons already:
 ## Per-phase retrospectives
 
 ### Phase 0 — Land the branch honestly
-_(fill when closed)_
+
+- **Keep shared singletons honest about what they can decode.** The built-in
+  contract API now separates the complete branch set from the registry-free
+  singleton so documented producer paths do not depend on an empty registry.
+- **Treat analyzer coverage expansion as its own cleanup.** Trial-enabling DCM
+  for `mix_schema`/`mix_tailwinds` surfaced broad pre-existing style debt; adding
+  the dev-deps belongs with a package-wide cleanup, not a correctness landing
+  phase.
+- **Do not patch generated artifacts without their source.** The remaining
+  tailwinds `card` keys live only in generated output in this workspace, so the
+  phase recorded the reason instead of hand-editing `default_theme.g.dart`.
 
 ### Phase 1 — Format v1 charter
 _(fill when closed)_
@@ -60,7 +70,9 @@ _(fill when closed)_
 
 ## Themes (cross-cutting, update as they emerge)
 
-- _(what patterns keep repeating across phases?)_
+- Analyzer/tool coverage changes can be larger than the feature they accompany;
+  scope them explicitly so correctness work does not inherit unrelated lint debt.
+- Generated files need traceable inputs before cleanup work touches them.
 
 ## Decisions we reversed (and why)
 

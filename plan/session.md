@@ -15,6 +15,35 @@ Template:
 
 ---
 
+## 2026-07-02 — Codex — Phase 0
+
+**Did:**
+- Merged `origin/main`, unpinned `packages/mix_schema` from the git-SHA `ack`
+  dependency to `ack: ^1.0.0`, and verified against the published package.
+- Made the shared `builtInMixSchemaContract` registry-free for icon/image, added
+  explicit guidance failures for missing registry-backed branches, and kept
+  `MixSchemaContractBuilder().builtIn()` as the full branch set for consumers
+  that build their own contract.
+- Added the empty-contract `StateError`, the `mixSchemaVersion`/pubspec guard,
+  public API docs for the consumer-facing contract/error/registry surface, and
+  updated `README.md`/`WIRE_CONTRACT.md`.
+- Updated tailwinds to use its own full built-in contract for runtime payload
+  decoding, documented the mix core changelog entries, deleted the stray iml
+  file, and applied a narrow `mix_lint` DCM cleanup needed after syncing main.
+- Full gate passed: `melos run gen:build && melos run ci && melos run analyze`.
+
+**Decisions:**
+- D0.1 uses Option 2: the singleton excludes registry-backed icon/image, while
+  `builtIn()` remains complete.
+- Generated tailwinds `card` spacing/radius keys stay until their generator
+  input is available; generated files were not hand-edited.
+- DCM dev-deps for `mix_schema`/`mix_tailwinds` are deferred because trial
+  enablement exposed package-wide pre-existing style debt outside Phase 0 scope.
+
+**Blocked/open:** None for Phase 0.
+
+**Next:** Start Phase 1 by resolving its open decisions before changing code.
+
 ## 2026-07-02 — Claude (Fable, clean-sheet review session) — planning
 
 **Did:**

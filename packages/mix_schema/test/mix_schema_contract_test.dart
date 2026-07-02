@@ -1,6 +1,11 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:ack/ack.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
+import 'package:mix_schema/encode.dart';
 import 'package:mix_schema/mix_schema.dart';
 
 final class _CustomStyle {
@@ -40,6 +45,83 @@ void main() {
     expect(() => builder.addStyler('other', branch), throwsStateError);
     expect(builder.builtIn, throwsStateError);
     expect(builder.freeze, throwsStateError);
+  });
+
+  test('contract builder reports a domain error when frozen empty', () {
+    expect(
+      () => MixSchemaContractBuilder().freeze(),
+      throwsA(
+        isA<StateError>().having(
+          (error) => error.message,
+          'message',
+          allOf(contains('builtIn()'), contains('addStyler()')),
+        ),
+      ),
+    );
+  });
+
+  test('mixSchemaVersion stays in sync with pubspec version', () {
+    final pubspec = File('pubspec.yaml').readAsStringSync();
+    final version = RegExp(
+      r'^version:\s*([^\s]+)\s*$',
+      multiLine: true,
+    ).firstMatch(pubspec)?.group(1);
+
+    expect(version, isNotNull);
+    expect(mixSchemaVersion, version);
+  });
+
+  test('shared built-in contract leaves registry-backed stylers explicit', () {
+    expect(
+      builtInMixSchemaContract.registeredTypes,
+      isNot(contains(anyOf('icon', 'image'))),
+    );
+
+    for (final payload in [
+      {'type': 'icon', 'icon': 'home'},
+      {'type': 'image', 'image': 'avatar'},
+    ]) {
+      final result = builtInMixSchemaContract.decode<Object>(payload);
+      final errors = switch (result) {
+        MixSchemaDecodeFailure<Object>(:final errors) => errors,
+        MixSchemaDecodeSuccess<Object>() => fail('expected failure'),
+      };
+
+      expect(
+        errors.map((error) => error.code),
+        contains(MixSchemaErrorCode.unknownType),
+      );
+      expect(
+        errors.single.message,
+        allOf(
+          contains('registry-backed'),
+          contains('MixSchemaContractBuilder().builtIn()'),
+        ),
+      );
+    }
+
+    for (final styler in [
+      IconStyler(icon: const IconData(0xe88a, fontFamily: 'MaterialIcons')),
+      ImageStyler(image: MemoryImage(Uint8List.fromList([0]))),
+    ]) {
+      final result = builtInMixSchemaContract.encode(styler);
+      final errors = switch (result) {
+        MixSchemaEncodeFailure(:final errors) => errors,
+        MixSchemaEncodeSuccess() => fail('expected failure'),
+      };
+
+      expect(
+        errors.map((error) => error.code),
+        contains(MixSchemaErrorCode.unsupportedEncodeValue),
+      );
+      expect(
+        errors.single.message,
+        allOf(
+          contains('registry-backed'),
+          contains('MixSchemaContractBuilder().builtIn()'),
+        ),
+      );
+    }
   });
 
   test('frozen contract remains usable with original registry behavior', () {

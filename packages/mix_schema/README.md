@@ -6,7 +6,8 @@ The package is schema-first: Ack owns validation, decode, encode, and JSON Schem
 
 ## Current Surface
 
-- Built-in styler branches: `box`, `text`, `flex`, `stack`, `icon`, `image`, `flex_box`, `stack_box`.
+- Full built-in contract branches: `box`, `text`, `flex`, `stack`, `icon`, `image`, `flex_box`, `stack_box`.
+- The shared `builtInMixSchemaContract` is registry-free and intentionally exposes only `box`, `text`, `flex`, `stack`, `flex_box`, and `stack_box`. Use `MixSchemaContractBuilder().builtIn()` with a populated registry for icon/image payloads.
 - Variants use `Ack.lazy` for nested styles.
 - Modifiers support opacity, blur, flexible, and default text style.
 - Animation support is limited to named-curve `CurveAnimationConfig`; optional callbacks use the `animation_on_end` registry.

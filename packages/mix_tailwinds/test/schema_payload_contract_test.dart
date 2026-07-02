@@ -20,6 +20,8 @@ JsonMap _iconPayload(String classNames) =>
     TwTranslator(config: TwConfig.standard()).payloadIcon(classNames);
 
 void main() {
+  final fullContract = MixSchemaContractBuilder().builtIn().freeze();
+
   test('box parser emits schema payloads that decode through mix_schema', () {
     final contract = MixSchemaContractBuilder().builtIn().freeze();
     final payload = _boxPayload('bg-blue-500 p-4 rounded-md');
@@ -379,7 +381,7 @@ void main() {
     expect(payload['color'], '#1D4ED8');
     expect(payload['opacity'], 0.5);
     expect(
-      builtInMixSchemaContract.decode<IconStyler>(payload),
+      fullContract.decode<IconStyler>(payload),
       isA<MixSchemaDecodeSuccess>(),
     );
   });

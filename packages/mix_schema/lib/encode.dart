@@ -8,15 +8,22 @@ import 'src/contract/mix_schema_contract.dart'
 import 'src/schema/primitive_wire.dart';
 import 'src/schema/wire_discriminators.dart';
 
-/// Shared default contract with every built-in styler registered.
+/// Shared default contract for registry-free built-in stylers.
 ///
-/// Payload producers (e.g. `mix_tailwinds`) decode/encode against this instead
-/// of freezing a fresh contract per instance.
+/// Payload producers (e.g. `mix_tailwinds`) can decode/encode box, text, flex,
+/// stack, flex_box, and stack_box payloads against this instead of freezing a
+/// fresh contract per instance. Icon and image stylers use app-owned identity
+/// registries, so producers that need those branches should freeze their own
+/// [MixSchemaContractBuilder.builtIn] contract with the required registry data.
 final MixSchemaContract builtInMixSchemaContract = MixSchemaContractBuilder()
-    .builtIn()
+    .builtIn(includeRegistryBacked: false)
     .freeze();
 
 /// Styler discriminator wire values for the `type` field.
+///
+/// The enum lists the full wire vocabulary. The shared
+/// [builtInMixSchemaContract] intentionally excludes [icon] and [image]
+/// branches because their identity fields require an app-owned registry.
 enum SchemaStyler {
   box(schemaTypeBox),
   text(schemaTypeText),

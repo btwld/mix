@@ -10,6 +10,11 @@ tightening the public API around the internal token registry.
 - **`ContextToken`:** Zero-config token whose value is derived directly from
   the build context, so context-dependent values resolve without first
   registering a token in a scope (#938).
+- **Typed context variants:** `BrightnessVariant`, `BreakpointVariant`, and
+  `NotVariant` are now public value objects behind
+  `ContextVariant.brightness`, `ContextVariant.breakpoint`, and
+  `ContextVariant.not`, giving schema and tooling code stable typed data to
+  inspect instead of parsing keys.
 - **Spring animation helpers:** `AnimationConfig` statics are now factories,
   with added spring-curve wrappers for configuring physics-based transitions
   (#937).
@@ -21,6 +26,10 @@ tightening the public API around the internal token registry.
   brightness, breakpoints. Previously `Prop.resolveProp` resolved the merged
   nested style via `resolve()`, which skips variants. No-op for nested styles
   without variants (#926).
+- **Context variant equality:** `ContextVariant.brightness`,
+  `ContextVariant.breakpoint`, and `ContextVariant.not` now compare by their
+  typed values instead of identity, so equivalent variants deduplicate and
+  round-trip predictably.
 - **`Matrix4` interpolation:** Tween a transform against the identity matrix
   when one endpoint is null, instead of producing a degenerate result (#931).
 - **Animation config fallback:** Fall back to the previous animation config

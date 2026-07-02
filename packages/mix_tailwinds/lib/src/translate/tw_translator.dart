@@ -20,6 +20,10 @@ import 'tw_presets.dart';
 import 'tw_routing.dart';
 import 'tw_target.dart';
 
+final MixSchemaContract _tailwindsMixSchemaContract = MixSchemaContractBuilder()
+    .builtIn()
+    .freeze();
+
 final class TwTranslator {
   TwTranslator({required this.config, this.onUnsupported})
     : _parser = TailwindCandidateParser(
@@ -829,7 +833,7 @@ final class TwTranslator {
   }
 
   T _decodePayload<T extends Object>(JsonMap payload) {
-    final result = builtInMixSchemaContract.decode<T>(payload);
+    final result = _tailwindsMixSchemaContract.decode<T>(payload);
     return switch (result) {
       MixSchemaDecodeSuccess<T>(:final value) => value,
       MixSchemaDecodeFailure<T>(:final errors) => throw StateError(
