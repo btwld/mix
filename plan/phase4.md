@@ -111,7 +111,8 @@ blocked entirely, hiding `ColorRef.withAlpha()`-style composition).
   forever.
 **Acceptance:**
 - [ ] Per-kind round-trip; nested `not(not(x))` normalization decided + tested.
-- [ ] Core asks (if any) are separate, minimal, CHANGELOG'd commits.
+- [ ] Core asks (if any) are minimal, CHANGELOG'd, and included in the single
+      phase commit unless Leo explicitly approves a split.
 
 ### R4.7 — Remaining field gaps (backlog-driven, decide per item)
 Work the phase-2 backlog's残り: `foregroundDecoration`, `decoration.image`

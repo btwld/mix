@@ -13,12 +13,25 @@ realign the reference consumer.
 
 1. Work phases in order (dependencies are declared per phase; 3 and 4 can overlap
    once 2 exists).
-2. Before starting a phase: read its doc top to bottom, resolve the **Open
-   decisions** first (record the outcome in the doc's Decision log).
-3. Execute the **Task checklist**, checking items off in the doc as they land.
-4. After every work session: append an entry to `session.md`.
-5. When a phase closes: fill its **Decision log & lessons** section and roll
-   anything cross-cutting up into `lessons.md`.
+2. Before starting a phase: read its doc top to bottom, review `lessons.md`, the
+   prior phase's Decision log, and the latest `session.md` entry. Run a
+   phase-entry agent review of the phase plan against those inputs, then make
+   any checklist/process adjustments before coding.
+3. Resolve the **Open decisions** first (record the outcome in the doc's
+   Decision log).
+4. Execute the **Task checklist**, checking items off in the doc as they land.
+5. Verify the phase with fresh command output. The standard gate is
+   `melos run gen:build && melos run ci && melos run analyze`.
+6. Before closing a phase, after it appears complete, run a full agent/code
+   review over the entire phase diff (implementation, tests, generated files,
+   docs, and plan updates). Address review findings before marking the phase
+   `Completed`.
+7. After every work session: append an entry to `session.md`.
+8. When a phase closes: fill its **Decision log & lessons** section, roll
+   anything cross-cutting up into `lessons.md`, update this README's status
+   board, and land exactly one local commit for the phase. Do not split a phase
+   into multiple commits unless Leo explicitly asks; if another rule seems to
+   require a split, stop and ask first.
 
 Conventions:
 - Requirement IDs (`R0.1`, `R3.4`, …) are **planning artifacts** for traceability
@@ -26,8 +39,12 @@ Conventions:
   tests assert behavior and public contract output — never requirement IDs.
 - `[review A1]`-style tags link a requirement to the finding that motivates it in
   [`findings.md`](findings.md) (§Issues A1–A7, B1–B6, C1–C8).
-- Every phase ends with the repo's standard gate:
-  `melos run gen:build && melos run ci && melos run analyze`.
+- Every phase ends with the repo's standard gate and a fresh full agent/code
+  review before completion is recorded. Use `dev-tools:code-review` for the
+  closeout review and delegate to a fresh reviewer agent when available.
+- Commit discipline is one local commit per phase by default, after review and
+  verification. Avoid partial, per-package, or cleanup-only commits unless Leo
+  explicitly asks for them.
 
 ## Status board
 

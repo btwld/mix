@@ -73,6 +73,12 @@ _(fill when closed)_
 - Analyzer/tool coverage changes can be larger than the feature they accompany;
   scope them explicitly so correctness work does not inherit unrelated lint debt.
 - Generated files need traceable inputs before cleanup work touches them.
+- Phase boundaries need their own review loop: review lessons and prior phase
+  decisions before starting, then run a full agent/code review after the phase
+  appears complete but before marking it completed.
+- One commit per phase keeps review, rollback, and handoff at the same
+  granularity as the plan. Older "separate commit" instincts should become
+  explicit stop-and-ask moments, not unilateral splits.
 
 ## Decisions we reversed (and why)
 

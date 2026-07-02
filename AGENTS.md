@@ -20,7 +20,9 @@ and realign the tailwinds consumer.
 ## How to work the plan (every session)
 
 1. **Orient** — read `plan/README.md` (status board), then `plan/session.md` (latest
-   entry), then the active `plan/phaseN.md`.
+   entry), then `plan/lessons.md`, then the active `plan/phaseN.md`. Before coding,
+   run a phase-entry agent review of the active phase plan against prior
+   decisions/lessons and apply any lesson-driven checklist adjustments.
 2. **Decide before doing** — resolve the phase's *Open decisions* (D-items) first and
    record outcomes in its Decision log. Don't start tasks gated on an open decision.
 3. **Execute** — work the task checklist in order, checking items off in the doc as they
@@ -29,9 +31,16 @@ and realign the tailwinds consumer.
 4. **Verify** — meet the phase's exit criteria; the standard gate is
    `melos run gen:build && melos run ci && melos run analyze`.
    Never check off an item without fresh passing output.
-5. **Hand off** — append a `plan/session.md` entry (did / decisions / blocked / next) and
+5. **Review before closing** — after the phase appears complete and verified, run a full
+   agent/code review over the whole phase diff (implementation, tests, generated files,
+   docs, and plan updates). Use `dev-tools:code-review` and delegate to a fresh
+   reviewer agent when available. Address findings before marking the phase completed.
+6. **Hand off** — append a `plan/session.md` entry (did / decisions / blocked / next) and
    update the README status board. On phase close: fill the phase's *Decision log &
    lessons* and roll cross-cutting insights into `plan/lessons.md`.
+7. **Commit** — land exactly one local commit per completed phase. Do not split a phase
+   into multiple commits unless Leo explicitly asks; if another rule appears to require
+   a split, stop and ask.
 
 Phase order: **0 → 1 → 2 → 3 → 4 → 5**. Phase 2's inventory run generates phase 4's
 backlog (`plan/coverage-backlog.md`); phase 4's gradient codec gates phase 5's bypass
@@ -59,7 +68,8 @@ removal; phase 5 starts with a benchmark before deciding.
 - Tests assert **behavior**, never requirement IDs (`packages/mix_schema/REQUIREMENTS.md`
   convention — the plan's R-IDs are planning artifacts only).
 - `packages/mix` is a **published stable package** (≥2.0.3): core changes must be
-  minimal, separately committed, and CHANGELOG'd.
+  minimal and CHANGELOG'd. This plan uses one commit per phase, so do not split
+  core changes into a separate commit unless Leo explicitly asks.
 - Conventional Commits `type(scope): description` — scopes: `mix`, `mix_schema`,
   `mix_tailwinds`, `mix_generator`, `mix_annotations`, `mix_lint`.
   Branch: `feat/mix_schema`; PRs target `main`.

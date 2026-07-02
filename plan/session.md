@@ -15,6 +15,20 @@ Template:
 
 ---
 
+## 2026-07-02 — Codex — process follow-up
+
+**Did:** Updated the plan process docs to require lesson/prior-phase review
+before starting a phase, full agent/code review before closing a phase, and one
+local commit per phase. Reconciled Phase 2/Phase 4 wording that still implied
+extra commits.
+
+**Decisions:** One commit per phase is now the default. If another rule appears
+to require splitting commits, stop and ask Leo before committing.
+
+**Blocked/open:** None.
+
+**Next:** Phase 1 can start after its entry review and open decisions.
+
 ## 2026-07-02 — Codex — Phase 0
 
 **Did:**

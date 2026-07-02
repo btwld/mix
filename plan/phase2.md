@@ -64,7 +64,7 @@ every inventory id to exactly one bucket:
       cache or scope the entry points.
 
 ### R2.4 — Coverage backlog artifact
-- [ ] First run's classified output is committed as `plan/coverage-backlog.md`
+- [ ] First run's classified output is checked in as `plan/coverage-backlog.md`
       (grouped: supported / deferred-with-target-phase / never-with-reason).
       Phase 4's checklist is generated from the "deferred" group.
 
@@ -107,7 +107,8 @@ silently even in release — this is the R5 fail-loud promise under version skew
 - Deleting any manifest entry → CI fails with a readable diff (demonstrated).
 - Adding a dummy `Prop` field to a local `mix` checkout → CI fails (demonstrated
   once manually; documented in the tool's header).
-- `plan/coverage-backlog.md` committed; phase 4 checklist references it.
+- `plan/coverage-backlog.md` is included in the phase commit; phase 4 checklist
+  references it.
 - Full gate green.
 
 ## Decision log & lessons (fill during execution)
