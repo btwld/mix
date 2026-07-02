@@ -13,10 +13,11 @@ realign the reference consumer.
 
 1. Work phases in order (dependencies are declared per phase; 3 and 4 can overlap
    once 2 exists).
-2. Before starting a phase: read its doc top to bottom, review `lessons.md`, the
-   prior phase's Decision log, and the latest `session.md` entry. Run a
-   phase-entry agent review of the phase plan against those inputs, then make
-   any checklist/process adjustments before coding.
+2. Before starting a phase: read its doc top to bottom, review `lessons.md`
+   (including the carry-forward actions), the prior phase's Decision log, and
+   the latest `session.md` entry. Run a phase-entry agent review of the phase
+   plan against those inputs, then make any checklist/process adjustments before
+   coding.
 3. Resolve the **Open decisions** first (record the outcome in the doc's
    Decision log).
 4. Execute the **Task checklist**, checking items off in the doc as they land.
@@ -29,9 +30,10 @@ realign the reference consumer.
 7. After every work session: append an entry to `session.md`.
 8. When a phase closes: fill its **Decision log & lessons** section, roll
    anything cross-cutting up into `lessons.md`, update this README's status
-   board, and land exactly one local commit for the phase. Do not split a phase
-   into multiple commits unless Leo explicitly asks; if another rule seems to
-   require a split, stop and ask first.
+   board, confirm that phase-owned carry-forward lessons were applied or
+   explicitly deferred, and land exactly one local commit for the phase. Do not
+   split a phase into multiple commits unless Leo explicitly asks; if another
+   rule seems to require a split, stop and ask first.
 
 Conventions:
 - Requirement IDs (`R0.1`, `R3.4`, …) are **planning artifacts** for traceability

@@ -109,6 +109,9 @@ phase): decide whether/when mix_schema publishes.
       If publishing: remove `publish_to: none`, add `publish_mix_schema` job to
       `.github/workflows/publish.yml`, add to `changelog.yml` version-bump flow,
       write a real CHANGELOG + README quickstart.
+- [ ] Before any publish decision, explicitly resolve the Phase 1 transition
+      compromise: keep missing `v` as a warning for internal branch consumers, or
+      flip missing `v` to fatal and update tests/docs together.
 
 ## Non-goals (this phase)
 
@@ -144,6 +147,8 @@ consumers; else (a).
 - Grep-proof: no `package:mix_schema/` imports in tailwinds' runtime widget
   path; guard test enforces it.
 - Benchmark numbers + all D5.x decisions recorded below.
+- Phase 5 closeout confirms every carry-forward lesson owned by Phase 5 in
+  `plan/lessons.md` was either applied or explicitly deferred with a reason.
 
 ## Decision log & lessons (fill during execution)
 

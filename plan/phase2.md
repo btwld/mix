@@ -67,6 +67,9 @@ every inventory id to exactly one bucket:
 - [ ] First run's classified output is checked in as `plan/coverage-backlog.md`
       (grouped: supported / deferred-with-target-phase / never-with-reason).
       Phase 4's checklist is generated from the "deferred" group.
+- [ ] The backlog includes a short provenance header naming the inventory tool,
+      command, source package revision, and whether any entries were manually
+      curated. Do not hand-edit generated output without recording why.
 
 ### R2.5 — Runtime exhaustiveness assert (encode-side skew guard)
 Per styler, encode asserts that the set of fields it consumed (covered +
@@ -109,6 +112,8 @@ silently even in release — this is the R5 fail-loud promise under version skew
   once manually; documented in the tool's header).
 - `plan/coverage-backlog.md` is included in the phase commit; phase 4 checklist
   references it.
+- Phase 2 closeout confirms every carry-forward lesson owned by Phase 2 in
+  `plan/lessons.md` was either applied or explicitly deferred with a reason.
 - Full gate green.
 
 ## Decision log & lessons (fill during execution)

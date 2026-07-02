@@ -61,6 +61,8 @@ blocked entirely, hiding `ColorRef.withAlpha()`-style composition).
 - [ ] Canonical rule tested: single-source props stay flat (no gratuitous
       `$merge`); `encode(decode(j)) == j` byte-stable goldens updated.
 - [ ] Schema export represents the term union without leaking internals.
+- [ ] Reserved control-marker collisions are tested: `$merge` and `apply` remain
+      grammar-owned keys and cannot be redefined by field or extension payloads.
 
 ### R4.3 — Gradients (first coverage family — unblocks phase 5)
 - `decoration.gradient` union under `"kind"`: `linear` / `radial` / `sweep`,
@@ -163,6 +165,8 @@ here. Affects R4.3–R4.7 implementation placement, not their wire shape.
 - Named regression tests green: merge-encode, fluent-transform-encode,
   token+directive composition, gradient fixture.
 - Full gate green; goldens updated; WIRE_CONTRACT.md complete per family.
+- Phase 4 closeout confirms every carry-forward lesson owned by Phase 4 in
+  `plan/lessons.md` was either applied or explicitly deferred with a reason.
 
 ## Decision log & lessons (fill during execution)
 

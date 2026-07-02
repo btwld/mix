@@ -15,6 +15,20 @@ Template:
 
 ---
 
+## 2026-07-02 — Codex — lesson carry-forward
+
+**Did:** Turned the Phase 0/1 lessons into explicit carry-forward actions with
+phase owners, then added small acceptance hooks to phases 2–5 so future work
+checks provenance, reserved control-key collisions, publish-time `v` policy, and
+lesson closeout instead of relying on memory.
+
+**Decisions:** This was a process/docs cleanup only; no phase implementation was
+started.
+
+**Blocked/open:** None.
+
+**Next:** Phase 2 remains the next implementation phase.
+
 ## 2026-07-02 — Codex — Phase 1
 
 **Did:**

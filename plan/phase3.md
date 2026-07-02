@@ -43,6 +43,8 @@ added to core precisely to make variants encodable).
       explicit `"kind": "double"`.
 - [ ] Token name validation rule decided (D3.1) and enforced with a typed error.
 - [ ] Unknown `$`-marker rejected with a clear code/message.
+- [ ] Reserved control-marker collisions are tested: token terms cannot smuggle
+      unrelated `$` keys, and custom extension points cannot redefine `$token`.
 
 ### R3.2 — Token reference encode
 - A single-source `TokenSource`-backed Prop encodes to `{"$token": name}`
@@ -141,6 +143,8 @@ check, or add a core helper? Recommendation: document + preflight; no core ask.
 - WIRE_CONTRACT.md: "Token references" + "Theme document" sections match tests.
 - R3.6 demo test green — this is the phase's definition of done.
 - Inventory manifest (phase 2) updated: token constructs move to `supported`.
+- Phase 3 closeout confirms every carry-forward lesson owned by Phase 3 in
+  `plan/lessons.md` was either applied or explicitly deferred with a reason.
 
 ## Decision log & lessons (fill during execution)
 

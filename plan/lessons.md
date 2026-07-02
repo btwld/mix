@@ -94,6 +94,19 @@ _(fill when closed)_
 - Wire-format envelope keys are reserved across built-in and custom branches;
   custom extension points need regression tests for those contract boundaries.
 
+## Carry-forward actions
+
+| Lesson | Owner | Action |
+|--------|-------|--------|
+| Coverage should be a decision, not an accident. | Phase 2 | Inventory output and the coverage backlog must be generated deterministically, classify every reviewed gap, and record enough provenance that later agents know what produced it. |
+| Recommended API paths need tests. | Every phase | Any README/WIRE_CONTRACT usage path introduced or recommended in a phase gets an end-to-end test in the same phase. |
+| Encode semantics must be value-based, not construction-history-based. | Phase 4 | The `$merge` work must keep named construction-history regressions and resolution-equivalence tests, not just byte round-trips. |
+| Runtime dogfooding has an expiry. | Phase 5 | Benchmark before deciding, then move the schema guarantee to test-time unless data justifies keeping runtime decode. |
+| Generated files need traceable inputs. | Phase 2 / Phase 4 | Generated backlog or schema artifacts need a source/tool header; if the input is missing, record the blocker instead of hand-editing generated output. |
+| Phase boundary checks prevent stale assumptions. | Every phase | Run the lesson/prior-decision entry review before work and the full agent/code review before closeout. |
+| Root/control keys are reserved contract boundaries. | Phase 3 / Phase 4 | `$token`, `$merge`, `apply`, and future control markers need collision/unknown-marker tests analogous to the Phase 1 custom-branch `v` test. |
+| Missing `v` is a transition compromise. | Phase 5 / publish checkpoint | Before publishing the v1 contract, explicitly decide whether to flip missing `v` from warning to fatal and update tests/docs together. |
+
 ## Decisions we reversed (and why)
 
 | Date | Original decision | Reversal | Why |
