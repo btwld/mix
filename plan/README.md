@@ -51,7 +51,7 @@ Conventions:
 | Phase | Doc | Theme | Status |
 |-------|-----|-------|--------|
 | 0 | [phase0.md](phase0.md) | Land the branch honestly (pre-merge fixes) | Completed |
-| 1 | [phase1.md](phase1.md) | Format v1 charter — versioning, null policy, strict/lenient, limits | Not started |
+| 1 | [phase1.md](phase1.md) | Format v1 charter — versioning, null policy, strict/lenient, limits | Completed |
 | 2 | [phase2.md](phase2.md) | Drift ratchet — core-surface inventory tool | Not started |
 | 3 | [phase3.md](phase3.md) | Token model — `$token` grammar + theme document | Not started |
 | 4 | [phase4.md](phase4.md) | Property grammar (`apply`/`$merge`) + coverage expansion | Not started |

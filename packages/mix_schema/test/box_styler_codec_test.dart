@@ -42,6 +42,7 @@ void main() {
     };
 
     expect(payload, {
+      'v': 1,
       'type': 'box',
       'alignment': 'center',
       'padding': {'top': 8.0},

@@ -16,6 +16,7 @@ void main() {
     expect(schema[r'$schema'], 'http://json-schema.org/draft-07/schema#');
     expect(schema['x-mix-schema-contract'], 'mix_schema');
     expect(schema['x-mix-schema-version'], isA<String>());
+    expect(schema['x-mix-schema-format-version'], mixSchemaFormatVersion);
     expect(branches, hasLength(contract.registeredTypes.length));
     expect(branchesByType.keys.toSet(), contract.registeredTypes.toSet());
 
@@ -23,15 +24,21 @@ void main() {
       final branch = branchesByType[type]!;
       final properties = _properties(branch);
       final required = _required(branch);
+      final version = _object(properties['v']);
       final discriminator = _object(properties['type']);
 
+      expect(required, contains('v'), reason: type);
       expect(required, contains('type'), reason: type);
+      expect(version['type'], 'integer', reason: type);
+      expect(version['const'], mixSchemaFormatVersion, reason: type);
       expect(discriminator['type'], 'string', reason: type);
       expect(discriminator['const'], type, reason: type);
       expect(properties.keys.toSet(), {
+        'v',
         'type',
         ..._expectedBranchProperties[type]!,
       }, reason: type);
+      expect(_expectedBranchProperties[type], isNot(contains('v')));
       expect(_expectedBranchProperties[type], isNot(contains('type')));
     }
 

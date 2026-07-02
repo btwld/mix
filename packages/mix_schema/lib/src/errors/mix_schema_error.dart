@@ -2,6 +2,15 @@ import 'package:ack/ack.dart';
 
 /// Stable public error categories emitted by `mix_schema`.
 enum MixSchemaErrorCode {
+  /// A payload declares a wire format version this decoder cannot read.
+  unsupportedVersion('unsupported_version'),
+
+  /// A payload contains explicit JSON null where absence is required.
+  nullForbidden('null_forbidden'),
+
+  /// A payload exceeded the configured depth or node-count limit.
+  limitExceeded('limit_exceeded'),
+
   /// Decoded value did not match the caller's requested Dart type.
   typeMismatch('type_mismatch'),
 
@@ -41,6 +50,15 @@ enum MixSchemaErrorCode {
   final String wireValue;
 }
 
+/// Severity for a schema diagnostic.
+enum MixSchemaDiagnosticSeverity {
+  /// Fatal diagnostic returned in a failure result.
+  error,
+
+  /// Non-fatal diagnostic returned alongside a successful lenient decode.
+  warning,
+}
+
 /// Path-qualified public schema error.
 final class MixSchemaError {
   /// Creates an immutable schema error.
@@ -49,6 +67,7 @@ final class MixSchemaError {
     required this.path,
     required this.message,
     this.value,
+    this.severity = MixSchemaDiagnosticSeverity.error,
   });
 
   /// Stable category for this error.
@@ -63,9 +82,13 @@ final class MixSchemaError {
   /// Offending value when it is safe and useful to expose.
   final Object? value;
 
+  /// Whether this diagnostic is fatal or advisory.
+  final MixSchemaDiagnosticSeverity severity;
+
   /// Converts this error to a JSON-safe diagnostic map.
   JsonMap toJson() => {
     'code': code.wireValue,
+    'severity': severity.name,
     'path': path,
     'message': message,
     if (value != null) 'value': value,
@@ -83,7 +106,10 @@ sealed class MixSchemaValidationResult {
 /// Validation succeeded.
 final class MixSchemaValidationSuccess extends MixSchemaValidationResult {
   /// Creates a validation success result.
-  const MixSchemaValidationSuccess();
+  const MixSchemaValidationSuccess({this.warnings = const []});
+
+  /// Non-fatal validation diagnostics.
+  final List<MixSchemaError> warnings;
 }
 
 /// Validation failed with one or more path-qualified errors.
@@ -104,20 +130,26 @@ sealed class MixSchemaDecodeResult<T extends Object> {
 final class MixSchemaDecodeSuccess<T extends Object>
     extends MixSchemaDecodeResult<T> {
   /// Creates a decode success result.
-  const MixSchemaDecodeSuccess(this.value);
+  const MixSchemaDecodeSuccess(this.value, {this.warnings = const []});
 
   /// Decoded Mix styler or custom registered value.
   final T value;
+
+  /// Non-fatal decode diagnostics.
+  final List<MixSchemaError> warnings;
 }
 
 /// Decode failed with one or more path-qualified errors.
 final class MixSchemaDecodeFailure<T extends Object>
     extends MixSchemaDecodeResult<T> {
   /// Creates a decode failure result.
-  const MixSchemaDecodeFailure(this.errors);
+  const MixSchemaDecodeFailure(this.errors, {this.warnings = const []});
 
   /// Collected decode errors.
   final List<MixSchemaError> errors;
+
+  /// Non-fatal diagnostics collected before a fatal decode error.
+  final List<MixSchemaError> warnings;
 }
 
 /// Result returned by [MixSchemaContract.encode].

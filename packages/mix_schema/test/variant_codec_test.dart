@@ -37,6 +37,7 @@ void main() {
 
   test('decodes widget state, enabled, brightness, and breakpoint', () {
     final payload = {
+      'v': 1,
       'type': 'box',
       'variants': [
         {
@@ -199,6 +200,7 @@ void main() {
 
   test('context_not_widget_state decodes and re-encodes symmetrically', () {
     final payload = {
+      'v': 1,
       'type': 'box',
       'variants': [
         {
@@ -224,6 +226,7 @@ void main() {
 
   test('widget_state and enabled decode and re-encode symmetrically', () {
     final payload = {
+      'v': 1,
       'type': 'box',
       'variants': [
         {
@@ -313,6 +316,7 @@ void main() {
 
   test('nested variants decode and re-encode through the lazy root schema', () {
     final payload = {
+      'v': 1,
       'type': 'box',
       'variants': [
         {

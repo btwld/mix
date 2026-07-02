@@ -54,7 +54,19 @@ Things the review itself surfaced that qualify as lessons already:
   phase recorded the reason instead of hand-editing `default_theme.g.dart`.
 
 ### Phase 1 — Format v1 charter
-_(fill when closed)_
+
+- **Keep the envelope authoritative over branch payloads.** Root `v` is a
+  contract boundary, not a styler field. Write it last during encode/schema
+  export and cover custom branches that try to declare the same key.
+- **Reparse after each lenient skip.** Removing multiple list entries from one
+  stale validation pass can shift indices; one removal per parse attempt keeps
+  warnings and retained data coherent.
+- **Uniform null policy simplifies preflight.** Moving unbounded constraints to
+  `"infinity"` lets the contract reject explicit JSON null before any field
+  codec runs.
+- **Do not assume the schema engine owns resource limits.** Ack handled a
+  250-deep nested style probe, so untrusted-input depth/node caps belong in the
+  contract wrapper.
 
 ### Phase 2 — Drift ratchet
 _(fill when closed)_
@@ -79,6 +91,8 @@ _(fill when closed)_
 - One commit per phase keeps review, rollback, and handoff at the same
   granularity as the plan. Older "separate commit" instincts should become
   explicit stop-and-ask moments, not unilateral splits.
+- Wire-format envelope keys are reserved across built-in and custom branches;
+  custom extension points need regression tests for those contract boundaries.
 
 ## Decisions we reversed (and why)
 

@@ -8,6 +8,7 @@ export 'src/errors/mix_schema_error.dart'
         MixSchemaDecodeFailure,
         MixSchemaDecodeResult,
         MixSchemaDecodeSuccess,
+        MixSchemaDiagnosticSeverity,
         MixSchemaEncodeFailure,
         MixSchemaEncodeResult,
         MixSchemaEncodeSuccess,

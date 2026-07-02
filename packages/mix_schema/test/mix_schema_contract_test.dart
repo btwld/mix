@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:ack/ack.dart';
@@ -30,6 +29,7 @@ void main() {
     expect(schema[r'$schema'], contains('draft-07'));
     expect(schema['x-mix-schema-contract'], 'mix_schema');
     expect(schema['x-mix-schema-version'], isA<String>());
+    expect(schema['x-mix-schema-format-version'], mixSchemaFormatVersion);
   });
 
   test('contract builder cannot be mutated or frozen twice after freeze', () {
@@ -60,16 +60,43 @@ void main() {
     );
   });
 
-  test('mixSchemaVersion stays in sync with pubspec version', () {
-    final pubspec = File('pubspec.yaml').readAsStringSync();
-    final version = RegExp(
-      r'^version:\s*([^\s]+)\s*$',
-      multiLine: true,
-    ).firstMatch(pubspec)?.group(1);
+  test('format version is distinct from package version metadata', () {
+    final schema = newContract().exportJsonSchema();
 
-    expect(version, isNotNull);
-    expect(mixSchemaVersion, version);
+    expect(mixSchemaFormatVersion, 1);
+    expect(schema['x-mix-schema-format-version'], mixSchemaFormatVersion);
+    expect(schema['x-mix-schema-version'], mixSchemaVersion);
+    expect(mixSchemaVersion, isA<String>());
   });
+
+  test(
+    'format version envelope is authoritative over custom branch fields',
+    () {
+      final branch =
+          Ack.object({
+            'v': Ack.number().optional(),
+            'value': Ack.string(),
+          }).codec<_CustomStyle>(
+            decode: (data) => _CustomStyle(data['value']! as String),
+            encode: (value) => {'v': 99, 'value': value.value},
+          );
+      final contract = MixSchemaContractBuilder()
+          .addStyler('custom', branch)
+          .freeze();
+
+      final encoded = switch (contract.encode(const _CustomStyle('ok'))) {
+        MixSchemaEncodeSuccess(:final value) => value,
+        MixSchemaEncodeFailure(:final errors) => fail('$errors'),
+      };
+      final schema = contract.exportJsonSchema();
+      final branchSchema = (schema['anyOf']! as List).cast<JsonMap>().single;
+      final properties = branchSchema['properties']! as JsonMap;
+
+      expect(encoded['v'], mixSchemaFormatVersion);
+      expect((properties['v']! as JsonMap)['const'], mixSchemaFormatVersion);
+      expect((properties['v']! as JsonMap)['type'], 'integer');
+    },
+  );
 
   test('shared built-in contract leaves registry-backed stylers explicit', () {
     expect(
@@ -182,6 +209,6 @@ void main() {
       MixSchemaEncodeFailure(:final errors) => fail('$errors'),
     };
 
-    expect(encoded, {'type': 'box'});
+    expect(encoded, {'v': 1, 'type': 'box'});
   });
 }

@@ -62,6 +62,7 @@ void main() {
     };
 
     expect(payload, {
+      'v': 1,
       'type': 'box',
       'modifiers': [
         {'type': 'opacity', 'opacity': 0.5},
@@ -109,6 +110,7 @@ void main() {
     };
 
     expect(payload, {
+      'v': 1,
       'type': 'box',
       'modifiers': [
         {'type': 'flexible', 'flex': 1, 'fit': 'tight'},

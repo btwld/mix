@@ -15,6 +15,69 @@ void main() {
     expect(codeFor(result.getError()), MixSchemaErrorCode.typeMismatch);
   });
 
+  test('reaches unsupported_version through contract preflight', () {
+    final result = MixSchemaContractBuilder().builtIn().freeze().decode<Object>(
+      {'v': 2, 'type': 'box'},
+    );
+
+    final errors = switch (result) {
+      MixSchemaDecodeFailure<Object>(:final errors) => errors,
+      MixSchemaDecodeSuccess<Object>() => fail('expected failure'),
+    };
+
+    expect(errors.single.code, MixSchemaErrorCode.unsupportedVersion);
+  });
+
+  test('reaches null_forbidden through contract preflight', () {
+    final result = MixSchemaContractBuilder().builtIn().freeze().decode<Object>(
+      {'v': 1, 'type': 'box', 'padding': null},
+    );
+
+    final errors = switch (result) {
+      MixSchemaDecodeFailure<Object>(:final errors) => errors,
+      MixSchemaDecodeSuccess<Object>() => fail('expected failure'),
+    };
+
+    expect(errors.single.code, MixSchemaErrorCode.nullForbidden);
+  });
+
+  test('reaches limit_exceeded through contract preflight', () {
+    var style = <String, Object?>{'type': 'box'};
+    for (var i = 0; i < 70; i += 1) {
+      style = <String, Object?>{
+        'type': 'box',
+        'variants': [
+          {'kind': 'named', 'name': 'v$i', 'style': style},
+        ],
+      };
+    }
+
+    final result = MixSchemaContractBuilder().builtIn().freeze().decode<Object>(
+      {'v': 1, ...style},
+    );
+
+    final errors = switch (result) {
+      MixSchemaDecodeFailure<Object>(:final errors) => errors,
+      MixSchemaDecodeSuccess<Object>() => fail('expected failure'),
+    };
+
+    expect(errors.single.code, MixSchemaErrorCode.limitExceeded);
+  });
+
+  test('carries warning severity separately from errors', () {
+    final result = MixSchemaContractBuilder().builtIn().freeze().decode<Object>(
+      {'type': 'box'},
+    );
+
+    final warnings = switch (result) {
+      MixSchemaDecodeSuccess<Object>(:final warnings) => warnings,
+      MixSchemaDecodeFailure<Object>(:final errors) => fail('$errors'),
+    };
+
+    expect(warnings.single.code, MixSchemaErrorCode.requiredField);
+    expect(warnings.single.severity, MixSchemaDiagnosticSeverity.warning);
+  });
+
   test('maps required_field', () {
     final result = Ack.object({'value': Ack.string()}).safeParse({});
 

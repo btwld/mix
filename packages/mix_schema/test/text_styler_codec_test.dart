@@ -53,6 +53,7 @@ void main() {
     };
 
     expect(payload, {
+      'v': 1,
       'type': 'text',
       'textAlign': 'end',
       'style': {
@@ -75,6 +76,7 @@ void main() {
     };
 
     expect(payload, {
+      'v': 1,
       'type': 'text',
       'textDirectives': ['uppercase'],
     });
@@ -82,6 +84,7 @@ void main() {
 
   test('text directives decode and re-encode symmetrically', () {
     final payload = {
+      'v': 1,
       'type': 'text',
       'textDirectives': [
         'uppercase',
@@ -105,6 +108,7 @@ void main() {
 
   test('lineThrough text decoration uses line_through wire value', () {
     final payload = {
+      'v': 1,
       'type': 'text',
       'style': {'decoration': 'line_through'},
     };

@@ -28,7 +28,7 @@ MixSchemaError _mapSingleSchemaError(SchemaError error) {
   if (cause is UnsupportedEncodeValueError) {
     return MixSchemaError(
       code: MixSchemaErrorCode.unsupportedEncodeValue,
-      path: error.path,
+      path: _normalizePath(error.path),
       message: cause.reason,
       value: cause.value,
     );
@@ -36,7 +36,7 @@ MixSchemaError _mapSingleSchemaError(SchemaError error) {
   if (cause is UnknownRegistryIdError) {
     return MixSchemaError(
       code: MixSchemaErrorCode.unknownRegistryId,
-      path: error.path,
+      path: _normalizePath(error.path),
       message: cause.toString(),
       value: cause.id,
     );
@@ -44,7 +44,7 @@ MixSchemaError _mapSingleSchemaError(SchemaError error) {
   if (cause is UnknownRegistryValueError) {
     return MixSchemaError(
       code: MixSchemaErrorCode.unknownRegistryValue,
-      path: error.path,
+      path: _normalizePath(error.path),
       message: cause.toString(),
       value: cause.value,
     );
@@ -76,10 +76,17 @@ MixSchemaError _mapSingleSchemaError(SchemaError error) {
 
   return MixSchemaError(
     code: code,
-    path: error.path,
+    path: _normalizePath(error.path),
     message: error.message,
     value: error.value,
   );
+}
+
+String _normalizePath(String path) {
+  if (path.startsWith('#/')) return path.substring(1);
+  if (path == '#') return '';
+
+  return path;
 }
 
 MixSchemaErrorCode _mapConstraintCode(

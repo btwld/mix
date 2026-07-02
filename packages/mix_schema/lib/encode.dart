@@ -124,7 +124,7 @@ Object payloadEdgeInsets({
 /// Sparse `BoxConstraints` payload; omits unset bounds.
 ///
 /// Pass [double.infinity] for an explicit unbounded max constraint; it is
-/// emitted as `null`, matching the runtime codec's canonical wire form.
+/// emitted as `"infinity"`, matching the runtime codec's canonical wire form.
 JsonMap payloadConstraints({
   double? minWidth,
   double? maxWidth,
@@ -139,8 +139,8 @@ JsonMap payloadConstraints({
   };
 }
 
-double? _payloadMaxConstraintBound(double value) {
-  return value == double.infinity ? null : value;
+Object _payloadMaxConstraintBound(double value) {
+  return value == double.infinity ? 'infinity' : value;
 }
 
 /// Single `BorderSide` payload; omits unset fields.

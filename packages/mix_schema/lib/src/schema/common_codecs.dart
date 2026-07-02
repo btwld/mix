@@ -239,9 +239,9 @@ CodecSchema<String, Directive<String>> textDirectiveCodec() {
 CodecSchema<JsonMap, BoxConstraintsMix> boxConstraintsCodec() {
   return Ack.object({
         'minWidth': nonNegativeDoubleCodec().optional(),
-        'maxWidth': nonNegativeDoubleCodec().nullable().optional(),
+        'maxWidth': _maxConstraintBoundWireSchema().optional(),
         'minHeight': nonNegativeDoubleCodec().optional(),
-        'maxHeight': nonNegativeDoubleCodec().nullable().optional(),
+        'maxHeight': _maxConstraintBoundWireSchema().optional(),
       })
       .constrain(const _BoxConstraintsBoundsConstraint())
       .codec<BoxConstraintsMix>(
@@ -293,6 +293,10 @@ CodecSchema<String, T> enumCodec<T extends Object>(
 
 CodecSchema<String, T> enumNameCodec<T extends Enum>(List<T> values) {
   return enumCodec({for (final value in values) value.name: value});
+}
+
+AckSchema<Object, Object> _maxConstraintBoundWireSchema() {
+  return Ack.anyOf([nonNegativeDoubleCodec(), Ack.literal('infinity')]);
 }
 
 CodecSchema<String, TextDirection> textDirectionCodec() {
@@ -510,8 +514,9 @@ double? _readOptionalMinConstraintBound(JsonMap data, String key) {
 
 double? _readOptionalMaxConstraintBound(JsonMap data, String key) {
   if (!data.containsKey(key)) return null;
+  if (data[key] == 'infinity') return double.infinity;
 
-  return data[key] == null ? double.infinity : data[key] as double;
+  return data[key] as double;
 }
 
 JsonMap _encodeBoxConstraintsMix(BoxConstraintsMix value) {
@@ -542,8 +547,8 @@ double _encodeMinConstraintBound(double value) {
   return value;
 }
 
-double? _encodeMaxConstraintBound(double value) {
-  return value == double.infinity ? null : value;
+Object _encodeMaxConstraintBound(double value) {
+  return value == double.infinity ? 'infinity' : value;
 }
 
 void _assertEncodableConstraintBounds(double? min, double? max, String axis) {
@@ -632,7 +637,11 @@ final class _BoxConstraintsBoundsConstraint extends Constraint<JsonMap>
 
   static bool _isAxisValid(JsonMap value, String minKey, String maxKey) {
     final min = value[minKey] as double?;
-    final max = value[maxKey] as double?;
+    final max = switch (value[maxKey]) {
+      'infinity' => double.infinity,
+      final double value => value,
+      _ => null,
+    };
     if (min == null || max == null) return true;
 
     return min <= max;

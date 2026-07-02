@@ -66,6 +66,7 @@ void main() {
         ),
       ),
       {
+        'v': 1,
         'type': 'flex',
         'direction': 'horizontal',
         'mainAxisAlignment': 'spaceBetween',
@@ -87,6 +88,7 @@ void main() {
         ),
       ),
       {
+        'v': 1,
         'type': 'stack',
         'alignment': 'center',
         'fit': 'expand',
@@ -115,6 +117,7 @@ void main() {
         ),
       ),
       {
+        'v': 1,
         'type': 'icon',
         'icon': 'home',
         'color': '#112233',
@@ -134,6 +137,7 @@ void main() {
         ),
       ),
       {
+        'v': 1,
         'type': 'image',
         'image': 'pixels',
         'width': 64.0,
@@ -194,6 +198,7 @@ void main() {
         ),
       ),
       {
+        'v': 1,
         'type': 'flex_box',
         'padding': 8.0,
         'decoration': {'color': '#112233'},
@@ -214,6 +219,7 @@ void main() {
         ),
       ),
       {
+        'v': 1,
         'type': 'stack_box',
         'margin': {'top': 4.0},
         'stackAlignment': 'center',
@@ -226,6 +232,7 @@ void main() {
   test('flex_box keeps box and flex clipBehavior wire fields distinct', () {
     final contract = MixSchemaContractBuilder().builtIn().freeze();
     final payload = {
+      'v': 1,
       'type': 'flex_box',
       'clipBehavior': 'hardEdge',
       'flexClipBehavior': 'antiAlias',
@@ -242,6 +249,7 @@ void main() {
   test('stack_box keeps box and stack clipBehavior wire fields distinct', () {
     final contract = MixSchemaContractBuilder().builtIn().freeze();
     final payload = {
+      'v': 1,
       'type': 'stack_box',
       'clipBehavior': 'antiAlias',
       'stackClipBehavior': 'none',
@@ -260,6 +268,7 @@ void main() {
     () {
       final contract = MixSchemaContractBuilder().builtIn().freeze();
       final payload = {
+        'v': 1,
         'type': 'stack_box',
         'alignment': 'topLeft',
         'stackAlignment': 'center',

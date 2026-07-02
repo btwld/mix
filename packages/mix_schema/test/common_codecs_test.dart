@@ -83,6 +83,7 @@ void main() {
     };
 
     expect(encoded, {
+      'v': 1,
       'type': 'box',
       'decoration': {'color': '#CC336699'},
     });
@@ -162,16 +163,16 @@ void main() {
     expect(singleValueProp(constraints.$maxWidth, 'maxWidth'), 32);
   });
 
-  test('unbounded max constraints use explicit null only when present', () {
+  test('unbounded max constraints use infinity sentinel only when present', () {
     final payload = _encodeBox(
       BoxStyler(constraints: BoxConstraintsMix.maxWidth(double.infinity)),
     );
 
-    expect(payload['constraints'], {'maxWidth': null});
+    expect(payload['constraints'], {'maxWidth': 'infinity'});
 
     final constraints = _decodeBoxConstraints({
       'type': 'box',
-      'constraints': {'maxWidth': null, 'maxHeight': null},
+      'constraints': {'maxWidth': 'infinity', 'maxHeight': 'infinity'},
     });
 
     expect(singleValueProp(constraints.$maxWidth, 'maxWidth'), double.infinity);

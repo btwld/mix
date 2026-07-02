@@ -15,6 +15,36 @@ Template:
 
 ---
 
+## 2026-07-02 — Codex — Phase 1
+
+**Did:**
+- Implemented the format v1 envelope: top-level `v: 1` encode/schema export,
+  transition warning for missing `v`, and dedicated failures for malformed or
+  unsupported versions.
+- Added uniform null preflight, replaced max-constraint nulls with the
+  `"infinity"` sentinel, and documented the policy in `WIRE_CONTRACT.md`.
+- Added strict/default and lenient/opt-in decode modes with warning diagnostics,
+  plus resource-limit preflight for max depth 64 and 10,000 nodes.
+- Added Phase 1 behavior tests, updated existing encode/schema expectations, and
+  addressed the delegated closeout review finding that custom branches could
+  override the root `v` envelope.
+- Verified with `melos run gen:build && melos run ci && melos run analyze`
+  after the review fix.
+
+**Decisions:**
+- D1.1: missing `v` decodes as v1 with a warning during this branch window;
+  canonical producers/export include `v: 1`.
+- D1.2: unbounded max constraints use `"infinity"`; explicit JSON null is
+  forbidden everywhere.
+- D1.3: decode mode lives in `MixSchemaDecodeOptions`.
+- D1.4: caps are depth 64 and 10,000 nodes; Ack did not enforce an equivalent
+  depth cap in the probe.
+
+**Blocked/open:** Missing `v` should be flipped from warning to fatal before any
+v1 contract publish.
+
+**Next:** Start Phase 2 with its entry review and open decisions.
+
 ## 2026-07-02 — Codex — process follow-up
 
 **Did:** Updated the plan process docs to require lesson/prior-phase review

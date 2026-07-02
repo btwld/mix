@@ -1,6 +1,6 @@
 # Phase 1 — Format v1 charter (versioning, null policy, strict/lenient, limits)
 
-**Status:** Not started · **Depends on:** phase 0 · **Blocks:** credible server-driven use; publishing
+**Status:** Completed · **Depends on:** phase 0 · **Blocks:** credible server-driven use; publishing
 **Scope:** the wire format's *rules of evolution* — envelope, null semantics,
 decode modes, input limits, and the written policy. No new styling coverage.
 
@@ -31,10 +31,10 @@ mid-branch (`mix_schema_limits.dart`, commit `9239a75e8`) with no replacement.
   (`unsupportedVersion`) whose message names both the payload's and the
   decoder's supported version(s).
 **Acceptance:**
-- [ ] `v` accepted/required per D1.1's transition rule; tests for: valid `v:1`,
+- [x] `v` accepted/required per D1.1's transition rule; tests for: valid `v:1`,
       unsupported `v:2`, missing `v` (per decision), non-integer `v`.
-- [ ] `exportJsonSchema()` reflects the envelope; golden updated.
-- [ ] Format version is a distinct constant from the package version (supersedes
+- [x] `exportJsonSchema()` reflects the envelope; golden updated.
+- [x] Format version is a distinct constant from the package version (supersedes
       phase 0's R0.8 test with: format-version-in-schema-export test).
 
 ### R1.2 — Uniform null semantics `[review A3]`
@@ -44,10 +44,10 @@ mid-branch (`mix_schema_limits.dart`, commit `9239a75e8`) with no replacement.
 - The constraints infinity exception is eliminated per D1.2 (either `"infinity"`
   string sentinel, or documented as the single sanctioned null with rationale).
 **Acceptance:**
-- [ ] Probe-style tests: `{"padding": null}`, `{"decoration": {"color": null}}`,
+- [x] Probe-style tests: `{"padding": null}`, `{"decoration": {"color": null}}`,
       nested-in-variant null — all fail with the dedicated code and precise path.
-- [ ] Round-trip for unbounded max constraints under the D1.2 representation.
-- [ ] WIRE_CONTRACT.md "Null semantics" section written.
+- [x] Round-trip for unbounded max constraints under the D1.2 representation.
+- [x] WIRE_CONTRACT.md "Null semantics" section written.
 
 ### R1.3 — Strict / lenient decode modes `[review B2]`
 - **Strict (default):** current behavior — unknown key/kind/enum anywhere fails
@@ -59,10 +59,10 @@ mid-branch (`mix_schema_limits.dart`, commit `9239a75e8`) with no replacement.
   forbidden null, malformed term) remain fatal; a composite value is never
   partially applied.
 **Acceptance:**
-- [ ] Decode API accepts a mode (options object or parameter — D1.3).
-- [ ] Result type carries warnings distinct from errors (severity or separate
+- [x] Decode API accepts a mode (options object or parameter — D1.3).
+- [x] Result type carries warnings distinct from errors (severity or separate
       list) without breaking existing `MixSchemaDecodeSuccess/Failure` matching.
-- [ ] Tests per issue class × mode: unknown top-level field, unknown nested
+- [x] Tests per issue class × mode: unknown top-level field, unknown nested
       field, unknown variant `kind`, unknown enum value, unknown modifier `type`
       — lenient skips exactly the right granule and reports it; strict fails.
 
@@ -74,16 +74,16 @@ WIRE_CONTRACT.md gains a normative "Versioning & Evolution" section:
   what old lenient clients do (degrade with warnings).
 - Deprecation notation for renamed keys.
 **Acceptance:**
-- [ ] Section exists, reviewed against R1.1–R1.3 behavior; no code/doc conflict.
+- [x] Section exists, reviewed against R1.1–R1.3 behavior; no code/doc conflict.
 
 ### R1.5 — Untrusted-input resource limits `[review A6]`
 - Restore explicit caps: maximum nesting depth and maximum node count (defaults
   informed by real payloads — e.g. depth 64, nodes 10k; tune in D1.4).
 - Exceeding a cap fails with a dedicated code (`limitExceeded`) and path.
 **Acceptance:**
-- [ ] First verify whether ack already enforces caps (probe with a deep-nesting
+- [x] First verify whether ack already enforces caps (probe with a deep-nesting
       bomb through `Ack.lazy` variants); implement only what's missing.
-- [ ] Tests: depth bomb via nested variants, wide-array bomb; decoder returns a
+- [x] Tests: depth bomb via nested variants, wide-array bomb; decoder returns a
       typed failure (never a stack overflow / hang) within the caps.
 
 ### R1.6 — Error model additions
@@ -91,7 +91,7 @@ WIRE_CONTRACT.md gains a normative "Versioning & Evolution" section:
   `limitExceeded`, warning-severity carrier) added to `MixSchemaErrorCode` +
   error-mapper coverage test (every code reachable).
 **Acceptance:**
-- [ ] `error_mapper_test.dart` extended; each new code has a reaching test.
+- [x] `error_mapper_test.dart` extended; each new code has a reaching test.
 
 ## Non-goals (this phase)
 
@@ -105,23 +105,32 @@ codec is an endpoint; preserved-unvalidated bytes would tunnel the trust boundar
 warning, for one transition window (existing fixtures keep working); (b) absent
 → fatal immediately (clean, breaks current payload producers at once).
 Recommendation: (a) during this branch's life, flip to (b) before any publish.
-**Decision:** _(record)_
+**Decision:** Option (a). During this branch's life, absent `v` decodes as
+format v1 and records a warning; encoded output and exported schema are
+canonical with `v: 1`. Before publishing the v1 contract, revisit and flip
+missing `v` to fatal.
 
 **D1.2 — Infinity representation for constraints max bounds.** (a) keep
 `null`-means-infinity as the single documented null exception; (b) replace with
 `"infinity"` string sentinel and forbid null uniformly. Recommendation: (b) —
 one rule beats one exception; migration is mechanical.
-**Decision:** _(record)_
+**Decision:** Option (b). `maxWidth`/`maxHeight` use the string sentinel
+`"infinity"` for unbounded max constraints; explicit JSON `null` is forbidden
+everywhere.
 
 **D1.3 — Where the mode lives.** Options parameter on `decode()` vs a
 `DecodeOptions` object (extensible for resolvers in phase 5 — recommendation:
 introduce `DecodeOptions` now with `mode` only; resolvers slot in later without
 another signature change).
-**Decision:** _(record)_
+**Decision:** Introduce a `MixSchemaDecodeOptions` object now, with `mode` as
+its first public option. Keep `decode(payload)` strict by default.
 
 **D1.4 — Cap values.** Measure the largest realistic tailwinds-produced payload
 and the parity fixtures before picking numbers.
-**Decision:** _(record)_
+**Decision:** Use defaults of max depth 64 and max node count 10,000. Current
+tailwinds-produced payloads and parity fixtures are small object/list trees; the
+defaults are intentionally far above realistic output while still bounding
+malicious deep/wide input before Ack traversal.
 
 ## Verification / exit criteria
 
@@ -134,4 +143,9 @@ and the parity fixtures before picking numbers.
 
 | Date | Decision / lesson | Notes |
 |------|-------------------|-------|
-| | | |
+| 2026-07-02 | Missing `v` uses the transition warning path. | Decoders treat absent `v` as v1 for this branch window; producers and schema export are canonical with `v: 1`. Flip to fatal before publish. |
+| 2026-07-02 | Unbounded max constraints use `"infinity"`. | This removed the only planned null exception, so preflight can forbid explicit JSON null uniformly before Ack traversal. |
+| 2026-07-02 | Ack does not provide the needed input caps. | Probe decoded a 250-deep nested variant payload, so Phase 1 added contract-owned depth/node preflight. |
+| 2026-07-02 | Lenient decode removes one bad granule per parse attempt. | The closeout review exposed stale-index risk when multiple list entries fail in one Ack pass; reparsing after each removal keeps list paths coherent. |
+| 2026-07-02 | Root `v` is reserved even for custom branches. | The delegated review found custom branches could override the envelope; encode/export now write the format version last and tests cover the edge. |
+| 2026-07-02 | Verification and review completed. | Fresh closeout gate passed: `melos run gen:build && melos run ci && melos run analyze`; delegated review findings were addressed. |

@@ -7,6 +7,13 @@ The package is schema-first: Ack owns validation, decode, encode, and JSON Schem
 ## Current Surface
 
 - Full built-in contract branches: `box`, `text`, `flex`, `stack`, `icon`, `image`, `flex_box`, `stack_box`.
+- Top-level style documents use wire format `v: 1`; nested styles inherit the
+  enclosing document version.
+- Explicit JSON `null` is forbidden; unbounded max constraints use the
+  `"infinity"` sentinel.
+- Decode is strict by default. `MixSchemaDecodeOptions(mode:
+  MixSchemaDecodeMode.lenient)` skips forward-compatible unknown fields,
+  variant entries, and modifier entries with warnings.
 - The shared `builtInMixSchemaContract` is registry-free and intentionally exposes only `box`, `text`, `flex`, `stack`, `flex_box`, and `stack_box`. Use `MixSchemaContractBuilder().builtIn()` with a populated registry for icon/image payloads.
 - Variants use `Ack.lazy` for nested styles.
 - Modifiers support opacity, blur, flexible, and default text style.

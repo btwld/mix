@@ -91,6 +91,7 @@ void main() {
     };
 
     expect(payload, {
+      'v': 1,
       'type': 'box',
       'animation': {
         'duration': 250,
