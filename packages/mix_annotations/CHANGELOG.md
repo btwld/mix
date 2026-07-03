@@ -1,3 +1,7 @@
+## 2.1.1
+
+ - **DOCS**: Document `@MixableField(setterType:)` usage for `@MixableSpec` and `@MixableModifier` fields (#950, #951).
+
 ## 2.1.0
 
  - **FEAT**: Add `@MixableModifier` annotation. Annotate a `WidgetModifier` subclass to generate its modifier mixin and `ModifierMix` class via `mix_generator` (#924).
