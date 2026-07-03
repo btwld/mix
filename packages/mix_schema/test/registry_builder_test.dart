@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mix_schema/mix_schema.dart';
 import 'package:mix_schema/src/errors/mix_schema_error.dart';
+import 'package:mix_schema/src/registry/registry.dart';
 
 final class _EqualValue {
   const _EqualValue(this.id);
@@ -17,18 +17,11 @@ final class _EqualValue {
 
 void main() {
   test('registry builder freezes scoped identity values', () {
-    void callback() {}
+    const icon = IconData(0xe145, fontFamily: 'MaterialIcons');
+    final registry = RegistryBuilder().iconData('add', icon).freeze();
 
-    final registry = RegistryBuilder()
-        .animationOnEnd('done', callback)
-        .iconData('add', const IconData(0xe145, fontFamily: 'MaterialIcons'))
-        .freeze();
-
-    expect(
-      registry.lookup<VoidCallback>(MixSchemaScope.animationOnEnd, 'done'),
-      callback,
-    );
-    expect(registry.idFor(MixSchemaScope.animationOnEnd, callback), 'done');
+    expect(registry.lookup<IconData>(MixSchemaScope.iconData, 'add'), icon);
+    expect(registry.idFor(MixSchemaScope.iconData, icon), 'add');
   });
 
   test('registry reverse lookup requires registered identity', () {

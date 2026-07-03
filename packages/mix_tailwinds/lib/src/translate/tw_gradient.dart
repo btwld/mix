@@ -1,4 +1,4 @@
-/// Gradient accumulation and post-decode Mix patching.
+/// Gradient accumulation for Tailwind directional color stops.
 library;
 
 import 'dart:math' as math;
@@ -97,59 +97,7 @@ final class GradientAccum {
   }
 }
 
-@immutable
-class TwCssKeywordLinearTransform extends GradientTransform {
-  const TwCssKeywordLinearTransform(this.directionKey);
-
-  final String directionKey;
-
-  @override
-  Matrix4 transform(Rect bounds, {TextDirection? textDirection}) {
-    final w = bounds.width;
-    final h = bounds.height;
-    if (w <= 0 || h <= 0) return Matrix4.identity();
-
-    final (rawX, rawY) = _directionVector(directionKey, w, h);
-    final magnitude = math.sqrt((rawX * rawX) + (rawY * rawY));
-    if (magnitude == 0) return Matrix4.identity();
-
-    final ux = rawX / magnitude;
-    final uy = rawY / magnitude;
-    final gradientLength = (w * ux.abs()) + (h * uy.abs());
-    final scale = gradientLength / w;
-    final angle = math.atan2(uy, ux);
-
-    return Matrix4.identity()
-      ..translateByDouble(bounds.center.dx, bounds.center.dy, 0, 1)
-      ..rotateZ(angle)
-      ..scaleByDouble(scale, scale, 1, 1)
-      ..translateByDouble(-bounds.center.dx, -bounds.center.dy, 0, 1);
-  }
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is TwCssKeywordLinearTransform &&
-          directionKey == other.directionKey;
-
-  @override
-  int get hashCode => directionKey.hashCode;
-
-  static (double, double) _directionVector(
-    String directionKey,
-    double width,
-    double height,
-  ) {
-    return switch (directionKey) {
-      'to-r' => (1, 0),
-      'to-l' => (-1, 0),
-      'to-b' => (0, 1),
-      'to-t' => (0, -1),
-      'to-br' => (height, width),
-      'to-tr' => (height, -width),
-      'to-bl' => (-height, width),
-      'to-tl' => (-height, -width),
-      _ => (0, 1),
-    };
-  }
+/// Tailwinds compatibility name for Mix's CSS keyword linear-gradient transform.
+class TwCssKeywordLinearTransform extends CssKeywordLinearTransform {
+  const TwCssKeywordLinearTransform(super.directionKey);
 }

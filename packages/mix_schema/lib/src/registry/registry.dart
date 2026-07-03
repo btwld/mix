@@ -4,9 +4,6 @@ import '../errors/mix_schema_error.dart';
 
 /// Registry scopes used for runtime identity values in schema payloads.
 enum MixSchemaScope {
-  /// Callback used by animation `onEnd`.
-  animationOnEnd('animation_on_end'),
-
   /// Flutter [IconData] values referenced by icon stylers.
   iconData('icon_data'),
 
@@ -51,10 +48,6 @@ final class RegistryBuilder {
 
     return this;
   }
-
-  /// Registers an animation `onEnd` callback.
-  RegistryBuilder animationOnEnd(String id, VoidCallback value) =>
-      register(MixSchemaScope.animationOnEnd, id, value);
 
   /// Registers an [IconData] identity value.
   RegistryBuilder iconData(String id, IconData value) =>

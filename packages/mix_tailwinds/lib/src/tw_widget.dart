@@ -514,7 +514,7 @@ class TwIcon extends StatelessWidget {
 ///
 /// Parses each token through the candidate parser so variant-prefixed margins
 /// (e.g. `hover:me-1`) and negatives do not apply as base styles. `ms`/`me` are
-/// not schema-routed utility roots, so sides are matched on the unprefixed
+/// not typed-styler utility roots, so sides are matched on the unprefixed
 /// utility text rather than via [routeCandidate].
 EdgeInsetsGeometry? _extractLogicalMargin(String classNames, TwConfig cfg) {
   var start = 0.0;

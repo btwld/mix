@@ -4,32 +4,30 @@ import 'package:mix/mix.dart';
 import 'package:mix_schema/mix_schema.dart';
 
 void main() {
-  test('animation decodes registry-backed onEnd callbacks', () {
-    void onEnd() {}
-    final builder = MixSchemaContractBuilder();
-    builder.registry.animationOnEnd('done', onEnd);
-    final contract = builder.builtIn().freeze();
+  test('animation rejects callback ids in v1 wire', () {
+    final decoded = MixSchemaContractBuilder()
+        .builtIn()
+        .freeze()
+        .decode<BoxStyler>({
+          'type': 'box',
+          'animation': {
+            'duration': 250,
+            'delay': 50,
+            'curve': 'easeInOut',
+            'onEnd': 'done',
+          },
+        });
 
-    final decoded = contract.decode<BoxStyler>({
-      'type': 'box',
-      'animation': {
-        'duration': 250,
-        'delay': 50,
-        'curve': 'easeInOut',
-        'onEnd': 'done',
-      },
-    });
-
-    final style = switch (decoded) {
-      MixSchemaDecodeSuccess<BoxStyler>(:final value) => value,
-      MixSchemaDecodeFailure<BoxStyler>(:final errors) => fail('$errors'),
+    final errors = switch (decoded) {
+      MixSchemaDecodeFailure<BoxStyler>(:final errors) => errors,
+      MixSchemaDecodeSuccess<BoxStyler>() => fail('expected failure'),
     };
-    final animation = style.$animation as CurveAnimationConfig;
 
-    expect(animation.duration, const Duration(milliseconds: 250));
-    expect(animation.delay, const Duration(milliseconds: 50));
-    expect(animation.curve, Curves.easeInOut);
-    expect(animation.onEnd, same(onEnd));
+    expect(
+      errors.map((error) => error.code),
+      contains(MixSchemaErrorCode.unknownField),
+    );
+    expect(errors.map((error) => error.path), contains('/animation/onEnd'));
   });
 
   test('animation delay defaults to zero on decode', () {
@@ -70,18 +68,12 @@ void main() {
     }
   });
 
-  test('animation encodes named curves and registry callbacks', () {
-    void onEnd() {}
-    final builder = MixSchemaContractBuilder();
-    builder.registry.animationOnEnd('done', onEnd);
-    final contract = builder.builtIn().freeze();
-
-    final encoded = contract.encode(
+  test('animation encodes named curves without callbacks', () {
+    final encoded = MixSchemaContractBuilder().builtIn().freeze().encode(
       BoxStyler(
         animation: CurveAnimationConfig.easeInOut(
           const Duration(milliseconds: 250),
           delay: const Duration(milliseconds: 50),
-          onEnd: onEnd,
         ),
       ),
     );
@@ -94,26 +86,17 @@ void main() {
     expect(payload, {
       'v': 1,
       'type': 'box',
-      'animation': {
-        'duration': 250,
-        'curve': 'easeInOut',
-        'delay': 50,
-        'onEnd': 'done',
-      },
+      'animation': {'duration': 250, 'curve': 'easeInOut', 'delay': 50},
     });
   });
 
   test('spring animations round-trip physical parameters', () {
-    void onEnd() {}
-    final builder = MixSchemaContractBuilder();
-    builder.registry.animationOnEnd('spring_done', onEnd);
-    final contract = builder.builtIn().freeze();
+    final contract = MixSchemaContractBuilder().builtIn().freeze();
 
     final decoded = contract.decode<BoxStyler>({
       'type': 'box',
       'animation': {
         'spring': {'mass': 1.5, 'stiffness': 220, 'damping': 18},
-        'onEnd': 'spring_done',
       },
     });
 
@@ -126,7 +109,6 @@ void main() {
     expect(animation.spring.mass, 1.5);
     expect(animation.spring.stiffness, 220);
     expect(animation.spring.damping, 18);
-    expect(animation.onEnd, same(onEnd));
 
     final encoded = contract.encode(
       BoxStyler(
@@ -136,7 +118,6 @@ void main() {
             stiffness: 220,
             damping: 18,
           ),
-          onEnd: onEnd,
         ),
       ),
     );
@@ -151,7 +132,6 @@ void main() {
       'type': 'box',
       'animation': {
         'spring': {'mass': 1.5, 'stiffness': 220.0, 'damping': 18.0},
-        'onEnd': 'spring_done',
       },
     });
   });
@@ -243,7 +223,7 @@ void main() {
     );
   });
 
-  test('unregistered animation callbacks do not serialize closures', () {
+  test('animation callbacks fail encode instead of serializing closures', () {
     void onEnd() {}
     final result = MixSchemaContractBuilder().builtIn().freeze().encode(
       BoxStyler(
@@ -261,7 +241,7 @@ void main() {
 
     expect(
       errors.map((error) => error.code),
-      contains(MixSchemaErrorCode.unknownRegistryValue),
+      contains(MixSchemaErrorCode.unsupportedEncodeValue),
     );
   });
 }

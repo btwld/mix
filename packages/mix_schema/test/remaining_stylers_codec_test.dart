@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
@@ -98,13 +96,10 @@ void main() {
     );
   });
 
-  test('icon and image use scoped registries for identity fields', () {
+  test('icon and image use value forms for identity fields', () {
     const icon = IconData(0xe88a, fontFamily: 'MaterialIcons');
-    final image = MemoryImage(Uint8List.fromList([0, 1, 2, 3]));
-    final builder = MixSchemaContractBuilder()
-      ..registry.iconData('home', icon)
-      ..registry.imageProvider('pixels', image);
-    final contract = builder.builtIn().freeze();
+    const image = NetworkImage('https://example.com/pixels.png');
+    final contract = MixSchemaContractBuilder().builtIn().freeze();
 
     expect(
       _encode(
@@ -119,7 +114,7 @@ void main() {
       {
         'v': 1,
         'type': 'icon',
-        'icon': 'home',
+        'icon': {'codePoint': 0xe88a, 'fontFamily': 'MaterialIcons'},
         'color': '#112233',
         'size': 24.0,
         'blendMode': 'srcIn',
@@ -139,7 +134,7 @@ void main() {
       {
         'v': 1,
         'type': 'image',
-        'image': 'pixels',
+        'image': {'url': 'https://example.com/pixels.png'},
         'width': 64.0,
         'fit': 'cover',
         'alignment': 'center',
@@ -147,7 +142,7 @@ void main() {
     );
   });
 
-  test('icon and image registry id failures surface through the contract', () {
+  test('icon and image resolver failures surface through the contract', () {
     final contract = MixSchemaContractBuilder().builtIn().freeze();
 
     for (final payload in [
@@ -162,7 +157,7 @@ void main() {
 
       expect(
         errors.map((error) => error.code),
-        contains(MixSchemaErrorCode.unknownRegistryId),
+        contains(MixSchemaErrorCode.unresolvedIdentityName),
       );
     }
 

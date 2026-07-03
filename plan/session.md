@@ -15,6 +15,35 @@ Template:
 
 ---
 
+## 2026-07-03 — Codex — Phase 5
+
+**Did:**
+- Completed Phase 5: tailwinds now builds Mix stylers directly, enforces the
+  schema contract in tests, and has no runtime `package:mix_schema` imports in
+  the guarded public/widget translator path.
+- Replaced app-frozen identity registries with per-call icon/image resolvers,
+  reverse-name encode options, and value forms; hid registry types from the
+  public `mix_schema.dart` entry point.
+- Removed callback-over-wire support from v1 animation payloads, restored the
+  `mix_tailwinds` semantic compatibility facade, and moved CSS keyword linear
+  gradient behavior into core `mix` with schema `css_linear` support.
+- Ran the delegated closeout review and fixed its only finding by documenting
+  the Flutter icon tree-shaking caveat for raw `IconData` value forms.
+- Verified with the full gate (`melos run gen:build`, `melos run ci`,
+  `melos run analyze`), focused schema/tailwinds contract tests, and the
+  tailwinds example visual parity suite.
+
+**Decisions:**
+- Retire tailwinds runtime decode to test-time enforcement.
+- Keep `MixSchemaDecodeOptions` / `MixSchemaEncodeOptions` names.
+- Keep missing top-level `v` as a warning until the publishable v1 checkpoint.
+- Keep `mix_schema` unpublished until the future widget-tree demo proves the
+  composed contract.
+
+**Blocked/open:** None for Phase 5.
+
+**Next:** Commit Phase 5 as one local commit.
+
 ## 2026-07-03 — Codex — Phase 4
 
 **Did:**

@@ -3,8 +3,6 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
-import 'package:mix_schema/encode.dart';
-import 'package:mix_schema/mix_schema.dart';
 
 import '../parser/candidate_parser.dart';
 import '../parser/data/parser_registry.g.dart';
@@ -19,10 +17,6 @@ import 'tw_gradient.dart';
 import 'tw_presets.dart';
 import 'tw_routing.dart';
 import 'tw_target.dart';
-
-final MixSchemaContract _tailwindsMixSchemaContract = MixSchemaContractBuilder()
-    .builtIn()
-    .freeze();
 
 final class TwTranslator {
   TwTranslator({required this.config, this.onUnsupported})
@@ -44,11 +38,9 @@ final class TwTranslator {
     return _translate<BoxStyler>(
       classNames,
       target: TwTarget.box,
-      empty: BoxStyler.new,
-      decode: _decodePayload<BoxStyler>,
+      build: (context) => context.toBoxStyler(config),
       merge: (base, other) => base.merge(other),
       wrapVariant: _wrapBoxVariant,
-      applyGradient: (style, gradient) => style.gradient(gradient),
     );
   }
 
@@ -56,14 +48,12 @@ final class TwTranslator {
     return _translate<FlexBoxStyler>(
       classNames,
       target: TwTarget.flexBox,
-      empty: FlexBoxStyler.new,
-      decode: _decodePayload<FlexBoxStyler>,
+      build: (context) => context.toFlexBoxStyler(config),
       merge: (base, other) => base.merge(other),
       wrapVariant: _wrapFlexVariant,
-      applyGradient: (style, gradient) => style.gradient(gradient),
-      afterBasePayload: (payload, context) {
+      afterBase: (context) {
         if (!context.hasBaseFlex) {
-          payload['direction'] = payloadEnum(Axis.vertical);
+          context.direction = Axis.vertical;
         }
       },
     );
@@ -73,43 +63,17 @@ final class TwTranslator {
     return _translate<TextStyler>(
       classNames,
       target: TwTarget.text,
-      empty: TextStyler.new,
-      decode: _decodePayload<TextStyler>,
+      build: (context) => context.toTextStyler(config),
       merge: (base, other) => base.merge(other),
       wrapVariant: _wrapTextVariant,
-      applyGradient: (style, _) => style,
-      seedPayload: () => payloadStyler(SchemaStyler.text, {
-        'style': payloadTextStyle(height: config.textDefaults.lineHeight),
-      }),
     );
   }
 
-  JsonMap payloadBox(String classNames) {
-    return _payloadFor(classNames, target: TwTarget.box);
-  }
-
-  JsonMap payloadFlex(String classNames) {
-    return _payloadFor(classNames, target: TwTarget.flexBox);
-  }
-
-  JsonMap payloadText(String classNames) {
-    return _payloadFor(classNames, target: TwTarget.text);
-  }
-
   IconStyler translateIcon(String classNames) {
-    return _decodePayload<IconStyler>(payloadIcon(classNames));
-  }
-
-  /// Builds an `icon` styler payload from base, schema-supported utilities.
-  ///
-  /// Only `w-*`/`h-*` (size), `text-<color>` (color), and `opacity-*` map onto
-  /// [IconStyler]. This Tailwinds icon path ignores variant-prefixed utilities
-  /// as base icon fields; widget-layer utilities (e.g. margins) are handled
-  /// separately by [TwIcon].
-  JsonMap payloadIcon(String classNames) {
-    final payload = payloadStyler(SchemaStyler.icon);
     double? width;
     double? height;
+    Color? color;
+    double? opacity;
 
     for (final token in listTokens(classNames)) {
       final parsed = _parser.parseCandidate(token);
@@ -131,20 +95,17 @@ final class TwTranslator {
         case 'h':
           height = _sizingLength('h', value) ?? height;
         case 'text':
-          final color = _color(value, _utilityModifier(utility));
-          if (color != null) payload['color'] = payloadColor(color);
+          color = _color(value, _utilityModifier(utility)) ?? color;
         case 'opacity':
-          final opacity = _opacity(value);
-          if (opacity != null) payload['opacity'] = opacity;
+          opacity = _opacity(value) ?? opacity;
       }
     }
 
     final size = (width != null && height != null)
         ? (width < height ? width : height)
         : (width ?? height);
-    if (size != null) payload['size'] = size;
 
-    return payload;
+    return IconStyler(size: size, color: color, opacity: opacity);
   }
 
   CurveAnimationConfig? parseAnimationFromTokens(List<String> tokens) {
@@ -200,65 +161,17 @@ final class TwTranslator {
     return CurveAnimationConfig(duration: duration, curve: curve, delay: delay);
   }
 
-  JsonMap _payloadFor(String classNames, {required TwTarget target}) {
-    final groups = _buildGroups(classNames, target);
-    final base = groups[_VariantPath.base] ?? _GroupContext(target);
-
-    if (target == TwTarget.box) {
-      final hasVariantTransform = groups.entries.any(
-        (entry) =>
-            entry.key != _VariantPath.base &&
-            entry.value.transform.hasAnyTransform,
-      );
-      if (hasVariantTransform && !base.transform.hasAnyTransform) {
-        base.transform.needsIdentity = true;
-      }
-
-      _finalizeGroupPayload(base);
-      final variants = <JsonMap>[];
-      for (final entry in groups.entries) {
-        if (entry.key == _VariantPath.base) continue;
-
-        final context = entry.value;
-        if (context.transform.hasAnyTransform &&
-            base.transform.hasAnyTransform) {
-          context.transform.inheritUnsetFrom(base.transform);
-        }
-        if (context.border.hasStructure && base.border.hasStructure) {
-          context.border.inheritUnsetFrom(base.border);
-        }
-
-        _finalizeGroupPayload(context);
-        if (_isEmptyPayload(context.payload)) continue;
-        variants.add(_boxVariantPayload(entry.key.parts, context.payload));
-      }
-      if (variants.isNotEmpty) {
-        base.payload['variants'] = variants;
-      }
-
-      return base.payload;
-    }
-
-    _finalizeGroupPayload(base);
-    return base.payload;
-  }
-
   S _translate<S>(
     String classNames, {
     required TwTarget target,
-    required S Function() empty,
-    required S Function(JsonMap payload) decode,
+    required S Function(_GroupContext context) build,
     required S Function(S base, S other) merge,
     required S Function(List<_VariantPart> path, S style) wrapVariant,
-    required S Function(S style, LinearGradientMix gradient) applyGradient,
-    JsonMap Function()? seedPayload,
-    void Function(JsonMap payload, _GroupContext context)? afterBasePayload,
+    void Function(_GroupContext context)? afterBase,
   }) {
-    final groups = _buildGroups(classNames, target, seedPayload: seedPayload);
-    final baseContext =
-        groups[_VariantPath.base] ??
-        _GroupContext(target, seedPayload: seedPayload);
-    afterBasePayload?.call(baseContext.payload, baseContext);
+    final groups = _buildGroups(classNames, target);
+    final baseContext = groups[_VariantPath.base] ?? _GroupContext(target);
+    afterBase?.call(baseContext);
 
     final hasVariantTransform = groups.entries.any(
       (entry) =>
@@ -269,12 +182,7 @@ final class TwTranslator {
       baseContext.transform.needsIdentity = true;
     }
 
-    _finalizeGroupPayload(baseContext);
-    var result = decode(baseContext.payload);
-    final baseGradient = baseContext.gradient.toGradientMix(
-      config.gradientStrategy,
-    );
-    if (baseGradient != null) result = applyGradient(result, baseGradient);
+    var result = build(baseContext);
 
     for (final entry in groups.entries) {
       if (entry.key == _VariantPath.base) continue;
@@ -289,10 +197,7 @@ final class TwTranslator {
       if (context.gradient.hasAnyPart && baseContext.gradient.hasAnyPart) {
         context.gradient.inheritUnsetFrom(baseContext.gradient);
       }
-      _finalizeGroupPayload(context);
-      var child = decode(context.payload);
-      final gradient = context.gradient.toGradientMix(config.gradientStrategy);
-      if (gradient != null) child = applyGradient(child, gradient);
+      final child = build(context);
       result = merge(result, wrapVariant(entry.key.parts, child));
     }
 
@@ -301,15 +206,11 @@ final class TwTranslator {
 
   Map<_VariantPath, _GroupContext> _buildGroups(
     String classNames,
-    TwTarget target, {
-    JsonMap Function()? seedPayload,
-  }) {
+    TwTarget target,
+  ) {
     final groups = <_VariantPath, _GroupContext>{};
     _GroupContext groupFor(_VariantPath path) {
-      return groups.putIfAbsent(path, () {
-        final context = _GroupContext(target, seedPayload: seedPayload);
-        return context;
-      });
+      return groups.putIfAbsent(path, () => _GroupContext(target));
     }
 
     for (final token in listTokens(classNames)) {
@@ -370,7 +271,7 @@ final class TwTranslator {
     }
 
     if (target == TwTarget.text) {
-      return _applyTextUtility(group.payload, raw, root, value, modifier);
+      return _applyTextUtility(group, raw, root, value, modifier);
     }
 
     return _applyBoxLikeUtility(group, raw, root, value, modifier, negative);
@@ -384,70 +285,61 @@ final class TwTranslator {
     TailwindModifier? modifier,
     bool negative,
   ) {
-    final payload = group.payload;
     switch (raw) {
       case 'inline-flex':
-        payload['direction'] = payloadEnum(Axis.horizontal);
-        payload['mainAxisSize'] = payloadEnum(MainAxisSize.min);
+        group.direction = Axis.horizontal;
+        group.mainAxisSize = MainAxisSize.min;
         group.hasBaseFlex = true;
         return true;
       case 'flex':
       case 'flex-row':
-        payload['direction'] = payloadEnum(Axis.horizontal);
+        group.direction = Axis.horizontal;
         group.hasBaseFlex = true;
         return true;
       case 'flex-col':
-        payload['direction'] = payloadEnum(Axis.vertical);
+        group.direction = Axis.vertical;
         group.hasBaseFlex = true;
         return true;
       case 'items-start':
-        payload['crossAxisAlignment'] = payloadEnum(CrossAxisAlignment.start);
+        group.crossAxisAlignment = CrossAxisAlignment.start;
         return true;
       case 'items-center':
-        payload['crossAxisAlignment'] = payloadEnum(CrossAxisAlignment.center);
+        group.crossAxisAlignment = CrossAxisAlignment.center;
         return true;
       case 'items-end':
-        payload['crossAxisAlignment'] = payloadEnum(CrossAxisAlignment.end);
+        group.crossAxisAlignment = CrossAxisAlignment.end;
         return true;
       case 'items-stretch':
-        payload['crossAxisAlignment'] = payloadEnum(CrossAxisAlignment.stretch);
+        group.crossAxisAlignment = CrossAxisAlignment.stretch;
         return true;
       case 'items-baseline':
-        payload['crossAxisAlignment'] = payloadEnum(
-          CrossAxisAlignment.baseline,
-        );
-        payload['textBaseline'] = payloadEnum(TextBaseline.alphabetic);
+        group.crossAxisAlignment = CrossAxisAlignment.baseline;
+        group.textBaseline = TextBaseline.alphabetic;
         return true;
       case 'justify-start':
-        payload['mainAxisAlignment'] = payloadEnum(MainAxisAlignment.start);
+        group.mainAxisAlignment = MainAxisAlignment.start;
         return true;
       case 'justify-center':
-        payload['mainAxisAlignment'] = payloadEnum(MainAxisAlignment.center);
+        group.mainAxisAlignment = MainAxisAlignment.center;
         return true;
       case 'justify-end':
-        payload['mainAxisAlignment'] = payloadEnum(MainAxisAlignment.end);
+        group.mainAxisAlignment = MainAxisAlignment.end;
         return true;
       case 'justify-between':
-        payload['mainAxisAlignment'] = payloadEnum(
-          MainAxisAlignment.spaceBetween,
-        );
+        group.mainAxisAlignment = MainAxisAlignment.spaceBetween;
         return true;
       case 'justify-around':
-        payload['mainAxisAlignment'] = payloadEnum(
-          MainAxisAlignment.spaceAround,
-        );
+        group.mainAxisAlignment = MainAxisAlignment.spaceAround;
         return true;
       case 'justify-evenly':
-        payload['mainAxisAlignment'] = payloadEnum(
-          MainAxisAlignment.spaceEvenly,
-        );
+        group.mainAxisAlignment = MainAxisAlignment.spaceEvenly;
         return true;
     }
 
     if (root == 'gap') {
       final length = _spaceLength(value, negative: negative);
       if (length == null) return false;
-      payload['spacing'] = length;
+      group.spacing = length;
       return true;
     }
 
@@ -462,131 +354,127 @@ final class TwTranslator {
     TailwindModifier? modifier,
     bool negative,
   ) {
-    final payload = group.payload;
-
-    if (_applySpacing(payload, root, value, negative: negative)) return true;
-    if (_applySizing(payload, root, value, negative: negative)) return true;
+    if (_applySpacing(group, root, value, negative: negative)) return true;
+    if (_applySizing(group, root, value, negative: negative)) return true;
     if (_applyBorder(group, raw, root, value, modifier)) return true;
-    if (_applyRadius(payload, root, value)) return true;
+    if (_applyRadius(group, root, value)) return true;
     if (_applyTransform(group.transform, root, value, negative)) return true;
 
     switch (root) {
       case 'bg':
         final color = _color(value, modifier);
         if (color == null) return false;
-        _decoration(payload).addAll(payloadDecoration(color: color));
+        group.decoration.color = color;
         return true;
       case 'opacity':
         final opacity = _opacity(value);
         if (opacity == null) return false;
-        _modifiers(
-          payload,
-        ).add(payloadModifier(SchemaModifier.opacity, {'opacity': opacity}));
+        group.modifiers.add(OpacityModifierMix(opacity: opacity));
         return true;
       case 'blur':
         final sigma = _blur(value);
         if (sigma == null) return false;
-        _modifiers(
-          payload,
-        ).add(payloadModifier(SchemaModifier.blur, {'sigma': sigma}));
+        group.modifiers.add(BlurModifierMix(sigma: sigma));
         return true;
       case 'shadow':
-        final shadows = _boxShadowPayload(raw, value);
+        final shadows = _boxShadowMixes(raw, value);
         if (shadows == null) return false;
-        _decoration(payload).addAll(payloadDecoration(boxShadow: shadows));
+        group.decoration.boxShadow = shadows;
         return true;
       case 'text':
       case 'size':
-        return _applyDefaultTextUtility(payload, root, value, modifier);
+        return _applyDefaultTextUtility(group, root, value, modifier);
     }
 
     if (raw == 'overflow-hidden' || raw == 'overflow-clip') {
-      _decoration(payload);
-      payload['clipBehavior'] = payloadEnum(Clip.hardEdge);
+      group.decoration.ensurePresent = true;
+      group.clipBehavior = Clip.hardEdge;
       return true;
     }
     if (raw == 'overflow-visible') {
-      payload['clipBehavior'] = payloadEnum(Clip.none);
+      group.clipBehavior = Clip.none;
       return true;
     }
-    if (_applyDefaultTextStatic(payload, raw)) return true;
+    if (_applyDefaultTextStatic(group, raw)) return true;
 
     return false;
   }
 
   bool _applyTextUtility(
-    JsonMap payload,
+    _GroupContext group,
     String raw,
     String root,
     TailwindValue? value,
     TailwindModifier? modifier,
   ) {
     if (root == 'text' || root == 'size') {
-      if (_applyTextStyleUtility(() => _textStyle(payload), value, modifier)) {
+      if (_applyTextStyleUtility(() => group.textStyle, value, modifier)) {
         return true;
       }
     }
 
     switch (raw) {
       case 'text-left':
-        payload['textAlign'] = payloadEnum(TextAlign.left);
+        group.textAlign = TextAlign.left;
         return true;
       case 'text-center':
-        payload['textAlign'] = payloadEnum(TextAlign.center);
+        group.textAlign = TextAlign.center;
         return true;
       case 'text-right':
-        payload['textAlign'] = payloadEnum(TextAlign.right);
+        group.textAlign = TextAlign.right;
         return true;
       case 'text-justify':
-        payload['textAlign'] = payloadEnum(TextAlign.justify);
+        group.textAlign = TextAlign.justify;
         return true;
       case 'text-start':
-        payload['textAlign'] = payloadEnum(TextAlign.start);
+        group.textAlign = TextAlign.start;
         return true;
       case 'text-end':
-        payload['textAlign'] = payloadEnum(TextAlign.end);
+        group.textAlign = TextAlign.end;
         return true;
       case 'uppercase':
+        group.textDirectives.add(const UppercaseStringDirective());
+        return true;
       case 'lowercase':
+        group.textDirectives.add(const LowercaseStringDirective());
+        return true;
       case 'capitalize':
-        _textDirectives(payload).add(raw);
+        group.textDirectives.add(const CapitalizeStringDirective());
         return true;
       case 'truncate':
-        payload['overflow'] = payloadEnum(TextOverflow.ellipsis);
-        payload['maxLines'] = 1;
-        payload['softWrap'] = false;
+        group.overflow = TextOverflow.ellipsis;
+        group.maxLines = 1;
+        group.softWrap = false;
         return true;
       case 'leading-even':
-        payload['textHeightBehavior'] = payloadTextHeightBehavior(
-          leadingDistribution: TextLeadingDistribution.even,
-        );
+        group.textHeightBehavior.leadingDistribution =
+            TextLeadingDistribution.even;
         return true;
       case 'leading-trim':
-        payload['textHeightBehavior'] = payloadTextHeightBehavior(
-          leadingDistribution: TextLeadingDistribution.even,
-          applyHeightToFirstAscent: false,
-          applyHeightToLastDescent: false,
-        );
+        group.textHeightBehavior
+          ..leadingDistribution = TextLeadingDistribution.even
+          ..applyHeightToFirstAscent = false
+          ..applyHeightToLastDescent = false;
         return true;
     }
 
-    if (_applyFontWeight(_textStyle(payload), raw)) return true;
-    if (_applyLineHeight(_textStyle(payload), raw)) return true;
-    if (_applyTracking(_textStyle(payload), raw)) return true;
-    if (_applyTextShadow(_textStyle(payload), raw)) return true;
+    if (_applyFontWeight(group.textStyle, raw)) return true;
+    if (_applyLineHeight(group.textStyle, raw)) return true;
+    if (_applyTracking(group.textStyle, raw)) return true;
+    if (_applyTextShadow(group.textStyle, raw)) return true;
 
     return false;
   }
 
   bool _applyDefaultTextUtility(
-    JsonMap payload,
+    _GroupContext group,
     String root,
     TailwindValue? value,
     TailwindModifier? modifier,
   ) {
     if (root == 'text' || root == 'size') {
       return _applyTextStyleUtility(
-        () => _defaultTextStyle(payload),
+        () => group.ensureDefaultTextStyle(),
         value,
         modifier,
       );
@@ -596,7 +484,7 @@ final class TwTranslator {
   }
 
   bool _applyTextStyleUtility(
-    JsonMap Function() style,
+    _TextStyleAccum Function() style,
     TailwindValue? value,
     TailwindModifier? modifier,
   ) {
@@ -604,53 +492,55 @@ final class TwTranslator {
     final size = key == null ? null : config.fontSizes[key];
     if (size != null) {
       final lineHeight = twDefaultLineHeights[key];
-      style().addAll(payloadTextStyle(fontSize: size, height: lineHeight));
+      style()
+        ..fontSize = size
+        ..height = lineHeight;
       return true;
     }
 
     final arbitraryLength = _arbitraryLength(value);
     if (arbitraryLength != null) {
-      style().addAll(payloadTextStyle(fontSize: arbitraryLength));
+      style().fontSize = arbitraryLength;
       return true;
     }
 
     final color = _color(value, modifier);
     if (color != null) {
-      style().addAll(payloadTextStyle(color: color));
+      style().color = color;
       return true;
     }
 
     return false;
   }
 
-  bool _applyDefaultTextStatic(JsonMap payload, String raw) {
-    final style = _defaultTextStyle(payload);
+  bool _applyDefaultTextStatic(_GroupContext group, String raw) {
+    final style = group.ensureDefaultTextStyle();
     if (_applyFontWeight(style, raw)) return true;
     if (_applyTextShadow(style, raw)) return true;
     return false;
   }
 
   bool _applySpacing(
-    JsonMap payload,
+    _GroupContext group,
     String root,
     TailwindValue? value, {
     required bool negative,
   }) {
-    final field = switch (root) {
-      'p' || 'px' || 'py' || 'pt' || 'pr' || 'pb' || 'pl' => 'padding',
-      'm' || 'mx' || 'my' || 'mt' || 'mr' || 'mb' || 'ml' => 'margin',
+    final edges = switch (root) {
+      'p' || 'px' || 'py' || 'pt' || 'pr' || 'pb' || 'pl' => group.padding,
+      'm' || 'mx' || 'my' || 'mt' || 'mr' || 'mb' || 'ml' => group.margin,
       _ => null,
     };
-    if (field == null) return false;
+    if (edges == null) return false;
     final length = _spaceLength(value, negative: negative);
     if (length == null) return false;
-    if (field == 'margin' && length < 0) return true;
-    _setEdge(payload, field, length, sides: _axisOrSide(root));
+    if (identical(edges, group.margin) && length < 0) return true;
+    edges.set(length, sides: _axisOrSide(root));
     return true;
   }
 
   bool _applySizing(
-    JsonMap payload,
+    _GroupContext group,
     String root,
     TailwindValue? value, {
     required bool negative,
@@ -660,48 +550,70 @@ final class TwTranslator {
     final length = _sizingLength(root, value);
     if (length == null) return _isWidgetLayerSize(value);
 
-    final delta = switch (root) {
-      'w' => payloadConstraints(minWidth: length, maxWidth: length),
-      'h' => payloadConstraints(minHeight: length, maxHeight: length),
-      'min-w' => payloadConstraints(minWidth: length),
-      'min-h' => payloadConstraints(minHeight: length),
-      'max-w' => payloadConstraints(maxWidth: length),
-      'max-h' => payloadConstraints(maxHeight: length),
-      _ => null,
-    };
-    if (delta == null) return false;
-    _objectField(payload, 'constraints').addAll(delta);
+    switch (root) {
+      case 'w':
+        group.constraints
+          ..minWidth = length
+          ..maxWidth = length;
+      case 'h':
+        group.constraints
+          ..minHeight = length
+          ..maxHeight = length;
+      case 'min-w':
+        group.constraints.minWidth = length;
+      case 'min-h':
+        group.constraints.minHeight = length;
+      case 'max-w':
+        group.constraints.maxWidth = length;
+      case 'max-h':
+        group.constraints.maxHeight = length;
+      default:
+        return false;
+    }
 
     return true;
   }
 
-  bool _applyRadius(JsonMap payload, String root, TailwindValue? value) {
+  bool _applyRadius(_GroupContext group, String root, TailwindValue? value) {
     if (!root.startsWith('rounded')) return false;
     final key = _valueKey(value) ?? '';
     final radius = config.radii[key];
     if (radius == null) return false;
-    final delta = switch (root) {
-      'rounded' => payloadBorderRadius(
-        topLeft: radius,
-        topRight: radius,
-        bottomLeft: radius,
-        bottomRight: radius,
-      ),
-      'rounded-t' => payloadBorderRadius(topLeft: radius, topRight: radius),
-      'rounded-b' => payloadBorderRadius(
-        bottomLeft: radius,
-        bottomRight: radius,
-      ),
-      'rounded-l' => payloadBorderRadius(topLeft: radius, bottomLeft: radius),
-      'rounded-r' => payloadBorderRadius(topRight: radius, bottomRight: radius),
-      'rounded-tl' => payloadBorderRadius(topLeft: radius),
-      'rounded-tr' => payloadBorderRadius(topRight: radius),
-      'rounded-bl' => payloadBorderRadius(bottomLeft: radius),
-      'rounded-br' => payloadBorderRadius(bottomRight: radius),
-      _ => null,
-    };
-    if (delta == null) return false;
-    _objectField(_decoration(payload), 'borderRadius').addAll(delta);
+    final corner = Radius.circular(radius);
+    switch (root) {
+      case 'rounded':
+        group.decoration.borderRadius
+          ..topLeft = corner
+          ..topRight = corner
+          ..bottomLeft = corner
+          ..bottomRight = corner;
+      case 'rounded-t':
+        group.decoration.borderRadius
+          ..topLeft = corner
+          ..topRight = corner;
+      case 'rounded-b':
+        group.decoration.borderRadius
+          ..bottomLeft = corner
+          ..bottomRight = corner;
+      case 'rounded-l':
+        group.decoration.borderRadius
+          ..topLeft = corner
+          ..bottomLeft = corner;
+      case 'rounded-r':
+        group.decoration.borderRadius
+          ..topRight = corner
+          ..bottomRight = corner;
+      case 'rounded-tl':
+        group.decoration.borderRadius.topLeft = corner;
+      case 'rounded-tr':
+        group.decoration.borderRadius.topRight = corner;
+      case 'rounded-bl':
+        group.decoration.borderRadius.bottomLeft = corner;
+      case 'rounded-br':
+        group.decoration.borderRadius.bottomRight = corner;
+      default:
+        return false;
+    }
 
     return true;
   }
@@ -817,31 +729,6 @@ final class TwTranslator {
     return false;
   }
 
-  void _finalizeGroupPayload(_GroupContext group) {
-    if (group.transform.hasAnyTransform) {
-      group.payload['transform'] = group.transform.toPayload();
-    }
-    if (group.border.hasStructure) {
-      _decoration(group.payload).addAll(
-        payloadDecoration(
-          border: group.border.toPayload(
-            defaultColor: config.colorOf('gray-200') ?? const Color(0xFFE5E7EB),
-          ),
-        ),
-      );
-    }
-  }
-
-  T _decodePayload<T extends Object>(JsonMap payload) {
-    final result = _tailwindsMixSchemaContract.decode<T>(payload);
-    return switch (result) {
-      MixSchemaDecodeSuccess<T>(:final value) => value,
-      MixSchemaDecodeFailure<T>(:final errors) => throw StateError(
-        'Tailwinds emitted an invalid schema payload: $errors',
-      ),
-    };
-  }
-
   S _wrapBoxVariant<S>(List<_VariantPart> path, S style) {
     var wrapped = style as BoxStyler;
     for (final part in path.reversed) {
@@ -924,53 +811,6 @@ final class TwTranslator {
         style,
       ),
     };
-  }
-
-  JsonMap _boxVariantPayload(List<_VariantPart> path, JsonMap payload) {
-    var current = payload;
-    for (final part in path.reversed) {
-      current = payloadStyler(SchemaStyler.box, {
-        'variants': [_boxVariantPartPayload(part, current)],
-      });
-    }
-
-    final variants = current['variants']! as List;
-    return variants.single! as JsonMap;
-  }
-
-  JsonMap _boxVariantPartPayload(_VariantPart part, JsonMap style) {
-    return switch (part.kind) {
-      _VariantKind.hover => _widgetStateVariant(WidgetState.hovered, style),
-      _VariantKind.focus => _widgetStateVariant(WidgetState.focused, style),
-      _VariantKind.pressed => _widgetStateVariant(WidgetState.pressed, style),
-      _VariantKind.disabled => _widgetStateVariant(WidgetState.disabled, style),
-      _VariantKind.enabled => payloadVariant(SchemaVariant.enabled, {
-        'style': style,
-      }),
-      _VariantKind.dark => payloadVariant(SchemaVariant.contextBrightness, {
-        'brightness': payloadEnum(Brightness.dark),
-        'style': style,
-      }),
-      _VariantKind.light => payloadVariant(SchemaVariant.contextBrightness, {
-        'brightness': payloadEnum(Brightness.light),
-        'style': style,
-      }),
-      _VariantKind.breakpoint => payloadVariant(
-        SchemaVariant.contextBreakpoint,
-        {'minWidth': part.breakpoint, 'style': style},
-      ),
-      _VariantKind.notHover => payloadVariant(
-        SchemaVariant.contextNotWidgetState,
-        {'state': payloadWidgetState(WidgetState.hovered), 'style': style},
-      ),
-    };
-  }
-
-  JsonMap _widgetStateVariant(WidgetState state, JsonMap style) {
-    return payloadVariant(SchemaVariant.widgetState, {
-      'state': payloadWidgetState(state),
-      'style': style,
-    });
   }
 
   _VariantPath? _variantPath(List<TailwindVariant> variants) {
@@ -1135,16 +975,16 @@ final class TwTranslator {
     return config.blurOf(key);
   }
 
-  List<JsonMap>? _boxShadowPayload(String raw, TailwindValue? value) {
+  List<BoxShadowMix>? _boxShadowMixes(String raw, TailwindValue? value) {
     final key = raw == 'shadow' ? 'shadow' : 'shadow-${_valueKey(value)}';
     final shadows = raw == 'shadow-none'
         ? const <BoxShadow>[]
         : kTailwindBoxShadowPresets[key];
     if (shadows == null) return null;
-    return shadows.map(payloadBoxShadow).toList(growable: false);
+    return shadows.map(BoxShadowMix.value).toList(growable: false);
   }
 
-  bool _applyFontWeight(JsonMap style, String raw) {
+  bool _applyFontWeight(_TextStyleAccum style, String raw) {
     final weight = switch (raw) {
       'font-thin' => FontWeight.w100,
       'font-extralight' => FontWeight.w200,
@@ -1158,11 +998,11 @@ final class TwTranslator {
       _ => null,
     };
     if (weight == null) return false;
-    style.addAll(payloadTextStyle(fontWeight: weight));
+    style.fontWeight = weight;
     return true;
   }
 
-  bool _applyLineHeight(JsonMap style, String raw) {
+  bool _applyLineHeight(_TextStyleAccum style, String raw) {
     final height = switch (raw) {
       'leading-none' => 1.0,
       'leading-tight' => 1.25,
@@ -1173,11 +1013,11 @@ final class TwTranslator {
       _ => null,
     };
     if (height == null) return false;
-    style.addAll(payloadTextStyle(height: height));
+    style.height = height;
     return true;
   }
 
-  bool _applyTracking(JsonMap style, String raw) {
+  bool _applyTracking(_TextStyleAccum style, String raw) {
     final tracking = switch (raw) {
       'tracking-tighter' => -0.8,
       'tracking-tight' => -0.4,
@@ -1188,11 +1028,11 @@ final class TwTranslator {
       _ => null,
     };
     if (tracking == null) return false;
-    style.addAll(payloadTextStyle(letterSpacing: tracking));
+    style.letterSpacing = tracking;
     return true;
   }
 
-  bool _applyTextShadow(JsonMap style, String raw) {
+  bool _applyTextShadow(_TextStyleAccum style, String raw) {
     final preset = switch (raw) {
       'text-shadow-none' => null,
       'text-shadow-2xs' => TextShadowPreset.twoXs,
@@ -1206,7 +1046,7 @@ final class TwTranslator {
     final shadows = preset == null
         ? const <Shadow>[]
         : kTextShadowPresets[preset]!;
-    style['shadows'] = shadows.map(payloadShadow).toList(growable: false);
+    style.shadows = shadows.map(ShadowMix.value).toList(growable: false);
     return true;
   }
 
@@ -1216,33 +1056,6 @@ final class TwTranslator {
         key == 'screen' ||
         key == 'auto' ||
         key?.contains('/') == true;
-  }
-
-  void _setEdge(
-    JsonMap payload,
-    String field,
-    double value, {
-    required String sides,
-  }) {
-    final data = _objectField(payload, field);
-    switch (sides) {
-      case 'all':
-        data
-          ..['left'] = value
-          ..['top'] = value
-          ..['right'] = value
-          ..['bottom'] = value;
-      case 'x':
-        data
-          ..['left'] = value
-          ..['right'] = value;
-      case 'y':
-        data
-          ..['top'] = value
-          ..['bottom'] = value;
-      default:
-        data[sides] = value;
-    }
   }
 
   String _axisOrSide(String root) {
@@ -1257,35 +1070,6 @@ final class TwTranslator {
       _ => 'all',
     };
   }
-
-  JsonMap _decoration(JsonMap payload) => _objectField(payload, 'decoration');
-  JsonMap _textStyle(JsonMap payload) => _objectField(payload, 'style');
-
-  JsonMap _defaultTextStyle(JsonMap payload) {
-    final modifiers = _modifiers(payload);
-    for (final modifier in modifiers) {
-      if (modifier['type'] == SchemaModifier.defaultTextStyle.wireValue) {
-        return _objectField(modifier, 'style');
-      }
-    }
-    final modifier = payloadModifier(SchemaModifier.defaultTextStyle, {
-      'style': <String, Object?>{},
-    });
-    modifiers.add(modifier);
-    return modifier['style']! as JsonMap;
-  }
-
-  List<JsonMap> _modifiers(JsonMap payload) {
-    return (payload['modifiers'] ??= <JsonMap>[]) as List<JsonMap>;
-  }
-
-  List<String> _textDirectives(JsonMap payload) {
-    return (payload['textDirectives'] ??= <String>[]) as List<String>;
-  }
-
-  JsonMap _objectField(JsonMap payload, String field) {
-    return (payload[field] ??= <String, Object?>{}) as JsonMap;
-  }
 }
 
 const _easeTokens = {
@@ -1298,22 +1082,266 @@ const _easeTokens = {
 const Object _missingTextShadowPreset = Object();
 
 final class _GroupContext {
-  _GroupContext(this.target, {JsonMap Function()? seedPayload})
-    : payload = seedPayload?.call() ?? _payloadForTarget(target);
+  _GroupContext(this.target);
 
   final TwTarget target;
-  final JsonMap payload;
+  final padding = _EdgeAccum();
+  final margin = _EdgeAccum();
+  final constraints = _ConstraintsAccum();
+  final decoration = _DecorationAccum();
+  final modifiers = <ModifierMix>[];
+  final textStyle = _TextStyleAccum();
+  final defaultTextStyle = _TextStyleAccum();
+  final textHeightBehavior = _TextHeightBehaviorAccum();
+  final textDirectives = <Directive<String>>[];
   final transform = TransformAccum();
   final border = BorderAccum();
   final gradient = GradientAccum();
+  int? _defaultTextStyleInsertIndex;
+
+  Clip? clipBehavior;
+  Axis? direction;
+  MainAxisAlignment? mainAxisAlignment;
+  CrossAxisAlignment? crossAxisAlignment;
+  MainAxisSize? mainAxisSize;
+  TextBaseline? textBaseline;
+  double? spacing;
+  TextAlign? textAlign;
+  TextOverflow? overflow;
+  int? maxLines;
+  bool? softWrap;
   bool hasBaseFlex = false;
 
-  static JsonMap _payloadForTarget(TwTarget target) {
-    return payloadStyler(switch (target) {
-      TwTarget.box => SchemaStyler.box,
-      TwTarget.flexBox => SchemaStyler.flexBox,
-      TwTarget.text => SchemaStyler.text,
-    });
+  _TextStyleAccum ensureDefaultTextStyle() {
+    _defaultTextStyleInsertIndex ??= modifiers.length;
+    return defaultTextStyle;
+  }
+
+  BoxStyler toBoxStyler(TwConfig config) {
+    return BoxStyler(
+      padding: padding.toMix(),
+      margin: margin.toMix(),
+      constraints: constraints.toMix(),
+      decoration: _decorationMix(config),
+      transform: transform.hasAnyTransform ? transform.toMatrix4() : null,
+      clipBehavior: clipBehavior,
+      modifier: _modifierConfig(),
+    );
+  }
+
+  FlexBoxStyler toFlexBoxStyler(TwConfig config) {
+    return FlexBoxStyler(
+      padding: padding.toMix(),
+      margin: margin.toMix(),
+      constraints: constraints.toMix(),
+      decoration: _decorationMix(config),
+      transform: transform.hasAnyTransform ? transform.toMatrix4() : null,
+      clipBehavior: clipBehavior,
+      direction: direction,
+      mainAxisAlignment: mainAxisAlignment,
+      crossAxisAlignment: crossAxisAlignment,
+      mainAxisSize: mainAxisSize,
+      textBaseline: textBaseline,
+      spacing: spacing,
+      modifier: _modifierConfig(),
+    );
+  }
+
+  TextStyler toTextStyler(TwConfig config) {
+    return TextStyler(
+      style: textStyle.toMix(defaultHeight: config.textDefaults.lineHeight),
+      textAlign: textAlign,
+      overflow: overflow,
+      maxLines: maxLines,
+      softWrap: softWrap,
+      textHeightBehavior: textHeightBehavior.toMix(),
+      textDirectives: textDirectives.isEmpty
+          ? null
+          : List.unmodifiable(textDirectives),
+      modifier: _modifierConfig(),
+    );
+  }
+
+  BoxDecorationMix? _decorationMix(TwConfig config) {
+    final gradientMix = gradient.toGradientMix(config.gradientStrategy);
+    final borderMix = border.hasStructure
+        ? border.toMix(
+            defaultColor: config.colorOf('gray-200') ?? const Color(0xFFE5E7EB),
+          )
+        : null;
+
+    return decoration.toMix(border: borderMix, gradient: gradientMix);
+  }
+
+  WidgetModifierConfig? _modifierConfig() {
+    if (modifiers.isEmpty && _defaultTextStyleInsertIndex == null) return null;
+
+    final output = List<ModifierMix>.of(modifiers);
+    if (_defaultTextStyleInsertIndex case final index?) {
+      output.insert(
+        index,
+        DefaultTextStyleModifierMix(style: defaultTextStyle.toMix()),
+      );
+    }
+
+    return WidgetModifierConfig.modifiers(output);
+  }
+}
+
+final class _EdgeAccum {
+  double? left;
+  double? top;
+  double? right;
+  double? bottom;
+
+  bool get hasAny =>
+      left != null || top != null || right != null || bottom != null;
+
+  void set(double value, {required String sides}) {
+    switch (sides) {
+      case 'all':
+        left = top = right = bottom = value;
+      case 'x':
+        left = right = value;
+      case 'y':
+        top = bottom = value;
+      case 'top':
+        top = value;
+      case 'right':
+        right = value;
+      case 'bottom':
+        bottom = value;
+      case 'left':
+        left = value;
+    }
+  }
+
+  EdgeInsetsMix? toMix() {
+    if (!hasAny) return null;
+    return EdgeInsetsMix(left: left, top: top, right: right, bottom: bottom);
+  }
+}
+
+final class _ConstraintsAccum {
+  double? minWidth;
+  double? maxWidth;
+  double? minHeight;
+  double? maxHeight;
+
+  bool get hasAny =>
+      minWidth != null ||
+      maxWidth != null ||
+      minHeight != null ||
+      maxHeight != null;
+
+  BoxConstraintsMix? toMix() {
+    if (!hasAny) return null;
+    return BoxConstraintsMix(
+      minWidth: minWidth,
+      maxWidth: maxWidth,
+      minHeight: minHeight,
+      maxHeight: maxHeight,
+    );
+  }
+}
+
+final class _DecorationAccum {
+  Color? color;
+  List<BoxShadowMix>? boxShadow;
+  bool ensurePresent = false;
+  final borderRadius = _BorderRadiusAccum();
+
+  bool get hasAny =>
+      ensurePresent ||
+      color != null ||
+      boxShadow != null ||
+      borderRadius.hasAny;
+
+  BoxDecorationMix? toMix({BoxBorderMix? border, GradientMix? gradient}) {
+    if (!hasAny && border == null && gradient == null) return null;
+    return BoxDecorationMix(
+      color: color,
+      border: border,
+      borderRadius: borderRadius.toMix(),
+      boxShadow: boxShadow,
+      gradient: gradient,
+    );
+  }
+}
+
+final class _BorderRadiusAccum {
+  Radius? topLeft;
+  Radius? topRight;
+  Radius? bottomLeft;
+  Radius? bottomRight;
+
+  bool get hasAny =>
+      topLeft != null ||
+      topRight != null ||
+      bottomLeft != null ||
+      bottomRight != null;
+
+  BorderRadiusMix? toMix() {
+    if (!hasAny) return null;
+    return BorderRadiusMix(
+      topLeft: topLeft,
+      topRight: topRight,
+      bottomLeft: bottomLeft,
+      bottomRight: bottomRight,
+    );
+  }
+}
+
+final class _TextStyleAccum {
+  Color? color;
+  double? fontSize;
+  FontWeight? fontWeight;
+  TextDecoration? decoration;
+  double? height;
+  double? letterSpacing;
+  List<ShadowMix>? shadows;
+
+  bool get hasAny =>
+      color != null ||
+      fontSize != null ||
+      fontWeight != null ||
+      decoration != null ||
+      height != null ||
+      letterSpacing != null ||
+      shadows != null;
+
+  TextStyleMix? toMix({double? defaultHeight}) {
+    final resolvedHeight = height ?? defaultHeight;
+    if (!hasAny && resolvedHeight == null) return null;
+    return TextStyleMix(
+      color: color,
+      fontSize: fontSize,
+      fontWeight: fontWeight,
+      decoration: decoration,
+      height: resolvedHeight,
+      letterSpacing: letterSpacing,
+      shadows: shadows,
+    );
+  }
+}
+
+final class _TextHeightBehaviorAccum {
+  bool? applyHeightToFirstAscent;
+  bool? applyHeightToLastDescent;
+  TextLeadingDistribution? leadingDistribution;
+
+  bool get hasAny =>
+      applyHeightToFirstAscent != null ||
+      applyHeightToLastDescent != null ||
+      leadingDistribution != null;
+
+  TextHeightBehaviorMix? toMix() {
+    if (!hasAny) return null;
+    return TextHeightBehaviorMix(
+      applyHeightToFirstAscent: applyHeightToFirstAscent,
+      applyHeightToLastDescent: applyHeightToLastDescent,
+      leadingDistribution: leadingDistribution,
+    );
   }
 }
 
@@ -1373,16 +1401,4 @@ bool _partsEqual(List<_VariantPart> a, List<_VariantPart> b) {
     if (a[i] != b[i]) return false;
   }
   return true;
-}
-
-bool _isEmptyPayload(JsonMap payload) {
-  return payload.entries.every((entry) {
-    return entry.key == 'type' || _isEmptySchemaValue(entry.value);
-  });
-}
-
-bool _isEmptySchemaValue(Object? value) {
-  return value == null ||
-      (value is Map && value.isEmpty) ||
-      (value is List && value.isEmpty);
 }

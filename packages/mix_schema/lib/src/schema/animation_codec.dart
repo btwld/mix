@@ -1,15 +1,12 @@
-import 'package:ack/ack.dart';
+import 'package:ack/ack.dart' hide JsonMap;
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
+import '../contract/json_map.dart';
 import '../errors/mix_schema_error.dart';
-import '../registry/registry.dart';
-import '../registry/registry_value_codec.dart';
 import 'common_codecs.dart';
 
-AckSchema<Object, AnimationConfig> animationConfigCodec({
-  required FrozenRegistry Function() registry,
-}) {
+AckSchema<Object, AnimationConfig> animationConfigCodec() {
   return Ack.object({
         'type': Ack.literal('curve').optional(),
         'spring': Ack.object({
@@ -20,10 +17,6 @@ AckSchema<Object, AnimationConfig> animationConfigCodec({
         'duration': _durationCodec().optional(),
         'curve': curveCodec().optional(),
         'delay': _durationCodec().optional(),
-        'onEnd': registryValueCodec<VoidCallback>(
-          registry,
-          MixSchemaScope.animationOnEnd,
-        ).optional(),
       })
       .refine(
         _hasValidAnimationShape,
@@ -79,7 +72,6 @@ AnimationConfig _decodeAnimationConfig(Object value) {
         stiffness: springData['stiffness']! as double,
         damping: springData['damping']! as double,
       ),
-      onEnd: data['onEnd'] as VoidCallback?,
     );
   }
 
@@ -87,7 +79,6 @@ AnimationConfig _decodeAnimationConfig(Object value) {
     duration: data['duration']! as Duration,
     curve: data['curve']! as Curve,
     delay: data['delay'] as Duration? ?? Duration.zero,
-    onEnd: data['onEnd'] as VoidCallback?,
   );
 }
 
@@ -113,6 +104,13 @@ Curve _decodeCurve(Object value) {
 }
 
 JsonMap _encodeAnimationConfig(AnimationConfig value) {
+  if (_animationCallback(value) case final onEnd?) {
+    throw UnsupportedEncodeValueError(
+      onEnd,
+      'Animation callbacks are not representable in mix_schema v1.',
+    );
+  }
+
   return switch (value) {
     CurveAnimationConfig() => _encodeCurveAnimationConfig(value),
     SpringAnimationConfig() => {
@@ -121,7 +119,6 @@ JsonMap _encodeAnimationConfig(AnimationConfig value) {
         'stiffness': value.spring.stiffness,
         'damping': value.spring.damping,
       },
-      'onEnd': value.onEnd,
     },
     _ => throw UnsupportedEncodeValueError(
       value,
@@ -130,12 +127,20 @@ JsonMap _encodeAnimationConfig(AnimationConfig value) {
   };
 }
 
+VoidCallback? _animationCallback(AnimationConfig value) {
+  return switch (value) {
+    CurveAnimationConfig(:final onEnd) => onEnd,
+    SpringAnimationConfig(:final onEnd) => onEnd,
+    PhaseAnimationConfig(:final onEnd) => onEnd,
+    _ => null,
+  };
+}
+
 JsonMap _encodeCurveAnimationConfig(CurveAnimationConfig value) {
   return {
     'duration': value.duration,
     'curve': value.curve,
     'delay': value.delay,
-    'onEnd': value.onEnd,
   };
 }
 

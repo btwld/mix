@@ -4,8 +4,7 @@ library;
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:mix_schema/encode.dart';
-import 'package:mix_schema/mix_schema.dart';
+import 'package:mix/mix.dart';
 
 final class TransformAccum {
   double? scale;
@@ -44,8 +43,6 @@ final class TransformAccum {
 
     return matrix;
   }
-
-  List<double> toPayload() => toMatrix4().storage.toList(growable: false);
 }
 
 final class BorderAccum {
@@ -120,29 +117,25 @@ final class BorderAccum {
     leftColor ??= base.leftColor;
   }
 
-  JsonMap toPayload({required Color defaultColor}) {
-    JsonMap side(double? width, Color? color) {
+  BorderMix? toMix({required Color defaultColor}) {
+    BorderSideMix? side(double? width, Color? color) {
+      if (width == null && color == null) return null;
       final resolvedWidth = width ?? 0;
-      return payloadBorderSide(
+      return BorderSideMix(
         color: color ?? defaultColor,
         width: resolvedWidth,
         style: resolvedWidth > 0 ? BorderStyle.solid : BorderStyle.none,
       );
     }
 
-    return payloadBorder(
-      top: (topWidth != null || topColor != null)
-          ? side(topWidth, topColor)
-          : null,
-      right: (rightWidth != null || rightColor != null)
-          ? side(rightWidth, rightColor)
-          : null,
-      bottom: (bottomWidth != null || bottomColor != null)
-          ? side(bottomWidth, bottomColor)
-          : null,
-      left: (leftWidth != null || leftColor != null)
-          ? side(leftWidth, leftColor)
-          : null,
-    );
+    final top = side(topWidth, topColor);
+    final right = side(rightWidth, rightColor);
+    final bottom = side(bottomWidth, bottomColor);
+    final left = side(leftWidth, leftColor);
+    if (top == null && right == null && bottom == null && left == null) {
+      return null;
+    }
+
+    return BorderMix(top: top, right: right, bottom: bottom, left: left);
   }
 }

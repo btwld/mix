@@ -2,7 +2,7 @@ import 'package:ack/ack.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-import '../registry/registry.dart';
+import '../contract/identity_resolution.dart';
 import 'common_codecs.dart';
 import 'schema_field.dart';
 import 'styler_field_inventory.dart';
@@ -10,16 +10,16 @@ import 'styler_codec_helpers.dart';
 
 AckSchema<JsonMap, StackStyler> stackStylerCodec({
   AckSchema<JsonMap, Object>? rootStyleSchema,
-  required FrozenRegistry Function() registry,
+  MixSchemaIdentityContext Function()? identityContext,
 }) {
-  return _stackStylerSchemaType(rootStyleSchema, registry).codec();
+  return _stackStylerSchemaType(rootStyleSchema).codec();
 }
 
 JsonMap encodeStackStylerFields(
   StackStyler value, {
   bool includeStylerMetadata = true,
 }) {
-  return _stackStylerSchemaType(null, emptyFrozenRegistry).encodeFields(
+  return _stackStylerSchemaType(null).encodeFields(
     value,
     omit: includeStylerMetadata ? const {} : stylerMetadataFields,
   );
@@ -27,7 +27,6 @@ JsonMap encodeStackStylerFields(
 
 SchemaObject<StackStyler> _stackStylerSchemaType(
   AckSchema<JsonMap, Object>? rootStyleSchema,
-  FrozenRegistry Function() registry,
 ) {
   final alignment = propValueAsField<StackStyler, Alignment, AlignmentGeometry>(
     'alignment',
@@ -51,7 +50,6 @@ SchemaObject<StackStyler> _stackStylerSchemaType(
   );
   final metadata = StylerMetadataFields<StackStyler, StackSpec>(
     rootStyleSchema: rootStyleSchema,
-    registry: registry,
     readVariants: (value) => value.$variants,
     readModifier: (value) => value.$modifier,
     readAnimation: (value) => value.$animation,

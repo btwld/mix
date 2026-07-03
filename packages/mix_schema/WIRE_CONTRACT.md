@@ -27,9 +27,9 @@ Styler discriminator values are:
 - `stack_box`
 
 The full built-in contract accepts all branches above. The shared
-`builtInMixSchemaContract` intentionally excludes `icon` and `image` because
-their identity fields require an app-owned registry; freeze a custom
-`MixSchemaContractBuilder().builtIn()` contract when those branches are needed.
+`builtInMixSchemaContract` is registry-free and accepts every built-in branch,
+including `icon` and `image`. String identity names are resolved per call with
+`MixSchemaDecodeOptions`; common icon/image value forms require no app state.
 
 During the v1 transition window, a missing top-level `v` is decoded as v1 with
 a warning. Encoded output and exported JSON Schema are canonical and include
@@ -166,7 +166,14 @@ are style metadata fields, not spec fields.
 
 ### icon
 
-- `icon`: registry id from the `icon_data` scope
+- `icon`: either a resolver name string or an object with:
+  - `codePoint`: integer
+  - `fontFamily`: optional string
+  - `fontPackage`: optional string
+  - `matchTextDirection`: optional boolean
+
+Raw `IconData` value forms are useful for tooling and controlled payloads, but
+resolver names are safer for app icons when Flutter icon tree-shaking matters.
 - `color`: color
 - `size`: number
 - `weight`: number
@@ -185,7 +192,9 @@ are style metadata fields, not spec fields.
 
 ### image
 
-- `image`: registry id from the `image_provider` scope
+- `image`: either a resolver name string, `{ "url": string }` for
+  `NetworkImage`, or `{ "asset": string, "package"?: string }` for
+  `AssetImage`
 - `width`: number
 - `height`: number
 - `color`: color
@@ -256,11 +265,21 @@ part.
 
 Gradient colors are color lists, stops are number lists, alignments use the
 common `alignment` value, and `tileMode` is a Flutter `TileMode` enum name.
-The only supported gradient transform is:
+Supported gradient transforms are:
 
 ```json
 { "kind": "rotation", "radians": 0.25 }
 ```
+
+and CSS-keyword linear transforms for bounds-aware Tailwind/CSS corner
+directions:
+
+```json
+{ "kind": "css_linear", "direction": "to-br" }
+```
+
+`direction` accepts `to-r`, `to-br`, `to-b`, `to-bl`, `to-l`, `to-tl`, `to-t`,
+and `to-tr`.
 
 Other `GradientTransform` implementations fail encode with
 `unsupported_encode_value`.
@@ -545,17 +564,16 @@ Animation payloads encode the data-only implicit animation configs.
 - `curve`: registered curve name, or `{ "cubic": [a, b, c, d] }` for `Cubic`
 - `delay`: optional non-negative milliseconds or `DurationToken` reference.
   Missing `delay` decodes as `0`; canonical encode emits `delay`.
-- `onEnd`: optional registry id if callback encoding is enabled
 
 `SpringAnimationConfig` uses:
 
 - `spring.mass`: positive number
 - `spring.stiffness`: positive number
 - `spring.damping`: non-negative number
-- `onEnd`: optional registry id if callback encoding is enabled
 
 `PhaseAnimationConfig`, `KeyframeAnimationConfig`, custom `Curve` subclasses,
-and unregistered callback closures fail encode.
+and animation configs carrying `onEnd` callbacks fail encode. Callback-over-wire
+is outside v1 and should be revisited with the future event/tree layer.
 
 ## V1 Unsupported Field Families
 
@@ -567,24 +585,43 @@ the canonical v1 contract. Producers must omit these fields or expect
 - shape and directional border families not listed in Common Values
 - preset-only helpers such as `ElevationShadow`
 
-## Registry Values
+## Identity Values
 
-Registry ids must match `[A-Za-z0-9_-]{1,96}`. The canonical identity scopes are:
+Resolver names must match `[A-Za-z0-9_-]{1,96}`. Decode uses per-call
+`MixSchemaDecodeOptions(resolveIcon:, resolveImage:)` callbacks for string
+identity names:
 
-- `icon_data`
-- `image_provider`
+```dart
+final decoded = builtInMixSchemaContract.decode<IconStyler>(
+  {'type': 'icon', 'icon': 'home'},
+  options: MixSchemaDecodeOptions(resolveIcon: (name) => icons[name]),
+);
+```
 
-Animation callbacks use the optional `animation_on_end` scope when `onEnd`
-encoding is enabled. Closure-backed context variant builders are not part of the
-canonical contract.
+Encoding can emit resolver names with per-call reverse maps:
+
+```dart
+final encoded = builtInMixSchemaContract.encode(
+  IconStyler(icon: homeIcon),
+  options: MixSchemaEncodeOptions(iconNames: {'home': homeIcon}),
+);
+```
+
+Without a reverse map, `IconData` encodes as its value object. Prefer resolver
+names for app icons when Flutter icon tree-shaking matters. `NetworkImage`
+and `AssetImage` encode as their value forms; other `ImageProvider`
+implementations fail encode with `unresolved_identity_value`. A well-formed
+string name that the resolver does not return fails decode with
+`unresolved_identity_name`. Closure-backed context variant builders and
+callback identities are not part of the canonical contract.
 
 ## Encode Policy
 
 Styler encode supports representable value sources, canonical token references,
-directive applications, and ordered multi-source props through the property-term
-grammar. Custom token subclasses, unregistered identity values, unsupported
-directive types, and unsupported runtime objects fail encode with a public
-`MixSchemaError`.
+directive applications, ordered multi-source props through the property-term
+grammar, and supported identity value forms. Custom token subclasses,
+unresolved identity values, unsupported directive types, and unsupported runtime
+objects fail encode with a public `MixSchemaError`.
 
 Encode errors use stable public codes. `unsupported_encode_value` reports values
 that the v1 contract intentionally cannot represent. `inventory_skew` reports a

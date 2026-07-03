@@ -1,3 +1,12 @@
+## Unreleased
+
+### New features
+
+- **`CssKeywordLinearTransform`:** Adds a reusable bounds-aware
+  `GradientTransform` for CSS linear-gradient keyword directions, so Tailwind
+  corner gradients can round-trip through schema tooling without losing visual
+  parity.
+
 ## 2.1.0
 
 This release adds context-derived token resolution and richer animation

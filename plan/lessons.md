@@ -163,7 +163,27 @@ Things the review itself surfaced that qualify as lessons already:
   field-specific Flutter/Mix semantics still belong to the codecs and tests.
 
 ### Phase 5 — Consumer realignment + API reshaping
-_(fill when closed)_
+
+- **Runtime schema dogfooding should retire into stronger contract tests.**
+  Tailwinds no longer pays build-time encode/decode cost; representative
+  translator outputs now encode and validate in tests, including icon and
+  gradient paths.
+- **Representative fixtures need the awkward default path, not just the simple
+  path.** Horizontal gradients encoded cleanly, but the default CSS-corner
+  gradient strategy used a bounds-aware transform that schema could not encode.
+  Add contract fixtures for default behavior when removing runtime guards.
+- **Registry removal is an API-surface task, not just an implementation swap.**
+  Resolver/value forms replaced frozen registries, but closeout still had to
+  remove public builder/contract registry access and the stale
+  `animation_on_end` registry scope.
+- **Raw value forms need platform caveats where names carry semantics.** Icon
+  `codePoint` payloads are useful, but app-facing docs need to call out Flutter
+  icon tree-shaking so resolver names remain the safer recommendation for app
+  icon identities.
+- **Compatibility facades can preserve users while moving ownership.** The
+  Tailwinds `TwCssKeywordLinearTransform` name remains importable, but the
+  reusable transform semantics now live in `mix` so `mix_schema` can recognize a
+  core value without depending on Tailwinds.
 
 ## Themes (cross-cutting, update as they emerge)
 
@@ -186,6 +206,9 @@ _(fill when closed)_
 - Checked boxes rot: a doc-lockstep claim verified at one phase close can be
   invalidated by later edges or missed cases; cross-phase reviews re-verify
   predecessor claims (phase 2.5 exists because of this).
+- Consumer realignments need both runtime and public-API guards: removing a
+  runtime dependency is not enough if exported compatibility symbols disappear
+  or default rendering paths stop being wire-representable.
 
 ## Carry-forward actions
 

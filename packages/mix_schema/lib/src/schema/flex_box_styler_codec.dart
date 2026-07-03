@@ -2,7 +2,7 @@ import 'package:ack/ack.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-import '../registry/registry.dart';
+import '../contract/identity_resolution.dart';
 import 'box_styler_codec.dart';
 import 'common_codecs.dart';
 import 'flex_styler_codec.dart';
@@ -12,14 +12,13 @@ import 'styler_codec_helpers.dart';
 
 AckSchema<JsonMap, FlexBoxStyler> flexBoxStylerCodec({
   AckSchema<JsonMap, Object>? rootStyleSchema,
-  required FrozenRegistry Function() registry,
+  MixSchemaIdentityContext Function()? identityContext,
 }) {
-  return _flexBoxStylerSchemaType(rootStyleSchema, registry).codec();
+  return _flexBoxStylerSchemaType(rootStyleSchema).codec();
 }
 
 SchemaObject<FlexBoxStyler> _flexBoxStylerSchemaType(
   AckSchema<JsonMap, Object>? rootStyleSchema,
-  FrozenRegistry Function() registry,
 ) {
   final alignment = derivedField<FlexBoxStyler, Prop<AlignmentGeometry>>(
     'alignment',
@@ -94,30 +93,26 @@ SchemaObject<FlexBoxStyler> _flexBoxStylerSchemaType(
     _flexField,
     inventoryName: 'flex',
   );
-  final mainAxisAlignment = derivedField<
-    FlexBoxStyler,
-    Prop<MainAxisAlignment>
-  >(
-    'mainAxisAlignment',
-    valuePropCodec<MainAxisAlignment>(
-      enumNameCodec(MainAxisAlignment.values),
-      fieldName: 'mainAxisAlignment',
-    ),
-    _flexField,
-    inventoryName: 'flex',
-  );
-  final crossAxisAlignment = derivedField<
-    FlexBoxStyler,
-    Prop<CrossAxisAlignment>
-  >(
-    'crossAxisAlignment',
-    valuePropCodec<CrossAxisAlignment>(
-      enumNameCodec(CrossAxisAlignment.values),
-      fieldName: 'crossAxisAlignment',
-    ),
-    _flexField,
-    inventoryName: 'flex',
-  );
+  final mainAxisAlignment =
+      derivedField<FlexBoxStyler, Prop<MainAxisAlignment>>(
+        'mainAxisAlignment',
+        valuePropCodec<MainAxisAlignment>(
+          enumNameCodec(MainAxisAlignment.values),
+          fieldName: 'mainAxisAlignment',
+        ),
+        _flexField,
+        inventoryName: 'flex',
+      );
+  final crossAxisAlignment =
+      derivedField<FlexBoxStyler, Prop<CrossAxisAlignment>>(
+        'crossAxisAlignment',
+        valuePropCodec<CrossAxisAlignment>(
+          enumNameCodec(CrossAxisAlignment.values),
+          fieldName: 'crossAxisAlignment',
+        ),
+        _flexField,
+        inventoryName: 'flex',
+      );
   final mainAxisSize = derivedField<FlexBoxStyler, Prop<MainAxisSize>>(
     'mainAxisSize',
     valuePropCodec<MainAxisSize>(
@@ -127,18 +122,16 @@ SchemaObject<FlexBoxStyler> _flexBoxStylerSchemaType(
     _flexField,
     inventoryName: 'flex',
   );
-  final verticalDirection = derivedField<
-    FlexBoxStyler,
-    Prop<VerticalDirection>
-  >(
-    'verticalDirection',
-    valuePropCodec<VerticalDirection>(
-      enumNameCodec(VerticalDirection.values),
-      fieldName: 'verticalDirection',
-    ),
-    _flexField,
-    inventoryName: 'flex',
-  );
+  final verticalDirection =
+      derivedField<FlexBoxStyler, Prop<VerticalDirection>>(
+        'verticalDirection',
+        valuePropCodec<VerticalDirection>(
+          enumNameCodec(VerticalDirection.values),
+          fieldName: 'verticalDirection',
+        ),
+        _flexField,
+        inventoryName: 'flex',
+      );
   final textDirection = derivedField<FlexBoxStyler, Prop<TextDirection>>(
     'textDirection',
     valuePropCodec<TextDirection>(
@@ -175,7 +168,6 @@ SchemaObject<FlexBoxStyler> _flexBoxStylerSchemaType(
   );
   final metadata = StylerMetadataFields<FlexBoxStyler, FlexBoxSpec>(
     rootStyleSchema: rootStyleSchema,
-    registry: registry,
     readVariants: (value) => value.$variants,
     readModifier: (value) => value.$modifier,
     readAnimation: (value) => value.$animation,

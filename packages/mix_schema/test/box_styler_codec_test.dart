@@ -161,6 +161,20 @@ void main() {
         'type': 'box',
         'decoration': {
           'gradient': {
+            'kind': 'linear',
+            'begin': 'centerLeft',
+            'end': 'centerRight',
+            'colors': ['#000000', '#FFFFFF'],
+            'stops': [0.0, 1.0],
+            'transform': {'kind': 'css_linear', 'direction': 'to-br'},
+          },
+        },
+      },
+      {
+        'v': 1,
+        'type': 'box',
+        'decoration': {
+          'gradient': {
             'kind': 'radial',
             'center': 'center',
             'radius': 0.75,
@@ -298,6 +312,38 @@ void main() {
     expect(_encode(contract(), _decodeBox(contract(), payload)), payload);
   });
 
+  test('linear gradient encode matches Tailwinds css-angle fixture', () {
+    final style = BoxStyler(
+      decoration: BoxDecorationMix(
+        gradient: LinearGradientMix(
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+          transform: const CssKeywordLinearTransform('to-br'),
+          colors: const [
+            Color(0xFF000000),
+            Color(0xFFFFFFFF),
+            Color(0xFF000000),
+          ],
+          stops: const [0.0, 0.5, 1.0],
+        ),
+      ),
+    );
+
+    final payload = _encode(contract(), style);
+
+    expect(payload['decoration'], {
+      'gradient': {
+        'kind': 'linear',
+        'begin': 'centerLeft',
+        'end': 'centerRight',
+        'colors': ['#000000', '#FFFFFF', '#000000'],
+        'stops': [0.0, 0.5, 1.0],
+        'transform': {'kind': 'css_linear', 'direction': 'to-br'},
+      },
+    });
+    expect(_encode(contract(), _decodeBox(contract(), payload)), payload);
+  });
+
   testWidgets('gradient payloads resolve like hand-built Mix gradients', (
     tester,
   ) async {
@@ -327,6 +373,33 @@ void main() {
               stops: const [0.0, 1.0],
               tileMode: TileMode.mirror,
               transform: const GradientRotation(0.25),
+            ),
+          ),
+        ),
+      ),
+      (
+        wire: {
+          'v': 1,
+          'type': 'box',
+          'decoration': {
+            'gradient': {
+              'kind': 'linear',
+              'begin': 'centerLeft',
+              'end': 'centerRight',
+              'colors': ['#000000', '#FFFFFF'],
+              'stops': [0.0, 1.0],
+              'transform': {'kind': 'css_linear', 'direction': 'to-br'},
+            },
+          },
+        },
+        expected: BoxStyler(
+          decoration: BoxDecorationMix(
+            gradient: LinearGradientMix(
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+              colors: const [Color(0xFF000000), Color(0xFFFFFFFF)],
+              stops: const [0.0, 1.0],
+              transform: const CssKeywordLinearTransform('to-br'),
             ),
           ),
         ),
@@ -445,6 +518,41 @@ void main() {
               (error) => error.message,
               'message',
               contains('decoration.gradient.transform'),
+            ),
+      ),
+    );
+  });
+
+  test('unsupported css gradient directions fail encode explicitly', () {
+    final result = contract().encode(
+      BoxStyler(
+        decoration: BoxDecorationMix(
+          gradient: LinearGradientMix(
+            transform: const CssKeywordLinearTransform('diagonal'),
+            colors: const [Color(0xFF000000), Color(0xFFFFFFFF)],
+          ),
+        ),
+      ),
+    );
+
+    final errors = switch (result) {
+      MixSchemaEncodeFailure(:final errors) => errors,
+      MixSchemaEncodeSuccess() => fail('expected failure'),
+    };
+
+    expect(
+      errors,
+      contains(
+        isA<MixSchemaError>()
+            .having(
+              (error) => error.code,
+              'code',
+              MixSchemaErrorCode.unsupportedEncodeValue,
+            )
+            .having(
+              (error) => error.message,
+              'message',
+              contains('css_linear.direction'),
             ),
       ),
     );

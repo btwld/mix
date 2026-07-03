@@ -2,7 +2,7 @@ import 'package:ack/ack.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-import '../registry/registry.dart';
+import '../contract/identity_resolution.dart';
 import '../registry/registry_value_codec.dart';
 import 'common_codecs.dart';
 import 'schema_field.dart';
@@ -11,18 +11,18 @@ import 'styler_codec_helpers.dart';
 
 AckSchema<JsonMap, IconStyler> iconStylerCodec({
   AckSchema<JsonMap, Object>? rootStyleSchema,
-  required FrozenRegistry Function() registry,
+  required MixSchemaIdentityContext Function() identityContext,
 }) {
-  return _iconStylerSchemaType(rootStyleSchema, registry).codec();
+  return _iconStylerSchemaType(rootStyleSchema, identityContext).codec();
 }
 
 SchemaObject<IconStyler> _iconStylerSchemaType(
   AckSchema<JsonMap, Object>? rootStyleSchema,
-  FrozenRegistry Function() registry,
+  MixSchemaIdentityContext Function() identityContext,
 ) {
   final icon = propValueField<IconStyler, IconData>(
     'icon',
-    registryValueCodec<IconData>(registry, MixSchemaScope.iconData),
+    iconDataIdentityCodec(identityContext),
     (value) => value.$icon,
   );
   final color = propTokenValueField<IconStyler, Color>(
@@ -87,7 +87,6 @@ SchemaObject<IconStyler> _iconStylerSchemaType(
   );
   final metadata = StylerMetadataFields<IconStyler, IconSpec>(
     rootStyleSchema: rootStyleSchema,
-    registry: registry,
     readVariants: (value) => value.$variants,
     readModifier: (value) => value.$modifier,
     readAnimation: (value) => value.$animation,

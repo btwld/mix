@@ -14,11 +14,21 @@ The package is schema-first: Ack owns validation, decode, encode, and JSON Schem
 - Decode is strict by default. `MixSchemaDecodeOptions(mode:
   MixSchemaDecodeMode.lenient)` skips forward-compatible unknown fields,
   variant entries, and modifier entries with warnings.
-- The shared `builtInMixSchemaContract` is registry-free and intentionally exposes only `box`, `text`, `flex`, `stack`, `flex_box`, and `stack_box`. Use `MixSchemaContractBuilder().builtIn()` with a populated registry for icon/image payloads.
+- The shared `builtInMixSchemaContract` is registry-free and exposes every
+  built-in branch, including `icon` and `image`.
+- Icon and image identities decode through per-call
+  `MixSchemaDecodeOptions(resolveIcon:, resolveImage:)` callbacks when the
+  wire uses a string name. Common value forms decode without app state:
+  icon `codePoint` objects, image `url` objects, and image `asset` objects.
+  Prefer resolver names for app icons when Flutter icon tree-shaking matters.
+- Encoding can emit per-call names with `MixSchemaEncodeOptions(iconNames:,
+  imageNames:)`; otherwise icons encode as value forms and unsupported image
+  providers fail with resolver-flavored diagnostics.
 - Variants use `Ack.lazy` for nested styles.
 - Modifiers support opacity, blur, flexible, and default text style.
-- Animation support is limited to named-curve `CurveAnimationConfig`; optional callbacks use the `animation_on_end` registry.
-- App-owned identity values use registries for `IconData` and `ImageProvider`.
+- Animation support is limited to data-only `CurveAnimationConfig` and
+  `SpringAnimationConfig`; `onEnd` callbacks are not represented in v1 and fail
+  encode explicitly.
 
 Unsupported runtime values fail encode explicitly instead of being dropped.
 

@@ -1,16 +1,18 @@
-import 'package:ack/ack.dart';
+import 'package:ack/ack.dart' as ack;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix_schema/mix_schema.dart';
 import 'package:mix_schema/src/errors/mix_schema_error.dart';
 import 'package:mix_schema/src/errors/schema_error_mapper.dart';
 
 void main() {
-  MixSchemaErrorCode codeFor(SchemaError error) {
+  MixSchemaErrorCode codeFor(ack.SchemaError error) {
     return mapSchemaError(error).single.code;
   }
 
   test('maps type_mismatch', () {
-    final result = Ack.object({'value': Ack.string()}).safeParse('nope');
+    final result = ack.Ack.object({
+      'value': ack.Ack.string(),
+    }).safeParse('nope');
 
     expect(codeFor(result.getError()), MixSchemaErrorCode.typeMismatch);
   });
@@ -79,24 +81,24 @@ void main() {
   });
 
   test('maps required_field', () {
-    final result = Ack.object({'value': Ack.string()}).safeParse({});
+    final result = ack.Ack.object({'value': ack.Ack.string()}).safeParse({});
 
     expect(codeFor(result.getError()), MixSchemaErrorCode.requiredField);
   });
 
   test('maps unknown_field', () {
-    final result = Ack.object({
-      'value': Ack.string(),
+    final result = ack.Ack.object({
+      'value': ack.Ack.string(),
     }).safeParse({'value': 'x', 'extra': true});
 
     expect(codeFor(result.getError()), MixSchemaErrorCode.unknownField);
   });
 
   test('unwraps transform-wrapped schema errors with outer path', () {
-    final inner = Ack.object({'known': Ack.string()});
-    final schema = Ack.object({
-      'outer': Ack.codec<Object, Object, JsonMap>(
-        input: Ack.any(),
+    final inner = ack.Ack.object({'known': ack.Ack.string()});
+    final schema = ack.Ack.object({
+      'outer': ack.Ack.codec<Object, Object, JsonMap>(
+        input: ack.Ack.any(),
         decode: (wire) {
           final result = inner.safeParse(wire);
           if (result.isFail) throw result.getError();
@@ -117,7 +119,7 @@ void main() {
   });
 
   test('maps invalid_enum', () {
-    final result = Ack.enumString(['a']).safeParse('b');
+    final result = ack.Ack.enumString(['a']).safeParse('b');
 
     expect(codeFor(result.getError()), MixSchemaErrorCode.invalidEnum);
   });
@@ -135,13 +137,13 @@ void main() {
   });
 
   test('maps constraint_violation', () {
-    final result = Ack.string().minLength(2).safeParse('a');
+    final result = ack.Ack.string().minLength(2).safeParse('a');
 
     expect(codeFor(result.getError()), MixSchemaErrorCode.constraintViolation);
   });
 
   test('maps unsupported_encode_value', () {
-    final result = Ack.string()
+    final result = ack.Ack.string()
         .codec<int>(
           decode: int.parse,
           encode: (value) =>
@@ -167,37 +169,37 @@ void main() {
     expect(errors.single.code, MixSchemaErrorCode.unknownType);
   });
 
-  test('maps unknown_registry_id', () {
-    final result = Ack.string()
+  test('maps unresolved_identity_name', () {
+    final result = ack.Ack.string()
         .codec<Object>(
-          decode: (value) => throw UnknownRegistryIdError(
-            MixSchemaScope.animationOnEnd,
-            value,
-          ),
+          decode: (value) => throw UnresolvedIdentityNameError('icon', value),
           encode: (_) => 'x',
         )
         .safeParse('missing');
 
-    expect(codeFor(result.getError()), MixSchemaErrorCode.unknownRegistryId);
+    expect(
+      codeFor(result.getError()),
+      MixSchemaErrorCode.unresolvedIdentityName,
+    );
   });
 
-  test('maps unknown_registry_value', () {
+  test('maps unresolved_identity_value', () {
     final value = Object();
-    final result = Ack.string()
+    final result = ack.Ack.string()
         .codec<Object>(
           decode: (value) => value,
-          encode: (_) => throw UnknownRegistryValueError(
-            MixSchemaScope.animationOnEnd,
-            value,
-          ),
+          encode: (_) => throw UnresolvedIdentityValueError('image', value),
         )
         .safeEncode(value);
 
-    expect(codeFor(result.getError()), MixSchemaErrorCode.unknownRegistryValue);
+    expect(
+      codeFor(result.getError()),
+      MixSchemaErrorCode.unresolvedIdentityValue,
+    );
   });
 
   test('maps transform_failed', () {
-    final result = Ack.string()
+    final result = ack.Ack.string()
         .codec<int>(
           decode: (_) => throw StateError('bad transform'),
           encode: (value) => '$value',
@@ -208,7 +210,7 @@ void main() {
   });
 
   test('maps validation_failed fallback', () {
-    final result = Ack.instance<Object>()
+    final result = ack.Ack.instance<Object>()
         .refine((_) => false, message: 'no')
         .safeParse(Object());
 

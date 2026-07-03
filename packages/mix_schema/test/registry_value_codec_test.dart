@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix_schema/mix_schema.dart';
 import 'package:mix_schema/src/errors/schema_error_mapper.dart';
+import 'package:mix_schema/src/registry/registry.dart';
 import 'package:mix_schema/src/registry/registry_value_codec.dart';
 
 void main() {
@@ -32,7 +33,7 @@ void main() {
     );
   });
 
-  test('unknown id maps to unknown_registry_id', () {
+  test('unknown id maps to unresolved_identity_name', () {
     final registry = RegistryBuilder().freeze();
     final schema = registryValueCodec<IconData>(
       () => registry,
@@ -43,11 +44,11 @@ void main() {
     expect(result.isFail, isTrue);
     expect(
       mapSchemaError(result.getError()).single.code,
-      MixSchemaErrorCode.unknownRegistryId,
+      MixSchemaErrorCode.unresolvedIdentityName,
     );
   });
 
-  test('unregistered value maps to unknown_registry_value', () {
+  test('unregistered value maps to unresolved_identity_value', () {
     final registry = RegistryBuilder().freeze();
     final schema = registryValueCodec<IconData>(
       () => registry,
@@ -60,7 +61,7 @@ void main() {
     expect(result.isFail, isTrue);
     expect(
       mapSchemaError(result.getError()).single.code,
-      MixSchemaErrorCode.unknownRegistryValue,
+      MixSchemaErrorCode.unresolvedIdentityValue,
     );
   });
 
@@ -83,7 +84,7 @@ void main() {
     expect(result.isFail, isTrue);
     expect(
       mapSchemaError(result.getError()).single.code,
-      MixSchemaErrorCode.unknownRegistryValue,
+      MixSchemaErrorCode.unresolvedIdentityValue,
     );
   });
 }

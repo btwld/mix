@@ -31,10 +31,7 @@ List<MixSchemaError> mapSchemaError(SchemaError error) {
   return errors;
 }
 
-MixSchemaError _mapSingleSchemaError(
-  SchemaError error, {
-  String? pathPrefix,
-}) {
+MixSchemaError _mapSingleSchemaError(SchemaError error, {String? pathPrefix}) {
   final path = _joinErrorPaths(pathPrefix, error.path);
   final cause = error.cause;
   if (cause is SchemaPathError) {
@@ -69,9 +66,25 @@ MixSchemaError _mapSingleSchemaError(
       value: cause.toJson(),
     );
   }
+  if (cause is UnresolvedIdentityNameError) {
+    return MixSchemaError(
+      code: MixSchemaErrorCode.unresolvedIdentityName,
+      path: path,
+      message: cause.toString(),
+      value: cause.name,
+    );
+  }
+  if (cause is UnresolvedIdentityValueError) {
+    return MixSchemaError(
+      code: MixSchemaErrorCode.unresolvedIdentityValue,
+      path: path,
+      message: cause.toString(),
+      value: cause.value,
+    );
+  }
   if (cause is UnknownRegistryIdError) {
     return MixSchemaError(
-      code: MixSchemaErrorCode.unknownRegistryId,
+      code: MixSchemaErrorCode.unresolvedIdentityName,
       path: path,
       message: cause.toString(),
       value: cause.id,
@@ -79,7 +92,7 @@ MixSchemaError _mapSingleSchemaError(
   }
   if (cause is UnknownRegistryValueError) {
     return MixSchemaError(
-      code: MixSchemaErrorCode.unknownRegistryValue,
+      code: MixSchemaErrorCode.unresolvedIdentityValue,
       path: path,
       message: cause.toString(),
       value: cause.value,

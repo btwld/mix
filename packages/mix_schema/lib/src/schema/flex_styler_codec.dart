@@ -2,7 +2,7 @@ import 'package:ack/ack.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
-import '../registry/registry.dart';
+import '../contract/identity_resolution.dart';
 import 'common_codecs.dart';
 import 'schema_field.dart';
 import 'styler_field_inventory.dart';
@@ -10,16 +10,16 @@ import 'styler_codec_helpers.dart';
 
 AckSchema<JsonMap, FlexStyler> flexStylerCodec({
   AckSchema<JsonMap, Object>? rootStyleSchema,
-  required FrozenRegistry Function() registry,
+  MixSchemaIdentityContext Function()? identityContext,
 }) {
-  return _flexStylerSchemaType(rootStyleSchema, registry).codec();
+  return _flexStylerSchemaType(rootStyleSchema).codec();
 }
 
 JsonMap encodeFlexStylerFields(
   FlexStyler value, {
   bool includeStylerMetadata = true,
 }) {
-  return _flexStylerSchemaType(null, emptyFrozenRegistry).encodeFields(
+  return _flexStylerSchemaType(null).encodeFields(
     value,
     omit: includeStylerMetadata ? const {} : stylerMetadataFields,
   );
@@ -27,7 +27,6 @@ JsonMap encodeFlexStylerFields(
 
 SchemaObject<FlexStyler> _flexStylerSchemaType(
   AckSchema<JsonMap, Object>? rootStyleSchema,
-  FrozenRegistry Function() registry,
 ) {
   final direction = propValueField<FlexStyler, Axis>(
     'direction',
@@ -76,7 +75,6 @@ SchemaObject<FlexStyler> _flexStylerSchemaType(
   );
   final metadata = StylerMetadataFields<FlexStyler, FlexSpec>(
     rootStyleSchema: rootStyleSchema,
-    registry: registry,
     readVariants: (value) => value.$variants,
     readModifier: (value) => value.$modifier,
     readAnimation: (value) => value.$animation,

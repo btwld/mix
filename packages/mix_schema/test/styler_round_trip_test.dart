@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
@@ -15,14 +13,9 @@ import 'package:mix_schema/mix_schema.dart';
 /// add decode-side symmetry and metadata fidelity for every built-in branch.
 void main() {
   const icon = IconData(0xe88a, fontFamily: 'MaterialIcons');
-  final image = MemoryImage(Uint8List.fromList([0, 1, 2, 3]));
+  const image = NetworkImage('https://example.com/pixels.png');
 
-  final contract =
-      (MixSchemaContractBuilder()
-            ..registry.iconData('home', icon)
-            ..registry.imageProvider('pixels', image))
-          .builtIn()
-          .freeze();
+  final contract = MixSchemaContractBuilder().builtIn().freeze();
 
   JsonMap encode(Object styler) {
     final result = contract.encode(styler);

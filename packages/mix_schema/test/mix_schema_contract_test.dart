@@ -3,7 +3,6 @@ import 'dart:typed_data';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
-import 'package:mix_schema/encode.dart';
 import 'package:mix_schema/mix_schema.dart';
 
 final class _CustomStyle {
@@ -99,81 +98,35 @@ void main() {
     },
   );
 
-  test('shared built-in contract leaves registry-backed stylers explicit', () {
+  test('shared built-in contract includes icon and image stylers', () {
     expect(
       builtInMixSchemaContract.registeredTypes,
-      isNot(contains(anyOf('icon', 'image'))),
+      containsAll(<String>['icon', 'image']),
     );
 
-    for (final payload in [
-      {'type': 'icon', 'icon': 'home'},
-      {'type': 'image', 'image': 'avatar'},
-    ]) {
-      final result = builtInMixSchemaContract.decode<Object>(payload);
-      final errors = switch (result) {
-        MixSchemaDecodeFailure<Object>(:final errors) => errors,
-        MixSchemaDecodeSuccess<Object>() => fail('expected failure'),
-      };
-
-      expect(
-        errors.map((error) => error.code),
-        contains(MixSchemaErrorCode.unknownType),
-      );
-      expect(
-        errors.single.message,
-        allOf(
-          contains('registry-backed'),
-          contains('MixSchemaContractBuilder().builtIn()'),
-        ),
-      );
-    }
-
-    for (final styler in [
-      IconStyler(icon: const IconData(0xe88a, fontFamily: 'MaterialIcons')),
-      ImageStyler(image: MemoryImage(Uint8List.fromList([0]))),
-    ]) {
-      final result = builtInMixSchemaContract.encode(styler);
-      final errors = switch (result) {
-        MixSchemaEncodeFailure(:final errors) => errors,
-        MixSchemaEncodeSuccess() => fail('expected failure'),
-      };
-
-      expect(
-        errors.map((error) => error.code),
-        contains(MixSchemaErrorCode.unsupportedEncodeValue),
-      );
-      expect(
-        errors.single.message,
-        allOf(
-          contains('registry-backed'),
-          contains('MixSchemaContractBuilder().builtIn()'),
-        ),
-      );
-    }
+    expect(
+      builtInMixSchemaContract.decode<IconStyler>({
+        'type': 'icon',
+        'icon': {'codePoint': 0xe88a, 'fontFamily': 'MaterialIcons'},
+      }),
+      isA<MixSchemaDecodeSuccess<IconStyler>>(),
+    );
+    expect(
+      builtInMixSchemaContract.decode<ImageStyler>({
+        'type': 'image',
+        'image': {'asset': 'avatar.png'},
+      }),
+      isA<MixSchemaDecodeSuccess<ImageStyler>>(),
+    );
   });
 
-  test('frozen contract remains usable with original registry behavior', () {
-    void onEnd() {}
-
-    final builder = MixSchemaContractBuilder()
-      ..registry.animationOnEnd('done', onEnd);
+  test('contract builder has no frozen registry state', () {
+    final builder = MixSchemaContractBuilder();
     final contract = builder.builtIn().freeze();
 
     expect(
-      () => builder.registry.animationOnEnd('later', () {}),
-      throwsStateError,
-    );
-    expect(
-      contract.decode<BoxStyler>({
-        'type': 'box',
-        'animation': {
-          'duration': 250,
-          'curve': 'linear',
-          'delay': 0,
-          'onEnd': 'done',
-        },
-      }),
-      isA<MixSchemaDecodeSuccess<BoxStyler>>(),
+      contract.encode(ImageStyler(image: MemoryImage(Uint8List.fromList([0])))),
+      isA<MixSchemaEncodeFailure>(),
     );
   });
 

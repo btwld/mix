@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
 import '../errors/mix_schema_error.dart';
-import '../registry/registry.dart';
+import '../contract/identity_resolution.dart';
 import 'common_codecs.dart';
 import 'schema_field.dart';
 import 'styler_field_inventory.dart';
@@ -11,16 +11,16 @@ import 'styler_codec_helpers.dart';
 
 AckSchema<JsonMap, BoxStyler> boxStylerCodec({
   AckSchema<JsonMap, Object>? rootStyleSchema,
-  required FrozenRegistry Function() registry,
+  MixSchemaIdentityContext Function()? identityContext,
 }) {
-  return _boxStylerSchemaType(rootStyleSchema, registry).codec();
+  return _boxStylerSchemaType(rootStyleSchema).codec();
 }
 
 JsonMap encodeBoxStylerFields(
   BoxStyler value, {
   bool includeStylerMetadata = true,
 }) {
-  return _boxStylerSchemaType(null, null).encodeFields(
+  return _boxStylerSchemaType(null).encodeFields(
     value,
     omit: includeStylerMetadata ? const {} : stylerMetadataFields,
   );
@@ -28,7 +28,6 @@ JsonMap encodeBoxStylerFields(
 
 SchemaObject<BoxStyler> _boxStylerSchemaType(
   AckSchema<JsonMap, Object>? rootStyleSchema,
-  FrozenRegistry Function()? registry,
 ) {
   final alignment = propValueAsField<BoxStyler, Alignment, AlignmentGeometry>(
     'alignment',
@@ -82,7 +81,6 @@ SchemaObject<BoxStyler> _boxStylerSchemaType(
       );
   final metadata = StylerMetadataFields<BoxStyler, BoxSpec>(
     rootStyleSchema: rootStyleSchema,
-    registry: registry ?? emptyFrozenRegistry,
     readVariants: (value) => value.$variants,
     readModifier: (value) => value.$modifier,
     readAnimation: (value) => value.$animation,
@@ -374,22 +372,66 @@ JsonMap _encodeSweepGradientMix(SweepGradientMix value) {
   };
 }
 
-CodecSchema<JsonMap, GradientTransform> _gradientTransformCodec() {
-  return Ack.object({
-    'kind': Ack.literal('rotation'),
-    'radians': numberAsDoubleCodec(),
-  }).codec<GradientTransform>(
-    decode: (data) => GradientRotation(data['radians']! as double),
-    encode: (value) => switch (value) {
-      GradientRotation(:final radians) => {
-        'kind': 'rotation',
-        'radians': radians,
-      },
-      _ => throw UnsupportedEncodeValueError(
-        value,
-        'Field "decoration.gradient.transform" only supports '
-        'GradientRotation.',
+CodecSchema<Object, GradientTransform> _gradientTransformCodec() {
+  return Ack.anyOf([
+    Ack.object({
+      'kind': Ack.literal('rotation'),
+      'radians': numberAsDoubleCodec(),
+    }),
+    Ack.object({
+      'kind': Ack.literal('css_linear'),
+      'direction': Ack.enumString(
+        CssKeywordLinearTransform.supportedDirectionKeys.toList(
+          growable: false,
+        ),
       ),
+    }),
+  ]).codec<GradientTransform>(
+    decode: (value) {
+      final data = value as JsonMap;
+
+      return switch (data['kind']) {
+        'rotation' => GradientRotation(data['radians']! as double),
+        'css_linear' => CssKeywordLinearTransform(data['direction']! as String),
+        final kind => throw UnsupportedEncodeValueError(
+          kind,
+          'Unsupported gradient transform kind "$kind".',
+        ),
+      };
     },
+    encode: _encodeGradientTransform,
   );
+}
+
+JsonMap _encodeGradientTransform(GradientTransform value) {
+  return switch (value) {
+    GradientRotation(:final radians) => {
+      'kind': 'rotation',
+      'radians': radians,
+    },
+    CssKeywordLinearTransform(:final directionKey) =>
+      _encodeCssKeywordLinearTransform(value, directionKey),
+    _ => throw UnsupportedEncodeValueError(
+      value,
+      'Field "decoration.gradient.transform" only supports '
+      'GradientRotation or CssKeywordLinearTransform.',
+    ),
+  };
+}
+
+JsonMap _encodeCssKeywordLinearTransform(
+  CssKeywordLinearTransform value,
+  String directionKey,
+) {
+  if (!CssKeywordLinearTransform.supportedDirectionKeys.contains(
+    directionKey,
+  )) {
+    throw UnsupportedEncodeValueError(
+      value,
+      'Field "decoration.gradient.transform.css_linear.direction" only '
+      'supports CSS linear-gradient directions.',
+    );
+  }
+
+  return {'kind': 'css_linear', 'direction': directionKey};
 }

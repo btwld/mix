@@ -1,7 +1,6 @@
 import 'package:ack/ack.dart';
 import 'package:mix/mix.dart';
 
-import '../registry/registry.dart';
 import 'animation_codec.dart';
 import 'common_codecs.dart';
 import 'modifier_codec.dart';
@@ -10,15 +9,12 @@ import 'variant_codec.dart';
 
 const stylerMetadataFields = {'variants', 'modifiers', 'animation'};
 
-FrozenRegistry emptyFrozenRegistry() => RegistryBuilder().freeze();
-
 final class StylerMetadataFields<
   Owner extends Object,
   SpecType extends Spec<SpecType>
 > {
   StylerMetadataFields({
     required AckSchema<JsonMap, Object>? rootStyleSchema,
-    required FrozenRegistry Function() registry,
     required List<VariantStyle<SpecType>>? Function(Owner value) readVariants,
     required WidgetModifierConfig? Function(Owner value) readModifier,
     required AnimationConfig? Function(Owner value) readAnimation,
@@ -38,7 +34,7 @@ final class StylerMetadataFields<
        ),
        animation = directField<Owner, AnimationConfig>(
          'animation',
-         animationConfigCodec(registry: registry),
+         animationConfigCodec(),
          readAnimation,
        );
 

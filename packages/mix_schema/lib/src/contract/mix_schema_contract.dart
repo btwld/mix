@@ -1,4 +1,4 @@
-import 'package:ack/ack.dart';
+import 'package:ack/ack.dart' hide JsonMap;
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart'
     show
@@ -18,9 +18,10 @@ import 'package:mix/mix.dart'
         SpaceToken,
         TextStyleToken;
 
+import 'identity_resolution.dart';
+import 'json_map.dart';
 import '../errors/mix_schema_error.dart';
 import '../errors/schema_error_mapper.dart';
-import '../registry/registry.dart';
 import '../schema/box_styler_codec.dart';
 import '../schema/flex_box_styler_codec.dart';
 import '../schema/flex_styler_codec.dart';
@@ -57,10 +58,36 @@ enum MixSchemaDecodeMode {
 /// Options for decoding a style document.
 final class MixSchemaDecodeOptions {
   /// Creates decode options.
-  const MixSchemaDecodeOptions({this.mode = MixSchemaDecodeMode.strict});
+  const MixSchemaDecodeOptions({
+    this.mode = MixSchemaDecodeMode.strict,
+    this.resolveIcon,
+    this.resolveImage,
+  });
 
   /// How unknown fields, discriminators, and enum values are handled.
   final MixSchemaDecodeMode mode;
+
+  /// Resolves string icon identities for icon styler payloads.
+  final MixSchemaIconResolver? resolveIcon;
+
+  /// Resolves string image identities for image styler payloads.
+  final MixSchemaImageResolver? resolveImage;
+}
+
+/// Options for encoding runtime identity values.
+final class MixSchemaEncodeOptions {
+  /// Creates encode options.
+  const MixSchemaEncodeOptions({
+    this.iconNames = const {},
+    this.imageNames = const {},
+  });
+
+  /// Optional names to emit for icon identities before falling back to value
+  /// forms.
+  final Map<String, IconData> iconNames;
+
+  /// Optional names to emit for image identities before supported value forms.
+  final Map<String, ImageProvider<Object>> imageNames;
 }
 
 /// Owned wrapper for a styler branch registered with [MixSchemaContractBuilder].
@@ -121,22 +148,19 @@ final class MixSchemaRootSchema {
 /// immutable [MixSchemaContract].
 final class MixSchemaContractBuilder {
   /// Creates an empty builder.
-  MixSchemaContractBuilder() : _registryBuilder = RegistryBuilder() {
+  MixSchemaContractBuilder()
+    : _identityContext = MixSchemaIdentityContextHolder() {
     _rootSchemaRef = Ack.lazy<JsonMap, Object>(
       'mix_schema_style',
       () => _rootSchema,
     );
   }
 
-  final RegistryBuilder _registryBuilder;
+  final MixSchemaIdentityContextHolder _identityContext;
   final Map<String, AckSchema<JsonMap, Object>> _branches = {};
   late final AckSchema<JsonMap, Object> _rootSchemaRef;
   late AckSchema<JsonMap, Object> _rootSchema;
-  late FrozenRegistry _frozenRegistry;
   bool _isFrozen = false;
-
-  /// Registry builder used by registry-backed fields in the eventual contract.
-  RegistryBuilder get registry => _registryBuilder;
 
   /// Registers a styler branch for the root `type` discriminator.
   ///
@@ -158,8 +182,10 @@ final class MixSchemaContractBuilder {
   /// Registers the package's built-in styler branches.
   ///
   /// By default this includes every built-in styler. Set
-  /// [includeRegistryBacked] to `false` for shared contracts that should avoid
-  /// `icon` and `image`, whose identity fields need an app-owned registry.
+  /// [includeRegistryBacked] to `false` to omit the `icon` and `image` branches
+  /// for legacy producer-only contracts. The parameter name is retained for
+  /// source compatibility; those branches now use resolver/value-form identity
+  /// codecs.
   MixSchemaContractBuilder builtIn({bool includeRegistryBacked = true}) {
     _ensureMutable();
     addStyler(
@@ -167,7 +193,7 @@ final class MixSchemaContractBuilder {
       MixSchemaBranch._ack(
         boxStylerCodec(
           rootStyleSchema: _rootSchemaRef,
-          registry: () => _frozenRegistry,
+          identityContext: () => _identityContext.current,
         ),
       ),
     );
@@ -176,7 +202,7 @@ final class MixSchemaContractBuilder {
       MixSchemaBranch._ack(
         textStylerCodec(
           rootStyleSchema: _rootSchemaRef,
-          registry: () => _frozenRegistry,
+          identityContext: () => _identityContext.current,
         ),
       ),
     );
@@ -185,7 +211,7 @@ final class MixSchemaContractBuilder {
       MixSchemaBranch._ack(
         flexStylerCodec(
           rootStyleSchema: _rootSchemaRef,
-          registry: () => _frozenRegistry,
+          identityContext: () => _identityContext.current,
         ),
       ),
     );
@@ -194,7 +220,7 @@ final class MixSchemaContractBuilder {
       MixSchemaBranch._ack(
         stackStylerCodec(
           rootStyleSchema: _rootSchemaRef,
-          registry: () => _frozenRegistry,
+          identityContext: () => _identityContext.current,
         ),
       ),
     );
@@ -204,7 +230,7 @@ final class MixSchemaContractBuilder {
         MixSchemaBranch._ack(
           iconStylerCodec(
             rootStyleSchema: _rootSchemaRef,
-            registry: () => _frozenRegistry,
+            identityContext: () => _identityContext.current,
           ),
         ),
       );
@@ -213,7 +239,7 @@ final class MixSchemaContractBuilder {
         MixSchemaBranch._ack(
           imageStylerCodec(
             rootStyleSchema: _rootSchemaRef,
-            registry: () => _frozenRegistry,
+            identityContext: () => _identityContext.current,
           ),
         ),
       );
@@ -223,7 +249,7 @@ final class MixSchemaContractBuilder {
       MixSchemaBranch._ack(
         flexBoxStylerCodec(
           rootStyleSchema: _rootSchemaRef,
-          registry: () => _frozenRegistry,
+          identityContext: () => _identityContext.current,
         ),
       ),
     );
@@ -232,7 +258,7 @@ final class MixSchemaContractBuilder {
       MixSchemaBranch._ack(
         stackBoxStylerCodec(
           rootStyleSchema: _rootSchemaRef,
-          registry: () => _frozenRegistry,
+          identityContext: () => _identityContext.current,
         ),
       ),
     );
@@ -242,7 +268,7 @@ final class MixSchemaContractBuilder {
 
   /// Freezes the builder into an immutable contract.
   ///
-  /// The builder and its registry cannot be mutated after this call succeeds.
+  /// The builder cannot be mutated after this call succeeds.
   /// At least one styler branch must be registered before freezing.
   MixSchemaContract freeze() {
     _ensureMutable();
@@ -252,9 +278,7 @@ final class MixSchemaContractBuilder {
         'Call builtIn() or addStyler() before freeze().',
       );
     }
-    final registry = _registryBuilder.freeze();
     _isFrozen = true;
-    _frozenRegistry = registry;
     final root = Ack.discriminated<Object>(
       discriminatorKey: 'type',
       schemas: _branches,
@@ -264,7 +288,7 @@ final class MixSchemaContractBuilder {
     return MixSchemaContract._(
       rootSchema: MixSchemaRootSchema._(root),
       rootAckSchema: root,
-      registry: registry,
+      identityContext: _identityContext,
       registeredTypes: List.unmodifiable(_branches.keys),
     );
   }
@@ -285,47 +309,31 @@ final class MixSchemaContract {
   const MixSchemaContract._({
     required this.rootSchema,
     required AckSchema<JsonMap, Object> rootAckSchema,
-    required this.registry,
+    required MixSchemaIdentityContextHolder identityContext,
     required this.registeredTypes,
-  }) : _rootSchema = rootAckSchema;
+  }) : _rootSchema = rootAckSchema,
+       _identityContext = identityContext;
 
   /// Root schema view used for schema export and inspection.
   final MixSchemaRootSchema rootSchema;
 
   final AckSchema<JsonMap, Object> _rootSchema;
-
-  /// Frozen registry used by identity fields such as callbacks and icons.
-  final FrozenRegistry registry;
+  final MixSchemaIdentityContextHolder _identityContext;
 
   /// Root `type` discriminator values registered in this contract.
   final List<String> registeredTypes;
 
   /// Validates [payload] without requiring the caller to choose a Dart type.
-  MixSchemaValidationResult validate(Object? payload) {
-    final prepared = _preparePayload(payload);
-    if (prepared case _PreparedPayloadFailure(:final error)) {
-      return MixSchemaValidationFailure([error]);
-    }
-    final ready = prepared as _PreparedPayloadSuccess;
-
-    final registryBackedError = _missingRegistryBackedBranchForPayload(
-      ready.payload,
-    );
-    if (registryBackedError != null) {
-      return MixSchemaValidationFailure([
-        registryBackedError,
-      ], warnings: ready.warnings);
-    }
-
-    final result = _rootSchema.safeParse(ready.payload);
-    if (result.isOk) {
-      return MixSchemaValidationSuccess(warnings: ready.warnings);
-    }
-
-    return MixSchemaValidationFailure(
-      mapSchemaError(result.getError()),
-      warnings: ready.warnings,
-    );
+  MixSchemaValidationResult validate(
+    Object? payload, {
+    MixSchemaDecodeOptions options = const MixSchemaDecodeOptions(),
+  }) {
+    return switch (decode<Object>(payload, options: options)) {
+      MixSchemaDecodeSuccess<Object>(:final warnings) =>
+        MixSchemaValidationSuccess(warnings: warnings),
+      MixSchemaDecodeFailure<Object>(:final errors, :final warnings) =>
+        MixSchemaValidationFailure(errors, warnings: warnings),
+    };
   }
 
   /// Decodes [payload] as a Mix styler or custom registered value of type [T].
@@ -339,20 +347,24 @@ final class MixSchemaContract {
     }
     final ready = prepared as _PreparedPayloadSuccess;
 
-    final registryBackedError = _missingRegistryBackedBranchForPayload(
-      ready.payload,
-    );
-    if (registryBackedError != null) {
+    final identityBranchError = _missingIdentityBranchForPayload(ready.payload);
+    if (identityBranchError != null) {
       return MixSchemaDecodeFailure([
-        registryBackedError,
+        identityBranchError,
       ], warnings: ready.warnings);
     }
 
     if (options.mode == MixSchemaDecodeMode.lenient) {
-      return _decodeLenient<T>(ready.payload, ready.warnings);
+      return _withIdentityContext(
+        _decodeContext(options),
+        () => _decodeLenient<T>(ready.payload, ready.warnings),
+      );
     }
 
-    final result = _rootSchema.safeParse(ready.payload);
+    final result = _withIdentityContext(
+      _decodeContext(options),
+      () => _rootSchema.safeParse(ready.payload),
+    );
     if (result.isFail) {
       return MixSchemaDecodeFailure(
         mapSchemaError(result.getError()),
@@ -376,15 +388,23 @@ final class MixSchemaContract {
   }
 
   /// Encodes a representable Mix styler or custom registered value.
-  MixSchemaEncodeResult encode(Object value) {
-    final registryBackedError = _missingRegistryBackedBranchForValue(value);
-    if (registryBackedError != null) {
-      return MixSchemaEncodeFailure([registryBackedError]);
+  MixSchemaEncodeResult encode(
+    Object value, {
+    MixSchemaEncodeOptions options = const MixSchemaEncodeOptions(),
+  }) {
+    final identityBranchError = _missingIdentityBranchForValue(value);
+    if (identityBranchError != null) {
+      return MixSchemaEncodeFailure([identityBranchError]);
     }
 
-    final result = _rootSchema.safeEncode(value);
+    final result = _withIdentityContext(
+      _encodeContext(options),
+      () => _rootSchema.safeEncode(value),
+    );
     if (result.isFail) {
-      return MixSchemaEncodeFailure(mapSchemaError(result.getError()));
+      return MixSchemaEncodeFailure(
+        _withoutRootEncodeBranchNoise(mapSchemaError(result.getError())),
+      );
     }
 
     final encoded = result.getOrNull();
@@ -393,6 +413,49 @@ final class MixSchemaContract {
       ...encoded!,
       _versionKey: mixSchemaFormatVersion,
     });
+  }
+
+  R _withIdentityContext<R>(
+    MixSchemaIdentityContext context,
+    R Function() run,
+  ) {
+    final previous = _identityContext.current;
+    _identityContext.current = context;
+    try {
+      return run();
+    } finally {
+      _identityContext.current = previous;
+    }
+  }
+
+  MixSchemaIdentityContext _decodeContext(MixSchemaDecodeOptions options) {
+    return MixSchemaIdentityContext(
+      resolveIcon: options.resolveIcon,
+      resolveImage: options.resolveImage,
+    );
+  }
+
+  MixSchemaIdentityContext _encodeContext(MixSchemaEncodeOptions options) {
+    return MixSchemaIdentityContext(
+      iconNames: options.iconNames,
+      imageNames: options.imageNames,
+    );
+  }
+
+  List<MixSchemaError> _withoutRootEncodeBranchNoise(
+    List<MixSchemaError> errors,
+  ) {
+    final hasSpecificError = errors.any((error) => error.path.isNotEmpty);
+    if (!hasSpecificError) return errors;
+
+    return errors
+        .where(
+          (error) =>
+              error.path.isNotEmpty ||
+              error.code != MixSchemaErrorCode.unsupportedEncodeValue ||
+              !error.message.startsWith('Expected '),
+        )
+        .toList(growable: false);
   }
 
   /// Exports the registered contract shape as draft-07 JSON Schema metadata.
@@ -478,41 +541,41 @@ final class MixSchemaContract {
     }
   }
 
-  MixSchemaError? _missingRegistryBackedBranchForPayload(Object? payload) {
+  MixSchemaError? _missingIdentityBranchForPayload(Object? payload) {
     if (payload is! Map) return null;
     final type = payload['type'];
-    if (type is! String || !_isMissingRegistryBackedBranch(type)) return null;
+    if (type is! String || !_isMissingIdentityBranch(type)) return null;
 
-    return _registryBackedBranchError(
+    return _identityBranchError(
       code: MixSchemaErrorCode.unknownType,
       path: '/type',
       wireType: type,
     );
   }
 
-  MixSchemaError? _missingRegistryBackedBranchForValue(Object value) {
+  MixSchemaError? _missingIdentityBranchForValue(Object value) {
     final wireType = switch (value) {
       IconStyler() => schemaTypeIcon,
       ImageStyler() => schemaTypeImage,
       _ => null,
     };
-    if (wireType == null || !_isMissingRegistryBackedBranch(wireType)) {
+    if (wireType == null || !_isMissingIdentityBranch(wireType)) {
       return null;
     }
 
-    return _registryBackedBranchError(
+    return _identityBranchError(
       code: MixSchemaErrorCode.unsupportedEncodeValue,
       path: '',
       wireType: wireType,
     );
   }
 
-  bool _isMissingRegistryBackedBranch(String wireType) {
+  bool _isMissingIdentityBranch(String wireType) {
     return (wireType == schemaTypeIcon || wireType == schemaTypeImage) &&
         !registeredTypes.contains(wireType);
   }
 
-  MixSchemaError _registryBackedBranchError({
+  MixSchemaError _identityBranchError({
     required MixSchemaErrorCode code,
     required String path,
     required String wireType,
@@ -521,10 +584,9 @@ final class MixSchemaContract {
       code: code,
       path: path,
       message:
-          'The "$wireType" styler branch is registry-backed and is not '
-          'registered in this contract. Use '
-          'MixSchemaContractBuilder().builtIn() with a populated registry for '
-          'icon/image payloads.',
+          'The "$wireType" styler branch is not registered in this contract. '
+          'Use MixSchemaContractBuilder().builtIn() to include the full '
+          'built-in styler set.',
     );
   }
 }

@@ -38,11 +38,11 @@ enum MixSchemaErrorCode {
   /// The root discriminator did not match any registered styler branch.
   unknownType('unknown_type'),
 
-  /// A registry id was well formed but absent from the frozen registry.
-  unknownRegistryId('unknown_registry_id'),
+  /// An identity name was well formed but not resolved by decode options.
+  unresolvedIdentityName('unresolved_identity_name'),
 
-  /// A runtime identity value was not registered for encode.
-  unknownRegistryValue('unknown_registry_value'),
+  /// A runtime identity value could not be named or encoded as a value form.
+  unresolvedIdentityValue('unresolved_identity_value'),
 
   /// Ack reported a validation failure that did not map to a narrower code.
   validationFailed('validation_failed'),
@@ -323,4 +323,34 @@ final class UnknownRegistryValueError implements Exception {
 
   @override
   String toString() => 'Unknown registry value ${value.runtimeType} in $scope.';
+}
+
+/// Internal sentinel thrown when a named identity cannot be resolved.
+final class UnresolvedIdentityNameError implements Exception {
+  /// Creates an unresolved-name sentinel for [scope] and [name].
+  const UnresolvedIdentityNameError(this.scope, this.name);
+
+  /// Identity scope that was queried.
+  final String scope;
+
+  /// Missing identity name.
+  final String name;
+
+  @override
+  String toString() => 'Unresolved $scope identity name "$name".';
+}
+
+/// Internal sentinel thrown when a runtime identity cannot be represented.
+final class UnresolvedIdentityValueError implements Exception {
+  /// Creates an unresolved-value sentinel for [scope] and [value].
+  const UnresolvedIdentityValueError(this.scope, this.value);
+
+  /// Identity scope searched during encode.
+  final String scope;
+
+  /// Runtime value that could not be represented.
+  final Object value;
+
+  @override
+  String toString() => 'Unresolved $scope identity value ${value.runtimeType}.';
 }
