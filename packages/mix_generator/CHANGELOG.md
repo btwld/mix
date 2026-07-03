@@ -1,3 +1,8 @@
+## 2.1.1
+
+ - **FEAT**: Support `@MixableField(setterType:)` on `@MixableModifier` fields. Generated `ModifierMix` constructors accept the declared Mix type and wrap values with `Prop.maybeMix` (#950).
+ - **FEAT**: Support `@MixableField(setterType:)` on `@MixableSpec` fields. Generated spec stylers expose Mix-typed setters and field factories for nested `StyleSpec` fields (#951).
+
 ## 2.1.0
 
  - **FEAT**: Add `@MixableModifier` generator. Annotate a `WidgetModifier` subclass
