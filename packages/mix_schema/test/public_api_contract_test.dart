@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mix_schema/encode.dart' as encode_compat;
 import 'package:mix_schema/mix_schema.dart';
 import 'package:mix_schema/testing.dart' as schema_testing;
 
@@ -30,15 +29,60 @@ void main() {
       expect(contract.rootSchema.toJsonSchema(), isA<JsonMap>());
       expect(contract.validate(payload), isA<MixSchemaValidationSuccess>());
       expect(SchemaStyler.box.wireValue, 'box');
-      expect(SchemaModifier.opacity.wireValue, 'opacity');
-      expect(SchemaVariant.widgetState.wireValue, 'widget_state');
+      expect(
+        SchemaModifier.values.map((value) => value.wireValue),
+        containsAll([
+          'align',
+          'aspect_ratio',
+          'blur',
+          'box',
+          'clip_oval',
+          'clip_rect',
+          'clip_r_rect',
+          'clip_triangle',
+          'default_text_style',
+          'default_text_styler',
+          'flexible',
+          'fractionally_sized_box',
+          'icon_theme',
+          'intrinsic_height',
+          'intrinsic_width',
+          'opacity',
+          'padding',
+          'rotate',
+          'rotated_box',
+          'scale',
+          'scroll_view',
+          'sized_box',
+          'skew',
+          'transform',
+          'translate',
+          'visibility',
+        ]),
+      );
+      expect(
+        SchemaVariant.values.map((value) => value.wireValue),
+        containsAll([
+          'named',
+          'widget_state',
+          'enabled',
+          'context_brightness',
+          'context_breakpoint',
+          'context_directionality',
+          'context_not',
+          'context_not_widget_state',
+          'context_orientation',
+          'context_platform',
+          'context_web',
+        ]),
+      );
       expect(builtInMixSchemaContract.registeredTypes, contains('box'));
       expect(
         schema_testing.payloadStyler(schema_testing.SchemaStyler.box)['type'],
         'box',
       );
       expect(
-        encode_compat.payloadModifier(encode_compat.SchemaModifier.opacity, {
+        schema_testing.payloadModifier(schema_testing.SchemaModifier.opacity, {
           'opacity': 0.5,
         })['type'],
         'opacity',

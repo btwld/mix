@@ -15,6 +15,71 @@ Template:
 
 ---
 
+## 2026-07-03 — Codex — follow-up drift cleanup
+
+**Did:** Implemented the review follow-up for `mix_schema`: identity value
+forms now preserve `IconData.fontFamilyFallback` plus supported `NetworkImage`
+state, unmodeled image state fails encode, lenient repair removes nested enum
+drift at the smallest safe path, one-item `$merge` carriers collapse after
+lenient directive cleanup, and box-shadow token encode failures now mirror
+shadow-list handling. The delegated Dart/Flutter review found the same
+one-source `$merge` collapse issue after invalid `$merge` source removal; fixed
+that edge with a regression test too.
+
+**Decisions:** Keep `NetworkImage.headers` and `AssetImage.bundle` fail-loud
+instead of adding arbitrary-map or bundle identity wire forms. Leave Tailwinds
+unchanged because the follow-up review did not find an actionable Tailwinds
+issue.
+
+**Verification:** Focused follow-up suite passed:
+`fvm flutter test test/resolver_options_test.dart test/format_v1_contract_test.dart test/property_grammar_codec_test.dart test/token_codec_test.dart test/schema_export_golden_test.dart --reporter expanded`
+reported `+91`. Full gate passed:
+`melos run gen:build --no-select`, `melos run ci --no-select`,
+`melos run analyze --no-select`, and `git diff --check origin/main...HEAD`.
+Targeted `ast-grep` scans found no stale `_removeEmptyApplyList` calls and
+confirmed the box-shadow token guard shape.
+
+**Blocked/open:** None.
+
+**Next:** Push/open PR when ready.
+
+## 2026-07-03 — Codex — drift closeout
+
+**Did:** Closed the attached drift plan without compatibility shims. Tightened
+`mix_schema` runtime/schema/WIRE behavior for theme aliases, directive params,
+numeric constraints, token terms, single-item `$merge`, theme text styles, and
+schema vocabulary. Removed the unpublished `encode.dart` entry point and moved
+payload helpers to `mix_schema/testing.dart`. Updated Tailwinds basis warnings
+and made the parser registry regenerate deterministically from a committed
+compact snapshot.
+
+**Decisions:** Keep `mix_schema` unpublished and allow the no-legacy cleanup;
+do not restore old `TwConfig` helpers; keep unsupported percentage/full basis
+out of scope; document the Phase 5 benchmark harness as ephemeral and rely on
+the runtime import/bypass tests as durable guardrails.
+
+**Review:** Full diff review found one schema-export gap before closeout:
+double-valued nested fields modeled by exported literal schemas and double-field
+`$merge` sources still rejected token `kind`. Fixed the exporter and added
+schema golden coverage for nested text/strut double fields and merge sources.
+A second pass found that a one-element `$merge` with `apply: []` bypassed the
+single-source merge guard. Fixed runtime/schema/WIRE parity so present `apply`
+lists must be non-empty.
+
+**Verification:**
+- Focused `mix_schema` drift suite passed (`+116`).
+- Second-pass focused `$merge`/schema export tests passed (`+3`).
+- Focused Tailwinds basis/registry suite passed (`+5`).
+- Synced with `origin/main` via merge commit `5eeec23be`.
+- Full gate passed: `melos run gen:build --no-select`,
+  `melos run ci --no-select`, and `melos run analyze --no-select` all reported
+  `SUCCESS`. The pub kernel-cache warning still printed, but each command
+  exited 0; final analyzer rerun reported no Dart or DCM issues.
+
+**Blocked/open:** None.
+
+**Next:** Commit the drift closeout, then push when ready.
+
 ## 2026-07-03 — Codex — final plan audit
 
 **Did:** Audited the completed plan against the status board, phase docs,
@@ -64,8 +129,8 @@ commit, then verify the remote branch and close the goal.
 - D5.1: retire Tailwinds runtime decode to test-time encode/validate checks.
 - D5.2: drop `onEnd` callbacks from v1 wire; revisit callbacks in the future
   event/tree layer.
-- D5.3: keep producer payload helpers as `mix_schema/testing.dart`, with
-  `encode.dart` only as an unpublished compatibility re-export.
+- D5.3: keep producer payload helpers as `mix_schema/testing.dart` and remove
+  the unpublished `encode.dart` entry point.
 - D5.4: restore the Tailwinds semantic compatibility facade.
 - D5.5: keep MixSchema-prefixed option names.
 - D5.6: keep `mix_schema` unpublished until the tree-layer demo; keep missing

@@ -129,6 +129,158 @@ void main() {
       expect(errors.single.message, contains('"spaces"'));
     });
 
+    test('rejects extra alias keys including apply', () {
+      final cases = <String, ({String extraKey, JsonMap payload})>{
+        'apply': (
+          extraKey: 'apply',
+          payload: {
+            'v': 1,
+            'type': 'theme',
+            'colors': {
+              'color.brand': '#336699',
+              'color.alias': {
+                r'$token': 'color.brand',
+                'apply': [
+                  {'op': 'color_opacity', 'opacity': 0.5},
+                ],
+              },
+            },
+          },
+        ),
+        'extra': (
+          extraKey: 'fallback',
+          payload: {
+            'v': 1,
+            'type': 'theme',
+            'colors': {
+              'color.brand': '#336699',
+              'color.alias': {r'$token': 'color.brand', 'fallback': '#000000'},
+            },
+          },
+        ),
+      };
+
+      for (final entry in cases.entries) {
+        final result = codec.decode(entry.value.payload);
+        final errors = switch (result) {
+          MixSchemaDecodeFailure<MixSchemaThemeDocument>(:final errors) =>
+            errors,
+          MixSchemaDecodeSuccess<MixSchemaThemeDocument>() => fail(
+            'expected ${entry.key} failure',
+          ),
+        };
+
+        expect(errors.single.code, MixSchemaErrorCode.unknownField);
+        expect(
+          errors.single.path,
+          '/colors/color.alias/${entry.value.extraKey}',
+        );
+      }
+    });
+
+    test('round-trips canonical text style fields', () {
+      final payload = {
+        'v': 1,
+        'type': 'theme',
+        'textStyles': {
+          'type.rich': {
+            'color': '#112233',
+            'backgroundColor': '#445566',
+            'fontSize': 16,
+            'fontWeight': 'w700',
+            'fontStyle': 'italic',
+            'letterSpacing': 0.4,
+            'debugLabel': 'rich-label',
+            'wordSpacing': 1.2,
+            'textBaseline': 'alphabetic',
+            'height': 1.5,
+            'fontFamily': 'Inter',
+            'fontFamilyFallback': ['Arial', 'sans-serif'],
+            'fontFeatures': [
+              {'feature': 'liga', 'value': 1},
+            ],
+            'fontVariations': [
+              {'axis': 'wght', 'value': 650},
+            ],
+            'decoration': 'underline',
+            'decorationColor': '#778899',
+            'decorationStyle': 'dashed',
+            'decorationThickness': 2,
+            'shadows': [
+              {
+                'color': '#33000000',
+                'offset': {'x': 0, 'y': 1},
+                'blurRadius': 2,
+              },
+            ],
+          },
+        },
+      };
+
+      final decoded = _decodeTheme(codec, payload);
+      final style = decoded.tokens[const TextStyleToken('type.rich')];
+
+      expect(
+        style,
+        isA<TextStyle>()
+            .having((value) => value.color, 'color', const Color(0xFF112233))
+            .having(
+              (value) => value.backgroundColor,
+              'backgroundColor',
+              const Color(0xFF445566),
+            )
+            .having((value) => value.fontSize, 'fontSize', 16)
+            .having((value) => value.fontWeight, 'fontWeight', FontWeight.w700)
+            .having((value) => value.fontStyle, 'fontStyle', FontStyle.italic)
+            .having((value) => value.letterSpacing, 'letterSpacing', 0.4)
+            .having((value) => value.debugLabel, 'debugLabel', 'rich-label')
+            .having((value) => value.wordSpacing, 'wordSpacing', 1.2)
+            .having(
+              (value) => value.textBaseline,
+              'textBaseline',
+              TextBaseline.alphabetic,
+            )
+            .having((value) => value.height, 'height', 1.5)
+            .having((value) => value.fontFamily, 'fontFamily', 'Inter')
+            .having((value) => value.fontFamilyFallback, 'fontFamilyFallback', [
+              'Arial',
+              'sans-serif',
+            ])
+            .having((value) => value.fontFeatures, 'fontFeatures', const [
+              FontFeature('liga'),
+            ])
+            .having((value) => value.fontVariations, 'fontVariations', const [
+              FontVariation('wght', 650),
+            ])
+            .having(
+              (value) => value.textBaseline,
+              'textBaseline',
+              TextBaseline.alphabetic,
+            )
+            .having(
+              (value) => value.decoration,
+              'decoration',
+              TextDecoration.underline,
+            )
+            .having(
+              (value) => value.decorationColor,
+              'decorationColor',
+              const Color(0xFF778899),
+            )
+            .having(
+              (value) => value.decorationStyle,
+              'decorationStyle',
+              TextDecorationStyle.dashed,
+            )
+            .having(
+              (value) => value.decorationThickness,
+              'decorationThickness',
+              2,
+            ),
+      );
+      expect(_encodeTheme(codec, decoded), payload);
+    });
+
     test('rejects token references when encoding concrete theme values', () {
       final result = codec.encode(
         MixSchemaThemeDocument(

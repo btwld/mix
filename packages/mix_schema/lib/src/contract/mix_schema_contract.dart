@@ -527,6 +527,7 @@ final class MixSchemaContract {
         warnings.add(_asWarning(error, path: warningPath));
         if (removalKind == _RemovalKind.listEntry) {
           journal.record(removalPath);
+          _repairAfterListEntryRemoval(current, removalPath);
         }
         removals += 1;
         changed = true;
@@ -1144,6 +1145,16 @@ List<String>? _lenientRemovalPath(MixSchemaError error) {
     return segments;
   }
 
+  if ((error.code == MixSchemaErrorCode.invalidEnum ||
+          error.code == MixSchemaErrorCode.unknownType) &&
+      _isLenientNestedRepairPath(segments)) {
+    if (_isNestedDiscriminatorPath(segments)) {
+      return segments.sublist(0, segments.length - 1);
+    }
+
+    return segments;
+  }
+
   return [segments.first];
 }
 
@@ -1184,6 +1195,20 @@ bool _isLenientNestedMapPropertyPath(List<String> path) {
   if (path.last == 'type' || path.last == _versionKey) return false;
 
   return true;
+}
+
+bool _isLenientNestedRepairPath(List<String> path) {
+  if (path.length < 2) return false;
+  if (path.first == 'type' || path.first == _versionKey) return false;
+  if (path.last == _versionKey) return false;
+
+  return true;
+}
+
+bool _isNestedDiscriminatorPath(List<String> path) {
+  if (path.length < 2) return false;
+
+  return path.last == 'type' || path.last == 'kind';
 }
 
 const _lenientListEntryPathSuffixes = [
@@ -1238,6 +1263,70 @@ _RemovalKind? _removePath(Object? root, List<String> path) {
   }
 
   return null;
+}
+
+void _repairAfterListEntryRemoval(Object? root, List<String> removedEntryPath) {
+  if (removedEntryPath.length < 2) return;
+
+  final listKey = removedEntryPath[removedEntryPath.length - 2];
+  if (listKey != applyDirectivesKey && listKey != mergeReferenceKey) return;
+
+  final termPath = removedEntryPath.sublist(0, removedEntryPath.length - 2);
+  Object? parent = root;
+  for (final segment in termPath) {
+    parent = switch (parent) {
+      Map<String, Object?>() => parent[segment],
+      List() => _readList(parent, segment),
+      _ => null,
+    };
+    if (parent == null) return;
+  }
+
+  if (parent is! Map<String, Object?>) return;
+  final apply = parent[applyDirectivesKey];
+  if (apply is List && apply.isEmpty) parent.remove(applyDirectivesKey);
+  _collapseSingleSourceMergeCarrier(root, termPath, parent);
+}
+
+void _collapseSingleSourceMergeCarrier(
+  Object? root,
+  List<String> termPath,
+  Map<String, Object?> term,
+) {
+  if (term.containsKey(applyDirectivesKey)) return;
+  if (term.keys.length != 1 || !term.containsKey(mergeReferenceKey)) return;
+
+  final sources = term[mergeReferenceKey];
+  if (sources is! List || sources.length != 1) return;
+
+  _replacePath(root, termPath, _deepMutableCopy(sources.single));
+}
+
+void _replacePath(Object? root, List<String> path, Object? value) {
+  if (path.isEmpty) return;
+
+  Object? parent = root;
+  for (final segment in path.take(path.length - 1)) {
+    parent = switch (parent) {
+      Map<String, Object?>() => parent[segment],
+      List() => _readList(parent, segment),
+      _ => null,
+    };
+    if (parent == null) return;
+  }
+
+  final last = path.last;
+  if (parent is Map<String, Object?>) {
+    if (parent.containsKey(last)) parent[last] = value;
+
+    return;
+  }
+
+  if (parent is List) {
+    final index = int.tryParse(last);
+    if (index == null || index < 0 || index >= parent.length) return;
+    parent[index] = value;
+  }
 }
 
 Object? _readList(List<Object?> list, String segment) {
@@ -1308,9 +1397,10 @@ JsonMap _withVersionEnvelope(JsonMap schema) {
 }
 
 JsonMap _withPropertyTermDefinitions(JsonMap schema) {
-  final withPropertyTermRefs =
-      _replaceAckAnyJsonSchemas(_withNestedPropertyLiteralSchemas(schema))
-          as JsonMap;
+  final withPropertyTermRefs = _withDoubleTokenPropertyTermSchemas(
+    _replaceAckAnyJsonSchemas(_withNestedPropertyLiteralSchemas(schema))
+        as JsonMap,
+  );
   final definitions = Map<String, Object?>.from(
     (withPropertyTermRefs['definitions'] as Map?) ?? const {},
   );
@@ -1320,20 +1410,100 @@ JsonMap _withPropertyTermDefinitions(JsonMap schema) {
     'definitions': {
       ...definitions,
       'mix_schema_property_term': _propertyTermJsonSchema(),
+      'mix_schema_double_property_term': _propertyTermJsonSchema(
+        allowTokenKind: true,
+      ),
       'mix_schema_property_control_term': _propertyControlTermJsonSchema(),
+      'mix_schema_double_property_control_term': _propertyControlTermJsonSchema(
+        allowTokenKind: true,
+      ),
       'mix_schema_directive': _directiveJsonSchema(),
       _boxDecorationLiteralSchemaDefinition: _nestedLiteralDefinitionSchema(
         boxDecorationCodec().toJsonSchema(),
+        definitionName: _boxDecorationLiteralSchemaDefinition,
       ),
       _strutStyleLiteralSchemaDefinition: _nestedLiteralDefinitionSchema(
         strutStyleMixCodec().toJsonSchema(),
+        definitionName: _strutStyleLiteralSchemaDefinition,
       ),
       _textStyleLiteralSchemaDefinition: _nestedLiteralDefinitionSchema(
         textStyleMixLiteralJsonSchema(),
+        definitionName: _textStyleLiteralSchemaDefinition,
       ),
     },
   };
 }
+
+JsonMap _withDoubleTokenPropertyTermSchemas(JsonMap schema) {
+  final anyOf = schema['anyOf'];
+  if (anyOf is List) {
+    return {
+      ...schema,
+      'anyOf': [
+        for (final branch in anyOf) _withDoubleTokenBranchProperties(branch),
+      ],
+    };
+  }
+
+  return _withDoubleTokenBranchProperties(schema) as JsonMap;
+}
+
+Object? _withDoubleTokenBranchProperties(Object? branchValue) {
+  if (branchValue is! JsonMap) return branchValue;
+  final doubleTokenProperties =
+      _doubleTokenRootPropertiesByType[_branchSchemaType(branchValue)];
+  if (doubleTokenProperties == null || doubleTokenProperties.isEmpty) {
+    return branchValue;
+  }
+
+  final properties = Map<String, Object?>.from(
+    (branchValue['properties'] as Map?) ?? const {},
+  );
+  for (final property in doubleTokenProperties) {
+    final value = properties[property];
+    if (_isGenericPropertyTermRef(value)) {
+      properties[property] = _propertyTermFieldJsonSchema(allowTokenKind: true);
+    }
+  }
+
+  return {...branchValue, 'properties': properties};
+}
+
+bool _isGenericPropertyTermRef(Object? value) {
+  return value is JsonMap &&
+      value.length == 1 &&
+      value[r'$ref'] == '#/definitions/mix_schema_property_term';
+}
+
+bool _isGenericPropertyControlTermRef(Object? value) {
+  return value is JsonMap &&
+      value.length == 1 &&
+      value[r'$ref'] == '#/definitions/mix_schema_property_control_term';
+}
+
+const _doubleTokenRootPropertiesByType = {
+  schemaTypeBox: {'padding', 'margin'},
+  schemaTypeFlex: {'spacing'},
+  schemaTypeIcon: {'size', 'weight', 'grade', 'opticalSize', 'fill', 'opacity'},
+  schemaTypeImage: {'width', 'height'},
+  schemaTypeFlexBox: {'padding', 'margin', 'spacing'},
+  schemaTypeStackBox: {'padding', 'margin'},
+};
+
+const _doubleTokenNestedPropertyPathsByDefinition = {
+  _strutStyleLiteralSchemaDefinition: [
+    ['fontSize'],
+    ['height'],
+    ['leading'],
+  ],
+  _textStyleLiteralSchemaDefinition: [
+    ['fontSize'],
+    ['letterSpacing'],
+    ['wordSpacing'],
+    ['height'],
+    ['decorationThickness'],
+  ],
+};
 
 const _boxDecorationLiteralSchemaDefinition =
     'mix_schema_box_decoration_literal';
@@ -1452,11 +1622,89 @@ bool _isAckAnyJsonSchema(JsonMap value) {
       types.length == 6;
 }
 
-JsonMap _nestedLiteralDefinitionSchema(JsonMap schema) {
+JsonMap _nestedLiteralDefinitionSchema(
+  JsonMap schema, {
+  required String definitionName,
+}) {
   final replaced = _replaceAckAnyJsonSchemas(schema);
   if (replaced is! JsonMap) return JsonMap.from(replaced as Map);
 
-  return _wrapTopLevelPropertySchemas(replaced);
+  return _withDoubleTokenNestedPropertySchemas(
+    _wrapTopLevelPropertySchemas(replaced),
+    _doubleTokenNestedPropertyPathsByDefinition[definitionName] ?? const [],
+  );
+}
+
+JsonMap _withDoubleTokenNestedPropertySchemas(
+  JsonMap schema,
+  List<List<String>> paths,
+) {
+  var result = schema;
+  for (final path in paths) {
+    result = _withDoubleTokenPropertyTermAtPath(result, path) as JsonMap;
+  }
+
+  return result;
+}
+
+Object? _withDoubleTokenPropertyTermAtPath(Object? value, List<String> path) {
+  if (path.isEmpty) return _allowDoubleTokenKindInPropertyTerm(value);
+  if (value is! Map) return value;
+
+  final map = JsonMap.from(value);
+  final anyOf = map['anyOf'];
+  if (anyOf is List) {
+    return {
+      ...map,
+      'anyOf': [
+        for (final branch in anyOf)
+          _withDoubleTokenPropertyTermAtPath(branch, path),
+      ],
+    };
+  }
+
+  final segment = path.first;
+  final rest = path.sublist(1);
+  if (segment == '*') {
+    final items = map['items'];
+    if (items == null) return value;
+    return {...map, 'items': _withDoubleTokenPropertyTermAtPath(items, rest)};
+  }
+
+  final properties = map['properties'];
+  if (properties is! Map || !properties.containsKey(segment)) return value;
+
+  return {
+    ...map,
+    'properties': {
+      ...properties,
+      segment: _withDoubleTokenPropertyTermAtPath(properties[segment], rest),
+    },
+  };
+}
+
+Object? _allowDoubleTokenKindInPropertyTerm(Object? value) {
+  if (value is! Map) return value;
+
+  final map = JsonMap.from(value);
+  if (_isGenericPropertyTermRef(map)) {
+    return _propertyTermFieldJsonSchema(allowTokenKind: true);
+  }
+  if (_isGenericPropertyControlTermRef(map)) {
+    return {r'$ref': '#/definitions/mix_schema_double_property_control_term'};
+  }
+
+  final anyOf = map['anyOf'];
+  if (anyOf is List) {
+    return {
+      ...map,
+      'anyOf': [
+        for (final branch in anyOf) _allowDoubleTokenKindInPropertyTerm(branch),
+      ],
+    };
+  }
+
+  return value;
 }
 
 JsonMap _wrapTopLevelPropertySchemas(JsonMap schema) {
@@ -1493,21 +1741,31 @@ bool _hasPropertyControlTermRef(JsonMap schema) {
   return anyOf.any(
     (branch) =>
         branch is Map &&
-        branch[r'$ref'] == '#/definitions/mix_schema_property_control_term',
+        (branch[r'$ref'] == '#/definitions/mix_schema_property_control_term' ||
+            branch[r'$ref'] ==
+                '#/definitions/mix_schema_double_property_control_term'),
   );
 }
 
-JsonMap _propertyTermJsonSchema() {
+JsonMap _propertyTermJsonSchema({bool allowTokenKind = false}) {
   return {
     'anyOf': [
       ..._genericPropertyLiteralSchemas(),
-      {r'$ref': '#/definitions/mix_schema_property_control_term'},
+      {
+        r'$ref': allowTokenKind
+            ? '#/definitions/mix_schema_double_property_control_term'
+            : '#/definitions/mix_schema_property_control_term',
+      },
     ],
   };
 }
 
-JsonMap _propertyTermFieldJsonSchema() {
-  return {r'$ref': '#/definitions/mix_schema_property_term'};
+JsonMap _propertyTermFieldJsonSchema({bool allowTokenKind = false}) {
+  return {
+    r'$ref': allowTokenKind
+        ? '#/definitions/mix_schema_double_property_term'
+        : '#/definitions/mix_schema_property_term',
+  };
 }
 
 JsonMap _propertyTermLiteralFieldRefSchema(String definitionName) {
@@ -1549,7 +1807,11 @@ List<JsonMap> _genericPropertyLiteralSchemas() {
   ];
 }
 
-JsonMap _propertyControlTermJsonSchema() {
+JsonMap _propertyControlTermJsonSchema({bool allowTokenKind = false}) {
+  final propertyTermRef = allowTokenKind
+      ? '#/definitions/mix_schema_double_property_term'
+      : '#/definitions/mix_schema_property_term';
+
   return {
     'anyOf': [
       {
@@ -1559,12 +1821,14 @@ JsonMap _propertyControlTermJsonSchema() {
             'type': 'string',
             'pattern': _tokenNamePatternSchema,
           },
-          tokenKindKey: {
-            'type': 'string',
-            'enum': [tokenKindSpace, tokenKindDouble],
-          },
+          if (allowTokenKind)
+            tokenKindKey: {
+              'type': 'string',
+              'enum': [tokenKindSpace, tokenKindDouble],
+            },
           applyDirectivesKey: {
             'type': 'array',
+            'minItems': 1,
             'items': {r'$ref': '#/definitions/mix_schema_directive'},
           },
         },
@@ -1576,15 +1840,28 @@ JsonMap _propertyControlTermJsonSchema() {
         'properties': {
           mergeReferenceKey: {
             'type': 'array',
-            'minItems': 1,
-            'items': {r'$ref': '#/definitions/mix_schema_property_term'},
-          },
-          applyDirectivesKey: {
-            'type': 'array',
-            'items': {r'$ref': '#/definitions/mix_schema_directive'},
+            'minItems': 2,
+            'items': {r'$ref': propertyTermRef},
           },
         },
         'required': [mergeReferenceKey],
+        'additionalProperties': false,
+      },
+      {
+        'type': 'object',
+        'properties': {
+          mergeReferenceKey: {
+            'type': 'array',
+            'minItems': 1,
+            'items': {r'$ref': propertyTermRef},
+          },
+          applyDirectivesKey: {
+            'type': 'array',
+            'minItems': 1,
+            'items': {r'$ref': '#/definitions/mix_schema_directive'},
+          },
+        },
+        'required': [mergeReferenceKey, applyDirectivesKey],
         'additionalProperties': false,
       },
     ],
@@ -1592,44 +1869,116 @@ JsonMap _propertyControlTermJsonSchema() {
 }
 
 JsonMap _directiveJsonSchema() {
-  return {
-    'type': 'object',
-    'properties': {
-      directiveOpKey: {
-        'type': 'string',
-        'enum': [
-          'capitalize',
-          'color_alpha',
-          'color_brighten',
-          'color_darken',
-          'color_desaturate',
-          'color_lighten',
-          'color_opacity',
-          'color_saturate',
-          'color_shade',
-          'color_tint',
-          'color_with_blue',
-          'color_with_green',
-          'color_with_red',
-          'color_with_values',
-          'lowercase',
-          'number_abs',
-          'number_add',
-          'number_ceil',
-          'number_clamp',
-          'number_divide',
-          'number_floor',
-          'number_multiply',
-          'number_round',
-          'number_subtract',
-          'sentence_case',
-          'title_case',
-          'uppercase',
-        ],
+  JsonMap directiveBranch(
+    String op, {
+    Map<String, JsonMap> params = const {},
+    List<String> requiredParams = const [],
+  }) {
+    return {
+      'type': 'object',
+      'properties': {
+        directiveOpKey: {'type': 'string', 'const': op},
+        ...params,
       },
-    },
-    'required': [directiveOpKey],
-    'additionalProperties': true,
+      'required': [directiveOpKey, ...requiredParams],
+      'additionalProperties': false,
+    };
+  }
+
+  const numberParam = {'type': 'number'};
+  const integerParam = {'type': 'integer'};
+
+  return {
+    'anyOf': [
+      directiveBranch(
+        'color_opacity',
+        params: const {'opacity': numberParam},
+        requiredParams: const ['opacity'],
+      ),
+      directiveBranch(
+        'color_with_values',
+        params: const {
+          'alpha': numberParam,
+          'red': numberParam,
+          'green': numberParam,
+          'blue': numberParam,
+          'colorSpace': {
+            'type': 'string',
+            'enum': ['sRGB', 'extendedSRGB', 'displayP3'],
+          },
+        },
+      ),
+      for (final op in const [
+        'color_alpha',
+        'color_darken',
+        'color_lighten',
+        'color_saturate',
+        'color_desaturate',
+        'color_tint',
+        'color_shade',
+        'color_brighten',
+      ])
+        directiveBranch(
+          op,
+          params: {op == 'color_alpha' ? 'alpha' : 'amount': integerParam},
+          requiredParams: [op == 'color_alpha' ? 'alpha' : 'amount'],
+        ),
+      directiveBranch(
+        'color_with_red',
+        params: const {'red': integerParam},
+        requiredParams: const ['red'],
+      ),
+      directiveBranch(
+        'color_with_green',
+        params: const {'green': integerParam},
+        requiredParams: const ['green'],
+      ),
+      directiveBranch(
+        'color_with_blue',
+        params: const {'blue': integerParam},
+        requiredParams: const ['blue'],
+      ),
+      for (final op in const [
+        'uppercase',
+        'lowercase',
+        'capitalize',
+        'title_case',
+        'sentence_case',
+      ])
+        directiveBranch(op),
+      directiveBranch(
+        'number_multiply',
+        params: const {'factor': numberParam},
+        requiredParams: const ['factor'],
+      ),
+      directiveBranch(
+        'number_add',
+        params: const {'addend': numberParam},
+        requiredParams: const ['addend'],
+      ),
+      directiveBranch(
+        'number_subtract',
+        params: const {'subtrahend': numberParam},
+        requiredParams: const ['subtrahend'],
+      ),
+      directiveBranch(
+        'number_divide',
+        params: const {'divisor': numberParam},
+        requiredParams: const ['divisor'],
+      ),
+      directiveBranch(
+        'number_clamp',
+        params: const {'min': numberParam, 'max': numberParam},
+        requiredParams: const ['min', 'max'],
+      ),
+      for (final op in const [
+        'number_abs',
+        'number_round',
+        'number_floor',
+        'number_ceil',
+      ])
+        directiveBranch(op),
+    ],
   };
 }
 
@@ -1784,6 +2133,25 @@ String? _readThemeAlias(
       ),
     );
     return null;
+  }
+
+  final allowedKeys = {
+    tokenReferenceKey,
+    if (kind.aliasKind != null) tokenKindKey,
+  };
+  for (final key in value.keys) {
+    if (allowedKeys.contains(key)) continue;
+    errors.add(
+      MixSchemaError(
+        code: MixSchemaErrorCode.unknownField,
+        path: _joinPath(valuePath, key),
+        message:
+            'Theme aliases may only contain "$tokenReferenceKey"'
+            '${kind.aliasKind == null ? '' : ' and "$tokenKindKey"'} fields.',
+        value: key,
+      ),
+    );
+    return rawTarget;
   }
   if (!isValidTokenName(rawTarget)) {
     errors.add(
@@ -2019,9 +2387,14 @@ CodecSchema<JsonMap, TextStyle> _themeTextStyleCodec() {
     'fontWeight': fontWeightLiteralCodec().optional(),
     'fontStyle': fontStyleCodec().optional(),
     'letterSpacing': numberAsDoubleCodec().optional(),
+    'debugLabel': Ack.string().optional(),
     'wordSpacing': numberAsDoubleCodec().optional(),
+    'textBaseline': enumNameCodec(TextBaseline.values).optional(),
     'height': numberAsDoubleCodec().optional(),
     'fontFamily': Ack.string().optional(),
+    'fontFamilyFallback': Ack.list(Ack.string()).optional(),
+    'fontFeatures': Ack.list(fontFeatureCodec()).optional(),
+    'fontVariations': Ack.list(fontVariationCodec()).optional(),
     'decoration': textDecorationCodec().optional(),
     'decorationColor': colorLiteralCodec().optional(),
     'decorationStyle': textDecorationStyleCodec().optional(),
@@ -2035,9 +2408,14 @@ CodecSchema<JsonMap, TextStyle> _themeTextStyleCodec() {
       fontWeight: data['fontWeight'] as FontWeight?,
       fontStyle: data['fontStyle'] as FontStyle?,
       letterSpacing: data['letterSpacing'] as double?,
+      debugLabel: data['debugLabel'] as String?,
       wordSpacing: data['wordSpacing'] as double?,
+      textBaseline: data['textBaseline'] as TextBaseline?,
       height: data['height'] as double?,
       fontFamily: data['fontFamily'] as String?,
+      fontFamilyFallback: (data['fontFamilyFallback'] as List?)?.cast<String>(),
+      fontFeatures: (data['fontFeatures'] as List?)?.cast<FontFeature>(),
+      fontVariations: (data['fontVariations'] as List?)?.cast<FontVariation>(),
       decoration: data['decoration'] as TextDecoration?,
       decorationColor: data['decorationColor'] as Color?,
       decorationStyle: data['decorationStyle'] as TextDecorationStyle?,
@@ -2049,13 +2427,8 @@ CodecSchema<JsonMap, TextStyle> _themeTextStyleCodec() {
 }
 
 JsonMap _encodeThemeTextStyle(TextStyle value) {
-  failIfPresent(value.debugLabel, 'theme.textStyle.debugLabel');
-  failIfPresent(value.fontFamilyFallback, 'theme.textStyle.fontFamilyFallback');
-  failIfPresent(value.fontFeatures, 'theme.textStyle.fontFeatures');
-  failIfPresent(value.fontVariations, 'theme.textStyle.fontVariations');
   failIfPresent(value.foreground, 'theme.textStyle.foreground');
   failIfPresent(value.background, 'theme.textStyle.background');
-  failIfPresent(value.textBaseline, 'theme.textStyle.textBaseline');
   failIfPresent(value.locale, 'theme.textStyle.locale');
   failIfPresent(
     value.leadingDistribution,
@@ -2073,9 +2446,14 @@ JsonMap _encodeThemeTextStyle(TextStyle value) {
     'fontWeight': value.fontWeight,
     'fontStyle': value.fontStyle,
     'letterSpacing': value.letterSpacing,
+    'debugLabel': value.debugLabel,
     'wordSpacing': value.wordSpacing,
+    'textBaseline': value.textBaseline,
     'height': value.height,
     'fontFamily': value.fontFamily,
+    'fontFamilyFallback': value.fontFamilyFallback,
+    'fontFeatures': value.fontFeatures,
+    'fontVariations': value.fontVariations,
     'decoration': value.decoration,
     'decorationColor': value.decorationColor,
     'decorationStyle': value.decorationStyle,

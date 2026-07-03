@@ -77,8 +77,8 @@ and returns the warnings collected before the cap was hit.
 
 Within v1, producers may add new fields, new variant/modifier kinds, new enum
 values, and future token kinds. Old strict clients reject those additions. Old
-lenient clients degrade by skipping the smallest enclosing property or entry and
-reporting warnings.
+lenient clients degrade by skipping the smallest repairable property, nested
+property, or list entry and reporting warnings.
 
 Changing the meaning, unit, type, or canonical spelling of an existing key is
 not additive; that requires `v: 2`. Renames must be represented as a new key in
@@ -125,7 +125,7 @@ are style metadata fields, not spec fields.
 - `textAlign`: `left`, `right`, `center`, `justify`, `start`, `end`
 - `strutStyle`: strut style
 - `textScaler`: `{ "linear": number }`
-- `maxLines`: integer
+- `maxLines`: positive integer
 - `style`: text style
 - `textWidthBasis`: enum name from `TextWidthBasis`
 - `textDirection`: `ltr`, `rtl`
@@ -170,6 +170,7 @@ are style metadata fields, not spec fields.
   - `codePoint`: integer
   - `fontFamily`: optional string
   - `fontPackage`: optional string
+  - `fontFamilyFallback`: optional string list
   - `matchTextDirection`: optional boolean
 
 Raw `IconData` value forms are useful for tooling and controlled payloads, but
@@ -184,7 +185,7 @@ resolver names are safer for app icons when Flutter icon tree-shaking matters.
 - `applyTextScaling`: boolean
 - `fill`: number
 - `semanticsLabel`: string
-- `opacity`: number
+- `opacity`: number between `0` and `1`
 - `blendMode`: enum name from `BlendMode`
 - `variants`: list of variant payloads
 - `modifiers`: modifier payload list or ordered modifier object
@@ -192,7 +193,8 @@ resolver names are safer for app icons when Flutter icon tree-shaking matters.
 
 ### image
 
-- `image`: either a resolver name string, `{ "url": string }` for
+- `image`: either a resolver name string, `{ "url": string, "scale"?: number,
+  "webHtmlElementStrategy"?: "never" | "fallback" | "prefer" }` for
   `NetworkImage`, or `{ "asset": string, "package"?: string }` for
   `AssetImage`
 - `width`: number
@@ -322,19 +324,21 @@ Multi-source props use an ordered `$merge` term:
 
 The encoder emits `$merge` only when the runtime prop has multiple sources.
 Single-source props stay flat unless the source is a token or needs `apply`.
-A one-element `$merge` is accepted as a carrier for `apply`, but canonical
-encode does not generate it for ordinary single-source props.
+A one-element `$merge` is accepted only as a carrier for a non-empty `apply`;
+canonical encode does not generate it for ordinary single-source props.
 
 `$token`, `$merge`, and `apply` are grammar-owned keys. Token reference objects
 may contain only `$token`, optional double-token `kind`, and optional `apply`.
 Merge objects may contain only `$merge` and optional `apply`. Unknown
 `$`-prefixed markers fail preflight.
 
-Exported JSON Schema uses `#/definitions/mix_schema_property_term` at
-property-term boundaries. That shared definition constrains control-marker
-objects (`$token`, `$merge`, and `apply`) and excludes malformed marker
-combinations. Field-specific literal details still come from the runtime codecs;
-runtime decode remains authoritative for exact Flutter/Mix value semantics.
+Exported JSON Schema uses `#/definitions/mix_schema_property_term` at ordinary
+property-term boundaries and `#/definitions/mix_schema_double_property_term` at
+double-token-capable boundaries. Those shared definitions constrain
+control-marker objects (`$token`, `$merge`, and `apply`) and exclude malformed
+marker combinations. Field-specific literal details still come from the runtime
+codecs; runtime decode remains authoritative for exact Flutter/Mix value
+semantics.
 
 ## Token References
 
@@ -355,7 +359,7 @@ The field position selects the canonical Mix token class:
 - duration fields: `DurationToken`
 - breakpoint variants: `BreakpointToken`
 
-Double-valued token references may include `"kind": "space"` or
+Only double-valued token references may include `"kind": "space"` or
 `"kind": "double"`. Decode defaults missing `kind` to `"space"`; canonical
 encode always writes `kind` for `SpaceToken` and `DoubleToken`.
 
@@ -367,8 +371,8 @@ values under both token classes.
 
 ## Directives
 
-Directive objects use core `Directive.key` strings as `op` values. Supported
-ops are:
+Directive objects use core `Directive.key` strings as `op` values. `apply`,
+when present, must contain at least one directive object. Supported ops are:
 
 - color: `color_alpha`, `color_brighten`, `color_darken`,
   `color_desaturate`, `color_lighten`, `color_opacity`, `color_saturate`,
@@ -380,14 +384,17 @@ ops are:
   `number_divide`, `number_floor`, `number_multiply`, `number_round`,
   `number_subtract`
 
-Directive params use the core field names: for example `color_alpha` has
-`alpha`, `color_opacity` has `opacity`, `number_multiply` has `factor`, and
-`number_clamp` has `min` and `max`. `color_with_values.colorSpace`, when
-present, is a Flutter `ColorSpace` enum name. Unknown `op` values fail strict
-decode with `invalid_enum` at the `apply` entry's `op` path; lenient decode
-removes the invalid `apply` entry and reports the same path as a warning. If no
-valid directives remain, canonical re-encode omits `apply` and preserves the
-underlying term when it is otherwise valid.
+Directive params are op-specific and use the core field names: for example
+`color_alpha` has only `alpha`, `color_opacity` has only `opacity`,
+`number_multiply` has only `factor`, and `number_clamp` has only `min` and
+`max`. `color_with_values` may use `alpha`, `red`, `green`, `blue`, and
+`colorSpace`; `colorSpace`, when present, is a Flutter `ColorSpace` enum name.
+Unknown `op` values fail strict decode with `invalid_enum` at the `apply`
+entry's `op` path. Extra params fail strict decode with `unknown_field` at the
+extra param path. Lenient decode removes the invalid `apply` entry and reports
+the original failing path as a warning. If no valid directives remain, canonical
+re-encode omits `apply` and preserves the underlying term when it is otherwise
+valid.
 
 ## Theme Document
 
@@ -425,12 +432,23 @@ Whole-value aliases are allowed only within the same map:
 }
 ```
 
+Alias objects may contain only `$token` and, for `spaces` or `doubles`, the
+matching `kind` value. Alias objects never carry `apply` or fallback fields.
+
 Aliases are resolved eagerly at theme decode time with cycle detection, so the
 decoded theme exposes a flat `Map<MixToken, Object>` ready for
 `MixScope(tokens:)`. Cross-kind aliases, missing alias targets, alias cycles,
 and nested token references inside concrete theme values fail decode. Encoding a
 decoded theme emits the flattened concrete token values; alias syntax is not
 preserved.
+
+Theme `textStyles` use the canonical concrete `TextStyle` fields supported by
+the style contract: `color`, `backgroundColor`, `fontSize`, `fontWeight`,
+`fontStyle`, `letterSpacing`, `debugLabel`, `wordSpacing`, `textBaseline`,
+`height`, `fontFamily`, `fontFamilyFallback`, `fontFeatures`,
+`fontVariations`, `decoration`, `decorationColor`, `decorationStyle`,
+`decorationThickness`, and `shadows`. Nested token references inside those
+values fail decode.
 
 ## Token Preflight
 
@@ -524,21 +542,23 @@ an object with optional `order` and `items`:
 Modifier payloads use a `type` discriminator. Supported kinds are:
 
 - `align`: optional `alignment`, `widthFactor`, and `heightFactor`
-- `aspect_ratio`: optional `aspectRatio`
+- `aspect_ratio`: optional positive `aspectRatio`
 - `blur`: required `sigma`
 - `box`: required nested box `style`
 - `clip_oval`, `clip_rect`, `clip_triangle`: optional `clipBehavior`
 - `clip_r_rect`: optional `borderRadius` and `clipBehavior`
 - `default_text_style`: optional `style`, `textAlign`, `softWrap`, `overflow`,
-  and `maxLines`
+  and positive `maxLines`
 - `default_text_styler`: required nested text `style`
-- `flexible`: optional `flex` integer and `fit` value `tight` or `loose`
+- `flexible`: optional non-negative `flex` integer and `fit` value `tight` or
+  `loose`
 - `fractionally_sized_box`: optional `widthFactor`, `heightFactor`, and
   `alignment`
 - `icon_theme`: optional `color`, `size`, `fill`, `weight`, `grade`,
-  `opticalSize`, `opacity`, `shadows`, and `applyTextScaling`
+  `opticalSize`, `opacity` between `0` and `1`, `shadows`, and
+  `applyTextScaling`
 - `intrinsic_height`, `intrinsic_width`: no fields
-- `opacity`: required `opacity`
+- `opacity`: required `opacity` between `0` and `1`
 - `padding`: required `padding`
 - `rotate`: optional `radians` and `alignment`
 - `rotated_box`: optional `quarterTurns`
@@ -609,9 +629,10 @@ final encoded = builtInMixSchemaContract.encode(
 
 Without a reverse map, `IconData` encodes as its value object. Prefer resolver
 names for app icons when Flutter icon tree-shaking matters. `NetworkImage`
-and `AssetImage` encode as their value forms; other `ImageProvider`
-implementations fail encode with `unresolved_identity_value`. A well-formed
-string name that the resolver does not return fails decode with
+and `AssetImage` encode as their value forms when all state is represented by
+the wire contract. `NetworkImage.headers`, `AssetImage.bundle`, and other
+`ImageProvider` implementations fail encode with `unresolved_identity_value`.
+A well-formed string name that the resolver does not return fails decode with
 `unresolved_identity_name`. Closure-backed context variant builders and
 callback identities are not part of the canonical contract.
 

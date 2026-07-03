@@ -98,7 +98,9 @@ AckSchema<JsonMap, AlignModifierMix> _alignModifierCodec() {
 
 AckSchema<JsonMap, AspectRatioModifierMix> _aspectRatioModifierCodec() {
   return Ack.object({
-    'aspectRatio': _doubleProp('modifiers.aspectRatio.aspectRatio').optional(),
+    'aspectRatio': _positiveDoubleProp(
+      'modifiers.aspectRatio.aspectRatio',
+    ).optional(),
   }).codec<AspectRatioModifierMix>(
     decode: (data) => AspectRatioModifierMix.create(
       aspectRatio: data['aspectRatio'] as Prop<double>?,
@@ -245,7 +247,9 @@ _defaultTextStyleModifierCodec() {
       textOverflowCodec(),
       fieldName: 'modifiers.defaultTextStyle.overflow',
     ).optional(),
-    'maxLines': _intProp('modifiers.defaultTextStyle.maxLines').optional(),
+    'maxLines': _positiveIntProp(
+      'modifiers.defaultTextStyle.maxLines',
+    ).optional(),
   }).codec<DefaultTextStyleModifierMix>(
     decode: (data) => DefaultTextStyleModifierMix.create(
       style: data['style'] as Prop<TextStyle>?,
@@ -280,7 +284,7 @@ _defaultTextStylerModifierCodec(AckSchema<JsonMap, Object>? rootStyleSchema) {
 
 AckSchema<JsonMap, FlexibleModifierMix> _flexibleModifierCodec() {
   return Ack.object({
-    'flex': _intProp('modifiers.flexible.flex').optional(),
+    'flex': _nonNegativeIntProp('modifiers.flexible.flex').optional(),
     'fit': valuePropCodec<FlexFit>(
       enumCodec({
         'tight': FlexFit.tight,
@@ -346,7 +350,7 @@ AckSchema<JsonMap, IconThemeModifierMix> _iconThemeModifierCodec() {
     'opticalSize': _doubleTokenProp(
       'modifiers.iconTheme.opticalSize',
     ).optional(),
-    'opacity': _doubleTokenProp('modifiers.iconTheme.opacity').optional(),
+    'opacity': _opacityTokenProp('modifiers.iconTheme.opacity').optional(),
     'shadows': mixPropCodec<ShadowListMix, List<Shadow>>(
       _shadowListMixCodec(),
       fieldName: 'modifiers.iconTheme.shadows',
@@ -411,7 +415,7 @@ AckSchema<JsonMap, IntrinsicWidthModifierMix> _intrinsicWidthModifierCodec() {
 
 AckSchema<JsonMap, OpacityModifierMix> _opacityModifierCodec() {
   return Ack.object({
-    'opacity': _doubleProp('modifiers.opacity.opacity'),
+    'opacity': _opacityProp('modifiers.opacity.opacity'),
   }).codec<OpacityModifierMix>(
     decode: (data) =>
         OpacityModifierMix.create(opacity: data['opacity'] as Prop<double>?),
@@ -686,12 +690,32 @@ CodecSchema<Object, Prop<double>> _doubleProp(String fieldName) {
   return valuePropCodec<double>(numberAsDoubleCodec(), fieldName: fieldName);
 }
 
+CodecSchema<Object, Prop<double>> _positiveDoubleProp(String fieldName) {
+  return valuePropCodec<double>(positiveDoubleCodec(), fieldName: fieldName);
+}
+
 CodecSchema<Object, Prop<double>> _doubleTokenProp(String fieldName) {
   return valuePropCodec<double>(doubleTokenCodec(), fieldName: fieldName);
 }
 
+CodecSchema<Object, Prop<double>> _opacityProp(String fieldName) {
+  return valuePropCodec<double>(unitDoubleCodec(), fieldName: fieldName);
+}
+
+CodecSchema<Object, Prop<double>> _opacityTokenProp(String fieldName) {
+  return valuePropCodec<double>(unitDoubleTokenCodec(), fieldName: fieldName);
+}
+
 CodecSchema<Object, Prop<int>> _intProp(String fieldName) {
   return valuePropCodec<int>(Ack.integer(), fieldName: fieldName);
+}
+
+CodecSchema<Object, Prop<int>> _positiveIntProp(String fieldName) {
+  return valuePropCodec<int>(Ack.integer().min(1), fieldName: fieldName);
+}
+
+CodecSchema<Object, Prop<int>> _nonNegativeIntProp(String fieldName) {
+  return valuePropCodec<int>(Ack.integer().min(0), fieldName: fieldName);
 }
 
 CodecSchema<Object, Prop<bool>> _boolProp(String fieldName) {

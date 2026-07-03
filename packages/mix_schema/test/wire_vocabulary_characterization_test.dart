@@ -1,15 +1,15 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
-import 'package:mix_schema/encode.dart';
 import 'package:mix_schema/mix_schema.dart';
+import 'package:mix_schema/testing.dart';
 import 'package:mix_schema/src/schema/common_codecs.dart';
 
 /// Characterization tests that pin the wire vocabulary now owned by a single
 /// source — `primitive_wire.dart` (`widgetStateWireValues` /
 /// `fontWeightWireValues`) — and consumed by both the codec path
 /// (`variant_codec.dart`, `text_styler_codec.dart`) and the producer path
-/// (`encode.dart`). They guard the two paths against silently drifting apart if
+/// (`testing.dart`). They guard the two paths against silently drifting apart if
 /// that shared table ever changes.
 ///
 /// Also covers two previously-untested behaviors: `validate` rejecting unknown

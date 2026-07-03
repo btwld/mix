@@ -497,6 +497,36 @@ void main() {
         ),
       );
     });
+
+    test(
+      'invalid box shadow token names fail encode with the token-name code',
+      () {
+        final result = contract().encode(
+          BoxStyler(
+            decoration: BoxDecorationMix.create(
+              boxShadow: Prop.token(const BoxShadowToken('shadow/bad')),
+            ),
+          ),
+        );
+        final errors = switch (result) {
+          MixSchemaEncodeFailure(:final errors) => errors,
+          MixSchemaEncodeSuccess() => fail('expected failure'),
+        };
+
+        expect(
+          errors,
+          contains(
+            isA<MixSchemaError>()
+                .having(
+                  (error) => error.code,
+                  'code',
+                  MixSchemaErrorCode.invalidTokenName,
+                )
+                .having((error) => error.path, 'path', '/decoration/boxShadow'),
+          ),
+        );
+      },
+    );
   });
 }
 

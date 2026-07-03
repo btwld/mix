@@ -1359,11 +1359,21 @@ void main() {
       expect(seen, isNot(contains('bg-blue-500')));
     });
 
-    test('flex item tokens are silently ignored', () {
+    test('unsupported basis flex item tokens report warnings', () {
       final seen = <String>[];
       TwParser(
         onUnsupported: seen.add,
-      ).parseFlex('flex flex-1 basis-1/2 self-end');
+      ).parseFlex('flex flex-1 basis-1/2 basis-full basis-[50%] self-end');
+
+      expect(seen, containsAll(['basis-1/2', 'basis-full', 'basis-[50%]']));
+      expect(seen, isNot(contains('flex-1')));
+      expect(seen, isNot(contains('self-end')));
+    });
+
+    test('supported basis flex item tokens do not report warnings', () {
+      final seen = <String>[];
+      TwParser(onUnsupported: seen.add).parseFlex('flex basis-auto basis-32');
+
       expect(seen, isEmpty);
     });
 

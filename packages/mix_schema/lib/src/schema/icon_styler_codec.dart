@@ -77,7 +77,7 @@ SchemaObject<IconStyler> _iconStylerSchemaType(
   );
   final opacity = propTokenValueField<IconStyler, double>(
     'opacity',
-    doubleTokenCodec(),
+    unitDoubleTokenCodec(),
     (value) => value.$opacity,
   );
   final blendMode = propValueField<IconStyler, BlendMode>(

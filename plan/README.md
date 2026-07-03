@@ -60,6 +60,9 @@ Conventions:
 | 4 | [phase4.md](phase4.md) | Property grammar (`apply`/`$merge`) + coverage expansion | Completed |
 | 5 | [phase5.md](phase5.md) | Consumer realignment (tailwinds) + public API reshaping | Completed |
 
+2026-07-03 drift closeout is tracked in [session.md](session.md); it tightens
+the final contract/docs without reopening the completed phase sequence.
+
 Other files: [findings.md](findings.md) (review snapshot — the "why" behind every
 phase) · [session.md](session.md) (running log) · [lessons.md](lessons.md)
 (retrospective rollup, filled as phases close).

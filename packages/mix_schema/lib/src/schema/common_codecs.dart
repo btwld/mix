@@ -26,6 +26,22 @@ CodecSchema<num, double> numberAsDoubleCodec() {
   );
 }
 
+CodecSchema<num, double> positiveDoubleCodec() {
+  return Ack.number()
+      .constrain(
+        _PredicateConstraint<num>(
+          constraintKey: 'mix_schema_positive_number',
+          description: 'Number must be greater than zero.',
+          isValidValue: (value) => value > 0,
+          message: 'Value must be greater than zero.',
+        ),
+      )
+      .codec<double>(
+        decode: (value) => value.toDouble(),
+        encode: (value) => value,
+      );
+}
+
 CodecSchema<num, double> nonNegativeDoubleCodec() {
   return Ack.number()
       .min(0)
@@ -35,9 +51,46 @@ CodecSchema<num, double> nonNegativeDoubleCodec() {
       );
 }
 
+CodecSchema<num, double> unitDoubleCodec() {
+  return Ack.number()
+      .constrain(
+        _PredicateConstraint<num>(
+          constraintKey: 'mix_schema_unit_number',
+          description: 'Number must be between 0 and 1 inclusive.',
+          isValidValue: (value) => value >= 0 && value <= 1,
+          message: 'Value must be between 0 and 1.',
+        ),
+      )
+      .codec<double>(
+        decode: (value) => value.toDouble(),
+        encode: (value) => value,
+      );
+}
+
 CodecSchema<Object, double> doubleTokenCodec() {
   return tokenizedCodec<double, double>(
     literal: numberAsDoubleCodec(),
+    decodeToken: (data) {
+      final name = data[tokenReferenceKey]! as String;
+      final kind = data[tokenKindKey] as String? ?? tokenKindSpace;
+
+      return switch (kind) {
+        tokenKindDouble => DoubleToken(name),
+        tokenKindSpace => SpaceToken(name),
+        _ => throw UnsupportedEncodeValueError(
+          kind,
+          'Unknown double token kind "$kind".',
+        ),
+      };
+    },
+    reference: (token) => token(),
+    allowDoubleKind: true,
+  );
+}
+
+CodecSchema<Object, double> unitDoubleTokenCodec() {
+  return tokenizedCodec<double, double>(
+    literal: unitDoubleCodec(),
     decodeToken: (data) {
       final name = data[tokenReferenceKey]! as String;
       final kind = data[tokenKindKey] as String? ?? tokenKindSpace;
@@ -363,8 +416,10 @@ CodecSchema<Object, BoxShadowListMix> boxShadowListMixCodec() {
       ),
     },
     encode: (value) {
+      final token = tokenFromReference<List<BoxShadow>>(value);
       final tokenResult = tokenCodec.safeEncode(value);
       if (tokenResult.isOk) return tokenResult.getOrNull()!;
+      if (token != null) throw tokenResult.getError();
 
       return value.items;
     },
@@ -737,6 +792,17 @@ Prop<PropValue> _decodePropTerm<Value extends Object, PropValue extends Object>(
         'Field "$fieldName" merge terms must be a non-empty list.',
       );
     }
+    if (sources.length == 1 &&
+        (apply == null || (apply is List && apply.isEmpty))) {
+      throw SchemaPathError(
+        code: MixSchemaErrorCode.constraintViolation,
+        relativePath: '/$mergeReferenceKey',
+        reason:
+            'Field "$fieldName" merge terms must contain at least two '
+            'sources unless directives are applied.',
+        value: sources,
+      );
+    }
 
     final terms = <Prop<PropValue>>[];
     for (var i = 0; i < sources.length; i += 1) {
@@ -817,6 +883,14 @@ Prop<PropValue> _withDecodedDirectives<PropValue extends Object>(
   String fieldName,
 ) {
   if (apply == null) return prop;
+  if (apply is List && apply.isEmpty) {
+    throw SchemaPathError(
+      code: MixSchemaErrorCode.constraintViolation,
+      relativePath: '/$applyDirectivesKey',
+      reason: 'Field "$fieldName" apply must contain at least one directive.',
+      value: apply,
+    );
+  }
 
   return prop.directives(decodeDirectiveList<PropValue>(apply, fieldName));
 }
@@ -868,74 +942,184 @@ Directive<Value> _decodeDirective<Value extends Object>(
   }
 
   final directive = switch (op) {
-    'color_opacity' => OpacityColorDirective(
-      _requiredDoubleParam(wire, 'opacity', fieldName),
+    'color_opacity' => _withDirectiveParams(
+      wire,
+      index,
+      const {'opacity'},
+      () => OpacityColorDirective(
+        _requiredDoubleParam(wire, 'opacity', fieldName),
+      ),
     ),
-    'color_with_values' => WithValuesColorDirective(
-      alpha: _optionalDoubleParam(wire, 'alpha', fieldName),
-      red: _optionalDoubleParam(wire, 'red', fieldName),
-      green: _optionalDoubleParam(wire, 'green', fieldName),
-      blue: _optionalDoubleParam(wire, 'blue', fieldName),
-      colorSpace: _optionalColorSpaceParam(wire, fieldName),
+    'color_with_values' => _withDirectiveParams(
+      wire,
+      index,
+      const {'alpha', 'red', 'green', 'blue', 'colorSpace'},
+      () => WithValuesColorDirective(
+        alpha: _optionalDoubleParam(wire, 'alpha', fieldName),
+        red: _optionalDoubleParam(wire, 'red', fieldName),
+        green: _optionalDoubleParam(wire, 'green', fieldName),
+        blue: _optionalDoubleParam(wire, 'blue', fieldName),
+        colorSpace: _optionalColorSpaceParam(wire, fieldName),
+      ),
     ),
-    'color_alpha' => AlphaColorDirective(
-      _requiredIntParam(wire, 'alpha', fieldName),
+    'color_alpha' => _withDirectiveParams(
+      wire,
+      index,
+      const {'alpha'},
+      () => AlphaColorDirective(_requiredIntParam(wire, 'alpha', fieldName)),
     ),
-    'color_darken' => DarkenColorDirective(
-      _requiredIntParam(wire, 'amount', fieldName),
+    'color_darken' => _amountColorDirective(
+      wire,
+      fieldName,
+      index,
+      DarkenColorDirective.new,
     ),
-    'color_lighten' => LightenColorDirective(
-      _requiredIntParam(wire, 'amount', fieldName),
+    'color_lighten' => _amountColorDirective(
+      wire,
+      fieldName,
+      index,
+      LightenColorDirective.new,
     ),
-    'color_saturate' => SaturateColorDirective(
-      _requiredIntParam(wire, 'amount', fieldName),
+    'color_saturate' => _amountColorDirective(
+      wire,
+      fieldName,
+      index,
+      SaturateColorDirective.new,
     ),
-    'color_desaturate' => DesaturateColorDirective(
-      _requiredIntParam(wire, 'amount', fieldName),
+    'color_desaturate' => _amountColorDirective(
+      wire,
+      fieldName,
+      index,
+      DesaturateColorDirective.new,
     ),
-    'color_tint' => TintColorDirective(
-      _requiredIntParam(wire, 'amount', fieldName),
+    'color_tint' => _amountColorDirective(
+      wire,
+      fieldName,
+      index,
+      TintColorDirective.new,
     ),
-    'color_shade' => ShadeColorDirective(
-      _requiredIntParam(wire, 'amount', fieldName),
+    'color_shade' => _amountColorDirective(
+      wire,
+      fieldName,
+      index,
+      ShadeColorDirective.new,
     ),
-    'color_brighten' => BrightenColorDirective(
-      _requiredIntParam(wire, 'amount', fieldName),
+    'color_brighten' => _amountColorDirective(
+      wire,
+      fieldName,
+      index,
+      BrightenColorDirective.new,
     ),
-    'color_with_red' => WithRedColorDirective(
-      _requiredIntParam(wire, 'red', fieldName),
+    'color_with_red' => _withDirectiveParams(
+      wire,
+      index,
+      const {'red'},
+      () => WithRedColorDirective(_requiredIntParam(wire, 'red', fieldName)),
     ),
-    'color_with_green' => WithGreenColorDirective(
-      _requiredIntParam(wire, 'green', fieldName),
+    'color_with_green' => _withDirectiveParams(
+      wire,
+      index,
+      const {'green'},
+      () =>
+          WithGreenColorDirective(_requiredIntParam(wire, 'green', fieldName)),
     ),
-    'color_with_blue' => WithBlueColorDirective(
-      _requiredIntParam(wire, 'blue', fieldName),
+    'color_with_blue' => _withDirectiveParams(
+      wire,
+      index,
+      const {'blue'},
+      () => WithBlueColorDirective(_requiredIntParam(wire, 'blue', fieldName)),
     ),
-    'uppercase' => const UppercaseStringDirective(),
-    'lowercase' => const LowercaseStringDirective(),
-    'capitalize' => const CapitalizeStringDirective(),
-    'title_case' => const TitleCaseStringDirective(),
-    'sentence_case' => const SentenceCaseStringDirective(),
-    'number_multiply' => MultiplyNumberDirective(
-      _requiredNumParam(wire, 'factor', fieldName),
+    'uppercase' => _withDirectiveParams(
+      wire,
+      index,
+      const {},
+      () => const UppercaseStringDirective(),
     ),
-    'number_add' => AddNumberDirective(
-      _requiredNumParam(wire, 'addend', fieldName),
+    'lowercase' => _withDirectiveParams(
+      wire,
+      index,
+      const {},
+      () => const LowercaseStringDirective(),
     ),
-    'number_subtract' => SubtractNumberDirective(
-      _requiredNumParam(wire, 'subtrahend', fieldName),
+    'capitalize' => _withDirectiveParams(
+      wire,
+      index,
+      const {},
+      () => const CapitalizeStringDirective(),
     ),
-    'number_divide' => DivideNumberDirective(
-      _requiredNumParam(wire, 'divisor', fieldName),
+    'title_case' => _withDirectiveParams(
+      wire,
+      index,
+      const {},
+      () => const TitleCaseStringDirective(),
     ),
-    'number_clamp' => ClampNumberDirective(
-      _requiredNumParam(wire, 'min', fieldName),
-      _requiredNumParam(wire, 'max', fieldName),
+    'sentence_case' => _withDirectiveParams(
+      wire,
+      index,
+      const {},
+      () => const SentenceCaseStringDirective(),
     ),
-    'number_abs' => const AbsNumberDirective(),
-    'number_round' => const RoundNumberDirective(),
-    'number_floor' => const FloorNumberDirective(),
-    'number_ceil' => const CeilNumberDirective(),
+    'number_multiply' => _withDirectiveParams(
+      wire,
+      index,
+      const {'factor'},
+      () =>
+          MultiplyNumberDirective(_requiredNumParam(wire, 'factor', fieldName)),
+    ),
+    'number_add' => _withDirectiveParams(
+      wire,
+      index,
+      const {'addend'},
+      () => AddNumberDirective(_requiredNumParam(wire, 'addend', fieldName)),
+    ),
+    'number_subtract' => _withDirectiveParams(
+      wire,
+      index,
+      const {'subtrahend'},
+      () => SubtractNumberDirective(
+        _requiredNumParam(wire, 'subtrahend', fieldName),
+      ),
+    ),
+    'number_divide' => _withDirectiveParams(
+      wire,
+      index,
+      const {'divisor'},
+      () =>
+          DivideNumberDirective(_requiredNumParam(wire, 'divisor', fieldName)),
+    ),
+    'number_clamp' => _withDirectiveParams(
+      wire,
+      index,
+      const {'min', 'max'},
+      () => ClampNumberDirective(
+        _requiredNumParam(wire, 'min', fieldName),
+        _requiredNumParam(wire, 'max', fieldName),
+      ),
+    ),
+    'number_abs' => _withDirectiveParams(
+      wire,
+      index,
+      const {},
+      () => const AbsNumberDirective(),
+    ),
+    'number_round' => _withDirectiveParams(
+      wire,
+      index,
+      const {},
+      () => const RoundNumberDirective(),
+    ),
+    'number_floor' => _withDirectiveParams(
+      wire,
+      index,
+      const {},
+      () => const FloorNumberDirective(),
+    ),
+    'number_ceil' => _withDirectiveParams(
+      wire,
+      index,
+      const {},
+      () => const CeilNumberDirective(),
+    ),
     _ => throw SchemaPathError(
       code: MixSchemaErrorCode.invalidEnum,
       relativePath: '/$applyDirectivesKey/$index/$directiveOpKey',
@@ -945,6 +1129,37 @@ Directive<Value> _decodeDirective<Value extends Object>(
   };
 
   return _coerceDirective<Value>(directive, fieldName);
+}
+
+T _amountColorDirective<T>(
+  JsonMap wire,
+  String fieldName,
+  int index,
+  T Function(int amount) create,
+) {
+  return _withDirectiveParams(wire, index, const {
+    'amount',
+  }, () => create(_requiredIntParam(wire, 'amount', fieldName)));
+}
+
+T _withDirectiveParams<T>(
+  JsonMap wire,
+  int index,
+  Set<String> allowedParams,
+  T Function() create,
+) {
+  for (final key in wire.keys) {
+    if (key == directiveOpKey || allowedParams.contains(key)) continue;
+
+    throw SchemaPathError(
+      code: MixSchemaErrorCode.unknownField,
+      relativePath: '/$applyDirectivesKey/$index/$key',
+      reason: 'Directive "${wire[directiveOpKey]}" does not allow "$key".',
+      value: key,
+    );
+  }
+
+  return create();
 }
 
 JsonMap _encodeDirective<Value extends Object>(

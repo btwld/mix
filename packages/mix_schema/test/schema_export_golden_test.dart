@@ -104,7 +104,7 @@ void main() {
     expect(encoded, contains(r'"double"'));
     expect(encoded.length, lessThan(520000));
     expect(_object(_properties(branchesByType['box']!)['padding']), {
-      r'$ref': '#/definitions/mix_schema_property_term',
+      r'$ref': '#/definitions/mix_schema_double_property_term',
     });
     final propertyTerm = _object(definitions['mix_schema_property_term']);
     expect(_matchesPropertyTerm(propertyTerm, 4, definitions), isTrue);
@@ -136,11 +136,126 @@ void main() {
       isFalse,
     );
     expect(
+      _matchesPropertyTerm(propertyTerm, {
+        r'$token': 'color.brand',
+        'kind': 'space',
+      }, definitions),
+      isFalse,
+    );
+    expect(
       _matchesPropertyTerm(propertyTerm, {r'$merge': []}, definitions),
       isFalse,
     );
     expect(
+      _matchesPropertyTerm(propertyTerm, {
+        r'$merge': [4],
+      }, definitions),
+      isFalse,
+    );
+    expect(
+      _matchesPropertyTerm(propertyTerm, {
+        r'$merge': [4],
+        'apply': [
+          {'op': 'number_multiply', 'factor': 2},
+        ],
+      }, definitions),
+      isTrue,
+    );
+    expect(
+      _matchesPropertyTerm(propertyTerm, {
+        r'$merge': [4],
+        'apply': [],
+      }, definitions),
+      isFalse,
+    );
+    expect(
       _matchesPropertyTerm(propertyTerm, {'apply': []}, definitions),
+      isFalse,
+    );
+    expect(
+      _matchesJsonSchema(
+        _object(_properties(branchesByType['text']!)['selectionColor']),
+        {r'$token': 'color.brand', 'kind': 'space'},
+        definitions,
+      ),
+      isFalse,
+    );
+    expect(
+      _matchesJsonSchema(
+        _object(_properties(branchesByType['flex']!)['spacing']),
+        {r'$token': 'space.stack.sm', 'kind': 'space'},
+        definitions,
+      ),
+      isTrue,
+    );
+    expect(
+      _matchesJsonSchema(
+        _object(_properties(branchesByType['flex']!)['spacing']),
+        {r'$token': 'double.gap', 'kind': 'double'},
+        definitions,
+      ),
+      isTrue,
+    );
+    expect(
+      _matchesJsonSchema(
+        _object(_properties(branchesByType['flex']!)['spacing']),
+        {
+          r'$merge': [
+            {r'$token': 'space.stack.sm', 'kind': 'space'},
+            4,
+          ],
+        },
+        definitions,
+      ),
+      isTrue,
+    );
+    expect(
+      _matchesJsonSchema(
+        _propertySchemaAt(branchesByType['text']!, [
+          'style',
+          'fontSize',
+        ], definitions),
+        {r'$token': 'space.font.md', 'kind': 'space'},
+        definitions,
+      ),
+      isTrue,
+    );
+    expect(
+      _matchesJsonSchema(
+        _propertySchemaAt(branchesByType['text']!, [
+          'style',
+          'color',
+        ], definitions),
+        {r'$token': 'color.brand', 'kind': 'space'},
+        definitions,
+      ),
+      isFalse,
+    );
+    expect(
+      _matchesJsonSchema(
+        _propertySchemaAt(branchesByType['text']!, [
+          'strutStyle',
+          'leading',
+        ], definitions),
+        {r'$token': 'space.leading.tight', 'kind': 'space'},
+        definitions,
+      ),
+      isTrue,
+    );
+    final directive = _object(definitions['mix_schema_directive']);
+    expect(
+      _matchesJsonSchema(directive, {
+        'op': 'color_opacity',
+        'opacity': 0.5,
+      }, definitions),
+      isTrue,
+    );
+    expect(
+      _matchesJsonSchema(directive, {
+        'op': 'color_opacity',
+        'opacity': 0.5,
+        'alpha': 0.7,
+      }, definitions),
       isFalse,
     );
     expect(
@@ -376,7 +491,9 @@ bool _hasPropertyControlTerm(JsonMap schema) {
   return anyOf.any(
     (branch) =>
         branch is Map &&
-        branch[r'$ref'] == '#/definitions/mix_schema_property_control_term',
+        (branch[r'$ref'] == '#/definitions/mix_schema_property_control_term' ||
+            branch[r'$ref'] ==
+                '#/definitions/mix_schema_double_property_control_term'),
   );
 }
 
@@ -432,6 +549,25 @@ bool _matchesJsonSchema(JsonMap schema, Object? value, JsonMap definitions) {
   if (minItems is int && value is List && value.length < minItems) {
     return false;
   }
+
+  final maxItems = schema['maxItems'];
+  if (maxItems is int && value is List && value.length > maxItems) {
+    return false;
+  }
+
+  final items = schema['items'];
+  if (items is Map && value is List) {
+    for (final item in value) {
+      if (!_matchesJsonSchema(_object(items), item, definitions)) {
+        return false;
+      }
+    }
+  }
+
+  if (schema.containsKey('const') && schema['const'] != value) return false;
+
+  final enumValues = schema['enum'];
+  if (enumValues is List && !enumValues.contains(value)) return false;
 
   final properties = schema['properties'];
   if (properties is Map && value is Map) {

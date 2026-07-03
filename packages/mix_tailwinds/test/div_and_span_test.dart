@@ -1232,12 +1232,14 @@ void main() {
     expect(text.style?.fontWeight, FontWeight.w700);
   });
 
-  test('flex item tokens are ignored by parser callbacks', () {
+  test('unsupported basis flex item tokens report parser callbacks', () {
     final seen = <String>[];
     TwParser(
       onUnsupported: seen.add,
-    ).parseFlex('flex flex-1 basis-1/2 self-end');
-    expect(seen, isEmpty);
+    ).parseFlex('flex flex-1 basis-1/2 basis-full basis-[50%] self-end');
+    expect(seen, containsAll(['basis-1/2', 'basis-full', 'basis-[50%]']));
+    expect(seen, isNot(contains('flex-1')));
+    expect(seen, isNot(contains('self-end')));
   });
 
   testWidgets(

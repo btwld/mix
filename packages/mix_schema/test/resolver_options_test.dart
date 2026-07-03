@@ -1,5 +1,4 @@
-import 'dart:typed_data';
-
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
@@ -15,6 +14,7 @@ void main() {
           'codePoint': 0xe88a,
           'fontFamily': 'MaterialIcons',
           'fontPackage': 'material',
+          'fontFamilyFallback': ['MaterialSymbolsRounded', 'MaterialIcons'],
           'matchTextDirection': true,
         },
       });
@@ -28,6 +28,10 @@ void main() {
       expect(source.value.codePoint, 0xe88a);
       expect(source.value.fontFamily, 'MaterialIcons');
       expect(source.value.fontPackage, 'material');
+      expect(source.value.fontFamilyFallback, [
+        'MaterialSymbolsRounded',
+        'MaterialIcons',
+      ]);
       expect(source.value.matchTextDirection, isTrue);
     },
   );
@@ -75,6 +79,7 @@ void main() {
         icon: const IconData(
           0xe88a,
           fontFamily: 'MaterialIcons',
+          fontFamilyFallback: ['MaterialSymbolsRounded'],
           matchTextDirection: true,
         ),
       ),
@@ -88,6 +93,7 @@ void main() {
     expect(payload['icon'], {
       'codePoint': 0xe88a,
       'fontFamily': 'MaterialIcons',
+      'fontFamilyFallback': ['MaterialSymbolsRounded'],
       'matchTextDirection': true,
     });
   });
@@ -97,7 +103,11 @@ void main() {
     () {
       final urlResult = builtInMixSchemaContract.decode<ImageStyler>({
         'type': 'image',
-        'image': {'url': 'https://example.com/avatar.png'},
+        'image': {
+          'url': 'https://example.com/avatar.png',
+          'scale': 2,
+          'webHtmlElementStrategy': 'prefer',
+        },
       });
       final urlStyler = switch (urlResult) {
         MixSchemaDecodeSuccess<ImageStyler>(:final value) => value,
@@ -107,7 +117,11 @@ void main() {
           urlStyler.$image!.sources.single
               as ValueSource<ImageProvider<Object>>;
 
-      expect(urlSource.value, isA<NetworkImage>());
+      final urlImage = urlSource.value as NetworkImage;
+
+      expect(urlImage.url, 'https://example.com/avatar.png');
+      expect(urlImage.scale, 2);
+      expect(urlImage.webHtmlElementStrategy, WebHtmlElementStrategy.prefer);
 
       final assetResult = builtInMixSchemaContract.decode<ImageStyler>({
         'type': 'image',
@@ -163,6 +177,31 @@ void main() {
     expect(payload, {'v': 1, 'type': 'image', 'image': 'avatar'});
   });
 
+  test(
+    'built-in singleton encodes image value forms with supported fields',
+    () {
+      const image = NetworkImage(
+        'https://example.com/avatar.png',
+        scale: 2,
+        webHtmlElementStrategy: WebHtmlElementStrategy.prefer,
+      );
+
+      final result = builtInMixSchemaContract.encode(
+        ImageStyler(image: image as ImageProvider<Object>),
+      );
+      final payload = switch (result) {
+        MixSchemaEncodeSuccess(:final value) => value,
+        MixSchemaEncodeFailure(:final errors) => fail('$errors'),
+      };
+
+      expect(payload['image'], {
+        'url': 'https://example.com/avatar.png',
+        'scale': 2.0,
+        'webHtmlElementStrategy': 'prefer',
+      });
+    },
+  );
+
   test('unresolved identity names use resolver-flavored diagnostics', () {
     final result = builtInMixSchemaContract.decode<IconStyler>({
       'type': 'icon',
@@ -191,4 +230,35 @@ void main() {
     expect(errors.single.code, MixSchemaErrorCode.unresolvedIdentityValue);
     expect(errors.single.path, '/image');
   });
+
+  test(
+    'unmodeled image value state fails encode with resolver diagnostics',
+    () {
+      for (final image in <ImageProvider<Object>>[
+        const NetworkImage(
+              'https://example.com/avatar.png',
+              headers: {'authorization': 'redacted'},
+            )
+            as ImageProvider<Object>,
+        AssetImage('assets/avatar.png', bundle: _UnsupportedAssetBundle())
+            as ImageProvider<Object>,
+      ]) {
+        final result = builtInMixSchemaContract.encode(
+          ImageStyler(image: image),
+        );
+        final errors = switch (result) {
+          MixSchemaEncodeFailure(:final errors) => errors,
+          MixSchemaEncodeSuccess() => fail('expected failure'),
+        };
+
+        expect(errors.single.code, MixSchemaErrorCode.unresolvedIdentityValue);
+        expect(errors.single.path, '/image');
+      }
+    },
+  );
+}
+
+final class _UnsupportedAssetBundle extends CachingAssetBundle {
+  @override
+  Future<ByteData> load(String key) async => ByteData(0);
 }

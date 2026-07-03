@@ -27,10 +27,32 @@ enum SchemaStyler {
 
 /// Modifier discriminator wire values currently supported by `mix_schema`.
 enum SchemaModifier {
+  align(modifierTypeAlign),
+  aspectRatio(modifierTypeAspectRatio),
   opacity(modifierTypeOpacity),
   blur(modifierTypeBlur),
+  box(modifierTypeBox),
+  clipOval(modifierTypeClipOval),
+  clipRect(modifierTypeClipRect),
+  clipRRect(modifierTypeClipRRect),
+  clipTriangle(modifierTypeClipTriangle),
   flexible(modifierTypeFlexible),
-  defaultTextStyle(modifierTypeDefaultTextStyle);
+  defaultTextStyle(modifierTypeDefaultTextStyle),
+  defaultTextStyler(modifierTypeDefaultTextStyler),
+  fractionallySizedBox(modifierTypeFractionallySizedBox),
+  iconTheme(modifierTypeIconTheme),
+  intrinsicHeight(modifierTypeIntrinsicHeight),
+  intrinsicWidth(modifierTypeIntrinsicWidth),
+  padding(modifierTypePadding),
+  rotate(modifierTypeRotate),
+  rotatedBox(modifierTypeRotatedBox),
+  scale(modifierTypeScale),
+  scrollView(modifierTypeScrollView),
+  sizedBox(modifierTypeSizedBox),
+  skew(modifierTypeSkew),
+  transform(modifierTypeTransform),
+  translate(modifierTypeTranslate),
+  visibility(modifierTypeVisibility);
 
   const SchemaModifier(this.wireValue);
 
@@ -44,7 +66,12 @@ enum SchemaVariant {
   enabled(variantKindEnabled),
   contextBrightness(variantKindContextBrightness),
   contextBreakpoint(variantKindContextBreakpoint),
-  contextNotWidgetState(variantKindContextNotWidgetState);
+  contextDirectionality(variantKindContextDirectionality),
+  contextNot(variantKindContextNot),
+  contextNotWidgetState(variantKindContextNotWidgetState),
+  contextOrientation(variantKindContextOrientation),
+  contextPlatform(variantKindContextPlatform),
+  contextWeb(variantKindContextWeb);
 
   const SchemaVariant(this.wireValue);
 

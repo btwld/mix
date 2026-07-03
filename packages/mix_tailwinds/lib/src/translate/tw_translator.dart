@@ -231,6 +231,9 @@ final class TwTranslator {
         continue;
       }
       if (route.kind == TwRouteKind.widgetLayer) {
+        if (!_isSupportedWidgetLayerUtility(candidate.utility)) {
+          onUnsupported?.call(token);
+        }
         continue;
       }
 
@@ -882,6 +885,42 @@ final class TwTranslator {
 
   String? _valueKey(TailwindValue? value) {
     return tailwindValueKey(value);
+  }
+
+  bool _isSupportedWidgetLayerUtility(TailwindUtility utility) {
+    if (_isBasisUtility(utility)) {
+      return _isSupportedBasisUtility(utility);
+    }
+
+    return true;
+  }
+
+  bool _isBasisUtility(TailwindUtility utility) {
+    final raw = utility.raw;
+    return raw.startsWith('basis-') || _utilityRoot(utility) == 'basis';
+  }
+
+  bool _isSupportedBasisUtility(TailwindUtility utility) {
+    if (_utilityNegative(utility)) return false;
+
+    final key = _basisKey(utility);
+    if (key == null || key.isEmpty) return false;
+    if (key == 'auto') return true;
+
+    return config.hasSpace(key);
+  }
+
+  String? _basisKey(TailwindUtility utility) {
+    final raw = utility.raw;
+    if (raw.startsWith('basis-')) {
+      return raw.substring(6);
+    }
+
+    if (_utilityRoot(utility) == 'basis') {
+      return _valueKey(_utilityValue(utility));
+    }
+
+    return null;
   }
 
   double? _spaceLength(TailwindValue? value, {required bool negative}) {

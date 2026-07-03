@@ -12,6 +12,16 @@ void main() {
     registry: defaultTailwindParserRegistry,
   );
 
+  test('generated parser registry uses committed deterministic metadata', () {
+    expect(generatedTailwindRegistryMeta, isNot(contains('generatedAt')));
+    final generated = File(
+      'lib/src/parser/data/parser_registry.g.dart',
+    ).readAsStringSync();
+
+    expect(generated, contains('tool/tailwind_parser_registry_snapshot.json'));
+    expect(generated, isNot(contains('Generated at ')));
+  });
+
   test(
     'parses all probe fixtures into the expected utility root when valid',
     () {

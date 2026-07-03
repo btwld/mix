@@ -116,6 +116,23 @@ void main() {
       expect(encode(decoded), payload);
     });
 
+    test('empty apply lists fail strict decoding', () {
+      final result = contract().decode<TextStyler>({
+        'v': 1,
+        'type': 'text',
+        'style': {
+          'color': {r'$token': 'color.brand', 'apply': []},
+        },
+      });
+      final errors = switch (result) {
+        MixSchemaDecodeFailure<TextStyler>(:final errors) => errors,
+        MixSchemaDecodeSuccess<TextStyler>() => fail('expected failure'),
+      };
+
+      expect(errors.single.code, MixSchemaErrorCode.constraintViolation);
+      expect(errors.single.path, '/style/color/apply');
+    });
+
     test('round-trips nested strut numeric directives', () {
       final payload = {
         'v': 1,
@@ -208,6 +225,128 @@ void main() {
         'color': {r'$token': 'color.brand'},
       });
       expect(reencoded['padding'], 4.0);
+    });
+
+    test('extra directive params fail strict and skip in lenient mode', () {
+      final payload = {
+        'v': 1,
+        'type': 'box',
+        'padding': 4,
+        'decoration': {
+          'color': {
+            r'$token': 'color.brand',
+            'apply': [
+              {'op': 'color_opacity', 'opacity': 0.5, 'alpha': 0.7},
+            ],
+          },
+        },
+      };
+
+      final strict = contract().decode<BoxStyler>(payload);
+      final strictErrors = switch (strict) {
+        MixSchemaDecodeFailure<BoxStyler>(:final errors) => errors,
+        MixSchemaDecodeSuccess<BoxStyler>() => fail('expected failure'),
+      };
+
+      expect(strictErrors.single.code, MixSchemaErrorCode.unknownField);
+      expect(strictErrors.single.path, '/decoration/color/apply/0/alpha');
+
+      final lenient = contract().decode<BoxStyler>(
+        payload,
+        options: const MixSchemaDecodeOptions(
+          mode: MixSchemaDecodeMode.lenient,
+        ),
+      );
+      final success = switch (lenient) {
+        MixSchemaDecodeSuccess<BoxStyler> result => result,
+        MixSchemaDecodeFailure<BoxStyler>(:final errors) => fail('$errors'),
+      };
+
+      expect(success.warnings.single.code, MixSchemaErrorCode.unknownField);
+      expect(success.warnings.single.path, '/decoration/color/apply/0/alpha');
+      expect(encode(success.value)['decoration'], {
+        'color': {r'$token': 'color.brand'},
+      });
+    });
+
+    test('single-item merge terms require apply directives', () {
+      final result = contract().decode<FlexStyler>({
+        'v': 1,
+        'type': 'flex',
+        'spacing': {
+          r'$merge': [4],
+        },
+      });
+      final errors = switch (result) {
+        MixSchemaDecodeFailure<FlexStyler>(:final errors) => errors,
+        MixSchemaDecodeSuccess<FlexStyler>() => fail('expected failure'),
+      };
+
+      expect(errors.single.code, MixSchemaErrorCode.constraintViolation);
+      expect(errors.single.path, '/spacing/\$merge');
+
+      final emptyApplyResult = contract().decode<FlexStyler>({
+        'v': 1,
+        'type': 'flex',
+        'spacing': {
+          r'$merge': [4],
+          'apply': [],
+        },
+      });
+      final emptyApplyErrors = switch (emptyApplyResult) {
+        MixSchemaDecodeFailure<FlexStyler>(:final errors) => errors,
+        MixSchemaDecodeSuccess<FlexStyler>() => fail('expected failure'),
+      };
+
+      expect(
+        emptyApplyErrors.single.code,
+        MixSchemaErrorCode.constraintViolation,
+      );
+      expect(emptyApplyErrors.single.path, '/spacing/\$merge');
+
+      final withApply = decode<FlexStyler>({
+        'v': 1,
+        'type': 'flex',
+        'spacing': {
+          r'$merge': [4],
+          'apply': [
+            {'op': 'number_multiply', 'factor': 2},
+          ],
+        },
+      });
+
+      expect(encode(withApply)['spacing'], {
+        r'$merge': [4.0],
+        'apply': [
+          {'op': 'number_multiply', 'factor': 2},
+        ],
+      });
+    });
+
+    test('lenient mode keeps one-item merge source after invalid apply', () {
+      final result = contract().decode<FlexStyler>(
+        {
+          'v': 1,
+          'type': 'flex',
+          'spacing': {
+            r'$merge': [4],
+            'apply': [
+              {'op': 'future_number_op'},
+            ],
+          },
+        },
+        options: const MixSchemaDecodeOptions(
+          mode: MixSchemaDecodeMode.lenient,
+        ),
+      );
+      final success = switch (result) {
+        MixSchemaDecodeSuccess<FlexStyler> result => result,
+        MixSchemaDecodeFailure<FlexStyler>(:final errors) => fail('$errors'),
+      };
+
+      expect(success.warnings.single.code, MixSchemaErrorCode.invalidEnum);
+      expect(success.warnings.single.path, '/spacing/apply/0/op');
+      expect(encode(success.value)['spacing'], 4.0);
     });
   });
 }

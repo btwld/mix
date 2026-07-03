@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
-import 'package:mix_schema/encode.dart';
 import 'package:mix_schema/mix_schema.dart';
+import 'package:mix_schema/testing.dart';
 
 void _expectDecodes<T extends Object>(JsonMap payload) {
   final result = builtInMixSchemaContract.decode<T>(payload);

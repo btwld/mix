@@ -268,6 +268,54 @@ void main() {
       expect(reencoded['padding'], 2.0);
     });
 
+    test('lenient mode skips nested invalid enum fields', () {
+      final payload = {
+        'v': 1,
+        'type': 'box',
+        'padding': 4,
+        'decoration': {'color': '#000000', 'shape': 'future_shape'},
+      };
+
+      expect(
+        decodeErrors<BoxStyler>(payload).single.code,
+        MixSchemaErrorCode.invalidEnum,
+      );
+
+      final success = decodeSuccess<BoxStyler>(payload, options: lenient);
+      final reencoded = encode(success.value);
+
+      expect(success.warnings.single.path, '/decoration/shape');
+      expect(reencoded['decoration'], {'color': '#000000'});
+      expect(reencoded['padding'], 4.0);
+    });
+
+    test('lenient mode skips nested invalid discriminator objects', () {
+      final payload = {
+        'v': 1,
+        'type': 'box',
+        'padding': 4,
+        'decoration': {
+          'color': '#000000',
+          'gradient': {
+            'kind': 'future_gradient',
+            'colors': ['#FFFFFF', '#000000'],
+          },
+        },
+      };
+
+      expect(
+        decodeErrors<BoxStyler>(payload).single.code,
+        MixSchemaErrorCode.invalidEnum,
+      );
+
+      final success = decodeSuccess<BoxStyler>(payload, options: lenient);
+      final reencoded = encode(success.value);
+
+      expect(success.warnings.single.path, '/decoration/gradient/kind');
+      expect(reencoded['decoration'], {'color': '#000000'});
+      expect(reencoded['padding'], 4.0);
+    });
+
     test('lenient mode skips unknown directive ops', () {
       final payload = {
         'v': 1,
@@ -320,6 +368,29 @@ void main() {
       expect(reencoded['clipBehavior'], {
         r'$merge': ['hardEdge', 'none'],
       });
+      expect(reencoded['padding'], 2.0);
+    });
+
+    test('lenient mode collapses merge after invalid source removal', () {
+      final payload = {
+        'v': 1,
+        'type': 'box',
+        'padding': 2,
+        'clipBehavior': {
+          r'$merge': ['hardEdge', 'future_clip'],
+        },
+      };
+
+      final strictErrors = decodeErrors<BoxStyler>(payload);
+
+      expect(strictErrors.single.code, MixSchemaErrorCode.invalidEnum);
+      expect(strictErrors.single.path, r'/clipBehavior/$merge/1');
+
+      final success = decodeSuccess<BoxStyler>(payload, options: lenient);
+      final reencoded = encode(success.value);
+
+      expect(success.warnings.single.path, r'/clipBehavior/$merge/1');
+      expect(reencoded['clipBehavior'], 'hardEdge');
       expect(reencoded['padding'], 2.0);
     });
 

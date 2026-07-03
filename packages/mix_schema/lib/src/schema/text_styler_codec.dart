@@ -42,7 +42,7 @@ SchemaObject<TextStyler> _textStylerSchemaType(
   );
   final maxLines = propValueField<TextStyler, int>(
     'maxLines',
-    Ack.integer(),
+    Ack.integer().min(1),
     (value) => value.$maxLines,
   );
   final style = propTokenMixField<TextStyler, TextStyleMix, TextStyle>(

@@ -170,7 +170,10 @@ threads post-decode application. The post-refactor benchmark on 2026-07-03 used
 the same 10 box, 7 flex, 7 text corpus shape and 5,000 repeat count: direct
 translation measured 4.97us/box, 3.57us/flex, and 2.25us/text fixture.
 Runtime `package:mix_schema` import count was 0 and gradient post-decode bypass
-count was 0.
+count was 0. The benchmark harness was an ephemeral closeout tool and is not a
+maintained phase artifact; recreate it only if the exact benchmark needs to be
+rerun. The durable guardrails are the runtime import guard and gradient bypass
+contract tests.
 
 **D5.2 — `animation_on_end` callbacks.** With registries gone: resolver
 (`resolveCallback`), or drop `onEnd` from the wire (knownUnsupported)?
@@ -187,9 +190,9 @@ tests. Recommendation: (b) if R5.2 keeps encode-then-validate tests in
 consumers; else (a).
 **Decision:** Move consumer-facing contract vocabulary and
 `builtInMixSchemaContract` to `mix_schema.dart`; demote any remaining payload
-helper surface to `package:mix_schema/testing.dart` for contract tests.
-`encode.dart` may remain only as a compatibility re-export during this
-unpublished transition.
+helper surface to `package:mix_schema/testing.dart` for contract tests. The
+unpublished `encode.dart` entry point is removed instead of kept as a
+compatibility re-export.
 
 **D5.4 — mix_tailwinds public semantic API.** Restore the `tw_semantic.dart`
 facade, document a breaking alpha cleanup, or replace it with a new public API?
@@ -237,11 +240,11 @@ phase; revisit before a publishable v1 checkpoint.
 | 2026-07-03 | Phase-entry review adjustments applied before coding. | A read-only subagent review required promoting R5.8 to D5.4, recording benchmark method/import/bypass counts, broadening the tailwinds runtime import guard to public/runtime translator files, spelling out `animation_on_end` cleanup, choosing MixSchema-prefixed option names, adding public API compile checks, requiring README resolver docs/tests, naming the visual parity commands, and treating this entry review as the post-Phase-4 cross-phase review before coding. |
 | 2026-07-03 | D5.1: retire tailwinds runtime decode. | Baseline benchmark: current payload-build→decode vs payload-build-only lower bound was 31.67us vs 3.39us for box, 15.07us vs 1.99us for flex, and 20.96us vs 1.88us for text fixtures; current production `mix_schema` import count is 3, with one gradient post-decode bypass. |
 | 2026-07-03 | D5.2: drop callback-over-wire support. | `animation_on_end` does not become a resolver; `onEnd` is out of v1 until the future event/tree layer owns callback semantics. |
-| 2026-07-03 | D5.3: testing support owns payload helpers. | Consumer vocabulary and the built-in singleton move to `mix_schema.dart`; any surviving payload helpers are test-support via `mix_schema/testing.dart`, with `encode.dart` only a temporary compatibility re-export if needed. |
+| 2026-07-03 | D5.3: testing support owns payload helpers. | Consumer vocabulary and the built-in singleton move to `mix_schema.dart`; surviving payload helpers are test-support via `mix_schema/testing.dart`; the unpublished `encode.dart` entry point is removed. |
 | 2026-07-03 | D5.4: restore mix_tailwinds semantic compatibility. | Compared `mix_tailwinds.dart` against `origin/main`: the branch replaced `tw_semantic.dart` with one-line `tw_types.dart`, removing semantic AST/plugin/preset symbols. Restore a compatibility facade and compile test. |
 | 2026-07-03 | D5.5: keep MixSchema-prefixed options. | Extend `MixSchemaDecodeOptions`; introduce `MixSchemaEncodeOptions`. Do not add generic `DecodeOptions` / `EncodeOptions` names. |
 | 2026-07-03 | D5.6: stay unpublished and keep missing-`v` warning. | Publishing waits for the tree-layer demo; the missing-version transition compromise remains warning-only for this internal phase. |
-| 2026-07-03 | Post-refactor benchmark: direct tailwinds path confirmed. | Same 10 box / 7 flex / 7 text corpus shape and 5,000 repeat count: 4.97us/box, 3.57us/flex, 2.25us/text. Runtime `package:mix_schema` import count is 0; gradient post-decode bypass count is 0. |
+| 2026-07-03 | Post-refactor benchmark: direct tailwinds path confirmed. | Same 10 box / 7 flex / 7 text corpus shape and 5,000 repeat count: 4.97us/box, 3.57us/flex, 2.25us/text. Runtime `package:mix_schema` import count is 0; gradient post-decode bypass count is 0. The benchmark harness was ephemeral; keep the import/bypass tests as the load-bearing guardrails unless exact benchmark recreation is required. |
 | 2026-07-03 | Registry surface reduced to internal legacy support. | Public identity failures now use `unresolved_identity_name` / `unresolved_identity_value`; `RegistryBuilder`, `FrozenRegistry`, and `MixSchemaScope` are no longer exported or exposed from `mix_schema.dart`. |
 | 2026-07-03 | Tailwinds CSS corner gradients needed a shared transform. | The default Tailwinds `cssAngleRect` strategy produced `TwCssKeywordLinearTransform`, which was not schema-encodable while only `GradientRotation` was supported. Phase 5 moved the bounds-aware transform to `mix` as `CssKeywordLinearTransform`, kept the Tailwinds compatibility subclass, and added `css_linear` wire support. |
 | 2026-07-03 | Closeout hardening covered resolver and gradient edge cases. | `resolveImage` / `imageNames` success paths are covered alongside icon resolver paths, and invalid `CssKeywordLinearTransform` directions fail encode instead of emitting invalid `css_linear` wire. |

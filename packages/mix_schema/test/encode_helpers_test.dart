@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mix_schema/encode.dart';
+import 'package:mix_schema/testing.dart';
 
 void main() {
   test('payloadColor matches Ack Flutter codec canonical hex', () {

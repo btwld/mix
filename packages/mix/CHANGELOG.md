@@ -6,6 +6,27 @@
   `GradientTransform` for CSS linear-gradient keyword directions, so Tailwind
   corner gradients can round-trip through schema tooling without losing visual
   parity.
+- **Typed context variants:** `BrightnessVariant`, `BreakpointVariant`,
+  `OrientationVariant`, `DirectionalityVariant`, `PlatformVariant`,
+  `WebVariant`, and `NotVariant` are now public value objects behind their
+  `ContextVariant` factories, giving schema and tooling code stable typed data
+  to inspect instead of parsing keys.
+
+### Fixes
+
+- **Context variant equality:** `ContextVariant.brightness`,
+  `ContextVariant.breakpoint`, and `ContextVariant.not` now compare by their
+  typed values instead of identity, so equivalent variants deduplicate and
+  round-trip predictably.
+- **Default text style modifier merge:** Partial `DefaultTextStyleModifierMix`
+  overrides now merge with the ambient `DefaultTextStyle` instead of replacing
+  inherited text style fields.
+
+### API changes
+
+- **`tokenFromReferenceValue`** is now public for schema/tooling code that needs
+  to identify unresolved token references, including sentinel-backed
+  `DoubleRef` values, without importing Mix internals.
 
 ## 2.1.0
 
@@ -19,11 +40,6 @@ tightening the public API around the internal token registry.
 - **`ContextToken`:** Zero-config token whose value is derived directly from
   the build context, so context-dependent values resolve without first
   registering a token in a scope (#938).
-- **Typed context variants:** `BrightnessVariant`, `BreakpointVariant`,
-  `OrientationVariant`, `DirectionalityVariant`, `PlatformVariant`,
-  `WebVariant`, and `NotVariant` are now public value objects behind their
-  `ContextVariant` factories, giving schema and tooling code stable typed data
-  to inspect instead of parsing keys.
 - **Spring animation helpers:** `AnimationConfig` statics are now factories,
   with added spring-curve wrappers for configuring physics-based transitions
   (#937).
@@ -35,10 +51,6 @@ tightening the public API around the internal token registry.
   brightness, breakpoints. Previously `Prop.resolveProp` resolved the merged
   nested style via `resolve()`, which skips variants. No-op for nested styles
   without variants (#926).
-- **Context variant equality:** `ContextVariant.brightness`,
-  `ContextVariant.breakpoint`, and `ContextVariant.not` now compare by their
-  typed values instead of identity, so equivalent variants deduplicate and
-  round-trip predictably.
 - **`Matrix4` interpolation:** Tween a transform against the identity matrix
   when one endpoint is null, instead of producing a degenerate result (#931).
 - **Animation config fallback:** Fall back to the previous animation config
@@ -79,9 +91,6 @@ tightening the public API around the internal token registry.
 - **`isAnyTokenRef`** drops the brittle `runtimeType.toString().endsWith(...)`
   check; a `Prop` carrying a `TokenSource` is now the sole class-based
   invariant.
-- **`tokenFromReferenceValue`** is now public for schema/tooling code that needs
-  to identify unresolved token references, including sentinel-backed
-  `DoubleRef` values, without importing Mix internals.
 
 ### Other changes
 

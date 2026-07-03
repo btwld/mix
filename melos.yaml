@@ -80,8 +80,12 @@ scripts:
       dependsOn: "build_runner"
 
   gen:build:
-    run: melos run gen:clean && melos run gen:build:flutter && melos run gen:build:dart
+    run: melos run gen:clean && melos run gen:build:flutter && melos run gen:build:dart && melos run gen:tailwinds-registry
     description: Generate code for all packages
+
+  gen:tailwinds-registry:
+    run: melos exec --scope="mix_tailwinds" -- dart run tool/gen_registry.dart
+    description: Generate the deterministic mix_tailwinds parser registry
 
   gen:build:flutter:
     run: melos exec --category=flutter_projects --order-dependents -- flutter pub run build_runner build --delete-conflicting-outputs

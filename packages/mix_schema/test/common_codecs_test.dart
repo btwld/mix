@@ -258,6 +258,95 @@ void main() {
     }
   });
 
+  test('field-specific numeric bounds fail validation', () {
+    final contract = MixSchemaContractBuilder().builtIn().freeze();
+    final cases = <String, JsonMap>{
+      'text maxLines zero': {'type': 'text', 'maxLines': 0},
+      'text maxLines negative': {'type': 'text', 'maxLines': -1},
+      'default text maxLines zero': {
+        'type': 'box',
+        'modifiers': [
+          {'type': 'default_text_style', 'maxLines': 0},
+        ],
+      },
+      'aspect ratio zero': {
+        'type': 'box',
+        'modifiers': [
+          {'type': 'aspect_ratio', 'aspectRatio': 0},
+        ],
+      },
+      'aspect ratio negative': {
+        'type': 'box',
+        'modifiers': [
+          {'type': 'aspect_ratio', 'aspectRatio': -1},
+        ],
+      },
+      'flex negative': {
+        'type': 'box',
+        'modifiers': [
+          {'type': 'flexible', 'flex': -1},
+        ],
+      },
+      'modifier opacity negative': {
+        'type': 'box',
+        'modifiers': [
+          {'type': 'opacity', 'opacity': -0.1},
+        ],
+      },
+      'modifier opacity above one': {
+        'type': 'box',
+        'modifiers': [
+          {'type': 'opacity', 'opacity': 1.1},
+        ],
+      },
+      'icon opacity above one': {
+        'type': 'icon',
+        'icon': {'codePoint': 0xe88a, 'fontFamily': 'MaterialIcons'},
+        'opacity': 1.1,
+      },
+      'icon theme opacity above one': {
+        'type': 'box',
+        'modifiers': [
+          {'type': 'icon_theme', 'opacity': 1.1},
+        ],
+      },
+    };
+
+    for (final entry in cases.entries) {
+      final errors = _validationErrors(contract.validate(entry.value));
+
+      expect(
+        errors.map((error) => error.code),
+        contains(MixSchemaErrorCode.constraintViolation),
+        reason: entry.key,
+      );
+    }
+  });
+
+  test('numeric lower-bound edges that are allowed still decode', () {
+    final contract = MixSchemaContractBuilder().builtIn().freeze();
+
+    expect(
+      contract.validate({
+        'type': 'box',
+        'modifiers': [
+          {'type': 'flexible', 'flex': 0},
+          {'type': 'opacity', 'opacity': 0},
+        ],
+      }),
+      isA<MixSchemaValidationSuccess>(),
+    );
+    expect(
+      contract.validate({
+        'type': 'box',
+        'modifiers': [
+          {'type': 'opacity', 'opacity': 1},
+        ],
+      }),
+      isA<MixSchemaValidationSuccess>(),
+    );
+  });
+
   test('multi-source props fail encode explicitly', () {
     final prop = Prop.value(1.0).mergeProp(Prop.value(2.0));
 

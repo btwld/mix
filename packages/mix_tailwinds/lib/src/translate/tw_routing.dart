@@ -202,6 +202,7 @@ bool isWidgetLayerUtility(TailwindUtility utility) {
   }
 
   if (_flexItemTokens.contains(raw) ||
+      raw.startsWith('basis-') ||
       raw.startsWith('self-') ||
       root == 'basis' ||
       root == 'self' ||
