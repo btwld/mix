@@ -89,10 +89,12 @@ Zero `///` doc comments on `mix_schema_contract.dart`, `mix_schema_error.dart`,
 
 ### R0.9 — Optional, pre-reviewed fold-ins (prior review, deferred items)
 Only if cheap while in the area; otherwise leave for their owning phase:
-- [ ] S7: route `MixSchemaContract.validate()` through `decode<Object>()`
-      (removes the duplicated pipeline). `[prior review S7]`
-- [ ] Test-helper dedup: one shared `test/support/codec_helpers.dart` for the
-      result-unwrap switch duplicated across 13 files. `[review C5-pref]`
+- [x] S7: route `MixSchemaContract.validate()` through `decode<Object>()`
+      (removes the duplicated pipeline). Completed in Phase 5 R5.5.
+      `[prior review S7]`
+- [x] Test-helper dedup preference explicitly deferred out of this plan:
+      one shared `test/support/codec_helpers.dart` for result-unwrapping
+      remains optional test-only cleanup, not a phase gate. `[review C5-pref]`
 
 ## Non-goals (this phase)
 
@@ -131,3 +133,4 @@ tailwinds realignment, registry redesign beyond what D0.1 decides.
 | 2026-07-02 | D0.1: use Option 2 for icon/image singleton behavior. | This keeps Phase 0 scoped to correctness/hygiene while removing the misleading empty-registry trap from the shared singleton. |
 | 2026-07-02 | Leave generated tailwinds `card` spacing/radius keys for now. | The only remaining keys are in `default_theme.g.dart`; the generator input is not present in this workspace, and generated files should not be hand-edited. |
 | 2026-07-02 | Do not add `dart_code_metrics_presets` to `mix_schema`/`mix_tailwinds` in Phase 0. | Trial enablement made DCM scan both packages and surfaced hundreds of pre-existing style findings, which is outside this phase's correctness/hygiene scope. Keep the existing `melos analyze:dcm` filter and defer package-wide DCM cleanup. |
+| 2026-07-03 | Optional fold-ins reconciled during final audit. | S7 was completed in Phase 5 when `validate()` was routed through `decode<Object>()`; the helper-dedup preference remains intentionally deferred as non-gating test cleanup. |

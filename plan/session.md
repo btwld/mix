@@ -15,34 +15,78 @@ Template:
 
 ---
 
+## 2026-07-03 — Codex — final plan audit
+
+**Did:** Audited the completed plan against the status board, phase docs,
+session log, lessons, and current git state after Phase 5 landed. Reconciled
+two stale plan-doc signals: Phase 3's phase doc status now matches its completed
+implementation/session evidence, and Phase 0's optional fold-ins now record
+that S7 landed in Phase 5 while the helper-dedup preference is deferred
+non-gating cleanup.
+
+**Decisions:** Keep the final history shape as one Phase 5 implementation
+commit plus the allowed retrospective/docs commit, matching the user's
+retrospective-commit instruction; amend this reconciliation into that existing
+retrospective/docs commit instead of adding a third closeout commit.
+
+**Blocked/open:** None for the plan. `mix_schema` publishing remains
+intentionally deferred until the tree-layer demo.
+
+**Next:** Amend and force-with-lease push the existing retrospective/docs
+commit, then verify the remote branch and close the goal.
+
 ## 2026-07-03 — Codex — Phase 5
 
 **Did:**
-- Completed Phase 5: tailwinds now builds Mix stylers directly, enforces the
-  schema contract in tests, and has no runtime `package:mix_schema` imports in
-  the guarded public/widget translator path.
-- Replaced app-frozen identity registries with per-call icon/image resolvers,
-  reverse-name encode options, and value forms; hid registry types from the
-  public `mix_schema.dart` entry point.
-- Removed callback-over-wire support from v1 animation payloads, restored the
-  `mix_tailwinds` semantic compatibility facade, and moved CSS keyword linear
-  gradient behavior into core `mix` with schema `css_linear` support.
-- Ran the delegated closeout review and fixed its only finding by documenting
-  the Flutter icon tree-shaking caveat for raw `IconData` value forms.
-- Verified with the full gate (`melos run gen:build`, `melos run ci`,
-  `melos run analyze`), focused schema/tailwinds contract tests, and the
-  tailwinds example visual parity suite.
+- Completed Phase 5 consumer realignment: `mix_tailwinds` now builds stylers
+  directly, no runtime `mix_schema` imports remain in the public/runtime path,
+  payload producer duplication was removed, and flex-item helpers construct
+  `FlexibleModifierMix` directly.
+- Reshaped `mix_schema` public API around `mix_schema.dart`: shared
+  `builtInMixSchemaContract`, wire vocabulary, owned `JsonMap`, per-call
+  icon/image resolver and encode options, hidden Ack wrapper types, and
+  `testing.dart` for payload helper support.
+- Replaced public frozen-registry identity policy with resolver/value forms for
+  icon/image, removed callback-over-wire support for animation `onEnd`, and
+  reduced registry types to internal legacy support.
+- Removed the Tailwinds gradient bypass. The default CSS-corner gradient path is
+  now wire-representable via core `CssKeywordLinearTransform` and schema
+  `css_linear` transform payloads, while `TwCssKeywordLinearTransform` remains a
+  compatibility subclass.
+- Restored `mix_tailwinds` semantic public API compatibility and added compile
+  coverage for the kept barrel symbols.
+- Ran the required delegated closeout review and addressed its doc finding by
+  adding the Flutter icon tree-shaking caveat for raw `IconData` value forms.
+  Closeout hardening also covered image `resolveImage` / `imageNames` success
+  paths and fail-loud invalid CSS gradient directions.
 
 **Decisions:**
-- Retire tailwinds runtime decode to test-time enforcement.
-- Keep `MixSchemaDecodeOptions` / `MixSchemaEncodeOptions` names.
-- Keep missing top-level `v` as a warning until the publishable v1 checkpoint.
-- Keep `mix_schema` unpublished until the future widget-tree demo proves the
-  composed contract.
+- D5.1: retire Tailwinds runtime decode to test-time encode/validate checks.
+- D5.2: drop `onEnd` callbacks from v1 wire; revisit callbacks in the future
+  event/tree layer.
+- D5.3: keep producer payload helpers as `mix_schema/testing.dart`, with
+  `encode.dart` only as an unpublished compatibility re-export.
+- D5.4: restore the Tailwinds semantic compatibility facade.
+- D5.5: keep MixSchema-prefixed option names.
+- D5.6: keep `mix_schema` unpublished until the tree-layer demo; keep missing
+  `v` warning-only for this internal phase.
 
-**Blocked/open:** None for Phase 5.
+**Verification:**
+- Focused schema tests: `fvm flutter test test/resolver_options_test.dart
+  test/box_styler_codec_test.dart --reporter expanded` passed (`+26`).
+- Full package and focused consumer suites passed: full `packages/mix_schema`
+  (`+306`), Tailwinds realignment/compatibility set (`+100`), visual parity
+  goldens (`+6`), and Phase 5 benchmark (`+1`, 0 runtime schema imports, 0
+  gradient bypasses).
+- Final post-review gate passed: `melos run gen:build`, `melos run ci`, and
+  `melos run analyze` all reported `SUCCESS`. `analyze` still printed sandbox
+  pub-log write warnings but exited 0 after schema inventory, Dart analyze, and
+  DCM succeeded.
 
-**Next:** Commit Phase 5 as one local commit.
+**Blocked/open:** None for Phase 5. Publishing remains intentionally deferred
+until the tree-layer demo.
+
+**Next:** Push the completed phase commits.
 
 ## 2026-07-03 — Codex — Phase 4
 

@@ -1,6 +1,6 @@
 # Phase 3 — Token model (`$token` grammar + theme document)
 
-**Status:** Not started · **Depends on:** phase 1 (envelope/modes), phase 2 recommended (classification), phase 2.5 (review fixes) · **Blocks:** the token-sharing target; parts of phase 4 (token-backed breakpoints)
+**Status:** Completed · **Depends on:** phase 1 (envelope/modes), phase 2 recommended (classification), phase 2.5 (review fixes) · **Blocks:** the token-sharing target; parts of phase 4 (token-backed breakpoints)
 **Scope:** wire grammar for token references, a theme/token-definition document,
 preflight tooling, and the end-to-end inheritance demo.
 
