@@ -20,7 +20,7 @@ SchemaObject<ImageStyler> _imageStylerSchemaType(
   AckSchema<JsonMap, Object>? rootStyleSchema,
   FrozenRegistry Function() registry,
 ) {
-  final image = valueField<ImageStyler, ImageProvider<Object>>(
+  final image = propValueField<ImageStyler, ImageProvider<Object>>(
     'image',
     registryValueCodec<ImageProvider<Object>>(
       registry,
@@ -28,67 +28,72 @@ SchemaObject<ImageStyler> _imageStylerSchemaType(
     ),
     (value) => value.$image,
   );
-  final width = tokenValueField<ImageStyler, double>(
+  final width = propTokenValueField<ImageStyler, double>(
     'width',
     nonNegativeDoubleTokenCodec(),
     (value) => value.$width,
   );
-  final height = tokenValueField<ImageStyler, double>(
+  final height = propTokenValueField<ImageStyler, double>(
     'height',
     nonNegativeDoubleTokenCodec(),
     (value) => value.$height,
   );
-  final color = tokenValueField<ImageStyler, Color>(
+  final color = propTokenValueField<ImageStyler, Color>(
     'color',
     colorCodec(),
     (value) => value.$color,
   );
-  final repeat = valueField<ImageStyler, ImageRepeat>(
+  final repeat = propValueField<ImageStyler, ImageRepeat>(
     'repeat',
     enumNameCodec(ImageRepeat.values),
     (value) => value.$repeat,
   );
-  final fit = valueField<ImageStyler, BoxFit>(
+  final fit = propValueField<ImageStyler, BoxFit>(
     'fit',
     enumNameCodec(BoxFit.values),
     (value) => value.$fit,
   );
-  final alignment = mixField<ImageStyler, Alignment, AlignmentGeometry>(
+  final alignment = propValueAsField<ImageStyler, Alignment, AlignmentGeometry>(
     'alignment',
     alignmentCodec(),
     (value) => value.$alignment,
   );
-  final filterQuality = valueField<ImageStyler, FilterQuality>(
+  final centerSlice = propValueField<ImageStyler, Rect>(
+    'centerSlice',
+    rectCodec(),
+    (value) => value.$centerSlice,
+  );
+  final filterQuality = propValueField<ImageStyler, FilterQuality>(
     'filterQuality',
     enumNameCodec(FilterQuality.values),
     (value) => value.$filterQuality,
   );
-  final colorBlendMode = valueField<ImageStyler, BlendMode>(
+  final colorBlendMode = propValueField<ImageStyler, BlendMode>(
     'colorBlendMode',
     enumNameCodec(BlendMode.values),
     (value) => value.$colorBlendMode,
   );
-  final semanticLabel = valueField<ImageStyler, String>(
+  final semanticLabel = propValueField<ImageStyler, String>(
     'semanticLabel',
     Ack.string(),
     (value) => value.$semanticLabel,
   );
-  final excludeFromSemantics = valueField<ImageStyler, bool>(
+  final excludeFromSemantics = propValueField<ImageStyler, bool>(
     'excludeFromSemantics',
     Ack.boolean(),
     (value) => value.$excludeFromSemantics,
   );
-  final gaplessPlayback = valueField<ImageStyler, bool>(
+  final gaplessPlayback = propValueField<ImageStyler, bool>(
     'gaplessPlayback',
     Ack.boolean(),
     (value) => value.$gaplessPlayback,
   );
-  final isAntiAlias = valueField<ImageStyler, bool>(
+  final isAntiAlias = propValueField<ImageStyler, bool>(
     'isAntiAlias',
     Ack.boolean(),
     (value) => value.$isAntiAlias,
   );
-  final matchTextDirection = valueField<ImageStyler, bool>(
+  final matchTextDirection = propValueField<ImageStyler, bool>(
     'matchTextDirection',
     Ack.boolean(),
     (value) => value.$matchTextDirection,
@@ -113,6 +118,7 @@ SchemaObject<ImageStyler> _imageStylerSchemaType(
       repeat,
       fit,
       alignment,
+      centerSlice,
       filterQuality,
       colorBlendMode,
       semanticLabel,
@@ -122,14 +128,8 @@ SchemaObject<ImageStyler> _imageStylerSchemaType(
       matchTextDirection,
       ...metadata.fields,
     ],
-    unsupportedFields: [
-      ...metadata.unsupportedFields(),
-      UnsupportedSchemaField<ImageStyler>(
-        'centerSlice',
-        (value) => value.$centerSlice,
-      ),
-    ],
-    build: (data) => ImageStyler(
+    unsupportedFields: [...metadata.unsupportedFields()],
+    build: (data) => ImageStyler.create(
       image: image.value(data),
       width: width.value(data),
       height: height.value(data),
@@ -137,6 +137,7 @@ SchemaObject<ImageStyler> _imageStylerSchemaType(
       repeat: repeat.value(data),
       fit: fit.value(data),
       alignment: alignment.value(data),
+      centerSlice: centerSlice.value(data),
       filterQuality: filterQuality.value(data),
       colorBlendMode: colorBlendMode.value(data),
       semanticLabel: semanticLabel.value(data),

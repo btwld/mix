@@ -21,76 +21,104 @@ SchemaObject<StackBoxStyler> _stackBoxStylerSchemaType(
   AckSchema<JsonMap, Object>? rootStyleSchema,
   FrozenRegistry Function() registry,
 ) {
-  final alignment = derivedField<StackBoxStyler, Alignment>(
+  final alignment = derivedField<StackBoxStyler, Prop<AlignmentGeometry>>(
     'alignment',
-    alignmentCodec(),
+    valueAsPropCodec<Alignment, AlignmentGeometry>(
+      alignmentCodec(),
+      fieldName: 'alignment',
+    ),
     _boxField,
     inventoryName: 'box',
   );
-  final padding = derivedField<StackBoxStyler, EdgeInsetsMix>(
+  final padding = derivedField<StackBoxStyler, Prop<EdgeInsetsGeometry>>(
     'padding',
-    edgeInsetsCodec(),
+    mixPropCodec<EdgeInsetsMix, EdgeInsetsGeometry>(
+      edgeInsetsCodec(),
+      fieldName: 'padding',
+    ),
     _boxField,
     inventoryName: 'box',
   );
-  final margin = derivedField<StackBoxStyler, EdgeInsetsMix>(
+  final margin = derivedField<StackBoxStyler, Prop<EdgeInsetsGeometry>>(
     'margin',
-    edgeInsetsCodec(),
+    mixPropCodec<EdgeInsetsMix, EdgeInsetsGeometry>(
+      edgeInsetsCodec(),
+      fieldName: 'margin',
+    ),
     _boxField,
     inventoryName: 'box',
   );
-  final constraints = derivedField<StackBoxStyler, BoxConstraintsMix>(
+  final constraints = derivedField<StackBoxStyler, Prop<BoxConstraints>>(
     'constraints',
-    boxConstraintsCodec(),
+    mixPropCodec<BoxConstraintsMix, BoxConstraints>(
+      boxConstraintsCodec(),
+      fieldName: 'constraints',
+    ),
     _boxField,
     inventoryName: 'box',
   );
-  final clipBehavior = derivedField<StackBoxStyler, Clip>(
+  final clipBehavior = derivedField<StackBoxStyler, Prop<Clip>>(
     'clipBehavior',
-    enumNameCodec(Clip.values),
+    valuePropCodec<Clip>(enumNameCodec(Clip.values), fieldName: 'clipBehavior'),
     _boxField,
     inventoryName: 'box',
   );
-  final transform = derivedField<StackBoxStyler, Matrix4>(
+  final transform = derivedField<StackBoxStyler, Prop<Matrix4>>(
     'transform',
-    matrix4Codec(),
+    valuePropCodec<Matrix4>(matrix4Codec(), fieldName: 'transform'),
     _boxField,
     inventoryName: 'box',
   );
-  final transformAlignment = derivedField<StackBoxStyler, Alignment>(
-    'transformAlignment',
-    alignmentCodec(),
-    _boxField,
-    inventoryName: 'box',
-  );
-  final decoration = derivedField<StackBoxStyler, BoxDecorationMix>(
+  final transformAlignment =
+      derivedField<StackBoxStyler, Prop<AlignmentGeometry>>(
+        'transformAlignment',
+        valueAsPropCodec<Alignment, AlignmentGeometry>(
+          alignmentCodec(),
+          fieldName: 'transformAlignment',
+        ),
+        _boxField,
+        inventoryName: 'box',
+      );
+  final decoration = derivedField<StackBoxStyler, Prop<Decoration>>(
     'decoration',
-    boxDecorationCodec(),
+    mixPropCodec<BoxDecorationMix, Decoration>(
+      boxDecorationCodec(),
+      fieldName: 'decoration',
+    ),
     _boxField,
     inventoryName: 'box',
   );
-  final stackAlignment = derivedField<StackBoxStyler, Alignment>(
+  final stackAlignment = derivedField<StackBoxStyler, Prop<AlignmentGeometry>>(
     'stackAlignment',
-    alignmentCodec(),
+    valueAsPropCodec<Alignment, AlignmentGeometry>(
+      alignmentCodec(),
+      fieldName: 'stackAlignment',
+    ),
     _stackField,
     readWire: 'alignment',
     inventoryName: 'stack',
   );
-  final fit = derivedField<StackBoxStyler, StackFit>(
+  final fit = derivedField<StackBoxStyler, Prop<StackFit>>(
     'fit',
-    enumNameCodec(StackFit.values),
+    valuePropCodec<StackFit>(enumNameCodec(StackFit.values), fieldName: 'fit'),
     _stackField,
     inventoryName: 'stack',
   );
-  final textDirection = derivedField<StackBoxStyler, TextDirection>(
+  final textDirection = derivedField<StackBoxStyler, Prop<TextDirection>>(
     'textDirection',
-    textDirectionCodec(),
+    valuePropCodec<TextDirection>(
+      textDirectionCodec(),
+      fieldName: 'textDirection',
+    ),
     _stackField,
     inventoryName: 'stack',
   );
-  final stackClipBehavior = derivedField<StackBoxStyler, Clip>(
+  final stackClipBehavior = derivedField<StackBoxStyler, Prop<Clip>>(
     'stackClipBehavior',
-    enumNameCodec(Clip.values),
+    valuePropCodec<Clip>(
+      enumNameCodec(Clip.values),
+      fieldName: 'stackClipBehavior',
+    ),
     _stackField,
     readWire: 'clipBehavior',
     inventoryName: 'stack',
@@ -123,19 +151,27 @@ SchemaObject<StackBoxStyler> _stackBoxStylerSchemaType(
       ...metadata.fields,
     ],
     unsupportedFields: [...metadata.unsupportedFields()],
-    build: (data) => StackBoxStyler(
-      alignment: alignment.value(data),
-      padding: padding.value(data),
-      margin: margin.value(data),
-      constraints: constraints.value(data),
-      clipBehavior: clipBehavior.value(data),
-      transform: transform.value(data),
-      transformAlignment: transformAlignment.value(data),
-      decoration: decoration.value(data),
-      stackAlignment: stackAlignment.value(data),
-      fit: fit.value(data),
-      textDirection: textDirection.value(data),
-      stackClipBehavior: stackClipBehavior.value(data),
+    build: (data) => StackBoxStyler.create(
+      box: Prop.mix(
+        BoxStyler.create(
+          alignment: alignment.value(data),
+          padding: padding.value(data),
+          margin: margin.value(data),
+          constraints: constraints.value(data),
+          clipBehavior: clipBehavior.value(data),
+          transform: transform.value(data),
+          transformAlignment: transformAlignment.value(data),
+          decoration: decoration.value(data),
+        ),
+      ),
+      stack: Prop.mix(
+        StackStyler.create(
+          alignment: stackAlignment.value(data),
+          fit: fit.value(data),
+          textDirection: textDirection.value(data),
+          clipBehavior: stackClipBehavior.value(data),
+        ),
+      ),
       variants: metadata.variants?.value(data),
       modifier: metadata.modifiers.value(data),
       animation: metadata.animation.value(data),

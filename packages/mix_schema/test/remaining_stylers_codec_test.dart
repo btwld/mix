@@ -285,29 +285,89 @@ void main() {
     },
   );
 
-  test('unsupported runtime styler fields fail encode explicitly', () {
+  test('remaining data-only styler fields round-trip', () {
     final contract = MixSchemaContractBuilder().builtIn().freeze();
-    final cases = <Object>[
-      BoxStyler(
-        foregroundDecoration: BoxDecorationMix(color: const Color(0xFF000000)),
-      ),
-      TextStyler(strutStyle: StrutStyleMix(fontSize: 12)),
-      IconStyler(shadows: [ShadowMix(color: const Color(0xFF000000))]),
-      ImageStyler(centerSlice: const Rect.fromLTRB(1, 1, 2, 2)),
+    final payloads = <JsonMap>[
+      {
+        'v': 1,
+        'type': 'box',
+        'foregroundDecoration': {'color': '#000000'},
+      },
+      {
+        'v': 1,
+        'type': 'icon',
+        'shadows': [
+          {
+            'color': '#000000',
+            'offset': {'x': 1.0, 'y': 2.0},
+            'blurRadius': 3.0,
+          },
+        ],
+      },
+      {
+        'v': 1,
+        'type': 'image',
+        'centerSlice': {'left': 1.0, 'top': 2.0, 'right': 3.0, 'bottom': 4.0},
+      },
+      {
+        'v': 1,
+        'type': 'text',
+        'strutStyle': {
+          'fontFamily': 'Inter',
+          'fontFamilyFallback': ['Roboto', 'Arial'],
+          'fontSize': 12.0,
+          'fontWeight': 'w600',
+          'fontStyle': 'italic',
+          'height': 1.2,
+          'leading': 0.1,
+          'forceStrutHeight': true,
+        },
+        'textScaler': {'linear': 1.25},
+        'textWidthBasis': 'longestLine',
+        'locale': {
+          'languageCode': 'en',
+          'scriptCode': 'Latn',
+          'countryCode': 'US',
+        },
+        'style': {
+          'debugLabel': 'body',
+          'fontFamilyFallback': ['Inter', 'Arial'],
+          'fontFeatures': [
+            {'feature': 'kern', 'value': 1},
+          ],
+          'fontVariations': [
+            {'axis': 'wght', 'value': 600.0},
+          ],
+          'textBaseline': 'alphabetic',
+        },
+      },
     ];
 
-    for (final styler in cases) {
-      final result = contract.encode(styler);
-      final errors = switch (result) {
-        MixSchemaEncodeFailure(:final errors) => errors,
-        MixSchemaEncodeSuccess() => fail('expected encode failure for $styler'),
+    for (final payload in payloads) {
+      final decoded = contract.decode<Object>(payload);
+      final styler = switch (decoded) {
+        MixSchemaDecodeSuccess<Object>(:final value) => value,
+        MixSchemaDecodeFailure<Object>(:final errors) => fail('$errors'),
       };
 
-      expect(
-        errors.map((error) => error.code),
-        contains(MixSchemaErrorCode.unsupportedEncodeValue),
-      );
+      expect(_encode(contract, styler), payload);
     }
+  });
+
+  test('non-linear text scalers fail encode explicitly', () {
+    final contract = MixSchemaContractBuilder().builtIn().freeze();
+    final result = contract.encode(
+      TextStyler(textScaler: const _NonLinearTextScaler()),
+    );
+    final errors = switch (result) {
+      MixSchemaEncodeFailure(:final errors) => errors,
+      MixSchemaEncodeSuccess() => fail('expected encode failure'),
+    };
+
+    expect(
+      errors.map((error) => error.code),
+      contains(MixSchemaErrorCode.unsupportedEncodeValue),
+    );
   });
 
   test(
@@ -385,4 +445,15 @@ JsonMap _encode(MixSchemaContract contract, Object value) {
     MixSchemaEncodeSuccess(:final value) => value,
     MixSchemaEncodeFailure(:final errors) => throw TestFailure('$errors'),
   };
+}
+
+final class _NonLinearTextScaler extends TextScaler {
+  const _NonLinearTextScaler();
+
+  @override
+  double scale(double fontSize) => fontSize * 1.2 + 1;
+
+  @override
+  // ignore: deprecated_member_use
+  double get textScaleFactor => 1.2;
 }

@@ -44,10 +44,105 @@ void main() {
 
     expect(encoded, isNot(contains('x-ack-codec')));
     expect(encoded, contains(r'"$token"'));
+    expect(encoded, contains(r'"$merge"'));
+    expect(encoded, contains(r'"apply"'));
+    expect(encoded, contains(r'"op"'));
+    final definitions = _object(schema['definitions']);
+    expect(
+      definitions.keys,
+      containsAll([
+        'mix_schema_property_term',
+        'mix_schema_property_control_term',
+        'mix_schema_box_decoration_literal',
+        'mix_schema_directive',
+        'mix_schema_strut_style_literal',
+        'mix_schema_text_style_literal',
+      ]),
+    );
+    expect(
+      _hasPropertyControlTerm(
+        _propertySchemaAt(branchesByType['text']!, [
+          'style',
+          'color',
+        ], definitions),
+      ),
+      isTrue,
+    );
+    expect(
+      _hasPropertyControlTerm(
+        _propertySchemaAt(branchesByType['text']!, [
+          'strutStyle',
+          'fontSize',
+        ], definitions),
+      ),
+      isTrue,
+    );
+    expect(
+      _hasPropertyControlTerm(
+        _propertySchemaAt(branchesByType['box']!, [
+          'decoration',
+          'boxShadow',
+        ], definitions),
+      ),
+      isTrue,
+    );
+    expect(encoded, contains(r'"fractionally_sized_box"'));
+    expect(encoded, contains(r'"default_text_styler"'));
+    expect(encoded, contains(r'"spring"'));
+    expect(encoded, contains(r'"cubic"'));
+    expect(encoded, contains(r'"context_orientation"'));
+    expect(encoded, contains(r'"context_directionality"'));
+    expect(encoded, contains(r'"context_platform"'));
+    expect(encoded, contains(r'"context_web"'));
+    expect(encoded, contains(r'"context_not"'));
+    expect(encoded, contains(r'"foregroundDecoration"'));
+    expect(encoded, contains(r'"strutStyle"'));
+    expect(encoded, contains(r'"textScaler"'));
+    expect(encoded, contains(r'"centerSlice"'));
     expect(encoded, contains(r'[A-Za-z0-9_.-]{1,128}'));
     expect(encoded, contains(r'"space"'));
     expect(encoded, contains(r'"double"'));
-    expect(encoded.length, lessThan(320000));
+    expect(encoded.length, lessThan(520000));
+    expect(_object(_properties(branchesByType['box']!)['padding']), {
+      r'$ref': '#/definitions/mix_schema_property_term',
+    });
+    final propertyTerm = _object(definitions['mix_schema_property_term']);
+    expect(_matchesPropertyTerm(propertyTerm, 4, definitions), isTrue);
+    expect(
+      _matchesPropertyTerm(propertyTerm, {'left': 4}, definitions),
+      isTrue,
+    );
+    expect(
+      _matchesPropertyTerm(propertyTerm, {
+        r'$token': 'space.stack.sm',
+      }, definitions),
+      isTrue,
+    );
+    expect(
+      _matchesPropertyTerm(propertyTerm, {
+        r'$merge': [4, 8],
+      }, definitions),
+      isTrue,
+    );
+    expect(
+      _matchesPropertyTerm(propertyTerm, {r'$token': 7}, definitions),
+      isFalse,
+    );
+    expect(
+      _matchesPropertyTerm(propertyTerm, {
+        r'$token': 'x',
+        'bad': 1,
+      }, definitions),
+      isFalse,
+    );
+    expect(
+      _matchesPropertyTerm(propertyTerm, {r'$merge': []}, definitions),
+      isFalse,
+    );
+    expect(
+      _matchesPropertyTerm(propertyTerm, {'apply': []}, definitions),
+      isFalse,
+    );
     expect(
       _requiredListsContainingVersion(schema),
       hasLength(contract.registeredTypes.length),
@@ -66,19 +161,24 @@ const _expectedBranchProperties = {
     'transform',
     'transformAlignment',
     'decoration',
+    'foregroundDecoration',
     'variants',
     'modifiers',
     'animation',
   },
   'text': {
     'overflow',
+    'strutStyle',
     'textAlign',
+    'textScaler',
     'maxLines',
     'style',
+    'textWidthBasis',
     'textDirection',
     'softWrap',
     'selectionColor',
     'semanticsLabel',
+    'locale',
     'textHeightBehavior',
     'textDirectives',
     'variants',
@@ -115,6 +215,7 @@ const _expectedBranchProperties = {
     'weight',
     'grade',
     'opticalSize',
+    'shadows',
     'textDirection',
     'applyTextScaling',
     'fill',
@@ -133,6 +234,7 @@ const _expectedBranchProperties = {
     'repeat',
     'fit',
     'alignment',
+    'centerSlice',
     'filterQuality',
     'colorBlendMode',
     'semanticLabel',
@@ -199,12 +301,178 @@ JsonMap _properties(JsonMap branch) {
   return _object(branch['properties']);
 }
 
+JsonMap _propertySchemaAt(
+  JsonMap schema,
+  List<String> path,
+  JsonMap definitions,
+) {
+  var current = schema;
+  for (final segment in path) {
+    current = _object(
+      _literalPropertiesContaining(current, definitions, segment)[segment],
+    );
+  }
+
+  return current;
+}
+
+JsonMap _literalPropertiesContaining(
+  JsonMap schema,
+  JsonMap definitions,
+  String property,
+) {
+  final properties = _tryLiteralPropertiesContaining(
+    schema,
+    definitions,
+    property,
+  );
+  if (properties != null) return properties;
+
+  fail('Schema node does not expose literal property "$property": $schema');
+}
+
+JsonMap? _tryLiteralPropertiesContaining(
+  Object? schema,
+  JsonMap definitions,
+  String property,
+) {
+  if (schema is! Map) return null;
+
+  final ref = schema[r'$ref'];
+  if (ref is String && ref.startsWith('#/definitions/')) {
+    final name = ref.substring('#/definitions/'.length);
+
+    return _tryLiteralPropertiesContaining(
+      definitions[name],
+      definitions,
+      property,
+    );
+  }
+
+  final properties = schema['properties'];
+  if (properties is Map && properties.containsKey(property)) {
+    return _object(properties);
+  }
+
+  final anyOf = schema['anyOf'];
+  if (anyOf is List) {
+    for (final branch in anyOf) {
+      final nested = _tryLiteralPropertiesContaining(
+        branch,
+        definitions,
+        property,
+      );
+      if (nested != null) return nested;
+    }
+  }
+
+  return null;
+}
+
+bool _hasPropertyControlTerm(JsonMap schema) {
+  final anyOf = schema['anyOf'];
+  if (anyOf is! List) return false;
+
+  return anyOf.any(
+    (branch) =>
+        branch is Map &&
+        branch[r'$ref'] == '#/definitions/mix_schema_property_control_term',
+  );
+}
+
 List<String> _required(JsonMap branch) {
   return (branch['required'] as List).cast<String>();
 }
 
 JsonMap _object(Object? value) {
   return Map<String, Object?>.from(value! as Map);
+}
+
+bool _matchesPropertyTerm(JsonMap schema, Object? value, JsonMap definitions) {
+  final anyOf = schema['anyOf']! as List;
+
+  return anyOf.any(
+    (branch) => _matchesJsonSchema(_object(branch), value, definitions),
+  );
+}
+
+bool _matchesJsonSchema(JsonMap schema, Object? value, JsonMap definitions) {
+  final ref = schema[r'$ref'];
+  if (ref is String && ref.startsWith('#/definitions/')) {
+    final name = ref.substring('#/definitions/'.length);
+
+    return _matchesJsonSchema(_object(definitions[name]), value, definitions);
+  }
+
+  final anyOf = schema['anyOf'];
+  if (anyOf is List &&
+      !anyOf.any(
+        (branch) => _matchesJsonSchema(_object(branch), value, definitions),
+      )) {
+    return false;
+  }
+
+  final not = schema['not'];
+  if (not is Map && _matchesJsonSchema(_object(not), value, definitions)) {
+    return false;
+  }
+
+  final type = schema['type'];
+  if (type is String && !_matchesJsonType(type, value)) return false;
+
+  final required = (schema['required'] as List?)?.cast<String>() ?? const [];
+  if (required.isNotEmpty) {
+    if (value is! Map) return false;
+    for (final key in required) {
+      if (!value.containsKey(key)) return false;
+    }
+  }
+
+  final minItems = schema['minItems'];
+  if (minItems is int && value is List && value.length < minItems) {
+    return false;
+  }
+
+  final properties = schema['properties'];
+  if (properties is Map && value is Map) {
+    final propertySchemas = Map<String, Object?>.from(properties);
+    if (schema['additionalProperties'] == false) {
+      for (final key in value.keys) {
+        if (!propertySchemas.containsKey(key)) return false;
+      }
+    }
+    for (final entry in propertySchemas.entries) {
+      if (!value.containsKey(entry.key)) continue;
+      if (!_matchesJsonSchema(
+        _object(entry.value),
+        value[entry.key],
+        definitions,
+      )) {
+        return false;
+      }
+    }
+  }
+
+  final pattern = schema['pattern'];
+  if (pattern is String &&
+      value is String &&
+      !RegExp(pattern).hasMatch(value)) {
+    return false;
+  }
+
+  return true;
+}
+
+bool _matchesJsonType(String type, Object? value) {
+  return switch (type) {
+    'array' => value is List,
+    'boolean' => value is bool,
+    'integer' => value is int,
+    'number' => value is num,
+    'object' => value is Map,
+    'string' => value is String,
+    _ => false,
+  };
 }
 
 List<List<String>> _requiredListsContainingVersion(Object? value) {

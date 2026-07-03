@@ -29,47 +29,47 @@ SchemaObject<FlexStyler> _flexStylerSchemaType(
   AckSchema<JsonMap, Object>? rootStyleSchema,
   FrozenRegistry Function() registry,
 ) {
-  final direction = valueField<FlexStyler, Axis>(
+  final direction = propValueField<FlexStyler, Axis>(
     'direction',
     enumNameCodec(Axis.values),
     (value) => value.$direction,
   );
-  final mainAxisAlignment = valueField<FlexStyler, MainAxisAlignment>(
+  final mainAxisAlignment = propValueField<FlexStyler, MainAxisAlignment>(
     'mainAxisAlignment',
     enumNameCodec(MainAxisAlignment.values),
     (value) => value.$mainAxisAlignment,
   );
-  final crossAxisAlignment = valueField<FlexStyler, CrossAxisAlignment>(
+  final crossAxisAlignment = propValueField<FlexStyler, CrossAxisAlignment>(
     'crossAxisAlignment',
     enumNameCodec(CrossAxisAlignment.values),
     (value) => value.$crossAxisAlignment,
   );
-  final mainAxisSize = valueField<FlexStyler, MainAxisSize>(
+  final mainAxisSize = propValueField<FlexStyler, MainAxisSize>(
     'mainAxisSize',
     enumNameCodec(MainAxisSize.values),
     (value) => value.$mainAxisSize,
   );
-  final verticalDirection = valueField<FlexStyler, VerticalDirection>(
+  final verticalDirection = propValueField<FlexStyler, VerticalDirection>(
     'verticalDirection',
     enumNameCodec(VerticalDirection.values),
     (value) => value.$verticalDirection,
   );
-  final textDirection = valueField<FlexStyler, TextDirection>(
+  final textDirection = propValueField<FlexStyler, TextDirection>(
     'textDirection',
     textDirectionCodec(),
     (value) => value.$textDirection,
   );
-  final textBaseline = valueField<FlexStyler, TextBaseline>(
+  final textBaseline = propValueField<FlexStyler, TextBaseline>(
     'textBaseline',
     enumNameCodec(TextBaseline.values),
     (value) => value.$textBaseline,
   );
-  final clipBehavior = valueField<FlexStyler, Clip>(
+  final clipBehavior = propValueField<FlexStyler, Clip>(
     'clipBehavior',
     enumNameCodec(Clip.values),
     (value) => value.$clipBehavior,
   );
-  final spacing = tokenValueField<FlexStyler, double>(
+  final spacing = propTokenValueField<FlexStyler, double>(
     'spacing',
     doubleTokenCodec(),
     (value) => value.$spacing,
@@ -99,7 +99,7 @@ SchemaObject<FlexStyler> _flexStylerSchemaType(
       ...metadata.fields,
     ],
     unsupportedFields: [...metadata.unsupportedFields()],
-    build: (data) => FlexStyler(
+    build: (data) => FlexStyler.create(
       direction: direction.value(data),
       mainAxisAlignment: mainAxisAlignment.value(data),
       crossAxisAlignment: crossAxisAlignment.value(data),

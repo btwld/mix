@@ -55,12 +55,15 @@ values, and unknown enum values anywhere in the document.
 
 Lenient decode is explicit opt-in through `MixSchemaDecodeOptions`. It is only
 for forward-compatible additive data. Unknown fields, unknown nested
-discriminators, and unknown enum values are skipped at the smallest enclosing
-named property:
+discriminators, and unknown enum values are skipped at the smallest repairable
+property or list entry:
 
 - a styler field for normal styler properties,
 - a variant entry for unknown variant data,
-- a modifier entry for unknown modifier data.
+- a modifier entry for unknown modifier data,
+- the specific `$merge`, `apply`, `modifiers.order`, `modifiers.items`,
+  gradient color/stop, shadow, or typography-list entry when that narrower
+  removal keeps the surrounding value valid.
 
 The skipped item is reported as a warning with the original path. Structural
 problems remain fatal in both modes: bad `v`, unknown root `type`, explicit
@@ -111,24 +114,29 @@ are style metadata fields, not spec fields.
 - `transform`: 16-number `Matrix4` storage list
 - `transformAlignment`: alignment
 - `decoration`: box decoration
+- `foregroundDecoration`: box decoration
 - `variants`: list of variant payloads
-- `modifiers`: list of modifier payloads
+- `modifiers`: modifier payload list or ordered modifier object
 - `animation`: animation payload
 
 ### text
 
 - `overflow`: `clip`, `fade`, `ellipsis`, `visible`
 - `textAlign`: `left`, `right`, `center`, `justify`, `start`, `end`
+- `strutStyle`: strut style
+- `textScaler`: `{ "linear": number }`
 - `maxLines`: integer
 - `style`: text style
+- `textWidthBasis`: enum name from `TextWidthBasis`
 - `textDirection`: `ltr`, `rtl`
 - `softWrap`: boolean
 - `selectionColor`: color
 - `semanticsLabel`: string
+- `locale`: locale object
 - `textHeightBehavior`: text height behavior
 - `textDirectives`: list of text directive names
 - `variants`: list of variant payloads
-- `modifiers`: list of modifier payloads
+- `modifiers`: modifier payload list or ordered modifier object
 - `animation`: animation payload
 
 ### flex
@@ -143,7 +151,7 @@ are style metadata fields, not spec fields.
 - `clipBehavior`: enum name from `Clip`
 - `spacing`: number
 - `variants`: list of variant payloads
-- `modifiers`: list of modifier payloads
+- `modifiers`: modifier payload list or ordered modifier object
 - `animation`: animation payload
 
 ### stack
@@ -153,7 +161,7 @@ are style metadata fields, not spec fields.
 - `textDirection`: `ltr`, `rtl`
 - `clipBehavior`: enum name from `Clip`
 - `variants`: list of variant payloads
-- `modifiers`: list of modifier payloads
+- `modifiers`: modifier payload list or ordered modifier object
 - `animation`: animation payload
 
 ### icon
@@ -164,6 +172,7 @@ are style metadata fields, not spec fields.
 - `weight`: number
 - `grade`: number
 - `opticalSize`: number
+- `shadows`: list of shadow values or `ShadowToken` reference
 - `textDirection`: `ltr`, `rtl`
 - `applyTextScaling`: boolean
 - `fill`: number
@@ -171,7 +180,7 @@ are style metadata fields, not spec fields.
 - `opacity`: number
 - `blendMode`: enum name from `BlendMode`
 - `variants`: list of variant payloads
-- `modifiers`: list of modifier payloads
+- `modifiers`: modifier payload list or ordered modifier object
 - `animation`: animation payload
 
 ### image
@@ -183,6 +192,7 @@ are style metadata fields, not spec fields.
 - `repeat`: enum name from `ImageRepeat`
 - `fit`: enum name from `BoxFit`
 - `alignment`: alignment
+- `centerSlice`: rect
 - `filterQuality`: enum name from `FilterQuality`
 - `colorBlendMode`: enum name from `BlendMode`
 - `semanticLabel`: string
@@ -191,7 +201,7 @@ are style metadata fields, not spec fields.
 - `isAntiAlias`: boolean
 - `matchTextDirection`: boolean
 - `variants`: list of variant payloads
-- `modifiers`: list of modifier payloads
+- `modifiers`: modifier payload list or ordered modifier object
 - `animation`: animation payload
 
 ### flex_box
@@ -225,21 +235,92 @@ part.
 - `boxShadow`: optional `color`, `offset`, `blurRadius`, `spreadRadius`.
 - `shadow`: optional `color`, `offset`, `blurRadius`.
 - `offset`: `{ "x": number, "y": number }`.
+- `rect`: `{ "left": number, "top": number, "right": number, "bottom": number }`.
+- `locale`: `{ "languageCode": string, "scriptCode"?: string, "countryCode"?: string }`.
 - `matrix4`: exactly 16 numbers.
 
-## Token References
+## Decoration Values
 
-Token-capable field positions accept a token reference object:
+`box.decoration` and `box.foregroundDecoration` support optional `color`,
+`border`, `borderRadius`, `shape`, `backgroundBlendMode`, `gradient`, and
+`boxShadow`.
+
+`gradient` uses a `kind` discriminator:
+
+- `linear`: optional `begin`, `end`, `colors`, `stops`, `tileMode`, and
+  `transform`
+- `radial`: optional `center`, `radius`, `focal`, `focalRadius`, `colors`,
+  `stops`, `tileMode`, and `transform`
+- `sweep`: optional `center`, `startAngle`, `endAngle`, `colors`, `stops`,
+  `tileMode`, and `transform`
+
+Gradient colors are color lists, stops are number lists, alignments use the
+common `alignment` value, and `tileMode` is a Flutter `TileMode` enum name.
+The only supported gradient transform is:
+
+```json
+{ "kind": "rotation", "radians": 0.25 }
+```
+
+Other `GradientTransform` implementations fail encode with
+`unsupported_encode_value`.
+
+## Property Terms
+
+Representable `Prop` fields use a property term. A term is normally the field's
+plain literal value:
+
+```json
+"#336699"
+```
+
+Token-capable field positions also accept a token reference object:
+
 
 ```json
 { "$token": "color.text.primary" }
 ```
 
+Any literal or token term may carry `apply`, a list of directive objects:
+
+```json
+{
+  "$token": "color.brand",
+  "apply": [{ "op": "color_alpha", "alpha": 128 }]
+}
+```
+
+Multi-source props use an ordered `$merge` term:
+
+```json
+{
+  "$merge": [
+    { "minWidth": 1, "maxWidth": 1 },
+    { "minHeight": 2, "maxHeight": 2 }
+  ]
+}
+```
+
+The encoder emits `$merge` only when the runtime prop has multiple sources.
+Single-source props stay flat unless the source is a token or needs `apply`.
+A one-element `$merge` is accepted as a carrier for `apply`, but canonical
+encode does not generate it for ordinary single-source props.
+
+`$token`, `$merge`, and `apply` are grammar-owned keys. Token reference objects
+may contain only `$token`, optional double-token `kind`, and optional `apply`.
+Merge objects may contain only `$merge` and optional `apply`. Unknown
+`$`-prefixed markers fail preflight.
+
+Exported JSON Schema uses `#/definitions/mix_schema_property_term` at
+property-term boundaries. That shared definition constrains control-marker
+objects (`$token`, `$merge`, and `apply`) and excludes malformed marker
+combinations. Field-specific literal details still come from the runtime codecs;
+runtime decode remains authoritative for exact Flutter/Mix value semantics.
+
+## Token References
+
 Token names must match `[A-Za-z0-9_.-]{1,128}`. Invalid names fail with
-`invalid_token_name` at the `$token` path. `$token` is a reserved control
-marker; token reference objects may contain only `$token` and, for double-valued
-references, `kind`. `$merge` is reserved for a future merge grammar and is
-rejected in v1, as are all unknown `$`-prefixed markers.
+`invalid_token_name` at the `$token` path.
 
 The field position selects the canonical Mix token class:
 
@@ -264,6 +345,30 @@ therefore remain a Mix runtime lookup failure rather than a schema decode
 failure. Data-referenced tokens must be registered under the canonical token
 class above; scopes that want Dart-side aliases should register equivalent
 values under both token classes.
+
+## Directives
+
+Directive objects use core `Directive.key` strings as `op` values. Supported
+ops are:
+
+- color: `color_alpha`, `color_brighten`, `color_darken`,
+  `color_desaturate`, `color_lighten`, `color_opacity`, `color_saturate`,
+  `color_shade`, `color_tint`, `color_with_blue`, `color_with_green`,
+  `color_with_red`, `color_with_values`
+- string: `capitalize`, `lowercase`, `sentence_case`, `title_case`,
+  `uppercase`
+- number: `number_abs`, `number_add`, `number_ceil`, `number_clamp`,
+  `number_divide`, `number_floor`, `number_multiply`, `number_round`,
+  `number_subtract`
+
+Directive params use the core field names: for example `color_alpha` has
+`alpha`, `color_opacity` has `opacity`, `number_multiply` has `factor`, and
+`number_clamp` has `min` and `max`. `color_with_values.colorSpace`, when
+present, is a Flutter `ColorSpace` enum name. Unknown `op` values fail strict
+decode with `invalid_enum` at the `apply` entry's `op` path; lenient decode
+removes the invalid `apply` entry and reports the same path as a warning. If no
+valid directives remain, canonical re-encode omits `apply` and preserves the
+underlying term when it is otherwise valid.
 
 ## Theme Document
 
@@ -330,9 +435,20 @@ final missing = used.difference(declared);
 ## Text Values
 
 `textStyle` supports optional `color`, `backgroundColor`, `fontSize`,
-`fontWeight`, `fontStyle`, `letterSpacing`, `wordSpacing`, `height`,
-`fontFamily`, `decoration`, `decorationColor`, `decorationStyle`,
+`fontWeight`, `fontStyle`, `letterSpacing`, `debugLabel`, `wordSpacing`,
+`textBaseline`, `height`, `fontFamily`, `fontFamilyFallback`, `fontFeatures`,
+`fontVariations`, `decoration`, `decorationColor`, `decorationStyle`,
 `decorationThickness`, and `shadows`.
+
+`fontFeatures` are objects with a four-character `feature` tag and non-negative
+integer `value`. `fontVariations` are objects with a four-character `axis` tag
+and numeric `value`.
+
+`strutStyle` supports optional `fontFamily`, `fontFamilyFallback`, `fontSize`,
+`fontWeight`, `fontStyle`, `height`, `leading`, and `forceStrutHeight`.
+
+`textScaler` supports only linear scalers as `{ "linear": number }`.
+Non-linear/custom `TextScaler` implementations fail encode.
 
 `textHeightBehavior` supports optional `applyHeightToFirstAscent`,
 `applyHeightToLastDescent`, and `leadingDistribution`.
@@ -352,34 +468,104 @@ Variant payloads use a `kind` discriminator:
 - `context_breakpoint`: either
   `{ "minWidth"?: number, "maxWidth"?: number, "style": styler }` or
   `{ "token": tokenName, "style": styler }`
+- `context_orientation`: `{ "orientation": "portrait" | "landscape",
+  "style": styler }`
+- `context_directionality`: `{ "textDirection": "ltr" | "rtl",
+  "style": styler }`
+- `context_platform`: `{ "platform": targetPlatform, "style": styler }`
+- `context_web`: `{ "style": styler }`
+- `context_not`: `{ "variant": contextVariantSelector, "style": styler }`
+
+`context_not.variant` is a recursive context-variant selector using the same
+`kind` and data fields above, but without `style`. Explicit nesting is
+preserved; `not(not(web))` encodes as nested `context_not` selectors rather
+than being normalized away.
 
 Only the context variant forms listed above are part of the canonical wire
-contract. Composite and closure-backed context variants can be added later only
-if Mix exposes typed runtime data that can be encoded without key parsing.
+contract. Closure-backed `ContextVariantBuilder` and custom size predicates are
+not represented by v1.
 
 Widget state values are `hovered`, `focused`, `pressed`, `dragged`, `selected`,
 `scrolled_under`, `disabled`, and `error`.
 
 ## Modifiers
 
-Modifier payloads use a `type` discriminator:
+The `modifiers` field is normally a list of modifier payloads in application
+order. If a custom modifier application order is required, `modifiers` may be
+an object with optional `order` and `items`:
 
-- `opacity`: `{ "opacity": number }`
-- `blur`: `{ "sigma": number }`
-- `flexible`: optional `flex` integer and `fit` value `tight` or `loose`
+```json
+{
+  "order": ["blur", "opacity"],
+  "items": [{ "type": "opacity", "opacity": 0.5 }]
+}
+```
+
+`order` values use the same kind strings as modifier payload `type` values.
+Modifier payloads use a `type` discriminator. Supported kinds are:
+
+- `align`: optional `alignment`, `widthFactor`, and `heightFactor`
+- `aspect_ratio`: optional `aspectRatio`
+- `blur`: required `sigma`
+- `box`: required nested box `style`
+- `clip_oval`, `clip_rect`, `clip_triangle`: optional `clipBehavior`
+- `clip_r_rect`: optional `borderRadius` and `clipBehavior`
 - `default_text_style`: optional `style`, `textAlign`, `softWrap`, `overflow`,
   and `maxLines`
+- `default_text_styler`: required nested text `style`
+- `flexible`: optional `flex` integer and `fit` value `tight` or `loose`
+- `fractionally_sized_box`: optional `widthFactor`, `heightFactor`, and
+  `alignment`
+- `icon_theme`: optional `color`, `size`, `fill`, `weight`, `grade`,
+  `opticalSize`, `opacity`, `shadows`, and `applyTextScaling`
+- `intrinsic_height`, `intrinsic_width`: no fields
+- `opacity`: required `opacity`
+- `padding`: required `padding`
+- `rotate`: optional `radians` and `alignment`
+- `rotated_box`: optional `quarterTurns`
+- `scale`: optional `x`, `y`, and `alignment`
+- `scroll_view`: optional `scrollDirection`, `reverse`, `padding`, and
+  `clipBehavior`
+- `sized_box`: optional `width` and `height`
+- `skew`: optional `skewX`, `skewY`, and `alignment`
+- `transform`: optional `transform` matrix and `alignment`
+- `translate`: optional `x` and `y`
+- `visibility`: optional `visible`
+
+Custom clippers, `ScrollPhysics`, shader masks, mouse cursors, reset/internal
+modifiers, and unknown modifier kinds are not represented by v1.
 
 ## Animation
 
-Animation payloads encode `CurveAnimationConfig`:
+Animation payloads encode the data-only implicit animation configs.
+
+`CurveAnimationConfig` uses the legacy object form:
 
 - `duration`: non-negative milliseconds or `DurationToken` reference
-- `curve`: registered curve name
-- `delay`: non-negative milliseconds or `DurationToken` reference
+- `curve`: registered curve name, or `{ "cubic": [a, b, c, d] }` for `Cubic`
+- `delay`: optional non-negative milliseconds or `DurationToken` reference.
+  Missing `delay` decodes as `0`; canonical encode emits `delay`.
 - `onEnd`: optional registry id if callback encoding is enabled
 
-Unsupported animation config types fail encode.
+`SpringAnimationConfig` uses:
+
+- `spring.mass`: positive number
+- `spring.stiffness`: positive number
+- `spring.damping`: non-negative number
+- `onEnd`: optional registry id if callback encoding is enabled
+
+`PhaseAnimationConfig`, `KeyframeAnimationConfig`, custom `Curve` subclasses,
+and unregistered callback closures fail encode.
+
+## V1 Unsupported Field Families
+
+The inventory ratchet explicitly classifies several Mix data families as outside
+the canonical v1 contract. Producers must omit these fields or expect
+`unsupported_encode_value` on encode:
+
+- `decoration.image` and `DecorationImageMix`
+- shape and directional border families not listed in Common Values
+- preset-only helpers such as `ElevationShadow`
 
 ## Registry Values
 
@@ -394,26 +580,29 @@ canonical contract.
 
 ## Encode Policy
 
-Styler encode supports fields backed by one value source that can be represented
-by this contract. Single-source canonical token references encode to token
-reference objects. Directives on non-directive fields, multi-source props,
-unregistered identity values, custom token subclasses, and unsupported runtime
-objects fail encode with a public `MixSchemaError`.
+Styler encode supports representable value sources, canonical token references,
+directive applications, and ordered multi-source props through the property-term
+grammar. Custom token subclasses, unregistered identity values, unsupported
+directive types, and unsupported runtime objects fail encode with a public
+`MixSchemaError`.
 
 Encode errors use stable public codes. `unsupported_encode_value` reports values
 that the v1 contract intentionally cannot represent. `inventory_skew` reports a
 developer/runtime mismatch where a Mix styler exposes a field that is not covered
 by the schema encoder inventory.
 
-The runtime `inventory_skew` guard is currently scoped to the built-in styler
-roots (`BoxStyler`, `TextStyler`, `FlexStyler`, `StackStyler`, `IconStyler`,
-`ImageStyler`, `FlexBoxStyler`, and `StackBoxStyler`). Nested Mix value types
-are tracked by the inventory manifest and backlog but do not yet have their own
-runtime props-count guard. Named missing/stale fields are included when the
-schema inventory can identify them; runtime count-only skew includes
-`expectedFieldCount` and `actualFieldCount`. A net-zero runtime change that
-removes one field and adds another field with the same total count is not
-detectable by the count-only fallback.
+The runtime `inventory_skew` guard covers the built-in styler roots
+(`BoxStyler`, `TextStyler`, `FlexStyler`, `StackStyler`, `IconStyler`,
+`ImageStyler`, `FlexBoxStyler`, and `StackBoxStyler`) plus Phase 4 nested
+families that have dedicated encode maps: `BoxDecorationMix`,
+`LinearGradientMix`, `RadialGradientMix`, `SweepGradientMix`, `TextStyleMix`,
+`StrutStyleMix`, `WidgetModifierConfig`, and supported modifier mix payloads.
+Nested types that remain unsupported are tracked by the inventory manifest and
+backlog. Named missing/stale fields are included when the schema inventory can
+identify them; runtime count-only skew includes `expectedFieldCount` and
+`actualFieldCount`. A net-zero runtime change that removes one field and adds
+another field with the same total count is not detectable by the count-only
+fallback.
 
 Encoded top-level style documents include `v: 1`. Nested style objects emitted
 inside variants do not include `v`.

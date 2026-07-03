@@ -53,11 +53,8 @@ class ContextVariant extends Variant {
     return WidgetStateVariant(state);
   }
 
-  static ContextVariant orientation(Orientation orientation) {
-    return ContextVariant(
-      'media_query_orientation_${orientation.name}',
-      (context) => MediaQuery.orientationOf(context) == orientation,
-    );
+  static OrientationVariant orientation(Orientation orientation) {
+    return OrientationVariant(orientation);
   }
 
   static ContextVariant not(ContextVariant variant) {
@@ -80,24 +77,18 @@ class ContextVariant extends Variant {
   }
 
   // Directionality
-  static ContextVariant directionality(TextDirection direction) {
-    return ContextVariant(
-      'directionality_${direction.name}',
-      (context) => Directionality.of(context) == direction,
-    );
+  static DirectionalityVariant directionality(TextDirection direction) {
+    return DirectionalityVariant(direction);
   }
 
   // Platform
-  static ContextVariant platform(TargetPlatform platform) {
-    return ContextVariant(
-      'platform_${platform.name}',
-      (context) => defaultTargetPlatform == platform,
-    );
+  static PlatformVariant platform(TargetPlatform platform) {
+    return PlatformVariant(platform);
   }
 
   // Web
-  static ContextVariant web() {
-    return ContextVariant('web', (_) => kIsWeb);
+  static WebVariant web() {
+    return WebVariant();
   }
 
   // Responsive breakpoints
@@ -117,6 +108,25 @@ class ContextVariant extends Variant {
   bool when(BuildContext context) {
     return shouldApply(context);
   }
+}
+
+/// Context variant that applies for a media-query orientation.
+final class OrientationVariant extends ContextVariant {
+  final Orientation orientation;
+
+  OrientationVariant(this.orientation)
+    : super(
+        'media_query_orientation_${orientation.name}',
+        (context) => MediaQuery.orientationOf(context) == orientation,
+      );
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is OrientationVariant && other.orientation == orientation;
+
+  @override
+  int get hashCode => orientation.hashCode;
 }
 
 /// Context variant that applies for a platform brightness.
@@ -173,6 +183,55 @@ final class NotVariant extends ContextVariant {
 
   @override
   int get hashCode => inner.hashCode;
+}
+
+/// Context variant that applies for inherited text direction.
+final class DirectionalityVariant extends ContextVariant {
+  final TextDirection direction;
+
+  DirectionalityVariant(this.direction)
+    : super(
+        'directionality_${direction.name}',
+        (context) => Directionality.of(context) == direction,
+      );
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is DirectionalityVariant && other.direction == direction;
+
+  @override
+  int get hashCode => direction.hashCode;
+}
+
+/// Context variant that applies for the current default target platform.
+final class PlatformVariant extends ContextVariant {
+  final TargetPlatform platform;
+
+  PlatformVariant(this.platform)
+    : super(
+        'platform_${platform.name}',
+        (_) => defaultTargetPlatform == platform,
+      );
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is PlatformVariant && other.platform == platform;
+
+  @override
+  int get hashCode => platform.hashCode;
+}
+
+/// Context variant that applies when running on the web.
+final class WebVariant extends ContextVariant {
+  WebVariant() : super('web', (_) => kIsWeb);
+
+  @override
+  bool operator ==(Object other) => other is WebVariant;
+
+  @override
+  int get hashCode => key.hashCode;
 }
 
 final class WidgetStateVariant extends ContextVariant {

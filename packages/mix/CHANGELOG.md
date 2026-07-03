@@ -10,11 +10,11 @@ tightening the public API around the internal token registry.
 - **`ContextToken`:** Zero-config token whose value is derived directly from
   the build context, so context-dependent values resolve without first
   registering a token in a scope (#938).
-- **Typed context variants:** `BrightnessVariant`, `BreakpointVariant`, and
-  `NotVariant` are now public value objects behind
-  `ContextVariant.brightness`, `ContextVariant.breakpoint`, and
-  `ContextVariant.not`, giving schema and tooling code stable typed data to
-  inspect instead of parsing keys.
+- **Typed context variants:** `BrightnessVariant`, `BreakpointVariant`,
+  `OrientationVariant`, `DirectionalityVariant`, `PlatformVariant`,
+  `WebVariant`, and `NotVariant` are now public value objects behind their
+  `ContextVariant` factories, giving schema and tooling code stable typed data
+  to inspect instead of parsing keys.
 - **Spring animation helpers:** `AnimationConfig` statics are now factories,
   with added spring-curve wrappers for configuring physics-based transitions
   (#937).

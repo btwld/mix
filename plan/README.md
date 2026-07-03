@@ -57,7 +57,7 @@ Conventions:
 | 2 | [phase2.md](phase2.md) | Drift ratchet — core-surface inventory tool | Completed |
 | 2.5 | [phase2.5.md](phase2.5.md) | Cross-phase review fixes — ratchet hardening + doc lockstep | Completed |
 | 3 | [phase3.md](phase3.md) | Token model — `$token` grammar + theme document | Completed |
-| 4 | [phase4.md](phase4.md) | Property grammar (`apply`/`$merge`) + coverage expansion | Not started |
+| 4 | [phase4.md](phase4.md) | Property grammar (`apply`/`$merge`) + coverage expansion | Completed |
 | 5 | [phase5.md](phase5.md) | Consumer realignment (tailwinds) + public API reshaping | Not started |
 
 Other files: [findings.md](findings.md) (review snapshot — the "why" behind every

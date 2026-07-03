@@ -128,7 +128,39 @@ Things the review itself surfaced that qualify as lessons already:
   ratchet, or supported fields looked unimplemented.
 
 ### Phase 4 — Property grammar + coverage
-_(fill when closed)_
+
+- **Property grammar needs repair granules, not just decode forms.** Adding
+  `apply` and `$merge` made lenient cleanup part of the grammar contract:
+  invalid directive, merge, modifier, variant, and ordinary list entries must be
+  removable without dropping the parent style field.
+- **Nested Mix coverage needs runtime ratchets too.** Phase 2 guarded styler
+  roots; Phase 4 added guards for nested `BoxDecorationMix`, gradients,
+  `WidgetModifierConfig`, modifier mixes, `TextStyleMix`, and `StrutStyleMix`
+  so core field drift fails during encode instead of silently changing the wire
+  contract.
+- **Token-aware encode is still opt-in and must fail before runtime access.**
+  New token-bearing fields need tokenized codecs and canonical-token validation
+  before any Flutter value getter can run; otherwise unresolved token refs throw
+  framework errors instead of schema diagnostics.
+- **Coverage expansion should leave unsupported gaps explicit.** Data-only
+  fields moved to `supported`, while image decorations, shape/directional border
+  families, and `ElevationShadow` are documented v1 unsupported items rather
+  than lingering deferred backlog.
+- **Nested Prop fields need the same grammar as root styler fields.** Encoding a
+  nested `Prop` as `apply` / `$merge` is not enough if the nested field codec
+  still validates literal-only input; `TextStyleMix`, `StrutStyleMix`, and
+  `BoxDecorationMix` need property-term codecs at their own field boundaries.
+- **Discriminated unions must reject the wrong branch's fields.** A permissive
+  superset object lets invalid gradient payloads round-trip under the wrong
+  `kind`; each branch needs kind-specific strict checks plus matching lenient
+  repair granules.
+- **Exported schema definitions must be attached to fields.** String-presence
+  checks for `$merge` / `apply` were too weak; representative field schemas now
+  assert a `mix_schema_property_control_term` branch and shared literal
+  definitions for nested Mix objects.
+- **Exported JSON Schema is a contract guard, not a runtime replacement.**
+  Shared property-term definitions should reject malformed control markers, but
+  field-specific Flutter/Mix semantics still belong to the codecs and tests.
 
 ### Phase 5 — Consumer realignment + API reshaping
 _(fill when closed)_

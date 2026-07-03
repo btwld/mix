@@ -5,16 +5,24 @@ import 'mix_schema_error.dart';
 List<MixSchemaError> mapSchemaError(SchemaError error) {
   final errors = <MixSchemaError>[];
 
-  void flatten(SchemaError current) {
+  void flatten(SchemaError current, {String? pathPrefix}) {
     if (current is SchemaNestedError) {
       for (final child in current.errors) {
-        flatten(child);
+        flatten(child, pathPrefix: pathPrefix);
       }
 
       return;
     }
 
-    errors.add(_mapSingleSchemaError(current));
+    if ((current is SchemaTransformError || current is SchemaEncodeError) &&
+        current.cause is SchemaError) {
+      final nestedPrefix = _joinErrorPaths(pathPrefix, current.path);
+      flatten(current.cause! as SchemaError, pathPrefix: nestedPrefix);
+
+      return;
+    }
+
+    errors.add(_mapSingleSchemaError(current, pathPrefix: pathPrefix));
   }
 
   flatten(error);
@@ -23,12 +31,24 @@ List<MixSchemaError> mapSchemaError(SchemaError error) {
   return errors;
 }
 
-MixSchemaError _mapSingleSchemaError(SchemaError error) {
+MixSchemaError _mapSingleSchemaError(
+  SchemaError error, {
+  String? pathPrefix,
+}) {
+  final path = _joinErrorPaths(pathPrefix, error.path);
   final cause = error.cause;
+  if (cause is SchemaPathError) {
+    return MixSchemaError(
+      code: cause.code,
+      path: _joinErrorPaths(path, cause.relativePath),
+      message: cause.reason,
+      value: cause.value,
+    );
+  }
   if (cause is UnsupportedEncodeValueError) {
     return MixSchemaError(
       code: MixSchemaErrorCode.unsupportedEncodeValue,
-      path: _normalizePath(error.path),
+      path: path,
       message: cause.reason,
       value: cause.value,
     );
@@ -36,7 +56,7 @@ MixSchemaError _mapSingleSchemaError(SchemaError error) {
   if (cause is InvalidTokenNameError) {
     return MixSchemaError(
       code: MixSchemaErrorCode.invalidTokenName,
-      path: _normalizePath(error.path),
+      path: path,
       message: cause.reason,
       value: cause.name,
     );
@@ -44,7 +64,7 @@ MixSchemaError _mapSingleSchemaError(SchemaError error) {
   if (cause is SchemaInventorySkewError) {
     return MixSchemaError(
       code: MixSchemaErrorCode.inventorySkew,
-      path: _normalizePath(error.path),
+      path: path,
       message: cause.toString(),
       value: cause.toJson(),
     );
@@ -52,7 +72,7 @@ MixSchemaError _mapSingleSchemaError(SchemaError error) {
   if (cause is UnknownRegistryIdError) {
     return MixSchemaError(
       code: MixSchemaErrorCode.unknownRegistryId,
-      path: _normalizePath(error.path),
+      path: path,
       message: cause.toString(),
       value: cause.id,
     );
@@ -60,7 +80,7 @@ MixSchemaError _mapSingleSchemaError(SchemaError error) {
   if (cause is UnknownRegistryValueError) {
     return MixSchemaError(
       code: MixSchemaErrorCode.unknownRegistryValue,
-      path: _normalizePath(error.path),
+      path: path,
       message: cause.toString(),
       value: cause.value,
     );
@@ -92,7 +112,7 @@ MixSchemaError _mapSingleSchemaError(SchemaError error) {
 
   return MixSchemaError(
     code: code,
-    path: _normalizePath(error.path),
+    path: path,
     message: error.message,
     value: error.value,
   );
@@ -103,6 +123,19 @@ String _normalizePath(String path) {
   if (path == '#') return '';
 
   return path;
+}
+
+String _joinErrorPaths(String? prefix, String path) {
+  final normalizedPath = _normalizePath(path);
+  if (prefix == null || prefix.isEmpty) return normalizedPath;
+  final normalizedPrefix = _normalizePath(prefix);
+  if (normalizedPath.isEmpty) return normalizedPrefix;
+  if (normalizedPath == normalizedPrefix ||
+      normalizedPath.startsWith('$normalizedPrefix/')) {
+    return normalizedPath;
+  }
+
+  return '$normalizedPrefix$normalizedPath';
 }
 
 MixSchemaErrorCode _mapConstraintCode(

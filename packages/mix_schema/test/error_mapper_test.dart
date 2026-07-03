@@ -92,6 +92,30 @@ void main() {
     expect(codeFor(result.getError()), MixSchemaErrorCode.unknownField);
   });
 
+  test('unwraps transform-wrapped schema errors with outer path', () {
+    final inner = Ack.object({'known': Ack.string()});
+    final schema = Ack.object({
+      'outer': Ack.codec<Object, Object, JsonMap>(
+        input: Ack.any(),
+        decode: (wire) {
+          final result = inner.safeParse(wire);
+          if (result.isFail) throw result.getError();
+
+          return result.getOrThrow()!;
+        },
+        encode: (value) => value,
+      ),
+    });
+
+    final result = schema.safeParse({
+      'outer': {'known': 'x', 'future': true},
+    });
+    final errors = mapSchemaError(result.getError());
+
+    expect(errors.single.code, MixSchemaErrorCode.unknownField);
+    expect(errors.single.path, '/outer/future');
+  });
+
   test('maps invalid_enum', () {
     final result = Ack.enumString(['a']).safeParse('b');
 

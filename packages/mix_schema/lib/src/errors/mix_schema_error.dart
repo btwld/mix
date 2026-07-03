@@ -219,6 +219,32 @@ final class InvalidTokenNameError implements Exception {
   String toString() => reason;
 }
 
+/// Internal sentinel for schema errors that need a path below a transform root.
+final class SchemaPathError implements Exception {
+  /// Creates a path-qualified schema sentinel.
+  const SchemaPathError({
+    required this.code,
+    required this.relativePath,
+    required this.reason,
+    this.value,
+  });
+
+  /// Public error code to emit.
+  final MixSchemaErrorCode code;
+
+  /// Path relative to the schema transform root.
+  final String relativePath;
+
+  /// Explanation for why the wire value is invalid.
+  final String reason;
+
+  /// Offending value, when useful to expose.
+  final Object? value;
+
+  @override
+  String toString() => reason;
+}
+
 /// Internal sentinel thrown when codec coverage drifts from owner fields.
 final class SchemaInventorySkewError implements Exception {
   /// Creates an inventory-skew sentinel.

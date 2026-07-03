@@ -161,7 +161,7 @@ void main() {
       expect(reencoded['padding'], 8.0);
     });
 
-    test('lenient mode skips a composite field with an unknown nested key', () {
+    test('lenient mode skips an unknown nested key in a composite field', () {
       final payload = {
         'v': 1,
         'type': 'box',
@@ -178,7 +178,7 @@ void main() {
       final reencoded = encode(success.value);
 
       expect(success.warnings.single.path, '/decoration/future');
-      expect(reencoded.containsKey('decoration'), isFalse);
+      expect(reencoded['decoration'], {'color': '#000000'});
       expect(reencoded['padding'], 4.0);
     });
 
@@ -268,6 +268,61 @@ void main() {
       expect(reencoded['padding'], 2.0);
     });
 
+    test('lenient mode skips unknown directive ops', () {
+      final payload = {
+        'v': 1,
+        'type': 'box',
+        'padding': 2,
+        'decoration': {
+          'color': {
+            r'$token': 'color.brand',
+            'apply': [
+              {'op': 'future_directive'},
+            ],
+          },
+        },
+      };
+
+      final strictErrors = decodeErrors<BoxStyler>(payload);
+
+      expect(strictErrors.single.code, MixSchemaErrorCode.invalidEnum);
+      expect(strictErrors.single.path, '/decoration/color/apply/0/op');
+
+      final success = decodeSuccess<BoxStyler>(payload, options: lenient);
+      final reencoded = encode(success.value);
+
+      expect(success.warnings.single.path, '/decoration/color/apply/0/op');
+      expect(reencoded['decoration'], {
+        'color': {r'$token': 'color.brand'},
+      });
+      expect(reencoded['padding'], 2.0);
+    });
+
+    test('lenient mode skips invalid merge source entries', () {
+      final payload = {
+        'v': 1,
+        'type': 'box',
+        'padding': 2,
+        'clipBehavior': {
+          r'$merge': ['hardEdge', 'future_clip', 'none'],
+        },
+      };
+
+      final strictErrors = decodeErrors<BoxStyler>(payload);
+
+      expect(strictErrors.single.code, MixSchemaErrorCode.invalidEnum);
+      expect(strictErrors.single.path, r'/clipBehavior/$merge/1');
+
+      final success = decodeSuccess<BoxStyler>(payload, options: lenient);
+      final reencoded = encode(success.value);
+
+      expect(success.warnings.single.path, r'/clipBehavior/$merge/1');
+      expect(reencoded['clipBehavior'], {
+        r'$merge': ['hardEdge', 'none'],
+      });
+      expect(reencoded['padding'], 2.0);
+    });
+
     test('lenient mode skips unknown modifier entries', () {
       final payload = {
         'v': 1,
@@ -279,8 +334,8 @@ void main() {
       };
 
       expect(
-        decodeErrors<BoxStyler>(payload).single.code,
-        MixSchemaErrorCode.unknownType,
+        decodeErrors<BoxStyler>(payload).map((error) => error.code),
+        contains(MixSchemaErrorCode.unknownType),
       );
 
       final success = decodeSuccess<BoxStyler>(payload, options: lenient);
@@ -290,6 +345,141 @@ void main() {
       expect(success.warnings.single.path, '/modifiers/0/type');
       expect(modifiers, hasLength(1));
       expect((modifiers.single! as JsonMap)['type'], 'opacity');
+    });
+
+    test('lenient mode skips ordered modifier items', () {
+      final payload = {
+        'v': 1,
+        'type': 'box',
+        'modifiers': {
+          'order': ['opacity'],
+          'items': [
+            {'type': 'future', 'value': 1},
+            {'type': 'opacity', 'opacity': 0.5},
+          ],
+        },
+      };
+
+      expect(
+        decodeErrors<BoxStyler>(payload).map((error) => error.code),
+        contains(MixSchemaErrorCode.unknownType),
+      );
+
+      final success = decodeSuccess<BoxStyler>(payload, options: lenient);
+      final reencoded = encode(success.value);
+      final modifiers = reencoded['modifiers']! as JsonMap;
+      final items = modifiers['items']! as List;
+
+      expect(success.warnings.single.path, '/modifiers/items/0/type');
+      expect(modifiers['order'], ['opacity']);
+      expect(items, hasLength(1));
+      expect((items.single! as JsonMap)['type'], 'opacity');
+    });
+
+    test('lenient mode skips unknown modifier order entries', () {
+      final payload = {
+        'v': 1,
+        'type': 'box',
+        'modifiers': {
+          'order': ['future', 'opacity'],
+          'items': [
+            {'type': 'opacity', 'opacity': 0.5},
+          ],
+        },
+      };
+
+      final strictErrors = decodeErrors<BoxStyler>(payload);
+
+      expect(
+        strictErrors,
+        contains(
+          isA<MixSchemaError>()
+              .having(
+                (error) => error.code,
+                'code',
+                MixSchemaErrorCode.invalidEnum,
+              )
+              .having((error) => error.path, 'path', '/modifiers/order/0'),
+        ),
+      );
+
+      final success = decodeSuccess<BoxStyler>(payload, options: lenient);
+      final reencoded = encode(success.value);
+      final modifiers = reencoded['modifiers']! as JsonMap;
+      final items = modifiers['items']! as List;
+
+      expect(
+        success.warnings.map((warning) => warning.path),
+        contains('/modifiers/order/0'),
+      );
+      expect(modifiers['order'], ['opacity']);
+      expect(items, hasLength(1));
+      expect((items.single! as JsonMap)['type'], 'opacity');
+    });
+
+    test('lenient mode skips ordinary list entries inside styler fields', () {
+      final payload = {
+        'v': 1,
+        'type': 'text',
+        'style': {
+          'debugLabel': 'body',
+          'fontFeatures': [
+            {'feature': 'kern', 'value': 1, 'future': true},
+            {'feature': 'liga', 'value': 1},
+          ],
+        },
+      };
+
+      expect(
+        decodeErrors<TextStyler>(payload).map((error) => error.code),
+        contains(MixSchemaErrorCode.unknownField),
+      );
+
+      final success = decodeSuccess<TextStyler>(payload, options: lenient);
+      final reencoded = encode(success.value);
+      final style = reencoded['style']! as JsonMap;
+
+      expect(success.warnings.single.path, '/style/fontFeatures/0/future');
+      expect(style['debugLabel'], 'body');
+      expect(style['fontFeatures'], [
+        {'feature': 'liga', 'value': 1},
+      ]);
+    });
+
+    test('lenient mode skips shadow list entries inside styler fields', () {
+      final payload = {
+        'v': 1,
+        'type': 'icon',
+        'shadows': [
+          {
+            'color': '#000000',
+            'offset': {'x': 1.0, 'y': 2.0},
+            'future': true,
+          },
+          {
+            'color': '#111111',
+            'offset': {'x': 3.0, 'y': 4.0},
+            'blurRadius': 5.0,
+          },
+        ],
+      };
+
+      expect(
+        decodeErrors<IconStyler>(payload).map((error) => error.code),
+        contains(MixSchemaErrorCode.unknownField),
+      );
+
+      final success = decodeSuccess<IconStyler>(payload, options: lenient);
+      final reencoded = encode(success.value);
+
+      expect(success.warnings.single.path, '/shadows/0/future');
+      expect(reencoded['shadows'], [
+        {
+          'color': '#111111',
+          'offset': {'x': 3.0, 'y': 4.0},
+          'blurRadius': 5.0,
+        },
+      ]);
     });
 
     test('lenient mode keeps structural root failures fatal', () {

@@ -21,48 +21,68 @@ SchemaObject<TextStyler> _textStylerSchemaType(
   AckSchema<JsonMap, Object>? rootStyleSchema,
   FrozenRegistry Function() registry,
 ) {
-  final overflow = valueField<TextStyler, TextOverflow>(
+  final overflow = propValueField<TextStyler, TextOverflow>(
     'overflow',
     textOverflowCodec(),
     (value) => value.$overflow,
   );
-  final textAlign = valueField<TextStyler, TextAlign>(
+  final strutStyle = propMixField<TextStyler, StrutStyleMix, StrutStyle>(
+    'strutStyle',
+    strutStyleMixCodec(),
+    (value) => value.$strutStyle,
+  );
+  final textAlign = propValueField<TextStyler, TextAlign>(
     'textAlign',
     textAlignCodec(),
     (value) => value.$textAlign,
   );
-  final maxLines = valueField<TextStyler, int>(
+  final textScaler = propValueField<TextStyler, TextScaler>(
+    'textScaler',
+    textScalerCodec(),
+    (value) => value.$textScaler,
+  );
+  final maxLines = propValueField<TextStyler, int>(
     'maxLines',
     Ack.integer(),
     (value) => value.$maxLines,
   );
-  final style = tokenMixField<TextStyler, TextStyleMix, TextStyle>(
+  final style = propTokenMixField<TextStyler, TextStyleMix, TextStyle>(
     'style',
     textStyleMixCodec(),
     (value) => value.$style,
   );
-  final textDirection = valueField<TextStyler, TextDirection>(
+  final textWidthBasis = propValueField<TextStyler, TextWidthBasis>(
+    'textWidthBasis',
+    enumNameCodec(TextWidthBasis.values),
+    (value) => value.$textWidthBasis,
+  );
+  final textDirection = propValueField<TextStyler, TextDirection>(
     'textDirection',
     textDirectionCodec(),
     (value) => value.$textDirection,
   );
-  final softWrap = valueField<TextStyler, bool>(
+  final softWrap = propValueField<TextStyler, bool>(
     'softWrap',
     Ack.boolean(),
     (value) => value.$softWrap,
   );
-  final selectionColor = tokenValueField<TextStyler, Color>(
+  final selectionColor = propTokenValueField<TextStyler, Color>(
     'selectionColor',
     colorCodec(),
     (value) => value.$selectionColor,
   );
-  final semanticsLabel = valueField<TextStyler, String>(
+  final semanticsLabel = propValueField<TextStyler, String>(
     'semanticsLabel',
     Ack.string(),
     (value) => value.$semanticsLabel,
   );
+  final locale = propValueField<TextStyler, Locale>(
+    'locale',
+    localeCodec(),
+    (value) => value.$locale,
+  );
   final textHeightBehavior =
-      mixField<TextStyler, TextHeightBehaviorMix, TextHeightBehavior>(
+      propMixField<TextStyler, TextHeightBehaviorMix, TextHeightBehavior>(
         'textHeightBehavior',
         textHeightBehaviorCodec(),
         (value) => value.$textHeightBehavior,
@@ -86,42 +106,35 @@ SchemaObject<TextStyler> _textStylerSchemaType(
     actualFieldCount: stylerFieldCount,
     fields: [
       overflow,
+      strutStyle,
       textAlign,
+      textScaler,
       maxLines,
       style,
+      textWidthBasis,
       textDirection,
       softWrap,
       selectionColor,
       semanticsLabel,
+      locale,
       textHeightBehavior,
       textDirectives,
       ...metadata.fields,
     ],
-    unsupportedFields: [
-      UnsupportedSchemaField<TextStyler>(
-        'strutStyle',
-        (value) => value.$strutStyle,
-      ),
-      UnsupportedSchemaField<TextStyler>(
-        'textScaler',
-        (value) => value.$textScaler,
-      ),
-      UnsupportedSchemaField<TextStyler>(
-        'textWidthBasis',
-        (value) => value.$textWidthBasis,
-      ),
-      UnsupportedSchemaField<TextStyler>('locale', (value) => value.$locale),
-      ...metadata.unsupportedFields(),
-    ],
-    build: (data) => TextStyler(
+    unsupportedFields: [...metadata.unsupportedFields()],
+    build: (data) => TextStyler.create(
       overflow: overflow.value(data),
+      strutStyle: strutStyle.value(data),
       textAlign: textAlign.value(data),
+      textScaler: textScaler.value(data),
       maxLines: maxLines.value(data),
       style: style.value(data),
+      textWidthBasis: textWidthBasis.value(data),
       textDirection: textDirection.value(data),
       softWrap: softWrap.value(data),
       selectionColor: selectionColor.value(data),
       semanticsLabel: semanticsLabel.value(data),
+      locale: locale.value(data),
       textHeightBehavior: textHeightBehavior.value(data),
       textDirectives: textDirectives.value(data),
       variants: metadata.variants?.value(data),
@@ -139,103 +152,144 @@ CodecSchema<Object, TextStyleMix> textStyleMixCodec() {
   );
 }
 
+JsonMap textStyleMixLiteralJsonSchema() {
+  return _textStyleMixObjectCodec().toJsonSchema();
+}
+
 CodecSchema<JsonMap, TextStyleMix> _textStyleMixObjectCodec() {
   return Ack.object({
-    'color': colorCodec().optional(),
-    'backgroundColor': colorCodec().optional(),
-    'fontSize': doubleTokenCodec().optional(),
-    'fontWeight': fontWeightCodec().optional(),
-    'fontStyle': fontStyleCodec().optional(),
-    'letterSpacing': doubleTokenCodec().optional(),
-    'wordSpacing': doubleTokenCodec().optional(),
-    'height': doubleTokenCodec().optional(),
-    'fontFamily': Ack.string().optional(),
-    'decoration': textDecorationCodec().optional(),
-    'decorationColor': colorCodec().optional(),
-    'decorationStyle': textDecorationStyleCodec().optional(),
-    'decorationThickness': doubleTokenCodec().optional(),
-    'shadows': _shadowListFieldCodec().optional(),
+    'color': valuePropCodec<Color>(
+      colorCodec(),
+      fieldName: 'style.color',
+    ).optional(),
+    'backgroundColor': valuePropCodec<Color>(
+      colorCodec(),
+      fieldName: 'style.backgroundColor',
+    ).optional(),
+    'fontSize': valuePropCodec<double>(
+      doubleTokenCodec(),
+      fieldName: 'style.fontSize',
+    ).optional(),
+    'fontWeight': valuePropCodec<FontWeight>(
+      fontWeightCodec(),
+      fieldName: 'style.fontWeight',
+    ).optional(),
+    'fontStyle': valuePropCodec<FontStyle>(
+      fontStyleCodec(),
+      fieldName: 'style.fontStyle',
+    ).optional(),
+    'letterSpacing': valuePropCodec<double>(
+      doubleTokenCodec(),
+      fieldName: 'style.letterSpacing',
+    ).optional(),
+    'debugLabel': valuePropCodec<String>(
+      Ack.string(),
+      fieldName: 'style.debugLabel',
+    ).optional(),
+    'wordSpacing': valuePropCodec<double>(
+      doubleTokenCodec(),
+      fieldName: 'style.wordSpacing',
+    ).optional(),
+    'textBaseline': valuePropCodec<TextBaseline>(
+      enumNameCodec(TextBaseline.values),
+      fieldName: 'style.textBaseline',
+    ).optional(),
+    'height': valuePropCodec<double>(
+      doubleTokenCodec(),
+      fieldName: 'style.height',
+    ).optional(),
+    'fontFamily': valuePropCodec<String>(
+      Ack.string(),
+      fieldName: 'style.fontFamily',
+    ).optional(),
+    'fontFamilyFallback': valuePropCodec<List<String>>(
+      Ack.list(Ack.string()),
+      fieldName: 'style.fontFamilyFallback',
+    ).optional(),
+    'fontFeatures': valuePropCodec<List<FontFeature>>(
+      Ack.list(fontFeatureCodec()),
+      fieldName: 'style.fontFeatures',
+    ).optional(),
+    'fontVariations': valuePropCodec<List<FontVariation>>(
+      Ack.list(fontVariationCodec()),
+      fieldName: 'style.fontVariations',
+    ).optional(),
+    'decoration': valuePropCodec<TextDecoration>(
+      textDecorationCodec(),
+      fieldName: 'style.decoration',
+    ).optional(),
+    'decorationColor': valuePropCodec<Color>(
+      colorCodec(),
+      fieldName: 'style.decorationColor',
+    ).optional(),
+    'decorationStyle': valuePropCodec<TextDecorationStyle>(
+      textDecorationStyleCodec(),
+      fieldName: 'style.decorationStyle',
+    ).optional(),
+    'decorationThickness': valuePropCodec<double>(
+      doubleTokenCodec(),
+      fieldName: 'style.decorationThickness',
+    ).optional(),
+    'shadows': mixPropCodec<ShadowListMix, List<Shadow>>(
+      _shadowListFieldCodec(),
+      fieldName: 'style.shadows',
+    ).optional(),
   }).codec<TextStyleMix>(
     decode: (data) => TextStyleMix.create(
-      color: Prop.maybe(data['color'] as Color?),
-      backgroundColor: Prop.maybe(data['backgroundColor'] as Color?),
-      fontSize: Prop.maybe(data['fontSize'] as double?),
-      fontWeight: Prop.maybe(data['fontWeight'] as FontWeight?),
-      fontStyle: Prop.maybe(data['fontStyle'] as FontStyle?),
-      letterSpacing: Prop.maybe(data['letterSpacing'] as double?),
-      wordSpacing: Prop.maybe(data['wordSpacing'] as double?),
-      height: Prop.maybe(data['height'] as double?),
-      fontFamily: Prop.maybe(data['fontFamily'] as String?),
-      decoration: Prop.maybe(data['decoration'] as TextDecoration?),
-      decorationColor: Prop.maybe(data['decorationColor'] as Color?),
-      decorationStyle: Prop.maybe(
-        data['decorationStyle'] as TextDecorationStyle?,
-      ),
-      decorationThickness: Prop.maybe(data['decorationThickness'] as double?),
-      shadows: _shadowListProp(data['shadows']),
+      color: data['color'] as Prop<Color>?,
+      backgroundColor: data['backgroundColor'] as Prop<Color>?,
+      fontSize: data['fontSize'] as Prop<double>?,
+      fontWeight: data['fontWeight'] as Prop<FontWeight>?,
+      fontStyle: data['fontStyle'] as Prop<FontStyle>?,
+      letterSpacing: data['letterSpacing'] as Prop<double>?,
+      debugLabel: data['debugLabel'] as Prop<String>?,
+      wordSpacing: data['wordSpacing'] as Prop<double>?,
+      textBaseline: data['textBaseline'] as Prop<TextBaseline>?,
+      height: data['height'] as Prop<double>?,
+      fontFamily: data['fontFamily'] as Prop<String>?,
+      fontFamilyFallback: data['fontFamilyFallback'] as Prop<List<String>>?,
+      fontFeatures: data['fontFeatures'] as Prop<List<FontFeature>>?,
+      fontVariations: data['fontVariations'] as Prop<List<FontVariation>>?,
+      decoration: data['decoration'] as Prop<TextDecoration>?,
+      decorationColor: data['decorationColor'] as Prop<Color>?,
+      decorationStyle: data['decorationStyle'] as Prop<TextDecorationStyle>?,
+      decorationThickness: data['decorationThickness'] as Prop<double>?,
+      shadows: data['shadows'] as Prop<List<Shadow>>?,
     ),
     encode: _encodeTextStyle,
   );
 }
 
 JsonMap _encodeTextStyle(TextStyleMix value) {
-  failIfPresent(value.$debugLabel, 'style.debugLabel');
-  failIfPresent(value.$textBaseline, 'style.textBaseline');
+  checkKnownFieldInventory(
+    value,
+    owner: 'TextStyleMix',
+    fields: textStyleMixInventory,
+  );
   failIfPresent(value.$foreground, 'style.foreground');
   failIfPresent(value.$background, 'style.background');
   failIfPresent(value.$inherit, 'style.inherit');
-  failIfPresent(value.$fontFamilyFallback, 'style.fontFamilyFallback');
-  failIfPresent(value.$fontFeatures, 'style.fontFeatures');
-  failIfPresent(value.$fontVariations, 'style.fontVariations');
 
   return {
-    'color': singleValuePropWire(value.$color, 'style.color'),
-    'backgroundColor': singleValuePropWire(
-      value.$backgroundColor,
-      'style.backgroundColor',
-    ),
-    'fontSize': singleValuePropWire(value.$fontSize, 'style.fontSize'),
-    'fontWeight': singleValuePropWire(value.$fontWeight, 'style.fontWeight'),
-    'fontStyle': singleValueProp(value.$fontStyle, 'style.fontStyle'),
-    'letterSpacing': singleValuePropWire(
-      value.$letterSpacing,
-      'style.letterSpacing',
-    ),
-    'wordSpacing': singleValuePropWire(value.$wordSpacing, 'style.wordSpacing'),
-    'height': singleValuePropWire(value.$height, 'style.height'),
-    'fontFamily': singleValueProp(value.$fontFamily, 'style.fontFamily'),
-    'decoration': singleValueProp(value.$decoration, 'style.decoration'),
-    'decorationColor': singleValuePropWire(
-      value.$decorationColor,
-      'style.decorationColor',
-    ),
-    'decorationStyle': singleValueProp(
-      value.$decorationStyle,
-      'style.decorationStyle',
-    ),
-    'decorationThickness': singleValuePropWire(
-      value.$decorationThickness,
-      'style.decorationThickness',
-    ),
-    'shadows': _shadowListWire(value),
-  };
-}
-
-Object? _shadowListWire(TextStyleMix value) {
-  final shadows = singleMixPropWire<ShadowListMix, List<Shadow>>(
-    value.$shadows,
-    'style.shadows',
-  );
-
-  return switch (shadows) {
-    null => null,
-    JsonMap() => shadows,
-    Prop<List<Shadow>>() => shadows,
-    ShadowListMix() => shadows.items,
-    _ => throw UnsupportedEncodeValueError(
-      shadows,
-      'Field "style.shadows" decoded to unsupported ${shadows.runtimeType}.',
-    ),
+    'color': value.$color,
+    'backgroundColor': value.$backgroundColor,
+    'fontSize': value.$fontSize,
+    'fontWeight': value.$fontWeight,
+    'fontStyle': value.$fontStyle,
+    'letterSpacing': value.$letterSpacing,
+    'debugLabel': value.$debugLabel,
+    'wordSpacing': value.$wordSpacing,
+    'textBaseline': value.$textBaseline,
+    'height': value.$height,
+    'fontFamily': value.$fontFamily,
+    'fontFamilyFallback': value.$fontFamilyFallback,
+    'fontFeatures': value.$fontFeatures,
+    'fontVariations': value.$fontVariations,
+    'decoration': value.$decoration,
+    'decorationColor': value.$decorationColor,
+    'decorationStyle': value.$decorationStyle,
+    'decorationThickness': value.$decorationThickness,
+    'shadows': value.$shadows,
   };
 }
 
@@ -292,24 +346,117 @@ CodecSchema<String, TextDecorationStyle> textDecorationStyleCodec() {
   }, debugName: 'TextDecorationStyle');
 }
 
-AckSchema<Object, Object> _shadowListFieldCodec() {
-  return Ack.anyOf([
-    Ack.list(shadowCodec()),
-    tokenReferenceCodec<List<Shadow>, ShadowListMix>(
-      decodeToken: (data) => ShadowToken(data[tokenReferenceKey]! as String),
-      reference: (token) => (token as ShadowToken).mix(),
+CodecSchema<JsonMap, StrutStyleMix> strutStyleMixCodec() {
+  return Ack.object({
+    'fontFamily': valuePropCodec<String>(
+      Ack.string(),
+      fieldName: 'strutStyle.fontFamily',
+    ).optional(),
+    'fontFamilyFallback': valuePropCodec<List<String>>(
+      Ack.list(Ack.string()),
+      fieldName: 'strutStyle.fontFamilyFallback',
+    ).optional(),
+    'fontSize': valuePropCodec<double>(
+      doubleTokenCodec(),
+      fieldName: 'strutStyle.fontSize',
+    ).optional(),
+    'fontWeight': valuePropCodec<FontWeight>(
+      fontWeightCodec(),
+      fieldName: 'strutStyle.fontWeight',
+    ).optional(),
+    'fontStyle': valuePropCodec<FontStyle>(
+      fontStyleCodec(),
+      fieldName: 'strutStyle.fontStyle',
+    ).optional(),
+    'height': valuePropCodec<double>(
+      doubleTokenCodec(),
+      fieldName: 'strutStyle.height',
+    ).optional(),
+    'leading': valuePropCodec<double>(
+      doubleTokenCodec(),
+      fieldName: 'strutStyle.leading',
+    ).optional(),
+    'forceStrutHeight': valuePropCodec<bool>(
+      Ack.boolean(),
+      fieldName: 'strutStyle.forceStrutHeight',
+    ).optional(),
+  }).codec<StrutStyleMix>(
+    decode: (data) => StrutStyleMix.create(
+      fontFamily: data['fontFamily'] as Prop<String>?,
+      fontFamilyFallback: data['fontFamilyFallback'] as Prop<List<String>>?,
+      fontSize: data['fontSize'] as Prop<double>?,
+      fontWeight: data['fontWeight'] as Prop<FontWeight>?,
+      fontStyle: data['fontStyle'] as Prop<FontStyle>?,
+      height: data['height'] as Prop<double>?,
+      leading: data['leading'] as Prop<double>?,
+      forceStrutHeight: data['forceStrutHeight'] as Prop<bool>?,
     ),
-  ]);
+    encode: _encodeStrutStyle,
+  );
 }
 
-Prop<List<Shadow>>? _shadowListProp(Object? value) {
-  return switch (value) {
-    null => null,
-    Prop<List<Shadow>>() => value,
-    List<ShadowMix>() => Prop.mix(ShadowListMix(value)),
-    _ => throw UnsupportedEncodeValueError(
-      value,
-      'TextStyle shadows decoded to unsupported ${value.runtimeType}.',
-    ),
+JsonMap _encodeStrutStyle(StrutStyleMix value) {
+  checkKnownFieldInventory(
+    value,
+    owner: 'StrutStyleMix',
+    fields: strutStyleMixInventory,
+  );
+
+  return {
+    'fontFamily': value.$fontFamily,
+    'fontFamilyFallback': value.$fontFamilyFallback,
+    'fontSize': value.$fontSize,
+    'fontWeight': value.$fontWeight,
+    'fontStyle': value.$fontStyle,
+    'height': value.$height,
+    'leading': value.$leading,
+    'forceStrutHeight': value.$forceStrutHeight,
   };
+}
+
+CodecSchema<JsonMap, TextScaler> textScalerCodec() {
+  return Ack.object({'linear': nonNegativeDoubleCodec()}).codec<TextScaler>(
+    decode: (data) => TextScaler.linear(data['linear']! as double),
+    encode: _encodeTextScaler,
+  );
+}
+
+JsonMap _encodeTextScaler(TextScaler value) {
+  // TextScaler only exposes this compatibility getter for linear detection.
+  // ignore: deprecated_member_use
+  final factor = value.textScaleFactor;
+  if (TextScaler.linear(factor) != value) {
+    throw UnsupportedEncodeValueError(
+      value,
+      'Only linear TextScaler values are representable.',
+    );
+  }
+
+  return {'linear': factor};
+}
+
+CodecSchema<JsonMap, FontFeature> fontFeatureCodec() {
+  return Ack.object({
+    'feature': Ack.string().minLength(4).maxLength(4),
+    'value': Ack.integer().min(0),
+  }).codec<FontFeature>(
+    decode: (data) =>
+        FontFeature(data['feature']! as String, data['value']! as int),
+    encode: (value) => {'feature': value.feature, 'value': value.value},
+  );
+}
+
+CodecSchema<JsonMap, FontVariation> fontVariationCodec() {
+  return Ack.object({
+    'axis': Ack.string().minLength(4).maxLength(4),
+    'value': numberAsDoubleCodec(),
+  }).codec<FontVariation>(
+    decode: (data) =>
+        FontVariation(data['axis']! as String, data['value']! as double),
+    encode: (value) => {'axis': value.axis, 'value': value.value},
+  );
+}
+
+CodecSchema<Object, ShadowListMix> _shadowListFieldCodec() {
+  return shadowListMixCodec();
 }

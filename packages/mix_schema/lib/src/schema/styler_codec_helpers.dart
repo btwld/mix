@@ -32,7 +32,7 @@ final class StylerMetadataFields<
              ),
        modifiers = directField<Owner, WidgetModifierConfig>(
          'modifiers',
-         modifierConfigCodec(),
+         modifierConfigCodec(rootStyleSchema: rootStyleSchema),
          readModifier,
          inventoryName: 'modifier',
        ),

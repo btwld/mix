@@ -1,11 +1,17 @@
+import 'dart:ui' show ColorSpace;
+
 import 'package:ack/ack.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
 import '../errors/mix_schema_error.dart';
+import '../errors/schema_error_mapper.dart';
 import 'primitive_wire.dart';
 
 const String tokenReferenceKey = r'$token';
+const String mergeReferenceKey = r'$merge';
+const String applyDirectivesKey = 'apply';
+const String directiveOpKey = 'op';
 const String tokenKindKey = 'kind';
 const String tokenKindSpace = 'space';
 const String tokenKindDouble = 'double';
@@ -105,6 +111,47 @@ CodecSchema<JsonMap, Offset> offsetCodec() {
   }).codec<Offset>(
     decode: (data) => Offset(data['x']! as double, data['y']! as double),
     encode: (value) => {'x': value.dx, 'y': value.dy},
+  );
+}
+
+CodecSchema<JsonMap, Rect> rectCodec() {
+  return Ack.object({
+    'left': numberAsDoubleCodec(),
+    'top': numberAsDoubleCodec(),
+    'right': numberAsDoubleCodec(),
+    'bottom': numberAsDoubleCodec(),
+  }).codec<Rect>(
+    decode: (data) => Rect.fromLTRB(
+      data['left']! as double,
+      data['top']! as double,
+      data['right']! as double,
+      data['bottom']! as double,
+    ),
+    encode: (value) => {
+      'left': value.left,
+      'top': value.top,
+      'right': value.right,
+      'bottom': value.bottom,
+    },
+  );
+}
+
+CodecSchema<JsonMap, Locale> localeCodec() {
+  return Ack.object({
+    'languageCode': Ack.string().notEmpty(),
+    'scriptCode': Ack.string().notEmpty().optional(),
+    'countryCode': Ack.string().notEmpty().optional(),
+  }).codec<Locale>(
+    decode: (data) => Locale.fromSubtags(
+      languageCode: data['languageCode']! as String,
+      scriptCode: data['scriptCode'] as String?,
+      countryCode: data['countryCode'] as String?,
+    ),
+    encode: (value) => {
+      'languageCode': value.languageCode,
+      'scriptCode': value.scriptCode,
+      'countryCode': value.countryCode,
+    },
   );
 }
 
@@ -267,6 +314,63 @@ CodecSchema<JsonMap, ShadowMix> shadowCodec() {
   );
 }
 
+CodecSchema<Object, ShadowListMix> shadowListMixCodec() {
+  final tokenWireSchema = tokenReferenceWireSchema();
+  final tokenCodec = tokenReferenceCodec<List<Shadow>, ShadowListMix>(
+    decodeToken: (data) => ShadowToken(data[tokenReferenceKey]! as String),
+    reference: (token) => (token as ShadowToken).mix(),
+  );
+
+  return Ack.codec<Object, Object, ShadowListMix>(
+    input: Ack.anyOf([Ack.list(shadowCodec()), tokenWireSchema]),
+    decode: (value) => switch (value) {
+      ShadowListMix() => value,
+      List<ShadowMix>() => ShadowListMix(value),
+      JsonMap() => tokenCodec.safeParse(value).getOrThrow()!,
+      _ => throw UnsupportedEncodeValueError(
+        value,
+        'Shadow lists must be literal shadow arrays or ShadowToken references.',
+      ),
+    },
+    encode: (value) {
+      final token = tokenFromReference<List<Shadow>>(value);
+      final tokenResult = tokenCodec.safeEncode(value);
+      if (tokenResult.isOk) return tokenResult.getOrNull()!;
+      if (token != null) throw tokenResult.getError();
+
+      return value.items;
+    },
+  );
+}
+
+CodecSchema<Object, BoxShadowListMix> boxShadowListMixCodec() {
+  final tokenWireSchema = tokenReferenceWireSchema();
+  final tokenCodec = tokenReferenceCodec<List<BoxShadow>, BoxShadowListMix>(
+    decodeToken: (data) => BoxShadowToken(data[tokenReferenceKey]! as String),
+    reference: (token) => (token as BoxShadowToken).mix(),
+  );
+
+  return Ack.codec<Object, Object, BoxShadowListMix>(
+    input: Ack.anyOf([Ack.list(boxShadowCodec()), tokenWireSchema]),
+    decode: (value) => switch (value) {
+      BoxShadowListMix() => value,
+      List<BoxShadowMix>() => BoxShadowListMix(value),
+      JsonMap() => tokenCodec.safeParse(value).getOrThrow()!,
+      _ => throw UnsupportedEncodeValueError(
+        value,
+        'Box shadow lists must be literal shadow arrays or BoxShadowToken '
+        'references.',
+      ),
+    },
+    encode: (value) {
+      final tokenResult = tokenCodec.safeEncode(value);
+      if (tokenResult.isOk) return tokenResult.getOrNull()!;
+
+      return value.items;
+    },
+  );
+}
+
 CodecSchema<JsonMap, TextHeightBehaviorMix> textHeightBehaviorCodec() {
   return Ack.object({
     'applyHeightToFirstAscent': Ack.boolean().optional(),
@@ -306,6 +410,35 @@ CodecSchema<String, Directive<String>> textDirectiveCodec() {
     'title_case': const TitleCaseStringDirective(),
     'sentence_case': const SentenceCaseStringDirective(),
   }, debugName: 'TextDirective');
+}
+
+CodecSchema<Object, Prop<Value>> valuePropCodec<Value extends Object>(
+  AckSchema<Object, Value> valueCodec, {
+  required String fieldName,
+}) {
+  return valueAsPropCodec<Value, Value>(valueCodec, fieldName: fieldName);
+}
+
+CodecSchema<Object, Prop<PropValue>> valueAsPropCodec<
+  Value extends Object,
+  PropValue extends Object
+>(AckSchema<Object, Value> valueCodec, {required String fieldName}) {
+  return _propTermCodec<Value, PropValue>(
+    valueCodec,
+    fieldName: fieldName,
+    source: _PropSourceKind.value,
+  );
+}
+
+CodecSchema<Object, Prop<PropValue>> mixPropCodec<
+  Value extends Object,
+  PropValue extends Object
+>(AckSchema<Object, Value> valueCodec, {required String fieldName}) {
+  return _propTermCodec<Value, PropValue>(
+    valueCodec,
+    fieldName: fieldName,
+    source: _PropSourceKind.mix,
+  );
 }
 
 CodecSchema<JsonMap, BoxConstraintsMix> boxConstraintsCodec() {
@@ -413,41 +546,106 @@ Object? readPropWire<T extends Object, V extends Object>(
   Prop<V>? prop,
   String fieldName,
 ) {
-  if (prop == null) return null;
-  if (prop.$directives?.isNotEmpty == true) {
-    throw UnsupportedEncodeValueError(
-      prop,
-      'Field "$fieldName" has directives and cannot be represented.',
-    );
-  }
-  if (prop.sources.length != 1) {
-    throw UnsupportedEncodeValueError(
-      prop,
-      'Field "$fieldName" has ${prop.sources.length} sources; expected one.',
-    );
-  }
-
-  final source = prop.sources.single;
-  if (source is TokenSource<V>) {
-    return _referenceForToken<T, V>(source.token, fieldName);
-  }
-  if (source is MixSource<V> && source.mix is T) {
-    return source.mix as T;
-  }
-  if (source is ValueSource<V> && source.value is T) {
-    return source.value as T;
-  }
-
-  throw UnsupportedEncodeValueError(
+  return encodePropTerm<T, V>(
     prop,
-    'Field "$fieldName" is ${source.runtimeType}; expected $T.',
+    fieldName: fieldName,
+    valueCodec: null,
+    tokenAware: true,
   );
+}
+
+Object? encodePropTerm<T extends Object, V extends Object>(
+  Prop<V>? prop, {
+  required String fieldName,
+  AckSchema<Object, T>? valueCodec,
+  bool tokenAware = false,
+}) {
+  if (prop == null) return null;
+  if (prop.sources.isEmpty) {
+    throw UnsupportedEncodeValueError(
+      prop,
+      'Field "$fieldName" has directives but no value sources.',
+    );
+  }
+
+  final directives = prop.$directives;
+  if (prop.sources.length == 1 && (directives == null || directives.isEmpty)) {
+    return _encodePropSource<T, V>(
+      prop.sources.single,
+      fieldName: fieldName,
+      valueCodec: valueCodec,
+      tokenAware: tokenAware,
+    );
+  }
+
+  final encodedSources = [
+    for (final source in prop.sources)
+      _encodePropSource<T, V>(
+        source,
+        fieldName: fieldName,
+        valueCodec: valueCodec,
+        tokenAware: tokenAware,
+      ),
+  ];
+
+  if (prop.sources.length == 1 &&
+      directives != null &&
+      directives.isNotEmpty &&
+      encodedSources.single is JsonMap &&
+      (encodedSources.single as JsonMap).containsKey(tokenReferenceKey)) {
+    return {
+      ...(encodedSources.single as JsonMap),
+      applyDirectivesKey: encodeDirectiveList(directives, fieldName),
+    };
+  }
+
+  return {
+    mergeReferenceKey: encodedSources,
+    if (directives != null && directives.isNotEmpty)
+      applyDirectivesKey: encodeDirectiveList(directives, fieldName),
+  };
+}
+
+Object _encodePropSource<T extends Object, V extends Object>(
+  PropSource<V> source, {
+  required String fieldName,
+  AckSchema<Object, T>? valueCodec,
+  required bool tokenAware,
+}) {
+  Object value;
+  if (source is TokenSource<V>) {
+    if (!tokenAware) {
+      throw UnsupportedEncodeValueError(
+        source.token,
+        'Field "$fieldName" references a token and cannot be represented.',
+      );
+    }
+    value = _referenceForToken<T, V>(source.token, fieldName);
+  } else if (source is MixSource<V> && source.mix is T) {
+    value = source.mix as T;
+  } else if (source is ValueSource<V> && source.value is T) {
+    value = source.value as T;
+  } else {
+    throw UnsupportedEncodeValueError(
+      source,
+      'Field "$fieldName" is ${source.runtimeType}; expected $T.',
+    );
+  }
+
+  if (valueCodec == null) return value;
+
+  final result = valueCodec.safeEncode(value as T);
+  if (result.isFail) throw result.getError();
+
+  return result.getOrNull()!;
 }
 
 Object _referenceForToken<T extends Object, V extends Object>(
   MixToken<V> token,
   String fieldName,
 ) {
+  encodeTokenReference(token, fieldName);
+
   if (T == TextStyleMix && token is TextStyleToken) {
     return (token as TextStyleToken).mix();
   }
@@ -501,6 +699,499 @@ T? readProp<T extends Object, V extends Object>(
   );
 }
 
+CodecSchema<Object, Prop<PropValue>>
+_propTermCodec<Value extends Object, PropValue extends Object>(
+  AckSchema<Object, Value> valueCodec, {
+  required String fieldName,
+  required _PropSourceKind source,
+}) {
+  return Ack.codec<Object, Object, Prop<PropValue>>(
+    input: Ack.any(),
+    decode: (wire) => _decodePropTerm<Value, PropValue>(
+      wire,
+      valueCodec: valueCodec,
+      fieldName: fieldName,
+      source: source,
+    ),
+    encode: (prop) => encodePropTerm<Value, PropValue>(
+      prop,
+      fieldName: fieldName,
+      valueCodec: valueCodec,
+      tokenAware: true,
+    )!,
+  );
+}
+
+Prop<PropValue> _decodePropTerm<Value extends Object, PropValue extends Object>(
+  Object wire, {
+  required AckSchema<Object, Value> valueCodec,
+  required String fieldName,
+  required _PropSourceKind source,
+}) {
+  final apply = wire is JsonMap ? wire[applyDirectivesKey] : null;
+  if (wire is JsonMap && wire.containsKey(mergeReferenceKey)) {
+    final sources = wire[mergeReferenceKey];
+    if (sources is! List || sources.isEmpty) {
+      throw UnsupportedEncodeValueError(
+        wire,
+        'Field "$fieldName" merge terms must be a non-empty list.',
+      );
+    }
+
+    final terms = <Prop<PropValue>>[];
+    for (var i = 0; i < sources.length; i += 1) {
+      terms.add(
+        _decodeMergeTerm<Value, PropValue>(
+          sources[i] as Object,
+          index: i,
+          valueCodec: valueCodec,
+          fieldName: fieldName,
+          source: source,
+        ),
+      );
+    }
+
+    final merged = terms.reduce((current, next) => current.mergeProp(next));
+
+    return _withDecodedDirectives(merged, apply, fieldName);
+  }
+
+  final termWire = wire is JsonMap && wire.containsKey(applyDirectivesKey)
+      ? {
+          for (final entry in wire.entries)
+            if (entry.key != applyDirectivesKey) entry.key: entry.value,
+        }
+      : wire;
+  final result = valueCodec.safeParse(termWire);
+  if (result.isFail) throw result.getError();
+
+  final decoded = result.getOrNull()!;
+  final prop = switch (source) {
+    _PropSourceKind.value => Prop.value<PropValue>(decoded as PropValue),
+    _PropSourceKind.mix =>
+      decoded is Prop<PropValue>
+          ? decoded
+          : Prop.mix<PropValue>(decoded as Mix<PropValue>),
+  };
+
+  return _withDecodedDirectives(prop, apply, fieldName);
+}
+
+Prop<PropValue>
+_decodeMergeTerm<Value extends Object, PropValue extends Object>(
+  Object wire, {
+  required int index,
+  required AckSchema<Object, Value> valueCodec,
+  required String fieldName,
+  required _PropSourceKind source,
+}) {
+  try {
+    return _decodePropTerm<Value, PropValue>(
+      wire,
+      valueCodec: valueCodec,
+      fieldName: fieldName,
+      source: source,
+    );
+  } on SchemaPathError catch (error) {
+    throw SchemaPathError(
+      code: error.code,
+      relativePath: '/$mergeReferenceKey/$index${error.relativePath}',
+      reason: error.reason,
+      value: error.value,
+    );
+  } on SchemaError catch (error) {
+    final mapped = mapSchemaError(error).first;
+
+    throw SchemaPathError(
+      code: mapped.code,
+      relativePath: '/$mergeReferenceKey/$index${mapped.path}',
+      reason: mapped.message,
+      value: mapped.value,
+    );
+  }
+}
+
+Prop<PropValue> _withDecodedDirectives<PropValue extends Object>(
+  Prop<PropValue> prop,
+  Object? apply,
+  String fieldName,
+) {
+  if (apply == null) return prop;
+
+  return prop.directives(decodeDirectiveList<PropValue>(apply, fieldName));
+}
+
+List<Directive<Value>> decodeDirectiveList<Value extends Object>(
+  Object wire,
+  String fieldName,
+) {
+  if (wire is! List) {
+    throw UnsupportedEncodeValueError(
+      wire,
+      'Field "$fieldName" apply must be a list of directive objects.',
+    );
+  }
+
+  return [
+    for (var i = 0; i < wire.length; i += 1)
+      _decodeDirective<Value>(wire[i], fieldName, i),
+  ];
+}
+
+List<JsonMap> encodeDirectiveList<Value extends Object>(
+  List<Directive<Value>> directives,
+  String fieldName,
+) {
+  return [
+    for (final directive in directives) _encodeDirective(directive, fieldName),
+  ];
+}
+
+Directive<Value> _decodeDirective<Value extends Object>(
+  Object? wire,
+  String fieldName,
+  int index,
+) {
+  if (wire is! JsonMap) {
+    throw UnsupportedEncodeValueError(
+      wire,
+      'Field "$fieldName" apply entries must be directive objects.',
+    );
+  }
+
+  final op = wire[directiveOpKey];
+  if (op is! String) {
+    throw UnsupportedEncodeValueError(
+      wire,
+      'Field "$fieldName" directive objects must include string "op".',
+    );
+  }
+
+  final directive = switch (op) {
+    'color_opacity' => OpacityColorDirective(
+      _requiredDoubleParam(wire, 'opacity', fieldName),
+    ),
+    'color_with_values' => WithValuesColorDirective(
+      alpha: _optionalDoubleParam(wire, 'alpha', fieldName),
+      red: _optionalDoubleParam(wire, 'red', fieldName),
+      green: _optionalDoubleParam(wire, 'green', fieldName),
+      blue: _optionalDoubleParam(wire, 'blue', fieldName),
+      colorSpace: _optionalColorSpaceParam(wire, fieldName),
+    ),
+    'color_alpha' => AlphaColorDirective(
+      _requiredIntParam(wire, 'alpha', fieldName),
+    ),
+    'color_darken' => DarkenColorDirective(
+      _requiredIntParam(wire, 'amount', fieldName),
+    ),
+    'color_lighten' => LightenColorDirective(
+      _requiredIntParam(wire, 'amount', fieldName),
+    ),
+    'color_saturate' => SaturateColorDirective(
+      _requiredIntParam(wire, 'amount', fieldName),
+    ),
+    'color_desaturate' => DesaturateColorDirective(
+      _requiredIntParam(wire, 'amount', fieldName),
+    ),
+    'color_tint' => TintColorDirective(
+      _requiredIntParam(wire, 'amount', fieldName),
+    ),
+    'color_shade' => ShadeColorDirective(
+      _requiredIntParam(wire, 'amount', fieldName),
+    ),
+    'color_brighten' => BrightenColorDirective(
+      _requiredIntParam(wire, 'amount', fieldName),
+    ),
+    'color_with_red' => WithRedColorDirective(
+      _requiredIntParam(wire, 'red', fieldName),
+    ),
+    'color_with_green' => WithGreenColorDirective(
+      _requiredIntParam(wire, 'green', fieldName),
+    ),
+    'color_with_blue' => WithBlueColorDirective(
+      _requiredIntParam(wire, 'blue', fieldName),
+    ),
+    'uppercase' => const UppercaseStringDirective(),
+    'lowercase' => const LowercaseStringDirective(),
+    'capitalize' => const CapitalizeStringDirective(),
+    'title_case' => const TitleCaseStringDirective(),
+    'sentence_case' => const SentenceCaseStringDirective(),
+    'number_multiply' => MultiplyNumberDirective(
+      _requiredNumParam(wire, 'factor', fieldName),
+    ),
+    'number_add' => AddNumberDirective(
+      _requiredNumParam(wire, 'addend', fieldName),
+    ),
+    'number_subtract' => SubtractNumberDirective(
+      _requiredNumParam(wire, 'subtrahend', fieldName),
+    ),
+    'number_divide' => DivideNumberDirective(
+      _requiredNumParam(wire, 'divisor', fieldName),
+    ),
+    'number_clamp' => ClampNumberDirective(
+      _requiredNumParam(wire, 'min', fieldName),
+      _requiredNumParam(wire, 'max', fieldName),
+    ),
+    'number_abs' => const AbsNumberDirective(),
+    'number_round' => const RoundNumberDirective(),
+    'number_floor' => const FloorNumberDirective(),
+    'number_ceil' => const CeilNumberDirective(),
+    _ => throw SchemaPathError(
+      code: MixSchemaErrorCode.invalidEnum,
+      relativePath: '/$applyDirectivesKey/$index/$directiveOpKey',
+      reason: 'Unknown directive op "$op" for field "$fieldName".',
+      value: op,
+    ),
+  };
+
+  return _coerceDirective<Value>(directive, fieldName);
+}
+
+JsonMap _encodeDirective<Value extends Object>(
+  Directive<Value> directive,
+  String fieldName,
+) {
+  if (directive is _NumberDirectiveAdapter) {
+    final adapter = directive as _NumberDirectiveAdapter;
+
+    return _encodeNumberDirective(adapter.inner);
+  }
+
+  return switch (directive) {
+    OpacityColorDirective(:final opacity) => {
+      directiveOpKey: directive.key,
+      'opacity': opacity,
+    },
+    WithValuesColorDirective(
+      :final alpha,
+      :final red,
+      :final green,
+      :final blue,
+      :final colorSpace,
+    ) =>
+      {
+        directiveOpKey: directive.key,
+        'alpha': ?alpha,
+        'red': ?red,
+        'green': ?green,
+        'blue': ?blue,
+        if (colorSpace != null) 'colorSpace': colorSpace.name,
+      },
+    AlphaColorDirective(:final alpha) => {
+      directiveOpKey: directive.key,
+      'alpha': alpha,
+    },
+    DarkenColorDirective(:final amount) => {
+      directiveOpKey: directive.key,
+      'amount': amount,
+    },
+    LightenColorDirective(:final amount) => {
+      directiveOpKey: directive.key,
+      'amount': amount,
+    },
+    SaturateColorDirective(:final amount) => {
+      directiveOpKey: directive.key,
+      'amount': amount,
+    },
+    DesaturateColorDirective(:final amount) => {
+      directiveOpKey: directive.key,
+      'amount': amount,
+    },
+    TintColorDirective(:final amount) => {
+      directiveOpKey: directive.key,
+      'amount': amount,
+    },
+    ShadeColorDirective(:final amount) => {
+      directiveOpKey: directive.key,
+      'amount': amount,
+    },
+    BrightenColorDirective(:final amount) => {
+      directiveOpKey: directive.key,
+      'amount': amount,
+    },
+    WithRedColorDirective(:final red) => {
+      directiveOpKey: directive.key,
+      'red': red,
+    },
+    WithGreenColorDirective(:final green) => {
+      directiveOpKey: directive.key,
+      'green': green,
+    },
+    WithBlueColorDirective(:final blue) => {
+      directiveOpKey: directive.key,
+      'blue': blue,
+    },
+    UppercaseStringDirective() ||
+    LowercaseStringDirective() ||
+    CapitalizeStringDirective() ||
+    TitleCaseStringDirective() ||
+    SentenceCaseStringDirective() => {directiveOpKey: directive.key},
+    NumberDirective() => _encodeNumberDirective(directive as NumberDirective),
+    _ => throw UnsupportedEncodeValueError(
+      directive,
+      'Directive ${directive.runtimeType} is not representable for '
+      'field "$fieldName".',
+    ),
+  };
+}
+
+Directive<Value> _coerceDirective<Value extends Object>(
+  Object directive,
+  String fieldName,
+) {
+  if (directive is NumberDirective) {
+    if (_valueTypeIs<Value, double>()) {
+      return _DoubleNumberDirective(directive) as Directive<Value>;
+    }
+    if (_valueTypeIs<Value, int>()) {
+      return _IntNumberDirective(directive) as Directive<Value>;
+    }
+    if (_valueTypeIs<Value, num>()) return directive as Directive<Value>;
+
+    throw UnsupportedEncodeValueError(
+      directive,
+      'Field "$fieldName" does not accept number directive '
+      '${directive.key}.',
+    );
+  }
+  if (directive is Directive<Value>) return directive;
+
+  throw UnsupportedEncodeValueError(
+    directive,
+    'Directive ${directive.runtimeType} is not valid for field "$fieldName".',
+  );
+}
+
+JsonMap _encodeNumberDirective(NumberDirective directive) {
+  return switch (directive) {
+    MultiplyNumberDirective(:final factor) => {
+      directiveOpKey: directive.key,
+      'factor': factor,
+    },
+    AddNumberDirective(:final addend) => {
+      directiveOpKey: directive.key,
+      'addend': addend,
+    },
+    SubtractNumberDirective(:final subtrahend) => {
+      directiveOpKey: directive.key,
+      'subtrahend': subtrahend,
+    },
+    DivideNumberDirective(:final divisor) => {
+      directiveOpKey: directive.key,
+      'divisor': divisor,
+    },
+    ClampNumberDirective(:final min, :final max) => {
+      directiveOpKey: directive.key,
+      'min': min,
+      'max': max,
+    },
+    AbsNumberDirective() ||
+    RoundNumberDirective() ||
+    FloorNumberDirective() ||
+    CeilNumberDirective() => {directiveOpKey: directive.key},
+    _ => throw UnsupportedEncodeValueError(
+      directive,
+      'Number directive ${directive.runtimeType} is not representable.',
+    ),
+  };
+}
+
+bool _valueTypeIs<Value extends Object, Expected extends Object>() {
+  return <Value>[] is List<Expected>;
+}
+
+abstract final class _NumberDirectiveAdapter<T extends num>
+    extends Directive<T> {
+  const _NumberDirectiveAdapter(this.inner);
+
+  final NumberDirective inner;
+
+  @override
+  String get key => inner.key;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is _NumberDirectiveAdapter<T> && inner == other.inner;
+
+  @override
+  int get hashCode => Object.hash(T, inner);
+}
+
+final class _DoubleNumberDirective extends _NumberDirectiveAdapter<double> {
+  const _DoubleNumberDirective(super.inner);
+
+  @override
+  double apply(double value) => inner.apply(value).toDouble();
+}
+
+final class _IntNumberDirective extends _NumberDirectiveAdapter<int> {
+  const _IntNumberDirective(super.inner);
+
+  @override
+  int apply(int value) {
+    final result = inner.apply(value);
+    if (result is int) return result;
+    if (result is double && result == result.roundToDouble()) {
+      return result.toInt();
+    }
+
+    throw UnsupportedError(
+      'Number directive $key resolved to non-integer value $result.',
+    );
+  }
+}
+
+double _requiredDoubleParam(JsonMap data, String key, String fieldName) {
+  final value = _requiredNumParam(data, key, fieldName);
+
+  return value.toDouble();
+}
+
+double? _optionalDoubleParam(JsonMap data, String key, String fieldName) {
+  if (!data.containsKey(key)) return null;
+
+  return _requiredDoubleParam(data, key, fieldName);
+}
+
+int _requiredIntParam(JsonMap data, String key, String fieldName) {
+  final value = data[key];
+  if (value is int) return value;
+
+  throw UnsupportedEncodeValueError(
+    value,
+    'Field "$fieldName" directive param "$key" must be an integer.',
+  );
+}
+
+num _requiredNumParam(JsonMap data, String key, String fieldName) {
+  final value = data[key];
+  if (value is num && value.isFinite) return value;
+
+  throw UnsupportedEncodeValueError(
+    value,
+    'Field "$fieldName" directive param "$key" must be a finite number.',
+  );
+}
+
+ColorSpace? _optionalColorSpaceParam(JsonMap data, String fieldName) {
+  if (!data.containsKey('colorSpace')) return null;
+  final value = data['colorSpace'];
+  if (value is String) {
+    for (final colorSpace in ColorSpace.values) {
+      if (colorSpace.name == value) return colorSpace;
+    }
+  }
+
+  throw UnsupportedEncodeValueError(
+    value,
+    'Field "$fieldName" directive param "colorSpace" must be a ColorSpace '
+    'enum name.',
+  );
+}
+
+enum _PropSourceKind { value, mix }
+
 JsonMap encodeTokenReference(MixToken<dynamic> token, String fieldName) {
   final name = switch (token) {
     ColorToken() when token.runtimeType == ColorToken => token.name,
@@ -550,14 +1241,9 @@ tokenReferenceCodec<TokenValue extends Object, Runtime extends Object>({
   required Runtime Function(MixToken<TokenValue> token) reference,
   bool allowDoubleKind = false,
 }) {
-  return Ack.object({
-    tokenReferenceKey: tokenNameCodec(),
-    if (allowDoubleKind)
-      tokenKindKey: Ack.enumString([
-        tokenKindSpace,
-        tokenKindDouble,
-      ]).optional(),
-  }).codec<Runtime>(
+  return tokenReferenceWireSchema(
+    allowDoubleKind: allowDoubleKind,
+  ).codec<Runtime>(
     decode: (data) => reference(decodeToken(data)),
     encode: (value) {
       if (value is double) {
@@ -580,6 +1266,19 @@ tokenReferenceCodec<TokenValue extends Object, Runtime extends Object>({
   );
 }
 
+AckSchema<JsonMap, JsonMap> tokenReferenceWireSchema({
+  bool allowDoubleKind = false,
+}) {
+  return Ack.object({
+    tokenReferenceKey: tokenNameCodec(),
+    if (allowDoubleKind)
+      tokenKindKey: Ack.enumString([
+        tokenKindSpace,
+        tokenKindDouble,
+      ]).optional(),
+  });
+}
+
 CodecSchema<Object, Runtime>
 tokenizedCodec<TokenValue extends Object, Runtime extends Object>({
   required AckSchema<Object, Runtime> literal,
@@ -594,12 +1293,27 @@ tokenizedCodec<TokenValue extends Object, Runtime extends Object>({
   );
 
   return Ack.codec<Object, Object, Runtime>(
-    input: Ack.anyOf([
-      tokenCodec as AckSchema<Object, Object>,
-      literal as AckSchema<Object, Object>,
-    ]),
-    decode: (value) => value as Runtime,
-    encode: (value) => value,
+    input: Ack.any(),
+    decode: (value) {
+      final schema = value is JsonMap && value.containsKey(tokenReferenceKey)
+          ? tokenCodec
+          : literal;
+      final result = schema.safeParse(value);
+      if (result.isFail) throw result.getError();
+
+      return result.getOrNull()!;
+    },
+    encode: (value) {
+      final token = tokenFromReferenceValue<TokenValue>(value);
+      final tokenResult = tokenCodec.safeEncode(value);
+      if (tokenResult.isOk) return tokenResult.getOrNull()!;
+      if (token != null) throw tokenResult.getError();
+
+      final literalResult = literal.safeEncode(value);
+      if (literalResult.isFail) throw literalResult.getError();
+
+      return literalResult.getOrNull()!;
+    },
   );
 }
 

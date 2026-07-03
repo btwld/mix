@@ -60,6 +60,44 @@ valueField<Owner extends Object, Value extends Object>(
   );
 }
 
+SchemaField<Owner, Prop<Value>>
+propValueField<Owner extends Object, Value extends Object>(
+  String wire,
+  AckSchema<Object, Value> codec,
+  Prop<Value>? Function(Owner value) read, {
+  String? fieldName,
+  String? inventoryName,
+}) {
+  return SchemaField<Owner, Prop<Value>>(
+    wire: wire,
+    codec: valuePropCodec<Value>(codec, fieldName: fieldName ?? wire),
+    inventoryName: inventoryName,
+    read: read,
+  );
+}
+
+SchemaField<Owner, Prop<PropValue>> propValueAsField<
+  Owner extends Object,
+  Value extends Object,
+  PropValue extends Object
+>(
+  String wire,
+  AckSchema<Object, Value> codec,
+  Prop<PropValue>? Function(Owner value) read, {
+  String? fieldName,
+  String? inventoryName,
+}) {
+  return SchemaField<Owner, Prop<PropValue>>(
+    wire: wire,
+    codec: valueAsPropCodec<Value, PropValue>(
+      codec,
+      fieldName: fieldName ?? wire,
+    ),
+    inventoryName: inventoryName,
+    read: read,
+  );
+}
+
 SchemaField<Owner, Value>
 tokenValueField<Owner extends Object, Value extends Object>(
   String wire,
@@ -76,6 +114,22 @@ tokenValueField<Owner extends Object, Value extends Object>(
   );
 }
 
+SchemaField<Owner, Prop<Value>>
+propTokenValueField<Owner extends Object, Value extends Object>(
+  String wire,
+  AckSchema<Object, Value> codec,
+  Prop<Value>? Function(Owner value) read, {
+  String? fieldName,
+  String? inventoryName,
+}) {
+  return SchemaField<Owner, Prop<Value>>(
+    wire: wire,
+    codec: valuePropCodec<Value>(codec, fieldName: fieldName ?? wire),
+    inventoryName: inventoryName,
+    read: read,
+  );
+}
+
 SchemaField<Owner, Value>
 mixField<Owner extends Object, Value extends Object, PropValue extends Object>(
   String wire,
@@ -89,6 +143,25 @@ mixField<Owner extends Object, Value extends Object, PropValue extends Object>(
     codec: codec,
     inventoryName: inventoryName,
     read: (value) => readProp<Value, PropValue>(read(value), fieldName ?? wire),
+  );
+}
+
+SchemaField<Owner, Prop<PropValue>> propMixField<
+  Owner extends Object,
+  Value extends Object,
+  PropValue extends Object
+>(
+  String wire,
+  AckSchema<Object, Value> codec,
+  Prop<PropValue>? Function(Owner value) read, {
+  String? fieldName,
+  String? inventoryName,
+}) {
+  return SchemaField<Owner, Prop<PropValue>>(
+    wire: wire,
+    codec: mixPropCodec<Value, PropValue>(codec, fieldName: fieldName ?? wire),
+    inventoryName: inventoryName,
+    read: read,
   );
 }
 
@@ -109,6 +182,25 @@ SchemaField<Owner, Value> tokenMixField<
     inventoryName: inventoryName,
     read: (value) =>
         readPropWire<Value, PropValue>(read(value), fieldName ?? wire),
+  );
+}
+
+SchemaField<Owner, Prop<PropValue>> propTokenMixField<
+  Owner extends Object,
+  Value extends Object,
+  PropValue extends Object
+>(
+  String wire,
+  AckSchema<Object, Value> codec,
+  Prop<PropValue>? Function(Owner value) read, {
+  String? fieldName,
+  String? inventoryName,
+}) {
+  return SchemaField<Owner, Prop<PropValue>>(
+    wire: wire,
+    codec: mixPropCodec<Value, PropValue>(codec, fieldName: fieldName ?? wire),
+    inventoryName: inventoryName,
+    read: read,
   );
 }
 
@@ -160,6 +252,29 @@ final class UnsupportedSchemaField<Owner extends Object> {
   }
 }
 
+void checkSchemaFieldInventory({
+  required String owner,
+  required Set<String> ownerFieldInventory,
+  required Set<String> consumedFieldInventory,
+  int? actualFieldCount,
+}) {
+  final missing = ownerFieldInventory.difference(consumedFieldInventory);
+  final stale = consumedFieldInventory.difference(ownerFieldInventory);
+  final countSkew =
+      actualFieldCount != null &&
+      actualFieldCount != ownerFieldInventory.length;
+
+  if (missing.isEmpty && stale.isEmpty && !countSkew) return;
+
+  throw SchemaInventorySkewError(
+    owner: owner,
+    missingFields: missing,
+    staleFields: stale,
+    expectedFieldCount: countSkew ? ownerFieldInventory.length : null,
+    actualFieldCount: countSkew ? actualFieldCount : null,
+  );
+}
+
 final class SchemaObject<Owner extends Object> {
   const SchemaObject({
     required this.fields,
@@ -202,21 +317,11 @@ final class SchemaObject<Owner extends Object> {
     final owner = ownerFieldInventory;
     if (owner == null) return;
 
-    final consumed = _inferredConsumedFields();
-    final missing = owner.difference(consumed);
-    final stale = consumed.difference(owner);
-
-    final actualCount = actualFieldCount?.call(value);
-    final countSkew = actualCount != null && actualCount != owner.length;
-
-    if (missing.isEmpty && stale.isEmpty && !countSkew) return;
-
-    throw SchemaInventorySkewError(
+    checkSchemaFieldInventory(
       owner: inventoryOwner ?? Owner.toString(),
-      missingFields: missing,
-      staleFields: stale,
-      expectedFieldCount: countSkew ? owner.length : null,
-      actualFieldCount: countSkew ? actualCount : null,
+      ownerFieldInventory: owner,
+      consumedFieldInventory: _inferredConsumedFields(),
+      actualFieldCount: actualFieldCount?.call(value),
     );
   }
 

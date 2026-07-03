@@ -29,22 +29,22 @@ SchemaObject<StackStyler> _stackStylerSchemaType(
   AckSchema<JsonMap, Object>? rootStyleSchema,
   FrozenRegistry Function() registry,
 ) {
-  final alignment = mixField<StackStyler, Alignment, AlignmentGeometry>(
+  final alignment = propValueAsField<StackStyler, Alignment, AlignmentGeometry>(
     'alignment',
     alignmentCodec(),
     (value) => value.$alignment,
   );
-  final fit = valueField<StackStyler, StackFit>(
+  final fit = propValueField<StackStyler, StackFit>(
     'fit',
     enumNameCodec(StackFit.values),
     (value) => value.$fit,
   );
-  final textDirection = valueField<StackStyler, TextDirection>(
+  final textDirection = propValueField<StackStyler, TextDirection>(
     'textDirection',
     textDirectionCodec(),
     (value) => value.$textDirection,
   );
-  final clipBehavior = valueField<StackStyler, Clip>(
+  final clipBehavior = propValueField<StackStyler, Clip>(
     'clipBehavior',
     enumNameCodec(Clip.values),
     (value) => value.$clipBehavior,
@@ -63,7 +63,7 @@ SchemaObject<StackStyler> _stackStylerSchemaType(
     actualFieldCount: stylerFieldCount,
     fields: [alignment, fit, textDirection, clipBehavior, ...metadata.fields],
     unsupportedFields: [...metadata.unsupportedFields()],
-    build: (data) => StackStyler(
+    build: (data) => StackStyler.create(
       alignment: alignment.value(data),
       fit: fit.value(data),
       textDirection: textDirection.value(data),

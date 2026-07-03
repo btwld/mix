@@ -79,6 +79,57 @@ void main() {
     ]);
   });
 
+  test(
+    'decodes orientation, directionality, platform, web, and recursive not',
+    () {
+      final payload = {
+        'v': 1,
+        'type': 'box',
+        'variants': [
+          {
+            'kind': 'context_orientation',
+            'orientation': 'portrait',
+            'style': {'type': 'box'},
+          },
+          {
+            'kind': 'context_directionality',
+            'textDirection': 'rtl',
+            'style': {'type': 'box'},
+          },
+          {
+            'kind': 'context_platform',
+            'platform': 'iOS',
+            'style': {'type': 'box'},
+          },
+          {
+            'kind': 'context_web',
+            'style': {'type': 'box'},
+          },
+          {
+            'kind': 'context_not',
+            'variant': {'kind': 'context_brightness', 'brightness': 'dark'},
+            'style': {'type': 'box'},
+          },
+        ],
+      };
+
+      final box = decodeBox(payload);
+      final reencoded = switch (contract().encode(box)) {
+        MixSchemaEncodeSuccess(:final value) => value,
+        MixSchemaEncodeFailure(:final errors) => fail('$errors'),
+      };
+      final variants = box.$variants!.map((entry) => entry.variant).toList();
+
+      expect(variants[0], isA<OrientationVariant>());
+      expect(variants[1], isA<DirectionalityVariant>());
+      expect(variants[2], isA<PlatformVariant>());
+      expect(variants[3], isA<WebVariant>());
+      expect(variants[4], isA<NotVariant>());
+      expect((variants[4] as NotVariant).inner, isA<BrightnessVariant>());
+      expect(reencoded, payload);
+    },
+  );
+
   test('removed context variant hacks fail as unknown variant kinds', () {
     for (final kind in ['context_all_of', 'context_variant_builder']) {
       final errors = _validationErrors(
@@ -196,6 +247,88 @@ void main() {
         'style': {'type': 'box', 'clipBehavior': 'antiAliasWithSaveLayer'},
       },
     ]);
+  });
+
+  test('encodes expanded typed context variants without parsing keys', () {
+    final style = BoxStyler(
+      variants: [
+        VariantStyle(
+          ContextVariant.orientation(Orientation.landscape),
+          BoxStyler(clipBehavior: Clip.hardEdge),
+        ),
+        VariantStyle(
+          ContextVariant.directionality(TextDirection.ltr),
+          BoxStyler(clipBehavior: Clip.antiAlias),
+        ),
+        VariantStyle(
+          ContextVariant.platform(TargetPlatform.android),
+          BoxStyler(clipBehavior: Clip.antiAliasWithSaveLayer),
+        ),
+        VariantStyle(ContextVariant.web(), BoxStyler(clipBehavior: Clip.none)),
+      ],
+    );
+
+    final encoded = contract().encode(style);
+    final payload = switch (encoded) {
+      MixSchemaEncodeSuccess(:final value) => value,
+      MixSchemaEncodeFailure(:final errors) => fail('$errors'),
+    };
+
+    expect(payload['variants'], [
+      {
+        'kind': 'context_orientation',
+        'orientation': 'landscape',
+        'style': {'type': 'box', 'clipBehavior': 'hardEdge'},
+      },
+      {
+        'kind': 'context_directionality',
+        'textDirection': 'ltr',
+        'style': {'type': 'box', 'clipBehavior': 'antiAlias'},
+      },
+      {
+        'kind': 'context_platform',
+        'platform': 'android',
+        'style': {'type': 'box', 'clipBehavior': 'antiAliasWithSaveLayer'},
+      },
+      {
+        'kind': 'context_web',
+        'style': {'type': 'box', 'clipBehavior': 'none'},
+      },
+    ]);
+  });
+
+  test('recursive not variants preserve explicit nesting', () {
+    final style = BoxStyler(
+      variants: [
+        VariantStyle(
+          ContextVariant.not(ContextVariant.not(ContextVariant.web())),
+          BoxStyler(clipBehavior: Clip.hardEdge),
+        ),
+      ],
+    );
+
+    final encoded = contract().encode(style);
+    final payload = switch (encoded) {
+      MixSchemaEncodeSuccess(:final value) => value,
+      MixSchemaEncodeFailure(:final errors) => fail('$errors'),
+    };
+
+    expect(payload['variants'], [
+      {
+        'kind': 'context_not',
+        'variant': {
+          'kind': 'context_not',
+          'variant': {'kind': 'context_web'},
+        },
+        'style': {'type': 'box', 'clipBehavior': 'hardEdge'},
+      },
+    ]);
+
+    final decoded = decodeBox({'v': 1, 'type': 'box', ...payload});
+    final outer = decoded.$variants!.single.variant as NotVariant;
+    final inner = outer.inner as NotVariant;
+
+    expect(inner.inner, isA<WebVariant>());
   });
 
   test('encodes token-backed breakpoint convenience variants', () {

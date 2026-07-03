@@ -67,6 +67,27 @@ void main() {
     });
   });
 
+  test('text style token color directives encode with apply grammar', () {
+    const token = ColorToken('color.brand');
+    final result = contract().encode(
+      TextStyler(style: TextStyleMix(color: token().withAlpha(128))),
+    );
+
+    final payload = switch (result) {
+      MixSchemaEncodeSuccess(:final value) => value,
+      MixSchemaEncodeFailure(:final errors) => fail('$errors'),
+    };
+
+    expect(payload['style'], {
+      'color': {
+        r'$token': 'color.brand',
+        'apply': [
+          {'op': 'color_alpha', 'alpha': 128},
+        ],
+      },
+    });
+  });
+
   test('text styler encodes supported text directives', () {
     final result = contract().encode(TextStyler.uppercase());
 

@@ -397,8 +397,10 @@ final class MixSchemaContract {
 
   /// Exports the registered contract shape as draft-07 JSON Schema metadata.
   JsonMap exportJsonSchema() {
-    final exported = _withVersionEnvelope(
-      Map<String, Object?>.from(rootSchema.toJsonSchema()),
+    final exported = _withPropertyTermDefinitions(
+      _withVersionEnvelope(
+        Map<String, Object?>.from(rootSchema.toJsonSchema()),
+      ),
     );
 
     return {
@@ -442,9 +444,9 @@ final class MixSchemaContract {
 
       final errors = mapSchemaError(result.getError());
       var changed = false;
-      for (final error in errors) {
-        final removalPath = _lenientRemovalPath(error);
-        if (removalPath == null) continue;
+      final repair = _lenientRepairCandidate(errors);
+      if (repair != null) {
+        final (:error, :removalPath) = repair;
         if (removals >= _defaultMaxLenientRemovals) {
           return MixSchemaDecodeFailure([
             const MixSchemaError(
@@ -465,7 +467,6 @@ final class MixSchemaContract {
         }
         removals += 1;
         changed = true;
-        break;
       }
 
       if (!changed) {
@@ -908,14 +909,35 @@ MixSchemaError? _inspectControlMarkers(JsonMap value, String path) {
     }
 
     for (final key in value.keys) {
-      if (key == tokenReferenceKey || key == tokenKindKey) continue;
+      if (key == tokenReferenceKey ||
+          key == tokenKindKey ||
+          key == applyDirectivesKey) {
+        continue;
+      }
 
       return MixSchemaError(
         code: MixSchemaErrorCode.unknownField,
         path: _joinPath(path, key),
         message:
             'A token reference term may only contain "$tokenReferenceKey" '
-            'and "$tokenKindKey".',
+            '"$tokenKindKey", and "$applyDirectivesKey".',
+        value: key,
+      );
+    }
+
+    return null;
+  }
+
+  if (value.containsKey(mergeReferenceKey)) {
+    for (final key in value.keys) {
+      if (key == mergeReferenceKey || key == applyDirectivesKey) continue;
+
+      return MixSchemaError(
+        code: MixSchemaErrorCode.unknownField,
+        path: _joinPath(path, key),
+        message:
+            'A merge term may only contain "$mergeReferenceKey" and '
+            '"$applyDirectivesKey".',
         value: key,
       );
     }
@@ -929,9 +951,7 @@ MixSchemaError? _inspectControlMarkers(JsonMap value, String path) {
     return MixSchemaError(
       code: MixSchemaErrorCode.unknownField,
       path: _joinPath(path, key),
-      message: key == r'$merge'
-          ? r'"$merge" is reserved for the phase 4 property grammar and is not supported in format v1 token terms.'
-          : 'Unknown mix_schema control marker "$key".',
+      message: 'Unknown mix_schema control marker "$key".',
       value: key,
     );
   }
@@ -1012,6 +1032,21 @@ final class _LenientRemovalJournal {
   }
 }
 
+({MixSchemaError error, List<String> removalPath})? _lenientRepairCandidate(
+  List<MixSchemaError> errors,
+) {
+  ({MixSchemaError error, List<String> removalPath})? best;
+  for (final error in errors) {
+    final removalPath = _lenientRemovalPath(error);
+    if (removalPath == null) continue;
+    if (best == null || removalPath.length > best.removalPath.length) {
+      best = (error: error, removalPath: removalPath);
+    }
+  }
+
+  return best;
+}
+
 List<String>? _lenientRemovalPath(MixSchemaError error) {
   if (!_isLenientSkippable(error)) return null;
 
@@ -1042,6 +1077,11 @@ List<String>? _lenientRemovalPath(MixSchemaError error) {
     return entryPath;
   }
 
+  if (error.code == MixSchemaErrorCode.unknownField &&
+      _isLenientNestedMapPropertyPath(segments)) {
+    return segments;
+  }
+
   return [segments.first];
 }
 
@@ -1058,15 +1098,52 @@ bool _isLenientSkippable(MixSchemaError error) {
   List<String> segments,
 ) {
   for (var i = segments.length - 2; i >= 0; i -= 1) {
-    final segment = segments[i];
-    if (segment != 'variants' && segment != 'modifiers') continue;
     if (int.tryParse(segments[i + 1]) == null) continue;
+    final listPath = segments.sublist(0, i + 1);
+    if (!_isLenientListEntryPath(listPath)) continue;
 
-    return (container: segment, index: i);
+    return (container: segments[i], index: i);
   }
 
   return null;
 }
+
+bool _isLenientListEntryPath(List<String> path) {
+  for (final suffix in _lenientListEntryPathSuffixes) {
+    if (_endsWithSegments(path, suffix)) return true;
+  }
+
+  return false;
+}
+
+bool _isLenientNestedMapPropertyPath(List<String> path) {
+  if (path.length < 2) return false;
+  if (path.first == 'type' || path.first == _versionKey) return false;
+  if (path.last == 'type' || path.last == _versionKey) return false;
+
+  return true;
+}
+
+const _lenientListEntryPathSuffixes = [
+  ['variants'],
+  ['modifiers'],
+  ['modifiers', 'order'],
+  ['modifiers', 'items'],
+  [applyDirectivesKey],
+  [mergeReferenceKey],
+  ['decoration', 'boxShadow'],
+  ['decoration', 'gradient', 'colors'],
+  ['decoration', 'gradient', 'stops'],
+  ['foregroundDecoration', 'boxShadow'],
+  ['foregroundDecoration', 'gradient', 'colors'],
+  ['foregroundDecoration', 'gradient', 'stops'],
+  ['style', 'fontFamilyFallback'],
+  ['style', 'fontFeatures'],
+  ['style', 'fontVariations'],
+  ['style', 'shadows'],
+  ['strutStyle', 'fontFamilyFallback'],
+  ['shadows'],
+];
 
 enum _RemovalKind { mapProperty, listEntry }
 
@@ -1140,6 +1217,16 @@ bool _startsWithSegments(List<String> value, List<String> prefix) {
   return true;
 }
 
+bool _endsWithSegments(List<String> value, List<String> suffix) {
+  if (value.length < suffix.length) return false;
+  final offset = value.length - suffix.length;
+  for (var i = 0; i < suffix.length; i += 1) {
+    if (value[offset + i] != suffix[i]) return false;
+  }
+
+  return true;
+}
+
 String _joinPath(String base, String segment) {
   final encoded = _escapePathSegment(segment);
 
@@ -1156,6 +1243,332 @@ JsonMap _withVersionEnvelope(JsonMap schema) {
   }
 
   return _branchWithVersion(schema);
+}
+
+JsonMap _withPropertyTermDefinitions(JsonMap schema) {
+  final withPropertyTermRefs =
+      _replaceAckAnyJsonSchemas(_withNestedPropertyLiteralSchemas(schema))
+          as JsonMap;
+  final definitions = Map<String, Object?>.from(
+    (withPropertyTermRefs['definitions'] as Map?) ?? const {},
+  );
+
+  return {
+    ...withPropertyTermRefs,
+    'definitions': {
+      ...definitions,
+      'mix_schema_property_term': _propertyTermJsonSchema(),
+      'mix_schema_property_control_term': _propertyControlTermJsonSchema(),
+      'mix_schema_directive': _directiveJsonSchema(),
+      _boxDecorationLiteralSchemaDefinition: _nestedLiteralDefinitionSchema(
+        boxDecorationCodec().toJsonSchema(),
+      ),
+      _strutStyleLiteralSchemaDefinition: _nestedLiteralDefinitionSchema(
+        strutStyleMixCodec().toJsonSchema(),
+      ),
+      _textStyleLiteralSchemaDefinition: _nestedLiteralDefinitionSchema(
+        textStyleMixLiteralJsonSchema(),
+      ),
+    },
+  };
+}
+
+const _boxDecorationLiteralSchemaDefinition =
+    'mix_schema_box_decoration_literal';
+const _strutStyleLiteralSchemaDefinition = 'mix_schema_strut_style_literal';
+const _textStyleLiteralSchemaDefinition = 'mix_schema_text_style_literal';
+
+JsonMap _withNestedPropertyLiteralSchemas(JsonMap schema) {
+  final anyOf = schema['anyOf'];
+  if (anyOf is List) {
+    return {
+      ...schema,
+      'anyOf': [
+        for (final branch in anyOf) _withNestedBranchLiteralSchemas(branch),
+      ],
+    };
+  }
+
+  return _withNestedBranchLiteralSchemas(schema) as JsonMap;
+}
+
+Object? _withNestedBranchLiteralSchemas(Object? branchValue) {
+  if (branchValue is! JsonMap) return branchValue;
+
+  final properties = Map<String, Object?>.from(
+    (branchValue['properties'] as Map?) ?? const {},
+  );
+  switch (_branchSchemaType(branchValue)) {
+    case schemaTypeBox:
+      _setPropertyLiteralSchemaRef(
+        properties,
+        'decoration',
+        _boxDecorationLiteralSchemaDefinition,
+      );
+      _setPropertyLiteralSchemaRef(
+        properties,
+        'foregroundDecoration',
+        _boxDecorationLiteralSchemaDefinition,
+      );
+    case schemaTypeText:
+      _setPropertyLiteralSchemaRef(
+        properties,
+        'style',
+        _textStyleLiteralSchemaDefinition,
+      );
+      _setPropertyLiteralSchemaRef(
+        properties,
+        'strutStyle',
+        _strutStyleLiteralSchemaDefinition,
+      );
+    case schemaTypeFlexBox || schemaTypeStackBox:
+      _setPropertyLiteralSchemaRef(
+        properties,
+        'decoration',
+        _boxDecorationLiteralSchemaDefinition,
+      );
+  }
+
+  return {...branchValue, 'properties': properties};
+}
+
+String? _branchSchemaType(JsonMap branch) {
+  final properties = branch['properties'];
+  if (properties is! Map) return null;
+  final type = properties['type'];
+  if (type is! Map) return null;
+
+  return type['const'] as String?;
+}
+
+void _setPropertyLiteralSchemaRef(
+  Map<String, Object?> properties,
+  String key,
+  String definitionName,
+) {
+  if (!properties.containsKey(key)) return;
+  properties[key] = _propertyTermLiteralFieldRefSchema(definitionName);
+}
+
+Object? _replaceAckAnyJsonSchemas(Object? value) {
+  if (value is List) {
+    return [for (final item in value) _replaceAckAnyJsonSchemas(item)];
+  }
+  if (value is! Map) return value;
+
+  final map = JsonMap.from(value);
+  if (_isAckAnyJsonSchema(map)) {
+    return _propertyTermFieldJsonSchema();
+  }
+
+  return {
+    for (final entry in map.entries)
+      entry.key: _replaceAckAnyJsonSchemas(entry.value),
+  };
+}
+
+bool _isAckAnyJsonSchema(JsonMap value) {
+  final anyOf = value['anyOf'];
+  if (anyOf is! List || anyOf.length != 6) return false;
+
+  final types = <String>{};
+  for (final branch in anyOf) {
+    if (branch is! JsonMap) return false;
+    final type = branch['type'];
+    if (type is! String) return false;
+    types.add(type);
+  }
+
+  return types.containsAll(const {
+        'string',
+        'number',
+        'integer',
+        'boolean',
+        'object',
+        'array',
+      }) &&
+      types.length == 6;
+}
+
+JsonMap _nestedLiteralDefinitionSchema(JsonMap schema) {
+  final replaced = _replaceAckAnyJsonSchemas(schema);
+  if (replaced is! JsonMap) return JsonMap.from(replaced as Map);
+
+  return _wrapTopLevelPropertySchemas(replaced);
+}
+
+JsonMap _wrapTopLevelPropertySchemas(JsonMap schema) {
+  final properties = schema['properties'];
+  if (properties is! Map) return schema;
+
+  return {
+    ...schema,
+    'properties': {
+      for (final entry in properties.entries)
+        entry.key: _propertyTermLiteralFieldSchema(entry.value),
+    },
+  };
+}
+
+Object? _propertyTermLiteralFieldSchema(Object? literalSchema) {
+  if (literalSchema is! Map) return literalSchema;
+
+  final schema = JsonMap.from(literalSchema);
+  if (_hasPropertyControlTermRef(schema)) return schema;
+
+  return {
+    'anyOf': [
+      schema,
+      {r'$ref': '#/definitions/mix_schema_property_control_term'},
+    ],
+  };
+}
+
+bool _hasPropertyControlTermRef(JsonMap schema) {
+  final anyOf = schema['anyOf'];
+  if (anyOf is! List) return false;
+
+  return anyOf.any(
+    (branch) =>
+        branch is Map &&
+        branch[r'$ref'] == '#/definitions/mix_schema_property_control_term',
+  );
+}
+
+JsonMap _propertyTermJsonSchema() {
+  return {
+    'anyOf': [
+      ..._genericPropertyLiteralSchemas(),
+      {r'$ref': '#/definitions/mix_schema_property_control_term'},
+    ],
+  };
+}
+
+JsonMap _propertyTermFieldJsonSchema() {
+  return {r'$ref': '#/definitions/mix_schema_property_term'};
+}
+
+JsonMap _propertyTermLiteralFieldRefSchema(String definitionName) {
+  return {
+    'anyOf': [
+      {r'$ref': '#/definitions/$definitionName'},
+      {r'$ref': '#/definitions/mix_schema_property_control_term'},
+    ],
+  };
+}
+
+List<JsonMap> _genericPropertyLiteralSchemas() {
+  return [
+    {
+      'description':
+          'Field-specific scalar, array, or object literal without '
+          'property-term control markers; see the enclosing property schema.',
+      'not': {'type': 'object'},
+    },
+    {
+      'type': 'object',
+      'description':
+          'Field-specific object literal without property-term control markers; '
+          'see the enclosing property schema.',
+      'not': {
+        'anyOf': [
+          {
+            'required': [tokenReferenceKey],
+          },
+          {
+            'required': [mergeReferenceKey],
+          },
+          {
+            'required': [applyDirectivesKey],
+          },
+        ],
+      },
+    },
+  ];
+}
+
+JsonMap _propertyControlTermJsonSchema() {
+  return {
+    'anyOf': [
+      {
+        'type': 'object',
+        'properties': {
+          tokenReferenceKey: {
+            'type': 'string',
+            'pattern': _tokenNamePatternSchema,
+          },
+          tokenKindKey: {
+            'type': 'string',
+            'enum': [tokenKindSpace, tokenKindDouble],
+          },
+          applyDirectivesKey: {
+            'type': 'array',
+            'items': {r'$ref': '#/definitions/mix_schema_directive'},
+          },
+        },
+        'required': [tokenReferenceKey],
+        'additionalProperties': false,
+      },
+      {
+        'type': 'object',
+        'properties': {
+          mergeReferenceKey: {
+            'type': 'array',
+            'minItems': 1,
+            'items': {r'$ref': '#/definitions/mix_schema_property_term'},
+          },
+          applyDirectivesKey: {
+            'type': 'array',
+            'items': {r'$ref': '#/definitions/mix_schema_directive'},
+          },
+        },
+        'required': [mergeReferenceKey],
+        'additionalProperties': false,
+      },
+    ],
+  };
+}
+
+JsonMap _directiveJsonSchema() {
+  return {
+    'type': 'object',
+    'properties': {
+      directiveOpKey: {
+        'type': 'string',
+        'enum': [
+          'capitalize',
+          'color_alpha',
+          'color_brighten',
+          'color_darken',
+          'color_desaturate',
+          'color_lighten',
+          'color_opacity',
+          'color_saturate',
+          'color_shade',
+          'color_tint',
+          'color_with_blue',
+          'color_with_green',
+          'color_with_red',
+          'color_with_values',
+          'lowercase',
+          'number_abs',
+          'number_add',
+          'number_ceil',
+          'number_clamp',
+          'number_divide',
+          'number_floor',
+          'number_multiply',
+          'number_round',
+          'number_subtract',
+          'sentence_case',
+          'title_case',
+          'uppercase',
+        ],
+      },
+    },
+    'required': [directiveOpKey],
+    'additionalProperties': true,
+  };
 }
 
 JsonMap _branchWithVersion(Object? branchValue) {

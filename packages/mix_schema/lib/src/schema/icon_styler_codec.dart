@@ -20,62 +20,67 @@ SchemaObject<IconStyler> _iconStylerSchemaType(
   AckSchema<JsonMap, Object>? rootStyleSchema,
   FrozenRegistry Function() registry,
 ) {
-  final icon = valueField<IconStyler, IconData>(
+  final icon = propValueField<IconStyler, IconData>(
     'icon',
     registryValueCodec<IconData>(registry, MixSchemaScope.iconData),
     (value) => value.$icon,
   );
-  final color = tokenValueField<IconStyler, Color>(
+  final color = propTokenValueField<IconStyler, Color>(
     'color',
     colorCodec(),
     (value) => value.$color,
   );
-  final size = tokenValueField<IconStyler, double>(
+  final size = propTokenValueField<IconStyler, double>(
     'size',
     nonNegativeDoubleTokenCodec(),
     (value) => value.$size,
   );
-  final weight = tokenValueField<IconStyler, double>(
+  final weight = propTokenValueField<IconStyler, double>(
     'weight',
     doubleTokenCodec(),
     (value) => value.$weight,
   );
-  final grade = tokenValueField<IconStyler, double>(
+  final grade = propTokenValueField<IconStyler, double>(
     'grade',
     doubleTokenCodec(),
     (value) => value.$grade,
   );
-  final opticalSize = tokenValueField<IconStyler, double>(
+  final opticalSize = propTokenValueField<IconStyler, double>(
     'opticalSize',
     nonNegativeDoubleTokenCodec(),
     (value) => value.$opticalSize,
   );
-  final textDirection = valueField<IconStyler, TextDirection>(
+  final shadows = propMixField<IconStyler, ShadowListMix, List<Shadow>>(
+    'shadows',
+    shadowListMixCodec(),
+    (value) => value.$shadows,
+  );
+  final textDirection = propValueField<IconStyler, TextDirection>(
     'textDirection',
     textDirectionCodec(),
     (value) => value.$textDirection,
   );
-  final applyTextScaling = valueField<IconStyler, bool>(
+  final applyTextScaling = propValueField<IconStyler, bool>(
     'applyTextScaling',
     Ack.boolean(),
     (value) => value.$applyTextScaling,
   );
-  final fill = tokenValueField<IconStyler, double>(
+  final fill = propTokenValueField<IconStyler, double>(
     'fill',
     doubleTokenCodec(),
     (value) => value.$fill,
   );
-  final semanticsLabel = valueField<IconStyler, String>(
+  final semanticsLabel = propValueField<IconStyler, String>(
     'semanticsLabel',
     Ack.string(),
     (value) => value.$semanticsLabel,
   );
-  final opacity = tokenValueField<IconStyler, double>(
+  final opacity = propTokenValueField<IconStyler, double>(
     'opacity',
     doubleTokenCodec(),
     (value) => value.$opacity,
   );
-  final blendMode = valueField<IconStyler, BlendMode>(
+  final blendMode = propValueField<IconStyler, BlendMode>(
     'blendMode',
     enumNameCodec(BlendMode.values),
     (value) => value.$blendMode,
@@ -99,6 +104,7 @@ SchemaObject<IconStyler> _iconStylerSchemaType(
       weight,
       grade,
       opticalSize,
+      shadows,
       textDirection,
       applyTextScaling,
       fill,
@@ -107,17 +113,15 @@ SchemaObject<IconStyler> _iconStylerSchemaType(
       blendMode,
       ...metadata.fields,
     ],
-    unsupportedFields: [
-      ...metadata.unsupportedFields(),
-      UnsupportedSchemaField<IconStyler>('shadows', (value) => value.$shadows),
-    ],
-    build: (data) => IconStyler(
+    unsupportedFields: [...metadata.unsupportedFields()],
+    build: (data) => IconStyler.create(
       icon: icon.value(data),
       color: color.value(data),
       size: size.value(data),
       weight: weight.value(data),
       grade: grade.value(data),
       opticalSize: opticalSize.value(data),
+      shadows: shadows.value(data),
       textDirection: textDirection.value(data),
       applyTextScaling: applyTextScaling.value(data),
       fill: fill.value(data),

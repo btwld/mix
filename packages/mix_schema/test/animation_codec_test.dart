@@ -32,21 +32,22 @@ void main() {
     expect(animation.onEnd, same(onEnd));
   });
 
-  test('animation delay is explicit and not defaulted', () {
-    final result = MixSchemaContractBuilder().builtIn().freeze().validate({
-      'type': 'box',
-      'animation': {'duration': 250, 'curve': 'easeInOut'},
-    });
+  test('animation delay defaults to zero on decode', () {
+    final result = MixSchemaContractBuilder()
+        .builtIn()
+        .freeze()
+        .decode<BoxStyler>({
+          'type': 'box',
+          'animation': {'duration': 250, 'curve': 'easeInOut'},
+        });
 
-    final errors = switch (result) {
-      MixSchemaValidationFailure(:final errors) => errors,
-      MixSchemaValidationSuccess() => fail('expected failure'),
+    final style = switch (result) {
+      MixSchemaDecodeSuccess<BoxStyler>(:final value) => value,
+      MixSchemaDecodeFailure<BoxStyler>(:final errors) => fail('$errors'),
     };
+    final animation = style.$animation as CurveAnimationConfig;
 
-    expect(
-      errors.map((error) => error.code),
-      contains(MixSchemaErrorCode.requiredField),
-    );
+    expect(animation.delay, Duration.zero);
   });
 
   test('animation duration and delay must be non-negative', () {
@@ -102,10 +103,108 @@ void main() {
     });
   });
 
-  test('spring animations fail encode explicitly', () {
+  test('spring animations round-trip physical parameters', () {
+    void onEnd() {}
+    final builder = MixSchemaContractBuilder();
+    builder.registry.animationOnEnd('spring_done', onEnd);
+    final contract = builder.builtIn().freeze();
+
+    final decoded = contract.decode<BoxStyler>({
+      'type': 'box',
+      'animation': {
+        'spring': {'mass': 1.5, 'stiffness': 220, 'damping': 18},
+        'onEnd': 'spring_done',
+      },
+    });
+
+    final decodedStyle = switch (decoded) {
+      MixSchemaDecodeSuccess<BoxStyler>(:final value) => value,
+      MixSchemaDecodeFailure<BoxStyler>(:final errors) => fail('$errors'),
+    };
+    final animation = decodedStyle.$animation as SpringAnimationConfig;
+
+    expect(animation.spring.mass, 1.5);
+    expect(animation.spring.stiffness, 220);
+    expect(animation.spring.damping, 18);
+    expect(animation.onEnd, same(onEnd));
+
+    final encoded = contract.encode(
+      BoxStyler(
+        animation: SpringAnimationConfig(
+          spring: const SpringDescription(
+            mass: 1.5,
+            stiffness: 220,
+            damping: 18,
+          ),
+          onEnd: onEnd,
+        ),
+      ),
+    );
+
+    final payload = switch (encoded) {
+      MixSchemaEncodeSuccess(:final value) => value,
+      MixSchemaEncodeFailure(:final errors) => fail('$errors'),
+    };
+
+    expect(payload, {
+      'v': 1,
+      'type': 'box',
+      'animation': {
+        'spring': {'mass': 1.5, 'stiffness': 220.0, 'damping': 18.0},
+        'onEnd': 'spring_done',
+      },
+    });
+  });
+
+  test('cubic curves round-trip explicit control points', () {
+    final contract = MixSchemaContractBuilder().builtIn().freeze();
+    final encoded = contract.encode(
+      BoxStyler(
+        animation: const CurveAnimationConfig(
+          duration: Duration(milliseconds: 250),
+          curve: Cubic(0.1, 0.2, 0.3, 0.4),
+        ),
+      ),
+    );
+
+    final payload = switch (encoded) {
+      MixSchemaEncodeSuccess(:final value) => value,
+      MixSchemaEncodeFailure(:final errors) => fail('$errors'),
+    };
+
+    expect(payload, {
+      'v': 1,
+      'type': 'box',
+      'animation': {
+        'duration': 250,
+        'curve': {
+          'cubic': [0.1, 0.2, 0.3, 0.4],
+        },
+        'delay': 0,
+      },
+    });
+
+    final decoded = contract.decode<BoxStyler>(payload);
+    final style = switch (decoded) {
+      MixSchemaDecodeSuccess<BoxStyler>(:final value) => value,
+      MixSchemaDecodeFailure<BoxStyler>(:final errors) => fail('$errors'),
+    };
+    final animation = style.$animation as CurveAnimationConfig;
+    final curve = animation.curve as Cubic;
+
+    expect(curve.a, 0.1);
+    expect(curve.b, 0.2);
+    expect(curve.c, 0.3);
+    expect(curve.d, 0.4);
+  });
+
+  test('unsupported curve subclasses fail encode explicitly', () {
     final result = MixSchemaContractBuilder().builtIn().freeze().encode(
       BoxStyler(
-        animation: AnimationConfig.spring(const Duration(milliseconds: 250)),
+        animation: const CurveAnimationConfig(
+          duration: Duration(milliseconds: 250),
+          curve: _CustomCurve(),
+        ),
       ),
     );
 
@@ -120,12 +219,15 @@ void main() {
     );
   });
 
-  test('arbitrary curves fail encode explicitly', () {
+  test('phase animation configs fail encode explicitly', () {
     final result = MixSchemaContractBuilder().builtIn().freeze().encode(
-      BoxStyler(
-        animation: const CurveAnimationConfig(
-          duration: Duration(milliseconds: 250),
-          curve: Cubic(0.1, 0.2, 0.3, 0.4),
+      const BoxStyler.create(
+        animation: PhaseAnimationConfig<BoxSpec, BoxStyler>(
+          styles: [BoxStyler.create()],
+          curveConfigs: [
+            CurveAnimationConfig.linear(Duration(milliseconds: 250)),
+          ],
+          trigger: null,
         ),
       ),
     );
@@ -162,4 +264,11 @@ void main() {
       contains(MixSchemaErrorCode.unknownRegistryValue),
     );
   });
+}
+
+final class _CustomCurve extends Curve {
+  const _CustomCurve();
+
+  @override
+  double transform(double t) => t;
 }

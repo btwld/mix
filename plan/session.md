@@ -15,6 +15,46 @@ Template:
 
 ---
 
+## 2026-07-03 — Codex — Phase 4
+
+**Did:**
+- Completed Phase 4: `apply` directives, `$merge` source stacks, gradient
+  codecs, expanded modifiers, spring/cubic animation support, context variant
+  expansion, and remaining data-only field coverage.
+- Regenerated `plan/coverage-backlog.md`; the manifest now has zero deferred
+  entries and only `supported` / explicit v1 unsupported classifications.
+- Added R4.8 closeout hardening: nested `TextStyleMix` / `StrutStyleMix` skew
+  guards, explicit lenient-removal coverage for new list-valued fields, and
+  token-first shadow-list encode so unresolved tokens report schema errors.
+- Ran the required delegated closeout review and fixed its findings: nested
+  text/strut/box-shadow fields now accept property terms, gradient fields are
+  kind-specific and fail-loud, lenient repair keeps the smallest recoverable
+  nested field/list entry, and JSON Schema export attaches property-control
+  refs to representative nested fields instead of only defining them globally.
+- Verified with focused R4.8 tests, the full `packages/mix_schema` suite, and
+  the fresh full gate after review fixes: `melos run gen:build`,
+  `melos run ci`, and `melos run analyze` all reported `SUCCESS`.
+
+**Decisions:**
+- Preserve explicit nested `context_not` variants instead of normalizing
+  `not(not(x))`.
+- Keep Flutter primitive codecs local for this phase; Ack's branch-only
+  `flutter_codec` remains a reference, not a dependency.
+- Treat decoration images, shape/directional border families, and
+  `ElevationShadow` as explicit v1 unsupported coverage, not future deferred
+  backlog.
+- Gradient codecs are discriminated by `kind`: fields from another gradient
+  kind are strict errors, while lenient mode removes only the incompatible
+  nested field.
+- Shared JSON Schema definitions are used for nested text-style, strut-style,
+  and box-decoration literal shapes to avoid bloating the exported schema while
+  still exposing field-level property-control branches. Runtime codecs remain
+  authoritative for exact field-specific Flutter/Mix semantics.
+
+**Blocked/open:** None for Phase 4.
+
+**Next:** Commit Phase 4 as one local commit, then start Phase 5.
+
 ## 2026-07-02 — Codex — Phase 3
 
 **Did:**

@@ -44,10 +44,8 @@ final class SchemaInventoryEntry {
   final String? reason;
 }
 
-const _phase4Coverage = 'deferred: phase 4 - codec coverage backlog.';
-const _phase4Directives = 'deferred: phase 4 - Prop directive grammar.';
-const _phase4Modifiers = 'deferred: phase 4 - modifier codec expansion.';
-const _phase4Variants = 'deferred: phase 4 - context variant codec expansion.';
+const _v1OutOfScope =
+    'v1 unsupported: outside the canonical v1 data contract after Phase 4 coverage triage.';
 const _neverClosureBacked = 'never: closure-backed runtime behavior.';
 const _neverRuntimeOnly = 'never: runtime-only value with no stable data wire.';
 const _neverInternal =
@@ -57,7 +55,7 @@ const _neverInternal =
 const schemaInventoryManifest = <SchemaInventoryEntry>[
   ..._supportedInventory,
   ..._phase3DeferredInventory,
-  ..._phase4DeferredInventory,
+  ..._v1UnsupportedInventory,
   ..._neverUnsupportedInventory,
 ];
 
@@ -67,6 +65,7 @@ const _supportedInventory = <SchemaInventoryEntry>[
   SchemaInventoryEntry.supported(r'BoxStyler.$clipBehavior'),
   SchemaInventoryEntry.supported(r'BoxStyler.$constraints'),
   SchemaInventoryEntry.supported(r'BoxStyler.$decoration'),
+  SchemaInventoryEntry.supported(r'BoxStyler.$foregroundDecoration'),
   SchemaInventoryEntry.supported(r'BoxStyler.$margin'),
   SchemaInventoryEntry.supported(r'BoxStyler.$modifier'),
   SchemaInventoryEntry.supported(r'BoxStyler.$padding'),
@@ -101,12 +100,14 @@ const _supportedInventory = <SchemaInventoryEntry>[
   SchemaInventoryEntry.supported(r'IconStyler.$opacity'),
   SchemaInventoryEntry.supported(r'IconStyler.$opticalSize'),
   SchemaInventoryEntry.supported(r'IconStyler.$semanticsLabel'),
+  SchemaInventoryEntry.supported(r'IconStyler.$shadows'),
   SchemaInventoryEntry.supported(r'IconStyler.$size'),
   SchemaInventoryEntry.supported(r'IconStyler.$textDirection'),
   SchemaInventoryEntry.supported(r'IconStyler.$variants'),
   SchemaInventoryEntry.supported(r'IconStyler.$weight'),
   SchemaInventoryEntry.supported(r'ImageStyler.$alignment'),
   SchemaInventoryEntry.supported(r'ImageStyler.$animation'),
+  SchemaInventoryEntry.supported(r'ImageStyler.$centerSlice'),
   SchemaInventoryEntry.supported(r'ImageStyler.$color'),
   SchemaInventoryEntry.supported(r'ImageStyler.$colorBlendMode'),
   SchemaInventoryEntry.supported(r'ImageStyler.$excludeFromSemantics'),
@@ -135,6 +136,7 @@ const _supportedInventory = <SchemaInventoryEntry>[
   SchemaInventoryEntry.supported(r'StackStyler.$textDirection'),
   SchemaInventoryEntry.supported(r'StackStyler.$variants'),
   SchemaInventoryEntry.supported(r'TextStyler.$animation'),
+  SchemaInventoryEntry.supported(r'TextStyler.$locale'),
   SchemaInventoryEntry.supported(r'TextStyler.$maxLines'),
   SchemaInventoryEntry.supported(r'TextStyler.$modifier'),
   SchemaInventoryEntry.supported(r'TextStyler.$overflow'),
@@ -142,13 +144,20 @@ const _supportedInventory = <SchemaInventoryEntry>[
   SchemaInventoryEntry.supported(r'TextStyler.$semanticsLabel'),
   SchemaInventoryEntry.supported(r'TextStyler.$softWrap'),
   SchemaInventoryEntry.supported(r'TextStyler.$style'),
+  SchemaInventoryEntry.supported(r'TextStyler.$strutStyle'),
   SchemaInventoryEntry.supported(r'TextStyler.$textAlign'),
   SchemaInventoryEntry.supported(r'TextStyler.$textDirection'),
   SchemaInventoryEntry.supported(r'TextStyler.$textDirectives'),
   SchemaInventoryEntry.supported(r'TextStyler.$textHeightBehavior'),
+  SchemaInventoryEntry.supported(r'TextStyler.$textScaler'),
+  SchemaInventoryEntry.supported(r'TextStyler.$textWidthBasis'),
   SchemaInventoryEntry.supported(r'TextStyler.$variants'),
   SchemaInventoryEntry.supported('animation:CurveAnimationConfig'),
+  SchemaInventoryEntry.supported('animation:SpringAnimationConfig'),
   SchemaInventoryEntry.supported(r'config:WidgetModifierConfig.$modifiers'),
+  SchemaInventoryEntry.supported(
+    r'config:WidgetModifierConfig.$orderOfModifiers',
+  ),
   SchemaInventoryEntry.supported('curve:bounceIn'),
   SchemaInventoryEntry.supported('curve:bounceInOut'),
   SchemaInventoryEntry.supported('curve:bounceOut'),
@@ -193,7 +202,29 @@ const _supportedInventory = <SchemaInventoryEntry>[
   SchemaInventoryEntry.supported('curve:linearToEaseOut'),
   SchemaInventoryEntry.supported('curve:slowMiddle'),
   SchemaInventoryEntry.supported('directive:capitalize'),
+  SchemaInventoryEntry.supported('directive:color_alpha'),
+  SchemaInventoryEntry.supported('directive:color_brighten'),
+  SchemaInventoryEntry.supported('directive:color_darken'),
+  SchemaInventoryEntry.supported('directive:color_desaturate'),
+  SchemaInventoryEntry.supported('directive:color_lighten'),
+  SchemaInventoryEntry.supported('directive:color_opacity'),
+  SchemaInventoryEntry.supported('directive:color_saturate'),
+  SchemaInventoryEntry.supported('directive:color_shade'),
+  SchemaInventoryEntry.supported('directive:color_tint'),
+  SchemaInventoryEntry.supported('directive:color_with_blue'),
+  SchemaInventoryEntry.supported('directive:color_with_green'),
+  SchemaInventoryEntry.supported('directive:color_with_red'),
+  SchemaInventoryEntry.supported('directive:color_with_values'),
   SchemaInventoryEntry.supported('directive:lowercase'),
+  SchemaInventoryEntry.supported('directive:number_abs'),
+  SchemaInventoryEntry.supported('directive:number_add'),
+  SchemaInventoryEntry.supported('directive:number_ceil'),
+  SchemaInventoryEntry.supported('directive:number_clamp'),
+  SchemaInventoryEntry.supported('directive:number_divide'),
+  SchemaInventoryEntry.supported('directive:number_floor'),
+  SchemaInventoryEntry.supported('directive:number_multiply'),
+  SchemaInventoryEntry.supported('directive:number_round'),
+  SchemaInventoryEntry.supported('directive:number_subtract'),
   SchemaInventoryEntry.supported('directive:sentence_case'),
   SchemaInventoryEntry.supported('directive:title_case'),
   SchemaInventoryEntry.supported('directive:uppercase'),
@@ -212,13 +243,17 @@ const _supportedInventory = <SchemaInventoryEntry>[
   SchemaInventoryEntry.supported('enum:ImageRepeat'),
   SchemaInventoryEntry.supported('enum:MainAxisAlignment'),
   SchemaInventoryEntry.supported('enum:MainAxisSize'),
+  SchemaInventoryEntry.supported('enum:Orientation'),
   SchemaInventoryEntry.supported('enum:StackFit'),
+  SchemaInventoryEntry.supported('enum:TargetPlatform'),
   SchemaInventoryEntry.supported('enum:TextAlign'),
   SchemaInventoryEntry.supported('enum:TextBaseline'),
   SchemaInventoryEntry.supported('enum:TextDecorationStyle'),
   SchemaInventoryEntry.supported('enum:TextDirection'),
   SchemaInventoryEntry.supported('enum:TextLeadingDistribution'),
   SchemaInventoryEntry.supported('enum:TextOverflow'),
+  SchemaInventoryEntry.supported('enum:TextWidthBasis'),
+  SchemaInventoryEntry.supported('enum:TileMode'),
   SchemaInventoryEntry.supported('enum:VerticalDirection'),
   SchemaInventoryEntry.supported('enum:WidgetState'),
   SchemaInventoryEntry.supported(r'mix:BaseShadowMix.$blurRadius'),
@@ -247,14 +282,30 @@ const _supportedInventory = <SchemaInventoryEntry>[
   SchemaInventoryEntry.supported(r'mix:BoxShadowMix.$spreadRadius'),
   SchemaInventoryEntry.supported(r'mix:DecorationMix.$boxShadow'),
   SchemaInventoryEntry.supported(r'mix:DecorationMix.$color'),
+  SchemaInventoryEntry.supported(r'mix:DecorationMix.$gradient'),
   SchemaInventoryEntry.supported(r'mix:EdgeInsetsGeometryMix.$bottom'),
   SchemaInventoryEntry.supported(r'mix:EdgeInsetsGeometryMix.$top'),
   SchemaInventoryEntry.supported(r'mix:EdgeInsetsMix.$left'),
   SchemaInventoryEntry.supported(r'mix:EdgeInsetsMix.$right'),
+  SchemaInventoryEntry.supported(r'mix:GradientMix.$colors'),
+  SchemaInventoryEntry.supported(r'mix:GradientMix.$stops'),
+  SchemaInventoryEntry.supported(r'mix:GradientMix.$transform'),
+  SchemaInventoryEntry.supported(r'mix:LinearGradientMix.$begin'),
+  SchemaInventoryEntry.supported(r'mix:LinearGradientMix.$end'),
+  SchemaInventoryEntry.supported(r'mix:LinearGradientMix.$tileMode'),
+  SchemaInventoryEntry.supported(r'mix:RadialGradientMix.$center'),
+  SchemaInventoryEntry.supported(r'mix:RadialGradientMix.$focal'),
+  SchemaInventoryEntry.supported(r'mix:RadialGradientMix.$focalRadius'),
+  SchemaInventoryEntry.supported(r'mix:RadialGradientMix.$radius'),
+  SchemaInventoryEntry.supported(r'mix:RadialGradientMix.$tileMode'),
   SchemaInventoryEntry.supported(r'mix:StackMix.$alignment'),
   SchemaInventoryEntry.supported(r'mix:StackMix.$clipBehavior'),
   SchemaInventoryEntry.supported(r'mix:StackMix.$fit'),
   SchemaInventoryEntry.supported(r'mix:StackMix.$textDirection'),
+  SchemaInventoryEntry.supported(r'mix:SweepGradientMix.$center'),
+  SchemaInventoryEntry.supported(r'mix:SweepGradientMix.$endAngle'),
+  SchemaInventoryEntry.supported(r'mix:SweepGradientMix.$startAngle'),
+  SchemaInventoryEntry.supported(r'mix:SweepGradientMix.$tileMode'),
   SchemaInventoryEntry.supported(
     r'mix:TextHeightBehaviorMix.$applyHeightToFirstAscent',
   ),
@@ -264,24 +315,59 @@ const _supportedInventory = <SchemaInventoryEntry>[
   SchemaInventoryEntry.supported(
     r'mix:TextHeightBehaviorMix.$leadingDistribution',
   ),
+  SchemaInventoryEntry.supported(r'mix:StrutStyleMix.$fontFamily'),
+  SchemaInventoryEntry.supported(r'mix:StrutStyleMix.$fontFamilyFallback'),
+  SchemaInventoryEntry.supported(r'mix:StrutStyleMix.$fontSize'),
+  SchemaInventoryEntry.supported(r'mix:StrutStyleMix.$fontStyle'),
+  SchemaInventoryEntry.supported(r'mix:StrutStyleMix.$fontWeight'),
+  SchemaInventoryEntry.supported(r'mix:StrutStyleMix.$forceStrutHeight'),
+  SchemaInventoryEntry.supported(r'mix:StrutStyleMix.$height'),
+  SchemaInventoryEntry.supported(r'mix:StrutStyleMix.$leading'),
   SchemaInventoryEntry.supported(r'mix:TextStyleMix.$backgroundColor'),
   SchemaInventoryEntry.supported(r'mix:TextStyleMix.$color'),
+  SchemaInventoryEntry.supported(r'mix:TextStyleMix.$debugLabel'),
   SchemaInventoryEntry.supported(r'mix:TextStyleMix.$decoration'),
   SchemaInventoryEntry.supported(r'mix:TextStyleMix.$decorationColor'),
   SchemaInventoryEntry.supported(r'mix:TextStyleMix.$decorationStyle'),
   SchemaInventoryEntry.supported(r'mix:TextStyleMix.$decorationThickness'),
   SchemaInventoryEntry.supported(r'mix:TextStyleMix.$fontFamily'),
+  SchemaInventoryEntry.supported(r'mix:TextStyleMix.$fontFamilyFallback'),
+  SchemaInventoryEntry.supported(r'mix:TextStyleMix.$fontFeatures'),
   SchemaInventoryEntry.supported(r'mix:TextStyleMix.$fontSize'),
   SchemaInventoryEntry.supported(r'mix:TextStyleMix.$fontStyle'),
   SchemaInventoryEntry.supported(r'mix:TextStyleMix.$fontWeight'),
+  SchemaInventoryEntry.supported(r'mix:TextStyleMix.$fontVariations'),
   SchemaInventoryEntry.supported(r'mix:TextStyleMix.$height'),
   SchemaInventoryEntry.supported(r'mix:TextStyleMix.$letterSpacing'),
   SchemaInventoryEntry.supported(r'mix:TextStyleMix.$shadows'),
+  SchemaInventoryEntry.supported(r'mix:TextStyleMix.$textBaseline'),
   SchemaInventoryEntry.supported(r'mix:TextStyleMix.$wordSpacing'),
+  SchemaInventoryEntry.supported('modifier:AlignModifierMix'),
+  SchemaInventoryEntry.supported('modifier:AspectRatioModifierMix'),
   SchemaInventoryEntry.supported('modifier:BlurModifierMix'),
+  SchemaInventoryEntry.supported('modifier:BoxModifierMix'),
+  SchemaInventoryEntry.supported('modifier:ClipOvalModifierMix'),
+  SchemaInventoryEntry.supported('modifier:ClipRRectModifierMix'),
+  SchemaInventoryEntry.supported('modifier:ClipRectModifierMix'),
+  SchemaInventoryEntry.supported('modifier:ClipTriangleModifierMix'),
   SchemaInventoryEntry.supported('modifier:DefaultTextStyleModifierMix'),
+  SchemaInventoryEntry.supported('modifier:DefaultTextStylerModifierMix'),
   SchemaInventoryEntry.supported('modifier:FlexibleModifierMix'),
+  SchemaInventoryEntry.supported('modifier:FractionallySizedBoxModifierMix'),
+  SchemaInventoryEntry.supported('modifier:IconThemeModifierMix'),
+  SchemaInventoryEntry.supported('modifier:IntrinsicHeightModifierMix'),
+  SchemaInventoryEntry.supported('modifier:IntrinsicWidthModifierMix'),
   SchemaInventoryEntry.supported('modifier:OpacityModifierMix'),
+  SchemaInventoryEntry.supported('modifier:PaddingModifierMix'),
+  SchemaInventoryEntry.supported('modifier:RotateModifierMix'),
+  SchemaInventoryEntry.supported('modifier:RotatedBoxModifierMix'),
+  SchemaInventoryEntry.supported('modifier:ScaleModifierMix'),
+  SchemaInventoryEntry.supported('modifier:ScrollViewModifierMix'),
+  SchemaInventoryEntry.supported('modifier:SizedBoxModifierMix'),
+  SchemaInventoryEntry.supported('modifier:SkewModifierMix'),
+  SchemaInventoryEntry.supported('modifier:TransformModifierMix'),
+  SchemaInventoryEntry.supported('modifier:TranslateModifierMix'),
+  SchemaInventoryEntry.supported('modifier:VisibilityModifierMix'),
   SchemaInventoryEntry.supported('token:BorderSideToken'),
   SchemaInventoryEntry.supported('token:BoxShadowToken'),
   SchemaInventoryEntry.supported('token:BreakpointToken'),
@@ -295,520 +381,176 @@ const _supportedInventory = <SchemaInventoryEntry>[
   SchemaInventoryEntry.supported('token:TextStyleToken'),
   SchemaInventoryEntry.supported('variant:BreakpointVariant'),
   SchemaInventoryEntry.supported('variant:BrightnessVariant'),
+  SchemaInventoryEntry.supported('variant:DirectionalityVariant'),
   SchemaInventoryEntry.supported('variant:NamedVariant'),
   SchemaInventoryEntry.supported('variant:NotVariant'),
+  SchemaInventoryEntry.supported('variant:OrientationVariant'),
+  SchemaInventoryEntry.supported('variant:PlatformVariant'),
+  SchemaInventoryEntry.supported('variant:WebVariant'),
   SchemaInventoryEntry.supported('variant:WidgetStateVariant'),
+  SchemaInventoryEntry.supported('variant_factory:ContextVariant.breakpoint'),
   SchemaInventoryEntry.supported('variant_factory:ContextVariant.brightness'),
   SchemaInventoryEntry.supported('variant_factory:ContextVariant.desktop'),
+  SchemaInventoryEntry.supported(
+    'variant_factory:ContextVariant.directionality',
+  ),
   SchemaInventoryEntry.supported('variant_factory:ContextVariant.mobile'),
+  SchemaInventoryEntry.supported('variant_factory:ContextVariant.not'),
+  SchemaInventoryEntry.supported('variant_factory:ContextVariant.orientation'),
+  SchemaInventoryEntry.supported('variant_factory:ContextVariant.platform'),
   SchemaInventoryEntry.supported('variant_factory:ContextVariant.tablet'),
+  SchemaInventoryEntry.supported('variant_factory:ContextVariant.web'),
   SchemaInventoryEntry.supported('variant_factory:ContextVariant.widgetState'),
   SchemaInventoryEntry.supported('variant_factory:Variant.named'),
 ];
 
 const _phase3DeferredInventory = <SchemaInventoryEntry>[];
 
-const _phase4DeferredInventory = <SchemaInventoryEntry>[
-  SchemaInventoryEntry.knownUnsupported(
-    r'BoxStyler.$foregroundDecoration',
-    _phase4Coverage,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    r'IconStyler.$shadows',
-    _phase4Coverage,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    r'ImageStyler.$centerSlice',
-    _phase4Coverage,
-  ),
-  SchemaInventoryEntry.knownUnsupported(r'TextStyler.$locale', _phase4Coverage),
-  SchemaInventoryEntry.knownUnsupported(
-    r'TextStyler.$strutStyle',
-    _phase4Coverage,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    r'TextStyler.$textScaler',
-    _phase4Coverage,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    r'TextStyler.$textWidthBasis',
-    _phase4Coverage,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'animation:SpringAnimationConfig',
-    _phase4Coverage,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    r'config:WidgetModifierConfig.$orderOfModifiers',
-    _phase4Modifiers,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'directive:color_alpha',
-    _phase4Directives,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'directive:color_brighten',
-    _phase4Directives,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'directive:color_darken',
-    _phase4Directives,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'directive:color_desaturate',
-    _phase4Directives,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'directive:color_lighten',
-    _phase4Directives,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'directive:color_opacity',
-    _phase4Directives,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'directive:color_saturate',
-    _phase4Directives,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'directive:color_shade',
-    _phase4Directives,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'directive:color_tint',
-    _phase4Directives,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'directive:color_with_blue',
-    _phase4Directives,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'directive:color_with_green',
-    _phase4Directives,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'directive:color_with_red',
-    _phase4Directives,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'directive:color_with_values',
-    _phase4Directives,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'directive:number_abs',
-    _phase4Directives,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'directive:number_add',
-    _phase4Directives,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'directive:number_ceil',
-    _phase4Directives,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'directive:number_clamp',
-    _phase4Directives,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'directive:number_divide',
-    _phase4Directives,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'directive:number_floor',
-    _phase4Directives,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'directive:number_multiply',
-    _phase4Directives,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'directive:number_round',
-    _phase4Directives,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'directive:number_subtract',
-    _phase4Directives,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'enum:ElevationShadow',
-    _phase4Coverage,
-  ),
-  SchemaInventoryEntry.knownUnsupported('enum:Orientation', _phase4Variants),
-  SchemaInventoryEntry.knownUnsupported('enum:TargetPlatform', _phase4Variants),
-  SchemaInventoryEntry.knownUnsupported('enum:TextWidthBasis', _phase4Coverage),
-  SchemaInventoryEntry.knownUnsupported('enum:TileMode', _phase4Coverage),
+const _v1UnsupportedInventory = <SchemaInventoryEntry>[
+  SchemaInventoryEntry.knownUnsupported('enum:ElevationShadow', _v1OutOfScope),
   SchemaInventoryEntry.knownUnsupported(
     r'mix:BeveledRectangleBorderMix.$borderRadius',
-    _phase4Coverage,
+    _v1OutOfScope,
   ),
   SchemaInventoryEntry.knownUnsupported(
     r'mix:BorderDirectionalMix.$end',
-    _phase4Coverage,
+    _v1OutOfScope,
   ),
   SchemaInventoryEntry.knownUnsupported(
     r'mix:BorderDirectionalMix.$start',
-    _phase4Coverage,
+    _v1OutOfScope,
   ),
   SchemaInventoryEntry.knownUnsupported(
     r'mix:BorderRadiusDirectionalMix.$bottomEnd',
-    _phase4Coverage,
+    _v1OutOfScope,
   ),
   SchemaInventoryEntry.knownUnsupported(
     r'mix:BorderRadiusDirectionalMix.$bottomStart',
-    _phase4Coverage,
+    _v1OutOfScope,
   ),
   SchemaInventoryEntry.knownUnsupported(
     r'mix:BorderRadiusDirectionalMix.$topEnd',
-    _phase4Coverage,
+    _v1OutOfScope,
   ),
   SchemaInventoryEntry.knownUnsupported(
     r'mix:BorderRadiusDirectionalMix.$topStart',
-    _phase4Coverage,
+    _v1OutOfScope,
   ),
   SchemaInventoryEntry.knownUnsupported(
     r'mix:CircleBorderMix.$eccentricity',
-    _phase4Coverage,
+    _v1OutOfScope,
   ),
   SchemaInventoryEntry.knownUnsupported(
     r'mix:ContinuousRectangleBorderMix.$borderRadius',
-    _phase4Coverage,
+    _v1OutOfScope,
   ),
   SchemaInventoryEntry.knownUnsupported(
     r'mix:DecorationImageMix.$alignment',
-    _phase4Coverage,
+    _v1OutOfScope,
   ),
   SchemaInventoryEntry.knownUnsupported(
     r'mix:DecorationImageMix.$centerSlice',
-    _phase4Coverage,
+    _v1OutOfScope,
   ),
   SchemaInventoryEntry.knownUnsupported(
     r'mix:DecorationImageMix.$filterQuality',
-    _phase4Coverage,
+    _v1OutOfScope,
   ),
   SchemaInventoryEntry.knownUnsupported(
     r'mix:DecorationImageMix.$fit',
-    _phase4Coverage,
+    _v1OutOfScope,
   ),
   SchemaInventoryEntry.knownUnsupported(
     r'mix:DecorationImageMix.$image',
-    _phase4Coverage,
+    _v1OutOfScope,
   ),
   SchemaInventoryEntry.knownUnsupported(
     r'mix:DecorationImageMix.$invertColors',
-    _phase4Coverage,
+    _v1OutOfScope,
   ),
   SchemaInventoryEntry.knownUnsupported(
     r'mix:DecorationImageMix.$isAntiAlias',
-    _phase4Coverage,
+    _v1OutOfScope,
   ),
   SchemaInventoryEntry.knownUnsupported(
     r'mix:DecorationImageMix.$repeat',
-    _phase4Coverage,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    r'mix:DecorationMix.$gradient',
-    _phase4Coverage,
+    _v1OutOfScope,
   ),
   SchemaInventoryEntry.knownUnsupported(
     r'mix:DecorationMix.$image',
-    _phase4Coverage,
+    _v1OutOfScope,
   ),
   SchemaInventoryEntry.knownUnsupported(
     r'mix:EdgeInsetsDirectionalMix.$end',
-    _phase4Coverage,
+    _v1OutOfScope,
   ),
   SchemaInventoryEntry.knownUnsupported(
     r'mix:EdgeInsetsDirectionalMix.$start',
-    _phase4Coverage,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    r'mix:GradientMix.$colors',
-    _phase4Coverage,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    r'mix:GradientMix.$stops',
-    _phase4Coverage,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    r'mix:GradientMix.$transform',
-    _phase4Coverage,
+    _v1OutOfScope,
   ),
   SchemaInventoryEntry.knownUnsupported(
     r'mix:LinearBorderEdgeMix.$alignment',
-    _phase4Coverage,
+    _v1OutOfScope,
   ),
   SchemaInventoryEntry.knownUnsupported(
     r'mix:LinearBorderEdgeMix.$size',
-    _phase4Coverage,
+    _v1OutOfScope,
   ),
   SchemaInventoryEntry.knownUnsupported(
     r'mix:LinearBorderMix.$bottom',
-    _phase4Coverage,
+    _v1OutOfScope,
   ),
   SchemaInventoryEntry.knownUnsupported(
     r'mix:LinearBorderMix.$end',
-    _phase4Coverage,
+    _v1OutOfScope,
   ),
   SchemaInventoryEntry.knownUnsupported(
     r'mix:LinearBorderMix.$start',
-    _phase4Coverage,
+    _v1OutOfScope,
   ),
   SchemaInventoryEntry.knownUnsupported(
     r'mix:LinearBorderMix.$top',
-    _phase4Coverage,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    r'mix:LinearGradientMix.$begin',
-    _phase4Coverage,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    r'mix:LinearGradientMix.$end',
-    _phase4Coverage,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    r'mix:LinearGradientMix.$tileMode',
-    _phase4Coverage,
+    _v1OutOfScope,
   ),
   SchemaInventoryEntry.knownUnsupported(
     r'mix:OutlinedBorderMix.$side',
-    _phase4Coverage,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    r'mix:RadialGradientMix.$center',
-    _phase4Coverage,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    r'mix:RadialGradientMix.$focal',
-    _phase4Coverage,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    r'mix:RadialGradientMix.$focalRadius',
-    _phase4Coverage,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    r'mix:RadialGradientMix.$radius',
-    _phase4Coverage,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    r'mix:RadialGradientMix.$tileMode',
-    _phase4Coverage,
+    _v1OutOfScope,
   ),
   SchemaInventoryEntry.knownUnsupported(
     r'mix:RoundedRectangleBorderMix.$borderRadius',
-    _phase4Coverage,
+    _v1OutOfScope,
   ),
   SchemaInventoryEntry.knownUnsupported(
     r'mix:RoundedSuperellipseBorderMix.$borderRadius',
-    _phase4Coverage,
+    _v1OutOfScope,
   ),
   SchemaInventoryEntry.knownUnsupported(
     r'mix:ShapeDecorationMix.$shape',
-    _phase4Coverage,
+    _v1OutOfScope,
   ),
   SchemaInventoryEntry.knownUnsupported(
     r'mix:StarBorderMix.$innerRadiusRatio',
-    _phase4Coverage,
+    _v1OutOfScope,
   ),
   SchemaInventoryEntry.knownUnsupported(
     r'mix:StarBorderMix.$pointRounding',
-    _phase4Coverage,
+    _v1OutOfScope,
   ),
   SchemaInventoryEntry.knownUnsupported(
     r'mix:StarBorderMix.$points',
-    _phase4Coverage,
+    _v1OutOfScope,
   ),
   SchemaInventoryEntry.knownUnsupported(
     r'mix:StarBorderMix.$rotation',
-    _phase4Coverage,
+    _v1OutOfScope,
   ),
   SchemaInventoryEntry.knownUnsupported(
     r'mix:StarBorderMix.$squash',
-    _phase4Coverage,
+    _v1OutOfScope,
   ),
   SchemaInventoryEntry.knownUnsupported(
     r'mix:StarBorderMix.$valleyRounding',
-    _phase4Coverage,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    r'mix:StrutStyleMix.$fontFamily',
-    _phase4Coverage,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    r'mix:StrutStyleMix.$fontFamilyFallback',
-    _phase4Coverage,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    r'mix:StrutStyleMix.$fontSize',
-    _phase4Coverage,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    r'mix:StrutStyleMix.$fontStyle',
-    _phase4Coverage,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    r'mix:StrutStyleMix.$fontWeight',
-    _phase4Coverage,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    r'mix:StrutStyleMix.$forceStrutHeight',
-    _phase4Coverage,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    r'mix:StrutStyleMix.$height',
-    _phase4Coverage,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    r'mix:StrutStyleMix.$leading',
-    _phase4Coverage,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    r'mix:SweepGradientMix.$center',
-    _phase4Coverage,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    r'mix:SweepGradientMix.$endAngle',
-    _phase4Coverage,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    r'mix:SweepGradientMix.$startAngle',
-    _phase4Coverage,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    r'mix:SweepGradientMix.$tileMode',
-    _phase4Coverage,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    r'mix:TextStyleMix.$debugLabel',
-    _phase4Coverage,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    r'mix:TextStyleMix.$fontFamilyFallback',
-    _phase4Coverage,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    r'mix:TextStyleMix.$fontFeatures',
-    _phase4Coverage,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    r'mix:TextStyleMix.$fontVariations',
-    _phase4Coverage,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    r'mix:TextStyleMix.$textBaseline',
-    _phase4Coverage,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'modifier:AlignModifierMix',
-    _phase4Modifiers,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'modifier:AspectRatioModifierMix',
-    _phase4Modifiers,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'modifier:BoxModifierMix',
-    _phase4Modifiers,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'modifier:ClipOvalModifierMix',
-    _phase4Modifiers,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'modifier:ClipRRectModifierMix',
-    _phase4Modifiers,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'modifier:ClipRectModifierMix',
-    _phase4Modifiers,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'modifier:ClipTriangleModifierMix',
-    _phase4Modifiers,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'modifier:DefaultTextStylerModifierMix',
-    _phase4Modifiers,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'modifier:FractionallySizedBoxModifierMix',
-    _phase4Modifiers,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'modifier:IconThemeModifierMix',
-    _phase4Modifiers,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'modifier:IntrinsicHeightModifierMix',
-    _phase4Modifiers,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'modifier:IntrinsicWidthModifierMix',
-    _phase4Modifiers,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'modifier:PaddingModifierMix',
-    _phase4Modifiers,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'modifier:RotateModifierMix',
-    _phase4Modifiers,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'modifier:RotatedBoxModifierMix',
-    _phase4Modifiers,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'modifier:ScaleModifierMix',
-    _phase4Modifiers,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'modifier:ScrollViewModifierMix',
-    _phase4Modifiers,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'modifier:SizedBoxModifierMix',
-    _phase4Modifiers,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'modifier:SkewModifierMix',
-    _phase4Modifiers,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'modifier:TransformModifierMix',
-    _phase4Modifiers,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'modifier:TranslateModifierMix',
-    _phase4Modifiers,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'modifier:VisibilityModifierMix',
-    _phase4Modifiers,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'variant_factory:ContextVariant.breakpoint',
-    _phase4Variants,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'variant_factory:ContextVariant.directionality',
-    _phase4Variants,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'variant_factory:ContextVariant.not',
-    _phase4Variants,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'variant_factory:ContextVariant.orientation',
-    _phase4Variants,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'variant_factory:ContextVariant.platform',
-    _phase4Variants,
-  ),
-  SchemaInventoryEntry.knownUnsupported(
-    'variant_factory:ContextVariant.web',
-    _phase4Variants,
+    _v1OutOfScope,
   ),
 ];
 

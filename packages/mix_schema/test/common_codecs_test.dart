@@ -1,3 +1,5 @@
+import 'dart:ui' show ColorSpace;
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
@@ -122,6 +124,48 @@ void main() {
     expect(schema.safeParse(0).isFail, isTrue);
   });
 
+  test('directive table round-trips every core directive key', () {
+    _expectDirectiveRoundTrip<Color>([
+      const OpacityColorDirective(0.5),
+      const WithValuesColorDirective(
+        alpha: 0.8,
+        red: 0.1,
+        green: 0.2,
+        blue: 0.3,
+        colorSpace: ColorSpace.displayP3,
+      ),
+      const AlphaColorDirective(128),
+      const DarkenColorDirective(8),
+      const LightenColorDirective(9),
+      const SaturateColorDirective(10),
+      const DesaturateColorDirective(11),
+      const TintColorDirective(12),
+      const ShadeColorDirective(13),
+      const BrightenColorDirective(14),
+      const WithRedColorDirective(15),
+      const WithGreenColorDirective(16),
+      const WithBlueColorDirective(17),
+    ]);
+    _expectDirectiveRoundTrip<String>(const [
+      UppercaseStringDirective(),
+      LowercaseStringDirective(),
+      CapitalizeStringDirective(),
+      TitleCaseStringDirective(),
+      SentenceCaseStringDirective(),
+    ]);
+    _expectDirectiveRoundTrip<num>([
+      MultiplyNumberDirective(2),
+      AddNumberDirective(3),
+      SubtractNumberDirective(4),
+      DivideNumberDirective(5),
+      ClampNumberDirective(6, 7),
+      const AbsNumberDirective(),
+      const RoundNumberDirective(),
+      const FloorNumberDirective(),
+      const CeilNumberDirective(),
+    ]);
+  });
+
   test('box constraints preserve absent payload fields', () {
     final payload = _encodeBox(
       BoxStyler(constraints: BoxConstraintsMix.minWidth(12)),
@@ -222,6 +266,16 @@ void main() {
       throwsA(isA<UnsupportedEncodeValueError>()),
     );
   });
+}
+
+void _expectDirectiveRoundTrip<T extends Object>(
+  List<Directive<T>> directives,
+) {
+  final encoded = encodeDirectiveList<T>(directives, 'field');
+  final decoded = decodeDirectiveList<T>(encoded, 'field');
+
+  expect(decoded, directives);
+  expect(encodeDirectiveList<T>(decoded, 'field'), encoded);
 }
 
 List<MixSchemaError> _validationErrors(MixSchemaValidationResult result) {

@@ -134,23 +134,38 @@ void main() {
       expect(errors.single.path, '/decoration/color/\$token');
     });
 
-    test('rejects reserved and unknown control markers', () {
-      for (final marker in [r'$merge', r'$bogus']) {
-        final result = contract().decode<BoxStyler>({
-          'v': 1,
-          'type': 'box',
-          'decoration': {
-            'color': {marker: []},
-          },
-        });
-        final errors = switch (result) {
-          MixSchemaDecodeFailure<BoxStyler>(:final errors) => errors,
-          MixSchemaDecodeSuccess<BoxStyler>() => fail('expected failure'),
-        };
+    test('rejects unknown control markers', () {
+      final result = contract().decode<BoxStyler>({
+        'v': 1,
+        'type': 'box',
+        'decoration': {
+          'color': {r'$bogus': []},
+        },
+      });
+      final errors = switch (result) {
+        MixSchemaDecodeFailure<BoxStyler>(:final errors) => errors,
+        MixSchemaDecodeSuccess<BoxStyler>() => fail('expected failure'),
+      };
 
-        expect(errors.single.code, MixSchemaErrorCode.unknownField);
-        expect(errors.single.path, '/decoration/color/$marker');
-      }
+      expect(errors.single.code, MixSchemaErrorCode.unknownField);
+      expect(errors.single.path, '/decoration/color/\$bogus');
+    });
+
+    test('rejects malformed merge terms', () {
+      final result = contract().decode<BoxStyler>({
+        'v': 1,
+        'type': 'box',
+        'decoration': {
+          'color': {r'$merge': []},
+        },
+      });
+      final errors = switch (result) {
+        MixSchemaDecodeFailure<BoxStyler>(:final errors) => errors,
+        MixSchemaDecodeSuccess<BoxStyler>() => fail('expected failure'),
+      };
+
+      expect(errors.single.code, MixSchemaErrorCode.unsupportedEncodeValue);
+      expect(errors.single.path, '/decoration/color');
     });
   });
 
