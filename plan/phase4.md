@@ -68,6 +68,8 @@ blocked entirely, hiding `ColorRef.withAlpha()`-style composition).
 - `decoration.gradient` union under `"kind"`: `linear` / `radial` / `sweep`,
   mirroring `LinearGradientMix`/`RadialGradientMix`/`SweepGradientMix` fields;
   `GradientRotation` as the only supported `transform` (others fail encode).
+  (Superseded in phase 5: `css_linear` CSS-keyword transforms were added so
+  the default Tailwinds corner-gradient path is wire-representable.)
 - Remove `failIfPresent($gradient)` from the box decoration codec.
 **Acceptance:**
 - [x] Round-trip all three kinds + rotation; resolution equivalence vs
@@ -205,3 +207,4 @@ dependency, unless maintainers explicitly request convergence during the phase.
 | 2026-07-03 | Lenient repair uses the smallest recoverable granule. | Unknown nested map keys and invalid `modifiers.order` entries are removed without dropping the containing style field. |
 | 2026-07-03 | JSON Schema export constrains marker grammar, not all runtime semantics. | Shared property-term definitions validate `$token`, `$merge`, and `apply` marker shapes at field boundaries; runtime codecs remain authoritative for field-specific Flutter/Mix literals. |
 | 2026-07-03 | Phase 4 verified and closed. | After closeout fixes, `melos run gen:build`, `melos run ci`, and `melos run analyze` all reported `SUCCESS`; the only repeated noise was the known pub-cache kernel-format warning. |
+| 2026-07-04 | R4.3 transform support superseded by Phase 5 `css_linear`. | Phase 5 added CSS-keyword linear transforms so Tailwinds' default corner-gradient path is wire-representable; see Phase 5's decision log and `WIRE_CONTRACT.md` gradient transform docs. |

@@ -223,6 +223,33 @@ void main() {
     );
   });
 
+  test('keyframe animation configs fail encode explicitly', () {
+    final result = MixSchemaContractBuilder().builtIn().freeze().encode(
+      BoxStyler.create(
+        animation: KeyframeAnimationConfig<BoxSpec>(
+          trigger: null,
+          timeline: [
+            KeyframeTrack<double>('opacity', [
+              const Keyframe.linear(1.0, Duration(milliseconds: 250)),
+            ], initial: 0.0),
+          ],
+          styleBuilder: (result, style) => style,
+          initialStyle: const BoxStyler.create(),
+        ),
+      ),
+    );
+
+    final errors = switch (result) {
+      MixSchemaEncodeFailure(:final errors) => errors,
+      MixSchemaEncodeSuccess() => fail('expected failure'),
+    };
+
+    expect(
+      errors.map((error) => error.code),
+      contains(MixSchemaErrorCode.unsupportedEncodeValue),
+    );
+  });
+
   test('animation callbacks fail encode instead of serializing closures', () {
     void onEnd() {}
     final result = MixSchemaContractBuilder().builtIn().freeze().encode(

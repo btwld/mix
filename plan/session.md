@@ -15,6 +15,33 @@ Template:
 
 ---
 
+## 2026-07-04 — Codex — plan-execution audit + fixes
+
+**Did:** Closed the plan-audit follow-up without wire-behavior changes:
+documented the six remaining public error codes in `WIRE_CONTRACT.md`,
+regenerated `coverage-backlog.md`, annotated Phase 0/Phase 4 supersessions,
+closed the marker-collision carry-forward lesson, and added characterization
+tests for `KeyframeAnimationConfig` encode failure plus custom-branch marker
+payload handling.
+
+**Decisions:** Keep the existing global control-marker preflight. Known marker
+objects nested inside a custom branch payload can round-trip untouched when they
+match the marker grammar; unknown `$` markers still fail preflight. Use the
+current agent name in this entry rather than the stale agent name in the
+attached fix brief.
+
+**Verification:** Focused tests passed:
+`fvm flutter test test/animation_codec_test.dart test/mix_schema_contract_test.dart --reporter expanded`
+reported `+20`. Backlog/manifest ratchet passed:
+`melos run schema:inventory --no-select`. Full gate passed:
+`melos run gen:build --no-select`, `melos run ci --no-select`, and
+`melos run analyze --no-select` all reported `SUCCESS`. Error-code lockstep
+check found all 16 `MixSchemaErrorCode` wire strings in `WIRE_CONTRACT.md`.
+
+**Blocked/open:** None.
+
+**Next:** Push/open PR when ready.
+
 ## 2026-07-03 — Codex — plan stale-signal audit
 
 **Did:** Reviewed every `plan/` markdown file for stale phase state, legacy

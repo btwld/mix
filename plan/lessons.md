@@ -224,7 +224,7 @@ list. The only remaining future checkpoint is the missing-`v` publish decision.
 | Generated files need traceable inputs. | Phase 2 / Phase 4 | Generated backlog or schema artifacts need a source/tool header; if the input is missing, record the blocker instead of hand-editing generated output. |
 | Phase boundary checks prevent stale assumptions. | Every phase | Run the lesson/prior-decision entry review before work and the full agent/code review before closeout. |
 | CI ratchets need workflow-level proof. | Every phase | Before marking a check as "runs on every PR", inspect the workflow path and verify it invokes the relevant Melos chain. |
-| Root/control keys are reserved contract boundaries. | Phase 3 / Phase 4 | `$token`, `$merge`, `apply`, and future control markers need collision/unknown-marker tests analogous to the Phase 1 custom-branch `v` test. |
+| Root/control keys are reserved contract boundaries. | Phase 3 / Phase 4 | Closed 2026-07-04 by the custom-branch marker collision test. `$token`, `$merge`, `apply`, and future control markers need collision/unknown-marker tests analogous to the Phase 1 custom-branch `v` test. |
 | Missing `v` is a transition compromise. | Phase 5 / publish checkpoint | Before publishing the v1 contract, explicitly decide whether to flip missing `v` from warning to fatal and update tests/docs together. |
 | Lenient granule grammar lives away from codec owners. | Phase 4 | Every new list-valued wire field gets an explicit lenient-removal granule and a loud test; review `_lenientRemovalPath` when adding families. `[review X12]` |
 | Manifest `supported` must be provably true. | Phase 2.5 | Land the manifest↔codec truthfulness test so a false `supported` entry fails CI; keep it green thereafter. `[review X10]` |

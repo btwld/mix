@@ -11,6 +11,12 @@ final class _CustomStyle {
   final String value;
 }
 
+final class _CustomPayloadStyle {
+  const _CustomPayloadStyle(this.payload);
+
+  final JsonMap payload;
+}
+
 void main() {
   MixSchemaContract newContract() {
     final branch = MixSchemaBranch<_CustomStyle>.json(
@@ -97,6 +103,74 @@ void main() {
       expect((properties['v']! as JsonMap)['type'], 'integer');
     },
   );
+
+  test('custom payload marker names round-trip but unknown markers fail', () {
+    final branch = MixSchemaBranch<_CustomPayloadStyle>.json(
+      decode: (data) => _CustomPayloadStyle(
+        (data['payload']! as Map).cast<String, Object?>(),
+      ),
+      encode: (value) => {'payload': value.payload},
+      validate: (data) => data['payload'] is Map,
+      validationMessage: 'Custom branch requires a payload object.',
+    );
+    final contract = MixSchemaContractBuilder()
+        .addStyler('custom', branch)
+        .freeze();
+    final payload = <String, Object?>{
+      'tokenTerm': <String, Object?>{
+        r'$token': 'custom.token',
+        'apply': [
+          <String, Object?>{'op': 'custom_directive'},
+        ],
+      },
+      'mergeTerm': <String, Object?>{
+        r'$merge': [
+          <String, Object?>{'value': 'first'},
+          <String, Object?>{'value': 'second'},
+        ],
+        'apply': [
+          <String, Object?>{'op': 'custom_directive'},
+        ],
+      },
+    };
+
+    final encoded = switch (contract.encode(_CustomPayloadStyle(payload))) {
+      MixSchemaEncodeSuccess(:final value) => value,
+      MixSchemaEncodeFailure(:final errors) => fail('$errors'),
+    };
+    final decoded = switch (contract.decode<_CustomPayloadStyle>({
+      'v': mixSchemaFormatVersion,
+      'type': 'custom',
+      'payload': payload,
+    })) {
+      MixSchemaDecodeSuccess<_CustomPayloadStyle>(:final value) => value,
+      MixSchemaDecodeFailure<_CustomPayloadStyle>(:final errors) => fail(
+        '$errors',
+      ),
+    };
+    final rejected = contract.decode<_CustomPayloadStyle>({
+      'v': mixSchemaFormatVersion,
+      'type': 'custom',
+      'payload': {
+        'unknownTerm': {r'$custom': 'owned'},
+      },
+    });
+
+    expect(encoded['payload'], payload);
+    expect(decoded.payload, payload);
+    final errors = switch (rejected) {
+      MixSchemaDecodeFailure<_CustomPayloadStyle>(:final errors) => errors,
+      MixSchemaDecodeSuccess<_CustomPayloadStyle>() => fail('expected failure'),
+    };
+    expect(
+      errors.map((error) => error.code),
+      contains(MixSchemaErrorCode.unknownField),
+    );
+    expect(
+      errors.map((error) => error.path),
+      contains(r'/payload/unknownTerm/$custom'),
+    );
+  });
 
   test('shared built-in contract includes icon and image stylers', () {
     expect(

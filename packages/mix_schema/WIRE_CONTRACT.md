@@ -26,6 +26,8 @@ Styler discriminator values are:
 - `flex_box`
 - `stack_box`
 
+An unregistered root `type` fails with `unknown_type`.
+
 The full built-in contract accepts all branches above. The shared
 `builtInMixSchemaContract` is registry-free and accepts every built-in branch,
 including `icon` and `image`. String identity names are resolved per call with
@@ -38,6 +40,7 @@ has other fatal schema errors. Unsupported or malformed `v` fails with
 `unsupported_version`.
 
 Missing fields stay unset; Mix runtime defaults are not injected by the schema.
+Absent required fields fail with `required_field`.
 
 ## Null Semantics
 
@@ -98,6 +101,13 @@ Decode and validation preflight untrusted input before Ack traversal:
 
 Exceeding either cap fails with `limit_exceeded` at the path where the cap is
 crossed.
+
+## Generic Diagnostics
+
+`type_mismatch` reports a decoded value that does not match the caller's
+requested `decode<T>()` type. `validation_failed` reports an engine validation
+failure that does not map to a narrower public code. `transform_failed` reports
+a decode or encode transform that threw while processing a value.
 
 ## Styler Fields
 
@@ -229,6 +239,10 @@ to the box part; `stackAlignment` and `stackClipBehavior` belong to the stack
 part.
 
 ## Common Values
+
+Scalar and structural constraint failures, including positive-size rules,
+non-empty `apply`, and single-source `$merge` carrier requirements, report
+`constraint_violation`.
 
 - `color`: `#RRGGBB`, `#AARRGGBB`, `rgb(r,g,b)`, or `rgba(r,g,b,a)`.
 - `alignment`: one of `topLeft`, `topCenter`, `topRight`, `centerLeft`,

@@ -8,6 +8,7 @@
   removed the unpublished `encode.dart` compatibility entry point.
 - Filled the exported schema modifier and variant vocabulary so generated
   schema metadata matches supported discriminators.
+- Documented the remaining stable public error codes in the wire contract.
 
 ## 0.0.1
 
