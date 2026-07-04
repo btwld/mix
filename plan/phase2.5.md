@@ -1,6 +1,6 @@
 # Phase 2.5 — Cross-phase review fixes (ratchet hardening + contract doc lockstep)
 
-**Status:** Completed · **Depends on:** phases 1–2 (repairs their landed output) · **Blocks:** phase 3 start; phase 4's backlog integrity
+**Status:** Completed · **Depends on:** phases 1–2 (repairs their landed output) · **Originally blocked:** phase 3 start; phase 4's backlog integrity
 **Scope:** the fixes from the 2026-07-02 cross-phase review (`findings.md` Addendum,
 IDs X1–X12): inventory-tool blind spots, manifest reclassification + backlog
 regeneration, WIRE_CONTRACT/code lockstep, lenient-mode repairs, and test-gap
@@ -111,7 +111,7 @@ New wire vocabulary or coverage (phases 3–4); nested-Mix runtime skew guards
 *sequencing* decision; tailwinds changes; per-encode cost optimization (phase 5's
 benchmark owns encode-path cost questions).
 
-## Open decisions
+## Resolved decisions
 
 **D2.5.1 — AckSchema-hiding sequencing `[review X11]`.** The premortem assumed
 the extension API was already hidden behind mix_schema-owned types; C2 is
@@ -160,7 +160,7 @@ commit SHA and record the chosen revision in the session log.
 - Phase 2.5 closeout confirms every carry-forward lesson it owns in
   `plan/lessons.md` was applied or explicitly deferred with a reason.
 
-## Decision log & lessons (fill during execution)
+## Decision log & lessons
 
 | Date | Decision / lesson | Notes |
 |------|-------------------|-------|

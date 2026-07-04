@@ -1,6 +1,6 @@
 # Phase 1 — Format v1 charter (versioning, null policy, strict/lenient, limits)
 
-**Status:** Completed · **Depends on:** phase 0 · **Blocks:** credible server-driven use; publishing
+**Status:** Completed · **Depends on:** phase 0 · **Originally blocked:** credible server-driven use; publishing
 **Scope:** the wire format's *rules of evolution* — envelope, null semantics,
 decode modes, input limits, and the written policy. No new styling coverage.
 
@@ -99,7 +99,7 @@ Token grammar, `$merge`/`apply`, new styling coverage, consumer changes.
 Unknown-field *preservation* (proxy mode) is permanently out of scope — this
 codec is an endpoint; preserved-unvalidated bytes would tunnel the trust boundary.
 
-## Open decisions
+## Resolved decisions
 
 **D1.1 — Missing-`v` transition rule.** (a) absent → treated as `v:1` with a
 warning, for one transition window (existing fixtures keep working); (b) absent
@@ -139,7 +139,7 @@ malicious deep/wide input before Ack traversal.
   match tested behavior exactly.
 - A malicious-input test group exists (bombs, nulls, bad versions) and passes.
 
-## Decision log & lessons (fill during execution)
+## Decision log & lessons
 
 | Date | Decision / lesson | Notes |
 |------|-------------------|-------|

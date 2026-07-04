@@ -18,8 +18,9 @@ realign the reference consumer.
    the latest `session.md` entry. Run a phase-entry agent review of the phase
    plan against those inputs, then make any checklist/process adjustments before
    coding.
-3. Resolve the **Open decisions** first (record the outcome in the doc's
-   Decision log).
+3. Resolve the phase decision prompts first (record the outcome in the doc's
+   Decision log; completed phase docs label these sections **Resolved
+   decisions**).
 4. Execute the **Task checklist**, checking items off in the doc as they land.
 5. Verify the phase with fresh command output. The standard gate is
    `melos run gen:build && melos run ci && melos run analyze`.

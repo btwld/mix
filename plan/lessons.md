@@ -212,6 +212,9 @@ Things the review itself surfaced that qualify as lessons already:
 
 ## Carry-forward actions
 
+These rows are retained as retrospective guardrails, not an active phase task
+list. The only remaining future checkpoint is the missing-`v` publish decision.
+
 | Lesson | Owner | Action |
 |--------|-------|--------|
 | Coverage should be a decision, not an accident. | Phase 2 | Inventory output and the coverage backlog must be generated deterministically, classify every reviewed gap, and record enough provenance that later agents know what produced it. |

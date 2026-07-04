@@ -1,6 +1,6 @@
 # Phase 2 — Drift ratchet (core-surface inventory tool)
 
-**Status:** Completed · **Depends on:** phase 0 (clean baseline) · **Blocks:** phase 4 (it generates phase 4's backlog)
+**Status:** Completed · **Depends on:** phase 0 (clean baseline) · **Originally blocked:** phase 4 (it generated phase 4's backlog)
 **Scope:** dev tooling + CI + one runtime assert. No wire-format changes.
 
 ## Objective
@@ -93,7 +93,7 @@ Closing the gaps themselves (phase 4). Codegen of codecs (rejected by the
 review's adjudication: tables/ratchet beat a generator for 8 stylers on a stable
 core — revisit only if the manifest churn rate proves painful).
 
-## Open decisions
+## Resolved decisions
 
 **D2.1 — Manifest form.** Dart const map next to the codecs (compile-checked,
 IDE-navigable) vs YAML/JSON data file (diff-friendly, tool-writable).
@@ -128,7 +128,7 @@ dedicated inventory-skew code and names missing/stale field ids.
   `plan/lessons.md` was either applied or explicitly deferred with a reason.
 - Full gate green.
 
-## Decision log & lessons (fill during execution)
+## Decision log & lessons
 
 | Date | Decision / lesson | Notes |
 |------|-------------------|-------|

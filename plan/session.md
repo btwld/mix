@@ -15,6 +15,26 @@ Template:
 
 ---
 
+## 2026-07-03 — Codex — plan stale-signal audit
+
+**Did:** Reviewed every `plan/` markdown file for stale phase state, legacy
+surface references, deferred backlog drift, and no-longer-needed follow-up
+signals. Cleaned up completed phase docs by renaming resolved decision sections,
+removing stale execution-fill prompts, turning completed-phase "Blocks" headers
+into historical metadata, clarifying Phase 5's deferred publish checkpoint, and
+updating the final `encode.dart` wording to match the removed entry point plus
+`testing.dart` helper ownership.
+
+**Decisions:** Keep `findings.md` and older `session.md` entries as historical
+snapshots; their old `encode.dart`, bypass, deferred, and runtime-decode wording
+is evidence of the original review/phase history, not active work.
+
+**Blocked/open:** No active plan backlog found. `coverage-backlog.md` has zero
+deferred entries; publishing/missing-`v` remains the only explicit future
+checkpoint.
+
+**Next:** Push/open PR when ready.
+
 ## 2026-07-03 — Codex — follow-up drift cleanup
 
 **Did:** Implemented the review follow-up for `mix_schema`: identity value

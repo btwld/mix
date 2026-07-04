@@ -1,6 +1,6 @@
 # Phase 3 — Token model (`$token` grammar + theme document)
 
-**Status:** Completed · **Depends on:** phase 1 (envelope/modes), phase 2 recommended (classification), phase 2.5 (review fixes) · **Blocks:** the token-sharing target; parts of phase 4 (token-backed breakpoints)
+**Status:** Completed · **Depends on:** phase 1 (envelope/modes), phase 2 recommended (classification), phase 2.5 (review fixes) · **Originally blocked:** the token-sharing target; parts of phase 4 (token-backed breakpoints)
 **Scope:** wire grammar for token references, a theme/token-definition document,
 preflight tooling, and the end-to-end inheritance demo.
 
@@ -135,7 +135,7 @@ inside one theme document (apps swap documents or nest scopes — core's job);
 directive `apply` on token refs (phase 4, grammar); cross-document `$ref`
 (tree-layer concept, permanently out of the style format).
 
-## Open decisions
+## Resolved decisions
 
 **D3.1 — Token name grammar.** Free string vs constrained pattern (like
 registry ids). Recommendation: constrain (`[A-Za-z0-9_.-]{1,128}` — dots for
@@ -169,7 +169,7 @@ preflight/reporting; do not add a Mix core helper in this phase.
 - Phase 3 closeout confirms every carry-forward lesson owned by Phase 3 in
   `plan/lessons.md` was either applied or explicitly deferred with a reason.
 
-## Decision log & lessons (fill during execution)
+## Decision log & lessons
 
 | Date | Decision / lesson | Notes |
 |------|-------------------|-------|

@@ -1,6 +1,6 @@
 # Phase 5 — Consumer realignment (tailwinds) + public API reshaping
 
-**Status:** Completed · **Depends on:** phase 1 (options object), phase 4 R4.3 (gradients) for the bypass removal; other items independent · **Blocks:** publishing decision
+**Status:** Completed · **Depends on:** phase 1 (options object), phase 4 R4.3 (gradients) for the bypass removal; other items independent · **Leaves:** future publish checkpoint (deferred by D5.6)
 **Scope:** mix_tailwinds stops paying runtime rent for a test-time guarantee;
 mix_schema's public surface is reshaped to match how consumers actually use it.
 
@@ -93,7 +93,7 @@ the direct-styler-construction equivalent.
 ### R5.5 — Public surface reshaping (mix_schema) `[review C1–C3]`
 - [x] Move `SchemaStyler`/`SchemaModifier`/`SchemaVariant` (wire vocabulary) and
       `builtInMixSchemaContract` to the contract entry point (`mix_schema.dart`);
-      `encode.dart` either becomes test-support / is absorbed, per D5.3.
+      payload-test helpers live in `testing.dart`, per D5.3.
 - [x] Verify the Phase 3 `AckSchema`-hiding wrapper is still complete after
       token/property grammar work; finish any remaining public-surface cleanup
       (`MixSchemaBranch<T>` for custom branches, `MixSchemaRootSchema` for the
@@ -105,9 +105,9 @@ the direct-styler-construction equivalent.
 - [x] `validate()` routed through `decode<Object>()` if not already done in
       phase 0 (S7).
 - [x] Compile/API tests prove `package:mix_schema/mix_schema.dart` exposes the
-      consumer contract entry point without promising Ack types, and the chosen
-      `JsonMap`, `encode.dart`, and `testing.dart` fate is importable only where
-      intended.
+      consumer contract entry point without promising Ack types, `JsonMap` is
+      available from the intended public entry point, `testing.dart` owns the
+      test-support helpers, and no `encode.dart` entry point remains.
 
 ### R5.6 — Remove the gradient bypass (needs phase 4 R4.3)
 - [x] Delete `applyGradient` callback threading from `_translate` and
@@ -153,7 +153,7 @@ The widget-tree document layer (own package, own plan when it starts — the
 review confirmed the per-node style shape composes under it); rewriting the
 validation engine (ack stays per the review's adjudication).
 
-## Open decisions
+## Resolved decisions
 
 **D5.1 — Keep or retire tailwinds' runtime decode.** Decided by R5.1's numbers
 plus the bypass count. Default expectation per the review: retire to test-time.

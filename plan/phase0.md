@@ -1,6 +1,6 @@
 # Phase 0 — Land the branch honestly (pre-merge fixes)
 
-**Status:** Completed · **Depends on:** nothing · **Blocks:** merge of `feat/mix_schema`
+**Status:** Completed · **Depends on:** nothing · **Originally blocked:** merge of `feat/mix_schema`
 **Scope:** small, correctness + hygiene only. No new format features in this phase.
 
 ## Objective
@@ -22,7 +22,8 @@ keeps the package's "fail loud, no silent traps" promise honest.
 The shared singleton freezes an **empty** registry, so any icon/image payload
 fails decode (`unknown_registry_id`) and any `IconStyler`/`ImageStyler` fails
 encode — while `lib/encode.dart:11-14` recommends producers use exactly this
-singleton. Resolve the contradiction (see Open decisions D0.1 for the options).
+singleton. Resolve the contradiction (see Resolved decisions D0.1 for the
+options).
 **Acceptance:**
 - [x] A test exists that exercises icon and image payloads **through
       `builtInMixSchemaContract`** and pins the chosen behavior (working
@@ -101,7 +102,7 @@ Only if cheap while in the area; otherwise leave for their owning phase:
 Tokens, versioning envelope, `$merge`/`apply` grammar, coverage expansion,
 tailwinds realignment, registry redesign beyond what D0.1 decides.
 
-## Open decisions
+## Resolved decisions
 
 **D0.1 — Shape of the icon/image fix.** Options:
 1. **Ship per-call resolvers now** (`decode(..., resolveIcon:)` /
@@ -126,7 +127,7 @@ tailwinds realignment, registry redesign beyond what D0.1 decides.
 - New tests for R0.1, R0.2, R0.8 present and passing.
 - `git status` clean; branch merged with `origin/main`; CHANGELOG entry present.
 
-## Decision log & lessons (fill during execution)
+## Decision log & lessons
 
 | Date | Decision / lesson | Notes |
 |------|-------------------|-------|

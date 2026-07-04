@@ -1,6 +1,6 @@
 # Phase 4 — Property grammar (`apply`/`$merge`) + coverage expansion
 
-**Status:** Completed · **Depends on:** phase 1 (envelope), phase 2 + 2.5 (regenerated backlog), phase 3 (`$token` term) · **Blocks:** phase 5's gradient-bypass removal
+**Status:** Completed · **Depends on:** phase 1 (envelope), phase 2 + 2.5 (regenerated backlog), phase 3 (`$token` term) · **Originally blocked:** phase 5's gradient-bypass removal
 **Scope:** the wire format learns to represent what a `Prop` actually is
 (sources + directives), then coverage expands family-by-family from the phase-2
 backlog. Large phase — staged and parallelizable by family; each family lands
@@ -142,7 +142,7 @@ leftovers.
 Consumer changes (phase 5); representing closures/painters/Listenables (never);
 unknown-field preservation (never); token math.
 
-## Open decisions
+## Resolved decisions
 
 **D4.1 — Directive `op` spellings vs existing text-directive vocab.** Existing
 wire uses `uppercase`/`title_case`; core `Directive.key` may differ in casing.
@@ -186,7 +186,7 @@ dependency, unless maintainers explicitly request convergence during the phase.
 - Phase 4 closeout confirms every carry-forward lesson owned by Phase 4 in
   `plan/lessons.md` was either applied or explicitly deferred with a reason.
 
-## Decision log & lessons (fill during execution)
+## Decision log & lessons
 
 | Date | Decision / lesson | Notes |
 |------|-------------------|-------|
