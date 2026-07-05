@@ -25,6 +25,8 @@ final _idPattern = RegExp(registryIdPattern);
 bool isValidRegistryId(String value) => _idPattern.hasMatch(value);
 
 /// Mutable registry builder used before a contract is frozen.
+///
+/// See [FrozenRegistry] for this registry chain's internal-legacy status.
 final class RegistryBuilder {
   final Map<MixSchemaScope, Map<String, Object>> _values = {
     for (final scope in MixSchemaScope.values) scope: <String, Object>{},
@@ -79,6 +81,13 @@ final class RegistryBuilder {
 }
 
 /// Immutable registry used by a frozen schema contract.
+///
+/// Internal legacy support only. [RegistryBuilder], `FrozenRegistry`, and
+/// [MixSchemaScope] are not exported from `mix_schema.dart` and are not used
+/// by any built-in codec. The shipped contract resolves identity values
+/// through `MixSchemaIdentityContext` (see `identity_resolution.dart`), which
+/// matches by `==`. [idFor] matches by `identical()` deliberately (see its
+/// doc and the registry tests) — do not switch it to `==`.
 final class FrozenRegistry {
   const FrozenRegistry._(this._values);
 
