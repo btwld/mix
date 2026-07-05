@@ -15,6 +15,41 @@ Template:
 
 ---
 
+## 2026-07-05 — Claude (Sonnet) — review hardening follow-ups
+
+**Did:** Executed the attached 4-comment-review hardening plan (both retracted
+concerns re-confirmed independently, no bug fix needed). Task A: documented
+`FrozenRegistry`/`RegistryBuilder`/`MixSchemaScope` in
+`packages/mix_schema/lib/src/registry/registry.dart` as internal-legacy-only,
+pointing to `MixSchemaIdentityContext` as the shipped identity-resolution path
+and explaining why `idFor` matches by `identical()` deliberately. Task B: added
+non-square `cssAngleRect` angle assertions for `to-tr`/`to-bl`/`to-tl` in
+`packages/mix_tailwinds/test/div_and_span_test.dart`, mirroring the existing
+`to-br` case.
+
+**Decisions:** None new; reconfirmed phase 5 D5.5-adjacent stance that
+`FrozenRegistry`/`RegistryBuilder`/`MixSchemaScope` stay as documented internal
+legacy support rather than being deleted.
+
+**Verification:** Independently re-verified both plan claims before writing
+docs/tests (not just trusted the plan): grepped the whole package for
+`FrozenRegistry`/`RegistryBuilder`/`MixSchemaScope`/`registryValueCodec` — only
+referenced by their own two tests and `registry_value_codec.dart`; confirmed
+`icon_styler_codec.dart`/`image_styler_codec.dart` import that file only for
+the resolver-based `iconDataIdentityCodec`/`imageProviderIdentityCodec`, never
+`FrozenRegistry`/`RegistryBuilder`/`MixSchemaScope`; re-derived the four
+diagonal angle formulas from `_directionVector` in `gradient_mix.dart`. Full
+gate passed: `melos run gen:build`, `melos run ci`
+(`mix_schema` 325/325, `mix_tailwinds` 465/465 incl. the 3 new cases), and
+`melos run analyze` all reported `SUCCESS`, with zero generated-file drift.
+`dart format` reported 0 changes on both touched files.
+
+**Blocked/open:** None. Commit intentionally not made yet — plan says commit
+only when Leo asks; awaiting his go-ahead on one combined commit vs. two
+(`docs(mix_schema)` / `test(mix_tailwinds)`).
+
+**Next:** Commit per Leo's choice, then push/open PR when ready.
+
 ## 2026-07-04 — Codex — plan-execution audit + fixes
 
 **Did:** Closed the plan-audit follow-up without wire-behavior changes:
