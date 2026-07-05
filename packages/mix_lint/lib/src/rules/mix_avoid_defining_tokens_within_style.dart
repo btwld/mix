@@ -5,6 +5,7 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
+import '../utils/ast_helpers.dart';
 import '../utils/type_helpers.dart';
 
 class MixAvoidDefiningTokensWithinStyle extends AnalysisRule {
@@ -45,24 +46,19 @@ class _Visitor extends SimpleAstVisitor<void> {
   void visitInstanceCreationExpression(InstanceCreationExpression node) {
     if (!isMixTokenType(node.staticType)) return;
 
-    // Walk up the AST to see if this token is inside a Styler method chain.
-    // Stop at statement/declaration boundaries.
-    AstNode? current = node.parent;
-    while (current != null &&
-        current is! Statement &&
-        current is! Declaration) {
-      if (current is MethodInvocation && isMixStylerType(current.staticType)) {
+    for (final ancestor in ancestorsBeforeStatementOrDeclaration(node)) {
+      if (ancestor is MethodInvocation &&
+          isMixStylerType(ancestor.staticType)) {
         rule.reportAtNode(node);
 
         return;
       }
-      if (current is InstanceCreationExpression &&
-          isMixStylerType(current.staticType)) {
+      if (ancestor is InstanceCreationExpression &&
+          isMixStylerType(ancestor.staticType)) {
         rule.reportAtNode(node);
 
         return;
       }
-      current = current.parent;
     }
   }
 }

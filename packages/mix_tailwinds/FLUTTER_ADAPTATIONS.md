@@ -127,7 +127,7 @@ If you want visual parity, align **global defaults** first, then compare utility
 | `theme.extend.borderRadius` | `TwConfig.copyWith(radii: {...})` |
 | `theme.extend.screens` | `TwConfig.copyWith(breakpoints: {...})` |
 | `theme.extend.fontSize` | `TwConfig.copyWith(fontSizes: {...})` |
-| `theme.extend.fontWeight` | Update parser semantic mapping (currently from `tw_semantic.dart`) or use `MixScope(fontWeights: ...)` for non-tailwind Mix styles |
+| `theme.extend.fontWeight` | Update translator typography mapping or use `MixScope(fontWeights: ...)` for non-tailwind Mix styles |
 | `theme.extend.fontFamily` / base `font-sans` stack | `TwConfig.copyWith(textDefaults: config.textDefaults.copyWith(...))` |
 | Use native platform font defaults | `TwConfig.copyWith(textDefaults: const TwTextDefaults.platformDefault())` |
 | `@layer base { body { font-size / letter-spacing / line-height } }` | `TwConfig.textDefaults.copyWith(fontSize: ..., letterSpacing: ..., lineHeight: ...)` |
@@ -217,6 +217,24 @@ mix_tailwinds now automatically applies `min-w-0` semantics for `flex-1` to matc
 
 The following Tailwind utilities have limited or no support in mix_tailwinds due to fundamental differences between CSS and Flutter's layout system.
 
+### Parser and Variant Adaptations
+
+`mix_tailwinds` parses Tailwind candidates with a registry generated from the Tailwind spec lab, then routes supported values through `mix_schema` before composing Mix runtime variants.
+
+Current adaptation policy:
+
+| Tailwind feature | mix_tailwinds behavior | Reason |
+|---|---|---|
+| `group-*`, `peer-*` variants | Parsed, ignored | Flutter has no selector-relative group/peer state equivalent in this widget API. |
+| Arbitrary selector variants like `[&_p]:mt-4` | Parsed, ignored | Flutter widgets cannot target descendants by CSS selector. |
+| Container query variants like `@...` | Parsed, ignored | Container-query semantics remain in the widget/layout layer, not schema payloads. |
+| `!important` prefix/suffix | Parsed, ignored and reported through `onUnsupported` | Flutter/Mix has no CSS cascade priority model. |
+| Arbitrary properties like `[color:red]` | Parsed, ignored | They do not map safely to typed Mix schema fields. |
+| `from`/`via`/`to` gradients | Applied after schema decode | `mix_schema` intentionally does not encode/decode box gradients today. |
+| `bg-*/50` alpha modifiers | Approximated with Flutter alpha | Flutter has no `color-mix()`/OKLAB equivalent for Tailwind's CSS output. |
+
+Responsive layout utilities such as `w-full`, `w-screen`, fractions, external margin, negative margin handling, flex item parent data, axis, and gap remain in `tw_widget.dart` because they depend on live Flutter constraints.
+
 ### Percent-Based Sizing
 
 **Tailwind CSS:**
@@ -226,7 +244,7 @@ The following Tailwind utilities have limited or no support in mix_tailwinds due
 - Percent sizing is relative to parent container
 
 **Current Limitation:**
-- Arbitrary percent values like `w-[50%]` are parsed (as `TwUnit.percent`) but **not applied** by style appliers
+- Arbitrary percent values like `w-[50%]` are syntactically parsed but **not applied** by translator or widget sizing
 - Only pixel values (`w-[100px]`) work in arbitrary syntax
 
 **Workaround:**
@@ -253,7 +271,7 @@ FractionallySizedBox(
 
 **Current Limitation:**
 - `translate-x-1/2` and similar fractions are **not supported**
-- `translate-x-[50%]` is **treated as 50 pixels**, not 50%
+- `translate-x-[50%]` is **unsupported** and reported through `onUnsupported`
 
 **Workaround:**
 ```dart
@@ -303,16 +321,19 @@ Div(classNames: 'basis-48', ...)  // 192px basis
 - Supports hex, rgb(), rgba(), hsl(), hsla()
 
 **Current Limitation:**
-- Only **6-digit hex colors** are supported in arbitrary syntax
+- **3/4/6/8-digit CSS hex colors** are supported in arbitrary syntax
 - `bg-[#ff0000]` ✓ works
+- `bg-[#f00]` ✓ works
+- `bg-[#ffff]` ✓ works
+- `bg-[#ffffff80]` ✓ works
 - `bg-[rgb(255,0,0)]` ✗ not supported
-- Short hex like `bg-[#f00]` ✗ **silently produces a wrong color** (parsed as a raw int, not expanded to 6 digits)
+- `rgb()` and `hsl()` arbitrary color functions remain unsupported
 
 **Workaround:**
 ```dart
-// Always use full 6-digit hex (short hex silently produces wrong colors)
+// Use CSS hex arbitrary values
 Div(classNames: 'bg-[#ff0000]', ...)  // ✓ Works
-Div(classNames: 'bg-[#f00]', ...)     // ✗ Wrong color!
+Div(classNames: 'bg-[#f00]', ...)     // ✓ Works
 
 // Or add custom colors to TwConfig
 final config = TwConfig.standard().copyWith(
@@ -325,27 +346,28 @@ final config = TwConfig.standard().copyWith(
 
 ---
 
-### Variant Margin Behavior
+### Text Block Margin Variants
 
 **Tailwind CSS:**
 ```html
-<div className="m-2 hover:m-4">...</div>
+<p className="m-2 hover:m-4">...</p>
 ```
 - Margin changes on hover
 
 **Current Limitation:**
-- Margin is resolved once at build time
-- `hover:m-4`, `dark:m-2` and similar variant margins **do not update** on state change
+- `P` and heading margin extraction is base-only
+- Only unprefixed positive margins like `mb-4` are applied externally
+- `hover:m-4`, `dark:m-2`, `group-hover:m-4`, `@md:m-4`, and selector variants like `[&_p]:mt-4` are skipped instead of becoming unconditional margins
 
 **Workaround:**
 ```dart
 // Use padding instead (which does respond to variants)
-Div(classNames: 'p-2 hover:p-4', ...)  // ✓ Works
+P(text: '...', classNames: 'p-2 hover:p-4')  // ✓ Works
 
 // Or handle margin changes manually with StatefulWidget
 ```
 
-**Why:** CSS semantic margin is applied outside the `StyleBuilder` to ensure correct hit-testing behavior (margin should not be part of the interactive area). This means it doesn't receive variant state updates.
+**Why:** Text block CSS semantic margin is applied outside the `StyleBuilder` so margin stays outside the text hit-test/styling area. Until responsive/interactive margin semantics exist there, variant margins are ignored.
 
 ---
 
@@ -355,8 +377,7 @@ Div(classNames: 'p-2 hover:p-4', ...)  // ✓ Works
 |-----------------|--------|------------|
 | `w-[50%]`, `h-[25%]` | ✗ Parsed but not applied | Use `w-1/2`, `h-1/4` fractions |
 | `translate-x-1/2` | ✗ Not supported | Use pixel values |
-| `translate-x-[50%]` | ⚠️ Treated as pixels | Use Flutter Transform |
+| `translate-x-[50%]` | ✗ Unsupported | Use Flutter Transform |
 | `basis-1/2`, `basis-full` | ✗ Not supported | Use `w-1/2 flex-none` |
-| `bg-[rgb(...)]` | ✗ Not supported | Use hex: `bg-[#rrggbb]` |
-| `bg-[#f00]` (short hex) | ⚠️ Silently wrong color | Use full hex: `bg-[#ff0000]` |
-| `hover:m-4` | ✗ Not reactive | Use padding instead |
+| `bg-[rgb(...)]`, `bg-[hsl(...)]` | ✗ Not supported | Use CSS hex: `bg-[#rgb]`, `bg-[#rrggbb]`, or `bg-[#rrggbbaa]` |
+| `hover:m-4` on `P`/headings | ✗ Ignored | Use padding instead |
