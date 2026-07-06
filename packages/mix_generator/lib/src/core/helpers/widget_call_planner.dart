@@ -7,8 +7,8 @@ import 'package:analyzer/dart/element/type.dart';
 import '../checkers.dart';
 import '../errors.dart';
 import '../models/mix_widget_model.dart';
-import 'type_hierarchy.dart';
 import 'library_scope.dart';
+import 'type_hierarchy.dart';
 
 const reservedParamNames = {
   'build',
