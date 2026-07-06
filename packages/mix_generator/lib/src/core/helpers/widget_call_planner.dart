@@ -2,11 +2,13 @@
 library;
 
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/type.dart';
 
 import '../checkers.dart';
 import '../errors.dart';
 import '../models/mix_widget_model.dart';
 import 'library_scope.dart';
+import 'type_hierarchy.dart';
 
 const reservedParamNames = {
   'build',
@@ -26,6 +28,66 @@ List<String> optionalPositionalNames(
       .where((p) => p.isOptionalPositional)
       .map((p) => p.name ?? '<unnamed>')
       .toList();
+}
+
+String mixableSpecTargetWidgetName(ConstructorElement constructor) {
+  return requireName(
+    constructor.enclosingElement,
+    orFailWith: '@MixableSpec(target:) widget class must have a name.',
+  );
+}
+
+void validateMixableSpecTargetConstructor({
+  required ConstructorElement constructor,
+  required String widgetName,
+  required InterfaceElement specElement,
+  required String specName,
+  required Element anchor,
+}) {
+  final styleWidgetSupertype = findSupertypeMatching(
+    constructor.enclosingElement.thisType,
+    styleWidgetChecker,
+  );
+  if (styleWidgetSupertype == null) {
+    fail(
+      anchor,
+      'Widget $widgetName must extend StyleWidget<$specName> '
+      'to be used as @MixableSpec(target:).',
+    );
+  }
+
+  final widgetSpecArg = styleWidgetSupertype.typeArguments.first;
+  if (widgetSpecArg is! InterfaceType || widgetSpecArg.element != specElement) {
+    fail(
+      anchor,
+      'Spec generic mismatch: $specName annotated, but '
+      '$widgetName extends StyleWidget<${widgetSpecArg.getDisplayString()}>.',
+    );
+  }
+
+  final optionalPositional = optionalPositionalNames(
+    constructor.formalParameters,
+  );
+  if (optionalPositional.isNotEmpty) {
+    fail(
+      anchor,
+      '@MixableSpec(target:) does not support optional positional target '
+      'constructor parameters on $widgetName: '
+      '[${optionalPositional.join(', ')}].',
+      todo: 'Convert these parameters to required positional or named.',
+    );
+  }
+
+  for (final parameter in constructor.formalParameters) {
+    if (parameter.name == 'style' && parameter.isNamed) return;
+  }
+
+  fail(
+    anchor,
+    '@MixableSpec(target:) requires $widgetName to expose a named '
+    '`style` constructor parameter so the generated call() can pass '
+    '`style: this`.',
+  );
 }
 
 ({List<WidgetCallParam> params, bool forwardsKey}) extractCallParams(

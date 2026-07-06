@@ -29,7 +29,7 @@ class MixAvoidTokenRefOutsideMix extends AnalysisRule {
         'A token reference (e.g. token() or token.mix()) is a sentinel that only '
         "resolves inside Mix's pipeline. Pass it to a Mix styler/utility, or use "
         'token.resolve(context) to read the concrete value.',
-    severity: DiagnosticSeverity.WARNING,
+    severity: .WARNING,
   );
 
   MixAvoidTokenRefOutsideMix()
@@ -61,22 +61,6 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   const _Visitor(this.rule);
 
-  @override
-  void visitFunctionExpressionInvocation(FunctionExpressionInvocation node) {
-    // Implicit call: `token()`, `ColorToken('x')()`.
-    if (!isMixTokenType(node.function.staticType)) return;
-    _check(node);
-  }
-
-  @override
-  void visitMethodInvocation(MethodInvocation node) {
-    // Explicit ref producers: `token.call()` and `token.mix()`.
-    final name = node.methodName.name;
-    if (name != 'call' && name != 'mix') return;
-    if (!isMixTokenType(node.target?.staticType)) return;
-    _check(node);
-  }
-
   /// Reports [callable] (a token reference expression) when it is passed as an
   /// argument to a non-Mix API. Stays silent when the reference is not an
   /// argument or when the consumer cannot be resolved.
@@ -85,10 +69,11 @@ class _Visitor extends SimpleAstVisitor<void> {
     if (consumer == null) return;
 
     switch (_classify(consumer)) {
-      case _Verdict.notMix:
+      case .notMix:
         rule.reportAtNode(callable);
-      case _Verdict.mix:
-      case _Verdict.unknown:
+        break;
+      case .mix:
+      case .unknown:
         break;
     }
   }
@@ -123,12 +108,13 @@ class _Visitor extends SimpleAstVisitor<void> {
       // Instance receiver (e.g. `BoxStyler().color(...)`).
       final receiverType = consumer.target?.staticType;
       if (receiverType is InterfaceType) {
-        if (isMixType(receiverType)) return _Verdict.mix;
+        if (isMixType(receiverType)) return .mix;
 
         // A resolved non-type receiver: judge by enclosing element below, but
         // a plain instance receiver that is not Mix is a clear escape.
         final enclosing = _enclosingVerdict(consumer.methodName.element);
-        return enclosing == _Verdict.mix ? _Verdict.mix : _Verdict.notMix;
+
+        return enclosing == .mix ? .mix : .notMix;
       }
 
       // Static method (`EdgeInsetsGeometryMix.all(...)`) or top-level function.
@@ -137,34 +123,50 @@ class _Visitor extends SimpleAstVisitor<void> {
 
     // A function-typed value is being invoked (e.g. a closure variable). We
     // cannot tell whether it came from Mix, so stay silent.
-    return _Verdict.unknown;
+    return .unknown;
   }
 
   /// Classifies a callee [element] by its enclosing type, falling back to the
   /// declaring library URI for top-level functions.
   _Verdict _enclosingVerdict(Element? element) {
-    if (element == null) return _Verdict.unknown;
+    if (element == null) return .unknown;
 
     final enclosing = element.enclosingElement;
     if (enclosing is InterfaceElement) {
-      return isMixType(enclosing.thisType) ? _Verdict.mix : _Verdict.notMix;
+      return isMixType(enclosing.thisType) ? .mix : .notMix;
     }
 
     // Top-level / free function: allow only when declared in `package:mix`.
     final uri = element.library?.uri;
-    if (uri == null) return _Verdict.unknown;
+    if (uri == null) return .unknown;
 
-    return _isMixPackageUri(uri) ? _Verdict.mix : _Verdict.notMix;
+    return _isMixPackageUri(uri) ? .mix : .notMix;
   }
 
   _Verdict _verdictForType(DartType? type) {
-    if (type is! InterfaceType) return _Verdict.unknown;
+    if (type is! InterfaceType) return .unknown;
 
-    return isMixType(type) ? _Verdict.mix : _Verdict.notMix;
+    return isMixType(type) ? .mix : .notMix;
   }
 
   bool _isMixPackageUri(Uri uri) =>
       uri.scheme == 'package' &&
       uri.pathSegments.isNotEmpty &&
       uri.pathSegments.first == 'mix';
+
+  @override
+  void visitFunctionExpressionInvocation(FunctionExpressionInvocation node) {
+    // Implicit call: `token()`, `ColorToken('x')()`.
+    if (!isMixTokenType(node.function.staticType)) return;
+    _check(node);
+  }
+
+  @override
+  void visitMethodInvocation(MethodInvocation node) {
+    // Explicit ref producers: `token.call()` and `token.mix()`.
+    final name = node.methodName.name;
+    if (name != 'call' && name != 'mix') return;
+    if (!isMixTokenType(node.target?.staticType)) return;
+    _check(node);
+  }
 }

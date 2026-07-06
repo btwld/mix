@@ -5,6 +5,7 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
+import '../utils/ast_helpers.dart';
 import '../utils/type_helpers.dart';
 
 class MixMaxNumberOfAttributesPerStyle extends AnalysisRule {
@@ -47,28 +48,11 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   const _Visitor(this.rule, this.maxNumber);
 
-  List<MethodInvocation> _collectChain(InstanceCreationExpression ice) {
-    final chain = <MethodInvocation>[];
-    AstNode? current = ice;
-
-    while (true) {
-      final parent = current!.parent;
-      if (parent is MethodInvocation && parent.target == current) {
-        chain.add(parent);
-        current = parent;
-      } else {
-        break;
-      }
-    }
-
-    return chain;
-  }
-
   @override
   void visitInstanceCreationExpression(InstanceCreationExpression node) {
     if (!isMixStylerType(node.staticType)) return;
 
-    final chain = _collectChain(node);
+    final chain = collectDirectMethodChain(node);
     if (chain.length > maxNumber) {
       rule.reportAtNode(node);
     }
