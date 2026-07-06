@@ -36,6 +36,21 @@ class WidgetCallParam {
   });
 }
 
+/// One type parameter forwarded from a styler `call<T>()` method.
+class WidgetCallTypeParam {
+  /// The type parameter name.
+  final String name;
+
+  /// Dart source code for the explicit bound, if one exists.
+  final String? boundCode;
+
+  const WidgetCallTypeParam({required this.name, this.boundCode});
+
+  /// Code used in a generated class declaration.
+  String get declarationCode =>
+      boundCode == null ? name : '$name extends $boundCode';
+}
+
 /// The complete shape of a generated `@MixWidget` class.
 class MixWidgetModel {
   /// The generated `StatelessWidget` class name (e.g. `Card`).
@@ -62,6 +77,9 @@ class MixWidgetModel {
   /// positionals first, then named parameters.
   final List<WidgetCallParam> callParams;
 
+  /// Type parameters declared by the styler `call()` method.
+  final List<WidgetCallTypeParam> callTypeParams;
+
   /// `true` when the styler's `call()` declares a `Key? key` named parameter
   /// and the generated `build()` forwards `key: this.key`.
   final bool stylerCallForwardsKey;
@@ -76,6 +94,7 @@ class MixWidgetModel {
     required this.isFunctionFactory,
     required this.factoryParams,
     required this.callParams,
+    this.callTypeParams = const [],
     required this.stylerCallForwardsKey,
     this.doc,
   });
@@ -86,4 +105,18 @@ class MixWidgetModel {
   /// The builder applies Dart constructor syntax ordering when emitting code:
   /// all positional params first, then named params.
   List<WidgetCallParam> get allParams => [...factoryParams, ...callParams];
+
+  /// Type parameter declaration suffix for the generated widget class.
+  String get typeParameterDeclaration {
+    if (callTypeParams.isEmpty) return '';
+
+    return '<${callTypeParams.map((p) => p.declarationCode).join(', ')}>';
+  }
+
+  /// Type argument suffix for forwarding to the styler `call()` method.
+  String get typeParameterInvocation {
+    if (callTypeParams.isEmpty) return '';
+
+    return '<${callTypeParams.map((p) => p.name).join(', ')}>';
+  }
 }

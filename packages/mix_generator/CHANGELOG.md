@@ -1,3 +1,9 @@
+## 2.1.2
+
+ - **FIX**: Allow `@MixWidget` to generate widgets from generic styler
+   `call<T>()` methods, preserving type parameter bounds and forwarding type
+   arguments to the styler call.
+
 ## 2.1.1
 
  - **FEAT**: Support `@MixableField(setterType:)` on `@MixableModifier` fields. Generated `ModifierMix` constructors accept the declared Mix type and wrap values with `Prop.maybeMix` (#950).

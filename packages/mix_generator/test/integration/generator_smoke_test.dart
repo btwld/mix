@@ -917,6 +917,74 @@ final inheritedStyle = const StringStyler();
       );
     });
 
+    test(
+      'generic styler call emits generic widget and forwards call type',
+      () async {
+        const source = r'''
+library widget_case;
+
+import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+import 'package:mix/src/core/style.dart';
+
+part 'widget_case.g.dart';
+
+class BoxSpec { const BoxSpec(); }
+
+class RadioValue {}
+
+enum Variant { surface }
+
+class RadioStyler extends Style<BoxSpec> {
+  const RadioStyler();
+
+  Widget call<T extends RadioValue>({
+    Key? key,
+    required T value,
+    required List<T> values,
+  }) => const _Stub();
+}
+
+class _Stub extends StatelessWidget {
+  const _Stub();
+  @override
+  Widget build(BuildContext context) => const _Stub();
+}
+
+@MixWidget(name: 'FortalRadio')
+RadioStyler fortalRadioStyle({Variant variant = Variant.surface}) =>
+    const RadioStyler();
+''';
+
+        await expectGeneratorOutputResolves(
+          builder: partBuilder(const MixWidgetGenerator()),
+          sources: {
+            ...mixAnnotationsSources,
+            ...widgetStub,
+            'mix|lib/src/core/style.dart': styleStub,
+            'mix_generator|lib/widget_case.dart': source,
+          },
+          inputAsset: 'mix_generator|lib/widget_case.dart',
+          outputAsset: 'mix_generator|lib/widget_case.g.dart',
+          outputMatcher: allOf([
+            contains(
+              'class FortalRadio<T extends RadioValue> extends StatelessWidget',
+            ),
+            contains('this.variant = Variant.surface'),
+            contains('required this.value'),
+            contains('required this.values'),
+            contains('final T value;'),
+            contains('final List<T> values;'),
+            contains('return fortalRadioStyle('),
+            contains('variant: this.variant'),
+            contains('.call<T>('),
+            contains('value: this.value'),
+            contains('values: this.values'),
+          ]),
+        );
+      },
+    );
+
     test('positional call param surfaces as a positional widget arg', () async {
       const source = r'''
 library widget_case;

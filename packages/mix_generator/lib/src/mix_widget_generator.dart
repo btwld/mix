@@ -137,6 +137,7 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
       isFunctionFactory: false,
       factoryParams: const [],
       callParams: call.params,
+      callTypeParams: _extractCallTypeParams(callMethod, library: library),
       stylerCallForwardsKey: call.forwardsKey,
       doc: variable.documentationComment,
     );
@@ -194,6 +195,7 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
       isFunctionFactory: true,
       factoryParams: factoryParams,
       callParams: call.params,
+      callTypeParams: _extractCallTypeParams(callMethod, library: library),
       stylerCallForwardsKey: call.forwardsKey,
       doc: function.documentationComment,
     );
@@ -227,8 +229,8 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
   }
 
   /// Looks up the styler's `call()` method (including inherited members) and
-  /// validates the contract: non-generic, returns a `Widget`, no optional
-  /// positional parameters.
+  /// validates the contract: returns a `Widget`, no optional positional
+  /// parameters.
   MethodElement _requireCallMethod(
     Element anchor,
     InterfaceType stylerType, {
@@ -247,14 +249,6 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
         todo:
             'Add a `Widget call({...}) { return ...; }` to $stylerName so '
             'the generated widget knows how to render.',
-      );
-    }
-
-    if (call.typeParameters.isNotEmpty) {
-      fail(
-        anchor,
-        '$_annotationLabel requires a non-generic `call()` on $stylerName.',
-        todo: 'Remove type parameters from the `call()` method.',
       );
     }
 
@@ -277,6 +271,46 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
     }
 
     return call;
+  }
+
+  List<WidgetCallTypeParam> _extractCallTypeParams(
+    MethodElement callMethod, {
+    required LibraryElement library,
+  }) {
+    return [
+      for (final typeParameter in callMethod.typeParameters)
+        _callTypeParam(typeParameter, library: library),
+    ];
+  }
+
+  WidgetCallTypeParam _callTypeParam(
+    TypeParameterElement typeParameter, {
+    required LibraryElement library,
+  }) {
+    final name = requireName(
+      typeParameter,
+      orFailWith: '$_annotationLabel call type parameter must have a name.',
+    );
+    final bound = typeParameter.bound;
+
+    if (bound == null) {
+      return WidgetCallTypeParam(name: name);
+    }
+
+    final hiddenType = firstInvisibleTypeName(bound, library);
+    if (hiddenType != null) {
+      fail(
+        typeParameter,
+        'Call type parameter `$name` has bound `$hiddenType`, but that type '
+        'is not visible from the annotated library.',
+        todo: 'Import or re-export `$hiddenType` where the annotation lives.',
+      );
+    }
+
+    return WidgetCallTypeParam(
+      name: name,
+      boundCode: typeCode(bound, visibleFrom: library),
+    );
   }
 
   List<WidgetCallParam> _extractFactoryParams(

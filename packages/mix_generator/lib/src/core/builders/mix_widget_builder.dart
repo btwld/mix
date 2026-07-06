@@ -71,9 +71,13 @@ class MixWidgetBuilder {
 
     final callArgs = _callArgs();
     if (callArgs.isEmpty) {
-      buffer.writeln('    return $invocation.call();');
+      buffer.writeln(
+        '    return $invocation.call${model.typeParameterInvocation}();',
+      );
     } else {
-      buffer.writeln('    return $invocation.call(');
+      buffer.writeln(
+        '    return $invocation.call${model.typeParameterInvocation}(',
+      );
       for (final arg in callArgs) {
         buffer.writeln('      $arg,');
       }
@@ -115,7 +119,10 @@ class MixWidgetBuilder {
       buffer.writeln(model.doc);
     }
 
-    buffer.writeln('class ${model.widgetName} extends StatelessWidget {');
+    buffer.writeln(
+      'class ${model.widgetName}${model.typeParameterDeclaration} '
+      'extends StatelessWidget {',
+    );
 
     _writeConstructor(buffer);
     buffer.writeln();
