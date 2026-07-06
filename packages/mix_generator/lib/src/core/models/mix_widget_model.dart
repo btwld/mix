@@ -99,6 +99,12 @@ class MixWidgetModel {
     this.doc,
   });
 
+  String _typeParameterSuffix(String Function(WidgetCallTypeParam) render) {
+    if (callTypeParams.isEmpty) return '';
+
+    return '<${callTypeParams.map(render).join(', ')}>';
+  }
+
   /// All constructor parameters in source-group order: factory params first,
   /// then styler `call()` params.
   ///
@@ -107,16 +113,9 @@ class MixWidgetModel {
   List<WidgetCallParam> get allParams => [...factoryParams, ...callParams];
 
   /// Type parameter declaration suffix for the generated widget class.
-  String get typeParameterDeclaration {
-    if (callTypeParams.isEmpty) return '';
-
-    return '<${callTypeParams.map((p) => p.declarationCode).join(', ')}>';
-  }
+  String get typeParameterDeclaration =>
+      _typeParameterSuffix((p) => p.declarationCode);
 
   /// Type argument suffix for forwarding to the styler `call()` method.
-  String get typeParameterInvocation {
-    if (callTypeParams.isEmpty) return '';
-
-    return '<${callTypeParams.map((p) => p.name).join(', ')}>';
-  }
+  String get typeParameterInvocation => _typeParameterSuffix((p) => p.name);
 }
