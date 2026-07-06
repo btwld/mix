@@ -71,6 +71,7 @@ class _Visitor extends SimpleAstVisitor<void> {
     switch (_classify(consumer)) {
       case .notMix:
         rule.reportAtNode(callable);
+        break;
       case .mix:
       case .unknown:
         break;

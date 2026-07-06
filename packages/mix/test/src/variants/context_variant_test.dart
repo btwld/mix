@@ -56,4 +56,26 @@ void main() {
       expect(enabled.hashCode, anotherEnabled.hashCode);
     });
   });
+
+  group('responsive breakpoint shorthand factories', () {
+    test('mobile factory has stable breakpoint token key', () {
+      expect(ContextVariant.mobile().key, 'breakpoint_mix.breakpoint.mobile');
+    });
+
+    test('tablet factory has stable breakpoint token key', () {
+      expect(ContextVariant.tablet().key, 'breakpoint_mix.breakpoint.tablet');
+    });
+
+    test('desktop factory has stable breakpoint token key', () {
+      expect(ContextVariant.desktop().key, 'breakpoint_mix.breakpoint.desktop');
+    });
+  });
+
+  group('size factory', () {
+    test('creates variant with correct key', () {
+      final variant = ContextVariant.size('mobile', (size) => size.width < 768);
+
+      expect(variant.key, 'media_query_size_mobile');
+    });
+  });
 }

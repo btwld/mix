@@ -15,8 +15,10 @@
 ### Fixes
 
 - **Context variant equality:** `ContextVariant.brightness`,
-  `ContextVariant.breakpoint`, and `ContextVariant.not` now compare by their
-  typed values instead of identity, so equivalent variants deduplicate and
+  `ContextVariant.breakpoint`, `ContextVariant.orientation`,
+  `ContextVariant.directionality`, `ContextVariant.platform`,
+  `ContextVariant.web`, and `ContextVariant.not` now compare by their typed
+  values instead of identity, so equivalent variants deduplicate and
   round-trip predictably.
 - **Default text style modifier merge:** Partial `DefaultTextStyleModifierMix`
   overrides now merge with the ambient `DefaultTextStyle` instead of replacing
