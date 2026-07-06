@@ -229,8 +229,8 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
   }
 
   /// Looks up the styler's `call()` method (including inherited members) and
-  /// validates the contract: returns a `Widget`, no optional positional
-  /// parameters.
+  /// validates the contract: returns a `Widget`-assignable type, no optional
+  /// positional parameters.
   MethodElement _requireCallMethod(
     Element anchor,
     InterfaceType stylerType, {
@@ -252,7 +252,7 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
       );
     }
 
-    if (!widgetChecker.isAssignableFromType(call.returnType)) {
+    if (_widgetAssignableReturnType(call.returnType) == null) {
       fail(
         anchor,
         '$_annotationLabel requires $stylerName.call() to return a Widget '
@@ -271,6 +271,20 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
     }
 
     return call;
+  }
+
+  /// A generic `call<T extends Widget>()` reports its return as `T`; validate
+  /// that shape against the bound so generated `build()` still returns Widget.
+  DartType? _widgetAssignableReturnType(DartType returnType) {
+    if (returnType is TypeParameterType) {
+      return _widgetAssignableReturnType(returnType.bound);
+    }
+
+    if (widgetChecker.isAssignableFromType(returnType)) {
+      return returnType;
+    }
+
+    return null;
   }
 
   List<WidgetCallTypeParam> _extractCallTypeParams(
@@ -388,7 +402,7 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
     MethodElement callMethod,
     LibraryElement hostLibrary,
   ) {
-    final returnType = callMethod.returnType;
+    final returnType = _widgetAssignableReturnType(callMethod.returnType);
     if (returnType is! InterfaceType) return;
 
     final widgetType = findSupertypeMatching(returnType, widgetChecker);

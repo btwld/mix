@@ -985,6 +985,48 @@ RadioStyler fortalRadioStyle({Variant variant = Variant.surface}) =>
       },
     );
 
+    test('generic styler call can return its widget type parameter', () async {
+      const source = r'''
+library widget_case;
+
+import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+import 'package:mix/src/core/style.dart';
+
+part 'widget_case.g.dart';
+
+class BoxSpec { const BoxSpec(); }
+
+class TypedStyler extends Style<BoxSpec> {
+  const TypedStyler();
+
+  T call<T extends Widget>({Key? key, required T child}) => child;
+}
+
+@MixWidget(name: 'TypedHost')
+final typedStyle = const TypedStyler();
+''';
+
+      await expectGeneratorOutputResolves(
+        builder: partBuilder(const MixWidgetGenerator()),
+        sources: {
+          ...mixAnnotationsSources,
+          ...widgetStub,
+          'mix|lib/src/core/style.dart': styleStub,
+          'mix_generator|lib/widget_case.dart': source,
+        },
+        inputAsset: 'mix_generator|lib/widget_case.dart',
+        outputAsset: 'mix_generator|lib/widget_case.g.dart',
+        outputMatcher: allOf([
+          contains('class TypedHost<T extends Widget> extends StatelessWidget'),
+          contains('required this.child'),
+          contains('final T child;'),
+          contains('return typedStyle.call<T>('),
+          contains('child: this.child'),
+        ]),
+      );
+    });
+
     test('positional call param surfaces as a positional widget arg', () async {
       const source = r'''
 library widget_case;

@@ -223,6 +223,33 @@ final brokenStyle = const BadStyler();
     );
 
     test(
+      'MixWidgetGenerator rejects generic call returns with non-widget bounds',
+      () async {
+        const libSource = r'''
+library widget_validation;
+
+import 'package:mix_annotations/mix_annotations.dart';
+import 'package:mix/src/core/style.dart';
+
+class BoxSpec { const BoxSpec(); }
+
+class BadStyler extends Style<BoxSpec> {
+  const BadStyler();
+  T call<T extends Object>({required T value}) => value;
+}
+
+@MixWidget()
+final brokenStyle = const BadStyler();
+''';
+
+        final errors = await _expectMixWidgetValidationError(libSource);
+
+        expect(errors, contains('return a Widget subtype'));
+        expect(errors, contains('returns `T`'));
+      },
+    );
+
+    test(
       'MixWidgetGenerator rejects optional positional factory params',
       () async {
         const libSource = r'''
@@ -708,6 +735,33 @@ final cardStyle = const BoxStyler();
 
       expect(errors, contains('visible unprefixed'));
     });
+
+    test(
+      'MixWidgetGenerator rejects prefixed Flutter imports for generic returns',
+      () async {
+        const libSource = r'''
+library widget_validation;
+
+import 'package:flutter/widgets.dart' as fw;
+import 'package:mix_annotations/mix_annotations.dart';
+import 'package:mix/src/core/style.dart';
+
+class BoxSpec { const BoxSpec(); }
+
+class BoxStyler extends Style<BoxSpec> {
+  const BoxStyler();
+  T call<T extends fw.Widget>({fw.Key? key, required T child}) => child;
+}
+
+@MixWidget()
+final cardStyle = const BoxStyler();
+''';
+
+        final errors = await _expectMixWidgetValidationError(libSource);
+
+        expect(errors, contains('visible unprefixed'));
+      },
+    );
 
     test('MixWidgetGenerator rejects invalid name overrides', () async {
       const cases = {
