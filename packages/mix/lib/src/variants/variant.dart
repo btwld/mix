@@ -53,38 +53,20 @@ class ContextVariant extends Variant {
     return WidgetStateVariant(state);
   }
 
-  static ContextVariant orientation(Orientation orientation) {
-    return ContextVariant(
-      'media_query_orientation_${orientation.name}',
-      (context) => MediaQuery.orientationOf(context) == orientation,
-    );
+  static OrientationVariant orientation(Orientation orientation) {
+    return OrientationVariant(orientation);
   }
 
   static ContextVariant not(ContextVariant variant) {
-    return ContextVariant(
-      'not_${variant.key}',
-      (context) => !variant.when(context),
-    );
+    return NotVariant(variant);
   }
 
   static ContextVariant breakpoint(Breakpoint breakpoint) {
-    if (breakpoint case final BreakpointRef ref) {
-      return ContextVariant('breakpoint_${ref.token.name}', (context) {
-        return ref.token.resolve(context).matches(MediaQuery.sizeOf(context));
-      });
-    }
-
-    return ContextVariant(
-      'breakpoint_${breakpoint.minWidth ?? '0.0'}_${breakpoint.maxWidth ?? 'infinity'}',
-      (context) => breakpoint.matches(MediaQuery.sizeOf(context)),
-    );
+    return BreakpointVariant(breakpoint);
   }
 
   static ContextVariant brightness(Brightness brightness) {
-    return ContextVariant(
-      'media_query_platform_brightness_${brightness.name}',
-      (context) => MediaQuery.platformBrightnessOf(context) == brightness,
-    );
+    return BrightnessVariant(brightness);
   }
 
   static ContextVariant size(String name, bool Function(Size) condition) {
@@ -95,24 +77,18 @@ class ContextVariant extends Variant {
   }
 
   // Directionality
-  static ContextVariant directionality(TextDirection direction) {
-    return ContextVariant(
-      'directionality_${direction.name}',
-      (context) => Directionality.of(context) == direction,
-    );
+  static DirectionalityVariant directionality(TextDirection direction) {
+    return DirectionalityVariant(direction);
   }
 
   // Platform
-  static ContextVariant platform(TargetPlatform platform) {
-    return ContextVariant(
-      'platform_${platform.name}',
-      (context) => defaultTargetPlatform == platform,
-    );
+  static PlatformVariant platform(TargetPlatform platform) {
+    return PlatformVariant(platform);
   }
 
   // Web
-  static ContextVariant web() {
-    return ContextVariant('web', (_) => kIsWeb);
+  static WebVariant web() {
+    return WebVariant();
   }
 
   // Responsive breakpoints
@@ -134,6 +110,130 @@ class ContextVariant extends Variant {
   }
 }
 
+/// Context variant that applies for a media-query orientation.
+final class OrientationVariant extends ContextVariant {
+  final Orientation orientation;
+
+  OrientationVariant(this.orientation)
+    : super(
+        'media_query_orientation_${orientation.name}',
+        (context) => MediaQuery.orientationOf(context) == orientation,
+      );
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is OrientationVariant && other.orientation == orientation;
+
+  @override
+  int get hashCode => orientation.hashCode;
+}
+
+/// Context variant that applies for a platform brightness.
+final class BrightnessVariant extends ContextVariant {
+  final Brightness brightness;
+
+  BrightnessVariant(this.brightness)
+    : super(
+        'media_query_platform_brightness_${brightness.name}',
+        (context) => MediaQuery.platformBrightnessOf(context) == brightness,
+      );
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BrightnessVariant && other.brightness == brightness;
+
+  @override
+  int get hashCode => brightness.hashCode;
+}
+
+/// Context variant that applies for a concrete or token-backed breakpoint.
+final class BreakpointVariant extends ContextVariant {
+  final Breakpoint breakpoint;
+
+  BreakpointVariant(this.breakpoint)
+    : super(_breakpointKey(breakpoint), (context) {
+        if (breakpoint case final BreakpointRef ref) {
+          return ref.token.resolve(context).matches(MediaQuery.sizeOf(context));
+        }
+
+        return breakpoint.matches(MediaQuery.sizeOf(context));
+      });
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BreakpointVariant && other.breakpoint == breakpoint;
+
+  @override
+  int get hashCode => breakpoint.hashCode;
+}
+
+/// Context variant that applies when another context variant does not.
+final class NotVariant extends ContextVariant {
+  final ContextVariant inner;
+
+  NotVariant(this.inner)
+    : super('not_${inner.key}', (context) => !inner.when(context));
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) || other is NotVariant && other.inner == inner;
+
+  @override
+  int get hashCode => inner.hashCode;
+}
+
+/// Context variant that applies for inherited text direction.
+final class DirectionalityVariant extends ContextVariant {
+  final TextDirection direction;
+
+  DirectionalityVariant(this.direction)
+    : super(
+        'directionality_${direction.name}',
+        (context) => Directionality.of(context) == direction,
+      );
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is DirectionalityVariant && other.direction == direction;
+
+  @override
+  int get hashCode => direction.hashCode;
+}
+
+/// Context variant that applies for the current default target platform.
+final class PlatformVariant extends ContextVariant {
+  final TargetPlatform platform;
+
+  PlatformVariant(this.platform)
+    : super(
+        'platform_${platform.name}',
+        (_) => defaultTargetPlatform == platform,
+      );
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is PlatformVariant && other.platform == platform;
+
+  @override
+  int get hashCode => platform.hashCode;
+}
+
+/// Context variant that applies when running on the web.
+final class WebVariant extends ContextVariant {
+  WebVariant() : super('web', (_) => kIsWeb);
+
+  @override
+  bool operator ==(Object other) => other is WebVariant;
+
+  @override
+  int get hashCode => key.hashCode;
+}
+
 final class WidgetStateVariant extends ContextVariant {
   final WidgetState state;
 
@@ -149,6 +249,14 @@ final class WidgetStateVariant extends ContextVariant {
 
   @override
   int get hashCode => state.hashCode;
+}
+
+String _breakpointKey(Breakpoint breakpoint) {
+  if (breakpoint case final BreakpointRef ref) {
+    return 'breakpoint_${ref.token.name}';
+  }
+
+  return 'breakpoint_${breakpoint.minWidth ?? '0.0'}_${breakpoint.maxWidth ?? 'infinity'}';
 }
 
 /// Variant that dynamically builds a Style based on build context.

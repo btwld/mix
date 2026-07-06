@@ -1,3 +1,31 @@
+## Unreleased
+
+### New features
+
+- **Typed context variants:** `BrightnessVariant`, `BreakpointVariant`,
+  `OrientationVariant`, `DirectionalityVariant`, `PlatformVariant`,
+  `WebVariant`, and `NotVariant` are now public value objects behind their
+  `ContextVariant` factories, giving schema and tooling code stable typed data
+  to inspect instead of parsing keys.
+
+### Fixes
+
+- **Context variant equality:** `ContextVariant.brightness`,
+  `ContextVariant.breakpoint`, `ContextVariant.orientation`,
+  `ContextVariant.directionality`, `ContextVariant.platform`,
+  `ContextVariant.web`, and `ContextVariant.not` now compare by their typed
+  values instead of identity, so equivalent variants deduplicate and
+  round-trip predictably.
+- **Default text style modifier merge:** Partial `DefaultTextStyleModifierMix`
+  overrides now merge with the ambient `DefaultTextStyle` instead of replacing
+  inherited text style fields.
+
+### API changes
+
+- **`tokenFromReferenceValue`** is now public for schema/tooling code that needs
+  to identify unresolved token references, including sentinel-backed
+  `DoubleRef` values, without importing Mix internals.
+
 ## 2.1.0
 
 This release adds context-derived token resolution and richer animation
