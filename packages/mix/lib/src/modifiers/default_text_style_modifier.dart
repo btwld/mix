@@ -65,7 +65,7 @@ final class DefaultTextStyleModifier with _$DefaultTextStyleModifier {
 
   @override
   Widget build(Widget child) {
-    return DefaultTextStyle(
+    return DefaultTextStyle.merge(
       style: style,
       textAlign: textAlign,
       softWrap: softWrap,
