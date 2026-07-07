@@ -47,14 +47,9 @@ void main() {
   });
 
   testWidgets('Div wraps multiple children in Column', (tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Div(
-          classNames: 'p-4',
-          children: const [Text('First'), Text('Second')],
-        ),
-      ),
+    await pumpLtr(
+      tester,
+      Div(classNames: 'p-4', children: const [Text('First'), Text('Second')]),
     );
 
     expect(find.byType(Column), findsOneWidget);
@@ -62,21 +57,19 @@ void main() {
   });
 
   testWidgets('w-full does not crash inside Row', (tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: SizedBox(
-          width: 200,
-          child: Row(
-            children: [
-              Expanded(
-                child: Div(
-                  classNames: 'w-full bg-blue-500',
-                  child: const Text('Should not crash'),
-                ),
+    await pumpLtr(
+      tester,
+      SizedBox(
+        width: 200,
+        child: Row(
+          children: [
+            Expanded(
+              child: Div(
+                classNames: 'w-full bg-blue-500',
+                child: const Text('Should not crash'),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -86,21 +79,19 @@ void main() {
   });
 
   testWidgets('w-full expands to parent width inside Row', (tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: SizedBox(
-          width: 180,
-          child: Row(
-            children: [
-              Expanded(
-                child: Div(
-                  classNames: 'w-full bg-blue-500',
-                  child: const SizedBox(height: 10),
-                ),
+    await pumpLtr(
+      tester,
+      SizedBox(
+        width: 180,
+        child: Row(
+          children: [
+            Expanded(
+              child: Div(
+                classNames: 'w-full bg-blue-500',
+                child: const SizedBox(height: 10),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -142,21 +133,19 @@ void main() {
   });
 
   testWidgets('h-full does not crash inside Column', (tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: SizedBox(
-          height: 200,
-          child: Column(
-            children: [
-              Expanded(
-                child: Div(
-                  classNames: 'h-full bg-blue-500',
-                  child: const Text('Should not crash'),
-                ),
+    await pumpLtr(
+      tester,
+      SizedBox(
+        height: 200,
+        child: Column(
+          children: [
+            Expanded(
+              child: Div(
+                classNames: 'h-full bg-blue-500',
+                child: const Text('Should not crash'),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -166,21 +155,19 @@ void main() {
   });
 
   testWidgets('h-full expands to parent height inside Column', (tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: SizedBox(
-          height: 180,
-          child: Column(
-            children: [
-              Expanded(
-                child: Div(
-                  classNames: 'h-full bg-blue-500',
-                  child: const SizedBox(width: 10),
-                ),
+    await pumpLtr(
+      tester,
+      SizedBox(
+        height: 180,
+        child: Column(
+          children: [
+            Expanded(
+              child: Div(
+                classNames: 'h-full bg-blue-500',
+                child: const SizedBox(width: 10),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -195,21 +182,19 @@ void main() {
   });
 
   testWidgets('md:w-full is also guarded', (tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: SizedBox(
-          width: 220,
-          child: Row(
-            children: [
-              Expanded(
-                child: Div(
-                  classNames: 'md:w-full bg-blue-500',
-                  child: const SizedBox(height: 10),
-                ),
+    await pumpLtr(
+      tester,
+      SizedBox(
+        width: 220,
+        child: Row(
+          children: [
+            Expanded(
+              child: Div(
+                classNames: 'md:w-full bg-blue-500',
+                child: const SizedBox(height: 10),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -401,20 +386,18 @@ void main() {
   testWidgets('flex-1 applies flex parent data when used inside Row', (
     tester,
   ) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: SizedBox(
-          width: 200,
-          child: Row(
-            children: [
-              Div(
-                classNames: 'flex-1 bg-blue-500',
-                child: const SizedBox(width: 10, height: 10),
-              ),
-              const SizedBox(width: 20, height: 20),
-            ],
-          ),
+    await pumpLtr(
+      tester,
+      SizedBox(
+        width: 200,
+        child: Row(
+          children: [
+            Div(
+              classNames: 'flex-1 bg-blue-500',
+              child: const SizedBox(width: 10, height: 10),
+            ),
+            const SizedBox(width: 20, height: 20),
+          ],
         ),
       ),
     );
@@ -427,19 +410,17 @@ void main() {
   });
 
   testWidgets('flex-1 auto-applies min-w-0 constraint', (tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: SizedBox(
-          width: 200,
-          child: Row(
-            children: [
-              Div(
-                classNames: 'flex-1 bg-blue-500',
-                child: const SizedBox(width: 10, height: 10),
-              ),
-            ],
-          ),
+    await pumpLtr(
+      tester,
+      SizedBox(
+        width: 200,
+        child: Row(
+          children: [
+            Div(
+              classNames: 'flex-1 bg-blue-500',
+              child: const SizedBox(width: 10, height: 10),
+            ),
+          ],
         ),
       ),
     );
@@ -453,19 +434,17 @@ void main() {
   });
 
   testWidgets('flex-1 min-w-auto disables auto-constraint', (tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: SizedBox(
-          width: 200,
-          child: Row(
-            children: [
-              Div(
-                classNames: 'flex-1 min-w-auto bg-blue-500',
-                child: const SizedBox(width: 10, height: 10),
-              ),
-            ],
-          ),
+    await pumpLtr(
+      tester,
+      SizedBox(
+        width: 200,
+        child: Row(
+          children: [
+            Div(
+              classNames: 'flex-1 min-w-auto bg-blue-500',
+              child: const SizedBox(width: 10, height: 10),
+            ),
+          ],
         ),
       ),
     );
@@ -484,19 +463,17 @@ void main() {
   });
 
   testWidgets('flex-auto does NOT auto-apply min-w-0', (tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: SizedBox(
-          width: 200,
-          child: Row(
-            children: [
-              Div(
-                classNames: 'flex-auto bg-blue-500',
-                child: const SizedBox(width: 10, height: 10),
-              ),
-            ],
-          ),
+    await pumpLtr(
+      tester,
+      SizedBox(
+        width: 200,
+        child: Row(
+          children: [
+            Div(
+              classNames: 'flex-auto bg-blue-500',
+              child: const SizedBox(width: 10, height: 10),
+            ),
+          ],
         ),
       ),
     );
@@ -515,14 +492,10 @@ void main() {
   });
 
   testWidgets('TruncatedP renders correct hierarchy', (tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Row(
-          children: const [
-            TruncatedP(text: 'Long text', classNames: 'text-sm'),
-          ],
-        ),
+    await pumpLtr(
+      tester,
+      Row(
+        children: const [TruncatedP(text: 'Long text', classNames: 'text-sm')],
       ),
     );
 
@@ -562,17 +535,15 @@ void main() {
   testWidgets('self-end wraps child with Align based on flex axis', (
     tester,
   ) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Row(
-          children: [
-            Div(
-              classNames: 'self-end',
-              child: const SizedBox(width: 10, height: 10),
-            ),
-          ],
-        ),
+    await pumpLtr(
+      tester,
+      Row(
+        children: [
+          Div(
+            classNames: 'self-end',
+            child: const SizedBox(width: 10, height: 10),
+          ),
+        ],
       ),
     );
 
@@ -682,16 +653,14 @@ void main() {
   });
 
   testWidgets('gap-x-4 sets main-axis spacing for row flex', (tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Div(
-          classNames: 'flex gap-x-4',
-          children: const [
-            SizedBox(width: 20, height: 20),
-            SizedBox(width: 20, height: 20),
-          ],
-        ),
+    await pumpLtr(
+      tester,
+      Div(
+        classNames: 'flex gap-x-4',
+        children: const [
+          SizedBox(width: 20, height: 20),
+          SizedBox(width: 20, height: 20),
+        ],
       ),
     );
 
@@ -702,16 +671,14 @@ void main() {
   testWidgets('gap-y-4 applies cross-axis padding for row flex', (
     tester,
   ) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Div(
-          classNames: 'flex gap-y-4',
-          children: const [
-            SizedBox(width: 20, height: 20),
-            SizedBox(width: 20, height: 20),
-          ],
-        ),
+    await pumpLtr(
+      tester,
+      Div(
+        classNames: 'flex gap-y-4',
+        children: const [
+          SizedBox(width: 20, height: 20),
+          SizedBox(width: 20, height: 20),
+        ],
       ),
     );
 
@@ -739,16 +706,14 @@ void main() {
   });
 
   testWidgets('gap-y-6 sets main-axis spacing for column flex', (tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Div(
-          classNames: 'flex flex-col gap-y-6',
-          children: const [
-            SizedBox(width: 20, height: 20),
-            SizedBox(width: 20, height: 20),
-          ],
-        ),
+    await pumpLtr(
+      tester,
+      Div(
+        classNames: 'flex flex-col gap-y-6',
+        children: const [
+          SizedBox(width: 20, height: 20),
+          SizedBox(width: 20, height: 20),
+        ],
       ),
     );
 
@@ -759,16 +724,14 @@ void main() {
   testWidgets('gap-x-2 applies horizontal padding for column flex', (
     tester,
   ) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Div(
-          classNames: 'flex flex-col gap-x-2',
-          children: const [
-            SizedBox(width: 20, height: 20),
-            SizedBox(width: 20, height: 20),
-          ],
-        ),
+    await pumpLtr(
+      tester,
+      Div(
+        classNames: 'flex flex-col gap-x-2',
+        children: const [
+          SizedBox(width: 20, height: 20),
+          SizedBox(width: 20, height: 20),
+        ],
       ),
     );
 
@@ -796,16 +759,14 @@ void main() {
   });
 
   testWidgets('gap-x overrides gap on row flex', (tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Div(
-          classNames: 'flex gap-2 gap-x-6',
-          children: const [
-            SizedBox(width: 20, height: 20),
-            SizedBox(width: 20, height: 20),
-          ],
-        ),
+    await pumpLtr(
+      tester,
+      Div(
+        classNames: 'flex gap-2 gap-x-6',
+        children: const [
+          SizedBox(width: 20, height: 20),
+          SizedBox(width: 20, height: 20),
+        ],
       ),
     );
 
@@ -2007,16 +1968,14 @@ void main() {
   testWidgets('FlexBox Div with transition renders without error', (
     tester,
   ) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Div(
-          classNames: 'flex gap-4 transition duration-200 ease-in',
-          children: const [
-            SizedBox(width: 20, height: 20),
-            SizedBox(width: 20, height: 20),
-          ],
-        ),
+    await pumpLtr(
+      tester,
+      Div(
+        classNames: 'flex gap-4 transition duration-200 ease-in',
+        children: const [
+          SizedBox(width: 20, height: 20),
+          SizedBox(width: 20, height: 20),
+        ],
       ),
     );
 
@@ -2184,16 +2143,14 @@ void main() {
   testWidgets('FlexBox Div applies transform on its Box container', (
     tester,
   ) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Div(
-          classNames: 'flex gap-4 scale-105',
-          children: const [
-            SizedBox(width: 20, height: 20),
-            SizedBox(width: 20, height: 20),
-          ],
-        ),
+    await pumpLtr(
+      tester,
+      Div(
+        classNames: 'flex gap-4 scale-105',
+        children: const [
+          SizedBox(width: 20, height: 20),
+          SizedBox(width: 20, height: 20),
+        ],
       ),
     );
 
@@ -2744,14 +2701,9 @@ void main() {
     testWidgets(
       'Div with text-shadow-md applies shadows via DefaultTextStyle',
       (tester) async {
-        await tester.pumpWidget(
-          Directionality(
-            textDirection: TextDirection.ltr,
-            child: Div(
-              classNames: 'text-shadow-md',
-              children: [const Text('Hello')],
-            ),
-          ),
+        await pumpLtr(
+          tester,
+          Div(classNames: 'text-shadow-md', children: [const Text('Hello')]),
         );
 
         // Div wraps children with DefaultTextStyle for text shadows
@@ -3034,17 +2986,15 @@ void main() {
 
   group('flex in unbounded contexts (CSS parity)', () {
     testWidgets('flex-1 in vertical ScrollView does not crash', (tester) async {
-      await tester.pumpWidget(
-        const Directionality(
-          textDirection: TextDirection.ltr,
-          child: SingleChildScrollView(
-            child: Div(
-              classNames: 'flex flex-col gap-2',
-              children: [
-                Div(classNames: 'flex-1 h-20 bg-blue-500'),
-                Div(classNames: 'h-20 bg-red-500'),
-              ],
-            ),
+      await pumpLtr(
+        tester,
+        const SingleChildScrollView(
+          child: Div(
+            classNames: 'flex flex-col gap-2',
+            children: [
+              Div(classNames: 'flex-1 h-20 bg-blue-500'),
+              Div(classNames: 'h-20 bg-red-500'),
+            ],
           ),
         ),
       );
@@ -3053,17 +3003,15 @@ void main() {
     });
 
     testWidgets('shrink in vertical ScrollView does not crash', (tester) async {
-      await tester.pumpWidget(
-        const Directionality(
-          textDirection: TextDirection.ltr,
-          child: SingleChildScrollView(
-            child: Div(
-              classNames: 'flex flex-col',
-              children: [
-                Div(classNames: 'shrink h-20 bg-blue-500'),
-                Div(classNames: 'shrink-0 h-20 bg-red-500'),
-              ],
-            ),
+      await pumpLtr(
+        tester,
+        const SingleChildScrollView(
+          child: Div(
+            classNames: 'flex flex-col',
+            children: [
+              Div(classNames: 'shrink h-20 bg-blue-500'),
+              Div(classNames: 'shrink-0 h-20 bg-red-500'),
+            ],
           ),
         ),
       );
@@ -3073,18 +3021,16 @@ void main() {
     testWidgets('w-full in horizontal ScrollView does not crash', (
       tester,
     ) async {
-      await tester.pumpWidget(
-        const Directionality(
-          textDirection: TextDirection.ltr,
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Div(
-              classNames: 'flex flex-row',
-              children: [
-                Div(classNames: 'w-full h-20 bg-blue-500'),
-                Div(classNames: 'w-20 h-20 bg-red-500'),
-              ],
-            ),
+      await pumpLtr(
+        tester,
+        const SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Div(
+            classNames: 'flex flex-row',
+            children: [
+              Div(classNames: 'w-full h-20 bg-blue-500'),
+              Div(classNames: 'w-20 h-20 bg-red-500'),
+            ],
           ),
         ),
       );
@@ -3092,19 +3038,17 @@ void main() {
     });
 
     testWidgets('flex-1 in bounded context still works', (tester) async {
-      await tester.pumpWidget(
-        const Directionality(
-          textDirection: TextDirection.ltr,
-          child: SizedBox(
-            width: 300,
-            height: 200,
-            child: Div(
-              classNames: 'flex flex-row',
-              children: [
-                Div(classNames: 'flex-1 bg-blue-500'),
-                Div(classNames: 'flex-1 bg-red-500'),
-              ],
-            ),
+      await pumpLtr(
+        tester,
+        const SizedBox(
+          width: 300,
+          height: 200,
+          child: Div(
+            classNames: 'flex flex-row',
+            children: [
+              Div(classNames: 'flex-1 bg-blue-500'),
+              Div(classNames: 'flex-1 bg-red-500'),
+            ],
           ),
         ),
       );
