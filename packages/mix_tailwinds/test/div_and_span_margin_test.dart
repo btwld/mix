@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 import 'package:mix_tailwinds/mix_tailwinds.dart';
 
-import 'div_and_span_test_helpers.dart';
+import 'tailwinds_test_helpers.dart';
 
 void main() {
   group('P margin utilities', () {

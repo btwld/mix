@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix_tailwinds/mix_tailwinds.dart';
 
-import 'div_and_span_test_helpers.dart';
+import 'tailwinds_test_helpers.dart';
 
 void main() {
   testWidgets('smoke test: renders nested Div and P without warnings', (
