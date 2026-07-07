@@ -176,6 +176,64 @@ void main() {
       expect(code, isNot(contains('key: this.key')));
     });
 
+    test('generic styler call emits generic widget and forwards type args', () {
+      final builder = MixWidgetBuilder(
+        const MixWidgetModel(
+          widgetName: 'FortalRadio',
+          factoryReference: 'fortalRadioStyle',
+          isFunctionFactory: true,
+          factoryParams: [],
+          callParams: [
+            WidgetCallParam(
+              name: 'value',
+              typeCode: 'T',
+              isPositional: false,
+              isRequired: true,
+            ),
+          ],
+          callTypeParams: [WidgetCallTypeParam(name: 'T')],
+          stylerCallForwardsKey: true,
+        ),
+      );
+
+      final code = builder.build();
+
+      expect(code, contains('class FortalRadio<T> extends StatelessWidget'));
+      expect(code, contains('required this.value'));
+      expect(code, contains('final T value;'));
+      expect(code, contains('return fortalRadioStyle().call<T>('));
+      expect(code, contains('value: this.value,'));
+    });
+
+    test('generic styler call preserves bounds', () {
+      final builder = MixWidgetBuilder(
+        const MixWidgetModel(
+          widgetName: 'BoundedRadio',
+          factoryReference: 'boundedRadioStyle',
+          isFunctionFactory: false,
+          factoryParams: [],
+          callParams: [
+            WidgetCallParam(
+              name: 'value',
+              typeCode: 'T',
+              isPositional: false,
+              isRequired: true,
+            ),
+          ],
+          callTypeParams: [WidgetCallTypeParam(name: 'T', boundCode: 'Enum')],
+          stylerCallForwardsKey: false,
+        ),
+      );
+
+      final code = builder.build();
+
+      expect(
+        code,
+        contains('class BoundedRadio<T extends Enum> extends StatelessWidget'),
+      );
+      expect(code, contains('return boundedRadioStyle.call<T>('));
+    });
+
     test('doc comment carries over to the generated class', () {
       final builder = MixWidgetBuilder(
         const MixWidgetModel(

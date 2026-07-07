@@ -223,6 +223,91 @@ final brokenStyle = const BadStyler();
     );
 
     test(
+      'MixWidgetGenerator rejects generic call returns with non-widget bounds',
+      () async {
+        const libSource = r'''
+library widget_validation;
+
+import 'package:mix_annotations/mix_annotations.dart';
+import 'package:mix/src/core/style.dart';
+
+class BoxSpec { const BoxSpec(); }
+
+class BadStyler extends Style<BoxSpec> {
+  const BadStyler();
+  T call<T extends Object>({required T value}) => value;
+}
+
+@MixWidget()
+final brokenStyle = const BadStyler();
+''';
+
+        final errors = await _expectMixWidgetValidationError(libSource);
+
+        expect(errors, contains('return a Widget subtype'));
+        expect(errors, contains('returns `T`'));
+      },
+    );
+
+    test('MixWidgetGenerator rejects a call type parameter bound that is not '
+        'visible from the annotated library', () async {
+      const libSource = r'''
+library widget_validation;
+
+import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+import 'radio_styler.dart';
+
+@MixWidget()
+final radioStyle = const RadioStyler();
+''';
+
+      final errors = await _expectMixWidgetValidationError(
+        libSource,
+        extraSources: {
+          // `RadioValue` is only reachable through `radio_styler.dart`'s own
+          // import, not re-exported — so it stays invisible from
+          // `widget_validation.dart`, which imports `radio_styler.dart` but
+          // never `hidden_bound.dart` directly.
+          'mix_generator|lib/hidden_bound.dart': r'''
+library hidden_bound;
+
+class RadioValue {}
+''',
+          'mix_generator|lib/radio_styler.dart': r'''
+library radio_styler;
+
+import 'package:flutter/widgets.dart';
+import 'package:mix/src/core/style.dart';
+
+import 'hidden_bound.dart';
+
+class BoxSpec { const BoxSpec(); }
+
+class RadioStyler extends Style<BoxSpec> {
+  const RadioStyler();
+
+  Widget call<T extends RadioValue>({Key? key, required T value}) =>
+      const _Stub();
+}
+
+class _Stub extends StatelessWidget {
+  const _Stub();
+  @override
+  Widget build(BuildContext context) => const _Stub();
+}
+''',
+        },
+      );
+
+      expect(
+        errors,
+        contains('Call type parameter `T` has bound `RadioValue`'),
+      );
+      expect(errors, contains('not visible from the annotated library'));
+    });
+
+    test(
       'MixWidgetGenerator rejects optional positional factory params',
       () async {
         const libSource = r'''
@@ -708,6 +793,33 @@ final cardStyle = const BoxStyler();
 
       expect(errors, contains('visible unprefixed'));
     });
+
+    test(
+      'MixWidgetGenerator rejects prefixed Flutter imports for generic returns',
+      () async {
+        const libSource = r'''
+library widget_validation;
+
+import 'package:flutter/widgets.dart' as fw;
+import 'package:mix_annotations/mix_annotations.dart';
+import 'package:mix/src/core/style.dart';
+
+class BoxSpec { const BoxSpec(); }
+
+class BoxStyler extends Style<BoxSpec> {
+  const BoxStyler();
+  T call<T extends fw.Widget>({fw.Key? key, required T child}) => child;
+}
+
+@MixWidget()
+final cardStyle = const BoxStyler();
+''';
+
+        final errors = await _expectMixWidgetValidationError(libSource);
+
+        expect(errors, contains('visible unprefixed'));
+      },
+    );
 
     test('MixWidgetGenerator rejects invalid name overrides', () async {
       const cases = {
