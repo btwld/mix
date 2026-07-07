@@ -78,4 +78,83 @@ void main() {
       expect(variant.key, 'media_query_size_mobile');
     });
   });
+
+  group('shouldApply behavior', () {
+    testWidgets('brightness variant applies for matching theme brightness', (
+      tester,
+    ) async {
+      final dark = ContextVariant.brightness(Brightness.dark);
+      final light = ContextVariant.brightness(Brightness.light);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: MediaQuery(
+            data: const MediaQueryData(platformBrightness: Brightness.dark),
+            child: Builder(
+              builder: (context) {
+                expect(dark.shouldApply(context), isTrue);
+                expect(light.shouldApply(context), isFalse);
+                return const SizedBox();
+              },
+            ),
+          ),
+        ),
+      );
+    });
+
+    testWidgets('breakpoint variant applies from MediaQuery width', (
+      tester,
+    ) async {
+      const breakpoint = Breakpoint(minWidth: 400, maxWidth: 800);
+      final variant = ContextVariant.breakpoint(breakpoint);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: MediaQuery(
+            data: const MediaQueryData(size: Size(500, 800)),
+            child: Builder(
+              builder: (context) {
+                expect(variant.shouldApply(context), isTrue);
+                return const SizedBox();
+              },
+            ),
+          ),
+        ),
+      );
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: MediaQuery(
+            data: const MediaQueryData(size: Size(200, 800)),
+            child: Builder(
+              builder: (context) {
+                expect(variant.shouldApply(context), isFalse);
+                return const SizedBox();
+              },
+            ),
+          ),
+        ),
+      );
+    });
+
+    testWidgets('not variant inverts inner shouldApply result', (tester) async {
+      final disabled = ContextVariant.widgetState(WidgetState.disabled);
+      final enabled = ContextVariant.not(disabled);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: WidgetStateProvider(
+            states: const {WidgetState.disabled},
+            child: Builder(
+              builder: (context) {
+                expect(disabled.shouldApply(context), isTrue);
+                expect(enabled.shouldApply(context), isFalse);
+                return const SizedBox();
+              },
+            ),
+          ),
+        ),
+      );
+    });
+  });
 }

@@ -168,8 +168,29 @@ void main() {
         final hovered = WidgetStateVariant(WidgetState.hovered);
         final pressed = WidgetStateVariant(WidgetState.pressed);
 
-        // The functions should be different even if they might return the same result
         expect(hovered.shouldApply != pressed.shouldApply, isTrue);
+      });
+
+      testWidgets('shouldApply returns true only for the active widget state', (
+        tester,
+      ) async {
+        final hovered = WidgetStateVariant(WidgetState.hovered);
+        final pressed = WidgetStateVariant(WidgetState.pressed);
+
+        await tester.pumpWidget(
+          MaterialApp(
+            home: WidgetStateProvider(
+              states: const {WidgetState.hovered},
+              child: Builder(
+                builder: (context) {
+                  expect(hovered.shouldApply(context), isTrue);
+                  expect(pressed.shouldApply(context), isFalse);
+                  return const SizedBox();
+                },
+              ),
+            ),
+          ),
+        );
       });
     });
 

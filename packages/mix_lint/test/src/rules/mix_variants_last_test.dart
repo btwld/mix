@@ -33,6 +33,18 @@ void main() {
 }
 ''');
   }
+
+  void test_multiple_variants_then_property_reports() async {
+    await assertDiagnostics(
+      r'''
+import 'package:mix/mix.dart';
+void main() {
+  final s = BoxStyler().onDark(BoxStyler().color(0)).onHovered(BoxStyler().color(0)).width(10);
+}
+''',
+      [lint(130, 5)],
+    );
+  }
 }
 
 void main() {

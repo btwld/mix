@@ -2,6 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
+Widget styleAnimationBuilderCapturingColor(
+  StyleSpec<TestSpec> spec,
+  void Function(Color?) onColor,
+) {
+  return MaterialApp(
+    home: StyleAnimationBuilder<TestSpec>(
+      spec: spec,
+      builder: (context, resolved) {
+        onColor(resolved.spec.color);
+        return Container(color: resolved.spec.color);
+      },
+    ),
+  );
+}
+
 void main() {
   group('AnimationStyleWidget', () {
     testWidgets('builds with initial style', (tester) async {
@@ -70,34 +85,31 @@ void main() {
         spec: TestSpec(color: Colors.blue),
         animation: animationConfig,
       );
+      Color? capturedColor;
 
       await tester.pumpWidget(
-        MaterialApp(
-          home: StyleAnimationBuilder<TestSpec>(
-            spec: spec1,
-            builder: (context, spec) =>
-                Container(key: ValueKey(spec.spec.color)),
-          ),
+        styleAnimationBuilderCapturingColor(
+          spec1,
+          (color) => capturedColor = color,
         ),
       );
+      await tester.pumpAndSettle();
+      expect(capturedColor, Colors.red);
 
-      await tester.pump();
-
-      // Update style
       await tester.pumpWidget(
-        MaterialApp(
-          home: StyleAnimationBuilder<TestSpec>(
-            spec: spec2,
-            builder: (context, spec) =>
-                Container(key: ValueKey(spec.spec.color)),
-          ),
+        styleAnimationBuilderCapturingColor(
+          spec2,
+          (color) => capturedColor = color,
         ),
       );
-
-      // Animation should trigger
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 50));
+
+      expect(capturedColor, isNot(Colors.red));
+      expect(capturedColor, isNot(Colors.blue));
+
       await tester.pumpAndSettle();
+      expect(capturedColor, Colors.blue);
     });
 
     testWidgets('updates when animation config changes', (tester) async {
@@ -114,33 +126,34 @@ void main() {
         animation: config1,
       );
       const spec2 = StyleSpec<TestSpec>(
-        spec: TestSpec(color: Colors.red),
+        spec: TestSpec(color: Colors.blue),
         animation: config2,
       );
+      Color? capturedColor;
 
       await tester.pumpWidget(
-        MaterialApp(
-          home: StyleAnimationBuilder<TestSpec>(
-            spec: spec1,
-            builder: (context, spec) => Container(color: spec.spec.color),
-          ),
+        styleAnimationBuilderCapturingColor(
+          spec1,
+          (color) => capturedColor = color,
         ),
       );
-
-      await tester.pump();
-
-      // Change config
-      await tester.pumpWidget(
-        MaterialApp(
-          home: StyleAnimationBuilder<TestSpec>(
-            spec: spec2,
-            builder: (context, spec) => Container(color: spec.spec.color),
-          ),
-        ),
-      );
-
-      await tester.pump();
       await tester.pumpAndSettle();
+      expect(capturedColor, Colors.red);
+
+      await tester.pumpWidget(
+        styleAnimationBuilderCapturingColor(
+          spec2,
+          (color) => capturedColor = color,
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(capturedColor, isNot(Colors.red));
+      expect(capturedColor, isNot(Colors.blue));
+
+      await tester.pumpAndSettle();
+      expect(capturedColor, Colors.blue);
     });
 
     testWidgets('disposes correctly', (tester) async {
@@ -292,11 +305,13 @@ void main() {
         ),
       );
 
-      // Should update immediately (no animation)
       await tester.pump();
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('test-container')), findsOneWidget);
+      final container = tester.widget<Container>(
+        find.byKey(const Key('test-container')),
+      );
+      expect(container.color, Colors.blue);
     });
 
     testWidgets(
@@ -318,21 +333,13 @@ void main() {
 
         Color? capturedColor;
 
-        Widget buildSubject(StyleSpec<TestSpec> spec) {
-          return MaterialApp(
-            home: StyleAnimationBuilder<TestSpec>(
-              spec: spec,
-              builder: (context, resolved) {
-                capturedColor = resolved.spec.color;
-
-                return Container(color: resolved.spec.color);
-              },
-            ),
-          );
-        }
-
         // Start with the animated spec and let it settle on red.
-        await tester.pumpWidget(buildSubject(specWithAnimation));
+        await tester.pumpWidget(
+          styleAnimationBuilderCapturingColor(
+            specWithAnimation,
+            (color) => capturedColor = color,
+          ),
+        );
         await tester.pumpAndSettle();
 
         expect(capturedColor, Colors.red);
@@ -340,7 +347,12 @@ void main() {
         // Switch to a spec with a null animation config. The builder should
         // fall back to the previous config and keep animating instead of
         // jumping straight to the new target value.
-        await tester.pumpWidget(buildSubject(specWithoutAnimation));
+        await tester.pumpWidget(
+          styleAnimationBuilderCapturingColor(
+            specWithoutAnimation,
+            (color) => capturedColor = color,
+          ),
+        );
         await tester.pump();
         await tester.pump(const Duration(milliseconds: 100));
 
