@@ -45,5 +45,21 @@ void main() {
     expect(find.text('Primary'), findsOneWidget);
     expect(find.text('Secondary'), findsOneWidget);
     expect(unsupported, isEmpty);
+
+    Text textByLabel(String label) {
+      return tester
+          .widgetList<Text>(find.byType(Text))
+          .firstWhere((text) => text.data == label);
+    }
+
+    final titleText = textByLabel('Title');
+    expect(titleText.style?.fontWeight, FontWeight.w600);
+    expect(titleText.style?.color, const Color(0xFFFFFFFF));
+
+    final primaryText = textByLabel('Primary');
+    expect(primaryText.style?.color, const Color(0xFF1D4ED8));
+
+    final secondaryText = textByLabel('Secondary');
+    expect(secondaryText.style?.color, const Color(0xFFFFFFFF));
   });
 }

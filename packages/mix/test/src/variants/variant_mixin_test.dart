@@ -41,7 +41,7 @@ class TestVariantAttribute extends Style<BoxSpec>
 }
 
 void main() {
-  group('VariantMixin', () {
+  group('VariantStyleMixin factories', () {
     test('onDark creates correct variant', () {
       const attribute = TestVariantAttribute();
       const style = TestVariantAttribute();
@@ -211,7 +211,57 @@ void main() {
     });
   });
 
-  group('applyVariants', () {
+  group('applyVariants merge values', () {
+    test('merges width from a single applied named variant', () {
+      const smallVariant = NamedVariant('small');
+      final base = BoxStyler().width(100);
+      final smallStyle = BoxStyler().width(50);
+
+      final result = base.variant(smallVariant, smallStyle).applyVariants([
+        smallVariant,
+      ]);
+
+      final resolved = result.resolve(MockBuildContext());
+
+      expect(resolved.spec.constraints?.maxWidth, 50);
+    });
+
+    test('merges styles from multiple applied named variants', () {
+      const smallVariant = NamedVariant('small');
+      const primaryVariant = NamedVariant('primary');
+      final base = BoxStyler().width(100).color(Colors.red);
+      final smallStyle = BoxStyler().width(50);
+      final primaryStyle = BoxStyler().color(Colors.blue);
+
+      final result = base
+          .variant(smallVariant, smallStyle)
+          .variant(primaryVariant, primaryStyle)
+          .applyVariants([smallVariant, primaryVariant]);
+
+      final resolved = result.resolve(MockBuildContext());
+      final decoration = resolved.spec.decoration as BoxDecoration?;
+
+      expect(resolved.spec.constraints?.maxWidth, 50);
+      expect(decoration?.color, Colors.blue);
+    });
+
+    test('leaves base values when applying a non-matching variant', () {
+      const smallVariant = NamedVariant('small');
+      const missingVariant = NamedVariant('missing');
+      final base = BoxStyler().width(100);
+      final smallStyle = BoxStyler().width(50);
+
+      final result = base.variant(smallVariant, smallStyle).applyVariants([
+        missingVariant,
+      ]);
+
+      final resolved = result.resolve(MockBuildContext());
+
+      expect(resolved.spec.constraints?.maxWidth, 100);
+    });
+  });
+
+  group('applyVariants structure', () {
     test('returns concrete type T', () {
       const smallVariant = NamedVariant('small');
       const attribute = TestVariantAttribute();

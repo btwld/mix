@@ -10,7 +10,7 @@ import 'package:mix/src/theme/tokens/token_refs.dart';
 import '../../helpers/testing_utils.dart';
 
 void main() {
-  group('Token References', () {
+  group('prop token references', () {
     setUp(() {
       // Clear registry before each test to ensure clean state
       clearTokenRegistry();

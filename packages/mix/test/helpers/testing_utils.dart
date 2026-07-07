@@ -455,6 +455,29 @@ extension WidgetTesterExtension on WidgetTester {
   Future<void> pumpMaterialApp(Widget widget) async {
     await pumpWidget(MaterialApp(home: Scaffold(body: widget)));
   }
+
+  /// Pumps [Box] with [style] inside [MixScope] for token integration tests.
+  Future<Container> pumpBoxWithMixScope({
+    required Map<MixToken, Object> tokens,
+    required BoxStyler style,
+  }) async {
+    await pumpWidget(
+      MixScope(
+        tokens: tokens,
+        child: Directionality(
+          textDirection: TextDirection.ltr,
+          child: Box(style: style),
+        ),
+      ),
+    );
+
+    return widget<Container>(find.byType(Container));
+  }
+}
+
+/// Reads [BoxDecoration] from a pumped [Container].
+BoxDecoration boxDecorationFrom(Container container) {
+  return container.decoration! as BoxDecoration;
 }
 
 final blackPixelBytes = base64Decode(

@@ -142,7 +142,9 @@ enum DiagnosticLevel { info }
 
 enum DiagnosticsTreeStyle { singleLine }
 
-class DiagnosticPropertiesBuilder {}
+class DiagnosticPropertiesBuilder {
+  void add(Object? property) {}
+}
 
 class DiagnosticsNode {
   String toString({DiagnosticLevel? minLevel}) => super.toString();
@@ -176,6 +178,10 @@ abstract class Spec<T extends Spec<T>> with Equatable {
   T lerp(T? other, double t);
 }
 
+class MixOps {
+  static T? lerp<T>(T? a, T? b, double t) => a;
+}
+
 class Shadow {}
 
 @MixableSpec()
@@ -186,28 +192,26 @@ class BoxSpec with _$BoxSpec {
 }
 ''';
 
-      await testBuilder(
-        partBuilder(const SpecGenerator()),
-        {...mixAnnotationsSources, 'mix_generator|lib/spec_case.dart': source},
-        generateFor: {'mix_generator|lib/spec_case.dart'},
-        outputs: {
-          'mix_generator|lib/spec_case.g.dart': decodedMatches(
-            allOf([
-              contains(
-                'mixin _\$BoxSpec implements Spec<BoxSpec>, Diagnosticable',
-              ),
-              contains('Type get type => BoxSpec;'),
-              contains('List<Shadow>? get shadows;'),
-              contains('BoxSpec copyWith({List<Shadow>? shadows})'),
-              contains('shadows: shadows ?? this.shadows'),
-              contains("IterableProperty<Shadow>('shadows', shadows)"),
-              contains('MixOps.lerp(shadows, other?.shadows, t)'),
-              contains('propsEquals(props, other.props)'),
-              contains('propsHash(runtimeType, props)'),
-              contains('typedef _\$BoxSpecMethods = _\$BoxSpec;'),
-            ]),
-          ),
+      await expectGeneratorOutputResolves(
+        builder: partBuilder(const SpecGenerator()),
+        sources: {
+          ...mixAnnotationsSources,
+          'mix_generator|lib/spec_case.dart': source,
         },
+        inputAsset: 'mix_generator|lib/spec_case.dart',
+        outputAsset: 'mix_generator|lib/spec_case.g.dart',
+        outputMatcher: allOf([
+          contains('mixin _\$BoxSpec implements Spec<BoxSpec>, Diagnosticable'),
+          contains('Type get type => BoxSpec;'),
+          contains('List<Shadow>? get shadows;'),
+          contains('BoxSpec copyWith({List<Shadow>? shadows})'),
+          contains('shadows: shadows ?? this.shadows'),
+          contains("IterableProperty<Shadow>('shadows', shadows)"),
+          contains('MixOps.lerp(shadows, other?.shadows, t)'),
+          contains('propsEquals(props, other.props)'),
+          contains('propsHash(runtimeType, props)'),
+          contains('typedef _\$BoxSpecMethods = _\$BoxSpec;'),
+        ]),
       );
     });
 

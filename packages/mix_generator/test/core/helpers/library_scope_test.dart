@@ -80,6 +80,39 @@ void main() {
     });
   });
 
+  group('firstInvisibleTypeName', () {
+    test('returns hidden type name when type is not visible', () async {
+      final libraries = await _resolveHiddenLibraryScope();
+      final hiddenValue = libraries.hidden.getTopLevelFunction('hiddenValue')!;
+
+      expect(
+        firstInvisibleTypeName(hiddenValue.returnType, libraries.input),
+        'HiddenType',
+      );
+    });
+
+    test('returns null when all referenced types are visible', () async {
+      final libraries = await _resolveLibraryScope('''
+        import 'visible.dart';
+        VisibleType value() => throw UnimplementedError();
+      ''');
+
+      final value = libraries.input.getTopLevelFunction('value')!;
+
+      expect(firstInvisibleTypeName(value.returnType, libraries.input), isNull);
+    });
+
+    test('returns hidden generic argument name', () async {
+      final libraries = await _resolveHiddenLibraryScope();
+      final hiddenValue = libraries.hidden.getTopLevelFunction('hiddenAlias')!;
+
+      expect(
+        firstInvisibleTypeName(hiddenValue.returnType, libraries.input),
+        'HiddenAlias',
+      );
+    });
+  });
+
   group('typeCode', () {
     test('uses the visible prefix for generic type aliases', () async {
       final libraries = await _resolveLibraryScope('''
@@ -139,6 +172,44 @@ Future<({LibraryElement visible, LibraryElement input})> _resolveLibraryScope(
       return (
         visible: await resolver.libraryFor(
           AssetId('test_pkg', 'lib/visible.dart'),
+        ),
+        input: await resolver.libraryFor(AssetId('test_pkg', 'lib/input.dart')),
+      );
+    },
+    resolverFor: 'test_pkg|lib/input.dart',
+  );
+}
+
+Future<({LibraryElement hidden, LibraryElement input})>
+_resolveHiddenLibraryScope() {
+  return resolveSources(
+    {
+      'test_pkg|lib/hidden.dart': '''
+        library hidden;
+
+        class HiddenType {}
+        typedef HiddenAlias<T> = HiddenType;
+
+        HiddenType hiddenValue() => throw UnimplementedError();
+        HiddenAlias<int> hiddenAlias() => throw UnimplementedError();
+      ''',
+      'test_pkg|lib/input.dart': '''
+        library input;
+
+        import 'visible.dart';
+
+        VisibleType visibleValue() => throw UnimplementedError();
+      ''',
+      'test_pkg|lib/visible.dart': '''
+        library visible;
+
+        class VisibleType {}
+      ''',
+    },
+    (resolver) async {
+      return (
+        hidden: await resolver.libraryFor(
+          AssetId('test_pkg', 'lib/hidden.dart'),
         ),
         input: await resolver.libraryFor(AssetId('test_pkg', 'lib/input.dart')),
       );

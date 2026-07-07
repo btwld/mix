@@ -35,6 +35,17 @@ class MyStyler {
 }
 ''');
   }
+
+  void test_mixable_styler_with_factory_constructor_no_diagnostic() async {
+    await assertNoDiagnostics(r'''
+import 'package:mix_annotations/mix_annotations.dart';
+@MixableStyler()
+class MyStyler {
+  factory MyStyler.create() => const MyStyler._();
+  const MyStyler._();
+}
+''');
+  }
 }
 
 void main() {
