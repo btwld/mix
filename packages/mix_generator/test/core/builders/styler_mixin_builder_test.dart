@@ -290,8 +290,19 @@ void main() {
         );
         final code = builder.build();
 
-        expect(code, contains('BoxStyler animate(AnimationConfig value)'));
-        expect(code, contains('return merge(BoxStyler(animation: value))'));
+        expect(
+          code,
+          contains(
+            'BoxStyler animate(AnimationConfig value, {AnimationConfig? reverse})',
+          ),
+        );
+        expect(
+          code,
+          contains(
+            'ReversibleAnimationConfig(forward: value, reverse: reverse)',
+          ),
+        );
+        expect(code, contains('return merge(BoxStyler(animation: config))'));
       });
 
       test('generates variants method', () {

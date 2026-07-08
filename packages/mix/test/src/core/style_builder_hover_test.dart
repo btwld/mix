@@ -178,5 +178,99 @@ void main() {
         await gesture.removePointer();
       },
     );
+
+    testWidgets(
+      'hover with animate(reverse:) uses forward on enter and reverse on exit',
+      (tester) async {
+        // Forward enter is slow (300ms), reverse exit is fast (60ms). We pump
+        // partway through each to assert the correct timing config drives the
+        // transition without throwing.
+        final style = BoxStyler()
+            .color(Colors.blue)
+            .width(100)
+            .height(100)
+            .animate(.linear(300.ms))
+            .onHovered(
+              BoxStyler()
+                  .color(Colors.red)
+                  .scale(1.02)
+                  .animate(.linear(300.ms), reverse: .linear(60.ms)),
+            );
+
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: Center(
+                child: Box(key: const Key('reverse_card'), style: style),
+              ),
+            ),
+          ),
+        );
+
+        final gesture = await tester.createGesture(
+          kind: PointerDeviceKind.mouse,
+        );
+        await gesture.addPointer(location: Offset.zero);
+
+        // Enter: forward (300ms) drives. Settle the animation fully.
+        await gesture.moveTo(
+          tester.getCenter(find.byKey(const Key('reverse_card'))),
+        );
+        await tester.pump();
+        await tester.pumpAndSettle();
+        expect(tester.takeException(), isNull);
+
+        // Exit: reverse (60ms) drives. Pump less than forward duration to make
+        // sure the fast exit config completed the transition.
+        await gesture.moveTo(const Offset(-100, -100));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 80));
+        expect(tester.takeException(), isNull);
+
+        await tester.pumpAndSettle();
+        await gesture.removePointer();
+      },
+    );
+
+    testWidgets('inherited base reversible config does not break hover enter', (
+      tester,
+    ) async {
+      // The base owns a reversible config and the hover style inherits it.
+      // Enter should use the forward config rather than the reverse one.
+      final style = BoxStyler()
+          .color(Colors.blue)
+          .width(100)
+          .height(100)
+          .animate(.linear(120.ms), reverse: .linear(60.ms))
+          .onHovered(BoxStyler().color(Colors.red).scale(1.02));
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Center(
+              child: Box(key: const Key('inherited_card'), style: style),
+            ),
+          ),
+        ),
+      );
+
+      final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await gesture.addPointer(location: Offset.zero);
+
+      await gesture.moveTo(
+        tester.getCenter(find.byKey(const Key('inherited_card'))),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 70));
+      expect(tester.takeException(), isNull);
+
+      await tester.pumpAndSettle();
+      await gesture.moveTo(const Offset(-100, -100));
+      await tester.pump();
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+
+      await gesture.removePointer();
+    });
   });
 }

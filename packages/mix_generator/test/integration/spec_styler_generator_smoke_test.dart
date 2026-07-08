@@ -140,6 +140,11 @@ const _mixStub = '''
   }
 
   class AnimationConfig {}
+  class ReversibleAnimationConfig extends AnimationConfig {
+    final AnimationConfig forward;
+    final AnimationConfig reverse;
+    const ReversibleAnimationConfig({required this.forward, required this.reverse});
+  }
   class WidgetModifierConfig {
     static WidgetModifierConfig defaultTextStyler(Object value) => WidgetModifierConfig();
     Object? resolve(Object context) => null;
@@ -1023,7 +1028,9 @@ void main() {
               contains('TrivialStyler({'),
               contains('EdgeInsetsGeometryMix? padding'),
               contains('Prop.maybeMix(padding)'),
-              contains('TrivialStyler animate(AnimationConfig value)'),
+              contains(
+                'TrivialStyler animate(AnimationConfig value, {AnimationConfig? reverse})',
+              ),
               contains(
                 'TrivialStyler variants(List<VariantStyle<TrivialSpec>> value)',
               ),
@@ -1617,7 +1624,7 @@ void main() {
               ),
               contains('factory BoxStyler.translate(double x, double y'),
               contains('factory BoxStyler.textStyle(TextStyler value)'),
-              contains('factory BoxStyler.animate(AnimationConfig value)'),
+              contains('factory BoxStyler.animate('),
             ]),
           ),
         },
@@ -1703,9 +1710,7 @@ void main() {
               isNot(
                 contains('factory TextStyler.semanticsLabel(String value)'),
               ),
-              isNot(
-                contains('factory TextStyler.animate(AnimationConfig value)'),
-              ),
+              isNot(contains('factory TextStyler.animate(')),
             ]),
           ),
         },
@@ -1740,9 +1745,7 @@ void main() {
               isNot(
                 contains('factory IconStyler.semanticsLabel(String value)'),
               ),
-              isNot(
-                contains('factory IconStyler.animate(AnimationConfig value)'),
-              ),
+              isNot(contains('factory IconStyler.animate(')),
             ]),
           ),
         },
@@ -1788,7 +1791,7 @@ void main() {
           'mix|lib/box_spec.g.dart': decodedMatches(
             allOf([
               contains('factory BoxStyler.clipBehavior(Clip value)'),
-              contains('factory BoxStyler.animate(AnimationConfig value)'),
+              contains('factory BoxStyler.animate('),
               isNot(contains('factory BoxStyler.color(Color value)')),
               isNot(contains('factory BoxStyler.width(double value)')),
               isNot(contains('factory BoxStyler.scale(double scale')),
