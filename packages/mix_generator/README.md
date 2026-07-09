@@ -34,10 +34,11 @@ The generator emits several surfaces with deliberately different shapes, chosen 
 - **`@MixableSpec(target: Widget.new)`** also emits a full generated Styler class into the same `.g.dart` part file as the spec mixin. The generated class owns fields, constructors, factories, fluent methods, `call()`, merge, resolve, diagnostics, and props.
 - **`@MixableStyler`** emits a legacy *slim* mixin (`mixin _$<Name>Mixin on Style<S>, Diagnosticable`) that fills in per-field plumbing for handwritten styler classes.
 - **`@Mixable`** emits a *slim* mixin (`mixin _$<Name>Mixin on Mix<T>[, DefaultValue<T>][, Diagnosticable]`) for the same reason — Mix subclasses commonly compose intermediate base classes (e.g., `class BoxConstraintsMix extends ConstraintsMix<BoxConstraints>`) and the user keeps that inheritance chain.
+- **`@MixableModifier`** emits a self-contained modifier mixin (`mixin _$<Name> implements WidgetModifier<T>, Diagnosticable`) plus its corresponding `<Name>Mix` class.
 
 If the asymmetry feels surprising, the rule is: rich/full shape for pure-data specs and their generated stylers; slim shape for types whose `extends` chain carries shared state or behavior.
 
-A fourth annotation, **`@MixWidget`**, generates a full `StatelessWidget` class (not a mixin) that wraps a top-level `Style<S>` factory — see the [`@MixWidget`](#from-mixwidget--widget-wrapper) section below.
+The **`@MixWidget`** annotation generates a full `StatelessWidget` class (not a mixin) that wraps a top-level `Style<S>` factory — see the [`@MixWidget`](#from-mixwidget--widget-wrapper) section below.
 
 ### From `@MixableSpec` — Spec mixin
 
@@ -130,6 +131,33 @@ final class BoxConstraintsMix extends ConstraintsMix<BoxConstraints>
   // ...
 }
 ```
+
+### From `@MixableModifier` — modifier mixin and ModifierMix
+
+Generates a self-contained `_$<Name>` mixin for an immutable
+`WidgetModifier`, plus a `<Name>Mix` class that can be used in styles. The mixin
+provides `type`, `copyWith`, optional `lerp`, value equality, diagnostics, and
+the `build` contract. The Mix class provides constructors, `resolve`, `merge`,
+diagnostics, and `props`.
+
+```dart
+part 'opacity_modifier.g.dart';
+
+@MixableModifier()
+final class OpacityModifier with _$OpacityModifier {
+  @override
+  final double opacity;
+
+  const OpacityModifier([double? opacity]) : opacity = opacity ?? 1.0;
+
+  @override
+  Widget build(Widget child) => Opacity(opacity: opacity, child: child);
+}
+```
+
+Pass `lerp: false` when the modifier implements custom interpolation. A field
+may use `@MixableField(setterType: SomeMix)` when its style-facing value should
+be a Mix type; the setter type must resolve to the field's runtime value type.
 
 ### From `@MixWidget` — widget wrapper
 

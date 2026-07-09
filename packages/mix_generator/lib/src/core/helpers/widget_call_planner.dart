@@ -3,6 +3,7 @@ library;
 
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
+import 'package:source_gen/source_gen.dart';
 
 import '../checkers.dart';
 import '../errors.dart';
@@ -18,6 +19,79 @@ const reservedParamNames = {
   'toString',
   'noSuchMethod',
 };
+
+/// Builds the widget-facing `call()` method configured by
+/// `@MixableSpec(target:)`.
+///
+/// [hostElement] and [hostLibrary] identify where the generated method is
+/// emitted. Legacy handwritten stylers can live in a different library from
+/// the spec, so [validateTargetVisibility] preserves their stricter visibility
+/// check without changing the generated-spec path.
+String? buildMixableSpecTargetCall({
+  required ConstantReader annotation,
+  required InterfaceElement specElement,
+  required String specName,
+  required String stylerName,
+  required Element hostElement,
+  required LibraryElement hostLibrary,
+  bool validateTargetVisibility = false,
+  String indent = '',
+}) {
+  final target = annotation.peek('target');
+  if (target == null || target.isNull) return null;
+
+  final constructor = target.objectValue.toFunctionValue();
+  if (constructor is! ConstructorElement) {
+    fail(
+      specElement,
+      '@MixableSpec(target:) must be a constructor tear-off '
+      '(e.g., Box.new).',
+    );
+  }
+
+  final widgetName = mixableSpecTargetWidgetName(constructor);
+  if (validateTargetVisibility) {
+    final widgetElement = constructor.enclosingElement;
+    final hiddenWidgetType = firstInvisibleTypeName(
+      widgetElement.thisType,
+      hostLibrary,
+    );
+    if (hiddenWidgetType != null) {
+      fail(
+        hostElement,
+        'Target widget `$hiddenWidgetType` is used by @MixableSpec(target:) '
+        'but is not visible from the @MixableStyler library.',
+        todo:
+            'Import or re-export `$hiddenWidgetType` where the styler is declared.',
+      );
+    }
+  }
+
+  validateMixableSpecTargetConstructor(
+    constructor: constructor,
+    widgetName: widgetName,
+    specElement: specElement,
+    specName: specName,
+    anchor: specElement,
+  );
+
+  final call = extractCallParams(
+    constructor,
+    anchor: hostElement,
+    library: hostLibrary,
+    factoryReference: stylerName,
+    excludeNames: const {'style', 'styleSpec'},
+    annotationLabel: '@MixableSpec(target:)',
+    keyOwner: 'the target constructor',
+  );
+
+  return renderWidgetCall(
+    widgetName: widgetName,
+    params: call.params,
+    forwardsKey: call.forwardsKey,
+    indent: indent,
+  );
+}
 
 /// Returns display names of optional positional parameters in declaration
 /// order, with `<unnamed>` substituted for nameless parameters.

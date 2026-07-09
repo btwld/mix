@@ -590,41 +590,13 @@ class SpecStylerClassBuilder {
   }
 
   String? _buildCallMethod() {
-    final reader = annotation.peek('target');
-    if (reader == null || reader.isNull) return null;
-
-    final fn = reader.objectValue.toFunctionValue();
-    if (fn is! ConstructorElement) {
-      fail(
-        specElement,
-        '@MixableSpec(target:) must be a constructor tear-off '
-        '(e.g., Box.new).',
-      );
-    }
-
-    final widgetName = mixableSpecTargetWidgetName(fn);
-    validateMixableSpecTargetConstructor(
-      constructor: fn,
-      widgetName: widgetName,
+    return buildMixableSpecTargetCall(
+      annotation: annotation,
       specElement: specElement,
       specName: specName,
-      anchor: specElement,
-    );
-
-    final result = extractCallParams(
-      fn,
-      anchor: specElement,
-      library: specElement.library,
-      factoryReference: stylerName,
-      excludeNames: const {'style', 'styleSpec'},
-      annotationLabel: '@MixableSpec(target:)',
-      keyOwner: 'the target constructor',
-    );
-
-    return renderWidgetCall(
-      widgetName: widgetName,
-      params: result.params,
-      forwardsKey: result.forwardsKey,
+      stylerName: stylerName,
+      hostElement: specElement,
+      hostLibrary: specElement.library,
     );
   }
 
