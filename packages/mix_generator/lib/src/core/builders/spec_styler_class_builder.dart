@@ -47,6 +47,7 @@ class SpecStylerClassBuilder {
       _setterTypeOverride(field) ??
       _listMixParamType(field) ??
       mixTypeFor(field.typeName) ??
+      _nestedStylerType(field) ??
       _fieldValueType(field);
 
   String? _propFactory(FieldModel field) {
@@ -57,7 +58,26 @@ class SpecStylerClassBuilder {
 
     if (_listMixParamType(field) != null) return null;
 
-    return mixTypeFor(field.typeName) == null ? 'Prop.maybe' : 'Prop.maybeMix';
+    if (mixTypeFor(field.typeName) != null) return 'Prop.maybeMix';
+
+    if (_nestedStylerType(field) != null) return 'Prop.maybeMix';
+
+    return 'Prop.maybe';
+  }
+
+  /// Styler type for a nested `StyleSpec<X>` field, derived by the same
+  /// `X -> XStyler` naming convention as generated styler class names.
+  ///
+  /// Pure string derivation by design: same-package generated stylers are not
+  /// resolvable while this generator runs (build phases hide later-phase
+  /// outputs from the resolver), so the derived type cannot be validated
+  /// here. When `X`'s styler does not follow the convention the generated
+  /// code fails to compile; `@MixableField(setterType:)` overrides the
+  /// convention for types that resolve during generation.
+  String? _nestedStylerType(FieldModel field) {
+    final specArgument = styleSpecArgumentOf(field.typeName);
+
+    return specArgument == null ? null : deriveStylerName(specArgument);
   }
 
   /// Whether [field] declares a `@MixableField(setterType:)` override.

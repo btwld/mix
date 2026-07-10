@@ -1,5 +1,14 @@
 ## 2.1.2
 
+ - **FEAT**: Derive nested styler types for `StyleSpec<XSpec>` spec fields by
+   the `XSpec -> XStyler` naming convention. Generated spec stylers now expose
+   styler-typed constructors, setters, and field factories with
+   `Prop.maybeMix` merge semantics for nested specs without requiring
+   `@MixableField(setterType:)` — including same-package generated stylers,
+   which annotation type arguments can never resolve during generation.
+   `setterType` still overrides the convention. **Breaking** for specs that
+   relied on nested `StyleSpec` constructor params being raw resolved values:
+   pass the corresponding styler instead.
  - **FIX**: Allow `@MixWidget` to generate widgets from generic styler
    `call<T>()` methods, preserving type parameter bounds and forwarding type
    arguments to the styler call.

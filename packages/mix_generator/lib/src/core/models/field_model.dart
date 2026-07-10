@@ -22,6 +22,15 @@ String deriveStylerName(String specName) {
   return '${specName}Styler';
 }
 
+/// The spec type argument `X` of a `StyleSpec<X>` [typeName], or `null` when
+/// [typeName] is not a `StyleSpec<...>` type.
+String? styleSpecArgumentOf(String typeName) {
+  const prefix = 'StyleSpec<';
+  if (!typeName.startsWith(prefix) || !typeName.endsWith('>')) return null;
+
+  return typeName.substring(prefix.length, typeName.length - 1);
+}
+
 /// Extracts [FieldModel]s from the unnamed constructor of [classElement].
 ///
 /// Returns an empty list when the class has no unnamed constructor. Fails via

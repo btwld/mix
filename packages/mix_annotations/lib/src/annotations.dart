@@ -71,6 +71,13 @@ const mixableStyler = MixableStyler();
 /// can expose its `Styler` so it accepts fluent values (e.g.
 /// `UIAppBarStyler.container(BoxStyler().paddingAll(8))`).
 ///
+/// Nested `StyleSpec<XSpec>` fields derive `XStyler` automatically by the
+/// generator's naming convention, so [setterType] is only needed when the
+/// styler name deviates from that convention. The derived name is not
+/// validated during generation (same-package generated stylers are not
+/// resolvable then); a wrong convention surfaces as an analyzer error in the
+/// generated output.
+///
 /// When used on a `@MixableSpec` field, `setterType` must be a Mix/Styler type
 /// (i.e. assignable to `Mix<...>`), because generated constructors wrap the
 /// argument with `Prop.maybeMix(...)`.
