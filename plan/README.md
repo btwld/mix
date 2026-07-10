@@ -1,4 +1,4 @@
-# mix_schema Evolution Plan
+# mix_protocol Evolution Plan
 
 Execution plan derived from a clean-sheet review of branch `feat/mix_schema`
 (findings snapshot: [`findings.md`](findings.md), 2026-07-02).
@@ -38,7 +38,7 @@ realign the reference consumer.
 
 Conventions:
 - Requirement IDs (`R0.1`, `R3.4`, …) are **planning artifacts** for traceability
-  inside this folder. Per the repo's own convention (`packages/mix_schema/REQUIREMENTS.md`),
+  inside this folder. Per the repo's own convention (`packages/mix_protocol/REQUIREMENTS.md`),
   tests assert behavior and public contract output — never requirement IDs.
 - `[review A1]`-style tags link a requirement to the finding that motivates it in
   [`findings.md`](findings.md) (§Issues A1–A7, B1–B6, C1–C8).
@@ -60,9 +60,11 @@ Conventions:
 | 3 | [phase3.md](phase3.md) | Token model — `$token` grammar + theme document | Completed |
 | 4 | [phase4.md](phase4.md) | Property grammar (`apply`/`$merge`) + coverage expansion | Completed |
 | 5 | [phase5.md](phase5.md) | Consumer realignment (tailwinds) + public API reshaping | Completed |
+| 6 | [phase6.md](phase6.md) | 1.0 protocol naming + public-surface subtraction | Completed |
 
-2026-07-03 drift closeout is tracked in [session.md](session.md); it tightens
-the final contract/docs without reopening the completed phase sequence.
+2026-07-03 drift closeout is tracked in [session.md](session.md); it tightened
+the v1 contract/docs. Phase 6 completed the explicit 1.0 clean-sheet checkpoint
+requested after that closeout.
 
 Other files: [findings.md](findings.md) (review snapshot — the "why" behind every
 phase) · [session.md](session.md) (running log) · [lessons.md](lessons.md)

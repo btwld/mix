@@ -15,6 +15,42 @@ Template:
 
 ---
 
+## 2026-07-10 — Codex — Phase 6
+
+**Did:** Renamed the unpublished `mix_schema` package to `mix_protocol` 1.0.0
+and replaced the configurable contract surface with the fixed `mixProtocol`
+façade. Unified fallible operations under `MixProtocolResult<T>`, integrated
+theme operations, made top-level `v` mandatory, removed unused custom-branch
+and frozen-registry machinery, moved identities to per-call resolution/value
+forms, and kept Ack private. Consolidated Tailwinds representability into a
+labeled typed/canonical corpus while retaining a direct runtime path and a
+complete runtime-import guard. Rewrote protocol docs, regenerated the 384-ID
+coverage backlog, and restored the 1.0 wire-code/schema-name ratchets.
+
+**Decisions:** Keep the proven JSON `v`/`type`/`kind` grammar and stable error
+wire strings; rename branded Dart/package/JSON-Schema vocabulary only. Keep
+theme decode strict, schema export infallible, `mix_protocol` development-only
+in Tailwinds, and the package unpublished until release workflow is chosen.
+Neither `packages/mix` nor `packages/mix_generator` changed in this phase.
+
+**Review/verification:** The fresh closeout review found and resolved four
+issues: high-risk recursive/quadratic theme-alias traversal, medium JSON-unsafe
+diagnostic serialization, a medium missing exact modifier/variant vocabulary
+ratchet, and a low resolver example without mandatory `v`. Alias resolution is
+now iterative and linear with a 4,900-hop regression; diagnostics omit
+runtime-only values from JSON; and exported style, modifier, and variant sets
+are checked exactly. The final post-review
+`melos run gen:build && melos run ci && melos run analyze` gate passed, as did
+the Tailwinds parity/shrink/duration goldens, focused protocol/Tailwinds suites,
+forbidden-symbol/old-name scans, inventory regeneration, and diff checks. The
+recurring pub kernel-cache warning was non-fatal; every Melos step reported
+`SUCCESS` and the chained command exited 0.
+
+**Blocked/open:** None. The package remains `publish_to: none` by decision.
+
+**Next:** Push/open the existing branch when ready; publication remains a
+separate owner-controlled release step.
+
 ## 2026-07-05 — Claude (Sonnet) — review hardening follow-ups
 
 **Did:** Executed the attached 4-comment-review hardening plan (both retracted

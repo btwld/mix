@@ -185,6 +185,30 @@ Things the review itself surfaced that qualify as lessons already:
   reusable transform semantics now live in `mix` so `mix_schema` can recognize a
   core value without depending on Tailwinds.
 
+### Phase 6 — 1.0 protocol naming + public-surface subtraction
+
+- **Name the package for the compatibility boundary it owns.** JSON Schema is
+  one generated artifact; versioning, canonical encode, recovery, identities,
+  diagnostics, and wire evolution make the package a protocol.
+- **A fixed vocabulary is more honest than unused extensibility.** Public custom
+  branches and a frozen registry had no production consumer, weakened schema
+  precision, and multiplied APIs. Removing them made the 1.0 surface smaller
+  without reducing demonstrated capability.
+- **Reference consumers should prove canonicality, not just acceptance.** The
+  Tailwinds corpus now performs typed strict decode and canonical re-encode for
+  every labeled case. That catches asymmetric codecs while preserving Tailwinds'
+  direct runtime path.
+- **Resolve transition policy before declaring 1.0.** Making top-level `v`
+  mandatory before publication removed ambiguous version negotiation and closed
+  the final publish-checkpoint carry-forward.
+- **Private engines leave room to evolve implementation.** Keeping Ack out of
+  exported signatures lets the protocol own stable Dart results and wire errors
+  while retaining a proven bidirectional codec engine internally.
+- **Structural input limits do not bound semantic graphs.** A shallow theme map
+  can contain thousands of alias hops without approaching the JSON depth cap;
+  alias resolution therefore needs iterative, linear graph traversal rather
+  than recursive path copying.
+
 ## Themes (cross-cutting, update as they emerge)
 
 - Analyzer/tool coverage changes can be larger than the feature they accompany;
@@ -213,7 +237,7 @@ Things the review itself surfaced that qualify as lessons already:
 ## Carry-forward actions
 
 These rows are retained as retrospective guardrails, not an active phase task
-list. The only remaining future checkpoint is the missing-`v` publish decision.
+list. Phase 6 closed the final missing-`v` publish checkpoint.
 
 | Lesson | Owner | Action |
 |--------|-------|--------|
@@ -225,7 +249,7 @@ list. The only remaining future checkpoint is the missing-`v` publish decision.
 | Phase boundary checks prevent stale assumptions. | Every phase | Run the lesson/prior-decision entry review before work and the full agent/code review before closeout. |
 | CI ratchets need workflow-level proof. | Every phase | Before marking a check as "runs on every PR", inspect the workflow path and verify it invokes the relevant Melos chain. |
 | Root/control keys are reserved contract boundaries. | Phase 3 / Phase 4 | Closed 2026-07-04 by the custom-branch marker collision test. `$token`, `$merge`, `apply`, and future control markers need collision/unknown-marker tests analogous to the Phase 1 custom-branch `v` test. |
-| Missing `v` is a transition compromise. | Phase 5 / publish checkpoint | Before publishing the v1 contract, explicitly decide whether to flip missing `v` from warning to fatal and update tests/docs together. |
+| Missing `v` is a transition compromise. | Phase 5 / publish checkpoint | Closed in Phase 6: missing top-level `v` is fatal, with tests and docs updated together before the 1.0 checkpoint. |
 | Lenient granule grammar lives away from codec owners. | Phase 4 | Every new list-valued wire field gets an explicit lenient-removal granule and a loud test; review `_lenientRemovalPath` when adding families. `[review X12]` |
 | Manifest `supported` must be provably true. | Phase 2.5 | Land the manifest↔codec truthfulness test so a false `supported` entry fails CI; keep it green thereafter. `[review X10]` |
 | Cross-phase reviews complement closeout reviews. | Post-phase-4 milestone | Per-diff closeout reviews missed cross-phase contract drift (X3/X4 survived two closeouts); run the next cross-phase review after phase 4 lands. |

@@ -26,7 +26,7 @@ command:
 categories:
   flutter_projects: 
     - packages/mix
-    - packages/mix_schema
+    - packages/mix_protocol
     - packages/mix_tailwinds
     - packages/mix/example
     - packages/mix_lint_test
@@ -42,8 +42,8 @@ scripts:
     description: Run all static analysis checks.
 
   schema:inventory:
-    run: melos exec --scope="mix_schema" -- dart run tool/inventory_check.dart --check
-    description: Verify mix_schema inventory coverage decisions.
+    run: melos exec --scope="mix_protocol" -- dart run tool/inventory_check.dart --check
+    description: Verify mix_protocol inventory coverage decisions.
 
   analyze:dart:
     run: melos exec -c 4 -- dart analyze .
