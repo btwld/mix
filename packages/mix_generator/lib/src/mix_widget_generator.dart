@@ -9,6 +9,8 @@
 /// spec-generated stylers, that `call()` can come from `SpecStylerGenerator`.
 library;
 
+import 'dart:convert';
+
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
@@ -28,6 +30,7 @@ const _annotationLabel = '@MixWidget';
 class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
   static final _identifierPattern = RegExp(r'^_*[A-Za-z][A-Za-z0-9_]*$');
   static final _derivedNamePattern = RegExp(r'^_*[a-z][A-Za-z0-9]*Style$');
+  static const _variantParamName = 'variant';
 
   static const _dartReservedWords = {
     'abstract',
@@ -184,6 +187,11 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
 
     _rejectCollisions(function, factoryParams, call.params);
 
+    final variantConstructors = _extractVariantConstructors(
+      function,
+      library: library,
+    );
+
     return MixWidgetModel(
       widgetName: _resolveWidgetName(
         function,
@@ -198,8 +206,75 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
       callTypeParams: _extractCallTypeParams(callMethod, library: library),
       stylerCallForwardsKey: call.forwardsKey,
       doc: function.documentationComment,
+      variantParamName: variantConstructors == null ? null : _variantParamName,
+      variantConstructors: variantConstructors ?? const [],
     );
   }
+
+  List<WidgetVariantConstructor>? _extractVariantConstructors(
+    TopLevelFunctionElement function, {
+    required LibraryElement library,
+  }) {
+    for (final parameter in function.formalParameters) {
+      if (parameter.name != _variantParamName || !parameter.isNamed) continue;
+
+      final type = parameter.type;
+      if (type is! InterfaceType ||
+          type.nullabilitySuffix == .question ||
+          type.element is! EnumElement) {
+        return null;
+      }
+
+      final enumElement = type.element as EnumElement;
+      final enumTypeCode = typeCode(type, visibleFrom: library);
+
+      return [
+        for (final constant in enumElement.constants)
+          // An imported enum's private constants cannot be referenced from
+          // the annotated library, so they cannot back constructors here.
+          if (constant.isPublic || constant.library == library)
+            _variantConstructor(constant, enumTypeCode: enumTypeCode),
+      ];
+    }
+
+    return null;
+  }
+
+  WidgetVariantConstructor _variantConstructor(
+    FieldElement constant, {
+    required String enumTypeCode,
+  }) {
+    final name = requireName(
+      constant,
+      orFailWith: '$_annotationLabel enum constants must have names.',
+    );
+
+    return WidgetVariantConstructor(
+      name: name,
+      valueCode: '$enumTypeCode.$name',
+      doc: constant.documentationComment,
+      deprecationCode: _deprecationCode(constant),
+    );
+  }
+
+  String? _deprecationCode(FieldElement constant) {
+    for (final annotation in constant.metadata.annotations) {
+      if (!annotation.isDeprecated) continue;
+
+      final value = annotation.computeConstantValue();
+      final message = value?.getField('message')?.toStringValue();
+      final messageCode = message == null
+          ? 'null'
+          : _dartStringLiteral(message);
+
+      return '@Deprecated($messageCode)';
+    }
+
+    return null;
+  }
+
+  String _dartStringLiteral(String value) =>
+      jsonEncode(value).replaceAll(r'$', r'\$');
 
   /// Confirms [type] is a `Style<S>` subtype and returns the styler interface.
   InterfaceType _requireStyleInterface(Element anchor, DartType type) {
