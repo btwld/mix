@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/widgets.dart';
 
 import '../core/style.dart';
@@ -649,8 +651,8 @@ final class WidgetModifierConfig with Equatable {
 /// nearest scope order), then the package [_defaultOrder], then any remaining
 /// configured types in stable (first-seen) order. Each type is emitted once.
 ///
-/// Shared by [WidgetModifierConfig.resolve] and
-/// [WidgetModifierConfig.reorderModifiers].
+/// Shared by [WidgetModifierConfig.resolve],
+/// [WidgetModifierConfig.reorderModifiers], and [ModifierListTween].
 List<WidgetModifier> _orderModifiers(
   List<WidgetModifier> modifiers, {
   List<Type> preferredOrder = const [],
@@ -673,7 +675,34 @@ List<WidgetModifier> _orderModifiers(
     }
   }
 
-  return orderedSpecs;
+  return _ResolvedModifierList(orderedSpecs, preferredOrder);
+}
+
+/// A resolved modifier list that retains the local/scope precedence used to
+/// order it so transient animation unions can apply that same precedence.
+final class _ResolvedModifierList extends ListBase<WidgetModifier> {
+  final List<Type> preferredOrder;
+  final List<WidgetModifier> _modifiers;
+
+  _ResolvedModifierList(
+    List<WidgetModifier> modifiers,
+    List<Type> preferredOrder,
+  ) : _modifiers = modifiers,
+      preferredOrder = List<Type>.unmodifiable(preferredOrder);
+
+  @override
+  set length(int value) => _modifiers.length = value;
+
+  @override
+  WidgetModifier operator [](int index) => _modifiers[index];
+
+  @override
+  void operator []=(int index, WidgetModifier value) {
+    _modifiers[index] = value;
+  }
+
+  @override
+  int get length => _modifiers.length;
 }
 
 const _defaultOrder = [
@@ -791,7 +820,18 @@ final defaultModifier = {
 };
 
 class ModifierListTween extends Tween<List<WidgetModifier>?> {
-  ModifierListTween({super.begin, super.end});
+  /// The target's resolved local/scope precedence, falling back to the
+  /// beginning precedence when there is no resolved target list.
+  final List<Type>? _preferredOrder;
+
+  ModifierListTween({super.begin, super.end})
+    : _preferredOrder = switch (end) {
+        _ResolvedModifierList() => end.preferredOrder,
+        _ => switch (begin) {
+          _ResolvedModifierList() => begin.preferredOrder,
+          _ => null,
+        },
+      };
 
   @override
   List<WidgetModifier>? lerp(double t) {
@@ -815,6 +855,7 @@ class ModifierListTween extends Tween<List<WidgetModifier>?> {
     // Interpolate over the union of begin and target identities. Runtime type
     // is the matching identity (multiple instances of one type is out of scope).
     final lerped = <WidgetModifier>[];
+    var emittedBeginningOnly = false;
 
     // Target members, in target order.
     for (final endModifier in endModifiers) {
@@ -838,14 +879,21 @@ class ModifierListTween extends Tween<List<WidgetModifier>?> {
       if (to != null) {
         // Beginning-only with a neutral default: interpolate begin -> neutral.
         lerped.add(beginModifier.lerp(to, t) as WidgetModifier);
+        emittedBeginningOnly = true;
       } else if (t < 0.5) {
         // Beginning-only without a neutral default: snap out at the midpoint.
         lerped.add(beginModifier);
+        emittedBeginningOnly = true;
       }
     }
 
     if (lerped.isEmpty) return null;
 
-    return lerped;
+    // A plain list with no beginning-only member already has the complete
+    // target order. Otherwise, order the transient union with the precedence
+    // retained during resolution, or the package default for direct callers.
+    if (_preferredOrder == null && !emittedBeginningOnly) return lerped;
+
+    return _orderModifiers(lerped, preferredOrder: _preferredOrder ?? const []);
   }
 }

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
+import '../../helpers/testing_utils.dart';
+
 /// A custom [WidgetModifier] that is intentionally absent from `defaultModifier`,
 /// so it exercises the "no neutral default" interpolation path with a type that
 /// is not a built-in.
@@ -37,6 +39,19 @@ X? _firstOfType<X extends WidgetModifier<X>>(List<WidgetModifier>? list) {
 
 bool _has<X extends WidgetModifier<X>>(List<WidgetModifier>? list) =>
     _firstOfType<X>(list) != null;
+
+void _expectIntermediateOrder(
+  ModifierListTween tween,
+  List<Type> expectedTypes,
+) {
+  for (final t in [0.25, 0.5, 0.75]) {
+    expect(
+      tween.lerp(t)!.map((modifier) => modifier.runtimeType),
+      expectedTypes,
+      reason: 'modifier precedence must remain stable at t=$t',
+    );
+  }
+}
 
 void main() {
   // Membership snap point documented by ModifierListTween.
@@ -258,7 +273,61 @@ void main() {
     }
   });
 
-  group('ModifierListTween.lerp — mixed membership keeps target order', () {
+  group('ModifierListTween.lerp — mixed membership preserves precedence', () {
+    test('uses package default order for disjoint endpoints', () {
+      final padding = <WidgetModifier>[
+        PaddingModifier(const EdgeInsets.all(8)),
+      ];
+      final opacity = <WidgetModifier>[OpacityModifier(0.5)];
+
+      _expectIntermediateOrder(
+        ModifierListTween(begin: padding, end: opacity),
+        [PaddingModifier, OpacityModifier],
+      );
+      _expectIntermediateOrder(
+        ModifierListTween(begin: opacity, end: padding),
+        [PaddingModifier, OpacityModifier],
+      );
+    });
+
+    test('uses style-local order for disjoint endpoints', () {
+      const localOrder = [OpacityModifier, PaddingModifier];
+      final context = MockBuildContext();
+      final opacity = WidgetModifierConfig.opacity(
+        0.5,
+      ).orderOfModifiers(localOrder).resolve(context);
+      final padding = WidgetModifierConfig.padding(
+        EdgeInsetsGeometryMix.all(8),
+      ).orderOfModifiers(localOrder).resolve(context);
+
+      _expectIntermediateOrder(
+        ModifierListTween(begin: padding, end: opacity),
+        localOrder,
+      );
+      _expectIntermediateOrder(
+        ModifierListTween(begin: opacity, end: padding),
+        localOrder,
+      );
+    });
+
+    test('uses MixScope order for disjoint endpoints', () {
+      const scopeOrder = [OpacityModifier, PaddingModifier];
+      final context = MockBuildContext(orderOfModifiers: scopeOrder);
+      final opacity = WidgetModifierConfig.opacity(0.5).resolve(context);
+      final padding = WidgetModifierConfig.padding(
+        EdgeInsetsGeometryMix.all(8),
+      ).resolve(context);
+
+      _expectIntermediateOrder(
+        ModifierListTween(begin: padding, end: opacity),
+        scopeOrder,
+      );
+      _expectIntermediateOrder(
+        ModifierListTween(begin: opacity, end: padding),
+        scopeOrder,
+      );
+    });
+
     test('union is ordered by the canonical modifier order', () {
       // Opacity is outermost-last in the default order; Padding precedes it.
       final tween = ModifierListTween(
