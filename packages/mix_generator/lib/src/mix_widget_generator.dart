@@ -187,9 +187,13 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
 
     _rejectCollisions(function, factoryParams, call.params);
 
+    final callTypeParams = _extractCallTypeParams(callMethod, library: library);
     final variantConstructors = _extractVariantConstructors(
       function,
       library: library,
+      widgetTypeParameterNames: {
+        for (final typeParameter in callTypeParams) typeParameter.name,
+      },
     );
 
     return MixWidgetModel(
@@ -203,7 +207,7 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
       isFunctionFactory: true,
       factoryParams: factoryParams,
       callParams: call.params,
-      callTypeParams: _extractCallTypeParams(callMethod, library: library),
+      callTypeParams: callTypeParams,
       stylerCallForwardsKey: call.forwardsKey,
       doc: function.documentationComment,
       variantParamName: variantConstructors == null ? null : _variantParamName,
@@ -214,6 +218,7 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
   List<WidgetVariantConstructor>? _extractVariantConstructors(
     TopLevelFunctionElement function, {
     required LibraryElement library,
+    required Set<String> widgetTypeParameterNames,
   }) {
     for (final parameter in function.formalParameters) {
       if (parameter.name != _variantParamName || !parameter.isNamed) continue;
@@ -228,13 +233,23 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
       final enumElement = type.element as EnumElement;
       final enumTypeCode = typeCode(type, visibleFrom: library);
 
-      return [
+      final constructors = [
         for (final constant in enumElement.constants)
           // An imported enum's private constants cannot be referenced from
           // the annotated library, so they cannot back constructors here.
           if (constant.isPublic || constant.library == library)
             _variantConstructor(constant, enumTypeCode: enumTypeCode),
       ];
+
+      if (constructors.any(
+        (constructor) => widgetTypeParameterNames.contains(constructor.name),
+      )) {
+        // Named constructors and class type parameters share a namespace.
+        // Keep the convention non-breaking rather than emitting invalid Dart.
+        return null;
+      }
+
+      return constructors;
     }
 
     return null;

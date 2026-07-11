@@ -164,6 +164,39 @@ ButtonStyler buttonStyle({required ButtonVariant variant}) =>
       );
     });
 
+    test(
+      'type parameter conflicts suppress all variant constructors',
+      () async {
+        const factory = r'''
+enum GenericButtonVariant { T, solid }
+
+class GenericButtonStyler extends Style<ButtonSpec> {
+  const GenericButtonStyler();
+
+  T call<T extends Widget>({Key? key, required T child}) => child;
+}
+
+@MixWidget(name: 'GenericButton')
+GenericButtonStyler genericButtonStyle({
+  GenericButtonVariant variant = GenericButtonVariant.solid,
+}) => const GenericButtonStyler();
+''';
+
+        await expectGeneratorOutputResolves(
+          builder: partBuilder(const MixWidgetGenerator()),
+          sources: _sources(factory),
+          inputAsset: 'mix_generator|lib/widget_case.dart',
+          outputAsset: 'mix_generator|lib/widget_case.g.dart',
+          outputMatcher: allOf([
+            contains('class GenericButton<T extends Widget>'),
+            contains('this.variant = GenericButtonVariant.solid'),
+            isNot(contains('const GenericButton.T(')),
+            isNot(contains('const GenericButton.solid(')),
+          ]),
+        );
+      },
+    );
+
     test('skips private constants from an imported enum', () async {
       const variants = r'''
 library button_variants;

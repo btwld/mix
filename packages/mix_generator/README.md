@@ -199,7 +199,9 @@ ButtonStyler buttonStyle({ButtonVariant variant = .solid}) => ...;
 Each named constructor omits the `variant` argument and preserves every other
 factory and styler `call()` parameter. Enum-value documentation and deprecation
 metadata are carried onto the matching constructor. Nullable, positional, and
-non-enum `variant` parameters retain the single-constructor behavior.
+non-enum `variant` parameters retain the single-constructor behavior. Variant
+constructors are also skipped when an enum value conflicts with a generated
+widget type parameter.
 
 See [`mix_annotations`](https://pub.dev/packages/mix_annotations) for the full annotation contract (parameter rules, `Key? key` forwarding, naming/visibility constraints).
 
