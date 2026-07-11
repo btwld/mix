@@ -655,4 +655,153 @@ void main() {
       trigger2.dispose();
     });
   });
+
+  group('input validation', () {
+    group('PhaseAnimationConfig', () {
+      test('empty phase list throws', () {
+        expect(
+          () => PhaseAnimationConfig<MockSpec<double>, MockStyle<double>>(
+            styles: const [],
+            curveConfigs: const [],
+            trigger: null,
+          ),
+          throwsA(isA<AssertionError>()),
+        );
+      });
+
+      test('mismatched styles and curveConfigs throws', () {
+        expect(
+          () => PhaseAnimationConfig<MockSpec<double>, MockStyle<double>>(
+            styles: [MockStyle(0.0), MockStyle(1.0)],
+            curveConfigs: const [
+              CurveAnimationConfig(
+                duration: Duration(milliseconds: 100),
+                curve: Curves.linear,
+              ),
+            ],
+            trigger: null,
+          ),
+          throwsA(isA<AssertionError>()),
+        );
+      });
+
+      test('negative duration throws', () {
+        expect(
+          () => PhaseAnimationConfig<MockSpec<double>, MockStyle<double>>(
+            styles: [MockStyle(0.0)],
+            curveConfigs: const [
+              CurveAnimationConfig(
+                duration: Duration(milliseconds: -100),
+                curve: Curves.linear,
+              ),
+            ],
+            trigger: null,
+          ),
+          throwsA(isA<AssertionError>()),
+        );
+      });
+
+      test('looping config with zero total duration throws', () {
+        expect(
+          () => PhaseAnimationConfig<MockSpec<double>, MockStyle<double>>(
+            styles: [MockStyle(0.0)],
+            curveConfigs: const [
+              CurveAnimationConfig(
+                duration: Duration.zero,
+                curve: Curves.linear,
+              ),
+            ],
+            trigger: null,
+          ),
+          throwsA(isA<AssertionError>()),
+        );
+      });
+    });
+
+    group('KeyframeTrack', () {
+      test('negative segment duration throws', () {
+        expect(
+          () => KeyframeTrack<double>('t', const [
+            Keyframe.linear(1.0, Duration(milliseconds: -50)),
+          ], initial: 0.0),
+          throwsA(isA<AssertionError>()),
+        );
+      });
+    });
+
+    group('KeyframeAnimationConfig', () {
+      test('duplicate track ids throws', () {
+        final trigger = ValueNotifier(false);
+        addTearDown(trigger.dispose);
+
+        expect(
+          () => KeyframeAnimationConfig<MockSpec<double>>(
+            trigger: trigger,
+            timeline: [
+              KeyframeTrack<double>('dup', const [
+                Keyframe.linear(1.0, Duration(milliseconds: 100)),
+              ], initial: 0.0),
+              KeyframeTrack<double>('dup', const [
+                Keyframe.linear(1.0, Duration(milliseconds: 100)),
+              ], initial: 0.0),
+            ],
+            styleBuilder: (result, style) => style,
+            initialStyle: MockStyle(0.0),
+          ),
+          throwsA(isA<AssertionError>()),
+        );
+      });
+
+      test('looping timeline with no positive duration throws', () {
+        expect(
+          () => KeyframeAnimationConfig<MockSpec<double>>(
+            trigger: null,
+            timeline: [
+              KeyframeTrack<double>('t', const [
+                Keyframe.linear(1.0, Duration.zero),
+              ], initial: 0.0),
+            ],
+            styleBuilder: (result, style) => style,
+            initialStyle: MockStyle(0.0),
+          ),
+          throwsA(isA<AssertionError>()),
+        );
+      });
+
+      test('triggered empty timeline is allowed', () {
+        final trigger = ValueNotifier(false);
+        addTearDown(trigger.dispose);
+
+        expect(
+          () => KeyframeAnimationConfig<MockSpec<double>>(
+            trigger: trigger,
+            timeline: const [],
+            styleBuilder: (result, style) => style,
+            initialStyle: MockStyle(0.0),
+          ),
+          returnsNormally,
+        );
+      });
+    });
+  });
+
+  group('phaseAnimation onEnd contract', () {
+    test('fluent phaseAnimation forwards onEnd to PhaseAnimationConfig', () {
+      var called = false;
+      final style = BoxStyler().phaseAnimation(
+        phases: const [0, 1],
+        styleBuilder: (phase, s) => s,
+        configBuilder: (phase) => const CurveAnimationConfig(
+          duration: Duration(milliseconds: 100),
+          curve: Curves.linear,
+        ),
+        onEnd: () => called = true,
+      );
+
+      final config = style.$animation! as PhaseAnimationConfig;
+      expect(config.onEnd, isNotNull);
+      config.onEnd!();
+      expect(called, isTrue);
+    });
+  });
 }
