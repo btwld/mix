@@ -352,7 +352,6 @@ void main() {
 
         expect(variantAttr.variant, hoverVariant);
         expect(variantAttr.value, style);
-        expect(variantAttr.mergeKey, hoverVariant.key);
       });
 
       test(
@@ -369,8 +368,6 @@ void main() {
           );
 
           expect(hoverStyle.mergeKey, isNot(equals(pressStyle.mergeKey)));
-          expect(hoverStyle.mergeKey, 'widget_state_hovered');
-          expect(pressStyle.mergeKey, 'widget_state_pressed');
         },
       );
 

@@ -10,6 +10,12 @@
 
 ### Fixes
 
+- **Variant merge-key collisions:** Variant styles now merge by an opaque,
+  semantic identity instead of the human-readable `Variant.key`. Equivalent
+  named, enum-backed, and built-in context variants still coalesce, while
+  unrelated variants with the same label retain their own predicates. Dynamic
+  builders keep their existing build-then-merge behavior and use function
+  equality instead of a hash string for merge identity.
 - **Context variant equality:** `ContextVariant.brightness`,
   `ContextVariant.breakpoint`, `ContextVariant.orientation`,
   `ContextVariant.directionality`, `ContextVariant.platform`,
