@@ -640,6 +640,99 @@ void main() {
       });
     });
 
+    group('Stable ordering (linear partition)', () {
+      testWidgets(
+        'interleaved buckets preserve stored order within each bucket',
+        (tester) async {
+          // Interleave non-widget-state and widget-state variants. After the
+          // partition, the last stored variant within each bucket must win the
+          // merge: height from the last non-state variant, width from the last
+          // widget-state variant.
+          final testAttribute = _MockSpecAttribute(
+            width: 50.0,
+            height: 75.0,
+            variants: [
+              VariantStyle(
+                ContextVariant('ctx1', (_) => true),
+                _MockSpecAttribute(width: 0.0, height: 10.0),
+              ),
+              VariantStyle(
+                WidgetStateVariant(WidgetState.hovered),
+                _MockSpecAttribute(width: 100.0),
+              ),
+              VariantStyle(
+                ContextVariant('ctx2', (_) => true),
+                _MockSpecAttribute(width: 0.0, height: 20.0),
+              ),
+              VariantStyle(
+                WidgetStateVariant(WidgetState.pressed),
+                _MockSpecAttribute(width: 200.0),
+              ),
+              VariantStyle(
+                ContextVariant('ctx3', (_) => true),
+                _MockSpecAttribute(width: 0.0, height: 30.0),
+              ),
+            ],
+          );
+
+          await tester.pumpWidget(
+            MaterialApp(
+              home: WidgetStateProvider(
+                states: const {WidgetState.hovered, WidgetState.pressed},
+                child: Builder(
+                  builder: (context) {
+                    final result = testAttribute.mergeActiveVariants(
+                      context,
+                      namedVariants: {},
+                    );
+                    final spec = result.resolve(context);
+                    final resolved = spec.resolvedValue as Map;
+
+                    // Last non-state variant wins height.
+                    expect(resolved['height'], 30.0);
+                    // Last widget-state variant wins width.
+                    expect(resolved['width'], 200.0);
+
+                    return Container();
+                  },
+                ),
+              ),
+            ),
+          );
+        },
+      );
+
+      test('large equal-priority list preserves stored order', () {
+        // 50 equally-prioritized (all active) context variants. A stable
+        // partition keeps stored order, so the last-stored variant wins the
+        // merge. An unstable List.sort would not guarantee this for a list this
+        // large (Dart falls back to a non-stable sort above ~32 elements).
+        const count = 50;
+        final variants = [
+          for (var i = 1; i <= count; i++)
+            VariantStyle<MockSpec<Map<String, dynamic>>>(
+              ContextVariant('ctx$i', (_) => true),
+              _MockSpecAttribute(width: 0.0, height: i.toDouble()),
+            ),
+        ];
+
+        final testAttribute = _MockSpecAttribute(
+          width: 50.0,
+          variants: variants,
+        );
+
+        final context = MockBuildContext();
+        final result = testAttribute.mergeActiveVariants(
+          context,
+          namedVariants: {},
+        );
+        final spec = result.resolve(context);
+
+        // The last stored variant (height == count) must win.
+        expect((spec.resolvedValue as Map)['height'], count.toDouble());
+      });
+    });
+
     group('Integration with existing variant system', () {
       testWidgets('works with actual WidgetStateVariant instances', (
         tester,

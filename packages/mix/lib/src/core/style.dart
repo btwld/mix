@@ -58,8 +58,14 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
   }
 
   /// Gets the closest [Style] from the widget tree, or null if not found.
+  ///
+  /// Registers an inherited-widget dependency, so a widget resolved through
+  /// this lookup re-resolves when the ancestor [StyleProvider] changes — even
+  /// if the provider's own child widget instance is identical. This matches the
+  /// contract of standard Flutter `of` APIs.
   static Style<S>? maybeOf<S extends Spec<S>>(BuildContext context) {
-    final provider = context.getInheritedWidgetOfExactType<StyleProvider<S>>();
+    final provider = context
+        .dependOnInheritedWidgetOfExactType<StyleProvider<S>>();
 
     return provider?.style;
   }
@@ -70,6 +76,37 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
         .where((v) => v.variant is WidgetStateVariant)
         .map((v) => (v.variant as WidgetStateVariant).state)
         .toSet();
+  }
+
+  /// Whether this style declares a widget-state variant that automatic pointer
+  /// tracking can actually produce (`hovered` or `pressed`).
+  ///
+  /// [StyleBuilder] uses this to decide whether to install a
+  /// `MixInteractionDetector`. Other widget states (focus, disabled, selected,
+  /// dragged, error, scrolledUnder) require an external owner or an existing
+  /// `WidgetStateProvider` and are intentionally excluded — a pointer detector
+  /// cannot activate them, so installing one for them would be dead work.
+  ///
+  /// This is a boolean capability query rather than a `Set<WidgetState>` so the
+  /// hot path allocates nothing. Only the top-level variants are inspected,
+  /// matching [widgetStates]; nested variants are not scanned because a pointer
+  /// detector produces both `hovered` and `pressed` once installed, and any
+  /// realistic nested pointer variant sits under a top-level pointer variant or
+  /// under an owner (e.g. `Pressable`) that already provides the scope.
+  @internal
+  bool get needsPointerTracking {
+    final variants = $variants;
+    if (variants == null) return false;
+
+    for (final variantStyle in variants) {
+      final variant = variantStyle.variant;
+      if (variant is WidgetStateVariant &&
+          (variant.state == .hovered || variant.state == .pressed)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   /// Merges all active variants with their nested variants recursively.
@@ -88,7 +125,8 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
     BuildContext context, {
     required Set<NamedVariant> namedVariants,
   }) {
-    // Filter variants that should be active in this context
+    // Filter variants that should be active in this context, preserving their
+    // stored order.
     final activeVariants = ($variants ?? [])
         .where(
           (variantAttr) => switch (variantAttr.variant) {
@@ -99,18 +137,25 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
         )
         .toList();
 
-    // Sort by priority: WidgetStateVariant gets applied last (highest priority)
-    activeVariants.sort(
-      (a, b) => Comparable.compare(
-        a.variant is WidgetStateVariant ? 1 : 0,
-        b.variant is WidgetStateVariant ? 1 : 0,
-      ),
-    );
+    // Order by priority using a stable linear partition into two buckets,
+    // preserving stored order within each bucket:
+    //   1. non-widget-state variants (lower priority, applied first)
+    //   2. widget-state variants     (highest priority, applied last)
+    //
+    // A partition is used instead of List.sort because Dart's sort is not
+    // guaranteed to preserve the relative order of items that compare equal,
+    // yet Mix's contract requires the last stored variant within a bucket to
+    // win. Deriving order by construction makes precedence deterministic
+    // regardless of the sort implementation.
+    final orderedVariants = [
+      ...activeVariants.where((v) => v.variant is! WidgetStateVariant),
+      ...activeVariants.where((v) => v.variant is WidgetStateVariant),
+    ];
 
     // Extract the style from each active variant
     final stylesToMerge = <(Style<S>, bool)>[]; // (style, isFromStyleVariation)
 
-    for (final variantAttr in activeVariants) {
+    for (final variantAttr in orderedVariants) {
       final result = switch (variantAttr.variant) {
         ContextVariantBuilder variant => (
           variant.build(context) as Style<S>,
