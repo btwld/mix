@@ -47,8 +47,11 @@ class StyleBuilder<S extends Spec<S>> extends StatefulWidget {
 }
 
 class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>> {
-  /// State captured when an external controller is removed. The snapshot is
-  /// consumed only if the next build installs automatic pointer tracking.
+  /// A one-build state snapshot captured when an external controller is removed.
+  ///
+  /// It seeds a newly mounted [MixInteractionDetector] when automatic pointer
+  /// tracking is needed; otherwise it is discarded to avoid restoring stale
+  /// state later.
   Set<WidgetState>? _controllerHandoffStates;
 
   Set<WidgetState> _takeControllerHandoffStates() {

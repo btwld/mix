@@ -27,10 +27,12 @@ class MixInteractionDetector extends StatefulWidget {
   final Widget child;
   final WidgetStatesController? controller;
 
-  /// States used to initialize the internally owned controller.
+  /// States used to seed an internally owned controller.
   ///
-  /// These are ignored when [controller] is provided and are not reapplied on
-  /// subsequent widget updates.
+  /// This set is read only when the detector is first mounted without an
+  /// external [controller]. The states are copied before [enabled] is
+  /// synchronized, which clears hover and press while disabled. Later changes
+  /// to this property are not reapplied to the active controller.
   final Set<WidgetState> initialStates;
 
   final bool enabled;
