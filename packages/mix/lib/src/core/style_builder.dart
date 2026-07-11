@@ -55,6 +55,27 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>> {
   /// controller the [MixInteractionDetector] owns its own controller instead.
   WidgetStatesController? _preservedController;
 
+  /// State captured when an external controller is removed. The snapshot is
+  /// consumed only if the next build installs automatic pointer tracking.
+  Set<WidgetState>? _controllerHandoffStates;
+
+  WidgetStatesController? _controllerForAutomaticTracking() {
+    final states = _controllerHandoffStates;
+    if (states == null) return _preservedController;
+
+    _controllerHandoffStates = null;
+    _preservedController?.dispose();
+    _preservedController = WidgetStatesController(states);
+
+    return _preservedController;
+  }
+
+  void _clearControllerHandoff() {
+    _controllerHandoffStates = null;
+    _preservedController?.dispose();
+    _preservedController = null;
+  }
+
   Style<S> _buildStyle(BuildContext context) {
     final inheritedStyle = Style.maybeOf<S>(context);
     final style = widget.style;
@@ -77,23 +98,15 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>> {
     if (oldWidget.controller == widget.controller) return;
 
     if (widget.controller != null) {
-      // An external controller now drives state; drop any internal one we own.
-      _preservedController?.dispose();
-      _preservedController = null;
-    } else if (widget.style.needsPointerTracking) {
-      // The external controller was removed while the style still reacts to
-      // pointer state. Seed an internal controller from its last states so a
-      // transient hover/press does not reset when swapping to automatic
-      // tracking.
-      _preservedController = WidgetStatesController(
-        oldWidget.controller?.value ?? {},
-      );
+      _clearControllerHandoff();
+    } else {
+      _controllerHandoffStates = Set.of(oldWidget.controller!.value);
     }
   }
 
   @override
   void dispose() {
-    _preservedController?.dispose();
+    _clearControllerHandoff();
     super.dispose();
   }
 
@@ -127,9 +140,11 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>> {
       // (external controller was just removed); otherwise let the detector
       // create and own its controller so nothing is allocated here.
       current = MixInteractionDetector(
-        controller: _preservedController,
+        controller: _controllerForAutomaticTracking(),
         child: current,
       );
+    } else {
+      _clearControllerHandoff();
     }
 
     // If inheritable is true, wrap with StyleProvider to pass the merged style down

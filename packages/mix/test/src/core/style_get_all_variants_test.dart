@@ -35,7 +35,7 @@ void main() {
 
   group('Style.mergeActiveVariants', () {
     group('Variant priority system', () {
-      testWidgets('WidgetStateVariant gets sorted last (highest priority)', (
+      testWidgets('WidgetStateVariant is applied last (highest priority)', (
         tester,
       ) async {
         // Create test attribute with mixed variant types
@@ -63,7 +63,7 @@ void main() {
           width: 50.0,
           variants: [
             contextVarAttr,
-            widgetStateVarAttr, // Should be sorted last
+            widgetStateVarAttr, // Should be applied last
             namedVarAttr,
           ],
         );
@@ -146,7 +146,9 @@ void main() {
         );
       });
 
-      testWidgets('mixed variant types are sorted correctly', (tester) async {
+      testWidgets('mixed variant types follow priority buckets', (
+        tester,
+      ) async {
         // Create a mix of all variant types
         final contextVariant = ContextVariant('context', (context) => true);
         const namedVariant = NamedVariant('named');
@@ -158,23 +160,23 @@ void main() {
           VariantStyle(
             widgetStateVariant1,
             _MockSpecAttribute(width: 100.0),
-          ), // Should be sorted to end
+          ), // Higher-priority bucket
           VariantStyle(
             contextVariant,
             _MockSpecAttribute(width: 200.0),
-          ), // Should be sorted earlier
+          ), // Lower-priority bucket
           VariantStyle(
             widgetStateVariant2,
             _MockSpecAttribute(width: 300.0),
-          ), // Should be sorted to end
+          ), // Higher-priority bucket
           VariantStyle(
             namedVariant,
             _MockSpecAttribute(width: 400.0),
-          ), // Should be sorted earlier
+          ), // Lower-priority bucket
           VariantStyle(
             multiNamedVariant,
             _MockSpecAttribute(width: 500.0),
-          ), // Should be sorted earlier
+          ), // Lower-priority bucket
         ];
 
         final testAttribute = _MockSpecAttribute(
@@ -352,7 +354,7 @@ void main() {
     });
 
     group('Merging behavior', () {
-      testWidgets('variants are merged in sorted order', (tester) async {
+      testWidgets('variants are merged in priority order', (tester) async {
         final contextVariant = ContextVariant('context', (context) => true);
         final widgetStateVariant = WidgetStateVariant(WidgetState.hovered);
 
@@ -599,8 +601,8 @@ void main() {
         expect((spec.resolvedValue as Map)['width'], 50.0);
       });
 
-      test('sorting is stable for non-WidgetStateVariant elements', () {
-        // Create multiple non-WidgetState variants to test stable sort
+      test('non-WidgetStateVariant elements preserve stored order', () {
+        // Multiple non-widget-state variants remain in their stored order.
         final variants = [
           VariantStyle(
             ContextVariant('context1', (context) => true),

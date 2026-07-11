@@ -23,13 +23,6 @@ void main() {
 
       Color? currentColor;
 
-      // Verify the style has widget states
-      expect(
-        style.widgetStates.isNotEmpty,
-        isTrue,
-        reason: 'Style should have widget states for hover',
-      );
-
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(

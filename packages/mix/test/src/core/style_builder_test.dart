@@ -839,6 +839,52 @@ void main() {
           );
         },
       );
+
+      testWidgets(
+        'preserves inherited widget state when external controller is removed',
+        (tester) async {
+          final externalController = WidgetStatesController({
+            WidgetState.hovered,
+          });
+          addTearDown(externalController.dispose);
+
+          WidgetStatesController? controller = externalController;
+          late StateSetter setOuter;
+          Color? color;
+
+          await tester.pumpWidget(
+            MaterialApp(
+              home: StyleProvider<BoxSpec>(
+                style: BoxStyler()
+                    .color(Colors.red)
+                    .onHovered(BoxStyler().color(Colors.blue)),
+                child: StatefulBuilder(
+                  builder: (context, setState) {
+                    setOuter = setState;
+
+                    return StyleBuilder<BoxSpec>(
+                      controller: controller,
+                      style: BoxStyler().size(100, 100),
+                      builder: (context, spec) {
+                        color = (spec.decoration as BoxDecoration?)?.color;
+
+                        return const SizedBox(width: 100, height: 100);
+                      },
+                    );
+                  },
+                ),
+              ),
+            ),
+          );
+
+          expect(color, Colors.blue);
+
+          setOuter(() => controller = null);
+          await tester.pump();
+
+          expect(color, Colors.blue);
+        },
+      );
     });
 
     testWidgets(

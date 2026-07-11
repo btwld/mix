@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
@@ -235,6 +236,64 @@ void main() {
       );
 
       expect(find.byType(MixInteractionDetector), findsOneWidget);
+    });
+
+    testWidgets('a statically nested hover variant tracks pointer state', (
+      tester,
+    ) async {
+      Color? color;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Center(
+            child: StyleBuilder<BoxSpec>(
+              style: BoxStyler()
+                  .color(Colors.blue)
+                  .onLight(
+                    BoxStyler().onHovered(BoxStyler().color(Colors.red)),
+                  ),
+              builder: (context, spec) {
+                color = colorOf(spec);
+
+                return const SizedBox(
+                  key: Key('nested-hover-target'),
+                  width: 100,
+                  height: 100,
+                );
+              },
+            ),
+          ),
+        ),
+      );
+
+      expect(color, Colors.blue);
+      expect(find.byType(MixInteractionDetector), findsOneWidget);
+
+      final pointer = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await pointer.addPointer(location: Offset.zero);
+      await pointer.moveTo(
+        tester.getCenter(find.byKey(const Key('nested-hover-target'))),
+      );
+      await tester.pump();
+
+      expect(color, Colors.red);
+      await pointer.removePointer();
+    });
+
+    test('static pointer capability handles cyclic variant graphs', () {
+      final variants = <VariantStyle<BoxSpec>>[];
+      final style = BoxStyler(variants: variants);
+
+      variants
+        ..add(VariantStyle(ContextVariant('cycle', (_) => true), style))
+        ..add(
+          VariantStyle(
+            ContextVariant('nested-hover', (_) => true),
+            BoxStyler().onHovered(BoxStyler().color(Colors.red)),
+          ),
+        );
+
+      expect(style.needsPointerTracking, isTrue);
     });
   });
 

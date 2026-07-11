@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
@@ -70,12 +72,26 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
     return provider?.style;
   }
 
-  @internal
-  Set<WidgetState> get widgetStates {
-    return ($variants ?? [])
-        .where((v) => v.variant is WidgetStateVariant)
-        .map((v) => (v.variant as WidgetStateVariant).state)
-        .toSet();
+  bool _needsPointerTracking(Set<Style<S>> visited) {
+    if (!visited.add(this)) return false;
+
+    final variants = $variants;
+    if (variants == null) return false;
+
+    for (final variantStyle in variants) {
+      final variant = variantStyle.variant;
+      if (variant is WidgetStateVariant &&
+          (variant.state == .hovered || variant.state == .pressed)) {
+        return true;
+      }
+
+      if (variant is! ContextVariantBuilder &&
+          variantStyle.value._needsPointerTracking(visited)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   /// Whether this style declares a widget-state variant that automatic pointer
@@ -87,26 +103,15 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
   /// `WidgetStateProvider` and are intentionally excluded — a pointer detector
   /// cannot activate them, so installing one for them would be dead work.
   ///
-  /// This is a boolean capability query rather than a `Set<WidgetState>` so the
-  /// hot path allocates nothing. Only the top-level variants are inspected,
-  /// matching [widgetStates]; nested variants are not scanned because a pointer
-  /// detector produces both `hovered` and `pressed` once installed, and any
-  /// realistic nested pointer variant sits under a top-level pointer variant or
-  /// under an owner (e.g. `Pressable`) that already provides the scope.
+  /// Static nested variant branches are inspected recursively. Dynamic
+  /// [ContextVariantBuilder] output remains opaque and requires an external
+  /// state owner when it returns pointer-state variants.
   @internal
   bool get needsPointerTracking {
     final variants = $variants;
-    if (variants == null) return false;
+    if (variants == null || variants.isEmpty) return false;
 
-    for (final variantStyle in variants) {
-      final variant = variantStyle.variant;
-      if (variant is WidgetStateVariant &&
-          (variant.state == .hovered || variant.state == .pressed)) {
-        return true;
-      }
-    }
-
-    return false;
+    return _needsPointerTracking(HashSet.identity());
   }
 
   /// Merges all active variants with their nested variants recursively.
@@ -125,9 +130,12 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
     BuildContext context, {
     required Set<NamedVariant> namedVariants,
   }) {
+    final variants = $variants;
+    if (variants == null || variants.isEmpty) return this;
+
     // Filter variants that should be active in this context, preserving their
     // stored order.
-    final activeVariants = ($variants ?? [])
+    final activeVariants = variants
         .where(
           (variantAttr) => switch (variantAttr.variant) {
             (ContextVariant variant) => variant.when(context),
