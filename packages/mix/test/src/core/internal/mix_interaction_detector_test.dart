@@ -5,8 +5,111 @@ import 'package:mix/src/core/internal/mix_interaction_detector.dart';
 import 'package:mix/src/core/pointer_position.dart';
 import 'package:mix/src/core/providers/widget_state_provider.dart';
 
+Widget _stateProbe(ValueChanged<WidgetStateProvider> onBuild) {
+  return Builder(
+    builder: (context) {
+      onBuild(WidgetStateProvider.of(context)!);
+
+      return const SizedBox(width: 100, height: 100);
+    },
+  );
+}
+
 void main() {
   group('MixInteractionDetector', () {
+    testWidgets('seeds an internally owned controller from initial states', (
+      tester,
+    ) async {
+      WidgetStateProvider? states;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: MixInteractionDetector(
+            initialStates: const {WidgetState.hovered, WidgetState.focused},
+            child: _stateProbe((value) => states = value),
+          ),
+        ),
+      );
+
+      expect(states?.hovered, isTrue);
+      expect(states?.focused, isTrue);
+    });
+
+    testWidgets('does not reapply initial states after initialization', (
+      tester,
+    ) async {
+      WidgetStateProvider? states;
+
+      Widget buildDetector(Set<WidgetState> initialStates) {
+        return MaterialApp(
+          home: MixInteractionDetector(
+            initialStates: initialStates,
+            child: _stateProbe((value) => states = value),
+          ),
+        );
+      }
+
+      await tester.pumpWidget(buildDetector(const {WidgetState.hovered}));
+      expect(states?.hovered, isTrue);
+      expect(states?.pressed, isFalse);
+
+      await tester.pumpWidget(buildDetector(const {WidgetState.pressed}));
+      expect(states?.hovered, isTrue);
+      expect(states?.pressed, isFalse);
+    });
+
+    testWidgets('external controller takes precedence over initial states', (
+      tester,
+    ) async {
+      final externalController = WidgetStatesController({WidgetState.selected});
+      addTearDown(externalController.dispose);
+
+      WidgetStateProvider? states;
+
+      Widget buildDetector(WidgetStatesController? controller) {
+        return MaterialApp(
+          home: MixInteractionDetector(
+            controller: controller,
+            initialStates: const {WidgetState.hovered},
+            child: _stateProbe((value) => states = value),
+          ),
+        );
+      }
+
+      await tester.pumpWidget(buildDetector(externalController));
+      expect(states?.hovered, isFalse);
+      expect(states?.selected, isTrue);
+
+      await tester.pumpWidget(buildDetector(null));
+      expect(states?.hovered, isFalse);
+      expect(states?.selected, isTrue);
+    });
+
+    testWidgets('disabled state normalizes transient initial states', (
+      tester,
+    ) async {
+      WidgetStateProvider? states;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: MixInteractionDetector(
+            enabled: false,
+            initialStates: const {
+              WidgetState.hovered,
+              WidgetState.pressed,
+              WidgetState.focused,
+            },
+            child: _stateProbe((value) => states = value),
+          ),
+        ),
+      );
+
+      expect(states?.disabled, isTrue);
+      expect(states?.hovered, isFalse);
+      expect(states?.pressed, isFalse);
+      expect(states?.focused, isTrue);
+    });
+
     testWidgets('initializes with disabled state when enabled is false', (
       WidgetTester tester,
     ) async {

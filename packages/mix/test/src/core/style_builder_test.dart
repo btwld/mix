@@ -885,6 +885,58 @@ void main() {
           expect(color, Colors.blue);
         },
       );
+
+      testWidgets(
+        'discards handoff state when automatic tracking is not installed',
+        (tester) async {
+          final externalController = WidgetStatesController({
+            WidgetState.hovered,
+          });
+          addTearDown(externalController.dispose);
+
+          WidgetStatesController? controller = externalController;
+          var tracksHover = false;
+          late StateSetter setOuter;
+          Color? color;
+
+          await tester.pumpWidget(
+            MaterialApp(
+              home: StatefulBuilder(
+                builder: (context, setState) {
+                  setOuter = setState;
+
+                  final style = BoxStyler().color(Colors.red);
+
+                  return StyleBuilder<BoxSpec>(
+                    controller: controller,
+                    style: tracksHover
+                        ? style.onHovered(BoxStyler().color(Colors.blue))
+                        : style,
+                    builder: (context, spec) {
+                      color = (spec.decoration as BoxDecoration?)?.color;
+
+                      return const SizedBox(width: 100, height: 100);
+                    },
+                  );
+                },
+              ),
+            ),
+          );
+
+          expect(color, Colors.red);
+
+          setOuter(() => controller = null);
+          await tester.pump();
+
+          expect(find.byType(MixInteractionDetector), findsNothing);
+
+          setOuter(() => tracksHover = true);
+          await tester.pump();
+
+          expect(find.byType(MixInteractionDetector), findsOneWidget);
+          expect(color, Colors.red);
+        },
+      );
     });
 
     testWidgets(
