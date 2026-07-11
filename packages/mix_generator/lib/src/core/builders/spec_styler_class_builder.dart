@@ -43,21 +43,65 @@ class SpecStylerClassBuilder {
     return 'Prop<${_fieldValueType(field)}>?';
   }
 
-  String _publicParamType(FieldModel field) =>
-      _setterTypeOverride(field) ??
-      _listMixParamType(field) ??
-      mixTypeFor(field.typeName) ??
-      _fieldValueType(field);
-
-  String? _propFactory(FieldModel field) {
-    if (isRawListField(field.name)) return null;
+  /// The public constructor/setter parameter type for [field] and the `Prop`
+  /// factory that wraps it, decided in one ladder so the pair cannot drift:
+  /// every branch that picks a Mix-typed parameter also picks `Prop.maybeMix`.
+  ///
+  /// A `null` factory means the generated constructor forwards the value
+  /// unwrapped: curated raw-list fields store plain lists, and list Mix
+  /// params are wrapped by [_createArgument] with `Prop.mix(ListMix(...))`.
+  ({String paramType, String? propFactory}) _publicApiFor(FieldModel field) {
+    // Curated raw-list fields are never Prop-wrapped, whatever their type.
+    String? unlessRawList(String propFactory) =>
+        isRawListField(field.name) ? null : propFactory;
 
     // `_setterTypeOverride` validates that overrides are Mix/Styler types.
-    if (_hasSetterTypeOverride(field)) return 'Prop.maybeMix';
+    final setterTypeOverride = _setterTypeOverride(field);
+    if (setterTypeOverride != null) {
+      return (
+        paramType: setterTypeOverride,
+        propFactory: unlessRawList('Prop.maybeMix'),
+      );
+    }
 
-    if (_listMixParamType(field) != null) return null;
+    final listMixParamType = _listMixParamType(field);
+    if (listMixParamType != null) {
+      return (paramType: listMixParamType, propFactory: null);
+    }
 
-    return mixTypeFor(field.typeName) == null ? 'Prop.maybe' : 'Prop.maybeMix';
+    final mixParamType = mixTypeFor(field.typeName) ?? _nestedStylerType(field);
+    if (mixParamType != null) {
+      return (
+        paramType: mixParamType,
+        propFactory: unlessRawList('Prop.maybeMix'),
+      );
+    }
+
+    return (
+      paramType: _fieldValueType(field),
+      propFactory: unlessRawList('Prop.maybe'),
+    );
+  }
+
+  String _publicParamType(FieldModel field) => _publicApiFor(field).paramType;
+
+  String? _propFactory(FieldModel field) => _publicApiFor(field).propFactory;
+
+  /// Styler type for a nested `StyleSpec<X>` field, derived by the same
+  /// `X -> XStyler` naming convention as generated styler class names.
+  ///
+  /// The `StyleSpec` wrapper is detected via the analyzer
+  /// ([FieldModel.styleSpecArgument]); only the styler *name* is a string
+  /// convention, because same-package generated stylers are not resolvable
+  /// while this generator runs (build phases hide later-phase outputs from
+  /// the resolver), so the derived type cannot be validated here. When `X`'s
+  /// styler does not follow the convention the generated code fails to
+  /// compile; `@MixableField(setterType:)` overrides the convention for
+  /// types that resolve during generation.
+  String? _nestedStylerType(FieldModel field) {
+    final specArgument = field.styleSpecArgument;
+
+    return specArgument == null ? null : deriveStylerName(specArgument);
   }
 
   /// Whether [field] declares a `@MixableField(setterType:)` override.
@@ -607,7 +651,8 @@ class SpecStylerClassBuilder {
     final matchedFieldNames = <String>{};
     for (final part in surface.parts) {
       for (final field in fields) {
-        if (field.name == part.fieldName && _isStyleSpecField(field, part)) {
+        if (field.name == part.fieldName &&
+            field.styleSpecArgument == part.specName) {
           matchedFieldNames.add(field.name);
         }
       }
@@ -616,18 +661,6 @@ class SpecStylerClassBuilder {
     if (matchedFieldNames.length != surface.parts.length) return null;
 
     return _CompoundConfig(surface: surface, fieldNames: matchedFieldNames);
-  }
-
-  bool _isStyleSpecField(FieldModel field, CompoundStylerPartDescriptor part) {
-    final fieldElement = specElement.getField(field.name);
-    final type = fieldElement?.type;
-    if (type is! InterfaceType) return false;
-    if (type.element.name != 'StyleSpec') return false;
-    if (type.typeArguments.length != 1) return false;
-
-    final specType = type.typeArguments.single;
-
-    return specType is InterfaceType && specType.element.name == part.specName;
   }
 
   String _createArgument(FieldModel field) {
