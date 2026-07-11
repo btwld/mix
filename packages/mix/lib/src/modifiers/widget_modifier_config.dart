@@ -10,6 +10,7 @@ import '../properties/typography/text_style_mix.dart';
 import '../specs/box/box_spec.dart';
 import '../specs/icon/icon_spec.dart';
 import '../specs/text/text_spec.dart';
+import '../theme/mix_theme.dart';
 import 'align_modifier.dart';
 import 'aspect_ratio_modifier.dart';
 import 'blur_modifier.dart';
@@ -355,33 +356,17 @@ final class WidgetModifierConfig with Equatable {
     );
   }
 
-  /// Orders modifiers according to the specified order or default order.
+  /// Orders modifiers according to the style-local order, then the package
+  /// default order, then any remaining types.
+  ///
+  /// This ignores the ambient [MixScope] order; [resolve] layers that in with
+  /// the correct precedence. Kept for its `@visibleForTesting` surface.
   @visibleForTesting
   List<WidgetModifier> reorderModifiers(List<WidgetModifier> modifiers) {
-    if (modifiers.isEmpty) return modifiers;
-
-    final orderOfModifiers = {
-      // Prioritize the order of modifiers provided by the user.
-      ...?$orderOfModifiers,
-      // Add the default order of modifiers.
-      ..._defaultOrder,
-      // Add any remaining modifiers that were not included in the order.
-      ...modifiers.map((e) => e.runtimeType),
-    }.toList();
-
-    final orderedSpecs = <WidgetModifier>[];
-
-    for (final modifierType in orderOfModifiers) {
-      // Find and add modifiers matching this type
-      final modifier = modifiers
-          .where((e) => e.runtimeType == modifierType)
-          .firstOrNull;
-      if (modifier != null) {
-        orderedSpecs.add(modifier);
-      }
-    }
-
-    return orderedSpecs;
+    return _orderModifiers(
+      modifiers,
+      preferredOrder: $orderOfModifiers ?? const [],
+    );
   }
 
   WidgetModifierConfig shaderMask({
@@ -610,25 +595,86 @@ final class WidgetModifierConfig with Equatable {
 
   /// Resolves the modifiers into a properly ordered list ready for rendering.
   ///
-  /// It's important to order the list before resolving to ensure the correct order of modifiers.
+  /// The resolved list is ordered outermost-to-innermost with this precedence:
+  ///
+  ///     style-local order > nearest MixScope order > package default order
+  ///       > remaining configured types in stable order
   List<WidgetModifier> resolve(BuildContext context) {
-    if ($modifiers == null || $modifiers!.isEmpty) return [];
+    if ($modifiers == null || $modifiers!.isEmpty) return const [];
 
-    // Resolve each modifier attribute to its corresponding modifier spec
+    // Resolve each modifier attribute to its corresponding modifier spec.
+    // Reset specs are filtered here so they never reach rendering.
     final resolvedModifiers = <WidgetModifier>[];
     for (final attribute in $modifiers!) {
       final resolved = attribute.resolve(context);
-      // Filter out reset specs so they never reach rendering
       if (resolved is! ResetModifier) {
         resolvedModifiers.add(resolved as WidgetModifier);
       }
     }
+    if (resolvedModifiers.isEmpty) return const [];
 
-    return reorderModifiers(resolvedModifiers);
+    // Only subscribe to the `modifierOrder` inherited-model aspect when a scope
+    // order could actually change the result: modifiers are present and the
+    // style-local order does not already cover every present type. This keeps a
+    // modifier-order-only consumer from rebuilding on unrelated token changes,
+    // and avoids a spurious dependency when the local order fully determines
+    // the outcome.
+    final scopeOrder = _localOrderFullyCovers(resolvedModifiers)
+        ? null
+        : MixScope.maybeOf(context, 'modifierOrder')?.orderOfModifiers;
+
+    return _orderModifiers(
+      resolvedModifiers,
+      preferredOrder: [...?$orderOfModifiers, ...?scopeOrder],
+    );
+  }
+
+  /// Whether the style-local [$orderOfModifiers] already lists every present
+  /// modifier type, in which case the scope order cannot affect the outcome.
+  bool _localOrderFullyCovers(List<WidgetModifier> modifiers) {
+    final local = $orderOfModifiers;
+    if (local == null || local.isEmpty) return false;
+    final localTypes = local.toSet();
+
+    return modifiers.every((m) => localTypes.contains(m.runtimeType));
   }
 
   @override
   List<Object?> get props => [$orderOfModifiers, $modifiers];
+}
+
+/// Orders [modifiers] outermost-to-innermost by type.
+///
+/// [preferredOrder] wins first (the caller concatenates style-local order then
+/// nearest scope order), then the package [_defaultOrder], then any remaining
+/// configured types in stable (first-seen) order. Each type is emitted once.
+///
+/// Shared by [WidgetModifierConfig.resolve]/[WidgetModifierConfig.reorderModifiers]
+/// and [ModifierListTween] so animated frames nest consistently with resolved
+/// lists.
+List<WidgetModifier> _orderModifiers(
+  List<WidgetModifier> modifiers, {
+  List<Type> preferredOrder = const [],
+}) {
+  if (modifiers.isEmpty) return modifiers;
+
+  final orderOfModifiers = <Type>{
+    ...preferredOrder,
+    ..._defaultOrder,
+    ...modifiers.map((e) => e.runtimeType),
+  };
+
+  final orderedSpecs = <WidgetModifier>[];
+  for (final modifierType in orderOfModifiers) {
+    final modifier = modifiers
+        .where((e) => e.runtimeType == modifierType)
+        .firstOrNull;
+    if (modifier != null) {
+      orderedSpecs.add(modifier);
+    }
+  }
+
+  return orderedSpecs;
 }
 
 const _defaultOrder = [
@@ -721,6 +767,18 @@ const _defaultOrder = [
   ShaderMaskModifier,
 ];
 
+/// Neutral (identity) values used as the interpolation anchor when a modifier
+/// type is present on only one side of a [ModifierListTween].
+///
+/// Each entry's default constructor is a genuine no-op: `OpacityModifier()` is
+/// opacity `1.0`, `PaddingModifier()` is `EdgeInsets.zero`, `TransformModifier()`
+/// is `Matrix4.identity()`, `BlurModifier()` is sigma `0.0`, and so on — so an
+/// addition/removal fades through "no visible effect".
+///
+/// Types with no genuine neutral are deliberately omitted so the tween falls
+/// back to the documented midpoint snap instead of inventing a fake anchor:
+/// `ShaderMaskModifier` (arbitrary shader), `MouseCursorModifier`,
+/// `ScrollViewModifier`, `BoxModifier`, and `DefaultTextStylerModifier`.
 final defaultModifier = {
   FlexibleModifier: FlexibleModifier(),
   VisibilityModifier: VisibilityModifier(),
@@ -752,42 +810,59 @@ class ModifierListTween extends Tween<List<WidgetModifier>?> {
 
   @override
   List<WidgetModifier>? lerp(double t) {
-    List<WidgetModifier>? lerpedModifiers;
-    if (end != null) {
-      // Use empty list if begin is null (handles lerp from null to non-null)
-      final thisModifiers = begin ?? [];
-      final otherModifiers = end!;
+    // Exact endpoints first. Guarantees lerp(0) == begin and lerp(1) == end for
+    // every membership case, before any fallback/floating-point logic can lose
+    // begin/end identity. Exact equality (not <=/>=) is deliberate so curves
+    // that overshoot the [0, 1] range still extrapolate modifier values.
+    if (t == 0.0) return begin;
+    if (t == 1.0) return end;
 
-      // Create a map of modifiers by runtime type from the other list
-      final thisModifierMap = <Type, WidgetModifier>{};
+    final beginModifiers = begin ?? const <WidgetModifier>[];
+    final endModifiers = end ?? const <WidgetModifier>[];
 
-      for (final modifier in thisModifiers) {
-        thisModifierMap[modifier.runtimeType] = modifier;
-      }
+    final beginByType = <Type, WidgetModifier>{
+      for (final m in beginModifiers) m.runtimeType: m,
+    };
+    final endByType = <Type, WidgetModifier>{
+      for (final m in endModifiers) m.runtimeType: m,
+    };
 
-      // Lerp each modifier from this list with its matching type from other
-      lerpedModifiers = [];
-      for (final modifier in otherModifiers) {
-        WidgetModifier? thisModifier = thisModifierMap[modifier.runtimeType];
-        thisModifier ??=
-            defaultModifier[modifier.runtimeType] as WidgetModifier?;
+    // Interpolate over the union of begin and target identities. Runtime type
+    // is the matching identity (multiple instances of one type is out of scope).
+    final lerped = <WidgetModifier>[];
 
-        if (thisModifier != null) {
-          // Both have this modifier type, lerp them
-          // We need to use dynamic dispatch here since lerp is type-specific
-          final lerpedModifier =
-              thisModifier.lerp(modifier, t) as WidgetModifier;
-          lerpedModifiers.add(lerpedModifier);
-        } else {
-          // Only this has the modifier, fade it out if t > 0.5
-
-          if (t < 0.5) {
-            lerpedModifiers.add(modifier);
-          }
-        }
+    // Target members, in target order.
+    for (final endModifier in endModifiers) {
+      final from =
+          beginByType[endModifier.runtimeType] ??
+          defaultModifier[endModifier.runtimeType] as WidgetModifier?;
+      if (from != null) {
+        // Present in both, or target-only with a neutral default:
+        // interpolate begin/neutral -> target.
+        lerped.add(from.lerp(endModifier, t) as WidgetModifier);
+      } else if (t >= 0.5) {
+        // Target-only without a neutral default: snap in at the midpoint.
+        lerped.add(endModifier);
       }
     }
 
-    return lerpedModifiers;
+    // Beginning-only members, in beginning order, until they disappear.
+    for (final beginModifier in beginModifiers) {
+      if (endByType.containsKey(beginModifier.runtimeType)) continue;
+      final to = defaultModifier[beginModifier.runtimeType] as WidgetModifier?;
+      if (to != null) {
+        // Beginning-only with a neutral default: interpolate begin -> neutral.
+        lerped.add(beginModifier.lerp(to, t) as WidgetModifier);
+      } else if (t < 0.5) {
+        // Beginning-only without a neutral default: snap out at the midpoint.
+        lerped.add(beginModifier);
+      }
+    }
+
+    if (lerped.isEmpty) return null;
+
+    // Order the transient union with the same precedence as resolved lists so
+    // intermediate frames nest consistently with the begin/end endpoints.
+    return _orderModifiers(lerped);
   }
 }
