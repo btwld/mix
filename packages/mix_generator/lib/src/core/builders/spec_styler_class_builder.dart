@@ -43,27 +43,49 @@ class SpecStylerClassBuilder {
     return 'Prop<${_fieldValueType(field)}>?';
   }
 
-  String _publicParamType(FieldModel field) =>
-      _setterTypeOverride(field) ??
-      _listMixParamType(field) ??
-      mixTypeFor(field.typeName) ??
-      _nestedStylerType(field) ??
-      _fieldValueType(field);
-
-  String? _propFactory(FieldModel field) {
-    if (isRawListField(field.name)) return null;
+  /// The public constructor/setter parameter type for [field] and the `Prop`
+  /// factory that wraps it, decided in one ladder so the pair cannot drift:
+  /// every branch that picks a Mix-typed parameter also picks `Prop.maybeMix`.
+  ///
+  /// A `null` factory means the generated constructor forwards the value
+  /// unwrapped: curated raw-list fields store plain lists, and list Mix
+  /// params are wrapped by [_createArgument] with `Prop.mix(ListMix(...))`.
+  ({String paramType, String? propFactory}) _publicApiFor(FieldModel field) {
+    // Curated raw-list fields are never Prop-wrapped, whatever their type.
+    String? unlessRawList(String propFactory) =>
+        isRawListField(field.name) ? null : propFactory;
 
     // `_setterTypeOverride` validates that overrides are Mix/Styler types.
-    if (_hasSetterTypeOverride(field)) return 'Prop.maybeMix';
+    final setterTypeOverride = _setterTypeOverride(field);
+    if (setterTypeOverride != null) {
+      return (
+        paramType: setterTypeOverride,
+        propFactory: unlessRawList('Prop.maybeMix'),
+      );
+    }
 
-    if (_listMixParamType(field) != null) return null;
+    final listMixParamType = _listMixParamType(field);
+    if (listMixParamType != null) {
+      return (paramType: listMixParamType, propFactory: null);
+    }
 
-    if (mixTypeFor(field.typeName) != null) return 'Prop.maybeMix';
+    final mixParamType = mixTypeFor(field.typeName) ?? _nestedStylerType(field);
+    if (mixParamType != null) {
+      return (
+        paramType: mixParamType,
+        propFactory: unlessRawList('Prop.maybeMix'),
+      );
+    }
 
-    if (_nestedStylerType(field) != null) return 'Prop.maybeMix';
-
-    return 'Prop.maybe';
+    return (
+      paramType: _fieldValueType(field),
+      propFactory: unlessRawList('Prop.maybe'),
+    );
   }
+
+  String _publicParamType(FieldModel field) => _publicApiFor(field).paramType;
+
+  String? _propFactory(FieldModel field) => _publicApiFor(field).propFactory;
 
   /// Styler type for a nested `StyleSpec<X>` field, derived by the same
   /// `X -> XStyler` naming convention as generated styler class names.

@@ -1,4 +1,4 @@
-## 2.1.2
+## 2.2.0
 
  - **FEAT**: Derive nested styler types for `StyleSpec<XSpec>` spec fields by
    the `XSpec -> XStyler` naming convention. Generated spec stylers now expose
