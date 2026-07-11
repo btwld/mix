@@ -90,14 +90,16 @@ class SpecStylerClassBuilder {
   /// Styler type for a nested `StyleSpec<X>` field, derived by the same
   /// `X -> XStyler` naming convention as generated styler class names.
   ///
-  /// Pure string derivation by design: same-package generated stylers are not
-  /// resolvable while this generator runs (build phases hide later-phase
-  /// outputs from the resolver), so the derived type cannot be validated
-  /// here. When `X`'s styler does not follow the convention the generated
-  /// code fails to compile; `@MixableField(setterType:)` overrides the
-  /// convention for types that resolve during generation.
+  /// The `StyleSpec` wrapper is detected via the analyzer
+  /// ([FieldModel.styleSpecArgument]); only the styler *name* is a string
+  /// convention, because same-package generated stylers are not resolvable
+  /// while this generator runs (build phases hide later-phase outputs from
+  /// the resolver), so the derived type cannot be validated here. When `X`'s
+  /// styler does not follow the convention the generated code fails to
+  /// compile; `@MixableField(setterType:)` overrides the convention for
+  /// types that resolve during generation.
   String? _nestedStylerType(FieldModel field) {
-    final specArgument = styleSpecArgumentOf(field.typeName);
+    final specArgument = field.styleSpecArgument;
 
     return specArgument == null ? null : deriveStylerName(specArgument);
   }
@@ -649,7 +651,8 @@ class SpecStylerClassBuilder {
     final matchedFieldNames = <String>{};
     for (final part in surface.parts) {
       for (final field in fields) {
-        if (field.name == part.fieldName && _isStyleSpecField(field, part)) {
+        if (field.name == part.fieldName &&
+            field.styleSpecArgument == part.specName) {
           matchedFieldNames.add(field.name);
         }
       }
@@ -658,18 +661,6 @@ class SpecStylerClassBuilder {
     if (matchedFieldNames.length != surface.parts.length) return null;
 
     return _CompoundConfig(surface: surface, fieldNames: matchedFieldNames);
-  }
-
-  bool _isStyleSpecField(FieldModel field, CompoundStylerPartDescriptor part) {
-    final fieldElement = specElement.getField(field.name);
-    final type = fieldElement?.type;
-    if (type is! InterfaceType) return false;
-    if (type.element.name != 'StyleSpec') return false;
-    if (type.typeArguments.length != 1) return false;
-
-    final specType = type.typeArguments.single;
-
-    return specType is InterfaceType && specType.element.name == part.specName;
   }
 
   String _createArgument(FieldModel field) {

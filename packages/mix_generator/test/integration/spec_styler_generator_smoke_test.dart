@@ -7,30 +7,44 @@ import 'package:test/test.dart';
 
 import '../core/test_helpers.dart';
 
-const _mixSources = {'mix|lib/mix.dart': _mixStub};
+const _mixSources = {
+  'mix|lib/mix.dart': _mixStub,
+  'mix|lib/src/core/style_spec.dart': _styleSpecStub,
+};
+
+/// `StyleSpec` declared at its real `package:mix` path so the URL-based
+/// `styleSpecChecker` matches in tests — the same reason
+/// `_setterTypeMixSources` declares `Mix` at its real path for `mixChecker`.
+const _styleSpecStub = '''
+  import '../../mix.dart';
+
+  class StyleSpec<S extends Spec<S>> {
+    const StyleSpec({
+      required S spec,
+      Object? animation,
+      Object? widgetModifiers,
+    });
+  }
+''';
+
 const _setterTypeMixSources = {
   'mix|lib/src/core/mix_element.dart': '''
     abstract class Mix<T> {
       const Mix();
     }
   ''',
+  'mix|lib/src/core/style_spec.dart': _styleSpecStub,
   'mix|lib/mix.dart': '''
     import 'package:flutter/foundation.dart';
 
     import 'src/core/mix_element.dart';
+    import 'src/core/style_spec.dart';
 
     export 'src/core/mix_element.dart';
+    export 'src/core/style_spec.dart';
 
     abstract class Spec<T extends Spec<T>> {
       const Spec();
-    }
-
-    class StyleSpec<S extends Spec<S>> {
-      const StyleSpec({
-        required S spec,
-        Object? animation,
-        Object? widgetModifiers,
-      });
     }
 
     abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>> {
@@ -112,12 +126,10 @@ const _mixSourcesWithStyleWidget = {
 const _mixStub = '''
   import 'package:flutter/foundation.dart';
 
+  export 'src/core/style_spec.dart';
+
   abstract class Spec<T extends Spec<T>> {
     const Spec();
-  }
-
-  class StyleSpec<S extends Spec<S>> {
-    const StyleSpec({required S spec, Object? animation, Object? widgetModifiers});
   }
 
   abstract class Style<S extends Spec<S>> {

@@ -4,6 +4,7 @@ library;
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 
+import '../checkers.dart';
 import '../curated/type_metadata.dart';
 import '../errors.dart';
 import 'type_helpers.dart';
@@ -20,15 +21,6 @@ String deriveStylerName(String specName) {
   }
 
   return '${specName}Styler';
-}
-
-/// The spec type argument `X` of a `StyleSpec<X>` [typeName], or `null` when
-/// [typeName] is not a `StyleSpec<...>` type.
-String? styleSpecArgumentOf(String typeName) {
-  const prefix = 'StyleSpec<';
-  if (!typeName.startsWith(prefix) || !typeName.endsWith('>')) return null;
-
-  return typeName.substring(prefix.length, typeName.length - 1);
 }
 
 /// Extracts [FieldModel]s from the unnamed constructor of [classElement].
@@ -69,6 +61,13 @@ class FieldModel {
   /// The list element type when [isList] is true.
   final String? listElementType;
 
+  /// The spec type argument name `X` when the field type is Mix's
+  /// `StyleSpec<X>`, or `null` otherwise.
+  ///
+  /// Analyzer-derived (URL-checked against `package:mix`, so same-named user
+  /// classes never match); synthesized models must set it explicitly.
+  final String? styleSpecArgument;
+
   /// The type emitted in generated `copyWith` and `lerp` methods.
   final String effectiveSpecType;
 
@@ -89,6 +88,7 @@ class FieldModel {
     required this.typeName,
     required this.isList,
     this.listElementType,
+    this.styleSpecArgument,
     required this.effectiveSpecType,
     required this.isLerpable,
     required this.diagnosticKind,
@@ -125,6 +125,7 @@ class FieldModel {
       typeName: typeName,
       isList: isList,
       listElementType: listElementType,
+      styleSpecArgument: _styleSpecArgumentOf(type),
       effectiveSpecType: effectiveSpecType,
       isLerpable: isLerpable,
       diagnosticKind: diagnosticKind,
@@ -147,6 +148,18 @@ bool _isList(DartType type) {
   if (type is! InterfaceType) return false;
 
   return type.isDartCoreList;
+}
+
+/// The spec type argument name `X` of Mix's `StyleSpec<X>`, or `null` when
+/// [type] is not that `StyleSpec` or its argument is not an interface type.
+String? _styleSpecArgumentOf(DartType type) {
+  if (type is! InterfaceType) return null;
+  if (!styleSpecChecker.isExactlyType(type)) return null;
+  if (type.typeArguments.length != 1) return null;
+
+  final argument = type.typeArguments.single;
+
+  return argument is InterfaceType ? argument.element.name : null;
 }
 
 String? _getListElementType(DartType type) {
