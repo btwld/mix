@@ -209,6 +209,53 @@ void main() {
       expect(_has<_TagModifier>(custom.lerp(belowSnap)), isTrue);
       expect(_has<_TagModifier>(custom.lerp(snap)), isFalse);
     });
+
+    // Null dimensions/factors make SizedBox and FractionallySizedBox no-ops
+    // when built, but their numeric lerps treat null as zero. They therefore
+    // cannot serve as interpolation identities either.
+    final modifiersWithoutIdentity = <WidgetModifier>[
+      const FlexibleModifier(),
+      const IconThemeModifier(),
+      const DefaultTextStyleModifier(),
+      const SizedBoxModifier(),
+      const FractionallySizedBoxModifier(),
+      const IntrinsicHeightModifier(),
+      const IntrinsicWidthModifier(),
+      const AspectRatioModifier(),
+      const AlignModifier(),
+      const ClipOvalModifier(),
+      const ClipRRectModifier(),
+      const ClipPathModifier(),
+      const ClipTriangleModifier(),
+    ];
+
+    for (final modifier in modifiersWithoutIdentity) {
+      test('${modifier.runtimeType} snaps in both directions', () {
+        final addition = ModifierListTween(begin: const [], end: [modifier]);
+        final removal = ModifierListTween(begin: [modifier], end: const []);
+
+        expect(
+          addition.lerp(belowSnap),
+          isNull,
+          reason: '${modifier.runtimeType} has no neutral addition anchor',
+        );
+        expect(
+          addition.lerp(snap)?.single.runtimeType,
+          modifier.runtimeType,
+          reason: '${modifier.runtimeType} must snap in at the midpoint',
+        );
+        expect(
+          removal.lerp(belowSnap)?.single.runtimeType,
+          modifier.runtimeType,
+          reason: '${modifier.runtimeType} must remain before the midpoint',
+        );
+        expect(
+          removal.lerp(snap),
+          isNull,
+          reason: '${modifier.runtimeType} has no neutral removal anchor',
+        );
+      });
+    }
   });
 
   group('ModifierListTween.lerp — mixed membership keeps target order', () {
@@ -225,6 +272,18 @@ void main() {
         types.indexOf(PaddingModifier),
         lessThan(types.indexOf(OpacityModifier)),
       );
+    });
+
+    test('preserves a resolved non-default target order', () {
+      final tween = ModifierListTween(
+        begin: [OpacityModifier(0.2), PaddingModifier(const EdgeInsets.all(4))],
+        end: [OpacityModifier(0.8), PaddingModifier(const EdgeInsets.all(8))],
+      );
+
+      expect(tween.lerp(0.5)!.map((modifier) => modifier.runtimeType), [
+        OpacityModifier,
+        PaddingModifier,
+      ]);
     });
   });
 }

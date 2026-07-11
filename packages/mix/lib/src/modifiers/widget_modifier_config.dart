@@ -343,6 +343,16 @@ final class WidgetModifierConfig with Equatable {
     }
   }
 
+  /// Whether the style-local [$orderOfModifiers] already lists every present
+  /// modifier type, in which case the scope order cannot affect the outcome.
+  bool _localOrderFullyCovers(List<WidgetModifier> modifiers) {
+    final local = $orderOfModifiers;
+    if (local == null || local.isEmpty) return false;
+    final localTypes = local.toSet();
+
+    return modifiers.every((m) => localTypes.contains(m.runtimeType));
+  }
+
   WidgetModifierConfig translate({required double x, required double y}) {
     return merge(WidgetModifierConfig.translate(x: x, y: y));
   }
@@ -629,16 +639,6 @@ final class WidgetModifierConfig with Equatable {
     );
   }
 
-  /// Whether the style-local [$orderOfModifiers] already lists every present
-  /// modifier type, in which case the scope order cannot affect the outcome.
-  bool _localOrderFullyCovers(List<WidgetModifier> modifiers) {
-    final local = $orderOfModifiers;
-    if (local == null || local.isEmpty) return false;
-    final localTypes = local.toSet();
-
-    return modifiers.every((m) => localTypes.contains(m.runtimeType));
-  }
-
   @override
   List<Object?> get props => [$orderOfModifiers, $modifiers];
 }
@@ -649,9 +649,8 @@ final class WidgetModifierConfig with Equatable {
 /// nearest scope order), then the package [_defaultOrder], then any remaining
 /// configured types in stable (first-seen) order. Each type is emitted once.
 ///
-/// Shared by [WidgetModifierConfig.resolve]/[WidgetModifierConfig.reorderModifiers]
-/// and [ModifierListTween] so animated frames nest consistently with resolved
-/// lists.
+/// Shared by [WidgetModifierConfig.resolve] and
+/// [WidgetModifierConfig.reorderModifiers].
 List<WidgetModifier> _orderModifiers(
   List<WidgetModifier> modifiers, {
   List<Type> preferredOrder = const [],
@@ -770,37 +769,23 @@ const _defaultOrder = [
 /// Neutral (identity) values used as the interpolation anchor when a modifier
 /// type is present on only one side of a [ModifierListTween].
 ///
-/// Each entry's default constructor is a genuine no-op: `OpacityModifier()` is
-/// opacity `1.0`, `PaddingModifier()` is `EdgeInsets.zero`, `TransformModifier()`
-/// is `Matrix4.identity()`, `BlurModifier()` is sigma `0.0`, and so on — so an
-/// addition/removal fades through "no visible effect".
+/// Each entry can interpolate through its default constructor without changing
+/// layout, paint, inherited data, or clipping. For example,
+/// `OpacityModifier()` is opacity `1.0`, `PaddingModifier()` is
+/// `EdgeInsets.zero`, `TransformModifier()` is `Matrix4.identity()`, and
+/// `BlurModifier()` is sigma `0.0`.
 ///
 /// Types with no genuine neutral are deliberately omitted so the tween falls
-/// back to the documented midpoint snap instead of inventing a fake anchor:
-/// `ShaderMaskModifier` (arbitrary shader), `MouseCursorModifier`,
-/// `ScrollViewModifier`, `BoxModifier`, and `DefaultTextStylerModifier`.
+/// back to the documented midpoint snap instead of inventing a fake anchor.
 final defaultModifier = {
-  FlexibleModifier: FlexibleModifier(),
   VisibilityModifier: VisibilityModifier(),
-  IconThemeModifier: IconThemeModifier(),
-  DefaultTextStyleModifier: DefaultTextStyleModifier(),
-  SizedBoxModifier: SizedBoxModifier(),
-  FractionallySizedBoxModifier: FractionallySizedBoxModifier(),
-  IntrinsicHeightModifier: IntrinsicHeightModifier(),
-  IntrinsicWidthModifier: IntrinsicWidthModifier(),
-  AspectRatioModifier: AspectRatioModifier(),
   RotatedBoxModifier: RotatedBoxModifier(),
-  AlignModifier: AlignModifier(),
   PaddingModifier: PaddingModifier(),
   TransformModifier: TransformModifier(),
   ScaleModifier: ScaleModifier(),
   RotateModifier: RotateModifier(),
   TranslateModifier: TranslateModifier(),
   SkewModifier: SkewModifier(),
-  ClipOvalModifier: ClipOvalModifier(),
-  ClipRRectModifier: ClipRRectModifier(),
-  ClipPathModifier: ClipPathModifier(),
-  ClipTriangleModifier: ClipTriangleModifier(),
   BlurModifier: BlurModifier(),
   OpacityModifier: OpacityModifier(),
 };
@@ -861,8 +846,6 @@ class ModifierListTween extends Tween<List<WidgetModifier>?> {
 
     if (lerped.isEmpty) return null;
 
-    // Order the transient union with the same precedence as resolved lists so
-    // intermediate frames nest consistently with the begin/end endpoints.
-    return _orderModifiers(lerped);
+    return lerped;
   }
 }

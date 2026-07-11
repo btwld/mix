@@ -207,6 +207,82 @@ void main() {
       },
     );
   });
+
+  group('Modifier order phase animation lifecycle', () {
+    testWidgets('phase styles with modifiers mount below MixScope', (
+      tester,
+    ) async {
+      final trigger = ValueNotifier(false);
+      addTearDown(trigger.dispose);
+
+      final style = BoxStyler().phaseAnimation<int>(
+        trigger: trigger,
+        phases: const [0, 1],
+        styleBuilder: (phase, style) => phase == 0
+            ? style.wrap(WidgetModifierConfig.opacity(0.5))
+            : style.wrap(
+                WidgetModifierConfig.padding(EdgeInsetsGeometryMix.all(8)),
+              ),
+        configBuilder: (_) => const CurveAnimationConfig(
+          duration: Duration(milliseconds: 100),
+          curve: Curves.linear,
+        ),
+      );
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: MixScope.empty(child: Box(style: style)),
+        ),
+      );
+
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('scope order changes re-resolve phase styles', (tester) async {
+      final trigger = ValueNotifier(false);
+      addTearDown(trigger.dispose);
+
+      final style = BoxStyler().phaseAnimation<int>(
+        trigger: trigger,
+        phases: const [0, 1],
+        styleBuilder: (_, style) => style.wrap(_opacityThenPadding()),
+        configBuilder: (_) => const CurveAnimationConfig(
+          duration: Duration(milliseconds: 100),
+          curve: Curves.linear,
+        ),
+      );
+      final host = GlobalKey<_ScopeHostState>();
+      final opacity = find.byWidgetPredicate(
+        (widget) => widget is Opacity && widget.opacity == 0.5,
+      );
+      final padding = find.byWidgetPredicate(
+        (widget) =>
+            widget is Padding && widget.padding == const EdgeInsets.all(10),
+      );
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: _ScopeHost(
+            key: host,
+            child: Box(style: style),
+          ),
+        ),
+      );
+      trigger.value = true;
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 50));
+
+      expect(find.descendant(of: padding, matching: opacity), findsOneWidget);
+
+      host.currentState!.update(
+        order: const [OpacityModifier, PaddingModifier],
+      );
+      await tester.pump();
+
+      expect(find.descendant(of: opacity, matching: padding), findsOneWidget);
+      expect(find.descendant(of: padding, matching: opacity), findsNothing);
+    });
+  });
 }
 
 /// Test host that keeps its [child] instance stable across rebuilds so that
