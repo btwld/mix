@@ -242,6 +242,9 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
     required super.initialSpec,
     required this.context,
   }) {
+    // Validate before any controller work so invalid configs fail early. Kept
+    // here (not in the const constructor) to preserve const construction.
+    config.validate();
     _setUpAnimation();
     // Register the completion listener on the controller once, for the driver's
     // whole lifetime. `_setUpAnimation` re-drives `_animation` on every
@@ -348,6 +351,7 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
 
   @override
   void updateDriver(covariant PhaseAnimationConfig config) {
+    config.validate();
     this.config.trigger?.removeListener(_onTriggerChanged);
     if (config != this.config) {
       controller.reset();
@@ -376,6 +380,9 @@ class KeyframeAnimationDriver<S extends Spec<S>>
     required super.initialSpec,
     required this.context,
   }) : _config = config {
+    // Validate before any controller work so invalid configs fail early. Kept
+    // here (not in the const constructor) to preserve const construction.
+    config.validate();
     _setUpAnimation();
     if (config.isLooping) {
       _startLoopingAnimation();
@@ -433,6 +440,7 @@ class KeyframeAnimationDriver<S extends Spec<S>>
 
   @override
   void updateDriver(covariant KeyframeAnimationConfig<S> config) {
+    config.validate();
     _config.trigger?.removeListener(_onTriggerChanged);
     if (_config != config) {
       controller.reset();

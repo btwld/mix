@@ -664,7 +664,7 @@ void main() {
             styles: const [],
             curveConfigs: const [],
             trigger: null,
-          ),
+          ).validate(),
           throwsA(isA<AssertionError>()),
         );
       });
@@ -680,7 +680,7 @@ void main() {
               ),
             ],
             trigger: null,
-          ),
+          ).validate(),
           throwsA(isA<AssertionError>()),
         );
       });
@@ -696,7 +696,7 @@ void main() {
               ),
             ],
             trigger: null,
-          ),
+          ).validate(),
           throwsA(isA<AssertionError>()),
         );
       });
@@ -712,7 +712,7 @@ void main() {
               ),
             ],
             trigger: null,
-          ),
+          ).validate(),
           throwsA(isA<AssertionError>()),
         );
       });
@@ -747,7 +747,7 @@ void main() {
             ],
             styleBuilder: (result, style) => style,
             initialStyle: MockStyle(0.0),
-          ),
+          ).validate(),
           throwsA(isA<AssertionError>()),
         );
       });
@@ -763,7 +763,7 @@ void main() {
             ],
             styleBuilder: (result, style) => style,
             initialStyle: MockStyle(0.0),
-          ),
+          ).validate(),
           throwsA(isA<AssertionError>()),
         );
       });
@@ -778,7 +778,7 @@ void main() {
             timeline: const [],
             styleBuilder: (result, style) => style,
             initialStyle: MockStyle(0.0),
-          ),
+          ).validate(),
           returnsNormally,
         );
       });

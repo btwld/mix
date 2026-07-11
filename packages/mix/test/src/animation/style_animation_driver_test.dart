@@ -1192,4 +1192,57 @@ void main() {
       },
     );
   });
+
+  group('driver validates config before running (regression)', () {
+    test('PhaseAnimationDriver rejects an invalid config on construction', () {
+      // Mismatched styles/curveConfigs must fail via validate() before any
+      // controller work — proves the driver is wired to config.validate().
+      expect(
+        () => PhaseAnimationDriver<MockSpec<double>>(
+          vsync: const TestVSync(),
+          config: PhaseAnimationConfig<MockSpec<double>, MockStyle<double>>(
+            styles: [MockStyle(0.0), MockStyle(1.0)],
+            curveConfigs: const [
+              CurveAnimationConfig(
+                duration: Duration(milliseconds: 100),
+                curve: Curves.linear,
+              ),
+            ],
+            trigger: null,
+          ),
+          initialSpec: MockSpec(resolvedValue: 0.0).toStyleSpec(),
+          context: MockBuildContext(),
+        ),
+        throwsA(isA<AssertionError>()),
+      );
+    });
+
+    test('KeyframeAnimationDriver rejects an invalid config on construction', () {
+      final trigger = ValueNotifier(false);
+      addTearDown(trigger.dispose);
+
+      // Duplicate track ids must fail via validate() before any controller work.
+      expect(
+        () => KeyframeAnimationDriver<MockSpec<double>>(
+          vsync: const TestVSync(),
+          config: KeyframeAnimationConfig<MockSpec<double>>(
+            trigger: trigger,
+            timeline: [
+              KeyframeTrack<double>('dup', const [
+                Keyframe.linear(1.0, Duration(milliseconds: 100)),
+              ], initial: 0.0),
+              KeyframeTrack<double>('dup', const [
+                Keyframe.linear(1.0, Duration(milliseconds: 100)),
+              ], initial: 0.0),
+            ],
+            styleBuilder: (result, style) => style,
+            initialStyle: MockStyle(0.0),
+          ),
+          initialSpec: MockSpec(resolvedValue: 0.0).toStyleSpec(),
+          context: MockBuildContext(),
+        ),
+        throwsA(isA<AssertionError>()),
+      );
+    });
+  });
 }
