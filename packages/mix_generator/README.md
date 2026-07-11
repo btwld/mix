@@ -183,6 +183,26 @@ final cardStyle = BoxStyler()
 
 The widget name is derived from a lower-camel-case `*Style` identifier (`cardStyle` → `Card`); pass `@MixWidget(name: 'X')` to override. Function-backed factories thread their args before the styler `call()`: `@MixWidget Style<S> badge({Color? color}) => ...` generates a `Badge({this.color, this.child})` constructor.
 
+When a function-backed factory declares a named, non-nullable enum parameter
+named `variant`, the generator also emits one named constructor per accessible
+enum value:
+
+```dart
+@MixWidget()
+ButtonStyler buttonStyle({ButtonVariant variant = .solid}) => ...;
+
+// Generates both the backwards-compatible `Button(variant: ...)` and:
+//   const Button.solid({super.key, ...}) : variant = ButtonVariant.solid;
+//   const Button.ghost({super.key, ...}) : variant = ButtonVariant.ghost;
+```
+
+Each named constructor omits the `variant` argument and preserves every other
+factory and styler `call()` parameter. Enum-value documentation and deprecation
+metadata are carried onto the matching constructor. Nullable, positional, and
+non-enum `variant` parameters retain the single-constructor behavior. Variant
+constructors are also skipped when an enum value conflicts with a generated
+widget type parameter.
+
 See [`mix_annotations`](https://pub.dev/packages/mix_annotations) for the full annotation contract (parameter rules, `Key? key` forwarding, naming/visibility constraints).
 
 ### Field-level control with `@MixableField`

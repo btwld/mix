@@ -974,6 +974,7 @@ RadioStyler fortalRadioStyle({Variant variant = Variant.surface}) =>
             contains(
               'class FortalRadio<T extends RadioValue> extends StatelessWidget',
             ),
+            contains('const FortalRadio.surface('),
             contains('this.variant = Variant.surface'),
             contains('required this.value'),
             contains('required this.values'),

@@ -1,3 +1,10 @@
+## 2.2.0
+
+ - **FEAT**: Generate one named widget constructor per accessible enum value
+   when an `@MixWidget` function has a named, non-nullable enum parameter named
+   `variant` (for example, `Button.solid(...)`). The existing unnamed
+   constructor remains unchanged.
+
 ## 2.1.2
 
  - **FEAT**: Derive nested styler types for `StyleSpec<XSpec>` spec fields by
