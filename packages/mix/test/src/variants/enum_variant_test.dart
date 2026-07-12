@@ -69,7 +69,6 @@ void main() {
         final variantStyle = VariantStyle(ButtonVariant.primary, style);
 
         expect(variantStyle.variant, ButtonVariant.primary);
-        expect(variantStyle.mergeKey, 'primary');
       });
 
       test('different enum values create different mergeKeys', () {

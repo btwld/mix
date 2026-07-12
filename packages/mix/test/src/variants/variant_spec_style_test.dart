@@ -14,7 +14,6 @@ void main() {
 
         expect(variantAttr.variant, variant);
         expect(variantAttr.value, style);
-        expect(variantAttr.mergeKey, 'primary');
       });
 
       test('creates VariantSpecAttribute with ContextVariant', () {
@@ -24,7 +23,6 @@ void main() {
 
         expect(variantAttr.variant, variant);
         expect(variantAttr.value, style);
-        expect(variantAttr.mergeKey, 'widget_state_hovered');
       });
 
       test('creates VariantSpecAttribute with ContextVariant', () {
@@ -34,7 +32,6 @@ void main() {
 
         expect(variantAttr.variant, variant);
         expect(variantAttr.value, style);
-        expect(variantAttr.mergeKey, 'widget_state_hovered');
       });
     });
 
@@ -275,28 +272,35 @@ void main() {
     });
 
     group('mergeKey property', () {
-      test('uses variant key as merge key', () {
-        const variant = NamedVariant('primary');
+      test('matches semantically equivalent named variants', () {
+        const first = NamedVariant('primary');
+        const second = NamedVariant('primary');
         final style = BoxStyler().width(100.0);
-        final variantAttr = VariantStyle(variant, style);
+        final firstStyle = VariantStyle(first, style);
+        final secondStyle = VariantStyle(second, style);
 
-        expect(variantAttr.mergeKey, 'primary');
+        expect(firstStyle.mergeKey, equals(secondStyle.mergeKey));
       });
 
-      test('uses ContextVariant key as merge key', () {
-        final variant = ContextVariant.widgetState(WidgetState.hovered);
+      test('matches semantically equivalent context variants', () {
+        final first = ContextVariant.widgetState(WidgetState.hovered);
+        final second = ContextVariant.widgetState(WidgetState.hovered);
         final style = BoxStyler().width(100.0);
-        final variantAttr = VariantStyle(variant, style);
+        final firstStyle = VariantStyle(first, style);
+        final secondStyle = VariantStyle(second, style);
 
-        expect(variantAttr.mergeKey, 'widget_state_hovered');
+        expect(firstStyle.mergeKey, equals(secondStyle.mergeKey));
       });
 
-      test('uses variant key as merge key', () {
-        const variant = NamedVariant('primary');
+      test('does not use the display key as semantic identity', () {
+        const named = NamedVariant('web');
+        final contextual = ContextVariant.web();
         final style = BoxStyler().width(100.0);
-        final variantAttr = VariantStyle(variant, style);
+        final namedStyle = VariantStyle(named, style);
+        final contextualStyle = VariantStyle(contextual, style);
 
-        expect(variantAttr.mergeKey, 'primary');
+        expect(named.key, contextual.key);
+        expect(namedStyle.mergeKey, isNot(equals(contextualStyle.mergeKey)));
       });
     });
 
