@@ -11,6 +11,7 @@ extension on Set<WidgetState> {
   bool get hasDragged => contains(WidgetState.dragged);
   bool get hasSelected => contains(WidgetState.selected);
   bool get hasError => contains(WidgetState.error);
+  bool get hasScrolledUnder => contains(WidgetState.scrolledUnder);
 }
 
 /// Provider for widget state information using Flutter's [InheritedModel].
@@ -29,17 +30,31 @@ class WidgetStateProvider extends InheritedModel<WidgetState> {
        pressed = states.hasPressed,
        dragged = states.hasDragged,
        selected = states.hasSelected,
-       error = states.hasError;
+       error = states.hasError,
+       scrolledUnder = states.hasScrolledUnder;
 
   /// Retrieves the [WidgetStateProvider] from the widget tree.
   ///
   /// If [state] is provided, creates a dependency only on that specific state.
   /// This enables granular rebuilds when only specific states change.
+  ///
+  /// Passing a null [state] creates a dependency on *every* aspect, so callers
+  /// that only need to know whether a scope exists should use [hasProvider]
+  /// instead of comparing `of(context)` against null.
   static WidgetStateProvider? of(BuildContext context, [WidgetState? state]) {
     return InheritedModel.inheritFrom<WidgetStateProvider>(
       context,
       aspect: state,
     );
+  }
+
+  /// Whether a [WidgetStateProvider] scope exists above [context].
+  ///
+  /// Unlike [of], this performs a read-only lookup and does **not** register a
+  /// dependency on any state aspect, so a widget calling it will not rebuild
+  /// when unrelated states (hover, press, etc.) change.
+  static bool hasProvider(BuildContext context) {
+    return context.getInheritedWidgetOfExactType<WidgetStateProvider>() != null;
   }
 
   /// Checks if a specific [WidgetState] is currently active.
@@ -59,7 +74,7 @@ class WidgetStateProvider extends InheritedModel<WidgetState> {
       .dragged => model.dragged,
       .selected => model.selected,
       .error => model.error,
-      .scrolledUnder => false,
+      .scrolledUnder => model.scrolledUnder,
     };
   }
 
@@ -84,6 +99,9 @@ class WidgetStateProvider extends InheritedModel<WidgetState> {
   /// Whether the widget has an error.
   final bool error;
 
+  /// Whether the widget is scrolled under (e.g. content beneath an app bar).
+  final bool scrolledUnder;
+
   @override
   bool updateShouldNotify(WidgetStateProvider oldWidget) {
     return oldWidget.disabled != disabled ||
@@ -92,7 +110,8 @@ class WidgetStateProvider extends InheritedModel<WidgetState> {
         oldWidget.pressed != pressed ||
         oldWidget.dragged != dragged ||
         oldWidget.selected != selected ||
-        oldWidget.error != error;
+        oldWidget.error != error ||
+        oldWidget.scrolledUnder != scrolledUnder;
   }
 
   @override
@@ -106,7 +125,9 @@ class WidgetStateProvider extends InheritedModel<WidgetState> {
         oldWidget.pressed != pressed && dependencies.hasPressed ||
         oldWidget.dragged != dragged && dependencies.hasDragged ||
         oldWidget.selected != selected && dependencies.hasSelected ||
-        oldWidget.error != error && dependencies.hasError;
+        oldWidget.error != error && dependencies.hasError ||
+        oldWidget.scrolledUnder != scrolledUnder &&
+            dependencies.hasScrolledUnder;
   }
 }
 

@@ -18,6 +18,7 @@ class MixInteractionDetector extends StatefulWidget {
     super.key,
     required this.child,
     this.controller,
+    this.initialStates = const {},
     this.enabled = true,
     this.onHoverChange,
     this.onPointerPositionChange,
@@ -25,6 +26,15 @@ class MixInteractionDetector extends StatefulWidget {
 
   final Widget child;
   final WidgetStatesController? controller;
+
+  /// States used to seed an internally owned controller.
+  ///
+  /// This set is read only when the detector is first mounted without an
+  /// external [controller]. The states are copied before [enabled] is
+  /// synchronized, which clears hover and press while disabled. Later changes
+  /// to this property are not reapplied to the active controller.
+  final Set<WidgetState> initialStates;
+
   final bool enabled;
   final ValueChanged<bool>? onHoverChange;
   final ValueChanged<PointerPosition>? onPointerPositionChange;
@@ -41,12 +51,10 @@ class _MixInteractionDetectorState extends State<MixInteractionDetector> {
   void initState() {
     super.initState();
     _cursorPositionNotifier = PointerPositionNotifier();
+    if (widget.controller == null) {
+      _internalController = WidgetStatesController(widget.initialStates);
+    }
     _syncDisabledState();
-  }
-
-  /// Creates an internal controller with initial disabled state if needed.
-  WidgetStatesController _createInternalController() {
-    return WidgetStatesController({if (!widget.enabled) .disabled});
   }
 
   /// Syncs disabled state and clears transients when disabling.
@@ -63,9 +71,7 @@ class _MixInteractionDetectorState extends State<MixInteractionDetector> {
   /// Handles state controller changes between external and internal.
   void _handleControllerChange(MixInteractionDetector oldWidget) {
     if (widget.controller == null) {
-      _internalController ??= WidgetStatesController(
-        oldWidget.controller?.value ?? {},
-      );
+      _internalController = WidgetStatesController(oldWidget.controller!.value);
     } else {
       _internalController?.dispose();
       _internalController = null;
@@ -165,8 +171,7 @@ class _MixInteractionDetectorState extends State<MixInteractionDetector> {
   }
 
   WidgetStatesController get _effectiveController =>
-      widget.controller ??
-      (_internalController ??= _createInternalController());
+      widget.controller ?? _internalController!;
 
   @override
   void didUpdateWidget(MixInteractionDetector oldWidget) {

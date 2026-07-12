@@ -46,44 +46,19 @@ class StyleBuilder<S extends Spec<S>> extends StatefulWidget {
   State<StyleBuilder<S>> createState() => _StyleBuilderState<S>();
 }
 
-class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
-    with TickerProviderStateMixin {
-  late WidgetStatesController _controller;
+class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>> {
+  /// A one-build state snapshot captured when an external controller is removed.
+  ///
+  /// It seeds a newly mounted [MixInteractionDetector] when automatic pointer
+  /// tracking is needed; otherwise it is discarded to avoid restoring stale
+  /// state later.
+  Set<WidgetState>? _controllerHandoffStates;
 
-  /// Tracks whether we created the controller internally (and thus own it)
-  bool _ownsController = false;
+  Set<WidgetState> _takeControllerHandoffStates() {
+    final states = _controllerHandoffStates;
+    _controllerHandoffStates = null;
 
-  @override
-  void initState() {
-    super.initState();
-    _initController();
-  }
-
-  void _initController() {
-    if (widget.controller != null) {
-      _controller = widget.controller!;
-      _ownsController = false;
-    } else {
-      _controller = WidgetStatesController();
-      _ownsController = true;
-    }
-  }
-
-  void _handleControllerChange(StyleBuilder<S> oldWidget) {
-    // Dispose old internal controller if we owned it
-    if (_ownsController) {
-      _controller.dispose();
-    }
-
-    // Set up new controller
-    if (widget.controller != null) {
-      _controller = widget.controller!;
-      _ownsController = false;
-    } else {
-      // Create internal controller, preserving state from old external controller
-      _controller = WidgetStatesController(oldWidget.controller?.value ?? {});
-      _ownsController = true;
-    }
+    return states ?? const {};
   }
 
   Style<S> _buildStyle(BuildContext context) {
@@ -105,31 +80,19 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
   void didUpdateWidget(covariant StyleBuilder<S> oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    // Handle controller changes
-    if (oldWidget.controller != widget.controller) {
-      _handleControllerChange(oldWidget);
-    }
-  }
+    if (oldWidget.controller == widget.controller) return;
 
-  @override
-  void dispose() {
-    // Only dispose controllers we created internally
-    if (_ownsController) {
-      _controller.dispose();
+    if (widget.controller != null) {
+      _controllerHandoffStates = null;
+    } else {
+      _controllerHandoffStates = Set.of(oldWidget.controller!.value);
     }
-
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final style = _buildStyle(context);
-
-    // Calculate interactivity need early
-    final needsToTrackWidgetState =
-        widget.controller == null && style.widgetStates.isNotEmpty;
-
-    final alreadyHasWidgetStateScope = WidgetStateProvider.of(context) != null;
+    final externalController = widget.controller;
 
     Widget current = Builder(
       builder: (context) {
@@ -142,16 +105,25 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
       },
     );
 
-    if (needsToTrackWidgetState && !alreadyHasWidgetStateScope) {
-      // If we need interactivity and no MixWidgetStateModel is present,
-      // wrap in MixInteractionDetector
-      current = MixInteractionDetector(controller: _controller, child: current);
-    } else if (widget.controller != null) {
-      // If we have an external controller, wrap with _ExternalControllerProvider
+    if (externalController != null) {
+      // An external controller drives state; mirror it into the subtree.
       current = _ExternalControllerProvider(
-        controller: _controller,
+        controller: externalController,
         child: current,
       );
+    } else if (style.needsPointerTracking &&
+        !WidgetStateProvider.hasProvider(context)) {
+      // Install automatic pointer tracking only when the style reacts to a
+      // pointer-produced state (hover/press) and no ancestor already provides a
+      // WidgetStateProvider scope. A state snapshot is passed only when an
+      // external controller was just removed; the detector creates and owns the
+      // automatic controller in every case.
+      current = MixInteractionDetector(
+        initialStates: _takeControllerHandoffStates(),
+        child: current,
+      );
+    } else {
+      _controllerHandoffStates = null;
     }
 
     // If inheritable is true, wrap with StyleProvider to pass the merged style down

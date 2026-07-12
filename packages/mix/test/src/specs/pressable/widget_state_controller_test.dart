@@ -217,6 +217,81 @@ void main() {
         isFalse,
       );
     });
+
+    testWidgets('hasStateOf reports scrolledUnder', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: WidgetStateProvider(
+            states: {WidgetState.scrolledUnder},
+            child: Builder(
+              builder: (context) {
+                expect(
+                  WidgetStateProvider.hasStateOf(
+                    context,
+                    WidgetState.scrolledUnder,
+                  ),
+                  isTrue,
+                );
+                expect(
+                  WidgetStateProvider.hasStateOf(context, WidgetState.hovered),
+                  isFalse,
+                );
+                return Container();
+              },
+            ),
+          ),
+        ),
+      );
+    });
+
+    test('scrolledUnder participates in dependent notifications', () {
+      final oldModel = WidgetStateProvider(states: {}, child: Container());
+      final newModel = WidgetStateProvider(
+        states: {WidgetState.scrolledUnder},
+        child: Container(),
+      );
+
+      expect(newModel.updateShouldNotify(oldModel), isTrue);
+      expect(
+        newModel.updateShouldNotifyDependent(oldModel, {
+          WidgetState.scrolledUnder,
+        }),
+        isTrue,
+      );
+      expect(
+        newModel.updateShouldNotifyDependent(oldModel, {WidgetState.hovered}),
+        isFalse,
+      );
+    });
+
+    testWidgets('hasProvider detects an ancestor scope', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: WidgetStateProvider(
+            states: {WidgetState.hovered},
+            child: Builder(
+              builder: (context) {
+                expect(WidgetStateProvider.hasProvider(context), isTrue);
+                return Container();
+              },
+            ),
+          ),
+        ),
+      );
+    });
+
+    testWidgets('hasProvider returns false without a scope', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Builder(
+            builder: (context) {
+              expect(WidgetStateProvider.hasProvider(context), isFalse);
+              return Container();
+            },
+          ),
+        ),
+      );
+    });
   });
 
   testWidgets('PressableState updates widgets correctly', (
