@@ -1,3 +1,9 @@
+## 2.1.2
+
+ - **DOCS**: Document that nested `StyleSpec<XSpec>` fields derive `XStyler`
+   automatically by convention, so `@MixableField(setterType:)` is only needed
+   to override the derived name (#961).
+
 ## 2.1.1
 
  - **DOCS**: Document `@MixableField(setterType:)` usage for `@MixableSpec` and `@MixableModifier` fields (#950, #951).
