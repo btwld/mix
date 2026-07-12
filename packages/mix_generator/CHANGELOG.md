@@ -4,9 +4,6 @@
    when an `@MixWidget` function has a named, non-nullable enum parameter named
    `variant` (for example, `Button.solid(...)`). The existing unnamed
    constructor remains unchanged.
-
-## 2.1.2
-
  - **FEAT**: Derive nested styler types for `StyleSpec<XSpec>` spec fields by
    the `XSpec -> XStyler` naming convention. Generated spec stylers now expose
    styler-typed constructors, setters, and field factories with
