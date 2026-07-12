@@ -122,6 +122,30 @@ class MixableField {
   });
 }
 
+/// Selects styler `call()` parameters exposed by a generated [MixWidget].
+///
+/// [MixWidget] defaults to [MixWidgetParameterSelection.all], which includes
+/// every non-`key` parameter. Use [MixWidgetParameterSelection.only] to expose
+/// a stable, explicit subset instead. Factory parameters and a valid
+/// `Key? key` parameter remain automatic in both modes.
+final class MixWidgetParameterSelection {
+  /// Whether every selectable styler `call()` parameter is included.
+  final bool includesAll;
+
+  /// The selected non-`key` styler `call()` parameter names.
+  ///
+  /// This is empty for [MixWidgetParameterSelection.all].
+  final Set<String> names;
+
+  /// Includes every non-`key` styler `call()` parameter.
+  const MixWidgetParameterSelection.all()
+    : includesAll = true,
+      names = const {};
+
+  /// Includes exactly the non-`key` styler `call()` parameters in [names].
+  const MixWidgetParameterSelection.only(this.names) : includesAll = false;
+}
+
 /// Annotation that drives generation of a `StatelessWidget` wrapper for a
 /// `Style<S>` factory.
 ///
@@ -147,6 +171,13 @@ class MixableField {
 /// // `color` (factory param) plus `child` (from `BoxStyler.call`).
 /// ```
 ///
+/// [widgetParameters] controls which non-`key` styler `call()` parameters are
+/// exposed by the generated widget. It defaults to
+/// [MixWidgetParameterSelection.all]. Use
+/// `widgetParameters: .only({'controller', 'focusNode'})` when the widget
+/// should expose only a curated subset. Factory parameters and a valid
+/// `Key? key` styler parameter remain automatic.
+///
 /// Requires the annotated element's name to be `lowerCamelCase` ending in
 /// `Style` (for example, `cardStyle`, `primaryButtonStyle`, or
 /// `_internalCardStyle`). The generator strips a trailing `Style` and
@@ -157,7 +188,14 @@ class MixWidget {
   /// the name is derived from the annotated element's name.
   final String? name;
 
-  const MixWidget({this.name});
+  /// Selection of non-`key` styler `call()` parameters exposed by the
+  /// generated widget.
+  final MixWidgetParameterSelection widgetParameters;
+
+  const MixWidget({
+    this.name,
+    this.widgetParameters = const MixWidgetParameterSelection.all(),
+  });
 }
 
 const mixWidget = MixWidget();

@@ -27,6 +27,8 @@ import 'core/models/mix_widget_model.dart';
 
 const _annotationLabel = '@MixWidget';
 
+typedef _WidgetParameterSelection = ({bool includesAll, Set<String> names});
+
 class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
   static final _identifierPattern = RegExp(r'^_*[A-Za-z][A-Za-z0-9_]*$');
   static final _derivedNamePattern = RegExp(r'^_*[a-z][A-Za-z0-9]*Style$');
@@ -108,6 +110,7 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
   MixWidgetModel _modelForVariable(
     TopLevelVariableElement variable,
     ConstantReader annotation,
+    _WidgetParameterSelection widgetParameters,
   ) {
     final variableName = requireName(
       variable,
@@ -122,11 +125,12 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
       library: library,
     );
     _requireUnprefixedFlutterSymbols(variable, callMethod, library);
-    final call = extractCallParams(
+    final call = _extractWidgetCallParams(
       callMethod,
       anchor: variable,
       library: library,
       factoryReference: variableName,
+      widgetParameters: widgetParameters,
     );
 
     return MixWidgetModel(
@@ -149,6 +153,7 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
   MixWidgetModel _modelForFunction(
     TopLevelFunctionElement function,
     ConstantReader annotation,
+    _WidgetParameterSelection widgetParameters,
   ) {
     final functionName = requireName(
       function,
@@ -178,11 +183,12 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
       library: library,
       factoryReference: functionName,
     );
-    final call = extractCallParams(
+    final call = _extractWidgetCallParams(
       callMethod,
       anchor: function,
       library: library,
       factoryReference: functionName,
+      widgetParameters: widgetParameters,
     );
 
     _rejectCollisions(function, factoryParams, call.params);
@@ -319,8 +325,7 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
   }
 
   /// Looks up the styler's `call()` method (including inherited members) and
-  /// validates the contract: returns a `Widget`-assignable type, no optional
-  /// positional parameters.
+  /// validates that it returns a `Widget`-assignable type.
   MethodElement _requireCallMethod(
     Element anchor,
     InterfaceType stylerType, {
@@ -350,17 +355,118 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
       );
     }
 
-    final optionalPositional = optionalPositionalNames(call.formalParameters);
+    return call;
+  }
+
+  /// Reads the concrete annotation value into the two generator modes.
+  ///
+  /// The public annotation always supplies [MixWidget.widgetParameters], so
+  /// generation never treats a missing or null value as an implicit default.
+  _WidgetParameterSelection _widgetParameterSelectionFor(
+    ConstantReader annotation,
+  ) {
+    final selection = annotation.read('widgetParameters');
+    final names = {
+      for (final name in selection.read('names').setValue)
+        ConstantReader(name).stringValue,
+    };
+
+    return (includesAll: selection.read('includesAll').boolValue, names: names);
+  }
+
+  /// Selects and validates the non-key styler `call()` parameters exposed by
+  /// a generated widget.
+  ///
+  /// Excluded parameters are removed before optional-positional, reserved-name,
+  /// visibility, and collision validation. `key` remains automatic and is
+  /// therefore always validated, even in an empty `only` selection.
+  ({List<WidgetCallParam> params, bool forwardsKey}) _extractWidgetCallParams(
+    MethodElement callMethod, {
+    required Element anchor,
+    required LibraryElement library,
+    required String factoryReference,
+    required _WidgetParameterSelection widgetParameters,
+  }) {
+    final excludedNames = <String>{};
+
+    if (!widgetParameters.includesAll) {
+      final availableNames = {
+        for (final parameter in callMethod.formalParameters)
+          if (parameter.name case final String name) name,
+      };
+
+      for (final name in widgetParameters.names) {
+        if (name == 'key') {
+          fail(
+            anchor,
+            '$_annotationLabel widgetParameters must not select `key`; '
+            '`Key? key` is forwarded automatically.',
+            todo: 'Remove `key` from the selection.',
+          );
+        }
+
+        if (!availableNames.contains(name)) {
+          fail(
+            anchor,
+            '$_annotationLabel widgetParameters selects unknown styler '
+            '`call()` parameter `$name`.',
+            todo: 'Select a parameter declared by the styler `call()` method.',
+          );
+        }
+      }
+
+      for (final parameter in callMethod.formalParameters) {
+        final name = parameter.name;
+        if (name == 'key' ||
+            name == null ||
+            widgetParameters.names.contains(name)) {
+          continue;
+        }
+
+        if (parameter.isRequired) {
+          fail(
+            anchor,
+            '$_annotationLabel widgetParameters must include required styler '
+            '`call()` parameter `$name`.',
+            todo:
+                'Add `$name` to `widgetParameters: .only({...})` or use '
+                '`widgetParameters: .all()`.',
+          );
+        }
+
+        excludedNames.add(name);
+      }
+    }
+
+    final selectedParameters = [
+      for (final parameter in callMethod.formalParameters)
+        if (parameter.name == 'key' ||
+            parameter.name == null ||
+            !excludedNames.contains(parameter.name))
+          parameter,
+    ];
+
+    final optionalPositional = optionalPositionalNames(
+      selectedParameters.where((parameter) => parameter.name != 'key'),
+    );
     if (optionalPositional.isNotEmpty) {
       fail(
         anchor,
         '$_annotationLabel does not support optional positional `call()` '
-        'parameters on $stylerName: [${optionalPositional.join(', ')}].',
+        'parameters on '
+        '${callMethod.enclosingElement?.displayName ?? 'the styler'}: '
+        '[${optionalPositional.join(', ')}].',
         todo: 'Convert these parameters to required positional or named.',
       );
     }
 
-    return call;
+    return extractCallParams(
+      callMethod,
+      anchor: anchor,
+      library: library,
+      factoryReference: factoryReference,
+      excludeNames: excludedNames,
+    );
   }
 
   /// A generic `call<T extends Widget>()` reports its return as `T`; validate
@@ -634,9 +740,18 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
     ConstantReader annotation,
     BuildStep buildStep,
   ) {
+    final widgetParameters = _widgetParameterSelectionFor(annotation);
     final model = switch (element) {
-      TopLevelVariableElement v => _modelForVariable(v, annotation),
-      TopLevelFunctionElement f => _modelForFunction(f, annotation),
+      TopLevelVariableElement v => _modelForVariable(
+        v,
+        annotation,
+        widgetParameters,
+      ),
+      TopLevelFunctionElement f => _modelForFunction(
+        f,
+        annotation,
+        widgetParameters,
+      ),
       _ => fail(
         element,
         '$_annotationLabel can only be applied to top-level variables or '

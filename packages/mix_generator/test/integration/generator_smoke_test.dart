@@ -761,10 +761,56 @@ final cardStyle = const BoxStyler();
       },
     );
 
-    test(
-      'function-backed style: routes factory params back into the factory',
-      () async {
-        const source = r'''
+    test('explicit all selection preserves every call parameter', () async {
+      const source = r'''
+library widget_case;
+
+import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+import 'package:mix/src/core/style.dart';
+
+part 'widget_case.g.dart';
+
+class BoxSpec { const BoxSpec(); }
+
+class BoxStyler extends Style<BoxSpec> {
+  const BoxStyler();
+  Widget call({Key? key, String? label, Widget? child}) => const _Stub();
+}
+
+class _Stub extends StatelessWidget {
+  const _Stub();
+  @override
+  Widget build(BuildContext context) => const _Stub();
+}
+
+@MixWidget(widgetParameters: .all())
+final allStyle = const BoxStyler();
+''';
+
+      await expectGeneratorOutputResolves(
+        builder: partBuilder(const MixWidgetGenerator()),
+        sources: {
+          ...mixAnnotationsSources,
+          ...widgetStub,
+          'mix|lib/src/core/style.dart': styleStub,
+          'mix_generator|lib/widget_case.dart': source,
+        },
+        inputAsset: 'mix_generator|lib/widget_case.dart',
+        outputAsset: 'mix_generator|lib/widget_case.g.dart',
+        outputMatcher: allOf([
+          contains('class All extends StatelessWidget'),
+          contains('final String? label;'),
+          contains('final Widget? child;'),
+          contains('key: this.key'),
+          contains('label: this.label'),
+          contains('child: this.child'),
+        ]),
+      );
+    });
+
+    test('empty only selection keeps automatic key forwarding', () async {
+      const source = r'''
 library widget_case;
 
 import 'package:flutter/widgets.dart';
@@ -786,8 +832,119 @@ class _Stub extends StatelessWidget {
   Widget build(BuildContext context) => const _Stub();
 }
 
-@MixWidget()
-BoxStyler badgeStyle({Color? color, BoxStyler? style}) => const BoxStyler();
+@MixWidget(widgetParameters: .only({}))
+final emptyStyle = const BoxStyler();
+''';
+
+      await expectGeneratorOutputResolves(
+        builder: partBuilder(const MixWidgetGenerator()),
+        sources: {
+          ...mixAnnotationsSources,
+          ...widgetStub,
+          'mix|lib/src/core/style.dart': styleStub,
+          'mix_generator|lib/widget_case.dart': source,
+        },
+        inputAsset: 'mix_generator|lib/widget_case.dart',
+        outputAsset: 'mix_generator|lib/widget_case.g.dart',
+        outputMatcher: allOf([
+          contains('class Empty extends StatelessWidget'),
+          contains('const Empty({super.key});'),
+          contains('return emptyStyle.call(key: this.key);'),
+          isNot(contains('final Widget? child;')),
+          isNot(contains('child: this.child')),
+        ]),
+      );
+    });
+
+    test(
+      'only selection filters optional, reserved, and invisible call parameters',
+      () async {
+        const host = r'''
+library widget_case;
+
+import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+import 'external_styler.dart';
+
+part 'widget_case.g.dart';
+
+@MixWidget(widgetParameters: .only({'child'}))
+final externalStyle = const ExternalStyler();
+''';
+        const externalStyler = r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/src/core/style.dart';
+
+class ExternalSpec { const ExternalSpec(); }
+class _Hidden {}
+
+class ExternalStyler extends Style<ExternalSpec> {
+  const ExternalStyler();
+
+  Widget call(
+    Widget child,
+    [String? optional, _Hidden? hidden, String? build],
+  ) => const _Stub();
+}
+
+class _Stub extends StatelessWidget {
+  const _Stub();
+  @override
+  Widget build(BuildContext context) => const _Stub();
+}
+''';
+
+        await expectGeneratorOutputResolves(
+          builder: partBuilder(const MixWidgetGenerator()),
+          sources: {
+            ...mixAnnotationsSources,
+            ...widgetStub,
+            'mix|lib/src/core/style.dart': styleStub,
+            'mix_generator|lib/external_styler.dart': externalStyler,
+            'mix_generator|lib/widget_case.dart': host,
+          },
+          inputAsset: 'mix_generator|lib/widget_case.dart',
+          outputAsset: 'mix_generator|lib/widget_case.g.dart',
+          outputMatcher: allOf([
+            contains('class External extends StatelessWidget'),
+            contains('final Widget child;'),
+            contains('return externalStyle.call(this.child);'),
+            isNot(contains('optional')),
+            isNot(contains('hidden')),
+            isNot(contains('final String? build;')),
+          ]),
+        );
+      },
+    );
+
+    test(
+      'function-backed style: routes factory params back into the factory',
+      () async {
+        const source = r'''
+library widget_case;
+
+import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+import 'package:mix/src/core/style.dart';
+
+part 'widget_case.g.dart';
+
+class BoxSpec { const BoxSpec(); }
+
+class BoxStyler extends Style<BoxSpec> {
+  const BoxStyler();
+  Widget call({Key? key, String? label, Widget? child}) => const _Stub();
+}
+
+class _Stub extends StatelessWidget {
+  const _Stub();
+  @override
+  Widget build(BuildContext context) => const _Stub();
+}
+
+@MixWidget(widgetParameters: .only({'label'}))
+BoxStyler badgeStyle({String? child, Color? color, BoxStyler? style}) =>
+    const BoxStyler();
 ''';
 
         await expectGeneratorOutputResolves(
@@ -802,12 +959,16 @@ BoxStyler badgeStyle({Color? color, BoxStyler? style}) => const BoxStyler();
           outputAsset: 'mix_generator|lib/widget_case.g.dart',
           outputMatcher: allOf([
             contains('class Badge extends StatelessWidget'),
+            contains('final String? child;'),
             contains('final Color? color;'),
             contains('final BoxStyler? style;'),
-            contains('final Widget? child;'),
+            contains('final String? label;'),
+            isNot(contains('final Widget? child;')),
             contains('return badgeStyle('),
+            contains('child: this.child'),
             contains('color: this.color'),
             contains('style: this.style'),
+            contains('label: this.label'),
           ]),
         );
       },
@@ -883,7 +1044,7 @@ class BaseStyler<T> extends Style<BoxSpec> {
   Widget call({
     Key? key,
     required T value,
-    required List<T> values,
+    T? fallback,
   }) => const _Stub();
 }
 
@@ -897,7 +1058,7 @@ class _Stub extends StatelessWidget {
   Widget build(BuildContext context) => const _Stub();
 }
 
-@MixWidget()
+@MixWidget(widgetParameters: .only({'value'}))
 final inheritedStyle = const StringStyler();
 ''';
 
@@ -914,9 +1075,8 @@ final inheritedStyle = const StringStyler();
         outputMatcher: allOf([
           contains('class Inherited extends StatelessWidget'),
           contains('final String value;'),
-          contains('final List<String> values;'),
+          isNot(contains('fallback')),
           isNot(contains('final T value;')),
-          isNot(contains('final List<T> values;')),
         ]),
       );
     });

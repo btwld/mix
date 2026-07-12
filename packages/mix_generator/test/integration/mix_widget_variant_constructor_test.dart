@@ -142,6 +142,38 @@ ButtonStyler buttonStyle({
       },
     );
 
+    test(
+      'curates call parameters in unnamed and variant constructors',
+      () async {
+        const factory = r'''
+enum ButtonVariant { solid, ghost }
+
+@MixWidget(widgetParameters: .only({'label'}))
+ButtonStyler buttonStyle({
+  ButtonVariant variant = ButtonVariant.solid,
+  int size = 2,
+}) => const ButtonStyler();
+''';
+
+        await expectGeneratorOutputResolves(
+          builder: partBuilder(const MixWidgetGenerator()),
+          sources: _sources(factory),
+          inputAsset: 'mix_generator|lib/widget_case.dart',
+          outputAsset: 'mix_generator|lib/widget_case.g.dart',
+          outputMatcher: allOf([
+            contains('this.variant = ButtonVariant.solid'),
+            contains('this.size = 2'),
+            contains('required this.label'),
+            contains('const Button.solid('),
+            contains('const Button.ghost('),
+            isNot(contains('final Widget? child;')),
+            isNot(contains('child: this.child')),
+            contains('label: this.label'),
+          ]),
+        );
+      },
+    );
+
     test('required named enum variants also trigger', () async {
       const factory = r'''
 enum ButtonVariant { solid }

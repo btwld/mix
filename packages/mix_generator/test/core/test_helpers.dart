@@ -235,10 +235,25 @@ class MixableField {
   });
 }
 
+class MixWidgetParameterSelection {
+  final bool includesAll;
+  final Set<String> names;
+
+  const MixWidgetParameterSelection.all()
+    : includesAll = true,
+      names = const {};
+
+  const MixWidgetParameterSelection.only(this.names) : includesAll = false;
+}
+
 class MixWidget {
   final String? name;
+  final MixWidgetParameterSelection widgetParameters;
 
-  const MixWidget({this.name});
+  const MixWidget({
+    this.name,
+    this.widgetParameters = const MixWidgetParameterSelection.all(),
+  });
 }
 
 class MixableModifier {

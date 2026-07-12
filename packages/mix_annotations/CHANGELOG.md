@@ -1,3 +1,10 @@
+## Unreleased
+
+ - **FEAT**: Add `MixWidgetParameterSelection` and the
+   `MixWidget.widgetParameters` default. `@MixWidget()` now concretely carries
+   `.all()`, while `.only({...})` supports opt-in curation of generated widget
+   parameters.
+
 ## 2.1.2
 
  - **DOCS**: Document that nested `StyleSpec<XSpec>` fields derive `XStyler`
