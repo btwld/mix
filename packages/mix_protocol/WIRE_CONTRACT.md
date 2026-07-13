@@ -672,8 +672,8 @@ by the schema encoder inventory.
 
 The runtime `inventory_skew` guard covers the built-in styler roots
 (`BoxStyler`, `TextStyler`, `FlexStyler`, `StackStyler`, `IconStyler`,
-`ImageStyler`, `FlexBoxStyler`, and `StackBoxStyler`) plus Phase 4 nested
-families that have dedicated encode maps: `BoxDecorationMix`,
+`ImageStyler`, `FlexBoxStyler`, and `StackBoxStyler`) plus nested Mix families
+that have dedicated encode maps: `BoxDecorationMix`,
 `LinearGradientMix`, `RadialGradientMix`, `SweepGradientMix`, `TextStyleMix`,
 `StrutStyleMix`, `WidgetModifierConfig`, and supported modifier mix payloads.
 Nested types that remain unsupported are tracked by the inventory manifest and

@@ -44,8 +44,7 @@ final class SchemaInventoryEntry {
   final String? reason;
 }
 
-const _v1OutOfScope =
-    'v1 unsupported: outside the canonical v1 data contract after Phase 4 coverage triage.';
+const _v1OutOfScope = 'v1 unsupported: outside the canonical v1 data contract.';
 const _neverClosureBacked = 'never: closure-backed runtime behavior.';
 const _neverRuntimeOnly = 'never: runtime-only value with no stable data wire.';
 const _neverInternal =
@@ -54,7 +53,6 @@ const _neverInternal =
 /// Coverage decisions for the current checked-in `packages/mix` inventory.
 const schemaInventoryManifest = <SchemaInventoryEntry>[
   ..._supportedInventory,
-  ..._phase3DeferredInventory,
   ..._v1UnsupportedInventory,
   ..._neverUnsupportedInventory,
 ];
@@ -403,8 +401,6 @@ const _supportedInventory = <SchemaInventoryEntry>[
   SchemaInventoryEntry.supported('variant_factory:ContextVariant.widgetState'),
   SchemaInventoryEntry.supported('variant_factory:Variant.named'),
 ];
-
-const _phase3DeferredInventory = <SchemaInventoryEntry>[];
 
 const _v1UnsupportedInventory = <SchemaInventoryEntry>[
   SchemaInventoryEntry.knownUnsupported('enum:ElevationShadow', _v1OutOfScope),

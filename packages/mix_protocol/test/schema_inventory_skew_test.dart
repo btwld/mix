@@ -191,7 +191,7 @@ void main() {
     }
   });
 
-  test('Phase 4 nested Mix inventories match runtime fields', () {
+  test('nested Mix inventories match runtime fields', () {
     final cases = [
       (
         value: const WidgetModifierConfig(),
