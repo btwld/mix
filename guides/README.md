@@ -11,3 +11,4 @@ If you want these guides mirrored privately, keep the source of truth in Notion 
 ## Guide Index
 
 - `api-composition-guidelines.md` - Fluent composition patterns and sizing decisions.
+- `mix-styling-rendering-pipeline.md` - End-to-end Mix style resolution, animation, modifier, and widget pipeline.

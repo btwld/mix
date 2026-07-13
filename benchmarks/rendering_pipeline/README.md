@@ -8,6 +8,14 @@ The first results are characterization data, not regression thresholds or
 marketing claims. Compare absolute frame-budget impact as well as ratios; a
 large ratio over a tiny baseline can still be immaterial.
 
+## Pipeline references
+
+- [Mix styling and rendering pipeline](../../guides/mix-styling-rendering-pipeline.md)
+  documents the framework stages and implementation map.
+- [Rendering-pipeline instrumentation](INSTRUMENTATION.md) maps those stages to
+  primary measurements, diagnostic counters, confirmed behavior, and the
+  quick-win experiment queue.
+
 ## What is measured
 
 The benchmark uses a deterministic 60-card `GridView.builder` inside a fixed
