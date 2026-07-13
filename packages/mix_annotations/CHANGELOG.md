@@ -3,7 +3,8 @@
  - **FEAT**: Add `MixWidgetParameterSelection` and the
    `MixWidget.widgetParameters` default. `@MixWidget()` now concretely carries
    `.all()`, while `.only({...})` supports opt-in curation of generated widget
-   parameters.
+   value parameters. Factory parameters, valid `Key? key`, and method-level
+   type parameters remain automatic.
 
 ## 2.1.2
 

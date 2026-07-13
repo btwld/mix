@@ -360,12 +360,15 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
 
   /// Reads the concrete annotation value into the two generator modes.
   ///
-  /// The public annotation always supplies [MixWidget.widgetParameters], so
-  /// generation never treats a missing or null value as an implicit default.
+  /// `mix_annotations` versions before parameter curation do not expose
+  /// [MixWidget.widgetParameters]. Treat that legacy shape as `.all()` so a
+  /// generator upgrade does not break existing `@MixWidget()` consumers.
   _WidgetParameterSelection _widgetParameterSelectionFor(
     ConstantReader annotation,
   ) {
-    final selection = annotation.read('widgetParameters');
+    final selection = annotation.peek('widgetParameters');
+    if (selection == null) return (includesAll: true, names: <String>{});
+
     final names = {
       for (final name in selection.read('names').setValue)
         ConstantReader(name).stringValue,
@@ -452,8 +455,8 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
     if (optionalPositional.isNotEmpty) {
       fail(
         anchor,
-        '$_annotationLabel does not support optional positional `call()` '
-        'parameters on '
+        '$_annotationLabel does not support selected optional positional '
+        '`call()` parameters on '
         '${callMethod.enclosingElement?.displayName ?? 'the styler'}: '
         '[${optionalPositional.join(', ')}].',
         todo: 'Convert these parameters to required positional or named.',

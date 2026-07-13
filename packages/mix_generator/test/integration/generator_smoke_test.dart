@@ -761,6 +761,54 @@ final cardStyle = const BoxStyler();
       },
     );
 
+    test('legacy MixWidget annotation defaults to all parameters', () async {
+      const source = r'''
+library widget_case;
+
+import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+import 'package:mix/src/core/style.dart';
+
+part 'widget_case.g.dart';
+
+class BoxSpec { const BoxSpec(); }
+
+class BoxStyler extends Style<BoxSpec> {
+  const BoxStyler();
+  Widget call({Key? key, String? label, Widget? child}) => const _Stub();
+}
+
+class _Stub extends StatelessWidget {
+  const _Stub();
+  @override
+  Widget build(BuildContext context) => const _Stub();
+}
+
+@MixWidget()
+final legacyStyle = const BoxStyler();
+''';
+
+      await expectGeneratorOutputResolves(
+        builder: partBuilder(const MixWidgetGenerator()),
+        sources: {
+          ...legacyMixWidgetAnnotationSources,
+          ...widgetStub,
+          'mix|lib/src/core/style.dart': styleStub,
+          'mix_generator|lib/widget_case.dart': source,
+        },
+        inputAsset: 'mix_generator|lib/widget_case.dart',
+        outputAsset: 'mix_generator|lib/widget_case.g.dart',
+        outputMatcher: allOf([
+          contains('class Legacy extends StatelessWidget'),
+          contains('final String? label;'),
+          contains('final Widget? child;'),
+          contains('key: this.key'),
+          contains('label: this.label'),
+          contains('child: this.child'),
+        ]),
+      );
+    });
+
     test('explicit all selection preserves every call parameter', () async {
       const source = r'''
 library widget_case;
@@ -1026,7 +1074,66 @@ final genericStyle = const GenericStyler<String>();
       );
     });
 
-    test('inherited generic call params use concrete type arguments', () async {
+    test(
+      'inherited generic call params preserve nested concrete types',
+      () async {
+        const source = r'''
+library widget_case;
+
+import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+import 'package:mix/src/core/style.dart';
+
+part 'widget_case.g.dart';
+
+class BoxSpec { const BoxSpec(); }
+
+class BaseStyler<T> extends Style<BoxSpec> {
+  const BaseStyler();
+
+  Widget call({
+    Key? key,
+    required T value,
+    required List<T> values,
+  }) => const _Stub();
+}
+
+class StringStyler extends BaseStyler<String> {
+  const StringStyler();
+}
+
+class _Stub extends StatelessWidget {
+  const _Stub();
+  @override
+  Widget build(BuildContext context) => const _Stub();
+}
+
+@MixWidget()
+final inheritedStyle = const StringStyler();
+''';
+
+        await expectGeneratorOutputResolves(
+          builder: partBuilder(const MixWidgetGenerator()),
+          sources: {
+            ...mixAnnotationsSources,
+            ...widgetStub,
+            'mix|lib/src/core/style.dart': styleStub,
+            'mix_generator|lib/widget_case.dart': source,
+          },
+          inputAsset: 'mix_generator|lib/widget_case.dart',
+          outputAsset: 'mix_generator|lib/widget_case.g.dart',
+          outputMatcher: allOf([
+            contains('class Inherited extends StatelessWidget'),
+            contains('final String value;'),
+            contains('final List<String> values;'),
+            isNot(contains('final T value;')),
+            isNot(contains('final List<T> values;')),
+          ]),
+        );
+      },
+    );
+
+    test('only selection curates inherited generic call params', () async {
       const source = r'''
 library widget_case;
 
@@ -1077,6 +1184,56 @@ final inheritedStyle = const StringStyler();
           contains('final String value;'),
           isNot(contains('fallback')),
           isNot(contains('final T value;')),
+        ]),
+      );
+    });
+
+    test('only selection keeps method type parameters automatic', () async {
+      const source = r'''
+library widget_case;
+
+import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+import 'package:mix/src/core/style.dart';
+
+part 'widget_case.g.dart';
+
+class BoxSpec { const BoxSpec(); }
+
+class GenericCallStyler extends Style<BoxSpec> {
+  const GenericCallStyler();
+
+  Widget call<T>({Key? key, T? value, Widget? child}) => const _Stub();
+}
+
+class _Stub extends StatelessWidget {
+  const _Stub();
+  @override
+  Widget build(BuildContext context) => const _Stub();
+}
+
+@MixWidget(widgetParameters: .only({'child'}))
+final genericCallStyle = const GenericCallStyler();
+''';
+
+      await expectGeneratorOutputResolves(
+        builder: partBuilder(const MixWidgetGenerator()),
+        sources: {
+          ...mixAnnotationsSources,
+          ...widgetStub,
+          'mix|lib/src/core/style.dart': styleStub,
+          'mix_generator|lib/widget_case.dart': source,
+        },
+        inputAsset: 'mix_generator|lib/widget_case.dart',
+        outputAsset: 'mix_generator|lib/widget_case.g.dart',
+        outputMatcher: allOf([
+          contains('class GenericCall<T> extends StatelessWidget'),
+          contains('final Widget? child;'),
+          isNot(contains('final T? value;')),
+          contains('return genericCallStyle.call<T>('),
+          contains('key: this.key'),
+          contains('child: this.child'),
+          isNot(contains('value: this.value')),
         ]),
       );
     });

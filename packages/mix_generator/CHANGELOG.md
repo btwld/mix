@@ -1,9 +1,11 @@
 ## Unreleased
 
  - **FEAT**: Support `@MixWidget(widgetParameters: .only({...}))` for a stable,
-   curated generated widget API. Factory parameters and valid `Key? key`
-   forwarding remain automatic; excluded styler parameters are not validated
-   for generated-widget visibility or name collisions.
+   curated generated widget value-parameter API. Factory parameters, valid
+   `Key? key` forwarding, and method-level type parameters remain automatic;
+   excluded optional parameters use the styler method's defaults and are not
+   validated for generated-widget visibility or name collisions. Annotations
+   from older `mix_annotations` releases retain `.all()` behavior.
 
 ## 2.1.2
 

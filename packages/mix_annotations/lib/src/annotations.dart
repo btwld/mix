@@ -122,27 +122,28 @@ class MixableField {
   });
 }
 
-/// Selects styler `call()` parameters exposed by a generated [MixWidget].
+/// Selects styler `call()` value parameters exposed by a generated [MixWidget].
 ///
 /// [MixWidget] defaults to [MixWidgetParameterSelection.all], which includes
-/// every non-`key` parameter. Use [MixWidgetParameterSelection.only] to expose
-/// a stable, explicit subset instead. Factory parameters and a valid
-/// `Key? key` parameter remain automatic in both modes.
+/// every non-`key` value parameter. Use [MixWidgetParameterSelection.only] to
+/// expose a stable, explicit value-parameter subset instead. Factory
+/// parameters, a valid `Key? key`, and method-level `call<T>()` type parameters
+/// remain automatic in both modes.
 final class MixWidgetParameterSelection {
-  /// Whether every selectable styler `call()` parameter is included.
+  /// Whether every selectable styler `call()` value parameter is included.
   final bool includesAll;
 
-  /// The selected non-`key` styler `call()` parameter names.
+  /// The selected non-`key` styler `call()` value parameter names.
   ///
   /// This is empty for [MixWidgetParameterSelection.all].
   final Set<String> names;
 
-  /// Includes every non-`key` styler `call()` parameter.
+  /// Includes every non-`key` styler `call()` value parameter.
   const MixWidgetParameterSelection.all()
     : includesAll = true,
       names = const {};
 
-  /// Includes exactly the non-`key` styler `call()` parameters in [names].
+  /// Includes exactly the non-`key` styler `call()` value parameters in [names].
   const MixWidgetParameterSelection.only(this.names) : includesAll = false;
 }
 
@@ -171,12 +172,14 @@ final class MixWidgetParameterSelection {
 /// // `color` (factory param) plus `child` (from `BoxStyler.call`).
 /// ```
 ///
-/// [widgetParameters] controls which non-`key` styler `call()` parameters are
-/// exposed by the generated widget. It defaults to
+/// [widgetParameters] controls which non-`key` styler `call()` value parameters
+/// are exposed by the generated widget. It defaults to
 /// [MixWidgetParameterSelection.all]. Use
 /// `widgetParameters: .only({'controller', 'focusNode'})` when the widget
-/// should expose only a curated subset. Factory parameters and a valid
-/// `Key? key` styler parameter remain automatic.
+/// should expose only a curated subset. Factory parameters, a valid `Key? key`,
+/// and method-level `call<T>()` type parameters remain automatic. Optional
+/// value parameters omitted by `.only(...)` are not forwarded, so the styler
+/// method's defaults apply.
 ///
 /// Requires the annotated element's name to be `lowerCamelCase` ending in
 /// `Style` (for example, `cardStyle`, `primaryButtonStyle`, or
@@ -188,7 +191,7 @@ class MixWidget {
   /// the name is derived from the annotated element's name.
   final String? name;
 
-  /// Selection of non-`key` styler `call()` parameters exposed by the
+  /// Selection of non-`key` styler `call()` value parameters exposed by the
   /// generated widget.
   final MixWidgetParameterSelection widgetParameters;
 

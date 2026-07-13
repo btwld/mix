@@ -164,8 +164,8 @@ be a Mix type; the setter type must resolve to the field's runtime value type.
 Generates a `StatelessWidget` wrapper around a top-level `Style<S>` variable or function. The wrapper's constructor mirrors the factory's parameters (for function-backed styles) plus the styler's `call()` parameters; `build()` invokes the factory and forwards the parameters through to the resulting widget.
 
 `@MixWidget()` is equivalent to `widgetParameters: .all()`: every non-`key`
-styler `call()` parameter is exposed. To keep a generated widget API stable as
-a styler evolves, select the supported parameters explicitly:
+styler `call()` value parameter is exposed. To keep that value-parameter API
+stable as a styler evolves, select the supported parameters explicitly:
 
 ```dart
 @MixWidget(
@@ -174,9 +174,16 @@ a styler evolves, select the supported parameters explicitly:
 final editorStyle = EditorStyler();
 ```
 
-`.only({})` exposes none of the selectable styler parameters. Factory
-parameters and a valid `Key? key` parameter are always automatic, and required
-styler parameters must be included in an `.only(...)` selection.
+`.only({})` exposes none of the selectable styler value parameters. Factory
+parameters, a valid `Key? key`, and method-level `call<T>()` type parameters are
+always automatic, and required styler value parameters must be included in an
+`.only(...)` selection. Excluded optional parameters are not forwarded, so the
+styler method's defaults apply.
+
+For compatibility, an annotation from an older `mix_annotations` release that
+does not define `widgetParameters` is interpreted as `.all()`. Using
+`.only(...)` requires an annotations release that defines
+`MixWidgetParameterSelection`.
 
 ```dart
 part 'card.g.dart';
