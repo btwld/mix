@@ -42,6 +42,14 @@ class WidgetStateProvider extends InheritedModel<WidgetState> {
     );
   }
 
+  /// Whether a [WidgetStateProvider] exists above [context].
+  ///
+  /// Unlike [of], this lookup does not register a dependency on any state
+  /// aspect.
+  static bool hasProvider(BuildContext context) {
+    return context.getInheritedWidgetOfExactType<WidgetStateProvider>() != null;
+  }
+
   /// Checks if a specific [WidgetState] is currently active.
   ///
   /// Returns false if no [WidgetStateProvider] is found in the widget tree.
