@@ -9,7 +9,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'scenarios/card_grid.dart';
+import 'src/benchmark_case_host.dart';
+import 'src/benchmark_frame_clock.dart';
+import 'src/benchmark_frame_guard.dart';
 import 'src/benchmark_metadata.dart';
+import 'src/benchmark_run_options.dart';
 import 'src/statistics.dart';
 
 const int _warmupIterations = 100;
@@ -17,23 +21,37 @@ const int _benchmarkSeconds = int.fromEnvironment(
   'BENCHMARK_SECONDS',
   defaultValue: 3,
 );
-const Duration _frameInterval = Duration(microseconds: 16667);
 
-enum _MicroScenario { s0, s1, s2 }
+enum _MicroScenario { s0, s1, s2, s0Idiomatic, s1Idiomatic }
 
 extension on _MicroScenario {
-  String get label => name.toUpperCase();
+  String get label => switch (this) {
+    _MicroScenario.s0 => 'S0',
+    _MicroScenario.s1 => 'S1',
+    _MicroScenario.s2 => 'S2',
+    _MicroScenario.s0Idiomatic => 'S0I',
+    _MicroScenario.s1Idiomatic => 'S1I',
+  };
 
   String get action => switch (this) {
-    _MicroScenario.s0 => 'static_grid_rebuild',
-    _MicroScenario.s1 => 'negative_control_hover_toggle',
+    _MicroScenario.s0 || _MicroScenario.s0Idiomatic => 'static_grid_rebuild',
+    _MicroScenario.s1 ||
+    _MicroScenario.s1Idiomatic => 'negative_control_hover_toggle',
     _MicroScenario.s2 => 'target_pressed_selected_toggle',
+  };
+
+  BenchmarkTrack get track => switch (this) {
+    _MicroScenario.s0 ||
+    _MicroScenario.s1 ||
+    _MicroScenario.s2 => BenchmarkTrack.isolation,
+    _MicroScenario.s0Idiomatic ||
+    _MicroScenario.s1Idiomatic => BenchmarkTrack.idiomatic,
   };
 }
 
-Future<void> main() => executeMicrobenchmark();
+Future<void> main(List<String> arguments) => executeMicrobenchmark(arguments);
 
-Future<void> executeMicrobenchmark() async {
+Future<void> executeMicrobenchmark([List<String> arguments = const []]) async {
   if (!kReleaseMode) {
     throw StateError(
       'CPU timings are valid only in release mode. '
@@ -50,30 +68,62 @@ Future<void> executeMicrobenchmark() async {
     'BENCHMARK_ORDER',
     defaultValue: 'flutter-first',
   );
+  final runOptions = BenchmarkRunOptions.parse(arguments);
+  final implementations = benchmarkImplementationOrder(orderLabel)
+      .where(
+        (implementation) =>
+            runOptions.implementation == null ||
+            implementation.label == runOptions.implementation,
+      )
+      .toList(growable: false);
+  final scenarios = _MicroScenario.values
+      .where(
+        (scenario) =>
+            runOptions.scenario == null ||
+            scenario.label == runOptions.scenario,
+      )
+      .toList(growable: false);
   final results = <Map<String, Object?>>[];
+  final frameClock = BenchmarkFrameClock();
 
   await benchmarkWidgets((WidgetTester tester) async {
-    for (final implementation in benchmarkImplementationOrder(orderLabel)) {
-      for (final scenario in _MicroScenario.values) {
-        print(
-          'MICROBENCHMARK_PROGRESS:${implementation.label}:${scenario.label}:start',
-        );
-        results.add(
-          await _measureCase(
-            tester: tester,
-            binding: binding,
-            implementation: implementation,
-            scenario: scenario,
-          ),
-        );
-        print(
-          'MICROBENCHMARK_PROGRESS:${implementation.label}:${scenario.label}:done',
-        );
+    final hostKey = GlobalKey<BenchmarkCaseHostState>();
+    await tester.pumpWidget(BenchmarkCaseHost(key: hostKey));
+    await tester.pumpAndSettle();
+
+    final host = hostKey.currentState;
+    if (host == null || !host.mounted) {
+      throw StateError('The persistent benchmark host was not mounted.');
+    }
+
+    final frameGuard = BenchmarkFrameGuard.enter(binding);
+    try {
+      for (final implementation in implementations) {
+        for (final scenario in scenarios) {
+          print(
+            'MICROBENCHMARK_PROGRESS:'
+            '${implementation.label}:${scenario.label}:start',
+          );
+          results.add(
+            await _measureCase(
+              tester: tester,
+              host: host,
+              implementation: implementation,
+              scenario: scenario,
+              frameClock: frameClock,
+            ),
+          );
+          print(
+            'MICROBENCHMARK_PROGRESS:'
+            '${implementation.label}:${scenario.label}:done',
+          );
+        }
       }
+    } finally {
+      frameGuard.dispose();
     }
   });
-  final expectedResultCount =
-      BenchmarkImplementation.values.length * _MicroScenario.values.length;
+  final expectedResultCount = implementations.length * scenarios.length;
   if (results.length != expectedResultCount) {
     throw StateError(
       'Expected $expectedResultCount benchmark results, got ${results.length}.',
@@ -81,19 +131,25 @@ Future<void> executeMicrobenchmark() async {
   }
 
   final view = binding.platformDispatcher.views.firstOrNull;
+  final metadata =
+      createBenchmarkMetadata(
+          kind: 'release_cpu_microbenchmark',
+          runOrder: orderLabel,
+          view: view,
+        )
+        ..['case_selection'] = <String, Object>{
+          'implementation': runOptions.implementation ?? 'all',
+          'scenario': runOptions.scenario ?? 'all',
+        };
   final output = <String, Object?>{
     'schema_version': benchmarkSchemaVersion,
-    'metadata': createBenchmarkMetadata(
-      kind: 'release_cpu_microbenchmark',
-      runOrder: orderLabel,
-      view: view,
-    ),
+    'metadata': metadata,
     'results': results,
   };
 
-  final configuredOutputPath = const String.fromEnvironment(
-    'BENCHMARK_OUTPUT_PATH',
-  );
+  final configuredOutputPath =
+      runOptions.outputPath ??
+      const String.fromEnvironment('BENCHMARK_OUTPUT_PATH');
   final outputFile = configuredOutputPath.isEmpty
       ? File('${Directory.systemTemp.path}/rendering_pipeline_micro.json')
       : File(configuredOutputPath).absolute;
@@ -105,31 +161,32 @@ Future<void> executeMicrobenchmark() async {
 
 Future<Map<String, Object?>> _measureCase({
   required WidgetTester tester,
-  required LiveTestWidgetsFlutterBinding binding,
+  required BenchmarkCaseHostState host,
   required BenchmarkImplementation implementation,
   required _MicroScenario scenario,
+  required BenchmarkFrameClock frameClock,
 }) async {
   final cards = createBenchmarkCards();
   final controllers = BenchmarkControllerSet(cards);
   final gridKey = GlobalKey<BenchmarkGridState>();
-  final originalFramePolicy = binding.framePolicy;
-  var frameTimestamp = Duration.zero;
   var toggled = false;
 
-  await tester.pumpWidget(
+  host.showCase(
     BenchmarkApp(
       implementation: implementation,
-      track: BenchmarkTrack.isolation,
+      track: scenario.track,
       cards: cards,
       controllers: controllers,
       gridKey: gridKey,
     ),
   );
-  await tester.pump();
+  await tester.pumpBenchmark(frameClock.next());
+  if (gridKey.currentState == null) {
+    throw StateError('The benchmark grid was not mounted.');
+  }
   print(
     'MICROBENCHMARK_PROGRESS:${implementation.label}:${scenario.label}:rendered',
   );
-  await _enterBenchmarkFramePolicy(tester, binding);
   print(
     'MICROBENCHMARK_PROGRESS:${implementation.label}:${scenario.label}:manual-frames',
   );
@@ -138,9 +195,11 @@ Future<Map<String, Object?>> _measureCase({
     toggled = !toggled;
     switch (scenario) {
       case _MicroScenario.s0:
+      case _MicroScenario.s0Idiomatic:
         gridKey.currentState!.rebuildScreen();
         break;
       case _MicroScenario.s1:
+      case _MicroScenario.s1Idiomatic:
         controllers.setState(stateFreeCardId, WidgetState.hovered, toggled);
         controllers.setState(pressedOnlyCardId, WidgetState.hovered, toggled);
         break;
@@ -149,8 +208,7 @@ Future<Map<String, Object?>> _measureCase({
         controllers.setState(targetCardId, WidgetState.selected, toggled);
         break;
     }
-    frameTimestamp += _frameInterval;
-    await tester.pumpBenchmark(frameTimestamp);
+    await tester.pumpBenchmark(frameClock.next());
   }
 
   for (var iteration = 0; iteration < _warmupIterations; iteration++) {
@@ -170,9 +228,8 @@ Future<Map<String, Object?>> _measureCase({
   }
   measuredTime.stop();
 
-  binding.framePolicy = originalFramePolicy;
-  await tester.pumpWidget(const SizedBox.shrink());
-  await tester.pump();
+  host.clearCase();
+  await tester.pumpBenchmark(frameClock.next());
   controllers.dispose();
 
   final statistics = DistributionStatistics.fromSamples(samples);
@@ -180,21 +237,11 @@ Future<Map<String, Object?>> _measureCase({
   return <String, Object?>{
     'scenario': scenario.label,
     'action': scenario.action,
-    'track': BenchmarkTrack.isolation.label,
+    'track': scenario.track.label,
     'implementation': implementation.label,
     'warmup_iterations': _warmupIterations,
     'measurement_duration_ms': measuredTime.elapsedMilliseconds,
     'metrics': statistics.toJson(unitSuffix: 'us'),
     'samples_us': samples,
   };
-}
-
-Future<void> _enterBenchmarkFramePolicy(
-  WidgetTester tester,
-  LiveTestWidgetsFlutterBinding binding,
-) async {
-  binding.addPostFrameCallback((Duration _) {
-    binding.framePolicy = LiveTestWidgetsFlutterBindingFramePolicy.benchmark;
-  });
-  await tester.pump();
 }

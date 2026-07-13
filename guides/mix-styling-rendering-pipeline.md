@@ -4,11 +4,12 @@ This guide explains how Mix turns an unresolved `Styler` into a Flutter widget
 tree. It covers generation, merging, inheritance, variants, widget state,
 tokens, directives, nested styles, animation, and widget modifiers.
 
-The guide targets Mix `2.1.x` and was reverified on 2026-07-12 against
-`origin/main` at `1edefc5ac746bf2ce7c71202f52133c38eb02aa4`. Here,
-"rendering pipeline" means Mix's style-to-widget pipeline. Flutter still owns
-the later element, render-object, layout, paint, compositing, and semantics
-phases.
+The guide targets Mix `2.1.x` and was reverified on 2026-07-13 against the code
+in this repository. The investigation started from `origin/main` at
+`1edefc5ac746bf2ce7c71202f52133c38eb02aa4`; its accepted pipeline changes are
+recorded in `benchmarks/rendering_pipeline/FINDINGS.md`. Here, "rendering
+pipeline" means Mix's style-to-widget pipeline. Flutter still owns the later
+element, render-object, layout, paint, compositing, and semantics phases.
 
 ## Contents
 
@@ -314,8 +315,8 @@ to re-resolve.
 
 ### State context before resolution
 
-After merging inheritance, `StyleBuilder` checks direct widget-state variants.
-It may wrap the inner resolver in either:
+After merging inheritance, `StyleBuilder` checks for direct hover and pressed
+variants. It may wrap the inner resolver in either:
 
 - `MixInteractionDetector`, for automatic hover and press tracking; or
 - an internal provider backed by the caller's `WidgetStatesController`.
@@ -527,9 +528,10 @@ Widget-state variants read `WidgetStateProvider` during variant selection.
 ### Automatic tracking
 
 After inheritance is merged, `StyleBuilder` inspects only direct, top-level
-`WidgetStateVariant` entries in `$variants`. If at least one exists, no external
-controller was supplied, and no provider is already in scope, it inserts a
-`MixInteractionDetector`.
+`WidgetStateVariant` entries in `$variants`. If a hover or pressed variant
+exists, no external controller was supplied, and no provider is already in
+scope, it inserts a `MixInteractionDetector`. Other states cannot be produced
+by that detector and therefore do not install pointer tracking by themselves.
 
 The detector's internal tree is:
 
@@ -801,13 +803,13 @@ is no animation config.
 | `SpringAnimationConfig` | `SpringAnimationDriver` | Unbounded controller driven by `SpringSimulation`, with optional `onEnd`. |
 | `PhaseAnimationConfig` | `PhaseAnimationDriver` | Cyclic sequence of styles and per-transition curve configs. |
 | `KeyframeAnimationConfig` | `KeyframeAnimationDriver` | Parallel named tracks mapped back into a style. |
-| null | `NoAnimationDriver` | Immediately exposes each new target spec. |
+| null | No driver | Calls the style builder directly with the target spec. |
 
-On first build, a null config selects `NoAnimationDriver`. When a
-`CurveAnimationConfig` or `SpringAnimationConfig` is removed during an update,
-`StyleAnimationBuilder` reuses that implicit driver's old config long enough to
-animate toward the new unconfigured target. This is not a general outgoing
-transition rule: phase and keyframe drivers do not retarget through
+On first build, a null config skips driver and `AnimatedBuilder` creation. When
+a `CurveAnimationConfig` or `SpringAnimationConfig` is removed during an
+update, `StyleAnimationBuilder` reuses that implicit driver's old config long
+enough to animate toward the new unconfigured target. This is not a general
+outgoing transition rule: phase and keyframe drivers do not retarget through
 `didUpdateSpec`, so removing either config does not animate that driver toward
 the supplied target in the same update.
 

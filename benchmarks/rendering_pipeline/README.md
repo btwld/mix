@@ -15,14 +15,16 @@ large ratio over a tiny baseline can still be immaterial.
 - [Rendering-pipeline instrumentation](INSTRUMENTATION.md) maps those stages to
   primary measurements, diagnostic counters, confirmed behavior, and the
   quick-win experiment queue.
+- [Investigation findings](FINDINGS.md) records valid and invalid datasets,
+  accepted and rejected optimizations, and the remaining cost map.
 
 ## What is measured
 
 The benchmark uses a deterministic 60-card `GridView.builder` inside a fixed
 1200×800 logical viewport. About 24 cards are fully visible and a fifth row is
-partially visible at the initial scroll position. Every card uses the same cached content widget: icon, title,
-subtitle, badge, padding, rounded decoration, border, and shadow. There is no
-network access or image decoding.
+partially visible at the initial scroll position. Every card uses the same
+cached content widget: icon, title, subtitle, badge, padding, rounded
+decoration, border, and shadow. There is no network access or image decoding.
 
 Two complementary tracks are available:
 
@@ -42,6 +44,8 @@ builds. Contract counters are nullable and are not installed in timed runs.
 | S0 | Rebuild the static grid. | Release CPU microbenchmark |
 | S1 | Toggle hover on state-free and pressed-only cards. | Contract + release CPU microbenchmark |
 | S2 | Toggle one card's pressed and selected states. | Contract + release/profile |
+| S0I | Rebuild the static grid through idiomatic wrappers. | Idiomatic release CPU microbenchmark |
+| S1I | Toggle irrelevant hover through idiomatic providers. | Contract + idiomatic release CPU microbenchmark |
 | S3 | Sweep a real mouse pointer over visible cards. | Idiomatic profile track on macOS |
 | S4 | Alternate hover/press every frame with a 150 ms `easeInOut` animation. | Isolation profile track |
 | S5 | Change one inherited `ThemeData` color seed. | Isolation profile track |
@@ -62,10 +66,26 @@ lib/main.dart                                  manual scenario app
 lib/scenarios/card_grid.dart                   data, grid, shared renderer, probes
 lib/scenarios/flutter_card.dart                Flutter isolation/idiomatic cards
 lib/scenarios/mix_card.dart                    Mix isolation/idiomatic cards
-lib/microbenchmark.dart                        release benchmarkWidgets S0-S2
+lib/microbenchmark.dart                        release S0-S2 and S0I-S1I
+lib/variant_microbenchmark.dart                diagnostic 0/1/4/12 variant probe
+lib/resolution_stage_microbenchmark.dart       diagnostic merge/resolve/full-build split
+lib/allocation_microbenchmark.dart             retained-result heap target
+lib/post_build_microbenchmark.dart             exploratory wrapper probe; timing inconclusive
+lib/src/allocation_benchmark_protocol.dart     allocation target/driver protocol
+lib/src/allocation_profile_summary.dart        per-class retained-delta summary
+lib/src/benchmark_case_host.dart               persistent root for replacing timed cases
+lib/src/benchmark_frame_clock.dart             monotonic synthetic frame clock
+lib/src/benchmark_frame_guard.dart             exclusive manual-frame ownership
+lib/src/benchmark_run_options.dart             fresh-process case selectors
 test/rebuild_contract_test.dart                strict rebuild/layout/paint contracts
+test/benchmark_case_host_test.dart              case replacement/disposal contract
+test/benchmark_frame_clock_test.dart           cross-case clock contract
+test/benchmark_run_options_test.dart            selector parsing contracts
+test/allocation_benchmark_protocol_test.dart   stage-order contract
+test/allocation_profile_summary_test.dart      class-delta summary contract
 integration_test/state_transition_perf_test.dart  profile S2-S5 benchmark
 test_driver/perf_driver.dart                   raw JSON writer
+tool/allocation_driver.dart                    external VM-service heap profiler
 tool/compare_results.dart                      Mix-minus-Flutter comparison
 ```
 
@@ -84,9 +104,11 @@ The contract suite asserts that:
 
 - hover does not rebuild or resolve a state-free Mix card;
 - hover does not rebuild or resolve a pressed-only Mix card;
-- a declared target state resolves/rebuilds and paints the target only; and
+- a declared target state resolves/rebuilds and paints the target only;
 - an external controller does not rebuild, lay out, or paint unrelated
-  siblings.
+  siblings;
+- two S2 notifications coalesce into one Mix resolution; and
+- idiomatic press resolves once per pressed-state transition.
 
 These are pass/fail correctness gates, not timing claims.
 
@@ -110,9 +132,18 @@ Pass a stable device label with `--dart-define=DEVICE_NAME=<label>`.
 
 Debug/JIT results are invalid. This harness follows Flutter's
 `benchmarkWidgets` plus `LiveTestWidgetsFlutterBindingFramePolicy.benchmark`
-and `pumpBenchmark` pattern. It warms each case for 100 iterations, measures
-for a fixed duration, then emits every raw iteration plus average, median, p90,
-p99, worst, standard deviation, and sample count in microseconds.
+and `pumpBenchmark` pattern. It keeps one mounted root, enters benchmark policy
+once, shares one monotonic synthetic clock, and detaches engine begin/draw
+callbacks while manual frames own the binding. The final guard passed 30
+independent release stress processes without a frame-pairing failure.
+
+For small A/B deltas, run one implementation/scenario per fresh process. A
+multi-case process is useful as a smoke test, but later cases can inherit heap
+and GC phase from earlier cases. Runtime selectors avoid rebuilding the binary
+for every case on desktop.
+The harness warms each case for 100 iterations, measures for a fixed duration,
+then emits every raw iteration plus average, median, p90, p99, worst, standard
+deviation, and sample count in microseconds.
 
 ```bash
 fvm flutter run --release -d macos -t lib/microbenchmark.dart \
@@ -123,12 +154,130 @@ fvm flutter run --release -d macos -t lib/microbenchmark.dart \
   --dart-define=RUN_ID=origin-main-01 \
   --dart-define=BENCHMARK_ORDER=flutter-first \
   --dart-define=BENCHMARK_SECONDS=3 \
-  --dart-define=BENCHMARK_OUTPUT_PATH="$(pwd)/../../.context/benchmark-results/origin-main-micro-01.json"
+  --dart-entrypoint-args=--implementation=mix \
+  --dart-entrypoint-args=--scenario=S0 \
+  --dart-entrypoint-args=--output="$(pwd)/../../.context/benchmark-results/origin-main-mix-s0-01.json"
 ```
 
-The app writes the complete raw document to `BENCHMARK_OUTPUT_PATH` and prints
-a short `BENCHMARK_RESULT_FILE:` confirmation. The default path is
-`$TMPDIR/rendering_pipeline_micro.json`.
+Supported implementations are `flutter` and `mix`; supported scenarios are
+`S0`, `S1`, `S2`, `S0I`, and `S1I`. Omit both selectors to run the complete
+matrix. Runtime `--output` overrides `BENCHMARK_OUTPUT_PATH`; the default is
+`$TMPDIR/rendering_pipeline_micro.json`. The app prints a short
+`BENCHMARK_RESULT_FILE:` confirmation.
+
+## Variant diagnostic microbenchmark
+
+This Mix-only diagnostic rebuilds one `StyleBuilder` with 0, 1, 4, and 12
+active interleaved context/widget-state variants. It is intended for paired
+before/after variant-resolution experiments, not Mix-versus-Flutter claims.
+
+```bash
+fvm flutter run --release -d macos -t lib/variant_microbenchmark.dart \
+  --dart-define=MIX_SHA="$MIX_SHA" \
+  --dart-define=FLUTTER_REVISION="$FLUTTER_REVISION" \
+  --dart-define=IMPLEMENTATION_LABEL=variant-experiment \
+  --dart-define=DEVICE_NAME=benchmark-mac \
+  --dart-define=RUN_ID=variant-experiment-01 \
+  --dart-define=BENCHMARK_SECONDS=3 \
+  --dart-define=BENCHMARK_OUTPUT_PATH="$(pwd)/../../.context/benchmark-results/variant-experiment-01.json"
+```
+
+## Resolution-stage diagnostic microbenchmark
+
+This Mix-only diagnostic uses realistic card styles and measures six
+synchronous batched paths:
+
+- a store-only harness control;
+- active-variant evaluation and merge;
+- property-source resolution of an already merged style;
+- `BoxSpec`/`StyleSpec` construction from already resolved fields;
+- generated spec resolution of an already merged style; and
+- the complete `Style.build` call.
+
+It runs inactive-only (no selected variant), static (one active variant), and
+all-active (five active variants) profiles. The cases are independent tight
+loops, so their values characterize the composition of style computation; they
+are not additive attribution of the primary grid's widget/layout/paint time.
+Alternate `BENCHMARK_ORDER=forward` and `reverse` across processes.
+
+```bash
+fvm flutter run --release -d macos \
+  -t lib/resolution_stage_microbenchmark.dart \
+  --dart-define=MIX_SHA="$MIX_SHA" \
+  --dart-define=FLUTTER_REVISION="$FLUTTER_REVISION" \
+  --dart-define=IMPLEMENTATION_LABEL=resolution-stage-diagnostic \
+  --dart-define=DEVICE_NAME=benchmark-mac \
+  --dart-define=RUN_ID=resolution-stage-01 \
+  --dart-define=BENCHMARK_ORDER=forward \
+  --dart-define=BENCHMARK_SECONDS=3 \
+  --dart-define=BENCHMARK_OUTPUT_PATH="$(pwd)/../../.context/benchmark-results/resolution-stage-01.json"
+```
+
+## Retained-result heap diagnostic
+
+This diagnostic answers which objects remain reachable from each returned
+stage result. It does **not** measure transient allocation throughput. The VM's
+`getAllocationProfile` endpoint is a live-heap census; its reset option only
+updates the accumulation timestamp in this runtime. The driver therefore runs
+in a separate OS process, forces GC before both snapshots, and subtracts the
+baseline from a second GC'd snapshot after the app retains every operation
+result.
+
+Start the profile target and leave it running:
+
+```bash
+SERVICE_FILE="$(pwd)/../../.context/allocation-vm-service.txt"
+rm -f "$SERVICE_FILE"
+fvm flutter run --profile --no-dds -d macos \
+  --vmservice-out-file="$SERVICE_FILE" \
+  -t lib/allocation_microbenchmark.dart \
+  --dart-define=MIX_SHA="$MIX_SHA" \
+  --dart-define=FLUTTER_REVISION="$FLUTTER_REVISION" \
+  --dart-define=IMPLEMENTATION_LABEL=pr976-baseline \
+  --dart-define=DEVICE_NAME=benchmark-mac \
+  --dart-define=RUN_ID=retained-forward-01
+```
+
+From a second terminal, drive the target and write the result:
+
+```bash
+fvm dart run tool/allocation_driver.dart \
+  --service-uri-file="$SERVICE_FILE" \
+  --output="$(pwd)/../../.context/benchmark-results/retained-forward-01.json" \
+  --order=forward \
+  --operation-count=5000 \
+  --warmup-operation-count=10000
+```
+
+Repeat with a fresh target and `--order=reverse`. The report records per-class
+and total retained instance/byte deltas. Control-case list backing is part of
+the measurement floor. Do not call those deltas "allocations per operation" or
+compare their profile timing with release/AOT timing.
+
+## Exploratory post-build probe
+
+`post_build_microbenchmark.dart` compares a pre-resolved direct renderer, null
+`StyleAnimationBuilder`, `StyleSpecBuilder`, and full `StyleBuilder`. It is
+retained to make the rejected experiment reproducible, not as a source of
+standalone wrapper-cost claims. Forward/reverse results were order-dependent,
+and repeated live macOS runs exposed application-activation and frame-pairing
+failures. See [the findings](FINDINGS.md#r4-subtracting-pumped-widget-wrapper-cases)
+before using it.
+
+Run only one process/order at a time:
+
+```bash
+fvm flutter run --release -d macos \
+  -t lib/post_build_microbenchmark.dart \
+  --dart-define=MIX_SHA="$MIX_SHA" \
+  --dart-define=FLUTTER_REVISION="$FLUTTER_REVISION" \
+  --dart-define=IMPLEMENTATION_LABEL=post-build-exploration \
+  --dart-define=DEVICE_NAME=benchmark-mac \
+  --dart-define=RUN_ID=post-build-01 \
+  --dart-define=POST_BUILD_ORDER=forward \
+  --dart-define=BENCHMARK_SECONDS=3 \
+  --dart-define=BENCHMARK_OUTPUT_PATH="$(pwd)/../../.context/benchmark-results/post-build-01.json"
+```
 
 ## Profile integration benchmark
 
@@ -151,6 +300,9 @@ fvm flutter drive --profile -d macos \
   --dart-define=IMPLEMENTATION_LABEL=origin-main \
   --dart-define=DEVICE_NAME=benchmark-mac \
   --dart-define=RUN_ID=origin-main-01 \
+  --dart-define=SCENARIOS=S2 \
+  --dart-define=TRACKS=isolation \
+  --dart-define=IMPLEMENTATIONS=mix \
   --dart-define=BENCHMARK_ORDER=flutter-first
 ```
 
@@ -174,6 +326,37 @@ fvm flutter drive --profile --no-dds -d <physical-device> \
 The driver writes `build/<BENCHMARK_OUTPUT_BASENAME>.json`. Copy each raw file
 to a durable result directory before the next checkout or clean build.
 
+## Release/AOT cadence benchmark
+
+Flutter Driver does not support non-web release mode. The same integration
+target can write `FrameTiming` data itself when built as a release app. Build
+one frozen app per implementation/revision:
+
+```bash
+OUTPUT="$(pwd)/../../.context/benchmark-results/release-cadence-latest.json"
+fvm flutter build macos --release \
+  -t integration_test/state_transition_perf_test.dart \
+  --dart-define=MIX_SHA="$MIX_SHA" \
+  --dart-define=FLUTTER_REVISION="$FLUTTER_REVISION" \
+  --dart-define=IMPLEMENTATION_LABEL=release-cadence \
+  --dart-define=DEVICE_NAME=benchmark-mac \
+  --dart-define=RUN_ID=release-cadence-01 \
+  --dart-define=SCENARIOS=S2 \
+  --dart-define=TRACKS=isolation \
+  --dart-define=IMPLEMENTATIONS=mix \
+  --dart-define=BENCHMARK_OUTPUT_PATH="$OUTPUT"
+```
+
+Launch the copied/frozen app executable directly. It warms 100 transitions,
+measures 200 at display cadence, writes the configured JSON, and exits:
+
+```bash
+build/macos/Build/Products/Release/rendering_pipeline.app/Contents/MacOS/rendering_pipeline
+```
+
+This mode records build, raster, total-span, and refresh-budget data. It does
+not report GC or cache metrics; use the profile benchmark for those.
+
 ## Experimental protocol
 
 1. Use `fvm flutter` 3.41.7. Do not combine data from another Flutter revision.
@@ -182,13 +365,18 @@ to a durable result directory before the next checkout or clean build.
 3. Fix device resolution, refresh rate, locale, power mode, brightness, and
    thermal conditions. The app fixes its internal viewport, text scale,
    brightness, locale, card data, duration, and curve.
-4. The harness prebuilds each screen and performs 100 transitions before each
-   measured action. Each profile case then performs 200 transitions.
-5. Capture at least 10 independent process runs. Alternate
-   `BENCHMARK_ORDER=flutter-first` and `mix-first` to reduce order/thermal bias.
-6. Label and retain every raw JSON/log. A comparison set must identify the Mix
+4. The release A/B protocol runs one selected case in each fresh process. The
+   profile harness prebuilds its selected screen, performs 100 warm-up
+   transitions, then measures 200 transitions.
+5. Capture at least 10 independent release process pairs. Rotate case order
+   across pairs and alternate which revision runs first. When intentionally
+   running a multi-case smoke/profile matrix, also alternate
+   `BENCHMARK_ORDER=flutter-first` and `mix-first`.
+6. For revision A/B work, pair adjacent baseline/changed processes and
+   alternate which revision runs first. Retain every per-pair delta.
+7. Label and retain every raw JSON/log. A comparison set must identify the Mix
    SHA/checkout as `origin-main`, `pr-962`, or the future no-animation path.
-7. Do not add a CI threshold until repeated runs on a stable runner establish
+8. Do not add a CI threshold until repeated runs on a stable runner establish
    normal variance.
 
 PR and future-path comparisons use the same app because `mix` is a path

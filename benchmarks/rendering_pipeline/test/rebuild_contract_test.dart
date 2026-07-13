@@ -175,6 +175,161 @@ void main() {
     });
   });
 
+  group('Mix idiomatic widget-state dependency contracts', () {
+    testWidgets('hover does not resolve a state-free card', (
+      WidgetTester tester,
+    ) async {
+      final controller = WidgetStatesController();
+      final counters = PipelineCounters();
+      addTearDown(controller.dispose);
+
+      await tester.pumpWidget(
+        _ContractScreen(
+          counters: counters,
+          children: <Widget>[
+            MixIdiomaticCard(
+              data: contractCardData,
+              controller: controller,
+              profile: CardStateProfile.stateFree,
+              counters: counters,
+              child: _cachedChild,
+            ),
+          ],
+        ),
+      );
+
+      counters.reset();
+      controller.update(WidgetState.hovered, true);
+      await tester.pump();
+
+      _expectNoPipelineWork(counters, contractCardData.id);
+      expect(counters.screenBuilds, 0);
+    });
+
+    testWidgets('hover does not resolve a pressed-only card', (
+      WidgetTester tester,
+    ) async {
+      final controller = WidgetStatesController();
+      final counters = PipelineCounters();
+      addTearDown(controller.dispose);
+
+      await tester.pumpWidget(
+        _ContractScreen(
+          counters: counters,
+          children: <Widget>[
+            MixIdiomaticCard(
+              data: const ProductCardData(
+                id: pressedOnlyCardId,
+                title: 'Product 01',
+                subtitle: 'Deterministic benchmark content',
+                badge: 'SALE',
+                disabled: false,
+              ),
+              controller: controller,
+              profile: CardStateProfile.pressedOnly,
+              counters: counters,
+              child: _cachedChild,
+            ),
+          ],
+        ),
+      );
+
+      counters.reset();
+      controller.update(WidgetState.hovered, true);
+      await tester.pump();
+
+      _expectNoPipelineWork(counters, pressedOnlyCardId);
+      expect(counters.screenBuilds, 0);
+    });
+  });
+
+  group('State transition diagnostic contracts', () {
+    testWidgets('S2 coalesces two notifications into one Mix resolution', (
+      WidgetTester tester,
+    ) async {
+      final controller = WidgetStatesController();
+      final counters = PipelineCounters();
+      var notifications = 0;
+      controller.addListener(() => notifications++);
+      addTearDown(controller.dispose);
+
+      await tester.pumpWidget(
+        _ContractScreen(
+          counters: counters,
+          children: <Widget>[
+            MixIsolationCard(
+              data: _targetData,
+              controller: controller,
+              profile: CardStateProfile.all,
+              counters: counters,
+              child: _cachedChild,
+            ),
+          ],
+        ),
+      );
+
+      counters.reset();
+      notifications = 0;
+      controller
+        ..update(WidgetState.pressed, true)
+        ..update(WidgetState.selected, true);
+      await tester.pump();
+
+      expect(notifications, 2);
+      expect(counters.mixResolutionsFor(targetCardId), 1);
+      expect(counters.cardBuildsFor(targetCardId), 1);
+    });
+
+    testWidgets('idiomatic press resolves once per pressed transition', (
+      WidgetTester tester,
+    ) async {
+      final controller = WidgetStatesController();
+      final counters = PipelineCounters();
+      var pressedTransitions = 0;
+      var wasPressed = false;
+      controller.addListener(() {
+        final isPressed = controller.value.contains(WidgetState.pressed);
+        if (isPressed != wasPressed) {
+          pressedTransitions++;
+          wasPressed = isPressed;
+        }
+      });
+      addTearDown(controller.dispose);
+
+      await tester.pumpWidget(
+        _ContractScreen(
+          counters: counters,
+          children: <Widget>[
+            MixIdiomaticCard(
+              data: _targetData,
+              controller: controller,
+              profile: CardStateProfile.all,
+              counters: counters,
+              child: _cachedChild,
+            ),
+          ],
+        ),
+      );
+
+      counters.reset();
+      final hitTarget = find.byKey(
+        const ValueKey<String>('card-hit-target-$targetCardId'),
+      );
+      final gesture = await tester.startGesture(tester.getCenter(hitTarget));
+      await tester.pump();
+
+      expect(pressedTransitions, 1);
+      expect(counters.mixResolutionsFor(targetCardId), 1);
+
+      counters.reset();
+      await gesture.up();
+      await tester.pump();
+
+      expect(pressedTransitions, 2);
+      expect(counters.mixResolutionsFor(targetCardId), 1);
+    });
+  });
+
   group('Flutter isolation baseline contracts', () {
     testWidgets('hover does not rebuild a pressed-only mapper', (
       WidgetTester tester,

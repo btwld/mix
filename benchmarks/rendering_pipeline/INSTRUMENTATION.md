@@ -32,12 +32,47 @@ fan-out invariants but do not measure duration. The idiomatic Mix card does not
 currently count its concrete `Box` builder execution, so its counters are not a
 complete stage trace.
 
+Focused diagnostic contracts additionally attach controller listeners to
+count notifications and pressed-state transitions. These listeners are not
+installed in timed runs.
+
 ### Release CPU microbenchmark
 
 The microbenchmark records elapsed time for one complete pumped iteration. It
 includes controller updates and all framework work performed by
 `pumpBenchmark`, but does not divide that time between notification, variant
 merge, Prop resolution, widget build, layout, and paint.
+
+Decision-grade release comparisons select one implementation/scenario per
+fresh process. Multi-case runs remain useful for smoke and stress work, but
+later cases can inherit heap/GC phase from earlier cases. The harness keeps one
+root mounted, enters benchmark policy once, uses one monotonic clock, and gives
+manual frames exclusive ownership of the binding.
+
+The release suite includes both isolation S0-S2 and idiomatic S0I-S1I. Four
+separate Mix-only diagnostics stay outside the primary comparison:
+
+- the variant probe measures complete widget rebuilds with 0, 1, 4, and 12
+  active variants; and
+- the resolution-stage probe uses synchronous batches to time a harness
+  control, variant merge, property-source resolution, spec construction,
+  premerged spec resolution, and full `Style.build` for inactive-only, static,
+  and all-active versions of realistic styles;
+- the retained-result heap probe uses an external VM-service process and GC'd
+  before/after live-heap snapshots while retaining every returned result; and
+- the exploratory post-build probe compares wrapper/widget paths, but its
+  pumped-frame deltas are not valid stage attribution.
+
+The stage cases are measured independently. Their shares locate work inside
+style computation, but they do not allocate the primary grid's complete
+widget/layout/paint duration among stages.
+
+The retained-result probe is deliberately narrower than an allocation
+profiler. In this VM, `getAllocationProfile` enumerates the live heap and reset
+only changes its timestamp; it does not expose allocation throughput.
+Consequently the probe reports `retained_heap_delta` and explicitly excludes
+transient intermediates. The profiler runs in a separate OS process so its own
+`vm_service` classes cannot pollute the target isolate group.
 
 ### Profile integration benchmark
 
@@ -53,6 +88,20 @@ The profile benchmark records:
 This is aggregate frame evidence. It does not currently associate a frame with
 a transition ID or record `vsyncOverhead`, so scheduling/boundary delays cannot
 always be separated from Mix work.
+
+### Release/AOT cadence benchmark
+
+Flutter Driver refuses non-web release mode. To measure the same warmed S2
+transition cadence with the shipping AOT compiler, the integration target can
+instead be built as a release macOS app and launched directly. In release mode
+the target installs one `TimingsCallback`, records build/raster/total-span
+arrays, writes JSON to `BENCHMARK_OUTPUT_PATH`, and exits. It does not claim GC
+or cache metrics because `watchPerformance` is unavailable in this mode.
+
+Use frozen baseline/changed binaries for repeated A/B work. The measurement is
+frame-level and intentionally complements rather than replaces the tight-loop
+CPU primary: sub-frame changes may be below cadence noise, while missed-frame
+or tail regressions remain visible.
 
 ## Stage map for diagnostic instrumentation
 
@@ -71,7 +120,7 @@ track, transition ID, frame number when known, card ID, and event source.
 | Animation | Was this a target update or an animation tick? | driver type, target updates, lerp ticks/duration, completion/interruption |
 | Widget | Which Mix and concrete builders ran? | `StyleSpecBuilder`, concrete widget, target/sibling build counts |
 | Flutter pipeline | What downstream work followed? | layout, paint, raster, total span, vsync overhead |
-| Memory | Which classes create pressure? | allocated bytes/instances by class, retained bytes in separate run |
+| Memory | Which result classes remain reachable? | GC'd retained bytes/instances by class; transient allocation unmeasured |
 
 Use lightweight integer counters for invocation questions. Use diagnostic-only
 `TimelineTask`/timeline spans or stopwatches for stage duration. Use a single
@@ -92,70 +141,128 @@ Focused counter probes against the current code established:
 - Moving a pointer from one card to another normally changes two controllers:
   hover exits the old card and enters the new card. Two card resolutions are
   expected when both styles use hover.
+- Across 10 alternating-order release processes, the five-declared-variant
+  style spends roughly 63-64% of `Style.build` time in active-variant merge and
+  30-33% in generated spec/property resolution. The static profile averages
+  5.44 µs per full build; the all-active profile averages 20.30 µs.
+- GC'd retained-result snapshots show that full `Style.build` and premerged
+  spec resolution return the same-size final object graph: about 13 objects /
+  664 B static and 16 objects / 760 B all-active per retained result. Variant
+  merge intermediates do not survive in the returned `StyleSpec` graph.
+- Generated spec construction alone measures about 11-12 ns in the resolution
+  probe. Property-source resolution is the material generated stage. A fast
+  path limited to one ordinary `ValueSource` reduces static property resolution
+  by 28.2% and the complete static `Style.build` by 12.4% without changing
+  token, `MixSource`, nested `Mix`, or multi-source dispatch.
+
+## Inconclusive post-build probe
+
+Separately pumped direct-renderer, null-animation, `StyleSpecBuilder`, and full
+`StyleBuilder` cases changed ordering between forward and reverse processes.
+The full path even appeared faster than the direct path in one process, which
+is not a defensible wrapper-cost result. Attempts to repeat raw macOS app
+launches also exposed app-activation stalls, while many case repetitions in one
+process reproduced Flutter live-binding frame-pair errors.
+
+Keep these observations as a measurement-method finding: `pumpBenchmark` is
+appropriate for complete workload comparisons, but its live-frame scheduling
+floor is too large for subtracting these small wrapper layers. The next probe
+should use diagnostic timeline spans or invocation/allocation counters inside a
+single shared frame.
+
+## Live frame-policy finding
+
+Flutter's official `pumpBenchmark` contract requires
+`LiveTestWidgetsFlutterBindingFramePolicy.benchmark`, which directly drives
+`handleBeginFrame` and `handleDrawFrame`. Flutter's pinned stock build/layout
+microbenchmarks mount and settle once, switch to benchmark policy once, and
+remain there for the measurement loop.
+
+The original multi-case harness returned to live policy for every case. A
+persistent root and one policy transition removed the dominant trigger but did
+not eliminate the race: after many clean launches, a previously accepted macOS
+vsync still overlapped a manual frame.
+
+The accepted harness additionally detaches the engine's begin/draw callbacks
+while `pumpBenchmark` owns the binding, then restores them with the original
+policy. This prevents an already-queued vsync from splitting the manual pair.
+It passed 30 independent stress processes and two separate 200-case A/B
+matrices with zero pairing errors. The earlier `endOfFrame` drain was removed.
+
+Fresh-process selectors address a separate issue discovered afterward: even a
+structurally clean multi-case process can transfer heap/GC phase into later
+cases. Use one selected case per process for small A/B deltas.
 
 ## Observed avoidable work
 
-`StyleBuilder` currently checks for an existing state scope with
-`WidgetStateProvider.of(context)` without an aspect. That lookup establishes a
+Before QW1, `StyleBuilder` checked for an existing state scope with
+`WidgetStateProvider.of(context)` without an aspect. That lookup established a
 dependency on the whole provider. In the idiomatic `Pressable` path, a hover
-change therefore causes one style resolution even for:
+change caused one style resolution even for:
 
 - a state-free style; and
 - a pressed-only style.
 
-The existing S1 negative-control contract uses the isolation path and does not
-cover this idiomatic provider arrangement.
+Idiomatic contracts now cover this provider arrangement and require zero
+resolutions for both cases.
 
 ## Quick-win experiment queue
 
-These are hypotheses, not accepted optimizations. Change one variable at a time
-and compare paired runs.
+This queue records each hypothesis and its current disposition. Experiments
+change one variable at a time and compare paired runs.
 
-### QW1: Non-listening state-scope presence lookup
+### QW1: Non-listening state-scope presence lookup — accepted
 
 Replace the dependency-forming provider-presence check with a non-listening
 ancestor lookup while keeping aspect-specific dependencies inside widget-state
 variants.
 
-Proof:
+Evidence and remaining proof:
 
 - add idiomatic state-free and pressed-only hover contracts;
 - require zero resolutions/build/layout/paint for irrelevant hover;
-- rerun S3 and a matched controlled-hover case; and
+- matched controlled-hover S1I is complete; S3 profile repetition remains; and
 - confirm relevant hover/press/focus states still update.
 
-Expected scope: removes avoidable resolutions. It should not change the cost of
-a style that actually consumes the changed state.
+Result: both new contracts failed with one resolution before the change and
+pass with zero after it. Relevant hover/press tests remain green. S1I
+wall-clock timing changed distribution shape and is treated as inconclusive;
+the accepted claim is eliminated work.
 
-### QW2: No-animation fast path
+### QW2: Null-animation lightweight path — accepted
 
-`StyleSpecBuilder` always creates `StyleAnimationBuilder`, and a null animation
-creates `NoAnimationDriver`. Evaluate a direct path for stable null-animation
-styles without changing transitions where animation config is added or removed.
+`StyleSpecBuilder` still creates `StyleAnimationBuilder` so animation config can
+be added or removed without losing lifecycle state. A null animation now skips
+`NoAnimationDriver` and `AnimatedBuilder` allocation while configured animation
+behavior remains unchanged.
 
-Proof:
+Evidence and remaining proof:
 
 - S0 release CPU delta;
 - S2 isolation release/profile delta;
 - lifecycle tests for adding and removing animation config; and
-- allocation counts for drivers/controllers/spec wrappers.
+- allocation counts for drivers/controllers/spec wrappers remain.
 
-### QW3: Stable linear variant partition
+### QW3: Stable linear variant partition — rejected as a speed win
 
 Replace sorting used only to place widget-state variants last with a stable
 linear partition. This is also part of the behavior discussed around PR #962.
 
-Proof:
+The tested two-bucket/followed-by implementation regressed all non-empty counts
+in 10 corrected pairs and was reverted. Stable order remains a correctness
+issue associated with PR #962, whose implementation differs and must be
+measured independently.
+
+Evidence used:
 
 - same-bucket ordering contracts;
 - S0/S2 resolution microbenchmarks with 1, 4, and 12 variants; and
-- temporary allocation counters for active-variant lists.
+- corrected paired release samples for each declared count.
 
-### QW4: Resolve only after relevant state changes
+### QW4: Resolve only after relevant state changes — partially accepted
 
-Before attempting field-level caching, measure how often full style resolution
-runs for state changes that affect no declared variant. QW1 should remove the
-known broad-provider cause first.
+QW1 removed the known broad-provider cause. Field-level caching remains
+deferred until context/token/directive invalidation can be represented safely.
 
 Proof:
 
@@ -163,7 +270,7 @@ Proof:
 - state-free, single-state, and all-state styles; and
 - resolver counts across 1, 24, 60, and 240 cards.
 
-### QW5: Interaction-wrapper cost
+### QW5: Interaction-wrapper cost — partially resolved
 
 Measure identical hover and press sequences through:
 
@@ -176,12 +283,70 @@ This separates state ownership from style computation. Duplicate setter
 attempts during press are lower priority because the controller suppresses
 duplicate notifications, but the extra callbacks can be quantified here.
 
+Current evidence: S2 produces two notifications and one resolution; idiomatic
+press produces one resolution on pressed-down and one on pressed-up. Automatic
+tracking is now installed only for hover/pressed styles, and controller
+ownership is lazy. Retained result classes are measured; transient allocation
+volume remains unmeasured.
+
+### QW6: Remove the second active-style merge list — rejected
+
+Fully fusing extraction, recursion, and merge reduced synchronous
+`Style.build` dramatically and made static S0/S0I 15–22% faster. It also
+regressed S2 in 10/10 fresh-process CPU pairs and two balanced real-cadence
+profile pairs. A narrower single-active fast path retained the static win but
+still regressed S2 in 10/10 CPU pairs. Both implementations were reverted.
+
+This is the main methodological result of the session: a stage-local win is
+insufficient when the complete targeted workload moves cost elsewhere. See
+`FINDINGS.md` for the release, profile, raster, and total-span tables.
+
+### QW7: Skip already-unnecessary variant sorting — rejected
+
+Scan the active variants and skip the stable sort when non-widget variants are
+already before widget-state variants. Focused ordering tests passed, but four
+order-balanced release stage runs made the target variant-merge stage about
+1.5% slower for static and 0.3% slower for all-active. The experiment was
+reverted at the stage-screen gate; no primary S0/S2 claim was made.
+
+### QW8: Share null-side variant lists — rejected at source review
+
+Returning the existing list from `MixOps.mergeVariants` would avoid copies but
+would also create a new observable alias between the source and merged styles.
+Variant lists are public and mutable, and constructors currently retain
+caller-owned lists. This candidate needs a separate immutability/ownership
+design before it can qualify as a safe performance experiment.
+
+### QW9: No-active-variant early return — rejected
+
+When variants are declared but the filter selects none, current code sorts an
+empty list, allocates the extraction list, and then returns the original style
+without merging. Returning immediately after filtering preserves current result
+identity and ordering semantics. Add an inactive-only stage profile first, then
+screen this single branch against static and all-active controls.
+
+Result: four order-balanced release runs measured 564.89 ns baseline versus
+565.94 ns changed for the directly affected inactive-only merge stage (+0.18%).
+The branch was reverted at the stage gate. A lower full-build aggregate was not
+promoted because the target stage itself did not improve.
+
+### QW10: Single ordinary value resolution — accepted
+
+When a `Prop` contains exactly one ordinary `ValueSource` whose value is not
+itself `Mix<V>`, resolution no longer creates/scans the accumulation list. It
+applies directives and returns directly. More general single-source versions
+were rejected because profile-mode cadence regressed even though release CPU
+improved. The narrow branch passed semantic tests, the intended stage screen,
+the 200-case release CPU matrix, two balanced profile pairs, and a 40-process
+release/AOT cadence campaign. See F8/R8 in `FINDINGS.md` for exact results.
+
 ## Experiment rules
 
 - Keep primary and diagnostic result files separately labeled.
 - Do not infer allocation volume from GC event counts alone.
-- Pair Flutter and Mix within each run, alternate order across runs, and retain
-  each paired delta.
+- For small deltas, run Flutter and Mix controls as separate fresh processes,
+  rotate case order, alternate revision-first order, and retain every paired
+  delta.
 - Do not attribute a total-span outlier to Mix unless its build/raster/vsync
   phases and transition boundary identify the source.
 - Promote a quick win only when its contract tests pass and repeated primary
