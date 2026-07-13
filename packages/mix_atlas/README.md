@@ -212,12 +212,24 @@ The same catalog can power a local viewer:
 MaterialApp(home: AtlasCatalogViewer(catalog: componentCatalog))
 ```
 
-The viewer searches components, switches themes, and renders a non-interactive
-two-axis scrolling canvas. Wrap bounded menu, dialog, tooltip, or popover
-fixtures in `AtlasOverlayHost` so their local `Navigator` and `Overlay` stay
-inside both the viewer canvas and the golden repaint boundary. Overlay fixtures
-need a deterministic initial-open or controller API; pointer gestures are not
-captured by the atlas.
+The responsive viewer preserves declared catalog order and includes keyboard
+search (`/` to focus and Escape to clear), compact navigation, theme controls,
+and an atlas-details popover. Its non-interactive `AtlasStoryCanvas` presents
+each scenario as a story and places values from the final row axis side by side
+for quick comparison. The canonical `AtlasView` row-by-scenario grid remains
+the source for generated golden artifacts.
+
+`AtlasStoryCanvas` can also be embedded directly when an application supplies
+its own catalog shell:
+
+```dart
+AtlasStoryCanvas(atlas: buttonAtlas, theme: lightTheme)
+```
+
+Wrap bounded menu, dialog, tooltip, or popover fixtures in `AtlasOverlayHost`
+so their local `Navigator` and `Overlay` stay inside both the viewer canvas and
+the golden repaint boundary. Overlay fixtures need a deterministic initial-open
+or controller API; pointer gestures are not captured by the atlas.
 
 ## AI inspection workflow
 

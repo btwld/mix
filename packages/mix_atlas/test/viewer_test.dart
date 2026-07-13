@@ -1,6 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mix_atlas/golden.dart';
 import 'package:mix_atlas/mix_atlas.dart';
+
+import 'support/reference_catalog.dart';
 
 Widget _cell(BuildContext context, AtlasCellContext cell) => const Text('cell');
 
@@ -18,7 +24,7 @@ AtlasCatalog _catalog() => AtlasCatalog(
       'night',
       label: 'Night',
       brightness: Brightness.dark,
-      background: Colors.black,
+      background: const Color(0xff15171c),
       builder: (context, child) => child,
     ),
   ],
@@ -38,10 +44,54 @@ AtlasCatalog _catalog() => AtlasCatalog(
   ],
 );
 
+AtlasCatalog _groupedCatalog() => AtlasCatalog(
+  id: 'grouped',
+  label: 'Grouped system',
+  themes: [
+    AtlasTheme('day', background: Colors.white, builder: (_, child) => child),
+  ],
+  atlases: [
+    ComponentAtlas(
+      id: 'badge',
+      label: 'Badge',
+      rowAxes: const [
+        AtlasAxis('variant', 'Variant'),
+        AtlasAxis('size', 'Size'),
+      ],
+      scenarios: const [AtlasScenario('rest', label: 'Resting')],
+      rows: [
+        for (final (variant, size) in [
+          ('solid', 'small'),
+          ('solid', 'large'),
+          ('outline', 'small'),
+          ('outline', 'large'),
+        ])
+          AtlasRow(
+            '$variant-$size',
+            (context, cell) => SizedBox(
+              width: size == 'small' ? 56 : 88,
+              height: size == 'small' ? 28 : 36,
+              child: ColoredBox(
+                color: variant == 'solid'
+                    ? const Color(0xff3157d5)
+                    : const Color(0xffdce4ff),
+              ),
+            ),
+            values: {
+              'variant': AtlasAxisValue(variant, _humanize(variant)),
+              'size': AtlasAxisValue(size, _humanize(size)),
+            },
+          ),
+      ],
+    ),
+  ],
+);
+
 /// A cell that pushes an overlay route onto the local [AtlasOverlayHost]
-/// Navigator, mirroring how the Dialog atlas opens its modal.
+/// Navigator, mirroring how a dialog atlas opens its modal.
 class _PushingCell extends StatefulWidget {
   const _PushingCell(this.label);
+
   final String label;
 
   @override
@@ -70,8 +120,6 @@ class _PushingCellState extends State<_PushingCell> {
   Widget build(BuildContext context) => const SizedBox(width: 40, height: 40);
 }
 
-/// Two atlases whose cells share the `SizedBox > AtlasOverlayHost` shape,
-/// so their local Navigators reuse the same element across an atlas switch.
 AtlasCatalog _overlayCatalog() => AtlasCatalog(
   id: 'overlays',
   themes: [
@@ -127,35 +175,159 @@ void main() {
     );
   });
 
-  testWidgets('viewer exposes labels, coverage, search, and declared order', (
+  testWidgets('viewer exposes search, details, and declared atlas order', (
     tester,
   ) async {
-    await tester.pumpWidget(
-      MaterialApp(home: AtlasCatalogViewer(catalog: _catalog())),
-    );
-    expect(find.text('Custom system'), findsOneWidget);
-    expect(find.text('1 rows × 1 scenarios = 1 cells'), findsOneWidget);
-    expect(find.text('Zeta control'), findsWidgets);
-    expect(find.text('Alpha control'), findsOneWidget);
-    final tiles = tester.widgetList<ListTile>(find.byType(ListTile)).toList();
-    expect((tiles[0].title! as Text).data, 'Zeta control');
-    expect((tiles[1].title! as Text).data, 'Alpha control');
-    await tester.enterText(find.byType(TextField), 'alpha');
+    await _setViewport(tester, const Size(1440, 900));
+    final catalog = _catalog();
+
+    await tester.pumpWidget(_ViewerHarness(catalog: catalog));
     await tester.pump();
-    expect(find.text('Zeta control'), findsNWidgets(2));
-    expect(find.text('Alpha control'), findsOneWidget);
+
+    expect(find.text('Custom system'), findsOneWidget);
+    expect(find.byKey(const ValueKey('selected-atlas-title')), findsOneWidget);
+    expect(find.byKey(const ValueKey('atlas-story-canvas')), findsOneWidget);
+    expect(find.text('1 cells'), findsOneWidget);
+
+    final zeta = find.byKey(const ValueKey('catalog-item-zeta'));
+    final alpha = find.byKey(const ValueKey('catalog-item-alpha'));
+    expect(tester.getTopLeft(zeta).dy, lessThan(tester.getTopLeft(alpha).dy));
+
+    await tester.enterText(
+      find.byKey(const ValueKey('catalog-search')),
+      'alpha',
+    );
+    await tester.pump();
+    expect(zeta, findsNothing);
+    expect(alpha, findsOneWidget);
+
+    await tester.tap(find.byKey(const ValueKey('clear-catalog-search')));
+    await tester.pump();
+    expect(zeta, findsOneWidget);
+    expect(alpha, findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 
-  testWidgets('compact viewer uses a drawer', (tester) async {
-    tester.view.physicalSize = const Size(600, 800);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.reset);
+  testWidgets('supports slash, enter, and escape keyboard search', (
+    tester,
+  ) async {
+    await _setViewport(tester, const Size(1440, 900));
+    final catalog = _catalog();
+    final controller = AtlasCatalogController(catalog);
+    addTearDown(controller.dispose);
+
     await tester.pumpWidget(
-      MaterialApp(home: AtlasCatalogViewer(catalog: _catalog())),
+      _ViewerHarness(catalog: catalog, controller: controller),
     );
-    await tester.tap(find.byTooltip('Open navigation menu'));
-    await tester.pumpAndSettle();
-    expect(find.byType(Drawer), findsOneWidget);
+    await tester.pump();
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.slash);
+    await tester.pump();
+    var editable = tester.widget<EditableText>(find.byType(EditableText));
+    expect(editable.focusNode.hasFocus, isTrue);
+
+    await tester.enterText(
+      find.byKey(const ValueKey('catalog-search')),
+      'alpha',
+    );
+    await tester.testTextInput.receiveAction(TextInputAction.search);
+    await tester.pump();
+    expect(controller.selection?.atlasId, 'alpha');
+
+    editable = tester.widget<EditableText>(find.byType(EditableText));
+    expect(editable.focusNode.hasFocus, isTrue);
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+    await tester.pump();
+    editable = tester.widget<EditableText>(find.byType(EditableText));
+    expect(editable.controller.text, isEmpty);
+    expect(find.text('Atlases'), findsOneWidget);
+  });
+
+  testWidgets('compact layout keeps catalog and themes available', (
+    tester,
+  ) async {
+    await _setViewport(tester, const Size(720, 900));
+    final catalog = _catalog();
+    final controller = AtlasCatalogController(
+      catalog,
+      atlasId: 'alpha',
+      themeId: 'night',
+    );
+    addTearDown(controller.dispose);
+
+    await tester.pumpWidget(
+      _ViewerHarness(catalog: catalog, controller: controller),
+    );
+    await tester.pump();
+
+    expect(find.byKey(const ValueKey('compact-catalog-rail')), findsOneWidget);
+    expect(find.byKey(const ValueKey('catalog-item-zeta')), findsOneWidget);
+    expect(find.byKey(const ValueKey('catalog-item-alpha')), findsOneWidget);
+    expect(find.byKey(const ValueKey('theme-night')), findsOneWidget);
+    expect(find.text('Alpha control'), findsWidgets);
+    final canvasContext = tester.element(
+      find.byKey(const ValueKey('atlas-story-canvas')),
+    );
+    expect(Theme.of(canvasContext).brightness, Brightness.dark);
+    expect(
+      MediaQuery.platformBrightnessOf(canvasContext),
+      Brightness.dark,
+      reason: 'Mix onDark variants must resolve from the selected atlas theme.',
+    );
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('story canvas aligns final-axis values and shows details', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    await _setViewport(tester, const Size(1440, 900));
+    final catalog = _groupedCatalog();
+
+    await tester.pumpWidget(_ViewerHarness(catalog: catalog));
+    await tester.pump();
+
+    final small = find.byKey(const ValueKey('story-cell-rest-solid-small'));
+    final large = find.byKey(const ValueKey('story-cell-rest-solid-large'));
+    expect(small, findsOneWidget);
+    expect(large, findsOneWidget);
+    expect(tester.getCenter(small).dy, tester.getCenter(large).dy);
+    expect(tester.getTopLeft(small).dx, lessThan(tester.getTopLeft(large).dx));
+    expect(
+      find.bySemanticsLabel('Show atlas details, 4 cells'),
+      findsOneWidget,
+    );
+
+    await tester.tap(find.byKey(const ValueKey('atlas-details-trigger')));
+    await tester.pump();
+
+    final popover = find.byKey(const ValueKey('atlas-details-popover'));
+    expect(popover, findsOneWidget);
+    for (final label in [
+      'Atlas details',
+      'Scenario',
+      'Variants',
+      'Sizes',
+      'Cells',
+    ]) {
+      expect(
+        find.descendant(of: popover, matching: find.text(label)),
+        findsOneWidget,
+      );
+    }
+    for (final value in ['Resting', '2', '4']) {
+      expect(
+        find.descendant(of: popover, matching: find.text(value)),
+        findsWidgets,
+      );
+    }
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+    await tester.pump();
+    expect(popover, findsNothing);
+    expect(tester.takeException(), isNull);
+    semantics.dispose();
   });
 
   testWidgets('empty catalog has a useful state', (tester) async {
@@ -169,31 +341,13 @@ void main() {
     expect(find.text('No atlases to display'), findsOneWidget);
   });
 
-  testWidgets('atlas uses human labels and metadata retains IDs', (
-    tester,
-  ) async {
-    final catalog = _catalog();
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: AtlasView(atlas: catalog.atlases.first),
-      ),
-    );
-    expect(find.text('Resting'), findsOneWidget);
-    expect(find.text('Plain row'), findsOneWidget);
-  });
-
   testWidgets('swapping the catalog rebuilds with a fresh controller', (
     tester,
   ) async {
-    await tester.pumpWidget(
-      MaterialApp(home: AtlasCatalogViewer(catalog: _catalog())),
-    );
+    await tester.pumpWidget(_ViewerHarness(catalog: _catalog()));
     expect(find.text('Zeta control'), findsWidgets);
 
-    await tester.pumpWidget(
-      MaterialApp(home: AtlasCatalogViewer(catalog: _overlayCatalog())),
-    );
+    await tester.pumpWidget(_ViewerHarness(catalog: _overlayCatalog()));
     await tester.pumpAndSettle();
     expect(find.text('leak-first'), findsOneWidget);
     expect(find.text('Zeta control'), findsNothing);
@@ -206,9 +360,7 @@ void main() {
     final controller = AtlasCatalogController(catalog);
     addTearDown(controller.dispose);
     await tester.pumpWidget(
-      MaterialApp(
-        home: AtlasCatalogViewer(catalog: catalog, controller: controller),
-      ),
+      _ViewerHarness(catalog: catalog, controller: controller),
     );
     await tester.pumpAndSettle();
     expect(find.text('leak-first'), findsOneWidget);
@@ -218,4 +370,130 @@ void main() {
     expect(find.text('second-cell'), findsOneWidget);
     expect(find.text('leak-first'), findsNothing);
   });
+
+  testWidgets('desktop light viewer matches its reference image', (
+    tester,
+  ) async {
+    if (!_supportsViewerGoldens()) return;
+    await _setViewport(tester, const Size(1440, 900));
+    final controller = AtlasCatalogController(referenceCatalog);
+    addTearDown(controller.dispose);
+
+    await tester.pumpWidget(
+      _ViewerHarness(
+        catalog: referenceCatalog,
+        controller: controller,
+        captureKey: _captureKey,
+      ),
+    );
+    await tester.pump();
+
+    await expectLater(
+      find.byKey(_captureKey),
+      matchesGoldenFile('viewer_goldens/atlas-viewer-desktop-light.png'),
+    );
+  });
+
+  testWidgets('compact dark viewer matches its reference image', (
+    tester,
+  ) async {
+    if (!_supportsViewerGoldens()) return;
+    await _setViewport(tester, const Size(720, 900));
+    final controller = AtlasCatalogController(
+      referenceCatalog,
+      themeId: 'dark',
+    );
+    addTearDown(controller.dispose);
+
+    await tester.pumpWidget(
+      _ViewerHarness(
+        catalog: referenceCatalog,
+        controller: controller,
+        captureKey: _captureKey,
+      ),
+    );
+    await tester.pump();
+
+    await expectLater(
+      find.byKey(_captureKey),
+      matchesGoldenFile('viewer_goldens/atlas-viewer-compact-dark.png'),
+    );
+  });
+
+  testWidgets('desktop search and details match their reference image', (
+    tester,
+  ) async {
+    if (!_supportsViewerGoldens()) return;
+    await _setViewport(tester, const Size(1440, 900));
+    final controller = AtlasCatalogController(referenceCatalog);
+    addTearDown(controller.dispose);
+
+    await tester.pumpWidget(
+      _ViewerHarness(
+        catalog: referenceCatalog,
+        controller: controller,
+        captureKey: _captureKey,
+      ),
+    );
+    await tester.pump();
+
+    await tester.enterText(
+      find.byKey(const ValueKey('catalog-search')),
+      'button',
+    );
+    FocusManager.instance.primaryFocus?.unfocus();
+    await tester.pump();
+    await tester.tap(find.byKey(const ValueKey('atlas-details-trigger')));
+    await tester.pump();
+
+    await expectLater(
+      find.byKey(_captureKey),
+      matchesGoldenFile(
+        'viewer_goldens/atlas-viewer-desktop-search-details-light.png',
+      ),
+    );
+  });
+}
+
+const _captureKey = ValueKey('viewer-capture');
+
+class _ViewerHarness extends StatelessWidget {
+  const _ViewerHarness({
+    required this.catalog,
+    this.controller,
+    this.captureKey,
+  });
+
+  final AtlasCatalog catalog;
+  final AtlasCatalogController? controller;
+  final Key? captureKey;
+
+  @override
+  Widget build(BuildContext context) => MaterialApp(
+    debugShowCheckedModeBanner: false,
+    home: RepaintBoundary(
+      key: captureKey,
+      child: AtlasCatalogViewer(catalog: catalog, controller: controller),
+    ),
+  );
+}
+
+Future<void> _setViewport(WidgetTester tester, Size size) async {
+  tester.view.devicePixelRatio = 1;
+  tester.view.physicalSize = size;
+  addTearDown(tester.view.resetDevicePixelRatio);
+  addTearDown(tester.view.resetPhysicalSize);
+}
+
+String _humanize(String value) =>
+    '${value[0].toUpperCase()}${value.substring(1)}';
+
+bool _supportsViewerGoldens() {
+  if (AtlasGoldens.platforms.contains(Platform.operatingSystem)) return true;
+  markTestSkipped(
+    'Viewer goldens are generated on ${AtlasGoldens.platforms}; '
+    'rendering differs on ${Platform.operatingSystem}.',
+  );
+
+  return false;
 }

@@ -7,5 +7,6 @@ library;
 export 'src/scenario.dart';
 export 'src/component_atlas.dart';
 export 'src/atlas_view.dart';
+export 'src/atlas_story_canvas.dart';
 export 'src/theme.dart';
 export 'src/viewer.dart';

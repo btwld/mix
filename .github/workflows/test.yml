@@ -65,7 +65,7 @@ jobs:
       - name: Compare mix_atlas goldens
         run: |
           cd packages/mix_atlas
-          flutter test test/atlas_golden_test.dart
+          flutter test --reporter failures-only
       - name: Upload golden failures
         if: failure()
         uses: actions/upload-artifact@v4
@@ -77,10 +77,12 @@ jobs:
         if: failure()
         run: |
           cd packages/mix_atlas
-          flutter test test/atlas_golden_test.dart --update-goldens
+          flutter test --update-goldens --reporter failures-only
       - name: Upload canonical goldens
         if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: mix-atlas-canonical-goldens
-          path: packages/mix_atlas/test/goldens/**
+          path: |
+            packages/mix_atlas/test/goldens/**
+            packages/mix_atlas/test/viewer_goldens/**

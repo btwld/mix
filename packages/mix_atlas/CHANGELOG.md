@@ -1,3 +1,17 @@
+## Unreleased
+
+- Rebuilt `AtlasCatalogViewer` with responsive desktop and compact layouts,
+  keyboard search, theme controls, atlas details, and polished light/dark
+  navigation chrome.
+- Added `AtlasStoryCanvas`, a scenario-first live-viewer presentation that
+  places values from the final row axis side by side while preserving
+  `AtlasView` as the canonical golden-sheet grid.
+- Applied the selected atlas theme's brightness to both Material and
+  `MediaQuery`, so Mix context variants such as `onDark` resolve correctly in
+  the live viewer.
+- Added deterministic desktop-light, compact-dark, and search/details viewer
+  golden coverage.
+
 ## 0.1.0
 
 - Initial release of `mix_atlas`.
