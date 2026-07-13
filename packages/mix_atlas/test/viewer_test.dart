@@ -87,6 +87,40 @@ AtlasCatalog _groupedCatalog() => AtlasCatalog(
   ],
 );
 
+const _themeScopeColor = Color(0xffff00ff);
+
+AtlasCatalog _themeScopeCatalog() => AtlasCatalog(
+  id: 'theme-scope',
+  themes: [
+    AtlasTheme(
+      'custom',
+      background: Colors.white,
+      builder: (_, child) => Theme(
+        data: ThemeData(
+          colorScheme: const ColorScheme.light(primary: _themeScopeColor),
+        ),
+        child: child,
+      ),
+    ),
+  ],
+  atlases: [
+    ComponentAtlas(
+      id: 'probe',
+      scenarios: const [AtlasScenario('default')],
+      rows: [
+        AtlasRow(
+          'default',
+          (context, cell) => ColoredBox(
+            key: const ValueKey('theme-scope-cell'),
+            color: Theme.of(context).colorScheme.primary,
+            child: const SizedBox(width: 20, height: 20),
+          ),
+        ),
+      ],
+    ),
+  ],
+);
+
 /// A cell that pushes an overlay route onto the local [AtlasOverlayHost]
 /// Navigator, mirroring how a dialog atlas opens its modal.
 class _PushingCell extends StatefulWidget {
@@ -276,6 +310,15 @@ void main() {
       reason: 'Mix onDark variants must resolve from the selected atlas theme.',
     );
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('theme builder scope reaches story components', (tester) async {
+    await tester.pumpWidget(_ViewerHarness(catalog: _themeScopeCatalog()));
+
+    final cell = tester.widget<ColoredBox>(
+      find.byKey(const ValueKey('theme-scope-cell')),
+    );
+    expect(cell.color, _themeScopeColor);
   });
 
   testWidgets('story canvas aligns final-axis values and shows details', (

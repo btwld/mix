@@ -148,79 +148,68 @@ class _AtlasCatalogViewerState extends State<AtlasCatalogViewer> {
       (item) => item.id == selection.themeId,
     );
 
-    return theme.builder(
-      context,
-      Builder(
-        builder: (context) {
-          final viewerTheme = _viewerTheme(theme);
-          final mediaQuery =
-              (MediaQuery.maybeOf(context) ?? const MediaQueryData()).copyWith(
-                platformBrightness: theme.brightness,
-              );
+    final viewerTheme = _viewerTheme(theme);
+    final mediaQuery = (MediaQuery.maybeOf(context) ?? const MediaQueryData())
+        .copyWith(platformBrightness: theme.brightness);
 
-          return MediaQuery(
-            data: mediaQuery,
-            child: Theme(
-              data: viewerTheme,
-              child: DefaultTextStyle(
-                style: _textStyle(
-                  color: viewerTheme.colorScheme.onSurface,
-                  fontSize: 14,
-                ),
-                child: CallbackShortcuts(
-                  bindings: {
-                    const SingleActivator(.slash): _focusSearch,
-                    const SingleActivator(.escape): _handleEscape,
-                  },
-                  child: Focus(
-                    autofocus: true,
-                    child: Material(
-                      color: viewerTheme.colorScheme.surface,
-                      child: SafeArea(
-                        child: LayoutBuilder(
-                          builder: (context, constraints) {
-                            final desktop =
-                                constraints.maxWidth >= _desktopBreakpoint;
+    return MediaQuery(
+      data: mediaQuery,
+      child: Theme(
+        data: viewerTheme,
+        child: DefaultTextStyle(
+          style: _textStyle(
+            color: viewerTheme.colorScheme.onSurface,
+            fontSize: 14,
+          ),
+          child: CallbackShortcuts(
+            bindings: {
+              const SingleActivator(.slash): _focusSearch,
+              const SingleActivator(.escape): _handleEscape,
+            },
+            child: Focus(
+              autofocus: true,
+              child: Material(
+                color: viewerTheme.colorScheme.surface,
+                child: SafeArea(
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      final desktop =
+                          constraints.maxWidth >= _desktopBreakpoint;
 
-                            return desktop
-                                ? _DesktopLayout(
-                                    catalog: widget.catalog,
-                                    controller: _controller,
-                                    atlas: atlas,
-                                    theme: theme,
-                                    searchController: _searchController,
-                                    searchFocusNode: _searchFocusNode,
-                                    detailsOpen: _detailsOpen,
-                                    onClearSearch: _clearSearch,
-                                    onSubmitSearch: _submitSearch,
-                                    onToggleDetails: () => setState(
-                                      () => _detailsOpen = !_detailsOpen,
-                                    ),
-                                  )
-                                : _CompactLayout(
-                                    catalog: widget.catalog,
-                                    controller: _controller,
-                                    atlas: atlas,
-                                    theme: theme,
-                                    searchController: _searchController,
-                                    searchFocusNode: _searchFocusNode,
-                                    detailsOpen: _detailsOpen,
-                                    onClearSearch: _clearSearch,
-                                    onSubmitSearch: _submitSearch,
-                                    onToggleDetails: () => setState(
-                                      () => _detailsOpen = !_detailsOpen,
-                                    ),
-                                  );
-                          },
-                        ),
-                      ),
-                    ),
+                      return desktop
+                          ? _DesktopLayout(
+                              catalog: widget.catalog,
+                              controller: _controller,
+                              atlas: atlas,
+                              theme: theme,
+                              searchController: _searchController,
+                              searchFocusNode: _searchFocusNode,
+                              detailsOpen: _detailsOpen,
+                              onClearSearch: _clearSearch,
+                              onSubmitSearch: _submitSearch,
+                              onToggleDetails: () =>
+                                  setState(() => _detailsOpen = !_detailsOpen),
+                            )
+                          : _CompactLayout(
+                              catalog: widget.catalog,
+                              controller: _controller,
+                              atlas: atlas,
+                              theme: theme,
+                              searchController: _searchController,
+                              searchFocusNode: _searchFocusNode,
+                              detailsOpen: _detailsOpen,
+                              onClearSearch: _clearSearch,
+                              onSubmitSearch: _submitSearch,
+                              onToggleDetails: () =>
+                                  setState(() => _detailsOpen = !_detailsOpen),
+                            );
+                    },
                   ),
                 ),
               ),
             ),
-          );
-        },
+          ),
+        ),
       ),
     );
   }
@@ -1186,15 +1175,21 @@ class _AtlasViewport extends StatelessWidget {
             scrollDirection: .horizontal,
             child: Padding(
               padding: .all(inset),
-              child: SizedBox(
-                width: width,
-                child: AtlasStoryCanvas(
-                  // A selected atlas must get a fresh subtree so overlay-host
-                  // Navigator routes cannot leak across component switches.
-                  key: ValueKey(atlas.id),
-                  atlas: atlas,
-                  theme: theme,
-                  compact: compact,
+              child: Builder(
+                builder: (context) => theme.builder(
+                  context,
+                  SizedBox(
+                    width: width,
+                    child: AtlasStoryCanvas(
+                      // A selected atlas must get a fresh subtree so
+                      // overlay-host Navigator routes cannot leak across
+                      // component switches.
+                      key: ValueKey(atlas.id),
+                      atlas: atlas,
+                      theme: theme,
+                      compact: compact,
+                    ),
+                  ),
                 ),
               ),
             ),
