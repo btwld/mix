@@ -78,6 +78,22 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
     };
   }
 
+  /// Chooses the config that drives an animate-out transition when the new spec
+  /// removes its animation (`config == null`).
+  ///
+  /// Only implicit drivers (curve, spring) retarget toward the new spec through
+  /// [StyleAnimationDriver.didUpdateSpec], so only those may be reused. Phase and
+  /// keyframe drivers replay their own sequence and never retarget; reusing an
+  /// outgoing phase/keyframe config would keep the old animation running instead
+  /// of showing the new target, so return `null` to let a [NoAnimationDriver]
+  /// expose the target immediately on the same update.
+  AnimationConfig? _outgoingConfigFor(AnimationConfig? oldConfig) {
+    return switch (oldConfig) {
+      CurveAnimationConfig() || SpringAnimationConfig() => oldConfig,
+      PhaseAnimationConfig() || KeyframeAnimationConfig() || null => null,
+    };
+  }
+
   @override
   void dispose() {
     animationDriver.dispose();
@@ -96,7 +112,7 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
     } else {
       animationDriver.dispose();
       animationDriver = _createAnimationDriver(
-        config: config ?? oldConfig,
+        config: config ?? _outgoingConfigFor(oldConfig),
         initialSpec: oldWidget.spec,
       );
     }
