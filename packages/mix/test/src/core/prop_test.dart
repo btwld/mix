@@ -42,6 +42,29 @@ void main() {
       expect(resolved, equals(42));
     });
 
+    test('applies directives after resolving a single direct source', () {
+      final prop = Prop.value(
+        21,
+      ).directives([MockDirective<int>('double', (value) => value * 2)]);
+
+      expect(prop.resolveProp(MockBuildContext()), 42);
+    });
+
+    test('resolves a Mix stored as a single direct source', () {
+      final mix = MockMix<Object>(42);
+      final prop = Prop.value<Object>(mix);
+
+      expect(prop.resolveProp(MockBuildContext()), 42);
+    });
+
+    test('resolves a Mix returned by a single token source', () {
+      final token = TestToken<Object>('mixed');
+      final prop = Prop.token(token);
+      final context = MockBuildContext(tokens: {token: MockMix<Object>(42)});
+
+      expect(prop.resolveProp(context), 42);
+    });
+
     test('merges value and token sources (universal accumulation)', () {
       final token = TestToken<int>('n');
       final p1 = Prop.value(1);
