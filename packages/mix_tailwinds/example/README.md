@@ -75,5 +75,6 @@ The outputs live under `packages/mix_tailwinds/example/test/goldens/`.
 
 - The example starts from `TwConfig.standard()`. Screenshot mode pins both the Flutter and Tailwind reference screenshots to the bundled `TwParityRoboto` font so pixel comparisons do not depend on platform system-font metrics.
 - `flowbite-card` extends `TwConfig.standard()` locally for Flowbite semantic aliases such as `bg-neutral-primary-soft`, `rounded-base`, and `text-heading`.
+- `assets/images/flowbite-card-hero.svg` is retained as the editable source artwork; the Flutter and browser fixtures both render its rasterized PNG counterpart.
 - `flowbite-card` maps Flowbite inline SVGs to `TwIcon` with Material icon equivalents. This keeps the Flutter side in the `mix_tailwinds` widget model while avoiding a separate SVG/path renderer.
 - The components intentionally stick to utilities we already support (layout, spacing, border, radius, typography, responsive prefixes, and hover states on the buttons). If you add more classes to a Flutter example, mirror the change in its matching `real_tailwind/*.html` fixture so comparisons stay 1:1.

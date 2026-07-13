@@ -4,7 +4,7 @@ import 'package:mix/mix.dart';
 import 'package:mix_tailwinds/mix_tailwinds.dart';
 
 void main() {
-  test('public barrel keeps semantic compatibility symbols', () {
+  test('public barrel keeps supported semantic symbols', () {
     const length = TwLengthValue(4);
     const color = TwColorValue(Color(0xFF112233));
     const parsed = TwParsedClass(
