@@ -30,9 +30,15 @@ CodecSchema<Object, IconData> iconDataIdentityCodec(
       }
 
       final data = value as JsonMap;
+      // Wire values are decoded at runtime by design. Flutter marks these
+      // arguments as constant-only so icon tree shaking can diagnose apps that
+      // construct IconData dynamically.
       return IconData(
+        // ignore: non_const_argument_for_const_parameter
         data['codePoint']! as int,
+        // ignore: non_const_argument_for_const_parameter
         fontFamily: data['fontFamily'] as String?,
+        // ignore: non_const_argument_for_const_parameter
         fontPackage: data['fontPackage'] as String?,
         fontFamilyFallback: (data['fontFamilyFallback'] as List?)
             ?.cast<String>(),

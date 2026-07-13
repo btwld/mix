@@ -709,11 +709,7 @@ const generatedFunctionalVariantRoots = <String>{
   'supports',
 };
 
-const generatedCompoundVariantRoots = <String>{
-  'group',
-  'not',
-  'peer',
-};
+const generatedCompoundVariantRoots = <String>{'group', 'not', 'peer'};
 
 final defaultTailwindParserRegistry = TailwindParserRegistry(
   staticUtilityRoots: generatedStaticUtilityRoots,

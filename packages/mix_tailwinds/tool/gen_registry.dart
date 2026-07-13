@@ -26,6 +26,20 @@ void main(List<String> args) {
   final target = File('lib/src/parser/data/parser_registry.g.dart')
     ..parent.createSync(recursive: true);
   target.writeAsStringSync(output);
+  _formatGeneratedDart(target);
+}
+
+void _formatGeneratedDart(File target) {
+  final result = Process.runSync(Platform.resolvedExecutable, [
+    'format',
+    target.path,
+  ]);
+  if (result.exitCode == 0) return;
+
+  stderr
+    ..write(result.stdout)
+    ..write(result.stderr);
+  exitCode = result.exitCode;
 }
 
 void _writeSnapshot(List<String> args) {
