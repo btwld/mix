@@ -212,6 +212,10 @@ The same catalog can power a local viewer:
 MaterialApp(home: AtlasCatalogViewer(catalog: componentCatalog))
 ```
 
+For a native desktop host with an initial size and enforced minimum size, see
+the [`example`](example/) app. It keeps `window_manager` in the application
+layer rather than adding a desktop plugin dependency to this reusable package.
+
 The responsive viewer preserves declared catalog order and includes keyboard
 search (`/` to focus and Escape to clear), compact navigation, theme controls,
 and an atlas-details popover. Its non-interactive `AtlasStoryCanvas` presents

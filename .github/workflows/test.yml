@@ -86,3 +86,8 @@ jobs:
           path: |
             packages/mix_atlas/test/goldens/**
             packages/mix_atlas/test/viewer_goldens/**
+      - name: Build mix_atlas macOS example
+        run: |
+          cd packages/mix_atlas/example
+          flutter create --platforms=macos .
+          flutter build macos --debug

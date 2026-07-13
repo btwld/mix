@@ -1,0 +1,29 @@
+name: mix_atlas_example
+description: Desktop example for the Mix Atlas catalog viewer.
+publish_to: none
+version: 0.1.0+1
+
+environment:
+  sdk: ">=3.11.0 <4.0.0"
+  flutter: ">=3.41.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  mix: ^2.0.3
+  mix_atlas:
+    path: ..
+  window_manager: ^0.5.2
+
+dependency_overrides:
+  mix:
+    path: ../../mix
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  dart_code_metrics_presets: ^2.24.0
+
+flutter:
+  uses-material-design: true

@@ -11,6 +11,8 @@
   the live viewer.
 - Added deterministic desktop-light, compact-dark, and search/details viewer
   golden coverage.
+- Added a runnable desktop example that configures the Atlas viewer's initial
+  and minimum native window sizes through `window_manager`.
 
 ## 0.1.0
 

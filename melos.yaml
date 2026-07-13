@@ -4,6 +4,7 @@ name: mix_workspace
 packages:
   - packages/*
   - packages/mix/example
+  - packages/mix_atlas/example
   - packages/mix_generator/example
   - packages/mix_tailwinds/example
   - packages/*/demo
@@ -27,6 +28,7 @@ categories:
   flutter_projects:
     - packages/mix
     - packages/mix/example
+    - packages/mix_atlas/example
     - packages/mix_lint_test
     - packages/annotations
     - packages/mix_atlas
