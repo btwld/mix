@@ -1,0 +1,78 @@
+{
+  "schema": "mix_atlas/atlas/v1",
+  "component": "button",
+  "componentLabel": "Button",
+  "theme": "dark",
+  "themeLabel": "Dark",
+  "brightness": "dark",
+  "file": "button.png",
+  "rowAxes": [
+    {
+      "id": "tone",
+      "label": "Tone"
+    }
+  ],
+  "rows": [
+    {
+      "id": "primary",
+      "values": {
+        "tone": {
+          "id": "primary",
+          "label": "Primary"
+        }
+      }
+    },
+    {
+      "id": "accent",
+      "values": {
+        "tone": {
+          "id": "accent",
+          "label": "Accent"
+        }
+      }
+    }
+  ],
+  "columns": [
+    {
+      "id": "default",
+      "states": [],
+      "props": {}
+    },
+    {
+      "id": "hovered",
+      "states": [
+        "hovered"
+      ],
+      "props": {}
+    },
+    {
+      "id": "pressed",
+      "states": [
+        "pressed"
+      ],
+      "props": {}
+    },
+    {
+      "id": "focused",
+      "states": [
+        "focused"
+      ],
+      "props": {}
+    },
+    {
+      "id": "disabled",
+      "states": [
+        "disabled"
+      ],
+      "props": {}
+    },
+    {
+      "id": "loading",
+      "label": "Loading",
+      "states": [],
+      "props": {
+        "loading": true
+      }
+    }
+  ]
+}

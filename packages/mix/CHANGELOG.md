@@ -2,6 +2,10 @@
 
 ### New features
 
+- **Style-state override scope:** `WidgetStateStyleOverride` lets tooling and
+  tests force widget-state variants through normal `style` resolution, taking
+  precedence over controllers and nested interaction providers without
+  changing component behavior.
 - **Typed context variants:** `BrightnessVariant`, `BreakpointVariant`,
   `OrientationVariant`, `DirectionalityVariant`, `PlatformVariant`,
   `WebVariant`, and `NotVariant` are now public value objects behind their

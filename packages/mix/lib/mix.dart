@@ -40,12 +40,16 @@ export 'src/core/prop_source.dart';
 export 'src/core/providers/style_provider.dart';
 export 'src/core/providers/style_spec_provider.dart';
 export 'src/core/providers/widget_state_provider.dart';
+export 'src/core/providers/widget_state_style_override.dart';
 export 'src/core/spec.dart';
 export 'src/core/style.dart' hide StyleElement;
 export 'src/core/style_builder.dart';
 export 'src/core/style_spec.dart';
 export 'src/core/style_widget.dart';
 export 'src/core/widget_modifier.dart';
+
+/// GENERATED_STYLER_SUPPORT.DART
+export 'src/generated_styler_support.dart' hide StyleElement;
 
 /// MODIFIERS
 export 'src/modifiers/align_modifier.dart';

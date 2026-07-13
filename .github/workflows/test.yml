@@ -45,3 +45,42 @@ jobs:
     with:
       flutter-version: 'stable'
       run-dcm: true
+
+  mix_atlas_goldens:
+    name: mix_atlas Goldens (macOS)
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: kuhnroyal/flutter-fvm-config-action@v2
+        id: fvm-config-action
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ steps.fvm-config-action.outputs.FLUTTER_VERSION }}
+          channel: ${{ steps.fvm-config-action.outputs.FLUTTER_CHANNEL }}
+          cache: true
+      - name: Bootstrap workspace
+        run: |
+          dart pub global activate melos 6.3.3
+          melos bootstrap
+      - name: Compare mix_atlas goldens
+        run: |
+          cd packages/mix_atlas
+          flutter test test/atlas_golden_test.dart
+      - name: Upload golden failures
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mix-atlas-golden-failures
+          path: packages/mix_atlas/test/failures/**
+          if-no-files-found: ignore
+      - name: Regenerate canonical goldens after failure
+        if: failure()
+        run: |
+          cd packages/mix_atlas
+          flutter test test/atlas_golden_test.dart --update-goldens
+      - name: Upload canonical goldens
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mix-atlas-canonical-goldens
+          path: packages/mix_atlas/test/goldens/**

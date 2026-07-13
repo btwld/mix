@@ -11,6 +11,10 @@ on:
         type: boolean
         description: whether to update mix_tailwinds package
         default: false
+      update_mix_atlas:
+        type: boolean
+        description: whether to update mix_atlas package
+        default: false
       mix_version:
         type: string
         description: set the version for mix core packages
@@ -18,6 +22,10 @@ on:
       mix_tailwinds_version:
         type: string
         description: set the version for mix_tailwinds
+        default: ""
+      mix_atlas_version:
+        type: string
+        description: set the version for mix_atlas
         default: ""
 
 jobs:
@@ -74,6 +82,10 @@ jobs:
           ignored_packages="$ignored_packages --ignore=mix_tailwinds"
         fi
 
+        if [ "${{ github.event.inputs.update_mix_atlas }}" == "false" ]; then
+          ignored_packages="$ignored_packages --ignore=mix_atlas"
+        fi
+
 
         packages_with_versions=""
 
@@ -86,6 +98,10 @@ jobs:
 
         if [ "${{ github.event.inputs.mix_tailwinds_version }}" != "" ]; then
           packages_with_versions="$packages_with_versions -V mix_tailwinds:${{ github.event.inputs.mix_tailwinds_version }}"
+        fi
+
+        if [ "${{ github.event.inputs.mix_atlas_version }}" != "" ]; then
+          packages_with_versions="$packages_with_versions -V mix_atlas:${{ github.event.inputs.mix_atlas_version }}"
         fi
 
         melos version $ignored_packages --yes --no-git-tag-version $packages_with_versions

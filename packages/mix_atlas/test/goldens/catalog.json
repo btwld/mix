@@ -1,0 +1,35 @@
+{
+  "schema": "mix_atlas/catalog/v1",
+  "id": "mix-atlas-reference",
+  "label": "Mix Atlas reference",
+  "themes": [
+    {
+      "id": "light",
+      "label": "Light",
+      "brightness": "light"
+    },
+    {
+      "id": "dark",
+      "label": "Dark",
+      "brightness": "dark"
+    }
+  ],
+  "atlases": [
+    {
+      "id": "button",
+      "label": "Button",
+      "files": [
+        {
+          "theme": "light",
+          "image": "light/button.png",
+          "metadata": "light/button.json"
+        },
+        {
+          "theme": "dark",
+          "image": "dark/button.png",
+          "metadata": "dark/button.json"
+        }
+      ]
+    }
+  ]
+}

@@ -271,6 +271,7 @@ const _packageExportConfigs = <String, _PackageExportConfig>{
     libraryDirective: 'library;',
     hiddenSymbolsByPath: {
       'src/core/style.dart': ['StyleElement'],
+      'src/generated_styler_support.dart': ['StyleElement'],
       // Token-registry helpers are @internal; tests import them via
       // package:mix/src/... directly.
       'src/theme/tokens/token_refs.dart': [
