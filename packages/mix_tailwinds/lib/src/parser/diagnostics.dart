@@ -5,41 +5,18 @@ import 'model.dart';
 
 sealed class TailwindParseResult {
   const TailwindParseResult();
-
-  String get input;
-  bool get isSuccess;
 }
 
 final class TailwindParseSuccess extends TailwindParseResult {
-  const TailwindParseSuccess({
-    required this.input,
-    required this.candidate,
-    this.warnings = const [],
-  });
+  const TailwindParseSuccess({required this.candidate});
 
-  @override
-  final String input;
   final TailwindCandidate candidate;
-  final List<TailwindParseWarning> warnings;
-
-  @override
-  bool get isSuccess => true;
 }
 
 final class TailwindParseFailure extends TailwindParseResult {
-  const TailwindParseFailure({
-    required this.input,
-    required this.errors,
-    this.partial,
-  });
+  const TailwindParseFailure({required this.errors});
 
-  @override
-  final String input;
   final List<TailwindParseError> errors;
-  final TailwindCandidate? partial;
-
-  @override
-  bool get isSuccess => false;
 }
 
 final class TailwindParseError {
@@ -65,16 +42,4 @@ enum TailwindParseErrorCode {
   invalidImportantPosition,
   invalidArbitraryProperty,
   invalidVariantChain,
-}
-
-final class TailwindParseWarning {
-  const TailwindParseWarning({
-    required this.code,
-    required this.message,
-    required this.span,
-  });
-
-  final String code;
-  final String message;
-  final SourceSpan span;
 }

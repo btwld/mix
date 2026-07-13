@@ -5,14 +5,14 @@ import '../parser/candidate_parser.dart';
 import '../parser/data/parser_registry.g.dart';
 import '../parser/diagnostics.dart';
 import '../parser/model.dart';
+import '../tw_utils.dart';
 import 'tw_routing.dart';
 
 enum TwTarget { box, flexBox, text }
 
-final _parser = TailwindCandidateParser(
+const _parser = TailwindCandidateParser(
   registry: defaultTailwindParserRegistry,
 );
-final _whitespaceRegex = RegExp(r'\s+');
 
 bool hasBoxUtilities(
   String classNames, {
@@ -47,9 +47,7 @@ bool wantsFlex(Set<String> tokens, {required Map<String, double> breakpoints}) {
 }
 
 Iterable<TailwindCandidate> _parseCandidates(String classNames) sync* {
-  final trimmed = classNames.trim();
-  if (trimmed.isEmpty) return;
-  for (final token in trimmed.split(_whitespaceRegex)) {
+  for (final token in splitTailwindTokens(classNames)) {
     final candidate = _parseCandidate(token);
     if (candidate != null) yield candidate;
   }

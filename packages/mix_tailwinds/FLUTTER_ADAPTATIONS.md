@@ -298,7 +298,8 @@ Transform.translate(
 - Sets flex basis to 50% or 100% of container
 
 **Current Limitation:**
-- `basis-1/2`, `basis-1/3`, `basis-full` are **not supported**
+- `basis-1/2`, `basis-1/3`, `basis-full` are **not supported** and are
+  reported through `onUnsupported`
 - Only space scale values (`basis-4`, `basis-8`) and `basis-auto` work
 
 **Workaround:**
@@ -378,6 +379,6 @@ P(text: '...', classNames: 'p-2 hover:p-4')  // ✓ Works
 | `w-[50%]`, `h-[25%]` | ✗ Parsed but not applied | Use `w-1/2`, `h-1/4` fractions |
 | `translate-x-1/2` | ✗ Not supported | Use pixel values |
 | `translate-x-[50%]` | ✗ Unsupported | Use Flutter Transform |
-| `basis-1/2`, `basis-full` | ✗ Not supported | Use `w-1/2 flex-none` |
+| `basis-1/2`, `basis-full` | ✗ Unsupported; reported through `onUnsupported` | Use `w-1/2 flex-none` |
 | `bg-[rgb(...)]`, `bg-[hsl(...)]` | ✗ Not supported | Use CSS hex: `bg-[#rgb]`, `bg-[#rrggbb]`, or `bg-[#rrggbbaa]` |
 | `hover:m-4` on `P`/headings | ✗ Ignored | Use padding instead |

@@ -22,7 +22,6 @@ Build a **1:1 mapping** from **Tailwind CSS utilities → Mix stylers/widgets** 
 Key docs:
 - `COMPARISON_TESTING.md` — screenshot + pixel-diff workflow for Flutter vs Tailwind
 - `FLUTTER_ADAPTATIONS.md` — intentional/necessary semantic differences vs CSS
-- `FUTURE_WORK.md` — backlog + planned parity work
 
 ## Workflow (Preferred)
 

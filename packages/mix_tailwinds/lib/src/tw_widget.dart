@@ -18,8 +18,7 @@ import 'tw_utils.dart';
 // Box/Margin Utility Detection
 // =============================================================================
 
-final _whitespaceRegex = RegExp(r'\s+');
-final _candidateParser = TailwindCandidateParser(
+const _candidateParser = TailwindCandidateParser(
   registry: defaultTailwindParserRegistry,
 );
 
@@ -34,9 +33,7 @@ final _candidateParser = TailwindCandidateParser(
 /// - Variant-prefixed margins are skipped because responsive/interaction
 ///   margin semantics are not yet modeled in the widget layer.
 EdgeInsets? _extractMargin(String classNames, TwConfig cfg) {
-  final tokens = classNames.trim().isEmpty
-      ? const <String>[]
-      : classNames.trim().split(_whitespaceRegex);
+  final tokens = splitTailwindTokens(classNames);
   double? top, right, bottom, left;
 
   for (final token in tokens) {
@@ -523,9 +520,7 @@ EdgeInsetsGeometry? _extractLogicalMargin(String classNames, TwConfig cfg) {
   var right = 0.0;
   var hasMargin = false;
 
-  final tokens = classNames.trim().isEmpty
-      ? const <String>[]
-      : classNames.trim().split(_whitespaceRegex);
+  final tokens = splitTailwindTokens(classNames);
   for (final token in tokens) {
     final candidate = _parseCandidate(token);
     if (candidate == null || candidate.variants.isNotEmpty) continue;
@@ -747,8 +742,7 @@ bool _hasResponsiveAlignItems(Set<String> tokens, TwConfig cfg, double width) {
 }
 
 bool _hasResponsiveWidthToken(String classNames, TwConfig cfg, double width) {
-  final tokens = classNames.split(_whitespaceRegex);
-  for (final token in tokens) {
+  for (final token in splitTailwindTokens(classNames)) {
     final info = _parseResponsiveToken(token, cfg);
     if (info == null || info.minWidth > width) {
       continue;

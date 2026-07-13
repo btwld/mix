@@ -19,20 +19,13 @@ import 'tw_routing.dart';
 import 'tw_target.dart';
 
 final class TwTranslator {
-  TwTranslator({required this.config, this.onUnsupported})
-    : _parser = TailwindCandidateParser(
-        registry: defaultTailwindParserRegistry,
-      );
+  TwTranslator({required this.config, this.onUnsupported});
 
   final TwConfig config;
   final TokenWarningCallback? onUnsupported;
-  final TailwindCandidateParser _parser;
-
-  List<String> listTokens(String classNames) {
-    final trimmed = classNames.trim();
-    if (trimmed.isEmpty) return const [];
-    return trimmed.split(RegExp(r'\s+'));
-  }
+  static const _parser = TailwindCandidateParser(
+    registry: defaultTailwindParserRegistry,
+  );
 
   BoxStyler translateBox(String classNames) {
     return _translate<BoxStyler>(
@@ -75,7 +68,7 @@ final class TwTranslator {
     Color? color;
     double? opacity;
 
-    for (final token in listTokens(classNames)) {
+    for (final token in splitTailwindTokens(classNames)) {
       final parsed = _parser.parseCandidate(token);
       if (parsed is! TailwindParseSuccess) continue;
       final candidate = parsed.candidate;
@@ -85,9 +78,9 @@ final class TwTranslator {
       if (route.kind != TwRouteKind.schemaValue) continue;
 
       final utility = candidate.utility;
-      if (_utilityNegative(utility)) continue;
-      final root = _utilityRoot(utility);
-      final value = _utilityValue(utility);
+      if (tailwindUtilityNegative(utility)) continue;
+      final root = tailwindUtilityRoot(utility);
+      final value = tailwindUtilityValue(utility);
 
       switch (root) {
         case 'w':
@@ -95,7 +88,7 @@ final class TwTranslator {
         case 'h':
           height = _sizingLength('h', value) ?? height;
         case 'text':
-          color = _color(value, _utilityModifier(utility)) ?? color;
+          color = _color(value, tailwindUtilityModifier(utility)) ?? color;
         case 'opacity':
           opacity = _opacity(value) ?? opacity;
       }
@@ -166,7 +159,7 @@ final class TwTranslator {
     required TwTarget target,
     required S Function(_GroupContext context) build,
     required S Function(S base, S other) merge,
-    required S Function(List<_VariantPart> path, S style) wrapVariant,
+    required S Function(List<TwRuntimeVariant> path, S style) wrapVariant,
     void Function(_GroupContext context)? afterBase,
   }) {
     final groups = _buildGroups(classNames, target);
@@ -213,7 +206,7 @@ final class TwTranslator {
       return groups.putIfAbsent(path, () => _GroupContext(target));
     }
 
-    for (final token in listTokens(classNames)) {
+    for (final token in splitTailwindTokens(classNames)) {
       final parsed = _parser.parseCandidate(token);
       if (parsed is TailwindParseFailure) {
         onUnsupported?.call(token);
@@ -262,10 +255,10 @@ final class TwTranslator {
   ) {
     final utility = candidate.utility;
     final raw = utility.raw;
-    final root = _utilityRoot(utility);
-    final value = _utilityValue(utility);
-    final modifier = _utilityModifier(utility);
-    final negative = _utilityNegative(utility);
+    final root = tailwindUtilityRoot(utility);
+    final value = tailwindUtilityValue(utility);
+    final modifier = tailwindUtilityModifier(utility);
+    final negative = tailwindUtilityNegative(utility);
 
     if (target == TwTarget.flexBox) {
       if (_applyFlexUtility(group, raw, root, value, modifier, negative)) {
@@ -491,7 +484,7 @@ final class TwTranslator {
     TailwindValue? value,
     TailwindModifier? modifier,
   ) {
-    final key = _valueKey(value);
+    final key = tailwindValueKey(value);
     final size = key == null ? null : config.fontSizes[key];
     if (size != null) {
       final lineHeight = twDefaultLineHeights[key];
@@ -579,7 +572,7 @@ final class TwTranslator {
 
   bool _applyRadius(_GroupContext group, String root, TailwindValue? value) {
     if (!root.startsWith('rounded')) return false;
-    final key = _valueKey(value) ?? '';
+    final key = tailwindValueKey(value) ?? '';
     final radius = config.radii[key];
     if (radius == null) return false;
     final corner = Radius.circular(radius);
@@ -629,7 +622,7 @@ final class TwTranslator {
     TailwindModifier? modifier,
   ) {
     if (!root.startsWith('border')) return false;
-    final key = _valueKey(value) ?? '';
+    final key = tailwindValueKey(value) ?? '';
     final color = _color(value, modifier);
     final width = config.borderWidths[key] ?? (key.isEmpty ? 1.0 : null);
 
@@ -666,7 +659,7 @@ final class TwTranslator {
     TailwindValue? value,
     bool negative,
   ) {
-    final key = _valueKey(value);
+    final key = tailwindValueKey(value);
     switch (root) {
       case 'scale':
         final scale = key == null ? null : config.scaleOf(key);
@@ -695,9 +688,9 @@ final class TwTranslator {
   bool _applyGradient(GradientAccum gradient, TailwindCandidate candidate) {
     final utility = candidate.utility;
     final raw = utility.raw;
-    final root = _utilityRoot(utility);
-    final value = _utilityValue(utility);
-    final key = _valueKey(value);
+    final root = tailwindUtilityRoot(utility);
+    final value = tailwindUtilityValue(utility);
+    final key = tailwindValueKey(value);
 
     if (raw.startsWith('bg-gradient-')) {
       final directionKey = raw.substring(12);
@@ -714,17 +707,17 @@ final class TwTranslator {
       gradient.direction = direction;
       return true;
     } else if (root == 'from') {
-      final color = _color(value, _utilityModifier(utility));
+      final color = _color(value, tailwindUtilityModifier(utility));
       if (color == null) return false;
       gradient.fromColor = color;
       return true;
     } else if (root == 'via') {
-      final color = _color(value, _utilityModifier(utility));
+      final color = _color(value, tailwindUtilityModifier(utility));
       if (color == null) return false;
       gradient.viaColor = color;
       return true;
     } else if (root == 'to') {
-      final color = _color(value, _utilityModifier(utility));
+      final color = _color(value, tailwindUtilityModifier(utility));
       if (color == null) return false;
       gradient.toColor = color;
       return true;
@@ -732,7 +725,7 @@ final class TwTranslator {
     return false;
   }
 
-  S _wrapBoxVariant<S>(List<_VariantPart> path, S style) {
+  S _wrapBoxVariant<S>(List<TwRuntimeVariant> path, S style) {
     var wrapped = style as BoxStyler;
     for (final part in path.reversed) {
       wrapped = _newBoxVariant(part, wrapped);
@@ -740,7 +733,7 @@ final class TwTranslator {
     return wrapped as S;
   }
 
-  S _wrapFlexVariant<S>(List<_VariantPart> path, S style) {
+  S _wrapFlexVariant<S>(List<TwRuntimeVariant> path, S style) {
     var wrapped = style as FlexBoxStyler;
     for (final part in path.reversed) {
       wrapped = _newFlexVariant(part, wrapped);
@@ -748,7 +741,7 @@ final class TwTranslator {
     return wrapped as S;
   }
 
-  S _wrapTextVariant<S>(List<_VariantPart> path, S style) {
+  S _wrapTextVariant<S>(List<TwRuntimeVariant> path, S style) {
     var wrapped = style as TextStyler;
     for (final part in path.reversed) {
       wrapped = _newTextVariant(part, wrapped);
@@ -756,60 +749,60 @@ final class TwTranslator {
     return wrapped as S;
   }
 
-  BoxStyler _newBoxVariant(_VariantPart part, BoxStyler style) {
+  BoxStyler _newBoxVariant(TwRuntimeVariant part, BoxStyler style) {
     return switch (part.kind) {
-      _VariantKind.hover => BoxStyler().onHovered(style),
-      _VariantKind.focus => BoxStyler().onFocused(style),
-      _VariantKind.pressed => BoxStyler().onPressed(style),
-      _VariantKind.disabled => BoxStyler().onDisabled(style),
-      _VariantKind.enabled => BoxStyler().onEnabled(style),
-      _VariantKind.dark => BoxStyler().onDark(style),
-      _VariantKind.light => BoxStyler().onLight(style),
-      _VariantKind.breakpoint => BoxStyler().onBreakpoint(
+      TwRuntimeVariantKind.hover => BoxStyler().onHovered(style),
+      TwRuntimeVariantKind.focus => BoxStyler().onFocused(style),
+      TwRuntimeVariantKind.pressed => BoxStyler().onPressed(style),
+      TwRuntimeVariantKind.disabled => BoxStyler().onDisabled(style),
+      TwRuntimeVariantKind.enabled => BoxStyler().onEnabled(style),
+      TwRuntimeVariantKind.dark => BoxStyler().onDark(style),
+      TwRuntimeVariantKind.light => BoxStyler().onLight(style),
+      TwRuntimeVariantKind.breakpoint => BoxStyler().onBreakpoint(
         Breakpoint(minWidth: part.breakpoint!),
         style,
       ),
-      _VariantKind.notHover => BoxStyler().onNot(
+      TwRuntimeVariantKind.notHover => BoxStyler().onNot(
         ContextVariant.widgetState(WidgetState.hovered),
         style,
       ),
     };
   }
 
-  FlexBoxStyler _newFlexVariant(_VariantPart part, FlexBoxStyler style) {
+  FlexBoxStyler _newFlexVariant(TwRuntimeVariant part, FlexBoxStyler style) {
     return switch (part.kind) {
-      _VariantKind.hover => FlexBoxStyler().onHovered(style),
-      _VariantKind.focus => FlexBoxStyler().onFocused(style),
-      _VariantKind.pressed => FlexBoxStyler().onPressed(style),
-      _VariantKind.disabled => FlexBoxStyler().onDisabled(style),
-      _VariantKind.enabled => FlexBoxStyler().onEnabled(style),
-      _VariantKind.dark => FlexBoxStyler().onDark(style),
-      _VariantKind.light => FlexBoxStyler().onLight(style),
-      _VariantKind.breakpoint => FlexBoxStyler().onBreakpoint(
+      TwRuntimeVariantKind.hover => FlexBoxStyler().onHovered(style),
+      TwRuntimeVariantKind.focus => FlexBoxStyler().onFocused(style),
+      TwRuntimeVariantKind.pressed => FlexBoxStyler().onPressed(style),
+      TwRuntimeVariantKind.disabled => FlexBoxStyler().onDisabled(style),
+      TwRuntimeVariantKind.enabled => FlexBoxStyler().onEnabled(style),
+      TwRuntimeVariantKind.dark => FlexBoxStyler().onDark(style),
+      TwRuntimeVariantKind.light => FlexBoxStyler().onLight(style),
+      TwRuntimeVariantKind.breakpoint => FlexBoxStyler().onBreakpoint(
         Breakpoint(minWidth: part.breakpoint!),
         style,
       ),
-      _VariantKind.notHover => FlexBoxStyler().onNot(
+      TwRuntimeVariantKind.notHover => FlexBoxStyler().onNot(
         ContextVariant.widgetState(WidgetState.hovered),
         style,
       ),
     };
   }
 
-  TextStyler _newTextVariant(_VariantPart part, TextStyler style) {
+  TextStyler _newTextVariant(TwRuntimeVariant part, TextStyler style) {
     return switch (part.kind) {
-      _VariantKind.hover => TextStyler().onHovered(style),
-      _VariantKind.focus => TextStyler().onFocused(style),
-      _VariantKind.pressed => TextStyler().onPressed(style),
-      _VariantKind.disabled => TextStyler().onDisabled(style),
-      _VariantKind.enabled => TextStyler().onEnabled(style),
-      _VariantKind.dark => TextStyler().onDark(style),
-      _VariantKind.light => TextStyler().onLight(style),
-      _VariantKind.breakpoint => TextStyler().onBreakpoint(
+      TwRuntimeVariantKind.hover => TextStyler().onHovered(style),
+      TwRuntimeVariantKind.focus => TextStyler().onFocused(style),
+      TwRuntimeVariantKind.pressed => TextStyler().onPressed(style),
+      TwRuntimeVariantKind.disabled => TextStyler().onDisabled(style),
+      TwRuntimeVariantKind.enabled => TextStyler().onEnabled(style),
+      TwRuntimeVariantKind.dark => TextStyler().onDark(style),
+      TwRuntimeVariantKind.light => TextStyler().onLight(style),
+      TwRuntimeVariantKind.breakpoint => TextStyler().onBreakpoint(
         Breakpoint(minWidth: part.breakpoint!),
         style,
       ),
-      _VariantKind.notHover => TextStyler().onNot(
+      TwRuntimeVariantKind.notHover => TextStyler().onNot(
         ContextVariant.widgetState(WidgetState.hovered),
         style,
       ),
@@ -817,74 +810,13 @@ final class TwTranslator {
   }
 
   _VariantPath? _variantPath(List<TailwindVariant> variants) {
-    final parts = <_VariantPart>[];
+    final parts = <TwRuntimeVariant>[];
     for (final variant in variants) {
-      final part = _variantPart(variant);
+      final part = runtimeVariantFor(variant, breakpoints: config.breakpoints);
       if (part == null) return null;
       parts.add(part);
     }
     return parts.isEmpty ? _VariantPath.base : _VariantPath(parts);
-  }
-
-  _VariantPart? _variantPart(TailwindVariant variant) {
-    final runtime = runtimeVariantFor(variant, breakpoints: config.breakpoints);
-    if (runtime == null) return null;
-
-    return switch (runtime.kind) {
-      TwRuntimeVariantKind.hover => _VariantPart(
-        _VariantKind.hover,
-        runtime.key,
-      ),
-      TwRuntimeVariantKind.focus => _VariantPart(
-        _VariantKind.focus,
-        runtime.key,
-      ),
-      TwRuntimeVariantKind.pressed => _VariantPart(
-        _VariantKind.pressed,
-        runtime.key,
-      ),
-      TwRuntimeVariantKind.disabled => _VariantPart(
-        _VariantKind.disabled,
-        runtime.key,
-      ),
-      TwRuntimeVariantKind.enabled => _VariantPart(
-        _VariantKind.enabled,
-        runtime.key,
-      ),
-      TwRuntimeVariantKind.dark => _VariantPart(_VariantKind.dark, runtime.key),
-      TwRuntimeVariantKind.light => _VariantPart(
-        _VariantKind.light,
-        runtime.key,
-      ),
-      TwRuntimeVariantKind.breakpoint => _VariantPart.breakpoint(
-        runtime.key,
-        runtime.breakpoint!,
-      ),
-      TwRuntimeVariantKind.notHover => _VariantPart(
-        _VariantKind.notHover,
-        runtime.key,
-      ),
-    };
-  }
-
-  String _utilityRoot(TailwindUtility utility) {
-    return tailwindUtilityRoot(utility);
-  }
-
-  TailwindValue? _utilityValue(TailwindUtility utility) {
-    return tailwindUtilityValue(utility);
-  }
-
-  TailwindModifier? _utilityModifier(TailwindUtility utility) {
-    return tailwindUtilityModifier(utility);
-  }
-
-  bool _utilityNegative(TailwindUtility utility) {
-    return tailwindUtilityNegative(utility);
-  }
-
-  String? _valueKey(TailwindValue? value) {
-    return tailwindValueKey(value);
   }
 
   bool _isSupportedWidgetLayerUtility(TailwindUtility utility) {
@@ -897,11 +829,11 @@ final class TwTranslator {
 
   bool _isBasisUtility(TailwindUtility utility) {
     final raw = utility.raw;
-    return raw.startsWith('basis-') || _utilityRoot(utility) == 'basis';
+    return raw.startsWith('basis-') || tailwindUtilityRoot(utility) == 'basis';
   }
 
   bool _isSupportedBasisUtility(TailwindUtility utility) {
-    if (_utilityNegative(utility)) return false;
+    if (tailwindUtilityNegative(utility)) return false;
 
     final key = _basisKey(utility);
     if (key == null || key.isEmpty) return false;
@@ -916,15 +848,15 @@ final class TwTranslator {
       return raw.substring(6);
     }
 
-    if (_utilityRoot(utility) == 'basis') {
-      return _valueKey(_utilityValue(utility));
+    if (tailwindUtilityRoot(utility) == 'basis') {
+      return tailwindValueKey(tailwindUtilityValue(utility));
     }
 
     return null;
   }
 
   double? _spaceLength(TailwindValue? value, {required bool negative}) {
-    final key = _valueKey(value);
+    final key = tailwindValueKey(value);
     final resolved = key == null ? null : config.space[key];
     final length = resolved ?? _arbitraryLength(value);
     if (length == null) return null;
@@ -932,7 +864,7 @@ final class TwTranslator {
   }
 
   double? _sizingLength(String root, TailwindValue? value) {
-    final key = _valueKey(value);
+    final key = tailwindValueKey(value);
     if (root == 'max-w' && key != null) {
       final maxWidth = kTailwindMaxWidthPresets[key];
       if (maxWidth != null) return maxWidth;
@@ -951,7 +883,7 @@ final class TwTranslator {
       return _applyOpacity(parsed, modifier);
     }
     if (value is TailwindCssVariableValue) return null;
-    final key = _valueKey(value);
+    final key = tailwindValueKey(value);
     if (key == null || key.isEmpty) return null;
     return _applyOpacity(config.colorOf(key), modifier);
   }
@@ -1002,7 +934,7 @@ final class TwTranslator {
   }
 
   double? _opacity(TailwindValue? value) {
-    final key = _valueKey(value);
+    final key = tailwindValueKey(value);
     if (key == null) return null;
     final numeric = double.tryParse(key);
     if (numeric == null) return null;
@@ -1010,17 +942,19 @@ final class TwTranslator {
   }
 
   double? _blur(TailwindValue? value) {
-    final key = _valueKey(value) ?? '';
+    final key = tailwindValueKey(value) ?? '';
     return config.blurOf(key);
   }
 
   List<BoxShadowMix>? _boxShadowMixes(String raw, TailwindValue? value) {
-    final key = raw == 'shadow' ? 'shadow' : 'shadow-${_valueKey(value)}';
+    final key = raw == 'shadow'
+        ? 'shadow'
+        : 'shadow-${tailwindValueKey(value)}';
     final shadows = raw == 'shadow-none'
-        ? const <BoxShadow>[]
+        ? const <BoxShadowMix>[]
         : kTailwindBoxShadowPresets[key];
     if (shadows == null) return null;
-    return shadows.map(BoxShadowMix.value).toList(growable: false);
+    return List.of(shadows, growable: false);
   }
 
   bool _applyFontWeight(_TextStyleAccum style, String raw) {
@@ -1072,25 +1006,22 @@ final class TwTranslator {
   }
 
   bool _applyTextShadow(_TextStyleAccum style, String raw) {
-    final preset = switch (raw) {
-      'text-shadow-none' => null,
-      'text-shadow-2xs' => TextShadowPreset.twoXs,
-      'text-shadow-xs' => TextShadowPreset.xs,
-      'text-shadow-sm' => TextShadowPreset.sm,
-      'text-shadow-md' => TextShadowPreset.md,
-      'text-shadow-lg' => TextShadowPreset.lg,
-      _ => _missingTextShadowPreset,
+    final shadows = switch (raw) {
+      'text-shadow-none' => const <Shadow>[],
+      'text-shadow-2xs' => kTextShadowPresets[TextShadowPreset.twoXs]!,
+      'text-shadow-xs' => kTextShadowPresets[TextShadowPreset.xs]!,
+      'text-shadow-sm' => kTextShadowPresets[TextShadowPreset.sm]!,
+      'text-shadow-md' => kTextShadowPresets[TextShadowPreset.md]!,
+      'text-shadow-lg' => kTextShadowPresets[TextShadowPreset.lg]!,
+      _ => null,
     };
-    if (identical(preset, _missingTextShadowPreset)) return false;
-    final shadows = preset == null
-        ? const <Shadow>[]
-        : kTextShadowPresets[preset]!;
+    if (shadows == null) return false;
     style.shadows = shadows.map(ShadowMix.value).toList(growable: false);
     return true;
   }
 
   bool _isWidgetLayerSize(TailwindValue? value) {
-    final key = _valueKey(value);
+    final key = tailwindValueKey(value);
     return key == 'full' ||
         key == 'screen' ||
         key == 'auto' ||
@@ -1117,8 +1048,6 @@ const _easeTokens = {
   'ease-out': Curves.easeOut,
   'ease-in-out': Curves.easeInOut,
 };
-
-const Object _missingTextShadowPreset = Object();
 
 final class _GroupContext {
   _GroupContext(this.target);
@@ -1384,45 +1313,12 @@ final class _TextHeightBehaviorAccum {
   }
 }
 
-enum _VariantKind {
-  hover,
-  focus,
-  pressed,
-  disabled,
-  enabled,
-  dark,
-  light,
-  breakpoint,
-  notHover,
-}
-
-final class _VariantPart {
-  const _VariantPart(this.kind, this.key, {this.breakpoint});
-  const _VariantPart.breakpoint(String key, double breakpoint)
-    : this(_VariantKind.breakpoint, key, breakpoint: breakpoint);
-
-  final _VariantKind kind;
-  final String key;
-  final double? breakpoint;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is _VariantPart &&
-          kind == other.kind &&
-          key == other.key &&
-          breakpoint == other.breakpoint;
-
-  @override
-  int get hashCode => Object.hash(kind, key, breakpoint);
-}
-
 final class _VariantPath {
   const _VariantPath(this.parts);
 
   static const base = _VariantPath([]);
 
-  final List<_VariantPart> parts;
+  final List<TwRuntimeVariant> parts;
 
   @override
   bool operator ==(Object other) =>
@@ -1435,7 +1331,7 @@ final class _VariantPath {
   int get hashCode => Object.hashAll(parts);
 }
 
-bool _partsEqual(List<_VariantPart> a, List<_VariantPart> b) {
+bool _partsEqual(List<TwRuntimeVariant> a, List<TwRuntimeVariant> b) {
   for (var i = 0; i < a.length; i++) {
     if (a[i] != b[i]) return false;
   }

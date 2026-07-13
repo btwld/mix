@@ -25,14 +25,12 @@ final class TailwindCandidate {
     required this.variants,
     required this.utility,
     required this.important,
-    required this.span,
   });
 
   final String raw;
   final List<TailwindVariant> variants;
   final TailwindUtility utility;
   final bool important;
-  final SourceSpan span;
 }
 
 sealed class TailwindUtility {

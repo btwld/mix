@@ -16,13 +16,10 @@ void main(List<String> args) {
   }
 
   final sourcePath = args.isEmpty ? _defaultSnapshotPath : args.single;
-  final source = _readSnapshotSource(sourcePath);
-  if (source == null) return;
+  final snapshot = _readSnapshot(sourcePath);
+  if (snapshot == null) return;
 
-  final output = _buildRegistryOutput(
-    source.snapshot,
-    generatedFrom: sourcePath,
-  );
+  final output = _buildRegistryOutput(snapshot, generatedFrom: sourcePath);
   final target = File('lib/src/parser/data/parser_registry.g.dart')
     ..parent.createSync(recursive: true);
   target.writeAsStringSync(output);
@@ -62,16 +59,14 @@ void _writeSnapshot(List<String> args) {
   target.writeAsStringSync('${encoder.convert(snapshot.toJson())}\n');
 }
 
-_SnapshotSource? _readSnapshotSource(String path) {
+_RegistrySnapshot? _readSnapshot(String path) {
   final type = FileSystemEntity.typeSync(path);
   if (type == FileSystemEntityType.directory) {
-    final dir = Directory(path);
-    return _SnapshotSource(_snapshotFromOutDir(dir));
+    return _snapshotFromOutDir(Directory(path));
   }
 
   if (type == FileSystemEntityType.file) {
-    final file = File(path);
-    return _SnapshotSource(_snapshotFromFile(file));
+    return _snapshotFromFile(File(path));
   }
 
   stderr.writeln('Tailwind registry source not found: $path');
@@ -186,14 +181,14 @@ String _buildRegistryOutput(
       'const generatedCompoundVariantRoots = <String>{${_dartStringSet(compoundVariantRoots)}};',
     )
     ..writeln()
-    ..writeln('final defaultTailwindParserRegistry = TailwindParserRegistry(')
+    ..writeln('const defaultTailwindParserRegistry = TailwindParserRegistry(')
     ..writeln('  staticUtilityRoots: generatedStaticUtilityRoots,')
     ..writeln('  functionalUtilityRoots: generatedFunctionalUtilityRoots,')
-    ..writeln('  staticVariantRoots: generatedStaticVariantRoots,')
+    ..writeln(
+      "  staticVariantRoots: {...generatedStaticVariantRoots, 'light'},",
+    )
     ..writeln('  functionalVariantRoots: generatedFunctionalVariantRoots,')
     ..writeln('  compoundVariantRoots: generatedCompoundVariantRoots,')
-    ..writeln("  customVariantRoots: const {'light'},")
-    ..writeln('  meta: generatedTailwindRegistryMeta,')
     ..writeln(');');
 
   return output.toString();
@@ -340,12 +335,6 @@ String _dartValue(Object? value) {
 
 String _escape(String value) =>
     value.replaceAll(r'\', r'\\').replaceAll("'", r"\'");
-
-final class _SnapshotSource {
-  const _SnapshotSource(this.snapshot);
-
-  final _RegistrySnapshot snapshot;
-}
 
 final class _RegistrySnapshot {
   const _RegistrySnapshot({

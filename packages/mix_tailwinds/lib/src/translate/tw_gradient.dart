@@ -8,6 +8,7 @@ import 'package:mix/mix.dart';
 
 import '../tw_config.dart';
 
+/// Gradient direction alignments for Tailwind gradient tokens.
 const gradientDirections = <String, (Alignment, Alignment)>{
   'to-t': (Alignment.bottomCenter, Alignment.topCenter),
   'to-tr': (Alignment.bottomLeft, Alignment.topRight),

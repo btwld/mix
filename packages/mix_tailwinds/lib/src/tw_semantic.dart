@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
+import 'theme/data/default_theme.g.dart';
+import 'translate/tw_presets.dart';
+
+export 'translate/tw_gradient.dart' show gradientDirections;
+export 'translate/tw_presets.dart'
+    show TextShadowPreset, kTailwindBoxShadowPresets, kTextShadowPresets;
+
 // =============================================================================
 // Value Types (Semantic AST Values)
 // =============================================================================
@@ -201,115 +208,6 @@ final class TwCurveValue extends TwValue {
   @override
   String toString() => 'TwCurveValue($curve)';
 }
-
-// =============================================================================
-// Text Shadow Presets
-// =============================================================================
-
-enum TextShadowPreset { twoXs, xs, sm, md, lg }
-
-const Map<TextShadowPreset, List<Shadow>> kTextShadowPresets = {
-  TextShadowPreset.twoXs: [
-    Shadow(offset: Offset(0, 1), blurRadius: 0, color: Color(0x26000000)),
-  ],
-  TextShadowPreset.xs: [
-    Shadow(offset: Offset(0, 1), blurRadius: 1, color: Color(0x33000000)),
-  ],
-  TextShadowPreset.sm: [
-    Shadow(offset: Offset(0, 1), blurRadius: 0, color: Color(0x13000000)),
-    Shadow(offset: Offset(0, 1), blurRadius: 1, color: Color(0x13000000)),
-    Shadow(offset: Offset(0, 2), blurRadius: 2, color: Color(0x13000000)),
-  ],
-  TextShadowPreset.md: [
-    Shadow(offset: Offset(0, 1), blurRadius: 1, color: Color(0x1A000000)),
-    Shadow(offset: Offset(0, 1), blurRadius: 2, color: Color(0x1A000000)),
-    Shadow(offset: Offset(0, 2), blurRadius: 4, color: Color(0x1A000000)),
-  ],
-  TextShadowPreset.lg: [
-    Shadow(offset: Offset(0, 1), blurRadius: 2, color: Color(0x1A000000)),
-    Shadow(offset: Offset(0, 3), blurRadius: 2, color: Color(0x1A000000)),
-    Shadow(offset: Offset(0, 4), blurRadius: 8, color: Color(0x1A000000)),
-  ],
-};
-
-// =============================================================================
-// Box Shadow Presets (Tailwind parity)
-// =============================================================================
-
-final Map<String, List<BoxShadowMix>> kTailwindBoxShadowPresets = {
-  'shadow-sm': [
-    BoxShadowMix(
-      offset: const Offset(0, 1),
-      blurRadius: 2,
-      spreadRadius: 0,
-      color: const Color(0x0D000000), // 0.05
-    ),
-  ],
-  'shadow': [
-    BoxShadowMix(
-      offset: const Offset(0, 1),
-      blurRadius: 3,
-      spreadRadius: 0,
-      color: const Color(0x1A000000), // 0.10
-    ),
-    BoxShadowMix(
-      offset: const Offset(0, 1),
-      blurRadius: 2,
-      spreadRadius: 0,
-      color: const Color(0x0F000000), // 0.06
-    ),
-  ],
-  'shadow-md': [
-    BoxShadowMix(
-      offset: const Offset(0, 4),
-      blurRadius: 6,
-      spreadRadius: -1,
-      color: const Color(0x1A000000), // 0.10
-    ),
-    BoxShadowMix(
-      offset: const Offset(0, 2),
-      blurRadius: 4,
-      spreadRadius: -2,
-      color: const Color(0x1A000000), // 0.10
-    ),
-  ],
-  'shadow-lg': [
-    BoxShadowMix(
-      offset: const Offset(0, 10),
-      blurRadius: 15,
-      spreadRadius: -3,
-      color: const Color(0x1A000000), // 0.10
-    ),
-    BoxShadowMix(
-      offset: const Offset(0, 4),
-      blurRadius: 6,
-      spreadRadius: -4,
-      color: const Color(0x1A000000), // 0.10
-    ),
-  ],
-  'shadow-xl': [
-    BoxShadowMix(
-      offset: const Offset(0, 20),
-      blurRadius: 25,
-      spreadRadius: -5,
-      color: const Color(0x1A000000), // 0.10
-    ),
-    BoxShadowMix(
-      offset: const Offset(0, 8),
-      blurRadius: 10,
-      spreadRadius: -6,
-      color: const Color(0x1A000000), // 0.10
-    ),
-  ],
-  'shadow-2xl': [
-    BoxShadowMix(
-      offset: const Offset(0, 25),
-      blurRadius: 50,
-      spreadRadius: -12,
-      color: const Color(0x40000000), // 0.25
-    ),
-  ],
-};
 
 // =============================================================================
 // Property Enum
@@ -1373,41 +1271,11 @@ final Set<String> _allPluginPrefixes = {
 }
 
 // =============================================================================
-// Gradient Direction Map
-// =============================================================================
-
-/// Gradient direction alignments for Tailwind gradient tokens.
-const Map<String, (Alignment, Alignment)> gradientDirections = {
-  'to-t': (Alignment.bottomCenter, Alignment.topCenter),
-  'to-tr': (Alignment.bottomLeft, Alignment.topRight),
-  'to-r': (Alignment.centerLeft, Alignment.centerRight),
-  'to-br': (Alignment.topLeft, Alignment.bottomRight),
-  'to-b': (Alignment.topCenter, Alignment.bottomCenter),
-  'to-bl': (Alignment.topRight, Alignment.bottomLeft),
-  'to-l': (Alignment.centerRight, Alignment.centerLeft),
-  'to-tl': (Alignment.bottomRight, Alignment.topLeft),
-};
-
-// =============================================================================
 // Tailwind Default Line Heights
 // =============================================================================
 
 /// Tailwind default line heights for text-* sizes (as multipliers).
-const Map<String, double> tailwindLineHeights = {
-  'xs': 1.333, // 12px / 16px
-  'sm': 1.429, // 14px / 20px
-  'base': 1.5, // 16px / 24px
-  'lg': 1.556, // 18px / 28px
-  'xl': 1.4, // 20px / 28px
-  '2xl': 1.333, // 24px / 32px
-  '3xl': 1.2, // 30px / 36px
-  '4xl': 1.111, // 36px / 40px
-  '5xl': 1.0, // 48px / 48px (leading-none)
-  '6xl': 1.0, // 60px / 60px
-  '7xl': 1.0, // 72px / 72px
-  '8xl': 1.0, // 96px / 96px
-  '9xl': 1.0, // 128px / 128px
-};
+const Map<String, double> tailwindLineHeights = twDefaultLineHeights;
 
 /// Tailwind Preflight default line-height (1.5).
 const double preflightLineHeight = 1.5;

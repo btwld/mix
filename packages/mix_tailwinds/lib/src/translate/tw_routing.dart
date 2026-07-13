@@ -127,6 +127,17 @@ final class TwRuntimeVariant {
   final TwRuntimeVariantKind kind;
   final String key;
   final double? breakpoint;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is TwRuntimeVariant &&
+          kind == other.kind &&
+          key == other.key &&
+          breakpoint == other.breakpoint;
+
+  @override
+  int get hashCode => Object.hash(kind, key, breakpoint);
 }
 
 TwRuntimeVariant? runtimeVariantFor(

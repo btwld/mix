@@ -8,7 +8,7 @@ import 'package:mix_tailwinds/src/parser/diagnostics.dart';
 import 'package:mix_tailwinds/src/parser/model.dart';
 
 void main() {
-  final parser = TailwindCandidateParser(
+  const parser = TailwindCandidateParser(
     registry: defaultTailwindParserRegistry,
   );
 

@@ -4,6 +4,7 @@ import 'translate/tw_target.dart' as target;
 import 'translate/tw_translator.dart';
 import 'tw_config.dart';
 import 'tw_types.dart';
+import 'tw_utils.dart';
 
 class TwParser {
   factory TwParser({TwConfig? config, TokenWarningCallback? onUnsupported}) {
@@ -28,8 +29,7 @@ class TwParser {
   final TokenWarningCallback? onUnsupported;
   final TwTranslator _translator;
 
-  List<String> listTokens(String classNames) =>
-      _translator.listTokens(classNames);
+  List<String> listTokens(String classNames) => splitTailwindTokens(classNames);
 
   Set<String> setTokens(String classNames) => listTokens(classNames).toSet();
 

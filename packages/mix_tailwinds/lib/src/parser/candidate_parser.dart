@@ -6,19 +6,14 @@ import 'model.dart';
 import 'parser_registry.dart';
 
 final class TailwindCandidateParser {
-  const TailwindCandidateParser({
-    this.registry = TailwindParserRegistry.empty,
-    this.options = const TailwindParserOptions(),
-  });
+  const TailwindCandidateParser({this.registry = TailwindParserRegistry.empty});
 
   final TailwindParserRegistry registry;
-  final TailwindParserOptions options;
 
   TailwindParseResult parseCandidate(String input) {
     final trimmed = input.trim();
     if (trimmed.isEmpty) {
       return TailwindParseFailure(
-        input: input,
         errors: [
           TailwindParseError(
             code: TailwindParseErrorCode.emptyInput,
@@ -31,17 +26,16 @@ final class TailwindCandidateParser {
 
     final balanceError = _balancedDelimiterError(trimmed);
     if (balanceError != null) {
-      return TailwindParseFailure(input: input, errors: [balanceError]);
+      return TailwindParseFailure(errors: [balanceError]);
     }
     final emptyArbitraryError = _emptyArbitraryValueError(trimmed);
     if (emptyArbitraryError != null) {
-      return TailwindParseFailure(input: input, errors: [emptyArbitraryError]);
+      return TailwindParseFailure(errors: [emptyArbitraryError]);
     }
 
     final parts = _splitOutsideDelimiters(trimmed, ':');
     if (parts.any((part) => part.isEmpty)) {
       return TailwindParseFailure(
-        input: input,
         errors: [
           TailwindParseError(
             code: TailwindParseErrorCode.invalidVariantChain,
@@ -59,7 +53,7 @@ final class TailwindCandidateParser {
       important = true;
       utilityRaw = utilityRaw.substring(0, utilityRaw.length - 1);
     }
-    if (options.allowLegacyImportantPrefix && utilityRaw.startsWith('!')) {
+    if (utilityRaw.startsWith('!')) {
       important = true;
       utilityRaw = utilityRaw.substring(1);
       utilityStart++;
@@ -68,7 +62,6 @@ final class TailwindCandidateParser {
     if (invalidImportant != -1) {
       final spanStart = utilityStart + invalidImportant;
       return TailwindParseFailure(
-        input: input,
         errors: [
           TailwindParseError(
             code: TailwindParseErrorCode.invalidImportantPosition,
@@ -80,14 +73,14 @@ final class TailwindCandidateParser {
     }
     final modifierError = _modifierError(utilityRaw);
     if (modifierError != null) {
-      return TailwindParseFailure(input: input, errors: [modifierError]);
+      return TailwindParseFailure(errors: [modifierError]);
     }
 
     final variants = <TailwindVariant>[];
     for (final rawVariant in parts.take(parts.length - 1)) {
       final modifierError = _modifierError(rawVariant);
       if (modifierError != null) {
-        return TailwindParseFailure(input: input, errors: [modifierError]);
+        return TailwindParseFailure(errors: [modifierError]);
       }
       variants.add(_parseVariant(rawVariant));
     }
@@ -95,7 +88,6 @@ final class TailwindCandidateParser {
     final utility = _parseUtility(utilityRaw);
     if (utility == null) {
       return TailwindParseFailure(
-        input: input,
         errors: [
           TailwindParseError(
             code: TailwindParseErrorCode.invalidArbitraryProperty,
@@ -107,13 +99,11 @@ final class TailwindCandidateParser {
     }
 
     return TailwindParseSuccess(
-      input: input,
       candidate: TailwindCandidate(
         raw: trimmed,
         variants: List.unmodifiable(variants),
         utility: utility,
         important: important,
-        span: SourceSpan(0, trimmed.length),
       ),
     );
   }
@@ -128,7 +118,7 @@ final class TailwindCandidateParser {
       body = body.substring(1);
     }
 
-    if (registry.isStaticUtility(body)) {
+    if (registry.staticUtilityRoots.contains(body)) {
       return TailwindStaticUtility(raw: raw, root: body);
     }
 
@@ -219,7 +209,7 @@ final class TailwindCandidateParser {
       );
     }
 
-    if (registry.isStaticVariant(body)) {
+    if (registry.staticVariantRoots.contains(body)) {
       return TailwindStaticVariant(raw: raw, root: body, modifier: modifier);
     }
 
@@ -361,16 +351,6 @@ final class TailwindCandidateParser {
     }
     return null;
   }
-}
-
-final class TailwindParserOptions {
-  const TailwindParserOptions({
-    this.allowLegacyImportantPrefix = true,
-    this.preserveSourceSpans = true,
-  });
-
-  final bool allowLegacyImportantPrefix;
-  final bool preserveSourceSpans;
 }
 
 TailwindParseError? _balancedDelimiterError(String input) {

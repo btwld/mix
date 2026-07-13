@@ -711,12 +711,10 @@ const generatedFunctionalVariantRoots = <String>{
 
 const generatedCompoundVariantRoots = <String>{'group', 'not', 'peer'};
 
-final defaultTailwindParserRegistry = TailwindParserRegistry(
+const defaultTailwindParserRegistry = TailwindParserRegistry(
   staticUtilityRoots: generatedStaticUtilityRoots,
   functionalUtilityRoots: generatedFunctionalUtilityRoots,
-  staticVariantRoots: generatedStaticVariantRoots,
+  staticVariantRoots: {...generatedStaticVariantRoots, 'light'},
   functionalVariantRoots: generatedFunctionalVariantRoots,
   compoundVariantRoots: generatedCompoundVariantRoots,
-  customVariantRoots: const {'light'},
-  meta: generatedTailwindRegistryMeta,
 );
