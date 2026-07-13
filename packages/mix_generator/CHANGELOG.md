@@ -1,3 +1,12 @@
+## Unreleased
+
+ - **FEAT**: Support `@MixWidget(widgetParameters: .only({...}))` for a stable,
+   curated generated widget value-parameter API. Factory parameters, valid
+   `Key? key` forwarding, and method-level type parameters remain automatic;
+   excluded optional parameters use the styler method's defaults and are not
+   validated for generated-widget visibility or name collisions. Annotations
+   from older `mix_annotations` releases retain `.all()` behavior.
+
 ## 2.1.2
 
  - **FEAT**: Generate one named widget constructor per accessible enum value

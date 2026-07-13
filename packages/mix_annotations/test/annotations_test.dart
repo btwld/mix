@@ -31,4 +31,36 @@ void main() {
       expect(annotation.factoryName, 'foo');
     });
   });
+
+  group('MixWidget', () {
+    test('defaults widgetParameters to all', () {
+      const annotation = MixWidget();
+
+      expect(annotation.widgetParameters.includesAll, isTrue);
+      expect(annotation.widgetParameters.names, isEmpty);
+    });
+
+    test('preserves an explicit all selection', () {
+      const annotation = MixWidget(widgetParameters: .all());
+
+      expect(annotation.widgetParameters.includesAll, isTrue);
+      expect(annotation.widgetParameters.names, isEmpty);
+    });
+
+    test('preserves selected widget parameters', () {
+      const annotation = MixWidget(
+        widgetParameters: .only({'controller', 'focusNode'}),
+      );
+
+      expect(annotation.widgetParameters.includesAll, isFalse);
+      expect(annotation.widgetParameters.names, {'controller', 'focusNode'});
+    });
+
+    test('allows an empty widget parameter selection', () {
+      const annotation = MixWidget(widgetParameters: .only({}));
+
+      expect(annotation.widgetParameters.includesAll, isFalse);
+      expect(annotation.widgetParameters.names, isEmpty);
+    });
+  });
 }
