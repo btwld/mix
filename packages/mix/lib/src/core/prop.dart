@@ -214,6 +214,13 @@ class Prop<V> {
       throw FlutterError('Prop<$V> has no sources');
     }
 
+    if (sources.length == 1) {
+      final source = sources.first;
+      if (source is ValueSource<V> && source.value is! Mix<V>) {
+        return PropOps.applyDirectives(source.value, $directives);
+      }
+    }
+
     // Resolve all sources to values
     final values = [];
     for (final source in sources) {
