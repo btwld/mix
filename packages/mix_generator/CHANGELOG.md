@@ -1,4 +1,4 @@
-## Unreleased
+## 2.1.3
 
  - **FEAT**: Support `@MixWidget(widgetParameters: .only({...}))` for a stable,
    curated generated widget value-parameter API. Factory parameters, valid

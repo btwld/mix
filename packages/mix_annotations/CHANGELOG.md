@@ -1,4 +1,4 @@
-## Unreleased
+## 2.1.3
 
  - **FEAT**: Add `MixWidgetParameterSelection` and the
    `MixWidget.widgetParameters` default. `@MixWidget()` now concretely carries
