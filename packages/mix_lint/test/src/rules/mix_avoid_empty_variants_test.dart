@@ -33,6 +33,27 @@ void main() {
 }
 ''');
   }
+
+  void test_variant_only_chain_reports_each_empty_base() async {
+    await assertDiagnostics(
+      r'''
+import 'package:mix/mix.dart';
+void main() {
+  final s = BoxStyler().onDark(BoxStyler().color(0)).onHovered(BoxStyler().color(0));
+}
+''',
+      [lint(57, 11)],
+    );
+  }
+
+  void test_variant_after_concrete_property_no_diagnostic() async {
+    await assertNoDiagnostics(r'''
+import 'package:mix/mix.dart';
+void main() {
+  final s = BoxStyler().width(10).onDark(BoxStyler().color(0));
+}
+''');
+  }
 }
 
 void main() {

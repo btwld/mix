@@ -16,6 +16,9 @@ sealed class Variant {
   /// Factory method to create a named variant
   static NamedVariant named(String name) => .new(name);
 
+  /// Human-readable label used for diagnostics.
+  ///
+  /// This label is not guaranteed to be unique across variant kinds.
   String get key;
 }
 

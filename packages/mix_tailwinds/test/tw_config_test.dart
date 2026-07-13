@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix_tailwinds/mix_tailwinds.dart';
 
+import 'tailwinds_test_helpers.dart';
+
 void main() {
   group('TwConfig defaults', () {
     test('standard uses cssAngleRect gradient strategy', () {
@@ -237,18 +239,16 @@ void main() {
 
       late TextStyle resolvedDefaultTextStyle;
 
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: TwScope(
-            config: customConfig,
-            child: Builder(
-              builder: (context) {
-                expect(TwConfigProvider.of(context), same(customConfig));
-                resolvedDefaultTextStyle = DefaultTextStyle.of(context).style;
-                return const SizedBox();
-              },
-            ),
+      await pumpLtr(
+        tester,
+        TwScope(
+          config: customConfig,
+          child: Builder(
+            builder: (context) {
+              expect(TwConfigProvider.of(context), same(customConfig));
+              resolvedDefaultTextStyle = DefaultTextStyle.of(context).style;
+              return const SizedBox();
+            },
           ),
         ),
       );
@@ -270,19 +270,17 @@ void main() {
 
       late TextStyle parsedTextStyle;
 
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: TwScope(
-            config: customConfig,
-            child: Builder(
-              builder: (context) {
-                parsedTextStyle = TwParser(
-                  config: customConfig,
-                ).parseText('').resolve(context).spec.style!;
-                return const SizedBox();
-              },
-            ),
+      await pumpLtr(
+        tester,
+        TwScope(
+          config: customConfig,
+          child: Builder(
+            builder: (context) {
+              parsedTextStyle = TwParser(
+                config: customConfig,
+              ).parseText('').resolve(context).spec.style!;
+              return const SizedBox();
+            },
           ),
         ),
       );

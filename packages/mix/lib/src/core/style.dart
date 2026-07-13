@@ -245,6 +245,18 @@ abstract class ModifierMix<S extends WidgetModifier<S>> extends Mix<S>
   Type get mergeKey => S;
 }
 
+enum _VariantMergeNamespace { named, context, builder }
+
+// Keep diagnostic labels out of semantic identity. Record equality delegates
+// to the value semantics already defined by each supported variant kind.
+Object _variantMergeKey(Variant variant) {
+  return switch (variant) {
+    NamedVariant(:final name) => (_VariantMergeNamespace.named, name),
+    ContextVariantBuilder(:final fn) => (_VariantMergeNamespace.builder, fn),
+    ContextVariant() => (_VariantMergeNamespace.context, variant),
+  };
+}
+
 /// Variant wrapper for conditional styling
 final class VariantStyle<S extends Spec<S>> extends Mixable<StyleSpec<S>>
     with Equatable
@@ -273,10 +285,12 @@ final class VariantStyle<S extends Spec<S>> extends Mixable<StyleSpec<S>>
       return VariantStyle(variant, _style);
     }
 
-    if (variant.key != other.variant.key) {
+    if (mergeKey != other.mergeKey) {
       throw ArgumentError(
         'Cannot merge VariantStyle with different variants. '
-        'Attempted to merge variant "${variant.key}" with "${other.variant.key}".',
+        '${variant.runtimeType}(key: "${variant.key}") and '
+        '${other.variant.runtimeType}(key: "${other.variant.key}") do not '
+        'have the same semantic merge identity.',
       );
     }
 
@@ -286,6 +300,7 @@ final class VariantStyle<S extends Spec<S>> extends Mixable<StyleSpec<S>>
   @override
   List<Object?> get props => [variant, _style];
 
+  /// Opaque semantic identity used when merging variant style fragments.
   @override
-  Object get mergeKey => variant.key;
+  Object get mergeKey => _variantMergeKey(variant);
 }

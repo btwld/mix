@@ -82,56 +82,14 @@ class StylerGenerator extends GeneratorForAnnotation<MixableStyler> {
     );
     if (specAnnotation == null) return null;
 
-    final reader = ConstantReader(specAnnotation).peek('target');
-    if (reader == null || reader.isNull) return null;
-
-    final fn = reader.objectValue.toFunctionValue();
-    if (fn is! ConstructorElement) {
-      fail(
-        specElement,
-        '@MixableSpec(target:) must be a constructor tear-off '
-        '(e.g., Box.new).',
-      );
-    }
-
-    final widgetClass = fn.enclosingElement;
-    final widgetName = mixableSpecTargetWidgetName(fn);
-    final hiddenWidgetType = firstInvisibleTypeName(
-      widgetClass.thisType,
-      stylerElement.library,
-    );
-    if (hiddenWidgetType != null) {
-      fail(
-        stylerElement,
-        'Target widget `$hiddenWidgetType` is used by @MixableSpec(target:) '
-        'but is not visible from the @MixableStyler library.',
-        todo:
-            'Import or re-export `$hiddenWidgetType` where the styler is declared.',
-      );
-    }
-
-    validateMixableSpecTargetConstructor(
-      constructor: fn,
-      widgetName: widgetName,
+    return buildMixableSpecTargetCall(
+      annotation: ConstantReader(specAnnotation),
       specElement: specElement,
       specName: specName,
-      anchor: specElement,
-    );
-
-    final result = extractCallParams(
-      fn,
-      anchor: stylerElement,
-      library: stylerElement.library,
-      factoryReference: stylerName,
-      excludeNames: const {'style', 'styleSpec'},
-      annotationLabel: '@MixableSpec(target:)',
-      keyOwner: 'the target constructor',
-    );
-
-    return renderWidgetCall(
-      widgetName: widgetName,
-      params: result.params,
-      forwardsKey: result.forwardsKey,
+      stylerName: stylerName,
+      hostElement: stylerElement,
+      hostLibrary: stylerElement.library,
+      validateTargetVisibility: true,
       indent: '  ',
     );
   }

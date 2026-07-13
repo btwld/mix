@@ -7,30 +7,44 @@ import 'package:test/test.dart';
 
 import '../core/test_helpers.dart';
 
-const _mixSources = {'mix|lib/mix.dart': _mixStub};
+const _mixSources = {
+  'mix|lib/mix.dart': _mixStub,
+  'mix|lib/src/core/style_spec.dart': _styleSpecStub,
+};
+
+/// `StyleSpec` declared at its real `package:mix` path so the URL-based
+/// `styleSpecChecker` matches in tests — the same reason
+/// `_setterTypeMixSources` declares `Mix` at its real path for `mixChecker`.
+const _styleSpecStub = '''
+  import '../../mix.dart';
+
+  class StyleSpec<S extends Spec<S>> {
+    const StyleSpec({
+      required S spec,
+      Object? animation,
+      Object? widgetModifiers,
+    });
+  }
+''';
+
 const _setterTypeMixSources = {
   'mix|lib/src/core/mix_element.dart': '''
     abstract class Mix<T> {
       const Mix();
     }
   ''',
+  'mix|lib/src/core/style_spec.dart': _styleSpecStub,
   'mix|lib/mix.dart': '''
     import 'package:flutter/foundation.dart';
 
     import 'src/core/mix_element.dart';
+    import 'src/core/style_spec.dart';
 
     export 'src/core/mix_element.dart';
+    export 'src/core/style_spec.dart';
 
     abstract class Spec<T extends Spec<T>> {
       const Spec();
-    }
-
-    class StyleSpec<S extends Spec<S>> {
-      const StyleSpec({
-        required S spec,
-        Object? animation,
-        Object? widgetModifiers,
-      });
     }
 
     abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>> {
@@ -112,12 +126,10 @@ const _mixSourcesWithStyleWidget = {
 const _mixStub = '''
   import 'package:flutter/foundation.dart';
 
+  export 'src/core/style_spec.dart';
+
   abstract class Spec<T extends Spec<T>> {
     const Spec();
-  }
-
-  class StyleSpec<S extends Spec<S>> {
-    const StyleSpec({required S spec, Object? animation, Object? widgetModifiers});
   }
 
   abstract class Style<S extends Spec<S>> {
@@ -1243,6 +1255,109 @@ void main() {
       );
     });
 
+    test(
+      'derives nested styler types from StyleSpec fields by convention',
+      () async {
+        const input = '''
+        library spike;
+        import 'package:flutter/foundation.dart';
+        import 'package:flutter/widgets.dart';
+        import 'package:mix/mix.dart';
+        import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
+
+        final class InnerSpec extends Spec<InnerSpec> {
+          const InnerSpec();
+        }
+
+        class InnerStyler extends Style<InnerSpec> with Diagnosticable {}
+
+        @MixableSpec()
+        final class HostSpec extends Spec<HostSpec> {
+          final StyleSpec<InnerSpec>? container;
+          const HostSpec({this.container});
+        }
+      ''';
+
+        await expectGeneratorOutputResolves(
+          builder: _specStylerPartBuilder(),
+          sources: {
+            ...mixAnnotationsSources,
+            ..._flutterResolveStubs,
+            ..._setterTypeMixSources,
+            'mix|lib/spike.dart': input,
+          },
+          inputAsset: 'mix|lib/spike.dart',
+          outputAsset: 'mix|lib/spike.g.dart',
+          outputMatcher: allOf([
+            contains('factory HostStyler.container(InnerStyler value)'),
+            contains('HostStyler container(InnerStyler value)'),
+            contains('InnerStyler? container,'),
+            contains('container: Prop.maybeMix(container)'),
+            isNot(contains('StyleSpec<InnerSpec> value')),
+            isNot(contains('Prop.maybe(container)')),
+          ]),
+        );
+      },
+    );
+
+    test(
+      'derives same-package generated styler types without resolving them',
+      () async {
+        // InnerStyler is emitted into inner_spec.g.dart by this same builder,
+        // so it can never resolve while spike.dart is being generated. The
+        // convention must hold by string derivation alone — this is the
+        // downstream-aggregator scenario (a spec composing sibling specs from
+        // its own package).
+        const inner = '''
+        import 'package:mix/mix.dart';
+        import 'package:mix_annotations/mix_annotations.dart';
+        part 'inner_spec.g.dart';
+
+        @MixableSpec()
+        final class InnerSpec extends Spec<InnerSpec> {
+          const InnerSpec();
+        }
+      ''';
+        const input = '''
+        library spike;
+        import 'package:mix/mix.dart';
+        import 'package:mix_annotations/mix_annotations.dart';
+        import 'inner_spec.dart';
+        part 'spike.g.dart';
+
+        @MixableSpec()
+        final class HostSpec extends Spec<HostSpec> {
+          final StyleSpec<InnerSpec>? inner;
+          const HostSpec({this.inner});
+        }
+      ''';
+
+        await testBuilder(
+          _specStylerPartBuilder(),
+          {
+            ...mixAnnotationsSources,
+            ..._mixSources,
+            'mix|lib/inner_spec.dart': inner,
+            'mix|lib/spike.dart': input,
+          },
+          outputs: {
+            'mix|lib/inner_spec.g.dart': decodedMatches(
+              contains('class InnerStyler'),
+            ),
+            'mix|lib/spike.g.dart': decodedMatches(
+              allOf(
+                contains('InnerStyler? inner,'),
+                contains('inner: Prop.maybeMix(inner)'),
+                contains('HostStyler inner(InnerStyler value)'),
+                isNot(contains('Prop.maybe(inner)')),
+              ),
+            ),
+          },
+        );
+      },
+    );
+
     test('rejects spec setterType that is not Mix-compatible', () async {
       const input = '''
         library spike;
@@ -1443,7 +1558,12 @@ void main() {
           final class BoxSpec extends Spec<BoxSpec> {
             const BoxSpec();
           }
+
+          class BoxStyler extends Style<BoxSpec> {
+            const BoxStyler();
+          }
         ''';
+      // FlexSpec's convention-derived `FlexStyler` resolves from the mix stub.
       const flexSpec = '''
           import 'package:mix/mix.dart';
 
@@ -1844,7 +1964,10 @@ void main() {
               isNot(contains('factory FlexBoxStyler.direction(Axis value)')),
               isNot(contains('factory FlexBoxStyler.row()')),
               isNot(contains('FlexStyleMixin<FlexBoxStyler>')),
-              isNot(contains('box: Prop.maybeMix(')),
+              // The nested field still gets its convention-derived styler
+              // type; only the compound flattening must stay inactive.
+              contains('BoxStyler? box,'),
+              contains('box: Prop.maybeMix(box)'),
               isNot(contains('FlexStyler(')),
             ]),
           ),

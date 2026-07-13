@@ -34,10 +34,11 @@ The generator emits several surfaces with deliberately different shapes, chosen 
 - **`@MixableSpec(target: Widget.new)`** also emits a full generated Styler class into the same `.g.dart` part file as the spec mixin. The generated class owns fields, constructors, factories, fluent methods, `call()`, merge, resolve, diagnostics, and props.
 - **`@MixableStyler`** emits a legacy *slim* mixin (`mixin _$<Name>Mixin on Style<S>, Diagnosticable`) that fills in per-field plumbing for handwritten styler classes.
 - **`@Mixable`** emits a *slim* mixin (`mixin _$<Name>Mixin on Mix<T>[, DefaultValue<T>][, Diagnosticable]`) for the same reason — Mix subclasses commonly compose intermediate base classes (e.g., `class BoxConstraintsMix extends ConstraintsMix<BoxConstraints>`) and the user keeps that inheritance chain.
+- **`@MixableModifier`** emits a self-contained modifier mixin (`mixin _$<Name> implements WidgetModifier<T>, Diagnosticable`) plus its corresponding `<Name>Mix` class.
 
 If the asymmetry feels surprising, the rule is: rich/full shape for pure-data specs and their generated stylers; slim shape for types whose `extends` chain carries shared state or behavior.
 
-A fourth annotation, **`@MixWidget`**, generates a full `StatelessWidget` class (not a mixin) that wraps a top-level `Style<S>` factory — see the [`@MixWidget`](#from-mixwidget--widget-wrapper) section below.
+The **`@MixWidget`** annotation generates a full `StatelessWidget` class (not a mixin) that wraps a top-level `Style<S>` factory — see the [`@MixWidget`](#from-mixwidget--widget-wrapper) section below.
 
 ### From `@MixableSpec` — Spec mixin
 
@@ -131,9 +132,58 @@ final class BoxConstraintsMix extends ConstraintsMix<BoxConstraints>
 }
 ```
 
+### From `@MixableModifier` — modifier mixin and ModifierMix
+
+Generates a self-contained `_$<Name>` mixin for an immutable
+`WidgetModifier`, plus a `<Name>Mix` class that can be used in styles. The mixin
+provides `type`, `copyWith`, optional `lerp`, value equality, diagnostics, and
+the `build` contract. The Mix class provides constructors, `resolve`, `merge`,
+diagnostics, and `props`.
+
+```dart
+part 'opacity_modifier.g.dart';
+
+@MixableModifier()
+final class OpacityModifier with _$OpacityModifier {
+  @override
+  final double opacity;
+
+  const OpacityModifier([double? opacity]) : opacity = opacity ?? 1.0;
+
+  @override
+  Widget build(Widget child) => Opacity(opacity: opacity, child: child);
+}
+```
+
+Pass `lerp: false` when the modifier implements custom interpolation. A field
+may use `@MixableField(setterType: SomeMix)` when its style-facing value should
+be a Mix type; the setter type must resolve to the field's runtime value type.
+
 ### From `@MixWidget` — widget wrapper
 
 Generates a `StatelessWidget` wrapper around a top-level `Style<S>` variable or function. The wrapper's constructor mirrors the factory's parameters (for function-backed styles) plus the styler's `call()` parameters; `build()` invokes the factory and forwards the parameters through to the resulting widget.
+
+`@MixWidget()` is equivalent to `widgetParameters: .all()`: every non-`key`
+styler `call()` value parameter is exposed. To keep that value-parameter API
+stable as a styler evolves, select the supported parameters explicitly:
+
+```dart
+@MixWidget(
+  widgetParameters: .only({'controller', 'focusNode'}),
+)
+final editorStyle = EditorStyler();
+```
+
+`.only({})` exposes none of the selectable styler value parameters. Factory
+parameters, a valid `Key? key`, and method-level `call<T>()` type parameters are
+always automatic, and required styler value parameters must be included in an
+`.only(...)` selection. Excluded optional parameters are not forwarded, so the
+styler method's defaults apply.
+
+For compatibility, an annotation from an older `mix_annotations` release that
+does not define `widgetParameters` is interpreted as `.all()`. Using
+`.only(...)` requires an annotations release that defines
+`MixWidgetParameterSelection`.
 
 ```dart
 part 'card.g.dart';
@@ -154,6 +204,26 @@ final cardStyle = BoxStyler()
 ```
 
 The widget name is derived from a lower-camel-case `*Style` identifier (`cardStyle` → `Card`); pass `@MixWidget(name: 'X')` to override. Function-backed factories thread their args before the styler `call()`: `@MixWidget Style<S> badge({Color? color}) => ...` generates a `Badge({this.color, this.child})` constructor.
+
+When a function-backed factory declares a named, non-nullable enum parameter
+named `variant`, the generator also emits one named constructor per accessible
+enum value:
+
+```dart
+@MixWidget()
+ButtonStyler buttonStyle({ButtonVariant variant = .solid}) => ...;
+
+// Generates both the backwards-compatible `Button(variant: ...)` and:
+//   const Button.solid({super.key, ...}) : variant = ButtonVariant.solid;
+//   const Button.ghost({super.key, ...}) : variant = ButtonVariant.ghost;
+```
+
+Each named constructor omits the `variant` argument and preserves every other
+factory and styler `call()` parameter. Enum-value documentation and deprecation
+metadata are carried onto the matching constructor. Nullable, positional, and
+non-enum `variant` parameters retain the single-constructor behavior. Variant
+constructors are also skipped when an enum value conflicts with a generated
+widget type parameter.
 
 See [`mix_annotations`](https://pub.dev/packages/mix_annotations) for the full annotation contract (parameter rules, `Key? key` forwarding, naming/visibility constraints).
 

@@ -106,6 +106,38 @@ final Prop<Matrix4>? $transform;
 final Prop<List<Shadow>>? $shadows;
 ```
 
+### `@MixWidget`
+
+Generates a `StatelessWidget` wrapper around a top-level styler variable or
+styler-returning function. By default, the wrapper exposes every non-`key`
+value parameter from the styler's `call()` method:
+
+```dart
+@MixWidget() // Equivalent to widgetParameters: .all()
+final cardStyle = BoxStyler();
+```
+
+Use `widgetParameters: .only(...)` to keep the generated widget's value-
+parameter API limited to a deliberate subset. This prevents newly added styler
+value parameters from becoming public widget parameters automatically:
+
+```dart
+@MixWidget(
+  widgetParameters: .only({'controller', 'focusNode'}),
+)
+final editorStyle = EditorStyler();
+```
+
+An empty `.only({})` exposes no selectable styler value parameters. Factory
+parameters, a valid `Key? key`, and method-level `call<T>()` type parameters
+remain automatic in every mode; required styler value parameters must be
+selected. Excluded optional parameters are not forwarded, so the styler
+method's defaults apply.
+
+Generators that also support older `mix_annotations` releases interpret an
+annotation without `widgetParameters` as `.all()`. Using `.only(...)` requires
+an annotations release that defines `MixWidgetParameterSelection`.
+
 ## Generator Flags
 
 Each annotation accepts bitwise flags to control which methods or components are generated:

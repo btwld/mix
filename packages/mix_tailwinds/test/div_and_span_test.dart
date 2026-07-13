@@ -1,118 +1,12 @@
 import 'dart:math' as math;
 
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 import 'package:mix_tailwinds/mix_tailwinds.dart';
 
-Future<Container> _boxContainerFor(
-  WidgetTester tester,
-  String classNames,
-) async {
-  await tester.pumpWidget(
-    Directionality(
-      textDirection: TextDirection.ltr,
-      child: Div(classNames: classNames, child: const SizedBox()),
-    ),
-  );
-  await tester.pump();
-
-  // CSS semantic widgets use Container directly (margin is applied via Padding)
-  final containerFinder = find.byType(Container);
-
-  expect(containerFinder, findsOneWidget);
-
-  return tester.widget<Container>(containerFinder);
-}
-
-Future<BoxDecoration?> _boxDecorationFor(
-  WidgetTester tester,
-  String classNames,
-) async {
-  final container = await _boxContainerFor(tester, classNames);
-  return container.decoration as BoxDecoration?;
-}
-
-Future<BoxDecoration?> _boxDecorationForWithConfig(
-  WidgetTester tester,
-  String classNames,
-  TwConfig config,
-) async {
-  await tester.pumpWidget(
-    Directionality(
-      textDirection: TextDirection.ltr,
-      child: TwScope(
-        config: config,
-        child: Div(classNames: classNames, child: const SizedBox()),
-      ),
-    ),
-  );
-  await tester.pump();
-
-  final containerFinder = find.byType(Container);
-  expect(containerFinder, findsOneWidget);
-
-  final container = tester.widget<Container>(containerFinder);
-  return container.decoration as BoxDecoration?;
-}
-
-Future<void> _expectBoxShadows(
-  WidgetTester tester,
-  String classNames,
-  List<BoxShadow> expected,
-) async {
-  final decoration = await _boxDecorationFor(tester, classNames);
-  final actual = decoration?.boxShadow;
-  expect(actual ?? const <BoxShadow>[], orderedEquals(expected));
-}
-
-/// Helper to parse animation config from class names.
-/// Uses the non-deprecated parseAnimationFromTokens internally.
-CurveAnimationConfig? _parseAnimation(String classNames, {TwParser? parser}) {
-  final p = parser ?? TwParser();
-  return p.parseAnimationFromTokens(p.listTokens(classNames));
-}
-
-Future<Text> _renderedTextFor(
-  WidgetTester tester,
-  String classNames, {
-  String value = 'sample',
-}) async {
-  await tester.pumpWidget(
-    Directionality(
-      textDirection: TextDirection.ltr,
-      child: StyledText(value, style: TwParser().parseText(classNames)),
-    ),
-  );
-  await tester.pump();
-
-  return tester.widget<Text>(find.text(value));
-}
-
-Future<void> _pumpSized(
-  WidgetTester tester,
-  Widget child, {
-  double width = 800,
-  double height = 600,
-}) async {
-  await tester.binding.setSurfaceSize(Size(width, height));
-  addTearDown(() => tester.binding.setSurfaceSize(null));
-  await tester.pumpWidget(
-    MediaQuery(
-      data: MediaQueryData(size: Size(width, height)),
-      child: Directionality(
-        textDirection: TextDirection.ltr,
-        child: Align(
-          alignment: Alignment.topLeft,
-          child: SizedBox(width: width, height: height, child: child),
-        ),
-      ),
-    ),
-  );
-  await tester.pump();
-}
+import 'tailwinds_test_helpers.dart';
 
 Future<FlexParentData> _rowParentDataForDiv(
   WidgetTester tester,
@@ -147,15 +41,10 @@ void main() {
   testWidgets('Div picks flex layout when flex token is present', (
     tester,
   ) async {
-    final widget = Directionality(
-      textDirection: TextDirection.ltr,
-      child: Div(
-        classNames: 'flex gap-4',
-        children: const [SizedBox(), SizedBox()],
-      ),
+    await pumpLtr(
+      tester,
+      Div(classNames: 'flex gap-4', children: const [SizedBox(), SizedBox()]),
     );
-
-    await tester.pumpWidget(widget);
 
     // CSS semantic widgets use Flex directly instead of FlexBox
     expect(find.byType(Flex), findsOneWidget);
@@ -164,15 +53,13 @@ void main() {
   testWidgets('Div picks flex layout when only md:flex token is present', (
     tester,
   ) async {
-    final widget = Directionality(
-      textDirection: TextDirection.ltr,
-      child: Div(
+    await pumpLtr(
+      tester,
+      Div(
         classNames: 'md:flex gap-4',
         children: const [SizedBox(), SizedBox()],
       ),
     );
-
-    await tester.pumpWidget(widget);
 
     // CSS semantic widgets use Flex directly instead of FlexBox
     expect(find.byType(Flex), findsOneWidget);
@@ -181,12 +68,7 @@ void main() {
   testWidgets('Div defaults to box layout when flex tokens missing', (
     tester,
   ) async {
-    final widget = Directionality(
-      textDirection: TextDirection.ltr,
-      child: Div(classNames: 'bg-blue-500 p-4', child: const SizedBox()),
-    );
-
-    await tester.pumpWidget(widget);
+    await pumpDiv(tester, 'bg-blue-500 p-4', child: const SizedBox());
 
     // CSS semantic widgets use Container directly; no Flex when not in flex mode
     expect(find.byType(Container), findsOneWidget);
@@ -194,14 +76,9 @@ void main() {
   });
 
   testWidgets('Div wraps multiple children in Column', (tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Div(
-          classNames: 'p-4',
-          children: const [Text('First'), Text('Second')],
-        ),
-      ),
+    await pumpLtr(
+      tester,
+      Div(classNames: 'p-4', children: const [Text('First'), Text('Second')]),
     );
 
     expect(find.byType(Column), findsOneWidget);
@@ -209,21 +86,19 @@ void main() {
   });
 
   testWidgets('w-full does not crash inside Row', (tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: SizedBox(
-          width: 200,
-          child: Row(
-            children: [
-              Expanded(
-                child: Div(
-                  classNames: 'w-full bg-blue-500',
-                  child: const Text('Should not crash'),
-                ),
+    await pumpLtr(
+      tester,
+      SizedBox(
+        width: 200,
+        child: Row(
+          children: [
+            Expanded(
+              child: Div(
+                classNames: 'w-full bg-blue-500',
+                child: const Text('Should not crash'),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -233,21 +108,19 @@ void main() {
   });
 
   testWidgets('w-full expands to parent width inside Row', (tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: SizedBox(
-          width: 180,
-          child: Row(
-            children: [
-              Expanded(
-                child: Div(
-                  classNames: 'w-full bg-blue-500',
-                  child: const SizedBox(height: 10),
-                ),
+    await pumpLtr(
+      tester,
+      SizedBox(
+        width: 180,
+        child: Row(
+          children: [
+            Expanded(
+              child: Div(
+                classNames: 'w-full bg-blue-500',
+                child: const SizedBox(height: 10),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -264,7 +137,7 @@ void main() {
   testWidgets('w-full inside Row respects padded available width', (
     tester,
   ) async {
-    await _pumpSized(
+    await pumpSized(
       tester,
       Padding(
         padding: const EdgeInsets.all(16),
@@ -289,21 +162,19 @@ void main() {
   });
 
   testWidgets('h-full does not crash inside Column', (tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: SizedBox(
-          height: 200,
-          child: Column(
-            children: [
-              Expanded(
-                child: Div(
-                  classNames: 'h-full bg-blue-500',
-                  child: const Text('Should not crash'),
-                ),
+    await pumpLtr(
+      tester,
+      SizedBox(
+        height: 200,
+        child: Column(
+          children: [
+            Expanded(
+              child: Div(
+                classNames: 'h-full bg-blue-500',
+                child: const Text('Should not crash'),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -313,21 +184,19 @@ void main() {
   });
 
   testWidgets('h-full expands to parent height inside Column', (tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: SizedBox(
-          height: 180,
-          child: Column(
-            children: [
-              Expanded(
-                child: Div(
-                  classNames: 'h-full bg-blue-500',
-                  child: const SizedBox(width: 10),
-                ),
+    await pumpLtr(
+      tester,
+      SizedBox(
+        height: 180,
+        child: Column(
+          children: [
+            Expanded(
+              child: Div(
+                classNames: 'h-full bg-blue-500',
+                child: const SizedBox(width: 10),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -342,21 +211,19 @@ void main() {
   });
 
   testWidgets('md:w-full is also guarded', (tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: SizedBox(
-          width: 220,
-          child: Row(
-            children: [
-              Expanded(
-                child: Div(
-                  classNames: 'md:w-full bg-blue-500',
-                  child: const SizedBox(height: 10),
-                ),
+    await pumpLtr(
+      tester,
+      SizedBox(
+        width: 220,
+        child: Row(
+          children: [
+            Expanded(
+              child: Div(
+                classNames: 'md:w-full bg-blue-500',
+                child: const SizedBox(height: 10),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -365,7 +232,7 @@ void main() {
   });
 
   testWidgets('flex container respects w-full wrapper', (tester) async {
-    await _pumpSized(
+    await pumpSized(
       tester,
       Div(
         classNames: 'flex w-full bg-blue-500',
@@ -386,7 +253,7 @@ void main() {
   });
 
   testWidgets('flex container applies fractional width tokens', (tester) async {
-    await _pumpSized(
+    await pumpSized(
       tester,
       Div(
         classNames: 'flex w-1/2 bg-blue-500',
@@ -407,7 +274,7 @@ void main() {
   });
 
   testWidgets('w-1/2 applies half-width constraint', (tester) async {
-    await _pumpSized(
+    await pumpSized(
       tester,
       Div(classNames: 'w-1/2 bg-blue-500', child: const SizedBox(height: 40)),
       width: 200,
@@ -418,7 +285,7 @@ void main() {
   });
 
   testWidgets('w-2/3 applies two-thirds width', (tester) async {
-    await _pumpSized(
+    await pumpSized(
       tester,
       Div(classNames: 'w-2/3', child: const SizedBox(height: 20)),
       width: 300,
@@ -429,7 +296,7 @@ void main() {
   });
 
   testWidgets('w-3/4 applies three-quarter width', (tester) async {
-    await _pumpSized(
+    await pumpSized(
       tester,
       Div(classNames: 'w-3/4', child: const SizedBox(height: 20)),
       width: 400,
@@ -440,7 +307,7 @@ void main() {
   });
 
   testWidgets('h-1/4 applies quarter-height constraint', (tester) async {
-    await _pumpSized(
+    await pumpSized(
       tester,
       Div(classNames: 'h-1/4 bg-blue-500', child: const SizedBox(width: 40)),
       height: 400,
@@ -451,7 +318,7 @@ void main() {
   });
 
   testWidgets('h-1/2 applies half-height constraint', (tester) async {
-    await _pumpSized(
+    await pumpSized(
       tester,
       Div(classNames: 'h-1/2 bg-blue-500', child: const SizedBox(width: 40)),
       height: 300,
@@ -464,7 +331,7 @@ void main() {
   testWidgets('w-1/2 h-1/2 applies both width and height constraints', (
     tester,
   ) async {
-    await _pumpSized(
+    await pumpSized(
       tester,
       Div(classNames: 'w-1/2 h-1/2', child: const SizedBox()),
       width: 120,
@@ -477,14 +344,14 @@ void main() {
   });
 
   testWidgets('max-w-sm uses Tailwind named max-width scale', (tester) async {
-    final container = await _boxContainerFor(tester, 'max-w-sm');
+    final container = await boxContainerFor(tester, 'max-w-sm');
     expect(container.constraints?.maxWidth, 384);
   });
 
   testWidgets('items-stretch expands cross axis when explicitly requested', (
     tester,
   ) async {
-    await _pumpSized(
+    await pumpSized(
       tester,
       Div(
         classNames: 'flex flex-col items-stretch',
@@ -529,7 +396,7 @@ void main() {
   testWidgets('row flex avoids stretch on unbounded cross axis', (
     tester,
   ) async {
-    await _pumpSized(
+    await pumpSized(
       tester,
       Div(
         classNames: 'flex flex-col',
@@ -632,19 +499,17 @@ void main() {
   });
 
   testWidgets('flex-1 auto-applies min-w-0 constraint', (tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: SizedBox(
-          width: 200,
-          child: Row(
-            children: [
-              Div(
-                classNames: 'flex-1 bg-blue-500',
-                child: const SizedBox(width: 10, height: 10),
-              ),
-            ],
-          ),
+    await pumpLtr(
+      tester,
+      SizedBox(
+        width: 200,
+        child: Row(
+          children: [
+            Div(
+              classNames: 'flex-1 bg-blue-500',
+              child: const SizedBox(width: 10, height: 10),
+            ),
+          ],
         ),
       ),
     );
@@ -658,19 +523,17 @@ void main() {
   });
 
   testWidgets('flex-1 min-w-auto disables auto-constraint', (tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: SizedBox(
-          width: 200,
-          child: Row(
-            children: [
-              Div(
-                classNames: 'flex-1 min-w-auto bg-blue-500',
-                child: const SizedBox(width: 10, height: 10),
-              ),
-            ],
-          ),
+    await pumpLtr(
+      tester,
+      SizedBox(
+        width: 200,
+        child: Row(
+          children: [
+            Div(
+              classNames: 'flex-1 min-w-auto bg-blue-500',
+              child: const SizedBox(width: 10, height: 10),
+            ),
+          ],
         ),
       ),
     );
@@ -689,19 +552,17 @@ void main() {
   });
 
   testWidgets('flex-auto does NOT auto-apply min-w-0', (tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: SizedBox(
-          width: 200,
-          child: Row(
-            children: [
-              Div(
-                classNames: 'flex-auto bg-blue-500',
-                child: const SizedBox(width: 10, height: 10),
-              ),
-            ],
-          ),
+    await pumpLtr(
+      tester,
+      SizedBox(
+        width: 200,
+        child: Row(
+          children: [
+            Div(
+              classNames: 'flex-auto bg-blue-500',
+              child: const SizedBox(width: 10, height: 10),
+            ),
+          ],
         ),
       ),
     );
@@ -720,14 +581,10 @@ void main() {
   });
 
   testWidgets('TruncatedP renders correct hierarchy', (tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Row(
-          children: const [
-            TruncatedP(text: 'Long text', classNames: 'text-sm'),
-          ],
-        ),
+    await pumpLtr(
+      tester,
+      Row(
+        children: const [TruncatedP(text: 'Long text', classNames: 'text-sm')],
       ),
     );
 
@@ -736,7 +593,7 @@ void main() {
   });
 
   testWidgets('basis-32 constrains main-axis size inside Row', (tester) async {
-    await _pumpSized(
+    await pumpSized(
       tester,
       Row(
         children: [
@@ -767,17 +624,15 @@ void main() {
   testWidgets('self-end wraps child with Align based on flex axis', (
     tester,
   ) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Row(
-          children: [
-            Div(
-              classNames: 'self-end',
-              child: const SizedBox(width: 10, height: 10),
-            ),
-          ],
-        ),
+    await pumpLtr(
+      tester,
+      Row(
+        children: [
+          Div(
+            classNames: 'self-end',
+            child: const SizedBox(width: 10, height: 10),
+          ),
+        ],
       ),
     );
 
@@ -791,13 +646,13 @@ void main() {
   });
 
   testWidgets('shadow-none removes box shadows', (tester) async {
-    final decoration = await _boxDecorationFor(tester, 'shadow-none');
+    final decoration = await boxDecorationFor(tester, 'shadow-none');
     final shadows = decoration?.boxShadow;
     expect(shadows, anyOf(isNull, isEmpty));
   });
 
   testWidgets('shadow-xs matches Tailwind preset', (tester) async {
-    await _expectBoxShadows(tester, 'shadow-xs', const [
+    await expectBoxShadows(tester, 'shadow-xs', const [
       BoxShadow(
         offset: Offset(0, 1),
         blurRadius: 2,
@@ -808,7 +663,7 @@ void main() {
   });
 
   testWidgets('shadow-sm matches Tailwind preset', (tester) async {
-    await _expectBoxShadows(tester, 'shadow-sm', const [
+    await expectBoxShadows(tester, 'shadow-sm', const [
       BoxShadow(
         offset: Offset(0, 1),
         blurRadius: 2,
@@ -819,7 +674,7 @@ void main() {
   });
 
   testWidgets('shadow matches Tailwind preset', (tester) async {
-    await _expectBoxShadows(tester, 'shadow', const [
+    await expectBoxShadows(tester, 'shadow', const [
       BoxShadow(
         offset: Offset(0, 1),
         blurRadius: 3,
@@ -836,7 +691,7 @@ void main() {
   });
 
   testWidgets('shadow-md matches Tailwind preset', (tester) async {
-    await _expectBoxShadows(tester, 'shadow-md', const [
+    await expectBoxShadows(tester, 'shadow-md', const [
       BoxShadow(
         offset: Offset(0, 4),
         blurRadius: 6,
@@ -853,7 +708,7 @@ void main() {
   });
 
   testWidgets('shadow-lg matches Tailwind preset', (tester) async {
-    await _expectBoxShadows(tester, 'shadow-lg', const [
+    await expectBoxShadows(tester, 'shadow-lg', const [
       BoxShadow(
         offset: Offset(0, 10),
         blurRadius: 15,
@@ -870,7 +725,7 @@ void main() {
   });
 
   testWidgets('shadow-xl matches Tailwind preset', (tester) async {
-    await _expectBoxShadows(tester, 'shadow-xl', const [
+    await expectBoxShadows(tester, 'shadow-xl', const [
       BoxShadow(
         offset: Offset(0, 20),
         blurRadius: 25,
@@ -887,7 +742,7 @@ void main() {
   });
 
   testWidgets('shadow-2xl matches Tailwind preset', (tester) async {
-    await _expectBoxShadows(tester, 'shadow-2xl', const [
+    await expectBoxShadows(tester, 'shadow-2xl', const [
       BoxShadow(
         offset: Offset(0, 25),
         blurRadius: 50,
@@ -898,16 +753,14 @@ void main() {
   });
 
   testWidgets('gap-x-4 sets main-axis spacing for row flex', (tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Div(
-          classNames: 'flex gap-x-4',
-          children: const [
-            SizedBox(width: 20, height: 20),
-            SizedBox(width: 20, height: 20),
-          ],
-        ),
+    await pumpLtr(
+      tester,
+      Div(
+        classNames: 'flex gap-x-4',
+        children: const [
+          SizedBox(width: 20, height: 20),
+          SizedBox(width: 20, height: 20),
+        ],
       ),
     );
 
@@ -918,16 +771,14 @@ void main() {
   testWidgets('gap-y-4 applies cross-axis padding for row flex', (
     tester,
   ) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Div(
-          classNames: 'flex gap-y-4',
-          children: const [
-            SizedBox(width: 20, height: 20),
-            SizedBox(width: 20, height: 20),
-          ],
-        ),
+    await pumpLtr(
+      tester,
+      Div(
+        classNames: 'flex gap-y-4',
+        children: const [
+          SizedBox(width: 20, height: 20),
+          SizedBox(width: 20, height: 20),
+        ],
       ),
     );
 
@@ -955,16 +806,14 @@ void main() {
   });
 
   testWidgets('gap-y-6 sets main-axis spacing for column flex', (tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Div(
-          classNames: 'flex flex-col gap-y-6',
-          children: const [
-            SizedBox(width: 20, height: 20),
-            SizedBox(width: 20, height: 20),
-          ],
-        ),
+    await pumpLtr(
+      tester,
+      Div(
+        classNames: 'flex flex-col gap-y-6',
+        children: const [
+          SizedBox(width: 20, height: 20),
+          SizedBox(width: 20, height: 20),
+        ],
       ),
     );
 
@@ -975,16 +824,14 @@ void main() {
   testWidgets('gap-x-2 applies horizontal padding for column flex', (
     tester,
   ) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Div(
-          classNames: 'flex flex-col gap-x-2',
-          children: const [
-            SizedBox(width: 20, height: 20),
-            SizedBox(width: 20, height: 20),
-          ],
-        ),
+    await pumpLtr(
+      tester,
+      Div(
+        classNames: 'flex flex-col gap-x-2',
+        children: const [
+          SizedBox(width: 20, height: 20),
+          SizedBox(width: 20, height: 20),
+        ],
       ),
     );
 
@@ -1012,16 +859,14 @@ void main() {
   });
 
   testWidgets('gap-x overrides gap on row flex', (tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Div(
-          classNames: 'flex gap-2 gap-x-6',
-          children: const [
-            SizedBox(width: 20, height: 20),
-            SizedBox(width: 20, height: 20),
-          ],
-        ),
+    await pumpLtr(
+      tester,
+      Div(
+        classNames: 'flex gap-2 gap-x-6',
+        children: const [
+          SizedBox(width: 20, height: 20),
+          SizedBox(width: 20, height: 20),
+        ],
       ),
     );
 
@@ -1031,7 +876,7 @@ void main() {
 
   testWidgets('gap-x responds to breakpoints', (tester) async {
     Future<double> spacingFor(double width) async {
-      await _pumpSized(
+      await pumpSized(
         tester,
         Div(
           classNames: 'flex gap-x-2 md:gap-x-6',
@@ -1056,7 +901,7 @@ void main() {
 
   testWidgets('gap-y responds to breakpoints for column flex', (tester) async {
     Future<double> spacingFor(double width) async {
-      await _pumpSized(
+      await pumpSized(
         tester,
         Div(
           classNames: 'flex flex-col gap-y-2 lg:gap-y-8',
@@ -1080,7 +925,7 @@ void main() {
   });
 
   testWidgets('border-t applies top border', (tester) async {
-    final decoration = await _boxDecorationFor(tester, 'border-t');
+    final decoration = await boxDecorationFor(tester, 'border-t');
     final border = decoration?.border as Border?;
     expect(border, isNotNull);
     expect(border!.top.width, 1);
@@ -1088,7 +933,7 @@ void main() {
   });
 
   testWidgets('border-y-2 sets vertical border width', (tester) async {
-    final decoration = await _boxDecorationFor(tester, 'border-y-2');
+    final decoration = await boxDecorationFor(tester, 'border-y-2');
     final border = decoration?.border as Border?;
     expect(border, isNotNull);
     expect(border!.top.width, 2);
@@ -1097,7 +942,7 @@ void main() {
   });
 
   testWidgets('border-x-red-500 colors horizontal borders', (tester) async {
-    final decoration = await _boxDecorationFor(tester, 'border-x-red-500');
+    final decoration = await boxDecorationFor(tester, 'border-x-red-500');
     final border = decoration?.border as Border?;
     expect(border, isNotNull);
     expect(border!.left.color, const Color(0xFFEF4444));
@@ -1108,7 +953,7 @@ void main() {
     tester,
   ) async {
     // Color-only border tokens should NOT create borders
-    final decoration = await _boxDecorationFor(tester, 'border-gray-200');
+    final decoration = await boxDecorationFor(tester, 'border-gray-200');
     final border = decoration?.border as Border?;
     // Either null or all sides have width 0
     expect(border?.top.width ?? 0, 0);
@@ -1124,7 +969,7 @@ void main() {
   testWidgets('border-t border-gray-200 applies color to top only', (
     tester,
   ) async {
-    final decoration = await _boxDecorationFor(
+    final decoration = await boxDecorationFor(
       tester,
       'border-t border-gray-200',
     );
@@ -1143,7 +988,7 @@ void main() {
   testWidgets('border border-red-500 applies color to all sides', (
     tester,
   ) async {
-    final decoration = await _boxDecorationFor(tester, 'border border-red-500');
+    final decoration = await boxDecorationFor(tester, 'border border-red-500');
     final border = decoration?.border as Border?;
     expect(border, isNotNull);
     expect(border!.top.width, 1);
@@ -1156,7 +1001,7 @@ void main() {
   testWidgets('border-x-2 border-blue-500 applies width and color', (
     tester,
   ) async {
-    final decoration = await _boxDecorationFor(
+    final decoration = await boxDecorationFor(
       tester,
       'border-x-2 border-blue-500',
     );
@@ -1171,7 +1016,7 @@ void main() {
   });
 
   testWidgets('variant borders inherit base border structure', (tester) async {
-    final decoration = await _boxDecorationFor(
+    final decoration = await boxDecorationFor(
       tester,
       'border-t hover:border-red-500',
     );
@@ -1185,7 +1030,7 @@ void main() {
   });
 
   testWidgets('rounded-t-md applies top border radius', (tester) async {
-    final decoration = await _boxDecorationFor(tester, 'rounded-t-md');
+    final decoration = await boxDecorationFor(tester, 'rounded-t-md');
     final radius = decoration?.borderRadius?.resolve(TextDirection.ltr);
     expect(radius, isNotNull);
     expect(radius!.topLeft.x, 6);
@@ -1195,7 +1040,7 @@ void main() {
   });
 
   testWidgets('rounded-bl-lg applies bottom-left radius', (tester) async {
-    final decoration = await _boxDecorationFor(tester, 'rounded-bl-lg');
+    final decoration = await boxDecorationFor(tester, 'rounded-bl-lg');
     final radius = decoration?.borderRadius?.resolve(TextDirection.ltr);
     expect(radius, isNotNull);
     expect(radius!.bottomLeft.x, 8);
@@ -1203,7 +1048,7 @@ void main() {
   });
 
   testWidgets('px-4 overridden by p-2', (tester) async {
-    final container = await _boxContainerFor(tester, 'px-4 p-2');
+    final container = await boxContainerFor(tester, 'px-4 p-2');
     final padding = container.padding as EdgeInsets?;
     expect(padding, isNotNull);
     expect(padding!.left, 8);
@@ -1212,7 +1057,7 @@ void main() {
   });
 
   testWidgets('p-2 overridden by px-4', (tester) async {
-    final container = await _boxContainerFor(tester, 'p-2 px-4');
+    final container = await boxContainerFor(tester, 'p-2 px-4');
     final padding = container.padding as EdgeInsets?;
     expect(padding, isNotNull);
     expect(padding!.left, 16);
@@ -1223,9 +1068,7 @@ void main() {
   testWidgets('P forwards text style tokens', (tester) async {
     final p = P(text: 'Hello', classNames: 'text-blue-500 font-bold');
 
-    await tester.pumpWidget(
-      Directionality(textDirection: TextDirection.ltr, child: p),
-    );
+    await pumpLtr(tester, p);
 
     final text = tester.widget<Text>(find.text('Hello'));
     expect(text.style?.color, const Color(0xFF3B82F6));
@@ -1358,7 +1201,7 @@ void main() {
   testWidgets('Parser defaults to column for prefixed-only flex tokens', (
     tester,
   ) async {
-    await _pumpSized(
+    await pumpSized(
       tester,
       const Div(classNames: 'md:flex', children: [SizedBox(), SizedBox()]),
       width: 700,
@@ -1366,14 +1209,14 @@ void main() {
     expect(find.byType(Flex), findsOneWidget);
     expect(tester.widget<Flex>(find.byType(Flex)).direction, Axis.vertical);
 
-    await _pumpSized(
+    await pumpSized(
       tester,
       const Div(classNames: 'flex', children: [SizedBox(), SizedBox()]),
     );
     expect(find.byType(Flex), findsOneWidget);
     expect(tester.widget<Flex>(find.byType(Flex)).direction, Axis.horizontal);
 
-    await _pumpSized(
+    await pumpSized(
       tester,
       const Div(classNames: 'flex-col', children: [SizedBox(), SizedBox()]),
     );
@@ -1397,7 +1240,7 @@ void main() {
 
   test('Unknown tokens trigger onUnsupported callback', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseBox('w-4 unknown-token bg-blue-500');
+    parseBoxWatching('w-4 unknown-token bg-blue-500', seen);
 
     expect(seen, contains('unknown-token'));
     expect(seen, isNot(contains('w-4')));
@@ -1406,14 +1249,14 @@ void main() {
 
   test('Typos are reported', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseBox('bg-blu-500');
+    parseBoxWatching('bg-blu-500', seen);
 
     expect(seen, contains('bg-blu-500'));
   });
 
   test('Unimplemented tokens are reported', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseBox('z-10 opacity-50');
+    parseBoxWatching('z-10 opacity-50', seen);
 
     expect(seen, contains('z-10'));
     expect(seen, isNot(contains('opacity-50')));
@@ -1421,7 +1264,7 @@ void main() {
 
   test('Prefix chains parse without warnings', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseBox('md:hover:bg-blue-500');
+    parseBoxWatching('md:hover:bg-blue-500', seen);
 
     expect(seen, isEmpty);
   });
@@ -1435,76 +1278,46 @@ void main() {
   });
 
   testWidgets('Arbitrary 3/4-digit hex colors are applied', (tester) async {
-    final rgb = await _boxDecorationFor(tester, 'bg-[#fff]');
+    final rgb = await boxDecorationFor(tester, 'bg-[#fff]');
     expect(rgb?.color, equals(const Color(0xFFFFFFFF)));
 
-    final rgba = await _boxDecorationFor(tester, 'bg-[#ffff]');
+    final rgba = await boxDecorationFor(tester, 'bg-[#ffff]');
     expect(rgba?.color, equals(const Color(0xFFFFFFFF)));
   });
 
   testWidgets('Arbitrary 6/8-digit CSS hex colors are applied', (tester) async {
-    final opaque = await _boxDecorationFor(tester, 'bg-[#ffffff]');
+    final opaque = await boxDecorationFor(tester, 'bg-[#ffffff]');
     expect(opaque?.color, equals(const Color(0xFFFFFFFF)));
 
-    final alpha = await _boxDecorationFor(tester, 'bg-[#ffffff80]');
+    final alpha = await boxDecorationFor(tester, 'bg-[#ffffff80]');
     expect(alpha?.color, equals(const Color(0x80FFFFFF)));
 
-    final cssOrdered = await _boxDecorationFor(tester, 'bg-[#80ffffff]');
+    final cssOrdered = await boxDecorationFor(tester, 'bg-[#80ffffff]');
     expect(cssOrdered?.color, equals(const Color(0xFF80FFFF)));
   });
 
-  // ==========================================================================
-  // State Prefix Tests
-  // ==========================================================================
+  group('state prefix parsing', () {
+    const cases = <String, int>{
+      'hover:bg-blue-500': 1,
+      'focus:bg-blue-500': 1,
+      'active:bg-blue-500': 1,
+      'disabled:bg-gray-200': 1,
+      'dark:bg-gray-700': 1,
+      'light:bg-white': 1,
+      'dark:hover:bg-blue-700': 1,
+      'md:hover:bg-blue-500 lg:focus:bg-blue-700': 2,
+    };
 
-  test('hover: prefix parses without warnings', () {
-    final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseBox('hover:bg-blue-500');
-    expect(seen, isEmpty);
-  });
+    for (final entry in cases.entries) {
+      test('${entry.key} registers ${entry.value} variant(s)', () {
+        final seen = <String>[];
+        final style = parseBoxWatching(entry.key, seen);
 
-  test('focus: prefix parses without warnings', () {
-    final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseBox('focus:bg-blue-500');
-    expect(seen, isEmpty);
-  });
-
-  test('active: prefix parses without warnings', () {
-    final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseBox('active:bg-blue-500');
-    expect(seen, isEmpty);
-  });
-
-  test('disabled: prefix parses without warnings', () {
-    final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseBox('disabled:bg-gray-200');
-    expect(seen, isEmpty);
-  });
-
-  test('dark: prefix parses without warnings', () {
-    final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseBox('dark:bg-gray-700');
-    expect(seen, isEmpty);
-  });
-
-  test('light: prefix parses without warnings', () {
-    final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseBox('light:bg-white');
-    expect(seen, isEmpty);
-  });
-
-  test('chained state prefixes parse without warnings', () {
-    final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseBox('dark:hover:bg-blue-700');
-    expect(seen, isEmpty);
-  });
-
-  test('breakpoint + state prefixes chain correctly', () {
-    final seen = <String>[];
-    TwParser(
-      onUnsupported: seen.add,
-    ).parseBox('md:hover:bg-blue-500 lg:focus:bg-blue-700');
-    expect(seen, isEmpty);
+        expect(seen, isEmpty);
+        expect(style.$variants, isNotNull);
+        expect(style.$variants, hasLength(entry.value));
+      });
+    }
   });
 
   // ==========================================================================
@@ -1512,48 +1325,43 @@ void main() {
   // ==========================================================================
 
   testWidgets('leading-none applies line height 1.0', (tester) async {
-    final text = await _renderedTextFor(tester, 'leading-none');
+    final text = await renderedTextFor(tester, 'leading-none');
     expect(text.style?.height, 1.0);
   });
 
   testWidgets('leading-tight applies line height 1.25', (tester) async {
-    final text = await _renderedTextFor(tester, 'leading-tight');
+    final text = await renderedTextFor(tester, 'leading-tight');
     expect(text.style?.height, 1.25);
   });
 
   testWidgets('leading-snug applies line height 1.375', (tester) async {
-    final text = await _renderedTextFor(tester, 'leading-snug');
+    final text = await renderedTextFor(tester, 'leading-snug');
     expect(text.style?.height, 1.375);
   });
 
   testWidgets('leading-normal applies line height 1.5', (tester) async {
-    final text = await _renderedTextFor(tester, 'leading-normal');
+    final text = await renderedTextFor(tester, 'leading-normal');
     expect(text.style?.height, 1.5);
   });
 
   testWidgets('leading-relaxed applies line height 1.625', (tester) async {
-    final text = await _renderedTextFor(tester, 'leading-relaxed');
+    final text = await renderedTextFor(tester, 'leading-relaxed');
     expect(text.style?.height, 1.625);
   });
 
   testWidgets('leading-loose applies line height 2.0', (tester) async {
-    final text = await _renderedTextFor(tester, 'leading-loose');
+    final text = await renderedTextFor(tester, 'leading-loose');
     expect(text.style?.height, 2.0);
   });
 
   testWidgets('leading-even applies even leading distribution', (tester) async {
     const value = 'leading-even sample';
     final seen = <String>[];
-    final style = TwParser(onUnsupported: seen.add).parseText('leading-even');
+    final style = twParserWatching(seen).parseText('leading-even');
 
     expect(seen, isEmpty);
 
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: StyledText(value, style: style),
-      ),
-    );
+    await pumpLtr(tester, StyledText(value, style: style));
 
     final text = tester.widget<Text>(find.text(value));
     final behavior = text.textHeightBehavior;
@@ -1569,16 +1377,11 @@ void main() {
     (tester) async {
       const value = 'leading-trim sample';
       final seen = <String>[];
-      final style = TwParser(onUnsupported: seen.add).parseText('leading-trim');
+      final style = twParserWatching(seen).parseText('leading-trim');
 
       expect(seen, isEmpty);
 
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: StyledText(value, style: style),
-        ),
-      );
+      await pumpLtr(tester, StyledText(value, style: style));
 
       final text = tester.widget<Text>(find.text(value));
       final behavior = text.textHeightBehavior;
@@ -1595,32 +1398,32 @@ void main() {
   // ==========================================================================
 
   testWidgets('tracking-tighter applies -0.8 letter spacing', (tester) async {
-    final text = await _renderedTextFor(tester, 'tracking-tighter');
+    final text = await renderedTextFor(tester, 'tracking-tighter');
     expect(text.style?.letterSpacing, -0.8);
   });
 
   testWidgets('tracking-tight applies -0.4 letter spacing', (tester) async {
-    final text = await _renderedTextFor(tester, 'tracking-tight');
+    final text = await renderedTextFor(tester, 'tracking-tight');
     expect(text.style?.letterSpacing, -0.4);
   });
 
   testWidgets('tracking-normal applies 0 letter spacing', (tester) async {
-    final text = await _renderedTextFor(tester, 'tracking-normal');
+    final text = await renderedTextFor(tester, 'tracking-normal');
     expect(text.style?.letterSpacing, 0);
   });
 
   testWidgets('tracking-wide applies 0.4 letter spacing', (tester) async {
-    final text = await _renderedTextFor(tester, 'tracking-wide');
+    final text = await renderedTextFor(tester, 'tracking-wide');
     expect(text.style?.letterSpacing, 0.4);
   });
 
   testWidgets('tracking-wider applies 0.8 letter spacing', (tester) async {
-    final text = await _renderedTextFor(tester, 'tracking-wider');
+    final text = await renderedTextFor(tester, 'tracking-wider');
     expect(text.style?.letterSpacing, 0.8);
   });
 
   testWidgets('tracking-widest applies 1.6 letter spacing', (tester) async {
-    final text = await _renderedTextFor(tester, 'tracking-widest');
+    final text = await renderedTextFor(tester, 'tracking-widest');
     expect(text.style?.letterSpacing, 1.6);
   });
 
@@ -1628,27 +1431,31 @@ void main() {
   // Min-Width/Min-Height Tests
   // ==========================================================================
 
-  test('min-w-0 parses without warnings in box context', () {
+  test('min-w-0 parses without warnings and returns a style', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseBox('min-w-0');
+    final style = parseBoxWatching('min-w-0', seen);
+
     expect(seen, isEmpty);
+    expect(style, isA<BoxStyler>());
   });
 
-  test('min-h-0 parses without warnings in box context', () {
+  test('min-h-0 parses without warnings and returns a style', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseBox('min-h-0');
+    final style = parseBoxWatching('min-h-0', seen);
+
     expect(seen, isEmpty);
+    expect(style, isA<BoxStyler>());
   });
 
   test('min-w-0 parses without warnings in flex context', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseFlex('flex min-w-0');
+    twParserWatching(seen).parseFlex('flex min-w-0');
     expect(seen, isEmpty);
   });
 
   test('min-h-0 parses without warnings in flex context', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseFlex('flex min-h-0');
+    twParserWatching(seen).parseFlex('flex min-h-0');
     expect(seen, isEmpty);
   });
 
@@ -1658,7 +1465,7 @@ void main() {
 
   test('truncate parses without warnings', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseText('truncate');
+    twParserWatching(seen).parseText('truncate');
     expect(seen, isEmpty);
   });
 
@@ -1668,9 +1475,7 @@ void main() {
       classNames: 'truncate',
     );
 
-    await tester.pumpWidget(
-      Directionality(textDirection: TextDirection.ltr, child: p),
-    );
+    await pumpLtr(tester, p);
 
     final text = tester.widget<Text>(
       find.text('This is a very long text that should be truncated'),
@@ -1685,37 +1490,37 @@ void main() {
 
   test('overflow-hidden parses without warnings in flex context', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseFlex('flex overflow-hidden');
+    twParserWatching(seen).parseFlex('flex overflow-hidden');
     expect(seen, isEmpty);
   });
 
   test('overflow-visible parses without warnings in flex context', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseFlex('flex overflow-visible');
+    twParserWatching(seen).parseFlex('flex overflow-visible');
     expect(seen, isEmpty);
   });
 
   test('overflow-clip parses without warnings in flex context', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseFlex('flex overflow-clip');
+    twParserWatching(seen).parseFlex('flex overflow-clip');
     expect(seen, isEmpty);
   });
 
   test('overflow-hidden parses without warnings in box context', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseBox('overflow-hidden');
+    parseBoxWatching('overflow-hidden', seen);
     expect(seen, isEmpty);
   });
 
   test('overflow-visible parses without warnings in box context', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseBox('overflow-visible');
+    parseBoxWatching('overflow-visible', seen);
     expect(seen, isEmpty);
   });
 
   test('overflow-clip parses without warnings in box context', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseBox('overflow-clip');
+    parseBoxWatching('overflow-clip', seen);
     expect(seen, isEmpty);
   });
 
@@ -1725,25 +1530,25 @@ void main() {
 
   test('flex-shrink-0 is ignored by parser (handled at widget layer)', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseFlex('flex flex-shrink-0');
+    twParserWatching(seen).parseFlex('flex flex-shrink-0');
     expect(seen, isEmpty);
   });
 
   test('shrink-0 is ignored by parser (handled at widget layer)', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseFlex('flex shrink-0');
+    twParserWatching(seen).parseFlex('flex shrink-0');
     expect(seen, isEmpty);
   });
 
   test('flex-shrink is ignored by parser (handled at widget layer)', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseFlex('flex flex-shrink');
+    twParserWatching(seen).parseFlex('flex flex-shrink');
     expect(seen, isEmpty);
   });
 
   test('shrink is ignored by parser (handled at widget layer)', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseFlex('flex shrink');
+    twParserWatching(seen).parseFlex('flex shrink');
     expect(seen, isEmpty);
   });
 
@@ -1753,13 +1558,13 @@ void main() {
 
   test('items-stretch parses without warnings', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseFlex('flex items-stretch');
+    twParserWatching(seen).parseFlex('flex items-stretch');
     expect(seen, isEmpty);
   });
 
   test('items-baseline parses without warnings', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseFlex('flex items-baseline');
+    twParserWatching(seen).parseFlex('flex items-baseline');
     expect(seen, isEmpty);
   });
 
@@ -1769,27 +1574,27 @@ void main() {
 
   test('text tokens can combine font-size with leading', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseText('text-lg leading-tight');
+    twParserWatching(seen).parseText('text-lg leading-tight');
     expect(seen, isEmpty);
   });
 
   test('text tokens can combine with tracking', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseText('text-sm tracking-wide');
+    twParserWatching(seen).parseText('text-sm tracking-wide');
     expect(seen, isEmpty);
   });
 
   test('multiple text modifiers parse without warnings', () {
     final seen = <String>[];
-    TwParser(
-      onUnsupported: seen.add,
+    twParserWatching(
+      seen,
     ).parseText('text-lg font-bold leading-tight tracking-wide uppercase');
     expect(seen, isEmpty);
   });
 
   test('flex with min-w-0 and overflow-hidden parses', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseFlex('flex min-w-0 overflow-hidden');
+    twParserWatching(seen).parseFlex('flex min-w-0 overflow-hidden');
     expect(seen, isEmpty);
   });
 
@@ -1799,79 +1604,79 @@ void main() {
 
   test('transition parses without warnings', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseBox('transition');
+    parseBoxWatching('transition', seen);
     expect(seen, isEmpty);
   });
 
   test('transition-all parses without warnings', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseBox('transition-all');
+    parseBoxWatching('transition-all', seen);
     expect(seen, isEmpty);
   });
 
   test('transition-none parses without warnings', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseBox('transition-none');
+    parseBoxWatching('transition-none', seen);
     expect(seen, isEmpty);
   });
 
   test('transition-colors parses without warnings (alias)', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseBox('transition-colors');
+    parseBoxWatching('transition-colors', seen);
     expect(seen, isEmpty);
   });
 
   test('transition-opacity parses without warnings (alias)', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseBox('transition-opacity');
+    parseBoxWatching('transition-opacity', seen);
     expect(seen, isEmpty);
   });
 
   test('transition-shadow parses without warnings (alias)', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseBox('transition-shadow');
+    parseBoxWatching('transition-shadow', seen);
     expect(seen, isEmpty);
   });
 
   test('transition-transform parses without warnings (alias)', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseBox('transition-transform');
+    parseBoxWatching('transition-transform', seen);
     expect(seen, isEmpty);
   });
 
   test('duration-300 parses without warnings', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseBox('duration-300');
+    parseBoxWatching('duration-300', seen);
     expect(seen, isEmpty);
   });
 
   test('delay-150 parses without warnings', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseBox('delay-150');
+    parseBoxWatching('delay-150', seen);
     expect(seen, isEmpty);
   });
 
   test('ease-in parses without warnings', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseBox('ease-in');
+    parseBoxWatching('ease-in', seen);
     expect(seen, isEmpty);
   });
 
   test('ease-out parses without warnings', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseBox('ease-out');
+    parseBoxWatching('ease-out', seen);
     expect(seen, isEmpty);
   });
 
   test('ease-in-out parses without warnings', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseBox('ease-in-out');
+    parseBoxWatching('ease-in-out', seen);
     expect(seen, isEmpty);
   });
 
   test('ease-linear parses without warnings', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseBox('ease-linear');
+    parseBoxWatching('ease-linear', seen);
     expect(seen, isEmpty);
   });
 
@@ -1880,19 +1685,19 @@ void main() {
   // ==========================================================================
 
   test('transition applies 150ms default duration', () {
-    final config = _parseAnimation('transition');
+    final config = parseAnimation('transition');
     expect(config, isNotNull);
     expect(config!.duration, const Duration(milliseconds: 150));
   });
 
   test('transition applies ease-out default curve', () {
-    final config = _parseAnimation('transition');
+    final config = parseAnimation('transition');
     expect(config, isNotNull);
     expect(config!.curve, Curves.easeOut);
   });
 
   test('transition applies 0ms default delay', () {
-    final config = _parseAnimation('transition');
+    final config = parseAnimation('transition');
     expect(config, isNotNull);
     expect(config!.delay, Duration.zero);
   });
@@ -1902,43 +1707,43 @@ void main() {
   // ==========================================================================
 
   test('delay-0 sets 0ms delay', () {
-    final config = _parseAnimation('transition delay-0');
+    final config = parseAnimation('transition delay-0');
     expect(config, isNotNull);
     expect(config!.delay, Duration.zero);
   });
 
   test('delay-75 sets 75ms delay', () {
-    final config = _parseAnimation('transition delay-75');
+    final config = parseAnimation('transition delay-75');
     expect(config, isNotNull);
     expect(config!.delay, const Duration(milliseconds: 75));
   });
 
   test('delay-100 sets 100ms delay', () {
-    final config = _parseAnimation('transition delay-100');
+    final config = parseAnimation('transition delay-100');
     expect(config, isNotNull);
     expect(config!.delay, const Duration(milliseconds: 100));
   });
 
   test('delay-150 sets 150ms delay', () {
-    final config = _parseAnimation('transition delay-150');
+    final config = parseAnimation('transition delay-150');
     expect(config, isNotNull);
     expect(config!.delay, const Duration(milliseconds: 150));
   });
 
   test('delay-500 sets 500ms delay', () {
-    final config = _parseAnimation('transition delay-500');
+    final config = parseAnimation('transition delay-500');
     expect(config, isNotNull);
     expect(config!.delay, const Duration(milliseconds: 500));
   });
 
   test('delay-700 sets 700ms delay', () {
-    final config = _parseAnimation('transition delay-700');
+    final config = parseAnimation('transition delay-700');
     expect(config, isNotNull);
     expect(config!.delay, const Duration(milliseconds: 700));
   });
 
   test('delay-1000 sets 1000ms delay', () {
-    final config = _parseAnimation('transition delay-1000');
+    final config = parseAnimation('transition delay-1000');
     expect(config, isNotNull);
     expect(config!.delay, const Duration(milliseconds: 1000));
   });
@@ -1948,39 +1753,39 @@ void main() {
   // ==========================================================================
 
   test('transition-none returns null config', () {
-    final config = _parseAnimation('transition-none');
+    final config = parseAnimation('transition-none');
     expect(config, isNull);
   });
 
   test('transition-none disables even with duration present', () {
-    final config = _parseAnimation('transition-none duration-300');
+    final config = parseAnimation('transition-none duration-300');
     expect(config, isNull);
   });
 
   test('transition-none disables even with ease present', () {
-    final config = _parseAnimation('transition-none ease-in');
+    final config = parseAnimation('transition-none ease-in');
     expect(config, isNull);
   });
 
   test('transition-none disables even with delay present', () {
-    final config = _parseAnimation('transition-none delay-500');
+    final config = parseAnimation('transition-none delay-500');
     expect(config, isNull);
   });
 
   test('transition-none disables with all modifiers', () {
-    final config = _parseAnimation(
+    final config = parseAnimation(
       'transition-none duration-300 ease-in delay-100',
     );
     expect(config, isNull);
   });
 
   test('transition then transition-none disables animation', () {
-    final config = _parseAnimation('transition transition-none');
+    final config = parseAnimation('transition transition-none');
     expect(config, isNull);
   });
 
   test('duration-300 then transition-none disables animation', () {
-    final config = _parseAnimation('duration-300 transition-none');
+    final config = parseAnimation('duration-300 transition-none');
     expect(config, isNull);
   });
 
@@ -1989,25 +1794,25 @@ void main() {
   // ==========================================================================
 
   test('later duration overrides earlier', () {
-    final config = _parseAnimation('transition duration-100 duration-300');
+    final config = parseAnimation('transition duration-100 duration-300');
     expect(config, isNotNull);
     expect(config!.duration, const Duration(milliseconds: 300));
   });
 
   test('later ease overrides earlier', () {
-    final config = _parseAnimation('transition ease-in ease-out');
+    final config = parseAnimation('transition ease-in ease-out');
     expect(config, isNotNull);
     expect(config!.curve, Curves.easeOut);
   });
 
   test('later delay overrides earlier', () {
-    final config = _parseAnimation('transition delay-100 delay-500');
+    final config = parseAnimation('transition delay-100 delay-500');
     expect(config, isNotNull);
     expect(config!.delay, const Duration(milliseconds: 500));
   });
 
   test('later delay-0 overrides earlier delay-500', () {
-    final config = _parseAnimation('transition delay-500 delay-0');
+    final config = parseAnimation('transition delay-500 delay-0');
     expect(config, isNotNull);
     expect(config!.delay, Duration.zero);
   });
@@ -2017,22 +1822,22 @@ void main() {
   // ==========================================================================
 
   test('duration alone returns null', () {
-    final config = _parseAnimation('duration-300');
+    final config = parseAnimation('duration-300');
     expect(config, isNull);
   });
 
   test('ease alone returns null', () {
-    final config = _parseAnimation('ease-in');
+    final config = parseAnimation('ease-in');
     expect(config, isNull);
   });
 
   test('delay alone returns null', () {
-    final config = _parseAnimation('delay-200');
+    final config = parseAnimation('delay-200');
     expect(config, isNull);
   });
 
   test('duration ease delay without transition returns null', () {
-    final config = _parseAnimation('duration-300 ease-in delay-100');
+    final config = parseAnimation('duration-300 ease-in delay-100');
     expect(config, isNull);
   });
 
@@ -2041,55 +1846,55 @@ void main() {
   // ==========================================================================
 
   test('duration-0 sets 0ms duration', () {
-    final config = _parseAnimation('transition duration-0');
+    final config = parseAnimation('transition duration-0');
     expect(config, isNotNull);
     expect(config!.duration, Duration.zero);
   });
 
   test('duration-75 sets 75ms duration', () {
-    final config = _parseAnimation('transition duration-75');
+    final config = parseAnimation('transition duration-75');
     expect(config, isNotNull);
     expect(config!.duration, const Duration(milliseconds: 75));
   });
 
   test('duration-100 sets 100ms duration', () {
-    final config = _parseAnimation('transition duration-100');
+    final config = parseAnimation('transition duration-100');
     expect(config, isNotNull);
     expect(config!.duration, const Duration(milliseconds: 100));
   });
 
   test('duration-150 sets 150ms duration', () {
-    final config = _parseAnimation('transition duration-150');
+    final config = parseAnimation('transition duration-150');
     expect(config, isNotNull);
     expect(config!.duration, const Duration(milliseconds: 150));
   });
 
   test('duration-200 sets 200ms duration', () {
-    final config = _parseAnimation('transition duration-200');
+    final config = parseAnimation('transition duration-200');
     expect(config, isNotNull);
     expect(config!.duration, const Duration(milliseconds: 200));
   });
 
   test('duration-300 sets 300ms duration', () {
-    final config = _parseAnimation('transition duration-300');
+    final config = parseAnimation('transition duration-300');
     expect(config, isNotNull);
     expect(config!.duration, const Duration(milliseconds: 300));
   });
 
   test('duration-500 sets 500ms duration', () {
-    final config = _parseAnimation('transition duration-500');
+    final config = parseAnimation('transition duration-500');
     expect(config, isNotNull);
     expect(config!.duration, const Duration(milliseconds: 500));
   });
 
   test('duration-700 sets 700ms duration', () {
-    final config = _parseAnimation('transition duration-700');
+    final config = parseAnimation('transition duration-700');
     expect(config, isNotNull);
     expect(config!.duration, const Duration(milliseconds: 700));
   });
 
   test('duration-1000 sets 1000ms duration', () {
-    final config = _parseAnimation('transition duration-1000');
+    final config = parseAnimation('transition duration-1000');
     expect(config, isNotNull);
     expect(config!.duration, const Duration(milliseconds: 1000));
   });
@@ -2099,25 +1904,25 @@ void main() {
   // ==========================================================================
 
   test('ease-linear sets Curves.linear', () {
-    final config = _parseAnimation('transition ease-linear');
+    final config = parseAnimation('transition ease-linear');
     expect(config, isNotNull);
     expect(config!.curve, Curves.linear);
   });
 
   test('ease-in sets Curves.easeIn', () {
-    final config = _parseAnimation('transition ease-in');
+    final config = parseAnimation('transition ease-in');
     expect(config, isNotNull);
     expect(config!.curve, Curves.easeIn);
   });
 
   test('ease-out sets Curves.easeOut', () {
-    final config = _parseAnimation('transition ease-out');
+    final config = parseAnimation('transition ease-out');
     expect(config, isNotNull);
     expect(config!.curve, Curves.easeOut);
   });
 
   test('ease-in-out sets Curves.easeInOut', () {
-    final config = _parseAnimation('transition ease-in-out');
+    final config = parseAnimation('transition ease-in-out');
     expect(config, isNotNull);
     expect(config!.curve, Curves.easeInOut);
   });
@@ -2127,7 +1932,7 @@ void main() {
   // ==========================================================================
 
   test('transition with all modifiers parses correctly', () {
-    final config = _parseAnimation('transition duration-300 ease-in delay-100');
+    final config = parseAnimation('transition duration-300 ease-in delay-100');
     expect(config, isNotNull);
     expect(config!.duration, const Duration(milliseconds: 300));
     expect(config.curve, Curves.easeIn);
@@ -2135,9 +1940,7 @@ void main() {
   });
 
   test('transition-colors with modifiers parses correctly', () {
-    final config = _parseAnimation(
-      'transition-colors duration-500 ease-in-out',
-    );
+    final config = parseAnimation('transition-colors duration-500 ease-in-out');
     expect(config, isNotNull);
     expect(config!.duration, const Duration(milliseconds: 500));
     expect(config.curve, Curves.easeInOut);
@@ -2145,7 +1948,7 @@ void main() {
 
   test('prefixed animation tokens are recognized', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseBox('hover:transition duration-300');
+    parseBoxWatching('hover:transition duration-300', seen);
     expect(seen, isEmpty);
   });
 
@@ -2155,49 +1958,37 @@ void main() {
 
   test('duration with invalid value warns via onUnsupported', () {
     final seen = <String>[];
-    _parseAnimation(
-      'transition duration-abc',
-      parser: TwParser(onUnsupported: seen.add),
-    );
+    parseAnimation('transition duration-abc', parser: twParserWatching(seen));
     expect(seen, contains('duration-abc'));
   });
 
   test('delay with invalid value warns via onUnsupported', () {
     final seen = <String>[];
-    _parseAnimation(
-      'transition delay-xyz',
-      parser: TwParser(onUnsupported: seen.add),
-    );
+    parseAnimation('transition delay-xyz', parser: twParserWatching(seen));
     expect(seen, contains('delay-xyz'));
   });
 
   test('duration with invalid value preserves default 150ms', () {
-    final config = _parseAnimation('transition duration-abc');
+    final config = parseAnimation('transition duration-abc');
     expect(config, isNotNull);
     expect(config!.duration, const Duration(milliseconds: 150));
   });
 
   test('delay with invalid value preserves default 0ms', () {
-    final config = _parseAnimation('transition delay-xyz');
+    final config = parseAnimation('transition delay-xyz');
     expect(config, isNotNull);
     expect(config!.delay, Duration.zero);
   });
 
   test('duration- without value warns via onUnsupported', () {
     final seen = <String>[];
-    _parseAnimation(
-      'transition duration-',
-      parser: TwParser(onUnsupported: seen.add),
-    );
+    parseAnimation('transition duration-', parser: twParserWatching(seen));
     expect(seen, contains('duration-'));
   });
 
   test('delay- without value warns via onUnsupported', () {
     final seen = <String>[];
-    _parseAnimation(
-      'transition delay-',
-      parser: TwParser(onUnsupported: seen.add),
-    );
+    parseAnimation('transition delay-', parser: twParserWatching(seen));
     expect(seen, contains('delay-'));
   });
 
@@ -2207,37 +1998,25 @@ void main() {
 
   test('duration-2000 warns (not a valid Tailwind value)', () {
     final seen = <String>[];
-    _parseAnimation(
-      'transition duration-2000',
-      parser: TwParser(onUnsupported: seen.add),
-    );
+    parseAnimation('transition duration-2000', parser: twParserWatching(seen));
     expect(seen, contains('duration-2000'));
   });
 
   test('duration-50 warns (not a valid Tailwind value)', () {
     final seen = <String>[];
-    _parseAnimation(
-      'transition duration-50',
-      parser: TwParser(onUnsupported: seen.add),
-    );
+    parseAnimation('transition duration-50', parser: twParserWatching(seen));
     expect(seen, contains('duration-50'));
   });
 
   test('delay-2500 warns (not a valid Tailwind value)', () {
     final seen = <String>[];
-    _parseAnimation(
-      'transition delay-2500',
-      parser: TwParser(onUnsupported: seen.add),
-    );
+    parseAnimation('transition delay-2500', parser: twParserWatching(seen));
     expect(seen, contains('delay-2500'));
   });
 
   test('delay-25 warns (not a valid Tailwind value)', () {
     final seen = <String>[];
-    _parseAnimation(
-      'transition delay-25',
-      parser: TwParser(onUnsupported: seen.add),
-    );
+    parseAnimation('transition delay-25', parser: twParserWatching(seen));
     expect(seen, contains('delay-25'));
   });
 
@@ -2246,29 +2025,29 @@ void main() {
   // ==========================================================================
 
   test('md:transition is recognized as transition trigger', () {
-    final config = _parseAnimation('md:transition');
+    final config = parseAnimation('md:transition');
     expect(config, isNotNull);
   });
 
   test('hover:duration-500 modifies duration', () {
-    final config = _parseAnimation('transition hover:duration-500');
+    final config = parseAnimation('transition hover:duration-500');
     expect(config, isNotNull);
     expect(config!.duration, const Duration(milliseconds: 500));
   });
 
   test('sm:ease-in correctly applies curve', () {
-    final config = _parseAnimation('transition sm:ease-in');
+    final config = parseAnimation('transition sm:ease-in');
     expect(config, isNotNull);
     expect(config!.curve, Curves.easeIn);
   });
 
   test('md:transition-none disables animation', () {
-    final config = _parseAnimation('transition md:transition-none');
+    final config = parseAnimation('transition md:transition-none');
     expect(config, isNull);
   });
 
   test('lg:delay-300 applies delay', () {
-    final config = _parseAnimation('transition lg:delay-300');
+    final config = parseAnimation('transition lg:delay-300');
     expect(config, isNotNull);
     expect(config!.delay, const Duration(milliseconds: 300));
   });
@@ -2278,29 +2057,29 @@ void main() {
   // ==========================================================================
 
   test('empty string returns null', () {
-    final config = _parseAnimation('');
+    final config = parseAnimation('');
     expect(config, isNull);
   });
 
   test('whitespace only returns null', () {
-    final config = _parseAnimation('   ');
+    final config = parseAnimation('   ');
     expect(config, isNull);
   });
 
   test('order independence: duration before transition works', () {
-    final config = _parseAnimation('duration-300 transition');
+    final config = parseAnimation('duration-300 transition');
     expect(config, isNotNull);
     expect(config!.duration, const Duration(milliseconds: 300));
   });
 
   test('order independence: delay before transition works', () {
-    final config = _parseAnimation('delay-200 transition');
+    final config = parseAnimation('delay-200 transition');
     expect(config, isNotNull);
     expect(config!.delay, const Duration(milliseconds: 200));
   });
 
   test('order independence: ease before transition works', () {
-    final config = _parseAnimation('ease-in transition');
+    final config = parseAnimation('ease-in transition');
     expect(config, isNotNull);
     expect(config!.curve, Curves.easeIn);
   });
@@ -2326,14 +2105,10 @@ void main() {
   );
 
   testWidgets('Div with transition renders without error', (tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Div(
-          classNames: 'bg-blue-500 transition duration-300',
-          child: const SizedBox(width: 50, height: 50),
-        ),
-      ),
+    await pumpDiv(
+      tester,
+      'bg-blue-500 transition duration-300',
+      child: const SizedBox(width: 50, height: 50),
     );
 
     expect(tester.takeException(), isNull);
@@ -2343,14 +2118,10 @@ void main() {
   testWidgets('Div with transition-none renders without animation', (
     tester,
   ) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Div(
-          classNames: 'bg-blue-500 transition-none duration-300',
-          child: const SizedBox(width: 50, height: 50),
-        ),
-      ),
+    await pumpDiv(
+      tester,
+      'bg-blue-500 transition-none duration-300',
+      child: const SizedBox(width: 50, height: 50),
     );
 
     expect(tester.takeException(), isNull);
@@ -2360,16 +2131,14 @@ void main() {
   testWidgets('FlexBox Div with transition renders without error', (
     tester,
   ) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Div(
-          classNames: 'flex gap-4 transition duration-200 ease-in',
-          children: const [
-            SizedBox(width: 20, height: 20),
-            SizedBox(width: 20, height: 20),
-          ],
-        ),
+    await pumpLtr(
+      tester,
+      Div(
+        classNames: 'flex gap-4 transition duration-200 ease-in',
+        children: const [
+          SizedBox(width: 20, height: 20),
+          SizedBox(width: 20, height: 20),
+        ],
       ),
     );
 
@@ -2383,61 +2152,61 @@ void main() {
 
   test('scale-105 parses without warnings', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseBox('scale-105');
+    parseBoxWatching('scale-105', seen);
     expect(seen, isEmpty);
   });
 
   test('scale-50 parses without warnings', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseBox('scale-50');
+    parseBoxWatching('scale-50', seen);
     expect(seen, isEmpty);
   });
 
   test('scale-150 parses without warnings', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseBox('scale-150');
+    parseBoxWatching('scale-150', seen);
     expect(seen, isEmpty);
   });
 
   test('rotate-45 parses without warnings', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseBox('rotate-45');
+    parseBoxWatching('rotate-45', seen);
     expect(seen, isEmpty);
   });
 
   test('rotate-90 parses without warnings', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseBox('rotate-90');
+    parseBoxWatching('rotate-90', seen);
     expect(seen, isEmpty);
   });
 
   test('-rotate-45 parses without warnings', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseBox('-rotate-45');
+    parseBoxWatching('-rotate-45', seen);
     expect(seen, isEmpty);
   });
 
   test('translate-x-4 parses without warnings', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseBox('translate-x-4');
+    parseBoxWatching('translate-x-4', seen);
     expect(seen, isEmpty);
   });
 
   test('translate-y-4 parses without warnings', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseBox('translate-y-4');
+    parseBoxWatching('translate-y-4', seen);
     expect(seen, isEmpty);
   });
 
   test('-translate-x-4 parses without warnings', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseBox('-translate-x-4');
+    parseBoxWatching('-translate-x-4', seen);
     expect(seen, isEmpty);
   });
 
   test('-translate-y-4 parses without warnings', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseBox('-translate-y-4');
+    parseBoxWatching('-translate-y-4', seen);
     expect(seen, isEmpty);
   });
 
@@ -2446,7 +2215,7 @@ void main() {
   // ==========================================================================
 
   testWidgets('Div with scale-105 sets container transform', (tester) async {
-    final container = await _boxContainerFor(tester, 'scale-105 bg-blue-500');
+    final container = await boxContainerFor(tester, 'scale-105 bg-blue-500');
 
     expect(container.transform, isNotNull);
     expect(container.transform![0], closeTo(1.05, 0.0001));
@@ -2460,7 +2229,7 @@ void main() {
   });
 
   testWidgets('Div with rotate-45 sets container transform', (tester) async {
-    final container = await _boxContainerFor(tester, 'rotate-45');
+    final container = await boxContainerFor(tester, 'rotate-45');
 
     expect(container.transform, isNotNull);
     expect(container.transform![0], closeTo(0.7071, 0.001));
@@ -2476,7 +2245,7 @@ void main() {
   testWidgets('Div with translate-x-4 sets container transform', (
     tester,
   ) async {
-    final container = await _boxContainerFor(tester, 'translate-x-4');
+    final container = await boxContainerFor(tester, 'translate-x-4');
 
     expect(container.transform, isNotNull);
     expect(container.transform![12], closeTo(16, 0.0001));
@@ -2492,7 +2261,7 @@ void main() {
   testWidgets('Div without transform tokens leaves container transform null', (
     tester,
   ) async {
-    final container = await _boxContainerFor(tester, 'bg-blue-500 p-4');
+    final container = await boxContainerFor(tester, 'bg-blue-500 p-4');
 
     expect(container.transform, isNull);
     expect(
@@ -2507,7 +2276,7 @@ void main() {
   testWidgets('Div with combined transforms applies single composite matrix', (
     tester,
   ) async {
-    final container = await _boxContainerFor(
+    final container = await boxContainerFor(
       tester,
       'scale-110 rotate-12 translate-x-2',
     );
@@ -2537,16 +2306,14 @@ void main() {
   testWidgets('FlexBox Div applies transform on its Box container', (
     tester,
   ) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Div(
-          classNames: 'flex gap-4 scale-105',
-          children: const [
-            SizedBox(width: 20, height: 20),
-            SizedBox(width: 20, height: 20),
-          ],
-        ),
+    await pumpLtr(
+      tester,
+      Div(
+        classNames: 'flex gap-4 scale-105',
+        children: const [
+          SizedBox(width: 20, height: 20),
+          SizedBox(width: 20, height: 20),
+        ],
       ),
     );
 
@@ -2565,25 +2332,86 @@ void main() {
   });
 
   // ==========================================================================
+  // Div Margin Hit-Test (CSS parity)
+  // ==========================================================================
+
+  group('Div margin hit-test (CSS parity)', () {
+    testWidgets('m-4 applies margin via outer Padding on Div', (tester) async {
+      await pumpSized(
+        tester,
+        Div(
+          classNames: 'm-4 bg-blue-500',
+          child: const SizedBox(width: 40, height: 40),
+        ),
+        width: 200,
+        height: 120,
+      );
+
+      final padding = tester.widget<Padding>(find.byType(Padding).first);
+      final edgeInsets = padding.padding as EdgeInsets;
+      expect(edgeInsets.top, 16);
+      expect(edgeInsets.right, 16);
+      expect(edgeInsets.bottom, 16);
+      expect(edgeInsets.left, 16);
+    });
+
+    testWidgets('hover does not apply when pointer is in margin zone', (
+      tester,
+    ) async {
+      await pumpSized(
+        tester,
+        Div(
+          classNames: 'm-8 hover:scale-110',
+          child: const SizedBox(width: 40, height: 40),
+        ),
+        width: 220,
+        height: 140,
+      );
+
+      final gesture = await createOffscreenMouseGesture(tester);
+
+      final containerFinder = find.byType(Container);
+      final marginPadding = find.byType(Padding).first;
+      final marginTopLeft = tester.getTopLeft(marginPadding);
+      final marginInsets =
+          tester.widget<Padding>(marginPadding).padding as EdgeInsets;
+
+      await gesture.moveTo(
+        Offset(marginTopLeft.dx + marginInsets.left + 2, marginTopLeft.dy + 2),
+      );
+      await tester.pump();
+
+      final marginZoneTransform = tester
+          .widget<Container>(containerFinder)
+          .transform;
+      expect(marginZoneTransform, isNotNull);
+      expect(marginZoneTransform![0], closeTo(1.0, 0.01));
+
+      await gesture.moveTo(tester.getCenter(containerFinder));
+      await tester.pump();
+
+      final hoveredTransform = tester
+          .widget<Container>(containerFinder)
+          .transform;
+      expect(hoveredTransform, isNotNull);
+      expect(hoveredTransform![0], closeTo(1.1, 0.01));
+
+      await gesture.moveTo(const Offset(-500, -500));
+      await tester.pump();
+      await gesture.removePointer();
+    });
+  });
+
+  // ==========================================================================
   // Variant-Aware Transform Tests
   // ==========================================================================
 
   testWidgets('hover:scale-105 applies scale only when hovered', (
     tester,
   ) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Div(
-          classNames: 'hover:scale-105',
-          child: const SizedBox(width: 40, height: 40),
-        ),
-      ),
-    );
+    await pumpDiv(tester, 'hover:scale-105');
 
-    final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
-    await gesture.addPointer(location: const Offset(-500, -500));
-    await tester.pump();
+    final gesture = await createOffscreenMouseGesture(tester);
 
     // CSS semantic box creates single Container - no nested Container
     final containerFinder = find.byType(Container);
@@ -2608,19 +2436,13 @@ void main() {
   testWidgets('hover transform returns to base state when mouse exits', (
     tester,
   ) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Div(
-          classNames: 'hover:scale-110',
-          child: const SizedBox(width: 30, height: 30),
-        ),
-      ),
+    await pumpDiv(
+      tester,
+      'hover:scale-110',
+      child: const SizedBox(width: 30, height: 30),
     );
 
-    final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
-    await gesture.addPointer(location: const Offset(-500, -500));
-    await tester.pump();
+    final gesture = await createOffscreenMouseGesture(tester);
 
     // CSS semantic box creates single Container - no nested Container
     final containerFinder = find.byType(Container);
@@ -2641,7 +2463,7 @@ void main() {
   });
 
   testWidgets('md:rotate-45 applies only at md breakpoint', (tester) async {
-    await _pumpSized(
+    await pumpSized(
       tester,
       Div(
         classNames: 'md:rotate-45',
@@ -2658,7 +2480,7 @@ void main() {
     expect(baseMatrix, isNotNull);
     expect(baseMatrix![0], closeTo(1.0, 0.01)); // identity matrix
 
-    await _pumpSized(
+    await pumpSized(
       tester,
       Div(
         classNames: 'md:rotate-45',
@@ -2675,14 +2497,10 @@ void main() {
   testWidgets('rotate-45 hover:scale-110 keeps rotation on hover', (
     tester,
   ) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Div(
-          classNames: 'rotate-45 hover:scale-110',
-          child: const SizedBox(width: 30, height: 30),
-        ),
-      ),
+    await pumpDiv(
+      tester,
+      'rotate-45 hover:scale-110',
+      child: const SizedBox(width: 30, height: 30),
     );
 
     // CSS semantic box creates single Container - no nested Container
@@ -2690,8 +2508,10 @@ void main() {
 
     final baseMatrix = tester.widget<Container>(containerFinder).transform!;
 
-    final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
-    await gesture.addPointer(location: Offset.zero);
+    final gesture = await createMouseGesture(
+      tester,
+      initialPosition: Offset.zero,
+    );
     await gesture.moveTo(tester.getCenter(containerFinder));
     await tester.pump();
 
@@ -2706,19 +2526,13 @@ void main() {
   });
 
   testWidgets('transition hover:scale-110 animates on hover', (tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Div(
-          classNames: 'transition hover:scale-110',
-          child: const SizedBox(width: 30, height: 30),
-        ),
-      ),
+    await pumpDiv(
+      tester,
+      'transition hover:scale-110',
+      child: const SizedBox(width: 30, height: 30),
     );
 
-    final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
-    await gesture.addPointer(location: const Offset(-500, -500));
-    await tester.pump();
+    final gesture = await createOffscreenMouseGesture(tester);
 
     // CSS semantic box creates single Container - no nested Container
     final containerFinder = find.byType(Container);
@@ -2750,14 +2564,10 @@ void main() {
   testWidgets('transform is applied via Mix container, not external wrapper', (
     tester,
   ) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Div(
-          classNames: 'scale-105',
-          child: const SizedBox(width: 30, height: 30),
-        ),
-      ),
+    await pumpDiv(
+      tester,
+      'scale-105',
+      child: const SizedBox(width: 30, height: 30),
     );
 
     final boxFinder = find.byType(Container);
@@ -2780,31 +2590,31 @@ void main() {
 
   test('hover:scale-105 parses without warnings', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseBox('hover:scale-105');
+    parseBoxWatching('hover:scale-105', seen);
     expect(seen, isEmpty);
   });
 
   test('md:rotate-45 parses without warnings', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseBox('md:rotate-45');
+    parseBoxWatching('md:rotate-45', seen);
     expect(seen, isEmpty);
   });
 
   test('lg:translate-x-4 parses without warnings', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseBox('lg:translate-x-4');
+    parseBoxWatching('lg:translate-x-4', seen);
     expect(seen, isEmpty);
   });
 
   test('dark:scale-110 parses without warnings', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseBox('dark:scale-110');
+    parseBoxWatching('dark:scale-110', seen);
     expect(seen, isEmpty);
   });
 
   test('md:hover:scale-105 parses without warnings', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseBox('md:hover:scale-105');
+    parseBoxWatching('md:hover:scale-105', seen);
     expect(seen, isEmpty);
   });
 
@@ -2814,7 +2624,7 @@ void main() {
 
   test('transform tokens parse without warnings in flex context', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseFlex('flex scale-105 rotate-45');
+    twParserWatching(seen).parseFlex('flex scale-105 rotate-45');
     expect(seen, isEmpty);
   });
 
@@ -2824,13 +2634,13 @@ void main() {
 
   test('scale-999 warns via onUnsupported', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseBox('scale-999');
+    parseBoxWatching('scale-999', seen);
     expect(seen, contains('scale-999'));
   });
 
   test('rotate-999 warns via onUnsupported', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseBox('rotate-999');
+    parseBoxWatching('rotate-999', seen);
     expect(seen, contains('rotate-999'));
   });
 
@@ -2841,7 +2651,7 @@ void main() {
   testWidgets('flex-none child maintains intrinsic width in Row', (
     tester,
   ) async {
-    await _pumpSized(
+    await pumpSized(
       tester,
       Row(
         children: [
@@ -2870,7 +2680,7 @@ void main() {
   testWidgets('items-baseline sets baseline alignment and textBaseline', (
     tester,
   ) async {
-    await _pumpSized(
+    await pumpSized(
       tester,
       Div(
         classNames: 'flex items-baseline',
@@ -2896,67 +2706,63 @@ void main() {
   group('Blur tokens', () {
     test('blur-none parses without warnings', () {
       final seen = <String>[];
-      TwParser(onUnsupported: seen.add).parseBox('blur-none');
+      parseBoxWatching('blur-none', seen);
       expect(seen, isEmpty);
     });
 
     test('blur-sm parses without warnings', () {
       final seen = <String>[];
-      TwParser(onUnsupported: seen.add).parseBox('blur-sm');
+      parseBoxWatching('blur-sm', seen);
       expect(seen, isEmpty);
     });
 
     test('blur parses without warnings (default)', () {
       final seen = <String>[];
-      TwParser(onUnsupported: seen.add).parseBox('blur');
+      parseBoxWatching('blur', seen);
       expect(seen, isEmpty);
     });
 
     test('blur-md parses without warnings', () {
       final seen = <String>[];
-      TwParser(onUnsupported: seen.add).parseBox('blur-md');
+      parseBoxWatching('blur-md', seen);
       expect(seen, isEmpty);
     });
 
     test('blur-lg parses without warnings', () {
       final seen = <String>[];
-      TwParser(onUnsupported: seen.add).parseBox('blur-lg');
+      parseBoxWatching('blur-lg', seen);
       expect(seen, isEmpty);
     });
 
     test('blur-xl parses without warnings', () {
       final seen = <String>[];
-      TwParser(onUnsupported: seen.add).parseBox('blur-xl');
+      parseBoxWatching('blur-xl', seen);
       expect(seen, isEmpty);
     });
 
     test('blur-2xl parses without warnings', () {
       final seen = <String>[];
-      TwParser(onUnsupported: seen.add).parseBox('blur-2xl');
+      parseBoxWatching('blur-2xl', seen);
       expect(seen, isEmpty);
     });
 
     test('blur-3xl parses without warnings', () {
       final seen = <String>[];
-      TwParser(onUnsupported: seen.add).parseBox('blur-3xl');
+      parseBoxWatching('blur-3xl', seen);
       expect(seen, isEmpty);
     });
 
     test('blur-999 warns via onUnsupported', () {
       final seen = <String>[];
-      TwParser(onUnsupported: seen.add).parseBox('blur-999');
+      parseBoxWatching('blur-999', seen);
       expect(seen, contains('blur-999'));
     });
 
     testWidgets('Div with blur-md applies ImageFiltered', (tester) async {
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: Div(
-            classNames: 'blur-md',
-            child: const SizedBox(width: 40, height: 40),
-          ),
-        ),
+      await pumpDiv(
+        tester,
+        'blur-md',
+        child: const SizedBox(width: 40, height: 40),
       );
 
       expect(find.byType(ImageFiltered), findsOneWidget);
@@ -2965,37 +2771,30 @@ void main() {
     testWidgets('Div with blur-none does not apply ImageFiltered', (
       tester,
     ) async {
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: Div(
-            classNames: 'blur-none',
-            child: const SizedBox(width: 40, height: 40),
-          ),
-        ),
+      await pumpDiv(
+        tester,
+        'blur-none',
+        child: const SizedBox(width: 40, height: 40),
       );
 
       expect(find.byType(ImageFiltered), findsNothing);
     });
 
     testWidgets('hover:blur-lg applies blur on hover only', (tester) async {
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: Div(
-            classNames: 'hover:blur-lg',
-            child: const SizedBox(width: 40, height: 40),
-          ),
-        ),
+      await pumpDiv(
+        tester,
+        'hover:blur-lg',
+        child: const SizedBox(width: 40, height: 40),
       );
 
       // Initially no blur
       expect(find.byType(ImageFiltered), findsNothing);
 
       // Hover
-      final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
-      await gesture.addPointer(location: Offset.zero);
-      await tester.pump();
+      final gesture = await createMouseGesture(
+        tester,
+        initialPosition: Offset.zero,
+      );
 
       final boxFinder = find.byType(Container);
       await gesture.moveTo(tester.getCenter(boxFinder.first));
@@ -3022,57 +2821,52 @@ void main() {
   group('Text shadow tokens', () {
     test('text-shadow-none parses without warnings', () {
       final seen = <String>[];
-      TwParser(onUnsupported: seen.add).parseText('text-shadow-none');
+      twParserWatching(seen).parseText('text-shadow-none');
       expect(seen, isEmpty);
     });
 
     test('text-shadow-2xs parses without warnings', () {
       final seen = <String>[];
-      TwParser(onUnsupported: seen.add).parseText('text-shadow-2xs');
+      twParserWatching(seen).parseText('text-shadow-2xs');
       expect(seen, isEmpty);
     });
 
     test('text-shadow-xs parses without warnings', () {
       final seen = <String>[];
-      TwParser(onUnsupported: seen.add).parseText('text-shadow-xs');
+      twParserWatching(seen).parseText('text-shadow-xs');
       expect(seen, isEmpty);
     });
 
     test('text-shadow-sm parses without warnings', () {
       final seen = <String>[];
-      TwParser(onUnsupported: seen.add).parseText('text-shadow-sm');
+      twParserWatching(seen).parseText('text-shadow-sm');
       expect(seen, isEmpty);
     });
 
     test('text-shadow-md parses without warnings', () {
       final seen = <String>[];
-      TwParser(onUnsupported: seen.add).parseText('text-shadow-md');
+      twParserWatching(seen).parseText('text-shadow-md');
       expect(seen, isEmpty);
     });
 
     test('text-shadow-lg parses without warnings', () {
       final seen = <String>[];
-      TwParser(onUnsupported: seen.add).parseText('text-shadow-lg');
+      twParserWatching(seen).parseText('text-shadow-lg');
       expect(seen, isEmpty);
     });
 
     test('text-shadow-999 warns via onUnsupported', () {
       final seen = <String>[];
-      TwParser(onUnsupported: seen.add).parseText('text-shadow-999');
+      twParserWatching(seen).parseText('text-shadow-999');
       expect(seen, contains('text-shadow-999'));
     });
 
     testWidgets(
       'Div with text-shadow-md applies shadows via DefaultTextStyle',
       (tester) async {
-        await tester.pumpWidget(
-          Directionality(
-            textDirection: TextDirection.ltr,
-            child: Div(
-              classNames: 'text-shadow-md',
-              children: [const Text('Hello')],
-            ),
-          ),
+        await pumpLtr(
+          tester,
+          Div(classNames: 'text-shadow-md', children: [const Text('Hello')]),
         );
 
         // Div wraps children with DefaultTextStyle for text shadows
@@ -3102,11 +2896,9 @@ void main() {
     testWidgets('Span without box utilities renders StyledText only', (
       tester,
     ) async {
-      await tester.pumpWidget(
-        const Directionality(
-          textDirection: TextDirection.ltr,
-          child: Span(text: 'Hello', classNames: 'text-blue-500 font-bold'),
-        ),
+      await pumpLtr(
+        tester,
+        const Span(text: 'Hello', classNames: 'text-blue-500 font-bold'),
       );
 
       // Should have StyledText but no Container wrapper
@@ -3117,11 +2909,9 @@ void main() {
     testWidgets('Span with px-2 py-1 wraps in Box with padding', (
       tester,
     ) async {
-      await tester.pumpWidget(
-        const Directionality(
-          textDirection: TextDirection.ltr,
-          child: Span(text: 'Badge', classNames: 'px-2 py-1 text-white'),
-        ),
+      await pumpLtr(
+        tester,
+        const Span(text: 'Badge', classNames: 'px-2 py-1 text-white'),
       );
 
       // Should wrap in a Container (from _CssSemanticBox)
@@ -3139,11 +2929,9 @@ void main() {
     testWidgets('Span with bg-purple-500 applies background color', (
       tester,
     ) async {
-      await tester.pumpWidget(
-        const Directionality(
-          textDirection: TextDirection.ltr,
-          child: Span(text: 'Badge', classNames: 'bg-purple-500'),
-        ),
+      await pumpLtr(
+        tester,
+        const Span(text: 'Badge', classNames: 'bg-purple-500'),
       );
 
       expect(find.byType(Container), findsOneWidget);
@@ -3159,11 +2947,9 @@ void main() {
     testWidgets('Span with rounded-full applies circular border radius', (
       tester,
     ) async {
-      await tester.pumpWidget(
-        const Directionality(
-          textDirection: TextDirection.ltr,
-          child: Span(text: 'Pill', classNames: 'px-2 rounded-full'),
-        ),
+      await pumpLtr(
+        tester,
+        const Span(text: 'Pill', classNames: 'px-2 rounded-full'),
       );
 
       expect(find.byType(Container), findsOneWidget);
@@ -3178,11 +2964,9 @@ void main() {
     });
 
     testWidgets('Span with border applies border', (tester) async {
-      await tester.pumpWidget(
-        const Directionality(
-          textDirection: TextDirection.ltr,
-          child: Span(text: 'Bordered', classNames: 'border border-gray-300'),
-        ),
+      await pumpLtr(
+        tester,
+        const Span(text: 'Bordered', classNames: 'border border-gray-300'),
       );
 
       expect(find.byType(Container), findsOneWidget);
@@ -3197,14 +2981,12 @@ void main() {
       tester,
     ) async {
       // This matches the card-alert Admin badge use case
-      await tester.pumpWidget(
-        const Directionality(
-          textDirection: TextDirection.ltr,
-          child: Span(
-            text: 'Admin',
-            classNames:
-                'px-2 py-0.5 bg-purple-500/30 text-purple-200 text-xs rounded-full font-medium',
-          ),
+      await pumpLtr(
+        tester,
+        const Span(
+          text: 'Admin',
+          classNames:
+              'px-2 py-0.5 bg-purple-500/30 text-purple-200 text-xs rounded-full font-medium',
         ),
       );
 
@@ -3230,11 +3012,9 @@ void main() {
     });
 
     testWidgets('Span with shadow wraps in Box', (tester) async {
-      await tester.pumpWidget(
-        const Directionality(
-          textDirection: TextDirection.ltr,
-          child: Span(text: 'Shadowed', classNames: 'shadow-md'),
-        ),
+      await pumpLtr(
+        tester,
+        const Span(text: 'Shadowed', classNames: 'shadow-md'),
       );
 
       // shadow is a box utility, should trigger wrapping
@@ -3242,11 +3022,9 @@ void main() {
     });
 
     testWidgets('Span with opacity wraps and applies Opacity', (tester) async {
-      await tester.pumpWidget(
-        const Directionality(
-          textDirection: TextDirection.ltr,
-          child: Span(text: 'Faded', classNames: 'opacity-50'),
-        ),
+      await pumpLtr(
+        tester,
+        const Span(text: 'Faded', classNames: 'opacity-50'),
       );
 
       expect(find.byType(Container), findsOneWidget);
@@ -3310,358 +3088,11 @@ void main() {
     });
   });
 
-  // ===========================================================================
-  // P Margin Utilities Tests
-  // ===========================================================================
-
-  group('P margin utilities', () {
-    testWidgets('P without margin renders without Padding wrapper', (
-      tester,
-    ) async {
-      await tester.pumpWidget(
-        const Directionality(
-          textDirection: TextDirection.ltr,
-          child: P(text: 'Hello', classNames: 'text-lg font-bold'),
-        ),
-      );
-
-      // Should have StyledText but no Padding wrapper at root
-      expect(find.byType(StyledText), findsOneWidget);
-      expect(find.byType(Padding), findsNothing);
-      // The root should not be a Padding
-      final root = find.byType(P);
-      expect(root, findsOneWidget);
-      final pWidget = tester.element(root).widget;
-      expect(pWidget, isA<P>());
-    });
-
-    testWidgets('P with mb-4 applies bottom margin via Padding', (
-      tester,
-    ) async {
-      await tester.pumpWidget(
-        const Directionality(
-          textDirection: TextDirection.ltr,
-          child: P(text: 'Paragraph', classNames: 'text-sm mb-4'),
-        ),
-      );
-
-      // Should wrap in Padding
-      expect(find.byType(Padding), findsOneWidget);
-
-      final padding = tester.widget<Padding>(find.byType(Padding));
-      final edgeInsets = padding.padding as EdgeInsets;
-      expect(edgeInsets.bottom, 16); // mb-4 = 16px
-      expect(edgeInsets.top, 0);
-      expect(edgeInsets.left, 0);
-      expect(edgeInsets.right, 0);
-    });
-
-    testWidgets('P with m-4 applies margin on all sides', (tester) async {
-      await tester.pumpWidget(
-        const Directionality(
-          textDirection: TextDirection.ltr,
-          child: P(text: 'Spaced', classNames: 'm-4'),
-        ),
-      );
-
-      expect(find.byType(Padding), findsOneWidget);
-
-      final padding = tester.widget<Padding>(find.byType(Padding));
-      final edgeInsets = padding.padding as EdgeInsets;
-      expect(edgeInsets.top, 16);
-      expect(edgeInsets.right, 16);
-      expect(edgeInsets.bottom, 16);
-      expect(edgeInsets.left, 16);
-    });
-
-    testWidgets('P with mx-4 my-2 applies horizontal and vertical margins', (
-      tester,
-    ) async {
-      await tester.pumpWidget(
-        const Directionality(
-          textDirection: TextDirection.ltr,
-          child: P(text: 'Mixed', classNames: 'mx-4 my-2'),
-        ),
-      );
-
-      expect(find.byType(Padding), findsOneWidget);
-
-      final padding = tester.widget<Padding>(find.byType(Padding));
-      final edgeInsets = padding.padding as EdgeInsets;
-      expect(edgeInsets.left, 16); // mx-4
-      expect(edgeInsets.right, 16); // mx-4
-      expect(edgeInsets.top, 8); // my-2
-      expect(edgeInsets.bottom, 8); // my-2
-    });
-
-    testWidgets('P with individual margins mt-2 mr-4 mb-6 ml-8', (
-      tester,
-    ) async {
-      await tester.pumpWidget(
-        const Directionality(
-          textDirection: TextDirection.ltr,
-          child: P(text: 'Individual', classNames: 'mt-2 mr-4 mb-6 ml-8'),
-        ),
-      );
-
-      expect(find.byType(Padding), findsOneWidget);
-
-      final padding = tester.widget<Padding>(find.byType(Padding));
-      final edgeInsets = padding.padding as EdgeInsets;
-      expect(edgeInsets.top, 8); // mt-2
-      expect(edgeInsets.right, 16); // mr-4
-      expect(edgeInsets.bottom, 24); // mb-6
-      expect(edgeInsets.left, 32); // ml-8
-    });
-
-    testWidgets('P margin combined with text styles', (tester) async {
-      await tester.pumpWidget(
-        const Directionality(
-          textDirection: TextDirection.ltr,
-          child: P(
-            text: 'Styled',
-            classNames: 'text-slate-300 text-sm mb-4 font-medium',
-          ),
-        ),
-      );
-
-      // Should have both Padding and StyledText
-      expect(find.byType(Padding), findsOneWidget);
-      expect(find.byType(StyledText), findsOneWidget);
-
-      final padding = tester.widget<Padding>(find.byType(Padding));
-      final edgeInsets = padding.padding as EdgeInsets;
-      expect(edgeInsets.bottom, 16);
-    });
-  });
-
-  // ===========================================================================
-  // P/H Margin Utilities — arbitrary values & negative-margin safety
-  // Regression coverage for resolver-backed _extractMargin (feedback Finding 5).
-  // ===========================================================================
-
-  group('P/H margin utilities — arbitrary & negative', () {
-    testWidgets('P with mb-[10px] applies arbitrary bottom margin', (
-      tester,
-    ) async {
-      await tester.pumpWidget(
-        const Directionality(
-          textDirection: TextDirection.ltr,
-          child: P(text: 'Arb', classNames: 'text-sm mb-[10px]'),
-        ),
-      );
-
-      expect(find.byType(Padding), findsOneWidget);
-      final padding = tester.widget<Padding>(find.byType(Padding));
-      final edgeInsets = padding.padding as EdgeInsets;
-      expect(edgeInsets.bottom, 10);
-      expect(edgeInsets.top, 0);
-      expect(edgeInsets.left, 0);
-      expect(edgeInsets.right, 0);
-    });
-
-    testWidgets('P with mb-[1rem] applies arbitrary rem margin (16px)', (
-      tester,
-    ) async {
-      await tester.pumpWidget(
-        const Directionality(
-          textDirection: TextDirection.ltr,
-          child: P(text: 'Arb', classNames: 'mb-[1rem]'),
-        ),
-      );
-
-      expect(find.byType(Padding), findsOneWidget);
-      final padding = tester.widget<Padding>(find.byType(Padding));
-      final edgeInsets = padding.padding as EdgeInsets;
-      expect(edgeInsets.bottom, 16);
-    });
-
-    testWidgets('H1 with mx-[12px] applies arbitrary horizontal margin', (
-      tester,
-    ) async {
-      await tester.pumpWidget(
-        const Directionality(
-          textDirection: TextDirection.ltr,
-          child: H1(text: 'Heading', classNames: 'text-4xl mx-[12px]'),
-        ),
-      );
-
-      expect(find.byType(Padding), findsOneWidget);
-      final padding = tester.widget<Padding>(find.byType(Padding));
-      final edgeInsets = padding.padding as EdgeInsets;
-      expect(edgeInsets.left, 12);
-      expect(edgeInsets.right, 12);
-    });
-
-    testWidgets('P with -mb-4 does not crash and applies no Padding', (
-      tester,
-    ) async {
-      // Negative margins cannot render through Padding (RenderPadding asserts
-      // non-negative insets), so they must be skipped, not applied.
-      await tester.pumpWidget(
-        const Directionality(
-          textDirection: TextDirection.ltr,
-          child: P(text: 'Neg', classNames: '-mb-4'),
-        ),
-      );
-
-      expect(tester.takeException(), isNull);
-      expect(find.byType(Padding), findsNothing);
-    });
-
-    testWidgets('P with -mb-4 mt-2 applies only the positive side', (
-      tester,
-    ) async {
-      await tester.pumpWidget(
-        const Directionality(
-          textDirection: TextDirection.ltr,
-          child: P(text: 'Mixed', classNames: '-mb-4 mt-2'),
-        ),
-      );
-
-      expect(find.byType(Padding), findsOneWidget);
-      final padding = tester.widget<Padding>(find.byType(Padding));
-      final edgeInsets = padding.padding as EdgeInsets;
-      expect(edgeInsets.top, 8); // mt-2 applied
-      expect(edgeInsets.bottom, 0); // -mb-4 skipped, not -16
-    });
-
-    testWidgets('variant margins do not apply as base P/H margins', (
-      tester,
-    ) async {
-      for (final classNames in [
-        'hover:mb-4',
-        'group-hover:mb-4',
-        'peer-focus:mt-2',
-        '@md:mb-4',
-        '[&_p]:mt-4',
-      ]) {
-        await tester.pumpWidget(
-          Directionality(
-            textDirection: TextDirection.ltr,
-            child: P(text: 'Paragraph', classNames: classNames),
-          ),
-        );
-        expect(find.byType(Padding), findsNothing, reason: classNames);
-
-        await tester.pumpWidget(
-          Directionality(
-            textDirection: TextDirection.ltr,
-            child: H1(text: 'Heading', classNames: classNames),
-          ),
-        );
-        expect(find.byType(Padding), findsNothing, reason: classNames);
-      }
-    });
-  });
-
-  // ===========================================================================
-  // H1-H6 Margin Utilities Tests
-  // ===========================================================================
-
-  group('H1-H6 margin utilities', () {
-    testWidgets('H1 with mb-4 applies bottom margin', (tester) async {
-      await tester.pumpWidget(
-        const Directionality(
-          textDirection: TextDirection.ltr,
-          child: H1(text: 'Heading', classNames: 'text-4xl font-bold mb-4'),
-        ),
-      );
-
-      expect(find.byType(Padding), findsOneWidget);
-
-      final padding = tester.widget<Padding>(find.byType(Padding));
-      final edgeInsets = padding.padding as EdgeInsets;
-      expect(edgeInsets.bottom, 16);
-    });
-
-    testWidgets('H2 with my-4 applies vertical margins', (tester) async {
-      await tester.pumpWidget(
-        const Directionality(
-          textDirection: TextDirection.ltr,
-          child: H2(text: 'Section', classNames: 'text-3xl my-4'),
-        ),
-      );
-
-      expect(find.byType(Padding), findsOneWidget);
-
-      final padding = tester.widget<Padding>(find.byType(Padding));
-      final edgeInsets = padding.padding as EdgeInsets;
-      expect(edgeInsets.top, 16);
-      expect(edgeInsets.bottom, 16);
-    });
-
-    testWidgets('H3 with m-2 applies margin all sides', (tester) async {
-      await tester.pumpWidget(
-        const Directionality(
-          textDirection: TextDirection.ltr,
-          child: H3(text: 'Subsection', classNames: 'text-2xl m-2'),
-        ),
-      );
-
-      expect(find.byType(Padding), findsOneWidget);
-
-      final padding = tester.widget<Padding>(find.byType(Padding));
-      final edgeInsets = padding.padding as EdgeInsets;
-      expect(edgeInsets.top, 8);
-      expect(edgeInsets.right, 8);
-      expect(edgeInsets.bottom, 8);
-      expect(edgeInsets.left, 8);
-    });
-
-    testWidgets('H4 without margin renders without Padding', (tester) async {
-      await tester.pumpWidget(
-        const Directionality(
-          textDirection: TextDirection.ltr,
-          child: H4(text: 'Title', classNames: 'text-xl font-semibold'),
-        ),
-      );
-
-      // Should have StyledText but check there's no margin Padding
-      expect(find.byType(StyledText), findsOneWidget);
-      // H4 without margin should not add Padding wrapper
-      expect(find.byType(Padding), findsNothing);
-    });
-
-    testWidgets('H5 with mb-1 applies small bottom margin', (tester) async {
-      await tester.pumpWidget(
-        const Directionality(
-          textDirection: TextDirection.ltr,
-          child: H5(text: 'Label', classNames: 'text-lg mb-1'),
-        ),
-      );
-
-      expect(find.byType(Padding), findsOneWidget);
-
-      final padding = tester.widget<Padding>(find.byType(Padding));
-      final edgeInsets = padding.padding as EdgeInsets;
-      expect(edgeInsets.bottom, 4); // mb-1 = 4px
-    });
-
-    testWidgets('H6 with mx-2 applies horizontal margins', (tester) async {
-      await tester.pumpWidget(
-        const Directionality(
-          textDirection: TextDirection.ltr,
-          child: H6(text: 'Small', classNames: 'text-base mx-2'),
-        ),
-      );
-
-      expect(find.byType(Padding), findsOneWidget);
-
-      final padding = tester.widget<Padding>(find.byType(Padding));
-      final edgeInsets = padding.padding as EdgeInsets;
-      expect(edgeInsets.left, 8);
-      expect(edgeInsets.right, 8);
-      expect(edgeInsets.top, 0);
-      expect(edgeInsets.bottom, 0);
-    });
-  });
-
   group('Gradient direction parity', () {
     testWidgets('bg-gradient-to-br defaults to cssAngleRect strategy', (
       tester,
     ) async {
-      final decoration = await _boxDecorationFor(
+      final decoration = await boxDecorationFor(
         tester,
         'bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900',
       );
@@ -3680,7 +3111,7 @@ void main() {
       final config = TwConfig.standard().copyWith(
         gradientStrategy: TwGradientStrategy.alignment,
       );
-      final decoration = await _boxDecorationForWithConfig(
+      final decoration = await boxDecorationForWithConfig(
         tester,
         'bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900',
         config,
@@ -3698,7 +3129,7 @@ void main() {
       final config = TwConfig.standard().copyWith(
         gradientStrategy: TwGradientStrategy.angle,
       );
-      final decoration = await _boxDecorationForWithConfig(
+      final decoration = await boxDecorationForWithConfig(
         tester,
         'bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900',
         config,
@@ -3721,7 +3152,7 @@ void main() {
       final config = TwConfig.standard().copyWith(
         gradientStrategy: TwGradientStrategy.cssAngleRect,
       );
-      final decoration = await _boxDecorationForWithConfig(
+      final decoration = await boxDecorationForWithConfig(
         tester,
         'bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900',
         config,
@@ -3756,7 +3187,7 @@ void main() {
       final config = TwConfig.standard().copyWith(
         gradientStrategy: TwGradientStrategy.cssAngleRect,
       );
-      final decoration = await _boxDecorationForWithConfig(
+      final decoration = await boxDecorationForWithConfig(
         tester,
         'bg-gradient-to-tr from-slate-900 via-purple-900 to-slate-900',
         config,
@@ -3791,7 +3222,7 @@ void main() {
       final config = TwConfig.standard().copyWith(
         gradientStrategy: TwGradientStrategy.cssAngleRect,
       );
-      final decoration = await _boxDecorationForWithConfig(
+      final decoration = await boxDecorationForWithConfig(
         tester,
         'bg-gradient-to-bl from-slate-900 via-purple-900 to-slate-900',
         config,
@@ -3826,7 +3257,7 @@ void main() {
       final config = TwConfig.standard().copyWith(
         gradientStrategy: TwGradientStrategy.cssAngleRect,
       );
-      final decoration = await _boxDecorationForWithConfig(
+      final decoration = await boxDecorationForWithConfig(
         tester,
         'bg-gradient-to-tl from-slate-900 via-purple-900 to-slate-900',
         config,
@@ -3858,7 +3289,7 @@ void main() {
     testWidgets('bg-gradient-to-r uses unrotated horizontal axis', (
       tester,
     ) async {
-      final decoration = await _boxDecorationFor(
+      final decoration = await boxDecorationFor(
         tester,
         'bg-gradient-to-r from-slate-900 to-slate-900',
       );
@@ -3878,17 +3309,15 @@ void main() {
 
   group('flex in unbounded contexts (CSS parity)', () {
     testWidgets('flex-1 in vertical ScrollView does not crash', (tester) async {
-      await tester.pumpWidget(
-        const Directionality(
-          textDirection: TextDirection.ltr,
-          child: SingleChildScrollView(
-            child: Div(
-              classNames: 'flex flex-col gap-2',
-              children: [
-                Div(classNames: 'flex-1 h-20 bg-blue-500'),
-                Div(classNames: 'h-20 bg-red-500'),
-              ],
-            ),
+      await pumpLtr(
+        tester,
+        const SingleChildScrollView(
+          child: Div(
+            classNames: 'flex flex-col gap-2',
+            children: [
+              Div(classNames: 'flex-1 h-20 bg-blue-500'),
+              Div(classNames: 'h-20 bg-red-500'),
+            ],
           ),
         ),
       );
@@ -3897,17 +3326,15 @@ void main() {
     });
 
     testWidgets('shrink in vertical ScrollView does not crash', (tester) async {
-      await tester.pumpWidget(
-        const Directionality(
-          textDirection: TextDirection.ltr,
-          child: SingleChildScrollView(
-            child: Div(
-              classNames: 'flex flex-col',
-              children: [
-                Div(classNames: 'shrink h-20 bg-blue-500'),
-                Div(classNames: 'shrink-0 h-20 bg-red-500'),
-              ],
-            ),
+      await pumpLtr(
+        tester,
+        const SingleChildScrollView(
+          child: Div(
+            classNames: 'flex flex-col',
+            children: [
+              Div(classNames: 'shrink h-20 bg-blue-500'),
+              Div(classNames: 'shrink-0 h-20 bg-red-500'),
+            ],
           ),
         ),
       );
@@ -3917,18 +3344,16 @@ void main() {
     testWidgets('w-full in horizontal ScrollView does not crash', (
       tester,
     ) async {
-      await tester.pumpWidget(
-        const Directionality(
-          textDirection: TextDirection.ltr,
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Div(
-              classNames: 'flex flex-row',
-              children: [
-                Div(classNames: 'w-full h-20 bg-blue-500'),
-                Div(classNames: 'w-20 h-20 bg-red-500'),
-              ],
-            ),
+      await pumpLtr(
+        tester,
+        const SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Div(
+            classNames: 'flex flex-row',
+            children: [
+              Div(classNames: 'w-full h-20 bg-blue-500'),
+              Div(classNames: 'w-20 h-20 bg-red-500'),
+            ],
           ),
         ),
       );
@@ -3936,19 +3361,17 @@ void main() {
     });
 
     testWidgets('flex-1 in bounded context still works', (tester) async {
-      await tester.pumpWidget(
-        const Directionality(
-          textDirection: TextDirection.ltr,
-          child: SizedBox(
-            width: 300,
-            height: 200,
-            child: Div(
-              classNames: 'flex flex-row',
-              children: [
-                Div(classNames: 'flex-1 bg-blue-500'),
-                Div(classNames: 'flex-1 bg-red-500'),
-              ],
-            ),
+      await pumpLtr(
+        tester,
+        const SizedBox(
+          width: 300,
+          height: 200,
+          child: Div(
+            classNames: 'flex flex-row',
+            children: [
+              Div(classNames: 'flex-1 bg-blue-500'),
+              Div(classNames: 'flex-1 bg-red-500'),
+            ],
           ),
         ),
       );

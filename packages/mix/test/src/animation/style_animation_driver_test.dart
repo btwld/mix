@@ -166,7 +166,7 @@ void main() {
       expect(() => driver.dispose(), returnsNormally);
     });
 
-    group('initialization ', () {
+    group('initialization', () {
       test('with no progress', () {
         final driver = StyleAnimationDriverTest(
           vsync: const TestVSync(),
@@ -212,7 +212,7 @@ void main() {
       });
     });
 
-    group('animateTo ', () {
+    group('animateTo', () {
       late StyleAnimationDriverTest driver;
 
       setUp(() {

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
+import '../../helpers/testing_utils.dart';
+
 void main() {
   group('StyleWidget default style', () {
     test('uses IdentityStyle with the concrete default spec', () {
@@ -31,6 +33,41 @@ void main() {
       expect(RowBox(style: flexBoxStyle).style, same(flexBoxStyle));
       expect(ColumnBox(style: flexBoxStyle).style, same(flexBoxStyle));
       expect(StackBox(style: stackBoxStyle).style, same(stackBoxStyle));
+    });
+
+    testWidgets('routes styleSpec directly without resolving style', (
+      tester,
+    ) async {
+      const boxKey = Key('box');
+      final ignoredStyle = BoxStyler().width(999);
+      final directSpec = StyleSpec(
+        spec: BoxStyler()
+            .width(120)
+            .height(80)
+            .color(Colors.green)
+            .resolve(MockBuildContext())
+            .spec,
+      );
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Box(key: boxKey, style: ignoredStyle, styleSpec: directSpec),
+        ),
+      );
+
+      final styledContainer = tester.widget<Container>(
+        find.descendant(
+          of: find.byKey(boxKey),
+          matching: find.byType(Container),
+        ),
+      );
+
+      expect(styledContainer.constraints?.maxWidth, 120);
+      expect(styledContainer.constraints?.maxHeight, 80);
+      expect(
+        (styledContainer.decoration as BoxDecoration?)?.color,
+        Colors.green,
+      );
     });
 
     testWidgets('default Box inherits parent style', (tester) async {
