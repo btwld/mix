@@ -74,6 +74,14 @@ tightening the public API around the internal token registry.
   in order.
 - **`Prop.value` null safety:** the token-ref detection branch no longer
   crashes when `V` is nullable and the supplied value is `null`.
+- **Shadow tokens through styler methods:** `boxShadowToken.mix()` /
+  `shadowToken.mix()` can now be passed directly to `BoxStyler.boxShadows`,
+  `BoxStyler.shadows`, `FlexBoxStyler.shadows`, `StackBoxStyler.shadows`, and
+  `TextStyler.shadows` (#925). The token refs now also implement the raw
+  `List<BoxShadowMix>` / `List<ShadowMix>` parameter types — the same
+  sentinel-style shim used for `DoubleRef` — so the styler signatures are
+  unchanged and existing literal-list call sites keep working. Token refs are
+  detected and routed as a `Mix` so their token source survives resolution.
 
 ### API changes
 
