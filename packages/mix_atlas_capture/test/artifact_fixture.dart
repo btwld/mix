@@ -110,6 +110,37 @@ final class ArtifactFixture {
   final Map<String, Uint8List> files;
   final Map<String, Object?> manifest;
 
+  void addRenderedComponent({required String id, required String label}) {
+    final catalog =
+        jsonDecode(utf8.decode(files['catalog.json']!)) as Map<String, Object?>;
+    final atlases = catalog['atlases']! as List<Object?>;
+    atlases.add({
+      'id': id,
+      'label': label,
+      'files': [
+        for (final theme in const [('light', 'Light'), ('dark', 'Dark')])
+          {
+            'theme': theme.$1,
+            'image': '${theme.$1}/$id.png',
+            'metadata': '${theme.$1}/$id.json',
+          },
+      ],
+    });
+    for (final theme in const [('light', 'Light'), ('dark', 'Dark')]) {
+      files['${theme.$1}/$id.png'] = Uint8List.fromList(
+        files['${theme.$1}/button.png']!,
+      );
+      files['${theme.$1}/$id.json'] = _atlasMetadata(
+        theme.$1,
+        theme.$2,
+        component: id,
+        componentLabel: label,
+      );
+    }
+    replaceJson('catalog.json', catalog, rehash: false);
+    rehash();
+  }
+
   void addPortableButtonCapture({Map<String, Object?>? document}) {
     final component = document ?? validButtonComponentDocument();
     manifest['schema'] = 'mix_atlas/capture/v2';
@@ -387,14 +418,19 @@ final class _ResolvedMemoryArtifactSource implements ResolvedArtifactSource {
   }
 }
 
-Uint8List _atlasMetadata(String theme, String label) => _jsonBytes({
+Uint8List _atlasMetadata(
+  String theme,
+  String label, {
+  String component = 'button',
+  String componentLabel = 'Button',
+}) => _jsonBytes({
   'schema': 'mix_atlas/atlas/v1',
-  'component': 'button',
-  'componentLabel': 'Button',
+  'component': component,
+  'componentLabel': componentLabel,
   'theme': theme,
   'themeLabel': label,
   'brightness': theme,
-  'file': 'button.png',
+  'file': '$component.png',
   'rowAxes': [
     {'id': 'variant', 'label': 'Variant'},
   ],

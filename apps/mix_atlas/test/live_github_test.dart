@@ -7,6 +7,30 @@ import 'package:mix_atlas_app/src/data/capture_gateway.dart';
 
 const _defaultRepository = 'btwld/remix';
 const _defaultManifestPath = 'atlas/fortal/capture.json';
+const _liveTimeout = Timeout(Duration(minutes: 2));
+const _fortalComponentIds = [
+  'accordion',
+  'avatar',
+  'badge',
+  'button',
+  'callout',
+  'card',
+  'checkbox',
+  'dialog',
+  'divider',
+  'icon-button',
+  'menu',
+  'progress',
+  'radio',
+  'select',
+  'slider',
+  'spinner',
+  'switch',
+  'tabs',
+  'textfield',
+  'toggle',
+  'tooltip',
+];
 
 void main() {
   final repository =
@@ -26,56 +50,66 @@ void main() {
             'public-GitHub verification.'
       : false;
 
-  test('loads a v2 capture by mutable ref and immutable SHA', () async {
-    final gateway = DefaultAtlasCaptureGateway();
+  test(
+    'loads a v2 capture by mutable ref and immutable SHA',
+    () async {
+      final gateway = DefaultAtlasCaptureGateway();
 
-    final byRef = await gateway.loadGitHub(
-      repository: repository,
-      ref: ref!,
-      manifestPath: manifestPath,
-    );
-    final bySha = await gateway.loadGitHub(
-      repository: byRef.receipt.repository,
-      ref: expectedSha!,
-      manifestPath: manifestPath,
-    );
+      final byRef = await gateway.loadGitHub(
+        repository: repository,
+        ref: ref!,
+        manifestPath: manifestPath,
+      );
+      final bySha = await gateway.loadGitHub(
+        repository: byRef.receipt.repository,
+        ref: expectedSha!,
+        manifestPath: manifestPath,
+      );
 
-    expect(byRef.receipt.requestedRef, expectedRequestedRef);
-    expect(byRef.receipt.resolvedCommit, expectedSha);
-    expect(bySha.receipt.requestedRef, expectedSha);
-    expect(bySha.receipt.resolvedCommit, expectedSha);
-    expect(byRef.manifest.schemaVersion, 2);
-    expect(byRef.files, isNotEmpty);
-    expect(byRef.protocolThemes, isNotEmpty);
-    expect(byRef.componentDocuments, isNotEmpty);
-    expect(bySha.manifest.id, byRef.manifest.id);
-    expect(bySha.files.keys, unorderedEquals(byRef.files.keys));
-    for (final entry in byRef.files.entries) {
-      expect(bySha.files[entry.key], entry.value, reason: entry.key);
-    }
-    switch (byRef.manifest.id) {
-      case 'fortal':
-        final fortalButton = byRef.componentDocuments.single;
-        expect(byRef.files, hasLength(70));
-        expect(byRef.protocolThemes, hasLength(2));
-        expect(byRef.validatedStyleDocumentCount, 61);
-        expect(fortalButton.id, 'button');
-        expect(fortalButton.recipes, hasLength(20));
-        expect(fortalButton.states, hasLength(6));
-        expect(fortalButton.slots, hasLength(5));
-        break;
-      case 'hero-ui':
-        final heroButton = byRef.componentDocuments.single;
-        expect(byRef.files, hasLength(72));
-        expect(byRef.protocolThemes, hasLength(2));
-        expect(byRef.validatedStyleDocumentCount, 63);
-        expect(heroButton.id, 'button');
-        expect(heroButton.recipes, hasLength(21));
-        expect(heroButton.states, hasLength(6));
-        expect(heroButton.slots, hasLength(5));
-        break;
-    }
-  }, skip: skipReason);
+      expect(byRef.receipt.requestedRef, expectedRequestedRef);
+      expect(byRef.receipt.resolvedCommit, expectedSha);
+      expect(bySha.receipt.requestedRef, expectedSha);
+      expect(bySha.receipt.resolvedCommit, expectedSha);
+      expect(byRef.manifest.schemaVersion, 2);
+      expect(byRef.files, isNotEmpty);
+      expect(byRef.protocolThemes, isNotEmpty);
+      expect(byRef.componentDocuments, isNotEmpty);
+      expect(bySha.manifest.id, byRef.manifest.id);
+      expect(bySha.files.keys, unorderedEquals(byRef.files.keys));
+      for (final entry in byRef.files.entries) {
+        expect(bySha.files[entry.key], entry.value, reason: entry.key);
+      }
+      switch (byRef.manifest.id) {
+        case 'fortal':
+          final fortalButton = byRef.componentDocuments.single;
+          expect(
+            byRef.catalog.components.map((component) => component.id),
+            _fortalComponentIds,
+          );
+          expect(byRef.files, hasLength(150));
+          expect(byRef.atlasMetadata, hasLength(42));
+          expect(byRef.protocolThemes, hasLength(2));
+          expect(byRef.validatedStyleDocumentCount, 61);
+          expect(fortalButton.id, 'button');
+          expect(fortalButton.recipes, hasLength(20));
+          expect(fortalButton.states, hasLength(6));
+          expect(fortalButton.slots, hasLength(5));
+          break;
+        case 'hero-ui':
+          final heroButton = byRef.componentDocuments.single;
+          expect(byRef.files, hasLength(72));
+          expect(byRef.protocolThemes, hasLength(2));
+          expect(byRef.validatedStyleDocumentCount, 63);
+          expect(heroButton.id, 'button');
+          expect(heroButton.recipes, hasLength(21));
+          expect(heroButton.states, hasLength(6));
+          expect(heroButton.slots, hasLength(5));
+          break;
+      }
+    },
+    skip: skipReason,
+    timeout: _liveTimeout,
+  );
 
   test(
     'opens the live capture through the standalone app controller',
@@ -99,13 +133,32 @@ void main() {
       expect(controller.reviewContext?.repository, repository);
       expect(controller.reviewContext?.baselineRef, ref);
       expect(controller.reviewContext?.currentRef, ref);
-      expect(controller.reviewContext?.componentId, 'button');
-      expect(controller.reviewContext?.recipeId, isNotNull);
-      expect(controller.reviewContext?.stateId, isNotNull);
+      final capture = controller.current!;
+      if (capture.manifest.id == 'fortal') {
+        expect(controller.reviewContext?.componentId, 'accordion');
+        expect(controller.reviewContext?.recipeId, isNull);
+        expect(controller.reviewContext?.stateId, isNull);
+        expect(controller.reviewContext?.slotId, isNull);
+
+        controller.selectComponent('button');
+        expect(controller.reviewContext?.recipeId, isNotNull);
+        expect(controller.reviewContext?.stateId, isNotNull);
+        expect(controller.reviewContext?.slotId, isNotNull);
+
+        controller.selectComponent('avatar');
+        expect(controller.reviewContext?.recipeId, isNull);
+        expect(controller.reviewContext?.stateId, isNull);
+        expect(controller.reviewContext?.slotId, isNull);
+      } else {
+        expect(controller.reviewContext?.componentId, 'button');
+        expect(controller.reviewContext?.recipeId, isNotNull);
+        expect(controller.reviewContext?.stateId, isNotNull);
+        expect(controller.reviewContext?.slotId, isNotNull);
+      }
       expect(controller.reviewContext?.themeId, isNotNull);
-      expect(controller.reviewContext?.slotId, isNotNull);
     },
     skip: skipReason,
+    timeout: _liveTimeout,
   );
 
   test(
@@ -135,5 +188,6 @@ void main() {
         ? 'Set MIX_ATLAS_LIVE_MISSING_BASELINE_REF to run the current-only '
               'public-GitHub verification.'
         : skipReason,
+    timeout: _liveTimeout,
   );
 }

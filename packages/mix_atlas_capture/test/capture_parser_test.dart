@@ -30,6 +30,29 @@ void main() {
       },
     );
 
+    test(
+      'allows rendered-only catalog entries alongside portable documents',
+      () async {
+        final fixture = ArtifactFixture.create()
+          ..addRenderedComponent(id: 'avatar', label: 'Avatar')
+          ..addPortableButtonCapture();
+
+        final capture = await CaptureLoader(
+          source: fixture.source(),
+        ).load(fixtureRequest);
+
+        expect(capture.catalog.components.map((component) => component.id), [
+          'button',
+          'avatar',
+        ]);
+        expect(capture.componentDocuments.map((component) => component.id), [
+          'button',
+        ]);
+        expect(capture.atlasMetadata, contains('avatar/light'));
+        expect(capture.atlasMetadata, contains('avatar/dark'));
+      },
+    );
+
     test('rejects path traversal before reading child files', () {
       final fixture = ArtifactFixture.create();
       final entries = fixture.manifest['files']! as List<Object?>;

@@ -5,6 +5,12 @@ The package validates committed capture bundles, verifies file hashes, decodes
 Mix protocol documents, and reconstructs only the bounded component-v1
 vocabulary. It never imports or executes producer widgets.
 
+In capture v2, `catalog.json` is the complete component inventory. Portable
+`component/v1` documents may cover only a subset of that inventory; components
+without one remain reviewable through their indexed rendered artifacts and
+structured metadata. Every indexed artifact is still path-, byte-, and
+SHA-256-validated before the capture is exposed to the app.
+
 ```dart
 final capture = await AtlasCaptureReader(source: source).load(
   const AtlasRepositoryRequest(

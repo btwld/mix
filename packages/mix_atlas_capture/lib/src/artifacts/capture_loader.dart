@@ -116,11 +116,10 @@ final class CaptureLoader implements ArtifactCaptureLoader {
       final documentIds = manifest.componentDocuments
           .map((component) => component.id)
           .toSet();
-      if (catalogIds.length != documentIds.length ||
-          !catalogIds.containsAll(documentIds)) {
+      if (!catalogIds.containsAll(documentIds)) {
         throw ArtifactLoadException(
           .invalidComponent,
-          'Capture v2 must provide one component document per catalog component.',
+          'Every portable component document must reference a catalog component.',
           path: 'capture.json/components',
         );
       }

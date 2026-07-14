@@ -339,6 +339,7 @@ class _ComponentSidebarState extends State<_ComponentSidebar> {
               children: [
                 for (final component in components)
                   ListTile(
+                    key: ValueKey('component-${component.id}'),
                     leading: const Icon(Icons.widgets_outlined, size: 18),
                     title: Text(
                       component.label,

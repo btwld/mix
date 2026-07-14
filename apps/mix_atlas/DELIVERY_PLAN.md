@@ -31,8 +31,8 @@ regression, predicted impact, approval, or release decision.
 
 - `mix_atlas_capture` owns strict loading, capture models, portable rendering,
   source contracts, and producer packaging.
-- Capture v1 and v2 remain readable; producers write canonical v2 and component
-  v1 documents.
+- Capture v1 and v2 remain readable; producers write canonical v2 plus an
+  optional component-v1 portable-document subset.
 - Safe paths, collection limits, byte limits, strict fields, SHA-256 hashes,
   and protocol validation remain mandatory.
 - Baseline and changed Button fixtures cover the standalone reader.
@@ -52,14 +52,17 @@ regression, predicted impact, approval, or release decision.
 - `AtlasCapturePackager.build` writes sorted canonical files and removes stale
   generated files.
 - `AtlasCapturePackager.check` reports exact drift without rewriting files.
-- The Fortal reference bundle contains 70 indexed artifacts plus
-  `capture.json`.
+- The Fortal reference bundle contains 21 catalog components and 150 indexed
+  artifacts plus `capture.json`.
 - Its 200 supported cells remain pixel-exact and its 40 loading cells remain
   explicitly unsupported.
+- Forty-two light/dark contact sheets keep all 21 component families
+  reviewable; the 20 families without portable adapters are explicitly marked
+  rendered-only.
 
-The Remix producer still needs to publish the committed Fortal capture and pin
-an immutable Mix revision before the public `btwld/remix` sample can open from
-GitHub `main`. The local producer workflow is already validated.
+The Remix producer draft PR expands the committed Button baseline on `main` to
+all 21 Fortal component families, so the public sample exercises a real
+baseline/current comparison.
 
 ### Phase 4 — Sources, session, and navigation
 
@@ -77,10 +80,12 @@ GitHub `main`. The local producer workflow is already validated.
 
 ### Phase 5 — Catalog and Inspect
 
-- Catalog shows the captured component, recipe, state, and theme matrix.
+- Catalog shows every captured component. Components with portable documents
+  expose their recipe/state/theme matrix; rendered-only components expose their
+  hash-verified light/dark contact sheets without fabricated portable data.
 - Inspect shows the portable reconstruction, anatomy slots, declared
   properties, selectors, token references, captured theme values, diagnostics,
-  source files, and JSON pointers.
+  source files, and JSON pointers when the producer supplied that evidence.
 - Runtime evidence is always labeled `Not captured`.
 - The Fortal spinner remains an explicit unsupported slot.
 
@@ -135,13 +140,13 @@ Once the producer capture exists on a public branch, run the opt-in live source
 gate with that branch and its immutable head SHA:
 
 ```sh
-MIX_ATLAS_LIVE_REF=feat/mix-atlas-fortal-artifacts \
+MIX_ATLAS_LIVE_REF='#68' \
 MIX_ATLAS_LIVE_SHA=<full-commit-sha> \
 fvm flutter test test/live_github_test.dart
 ```
 
-Set `MIX_ATLAS_LIVE_MISSING_BASELINE_REF=main` before the first producer merge
-to exercise the current-only review state against the real network source.
+Set `MIX_ATLAS_LIVE_MISSING_BASELINE_REF` to a revision without the manifest to
+exercise the current-only review state against the real network source.
 
 Run producer verification from the Remix repository with its pinned Flutter
 toolchain:

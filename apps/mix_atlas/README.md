@@ -12,14 +12,15 @@ The phased implementation receipt and verification gates are recorded in
 
 The app preserves one immutable review context while moving through:
 
-1. **Catalog** — search captured components and select an exact recipe, state,
-   and theme cell.
+1. **Catalog** — search captured components and open either an exact portable
+   recipe/state/theme cell or a validated rendered contact sheet.
 2. **Changes** — review added, removed, and modified declared evidence between
    `main` and a current revision.
 3. **Compare** — view bounded baseline/current reconstructions side by side and
    select a changed property.
-4. **Inspect** — trace declared values, selectors, token references, captured
-   theme values, diagnostics, source files, and JSON pointers.
+4. **Inspect** — for components with portable documents, trace declared values,
+   selectors, token references, captured theme values, diagnostics, source
+   files, and JSON pointers.
 5. **Token Usage** — filter every exact captured reference by component,
    selector, theme, slot, property, and Direct/Alias classification.
 
@@ -58,20 +59,17 @@ response, Atlas shows the failure and does not retry until the reset time.
 The default sample fields point to:
 
 ```text
-repository: tilucasoli/hero_ui
+repository: btwld/remix
 baseline:   main
-current:    #21
-manifest:   atlas/hero_ui/capture.json
+current:    #68
+manifest:   atlas/fortal/capture.json
 ```
 
-The repository is `tilucasoli/hero_ui`. Draft PR #21 is sourced from the
-`leoafarias/hero_ui` fork and contains the generated Hero Button capture.
-Upstream `main` does not have `atlas/hero_ui/capture.json` yet, so this sample
-intentionally opens in current-only mode: Catalog and Inspect are available,
-while Changes and Compare remain disabled until the first baseline is merged.
-Returning to source selection keeps the last entered values. A load can also
-be cancelled from the header, and choosing a listed PR automatically selects
-that PR's actual base branch.
+`btwld/remix` `main` contains the committed Button baseline. Draft PR #68
+expands the Fortal capture to all 21 component families, so the sample opens as
+a real baseline/current comparison. Returning to source selection keeps the
+last entered values. A load can also be cancelled from the header, and choosing
+a listed PR automatically selects that PR's actual base branch.
 
 Release builds can choose a different initial source without editing Dart by
 passing `MIX_ATLAS_DEFAULT_REPOSITORY`, `MIX_ATLAS_DEFAULT_BASELINE_REF`,
@@ -87,9 +85,10 @@ Flutter's `--dart-define` option.
 - **Runtime**: always shown as `Not captured` in this preview.
 
 Atlas does not infer runtime winners, resolved widget styles, accessibility
-results, source locations, or visual impact. An unsupported slot remains visible
-with its structured diagnostic. Fortal's spinner is intentionally unsupported;
-the app never substitutes a made-up primitive.
+results, source locations, or visual impact. An unsupported portable slot
+remains visible with its structured diagnostic. A catalog component without a
+portable document is labeled `Rendered evidence`; Atlas displays its verified
+contact sheet and does not invent recipes, states, slots, or properties.
 
 ## Producer setup
 
@@ -115,9 +114,12 @@ melos run atlas:fortal
 melos run atlas:fortal:check
 ```
 
-Its capture contains 70 indexed artifacts plus `capture.json`. The 200
-non-loading Button cells have exact producer-side screenshot comparisons; the
-40 loading cells carry an explicit unsupported spinner diagnostic.
+Its capture contains 21 component families, 42 light/dark contact sheets, and
+150 indexed artifacts plus `capture.json`. Button retains its full portable
+recipe/state/slot evidence: 200 non-loading cells have exact producer-side
+screenshot comparisons, while 40 loading cells carry an explicit unsupported
+spinner diagnostic. The other 20 families are deliberately labeled
+rendered-only until their portable projection adapters exist.
 
 ## Develop and verify
 
@@ -137,25 +139,31 @@ deliberate visual review:
 fvm flutter test test/golden_test.dart --update-goldens
 ```
 
+Validate a freshly generated producer bundle through the same local loading
+path used by the app:
+
+```sh
+MIX_ATLAS_LIVE_LOCAL_ROOT=/path/to/remix \
+fvm flutter test test/live_local_capture_test.dart
+```
+
 After a producer branch has been pushed, validate the real public-GitHub path
 by mutable ref and immutable commit SHA. Repository and manifest default to the
 Fortal reference capture, but can be overridden for any public producer. For
-the Hero UI fork PR:
+the Fortal demo PR:
 
 ```sh
-MIX_ATLAS_LIVE_REPOSITORY=tilucasoli/hero_ui \
-MIX_ATLAS_LIVE_REF='#21' \
-MIX_ATLAS_LIVE_SHA=a1cf6b3377db0301cce21e399c1815698d47bd67 \
-MIX_ATLAS_LIVE_MANIFEST=atlas/hero_ui/capture.json \
-MIX_ATLAS_LIVE_MISSING_BASELINE_REF=main \
+MIX_ATLAS_LIVE_REPOSITORY=btwld/remix \
+MIX_ATLAS_LIVE_REF='#68' \
+MIX_ATLAS_LIVE_SHA=<full-pr-head-sha> \
+MIX_ATLAS_LIVE_MANIFEST=atlas/fortal/capture.json \
 fvm flutter test test/live_github_test.dart
 ```
 
 For a same-repository branch, omit `MIX_ATLAS_LIVE_REPOSITORY` and
-`MIX_ATLAS_LIVE_MANIFEST` when using the Fortal defaults. Before the first
-producer capture reaches its baseline branch, set
-`MIX_ATLAS_LIVE_MISSING_BASELINE_REF` as above. That also proves the current
-capture remains usable while Changes and Compare are unavailable.
+`MIX_ATLAS_LIVE_MANIFEST` when using the Fortal defaults. To exercise the
+current-only fallback separately, set `MIX_ATLAS_LIVE_MISSING_BASELINE_REF` to
+a revision that does not contain the selected manifest.
 
 The live test is deliberately opt-in so ordinary CI remains deterministic and
 does not consume unauthenticated GitHub API quota.

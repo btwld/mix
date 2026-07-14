@@ -21,7 +21,7 @@ final class AtlasSourceSelection {
   static const productionDefault = AtlasSourceSelection(
     repository: String.fromEnvironment(
       'MIX_ATLAS_DEFAULT_REPOSITORY',
-      defaultValue: 'tilucasoli/hero_ui',
+      defaultValue: 'btwld/remix',
     ),
     baselineRef: String.fromEnvironment(
       'MIX_ATLAS_DEFAULT_BASELINE_REF',
@@ -29,11 +29,11 @@ final class AtlasSourceSelection {
     ),
     currentRef: String.fromEnvironment(
       'MIX_ATLAS_DEFAULT_CURRENT_REF',
-      defaultValue: '#21',
+      defaultValue: '#68',
     ),
     manifestPath: String.fromEnvironment(
       'MIX_ATLAS_DEFAULT_MANIFEST',
-      defaultValue: 'atlas/hero_ui/capture.json',
+      defaultValue: 'atlas/fortal/capture.json',
     ),
   );
 
@@ -156,12 +156,15 @@ final class AtlasAppController extends ChangeNotifier {
         ? null
         : AtlasCaptureIndex.build(baselineCapture);
     currentIndex = AtlasCaptureIndex.build(currentCapture);
-    final component = currentCapture.componentDocuments.firstOrNull;
+    final catalogComponent = currentCapture.catalog.components.firstOrNull;
+    final component = currentCapture.componentDocuments
+        .where((document) => document.id == catalogComponent?.id)
+        .firstOrNull;
     reviewContext = AtlasReviewContext(
       repository: repository,
       baselineRef: baselineRef,
       currentRef: currentRef,
-      componentId: component?.id,
+      componentId: catalogComponent?.id ?? component?.id,
       recipeId: component?.recipes.firstOrNull?.id,
       stateId: component?.states.keys.firstOrNull,
       themeId: currentCapture.manifest.themes.firstOrNull?.id,
@@ -325,12 +328,17 @@ final class AtlasAppController extends ChangeNotifier {
     final component = current?.componentDocuments
         .where((component) => component.id == componentId)
         .firstOrNull;
-    reviewContext = reviewContext?.copyWith(
+    final review = reviewContext;
+    if (review == null) return;
+    reviewContext = AtlasReviewContext(
+      repository: review.repository,
+      baselineRef: review.baselineRef,
+      currentRef: review.currentRef,
       componentId: componentId,
       recipeId: component?.recipes.firstOrNull?.id,
       stateId: component?.states.keys.firstOrNull,
+      themeId: review.themeId,
       slotId: component?.slots.keys.firstOrNull,
-      clearEvidence: true,
     );
     notifyListeners();
   }

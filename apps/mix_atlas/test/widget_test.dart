@@ -35,10 +35,10 @@ void main() {
     expect(find.textContaining('never compiles'), findsOneWidget);
     _expectSourceFields(
       tester,
-      repository: 'tilucasoli/hero_ui',
+      repository: 'btwld/remix',
       baselineRef: 'main',
-      currentRef: '#21',
-      manifestPath: 'atlas/hero_ui/capture.json',
+      currentRef: '#68',
+      manifestPath: 'atlas/fortal/capture.json',
     );
   });
 
@@ -227,7 +227,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(controller.loadState, AtlasLoadState.ready);
-    expect(gateway.githubRefs, ['main', '#21']);
+    expect(gateway.githubRefs, ['main', '#68']);
   });
 
   testWidgets('navigates Catalog, Changes, Compare, Inspect, and Token Usage', (
@@ -349,7 +349,7 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('shows a truthful partial-capture state without component v1', (
+  testWidgets('shows rendered evidence without a portable component document', (
     tester,
   ) async {
     final partial = _withoutPortableComponents(baseline);
@@ -360,11 +360,47 @@ void main() {
 
     await tester.pumpWidget(AtlasApp(controller: controller));
 
+    expect(find.text('Rendered evidence'), findsOneWidget);
+    expect(find.text('Portable inspection not captured'), findsOneWidget);
     expect(
-      find.text('Portable reconstruction is not captured'),
+      find.byKey(const ValueKey('rendered-oracle-button-light')),
       findsOneWidget,
     );
-    expect(find.textContaining('contact-sheet oracle'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('clears portable selection when opening rendered-only evidence', (
+    tester,
+  ) async {
+    final mixed = _withRenderedOnlyAvatar(baseline);
+    final controller = AtlasAppController(
+      gateway: _FixtureGateway(baseline: mixed, changed: mixed),
+    );
+    await controller.openGitHub(repository: 'btwld/remix', currentRef: 'main');
+
+    await tester.pumpWidget(AtlasApp(controller: controller));
+    expect(controller.reviewContext?.componentId, 'button');
+    expect(controller.reviewContext?.recipeId, isNotNull);
+
+    await tester.tap(find.byKey(const ValueKey('component-avatar')));
+    await tester.pump();
+
+    expect(controller.reviewContext?.componentId, 'avatar');
+    expect(controller.reviewContext?.recipeId, isNull);
+    expect(controller.reviewContext?.stateId, isNull);
+    expect(controller.reviewContext?.slotId, isNull);
+    expect(
+      find.byKey(const ValueKey('rendered-oracle-avatar-light')),
+      findsOneWidget,
+    );
+
+    await tester.tap(find.byKey(const ValueKey('component-button')));
+    await tester.pump();
+    expect(controller.reviewContext?.recipeId, isNotNull);
+    expect(
+      find.byKey(const ValueKey('cell-solid-size1-default')),
+      findsOneWidget,
+    );
     expect(tester.takeException(), isNull);
   });
 
@@ -648,3 +684,47 @@ AtlasCapture _withoutPortableComponents(AtlasCapture source) => AtlasCapture(
   atlasMetadata: source.atlasMetadata,
   validatedStyleDocumentCount: source.validatedStyleDocumentCount,
 );
+
+AtlasCapture _withRenderedOnlyAvatar(AtlasCapture source) {
+  final button = source.catalog.components.single;
+  final avatar = AtlasCatalogComponent(
+    id: 'avatar',
+    label: 'Avatar',
+    assets: {
+      for (final entry in button.assets.entries)
+        entry.key: AtlasComponentAsset(
+          themeId: entry.value.themeId,
+          imagePath: entry.value.imagePath,
+          metadataPath: entry.value.metadataPath,
+        ),
+    },
+  );
+
+  return AtlasCapture(
+    receipt: source.receipt,
+    manifest: source.manifest,
+    catalog: AtlasCatalog(
+      id: source.catalog.id,
+      label: source.catalog.label,
+      themes: source.catalog.themes,
+      components: [button, avatar],
+    ),
+    protocolCoverage: source.protocolCoverage,
+    files: source.files,
+    themeTokenCounts: source.themeTokenCounts,
+    protocolThemes: source.protocolThemes,
+    componentDocuments: source.componentDocuments,
+    styleDocuments: source.styleDocuments,
+    atlasMetadata: {
+      ...source.atlasMetadata,
+      for (final theme in source.catalog.themes)
+        'avatar/${theme.id}': AtlasVisualOracleMetadata(
+          componentId: 'avatar',
+          themeId: theme.id,
+          rowCount: 1,
+          columnCount: 1,
+        ),
+    },
+    validatedStyleDocumentCount: source.validatedStyleDocumentCount,
+  );
+}

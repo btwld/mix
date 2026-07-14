@@ -14,18 +14,26 @@ class AtlasCatalogScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final capture = controller.current!;
     final selectedId = controller.reviewContext?.componentId;
+    final catalogComponent = capture.catalog.components
+        .where((component) => component.id == selectedId)
+        .firstOrNull;
     final component = capture.componentDocuments
         .where((document) => document.id == selectedId)
         .firstOrNull;
-    if (component == null) {
-      return const AtlasEmptyState(
-        title: 'Portable reconstruction is not captured',
-        message:
-            'This capture can still expose its contact-sheet oracle, but it has no component-v1 document to reconstruct.',
-      );
-    }
     final themeId =
         controller.reviewContext?.themeId ?? capture.manifest.themes.first.id;
+    if (component == null) {
+      return catalogComponent == null
+          ? const AtlasEmptyState(
+              title: 'Captured component is unavailable',
+              message: 'Choose another component from the catalog.',
+            )
+          : _RenderedCatalog(
+              capture: capture,
+              component: catalogComponent,
+              themeId: themeId,
+            );
+    }
 
     return Column(
       crossAxisAlignment: .stretch,
@@ -50,6 +58,120 @@ class AtlasCatalogScreen extends StatelessWidget {
           ),
         ),
         _SelectionBar(controller: controller),
+      ],
+    );
+  }
+}
+
+class _RenderedCatalog extends StatelessWidget {
+  const _RenderedCatalog({
+    required this.capture,
+    required this.component,
+    required this.themeId,
+  });
+
+  final AtlasCapture capture;
+  final AtlasCatalogComponent component;
+  final String themeId;
+
+  @override
+  Widget build(BuildContext context) {
+    final asset = component.assets[themeId];
+    final image = asset == null ? null : capture.files[asset.imagePath];
+    final metadata = capture.atlasMetadata['${component.id}/$themeId'];
+    if (asset == null || image == null || metadata == null) {
+      return const AtlasEmptyState(
+        title: 'Rendered evidence is unavailable',
+        message: 'The selected theme has no validated contact-sheet oracle.',
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: .stretch,
+      children: [
+        Padding(
+          padding: const .fromLTRB(24, 20, 24, 18),
+          child: Column(
+            crossAxisAlignment: .start,
+            children: [
+              Text(
+                component.label,
+                style: Theme.of(
+                  context,
+                ).textTheme.headlineSmall?.copyWith(fontWeight: .w700),
+              ),
+              const SizedBox(height: 5),
+              Text(
+                'Real producer contact sheet · $themeId · '
+                '${capture.receipt.requestedRef}',
+                style: const TextStyle(
+                  color: AtlasPalette.textMuted,
+                  fontSize: 12,
+                ),
+              ),
+              const SizedBox(height: 14),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  AtlasBadge('${metadata.rowCount} rows'),
+                  AtlasBadge('${metadata.columnCount} columns'),
+                  const AtlasBadge('Rendered evidence', success: true),
+                  const AtlasBadge(
+                    'Portable inspection not captured',
+                    warning: true,
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+        const Divider(height: 1),
+        Expanded(
+          child: ColoredBox(
+            color: AtlasPalette.surfaceMuted,
+            child: InteractiveViewer(
+              boundaryMargin: const .all(80),
+              constrained: false,
+              minScale: 0.1,
+              maxScale: 4,
+              child: Padding(
+                padding: const .all(24),
+                child: Semantics(
+                  label: '${component.label}, rendered $themeId contact sheet',
+                  child: Image.memory(
+                    image,
+                    key: ValueKey('rendered-oracle-${component.id}-$themeId'),
+                    filterQuality: FilterQuality.high,
+                    gaplessPlayback: true,
+                    errorBuilder: (context, error, stackTrace) =>
+                        const SizedBox(
+                          width: 640,
+                          height: 360,
+                          child: Center(
+                            child: Text(
+                              'Rendered evidence could not be decoded.',
+                              style: TextStyle(color: AtlasPalette.textMuted),
+                            ),
+                          ),
+                        ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        Container(
+          padding: const .symmetric(vertical: 11, horizontal: 22),
+          decoration: const BoxDecoration(
+            color: AtlasPalette.surface,
+            border: Border(top: BorderSide(color: AtlasPalette.border)),
+          ),
+          child: Text(
+            asset.imagePath,
+            style: const TextStyle(color: AtlasPalette.textMuted, fontSize: 11),
+          ),
+        ),
       ],
     );
   }

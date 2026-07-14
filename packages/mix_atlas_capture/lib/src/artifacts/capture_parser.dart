@@ -10,7 +10,7 @@ abstract final class CaptureLimits {
   static const maxJsonBytes = 2 * 1024 * 1024;
   static const maxFileBytes = 20 * 1024 * 1024;
   static const maxTotalBytes = 50 * 1024 * 1024;
-  static const maxFiles = 128;
+  static const maxFiles = 256;
   static const maxComponentDocuments = 64;
 }
 
