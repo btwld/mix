@@ -1,0 +1,1 @@
+{"schema":"mix_atlas/atlas/v1","component":"button","componentLabel":"Button","theme":"dark","themeLabel":"Dark","brightness":"dark","file":"button.png","rowAxes":[{"id":"variant","label":"Variant"}],"rows":[{"id":"solid","values":{"variant":{"id":"solid","label":"Solid"}}}],"columns":[{"id":"default","label":"Default"}]}

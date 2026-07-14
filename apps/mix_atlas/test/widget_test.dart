@@ -1,0 +1,536 @@
+import 'dart:async';
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mix_atlas_capture/mix_atlas_capture.dart';
+
+import 'package:mix_atlas_app/src/app.dart';
+import 'package:mix_atlas_app/src/app_controller.dart';
+import 'package:mix_atlas_app/src/data/capture_gateway.dart';
+import 'package:mix_atlas_app/src/models/destination.dart';
+
+void main() {
+  late AtlasCapture baseline;
+  late AtlasCapture changed;
+
+  setUpAll(() async {
+    baseline = await _loadFixture('button_baseline');
+    changed = await _loadFixture('button_changed');
+  });
+
+  testWidgets('starts with truthful local and GitHub source choices', (
+    tester,
+  ) async {
+    final controller = AtlasAppController(
+      gateway: _FixtureGateway(baseline: baseline, changed: changed),
+    );
+
+    await tester.pumpWidget(AtlasApp(controller: controller));
+
+    expect(find.text('Open a design-system capture'), findsOneWidget);
+    expect(find.byKey(const ValueKey('open-github')), findsOneWidget);
+    expect(find.byKey(const ValueKey('open-folder')), findsOneWidget);
+    expect(find.textContaining('never compiles'), findsOneWidget);
+  });
+
+  testWidgets('shows the capture workspace skeleton while validating', (
+    tester,
+  ) async {
+    final gateway = _PendingGateway();
+    final controller = AtlasAppController(gateway: gateway);
+    final load = controller.openGitHub(
+      repository: 'btwld/remix',
+      currentRef: 'main',
+    );
+
+    await tester.pumpWidget(AtlasApp(controller: controller));
+
+    expect(
+      find.byKey(const ValueKey('capture-loading-skeleton')),
+      findsOneWidget,
+    );
+    expect(
+      find.bySemanticsLabel('Validating capture files and protocol documents'),
+      findsOneWidget,
+    );
+
+    gateway.capture.complete(baseline);
+    await load;
+    await tester.pump();
+  });
+
+  testWidgets('opens an explicitly selected baseline revision', (tester) async {
+    final gateway = _SourceFormGateway(baseline: baseline, current: changed);
+    final controller = AtlasAppController(gateway: gateway);
+
+    await tester.pumpWidget(AtlasApp(controller: controller));
+    await tester.enterText(
+      find.byKey(const ValueKey('baseline-ref-field')),
+      'release/next',
+    );
+    await tester.enterText(
+      find.byKey(const ValueKey('current-ref-field')),
+      'feature/button',
+    );
+    await tester.tap(find.byKey(const ValueKey('open-github')));
+    await tester.pumpAndSettle();
+
+    expect(gateway.githubRefs, ['release/next', 'feature/button']);
+    expect(controller.reviewContext?.baselineRef, 'release/next');
+    expect(controller.reviewContext?.currentRef, 'feature/button');
+  });
+
+  testWidgets('shows remaining and reset GitHub API rate-limit data', (
+    tester,
+  ) async {
+    final gateway = _SourceFormGateway(
+      baseline: baseline,
+      current: changed,
+      pullRequestList: AtlasGitHubPullRequestList(
+        pullRequests: const [],
+        rateLimit: AtlasGitHubRateLimit(
+          remaining: 42,
+          limit: 60,
+          resetAt: DateTime.utc(2026, 7, 14, 8),
+        ),
+      ),
+    );
+    final controller = AtlasAppController(gateway: gateway);
+
+    await tester.pumpWidget(AtlasApp(controller: controller));
+    await tester.tap(find.widgetWithText(OutlinedButton, 'Open PRs'));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text(
+        'GitHub API · 42/60 requests remaining · resets 2026-07-14 08:00 UTC',
+      ),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('supports keyboard traversal and activation in the source form', (
+    tester,
+  ) async {
+    final gateway = _SourceFormGateway(baseline: baseline, current: changed);
+    final controller = AtlasAppController(gateway: gateway);
+
+    await tester.pumpWidget(AtlasApp(controller: controller));
+    for (var index = 0; index < 5; index += 1) {
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pump();
+    }
+
+    expect(FocusManager.instance.highlightMode, FocusHighlightMode.traditional);
+    expect(FocusManager.instance.primaryFocus, isNotNull);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+
+    expect(controller.loadState, AtlasLoadState.ready);
+    expect(gateway.githubRefs, ['main']);
+  });
+
+  testWidgets('navigates Catalog, Changes, Compare, Inspect, and Token Usage', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(1440, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final controller = AtlasAppController(
+      gateway: _FixtureGateway(baseline: baseline, changed: changed),
+    );
+    await controller.openGitHub(
+      repository: 'btwld/remix',
+      currentRef: 'feature',
+    );
+
+    await tester.pumpWidget(AtlasApp(controller: controller));
+    await tester.pump(const Duration(milliseconds: 200));
+
+    expect(find.text('Button'), findsWidgets);
+    expect(
+      find.byKey(const ValueKey('cell-solid-size1-default')),
+      findsOneWidget,
+    );
+    expect(find.text('6 states'), findsOneWidget);
+    expect(
+      find.bySemanticsLabel('Button, solid-size1, default, light'),
+      findsOneWidget,
+    );
+    await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
+    await expectLater(tester, meetsGuideline(textContrastGuideline));
+
+    await tester.tap(find.text('Changes').first);
+    await tester.pump(const Duration(milliseconds: 200));
+    expect(find.text('Declared changes'), findsOneWidget);
+    expect(find.textContaining('label.mix.json'), findsOneWidget);
+
+    await tester.tap(find.text('Compare').last);
+    await tester.pump(const Duration(milliseconds: 200));
+    expect(find.textContaining('Compare · button'), findsOneWidget);
+    expect(
+      find.textContaining('Contact-sheet oracle available'),
+      findsNWidgets(2),
+    );
+
+    await tester.tap(find.text('Inspect').last);
+    await tester.pump(const Duration(milliseconds: 200));
+    await tester.tap(find.textContaining('label · text'));
+    await tester.pump(const Duration(milliseconds: 200));
+    expect(find.text('style.color'), findsWidgets);
+    expect(find.text('Runtime · Not captured'), findsOneWidget);
+
+    await tester.tap(find.text('Open Token Usage'));
+    await tester.pump(const Duration(milliseconds: 200));
+    expect(find.textContaining('fortal.accent.9'), findsOneWidget);
+    expect(find.textContaining('not predicted visual impact'), findsOneWidget);
+    expect(find.text('Direct'), findsWidgets);
+    await tester.tap(find.byTooltip('Return to previous review'));
+    await tester.pump(const Duration(milliseconds: 200));
+    expect(find.textContaining('Inspect · Button'), findsOneWidget);
+    expect(controller.reviewContext?.property, 'style.color');
+    expect(controller.reviewContext?.tokenName, 'fortal.accent.9');
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('copies a declared change summary with revision evidence', (
+    tester,
+  ) async {
+    String? clipboardText;
+    tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+      SystemChannels.platform,
+      (call) async {
+        if (call.method == 'Clipboard.setData') {
+          clipboardText =
+              (call.arguments as Map<Object?, Object?>)['text'] as String?;
+        }
+
+        return null;
+      },
+    );
+    addTearDown(
+      () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+        SystemChannels.platform,
+        null,
+      ),
+    );
+    final controller = AtlasAppController(
+      gateway: _FixtureGateway(baseline: baseline, changed: changed),
+    );
+    await controller.openGitHub(
+      repository: 'btwld/remix',
+      currentRef: 'feature/button',
+    );
+    controller.navigate(AtlasDestination.changes);
+
+    await tester.pumpWidget(AtlasApp(controller: controller));
+    await tester.tap(find.byTooltip('Copy change summary'));
+    await tester.pump();
+
+    expect(clipboardText, contains('Mix Atlas declared change summary'));
+    expect(clipboardText, contains('btwld/remix · main → feature/button'));
+    expect(clipboardText, contains('label.mix.json'));
+  });
+
+  testWidgets('keeps controls usable at a compact desktop size', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(900, 700));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final controller = AtlasAppController(
+      gateway: _FixtureGateway(baseline: baseline, changed: changed),
+    );
+    await controller.openGitHub(repository: 'btwld/remix', currentRef: 'main');
+
+    await tester.pumpWidget(AtlasApp(controller: controller));
+    await tester.pump(const Duration(milliseconds: 200));
+
+    expect(find.byKey(const ValueKey('component-search')), findsOneWidget);
+    expect(find.text('Catalog'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('shows a truthful partial-capture state without component v1', (
+    tester,
+  ) async {
+    final partial = _withoutPortableComponents(baseline);
+    final controller = AtlasAppController(
+      gateway: _FixtureGateway(baseline: partial, changed: partial),
+    );
+    await controller.openGitHub(repository: 'btwld/remix', currentRef: 'main');
+
+    await tester.pumpWidget(AtlasApp(controller: controller));
+
+    expect(
+      find.text('Portable reconstruction is not captured'),
+      findsOneWidget,
+    );
+    expect(find.textContaining('contact-sheet oracle'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('keeps current review available when main has no capture', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(1440, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final controller = AtlasAppController(
+      gateway: _MissingBaselineGateway(currentCapture: changed),
+    );
+    await controller.openGitHub(
+      repository: 'btwld/remix',
+      currentRef: 'feature/first-capture',
+    );
+
+    await tester.pumpWidget(AtlasApp(controller: controller));
+    await tester.pump(const Duration(milliseconds: 200));
+
+    expect(find.text('Button'), findsWidgets);
+    expect(find.text('Baseline unavailable'), findsOneWidget);
+    expect(
+      find.textContaining('Catalog and Inspect remain available'),
+      findsOneWidget,
+    );
+    final changes = tester.widget<TextButton>(
+      find.widgetWithText(TextButton, 'Changes'),
+    );
+    expect(changes.onPressed, isNull);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('guards a comparison route when the baseline is unavailable', (
+    tester,
+  ) async {
+    final controller = AtlasAppController(
+      gateway: _MissingBaselineGateway(currentCapture: changed),
+    );
+    await controller.openGitHub(
+      repository: 'btwld/remix',
+      currentRef: 'feature/first-capture',
+    );
+    controller.navigate(AtlasDestination.changes);
+
+    await tester.pumpWidget(AtlasApp(controller: controller));
+
+    expect(find.text('Comparison unavailable'), findsOneWidget);
+    expect(
+      find.text(
+        'Changes require the main baseline capture. Catalog and Inspect remain available for the current revision.',
+      ),
+      findsOneWidget,
+    );
+    expect(tester.takeException(), isNull);
+  });
+
+  final failureTitles = <AtlasCaptureFailureKind, String>{
+    AtlasCaptureFailureKind.network: 'Could not reach GitHub',
+    AtlasCaptureFailureKind.rateLimited: 'GitHub rate limit reached',
+    AtlasCaptureFailureKind.notFound: 'Capture not found',
+    AtlasCaptureFailureKind.malformedJson: 'Capture JSON is malformed',
+    AtlasCaptureFailureKind.unsafePath: 'Capture contains an unsafe file path',
+    AtlasCaptureFailureKind.integrity: 'Capture integrity check failed',
+    AtlasCaptureFailureKind.unsupportedSchema: 'Capture schema is unsupported',
+  };
+  for (final failure in failureTitles.entries) {
+    testWidgets('shows a precise ${failure.key.name} source failure', (
+      tester,
+    ) async {
+      final controller = AtlasAppController(
+        gateway: _ErrorGateway(failure.key),
+      );
+      await controller.openGitHub(
+        repository: 'btwld/remix',
+        currentRef: 'feature',
+      );
+
+      await tester.pumpWidget(AtlasApp(controller: controller));
+
+      expect(find.text(failure.value), findsOneWidget);
+      expect(find.text('Retry'), findsOneWidget);
+      expect(find.textContaining('failure details'), findsOneWidget);
+    });
+  }
+}
+
+final class _FixtureGateway implements AtlasCaptureGateway {
+  const _FixtureGateway({required this.baseline, required this.changed});
+
+  final AtlasCapture baseline;
+  final AtlasCapture changed;
+
+  @override
+  Future<AtlasCapture> loadGitHub({
+    required String repository,
+    required String ref,
+    required String manifestPath,
+  }) async => ref == 'main' ? baseline : changed;
+
+  @override
+  Future<AtlasCapture> loadLocal({
+    required Directory directory,
+    required String manifestPath,
+  }) async => baseline;
+
+  @override
+  Future<AtlasGitHubPullRequestList> listOpenPullRequests(
+    String repository,
+  ) async =>
+      AtlasGitHubPullRequestList(pullRequests: const [], rateLimit: null);
+}
+
+final class _PendingGateway implements AtlasCaptureGateway {
+  final Completer<AtlasCapture> capture = Completer();
+
+  @override
+  Future<AtlasCapture> loadGitHub({
+    required String repository,
+    required String ref,
+    required String manifestPath,
+  }) => capture.future;
+
+  @override
+  Future<AtlasCapture> loadLocal({
+    required Directory directory,
+    required String manifestPath,
+  }) => capture.future;
+
+  @override
+  Future<AtlasGitHubPullRequestList> listOpenPullRequests(
+    String repository,
+  ) async =>
+      AtlasGitHubPullRequestList(pullRequests: const [], rateLimit: null);
+}
+
+final class _SourceFormGateway implements AtlasCaptureGateway {
+  _SourceFormGateway({
+    required this.baseline,
+    required this.current,
+    AtlasGitHubPullRequestList? pullRequestList,
+  }) : pullRequestList =
+           pullRequestList ??
+           AtlasGitHubPullRequestList(pullRequests: const [], rateLimit: null);
+
+  final AtlasCapture baseline;
+  final AtlasCapture current;
+  final AtlasGitHubPullRequestList pullRequestList;
+  final List<String> githubRefs = [];
+
+  @override
+  Future<AtlasCapture> loadGitHub({
+    required String repository,
+    required String ref,
+    required String manifestPath,
+  }) async {
+    githubRefs.add(ref);
+
+    return ref.startsWith('release') ? baseline : current;
+  }
+
+  @override
+  Future<AtlasCapture> loadLocal({
+    required Directory directory,
+    required String manifestPath,
+  }) async => current;
+
+  @override
+  Future<AtlasGitHubPullRequestList> listOpenPullRequests(
+    String repository,
+  ) async => pullRequestList;
+}
+
+final class _ErrorGateway implements AtlasCaptureGateway {
+  const _ErrorGateway(this.kind);
+
+  final AtlasCaptureFailureKind kind;
+
+  @override
+  Future<AtlasCapture> loadGitHub({
+    required String repository,
+    required String ref,
+    required String manifestPath,
+  }) async => throw AtlasCaptureException(
+    kind,
+    'Specific ${kind.name} failure details.',
+  );
+
+  @override
+  Future<AtlasCapture> loadLocal({
+    required Directory directory,
+    required String manifestPath,
+  }) async => throw AtlasCaptureException(
+    kind,
+    'Specific ${kind.name} failure details.',
+  );
+
+  @override
+  Future<AtlasGitHubPullRequestList> listOpenPullRequests(
+    String repository,
+  ) async => throw AtlasCaptureException(
+    kind,
+    'Specific ${kind.name} failure details.',
+  );
+}
+
+final class _MissingBaselineGateway implements AtlasCaptureGateway {
+  const _MissingBaselineGateway({required this.currentCapture});
+
+  final AtlasCapture currentCapture;
+
+  @override
+  Future<AtlasCapture> loadGitHub({
+    required String repository,
+    required String ref,
+    required String manifestPath,
+  }) async {
+    if (ref == 'main') {
+      throw const AtlasCaptureException(
+        AtlasCaptureFailureKind.notFound,
+        'The baseline manifest does not exist.',
+      );
+    }
+
+    return currentCapture;
+  }
+
+  @override
+  Future<AtlasCapture> loadLocal({
+    required Directory directory,
+    required String manifestPath,
+  }) async => currentCapture;
+
+  @override
+  Future<AtlasGitHubPullRequestList> listOpenPullRequests(
+    String repository,
+  ) async =>
+      AtlasGitHubPullRequestList(pullRequests: const [], rateLimit: null);
+}
+
+Future<AtlasCapture> _loadFixture(String fixture) {
+  final directory = Directory(
+    '${Directory.current.parent.parent.path}/packages/'
+    'mix_atlas_capture/test/fixtures/$fixture',
+  );
+
+  return AtlasCaptureReader(source: AtlasDirectorySource(directory)).load(
+    const AtlasRepositoryRequest(
+      repository: 'fixture',
+      ref: 'fixture',
+      manifestPath: 'capture.json',
+    ),
+  );
+}
+
+AtlasCapture _withoutPortableComponents(AtlasCapture source) => AtlasCapture(
+  receipt: source.receipt,
+  manifest: source.manifest,
+  catalog: source.catalog,
+  protocolCoverage: source.protocolCoverage,
+  files: source.files,
+  themeTokenCounts: source.themeTokenCounts,
+  protocolThemes: source.protocolThemes,
+  componentDocuments: const [],
+  styleDocuments: source.styleDocuments,
+  atlasMetadata: source.atlasMetadata,
+  validatedStyleDocumentCount: source.validatedStyleDocumentCount,
+);

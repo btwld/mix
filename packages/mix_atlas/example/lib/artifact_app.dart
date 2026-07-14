@@ -611,6 +611,10 @@ class _FailureState extends StatelessWidget {
       title: 'GitHub could not be reached',
       action: 'Check the connection and retry. No local build is required.',
     ),
+    .rateLimited => (
+      title: 'GitHub rate limit reached',
+      action: 'Wait until the reported reset time before retrying.',
+    ),
     .notFound => (
       title: 'Repository capture was not found',
       action: 'Check the repository, ref, and artifact path, then retry.',

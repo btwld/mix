@@ -2,6 +2,7 @@
 name: mix_workspace
 
 packages:
+  - apps/*
   - packages/*
   - packages/mix/example
   - packages/mix_atlas/example
@@ -34,6 +35,8 @@ categories:
     - packages/mix_lint_test
     - packages/annotations
     - packages/mix_atlas
+    - packages/mix_atlas_capture
+    - apps/mix_atlas
   dart_projects:
     - packages/mix_generator
     - packages/mix_lint

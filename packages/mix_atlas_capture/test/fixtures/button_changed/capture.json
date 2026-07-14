@@ -1,0 +1,95 @@
+{
+  "schema": "mix_atlas/capture/v2",
+  "id": "fortal",
+  "producer": {
+    "atlas": "0.1.0",
+    "mixProtocolVersion": "1.0.0",
+    "mixProtocolFormat": 1,
+    "flutter": "3.44.0"
+  },
+  "catalog": "catalog.json",
+  "themes": [
+    {
+      "id": "light",
+      "document": "themes/light.mix.json"
+    },
+    {
+      "id": "dark",
+      "document": "themes/dark.mix.json"
+    }
+  ],
+  "protocolCoverage": "protocol/coverage.json",
+  "files": [
+    {
+      "path": "catalog.json",
+      "sha256": "bef9dadc3ebdfcdcfe4515de8bd5db44e794b630ee8dee9ddab3146d1a9e0c2a",
+      "bytes": 394
+    },
+    {
+      "path": "components/button.component.json",
+      "sha256": "d9f237823b00c80a99336c063d6cd65d78da31000d407339e3b46ce4f2d155c5",
+      "bytes": 2970
+    },
+    {
+      "path": "dark/button.json",
+      "sha256": "d8d93e7987de81df484e407950e63388d45ad49650adeafe0912d9606c02c056",
+      "bytes": 323
+    },
+    {
+      "path": "dark/button.png",
+      "sha256": "3bb87b10bbd136a2099f1da24272bce36266368fee2d80bef1582fa5200cb99d",
+      "bytes": 70
+    },
+    {
+      "path": "light/button.json",
+      "sha256": "d49a93d95aacd987abc74eaf2ac13eb8b12f7ff6ebe6ab36b4f1b1e1b9f2602a",
+      "bytes": 326
+    },
+    {
+      "path": "light/button.png",
+      "sha256": "3bb87b10bbd136a2099f1da24272bce36266368fee2d80bef1582fa5200cb99d",
+      "bytes": 70
+    },
+    {
+      "path": "protocol/coverage.json",
+      "sha256": "58f57141e390c49ce892fad05d249c619aa999f903191623841e35d3b03f4ca3",
+      "bytes": 498
+    },
+    {
+      "path": "protocol/fixtures/fortal-button.mix.json",
+      "sha256": "6f5376a3e88a2695cef40f21ca309fb37e7955b433621e38c6d0b624e41e36a3",
+      "bytes": 20
+    },
+    {
+      "path": "styles/button/solid-size1/container.mix.json",
+      "sha256": "7f351f4b57ba7254c4a763174d56faa75f880aa80c88c3f2ff534bbf9cfe15ae",
+      "bytes": 25
+    },
+    {
+      "path": "styles/button/solid-size1/icon.mix.json",
+      "sha256": "0964c42d5e71b768861b925f64155c97ea9c719be1356eb9bc640d554b056f19",
+      "bytes": 21
+    },
+    {
+      "path": "styles/button/solid-size1/label.mix.json",
+      "sha256": "cf54898b08f19f811bb6a697a890f375a10d040117f06d381061c85bd194dcc8",
+      "bytes": 81
+    },
+    {
+      "path": "themes/dark.mix.json",
+      "sha256": "bff6a537db0eabd945284e633568e54c98725877553340d1579077764c79eb4e",
+      "bytes": 93
+    },
+    {
+      "path": "themes/light.mix.json",
+      "sha256": "88492abbcf8e3944a19e96c5a2a49ee7d5772fb157e0b35c0e503fc4a4a6973b",
+      "bytes": 93
+    }
+  ],
+  "components": [
+    {
+      "id": "button",
+      "document": "components/button.component.json"
+    }
+  ]
+}

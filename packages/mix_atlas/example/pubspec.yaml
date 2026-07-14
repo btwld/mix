@@ -14,6 +14,8 @@ dependencies:
   mix: ^2.0.3
   mix_atlas:
     path: ..
+  mix_atlas_capture:
+    path: ../../mix_atlas_capture
   mix_protocol:
     path: ../../mix_protocol
   window_manager: ^0.5.2

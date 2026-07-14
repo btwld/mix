@@ -12,4 +12,5 @@ export 'src/errors/mix_protocol_error.dart'
         MixProtocolFailure,
         MixProtocolResult,
         MixProtocolSuccess;
+export 'src/inspection/document_inspection.dart';
 export 'src/tokens/token_reference_walker.dart';

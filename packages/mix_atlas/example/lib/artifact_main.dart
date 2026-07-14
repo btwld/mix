@@ -20,7 +20,7 @@ Future<void> main() async {
   );
 
   runApp(
-    const ArtifactAtlasApp(
+    ArtifactAtlasApp(
       loader: CaptureLoader(
         source: GitHubRepositorySource(http: IoArtifactHttpClient()),
       ),

@@ -48,8 +48,8 @@ jobs:
       melos-commands: |
         melos run analyze
 
-  mix_atlas_goldens:
-    name: mix_atlas Goldens (macOS)
+  mix_atlas_preview:
+    name: Mix Atlas preview (macOS)
     runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
@@ -68,18 +68,26 @@ jobs:
         run: |
           cd packages/mix_atlas
           flutter test --reporter failures-only
+      - name: Test standalone Mix Atlas app and screen goldens
+        run: |
+          cd apps/mix_atlas
+          flutter test --reporter failures-only
       - name: Upload golden failures
         if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: mix-atlas-golden-failures
-          path: packages/mix_atlas/test/failures/**
+          path: |
+            packages/mix_atlas/test/failures/**
+            apps/mix_atlas/test/failures/**
           if-no-files-found: ignore
       - name: Regenerate canonical goldens after failure
         if: failure()
         run: |
           cd packages/mix_atlas
           flutter test --update-goldens --reporter failures-only
+          cd ../../apps/mix_atlas
+          flutter test test/golden_test.dart --update-goldens --reporter failures-only
       - name: Upload canonical goldens
         if: failure()
         uses: actions/upload-artifact@v4
@@ -88,8 +96,19 @@ jobs:
           path: |
             packages/mix_atlas/test/goldens/**
             packages/mix_atlas/test/viewer_goldens/**
+            apps/mix_atlas/test/goldens/**
       - name: Build mix_atlas macOS example
         run: |
           cd packages/mix_atlas/example
           flutter create --platforms=macos .
           flutter build macos --debug
+      - name: Build unsigned standalone developer preview
+        run: |
+          cd apps/mix_atlas
+          flutter build macos --release --no-tree-shake-icons
+      - name: Upload standalone developer preview
+        uses: actions/upload-artifact@v4
+        with:
+          name: mix-atlas-macos-developer-preview
+          path: apps/mix_atlas/build/macos/Build/Products/Release/mix_atlas.app
+          if-no-files-found: error

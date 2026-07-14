@@ -1,0 +1,27 @@
+name: mix_atlas_capture
+description: Validated, portable capture contracts for the Mix Atlas standalone viewer.
+version: 0.1.0
+publish_to: none
+repository: https://github.com/btwld/mix/tree/main/packages/mix_atlas_capture
+
+environment:
+  sdk: ">=3.11.0 <4.0.0"
+  flutter: ">=3.41.0"
+
+dependencies:
+  crypto: ^3.0.7
+  flutter:
+    sdk: flutter
+  mix:
+    path: ../mix
+  mix_protocol:
+    path: ../mix_protocol
+
+dev_dependencies:
+  dart_code_metrics_presets: ^2.24.0
+  flutter_lints: ^6.0.0
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
