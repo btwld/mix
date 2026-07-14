@@ -163,10 +163,12 @@ final class _AnatomyRenderer {
   const _AnatomyRenderer({required this.render});
 
   Widget _buildNode(ComponentAnatomyNode node) {
-    final children = [
-      for (final child in node.children)
-        _buildNode(render.component.anatomy.nodes[child]!),
-    ];
+    final children = <Widget>[];
+    for (final childId in node.children) {
+      final child = render.component.anatomy.nodes[childId]!;
+      if (_shouldOmit(child)) continue;
+      children.add(_buildNode(child));
+    }
     if (node.kind == .stack) {
       return Stack(alignment: .center, children: children);
     }
@@ -205,6 +207,14 @@ final class _AnatomyRenderer {
       ),
       .spinner => _UnsupportedSlot(slotId: slot.id, children: children),
     };
+  }
+
+  bool _shouldOmit(ComponentAnatomyNode node) {
+    final condition = node.visibleWhen;
+
+    return condition != null &&
+        node.maintainedFeatures.isEmpty &&
+        !_conditionMatches(condition, render.properties);
   }
 
   Widget buildRoot() => _buildNode(render.component.anatomy.root);

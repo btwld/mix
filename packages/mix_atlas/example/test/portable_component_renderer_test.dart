@@ -35,6 +35,12 @@ void main() {
     );
 
     expect(find.byType(FlexBox), findsOneWidget);
+    final container = tester.widget<FlexBox>(find.byType(FlexBox));
+    expect(
+      container.children,
+      hasLength(1),
+      reason: 'Absent optional icon slots must not create spacing children.',
+    );
     expect(find.widgetWithText(StyledText, 'Review Button'), findsOneWidget);
     final stateOverride = tester.widget<WidgetStateStyleOverride>(
       find.byType(WidgetStateStyleOverride),
