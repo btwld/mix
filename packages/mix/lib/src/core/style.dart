@@ -72,6 +72,24 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
         .toSet();
   }
 
+  /// Whether this style reacts to a state produced by automatic pointer
+  /// tracking.
+  @internal
+  bool get needsPointerTracking {
+    final variants = $variants;
+    if (variants == null) return false;
+
+    for (final variantStyle in variants) {
+      final variant = variantStyle.variant;
+      if (variant is WidgetStateVariant &&
+          (variant.state == .hovered || variant.state == .pressed)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   /// Merges all active variants with their nested variants recursively.
   ///
   /// This method evaluates which variants should be active based on the current
@@ -88,8 +106,13 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
     BuildContext context, {
     required Set<NamedVariant> namedVariants,
   }) {
+    final variants = $variants;
+    if (variants == null || variants.isEmpty) {
+      return this;
+    }
+
     // Filter variants that should be active in this context
-    final activeVariants = ($variants ?? [])
+    final activeVariants = variants
         .where(
           (variantAttr) => switch (variantAttr.variant) {
             (ContextVariant variant) => variant.when(context),

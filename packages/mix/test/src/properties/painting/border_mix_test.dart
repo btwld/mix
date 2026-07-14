@@ -349,6 +349,30 @@ void main() {
     });
 
     group('Resolution', () {
+      testWidgets('resolves a shared uniform side only once', (tester) async {
+        var resolverCalls = 0;
+        final colorToken = ContextToken<Color>((_) {
+          resolverCalls++;
+
+          return resolverCalls == 1 ? Colors.red : Colors.blue;
+        });
+        final borderMix = BorderMix.all(BorderSideMix(color: colorToken()));
+        late Border resolved;
+
+        await tester.pumpWidget(
+          Builder(
+            builder: (context) {
+              resolved = borderMix.resolve(context);
+
+              return const SizedBox.shrink();
+            },
+          ),
+        );
+
+        expect(resolverCalls, 1);
+        expect(resolved, Border.all(color: Colors.red));
+      });
+
       test('resolves to Border with correct properties', () {
         final borderMix = BorderMix(
           top: BorderSideMix(color: Colors.red, width: 2.0),

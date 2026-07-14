@@ -55,9 +55,12 @@ separate Mix-only diagnostics stay outside the primary comparison:
 - the variant probe measures complete widget rebuilds with 0, 1, 4, and 12
   active variants; and
 - the resolution-stage probe uses synchronous batches to time a harness
-  control, variant merge, property-source resolution, spec construction,
-  premerged spec resolution, and full `Style.build` for inactive-only, static,
-  and all-active versions of realistic styles;
+  control, variant collection/sort/extraction/merge, context-builder
+  extraction, ordinary-style extraction with exact, raw-prefiltered, cached,
+  and no-StyleVariation inspection, property-source resolution, spec
+  construction, decoration field resolution, border merge/normal/uniform-side
+  resolution, premerged spec resolution, and full `Style.build` for
+  inactive-only, static, and all-active versions of realistic styles;
 - the retained-result heap probe uses an external VM-service process and GC'd
   before/after live-heap snapshots while retaining every returned result; and
 - the exploratory post-build probe compares wrapper/widget paths, but its
@@ -66,6 +69,11 @@ separate Mix-only diagnostics stay outside the primary comparison:
 The stage cases are measured independently. Their shares locate work inside
 style computation, but they do not allocate the primary grid's complete
 widget/layout/paint duration among stages.
+
+The field-level property probes separately time a null-property control,
+padding, constraints, decoration, transform, and modifier resolution. Nullable
+results are valid: the harness uses a unique untouched sentinel to distinguish
+"operation did not run" from "operation ran and returned null."
 
 The retained-result probe is deliberately narrower than an allocation
 profiler. In this VM, `getAllocationProfile` enumerates the live heap and reset
@@ -340,6 +348,163 @@ improved. The narrow branch passed semantic tests, the intended stage screen,
 the 200-case release CPU matrix, two balanced profile pairs, and a 40-process
 release/AOT cadence campaign. See F8/R8 in `FINDINGS.md` for exact results.
 
+### QW11: Collect active variants with a manual loop — rejected
+
+Replacing `where(...).toList()` with an explicit loop improved the directly
+changed merge stage in four forward/reverse release pairs: median process
+averages moved -14.17% inactive, -4.53% static, and -2.75% all-active. The
+candidate preserved predicate count, priority, recursion, and merge semantics
+in focused tests.
+
+Ten fresh-process release/AOT pairs then separated the local win from the full
+pipeline result. S0 improved in 8/10 pairs with a -1.91% median paired change,
+but state-heavy S2 improved in only 4/10: its median paired change was +0.37%
+and its trimmed-mean regression was +0.67%. The candidate was reverted at the
+primary gate and did not proceed to profile or cadence testing. Raw evidence is
+under `.context/benchmark-results/manual-variant-collection-v1/` and
+`.context/benchmark-results/manual-variant-collection-primary-v1/`.
+
+### QW12: Split and attribute variant-merge sub-stages
+
+The release diagnostic now keeps official `variant_merge` and
+`full_style_build` controls while separately measuring active collection,
+priority sort, faithful extraction, pre-extracted merge, and a diagnostic-only
+merge with variant metadata stripped. Two balanced runs attribute roughly 78%
+of static merge and 90% of all-active merge to extraction/generic dispatch.
+Sorting, final merge, and variant-metadata copying are each small in comparison.
+
+Guarding the generic StyleVariation check when the named set is empty was then
+screened as a bounded hypothesis. Forward all-active improved, but reverse and
+both static merge measurements regressed, so it was reverted before primary
+testing. Evidence is in `.context/benchmark-results/variant-substage-faithful-v1/`
+and `.context/benchmark-results/empty-named-variation-guard-stage-v1/`.
+
+### QW13: Remove the extraction IIFE — rejected
+
+Direct switch cases and record-list appends preserved the entire two-phase
+algorithm and passed 45 focused tests. Forward all-active extraction/merge
+improved 4.5%/5.0%, but reverse extraction/merge moved +0.9%/+0.25%. Because the
+directly changed stage was order-sensitive, the change was reverted without a
+primary campaign. Raw evidence is under
+`.context/benchmark-results/extraction-no-iife-stage-v1/`.
+
+### QW14: Combine the generic StyleVariation test and cast — rejected
+
+A typed pattern binding preserved accepted generic types and behavior while
+removing the separate `is`/`as` pair. The result was again order-sensitive:
+forward all-active extraction/merge improved 3.6%/3.8%, while reverse moved
++2.6%/+0.29% and static controls regressed. It was reverted before primary
+testing. Evidence is under
+`.context/benchmark-results/variation-pattern-binding-stage-v1/`.
+
+### QW15: Preclassify StyleVariation values — rejected
+
+Framework-created `VariantStyle` values were given cached StyleVariation
+classification while the public const constructor retained runtime fallback
+behavior. The prototype preserved equality/hash behavior and passed 89 focused
+tests. It did not pass the balanced stage screen: forward all-active full build
+improved 2.41%, but reverse all-active full build regressed 1.63%; inactive-only
+full build regressed 4.92% forward and 6.43% reverse. Static also regressed in
+the forward run. The metadata and alternate construction path were reverted
+without a primary campaign. Evidence is under
+`.context/benchmark-results/preclassified-style-variation-stage-v1/`.
+
+### QW16: Specialize the empty-named-set extraction loop — rejected
+
+A whole-call branch removed the per-active-variant generic StyleVariation check
+when the named set was empty. A characterization test confirms that contextual
+StyleVariation objects still merge as ordinary styles without invoking their
+`styleBuilder`; all 88 focused tests passed. Official merge improved locally in
+both orders for inactive-only and all-active profiles. Complete all-active
+`Style.build` nevertheless regressed in both orders (+2.84% and +0.50%), while
+static official merge was mixed. The duplicated hot path was reverted before a
+primary campaign. Evidence is under
+`.context/benchmark-results/empty-named-specialized-path-stage-v1/`.
+
+### QW17: Split extraction by active input class
+
+The release diagnostic now times preselected `ContextVariantBuilder` entries,
+ordinary entries with the production StyleVariation inspection, and a
+counterfactual ordinary path without that inspection. Forward/reverse absolute
+times differ, but the composition is stable: builder execution is 21–23% of
+faithful extraction, while ordinary extraction with the generic interface
+check is 76–77%. Four ordinary styles take 8.399–16.369 µs with the check and
+only 0.086–0.090 µs without it. This locates cost; it does not supersede the
+production A/B failures in QW12–QW16. Evidence is under
+`.context/benchmark-results/extraction-composition-v1/`.
+
+### QW18: Avoid or cache the StyleVariation interface test — rejected
+
+Three further diagnostic shapes failed before production promotion:
+
+- a raw StyleVariation prefilter was +0.81% forward and -0.27% reverse versus
+  the exact generic check;
+- a temporary non-generic marker prefilter was -0.62% forward and flat
+  (-0.006%) reverse; and
+- a warmed `Expando<bool>` classification cache was +0.27% and +0.29% slower.
+
+All remain around 8–16 µs for four ordinary styles, while the no-check control
+is 88–93 ns. The AOT cost is the interface-test path itself; adding another
+interface or lookup does not avoid it. The marker API was reverted, and no
+production extraction or cache change was promoted. Evidence is under
+`.context/benchmark-results/raw-variation-prefilter-composition-v1/`,
+`.context/benchmark-results/marker-variation-prefilter-composition-v1/`, and
+`.context/benchmark-results/expando-variation-classification-v1/`.
+
+### QW19: Attribute generated fields and bypass one-item modifier ordering — rejected
+
+Forward/reverse field-family runs completed all 66 expected records. Balanced
+averages put decoration at 1.211 µs of 1.361 µs static property resolution and
+3.599 µs of 6.544 µs all-active resolution. The all-active one-item opacity
+modifier costs another 2.258 µs; padding and transform are comparatively small.
+
+A test-first one-item ordering guard then reduced modifier resolution by
+98.5–98.6%, all-active property resolution by 37–38%, and isolated full
+`Style.build` by 8–12% in both stage orders. The matched 80-process primary
+campaign rejected it: adjusted S0 was a small/inconsistent -0.77% (6/10), and
+S2 regressed +1.24% aggregate with only 3/10 improved pairs. S2 does not execute
+the changed branch, so this is another AOT code-shape failure rather than proof
+that less ordering work is intrinsically slower. The production/test hunk was
+reverted. Evidence is under
+`.context/benchmark-results/property-field-attribution-v2/`,
+`.context/benchmark-results/modifier-single-fastpath-v1/`, and
+`.context/benchmark-results/modifier-single-fastpath-primary-v1/`.
+
+### QW20: Resolve a shared uniform border side once — accepted
+
+The decoration protocol grew to 34 stages and completed valid forward/reverse
+runs for all three profiles. Border resolution accounted for 85–86% of the
+all-active merged-decoration stage. The realistic `borderAll` inputs produced
+one equal `Prop<BorderSide>` on all four fields, but generated `BorderMix`
+resolution resolved that property four times.
+
+A same-binary counterfactual reduced an already merged all-active border from
+1.60–1.68 µs to 0.825–0.857 µs by resolving one side and using
+`Border.fromBorderSide`. Test-first production work additionally proved that a
+context token on a shared uniform side was invoked four times on the baseline;
+the optimized path invokes it once and guarantees the declared border remains
+uniform. Non-uniform borders keep the original per-side resolution order.
+
+The first production shape redundantly evaluated structural equality twice
+and was rejected by its static stage regression. The corrected implementation
+evaluates uniformity once. Balanced candidate deltas were -22.4% for static
+merged-border resolution, -47.6% for all-active merged-border resolution,
+-30.1% for all-active decoration resolution, -23.8% for all-active property
+resolution, and -12.9% for all-active premerged spec resolution.
+
+Two 80-process primary campaigns were run after matched Flutter adjustment.
+Their candidate executables had byte-identical `__text` and disassembly, yet
+their ten-pair S2 aggregates had opposite signs (-0.67% and +0.58%). Pooling
+the 20 pairs establishes the supported conclusion: S0 improved 1.25%
+aggregate / 1.30% median paired / 1.11% trimmed mean with 13/20 improved
+pairs; S2 was neutral at -0.05% / -0.48% / -0.07% with 12/20 improved pairs.
+The `BorderMix` candidate is retained for its static win; S2 is only a
+non-regression result. Directional borders remain a separate hypothesis
+because this workload did not execute them. Evidence is under
+`.context/benchmark-results/decoration-substage-v1/`,
+`.context/benchmark-results/border-counterfactual-v1/`, and
+`.context/benchmark-results/uniform-border-primary-v{1,2}/`.
+
 ## Experiment rules
 
 - Keep primary and diagnostic result files separately labeled.
@@ -347,6 +512,9 @@ release/AOT cadence campaign. See F8/R8 in `FINDINGS.md` for exact results.
 - For small deltas, run Flutter and Mix controls as separate fresh processes,
   rotate case order, alternate revision-first order, and retain every paired
   delta.
+- Before every fresh-process run, verify that no earlier workspace benchmark
+  app or `flutter run` wrapper remains; explicitly terminate the runner after
+  the result marker is written.
 - Do not attribute a total-span outlier to Mix unless its build/raster/vsync
   phases and transition boundary identify the source.
 - Promote a quick win only when its contract tests pass and repeated primary

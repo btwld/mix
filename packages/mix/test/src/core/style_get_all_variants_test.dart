@@ -345,9 +345,42 @@ void main() {
           namedVariants: {const NamedVariant('other')},
         );
 
-        // No variants should apply, base width remains
+        // No variants should apply, so the original style can be returned.
+        expect(result, same(testAttribute));
         final spec = result.resolve(context);
         expect((spec.resolvedValue as Map)['width'], 50.0);
+      });
+
+      test('evaluates each context variant exactly once', () {
+        var firstEvaluations = 0;
+        var secondEvaluations = 0;
+        final firstVariant = ContextVariant('first', (context) {
+          firstEvaluations++;
+          return true;
+        });
+        final secondVariant = ContextVariant('second', (context) {
+          secondEvaluations++;
+          return false;
+        });
+        final testAttribute = _MockSpecAttribute(
+          width: 50,
+          variants: [
+            VariantStyle(firstVariant, _MockSpecAttribute(width: 100)),
+            VariantStyle(secondVariant, _MockSpecAttribute(width: 200)),
+          ],
+        );
+
+        final result = testAttribute.mergeActiveVariants(
+          MockBuildContext(),
+          namedVariants: const {},
+        );
+
+        expect(firstEvaluations, 1);
+        expect(secondEvaluations, 1);
+        expect(
+          (result.resolve(MockBuildContext()).resolvedValue as Map)['width'],
+          100,
+        );
       });
     });
 

@@ -17,6 +17,10 @@ large ratio over a tiny baseline can still be immaterial.
   quick-win experiment queue.
 - [Investigation findings](FINDINGS.md) records valid and invalid datasets,
   accepted and rejected optimizations, and the remaining cost map.
+- [Performance impact report](PERFORMANCE_IMPACT_REPORT.md) synthesizes the
+  Flutter/Mix comparison, state-change behavior, remaining bottlenecks, and
+  practical frame-budget impact. Its responsive web companion is available at
+  <https://mix-rendering-performance.leo510228.chatgpt.site>.
 
 ## What is measured
 
@@ -77,12 +81,14 @@ lib/src/benchmark_case_host.dart               persistent root for replacing tim
 lib/src/benchmark_frame_clock.dart             monotonic synthetic frame clock
 lib/src/benchmark_frame_guard.dart             exclusive manual-frame ownership
 lib/src/benchmark_run_options.dart             fresh-process case selectors
+lib/src/resolution_stage_protocol.dart         diagnostic stage/order contract
 test/rebuild_contract_test.dart                strict rebuild/layout/paint contracts
 test/benchmark_case_host_test.dart              case replacement/disposal contract
 test/benchmark_frame_clock_test.dart           cross-case clock contract
 test/benchmark_run_options_test.dart            selector parsing contracts
 test/allocation_benchmark_protocol_test.dart   stage-order contract
 test/allocation_profile_summary_test.dart      class-delta summary contract
+test/resolution_stage_protocol_test.dart       resolution-stage order contract
 integration_test/state_transition_perf_test.dart  profile S2-S5 benchmark
 test_driver/perf_driver.dart                   raw JSON writer
 tool/allocation_driver.dart                    external VM-service heap profiler
@@ -184,12 +190,26 @@ fvm flutter run --release -d macos -t lib/variant_microbenchmark.dart \
 
 ## Resolution-stage diagnostic microbenchmark
 
-This Mix-only diagnostic uses realistic card styles and measures six
-synchronous batched paths:
+This Mix-only diagnostic uses realistic card styles and measures synchronous
+batched paths across both the complete pipeline and variant-merge sub-stages:
 
 - a store-only harness control;
+- active-variant predicate evaluation and collection;
+- stable widget-state priority sorting of a preselected list;
+- active-style extraction from a presorted list;
+- context-builder extraction from preselected builder variants;
+- ordinary-style extraction with the production StyleVariation check;
+- ordinary-style extraction with a raw StyleVariation prefilter;
+- ordinary-style extraction with warmed identity-cached classification;
+- a counterfactual ordinary-style extraction without that check, used only to
+  attribute generic interface-dispatch cost;
+- merging pre-extracted styles while preserving variant metadata;
+- a counterfactual pre-extracted merge with variant metadata stripped, used
+  only to locate metadata-carrying cost;
 - active-variant evaluation and merge;
 - property-source resolution of an already merged style;
+- independent null-control, padding, constraints, decoration, transform, and
+  modifier-resolution probes;
 - `BoxSpec`/`StyleSpec` construction from already resolved fields;
 - generated spec resolution of an already merged style; and
 - the complete `Style.build` call.
@@ -198,7 +218,13 @@ It runs inactive-only (no selected variant), static (one active variant), and
 all-active (five active variants) profiles. The cases are independent tight
 loops, so their values characterize the composition of style computation; they
 are not additive attribution of the primary grid's widget/layout/paint time.
-Alternate `BENCHMARK_ORDER=forward` and `reverse` across processes.
+The stripped-metadata case intentionally produces a different intermediate
+style and is not evidence that removing public variant metadata is safe.
+Alternate `STAGE_ORDER=forward` and `reverse` across processes.
+In agent/PTY environments, confirm that no earlier workspace benchmark app or
+`flutter run` wrapper remains before launching, and explicitly reap the runner
+after the `BENCHMARK_RESULT_FILE` marker. Sleeping wrappers retain memory even
+when they use no CPU.
 
 ```bash
 fvm flutter run --release -d macos \
@@ -208,7 +234,7 @@ fvm flutter run --release -d macos \
   --dart-define=IMPLEMENTATION_LABEL=resolution-stage-diagnostic \
   --dart-define=DEVICE_NAME=benchmark-mac \
   --dart-define=RUN_ID=resolution-stage-01 \
-  --dart-define=BENCHMARK_ORDER=forward \
+  --dart-define=STAGE_ORDER=forward \
   --dart-define=BENCHMARK_SECONDS=3 \
   --dart-define=BENCHMARK_OUTPUT_PATH="$(pwd)/../../.context/benchmark-results/resolution-stage-01.json"
 ```

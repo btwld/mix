@@ -70,6 +70,28 @@ class TestSmallBoxStyler extends BoxStyler implements StyleVariation<BoxSpec> {
   }
 }
 
+class _ObservableBoxStyleVariation extends BoxStyler
+    implements StyleVariation<BoxSpec> {
+  final VoidCallback onStyleBuilder;
+
+  _ObservableBoxStyleVariation(this.onStyleBuilder)
+    : super(decoration: DecorationMix.color(Colors.red));
+
+  @override
+  NamedVariant get variantType => outlined;
+
+  @override
+  BoxStyler styleBuilder(
+    BoxStyler style,
+    Set<NamedVariant> activeVariants,
+    BuildContext context,
+  ) {
+    onStyleBuilder();
+
+    return style.width(100);
+  }
+}
+
 void main() {
   group('StyleVariation Interface', () {
     test('should implement basic interface correctly', () {
@@ -435,6 +457,42 @@ void main() {
   });
 
   group('Integration with Style.build()', () {
+    testWidgets(
+      'empty named variants merge an active contextual StyleVariation as a regular style',
+      (tester) async {
+        var styleBuilderCalls = 0;
+
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Builder(
+              builder: (context) {
+                final variation = _ObservableBoxStyleVariation(
+                  () => styleBuilderCalls++,
+                );
+                final style = BoxStyler().variants([
+                  VariantStyle(
+                    ContextVariant('always', (_) => true),
+                    variation,
+                  ),
+                ]);
+
+                final resolved = style.build(context).spec;
+
+                expect(styleBuilderCalls, 0);
+                expect(
+                  (resolved.decoration as BoxDecoration?)?.color,
+                  Colors.red,
+                );
+                expect(resolved.constraints, isNull);
+
+                return const SizedBox();
+              },
+            ),
+          ),
+        );
+      },
+    );
+
     testWidgets('should resolve StyleVariation through Style.build()', (
       tester,
     ) async {

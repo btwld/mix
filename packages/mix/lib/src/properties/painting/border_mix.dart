@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 
 import '../../core/helpers.dart';
-import '../../core/mix_element.dart';
+import '../../core/mix_element.dart' hide Mixable;
 import '../../core/prop.dart';
 
 part 'border_mix.g.dart';
@@ -168,7 +168,7 @@ sealed class BoxBorderMix<T extends BoxBorder> extends Mix<T> {
 /// Mix representation of [Border].
 ///
 /// Independent side control with tokens.
-@mixable
+@Mixable(methods: GeneratedMixMethods.skipResolve)
 final class BorderMix extends BoxBorderMix<Border>
     with DefaultValue<Border>, Diagnosticable, _$BorderMixMixin {
   @override
@@ -308,6 +308,30 @@ final class BorderMix extends BoxBorderMix<Border>
     if (!isUniform) return null;
 
     return $top ?? $right ?? $bottom ?? $left;
+  }
+
+  // Keep this next to the uniformity getters used by its fast path.
+  // ignore: member-ordering
+  @override
+  Border resolve(BuildContext context) {
+    final uniformSide = uniformBorderSide;
+    if (uniformSide != null) {
+      final side = MixOps.resolve(context, uniformSide);
+
+      return Border.fromBorderSide(side ?? defaultValue.top);
+    }
+    if ($top == null && $right == null && $bottom == null && $left == null) {
+      return defaultValue;
+    }
+
+    // Keep the generated resolver's side-evaluation order.
+    // ignore: arguments-ordering
+    return Border(
+      bottom: MixOps.resolve(context, $bottom) ?? defaultValue.bottom,
+      left: MixOps.resolve(context, $left) ?? defaultValue.left,
+      right: MixOps.resolve(context, $right) ?? defaultValue.right,
+      top: MixOps.resolve(context, $top) ?? defaultValue.top,
+    );
   }
 
   @override

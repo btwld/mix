@@ -46,45 +46,8 @@ class StyleBuilder<S extends Spec<S>> extends StatefulWidget {
   State<StyleBuilder<S>> createState() => _StyleBuilderState<S>();
 }
 
-class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
-    with TickerProviderStateMixin {
-  late WidgetStatesController _controller;
-
-  /// Tracks whether we created the controller internally (and thus own it)
-  bool _ownsController = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _initController();
-  }
-
-  void _initController() {
-    if (widget.controller != null) {
-      _controller = widget.controller!;
-      _ownsController = false;
-    } else {
-      _controller = WidgetStatesController();
-      _ownsController = true;
-    }
-  }
-
-  void _handleControllerChange(StyleBuilder<S> oldWidget) {
-    // Dispose old internal controller if we owned it
-    if (_ownsController) {
-      _controller.dispose();
-    }
-
-    // Set up new controller
-    if (widget.controller != null) {
-      _controller = widget.controller!;
-      _ownsController = false;
-    } else {
-      // Create internal controller, preserving state from old external controller
-      _controller = WidgetStatesController(oldWidget.controller?.value ?? {});
-      _ownsController = true;
-    }
-  }
+class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>> {
+  WidgetStatesController? _preservedController;
 
   Style<S> _buildStyle(BuildContext context) {
     final inheritedStyle = Style.maybeOf<S>(context);
@@ -105,31 +68,28 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
   void didUpdateWidget(covariant StyleBuilder<S> oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    // Handle controller changes
-    if (oldWidget.controller != widget.controller) {
-      _handleControllerChange(oldWidget);
+    if (oldWidget.controller == widget.controller) return;
+
+    if (widget.controller != null) {
+      _preservedController?.dispose();
+      _preservedController = null;
+    } else {
+      _preservedController = WidgetStatesController(
+        oldWidget.controller?.value ?? {},
+      );
     }
   }
 
   @override
   void dispose() {
-    // Only dispose controllers we created internally
-    if (_ownsController) {
-      _controller.dispose();
-    }
-
+    _preservedController?.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final style = _buildStyle(context);
-
-    // Calculate interactivity need early
-    final needsToTrackWidgetState =
-        widget.controller == null && style.widgetStates.isNotEmpty;
-
-    final alreadyHasWidgetStateScope = WidgetStateProvider.of(context) != null;
+    final externalController = widget.controller;
 
     Widget current = Builder(
       builder: (context) {
@@ -142,14 +102,15 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
       },
     );
 
-    if (needsToTrackWidgetState && !alreadyHasWidgetStateScope) {
-      // If we need interactivity and no MixWidgetStateModel is present,
-      // wrap in MixInteractionDetector
-      current = MixInteractionDetector(controller: _controller, child: current);
-    } else if (widget.controller != null) {
-      // If we have an external controller, wrap with _ExternalControllerProvider
+    if (externalController != null) {
       current = _ExternalControllerProvider(
-        controller: _controller,
+        controller: externalController,
+        child: current,
+      );
+    } else if (style.needsPointerTracking &&
+        !WidgetStateProvider.hasProvider(context)) {
+      current = MixInteractionDetector(
+        controller: _preservedController,
         child: current,
       );
     }

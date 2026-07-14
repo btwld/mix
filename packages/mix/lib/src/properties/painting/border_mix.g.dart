@@ -23,17 +23,6 @@ mixin _$BorderMixMixin on Mix<Border>, DefaultValue<Border>, Diagnosticable {
     );
   }
 
-  /// Resolves to [Border] using [context].
-  @override
-  Border resolve(BuildContext context) {
-    return Border(
-      bottom: MixOps.resolve(context, $bottom) ?? defaultValue.bottom,
-      left: MixOps.resolve(context, $left) ?? defaultValue.left,
-      right: MixOps.resolve(context, $right) ?? defaultValue.right,
-      top: MixOps.resolve(context, $top) ?? defaultValue.top,
-    );
-  }
-
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
