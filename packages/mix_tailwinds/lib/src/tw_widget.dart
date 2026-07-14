@@ -2,88 +2,70 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
+import 'parser/candidate_parser.dart';
+import 'parser/data/parser_registry.g.dart';
+import 'parser/diagnostics.dart';
+import 'parser/model.dart';
+import 'translate/tw_target.dart' as tw_target;
+import 'translate/tw_routing.dart';
 import 'tw_config.dart';
+import 'tw_flex_item.dart';
 import 'tw_parser.dart';
+import 'tw_types.dart';
 import 'tw_utils.dart';
 
 // =============================================================================
 // Box/Margin Utility Detection
 // =============================================================================
 
-/// Tokens that indicate box-level styling (padding, background, border, etc.)
-/// When present on Span, we need to wrap text in a Box container.
-const _boxUtilityPrefixes = [
-  'p-', 'px-', 'py-', 'pt-', 'pr-', 'pb-', 'pl-', // padding
-  'bg-', // background
-  'border', // border (includes border-*, rounded-*)
-  'rounded', // border radius
-  'shadow', // box shadow
-  // Note: 'ring' and 'opacity-' removed until implemented
-];
-final _whitespaceRegex = RegExp(r'\s+');
+const _candidateParser = TailwindCandidateParser(
+  registry: defaultTailwindParserRegistry,
+);
 
-/// Check if classNames contain any box utilities that require wrapping.
-bool _hasBoxUtilities(String classNames) {
-  final tokens = classNames.split(_whitespaceRegex);
-  for (final token in tokens) {
-    // Strip variant prefixes (hover:, md:, etc.) to get base token
-    final colonIdx = findLastColonOutsideBrackets(token);
-    final base = colonIdx >= 0 ? token.substring(colonIdx + 1) : token;
-
-    for (final prefix in _boxUtilityPrefixes) {
-      if (base.startsWith(prefix) || base == prefix.replaceAll('-', '')) {
-        return true;
-      }
-    }
-  }
-  return false;
-}
-
-/// Extract margin value from tokens for a given prefix (e.g., 'mb-').
-/// Returns null if not found.
+/// Extracts positive margin [EdgeInsets] from [classNames].
+///
+/// Returns null when no positive margin token is present.
+///
+/// - Negative margins (`-mb-4`) are skipped. They are applied via [Padding],
+///   whose `RenderPadding` asserts non-negative insets, so emitting them would
+///   crash. True CSS negative-margin parity needs a transform-based strategy at
+///   the box layer and is tracked separately.
+/// - Variant-prefixed margins are skipped because responsive/interaction
+///   margin semantics are not yet modeled in the widget layer.
 EdgeInsets? _extractMargin(String classNames, TwConfig cfg) {
-  final tokens = classNames.split(_whitespaceRegex);
+  final tokens = splitTailwindTokens(classNames);
   double? top, right, bottom, left;
 
   for (final token in tokens) {
-    final colonIdx = findLastColonOutsideBrackets(token);
-    final base = colonIdx >= 0 ? token.substring(colonIdx + 1) : token;
+    final candidate = _parseCandidate(token);
+    if (candidate == null || candidate.variants.isNotEmpty) continue;
 
-    if (base.startsWith('m-')) {
-      final value = cfg.spaceOf(base.substring(2), fallback: double.nan);
-      if (!value.isNaN) {
+    final route = routeCandidate(candidate, breakpoints: cfg.breakpoints);
+    if (route.kind != TwRouteKind.schemaValue) continue;
+
+    final utility = candidate.utility;
+    final root = tailwindUtilityRoot(utility);
+    if (!_marginRoots.contains(root)) continue;
+    if (tailwindUtilityNegative(utility)) continue;
+
+    final value = _marginLength(tailwindUtilityValue(utility), cfg);
+    if (value == null || value < 0) continue;
+
+    switch (root) {
+      case 'm':
         top = right = bottom = left = value;
-      }
-    } else if (base.startsWith('mx-')) {
-      final value = cfg.spaceOf(base.substring(3), fallback: double.nan);
-      if (!value.isNaN) {
+      case 'mx':
         left = right = value;
-      }
-    } else if (base.startsWith('my-')) {
-      final value = cfg.spaceOf(base.substring(3), fallback: double.nan);
-      if (!value.isNaN) {
+      case 'my':
         top = bottom = value;
-      }
-    } else if (base.startsWith('mt-')) {
-      final value = cfg.spaceOf(base.substring(3), fallback: double.nan);
-      if (!value.isNaN) {
+      case 'mt':
         top = value;
-      }
-    } else if (base.startsWith('mr-')) {
-      final value = cfg.spaceOf(base.substring(3), fallback: double.nan);
-      if (!value.isNaN) {
+      case 'mr':
         right = value;
-      }
-    } else if (base.startsWith('mb-')) {
-      final value = cfg.spaceOf(base.substring(3), fallback: double.nan);
-      if (!value.isNaN) {
+      case 'mb':
         bottom = value;
-      }
-    } else if (base.startsWith('ml-')) {
-      final value = cfg.spaceOf(base.substring(3), fallback: double.nan);
-      if (!value.isNaN) {
+      case 'ml':
         left = value;
-      }
     }
   }
 
@@ -92,11 +74,28 @@ EdgeInsets? _extractMargin(String classNames, TwConfig cfg) {
   }
 
   return EdgeInsets.only(
+    left: left ?? 0,
     top: top ?? 0,
     right: right ?? 0,
     bottom: bottom ?? 0,
-    left: left ?? 0,
   );
+}
+
+double? _marginLength(TailwindValue? value, TwConfig cfg) {
+  final key = tailwindValueKey(value);
+  final scale = cfg.space[key];
+  if (scale != null) return scale;
+  return value is TailwindArbitraryValue ? parseCssLength(value.value) : null;
+}
+
+const _marginRoots = {'m', 'mx', 'my', 'mt', 'mr', 'mb', 'ml'};
+
+TailwindCandidate? _parseCandidate(String token) {
+  final parsed = _candidateParser.parseCandidate(token);
+  return switch (parsed) {
+    TailwindParseSuccess(:final candidate) => candidate,
+    TailwindParseFailure() => null,
+  };
 }
 
 // =============================================================================
@@ -317,8 +316,16 @@ class Div extends StatelessWidget {
       'Provide either child or children, not both.',
     );
     final cfg = config ?? TwConfigProvider.of(context);
-    final parser = TwParser(config: cfg, onUnsupported: onUnsupported);
+    final reportedUnsupported = <String>{};
+    void reportUnsupported(String token) {
+      if (reportedUnsupported.add(token)) {
+        onUnsupported?.call(token);
+      }
+    }
+
+    final parser = TwParser(config: cfg, onUnsupported: reportUnsupported);
     final tokens = parser.setTokens(classNames);
+    _reportUnsupportedWidgetLayerVariants(tokens, cfg, reportUnsupported);
     final shouldUseFlex = isFlex ?? parser.wantsFlex(tokens);
     final animationConfig = parser.parseAnimationFromTokens(tokens.toList());
 
@@ -434,7 +441,7 @@ class Span extends StatelessWidget {
     final parser = TwParser(config: cfg);
 
     // Check if we need box styling (padding, background, border, etc.)
-    if (_hasBoxUtilities(classNames)) {
+    if (tw_target.hasBoxUtilities(classNames, breakpoints: cfg.breakpoints)) {
       // Parse as box to get padding, background, border, etc.
       // parseBox also handles text styling via DefaultTextStyle wrapper
       final boxStyle = parser.parseBox(classNames);
@@ -451,6 +458,105 @@ class Span extends StatelessWidget {
     final style = parser.parseText(classNames);
     return StyledText(text, style: style);
   }
+}
+
+/// Icon element with Tailwind-style size and color utilities.
+///
+/// This is a small bridge between Tailwind SVG icon classes and Mix's
+/// [StyledIcon]. It supports the icon classes used by common inline SVGs:
+/// `w-*`, `h-*`, `text-*`, and positive logical/physical margin tokens.
+class TwIcon extends StatelessWidget {
+  const TwIcon(
+    this.icon, {
+    super.key,
+    this.classNames = '',
+    this.config,
+    this.semanticLabel,
+  });
+
+  final IconData icon;
+  final String classNames;
+  final TwConfig? config;
+  final String? semanticLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    final cfg = config ?? TwConfigProvider.of(context);
+    final parsedStyle = TwParser(config: cfg).parseIcon(classNames);
+
+    // Preserve the inherited text color as a fallback; the parsed icon style
+    // overrides it when the class names include a `text-<color>` utility.
+    final fallbackColor = DefaultTextStyle.of(context).style.color;
+    var style = fallbackColor != null
+        ? IconStyler().color(fallbackColor)
+        : IconStyler();
+    style = style.merge(parsedStyle);
+
+    Widget current = StyledIcon(
+      icon: icon,
+      semanticLabel: semanticLabel,
+      style: style,
+    );
+
+    final margin = _extractLogicalMargin(classNames, cfg);
+    if (margin != null) {
+      current = Padding(padding: margin, child: current);
+    }
+
+    return current;
+  }
+}
+
+/// Extracts logical/physical icon margins (`ms-*`, `me-*`, `ml-*`, `mr-*`).
+///
+/// Parses each token through the candidate parser so variant-prefixed margins
+/// (e.g. `hover:me-1`) and negatives do not apply as base styles. `ms`/`me` are
+/// not typed-styler utility roots, so sides are matched on the unprefixed
+/// utility text rather than via [routeCandidate].
+EdgeInsetsGeometry? _extractLogicalMargin(String classNames, TwConfig cfg) {
+  var start = 0.0;
+  var end = 0.0;
+  var left = 0.0;
+  var right = 0.0;
+  var hasMargin = false;
+
+  final tokens = splitTailwindTokens(classNames);
+  for (final token in tokens) {
+    final candidate = _parseCandidate(token);
+    if (candidate == null || candidate.variants.isNotEmpty) continue;
+
+    final utility = candidate.utility;
+    if (tailwindUtilityNegative(utility)) continue;
+
+    final raw = utility.raw;
+    void Function(double value)? setter;
+    if (raw.startsWith('ms-')) {
+      setter = (value) => start = value;
+    } else if (raw.startsWith('me-')) {
+      setter = (value) => end = value;
+    } else if (raw.startsWith('ml-')) {
+      setter = (value) => left = value;
+    } else if (raw.startsWith('mr-')) {
+      setter = (value) => right = value;
+    }
+    if (setter == null) continue;
+
+    final length = _spacingTokenLength(raw.substring(3), cfg);
+    if (length == null) continue;
+    setter(length);
+    hasMargin = true;
+  }
+
+  if (!hasMargin) return null;
+  return EdgeInsetsDirectional.only(
+    start: start,
+    end: end,
+  ).add(EdgeInsets.only(left: left, right: right));
+}
+
+double? _spacingTokenLength(String key, TwConfig cfg) {
+  if (key == 'px') return 1;
+  return cfg.hasSpace(key) ? cfg.spaceOf(key) : null;
 }
 
 /// Heading level 1 element with Tailwind styling.
@@ -625,7 +731,7 @@ List<Widget> _applyCrossAxisGap(List<Widget> input, Axis axis, double? gap) {
 bool _hasResponsiveAlignItems(Set<String> tokens, TwConfig cfg, double width) {
   for (final token in tokens) {
     final info = _parseResponsiveToken(token, cfg);
-    if (info.minWidth > width) {
+    if (info == null || info.minWidth > width) {
       continue;
     }
     if (info.base.startsWith('items-')) {
@@ -636,10 +742,9 @@ bool _hasResponsiveAlignItems(Set<String> tokens, TwConfig cfg, double width) {
 }
 
 bool _hasResponsiveWidthToken(String classNames, TwConfig cfg, double width) {
-  final tokens = classNames.split(_whitespaceRegex);
-  for (final token in tokens) {
+  for (final token in splitTailwindTokens(classNames)) {
     final info = _parseResponsiveToken(token, cfg);
-    if (info.minWidth > width) {
+    if (info == null || info.minWidth > width) {
       continue;
     }
     if (info.base.startsWith('w-')) {
@@ -776,7 +881,7 @@ Widget _wrapWithFlexItemDecorators({
   required TwConfig cfg,
   required double viewportWidth,
 }) {
-  if (!_needsFlexItemDecorators(tokens)) {
+  if (!_needsFlexItemDecorators(tokens, cfg)) {
     return child;
   }
 
@@ -786,21 +891,92 @@ Widget _wrapWithFlexItemDecorators({
   );
 }
 
-bool _needsFlexItemDecorators(Set<String> tokens) {
+bool _needsFlexItemDecorators(Set<String> tokens, TwConfig cfg) {
   for (final token in tokens) {
-    // Use bracket-aware colon finding to handle arbitrary values like bg-[color:red]
-    final colonIdx = findLastColonOutsideBrackets(token);
-    final base = colonIdx >= 0 ? token.substring(colonIdx + 1) : token;
+    final info = _parseResponsiveToken(token, cfg);
+    if (info == null) continue;
+    final base = info.base;
     if (base == 'w-full' || base == 'h-full') {
       return true;
     }
     if (base.startsWith('flex-') ||
         base.startsWith('basis-') ||
         base.startsWith('self-') ||
-        base.startsWith('shrink')) {
+        base.startsWith('shrink') ||
+        base.startsWith('grow')) {
       return true;
     }
   }
+  return false;
+}
+
+void _reportUnsupportedWidgetLayerVariants(
+  Set<String> tokens,
+  TwConfig cfg,
+  TokenWarningCallback onUnsupported,
+) {
+  for (final token in tokens) {
+    final candidate = _parseCandidate(token);
+    if (candidate == null || candidate.variants.isEmpty) {
+      continue;
+    }
+    if (!_isRootLayoutWidgetUtility(candidate.utility)) {
+      continue;
+    }
+    if (_hasOnlyBreakpointVariants(candidate.variants, cfg)) {
+      continue;
+    }
+
+    onUnsupported(token);
+  }
+}
+
+bool _hasOnlyBreakpointVariants(List<TailwindVariant> variants, TwConfig cfg) {
+  for (final variant in variants) {
+    if (variant is! TailwindStaticVariant ||
+        !cfg.breakpoints.containsKey(variant.root)) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+bool _isRootLayoutWidgetUtility(TailwindUtility utility) {
+  final raw = utility.raw;
+  final root = tailwindUtilityRoot(utility);
+  final valueKey = tailwindValueKey(tailwindUtilityValue(utility));
+
+  if (raw.startsWith('flex-') ||
+      raw.startsWith('basis-') ||
+      raw.startsWith('self-') ||
+      raw.startsWith('shrink') ||
+      raw.startsWith('grow')) {
+    return true;
+  }
+
+  if (root == 'basis' ||
+      root == 'self' ||
+      root == 'grow' ||
+      root == 'shrink' ||
+      root == 'gap-x' ||
+      root == 'gap-y' ||
+      raw == 'block') {
+    return true;
+  }
+
+  if (root == 'w' ||
+      root == 'h' ||
+      root == 'min-w' ||
+      root == 'min-h' ||
+      root == 'max-w' ||
+      root == 'max-h') {
+    return valueKey == 'full' ||
+        valueKey == 'screen' ||
+        valueKey == 'auto' ||
+        valueKey?.contains('/') == true;
+  }
+
   return false;
 }
 
@@ -917,7 +1093,7 @@ bool _resolveMinScreenIntent(
 
   for (final token in tokens) {
     final info = _parseResponsiveToken(token, cfg);
-    if (info.minWidth > width) {
+    if (info == null || info.minWidth > width) {
       continue;
     }
     if (info.base == target) {
@@ -990,7 +1166,12 @@ Widget _applyFlexItemDecorators(
     current = _applySelfAlignment(current, selfAlignment, axis);
   }
 
-  final behavior = _resolveFlexItemBehavior(tokens, cfg, viewportWidth);
+  final behavior = _resolveFlexItemBehavior(
+    tokens,
+    cfg,
+    viewportWidth,
+    context,
+  );
 
   // Handle w-full/h-full when used as a direct child of a Flex.
   //
@@ -1051,7 +1232,7 @@ Axis _resolveFlexAxisResponsive(
 
   for (final token in tokens) {
     final info = _parseResponsiveToken(token, cfg);
-    if (info.minWidth > width) {
+    if (info == null || info.minWidth > width) {
       continue;
     }
     if (info.base == 'flex-col') {
@@ -1090,7 +1271,7 @@ double? _resolveResponsiveGap(
 
   for (final token in tokens) {
     final info = _parseResponsiveToken(token, cfg);
-    if (info.minWidth > width) {
+    if (info == null || info.minWidth > width) {
       continue;
     }
     if (!info.base.startsWith(prefix)) {
@@ -1123,7 +1304,7 @@ double? _resolveResponsiveFraction(
 
   for (final token in tokens) {
     final info = _parseResponsiveToken(token, cfg);
-    if (info.minWidth > width) {
+    if (info == null || info.minWidth > width) {
       continue;
     }
     if (!info.base.startsWith(prefix)) {
@@ -1154,7 +1335,7 @@ _DimensionIntent _resolveDimensionIntent(
 
   for (final token in tokens) {
     final info = _parseResponsiveToken(token, cfg);
-    if (info.minWidth > width) {
+    if (info == null || info.minWidth > width) {
       continue;
     }
 
@@ -1204,28 +1385,28 @@ class _ResponsiveToken {
   final double minWidth;
 }
 
-_ResponsiveToken _parseResponsiveToken(String token, TwConfig cfg) {
-  var remaining = token;
-  double minWidth = 0;
+_ResponsiveToken? _parseResponsiveToken(String token, TwConfig cfg) {
+  final candidate = _parseCandidate(token);
+  if (candidate == null) return null;
 
-  while (true) {
-    // Use bracket-aware colon finding to handle arbitrary values like bg-[color:red]
-    final index = findFirstColonOutsideBrackets(remaining);
-    if (index <= 0) {
-      break;
-    }
-
-    final head = remaining.substring(0, index);
-    final tail = remaining.substring(index + 1);
-    if (cfg.breakpoints.containsKey(head)) {
-      minWidth = cfg.breakpointOf(head);
-      remaining = tail;
-      continue;
-    }
-    break;
+  final route = routeCandidate(candidate, breakpoints: cfg.breakpoints);
+  if (route.kind == TwRouteKind.ignored ||
+      route.kind == TwRouteKind.unsupported) {
+    return null;
   }
 
-  return _ResponsiveToken(remaining, minWidth);
+  double minWidth = 0;
+
+  for (final variant in candidate.variants) {
+    if (variant is TailwindStaticVariant &&
+        cfg.breakpoints.containsKey(variant.root)) {
+      minWidth = cfg.breakpointOf(variant.root);
+    } else {
+      return null;
+    }
+  }
+
+  return _ResponsiveToken(candidate.utility.raw, minWidth);
 }
 
 enum _DimensionIntent { none, full, screen }
@@ -1254,12 +1435,13 @@ _FlexItemBehavior? _resolveFlexItemBehavior(
   Set<String> tokens,
   TwConfig cfg,
   double width,
+  BuildContext context,
 ) {
   // Check for min-w-auto escape hatch (respects breakpoint prefixes)
   var hasMinWidthAuto = false;
   for (final token in tokens) {
     final info = _parseResponsiveToken(token, cfg);
-    if (info.minWidth <= width && info.base == 'min-w-auto') {
+    if (info != null && info.minWidth <= width && info.base == 'min-w-auto') {
       hasMinWidthAuto = true;
       break;
     }
@@ -1270,31 +1452,19 @@ _FlexItemBehavior? _resolveFlexItemBehavior(
 
   for (final token in tokens) {
     final info = _parseResponsiveToken(token, cfg);
-    if (info.minWidth > width) {
+    if (info == null || info.minWidth > width) {
       continue;
     }
 
-    final candidate = switch (info.base) {
-      // flex-1: auto-apply min constraint for CSS flex: 1 1 0% parity
-      'flex-1' => _FlexItemBehavior(
-        flex: 1,
-        fit: FlexFit.tight,
-        applyMinConstraint: !hasMinWidthAuto,
-      ),
-      'flex-auto' => const _FlexItemBehavior(flex: 1, fit: FlexFit.loose),
-      'flex-initial' => const _FlexItemBehavior(flex: 0, fit: FlexFit.loose),
-      // flex-none / shrink-0: maintain intrinsic size (don't shrink)
-      'flex-none' ||
-      'flex-shrink-0' ||
-      'shrink-0' => const _FlexItemBehavior(flex: 0, fit: FlexFit.loose),
-      // shrink: allow item to shrink below intrinsic size when constrained
-      'flex-shrink' || 'shrink' => _FlexItemBehavior(
-        flex: 1,
-        fit: FlexFit.tight,
-        applyMinConstraint: !hasMinWidthAuto,
-      ),
-      _ => null,
-    };
+    final modifier = twFlexibleModifierForFlexItem(info.base);
+    final candidate = modifier == null
+        ? null
+        : _flexItemBehaviorFromModifier(
+            modifier,
+            context,
+            utility: info.base,
+            hasMinWidthAuto: hasMinWidthAuto,
+          );
 
     if (candidate != null && info.minWidth >= chosenMin) {
       behavior = candidate;
@@ -1303,6 +1473,27 @@ _FlexItemBehavior? _resolveFlexItemBehavior(
   }
 
   return behavior;
+}
+
+_FlexItemBehavior _flexItemBehaviorFromModifier(
+  FlexibleModifierMix modifier,
+  BuildContext context, {
+  required String utility,
+  required bool hasMinWidthAuto,
+}) {
+  final resolved = modifier.resolve(context);
+
+  return _FlexItemBehavior(
+    flex: resolved.flex ?? 1,
+    fit: resolved.fit ?? FlexFit.loose,
+    applyMinConstraint: _appliesAutoMinConstraint(utility, hasMinWidthAuto),
+  );
+}
+
+bool _appliesAutoMinConstraint(String utility, bool hasMinWidthAuto) {
+  if (hasMinWidthAuto) return false;
+
+  return utility == 'flex-1' || utility == 'flex-shrink' || utility == 'shrink';
 }
 
 _BasisValue? _resolveBasisValue(
@@ -1315,7 +1506,7 @@ _BasisValue? _resolveBasisValue(
 
   for (final token in tokens) {
     final info = _parseResponsiveToken(token, cfg);
-    if (info.minWidth > width) {
+    if (info == null || info.minWidth > width) {
       continue;
     }
 
@@ -1377,7 +1568,7 @@ _SelfAlignment? _resolveSelfAlignment(
 
   for (final token in tokens) {
     final info = _parseResponsiveToken(token, cfg);
-    if (info.minWidth > width) {
+    if (info == null || info.minWidth > width) {
       continue;
     }
 

@@ -80,11 +80,13 @@ Flex item tokens (`flex-1`, `flex-auto`, `flex-none`, `basis-*`, `self-*`, `shri
 | Token | Supported Values | Notes |
 |-------|------------------|-------|
 | `flex-1`, `flex-auto`, `flex-initial`, `flex-none` | ✅ Supported | Maps to Flutter's flex factor and fit |
-| `basis-*` | Spacing scale only (e.g., `basis-32`) | Fractional values like `basis-1/2` are **no-ops** |
+| `basis-*` | Spacing scale only (e.g., `basis-32`) | Unsupported fractional, full, arbitrary, and unknown values are no-ops reported through `onUnsupported` |
 | `self-start`, `self-center`, `self-end` | ✅ Supported | Cross-axis alignment |
 | `shrink`, `shrink-0` | ✅ Supported | Controls shrink behavior |
 
-**Important**: Because flex item tokens are handled at the widget layer (not the parser), they do **not** trigger `onUnsupported` callbacks even when unsupported (like `basis-1/2`).
+**Important**: Flex item tokens are handled at the widget layer rather than as
+Mix styler properties. Supported values stay quiet; unsupported `basis-*`
+values such as `basis-1/2` are reported through `onUnsupported`.
 
 ## Custom Configuration
 
@@ -135,11 +137,13 @@ Div(
 ```
 
 This callback receives:
-- The final token value (base class, not including variant prefixes)
-- Only tokens that couldn't be mapped to Mix stylers at the **parser layer**
+- The original class token, including variant prefixes when present
+- Tokens that cannot be mapped to Mix stylers, plus unsupported `basis-*`
+  values validated for the widget layer
 - It's safe to throw from this callback (will surface during development)
 
-**Note**: Flex item tokens (`flex-*`, `basis-*`, `self-*`, `shrink*`) are handled at the widget layer and **never** trigger `onUnsupported`, even for unsupported values like `basis-1/2`. This is by design.
+Supported flex item tokens (`flex-*`, `basis-*`, `self-*`, `shrink-*`, and
+`grow-*`) do not trigger `onUnsupported`.
 
 ## License
 

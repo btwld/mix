@@ -4,7 +4,10 @@ import 'package:flutter/rendering.dart';
 import 'package:mix_tailwinds/mix_tailwinds.dart';
 
 import 'card_alert_preview.dart';
+import 'flowbite_card_preview.dart';
 import 'gradient_debug_preview.dart';
+
+const _screenshotParityFontFamily = 'TwParityRoboto';
 
 void main() {
   // Ensure debug paint overlays are disabled for parity screenshots.
@@ -35,6 +38,7 @@ class ScreenshotConfig {
   /// Supported values:
   /// - `dashboard` (default)
   /// - `card-alert`
+  /// - `flowbite-card`
   /// - `gradient-debug`
   static String get example {
     if (!kIsWeb) return 'dashboard';
@@ -66,9 +70,7 @@ class TailwindParityApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final twConfig = TwConfig.standard().copyWith(
-      gradientStrategy: ScreenshotConfig.gradientStrategy,
-    );
+    final twConfig = _twConfigForCurrentMode();
 
     // Screenshot mode: render clean preview without UI chrome
     if (ScreenshotConfig.isScreenshotMode) {
@@ -76,15 +78,12 @@ class TailwindParityApp extends StatelessWidget {
       final example = ScreenshotConfig.example;
 
       if (example == 'gradient-debug') {
-        return TwScope(
-          config: twConfig,
-          child: MaterialApp(
-            debugShowCheckedModeBanner: false,
-            home: Scaffold(
-              backgroundColor: const Color(0xFFE2E8F0),
-              body: SingleChildScrollView(
-                child: GradientDebugPreview(width: width),
-              ),
+        return _ScreenshotWidgetsApp(
+          backgroundColor: const Color(0xFFE2E8F0),
+          child: TwScope(
+            config: twConfig,
+            child: SingleChildScrollView(
+              child: GradientDebugPreview(width: width),
             ),
           ),
         );
@@ -93,30 +92,39 @@ class TailwindParityApp extends StatelessWidget {
       // Card alert example - use slate-900 background to match gradient edge
       if (example == 'card-alert') {
         const slate900 = Color(0xFF0F172A);
-        return TwScope(
-          config: twConfig,
-          child: MaterialApp(
-            debugShowCheckedModeBanner: false,
-            theme: ThemeData(
-              scaffoldBackgroundColor: slate900,
-              canvasColor: slate900,
-            ),
-            home: const Scaffold(
-              backgroundColor: slate900,
-              body: CardAlertPreview(),
+        return _ScreenshotWidgetsApp(
+          backgroundColor: slate900,
+          child: TwScope(config: twConfig, child: const CardAlertPreview()),
+        );
+      }
+
+      if (example == 'flowbite-card') {
+        const gray50 = Color(0xFFF9FAFB);
+        return _ScreenshotWidgetsApp(
+          backgroundColor: gray50,
+          child: TwScope(
+            config: flowbiteCardTwConfig(twConfig),
+            child: const SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.all(16),
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: FlowbiteCardPreview(),
+                ),
+              ),
             ),
           ),
         );
       }
 
       // Default dashboard example
-      return TwScope(
-        config: twConfig,
-        child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          home: Scaffold(
-            backgroundColor: const Color(0xFFF3F4F6),
-            body: SingleChildScrollView(
+      return _ScreenshotWidgetsApp(
+        backgroundColor: const Color(0xFFF3F4F6),
+        child: TwScope(
+          config: twConfig,
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 40),
               child: TailwindParityPreview(width: width, scrollable: false),
             ),
           ),
@@ -124,18 +132,60 @@ class TailwindParityApp extends StatelessWidget {
       );
     }
 
-    return TwScope(
-      config: twConfig,
-      child: MaterialApp(
-        title: 'mix_tailwinds vs Tailwind CSS',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF2563EB)),
-          useMaterial3: true,
-        ),
-        home: const TailwindParityScreen(),
+    return MaterialApp(
+      title: 'mix_tailwinds vs Tailwind CSS',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF2563EB)),
+        useMaterial3: true,
+      ),
+      home: TwScope(config: twConfig, child: const TailwindParityScreen()),
+    );
+  }
+}
+
+class _ScreenshotWidgetsApp extends StatelessWidget {
+  const _ScreenshotWidgetsApp({
+    required this.backgroundColor,
+    required this.child,
+  });
+
+  final Color backgroundColor;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return WidgetsApp(
+      color: backgroundColor,
+      debugShowCheckedModeBanner: false,
+      pageRouteBuilder: <T>(RouteSettings settings, WidgetBuilder builder) {
+        return PageRouteBuilder<T>(
+          settings: settings,
+          pageBuilder: (context, animation, secondaryAnimation) {
+            return builder(context);
+          },
+        );
+      },
+      home: ColoredBox(
+        color: backgroundColor,
+        child: SizedBox.expand(child: child),
       ),
     );
   }
+}
+
+TwConfig _twConfigForCurrentMode() {
+  final baseConfig = TwConfig.standard().copyWith(
+    gradientStrategy: ScreenshotConfig.gradientStrategy,
+  );
+
+  if (!ScreenshotConfig.isScreenshotMode) return baseConfig;
+
+  return baseConfig.copyWith(
+    textDefaults: baseConfig.textDefaults.copyWith(
+      fontFamily: _screenshotParityFontFamily,
+      fontFamilyFallback: const [],
+    ),
+  );
 }
 
 class TailwindParityScreen extends StatefulWidget {
@@ -164,39 +214,46 @@ class _TailwindParityScreenState extends State<TailwindParityScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final twConfig = TwConfigProvider.of(context);
+
     return Scaffold(
       backgroundColor: const Color(0xFFF3F4F6),
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const _Header(),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  P(
-                    text:
-                        'Preview width: ${_previewWidth.toStringAsFixed(0)} px',
-                    classNames: 'text-base font-semibold text-gray-700',
-                  ),
-                  Slider(
-                    min: 320,
-                    max: 1040,
-                    divisions: 9,
-                    label: _previewWidth.toStringAsFixed(0),
-                    value: _previewWidth,
-                    onChanged: _updateWidth,
-                  ),
-                ],
+      body: TwScope(
+        config: twConfig,
+        child: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const _Header(),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    P(
+                      text:
+                          'Preview width: ${_previewWidth.toStringAsFixed(0)} px',
+                      classNames: 'text-base font-semibold text-gray-700',
+                    ),
+                    Slider(
+                      min: 320,
+                      max: 1040,
+                      divisions: 9,
+                      label: _previewWidth.toStringAsFixed(0),
+                      value: _previewWidth,
+                      onChanged: _updateWidth,
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 12),
-            Expanded(
-              child: Center(child: TailwindParityPreview(width: _previewWidth)),
-            ),
-          ],
+              const SizedBox(height: 12),
+              Expanded(
+                child: Center(
+                  child: TailwindParityPreview(width: _previewWidth),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -233,7 +290,7 @@ class _ComparisonStack extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Div(
-      classNames: 'flex flex-col gap-6 w-full',
+      classNames: 'flex w-full flex-col gap-6',
       children: const [_CampaignOverviewCard(), _TeamActivityCard()],
     );
   }
@@ -262,6 +319,7 @@ class _CampaignOverviewCard extends StatelessWidget {
           classNames: 'text-base text-gray-500',
         ),
         Div(
+          key: const ValueKey('dashboard-metric-row'),
           classNames:
               'flex flex-col gap-4 border-t border-gray-200 pt-4 md:flex-row',
           children: const [
@@ -279,14 +337,17 @@ class _CampaignOverviewCard extends StatelessWidget {
           ],
         ),
         Div(
+          key: const ValueKey('dashboard-button-row'),
           classNames: 'flex flex-col gap-3 md:flex-row',
           children: [
             Div(
+              key: const ValueKey('dashboard-view-button'),
               classNames:
                   'flex flex-1 items-center justify-center rounded-full bg-blue-600 px-4 py-3 text-base font-semibold text-white hover:bg-blue-700',
               child: const Span(text: 'View live dashboard'),
             ),
             Div(
+              key: const ValueKey('dashboard-download-button'),
               classNames:
                   'flex flex-1 items-center justify-center rounded-full border border-blue-600 px-4 py-3 text-base font-semibold text-blue-600 hover:bg-blue-50',
               child: const Span(text: 'Download CSV'),
@@ -312,6 +373,7 @@ class _MetricTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Div(
+      key: ValueKey('dashboard-metric-$label'),
       classNames: 'flex flex-1 flex-col gap-2 rounded-xl bg-blue-50 p-4',
       children: [
         P(
@@ -439,7 +501,8 @@ class _ActivityRow extends StatelessWidget {
     };
 
     return Div(
-      classNames: 'flex items-center justify-between gap-4 py-4 $borderClass',
+      key: ValueKey('dashboard-activity-$name'),
+      classNames: 'flex items-center justify-between gap-4 $borderClass py-4',
       children: [
         Div(
           classNames: 'flex flex-1 items-center gap-4',

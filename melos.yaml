@@ -27,6 +27,8 @@ command:
 categories:
   flutter_projects:
     - packages/mix
+    - packages/mix_protocol
+    - packages/mix_tailwinds
     - packages/mix/example
     - packages/mix_atlas/example
     - packages/mix_lint_test
@@ -39,11 +41,13 @@ categories:
 scripts:
   # ANALYSIS
   analyze:
-    run: melos run analyze:dart && melos run analyze:dcm
+    run: melos run schema:inventory --no-select && melos run analyze:dart --no-select && melos run analyze:dcm --no-select
     description: Run all static analysis checks.
-    exec:
-      failFast: true
-      
+
+  schema:inventory:
+    run: melos exec --scope="mix_protocol" -- dart run tool/inventory_check.dart --check
+    description: Verify mix_protocol inventory coverage decisions.
+
   analyze:dart:
     run: melos exec -c 4 -- dart analyze .
     description: Run Dart static analysis checks.
@@ -79,8 +83,12 @@ scripts:
       dependsOn: "build_runner"
 
   gen:build:
-    run: melos run gen:clean && melos run gen:build:flutter && melos run gen:build:dart
+    run: melos run gen:clean && melos run gen:build:flutter && melos run gen:build:dart && melos run gen:tailwinds-registry
     description: Generate code for all packages
+
+  gen:tailwinds-registry:
+    run: melos exec --scope="mix_tailwinds" -- dart run tool/gen_registry.dart
+    description: Generate the deterministic mix_tailwinds parser registry
 
   gen:build:flutter:
     run: melos exec --category=flutter_projects --order-dependents -- flutter pub run build_runner build --delete-conflicting-outputs
@@ -129,10 +137,8 @@ scripts:
       dirExists: test
 
   ci:
-    run: melos run test:flutter && melos run test:dart
+    run: melos run test:flutter --no-select && melos run test:dart --no-select
     description: Run flutter and dart tests
-    packageFilters:
-      dirExists: test
 
   brb:
     run: melos run gen:build

@@ -174,7 +174,7 @@ Rationale:
 Implemented in `mix_tailwinds`:
 
 - `TwGradientStrategy.cssAngleRect` (legacy `adaptive` kept for compatibility)
-- `TwCssKeywordLinearTransform` in parser path for `to-*` directional gradients
+- `CssKeywordLinearTransform` in `package:mix`, with the `TwCssKeywordLinearTransform` compatibility name in the parser path for `to-*` directional gradients
 - Screenshot query support via `?gradient=css-angle-rect`
 
 Result on real page (`card-alert`):

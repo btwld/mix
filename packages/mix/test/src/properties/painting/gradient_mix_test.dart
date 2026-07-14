@@ -5,6 +5,28 @@ import 'package:mix/mix.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
+  group('CssKeywordLinearTransform', () {
+    test('uses bounds when transforming corner directions', () {
+      const transform = CssKeywordLinearTransform('to-br');
+
+      final wide = transform.transform(const Rect.fromLTWH(0, 0, 200, 100));
+      final tall = transform.transform(const Rect.fromLTWH(0, 0, 100, 200));
+
+      expect(wide.storage, isNot(equals(tall.storage)));
+    });
+
+    test('compares by direction key', () {
+      expect(
+        const CssKeywordLinearTransform('to-br'),
+        const CssKeywordLinearTransform('to-br'),
+      );
+      expect(
+        const CssKeywordLinearTransform('to-br'),
+        isNot(const CssKeywordLinearTransform('to-tr')),
+      );
+    });
+  });
+
   group('LinearGradientMix', () {
     group('Constructor', () {
       test('only constructor creates instance with correct properties', () {

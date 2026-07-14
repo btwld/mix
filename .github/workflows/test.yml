@@ -39,12 +39,14 @@ jobs:
 
   test:
     name: Test
-    uses: btwld/dart-actions/.github/workflows/ci.yml@main
+    uses: btwld/dart-actions/.github/workflows/ci.yml@9075ce1232ec77b8747953f2ff4a349190e5a805
     secrets:
       token: ${{ secrets.GITHUB_TOKEN }}
     with:
       flutter-version: 'stable'
       run-dcm: true
+      melos-commands: |
+        melos run analyze
 
   mix_atlas_goldens:
     name: mix_atlas Goldens (macOS)
