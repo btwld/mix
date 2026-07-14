@@ -172,4 +172,79 @@ void main() {
       expect(edgeInsets.bottom, 0);
     });
   });
+
+  group('P/H margin utilities — arbitrary and negative', () {
+    testWidgets('P with mb-[10px] applies arbitrary bottom margin', (
+      tester,
+    ) async {
+      await pumpLtr(
+        tester,
+        const P(text: 'Arb', classNames: 'text-sm mb-[10px]'),
+      );
+
+      final edgeInsets = singlePaddingInsets(tester);
+      expect(edgeInsets.bottom, 10);
+      expect(edgeInsets.top, 0);
+      expect(edgeInsets.left, 0);
+      expect(edgeInsets.right, 0);
+    });
+
+    testWidgets('P with mb-[1rem] applies arbitrary rem margin', (
+      tester,
+    ) async {
+      await pumpLtr(tester, const P(text: 'Arb', classNames: 'mb-[1rem]'));
+
+      expect(singlePaddingInsets(tester).bottom, 16);
+    });
+
+    testWidgets('H1 with mx-[12px] applies arbitrary horizontal margin', (
+      tester,
+    ) async {
+      await pumpLtr(
+        tester,
+        const H1(text: 'Heading', classNames: 'text-4xl mx-[12px]'),
+      );
+
+      final edgeInsets = singlePaddingInsets(tester);
+      expect(edgeInsets.left, 12);
+      expect(edgeInsets.right, 12);
+    });
+
+    testWidgets('P with -mb-4 skips the unsupported negative margin', (
+      tester,
+    ) async {
+      await pumpLtr(tester, const P(text: 'Neg', classNames: '-mb-4'));
+
+      expect(tester.takeException(), isNull);
+      expect(find.byType(Padding), findsNothing);
+    });
+
+    testWidgets('P applies a positive side alongside a negative margin', (
+      tester,
+    ) async {
+      await pumpLtr(tester, const P(text: 'Mixed', classNames: '-mb-4 mt-2'));
+
+      final edgeInsets = singlePaddingInsets(tester);
+      expect(edgeInsets.top, 8);
+      expect(edgeInsets.bottom, 0);
+    });
+
+    testWidgets('variant margins do not apply as base P/H margins', (
+      tester,
+    ) async {
+      for (final classNames in [
+        'hover:mb-4',
+        'group-hover:mb-4',
+        'peer-focus:mt-2',
+        '@md:mb-4',
+        '[&_p]:mt-4',
+      ]) {
+        await pumpLtr(tester, P(text: 'Paragraph', classNames: classNames));
+        expect(find.byType(Padding), findsNothing, reason: classNames);
+
+        await pumpLtr(tester, H1(text: 'Heading', classNames: classNames));
+        expect(find.byType(Padding), findsNothing, reason: classNames);
+      }
+    });
+  });
 }

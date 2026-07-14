@@ -61,15 +61,18 @@ CurveAnimationConfig? parseAnimation(String classNames, {TwParser? parser}) {
   return p.parseAnimationFromTokens(p.listTokens(classNames));
 }
 
-TwParsedClass resolveSingle(String token, {TokenWarningCallback? onUnknown}) {
-  final parsed = TwResolver(
-    TwConfig.standard(),
-    onUnknownVariant: onUnknown,
-  ).resolveToken(token);
+Future<Text> renderedTextFor(
+  WidgetTester tester,
+  String classNames, {
+  String value = 'sample',
+}) async {
+  await pumpLtr(
+    tester,
+    StyledText(value, style: TwParser().parseText(classNames)),
+  );
+  await tester.pump();
 
-  expect(parsed, isNotNull);
-  expect(parsed, hasLength(1));
-  return parsed!.single;
+  return tester.widget<Text>(find.text(value));
 }
 
 Future<void> pumpSized(

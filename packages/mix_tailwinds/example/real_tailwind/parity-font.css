@@ -1,0 +1,17 @@
+@font-face {
+  font-family: "TwParityRoboto";
+  font-style: normal;
+  font-weight: 100 900;
+  font-stretch: 75% 100%;
+  font-display: block;
+  src: url("../assets/fonts/roboto/Roboto%5Bwdth%2Cwght%5D.ttf") format("truetype");
+}
+
+html,
+body,
+button,
+input,
+textarea,
+select {
+  font-family: "TwParityRoboto", sans-serif;
+}

@@ -1,6 +1,6 @@
 # mix_tailwinds Visual Comparison Testing Guide
 
-This guide is for AI agents performing visual parity testing between real Tailwind CSS and the mix_tailwinds Flutter implementation.
+This guide is for AI agents performing visual parity testing between real Tailwind CSS and the mix_tailwinds Flutter implementation. It is the canonical workflow referenced by `packages/mix_tailwinds/AGENTS.md` and `packages/mix_tailwinds/CLAUDE.md`.
 
 ## Goal
 
@@ -14,13 +14,23 @@ The visual output should be identical (or as close as possible given platform di
 
 ## Quick Start: Run Visual Comparison
 
+### Step 0: Verify Source Class Parity
+
+Before changing translator or renderer behavior, compare Tailwind HTML `class` strings against Flutter `classNames` strings:
+
+- Confirm corresponding elements use the same utility tokens in the same order.
+- Expand reusable Flutter components when comparing against repeated HTML nodes, such as metric tiles and activity rows.
+- Expand dynamic Flutter class fragments before comparing, such as `borderClass` and `badgeColor`.
+
+If class strings differ, fix example drift first. If class strings match, continue to layout metrics and pixel comparison; the bug is then in translation, widget placement, or renderer behavior.
+
 ### Step 1: Start Flutter Web Server
 
 ```bash
 cd packages/mix_tailwinds/example
 # If you see "not configured to build on the web", run:
-#   flutter create . --platforms=web
-flutter run -d web-server --web-port=8089 --profile
+#   fvm flutter create . --platforms=web
+fvm flutter run -d web-server --web-port=8089 --profile
 ```
 
 Wait for: `lib/main.dart is being served at http://localhost:8089`
@@ -32,14 +42,16 @@ Wait for: `lib/main.dart is being served at http://localhost:8089`
 ```bash
 cd packages/mix_tailwinds/tool/visual-comparison
 npm install  # first time only
+npx playwright install chromium  # first time only, if Chromium is missing
 npm run compare
 ```
 
 This script automatically:
-1. Captures Tailwind screenshots from `real_tailwind/index.html`
+1. Captures Tailwind screenshots from the configured `real_tailwind/*.html` fixture
 2. Captures Flutter screenshots from `localhost:8089`
-3. Generates pixel-diff images
-4. Reports diff percentages
+3. Generates pixel-diff, amplified absolute-diff, and blink-GIF images
+4. Writes `summary.json` with image dimensions and diff percentages
+5. Reports diff percentages
 
 ### Output
 
@@ -53,11 +65,19 @@ visual-comparison/
 │   ├── tailwind-480.png
 │   ├── tailwind-768.png
 │   ├── tailwind-1024.png
+│   ├── summary.json
 │   └── diff/
+│       ├── absdiff-480.png
+│       ├── blink-480.gif
 │       ├── diff-480.png
 │       ├── diff-768.png
 │       └── diff-1024.png
-└── card-alert/
+├── card-alert/
+│   ├── flutter-480.png
+│   ├── ... (same structure)
+│   └── diff/
+│       └── ...
+└── flowbite-card/
     ├── flutter-480.png
     ├── ... (same structure)
     └── diff/
@@ -68,6 +88,7 @@ To run a specific example:
 ```bash
 npm run compare -- --example=dashboard
 npm run compare -- --example=card-alert
+npm run compare -- --example=flowbite-card
 ```
 
 ### Interpreting Results
@@ -78,6 +99,26 @@ npm run compare -- --example=card-alert
 | 3-5% | Good parity (minor differences) |
 | 5-15% | Moderate diff (likely structural issues) |
 | > 15% | High diff (parser bugs likely) |
+
+Use percentages as a trend signal, not as the only pass/fail rule. A large region can be caused by one structural shift, such as a text line wrapping differently and moving every row below it.
+
+### Current Visual Baseline
+
+These values are useful when checking whether a new change regresses the existing examples:
+
+| Example | 480px | 768px | 1024px | Main known issue |
+|---------|-------|-------|--------|------------------|
+| `dashboard` | 1.20% | 1.14% | 0.89% | Remaining text anti-aliasing and minor shadow/background rendering noise |
+| `card-alert` | 4.86% | 3.94% | 3.36% | Remaining text baseline/anti-aliasing and minor background rendering noise |
+| `flowbite-card` | 1.43% | 1.43% | 1.43% | Remaining text rendering noise and Material icon equivalents differing from Flowbite SVG paths |
+
+Before treating a diff as a regression, compare against the previous commit or saved baseline artifacts. If current and baseline Flutter screenshots are byte-identical, the issue is existing parity drift, not a regression from the latest patch.
+
+`card-alert` 768px note: the comparison harness pins both the Tailwind HTML pages and Flutter screenshot mode to the bundled `TwParityRoboto` font. This keeps glyph metrics deterministic without changing canonical Tailwind sizes; `TwConfig.standard()` still uses the standard Tailwind font scale and system sans stack.
+
+`card-alert` button note: button labels rely on inherited `font-medium` plus Tailwind's base 16px text size. Screenshot previews use a `WidgetsApp` shell with `TwScope` around the captured content so Material text defaults cannot shadow Tailwind defaults; keep default text modifiers merging with the ambient style so partial overrides do not reset base font metrics.
+
+`dashboard` note: the Tailwind reference body uses `py-10`, which places `main` at `y=40`. The visual comparison tool reuses Tailwind's expanded clip for Flutter, so Flutter screenshot mode must include the same vertical frame before rendering the dashboard preview.
 
 ---
 
@@ -149,6 +190,24 @@ Red pixels in diff images indicate differences between Flutter and Tailwind:
 - **Missing borders** - Border not appearing at all
 - **Wrong sizes** - Element much larger/smaller than expected
 
+### Clearer Local Diff Artifacts
+
+The comparison tool writes extra artifacts next to each `diff-*.png`:
+
+- `diff/absdiff-<width>.png` amplifies raw channel differences so subtle text, color, and border drift is easier to see.
+- `diff/blink-<width>.gif` alternates Tailwind and Flutter frames so layout shifts are obvious.
+- `summary.json` records dimensions, diff percentages, thresholds, and generated artifact paths.
+
+Do not commit generated screenshots, GIFs, summaries, or diff images. If you need additional review composites such as triptychs, keep them under `.context/visual-review/`.
+
+For example:
+
+```bash
+npm run compare -- --example=card-alert
+open ../../visual-comparison/card-alert/diff/blink-768.gif
+open ../../visual-comparison/card-alert/diff/absdiff-768.png
+```
+
 ---
 
 ## Debugging Specific Classes
@@ -173,6 +232,15 @@ Some properties are handled in `lib/src/tw_widget.dart`:
 - Fractional widths (`w-1/2`, `h-1/3`)
 - Flex item decorators (`flex-1`, `basis-*`)
 - Responsive breakpoint resolution
+
+### Step 5: Add Metric Tests Before Changing Styling
+
+When a visual diff looks structural, add focused widget tests before changing parser or widget behavior. Prefer measuring bounds directly:
+
+- Card-alert: message width/height, warning top/bottom, button row top, equal button widths.
+- Dashboard: equal metric tile widths, equal action button widths, row separator/top-border behavior.
+
+This keeps fixes tied to utility semantics instead of chasing screenshot noise.
 
 ---
 
@@ -318,3 +386,24 @@ These differences are expected and not bugs:
 4. **Line height** - Minor line height differences between platforms
 
 Focus on fixing **structural** and **value** differences, not platform rendering differences.
+
+## Golden Test Notes
+
+`packages/mix_tailwinds/example/test/parity_golden_test.dart` is the Flutter-side golden harness for the dashboard surface. If it fails with a `FlutterError.onError` lifecycle assertion or hangs, fix the harness before updating any golden PNGs.
+
+Expected process:
+
+```bash
+cd packages/mix_tailwinds/example
+fvm flutter test test/parity_golden_test.dart
+```
+
+- A normal golden mismatch with files under `test/failures/` is actionable.
+- A harness assertion or hang is not actionable visual evidence.
+- Do not update committed goldens unless the root cause is understood and the updated images are the intended new baseline.
+
+Stable supporting goldens should keep passing:
+
+```bash
+fvm flutter test test/shrink_golden_test.dart test/duration_delay_golden_test.dart
+```

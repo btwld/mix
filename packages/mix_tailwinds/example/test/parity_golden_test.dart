@@ -4,7 +4,6 @@ import 'package:mix_tailwinds_example/main.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  final originalOnError = FlutterError.onError;
   var sawUnexpectedFlutterError = false;
 
   void drainKnownOverflowExceptions(WidgetTester tester) {
@@ -39,6 +38,7 @@ void main() {
   }
 
   Future<void> pumpAtWidth(WidgetTester tester, double width) async {
+    final previousOnError = FlutterError.onError;
     FlutterError.onError = (details) {
       final message = details.exceptionAsString();
       if (message.contains('RenderFlex overflowed')) {
@@ -47,11 +47,8 @@ void main() {
         return;
       }
       sawUnexpectedFlutterError = true;
-      originalOnError?.call(details);
+      previousOnError?.call(details);
     };
-    addTearDown(() {
-      FlutterError.onError = originalOnError;
-    });
 
     tester.view.devicePixelRatio = 1;
     tester.view.physicalSize = Size(width, 2000);
@@ -60,24 +57,28 @@ void main() {
       tester.view.resetDevicePixelRatio();
     });
 
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: MediaQuery(
-          data: MediaQueryData(size: Size(width, 2000)),
-          child: SizedBox(
-            width: width,
-            child: DecoratedBox(
-              decoration: const BoxDecoration(color: Color(0xFFF3F4F6)),
-              child: TailwindParityPreview(width: width, scrollable: false),
+    try {
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: MediaQuery(
+            data: MediaQueryData(size: Size(width, 2000)),
+            child: SizedBox(
+              width: width,
+              child: DecoratedBox(
+                decoration: const BoxDecoration(color: Color(0xFFF3F4F6)),
+                child: TailwindParityPreview(width: width, scrollable: false),
+              ),
             ),
           ),
         ),
-      ),
-    );
-    drainKnownOverflowExceptions(tester);
-    await tester.pumpAndSettle();
-    drainKnownOverflowExceptions(tester);
+      );
+      drainKnownOverflowExceptions(tester);
+      await tester.pumpAndSettle();
+      drainKnownOverflowExceptions(tester);
+    } finally {
+      FlutterError.onError = previousOnError;
+    }
   }
 
   const widths = [480.0, 768.0, 1024.0];

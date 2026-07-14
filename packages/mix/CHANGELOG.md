@@ -2,6 +2,10 @@
 
 ### New features
 
+- **`CssKeywordLinearTransform`:** Adds a reusable bounds-aware
+  `GradientTransform` for CSS linear-gradient keyword directions, so Tailwind
+  corner gradients can round-trip through schema tooling without losing visual
+  parity.
 - **Typed context variants:** `BrightnessVariant`, `BreakpointVariant`,
   `OrientationVariant`, `DirectionalityVariant`, `PlatformVariant`,
   `WebVariant`, and `NotVariant` are now public value objects behind their

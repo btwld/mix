@@ -8,6 +8,35 @@ import 'package:mix_tailwinds/mix_tailwinds.dart';
 
 import 'tailwinds_test_helpers.dart';
 
+Future<FlexParentData> _rowParentDataForDiv(
+  WidgetTester tester,
+  String classNames, {
+  TokenWarningCallback? onUnsupported,
+}) async {
+  await tester.pumpWidget(
+    Directionality(
+      textDirection: TextDirection.ltr,
+      child: SizedBox(
+        width: 200,
+        child: Row(
+          children: [
+            Div(
+              classNames: classNames,
+              onUnsupported: onUnsupported,
+              child: const SizedBox(width: 10, height: 10),
+            ),
+            const SizedBox(width: 20, height: 20),
+          ],
+        ),
+      ),
+    ),
+  );
+
+  final renderFlex = tester.renderObject<RenderFlex>(find.byType(Row));
+  final firstChild = renderFlex.firstChild!;
+  return firstChild.parentData as FlexParentData;
+}
+
 void main() {
   testWidgets('Div picks flex layout when flex token is present', (
     tester,
@@ -314,6 +343,11 @@ void main() {
     expect(boxSize.height, closeTo(120, 0.0001));
   });
 
+  testWidgets('max-w-sm uses Tailwind named max-width scale', (tester) async {
+    final container = await boxContainerFor(tester, 'max-w-sm');
+    expect(container.constraints?.maxWidth, 384);
+  });
+
   testWidgets('items-stretch expands cross axis when explicitly requested', (
     tester,
   ) async {
@@ -386,27 +420,82 @@ void main() {
   testWidgets('flex-1 applies flex parent data when used inside Row', (
     tester,
   ) async {
-    await pumpLtr(
+    final parentData = await _rowParentDataForDiv(tester, 'flex-1 bg-blue-500');
+
+    expect(parentData.flex, 1);
+    expect(parentData.fit, FlexFit.tight);
+  });
+
+  testWidgets('grow applies flex parent data when used inside Row', (
+    tester,
+  ) async {
+    final parentData = await _rowParentDataForDiv(tester, 'grow bg-blue-500');
+
+    expect(parentData.flex, 1);
+    expect(parentData.fit, FlexFit.tight);
+  });
+
+  testWidgets('grow-0 applies loose zero-flex parent data inside Row', (
+    tester,
+  ) async {
+    final parentData = await _rowParentDataForDiv(tester, 'grow-0 bg-blue-500');
+
+    expect(parentData.flex, 0);
+    expect(parentData.fit, FlexFit.loose);
+  });
+
+  testWidgets('hover:flex-1 reports once without base parent data', (
+    tester,
+  ) async {
+    final seen = <String>[];
+
+    final parentData = await _rowParentDataForDiv(
       tester,
-      SizedBox(
-        width: 200,
-        child: Row(
-          children: [
-            Div(
-              classNames: 'flex-1 bg-blue-500',
-              child: const SizedBox(width: 10, height: 10),
-            ),
-            const SizedBox(width: 20, height: 20),
+      'hover:flex-1 bg-blue-500',
+      onUnsupported: seen.add,
+    );
+
+    expect(parentData.flex, isNull);
+    expect(seen, ['hover:flex-1']);
+  });
+
+  testWidgets('hover:w-full reports once without base parent data', (
+    tester,
+  ) async {
+    final seen = <String>[];
+
+    final parentData = await _rowParentDataForDiv(
+      tester,
+      'hover:w-full bg-blue-500',
+      onUnsupported: seen.add,
+    );
+
+    expect(parentData.flex, isNull);
+    expect(seen, ['hover:w-full']);
+  });
+
+  testWidgets('hover:gap-x-4 reports once without base spacing', (
+    tester,
+  ) async {
+    final seen = <String>[];
+
+    await tester.pumpWidget(
+      Directionality(
+        textDirection: TextDirection.ltr,
+        child: Div(
+          classNames: 'flex hover:gap-x-4',
+          onUnsupported: seen.add,
+          children: const [
+            SizedBox(width: 20, height: 20),
+            SizedBox(width: 20, height: 20),
           ],
         ),
       ),
     );
 
-    final renderFlex = tester.renderObject<RenderFlex>(find.byType(Row));
-    final firstChild = renderFlex.firstChild!;
-    final parentData = firstChild.parentData as FlexParentData;
-    expect(parentData.flex, 1);
-    expect(parentData.fit, FlexFit.tight);
+    final flex = tester.widget<Flex>(find.byType(Flex));
+    expect(flex.spacing, 0);
+    expect(seen, ['hover:gap-x-4']);
   });
 
   testWidgets('flex-1 auto-applies min-w-0 constraint', (tester) async {
@@ -560,6 +649,17 @@ void main() {
     final decoration = await boxDecorationFor(tester, 'shadow-none');
     final shadows = decoration?.boxShadow;
     expect(shadows, anyOf(isNull, isEmpty));
+  });
+
+  testWidgets('shadow-xs matches Tailwind preset', (tester) async {
+    await expectBoxShadows(tester, 'shadow-xs', const [
+      BoxShadow(
+        offset: Offset(0, 1),
+        blurRadius: 2,
+        spreadRadius: 0,
+        color: Color(0x0D000000),
+      ),
+    ]);
   });
 
   testWidgets('shadow-sm matches Tailwind preset', (tester) async {
@@ -860,6 +960,10 @@ void main() {
     expect(border?.bottom.width ?? 0, 0);
     expect(border?.left.width ?? 0, 0);
     expect(border?.right.width ?? 0, 0);
+    expect(border?.top.style, BorderStyle.none);
+    expect(border?.bottom.style, BorderStyle.none);
+    expect(border?.left.style, BorderStyle.none);
+    expect(border?.right.style, BorderStyle.none);
   });
 
   testWidgets('border-t border-gray-200 applies color to top only', (
@@ -876,6 +980,9 @@ void main() {
     expect(border.bottom.width, 0);
     expect(border.left.width, 0);
     expect(border.right.width, 0);
+    expect(border.bottom.style, BorderStyle.none);
+    expect(border.left.style, BorderStyle.none);
+    expect(border.right.style, BorderStyle.none);
   });
 
   testWidgets('border border-red-500 applies color to all sides', (
@@ -968,14 +1075,39 @@ void main() {
     expect(text.style?.fontWeight, FontWeight.w700);
   });
 
-  test('flex item tokens are ignored by parser callbacks', () {
+  test('unsupported basis flex item tokens report parser callbacks', () {
     final seen = <String>[];
-    twParserWatching(seen).parseFlex('flex flex-1 basis-1/2 self-end');
-    expect(seen, isEmpty);
+    TwParser(
+      onUnsupported: seen.add,
+    ).parseFlex('flex flex-1 basis-1/2 basis-full basis-[50%] self-end');
+    expect(seen, containsAll(['basis-1/2', 'basis-full', 'basis-[50%]']));
+    expect(seen, isNot(contains('flex-1')));
+    expect(seen, isNot(contains('self-end')));
   });
+
+  testWidgets(
+    'Div reports unsupported tokens once across animation and translation',
+    (tester) async {
+      final seen = <String>[];
+
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: Div(
+            classNames: 'unknown-token',
+            onUnsupported: seen.add,
+            child: const SizedBox(),
+          ),
+        ),
+      );
+
+      expect(seen, ['unknown-token']);
+    },
+  );
 
   test('wantsFlex detects prefixed flex tokens', () {
     final parser = TwParser();
+    expect(parser.wantsFlex({'inline-flex'}), isTrue);
     expect(parser.wantsFlex({'sm:flex'}), isTrue);
     expect(parser.wantsFlex({'md:flex-row'}), isTrue);
     expect(parser.wantsFlex({'lg:flex-col'}), isTrue);
@@ -1001,6 +1133,47 @@ void main() {
     // Non-flex tokens should still return false
     expect(parser.wantsFlex({'p-4'}), isFalse);
     expect(parser.wantsFlex({'text-center'}), isFalse);
+  });
+
+  testWidgets('inline-flex renders horizontal shrink-wrap flex', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      const Directionality(
+        textDirection: TextDirection.ltr,
+        child: Center(
+          child: Div(
+            classNames: 'inline-flex items-center',
+            children: [SizedBox(width: 10, height: 8), SizedBox(width: 14)],
+          ),
+        ),
+      ),
+    );
+
+    final flex = tester.widget<Flex>(find.byType(Flex));
+    expect(flex.direction, Axis.horizontal);
+    expect(flex.mainAxisSize, MainAxisSize.min);
+    expect(tester.getSize(find.byType(Flex)).width, closeTo(24, 0.1));
+  });
+
+  testWidgets('TwIcon maps Tailwind size, color, and logical margin', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      const Directionality(
+        textDirection: TextDirection.ltr,
+        child: TwScope(
+          child: TwIcon(Icons.add, classNames: 'w-3 h-3 text-blue-700 me-1'),
+        ),
+      ),
+    );
+
+    final icon = tester.widget<Icon>(find.byIcon(Icons.add));
+    expect(icon.size, 12);
+    expect(icon.color, const Color(0xFF1D4ED8));
+
+    final padding = tester.widget<Padding>(find.byType(Padding));
+    expect(padding.padding.resolve(TextDirection.ltr).right, 4);
   });
 
   test('wantsFlex handles arbitrary values with colons correctly', () {
@@ -1085,7 +1258,8 @@ void main() {
     final seen = <String>[];
     parseBoxWatching('z-10 opacity-50', seen);
 
-    expect(seen, containsAll(['z-10', 'opacity-50']));
+    expect(seen, contains('z-10'));
+    expect(seen, isNot(contains('opacity-50')));
   });
 
   test('Prefix chains parse without warnings', () {
@@ -1103,22 +1277,23 @@ void main() {
     expect(() => parser.parseBox('h-1/'), returnsNormally);
   });
 
-  test('Arbitrary 3/4-digit hex colors are rejected', () {
-    final seen = <String>[];
-    final parser = twParserWatching(seen);
+  testWidgets('Arbitrary 3/4-digit hex colors are applied', (tester) async {
+    final rgb = await boxDecorationFor(tester, 'bg-[#fff]');
+    expect(rgb?.color, equals(const Color(0xFFFFFFFF)));
 
-    parser.parseBox('bg-[#fff] bg-[#ffff]');
-
-    expect(seen, contains('bg-[#fff]'));
-    expect(seen, contains('bg-[#ffff]'));
+    final rgba = await boxDecorationFor(tester, 'bg-[#ffff]');
+    expect(rgba?.color, equals(const Color(0xFFFFFFFF)));
   });
 
-  testWidgets('Arbitrary 6/8-digit hex colors are applied', (tester) async {
+  testWidgets('Arbitrary 6/8-digit CSS hex colors are applied', (tester) async {
     final opaque = await boxDecorationFor(tester, 'bg-[#ffffff]');
     expect(opaque?.color, equals(const Color(0xFFFFFFFF)));
 
-    final alpha = await boxDecorationFor(tester, 'bg-[#80ffffff]');
+    final alpha = await boxDecorationFor(tester, 'bg-[#ffffff80]');
     expect(alpha?.color, equals(const Color(0x80FFFFFF)));
+
+    final cssOrdered = await boxDecorationFor(tester, 'bg-[#80ffffff]');
+    expect(cssOrdered?.color, equals(const Color(0xFF80FFFF)));
   });
 
   group('state prefix parsing', () {
@@ -1149,40 +1324,34 @@ void main() {
   // Line Height (leading-*) Tests
   // ==========================================================================
 
-  test('leading-none applies line height 1.0', () {
-    final parsed = resolveSingle('leading-none');
-    expect(parsed.property, TwProperty.lineHeight);
-    expect(parsed.value, const TwLengthValue(1.0, TwUnit.none));
+  testWidgets('leading-none applies line height 1.0', (tester) async {
+    final text = await renderedTextFor(tester, 'leading-none');
+    expect(text.style?.height, 1.0);
   });
 
-  test('leading-tight applies line height 1.25', () {
-    final parsed = resolveSingle('leading-tight');
-    expect(parsed.property, TwProperty.lineHeight);
-    expect(parsed.value, const TwLengthValue(1.25, TwUnit.none));
+  testWidgets('leading-tight applies line height 1.25', (tester) async {
+    final text = await renderedTextFor(tester, 'leading-tight');
+    expect(text.style?.height, 1.25);
   });
 
-  test('leading-snug applies line height 1.375', () {
-    final parsed = resolveSingle('leading-snug');
-    expect(parsed.property, TwProperty.lineHeight);
-    expect(parsed.value, const TwLengthValue(1.375, TwUnit.none));
+  testWidgets('leading-snug applies line height 1.375', (tester) async {
+    final text = await renderedTextFor(tester, 'leading-snug');
+    expect(text.style?.height, 1.375);
   });
 
-  test('leading-normal applies line height 1.5', () {
-    final parsed = resolveSingle('leading-normal');
-    expect(parsed.property, TwProperty.lineHeight);
-    expect(parsed.value, const TwLengthValue(1.5, TwUnit.none));
+  testWidgets('leading-normal applies line height 1.5', (tester) async {
+    final text = await renderedTextFor(tester, 'leading-normal');
+    expect(text.style?.height, 1.5);
   });
 
-  test('leading-relaxed applies line height 1.625', () {
-    final parsed = resolveSingle('leading-relaxed');
-    expect(parsed.property, TwProperty.lineHeight);
-    expect(parsed.value, const TwLengthValue(1.625, TwUnit.none));
+  testWidgets('leading-relaxed applies line height 1.625', (tester) async {
+    final text = await renderedTextFor(tester, 'leading-relaxed');
+    expect(text.style?.height, 1.625);
   });
 
-  test('leading-loose applies line height 2.0', () {
-    final parsed = resolveSingle('leading-loose');
-    expect(parsed.property, TwProperty.lineHeight);
-    expect(parsed.value, const TwLengthValue(2.0, TwUnit.none));
+  testWidgets('leading-loose applies line height 2.0', (tester) async {
+    final text = await renderedTextFor(tester, 'leading-loose');
+    expect(text.style?.height, 2.0);
   });
 
   testWidgets('leading-even applies even leading distribution', (tester) async {
@@ -1228,40 +1397,34 @@ void main() {
   // Letter Spacing (tracking-*) Tests
   // ==========================================================================
 
-  test('tracking-tighter applies -0.8 letter spacing', () {
-    final parsed = resolveSingle('tracking-tighter');
-    expect(parsed.property, TwProperty.letterSpacing);
-    expect(parsed.value, const TwLengthValue(-0.8));
+  testWidgets('tracking-tighter applies -0.8 letter spacing', (tester) async {
+    final text = await renderedTextFor(tester, 'tracking-tighter');
+    expect(text.style?.letterSpacing, -0.8);
   });
 
-  test('tracking-tight applies -0.4 letter spacing', () {
-    final parsed = resolveSingle('tracking-tight');
-    expect(parsed.property, TwProperty.letterSpacing);
-    expect(parsed.value, const TwLengthValue(-0.4));
+  testWidgets('tracking-tight applies -0.4 letter spacing', (tester) async {
+    final text = await renderedTextFor(tester, 'tracking-tight');
+    expect(text.style?.letterSpacing, -0.4);
   });
 
-  test('tracking-normal applies 0 letter spacing', () {
-    final parsed = resolveSingle('tracking-normal');
-    expect(parsed.property, TwProperty.letterSpacing);
-    expect(parsed.value, const TwLengthValue(0));
+  testWidgets('tracking-normal applies 0 letter spacing', (tester) async {
+    final text = await renderedTextFor(tester, 'tracking-normal');
+    expect(text.style?.letterSpacing, 0);
   });
 
-  test('tracking-wide applies 0.4 letter spacing', () {
-    final parsed = resolveSingle('tracking-wide');
-    expect(parsed.property, TwProperty.letterSpacing);
-    expect(parsed.value, const TwLengthValue(0.4));
+  testWidgets('tracking-wide applies 0.4 letter spacing', (tester) async {
+    final text = await renderedTextFor(tester, 'tracking-wide');
+    expect(text.style?.letterSpacing, 0.4);
   });
 
-  test('tracking-wider applies 0.8 letter spacing', () {
-    final parsed = resolveSingle('tracking-wider');
-    expect(parsed.property, TwProperty.letterSpacing);
-    expect(parsed.value, const TwLengthValue(0.8));
+  testWidgets('tracking-wider applies 0.8 letter spacing', (tester) async {
+    final text = await renderedTextFor(tester, 'tracking-wider');
+    expect(text.style?.letterSpacing, 0.8);
   });
 
-  test('tracking-widest applies 1.6 letter spacing', () {
-    final parsed = resolveSingle('tracking-widest');
-    expect(parsed.property, TwProperty.letterSpacing);
-    expect(parsed.value, const TwLengthValue(1.6));
+  testWidgets('tracking-widest applies 1.6 letter spacing', (tester) async {
+    final text = await renderedTextFor(tester, 'tracking-widest');
+    expect(text.style?.letterSpacing, 1.6);
   });
 
   // ==========================================================================
@@ -2858,15 +3021,70 @@ void main() {
       expect(find.byType(Container), findsOneWidget);
     });
 
-    testWidgets('Span with opacity does not wrap in Box', (tester) async {
+    testWidgets('Span with opacity wraps and applies Opacity', (tester) async {
       await pumpLtr(
         tester,
         const Span(text: 'Faded', classNames: 'opacity-50'),
       );
 
-      // opacity- is not in box utility prefixes (not yet implemented for Box)
-      // so Span should not wrap in a Container
-      expect(find.byType(Container), findsNothing);
+      expect(find.byType(Container), findsOneWidget);
+      final opacity = tester.widget<Opacity>(find.byType(Opacity));
+      expect(opacity.opacity, 0.5);
+    });
+
+    testWidgets('Span with transform wraps in Box', (tester) async {
+      await tester.pumpWidget(
+        const Directionality(
+          textDirection: TextDirection.ltr,
+          child: Span(text: 'Moved', classNames: 'translate-x-2'),
+        ),
+      );
+
+      expect(find.byType(Container), findsOneWidget);
+      final container = tester.widget<Container>(find.byType(Container));
+      expect(container.transform, isNotNull);
+    });
+
+    testWidgets('Span with overflow wraps in Box', (tester) async {
+      await tester.pumpWidget(
+        const Directionality(
+          textDirection: TextDirection.ltr,
+          child: Span(text: 'Clipped', classNames: 'overflow-hidden'),
+        ),
+      );
+
+      expect(find.byType(Container), findsOneWidget);
+      final container = tester.widget<Container>(find.byType(Container));
+      expect(container.clipBehavior, Clip.hardEdge);
+    });
+
+    testWidgets('Span with blur wraps in Box', (tester) async {
+      await tester.pumpWidget(
+        const Directionality(
+          textDirection: TextDirection.ltr,
+          child: Span(text: 'Blurred', classNames: 'blur-sm'),
+        ),
+      );
+
+      expect(find.byType(Container), findsOneWidget);
+      expect(find.byType(ImageFiltered), findsOneWidget);
+    });
+
+    testWidgets('Span with gradient wraps in Box', (tester) async {
+      await tester.pumpWidget(
+        const Directionality(
+          textDirection: TextDirection.ltr,
+          child: Span(
+            text: 'Gradient',
+            classNames: 'bg-gradient-to-r from-blue-500 to-red-500',
+          ),
+        ),
+      );
+
+      expect(find.byType(Container), findsOneWidget);
+      final container = tester.widget<Container>(find.byType(Container));
+      final decoration = container.decoration as BoxDecoration?;
+      expect(decoration?.gradient, isA<LinearGradient>());
     });
   });
 
@@ -2961,6 +3179,111 @@ void main() {
       // CSS-equivalent direction for `to-br` in non-square bounds uses
       // atan2(width, height), not a fixed 45-degree angle.
       expect(angle, closeTo(math.atan2(rect.width, rect.height), 0.0001));
+    });
+
+    testWidgets('bg-gradient-to-tr can use cssAngleRect strategy', (
+      tester,
+    ) async {
+      final config = TwConfig.standard().copyWith(
+        gradientStrategy: TwGradientStrategy.cssAngleRect,
+      );
+      final decoration = await boxDecorationForWithConfig(
+        tester,
+        'bg-gradient-to-tr from-slate-900 via-purple-900 to-slate-900',
+        config,
+      );
+      final gradient = decoration?.gradient as LinearGradient?;
+
+      expect(gradient, isNotNull);
+      expect(gradient!.begin, Alignment.centerLeft);
+      expect(gradient.end, Alignment.centerRight);
+      expect(gradient.stops, const [0.0, 0.5, 1.0]);
+      expect(gradient.transform, isA<TwCssKeywordLinearTransform>());
+
+      final rect = const Rect.fromLTWH(0, 0, 300, 120);
+      final matrix = gradient.transform!.transform(rect)!;
+      final center = rect.center;
+      final transformedCenter = MatrixUtils.transformPoint(matrix, center);
+      final transformedPoint = MatrixUtils.transformPoint(
+        matrix,
+        center + const Offset(1, 0),
+      );
+      final direction = transformedPoint - transformedCenter;
+      final angle = math.atan2(direction.dy, direction.dx);
+
+      // CSS-equivalent direction for `to-tr` in non-square bounds uses
+      // atan2(-width, height), not a fixed -45-degree angle.
+      expect(angle, closeTo(math.atan2(-rect.width, rect.height), 0.0001));
+    });
+
+    testWidgets('bg-gradient-to-bl can use cssAngleRect strategy', (
+      tester,
+    ) async {
+      final config = TwConfig.standard().copyWith(
+        gradientStrategy: TwGradientStrategy.cssAngleRect,
+      );
+      final decoration = await boxDecorationForWithConfig(
+        tester,
+        'bg-gradient-to-bl from-slate-900 via-purple-900 to-slate-900',
+        config,
+      );
+      final gradient = decoration?.gradient as LinearGradient?;
+
+      expect(gradient, isNotNull);
+      expect(gradient!.begin, Alignment.centerLeft);
+      expect(gradient.end, Alignment.centerRight);
+      expect(gradient.stops, const [0.0, 0.5, 1.0]);
+      expect(gradient.transform, isA<TwCssKeywordLinearTransform>());
+
+      final rect = const Rect.fromLTWH(0, 0, 300, 120);
+      final matrix = gradient.transform!.transform(rect)!;
+      final center = rect.center;
+      final transformedCenter = MatrixUtils.transformPoint(matrix, center);
+      final transformedPoint = MatrixUtils.transformPoint(
+        matrix,
+        center + const Offset(1, 0),
+      );
+      final direction = transformedPoint - transformedCenter;
+      final angle = math.atan2(direction.dy, direction.dx);
+
+      // CSS-equivalent direction for `to-bl` in non-square bounds uses
+      // atan2(width, -height), not a fixed -45-degree angle.
+      expect(angle, closeTo(math.atan2(rect.width, -rect.height), 0.0001));
+    });
+
+    testWidgets('bg-gradient-to-tl can use cssAngleRect strategy', (
+      tester,
+    ) async {
+      final config = TwConfig.standard().copyWith(
+        gradientStrategy: TwGradientStrategy.cssAngleRect,
+      );
+      final decoration = await boxDecorationForWithConfig(
+        tester,
+        'bg-gradient-to-tl from-slate-900 via-purple-900 to-slate-900',
+        config,
+      );
+      final gradient = decoration?.gradient as LinearGradient?;
+
+      expect(gradient, isNotNull);
+      expect(gradient!.begin, Alignment.centerLeft);
+      expect(gradient.end, Alignment.centerRight);
+      expect(gradient.stops, const [0.0, 0.5, 1.0]);
+      expect(gradient.transform, isA<TwCssKeywordLinearTransform>());
+
+      final rect = const Rect.fromLTWH(0, 0, 300, 120);
+      final matrix = gradient.transform!.transform(rect)!;
+      final center = rect.center;
+      final transformedCenter = MatrixUtils.transformPoint(matrix, center);
+      final transformedPoint = MatrixUtils.transformPoint(
+        matrix,
+        center + const Offset(1, 0),
+      );
+      final direction = transformedPoint - transformedCenter;
+      final angle = math.atan2(direction.dy, direction.dx);
+
+      // CSS-equivalent direction for `to-tl` in non-square bounds uses
+      // atan2(-width, -height), not a fixed 45-degree angle.
+      expect(angle, closeTo(math.atan2(-rect.width, -rect.height), 0.0001));
     });
 
     testWidgets('bg-gradient-to-r uses unrotated horizontal axis', (

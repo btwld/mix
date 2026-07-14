@@ -1,70 +1,11 @@
 /// Shared helpers for Tailwind token parsing.
 library;
 
-/// Finds the first colon that's not inside square brackets.
-///
-/// Used for iterative prefix stripping (e.g., parsing `md:hover:flex` one
-/// prefix at a time).
-///
-/// Returns -1 if:
-/// - No colon exists outside brackets
-/// - Brackets are malformed (unclosed or extra closing)
-///
-/// Example:
-/// - `md:flex` → 2 (index of `:` after `md`)
-/// - `bg-[color:red]` → -1 (colon is inside brackets)
-/// - `md:bg-[color:red]` → 2 (first colon after `md`)
-int findFirstColonOutsideBrackets(String token) {
-  var bracketDepth = 0;
-  var firstColonOutside = -1;
-  for (var i = 0; i < token.length; i++) {
-    final c = token[i];
-    if (c == '[') {
-      bracketDepth++;
-    } else if (c == ']') {
-      bracketDepth--;
-      // Extra closing bracket - malformed
-      if (bracketDepth < 0) return -1;
-    } else if (c == ':' && bracketDepth == 0 && firstColonOutside == -1) {
-      firstColonOutside = i;
-    }
-  }
-  // Unclosed brackets - malformed, treat as no prefix
-  if (bracketDepth != 0) return -1;
-  return firstColonOutside;
-}
+final _whitespaceRegex = RegExp(r'\s+');
 
-/// Finds the last colon that's not inside square brackets.
-///
-/// Used for getting the base token directly (e.g., extracting `flex` from
-/// `md:hover:flex` in one operation).
-///
-/// Returns -1 if:
-/// - No colon exists outside brackets
-/// - Brackets are malformed (unclosed or extra closing)
-///
-/// Example:
-/// - `md:hover:flex` → 8 (index of last `:` before `flex`)
-/// - `bg-[color:red]` → -1 (colon is inside brackets)
-/// - `md:bg-[color:red]` → 2 (only colon outside brackets)
-int findLastColonOutsideBrackets(String token) {
-  var bracketDepth = 0;
-  var lastColonOutside = -1;
-  for (var i = 0; i < token.length; i++) {
-    final c = token[i];
-    if (c == '[') {
-      bracketDepth++;
-    } else if (c == ']') {
-      bracketDepth--;
-      // Extra closing bracket - malformed
-      if (bracketDepth < 0) return -1;
-    } else if (c == ':' && bracketDepth == 0) {
-      lastColonOutside = i; // Keep updating to get the last one
-    }
-  }
-  // Unclosed brackets - malformed, treat as no prefix
-  if (bracketDepth != 0) return -1;
-  return lastColonOutside;
+List<String> splitTailwindTokens(String classNames) {
+  final trimmed = classNames.trim();
+  return trimmed.isEmpty ? const [] : trimmed.split(_whitespaceRegex);
 }
 
 double? parseFractionToken(String value) {
@@ -81,4 +22,19 @@ double? parseFractionToken(String value) {
   }
 
   return numerator / denominator;
+}
+
+final _cssLengthRegex = RegExp(r'^(-?\d+\.?\d*)(px|rem|em)?$');
+
+/// Parses a raw CSS length string into logical pixels.
+///
+/// A bare number is treated as `px`; `rem`/`em` are converted at 16px. Returns
+/// null when [raw] is not a plain numeric length (e.g. `50%`, `full`, `auto`).
+double? parseCssLength(String raw) {
+  final match = _cssLengthRegex.firstMatch(raw);
+  if (match == null) return null;
+  var length = double.parse(match.group(1)!);
+  final unit = match.group(2) ?? 'px';
+  if (unit == 'rem' || unit == 'em') length *= 16;
+  return length;
 }

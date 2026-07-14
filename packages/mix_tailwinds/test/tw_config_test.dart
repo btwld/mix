@@ -12,6 +12,13 @@ void main() {
         equals(TwGradientStrategy.cssAngleRect),
       );
     });
+
+    test('standard uses canonical Tailwind font sizes', () {
+      final config = TwConfig.standard();
+
+      expect(config.fontSizeOf('sm'), equals(14));
+      expect(config.fontSizeOf('base'), equals(16));
+    });
   });
 
   group('TwConfig.copyWith', () {
@@ -189,7 +196,7 @@ void main() {
 
       final container = tester.widget<Container>(find.byType(Container));
       final decoration = container.decoration as BoxDecoration?;
-      expect(decoration?.color, equals(Colors.purple));
+      expect(decoration?.color, isSameColorAs(Colors.purple));
     });
 
     testWidgets('Div explicit config overrides provider', (tester) async {
@@ -215,7 +222,7 @@ void main() {
 
       final container = tester.widget<Container>(find.byType(Container));
       final decoration = container.decoration as BoxDecoration?;
-      expect(decoration?.color, equals(Colors.red));
+      expect(decoration?.color, isSameColorAs(Colors.red));
     });
   });
 

@@ -7,6 +7,7 @@
  *   npm install  # first time only
  *   npm run compare
  *   npm run compare -- --example=card-alert
+ *   npm run compare -- --example=flowbite-card
  *
  * Prerequisites:
  *   - Flutter web server running: flutter run -d web-server --web-port=8089 --profile
@@ -17,6 +18,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
 import { fileURLToPath } from 'node:url';
+import GIFEncoder from 'gif-encoder-2';
 import pixelmatch from 'pixelmatch';
 import { PNG } from 'pngjs';
 
@@ -43,6 +45,13 @@ const EXAMPLES = {
     margin: 16,
     moderateDiffThreshold: 7,
     highDiffThreshold: 16,
+  },
+  'flowbite-card': {
+    htmlFile: 'example/real_tailwind/flowbite-card.html',
+    selector: 'body > div',
+    margin: 16,
+    moderateDiffThreshold: 8,
+    highDiffThreshold: 18,
   },
   'gradient-debug': {
     htmlFile: 'example/real_tailwind/gradient-debug.html',
@@ -111,6 +120,7 @@ async function main() {
     await page.setViewportSize(viewport);
     await page.goto(`file://${tailwindPath}`);
     await page.waitForLoadState('networkidle');
+    await waitForFonts(page);
     const element = await page.$(elementSelector);
     if (!element) {
       console.error(`  ERROR: Could not find <${elementSelector}> element for ${width}px`);
@@ -144,6 +154,7 @@ async function main() {
       // Use state: 'attached' since the element may be transparent/hidden
       await page.waitForSelector('flt-glass-pane', { timeout: 10000, state: 'attached' });
       await page.waitForLoadState('networkidle');
+      await waitForFonts(page);
       // Additional delay for Flutter to finish painting
       await page.waitForTimeout(1000);
       const clip = clipByWidth.get(width) ?? fullViewportClip(viewport);
@@ -207,11 +218,70 @@ async function main() {
     const diffPath = path.join(diffDir, `diff-${width}.png`);
     fs.writeFileSync(diffPath, PNG.sync.write(diff));
 
+    const absoluteDiff = createAmplifiedAbsoluteDiff(
+      tailwindCropped,
+      flutterCropped,
+      targetWidth,
+      targetHeight,
+    );
+    const absoluteDiffPath = path.join(diffDir, `absdiff-${width}.png`);
+    fs.writeFileSync(absoluteDiffPath, PNG.sync.write(absoluteDiff));
+
+    const blinkPath = path.join(diffDir, `blink-${width}.gif`);
+    writeBlinkGif(
+      [tailwindCropped, flutterCropped],
+      targetWidth,
+      targetHeight,
+      blinkPath,
+    );
+
     const totalPixels = targetWidth * targetHeight;
     const delta = (mismatched / totalPixels) * 100;
-    results.push({ width, mismatched, totalPixels, delta, diffPath });
-    console.log(`  diff-${width}.png (${delta.toFixed(2)}% diff)`);
+    results.push({
+      width,
+      dimensions: {
+        tailwind: { width: tailwindPng.width, height: tailwindPng.height },
+        flutter: { width: flutterPng.width, height: flutterPng.height },
+        compared: { width: targetWidth, height: targetHeight },
+      },
+      mismatched,
+      totalPixels,
+      delta,
+      files: {
+        tailwind: path.relative(screenshotDir, tailwindFile),
+        flutter: path.relative(screenshotDir, flutterFile),
+        pixelmatchDiff: path.relative(screenshotDir, diffPath),
+        absoluteDiff: path.relative(screenshotDir, absoluteDiffPath),
+        blink: path.relative(screenshotDir, blinkPath),
+      },
+    });
+    console.log(
+      `  diff-${width}.png (${delta.toFixed(2)}% diff, plus absdiff/blink)`,
+    );
   }
+
+  const summaryPath = path.join(screenshotDir, 'summary.json');
+  const summary = {
+    generatedAt: new Date().toISOString(),
+    example: exampleArg,
+    gradientStrategy,
+    flutterUrl,
+    tailwindHtml: tailwindPath,
+    selector: elementSelector,
+    thresholds: {
+      moderateDiffPercent: exampleConfig.moderateDiffThreshold ?? 5,
+      highDiffPercent: exampleConfig.highDiffThreshold ?? 15,
+    },
+    results: results.map((r) => ({
+      width: r.width,
+      dimensions: r.dimensions,
+      mismatchedPixels: r.mismatched,
+      totalPixels: r.totalPixels,
+      diffPercent: Number(r.delta.toFixed(4)),
+      files: r.files,
+    })),
+  };
+  fs.writeFileSync(summaryPath, `${JSON.stringify(summary, null, 2)}\n`);
 
   // Output report
   console.log('\n=== Visual Comparison Results ===\n');
@@ -247,6 +317,7 @@ async function main() {
 
   console.log(`\nScreenshots saved to: ${screenshotDir}`);
   console.log(`Diff images saved to: ${diffDir}\n`);
+  console.log(`JSON summary saved to: ${summaryPath}\n`);
 }
 
 function cropToSize(png, targetWidth, targetHeight) {
@@ -264,8 +335,56 @@ function cropToSize(png, targetWidth, targetHeight) {
   return cropped;
 }
 
+async function waitForFonts(page) {
+  await page.evaluate(async () => {
+    if (document.fonts) {
+      await document.fonts.ready;
+    }
+  });
+}
+
 function fullViewportClip(viewport) {
   return { x: 0, y: 0, width: viewport.width, height: viewport.height };
+}
+
+function createAmplifiedAbsoluteDiff(tailwindPng, flutterPng, width, height) {
+  const amplified = new PNG({ width, height });
+  const gain = 4;
+
+  for (let i = 0; i < width * height; i++) {
+    const idx = i << 2;
+    amplified.data[idx] = clampByte(
+      Math.abs(tailwindPng.data[idx] - flutterPng.data[idx]) * gain,
+    );
+    amplified.data[idx + 1] = clampByte(
+      Math.abs(tailwindPng.data[idx + 1] - flutterPng.data[idx + 1]) * gain,
+    );
+    amplified.data[idx + 2] = clampByte(
+      Math.abs(tailwindPng.data[idx + 2] - flutterPng.data[idx + 2]) * gain,
+    );
+    amplified.data[idx + 3] = 255;
+  }
+
+  return amplified;
+}
+
+function writeBlinkGif(frames, width, height, outputPath) {
+  const encoder = new GIFEncoder(width, height, 'neuquant', false, frames.length);
+  encoder.start();
+  encoder.setRepeat(0);
+  encoder.setDelay(650);
+  encoder.setQuality(10);
+
+  for (const frame of frames) {
+    encoder.addFrame(frame.data);
+  }
+
+  encoder.finish();
+  fs.writeFileSync(outputPath, encoder.out.getData());
+}
+
+function clampByte(value) {
+  return Math.max(0, Math.min(255, Math.round(value)));
 }
 
 function expandClipBox(box, viewport, margin) {
