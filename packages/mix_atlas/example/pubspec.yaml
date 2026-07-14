@@ -8,11 +8,14 @@ environment:
   flutter: ">=3.41.0"
 
 dependencies:
+  crypto: ^3.0.7
   flutter:
     sdk: flutter
   mix: ^2.0.3
   mix_atlas:
     path: ..
+  mix_protocol:
+    path: ../../mix_protocol
   window_manager: ^0.5.2
 
 dependency_overrides:
