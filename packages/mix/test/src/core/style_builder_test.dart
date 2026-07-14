@@ -72,35 +72,49 @@ void main() {
         );
 
         // Verify that the animation wrapper is created
-        expect(find.byType(StyleAnimationBuilder<BoxSpec>), findsOneWidget);
+        final animationBuilder = find.byType(StyleAnimationBuilder<BoxSpec>);
+        expect(animationBuilder, findsOneWidget);
+        expect(
+          find.descendant(
+            of: animationBuilder,
+            matching: find.byType(AnimatedBuilder),
+          ),
+          findsOneWidget,
+        );
       });
 
-      testWidgets(
-        'Animation driver is still present when animation config is null',
-        (tester) async {
-          final boxAttribute = BoxStyler()
-              .width(100)
-              .height(200)
-              .color(Colors.blue);
+      testWidgets('Null animation bypasses the animated rebuild path', (
+        tester,
+      ) async {
+        final boxAttribute = BoxStyler()
+            .width(100)
+            .height(200)
+            .color(Colors.blue);
 
-          await tester.pumpWidget(
-            MaterialApp(
-              home: StyleBuilder<BoxSpec>(
-                style: boxAttribute,
-                builder: (context, spec) {
-                  return Container(
-                    decoration: spec.decoration,
-                    constraints: spec.constraints,
-                  );
-                },
-              ),
+        await tester.pumpWidget(
+          MaterialApp(
+            home: StyleBuilder<BoxSpec>(
+              style: boxAttribute,
+              builder: (context, spec) {
+                return Container(
+                  decoration: spec.decoration,
+                  constraints: spec.constraints,
+                );
+              },
             ),
-          );
+          ),
+        );
 
-          // StyleSpecBuilder always wraps with StyleAnimationBuilder.
-          expect(find.byType(StyleAnimationBuilder<BoxSpec>), findsOneWidget);
-        },
-      );
+        final animationBuilder = find.byType(StyleAnimationBuilder<BoxSpec>);
+        expect(animationBuilder, findsOneWidget);
+        expect(
+          find.descendant(
+            of: animationBuilder,
+            matching: find.byType(AnimatedBuilder),
+          ),
+          findsNothing,
+        );
+      });
 
       testWidgets(
         'Animation creates new animated build rather than interpolating between style changes',
@@ -839,6 +853,56 @@ void main() {
           );
         },
       );
+
+      testWidgets(
+        'preserves state from inherited pointer style when controller is removed',
+        (tester) async {
+          final externalController = WidgetStatesController({
+            WidgetState.hovered,
+          });
+          addTearDown(externalController.dispose);
+
+          WidgetStatesController? controller = externalController;
+          late void Function(VoidCallback) setState;
+
+          await tester.pumpWidget(
+            MaterialApp(
+              home: StyleProvider<BoxSpec>(
+                style: BoxStyler()
+                    .color(Colors.red)
+                    .onHovered(BoxStyler().color(Colors.blue)),
+                child: StatefulBuilder(
+                  builder: (context, stateSetter) {
+                    setState = stateSetter;
+                    return StyleBuilder<BoxSpec>(
+                      controller: controller,
+                      style: BoxStyler(),
+                      builder: (context, spec) {
+                        return Container(decoration: spec.decoration);
+                      },
+                    );
+                  },
+                ),
+              ),
+            ),
+          );
+
+          expect(
+            tester.widget<Container>(find.byType(Container)).decoration,
+            const BoxDecoration(color: Colors.blue),
+          );
+
+          setState(() {
+            controller = null;
+          });
+          await tester.pump();
+
+          expect(
+            tester.widget<Container>(find.byType(Container)).decoration,
+            const BoxDecoration(color: Colors.blue),
+          );
+        },
+      );
     });
 
     testWidgets(
@@ -864,6 +928,59 @@ void main() {
         expect(find.byType(MixInteractionDetector), findsNothing);
       },
     );
+
+    testWidgets(
+      'does not install pointer tracking for non-pointer widget states',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(
+          StyleBuilder<BoxSpec>(
+            style: BoxStyler().variant(
+              ContextVariant.widgetState(WidgetState.selected),
+              BoxStyler().color(Colors.blue),
+            ),
+            builder: (context, spec) => const SizedBox(),
+          ),
+        );
+
+        expect(find.byType(MixInteractionDetector), findsNothing);
+      },
+    );
+
+    testWidgets('only rebuilds for widget states declared by the style', (
+      WidgetTester tester,
+    ) async {
+      final controller = WidgetStatesController();
+      addTearDown(controller.dispose);
+      var styleBuilds = 0;
+
+      final styledChild = StyleBuilder<BoxSpec>(
+        style: BoxStyler().onPressed(BoxStyler().color(Colors.blue)),
+        builder: (context, spec) {
+          styleBuilds++;
+          return const SizedBox();
+        },
+      );
+
+      await tester.pumpWidget(
+        ListenableBuilder(
+          listenable: controller,
+          child: styledChild,
+          builder: (context, child) {
+            return WidgetStateProvider(states: controller.value, child: child!);
+          },
+        ),
+      );
+
+      expect(styleBuilds, 1);
+
+      controller.update(WidgetState.hovered, true);
+      await tester.pump();
+      expect(styleBuilds, 1);
+
+      controller.update(WidgetState.pressed, true);
+      await tester.pump();
+      expect(styleBuilds, 2);
+    });
 
     testWidgets('should update the Style when the controller is updated', (
       WidgetTester tester,
