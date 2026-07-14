@@ -65,6 +65,8 @@ class _Header extends StatelessWidget {
   Widget build(BuildContext context) {
     final capture = controller.current;
     final review = controller.reviewContext;
+    final canReturnToSource =
+        capture != null || controller.loadState == .loading;
 
     return SizedBox(
       height: 68,
@@ -77,6 +79,17 @@ class _Header extends StatelessWidget {
             padding: const .symmetric(horizontal: 18),
             child: Row(
               children: [
+                if (canReturnToSource) ...[
+                  IconButton(
+                    key: const ValueKey('back-to-source-selection'),
+                    onPressed: controller.showSourceSelection,
+                    tooltip: controller.loadState == .loading
+                        ? 'Cancel and return to source selection'
+                        : 'Back to source selection',
+                    icon: const Icon(Icons.arrow_back),
+                  ),
+                  const SizedBox(width: 4),
+                ],
                 const Icon(Icons.grid_view_rounded, color: AtlasPalette.accent),
                 const SizedBox(width: 9),
                 const Text(

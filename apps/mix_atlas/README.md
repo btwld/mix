@@ -58,11 +58,25 @@ response, Atlas shows the failure and does not retry until the reset time.
 The default sample fields point to:
 
 ```text
-repository: btwld/remix
+repository: tilucasoli/hero_ui
 baseline:   main
-current:    main
-manifest:   atlas/fortal/capture.json
+current:    #21
+manifest:   atlas/hero_ui/capture.json
 ```
+
+The repository is `tilucasoli/hero_ui`. Draft PR #21 is sourced from the
+`leoafarias/hero_ui` fork and contains the generated Hero Button capture.
+Upstream `main` does not have `atlas/hero_ui/capture.json` yet, so this sample
+intentionally opens in current-only mode: Catalog and Inspect are available,
+while Changes and Compare remain disabled until the first baseline is merged.
+Returning to source selection keeps the last entered values. A load can also
+be cancelled from the header, and choosing a listed PR automatically selects
+that PR's actual base branch.
+
+Release builds can choose a different initial source without editing Dart by
+passing `MIX_ATLAS_DEFAULT_REPOSITORY`, `MIX_ATLAS_DEFAULT_BASELINE_REF`,
+`MIX_ATLAS_DEFAULT_CURRENT_REF`, and `MIX_ATLAS_DEFAULT_MANIFEST` through
+Flutter's `--dart-define` option.
 
 ## Evidence levels
 
@@ -124,17 +138,24 @@ fvm flutter test test/golden_test.dart --update-goldens
 ```
 
 After a producer branch has been pushed, validate the real public-GitHub path
-by mutable ref and immutable commit SHA:
+by mutable ref and immutable commit SHA. Repository and manifest default to the
+Fortal reference capture, but can be overridden for any public producer. For
+the Hero UI fork PR:
 
 ```sh
-MIX_ATLAS_LIVE_REF=feat/mix-atlas-fortal-artifacts \
-MIX_ATLAS_LIVE_SHA=<full-commit-sha> \
+MIX_ATLAS_LIVE_REPOSITORY=tilucasoli/hero_ui \
+MIX_ATLAS_LIVE_REF='#21' \
+MIX_ATLAS_LIVE_SHA=a1cf6b3377db0301cce21e399c1815698d47bd67 \
+MIX_ATLAS_LIVE_MANIFEST=atlas/hero_ui/capture.json \
+MIX_ATLAS_LIVE_MISSING_BASELINE_REF=main \
 fvm flutter test test/live_github_test.dart
 ```
 
-Before the first producer capture reaches `main`, add
-`MIX_ATLAS_LIVE_MISSING_BASELINE_REF=main` to the command. That also proves the
-current capture remains usable while Changes and Compare are unavailable.
+For a same-repository branch, omit `MIX_ATLAS_LIVE_REPOSITORY` and
+`MIX_ATLAS_LIVE_MANIFEST` when using the Fortal defaults. Before the first
+producer capture reaches its baseline branch, set
+`MIX_ATLAS_LIVE_MISSING_BASELINE_REF` as above. That also proves the current
+capture remains usable while Changes and Compare are unavailable.
 
 The live test is deliberately opt-in so ordinary CI remains deterministic and
 does not consume unauthenticated GitHub API quota.

@@ -5,12 +5,20 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix_atlas_app/src/app_controller.dart';
 import 'package:mix_atlas_app/src/data/capture_gateway.dart';
 
-const _repository = 'btwld/remix';
-const _manifestPath = 'atlas/fortal/capture.json';
+const _defaultRepository = 'btwld/remix';
+const _defaultManifestPath = 'atlas/fortal/capture.json';
 
 void main() {
+  final repository =
+      Platform.environment['MIX_ATLAS_LIVE_REPOSITORY'] ?? _defaultRepository;
+  final manifestPath =
+      Platform.environment['MIX_ATLAS_LIVE_MANIFEST'] ?? _defaultManifestPath;
   final ref = Platform.environment['MIX_ATLAS_LIVE_REF'];
   final expectedSha = Platform.environment['MIX_ATLAS_LIVE_SHA'];
+  final pullNumber = RegExp(
+    r'^(?:#|pull/)?([1-9][0-9]*)$',
+  ).firstMatch(ref ?? '')?.group(1);
+  final expectedRequestedRef = pullNumber == null ? ref : 'pull/$pullNumber';
   final missingBaselineRef =
       Platform.environment['MIX_ATLAS_LIVE_MISSING_BASELINE_REF'];
   final skipReason = ref == null || expectedSha == null
@@ -18,45 +26,56 @@ void main() {
             'public-GitHub verification.'
       : false;
 
-  test(
-    'loads the Fortal v2 capture by mutable ref and immutable SHA',
-    () async {
-      final gateway = DefaultAtlasCaptureGateway();
+  test('loads a v2 capture by mutable ref and immutable SHA', () async {
+    final gateway = DefaultAtlasCaptureGateway();
 
-      final byRef = await gateway.loadGitHub(
-        repository: _repository,
-        ref: ref!,
-        manifestPath: _manifestPath,
-      );
-      final bySha = await gateway.loadGitHub(
-        repository: _repository,
-        ref: expectedSha!,
-        manifestPath: _manifestPath,
-      );
+    final byRef = await gateway.loadGitHub(
+      repository: repository,
+      ref: ref!,
+      manifestPath: manifestPath,
+    );
+    final bySha = await gateway.loadGitHub(
+      repository: byRef.receipt.repository,
+      ref: expectedSha!,
+      manifestPath: manifestPath,
+    );
 
-      expect(byRef.receipt.requestedRef, ref);
-      expect(byRef.receipt.resolvedCommit, expectedSha);
-      expect(bySha.receipt.requestedRef, expectedSha);
-      expect(bySha.receipt.resolvedCommit, expectedSha);
-      expect(byRef.manifest.schemaVersion, 2);
-      expect(byRef.manifest.id, 'fortal');
-      expect(byRef.files, hasLength(70));
-      expect(byRef.protocolThemes, hasLength(2));
-      expect(byRef.validatedStyleDocumentCount, 61);
-      expect(byRef.componentDocuments, hasLength(1));
-
-      final button = byRef.componentDocuments.single;
-      expect(button.id, 'button');
-      expect(button.recipes, hasLength(20));
-      expect(button.states, hasLength(6));
-      expect(button.slots, hasLength(5));
-      expect(bySha.files.keys, unorderedEquals(byRef.files.keys));
-      for (final entry in byRef.files.entries) {
-        expect(bySha.files[entry.key], entry.value, reason: entry.key);
-      }
-    },
-    skip: skipReason,
-  );
+    expect(byRef.receipt.requestedRef, expectedRequestedRef);
+    expect(byRef.receipt.resolvedCommit, expectedSha);
+    expect(bySha.receipt.requestedRef, expectedSha);
+    expect(bySha.receipt.resolvedCommit, expectedSha);
+    expect(byRef.manifest.schemaVersion, 2);
+    expect(byRef.files, isNotEmpty);
+    expect(byRef.protocolThemes, isNotEmpty);
+    expect(byRef.componentDocuments, isNotEmpty);
+    expect(bySha.manifest.id, byRef.manifest.id);
+    expect(bySha.files.keys, unorderedEquals(byRef.files.keys));
+    for (final entry in byRef.files.entries) {
+      expect(bySha.files[entry.key], entry.value, reason: entry.key);
+    }
+    switch (byRef.manifest.id) {
+      case 'fortal':
+        final fortalButton = byRef.componentDocuments.single;
+        expect(byRef.files, hasLength(70));
+        expect(byRef.protocolThemes, hasLength(2));
+        expect(byRef.validatedStyleDocumentCount, 61);
+        expect(fortalButton.id, 'button');
+        expect(fortalButton.recipes, hasLength(20));
+        expect(fortalButton.states, hasLength(6));
+        expect(fortalButton.slots, hasLength(5));
+        break;
+      case 'hero-ui':
+        final heroButton = byRef.componentDocuments.single;
+        expect(byRef.files, hasLength(72));
+        expect(byRef.protocolThemes, hasLength(2));
+        expect(byRef.validatedStyleDocumentCount, 63);
+        expect(heroButton.id, 'button');
+        expect(heroButton.recipes, hasLength(21));
+        expect(heroButton.states, hasLength(6));
+        expect(heroButton.slots, hasLength(5));
+        break;
+    }
+  }, skip: skipReason);
 
   test(
     'opens the live capture through the standalone app controller',
@@ -66,19 +85,20 @@ void main() {
       );
 
       await controller.openGitHub(
-        repository: _repository,
-        currentRef: expectedSha!,
-        baselineRef: ref!,
-        manifestPath: _manifestPath,
+        repository: repository,
+        currentRef: ref!,
+        baselineRef: ref,
+        manifestPath: manifestPath,
       );
 
       expect(controller.loadState, AtlasLoadState.ready);
       expect(controller.loadError, isNull);
       expect(controller.hasCompatibleComparison, true);
       expect(controller.hasChanges, false);
-      expect(controller.reviewContext?.repository, _repository);
+      expect(controller.current?.receipt.resolvedCommit, expectedSha);
+      expect(controller.reviewContext?.repository, repository);
       expect(controller.reviewContext?.baselineRef, ref);
-      expect(controller.reviewContext?.currentRef, expectedSha);
+      expect(controller.reviewContext?.currentRef, ref);
       expect(controller.reviewContext?.componentId, 'button');
       expect(controller.reviewContext?.recipeId, isNotNull);
       expect(controller.reviewContext?.stateId, isNotNull);
@@ -96,10 +116,10 @@ void main() {
       );
 
       await controller.openGitHub(
-        repository: _repository,
+        repository: repository,
         currentRef: ref!,
         baselineRef: missingBaselineRef!,
-        manifestPath: _manifestPath,
+        manifestPath: manifestPath,
       );
 
       expect(controller.loadState, AtlasLoadState.ready);

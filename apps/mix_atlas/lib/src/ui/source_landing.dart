@@ -19,10 +19,20 @@ class AtlasSourceLanding extends StatefulWidget {
 }
 
 class _AtlasSourceLandingState extends State<AtlasSourceLanding> {
-  final _repository = TextEditingController(text: 'btwld/remix');
-  final _baselineRef = TextEditingController(text: 'main');
-  final _currentRef = TextEditingController(text: 'main');
-  final _manifest = TextEditingController(text: 'atlas/fortal/capture.json');
+  late final TextEditingController _repository;
+  late final TextEditingController _baselineRef;
+  late final TextEditingController _currentRef;
+  late final TextEditingController _manifest;
+
+  @override
+  void initState() {
+    super.initState();
+    final source = widget.controller.sourceSelection;
+    _repository = TextEditingController(text: source.repository);
+    _baselineRef = TextEditingController(text: source.baselineRef);
+    _currentRef = TextEditingController(text: source.currentRef);
+    _manifest = TextEditingController(text: source.manifestPath);
+  }
 
   void _openGitHub() {
     widget.controller.openGitHub(
@@ -131,6 +141,7 @@ class _AtlasSourceLandingState extends State<AtlasSourceLanding> {
                           SizedBox(
                             width: fieldWidth,
                             child: TextField(
+                              key: const ValueKey('manifest-field'),
                               controller: _manifest,
                               decoration: const InputDecoration(
                                 labelText: 'Capture manifest',
@@ -143,7 +154,9 @@ class _AtlasSourceLandingState extends State<AtlasSourceLanding> {
                   ),
                   const SizedBox(height: 12),
                   const Text(
-                    'Baseline defaults to main. Override it to compare against another branch or immutable SHA.',
+                    'Current accepts a branch, SHA, or PR. Fork PRs resolve to '
+                    'their head repository; when a baseline has no capture, '
+                    'Atlas opens the current capture on its own.',
                     style: TextStyle(
                       color: AtlasPalette.textMuted,
                       fontSize: 12,
@@ -160,6 +173,7 @@ class _AtlasSourceLandingState extends State<AtlasSourceLanding> {
                         label: const Text('Open repository'),
                       ),
                       OutlinedButton.icon(
+                        key: const ValueKey('open-pull-requests'),
                         onPressed: _listPullRequests,
                         icon: const Icon(Icons.call_split),
                         label: const Text('Open PRs'),
@@ -174,9 +188,11 @@ class _AtlasSourceLandingState extends State<AtlasSourceLanding> {
                       children: [
                         for (final pull in widget.controller.pullRequests)
                           ActionChip(
+                            key: ValueKey('pull-request-${pull.number}'),
                             label: Text('#${pull.number} ${pull.title}'),
                             onPressed: () {
-                              _currentRef.text = '${pull.number}';
+                              _baselineRef.text = pull.baseRef;
+                              _currentRef.text = '#${pull.number}';
                               _openGitHub();
                             },
                           ),

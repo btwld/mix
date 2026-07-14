@@ -33,16 +33,25 @@ void main() {
     expect(find.byKey(const ValueKey('open-github')), findsOneWidget);
     expect(find.byKey(const ValueKey('open-folder')), findsOneWidget);
     expect(find.textContaining('never compiles'), findsOneWidget);
+    _expectSourceFields(
+      tester,
+      repository: 'tilucasoli/hero_ui',
+      baselineRef: 'main',
+      currentRef: '#21',
+      manifestPath: 'atlas/hero_ui/capture.json',
+    );
   });
 
-  testWidgets('shows the capture workspace skeleton while validating', (
+  testWidgets('can cancel capture validation and retain the source fields', (
     tester,
   ) async {
     final gateway = _PendingGateway();
     final controller = AtlasAppController(gateway: gateway);
     final load = controller.openGitHub(
-      repository: 'btwld/remix',
-      currentRef: 'main',
+      repository: 'example/design_system',
+      baselineRef: 'release/next',
+      currentRef: '#42',
+      manifestPath: 'atlas/example/capture.json',
     );
 
     await tester.pumpWidget(AtlasApp(controller: controller));
@@ -55,10 +64,99 @@ void main() {
       find.bySemanticsLabel('Validating capture files and protocol documents'),
       findsOneWidget,
     );
+    expect(
+      find.byKey(const ValueKey('back-to-source-selection')),
+      findsOneWidget,
+    );
+
+    await tester.tap(find.byKey(const ValueKey('back-to-source-selection')));
+    await tester.pumpAndSettle();
+
+    expect(controller.loadState, AtlasLoadState.empty);
+    expect(find.text('Open a design-system capture'), findsOneWidget);
+    _expectSourceFields(
+      tester,
+      repository: 'example/design_system',
+      baselineRef: 'release/next',
+      currentRef: '#42',
+      manifestPath: 'atlas/example/capture.json',
+    );
 
     gateway.capture.complete(baseline);
     await load;
     await tester.pump();
+
+    expect(controller.loadState, AtlasLoadState.empty);
+    expect(controller.current, isNull);
+  });
+
+  testWidgets('returns from a loaded capture without resetting its source', (
+    tester,
+  ) async {
+    final controller = AtlasAppController(
+      gateway: _FixtureGateway(baseline: baseline, changed: changed),
+    );
+    await controller.openGitHub(
+      repository: 'example/design_system',
+      baselineRef: 'release/next',
+      currentRef: '#42',
+      manifestPath: 'atlas/example/capture.json',
+    );
+
+    await tester.pumpWidget(AtlasApp(controller: controller));
+
+    expect(
+      find.byKey(const ValueKey('back-to-source-selection')),
+      findsOneWidget,
+    );
+    await tester.tap(find.byKey(const ValueKey('back-to-source-selection')));
+    await tester.pumpAndSettle();
+
+    expect(controller.loadState, AtlasLoadState.empty);
+    expect(controller.current, isNull);
+    expect(find.text('Open a design-system capture'), findsOneWidget);
+    _expectSourceFields(
+      tester,
+      repository: 'example/design_system',
+      baselineRef: 'release/next',
+      currentRef: '#42',
+      manifestPath: 'atlas/example/capture.json',
+    );
+  });
+
+  testWidgets('opens a selected PR against its actual base branch', (
+    tester,
+  ) async {
+    final gateway = _SourceFormGateway(
+      baseline: baseline,
+      current: changed,
+      pullRequestList: AtlasGitHubPullRequestList(
+        pullRequests: const [
+          AtlasGitHubPullRequest(
+            number: 42,
+            title: 'Design-system update',
+            url: 'https://github.com/example/design_system/pull/42',
+            baseRef: 'release/next',
+            headRepository: 'contributor/design_system',
+            headSha: '4242424242424242424242424242424242424242',
+          ),
+        ],
+        rateLimit: null,
+      ),
+    );
+    final controller = AtlasAppController(gateway: gateway);
+
+    await tester.pumpWidget(AtlasApp(controller: controller));
+    await tester.tap(find.byKey(const ValueKey('open-pull-requests')));
+    await tester.pumpAndSettle();
+    final pullRequest = find.byKey(const ValueKey('pull-request-42'));
+    await tester.ensureVisible(pullRequest);
+    await tester.tap(pullRequest);
+    await tester.pumpAndSettle();
+
+    expect(gateway.githubRefs, ['release/next', '#42']);
+    expect(controller.reviewContext?.baselineRef, 'release/next');
+    expect(controller.reviewContext?.currentRef, '#42');
   });
 
   testWidgets('opens an explicitly selected baseline revision', (tester) async {
@@ -129,7 +227,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(controller.loadState, AtlasLoadState.ready);
-    expect(gateway.githubRefs, ['main']);
+    expect(gateway.githubRefs, ['main', '#21']);
   });
 
   testWidgets('navigates Catalog, Changes, Compare, Inspect, and Token Usage', (
@@ -351,6 +449,22 @@ void main() {
       expect(find.textContaining('failure details'), findsOneWidget);
     });
   }
+}
+
+void _expectSourceFields(
+  WidgetTester tester, {
+  required String repository,
+  required String baselineRef,
+  required String currentRef,
+  required String manifestPath,
+}) {
+  String value(String key) =>
+      tester.widget<TextField>(find.byKey(ValueKey(key))).controller!.text;
+
+  expect(value('repository-field'), repository);
+  expect(value('baseline-ref-field'), baselineRef);
+  expect(value('current-ref-field'), currentRef);
+  expect(value('manifest-field'), manifestPath);
 }
 
 final class _FixtureGateway implements AtlasCaptureGateway {

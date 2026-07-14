@@ -10,6 +10,39 @@ import 'models/review_context.dart';
 
 enum AtlasLoadState { empty, loading, ready, error }
 
+final class AtlasSourceSelection {
+  const AtlasSourceSelection({
+    required this.repository,
+    required this.baselineRef,
+    required this.currentRef,
+    required this.manifestPath,
+  });
+
+  static const productionDefault = AtlasSourceSelection(
+    repository: String.fromEnvironment(
+      'MIX_ATLAS_DEFAULT_REPOSITORY',
+      defaultValue: 'tilucasoli/hero_ui',
+    ),
+    baselineRef: String.fromEnvironment(
+      'MIX_ATLAS_DEFAULT_BASELINE_REF',
+      defaultValue: 'main',
+    ),
+    currentRef: String.fromEnvironment(
+      'MIX_ATLAS_DEFAULT_CURRENT_REF',
+      defaultValue: '#21',
+    ),
+    manifestPath: String.fromEnvironment(
+      'MIX_ATLAS_DEFAULT_MANIFEST',
+      defaultValue: 'atlas/hero_ui/capture.json',
+    ),
+  );
+
+  final String repository;
+  final String baselineRef;
+  final String currentRef;
+  final String manifestPath;
+}
+
 final class AtlasAppController extends ChangeNotifier {
   AtlasLoadState loadState = .empty;
 
@@ -24,13 +57,20 @@ final class AtlasAppController extends ChangeNotifier {
   List<AtlasGitHubPullRequest> pullRequests = const [];
   AtlasGitHubRateLimit? pullRequestRateLimit;
   Object? pullRequestError;
+  AtlasSourceSelection _sourceSelection;
   final AtlasCaptureGateway _gateway;
   final List<AtlasDestination> _history = [AtlasDestination.catalog];
   int _loadGeneration = 0;
   int _pullRequestGeneration = 0;
   Future<void> Function()? _lastLoad;
-  AtlasAppController({required AtlasCaptureGateway gateway})
-    : _gateway = gateway;
+  AtlasAppController({
+    required AtlasCaptureGateway gateway,
+    AtlasSourceSelection sourceSelection =
+        AtlasSourceSelection.productionDefault,
+  }) : _sourceSelection = sourceSelection,
+       _gateway = gateway;
+
+  AtlasSourceSelection get sourceSelection => _sourceSelection;
 
   Future<void> _openLocal(Directory directory, String manifestPath) async {
     final generation = ++_loadGeneration;
@@ -200,11 +240,18 @@ final class AtlasAppController extends ChangeNotifier {
     String baselineRef = 'main',
     String manifestPath = 'atlas/fortal/capture.json',
   }) {
+    final selection = AtlasSourceSelection(
+      repository: repository.trim(),
+      baselineRef: baselineRef.trim(),
+      currentRef: currentRef.trim(),
+      manifestPath: manifestPath.trim(),
+    );
+    _sourceSelection = selection;
     Future<void> action() => _openGitHub(
-      repository: repository,
-      currentRef: currentRef,
-      baselineRef: baselineRef,
-      manifestPath: manifestPath,
+      repository: selection.repository,
+      currentRef: selection.currentRef,
+      baselineRef: selection.baselineRef,
+      manifestPath: selection.manifestPath,
     );
     _lastLoad = action;
 
@@ -230,6 +277,27 @@ final class AtlasAppController extends ChangeNotifier {
   }
 
   Future<void> retry() => _lastLoad?.call() ?? Future.value();
+
+  void showSourceSelection() {
+    _loadGeneration += 1;
+    _pullRequestGeneration += 1;
+    loadState = .empty;
+    baseline = null;
+    current = null;
+    baselineIndex = null;
+    currentIndex = null;
+    reviewContext = null;
+    baselineLoadError = null;
+    loadError = null;
+    pullRequests = const [];
+    pullRequestRateLimit = null;
+    pullRequestError = null;
+    _lastLoad = null;
+    _history
+      ..clear()
+      ..add(.catalog);
+    notifyListeners();
+  }
 
   void navigate(AtlasDestination next) {
     if (destination == next) return;
