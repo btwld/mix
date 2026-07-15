@@ -436,13 +436,15 @@ bool _isRenderableNodeBinding(
     'icon' => atlasPortableIconIdentities.contains(value),
     'source' => value is String && manifest.files.containsKey(value),
     'value' => value is num && value.isFinite && value >= 0 && value <= 1,
-    'strokeWidth' => value is num && value.isFinite && value > 0,
+    'strokeWidth' ||
+    'trackStrokeWidth' => value is num && value.isFinite && value > 0,
     'size' ||
     'widthFactor' ||
     'heightFactor' => value is num && value.isFinite && value >= 0,
-    'color' || 'backgroundColor' =>
+    'color' || 'backgroundColor' || 'trackColor' =>
       binding.kind == .token ||
           (value is String && _portableColorPattern.hasMatch(value)),
+    'duration' => value is int && value > 0,
     'alignment' => value is String && _portableAlignments.contains(value),
     _ => false,
   };

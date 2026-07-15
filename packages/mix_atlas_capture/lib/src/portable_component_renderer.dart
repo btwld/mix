@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:math' as math;
 import 'dart:ui' show SemanticsRole;
 
 import 'package:flutter/material.dart';
@@ -337,16 +338,19 @@ final class _AnatomyRenderer {
   }
 
   Widget _buildSpinner(ComponentAnatomyNode node) {
-    final size = _optionalDoubleBinding(node, 'size');
-    final progress = CircularProgressIndicator(
-      value: _optionalDoubleBinding(node, 'value'),
-      backgroundColor: _optionalColorBinding(node, 'backgroundColor'),
-      color: _optionalColorBinding(node, 'color'),
-      strokeWidth: _optionalDoubleBinding(node, 'strokeWidth') ?? 4,
-    );
-    if (size == null) return progress;
+    final duration = _optionalBinding(node, 'duration');
 
-    return SizedBox.square(dimension: size, child: progress);
+    return _PortableArcSpinner(
+      size: _optionalDoubleBinding(node, 'size') ?? 24,
+      value: _optionalDoubleBinding(node, 'value'),
+      strokeWidth: _optionalDoubleBinding(node, 'strokeWidth') ?? 1.5,
+      color: _optionalColorBinding(node, 'color'),
+      trackColor:
+          _optionalColorBinding(node, 'trackColor') ??
+          _optionalColorBinding(node, 'backgroundColor'),
+      trackStrokeWidth: _optionalDoubleBinding(node, 'trackStrokeWidth'),
+      duration: Duration(milliseconds: duration is int ? duration : 1000),
+    );
   }
 
   Widget _buildFractionalPosition(ComponentAnatomyNode node, Widget child) {
@@ -458,6 +462,134 @@ final class _AnatomyRenderer {
   }
 
   Widget buildRoot() => _buildNode(render.component.anatomy.root);
+}
+
+class _PortableArcSpinner extends StatefulWidget {
+  const _PortableArcSpinner({
+    required this.size,
+    required this.value,
+    required this.strokeWidth,
+    required this.color,
+    required this.trackColor,
+    required this.trackStrokeWidth,
+    required this.duration,
+  });
+
+  final double size;
+  final double? value;
+  final double strokeWidth;
+  final Color? color;
+  final Color? trackColor;
+  final double? trackStrokeWidth;
+  final Duration duration;
+
+  @override
+  State<_PortableArcSpinner> createState() => _PortableArcSpinnerState();
+}
+
+class _PortableArcSpinnerState extends State<_PortableArcSpinner>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    duration: widget.duration,
+    vsync: this,
+  )..repeat();
+
+  @override
+  void didUpdateWidget(covariant _PortableArcSpinner oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.duration != widget.duration) {
+      _controller
+        ..duration = widget.duration
+        ..repeat();
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final color = widget.color ?? Theme.of(context).colorScheme.primary;
+
+    return CustomPaint(
+      painter: _PortableArcSpinnerPainter(
+        animation: _controller,
+        value: widget.value,
+        strokeWidth: widget.strokeWidth,
+        color: color,
+        trackColor: widget.trackColor,
+        trackStrokeWidth: widget.trackStrokeWidth,
+      ),
+      size: Size.square(widget.size),
+    );
+  }
+}
+
+class _PortableArcSpinnerPainter extends CustomPainter {
+  _PortableArcSpinnerPainter({
+    required this.animation,
+    required this.value,
+    required this.strokeWidth,
+    required this.color,
+    required this.trackColor,
+    required this.trackStrokeWidth,
+  }) : super(repaint: animation);
+
+  final Animation<double> animation;
+  final double? value;
+  final double strokeWidth;
+  final Color color;
+  final Color? trackColor;
+  final double? trackStrokeWidth;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas.translate(size.width / 2, size.height / 2);
+    final indicatorThickness = strokeWidth * 2;
+    final trackThickness = trackColor == null
+        ? 0.0
+        : 2 * (trackStrokeWidth ?? strokeWidth);
+    final radius =
+        math.min(size.width, size.height) / 2 -
+        math.max(indicatorThickness, trackThickness);
+    if (trackColor != null) {
+      canvas.drawCircle(
+        Offset.zero,
+        radius,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = trackThickness
+          ..color = trackColor!,
+      );
+    }
+    final progress = value;
+    final startAngle =
+        math.pi / 3 + (progress == null ? animation.value * 2 * math.pi : 0);
+    final sweepAngle = progress == null
+        ? 2 * math.pi / 3
+        : progress * 2 * math.pi;
+    canvas.drawArc(
+      Rect.fromCircle(center: Offset.zero, radius: radius),
+      startAngle,
+      sweepAngle,
+      false,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = indicatorThickness
+        ..color = color,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _PortableArcSpinnerPainter oldDelegate) =>
+      oldDelegate.value != value ||
+      oldDelegate.strokeWidth != strokeWidth ||
+      oldDelegate.color != color ||
+      oldDelegate.trackColor != trackColor ||
+      oldDelegate.trackStrokeWidth != trackStrokeWidth;
 }
 
 class _UnsupportedV1Slot extends StatelessWidget {

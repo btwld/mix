@@ -213,12 +213,15 @@ bool _isStaticNodeBindingValue(String name, Object? value) {
     'icon' => atlasPortableIconIdentities.contains(value),
     'source' => value is String,
     'value' => value is num && value.isFinite && value >= 0 && value <= 1,
-    'strokeWidth' => value is num && value.isFinite && value > 0,
+    'strokeWidth' ||
+    'trackStrokeWidth' => value is num && value.isFinite && value > 0,
     'size' ||
     'widthFactor' ||
     'heightFactor' => value is num && value.isFinite && value >= 0,
     'color' ||
-    'backgroundColor' => value is String && _colorPattern.hasMatch(value),
+    'backgroundColor' ||
+    'trackColor' => value is String && _colorPattern.hasMatch(value),
+    'duration' => value is int && value > 0,
     'alignment' => value is String && _alignments.contains(value),
     _ => false,
   };
@@ -1035,9 +1038,12 @@ void _validateNodeBindings(
     .spinner => const {
       'value',
       'strokeWidth',
+      'trackStrokeWidth',
       'color',
       'backgroundColor',
+      'trackColor',
       'size',
+      'duration',
     },
     .fractionalPosition => const {'widthFactor', 'heightFactor', 'alignment'},
     .stack || .slot => throw StateError('v1 node admitted by v2 parser.'),
@@ -1079,7 +1085,7 @@ void _validateNodeBindings(
         propertyKinds: const {.number},
         tokenKinds: const {'space', 'double'},
       ),
-      'strokeWidth' => _bindingMatches(
+      'strokeWidth' || 'trackStrokeWidth' => _bindingMatches(
         entry.value,
         properties: properties,
         literal: (value) => value is num && value.isFinite && value > 0,
@@ -1093,12 +1099,19 @@ void _validateNodeBindings(
         propertyKinds: const {.number},
         tokenKinds: const {'space', 'double'},
       ),
-      'color' || 'backgroundColor' => _bindingMatches(
+      'color' || 'backgroundColor' || 'trackColor' => _bindingMatches(
         entry.value,
         properties: properties,
         literal: (value) => value is String && _colorPattern.hasMatch(value),
         propertyKinds: const {.string},
         tokenKinds: const {'color'},
+      ),
+      'duration' => _bindingMatches(
+        entry.value,
+        properties: properties,
+        literal: (value) => value is int && value > 0,
+        propertyKinds: const {.duration},
+        tokenKinds: const {'duration'},
       ),
       'alignment' => _bindingMatches(
         entry.value,

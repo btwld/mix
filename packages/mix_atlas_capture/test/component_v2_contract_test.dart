@@ -262,7 +262,7 @@ void main() {
       expect(find.byType(StyledText), findsOneWidget);
       expect(find.byType(StyledIcon), findsOneWidget);
       expect(find.byType(StyledImage), findsOneWidget);
-      expect(find.byType(CircularProgressIndicator), findsNWidgets(2));
+      expect(find.byType(CustomPaint), findsAtLeastNWidgets(2));
       expect(find.byType(FractionallySizedBox), findsOneWidget);
       expect(
         find.byKey(const ValueKey('portable-component-fixtureChild')),
@@ -467,11 +467,14 @@ AtlasPortableComponentBuilder portableV2FixtureBuilder() {
         bindings: const {
           'value': AtlasPortableBinding.property('progress'),
           'strokeWidth': AtlasPortableBinding.literal(2.0),
+          'trackStrokeWidth': AtlasPortableBinding.literal(1.0),
           'color': AtlasPortableBinding.token(
             kind: 'color',
             name: 'fortal.accent.9',
           ),
+          'trackColor': AtlasPortableBinding.literal('#223344'),
           'size': AtlasPortableBinding.literal(16.0),
+          'duration': AtlasPortableBinding.property('duration'),
         },
         visibleWhen: const ComponentVisibilityCondition.widgetState(
           state: 'selected',
