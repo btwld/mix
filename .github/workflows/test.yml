@@ -44,6 +44,8 @@ jobs:
       token: ${{ secrets.GITHUB_TOKEN }}
     with:
       flutter-version: 'stable'
-      run-dcm: true
+      # DCM requires CI credentials; the reusable workflow still runs Dart analysis.
+      run-dcm: false
       melos-commands: |
-        melos run analyze
+        melos run schema:inventory
+        melos run analyze:dart

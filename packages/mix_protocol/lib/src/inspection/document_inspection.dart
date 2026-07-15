@@ -137,10 +137,11 @@ final class MixProtocolThemeTokenInspection {
     required this.name,
     required this.jsonPointer,
     required this.declaration,
-    required this.declaredWireValue,
+    required Object? declaredWireValue,
     required List<String> aliasChain,
     required Object? resolvedWireValue,
-  }) : aliasChain = List.unmodifiable(aliasChain),
+  }) : declaredWireValue = _immutableJson(declaredWireValue),
+       aliasChain = List.unmodifiable(aliasChain),
        resolvedWireValue = _immutableJson(resolvedWireValue);
 
   final String kind;
@@ -178,19 +179,19 @@ MixProtocolResult<MixProtocolStyleInspection> inspectStyleDocument(
     return MixProtocolFailure(errors, warnings: warnings);
   }
   final style = (decoded as MixProtocolSuccess<Object>).value;
-  final document = payload as JsonMap;
-  final evidence = _StyleInspectionEvidence(tokenReferencesOf(style));
+  final document = _immutableJson(payload) as JsonMap;
+  final state = _StyleInspectionState(tokenReferencesOf(style));
   _walkStyle(
     document,
     pointer: '',
     propertyPath: const [],
     selectors: const [],
     mergePath: const [],
-    evidence: evidence,
+    state: state,
   );
 
   return MixProtocolSuccess(
-    evidence.build(document['type']! as String),
+    state.build(document['type']! as String),
     warnings: decoded.warnings,
   );
 }
@@ -211,7 +212,7 @@ MixProtocolResult<MixProtocolThemeInspection> inspectThemeDocument(
   if (encoded case MixProtocolFailure<JsonMap>(:final errors)) {
     return MixProtocolFailure(errors, warnings: decoded.warnings);
   }
-  final document = payload as JsonMap;
+  final document = _immutableJson(payload) as JsonMap;
   final resolvedDocument = (encoded as MixProtocolSuccess<JsonMap>).value;
   final tokens = <MixProtocolThemeTokenInspection>[];
   final kinds =
@@ -231,7 +232,7 @@ MixProtocolResult<MixProtocolThemeInspection> inspectThemeDocument(
           declaration: alias == null
               ? MixProtocolTokenDeclaration.direct
               : MixProtocolTokenDeclaration.alias,
-          declaredWireValue: _immutableJson(value),
+          declaredWireValue: value,
           aliasChain: alias == null
               ? const []
               : _aliasChain(name, declarations),
@@ -247,8 +248,8 @@ MixProtocolResult<MixProtocolThemeInspection> inspectThemeDocument(
   );
 }
 
-final class _StyleInspectionEvidence {
-  _StyleInspectionEvidence(Iterable<MixProtocolTokenReference> references) {
+final class _StyleInspectionState {
+  _StyleInspectionState(Iterable<MixProtocolTokenReference> references) {
     for (final reference in references) {
       referencesByName.putIfAbsent(reference.name, () => []).add(reference);
     }
@@ -273,7 +274,7 @@ void _walkStyle(
   required List<String> propertyPath,
   required List<MixProtocolSelectorContext> selectors,
   required List<int> mergePath,
-  required _StyleInspectionEvidence evidence,
+  required _StyleInspectionState state,
 }) {
   if (value is JsonMap) {
     final tokenName = value[r'$token'];
@@ -283,12 +284,12 @@ void _walkStyle(
           value,
           tokenName,
           propertyPath,
-          evidence.referencesByName,
+          state.referencesByName,
         ),
         name: tokenName,
         jsonPointer: '$pointer/\$token',
       );
-      evidence.evidence.add(
+      state.evidence.add(
         MixProtocolValueEvidence(
           propertyPath: propertyPath,
           jsonPointer: pointer,
@@ -304,7 +305,7 @@ void _walkStyle(
         propertyPath: propertyPath,
         selectors: selectors,
         mergePath: mergePath,
-        evidence: evidence.evidence,
+        evidence: state.evidence,
       );
 
       return;
@@ -318,7 +319,7 @@ void _walkStyle(
           propertyPath: propertyPath,
           selectors: selectors,
           mergePath: [...mergePath, index],
-          evidence: evidence,
+          state: state,
         );
       }
       _collectApplyDirectives(
@@ -327,7 +328,7 @@ void _walkStyle(
         propertyPath: propertyPath,
         selectors: selectors,
         mergePath: mergePath,
-        evidence: evidence.evidence,
+        evidence: state.evidence,
       );
 
       return;
@@ -339,7 +340,7 @@ void _walkStyle(
         final selectorPointer = '$pointer/variants/$index';
         final selectorInspection = _inspectSelector(variant, selectorPointer);
         final selector = selectorInspection.selector;
-        evidence.evidence.add(
+        state.evidence.add(
           MixProtocolSelectorEvidence(
             jsonPointer: selectorPointer,
             selectors: selectors,
@@ -354,7 +355,7 @@ void _walkStyle(
           propertyPath: propertyPath,
           selectors: [...selectors, selector],
           mergePath: mergePath,
-          evidence: evidence,
+          state: state,
         );
       }
     }
@@ -370,7 +371,7 @@ void _walkStyle(
         propertyPath: [...propertyPath, key],
         selectors: selectors,
         mergePath: mergePath,
-        evidence: evidence,
+        state: state,
       );
     }
 
@@ -384,13 +385,13 @@ void _walkStyle(
         propertyPath: propertyPath,
         selectors: selectors,
         mergePath: mergePath,
-        evidence: evidence,
+        state: state,
       );
     }
 
     return;
   }
-  evidence.evidence.add(
+  state.evidence.add(
     MixProtocolValueEvidence(
       propertyPath: propertyPath,
       jsonPointer: pointer,
@@ -441,7 +442,7 @@ _inspectSelector(JsonMap variant, String pointer) {
   final fields =
       _immutableJson(<String, Object?>{
             for (final entry in variant.entries)
-              if (entry.key != 'style') entry.key: _immutableJson(entry.value),
+              if (entry.key != 'style') entry.key: entry.value,
           })!
           as Map<String, Object?>;
   final kind = fields['kind']! as String;
@@ -462,7 +463,7 @@ _inspectSelector(JsonMap variant, String pointer) {
   return (
     selector: MixProtocolSelectorContext(
       kind: kind,
-      value: selected ?? jsonEncode(fields),
+      value: selected ?? jsonEncode(_canonicalSelectorIdentity(fields)),
       jsonPointer: pointer,
       fields: fields,
     ),
@@ -622,8 +623,9 @@ List<String> _aliasChain(String name, JsonMap declarations) {
 }
 
 Object? _immutableJson(Object? value) {
-  if (value is JsonMap) {
-    final keys = value.keys.toList()..sort();
+  if (value is Map) {
+    if (value.keys.any((key) => key is! String)) return value;
+    final keys = value.keys.cast<String>().toList()..sort();
 
     return Map<String, Object?>.unmodifiable({
       for (final key in keys) key: _immutableJson(value[key]),
@@ -631,6 +633,25 @@ Object? _immutableJson(Object? value) {
   }
   if (value is List<Object?>) {
     return List<Object?>.unmodifiable(value.map(_immutableJson));
+  }
+
+  return value;
+}
+
+Object? _canonicalSelectorIdentity(Object? value) {
+  if (value is num) {
+    final normalized = value.toDouble();
+
+    return normalized == 0 ? 0.0 : normalized;
+  }
+  if (value is JsonMap) {
+    return {
+      for (final entry in value.entries)
+        entry.key: _canonicalSelectorIdentity(entry.value),
+    };
+  }
+  if (value is List<Object?>) {
+    return value.map(_canonicalSelectorIdentity).toList(growable: false);
   }
 
   return value;

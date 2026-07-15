@@ -266,6 +266,20 @@ void main() {
       expect(left.key, right.key);
     });
 
+    test('canonicalizes numerically equivalent breakpoint bounds', () {
+      final integerBound = _selectorFrom({
+        'kind': 'context_breakpoint',
+        'minWidth': 320,
+      });
+      final doubleBound = _selectorFrom({
+        'kind': 'context_breakpoint',
+        'minWidth': 320.0,
+      });
+
+      expect(integerBound.value, doubleBound.value);
+      expect(integerBound.key, doubleBound.key);
+    });
+
     test('uses schema context for same-name cross-kind token references', () {
       final inspection = _inspectStyle({
         'v': 1,
@@ -360,6 +374,23 @@ void main() {
       );
     });
 
+    test('inspects nested generic string-keyed style maps', () {
+      final inspection = _inspectStyle(<String, Object?>{
+        'v': 1,
+        'type': 'box',
+        'decoration': <dynamic, dynamic>{'color': '#112233'},
+      });
+
+      expect(
+        inspection.values.singleWhere(
+          (value) => value.jsonPointer == '/decoration/color',
+        ),
+        isA<MixProtocolValueEvidence>()
+            .having((value) => value.property, 'property', 'decoration.color')
+            .having((value) => value.literalValue, 'literal', '#112233'),
+      );
+    });
+
     test('rejects invalid protocol data instead of inspecting guesses', () {
       final result = inspectStyleDocument({'v': 1, 'type': 'not_a_style'});
 
@@ -368,6 +399,56 @@ void main() {
   });
 
   group('theme document inspection', () {
+    test('defensively copies declared wire values', () {
+      final nested = <String, Object?>{'fontSize': 14};
+      final declared = <String, Object?>{'style': nested};
+      final token = MixProtocolThemeTokenInspection(
+        kind: 'textStyles',
+        name: 'base',
+        jsonPointer: '/textStyles/base',
+        declaration: MixProtocolTokenDeclaration.direct,
+        declaredWireValue: declared,
+        aliasChain: const ['base'],
+        resolvedWireValue: null,
+      );
+
+      declared['style'] = null;
+      nested['fontSize'] = 16;
+
+      expect(token.declaredWireValue, {
+        'style': {'fontSize': 14},
+      });
+      expect(
+        () =>
+            (token.declaredWireValue! as Map<String, Object?>)['style'] = null,
+        throwsUnsupportedError,
+      );
+      expect(
+        () =>
+            ((token.declaredWireValue! as Map<String, Object?>)['style']!
+                    as Map<String, Object?>)['fontSize'] =
+                16,
+        throwsUnsupportedError,
+      );
+    });
+
+    test('inspects nested generic string-keyed theme maps', () {
+      final result = inspectThemeDocument(<String, Object?>{
+        'v': 1,
+        'type': 'theme',
+        'colors': <dynamic, dynamic>{'color.base': '#112233'},
+      });
+      final inspection = switch (result) {
+        MixProtocolSuccess<MixProtocolThemeInspection>(:final value) => value,
+        MixProtocolFailure<MixProtocolThemeInspection>(:final errors) => fail(
+          '$errors',
+        ),
+      };
+
+      expect(inspection.tokens.single.name, 'color.base');
+      expect(inspection.tokens.single.declaredWireValue, '#112233');
+    });
+
     test('reports direct values, aliases, chains, and resolved values', () {
       final result = inspectThemeDocument({
         'v': 1,

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show setEquals;
 import 'package:flutter/widgets.dart'
     show BuildContext, InheritedModel, WidgetState, WidgetStatesController;
 
@@ -60,8 +61,7 @@ class WidgetStateProvider extends InheritedModel<WidgetState> {
 
   @override
   bool updateShouldNotify(WidgetStateProvider oldWidget) {
-    return oldWidget.states.length != states.length ||
-        !oldWidget.states.containsAll(states);
+    return !setEquals(oldWidget.states, states);
   }
 
   @override
