@@ -35,11 +35,14 @@ void main() {
       final capture = controller.current!;
       expect(capture.manifest.id, 'fortal');
       expect(capture.catalog.components, hasLength(21));
-      expect(capture.files, hasLength(150));
+      expect(capture.files, hasLength(110));
       expect(capture.atlasMetadata, hasLength(42));
-      expect(capture.componentDocuments.single.id, 'button');
+      expect(capture.componentDocuments, hasLength(21));
+      expect(capture.validatedStyleDocumentCount, 589);
       expect(controller.reviewContext?.componentId, 'accordion');
-      expect(controller.reviewContext?.recipeId, isNull);
+      expect(controller.reviewContext?.recipeId, isNotNull);
+      expect(controller.reviewContext?.stateId, isNotNull);
+      expect(controller.reviewContext?.slotId, isNotNull);
 
       controller.selectComponent('avatar');
       controller.selectTheme('dark');
@@ -47,7 +50,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 250));
       expect(find.text('21 captured components'), findsOneWidget);
       expect(
-        find.byKey(const ValueKey('rendered-oracle-avatar-dark')),
+        find.byKey(const ValueKey('cell-soft-size1-default')),
         findsOneWidget,
       );
 

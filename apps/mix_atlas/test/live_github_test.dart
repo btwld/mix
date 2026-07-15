@@ -1,9 +1,13 @@
 import 'dart:io';
 
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mix_atlas/golden.dart';
 
+import 'package:mix_atlas_app/src/app.dart';
 import 'package:mix_atlas_app/src/app_controller.dart';
 import 'package:mix_atlas_app/src/data/capture_gateway.dart';
+import 'package:mix_atlas_app/src/models/destination.dart';
 
 const _defaultRepository = 'btwld/remix';
 const _defaultManifestPath = 'atlas/fortal/capture.json';
@@ -33,6 +37,14 @@ const _fortalComponentIds = [
 ];
 
 void main() {
+  late HttpOverrides? previousHttpOverrides;
+  setUpAll(() async {
+    await loadAtlasFonts();
+    previousHttpOverrides = HttpOverrides.current;
+    HttpOverrides.global = _LiveHttpOverrides();
+  });
+  tearDownAll(() => HttpOverrides.global = previousHttpOverrides);
+
   final repository =
       Platform.environment['MIX_ATLAS_LIVE_REPOSITORY'] ?? _defaultRepository;
   final manifestPath =
@@ -81,15 +93,37 @@ void main() {
       }
       switch (byRef.manifest.id) {
         case 'fortal':
-          final fortalButton = byRef.componentDocuments.single;
           expect(
             byRef.catalog.components.map((component) => component.id),
             _fortalComponentIds,
           );
-          expect(byRef.files, hasLength(150));
+          expect(
+            byRef.componentDocuments.map((component) => component.id),
+            _fortalComponentIds,
+          );
+          expect(byRef.files, hasLength(110));
           expect(byRef.atlasMetadata, hasLength(42));
           expect(byRef.protocolThemes, hasLength(2));
-          expect(byRef.validatedStyleDocumentCount, 61);
+          expect(byRef.componentDocuments, hasLength(21));
+          expect(
+            byRef.componentDocuments.fold<int>(
+              0,
+              (total, component) => total + component.recipes.length,
+            ),
+            148,
+          );
+          expect(
+            byRef.componentDocuments.fold<int>(
+              0,
+              (total, component) =>
+                  total + component.recipes.length * component.states.length,
+            ),
+            613,
+          );
+          expect(byRef.validatedStyleDocumentCount, 589);
+          final fortalButton = byRef.componentDocuments.singleWhere(
+            (component) => component.id == 'button',
+          );
           expect(fortalButton.id, 'button');
           expect(fortalButton.recipes, hasLength(20));
           expect(fortalButton.states, hasLength(6));
@@ -111,18 +145,22 @@ void main() {
     timeout: _liveTimeout,
   );
 
-  test(
+  testWidgets(
     'opens the live capture through the standalone app controller',
-    () async {
+    (tester) async {
+      await tester.binding.setSurfaceSize(const Size(1440, 900));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
       final controller = AtlasAppController(
         gateway: DefaultAtlasCaptureGateway(),
       );
 
-      await controller.openGitHub(
-        repository: repository,
-        currentRef: ref!,
-        baselineRef: ref,
-        manifestPath: manifestPath,
+      await tester.runAsync(
+        () => controller.openGitHub(
+          repository: repository,
+          currentRef: ref!,
+          baselineRef: ref,
+          manifestPath: manifestPath,
+        ),
       );
 
       expect(controller.loadState, AtlasLoadState.ready);
@@ -136,9 +174,9 @@ void main() {
       final capture = controller.current!;
       if (capture.manifest.id == 'fortal') {
         expect(controller.reviewContext?.componentId, 'accordion');
-        expect(controller.reviewContext?.recipeId, isNull);
-        expect(controller.reviewContext?.stateId, isNull);
-        expect(controller.reviewContext?.slotId, isNull);
+        expect(controller.reviewContext?.recipeId, isNotNull);
+        expect(controller.reviewContext?.stateId, isNotNull);
+        expect(controller.reviewContext?.slotId, isNotNull);
 
         controller.selectComponent('button');
         expect(controller.reviewContext?.recipeId, isNotNull);
@@ -146,9 +184,60 @@ void main() {
         expect(controller.reviewContext?.slotId, isNotNull);
 
         controller.selectComponent('avatar');
-        expect(controller.reviewContext?.recipeId, isNull);
-        expect(controller.reviewContext?.stateId, isNull);
-        expect(controller.reviewContext?.slotId, isNull);
+        expect(controller.reviewContext?.recipeId, isNotNull);
+        expect(controller.reviewContext?.stateId, isNotNull);
+        expect(controller.reviewContext?.slotId, isNotNull);
+
+        await tester.pumpWidget(AtlasApp(controller: controller));
+        await tester.pump(const Duration(milliseconds: 250));
+        for (final component in capture.componentDocuments) {
+          controller.selectComponent(component.id);
+          final recipe = component.recipes.last;
+          final state = component.states.values.last;
+          controller.selectCell(recipeId: recipe.id, stateId: state.id);
+          for (final themeId in const ['light', 'dark']) {
+            controller.selectTheme(themeId);
+            await tester.pump(const Duration(milliseconds: 250));
+            expect(
+              find.byKey(ValueKey('cell-${recipe.id}-${state.id}')),
+              findsOneWidget,
+              reason: '${component.id}/$themeId',
+            );
+            expect(
+              tester.takeException(),
+              isNull,
+              reason: '${component.id}/$themeId',
+            );
+          }
+        }
+
+        controller.selectComponent('button');
+        controller.selectCell(recipeId: 'solid-size1', stateId: 'default');
+        controller.selectTheme('light');
+        await tester.pump(const Duration(milliseconds: 250));
+        await tester.tap(find.byKey(const ValueKey('oracle-action')));
+        await tester.pump(const Duration(milliseconds: 250));
+        expect(
+          find.byKey(const ValueKey('oracle-image-button-light')),
+          findsOneWidget,
+        );
+        await tester.tap(find.byTooltip('Close oracle'));
+        await tester.pump(const Duration(milliseconds: 250));
+
+        controller.navigate(AtlasDestination.inspect);
+        await tester.pump(const Duration(milliseconds: 250));
+        expect(find.text('Inspect · Button'), findsOneWidget);
+        await tester.tap(find.byTooltip('Back'));
+        await tester.pump(const Duration(milliseconds: 250));
+        expect(controller.destination, AtlasDestination.catalog);
+
+        controller.navigate(AtlasDestination.compare);
+        await tester.pump(const Duration(milliseconds: 250));
+        expect(find.text('Compare · button'), findsOneWidget);
+        await tester.tap(find.byTooltip('Back'));
+        await tester.pump(const Duration(milliseconds: 250));
+        expect(controller.destination, AtlasDestination.catalog);
+        expect(tester.takeException(), isNull);
       } else {
         expect(controller.reviewContext?.componentId, 'button');
         expect(controller.reviewContext?.recipeId, isNotNull);
@@ -157,7 +246,7 @@ void main() {
       }
       expect(controller.reviewContext?.themeId, isNotNull);
     },
-    skip: skipReason,
+    skip: skipReason != false,
     timeout: _liveTimeout,
   );
 
@@ -191,3 +280,5 @@ void main() {
     timeout: _liveTimeout,
   );
 }
+
+final class _LiveHttpOverrides extends HttpOverrides {}
