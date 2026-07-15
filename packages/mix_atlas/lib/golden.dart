@@ -64,10 +64,15 @@ Future<void> expectAtlasWidgetParity(
     portable,
     phase: animationPhase ?? AtlasParity.animationPhase,
   );
-  final comparison = await GoldenFileComparator.compareLists(
-    producerBytes,
-    portableBytes,
+  // Equal PNG byte lists return synchronously, but unequal images take the
+  // engine-backed codec path. Run that path outside the fake-async test zone
+  // so codec callbacks can complete instead of leaving parity tests hung.
+  final comparison = await tester.runAsync<ComparisonResult>(
+    () => GoldenFileComparator.compareLists(producerBytes, portableBytes),
   );
+  if (comparison == null) {
+    throw TestFailure('Atlas parity image comparison did not complete.');
+  }
   final tolerance = precisionTolerance ?? AtlasParity.precisionTolerance;
   final passed = comparison.passed || comparison.diffPercent <= tolerance;
   if (!passed) {

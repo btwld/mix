@@ -21,4 +21,23 @@ void main() {
       portable: contactSheet,
     );
   });
+
+  testWidgets('parity harness compares unequal image bytes without hanging', (
+    tester,
+  ) async {
+    await expectAtlasWidgetParity(
+      tester,
+      producer: const SizedBox(
+        width: 120,
+        height: 80,
+        child: ColoredBox(color: Color(0xFF3366FF)),
+      ),
+      portable: const SizedBox(
+        width: 120,
+        height: 80,
+        child: ColoredBox(color: Color(0xFFFF6633)),
+      ),
+      precisionTolerance: 1,
+    );
+  });
 }
