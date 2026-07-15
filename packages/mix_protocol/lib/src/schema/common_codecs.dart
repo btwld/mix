@@ -498,9 +498,9 @@ CodecSchema<Object, Prop<PropValue>> mixPropCodec<
 
 CodecSchema<JsonMap, BoxConstraintsMix> boxConstraintsCodec() {
   return Ack.object({
-        'minWidth': nonNegativeDoubleCodec().optional(),
+        'minWidth': nonNegativeDoubleTokenCodec().optional(),
         'maxWidth': _maxConstraintBoundWireSchema().optional(),
-        'minHeight': nonNegativeDoubleCodec().optional(),
+        'minHeight': nonNegativeDoubleTokenCodec().optional(),
         'maxHeight': _maxConstraintBoundWireSchema().optional(),
       })
       .constrain(const _BoxConstraintsBoundsConstraint())
@@ -556,7 +556,7 @@ CodecSchema<String, T> enumNameCodec<T extends Enum>(List<T> values) {
 }
 
 AckSchema<Object, Object> _maxConstraintBoundWireSchema() {
-  return Ack.anyOf([nonNegativeDoubleCodec(), Ack.literal('infinity')]);
+  return Ack.anyOf([nonNegativeDoubleTokenCodec(), Ack.literal('infinity')]);
 }
 
 CodecSchema<String, TextDirection> textDirectionCodec() {
@@ -1729,10 +1729,10 @@ double? _readOptionalMaxConstraintBound(JsonMap data, String key) {
 }
 
 JsonMap _encodeBoxConstraintsMix(BoxConstraintsMix value) {
-  final minWidth = singleValueProp(value.$minWidth, 'minWidth');
-  final maxWidth = singleValueProp(value.$maxWidth, 'maxWidth');
-  final minHeight = singleValueProp(value.$minHeight, 'minHeight');
-  final maxHeight = singleValueProp(value.$maxHeight, 'maxHeight');
+  final minWidth = singleValuePropWire(value.$minWidth, 'minWidth');
+  final maxWidth = singleValuePropWire(value.$maxWidth, 'maxWidth');
+  final minHeight = singleValuePropWire(value.$minHeight, 'minHeight');
+  final maxHeight = singleValuePropWire(value.$maxHeight, 'maxHeight');
 
   _assertEncodableConstraintBounds(minWidth, maxWidth, 'width');
   _assertEncodableConstraintBounds(minHeight, maxHeight, 'height');
@@ -1745,8 +1745,8 @@ JsonMap _encodeBoxConstraintsMix(BoxConstraintsMix value) {
   };
 }
 
-double _encodeMinConstraintBound(double value) {
-  if (value == double.infinity) {
+Object _encodeMinConstraintBound(Object value) {
+  if (value is double && value == double.infinity) {
     throw UnsupportedEncodeValueError(
       value,
       'Minimum constraint bounds cannot be unbounded.',
@@ -1756,12 +1756,16 @@ double _encodeMinConstraintBound(double value) {
   return value;
 }
 
-Object _encodeMaxConstraintBound(double value) {
-  return value == double.infinity ? 'infinity' : value;
+Object _encodeMaxConstraintBound(Object value) {
+  return value is double && value == double.infinity ? 'infinity' : value;
 }
 
-void _assertEncodableConstraintBounds(double? min, double? max, String axis) {
-  if (min == null || max == null || max == double.infinity) return;
+void _assertEncodableConstraintBounds(Object? min, Object? max, String axis) {
+  if (min is! double || max is! double || max == double.infinity) return;
+  if (tokenFromReferenceValue<double>(min) != null ||
+      tokenFromReferenceValue<double>(max) != null) {
+    return;
+  }
   if (min <= max) return;
 
   throw UnsupportedEncodeValueError({
@@ -1845,13 +1849,17 @@ final class _BoxConstraintsBoundsConstraint extends Constraint<JsonMap>
   }
 
   static bool _isAxisValid(JsonMap value, String minKey, String maxKey) {
-    final min = value[minKey] as double?;
+    final min = value[minKey];
+    if (min is! double || tokenFromReferenceValue<double>(min) != null) {
+      return true;
+    }
     final max = switch (value[maxKey]) {
       'infinity' => double.infinity,
-      final double value => value,
+      final double value when tokenFromReferenceValue<double>(value) == null =>
+        value,
       _ => null,
     };
-    if (min == null || max == null) return true;
+    if (max == null) return true;
 
     return min <= max;
   }
