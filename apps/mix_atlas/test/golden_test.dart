@@ -15,6 +15,7 @@ void main() {
   late AtlasCapture changed;
 
   setUpAll(() async {
+    await loadAtlasFonts();
     baseline = await _loadFixture('button_baseline');
     changed = await _loadFixture('button_changed');
   });
