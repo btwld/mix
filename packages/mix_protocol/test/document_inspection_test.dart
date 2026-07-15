@@ -29,34 +29,34 @@ void main() {
       });
 
       expect(
-        inspection.terms,
+        inspection.values,
         contains(
-          isA<MixProtocolStyleTerm>()
+          isA<MixProtocolValueEvidence>()
               .having((term) => term.property, 'property', 'padding.top')
               .having(
                 (term) => term.jsonPointer,
                 'pointer',
                 r'/padding/$merge/0/top',
               )
-              .having((term) => term.mergeSource, 'merge source', 0)
+              .having((term) => term.mergePath, 'merge path', [0])
               .having((term) => term.literalValue, 'literal', 4),
         ),
       );
-      final left = inspection.terms.singleWhere(
+      final left = inspection.values.singleWhere(
         (term) => term.property == 'padding.left',
       );
-      expect(left.mergeSource, 1);
+      expect(left.mergePath, [1]);
       expect(left.token?.kind, 'spaces');
       expect(left.token?.name, 'space.pad');
       expect(left.token?.jsonPointer, r'/padding/$merge/1/left/$token');
 
-      final hovered = inspection.terms.singleWhere(
+      final hovered = inspection.values.singleWhere(
         (term) => term.property == 'spacing',
       );
       expect(hovered.selectors.single.kind, 'widget_state');
       expect(hovered.selectors.single.value, 'hovered');
       expect(hovered.token?.kind, 'spaces');
-      expect(inspection.tokenOccurrences, hasLength(2));
+      expect(inspection.valueTokens, hasLength(2));
     });
 
     test('accepts strict per-call icon and image resolvers', () {
@@ -75,16 +75,16 @@ void main() {
       }, resolveImage: (name) => name == 'avatar' ? image : null);
 
       expect(
-        iconInspection.terms.singleWhere((term) => term.property == 'icon'),
-        isA<MixProtocolStyleTerm>().having(
+        iconInspection.values.singleWhere((term) => term.property == 'icon'),
+        isA<MixProtocolValueEvidence>().having(
           (term) => term.literalValue,
           'literal value',
           'home',
         ),
       );
       expect(
-        imageInspection.terms.singleWhere((term) => term.property == 'image'),
-        isA<MixProtocolStyleTerm>().having(
+        imageInspection.values.singleWhere((term) => term.property == 'image'),
+        isA<MixProtocolValueEvidence>().having(
           (term) => term.literalValue,
           'literal value',
           'avatar',
@@ -104,13 +104,13 @@ void main() {
         },
       });
 
-      expect(inspection.terms, hasLength(1));
-      expect(inspection.terms.single.property, 'spacing');
-      expect(inspection.terms.single.jsonPointer, r'/spacing/$merge/0');
+      expect(inspection.values, hasLength(1));
+      expect(inspection.values.single.property, 'spacing');
+      expect(inspection.values.single.jsonPointer, r'/spacing/$merge/0');
       expect(inspection.directives, hasLength(1));
       expect(
         inspection.directives.single,
-        isA<MixProtocolDirectiveInspection>()
+        isA<MixProtocolDirectiveEvidence>()
             .having((directive) => directive.property, 'property', 'spacing')
             .having(
               (directive) => directive.jsonPointer,
@@ -144,9 +144,9 @@ void main() {
         ],
       });
 
-      expect(inspection.tokenOccurrences, hasLength(1));
+      expect(inspection.selectors.single.tokenOccurrences, hasLength(1));
       expect(
-        inspection.tokenOccurrences.single,
+        inspection.selectors.single.tokenOccurrences.single,
         isA<MixProtocolTokenOccurrence>()
             .having((token) => token.kind, 'kind', 'breakpoints')
             .having((token) => token.name, 'name', 'breakpoint.sidebar')
@@ -156,6 +156,114 @@ void main() {
               '/variants/0/token',
             ),
       );
+    });
+
+    test('emits empty selector evidence with complete selector context', () {
+      final inspection = _inspectStyle({
+        'v': 1,
+        'type': 'box',
+        'variants': [
+          {
+            'kind': 'widget_state',
+            'state': 'hovered',
+            'style': {
+              'type': 'box',
+              'variants': [
+                {
+                  'kind': 'widget_state',
+                  'state': 'focused',
+                  'style': {'type': 'box'},
+                },
+              ],
+            },
+          },
+        ],
+      });
+
+      expect(inspection.selectors, hasLength(2));
+      final focused = inspection.selectors.last;
+      expect(focused.selectors.single.value, 'hovered');
+      expect(focused.selector.value, 'focused');
+      expect(focused.mergePath, isEmpty);
+      expect(inspection.values, isEmpty);
+    });
+
+    test(
+      'preserves nested merge ancestry and sorts array indices numerically',
+      () {
+        final inspection = _inspectStyle({
+          'v': 1,
+          'type': 'flex',
+          'spacing': {
+            r'$merge': [
+              for (var index = 0; index < 12; index += 1)
+                if (index == 1)
+                  {
+                    r'$merge': [0, 1, 2],
+                    'apply': [
+                      {'op': 'number_multiply', 'factor': 2},
+                    ],
+                  }
+                else
+                  index,
+            ],
+          },
+        });
+
+        expect(inspection.values.map((value) => value.mergePath), [
+          [0],
+          [1, 0],
+          [1, 1],
+          [1, 2],
+          [2],
+          [3],
+          [4],
+          [5],
+          [6],
+          [7],
+          [8],
+          [9],
+          [10],
+          [11],
+        ]);
+        expect(inspection.directives.single.mergePath, [1]);
+      },
+    );
+
+    test('canonicalizes reordered compound and nested selector fields', () {
+      final left = _selectorFrom({
+        'kind': 'context_not',
+        'variant': {
+          'kind': 'context_not',
+          'variant': {'kind': 'context_platform', 'platform': 'android'},
+        },
+      });
+      final right = _selectorFrom({
+        'variant': {
+          'variant': {'platform': 'android', 'kind': 'context_platform'},
+          'kind': 'context_not',
+        },
+        'kind': 'context_not',
+      });
+
+      expect(left.fields, right.fields);
+      expect(left.value, right.value);
+      expect(left.key, right.key);
+    });
+
+    test('canonicalizes reordered breakpoint selector fields', () {
+      final left = _selectorFrom({
+        'kind': 'context_breakpoint',
+        'token': 'breakpoint.sidebar',
+      });
+      final right = _selectorFrom({
+        'token': 'breakpoint.sidebar',
+        'kind': 'context_breakpoint',
+      });
+
+      expect(left.fields, right.fields);
+      expect(left.value, right.value);
+      expect(left.key, right.key);
     });
 
     test('uses schema context for same-name cross-kind token references', () {
@@ -169,7 +277,7 @@ void main() {
       });
 
       final occurrences = {
-        for (final token in inspection.tokenOccurrences)
+        for (final token in inspection.valueTokens)
           token.jsonPointer: token.kind,
       };
       expect(occurrences, {
@@ -193,7 +301,7 @@ void main() {
       });
 
       final occurrences = {
-        for (final token in inspection.tokenOccurrences)
+        for (final token in inspection.valueTokens)
           token.jsonPointer: token.kind,
       };
       expect(occurrences, {
@@ -217,7 +325,7 @@ void main() {
         },
       });
 
-      final radius = inspection.tokenOccurrences.singleWhere(
+      final radius = inspection.valueTokens.singleWhere(
         (token) => token.jsonPointer == r'/decoration/gradient/radius/$token',
       );
       expect(radius.kind, 'spaces');
@@ -285,12 +393,129 @@ void main() {
       );
       expect(direct.declaration, MixProtocolTokenDeclaration.direct);
       expect(direct.jsonPointer, '/colors/color.base');
-      expect(direct.resolvedValue, const Color(0xFF112233));
+      expect(direct.declaredWireValue, '#112233');
+      expect(direct.resolvedWireValue, '#112233');
       expect(alias.declaration, MixProtocolTokenDeclaration.alias);
       expect(alias.aliasChain, ['color.deep', 'color.alias', 'color.base']);
-      expect(alias.resolvedValue, const Color(0xFF112233));
+      expect(alias.declaredWireValue, {r'$token': 'color.alias'});
+      expect(alias.resolvedWireValue, '#112233');
+    });
+
+    test('reports canonical immutable wire values for every token kind', () {
+      final payload = <String, Object?>{
+        'v': 1,
+        'type': 'theme',
+        'colors': {'base': '#101820'},
+        'spaces': {'base': 8},
+        'doubles': {'base': 0.64},
+        'radii': {'base': 12},
+        'textStyles': {
+          'base': {'fontSize': 14, 'height': 1.4},
+        },
+        'shadows': {
+          'base': [
+            {
+              'color': '#33000000',
+              'offset': {'x': 0, 'y': 1},
+              'blurRadius': 2,
+            },
+          ],
+        },
+        'boxShadows': {
+          'base': [
+            {
+              'color': '#33000000',
+              'offset': {'x': 0, 'y': 2},
+              'blurRadius': 8,
+              'spreadRadius': 1,
+            },
+          ],
+        },
+        'borders': {
+          'base': {'color': '#008577', 'width': 2, 'style': 'solid'},
+        },
+        'fontWeights': {'base': 'w700'},
+        'breakpoints': {
+          'base': {'minWidth': 960},
+        },
+        'durations': {'base': 120},
+      };
+      for (final entry in payload.entries.toList()) {
+        if (entry.key == 'v' || entry.key == 'type') continue;
+        final declarations = Map<String, Object?>.from(entry.value! as Map);
+        payload[entry.key] = declarations;
+        declarations['alias'] = {
+          r'$token': 'base',
+          if (entry.key == 'spaces') 'kind': 'space',
+          if (entry.key == 'doubles') 'kind': 'double',
+        };
+        declarations['deep'] = {
+          r'$token': 'alias',
+          if (entry.key == 'spaces') 'kind': 'space',
+          if (entry.key == 'doubles') 'kind': 'double',
+        };
+      }
+
+      final inspection = switch (inspectThemeDocument(payload)) {
+        MixProtocolSuccess<MixProtocolThemeInspection>(:final value) => value,
+        MixProtocolFailure<MixProtocolThemeInspection>(:final errors) => fail(
+          '$errors',
+        ),
+      };
+
+      for (final kind in payload.keys.where(
+        (key) => key != 'v' && key != 'type',
+      )) {
+        final direct = inspection.tokens.singleWhere(
+          (token) => token.kind == kind && token.name == 'base',
+        );
+        final alias = inspection.tokens.singleWhere(
+          (token) => token.kind == kind && token.name == 'deep',
+        );
+        expect(alias.aliasChain, ['deep', 'alias', 'base']);
+        expect(alias.resolvedWireValue, direct.resolvedWireValue);
+        expect(alias.declaredWireValue, containsPair(r'$token', 'alias'));
+      }
+
+      final textStyle = inspection.tokens.singleWhere(
+        (token) => token.kind == 'textStyles' && token.name == 'base',
+      );
+      final shadow = inspection.tokens.singleWhere(
+        (token) => token.kind == 'shadows' && token.name == 'base',
+      );
+      expect(
+        () =>
+            (textStyle.resolvedWireValue! as Map<String, Object?>)['fontSize'] =
+                16,
+        throwsUnsupportedError,
+      );
+      expect(
+        () => (shadow.resolvedWireValue! as List<Object?>).add(null),
+        throwsUnsupportedError,
+      );
+      expect(
+        () =>
+            ((shadow.resolvedWireValue! as List<Object?>).single
+                    as Map<String, Object?>)['blurRadius'] =
+                4,
+        throwsUnsupportedError,
+      );
     });
   });
+}
+
+extension on MixProtocolStyleInspection {
+  Iterable<MixProtocolValueEvidence> get values =>
+      evidence.whereType<MixProtocolValueEvidence>();
+
+  Iterable<MixProtocolDirectiveEvidence> get directives =>
+      evidence.whereType<MixProtocolDirectiveEvidence>();
+
+  Iterable<MixProtocolSelectorEvidence> get selectors =>
+      evidence.whereType<MixProtocolSelectorEvidence>();
+
+  Iterable<MixProtocolTokenOccurrence> get valueTokens =>
+      values.map((value) => value.token).nonNulls;
 }
 
 MixProtocolStyleInspection _inspectStyle(
@@ -308,4 +533,19 @@ MixProtocolStyleInspection _inspectStyle(
       '$errors',
     ),
   };
+}
+
+MixProtocolSelectorContext _selectorFrom(Map<String, Object?> selector) {
+  final inspection = _inspectStyle({
+    'v': 1,
+    'type': 'box',
+    'variants': [
+      {
+        ...selector,
+        'style': {'type': 'box'},
+      },
+    ],
+  });
+
+  return inspection.selectors.single.selector;
 }
