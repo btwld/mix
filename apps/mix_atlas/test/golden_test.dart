@@ -15,13 +15,22 @@ void main() {
   late AtlasCapture changed;
 
   setUpAll(() async {
-    await loadAtlasFonts();
     baseline = await _loadFixture('button_baseline');
     changed = await _loadFixture('button_changed');
   });
 
   for (final destination in AtlasDestination.values) {
     testWidgets('${destination.name} canonical desktop golden', (tester) async {
+      if (!AtlasGoldens.platforms.contains(Platform.operatingSystem)) {
+        markTestSkipped(
+          'Mix Atlas app goldens are generated on '
+          '${AtlasGoldens.platforms}; rendering differs on '
+          '${Platform.operatingSystem}.',
+        );
+
+        return;
+      }
+
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.resetDevicePixelRatio);
       await tester.binding.setSurfaceSize(const Size(1440, 900));
