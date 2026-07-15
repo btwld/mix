@@ -6,7 +6,7 @@ import 'package:flutter/widgets.dart';
 /// This is intended for tooling and tests that need to render a component in a
 /// specific visual state without changing the component's interaction state.
 /// When present, the override takes precedence over explicit controllers and
-/// ordinary [WidgetStateProvider] scopes for [StyleBuilder] resolution.
+/// ordinary [WidgetStateProvider] scopes when resolving widget-state variants.
 class WidgetStateStyleOverride extends InheritedWidget {
   WidgetStateStyleOverride({
     super.key,

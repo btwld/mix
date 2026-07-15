@@ -6,7 +6,6 @@ import 'internal/mix_interaction_detector.dart';
 import 'providers/style_provider.dart';
 import 'providers/style_spec_provider.dart';
 import 'providers/widget_state_provider.dart';
-import 'providers/widget_state_style_override.dart';
 import 'spec.dart';
 import 'style.dart';
 import 'style_spec.dart';
@@ -125,7 +124,6 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
   @override
   Widget build(BuildContext context) {
     final style = _buildStyle(context);
-    final stateOverride = WidgetStateStyleOverride.maybeOf(context);
 
     // Calculate interactivity need early
     final needsToTrackWidgetState =
@@ -144,12 +142,7 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
       },
     );
 
-    if (stateOverride != null) {
-      current = WidgetStateProvider(
-        states: stateOverride.states,
-        child: current,
-      );
-    } else if (needsToTrackWidgetState && !alreadyHasWidgetStateScope) {
+    if (needsToTrackWidgetState && !alreadyHasWidgetStateScope) {
       // If we need interactivity and no MixWidgetStateModel is present,
       // wrap in MixInteractionDetector
       current = MixInteractionDetector(controller: _controller, child: current);
