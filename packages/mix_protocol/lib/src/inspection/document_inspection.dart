@@ -1,6 +1,6 @@
-import 'dart:collection';
 import 'dart:convert';
 
+import '../contract/identity_resolution.dart';
 import '../contract/json_map.dart';
 import '../contract/mix_protocol_contract.dart';
 import '../errors/mix_protocol_error.dart';
@@ -16,7 +16,7 @@ final class MixProtocolSelectorContext {
     required this.value,
     required this.jsonPointer,
     required Map<String, Object?> fields,
-  }) : fields = UnmodifiableMapView(fields);
+  }) : fields = _immutableJson(fields) as Map<String, Object?>;
 
   final String kind;
   final String value;
@@ -61,19 +61,44 @@ final class MixProtocolStyleTerm {
   String get property => propertyPath.join('.');
 }
 
+/// One declared directive attached to a style term.
+final class MixProtocolDirectiveInspection {
+  MixProtocolDirectiveInspection({
+    required List<String> propertyPath,
+    required this.jsonPointer,
+    required List<MixProtocolSelectorContext> selectors,
+    required this.mergeSource,
+    required this.op,
+    required Map<String, Object?> parameters,
+  }) : propertyPath = List.unmodifiable(propertyPath),
+       selectors = List.unmodifiable(selectors),
+       parameters = _immutableJson(parameters) as Map<String, Object?>;
+
+  final List<String> propertyPath;
+  final String jsonPointer;
+  final List<MixProtocolSelectorContext> selectors;
+  final int? mergeSource;
+  final String op;
+  final Map<String, Object?> parameters;
+
+  String get property => propertyPath.join('.');
+}
+
 /// Declared, pointer-addressable evidence from a valid style document.
 final class MixProtocolStyleInspection {
   MixProtocolStyleInspection({
     required this.styleType,
     required List<MixProtocolStyleTerm> terms,
-  }) : terms = List.unmodifiable(terms);
+    required List<MixProtocolTokenOccurrence> tokenOccurrences,
+    required List<MixProtocolDirectiveInspection> directives,
+  }) : terms = List.unmodifiable(terms),
+       tokenOccurrences = List.unmodifiable(tokenOccurrences),
+       directives = List.unmodifiable(directives);
 
   final String styleType;
   final List<MixProtocolStyleTerm> terms;
-
-  List<MixProtocolTokenOccurrence> get tokenOccurrences => List.unmodifiable(
-    terms.map((term) => term.token).whereType<MixProtocolTokenOccurrence>(),
-  );
+  final List<MixProtocolTokenOccurrence> tokenOccurrences;
+  final List<MixProtocolDirectiveInspection> directives;
 }
 
 /// One declared token entry and its decoded theme value.
@@ -108,35 +133,34 @@ final class MixProtocolThemeInspection {
 
 /// Inspects only declared data after a strict style decode succeeds.
 MixProtocolResult<MixProtocolStyleInspection> inspectStyleDocument(
-  Object? payload,
-) {
-  final decoded = mixProtocol.decodeStyle<Object>(payload);
+  Object? payload, {
+  MixProtocolIconResolver? resolveIcon,
+  MixProtocolImageResolver? resolveImage,
+}) {
+  final decoded = mixProtocol.decodeStyle<Object>(
+    payload,
+    options: MixProtocolDecodeOptions(
+      resolveIcon: resolveIcon,
+      resolveImage: resolveImage,
+    ),
+  );
   if (decoded case MixProtocolFailure<Object>(:final errors, :final warnings)) {
     return MixProtocolFailure(errors, warnings: warnings);
   }
   final style = (decoded as MixProtocolSuccess<Object>).value;
   final document = payload as JsonMap;
-  final referencesByName = <String, List<MixProtocolTokenReference>>{};
-  for (final reference in tokenReferencesOf(style)) {
-    referencesByName.putIfAbsent(reference.name, () => []).add(reference);
-  }
-  final terms = <MixProtocolStyleTerm>[];
+  final evidence = _StyleInspectionEvidence(tokenReferencesOf(style));
   _walkStyle(
     document,
     pointer: '',
     propertyPath: const [],
     selectors: const [],
     mergeSource: null,
-    referencesByName: referencesByName,
-    terms: terms,
+    evidence: evidence,
   );
-  terms.sort((left, right) => left.jsonPointer.compareTo(right.jsonPointer));
 
   return MixProtocolSuccess(
-    MixProtocolStyleInspection(
-      styleType: document['type']! as String,
-      terms: terms,
-    ),
+    evidence.build(document['type']! as String),
     warnings: decoded.warnings,
   );
 }
@@ -193,24 +217,59 @@ MixProtocolResult<MixProtocolThemeInspection> inspectThemeDocument(
   );
 }
 
+final class _StyleInspectionEvidence {
+  _StyleInspectionEvidence(Iterable<MixProtocolTokenReference> references) {
+    for (final reference in references) {
+      referencesByName.putIfAbsent(reference.name, () => []).add(reference);
+    }
+  }
+
+  final referencesByName = <String, List<MixProtocolTokenReference>>{};
+  final terms = <MixProtocolStyleTerm>[];
+  final tokenOccurrences = <MixProtocolTokenOccurrence>[];
+  final directives = <MixProtocolDirectiveInspection>[];
+
+  MixProtocolStyleInspection build(String styleType) {
+    terms.sort((left, right) => left.jsonPointer.compareTo(right.jsonPointer));
+    tokenOccurrences.sort(
+      (left, right) => left.jsonPointer.compareTo(right.jsonPointer),
+    );
+    directives.sort(
+      (left, right) => left.jsonPointer.compareTo(right.jsonPointer),
+    );
+
+    return MixProtocolStyleInspection(
+      styleType: styleType,
+      terms: terms,
+      tokenOccurrences: tokenOccurrences,
+      directives: directives,
+    );
+  }
+}
+
 void _walkStyle(
   Object? value, {
   required String pointer,
   required List<String> propertyPath,
   required List<MixProtocolSelectorContext> selectors,
   required int? mergeSource,
-  required Map<String, List<MixProtocolTokenReference>> referencesByName,
-  required List<MixProtocolStyleTerm> terms,
+  required _StyleInspectionEvidence evidence,
 }) {
   if (value is JsonMap) {
     final tokenName = value[r'$token'];
     if (tokenName is String) {
       final occurrence = MixProtocolTokenOccurrence(
-        kind: _tokenKind(value, tokenName, propertyPath, referencesByName),
+        kind: _tokenKind(
+          value,
+          tokenName,
+          propertyPath,
+          evidence.referencesByName,
+        ),
         name: tokenName,
         jsonPointer: '$pointer/\$token',
       );
-      terms.add(
+      evidence.tokenOccurrences.add(occurrence);
+      evidence.terms.add(
         MixProtocolStyleTerm(
           propertyPath: propertyPath,
           jsonPointer: pointer,
@@ -220,18 +279,14 @@ void _walkStyle(
           token: occurrence,
         ),
       );
-      for (final entry in value.entries) {
-        if (entry.key == r'$token' || entry.key == 'kind') continue;
-        _walkStyle(
-          entry.value,
-          pointer: '$pointer/${_escape(entry.key)}',
-          propertyPath: [...propertyPath, entry.key],
-          selectors: selectors,
-          mergeSource: mergeSource,
-          referencesByName: referencesByName,
-          terms: terms,
-        );
-      }
+      _collectApplyDirectives(
+        value,
+        pointer: pointer,
+        propertyPath: propertyPath,
+        selectors: selectors,
+        mergeSource: mergeSource,
+        directives: evidence.directives,
+      );
 
       return;
     }
@@ -244,10 +299,17 @@ void _walkStyle(
           propertyPath: propertyPath,
           selectors: selectors,
           mergeSource: index,
-          referencesByName: referencesByName,
-          terms: terms,
+          evidence: evidence,
         );
       }
+      _collectApplyDirectives(
+        value,
+        pointer: pointer,
+        propertyPath: propertyPath,
+        selectors: selectors,
+        mergeSource: mergeSource,
+        directives: evidence.directives,
+      );
 
       return;
     }
@@ -255,15 +317,18 @@ void _walkStyle(
     if (variants is List<Object?>) {
       for (var index = 0; index < variants.length; index += 1) {
         final variant = variants[index]! as JsonMap;
-        final selector = _selector(variant, '$pointer/variants/$index');
+        final selector = _inspectSelector(
+          variant,
+          '$pointer/variants/$index',
+          evidence.tokenOccurrences,
+        );
         _walkStyle(
           variant['style'],
           pointer: '$pointer/variants/$index/style',
           propertyPath: propertyPath,
           selectors: [...selectors, selector],
           mergeSource: mergeSource,
-          referencesByName: referencesByName,
-          terms: terms,
+          evidence: evidence,
         );
       }
     }
@@ -279,8 +344,7 @@ void _walkStyle(
         propertyPath: [...propertyPath, key],
         selectors: selectors,
         mergeSource: mergeSource,
-        referencesByName: referencesByName,
-        terms: terms,
+        evidence: evidence,
       );
     }
 
@@ -294,14 +358,13 @@ void _walkStyle(
         propertyPath: propertyPath,
         selectors: selectors,
         mergeSource: mergeSource,
-        referencesByName: referencesByName,
-        terms: terms,
+        evidence: evidence,
       );
     }
 
     return;
   }
-  terms.add(
+  evidence.terms.add(
     MixProtocolStyleTerm(
       propertyPath: propertyPath,
       jsonPointer: pointer,
@@ -313,7 +376,41 @@ void _walkStyle(
   );
 }
 
-MixProtocolSelectorContext _selector(JsonMap variant, String pointer) {
+void _collectApplyDirectives(
+  JsonMap term, {
+  required String pointer,
+  required List<String> propertyPath,
+  required List<MixProtocolSelectorContext> selectors,
+  required int? mergeSource,
+  required List<MixProtocolDirectiveInspection> directives,
+}) {
+  final apply = term['apply'];
+  if (apply is! List<Object?>) return;
+
+  for (var index = 0; index < apply.length; index += 1) {
+    final wire = apply[index]! as JsonMap;
+    directives.add(
+      MixProtocolDirectiveInspection(
+        propertyPath: propertyPath,
+        jsonPointer: '$pointer/apply/$index',
+        selectors: selectors,
+        mergeSource: mergeSource,
+        op: wire['op']! as String,
+        parameters: {
+          for (final entry in wire.entries)
+            if (entry.key != 'op') entry.key: entry.value,
+        },
+      ),
+    );
+  }
+}
+
+MixProtocolSelectorContext _inspectSelector(
+  JsonMap variant,
+  String pointer,
+  List<MixProtocolTokenOccurrence> tokenOccurrences,
+) {
+  _collectSelectorTokenOccurrences(variant, pointer, tokenOccurrences);
   final fields = <String, Object?>{
     for (final entry in variant.entries)
       if (entry.key != 'style') entry.key: _immutableJson(entry.value),
@@ -341,6 +438,32 @@ MixProtocolSelectorContext _selector(JsonMap variant, String pointer) {
   );
 }
 
+void _collectSelectorTokenOccurrences(
+  JsonMap selector,
+  String pointer,
+  List<MixProtocolTokenOccurrence> tokenOccurrences,
+) {
+  final tokenName = selector['token'];
+  if (selector['kind'] == 'context_breakpoint' && tokenName is String) {
+    tokenOccurrences.add(
+      MixProtocolTokenOccurrence(
+        kind: 'breakpoints',
+        name: tokenName,
+        jsonPointer: '$pointer/token',
+      ),
+    );
+  }
+
+  final nested = selector['variant'];
+  if (nested is JsonMap) {
+    _collectSelectorTokenOccurrences(
+      nested,
+      '$pointer/variant',
+      tokenOccurrences,
+    );
+  }
+}
+
 String _tokenKind(
   JsonMap token,
   String name,
@@ -349,21 +472,89 @@ String _tokenKind(
 ) {
   final wireKind = token['kind'];
   if (wireKind is String) return _pluralKind(wireKind);
-  final matches = referencesByName[name] ?? const [];
-  if (matches.length == 1) return matches.single.kind;
-  final property = propertyPath.lastOrNull;
-  final inferred = switch (property) {
-    'color' || 'selectionColor' || 'decorationColor' => 'colors',
-    'padding' || 'margin' || 'spacing' || 'size' => 'spaces',
-    'borderRadius' || 'radius' => 'radii',
-    'fontWeight' => 'fontWeights',
-    'duration' || 'delay' => 'durations',
-    _ => null,
-  };
+  final inferred = _schemaTokenKind(propertyPath);
   if (inferred != null) return inferred;
+  final matches = referencesByName[name] ?? const [];
+  final runtimeKinds = matches.map((match) => match.kind).toSet();
+  if (runtimeKinds.length == 1) return runtimeKinds.single;
 
-  return matches.isEmpty ? 'unknown' : matches.first.kind;
+  return 'unknown';
 }
+
+String? _schemaTokenKind(List<String> propertyPath) {
+  final property = propertyPath.lastOrNull;
+  if (property == null) return null;
+  final parent = propertyPath.length > 1
+      ? propertyPath[propertyPath.length - 2]
+      : null;
+
+  if (_edgeProperties.contains(property)) {
+    if (parent == 'padding' || parent == 'margin') return 'spaces';
+    if (parent == 'border') return 'borders';
+  }
+  if (_cornerProperties.contains(property) && parent == 'borderRadius') {
+    return 'radii';
+  }
+
+  return _tokenKindByProperty[property];
+}
+
+const _edgeProperties = {'top', 'right', 'bottom', 'left', 'start', 'end'};
+
+const _cornerProperties = {
+  'topLeft',
+  'topRight',
+  'bottomLeft',
+  'bottomRight',
+  'topStart',
+  'topEnd',
+  'bottomStart',
+  'bottomEnd',
+};
+
+/// Schema-defined token kinds for property names whose runtime references can
+/// be ambiguous because multiple token classes share the same declared name.
+const _tokenKindByProperty = <String, String>{
+  'color': 'colors',
+  'backgroundColor': 'colors',
+  'selectionColor': 'colors',
+  'decorationColor': 'colors',
+  'padding': 'spaces',
+  'margin': 'spaces',
+  'spacing': 'spaces',
+  'size': 'spaces',
+  'width': 'spaces',
+  'height': 'spaces',
+  'minWidth': 'spaces',
+  'maxWidth': 'spaces',
+  'minHeight': 'spaces',
+  'maxHeight': 'spaces',
+  'fontSize': 'spaces',
+  'letterSpacing': 'spaces',
+  'wordSpacing': 'spaces',
+  'leading': 'spaces',
+  'decorationThickness': 'spaces',
+  'blurRadius': 'spaces',
+  'spreadRadius': 'spaces',
+  'strokeAlign': 'spaces',
+  'weight': 'spaces',
+  'grade': 'spaces',
+  'opticalSize': 'spaces',
+  'fill': 'spaces',
+  'opacity': 'spaces',
+  'radius': 'spaces',
+  'focalRadius': 'spaces',
+  'startAngle': 'spaces',
+  'endAngle': 'spaces',
+  'borderRadius': 'radii',
+  'style': 'textStyles',
+  'shadows': 'shadows',
+  'boxShadow': 'boxShadows',
+  'border': 'borders',
+  'fontWeight': 'fontWeights',
+  'duration': 'durations',
+  'delay': 'durations',
+};
 
 String _pluralKind(String kind) => switch (kind) {
   'color' => 'colors',
