@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mix_atlas/golden.dart';
 import 'package:mix_atlas_capture/mix_atlas_capture.dart';
 
 import 'package:mix_atlas_app/src/app.dart';
@@ -15,7 +15,7 @@ void main() {
   late AtlasCapture changed;
 
   setUpAll(() async {
-    await _loadGoldenFonts();
+    await loadAtlasFonts();
     baseline = await _loadFixture('button_baseline');
     changed = await _loadFixture('button_changed');
   });
@@ -66,30 +66,6 @@ void main() {
       expect(tester.takeException(), isNull);
     });
   }
-}
-
-Future<void> _loadGoldenFonts() async {
-  const sdkMarker = '/bin/cache/';
-  final executable = Platform.resolvedExecutable;
-  final markerIndex = executable.indexOf(sdkMarker);
-  if (markerIndex < 0) {
-    throw StateError('Could not locate Flutter SDK from $executable.');
-  }
-  final flutterRoot = executable.substring(0, markerIndex);
-  final roboto = await File(
-    '$flutterRoot/bin/cache/artifacts/material_fonts/Roboto-Regular.ttf',
-  ).readAsBytes();
-  final icons = await File(
-    '$flutterRoot/bin/cache/artifacts/material_fonts/MaterialIcons-Regular.otf',
-  ).readAsBytes();
-  await Future.wait([
-    (FontLoader(
-      'Roboto',
-    )..addFont(Future.value(ByteData.sublistView(roboto)))).load(),
-    (FontLoader(
-      'MaterialIcons',
-    )..addFont(Future.value(ByteData.sublistView(icons)))).load(),
-  ]);
 }
 
 final class _GoldenGateway implements AtlasCaptureGateway {
