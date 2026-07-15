@@ -1,10 +1,9 @@
-/// Deterministic producer-side APIs for building and checking Atlas captures.
+/// Flutter producer-side APIs for projecting and building Atlas captures.
 ///
-/// Import this library from command-line tooling to avoid loading viewer-only
-/// Flutter reconstruction and source-adapter APIs.
+/// Pure Dart command-line packagers should import `packaging.dart` instead.
 library;
 
-export 'src/packaging/capture_packager.dart';
+export 'packaging.dart';
 export 'src/artifacts/component_document.dart'
     show
         AtlasPortableBinding,
