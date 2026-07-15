@@ -1,3 +1,11 @@
+## 2.2.0-beta.0
+
+ - **FEAT**: Add `MixableField.forwardStyler` and `stylerSurface` for opt-in
+   projection of a nested generated Styler's canonical named-factory surface
+   onto its parent Styler (#983).
+ - **DOCS**: Document the construction and fluent-method contract for a custom
+   `setterType` combined with `forwardStyler`.
+
 ## 2.1.3
 
  - **FEAT**: Add `MixWidgetParameterSelection` and the
@@ -5,11 +13,6 @@
    `.all()`, while `.only({...})` supports opt-in curation of generated widget
    value parameters. Factory parameters, valid `Key? key`, and method-level
    type parameters remain automatic.
- - **FEAT**: Add `MixableField.forwardStyler` and `stylerSurface` for opt-in
-   projection of a nested generated Styler's canonical named-factory surface
-   onto its parent Styler (#983).
- - **DOCS**: Document the construction and fluent-method contract for a custom
-   `setterType` combined with `forwardStyler`.
 
 ## 2.1.2
 
