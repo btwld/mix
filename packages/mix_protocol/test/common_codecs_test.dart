@@ -208,6 +208,32 @@ void main() {
     expect(singleValueProp(constraints.$maxWidth, 'maxWidth'), 32);
   });
 
+  test('box constraints preserve unresolved numeric tokens', () {
+    const minWidth = SpaceToken('constraint.min-width');
+    const maxWidth = SpaceToken('constraint.max-width');
+    final payload = _encodeBox(
+      BoxStyler(
+        constraints: BoxConstraintsMix(
+          minWidth: minWidth(),
+          maxWidth: maxWidth(),
+        ),
+      ),
+    );
+
+    expect(payload['constraints'], {
+      'minWidth': {r'$token': minWidth.name, 'kind': 'space'},
+      'maxWidth': {r'$token': maxWidth.name, 'kind': 'space'},
+    });
+
+    final constraints = _decodeBoxConstraints({
+      'type': 'box',
+      'constraints': payload['constraints']!,
+    });
+
+    expect(tokenFromReferenceValue<double>(constraints.$minWidth), minWidth);
+    expect(tokenFromReferenceValue<double>(constraints.$maxWidth), maxWidth);
+  });
+
   test('unbounded max constraints use infinity sentinel only when present', () {
     final payload = _encodeBox(
       BoxStyler(constraints: BoxConstraintsMix.maxWidth(double.infinity)),

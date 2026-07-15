@@ -285,6 +285,9 @@ const _packageExportConfigs = <String, _PackageExportConfig>{
       // from leaking as public Mix API via the barrel.
       'src/core/equatable.dart',
       'src/core/shape_border_merge.dart',
+      // Generated stylers import this internal support barrel directly. Its
+      // individual public symbols are already exported by mix.dart.
+      'src/generated_styler_support.dart',
     ],
     forcedPaths: ['src/modifiers/internal/reset_modifier.dart'],
   ),
