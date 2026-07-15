@@ -1,3 +1,14 @@
+## Unreleased
+
+### New features
+
+- Added style and theme document inspection APIs for schema tooling.
+
+### Fixes
+
+- Preserve unresolved numeric tokens when box constraints are encoded and
+  decoded.
+
 ## 1.0.0
 
 - Renamed the unpublished package from `mix_schema` to `mix_protocol` to match

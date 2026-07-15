@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../core/breakpoint.dart';
 import '../core/providers/widget_state_provider.dart';
+import '../core/providers/widget_state_style_override.dart';
 import '../core/spec.dart';
 import '../core/style.dart';
 import '../theme/tokens/token_refs.dart';
@@ -242,6 +243,9 @@ final class WidgetStateVariant extends ContextVariant {
 
   WidgetStateVariant(this.state)
     : super('widget_state_${state.name}', (context) {
+        final override = WidgetStateStyleOverride.maybeOf(context);
+        if (override != null) return override.states.contains(state);
+
         return WidgetStateProvider.hasStateOf(context, state);
       });
 
