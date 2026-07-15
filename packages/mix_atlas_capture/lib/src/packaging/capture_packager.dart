@@ -15,7 +15,7 @@ final class AtlasCaptureThemeSpec {
   Map<String, Object?> toJson() => {'id': id, 'document': documentPath};
 }
 
-/// A portable component-v1 document included in a canonical capture.
+/// A portable component-v1 or component-v2 document in a canonical capture.
 final class AtlasCaptureComponentSpec {
   final String id;
 

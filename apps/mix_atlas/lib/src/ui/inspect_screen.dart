@@ -42,7 +42,7 @@ class AtlasInspectScreen extends StatelessWidget {
               item.slotId == slotId,
         )
         .toList();
-    final styleReference = recipe.styleFor(slotId);
+    final styleReference = recipe.styles[slotId];
 
     return Column(
       crossAxisAlignment: .stretch,
@@ -202,6 +202,20 @@ class _AnatomyPreview extends StatelessWidget {
               onSelected: (_) => controller.selectSlot(slot.id),
               selected: slot.id == selectedSlot,
             ),
+          for (final node in component.anatomy.nodes.values)
+            if (node.slotId == null &&
+                (node.bindings.isNotEmpty || node.kind == .nestedComponent))
+              ChoiceChip(
+                label: Text('${node.id} · ${node.kind.name}'),
+                onSelected: (_) => controller.selectSlot(node.id),
+                selected: node.id == selectedSlot,
+              ),
+          if (component.semantics.bindings.isNotEmpty)
+            ChoiceChip(
+              label: const Text('semantics · contract'),
+              onSelected: (_) => controller.selectSlot('semantics'),
+              selected: selectedSlot == 'semantics',
+            ),
         ],
       ),
     ],
@@ -217,87 +231,104 @@ class _EvidenceList extends StatelessWidget {
 
   final AtlasAppController controller;
   final List<AtlasPropertyEvidence> evidence;
-  final AtlasSlotStyle reference;
+  final AtlasSlotStyle? reference;
 
   @override
-  Widget build(BuildContext context) => ListView(
-    padding: const .all(20),
-    children: [
-      Row(
-        children: [
-          Expanded(
-            child: Text(
-              'Declared properties',
-              style: Theme.of(
-                context,
-              ).textTheme.titleMedium?.copyWith(fontWeight: .w700),
+  Widget build(BuildContext context) {
+    final badgeLabel = switch (reference) {
+      null => '${evidence.length} bindings',
+      final value when value.isSupported => '${evidence.length} terms',
+      _ => 'Unsupported',
+    };
+    final sourceLabel = switch (reference) {
+      null =>
+        evidence.firstOrNull?.sourcePath ??
+            'No declared binding evidence exists for this node.',
+      final value when value.isSupported =>
+        value.documentPath ?? value.styleId!,
+      _ => 'No portable style document exists for this slot.',
+    };
+
+    return ListView(
+      padding: const .all(20),
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                'Declared properties',
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: .w700),
+              ),
             ),
-          ),
-          AtlasBadge(
-            reference.isSupported ? '${evidence.length} terms' : 'Unsupported',
-            warning: !reference.isSupported,
-          ),
-        ],
-      ),
-      const SizedBox(height: 6),
-      Text(
-        reference.isSupported
-            ? reference.documentPath!
-            : 'No portable style document exists for this slot.',
-        style: const TextStyle(color: AtlasPalette.textMuted, fontSize: 11),
-      ),
-      const SizedBox(height: 14),
-      if (!reference.isSupported)
-        for (final diagnostic in reference.diagnostics) ...[
-          AtlasPanel(
-            child: Column(
-              crossAxisAlignment: .start,
-              children: [
-                Row(
-                  spacing: 8,
-                  children: [
-                    const Icon(
-                      Icons.warning_amber_rounded,
-                      size: 18,
-                      color: AtlasPalette.warning,
-                    ),
-                    Expanded(
-                      child: Text(
-                        diagnostic.code,
-                        style: const TextStyle(fontWeight: .w700),
+            AtlasBadge(
+              badgeLabel,
+              warning: reference != null && !reference!.isSupported,
+            ),
+          ],
+        ),
+        const SizedBox(height: 6),
+        Text(
+          sourceLabel,
+          style: const TextStyle(color: AtlasPalette.textMuted, fontSize: 11),
+        ),
+        const SizedBox(height: 14),
+        if (reference != null && !reference!.isSupported)
+          for (final diagnostic in reference!.diagnostics) ...[
+            AtlasPanel(
+              child: Column(
+                crossAxisAlignment: .start,
+                children: [
+                  Row(
+                    spacing: 8,
+                    children: [
+                      const Icon(
+                        Icons.warning_amber_rounded,
+                        size: 18,
+                        color: AtlasPalette.warning,
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                Text(diagnostic.message, style: const TextStyle(fontSize: 12)),
-                const SizedBox(height: 5),
-                Text(
-                  diagnostic.path,
-                  style: const TextStyle(
-                    color: AtlasPalette.textMuted,
-                    fontSize: 10,
+                      Expanded(
+                        child: Text(
+                          diagnostic.code,
+                          style: const TextStyle(fontWeight: .w700),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ],
+                  const SizedBox(height: 8),
+                  Text(
+                    diagnostic.message,
+                    style: const TextStyle(fontSize: 12),
+                  ),
+                  const SizedBox(height: 5),
+                  Text(
+                    diagnostic.path,
+                    style: const TextStyle(
+                      color: AtlasPalette.textMuted,
+                      fontSize: 10,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          const SizedBox(height: 8),
-        ]
-      else if (evidence.isEmpty)
-        const AtlasEmptyState(
-          title: 'No declared leaf terms',
-          message:
-              'The protocol document is valid but declares no inspectable properties beyond its type.',
-          icon: Icons.data_object,
-        )
-      else
-        for (final item in evidence) ...[
-          _EvidenceCard(controller: controller, evidence: item),
-          const SizedBox(height: 8),
-        ],
-    ],
-  );
+            const SizedBox(height: 8),
+          ]
+        else if (evidence.isEmpty)
+          const AtlasEmptyState(
+            title: 'No declared leaf terms',
+            message:
+                'The protocol document is valid but declares no inspectable properties beyond its type.',
+            icon: Icons.data_object,
+          )
+        else
+          for (final item in evidence) ...[
+            _EvidenceCard(controller: controller, evidence: item),
+            const SizedBox(height: 8),
+          ],
+      ],
+    );
+  }
 }
 
 class _EvidenceCard extends StatelessWidget {

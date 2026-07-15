@@ -1,5 +1,7 @@
 ## Unreleased
 
+- Added a producer/portable raster parity harness with a deterministic 200 ms
+  animation phase and the Fortal macOS precision tolerance.
 - Rebuilt `AtlasCatalogViewer` with responsive desktop and compact layouts,
   keyboard search, theme controls, atlas details, and polished light/dark
   navigation chrome.

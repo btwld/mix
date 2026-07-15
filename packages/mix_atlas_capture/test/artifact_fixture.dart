@@ -169,6 +169,22 @@ final class ArtifactFixture {
     rehash();
   }
 
+  void addPortableV2Capture(Map<String, Map<String, Object?>> documents) {
+    manifest['schema'] = 'mix_atlas/capture/v2';
+    manifest['components'] = [
+      for (final id in documents.keys)
+        {'id': id, 'document': 'components/$id.component.json'},
+    ];
+    for (final entry in documents.entries) {
+      replaceJson(
+        'components/${entry.key}.component.json',
+        entry.value,
+        rehash: false,
+      );
+    }
+    rehash();
+  }
+
   void replaceJson(String path, Object? value, {bool rehash = true}) {
     files[path] = _jsonBytes(value);
     if (rehash) this.rehash();

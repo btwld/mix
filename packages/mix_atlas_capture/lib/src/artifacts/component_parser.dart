@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'capture_bundle.dart';
 import 'capture_parser.dart';
 import 'component_document.dart';
+import 'component_v2_parser.dart';
 
 abstract final class ComponentDocumentLimits {
   static const maxProperties = 32;
@@ -23,6 +24,9 @@ PortableComponentDocument parsePortableComponentDocument(
   required String path,
 }) {
   final root = decodeJsonObject(bytes, path: path);
+  if (root['schema'] == 'mix_atlas/component/v2') {
+    return parsePortableComponentV2(root, path: path);
+  }
   _expectKeys(root, const {
     'schema',
     'id',
@@ -219,7 +223,7 @@ ComponentPropertyDefinition _parseScalarProperty(
   final isValid = switch (kind) {
     .string => defaultValue is String,
     .boolean => defaultValue is bool,
-    .enumeration || .icon => false,
+    .enumeration || .number || .duration || .icon => false,
   };
   if (!isValid) {
     throw ArtifactLoadException(
@@ -526,7 +530,7 @@ ComponentVisibilityCondition _parseCondition(
     _expectKeys(value, const {'property', 'operator'}, path: path);
     final supportsPresence = switch (property.kind) {
       .icon || .string => true,
-      .enumeration || .boolean => false,
+      .enumeration || .boolean || .number || .duration => false,
     };
     if (!supportsPresence) {
       throw ArtifactLoadException(
@@ -976,6 +980,8 @@ void _validatePropertyValue(
     .enumeration => value is String && definition.values.contains(value),
     .string => value is String,
     .boolean => value is bool,
+    .number => value is num && value.isFinite,
+    .duration => value is int && value >= 0,
     .icon =>
       (!definition.isRequired && value == null) ||
           (value is String && _identityPattern.hasMatch(value)),

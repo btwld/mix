@@ -31,8 +31,9 @@ regression, predicted impact, approval, or release decision.
 
 - `mix_atlas_capture` owns strict loading, capture models, portable rendering,
   source contracts, and producer packaging.
-- Capture v1 and v2 remain readable; producers write canonical v2 plus an
-  optional component-v1 portable-document subset.
+- Capture v1 and v2 remain readable; complete producers write canonical
+  capture v2 with one component-v2 document per catalog component. Legacy
+  component-v1 and partial captures remain compatible.
 - Safe paths, collection limits, byte limits, strict fields, SHA-256 hashes,
   and protocol validation remain mandatory.
 - Baseline and changed Button fixtures cover the standalone reader.
@@ -52,13 +53,12 @@ regression, predicted impact, approval, or release decision.
 - `AtlasCapturePackager.build` writes sorted canonical files and removes stale
   generated files.
 - `AtlasCapturePackager.check` reports exact drift without rewriting files.
-- The Fortal reference bundle contains 21 catalog components and 150 indexed
-  artifacts plus `capture.json`.
-- Its 200 supported cells remain pixel-exact and its 40 loading cells remain
-  explicitly unsupported.
-- Forty-two light/dark contact sheets keep all 21 component families
-  reviewable; the 20 families without portable adapters are explicitly marked
-  rendered-only.
+- The Fortal reference bundle contains 21 component-v2 documents, 148 recipes,
+  613 selectable cells per theme, and 1,226 light/dark renders.
+- Every visual slot is strictly projected; generation fails instead of
+  emitting a component-v2 placeholder.
+- Forty-two light/dark contact sheets remain hash-validated visual oracles,
+  separate from the primary portable matrices.
 
 The Remix producer draft PR expands the committed Button baseline on `main` to
 all 21 Fortal component families, so the public sample exercises a real
@@ -80,14 +80,16 @@ baseline/current comparison.
 
 ### Phase 5 — Catalog and Inspect
 
-- Catalog shows every captured component. Components with portable documents
-  expose their recipe/state/theme matrix; rendered-only components expose their
-  hash-verified light/dark contact sheets without fabricated portable data.
+- Catalog shows every captured component. Portable documents expose their
+  recipe/state/theme matrices, with hash-verified light/dark contact sheets
+  behind an **Oracle** action. Only legacy partial captures use the rendered
+  fallback.
 - Inspect shows the portable reconstruction, anatomy slots, declared
   properties, selectors, token references, captured theme values, diagnostics,
   source files, and JSON pointers when the producer supplied that evidence.
 - Runtime evidence is always labeled `Not captured`.
-- The Fortal spinner remains an explicit unsupported slot.
+- Component-v2 spinner and fractional-position primitives reconstruct custom
+  scalar visuals without an unsupported placeholder.
 
 ### Phase 6 — Changes, Compare, and Token Usage
 

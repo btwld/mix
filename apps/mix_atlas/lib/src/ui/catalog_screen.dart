@@ -14,25 +14,39 @@ class AtlasCatalogScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final capture = controller.current!;
     final selectedId = controller.reviewContext?.componentId;
-    final catalogComponent = capture.catalog.components
-        .where((component) => component.id == selectedId)
-        .firstOrNull;
     final component = capture.componentDocuments
         .where((document) => document.id == selectedId)
         .firstOrNull;
     final themeId =
         controller.reviewContext?.themeId ?? capture.manifest.themes.first.id;
     if (component == null) {
-      return catalogComponent == null
-          ? const AtlasEmptyState(
-              title: 'Captured component is unavailable',
-              message: 'Choose another component from the catalog.',
-            )
-          : _RenderedCatalog(
-              capture: capture,
-              component: catalogComponent,
-              themeId: themeId,
-            );
+      final catalogComponent = capture.catalog.components
+          .where((component) => component.id == selectedId)
+          .firstOrNull;
+      if (catalogComponent == null) {
+        return const AtlasEmptyState(
+          title: 'Captured component is unavailable',
+          message: 'Choose another component from the catalog.',
+        );
+      }
+      final legacyPartial =
+          capture.manifest.schemaVersion < 2 ||
+          capture.componentDocuments.isEmpty ||
+          capture.componentDocuments.any((document) => document.schema == .v1);
+      if (legacyPartial) {
+        return _RenderedCatalog(
+          capture: capture,
+          component: catalogComponent,
+          themeId: themeId,
+        );
+      }
+
+      return const AtlasEmptyState(
+        title: 'Portable component document is missing',
+        message:
+            'Complete component-v2 captures cannot substitute a contact sheet for a selectable matrix.',
+        icon: Icons.account_tree_outlined,
+      );
     }
 
     return Column(
@@ -133,29 +147,27 @@ class _RenderedCatalog extends StatelessWidget {
             child: InteractiveViewer(
               boundaryMargin: const .all(80),
               constrained: false,
-              minScale: 0.1,
               maxScale: 4,
+              minScale: 0.1,
               child: Padding(
                 padding: const .all(24),
-                child: Semantics(
-                  label: '${component.label}, rendered $themeId contact sheet',
-                  child: Image.memory(
-                    image,
-                    key: ValueKey('rendered-oracle-${component.id}-$themeId'),
-                    filterQuality: FilterQuality.high,
-                    gaplessPlayback: true,
-                    errorBuilder: (context, error, stackTrace) =>
-                        const SizedBox(
-                          width: 640,
-                          height: 360,
-                          child: Center(
-                            child: Text(
-                              'Rendered evidence could not be decoded.',
-                              style: TextStyle(color: AtlasPalette.textMuted),
-                            ),
-                          ),
-                        ),
+                child: Image.memory(
+                  image,
+                  key: ValueKey('rendered-oracle-${component.id}-$themeId'),
+                  errorBuilder: (context, error, stackTrace) => const SizedBox(
+                    width: 640,
+                    height: 360,
+                    child: Center(
+                      child: Text(
+                        'Rendered evidence could not be decoded.',
+                        style: TextStyle(color: AtlasPalette.textMuted),
+                      ),
+                    ),
                   ),
+                  semanticLabel:
+                      '${component.label}, rendered $themeId contact sheet',
+                  gaplessPlayback: true,
+                  filterQuality: .high,
                 ),
               ),
             ),
@@ -194,11 +206,30 @@ class _CatalogTitle extends StatelessWidget {
       child: Column(
         crossAxisAlignment: .start,
         children: [
-          Text(
-            component.label,
-            style: Theme.of(
-              context,
-            ).textTheme.headlineSmall?.copyWith(fontWeight: .w700),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  component.label,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.headlineSmall?.copyWith(fontWeight: .w700),
+                ),
+              ),
+              OutlinedButton.icon(
+                key: const ValueKey('oracle-action'),
+                onPressed: () => showDialog<void>(
+                  context: context,
+                  builder: (context) => _OracleDialog(
+                    capture: capture,
+                    component: component,
+                    themeId: controller.reviewContext!.themeId!,
+                  ),
+                ),
+                icon: const Icon(Icons.image_outlined, size: 18),
+                label: const Text('Oracle'),
+              ),
+            ],
           ),
           const SizedBox(height: 5),
           Text(
@@ -220,6 +251,84 @@ class _CatalogTitle extends StatelessWidget {
             ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _OracleDialog extends StatelessWidget {
+  const _OracleDialog({
+    required this.capture,
+    required this.component,
+    required this.themeId,
+  });
+
+  final AtlasCapture capture;
+  final AtlasComponentDocument component;
+  final String themeId;
+
+  @override
+  Widget build(BuildContext context) {
+    final oracle = component.oracles[themeId]!;
+
+    return Dialog(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 1100, maxHeight: 760),
+        child: Column(
+          crossAxisAlignment: .stretch,
+          children: [
+            Padding(
+              padding: const .fromLTRB(20, 14, 10, 12),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      '${component.label} · $themeId oracle',
+                      style: Theme.of(
+                        context,
+                      ).textTheme.titleMedium?.copyWith(fontWeight: .w700),
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    tooltip: 'Close oracle',
+                    icon: const Icon(Icons.close),
+                  ),
+                ],
+              ),
+            ),
+            const Divider(height: 1),
+            Expanded(
+              child: InteractiveViewer(
+                boundaryMargin: const .all(80),
+                constrained: false,
+                maxScale: 4,
+                minScale: 0.1,
+                child: Padding(
+                  padding: const .all(24),
+                  child: Image.memory(
+                    capture.file(oracle.imagePath),
+                    key: ValueKey('oracle-image-${component.id}-$themeId'),
+                    semanticLabel:
+                        '${component.label}, rendered $themeId contact-sheet oracle',
+                    gaplessPlayback: true,
+                    filterQuality: .high,
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const .all(12),
+              child: Text(
+                oracle.imagePath,
+                style: const TextStyle(
+                  color: AtlasPalette.textMuted,
+                  fontSize: 11,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

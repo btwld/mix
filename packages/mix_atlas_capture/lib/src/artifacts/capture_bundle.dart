@@ -189,14 +189,63 @@ final class CapturedAtlasMetadata {
   final String componentId;
 
   final String themeId;
+  final List<CapturedAtlasAxis> rowAxes;
+  final List<CapturedAtlasRow> rows;
+  final List<CapturedAtlasScenario> scenarios;
   final int rowCount;
   final int columnCount;
-  const CapturedAtlasMetadata({
+  CapturedAtlasMetadata({
     required this.componentId,
     required this.themeId,
+    List<CapturedAtlasAxis> rowAxes = const [],
+    List<CapturedAtlasRow> rows = const [],
+    List<CapturedAtlasScenario> scenarios = const [],
     required this.rowCount,
     required this.columnCount,
-  });
+  }) : rowAxes = List.unmodifiable(rowAxes),
+       rows = List.unmodifiable(rows),
+       scenarios = List.unmodifiable(scenarios);
+}
+
+final class CapturedAtlasAxis {
+  final String id;
+  final String label;
+
+  const CapturedAtlasAxis({required this.id, required this.label});
+}
+
+final class CapturedAtlasAxisValue {
+  final String id;
+  final String label;
+
+  const CapturedAtlasAxisValue({required this.id, required this.label});
+}
+
+final class CapturedAtlasRow {
+  final String id;
+  final String? label;
+  final Map<String, CapturedAtlasAxisValue> values;
+
+  CapturedAtlasRow({
+    required this.id,
+    this.label,
+    required Map<String, CapturedAtlasAxisValue> values,
+  }) : values = Map.unmodifiable(values);
+}
+
+final class CapturedAtlasScenario {
+  final String id;
+  final String? label;
+  final Set<String> widgetStates;
+  final Map<String, Object?> properties;
+
+  CapturedAtlasScenario({
+    required this.id,
+    this.label,
+    required Set<String> widgetStates,
+    required Map<String, Object?> properties,
+  }) : widgetStates = Set.unmodifiable(widgetStates),
+       properties = Map.unmodifiable(properties);
 }
 
 final class ProtocolDiagnostic {

@@ -408,6 +408,18 @@ CapturedAtlasMetadata parseAtlasMetadata(
   required CapturedComponentAsset asset,
 }) {
   final root = decodeJsonObject(bytes, path: path);
+  _expectKeys(root, const {
+    'schema',
+    'component',
+    'componentLabel',
+    'theme',
+    'themeLabel',
+    'brightness',
+    'file',
+    'rowAxes',
+    'rows',
+    'columns',
+  }, path: path);
   _expectValue(
     root,
     'schema',
@@ -432,22 +444,174 @@ CapturedAtlasMetadata parseAtlasMetadata(
       path: path,
     );
   }
-  final rows = _requiredList(root, 'rows', path: '$path/rows');
-  final columns = _requiredList(root, 'columns', path: '$path/columns');
-  if (rows.isEmpty || columns.isEmpty) {
+  final rawAxes = _requiredList(root, 'rowAxes', path: '$path/rowAxes');
+  if (rawAxes.length > 16) {
     throw ArtifactLoadException(
       .invalidCatalog,
-      'Atlas metadata must contain rows and columns.',
+      'Atlas metadata exceeds the row-axis limit.',
+      path: '$path/rowAxes',
+    );
+  }
+  final axes = <CapturedAtlasAxis>[];
+  final axisIds = <String>{};
+  for (var index = 0; index < rawAxes.length; index += 1) {
+    final axisPath = '$path/rowAxes/$index';
+    final value = _asObject(rawAxes[index], path: axisPath);
+    _expectKeys(value, const {'id', 'label'}, path: axisPath);
+    final id = _atlasIdentifier(value, 'id', path: '$axisPath/id');
+    if (!axisIds.add(id)) {
+      throw ArtifactLoadException(
+        .invalidCatalog,
+        'Atlas row-axis identifiers must be unique.',
+        path: '$axisPath/id',
+      );
+    }
+    axes.add(
+      CapturedAtlasAxis(
+        id: id,
+        label: _requiredString(value, 'label', path: '$axisPath/label'),
+      ),
+    );
+  }
+
+  final rawRows = _requiredList(root, 'rows', path: '$path/rows');
+  final rawColumns = _requiredList(root, 'columns', path: '$path/columns');
+  if (rawRows.isEmpty ||
+      rawRows.length > 512 ||
+      rawColumns.isEmpty ||
+      rawColumns.length > 64) {
+    throw ArtifactLoadException(
+      .invalidCatalog,
+      'Atlas metadata must contain bounded rows and columns.',
       path: path,
+    );
+  }
+  final rows = <CapturedAtlasRow>[];
+  final rowIds = <String>{};
+  for (var index = 0; index < rawRows.length; index += 1) {
+    final rowPath = '$path/rows/$index';
+    final value = _asObject(rawRows[index], path: rowPath);
+    _expectKeys(value, const {'id', 'label', 'values'}, path: rowPath);
+    final id = _atlasIdentifier(value, 'id', path: '$rowPath/id');
+    if (!rowIds.add(id)) {
+      throw ArtifactLoadException(
+        .invalidCatalog,
+        'Atlas row identifiers must be unique.',
+        path: '$rowPath/id',
+      );
+    }
+    final rawValues = _requiredObject(value, 'values', path: '$rowPath/values');
+    if (rawValues.keys.toSet().difference(axisIds).isNotEmpty ||
+        axisIds.difference(rawValues.keys.toSet()).isNotEmpty) {
+      throw ArtifactLoadException(
+        .invalidCatalog,
+        'Every row must declare exactly one value for every row axis.',
+        path: '$rowPath/values',
+      );
+    }
+    final values = <String, CapturedAtlasAxisValue>{};
+    for (final axis in axes) {
+      final valuePath = '$rowPath/values/${axis.id}';
+      final coordinate = _asObject(rawValues[axis.id], path: valuePath);
+      _expectKeys(coordinate, const {'id', 'label'}, path: valuePath);
+      values[axis.id] = CapturedAtlasAxisValue(
+        id: _atlasIdentifier(coordinate, 'id', path: '$valuePath/id'),
+        label: _requiredString(coordinate, 'label', path: '$valuePath/label'),
+      );
+    }
+    rows.add(
+      CapturedAtlasRow(
+        id: id,
+        label: _optionalString(value, 'label'),
+        values: values,
+      ),
+    );
+  }
+
+  const allowedWidgetStates = {
+    'hovered',
+    'focused',
+    'pressed',
+    'dragged',
+    'selected',
+    'scrolledUnder',
+    'disabled',
+    'error',
+  };
+  final scenarios = <CapturedAtlasScenario>[];
+  final scenarioIds = <String>{};
+  for (var index = 0; index < rawColumns.length; index += 1) {
+    final scenarioPath = '$path/columns/$index';
+    final value = _asObject(rawColumns[index], path: scenarioPath);
+    _expectKeys(value, const {
+      'id',
+      'label',
+      'states',
+      'props',
+    }, path: scenarioPath);
+    final id = _atlasIdentifier(value, 'id', path: '$scenarioPath/id');
+    if (!scenarioIds.add(id)) {
+      throw ArtifactLoadException(
+        .invalidCatalog,
+        'Atlas scenario identifiers must be unique.',
+        path: '$scenarioPath/id',
+      );
+    }
+    final rawStates = value.containsKey('states')
+        ? _asList(value['states'], path: '$scenarioPath/states')
+        : const <Object?>[];
+    final states = <String>{};
+    for (var stateIndex = 0; stateIndex < rawStates.length; stateIndex += 1) {
+      final state = rawStates[stateIndex];
+      if (state is! String ||
+          !allowedWidgetStates.contains(state) ||
+          !states.add(state)) {
+        throw ArtifactLoadException(
+          .invalidCatalog,
+          'Atlas widget states must be supported and unique.',
+          path: '$scenarioPath/states/$stateIndex',
+        );
+      }
+    }
+    final properties = value.containsKey('props')
+        ? _asObject(value['props'], path: '$scenarioPath/props')
+        : const <String, Object?>{};
+    scenarios.add(
+      CapturedAtlasScenario(
+        id: id,
+        label: _optionalString(value, 'label'),
+        widgetStates: states,
+        properties: properties,
+      ),
     );
   }
 
   return CapturedAtlasMetadata(
     componentId: componentId,
     themeId: themeId,
+    rowAxes: axes,
+    rows: rows,
+    scenarios: scenarios,
     rowCount: rows.length,
-    columnCount: columns.length,
+    columnCount: scenarios.length,
   );
+}
+
+String _atlasIdentifier(
+  Map<String, Object?> value,
+  String key, {
+  required String path,
+}) {
+  final id = _requiredString(value, key, path: path);
+  if (!RegExp(r'^[A-Za-z][A-Za-z0-9_-]{0,63}$').hasMatch(id)) {
+    throw ArtifactLoadException(
+      .invalidCatalog,
+      'Expected a stable Atlas identifier.',
+      path: path,
+    );
+  }
+
+  return id;
 }
 
 ProtocolCoverageSummary parseProtocolCoverage(

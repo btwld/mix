@@ -192,23 +192,34 @@ final class _Snapshot {
   });
 }
 
-Map<String, _Snapshot> _componentSnapshots(LoadedCapture capture) => {
-  for (final component in capture.componentDocuments)
-    component.id: _Snapshot(
-      category: .component,
-      id: component.id,
-      value: {
-        'label': component.label,
-        'semantics': {
-          'role': component.semantics.role,
-          'labelProperty': component.semantics.labelPropertyId,
-          'enabledProperty': component.semantics.enabledPropertyId,
-          'loadingProperty': component.semantics.loadingPropertyId,
+Map<String, _Snapshot> _componentSnapshots(LoadedCapture capture) {
+  final documents = {
+    for (final component in capture.componentDocuments) component.id: component,
+  };
+
+  return {
+    for (final catalogComponent in capture.catalog.components)
+      catalogComponent.id: _Snapshot(
+        category: .component,
+        id: catalogComponent.id,
+        value: {
+          'label': catalogComponent.label,
+          'portable': documents.containsKey(catalogComponent.id),
+          if (documents[catalogComponent.id] case final component?) ...{
+            'schema': component.schema.name,
+            'semantics': {
+              'role': component.semantics.role,
+              'bindings': {
+                for (final binding in component.semantics.bindings.entries)
+                  binding.key: binding.value.toJson(),
+              },
+            },
+          },
         },
-      },
-      componentId: component.id,
-    ),
-};
+        componentId: catalogComponent.id,
+      ),
+  };
+}
 
 Map<String, _Snapshot> _recipeSnapshots(LoadedCapture capture) => {
   for (final component in capture.componentDocuments)
@@ -225,6 +236,7 @@ Map<String, _Snapshot> _recipeSnapshots(LoadedCapture capture) => {
                 'evidence': style.value.evidence.name,
                 if (style.value.documentPath != null)
                   'document': style.value.documentPath,
+                if (style.value.styleId != null) 'style': style.value.styleId,
               },
           },
         },
@@ -360,6 +372,22 @@ Map<String, _Snapshot> _diagnosticSnapshots(LoadedCapture capture) {
     }
   }
   for (final component in capture.componentDocuments) {
+    for (final diagnostic in component.diagnostics) {
+      final key = [
+        'component',
+        component.id,
+        diagnostic.code,
+        diagnostic.path,
+        diagnostic.message,
+      ].join('|');
+      result[key] = _Snapshot(
+        category: .diagnostic,
+        id: '${component.id} · ${diagnostic.code}',
+        value: {'severity': diagnostic.severity, 'message': diagnostic.message},
+        componentId: component.id,
+        jsonPointer: diagnostic.path,
+      );
+    }
     for (final recipe in component.recipes) {
       for (final style in recipe.styles.entries) {
         for (final diagnostic in style.value.diagnostics) {
@@ -395,21 +423,21 @@ Map<String, _Snapshot> _diagnosticSnapshots(LoadedCapture capture) {
 }
 
 Map<String, _Snapshot> _visualOracleSnapshots(LoadedCapture capture) => {
-  for (final component in capture.componentDocuments)
-    for (final oracle in component.oracles.values)
-      '${component.id}|${oracle.themeId}': _Snapshot(
+  for (final component in capture.catalog.components)
+    for (final asset in component.assets.values)
+      '${component.id}|${asset.themeId}': _Snapshot(
         category: .visualOracle,
-        id: '${component.id} / ${oracle.themeId} contact sheet',
+        id: '${component.id} / ${asset.themeId} contact sheet',
         value: {
-          'image': oracle.imagePath,
-          'imageHash': capture.manifest.files[oracle.imagePath]?.sha256,
-          'metadata': oracle.metadataPath,
-          'metadataHash': capture.manifest.files[oracle.metadataPath]?.sha256,
-          'evidence': oracle.evidence.name,
+          'image': asset.imagePath,
+          'imageHash': capture.manifest.files[asset.imagePath]?.sha256,
+          'metadata': asset.metadataPath,
+          'metadataHash': capture.manifest.files[asset.metadataPath]?.sha256,
+          'evidence': 'rendered',
         },
         componentId: component.id,
-        themeId: oracle.themeId,
-        sourcePath: oracle.imagePath,
+        themeId: asset.themeId,
+        sourcePath: asset.imagePath,
       ),
 };
 

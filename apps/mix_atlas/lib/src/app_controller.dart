@@ -11,13 +11,6 @@ import 'models/review_context.dart';
 enum AtlasLoadState { empty, loading, ready, error }
 
 final class AtlasSourceSelection {
-  const AtlasSourceSelection({
-    required this.repository,
-    required this.baselineRef,
-    required this.currentRef,
-    required this.manifestPath,
-  });
-
   static const productionDefault = AtlasSourceSelection(
     repository: String.fromEnvironment(
       'MIX_ATLAS_DEFAULT_REPOSITORY',
@@ -38,9 +31,16 @@ final class AtlasSourceSelection {
   );
 
   final String repository;
+
   final String baselineRef;
   final String currentRef;
   final String manifestPath;
+  const AtlasSourceSelection({
+    required this.repository,
+    required this.baselineRef,
+    required this.currentRef,
+    required this.manifestPath,
+  });
 }
 
 final class AtlasAppController extends ChangeNotifier {
@@ -65,12 +65,9 @@ final class AtlasAppController extends ChangeNotifier {
   Future<void> Function()? _lastLoad;
   AtlasAppController({
     required AtlasCaptureGateway gateway,
-    AtlasSourceSelection sourceSelection =
-        AtlasSourceSelection.productionDefault,
+    AtlasSourceSelection sourceSelection = .productionDefault,
   }) : _sourceSelection = sourceSelection,
        _gateway = gateway;
-
-  AtlasSourceSelection get sourceSelection => _sourceSelection;
 
   Future<void> _openLocal(Directory directory, String manifestPath) async {
     final generation = ++_loadGeneration;
@@ -194,6 +191,8 @@ final class AtlasAppController extends ChangeNotifier {
     loadError = error;
     notifyListeners();
   }
+
+  AtlasSourceSelection get sourceSelection => _sourceSelection;
 
   AtlasDestination get destination => _history.last;
 

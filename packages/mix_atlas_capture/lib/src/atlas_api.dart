@@ -5,6 +5,18 @@ import 'portable_component_renderer.dart';
 import 'sources/artifact_source.dart';
 import 'sources/github_repository_source.dart';
 
+export 'artifacts/component_document.dart'
+    show
+        AtlasPortableBinding,
+        AtlasPortableNode,
+        AtlasPortableSemantics,
+        atlasPortableIconIdentities;
+export 'producer/portable_component_builder.dart'
+    show
+        AtlasCompositeStyleProjector,
+        AtlasPortableComponentBuilder,
+        AtlasPortableProjectionException;
+
 export 'sources/directory_source.dart' show AtlasDirectorySource;
 export 'sources/github_repository_source.dart'
     show
@@ -27,12 +39,17 @@ typedef AtlasComponentAsset = CapturedComponentAsset;
 typedef AtlasCatalogComponent = CapturedComponent;
 typedef AtlasCatalog = CapturedCatalog;
 typedef AtlasVisualOracleMetadata = CapturedAtlasMetadata;
+typedef AtlasVisualOracleAxis = CapturedAtlasAxis;
+typedef AtlasVisualOracleAxisValue = CapturedAtlasAxisValue;
+typedef AtlasVisualOracleRow = CapturedAtlasRow;
+typedef AtlasVisualOracleScenario = CapturedAtlasScenario;
 typedef AtlasDiagnostic = ProtocolDiagnostic;
 typedef AtlasCoverageItem = ProtocolCoverageItem;
 typedef AtlasCoverageSummary = ProtocolCoverageSummary;
 typedef AtlasCapture = LoadedCapture;
 
 typedef AtlasComponentPropertyKind = ComponentPropertyKind;
+typedef AtlasComponentDocumentSchema = ComponentDocumentSchema;
 typedef AtlasComponentSlotKind = ComponentSlotKind;
 typedef AtlasEvidence = ComponentEvidence;
 typedef AtlasSupportStatus = ComponentSupportStatus;
@@ -46,6 +63,7 @@ typedef AtlasAnatomyNode = ComponentAnatomyNode;
 typedef AtlasComponentAnatomy = ComponentAnatomy;
 typedef AtlasComponentDiagnostic = ComponentDiagnostic;
 typedef AtlasSlotStyle = ComponentSlotStyleReference;
+typedef AtlasStyleLibraryEntry = ComponentStyleLibraryEntry;
 typedef AtlasComponentRecipe = PortableComponentRecipe;
 typedef AtlasSemanticsContract = ComponentSemanticsContract;
 typedef AtlasVisualOracle = ComponentVisualOracle;
@@ -70,7 +88,7 @@ final class AtlasCaptureReader {
       _loader.load(request);
 }
 
-/// Reconstructs only the whitelisted component-v1 vocabulary.
+/// Reconstructs the whitelisted component-v1 and component-v2 vocabularies.
 class AtlasPortableComponent extends PortableComponentRenderer {
   const AtlasPortableComponent({
     required super.capture,

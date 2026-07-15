@@ -12,8 +12,9 @@ The phased implementation receipt and verification gates are recorded in
 
 The app preserves one immutable review context while moving through:
 
-1. **Catalog** — search captured components and open either an exact portable
-   recipe/state/theme cell or a validated rendered contact sheet.
+1. **Catalog** — search captured components and open an exact portable
+   recipe/state/theme cell; validated contact sheets remain available through
+   the **Oracle** action.
 2. **Changes** — review added, removed, and modified declared evidence between
    `main` and a current revision.
 3. **Compare** — view bounded baseline/current reconstructions side by side and
@@ -85,10 +86,11 @@ Flutter's `--dart-define` option.
 - **Runtime**: always shown as `Not captured` in this preview.
 
 Atlas does not infer runtime winners, resolved widget styles, accessibility
-results, source locations, or visual impact. An unsupported portable slot
-remains visible with its structured diagnostic. A catalog component without a
-portable document is labeled `Rendered evidence`; Atlas displays its verified
-contact sheet and does not invent recipes, states, slots, or properties.
+results, source locations, or visual impact. Component-v2 diagnostics can
+describe omitted nonvisual runtime behavior, but never replace a visual node.
+A legacy partial capture without a portable document is labeled
+`Rendered evidence`; Atlas displays its verified contact sheet and does not
+invent recipes, states, slots, or properties.
 
 ## Producer setup
 
@@ -114,12 +116,11 @@ melos run atlas:fortal
 melos run atlas:fortal:check
 ```
 
-Its capture contains 21 component families, 42 light/dark contact sheets, and
-150 indexed artifacts plus `capture.json`. Button retains its full portable
-recipe/state/slot evidence: 200 non-loading cells have exact producer-side
-screenshot comparisons, while 40 loading cells carry an explicit unsupported
-spinner diagnostic. The other 20 families are deliberately labeled
-rendered-only until their portable projection adapters exist.
+Its complete capture contains 21 portable component documents and 42
+light/dark contact-sheet oracles. The shared adapter inventory declares exactly
+148 recipes and 613 selectable cells per theme, for 1,226 producer/portable
+renders. Strict generation rejects placeholders and any catalog row or scenario
+that does not map one-to-one to a portable recipe or state.
 
 ## Develop and verify
 

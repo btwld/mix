@@ -259,6 +259,15 @@ void main() {
     await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
     await expectLater(tester, meetsGuideline(textContrastGuideline));
 
+    await tester.tap(find.byKey(const ValueKey('oracle-action')));
+    await tester.pumpAndSettle();
+    expect(
+      find.byKey(const ValueKey('oracle-image-button-light')),
+      findsOneWidget,
+    );
+    await tester.tap(find.byTooltip('Close oracle'));
+    await tester.pumpAndSettle();
+
     await tester.tap(find.text('Changes').first);
     await tester.pump(const Duration(milliseconds: 200));
     expect(find.text('Declared changes'), findsOneWidget);

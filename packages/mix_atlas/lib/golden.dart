@@ -8,6 +8,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -29,6 +30,99 @@ abstract final class AtlasGoldens {
   /// small local-only value can absorb host OS text-rasterization differences
   /// while still comparing the complete image.
   static double precisionTolerance = 0.0;
+}
+
+/// Producer/portable parity defaults shared by adapter test suites.
+abstract final class AtlasParity {
+  /// Existing macOS raster tolerance used by the Fortal capture.
+  static double precisionTolerance = 0.0002;
+
+  /// Deterministic phase used for spinners and other looping animations.
+  static Duration animationPhase = const Duration(milliseconds: 200);
+}
+
+/// Renders producer and portable widgets independently and compares every
+/// rasterized pixel using [AtlasParity] defaults.
+///
+/// Callers are responsible for supplying the same theme, constraints, and
+/// contact-sheet chrome to both widgets. A mismatch throws a [TestFailure]
+/// with the measured differing-pixel fraction.
+Future<void> expectAtlasWidgetParity(
+  WidgetTester tester, {
+  required Widget producer,
+  required Widget portable,
+  double? precisionTolerance,
+  Duration? animationPhase,
+}) async {
+  final producerBytes = await _renderParityWidget(
+    tester,
+    producer,
+    phase: animationPhase ?? AtlasParity.animationPhase,
+  );
+  final portableBytes = await _renderParityWidget(
+    tester,
+    portable,
+    phase: animationPhase ?? AtlasParity.animationPhase,
+  );
+  final comparison = await GoldenFileComparator.compareLists(
+    producerBytes,
+    portableBytes,
+  );
+  final tolerance = precisionTolerance ?? AtlasParity.precisionTolerance;
+  final passed = comparison.passed || comparison.diffPercent <= tolerance;
+  if (!passed) {
+    final difference = comparison.diffPercent;
+    comparison.dispose();
+    throw TestFailure(
+      'Producer and portable contact sheets differ by '
+      '${difference.toStringAsFixed(8)} pixels; tolerance is '
+      '${tolerance.toStringAsFixed(8)}.',
+    );
+  }
+  comparison.dispose();
+}
+
+Future<Uint8List> _renderParityWidget(
+  WidgetTester tester,
+  Widget child, {
+  required Duration phase,
+}) async {
+  final key = UniqueKey();
+  await tester.pumpWidget(
+    Directionality(
+      textDirection: .ltr,
+      child: Align(
+        alignment: Alignment.topLeft,
+        child: RepaintBoundary(key: key, child: child),
+      ),
+    ),
+  );
+  await tester.pump();
+  await tester.pump(phase);
+  final boundary = tester.renderObject<RenderRepaintBoundary>(find.byKey(key));
+  final imageFuture = boundary.toImage(pixelRatio: 1);
+
+  // Raster capture and PNG encoding are engine-backed asynchronous work.
+  // Flutter's own golden matcher performs both outside the fake-async test
+  // zone so a following pump cannot deadlock behind an engine callback.
+  final bytes = await tester.runAsync<Uint8List>(() async {
+    final image = await imageFuture;
+    try {
+      final data = await image.toByteData(format: .png);
+      if (data == null) {
+        throw TestFailure('Could not encode an Atlas parity raster.');
+      }
+
+      return data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+    } finally {
+      image.dispose();
+    }
+  });
+  if (bytes == null) {
+    throw TestFailure('Atlas parity raster capture did not complete.');
+  }
+
+  return bytes;
 }
 
 /// Loads Roboto and MaterialIcons from the Flutter SDK cache so atlas

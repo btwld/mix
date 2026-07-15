@@ -133,6 +133,53 @@ void main() {
     );
   });
 
+  test('indexes visual-oracle changes for the full catalog', () {
+    final renderedOnly = _clone(
+      baseline,
+      catalog: AtlasCatalog(
+        id: baseline.catalog.id,
+        label: baseline.catalog.label,
+        themes: baseline.catalog.themes,
+        components: [
+          ...baseline.catalog.components,
+          AtlasCatalogComponent(
+            id: 'avatar',
+            label: 'Avatar',
+            assets: {
+              'light': const AtlasComponentAsset(
+                themeId: 'light',
+                imagePath: 'light/avatar.png',
+                metadataPath: 'light/avatar.json',
+              ),
+              'dark': const AtlasComponentAsset(
+                themeId: 'dark',
+                imagePath: 'dark/avatar.png',
+                metadataPath: 'dark/avatar.json',
+              ),
+            },
+          ),
+        ],
+      ),
+    );
+
+    final comparison = AtlasCaptureComparison.compare(baseline, renderedOnly);
+
+    expect(
+      comparison.count(category: AtlasDeclaredChangeCategory.visualOracle),
+      2,
+    );
+    expect(
+      comparison.changes
+          .where(
+            (change) =>
+                change.category == AtlasDeclaredChangeCategory.visualOracle,
+          )
+          .map((change) => change.componentId)
+          .toSet(),
+      {'avatar'},
+    );
+  });
+
   test('reports unchanged and incompatible captures truthfully', () {
     expect(AtlasCaptureComparison.compare(baseline, baseline).changes, isEmpty);
     final incompatible = _clone(
