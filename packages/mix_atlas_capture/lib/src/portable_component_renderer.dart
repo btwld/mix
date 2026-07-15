@@ -89,9 +89,9 @@ class PortableComponentRenderer extends StatelessWidget {
               : null,
           onTap: canActivate ? (onActivate ?? _noOp) : null,
           role: semantics.flutterRole,
+          validationResult: semantics.boolValue('invalid') ? .invalid : .none,
           minValue: semantics.progressBound('minValue', fallback: '0'),
           maxValue: semantics.progressBound('maxValue', fallback: '1'),
-          validationResult: semantics.boolValue('invalid') ? .invalid : .none,
           child: ExcludeSemantics(
             child: onActivate == null
                 ? body
@@ -270,6 +270,7 @@ final class _ResolvedSemantics {
   }
 }
 
+// ignore: no-empty-block
 void _noOp() {}
 
 final class _AnatomyRenderer {
@@ -544,6 +545,13 @@ class _PortableArcSpinnerState extends State<_PortableArcSpinner>
 }
 
 class _PortableArcSpinnerPainter extends CustomPainter {
+  final Animation<double> animation;
+  final double? value;
+  final double strokeWidth;
+  final Color color;
+  final Color? trackColor;
+  final double? trackStrokeWidth;
+
   _PortableArcSpinnerPainter({
     required this.animation,
     required this.value,
@@ -552,13 +560,6 @@ class _PortableArcSpinnerPainter extends CustomPainter {
     required this.trackColor,
     required this.trackStrokeWidth,
   }) : super(repaint: animation);
-
-  final Animation<double> animation;
-  final double? value;
-  final double strokeWidth;
-  final Color color;
-  final Color? trackColor;
-  final double? trackStrokeWidth;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -572,10 +573,10 @@ class _PortableArcSpinnerPainter extends CustomPainter {
         math.max(indicatorThickness, trackThickness);
     if (trackColor != null) {
       canvas.drawCircle(
-        Offset.zero,
+        .zero,
         radius,
         Paint()
-          ..style = PaintingStyle.stroke
+          ..style = .stroke
           ..strokeWidth = trackThickness
           ..color = trackColor!,
       );
@@ -587,12 +588,12 @@ class _PortableArcSpinnerPainter extends CustomPainter {
         ? 2 * math.pi / 3
         : progress * 2 * math.pi;
     canvas.drawArc(
-      Rect.fromCircle(center: Offset.zero, radius: radius),
+      .fromCircle(center: .zero, radius: radius),
       startAngle,
       sweepAngle,
       false,
       Paint()
-        ..style = PaintingStyle.stroke
+        ..style = .stroke
         ..strokeWidth = indicatorThickness
         ..color = color,
     );

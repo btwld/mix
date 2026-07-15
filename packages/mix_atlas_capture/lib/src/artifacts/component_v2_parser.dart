@@ -394,6 +394,7 @@ Map<String, ComponentStateDefinition> _parseStates(
       propertyOverrides: overrides,
     );
   }
+
   return result;
 }
 
