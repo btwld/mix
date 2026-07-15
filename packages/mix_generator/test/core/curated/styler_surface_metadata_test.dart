@@ -10,6 +10,7 @@ void main() {
         invocation: 'visible(value)',
       );
 
+      expect(descriptor.invocationName, 'visible');
       expect(descriptor.forwardingInvocation, 'visibility(value)');
     });
 

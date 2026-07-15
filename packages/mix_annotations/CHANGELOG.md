@@ -8,6 +8,8 @@
  - **FEAT**: Add `MixableField.forwardStyler` and `stylerSurface` for opt-in
    projection of a nested generated Styler's canonical named-factory surface
    onto its parent Styler (#983).
+ - **DOCS**: Document the construction and fluent-method contract for a custom
+   `setterType` combined with `forwardStyler`.
 
 ## 2.1.2
 

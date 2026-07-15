@@ -57,15 +57,32 @@ StylerFactoryDescriptor _descriptorFor(
     );
   }
 
+  return stylerFactoryDescriptorForMethod(
+    factoryName: methodName,
+    invocationName: methodName,
+    method: method,
+    requiredFieldNames: requiredFieldNames,
+    libraryScope: libraryScope,
+  );
+}
+
+/// Describes a named Styler factory backed by an existing fluent [method].
+StylerFactoryDescriptor stylerFactoryDescriptorForMethod({
+  required String factoryName,
+  required String invocationName,
+  required MethodElement method,
+  required Set<String> requiredFieldNames,
+  required LibraryElement libraryScope,
+}) {
   final params = [
     for (final parameter in method.formalParameters)
       _forwarderParamFor(parameter, libraryScope),
   ];
 
   return StylerFactoryDescriptor(
-    name: methodName,
-    signature: '$methodName(${_signatureParameters(params)})',
-    invocation: '$methodName(${_invocationArguments(params)})',
+    name: factoryName,
+    signature: '$factoryName(${_signatureParameters(params)})',
+    invocation: '$invocationName(${_invocationArguments(params)})',
     requiredFieldNames: requiredFieldNames,
   );
 }

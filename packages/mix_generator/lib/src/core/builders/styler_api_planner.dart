@@ -6,7 +6,13 @@ import '../curated/styler_surface_metadata.dart';
 /// Concrete generated API member code keyed by public member name.
 typedef ApiMember = ({String name, String code});
 
-const _reservedBaseMethodNames = {'animate', 'variants', 'wrap', 'modifier'};
+/// Methods emitted by every generated Styler outside the curated API plan.
+const stylerGeneratedBaseMethodNames = {
+  'animate',
+  'variants',
+  'wrap',
+  'modifier',
+};
 
 void _validateUniqueFactories(String stylerName, List<ApiMember> factories) {
   final seen = <String>{};
@@ -25,12 +31,15 @@ void _validateUniqueMethods(
   List<ApiMember> methods,
 ) {
   for (final setterName in generatedSetterNames) {
-    if (!_reservedBaseMethodNames.contains(setterName)) continue;
+    if (!stylerGeneratedBaseMethodNames.contains(setterName)) continue;
 
     throw StateError('Duplicate generated method `$stylerName.$setterName`.');
   }
 
-  final seen = <String>{..._reservedBaseMethodNames, ...generatedSetterNames};
+  final seen = <String>{
+    ...stylerGeneratedBaseMethodNames,
+    ...generatedSetterNames,
+  };
   for (final method in methods) {
     if (seen.add(method.name)) continue;
 

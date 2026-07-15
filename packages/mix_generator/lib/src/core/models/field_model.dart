@@ -27,7 +27,11 @@ String deriveStylerName(String specName) {
 ///
 /// Returns an empty list when the class has no unnamed constructor. Fails via
 /// [fail] when a named parameter is missing a matching field declaration.
-List<FieldModel> extractSpecFields(ClassElement classElement, String specName) {
+List<FieldModel> extractSpecFields(
+  ClassElement classElement,
+  String specName, {
+  LibraryElement? visibleFrom,
+}) {
   final constructor = classElement.unnamedConstructor;
   if (constructor == null) return [];
 
@@ -43,7 +47,11 @@ List<FieldModel> extractSpecFields(ClassElement classElement, String specName) {
       fail(classElement, 'Field $paramName not found in $specName');
     }
 
-    return FieldModel.fromElement(field, stylerName: stylerName);
+    return FieldModel.fromElement(
+      field,
+      stylerName: stylerName,
+      visibleFrom: visibleFrom ?? classElement.library,
+    );
   }).toList();
 }
 
@@ -108,6 +116,7 @@ class FieldModel {
   factory FieldModel.fromElement(
     FieldElement element, {
     required String stylerName,
+    LibraryElement? visibleFrom,
   }) {
     final field = extractField(element);
     final type = field.type;
@@ -117,7 +126,10 @@ class FieldModel {
     final isList = _isList(type);
     final listElementType = isList ? _getListElementType(type) : null;
 
-    final effectiveSpecType = _getEffectiveSpecType(element);
+    final effectiveSpecType = _getEffectiveSpecType(
+      element,
+      visibleFrom ?? element.library,
+    );
     final isLerpable = _isLerpable(typeName, isList, listElementType);
     final diagnosticKind = diagnosticKindFor(typeName, isList: isList);
 
@@ -184,8 +196,8 @@ String? _getListElementType(DartType type) {
   return getBaseTypeName(type.typeArguments.first);
 }
 
-String _getEffectiveSpecType(FieldElement element) {
-  return visibleTypeCodeForField(element, visibleFrom: element.library);
+String _getEffectiveSpecType(FieldElement element, LibraryElement visibleFrom) {
+  return visibleTypeCodeForField(element, visibleFrom: visibleFrom);
 }
 
 bool _isLerpable(String typeName, bool isList, String? listElementType) {

@@ -85,7 +85,11 @@ const mixableStyler = MixableStyler();
 ///
 /// When used on a `@MixableSpec` field, `setterType` must be a Mix/Styler type
 /// (i.e. assignable to `Mix<...>`), because generated constructors wrap the
-/// argument with `Prop.maybeMix(...)`.
+/// argument with `Prop.maybeMix(...)`. When combined with [forwardStyler], the
+/// override must also be a concrete class with an accessible unnamed
+/// constructor callable without arguments. It must implement every forwarded
+/// fluent method with the generated signature and a return type assignable to
+/// itself.
 /// Example usage:
 /// ```dart
 /// @MixableField(ignoreSetter: true)

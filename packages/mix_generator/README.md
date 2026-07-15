@@ -255,6 +255,10 @@ are projected: a Box-backed field forwards `padding`, `color`, and `scale`, but
 not fluent-only helpers such as `paddingAll`. Parent-lifecycle factories such as
 `animate` are not forwarded. Unsupported fields, incompatible restricted
 surfaces, and member collisions produce diagnostics on the annotated field.
+When forwarding also specifies `setterType`, that custom type must be a concrete
+class with an accessible unnamed constructor callable without arguments. It
+must implement each forwarded fluent method with the canonical signature and a
+return type assignable to itself.
 
 ## Running the Generator
 

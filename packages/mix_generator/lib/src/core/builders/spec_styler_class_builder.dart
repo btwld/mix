@@ -8,6 +8,7 @@ import '../checkers.dart';
 import '../curated/styler_surface_metadata.dart';
 import '../curated/type_metadata.dart';
 import '../errors.dart';
+import '../helpers/library_scope.dart';
 import '../helpers/widget_call_planner.dart';
 import '../models/annotation_config.dart';
 import '../models/field_model.dart';
@@ -18,24 +19,19 @@ import 'styler_api_planner.dart';
 import 'styler_forwarder_factory.dart';
 import 'styler_mixin_builder.dart';
 
-const _reservedForwardingMethodNames = {
-  'animate',
-  'variants',
-  'wrap',
-  'modifier',
-};
-
 class SpecStylerClassBuilder {
   final ClassElement specElement;
   final String specName;
   final ConstantReader annotation;
   final KnownMixSymbolResolver symbolResolver;
+  final LibraryElement? emissionLibrary;
 
   const SpecStylerClassBuilder({
     required this.specElement,
     required this.specName,
     required this.annotation,
     required this.symbolResolver,
+    this.emissionLibrary,
   });
 
   String _fieldValueType(FieldModel field) =>
@@ -106,9 +102,31 @@ class SpecStylerClassBuilder {
   /// compile; `@MixableField(setterType:)` overrides the convention for
   /// types that resolve during generation.
   String? _nestedStylerType(FieldModel field) {
-    final specArgument = field.styleSpecArgument;
+    final nestedSpec = field.styleSpecElement;
+    final specArgument = nestedSpec?.name ?? field.styleSpecArgument;
+    if (specArgument == null) return null;
 
-    return specArgument == null ? null : deriveStylerName(specArgument);
+    final nestedStylerName = deriveStylerName(specArgument);
+    if (nestedSpec == null) return nestedStylerName;
+
+    final reference = referenceFor(nestedSpec, _emissionLibrary);
+    if (reference == null) {
+      final fieldElement = specElement.getField(field.name) ?? specElement;
+      fail(
+        fieldElement,
+        'Nested spec `$specArgument` is not visible from the library where '
+        'its Styler API is emitted.',
+        todo:
+            'Import or re-export `$specArgument` from the host library, or '
+            'disable `forwardStyler`.',
+      );
+    }
+
+    final separator = reference.lastIndexOf('.');
+
+    return separator < 0
+        ? nestedStylerName
+        : '${reference.substring(0, separator + 1)}$nestedStylerName';
   }
 
   /// Whether [field] declares a `@MixableField(setterType:)` override.
@@ -133,7 +151,7 @@ class SpecStylerClassBuilder {
 
     final typeCode = type_helpers.visibleTypeCodeForField(
       element,
-      visibleFrom: element.library,
+      visibleFrom: _emissionLibrary,
       type: type,
       usage: 'setter type',
     );
@@ -155,7 +173,7 @@ class SpecStylerClassBuilder {
     );
     final expectedType = type_helpers.visibleTypeCodeForField(
       element,
-      visibleFrom: element.library,
+      visibleFrom: _emissionLibrary,
       type: fieldValueType,
       usage: 'field value type',
     );
@@ -182,7 +200,7 @@ class SpecStylerClassBuilder {
 
     final actualType = type_helpers.visibleTypeCodeForField(
       element,
-      visibleFrom: element.library,
+      visibleFrom: _emissionLibrary,
       type: mixValueType,
       usage: 'setter type Mix value',
     );
@@ -513,8 +531,13 @@ class SpecStylerClassBuilder {
     final factoryNames = existingFactories
         .map((factory) => factory.name)
         .toSet();
+    final inheritedStylerMemberNames = symbolResolver.instanceMemberNames(
+      'MixStyler',
+      specElement,
+    );
     final methodNames = <String>{
-      ..._reservedForwardingMethodNames,
+      ...stylerGeneratedBaseMethodNames,
+      ...inheritedStylerMemberNames,
       ..._generatedSetterNames(fields, mixins),
       ...existingMethods.map((method) => method.name),
       ...mixins.expand(
@@ -581,7 +604,15 @@ class SpecStylerClassBuilder {
         for (final descriptor in actualFactories) descriptor.name: descriptor,
       };
       final nestedStylerType = _publicParamType(field);
+      final customSetterType = _setterTypeValue(field);
       final setterName = _setterNameFor(field)!;
+      if (customSetterType is InterfaceType) {
+        _validateCustomForwardingConstructor(
+          fieldElement,
+          customSetterType,
+          nestedStylerType,
+        );
+      }
 
       for (final descriptor in selectedFactories) {
         // `animate` configures the parent Styler's own lifecycle and already
@@ -603,6 +634,15 @@ class SpecStylerClassBuilder {
           );
         }
 
+        if (customSetterType is InterfaceType) {
+          _validateCustomForwardingMethod(
+            fieldElement,
+            customSetterType,
+            nestedStylerType,
+            actualDescriptor,
+          );
+        }
+
         if (!factoryNames.add(descriptor.name)) {
           fail(
             fieldElement,
@@ -614,11 +654,14 @@ class SpecStylerClassBuilder {
           );
         }
         if (!methodNames.add(descriptor.name)) {
+          final conflict = inheritedStylerMemberNames.contains(descriptor.name)
+              ? 'an inherited `MixStyler` member'
+              : 'a generated setter, generated base member, owner mixin, or '
+                    'another forwarded method';
           fail(
             fieldElement,
             'Forwarded method `$stylerName.${descriptor.name}` conflicts with '
-            'a generated setter, base member, owner mixin, or another '
-            'forwarded method.',
+            '$conflict.',
             todo:
                 'Forward a smaller surface or rename/remove the conflicting '
                 'parent member.',
@@ -637,7 +680,7 @@ class SpecStylerClassBuilder {
             name: descriptor.name,
             signature: descriptor.signature,
             bodyLines: [
-              'return $setterName($nestedStylerType().${descriptor.invocation});',
+              'return $setterName($nestedStylerType().${actualDescriptor.invocation});',
             ],
           ),
         );
@@ -645,6 +688,103 @@ class SpecStylerClassBuilder {
     }
 
     return (factories: factories, methods: methods);
+  }
+
+  void _validateCustomForwardingConstructor(
+    FieldElement fieldElement,
+    InterfaceType setterType,
+    String setterTypeCode,
+  ) {
+    final element = setterType.element;
+    final constructor = element is ClassElement
+        ? element.unnamedConstructor
+        : null;
+    final canConstruct =
+        element is ClassElement &&
+        !element.isAbstract &&
+        constructor != null &&
+        constructor.formalParameters.every((parameter) => parameter.isOptional);
+    if (canConstruct) return;
+
+    fail(
+      fieldElement,
+      'Custom `setterType` `$setterTypeCode` must be constructible with no '
+      'arguments for nested Styler forwarding.',
+      todo:
+          'Add an accessible unnamed constructor with no required parameters, '
+          'choose a constructible `setterType`, or disable `forwardStyler`.',
+    );
+  }
+
+  void _validateCustomForwardingMethod(
+    FieldElement fieldElement,
+    InterfaceType setterType,
+    String setterTypeCode,
+    StylerFactoryDescriptor descriptor,
+  ) {
+    final methodName = descriptor.invocationName;
+    final method =
+        setterType.getMethod(methodName) ??
+        setterType.lookUpMethod(
+          methodName,
+          fieldElement.library,
+          inherited: true,
+        );
+    if (method == null) {
+      fail(
+        fieldElement,
+        'Custom `setterType` `$setterTypeCode` does not implement forwarded '
+        'method `$methodName`.',
+        todo:
+            'Implement `$methodName` with the nested Styler signature, choose a '
+            'compatible `setterType`, or disable `forwardStyler`.',
+      );
+    }
+
+    final customDescriptor = stylerFactoryDescriptorForMethod(
+      factoryName: methodName,
+      invocationName: methodName,
+      method: method,
+      requiredFieldNames: const {},
+      libraryScope: fieldElement.library,
+    );
+    final argumentsOffset = descriptor.signature.indexOf('(');
+    final expectedSignature =
+        '$methodName${descriptor.signature.substring(argumentsOffset)}';
+    if (customDescriptor.signature != expectedSignature) {
+      fail(
+        fieldElement,
+        'Custom `setterType` `$setterTypeCode` forwarded method `$methodName` '
+        'has incompatible signature `${customDescriptor.signature}`; expected '
+        '`$expectedSignature`.',
+        todo:
+            'Match the generated nested Styler method signature or choose a '
+            'compatible `setterType`.',
+      );
+    }
+
+    final returnsSetterType = fieldElement.library.typeSystem.isAssignableTo(
+      method.returnType,
+      setterType,
+      strictCasts: false,
+    );
+    if (returnsSetterType) return;
+
+    final returnTypeCode = type_helpers.visibleTypeCodeForField(
+      fieldElement,
+      visibleFrom: fieldElement.library,
+      type: method.returnType,
+      usage: 'custom forwarded method return type',
+    );
+    fail(
+      fieldElement,
+      'Custom `setterType` `$setterTypeCode` forwarded method `$methodName` '
+      'must return a type assignable to `$setterTypeCode`, but returns '
+      '`$returnTypeCode`.',
+      todo:
+          'Return `$setterTypeCode` from `$methodName` or choose a compatible '
+          '`setterType`.',
+    );
   }
 
   ClassElement _requireSurfaceSpec(
@@ -688,8 +828,13 @@ class SpecStylerClassBuilder {
       specName: name,
       annotation: ConstantReader(surfaceAnnotation),
       symbolResolver: symbolResolver,
+      emissionLibrary: _emissionLibrary,
     );
-    final fields = extractSpecFields(surfaceSpec, name);
+    final fields = extractSpecFields(
+      surfaceSpec,
+      name,
+      visibleFrom: _emissionLibrary,
+    );
     final mixins = builder._collectOwnerMixins(fields);
 
     return builder._canonicalFactoryDescriptors(fields, mixins);
@@ -761,7 +906,7 @@ class SpecStylerClassBuilder {
             mixinElement: mixin.element,
             orderedMethodNames: entry.methodNames,
             requiredFieldNames: entry.requiredFieldNames,
-            libraryScope: mixin.element.library,
+            libraryScope: _emissionLibrary,
             anchor: specElement,
           ),
         );
@@ -989,10 +1134,16 @@ class SpecStylerClassBuilder {
     buffer.writeln();
   }
 
+  LibraryElement get _emissionLibrary => emissionLibrary ?? specElement.library;
+
   String get stylerName => deriveStylerName(specName);
 
   String build() {
-    final fields = extractSpecFields(specElement, specName);
+    final fields = extractSpecFields(
+      specElement,
+      specName,
+      visibleFrom: _emissionLibrary,
+    );
     final mixins = _collectOwnerMixins(fields);
     final mixinNames = mixins.map((m) => '${m.name}<$stylerName>').toList();
     final mixinClause = mixinNames.isEmpty

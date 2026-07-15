@@ -119,6 +119,11 @@ Styler, so same-package clean builds do not depend on resolving generated code.
 Forwarding preserves the canonical named-factory allowlist and does not promote
 fluent-only helpers such as `paddingAll`.
 
+When `setterType` and `forwardStyler` are combined, the custom setter type must
+be a concrete class with an accessible unnamed constructor callable without
+arguments. It must implement every forwarded fluent method with the canonical
+generated signature and return a type assignable to itself.
+
 ### `@MixWidget`
 
 Generates a `StatelessWidget` wrapper around a top-level styler variable or
