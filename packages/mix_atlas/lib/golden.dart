@@ -53,6 +53,8 @@ Future<void> expectAtlasWidgetParity(
   required Widget portable,
   double? precisionTolerance,
   Duration? animationPhase,
+  Directory? failureDirectory,
+  String failureName = 'atlas-parity',
 }) async {
   final producerBytes = await _renderParityWidget(
     tester,
@@ -77,14 +79,36 @@ Future<void> expectAtlasWidgetParity(
   final passed = comparison.passed || comparison.diffPercent <= tolerance;
   if (!passed) {
     final difference = comparison.diffPercent;
+    final failureLocation = failureDirectory == null
+        ? null
+        : _writeParityFailureRasters(
+            failureDirectory,
+            name: failureName,
+            producerBytes: producerBytes,
+            portableBytes: portableBytes,
+          );
     comparison.dispose();
     throw TestFailure(
       'Producer and portable contact sheets differ by '
       '${difference.toStringAsFixed(8)} pixels; tolerance is '
-      '${tolerance.toStringAsFixed(8)}.',
+      '${tolerance.toStringAsFixed(8)}.'
+      '${failureLocation == null ? '' : ' Rasters: $failureLocation'}',
     );
   }
   comparison.dispose();
+}
+
+String _writeParityFailureRasters(
+  Directory directory, {
+  required String name,
+  required Uint8List producerBytes,
+  required Uint8List portableBytes,
+}) {
+  directory.createSync(recursive: true);
+  File('${directory.path}/$name.producer.png').writeAsBytesSync(producerBytes);
+  File('${directory.path}/$name.portable.png').writeAsBytesSync(portableBytes);
+
+  return directory.absolute.path;
 }
 
 Future<Uint8List> _renderParityWidget(
