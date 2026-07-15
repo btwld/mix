@@ -240,6 +240,8 @@ class MixableField {
   final bool skipMixin;
   final String? factoryName;
   final bool skipFactory;
+  final bool forwardStyler;
+  final Type? stylerSurface;
 
   const MixableField({
     this.ignoreSetter = false,
@@ -248,6 +250,8 @@ class MixableField {
     this.skipMixin = false,
     this.factoryName,
     this.skipFactory = false,
+    this.forwardStyler = false,
+    this.stylerSurface,
   });
 }
 

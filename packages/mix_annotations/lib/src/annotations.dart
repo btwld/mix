@@ -65,6 +65,11 @@ const mixableStyler = MixableStyler();
 /// [skipMixin] prevents spec-driven stylers from inferring an owner mixin.
 /// [factoryName] optionally overrides the generated field factory name.
 /// [skipFactory] prevents spec-driven stylers from generating a field factory.
+/// [forwardStyler] projects the canonical named-factory surface of a nested
+/// `StyleSpec<XSpec>` field onto its generated parent Styler.
+/// [stylerSurface] optionally restricts forwarding to the generated Styler
+/// surface of another `@MixableSpec` type, such as `BoxSpec` for a
+/// `StyleSpec<FlexBoxSpec>` field.
 ///
 /// For spec-driven stylers ([MixableSpec]), [setterType] also drives the
 /// generated field factory and `Prop` wrapping: a nested `StyleSpec<S>` field
@@ -80,7 +85,11 @@ const mixableStyler = MixableStyler();
 ///
 /// When used on a `@MixableSpec` field, `setterType` must be a Mix/Styler type
 /// (i.e. assignable to `Mix<...>`), because generated constructors wrap the
-/// argument with `Prop.maybeMix(...)`.
+/// argument with `Prop.maybeMix(...)`. When combined with [forwardStyler], the
+/// override must also be a concrete class with an accessible unnamed
+/// constructor callable without arguments. It must implement every forwarded
+/// fluent method with the generated signature and a return type assignable to
+/// itself.
 /// Example usage:
 /// ```dart
 /// @MixableField(ignoreSetter: true)
@@ -112,6 +121,15 @@ class MixableField {
   /// Whether to skip field factory generation for spec-driven stylers.
   final bool skipFactory;
 
+  /// Whether to forward a nested Styler's canonical factory surface.
+  final bool forwardStyler;
+
+  /// Optional `@MixableSpec` type whose generated Styler surface is forwarded.
+  ///
+  /// The source Spec type is used instead of its generated Styler type so the
+  /// annotation also works during clean same-package builds.
+  final Type? stylerSurface;
+
   const MixableField({
     this.ignoreSetter = false,
     this.setterType,
@@ -119,6 +137,8 @@ class MixableField {
     this.skipMixin = false,
     this.factoryName,
     this.skipFactory = false,
+    this.forwardStyler = false,
+    this.stylerSurface,
   });
 }
 

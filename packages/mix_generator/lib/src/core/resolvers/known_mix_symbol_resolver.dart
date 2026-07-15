@@ -51,4 +51,31 @@ final class KnownMixSymbolResolver {
           'curated ownerMixins registry.',
     );
   }
+
+  /// All non-static instance member names declared or inherited by [symbolName].
+  Set<String> instanceMemberNames(String symbolName, Element errorElement) {
+    final interface = requireInterface(symbolName, errorElement);
+    final hierarchy = {
+      interface,
+      ...interface.allSupertypes.map((type) => type.element),
+    };
+
+    return {
+      for (final element in hierarchy)
+        ...element.methods
+            .where((method) => !method.isStatic)
+            .map((method) => method.name)
+            .nonNulls,
+      for (final element in hierarchy)
+        ...element.getters
+            .where((getter) => !getter.isStatic)
+            .map((getter) => getter.name)
+            .nonNulls,
+      for (final element in hierarchy)
+        ...element.setters
+            .where((setter) => !setter.isStatic)
+            .map((setter) => setter.name)
+            .nonNulls,
+    };
+  }
 }
