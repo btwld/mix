@@ -1,3 +1,5 @@
+import 'dart:ui' show SemanticsAction;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
@@ -98,5 +100,35 @@ void main() {
     await tester.pump();
 
     expect(activations, 0);
+  });
+
+  testWidgets('retains an activation semantic when callbacks are omitted', (
+    tester,
+  ) async {
+    final fixture = ArtifactFixture.create()..addPortableButtonCapture();
+    final capture = await CaptureLoader(
+      source: fixture.source(),
+    ).load(fixtureRequest);
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Center(
+          child: PortableComponentRenderer(
+            capture: capture,
+            component: capture.componentDocuments.single,
+            selection: const PortableComponentSelection(
+              recipeId: 'solid-size1',
+              stateId: 'default',
+              themeId: 'light',
+            ),
+          ),
+        ),
+      ),
+    );
+
+    final semantics = tester.getSemantics(
+      find.byKey(const ValueKey('portable-component-button')),
+    );
+    expect(semantics.getSemanticsData().hasAction(SemanticsAction.tap), isTrue);
   });
 }

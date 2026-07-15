@@ -84,8 +84,13 @@ class PortableComponentRenderer extends StatelessWidget {
           increasedValue: semantics.stringValue('increasedValue'),
           decreasedValue: semantics.stringValue('decreasedValue'),
           hint: semantics.stringValue('hint'),
-          onTap: canActivate ? onActivate : null,
+          tooltip: semantics.role == 'tooltip'
+              ? semantics.stringValue('label')
+              : null,
+          onTap: canActivate ? (onActivate ?? _noOp) : null,
           role: semantics.flutterRole,
+          minValue: semantics.progressBound('minValue', fallback: '0'),
+          maxValue: semantics.progressBound('maxValue', fallback: '1'),
           validationResult: semantics.boolValue('invalid') ? .invalid : .none,
           child: ExcludeSemantics(
             child: onActivate == null
@@ -210,7 +215,9 @@ final class _ResolvedSemantics {
     'dialog' => .dialog,
     'menu' => .menu,
     'menuItem' => .menuItem,
-    'tooltip' => .tooltip,
+    // Flutter 3.44 admits this role but its debug validator has no tooltip
+    // checks yet. Preserve the semantic through Semantics.tooltip instead.
+    'tooltip' => .none,
     'status' => .status,
     'progressIndicator' =>
       value('value') == null ? .loadingSpinner : .progressBar,
@@ -255,7 +262,15 @@ final class _ResolvedSemantics {
 
     return result is int ? result : null;
   }
+
+  String? progressBound(String name, {required String fallback}) {
+    if (role != 'progressIndicator' || value('value') == null) return null;
+
+    return stringValue(name) ?? fallback;
+  }
 }
+
+void _noOp() {}
 
 final class _AnatomyRenderer {
   final _ResolvedRender render;
