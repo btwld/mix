@@ -1,11 +1,5 @@
-## 2.1.3
+## 2.2.0-beta.0
 
- - **FEAT**: Support `@MixWidget(widgetParameters: .only({...}))` for a stable,
-   curated generated widget value-parameter API. Factory parameters, valid
-   `Key? key` forwarding, and method-level type parameters remain automatic;
-   excluded optional parameters use the styler method's defaults and are not
-   validated for generated-widget visibility or name collisions. Annotations
-   from older `mix_annotations` releases retain `.all()` behavior.
  - **FEAT**: Forward canonical named factories and matching fluent anchors from
    nested `StyleSpec<XSpec>` fields with
    `@MixableField(forwardStyler: true)`. A source-Spec `stylerSurface` override
@@ -16,6 +10,15 @@
    delegate restricted aliases through the actual nested implementation,
    validate custom forwarding `setterType` construction and method
    compatibility, and reject collisions with inherited `MixStyler` members.
+
+## 2.1.3
+
+ - **FEAT**: Support `@MixWidget(widgetParameters: .only({...}))` for a stable,
+   curated generated widget value-parameter API. Factory parameters, valid
+   `Key? key` forwarding, and method-level type parameters remain automatic;
+   excluded optional parameters use the styler method's defaults and are not
+   validated for generated-widget visibility or name collisions. Annotations
+   from older `mix_annotations` releases retain `.all()` behavior.
 
 ## 2.1.2
 
