@@ -5,6 +5,9 @@
    `.all()`, while `.only({...})` supports opt-in curation of generated widget
    value parameters. Factory parameters, valid `Key? key`, and method-level
    type parameters remain automatic.
+ - **FEAT**: Add `MixableField.forwardStyler` and `stylerSurface` for opt-in
+   projection of a nested generated Styler's canonical named-factory surface
+   onto its parent Styler (#983).
 
 ## 2.1.2
 

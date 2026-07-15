@@ -104,7 +104,20 @@ final Prop<Matrix4>? $transform;
 // Override the setter parameter type
 @MixableField(setterType: List<Shadow>)
 final Prop<List<Shadow>>? $shadows;
+
+// Forward canonical factories from a nested generated Styler.
+@MixableField(forwardStyler: true)
+final StyleSpec<BoxSpec>? container;
+
+// Restrict a FlexBox-backed field to the Box-generated Styler surface.
+@MixableField(forwardStyler: true, stylerSurface: BoxSpec)
+final StyleSpec<FlexBoxSpec>? restrictedContainer;
 ```
+
+`stylerSurface` references the source `@MixableSpec` type, not its generated
+Styler, so same-package clean builds do not depend on resolving generated code.
+Forwarding preserves the canonical named-factory allowlist and does not promote
+fluent-only helpers such as `paddingAll`.
 
 ### `@MixWidget`
 

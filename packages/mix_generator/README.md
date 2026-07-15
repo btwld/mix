@@ -237,7 +237,24 @@ final Prop<Matrix4>? $transform;
 // Override the setter parameter type.
 @MixableField(setterType: List<Shadow>)
 final Prop<List<Shadow>>? $shadows;
+
+// Forward a nested generated Styler's canonical named factories and matching
+// fluent anchors onto the parent Styler.
+@MixableField(forwardStyler: true)
+final StyleSpec<BoxSpec>? container;
+
+// Keep the actual FlexBoxStyler setter type, but expose only the BoxSpec
+// generated Styler surface.
+@MixableField(forwardStyler: true, stylerSurface: BoxSpec)
+final StyleSpec<FlexBoxSpec>? restrictedContainer;
 ```
+
+Forwarding uses the nested source Spec rather than resolving its generated
+Styler, so it works in clean same-package builds. Only canonical named factories
+are projected: a Box-backed field forwards `padding`, `color`, and `scale`, but
+not fluent-only helpers such as `paddingAll`. Parent-lifecycle factories such as
+`animate` are not forwarded. Unsupported fields, incompatible restricted
+surfaces, and member collisions produce diagnostics on the annotated field.
 
 ## Running the Generator
 

@@ -3,6 +3,16 @@ import 'package:test/test.dart';
 
 void main() {
   group('styler surface metadata', () {
+    test('retargets aliased factory invocations for forwarding anchors', () {
+      const descriptor = StylerFactoryDescriptor(
+        name: 'visibility',
+        signature: 'visibility(bool value)',
+        invocation: 'visible(value)',
+      );
+
+      expect(descriptor.forwardingInvocation, 'visibility(value)');
+    });
+
     test(
       'contains the complete handwritten TextStyler convenience surface',
       () {

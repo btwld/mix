@@ -6,6 +6,12 @@
    excluded optional parameters use the styler method's defaults and are not
    validated for generated-widget visibility or name collisions. Annotations
    from older `mix_annotations` releases retain `.all()` behavior.
+ - **FEAT**: Forward canonical named factories and matching fluent anchors from
+   nested `StyleSpec<XSpec>` fields with
+   `@MixableField(forwardStyler: true)`. A source-Spec `stylerSurface` override
+   supports compatible restricted surfaces without resolving same-package
+   generated Stylers, with field-located diagnostics for invalid or ambiguous
+   configurations (#983).
 
 ## 2.1.2
 

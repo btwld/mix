@@ -18,6 +18,13 @@ import 'styler_api_planner.dart';
 import 'styler_forwarder_factory.dart';
 import 'styler_mixin_builder.dart';
 
+const _reservedForwardingMethodNames = {
+  'animate',
+  'variants',
+  'wrap',
+  'modifier',
+};
+
 class SpecStylerClassBuilder {
   final ClassElement specElement;
   final String specName;
@@ -459,12 +466,259 @@ class SpecStylerClassBuilder {
         (usesCompoundSurface
             ? compound != null
             : surface.isAvailableFor(fieldNames));
-    final fieldFactories = _fieldFactoryMembers(
+    final factoryDescriptors = _canonicalFactoryDescriptors(fields, mixins);
+    final curatedMethods = <StylerMethodDescriptor>[
+      if (useSurface)
+        ..._surfaceMethods(
+          surface,
+          fieldNames,
+          ignoreRequiredFields: compound != null,
+        ),
+      if (_needsTransformAnchor(fields, mixins) && compound == null)
+        transformAnchorMethodDescriptor(),
+      if (_hasFieldNamed(fields, 'textDirectives'))
+        ...textDirectiveMethodDescriptors(),
+      if (surface?.generatesSingleShadowConvenience == true &&
+          _hasFieldNamed(fields, 'shadows'))
+        iconShadowMethodDescriptor(),
+      ...?compound?.surface.methodDescriptors,
+    ];
+    final forwardedApi = _forwardedApi(
       fields,
       mixins,
-      surface?.suppressedFieldFactoryNames ?? const {},
+      existingFactories: factoryDescriptors,
+      existingMethods: curatedMethods,
     );
-    final curatedFactories = <StylerFactoryDescriptor>[
+
+    return planStylerApi(
+      stylerName: stylerName,
+      curatedFactories: [...factoryDescriptors, ...forwardedApi.factories],
+      curatedMethods: [...curatedMethods, ...forwardedApi.methods],
+      generatedSetterNames: _generatedSetterNames(fields, mixins),
+    );
+  }
+
+  ({
+    List<StylerFactoryDescriptor> factories,
+    List<StylerMethodDescriptor> methods,
+  })
+  _forwardedApi(
+    List<FieldModel> fields,
+    List<_OwnerMixinReference> mixins, {
+    required List<StylerFactoryDescriptor> existingFactories,
+    required List<StylerMethodDescriptor> existingMethods,
+  }) {
+    final factories = <StylerFactoryDescriptor>[];
+    final methods = <StylerMethodDescriptor>[];
+    final factoryNames = existingFactories
+        .map((factory) => factory.name)
+        .toSet();
+    final methodNames = <String>{
+      ..._reservedForwardingMethodNames,
+      ..._generatedSetterNames(fields, mixins),
+      ...existingMethods.map((method) => method.name),
+      ...mixins.expand(
+        (mixin) => mixin.element.methods.map((method) => method.name).nonNulls,
+      ),
+    };
+
+    for (final field in fields) {
+      final fieldElement = specElement.getField(field.name);
+      if (fieldElement == null) continue;
+      final reader = _mixableFieldReader(field.name);
+      final forwardStyler = reader?.peek('forwardStyler')?.boolValue ?? false;
+      final selectedSurfaceType = reader?.peek('stylerSurface')?.typeValue;
+
+      if (!forwardStyler) {
+        if (selectedSurfaceType != null) {
+          fail(
+            fieldElement,
+            '@MixableField(stylerSurface: ...) on `${field.name}` requires '
+            '`forwardStyler: true`.',
+            todo: 'Enable `forwardStyler` or remove `stylerSurface`.',
+          );
+        }
+        continue;
+      }
+
+      if (!_shouldGenerateSetter(field, fields, mixins)) {
+        fail(
+          fieldElement,
+          '@MixableField(forwardStyler: true) on `${field.name}` requires a '
+          'generated setter to delegate the nested Styler.',
+          todo:
+              'Remove `ignoreSetter`, resolve the setter collision, or disable '
+              '`forwardStyler`.',
+        );
+      }
+
+      final actualSpec = field.styleSpecElement;
+      if (actualSpec is! ClassElement) {
+        fail(
+          fieldElement,
+          '@MixableField(forwardStyler: true) on `${field.name}` requires an '
+          'exact `StyleSpec<XSpec>` field.',
+          todo:
+              'Use `StyleSpec<XSpec>` for the field or disable '
+              '`forwardStyler`.',
+        );
+      }
+
+      final selectedSpec = selectedSurfaceType == null
+          ? actualSpec
+          : _requireSurfaceSpec(fieldElement, selectedSurfaceType.element);
+      final actualFactories = _factoryDescriptorsForSpec(
+        actualSpec,
+        errorElement: fieldElement,
+      );
+      final selectedFactories = selectedSpec == actualSpec
+          ? actualFactories
+          : _factoryDescriptorsForSpec(
+              selectedSpec,
+              errorElement: fieldElement,
+            );
+      final actualByName = {
+        for (final descriptor in actualFactories) descriptor.name: descriptor,
+      };
+      final nestedStylerType = _publicParamType(field);
+      final setterName = _setterNameFor(field)!;
+
+      for (final descriptor in selectedFactories) {
+        // `animate` configures the parent Styler's own lifecycle and already
+        // exists as a base method. It is deliberately not projected as nested
+        // field API.
+        if (descriptor.name == 'animate') continue;
+
+        final actualDescriptor = actualByName[descriptor.name];
+        if (actualDescriptor == null ||
+            actualDescriptor.signature != descriptor.signature) {
+          fail(
+            fieldElement,
+            'Styler surface `${deriveStylerName(selectedSpec.name!)}` is not a '
+            'compatible subset of `${deriveStylerName(actualSpec.name!)}`: '
+            'factory `${descriptor.signature}` is unavailable.',
+            todo:
+                'Choose a compatible `stylerSurface` or use the nested '
+                "Styler's inferred surface.",
+          );
+        }
+
+        if (!factoryNames.add(descriptor.name)) {
+          fail(
+            fieldElement,
+            'Forwarded factory `$stylerName.${descriptor.name}` conflicts with '
+            'another generated factory.',
+            todo:
+                'Forward a smaller surface, rename the conflicting field '
+                'factory, or disable one forwarding field.',
+          );
+        }
+        if (!methodNames.add(descriptor.name)) {
+          fail(
+            fieldElement,
+            'Forwarded method `$stylerName.${descriptor.name}` conflicts with '
+            'a generated setter, base member, owner mixin, or another '
+            'forwarded method.',
+            todo:
+                'Forward a smaller surface or rename/remove the conflicting '
+                'parent member.',
+          );
+        }
+
+        factories.add(
+          StylerFactoryDescriptor(
+            name: descriptor.name,
+            signature: descriptor.signature,
+            invocation: descriptor.forwardingInvocation,
+          ),
+        );
+        methods.add(
+          StylerMethodDescriptor(
+            name: descriptor.name,
+            signature: descriptor.signature,
+            bodyLines: [
+              'return $setterName($nestedStylerType().${descriptor.invocation});',
+            ],
+          ),
+        );
+      }
+    }
+
+    return (factories: factories, methods: methods);
+  }
+
+  ClassElement _requireSurfaceSpec(
+    FieldElement fieldElement,
+    Element? selectedElement,
+  ) {
+    if (selectedElement is! ClassElement) {
+      fail(
+        fieldElement,
+        '`stylerSurface` must reference an @MixableSpec class.',
+        todo: 'Pass a source Spec class such as `BoxSpec`.',
+      );
+    }
+
+    return selectedElement;
+  }
+
+  List<StylerFactoryDescriptor> _factoryDescriptorsForSpec(
+    ClassElement surfaceSpec, {
+    required FieldElement errorElement,
+  }) {
+    final surfaceAnnotation = mixableSpecAnnotationChecker.firstAnnotationOf(
+      surfaceSpec,
+    );
+    if (surfaceAnnotation == null) {
+      final name = surfaceSpec.name ?? '<unnamed>';
+      fail(
+        errorElement,
+        'Cannot forward `$name` because it is not annotated with '
+        '`@MixableSpec`.',
+        todo: 'Select an @MixableSpec source type for `stylerSurface`.',
+      );
+    }
+    final name = surfaceSpec.name;
+    if (name == null) {
+      fail(errorElement, 'Cannot forward an unnamed Styler surface.');
+    }
+
+    final builder = SpecStylerClassBuilder(
+      specElement: surfaceSpec,
+      specName: name,
+      annotation: ConstantReader(surfaceAnnotation),
+      symbolResolver: symbolResolver,
+    );
+    final fields = extractSpecFields(surfaceSpec, name);
+    final mixins = builder._collectOwnerMixins(fields);
+
+    return builder._canonicalFactoryDescriptors(fields, mixins);
+  }
+
+  /// The complete ordered named-factory contract emitted for this spec's
+  /// generated Styler. Keeping direct and curated factories in one descriptor
+  /// form lets nested fields project exactly this surface without inspecting a
+  /// generated Styler element.
+  List<StylerFactoryDescriptor> _canonicalFactoryDescriptors(
+    List<FieldModel> fields,
+    List<_OwnerMixinReference> mixins,
+  ) {
+    final compound = _compoundConfig(fields);
+    final fieldNames = _fieldNames(fields);
+    final surface = stylerSurfaceFor(stylerName);
+    final usesCompoundSurface = compoundStylerSurfaceFor(stylerName) != null;
+    final useSurface =
+        surface != null &&
+        (usesCompoundSurface
+            ? compound != null
+            : surface.isAvailableFor(fieldNames));
+
+    return [
+      ..._fieldFactoryDescriptors(
+        fields,
+        mixins,
+        surface?.suppressedFieldFactoryNames ?? const {},
+      ),
       if (useSurface)
         ..._surfaceFactories(
           surface,
@@ -483,30 +737,6 @@ class SpecStylerClassBuilder {
       if (useSurface && surface.generatesAnimateFactory)
         animateFactoryDescriptor(),
     ];
-    final curatedMethods = <StylerMethodDescriptor>[
-      if (useSurface)
-        ..._surfaceMethods(
-          surface,
-          fieldNames,
-          ignoreRequiredFields: compound != null,
-        ),
-      if (_needsTransformAnchor(fields, mixins) && compound == null)
-        transformAnchorMethodDescriptor(),
-      if (_hasFieldNamed(fields, 'textDirectives'))
-        ...textDirectiveMethodDescriptors(),
-      if (surface?.generatesSingleShadowConvenience == true &&
-          _hasFieldNamed(fields, 'shadows'))
-        iconShadowMethodDescriptor(),
-      ...?compound?.surface.methodDescriptors,
-    ];
-
-    return planStylerApi(
-      stylerName: stylerName,
-      fieldFactories: fieldFactories,
-      curatedFactories: curatedFactories,
-      curatedMethods: curatedMethods,
-      generatedSetterNames: _generatedSetterNames(fields, mixins),
-    );
   }
 
   List<StylerFactoryDescriptor> _surfaceFactories(
@@ -575,12 +805,12 @@ class SpecStylerClassBuilder {
         .toList();
   }
 
-  List<ApiMember> _fieldFactoryMembers(
+  List<StylerFactoryDescriptor> _fieldFactoryDescriptors(
     List<FieldModel> fields,
     List<_OwnerMixinReference> mixins,
     Set<String> suppressedFieldFactoryNames,
   ) {
-    final members = <ApiMember>[];
+    final descriptors = <StylerFactoryDescriptor>[];
     for (final field in fields) {
       final factoryName = _fieldFactoryName(field, fields, mixins);
       if (factoryName == null) continue;
@@ -590,14 +820,16 @@ class SpecStylerClassBuilder {
       if (setterName == null) continue;
 
       final paramType = _publicParamType(field);
-      members.add((
-        name: factoryName,
-        code:
-            'factory $stylerName.$factoryName($paramType value) => $stylerName().$setterName(value);',
-      ));
+      descriptors.add(
+        StylerFactoryDescriptor(
+          name: factoryName,
+          signature: '$factoryName($paramType value)',
+          invocation: '$setterName(value)',
+        ),
+      );
     }
 
-    return members;
+    return descriptors;
   }
 
   Set<String> _generatedSetterNames(
