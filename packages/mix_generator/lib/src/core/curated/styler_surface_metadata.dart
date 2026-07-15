@@ -29,6 +29,28 @@ class StylerFactoryDescriptor extends StylerFactorySurfaceEntry {
     this.requiredFieldNames = const {},
   });
 
+  int get _invocationArgumentsOffset {
+    final offset = invocation.indexOf('(');
+    if (offset < 0) {
+      throw StateError('Invalid Styler factory invocation `$invocation`.');
+    }
+
+    return offset;
+  }
+
+  /// The fluent method invoked by this factory.
+  String get invocationName =>
+      invocation.substring(0, _invocationArgumentsOffset);
+
+  /// Returns this invocation with its method name replaced by the factory name.
+  ///
+  /// Factory aliases can invoke a differently named fluent setter. Forwarded
+  /// parent factories instead invoke their generated same-name anchor method,
+  /// while the anchor keeps using the original invocation against the nested
+  /// Styler.
+  String get forwardingInvocation =>
+      '$name${invocation.substring(_invocationArgumentsOffset)}';
+
   /// Whether all required fields are available.
   bool isAvailableFor(Set<String> fieldNames) {
     return fieldNames.containsAll(requiredFieldNames);

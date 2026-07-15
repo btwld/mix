@@ -9,6 +9,11 @@ import '../core/test_helpers.dart';
 
 const _mixSources = {
   'mix|lib/mix.dart': _mixStub,
+  'mix|lib/src/core/mix_element.dart': '''
+    abstract class Mix<T> {
+      const Mix();
+    }
+  ''',
   'mix|lib/src/core/style_spec.dart': _styleSpecStub,
 };
 
@@ -125,14 +130,17 @@ const _mixSourcesWithStyleWidget = {
 /// part styler tests.
 const _mixStub = '''
   import 'package:flutter/foundation.dart';
+  import 'src/core/mix_element.dart';
+  import 'src/core/style_spec.dart';
 
+  export 'src/core/mix_element.dart';
   export 'src/core/style_spec.dart';
 
   abstract class Spec<T extends Spec<T>> {
     const Spec();
   }
 
-  abstract class Style<S extends Spec<S>> {
+  abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>> {
     final List<VariantStyle<S>>? \$variants;
     final WidgetModifierConfig? \$modifier;
     final AnimationConfig? \$animation;
@@ -149,6 +157,8 @@ const _mixStub = '''
   abstract class MixStyler<ST extends Style<SP>, SP extends Spec<SP>>
       extends Style<SP> with Diagnosticable {
     const MixStyler({super.variants, super.modifier, super.animation});
+
+    ST onHovered(ST style) => style;
   }
 
   class AnimationConfig {}
@@ -247,33 +257,33 @@ const _mixStub = '''
     T elevation(ElevationShadow value) => decoration(DecorationMix());
     T shadow(BoxShadowMix value) => decoration(DecorationMix());
     T shadows(List<BoxShadowMix> value) => decoration(DecorationMix());
-    T image(DecorationImageMix value);
-    T shape(ShapeBorderMix value);
+    T image(DecorationImageMix value) => decoration(DecorationMix());
+    T shape(ShapeBorderMix value) => decoration(DecorationMix());
     T backgroundImage(
       ImageProvider image, {
       BoxFit? fit,
       AlignmentGeometry? alignment,
       ImageRepeat repeat = .noRepeat,
-    });
+    }) => decoration(DecorationMix());
     T backgroundImageUrl(
       String url, {
       BoxFit? fit,
       AlignmentGeometry? alignment,
       ImageRepeat repeat = .noRepeat,
-    });
+    }) => decoration(DecorationMix());
     T backgroundImageAsset(
       String path, {
       BoxFit? fit,
       AlignmentGeometry? alignment,
       ImageRepeat repeat = .noRepeat,
-    });
+    }) => decoration(DecorationMix());
     T linearGradient({
       required List<Color> colors,
       List<double>? stops,
       AlignmentGeometry? begin,
       AlignmentGeometry? end,
       TileMode? tileMode,
-    });
+    }) => decoration(DecorationMix());
     T radialGradient({
       required List<Color> colors,
       List<double>? stops,
@@ -282,7 +292,7 @@ const _mixStub = '''
       AlignmentGeometry? focal,
       double? focalRadius,
       TileMode? tileMode,
-    });
+    }) => decoration(DecorationMix());
     T sweepGradient({
       required List<Color> colors,
       List<double>? stops,
@@ -290,14 +300,14 @@ const _mixStub = '''
       double? startAngle,
       double? endAngle,
       TileMode? tileMode,
-    });
+    }) => decoration(DecorationMix());
     T foregroundLinearGradient({
       required List<Color> colors,
       List<double>? stops,
       AlignmentGeometry? begin,
       AlignmentGeometry? end,
       TileMode? tileMode,
-    });
+    }) => foregroundDecoration(DecorationMix());
     T foregroundRadialGradient({
       required List<Color> colors,
       List<double>? stops,
@@ -306,7 +316,7 @@ const _mixStub = '''
       AlignmentGeometry? focal,
       double? focalRadius,
       TileMode? tileMode,
-    });
+    }) => foregroundDecoration(DecorationMix());
     T foregroundSweepGradient({
       required List<Color> colors,
       List<double>? stops,
@@ -314,7 +324,7 @@ const _mixStub = '''
       double? startAngle,
       double? endAngle,
       TileMode? tileMode,
-    });
+    }) => foregroundDecoration(DecorationMix());
   }
 
   mixin BorderStyleMixin<T> {}
@@ -1358,6 +1368,849 @@ void main() {
       },
     );
 
+    test(
+      'renders forwarded sibling surface types in the host library scope',
+      () async {
+        const visible = '''
+        class VisibleType {}
+      ''';
+        const inner = '''
+        import 'package:mix/mix.dart';
+        import 'package:mix_annotations/mix_annotations.dart';
+        import 'visible.dart' as inner_types;
+        part 'inner_support.dart';
+
+        @MixableSpec()
+        final class InnerSpec extends Spec<InnerSpec> {
+          final inner_types.VisibleType? value;
+
+          const InnerSpec({this.value});
+        }
+      ''';
+        const innerSupport = '''
+        part of 'inner_spec.dart';
+
+        final class InnerStyler extends Mix<StyleSpec<InnerSpec>> {
+          const InnerStyler();
+
+          InnerStyler value(inner_types.VisibleType value) => this;
+        }
+      ''';
+        const input = '''
+        library spike;
+        import 'package:flutter/foundation.dart';
+        import 'package:flutter/widgets.dart';
+        import 'package:mix/mix.dart';
+        import 'package:mix_annotations/mix_annotations.dart';
+        import 'inner_spec.dart' as nested;
+        import 'visible.dart' as host_types;
+        part 'spike.g.dart';
+
+        @MixableSpec()
+        final class HostSpec extends Spec<HostSpec> {
+          @MixableField(forwardStyler: true)
+          final StyleSpec<nested.InnerSpec>? inner;
+
+          const HostSpec({this.inner});
+        }
+      ''';
+
+        await expectGeneratorOutputResolves(
+          builder: _specStylerPartBuilder(),
+          sources: {
+            ...mixAnnotationsSources,
+            ..._flutterResolveStubs,
+            ..._mixSources,
+            'mix|lib/visible.dart': visible,
+            'mix|lib/inner_spec.dart': inner,
+            'mix|lib/inner_support.dart': innerSupport,
+            'mix|lib/spike.dart': input,
+          },
+          inputAsset: 'mix|lib/spike.dart',
+          outputAsset: 'mix|lib/spike.g.dart',
+          outputMatcher: allOf([
+            contains('factory HostStyler.inner(nested.InnerStyler value)'),
+            contains('factory HostStyler.value(host_types.VisibleType value)'),
+            contains('return inner(nested.InnerStyler().value(value));'),
+            isNot(contains('inner_types.VisibleType')),
+          ]),
+        );
+      },
+    );
+
+    test(
+      'forwards the canonical factory surface of a nested generated styler',
+      () async {
+        const input = '''
+        library spike;
+        import 'package:mix/mix.dart';
+        import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
+
+        class EdgeInsetsGeometry {}
+        class BoxConstraints {}
+        class Decoration {}
+
+        @MixableSpec()
+        final class BoxSpec extends Spec<BoxSpec> {
+          final EdgeInsetsGeometry? padding;
+          final BoxConstraints? constraints;
+          final Decoration? decoration;
+          final Matrix4? transform;
+          final AlignmentGeometry? transformAlignment;
+
+          const BoxSpec({
+            this.padding,
+            this.constraints,
+            this.decoration,
+            this.transform,
+            this.transformAlignment,
+          });
+        }
+
+        @MixableSpec()
+        final class CardSpec extends Spec<CardSpec> {
+          @MixableField(forwardStyler: true)
+          final StyleSpec<BoxSpec>? container;
+
+          const CardSpec({this.container});
+        }
+      ''';
+
+        await testBuilder(
+          _specStylerPartBuilder(),
+          {
+            ...mixAnnotationsSources,
+            ..._mixSources,
+            'mix|lib/spike.dart': input,
+          },
+          outputs: {
+            'mix|lib/spike.g.dart': decodedMatches(
+              allOf([
+                contains('factory CardStyler.container(BoxStyler value)'),
+                contains(
+                  'factory CardStyler.padding(EdgeInsetsGeometryMix value)',
+                ),
+                contains('factory CardStyler.color(Color value)'),
+                contains(
+                  'factory CardStyler.scale(double scale, {Alignment alignment = .center})',
+                ),
+                contains('CardStyler color(Color value)'),
+                contains('return container(BoxStyler().color(value));'),
+                isNot(contains('factory CardStyler.paddingAll(')),
+                isNot(contains('factory CardStyler.animate(')),
+              ]),
+            ),
+          },
+        );
+      },
+    );
+
+    test('supports default and restricted nested styler surfaces', () async {
+      const input = '''
+        library spike;
+        import 'package:mix/mix.dart';
+        import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
+
+        class EdgeInsetsGeometry {}
+        class BoxConstraints {}
+        class Decoration {}
+
+        @MixableSpec()
+        final class BoxSpec extends Spec<BoxSpec> {
+          final EdgeInsetsGeometry? padding;
+          final BoxConstraints? constraints;
+          final Decoration? decoration;
+          final Matrix4? transform;
+          final AlignmentGeometry? transformAlignment;
+
+          const BoxSpec({
+            this.padding,
+            this.constraints,
+            this.decoration,
+            this.transform,
+            this.transformAlignment,
+          });
+        }
+
+        @MixableSpec()
+        final class FlexSpec extends Spec<FlexSpec> {
+          final Axis? direction;
+          const FlexSpec({this.direction});
+        }
+
+        @MixableSpec()
+        final class FlexBoxSpec extends Spec<FlexBoxSpec> {
+          final StyleSpec<BoxSpec>? box;
+          final StyleSpec<FlexSpec>? flex;
+          const FlexBoxSpec({this.box, this.flex});
+        }
+
+        @MixableSpec()
+        final class DefaultCardSpec extends Spec<DefaultCardSpec> {
+          @MixableField(forwardStyler: true)
+          final StyleSpec<FlexBoxSpec>? container;
+          const DefaultCardSpec({this.container});
+        }
+
+        @MixableSpec()
+        final class RestrictedCardSpec extends Spec<RestrictedCardSpec> {
+          @MixableField(forwardStyler: true, stylerSurface: BoxSpec)
+          final StyleSpec<FlexBoxSpec>? container;
+          const RestrictedCardSpec({this.container});
+        }
+      ''';
+
+      await testBuilder(
+        _specStylerPartBuilder(),
+        {...mixAnnotationsSources, ..._mixSources, 'mix|lib/spike.dart': input},
+        outputs: {
+          'mix|lib/spike.g.dart': decodedMatches(
+            allOf([
+              contains('factory DefaultCardStyler.color(Color value)'),
+              contains('factory DefaultCardStyler.row()'),
+              contains('factory DefaultCardStyler.direction(Axis value)'),
+              contains('return container(FlexBoxStyler().row());'),
+              contains('factory RestrictedCardStyler.color(Color value)'),
+              contains('return container(FlexBoxStyler().color(value));'),
+              isNot(contains('factory RestrictedCardStyler.row()')),
+              isNot(
+                contains('factory RestrictedCardStyler.direction(Axis value)'),
+              ),
+            ]),
+          ),
+        },
+      );
+    });
+
+    test(
+      'uses setterType as the forwarded nested styler implementation',
+      () async {
+        const input = '''
+        library spike;
+        import 'package:flutter/foundation.dart';
+        import 'package:flutter/widgets.dart';
+        import 'package:mix/mix.dart';
+        import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
+
+        @MixableSpec()
+        final class InnerSpec extends Spec<InnerSpec> {
+          final bool? visible;
+          const InnerSpec({this.visible});
+        }
+
+        mixin VisibleStylerMixin<T> {
+          T visible(bool value) => this as T;
+        }
+
+        final class CustomInnerStyler extends Mix<StyleSpec<InnerSpec>>
+            with VisibleStylerMixin<CustomInnerStyler> {
+          const CustomInnerStyler();
+        }
+
+        @MixableSpec()
+        final class CardSpec extends Spec<CardSpec> {
+          @MixableField(
+            setterType: CustomInnerStyler,
+            forwardStyler: true,
+          )
+          final StyleSpec<InnerSpec>? container;
+          const CardSpec({this.container});
+        }
+      ''';
+
+        await expectGeneratorOutputResolves(
+          builder: _specStylerPartBuilder(),
+          sources: {
+            ...mixAnnotationsSources,
+            ..._flutterResolveStubs,
+            ..._mixSources,
+            'mix|lib/spike.dart': input,
+          },
+          inputAsset: 'mix|lib/spike.dart',
+          outputAsset: 'mix|lib/spike.g.dart',
+          outputMatcher: allOf([
+            contains('factory CardStyler.container(CustomInnerStyler value)'),
+            contains('factory CardStyler.visible(bool value)'),
+            contains('return container(CustomInnerStyler().visible(value));'),
+          ]),
+        );
+      },
+    );
+
+    test(
+      'rejects a custom forwarding setterType with a missing method',
+      () async {
+        const input = '''
+        library spike;
+        import 'package:mix/mix.dart';
+        import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
+
+        @MixableSpec()
+        final class InnerSpec extends Spec<InnerSpec> {
+          final bool? visible;
+          const InnerSpec({this.visible});
+        }
+
+        final class CustomInnerStyler extends Mix<StyleSpec<InnerSpec>> {
+          const CustomInnerStyler();
+        }
+
+        @MixableSpec()
+        final class HostSpec extends Spec<HostSpec> {
+          @MixableField(
+            setterType: CustomInnerStyler,
+            forwardStyler: true,
+          )
+          final StyleSpec<InnerSpec>? nested;
+
+          const HostSpec({this.nested});
+        }
+      ''';
+
+        final message = await _expectSpecStylerValidationError({
+          ...mixAnnotationsSources,
+          ..._mixSources,
+          'mix|lib/spike.dart': input,
+        });
+
+        expect(
+          message,
+          allOf([
+            contains('Custom `setterType` `CustomInnerStyler`'),
+            contains('does not implement forwarded method `visible`'),
+          ]),
+        );
+      },
+    );
+
+    test(
+      'rejects a custom forwarding setterType without zero-argument construction',
+      () async {
+        const input = '''
+        library spike;
+        import 'package:mix/mix.dart';
+        import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
+
+        @MixableSpec()
+        final class InnerSpec extends Spec<InnerSpec> {
+          final bool? visible;
+          const InnerSpec({this.visible});
+        }
+
+        final class CustomInnerStyler extends Mix<StyleSpec<InnerSpec>> {
+          final int seed;
+
+          const CustomInnerStyler(this.seed);
+
+          CustomInnerStyler visible(bool value) => this;
+        }
+
+        @MixableSpec()
+        final class HostSpec extends Spec<HostSpec> {
+          @MixableField(
+            setterType: CustomInnerStyler,
+            forwardStyler: true,
+          )
+          final StyleSpec<InnerSpec>? nested;
+
+          const HostSpec({this.nested});
+        }
+      ''';
+
+        final message = await _expectSpecStylerValidationError({
+          ...mixAnnotationsSources,
+          ..._mixSources,
+          'mix|lib/spike.dart': input,
+        });
+
+        expect(
+          message,
+          allOf([
+            contains('Custom `setterType` `CustomInnerStyler`'),
+            contains('must be constructible with no arguments'),
+          ]),
+        );
+      },
+    );
+
+    test('rejects an abstract custom forwarding setterType', () async {
+      const input = '''
+        library spike;
+        import 'package:mix/mix.dart';
+        import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
+
+        @MixableSpec()
+        final class InnerSpec extends Spec<InnerSpec> {
+          final bool? visible;
+          const InnerSpec({this.visible});
+        }
+
+        abstract class CustomInnerStyler extends Mix<StyleSpec<InnerSpec>> {
+          const CustomInnerStyler();
+
+          CustomInnerStyler visible(bool value);
+        }
+
+        @MixableSpec()
+        final class HostSpec extends Spec<HostSpec> {
+          @MixableField(
+            setterType: CustomInnerStyler,
+            forwardStyler: true,
+          )
+          final StyleSpec<InnerSpec>? nested;
+
+          const HostSpec({this.nested});
+        }
+      ''';
+
+      final message = await _expectSpecStylerValidationError({
+        ...mixAnnotationsSources,
+        ..._mixSources,
+        'mix|lib/spike.dart': input,
+      });
+
+      expect(
+        message,
+        allOf([
+          contains('Custom `setterType` `CustomInnerStyler`'),
+          contains('must be constructible with no arguments'),
+        ]),
+      );
+    });
+
+    test(
+      'rejects a custom forwarding setterType with an incompatible method',
+      () async {
+        const input = '''
+        library spike;
+        import 'package:mix/mix.dart';
+        import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
+
+        @MixableSpec()
+        final class InnerSpec extends Spec<InnerSpec> {
+          final bool? visible;
+          const InnerSpec({this.visible});
+        }
+
+        final class CustomInnerStyler extends Mix<StyleSpec<InnerSpec>> {
+          const CustomInnerStyler();
+
+          CustomInnerStyler visible(String value) => this;
+        }
+
+        @MixableSpec()
+        final class HostSpec extends Spec<HostSpec> {
+          @MixableField(
+            setterType: CustomInnerStyler,
+            forwardStyler: true,
+          )
+          final StyleSpec<InnerSpec>? nested;
+
+          const HostSpec({this.nested});
+        }
+      ''';
+
+        final message = await _expectSpecStylerValidationError({
+          ...mixAnnotationsSources,
+          ..._mixSources,
+          'mix|lib/spike.dart': input,
+        });
+
+        expect(
+          message,
+          allOf([
+            contains('Custom `setterType` `CustomInnerStyler`'),
+            contains('forwarded method `visible` has incompatible signature'),
+            contains('expected `visible(bool value)`'),
+          ]),
+        );
+      },
+    );
+
+    test(
+      'rejects a custom forwarding setterType with an incompatible return type',
+      () async {
+        const input = '''
+        library spike;
+        import 'package:mix/mix.dart';
+        import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
+
+        @MixableSpec()
+        final class InnerSpec extends Spec<InnerSpec> {
+          final bool? visible;
+          const InnerSpec({this.visible});
+        }
+
+        final class CustomInnerStyler extends Mix<StyleSpec<InnerSpec>> {
+          const CustomInnerStyler();
+
+          Object visible(bool value) => Object();
+        }
+
+        @MixableSpec()
+        final class HostSpec extends Spec<HostSpec> {
+          @MixableField(
+            setterType: CustomInnerStyler,
+            forwardStyler: true,
+          )
+          final StyleSpec<InnerSpec>? nested;
+
+          const HostSpec({this.nested});
+        }
+      ''';
+
+        final message = await _expectSpecStylerValidationError({
+          ...mixAnnotationsSources,
+          ..._mixSources,
+          'mix|lib/spike.dart': input,
+        });
+
+        expect(
+          message,
+          allOf([
+            contains('Custom `setterType` `CustomInnerStyler`'),
+            contains('forwarded method `visible` must return'),
+            contains('assignable to `CustomInnerStyler`'),
+          ]),
+        );
+      },
+    );
+
+    test('honors nested factory aliases and skipped factories', () async {
+      const input = '''
+        library spike;
+        import 'package:mix/mix.dart';
+        import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
+
+        @MixableSpec()
+        final class InnerSpec extends Spec<InnerSpec> {
+          @MixableField(factoryName: 'visibility')
+          final bool? visible;
+
+          @MixableField(skipFactory: true)
+          final int? internalValue;
+
+          const InnerSpec({this.visible, this.internalValue});
+        }
+
+        @MixableSpec()
+        final class CardSpec extends Spec<CardSpec> {
+          @MixableField(forwardStyler: true, skipFactory: true)
+          final StyleSpec<InnerSpec>? container;
+          const CardSpec({this.container});
+        }
+      ''';
+
+      await testBuilder(
+        _specStylerPartBuilder(),
+        {...mixAnnotationsSources, ..._mixSources, 'mix|lib/spike.dart': input},
+        outputs: {
+          'mix|lib/spike.g.dart': decodedMatches(
+            allOf([
+              contains('factory CardStyler.visibility(bool value)'),
+              contains('CardStyler visibility(bool value)'),
+              contains('return container(InnerStyler().visible(value));'),
+              contains(
+                'factory CardStyler.visibility(bool value) => CardStyler().visibility(value);',
+              ),
+              isNot(contains('factory CardStyler.container(')),
+              isNot(contains('factory CardStyler.internalValue(')),
+            ]),
+          ),
+        },
+      );
+    });
+
+    test(
+      'restricted surfaces delegate through the actual factory implementation',
+      () async {
+        const input = '''
+        library spike;
+        import 'package:flutter/foundation.dart';
+        import 'package:flutter/widgets.dart';
+        import 'package:mix/mix.dart';
+        import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
+
+        @MixableSpec()
+        final class SelectedSpec extends Spec<SelectedSpec> {
+          @MixableField(factoryName: 'state')
+          final bool? visible;
+
+          const SelectedSpec({this.visible});
+        }
+
+        @MixableSpec()
+        final class ActualSpec extends Spec<ActualSpec> {
+          @MixableField(factoryName: 'state')
+          final bool? enabled;
+
+          const ActualSpec({this.enabled});
+        }
+
+        @MixableSpec()
+        final class HostSpec extends Spec<HostSpec> {
+          @MixableField(
+            forwardStyler: true,
+            stylerSurface: SelectedSpec,
+          )
+          final StyleSpec<ActualSpec>? nested;
+
+          const HostSpec({this.nested});
+        }
+      ''';
+
+        await expectGeneratorOutputResolves(
+          builder: _specStylerPartBuilder(),
+          sources: {
+            ...mixAnnotationsSources,
+            ..._flutterResolveStubs,
+            ..._mixSources,
+            'mix|lib/spike.dart': input,
+          },
+          inputAsset: 'mix|lib/spike.dart',
+          outputAsset: 'mix|lib/spike.g.dart',
+          outputMatcher: allOf([
+            contains('factory HostStyler.state(bool value)'),
+            contains('return nested(ActualStyler().enabled(value));'),
+          ]),
+        );
+      },
+    );
+
+    test('resolves contextual shorthand for forwarded factories', () async {
+      const input = '''
+        library spike;
+        import 'package:flutter/foundation.dart';
+        import 'package:flutter/widgets.dart';
+        import 'package:mix/mix.dart';
+        import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
+
+        class EdgeInsetsGeometry {}
+        class BoxConstraints {}
+        class Decoration {}
+        enum Clip { hardEdge }
+
+        @MixableSpec()
+        final class BoxSpec extends Spec<BoxSpec> {
+          final AlignmentGeometry? alignment;
+          final EdgeInsetsGeometry? padding;
+          final EdgeInsetsGeometry? margin;
+          final BoxConstraints? constraints;
+          final Decoration? decoration;
+          final Decoration? foregroundDecoration;
+          final Matrix4? transform;
+          final AlignmentGeometry? transformAlignment;
+          final Clip? clipBehavior;
+
+          const BoxSpec({
+            this.alignment,
+            this.padding,
+            this.margin,
+            this.constraints,
+            this.decoration,
+            this.foregroundDecoration,
+            this.transform,
+            this.transformAlignment,
+            this.clipBehavior,
+          });
+        }
+
+        @MixableSpec()
+        final class CardSpec extends Spec<CardSpec> {
+          @MixableField(forwardStyler: true)
+          final StyleSpec<BoxSpec>? container;
+          const CardSpec({this.container});
+        }
+
+        CardStyler hoveredCard() =>
+            CardStyler().onHovered(.color(Color()));
+      ''';
+
+      await expectGeneratorOutputResolves(
+        builder: _specStylerPartBuilder(),
+        sources: {
+          ...mixAnnotationsSources,
+          ..._flutterResolveStubs,
+          ..._mixSources,
+          'mix|lib/spike.dart': input,
+        },
+        inputAsset: 'mix|lib/spike.dart',
+        outputAsset: 'mix|lib/spike.g.dart',
+        outputMatcher: contains('factory CardStyler.color(Color value)'),
+      );
+    });
+
+    test('rejects forwarding on a non-StyleSpec field', () async {
+      const input = '''
+        library spike;
+        import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
+
+        @MixableSpec()
+        final class CardSpec {
+          @MixableField(forwardStyler: true)
+          final int? container;
+          const CardSpec({this.container});
+        }
+      ''';
+
+      final message = await _expectSpecStylerValidationError({
+        ...mixAnnotationsSources,
+        ..._mixSources,
+        'mix|lib/spike.dart': input,
+      });
+
+      expect(
+        message,
+        allOf([
+          contains('@MixableField(forwardStyler: true)'),
+          contains('`container`'),
+          contains('requires an exact `StyleSpec<XSpec>` field'),
+        ]),
+      );
+    });
+
+    test('rejects an incompatible restricted styler surface', () async {
+      const input = '''
+        library spike;
+        import 'package:mix/mix.dart';
+        import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
+
+        class Decoration {}
+        class TextStyle {}
+
+        @MixableSpec()
+        final class BoxSpec extends Spec<BoxSpec> {
+          final Decoration? decoration;
+          const BoxSpec({this.decoration});
+        }
+
+        @MixableSpec()
+        final class TextSpec extends Spec<TextSpec> {
+          final TextStyle? style;
+          const TextSpec({this.style});
+        }
+
+        @MixableSpec()
+        final class CardSpec extends Spec<CardSpec> {
+          @MixableField(forwardStyler: true, stylerSurface: BoxSpec)
+          final StyleSpec<TextSpec>? label;
+          const CardSpec({this.label});
+        }
+      ''';
+
+      final message = await _expectSpecStylerValidationError({
+        ...mixAnnotationsSources,
+        ..._mixSources,
+        'mix|lib/spike.dart': input,
+      });
+
+      expect(
+        message,
+        allOf([
+          contains('Styler surface `BoxStyler`'),
+          contains('not a compatible subset of `TextStyler`'),
+          contains('factory `decoration(DecorationMix value)` is unavailable'),
+        ]),
+      );
+    });
+
+    test('rejects duplicate names from multiple forwarded fields', () async {
+      const input = '''
+        library spike;
+        import 'package:mix/mix.dart';
+        import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
+
+        class Decoration {}
+
+        @MixableSpec()
+        final class BoxSpec extends Spec<BoxSpec> {
+          final Decoration? decoration;
+          const BoxSpec({this.decoration});
+        }
+
+        @MixableSpec()
+        final class CardSpec extends Spec<CardSpec> {
+          @MixableField(forwardStyler: true)
+          final StyleSpec<BoxSpec>? primary;
+
+          @MixableField(forwardStyler: true)
+          final StyleSpec<BoxSpec>? secondary;
+
+          const CardSpec({this.primary, this.secondary});
+        }
+      ''';
+
+      final message = await _expectSpecStylerValidationError({
+        ...mixAnnotationsSources,
+        ..._mixSources,
+        'mix|lib/spike.dart': input,
+      });
+
+      expect(
+        message,
+        allOf([
+          contains('Forwarded factory `CardStyler.decoration`'),
+          contains('conflicts with another generated factory'),
+        ]),
+      );
+    });
+
+    test(
+      'rejects forwarded methods that collide with inherited styler members',
+      () async {
+        const input = '''
+        library spike;
+        import 'package:mix/mix.dart';
+        import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
+
+        @MixableSpec()
+        final class InnerSpec extends Spec<InnerSpec> {
+          @MixableField(factoryName: 'onHovered')
+          final bool? hovered;
+
+          const InnerSpec({this.hovered});
+        }
+
+        @MixableSpec()
+        final class HostSpec extends Spec<HostSpec> {
+          @MixableField(forwardStyler: true)
+          final StyleSpec<InnerSpec>? nested;
+
+          const HostSpec({this.nested});
+        }
+      ''';
+
+        final message = await _expectSpecStylerValidationError({
+          ...mixAnnotationsSources,
+          ..._mixSources,
+          'mix|lib/spike.dart': input,
+        });
+
+        expect(
+          message,
+          allOf([
+            contains('Forwarded method `HostStyler.onHovered`'),
+            contains('conflicts with an inherited `MixStyler` member'),
+          ]),
+        );
+      },
+    );
+
     test('rejects spec setterType that is not Mix-compatible', () async {
       const input = '''
         library spike;
@@ -1694,8 +2547,7 @@ void main() {
     test('emits curated Box convenience factories', () async {
       const input = '''
         library spike;
-        import 'package:mix/mix.dart'
-            show Alignment, AlignmentGeometry, Matrix4, TextStyler;
+        import 'package:mix/mix.dart';
         import 'package:mix_annotations/mix_annotations.dart';
         part 'spike.g.dart';
 
@@ -1780,7 +2632,7 @@ void main() {
     test('emits curated Text factories and directive methods', () async {
       const input = '''
         library spike;
-        import 'package:mix/mix.dart' show Directive;
+        import 'package:mix/mix.dart';
         import 'package:mix_annotations/mix_annotations.dart';
         part 'spike.g.dart';
 
@@ -1992,7 +2844,7 @@ void main() {
         ''';
       const input = '''
           library combo;
-          import 'package:mix/mix.dart' show Spec, StyleSpec;
+          import 'package:mix/mix.dart';
           import 'package:mix_annotations/mix_annotations.dart';
 
           import '../box/box_spec.dart';
@@ -2071,7 +2923,7 @@ void main() {
         ''';
       const input = '''
           library combo;
-          import 'package:mix/mix.dart' show Spec, StyleSpec;
+          import 'package:mix/mix.dart';
           import 'package:mix_annotations/mix_annotations.dart';
 
           import '../box/box_spec.dart';
