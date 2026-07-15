@@ -110,7 +110,7 @@ PortableComponentDocument parsePortableComponentV2(
     path: '$path/states',
   );
   final slots = _parseSlots(
-    _boundedList(root, 'slots', path: '$path/slots', maximum: 64),
+    _boundedList(root, 'slots', path: '$path/slots', minimum: 0, maximum: 64),
     path: '$path/slots',
   );
   final anatomy = _parseAnatomy(
@@ -143,7 +143,13 @@ PortableComponentDocument parsePortableComponentV2(
     path: '$path/semantics',
   );
   final oracles = _parseOracles(
-    _boundedList(root, 'oracles', path: '$path/oracles', maximum: 16),
+    _boundedList(
+      root,
+      'oracles',
+      path: '$path/oracles',
+      minimum: 0,
+      maximum: 16,
+    ),
     path: '$path/oracles',
   );
   final diagnostics = root.containsKey('diagnostics')
@@ -1328,11 +1334,12 @@ List<Object?> _boundedList(
   Map<String, Object?> value,
   String key, {
   required String path,
+  int minimum = 1,
   required int maximum,
 }) {
   final values = _asList(_requiredValue(value, key, path: path), path: path);
-  if (values.isEmpty || values.length > maximum) {
-    throw _malformed('List count must be between 1 and $maximum.', path);
+  if (values.length < minimum || values.length > maximum) {
+    throw _malformed('List count must be between $minimum and $maximum.', path);
   }
 
   return values;

@@ -90,6 +90,45 @@ void main() {
       expect(jsonEncode(payload), contains('hovered'));
     });
 
+    test('styleless primitives do not require synthetic style slots', () {
+      final document =
+          (AtlasPortableComponentBuilder(
+                  id: 'spinnerOnly',
+                  label: 'Spinner only',
+                )
+                ..property(
+                  ComponentPropertyDefinition(
+                    id: 'size',
+                    kind: .number,
+                    defaultValue: 16.0,
+                    isRequired: true,
+                  ),
+                )
+                ..state(
+                  ComponentStateDefinition(
+                    id: 'default',
+                    widgetStates: {},
+                    propertyOverrides: {},
+                  ),
+                )
+                ..node(
+                  AtlasPortableNode(
+                    id: 'spinner',
+                    kind: .spinner,
+                    children: [],
+                    bindings: {'size': AtlasPortableBinding.property('size')},
+                  ),
+                )
+                ..root('spinner')
+                ..recipe(id: 'default', styles: const {})
+                ..semantics(AtlasPortableSemantics(role: 'progressIndicator')))
+              .buildDocument();
+
+      expect(document.slots, isEmpty);
+      expect(document.styleLibrary, isEmpty);
+      expect(document.anatomy.root.kind, ComponentAnatomyNodeKind.spinner);
+    });
+
     test('strict parser rejects unsafe binding references', () {
       final json = _deepCopy(portableV2FixtureBuilder().buildJson());
       final anatomy = json['anatomy']! as Map<String, Object?>;
