@@ -41,6 +41,34 @@ void main() {
     expect(resolvedColor(tester), Colors.green);
   });
 
+  testWidgets('override supports the scrolledUnder widget state', (
+    tester,
+  ) async {
+    final scrolledUnderStyle = BoxStyler()
+        .color(Colors.red)
+        .variant(
+          WidgetStateVariant(WidgetState.scrolledUnder),
+          BoxStyler().color(Colors.green),
+        );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: WidgetStateStyleOverride(
+          states: const {WidgetState.scrolledUnder},
+          child: StyleBuilder<BoxSpec>(
+            style: scrolledUnderStyle,
+            builder: (_, spec) => ColoredBox(
+              key: const Key('styled-box'),
+              color: (spec.decoration as BoxDecoration).color!,
+            ),
+          ),
+        ),
+      ),
+    );
+
+    expect(resolvedColor(tester), Colors.green);
+  });
+
   testWidgets('override survives a nested Pressable state provider', (
     tester,
   ) async {
