@@ -154,6 +154,15 @@ void main() {
       );
     });
 
+    test('state IDs align to producer scenario names without a sentinel', () {
+      final json = _deepCopy(portableV2FixtureBuilder().buildJson());
+      final states = (json['states']! as List<Object?>)
+          .cast<Map<String, Object?>>();
+      states.first['id'] = 'collapsed';
+
+      expect(_parse(json).states.keys, contains('collapsed'));
+    });
+
     test('component/v1 documents still translate into the runtime model', () {
       final document = _parse(validButtonComponentDocument());
 

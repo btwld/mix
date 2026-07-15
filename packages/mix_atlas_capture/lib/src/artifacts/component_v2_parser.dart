@@ -388,16 +388,6 @@ Map<String, ComponentStateDefinition> _parseStates(
       propertyOverrides: overrides,
     );
   }
-  final defaultState = result['default'];
-  if (defaultState == null ||
-      defaultState.widgetStates.isNotEmpty ||
-      defaultState.propertyOverrides.isNotEmpty) {
-    throw _invalid(
-      'A default state without widget states or overrides is required.',
-      path,
-    );
-  }
-
   return result;
 }
 
