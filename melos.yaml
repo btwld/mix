@@ -45,6 +45,10 @@ scripts:
     run: melos exec --scope="mix_protocol" -- dart run tool/inventory_check.dart --check
     description: Verify mix_protocol inventory coverage decisions.
 
+  schema:export:
+    run: melos exec --scope="mix_protocol" -- flutter test test/schema_files_sync_test.dart --update-goldens
+    description: Regenerate the committed mix_protocol JSON Schema files in schema/.
+
   analyze:dart:
     run: melos exec -c 4 -- dart analyze .
     description: Run Dart static analysis checks.
