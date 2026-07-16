@@ -14,9 +14,30 @@ tokens from Figma styles, exporter plugin).
 
 ## Status
 
-Phase 1 (in progress): DTCG → theme document conversion.
+Phase 1 (in progress): DTCG → theme document conversion, with a `pull` CLI.
 
-## Usage
+## CLI
+
+Convert a directory of per-mode DTCG files (one Figma variable mode each) into
+`<name>.theme.json` documents:
+
+```bash
+dart run mix_figma pull --out design/tokens \
+    --group radius=radii --group breakpoint=breakpoints \
+    design/figma-export/
+```
+
+Each input file becomes one theme document; `--group <prefix>=<theme-group>`
+routes ambiguous dimension/number tokens, and `--rem-pixel-ratio <n>` resolves
+`rem` units. Every token that cannot be represented is reported as a warning —
+nothing is dropped silently — and the command exits non-zero only on file-level
+failures (unreadable file, non-object JSON).
+
+The CLI and conversion core are pure Dart (no Flutter dependency) so they run
+fast under `dart run`; the produced documents are validated against the real
+`mixProtocol.decodeTheme` codec in this package's test suite.
+
+## Library
 
 ```dart
 import 'package:mix_figma/mix_figma.dart';

@@ -1,7 +1,10 @@
-import 'package:mix_protocol/mix_protocol.dart';
-
 import '../diagnostics.dart';
 import 'dtcg_document.dart';
+
+/// The `mix_protocol` wire format version this converter targets. Mirrors
+/// `mixProtocolFormatVersion`; kept local so the conversion core stays pure
+/// Dart (no Flutter/`dart:ui` dependency) and runnable from a plain CLI.
+const int themeFormatVersion = 1;
 
 /// Options controlling DTCG → theme-document conversion.
 final class DtcgConversionOptions {
@@ -35,7 +38,7 @@ final class DtcgConversionResult {
 
   /// A `{"v": 1, "type": "theme", ...}` document. Validate and decode with
   /// `mixProtocol.decodeTheme`.
-  final JsonMap themeDocument;
+  final Map<String, Object?> themeDocument;
 
   /// Everything that could not be represented, and every value adjustment.
   final List<MixFigmaDiagnostic> diagnostics;
@@ -136,7 +139,7 @@ final class _Converter {
     }
 
     final themeDocument = <String, Object?>{
-      'v': mixProtocolFormatVersion,
+      'v': themeFormatVersion,
       'type': 'theme',
       for (final group in _groupOrder)
         if (groups[group] case final entries?)
@@ -224,7 +227,7 @@ final class _Converter {
 
   // --- Alias emission -----------------------------------------------------
 
-  JsonMap? _aliasWire(DtcgToken token, String group) {
+  Map<String, Object?>? _aliasWire(DtcgToken token, String group) {
     final target = token.aliasTarget!;
     if (_groupOf(target, const {}) != group) return null;
 
@@ -485,7 +488,7 @@ final class _Converter {
     return shadows;
   }
 
-  JsonMap? _border(Object? raw, String path) {
+  Map<String, Object?>? _border(Object? raw, String path) {
     final value = _deref(raw, path);
     if (value is! Map<String, Object?>) {
       _skip(path, 'unrecognized border value; skipped');
@@ -507,7 +510,7 @@ final class _Converter {
     return {'color': color, 'width': width, 'style': 'solid'};
   }
 
-  JsonMap? _textStyle(Object? raw, String path) {
+  Map<String, Object?>? _textStyle(Object? raw, String path) {
     final value = _deref(raw, path);
     if (value is! Map<String, Object?>) {
       _skip(path, 'unrecognized typography value; skipped');
