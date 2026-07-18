@@ -11,3 +11,5 @@ If you want these guides mirrored privately, keep the source of truth in Notion 
 ## Guide Index
 
 - `api-composition-guidelines.md` - Fluent composition patterns and sizing decisions.
+- `figma-import-export-plan.md` - Research and architecture for Figma import/export over the Mix protocol.
+- `figma-import-export-implementation-plan.md` - Phased implementation plan for the Figma bridge.
