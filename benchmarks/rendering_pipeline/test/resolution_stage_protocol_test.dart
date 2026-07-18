@@ -59,4 +59,47 @@ void main() {
   test('rejects unsupported order labels', () {
     expect(() => resolutionStageCases('random'), throwsArgumentError);
   });
+
+  test('filters profiles and stages without changing their relative order', () {
+    final profiles = parseResolutionProfileFilter('static,all_active');
+    final stages = parseResolutionStageFilter('variant_merge,full_style_build');
+
+    final forward = resolutionStageCases(
+      'forward',
+      profiles: profiles,
+      stages: stages,
+    );
+    final reverse = resolutionStageCases(
+      'reverse',
+      profiles: profiles,
+      stages: stages,
+    );
+
+    expect(
+      forward.map((entry) => '${entry.profile.label}:${entry.stage.label}'),
+      <String>[
+        'static:variant_merge',
+        'static:full_style_build',
+        'all_active:variant_merge',
+        'all_active:full_style_build',
+      ],
+    );
+    expect(reverse, forward.reversed);
+  });
+
+  test('empty filters select every profile and stage', () {
+    expect(parseResolutionProfileFilter(''), ResolutionProfile.values.toSet());
+    expect(parseResolutionStageFilter(''), ResolutionStage.values.toSet());
+  });
+
+  test('rejects unsupported profile and stage filter labels', () {
+    expect(
+      () => parseResolutionProfileFilter('static,unknown'),
+      throwsArgumentError,
+    );
+    expect(
+      () => parseResolutionStageFilter('variant_merge,unknown'),
+      throwsArgumentError,
+    );
+  });
 }

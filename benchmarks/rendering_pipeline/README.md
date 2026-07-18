@@ -239,6 +239,17 @@ fvm flutter run --release -d macos \
   --dart-define=BENCHMARK_OUTPUT_PATH="$(pwd)/../../.context/benchmark-results/resolution-stage-01.json"
 ```
 
+For a bounded stage screen, optionally select comma-separated protocol labels:
+
+```bash
+--dart-define=PROFILE_FILTER=static,all_active \
+--dart-define=STAGE_FILTER=variant_merge,full_style_build
+```
+
+Omitting either filter, or passing it as an empty string, selects every value
+for that dimension. Unsupported labels fail before measurement. Filtering does
+not change the relative forward/reverse order of the selected cases.
+
 ## Retained-result heap diagnostic
 
 This diagnostic answers which objects remain reachable from each returned

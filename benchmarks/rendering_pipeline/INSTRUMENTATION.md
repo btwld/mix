@@ -505,6 +505,30 @@ because this workload did not execute them. Evidence is under
 `.context/benchmark-results/border-counterfactual-v1/`, and
 `.context/benchmark-results/uniform-border-primary-v{1,2}/`.
 
+### QW21: Isolate a single-active helper from the multi-active hot body — paused
+
+The previous single-active fast path improved static S0/S0I by roughly 20% but
+regressed S2 in 10/10 pairs. The current experiment keeps the legacy
+multi-active extraction/merge body unchanged and calls a separate
+`vm:never-inline` helper only when exactly one variant is active. This tests
+whether the earlier S2 movement came from inlining/code-shape coupling rather
+than the single-active algorithm itself.
+
+To shorten stage iteration without changing the default protocol, the
+resolution executable now supports `PROFILE_FILTER` and `STAGE_FILTER`.
+Empty filters still select all profiles and all 34 stages. A targeted build can
+select `static,all_active` and `variant_merge,full_style_build`, producing four
+validated records instead of 102.
+
+One alternating-revision forward/reverse screen showed a balanced 71.0%
+static merge reduction and 53.1% static full-build reduction. All-active merge
+moved -3.5%, while all-active full build was +0.34% overall and changed sign by
+order (+2.61% forward, -1.87% reverse). The machine had unrelated background
+activity, so these results are provisional. No S0/S2 primary or profile work
+was run, and the helper is preserved only as an experimental checkpoint.
+Evidence and frozen apps are under
+`.context/benchmark-{results,builds}/variant-single-isolated-v1/`.
+
 ## Experiment rules
 
 - Keep primary and diagnostic result files separately labeled.

@@ -72,6 +72,17 @@ Future<void> executeResolutionStageMicrobenchmark() async {
     'STAGE_ORDER',
     defaultValue: 'forward',
   );
+  final selectedProfiles = parseResolutionProfileFilter(
+    const String.fromEnvironment('PROFILE_FILTER'),
+  );
+  final selectedStages = parseResolutionStageFilter(
+    const String.fromEnvironment('STAGE_FILTER'),
+  );
+  final stageCases = resolutionStageCases(
+    orderLabel,
+    profiles: selectedProfiles,
+    stages: selectedStages,
+  );
   final inactiveContextKey = GlobalKey();
   final staticContextKey = GlobalKey();
   final allActiveContextKey = GlobalKey();
@@ -209,7 +220,7 @@ Future<void> executeResolutionStageMicrobenchmark() async {
                 .toList(),
         };
 
-    for (final stageCase in resolutionStageCases(orderLabel)) {
+    for (final stageCase in stageCases) {
       final profile = stageCase.profile;
       final stage = stageCase.stage;
       print('RESOLUTION_STAGE_PROGRESS:${profile.label}:${stage.label}:start');
@@ -238,8 +249,7 @@ Future<void> executeResolutionStageMicrobenchmark() async {
     }
   });
 
-  final expectedResultCount =
-      ResolutionProfile.values.length * ResolutionStage.values.length;
+  final expectedResultCount = stageCases.length;
   if (results.length != expectedResultCount) {
     throw StateError(
       'Expected $expectedResultCount benchmark results, got ${results.length}.',

@@ -102,11 +102,53 @@ typedef ResolutionStageCase = ({
   ResolutionStage stage,
 });
 
-List<ResolutionStageCase> resolutionStageCases(String orderLabel) {
+Set<ResolutionProfile> parseResolutionProfileFilter(String filter) {
+  if (filter.trim().isEmpty) return ResolutionProfile.values.toSet();
+
+  final profilesByLabel = {
+    for (final profile in ResolutionProfile.values) profile.label: profile,
+  };
+
+  return {
+    for (final label in filter.split(','))
+      profilesByLabel[label.trim()] ??
+          (throw ArgumentError.value(
+            label.trim(),
+            'filter',
+            'Unsupported resolution profile label',
+          )),
+  };
+}
+
+Set<ResolutionStage> parseResolutionStageFilter(String filter) {
+  if (filter.trim().isEmpty) return ResolutionStage.values.toSet();
+
+  final stagesByLabel = {
+    for (final stage in ResolutionStage.values) stage.label: stage,
+  };
+
+  return {
+    for (final label in filter.split(','))
+      stagesByLabel[label.trim()] ??
+          (throw ArgumentError.value(
+            label.trim(),
+            'filter',
+            'Unsupported resolution stage label',
+          )),
+  };
+}
+
+List<ResolutionStageCase> resolutionStageCases(
+  String orderLabel, {
+  Set<ResolutionProfile>? profiles,
+  Set<ResolutionStage>? stages,
+}) {
   final cases = <ResolutionStageCase>[
     for (final profile in ResolutionProfile.values)
-      for (final stage in ResolutionStage.values)
-        (profile: profile, stage: stage),
+      if (profiles == null || profiles.contains(profile))
+        for (final stage in ResolutionStage.values)
+          if (stages == null || stages.contains(stage))
+            (profile: profile, stage: stage),
   ];
 
   return switch (orderLabel) {

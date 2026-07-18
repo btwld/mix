@@ -64,6 +64,43 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
     return provider?.style;
   }
 
+  @pragma('vm:never-inline')
+  Style<S> _mergeSingleActiveVariant(
+    BuildContext context,
+    VariantStyle<S> variantAttr,
+    Set<NamedVariant> namedVariants,
+  ) {
+    final (variantStyle, isFromStyleVariation) = switch (variantAttr.variant) {
+      ContextVariantBuilder variant => (
+        variant.build(context) as Style<S>,
+        false,
+      ),
+      (ContextVariant() || NamedVariant()) => () {
+        // ignore: avoid-unrelated-type-assertions
+        if (variantAttr.value is StyleVariation<S>) {
+          // ignore: avoid-unrelated-type-casts
+          final styleVariation = variantAttr.value as StyleVariation<S>;
+          if (namedVariants.contains(styleVariation.variantType)) {
+            return (
+              styleVariation.styleBuilder(this, namedVariants, context),
+              true,
+            );
+          }
+        }
+
+        return (variantAttr.value, false);
+      }(),
+    };
+    final fullyResolvedStyle = isFromStyleVariation
+        ? variantStyle
+        : variantStyle.mergeActiveVariants(
+            context,
+            namedVariants: namedVariants,
+          );
+
+    return _mergeStyles(this, fullyResolvedStyle);
+  }
+
   @internal
   Set<WidgetState> get widgetStates {
     return ($variants ?? [])
@@ -129,6 +166,14 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
         b.variant is WidgetStateVariant ? 1 : 0,
       ),
     );
+
+    if (activeVariants.length == 1) {
+      return _mergeSingleActiveVariant(
+        context,
+        activeVariants.single,
+        namedVariants,
+      );
+    }
 
     // Extract the style from each active variant
     final stylesToMerge = <(Style<S>, bool)>[]; // (style, isFromStyleVariation)
