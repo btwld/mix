@@ -1,0 +1,111 @@
+{
+  "schema": "mix_figma/figma-styles/v1",
+  "styles": [
+    {
+      "id": "text-body",
+      "key": "text-body-key",
+      "name": "type/body",
+      "styleType": "TEXT",
+      "value": {
+        "fontFamily": "Inter",
+        "fontSize": 14,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "lineHeight": {
+          "unit": "PERCENT",
+          "value": 140
+        },
+        "letterSpacing": {
+          "unit": "PIXELS",
+          "value": 0.2
+        }
+      }
+    },
+    {
+      "id": "effect-raised",
+      "key": "effect-raised-key",
+      "name": "shadow/box/raised",
+      "styleType": "EFFECT",
+      "value": {
+        "effects": [
+          {
+            "type": "DROP_SHADOW",
+            "color": {
+              "r": 0,
+              "g": 0,
+              "b": 0,
+              "a": 0.2
+            },
+            "offset": {
+              "x": 0,
+              "y": 2
+            },
+            "radius": 8,
+            "spread": 1,
+            "visible": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "effect-inner",
+      "key": "effect-inner-key",
+      "name": "shadow/inner",
+      "styleType": "EFFECT",
+      "value": {
+        "effects": [
+          {
+            "type": "INNER_SHADOW",
+            "color": "#33000000",
+            "offset": {
+              "x": 0,
+              "y": 1
+            },
+            "radius": 2,
+            "visible": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "paint-brand",
+      "key": "paint-brand-key",
+      "name": "color/brand/paint",
+      "styleType": "PAINT",
+      "value": {
+        "paints": [
+          {
+            "type": "SOLID",
+            "color": "#336699",
+            "opacity": 1,
+            "visible": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "paint-gradient",
+      "key": "paint-gradient-key",
+      "name": "gradient/brand",
+      "styleType": "PAINT",
+      "value": {
+        "paints": [
+          {
+            "type": "GRADIENT_LINEAR",
+            "gradientStops": [
+              {
+                "position": 0,
+                "color": "#336699"
+              },
+              {
+                "position": 1,
+                "color": "#8DA4EF"
+              }
+            ],
+            "visible": true
+          }
+        ]
+      }
+    }
+  ]
+}

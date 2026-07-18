@@ -1,0 +1,70 @@
+{
+  "v": 1,
+  "type": "theme",
+  "colors": {
+    "color.brand.accent": {
+      "$token": "color.brand.primary"
+    },
+    "color.brand.primary": "#336699"
+  },
+  "spaces": {
+    "space.stack.sm": 8
+  },
+  "doubles": {
+    "opacity.disabled": 0.64
+  },
+  "radii": {
+    "radius.card": 12
+  },
+  "textStyles": {
+    "type.body": {
+      "fontFamily": "Inter",
+      "fontSize": 14,
+      "fontWeight": "w400",
+      "height": 1.4
+    }
+  },
+  "shadows": {
+    "shadow.text.soft": [
+      {
+        "color": "#33000000",
+        "offset": {
+          "x": 0,
+          "y": 1
+        },
+        "blurRadius": 2
+      }
+    ]
+  },
+  "boxShadows": {
+    "shadow.text.box": [
+      {
+        "color": "#33000000",
+        "offset": {
+          "x": 0,
+          "y": 2
+        },
+        "blurRadius": 8,
+        "spreadRadius": 1
+      }
+    ]
+  },
+  "borders": {
+    "border.focus": {
+      "color": "#008577",
+      "width": 2,
+      "style": "solid"
+    }
+  },
+  "fontWeights": {
+    "weight.strong": "w700"
+  },
+  "breakpoints": {
+    "breakpoint.sidebar": {
+      "minWidth": 960
+    }
+  },
+  "durations": {
+    "duration.fast": 120
+  }
+}

@@ -1,0 +1,131 @@
+{
+  "schema": "mix_figma/figma-variables/v1",
+  "collections": [
+    {
+      "id": "collection-core",
+      "name": "Core",
+      "defaultModeId": "mode-light",
+      "modes": [
+        {
+          "id": "mode-light",
+          "name": "Light"
+        },
+        {
+          "id": "mode-dark",
+          "name": "Dark"
+        }
+      ]
+    }
+  ],
+  "variables": [
+    {
+      "id": "color-primary",
+      "name": "color/brand/primary",
+      "collectionId": "collection-core",
+      "resolvedType": "COLOR",
+      "valuesByMode": {
+        "mode-light": {
+          "r": 0.2,
+          "g": 0.4,
+          "b": 0.6,
+          "a": 1
+        },
+        "mode-dark": "#8DA4EF"
+      },
+      "scopes": [
+        "ALL_SCOPES"
+      ]
+    },
+    {
+      "id": "color-accent",
+      "name": "color/brand/accent",
+      "collectionId": "collection-core",
+      "resolvedType": "COLOR",
+      "valuesByMode": {
+        "mode-light": {
+          "type": "VARIABLE_ALIAS",
+          "id": "color-primary"
+        },
+        "mode-dark": {
+          "type": "VARIABLE_ALIAS",
+          "id": "color-primary"
+        }
+      }
+    },
+    {
+      "id": "space-sm",
+      "name": "space/stack/sm",
+      "collectionId": "collection-core",
+      "resolvedType": "FLOAT",
+      "valuesByMode": {
+        "mode-light": 8,
+        "mode-dark": 8
+      },
+      "scopes": [
+        "GAP"
+      ]
+    },
+    {
+      "id": "opacity-disabled",
+      "name": "opacity/disabled",
+      "collectionId": "collection-core",
+      "resolvedType": "FLOAT",
+      "valuesByMode": {
+        "mode-light": 0.64,
+        "mode-dark": 0.72
+      },
+      "codeSyntax": {
+        "WEB": "mix://doubles/opacity.disabled"
+      }
+    },
+    {
+      "id": "radius-card",
+      "name": "radius/card",
+      "collectionId": "collection-core",
+      "resolvedType": "FLOAT",
+      "valuesByMode": {
+        "mode-light": 12,
+        "mode-dark": 12
+      },
+      "scopes": [
+        "CORNER_RADIUS"
+      ]
+    },
+    {
+      "id": "weight-strong",
+      "name": "weight/strong",
+      "collectionId": "collection-core",
+      "resolvedType": "FLOAT",
+      "valuesByMode": {
+        "mode-light": 700,
+        "mode-dark": 700
+      },
+      "scopes": [
+        "FONT_WEIGHT"
+      ]
+    },
+    {
+      "id": "ambiguous",
+      "name": "number/ambiguous",
+      "collectionId": "collection-core",
+      "resolvedType": "FLOAT",
+      "valuesByMode": {
+        "mode-light": 2,
+        "mode-dark": 2
+      },
+      "scopes": [
+        "ALL_SCOPES"
+      ]
+    },
+    {
+      "id": "unsupported-string",
+      "name": "font/family",
+      "collectionId": "collection-core",
+      "resolvedType": "STRING",
+      "valuesByMode": {
+        "mode-light": "Inter",
+        "mode-dark": "Inter"
+      }
+    }
+  ]
+}

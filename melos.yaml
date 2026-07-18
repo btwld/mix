@@ -26,24 +26,30 @@ command:
 categories:
   flutter_projects: 
     - packages/mix
+    - packages/mix_figma
     - packages/mix_protocol
     - packages/mix_tailwinds
     - packages/mix/example
     - packages/mix_lint_test
     - packages/annotations
   dart_projects:
+    - packages/mix_component_contract
     - packages/mix_generator
     - packages/mix_lint
 
 scripts:
   # ANALYSIS
   analyze:
-    run: melos run schema:inventory --no-select && melos run analyze:dart --no-select && melos run analyze:dcm --no-select
+    run: melos run schema:inventory --no-select && melos run schema:export --no-select && melos run analyze:dart --no-select && melos run analyze:dcm --no-select
     description: Run all static analysis checks.
 
   schema:inventory:
     run: melos exec --scope="mix_protocol" -- dart run tool/inventory_check.dart --check
     description: Verify mix_protocol inventory coverage decisions.
+
+  schema:export:
+    run: melos exec --scope="mix_protocol" -- dart run tool/export_schemas.dart --check
+    description: Verify committed mix_protocol JSON Schemas are current.
 
   analyze:dart:
     run: melos exec -c 4 -- dart analyze .
@@ -80,12 +86,20 @@ scripts:
       dependsOn: "build_runner"
 
   gen:build:
-    run: melos run gen:clean && melos run gen:build:flutter && melos run gen:build:dart && melos run gen:tailwinds-registry
+    run: melos run gen:clean && melos run gen:build:flutter && melos run gen:build:dart && melos run gen:tailwinds-registry && melos run gen:schema-export && melos run gen:mix-figma-tokens
     description: Generate code for all packages
 
   gen:tailwinds-registry:
     run: melos exec --scope="mix_tailwinds" -- dart run tool/gen_registry.dart
     description: Generate the deterministic mix_tailwinds parser registry
+
+  gen:schema-export:
+    run: melos exec --scope="mix_protocol" -- dart run tool/export_schemas.dart --write
+    description: Export deterministic mix_protocol JSON Schemas
+
+  gen:mix-figma-tokens:
+    run: melos exec --scope="mix_figma" -- dart run tool/gen_tokens.dart
+    description: Generate Dart token declarations from canonical theme documents
 
   gen:build:flutter:
     run: melos exec --category=flutter_projects --order-dependents -- flutter pub run build_runner build --delete-conflicting-outputs

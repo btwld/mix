@@ -1,0 +1,338 @@
+{
+  "schema": "mix_atlas/component/v2",
+  "id": "fixture",
+  "label": "Fixture",
+  "properties": [
+    {
+      "id": "variant",
+      "kind": "enum",
+      "values": [
+        "primary"
+      ],
+      "required": true,
+      "default": "primary"
+    },
+    {
+      "id": "label",
+      "kind": "string",
+      "required": true,
+      "default": "Fixture"
+    },
+    {
+      "id": "enabled",
+      "kind": "boolean",
+      "required": true,
+      "default": true
+    },
+    {
+      "id": "invalid",
+      "kind": "boolean",
+      "required": true,
+      "default": false
+    },
+    {
+      "id": "progress",
+      "kind": "number",
+      "required": true,
+      "default": 0.5
+    },
+    {
+      "id": "duration",
+      "kind": "duration",
+      "required": true,
+      "default": 200
+    },
+    {
+      "id": "icon",
+      "kind": "icon",
+      "required": true,
+      "default": "check"
+    },
+    {
+      "id": "image",
+      "kind": "string",
+      "required": true,
+      "default": "images/fixture.png"
+    },
+    {
+      "id": "nestedRecipe",
+      "kind": "enum",
+      "values": [
+        "primary"
+      ],
+      "required": true,
+      "default": "primary"
+    }
+  ],
+  "states": [
+    {
+      "id": "default",
+      "widgetStates": [],
+      "properties": {}
+    },
+    {
+      "id": "selectedError",
+      "widgetStates": [
+        "error",
+        "selected"
+      ],
+      "properties": {
+        "invalid": true
+      }
+    }
+  ],
+  "slots": [
+    {
+      "id": "root",
+      "kind": "stack_box"
+    },
+    {
+      "id": "box",
+      "kind": "box"
+    },
+    {
+      "id": "text",
+      "kind": "text"
+    },
+    {
+      "id": "flex",
+      "kind": "flex_box"
+    },
+    {
+      "id": "icon",
+      "kind": "icon"
+    },
+    {
+      "id": "image",
+      "kind": "image"
+    }
+  ],
+  "anatomy": {
+    "root": "root",
+    "nodes": [
+      {
+        "id": "root",
+        "kind": "stack_box",
+        "slot": "root",
+        "children": [
+          "box",
+          "flex",
+          "spinner",
+          "fractional",
+          "nested"
+        ]
+      },
+      {
+        "id": "box",
+        "kind": "box",
+        "slot": "box",
+        "children": [
+          "text"
+        ]
+      },
+      {
+        "id": "text",
+        "kind": "text",
+        "slot": "text",
+        "children": [],
+        "bindings": {
+          "text": {
+            "property": "label"
+          }
+        }
+      },
+      {
+        "id": "flex",
+        "kind": "flex_box",
+        "slot": "flex",
+        "children": [
+          "icon",
+          "image"
+        ]
+      },
+      {
+        "id": "icon",
+        "kind": "icon",
+        "slot": "icon",
+        "children": [],
+        "bindings": {
+          "icon": {
+            "property": "icon"
+          }
+        }
+      },
+      {
+        "id": "image",
+        "kind": "image",
+        "slot": "image",
+        "children": [],
+        "bindings": {
+          "source": {
+            "property": "image"
+          }
+        }
+      },
+      {
+        "id": "spinner",
+        "kind": "spinner",
+        "children": [],
+        "bindings": {
+          "value": {
+            "property": "progress"
+          },
+          "strokeWidth": {
+            "literal": 2
+          },
+          "trackStrokeWidth": {
+            "literal": 1
+          },
+          "color": {
+            "token": "color/fortal.accent.9"
+          },
+          "trackColor": {
+            "literal": "#223344"
+          },
+          "size": {
+            "literal": 16
+          },
+          "duration": {
+            "property": "duration"
+          }
+        },
+        "visibleWhen": {
+          "state": "selected",
+          "operator": "active"
+        }
+      },
+      {
+        "id": "fractional",
+        "kind": "fractional_position",
+        "children": [
+          "fractionalSpinner"
+        ],
+        "bindings": {
+          "widthFactor": {
+            "property": "progress"
+          },
+          "alignment": {
+            "literal": "centerLeft"
+          }
+        }
+      },
+      {
+        "id": "fractionalSpinner",
+        "kind": "spinner",
+        "children": [],
+        "bindings": {
+          "size": {
+            "literal": 8
+          }
+        }
+      },
+      {
+        "id": "nested",
+        "kind": "nested_component",
+        "children": [],
+        "component": "fixtureChild",
+        "recipe": {
+          "property": "nestedRecipe"
+        },
+        "state": {
+          "literal": "default"
+        },
+        "properties": {
+          "label": {
+            "property": "label"
+          }
+        }
+      }
+    ]
+  },
+  "recipes": [
+    {
+      "id": "primary",
+      "properties": {
+        "variant": "primary"
+      },
+      "styles": {
+        "root": "primary/root",
+        "box": "primary/box",
+        "text": "primary/text",
+        "flex": "primary/flex",
+        "icon": "primary/icon",
+        "image": "primary/image"
+      }
+    }
+  ],
+  "styles": {
+    "primary/root": {
+      "type": "stack_box",
+      "v": 1
+    },
+    "primary/box": {
+      "type": "box",
+      "v": 1
+    },
+    "primary/text": {
+      "type": "text",
+      "v": 1
+    },
+    "primary/flex": {
+      "type": "flex_box",
+      "v": 1
+    },
+    "primary/icon": {
+      "type": "icon",
+      "v": 1
+    },
+    "primary/image": {
+      "type": "image",
+      "v": 1
+    }
+  },
+  "semantics": {
+    "role": "button",
+    "bindings": {
+      "label": {
+        "property": "label"
+      },
+      "enabled": {
+        "property": "enabled"
+      },
+      "selected": {
+        "literal": true
+      },
+      "required": {
+        "literal": true
+      },
+      "invalid": {
+        "property": "invalid"
+      },
+      "liveRegion": {
+        "literal": false
+      }
+    }
+  },
+  "oracles": [
+    {
+      "theme": "light",
+      "image": "light/fixture.png",
+      "metadata": "light/fixture.json",
+      "evidence": "rendered"
+    },
+    {
+      "theme": "dark",
+      "image": "dark/fixture.png",
+      "metadata": "dark/fixture.json",
+      "evidence": "rendered"
+    }
+  ],
+  "diagnostics": [
+    {
+      "code": "runtime.callback_omitted",
+      "severity": "info",
+      "path": "nested",
+      "message": "Callbacks are intentionally not captured."
+    }
+  ]
+}

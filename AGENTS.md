@@ -18,16 +18,24 @@ This installs FVM, Flutter SDK (3.41.7), DCM, and melos, then bootstraps all pac
 packages/
   mix/              # Core framework (v2.0.0-rc.0)
   mix_annotations/  # Annotations for codegen
+  mix_component_contract/ # Pure portable component contract
+  mix_figma/        # Dart Figma bridge and Mix protocol mapping
+  mix_figma_plugin/ # TypeScript Figma plugin (not a Dart package)
   mix_generator/    # build_runner generator
   mix_lint/         # Custom linter (not in pub workspace, see below)
+  mix_protocol/     # Versioned JSON wire protocol
+  mix_tailwinds/    # Tailwind-to-Mix parser
 ```
 
-## Pub workspace
+## Dependency resolution
 
-The repo uses [Dart pub workspaces](https://dart.dev/tools/pub/workspaces): a single `pubspec.lock` and shared resolution at the root. Run `dart pub get` at the repo root to resolve all workspace packages.
+The repo is a Melos workspace, not a Dart pub workspace. `melos bootstrap`
+resolves each Dart package and generates local `pubspec_overrides.yaml` path
+overrides. Lockfiles and generated override files are intentionally ignored.
 
-- **In the workspace:** mix, mix_annotations, mix_generator, mix_tailwinds, mix_tailwinds/example.
-- **Excluded:** `mix_lint` (uses analyzer ^7.x for custom_lint_builder; other packages use analyzer >=9). Run `dart pub get` inside `packages/mix_lint` when working on the linter.
+The TypeScript-only `mix_figma_plugin` package is outside Melos; run `npm ci`
+inside that directory. Melos categories are explicit allowlists for Dart and
+Flutter commands even though the `packages/*` glob discovers packages.
 
 ## Commands
 

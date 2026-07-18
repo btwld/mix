@@ -90,6 +90,7 @@ coverage/
 demo/.fvm/flutter_sdk
 website/tsconfig.tsbuildinfo
 node_modules
+packages/mix_figma_plugin/dist/
 
 # FVM 
 

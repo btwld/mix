@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mix Figma Bridge</title>
+    <style>
+      :root { color-scheme: light dark; font: 12px/1.4 Inter, sans-serif; }
+      body { margin: 0; padding: 16px; background: var(--figma-color-bg); color: var(--figma-color-text); }
+      h1 { font-size: 16px; margin: 0 0 12px; }
+      section { display: grid; gap: 8px; margin-bottom: 16px; }
+      button, input { box-sizing: border-box; width: 100%; min-height: 32px; border-radius: 6px; }
+      button { border: 0; background: var(--figma-color-bg-brand); color: var(--figma-color-text-onbrand); cursor: pointer; }
+      input { border: 1px solid var(--figma-color-border); padding: 6px 8px; background: var(--figma-color-bg); color: inherit; }
+      #status { min-height: 34px; padding: 8px; border-radius: 6px; background: var(--figma-color-bg-secondary); }
+    </style>
+  </head>
+  <body>
+    <h1>Mix Figma Bridge</h1>
+    <section>
+      <button id="health" type="button">Check bridge</button>
+      <button id="pull-tokens" type="button">Pull variables & styles</button>
+      <button id="push-tokens" type="button">Push variables & styles</button>
+      <button id="pull-selection" type="button">Pull selection</button>
+    </section>
+    <section>
+      <input id="component-id" aria-label="Component id" placeholder="Component id" />
+      <button id="push-component" type="button">Push component set</button>
+    </section>
+    <div id="status" role="status">Ready.</div>
+    <script>/*__MIX_FIGMA_UI_SCRIPT__*/</script>
+  </body>
+</html>

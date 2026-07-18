@@ -48,4 +48,38 @@ jobs:
       run-dcm: false
       melos-commands: |
         melos run schema:inventory
+        melos run schema:export
         melos run analyze:dart
+
+  figma-plugin:
+    name: Figma Plugin
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            plugin:
+              - 'packages/mix_figma_plugin/**'
+              - 'packages/mix_protocol/schema/**'
+      - uses: actions/setup-node@v4
+        if: steps.changes.outputs.plugin == 'true'
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: packages/mix_figma_plugin/package-lock.json
+      - name: Install dependencies
+        if: steps.changes.outputs.plugin == 'true'
+        working-directory: packages/mix_figma_plugin
+        run: npm ci
+      - name: Verify generated types
+        if: steps.changes.outputs.plugin == 'true'
+        working-directory: packages/mix_figma_plugin
+        run: |
+          npm run gen:types
+          git diff --exit-code -- src/generated
+      - name: Build and test
+        if: steps.changes.outputs.plugin == 'true'
+        working-directory: packages/mix_figma_plugin
+        run: npm run build && npm test

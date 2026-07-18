@@ -1,0 +1,170 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "$extensions": {
+    "com.btwld.mix": {
+      "mode": "dark"
+    }
+  },
+  "color": {
+    "$type": "color",
+    "brand": {
+      "primary": {
+        "$value": "#8DA4EF"
+      },
+      "accent": {
+        "$value": "{color.brand.primary}"
+      }
+    }
+  },
+  "space": {
+    "$type": "dimension",
+    "stack": {
+      "sm": {
+        "$value": {
+          "value": 8,
+          "unit": "px"
+        },
+        "$extensions": {
+          "com.btwld.mix": {
+            "group": "spaces"
+          }
+        }
+      }
+    }
+  },
+  "opacity": {
+    "$type": "number",
+    "disabled": {
+      "$value": 0.64,
+      "$extensions": {
+        "com.btwld.mix": {
+          "group": "doubles"
+        }
+      }
+    }
+  },
+  "radius": {
+    "$type": "dimension",
+    "card": {
+      "$value": {
+        "value": 12,
+        "unit": "px"
+      },
+      "$extensions": {
+        "com.btwld.mix": {
+          "group": "radii"
+        }
+      }
+    }
+  },
+  "type": {
+    "body": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "Inter",
+        "fontSize": {
+          "value": 14,
+          "unit": "px"
+        },
+        "fontWeight": 400,
+        "lineHeight": 1.4
+      }
+    }
+  },
+  "shadow": {
+    "text": {
+      "soft": {
+        "$type": "shadow",
+        "$value": {
+          "color": "#33000000",
+          "offsetX": {
+            "value": 0,
+            "unit": "px"
+          },
+          "offsetY": {
+            "value": 1,
+            "unit": "px"
+          },
+          "blur": {
+            "value": 2,
+            "unit": "px"
+          }
+        },
+        "$extensions": {
+          "com.btwld.mix": {
+            "group": "shadows"
+          }
+        }
+      },
+      "box": {
+        "$type": "shadow",
+        "$value": {
+          "color": "#33000000",
+          "offsetX": {
+            "value": 0,
+            "unit": "px"
+          },
+          "offsetY": {
+            "value": 2,
+            "unit": "px"
+          },
+          "blur": {
+            "value": 8,
+            "unit": "px"
+          },
+          "spread": {
+            "value": 1,
+            "unit": "px"
+          }
+        },
+        "$extensions": {
+          "com.btwld.mix": {
+            "group": "boxShadows"
+          }
+        }
+      }
+    }
+  },
+  "border": {
+    "focus": {
+      "$type": "border",
+      "$value": {
+        "color": "#008577",
+        "width": {
+          "value": 2,
+          "unit": "px"
+        },
+        "style": "solid"
+      }
+    }
+  },
+  "weight": {
+    "strong": {
+      "$type": "fontWeight",
+      "$value": 700
+    }
+  },
+  "breakpoint": {
+    "sidebar": {
+      "$type": "dimension",
+      "$value": {
+        "value": 960,
+        "unit": "px"
+      },
+      "$extensions": {
+        "com.btwld.mix": {
+          "group": "breakpoints"
+        }
+      }
+    }
+  },
+  "duration": {
+    "fast": {
+      "$type": "duration",
+      "$value": {
+        "value": 120,
+        "unit": "ms"
+      }
+    }
+  }
+}

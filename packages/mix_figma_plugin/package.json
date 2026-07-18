@@ -1,0 +1,19 @@
+{
+  "name": "@mix/mix-figma-plugin",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Figma plugin transport for the Mix protocol bridge",
+  "scripts": {
+    "build": "npm run typecheck && node scripts/build.mjs",
+    "gen:types": "node scripts/gen-types.mjs",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@figma/plugin-typings": "1.131.0",
+    "esbuild": "0.28.1",
+    "json-schema-to-typescript": "15.0.4",
+    "typescript": "7.0.2",
+    "vitest": "4.1.10"
+  }
+}
