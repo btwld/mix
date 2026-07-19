@@ -505,14 +505,14 @@ because this workload did not execute them. Evidence is under
 `.context/benchmark-results/border-counterfactual-v1/`, and
 `.context/benchmark-results/uniform-border-primary-v{1,2}/`.
 
-### QW21: Isolate a single-active helper from the multi-active hot body — paused
+### QW21: Isolate a single-active helper from the multi-active hot body — rejected
 
 The previous single-active fast path improved static S0/S0I by roughly 20% but
-regressed S2 in 10/10 pairs. The current experiment keeps the legacy
-multi-active extraction/merge body unchanged and calls a separate
-`vm:never-inline` helper only when exactly one variant is active. This tests
-whether the earlier S2 movement came from inlining/code-shape coupling rather
-than the single-active algorithm itself.
+regressed S2 in 10/10 pairs. This experiment kept the legacy multi-active
+extraction/merge body unchanged and called a separate `vm:never-inline` helper
+only when exactly one variant was active. It tested whether the earlier S2
+movement came from inlining/code-shape coupling rather than the single-active
+algorithm itself.
 
 To shorten stage iteration without changing the default protocol, the
 resolution executable now supports `PROFILE_FILTER` and `STAGE_FILTER`.
@@ -520,14 +520,20 @@ Empty filters still select all profiles and all 34 stages. A targeted build can
 select `static,all_active` and `variant_merge,full_style_build`, producing four
 validated records instead of 102.
 
-One alternating-revision forward/reverse screen showed a balanced 71.0%
-static merge reduction and 53.1% static full-build reduction. All-active merge
-moved -3.5%, while all-active full build was +0.34% overall and changed sign by
-order (+2.61% forward, -1.87% reverse). The machine had unrelated background
-activity, so these results are provisional. No S0/S2 primary or profile work
-was run, and the helper is preserved only as an experimental checkpoint.
-Evidence and frozen apps are under
-`.context/benchmark-{results,builds}/variant-single-isolated-v1/`.
+A fresh three-pair forward/reverse screen reproduced the static reduction:
+variant merge improved 68.64% and full build 50.59%, both 6/6. Complete
+all-active build improved 0.51% overall and in both order aggregates, although
+the isolated all-active merge stage regressed 0.32% with only 1/6 faster
+comparisons.
+
+The 80-process primary gate then improved adjusted S0 by 19.59% in 10/10
+pairs, but adjusted S2 regressed 1.10% aggregate, 1.32% median-paired, and
+1.05% trimmed mean with only 2/10 improvements. The helper was reverted under
+the state-heavy stop rule without profile or cadence work. The protocol
+filters remain. Valid evidence is under
+`.context/benchmark-results/variant-single-isolated-stable-host-v1/` and
+`.context/benchmark-{builds,results}/variant-single-isolated-primary-v1/`;
+the earlier paused dataset remains excluded.
 
 ## Experiment rules
 

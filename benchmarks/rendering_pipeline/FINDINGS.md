@@ -453,43 +453,6 @@ follow-up. Raw evidence is under
 `.context/benchmark-results/border-counterfactual-v1/`, and
 `.context/benchmark-results/uniform-border-primary-v{1,2}/`.
 
-### P1: Isolate the one-active fast path from multi-active AOT code — paused
-
-The earlier single-active experiment produced a large static win but regressed
-S2 even though S2 continued through the legacy multi-active algorithm. A new
-candidate tests whether AOT code-shape coupling caused that regression. It
-adds one `activeVariants.length == 1` dispatch and moves the single-active
-extraction/recursive merge into a `vm:never-inline` private helper. The
-existing multi-active extraction and merge loops remain textually unchanged.
-
-The resolution-stage protocol now accepts optional profile and stage filters,
-so this experiment can run only static/all-active `variant_merge` and
-`full_style_build` while an empty filter retains the complete 102-case matrix.
-Five protocol tests cover default selection, filtered forward/reverse order,
-and invalid labels. The candidate also passes 61 focused variant, nesting,
-identity, and `StyleVariation` tests plus Dart and fatal DCM analysis.
-
-One adjacent forward/reverse stage pair produced:
-
-| Profile/stage | Baseline | Candidate | Balanced change | Order detail |
-| --- | ---: | ---: | ---: | --- |
-| Static variant merge | 3.862 µs | 1.120 µs | -71.0% | -70.6% / -71.4% |
-| Static full build | 5.456 µs | 2.561 µs | -53.1% | -53.1% / -53.1% |
-| All-active variant merge | 14.431 µs | 13.926 µs | -3.5% | -2.3% / -4.7% |
-| All-active full build | 20.539 µs | 20.608 µs | +0.34% | +2.61% / -1.87% |
-
-These numbers are **provisional, not an optimization verdict**. The user
-reported unrelated background machine activity during the run, and the
-all-active full-build sign changed with order. No primary S0/S2, profile, or
-release-cadence campaign was started. The production helper remains an
-experimental checkpoint so the exact source can be resumed in a fresh
-session; it must not be described as accepted or shippable.
-
-Frozen apps and raw evidence are under
-`.context/benchmark-builds/variant-single-isolated-v1/` and
-`.context/benchmark-results/variant-single-isolated-v1/`. Resume instructions
-are in `.context/variant-single-isolated-handoff.md`.
-
 ## Rejected performance experiments
 
 ### R1: Fully fused active-style extraction and merge
@@ -793,6 +756,59 @@ attribution result, not a shippable optimization. Raw evidence is under
 `.context/benchmark-results/modifier-single-fastpath-v1/` and
 `.context/benchmark-results/modifier-single-fastpath-primary-v1/`.
 
+### R19: Isolate the one-active fast path from multi-active AOT code
+
+The earlier single-active experiment produced a large static win but regressed
+S2 even though S2 continued through the legacy multi-active algorithm. This
+candidate tested whether inlining/code-shape coupling caused that regression.
+It added one `activeVariants.length == 1` dispatch and moved the single-active
+extraction/recursive merge into a `vm:never-inline` private helper. The
+existing multi-active extraction and merge loops remained textually unchanged.
+
+The resolution-stage protocol gained optional profile and stage filters for
+this experiment. Empty filters retain the complete 102-case matrix, while the
+screen selected static/all-active `variant_merge` and `full_style_build`.
+Five protocol tests cover default selection, filtered forward/reverse order,
+and invalid labels. Before timing, the candidate also passed 61 focused
+variant, nesting, identity, and `StyleVariation` tests plus Dart and fatal DCM
+analysis.
+
+After the paused run was excluded, a stable-host screen ran three fresh
+forward/reverse pairs per revision. The verified Conductor renderer was
+suspended for the timing window and automatically resumed afterward so it did
+not compete with either revision:
+
+| Profile/stage | Baseline | Candidate | Aggregate change | Median paired | Faster pairs |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Static variant merge | 3.330 µs | 1.044 µs | -68.64% | -68.66% | 6/6 |
+| Static full build | 4.698 µs | 2.321 µs | -50.59% | -50.43% | 6/6 |
+| All-active variant merge | 12.653 µs | 12.693 µs | +0.32% | +0.99% | 1/6 |
+| All-active full build | 18.028 µs | 17.936 µs | -0.51% | -0.45% | 5/6 |
+
+Complete all-active build improved in both order aggregates (-0.55% forward,
+-0.48% reverse), so the candidate advanced to the primary gate despite the
+small isolated multi-active merge regression. Exact baseline-parent and
+candidate-checkpoint apps then ran an 80-process S0/S2 campaign: ten adjacent
+pairs per scenario, separate Flutter controls, alternating revision/scenario/
+implementation order, three measured seconds, and two-second lifecycle gaps.
+
+| Scenario | Baseline Flutter | Baseline Mix | Candidate Flutter | Candidate Mix | Aggregate adjusted | Median paired | Trimmed mean | Improved pairs |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| S0 static | 204.93 µs | 400.16 µs | 204.54 µs | 321.40 µs | -19.59% | -19.84% | -19.73% | 10/10 |
+| S2 pressed + selected | 148.11 µs | 126.74 µs | 148.00 µs | 128.02 µs | +1.10% | +1.32% | +1.05% | 2/10 |
+
+The never-inline boundary did not prevent the state-heavy regression. S2 does
+not execute the one-active helper, yet it moved backward across aggregate,
+median-paired, trimmed-mean, and win-count views. The production helper was
+therefore reverted without profile or release-cadence work. The tested
+resolution-stage filters remain as generally useful instrumentation.
+
+The excluded paused evidence remains under
+`.context/benchmark-{builds,results}/variant-single-isolated-v1/`. Valid fresh
+evidence is under
+`.context/benchmark-results/variant-single-isolated-stable-host-v1/` and
+`.context/benchmark-{builds,results}/variant-single-isolated-primary-v1/`.
+
 ## Remaining opportunities
 
 The next useful work should be bounded and independently attributable:
@@ -800,8 +816,8 @@ The next useful work should be bounded and independently attributable:
 - preserve the established multi-active behavior while avoiding repeated
   generic extraction dispatch through a structural design that does not add
   per-instance metadata to every `VariantStyle` or duplicate the hot loop; the
-  paused isolated single-active helper is the current experiment, not yet an
-  accepted answer;
+  isolated single-active helper is now rejected because its never-inline
+  boundary still regressed S2;
 - validate the equivalent uniform fast path for `BorderDirectionalMix` with a
   workload that actually exercises directional borders; do not infer it from
   the accepted `BorderMix` result;
