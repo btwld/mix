@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
+import '../src/benchmark_border_geometry.dart';
 import 'card_grid.dart';
 
 const Color _baseBorderColor = Color(0xffc7ccd4);
@@ -32,6 +33,7 @@ class FlutterIsolationCard extends StatelessWidget {
     required this.controller,
     required this.profile,
     required this.child,
+    this.borderGeometry = BenchmarkBorderGeometry.physical,
     this.animated = false,
     this.counters,
   });
@@ -39,6 +41,7 @@ class FlutterIsolationCard extends StatelessWidget {
   final ProductCardData data;
   final WidgetStatesController controller;
   final CardStateProfile profile;
+  final BenchmarkBorderGeometry borderGeometry;
   final Widget child;
   final bool animated;
   final PipelineCounters? counters;
@@ -54,6 +57,7 @@ class FlutterIsolationCard extends StatelessWidget {
         return _FlutterCardVisual(
           data: data,
           state: state,
+          borderGeometry: borderGeometry,
           animated: animated,
           counters: counters,
           child: child,
@@ -70,6 +74,7 @@ class FlutterIdiomaticCard extends StatefulWidget {
     required this.controller,
     required this.profile,
     required this.child,
+    this.borderGeometry = BenchmarkBorderGeometry.physical,
     this.animated = false,
     this.counters,
   });
@@ -77,6 +82,7 @@ class FlutterIdiomaticCard extends StatefulWidget {
   final ProductCardData data;
   final WidgetStatesController controller;
   final CardStateProfile profile;
+  final BenchmarkBorderGeometry borderGeometry;
   final Widget child;
   final bool animated;
   final PipelineCounters? counters;
@@ -106,6 +112,7 @@ class _FlutterIdiomaticCardState extends State<FlutterIdiomaticCard> {
         return _FlutterCardVisual(
           data: widget.data,
           state: state,
+          borderGeometry: widget.borderGeometry,
           animated: widget.animated,
           counters: widget.counters,
           child: widget.child,
@@ -241,6 +248,7 @@ class _FlutterCardVisual extends StatelessWidget {
   const _FlutterCardVisual({
     required this.data,
     required this.state,
+    required this.borderGeometry,
     required this.animated,
     required this.counters,
     required this.child,
@@ -248,13 +256,14 @@ class _FlutterCardVisual extends StatelessWidget {
 
   final ProductCardData data;
   final _InteractionState state;
+  final BenchmarkBorderGeometry borderGeometry;
   final bool animated;
   final PipelineCounters? counters;
   final Widget child;
 
   @override
   Widget build(BuildContext context) {
-    final targetSpec = _boxSpecFor(context, state);
+    final targetSpec = _boxSpecFor(context, state, borderGeometry);
 
     Widget current;
     if (animated) {
@@ -303,7 +312,11 @@ final class _BoxSpecTween extends Tween<BoxSpec> {
   BoxSpec lerp(double t) => begin?.lerp(end, t) ?? end!;
 }
 
-BoxSpec _boxSpecFor(BuildContext context, _InteractionState state) {
+BoxSpec _boxSpecFor(
+  BuildContext context,
+  _InteractionState state,
+  BenchmarkBorderGeometry borderGeometry,
+) {
   final colorScheme = Theme.of(context).colorScheme;
   final backgroundColor = state.hovered
       ? _hoverBackgroundColor
@@ -314,13 +327,23 @@ BoxSpec _boxSpecFor(BuildContext context, _InteractionState state) {
       ? _hoverBorderColor
       : _baseBorderColor;
   final borderWidth = state.selected ? 2.0 : 1.0;
+  final borderSide = BorderSide(color: borderColor, width: borderWidth);
+  final border = switch (borderGeometry) {
+    BenchmarkBorderGeometry.physical => Border.fromBorderSide(borderSide),
+    BenchmarkBorderGeometry.directional => BorderDirectional(
+      top: borderSide,
+      bottom: borderSide,
+      start: borderSide,
+      end: borderSide,
+    ),
+  };
   final scale = state.pressed ? 0.98 : 1.0;
 
   return BoxSpec(
     padding: const EdgeInsets.all(16),
     decoration: BoxDecoration(
       color: backgroundColor,
-      border: Border.all(color: borderColor, width: borderWidth),
+      border: border,
       borderRadius: const BorderRadius.all(Radius.circular(12)),
       boxShadow: _cardShadows,
     ),

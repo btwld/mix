@@ -1,8 +1,11 @@
+import 'benchmark_border_geometry.dart';
+
 class BenchmarkRunOptions {
   const BenchmarkRunOptions({
     this.implementation,
     this.scenario,
     this.outputPath,
+    this.borderGeometry = BenchmarkBorderGeometry.physical,
   });
 
   static const supportedImplementations = <String>{'flutter', 'mix'};
@@ -11,11 +14,13 @@ class BenchmarkRunOptions {
   final String? implementation;
   final String? scenario;
   final String? outputPath;
+  final BenchmarkBorderGeometry borderGeometry;
 
   factory BenchmarkRunOptions.parse(List<String> arguments) {
     String? implementation;
     String? scenario;
     String? outputPath;
+    var borderGeometry = BenchmarkBorderGeometry.physical;
 
     for (final argument in arguments) {
       if (argument.startsWith('--implementation=')) {
@@ -24,6 +29,10 @@ class BenchmarkRunOptions {
         scenario = argument.substring('--scenario='.length);
       } else if (argument.startsWith('--output=')) {
         outputPath = argument.substring('--output='.length);
+      } else if (argument.startsWith('--border=')) {
+        borderGeometry = parseBenchmarkBorderGeometry(
+          argument.substring('--border='.length),
+        );
       } else if (argument.startsWith('--')) {
         throw FormatException('Unknown benchmark argument: $argument');
       }
@@ -50,6 +59,7 @@ class BenchmarkRunOptions {
       implementation: implementation,
       scenario: scenario,
       outputPath: outputPath,
+      borderGeometry: borderGeometry,
     );
   }
 }

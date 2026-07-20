@@ -77,15 +77,18 @@ lib/allocation_microbenchmark.dart             retained-result heap target
 lib/post_build_microbenchmark.dart             exploratory wrapper probe; timing inconclusive
 lib/src/allocation_benchmark_protocol.dart     allocation target/driver protocol
 lib/src/allocation_profile_summary.dart        per-class retained-delta summary
+lib/src/benchmark_border_geometry.dart         strict physical/directional fixture selector
 lib/src/benchmark_case_host.dart               persistent root for replacing timed cases
 lib/src/benchmark_frame_clock.dart             monotonic synthetic frame clock
 lib/src/benchmark_frame_guard.dart             exclusive manual-frame ownership
 lib/src/benchmark_run_options.dart             fresh-process case selectors
 lib/src/resolution_stage_protocol.dart         diagnostic stage/order contract
 test/rebuild_contract_test.dart                strict rebuild/layout/paint contracts
+test/benchmark_border_geometry_test.dart       border-geometry selector contract
 test/benchmark_case_host_test.dart              case replacement/disposal contract
 test/benchmark_frame_clock_test.dart           cross-case clock contract
 test/benchmark_run_options_test.dart            selector parsing contracts
+test/border_geometry_contract_test.dart         matched Flutter/Mix border fixtures
 test/allocation_benchmark_protocol_test.dart   stage-order contract
 test/allocation_profile_summary_test.dart      class-delta summary contract
 test/resolution_stage_protocol_test.dart       resolution-stage order contract
@@ -162,14 +165,42 @@ fvm flutter run --release -d macos -t lib/microbenchmark.dart \
   --dart-define=BENCHMARK_SECONDS=3 \
   --dart-entrypoint-args=--implementation=mix \
   --dart-entrypoint-args=--scenario=S0 \
+  --dart-entrypoint-args=--border=directional \
   --dart-entrypoint-args=--output="$(pwd)/../../.context/benchmark-results/origin-main-mix-s0-01.json"
 ```
 
 Supported implementations are `flutter` and `mix`; supported scenarios are
-`S0`, `S1`, `S2`, `S0I`, and `S1I`. Omit both selectors to run the complete
-matrix. Runtime `--output` overrides `BENCHMARK_OUTPUT_PATH`; the default is
-`$TMPDIR/rendering_pipeline_micro.json`. The app prints a short
-`BENCHMARK_RESULT_FILE:` confirmation.
+`S0`, `S1`, `S2`, `S0I`, and `S1I`. Omit the implementation and scenario
+selectors to run the complete matrix. The optional
+`--border=physical|directional` selector changes only the
+border representation in the matched Flutter and Mix fixtures and defaults to
+`physical`. Runtime `--output` overrides `BENCHMARK_OUTPUT_PATH`; the default
+is `$TMPDIR/rendering_pipeline_micro.json`. The app prints a short
+`BENCHMARK_RESULT_FILE:` confirmation. Every result and the case-selection
+metadata record the chosen border geometry.
+
+### Lightweight local percentage protocol
+
+For a basic local release check, three matched pairs per scenario are enough to
+estimate a large effect without turning the run into a long campaign. Build or
+freeze each revision once, then repeat the command above in separate fresh
+processes for baseline/current `flutter` and `mix`, alternating which revision
+runs first and leaving a short lifecycle gap. Run S0 for static work and S2 as
+the state-heavy control.
+
+Normalize Mix movement by the contemporaneous Flutter control:
+
+```text
+adjusted change =
+  (current Mix / current Flutter) / (baseline Mix / baseline Flutter) - 1
+```
+
+Report the aggregate ratio, median paired ratio, pair win count, raw Mix change,
+and Flutter-control movement. With only three pairs, this is an exploratory
+percentage estimate: use it for a clear signal, not a CI threshold or a small
+optimization promotion. The July 2026 clean-baseline/current comparison found
+S0 -11.56% adjusted with 3/3 wins and S2 -1.41% with 2/3 wins; the latter is
+treated as noisy. Detailed validity limits are in [the findings](FINDINGS.md).
 
 ## Variant diagnostic microbenchmark
 
@@ -242,13 +273,22 @@ fvm flutter run --release -d macos \
 For a bounded stage screen, optionally select comma-separated protocol labels:
 
 ```bash
+--dart-define=BORDER_GEOMETRY=directional \
 --dart-define=PROFILE_FILTER=static,all_active \
---dart-define=STAGE_FILTER=variant_merge,full_style_build
+--dart-define=STAGE_FILTER=decoration_border_mix_merge,decoration_border_merged_mix_resolve,decoration_property_resolve,property_resolve,premerged_spec_resolve,full_style_build
 ```
 
 Omitting either filter, or passing it as an empty string, selects every value
 for that dimension. Unsupported labels fail before measurement. Filtering does
 not change the relative forward/reverse order of the selected cases.
+`BORDER_GEOMETRY` accepts `physical` or `directional`, defaults to `physical`,
+and is written to stage metadata.
+
+For a quick local comparison, run one fresh forward process and one fresh
+reverse process for each revision. A bounded optimization screen uses three
+matched pairs in each order. Treat either as diagnostic evidence: small
+performance thresholds require repeated measurements on the same stable host,
+not an uncalibrated GitHub-hosted runner.
 
 ## Retained-result heap diagnostic
 

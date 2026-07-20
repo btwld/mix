@@ -4,6 +4,7 @@ import 'package:mix/mix.dart';
 
 import 'flutter_card.dart';
 import 'mix_card.dart';
+import '../src/benchmark_border_geometry.dart';
 
 const int benchmarkCardCount = 60;
 const int stateFreeCardId = 0;
@@ -311,6 +312,7 @@ class BenchmarkGrid extends StatefulWidget {
     required this.track,
     required this.cards,
     required this.controllers,
+    this.borderGeometry = BenchmarkBorderGeometry.physical,
     this.animated = false,
     this.counters,
   });
@@ -319,6 +321,7 @@ class BenchmarkGrid extends StatefulWidget {
   final BenchmarkTrack track;
   final List<ProductCardData> cards;
   final BenchmarkControllerSet controllers;
+  final BenchmarkBorderGeometry borderGeometry;
   final bool animated;
   final PipelineCounters? counters;
 
@@ -366,6 +369,7 @@ class BenchmarkGridState extends State<BenchmarkGrid> {
               data: data,
               controller: controller,
               profile: profile,
+              borderGeometry: widget.borderGeometry,
               animated: widget.animated,
               counters: widget.counters,
               child: child,
@@ -375,6 +379,7 @@ class BenchmarkGridState extends State<BenchmarkGrid> {
               data: data,
               controller: controller,
               profile: profile,
+              borderGeometry: widget.borderGeometry,
               animated: widget.animated,
               counters: widget.counters,
               child: child,
@@ -384,6 +389,7 @@ class BenchmarkGridState extends State<BenchmarkGrid> {
               data: data,
               controller: controller,
               profile: profile,
+              borderGeometry: widget.borderGeometry,
               animated: widget.animated,
               counters: widget.counters,
               child: child,
@@ -393,6 +399,7 @@ class BenchmarkGridState extends State<BenchmarkGrid> {
               data: data,
               controller: controller,
               profile: profile,
+              borderGeometry: widget.borderGeometry,
               animated: widget.animated,
               counters: widget.counters,
               child: child,
@@ -415,6 +422,7 @@ class BenchmarkApp extends StatelessWidget {
     required this.track,
     required this.cards,
     required this.controllers,
+    this.borderGeometry = BenchmarkBorderGeometry.physical,
     this.gridKey,
     this.animated = false,
     this.counters,
@@ -424,6 +432,7 @@ class BenchmarkApp extends StatelessWidget {
   final BenchmarkTrack track;
   final List<ProductCardData> cards;
   final BenchmarkControllerSet controllers;
+  final BenchmarkBorderGeometry borderGeometry;
   final GlobalKey<BenchmarkGridState>? gridKey;
   final bool animated;
   final PipelineCounters? counters;
@@ -461,6 +470,7 @@ class BenchmarkApp extends StatelessWidget {
                         track: track,
                         cards: cards,
                         controllers: controllers,
+                        borderGeometry: borderGeometry,
                         animated: animated,
                         counters: counters,
                       ),

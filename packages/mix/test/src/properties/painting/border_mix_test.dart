@@ -10,9 +10,9 @@ void main() {
       test('creates BorderSideMix with all properties', () {
         final borderSideMix = BorderSideMix(
           color: Colors.red,
-          width: 2.0,
-          style: BorderStyle.solid,
           strokeAlign: 1.0,
+          style: .solid,
+          width: 2.0,
         );
 
         expect(borderSideMix.$color, resolvesTo(Colors.red));
@@ -51,7 +51,7 @@ void main() {
       });
 
       test('style factory creates BorderSideMix with style', () {
-        final borderSideMix = BorderSideMix.style(BorderStyle.none);
+        final borderSideMix = BorderSideMix.style(.none);
 
         expect(borderSideMix.$style, resolvesTo(BorderStyle.none));
         expect(borderSideMix.$color, isNull);
@@ -74,7 +74,7 @@ void main() {
         const borderSide = BorderSide(
           color: Colors.green,
           width: 4.0,
-          style: BorderStyle.solid,
+          style: .solid,
           strokeAlign: 0.8,
         );
 
@@ -91,11 +91,11 @@ void main() {
       });
 
       test('maybeValue returns null for BorderSide.none', () {
-        expect(BorderSideMix.maybeValue(BorderSide.none), isNull);
+        expect(BorderSideMix.maybeValue(.none), isNull);
       });
 
       test('maybeValue returns BorderSideMix for non-null borderSide', () {
-        const borderSide = BorderSide(width: 2.0, color: Colors.purple);
+        const borderSide = BorderSide(color: Colors.purple, width: 2.0);
         final borderSideMix = BorderSideMix.maybeValue(borderSide);
 
         expect(borderSideMix, isNotNull);
@@ -118,7 +118,7 @@ void main() {
       });
 
       test('style utility works correctly', () {
-        final borderSideMix = BorderSideMix().style(BorderStyle.none);
+        final borderSideMix = BorderSideMix().style(.none);
 
         expect(borderSideMix.$style, resolvesTo(BorderStyle.none));
       });
@@ -134,15 +134,15 @@ void main() {
       test('resolves to BorderSide with correct properties', () {
         final borderSideMix = BorderSideMix(
           color: Colors.red,
-          width: 2.0,
-          style: BorderStyle.solid,
           strokeAlign: 1.0,
+          style: .solid,
+          width: 2.0,
         );
 
         const resolvedValue = BorderSide(
           color: Colors.red,
           width: 2.0,
-          style: BorderStyle.solid,
+          style: .solid,
           strokeAlign: 1.0,
         );
 
@@ -153,9 +153,9 @@ void main() {
         final borderSideMix = BorderSideMix(width: 2.0);
 
         const resolvedValue = BorderSide(
-          width: 2.0,
           color: Color(0xFF000000),
-          style: BorderStyle.solid,
+          width: 2.0,
+          style: .solid,
           strokeAlign: -1.0,
         );
 
@@ -167,7 +167,7 @@ void main() {
       test('merges properties correctly', () {
         final first = BorderSideMix(color: Colors.red, width: 2.0);
 
-        final second = BorderSideMix(width: 3.0, style: BorderStyle.solid);
+        final second = BorderSideMix(style: .solid, width: 3.0);
 
         final merged = first.merge(second);
 
@@ -206,9 +206,9 @@ void main() {
       test('props includes all properties', () {
         final borderSideMix = BorderSideMix(
           color: Colors.red,
-          width: 2.0,
-          style: BorderStyle.solid,
           strokeAlign: 1.0,
+          style: .solid,
+          width: 2.0,
         );
 
         expect(borderSideMix.props.length, 4);
@@ -244,9 +244,9 @@ void main() {
 
         final borderMix = BorderMix(
           top: topSide,
-          right: rightSide,
           bottom: bottomSide,
           left: leftSide,
+          right: rightSide,
         );
 
         // Check that each side's Mix is correctly stored
@@ -316,9 +316,9 @@ void main() {
       test('handles Border with BorderSide.none correctly', () {
         const border = Border(
           top: BorderSide(color: Colors.red, width: 2.0),
-          right: BorderSide.none,
+          right: .none,
           bottom: BorderSide(color: Colors.blue, width: 1.0),
-          left: BorderSide.none,
+          left: .none,
         );
 
         final borderMix = BorderMix.value(border);
@@ -376,9 +376,9 @@ void main() {
       test('resolves to Border with correct properties', () {
         final borderMix = BorderMix(
           top: BorderSideMix(color: Colors.red, width: 2.0),
-          right: BorderSideMix(color: Colors.green, width: 3.0),
           bottom: BorderSideMix(color: Colors.blue, width: 1.0),
           left: BorderSideMix(color: Colors.yellow, width: 4.0),
+          right: BorderSideMix(color: Colors.green, width: 3.0),
         );
 
         const expectedBorder = Border(
@@ -399,9 +399,9 @@ void main() {
 
         const expectedBorder = Border(
           top: BorderSide(color: Colors.red, width: 2.0),
-          right: BorderSide.none,
-          bottom: BorderSide.none,
-          left: BorderSide.none,
+          right: .none,
+          bottom: .none,
+          left: .none,
         );
 
         expect(borderMix, resolvesTo(expectedBorder));
@@ -466,7 +466,7 @@ void main() {
       test('uniform shorthand chaining applies to all sides', () {
         final borderMix = BoxBorderMix.color(
           Colors.red,
-        ).width(2.0).style(BorderStyle.none).strokeAlign(1.0);
+        ).width(2.0).style(.none).strokeAlign(1.0);
         final resolved = borderMix.resolve(MockBuildContext());
 
         expect(resolved.top, resolved.right);
@@ -501,8 +501,8 @@ void main() {
         );
 
         final second = BorderMix(
-          right: BorderSideMix(color: Colors.blue, width: 3.0),
           bottom: BorderSideMix(color: Colors.yellow, width: 4.0),
+          right: BorderSideMix(color: Colors.blue, width: 3.0),
         );
 
         final merged = first.merge(second);
@@ -557,9 +557,9 @@ void main() {
       test('props includes all properties', () {
         final borderMix = BorderMix(
           top: BorderSideMix(color: Colors.red),
-          right: BorderSideMix(color: Colors.green),
           bottom: BorderSideMix(color: Colors.blue),
           left: BorderSideMix(color: Colors.yellow),
+          right: BorderSideMix(color: Colors.green),
         );
 
         expect(borderMix.props.length, 4);
@@ -580,12 +580,115 @@ void main() {
   });
 
   group('BorderDirectionalMix', () {
+    group('Resolution', () {
+      testWidgets('resolves shared directional side for each output field', (
+        tester,
+      ) async {
+        var resolverCalls = 0;
+        final colorToken = ContextToken((_) {
+          resolverCalls++;
+
+          return <Color>[
+            Colors.red,
+            Colors.blue,
+            Colors.green,
+            Colors.yellow,
+          ][resolverCalls - 1];
+        });
+        final borderMix = BorderDirectionalMix.all(
+          BorderSideMix(color: colorToken()),
+        );
+        late BorderDirectional resolved;
+
+        await tester.pumpWidget(
+          Builder(
+            builder: (context) {
+              resolved = borderMix.resolve(context);
+
+              return const SizedBox.shrink();
+            },
+          ),
+        );
+
+        expect(resolverCalls, 4);
+        expect(resolved.bottom.color, Colors.red);
+        expect(resolved.end.color, Colors.blue);
+        expect(resolved.start.color, Colors.green);
+        expect(resolved.top.color, Colors.yellow);
+      });
+
+      testWidgets('resolves nonuniform directional sides in generated order', (
+        tester,
+      ) async {
+        final resolverOrder = <String>[];
+
+        BorderSideMix side(String label, Color color) {
+          final token = ContextToken((_) {
+            resolverOrder.add(label);
+
+            return color;
+          });
+
+          return BorderSideMix(color: token());
+        }
+
+        final borderMix = BorderDirectionalMix(
+          top: side('top', Colors.red),
+          bottom: side('bottom', Colors.blue),
+          start: side('start', Colors.green),
+          end: side('end', Colors.yellow),
+        );
+        late BorderDirectional resolved;
+
+        await tester.pumpWidget(
+          Builder(
+            builder: (context) {
+              resolved = borderMix.resolve(context);
+
+              return const SizedBox.shrink();
+            },
+          ),
+        );
+
+        expect(resolverOrder, <String>['bottom', 'end', 'start', 'top']);
+        expect(resolved.top.color, Colors.red);
+        expect(resolved.bottom.color, Colors.blue);
+        expect(resolved.start.color, Colors.green);
+        expect(resolved.end.color, Colors.yellow);
+      });
+
+      test('resolves empty directional mix to default', () {
+        expect(
+          BorderDirectionalMix().resolve(MockBuildContext()),
+          const BorderDirectional(),
+        );
+      });
+
+      test('maps directional start and end in LTR and RTL', () {
+        final borderMix = BorderDirectionalMix(
+          start: BorderSideMix(color: Colors.red, width: 3),
+          end: BorderSideMix(color: Colors.blue, width: 7),
+        );
+        final resolved = borderMix.resolve(MockBuildContext());
+
+        final ltr = resolved.dimensions.resolve(.ltr);
+        final rtl = resolved.dimensions.resolve(.rtl);
+
+        expect(resolved.start.color, Colors.red);
+        expect(resolved.end.color, Colors.blue);
+        expect(ltr.left, 3);
+        expect(ltr.right, 7);
+        expect(rtl.left, 7);
+        expect(rtl.right, 3);
+      });
+    });
+
     group('Utility Methods', () {
       test('uniform shorthand chaining applies to all directional sides', () {
         final borderMix = BorderDirectionalMix()
             .color(Colors.teal)
             .width(4.0)
-            .style(BorderStyle.none)
+            .style(.none)
             .strokeAlign(0.5);
         final resolved = borderMix.resolve(MockBuildContext());
 

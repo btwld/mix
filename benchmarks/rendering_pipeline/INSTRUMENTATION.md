@@ -82,6 +82,30 @@ Consequently the probe reports `retained_heap_delta` and explicitly excludes
 transient intermediates. The profiler runs in a separate OS process so its own
 `vm_service` classes cannot pollute the target isolate group.
 
+### Combined accepted checkpoint estimate
+
+The bounded checkpoint comparison freezes the clean pre-optimization and
+current accepted sources, then launches one selected S0 or S2 case per release
+process. Each of three pairs contains baseline/current Flutter and Mix
+processes. Scenario, implementation, and revision order alternate; a two-second
+lifecycle gap separates processes. Binary hashes, result markers, metadata,
+duration, and positive samples remain strict validity checks.
+
+The quick campaign completed 24/24 valid processes. Matched Flutter adjustment
+estimated S0 at -11.56% aggregate / -11.94% median-paired with 3/3 wins. S2 was
+-1.41% / -1.79% with 2/3 wins. Aggregate Flutter movement was -0.60% for S0 and
++0.17% for S2. Two individual S2 Flutter pairs crossed +/-2%, so the S2 result
+is noisy rather than a decision-grade speed claim.
+
+At the user's request, Conductor stayed open. Its known processes were excluded
+from the between-case CPU abort check, and its verified WebContent renderer was
+suspended only during the timing window. The runner recorded rather than
+aborted for brief `mdworker` (20.3%) and `sysmond` (59.0%) bursts. This host
+policy is acceptable for a basic local percentage estimate with matched
+controls, but not for a release threshold or a small-delta promotion decision.
+Raw results, process logs, host events, manifest, and analysis are under
+`.context/benchmark-results/combined-accepted-quick-v8/`.
+
 ### Profile integration benchmark
 
 The profile benchmark records:
@@ -534,6 +558,32 @@ filters remain. Valid evidence is under
 `.context/benchmark-results/variant-single-isolated-stable-host-v1/` and
 `.context/benchmark-{builds,results}/variant-single-isolated-primary-v1/`;
 the earlier paused dataset remains excluded.
+
+### Directional-border workload axis
+
+The release microbenchmark and resolution-stage diagnostic can now exercise
+the real `BorderDirectionalMix` path without relabeling a physical-border
+workload. `--border=physical|directional` selects the release fixture, while
+`BORDER_GEOMETRY=physical|directional` selects the compile-time stage fixture;
+both default to `physical` so historical commands retain their meaning.
+
+The directional Mix style family uses `BorderDirectionalMix.all` in base,
+hovered, and selected sources. Its matched Flutter control uses an explicit
+uniform `BorderDirectional` with the same color, width, style, and stroke
+alignment. Geometry appears in case-selection metadata and in every primary
+result, and the stage output records it in metadata. Fixture tests resolve all
+three states and assert that neither implementation falls back to a physical
+`Border`.
+
+The bounded directional stage screen selects static and all-active profiles
+plus the unchanged border-merge control, direct merged-border resolver,
+decoration/property containment, premerged-spec resolution, and full style
+build. Its valid frozen screen completed three matched pairs per order with no
+exclusions. The candidate improved direct merged-border resolution by 21.89%
+static and 47.89% all-active, both 6/6, but regressed static premerged-spec
+resolution by 3.79% in 0/6 wins. It therefore failed before the primary gate;
+the generated production resolver was restored exactly. Complete evidence is
+under `.context/benchmark-results/border-directional-stage-v5/`.
 
 ## Experiment rules
 

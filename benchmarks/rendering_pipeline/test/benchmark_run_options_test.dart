@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:rendering_pipeline/src/benchmark_border_geometry.dart';
 import 'package:rendering_pipeline/src/benchmark_run_options.dart';
 
 void main() {
@@ -8,6 +9,7 @@ void main() {
     expect(options.implementation, isNull);
     expect(options.scenario, isNull);
     expect(options.outputPath, isNull);
+    expect(options.borderGeometry, BenchmarkBorderGeometry.physical);
   });
 
   test('parses an isolated benchmark case and output path', () {
@@ -22,6 +24,12 @@ void main() {
     expect(options.outputPath, '/tmp/result.json');
   });
 
+  test('parses the directional border selector', () {
+    final options = BenchmarkRunOptions.parse(const ['--border=directional']);
+
+    expect(options.borderGeometry, BenchmarkBorderGeometry.directional);
+  });
+
   test('rejects unsupported selectors and unknown long options', () {
     expect(
       () => BenchmarkRunOptions.parse(const ['--implementation=other']),
@@ -29,6 +37,10 @@ void main() {
     );
     expect(
       () => BenchmarkRunOptions.parse(const ['--scenario=S9']),
+      throwsFormatException,
+    );
+    expect(
+      () => BenchmarkRunOptions.parse(const ['--border=diagonal']),
       throwsFormatException,
     );
     expect(

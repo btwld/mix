@@ -1,12 +1,14 @@
 # Rendering-pipeline investigation findings
 
-- Date: 2026-07-13
+- Date: 2026-07-20
 - Flutter: 3.41.7 (`cc0734ac71`)
 - Dart: 3.11.5
 - Host: macOS 26.5.2, 1600×1200 physical view, 120 Hz
 - Branch: `chore/benchmarking`
 - Status: accepted baseline established in draft PR #976; validated follow-up
-  opened as draft PR #977; uniform-border follow-up validated locally
+  opened as draft PR #977; physical uniform-border follow-up accepted locally;
+  directional equivalent rejected at its frozen stage gate; bounded combined
+  baseline-to-current release estimate complete
 
 ## Executive answer
 
@@ -22,17 +24,18 @@ Mix pipeline and implemented fixes for them:
 
 Counter contracts confirm that irrelevant state changes now perform zero Mix
 resolutions, while relevant state changes retain the expected rebuild and paint
-behavior. The earlier combined workload A/B moved static Mix iterations by
-roughly 20–22 µs, but that multi-case timing is retained as directional
-characterization because this session later proved that heap/GC phase can leak
-between cases in one process. The eliminated-work and lifecycle claims are
-test-backed; a fresh origin-main versus final timing rerun is required before
-turning that older combined number into a regression threshold.
+behavior. A bounded fresh-process release comparison now measures the complete
+accepted source against the clean pre-optimization source boundary. After its
+matched Flutter control, S0 improved 11.56% aggregate / 11.94% median-paired in
+3/3 pairs. S2 improved 1.41% aggregate / 1.79% median-paired in 2/3 pairs. The
+S0 result is a useful local estimate; the smaller S2 result is noisy and is not
+a decision-grade speed claim. The earlier multi-case A/B remains directional
+characterization because heap/GC phase can leak between cases in one process.
 
 The main remaining static cost is style computation plus widget construction.
-With the accepted production state, fresh-process S0 averages 504.18 µs for Mix
-and 216.59 µs for Flutter, a 287.60 µs gap. That is about 3.45% of an 8.33 ms
-120 Hz frame budget, not a missed-frame claim. A synchronous stage probe
+In the latest bounded current-accepted release snapshot, S0 averages 400.97 µs
+for Mix and 203.55 µs for Flutter, a 197.42 µs gap. That is about 2.37% of an
+8.33 ms 120 Hz frame budget, not a missed-frame claim. A synchronous stage probe
 attributes about two thirds of realistic `Style.build` CPU to active-variant
 evaluation/merge and about one third to generated property/spec resolution.
 
@@ -71,6 +74,13 @@ removing repeated work, this preserves uniformity when a context-token resolver
 is consulted. Two matched 80-process campaigns pooled to a 1.25% adjusted S0
 improvement. Their individual S2 signs disagreed despite byte-identical
 executable text; the pooled S2 result is neutral (-0.05%), not a speed claim.
+
+The directional equivalent was subsequently exercised directly and rejected
+at its frozen stage gate. Although its merged-border resolver improved in all
+12 profile/order comparisons, static premerged-spec resolution regressed
+3.79% in 6/6 comparisons. The generated production resolver was restored
+exactly; only the generally useful directional workload instrumentation and
+behavioral contracts remain.
 
 ## Final measurement protocol
 
@@ -114,7 +124,10 @@ Valid local raw data (gitignored):
 - `.context/benchmark-results/prop-single-value-stage-v1/*.json`;
 - `.context/benchmark-results/prop-single-value-primary-v1/*.json`;
 - `.context/benchmark-results/prop-single-value-profile-v1/*.json`; and
-- `.context/benchmark-results/prop-single-value-release-cadence-v1/*.json`.
+- `.context/benchmark-results/prop-single-value-release-cadence-v1/*.json`;
+- `.context/benchmark-results/uniform-border-primary-v{1,2}/`;
+- `.context/benchmark-results/border-directional-stage-v5/`; and
+- `.context/benchmark-results/combined-accepted-quick-v8/`.
 
 ### Invalidated protocols
 
@@ -148,9 +161,32 @@ Neither supports a per-operation allocation claim.
 
 ## Current accepted pipeline cost
 
-These are fresh-process values from the baseline side of the final full-fusion
-experiment. They characterize the accepted production implementation. They do
-not compare origin-main with this worktree.
+The direct combined comparison uses clean pre-optimization commit
+`2140e609deb75ba091c7d0575034899053e6d2ed` and current accepted commit
+`38511e842f24b58facc86015e2196c7049147a9e`. The package source at the latter is
+identical to checkpoint `7d9433d70`. Each scenario has three adjacent matched
+pairs, with separate fresh processes for baseline/current Flutter and Mix,
+alternating order, three measured seconds, and two-second lifecycle gaps.
+
+| Scenario | Baseline Flutter | Baseline Mix | Current Flutter | Current Mix | Flutter control | Raw Mix | Adjusted aggregate | Paired median | Wins |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| S0 | 204.78 µs | 456.14 µs | 203.55 µs | 400.97 µs | -0.60% | -12.09% | **-11.56%** | **-11.94%** | 3/3 |
+| S2 | 147.52 µs | 128.68 µs | 147.77 µs | 127.07 µs | +0.17% | -1.25% | -1.41% | -1.79% | 2/3 |
+
+Negative changes favor the current accepted source. Aggregate Flutter controls
+were stable, but individual S2 controls ranged from -2.54% to +2.34%, and one
+adjusted pair regressed 1.10%. The host also recorded short `mdworker` (20.3%)
+and `sysmond` (59.0%) bursts while Conductor remained open at the user's
+request. This makes S0 a defensible basic local percentage estimate and S2 a
+small/noisy directional result, not a release threshold. All 24 result files
+passed binary, metadata, duration, marker, and positive-sample validation with
+zero exclusions. Raw evidence and the generated summary are under
+`.context/benchmark-results/combined-accepted-quick-v8/`.
+
+The following older fresh-process values come from the baseline side of the
+final full-fusion experiment. They characterize the then-accepted pipeline but
+predate the later one-value and physical-border wins; they do not compare the
+clean pre-optimization source with the final current source.
 
 | Scenario | Flutter average | Mix average | Mix − Flutter | Budget share of gap |
 | --- | ---: | ---: | ---: | ---: |
@@ -185,6 +221,55 @@ three fresh processes per implementation/scenario without errors:
 This is current-baseline characterization, not an optimization verdict: three
 runs are enough to reconcile the source/binary baseline but not the required
 10 adjacent A/B pairs.
+
+## Optimization disposition index
+
+The accepted source at `38511e842` is package-source identical to the current
+production checkpoint `7d9433d70`. The following index separates measured
+performance wins from eliminated-work contracts and prevents rejected ideas
+from being rediscovered without materially new evidence.
+
+### Retained production improvements
+
+| Area | Avoided work | Best quantitative evidence | Confidence |
+| --- | --- | --- | --- |
+| Non-listening provider presence | Irrelevant dependency on every widget-state aspect | State-free and pressed-only hover now cause zero Mix resolutions | Strong behavioral contract; no isolated percentage |
+| Null-animation direct build | `NoAnimationDriver`, controller/value, and `AnimatedBuilder` for styles without animation | Complete null/configured/interrupted lifecycle contracts | Strong behavioral contract; no isolated percentage |
+| Empty declared-variant return | Filter, sort, and list work when no variants exist | Zero-variant diagnostic improved about 2.05 µs average | Strong local attribution |
+| Lazy interaction ownership | Unused ticker/controller/state set and nonproductive detector wrappers | Tree/lifecycle tests prove wrappers and controllers are absent when unnecessary | Strong behavioral contract; no isolated percentage |
+| One ordinary `ValueSource` | Temporary value list and `Mix` scan | S0 -9.88%, S0I -9.23%, S2 -8.60%; 9/10, 9/10, and 10/10 wins | Strong primary plus profile/cadence confirmation |
+| Shared uniform physical `BorderMix` side | Three duplicate `Prop<BorderSide>` resolutions | Pooled S0 -1.25% with 13/20 wins; S2 -0.05% neutral | Strong small static win; state-heavy non-regression only |
+
+### Rejected, inconclusive, and unattempted shapes
+
+| ID | Candidate | Disposition | Decisive evidence / revisit condition |
+| --- | --- | --- | --- |
+| R1 | Fully fused active extraction/merge | Rejected | Static improved about 100 µs, but S2 regressed +11.98 µs adjusted in 0/10 and profile cadence also regressed |
+| R2 | Single-active direct path | Rejected | Static improved about 100 µs, but S2 regressed +3.34 µs adjusted in 0/10 |
+| R3 | Stable two-bucket partition | Rejected | Every nonempty diagnostic regressed, by +10.78 to +74.85 µs |
+| R4 | Separately pumped wrapper subtraction | Inconclusive/invalid | Frame scheduling and app activation dominated; revisit only with spans/counters inside one frame |
+| R5 | Skip already-ordered variant sorting | Rejected | Target variant merge was +1.5% static and +0.3% all-active |
+| R6 | Share a variant list for null-side merge | Not attempted | Public mutable list ownership would introduce aliasing; reconsider only after an immutable ownership contract |
+| R7 | Return when declared variants are all inactive | Rejected | Changed merge stage was flat-to-slower; the apparent full-build gain was unattributable |
+| R8 | Generalized single-source property dispatch | Rejected in broad form | Profile cadence regressed; only the narrower ordinary-`ValueSource` branch passed and is retained |
+| R9 | Manual active-variant collection loop | Rejected | Local merge improved, but S2 median/trimmed views regressed and only 4/10 pairs improved |
+| R10 | Empty-named-set variation guard | Rejected | Forward/reverse signs disagreed and static merge regressed in both orders |
+| R11 | Remove extraction IIFE | Rejected | Forward gain disappeared or reversed in reverse order |
+| R12 | Typed `StyleVariation` pattern | Rejected | Static and reverse all-active stages regressed |
+| R13 | Cache variation classification on each `VariantStyle` | Rejected | Moved cost across profiles/object shape; inactive full paths regressed in both orders |
+| R14 | Dedicated empty-named extraction loop | Rejected | All-active full build regressed in both orders despite local merge reductions |
+| R15 | Raw `StyleVariation` prefilter | Rejected | Same-binary ordinary-style false path was flat-to-slower |
+| R16 | Non-generic marker prefilter | Rejected | Same-binary marker path was effectively flat |
+| R17 | Warm `Expando` classification cache | Rejected | Best-case steady-state lookup was about 0.3% slower in both orders |
+| R18 | One-modifier ordering return | Rejected | Local modifier stage improved about 98.5%, but S2 regressed +1.24% aggregate with 3/10 wins |
+| R19 | Never-inline isolated single-active helper | Rejected | S0 improved -19.59%, but S2 regressed +1.10% with 2/10 wins |
+| R20 | Shared uniform `BorderDirectionalMix` side | Rejected | Direct resolver improved 21.89-47.89%, but static premerged spec regressed +3.79% in 0/6 |
+
+The recurring lesson is AOT code-shape sensitivity: removing locally measured
+work can still move the state-heavy or containing workload backward. A future
+candidate must therefore explain how its shape differs from the rejected
+version, pass the directly changed stage in both orders, and preserve S2 before
+promotion.
 
 ## Where style-computation time comes from
 
@@ -809,30 +894,67 @@ evidence is under
 `.context/benchmark-results/variant-single-isolated-stable-host-v1/` and
 `.context/benchmark-{builds,results}/variant-single-isolated-primary-v1/`.
 
-## Remaining opportunities
+### R20: Resolve a shared uniform directional-border side once
 
-The next useful work should be bounded and independently attributable:
+This candidate applied the accepted physical `BorderMix` shape to the real
+`BorderDirectionalMix` path. A strict fixture selector now constructs matched
+physical or directional borders in Flutter and Mix, records the selection in
+metadata, and defaults to the historical physical workload. Tests pin
+base/hover/selected fixture equivalence, empty/default behavior, logical-side
+mapping, and the generated bottom/end/start/top resolver order.
 
-- preserve the established multi-active behavior while avoiding repeated
-  generic extraction dispatch through a structural design that does not add
-  per-instance metadata to every `VariantStyle` or duplicate the hot loop; the
-  isolated single-active helper is now rejected because its never-inline
-  boundary still regressed S2;
-- validate the equivalent uniform fast path for `BorderDirectionalMix` with a
-  workload that actually exercises directional borders; do not infer it from
-  the accepted `BorderMix` result;
-- continue below the now-reduced decoration stage with border radius and box
-  shadow only if a primary workload can make their roughly 0.13/0.19 µs costs
-  material; modifier ordering already has a strong isolated fast path that
-  failed the whole-pipeline state gate;
-- find a supported way to measure transient AOT allocations, or use a narrowly
-  attributable source change plus release timing rather than mislabeling
-  retained heap as allocation throughput;
-- investigate a cache only after defining invalidation keys for context,
-  tokens, directives, inherited/named variants, widget states, modifiers, and
-  animation metadata; and
-- repeat profile work on a physical mobile device before making raster,
-  energy, or missed-frame claims beyond this macOS host.
+Baseline and candidate sources were frozen with aggregate manifest hashes
+`ec4d17b3996b27ff799d9e51f0f14ec3dcb82b7b6f8432e23b2872f96d585428`
+and `44c6fb5171262d5361b34e6b2f12ea2ce9650b826eae26f8b7bc3c967bae72b9`.
+The valid `border-directional-stage-v5` screen ran three adjacent pairs in
+each stage order, three measured seconds per selected case, 12 fresh frozen
+processes, and no exclusions. Negative changes favor the candidate:
+
+| Profile | Stage | Baseline ns | Candidate ns | Aggregate | Median paired | 20% trimmed | Wins | Forward | Reverse |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Static | Border merge | 30.359 | 30.241 | -0.389% | -0.360% | -0.353% | 5/6 | -0.366% | -0.412% |
+| Static | Merged border resolve | 329.930 | 257.698 | -21.893% | -22.050% | -21.955% | 6/6 | -21.713% | -22.071% |
+| Static | Decoration resolve | 1177.999 | 1046.982 | -11.122% | -11.179% | -11.116% | 6/6 | -11.043% | -11.201% |
+| Static | Property resolve | 1438.148 | 1376.107 | -4.314% | -4.322% | -4.297% | 6/6 | -4.449% | -4.178% |
+| Static | Premerged spec resolve | 1262.601 | 1310.426 | +3.788% | +3.801% | +3.762% | 0/6 | +3.752% | +3.823% |
+| Static | Full style build | 4657.102 | 4629.956 | -0.583% | -0.769% | -0.679% | 5/6 | -0.381% | -0.778% |
+| All-active | Border merge | 381.245 | 379.230 | -0.528% | -0.518% | -0.530% | 5/6 | -0.236% | -0.817% |
+| All-active | Merged border resolve | 1511.899 | 787.903 | -47.887% | -47.922% | -47.927% | 6/6 | -47.829% | -47.944% |
+| All-active | Decoration resolve | 3110.043 | 2331.819 | -25.023% | -24.979% | -24.973% | 6/6 | -24.878% | -25.167% |
+| All-active | Property resolve | 5672.867 | 4961.329 | -12.543% | -12.490% | -12.515% | 6/6 | -12.326% | -12.759% |
+| All-active | Premerged spec resolve | 6169.930 | 5424.706 | -12.078% | -11.975% | -11.934% | 6/6 | -11.897% | -12.259% |
+| All-active | Full style build | 18642.025 | 17883.179 | -4.071% | -3.924% | -4.104% | 6/6 | -4.117% | -4.026% |
+
+The target resolver improved strongly and consistently, but the static
+premerged-spec containment stage met the material-regression rule in both
+orders and lost all six comparisons. The candidate therefore failed the
+predefined stage gate. Per the stop condition, no 20-pair primary, profile, or
+release-cadence campaign was run. Production `border_mix.dart` and generated
+`border_mix.g.dart` were restored byte-for-byte to baseline SHA-256 values
+`718847d4c467dfe410a00988cc5002e62305caa28d52322bf48b8545d9e722f4` and
+`a6da7703b0a4dce16ec0d4860864c7981b8e357d4b9e8508e21ef5cd1dde6864`.
+
+Valid raw JSON, logs, manifest, host preflight, and the complete summary are
+under `.context/benchmark-results/border-directional-stage-v5/`. Attempts
+`v1` through `v4` remain separately preserved and excluded for marker-contract,
+duration-boundary, or host-contention failures; none contributes to these
+statistics.
+
+## Remaining opportunity matrix
+
+| Priority | Opportunity | Measured basis | Expected materiality | Risk / complexity | Required next evidence |
+| ---: | --- | --- | --- | --- | --- |
+| 1 | Remove repeated generic variation dispatch through a structural representation boundary while preserving the existing multi-active algorithm | Extraction is about 78% of static and 90% of all-active variant merge; ordinary generic inspection dominates it | High if the cost can be removed without duplicating the hot body | High semantic/AOT risk; high complexity | Design the ownership/type contract first, then forward/reverse stage screens and fresh S0/S2 controls |
+| 2 | Attribute post-resolution widget/framework cost inside one pumped frame | Current style computation explains only part of the end-to-end Flutter/Mix gap; R4 could not isolate wrappers | Medium to high, but currently unknown | Medium instrumentation complexity; low production risk | Timeline spans or counters inside one frame, never subtraction of independently pumped cases |
+| 3 | Obtain transient AOT allocation evidence | Retained result graphs are known, but merge intermediates are transient and current VM APIs do not count AOT allocations | Unknown; could identify avoidable churn | High tooling complexity; low source risk | Supported allocation tracing or a narrow source change plus release A/B timing |
+| 4 | Establish an immutable variant-list ownership contract, then reconsider null-side merge copies | R6 identified a copy but public mutable lists make sharing semantically unsafe | Probably low to medium | High API/compatibility risk | API design and mutation compatibility tests before any timing |
+| 5 | Attribute border radius and box-shadow resolution | Field split measured only about 0.13/0.19 µs in the current card | Low in this workload | Low-to-medium implementation risk | Show material S0/S2 share before production work |
+| 6 | Mobile profile validation of accepted wins | Current release evidence is macOS CPU-centric | Validation value is high; optimization value unknown | Medium device/runtime cost | Repeat selected profile/cadence cases on one fixed physical device |
+| Defer | General caching | Correct keys must cover context, tokens, directives, inherited/named variants, widget states, modifiers, and animation metadata | Potentially high but unbounded | Very high invalidation/correctness risk | Define a complete invalidation contract before prototyping |
+
+Do not revisit the single-active helpers, one-modifier shortcut, or uniform
+directional-border resolver merely by rearranging the same branch. Each already
+produced a large local win and a reproducible containing/state-heavy regression.
 
 Adjacent correctness items remain separate: listening inherited-style lookup,
 stable equal-priority variant ordering, and storing/notifying
@@ -880,6 +1002,20 @@ tracked diff; all six Dart analyzer jobs and four fatal DCM jobs completed with
 no issues. The aggregate `ci` wrapper still prompts for a package in this
 non-TTY shell, so its exact `test:flutter` and `test:dart` constituents were run
 directly with `--no-select` under the pinned FVM SDK.
+
+Completed for the rejected directional-border candidate and retained
+instrumentation:
+
+- build_runner restored the generated resolver, and both production files
+  match their frozen baseline SHA-256 values exactly;
+- all 51 focused border tests and all 35 rendering-pipeline tests pass;
+- focused Mix and complete rendering-pipeline Flutter analysis report no
+  issues;
+- fatal DCM reports no issues for the touched Mix source/test;
+- all 11 touched Dart files pass format verification, and `git diff --check`
+  passes; and
+- the verified Conductor renderer is resumed with no benchmark process or
+  CleanMyMac HealthMonitor sampler remaining.
 
 The code-only follow-up is commit `942fd7c04` on
 `refactor/prop-single-value-resolution`, draft PR #977. It is stacked on PR

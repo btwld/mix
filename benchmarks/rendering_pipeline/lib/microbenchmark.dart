@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'scenarios/card_grid.dart';
+import 'src/benchmark_border_geometry.dart';
 import 'src/benchmark_case_host.dart';
 import 'src/benchmark_frame_clock.dart';
 import 'src/benchmark_frame_guard.dart';
@@ -110,6 +111,7 @@ Future<void> executeMicrobenchmark([List<String> arguments = const []]) async {
               host: host,
               implementation: implementation,
               scenario: scenario,
+              borderGeometry: runOptions.borderGeometry,
               frameClock: frameClock,
             ),
           );
@@ -140,6 +142,7 @@ Future<void> executeMicrobenchmark([List<String> arguments = const []]) async {
         ..['case_selection'] = <String, Object>{
           'implementation': runOptions.implementation ?? 'all',
           'scenario': runOptions.scenario ?? 'all',
+          'border_geometry': runOptions.borderGeometry.name,
         };
   final output = <String, Object?>{
     'schema_version': benchmarkSchemaVersion,
@@ -164,6 +167,7 @@ Future<Map<String, Object?>> _measureCase({
   required BenchmarkCaseHostState host,
   required BenchmarkImplementation implementation,
   required _MicroScenario scenario,
+  required BenchmarkBorderGeometry borderGeometry,
   required BenchmarkFrameClock frameClock,
 }) async {
   final cards = createBenchmarkCards();
@@ -177,6 +181,7 @@ Future<Map<String, Object?>> _measureCase({
       track: scenario.track,
       cards: cards,
       controllers: controllers,
+      borderGeometry: borderGeometry,
       gridKey: gridKey,
     ),
   );
@@ -239,6 +244,7 @@ Future<Map<String, Object?>> _measureCase({
     'action': scenario.action,
     'track': scenario.track.label,
     'implementation': implementation.label,
+    'border_geometry': borderGeometry.name,
     'warmup_iterations': _warmupIterations,
     'measurement_duration_ms': measuredTime.elapsedMilliseconds,
     'metrics': statistics.toJson(unitSuffix: 'us'),

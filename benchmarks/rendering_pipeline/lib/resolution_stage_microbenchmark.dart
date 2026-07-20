@@ -11,6 +11,7 @@ import 'package:mix/mix.dart';
 
 import 'scenarios/card_grid.dart';
 import 'scenarios/mix_card.dart';
+import 'src/benchmark_border_geometry.dart';
 import 'src/benchmark_metadata.dart';
 import 'src/resolution_stage_protocol.dart';
 import 'src/statistics.dart';
@@ -78,6 +79,9 @@ Future<void> executeResolutionStageMicrobenchmark() async {
   final selectedStages = parseResolutionStageFilter(
     const String.fromEnvironment('STAGE_FILTER'),
   );
+  final borderGeometry = parseBenchmarkBorderGeometry(
+    const String.fromEnvironment('BORDER_GEOMETRY', defaultValue: 'physical'),
+  );
   final stageCases = resolutionStageCases(
     orderLabel,
     profiles: selectedProfiles,
@@ -125,9 +129,13 @@ Future<void> executeResolutionStageMicrobenchmark() async {
       throw StateError('A diagnostic BuildContext was not mounted.');
     }
 
-    final style = styleForCard(CardStateProfile.all, animated: false);
+    final style = styleForCard(
+      CardStateProfile.all,
+      animated: false,
+      borderGeometry: borderGeometry,
+    );
     final styles = <ResolutionProfile, BoxStyler>{
-      ResolutionProfile.inactiveOnly: _createInactiveOnlyStyle(),
+      ResolutionProfile.inactiveOnly: _createInactiveOnlyStyle(borderGeometry),
       ResolutionProfile.static: style,
       ResolutionProfile.allActive: style,
     };
@@ -151,13 +159,19 @@ Future<void> executeResolutionStageMicrobenchmark() async {
           decorationMixSources[profile]!,
         ),
     };
-    final decorationBorderMixSources = <ResolutionProfile, List<BorderMix>>{
+    final decorationBorderMixSources = <ResolutionProfile, List<BoxBorderMix>>{
       for (final profile in ResolutionProfile.values)
-        profile: _extractBorderMixSources(mergedDecorationMixes[profile]!),
+        profile: _extractBorderMixSources(
+          mergedDecorationMixes[profile]!,
+          borderGeometry,
+        ),
     };
-    final mergedDecorationBorderMixes = <ResolutionProfile, BorderMix?>{
+    final mergedDecorationBorderMixes = <ResolutionProfile, BoxBorderMix?>{
       for (final profile in ResolutionProfile.values)
-        profile: _mergeBorderMixSources(decorationBorderMixSources[profile]!),
+        profile: _mergeBorderMixSources(
+          decorationBorderMixSources[profile]!,
+          borderGeometry,
+        ),
     };
     final resolvedUniformBorderSides = <ResolutionProfile, BorderSide?>{
       for (final profile in ResolutionProfile.values)
@@ -236,6 +250,7 @@ Future<void> executeResolutionStageMicrobenchmark() async {
           decorationBorderMixSources: decorationBorderMixSources[profile]!,
           mergedDecorationBorderMix: mergedDecorationBorderMixes[profile],
           resolvedUniformBorderSide: resolvedUniformBorderSides[profile],
+          borderGeometry: borderGeometry,
           resolvedDecorationFields: resolvedDecorationFields[profile]!,
           resolvedFields: resolvedFields[profile]!,
           activeVariants: activeVariants[profile]!,
@@ -257,13 +272,14 @@ Future<void> executeResolutionStageMicrobenchmark() async {
   }
 
   final view = binding.platformDispatcher.views.firstOrNull;
+  final metadata = createBenchmarkMetadata(
+    kind: 'release_resolution_stage_microbenchmark',
+    runOrder: orderLabel,
+    view: view,
+  )..['border_geometry'] = borderGeometry.name;
   final output = <String, Object?>{
     'schema_version': benchmarkSchemaVersion,
-    'metadata': createBenchmarkMetadata(
-      kind: 'release_resolution_stage_microbenchmark',
-      runOrder: orderLabel,
-      view: view,
-    ),
+    'metadata': metadata,
     'results': results,
   };
 
@@ -289,9 +305,10 @@ Map<String, Object?> _measureCase({
   required BoxStyler premergedStyle,
   required List<BoxDecorationMix> decorationMixSources,
   required BoxDecorationMix mergedDecorationMix,
-  required List<BorderMix> decorationBorderMixSources,
-  required BorderMix? mergedDecorationBorderMix,
+  required List<BoxBorderMix> decorationBorderMixSources,
+  required BoxBorderMix? mergedDecorationBorderMix,
   required BorderSide? resolvedUniformBorderSide,
+  required BenchmarkBorderGeometry borderGeometry,
   required _ResolvedDecorationFields resolvedDecorationFields,
   required _ResolvedBoxFields resolvedFields,
   required List<VariantStyle<BoxSpec>> activeVariants,
@@ -385,19 +402,28 @@ Map<String, Object?> _measureCase({
       mergedDecorationMix.$border,
     ),
     ResolutionStage.decorationBorderMixMerge =>
-      () => blackHole = _mergeBorderMixSources(decorationBorderMixSources),
+      () => blackHole = _mergeBorderMixSources(
+        decorationBorderMixSources,
+        borderGeometry,
+      ),
     ResolutionStage.decorationBorderMergedMixResolve =>
       () => blackHole = mergedDecorationBorderMix?.resolve(context),
     ResolutionStage.decorationBorderUniformResolve =>
-      () =>
-          blackHole = _resolveUniformBorder(context, mergedDecorationBorderMix),
+      () => blackHole = _resolveUniformBorder(
+        context,
+        mergedDecorationBorderMix,
+        borderGeometry,
+      ),
     ResolutionStage.decorationBorderSideResolve =>
       () => blackHole = MixOps.resolve(
         context,
         mergedDecorationBorderMix?.uniformBorderSide,
       ),
     ResolutionStage.decorationBorderConstruction =>
-      () => blackHole = _constructUniformBorder(resolvedUniformBorderSide),
+      () => blackHole = _constructUniformBorder(
+        resolvedUniformBorderSide,
+        borderGeometry,
+      ),
     ResolutionStage.decorationBorderRadiusResolve =>
       () => blackHole = MixOps.resolve(
         context,
@@ -731,18 +757,31 @@ BoxDecorationMix _mergeDecorationMixSources(
   return merged;
 }
 
-List<BorderMix> _extractBorderMixSources(BoxDecorationMix decoration) {
+List<BoxBorderMix> _extractBorderMixSources(
+  BoxDecorationMix decoration,
+  BenchmarkBorderGeometry borderGeometry,
+) {
   final prop = decoration.$border;
-  if (prop == null) return const <BorderMix>[];
+  if (prop == null) return const <BoxBorderMix>[];
 
-  final mixes = <BorderMix>[];
+  final mixes = <BoxBorderMix>[];
   for (final source in prop.sources) {
     switch (source) {
-      case MixSource<BoxBorder>(:final mix) when mix is BorderMix:
-        mixes.add(mix);
+      case MixSource<BoxBorder>(:final mix):
+        final matchesGeometry = switch (borderGeometry) {
+          BenchmarkBorderGeometry.physical => mix is BorderMix,
+          BenchmarkBorderGeometry.directional => mix is BorderDirectionalMix,
+        };
+        if (!matchesGeometry) {
+          throw StateError(
+            'The border diagnostic requires ${borderGeometry.name} border '
+            'sources; found ${mix.runtimeType}.',
+          );
+        }
+        mixes.add(mix as BoxBorderMix);
       case _:
         throw StateError(
-          'The border diagnostic requires only BorderMix sources; '
+          'The border diagnostic requires only BoxBorderMix sources; '
           'found ${source.runtimeType}.',
         );
     }
@@ -751,9 +790,23 @@ List<BorderMix> _extractBorderMixSources(BoxDecorationMix decoration) {
   return mixes;
 }
 
-BorderMix? _mergeBorderMixSources(List<BorderMix> mixes) {
+BoxBorderMix? _mergeBorderMixSources(
+  List<BoxBorderMix> mixes,
+  BenchmarkBorderGeometry borderGeometry,
+) {
   if (mixes.isEmpty) return null;
 
+  return switch (borderGeometry) {
+    BenchmarkBorderGeometry.physical => _mergePhysicalBorderMixes(
+      mixes.cast<BorderMix>(),
+    ),
+    BenchmarkBorderGeometry.directional => _mergeDirectionalBorderMixes(
+      mixes.cast<BorderDirectionalMix>(),
+    ),
+  };
+}
+
+BorderMix _mergePhysicalBorderMixes(List<BorderMix> mixes) {
   var merged = mixes.first;
   for (var index = 1; index < mixes.length; index++) {
     merged = merged.merge(mixes[index]);
@@ -762,19 +815,48 @@ BorderMix? _mergeBorderMixSources(List<BorderMix> mixes) {
   return merged;
 }
 
-Border? _resolveUniformBorder(BuildContext context, BorderMix? mix) {
+BorderDirectionalMix _mergeDirectionalBorderMixes(
+  List<BorderDirectionalMix> mixes,
+) {
+  var merged = mixes.first;
+  for (var index = 1; index < mixes.length; index++) {
+    merged = merged.merge(mixes[index]);
+  }
+
+  return merged;
+}
+
+BoxBorder? _resolveUniformBorder(
+  BuildContext context,
+  BoxBorderMix? mix,
+  BenchmarkBorderGeometry borderGeometry,
+) {
   if (mix == null) return null;
 
   final side = mix.uniformBorderSide;
   if (side == null) return mix.resolve(context);
 
-  return Border.fromBorderSide(
+  return _constructUniformBorder(
     MixOps.resolve(context, side) ?? BorderSide.none,
+    borderGeometry,
   );
 }
 
-Border? _constructUniformBorder(BorderSide? side) {
-  return side == null ? null : Border.fromBorderSide(side);
+BoxBorder? _constructUniformBorder(
+  BorderSide? side,
+  BenchmarkBorderGeometry borderGeometry,
+) {
+  if (side == null) return null;
+
+  return switch (borderGeometry) {
+    BenchmarkBorderGeometry.physical => Border.fromBorderSide(side),
+    BenchmarkBorderGeometry.directional => BorderDirectional(
+      top: side,
+      bottom: side,
+      start: side,
+      end: side,
+    ),
+  };
 }
 
 _ResolvedDecorationFields _resolveDecorationFields(
@@ -845,7 +927,7 @@ StyleSpec<BoxSpec> _constructStyleSpec(_ResolvedBoxFields fields) {
   );
 }
 
-BoxStyler _createInactiveOnlyStyle() {
+BoxStyler _createInactiveOnlyStyle(BenchmarkBorderGeometry borderGeometry) {
   return BoxStyler()
       .size(100, 100)
       .color(Colors.black)
@@ -853,7 +935,18 @@ BoxStyler _createInactiveOnlyStyle() {
       .onPressed(BoxStyler().scale(0.98))
       .variant(
         ContextVariant.widgetState(WidgetState.selected),
-        BoxStyler().borderAll(color: Colors.indigo, width: 2),
+        _createSelectedBorderStyle(borderGeometry),
       )
       .onDisabled(BoxStyler().wrap(WidgetModifierConfig.opacity(0.45)));
+}
+
+BoxStyler _createSelectedBorderStyle(BenchmarkBorderGeometry borderGeometry) {
+  final side = BorderSideMix(color: Colors.indigo, width: 2);
+
+  return switch (borderGeometry) {
+    BenchmarkBorderGeometry.physical => BoxStyler().border(BorderMix.all(side)),
+    BenchmarkBorderGeometry.directional => BoxStyler().border(
+      BorderDirectionalMix.all(side),
+    ),
+  };
 }

@@ -1,13 +1,16 @@
 # Mix Rendering Performance: Cost, State Changes, and Practical Impact
 
-- Report date: 2026-07-13
+- Report date: 2026-07-20
 - Mix line under test: accepted pipeline changes from draft PR #976 plus the
-  single-value property optimization from draft PR #977
+  single-value property optimization from draft PR #977 and the locally
+  accepted uniform physical-border resolver
 - Flutter: 3.41.7 (`cc0734ac71`)
 - Dart: 3.11.5
 - Host: macOS 26.5.2, Apple silicon, 120 Hz
-- Primary benchmark: release/AOT, fresh process per implementation/scenario,
-  100 warm-ups, 10 adjacent baseline/optimized pairs
+- Primary optimization benchmark: release/AOT, fresh process per
+  implementation/scenario, 100 warm-ups, 10 adjacent baseline/optimized pairs
+- Combined checkpoint estimate: release/AOT, three matched fresh-process pairs
+  each for S0 and S2
 - Web companion: <https://mix-rendering-performance.leo510228.chatgpt.site>
 
 ## Executive verdict
@@ -16,9 +19,9 @@ Mix still has a measurable CPU premium when a large static subtree rebuilds,
 but the current evidence does **not** show a frame-rate problem on the tested
 host.
 
-- An optimized static Mix grid iteration takes **423.50 µs**, versus
-  **205.40 µs** for the matched direct-Flutter implementation. The ratio is
-  2.06×, but the absolute difference is only **218.10 µs**, or **2.62% of one
+- The latest current-accepted static Mix grid iteration takes **400.97 µs**,
+  versus **203.55 µs** for the matched direct-Flutter implementation. The ratio
+  is 1.97×, but the absolute difference is only **197.42 µs**, or **2.37% of one
   120 Hz frame budget**.
 - The idiomatic static path, including matched interaction wrappers, takes
   **556.30 µs** in Mix versus **298.72 µs** in Flutter. The **257.58 µs** gap is
@@ -33,6 +36,20 @@ host.
 - Real-cadence validation did not find a regression. Optimized Mix recorded
   zero 120 Hz misses over roughly 2,400 release-cadence frames. The release
   cadence averages were neutral at frame scale.
+- The later uniform physical-border resolver added a smaller **1.25% pooled S0
+  improvement** with neutral S2. The analogous directional resolver was
+  rejected because its static containing spec stage regressed **3.79% in 6/6
+  comparisons**, despite a much faster local border stage.
+- Directly comparing the clean pre-optimization source with the complete
+  current accepted source estimates a net **11.56% adjusted S0 improvement**
+  in 3/3 pairs. S2 was **1.41% faster adjusted** in 2/3 pairs, which is too
+  small and noisy to promote as a strong speed claim.
+
+The latest S0 absolute values and combined percentages come from the bounded
+baseline-to-current run. The S0I and detailed five-scenario values below come
+from the final single-value campaign; the physical-border result is a separately
+validated incremental change. These separate experiments are not added
+together to manufacture a combined percentage.
 
 The practical conclusion is therefore:
 
@@ -42,6 +59,27 @@ The practical conclusion is therefore:
 The risk rises on slower mobile hardware, in already budget-constrained frames,
 or when many styled nodes resolve together. Physical-device validation is
 still required before making broad mobile, energy, or raster claims.
+
+## Net baseline-to-current release estimate
+
+The direct comparison freezes clean pre-optimization commit `2140e609d` and
+current accepted commit `38511e842`. It runs separate baseline/current Flutter
+and Mix processes, three adjacent pairs per scenario, alternating order, three
+measured seconds, and matched Flutter normalization.
+
+| Scenario | Baseline Mix | Current Mix | Raw Mix | Flutter control | Adjusted aggregate | Paired median | Wins |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| S0 | 456.14 µs | 400.97 µs | -12.09% | -0.60% | **-11.56%** | **-11.94%** | 3/3 |
+| S2 | 128.68 µs | 127.07 µs | -1.25% | +0.17% | -1.41% | -1.79% | 2/3 |
+
+All 24 release processes passed marker, metadata, binary, duration, and sample
+validation. Aggregate Flutter controls stayed within 0.60%, but two individual
+S2 control pairs moved slightly beyond +/-2%. The host logged brief `mdworker`
+and `sysmond` CPU bursts while Conductor remained open. The table is therefore
+a practical local estimate: the 11-12% S0 signal is consistent, while the
+roughly 1-2% S2 movement should be treated as neutral-to-slightly-better rather
+than a release claim. Evidence is under
+`.context/benchmark-results/combined-accepted-quick-v8/`.
 
 ## What “Flutter versus Mix” means here
 
@@ -286,6 +324,7 @@ affected card is expected. This is not duplicate work on one card.
 | Empty-variant early return | Filter/sort/list work for styles with no variants | Zero-variant style build improved by roughly 2 µs in its diagnostic |
 | Lazy interaction ownership | Unused controller, state set, ticker/provider, and detector work | Only hover/pressed styles install automatic pointer tracking |
 | Single ordinary value fast path | Temporary list creation and `Mix` scan for one direct value | Static primary workloads improved about 9–10%; S2 improved 8.60% |
+| Shared uniform physical border side | Three duplicate side-property resolutions | Pooled S0 improved 1.25%; S2 was neutral |
 
 These changes are narrow because Mix supports tokens, nested mergeable values,
 directives, inheritance, context variants, widget-state variants, modifiers,
@@ -317,7 +356,13 @@ Other rejected ideas include:
 - sharing a mutable variant list, rejected because it changes ownership and
   aliasing semantics; and
 - a generalized single-source property shortcut, rejected after profile-mode
-  regressions even though its release CPU result looked good.
+  regressions even though its release CPU result looked good;
+- a one-modifier ordering shortcut, whose local stage improved about 98.5% but
+  whose complete S2 workload regressed 1.24%;
+- a never-inline isolated single-active helper, whose S0 improved 19.59% while
+  S2 regressed 1.10%; and
+- the uniform directional-border resolver, whose direct stage improved
+  21.89-47.89% while static premerged-spec resolution regressed 3.79%.
 
 ## Is the remaining slowness feasible?
 
@@ -353,17 +398,19 @@ failure by itself.
 Further improvement is feasible, but the remaining work is less likely to be a
 one-line shortcut:
 
-1. **Variant metadata/precomputation** is the highest-value target, provided it
-   preserves ordering and multi-active semantics.
-2. **Resolution caching** could be powerful, but only after defining safe keys
-   for context, tokens, directives, inherited/named variants, widget states,
-   modifiers, and animation metadata.
+1. **A structural variation-representation boundary** is the highest-value
+   target, provided it removes repeated generic inspection while preserving
+   ordering and the existing multi-active algorithm. Per-instance cached
+   metadata and duplicated/single-active loops have already failed.
+2. **In-frame post-resolution spans** are needed to attribute widget and
+   framework wrapper cost without unreliable pump subtraction.
 3. **Transient AOT allocation measurement** would distinguish CPU branching
    from allocation/GC pressure without misusing retained-heap counters.
-4. **Physical-device profile campaigns** are required before prioritizing
+4. **Resolution caching** could be powerful, but only after defining safe keys
+   for context, tokens, directives, inherited/named variants, widget states,
+   modifiers, and animation metadata.
+5. **Physical-device profile campaigns** are required before prioritizing
    raster, energy, or low-end-mobile work.
-5. **In-frame post-resolution spans** are needed to attribute animation and
-   wrapper layers without unreliable pump subtraction.
 
 The recommended posture is to keep the current narrow property optimization,
 avoid the rejected variant rewrites, and continue with bounded experiments that
