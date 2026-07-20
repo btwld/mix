@@ -1,0 +1,36 @@
+{
+  "schema": "mix_figma/sync-report/v1",
+  "version": 1,
+  "planId": "a7f292f0316803887cc1aa28431a7f67c129542ec02dcfbc1140aba005ede6d4",
+  "direction": "mixToFigma",
+  "resource": "tokens",
+  "status": "failed",
+  "remainingMutations": 63,
+  "pendingDeletes": 0,
+  "diagnostics": [
+    {
+      "code": "composite_token_uses_style_payload",
+      "severity": "info",
+      "path": "/boxShadows",
+      "message": "boxShadows tokens are emitted through Figma styles."
+    },
+    {
+      "code": "composite_token_uses_style_payload",
+      "severity": "info",
+      "path": "/boxShadows",
+      "message": "boxShadows tokens are emitted through Figma styles."
+    },
+    {
+      "code": "composite_token_uses_style_payload",
+      "severity": "info",
+      "path": "/textStyles",
+      "message": "textStyles tokens are emitted through Figma styles."
+    },
+    {
+      "code": "composite_token_uses_style_payload",
+      "severity": "info",
+      "path": "/textStyles",
+      "message": "textStyles tokens are emitted through Figma styles."
+    }
+  ]
+}

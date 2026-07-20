@@ -1,0 +1,101 @@
+{
+  "schema": "mix_figma/conformance/v1",
+  "cases": [
+    {
+      "id": "variables-core",
+      "kind": "variables",
+      "source": "../figma_variables/primitives.json",
+      "expected": {
+        "sourceItems": 8,
+        "supported": 7,
+        "unsupported": 1,
+        "nativeFidelity": {
+          "exact": 6,
+          "normalized": 1,
+          "unsupported": 1
+        },
+        "roundTripFidelity": {
+          "exact": 7,
+          "unsupported": 1
+        },
+        "diagnosticCodes": [
+          "ambiguous_float_variable",
+          "unsupported_variable_type"
+        ]
+      }
+    },
+    {
+      "id": "styles-core",
+      "kind": "styles",
+      "source": "../style_docs/figma_styles.json",
+      "expected": {
+        "sourceItems": 5,
+        "supported": 4,
+        "unsupported": 1,
+        "nativeFidelity": {
+          "exact": 2,
+          "normalized": 2,
+          "unsupported": 1
+        },
+        "roundTripFidelity": {
+          "exact": 2,
+          "lossy": 1,
+          "unsupported": 2
+        },
+        "diagnosticCodes": [
+          "gradient_style_fragment_not_exportable",
+          "paint_style_normalized_to_color_token",
+          "unsupported_inner_shadow"
+        ]
+      }
+    },
+    {
+      "id": "selection-button",
+      "kind": "selection",
+      "source": "../style_docs/button.node.json",
+      "expected": {
+        "protocolType": "box"
+      }
+    },
+    {
+      "id": "selection-input",
+      "kind": "selection",
+      "source": "../style_docs/input.node.json",
+      "expected": {
+        "protocolType": "flex_box"
+      }
+    },
+    {
+      "id": "selection-card",
+      "kind": "selection",
+      "source": "../style_docs/card.node.json",
+      "expected": {
+        "protocolType": "flex_box"
+      }
+    },
+    {
+      "id": "component-button-v2",
+      "kind": "component",
+      "source": "../components/button.component.json",
+      "expected": {
+        "minimumVariants": 6
+      }
+    },
+    {
+      "id": "component-input-v2",
+      "kind": "component",
+      "source": "../components/input.component.json",
+      "expected": {
+        "minimumVariants": 4
+      }
+    },
+    {
+      "id": "component-card-v2",
+      "kind": "component",
+      "source": "../components/card.component.json",
+      "expected": {
+        "minimumVariants": 2
+      }
+    }
+  ]
+}

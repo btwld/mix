@@ -1,0 +1,25 @@
+{
+  "schema": "mix_figma/figma-nodes/v1",
+  "root": {
+    "id": "button",
+    "name": "Button surface",
+    "type": "RECTANGLE",
+    "cornerRadius": 8,
+    "fills": [
+      {
+        "type": "SOLID",
+        "color": "#336699",
+        "visible": true
+      }
+    ],
+    "strokes": [
+      {
+        "type": "SOLID",
+        "color": "#FFFFFF",
+        "visible": true
+      }
+    ],
+    "strokeWeight": 1,
+    "children": []
+  }
+}

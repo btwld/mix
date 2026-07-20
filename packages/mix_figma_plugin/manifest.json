@@ -1,5 +1,6 @@
 {
   "name": "Mix Figma Bridge",
+  "id": "1660433577747262759",
   "api": "1.0.0",
   "main": "dist/code.js",
   "ui": "dist/ui.html",
@@ -7,9 +8,6 @@
   "documentAccess": "dynamic-page",
   "networkAccess": {
     "allowedDomains": ["none"],
-    "devAllowedDomains": [
-      "http://localhost:8787",
-      "http://127.0.0.1:8787"
-    ]
+    "devAllowedDomains": ["http://localhost:8787"]
   }
 }

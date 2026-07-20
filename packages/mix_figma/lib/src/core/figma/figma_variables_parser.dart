@@ -36,6 +36,7 @@ FigmaVariablesDocument parseFigmaVariablesDocument(JsonMap json) {
     }
     collections.add(
       FigmaVariableCollection(
+        key: value['key'] is String ? value['key']! as String : '',
         id: jsonString(value['id'], path: '/collections/$index/id'),
         name: jsonString(value['name'], path: '/collections/$index/name'),
         defaultModeId: jsonString(
@@ -43,6 +44,11 @@ FigmaVariablesDocument parseFigmaVariablesDocument(JsonMap json) {
           path: '/collections/$index/defaultModeId',
         ),
         modes: modes,
+        pluginData: _stringMap(
+          value['pluginData'],
+          path: '/collections/$index/pluginData',
+        ),
+        hiddenFromPublishing: value['hiddenFromPublishing'] == true,
         remote: value['remote'] == true,
       ),
     );

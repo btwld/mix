@@ -13,6 +13,7 @@ final class FigmaStyle {
   final JsonMap value;
   final JsonMap pluginData;
   final String description;
+  final bool remote;
   FigmaStyle({
     required this.id,
     required this.key,
@@ -21,6 +22,7 @@ final class FigmaStyle {
     required JsonMap value,
     JsonMap pluginData = const {},
     this.description = '',
+    this.remote = false,
   }) : value = Map.unmodifiable(value),
        pluginData = Map.unmodifiable(pluginData);
 }

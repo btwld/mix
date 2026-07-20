@@ -66,7 +66,9 @@ describe('writeVariables', () => {
         codeCalls,
         setValueForMode: (modeId: string, value: unknown) => valueCalls.push([modeId, value]),
         setVariableCodeSyntax: (platform: string, value: string) => codeCalls.push([platform, value]),
-        removeVariableCodeSyntax: vi.fn(),
+        removeVariableCodeSyntax: vi.fn(() => {
+          throw new Error('Code syntax field not found');
+        }),
         ...carrier,
       };
       variables.push(variable);
@@ -141,6 +143,7 @@ describe('writeVariables', () => {
       ['ANDROID', 'colorBrand'],
       ['WEB', '--color-brand'],
     ]);
+    expect(brand?.removeVariableCodeSyntax).not.toHaveBeenCalled();
     expect(brand?.data).toMatchObject({
       exact: 'variable-data',
       [MIX_FIGMA_PLUGIN_DATA_KEYS.identity]: 'colors.brand',
@@ -150,7 +153,7 @@ describe('writeVariables', () => {
     });
   });
 
-  it('updates stamped variables in place and removes collection modes absent from the canonical payload', async () => {
+  it('preserves absent modes unless an approved delete names the exact source id', async () => {
     const collectionData = dataCarrier();
     collectionData.data[MIX_FIGMA_PLUGIN_DATA_KEYS.identity] = 'foundation';
     const collection = {
@@ -205,7 +208,7 @@ describe('writeVariables', () => {
       },
     } as unknown as PluginAPI;
 
-    const result = await writeVariables(api, {
+    const payload: FigmaVariablesWritePayload = {
       version: 1,
       collections: [
         {
@@ -228,10 +231,27 @@ describe('writeVariables', () => {
           identity: { id: 'spaces.sm', kind: 'token', tokenGroup: 'spaces' },
         },
       ],
-    });
+    };
+    const result = await writeVariables(api, payload);
 
     expect(createVariableCollection).not.toHaveBeenCalled();
     expect(createVariable).not.toHaveBeenCalled();
+    expect(collection.removeMode).not.toHaveBeenCalled();
+    await writeVariables(api, payload, {
+      operations: [
+        {
+          action: 'delete',
+          kind: 'mode',
+          ref: 'mode:legacy',
+          sourceId: 'mode:legacy',
+          name: 'Legacy',
+          path: '/variables/collections/foundation/modes/mode:legacy',
+          destructive: true,
+          changes: ['delete'],
+          diagnostics: [],
+        },
+      ],
+    });
     expect(collection.removeMode).toHaveBeenCalledWith('mode:legacy');
     expect(result).toEqual({
       collections: { foundation: 'collection:existing' },
@@ -239,5 +259,152 @@ describe('writeVariables', () => {
       variables: { 'space-sm': 'variable:existing' },
     });
     expect(variable).toMatchObject({ name: 'space/sm' });
+  });
+
+  it('does not update an unowned variable referenced by a stale source id', async () => {
+    const collectionData = dataCarrier();
+    collectionData.data[MIX_FIGMA_PLUGIN_DATA_KEYS.identity] = 'foundation';
+    const collection = {
+      id: 'collection:managed',
+      name: 'Foundation',
+      modes: [{ modeId: 'mode:light', name: 'Light' }],
+      remote: false,
+      hiddenFromPublishing: false,
+      addMode: vi.fn(),
+      renameMode: vi.fn(),
+      ...collectionData,
+    };
+    const unowned = {
+      id: 'variable:user',
+      name: 'User variable',
+      description: 'Do not change',
+      variableCollectionId: collection.id,
+      resolvedType: 'FLOAT',
+      scopes: [],
+      remote: false,
+      hiddenFromPublishing: false,
+      setValueForMode: vi.fn(),
+      setVariableCodeSyntax: vi.fn(),
+      removeVariableCodeSyntax: vi.fn(),
+      ...dataCarrier(),
+    };
+    const created = {
+      id: 'variable:managed',
+      name: '',
+      description: '',
+      variableCollectionId: collection.id,
+      resolvedType: 'FLOAT',
+      scopes: [],
+      remote: false,
+      hiddenFromPublishing: false,
+      setValueForMode: vi.fn(),
+      setVariableCodeSyntax: vi.fn(),
+      removeVariableCodeSyntax: vi.fn(),
+      ...dataCarrier(),
+    };
+    const createVariable = vi.fn(() => created);
+    const api = {
+      variables: {
+        getLocalVariableCollectionsAsync: async () => [collection],
+        getLocalVariablesAsync: async () => [unowned],
+        createVariableCollection: vi.fn(),
+        createVariable,
+        createVariableAlias: vi.fn(),
+        getVariableByIdAsync: async () => null,
+      },
+    } as unknown as PluginAPI;
+    const payload: FigmaVariablesWritePayload = {
+      version: 1,
+      collections: [
+        {
+          ref: 'foundation',
+          sourceId: collection.id,
+          name: 'Foundation',
+          modes: [{ ref: 'light', sourceId: 'mode:light', name: 'Light' }],
+          identity: { id: 'foundation', kind: 'collection' },
+        },
+      ],
+      variables: [
+        {
+          ref: 'space-sm',
+          sourceId: unowned.id,
+          collectionRef: 'foundation',
+          name: 'space/sm',
+          resolvedType: 'FLOAT',
+          valuesByMode: { light: 4 },
+          identity: { id: 'spaces.sm', kind: 'token', tokenGroup: 'spaces' },
+        },
+      ],
+    };
+
+    await expect(writeVariables(api, payload)).resolves.toMatchObject({
+      variables: { 'space-sm': 'variable:managed' },
+    });
+    expect(createVariable).toHaveBeenCalledOnce();
+    expect(unowned).toMatchObject({
+      name: 'User variable',
+      description: 'Do not change',
+    });
+    expect(unowned.setValueForMode).not.toHaveBeenCalled();
+  });
+
+  it('refuses an exact delete operation when the variable is not Mix-owned', async () => {
+    const ownedData = dataCarrier();
+    ownedData.data[MIX_FIGMA_PLUGIN_DATA_KEYS.identity] = 'spaces.owned';
+    const owned = {
+      id: 'variable:owned',
+      name: 'space/owned',
+      remote: false,
+      remove: vi.fn(),
+      ...ownedData,
+    };
+    const unowned = {
+      id: 'variable:user',
+      name: 'space/user',
+      remote: false,
+      remove: vi.fn(),
+      ...dataCarrier(),
+    };
+    const api = {
+      variables: {
+        getLocalVariableCollectionsAsync: async () => [],
+        getLocalVariablesAsync: async () => [owned, unowned],
+      },
+    } as unknown as PluginAPI;
+    const payload: FigmaVariablesWritePayload = {
+      version: 1,
+      collections: [],
+      variables: [],
+    };
+    const operation = {
+      action: 'delete' as const,
+      kind: 'variable',
+      ref: 'spaces.owned',
+      sourceId: 'variable:owned',
+      name: 'space/owned',
+      path: '/variables/variables/spaces.owned',
+      destructive: true,
+      changes: ['delete'],
+      diagnostics: [],
+    };
+
+    await expect(writeVariables(api, payload, { operations: [operation] })).resolves.toEqual({
+      collections: {},
+      modes: {},
+      variables: {},
+    });
+    expect(owned.remove).toHaveBeenCalledOnce();
+
+    await expect(
+      writeVariables(api, payload, {
+        operations: [{
+          ...operation,
+          ref: 'spaces.user',
+          sourceId: 'variable:user',
+          name: 'space/user',
+        }],
+      }),
+    ).rejects.toThrow('Refusing to delete unowned variable');
+    expect(unowned.remove).not.toHaveBeenCalled();
   });
 });

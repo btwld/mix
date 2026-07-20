@@ -3,31 +3,315 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Mix Figma Bridge</title>
+    <title>Mix Sync Proof</title>
     <style>
-      :root { color-scheme: light dark; font: 12px/1.4 Inter, sans-serif; }
-      body { margin: 0; padding: 16px; background: var(--figma-color-bg); color: var(--figma-color-text); }
-      h1 { font-size: 16px; margin: 0 0 12px; }
-      section { display: grid; gap: 8px; margin-bottom: 16px; }
-      button, input { box-sizing: border-box; width: 100%; min-height: 32px; border-radius: 6px; }
-      button { border: 0; background: var(--figma-color-bg-brand); color: var(--figma-color-text-onbrand); cursor: pointer; }
-      input { border: 1px solid var(--figma-color-border); padding: 6px 8px; background: var(--figma-color-bg); color: inherit; }
-      #status { min-height: 34px; padding: 8px; border-radius: 6px; background: var(--figma-color-bg-secondary); }
+      :root {
+        color-scheme: light dark;
+        font: 12px/1.45 Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        --proof-blue: #3d5afe;
+        --proof-mint: #18a875;
+        --proof-amber: #d97706;
+        --proof-red: #d14343;
+        --hairline: var(--figma-color-border, rgba(127, 127, 127, 0.28));
+        --surface: var(--figma-color-bg, #ffffff);
+        --surface-raised: var(--figma-color-bg-secondary, #f4f4f5);
+        --ink: var(--figma-color-text, #171717);
+        --muted: var(--figma-color-text-secondary, #686868);
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        min-width: 320px;
+        background: var(--surface);
+        color: var(--ink);
+      }
+
+      button, input, select { font: inherit; }
+
+      button:focus-visible,
+      input:focus-visible,
+      select:focus-visible {
+        outline: 2px solid var(--proof-blue);
+        outline-offset: 2px;
+      }
+
+      .shell {
+        display: grid;
+        grid-template-rows: auto auto auto minmax(164px, 1fr) auto auto;
+        gap: 14px;
+        height: 640px;
+        padding: 16px;
+      }
+
+      .masthead {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--hairline);
+        padding-bottom: 12px;
+      }
+
+      .eyebrow {
+        margin: 0 0 2px;
+        color: var(--proof-blue);
+        font: 600 10px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 19px;
+        font-weight: 720;
+        letter-spacing: -0.035em;
+      }
+
+      .bridge-check {
+        width: auto;
+        border: 0;
+        padding: 4px 0 4px 8px;
+        background: transparent;
+        color: var(--muted);
+        cursor: pointer;
+        font: 600 10px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+        text-transform: uppercase;
+      }
+
+      .control-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 0.7fr);
+        gap: 10px;
+      }
+
+      .field { display: grid; gap: 5px; }
+      .field[hidden] { display: none; }
+
+      label {
+        color: var(--muted);
+        font-size: 10px;
+        font-weight: 650;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      select,
+      input[type="text"],
+      input[type="password"] {
+        width: 100%;
+        height: 34px;
+        border: 1px solid var(--hairline);
+        border-radius: 5px;
+        padding: 0 9px;
+        background: var(--surface);
+        color: var(--ink);
+      }
+
+      .proof-rail {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .proof-stage {
+        position: relative;
+        display: grid;
+        gap: 5px;
+        min-width: 0;
+        color: var(--muted);
+        font-size: 10px;
+      }
+
+      .proof-stage:not(:last-child)::after {
+        content: "";
+        position: absolute;
+        top: 7px;
+        left: 18px;
+        right: 4px;
+        height: 1px;
+        background: var(--hairline);
+      }
+
+      .stage-dot {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        place-items: center;
+        width: 15px;
+        height: 15px;
+        border: 1px solid var(--hairline);
+        border-radius: 50%;
+        background: var(--surface);
+        font: 600 8px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+
+      .proof-stage[data-state="active"] { color: var(--ink); font-weight: 650; }
+      .proof-stage[data-state="active"] .stage-dot { border-color: var(--proof-blue); color: var(--proof-blue); }
+      .proof-stage[data-state="done"] .stage-dot { border-color: var(--proof-mint); background: var(--proof-mint); color: white; }
+      .proof-stage[data-state="done"] .stage-dot::before { content: "✓"; }
+      .proof-stage[data-state="done"] .stage-dot span { display: none; }
+      .proof-stage[data-state="error"] .stage-dot { border-color: var(--proof-red); background: var(--proof-red); color: white; }
+
+      .ledger-wrap {
+        position: relative;
+        min-height: 0;
+        overflow: hidden;
+        border: 1px solid var(--hairline);
+        border-radius: 6px;
+        background: var(--surface-raised);
+      }
+
+      .ledger-label {
+        position: absolute;
+        top: 0;
+        right: 0;
+        border-left: 1px solid var(--hairline);
+        border-bottom: 1px solid var(--hairline);
+        padding: 4px 7px;
+        color: var(--muted);
+        background: var(--surface);
+        font: 600 9px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+        letter-spacing: 0.08em;
+      }
+
+      #preview {
+        height: 100%;
+        margin: 0;
+        overflow: auto;
+        padding: 28px 12px 12px;
+        color: var(--ink);
+        font: 10px/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        white-space: pre-wrap;
+      }
+
+      .deletion-control {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        border-left: 3px solid var(--proof-amber);
+        padding: 7px 9px;
+        background: color-mix(in srgb, var(--proof-amber) 10%, var(--surface));
+        color: var(--ink);
+      }
+
+      .deletion-control[hidden] { display: none; }
+      .deletion-control input { margin: 2px 0 0; accent-color: var(--proof-amber); }
+      .deletion-control label { color: inherit; font-size: 10px; letter-spacing: 0; text-transform: none; }
+
+      .actions {
+        display: grid;
+        grid-template-columns: 1.1fr 1fr 1fr;
+        gap: 8px;
+      }
+
+      .action {
+        min-height: 34px;
+        border: 1px solid var(--hairline);
+        border-radius: 5px;
+        padding: 0 10px;
+        background: var(--surface);
+        color: var(--ink);
+        cursor: pointer;
+        font-weight: 650;
+      }
+
+      .action.primary { border-color: var(--proof-blue); background: var(--proof-blue); color: white; }
+      .action.verify { border-color: var(--proof-mint); color: var(--proof-mint); }
+      .action:disabled { cursor: default; opacity: 0.38; }
+
+      #status {
+        min-height: 34px;
+        border-top: 1px solid var(--hairline);
+        padding: 9px 0 0 17px;
+        color: var(--muted);
+        font-size: 11px;
+      }
+
+      #status::before {
+        content: "";
+        float: left;
+        width: 7px;
+        height: 7px;
+        margin: 4px 0 0 -17px;
+        border-radius: 50%;
+        background: var(--muted);
+      }
+
+      #status[data-tone="working"]::before { background: var(--proof-blue); animation: pulse 1s ease-in-out infinite alternate; }
+      #status[data-tone="error"] { color: var(--proof-red); }
+      #status[data-tone="error"]::before { background: var(--proof-red); }
+
+      @keyframes pulse { to { opacity: 0.28; } }
+
+      @media (max-width: 360px) {
+        .shell { padding: 12px; }
+        .control-grid { grid-template-columns: 1fr; }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        #status[data-tone="working"]::before { animation: none; }
+      }
     </style>
   </head>
   <body>
-    <h1>Mix Figma Bridge</h1>
-    <section>
-      <button id="health" type="button">Check bridge</button>
-      <button id="pull-tokens" type="button">Pull variables & styles</button>
-      <button id="push-tokens" type="button">Push variables & styles</button>
-      <button id="pull-selection" type="button">Pull selection</button>
-    </section>
-    <section>
-      <input id="component-id" aria-label="Component id" placeholder="Component id" />
-      <button id="push-component" type="button">Push component set</button>
-    </section>
-    <div id="status" role="status">Ready.</div>
+    <main class="shell">
+      <header class="masthead">
+        <div>
+          <p class="eyebrow">Mix ↔ Figma</p>
+          <h1>Sync proof</h1>
+        </div>
+        <button id="health" class="bridge-check" type="button">Bridge status</button>
+      </header>
+
+      <div class="control-grid">
+        <div class="field">
+          <label for="bridge-token">Bridge session token</label>
+          <input id="bridge-token" type="password" autocomplete="off" spellcheck="false" placeholder="Paste token from bridge" />
+        </div>
+        <div class="field">
+          <label for="workflow">Workflow</label>
+          <select id="workflow">
+            <option value="tokens-pull">Tokens · Figma → Mix</option>
+            <option value="tokens-push">Tokens · Mix → Figma</option>
+            <option value="selection-pull">Selection · Figma → Mix</option>
+            <option value="component-push">Component set · Mix → Figma</option>
+          </select>
+        </div>
+        <div id="component-field" class="field" hidden>
+          <label for="component-id">Component id</label>
+          <input id="component-id" type="text" autocomplete="off" placeholder="button" />
+        </div>
+      </div>
+
+      <ol class="proof-rail" aria-label="Synchronization stages">
+        <li class="proof-stage" data-stage="analyze" data-state="active"><span class="stage-dot"><span>1</span></span><span>Analyze</span></li>
+        <li class="proof-stage" data-stage="preview" data-state="pending"><span class="stage-dot"><span>2</span></span><span>Preview</span></li>
+        <li class="proof-stage" data-stage="apply" data-state="pending"><span class="stage-dot"><span>3</span></span><span>Apply</span></li>
+        <li class="proof-stage" data-stage="verify" data-state="pending"><span class="stage-dot"><span>4</span></span><span>Verify</span></li>
+      </ol>
+
+      <section class="ledger-wrap" aria-label="Synchronization preview">
+        <span class="ledger-label">OPERATION LEDGER</span>
+        <pre id="preview">No plan yet.
+Analyze reads both sides without changing either one.</pre>
+      </section>
+
+      <div id="deletion-control" class="deletion-control" hidden>
+        <input id="allow-deletes" type="checkbox" />
+        <label for="allow-deletes">Also delete the exact Mix-managed resources listed above. Unowned Figma content is always retained.</label>
+      </div>
+
+      <div class="actions">
+        <button id="analyze" class="action primary" type="button">Analyze</button>
+        <button id="apply" class="action" type="button" disabled>Apply plan</button>
+        <button id="verify" class="action verify" type="button" disabled>Verify result</button>
+      </div>
+
+      <div id="status" role="status" aria-live="polite" data-tone="neutral">Ready. Analyze is read-only.</div>
+    </main>
     <script>/*__MIX_FIGMA_UI_SCRIPT__*/</script>
   </body>
 </html>

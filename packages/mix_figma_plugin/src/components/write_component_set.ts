@@ -1,29 +1,33 @@
 import { writePluginData } from '../plugin_data';
-import type {
-  ComponentNodePayload,
-  ComponentSetWritePayload,
-  ComponentSetWriteResult,
-  MixFigmaDiagnostic,
+import {
+  MIX_FIGMA_PLUGIN_DATA_KEYS,
+  type ComponentNodePayload,
+  type ComponentSetWritePayload,
+  type ComponentSetWriteResult,
+  type FigmaWriteOptions,
+  type MixFigmaDiagnostic,
 } from '../types';
 
 export async function writeComponentSet(
   api: PluginAPI,
   payload: ComponentSetWritePayload,
+  options: FigmaWriteOptions = {},
 ): Promise<ComponentSetWriteResult> {
   if (payload.variants.length === 0) {
     throw new Error(`Component set "${payload.name}" must contain at least one variant.`);
   }
   assertUniqueRefs(payload.variants.map((variant) => variant.ref));
 
-  const existingSet = await resolveComponentSet(api, payload.sourceId);
+  const existingSet = await resolveComponentSet(api, payload.sourceId, payload.ref);
   const parent = existingSet === null ? await resolveParent(api, payload.parentNodeId) : null;
   const diagnostics = [...(payload.diagnostics ?? [])];
+  assertNoErrorDiagnostics(diagnostics, payload.name);
   const components: ComponentNode[] = [];
   const variantIds: Record<string, string> = {};
 
   for (const variant of payload.variants) {
     const identity = `${payload.ref}.${variant.ref}`;
-    const component = findExistingVariant(existingSet, identity, variantName(variant.properties)) ?? api.createComponent();
+    const component = findExistingVariant(existingSet, identity) ?? api.createComponent();
     if (component.parent?.type === 'COMPONENT_SET') {
       for (const child of component.children.slice()) child.remove();
     }
@@ -49,26 +53,46 @@ export async function writeComponentSet(
     payload.rowGap ?? 48,
   );
 
-  if (existingSet !== null) {
-    const retainedIds = new Set(components.map((component) => component.id));
-    for (const child of existingSet.children.slice()) {
-      if (child.type === 'COMPONENT' && !retainedIds.has(child.id)) child.remove();
-    }
-  }
+  if (existingSet !== null) applyApprovedVariantDeletes(existingSet, payload.ref, options);
 
   const componentSet = existingSet ?? api.combineAsVariants(components, requireParent(parent));
   componentSet.name = payload.name;
   if (payload.description !== undefined) componentSet.description = payload.description;
   writePluginData(componentSet, payload.pluginData, payload.identity);
+  if (existingSet === null) placeNewComponentSet(api, componentSet, requireParent(parent));
+  assertNoErrorDiagnostics(diagnostics, payload.name);
 
   return { componentSetId: componentSet.id, variants: variantIds, diagnostics };
 }
 
-async function resolveComponentSet(api: PluginAPI, sourceId: string | undefined): Promise<ComponentSetNode | null> {
+function assertNoErrorDiagnostics(
+  diagnostics: readonly MixFigmaDiagnostic[],
+  componentName: string,
+): void {
+  const errors = diagnostics.filter((diagnostic) => diagnostic.severity === 'error');
+  if (errors.length === 0) return;
+  throw new Error(
+    `Component set "${componentName}" could not be written: ${errors
+      .map((diagnostic) => diagnostic.message)
+      .join('; ')}`,
+  );
+}
+
+async function resolveComponentSet(
+  api: PluginAPI,
+  sourceId: string | undefined,
+  expectedIdentity: string,
+): Promise<ComponentSetNode | null> {
   if (sourceId === undefined) return null;
   const node = await api.getNodeByIdAsync(sourceId);
   if (node === null || node.type !== 'COMPONENT_SET') {
     throw new Error(`Source component set "${sourceId}" was not found.`);
+  }
+  const identity =
+    node.getPluginData(MIX_FIGMA_PLUGIN_DATA_KEYS.identity) ||
+    node.getPluginData('mix.key');
+  if (identity !== expectedIdentity) {
+    throw new Error(`Refusing to update unowned component set "${node.name}".`);
   }
   return node;
 }
@@ -76,13 +100,40 @@ async function resolveComponentSet(api: PluginAPI, sourceId: string | undefined)
 function findExistingVariant(
   componentSet: ComponentSetNode | null,
   identity: string,
-  name: string,
 ): ComponentNode | undefined {
   return componentSet?.children.find(
     (child): child is ComponentNode =>
       child.type === 'COMPONENT' &&
-      (child.getPluginData('mix_figma.id') === identity || child.name === name),
+      child.getPluginData('mix_figma.id') === identity,
   );
+}
+
+function applyApprovedVariantDeletes(
+  componentSet: ComponentSetNode,
+  componentRef: string,
+  options: FigmaWriteOptions,
+): void {
+  for (const operation of options.operations ?? []) {
+    if (
+      operation.action !== 'delete' ||
+      !operation.destructive ||
+      operation.kind !== 'componentVariant' ||
+      operation.sourceId === undefined
+    ) {
+      continue;
+    }
+    const child = componentSet.children.find(
+      (item): item is ComponentNode =>
+        item.type === 'COMPONENT' && item.id === operation.sourceId,
+    );
+    if (child === undefined) {
+      throw new Error(`Approved component variant delete target "${operation.sourceId}" was not found.`);
+    }
+    if (!child.getPluginData('mix_figma.id').startsWith(`${componentRef}.`)) {
+      throw new Error(`Refusing to delete unowned component variant "${child.name}".`);
+    }
+    child.remove();
+  }
 }
 
 function requireParent(parent: (BaseNode & ChildrenMixin) | null): BaseNode & ChildrenMixin {
@@ -112,6 +163,7 @@ async function applyPayload(
 ): Promise<void> {
   const mutable = node as unknown as Record<string, unknown>;
   if (!isVariantRoot) node.name = payload.kind === 'UNSUPPORTED' ? `${payload.name} [unsupported]` : payload.name;
+  assignIfSupported(mutable, 'visible', payload.visible);
   if (payload.width !== undefined || payload.height !== undefined) {
     const resize = mutable.resize;
     const currentWidth = typeof mutable.width === 'number' ? mutable.width : 1;
@@ -155,29 +207,33 @@ async function applyPayload(
       }
       node.characters = payload.text.characters;
       if (payload.text.fontSize !== undefined) node.fontSize = payload.text.fontSize;
+      if (payload.text.letterSpacing !== undefined) node.letterSpacing = payload.text.letterSpacing;
+      if (payload.text.lineHeight !== undefined) node.lineHeight = payload.text.lineHeight;
     }
   }
 
   writePluginData(node, payload.pluginData, undefined);
   await applyVariableBindings(api, node, payload.variableBindings, path, diagnostics);
 
-  if (payload.children === undefined || payload.children.length === 0) return;
-  if (!hasChildren(node)) {
-    diagnostics.push({
-      code: 'unsupported_component_parent',
-      severity: 'error',
-      path,
-      message: `Node "${payload.name}" cannot contain anatomy children in Figma.`,
-    });
-    return;
-  }
+  if (payload.children !== undefined && payload.children.length > 0) {
+    if (!hasChildren(node)) {
+      diagnostics.push({
+        code: 'unsupported_component_parent',
+        severity: 'error',
+        path,
+        message: `Node "${payload.name}" cannot contain anatomy children in Figma.`,
+      });
+      return;
+    }
 
-  for (const childPayload of payload.children) {
-    const childPath = `${path}.${childPayload.id}`;
-    const child = createNode(api, childPayload, childPath, diagnostics);
-    node.appendChild(child);
-    await applyPayload(api, child, childPayload, childPath, diagnostics);
+    for (const childPayload of payload.children) {
+      const childPath = `${path}.${childPayload.id}`;
+      const child = createNode(api, childPayload, childPath, diagnostics);
+      node.appendChild(child);
+      await applyPayload(api, child, childPayload, childPath, diagnostics);
+    }
   }
+  applyAutoLayoutSizing(node, payload);
 }
 
 function createNode(
@@ -308,6 +364,37 @@ function arrangeGrid(nodes: readonly ComponentNode[], columns: number, columnGap
     node.x = (index % columns) * (cellWidth + columnGap);
     node.y = Math.floor(index / columns) * (cellHeight + rowGap);
   });
+}
+
+function applyAutoLayoutSizing(node: SceneNode, payload: ComponentNodePayload): void {
+  if (payload.layout?.mode === undefined || payload.layout.mode === 'NONE') return;
+  const mutable = node as unknown as Record<string, unknown>;
+  if (payload.width === undefined) assignIfSupported(mutable, 'primaryAxisSizingMode', 'AUTO');
+  if (payload.height === undefined) assignIfSupported(mutable, 'counterAxisSizingMode', 'AUTO');
+}
+
+function placeNewComponentSet(
+  api: PluginAPI,
+  componentSet: ComponentSetNode,
+  parent: BaseNode & ChildrenMixin,
+): void {
+  const siblings = parent.children.filter(
+    (node): node is SceneNode =>
+      node.id !== componentSet.id &&
+      'x' in node &&
+      'y' in node &&
+      'width' in node &&
+      'height' in node,
+  );
+  const viewport = (api as PluginAPI & { viewport?: PluginAPI['viewport'] }).viewport;
+  if (siblings.length === 0) {
+    componentSet.x = (viewport?.center.x ?? componentSet.width / 2) - componentSet.width / 2;
+    componentSet.y = (viewport?.center.y ?? componentSet.height / 2) - componentSet.height / 2;
+  } else {
+    componentSet.x = Math.max(...siblings.map((node) => node.x + node.width)) + 96;
+    componentSet.y = Math.min(...siblings.map((node) => node.y));
+  }
+  viewport?.scrollAndZoomIntoView([componentSet]);
 }
 
 function assignIfSupported(target: Record<string, unknown>, property: string, value: unknown): void {

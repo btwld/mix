@@ -57,6 +57,7 @@ String generateTokensSource(Map<String, JsonMap> themeDocuments) {
 
       return groupCompare != 0 ? groupCompare : left.$2.compareTo(right.$2);
     });
+  _validateUniqueTokenIdentifiers(orderedDeclarations);
 
   final buffer = StringBuffer()
     ..writeln('// GENERATED CODE - DO NOT MODIFY BY HAND.')
@@ -74,6 +75,7 @@ String generateTokensSource(Map<String, JsonMap> themeDocuments) {
   }
 
   final modes = themeDocuments.keys.toList()..sort();
+  _validateUniqueModeIdentifiers(modes);
   for (final mode in modes) {
     final theme = themeDocuments[mode]!;
     buffer
@@ -95,6 +97,36 @@ String generateTokensSource(Map<String, JsonMap> themeDocuments) {
   }
 
   return buffer.toString();
+}
+
+void _validateUniqueModeIdentifiers(List<String> modes) {
+  final namesByIdentifier = <String, String>{};
+  for (final mode in modes) {
+    final identifier = _dartIdentifier(mode);
+    final existing = namesByIdentifier[identifier];
+    if (existing != null && existing != mode) {
+      throw FormatException(
+        'Mode names "$existing" and "$mode" both normalize to the Dart '
+        'identifier "${identifier}Tokens".',
+      );
+    }
+    namesByIdentifier[identifier] = mode;
+  }
+}
+
+void _validateUniqueTokenIdentifiers(List<(String, String)> declarations) {
+  final namesByIdentifier = <String, String>{};
+  for (final (group, name) in declarations) {
+    final identifier = _identifier(_tokenClasses[group]!.$2, name);
+    final existing = namesByIdentifier[identifier];
+    if (existing != null && existing != name) {
+      throw FormatException(
+        'Token names "$existing" and "$name" both normalize to the Dart '
+        'identifier "$identifier".',
+      );
+    }
+    namesByIdentifier[identifier] = name;
+  }
 }
 
 void _validateTheme(JsonMap theme) {

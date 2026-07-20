@@ -1,0 +1,29 @@
+{
+  "$themes": [],
+  "global": {
+    "color": {
+      "brand": {
+        "value": "#336699",
+        "type": "color",
+        "description": "Tokens Studio legacy color token"
+      },
+      "accent": {
+        "value": "{global.color.brand}",
+        "type": "color"
+      }
+    },
+    "space": {
+      "stack": {
+        "sm": {
+          "value": 8,
+          "type": "dimension",
+          "$extensions": {
+            "com.btwld.mix": {
+              "group": "spaces"
+            }
+          }
+        }
+      }
+    }
+  }
+}

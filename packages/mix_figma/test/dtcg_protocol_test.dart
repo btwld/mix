@@ -7,7 +7,7 @@ import 'package:mix_figma/src/core/dtcg/dtcg_writer.dart';
 import 'package:mix_figma/src/core/protocol_json/theme_from_dtcg.dart';
 
 void main() {
-  group('DTCG 2025.10', () {
+  group('DTCG 2025.10 and Tokens Studio', () {
     test('parser and writer preserve aliases and extensions', () {
       final input = _json('dtcg/light.tokens.json');
       final document = parseDtcgDocument(input);
@@ -42,6 +42,31 @@ void main() {
         'breakpoints',
         'durations',
       ]);
+    });
+
+    test('maps Tokens Studio legacy type/value tokens losslessly', () {
+      final input = _json('dtcg/tokens_studio_legacy.tokens.json');
+      final document = parseDtcgDocument(input);
+
+      expect(document.tokens['global.color.brand']!.type, 'color');
+      expect(
+        document.tokens['global.color.accent']!.value,
+        '{global.color.brand}',
+      );
+      expect(document.tokens['global.space.stack.sm']!.mixGroup, 'spaces');
+      expect(writeDtcgDocument(document), input);
+
+      final result = buildProtocolThemeJsonFromDtcg(document);
+      expect(result.diagnostics, isEmpty);
+      expect(result.value, {
+        'v': 1,
+        'type': 'theme',
+        'colors': {
+          'global.color.accent': {r'$token': 'global.color.brand'},
+          'global.color.brand': '#336699',
+        },
+        'spaces': {'global.space.stack.sm': 8},
+      });
     });
   });
 }

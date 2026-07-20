@@ -15,35 +15,58 @@ DtcgDocument parseDtcgDocument(JsonMap json) {
         entry.key: entry.value,
   };
 
-  void visit(JsonMap node, List<String> path, String? inheritedType) {
-    final localType = node[r'$type'];
+  void visit(
+    JsonMap node,
+    List<String> path,
+    String? inheritedType,
+    _DtcgSyntax? inheritedSyntax,
+  ) {
+    final typeKey = node.containsKey(r'$type')
+        ? r'$type'
+        : node['type'] is String
+        ? 'type'
+        : null;
+    final localType = typeKey == null ? null : node[typeKey];
     if (localType != null && localType is! String) {
       throw FormatException(
-        'Expected a string at /${[...path, r'$type'].join('/')}.',
+        'Expected a string at /${[...path, typeKey].join('/')}.',
       );
     }
     final type = localType as String? ?? inheritedType;
-    if (node.containsKey(r'$value')) {
+    final _DtcgSyntax? syntax = switch (typeKey) {
+      r'$type' => .dtcg,
+      'type' => .tokensStudio,
+      _ => inheritedSyntax,
+    };
+    final valueKey = node.containsKey(r'$value')
+        ? r'$value'
+        : syntax == .tokensStudio && node.containsKey('value')
+        ? 'value'
+        : null;
+    if (valueKey != null) {
       if (path.isEmpty) {
         throw const FormatException('A root DTCG token needs a name.');
       }
       if (type == null || type.isEmpty) {
-        throw FormatException('Token ${path.join('.')} has no \$type.');
+        throw FormatException('Token ${path.join('.')} has no type.');
       }
       final tokenPath = path.join('.');
-      final extensions = node[r'$extensions'] == null
+      final extensionsKey = node.containsKey(r'$extensions')
+          ? r'$extensions'
+          : syntax == .tokensStudio && node.containsKey('extensions')
+          ? 'extensions'
+          : null;
+      final extensions = extensionsKey == null
           ? <String, Object?>{}
           : jsonObject(
-              node[r'$extensions'],
-              path: '/${[...path, r'$extensions'].join('/')}',
+              node[extensionsKey],
+              path: '/${[...path, extensionsKey].join('/')}',
             );
       tokens[tokenPath] = DtcgToken(
         path: tokenPath,
         type: type,
-        value: node[r'$value'],
-        description: node[r'$description'] is String
-            ? node[r'$description']! as String
-            : null,
+        value: node[valueKey],
+        description: _description(node, syntax),
         extensions: extensions,
       );
 
@@ -51,16 +74,20 @@ DtcgDocument parseDtcgDocument(JsonMap json) {
     }
 
     for (final entry in node.entries) {
-      if (entry.key.startsWith(r'$')) continue;
+      if (entry.key.startsWith(r'$') ||
+          syntax == .tokensStudio && _isLegacyMetadata(entry.key)) {
+        continue;
+      }
       visit(
         jsonObject(entry.value, path: '/${[...path, entry.key].join('/')}'),
         [...path, entry.key],
         type,
+        syntax,
       );
     }
   }
 
-  visit(json, const [], json[r'$type'] as String?);
+  visit(json, const [], null, null);
 
   return DtcgDocument(
     tokens: tokens,
@@ -69,6 +96,25 @@ DtcgDocument parseDtcgDocument(JsonMap json) {
     source: _deepCopy(json) as JsonMap,
   );
 }
+
+String? _description(JsonMap node, _DtcgSyntax? syntax) {
+  final value = node.containsKey(r'$description')
+      ? node[r'$description']
+      : syntax == .tokensStudio
+      ? node['description']
+      : null;
+
+  return value is String ? value : null;
+}
+
+bool _isLegacyMetadata(String key) {
+  return switch (key) {
+    'type' || 'value' || 'description' || 'extensions' => true,
+    _ => false,
+  };
+}
+
+enum _DtcgSyntax { dtcg, tokensStudio }
 
 Object? _deepCopy(Object? value) {
   return switch (value) {

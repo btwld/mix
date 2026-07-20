@@ -218,4 +218,126 @@ describe('Figma styles', () => {
     });
     expect(textStyles[0]?.setBoundVariable).toHaveBeenCalledWith('fontSize', { id: 'variable:font-size' });
   });
+
+  it('does not update an unowned style referenced by a stale source id', async () => {
+    const unowned = {
+      id: 'style:user',
+      name: 'User Typography',
+      description: 'Do not change',
+      remote: false,
+      fontName: { family: 'Inter', style: 'Regular' },
+      fontSize: 12,
+      letterSpacing: { unit: 'PIXELS', value: 0 },
+      lineHeight: { unit: 'AUTO' },
+      setBoundVariable: vi.fn(),
+      ...pluginData(),
+    };
+    const created = {
+      id: 'style:managed',
+      name: '',
+      description: '',
+      remote: false,
+      fontName: { family: 'Inter', style: 'Regular' },
+      fontSize: 12,
+      letterSpacing: { unit: 'PIXELS', value: 0 },
+      lineHeight: { unit: 'AUTO' },
+      setBoundVariable: vi.fn(),
+      ...pluginData(),
+    };
+    const createTextStyle = vi.fn(() => created);
+    const api = {
+      getLocalTextStylesAsync: async () => [unowned],
+      getLocalEffectStylesAsync: async () => [],
+      getLocalPaintStylesAsync: async () => [],
+      createTextStyle,
+      loadFontAsync: async () => undefined,
+      variables: { getVariableByIdAsync: async () => null },
+    } as unknown as PluginAPI;
+    const payload: FigmaStylesWritePayload = {
+      version: 1,
+      textStyles: [
+        {
+          ref: 'textStyles/type.body',
+          sourceId: unowned.id,
+          name: 'Typography/Body',
+          fontName: { family: 'Inter', style: 'Regular' },
+          fontSize: 16,
+          identity: { id: 'textStyles/type.body', kind: 'textStyle' },
+        },
+      ],
+      effectStyles: [],
+      paintStyles: [],
+    };
+
+    await expect(writeStyles(api, payload)).resolves.toMatchObject({
+      textStyles: { 'textStyles/type.body': 'style:managed' },
+    });
+    expect(createTextStyle).toHaveBeenCalledOnce();
+    expect(unowned).toMatchObject({
+      name: 'User Typography',
+      description: 'Do not change',
+      fontSize: 12,
+    });
+  });
+
+  it('deletes only the exact approved Mix-owned style', async () => {
+    const ownedData = pluginData({
+      [MIX_FIGMA_PLUGIN_DATA_KEYS.identity]: 'textStyles.body',
+    });
+    const owned = {
+      id: 'style:owned',
+      name: 'Typography/Body',
+      remote: false,
+      remove: vi.fn(),
+      ...ownedData,
+    };
+    const unowned = {
+      id: 'style:user',
+      name: 'Typography/User',
+      remote: false,
+      remove: vi.fn(),
+      ...pluginData(),
+    };
+    const api = {
+      getLocalTextStylesAsync: async () => [owned, unowned],
+      getLocalEffectStylesAsync: async () => [],
+      getLocalPaintStylesAsync: async () => [],
+    } as unknown as PluginAPI;
+    const payload: FigmaStylesWritePayload = {
+      version: 1,
+      textStyles: [],
+      effectStyles: [],
+      paintStyles: [],
+    };
+    const operation = {
+      action: 'delete' as const,
+      kind: 'textStyle',
+      ref: 'textStyles.body',
+      sourceId: 'style:owned',
+      name: 'Typography/Body',
+      path: '/styles/textStyles.body',
+      destructive: true,
+      changes: ['delete'],
+      diagnostics: [],
+    };
+
+    await expect(writeStyles(api, payload, { operations: [operation] })).resolves.toEqual({
+      textStyles: {},
+      effectStyles: {},
+      paintStyles: {},
+    });
+    expect(owned.remove).toHaveBeenCalledOnce();
+
+    await expect(
+      writeStyles(api, payload, {
+        operations: [{
+          ...operation,
+          ref: 'textStyles.user',
+          sourceId: 'style:user',
+          name: 'Typography/User',
+        }],
+      }),
+    ).rejects.toThrow('Refusing to delete unowned text style');
+    expect(unowned.remove).not.toHaveBeenCalled();
+  });
 });

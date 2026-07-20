@@ -1,9 +1,17 @@
 import { writePluginData } from '../plugin_data';
-import { MIX_FIGMA_PLUGIN_DATA_KEYS, type FigmaVariableValue, type FigmaVariablesWritePayload, type FigmaVariablesWriteResult } from '../types';
+import {
+  MIX_FIGMA_PLUGIN_DATA_KEYS,
+  type FigmaVariableValue,
+  type FigmaVariablesWritePayload,
+  type FigmaVariablesWriteResult,
+  type FigmaWriteOptions,
+  type MixFigmaSyncOperation,
+} from '../types';
 
 export async function writeVariables(
   api: PluginAPI,
   payload: FigmaVariablesWritePayload,
+  options: FigmaWriteOptions = {},
 ): Promise<FigmaVariablesWriteResult> {
   assertUniqueRefs('variable collection', payload.collections.map((collection) => collection.ref));
   assertUniqueRefs('variable', payload.variables.map((variable) => variable.ref));
@@ -21,8 +29,10 @@ export async function writeVariables(
       throw new Error(`Variable collection "${collectionPayload.name}" must contain at least one mode.`);
     }
 
-    const collection = findCollection(localCollections, collectionPayload) ??
+    const existingCollection = findCollection(localCollections, collectionPayload);
+    const collection = existingCollection ??
       api.variables.createVariableCollection(collectionPayload.name);
+    const collectionWasCreated = existingCollection === undefined;
     if (collection.remote) {
       throw new Error(`Cannot update remote variable collection "${collection.name}".`);
     }
@@ -35,9 +45,11 @@ export async function writeVariables(
 
     const resolvedModes: Record<string, string> = {};
     for (const [index, modePayload] of collectionPayload.modes.entries()) {
-      const existingMode = collection.modes.find(
-        (mode) => mode.modeId === modePayload.sourceId || mode.name === modePayload.name,
-      );
+      const existingMode = collectionWasCreated
+        ? undefined
+        : modePayload.sourceId === undefined
+          ? collection.modes.find((mode) => mode.name === modePayload.name)
+          : collection.modes.find((mode) => mode.modeId === modePayload.sourceId);
       if (existingMode !== undefined) {
         if (existingMode.name !== modePayload.name) {
           collection.renameMode(existingMode.modeId, modePayload.name);
@@ -46,18 +58,19 @@ export async function writeVariables(
         continue;
       }
 
-      if (index === 0 && collection.modes.length === 1 && collection.modes[0]?.name === 'Mode 1') {
+      if (!collectionWasCreated && modePayload.sourceId !== undefined) {
+        throw new Error(
+          `Source mode "${modePayload.sourceId}" was not found in collection "${collection.name}".`,
+        );
+      }
+
+      if (collectionWasCreated && index === 0 && collection.modes.length === 1 && collection.modes[0]?.name === 'Mode 1') {
         const defaultMode = collection.modes[0];
         collection.renameMode(defaultMode.modeId, modePayload.name);
         resolvedModes[modePayload.ref] = defaultMode.modeId;
       } else {
         resolvedModes[modePayload.ref] = collection.addMode(modePayload.name);
       }
-    }
-
-    const desiredModeIds = new Set(Object.values(resolvedModes));
-    for (const mode of collection.modes.slice()) {
-      if (!desiredModeIds.has(mode.modeId)) collection.removeMode(mode.modeId);
     }
 
     collectionObjects.set(collectionPayload.ref, collection);
@@ -78,7 +91,7 @@ export async function writeVariables(
       );
     }
 
-    const variable = findVariable(localVariables, variablePayload, collection.id) ??
+    const variable = findVariable(localVariables, variablePayload) ??
       api.variables.createVariable(variablePayload.name, collection, variablePayload.resolvedType);
     if (variable.remote) throw new Error(`Cannot update remote variable "${variable.name}".`);
     if (variable.resolvedType !== variablePayload.resolvedType) {
@@ -101,7 +114,11 @@ export async function writeVariables(
     if (variablePayload.codeSyntax !== undefined) {
       for (const platform of ['ANDROID', 'WEB', 'iOS'] as const) {
         const syntax = variablePayload.codeSyntax[platform];
-        if (syntax === undefined) variable.removeVariableCodeSyntax(platform);
+        if (syntax === undefined) {
+          if (variable.codeSyntax[platform] !== undefined) {
+            variable.removeVariableCodeSyntax(platform);
+          }
+        }
         else variable.setVariableCodeSyntax(platform, syntax);
       }
     }
@@ -127,33 +144,101 @@ export async function writeVariables(
     }
   }
 
+  applyApprovedDeletes(localCollections, localVariables, options.operations ?? []);
+
   return { collections: collectionIds, modes: modeIds, variables: variableIds };
+}
+
+function applyApprovedDeletes(
+  collections: readonly VariableCollection[],
+  variables: readonly Variable[],
+  operations: readonly MixFigmaSyncOperation[],
+): void {
+  for (const operation of approvedDeletes(operations, 'variable')) {
+    const variable = variables.find((item) => item.id === operation.sourceId);
+    if (variable === undefined) throw new Error(`Approved variable delete target "${operation.sourceId}" was not found.`);
+    if (variable.remote) throw new Error(`Cannot delete remote variable "${variable.name}".`);
+    assertOwned(variable, operation.ref, 'variable');
+    variable.remove();
+  }
+  for (const operation of approvedDeletes(operations, 'mode')) {
+    const collection = collections.find((item) => item.modes.some((mode) => mode.modeId === operation.sourceId));
+    if (collection === undefined) throw new Error(`Approved mode delete target "${operation.sourceId}" was not found.`);
+    if (collection.remote) throw new Error(`Cannot delete a mode from remote collection "${collection.name}".`);
+    assertOwned(collection, undefined, 'mode');
+    collection.removeMode(operation.sourceId as string);
+  }
+  for (const operation of approvedDeletes(operations, 'collection')) {
+    const collection = collections.find((item) => item.id === operation.sourceId);
+    if (collection === undefined) throw new Error(`Approved collection delete target "${operation.sourceId}" was not found.`);
+    if (collection.remote) throw new Error(`Cannot delete remote collection "${collection.name}".`);
+    assertOwned(collection, operation.ref, 'collection');
+    collection.remove();
+  }
+}
+
+function approvedDeletes(
+  operations: readonly MixFigmaSyncOperation[],
+  kind: string,
+): Array<MixFigmaSyncOperation & { readonly sourceId: string }> {
+  return operations
+    .filter(
+      (operation): operation is MixFigmaSyncOperation & { readonly sourceId: string } =>
+        operation.action === 'delete' &&
+        operation.destructive &&
+        operation.kind === kind &&
+        operation.sourceId !== undefined,
+    );
+}
+
+function assertOwned(
+  resource: Pick<PluginDataMixin, 'getPluginData'>,
+  expectedIdentity: string | undefined,
+  kind: string,
+): void {
+  const identity =
+    resource.getPluginData(MIX_FIGMA_PLUGIN_DATA_KEYS.identity) ||
+    resource.getPluginData('mix.key');
+  if (identity.length === 0 || (expectedIdentity !== undefined && identity !== expectedIdentity)) {
+    throw new Error(`Refusing to delete unowned ${kind}.`);
+  }
 }
 
 function findCollection(
   collections: readonly VariableCollection[],
   payload: FigmaVariablesWritePayload['collections'][number],
 ): VariableCollection | undefined {
-  return collections.find(
-    (collection) =>
-      collection.id === payload.sourceId ||
-      (payload.identity !== undefined &&
-        collection.getPluginData(MIX_FIGMA_PLUGIN_DATA_KEYS.identity) === payload.identity.id) ||
-      collection.name === payload.name,
-  );
+  return findManagedResource(collections, payload.sourceId, payload.identity?.id);
 }
 
 function findVariable(
   variables: readonly Variable[],
   payload: FigmaVariablesWritePayload['variables'][number],
-  collectionId: string,
 ): Variable | undefined {
-  return variables.find(
-    (variable) =>
-      variable.id === payload.sourceId ||
-      (payload.identity !== undefined &&
-        variable.getPluginData(MIX_FIGMA_PLUGIN_DATA_KEYS.identity) === payload.identity.id) ||
-      (variable.variableCollectionId === collectionId && variable.name === payload.name),
+  return findManagedResource(variables, payload.sourceId, payload.identity?.id);
+}
+
+function findManagedResource<T extends Pick<PluginDataMixin, 'getPluginData'> & { readonly id: string }>(
+  resources: readonly T[],
+  sourceId: string | undefined,
+  expectedIdentity: string | undefined,
+): T | undefined {
+  if (expectedIdentity === undefined) return undefined;
+  const bySourceId = sourceId === undefined
+    ? undefined
+    : resources.find((resource) => resource.id === sourceId);
+  if (bySourceId !== undefined && managedIdentity(bySourceId) === expectedIdentity) {
+    return bySourceId;
+  }
+  return resources.find((resource) => managedIdentity(resource) === expectedIdentity);
+}
+
+function managedIdentity(
+  resource: Pick<PluginDataMixin, 'getPluginData'>,
+): string {
+  return (
+    resource.getPluginData(MIX_FIGMA_PLUGIN_DATA_KEYS.identity) ||
+    resource.getPluginData('mix.key')
   );
 }
 

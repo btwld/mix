@@ -1,0 +1,88 @@
+{
+  "schema": "mix_atlas/component/v2",
+  "id": "input",
+  "label": "Input",
+  "properties": [
+    { "id": "variant", "kind": "enum", "values": ["outline"], "required": true, "default": "outline" },
+    { "id": "size", "kind": "enum", "values": ["md"], "required": true, "default": "md" },
+    { "id": "label", "kind": "string", "required": true, "default": "Email" },
+    { "id": "value", "kind": "string", "required": true, "default": "hello@example.com" },
+    { "id": "hint", "kind": "string", "required": true, "default": "name@example.com" },
+    { "id": "enabled", "kind": "boolean", "required": true, "default": true },
+    { "id": "focused", "kind": "boolean", "required": true, "default": false },
+    { "id": "invalid", "kind": "boolean", "required": true, "default": false }
+  ],
+  "states": [
+    { "id": "default", "widgetStates": [], "properties": {} },
+    { "id": "focused", "widgetStates": ["focused"], "properties": { "focused": true } },
+    { "id": "disabled", "widgetStates": ["disabled"], "properties": { "enabled": false } },
+    { "id": "error", "widgetStates": ["error"], "properties": { "invalid": true } }
+  ],
+  "slots": [
+    { "id": "root", "kind": "flex_box" },
+    { "id": "value", "kind": "text" }
+  ],
+  "anatomy": {
+    "root": "root",
+    "nodes": [
+      { "id": "root", "kind": "flex_box", "slot": "root", "children": ["value"] },
+      {
+        "id": "value",
+        "kind": "text",
+        "slot": "value",
+        "children": [],
+        "bindings": { "text": { "property": "value" } }
+      }
+    ]
+  },
+  "recipes": [
+    {
+      "id": "outline-md",
+      "properties": { "variant": "outline", "size": "md" },
+      "styles": { "root": "outline-md/root", "value": "outline-md/value" }
+    }
+  ],
+  "styles": {
+    "outline-md/root": {
+      "v": 1,
+      "type": "flex_box",
+      "direction": "horizontal",
+      "crossAxisAlignment": "center",
+      "padding": { "left": 12, "top": 10, "right": 12, "bottom": 10 },
+      "decoration": {
+        "color": "#FFFFFF",
+        "borderRadius": 8,
+        "border": {
+          "top": { "color": "#9CA3AF", "width": 1, "style": "solid" },
+          "right": { "color": "#9CA3AF", "width": 1, "style": "solid" },
+          "bottom": { "color": "#9CA3AF", "width": 1, "style": "solid" },
+          "left": { "color": "#9CA3AF", "width": 1, "style": "solid" }
+        }
+      }
+    },
+    "outline-md/value": {
+      "v": 1,
+      "type": "text",
+      "style": {
+        "color": "#374151",
+        "fontFamily": "Inter",
+        "fontSize": 14,
+        "fontWeight": "w400",
+        "height": 1.4
+      }
+    }
+  },
+  "semantics": {
+    "role": "textField",
+    "bindings": {
+      "label": { "property": "label" },
+      "hint": { "property": "hint" },
+      "value": { "property": "value" },
+      "enabled": { "property": "enabled" },
+      "focused": { "property": "focused" },
+      "invalid": { "property": "invalid" }
+    }
+  },
+  "oracles": [],
+  "diagnostics": []
+}

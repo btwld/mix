@@ -17,23 +17,33 @@ final class FigmaVariableMode {
 final class FigmaVariableCollection {
   final String id;
 
+  final String key;
   final String name;
   final String defaultModeId;
   final List<FigmaVariableMode> modes;
+  final Map<String, String> pluginData;
+  final bool hiddenFromPublishing;
   final bool remote;
   FigmaVariableCollection({
     required this.id,
     required this.name,
     required this.defaultModeId,
     required Iterable<FigmaVariableMode> modes,
+    this.key = '',
+    Map<String, String> pluginData = const {},
+    this.hiddenFromPublishing = false,
     this.remote = false,
-  }) : modes = List.unmodifiable(modes);
+  }) : modes = List.unmodifiable(modes),
+       pluginData = Map.unmodifiable(pluginData);
 
   JsonMap toJson() => {
     'id': id,
+    'key': key,
     'name': name,
     'defaultModeId': defaultModeId,
     'modes': modes.map((mode) => mode.toJson()).toList(),
+    'pluginData': pluginData,
+    'hiddenFromPublishing': hiddenFromPublishing,
     'remote': remote,
   };
 }

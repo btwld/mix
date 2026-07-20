@@ -19,17 +19,91 @@ final class FigmaThemeImportResult {
   }) : diagnostics = List.unmodifiable(diagnostics);
 }
 
+/// Assigns deterministic protocol names to variables across all collections.
+///
+/// Figma permits different collections to contain the same variable name,
+/// while a Mix theme requires names to be unique within each token group.
+/// Duplicate names are prefixed with a sanitized collection namespace so
+/// aliases keep pointing at the correct source variable.
+Map<String, String> buildProtocolVariableNameMap(
+  FigmaVariablesDocument document,
+) {
+  final variablesByBaseName = <String, List<FigmaVariable>>{};
+  for (final variable in document.variables) {
+    try {
+      final name = MixFigmaNameMapper.figmaToMix(variable.name);
+      variablesByBaseName.putIfAbsent(name, () => []).add(variable);
+    } on FormatException {
+      // The import result reports invalid names with source-specific context.
+    }
+  }
+
+  final result = <String, String>{};
+  final usedNames = <String>{};
+  final baseNames = variablesByBaseName.keys.toList()..sort();
+  for (final baseName in baseNames) {
+    final variables = variablesByBaseName[baseName]!;
+    if (variables.length == 1) {
+      result[variables.single.id] = baseName;
+      usedNames.add(baseName);
+    }
+  }
+  for (final baseName in baseNames) {
+    final variables = variablesByBaseName[baseName]!;
+    if (variables.length == 1) continue;
+    variables.sort((left, right) {
+      final leftCollection = document.collectionFor(left.collectionId);
+      final rightCollection = document.collectionFor(right.collectionId);
+      final collectionCompare = leftCollection.name.compareTo(
+        rightCollection.name,
+      );
+      if (collectionCompare != 0) return collectionCompare;
+      final idCompare = leftCollection.id.compareTo(rightCollection.id);
+
+      return idCompare != 0 ? idCompare : left.id.compareTo(right.id);
+    });
+    for (final variable in variables) {
+      final namespace = _collectionNamespace(
+        document.collectionFor(variable.collectionId).name,
+      );
+      var suffix = 1;
+      var candidate = _namespacedName(namespace, baseName, suffix);
+      while (usedNames.contains(candidate)) {
+        candidate = _namespacedName(namespace, baseName, ++suffix);
+      }
+      result[variable.id] = candidate;
+      usedNames.add(candidate);
+    }
+  }
+
+  return Map.unmodifiable(result);
+}
+
 /// Converts the selected Figma collection mode into a protocol theme.
 FigmaThemeImportResult buildProtocolThemeJsonFromFigmaVariables(
   FigmaVariablesDocument document, {
   required String modeId,
+  String? collectionId,
   MixFigmaConfig config = const MixFigmaConfig(),
+  Map<String, String> protocolNamesByVariableId = const {},
 }) {
   final diagnostics = <MixFigmaDiagnostic>[];
   final coverage = <MixFigmaCoverageItem>[];
   final variablesById = {
     for (final variable in document.variables) variable.id: variable,
   };
+  final groupsByVariableId = <String, String?>{};
+  final groupDiagnosticsByVariableId = <String, List<MixFigmaDiagnostic>>{};
+  for (final variable in document.variables) {
+    final groupDiagnostics = <MixFigmaDiagnostic>[];
+    groupsByVariableId[variable.id] = _protocolGroup(
+      variable,
+      collection: document.collectionFor(variable.collectionId),
+      config: config,
+      diagnostics: groupDiagnostics,
+    );
+    groupDiagnosticsByVariableId[variable.id] = groupDiagnostics;
+  }
   final groups = {
     'colors': {},
     'spaces': {},
@@ -38,23 +112,19 @@ FigmaThemeImportResult buildProtocolThemeJsonFromFigmaVariables(
     'fontWeights': {},
   };
 
-  final variables = document.variables.toList()
-    ..sort((left, right) => left.name.compareTo(right.name));
+  final variables =
+      document.variables
+          .where(
+            (variable) =>
+                collectionId == null || variable.collectionId == collectionId,
+          )
+          .toList()
+        ..sort((left, right) => left.name.compareTo(right.name));
   for (final variable in variables) {
-    final itemDiagnostics = <MixFigmaDiagnostic>[];
-    final collection = document.collectionFor(variable.collectionId);
-    final group = switch (variable.resolvedType) {
-      .color => 'colors',
-      .float => _floatGroupName(
-        disambiguateFloatVariable(
-          variable,
-          collection: collection,
-          config: config,
-        ),
-        itemDiagnostics,
-      ),
-      .string || .boolean => null,
-    };
+    final itemDiagnostics = <MixFigmaDiagnostic>[
+      ...?groupDiagnosticsByVariableId[variable.id],
+    ];
+    final group = groupsByVariableId[variable.id];
 
     if (group == null) {
       itemDiagnostics.add(
@@ -73,6 +143,8 @@ FigmaThemeImportResult buildProtocolThemeJsonFromFigmaVariables(
           id: variable.id,
           kind: 'variable',
           status: .unsupported,
+          nativeFidelity: .unsupported,
+          roundTripFidelity: .unsupported,
           diagnostics: itemDiagnostics,
         ),
       );
@@ -91,35 +163,80 @@ FigmaThemeImportResult buildProtocolThemeJsonFromFigmaVariables(
     } else {
       final rawValue = variable.valuesByMode[modeId];
 
-      try {
-        groups[group]![MixFigmaNameMapper.figmaToMix(
-          variable.name,
-        )] = _protocolVariableValue(
-          variable,
-          rawValue,
-          group: group,
-          variablesById: variablesById,
-        );
-      } on FormatException catch (error) {
+      final aliasTarget = rawValue is FigmaVariableAlias
+          ? variablesById[rawValue.variableId]
+          : null;
+      final targetGroup = aliasTarget == null
+          ? null
+          : groupsByVariableId[aliasTarget.id];
+      if (aliasTarget != null && targetGroup != group) {
         itemDiagnostics.add(
           MixFigmaDiagnostic(
-            code: 'invalid_variable_value',
+            code: 'cross_group_alias',
             severity: .error,
             path: '/variables/${variable.id}/valuesByMode/$modeId',
-            message: error.message,
+            message:
+                'Alias from $group token "${variable.name}" targets '
+                '${targetGroup ?? 'an unsupported'} token '
+                '"${aliasTarget.name}".',
           ),
         );
+      } else {
+        try {
+          final baseName = MixFigmaNameMapper.figmaToMix(variable.name);
+          final protocolName =
+              protocolNamesByVariableId[variable.id] ?? baseName;
+          if (protocolName != baseName) {
+            itemDiagnostics.add(
+              MixFigmaDiagnostic(
+                code: 'duplicate_variable_name_namespaced',
+                severity: .info,
+                path: '/variables/${variable.id}/name',
+                message:
+                    'Duplicate Figma variable name "${variable.name}" was '
+                    'imported as "$protocolName".',
+              ),
+            );
+          }
+          groups[group]![protocolName] = _protocolVariableValue(
+            variable,
+            rawValue,
+            group: group,
+            variablesById: variablesById,
+            protocolNamesByVariableId: protocolNamesByVariableId,
+          );
+        } on FormatException catch (error) {
+          itemDiagnostics.add(
+            MixFigmaDiagnostic(
+              code: 'invalid_variable_value',
+              severity: .error,
+              path: '/variables/${variable.id}/valuesByMode/$modeId',
+              message: error.message,
+            ),
+          );
+        }
       }
     }
 
     diagnostics.addAll(itemDiagnostics);
+    final hasError = itemDiagnostics.any((item) => item.severity == .error);
+    final wasNamespaced = itemDiagnostics.any(
+      (item) => item.code == 'duplicate_variable_name_namespaced',
+    );
+    final wasNormalized = itemDiagnostics.any(
+      (item) => item.code == 'ambiguous_float_variable',
+    );
     coverage.add(
       MixFigmaCoverageItem(
         id: variable.id,
         kind: 'variable',
-        status: itemDiagnostics.any((item) => item.severity == .error)
-            ? .unsupported
-            : .supported,
+        status: hasError ? .unsupported : .supported,
+        nativeFidelity: hasError
+            ? .error
+            : (wasNamespaced || wasNormalized ? .normalized : .exact),
+        roundTripFidelity: hasError
+            ? .error
+            : (wasNamespaced ? .normalized : .exact),
         diagnostics: itemDiagnostics,
       ),
     );
@@ -137,6 +254,20 @@ FigmaThemeImportResult buildProtocolThemeJsonFromFigmaVariables(
   );
 }
 
+String? _protocolGroup(
+  FigmaVariable variable, {
+  required FigmaVariableCollection collection,
+  required MixFigmaConfig config,
+  required List<MixFigmaDiagnostic> diagnostics,
+}) => switch (variable.resolvedType) {
+  .color => 'colors',
+  .float => _floatGroupName(
+    disambiguateFloatVariable(variable, collection: collection, config: config),
+    diagnostics,
+  ),
+  .string || .boolean => null,
+};
+
 String _floatGroupName(
   FloatDisambiguationResult result,
   List<MixFigmaDiagnostic> diagnostics,
@@ -151,6 +282,7 @@ Object _protocolVariableValue(
   Object? rawValue, {
   required String group,
   required Map<String, FigmaVariable> variablesById,
+  required Map<String, String> protocolNamesByVariableId,
 }) {
   if (rawValue case FigmaVariableAlias(:final variableId)) {
     final target = variablesById[variableId];
@@ -159,7 +291,9 @@ Object _protocolVariableValue(
     }
 
     return {
-      r'$token': MixFigmaNameMapper.figmaToMix(target.name),
+      r'$token':
+          protocolNamesByVariableId[target.id] ??
+          MixFigmaNameMapper.figmaToMix(target.name),
       if (group == 'spaces') 'kind': 'space',
       if (group == 'doubles') 'kind': 'double',
     };
@@ -175,6 +309,33 @@ Object _protocolVariableValue(
       'Value for ${variable.name} does not match $group.',
     ),
   };
+}
+
+String _collectionNamespace(String name) {
+  final dotted = name
+      .split('/')
+      .map((segment) => segment.trim())
+      .where((segment) => segment.isNotEmpty)
+      .join('.');
+  var namespace = dotted
+      .replaceAll(RegExp(r'[^A-Za-z0-9_.-]+'), '-')
+      .replaceAll(RegExp('-+'), '-')
+      .replaceAll(RegExp(r'^[.-]+|[.-]+$'), '');
+  if (namespace.isEmpty) namespace = 'collection';
+  if (namespace.length > 48) namespace = namespace.substring(0, 48);
+
+  return namespace;
+}
+
+String _namespacedName(String namespace, String baseName, int suffix) {
+  final tail = suffix == 1 ? '' : '.$suffix';
+  final maxBodyLength = 128 - tail.length;
+  final fullName = '$namespace.$baseName';
+  final body = fullName.length <= maxBodyLength
+      ? fullName
+      : fullName.substring(0, maxBodyLength);
+
+  return '$body$tail';
 }
 
 String _fontWeight(Object? value) {

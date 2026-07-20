@@ -1,0 +1,11 @@
+{
+  "schema": "mix_figma/sync-report/v1",
+  "version": 1,
+  "planId": "6804238f1f442eb76796d1997229790ea924bb8cd6f56dba514bd9724d441ccc",
+  "direction": "mixToFigma",
+  "resource": "component",
+  "status": "verified",
+  "remainingMutations": 0,
+  "pendingDeletes": 0,
+  "diagnostics": []
+}

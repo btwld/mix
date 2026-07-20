@@ -1,6 +1,6 @@
 import { createPluginController, isUiToSandboxMessage } from './controller';
 
-figma.showUI(__html__, { height: 560, themeColors: true, width: 360 });
+figma.showUI(__html__, { height: 640, themeColors: true, width: 420 });
 
 const controller = createPluginController(figma, (message) => {
   figma.ui.postMessage(message);

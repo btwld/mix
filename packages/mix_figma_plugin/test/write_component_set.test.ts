@@ -15,6 +15,10 @@ function makeNode(type: string, id: string) {
     y: 0,
     width: 100,
     height: 40,
+    layoutMode: 'NONE',
+    primaryAxisSizingMode: 'FIXED',
+    counterAxisSizingMode: 'FIXED',
+    visible: true,
     children,
     appendChild(child: Record<string, unknown>) {
       children.push(child);
@@ -44,6 +48,7 @@ describe('writeComponentSet', () => {
     const componentSet = makeNode('COMPONENT_SET', 'set:1');
     const api = {
       currentPage: page,
+      viewport: { center: { x: 400, y: 300 }, scrollAndZoomIntoView: vi.fn() },
       createComponent: vi.fn(() => {
         const node = create('COMPONENT');
         components.push(node);
@@ -83,6 +88,7 @@ describe('writeComponentSet', () => {
           name: 'Spinner',
           kind: 'UNSUPPORTED' as const,
           unsupportedReason: 'RemixSpinner has no neutral Mix protocol primitive.',
+          visible: false,
         },
       ],
     };
@@ -112,8 +118,12 @@ describe('writeComponentSet', () => {
     expect(components[0]?.setBoundVariable).toHaveBeenCalledWith('itemSpacing', variable);
     expect(components[0]?.children).toEqual([
       expect.objectContaining({ type: 'TEXT', name: 'Label', characters: 'Button' }),
-      expect.objectContaining({ type: 'FRAME', name: 'Spinner [unsupported]' }),
+      expect.objectContaining({ type: 'FRAME', name: 'Spinner [unsupported]', visible: false }),
     ]);
+    expect(components[0]).toMatchObject({
+      primaryAxisSizingMode: 'AUTO',
+      counterAxisSizingMode: 'AUTO',
+    });
     expect(componentSet).toMatchObject({
       name: 'Button',
       description: 'Button component set',
@@ -135,6 +145,49 @@ describe('writeComponentSet', () => {
     });
   });
 
+  it('places a newly exported set beside existing canvas content and reveals it', async () => {
+    const page = makeNode('PAGE', 'page:1');
+    const existing = makeNode('COMPONENT_SET', 'set:existing');
+    existing.x = 20;
+    existing.y = 40;
+    existing.width = 120;
+    page.children.push(existing);
+    const component = makeNode('COMPONENT', 'component:new');
+    const componentSet = makeNode('COMPONENT_SET', 'set:new');
+    componentSet.width = 200;
+    componentSet.height = 80;
+    const scrollAndZoomIntoView = vi.fn();
+    const api = {
+      currentPage: page,
+      viewport: { center: { x: 400, y: 300 }, scrollAndZoomIntoView },
+      createComponent: vi.fn(() => component),
+      getNodeByIdAsync: async () => null,
+      combineAsVariants: vi.fn(() => {
+        page.children.splice(page.children.indexOf(component), 1);
+        page.children.push(componentSet);
+        return componentSet;
+      }),
+      loadFontAsync: vi.fn(),
+      variables: { getVariableByIdAsync: vi.fn() },
+    } as unknown as PluginAPI;
+
+    await writeComponentSet(api, {
+      version: 1,
+      ref: 'input',
+      name: 'Input',
+      variants: [
+        {
+          ref: 'default',
+          properties: { State: 'Default' },
+          root: { id: 'root', name: 'Root', kind: 'FRAME' },
+        },
+      ],
+    });
+
+    expect(componentSet).toMatchObject({ x: 236, y: 40 });
+    expect(scrollAndZoomIntoView).toHaveBeenCalledWith([componentSet]);
+  });
+
   it('rejects an empty variant set before mutating the document', async () => {
     const createComponent = vi.fn();
     const api = { createComponent } as unknown as PluginAPI;
@@ -145,13 +198,80 @@ describe('writeComponentSet', () => {
     expect(createComponent).not.toHaveBeenCalled();
   });
 
-  it('updates a source component set in place, reuses stamped variants, and removes stale variants', async () => {
+  it('fails the transaction when Figma cannot materialize a required binding', async () => {
+    const page = makeNode('PAGE', 'page:1');
+    const component = makeNode('COMPONENT', 'component:1');
+    const componentSet = makeNode('COMPONENT_SET', 'set:1');
+    const api = {
+      currentPage: page,
+      createComponent: vi.fn(() => component),
+      getNodeByIdAsync: async () => null,
+      combineAsVariants: vi.fn(() => componentSet),
+      variables: {
+        getVariableByIdAsync: async () => null,
+        setBoundVariableForPaint: vi.fn(),
+      },
+    } as unknown as PluginAPI;
+
+    await expect(
+      writeComponentSet(api, {
+        version: 1,
+        ref: 'button',
+        name: 'Button',
+        variants: [
+          {
+            ref: 'default',
+            properties: { State: 'Default' },
+            root: {
+              id: 'root',
+              name: 'Root',
+              kind: 'FRAME',
+              variableBindings: { itemSpacing: 'Variable:missing' },
+            },
+          },
+        ],
+      }),
+    ).rejects.toThrow('Variable:missing');
+  });
+
+  it('refuses a source component set that no longer carries the expected identity', async () => {
+    const existingSet = makeNode('COMPONENT_SET', 'set:unowned');
+    const createComponent = vi.fn(() => makeNode('COMPONENT', 'component:new'));
+    const api = {
+      currentPage: makeNode('PAGE', 'page:1'),
+      getNodeByIdAsync: async () => existingSet,
+      createComponent,
+      loadFontAsync: vi.fn(),
+      variables: { getVariableByIdAsync: vi.fn() },
+    } as unknown as PluginAPI;
+
+    await expect(
+      writeComponentSet(api, {
+        version: 1,
+        ref: 'button',
+        sourceId: existingSet.id,
+        name: 'Button',
+        variants: [
+          {
+            ref: 'default',
+            properties: { State: 'Default' },
+            root: { id: 'root', name: 'Root', kind: 'FRAME' },
+          },
+        ],
+      }),
+    ).rejects.toThrow('Refusing to update unowned component set');
+    expect(createComponent).not.toHaveBeenCalled();
+  });
+
+  it('preserves stale variants until an exact stamped delete is approved', async () => {
     const existingSet = makeNode('COMPONENT_SET', 'set:existing');
     const existingVariant = makeNode('COMPONENT', 'component:existing');
     const staleVariant = makeNode('COMPONENT', 'component:stale');
+    const userVariant = makeNode('COMPONENT', 'component:user');
+    existingSet.setPluginData(MIX_FIGMA_PLUGIN_DATA_KEYS.identity, 'button');
     existingVariant.setPluginData(MIX_FIGMA_PLUGIN_DATA_KEYS.identity, 'button.default');
     staleVariant.setPluginData(MIX_FIGMA_PLUGIN_DATA_KEYS.identity, 'button.stale');
-    existingSet.children.push(existingVariant, staleVariant);
+    existingSet.children.push(existingVariant, staleVariant, userVariant);
     const createComponent = vi.fn();
     const combineAsVariants = vi.fn();
     const api = {
@@ -163,7 +283,7 @@ describe('writeComponentSet', () => {
       variables: { getVariableByIdAsync: vi.fn() },
     } as unknown as PluginAPI;
 
-    const result = await writeComponentSet(api, {
+    const payload: ComponentSetWritePayload = {
       version: 1,
       ref: 'button',
       sourceId: existingSet.id,
@@ -176,11 +296,30 @@ describe('writeComponentSet', () => {
         },
       ],
       identity: { id: 'button', kind: 'componentSet' },
-    });
+    };
+    const result = await writeComponentSet(api, payload);
 
     expect(createComponent).not.toHaveBeenCalled();
     expect(combineAsVariants).not.toHaveBeenCalled();
+    expect(staleVariant.remove).not.toHaveBeenCalled();
+    expect(userVariant.remove).not.toHaveBeenCalled();
+    await writeComponentSet(api, payload, {
+      operations: [
+        {
+          action: 'delete',
+          kind: 'componentVariant',
+          ref: 'stale',
+          sourceId: staleVariant.id,
+          name: 'Stale',
+          path: '/componentSet/variants/stale',
+          destructive: true,
+          changes: ['delete'],
+          diagnostics: [],
+        },
+      ],
+    });
     expect(staleVariant.remove).toHaveBeenCalledOnce();
+    expect(userVariant.remove).not.toHaveBeenCalled();
     expect(existingVariant.name).toBe('State=Default');
     expect(result).toMatchObject({
       componentSetId: 'set:existing',

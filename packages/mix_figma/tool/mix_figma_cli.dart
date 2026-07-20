@@ -114,16 +114,31 @@ Future<void> _check(_Options options) async {
 }
 
 Future<void> _serve(_Options options) async {
-  final server = await MixFigmaBridgeServer(
+  final authToken =
+      options.single('--auth-token') ?? createMixFigmaBridgeToken();
+  if (authToken.isEmpty) {
+    throw const FormatException('--auth-token must not be empty.');
+  }
+  final bridge = MixFigmaBridgeServer(
     host: options.single('--host') ?? '127.0.0.1',
     port: int.parse(options.single('--port') ?? '8787'),
     themeDirectory: options.single('--theme-dir') ?? '../../design/tokens',
+    styleDirectory: options.single('--style-dir') ?? '../../design/styles',
     componentDirectory:
         options.single('--component-dir') ?? '../../design/components',
+    reportDirectory:
+        options.single('--report-dir') ?? '../../design/figma-reports',
+    configPath: options.single('--config'),
+    authToken: authToken,
     validateByDefault: options.flag('--validate'),
-  ).start();
+  );
+  final server = await bridge.start();
   stdout.writeln(
     'Mix Figma bridge listening on http://${server.address.host}:${server.port}',
+  );
+  stdout.writeln('Session token: $authToken');
+  stdout.writeln(
+    'Paste this token into the Mix Figma plugin before connecting.',
   );
   await ProcessSignal.sigint.watch().first;
   await server.close(force: true);
@@ -196,4 +211,7 @@ const _usage = '''Usage: mix_figma_cli.dart <pull|push|check|serve>
   pull --from dtcg --input mode=path [--input mode=path] --output-dir path
   push --input-dir path [--output path]
   check --kind theme|style --expected path --actual path
-  serve [--host 127.0.0.1] [--port 8787] [--validate]''';
+  serve [--host 127.0.0.1] [--port 8787] [--theme-dir path]
+    [--style-dir path] [--component-dir path] [--report-dir path]
+    [--config mix_figma.yaml] [--auth-token value]
+    [--validate]''';

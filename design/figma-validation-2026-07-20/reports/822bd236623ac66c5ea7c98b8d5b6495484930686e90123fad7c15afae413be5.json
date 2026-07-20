@@ -1,0 +1,24 @@
+{
+  "schema": "mix_figma/sync-report/v1",
+  "version": 1,
+  "planId": "822bd236623ac66c5ea7c98b8d5b6495484930686e90123fad7c15afae413be5",
+  "direction": "figmaToMix",
+  "resource": "selection",
+  "status": "verifiedWithRetainedItems",
+  "remainingMutations": 0,
+  "pendingDeletes": 0,
+  "diagnostics": [
+    {
+      "code": "unmanaged_local_file_preserved",
+      "severity": "info",
+      "path": "/styles/button.style.json",
+      "message": "Existing local style file \"button\" is preserved."
+    },
+    {
+      "code": "unmanaged_local_file_preserved",
+      "severity": "info",
+      "path": "/styles/text-input.style.json",
+      "message": "Existing local style file \"text-input\" is preserved."
+    }
+  ]
+}

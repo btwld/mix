@@ -1,0 +1,106 @@
+{
+  "schema": "mix_atlas/component/v2",
+  "id": "card",
+  "label": "Card",
+  "properties": [
+    { "id": "variant", "kind": "enum", "values": ["elevated"], "required": true, "default": "elevated" },
+    { "id": "title", "kind": "string", "required": true, "default": "Card title" },
+    { "id": "body", "kind": "string", "required": true, "default": "Card body" }
+  ],
+  "states": [
+    { "id": "default", "widgetStates": [], "properties": {} },
+    { "id": "hovered", "widgetStates": ["hovered"], "properties": {} }
+  ],
+  "slots": [
+    { "id": "root", "kind": "flex_box" },
+    { "id": "title", "kind": "text" },
+    { "id": "body", "kind": "text" }
+  ],
+  "anatomy": {
+    "root": "root",
+    "nodes": [
+      { "id": "root", "kind": "flex_box", "slot": "root", "children": ["title", "body"] },
+      {
+        "id": "title",
+        "kind": "text",
+        "slot": "title",
+        "children": [],
+        "bindings": { "text": { "property": "title" } }
+      },
+      {
+        "id": "body",
+        "kind": "text",
+        "slot": "body",
+        "children": [],
+        "bindings": { "text": { "property": "body" } }
+      }
+    ]
+  },
+  "recipes": [
+    {
+      "id": "elevated",
+      "properties": { "variant": "elevated" },
+      "styles": {
+        "root": "elevated/root",
+        "title": "elevated/title",
+        "body": "elevated/body"
+      }
+    }
+  ],
+  "styles": {
+    "elevated/root": {
+      "v": 1,
+      "type": "flex_box",
+      "direction": "vertical",
+      "crossAxisAlignment": "start",
+      "spacing": 8,
+      "padding": { "left": 16, "top": 16, "right": 16, "bottom": 16 },
+      "decoration": {
+        "color": "#FFFFFF",
+        "borderRadius": 12,
+        "border": {
+          "top": { "color": "#D1D5DB", "width": 1, "style": "solid" },
+          "right": { "color": "#D1D5DB", "width": 1, "style": "solid" },
+          "bottom": { "color": "#D1D5DB", "width": 1, "style": "solid" },
+          "left": { "color": "#D1D5DB", "width": 1, "style": "solid" }
+        },
+        "boxShadow": [
+          {
+            "color": "#1F29371A",
+            "offset": { "x": 0, "y": 4 },
+            "blurRadius": 12,
+            "spreadRadius": 0
+          }
+        ]
+      }
+    },
+    "elevated/title": {
+      "v": 1,
+      "type": "text",
+      "style": {
+        "color": "#111827",
+        "fontFamily": "Inter",
+        "fontSize": 16,
+        "fontWeight": "w600",
+        "height": 1.25
+      }
+    },
+    "elevated/body": {
+      "v": 1,
+      "type": "text",
+      "style": {
+        "color": "#4B5563",
+        "fontFamily": "Inter",
+        "fontSize": 14,
+        "fontWeight": "w400",
+        "height": 1.4
+      }
+    }
+  },
+  "semantics": {
+    "role": "none",
+    "bindings": { "label": { "property": "title" } }
+  },
+  "oracles": [],
+  "diagnostics": []
+}

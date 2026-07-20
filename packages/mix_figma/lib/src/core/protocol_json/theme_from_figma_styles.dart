@@ -39,19 +39,31 @@ FigmaStylesImportResult buildProtocolThemeJsonFromFigmaStyles(
   for (final style in styles) {
     final itemDiagnostics = <MixFigmaDiagnostic>[];
     var supported = true;
-    final name = MixFigmaNameMapper.figmaToMix(style.name);
+    var nativeFidelity = MixFigmaFidelity.exact;
+    var roundTripFidelity = MixFigmaFidelity.exact;
     try {
+      final name = MixFigmaNameMapper.figmaToMix(style.name);
       switch (style.type) {
         case .text:
           textStyles[name] = _textStyle(style, itemDiagnostics);
+          if (itemDiagnostics.isNotEmpty) {
+            nativeFidelity = .normalized;
+            roundTripFidelity = .normalized;
+          }
         case .effect:
           final mapped = _effects(style, itemDiagnostics);
           if (mapped.isEmpty) {
             supported = false;
+            nativeFidelity = .unsupported;
+            roundTripFidelity = .unsupported;
           } else if (style.pluginData['mix.group'] == 'shadows') {
             shadows[name] = mapped;
           } else {
             boxShadows[name] = mapped;
+          }
+          if (mapped.isNotEmpty && itemDiagnostics.isNotEmpty) {
+            nativeFidelity = .lossy;
+            roundTripFidelity = .lossy;
           }
         case .paint:
           final paints = _objects(style.value['paints'], path: style.name);
@@ -67,8 +79,32 @@ FigmaStylesImportResult buildProtocolThemeJsonFromFigmaStyles(
               paint['color'],
               opacity: paint['opacity'] is num ? paint['opacity']! as num : 1,
             );
+            nativeFidelity = .normalized;
+            roundTripFidelity = .lossy;
+            itemDiagnostics.add(
+              MixFigmaDiagnostic(
+                code: 'paint_style_normalized_to_color_token',
+                severity: .warning,
+                path: '/styles/${style.id}',
+                message:
+                    'The solid paint value is preserved, but a later export '
+                    'creates a Figma variable instead of the original paint style.',
+              ),
+            );
           } else if (paint['type'] == 'GRADIENT_LINEAR') {
             fragments[name] = _gradientFragment(paint);
+            nativeFidelity = .normalized;
+            roundTripFidelity = .unsupported;
+            itemDiagnostics.add(
+              MixFigmaDiagnostic(
+                code: 'gradient_style_fragment_not_exportable',
+                severity: .warning,
+                path: '/styles/${style.id}',
+                message:
+                    'The gradient is imported as a style fragment, but style '
+                    'fragment export to a Figma paint style is not supported.',
+              ),
+            );
           } else {
             itemDiagnostics.add(
               MixFigmaDiagnostic(
@@ -80,6 +116,8 @@ FigmaStylesImportResult buildProtocolThemeJsonFromFigmaStyles(
               ),
             );
             supported = false;
+            nativeFidelity = .unsupported;
+            roundTripFidelity = .unsupported;
           }
       }
     } on FormatException catch (error) {
@@ -92,6 +130,8 @@ FigmaStylesImportResult buildProtocolThemeJsonFromFigmaStyles(
         ),
       );
       supported = false;
+      nativeFidelity = .error;
+      roundTripFidelity = .error;
     }
 
     diagnostics.addAll(itemDiagnostics);
@@ -100,6 +140,8 @@ FigmaStylesImportResult buildProtocolThemeJsonFromFigmaStyles(
         id: style.id,
         kind: 'style',
         status: supported ? .supported : .unsupported,
+        nativeFidelity: nativeFidelity,
+        roundTripFidelity: roundTripFidelity,
         diagnostics: itemDiagnostics,
       ),
     );
@@ -181,7 +223,18 @@ List<Object?> _effects(FigmaStyle style, List<MixFigmaDiagnostic> diagnostics) {
       );
       continue;
     }
-    if (effect['type'] != 'DROP_SHADOW') continue;
+    if (effect['type'] != 'DROP_SHADOW') {
+      diagnostics.add(
+        MixFigmaDiagnostic(
+          code: 'unsupported_effect_style_value',
+          severity: .warning,
+          path: '/styles/${style.id}/value/effects',
+          message:
+              'Effect type ${effect['type'] ?? '<missing>'} has no Mix shadow equivalent.',
+        ),
+      );
+      continue;
+    }
     final offset = effect['offset'] is Map
         ? (effect['offset']! as Map).cast<String, Object?>()
         : const <String, Object?>{};

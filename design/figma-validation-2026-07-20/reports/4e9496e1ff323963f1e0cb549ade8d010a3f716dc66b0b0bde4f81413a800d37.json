@@ -1,0 +1,30 @@
+{
+  "schema": "mix_figma/sync-report/v1",
+  "version": 1,
+  "planId": "4e9496e1ff323963f1e0cb549ade8d010a3f716dc66b0b0bde4f81413a800d37",
+  "direction": "mixToFigma",
+  "resource": "tokens",
+  "status": "verifiedWithRetainedItems",
+  "remainingMutations": 0,
+  "pendingDeletes": 0,
+  "diagnostics": [
+    {
+      "code": "composite_token_uses_style_payload",
+      "severity": "info",
+      "path": "/boxShadows",
+      "message": "boxShadows tokens are emitted through Figma styles."
+    },
+    {
+      "code": "composite_token_uses_style_payload",
+      "severity": "info",
+      "path": "/textStyles",
+      "message": "textStyles tokens are emitted through Figma styles."
+    },
+    {
+      "code": "unmanaged_resource_preserved",
+      "severity": "info",
+      "path": "/styles/S:18e7f9b66f92f16d11224a1c98c4c258a089a7b4,",
+      "message": "Unowned Figma resource \"User/Safety Sentinel\" will not be changed or deleted."
+    }
+  ]
+}

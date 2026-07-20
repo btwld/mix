@@ -34,4 +34,35 @@ void main() {
     expect(source, contains('final darkTokens'));
     expect(source, isNot(contains(r'$token')));
   });
+
+  test('rejects token names that normalize to one Dart identifier', () {
+    expect(
+      () => generateTokensSource({
+        'light': {
+          'v': 1,
+          'type': 'theme',
+          'colors': {'color.a-b': '#336699', 'color.a_b': '#8DA4EF'},
+        },
+      }),
+      throwsA(
+        isA<FormatException>()
+            .having((error) => error.message, 'message', contains('color.a-b'))
+            .having((error) => error.message, 'message', contains('color.a_b')),
+      ),
+    );
+  });
+
+  test('rejects mode names that normalize to one Dart identifier', () {
+    expect(
+      () => generateTokensSource({
+        'dark-mode': {'v': 1, 'type': 'theme'},
+        'dark_mode': {'v': 1, 'type': 'theme'},
+      }),
+      throwsA(
+        isA<FormatException>()
+            .having((error) => error.message, 'message', contains('dark-mode'))
+            .having((error) => error.message, 'message', contains('dark_mode')),
+      ),
+    );
+  });
 }

@@ -1,6 +1,7 @@
 library;
 
 export 'src/core/codegen/token_source_generator.dart';
+export 'src/core/conformance/conformance_manifest.dart';
 export 'src/core/diagnostics/mix_figma_coverage_report.dart';
 export 'src/core/diagnostics/mix_figma_diagnostic.dart';
 export 'src/core/dtcg/dtcg_document.dart';
@@ -24,6 +25,12 @@ export 'src/core/protocol_json/style_from_figma_node.dart';
 export 'src/core/protocol_json/theme_from_dtcg.dart';
 export 'src/core/protocol_json/theme_from_figma_styles.dart';
 export 'src/core/protocol_json/theme_from_figma_variables.dart';
+export 'src/core/sync/sync_plan.dart';
+export 'src/core/sync/sync_verification.dart';
+export 'src/core/sync/component_sync_planner.dart';
+export 'src/core/sync/selection_pull_analysis.dart';
+export 'src/core/sync/token_pull_analysis.dart';
+export 'src/core/sync/token_sync_planner.dart';
 export 'src/runtime/drift_checker.dart';
 export 'src/runtime/mix_figma_bridge.dart';
 export 'src/runtime/mix_scope_loader.dart';

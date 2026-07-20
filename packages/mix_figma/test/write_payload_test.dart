@@ -22,6 +22,7 @@ void main() {
         'fontSize': 14,
         'fontWeight': 'w400',
         'height': 1.4,
+        'letterSpacing': -0.25,
       },
     },
     'boxShadows': {
@@ -45,20 +46,32 @@ void main() {
   };
 
   test('lock file preserves stable Figma identities', () {
-    const lock = MixFigmaLock(
+    final lock = MixFigmaLock(
       collectionIds: {'Core': 'collection-existing'},
+      modeIds: const {
+        'Core': {
+          'mode:dark': 'figma-mode-dark',
+          'mode:light': 'figma-mode-light',
+        },
+      },
       variableIds: {'colors/color.brand': 'variable-existing'},
     );
     final decoded = MixFigmaLock.fromJson(lock.toJson());
 
     expect(decoded.collectionIds, lock.collectionIds);
     expect(decoded.variableIds, lock.variableIds);
-    expect(decoded.toJson()['schema'], 'mix_figma/lock/v1');
+    expect(decoded.toJson()['schema'], 'mix_figma/lock/v2');
   });
 
   test('theme push payload reaches a byte-stable primitive fixed point', () {
-    const lock = MixFigmaLock(
+    final lock = MixFigmaLock(
       collectionIds: {'Core': 'collection-existing'},
+      modeIds: const {
+        'Core': {
+          'mode:dark': 'figma-mode-dark',
+          'mode:light': 'figma-mode-light',
+        },
+      },
       variableIds: {'colors/color.brand': 'variable-existing'},
     );
     final push = buildFigmaVariableWritePayload(
@@ -71,6 +84,13 @@ void main() {
 
     expect((json['collection']! as Map)['id'], 'collection-existing');
     expect(
+      ((json['collections']! as List).single! as Map)['modes'],
+      containsAll(<Map<String, Object?>>[
+        {'ref': 'mode:dark', 'sourceId': 'figma-mode-dark', 'name': 'dark'},
+        {'ref': 'mode:light', 'sourceId': 'figma-mode-light', 'name': 'light'},
+      ]),
+    );
+    expect(
       variables.singleWhere(
         (variable) => variable['key'] == 'colors/color.brand',
       )['id'],
@@ -82,7 +102,7 @@ void main() {
     );
     final pulled = buildProtocolThemeJsonFromFigmaVariables(
       figmaVariablesDocumentFromWritePayload(json),
-      modeId: 'mode:light',
+      modeId: 'figma-mode-light',
     );
     expect(pulled.value, {
       'v': 1,
@@ -110,8 +130,33 @@ void main() {
     expect(variableKeys, isNot(contains(startsWith('boxShadows/'))));
     expect(styleTypes, containsAll(['TEXT', 'EFFECT']));
     final effect = ((styles['effectStyles']! as List).single! as Map);
-    final color = ((((effect['effects']! as List).single! as Map)['color']));
+    final textStyle = ((styles['textStyles']! as List).single! as Map);
+    final effectValue = ((effect['effects']! as List).single! as Map);
+    final color = effectValue['color'];
     expect(color, isA<Map>());
+    expect(effectValue['blendMode'], 'NORMAL');
+    expect(textStyle['letterSpacing'], {'unit': 'PIXELS', 'value': -0.25});
+  });
+
+  test('mode-invariant push diagnostics are reported once', () {
+    final result = buildFigmaVariableWritePayload({
+      'light': light,
+      'dark': dark,
+    });
+    final keys = result.diagnostics
+        .map(
+          (item) =>
+              '${item.severity.name}|${item.code}|${item.path}|${item.message}',
+        )
+        .toList();
+
+    expect(keys.toSet(), hasLength(keys.length));
+    expect(
+      result.diagnostics.where(
+        (item) => item.code == 'composite_token_uses_style_payload',
+      ),
+      hasLength(2),
+    );
   });
 
   test('primitive aliases and composites reach a full golden fixed point', () {

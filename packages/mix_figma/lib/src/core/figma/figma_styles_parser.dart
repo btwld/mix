@@ -34,6 +34,7 @@ FigmaStylesDocument parseFigmaStylesDocument(JsonMap json) {
         description: item['description'] is String
             ? item['description']! as String
             : '',
+        remote: item['remote'] == true,
       ),
     );
   }

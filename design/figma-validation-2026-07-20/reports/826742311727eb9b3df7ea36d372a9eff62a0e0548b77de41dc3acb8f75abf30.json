@@ -1,0 +1,216 @@
+{
+  "schema": "mix_figma/sync-report/v1",
+  "version": 1,
+  "planId": "826742311727eb9b3df7ea36d372a9eff62a0e0548b77de41dc3acb8f75abf30",
+  "direction": "figmaToMix",
+  "resource": "tokens",
+  "status": "verified",
+  "remainingMutations": 0,
+  "pendingDeletes": 0,
+  "diagnostics": [
+    {
+      "code": "unsupported_variable_type",
+      "severity": "warning",
+      "path": "/variables/VariableID:6:26",
+      "message": "STRING variable \"motion/easing/standard\" has no Mix protocol token kind."
+    },
+    {
+      "code": "unsupported_variable_type",
+      "severity": "warning",
+      "path": "/variables/VariableID:6:5",
+      "message": "STRING variable \"effect/shadow/sm\" has no Mix protocol token kind."
+    },
+    {
+      "code": "unsupported_variable_type",
+      "severity": "warning",
+      "path": "/variables/VariableID:6:5",
+      "message": "STRING variable \"effect/shadow/sm\" has no Mix protocol token kind."
+    },
+    {
+      "code": "unsupported_variable_type",
+      "severity": "warning",
+      "path": "/variables/VariableID:6:6",
+      "message": "STRING variable \"effect/shadow/md\" has no Mix protocol token kind."
+    },
+    {
+      "code": "unsupported_variable_type",
+      "severity": "warning",
+      "path": "/variables/VariableID:6:6",
+      "message": "STRING variable \"effect/shadow/md\" has no Mix protocol token kind."
+    },
+    {
+      "code": "unsupported_variable_type",
+      "severity": "warning",
+      "path": "/variables/VariableID:6:7",
+      "message": "STRING variable \"effect/shadow/lg\" has no Mix protocol token kind."
+    },
+    {
+      "code": "unsupported_variable_type",
+      "severity": "warning",
+      "path": "/variables/VariableID:6:7",
+      "message": "STRING variable \"effect/shadow/lg\" has no Mix protocol token kind."
+    },
+    {
+      "code": "unsupported_variable_type",
+      "severity": "warning",
+      "path": "/variables/VariableID:6:8",
+      "message": "STRING variable \"effect/shadow/blue\" has no Mix protocol token kind."
+    },
+    {
+      "code": "unsupported_variable_type",
+      "severity": "warning",
+      "path": "/variables/VariableID:6:8",
+      "message": "STRING variable \"effect/shadow/blue\" has no Mix protocol token kind."
+    },
+    {
+      "code": "unsupported_variable_type",
+      "severity": "warning",
+      "path": "/variables/VariableID:6:9",
+      "message": "STRING variable \"effect/shadow/aqua\" has no Mix protocol token kind."
+    },
+    {
+      "code": "unsupported_variable_type",
+      "severity": "warning",
+      "path": "/variables/VariableID:6:9",
+      "message": "STRING variable \"effect/shadow/aqua\" has no Mix protocol token kind."
+    },
+    {
+      "code": "ambiguous_float_variable",
+      "severity": "warning",
+      "path": "/variables/VariableID:7:10",
+      "message": "FLOAT variable \"font/size/lg\" defaulted to doubles because its token group is ambiguous."
+    },
+    {
+      "code": "ambiguous_float_variable",
+      "severity": "warning",
+      "path": "/variables/VariableID:7:11",
+      "message": "FLOAT variable \"font/size/xl\" defaulted to doubles because its token group is ambiguous."
+    },
+    {
+      "code": "ambiguous_float_variable",
+      "severity": "warning",
+      "path": "/variables/VariableID:7:12",
+      "message": "FLOAT variable \"font/size/2xl\" defaulted to doubles because its token group is ambiguous."
+    },
+    {
+      "code": "ambiguous_float_variable",
+      "severity": "warning",
+      "path": "/variables/VariableID:7:13",
+      "message": "FLOAT variable \"font/size/3xl\" defaulted to doubles because its token group is ambiguous."
+    },
+    {
+      "code": "ambiguous_float_variable",
+      "severity": "warning",
+      "path": "/variables/VariableID:7:14",
+      "message": "FLOAT variable \"font/size/4xl\" defaulted to doubles because its token group is ambiguous."
+    },
+    {
+      "code": "ambiguous_float_variable",
+      "severity": "warning",
+      "path": "/variables/VariableID:7:15",
+      "message": "FLOAT variable \"font/size/5xl\" defaulted to doubles because its token group is ambiguous."
+    },
+    {
+      "code": "ambiguous_float_variable",
+      "severity": "warning",
+      "path": "/variables/VariableID:7:16",
+      "message": "FLOAT variable \"font/size/6xl\" defaulted to doubles because its token group is ambiguous."
+    },
+    {
+      "code": "ambiguous_float_variable",
+      "severity": "warning",
+      "path": "/variables/VariableID:7:17",
+      "message": "FLOAT variable \"font/line-height/tight\" defaulted to doubles because its token group is ambiguous."
+    },
+    {
+      "code": "ambiguous_float_variable",
+      "severity": "warning",
+      "path": "/variables/VariableID:7:18",
+      "message": "FLOAT variable \"font/line-height/snug\" defaulted to doubles because its token group is ambiguous."
+    },
+    {
+      "code": "ambiguous_float_variable",
+      "severity": "warning",
+      "path": "/variables/VariableID:7:19",
+      "message": "FLOAT variable \"font/line-height/normal\" defaulted to doubles because its token group is ambiguous."
+    },
+    {
+      "code": "unsupported_variable_type",
+      "severity": "warning",
+      "path": "/variables/VariableID:7:2",
+      "message": "STRING variable \"font/family/sans\" has no Mix protocol token kind."
+    },
+    {
+      "code": "ambiguous_float_variable",
+      "severity": "warning",
+      "path": "/variables/VariableID:7:20",
+      "message": "FLOAT variable \"font/line-height/relaxed\" defaulted to doubles because its token group is ambiguous."
+    },
+    {
+      "code": "ambiguous_float_variable",
+      "severity": "warning",
+      "path": "/variables/VariableID:7:21",
+      "message": "FLOAT variable \"font/letter-spacing/tight\" defaulted to doubles because its token group is ambiguous."
+    },
+    {
+      "code": "ambiguous_float_variable",
+      "severity": "warning",
+      "path": "/variables/VariableID:7:22",
+      "message": "FLOAT variable \"font/letter-spacing/snug\" defaulted to doubles because its token group is ambiguous."
+    },
+    {
+      "code": "ambiguous_float_variable",
+      "severity": "warning",
+      "path": "/variables/VariableID:7:23",
+      "message": "FLOAT variable \"font/letter-spacing/normal\" defaulted to doubles because its token group is ambiguous."
+    },
+    {
+      "code": "ambiguous_float_variable",
+      "severity": "warning",
+      "path": "/variables/VariableID:7:24",
+      "message": "FLOAT variable \"font/letter-spacing/wide\" defaulted to doubles because its token group is ambiguous."
+    },
+    {
+      "code": "unsupported_variable_type",
+      "severity": "warning",
+      "path": "/variables/VariableID:7:3",
+      "message": "STRING variable \"font/family/display\" has no Mix protocol token kind."
+    },
+    {
+      "code": "unsupported_variable_type",
+      "severity": "warning",
+      "path": "/variables/VariableID:7:4",
+      "message": "STRING variable \"font/family/mono\" has no Mix protocol token kind."
+    },
+    {
+      "code": "ambiguous_float_variable",
+      "severity": "warning",
+      "path": "/variables/VariableID:7:5",
+      "message": "FLOAT variable \"font/size/3xs\" defaulted to doubles because its token group is ambiguous."
+    },
+    {
+      "code": "ambiguous_float_variable",
+      "severity": "warning",
+      "path": "/variables/VariableID:7:6",
+      "message": "FLOAT variable \"font/size/2xs\" defaulted to doubles because its token group is ambiguous."
+    },
+    {
+      "code": "ambiguous_float_variable",
+      "severity": "warning",
+      "path": "/variables/VariableID:7:7",
+      "message": "FLOAT variable \"font/size/xs\" defaulted to doubles because its token group is ambiguous."
+    },
+    {
+      "code": "ambiguous_float_variable",
+      "severity": "warning",
+      "path": "/variables/VariableID:7:8",
+      "message": "FLOAT variable \"font/size/sm\" defaulted to doubles because its token group is ambiguous."
+    },
+    {
+      "code": "ambiguous_float_variable",
+      "severity": "warning",
+      "path": "/variables/VariableID:7:9",
+      "message": "FLOAT variable \"font/size/base\" defaulted to doubles because its token group is ambiguous."
+    }
+  ]
+}

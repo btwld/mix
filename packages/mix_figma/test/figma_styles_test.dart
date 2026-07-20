@@ -12,6 +12,7 @@ void main() {
     expect(document.styles, hasLength(5));
     expect(document.styles.first.type.name, 'text');
     expect(document.styles.first.value['fontFamily'], 'Inter');
+    expect(document.styles.first.remote, isFalse);
   });
 
   test('maps composites and reports every unsupported style', () {
@@ -55,6 +56,23 @@ void main() {
       result.diagnostics.map((item) => item.code),
       contains('unsupported_inner_shadow'),
     );
+  });
+
+  test('reports an invalid Figma style name without aborting the pull', () {
+    final fixture = _fixture();
+    final styles = fixture['styles']! as List<Object?>;
+    final first = (styles.first! as Map<String, Object?>);
+    first['name'] = 'Backdrop Blur/backdrop-blur';
+
+    final result = buildProtocolThemeJsonFromFigmaStyles(
+      parseFigmaStylesDocument(fixture),
+    );
+
+    expect(result.coverage.unsupportedCount, 2);
+    final diagnostic = result.diagnostics.singleWhere(
+      (item) => item.message.contains('Backdrop Blur.backdrop-blur'),
+    );
+    expect(diagnostic.code, 'invalid_style_value');
   });
 }
 

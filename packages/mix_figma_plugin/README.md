@@ -19,6 +19,25 @@ Import `manifest.json` as a development plugin in Figma. `npm run build`
 produces `dist/code.js` for the plugin sandbox and a self-contained
 `dist/ui.html` for the iframe.
 
+Start the Dart bridge first, open the plugin, and use the guided workflow:
+
+1. Paste the session token printed by the bridge and check bridge status.
+2. Choose token pull, token push, selection import, or component export.
+3. Select **Analyze**. This is read-only and produces an operation ledger.
+4. Review errors, warnings, creates, updates, and proposed deletions.
+5. Select **Apply**. Deletion is disabled unless the plan contains managed
+   deletions and the user explicitly enables it.
+6. Select **Verify**. Figma writes are read back; only a verified result can
+   update the bridge lock.
+
+Token and component writes use one undo boundary and trigger undo on a write
+failure. Writers accept only the exact operations approved by the bridge.
+The UI also rejects an Apply response whose plan, payload, or operation list
+differs from Preview.
+Unowned resources are never selected by name for update or deletion, remote
+resources are not writable, and an exact delete is refused unless the target
+carries the expected Mix identity.
+
 The project uses `strict: true`. `skipLibCheck` is limited to dependency
 declarations because the official Figma globals intentionally redeclare DOM
 names such as `fetch`, `console`, and `Navigation` in this combined
@@ -30,23 +49,27 @@ changes must be followed by `npm run gen:types`.
 
 ## Neutral transport shapes
 
-All bridge DTOs live in `src/types.ts` and are JSON-safe:
+All bridge DTOs live in `src/types.ts` and are JSON-safe. They travel only
+through `/sync/plan`, `/sync/apply`, and `/sync/verify`:
 
-- `/pull/tokens` receives `{ variables, styles }`. Collections retain mode IDs,
-  variables retain primitive/alias values, scopes, `codeSyntax`, and every
+- Token snapshots contain `{ variables, styles }`. Collections retain mode
+  IDs; variables retain primitive/alias values, scopes, `codeSyntax`, and every
   private `pluginData` entry. Styles retain native values and plugin data.
-- `/push/tokens` returns collection/variable/style write payloads. `ref` is the
-  stable reference within one payload; `sourceId` is the current Figma ID when
-  known. Writers also resolve `mix_figma.id` stamps, so existing IDs survive a
-  pull/push cycle.
-- `/pull/nodes` receives `{ nodes }`, where `nodes.selection` is a recursive,
-  values-bearing snapshot plus structured diagnostics for known lossy cases.
-- `/push/components/:id` returns a normalized component-set payload. Each
-  payload variant becomes one Figma component named from sorted property
-  coordinates. Anatomy nodes are nested frames/text/vector primitives, and
-  `variableBindings` contains Figma variable IDs. A later payload can reuse a
-  stamped component set and variants through `sourceId` without duplicating
-  them.
+- Token Apply responses contain collection/variable/style write payloads.
+  `ref` is the stable reference within one payload; `sourceId` is only a lookup
+  hint. An existing object is updated only when its Mix identity stamp matches;
+  stale IDs never adopt an unowned Figma resource.
+- Selection snapshots contain `{ nodes, variables }`, where `nodes.selection`
+  is recursive and values-bearing, with structured diagnostics for known lossy
+  cases. The variable document lets the bridge resolve bindings in the
+  selection.
+- Component Apply responses contain a normalized component-set payload. Each
+  variant becomes one Figma component named from sorted property coordinates.
+  Anatomy nodes are nested frames/text/vector primitives, and
+  `variableBindings` contains Figma variable IDs.
+- Apply reuses the exact analyzed operations. Verify re-reads Figma and sends
+  the write result to the bridge. The bridge records stable IDs only after a
+  successful fixed-point check.
 
 The plugin stamps identities under these private plugin-data keys:
 
@@ -65,3 +88,8 @@ placeholder frame and returns an `unsupported_component_anatomy_node`
 diagnostic. Likewise, selection reads report margin metadata, inner shadows,
 absolute auto-layout children, angular/sweep gradients, unequal per-edge
 strokes, and foreground-decoration metadata as structured warnings.
+
+The shared conformance corpus covers Button, Input, and Card component
+contracts and selection snapshots in both Dart and TypeScript. It is a
+committed regression baseline, not a substitute for the controlled live gate
+in [the bridge runbook](../mix_figma/docs/live-release-gate.md).

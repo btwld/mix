@@ -1,4 +1,5 @@
 import type { SandboxToUiMessage, UiToSandboxMessage } from './types';
+import { readComponentSet } from './components/read_component_set';
 import { writeComponentSet } from './components/write_component_set';
 import { readSelection } from './nodes/read_selection';
 import { readStyles } from './styles/read_styles';
@@ -25,19 +26,43 @@ export function createPluginController(
             postResult(postMessage, message.requestId, { variables, styles });
             return;
           }
-          case 'read-selection':
-            postResult(postMessage, message.requestId, readSelection(api));
+          case 'read-selection': {
+            const [nodes, variables] = await Promise.all([
+              readSelection(api),
+              readVariables(api),
+            ]);
+            postResult(postMessage, message.requestId, { nodes, variables });
+            return;
+          }
+          case 'read-component-set':
+            postResult(
+              postMessage,
+              message.requestId,
+              await readComponentSet(api, message.componentRef),
+            );
             return;
           case 'write-tokens': {
-            const [variables, styles] = await Promise.all([
-              writeVariables(api, message.payload.variables),
-              writeStyles(api, message.payload.styles),
-            ]);
+            const { variables, styles } = await inUndoTransaction(api, async () => {
+              const options = message.operations === undefined ? {} : { operations: message.operations };
+              const variables = await writeVariables(api, message.payload.variables, options);
+              const styles = await writeStyles(api, message.payload.styles, options);
+              return { variables, styles };
+            });
             postResult(postMessage, message.requestId, { variables, styles });
             return;
           }
           case 'write-component-set':
-            postResult(postMessage, message.requestId, await writeComponentSet(api, message.payload));
+            postResult(
+              postMessage,
+              message.requestId,
+              await inUndoTransaction(api, () =>
+                writeComponentSet(
+                  api,
+                  message.payload,
+                  message.operations === undefined ? {} : { operations: message.operations },
+                ),
+              ),
+            );
             return;
           case 'close-plugin':
             api.closePlugin();
@@ -54,6 +79,18 @@ export function createPluginController(
   };
 }
 
+async function inUndoTransaction<T>(api: PluginAPI, action: () => Promise<T>): Promise<T> {
+  api.commitUndo();
+  try {
+    const result = await action();
+    api.commitUndo();
+    return result;
+  } catch (error) {
+    api.triggerUndo();
+    throw error;
+  }
+}
+
 function postResult(postMessage: SandboxPostMessage, requestId: string, payload: unknown): void {
   postMessage({ type: 'operation-result', requestId, payload });
 }
@@ -65,6 +102,8 @@ export function isUiToSandboxMessage(value: unknown): value is UiToSandboxMessag
     case 'read-selection':
     case 'close-plugin':
       return true;
+    case 'read-component-set':
+      return typeof value.componentRef === 'string';
     case 'write-tokens':
     case 'write-component-set':
       return isRecord(value.payload);

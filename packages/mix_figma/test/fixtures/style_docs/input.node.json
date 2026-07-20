@@ -1,0 +1,38 @@
+{
+  "schema": "mix_figma/figma-nodes/v1",
+  "root": {
+    "id": "input",
+    "name": "Input field",
+    "type": "FRAME",
+    "layoutMode": "HORIZONTAL",
+    "counterAxisAlignItems": "CENTER",
+    "itemSpacing": 8,
+    "paddingLeft": 12,
+    "paddingTop": 10,
+    "paddingRight": 12,
+    "paddingBottom": 10,
+    "cornerRadius": 8,
+    "fills": [
+      { "type": "SOLID", "color": "#FFFFFF", "visible": true }
+    ],
+    "strokes": [
+      { "type": "SOLID", "color": "#777777", "visible": true }
+    ],
+    "strokeWeight": 1,
+    "children": [
+      {
+        "id": "value",
+        "name": "Value",
+        "type": "TEXT",
+        "characters": "hello@example.com",
+        "style": {
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": 400,
+          "lineHeight": 20
+        },
+        "children": []
+      }
+    ]
+  }
+}

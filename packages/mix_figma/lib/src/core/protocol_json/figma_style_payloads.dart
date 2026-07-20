@@ -11,7 +11,7 @@ import '../mapping/name_mapper.dart';
 /// Routes composite theme tokens to Figma text/effect style write payloads.
 MixFigmaMappingResult<JsonMap> buildFigmaStylePayloads(
   JsonMap theme, {
-  MixFigmaLock lock = const MixFigmaLock(),
+  MixFigmaLock lock = .empty,
 }) {
   final diagnostics = <MixFigmaDiagnostic>[];
   final styles = <Object?>[];
@@ -138,8 +138,7 @@ JsonMap _pluginTextStyle(JsonMap value) {
         'style': _fontStyleName(weight, fontStyle),
       },
     if (value['fontSize'] != null) 'fontSize': value['fontSize'],
-    if (value['letterSpacing'] != null)
-      'letterSpacing': {'unit': 'PIXELS', 'value': value['letterSpacing']},
+    if (value['letterSpacing'] != null) 'letterSpacing': value['letterSpacing'],
     if (value['lineHeight'] != null) 'lineHeight': value['lineHeight'],
   };
 }
@@ -197,6 +196,7 @@ List<Object?> _effects(Object? value) {
           'offset': offset,
           'radius': shadow['blurRadius'],
           if (shadow['spreadRadius'] != null) 'spread': shadow['spreadRadius'],
+          'blendMode': 'NORMAL',
           'visible': true,
         };
       })

@@ -1,0 +1,268 @@
+{
+  "v": 1,
+  "type": "theme",
+  "colors": {
+    "color.action.accent.default": {
+      "$token": "color.brand.aqua.400"
+    },
+    "color.action.accent.pressed": {
+      "$token": "color.brand.aqua.500"
+    },
+    "color.action.primary.default": {
+      "$token": "color.brand.blue.500"
+    },
+    "color.action.primary.hover": {
+      "$token": "color.brand.blue.600"
+    },
+    "color.action.primary.pressed": {
+      "$token": "color.brand.blue.700"
+    },
+    "color.action.primary.tint": "#1A0C31FF",
+    "color.status.error": "#C91F27",
+    "color.status.error.tint": "#1AC91F27",
+    "color.status.success": "#007A56",
+    "color.status.success.tint": "#1F007A56",
+    "color.status.warning": "#FFB020",
+    "color.status.warning-text": "#8A5800",
+    "color.status.warning.tint": "#29FFB020",
+    "color.background.elevated": {
+      "$token": "color.neutral.white"
+    },
+    "color.background.page": {
+      "$token": "color.neutral.paper"
+    },
+    "color.background.surface-aqua": {
+      "$token": "color.brand.aqua.100"
+    },
+    "color.background.surface-dark": {
+      "$token": "color.brand.navy.900"
+    },
+    "color.border.default": {
+      "$token": "color.neutral.gray.300"
+    },
+    "color.border.strong": {
+      "$token": "color.neutral.ink"
+    },
+    "color.border.subtle": "#240B0F1A",
+    "color.data.chart.1": {
+      "$token": "color.brand.blue.500"
+    },
+    "color.data.chart.2": {
+      "$token": "color.data.cyan.400"
+    },
+    "color.data.chart.3": {
+      "$token": "color.brand.aqua.400"
+    },
+    "color.data.chart.4": {
+      "$token": "color.data.sky.500"
+    },
+    "color.data.chart.5": {
+      "$token": "color.brand.navy.900"
+    },
+    "color.text.accent": "#00805E",
+    "color.text.disabled": {
+      "$token": "color.neutral.gray.300"
+    },
+    "color.text.on-blue": {
+      "$token": "color.neutral.white"
+    },
+    "color.text.on-dark": {
+      "$token": "color.neutral.white"
+    },
+    "color.text.primary": {
+      "$token": "color.neutral.ink"
+    },
+    "color.text.secondary": {
+      "$token": "color.neutral.gray.600"
+    },
+    "color.brand.aqua.100": "#D2FEF6",
+    "color.brand.aqua.200": "#ADFFF2",
+    "color.brand.aqua.300": "#00EBBC",
+    "color.brand.aqua.400": "#00D29A",
+    "color.brand.aqua.50": "#EAFFF9",
+    "color.brand.aqua.500": "#00B384",
+    "color.brand.blue.100": "#DCE2FF",
+    "color.brand.blue.200": "#B7C2FF",
+    "color.brand.blue.300": "#7B9FFF",
+    "color.brand.blue.400": "#2A50FF",
+    "color.brand.blue.50": "#EEF1FF",
+    "color.brand.blue.500": "#0C31FF",
+    "color.brand.blue.600": "#0021DD",
+    "color.brand.blue.700": "#0923B9",
+    "color.brand.blue.800": "#06175E",
+    "color.brand.navy.850": "#090E29",
+    "color.brand.navy.900": "#050D3A",
+    "color.brand.navy.950": "#02092D",
+    "color.data.cyan.400": "#04C3DB",
+    "color.data.sky.400": "#53B4F0",
+    "color.data.sky.500": "#069AE5",
+    "color.neutral.black": "#000000",
+    "color.neutral.gray.100": "#ECEDF1",
+    "color.neutral.gray.200": "#D9D9D9",
+    "color.neutral.gray.300": "#BFBFBF",
+    "color.neutral.gray.400": "#9EA2B0",
+    "color.neutral.gray.500": "#737786",
+    "color.neutral.gray.600": "#4E5261",
+    "color.neutral.gray.700": "#333333",
+    "color.neutral.ink": "#0B0F1A",
+    "color.neutral.paper": "#F5F6FF",
+    "color.neutral.white": "#FFFFFF"
+  },
+  "spaces": {
+    "motion.duration.default": 180,
+    "space.1": 4,
+    "space.10": 128,
+    "space.2": 8,
+    "space.3": 12,
+    "space.4": 16,
+    "space.5": 24,
+    "space.6": 32,
+    "space.7": 48,
+    "space.8": 64,
+    "space.9": 96
+  },
+  "doubles": {
+    "font.letter-spacing.normal": 0,
+    "font.letter-spacing.snug": -0.014999999664723873,
+    "font.letter-spacing.tight": -0.019999999552965164,
+    "font.letter-spacing.wide": 0.07999999821186066,
+    "font.line-height.normal": 1.5,
+    "font.line-height.relaxed": 1.649999976158142,
+    "font.line-height.snug": 1.2000000476837158,
+    "font.line-height.tight": 1.0499999523162842,
+    "font.size.2xl": 31,
+    "font.size.2xs": 11,
+    "font.size.3xl": 39,
+    "font.size.3xs": 10,
+    "font.size.4xl": 49,
+    "font.size.5xl": 61,
+    "font.size.6xl": 76,
+    "font.size.base": 16,
+    "font.size.lg": 20,
+    "font.size.sm": 14,
+    "font.size.xl": 25,
+    "font.size.xs": 12.5
+  },
+  "radii": {
+    "radius.lg": 0,
+    "radius.md": 0,
+    "radius.pill": 999,
+    "radius.sm": 0,
+    "radius.xl": 0,
+    "radius.xs": 0
+  },
+  "textStyles": {
+    "Type.Body.Default": {
+      "fontFamily": "Hanken Grotesk",
+      "fontSize": 16,
+      "fontWeight": "w400",
+      "fontStyle": "normal",
+      "height": 1.5,
+      "letterSpacing": 0
+    },
+    "Type.Body.Large": {
+      "fontFamily": "Hanken Grotesk",
+      "fontSize": 20,
+      "fontWeight": "w400",
+      "fontStyle": "normal",
+      "height": 1.649999976158142,
+      "letterSpacing": 0
+    },
+    "Type.Body.Small": {
+      "fontFamily": "Hanken Grotesk",
+      "fontSize": 14,
+      "fontWeight": "w400",
+      "fontStyle": "normal",
+      "height": 1.5,
+      "letterSpacing": 0
+    },
+    "Type.Code.Default": {
+      "fontFamily": "JetBrains Mono",
+      "fontSize": 14,
+      "fontWeight": "w400",
+      "fontStyle": "normal",
+      "height": 1.5,
+      "letterSpacing": 0
+    },
+    "Type.Display": {
+      "fontFamily": "Hanken Grotesk",
+      "fontSize": 76,
+      "fontWeight": "w700",
+      "fontStyle": "normal",
+      "height": 1.0499999523162842,
+      "letterSpacing": -2
+    },
+    "Type.Heading.H1": {
+      "fontFamily": "Hanken Grotesk",
+      "fontSize": 49,
+      "fontWeight": "w700",
+      "fontStyle": "normal",
+      "height": 1.2000000476837158,
+      "letterSpacing": -1.5
+    },
+    "Type.Heading.H2": {
+      "fontFamily": "Hanken Grotesk",
+      "fontSize": 39,
+      "fontWeight": "w700",
+      "fontStyle": "normal",
+      "height": 1.2000000476837158,
+      "letterSpacing": -1.5
+    },
+    "Type.Heading.H3": {
+      "fontFamily": "Hanken Grotesk",
+      "fontSize": 31,
+      "fontWeight": "w700",
+      "fontStyle": "normal",
+      "height": 1.2000000476837158,
+      "letterSpacing": -1.5
+    },
+    "Type.Heading.H4": {
+      "fontFamily": "Hanken Grotesk",
+      "fontSize": 25,
+      "fontWeight": "w700",
+      "fontStyle": "normal",
+      "height": 1.2000000476837158,
+      "letterSpacing": 0
+    },
+    "Type.Label.Default": {
+      "fontFamily": "JetBrains Mono",
+      "fontSize": 10,
+      "fontWeight": "w500",
+      "fontStyle": "normal",
+      "height": 1.0,
+      "letterSpacing": 8
+    },
+    "Type.Label.Eyebrow": {
+      "fontFamily": "JetBrains Mono",
+      "fontSize": 12.5,
+      "fontWeight": "w500",
+      "fontStyle": "normal",
+      "height": 1.0,
+      "letterSpacing": 8
+    }
+  },
+  "boxShadows": {
+    "Elevation.Overlay.Dark": [
+      {
+        "color": "#99000000",
+        "offset": {
+          "x": 0,
+          "y": 16
+        },
+        "blurRadius": 40,
+        "spreadRadius": 0
+      }
+    ],
+    "Elevation.Overlay.Light": [
+      {
+        "color": "#29050D3A",
+        "offset": {
+          "x": 0,
+          "y": 8
+        },
+        "blurRadius": 28,
+        "spreadRadius": 0
+      }
+    ]
+  }
+}

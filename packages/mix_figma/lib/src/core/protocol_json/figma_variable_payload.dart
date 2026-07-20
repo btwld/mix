@@ -18,10 +18,23 @@ const _primitiveGroups = [
 MixFigmaMappingResult<JsonMap> buildFigmaVariableWritePayload(
   Map<String, JsonMap> themes, {
   String collectionName = 'Mix Tokens',
-  MixFigmaLock lock = const MixFigmaLock(),
+  MixFigmaLock lock = .empty,
 }) {
   if (themes.isEmpty) throw ArgumentError('At least one mode is required.');
   final diagnostics = <MixFigmaDiagnostic>[];
+  final diagnosticKeys =
+      <(MixFigmaDiagnosticSeverity, String, String, String)>{};
+  void addDiagnostic(MixFigmaDiagnostic diagnostic) {
+    if (diagnosticKeys.add((
+      diagnostic.severity,
+      diagnostic.code,
+      diagnostic.path,
+      diagnostic.message,
+    ))) {
+      diagnostics.add(diagnostic);
+    }
+  }
+
   final keys = <String>{};
   for (final theme in themes.values) {
     if (theme['v'] != 1 || theme['type'] != 'theme') {
@@ -32,7 +45,7 @@ MixFigmaMappingResult<JsonMap> buildFigmaVariableWritePayload(
     }
     for (final group in ['textStyles', 'shadows', 'boxShadows', 'borders']) {
       if (_group(theme, group).isNotEmpty) {
-        diagnostics.add(
+        addDiagnostic(
           MixFigmaDiagnostic(
             code: 'composite_token_uses_style_payload',
             severity: .info,
@@ -60,7 +73,7 @@ MixFigmaMappingResult<JsonMap> buildFigmaVariableWritePayload(
     for (final mode in modes) {
       final values = _group(themes[mode]!, group);
       if (!values.containsKey(name)) {
-        diagnostics.add(
+        addDiagnostic(
           MixFigmaDiagnostic(
             code: 'missing_mode_token',
             severity: .error,
@@ -108,9 +121,15 @@ MixFigmaMappingResult<JsonMap> buildFigmaVariableWritePayload(
       'collection': {
         'id': collectionId,
         'name': collectionName,
-        'defaultModeId': 'mode:${modes.first}',
+        'defaultModeId':
+            lock.modeIds[collectionRef]?['mode:${modes.first}'] ??
+            'mode:${modes.first}',
         'modes': [
-          for (final mode in modes) {'id': 'mode:$mode', 'name': mode},
+          for (final mode in modes)
+            {
+              'id': lock.modeIds[collectionRef]?['mode:$mode'] ?? 'mode:$mode',
+              'name': mode,
+            },
         ],
       },
       'collections': [
@@ -120,7 +139,14 @@ MixFigmaMappingResult<JsonMap> buildFigmaVariableWritePayload(
             'sourceId': sourceId,
           'name': collectionName,
           'modes': [
-            for (final mode in modes) {'ref': 'mode:$mode', 'name': mode},
+            for (final mode in modes)
+              {
+                'ref': 'mode:$mode',
+                if (lock.modeIds[collectionRef]?['mode:$mode']
+                    case final String sourceId)
+                  'sourceId': sourceId,
+                'name': mode,
+              },
           ],
           'identity': {
             'id': collectionName,
@@ -141,10 +167,106 @@ FigmaVariablesDocument figmaVariablesDocumentFromWritePayload(JsonMap payload) {
     throw const FormatException('Expected a variable write payload.');
   }
 
+  final legacyCollection = jsonObject(
+    payload['collection'],
+    path: '/collection',
+  );
+  final legacyCollectionId = jsonString(
+    legacyCollection['id'],
+    path: '/collection/id',
+  );
+  final collections = <JsonMap>[];
+  final collectionIds = <String, String>{};
+  final modeIds = <String, Map<String, String>>{};
+  final rawCollections = jsonList(payload['collections'], path: '/collections');
+  for (final value in rawCollections) {
+    final collection = jsonObject(value, path: '/collections');
+    final ref = jsonString(collection['ref'], path: '/collections/ref');
+    final identity = jsonObject(
+      collection['identity'],
+      path: '/collections/$ref/identity',
+    );
+    final id = collection['sourceId'] is String
+        ? collection['sourceId']! as String
+        : legacyCollectionId;
+    final rawModes = jsonList(
+      collection['modes'],
+      path: '/collections/$ref/modes',
+    );
+    final modes = <JsonMap>[];
+    final resolvedModeIds = <String, String>{};
+    for (final modeValue in rawModes) {
+      final mode = jsonObject(modeValue, path: '/collections/$ref/modes');
+      final modeRef = jsonString(
+        mode['ref'],
+        path: '/collections/$ref/modes/ref',
+      );
+      final modeId = mode['sourceId'] is String
+          ? mode['sourceId']! as String
+          : modeRef;
+      resolvedModeIds[modeRef] = modeId;
+      modes.add({
+        'id': modeId,
+        'name': jsonString(mode['name'], path: '/collections/$ref/modes/name'),
+      });
+    }
+    collectionIds[ref] = id;
+    modeIds[ref] = resolvedModeIds;
+    collections.add({
+      'id': id,
+      'key': ref,
+      'name': collection['name'],
+      'defaultModeId': modes.first['id'],
+      'modes': modes,
+      'pluginData': {
+        'mix_figma.id': identity['id'],
+        'mix_figma.kind': identity['kind'],
+      },
+      'hiddenFromPublishing': collection['hiddenFromPublishing'] ?? false,
+      'remote': false,
+    });
+  }
+
+  final variables = <JsonMap>[];
+  final rawVariables = jsonList(payload['variables'], path: '/variables');
+  for (final value in rawVariables) {
+    final variable = jsonObject(value, path: '/variables');
+    final ref = jsonString(variable['ref'], path: '/variables/ref');
+    final identity = jsonObject(
+      variable['identity'],
+      path: '/variables/$ref/identity',
+    );
+    final collectionRef = jsonString(
+      variable['collectionRef'],
+      path: '/variables/$ref/collectionRef',
+    );
+    variables.add({
+      ...variable,
+      'id': variable['sourceId'] ?? variable['id'],
+      'collectionId': collectionIds[collectionRef],
+      'valuesByMode': {
+        for (final entry in jsonObject(
+          variable['valuesByMode'],
+          path: '/variables/$ref/valuesByMode',
+        ).entries)
+          (modeIds[collectionRef]?[entry.key] ?? entry.key): entry.value,
+      },
+      'pluginData': {
+        ...jsonObject(
+          variable['pluginData'] ?? const <String, Object?>{},
+          path: '/variables/$ref/pluginData',
+        ),
+        'mix_figma.id': identity['id'],
+        'mix_figma.kind': identity['kind'],
+      },
+      'remote': false,
+    });
+  }
+
   return parseFigmaVariablesDocument({
     'schema': 'mix_figma/figma-variables/v1',
-    'collections': [payload['collection']],
-    'variables': payload['variables'],
+    'collections': collections,
+    'variables': variables,
   });
 }
 

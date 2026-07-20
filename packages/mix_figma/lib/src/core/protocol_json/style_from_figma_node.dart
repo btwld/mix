@@ -2,6 +2,7 @@ import '../diagnostics/mix_figma_diagnostic.dart';
 import '../figma/figma_node_document.dart';
 import '../json_map.dart';
 import '../mapping/mapping_result.dart';
+import '../mapping/name_mapper.dart';
 
 /// Converts one normalized Figma node into a strict protocol style document.
 MixFigmaMappingResult<JsonMap> buildProtocolStyleJsonFromNode(FigmaNode node) {
@@ -10,10 +11,10 @@ MixFigmaMappingResult<JsonMap> buildProtocolStyleJsonFromNode(FigmaNode node) {
 
   final value = switch (node.type) {
     'TEXT' => _textStyle(node, diagnostics),
-    'FRAME'
+    'FRAME' || 'COMPONENT' || 'INSTANCE'
         when node.layoutMode == 'HORIZONTAL' || node.layoutMode == 'VERTICAL' =>
       _flexBoxStyle(node, diagnostics),
-    'FRAME' => _stackBoxStyle(node, diagnostics),
+    'FRAME' || 'COMPONENT' || 'INSTANCE' => _stackBoxStyle(node, diagnostics),
     'RECTANGLE' ||
     'ELLIPSE' ||
     'COMPONENT' ||
@@ -70,12 +71,14 @@ JsonMap _boxFields(
 }) {
   final result = <String, Object?>{'v': 1, 'type': type};
   final padding = <String, Object?>{
-    if (node.fields['paddingLeft'] is num) 'left': node.fields['paddingLeft'],
-    if (node.fields['paddingTop'] is num) 'top': node.fields['paddingTop'],
-    if (node.fields['paddingRight'] is num)
-      'right': node.fields['paddingRight'],
-    if (node.fields['paddingBottom'] is num)
-      'bottom': node.fields['paddingBottom'],
+    if (_boundOrNumber(node, 'paddingLeft') case final Object value)
+      'left': value,
+    if (_boundOrNumber(node, 'paddingTop') case final Object value)
+      'top': value,
+    if (_boundOrNumber(node, 'paddingRight') case final Object value)
+      'right': value,
+    if (_boundOrNumber(node, 'paddingBottom') case final Object value)
+      'bottom': value,
   };
   if (padding.isNotEmpty) result['padding'] = padding;
 
@@ -90,10 +93,12 @@ JsonMap _boxFields(
   final cornerRadius =
       radiusTerm ??
       (node.fields['cornerRadius'] is num ? node.fields['cornerRadius'] : null);
+  final border = _uniformBorder(node);
   final shadows = _dropShadows(node.fields['effects']);
   final decoration = {
     'color': ?color,
     'gradient': ?gradient,
+    'border': ?border,
     'borderRadius': ?cornerRadius,
     if (shadows.isNotEmpty) 'boxShadow': shadows,
   };
@@ -113,24 +118,34 @@ JsonMap _textStyle(FigmaNode node, List<MixFigmaDiagnostic> _) {
   final rawStyle = node.fields['style'] is Map
       ? (node.fields['style']! as Map).cast<String, Object?>()
       : const <String, Object?>{};
-  final fontSize = rawStyle['fontSize'];
+  Object? textField(String name) => rawStyle[name] ?? node.fields[name];
+
+  final literalFontSize = _number(textField('fontSize'));
+  final fontSize = _boundTerm(node, 'fontSize') ?? literalFontSize;
   final fillTerm = _boundTerm(node, 'fills');
   final fill = _singleVisiblePaint(node.fields['fills']);
   final color =
       fillTerm ?? (fill?['type'] == 'SOLID' ? _color(fill!['color']!) : null);
   final style = {'color': ?color};
-  if (rawStyle['fontFamily'] case final String fontFamily) {
+  if (_fontFamily(textField('fontFamily') ?? textField('fontName'))
+      case final String fontFamily) {
     style['fontFamily'] = fontFamily;
   }
-  if (fontSize is num) style['fontSize'] = fontSize;
-  if (rawStyle['fontWeight'] is num) {
-    style['fontWeight'] =
-        'w${((rawStyle['fontWeight']! as num) / 100).round() * 100}';
+  if (fontSize != null) style['fontSize'] = fontSize;
+  final fontWeight =
+      _boundTerm(node, 'fontWeight') ??
+      _fontWeight(_number(textField('fontWeight')));
+  if (fontWeight != null) {
+    style['fontWeight'] = fontWeight;
   }
-  if (rawStyle['lineHeight'] is num && fontSize is num && fontSize != 0) {
-    style['height'] = (rawStyle['lineHeight']! as num) / fontSize;
+  if (_lineHeightMultiplier(textField('lineHeight'), literalFontSize)
+      case final num height) {
+    style['height'] = height;
   }
-  if (rawStyle['letterSpacing'] case final num letterSpacing) {
+  final letterSpacing =
+      _boundTerm(node, 'letterSpacing') ??
+      _letterSpacing(textField('letterSpacing'), literalFontSize);
+  if (letterSpacing != null) {
     style['letterSpacing'] = letterSpacing;
   }
 
@@ -143,14 +158,54 @@ JsonMap _textStyle(FigmaNode node, List<MixFigmaDiagnostic> _) {
   };
 }
 
+num? _number(Object? value) => value is num ? value : null;
+
+String? _fontWeight(num? value) =>
+    value == null ? null : 'w${(value / 100).round() * 100}';
+
+String? _fontFamily(Object? value) {
+  if (value is String) return value;
+  if (value is! Map) return null;
+
+  final family = value['family'];
+
+  return family is String ? family : null;
+}
+
+num? _lineHeightMultiplier(Object? value, num? fontSize) {
+  if (fontSize == null || fontSize == 0) return null;
+  if (value is num) return value / fontSize;
+  if (value is! Map || value['value'] is! num) return null;
+  final lineHeight = value['value']! as num;
+
+  return switch (value['unit']) {
+    'PIXELS' => lineHeight / fontSize,
+    'PERCENT' || 'INTRINSIC_%' => lineHeight / 100,
+    _ => null,
+  };
+}
+
+num? _letterSpacing(Object? value, num? fontSize) {
+  if (value is num) return value;
+  if (value is! Map || value['value'] is! num) return null;
+  final spacing = value['value']! as num;
+
+  return switch (value['unit']) {
+    'PIXELS' => spacing,
+    'PERCENT' when fontSize != null => fontSize * spacing / 100,
+    _ => null,
+  };
+}
+
 JsonMap? _boundTerm(FigmaNode node, String property) {
   final value = node.boundVariables[property];
   if (value == null) return null;
   if (value is String) return {r'$token': value};
   if (value is! Map) return null;
   final binding = value.cast<String, Object?>();
-  final name = binding['name'];
-  if (name is! String) return null;
+  final rawName = binding['name'];
+  if (rawName is! String) return null;
+  final name = MixFigmaNameMapper.figmaToMix(rawName);
   final kind = binding['kind'];
 
   return {
@@ -158,6 +213,22 @@ JsonMap? _boundTerm(FigmaNode node, String property) {
     if (kind == 'spaces') 'kind': 'space',
     if (kind == 'doubles') 'kind': 'double',
   };
+}
+
+Object? _boundOrNumber(FigmaNode node, String property) =>
+    _boundTerm(node, property) ?? _number(node.fields[property]);
+
+JsonMap? _uniformBorder(FigmaNode node) {
+  final stroke = _singleVisiblePaint(node.fields['strokes']);
+  final color =
+      _boundTerm(node, 'strokes') ??
+      (stroke?['type'] == 'SOLID' ? _color(stroke!['color']!) : null);
+  final width = _boundOrNumber(node, 'strokeWeight');
+  if (color == null || width == null) return null;
+
+  JsonMap side() => {'color': color, 'width': width, 'style': 'solid'};
+
+  return {'top': side(), 'right': side(), 'bottom': side(), 'left': side()};
 }
 
 JsonMap? _singleVisiblePaint(Object? value) {
@@ -238,21 +309,23 @@ void _collectKnownUnsupported(
     );
   }
 
-  if (node.fields['margin'] != null) {
+  if (node.fields['margin'] != null ||
+      _hasPluginData(node, 'mix_figma.margin')) {
     warning(
       'unsupported_margin',
       'Figma auto-layout has no margin field.',
       '/margin',
     );
   }
-  if (node.fields['individualStrokeWeights'] != null) {
+  if (_hasPerEdgeStrokeWeights(node)) {
     warning(
       'unsupported_per_edge_borders',
       'Per-edge Figma strokes cannot be represented as a uniform Mix border.',
       '/individualStrokeWeights',
     );
   }
-  if (node.fields['foregroundDecoration'] != null) {
+  if (node.fields['foregroundDecoration'] != null ||
+      _hasPluginData(node, 'mix_figma.foregroundDecoration')) {
     warning(
       'unsupported_foreground_decoration',
       'Figma has no foregroundDecoration equivalent.',
@@ -261,7 +334,7 @@ void _collectKnownUnsupported(
   }
   if (node.fields['layoutPositioning'] == 'ABSOLUTE') {
     warning(
-      'unsupported_absolute_position',
+      'unsupported_absolute_positioned_child',
       'Absolute-positioned stack children have no Mix styling equivalent.',
       '/layoutPositioning',
     );
@@ -277,11 +350,8 @@ void _collectKnownUnsupported(
       '/effects',
     );
   }
-  if (node.fields['fills'] is List &&
-      (node.fields['fills']! as List).whereType<Map>().any(
-        (paint) =>
-            paint['visible'] != false && paint['type'] == 'GRADIENT_ANGULAR',
-      )) {
+  if (_containsSweepGradient(node.fields['fills']) ||
+      _containsSweepGradient(node.fields['strokes'])) {
     warning(
       'unsupported_sweep_gradient',
       'Angular/sweep gradient conversion is intentionally diagnostic-only.',
@@ -296,3 +366,30 @@ void _collectKnownUnsupported(
     );
   }
 }
+
+bool _hasPluginData(FigmaNode node, String key) {
+  final pluginData = node.fields['pluginData'];
+
+  return pluginData is Map &&
+      pluginData[key] is String &&
+      (pluginData[key]! as String).isNotEmpty;
+}
+
+bool _hasPerEdgeStrokeWeights(FigmaNode node) {
+  if (node.fields['individualStrokeWeights'] != null) return true;
+  final weights = [
+    node.fields['strokeTopWeight'],
+    node.fields['strokeRightWeight'],
+    node.fields['strokeBottomWeight'],
+    node.fields['strokeLeftWeight'],
+  ];
+
+  return weights.every((weight) => weight is num) && weights.toSet().length > 1;
+}
+
+bool _containsSweepGradient(Object? paints) =>
+    paints is List &&
+    paints.whereType<Map>().any(
+      (paint) =>
+          paint['visible'] != false && paint['type'] == 'GRADIENT_ANGULAR',
+    );

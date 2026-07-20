@@ -1,9 +1,17 @@
 import { writePluginData } from '../plugin_data';
-import { MIX_FIGMA_PLUGIN_DATA_KEYS, type FigmaStylesWritePayload, type FigmaStylesWriteResult, type MixIdentityStamp } from '../types';
+import {
+  MIX_FIGMA_PLUGIN_DATA_KEYS,
+  type FigmaStylesWritePayload,
+  type FigmaStylesWriteResult,
+  type FigmaWriteOptions,
+  type MixFigmaSyncOperation,
+  type MixIdentityStamp,
+} from '../types';
 
 export async function writeStyles(
   api: PluginAPI,
   payload: FigmaStylesWritePayload,
+  options: FigmaWriteOptions = {},
 ): Promise<FigmaStylesWriteResult> {
   assertUniqueRefs('text style', payload.textStyles.map((style) => style.ref));
   assertUniqueRefs('effect style', payload.effectStyles.map((style) => style.ref));
@@ -64,7 +72,59 @@ export async function writeStyles(
     paintStyleIds[stylePayload.ref] = style.id;
   }
 
+  applyApprovedStyleDeletes(
+    localTextStyles,
+    localEffectStyles,
+    localPaintStyles,
+    options.operations ?? [],
+  );
+
   return { textStyles: textStyleIds, effectStyles: effectStyleIds, paintStyles: paintStyleIds };
+}
+
+function applyApprovedStyleDeletes(
+  textStyles: readonly TextStyle[],
+  effectStyles: readonly EffectStyle[],
+  paintStyles: readonly PaintStyle[],
+  operations: readonly MixFigmaSyncOperation[],
+): void {
+  const stylesByKind: Readonly<Record<string, readonly BaseStyle[]>> = {
+    textStyle: textStyles,
+    effectStyle: effectStyles,
+    paintStyle: paintStyles,
+  };
+  for (const operation of operations) {
+    if (
+      operation.action !== 'delete' ||
+      !operation.destructive ||
+      operation.sourceId === undefined
+    ) {
+      continue;
+    }
+    const styles = stylesByKind[operation.kind];
+    if (styles === undefined) continue;
+    const style = styles.find((item) => item.id === operation.sourceId);
+    if (style === undefined) {
+      throw new Error(`Approved ${operation.kind} delete target "${operation.sourceId}" was not found.`);
+    }
+    assertLocal(style, style.name);
+    assertOwnedStyle(style, operation.ref, operation.kind);
+    style.remove();
+  }
+}
+
+function assertOwnedStyle(style: BaseStyle, expectedIdentity: string, kind: string): void {
+  const identity =
+    style.getPluginData(MIX_FIGMA_PLUGIN_DATA_KEYS.identity) ||
+    style.getPluginData('mix.key');
+  if (identity.length === 0 || identity !== expectedIdentity) {
+    const label = kind === 'textStyle'
+      ? 'text style'
+      : kind === 'effectStyle'
+        ? 'effect style'
+        : 'paint style';
+    throw new Error(`Refusing to delete unowned ${label}.`);
+  }
 }
 
 interface StyleLookupPayload {
@@ -74,12 +134,21 @@ interface StyleLookupPayload {
 }
 
 function findStyle<T extends BaseStyle>(styles: readonly T[], payload: StyleLookupPayload): T | undefined {
-  return styles.find(
-    (style) =>
-      style.id === payload.sourceId ||
-      (payload.identity !== undefined &&
-        style.getPluginData(MIX_FIGMA_PLUGIN_DATA_KEYS.identity) === payload.identity.id) ||
-      style.name === payload.name,
+  const expectedIdentity = payload.identity?.id;
+  if (expectedIdentity === undefined) return undefined;
+  const bySourceId = payload.sourceId === undefined
+    ? undefined
+    : styles.find((style) => style.id === payload.sourceId);
+  if (bySourceId !== undefined && managedIdentity(bySourceId) === expectedIdentity) {
+    return bySourceId;
+  }
+  return styles.find((style) => managedIdentity(style) === expectedIdentity);
+}
+
+function managedIdentity(style: Pick<PluginDataMixin, 'getPluginData'>): string {
+  return (
+    style.getPluginData(MIX_FIGMA_PLUGIN_DATA_KEYS.identity) ||
+    style.getPluginData('mix.key')
   );
 }
 
