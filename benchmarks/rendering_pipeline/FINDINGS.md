@@ -8,7 +8,8 @@
 - Status: accepted baseline established in draft PR #976; validated follow-up
   opened as draft PR #977; physical uniform-border follow-up accepted locally;
   directional equivalent rejected at its frozen stage gate; bounded combined
-  baseline-to-current release estimate complete
+  baseline-to-current release estimate complete; compile-time in-frame timing
+  rejected for observer overhead and removed
 
 ## Executive answer
 
@@ -82,6 +83,15 @@ at its frozen stage gate. Although its merged-border resolver improved in all
 exactly; only the generally useful directional workload instrumentation and
 behavioral contracts remain.
 
+A final bounded experiment timed post-resolution work inside the same pumped
+frame. Its 24/24 valid fresh release processes were internally consistent, but
+the recorder itself added 14.20% adjusted S0 overhead and 16.92% adjusted S2
+overhead. Both exceeded the preregistered 5% ceiling in aggregate and paired-
+median views, with all three pairs slower and agreeing timing-order subsets.
+The stage shares are therefore diagnostic only. The Mix recorder and all
+benchmark-local timing hooks were removed, leaving production and benchmark
+source byte-for-byte at the accepted checkpoint.
+
 ## Final measurement protocol
 
 The release CPU protocol now uses:
@@ -127,7 +137,9 @@ Valid local raw data (gitignored):
 - `.context/benchmark-results/prop-single-value-release-cadence-v1/*.json`;
 - `.context/benchmark-results/uniform-border-primary-v{1,2}/`;
 - `.context/benchmark-results/border-directional-stage-v5/`; and
-- `.context/benchmark-results/combined-accepted-quick-v8/`.
+- `.context/benchmark-results/combined-accepted-quick-v8/`; and
+- `.context/benchmark-results/in-frame-attribution-v1/` (valid processes, but
+  rejected attribution method).
 
 ### Invalidated protocols
 
@@ -151,6 +163,12 @@ The post-build wrapper subtraction probe is also invalid for attribution.
 Forward/reverse ordering produced impossible hierarchies in which a full
 `StyleBuilder` appeared faster than a direct renderer. It remains explicitly
 exploratory; none of its deltas support a production claim.
+
+The compile-time in-frame timing probe is also invalid for percentage
+attribution. Unlike the subtraction probe, its 24 processes and stage arrays
+were structurally valid, but enabled timing moved the Flutter-adjusted total by
+14.20% for S0 and 16.92% for S2. That observer effect is larger than the 5%
+gate, so none of the measured stage shares supports a production decision.
 
 The allocation directories `pr976-allocation-v1` and `pr976-retained-v1` are
 also superseded. `getAllocationProfile` reports a live-heap census in this VM;
@@ -264,6 +282,7 @@ from being rediscovered without materially new evidence.
 | R18 | One-modifier ordering return | Rejected | Local modifier stage improved about 98.5%, but S2 regressed +1.24% aggregate with 3/10 wins |
 | R19 | Never-inline isolated single-active helper | Rejected | S0 improved -19.59%, but S2 regressed +1.10% with 2/10 wins |
 | R20 | Shared uniform `BorderDirectionalMix` side | Rejected | Direct resolver improved 21.89-47.89%, but static premerged spec regressed +3.79% in 0/6 |
+| R21 | Compile-time in-frame timing recorder | Rejected as an attribution method | 24/24 processes valid, but adjusted overhead was +14.20% S0 and +16.92% S2; exact source baseline restored |
 
 The recurring lesson is AOT code-shape sensitivity: removing locally measured
 work can still move the state-heavy or containing workload backward. A future
@@ -940,12 +959,57 @@ under `.context/benchmark-results/border-directional-stage-v5/`. Attempts
 duration-boundary, or host-contention failures; none contributes to these
 statistics.
 
+### R21: Time Mix and shared rendering stages inside one pumped frame
+
+Source inspection first ruled out a bounded structural variation-representation
+experiment. Public `const VariantStyle<S>` accepts any `Style<S>`, while the
+runtime must still discover `StyleVariation<S>` implementations dynamically.
+A compatible cached classification would repeat rejected R13; removing the
+fallback requires a public representation and migration design. The approved
+fallback therefore instrumented the real post-resolution path instead.
+
+The temporary recorder used monotonic `Stopwatch` ticks behind
+`MIX_BENCHMARK_TIMINGS`, with tests for no-sink behavior, synchronous delivery,
+nested/exception cleanup, and the four non-overlapping Mix stages. A
+benchmark-local collector recorded direct Flutter mapping, shared renderer
+build, layout, and paint in the same measured iteration. Contracts established
+that S0 executes all four Mix stages for each of 36 built cards; S2 bypasses
+outer inherited-style assembly and executes style resolution, renderer, and
+provider assembly once. Default tests emitted no events.
+
+Disabled and enabled release apps were built from the same 667-file source
+manifest (`8a08e50e4101b6c9e593461e4fa91feee63fa8e9c009e3c60ba3cc1853f428cf`).
+Three adjacent pairs per scenario produced 24 fresh processes with alternating
+scenario, implementation, and timing-first order. All passed source/binary
+hash, deep-signature, metadata, marker, duration, sample, stage-array, and
+lifecycle validation; none was excluded. Positive percentages are observer
+overhead:
+
+| Scenario | Disabled Flutter | Enabled Flutter | Disabled Mix | Enabled Mix | Raw Flutter | Raw Mix | Adjusted aggregate | Paired median | 20% trimmed | Slower pairs |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| S0 | 204.37 µs | 204.38 µs | 400.84 µs | 457.75 µs | +0.00% | +14.20% | **+14.20%** | **+15.15%** | +14.19% | 3/3 |
+| S2 | 148.13 µs | 125.78 µs | 126.94 µs | 126.03 µs | -15.08% | -0.72% | **+16.92%** | **+16.63%** | +16.92% | 3/3 |
+
+Timing-order subset means agreed rather than contradicting the result: S0 was
++13.71% disabled-first and +15.15% enabled-first; S2 was +16.44% and +17.15%.
+The observer gate failed decisively. For completeness, the invalidated stage
+payload placed Mix style resolution first in both average and median ranks,
+but it may not be treated as a share or next-target decision. The enabled S0
+payload observed 47.18% of its pump and S2 observed 12.98%; their residuals
+were 52.82% and 87.02%, respectively. Those values describe the rejected
+recorder, not the uninstrumented pipeline.
+
+Per the stop rule, every Mix and benchmark timing hook/test was removed. The
+tracked source is again identical to checkpoint `4269d387a`; the rejected
+source, frozen binaries, manifests, raw JSON, logs, host events, analyzer, and
+summary remain under `.context/benchmark-{build-sources,binaries,results}/in-frame-attribution-v1/`.
+
 ## Remaining opportunity matrix
 
 | Priority | Opportunity | Measured basis | Expected materiality | Risk / complexity | Required next evidence |
 | ---: | --- | --- | --- | --- | --- |
 | 1 | Remove repeated generic variation dispatch through a structural representation boundary while preserving the existing multi-active algorithm | Extraction is about 78% of static and 90% of all-active variant merge; ordinary generic inspection dominates it | High if the cost can be removed without duplicating the hot body | High semantic/AOT risk; high complexity | Design the ownership/type contract first, then forward/reverse stage screens and fresh S0/S2 controls |
-| 2 | Attribute post-resolution widget/framework cost inside one pumped frame | Current style computation explains only part of the end-to-end Flutter/Mix gap; R4 could not isolate wrappers | Medium to high, but currently unknown | Medium instrumentation complexity; low production risk | Timeline spans or counters inside one frame, never subtraction of independently pumped cases |
+| 2 | Develop lower-overhead post-resolution attribution | R4 subtraction was invalid and R21's same-frame recorder added 14-17% adjusted overhead | Medium to high, but currently unknown | High measurement-design risk; low production risk | Prefer framework/profile timeline data or one stage per binary; prove <=5% observer movement before interpreting shares |
 | 3 | Obtain transient AOT allocation evidence | Retained result graphs are known, but merge intermediates are transient and current VM APIs do not count AOT allocations | Unknown; could identify avoidable churn | High tooling complexity; low source risk | Supported allocation tracing or a narrow source change plus release A/B timing |
 | 4 | Establish an immutable variant-list ownership contract, then reconsider null-side merge copies | R6 identified a copy but public mutable lists make sharing semantically unsafe | Probably low to medium | High API/compatibility risk | API design and mutation compatibility tests before any timing |
 | 5 | Attribute border radius and box-shadow resolution | Field split measured only about 0.13/0.19 µs in the current card | Low in this workload | Low-to-medium implementation risk | Show material S0/S2 share before production work |
@@ -955,6 +1019,8 @@ statistics.
 Do not revisit the single-active helpers, one-modifier shortcut, or uniform
 directional-border resolver merely by rearranging the same branch. Each already
 produced a large local win and a reproducible containing/state-heavy regression.
+Do not restore the R21 recorder to interpret its stage percentages without a
+materially lower-overhead design and a new disabled/enabled observer gate.
 
 Adjacent correctness items remain separate: listening inherited-style lookup,
 stable equal-priority variant ordering, and storing/notifying
@@ -1016,6 +1082,18 @@ instrumentation:
   passes; and
 - the verified Conductor renderer is resumed with no benchmark process or
   CleanMyMac HealthMonitor sampler remaining.
+
+Completed for the rejected in-frame attribution method:
+
+- 24/24 fresh release processes passed all binary/result/stage-array checks,
+  with zero exclusions and 25 manifest rows including the header;
+- the observer gate failed for both S0 and S2, so no production target or
+  optimization was promoted;
+- production and benchmark timing hooks were removed, leaving no tracked Dart
+  source diff from `4269d387a`;
+- the frozen rejected source and binaries remain fully manifested; and
+- final verification re-ran the verdict-appropriate tests, analyzers,
+  generation consistency, fatal DCM, formatting, diff, and process checks.
 
 The code-only follow-up is commit `942fd7c04` on
 `refactor/prop-single-value-resolution`, draft PR #977. It is stacked on PR

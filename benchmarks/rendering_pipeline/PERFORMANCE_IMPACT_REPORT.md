@@ -44,6 +44,10 @@ host.
   current accepted source estimates a net **11.56% adjusted S0 improvement**
   in 3/3 pairs. S2 was **1.41% faster adjusted** in 2/3 pairs, which is too
   small and noisy to promote as a strong speed claim.
+- A same-frame stage-timing follow-up was rejected because the recorder added
+  **14.20% adjusted S0 overhead** and **16.92% adjusted S2 overhead**, above
+  its 5% validity ceiling. It produced no new optimization claim, and all
+  timing hooks were removed.
 
 The latest S0 absolute values and combined percentages come from the bounded
 baseline-to-current run. The S0I and detailed five-scenario values below come
@@ -80,6 +84,33 @@ a practical local estimate: the 11-12% S0 signal is consistent, while the
 roughly 1-2% S2 movement should be treated as neutral-to-slightly-better rather
 than a release claim. Evidence is under
 `.context/benchmark-results/combined-accepted-quick-v8/`.
+
+## Rejected in-frame attribution follow-up
+
+The final continuation asked whether the remaining Mix/Flutter gap could be
+split among style resolution, widget assembly, shared rendering, layout, and
+paint inside the same release frame. This avoids the earlier invalid method of
+subtracting independently pumped widget trees, but any inserted timer can
+still perturb the workload it observes.
+
+Two frozen release apps used the same instrumented source: one compiled the
+timing flag out and one enabled it. Three adjacent S0/S2 pairs, separate
+Flutter and Mix controls, alternating timing-first/scenario/implementation
+order, fresh processes, and lifecycle gaps produced 24/24 valid results with
+zero exclusions.
+
+| Scenario | Raw Flutter movement | Raw Mix movement | Flutter-adjusted observer overhead | Paired median | Slower pairs |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| S0 | +0.00% | +14.20% | **+14.20%** | **+15.15%** | 3/3 |
+| S2 | -15.08% | -0.72% | **+16.92%** | **+16.63%** | 3/3 |
+
+Both results fail the preregistered <=5% aggregate-and-median gate. Timing-
+order subsets agreed, so reversing order does not rescue the method. Although
+the enabled payload ranked style resolution first for Mix, those shares are
+not valid estimates of the uninstrumented pipeline. No production target was
+selected, no optimization was attempted, and the repository source was
+restored to checkpoint `4269d387a`. Raw data and the invalid-method summary
+are under `.context/benchmark-results/in-frame-attribution-v1/`.
 
 ## What “Flutter versus Mix” means here
 
@@ -238,8 +269,11 @@ iteration result.
 
 An attempted wrapper-subtraction probe was invalidated because independently
 pumped frames were dominated by scheduling and app-activation noise. The
-remaining post-resolution wrapper cost is not yet cleanly attributable. A
-future probe needs spans or counters inside one shared frame.
+later same-frame recorder was also invalidated because it added 14-17%
+Flutter-adjusted observer overhead. The remaining post-resolution wrapper cost
+is therefore not cleanly attributable. A replacement needs materially cheaper
+framework/profile spans or one stage per binary and must pass a <=5% disabled/
+enabled observer gate before its shares are interpreted.
 
 ### 4. Retained result size is known; transient allocation volume is not
 
@@ -402,8 +436,10 @@ one-line shortcut:
    target, provided it removes repeated generic inspection while preserving
    ordering and the existing multi-active algorithm. Per-instance cached
    metadata and duplicated/single-active loops have already failed.
-2. **In-frame post-resolution spans** are needed to attribute widget and
-   framework wrapper cost without unreliable pump subtraction.
+2. **Lower-overhead post-resolution attribution** is needed to measure widget
+   and framework wrapper cost. R4 subtraction and R21's multi-stage recorder
+   are both rejected; use framework/profile spans or one stage per binary and
+   prove <=5% observer movement first.
 3. **Transient AOT allocation measurement** would distinguish CPU branching
    from allocation/GC pressure without misusing retained-heap counters.
 4. **Resolution caching** could be powerful, but only after defining safe keys

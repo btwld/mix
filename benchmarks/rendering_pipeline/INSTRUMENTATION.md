@@ -585,6 +585,50 @@ resolution by 3.79% in 0/6 wins. It therefore failed before the primary gate;
 the generated production resolver was restored exactly. Complete evidence is
 under `.context/benchmark-results/border-directional-stage-v5/`.
 
+### Rejected same-frame timing recorder
+
+The R21 experiment temporarily added a compile-time `MIX_BENCHMARK_TIMINGS`
+recorder to the real `StyleBuilder`/`StyleSpecBuilder` path and a per-iteration
+collector to the benchmark renderer. It timed these non-overlapping bodies in
+one pumped frame:
+
+- inherited-style lookup/merge;
+- `Style.build` resolution;
+- the user renderer callback;
+- provider/modifier widget assembly;
+- matched Flutter `BoxSpec` mapping;
+- shared renderer construction;
+- layout; and
+- paint.
+
+Tests proved synchronous tick delivery, balanced nested/exception state,
+zero-filled aligned samples, no default events, and the scenario-specific
+relationships: S0 builds 36 cards; S2 skips outer inherited-style assembly and
+resolves/builds one target card. Two release apps were built from source
+manifest `8a08e50e4101b6c9e593461e4fa91feee63fa8e9c009e3c60ba3cc1853f428cf`,
+one with timing disabled and one enabled.
+
+The 24-process disabled/enabled campaign was structurally valid but failed the
+observer gate:
+
+| Scenario | Adjusted aggregate overhead | Paired median | Timing-order subsets | Slower pairs |
+| --- | ---: | ---: | --- | ---: |
+| S0 | +14.20% | +15.15% | +13.71% / +15.15% | 3/3 |
+| S2 | +16.92% | +16.63% | +16.44% / +17.15% | 3/3 |
+
+The preregistered ceiling was 5% for both aggregate and median, with stable
+timing-order subsets. Consequently, the recorder cannot prove stage shares or
+name a production target. Its apparent rankings and residuals are preserved
+only as rejected-method diagnostics under
+`.context/benchmark-results/in-frame-attribution-v1/`. All recorder, collector,
+render-probe, result-schema, and timing-contract source was removed. The
+normal release benchmark has no `MIX_BENCHMARK_TIMINGS` option.
+
+Any future same-frame attempt must first demonstrate <=5% disabled/enabled
+movement. Prefer framework/profile timeline data or one stage per frozen
+binary so nested event collection cannot perturb a 36-card S0 iteration this
+heavily. Do not combine R21's stage durations with uninstrumented totals.
+
 ## Experiment rules
 
 - Keep primary and diagnostic result files separately labeled.

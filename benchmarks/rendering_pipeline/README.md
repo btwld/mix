@@ -202,6 +202,23 @@ optimization promotion. The July 2026 clean-baseline/current comparison found
 S0 -11.56% adjusted with 3/3 wins and S2 -1.41% with 2/3 wins; the latter is
 treated as noisy. Detailed validity limits are in [the findings](FINDINGS.md).
 
+### In-frame timing experiment (rejected)
+
+A July 2026 experiment temporarily added compile-time timing around the real
+Mix builder plus benchmark-local Flutter mapping, shared renderer, layout, and
+paint stages. Its disabled/enabled release campaign completed 24/24 valid
+fresh processes, but the recorder added 14.20% Flutter-adjusted overhead in S0
+and 16.92% in S2. Both exceeded the predefined 5% ceiling, so stage shares and
+rankings are invalid for optimization decisions.
+
+All timing hooks and the `MIX_BENCHMARK_TIMINGS` define were removed. There is
+intentionally no supported command for that recorder in the current source.
+The exact rejected source, binaries, commands, hashes, raw output, and summary
+are preserved locally under
+`.context/benchmark-{build-sources,binaries,results}/in-frame-attribution-v1/`.
+Any replacement must compare frozen timing-disabled/enabled apps first and
+pass the <=5% aggregate-and-median observer gate before its stage data is used.
+
 ## Variant diagnostic microbenchmark
 
 This Mix-only diagnostic rebuilds one `StyleBuilder` with 0, 1, 4, and 12
