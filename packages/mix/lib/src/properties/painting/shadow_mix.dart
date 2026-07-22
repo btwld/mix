@@ -90,10 +90,12 @@ class ShadowMix extends BaseShadowMix<Shadow>
 
 /// Mix representation of [BoxShadow].
 ///
-/// Extends [ShadowMix] with spread radius support.
+/// Extends [ShadowMix] with blur style and spread radius support.
 @mixable
 class BoxShadowMix extends BaseShadowMix<BoxShadow>
     with DefaultValue<BoxShadow>, Diagnosticable, _$BoxShadowMixMixin {
+  @override
+  final Prop<BlurStyle>? $blurStyle;
   @override
   final Prop<double>? $spreadRadius;
 
@@ -101,11 +103,13 @@ class BoxShadowMix extends BaseShadowMix<BoxShadow>
     Color? color,
     Offset? offset,
     double? blurRadius,
+    BlurStyle? blurStyle,
     double? spreadRadius,
   }) : this.create(
          color: Prop.maybe(color),
          offset: Prop.maybe(offset),
          blurRadius: Prop.maybe(blurRadius),
+         blurStyle: Prop.maybe(blurStyle),
          spreadRadius: Prop.maybe(spreadRadius),
        );
 
@@ -113,8 +117,10 @@ class BoxShadowMix extends BaseShadowMix<BoxShadow>
     super.color,
     super.offset,
     super.blurRadius,
+    Prop<BlurStyle>? blurStyle,
     Prop<double>? spreadRadius,
-  }) : $spreadRadius = spreadRadius;
+  }) : $blurStyle = blurStyle,
+       $spreadRadius = spreadRadius;
 
   /// Creates a [BoxShadowMix] from an existing [BoxShadow].
   BoxShadowMix.value(BoxShadow boxShadow)
@@ -122,6 +128,7 @@ class BoxShadowMix extends BaseShadowMix<BoxShadow>
         color: boxShadow.color,
         offset: boxShadow.offset,
         blurRadius: boxShadow.blurRadius,
+        blurStyle: boxShadow.blurStyle,
         spreadRadius: boxShadow.spreadRadius,
       );
 
@@ -138,6 +145,11 @@ class BoxShadowMix extends BaseShadowMix<BoxShadow>
   /// Creates a box shadow with the specified blur radius.
   factory BoxShadowMix.blurRadius(double value) {
     return BoxShadowMix(blurRadius: value);
+  }
+
+  /// Creates a box shadow with the specified blur style.
+  factory BoxShadowMix.blurStyle(BlurStyle value) {
+    return BoxShadowMix(blurStyle: value);
   }
 
   /// Creates a box shadow with the specified spread radius.
@@ -172,6 +184,11 @@ class BoxShadowMix extends BaseShadowMix<BoxShadow>
   /// Copy with blur radius.
   BoxShadowMix blurRadius(double value) {
     return merge(BoxShadowMix.blurRadius(value));
+  }
+
+  /// Copy with blur style.
+  BoxShadowMix blurStyle(BlurStyle value) {
+    return merge(BoxShadowMix.blurStyle(value));
   }
 
   /// Returns a copy with the specified spread radius.

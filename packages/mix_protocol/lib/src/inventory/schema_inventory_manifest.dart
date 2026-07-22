@@ -433,6 +433,10 @@ const _v1UnsupportedInventory = <SchemaInventoryEntry>[
     _v1OutOfScope,
   ),
   SchemaInventoryEntry.knownUnsupported(
+    r'mix:BoxShadowMix.$blurStyle',
+    _v1OutOfScope,
+  ),
+  SchemaInventoryEntry.knownUnsupported(
     r'mix:CircleBorderMix.$eccentricity',
     _v1OutOfScope,
   ),
