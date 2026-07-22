@@ -1,3 +1,11 @@
+## 2.2.0-beta.1
+
+### Fixes
+
+- **Box shadow blur styles:** `BoxShadowMix` now preserves non-default
+  `BoxShadow.blurStyle` values across construction, conversion, merging,
+  resolution, diagnostics, equality, and its fluent and factory APIs (#992).
+
 ## 2.2.0-beta.0
 
 ### New features
