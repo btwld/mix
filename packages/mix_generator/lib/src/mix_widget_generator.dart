@@ -11,6 +11,7 @@ library;
 
 import 'dart:convert';
 
+import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
@@ -23,6 +24,7 @@ import 'core/errors.dart';
 import 'core/helpers/library_scope.dart';
 import 'core/helpers/type_hierarchy.dart';
 import 'core/helpers/widget_call_planner.dart';
+import 'core/models/field_model.dart' show deriveStylerName;
 import 'core/models/mix_widget_model.dart';
 
 const _annotationLabel = '@MixWidget';
@@ -111,6 +113,7 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
     TopLevelVariableElement variable,
     ConstantReader annotation,
     _WidgetParameterSelection widgetParameters,
+    String? writtenStylerName,
   ) {
     final variableName = requireName(
       variable,
@@ -118,19 +121,20 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
     );
 
     final library = variable.library;
-    final stylerType = _requireStyleInterface(variable, variable.type);
-    final callMethod = _requireCallMethod(
-      variable,
-      stylerType,
+    final callSource = _resolveCallSource(
+      anchor: variable,
+      stylerType: variable.type,
+      writtenStylerName: writtenStylerName,
       library: library,
     );
-    _requireUnprefixedFlutterSymbols(variable, callMethod, library);
+    _requireUnprefixedFlutterSymbols(variable, callSource.call, library);
     final call = _extractWidgetCallParams(
-      callMethod,
+      callSource.call,
       anchor: variable,
       library: library,
       factoryReference: variableName,
       widgetParameters: widgetParameters,
+      baseExcluded: callSource.baseExcluded,
     );
 
     return MixWidgetModel(
@@ -144,7 +148,9 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
       isFunctionFactory: false,
       factoryParams: const [],
       callParams: call.params,
-      callTypeParams: _extractCallTypeParams(callMethod, library: library),
+      callTypeParams: callSource.isGenerated
+          ? const []
+          : _extractCallTypeParams(callSource.call, library: library),
       stylerCallForwardsKey: call.forwardsKey,
       doc: variable.documentationComment,
     );
@@ -154,6 +160,7 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
     TopLevelFunctionElement function,
     ConstantReader annotation,
     _WidgetParameterSelection widgetParameters,
+    String? writtenStylerName,
   ) {
     final functionName = requireName(
       function,
@@ -169,14 +176,14 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
     }
 
     final library = function.library;
-    final stylerType = _requireStyleInterface(function, function.returnType);
-    final callMethod = _requireCallMethod(
-      function,
-      stylerType,
+    final callSource = _resolveCallSource(
+      anchor: function,
+      stylerType: function.returnType,
+      writtenStylerName: writtenStylerName,
       library: library,
     );
 
-    _requireUnprefixedFlutterSymbols(function, callMethod, library);
+    _requireUnprefixedFlutterSymbols(function, callSource.call, library);
 
     final factoryParams = _extractFactoryParams(
       function,
@@ -184,16 +191,19 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
       factoryReference: functionName,
     );
     final call = _extractWidgetCallParams(
-      callMethod,
+      callSource.call,
       anchor: function,
       library: library,
       factoryReference: functionName,
       widgetParameters: widgetParameters,
+      baseExcluded: callSource.baseExcluded,
     );
 
     _rejectCollisions(function, factoryParams, call.params);
 
-    final callTypeParams = _extractCallTypeParams(callMethod, library: library);
+    final callTypeParams = callSource.isGenerated
+        ? const <WidgetCallTypeParam>[]
+        : _extractCallTypeParams(callSource.call, library: library);
     final variantConstructors = _extractVariantConstructors(
       function,
       library: library,
@@ -297,8 +307,126 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
   String _dartStringLiteral(String value) =>
       jsonEncode(value).replaceAll(r'$', r'\$');
 
-  /// Confirms [type] is a `Style<S>` subtype and returns the styler interface.
-  InterfaceType _requireStyleInterface(Element anchor, DartType type) {
+  /// Resolves the executable whose parameters define the generated widget's
+  /// `call()`-facing surface.
+  ///
+  /// The common path is the styler's own resolvable `call()` method. When the
+  /// factory returns a Styler that `@MixableSpec` generates in the *same*
+  /// build, that Styler is invisible to the resolver — its declaration only
+  /// exists in the combined `.g.dart` part emitted after this generator runs —
+  /// so [stylerType] resolves to `InvalidType`. In that case the widget's call
+  /// surface is exactly the `@MixableSpec(target:)` constructor that
+  /// `SpecStylerGenerator` turns into `<Styler>.call()`, derived here from the
+  /// same source so generation stays single-pass.
+  _CallSource _resolveCallSource({
+    required Element anchor,
+    required DartType stylerType,
+    required String? writtenStylerName,
+    required LibraryElement library,
+  }) {
+    if (stylerType is InterfaceType &&
+        findSupertypeMatching(stylerType, styleChecker) != null) {
+      return _CallSource(
+        call: _requireCallMethod(anchor, stylerType, library: library),
+        baseExcluded: const {},
+        isGenerated: false,
+      );
+    }
+
+    final target = _generatedStylerTargetConstructor(
+      anchor,
+      stylerType,
+      writtenStylerName,
+      library,
+    );
+    if (target != null) {
+      return _CallSource(
+        call: target,
+        baseExcluded: stylerBackedTargetParams,
+        isGenerated: true,
+      );
+    }
+
+    // No same-build generated Styler matched: surface the original diagnostic
+    // (`InvalidType` / `does not extend Style<S>`) unchanged.
+    _rejectNonStylerType(anchor, stylerType);
+  }
+
+  /// Returns the `@MixableSpec(target:)` constructor backing a same-build
+  /// generated Styler named [writtenStylerName], or `null` when the factory
+  /// return type is not an unresolved same-library generated Styler.
+  ConstructorElement? _generatedStylerTargetConstructor(
+    Element anchor,
+    DartType stylerType,
+    String? writtenStylerName,
+    LibraryElement library,
+  ) {
+    // A resolvable interface is a real (mis)typed styler, not a generated one.
+    if (stylerType is InterfaceType || writtenStylerName == null) return null;
+
+    final specElement = _findGeneratedStylerSpec(library, writtenStylerName);
+    if (specElement == null) return null;
+
+    final specName = specElement.name!;
+    final annotationObject = mixableSpecAnnotationChecker.firstAnnotationOf(
+      specElement,
+    );
+    if (annotationObject == null) return null;
+
+    final target = ConstantReader(annotationObject).peek('target');
+    if (target == null || target.isNull) {
+      fail(
+        anchor,
+        '$_annotationLabel factory returns the same-build generated styler '
+        '`$writtenStylerName`, but `@MixableSpec` on `$specName` declares no '
+        '`target:`, so the generated styler has no `call()` to drive the '
+        'widget.',
+        todo:
+            'Add `@MixableSpec(target: YourWidget.new)` to `$specName`, or '
+            'return a styler that declares a `call()` method.',
+      );
+    }
+
+    final constructor = mixableSpecTargetTearOff(target, specElement);
+
+    validateMixableSpecTargetConstructor(
+      constructor: constructor,
+      widgetName: mixableSpecTargetWidgetName(constructor),
+      specElement: specElement,
+      specName: specName,
+      anchor: anchor,
+    );
+
+    return constructor;
+  }
+
+  /// Finds the `@MixableSpec` class in [library] whose conventional Styler
+  /// name equals [stylerName] (e.g. `ButtonSpec` -> `ButtonStyler`).
+  ///
+  /// Mirrors how `SpecStylerGenerator` links nested specs to their generated
+  /// stylers by name convention, because same-build generated stylers cannot
+  /// be resolved while a generator runs.
+  ClassElement? _findGeneratedStylerSpec(
+    LibraryElement library,
+    String stylerName,
+  ) {
+    for (final classElement in library.classes) {
+      final name = classElement.name;
+      if (name == null || deriveStylerName(name) != stylerName) continue;
+      if (mixableSpecAnnotationChecker.firstAnnotationOf(classElement) ==
+          null) {
+        continue;
+      }
+
+      return classElement;
+    }
+
+    return null;
+  }
+
+  /// Rejects a factory type that is neither a resolvable `Style<S>` subtype
+  /// nor a same-build generated Styler, with the diagnostic matched to why.
+  Never _rejectNonStylerType(Element anchor, DartType type) {
     if (type is! InterfaceType) {
       fail(
         anchor,
@@ -310,18 +438,14 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
       );
     }
 
-    if (findSupertypeMatching(type, styleChecker) == null) {
-      fail(
-        anchor,
-        '$_annotationLabel target must resolve to a Style<S> subtype, but '
-        '`${type.getDisplayString()}` does not extend Style<S>.',
-        todo:
-            'Use a styler that extends `Style<YourSpec>` (e.g. `BoxStyler`, '
-            '`TextStyler`).',
-      );
-    }
-
-    return type;
+    fail(
+      anchor,
+      '$_annotationLabel target must resolve to a Style<S> subtype, but '
+      '`${type.getDisplayString()}` does not extend Style<S>.',
+      todo:
+          'Use a styler that extends `Style<YourSpec>` (e.g. `BoxStyler`, '
+          '`TextStyler`).',
+    );
   }
 
   /// Looks up the styler's `call()` method (including inherited members) and
@@ -384,18 +508,24 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
   /// visibility, and collision validation. `key` remains automatic and is
   /// therefore always validated, even in an empty `only` selection.
   ({List<WidgetCallParam> params, bool forwardsKey}) _extractWidgetCallParams(
-    MethodElement callMethod, {
+    ExecutableElement callMethod, {
     required Element anchor,
     required LibraryElement library,
     required String factoryReference,
     required _WidgetParameterSelection widgetParameters,
+    Set<String> baseExcluded = const {},
   }) {
+    // [baseExcluded] names never surface as widget parameters (a generated
+    // styler's `style`/`styleSpec`); they are filtered out before curation,
+    // required-parameter, and optional-positional validation.
     final excludedNames = <String>{};
 
     if (!widgetParameters.includesAll) {
       final availableNames = {
         for (final parameter in callMethod.formalParameters)
-          if (parameter.name case final String name) name,
+          if (parameter.name case final String name
+              when !baseExcluded.contains(name))
+            name,
       };
 
       for (final name in widgetParameters.names) {
@@ -422,6 +552,7 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
         final name = parameter.name;
         if (name == 'key' ||
             name == null ||
+            baseExcluded.contains(name) ||
             widgetParameters.names.contains(name)) {
           continue;
         }
@@ -445,7 +576,8 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
       for (final parameter in callMethod.formalParameters)
         if (parameter.name == 'key' ||
             parameter.name == null ||
-            !excludedNames.contains(parameter.name))
+            (!excludedNames.contains(parameter.name) &&
+                !baseExcluded.contains(parameter.name)))
           parameter,
     ];
 
@@ -468,7 +600,7 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
       anchor: anchor,
       library: library,
       factoryReference: factoryReference,
-      excludeNames: excludedNames,
+      excludeNames: {...excludedNames, ...baseExcluded},
     );
   }
 
@@ -487,7 +619,7 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
   }
 
   List<WidgetCallTypeParam> _extractCallTypeParams(
-    MethodElement callMethod, {
+    ExecutableElement callMethod, {
     required LibraryElement library,
   }) {
     return [
@@ -598,7 +730,7 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
 
   void _requireUnprefixedFlutterSymbols(
     Element anchor,
-    MethodElement callMethod,
+    ExecutableElement callMethod,
     LibraryElement hostLibrary,
   ) {
     final returnType = _widgetAssignableReturnType(callMethod.returnType);
@@ -737,23 +869,59 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
     return '${'_' * leadingUnderscores}$pascal';
   }
 
+  /// The syntactic return/variable type name of the annotated factory, read
+  /// from the AST.
+  ///
+  /// A same-build generated Styler resolves to `InvalidType`, so its element
+  /// type carries no usable name; the written annotation still does. Returns
+  /// `null` when there is no explicit unprefixed type annotation (an inferred
+  /// variable, or a prefixed cross-library reference this pass cannot derive).
+  Future<String?> _writtenStylerTypeName(
+    Element element,
+    BuildStep buildStep,
+  ) async {
+    final node = await buildStep.resolver.astNodeFor(
+      element.firstFragment,
+      resolve: false,
+    );
+
+    TypeAnnotation? annotationType;
+    if (node is FunctionDeclaration) {
+      annotationType = node.returnType;
+    } else if (node is VariableDeclaration) {
+      final declarationList = node.parent;
+      if (declarationList is VariableDeclarationList) {
+        annotationType = declarationList.type;
+      }
+    }
+
+    if (annotationType is! NamedType || annotationType.importPrefix != null) {
+      return null;
+    }
+
+    return annotationType.name.lexeme;
+  }
+
   @override
-  String generateForAnnotatedElement(
+  Future<String> generateForAnnotatedElement(
     Element element,
     ConstantReader annotation,
     BuildStep buildStep,
-  ) {
+  ) async {
     final widgetParameters = _widgetParameterSelectionFor(annotation);
+    final writtenStylerName = await _writtenStylerTypeName(element, buildStep);
     final model = switch (element) {
       TopLevelVariableElement v => _modelForVariable(
         v,
         annotation,
         widgetParameters,
+        writtenStylerName,
       ),
       TopLevelFunctionElement f => _modelForFunction(
         f,
         annotation,
         widgetParameters,
+        writtenStylerName,
       ),
       _ => fail(
         element,
@@ -764,4 +932,26 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
 
     return MixWidgetBuilder(model).build();
   }
+}
+
+/// The executable whose parameters define a generated widget's `call()`
+/// surface, plus how to interpret them.
+class _CallSource {
+  /// The styler `call()` method, or the `@MixableSpec(target:)` constructor
+  /// when the factory returns a same-build generated Styler.
+  final ExecutableElement call;
+
+  /// Parameter names that never surface on the widget (a generated styler's
+  /// `style`/`styleSpec`).
+  final Set<String> baseExcluded;
+
+  /// Whether [call] is a generated styler's target constructor rather than a
+  /// resolvable `call()` method.
+  final bool isGenerated;
+
+  const _CallSource({
+    required this.call,
+    required this.baseExcluded,
+    required this.isGenerated,
+  });
 }
