@@ -123,8 +123,8 @@ final class _FlPieChartAdapterState extends State<FlPieChartAdapter> {
 
       return;
     }
-    if (event is fl.FlTapUpEvent && hit != null) {
-      widget.onSliceTap?.call(hit);
+    if (event is fl.FlTapUpEvent) {
+      if (hit != null) widget.onSliceTap?.call(hit);
       _setTooltipHit(hit);
 
       return;
@@ -184,9 +184,7 @@ final class _FlPieChartAdapterState extends State<FlPieChartAdapter> {
   @override
   Widget build(BuildContext context) {
     final frame = widget.spec.frame?.spec;
-    final hasDrawableData =
-        widget.slices.isNotEmpty &&
-        widget.slices.any((slice) => slice.value > 0);
+    final hasDrawableData = widget.slices.any((slice) => slice.value > 0);
     Widget chart;
 
     if (hasDrawableData) {

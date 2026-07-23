@@ -68,39 +68,11 @@ jobs:
 
   publish_mix_chart:
     if: startsWith(github.ref_name, 'mix_chart-v')
-    name: Publish mix_chart to pub.dev
-    environment: Production
-    runs-on: ubuntu-latest
+    uses: btwld/dart-actions/.github/workflows/publish.yml@main
+    with:
+      packages_folder_path: "packages"
+      packages: |
+        mix_chart
     permissions:
       id-token: write
       contents: read
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Dart (provision OIDC)
-        uses: dart-lang/setup-dart@v1
-
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-          cache: true
-
-      - name: Install mix_chart dependencies
-        working-directory: packages/mix_chart
-        run: flutter pub get
-
-      - name: Test mix_chart
-        working-directory: packages/mix_chart
-        run: flutter test
-
-      # 0.0.1 intentionally targets the coordinated Mix 2.2 beta. Pub treats
-      # stable packages with prerelease dependencies as a warning, not an error.
-      - name: Validate mix_chart package
-        working-directory: packages/mix_chart
-        run: dart pub publish --dry-run --ignore-warnings
-
-      - name: Publish mix_chart to pub.dev (OIDC)
-        working-directory: packages/mix_chart
-        run: dart pub publish --force

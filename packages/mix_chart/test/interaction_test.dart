@@ -69,6 +69,18 @@ void main() {
     expect(tapped?.pointId, 'jan');
 
     backend.data.lineTouchData.touchCallback!(
+      fl.FlTapUpEvent(
+        TapUpDetails(
+          kind: PointerDeviceKind.touch,
+          localPosition: const Offset(10, 10),
+        ),
+      ),
+      null,
+    );
+    await tester.pump();
+    expect(find.text('Point tooltip'), findsNothing);
+
+    backend.data.lineTouchData.touchCallback!(
       fl.FlPointerExitEvent(const PointerExitEvent(position: Offset(330, 80))),
       null,
     );
@@ -76,6 +88,69 @@ void main() {
 
     expect(hovered.last, isNull);
     expect(find.text('Point tooltip'), findsNothing);
+  });
+
+  testWidgets('line tooltips refresh or clear when point data changes', (
+    tester,
+  ) async {
+    var point = ChartPoint(id: 'point', x: 0, y: 1);
+    late StateSetter setHostState;
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: StatefulBuilder(
+          builder: (context, setState) {
+            setHostState = setState;
+
+            return SizedBox(
+              width: 320,
+              height: 200,
+              child: LineChart(
+                series: [
+                  LineSeries(id: 'series', label: 'Series', points: [point]),
+                ],
+                tooltipBuilder: (context, hit) {
+                  final pointHit = hit as LineChartHit;
+
+                  return Text('${pointHit.pointId}: ${pointHit.y}');
+                },
+              ),
+            );
+          },
+        ),
+      ),
+    );
+
+    final backend = tester.widget<fl.LineChart>(find.byType(fl.LineChart));
+    final bar = backend.data.lineBarsData.single;
+    backend.data.lineTouchData.touchCallback!(
+      fl.FlPointerHoverEvent(
+        const PointerHoverEvent(position: Offset(120, 80)),
+      ),
+      fl.LineTouchResponse(
+        touchLocation: const Offset(120, 80),
+        touchChartCoordinate: const Offset(0, 1),
+        lineBarSpots: [fl.TouchLineBarSpot(bar, 0, bar.spots.single, 0)],
+      ),
+    );
+    await tester.pump();
+    expect(find.text('point: 1.0'), findsOneWidget);
+
+    setHostState(() {
+      point = ChartPoint(id: 'point', x: 0, y: 2);
+    });
+    await tester.pump();
+
+    expect(find.text('point: 1.0'), findsNothing);
+    expect(find.text('point: 2.0'), findsOneWidget);
+
+    setHostState(() {
+      point = ChartPoint(id: 'replacement', x: 0, y: 3);
+    });
+    await tester.pump();
+
+    expect(find.text('point: 2.0'), findsNothing);
+    expect(find.text('replacement: 3.0'), findsNothing);
   });
 
   testWidgets('bar taps translate group, bar, and segment IDs', (tester) async {
@@ -110,6 +185,7 @@ void main() {
             ],
             hitTestPadding: const EdgeInsets.all(9),
             onBarTap: (hit) => tapped = hit,
+            tooltipBuilder: (context, hit) => const Text('Bar tooltip'),
           ),
         ),
       ),
@@ -142,6 +218,7 @@ void main() {
       ),
       response,
     );
+    await tester.pump();
 
     expect(
       backend.data.barTouchData.touchExtraThreshold,
@@ -158,6 +235,93 @@ void main() {
         segmentId: 'product',
       ),
     );
+    expect(find.text('Bar tooltip'), findsOneWidget);
+
+    backend.data.barTouchData.touchCallback!(
+      fl.FlTapUpEvent(
+        TapUpDetails(
+          kind: PointerDeviceKind.touch,
+          localPosition: const Offset(10, 10),
+        ),
+      ),
+      null,
+    );
+    await tester.pump();
+
+    expect(find.text('Bar tooltip'), findsNothing);
+  });
+
+  testWidgets('bar tooltips refresh or clear when bar data changes', (
+    tester,
+  ) async {
+    var bar = BarValue(id: 'bar', label: 'Bar', toY: 1);
+    late StateSetter setHostState;
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: StatefulBuilder(
+          builder: (context, setState) {
+            setHostState = setState;
+
+            return SizedBox(
+              width: 320,
+              height: 200,
+              child: BarChart(
+                groups: [
+                  BarGroup(id: 'group', label: 'Group', bars: [bar]),
+                ],
+                tooltipBuilder: (context, hit) {
+                  final barHit = hit as BarChartHit;
+
+                  return Text('${barHit.barId}: ${barHit.toY}');
+                },
+              ),
+            );
+          },
+        ),
+      ),
+    );
+
+    final backend = tester.widget<fl.BarChart>(find.byType(fl.BarChart));
+    final group = backend.data.barGroups.single;
+    final rod = group.barRods.single;
+    backend.data.barTouchData.touchCallback!(
+      fl.FlPointerHoverEvent(
+        const PointerHoverEvent(position: Offset(100, 70)),
+      ),
+      fl.BarTouchResponse(
+        touchLocation: const Offset(100, 70),
+        touchChartCoordinate: const Offset(0, 1),
+        spot: fl.BarTouchedSpot(
+          group,
+          0,
+          rod,
+          0,
+          null,
+          -1,
+          const fl.FlSpot(0, 1),
+          const Offset(100, 70),
+        ),
+      ),
+    );
+    await tester.pump();
+    expect(find.text('bar: 1.0'), findsOneWidget);
+
+    setHostState(() {
+      bar = BarValue(id: 'bar', label: 'Bar', toY: 2);
+    });
+    await tester.pump();
+
+    expect(find.text('bar: 1.0'), findsNothing);
+    expect(find.text('bar: 2.0'), findsOneWidget);
+
+    setHostState(() {
+      bar = BarValue(id: 'replacement', label: 'Replacement', toY: 3);
+    });
+    await tester.pump();
+
+    expect(find.text('bar: 2.0'), findsNothing);
+    expect(find.text('replacement: 3.0'), findsNothing);
   });
 
   testWidgets('pie hover and tap return stable slice IDs', (tester) async {
@@ -209,6 +373,19 @@ void main() {
       response,
     );
     expect(tapped?.sliceId, 'mobile');
+
+    backend.data.pieTouchData.touchCallback!(
+      fl.FlTapUpEvent(
+        TapUpDetails(
+          kind: PointerDeviceKind.touch,
+          localPosition: const Offset(10, 10),
+        ),
+      ),
+      null,
+    );
+    await tester.pump();
+
+    expect(find.text('Mobile\n64.0'), findsNothing);
   });
 
   testWidgets('removing a hovered pie slice clears its default tooltip', (

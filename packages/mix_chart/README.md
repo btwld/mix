@@ -82,7 +82,7 @@ LineChart(
     ),
   ).frame(.showBorder(false).clip(true)),
   onPointTap: (hit) => selectPoint(hit.selectionKey),
-)
+);
 ```
 
 Point IDs are unique within a series, while bar and segment IDs are unique
@@ -164,6 +164,8 @@ PieChart(
 Stacked bars use `BarSegment`; floating bars set both `fromY` and `toY`.
 A donut is a pie with `centerRadius` greater than zero. A nullable line-point
 `y` creates a gap. Empty charts and all-zero pies render safely.
+Horizontal bar scaling requires `spaceEvenly`, `spaceAround`, or
+`spaceBetween` alignment.
 
 ## Styling and precedence
 
@@ -281,14 +283,15 @@ default value is a deterministic ordered summary built from accessible labels
 and formatters. Use `semanticsValue` to replace it or
 `excludeFromSemantics: true` for decorative charts.
 
-Per-mark spatial semantics and keyboard navigation are not part of 0.0.1
+Per-mark spatial semantics and keyboard navigation are not part of 0.0.1-beta.0
 because the private renderer does not expose stable mark geometry.
 
 ## Architecture and limits
 
 The current renderer is `fl_chart ^1.2.0`, isolated under the package's private
 backend directory. It is dependency metadata, not a consumer API. There is no
-raw configuration escape hatch and no public renderer abstraction in 0.0.1.
+raw configuration escape hatch and no public renderer abstraction in
+0.0.1-beta.0.
 
 The initial scope intentionally excludes scatter, radar, candlestick, heatmap,
 gauge, treemap, annotations, error bars, 3D charts, and arbitrary mark painters.
@@ -299,11 +302,12 @@ direct-value themes, optional consumer tokens, interaction, and empty states.
 
 ## Release ownership
 
-The first `0.0.1` publication must be performed by an authorized maintainer and
-transferred to the repository's verified pub.dev publisher. After that one-time
-bootstrap, a `mix_chart-v<version>` tag runs the package-only test, validation,
-and OIDC publication job. Creating a release tag remains an explicit maintainer
-action; ordinary repository updates do not publish the package.
+The first `0.0.1-beta.0` publication must be performed by an authorized
+maintainer and transferred to the repository's verified pub.dev publisher.
+After that one-time bootstrap, a `mix_chart-v<version>` tag runs the
+package-only test, validation, and OIDC publication job. Creating a release tag
+remains an explicit maintainer action; ordinary repository updates do not
+publish the package.
 
 ## License
 

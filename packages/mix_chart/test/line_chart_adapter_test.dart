@@ -299,6 +299,50 @@ void main() {
     expect((error! as ArgumentError).name, 'verticalInterval');
   });
 
+  testWidgets('normalizes empty dashes and rejects non-positive lengths', (
+    tester,
+  ) async {
+    Widget host(List<int> dashArray) => MaterialApp(
+      home: SizedBox(
+        width: 300,
+        height: 200,
+        child: LineChart(
+          series: [
+            LineSeries(
+              id: 'series',
+              label: 'Series',
+              points: [
+                ChartPoint(id: 'first', x: 0, y: 1),
+                ChartPoint(id: 'second', x: 1, y: 2),
+              ],
+            ),
+          ],
+          style: .series(.stroke(.dashArray(dashArray))),
+        ),
+      ),
+    );
+
+    await tester.pumpWidget(host(const []));
+
+    expect(tester.takeException(), isNull);
+    expect(
+      tester
+          .widget<fl.LineChart>(find.byType(fl.LineChart))
+          .data
+          .lineBarsData
+          .single
+          .dashArray,
+      isNull,
+    );
+
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pumpWidget(host(const [0, 4]));
+    final error = tester.takeException();
+
+    expect(error, isA<ArgumentError>());
+    expect((error! as ArgumentError).name, 'dashArray');
+  });
+
   testWidgets('snaps topology changes and animates compatible updates', (
     tester,
   ) async {

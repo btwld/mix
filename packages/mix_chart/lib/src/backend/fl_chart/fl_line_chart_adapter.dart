@@ -57,7 +57,7 @@ final class FlLineChartAdapter extends StatefulWidget {
 }
 
 final class _FlLineChartAdapterState extends State<FlLineChartAdapter> {
-  ChartHit? _tooltipHit;
+  LineChartHit? _tooltipHit;
   bool _topologyCompatible = true;
 
   bool _isPointSelected(LineSeries series, ChartPoint point) => widget
@@ -123,7 +123,7 @@ final class _FlLineChartAdapterState extends State<FlLineChartAdapter> {
           return _resolveMarker(marker, baseColor, selected);
         },
       ),
-      dashArray: stroke?.dashArray,
+      dashArray: flResolveDashArray(stroke?.dashArray),
       shadow: presentation.shadow ?? const Shadow(color: Colors.transparent),
       isStepLineChart: switch (curve) {
         .stepBefore || .stepMiddle || .stepAfter => true,
@@ -198,8 +198,8 @@ final class _FlLineChartAdapterState extends State<FlLineChartAdapter> {
 
       return;
     }
-    if (event is fl.FlTapUpEvent && hit != null) {
-      widget.onPointTap?.call(hit);
+    if (event is fl.FlTapUpEvent) {
+      if (hit != null) widget.onPointTap?.call(hit);
       _setTooltipHit(hit);
 
       return;
@@ -231,15 +231,42 @@ final class _FlLineChartAdapterState extends State<FlLineChartAdapter> {
     );
   }
 
-  void _setTooltipHit(ChartHit? hit) {
+  void _setTooltipHit(LineChartHit? hit) {
     if (widget.tooltipBuilder == null || hit == _tooltipHit || !mounted) return;
     setState(() => _tooltipHit = hit);
+  }
+
+  LineChartHit? _updatedTooltipHit() {
+    final hit = _tooltipHit;
+    if (hit == null || widget.tooltipBuilder == null || !_topologyCompatible) {
+      return null;
+    }
+    final seriesIndex = widget.series.indexWhere(
+      (series) => series.id == hit.seriesId,
+    );
+    if (seriesIndex < 0) return null;
+    final pointIndex = widget.series[seriesIndex].points.indexWhere(
+      (point) => point.id == hit.pointId,
+    );
+    if (pointIndex < 0) return null;
+    final point = widget.series[seriesIndex].points[pointIndex];
+    if (point.y == null) return null;
+
+    return LineChartHit(
+      seriesId: hit.seriesId,
+      pointId: hit.pointId,
+      x: point.x,
+      y: point.y!,
+      localPosition: hit.localPosition,
+      event: hit.event,
+    );
   }
 
   @override
   void didUpdateWidget(FlLineChartAdapter oldWidget) {
     super.didUpdateWidget(oldWidget);
     _topologyCompatible = _hasSameTopology(oldWidget.series, widget.series);
+    _tooltipHit = _updatedTooltipHit();
   }
 
   @override

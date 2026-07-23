@@ -21,7 +21,7 @@ final class ChartStrokeSpec with _$ChartStrokeSpec {
   @override
   final double? width;
 
-  /// Alternating dash and gap lengths.
+  /// Positive alternating dash and gap lengths. Empty renders a solid stroke.
   @override
   final List<int>? dashArray;
 

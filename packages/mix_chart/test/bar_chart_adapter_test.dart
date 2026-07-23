@@ -216,4 +216,118 @@ void main() {
     expect(rods[1].width, 16);
     expect(rods[1].rodStackItems.single.borderSide.width, 2);
   });
+
+  testWidgets('normalizes an empty bar-border dash pattern', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: SizedBox(
+          width: 300,
+          height: 200,
+          child: BarChart(
+            groups: [
+              BarGroup(
+                id: 'group',
+                label: 'Group',
+                bars: [BarValue(id: 'bar', label: 'Bar', toY: 1)],
+              ),
+            ],
+            style: .bar(.borderDashArray(const [])),
+          ),
+        ),
+      ),
+    );
+
+    expect(tester.takeException(), isNull);
+    expect(
+      tester
+          .widget<fl.BarChart>(find.byType(fl.BarChart))
+          .data
+          .barGroups
+          .single
+          .barRods
+          .single
+          .borderDashArray,
+      isNull,
+    );
+  });
+
+  testWidgets('rejects fixed alignment with horizontal scaling', (
+    tester,
+  ) async {
+    Widget host(BarAlignment alignment, ChartScaleAxis axis) => MaterialApp(
+      home: SizedBox(
+        width: 300,
+        height: 200,
+        child: BarChart(
+          groups: [
+            BarGroup(
+              id: 'group',
+              label: 'Group',
+              bars: [BarValue(id: 'bar', label: 'Bar', toY: 1)],
+            ),
+          ],
+          viewport: ChartViewport(axis: axis),
+          style: .alignment(alignment),
+        ),
+      ),
+    );
+
+    for (final alignment in [
+      BarAlignment.start,
+      BarAlignment.center,
+      BarAlignment.end,
+    ]) {
+      for (final axis in [ChartScaleAxis.horizontal, ChartScaleAxis.both]) {
+        await tester.pumpWidget(host(alignment, axis));
+        final error = tester.takeException();
+
+        expect(error, isA<ArgumentError>());
+        expect((error! as ArgumentError).name, 'viewport');
+
+        await tester.pumpWidget(const SizedBox.shrink());
+      }
+    }
+  });
+
+  testWidgets('merges category labels with x-axis customization', (
+    tester,
+  ) async {
+    Widget host(ChartAxis xAxis) => MaterialApp(
+      home: SizedBox(
+        width: 300,
+        height: 200,
+        child: BarChart(
+          groups: [
+            BarGroup(
+              id: 'jan',
+              label: 'January',
+              bars: [BarValue(id: 'bar', label: 'Bar', toY: 1)],
+            ),
+          ],
+          xAxis: xAxis,
+        ),
+      ),
+    );
+
+    await tester.pumpWidget(host(ChartAxis.numeric(name: const Text('Month'))));
+    await tester.pump();
+
+    final titles = tester
+        .widget<fl.BarChart>(find.byType(fl.BarChart))
+        .data
+        .titlesData
+        .bottomTitles
+        .sideTitles;
+    expect(titles.interval, 1);
+    expect(find.text('Month'), findsOneWidget);
+    expect(find.text('January'), findsOneWidget);
+
+    await tester.pumpWidget(
+      host(ChartAxis.numeric(labelFormatter: (value) => 'Month ${value + 1}')),
+    );
+    await tester.pump();
+
+    expect(find.text('Month 1.0'), findsOneWidget);
+    expect(find.text('January'), findsNothing);
+  });
 }

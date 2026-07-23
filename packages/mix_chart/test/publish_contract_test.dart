@@ -3,11 +3,16 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  test('package manifest remains independently publishable as 0.0.1', () {
+  test('package manifest remains independently publishable as a beta', () {
     final pubspec = File('pubspec.yaml').readAsStringSync();
+    final changelog = File('CHANGELOG.md').readAsStringSync();
 
     expect(pubspec, contains(RegExp(r'^name: mix_chart$', multiLine: true)));
-    expect(pubspec, contains(RegExp(r'^version: 0\.0\.1$', multiLine: true)));
+    expect(
+      pubspec,
+      contains(RegExp(r'^version: 0\.0\.1-beta\.0$', multiLine: true)),
+    );
+    expect(changelog, startsWith('## 0.0.1-beta.0\n'));
     expect(
       pubspec,
       isNot(contains('publish_to: none')),
@@ -48,25 +53,5 @@ void main() {
         ),
       ),
     );
-  });
-
-  test('repository workflow recognizes mix_chart version tags', () {
-    final workflow = File(
-      '../../.github/workflows/publish.yml',
-    ).readAsStringSync();
-
-    expect(workflow, contains("'mix_chart-v[0-9]+.[0-9]+.[0-9]+*'"));
-    expect(workflow, contains("startsWith(github.ref_name, 'mix_chart-v')"));
-    expect(
-      workflow,
-      contains(
-        RegExp(
-          r'^        working-directory: packages/mix_chart$',
-          multiLine: true,
-        ),
-      ),
-    );
-    expect(workflow, contains('dart pub publish --dry-run --ignore-warnings'));
-    expect(workflow, contains('dart pub publish --force'));
   });
 }

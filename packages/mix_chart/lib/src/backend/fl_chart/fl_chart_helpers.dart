@@ -22,6 +22,20 @@ const flDefaultPalette = [
 List<Color> flResolvePalette(List<Color>? palette) =>
     palette == null || palette.isEmpty ? flDefaultPalette : palette;
 
+/// Normalizes a public dash pattern before passing it to the renderer.
+List<int>? flResolveDashArray(List<int>? dashArray) {
+  if (dashArray == null || dashArray.isEmpty) return null;
+  if (dashArray.any((length) => length <= 0)) {
+    throw ArgumentError.value(
+      dashArray,
+      'dashArray',
+      'All dash and gap lengths must be greater than 0',
+    );
+  }
+
+  return dashArray;
+}
+
 /// Maps the public viewport contract to fl_chart.
 fl.FlTransformationConfig flResolveViewport(ChartViewport? viewport) {
   final value = viewport ?? .none;
@@ -123,7 +137,7 @@ fl.FlLine flResolveLine(
     color: gradient == null ? color : null,
     gradient: gradient,
     strokeWidth: stroke?.width ?? fallbackWidth,
-    dashArray: stroke?.dashArray,
+    dashArray: flResolveDashArray(stroke?.dashArray),
   );
 }
 

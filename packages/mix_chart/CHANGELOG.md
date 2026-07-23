@@ -1,4 +1,4 @@
-## 0.0.1
+## 0.0.1-beta.0
 
 - Introduces Mix-owned `LineChart`, `BarChart`, and `PieChart` widgets.
 - Adds backend-neutral data, axis, viewport, interaction, tooltip, animation,

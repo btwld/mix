@@ -9,6 +9,7 @@ import '../models/chart_hit.dart';
 import '../models/pie_data.dart';
 import '../specs/pie/pie_chart_spec.dart';
 import 'chart_semantics.dart';
+import 'chart_validation.dart';
 
 /// A pie or donut chart with a Mix-owned public API.
 final class PieChart extends StyleWidget<PieChartSpec> {
@@ -32,7 +33,7 @@ final class PieChart extends StyleWidget<PieChartSpec> {
   }) : slices = UnmodifiableListView(List<PieSlice>.of(slices)),
        selectedSliceIds = UnmodifiableSetView(Set<Object>.of(selectedSliceIds)),
        super(style: style) {
-    _requireUniqueIds(slices.map((item) => item.id), 'slice');
+    requireUniqueChartIds(slices.map((item) => item.id), 'slice');
   }
 
   /// Ordered slices.
@@ -100,14 +101,5 @@ final class PieChart extends StyleWidget<PieChartSpec> {
       exclude: excludeFromSemantics,
       child: child,
     );
-  }
-}
-
-void _requireUniqueIds(Iterable<Object> ids, String kind) {
-  final seen = <Object>{};
-  for (final id in ids) {
-    if (!seen.add(id)) {
-      throw ArgumentError.value(id, 'id', 'Duplicate $kind ID');
-    }
   }
 }

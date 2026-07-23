@@ -9,6 +9,7 @@ import '../models/chart_config.dart';
 import '../models/chart_hit.dart';
 import '../specs/bar/bar_chart_spec.dart';
 import 'chart_semantics.dart';
+import 'chart_validation.dart';
 
 /// A grouped, stacked, or floating bar chart with a Mix-owned API.
 final class BarChart extends StyleWidget<BarChartSpec> {
@@ -39,7 +40,7 @@ final class BarChart extends StyleWidget<BarChartSpec> {
          Set<BarSelectionKey>.of(selectedItems),
        ),
        super(style: style) {
-    _requireUniqueIds(groups.map((item) => item.id), 'group');
+    requireUniqueChartIds(groups.map((item) => item.id), 'group');
     if (!hitTestPadding.isNonNegative) {
       throw ArgumentError.value(
         hitTestPadding,
@@ -140,14 +141,5 @@ final class BarChart extends StyleWidget<BarChartSpec> {
       exclude: excludeFromSemantics,
       child: child,
     );
-  }
-}
-
-void _requireUniqueIds(Iterable<Object> ids, String kind) {
-  final seen = <Object>{};
-  for (final id in ids) {
-    if (!seen.add(id)) {
-      throw ArgumentError.value(id, 'id', 'Duplicate $kind ID');
-    }
   }
 }

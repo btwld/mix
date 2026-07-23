@@ -31,7 +31,7 @@ final class BarSpec with _$BarSpec {
   @override
   final BorderSide? border;
 
-  /// Alternating border dash and gap lengths.
+  /// Positive alternating dash and gap lengths. Empty renders a solid border.
   @override
   final List<int>? borderDashArray;
 

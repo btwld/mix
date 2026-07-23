@@ -153,4 +153,25 @@ void main() {
       );
     });
   });
+
+  group('chart widgets', () {
+    test('reject duplicate top-level identifiers', () {
+      final duplicateId = isA<ArgumentError>().having(
+        (error) => error.name,
+        'name',
+        'id',
+      );
+      final series = LineSeries(
+        id: 'series',
+        label: 'Series',
+        points: const [],
+      );
+      final group = BarGroup(id: 'group', label: 'Group', bars: const []);
+      final slice = PieSlice(id: 'slice', label: 'Slice', value: 1);
+
+      expect(() => LineChart(series: [series, series]), throwsA(duplicateId));
+      expect(() => BarChart(groups: [group, group]), throwsA(duplicateId));
+      expect(() => PieChart(slices: [slice, slice]), throwsA(duplicateId));
+    });
+  });
 }

@@ -55,7 +55,7 @@ final class FlBarChartAdapter extends StatefulWidget {
 }
 
 final class _FlBarChartAdapterState extends State<FlBarChartAdapter> {
-  ChartHit? _tooltipHit;
+  BarChartHit? _tooltipHit;
   bool _topologyCompatible = true;
 
   bool _isSegmentSelected(BarGroup group, BarValue bar, BarSegment segment) =>
@@ -90,7 +90,7 @@ final class _FlBarChartAdapterState extends State<FlBarChartAdapter> {
       gradient: gradient,
       width: (presentation.width ?? 14) + (selected ? 2 : 0),
       borderRadius: presentation.borderRadius ?? .circular(6),
-      borderDashArray: presentation.borderDashArray,
+      borderDashArray: flResolveDashArray(presentation.borderDashArray),
       borderSide: presentation.border ?? .none,
       backDrawRodData: _resolveBackground(presentation.background?.spec),
       rodStackItems: [
@@ -193,8 +193,8 @@ final class _FlBarChartAdapterState extends State<FlBarChartAdapter> {
 
       return;
     }
-    if (event is fl.FlTapUpEvent && hit != null) {
-      widget.onBarTap?.call(hit);
+    if (event is fl.FlTapUpEvent) {
+      if (hit != null) widget.onBarTap?.call(hit);
       _setTooltipHit(hit);
 
       return;
@@ -229,19 +229,81 @@ final class _FlBarChartAdapterState extends State<FlBarChartAdapter> {
     );
   }
 
-  void _setTooltipHit(ChartHit? hit) {
+  void _setTooltipHit(BarChartHit? hit) {
     if (widget.tooltipBuilder == null || hit == _tooltipHit || !mounted) return;
     setState(() => _tooltipHit = hit);
+  }
+
+  BarChartHit? _updatedTooltipHit() {
+    final hit = _tooltipHit;
+    if (hit == null || widget.tooltipBuilder == null || !_topologyCompatible) {
+      return null;
+    }
+    final groupIndex = widget.groups.indexWhere(
+      (group) => group.id == hit.groupId,
+    );
+    if (groupIndex < 0) return null;
+    final barIndex = widget.groups[groupIndex].bars.indexWhere(
+      (bar) => bar.id == hit.barId,
+    );
+    if (barIndex < 0) return null;
+    final bar = widget.groups[groupIndex].bars[barIndex];
+    var fromY = bar.fromY;
+    var toY = bar.toY;
+
+    if (hit.segmentId case final segmentId?) {
+      final segmentIndex = bar.segments.indexWhere(
+        (segment) => segment.id == segmentId,
+      );
+      if (segmentIndex < 0) return null;
+      fromY = bar.segments[segmentIndex].fromY;
+      toY = bar.segments[segmentIndex].toY;
+    }
+
+    return BarChartHit(
+      groupId: hit.groupId,
+      barId: hit.barId,
+      segmentId: hit.segmentId,
+      fromY: fromY,
+      toY: toY,
+      localPosition: hit.localPosition,
+      event: hit.event,
+    );
+  }
+
+  ChartAxis _resolveXAxis() {
+    final axis = widget.xAxis;
+
+    return ChartAxis.numeric(
+      min: axis?.min,
+      max: axis?.max,
+      interval: axis?.interval ?? 1,
+      minIncluded: axis?.minIncluded ?? true,
+      maxIncluded: axis?.maxIncluded ?? true,
+      labelFormatter:
+          axis?.labelFormatter ??
+          (value) {
+            final index = value.round();
+
+            return index >= 0 && index < widget.groups.length
+                ? widget.groups[index].label
+                : '';
+          },
+      labelBuilder: axis?.labelBuilder,
+      name: axis?.name,
+    );
   }
 
   @override
   void didUpdateWidget(FlBarChartAdapter oldWidget) {
     super.didUpdateWidget(oldWidget);
     _topologyCompatible = _hasSameTopology(oldWidget.groups, widget.groups);
+    _tooltipHit = _updatedTooltipHit();
   }
 
   @override
   Widget build(BuildContext context) {
+    _validateViewport(widget.spec.alignment, widget.viewport);
     final palette = flResolvePalette(widget.spec.palette);
     final groups = <fl.BarChartGroupData>[];
 
@@ -265,18 +327,7 @@ final class _FlBarChartAdapterState extends State<FlBarChartAdapter> {
     }
 
     final frame = widget.spec.frame?.spec;
-    final effectiveXAxis =
-        widget.xAxis ??
-        ChartAxis.numeric(
-          interval: 1,
-          labelFormatter: (value) {
-            final index = value.round();
-
-            return index >= 0 && index < widget.groups.length
-                ? widget.groups[index].label
-                : '';
-          },
-        );
+    final effectiveXAxis = _resolveXAxis();
     final data = fl.BarChartData(
       barGroups: groups,
       groupsSpace: widget.spec.groupSpacing ?? 16,
@@ -319,6 +370,24 @@ final class _FlBarChartAdapterState extends State<FlBarChartAdapter> {
       builder: widget.tooltipBuilder,
       margin: widget.spec.tooltip?.spec.margin ?? 12,
       child: chart,
+    );
+  }
+}
+
+void _validateViewport(BarAlignment? alignment, ChartViewport? viewport) {
+  final scalesHorizontally = switch (viewport?.axis ?? .none) {
+    .horizontal || .both => true,
+    .none || .vertical => false,
+  };
+  final usesFixedAlignment = switch (alignment ?? .spaceEvenly) {
+    .start || .center || .end => true,
+    .spaceEvenly || .spaceAround || .spaceBetween => false,
+  };
+  if (scalesHorizontally && usesFixedAlignment) {
+    throw ArgumentError.value(
+      viewport,
+      'viewport',
+      'Horizontal scaling requires a space-based BarAlignment',
     );
   }
 }

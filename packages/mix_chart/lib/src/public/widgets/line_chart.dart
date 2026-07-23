@@ -9,6 +9,7 @@ import '../models/chart_hit.dart';
 import '../models/line_data.dart';
 import '../specs/line/line_chart_spec.dart';
 import 'chart_semantics.dart';
+import 'chart_validation.dart';
 
 /// A line or area chart with a Mix-owned public API.
 final class LineChart extends StyleWidget<LineChartSpec> {
@@ -39,7 +40,7 @@ final class LineChart extends StyleWidget<LineChartSpec> {
          Set<LinePointKey>.of(selectedPoints),
        ),
        super(style: style) {
-    _requireUniqueIds(series.map((item) => item.id), 'series');
+    requireUniqueChartIds(series.map((item) => item.id), 'series');
     if (!hitTestRadius.isFinite || hitTestRadius < 0) {
       throw ArgumentError.value(
         hitTestRadius,
@@ -141,14 +142,5 @@ final class LineChart extends StyleWidget<LineChartSpec> {
       exclude: excludeFromSemantics,
       child: child,
     );
-  }
-}
-
-void _requireUniqueIds(Iterable<Object> ids, String kind) {
-  final seen = <Object>{};
-  for (final id in ids) {
-    if (!seen.add(id)) {
-      throw ArgumentError.value(id, 'id', 'Duplicate $kind ID');
-    }
   }
 }
