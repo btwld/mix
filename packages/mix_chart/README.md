@@ -21,11 +21,21 @@ pie/donut charts.
 
 ## Gallery
 
-| Line charts | Pie and donut charts |
+| Line charts | Bar charts |
 | --- | --- |
-| ![Line chart gallery](example/screenshots/line-gallery-light.png) | ![Pie chart gallery](example/screenshots/pie-gallery-dark.png) |
+| ![Line chart gallery](example/screenshots/line-gallery-light.png) | ![Bar chart gallery](example/screenshots/bar-gallery-light.png) |
 
-![Analytics dashboard composed with mix_chart](example/screenshots/dashboard-dark.png)
+| Pie and donut charts | Analytics dashboard |
+| --- | --- |
+| ![Pie chart gallery](example/screenshots/pie-gallery-dark.png) | ![Analytics dashboard composed with mix_chart](example/screenshots/dashboard-dark.png) |
+
+### Interactive playground
+
+![Line chart playground with live style controls](example/screenshots/playground-line-light.png)
+
+| Bar controls | Pie and donut controls |
+| --- | --- |
+| ![Bar chart playground with live style controls](example/screenshots/playground-bar-light.png) | ![Pie chart playground with live style controls](example/screenshots/playground-pie-light.png) |
 
 ## Quick start
 

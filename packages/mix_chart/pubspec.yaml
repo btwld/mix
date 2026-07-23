@@ -28,7 +28,15 @@ dev_dependencies:
 screenshots:
   - description: A light line-chart gallery built with mix_chart.
     path: example/screenshots/line-gallery-light.png
+  - description: A light bar-chart gallery built with mix_chart.
+    path: example/screenshots/bar-gallery-light.png
   - description: A dark pie and donut chart gallery built with mix_chart.
     path: example/screenshots/pie-gallery-dark.png
   - description: A dark analytics dashboard composed with mix_chart.
     path: example/screenshots/dashboard-dark.png
+  - description: A line-chart playground with live Mix style controls.
+    path: example/screenshots/playground-line-light.png
+  - description: A bar-chart playground with live Mix style controls.
+    path: example/screenshots/playground-bar-light.png
+  - description: A pie and donut playground with live Mix style controls.
+    path: example/screenshots/playground-pie-light.png

@@ -34,12 +34,19 @@ void main() {
       RegExp(r'^screenshots:$', multiLine: true).hasMatch(pubspec),
       isTrue,
     );
+    final screenshotPaths = RegExp(
+      r'^    path: (example/screenshots/\S+)$',
+      multiLine: true,
+    ).allMatches(pubspec).map((match) => match.group(1)!);
+    expect(screenshotPaths, hasLength(7));
     expect(
-      RegExp(
-        r'^    path: example/screenshots/',
-        multiLine: true,
-      ).allMatches(pubspec).length,
-      3,
+      screenshotPaths,
+      everyElement(
+        predicate<String>(
+          (path) => File(path).existsSync(),
+          'references an existing screenshot',
+        ),
+      ),
     );
   });
 
