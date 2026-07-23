@@ -23,7 +23,7 @@ final class FlBarChartAdapter extends StatefulWidget {
     required this.rightAxis,
     required this.viewport,
     required this.dataTransition,
-    required this.selectedIds,
+    required this.selectedItems,
     required this.onBarHover,
     required this.onBarTap,
     required this.onBarLongPress,
@@ -41,7 +41,7 @@ final class FlBarChartAdapter extends StatefulWidget {
   final ChartAxis? rightAxis;
   final ChartViewport? viewport;
   final ChartDataTransition dataTransition;
-  final Set<Object> selectedIds;
+  final Set<BarSelectionKey> selectedItems;
   final ValueChanged<BarChartHit?>? onBarHover;
   final ValueChanged<BarChartHit>? onBarTap;
   final ValueChanged<BarChartHit>? onBarLongPress;
@@ -58,16 +58,28 @@ final class _FlBarChartAdapterState extends State<FlBarChartAdapter> {
   ChartHit? _tooltipHit;
   bool _topologyCompatible = true;
 
+  bool _isSegmentSelected(BarGroup group, BarValue bar, BarSegment segment) =>
+      widget.selectedItems.contains(
+        BarSelectionKey.segment(
+          groupId: group.id,
+          barId: bar.id,
+          segmentId: segment.id,
+        ),
+      );
+
   fl.BarChartRodData _resolveBar(
     BuildContext context,
+    BarGroup group,
     BarValue bar,
     BarSpec presentation,
     Color fallbackColor,
   ) {
     final gradient = presentation.gradient;
     final selected =
-        widget.selectedIds.contains(bar.id) ||
-        bar.segments.any((segment) => widget.selectedIds.contains(segment.id));
+        widget.selectedItems.contains(
+          BarSelectionKey.bar(groupId: group.id, barId: bar.id),
+        ) ||
+        bar.segments.any((segment) => _isSegmentSelected(group, bar, segment));
     final formatter =
         widget.yAxis?.labelFormatter ?? (double value) => '$value';
 
@@ -83,7 +95,7 @@ final class _FlBarChartAdapterState extends State<FlBarChartAdapter> {
       backDrawRodData: _resolveBackground(presentation.background?.spec),
       rodStackItems: [
         for (var index = 0; index < bar.segments.length; index++)
-          _resolveSegment(context, bar.segments[index], index),
+          _resolveSegment(context, group, bar, bar.segments[index], index),
       ],
       label: fl.BarChartRodLabel(
         show: presentation.label != null,
@@ -97,6 +109,8 @@ final class _FlBarChartAdapterState extends State<FlBarChartAdapter> {
 
   fl.BarChartRodStackItem _resolveSegment(
     BuildContext context,
+    BarGroup group,
+    BarValue bar,
     BarSegment segment,
     int segmentIndex,
   ) {
@@ -105,7 +119,7 @@ final class _FlBarChartAdapterState extends State<FlBarChartAdapter> {
     final palette = flResolvePalette(widget.spec.palette);
     final gradient = presentation.gradient;
     final color = presentation.color ?? palette[segmentIndex % palette.length];
-    final selected = widget.selectedIds.contains(segment.id);
+    final selected = _isSegmentSelected(group, bar, segment);
     final border =
         presentation.border ??
         (selected
@@ -239,7 +253,7 @@ final class _FlBarChartAdapterState extends State<FlBarChartAdapter> {
         final override = bar.style?.build(context).spec;
         final presentation = _mergeBar(widget.spec.bar?.spec, override);
         final fallbackColor = palette[barIndex % palette.length];
-        rods.add(_resolveBar(context, bar, presentation, fallbackColor));
+        rods.add(_resolveBar(context, group, bar, presentation, fallbackColor));
       }
       groups.add(
         fl.BarChartGroupData(
@@ -336,10 +350,16 @@ fl.BackgroundBarChartRodData _resolveBackground(BarBackgroundSpec? background) {
 BarSpec _mergeBar(BarSpec? base, BarSpec? override) {
   if (base == null) return override ?? const BarSpec();
   if (override == null) return base;
+  final paint = flMergePaint(
+    baseColor: base.color,
+    baseGradient: base.gradient,
+    overrideColor: override.color,
+    overrideGradient: override.gradient,
+  );
 
   return BarSpec(
-    color: override.color ?? base.color,
-    gradient: override.gradient ?? base.gradient,
+    color: paint.color,
+    gradient: paint.gradient,
     width: override.width ?? base.width,
     borderRadius: override.borderRadius ?? base.borderRadius,
     border: override.border ?? base.border,
@@ -357,14 +377,20 @@ StyleSpec<BarBackgroundSpec>? _mergeBackground(
 ) {
   if (base == null) return override;
   if (override == null) return base;
+  final paint = flMergePaint(
+    baseColor: base.spec.color,
+    baseGradient: base.spec.gradient,
+    overrideColor: override.spec.color,
+    overrideGradient: override.spec.gradient,
+  );
 
   return StyleSpec(
     spec: BarBackgroundSpec(
       show: override.spec.show ?? base.spec.show,
       fromY: override.spec.fromY ?? base.spec.fromY,
       toY: override.spec.toY ?? base.spec.toY,
-      color: override.spec.color ?? base.spec.color,
-      gradient: override.spec.gradient ?? base.spec.gradient,
+      color: paint.color,
+      gradient: paint.gradient,
     ),
   );
 }
@@ -372,10 +398,16 @@ StyleSpec<BarBackgroundSpec>? _mergeBackground(
 BarSegmentSpec _mergeSegment(BarSegmentSpec? base, BarSegmentSpec? override) {
   if (base == null) return override ?? const BarSegmentSpec();
   if (override == null) return base;
+  final paint = flMergePaint(
+    baseColor: base.color,
+    baseGradient: base.gradient,
+    overrideColor: override.color,
+    overrideGradient: override.gradient,
+  );
 
   return BarSegmentSpec(
-    color: override.color ?? base.color,
-    gradient: override.gradient ?? base.gradient,
+    color: paint.color,
+    gradient: paint.gradient,
     border: override.border ?? base.border,
     label: override.label ?? base.label,
   );

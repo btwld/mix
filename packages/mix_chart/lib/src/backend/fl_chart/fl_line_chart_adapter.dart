@@ -25,7 +25,7 @@ final class FlLineChartAdapter extends StatefulWidget {
     required this.rightAxis,
     required this.viewport,
     required this.dataTransition,
-    required this.selectedPointIds,
+    required this.selectedPoints,
     required this.onPointHover,
     required this.onPointTap,
     required this.onPointLongPress,
@@ -43,7 +43,7 @@ final class FlLineChartAdapter extends StatefulWidget {
   final ChartAxis? rightAxis;
   final ChartViewport? viewport;
   final ChartDataTransition dataTransition;
-  final Set<Object> selectedPointIds;
+  final Set<LinePointKey> selectedPoints;
   final ValueChanged<LineChartHit?>? onPointHover;
   final ValueChanged<LineChartHit>? onPointTap;
   final ValueChanged<LineChartHit>? onPointLongPress;
@@ -60,6 +60,10 @@ final class _FlLineChartAdapterState extends State<FlLineChartAdapter> {
   ChartHit? _tooltipHit;
   bool _topologyCompatible = true;
 
+  bool _isPointSelected(LineSeries series, ChartPoint point) => widget
+      .selectedPoints
+      .contains(LinePointKey(seriesId: series.id, pointId: point.id));
+
   fl.LineChartBarData _resolveSeries(
     LineSeries series,
     LineSeriesSpec presentation,
@@ -73,7 +77,7 @@ final class _FlLineChartAdapterState extends State<FlLineChartAdapter> {
     final gradient = stroke?.gradient?.withOpacity(opacity);
     final marker = presentation.marker?.spec;
     final hasSelectedPoint = series.points.any(
-      (point) => widget.selectedPointIds.contains(point.id),
+      (point) => _isPointSelected(series, point),
     );
     final curve = presentation.curve ?? .straight;
 
@@ -101,18 +105,20 @@ final class _FlLineChartAdapterState extends State<FlLineChartAdapter> {
       dotData: fl.FlDotData(
         show: (marker?.show ?? false) || hasSelectedPoint,
         checkToShowDot: (spot, bar) {
-          final pointIndex = bar.spots.indexOf(spot);
+          final pointIndex = bar.spots.indexWhere(
+            (candidate) => identical(candidate, spot),
+          );
           if (pointIndex < 0 || pointIndex >= series.points.length) {
             return false;
           }
 
           return (marker?.show ?? false) ||
-              widget.selectedPointIds.contains(series.points[pointIndex].id);
+              _isPointSelected(series, series.points[pointIndex]);
         },
         getDotPainter: (_, _, _, pointIndex) {
           final selected =
               pointIndex < series.points.length &&
-              widget.selectedPointIds.contains(series.points[pointIndex].id);
+              _isPointSelected(series, series.points[pointIndex]);
 
           return _resolveMarker(marker, baseColor, selected);
         },
@@ -422,14 +428,22 @@ StyleSpec<T>? _mergeNested<T extends Spec<T>>(
   return StyleSpec(spec: merge(base.spec, override.spec));
 }
 
-ChartStrokeSpec _mergeStroke(ChartStrokeSpec base, ChartStrokeSpec override) =>
-    .new(
-      color: override.color ?? base.color,
-      gradient: override.gradient ?? base.gradient,
-      width: override.width ?? base.width,
-      dashArray: override.dashArray ?? base.dashArray,
-      opacity: override.opacity ?? base.opacity,
-    );
+ChartStrokeSpec _mergeStroke(ChartStrokeSpec base, ChartStrokeSpec override) {
+  final paint = flMergePaint(
+    baseColor: base.color,
+    baseGradient: base.gradient,
+    overrideColor: override.color,
+    overrideGradient: override.gradient,
+  );
+
+  return ChartStrokeSpec(
+    color: paint.color,
+    gradient: paint.gradient,
+    width: override.width ?? base.width,
+    dashArray: override.dashArray ?? base.dashArray,
+    opacity: override.opacity ?? base.opacity,
+  );
+}
 
 ChartMarkerSpec _mergeMarker(ChartMarkerSpec base, ChartMarkerSpec override) =>
     .new(
@@ -442,13 +456,22 @@ ChartMarkerSpec _mergeMarker(ChartMarkerSpec base, ChartMarkerSpec override) =>
       shadow: override.shadow ?? base.shadow,
     );
 
-ChartAreaSpec _mergeArea(ChartAreaSpec base, ChartAreaSpec override) => .new(
-  show: override.show ?? base.show,
-  color: override.color ?? base.color,
-  gradient: override.gradient ?? base.gradient,
-  cutoffY: override.cutoffY ?? base.cutoffY,
-  applyCutoff: override.applyCutoff ?? base.applyCutoff,
-);
+ChartAreaSpec _mergeArea(ChartAreaSpec base, ChartAreaSpec override) {
+  final paint = flMergePaint(
+    baseColor: base.color,
+    baseGradient: base.gradient,
+    overrideColor: override.color,
+    overrideGradient: override.gradient,
+  );
+
+  return ChartAreaSpec(
+    show: override.show ?? base.show,
+    color: paint.color,
+    gradient: paint.gradient,
+    cutoffY: override.cutoffY ?? base.cutoffY,
+    applyCutoff: override.applyCutoff ?? base.applyCutoff,
+  );
+}
 
 bool _hasSameTopology(List<LineSeries> oldSeries, List<LineSeries> newSeries) {
   if (oldSeries.length != newSeries.length) return false;
@@ -460,7 +483,10 @@ bool _hasSameTopology(List<LineSeries> oldSeries, List<LineSeries> newSeries) {
       return false;
     }
     for (var pointIndex = 0; pointIndex < oldItem.points.length; pointIndex++) {
-      if (oldItem.points[pointIndex].id != newItem.points[pointIndex].id) {
+      final oldPoint = oldItem.points[pointIndex];
+      final newPoint = newItem.points[pointIndex];
+      if (oldPoint.id != newPoint.id ||
+          (oldPoint.y == null) != (newPoint.y == null)) {
         return false;
       }
     }

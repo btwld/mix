@@ -28,7 +28,7 @@ void main() {
         labelFormatter: (value) => 'USD ${value.toInt()}',
       ),
       viewport: ChartViewport(axis: ChartScaleAxis.horizontal, maxScale: 4),
-      selectedPointIds: const {'mar'},
+      selectedPoints: {const LinePointKey(seriesId: 'revenue', pointId: 'mar')},
       style:
           .frame(
                 .backgroundColor(
@@ -139,6 +139,166 @@ void main() {
     expect(backend.data.lineBarsData.single.color, const Color(0xFF7C3AED));
   });
 
+  testWidgets('per-series solid paints override inherited gradients', (
+    tester,
+  ) async {
+    const inheritedGradient = LinearGradient(
+      colors: [Color(0xFF111111), Color(0xFF222222)],
+    );
+    const strokeColor = Color(0xFFEF4444);
+    const belowColor = Color(0xFF22C55E);
+    const aboveColor = Color(0xFF3B82F6);
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: SizedBox(
+          width: 300,
+          height: 200,
+          child: LineChart(
+            series: [
+              LineSeries(
+                id: 'series',
+                label: 'Series',
+                points: [ChartPoint(id: 'point', x: 0, y: 1)],
+                style: .stroke(
+                  .color(strokeColor),
+                ).belowArea(.color(belowColor)).aboveArea(.color(aboveColor)),
+              ),
+            ],
+            style: .series(
+              .stroke(.gradient(inheritedGradient))
+                  .belowArea(.show(true).gradient(inheritedGradient))
+                  .aboveArea(.show(true).gradient(inheritedGradient)),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    final series = tester
+        .widget<fl.LineChart>(find.byType(fl.LineChart))
+        .data
+        .lineBarsData
+        .single;
+
+    expect(series.color, strokeColor);
+    expect(series.gradient, isNull);
+    expect(series.belowBarData.color, belowColor);
+    expect(series.belowBarData.gradient, isNull);
+    expect(series.aboveBarData.color, aboveColor);
+    expect(series.aboveBarData.gradient, isNull);
+  });
+
+  testWidgets('selected duplicate-coordinate point remains addressable', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: SizedBox(
+          width: 300,
+          height: 200,
+          child: LineChart(
+            series: [
+              LineSeries(
+                id: 'series',
+                label: 'Series',
+                points: [
+                  ChartPoint(id: 'first', x: 0, y: 1),
+                  ChartPoint(id: 'second', x: 0, y: 1),
+                ],
+              ),
+            ],
+            selectedPoints: {
+              const LinePointKey(seriesId: 'series', pointId: 'second'),
+            },
+          ),
+        ),
+      ),
+    );
+
+    final series = tester
+        .widget<fl.LineChart>(find.byType(fl.LineChart))
+        .data
+        .lineBarsData
+        .single;
+
+    expect(series.dotData.checkToShowDot(series.spots[1], series), isTrue);
+  });
+
+  testWidgets('selection scopes repeated point IDs to their series', (
+    tester,
+  ) async {
+    LineSeries series(Object id) => LineSeries(
+      id: id,
+      label: '$id',
+      points: [ChartPoint(id: 'shared', x: 0, y: 1)],
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: SizedBox(
+          width: 300,
+          height: 200,
+          child: LineChart(
+            series: [series('first'), series('second')],
+            selectedPoints: {
+              const LinePointKey(seriesId: 'second', pointId: 'shared'),
+            },
+          ),
+        ),
+      ),
+    );
+
+    final bars = tester
+        .widget<fl.LineChart>(find.byType(fl.LineChart))
+        .data
+        .lineBarsData;
+
+    expect(bars[0].dotData.show, isFalse);
+    expect(bars[1].dotData.show, isTrue);
+  });
+
+  testWidgets('rejects invalid grid intervals with a public argument error', (
+    tester,
+  ) async {
+    Widget host(LineChartStyler style) => MaterialApp(
+      home: SizedBox(
+        width: 300,
+        height: 200,
+        child: LineChart(
+          series: [
+            LineSeries(
+              id: 'series',
+              label: 'Series',
+              points: [ChartPoint(id: 'point', x: 0, y: 1)],
+            ),
+          ],
+          style: style,
+        ),
+      ),
+    );
+
+    for (final interval in [0.0, -1.0, double.nan, double.infinity]) {
+      await tester.pumpWidget(
+        host(LineChartStyler.grid(.horizontalInterval(interval))),
+      );
+      final error = tester.takeException();
+
+      expect(error, isA<ArgumentError>());
+      expect((error! as ArgumentError).name, 'horizontalInterval');
+
+      await tester.pumpWidget(const SizedBox.shrink());
+    }
+
+    await tester.pumpWidget(
+      host(LineChartStyler.grid(ChartGridStyler.verticalInterval(-1))),
+    );
+    final error = tester.takeException();
+
+    expect(error, isA<ArgumentError>());
+    expect((error! as ArgumentError).name, 'verticalInterval');
+  });
+
   testWidgets('snaps topology changes and animates compatible updates', (
     tester,
   ) async {
@@ -172,5 +332,40 @@ void main() {
       tester.widget<fl.LineChart>(find.byType(fl.LineChart)).duration,
       const Duration(seconds: 1),
     );
+  });
+
+  testWidgets('snaps transitions between drawable points and gaps', (
+    tester,
+  ) async {
+    Widget host(double? y) => MaterialApp(
+      home: SizedBox(
+        width: 300,
+        height: 200,
+        child: LineChart(
+          series: [
+            LineSeries(
+              id: 'series',
+              label: 'Series',
+              points: [ChartPoint(id: 'point', x: 0, y: y)],
+            ),
+          ],
+          dataTransition: const ChartDataTransition(
+            duration: Duration(seconds: 1),
+          ),
+        ),
+      ),
+    );
+
+    for (final transition in <(double?, double?)>[(1, null), (null, 1)]) {
+      await tester.pumpWidget(host(transition.$1));
+      await tester.pumpWidget(host(transition.$2));
+
+      expect(
+        tester.widget<fl.LineChart>(find.byType(fl.LineChart)).duration,
+        Duration.zero,
+      );
+
+      await tester.pumpWidget(const SizedBox.shrink());
+    }
   });
 }

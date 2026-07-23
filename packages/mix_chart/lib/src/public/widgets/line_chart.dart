@@ -21,7 +21,7 @@ final class LineChart extends StyleWidget<LineChartSpec> {
     this.rightAxis,
     this.viewport,
     this.dataTransition = ChartDataTransition.none,
-    Set<Object> selectedPointIds = const {},
+    Set<LinePointKey> selectedPoints = const {},
     this.onPointHover,
     this.onPointTap,
     this.onPointLongPress,
@@ -35,7 +35,9 @@ final class LineChart extends StyleWidget<LineChartSpec> {
     super.styleSpec,
     super.key,
   }) : series = UnmodifiableListView(List<LineSeries>.of(series)),
-       selectedPointIds = UnmodifiableSetView(Set<Object>.of(selectedPointIds)),
+       selectedPoints = UnmodifiableSetView(
+         Set<LinePointKey>.of(selectedPoints),
+       ),
        super(style: style) {
     _requireUniqueIds(series.map((item) => item.id), 'series');
     if (!hitTestRadius.isFinite || hitTestRadius < 0) {
@@ -68,8 +70,8 @@ final class LineChart extends StyleWidget<LineChartSpec> {
   /// Renderer-owned transition for compatible data updates.
   final ChartDataTransition dataTransition;
 
-  /// IDs of selected points.
-  final Set<Object> selectedPointIds;
+  /// Scoped keys of selected points.
+  final Set<LinePointKey> selectedPoints;
 
   /// Called when the hovered point changes.
   final ValueChanged<LineChartHit?>? onPointHover;
@@ -124,7 +126,7 @@ final class LineChart extends StyleWidget<LineChartSpec> {
       rightAxis: rightAxis,
       viewport: viewport,
       dataTransition: dataTransition,
-      selectedPointIds: selectedPointIds,
+      selectedPoints: selectedPoints,
       onPointHover: onPointHover,
       onPointTap: onPointTap,
       onPointLongPress: onPointLongPress,

@@ -94,4 +94,62 @@ void main() {
       Duration.zero,
     );
   });
+
+  testWidgets('per-slice solid paint overrides an inherited gradient', (
+    tester,
+  ) async {
+    const inheritedGradient = LinearGradient(
+      colors: [Color(0xFF111111), Color(0xFF222222)],
+    );
+    const sliceColor = Color(0xFFEF4444);
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: SizedBox(
+          width: 240,
+          height: 240,
+          child: PieChart(
+            slices: [
+              PieSlice(
+                id: 'slice',
+                label: 'Slice',
+                value: 1,
+                style: .color(sliceColor),
+              ),
+            ],
+            style: .slice(.gradient(inheritedGradient)),
+          ),
+        ),
+      ),
+    );
+
+    final section = tester
+        .widget<fl.PieChart>(find.byType(fl.PieChart))
+        .data
+        .sections
+        .single;
+
+    expect(section.color, sliceColor);
+    expect(section.gradient, isNull);
+  });
+
+  testWidgets('applies frame quarter turns to the pie start angle', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: SizedBox(
+          width: 240,
+          height: 240,
+          child: PieChart(
+            slices: [PieSlice(id: 'slice', label: 'Slice', value: 1)],
+            style: .startAngle(-90).frame(.rotationQuarterTurns(1)),
+          ),
+        ),
+      ),
+    );
+
+    final data = tester.widget<fl.PieChart>(find.byType(fl.PieChart)).data;
+    expect(data.startDegreeOffset, 0);
+  });
 }

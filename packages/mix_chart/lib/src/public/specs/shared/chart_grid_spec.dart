@@ -23,11 +23,11 @@ final class ChartGridSpec with _$ChartGridSpec {
   @override
   final bool? showVertical;
 
-  /// Horizontal line interval.
+  /// Positive horizontal line interval.
   @override
   final double? horizontalInterval;
 
-  /// Vertical line interval.
+  /// Positive vertical line interval.
   @override
   final double? verticalInterval;
 

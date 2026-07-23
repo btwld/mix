@@ -120,19 +120,19 @@ class _TrackedDemo extends StatefulWidget {
 }
 
 class _TrackedDemoState extends State<_TrackedDemo> {
-  Object? _selected;
+  BarSelectionKey? _selected;
 
   @override
   Widget build(BuildContext context) => DemoCard(
     title: 'Tracks, labels & selection',
-    caption: 'Tap a bar to derive a selected presentation from its public ID.',
+    caption: 'Tap a bar to derive selection from its scoped public key.',
     child: BarChart(
       groups: [
         for (final group in groupedRevenue())
           BarGroup(id: group.id, label: group.label, bars: [group.bars.first]),
       ],
-      selectedIds: {?_selected},
-      onBarTap: (hit) => setState(() => _selected = hit.barId),
+      selectedItems: {?_selected},
+      onBarTap: (hit) => setState(() => _selected = hit.selectionKey),
       yAxis: ChartAxis.numeric(min: 0, max: 65, interval: 10),
       style: _barStyle(context)
           .palette(const [Color(0xFF8B5CF6)])

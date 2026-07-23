@@ -50,6 +50,10 @@ void main() {
     expect(backend.data.lineTouchData.touchSpotThreshold, 18);
     expect(hovered.single?.seriesId, 'revenue');
     expect(hovered.single?.pointId, 'jan');
+    expect(
+      hovered.single?.selectionKey,
+      const LinePointKey(seriesId: 'revenue', pointId: 'jan'),
+    );
     expect(find.text('Point tooltip'), findsOneWidget);
 
     backend.data.lineTouchData.touchCallback!(
@@ -146,6 +150,14 @@ void main() {
     expect(tapped?.groupId, 'q1');
     expect(tapped?.barId, 'revenue');
     expect(tapped?.segmentId, 'product');
+    expect(
+      tapped?.selectionKey,
+      const BarSelectionKey.segment(
+        groupId: 'q1',
+        barId: 'revenue',
+        segmentId: 'product',
+      ),
+    );
   });
 
   testWidgets('pie hover and tap return stable slice IDs', (tester) async {
@@ -197,5 +209,56 @@ void main() {
       response,
     );
     expect(tapped?.sliceId, 'mobile');
+  });
+
+  testWidgets('removing a hovered pie slice clears its default tooltip', (
+    tester,
+  ) async {
+    var slices = [PieSlice(id: 'mobile', label: 'Mobile', value: 64)];
+    late StateSetter setHostState;
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: StatefulBuilder(
+          builder: (context, setState) {
+            setHostState = setState;
+
+            return SizedBox(
+              width: 240,
+              height: 240,
+              child: PieChart(slices: slices),
+            );
+          },
+        ),
+      ),
+    );
+
+    final backend = tester.widget<fl.PieChart>(find.byType(fl.PieChart));
+    final response = fl.PieTouchResponse(
+      touchLocation: const Offset(120, 60),
+      touchedSection: fl.PieTouchedSection(
+        backend.data.sections.single,
+        0,
+        45,
+        60,
+      ),
+    );
+
+    backend.data.pieTouchData.touchCallback!(
+      fl.FlPointerHoverEvent(
+        const PointerHoverEvent(position: Offset(120, 60)),
+      ),
+      response,
+    );
+    await tester.pump();
+    expect(find.text('Mobile\n64.0'), findsOneWidget);
+
+    setHostState(() {
+      slices = [PieSlice(id: 'desktop', label: 'Desktop', value: 36)];
+    });
+    await tester.pump();
+
+    expect(tester.takeException(), isNull);
+    expect(find.text('Mobile\n64.0'), findsNothing);
   });
 }

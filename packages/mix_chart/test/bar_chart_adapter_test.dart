@@ -32,7 +32,13 @@ void main() {
         ),
       ],
       yAxis: ChartAxis.numeric(min: 0, max: 15),
-      selectedIds: const {'services'},
+      selectedItems: {
+        const BarSelectionKey.segment(
+          groupId: 'q1',
+          barId: 'revenue',
+          segmentId: 'services',
+        ),
+      },
       style: .alignment(BarAlignment.spaceBetween)
           .groupSpacing(24)
           .barSpacing(7)
@@ -94,5 +100,120 @@ void main() {
       tester.widget<fl.BarChart>(find.byType(fl.BarChart)).duration,
       Duration.zero,
     );
+  });
+
+  testWidgets('per-item solid paints override inherited gradients', (
+    tester,
+  ) async {
+    const inheritedGradient = LinearGradient(
+      colors: [Color(0xFF111111), Color(0xFF222222)],
+    );
+    const barColor = Color(0xFFEF4444);
+    const backgroundColor = Color(0xFF22C55E);
+    const segmentColor = Color(0xFF3B82F6);
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: SizedBox(
+          width: 300,
+          height: 200,
+          child: BarChart(
+            groups: [
+              BarGroup(
+                id: 'group',
+                label: 'Group',
+                bars: [
+                  BarValue(
+                    id: 'bar',
+                    label: 'Bar',
+                    toY: 2,
+                    segments: [
+                      BarSegment(
+                        id: 'segment',
+                        label: 'Segment',
+                        fromY: 0,
+                        toY: 2,
+                        style: .color(segmentColor),
+                      ),
+                    ],
+                    style: .color(barColor).background(.color(backgroundColor)),
+                  ),
+                ],
+              ),
+            ],
+            style: .bar(
+              .gradient(
+                inheritedGradient,
+              ).background(.show(true).gradient(inheritedGradient)),
+            ).segment(.gradient(inheritedGradient)),
+          ),
+        ),
+      ),
+    );
+
+    final rod = tester
+        .widget<fl.BarChart>(find.byType(fl.BarChart))
+        .data
+        .barGroups
+        .single
+        .barRods
+        .single;
+
+    expect(rod.color, barColor);
+    expect(rod.gradient, isNull);
+    expect(rod.backDrawRodData.color, backgroundColor);
+    expect(rod.backDrawRodData.gradient, isNull);
+    expect(rod.rodStackItems.single.color, segmentColor);
+    expect(rod.rodStackItems.single.gradient, isNull);
+  });
+
+  testWidgets('selection scopes repeated local IDs to their parent marks', (
+    tester,
+  ) async {
+    BarGroup group(Object groupId) => BarGroup(
+      id: groupId,
+      label: '$groupId',
+      bars: [
+        BarValue(
+          id: 'actual',
+          label: 'Actual',
+          toY: 2,
+          segments: [
+            BarSegment(id: 'amount', label: 'Amount', fromY: 0, toY: 2),
+          ],
+        ),
+      ],
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: SizedBox(
+          width: 300,
+          height: 200,
+          child: BarChart(
+            groups: [group('first'), group('second')],
+            selectedItems: {
+              const BarSelectionKey.segment(
+                groupId: 'second',
+                barId: 'actual',
+                segmentId: 'amount',
+              ),
+            },
+          ),
+        ),
+      ),
+    );
+
+    final rods = tester
+        .widget<fl.BarChart>(find.byType(fl.BarChart))
+        .data
+        .barGroups
+        .map((group) => group.barRods.single)
+        .toList();
+
+    expect(rods[0].width, 14);
+    expect(rods[0].rodStackItems.single.borderSide, BorderSide.none);
+    expect(rods[1].width, 16);
+    expect(rods[1].rodStackItems.single.borderSide.width, 2);
   });
 }

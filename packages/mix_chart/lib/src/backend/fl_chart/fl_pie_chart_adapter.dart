@@ -77,7 +77,11 @@ final class _FlPieChartAdapterState extends State<FlPieChartAdapter> {
   Widget _buildDefaultTooltip(BuildContext context, ChartHit chartHit) {
     final hit = chartHit as PieChartHit;
     final tooltip = widget.spec.tooltip?.spec;
-    final slice = widget.slices.firstWhere((item) => item.id == hit.sliceId);
+    final sliceIndex = widget.slices.indexWhere(
+      (item) => item.id == hit.sliceId,
+    );
+    if (sliceIndex < 0) return const SizedBox.shrink();
+    final slice = widget.slices[sliceIndex];
     final formatter = widget.valueFormatter ?? (double value) => '$value';
     final borderSide = tooltip?.border ?? .none;
 
@@ -153,6 +157,28 @@ final class _FlPieChartAdapterState extends State<FlPieChartAdapter> {
   void didUpdateWidget(FlPieChartAdapter oldWidget) {
     super.didUpdateWidget(oldWidget);
     _topologyCompatible = _hasSameTopology(oldWidget.slices, widget.slices);
+    final hit = _tooltipHit;
+    if (hit == null) return;
+    if (!_topologyCompatible) {
+      _tooltipHit = null;
+
+      return;
+    }
+    final sliceIndex = widget.slices.indexWhere(
+      (slice) => slice.id == hit.sliceId,
+    );
+    if (sliceIndex < 0 || widget.slices[sliceIndex].value == 0) {
+      _tooltipHit = null;
+
+      return;
+    }
+    final slice = widget.slices[sliceIndex];
+    _tooltipHit = PieChartHit(
+      sliceId: slice.id,
+      value: slice.value,
+      localPosition: hit.localPosition,
+      event: hit.event,
+    );
   }
 
   @override
@@ -179,7 +205,9 @@ final class _FlPieChartAdapterState extends State<FlPieChartAdapter> {
         centerSpaceRadius: widget.spec.centerRadius ?? 0,
         centerSpaceColor: widget.spec.centerColor ?? Colors.transparent,
         sectionsSpace: widget.spec.sliceSpacing ?? 2,
-        startDegreeOffset: widget.spec.startAngle ?? -90,
+        startDegreeOffset:
+            (widget.spec.startAngle ?? -90) +
+            (frame?.rotationQuarterTurns ?? 0) * 90.0,
         pieTouchData: fl.PieTouchData(
           touchCallback: _handleTouch,
           mouseCursorResolver: widget.mouseCursorResolver == null
@@ -221,10 +249,16 @@ final class _FlPieChartAdapterState extends State<FlPieChartAdapter> {
 PieSliceSpec _mergeSlice(PieSliceSpec? base, PieSliceSpec? override) {
   if (base == null) return override ?? const PieSliceSpec();
   if (override == null) return base;
+  final paint = flMergePaint(
+    baseColor: base.color,
+    baseGradient: base.gradient,
+    overrideColor: override.color,
+    overrideGradient: override.gradient,
+  );
 
   return PieSliceSpec(
-    color: override.color ?? base.color,
-    gradient: override.gradient ?? base.gradient,
+    color: paint.color,
+    gradient: paint.gradient,
     radius: override.radius ?? base.radius,
     showLabel: override.showLabel ?? base.showLabel,
     label: override.label ?? base.label,

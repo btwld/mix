@@ -1,5 +1,85 @@
 import 'package:flutter/widgets.dart';
 
+/// Hierarchical identity for one selectable point in a line chart.
+@immutable
+final class LinePointKey {
+  /// Stable public series identifier.
+  final Object seriesId;
+
+  /// Stable public point identifier within [seriesId].
+  final Object pointId;
+
+  /// Creates a line-point selection key.
+  const LinePointKey({required this.seriesId, required this.pointId});
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is LinePointKey &&
+          seriesId == other.seriesId &&
+          pointId == other.pointId;
+
+  @override
+  String toString() => 'LinePointKey(seriesId: $seriesId, pointId: $pointId)';
+
+  @override
+  int get hashCode => Object.hash(seriesId, pointId);
+}
+
+/// Hierarchical identity for one selectable bar or stacked segment.
+@immutable
+final class BarSelectionKey {
+  /// Stable public group identifier.
+  final Object groupId;
+
+  /// Stable public bar identifier within [groupId].
+  final Object barId;
+
+  /// Stable segment identifier within [barId], or null for the whole bar.
+  final Object? segmentId;
+
+  const BarSelectionKey._({
+    required this.groupId,
+    required this.barId,
+    required this.segmentId,
+  });
+
+  /// Creates a selection key for a whole bar.
+  const BarSelectionKey.bar({required Object groupId, required Object barId})
+    : this._(groupId: groupId, barId: barId, segmentId: null);
+
+  /// Creates a selection key for a stacked bar segment.
+  const BarSelectionKey.segment({
+    required Object groupId,
+    required Object barId,
+    required Object segmentId,
+  }) : this._(groupId: groupId, barId: barId, segmentId: segmentId);
+
+  /// Whether this key identifies a stacked segment instead of a whole bar.
+  bool get isSegment => segmentId != null;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BarSelectionKey &&
+          groupId == other.groupId &&
+          barId == other.barId &&
+          segmentId == other.segmentId;
+
+  @override
+  String toString() {
+    final segmentId = this.segmentId;
+
+    return segmentId == null
+        ? 'BarSelectionKey.bar(groupId: $groupId, barId: $barId)'
+        : 'BarSelectionKey.segment(groupId: $groupId, barId: $barId, '
+              'segmentId: $segmentId)';
+  }
+
+  @override
+  int get hashCode => Object.hash(groupId, barId, segmentId);
+}
+
 /// Common information for a chart interaction hit.
 sealed class ChartHit {
   /// Position of the interaction within the chart.
@@ -34,6 +114,9 @@ final class LineChartHit extends ChartHit {
     required super.localPosition,
     required super.event,
   });
+
+  /// Scoped key that can be passed back to a line chart for selection.
+  LinePointKey get selectionKey => .new(seriesId: seriesId, pointId: pointId);
 }
 
 /// A hit on a bar or stacked bar segment.
@@ -63,6 +146,15 @@ final class BarChartHit extends ChartHit {
     required super.localPosition,
     required super.event,
   });
+
+  /// Scoped key that can be passed back to a bar chart for selection.
+  BarSelectionKey get selectionKey {
+    final segmentId = this.segmentId;
+
+    return segmentId == null
+        ? .bar(groupId: groupId, barId: barId)
+        : .segment(groupId: groupId, barId: barId, segmentId: segmentId);
+  }
 }
 
 /// A hit on a pie or donut slice.

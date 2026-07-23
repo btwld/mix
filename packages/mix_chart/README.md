@@ -12,7 +12,7 @@ implementation detail. Applications only import `mix_chart` and `mix`.
 - Contextual dot shorthand, named factories, and instance methods.
 - Direct `Color`, `Gradient`, `BorderSide`, `TextStyler`, and dimension values.
 - Optional consumer-owned Mix tokens and variants; no package token registry.
-- Stable IDs in callbacks and selection state instead of renderer indices.
+- Stable IDs in callbacks and scoped selection keys instead of renderer indices.
 - Arbitrary Flutter widgets for axis labels, badges, and custom tooltips.
 - Predictable animation ownership, reduced motion, and safe topology changes.
 
@@ -81,9 +81,32 @@ LineChart(
       .show(true).color(const Color(0x226366F1)),
     ),
   ).frame(.showBorder(false).clip(true)),
-  onPointTap: (hit) => selectPoint(hit.pointId),
+  onPointTap: (hit) => selectPoint(hit.selectionKey),
 )
 ```
+
+Point IDs are unique within a series, while bar and segment IDs are unique
+within their parents. Selection therefore uses hierarchical keys:
+
+```dart
+LinePointKey? selectedPoint;
+BarSelectionKey? selectedBarItem;
+
+LineChart(
+  series: series,
+  selectedPoints: {?selectedPoint},
+  onPointTap: (hit) => selectedPoint = hit.selectionKey,
+);
+
+BarChart(
+  groups: groups,
+  selectedItems: {?selectedBarItem},
+  onBarTap: (hit) => selectedBarItem = hit.selectionKey,
+);
+```
+
+Use `BarSelectionKey.bar(...)` or `BarSelectionKey.segment(...)` when
+constructing selection state without an interaction hit.
 
 The generated API supports all three composition forms:
 
@@ -163,7 +186,7 @@ Specs cover:
 | Lines | solid/gradient strokes, curves, steps, gaps, dashes, shadows, markers, area fills |
 | Bars | grouped/stacked/floating values, fills, radii, borders, tracks, labels, spacing |
 | Pie | fills, radius, donut center, gaps, angle, labels, badges, borders, corners |
-| Interaction | hover, tap, long press, hit tolerance, cursors, selected IDs, widget tooltips |
+| Interaction | hover, tap, long press, hit tolerance, cursors, scoped selection keys, widget tooltips |
 
 Use per-item Stylers for exceptions without rebuilding a renderer data object:
 
@@ -199,7 +222,9 @@ LineChart(
 
 `LineChartHit`, `BarChartHit`, and `PieChartHit` contain public stable IDs,
 values, local position, and the original Flutter pointer event when available.
-No backend event or index crosses the API boundary.
+Line and bar hits expose `selectionKey`, which can be passed directly to
+`selectedPoints` or `selectedItems`. No backend event or index crosses the API
+boundary.
 
 ## Animation ownership
 
@@ -227,9 +252,10 @@ LineChart(
 );
 ```
 
-Data interpolation only runs when ID order and list topology are unchanged.
-Insertion, deletion, or reorder snaps immediately, preventing the wrong marks
-from morphing by index. `MediaQuery.disableAnimations` forces immediate output.
+Data interpolation only runs when ID order and drawable topology are unchanged.
+Insertion, deletion, reorder, or a line point changing between a value and a
+gap snaps immediately, preventing the wrong marks from morphing by index.
+`MediaQuery.disableAnimations` forces immediate output.
 
 ## Optional consumer tokens
 

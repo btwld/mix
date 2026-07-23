@@ -56,6 +56,14 @@ fl.FlBorderData flResolveBorder(StyleSpec<ChartFrameSpec>? frame) {
 fl.FlGridData flResolveGrid(StyleSpec<ChartGridSpec>? grid) {
   final value = grid?.spec;
   final stroke = value?.stroke?.spec;
+  final horizontalInterval = _validatedGridInterval(
+    value?.horizontalInterval,
+    'horizontalInterval',
+  );
+  final verticalInterval = _validatedGridInterval(
+    value?.verticalInterval,
+    'verticalInterval',
+  );
   final line = flResolveLine(
     stroke,
     fallbackColor: const Color(0xFFE2E8F0),
@@ -65,12 +73,38 @@ fl.FlGridData flResolveGrid(StyleSpec<ChartGridSpec>? grid) {
   return fl.FlGridData(
     show: value?.show ?? true,
     drawHorizontalLine: value?.showHorizontal ?? true,
-    horizontalInterval: value?.horizontalInterval,
+    horizontalInterval: horizontalInterval,
     getDrawingHorizontalLine: (_) => line,
     drawVerticalLine: value?.showVertical ?? true,
-    verticalInterval: value?.verticalInterval,
+    verticalInterval: verticalInterval,
     getDrawingVerticalLine: (_) => line,
   );
+}
+
+double? _validatedGridInterval(double? value, String name) {
+  if (value == null) return null;
+  if (!value.isFinite || value <= 0) {
+    throw ArgumentError.value(value, name, 'Must be finite and greater than 0');
+  }
+
+  return value;
+}
+
+/// Merges mutually exclusive solid and gradient paints.
+({Color? color, Gradient? gradient}) flMergePaint({
+  required Color? baseColor,
+  required Gradient? baseGradient,
+  required Color? overrideColor,
+  required Gradient? overrideGradient,
+}) {
+  if (overrideGradient != null) {
+    return (color: null, gradient: overrideGradient);
+  }
+  if (overrideColor != null) {
+    return (color: overrideColor, gradient: null);
+  }
+
+  return (color: baseColor, gradient: baseGradient);
 }
 
 /// Maps a stroke without leaking renderer paint types through the public API.

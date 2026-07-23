@@ -52,12 +52,12 @@ class _RevenueDemo extends StatefulWidget {
 }
 
 class _RevenueDemoState extends State<_RevenueDemo> {
-  Object? _selected;
+  LinePointKey? _selected;
 
   @override
   Widget build(BuildContext context) => DemoCard(
     title: 'Revenue momentum',
-    caption: 'Tap a point. The selected ID stays in your application state.',
+    caption: 'Tap a point. Its scoped key stays in application state.',
     child: LineChart(
       semanticsLabel: 'Weekly revenue',
       series: revenueSeries(includeComparison: false),
@@ -68,8 +68,8 @@ class _RevenueDemoState extends State<_RevenueDemo> {
         interval: 10,
         labelFormatter: compactCurrency,
       ),
-      selectedPointIds: {?_selected},
-      onPointTap: (hit) => setState(() => _selected = hit.pointId),
+      selectedPoints: {?_selected},
+      onPointTap: (hit) => setState(() => _selected = hit.selectionKey),
       tooltipBuilder: (context, hit) {
         final point = hit as LineChartHit;
         return _Tooltip(title: 'Revenue', value: compactCurrency(point.y));

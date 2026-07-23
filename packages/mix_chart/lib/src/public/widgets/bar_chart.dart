@@ -21,7 +21,7 @@ final class BarChart extends StyleWidget<BarChartSpec> {
     this.rightAxis,
     this.viewport,
     this.dataTransition = ChartDataTransition.none,
-    Set<Object> selectedIds = const {},
+    Set<BarSelectionKey> selectedItems = const {},
     this.onBarHover,
     this.onBarTap,
     this.onBarLongPress,
@@ -35,7 +35,9 @@ final class BarChart extends StyleWidget<BarChartSpec> {
     super.styleSpec,
     super.key,
   }) : groups = UnmodifiableListView(List<BarGroup>.of(groups)),
-       selectedIds = UnmodifiableSetView(Set<Object>.of(selectedIds)),
+       selectedItems = UnmodifiableSetView(
+         Set<BarSelectionKey>.of(selectedItems),
+       ),
        super(style: style) {
     _requireUniqueIds(groups.map((item) => item.id), 'group');
     if (!hitTestPadding.isNonNegative) {
@@ -68,8 +70,8 @@ final class BarChart extends StyleWidget<BarChartSpec> {
   /// Renderer-owned transition for compatible data updates.
   final ChartDataTransition dataTransition;
 
-  /// IDs of selected bars or segments.
-  final Set<Object> selectedIds;
+  /// Scoped keys of selected bars or segments.
+  final Set<BarSelectionKey> selectedItems;
 
   /// Called when the hovered bar changes.
   final ValueChanged<BarChartHit?>? onBarHover;
@@ -123,7 +125,7 @@ final class BarChart extends StyleWidget<BarChartSpec> {
       rightAxis: rightAxis,
       viewport: viewport,
       dataTransition: dataTransition,
-      selectedIds: selectedIds,
+      selectedItems: selectedItems,
       onBarHover: onBarHover,
       onBarTap: onBarTap,
       onBarLongPress: onBarLongPress,

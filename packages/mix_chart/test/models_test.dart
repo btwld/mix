@@ -2,6 +2,29 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix_chart/mix_chart.dart';
 
 void main() {
+  group('selection keys', () {
+    test('compare by their complete hierarchical identity', () {
+      expect(
+        const LinePointKey(seriesId: 'series', pointId: 'point'),
+        const LinePointKey(seriesId: 'series', pointId: 'point'),
+      );
+      expect(
+        const LinePointKey(seriesId: 'first', pointId: 'shared'),
+        isNot(const LinePointKey(seriesId: 'second', pointId: 'shared')),
+      );
+      expect(
+        const BarSelectionKey.bar(groupId: 'group', barId: 'bar'),
+        isNot(
+          const BarSelectionKey.segment(
+            groupId: 'group',
+            barId: 'bar',
+            segmentId: 'bar',
+          ),
+        ),
+      );
+    });
+  });
+
   group('line data', () {
     test('accepts a null y value as a gap', () {
       final point = ChartPoint(id: 'gap', x: 1, y: null);
