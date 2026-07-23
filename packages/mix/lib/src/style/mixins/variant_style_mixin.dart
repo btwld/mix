@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/breakpoint.dart';
@@ -73,6 +74,21 @@ mixin VariantStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
   /// Creates a variant based on the specified breakpoint.
   T onBreakpoint(Breakpoint breakpoint, T style) {
     return variant(ContextVariant.breakpoint(breakpoint), style);
+  }
+
+  /// Creates a variant that matches offered [BoxConstraints], not viewport size.
+  ///
+  /// Uses maxWidth/maxHeight of the space offered to this style host
+  /// ([ConstraintScope]), so a compact style can apply in a narrow panel on a
+  /// wide desktop while [onMobile]/[onBreakpoint] remain viewport-based.
+  ///
+  /// Matching reuses [Breakpoint] inclusive bounds: unbounded axes stay
+  /// infinity so a finite `maxWidth` rule does not match.
+  ///
+  /// Spike / not productized — remove [internal] when exporting publicly.
+  @internal
+  T onConstraints(Breakpoint breakpoint, T style) {
+    return variant(ContextVariant.constraints(breakpoint), style);
   }
 
   /// Creates a variant for portrait device orientation.

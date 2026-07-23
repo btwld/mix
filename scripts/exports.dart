@@ -277,6 +277,8 @@ const _packageExportConfigs = <String, _PackageExportConfig>{
         'clearTokenRegistry',
         'getTokenFromValue',
       ],
+      // Layout spike: ConstraintVariant is @internal — do not export publicly.
+      'src/variants/variant.dart': ['ConstraintVariant'],
     },
     excludedPaths: [
       'src/core/decoration_merge.dart',
@@ -288,6 +290,14 @@ const _packageExportConfigs = <String, _PackageExportConfig>{
       // Generated stylers import this internal support barrel directly. Its
       // individual public symbols are already exported by mix.dart.
       'src/generated_styler_support.dart',
+      // Layout spike prototypes — unexported until productization.
+      'src/core/providers/constraint_scope.dart',
+      'src/layout/grid_box.dart',
+      'src/layout/grid_track.dart',
+      'src/layout/render_grid.dart',
+      'src/specs/wrap/wrap_spec.dart',
+      'src/specs/wrapbox/wrapbox_spec.dart',
+      'src/specs/wrapbox/wrapbox_widget.dart',
     ],
     forcedPaths: ['src/modifiers/internal/reset_modifier.dart'],
   ),

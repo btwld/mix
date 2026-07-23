@@ -10,4 +10,8 @@ If you want these guides mirrored privately, keep the source of truth in Notion 
 
 ## Guide Index
 
-- `api-composition-guidelines.md` - Fluent composition patterns and sizing decisions.
+- [API composition guidelines](api-composition-guidelines.md) - Fluent
+  composition patterns and sizing decisions.
+- [Layout system exploration](layout-system-exploration.md) - Clean-sheet
+  research plus spike-validated unbundled direction (`onConstraints`,
+  `WrapBox`, `GridBox`). Internal prototypes only; not exported from `mix.dart`.

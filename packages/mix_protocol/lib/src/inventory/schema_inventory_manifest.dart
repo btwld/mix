@@ -49,6 +49,8 @@ const _neverClosureBacked = 'never: closure-backed runtime behavior.';
 const _neverRuntimeOnly = 'never: runtime-only value with no stable data wire.';
 const _neverInternal =
     'never: internal or merge-control implementation detail.';
+const _spikeUnexported =
+    'spike: internal layout spike; not productized / not exported from mix.dart.';
 
 /// Coverage decisions for the current checked-in `packages/mix` inventory.
 const schemaInventoryManifest = <SchemaInventoryEntry>[
@@ -614,5 +616,94 @@ const _neverUnsupportedInventory = <SchemaInventoryEntry>[
   SchemaInventoryEntry.knownUnsupported(
     'variant_factory:ContextVariant.size',
     _neverClosureBacked,
+  ),
+  // Layout spike (unexported product surface; see guides/layout-system-exploration.md)
+  SchemaInventoryEntry.knownUnsupported(
+    r'GridBoxStyler.$animation',
+    _spikeUnexported,
+  ),
+  SchemaInventoryEntry.knownUnsupported(
+    r'GridBoxStyler.$modifier',
+    _spikeUnexported,
+  ),
+  SchemaInventoryEntry.knownUnsupported(
+    r'GridBoxStyler.$variants',
+    _spikeUnexported,
+  ),
+  SchemaInventoryEntry.knownUnsupported(
+    r'WrapBoxStyler.$animation',
+    _spikeUnexported,
+  ),
+  SchemaInventoryEntry.knownUnsupported(
+    r'WrapBoxStyler.$box',
+    _spikeUnexported,
+  ),
+  SchemaInventoryEntry.knownUnsupported(
+    r'WrapBoxStyler.$flow',
+    _spikeUnexported,
+  ),
+  SchemaInventoryEntry.knownUnsupported(
+    r'WrapBoxStyler.$modifier',
+    _spikeUnexported,
+  ),
+  SchemaInventoryEntry.knownUnsupported(
+    r'WrapBoxStyler.$variants',
+    _spikeUnexported,
+  ),
+  SchemaInventoryEntry.knownUnsupported(
+    r'WrapStyler.$alignment',
+    _spikeUnexported,
+  ),
+  SchemaInventoryEntry.knownUnsupported(
+    r'WrapStyler.$animation',
+    _spikeUnexported,
+  ),
+  SchemaInventoryEntry.knownUnsupported(
+    r'WrapStyler.$clipBehavior',
+    _spikeUnexported,
+  ),
+  SchemaInventoryEntry.knownUnsupported(
+    r'WrapStyler.$crossAxisAlignment',
+    _spikeUnexported,
+  ),
+  SchemaInventoryEntry.knownUnsupported(
+    r'WrapStyler.$direction',
+    _spikeUnexported,
+  ),
+  SchemaInventoryEntry.knownUnsupported(
+    r'WrapStyler.$modifier',
+    _spikeUnexported,
+  ),
+  SchemaInventoryEntry.knownUnsupported(
+    r'WrapStyler.$runAlignment',
+    _spikeUnexported,
+  ),
+  SchemaInventoryEntry.knownUnsupported(
+    r'WrapStyler.$runSpacing',
+    _spikeUnexported,
+  ),
+  SchemaInventoryEntry.knownUnsupported(
+    r'WrapStyler.$spacing',
+    _spikeUnexported,
+  ),
+  SchemaInventoryEntry.knownUnsupported(
+    r'WrapStyler.$textDirection',
+    _spikeUnexported,
+  ),
+  SchemaInventoryEntry.knownUnsupported(
+    r'WrapStyler.$variants',
+    _spikeUnexported,
+  ),
+  SchemaInventoryEntry.knownUnsupported(
+    r'WrapStyler.$verticalDirection',
+    _spikeUnexported,
+  ),
+  SchemaInventoryEntry.knownUnsupported(
+    'variant:ConstraintVariant',
+    _spikeUnexported,
+  ),
+  SchemaInventoryEntry.knownUnsupported(
+    'variant_factory:ContextVariant.constraints',
+    _spikeUnexported,
   ),
 ];

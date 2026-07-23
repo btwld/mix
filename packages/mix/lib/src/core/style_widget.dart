@@ -31,7 +31,17 @@ class _StyleWidgetState<S extends Spec<S>> extends State<StyleWidget<S>> {
   Widget build(BuildContext context) {
     final styleSpec = widget.styleSpec;
     if (styleSpec != null) {
-      // Direct spec usage - no style resolution needed
+      // Direct spec usage - no style resolution, no ConstraintScope.
+      // Constraint variants require the style path so StyleBuilder can publish
+      // offered BoxConstraints and merge matching branches.
+      assert(
+        !widget.style.hasConstraintVariants,
+        'Constraint variants (onConstraints) require the style resolution '
+        'path. The styleSpec parameter bypasses variant resolution and '
+        'ConstraintScope insertion. Pass the style with onConstraints '
+        'instead of styleSpec, or resolve constraint branches yourself.',
+      );
+
       return StyleSpecBuilder(builder: widget.build, styleSpec: styleSpec);
     } // Style resolution path (current behavior)
 

@@ -72,6 +72,28 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
         .toSet();
   }
 
+  /// Whether this style tree contains any [ConstraintVariant].
+  ///
+  /// Recurses into nested variant styles so that a constraint branch buried
+  /// under another variant still triggers [StyleBuilder]'s ConstraintScope
+  /// wrap. Styles without constraint variants pay zero LayoutBuilder cost.
+  @internal
+  bool get hasConstraintVariants {
+    final variants = $variants;
+    if (variants == null || variants.isEmpty) return false;
+
+    for (final variantStyle in variants) {
+      if (_isConstraintVariant(variantStyle.variant)) {
+        return true;
+      }
+      if (variantStyle.value.hasConstraintVariants) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   /// Merges all active variants with their nested variants recursively.
   ///
   /// This method evaluates which variants should be active based on the current
@@ -196,6 +218,17 @@ Style<S> _mergeStyles<S extends Spec<S>>(Style<S> current, Style<S> other) {
   }
 
   return current.merge(other);
+}
+
+bool _isConstraintVariant(Variant variant) {
+  return switch (variant) {
+    ConstraintVariant() => true,
+    NotVariant(:final inner) => _isConstraintVariant(inner),
+    NamedVariant() => false,
+    ContextVariantBuilder() => false,
+    // Remaining ContextVariant kinds (brightness, breakpoint, etc.).
+    ContextVariant() => false,
+  };
 }
 
 /// A no-op [Style] that resolves to a provided [Spec].

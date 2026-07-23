@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../core/breakpoint.dart';
+import '../core/providers/constraint_scope.dart';
 import '../core/providers/widget_state_provider.dart';
 import '../core/providers/widget_state_style_override.dart';
 import '../core/spec.dart';
@@ -67,6 +68,18 @@ class ContextVariant extends Variant {
 
   static ContextVariant breakpoint(Breakpoint breakpoint) {
     return BreakpointVariant(breakpoint);
+  }
+
+  /// Variant that matches against offered [BoxConstraints], not viewport size.
+  ///
+  /// Uses [ConstraintScope] (published by [StyleBuilder] when the style tree
+  /// contains a constraint variant). Size is formed from
+  /// `constraints.biggest` (maxWidth × maxHeight).
+  ///
+  /// Spike / not productized — remove [internal] when exporting publicly.
+  @internal
+  static ContextVariant constraints(Breakpoint breakpoint) {
+    return ConstraintVariant(breakpoint);
   }
 
   static ContextVariant brightness(Brightness brightness) {
@@ -174,6 +187,41 @@ final class BreakpointVariant extends ContextVariant {
   int get hashCode => breakpoint.hashCode;
 }
 
+/// Context variant that matches against offered [BoxConstraints].
+///
+/// Unlike [BreakpointVariant] (which uses [MediaQuery] viewport size), this
+/// forms the compared size from [ConstraintScope] — i.e.
+/// `BoxConstraints.biggest` (maxWidth × maxHeight) of the space offered to
+/// this style host. Unbounded axes remain infinity so a finite `maxWidth`
+/// rule does not match; `minWidth` rules can still match unbounded axes.
+///
+/// Inclusive bounds and token-backed [BreakpointRef] resolution match
+/// [BreakpointVariant] semantics.
+///
+/// Spike / not productized — remove [internal] when exporting publicly.
+@internal
+final class ConstraintVariant extends ContextVariant {
+  final Breakpoint breakpoint;
+
+  ConstraintVariant(this.breakpoint)
+    : super(_constraintKey(breakpoint), (context) {
+        final size = ConstraintScope.sizeOf(context);
+        if (breakpoint case final BreakpointRef ref) {
+          return ref.token.resolve(context).matches(size);
+        }
+
+        return breakpoint.matches(size);
+      });
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ConstraintVariant && other.breakpoint == breakpoint;
+
+  @override
+  int get hashCode => breakpoint.hashCode;
+}
+
 /// Context variant that applies when another context variant does not.
 final class NotVariant extends ContextVariant {
   final ContextVariant inner;
@@ -264,6 +312,15 @@ String _breakpointKey(Breakpoint breakpoint) {
   }
 
   return 'breakpoint_${breakpoint.minWidth ?? '0.0'}_${breakpoint.maxWidth ?? 'infinity'}';
+}
+
+String _constraintKey(Breakpoint breakpoint) {
+  if (breakpoint case final BreakpointRef ref) {
+    return 'constraints_${ref.token.name}';
+  }
+
+  return 'constraints_${breakpoint.minWidth ?? '0.0'}_${breakpoint.maxWidth ?? 'infinity'}_'
+      '${breakpoint.minHeight ?? '0.0'}_${breakpoint.maxHeight ?? 'infinity'}';
 }
 
 /// Variant that dynamically builds a Style based on build context.

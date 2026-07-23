@@ -135,4 +135,4 @@ export 'src/theme/tokens/token_refs.dart'
 export 'src/theme/tokens/value_tokens.dart';
 
 /// VARIANTS
-export 'src/variants/variant.dart';
+export 'src/variants/variant.dart' hide ConstraintVariant;

@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import '../animation/style_animation_builder.dart';
 import '../modifiers/internal/render_modifier.dart';
 import 'internal/mix_interaction_detector.dart';
+import 'providers/constraint_scope.dart';
 import 'providers/style_provider.dart';
 import 'providers/style_spec_provider.dart';
 import 'providers/widget_state_provider.dart';
@@ -131,16 +132,28 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
 
     final alreadyHasWidgetStateScope = WidgetStateProvider.of(context) != null;
 
-    Widget current = Builder(
-      builder: (context) {
-        final wrappedSpec = style.build(context);
+    // Resolve style in a Builder so inherited widgets (ConstraintScope,
+    // WidgetStateProvider, etc.) are visible to style.build.
+    Widget resolveChild(BuildContext context) {
+      final wrappedSpec = style.build(context);
 
-        return StyleSpecBuilder(
-          builder: widget.builder,
-          styleSpec: wrappedSpec,
-        );
-      },
-    );
+      return StyleSpecBuilder(builder: widget.builder, styleSpec: wrappedSpec);
+    }
+
+    Widget current = Builder(builder: resolveChild);
+
+    // Only pay LayoutBuilder cost when the style tree contains constraint
+    // variants. Existing styles without them are unaffected.
+    if (style.hasConstraintVariants) {
+      current = LayoutBuilder(
+        builder: (context, constraints) {
+          return ConstraintScope(
+            constraints: constraints,
+            child: Builder(builder: resolveChild),
+          );
+        },
+      );
+    }
 
     if (needsToTrackWidgetState && !alreadyHasWidgetStateScope) {
       // If we need interactivity and no MixWidgetStateModel is present,
