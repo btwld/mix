@@ -20,6 +20,11 @@ const reservedParamNames = {
   'noSuchMethod',
 };
 
+/// Target constructor parameters backed by the styler itself; a generated
+/// `call()` passes `style: this`, so they never surface as widget-facing
+/// parameters.
+const stylerBackedTargetParams = {'style', 'styleSpec'};
+
 /// Builds the widget-facing `call()` method configured by
 /// `@MixableSpec(target:)`.
 ///
@@ -40,15 +45,7 @@ String? buildMixableSpecTargetCall({
   final target = annotation.peek('target');
   if (target == null || target.isNull) return null;
 
-  final constructor = target.objectValue.toFunctionValue();
-  if (constructor is! ConstructorElement) {
-    fail(
-      specElement,
-      '@MixableSpec(target:) must be a constructor tear-off '
-      '(e.g., Box.new).',
-    );
-  }
-
+  final constructor = mixableSpecTargetTearOff(target, specElement);
   final widgetName = mixableSpecTargetWidgetName(constructor);
   if (validateTargetVisibility) {
     final widgetElement = constructor.enclosingElement;
@@ -80,7 +77,7 @@ String? buildMixableSpecTargetCall({
     anchor: hostElement,
     library: hostLibrary,
     factoryReference: stylerName,
-    excludeNames: const {'style', 'styleSpec'},
+    excludeNames: stylerBackedTargetParams,
     annotationLabel: '@MixableSpec(target:)',
     keyOwner: 'the target constructor',
   );
@@ -102,6 +99,24 @@ List<String> optionalPositionalNames(
       .where((p) => p.isOptionalPositional)
       .map((p) => p.name ?? '<unnamed>')
       .toList();
+}
+
+/// Resolves `@MixableSpec(target:)` to its constructor tear-off, failing on
+/// any other constant shape.
+ConstructorElement mixableSpecTargetTearOff(
+  ConstantReader target,
+  InterfaceElement specElement,
+) {
+  final constructor = target.objectValue.toFunctionValue();
+  if (constructor is! ConstructorElement) {
+    fail(
+      specElement,
+      '@MixableSpec(target:) must be a constructor tear-off '
+      '(e.g., Box.new).',
+    );
+  }
+
+  return constructor;
 }
 
 String mixableSpecTargetWidgetName(ConstructorElement constructor) {
