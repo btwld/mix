@@ -6,6 +6,7 @@ packages:
   - packages/mix/example
   - packages/mix_generator/example
   - packages/mix_tailwinds/example
+  - packages/mix_chart/example
   - packages/*/demo
 
 command:
@@ -24,10 +25,12 @@ command:
       pre: melos run gen:build
 
 categories:
-  flutter_projects: 
+  flutter_projects:
     - packages/mix
     - packages/mix_protocol
     - packages/mix_tailwinds
+    - packages/mix_chart
+    - packages/mix_chart/example
     - packages/mix/example
     - packages/mix_lint_test
     - packages/annotations
