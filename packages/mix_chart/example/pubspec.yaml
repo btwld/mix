@@ -1,0 +1,23 @@
+name: mix_chart_example
+description: "Gallery demonstrating the Mix-owned mix_chart API."
+publish_to: "none"
+version: 0.0.1+1
+
+environment:
+  sdk: ">=3.11.0 <4.0.0"
+  flutter: ">=3.41.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  mix: ^2.2.0-beta.0
+  mix_chart:
+    path: ..
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
