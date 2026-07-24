@@ -146,11 +146,31 @@ value parameters from becoming public widget parameters automatically:
 final editorStyle = EditorStyler();
 ```
 
-An empty `.only({})` exposes no selectable styler value parameters. Factory
-parameters, a valid `Key? key`, and method-level `call<T>()` type parameters
-remain automatic in every mode; required styler value parameters must be
-selected. Excluded optional parameters are not forwarded, so the styler
-method's defaults apply.
+An empty `.only({})` exposes no selectable styler value parameters. A valid
+`Key? key` and method-level `call<T>()` type parameters remain automatic;
+required styler value parameters must be selected. Excluded optional
+parameters are not forwarded, so the styler method's defaults apply.
+
+Use `target` to wrap a plain widget constructor directly and
+`factoryParameters` to curate recipe controls independently:
+
+```dart
+@MixWidget(
+  name: 'FortalButton',
+  target: RemixButton.new,
+  factoryParameters: .only({'variant', 'size'}),
+)
+ButtonStyler fortalButtonStyler({
+  ButtonVariant variant = .solid,
+  ButtonSize size = .medium,
+  bool highContrast = false,
+});
+```
+
+The target must be a Widget constructor with a compatible named `style`
+parameter. Its `style` and `styleSpec` parameters never surface on the
+generated wrapper. Required factory parameters must be selected; omitted
+optional parameters use the recipe's defaults.
 
 Generators that also support older `mix_annotations` releases interpret an
 annotation without `widgetParameters` as `.all()`. Using `.only(...)` requires

@@ -1,3 +1,11 @@
+## 2.2.0-beta.2
+
+ - **FEAT**: Generate `@MixWidget(target:)` wrappers for plain Widget
+   constructors without requiring `StyleWidget` or extension `call()` methods.
+   Preserve target generics, key/default forwarding, enum variant
+   constructors, independent widget/factory parameter curation, and clean
+   same-build generated Styler support.
+
 ## 2.2.0-beta.1
 
  - **FIX**: Generate `@MixWidget` wrappers on clean builds when a factory

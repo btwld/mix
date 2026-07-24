@@ -110,6 +110,13 @@ class MixWidgetModel {
   /// and the generated `build()` forwards `key: this.key`.
   final bool stylerCallForwardsKey;
 
+  /// Plain widget type instantiated directly, or `null` for the legacy Styler
+  /// `call()` path.
+  final String? targetTypeReference;
+
+  /// Named constructor suffix for [targetTypeReference], or `null` for `.new`.
+  final String? targetConstructorName;
+
   /// Doc comment carried over from the annotated element (with leading
   /// `///` markers intact), or `null` when the element has no doc.
   final String? doc;
@@ -129,6 +136,8 @@ class MixWidgetModel {
     required this.callParams,
     this.callTypeParams = const [],
     required this.stylerCallForwardsKey,
+    this.targetTypeReference,
+    this.targetConstructorName,
     this.doc,
     this.variantParamName,
     this.variantConstructors = const [],
@@ -145,7 +154,13 @@ class MixWidgetModel {
   ///
   /// The builder applies Dart constructor syntax ordering when emitting code:
   /// all positional params first, then named params.
-  List<WidgetCallParam> get allParams => [...factoryParams, ...callParams];
+  List<WidgetCallParam> get allParams {
+    final seen = <String>{};
+    return [
+      for (final parameter in [...factoryParams, ...callParams])
+        if (seen.add(parameter.name)) parameter,
+    ];
+  }
 
   /// Type parameter declaration suffix for the generated widget class.
   String get typeParameterDeclaration =>
@@ -153,4 +168,7 @@ class MixWidgetModel {
 
   /// Type argument suffix for forwarding to the styler `call()` method.
   String get typeParameterInvocation => _typeParameterSuffix((p) => p.name);
+
+  /// Whether `build()` instantiates a plain target widget directly.
+  bool get hasDirectTarget => targetTypeReference != null;
 }

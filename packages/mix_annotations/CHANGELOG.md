@@ -1,3 +1,8 @@
+## 2.2.0-beta.1
+
+ - **FEAT**: Add `MixWidget.target` for plain widget constructor tear-offs and
+   `factoryParameters` for independent recipe parameter curation.
+
 ## 2.2.0-beta.0
 
  - **FEAT**: Add `MixableField.forwardStyler` and `stylerSurface` for opt-in

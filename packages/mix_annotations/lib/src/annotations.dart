@@ -211,13 +211,30 @@ class MixWidget {
   /// the name is derived from the annotated element's name.
   final String? name;
 
+  /// Optional plain widget constructor rendered directly by the generated
+  /// wrapper.
+  ///
+  /// When set, widget parameters are read from this constructor instead of a
+  /// Styler `call()` method. The constructor must expose a compatible named
+  /// `style` parameter. `style` and `styleSpec` are supplied or omitted by the
+  /// generator and never become wrapper fields.
+  final Function? target;
+
   /// Selection of non-`key` styler `call()` value parameters exposed by the
   /// generated widget.
   final MixWidgetParameterSelection widgetParameters;
 
+  /// Selection of recipe factory parameters exposed by the generated widget.
+  ///
+  /// Required factory parameters must be selected. Optional parameters omitted
+  /// by `.only(...)` use the factory's own defaults.
+  final MixWidgetParameterSelection factoryParameters;
+
   const MixWidget({
     this.name,
+    this.target,
     this.widgetParameters = const MixWidgetParameterSelection.all(),
+    this.factoryParameters = const MixWidgetParameterSelection.all(),
   });
 }
 

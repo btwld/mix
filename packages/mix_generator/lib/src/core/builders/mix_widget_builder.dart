@@ -118,6 +118,12 @@ class MixWidgetBuilder {
         ? '${model.factoryReference}(${_factoryArgs()})'
         : model.factoryReference;
 
+    if (model.hasDirectTarget) {
+      _writeDirectTargetBuild(buffer, invocation);
+      buffer.writeln('  }');
+      return;
+    }
+
     final callArgs = _callArgs();
     final callTarget = '$invocation.call${model.typeParameterInvocation}';
 
@@ -132,6 +138,29 @@ class MixWidgetBuilder {
     }
 
     buffer.writeln('  }');
+  }
+
+  void _writeDirectTargetBuild(StringBuffer buffer, String styleInvocation) {
+    final constructorSuffix = model.targetConstructorName == null
+        ? ''
+        : '.${model.targetConstructorName}';
+    final target =
+        '${model.targetTypeReference}${model.typeParameterInvocation}'
+        '$constructorSuffix';
+    final args = [
+      for (final p in model.callParams.where((p) => p.isPositional))
+        'this.${p.name}',
+      if (model.stylerCallForwardsKey) 'key: this.key',
+      'style: $styleInvocation',
+      for (final p in model.callParams.where((p) => !p.isPositional))
+        '${p.name}: this.${p.name}',
+    ];
+
+    buffer.writeln('    return $target(');
+    for (final arg in args) {
+      buffer.writeln('      $arg,');
+    }
+    buffer.writeln('    );');
   }
 
   /// Renders the comma-separated argument list passed to the factory function.

@@ -52,8 +52,11 @@ void main() {
     test('defaults widgetParameters to all', () {
       const annotation = MixWidget();
 
+      expect(annotation.target, isNull);
       expect(annotation.widgetParameters.includesAll, isTrue);
       expect(annotation.widgetParameters.names, isEmpty);
+      expect(annotation.factoryParameters.includesAll, isTrue);
+      expect(annotation.factoryParameters.names, isEmpty);
     });
 
     test('preserves an explicit all selection', () {
@@ -78,5 +81,20 @@ void main() {
       expect(annotation.widgetParameters.includesAll, isFalse);
       expect(annotation.widgetParameters.names, isEmpty);
     });
+
+    test('preserves target and selected factory parameters', () {
+      const annotation = MixWidget(
+        target: _Target.new,
+        factoryParameters: .only({'variant', 'size'}),
+      );
+
+      expect(annotation.target, _Target.new);
+      expect(annotation.factoryParameters.includesAll, isFalse);
+      expect(annotation.factoryParameters.names, {'variant', 'size'});
+    });
   });
+}
+
+class _Target {
+  const _Target();
 }

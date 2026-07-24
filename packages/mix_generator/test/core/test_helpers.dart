@@ -268,11 +268,15 @@ class MixWidgetParameterSelection {
 
 class MixWidget {
   final String? name;
+  final Function? target;
   final MixWidgetParameterSelection widgetParameters;
+  final MixWidgetParameterSelection factoryParameters;
 
   const MixWidget({
     this.name,
+    this.target,
     this.widgetParameters = const MixWidgetParameterSelection.all(),
+    this.factoryParameters = const MixWidgetParameterSelection.all(),
   });
 }
 

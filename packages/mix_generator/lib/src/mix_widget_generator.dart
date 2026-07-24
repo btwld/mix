@@ -113,6 +113,7 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
     TopLevelVariableElement variable,
     ConstantReader annotation,
     _WidgetParameterSelection widgetParameters,
+    ConstructorElement? targetConstructor,
     String? writtenStylerName,
   ) {
     final variableName = requireName(
@@ -121,12 +122,20 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
     );
 
     final library = variable.library;
-    final callSource = _resolveCallSource(
-      anchor: variable,
-      stylerType: variable.type,
-      writtenStylerName: writtenStylerName,
-      library: library,
-    );
+    final callSource = targetConstructor == null
+        ? _resolveCallSource(
+            anchor: variable,
+            stylerType: variable.type,
+            writtenStylerName: writtenStylerName,
+            library: library,
+          )
+        : _directTargetCallSource(
+            anchor: variable,
+            constructor: targetConstructor,
+            stylerType: variable.type,
+            writtenStylerName: writtenStylerName,
+            library: library,
+          );
     _requireUnprefixedFlutterSymbols(variable, callSource.call, library);
     final call = _extractWidgetCallParams(
       callSource.call,
@@ -136,6 +145,13 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
       widgetParameters: widgetParameters,
       baseExcluded: callSource.baseExcluded,
     );
+    final callParams = targetConstructor == null
+        ? call.params
+        : _qualifyDirectTargetDefaults(
+            call.params,
+            constructor: targetConstructor,
+            targetTypeReference: callSource.targetTypeReference!,
+          );
 
     return MixWidgetModel(
       widgetName: _resolveWidgetName(
@@ -147,11 +163,15 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
       factoryReference: variableName,
       isFunctionFactory: false,
       factoryParams: const [],
-      callParams: call.params,
-      callTypeParams: callSource.isGenerated
-          ? const []
-          : _extractCallTypeParams(callSource.call, library: library),
+      callParams: callParams,
+      callTypeParams: targetConstructor == null
+          ? (callSource.isGenerated
+                ? const []
+                : _extractCallTypeParams(callSource.call, library: library))
+          : _extractTargetTypeParams(targetConstructor, library: library),
       stylerCallForwardsKey: call.forwardsKey,
+      targetTypeReference: callSource.targetTypeReference,
+      targetConstructorName: callSource.targetConstructorName,
       doc: variable.documentationComment,
     );
   }
@@ -160,6 +180,8 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
     TopLevelFunctionElement function,
     ConstantReader annotation,
     _WidgetParameterSelection widgetParameters,
+    _WidgetParameterSelection factoryParameters,
+    ConstructorElement? targetConstructor,
     String? writtenStylerName,
   ) {
     final functionName = requireName(
@@ -176,12 +198,20 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
     }
 
     final library = function.library;
-    final callSource = _resolveCallSource(
-      anchor: function,
-      stylerType: function.returnType,
-      writtenStylerName: writtenStylerName,
-      library: library,
-    );
+    final callSource = targetConstructor == null
+        ? _resolveCallSource(
+            anchor: function,
+            stylerType: function.returnType,
+            writtenStylerName: writtenStylerName,
+            library: library,
+          )
+        : _directTargetCallSource(
+            anchor: function,
+            constructor: targetConstructor,
+            stylerType: function.returnType,
+            writtenStylerName: writtenStylerName,
+            library: library,
+          );
 
     _requireUnprefixedFlutterSymbols(function, callSource.call, library);
 
@@ -189,6 +219,7 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
       function,
       library: library,
       factoryReference: functionName,
+      factoryParameters: factoryParameters,
     );
     final call = _extractWidgetCallParams(
       callSource.call,
@@ -198,19 +229,35 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
       widgetParameters: widgetParameters,
       baseExcluded: callSource.baseExcluded,
     );
+    final callParams = targetConstructor == null
+        ? call.params
+        : _qualifyDirectTargetDefaults(
+            call.params,
+            constructor: targetConstructor,
+            targetTypeReference: callSource.targetTypeReference!,
+          );
 
-    _rejectCollisions(function, factoryParams, call.params);
+    if (targetConstructor == null) {
+      _rejectCollisions(function, factoryParams, callParams);
+    } else {
+      _validateDirectTargetCollisions(function, factoryParams, callParams);
+    }
 
-    final callTypeParams = callSource.isGenerated
-        ? const <WidgetCallTypeParam>[]
-        : _extractCallTypeParams(callSource.call, library: library);
-    final variantConstructors = _extractVariantConstructors(
-      function,
-      library: library,
-      widgetTypeParameterNames: {
-        for (final typeParameter in callTypeParams) typeParameter.name,
-      },
-    );
+    final callTypeParams = targetConstructor == null
+        ? (callSource.isGenerated
+              ? const <WidgetCallTypeParam>[]
+              : _extractCallTypeParams(callSource.call, library: library))
+        : _extractTargetTypeParams(targetConstructor, library: library);
+    final variantConstructors =
+        factoryParams.any((parameter) => parameter.name == _variantParamName)
+        ? _extractVariantConstructors(
+            function,
+            library: library,
+            widgetTypeParameterNames: {
+              for (final typeParameter in callTypeParams) typeParameter.name,
+            },
+          )
+        : null;
 
     return MixWidgetModel(
       widgetName: _resolveWidgetName(
@@ -222,13 +269,194 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
       factoryReference: functionName,
       isFunctionFactory: true,
       factoryParams: factoryParams,
-      callParams: call.params,
+      callParams: callParams,
       callTypeParams: callTypeParams,
       stylerCallForwardsKey: call.forwardsKey,
+      targetTypeReference: callSource.targetTypeReference,
+      targetConstructorName: callSource.targetConstructorName,
       doc: function.documentationComment,
       variantParamName: variantConstructors == null ? null : _variantParamName,
       variantConstructors: variantConstructors ?? const [],
     );
+  }
+
+  List<WidgetCallParam> _qualifyDirectTargetDefaults(
+    List<WidgetCallParam> params, {
+    required ConstructorElement constructor,
+    required String targetTypeReference,
+  }) {
+    final target = constructor.enclosingElement;
+    return [
+      for (final param in params)
+        if (param.defaultValueCode case final code?
+            when RegExp(r'^[_$A-Za-z][_$A-Za-z0-9]*$').hasMatch(code) &&
+                _isStaticTargetMember(target, code))
+          WidgetCallParam(
+            name: param.name,
+            typeCode: param.typeCode,
+            isPositional: param.isPositional,
+            isRequired: param.isRequired,
+            defaultValueCode: '$targetTypeReference.$code',
+          )
+        else
+          param,
+    ];
+  }
+
+  bool _isStaticTargetMember(InterfaceElement target, String name) {
+    for (final method in target.methods) {
+      if (method.name == name && method.isStatic) return true;
+    }
+    for (final field in target.fields) {
+      if (field.name == name && field.isStatic) return true;
+    }
+    return false;
+  }
+
+  _CallSource _directTargetCallSource({
+    required Element anchor,
+    required ConstructorElement constructor,
+    required DartType stylerType,
+    required String? writtenStylerName,
+    required LibraryElement library,
+  }) {
+    final targetType = constructor.enclosingElement.thisType;
+    final targetName =
+        constructor.enclosingElement.name ?? targetType.getDisplayString();
+    if (!widgetChecker.isAssignableFromType(targetType)) {
+      fail(
+        anchor,
+        '$_annotationLabel(target:) must reference a Widget constructor, but '
+        '`$targetName` is not a Widget subtype.',
+      );
+    }
+
+    final targetReference = referenceFor(constructor.enclosingElement, library);
+    if (targetReference == null) {
+      fail(
+        anchor,
+        '$_annotationLabel(target:) widget `$targetName` is not visible from '
+        'the annotated library.',
+      );
+    }
+
+    final optionalPositional = optionalPositionalNames(
+      constructor.formalParameters,
+    );
+    if (optionalPositional.isNotEmpty) {
+      fail(
+        anchor,
+        '$_annotationLabel(target:) does not support optional positional '
+        'target constructor parameters on $targetName: '
+        '[${optionalPositional.join(', ')}].',
+        todo: 'Convert these parameters to required positional or named.',
+      );
+    }
+
+    FormalParameterElement? styleParameter;
+    for (final parameter in constructor.formalParameters) {
+      if (parameter.name == 'style' && parameter.isNamed) {
+        styleParameter = parameter;
+        break;
+      }
+    }
+    if (styleParameter == null) {
+      fail(
+        anchor,
+        '$_annotationLabel(target:) requires $targetName to expose a named '
+        '`style` constructor parameter so the generated widget can pass the '
+        'recipe result through `style`.',
+      );
+    }
+
+    final styleSpecParameter = constructor.formalParameters
+        .where((parameter) => parameter.name == 'styleSpec')
+        .firstOrNull;
+    if (styleSpecParameter != null && styleSpecParameter.isRequired) {
+      fail(
+        anchor,
+        '$_annotationLabel(target:) cannot omit required `styleSpec` on '
+        '$targetName.',
+      );
+    }
+
+    final compatible = _targetStyleAcceptsRecipe(
+      styleParameter.type,
+      stylerType: stylerType,
+      writtenStylerName: writtenStylerName,
+      library: library,
+    );
+    if (!compatible) {
+      fail(
+        anchor,
+        '$_annotationLabel(target:) $targetName `style` parameter cannot '
+        'accept the `${writtenStylerName ?? stylerType.getDisplayString()}` '
+        'recipe result.',
+      );
+    }
+
+    final constructorName = constructor.name;
+    return _CallSource(
+      call: constructor,
+      baseExcluded: stylerBackedTargetParams,
+      isGenerated: false,
+      targetTypeReference: targetReference,
+      targetConstructorName:
+          constructorName == null ||
+              constructorName.isEmpty ||
+              constructorName == 'new'
+          ? null
+          : constructorName,
+    );
+  }
+
+  bool _targetStyleAcceptsRecipe(
+    DartType targetStyleType, {
+    required DartType stylerType,
+    required String? writtenStylerName,
+    required LibraryElement library,
+  }) {
+    if (stylerType is InterfaceType) {
+      return library.typeSystem.isAssignableTo(
+        stylerType,
+        targetStyleType,
+        strictCasts: false,
+      );
+    }
+
+    if (writtenStylerName == null) return false;
+    final spec = _findGeneratedStylerSpec(library, writtenStylerName);
+    if (spec == null) return false;
+
+    // A target can itself refer to a same-build generated Styler, in which
+    // case analyzer reports InvalidType until the shared part is written.
+    if (targetStyleType is! InterfaceType) return true;
+
+    final acceptedStyle = findSupertypeMatching(targetStyleType, styleChecker);
+    if (acceptedStyle == null) {
+      // Some build-test consumers re-export a lightweight Style stub from a
+      // barrel rather than its canonical library. Preserve semantic matching
+      // for that test shape without weakening non-Style targets.
+      return targetStyleType.getDisplayString() == 'Style<${spec.name}>';
+    }
+    if (acceptedStyle.typeArguments.isEmpty) {
+      return false;
+    }
+
+    final acceptedSpec = acceptedStyle.typeArguments.first;
+    return acceptedSpec is InterfaceType &&
+        acceptedSpec.element.name == spec.name &&
+        acceptedSpec.element.library.uri == spec.library.uri;
+  }
+
+  List<WidgetCallTypeParam> _extractTargetTypeParams(
+    ConstructorElement constructor, {
+    required LibraryElement library,
+  }) {
+    return [
+      for (final typeParameter in constructor.enclosingElement.typeParameters)
+        _callTypeParam(typeParameter, library: library),
+    ];
   }
 
   List<WidgetVariantConstructor>? _extractVariantConstructors(
@@ -487,10 +715,11 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
   /// `mix_annotations` versions before parameter curation do not expose
   /// [MixWidget.widgetParameters]. Treat that legacy shape as `.all()` so a
   /// generator upgrade does not break existing `@MixWidget()` consumers.
-  _WidgetParameterSelection _widgetParameterSelectionFor(
+  _WidgetParameterSelection _parameterSelectionFor(
     ConstantReader annotation,
+    String fieldName,
   ) {
-    final selection = annotation.peek('widgetParameters');
+    final selection = annotation.peek(fieldName);
     if (selection == null) return (includesAll: true, names: <String>{});
 
     final names = {
@@ -662,10 +891,49 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
     TopLevelFunctionElement function, {
     required LibraryElement library,
     required String factoryReference,
+    required _WidgetParameterSelection factoryParameters,
   }) {
-    final optionalPositional = optionalPositionalNames(
-      function.formalParameters,
-    );
+    final selectedParameters = <FormalParameterElement>[];
+    final availableNames = {
+      for (final parameter in function.formalParameters)
+        if (parameter.name case final String name) name,
+    };
+
+    if (!factoryParameters.includesAll) {
+      for (final name in factoryParameters.names) {
+        if (!availableNames.contains(name)) {
+          fail(
+            function,
+            '$_annotationLabel factoryParameters selects unknown factory '
+            'parameter `$name`.',
+            todo: 'Select a parameter declared by the recipe factory.',
+          );
+        }
+      }
+    }
+
+    for (final parameter in function.formalParameters) {
+      final name = parameter.name;
+      final selected =
+          factoryParameters.includesAll ||
+          (name != null && factoryParameters.names.contains(name));
+      if (!selected) {
+        if (parameter.isRequired) {
+          fail(
+            function,
+            '$_annotationLabel factoryParameters must include required '
+            'factory parameter `$name`.',
+            todo:
+                'Add `$name` to `factoryParameters: .only({...})` or use '
+                '`factoryParameters: .all()`.',
+          );
+        }
+        continue;
+      }
+      selectedParameters.add(parameter);
+    }
+
+    final optionalPositional = optionalPositionalNames(selectedParameters);
     if (optionalPositional.isNotEmpty) {
       fail(
         function,
@@ -676,7 +944,7 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
     }
 
     final params = <WidgetCallParam>[];
-    for (final p in function.formalParameters) {
+    for (final p in selectedParameters) {
       _rejectFactoryKeyParam(p, function);
       rejectReservedName(p, function);
       rejectFactoryReferenceCollision(p, function, factoryReference);
@@ -725,6 +993,31 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
           todo: 'Rename one of the parameters.',
         );
       }
+    }
+  }
+
+  void _validateDirectTargetCollisions(
+    Element anchor,
+    List<WidgetCallParam> factoryParams,
+    List<WidgetCallParam> targetParams,
+  ) {
+    final factoryByName = {
+      for (final parameter in factoryParams) parameter.name: parameter,
+    };
+    for (final targetParam in targetParams) {
+      final factoryParam = factoryByName[targetParam.name];
+      if (factoryParam == null) continue;
+      if (factoryParam.typeCode == targetParam.typeCode) continue;
+
+      fail(
+        anchor,
+        '$_annotationLabel shared factory/target parameter '
+        '`${targetParam.name}` has incompatible types '
+        '`${factoryParam.typeCode}` and `${targetParam.typeCode}`.',
+        todo:
+            'Use matching types, or exclude the parameter from either '
+            '`factoryParameters` or `widgetParameters`.',
+      );
     }
   }
 
@@ -908,19 +1201,30 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
     ConstantReader annotation,
     BuildStep buildStep,
   ) async {
-    final widgetParameters = _widgetParameterSelectionFor(annotation);
+    final widgetParameters = _parameterSelectionFor(
+      annotation,
+      'widgetParameters',
+    );
+    final factoryParameters = _parameterSelectionFor(
+      annotation,
+      'factoryParameters',
+    );
+    final targetConstructor = _targetConstructorFor(element, annotation);
     final writtenStylerName = await _writtenStylerTypeName(element, buildStep);
     final model = switch (element) {
       TopLevelVariableElement v => _modelForVariable(
         v,
         annotation,
         widgetParameters,
+        targetConstructor,
         writtenStylerName,
       ),
       TopLevelFunctionElement f => _modelForFunction(
         f,
         annotation,
         widgetParameters,
+        factoryParameters,
+        targetConstructor,
         writtenStylerName,
       ),
       _ => fail(
@@ -931,6 +1235,24 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
     };
 
     return MixWidgetBuilder(model).build();
+  }
+
+  ConstructorElement? _targetConstructorFor(
+    Element anchor,
+    ConstantReader annotation,
+  ) {
+    final target = annotation.peek('target');
+    if (target == null || target.isNull) return null;
+
+    final constructor = target.objectValue.toFunctionValue();
+    if (constructor is! ConstructorElement) {
+      fail(
+        anchor,
+        '$_annotationLabel(target:) must be a constructor tear-off '
+        '(e.g., RemixButton.new).',
+      );
+    }
+    return constructor;
   }
 }
 
@@ -949,9 +1271,17 @@ class _CallSource {
   /// resolvable `call()` method.
   final bool isGenerated;
 
+  /// Plain widget type rendered directly instead of invoking Styler.call().
+  final String? targetTypeReference;
+
+  /// Named constructor on [targetTypeReference], or `null` for `.new`.
+  final String? targetConstructorName;
+
   const _CallSource({
     required this.call,
     required this.baseExcluded,
     required this.isGenerated,
+    this.targetTypeReference,
+    this.targetConstructorName,
   });
 }

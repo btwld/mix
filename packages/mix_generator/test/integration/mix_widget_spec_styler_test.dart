@@ -400,4 +400,249 @@ ButtonStyler buttonStyle() => throw UnimplementedError();
       },
     );
   });
+
+  group('MixWidget plain widget targets', () {
+    test('generates a direct plain StatelessWidget wrapper with independent '
+        'factory and widget filtering', () async {
+      const body = r'''
+enum ButtonVariant { solid, ghost }
+enum ButtonSize { small, large }
+
+@MixableSpec()
+final class ButtonSpec extends Spec<ButtonSpec> {
+  final Color? color;
+  const ButtonSpec({this.color});
+}
+
+class PlainButton extends StatelessWidget {
+  const PlainButton({
+    super.key,
+    required this.label,
+    this.child,
+    required this.style,
+    this.styleSpec,
+    this.transitionBuilder = defaultTransitionBuilder,
+  });
+
+  static Widget defaultTransitionBuilder(Widget child) => child;
+
+  final String label;
+  final Widget? child;
+  final Style<ButtonSpec> style;
+  final StyleSpec<ButtonSpec>? styleSpec;
+  final Widget Function(Widget) transitionBuilder;
+
+  @override
+  Widget build(BuildContext context) => child ?? const _Leaf();
+}
+
+class _Leaf extends Widget {
+  const _Leaf();
+}
+
+@MixWidget(
+  name: 'FortalButton',
+  target: PlainButton.new,
+  widgetParameters: .only({'label', 'child', 'transitionBuilder'}),
+  factoryParameters: .only({'variant', 'size'}),
+)
+ButtonStyler fortalButtonStyler({
+  ButtonVariant variant = ButtonVariant.solid,
+  ButtonSize size = ButtonSize.small,
+  bool highContrast = false,
+}) => ButtonStyler();
+''';
+
+      await expectGeneratorOutputResolves(
+        builder: _combinedBuilder(),
+        sources: _sources(body),
+        inputAsset: 'mix|lib/button.dart',
+        outputAsset: 'mix|lib/button.g.dart',
+        outputMatcher: allOf([
+          contains('class FortalButton extends StatelessWidget {'),
+          contains('const FortalButton({'),
+          contains('this.variant = ButtonVariant.solid,'),
+          contains('this.size = ButtonSize.small,'),
+          contains('required this.label,'),
+          contains('const FortalButton.solid('),
+          contains('const FortalButton.ghost('),
+          contains('final ButtonVariant variant;'),
+          contains('final ButtonSize size;'),
+          contains('final String label;'),
+          contains('final Widget? child;'),
+          contains(
+            'this.transitionBuilder = PlainButton.defaultTransitionBuilder,',
+          ),
+          isNot(contains('final bool highContrast;')),
+          isNot(contains('final Style<ButtonSpec> style;')),
+          isNot(contains('final StyleSpec<ButtonSpec>? styleSpec;')),
+          contains('return PlainButton('),
+          contains('key: this.key,'),
+          contains(
+            'style: fortalButtonStyler(variant: this.variant, '
+            'size: this.size),',
+          ),
+          contains('label: this.label,'),
+          contains('child: this.child,'),
+          isNot(contains('.call(')),
+        ]),
+      );
+    });
+
+    test('preserves generic target type parameters', () async {
+      const body = r'''
+final class ButtonSpec extends Spec<ButtonSpec> {
+  const ButtonSpec();
+}
+
+@MixableSpec()
+final class RadioSpec extends Spec<RadioSpec> {
+  const RadioSpec();
+}
+
+class PlainRadio<T extends Object> extends StatelessWidget {
+  const PlainRadio({
+    super.key,
+    required this.value,
+    required this.style,
+    this.styleSpec,
+  });
+
+  final T value;
+  final Style<RadioSpec> style;
+  final StyleSpec<RadioSpec>? styleSpec;
+
+  @override
+  Widget build(BuildContext context) => const _Leaf();
+}
+
+class _Leaf extends Widget {
+  const _Leaf();
+}
+
+@MixWidget(name: 'FortalRadio', target: PlainRadio.new)
+RadioStyler fortalRadioStyler() => RadioStyler();
+''';
+
+      await expectGeneratorOutputResolves(
+        builder: _combinedBuilder(),
+        sources: _sources(body),
+        inputAsset: 'mix|lib/button.dart',
+        outputAsset: 'mix|lib/button.g.dart',
+        outputMatcher: allOf([
+          contains(
+            'class FortalRadio<T extends Object> extends StatelessWidget',
+          ),
+          contains('final T value;'),
+          contains('return PlainRadio<T>('),
+          contains('style: fortalRadioStyler(),'),
+          contains('value: this.value,'),
+        ]),
+      );
+    });
+
+    test('rejects a target without a named style parameter', () async {
+      const body = r'''
+@MixableSpec()
+final class ButtonSpec extends Spec<ButtonSpec> {
+  const ButtonSpec();
+}
+
+class PlainButton extends StatelessWidget {
+  const PlainButton({super.key, required this.label});
+  final String label;
+  @override
+  Widget build(BuildContext context) => const _Leaf();
+}
+
+class _Leaf extends Widget {
+  const _Leaf();
+}
+
+@MixWidget(target: PlainButton.new)
+ButtonStyler buttonStyle() => ButtonStyler();
+''';
+
+      final errors = await _expectMixWidgetError(body);
+
+      expect(
+        errors,
+        contains(
+          '@MixWidget(target:) requires PlainButton to expose a named '
+          '`style` constructor parameter',
+        ),
+      );
+    });
+
+    test('rejects an incompatible target style parameter', () async {
+      const body = r'''
+@MixableSpec()
+final class ButtonSpec extends Spec<ButtonSpec> {
+  const ButtonSpec();
+}
+
+class PlainButton extends StatelessWidget {
+  const PlainButton({super.key, required this.label, required this.style});
+  final String label;
+  final int style;
+  @override
+  Widget build(BuildContext context) => const _Leaf();
+}
+
+class _Leaf extends Widget {
+  const _Leaf();
+}
+
+@MixWidget(target: PlainButton.new)
+ButtonStyler buttonStyle() => ButtonStyler();
+''';
+
+      final errors = await _expectMixWidgetError(body);
+
+      expect(
+        errors,
+        contains(
+          '@MixWidget(target:) PlainButton `style` parameter cannot accept '
+          'the `ButtonStyler` recipe result',
+        ),
+      );
+    });
+
+    test('rejects required factory parameters omitted from only', () async {
+      const body = r'''
+@MixableSpec()
+final class ButtonSpec extends Spec<ButtonSpec> {
+  const ButtonSpec();
+}
+
+class PlainButton extends StatelessWidget {
+  const PlainButton({super.key, required this.label, required this.style});
+  final String label;
+  final Style<ButtonSpec> style;
+  @override
+  Widget build(BuildContext context) => const _Leaf();
+}
+
+class _Leaf extends Widget {
+  const _Leaf();
+}
+
+@MixWidget(
+  target: PlainButton.new,
+  factoryParameters: .only({}),
+)
+ButtonStyler buttonStyle({required bool emphasized}) => ButtonStyler();
+''';
+
+      final errors = await _expectMixWidgetError(body);
+
+      expect(
+        errors,
+        contains(
+          '@MixWidget factoryParameters must include required factory '
+          'parameter `emphasized`',
+        ),
+      );
+    });
+  });
 }
