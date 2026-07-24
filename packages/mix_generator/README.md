@@ -174,11 +174,33 @@ stable as a styler evolves, select the supported parameters explicitly:
 final editorStyle = EditorStyler();
 ```
 
-`.only({})` exposes none of the selectable styler value parameters. Factory
-parameters, a valid `Key? key`, and method-level `call<T>()` type parameters are
-always automatic, and required styler value parameters must be included in an
-`.only(...)` selection. Excluded optional parameters are not forwarded, so the
-styler method's defaults apply.
+`.only({})` exposes none of the selectable styler value parameters. A valid
+`Key? key` and method-level `call<T>()` type parameters remain automatic, and
+required styler value parameters must be included in an `.only(...)`
+selection. Excluded optional parameters are not forwarded, so the styler
+method's defaults apply.
+
+For a plain Widget that accepts a generated Styler through a named `style`
+parameter, configure a direct target and curate factory controls separately:
+
+```dart
+@MixWidget(
+  name: 'FortalButton',
+  target: RemixButton.new,
+  factoryParameters: .only({'variant', 'size'}),
+)
+ButtonStyler fortalButtonStyler({
+  ButtonVariant variant = .solid,
+  ButtonSize size = .medium,
+  bool highContrast = false,
+});
+```
+
+This path reads widget parameters and generic type parameters from the target
+constructor, omits `style` and `styleSpec`, and instantiates the target
+directly with the recipe result passed through `style`. It does not require
+the target to extend `StyleWidget` and does not inspect extension `call()`
+methods.
 
 For compatibility, an annotation from an older `mix_annotations` release that
 does not define `widgetParameters` is interpreted as `.all()`. Using
