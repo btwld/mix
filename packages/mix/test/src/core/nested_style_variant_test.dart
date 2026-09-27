@@ -8,7 +8,7 @@ import 'package:mix/mix.dart';
 /// `FlexBoxStyler`'s nested box) carries its own context variants. Those are
 /// applied by [Style.build], not [Style.resolve]. Previously `Prop.resolveProp`
 /// resolved nested styles via `resolve()`, silently dropping their variants.
-/// See https://github.com/conceptadev/remix/issues/59.
+/// See https://github.com/btwld/remix/issues/59.
 void main() {
   group('Nested style prop variant resolution', () {
     BoxDecoration? boxDecorationOf(FlexBoxSpec spec) =>

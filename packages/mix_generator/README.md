@@ -219,8 +219,8 @@ part 'card.g.dart';
 @mixWidget
 final cardStyle = BoxStyler()
     .color(Colors.white)
-    .borderRounded(8)
-    .paddingAll(16);
+    .borderRadius(.circular(8))
+    .padding(.all(16));
 
 // Generates:
 //   class Card extends StatelessWidget {

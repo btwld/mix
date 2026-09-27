@@ -41,7 +41,7 @@ Use standard `// ignore:` comments with the format `mix_lint/<rule_name>`:
 
 ```dart
 // ignore: mix_lint/mix_variants_last
-final style = BoxStyler().onHovered(x).paddingAll(16);
+final style = BoxStyler().onHovered(x).padding(.all(16));
 ```
 
 ## Rules
@@ -58,7 +58,7 @@ Tokens are meant to be shared across the app. Creating them inline inside a Styl
 // Inline token inside a Styler
 final style = BoxStyler()
     .color(ColorToken('primary').call())
-    .borderRadiusTopLeft(RadiusToken('rounded')());
+    .borderRadius(.topLeft(RadiusToken('rounded')()));
 ```
 
 #### Do
@@ -69,7 +69,7 @@ final rounded = RadiusToken('rounded');
 
 final style = BoxStyler()
     .color(primary())
-    .borderRadiusTopLeft(rounded());
+    .borderRadius(.topLeft(rounded()));
 ```
 
 ### mix_avoid_defining_tokens_within_scope
@@ -169,18 +169,18 @@ The rule reports when a `Styler` constructor or a variant-style invocation has m
 // One large style with too many arguments (exceeds max_number)
 final style = BoxStyler()
     .color(Colors.blue)
-    .paddingAll(8)
+    .padding(.all(8))
     .margin(.all(4))
     .alignment(.center)
-    .borderRounded(8)
+    .borderRadius(.circular(8))
     .width(200)
     .height(100)
     .opacity(0.9)
     .onHovered(BoxStyler()
         .color(Colors.red)
-        .paddingAll(12)
+        .padding(.all(12))
         .margin(.all(6))
-        .borderRounded(10)
+        .borderRadius(.circular(10))
         .width(220)
         .height(120)
         .opacity(1.0));
@@ -190,22 +190,22 @@ final style = BoxStyler()
 
 ```dart
 final layout = BoxStyler()
-    .paddingAll(8)
+    .padding(.all(8))
     .margin(.all(4))
     .alignment(.center);
 
 final appearance = BoxStyler()
     .color(Colors.blue)
-    .borderRounded(8)
+    .borderRadius(.circular(8))
     .width(200)
     .height(100)
     .opacity(0.9);
 
 final hovered = BoxStyler()
     .color(Colors.red)
-    .paddingAll(12)
+    .padding(.all(12))
     .margin(.all(6))
-    .borderRounded(10)
+    .borderRadius(.circular(10))
     .width(220)
     .height(120)
     .opacity(1.0);
@@ -231,8 +231,8 @@ Ensures that variant methods (`onHovered`, `onPressed`, `onFocused`, `onDisabled
 final style = BoxStyler()
     .color(Colors.red)
     .onHovered(.color(Colors.blue))
-    .paddingAll(16)
-    .borderRounded(8)
+    .padding(.all(16))
+    .borderRadius(.circular(8))
     .onPressed(.color(Colors.green));
 ```
 
@@ -241,8 +241,8 @@ final style = BoxStyler()
 ```dart
 final style = BoxStyler()
     .color(Colors.red)
-    .paddingAll(16)
-    .borderRounded(8)
+    .padding(.all(16))
+    .borderRadius(.circular(8))
     .onHovered(.color(Colors.blue))
     .onPressed(.color(Colors.green));
 ```

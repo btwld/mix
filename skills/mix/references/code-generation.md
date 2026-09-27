@@ -76,7 +76,7 @@ to an explicitly configured plain Widget target.
 
 ```dart
 @MixWidget()
-final cardStyle = BoxStyler().paddingAll(16).borderRounded(12);
+final cardStyle = BoxStyler().padding(.all(16)).borderRadius(.circular(12));
 // Generates `class Card extends StatelessWidget { ... }`.
 ```
 

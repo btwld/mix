@@ -7,13 +7,14 @@ on:
       - 'mix_annotations-v[0-9]+.[0-9]+.[0-9]+*'
       - 'mix_generator-v[0-9]+.[0-9]+.[0-9]+*'
       - 'mix_lint-v[0-9]+.[0-9]+.[0-9]+*'
+      - 'mix_protocol-v[0-9]+.[0-9]+.[0-9]+*'
       - 'mix_winds-v[0-9]+.[0-9]+.[0-9]+*'
       - 'mix_chart-v[0-9]+.[0-9]+.[0-9]+*'
 
 jobs:
   publish_mix:
     if: startsWith(github.ref_name, 'mix-v')
-    uses: conceptadev/dart-actions/.github/workflows/publish.yml@main
+    uses: btwld/dart-actions/.github/workflows/publish.yml@main
     with:
       packages_folder_path: "packages"
       packages: |
@@ -24,7 +25,7 @@ jobs:
 
   publish_mix_annotations:
     if: startsWith(github.ref_name, 'mix_annotations-v')
-    uses: conceptadev/dart-actions/.github/workflows/publish.yml@main
+    uses: btwld/dart-actions/.github/workflows/publish.yml@main
     with:
       packages_folder_path: "packages"
       packages: |
@@ -35,7 +36,7 @@ jobs:
 
   publish_mix_generator:
     if: startsWith(github.ref_name, 'mix_generator-v')
-    uses: conceptadev/dart-actions/.github/workflows/publish.yml@main
+    uses: btwld/dart-actions/.github/workflows/publish.yml@main
     with:
       packages_folder_path: "packages"
       packages: |
@@ -46,7 +47,7 @@ jobs:
 
   publish_mix_lint:
     if: startsWith(github.ref_name, 'mix_lint-v')
-    uses: conceptadev/dart-actions/.github/workflows/publish.yml@main
+    uses: btwld/dart-actions/.github/workflows/publish.yml@main
     with:
       packages_folder_path: "packages"
       packages: |
@@ -55,9 +56,22 @@ jobs:
       id-token: write
       contents: read
 
+  publish_mix_protocol:
+    # pub.dev requires the first version to be published manually. The initial
+    # release tag is kept for traceability but must not attempt OIDC publishing.
+    if: startsWith(github.ref_name, 'mix_protocol-v') && github.ref_name != 'mix_protocol-v1.0.0-alpha.0'
+    uses: btwld/dart-actions/.github/workflows/publish.yml@main
+    with:
+      packages_folder_path: "packages"
+      packages: |
+        mix_protocol
+    permissions:
+      id-token: write
+      contents: read
+
   publish_mix_winds:
     if: startsWith(github.ref_name, 'mix_winds-v')
-    uses: conceptadev/dart-actions/.github/workflows/publish.yml@main
+    uses: btwld/dart-actions/.github/workflows/publish.yml@main
     with:
       packages_folder_path: "packages"
       packages: |
@@ -68,7 +82,7 @@ jobs:
 
   publish_mix_chart:
     if: startsWith(github.ref_name, 'mix_chart-v')
-    uses: conceptadev/dart-actions/.github/workflows/publish.yml@main
+    uses: btwld/dart-actions/.github/workflows/publish.yml@main
     with:
       packages_folder_path: "packages"
       packages: |

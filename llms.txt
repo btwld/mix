@@ -1,10 +1,10 @@
 # Mix
 
-> Mix is a type-safe Flutter styling system that separates immutable resolved Specs, fluent Stylers, and rendering Widgets. Repository `main` currently declares `mix 2.2.0-beta.1` and requires Dart 3.12+ and Flutter 3.44+.
+> Mix is a type-safe Flutter styling system that separates immutable resolved Specs, fluent Stylers, and rendering Widgets. Repository `main` currently declares `mix 2.2.0` and requires Dart 3.12+ and Flutter 3.44+.
 
 Important notes:
 
-- Treat local source and the consuming project's resolved package version as authoritative. `WrapBox` and `GridBox` landed on repository `main` after the `2.2.0-beta.1` release and may not exist in an installed release yet.
+- Treat local source and the consuming project's resolved package version as authoritative; APIs can differ across Mix releases.
 - Keep visual semantics in Mix Stylers. Use `Box` for one styled child, `FlexBox`/`RowBox`/`ColumnBox` for one-dimensional layouts, `WrapBox` for intrinsic wrapping runs, `GridBox` for explicit two-dimensional tracks, and `StackBox` for overlays.
 - `GridBoxStyler.onConstraints` observes the size offered by the Grid's parent; `onBreakpoint` observes the viewport through `MediaQuery`.
 - Grid currently supports fixed and fractional tracks with row-major placement. It does not support content-sized tracks, spans, named areas, masonry packing, direction-aware placement, or baseline alignment.
@@ -12,46 +12,46 @@ Important notes:
 
 ## Start Here
 
-- [Repository agent instructions](https://raw.githubusercontent.com/conceptadev/mix/main/AGENTS.md): Workspace structure, environment setup, commands, architecture, and critical contribution rules.
-- [Mix package README](https://raw.githubusercontent.com/conceptadev/mix/main/packages/mix/README.md): Current package usage, fluent styling, WrapBox, GridBox, variants, tokens, and animations.
-- [Mix agent skill](https://raw.githubusercontent.com/conceptadev/mix/main/skills/mix/SKILL.md): Version-aware guidance and routing to focused agent references.
-- [API composition guidelines](https://raw.githubusercontent.com/conceptadev/mix/main/guides/api-composition-guidelines.md): Fluent chaining, sizing, merge behavior, and API design policy.
+- [Repository agent instructions](https://raw.githubusercontent.com/btwld/mix/main/AGENTS.md): Workspace structure, environment setup, commands, architecture, and critical contribution rules.
+- [Mix package README](https://raw.githubusercontent.com/btwld/mix/main/packages/mix/README.md): Current package usage, fluent styling, WrapBox, GridBox, variants, tokens, and animations.
+- [Mix agent skill](https://raw.githubusercontent.com/btwld/mix/main/skills/mix/SKILL.md): Version-aware guidance and routing to focused agent references.
+- [API composition guidelines](https://raw.githubusercontent.com/btwld/mix/main/guides/api-composition-guidelines.md): Fluent chaining, sizing, merge behavior, and API design policy.
 
 ## Layout
 
-- [Layout with Mix agent reference](https://raw.githubusercontent.com/conceptadev/mix/main/skills/mix/references/layout.md): Decision guide for Box, Flex, Wrap, Grid, and Stack; includes responsive Grid use cases, constraints, animation, and limitations.
-- [Grid layout guide](https://raw.githubusercontent.com/conceptadev/mix/main/packages/mix/doc/grid-layout.md): Maintained GridBox contract covering tracks, local constraints, rows, tokens, animation, overflow, and unsupported features.
-- [Grid runnable examples](https://github.com/conceptadev/mix/blob/main/packages/mix/example/lib/layouts/grid/grid_example.dart): Dashboard, card catalog, media gallery, and animated 1:1-to-2:1 Grid scenarios.
-- [Grid example guide](https://raw.githubusercontent.com/conceptadev/mix/main/packages/mix/example/docs/layouts.md): Commands and visual use-case explanations for GridBox and WrapBox.
-- [Fluent API reference](https://raw.githubusercontent.com/conceptadev/mix/main/skills/mix/references/fluent-api.md): Layout/style mixins, callable Stylers, sizing, interaction widgets, and composition.
+- [Layout with Mix agent reference](https://raw.githubusercontent.com/btwld/mix/main/skills/mix/references/layout.md): Decision guide for Box, Flex, Wrap, Grid, and Stack; includes responsive Grid use cases, constraints, animation, and limitations.
+- [Grid layout guide](https://raw.githubusercontent.com/btwld/mix/main/packages/mix/doc/grid-layout.md): Maintained GridBox contract covering tracks, local constraints, rows, tokens, animation, overflow, and unsupported features.
+- [Grid runnable examples](https://github.com/btwld/mix/blob/main/packages/mix/example/lib/layouts/grid/grid_example.dart): Dashboard, card catalog, media gallery, and animated 1:1-to-2:1 Grid scenarios.
+- [Grid example guide](https://raw.githubusercontent.com/btwld/mix/main/packages/mix/example/docs/layouts.md): Commands and visual use-case explanations for GridBox and WrapBox.
+- [Fluent API reference](https://raw.githubusercontent.com/btwld/mix/main/skills/mix/references/fluent-api.md): Layout/style mixins, callable Stylers, sizing, interaction widgets, and composition.
 
 ## Styling and Theming
 
-- [Architecture reference](https://raw.githubusercontent.com/conceptadev/mix/main/skills/mix/references/architecture.md): Spec, Styler, Prop, resolution pipeline, StyleWidget, and modifiers.
-- [Styler API policy](https://raw.githubusercontent.com/conceptadev/mix/main/skills/mix/references/styler-api-policy.md): Top-level constructors, typed dot shorthand, generated factories, and composition rules.
-- [Variants reference](https://raw.githubusercontent.com/conceptadev/mix/main/skills/mix/references/variants.md): Context, named, breakpoint, and widget-state variants with merge priority.
-- [Animations reference](https://raw.githubusercontent.com/conceptadev/mix/main/skills/mix/references/animations.md): Implicit, phase, and keyframe animation patterns.
-- [Design tokens reference](https://raw.githubusercontent.com/conceptadev/mix/main/skills/mix/references/design-tokens.md): MixScope, token types, references, and theming.
-- [Widget modifiers and directives](https://raw.githubusercontent.com/conceptadev/mix/main/skills/mix/references/widget-modifiers-directives.md): Widget wrappers, modifier ordering, text directives, and Prop directives.
+- [Architecture reference](https://raw.githubusercontent.com/btwld/mix/main/skills/mix/references/architecture.md): Spec, Styler, Prop, resolution pipeline, StyleWidget, and modifiers.
+- [Styler API policy](https://raw.githubusercontent.com/btwld/mix/main/skills/mix/references/styler-api-policy.md): Top-level constructors, typed dot shorthand, generated factories, and composition rules.
+- [Variants reference](https://raw.githubusercontent.com/btwld/mix/main/skills/mix/references/variants.md): Context, named, breakpoint, and widget-state variants with merge priority.
+- [Animations reference](https://raw.githubusercontent.com/btwld/mix/main/skills/mix/references/animations.md): Implicit, phase, and keyframe animation patterns.
+- [Design tokens reference](https://raw.githubusercontent.com/btwld/mix/main/skills/mix/references/design-tokens.md): MixScope, token types, references, and theming.
+- [Widget modifiers and directives](https://raw.githubusercontent.com/btwld/mix/main/skills/mix/references/widget-modifiers-directives.md): Widget wrappers, modifier ordering, text directives, and Prop directives.
 
 ## Code Generation
 
-- [Code generation agent reference](https://raw.githubusercontent.com/conceptadev/mix/main/skills/mix/references/code-generation.md): `@MixableSpec`, `@MixWidget`, `@MixableModifier`, `@MixableField`, generated surfaces, and workflow.
-- [MixWidget variant constructor decisions](https://raw.githubusercontent.com/conceptadev/mix/main/guides/mix-widget-variant-constructors.md): Shipped enum constructor behavior, retained unnamed constructor, rejected runtime design, and recorded future decisions.
-- [mix_annotations README](https://raw.githubusercontent.com/conceptadev/mix/main/packages/mix_annotations/README.md): Current annotation contracts and examples.
-- [mix_generator README](https://raw.githubusercontent.com/conceptadev/mix/main/packages/mix_generator/README.md): Generator behavior, parameter curation, plain Widget targets, nested Styler forwarding, and generated output.
+- [Code generation agent reference](https://raw.githubusercontent.com/btwld/mix/main/skills/mix/references/code-generation.md): `@MixableSpec`, `@MixWidget`, `@MixableModifier`, `@MixableField`, generated surfaces, and workflow.
+- [MixWidget variant constructor decisions](https://raw.githubusercontent.com/btwld/mix/main/guides/mix-widget-variant-constructors.md): Shipped enum constructor behavior, retained unnamed constructor, rejected runtime design, and recorded future decisions.
+- [mix_annotations README](https://raw.githubusercontent.com/btwld/mix/main/packages/mix_annotations/README.md): Current annotation contracts and examples.
+- [mix_generator README](https://raw.githubusercontent.com/btwld/mix/main/packages/mix_generator/README.md): Generator behavior, parameter curation, plain Widget targets, nested Styler forwarding, and generated output.
 
 ## Packages and Machine Contracts
 
-- [mix_protocol guide](https://raw.githubusercontent.com/conceptadev/mix/main/packages/mix_protocol/GUIDE.md): Versioned Mix JSON documents, codecs, schema validation, inspection, and resolver behavior.
-- [mix_protocol wire contract](https://raw.githubusercontent.com/conceptadev/mix/main/packages/mix_protocol/WIRE_CONTRACT.md): Canonical wire vocabulary and compatibility rules.
-- [mix_winds README](https://raw.githubusercontent.com/conceptadev/mix/main/packages/mix_winds/README.md): Tailwind-style parsing and translation into Mix styles.
-- [mix_chart README](https://raw.githubusercontent.com/conceptadev/mix/main/packages/mix_chart/README.md): Mix-owned line, bar, and pie chart APIs.
-- [mix_lint README](https://raw.githubusercontent.com/conceptadev/mix/main/packages/mix_lint/README.md): Mix-specific analyzer and custom lint rules.
+- [mix_protocol guide](https://raw.githubusercontent.com/btwld/mix/main/packages/mix_protocol/GUIDE.md): Versioned Mix JSON documents, codecs, schema validation, inspection, and resolver behavior.
+- [mix_protocol wire contract](https://raw.githubusercontent.com/btwld/mix/main/packages/mix_protocol/WIRE_CONTRACT.md): Canonical wire vocabulary and compatibility rules.
+- [mix_winds README](https://raw.githubusercontent.com/btwld/mix/main/packages/mix_winds/README.md): Tailwind-style parsing and translation into Mix styles.
+- [mix_chart README](https://raw.githubusercontent.com/btwld/mix/main/packages/mix_chart/README.md): Mix-owned line, bar, and pie chart APIs.
+- [mix_lint README](https://raw.githubusercontent.com/btwld/mix/main/packages/mix_lint/README.md): Mix-specific analyzer and custom lint rules.
 
 ## Optional
 
-- [Worked examples](https://raw.githubusercontent.com/conceptadev/mix/main/skills/mix/references/examples.md): End-to-end examples for reusable components and responsive styles.
-- [Testing reference](https://raw.githubusercontent.com/conceptadev/mix/main/skills/mix/references/testing.md): Mix matchers, mock context, merge tests, widget tests, and generated API coverage.
-- [Development workflow](https://raw.githubusercontent.com/conceptadev/mix/main/skills/mix/references/development-workflow.md): Spec authoring, generation, exports, package boundaries, and verification.
-- [Repository changelog](https://raw.githubusercontent.com/conceptadev/mix/main/CHANGELOG.md): Project-level release history.
+- [Worked examples](https://raw.githubusercontent.com/btwld/mix/main/skills/mix/references/examples.md): End-to-end examples for reusable components and responsive styles.
+- [Testing reference](https://raw.githubusercontent.com/btwld/mix/main/skills/mix/references/testing.md): Mix matchers, mock context, merge tests, widget tests, and generated API coverage.
+- [Development workflow](https://raw.githubusercontent.com/btwld/mix/main/skills/mix/references/development-workflow.md): Spec authoring, generation, exports, package boundaries, and verification.
+- [Repository changelog](https://raw.githubusercontent.com/btwld/mix/main/CHANGELOG.md): Project-level release history.

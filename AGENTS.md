@@ -68,8 +68,8 @@ packages/mix/lib/src/
 final style = BoxStyler()
     .color(Colors.blue)
     .size(100, 100)
-    .paddingAll(16)
-    .borderRounded(8);
+    .padding(.all(16))
+    .borderRadius(.circular(8));
 
 Box(style: style, child: child)
 ```

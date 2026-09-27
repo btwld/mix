@@ -40,7 +40,7 @@ class _ScaleAnimationState extends State<ScaleAnimation> {
         .color(Colors.black)
         .height(100)
         .width(100)
-        .borderRounded(10)
+        .borderRadius(.circular(10))
         .scale(appear ? 1 : 0.1)
         .animate(.easeInOut(1.s));
 
@@ -56,7 +56,7 @@ final style = BoxStyler()
     .color(Colors.black)
     .height(100)
     .width(100)
-    .borderRounded(10)
+    .borderRadius(.circular(10))
     .scale(1)
     .onHovered(
       BoxStyler()
@@ -96,14 +96,14 @@ final style = BoxStyler()
     .color(Colors.deepPurple)
     .height(100)
     .width(100)
-    .borderRounded(40)
+    .borderRadius(.circular(40))
     .phaseAnimation(
       trigger: _isExpanded,  // Listenable; each notification starts one run
       phases: AnimationPhases.values,
       styleBuilder: (phase, style) => switch (phase) {
         .initial => style.scale(1),
         .compress => style.scale(0.75).color(Colors.red.shade800),
-        .expanded => style.scale(1.25).borderRounded(20).color(Colors.yellow.shade300),
+        .expanded => style.scale(1.25).borderRadius(.circular(20)).color(Colors.yellow.shade300),
       },
       configBuilder: (phase) => switch (phase) {
         .initial => CurveAnimationConfig.springWithDampingRatio(800.ms, ratio: 0.3),

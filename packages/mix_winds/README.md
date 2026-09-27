@@ -3,7 +3,7 @@
 > **Warning**
 > This package is **highly experimental** and should be considered a **proof of concept**. The API is unstable and subject to breaking changes without notice. Use at your own risk in production environments.
 
-Current release channel: **`0.1.0-alpha.0`** (experimental alpha).
+Current release channel: **`0.1.0-alpha.1`** (experimental alpha).
 
 Tailwind-like class utilities mapped to [Mix](https://pub.dev/packages/mix) 2.0 stylers.
 
@@ -22,7 +22,7 @@ Tailwind-like class utilities mapped to [Mix](https://pub.dev/packages/mix) 2.0 
 
 ```yaml
 dependencies:
-  mix_winds: 0.1.0-alpha.0
+  mix_winds: 0.1.0-alpha.1
 ```
 
 For unreleased changes, use the git reference:
@@ -102,7 +102,8 @@ nonverbal children.
 
 `mix_winds` compiles Tailwind classes to typed Mix stylers but does not own or
 depend on the Mix wire format. Applications that need portable JSON opt into
-`mix_protocol` themselves and encode the compiled styler at their boundary:
+`mix_protocol` themselves. Add `mix_protocol: ^1.0.0-alpha.0` as a direct
+dependency, then encode the compiled styler at the application boundary:
 
 ```dart
 import 'package:mix_protocol/mix_protocol.dart';

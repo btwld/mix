@@ -49,7 +49,7 @@ in `Box` when the grid itself needs padding or decoration:
 
 ```dart
 Box(
-  style: BoxStyler().paddingAll(16).color(Colors.white),
+  style: BoxStyler().padding(.all(16)).color(Colors.white),
   child: GridBox(style: gridStyle, children: cards),
 );
 ```
@@ -67,7 +67,7 @@ final toolbarStyle = FlexBoxStyler()
     .mainAxisAlignment(.spaceBetween)
     .crossAxisAlignment(.center)
     .spacing(12)
-    .paddingAll(16);
+    .padding(.all(16));
 
 RowBox(style: toolbarStyle, children: actions);
 ```
@@ -93,7 +93,7 @@ Use `WrapBox` for items whose intrinsic widths determine where runs break:
 
 ```dart
 final tagCloudStyle = WrapBoxStyler()
-    .paddingAll(16)
+    .padding(.all(16))
     .spacing(8)
     .runSpacing(10)
     .wrapAlignment(.center);
@@ -266,8 +266,8 @@ Use `StackBox` for badges, overlays, and positioned content:
 
 ```dart
 final overlayStyle = StackBoxStyler()
-    .paddingAll(12)
-    .borderRounded(16)
+    .padding(.all(12))
+    .borderRadius(.circular(16))
     .stackAlignment(.bottomCenter)
     .stackClipBehavior(.none);
 

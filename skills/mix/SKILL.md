@@ -80,12 +80,12 @@ When styling a Mix surface, keep visual semantics in Stylers instead of nesting 
 
 | Instead of | Write |
 |------------|-------|
-| `Container(color: ..., padding: ..., child: ...)` | `Box(style: BoxStyler().color(...).paddingAll(...), child: ...)` |
+| `Container(color: ..., padding: ..., child: ...)` | `Box(style: BoxStyler().color(...).padding(.all(...)), child: ...)` |
 | `Text('Label', style: TextStyle(...))` | `StyledText('Label', style: TextStyler().fontSize(...).color(...))` |
 | `Icon(Icons.star, color: ..., size: ...)` | `StyledIcon(icon: Icons.star, style: IconStyler().color(...).size(...))` |
 | `Theme.of(context).colorScheme.primary` in styles | `ColorToken` values from `MixScope`, then `BoxStyler().color($primary())` |
 | `Theme.of(context).textTheme.bodyMedium` in styles | `TextStyleToken` values from `MixScope`, then `TextStyler().style($body.mix())` |
-| Nested `Padding` / `Align` for a styled widget | Styler methods such as `.paddingAll(16)` and `.alignment(Alignment.center)` |
+| Nested `Padding` / `Align` for a styled widget | Styler methods such as `.padding(.all(16))` and `.alignment(Alignment.center)` |
 
 ### Choose the Layout Primitive
 

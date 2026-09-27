@@ -17,7 +17,7 @@ The package is intentionally narrow:
 - no runtime registry, import side effects, public Ack types, widget-tree
   model, transport, or persistence policy.
 
-Ack 1.2.0 supplies the private codecs and JSON Schema export. Mix generated
+Ack 1.6.1 supplies the private codecs and JSON Schema export. Mix generated
 stylers remain the runtime model. Protocol code does not generate a second
 style model.
 

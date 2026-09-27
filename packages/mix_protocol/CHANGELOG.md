@@ -1,11 +1,15 @@
-## Unreleased
+## 1.0.0-alpha.0
 
 ### New features
 
 - Added the v1 `context_focus_visible` selector, including nested negation.
-- Require Ack 1.2.0 for private codecs. Generated Mix stylers remain the runtime model.
+- Require Ack 1.6.1 for private codecs. Generated Mix stylers remain the runtime model.
 - Share field, token, merge, directive, and variant declarations with schema export.
 - Preserve literal types and directive families in exported Draft 7 schemas.
+- Export the breakpoint width/token either-or as `oneOf` instead of
+  `if`/`then`/`else`. The accepted documents are unchanged; the simpler
+  spelling drops a nested negation and a duplicated `anyOf` block at each
+  breakpoint site.
 - Check in the exported style and theme schemas under `schema/` with the
   fixture documents that pin their acceptance boundary. `tool/schema-check`
   validates every checked-in suite with Ajv, replacing the Dart `json_schema`
@@ -44,7 +48,7 @@
 - Preserve unresolved numeric tokens when box constraints are encoded and
   decoded.
 
-## 1.0.0
+### Initial v1 contract
 
 - Renamed the unpublished package from `mix_schema` to `mix_protocol` to match
   its versioned wire-compatibility responsibilities.

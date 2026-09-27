@@ -81,7 +81,7 @@ const mixableStyler = MixableStyler();
 /// For spec-driven stylers ([MixableSpec]), [setterType] also drives the
 /// generated field factory and `Prop` wrapping: a nested `StyleSpec<S>` field
 /// can expose its `Styler` so it accepts fluent values (e.g.
-/// `UIAppBarStyler.container(BoxStyler().paddingAll(8))`).
+/// `UIAppBarStyler.container(BoxStyler().padding(.all(8)))`).
 ///
 /// Nested `StyleSpec<XSpec>` fields derive `XStyler` automatically by the
 /// generator's naming convention, so [setterType] is only needed when the
@@ -186,7 +186,7 @@ final class MixWidgetParameterSelection {
 /// Example — variable-backed:
 /// ```dart
 /// @MixWidget()
-/// final cardStyle = BoxStyler().paddingAll(16).borderRounded(12);
+/// final cardStyle = BoxStyler().padding(.all(16)).borderRadius(.circular(12));
 /// // Generates `class Card extends StatelessWidget { ... }`.
 /// ```
 ///

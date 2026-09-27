@@ -22,9 +22,11 @@ import 'fractionally_sized_box_modifier.dart';
 import 'icon_theme_modifier.dart';
 import 'internal/reset_modifier.dart';
 import 'intrinsic_modifier.dart';
+import 'mouse_cursor_modifier.dart';
 import 'opacity_modifier.dart';
 import 'padding_modifier.dart';
 import 'rotated_box_modifier.dart';
+import 'scroll_view_modifier.dart';
 import 'shader_mask_modifier.dart';
 import 'sized_box_modifier.dart';
 import 'transform_modifier.dart';
@@ -328,6 +330,38 @@ final class WidgetModifierConfig with Equatable {
     return WidgetModifierConfig.modifier(BoxModifierMix(spec));
   }
 
+  /// Applies [mouseCursor] to the pointer while it hovers the widget.
+  ///
+  /// Pass [MouseCursor.defer] to hand the decision back to the region or
+  /// platform behind this one.
+  factory WidgetModifierConfig.mouseCursor(MouseCursor mouseCursor) {
+    return WidgetModifierConfig.modifier(
+      MouseCursorModifierMix(mouseCursor: mouseCursor),
+    );
+  }
+
+  /// Makes the widget scrollable in a single direction.
+  ///
+  /// Omitted options keep the scroll view's own defaults: a vertical
+  /// [scrollDirection], no [reverse], and [Clip.hardEdge] clipping.
+  factory WidgetModifierConfig.scrollView({
+    Axis? scrollDirection,
+    bool? reverse,
+    EdgeInsetsGeometryMix? padding,
+    ScrollPhysics? physics,
+    Clip? clipBehavior,
+  }) {
+    return WidgetModifierConfig.modifier(
+      ScrollViewModifierMix(
+        scrollDirection: scrollDirection,
+        reverse: reverse,
+        padding: padding,
+        physics: physics,
+        clipBehavior: clipBehavior,
+      ),
+    );
+  }
+
   void _mergeWithReset(
     Map<Object, ModifierMix> acc,
     Iterable<ModifierMix> list,
@@ -402,6 +436,20 @@ final class WidgetModifierConfig with Equatable {
     Alignment alignment = .center,
   }) {
     return merge(WidgetModifierConfig.scale(x: x, y: y, alignment: alignment));
+  }
+
+  WidgetModifierConfig skew({
+    required double skewX,
+    required double skewY,
+    Alignment alignment = .center,
+  }) {
+    return merge(
+      WidgetModifierConfig.skew(
+        skewX: skewX,
+        skewY: skewY,
+        alignment: alignment,
+      ),
+    );
   }
 
   WidgetModifierConfig opacity(double value) {
@@ -572,12 +620,79 @@ final class WidgetModifierConfig with Equatable {
     return merge(WidgetModifierConfig.defaultTextStyler(style));
   }
 
+  WidgetModifierConfig defaultIcon(IconStyler iconMix) {
+    return merge(WidgetModifierConfig.defaultIcon(iconMix));
+  }
+
+  WidgetModifierConfig iconTheme({
+    Color? color,
+    double? size,
+    double? fill,
+    double? weight,
+    double? grade,
+    double? opticalSize,
+    double? opacity,
+    List<Shadow>? shadows,
+    bool? applyTextScaling,
+  }) {
+    return merge(
+      WidgetModifierConfig.iconTheme(
+        color: color,
+        size: size,
+        fill: fill,
+        weight: weight,
+        grade: grade,
+        opticalSize: opticalSize,
+        opacity: opacity,
+        shadows: shadows,
+        applyTextScaling: applyTextScaling,
+      ),
+    );
+  }
+
+  WidgetModifierConfig box(BoxStyler spec) {
+    return merge(WidgetModifierConfig.box(spec));
+  }
+
+  WidgetModifierConfig mouseCursor(MouseCursor mouseCursor) {
+    return merge(WidgetModifierConfig.mouseCursor(mouseCursor));
+  }
+
+  WidgetModifierConfig scrollView({
+    Axis? scrollDirection,
+    bool? reverse,
+    EdgeInsetsGeometryMix? padding,
+    ScrollPhysics? physics,
+    Clip? clipBehavior,
+  }) {
+    return merge(
+      WidgetModifierConfig.scrollView(
+        scrollDirection: scrollDirection,
+        reverse: reverse,
+        padding: padding,
+        physics: physics,
+        clipBehavior: clipBehavior,
+      ),
+    );
+  }
+
   WidgetModifierConfig modifier(ModifierMix value) {
     return merge(WidgetModifierConfig.modifier(value));
   }
 
   WidgetModifierConfig orderOfModifiers(List<Type> value) {
     return merge(WidgetModifierConfig.orderOfModifiers(value));
+  }
+
+  /// Drops every modifier accumulated in this configuration so far.
+  ///
+  /// Modifiers chained after the reset are kept, and [orderOfModifiers] is
+  /// never cleared. The reset applies to this configuration only: merging the
+  /// result into another configuration no longer clears that one's modifiers.
+  /// Use the [WidgetModifierConfig.reset] factory when the reset must travel
+  /// with the merge, as in `style.wrap(.reset())`.
+  WidgetModifierConfig reset() {
+    return merge(WidgetModifierConfig.reset());
   }
 
   WidgetModifierConfig merge(WidgetModifierConfig? other) {

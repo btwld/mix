@@ -19,13 +19,13 @@ void main() {
       reason: 'mix_chart is released by the repository publish workflow.',
     );
     expect(
-      RegExp(r'^  mix: \^2\.2\.0-beta\.5$', multiLine: true).hasMatch(pubspec),
+      RegExp(r'^  mix: \^2\.2\.0$', multiLine: true).hasMatch(pubspec),
       isTrue,
       reason: 'Published packages must use the hosted Mix dependency.',
     );
     expect(
       RegExp(
-        r'^  mix_annotations: \^2\.2\.0-beta\.0$',
+        r'^  mix_annotations: \^2\.2\.0$',
         multiLine: true,
       ).hasMatch(pubspec),
       isTrue,

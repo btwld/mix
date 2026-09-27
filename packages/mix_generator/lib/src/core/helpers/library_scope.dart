@@ -128,6 +128,10 @@ String? firstInvisibleTypeName(DartType type, LibraryElement library) {
         return hiddenName;
       }
     }
+
+    // Generated code names the alias and never its expansion, so the types
+    // inside the aliased declaration do not need to be visible.
+    return null;
   }
 
   if (type is InterfaceType) {

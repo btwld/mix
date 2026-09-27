@@ -112,6 +112,25 @@ void main() {
       );
     });
 
+    test(
+      'accepts a visible alias whose expansion names hidden types',
+      () async {
+        final libraries = await _resolveHiddenLibraryScope();
+        final hiddenValue = libraries.hidden.getTopLevelFunction(
+          'hiddenBehindVisibleAlias',
+        )!;
+
+        expect(
+          firstInvisibleTypeName(hiddenValue.returnType, libraries.input),
+          isNull,
+        );
+        expect(
+          typeCode(hiddenValue.returnType, visibleFrom: libraries.input),
+          'VisibleCallback',
+        );
+      },
+    );
+
     test('checks generic function type parameter bounds', () async {
       final libraries = await _resolveHiddenLibraryScope();
       final hiddenValue = libraries.hidden.getTopLevelFunction(
@@ -199,12 +218,16 @@ _resolveHiddenLibraryScope() {
       'test_pkg|lib/hidden.dart': '''
         library hidden;
 
+        import 'visible.dart';
+
         class HiddenType {}
         typedef HiddenAlias<T> = HiddenType;
 
         HiddenType hiddenValue() => throw UnimplementedError();
         HiddenAlias<int> hiddenAlias() => throw UnimplementedError();
         S Function<S extends HiddenType>(S) hiddenGenericBound() =>
+            throw UnimplementedError();
+        VisibleCallback hiddenBehindVisibleAlias() =>
             throw UnimplementedError();
       ''',
       'test_pkg|lib/input.dart': '''
@@ -217,7 +240,10 @@ _resolveHiddenLibraryScope() {
       'test_pkg|lib/visible.dart': '''
         library visible;
 
+        import 'hidden.dart';
+
         class VisibleType {}
+        typedef VisibleCallback = void Function(HiddenType value);
       ''',
     },
     (resolver) async {

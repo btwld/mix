@@ -214,7 +214,7 @@ testWidgets('Box renders with style', (tester) async {
 
   await tester.pumpWithMixScope(
     Box(
-      style: BoxStyler().color(primary()).paddingAll(16),
+      style: BoxStyler().color(primary()).padding(.all(16)),
       child: const Text('Hello'),
     ),
     tokens: {primary: Colors.blue},

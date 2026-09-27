@@ -619,6 +619,6 @@
   ],
   "additionalProperties": false,
   "x-mix-protocol-contract": "mix_protocol_theme",
-  "x-mix-protocol-version": "1.0.0",
+  "x-mix-protocol-version": "1.0.0-alpha.0",
   "x-mix-protocol-format-version": 1
 }

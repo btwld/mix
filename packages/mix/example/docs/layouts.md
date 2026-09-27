@@ -4,20 +4,20 @@ These galleries consume Mix's public `package:mix/mix.dart` library. From
 `packages/mix/example`, run the combined app and select **Layouts**:
 
 ```sh
-flutter run -d chrome
+fvm flutter run -d chrome
 ```
 
 To run GridBox's standalone test host with dashboard, card-catalog,
 media-gallery, and implicit-animation use cases:
 
 ```sh
-flutter run -d chrome -t lib/layouts/grid/main.dart
+fvm flutter run -d chrome -t lib/layouts/grid/main.dart
 ```
 
 Open WrapBox directly:
 
 ```sh
-flutter run -d chrome -t lib/layouts/wrap/main.dart
+fvm flutter run -d chrome -t lib/layouts/wrap/main.dart
 ```
 
 For bite-sized interaction demos, see [Snacks](snacks.md). For local overrides,
@@ -95,7 +95,7 @@ The primary example uses WrapBoxStyler's flattened fluent methods:
 
 ```dart
 final style = WrapBoxStyler()
-    .paddingAll(16)
+    .padding(.all(16))
     .spacing(8)
     .runSpacing(10)
     .wrapAlignment(WrapAlignment.center);
@@ -111,5 +111,5 @@ The widget tests include smoke coverage and deterministic responsive golden
 images for WrapBox and GridBox, plus navigation coverage for the Layouts section:
 
 ```sh
-flutter test
+fvm flutter test
 ```

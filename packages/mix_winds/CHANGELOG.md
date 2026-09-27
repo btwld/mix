@@ -1,4 +1,11 @@
-## 0.1.0-alpha.0
+## 0.1.0-alpha.1
+
+- First functional `mix_winds` release on pub.dev, replacing the name-reservation
+  placeholder. Uses the released Mix 2.2.0 and hosted `mix_protocol` alpha for
+  development-time wire-contract checks; `mix_protocol` remains optional at
+  runtime for applications that need portable JSON.
+
+## 0.1.0-alpha.0 (tagged but not published)
 
 - Requires `mix` 2.2.0-beta.5 or later. The package uses focus-visible
   variants, semantics roles, and gradient transforms that were added after

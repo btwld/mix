@@ -160,13 +160,13 @@
                   "style"
                 ],
                 "additionalProperties": false,
-                "if": {
-                  "required": [
-                    "token"
-                  ]
-                },
-                "then": {
-                  "not": {
+                "oneOf": [
+                  {
+                    "required": [
+                      "token"
+                    ]
+                  },
+                  {
                     "anyOf": [
                       {
                         "required": [
@@ -180,21 +180,7 @@
                       }
                     ]
                   }
-                },
-                "else": {
-                  "anyOf": [
-                    {
-                      "required": [
-                        "minWidth"
-                      ]
-                    },
-                    {
-                      "required": [
-                        "maxWidth"
-                      ]
-                    }
-                  ]
-                }
+                ]
               },
               {
                 "type": "object",
@@ -1765,13 +1751,13 @@
                   "style"
                 ],
                 "additionalProperties": false,
-                "if": {
-                  "required": [
-                    "token"
-                  ]
-                },
-                "then": {
-                  "not": {
+                "oneOf": [
+                  {
+                    "required": [
+                      "token"
+                    ]
+                  },
+                  {
                     "anyOf": [
                       {
                         "required": [
@@ -1785,21 +1771,7 @@
                       }
                     ]
                   }
-                },
-                "else": {
-                  "anyOf": [
-                    {
-                      "required": [
-                        "minWidth"
-                      ]
-                    },
-                    {
-                      "required": [
-                        "maxWidth"
-                      ]
-                    }
-                  ]
-                }
+                ]
               },
               {
                 "type": "object",
@@ -3345,13 +3317,13 @@
                   "style"
                 ],
                 "additionalProperties": false,
-                "if": {
-                  "required": [
-                    "token"
-                  ]
-                },
-                "then": {
-                  "not": {
+                "oneOf": [
+                  {
+                    "required": [
+                      "token"
+                    ]
+                  },
+                  {
                     "anyOf": [
                       {
                         "required": [
@@ -3365,21 +3337,7 @@
                       }
                     ]
                   }
-                },
-                "else": {
-                  "anyOf": [
-                    {
-                      "required": [
-                        "minWidth"
-                      ]
-                    },
-                    {
-                      "required": [
-                        "maxWidth"
-                      ]
-                    }
-                  ]
-                }
+                ]
               },
               {
                 "type": "object",
@@ -4910,13 +4868,13 @@
                   "style"
                 ],
                 "additionalProperties": false,
-                "if": {
-                  "required": [
-                    "token"
-                  ]
-                },
-                "then": {
-                  "not": {
+                "oneOf": [
+                  {
+                    "required": [
+                      "token"
+                    ]
+                  },
+                  {
                     "anyOf": [
                       {
                         "required": [
@@ -4930,21 +4888,7 @@
                       }
                     ]
                   }
-                },
-                "else": {
-                  "anyOf": [
-                    {
-                      "required": [
-                        "minWidth"
-                      ]
-                    },
-                    {
-                      "required": [
-                        "maxWidth"
-                      ]
-                    }
-                  ]
-                }
+                ]
               },
               {
                 "type": "object",
@@ -6502,13 +6446,13 @@
                   "style"
                 ],
                 "additionalProperties": false,
-                "if": {
-                  "required": [
-                    "token"
-                  ]
-                },
-                "then": {
-                  "not": {
+                "oneOf": [
+                  {
+                    "required": [
+                      "token"
+                    ]
+                  },
+                  {
                     "anyOf": [
                       {
                         "required": [
@@ -6522,21 +6466,7 @@
                       }
                     ]
                   }
-                },
-                "else": {
-                  "anyOf": [
-                    {
-                      "required": [
-                        "minWidth"
-                      ]
-                    },
-                    {
-                      "required": [
-                        "maxWidth"
-                      ]
-                    }
-                  ]
-                }
+                ]
               },
               {
                 "type": "object",
@@ -8100,13 +8030,13 @@
                   "style"
                 ],
                 "additionalProperties": false,
-                "if": {
-                  "required": [
-                    "token"
-                  ]
-                },
-                "then": {
-                  "not": {
+                "oneOf": [
+                  {
+                    "required": [
+                      "token"
+                    ]
+                  },
+                  {
                     "anyOf": [
                       {
                         "required": [
@@ -8120,21 +8050,7 @@
                       }
                     ]
                   }
-                },
-                "else": {
-                  "anyOf": [
-                    {
-                      "required": [
-                        "minWidth"
-                      ]
-                    },
-                    {
-                      "required": [
-                        "maxWidth"
-                      ]
-                    }
-                  ]
-                }
+                ]
               },
               {
                 "type": "object",
@@ -9704,13 +9620,13 @@
                   "style"
                 ],
                 "additionalProperties": false,
-                "if": {
-                  "required": [
-                    "token"
-                  ]
-                },
-                "then": {
-                  "not": {
+                "oneOf": [
+                  {
+                    "required": [
+                      "token"
+                    ]
+                  },
+                  {
                     "anyOf": [
                       {
                         "required": [
@@ -9724,21 +9640,7 @@
                       }
                     ]
                   }
-                },
-                "else": {
-                  "anyOf": [
-                    {
-                      "required": [
-                        "minWidth"
-                      ]
-                    },
-                    {
-                      "required": [
-                        "maxWidth"
-                      ]
-                    }
-                  ]
-                }
+                ]
               },
               {
                 "type": "object",
@@ -11293,13 +11195,13 @@
                   "style"
                 ],
                 "additionalProperties": false,
-                "if": {
-                  "required": [
-                    "token"
-                  ]
-                },
-                "then": {
-                  "not": {
+                "oneOf": [
+                  {
+                    "required": [
+                      "token"
+                    ]
+                  },
+                  {
                     "anyOf": [
                       {
                         "required": [
@@ -11313,21 +11215,7 @@
                       }
                     ]
                   }
-                },
-                "else": {
-                  "anyOf": [
-                    {
-                      "required": [
-                        "minWidth"
-                      ]
-                    },
-                    {
-                      "required": [
-                        "maxWidth"
-                      ]
-                    }
-                  ]
-                }
+                ]
               },
               {
                 "type": "object",
@@ -12873,13 +12761,13 @@
                   "style"
                 ],
                 "additionalProperties": false,
-                "if": {
-                  "required": [
-                    "token"
-                  ]
-                },
-                "then": {
-                  "not": {
+                "oneOf": [
+                  {
+                    "required": [
+                      "token"
+                    ]
+                  },
+                  {
                     "anyOf": [
                       {
                         "required": [
@@ -12893,21 +12781,7 @@
                       }
                     ]
                   }
-                },
-                "else": {
-                  "anyOf": [
-                    {
-                      "required": [
-                        "minWidth"
-                      ]
-                    },
-                    {
-                      "required": [
-                        "maxWidth"
-                      ]
-                    }
-                  ]
-                }
+                ]
               },
               {
                 "type": "object",
@@ -14480,13 +14354,13 @@
                   "style"
                 ],
                 "additionalProperties": false,
-                "if": {
-                  "required": [
-                    "token"
-                  ]
-                },
-                "then": {
-                  "not": {
+                "oneOf": [
+                  {
+                    "required": [
+                      "token"
+                    ]
+                  },
+                  {
                     "anyOf": [
                       {
                         "required": [
@@ -14500,21 +14374,7 @@
                       }
                     ]
                   }
-                },
-                "else": {
-                  "anyOf": [
-                    {
-                      "required": [
-                        "minWidth"
-                      ]
-                    },
-                    {
-                      "required": [
-                        "maxWidth"
-                      ]
-                    }
-                  ]
-                }
+                ]
               },
               {
                 "type": "object",
@@ -16393,13 +16253,13 @@
                   "style"
                 ],
                 "additionalProperties": false,
-                "if": {
-                  "required": [
-                    "token"
-                  ]
-                },
-                "then": {
-                  "not": {
+                "oneOf": [
+                  {
+                    "required": [
+                      "token"
+                    ]
+                  },
+                  {
                     "anyOf": [
                       {
                         "required": [
@@ -16413,21 +16273,7 @@
                       }
                     ]
                   }
-                },
-                "else": {
-                  "anyOf": [
-                    {
-                      "required": [
-                        "minWidth"
-                      ]
-                    },
-                    {
-                      "required": [
-                        "maxWidth"
-                      ]
-                    }
-                  ]
-                }
+                ]
               },
               {
                 "type": "object",
@@ -21329,13 +21175,13 @@
                       "style"
                     ],
                     "additionalProperties": false,
-                    "if": {
-                      "required": [
-                        "token"
-                      ]
-                    },
-                    "then": {
-                      "not": {
+                    "oneOf": [
+                      {
+                        "required": [
+                          "token"
+                        ]
+                      },
+                      {
                         "anyOf": [
                           {
                             "required": [
@@ -21349,21 +21195,7 @@
                           }
                         ]
                       }
-                    },
-                    "else": {
-                      "anyOf": [
-                        {
-                          "required": [
-                            "minWidth"
-                          ]
-                        },
-                        {
-                          "required": [
-                            "maxWidth"
-                          ]
-                        }
-                      ]
-                    }
+                    ]
                   },
                   {
                     "type": "object",
@@ -22929,13 +22761,13 @@
                       "style"
                     ],
                     "additionalProperties": false,
-                    "if": {
-                      "required": [
-                        "token"
-                      ]
-                    },
-                    "then": {
-                      "not": {
+                    "oneOf": [
+                      {
+                        "required": [
+                          "token"
+                        ]
+                      },
+                      {
                         "anyOf": [
                           {
                             "required": [
@@ -22949,21 +22781,7 @@
                           }
                         ]
                       }
-                    },
-                    "else": {
-                      "anyOf": [
-                        {
-                          "required": [
-                            "minWidth"
-                          ]
-                        },
-                        {
-                          "required": [
-                            "maxWidth"
-                          ]
-                        }
-                      ]
-                    }
+                    ]
                   },
                   {
                     "type": "object",
@@ -24504,13 +24322,13 @@
                       "style"
                     ],
                     "additionalProperties": false,
-                    "if": {
-                      "required": [
-                        "token"
-                      ]
-                    },
-                    "then": {
-                      "not": {
+                    "oneOf": [
+                      {
+                        "required": [
+                          "token"
+                        ]
+                      },
+                      {
                         "anyOf": [
                           {
                             "required": [
@@ -24524,21 +24342,7 @@
                           }
                         ]
                       }
-                    },
-                    "else": {
-                      "anyOf": [
-                        {
-                          "required": [
-                            "minWidth"
-                          ]
-                        },
-                        {
-                          "required": [
-                            "maxWidth"
-                          ]
-                        }
-                      ]
-                    }
+                    ]
                   },
                   {
                     "type": "object",
@@ -26064,13 +25868,13 @@
                       "style"
                     ],
                     "additionalProperties": false,
-                    "if": {
-                      "required": [
-                        "token"
-                      ]
-                    },
-                    "then": {
-                      "not": {
+                    "oneOf": [
+                      {
+                        "required": [
+                          "token"
+                        ]
+                      },
+                      {
                         "anyOf": [
                           {
                             "required": [
@@ -26084,21 +25888,7 @@
                           }
                         ]
                       }
-                    },
-                    "else": {
-                      "anyOf": [
-                        {
-                          "required": [
-                            "minWidth"
-                          ]
-                        },
-                        {
-                          "required": [
-                            "maxWidth"
-                          ]
-                        }
-                      ]
-                    }
+                    ]
                   },
                   {
                     "type": "object",
@@ -27651,13 +27441,13 @@
                       "style"
                     ],
                     "additionalProperties": false,
-                    "if": {
-                      "required": [
-                        "token"
-                      ]
-                    },
-                    "then": {
-                      "not": {
+                    "oneOf": [
+                      {
+                        "required": [
+                          "token"
+                        ]
+                      },
+                      {
                         "anyOf": [
                           {
                             "required": [
@@ -27671,21 +27461,7 @@
                           }
                         ]
                       }
-                    },
-                    "else": {
-                      "anyOf": [
-                        {
-                          "required": [
-                            "minWidth"
-                          ]
-                        },
-                        {
-                          "required": [
-                            "maxWidth"
-                          ]
-                        }
-                      ]
-                    }
+                    ]
                   },
                   {
                     "type": "object",
@@ -29244,13 +29020,13 @@
                       "style"
                     ],
                     "additionalProperties": false,
-                    "if": {
-                      "required": [
-                        "token"
-                      ]
-                    },
-                    "then": {
-                      "not": {
+                    "oneOf": [
+                      {
+                        "required": [
+                          "token"
+                        ]
+                      },
+                      {
                         "anyOf": [
                           {
                             "required": [
@@ -29264,21 +29040,7 @@
                           }
                         ]
                       }
-                    },
-                    "else": {
-                      "anyOf": [
-                        {
-                          "required": [
-                            "minWidth"
-                          ]
-                        },
-                        {
-                          "required": [
-                            "maxWidth"
-                          ]
-                        }
-                      ]
-                    }
+                    ]
                   },
                   {
                     "type": "object",
@@ -30843,13 +30605,13 @@
                       "style"
                     ],
                     "additionalProperties": false,
-                    "if": {
-                      "required": [
-                        "token"
-                      ]
-                    },
-                    "then": {
-                      "not": {
+                    "oneOf": [
+                      {
+                        "required": [
+                          "token"
+                        ]
+                      },
+                      {
                         "anyOf": [
                           {
                             "required": [
@@ -30863,21 +30625,7 @@
                           }
                         ]
                       }
-                    },
-                    "else": {
-                      "anyOf": [
-                        {
-                          "required": [
-                            "minWidth"
-                          ]
-                        },
-                        {
-                          "required": [
-                            "maxWidth"
-                          ]
-                        }
-                      ]
-                    }
+                    ]
                   },
                   {
                     "type": "object",
@@ -32427,13 +32175,13 @@
                       "style"
                     ],
                     "additionalProperties": false,
-                    "if": {
-                      "required": [
-                        "token"
-                      ]
-                    },
-                    "then": {
-                      "not": {
+                    "oneOf": [
+                      {
+                        "required": [
+                          "token"
+                        ]
+                      },
+                      {
                         "anyOf": [
                           {
                             "required": [
@@ -32447,21 +32195,7 @@
                           }
                         ]
                       }
-                    },
-                    "else": {
-                      "anyOf": [
-                        {
-                          "required": [
-                            "minWidth"
-                          ]
-                        },
-                        {
-                          "required": [
-                            "maxWidth"
-                          ]
-                        }
-                      ]
-                    }
+                    ]
                   },
                   {
                     "type": "object",
@@ -34002,13 +33736,13 @@
                       "style"
                     ],
                     "additionalProperties": false,
-                    "if": {
-                      "required": [
-                        "token"
-                      ]
-                    },
-                    "then": {
-                      "not": {
+                    "oneOf": [
+                      {
+                        "required": [
+                          "token"
+                        ]
+                      },
+                      {
                         "anyOf": [
                           {
                             "required": [
@@ -34022,21 +33756,7 @@
                           }
                         ]
                       }
-                    },
-                    "else": {
-                      "anyOf": [
-                        {
-                          "required": [
-                            "minWidth"
-                          ]
-                        },
-                        {
-                          "required": [
-                            "maxWidth"
-                          ]
-                        }
-                      ]
-                    }
+                    ]
                   },
                   {
                     "type": "object",
@@ -35604,13 +35324,13 @@
                       "style"
                     ],
                     "additionalProperties": false,
-                    "if": {
-                      "required": [
-                        "token"
-                      ]
-                    },
-                    "then": {
-                      "not": {
+                    "oneOf": [
+                      {
+                        "required": [
+                          "token"
+                        ]
+                      },
+                      {
                         "anyOf": [
                           {
                             "required": [
@@ -35624,21 +35344,7 @@
                           }
                         ]
                       }
-                    },
-                    "else": {
-                      "anyOf": [
-                        {
-                          "required": [
-                            "minWidth"
-                          ]
-                        },
-                        {
-                          "required": [
-                            "maxWidth"
-                          ]
-                        }
-                      ]
-                    }
+                    ]
                   },
                   {
                     "type": "object",
@@ -37512,13 +37218,13 @@
                       "style"
                     ],
                     "additionalProperties": false,
-                    "if": {
-                      "required": [
-                        "token"
-                      ]
-                    },
-                    "then": {
-                      "not": {
+                    "oneOf": [
+                      {
+                        "required": [
+                          "token"
+                        ]
+                      },
+                      {
                         "anyOf": [
                           {
                             "required": [
@@ -37532,21 +37238,7 @@
                           }
                         ]
                       }
-                    },
-                    "else": {
-                      "anyOf": [
-                        {
-                          "required": [
-                            "minWidth"
-                          ]
-                        },
-                        {
-                          "required": [
-                            "maxWidth"
-                          ]
-                        }
-                      ]
-                    }
+                    ]
                   },
                   {
                     "type": "object",
@@ -39015,13 +38707,13 @@
             "kind"
           ],
           "additionalProperties": false,
-          "if": {
-            "required": [
-              "token"
-            ]
-          },
-          "then": {
-            "not": {
+          "oneOf": [
+            {
+              "required": [
+                "token"
+              ]
+            },
+            {
               "anyOf": [
                 {
                   "required": [
@@ -39035,21 +38727,7 @@
                 }
               ]
             }
-          },
-          "else": {
-            "anyOf": [
-              {
-                "required": [
-                  "minWidth"
-                ]
-              },
-              {
-                "required": [
-                  "maxWidth"
-                ]
-              }
-            ]
-          }
+          ]
         },
         {
           "type": "object",
@@ -39192,6 +38870,6 @@
     }
   },
   "x-mix-protocol-contract": "mix_protocol",
-  "x-mix-protocol-version": "1.0.0",
+  "x-mix-protocol-version": "1.0.0-alpha.0",
   "x-mix-protocol-format-version": 1
 }

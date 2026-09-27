@@ -79,9 +79,11 @@ function compile(schema) {
     strictNumbers: true,
     strictTypes: true,
     strictTuples: true,
-    // The breakpoint selector uses Draft 7's `if: {required: [...]}` idiom
-    // with the property declared on the parent schema. Ajv's optional
-    // strictRequired lint rejects that spelling even though it is valid.
+    // The breakpoint selector spells its either/or as
+    // `oneOf: [{required: [...]}, ...]`, with the properties declared on the
+    // parent schema. Ajv's optional strictRequired lint does not resolve
+    // `required` through an applicator branch, so it rejects that spelling
+    // even though it is valid.
     strictRequired: false,
     allErrors: false,
   });

@@ -104,7 +104,7 @@ final cardStyle = BoxStyler()
     .size(240, 100)
     .color(Colors.blue)
     .alignment(.center)
-    .borderRounded(12)
+    .borderRadius(.circular(12))
     .border(.color(Colors.black).width(1).style(.solid));
 
 Box(
@@ -127,13 +127,13 @@ final boxStyle = BoxStyler()
     .height(100)
     .width(100)
     .color(Colors.purple)
-    .borderRounded(10);
+    .borderRadius(.circular(10));
 
 // Compose from a base style
 final base = BoxStyler()
-    .paddingX(16)
-    .paddingY(8)
-    .borderRounded(8)
+    .padding(.horizontal(16))
+    .padding(.vertical(8))
+    .borderRadius(.circular(8))
     .color(Colors.black);
 final solid = base.color(Colors.blue);
 ```
@@ -146,7 +146,7 @@ final solid = base.color(Colors.blue);
 
 ```dart
 final tagCloud = WrapBoxStyler()
-    .paddingAll(16)
+    .padding(.all(16))
     .spacing(8)
     .runSpacing(10)
     .wrapAlignment(WrapAlignment.center);
@@ -165,7 +165,7 @@ Styles adapt to interactions and context in one place:
 ```dart
 final buttonStyle = BoxStyler()
     .height(50)
-    .borderRounded(25)
+    .borderRadius(.circular(25))
     .color(Colors.blue)
     .onHovered(.color(Colors.blue.shade700))
     .onDark(.color(Colors.blue.shade200));
@@ -191,7 +191,7 @@ MixScope(
 
 final style = BoxStyler()
     .color($primary())
-    .paddingAll($spacingMd());
+    .padding(.all($spacingMd()));
 ```
 
 [Design tokens guide →](https://www.fluttermix.com/documentation/mix/guides/design-token)

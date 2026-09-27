@@ -18,8 +18,8 @@ Prefer fluent chaining on Styler types. Each setter returns a new merged instanc
 ```dart
 final style = BoxStyler()
     .color(Colors.blue)
-    .paddingAll(16)
-    .borderRounded(8)
+    .padding(.all(16))
+    .borderRadius(.circular(8))
     .width(200);
 ```
 
@@ -27,22 +27,28 @@ Generated primitive setters merge a new Styler with the changed field. Convenien
 
 ## Style Mixins
 
-Stylers mix in convenience methods. All methods are available on the corresponding Styler.
+Stylers mix in convenience methods. All methods are available on the corresponding Styler. The deprecated one-line shorthands (`paddingAll`, `borderRounded`, …) are listed in [Retired conveniences](styler-api-policy.md#retired-conveniences); the tables below show the canonical calls.
 
 ### SpacingStyleMixin
 
-Padding and margin shortcuts:
+Padding and margin:
 
 | Method | Description |
 |--------|-------------|
-| `paddingAll(v)` | All sides |
-| `paddingX(v)` / `paddingY(v)` | Horizontal / vertical |
-| `paddingTop(v)`, `paddingBottom(v)`, `paddingLeft(v)`, `paddingRight(v)` | Individual sides |
-| `paddingStart(v)` / `paddingEnd(v)` | RTL-aware |
-| `paddingOnly(...)` | Named parameters for any combination |
-| `marginAll(v)` | All margin sides |
-| `marginTop(v)`, etc. | Individual margin sides |
-| `marginOnly(...)` | Named margin parameters |
+| `padding(.all(v))` | All sides |
+| `padding(.horizontal(v))` / `padding(.vertical(v))` | Horizontal / vertical |
+| `padding(.top(v))`, `padding(.bottom(v))`, `padding(.left(v))`, `padding(.right(v))` | Physical sides |
+| `padding(.start(v))`, `padding(.end(v))` | Directional sides |
+| `padding(.horizontal(h).left(l))`, `padding(.vertical(v).top(t))` | Known sides. Broad setter first; reversing overwrites the specific side |
+| `padding(.start(v).end(v))` | Known directional sides, chained |
+| `padding(.only(left: left ?? horizontal, ...))` | Caller resolves each side, then passes concrete values. `.only` does not apply horizontal/vertical fallback |
+| `padding(.directional(start: start ?? left ?? horizontal, ...))` | Same, when start or end is set |
+| `margin(.all(v))` | All margin sides |
+| `margin(.top(v))`, etc. | Individual margin sides |
+| `margin(.horizontal(h).left(l))`, `margin(.vertical(v).top(t))` | Known sides. Broad setter first; reversing overwrites the specific side |
+| `margin(.start(v).end(v))` | Known directional margin, chained |
+| `margin(.only(left: left ?? horizontal, ...))` | Caller resolves each side, then passes concrete values |
+| `margin(.directional(start: start ?? left ?? horizontal, ...))` | Same, when start or end is set |
 
 ### DecorationStyleMixin
 
@@ -58,7 +64,7 @@ Decoration, color, gradient, border, shadow, shape, background image:
 | `elevation(v)` | Elevation shadow preset |
 | `image(v)` | Decoration image |
 | `shape(v)` | Shape border |
-| `shapeCircle()`, `shapeStadium()`, `shapeRoundedRectangle()`, etc. | Shape shortcuts |
+| `shape(.circle())`, `shape(.stadium())`, `shape(.roundedRectangle())`, etc. | Shape shortcuts |
 | `backgroundImage(image)`, `backgroundImageUrl(url)`, `backgroundImageAsset(path)` | Background image utilities |
 | `linearGradient(...)`, `radialGradient(...)`, `sweepGradient(...)` | Gradient shortcuts |
 | `foregroundLinearGradient(...)`, etc. | Foreground gradient shortcuts |
@@ -67,22 +73,22 @@ Decoration, color, gradient, border, shadow, shape, background image:
 
 | Method | Description |
 |--------|-------------|
-| `borderAll(...)` | All sides: `color`, `width`, `style`, `strokeAlign` |
-| `borderTop(...)`, `borderBottom(...)`, `borderLeft(...)`, `borderRight(...)` | Individual sides |
-| `borderStart(...)` / `borderEnd(...)` | RTL-aware |
-| `borderVertical(...)` / `borderHorizontal(...)` | Grouped sides |
+| `border(.color(c).width(w).style(s).strokeAlign(a))` | Uniform known values. `style` and `strokeAlign` stay on this chain |
+| `border(.top(.color(c).width(w).style(s).strokeAlign(a)))` | One side. The same chain goes inside `.bottom`, `.left`, `.right`, `.start`, `.end`, `.vertical`, and `.horizontal` |
+| `border(.start(...))` / `border(.end(...))` | RTL-aware |
+| `border(.vertical(...))` / `border(.horizontal(...))` | Grouped sides |
 
 ### BorderRadiusStyleMixin
 
 | Method | Description |
 |--------|-------------|
-| `borderRounded(radius)` | Uniform circular radius (most common) |
-| `borderRadiusAll(radius)` | All corners with `Radius` |
-| `borderRadiusTop(r)`, `borderRadiusBottom(r)` | Top/bottom grouped |
-| `borderRadiusLeft(r)`, `borderRadiusRight(r)` | Left/right grouped |
-| `borderRadiusTopLeft(r)`, `borderRadiusTopRight(r)`, etc. | Individual corners |
-| `borderRadiusTopStart(r)`, `borderRadiusTopEnd(r)`, etc. | RTL-aware corners |
-| `borderRoundedTop(r)`, `borderRoundedBottom(r)`, etc. | Circular grouped |
+| `borderRadius(.circular(radius))` | Uniform circular radius (most common) |
+| `borderRadius(.all(radius))` | All corners with `Radius` |
+| `borderRadius(.top(r))`, `borderRadius(.bottom(r))` | Top/bottom grouped |
+| `borderRadius(.left(r))`, `borderRadius(.right(r))` | Left/right grouped |
+| `borderRadius(.topLeft(r))`, `borderRadius(.topRight(r))`, etc. | Individual corners |
+| `borderRadius(.topStart(r))`, `borderRadius(.topEnd(r))`, etc. | RTL-aware corners |
+| `borderRadius(.top(.circular(r)))`, `borderRadius(.bottom(.circular(r)))`, etc. | Circular grouped |
 
 ### ConstraintStyleMixin
 
@@ -92,15 +98,15 @@ Decoration, color, gradient, border, shadow, shape, background image:
 | `size(w, h)` | Both dimensions |
 | `minWidth(v)` / `maxWidth(v)` | Width constraints |
 | `minHeight(v)` / `maxHeight(v)` | Height constraints |
-| `constraintsOnly(...)` | Named parameters for any combination |
+| `minWidth(v).maxWidth(v)` on the Styler | Inline bounds. `constraints(existing)` is for a prebuilt BoxConstraintsMix |
 
 ### ShadowStyleMixin
 
 | Method | Description |
 |--------|-------------|
-| `shadowOnly(...)` | Single shadow with `color`, `offset`, `blurRadius`, `spreadRadius` |
-| `boxShadows(v)` | List of BoxShadowMix |
-| `boxElevation(v)` | ElevationShadow preset |
+| `shadow(.color(c).offset(x: x, y: y).blurRadius(b).spreadRadius(s))` | Known shadow fields. Nullable offset: `shadow(BoxShadowMix(...))` |
+| `shadows(v)` | List of BoxShadowMix |
+| `elevation(v)` | ElevationShadow preset |
 
 ### TransformStyleMixin
 
@@ -111,7 +117,7 @@ Decoration, color, gradient, border, shadow, shape, background image:
 | `scale(factor, {alignment})` | Uniform scale |
 | `translate(x, y, [z])` | Translation |
 | `skew(skewX, skewY)` | Skew |
-| `transformReset()` | Reset to identity |
+| `transform(.identity())` | Reset to identity |
 
 ### FlexStyleMixin (on FlexStyler/FlexBoxStyler)
 
@@ -278,6 +284,6 @@ Use `merge()` for combining reusable style fragments; see [`styler-api-policy.md
 Widget-backed generated Stylers support `call()` for inline widget creation. This includes `BoxStyler`, `TextStyler`, `IconStyler`, `ImageStyler`, `FlexBoxStyler`, `WrapBoxStyler`, and `StackBoxStyler`; layout-only stylers such as `FlexStyler`, `WrapStyler`, and `StackStyler` do not create widgets directly. `GridBoxStyler` is handwritten and is not callable; construct `GridBox(style: ..., children: ...)` explicitly.
 
 ```dart
-BoxStyler().color(Colors.blue).paddingAll(16)(child: Text('Hello'))
+BoxStyler().color(Colors.blue).padding(.all(16))(child: Text('Hello'))
 // Equivalent to: Box(style: BoxStyler()..., child: Text('Hello'))
 ```

@@ -11,7 +11,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  mix: ^2.2.0-beta.5
+  mix: ^2.2.0
   mix_chart:
     path: ../mix_chart
   mix_protocol:

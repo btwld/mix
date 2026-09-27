@@ -48,7 +48,30 @@ mixin ConstraintStyleMixin<T extends Mix<Object?>> {
     );
   }
 
-  /// Creates constraints with only specified values, supporting priority resolution
+  /// Creates constraints with only specified values, supporting priority resolution.
+  ///
+  /// Each bound falls back on its own: `minWidth ?? width`,
+  /// `maxWidth ?? width`, `minHeight ?? height`, `maxHeight ?? height`.
+  ///
+  /// Known values chain, broad setter first:
+  /// `width(200).minWidth(100).maxHeight(300)`. Reversing that order lets
+  /// `width` or `height` replace both bounds.
+  ///
+  /// Nullable forwarding passes the resolved bounds:
+  ///
+  /// ```dart
+  /// constraints(BoxConstraintsMix(
+  ///   minWidth: minWidth ?? width,
+  ///   maxWidth: maxWidth ?? width,
+  ///   minHeight: minHeight ?? height,
+  ///   maxHeight: maxHeight ?? height,
+  /// ))
+  /// ```
+  ///
+  /// Pass an existing [BoxConstraintsMix] to `constraints(...)`.
+  @Deprecated(
+    'Use width(w).maxWidth(max) with the broad setter first. Nullables: constraints(BoxConstraintsMix(minWidth: minWidth ?? width, maxWidth: maxWidth ?? width, minHeight: minHeight ?? height, maxHeight: maxHeight ?? height)). constraintsOnly will be removed in Mix 3.0.',
+  )
   T constraintsOnly({
     double? width,
     double? height,

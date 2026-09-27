@@ -115,6 +115,32 @@ jobs:
       - name: Validate publish archive
         run: dart pub publish --dry-run
 
+  protocol-release:
+    name: Protocol / Release dependency check
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: packages/mix_protocol
+    steps:
+      - uses: actions/checkout@v4
+      - uses: kuhnroyal/flutter-fvm-config-action@v2
+        id: fvm-config-action
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ steps.fvm-config-action.outputs.FLUTTER_VERSION }}
+          channel: ${{ steps.fvm-config-action.outputs.FLUTTER_CHANNEL }}
+      - name: Resolve hosted release dependencies
+        run: flutter pub get
+      - name: Analyze against published Mix
+        run: flutter analyze
+      - name: Test against published Mix
+        run: flutter test
+      - name: Restore files modified by Flutter tooling
+        run: git restore -- .
+      - name: Validate publish archive
+        run: dart pub publish --dry-run
+
   protocol-schema:
     name: Protocol Schema / Ajv check
     runs-on: ubuntu-latest

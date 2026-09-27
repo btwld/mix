@@ -389,12 +389,15 @@ final class _BreakpointBoundsConstraint extends Constraint<JsonMap>
       ],
     };
 
+    // Exactly one of a token reference or a width bound. Both present and
+    // both absent each match a different branch count, mirroring isValid.
     return {
-      'if': {
-        'required': ['token'],
-      },
-      'then': {'not': hasBounds},
-      'else': hasBounds,
+      'oneOf': [
+        {
+          'required': ['token'],
+        },
+        hasBounds,
+      ],
     };
   }
 

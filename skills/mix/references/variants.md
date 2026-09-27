@@ -93,7 +93,7 @@ final style = BoxStyler()
 ```dart
 final style = BoxStyler()
     .color(Colors.white)
-    .paddingAll(16)
+    .padding(.all(16))
     .onDark(BoxStyler().color(Colors.black))
     .onHovered(BoxStyler().color(Colors.blue.shade100))
     .onPressed(BoxStyler().color(Colors.blue.shade300));
@@ -108,9 +108,9 @@ const small = NamedVariant('small');
 
 // Apply in style
 final style = BoxStyler()
-    .paddingAll(16)
+    .padding(.all(16))
     .variant(primary, BoxStyler().color(Colors.blue))
-    .variant(small, BoxStyler().paddingAll(8));
+    .variant(small, BoxStyler().padding(.all(8)));
 
 // Resolve with named variants where a BuildContext is available
 final spec = style.build(context, namedVariants: {primary, small}).spec;
@@ -120,7 +120,7 @@ final spec = style.build(context, namedVariants: {primary, small}).spec;
 
 ```dart
 final style = BoxStyler()
-    .paddingAll(16)
+    .padding(.all(16))
     .variant(primary, BoxStyler().color(Colors.blue));
 
 // Apply named variants to a style

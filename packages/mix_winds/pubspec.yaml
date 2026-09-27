@@ -3,7 +3,7 @@ description: Tailwind-like class utilities mapped to Mix 2.0 stylers.
 # The reserved `mix_winds` name already holds a 0.0.1-dev.0 placeholder release,
 # and semver orders `0.0.1-alpha.1` (the last `mix_tailwinds` version) below it.
 # Every release under this name must therefore stay above 0.0.1-dev.0.
-version: 0.1.0-alpha.0
+version: 0.1.0-alpha.1
 homepage: https://github.com/btwld/mix
 repository: https://github.com/btwld/mix/tree/main/packages/mix_winds
 
@@ -14,12 +14,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  mix: ^2.2.0-beta.5
+  mix: ^2.2.0
 
 dev_dependencies:
   dart_code_metrics_presets: ^2.24.0
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
-  mix_protocol:
-    path: ../mix_protocol
+  mix_protocol: ^1.0.0-alpha.0

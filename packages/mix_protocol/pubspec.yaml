@@ -1,7 +1,6 @@
 name: mix_protocol
 description: Versioned JSON protocol for representable Mix styles and themes.
-version: 1.0.0
-publish_to: none
+version: 1.0.0-alpha.0
 repository: https://github.com/btwld/mix/tree/main/packages/mix_protocol
 
 environment:
@@ -9,10 +8,10 @@ environment:
   flutter: ">=3.44.0"
 
 dependencies:
-  ack: ^1.2.0
+  ack: ^1.6.1
   flutter:
     sdk: flutter
-  mix: ^2.2.0-beta.5
+  mix: ^2.2.0
 
 dev_dependencies:
   analyzer: '>=9.0.0 <11.0.0'

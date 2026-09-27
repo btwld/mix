@@ -34,7 +34,7 @@ MixScope(
 // 3. Use in styles — call() creates a token reference
 final style = BoxStyler()
     .color($primary())
-    .paddingAll($spacingMd());
+    .padding(.all($spacingMd()));
 ```
 
 The `()` call syntax on tokens creates a type-specific reference (`ColorRef`, `DoubleRef`, `RadiusRef`, etc.) that the `Prop` system recognizes as a token source and resolves from `MixScope` during style resolution.

@@ -65,16 +65,25 @@ mixin DecorationStyleMixin<T extends Mix<Object?>> {
   T foregroundDecoration(DecorationMix value);
 
   /// Sets a circular shape (CircleBorder)
+  @Deprecated(
+    'Use shape(.circle(...)) instead. shapeCircle will be removed in Mix 3.0.',
+  )
   T shapeCircle({BorderSideMix? side}) {
     return shape(CircleBorderMix(side: side));
   }
 
   /// Sets a stadium shape (StadiumBorder)
+  @Deprecated(
+    'Use shape(.stadium(...)) instead. shapeStadium will be removed in Mix 3.0.',
+  )
   T shapeStadium({BorderSideMix? side}) {
     return shape(StadiumBorderMix(side: side));
   }
 
   /// Sets a rounded rectangle shape (RoundedRectangleBorder)
+  @Deprecated(
+    'Use shape(.roundedRectangle(...)) instead. shapeRoundedRectangle will be removed in Mix 3.0.',
+  )
   T shapeRoundedRectangle({
     BorderSideMix? side,
     BorderRadiusMix? borderRadius,
@@ -85,6 +94,9 @@ mixin DecorationStyleMixin<T extends Mix<Object?>> {
   }
 
   /// Sets a beveled rectangle shape (BeveledRectangleBorder)
+  @Deprecated(
+    'Use shape(.beveledRectangle(...)) instead. shapeBeveledRectangle will be removed in Mix 3.0.',
+  )
   T shapeBeveledRectangle({
     BorderSideMix? side,
     BorderRadiusMix? borderRadius,
@@ -95,6 +107,9 @@ mixin DecorationStyleMixin<T extends Mix<Object?>> {
   }
 
   /// Sets a continuous rectangle shape (ContinuousRectangleBorder)
+  @Deprecated(
+    'Use shape(.continuousRectangle(...)) instead. shapeContinuousRectangle will be removed in Mix 3.0.',
+  )
   T shapeContinuousRectangle({
     BorderSideMix? side,
     BorderRadiusMix? borderRadius,
@@ -105,6 +120,9 @@ mixin DecorationStyleMixin<T extends Mix<Object?>> {
   }
 
   /// Sets a star shape (StarBorder)
+  @Deprecated(
+    'Use shape(.star(...)) instead. shapeStar will be removed in Mix 3.0.',
+  )
   T shapeStar({
     BorderSideMix? side,
     double? points,
@@ -128,6 +146,9 @@ mixin DecorationStyleMixin<T extends Mix<Object?>> {
   }
 
   /// Sets a linear border shape (LinearBorder)
+  @Deprecated(
+    'Use shape(.linear(...)) instead. shapeLinear will be removed in Mix 3.0.',
+  )
   T shapeLinear({
     BorderSideMix? side,
     LinearBorderEdgeMix? start,
@@ -147,6 +168,9 @@ mixin DecorationStyleMixin<T extends Mix<Object?>> {
   }
 
   /// Sets a superellipse shape (RoundedSuperellipseBorder)
+  @Deprecated(
+    'Use shape(.superellipse(...)) instead. shapeSuperellipse will be removed in Mix 3.0.',
+  )
   T shapeSuperellipse({BorderSideMix? side, BorderRadiusMix? borderRadius}) {
     return shape(
       RoundedSuperellipseBorderMix(borderRadius: borderRadius, side: side),

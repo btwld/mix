@@ -13,7 +13,7 @@ class MixAvoidEmptyVariants extends AnalysisRule {
     'mix_avoid_empty_variants',
     'Styler chains should include at least one base styling method, not only variant methods.',
     correctionMessage:
-        'Add base style properties (e.g. .color(), .paddingAll()) before the variant methods.',
+        'Add base style properties (e.g. .color(), .padding()) before the variant methods.',
   );
 
   MixAvoidEmptyVariants()
