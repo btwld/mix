@@ -9,13 +9,14 @@ One app contains three sections:
 - **Snacks:** [30 self-contained DartPad examples](docs/snacks.md), whose
   exact source is bundled for the gallery's copy action.
 
-From the repository root, run `melos bootstrap` for the local Mix checkout.
-Then, from this directory:
+The Remix CLI requires the repository's pinned Flutter 3.44.0 toolchain.
+From the repository root, run `fvm exec melos bootstrap` for the local Mix
+checkout. Then, from this directory:
 
 ```sh
-flutter run -d chrome
-flutter test
-flutter analyze
+fvm flutter run -d chrome
+fvm flutter test
+fvm flutter analyze
 ```
 
 Without Melos-generated overrides, `flutter pub get` resolves published Mix
