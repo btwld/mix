@@ -1,121 +1,24 @@
-# Mix examples
+# Getting started with Mix
 
-These apps consume only Mix's public `package:mix/mix.dart` library.
+[lib/main.dart](lib/main.dart) is a complete, small example: explicit colors,
+named styles, callable widgets, state variants, and an implicit animation.
+Click **Save example**, or focus it with Tab and press Enter. Click again to undo.
+`Pressable` owns the button's keyboard, pointer, and semantic behavior.
 
-Run the WrapBox gallery from this directory:
-
-```sh
-flutter run
-```
-
-Run the GridBox gallery with dashboard, card-catalog, media-gallery, and
-implicit-animation use cases:
+From the repository root, run `melos bootstrap` to use the local Mix checkout.
+Then, from this directory:
 
 ```sh
-flutter run -t lib/grid_main.dart
-```
-
-Run the Micro gallery — Mix ports of the
-[React Bits Micro catalog](https://reactbits.dev/c/micro):
-
-```sh
-flutter run -t lib/micro_main.dart
-```
-
-## Micro
-
-A live catalog of the 30 React Bits Micro interactions, styled and animated
-with Mix: `BoxStyler` / `PressableBox` for chrome, implicit springs for
-toggles, and keyframes for Pulse Heart and Bell Toggle. Filter by Controls,
-Actions, Motion, or Agent.
-
-## GridBox
-
-The Grid gallery switches between compact, medium, and wide parent widths. Its
-styles use `onConstraints`, so each Grid responds to its own offered space
-rather than the viewport:
-
-```dart
-final GridBoxStyler cardGrid = .equalColumns(3)
-    .gap(16)
-    .onConstraints(
-  .maxWidth(760),
-  .equalColumns(2).gap(12),
-).onConstraints(
-  .maxWidth(520),
-  .equalColumns(1).gap(10),
-);
-
-GridBox(style: cardGrid, children: cards);
-```
-
-The dashboard composes two independent GridBoxes: metrics transition from four
-to two to one column, while the asymmetric report panels transition from two
-columns to one.
-
-<p>
-  <img src="test/goldens/grid_dashboard_wide.png" alt="Wide GridBox dashboard" width="66%">
-  <img src="test/goldens/grid_dashboard_compact.png" alt="Compact GridBox dashboard" width="24%">
-</p>
-
-The card catalog omits `autoRows` so implicit rows size to unequal copy. The
-media gallery keeps fixed automatic rows for a dense, even tile height:
-
-<p>
-  <img src="test/goldens/grid_catalog_wide.png" alt="Wide GridBox card catalog" width="66%">
-  <img src="test/goldens/grid_gallery_compact.png" alt="Compact GridBox media gallery" width="24%">
-</p>
-
-### Grid animation
-
-The Animation example toggles a two-column planning Grid between balanced and
-focused geometry. Rebuilding the same two fractional tracks lets Mix
-interpolate their weights from 1:1 to 2:1 while also animating the repeated row
-height and gaps. The gallery deliberately uses 1.2 seconds so the interpolation
-is easy to inspect; product transitions can be shorter:
-
-![GridBox interpolating between balanced and focused tracks](../screenshots/grid_animation_demo.gif)
-
-```dart
-final GridBoxStyler animatedGrid = .columns([
-  .fr(focused ? 2 : 1),
-  .fr(1),
-])
-    .autoRows(.fixed(focused ? 148 : 112))
-    .gap(focused ? 20 : 12)
-    .animate(.easeInOut(const Duration(milliseconds: 1200)));
-```
-
-No `AnimationController` is needed. Track lists with different lengths or
-kinds switch at the midpoint instead, and `onConstraints` branch selection
-remains immediate because it happens during layout.
-
-<p>
-  <img src="test/goldens/grid_animation_balanced.png" alt="Balanced animated GridBox state" width="46%">
-  <img src="test/goldens/grid_animation_focused.png" alt="Focused animated GridBox state" width="46%">
-</p>
-
-## WrapBox
-
-The primary example uses WrapBoxStyler's flattened fluent methods:
-
-```dart
-final style = WrapBoxStyler()
-    .paddingAll(16)
-    .spacing(8)
-    .runSpacing(10)
-    .wrapAlignment(WrapAlignment.center);
-```
-
-For advanced composition, `.flow(WrapStyler(...))` replaces or merges the
-nested Wrap style directly. The name is `flow` because `.wrap()` is the Mix
-widget-modifier API. On WrapBoxStyler, `.alignment()` and `.clipBehavior()`
-belong to the outer Box; `.wrapAlignment()` and `.wrapClipBehavior()` belong
-to Flutter's inner Wrap.
-
-The widget tests include smoke coverage and deterministic responsive golden
-images for WrapBox and GridBox, plus a smoke catalog for Micro:
-
-```sh
+flutter run -d chrome
 flutter test
 ```
+
+Without Melos-generated overrides, `flutter pub get` uses published Mix
+(`^2.2.0`). This app is not publishable (`publish_to: none`).
+
+For more examples:
+
+- [Snacks](../../../examples/snacks): 30 bite-sized interaction demos, each with
+  a complete source file that the gallery can copy for DartPad.
+- [Layouts](../../../examples/layouts): responsive WrapBox and GridBox galleries.
+- [Example workspace setup](../../../examples): dependencies, tests, and web builds.

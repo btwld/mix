@@ -1,0 +1,91 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:example_snacks/snippets/bell_toggle/main.dart' as bell_toggle;
+import 'package:example_snacks/snippets/branched_menu/main.dart'
+    as branched_menu;
+import 'package:example_snacks/snippets/call_chip/main.dart' as call_chip;
+import 'package:example_snacks/snippets/code_slots/main.dart' as code_slots;
+import 'package:example_snacks/snippets/comet_dial/main.dart' as comet_dial;
+import 'package:example_snacks/snippets/dodge_field/main.dart' as dodge_field;
+import 'package:example_snacks/snippets/folder_float/main.dart' as folder_float;
+import 'package:example_snacks/snippets/fuse_button/main.dart' as fuse_button;
+import 'package:example_snacks/snippets/glide_select/main.dart' as glide_select;
+import 'package:example_snacks/snippets/hold_button/main.dart' as hold_button;
+import 'package:example_snacks/snippets/jelly_radio/main.dart' as jelly_radio;
+import 'package:example_snacks/snippets/lattice_loader/main.dart'
+    as lattice_loader;
+import 'package:example_snacks/snippets/peek_rating/main.dart' as peek_rating;
+import 'package:example_snacks/snippets/prompt_bar/main.dart' as prompt_bar;
+import 'package:example_snacks/snippets/pulse_heart/main.dart' as pulse_heart;
+import 'package:example_snacks/snippets/refine_frame/main.dart' as refine_frame;
+import 'package:example_snacks/snippets/rubber_segment/main.dart'
+    as rubber_segment;
+import 'package:example_snacks/snippets/scrub_field/main.dart' as scrub_field;
+import 'package:example_snacks/snippets/slide_commit/main.dart' as slide_commit;
+import 'package:example_snacks/snippets/sling_button/main.dart' as sling_button;
+import 'package:example_snacks/snippets/slosh_gauge/main.dart' as slosh_gauge;
+import 'package:example_snacks/snippets/spring_check/main.dart' as spring_check;
+import 'package:example_snacks/snippets/squish_switch/main.dart'
+    as squish_switch;
+import 'package:example_snacks/snippets/status_mark/main.dart' as status_mark;
+import 'package:example_snacks/snippets/swipe_row/main.dart' as swipe_row;
+import 'package:example_snacks/snippets/swipe_toast/main.dart' as swipe_toast;
+import 'package:example_snacks/snippets/thought_line/main.dart' as thought_line;
+import 'package:example_snacks/snippets/voice_pill/main.dart' as voice_pill;
+import 'package:example_snacks/snippets/wake_slider/main.dart' as wake_slider;
+import 'package:example_snacks/snippets/warm_tooltip/main.dart' as warm_tooltip;
+
+/// Launch the actual snippets, not the gallery's theme/token/overlay harness.
+void main() {
+  final examples = <String, VoidCallback>{
+    'bell_toggle': bell_toggle.main,
+    'branched_menu': branched_menu.main,
+    'call_chip': call_chip.main,
+    'code_slots': code_slots.main,
+    'comet_dial': comet_dial.main,
+    'dodge_field': dodge_field.main,
+    'folder_float': folder_float.main,
+    'fuse_button': fuse_button.main,
+    'glide_select': glide_select.main,
+    'hold_button': hold_button.main,
+    'jelly_radio': jelly_radio.main,
+    'lattice_loader': lattice_loader.main,
+    'peek_rating': peek_rating.main,
+    'prompt_bar': prompt_bar.main,
+    'pulse_heart': pulse_heart.main,
+    'refine_frame': refine_frame.main,
+    'rubber_segment': rubber_segment.main,
+    'scrub_field': scrub_field.main,
+    'slide_commit': slide_commit.main,
+    'sling_button': sling_button.main,
+    'slosh_gauge': slosh_gauge.main,
+    'spring_check': spring_check.main,
+    'squish_switch': squish_switch.main,
+    'status_mark': status_mark.main,
+    'swipe_row': swipe_row.main,
+    'swipe_toast': swipe_toast.main,
+    'thought_line': thought_line.main,
+    'voice_pill': voice_pill.main,
+    'wake_slider': wake_slider.main,
+    'warm_tooltip': warm_tooltip.main,
+  };
+  for (final entry in examples.entries) {
+    testWidgets('${entry.key} runs standalone on a compact screen', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(780, 600);
+      tester.view.devicePixelRatio = 2;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      entry.value();
+      await tester.pumpAndSettle();
+      expect(find.byType(WidgetsApp), findsOneWidget);
+      expect(tester.takeException(), isNull);
+      // Dispose controllers and pending timers before the test ends.
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump();
+      expect(tester.takeException(), isNull);
+    });
+  }
+}

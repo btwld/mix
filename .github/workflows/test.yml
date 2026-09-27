@@ -70,6 +70,31 @@ jobs:
       - name: Test
         run: melos run ci
 
+  hosted-examples:
+    name: Examples / Published Mix (${{ matrix.app }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        app: [examples/snacks, examples/layouts, packages/mix/example]
+    defaults:
+      run:
+        working-directory: ${{ matrix.app }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: kuhnroyal/flutter-fvm-config-action@v2
+        id: fvm-config-action
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ steps.fvm-config-action.outputs.FLUTTER_VERSION }}
+          channel: ${{ steps.fvm-config-action.outputs.FLUTTER_CHANNEL }}
+      # Deliberately omit Melos: apps must also work with published Mix.
+      - run: flutter pub get
+      - run: flutter analyze
+      - run: flutter test
+      - run: flutter build web
+
   winds-release:
     name: Winds / Release dependency check
     runs-on: ubuntu-latest

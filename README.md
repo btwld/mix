@@ -226,6 +226,14 @@ Directives transform values (text casing, number scaling, color adjustments) at 
 | [mix_lint](packages/mix_lint) | Custom linter rules |
 | [mix_winds](packages/mix_winds) | Utility-first styling inspired by Tailwind CSS |
 
+## Examples
+
+- [Getting started](packages/mix/example): a small, complete styling example.
+- [Snacks](examples/snacks): 30 copyable interaction demos.
+- [Layouts](examples/layouts): responsive WrapBox and GridBox galleries.
+
+See [example workspace setup](examples) for Melos, dependencies, and web builds.
+
 ## Documentation
 
 - [Introduction](https://www.fluttermix.com/documentation/mix/overview/introduction)

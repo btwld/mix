@@ -30,6 +30,18 @@
 **/example/macos/
 **/example/linux/
 
+# Gallery web runners are tracked; other platforms can be generated locally.
+/examples/*/android/
+/examples/*/ios/
+/examples/*/windows/
+/examples/*/macos/
+/examples/*/linux/
+/examples/*/.metadata
+
+# Keep the getting-started example runnable on web from a fresh checkout.
+!packages/mix/example/web/
+!packages/mix/example/web/**
+
 # The .vscode folder contains launch configuration and tasks you configure in
 # VS Code which you may wish to be included in version control, so this line
 # is commented out by default.

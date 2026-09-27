@@ -189,8 +189,8 @@ change itself should animate.
 The runnable gallery includes balanced and focused states of this example:
 
 <p>
-  <img src="../example/test/goldens/grid_animation_balanced.png" alt="Balanced animated GridBox state" width="46%">
-  <img src="../example/test/goldens/grid_animation_focused.png" alt="Focused animated GridBox state" width="46%">
+  <img src="../../../examples/layouts/test/goldens/grid_animation_balanced.png" alt="Balanced animated GridBox state" width="46%">
+  <img src="../../../examples/layouts/test/goldens/grid_animation_focused.png" alt="Focused animated GridBox state" width="46%">
 </p>
 
 ## Overflow and clipping
@@ -227,13 +227,13 @@ columns, spans, named areas, direction-aware placement, and baseline alignment
 are not part of the current API.
 
 Run the card, dashboard, gallery, and animation examples from
-`packages/mix/example`:
+`examples/layouts`:
 
 ```sh
-flutter run -t lib/grid_main.dart
+flutter run -t lib/grid/main.dart
 ```
 
 <p>
-  <img src="../example/test/goldens/grid_dashboard_wide.png" alt="Wide GridBox dashboard" width="66%">
-  <img src="../example/test/goldens/grid_dashboard_compact.png" alt="Compact GridBox dashboard" width="24%">
+  <img src="../../../examples/layouts/test/goldens/grid_dashboard_wide.png" alt="Wide GridBox dashboard" width="66%">
+  <img src="../../../examples/layouts/test/goldens/grid_dashboard_compact.png" alt="Compact GridBox dashboard" width="24%">
 </p>

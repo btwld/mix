@@ -161,7 +161,7 @@ WrapBox(style: tagCloud, children: tags);
 On the composite styler, `alignment` and `clipBehavior` configure the outer
 Box; `wrapAlignment` and `wrapClipBehavior` configure the inner Wrap. Use
 `.flow(WrapStyler(...))` when direct nested-style composition is needed. See
-the runnable [WrapBox example](example/README.md).
+the runnable [WrapBox example](../../examples/layouts/README.md).
 
 ### Grid Layouts
 
@@ -184,7 +184,7 @@ GridBox(style: dashboardGrid, children: panels);
 `onConstraints` observes local Grid constraints; `onBreakpoint` continues to
 observe the viewport. Compatible track, row, and gap changes can use Mix's
 implicit `animate` API. See the [Grid layout guide](doc/grid-layout.md) and the
-runnable [Grid examples](example/README.md).
+runnable [Grid examples](../../examples/layouts/README.md).
 
 ### Dynamic Styling (Variants)
 

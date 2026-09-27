@@ -3,6 +3,7 @@ name: mix_workspace
 
 packages:
   - packages/*
+  - examples/*
   - packages/mix/example
   - packages/mix_generator/example
   - packages/mix_winds/example
@@ -26,6 +27,8 @@ command:
 
 categories:
   flutter_projects:
+    - examples/snacks
+    - examples/layouts
     - packages/mix
     - packages/mix_protocol
     - packages/mix_chart_protocol
