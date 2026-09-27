@@ -814,11 +814,11 @@ class TwIcon extends StatelessWidget implements _TwCompilable {
 abstract class _Heading extends StatelessWidget implements _TwCompilable {
   const _Heading({
     super.key,
-    required int headingLevel,
+    required this._headingLevel,
     required this.text,
     this.classNames = '',
     this.config,
-  }) : _headingLevel = headingLevel;
+  });
 
   final int _headingLevel;
   final String text;

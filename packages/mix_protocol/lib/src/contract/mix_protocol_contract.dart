@@ -111,14 +111,11 @@ final class MixProtocol {
   }
 
   const MixProtocol._({
-    required AckSchema<JsonMap, Object> rootSchema,
-    required MixProtocolIdentityContextHolder identityContext,
-    required List<({String id, int wireVersion})> contributedVocabularies,
-    required List<List<String>> lenientListEntryPathSuffixes,
-  }) : _rootSchema = rootSchema,
-       _identityContext = identityContext,
-       _contributedVocabularies = contributedVocabularies,
-       _lenientListEntryPathSuffixes = lenientListEntryPathSuffixes;
+    required this._rootSchema,
+    required this._identityContext,
+    required this._contributedVocabularies,
+    required this._lenientListEntryPathSuffixes,
+  });
 
   R _withIdentityContext<R>(
     MixProtocolIdentityContext context,

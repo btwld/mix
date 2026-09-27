@@ -90,13 +90,7 @@ final class MixProtocolStylerBranch<T extends Object>
   _codec;
 
   /// Creates a branch whose full discriminator is derived from its vocabulary.
-  const MixProtocolStylerBranch({
-    required this.name,
-    required MixProtocolStylerCodec<T> Function(
-      MixProtocolBranchContext context,
-    )
-    codec,
-  }) : _codec = codec;
+  const MixProtocolStylerBranch({required this.name, required this._codec});
 
   @override
   _CompiledStylerBranch _build(MixProtocolBranchContext context) {
@@ -135,12 +129,10 @@ final class MixProtocolValueCodec<T extends Object> {
 
   const MixProtocolValueCodec._(
     this._schema, {
-    List<List<String>> listEntryPaths = const [],
-    T? Function(Object value)? convertValue,
-    AckSchema<Object, Object> Function(String fieldName)? mixPropCodec,
-  }) : _listEntryPaths = listEntryPaths,
-       _convertValue = convertValue,
-       _mixPropCodec = mixPropCodec;
+    this._listEntryPaths = const [],
+    this._convertValue,
+    this._mixPropCodec,
+  });
 
   SchemaFieldSemantics get _fieldSemantics =>
       SchemaFieldSemantics(listEntryPaths: _listEntryPaths);
@@ -488,21 +480,17 @@ final class MixProtocolStylerCodec<Owner extends Object> {
 
   MixProtocolStylerCodec._({
     required List<MixProtocolFieldCodec<Owner, Object>> fields,
-    MixProtocolStylerMetadataBase<Owner>? metadata,
-    String? inventoryOwner,
+    this._metadata,
+    this._inventoryOwner,
     Set<String>? ownerFieldInventory,
-    Set<String>? Function(Owner value)? ownerFieldInventoryOf,
-    int Function(Owner value)? actualFieldCount,
+    this._ownerFieldInventoryOf,
+    this._actualFieldCount,
     required Owner Function(JsonMap data) build,
   }) : _fields = List.unmodifiable(fields),
        _buildOwner = build,
-       _metadata = metadata,
-       _inventoryOwner = inventoryOwner,
        _ownerFieldInventory = ownerFieldInventory == null
            ? null
-           : Set.unmodifiable(ownerFieldInventory),
-       _ownerFieldInventoryOf = ownerFieldInventoryOf,
-       _actualFieldCount = actualFieldCount;
+           : Set.unmodifiable(ownerFieldInventory);
 
   /// Creates a codec for a Mix [Style], wiring its standard metadata and
   /// generated field inventory automatically.

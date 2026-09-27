@@ -208,7 +208,8 @@ void main() {
   testWidgets('spring check unchecked and checked goldens', (tester) async {
     useTolerantGoldenFileComparator(
       'snacks_gallery_test.dart',
-      precisionTolerance: 0.005,
+      // Flutter 3.44 rasterizes the tick and label slightly differently on Linux.
+      precisionTolerance: 0.0125,
     );
     await pumpBit(tester, const SpringCheck());
     await expectLater(

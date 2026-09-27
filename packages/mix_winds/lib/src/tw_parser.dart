@@ -40,10 +40,10 @@ class TwParser {
   }
   const TwParser._({
     required this.config,
-    required TwTranslator translator,
+    required this._translator,
     this.onDiagnostic,
     this.onUnsupported,
-  }) : _translator = translator;
+  });
 
   TwCompilation<FlexBoxStyler> compileFlex(String classNames) =>
       _translator.compileFlex(classNames);
