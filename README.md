@@ -77,8 +77,8 @@ Mix solves these by giving you a dedicated styling layer that stays consistent a
 
 ### Prerequisites
 
-- **Dart SDK**: 3.11.0 or higher
-- **Flutter**: 3.41.0 or higher
+- **Dart SDK**: 3.12.0 or higher
+- **Flutter**: 3.44.0 or higher
 
 ### Installation
 
@@ -228,9 +228,8 @@ Directives transform values (text casing, number scaling, color adjustments) at 
 
 ## Examples
 
-- [Getting started](packages/mix/example): a small, complete styling example.
-- [Snacks](examples/snacks): 30 copyable interaction demos.
-- [Layouts](examples/layouts): responsive WrapBox and GridBox galleries.
+- [Mix example app](packages/mix/example): getting started, responsive layouts,
+  and 30 copyable interaction demos in one place.
 
 See [example workspace setup](examples) for Melos, dependencies, and web builds.
 

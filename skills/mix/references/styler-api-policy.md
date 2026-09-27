@@ -1,6 +1,6 @@
 # Styler API Policy
 
-Rules for static factory constructors on Styler classes and Dart 3.11+ dot-shorthand usage.
+Rules for static factory constructors on Styler classes and Dart 3.12+ dot-shorthand usage.
 
 ## Table of Contents
 
@@ -11,7 +11,7 @@ Rules for static factory constructors on Styler classes and Dart 3.11+ dot-short
 - [Chain-only methods](#methods-without-factories-chain-only)
 - [Composition](#composition-decision-tree)
 
-Requires Dart SDK >=3.11.0 and Flutter >=3.41.0.
+Requires Dart SDK >=3.12.0 and Flutter >=3.44.0.
 
 ## The Top-Level Rule
 
@@ -74,7 +74,7 @@ Common typed contexts:
 
 ## Dot-Shorthand for Enum/Constant Arguments
 
-Within chains, use Dart 3.11+ inferred shorthand for enum and constant values:
+Within chains, use Dart 3.12+ inferred shorthand for enum and constant values:
 
 ```dart
 BoxStyler().alignment(.center)

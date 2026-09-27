@@ -4,8 +4,8 @@ This example renders the same UI twice: once with `mix_winds` (Flutter) and once
 
 ## Requirements
 
-- Dart SDK `>=3.11.0`
-- Flutter `>=3.41.0`
+- Dart SDK `>=3.12.0`
+- Flutter `>=3.44.0`
 
 ## Directory layout
 

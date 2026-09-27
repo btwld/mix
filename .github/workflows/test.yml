@@ -71,16 +71,12 @@ jobs:
         run: melos run ci
 
   hosted-examples:
-    name: Examples / Published Mix (${{ matrix.app }})
+    name: Examples / Published Mix
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    strategy:
-      fail-fast: false
-      matrix:
-        app: [examples/snacks, examples/layouts, packages/mix/example]
     defaults:
       run:
-        working-directory: ${{ matrix.app }}
+        working-directory: packages/mix/example
     steps:
       - uses: actions/checkout@v4
       - uses: kuhnroyal/flutter-fvm-config-action@v2

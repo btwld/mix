@@ -44,8 +44,8 @@ Mix solves these by giving you a dedicated styling layer that stays consistent a
 
 ### Prerequisites
 
-- **Dart SDK**: 3.11.0 or higher
-- **Flutter**: 3.41.0 or higher
+- **Dart SDK**: 3.12.0 or higher
+- **Flutter**: 3.44.0 or higher
 
 ### Installation
 
@@ -161,7 +161,7 @@ WrapBox(style: tagCloud, children: tags);
 On the composite styler, `alignment` and `clipBehavior` configure the outer
 Box; `wrapAlignment` and `wrapClipBehavior` configure the inner Wrap. Use
 `.flow(WrapStyler(...))` when direct nested-style composition is needed. See
-the runnable [WrapBox example](../../examples/layouts/README.md).
+the runnable [WrapBox example](example/docs/layouts.md).
 
 ### Grid Layouts
 
@@ -184,7 +184,7 @@ GridBox(style: dashboardGrid, children: panels);
 `onConstraints` observes local Grid constraints; `onBreakpoint` continues to
 observe the viewport. Compatible track, row, and gap changes can use Mix's
 implicit `animate` API. See the [Grid layout guide](doc/grid-layout.md) and the
-runnable [Grid examples](../../examples/layouts/README.md).
+runnable [Grid examples](example/docs/layouts.md).
 
 ### Dynamic Styling (Variants)
 

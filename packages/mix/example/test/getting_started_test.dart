@@ -1,7 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mix_example/main.dart';
+import 'package:mix_example/basics/getting_started.dart';
 
 void main() {
   testWidgets('saves and undoes with pointer and keyboard', (tester) async {

@@ -10,7 +10,7 @@ If Flutter is not installed or `flutter --version` fails, run the setup script:
 bash setup.sh
 ```
 
-This installs FVM, Flutter SDK (3.41.7), DCM, and melos, then bootstraps all packages.
+This installs FVM, Flutter SDK (3.44.0), DCM, and melos, then bootstraps all packages.
 
 ## Structure
 
@@ -94,8 +94,8 @@ final style = BoxStyler()
 
 ## Critical Rules
 
-- **Dart SDK:** >=3.11.0 (enables dot-shorthands)
-- **Flutter:** >=3.41.0
+- **Dart SDK:** >=3.12.0 (enables dot-shorthands)
+- **Flutter:** >=3.44.0
 - **Immutability:** Specs are always immutable; use `copyWith()` for changes
 - **Code generation:** Run `melos run gen:build` after modifying specs
 - **mix.dart is generated:** Don't edit directly; run `melos run exports`
@@ -130,5 +130,5 @@ scope: mix, mix_generator, mix_annotations, mix_lint
 
 - `melos.yaml` - All script definitions
 - `lints_with_dcm.yaml` - Linting rules
-- `.fvmrc` - Flutter version (3.41.7)
+- `.fvmrc` - Flutter version (3.44.0)
 - `packages/mix/lib/src/core/` - Core abstractions

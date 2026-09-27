@@ -26,7 +26,7 @@ packages/
   mix_chart/example/      # Chart example app
 ```
 
-**SDK constraints:** Dart >=3.11.0, Flutter >=3.41.0
+**SDK constraints:** Dart >=3.12.0, Flutter >=3.44.0
 
 ## Creating a New Widget-Backed Spec
 

@@ -1,18 +1,64 @@
 name: mix_example
-description: A minimal getting-started example for Mix.
+description: One app for Mix basics, layouts, and snacks.
 publish_to: none
 version: 1.0.0+1
 
 environment:
-  sdk: ">=3.11.0 <4.0.0"
-  flutter: ">=3.41.0"
+  sdk: ">=3.12.0 <4.0.0"
+  flutter: ">=3.44.0"
 
 dependencies:
   flutter:
     sdk: flutter
   mix: ^2.2.0
+  mix_annotations: ">=2.2.0-beta.1 <3.0.0"
+  remix: ^1.0.0-beta.10
 
 dev_dependencies:
+  remix_cli:
+    git:
+      url: https://github.com/btwld/remix.git
+      ref: v1.0.0-beta.10
+      path: packages/remix_cli
+  integration_test:
+    sdk: flutter
   flutter_lints: ^6.0.0
   flutter_test:
     sdk: flutter
+  build_runner:
+    version: ^2.11.0
+  mix_generator: ">=2.2.0-beta.3 <3.0.0"
+
+flutter:
+  uses-material-design: true
+  assets:
+    - lib/snippets/squish_switch/main.dart
+    - lib/snippets/peek_rating/main.dart
+    - lib/snippets/spring_check/main.dart
+    - lib/snippets/rubber_segment/main.dart
+    - lib/snippets/jelly_radio/main.dart
+    - lib/snippets/glide_select/main.dart
+    - lib/snippets/scrub_field/main.dart
+    - lib/snippets/code_slots/main.dart
+    - lib/snippets/wake_slider/main.dart
+    - lib/snippets/comet_dial/main.dart
+    - lib/snippets/hold_button/main.dart
+    - lib/snippets/pulse_heart/main.dart
+    - lib/snippets/slide_commit/main.dart
+    - lib/snippets/fuse_button/main.dart
+    - lib/snippets/bell_toggle/main.dart
+    - lib/snippets/sling_button/main.dart
+    - lib/snippets/dodge_field/main.dart
+    - lib/snippets/swipe_row/main.dart
+    - lib/snippets/warm_tooltip/main.dart
+    - lib/snippets/swipe_toast/main.dart
+    - lib/snippets/folder_float/main.dart
+    - lib/snippets/branched_menu/main.dart
+    - lib/snippets/lattice_loader/main.dart
+    - lib/snippets/status_mark/main.dart
+    - lib/snippets/call_chip/main.dart
+    - lib/snippets/prompt_bar/main.dart
+    - lib/snippets/voice_pill/main.dart
+    - lib/snippets/thought_line/main.dart
+    - lib/snippets/refine_frame/main.dart
+    - lib/snippets/slosh_gauge/main.dart

@@ -1,83 +1,140 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
-const pageColor = Color(0xFFF5F5FA);
-const whiteColor = Color(0xFFFFFFFF);
-const inkColor = Color(0xFF242438);
-const accentColor = Color(0xFF5B5BD6);
-const savedColor = Color(0xFF247A58);
+import 'basics/getting_started.dart';
+import 'layouts/layouts_gallery.dart';
+import 'snacks/gallery.dart';
+import 'snacks/theme.dart';
+import 'ui/ui.dart';
 
-final page = BoxStyler().color(pageColor).paddingAll(24).alignment(.center);
-final card = FlexBoxStyler()
-    .direction(.vertical)
-    .mainAxisSize(.min)
-    .crossAxisAlignment(.stretch)
-    .spacing(16)
-    .maxWidth(320)
-    .paddingAll(24)
-    .color(whiteColor)
-    .borderRounded(20);
-final heading = TextStyler().fontSize(24).fontWeight(.w700).color(inkColor);
-final body = TextStyler().fontSize(16).color(inkColor);
-final buttonLabel = TextStyler()
-    .fontSize(16)
-    .fontWeight(.w600)
-    .color(whiteColor);
+const _uiTheme = UiThemeData.light();
 
-// State changes the color; Pressable supplies hover, focus, and press variants.
-BoxStyler saveButton(bool saved) => BoxStyler()
-    .color(saved ? savedColor : accentColor)
-    .paddingAll(16)
-    .alignment(.center)
-    .borderRounded(12)
-    .border(.color(whiteColor).width(2))
-    .onHovered(.scale(1.02))
-    .onFocused(.border(.color(inkColor).width(2)))
-    .onPressed(.scale(0.96))
-    .animate(.easeInOut(180.ms));
+final _titleStyle = TextStyler()
+    .fontSize(24)
+    .fontWeight(.w700)
+    .color(UiTokens.foreground());
+final _descriptionStyle = TextStyler()
+    .fontSize(14)
+    .color(UiTokens.mutedForeground());
 
-/// Runs a small lesson in named styles, callable widgets, and state variants.
-///
-/// Click the button or focus it with Tab and press Enter to change its color.
-void main() => runApp(const GettingStartedApp());
+void main() => runApp(const MixExamplesApp());
 
-/// Keeps visual styles separate from widget composition and interaction state.
-class GettingStartedApp extends StatefulWidget {
-  const GettingStartedApp({super.key});
+/// One home for the introductory lesson, layout galleries, and Mix snacks.
+class MixExamplesApp extends StatelessWidget {
+  const MixExamplesApp({super.key});
 
   @override
-  State<GettingStartedApp> createState() => _GettingStartedAppState();
+  Widget build(BuildContext context) => MaterialApp(
+    debugShowCheckedModeBanner: false,
+    title: 'Mix examples',
+    theme: ThemeData(
+      colorScheme: ColorScheme.fromSeed(seedColor: _uiTheme.primary),
+      scaffoldBackgroundColor: _uiTheme.background,
+    ),
+    builder: (context, child) => UiThemeScope(mode: .light, child: child!),
+    home: const _ExamplesHome(),
+  );
 }
 
-class _GettingStartedAppState extends State<GettingStartedApp> {
-  bool _saved = false;
+enum _Section { basics, layouts, snacks }
+
+class _ExamplesHome extends StatefulWidget {
+  const _ExamplesHome();
+
+  @override
+  State<_ExamplesHome> createState() => _ExamplesHomeState();
+}
+
+class _ExamplesHomeState extends State<_ExamplesHome> {
+  _Section _section = _Section.basics;
+
+  void _selectSection(int index) {
+    setState(() => _section = _Section.values[index]);
+  }
 
   @override
   Widget build(BuildContext context) {
-    final button = saveButton(_saved);
-
-    return WidgetsApp(
-      debugShowCheckedModeBanner: false,
-      color: pageColor,
-      textStyle: const TextStyle(fontFamily: 'sans-serif'),
-      // With no Navigator, give Tab traversal an initial focus scope.
-      builder: (context, child) => FocusScope(
-        autofocus: true,
-        child: page(
-          child: card(
-            children: [
-              heading('Make it yours.'),
-              body('Named styles. A little state. One animated button.'),
-              Pressable(
-                onPress: () => setState(() => _saved = !_saved),
-                child: button(
-                  child: buttonLabel(_saved ? 'Saved — undo' : 'Save example'),
-                ),
-              ),
-            ],
+    final content = switch (_section) {
+      _Section.basics => const GettingStartedDemo(),
+      _Section.layouts => const LayoutsGalleryScreen(),
+      _Section.snacks => Theme(
+        data: snacksMaterialTheme(),
+        child: MixScope(
+          colors: snacksColors(),
+          radii: snacksRadii(),
+          child: const ColoredBox(
+            color: Color(0xFF07070B),
+            child: SnacksGalleryScreen(),
           ),
+        ),
+      ),
+    };
+
+    return Scaffold(
+      body: SafeArea(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final compact = constraints.maxWidth < 720;
+            return Padding(
+              padding: EdgeInsets.all(compact ? 16 : 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  UiCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  _titleStyle('Mix examples'),
+                                  const SizedBox(height: 4),
+                                  _descriptionStyle(
+                                    'Small lessons for expressive Flutter styling.',
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const UiBadge.secondary(label: 'Mix 2'),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: [
+                            for (final section in _Section.values)
+                              UiButton(
+                                label: _sectionLabel(section),
+                                variant: _section == section
+                                    ? .primary
+                                    : .secondary,
+                                size: .small,
+                                onPressed: () => _selectSection(section.index),
+                              ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Expanded(child: content),
+                ],
+              ),
+            );
+          },
         ),
       ),
     );
   }
+
+  String _sectionLabel(_Section section) => switch (section) {
+    _Section.basics => 'Basics',
+    _Section.layouts => 'Layouts',
+    _Section.snacks => 'Snacks',
+  };
 }

@@ -1,24 +1,27 @@
-# Getting started with Mix
+# Mix example app
 
-[lib/main.dart](lib/main.dart) is a complete, small example: explicit colors,
-named styles, callable widgets, state variants, and an implicit animation.
-Click **Save example**, or focus it with Tab and press Enter. Click again to undo.
-`Pressable` owns the button's keyboard, pointer, and semantic behavior.
+One app contains three sections:
 
-From the repository root, run `melos bootstrap` to use the local Mix checkout.
+- **Basics:** [getting started](lib/basics/getting_started.dart) is still a
+  complete standalone lesson in named styles, callable widgets, state variants,
+  and implicit animation.
+- **Layouts:** interactive [WrapBox and GridBox galleries](docs/layouts.md).
+- **Snacks:** [30 self-contained DartPad examples](docs/snacks.md), whose
+  exact source is bundled for the gallery's copy action.
+
+From the repository root, run `melos bootstrap` for the local Mix checkout.
 Then, from this directory:
 
 ```sh
 flutter run -d chrome
 flutter test
+flutter analyze
 ```
 
-Without Melos-generated overrides, `flutter pub get` uses published Mix
+Without Melos-generated overrides, `flutter pub get` resolves published Mix
 (`^2.2.0`). This app is not publishable (`publish_to: none`).
 
-For more examples:
-
-- [Snacks](../../../examples/snacks): 30 bite-sized interaction demos, each with
-  a complete source file that the gallery can copy for DartPad.
-- [Layouts](../../../examples/layouts): responsive WrapBox and GridBox galleries.
-- [Example workspace setup](../../../examples): dependencies, tests, and web builds.
+The shared shell uses the application-owned Vanilla preset from Remix
+`1.0.0-beta.10`, with a small Mix accent in its local theme. The 30 snippets
+remain independent Mix examples so they can still be copied directly into
+DartPad without Remix or app-local imports.
