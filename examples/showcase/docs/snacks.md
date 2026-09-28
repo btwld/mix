@@ -4,6 +4,13 @@ Thirty small, stateful styling lessons inspired by the [React Bits Micro catalog
 These are **Mix adaptations, not behavior-identical ports**. Named styles describe
 the appearance and motion; widget state owns interaction and composition.
 
+In the combined showcase, **Snacks** starts with one live example per group and
+its widget code alongside. Filter to a group to compare its first two examples;
+the remaining entries stay available as lightweight links. Opening an example
+gives the preview and code more room. The visible code leads with the widget;
+**Copy code** still copies the complete, runnable DartPad file. The separate
+dark `SnacksGalleryScreen` remains an interaction and golden-test host.
+
 Run from `examples/showcase`:
 
 ```sh

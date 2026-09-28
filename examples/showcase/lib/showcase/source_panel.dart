@@ -13,8 +13,17 @@ const _edge = Color(0xFFDCE4F0);
 const _stage = Color(0xFFF7F9FC);
 
 class SourcePanel extends StatefulWidget {
-  const SourcePanel({super.key, required this.path});
+  const SourcePanel({
+    super.key,
+    required this.path,
+    this.focusClass,
+    this.codeHeight = 370,
+    this.expandable = false,
+  });
   final String path;
+  final String? focusClass;
+  final double codeHeight;
+  final bool expandable;
 
   @override
   State<SourcePanel> createState() => _SourcePanelState();
@@ -23,27 +32,30 @@ class SourcePanel extends StatefulWidget {
 class _SourcePanelState extends State<SourcePanel> {
   late Future<_SourceData> _data;
   bool _copied = false;
+  bool _expanded = false;
 
   @override
   void initState() {
     super.initState();
-    _data = _load(widget.path);
+    _data = _load(widget.path, widget.focusClass);
   }
 
   @override
   void didUpdateWidget(covariant SourcePanel oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.path != widget.path) {
-      _data = _load(widget.path);
+    if (oldWidget.path != widget.path ||
+        oldWidget.focusClass != widget.focusClass) {
+      _data = _load(widget.path, widget.focusClass);
       _copied = false;
+      _expanded = false;
     }
   }
 
-  Future<_SourceData> _load(String path) async {
+  Future<_SourceData> _load(String path, String? focusClass) async {
     final source = await rootBundle.loadString(path);
-    final excerpt = widgetExcerpt(source);
+    final excerpt = widgetExcerpt(source, focusClass: focusClass);
     final parsed = syntax.highlight.parse(excerpt, language: 'dart');
-    return _SourceData(source, excerpt, [
+    return _SourceData(source, [
       for (final node in parsed.nodes ?? []) _span(node),
     ]);
   }
@@ -88,13 +100,15 @@ class _SourcePanelState extends State<SourcePanel> {
           ],
         ),
         const SizedBox(height: 4),
-        const Text(
-          'Widget and supporting styles · Copy the full runnable file',
-          style: TextStyle(color: _muted, fontSize: 13),
+        Text(
+          widget.focusClass == null
+              ? 'Widget and supporting styles · Copy the full runnable file'
+              : 'Widget first, supporting styles below · Copy the full DartPad file',
+          style: const TextStyle(color: _muted, fontSize: 13),
         ),
         const SizedBox(height: 14),
         Container(
-          height: 370,
+          height: _expanded ? 880 : widget.codeHeight,
           width: double.infinity,
           clipBehavior: Clip.antiAlias,
           decoration: BoxDecoration(
@@ -113,62 +127,48 @@ class _SourcePanelState extends State<SourcePanel> {
               }
               final data = snapshot.data!;
               return SingleChildScrollView(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          List.generate(
-                            data.lineCount,
-                            (i) => '${i + 1}',
-                          ).join('\n'),
-                          textAlign: TextAlign.right,
-                          style: const TextStyle(
-                            fontFamily: 'monospace',
-                            fontSize: 14,
-                            height: 1.55,
-                            color: Color(0xFF8894AA),
-                          ),
-                        ),
-                        const SizedBox(width: 24),
-                        SelectableText.rich(
-                          TextSpan(children: data.spans),
-                          style: const TextStyle(
-                            fontFamily: 'monospace',
-                            fontSize: 14,
-                            height: 1.55,
-                            color: _ink,
-                          ),
-                          textWidthBasis: TextWidthBasis.longestLine,
-                        ),
-                      ],
-                    ),
+                padding: const EdgeInsets.all(16),
+                child: SelectableText.rich(
+                  TextSpan(children: data.spans),
+                  style: const TextStyle(
+                    fontFamily: 'monospace',
+                    fontSize: 13,
+                    height: 1.55,
+                    color: _ink,
                   ),
                 ),
               );
             },
           ),
         ),
+        if (widget.expandable)
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton.icon(
+              onPressed: () => setState(() => _expanded = !_expanded),
+              label: Text(_expanded ? 'Show less code' : 'Show more code'),
+              icon: Icon(
+                _expanded
+                    ? Icons.unfold_less_rounded
+                    : Icons.unfold_more_rounded,
+                size: 18,
+              ),
+            ),
+          ),
       ],
     ),
   );
 }
 
 class _SourceData {
-  const _SourceData(this.source, this.excerpt, this.spans);
+  const _SourceData(this.source, this.spans);
   final String source;
-  final String excerpt;
   final List<InlineSpan> spans;
-  int get lineCount => '\n'.allMatches(excerpt).length + 1;
 }
 
-/// Drops only the standalone app shell. The visible code is still taken from
-/// the same source that the copy action puts on the clipboard.
-String widgetExcerpt(String source) {
+/// Drops the standalone app shell and optionally leads with the named widget.
+/// The copy action always uses the complete, unmodified source file.
+String widgetExcerpt(String source, {String? focusClass}) {
   final main = source.indexOf('void main() => runApp(');
   if (main < 0) return source.trim();
   final end = source.indexOf(RegExp(r'^\);\s*$', multiLine: true), main);
@@ -180,7 +180,18 @@ String widgetExcerpt(String source) {
   // DartPad instructions immediately preceding main belong to the shell.
   prelude = prelude.replaceFirst(RegExp(r'(?:\s*///[^\n]*\n)+\s*$'), '');
   final widget = source.substring(shellEnd < 0 ? source.length : shellEnd + 1);
-  return '${prelude.trim()}\n\n${widget.trim()}'.trim();
+  final excerpt = '${prelude.trim()}\n\n${widget.trim()}'.trim();
+  if (focusClass == null) return excerpt;
+
+  final focus = RegExp(
+    '(?:(?:^///[^\\n]*\\n)+)?^class ${RegExp.escape(focusClass)}\\b',
+    multiLine: true,
+  ).firstMatch(excerpt);
+  if (focus == null) return excerpt;
+
+  final widgetCode = excerpt.substring(focus.start).trim();
+  final supportingCode = excerpt.substring(0, focus.start).trim();
+  return '$widgetCode\n\n// Supporting styles and values\n$supportingCode';
 }
 
 TextSpan _span(syntax.Node node) => TextSpan(

@@ -15,7 +15,7 @@ import '../examples/layouts/wrap.dart';
 enum ExampleCategory {
   core('Core widgets', 'The building blocks for expressive interfaces.'),
   layouts('Layouts', 'Responsive arrangements built with Mix.'),
-  snacks('Snacks', 'Small interactive recipes built with Mix.'),
+  snacks('Snacks', 'Try an interaction, then read the Mix code beside it.'),
   charts('Charts', 'Visualize data with mix_chart.');
 
   const ExampleCategory(this.title, this.description);

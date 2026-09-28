@@ -36,7 +36,7 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 350));
     expect(
-      find.text('Small interactive recipes built with Mix.'),
+      find.text('Try an interaction, then read the Mix code beside it.'),
       findsOneWidget,
     );
 
@@ -44,6 +44,28 @@ void main() {
     await tester.pump();
     expect(find.text('Prompt Bar'), findsWidgets);
     expect(find.text('Squish Switch').hitTestable(), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('Snacks leads with live examples and opens deeper code', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(1200, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(const MixExamplesApp());
+
+    await tester.tap(find.text('View all').at(2));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 350));
+    expect(find.text('Live preview'), findsNWidgets(4));
+    expect(find.text('Example code'), findsNWidgets(4));
+    expect(find.text('More to explore'), findsOneWidget);
+
+    await tester.tap(find.text('Open example').first);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 350));
+    expect(find.text('Squish Switch'), findsWidgets);
+    expect(find.text('Show more code'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }
