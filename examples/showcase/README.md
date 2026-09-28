@@ -11,14 +11,20 @@ One app contains four catalog sections:
   backed by `mix_chart`.
 
 The home page is a compact catalog of static previews in `assets/previews/`.
-The Layouts page shows all three live examples with their code beside them.
-The Snacks page leads with four live, code-paired examples (one per group),
-keeps the remaining examples in a lightweight directory, and opens each in a
-larger detail view. The visible code omits the standalone app shell and starts
-with the Snack's widget before its supporting styles. **Copy code** copies the
-complete standalone file; the Snacks files are DartPad-ready. Catalog metadata lives in
+Regenerate the three Layout previews after changing their compositions with
+`fvm flutter test tool/generate_layout_previews_test.dart`.
+Each layout card opens one interactive example with its code beside it:
+GridBox offers width and content controls, and FlexBox and WrapBox follow
+the same pattern on their own pages. The layouts index lists the three
+primitives without
+mounting every demo. The Snacks page leads with four live, code-paired
+examples (one per group), keeps the remaining examples in a lightweight
+directory, and opens each in a larger detail view. The visible code omits
+the standalone app shell and starts with the example's widget before its
+supporting styles. **Copy code** copies the complete standalone file; the
+Snacks files are DartPad-ready. Catalog metadata lives in
 [catalog.dart](lib/catalog/catalog.dart); the shell lives in [main.dart](lib/main.dart).
-Each example's preview and copied source are the same file. The 30 Snacks live
+Each live preview and copied source use the same file. The 30 Snacks live
 as flat, standalone files under `lib/examples/snacks/`; their metadata is in
 `lib/snacks/catalog.dart`.
 

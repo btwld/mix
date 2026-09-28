@@ -14,7 +14,7 @@ import '../examples/layouts/wrap.dart';
 
 enum ExampleCategory {
   core('Core widgets', 'The building blocks for expressive interfaces.'),
-  layouts('Layouts', 'Responsive arrangements built with Mix.'),
+  layouts('Layouts', 'Open one layout, then read the Mix code beside it.'),
   snacks('Snacks', 'Try an interaction, then read the Mix code beside it.'),
   charts('Charts', 'Visualize data with mix_chart.');
 
@@ -32,6 +32,7 @@ class CatalogExample {
     required this.preview,
     this.previewImage,
     this.snack,
+    this.componentName,
   });
 
   final String title;
@@ -41,6 +42,10 @@ class CatalogExample {
   final WidgetBuilder preview;
   final String? previewImage;
   final SnackDemo? snack;
+  final String? componentName;
+
+  /// Widget shown first in the code panel. Copy still uses [source] whole.
+  String? get codeFocus => snack?.componentName ?? componentName;
 
   /// Curated static preview for the landing page.
   String get previewAsset =>
@@ -84,6 +89,7 @@ final examples = <CatalogExample>[
     category: .layouts,
     source: 'lib/examples/layouts/flex.dart',
     preview: (_) => const FlexExample(),
+    componentName: 'FlexExample',
   ),
   CatalogExample(
     title: 'WrapBox',
@@ -91,6 +97,7 @@ final examples = <CatalogExample>[
     category: .layouts,
     source: 'lib/examples/layouts/wrap.dart',
     preview: (_) => const WrapExample(),
+    componentName: 'WrapExample',
   ),
   CatalogExample(
     title: 'GridBox',
@@ -98,6 +105,7 @@ final examples = <CatalogExample>[
     category: .layouts,
     source: 'lib/examples/layouts/grid.dart',
     preview: (_) => const GridExample(),
+    componentName: 'GridExample',
   ),
   for (final demo in snackDemos)
     CatalogExample(

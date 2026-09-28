@@ -239,12 +239,7 @@ class _ExampleTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => InkWell(
-    onTap: () => _open(
-      context,
-      entry.category == ExampleCategory.layouts
-          ? const _CategoryPage(category: ExampleCategory.layouts)
-          : _DetailPage(entry: entry),
-    ),
+    onTap: () => _open(context, _DetailPage(entry: entry)),
     borderRadius: BorderRadius.circular(10),
     child: UiCard(
       style: CardStyler().padding(.all(11)).borderRadius(.circular(10)),
@@ -296,6 +291,7 @@ class _PreviewStage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final snack = entry.snack != null;
+    final layout = entry.category == ExampleCategory.layouts;
     final chart = entry.category == ExampleCategory.charts;
     final lightSnack =
         snack && const {'Squish Switch', 'Peek Rating'}.contains(entry.title);
@@ -325,14 +321,12 @@ class _PreviewStage extends StatelessWidget {
       ),
       child: Padding(
         padding: EdgeInsets.all(chart ? 10 : 12),
-        child: Center(
-          child: chart
-              ? SizedBox(
-                  width: double.infinity,
-                  height: height - 20,
-                  child: live,
-                )
-              : FittedBox(
+        child: chart
+            ? SizedBox(width: double.infinity, height: height - 20, child: live)
+            : layout
+            ? live
+            : Center(
+                child: FittedBox(
                   fit: BoxFit.scaleDown,
                   child: snack
                       ? SizedBox(
@@ -347,7 +341,7 @@ class _PreviewStage extends StatelessWidget {
                         )
                       : live,
                 ),
-        ),
+              ),
       ),
     );
   }
@@ -429,10 +423,7 @@ class _CategoryPageState extends State<_CategoryPage> {
             ],
             const SizedBox(height: 20),
             if (category == ExampleCategory.layouts)
-              for (final entry in entries) ...[
-                _ShowcaseRow(entry: entry),
-                const SizedBox(height: 16),
-              ]
+              _ExampleDirectory(entries: entries)
             else if (category == ExampleCategory.snacks) ...[
               for (final entry in featuredSnacks) ...[
                 _ShowcaseRow(entry: entry),
@@ -457,7 +448,7 @@ class _CategoryPageState extends State<_CategoryPage> {
                 ],
               ),
               const SizedBox(height: 12),
-              _SnackDirectory(entries: remainingSnacks),
+              _ExampleDirectory(entries: remainingSnacks),
             ] else
               _EntryGrid(
                 entries: entries,
@@ -470,8 +461,8 @@ class _CategoryPageState extends State<_CategoryPage> {
   }
 }
 
-class _SnackDirectory extends StatelessWidget {
-  const _SnackDirectory({required this.entries});
+class _ExampleDirectory extends StatelessWidget {
+  const _ExampleDirectory({required this.entries});
   final List<CatalogExample> entries;
 
   @override
@@ -613,22 +604,6 @@ class _DetailPage extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             _ShowcaseRow(entry: entry, showTitle: false),
-            if (entry.category == ExampleCategory.layouts) ...[
-              const SizedBox(height: 32),
-              const Text(
-                'More layout examples',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w800,
-                  color: _ink,
-                ),
-              ),
-              const SizedBox(height: 16),
-              for (final other in siblings.where((e) => e != entry)) ...[
-                _ShowcaseRow(entry: other),
-                const SizedBox(height: 16),
-              ],
-            ],
             const SizedBox(height: 28),
             const Divider(height: 32, color: _edge),
             Row(
@@ -696,7 +671,11 @@ class _ShowcaseRow extends StatelessWidget {
         builder: (context, constraints) {
           final wide = constraints.maxWidth >= 800;
           final isSnackDetail = entry.snack != null && !showTitle;
-          final previewHeight = entry.snack == null
+          final isLayoutDetail =
+              entry.category == ExampleCategory.layouts && !showTitle;
+          final previewHeight = isLayoutDetail
+              ? (wide ? 330.0 : 400.0)
+              : entry.snack == null
               ? (wide ? 370.0 : 280.0)
               : isSnackDetail
               ? (wide ? 420.0 : 240.0)
@@ -705,11 +684,15 @@ class _ShowcaseRow extends StatelessWidget {
             title: 'Live preview',
             child: _PreviewStage(entry: entry, height: previewHeight),
           );
+          final focusedDetail = isSnackDetail || isLayoutDetail;
           final source = SourcePanel(
             path: entry.source,
-            focusClass: entry.snack?.componentName,
-            codeHeight: isSnackDetail ? 580 : 370,
-            expandable: isSnackDetail,
+            focusClass: entry.codeFocus,
+            summary: isLayoutDetail
+                ? 'Widget first, supporting styles below · Copy the full runnable file'
+                : null,
+            codeHeight: focusedDetail ? 580 : 370,
+            expandable: focusedDetail,
           );
           return wide
               ? Row(

@@ -1,16 +1,25 @@
 # Mix Layouts
 
 These galleries consume Mix's public `package:mix/mix.dart` library. From
-`examples/showcase`, run the combined app and select **Layouts**. FlexBox,
-WrapBox, and GridBox appear together with live previews and focused code. The
-copy action includes their full runnable source files. Run the app with:
+`examples/showcase`, run the combined app. The home page keeps static
+screenshots. Open a layout card — or choose **Layouts**, then one primitive —
+to get that example alone, with its Mix code beside it. Desktop shows the
+preview and code side by side; narrower windows stack them. The visible code
+starts at the widget and leaves out the app shell. **Copy code** copies the
+complete runnable file.
 
 ```sh
 fvm flutter run -d chrome
 ```
 
-To run GridBox's standalone test host with dashboard, card-catalog,
-media-gallery, and implicit-animation use cases:
+GridBox's showcase example offers Compact, Medium, and Wide widths so
+`onConstraints` can select one, two, or four columns, plus a content control
+that swaps short metrics for unequal notes. FlexBox switches direction and
+content. WrapBox changes the offered width and the length of each child.
+
+The standalone GridBox and WrapBox hosts below remain the deeper galleries
+used by golden tests. They are separate entry points, not a second catalog
+inside the showcase.
 
 ```sh
 fvm flutter run -d chrome -t lib/layouts/grid/main.dart

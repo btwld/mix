@@ -17,11 +17,13 @@ class SourcePanel extends StatefulWidget {
     super.key,
     required this.path,
     this.focusClass,
+    this.summary,
     this.codeHeight = 370,
     this.expandable = false,
   });
   final String path;
   final String? focusClass;
+  final String? summary;
   final double codeHeight;
   final bool expandable;
 
@@ -101,9 +103,10 @@ class _SourcePanelState extends State<SourcePanel> {
         ),
         const SizedBox(height: 4),
         Text(
-          widget.focusClass == null
-              ? 'Widget and supporting styles · Copy the full runnable file'
-              : 'Widget first, supporting styles below · Copy the full DartPad file',
+          widget.summary ??
+              (widget.focusClass == null
+                  ? 'Widget and supporting styles · Copy the full runnable file'
+                  : 'Widget first, supporting styles below · Copy the full DartPad file'),
           style: const TextStyle(color: _muted, fontSize: 13),
         ),
         const SizedBox(height: 14),
