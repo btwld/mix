@@ -1,8 +1,22 @@
-## 2.2.1
+## Unreleased
 
 ### Fixes
 
-- **Reduced motion:** Style transitions now honor `MediaQuery.disableAnimations`. This changes default behavior for users with reduced motion on. Curve and spring changes land on the target in the same frame, triggered phase and keyframe sequences jump to their end, and looping phase and keyframe animations hold their first frame. The flag applies from the next transition: a running curve or spring transition finishes, and a loop stops when the flag turns on and resumes when it clears. `AnimationConfig.linear(Duration.zero)` now jumps instead of asserting. After a jump, `onEnd` runs once, after the frame.
+- **Reduced motion:** Style transitions now honor
+  `MediaQuery.disableAnimations`, whether the platform sets it or an app
+  overrides it for a subtree. This changes default behavior for users with
+  reduced motion on. Curve and spring changes land on the target in the same
+  frame, triggered phase and keyframe sequences jump to their end, and looping
+  phase and keyframe animations hold their resting frame. The flag applies from
+  the next transition, including a spec change in the same frame: a running
+  curve, spring, or triggered phase or keyframe transition finishes, and a loop
+  stops when the flag turns on and resumes when it clears. After a curve or
+  spring jump, `onEnd` runs once, after the frame. A triggered phase's
+  `onEnd` runs synchronously when the trigger fires.
+- **Zero and sub-millisecond curves:** A curve with no delay and no duration
+  jumps instead of asserting. A zero duration after a delay holds the start
+  through the delay, then lands on the target. Sub-millisecond durations no
+  longer assert.
 
 ## 2.2.0
 
