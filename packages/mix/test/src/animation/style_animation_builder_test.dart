@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
@@ -518,17 +519,16 @@ void main() {
       );
 
       await tester.pumpWidget(
-        _reducedMotionApp(
+        _motionView(
           StyleAnimationBuilder<TestSpec>(
             spec: StyleSpec<TestSpec>(spec: spec.spec, animation: animation),
             builder: (context, resolved) => const SizedBox(),
           ),
         ),
       );
-      // MaterialApp schedules one frame of its own. The phase loop must not
-      // schedule another after that frame is drawn.
-      await tester.pump();
-
+      // Mounted without MaterialApp, which schedules a frame of its own. The
+      // driver is created once the flag is known, so the phase loop never
+      // starts and the mount leaves no frame scheduled.
       expect(tester.binding.hasScheduledFrame, isFalse);
       await tester.pump(const Duration(milliseconds: 300));
       expect(tester.binding.hasScheduledFrame, isFalse);
@@ -552,7 +552,7 @@ void main() {
       );
 
       await tester.pumpWidget(
-        _reducedMotionApp(
+        _motionView(
           StyleAnimationBuilder<TestSpec>(
             spec: StyleSpec<TestSpec>(
               spec: const TestSpec(color: Colors.red),
@@ -562,10 +562,9 @@ void main() {
           ),
         ),
       );
-      // MaterialApp schedules one frame of its own. The keyframe loop must
-      // not schedule another after that frame is drawn.
-      await tester.pump();
-
+      // Mounted without MaterialApp, which schedules a frame of its own. The
+      // driver is created once the flag is known, so the keyframe loop never
+      // starts and the mount leaves no frame scheduled.
       expect(tester.binding.hasScheduledFrame, isFalse);
       await tester.pump(const Duration(milliseconds: 300));
       expect(tester.binding.hasScheduledFrame, isFalse);
@@ -689,10 +688,14 @@ void main() {
       tester,
     ) async {
       var ends = 0;
+      final phases = <SchedulerPhase>[];
       final animation = CurveAnimationConfig(
         duration: const Duration(milliseconds: 400),
         curve: Curves.linear,
-        onEnd: () => ends++,
+        onEnd: () {
+          ends++;
+          phases.add(SchedulerBinding.instance.schedulerPhase);
+        },
       );
       final red = StyleSpec<TestSpec>(
         spec: const TestSpec(color: Colors.red),
@@ -717,6 +720,7 @@ void main() {
         ),
       );
       expect(ends, 1);
+      expect(phases, [SchedulerPhase.postFrameCallbacks]);
 
       await tester.pump();
       expect(ends, 1);
@@ -766,6 +770,472 @@ void main() {
       expect(ends, 1);
       expect(tester.takeException(), isNull);
     });
+
+    testWidgets('a flag turning on with a spec change jumps in that frame', (
+      tester,
+    ) async {
+      const animation = CurveAnimationConfig(
+        duration: Duration(milliseconds: 400),
+        curve: Curves.linear,
+      );
+      Color? capturedColor;
+      void onColor(Color? color) => capturedColor = color;
+
+      await tester.pumpWidget(
+        _colorHost(
+          _colorSpec(Colors.red, animation),
+          reduced: false,
+          onColor: onColor,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.pumpWidget(
+        _colorHost(
+          _colorSpec(Colors.blue, animation),
+          reduced: true,
+          onColor: onColor,
+        ),
+      );
+
+      expect(capturedColor, Colors.blue);
+      await tester.pump(const Duration(milliseconds: 100));
+      expect(capturedColor, Colors.blue);
+    });
+
+    testWidgets('a flag clearing with a spec change animates that change', (
+      tester,
+    ) async {
+      const animation = CurveAnimationConfig(
+        duration: Duration(milliseconds: 400),
+        curve: Curves.linear,
+      );
+      Color? capturedColor;
+      void onColor(Color? color) => capturedColor = color;
+
+      await tester.pumpWidget(
+        _colorHost(
+          _colorSpec(Colors.red, animation),
+          reduced: true,
+          onColor: onColor,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.pumpWidget(
+        _colorHost(
+          _colorSpec(Colors.blue, animation),
+          reduced: false,
+          onColor: onColor,
+        ),
+      );
+      expect(capturedColor, Colors.red);
+
+      await tester.pump(const Duration(milliseconds: 200));
+      expect(capturedColor, isNot(Colors.red));
+      expect(capturedColor, isNot(Colors.blue));
+
+      await tester.pumpAndSettle();
+      expect(capturedColor, Colors.blue);
+    });
+
+    for (final (name, next) in <(String, AnimationConfig)>[
+      (
+        'curve',
+        const CurveAnimationConfig(
+          duration: Duration(milliseconds: 400),
+          curve: Curves.linear,
+        ),
+      ),
+      (
+        'spring',
+        SpringAnimationConfig.withDurationAndBounce(
+          duration: const Duration(milliseconds: 800),
+        ),
+      ),
+    ]) {
+      testWidgets(
+        'a jump shows the target itself and the next $name transition '
+        'starts from it',
+        (tester) async {
+          const animation = CurveAnimationConfig(
+            duration: Duration(milliseconds: 400),
+            curve: Curves.linear,
+          );
+          Color? capturedColor;
+          void onColor(Color? color) => capturedColor = color;
+
+          await tester.pumpWidget(
+            _colorHost(
+              _colorSpec(Colors.red, animation),
+              reduced: false,
+              onColor: onColor,
+            ),
+          );
+          await tester.pumpWidget(
+            _colorHost(
+              _colorSpec(Colors.blue, animation),
+              reduced: false,
+              onColor: onColor,
+            ),
+          );
+          await tester.pump(const Duration(milliseconds: 100));
+
+          // The controller is mid-way; the jump must not lerp the target.
+          await tester.pumpWidget(
+            _colorHost(
+              _colorSpec(Colors.green, next),
+              reduced: true,
+              onColor: onColor,
+            ),
+          );
+          expect(capturedColor, same(Colors.green));
+
+          await tester.pumpWidget(
+            _colorHost(
+              _colorSpec(Colors.red, next),
+              reduced: false,
+              onColor: onColor,
+            ),
+          );
+          expect(capturedColor, same(Colors.green));
+          await tester.pump(const Duration(milliseconds: 100));
+          expect(capturedColor, isNot(Colors.green));
+          expect(capturedColor, isNot(Colors.red));
+
+          await tester.pumpAndSettle();
+          // A settled spring can stop a hair short of its end.
+          expect(capturedColor, isSameColorAs(Colors.red));
+        },
+      );
+    }
+
+    testWidgets('a zero duration holds through the delay, then lands', (
+      tester,
+    ) async {
+      var ends = 0;
+      final animation = CurveAnimationConfig(
+        duration: Duration.zero,
+        delay: const Duration(milliseconds: 200),
+        curve: Curves.linear,
+        onEnd: () => ends++,
+      );
+      Color? capturedColor;
+
+      await tester.pumpWidget(
+        styleAnimationBuilderCapturingColor(
+          _colorSpec(Colors.red, animation),
+          (color) => capturedColor = color,
+        ),
+      );
+      await tester.pumpWidget(
+        styleAnimationBuilderCapturingColor(
+          _colorSpec(Colors.blue, animation),
+          (color) => capturedColor = color,
+        ),
+      );
+      expect(capturedColor, Colors.red);
+
+      await tester.pump(const Duration(milliseconds: 199));
+      expect(capturedColor, Colors.red);
+      expect(ends, 0);
+
+      await tester.pump(const Duration(milliseconds: 2));
+      expect(capturedColor, Colors.blue);
+      expect(ends, 1);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('a sub-millisecond curve animates without asserting', (
+      tester,
+    ) async {
+      const animation = CurveAnimationConfig(
+        duration: Duration(microseconds: 500),
+        delay: Duration(microseconds: 500),
+        curve: Curves.linear,
+      );
+      Color? capturedColor;
+
+      await tester.pumpWidget(
+        styleAnimationBuilderCapturingColor(
+          _colorSpec(Colors.red, animation),
+          (color) => capturedColor = color,
+        ),
+      );
+      await tester.pumpWidget(
+        styleAnimationBuilderCapturingColor(
+          _colorSpec(Colors.blue, animation),
+          (color) => capturedColor = color,
+        ),
+      );
+      expect(tester.takeException(), isNull);
+
+      await tester.pumpAndSettle();
+      expect(capturedColor, Colors.blue);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('a curve replaced by a spring while reduced jumps', (
+      tester,
+    ) async {
+      const curve = CurveAnimationConfig(
+        duration: Duration(milliseconds: 400),
+        curve: Curves.linear,
+      );
+      final spring = SpringAnimationConfig.withDurationAndBounce(
+        duration: const Duration(milliseconds: 800),
+      );
+      Color? capturedColor;
+      void onColor(Color? color) => capturedColor = color;
+
+      await tester.pumpWidget(
+        _colorView(
+          _colorSpec(Colors.red, curve),
+          reduced: true,
+          onColor: onColor,
+        ),
+      );
+      await tester.pumpWidget(
+        _colorView(
+          _colorSpec(Colors.blue, spring),
+          reduced: true,
+          onColor: onColor,
+        ),
+      );
+
+      expect(capturedColor, Colors.blue);
+      expect(tester.binding.hasScheduledFrame, isFalse);
+    });
+
+    testWidgets('a curve dropped while reduced jumps with the old config', (
+      tester,
+    ) async {
+      const curve = CurveAnimationConfig(
+        duration: Duration(milliseconds: 400),
+        curve: Curves.linear,
+      );
+      Color? capturedColor;
+      void onColor(Color? color) => capturedColor = color;
+
+      await tester.pumpWidget(
+        _colorView(
+          _colorSpec(Colors.red, curve),
+          reduced: true,
+          onColor: onColor,
+        ),
+      );
+      // A null config recreates the driver with the old config.
+      await tester.pumpWidget(
+        _colorView(
+          _colorSpec(Colors.blue, null),
+          reduced: true,
+          onColor: onColor,
+        ),
+      );
+
+      expect(capturedColor, Colors.blue);
+      expect(tester.binding.hasScheduledFrame, isFalse);
+    });
+
+    testWidgets('a curve replaced by a looping phase while reduced holds', (
+      tester,
+    ) async {
+      const curve = CurveAnimationConfig(
+        duration: Duration(milliseconds: 400),
+        curve: Curves.linear,
+      );
+      Color? capturedColor;
+      void onColor(Color? color) => capturedColor = color;
+
+      await tester.pumpWidget(
+        _colorView(
+          _colorSpec(Colors.red, curve),
+          reduced: true,
+          onColor: onColor,
+        ),
+      );
+      await tester.pumpWidget(
+        _colorView(
+          _colorSpec(Colors.red, _loopingPhase()),
+          reduced: true,
+          onColor: onColor,
+        ),
+      );
+
+      expect(capturedColor, Colors.red);
+      expect(tester.binding.hasScheduledFrame, isFalse);
+      await tester.pump(const Duration(milliseconds: 150));
+      expect(capturedColor, Colors.red);
+    });
+
+    testWidgets('a curve config update while reduced jumps', (tester) async {
+      Color? capturedColor;
+      void onColor(Color? color) => capturedColor = color;
+
+      await tester.pumpWidget(
+        _colorView(
+          _colorSpec(
+            Colors.red,
+            const CurveAnimationConfig(
+              duration: Duration(milliseconds: 400),
+              curve: Curves.linear,
+            ),
+          ),
+          reduced: true,
+          onColor: onColor,
+        ),
+      );
+      await tester.pumpWidget(
+        _colorView(
+          _colorSpec(
+            Colors.blue,
+            const CurveAnimationConfig(
+              duration: Duration(milliseconds: 600),
+              curve: Curves.easeIn,
+            ),
+          ),
+          reduced: true,
+          onColor: onColor,
+        ),
+      );
+
+      expect(capturedColor, Colors.blue);
+      expect(tester.binding.hasScheduledFrame, isFalse);
+    });
+
+    testWidgets('a looping phase config update while reduced holds', (
+      tester,
+    ) async {
+      Color? capturedColor;
+      void onColor(Color? color) => capturedColor = color;
+
+      await tester.pumpWidget(
+        _colorView(
+          _colorSpec(Colors.red, _loopingPhase()),
+          reduced: true,
+          onColor: onColor,
+        ),
+      );
+      await tester.pumpWidget(
+        _colorView(
+          _colorSpec(
+            Colors.red,
+            _loopingPhase(duration: const Duration(milliseconds: 500)),
+          ),
+          reduced: true,
+          onColor: onColor,
+        ),
+      );
+
+      expect(capturedColor, Colors.red);
+      expect(tester.binding.hasScheduledFrame, isFalse);
+    });
+
+    testWidgets('a triggered phase under reduced motion jumps to its end', (
+      tester,
+    ) async {
+      final trigger = ValueNotifier(0);
+      addTearDown(trigger.dispose);
+      var ends = 0;
+      final animation = _loopingPhase(trigger: trigger, onEnd: () => ends++);
+      Color? capturedColor;
+
+      await tester.pumpWidget(
+        _colorView(
+          _colorSpec(Colors.red, animation),
+          reduced: true,
+          onColor: (color) => capturedColor = color,
+        ),
+      );
+
+      trigger.value++;
+      // The zero-duration run completes inside the trigger notification.
+      expect(ends, 1);
+
+      await tester.pump();
+      // The sequence ends back on its first style.
+      expect(capturedColor, Colors.red);
+      expect(tester.binding.hasScheduledFrame, isFalse);
+      expect(ends, 1);
+    });
+
+    testWidgets('a triggered keyframe under reduced motion jumps to its end', (
+      tester,
+    ) async {
+      final trigger = ValueNotifier(0);
+      addTearDown(trigger.dispose);
+      Color? capturedColor;
+
+      await tester.pumpWidget(
+        _colorView(
+          _colorSpec(Colors.red, _colorKeyframes(trigger: trigger)),
+          reduced: true,
+          onColor: (color) => capturedColor = color,
+        ),
+      );
+      expect(capturedColor, Colors.red);
+
+      trigger.value++;
+      await tester.pump();
+
+      expect(capturedColor, Colors.blue);
+      expect(tester.binding.hasScheduledFrame, isFalse);
+    });
+
+    testWidgets('a looping keyframe stops and resumes with the flag', (
+      tester,
+    ) async {
+      Color? capturedColor;
+
+      Widget host({required bool reduced}) => _colorHost(
+        _colorSpec(Colors.red, _colorKeyframes()),
+        reduced: reduced,
+        onColor: (color) => capturedColor = color,
+      );
+
+      await tester.pumpWidget(host(reduced: false));
+      await tester.pump(const Duration(milliseconds: 150));
+      expect(capturedColor, isNot(Colors.red));
+
+      await tester.pumpWidget(host(reduced: true));
+      expect(capturedColor, Colors.red);
+      await tester.pump();
+      expect(tester.binding.hasScheduledFrame, isFalse);
+
+      await tester.pumpWidget(host(reduced: false));
+      await tester.pump(const Duration(milliseconds: 150));
+      expect(capturedColor, isNot(Colors.red));
+    });
+
+    testWidgets('the platform disableAnimations flag reduces motion', (
+      tester,
+    ) async {
+      tester.platformDispatcher.accessibilityFeaturesTestValue =
+          const FakeAccessibilityFeatures(disableAnimations: true);
+      addTearDown(
+        tester.platformDispatcher.clearAccessibilityFeaturesTestValue,
+      );
+      const animation = CurveAnimationConfig(
+        duration: Duration(milliseconds: 400),
+        curve: Curves.linear,
+      );
+      Color? capturedColor;
+
+      await tester.pumpWidget(
+        styleAnimationBuilderCapturingColor(
+          _colorSpec(Colors.red, animation),
+          (color) => capturedColor = color,
+        ),
+      );
+      await tester.pumpWidget(
+        styleAnimationBuilderCapturingColor(
+          _colorSpec(Colors.blue, animation),
+          (color) => capturedColor = color,
+        ),
+      );
+
+      expect(capturedColor, Colors.blue);
+    });
   });
 }
 
@@ -796,6 +1266,93 @@ Widget _reducedMotionApp(Widget child) {
       data: const MediaQueryData(disableAnimations: true),
       child: child,
     ),
+  );
+}
+
+/// A subtree without MaterialApp, which schedules frames of its own.
+Widget _motionView(Widget child, {bool reduced = true}) {
+  return MediaQuery(
+    data: MediaQueryData(disableAnimations: reduced),
+    child: child,
+  );
+}
+
+/// A MaterialApp whose subtree sets `disableAnimations` to [reduced].
+Widget _colorHost(
+  StyleSpec<TestSpec> spec, {
+  required bool reduced,
+  required void Function(Color?) onColor,
+}) {
+  return MaterialApp(
+    home: MediaQuery(
+      data: MediaQueryData(disableAnimations: reduced),
+      child: styleAnimationBuilderCapturingColor(spec, onColor, wrapApp: false),
+    ),
+  );
+}
+
+/// A builder in a bare [_motionView] that records the resolved color.
+Widget _colorView(
+  StyleSpec<TestSpec> spec, {
+  required bool reduced,
+  required void Function(Color?) onColor,
+}) {
+  return _motionView(
+    StyleAnimationBuilder<TestSpec>(
+      spec: spec,
+      builder: (context, resolved) {
+        onColor(resolved.spec.color);
+
+        return const SizedBox();
+      },
+    ),
+    reduced: reduced,
+  );
+}
+
+StyleSpec<TestSpec> _colorSpec(Color color, AnimationConfig? animation) {
+  return StyleSpec<TestSpec>(
+    spec: TestSpec(color: color),
+    animation: animation,
+  );
+}
+
+PhaseAnimationConfig<TestSpec, _TestStyle> _loopingPhase({
+  Duration duration = const Duration(milliseconds: 300),
+  Listenable? trigger,
+  VoidCallback? onEnd,
+}) {
+  return PhaseAnimationConfig<TestSpec, _TestStyle>(
+    styles: const [
+      _TestStyle(TestSpec(color: Colors.red)),
+      _TestStyle(TestSpec(color: Colors.blue)),
+    ],
+    curveConfigs: [
+      CurveAnimationConfig(duration: duration, curve: Curves.linear),
+      CurveAnimationConfig(
+        duration: duration,
+        curve: Curves.linear,
+        onEnd: onEnd,
+      ),
+    ],
+    trigger: trigger,
+  );
+}
+
+KeyframeAnimationConfig<TestSpec> _colorKeyframes({Listenable? trigger}) {
+  return KeyframeAnimationConfig<TestSpec>(
+    trigger: trigger,
+    initialStyle: const _TestStyle(TestSpec(color: Colors.red)),
+    timeline: [
+      KeyframeTrack<Color>(
+        'color',
+        [const Keyframe.linear(Colors.blue, Duration(milliseconds: 300))],
+        initial: Colors.red,
+        tweenBuilder: ({begin, end}) => ColorTween(begin: begin, end: end),
+      ),
+    ],
+    styleBuilder: (result, style) =>
+        _TestStyle(TestSpec(color: result.get<Color>('color'))),
   );
 }
 

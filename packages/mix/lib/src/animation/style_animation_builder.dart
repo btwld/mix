@@ -34,37 +34,35 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
     with TickerProviderStateMixin {
   late StyleAnimationDriver<S> animationDriver;
 
-  @override
-  void initState() {
-    super.initState();
-    final spec = widget.spec;
-    final config = spec.animation;
-    animationDriver = _createAnimationDriver(config: config, initialSpec: spec);
-  }
+  /// `MediaQuery.disableAnimations` for this subtree; null until first read.
+  ///
+  /// The driver is created once it is known, so a loop never starts while
+  /// the flag is set.
+  bool? _reducedMotion;
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    animationDriver.reducedMotion =
-        MediaQuery.maybeDisableAnimationsOf(context) ?? false;
-  }
+  bool _readReducedMotion() =>
+      MediaQuery.maybeDisableAnimationsOf(context) ?? false;
 
   StyleAnimationDriver<S> _createAnimationDriver({
     required AnimationConfig? config,
     required StyleSpec<S> initialSpec,
   }) {
+    final reducedMotion = _reducedMotion!;
+
     return switch (config) {
       // ignore: avoid-undisposed-instances
       CurveAnimationConfig() => CurveAnimationDriver(
         vsync: this,
         config: config,
         initialSpec: initialSpec,
+        reducedMotion: reducedMotion,
       ),
       // ignore: avoid-undisposed-instances
       SpringAnimationConfig() => SpringAnimationDriver(
         vsync: this,
         config: config,
         initialSpec: initialSpec,
+        reducedMotion: reducedMotion,
       ),
       // ignore: avoid-undisposed-instances
       PhaseAnimationConfig() => PhaseAnimationDriver(
@@ -72,6 +70,7 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
         config: config,
         initialSpec: initialSpec,
         context: context,
+        reducedMotion: reducedMotion,
       ),
       // ignore: avoid-undisposed-instances
       KeyframeAnimationConfig() => KeyframeAnimationDriver(
@@ -79,10 +78,30 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
         config: config as KeyframeAnimationConfig<S>,
         initialSpec: initialSpec,
         context: context,
+        reducedMotion: reducedMotion,
       ),
       // ignore: avoid-undisposed-instances
-      null => NoAnimationDriver(vsync: this, initialSpec: initialSpec),
+      null => NoAnimationDriver(
+        vsync: this,
+        initialSpec: initialSpec,
+        reducedMotion: reducedMotion,
+      ),
     };
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final isFirstRead = _reducedMotion == null;
+    _reducedMotion = _readReducedMotion();
+    if (isFirstRead) {
+      animationDriver = _createAnimationDriver(
+        config: widget.spec.animation,
+        initialSpec: widget.spec,
+      );
+    } else {
+      animationDriver.reducedMotion = _reducedMotion!;
+    }
   }
 
   @override
@@ -95,18 +114,23 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
   void didUpdateWidget(StyleAnimationBuilder<S> oldWidget) {
     super.didUpdateWidget(oldWidget);
 
+    // didUpdateWidget runs before didChangeDependencies, so read the flag
+    // here too: a spec change in the same frame must see the new value.
+    final reducedMotion = _readReducedMotion();
+    _reducedMotion = reducedMotion;
+    animationDriver.reducedMotion = reducedMotion;
+
     final config = widget.spec.animation;
     final oldConfig = oldWidget.spec.animation;
 
     if ((oldConfig.runtimeType == config.runtimeType) && config != null) {
       animationDriver.updateDriver(config);
     } else {
-      final reducedMotion = animationDriver.reducedMotion;
       animationDriver.dispose();
       animationDriver = _createAnimationDriver(
         config: config ?? oldConfig,
         initialSpec: oldWidget.spec,
-      )..reducedMotion = reducedMotion;
+      );
     }
 
     if (oldWidget.spec != widget.spec) {

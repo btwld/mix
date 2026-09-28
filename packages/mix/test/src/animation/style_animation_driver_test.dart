@@ -9,11 +9,13 @@ import '../../helpers/testing_utils.dart';
 final class StyleAnimationDriverTest
     extends ImplicitAnimationDriver<MockSpec<double>, CurveAnimationConfig> {
   int executeAnimationCallCounter = 0;
+  int completeAnimationCallCounter = 0;
 
   StyleAnimationDriverTest({
     required super.vsync,
     super.unbounded,
     required super.initialSpec,
+    super.reducedMotion,
   }) : super(
          config: const CurveAnimationConfig(
            duration: Duration(milliseconds: 300),
@@ -28,7 +30,7 @@ final class StyleAnimationDriverTest
 
   @override
   void onCompleteAnimation() {
-    // Test implementation - no-op
+    completeAnimationCallCounter += 1;
   }
 
   // Helper method to trigger animation like the old animateTo
@@ -255,6 +257,32 @@ void main() {
         );
         expect(driver.executeAnimationCallCounter, 3);
       });
+    });
+  });
+
+  group('ImplicitAnimationDriver subclass under reduced motion', () {
+    testWidgets('jumps to the target and completes once after the frame', (
+      tester,
+    ) async {
+      final driver = StyleAnimationDriverTest(
+        vsync: const TestVSync(),
+        initialSpec: MockSpec(resolvedValue: 0.0).toStyleSpec(),
+        reducedMotion: true,
+      );
+      addTearDown(driver.dispose);
+      final target = MockSpec(resolvedValue: 1.0).toStyleSpec();
+
+      await driver.triggerAnimation(target);
+
+      expect(driver.animation.value, same(target));
+      expect(driver.executeAnimationCallCounter, 0);
+      expect(driver.completeAnimationCallCounter, 0);
+
+      await tester.pump();
+      expect(driver.completeAnimationCallCounter, 1);
+
+      await tester.pump();
+      expect(driver.completeAnimationCallCounter, 1);
     });
   });
 

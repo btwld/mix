@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/physics.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
 import '../core/spec.dart';
@@ -34,11 +36,15 @@ abstract class StyleAnimationDriver<S extends Spec<S>> {
   @protected
   late Animation<StyleSpec<S>?> _animation;
 
+  bool _reducedMotion;
+
   StyleAnimationDriver({
     required this.vsync,
     required StyleSpec<S> initialSpec,
     bool unbounded = false,
-  }) : _initialSpec = initialSpec {
+    bool reducedMotion = false,
+  }) : _initialSpec = initialSpec,
+       _reducedMotion = reducedMotion {
     _controller = unbounded
         ? AnimationController.unbounded(vsync: vsync)
         : AnimationController(vsync: vsync);
@@ -51,14 +57,15 @@ abstract class StyleAnimationDriver<S extends Spec<S>> {
   /// Gets the animation that drives spec changes.
   Animation<StyleSpec<S>?> get animation => _animation;
 
-  bool _reducedMotion = false;
-
   /// Whether `MediaQuery.disableAnimations` is set for this driver's subtree.
   ///
   /// It applies from the next transition. A running curve or spring
   /// transition finishes; a loop stops on its first frame and resumes when
   /// the flag clears.
   bool get reducedMotion => _reducedMotion;
+
+  /// Set by `StyleAnimationBuilder` from `MediaQuery.disableAnimations`.
+  @internal
   set reducedMotion(bool value) {
     if (_reducedMotion == value) return;
     _reducedMotion = value;
@@ -107,6 +114,7 @@ abstract class ImplicitAnimationDriver<
     required this.config,
     required super.initialSpec,
     super.unbounded,
+    super.reducedMotion,
   }) {
     _tween.begin = _initialSpec;
     _tween.end = _initialSpec;
@@ -127,26 +135,25 @@ abstract class ImplicitAnimationDriver<
 
     _tween.begin = currentValue;
     _tween.end = targetSpec;
+    // A jump may have replaced the animation; drive the tween again.
+    _animation = _controller.drive(_tween);
 
     await executeAnimation();
   }
 
-  bool get _skipsMotion => reducedMotion;
-
-  /// The config's completion callback.
-  VoidCallback? get _onEnd;
-
   /// Shows [targetSpec] without a transition.
   ///
-  /// This runs while the builder updates, so [_onEnd] runs after the frame.
+  /// [onCompleteAnimation] runs once, after the frame. The builder jumps
+  /// while it updates, so that is the current frame; outside a frame, one is
+  /// scheduled.
   void _jumpTo(StyleSpec<S> targetSpec) {
     _controller.stop();
     _tween.begin = targetSpec;
     _tween.end = targetSpec;
-    _animation = _controller.drive(_tween);
-    if (_onEnd case final onEnd?) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => onEnd());
-    }
+    _animation = _controller.drive(ConstantTween(targetSpec));
+    SchedulerBinding.instance
+      ..addPostFrameCallback((_) => onCompleteAnimation())
+      ..ensureVisualUpdate();
   }
 
   void _onAnimationComplete(AnimationStatus status) {
@@ -154,6 +161,8 @@ abstract class ImplicitAnimationDriver<
       onCompleteAnimation();
     }
   }
+
+  bool get _skipsMotion => reducedMotion;
 
   void onCompleteAnimation();
 
@@ -168,6 +177,7 @@ abstract class ImplicitAnimationDriver<
     _controller.reset();
     _tween.begin = _initialSpec;
     _tween.end = _initialSpec;
+    _animation = _controller.drive(_tween);
   }
 
   @override
@@ -190,6 +200,7 @@ class CurveAnimationDriver<S extends Spec<S>>
     required super.vsync,
     required super.config,
     required super.initialSpec,
+    super.reducedMotion,
   }) : super(unbounded: false) {
     _tween.begin = _initialSpec;
     _tween.end = _initialSpec;
@@ -197,24 +208,31 @@ class CurveAnimationDriver<S extends Spec<S>>
     _animation = _controller.drive(_tween);
   }
 
-  TweenSequence<StyleSpec<S>?> _createTweenSequence() => .new([
-    if (config.delay > .zero)
+  /// Weights are in microseconds, so sub-millisecond durations keep a
+  /// positive weight.
+  Animatable<StyleSpec<S>?> _createAnimatable() {
+    // A zero duration after a delay holds the start, then lands on the end.
+    // A zero-weight [TweenSequenceItem] would assert.
+    if (config.duration <= .zero) {
+      return _tween.chain(CurveTween(curve: const Threshold(1.0)));
+    }
+
+    return TweenSequence([
+      if (config.delay > .zero)
+        TweenSequenceItem(
+          tween: ConstantTween(_initialSpec),
+          weight: config.delay.inMicroseconds.toDouble(),
+        ),
       TweenSequenceItem(
-        tween: ConstantTween(_initialSpec),
-        weight: config.delay.inMilliseconds.toDouble(),
+        tween: _tween.chain(CurveTween(curve: config.curve)),
+        weight: config.duration.inMicroseconds.toDouble(),
       ),
-    TweenSequenceItem(
-      tween: _tween.chain(CurveTween(curve: config.curve)),
-      weight: config.duration.inMilliseconds.toDouble(),
-    ),
-  ]);
+    ]);
+  }
 
-  /// A zero-weight [TweenSequenceItem] asserts, so a zero duration jumps.
+  /// A transition with no delay and no duration jumps.
   @override
-  bool get _skipsMotion => super._skipsMotion || config.duration == .zero;
-
-  @override
-  VoidCallback? get _onEnd => config.onEnd;
+  bool get _skipsMotion => super._skipsMotion || config.totalDuration <= .zero;
 
   @override
   void onCompleteAnimation() {
@@ -226,9 +244,7 @@ class CurveAnimationDriver<S extends Spec<S>>
   @override
   Future<void> executeAnimation() async {
     controller.duration = config.totalDuration;
-    final tweenSequence = _createTweenSequence();
-
-    _animation = controller.drive(tweenSequence);
+    _animation = controller.drive(_createAnimatable());
 
     try {
       await controller.forward(from: 0.0);
@@ -245,6 +261,7 @@ class SpringAnimationDriver<S extends Spec<S>>
     required super.vsync,
     required super.config,
     required super.initialSpec,
+    super.reducedMotion,
   }) : super(unbounded: true) {
     _tween.begin = _initialSpec;
     _tween.end = _initialSpec;
@@ -262,9 +279,6 @@ class SpringAnimationDriver<S extends Spec<S>>
       // Animation was cancelled - this is normal
     }
   }
-
-  @override
-  VoidCallback? get _onEnd => config.onEnd;
 
   @override
   void onCompleteAnimation() {
@@ -289,9 +303,10 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
     required this.config,
     required super.initialSpec,
     required this.context,
+    super.reducedMotion,
   }) {
     _setUpAnimation();
-    if (config.isLooping) {
+    if (config.isLooping && !reducedMotion) {
       _startLoopingAnimation();
     }
   }
@@ -361,6 +376,14 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
     controller.repeat();
   }
 
+  /// Gets the total duration of all animation phases combined.
+  Duration get totalDuration {
+    return config.curveConfigs.fold(
+      Duration.zero,
+      (acc, config) => acc + config.totalDuration,
+    );
+  }
+
   @override
   void didChangeReducedMotion() {
     if (!config.isLooping) return;
@@ -371,14 +394,6 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
     } else {
       _startLoopingAnimation();
     }
-  }
-
-  /// Gets the total duration of all animation phases combined.
-  Duration get totalDuration {
-    return config.curveConfigs.fold(
-      Duration.zero,
-      (acc, config) => acc + config.totalDuration,
-    );
   }
 
   @override
@@ -424,9 +439,10 @@ class KeyframeAnimationDriver<S extends Spec<S>>
     required KeyframeAnimationConfig<S> config,
     required super.initialSpec,
     required this.context,
+    super.reducedMotion,
   }) : _config = config {
     _setUpAnimation();
-    if (config.isLooping) {
+    if (config.isLooping && !reducedMotion) {
       _startLoopingAnimation();
     }
   }
@@ -453,6 +469,15 @@ class KeyframeAnimationDriver<S extends Spec<S>>
     controller.repeat();
   }
 
+  Duration get duration {
+    if (_config.timeline.isEmpty) return .zero;
+
+    return _config.timeline.fold(
+      Duration.zero,
+      (max, t) => t.totalDuration > max ? t.totalDuration : max,
+    );
+  }
+
   @override
   void didChangeReducedMotion() {
     if (!_config.isLooping) return;
@@ -463,15 +488,6 @@ class KeyframeAnimationDriver<S extends Spec<S>>
     } else {
       _startLoopingAnimation();
     }
-  }
-
-  Duration get duration {
-    if (_config.timeline.isEmpty) return .zero;
-
-    return _config.timeline.fold(
-      Duration.zero,
-      (max, t) => t.totalDuration > max ? t.totalDuration : max,
-    );
   }
 
   @override
@@ -535,7 +551,11 @@ class _KeyframeAnimatable<S extends Spec<S>> extends Animatable<StyleSpec<S>?> {
 /// timers, or animation lifecycle. Useful for testing or when animations
 /// should be disabled (e.g., for accessibility).
 class NoAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
-  NoAnimationDriver({required super.vsync, required super.initialSpec}) {
+  NoAnimationDriver({
+    required super.vsync,
+    required super.initialSpec,
+    super.reducedMotion,
+  }) {
     _animation = AlwaysStoppedAnimation<StyleSpec<S>?>(_initialSpec);
   }
 
