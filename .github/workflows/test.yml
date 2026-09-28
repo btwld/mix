@@ -76,7 +76,7 @@ jobs:
     timeout-minutes: 20
     defaults:
       run:
-        working-directory: examples/playground
+        working-directory: examples/showcase
     steps:
       - uses: actions/checkout@v4
       - uses: kuhnroyal/flutter-fvm-config-action@v2

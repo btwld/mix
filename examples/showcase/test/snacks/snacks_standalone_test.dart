@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix_showcase/examples/snacks/bell_toggle.dart' as bell_toggle;
-import 'package:mix_showcase/examples/snacks/branched_menu.dart' as branched_menu;
+import 'package:mix_showcase/examples/snacks/branched_menu.dart'
+    as branched_menu;
 import 'package:mix_showcase/examples/snacks/call_chip.dart' as call_chip;
 import 'package:mix_showcase/examples/snacks/code_slots.dart' as code_slots;
 import 'package:mix_showcase/examples/snacks/comet_dial.dart' as comet_dial;
@@ -24,7 +25,8 @@ import 'package:mix_showcase/examples/snacks/slide_commit.dart' as slide_commit;
 import 'package:mix_showcase/examples/snacks/sling_button.dart' as sling_button;
 import 'package:mix_showcase/examples/snacks/slosh_gauge.dart' as slosh_gauge;
 import 'package:mix_showcase/examples/snacks/spring_check.dart' as spring_check;
-import 'package:mix_showcase/examples/snacks/squish_switch.dart' as squish_switch;
+import 'package:mix_showcase/examples/snacks/squish_switch.dart'
+    as squish_switch;
 import 'package:mix_showcase/examples/snacks/status_mark.dart' as status_mark;
 import 'package:mix_showcase/examples/snacks/swipe_row.dart' as swipe_row;
 import 'package:mix_showcase/examples/snacks/swipe_toast.dart' as swipe_toast;
