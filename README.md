@@ -228,8 +228,8 @@ Directives transform values (text casing, number scaling, color adjustments) at 
 
 ## Examples
 
-- [Mix playground](examples/playground): getting started, responsive layouts,
-  and 30 copyable interaction demos in one place.
+- [Mix showcase](examples/showcase): a Remix-powered catalog of core
+  widgets, responsive layouts, 30 copyable interaction demos, and charts.
 
 See [example workspace setup](examples) for Melos, dependencies, and web builds.
 

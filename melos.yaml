@@ -3,7 +3,7 @@ name: mix_workspace
 
 packages:
   - packages/*
-  - examples/playground
+  - examples/showcase
   - packages/mix_generator/example
   - packages/mix_winds/example
   - packages/mix_chart/example
@@ -33,7 +33,7 @@ categories:
     - packages/mix_winds/example
     - packages/mix_chart
     - packages/mix_chart/example
-    - examples/playground
+    - examples/showcase
     - packages/mix_lint_test
     - packages/annotations
   dart_projects:
