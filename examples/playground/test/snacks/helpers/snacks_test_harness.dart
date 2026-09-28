@@ -75,7 +75,7 @@ double pixelDifference(Uint8List a, Uint8List b) {
 
 Future<void> loadSnacksFonts() async {
   final bytes = await File(
-    '../../mix_winds/example/assets/fonts/roboto/Roboto[wdth,wght].ttf',
+    '../../packages/mix_winds/example/assets/fonts/roboto/Roboto[wdth,wght].ttf',
   ).readAsBytes();
   await (FontLoader(
     'Roboto',

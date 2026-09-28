@@ -283,9 +283,9 @@ Distinguish `.alignment(...)` and `.clipBehavior(...)` for the outer Box from
 Check the smallest source and test surface that owns the behavior:
 
 - Grid guide: `packages/mix/doc/grid-layout.md`
-- Grid runnable use cases: `packages/mix/example/lib/layouts/grid/grid_example.dart`
+- Grid runnable use cases: `examples/playground/lib/layouts/grid/grid_example.dart`
 - Grid contract tests: `packages/mix/test/src/layout/`
-- Wrap runnable use case: `packages/mix/example/lib/layouts/wrap/main.dart`
+- Wrap runnable use case: `examples/playground/lib/layouts/wrap/main.dart`
 - Flex, Wrap, and Stack composites: `packages/mix/lib/src/specs/`
 
 Run focused widget tests while iterating. Before handing off changes to Mix

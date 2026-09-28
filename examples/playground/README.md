@@ -1,4 +1,4 @@
-# Mix example app
+# Mix playground
 
 One app contains three sections:
 
@@ -16,7 +16,7 @@ checkout. Then, from this directory:
 ```sh
 fvm flutter run -d chrome
 fvm flutter test
-fvm flutter analyze
+fvm flutter analyze --no-fatal-infos
 ```
 
 Without Melos-generated overrides, `flutter pub get` resolves published Mix

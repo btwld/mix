@@ -1,6 +1,6 @@
 # Mix examples
 
-[Run the combined example app](../packages/mix/example) for Basics, Layouts,
+[Run the combined playground app](playground) for Basics, Layouts,
 and 30 copyable Snacks. Charts and Winds keep their package-specific examples.
 
 The app is private (`publish_to: none`) and declares the published Mix version.

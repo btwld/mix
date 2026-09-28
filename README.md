@@ -228,7 +228,7 @@ Directives transform values (text casing, number scaling, color adjustments) at 
 
 ## Examples
 
-- [Mix example app](packages/mix/example): getting started, responsive layouts,
+- [Mix playground](examples/playground): getting started, responsive layouts,
   and 30 copyable interaction demos in one place.
 
 See [example workspace setup](examples) for Melos, dependencies, and web builds.

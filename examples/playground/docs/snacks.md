@@ -4,7 +4,7 @@ Thirty small, stateful styling lessons inspired by the [React Bits Micro catalog
 These are **Mix adaptations, not behavior-identical ports**. Named styles describe
 the appearance and motion; widget state owns interaction and composition.
 
-Run from `packages/mix/example`:
+Run from `examples/playground`:
 
 ```sh
 flutter run -d chrome
@@ -48,7 +48,7 @@ styling or interaction APIs. Recheck the live service below before adopting
 newer APIs. See [app setup](../README.md) for local overrides and published-dependency
 web builds.
 
-From `packages/mix/example`, recheck the live DartPad service with:
+From `examples/playground`, recheck the live DartPad service with:
 
 ```sh
 dart run tool/verify_dartpad.dart

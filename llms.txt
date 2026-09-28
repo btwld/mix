@@ -21,8 +21,8 @@ Important notes:
 
 - [Layout with Mix agent reference](https://raw.githubusercontent.com/btwld/mix/main/skills/mix/references/layout.md): Decision guide for Box, Flex, Wrap, Grid, and Stack; includes responsive Grid use cases, constraints, animation, and limitations.
 - [Grid layout guide](https://raw.githubusercontent.com/btwld/mix/main/packages/mix/doc/grid-layout.md): Maintained GridBox contract covering tracks, local constraints, rows, tokens, animation, overflow, and unsupported features.
-- [Grid runnable examples](https://github.com/btwld/mix/blob/main/packages/mix/example/lib/layouts/grid/grid_example.dart): Dashboard, card catalog, media gallery, and animated 1:1-to-2:1 Grid scenarios.
-- [Grid example guide](https://raw.githubusercontent.com/btwld/mix/main/packages/mix/example/docs/layouts.md): Commands and visual use-case explanations for GridBox and WrapBox.
+- [Grid runnable examples](https://github.com/btwld/mix/blob/main/examples/playground/lib/layouts/grid/grid_example.dart): Dashboard, card catalog, media gallery, and animated 1:1-to-2:1 Grid scenarios.
+- [Grid example guide](https://raw.githubusercontent.com/btwld/mix/main/examples/playground/docs/layouts.md): Commands and visual use-case explanations for GridBox and WrapBox.
 - [Fluent API reference](https://raw.githubusercontent.com/btwld/mix/main/skills/mix/references/fluent-api.md): Layout/style mixins, callable Stylers, sizing, interaction widgets, and composition.
 
 ## Styling and Theming

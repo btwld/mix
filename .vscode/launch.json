@@ -16,8 +16,8 @@
       "flutterMode": "profile"
     },
     {
-      "name": "Mix Example",
-      "cwd": "packages/mix/example",
+      "name": "Mix Playground",
+      "cwd": "examples/playground",
       "request": "launch",
       "type": "dart",
       "args": ["--enable-experiment=dot-shorthands"]

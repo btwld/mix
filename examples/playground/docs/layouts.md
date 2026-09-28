@@ -1,7 +1,7 @@
 # Mix Layouts
 
 These galleries consume Mix's public `package:mix/mix.dart` library. From
-`packages/mix/example`, run the combined app and select **Layouts**:
+`examples/playground`, run the combined app and select **Layouts**:
 
 ```sh
 fvm flutter run -d chrome
@@ -68,7 +68,7 @@ interpolate their weights from 1:1 to 2:1 while also animating the repeated row
 height and gaps. The gallery deliberately uses 1.2 seconds so the interpolation
 is easy to inspect; product transitions can be shorter:
 
-![GridBox interpolating between balanced and focused tracks](../../screenshots/grid_animation_demo.gif)
+![GridBox interpolating between balanced and focused tracks](../../../packages/mix/screenshots/grid_animation_demo.gif)
 
 ```dart
 final GridBoxStyler animatedGrid = .columns([
