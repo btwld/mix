@@ -1,3 +1,9 @@
+## 2.2.1
+
+### Fixes
+
+- **Reduced motion:** Style transitions now honor `MediaQuery.disableAnimations`. This changes default behavior for users with reduced motion on. Curve and spring changes land on the target in the same frame, triggered phase and keyframe sequences jump to their end, and looping phase and keyframe animations hold their first frame. The flag applies from the next transition: a running curve or spring transition finishes, and a loop stops when the flag turns on and resumes when it clears. `AnimationConfig.linear(Duration.zero)` now jumps instead of asserting. After a jump, `onEnd` runs once, after the frame.
+
 ## 2.2.0
 
 Stable release of the 2.2.0 line, cumulative over the `2.2.0-beta.0` through

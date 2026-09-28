@@ -42,6 +42,13 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
     animationDriver = _createAnimationDriver(config: config, initialSpec: spec);
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    animationDriver.reducedMotion =
+        MediaQuery.maybeDisableAnimationsOf(context) ?? false;
+  }
+
   StyleAnimationDriver<S> _createAnimationDriver({
     required AnimationConfig? config,
     required StyleSpec<S> initialSpec,
@@ -94,11 +101,12 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
     if ((oldConfig.runtimeType == config.runtimeType) && config != null) {
       animationDriver.updateDriver(config);
     } else {
+      final reducedMotion = animationDriver.reducedMotion;
       animationDriver.dispose();
       animationDriver = _createAnimationDriver(
         config: config ?? oldConfig,
         initialSpec: oldWidget.spec,
-      );
+      )..reducedMotion = reducedMotion;
     }
 
     if (oldWidget.spec != widget.spec) {
