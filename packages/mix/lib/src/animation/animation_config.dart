@@ -856,6 +856,40 @@ class PhaseAnimationConfig<T extends Spec<T>, U extends Style<T>>
 
   bool get isLooping => trigger == null;
 
+  /// Asserts the configuration invariants. Kept off the `const` constructor so
+  /// the public const construction path is preserved; [PhaseAnimationDriver]
+  /// calls this before the controller runs, so an invalid config still fails
+  /// before controller execution.
+  void validate() {
+    assert(
+      styles.length == curveConfigs.length,
+      'PhaseAnimationConfig requires one CurveAnimationConfig per phase '
+      '(got ${styles.length} styles and ${curveConfigs.length} configs).',
+    );
+    assert(
+      styles.isNotEmpty,
+      'PhaseAnimationConfig requires at least one phase.',
+    );
+    assert(
+      // Negative durations/delays produce out-of-order or backward tween
+      // weights and break TweenSequence timing.
+      curveConfigs.every((c) => c.duration >= .zero && c.delay >= .zero),
+      'PhaseAnimationConfig durations and delays must be non-negative.',
+    );
+    assert(
+      // A looping (untriggered) timeline is driven by `controller.repeat()`,
+      // which requires a positive period.
+      trigger != null ||
+          curveConfigs.fold<Duration>(
+                .zero,
+                (total, c) => total + c.totalDuration,
+              ) >
+              .zero,
+      'A looping PhaseAnimationConfig (trigger == null) must have a positive '
+      'total duration.',
+    );
+  }
+
   @override
   List<Object?> get props => [styles, trigger, curveConfigs];
 }
@@ -1042,7 +1076,11 @@ class KeyframeTrack<T> with Equatable {
     this.segments, {
     required this.initial,
     TweenBuilder<T?>? tweenBuilder,
-  }) : tweenBuilder = tweenBuilder ?? Tween<T>.new;
+  }) : tweenBuilder = tweenBuilder ?? Tween<T>.new,
+       assert(
+         segments.every((s) => s.duration >= .zero),
+         'KeyframeTrack "$id" segment durations must be non-negative.',
+       );
 
   Duration get totalDuration {
     return segments.fold(
@@ -1130,6 +1168,27 @@ class KeyframeAnimationConfig<S extends Spec<S>> extends AnimationConfig
   });
 
   bool get isLooping => trigger == null;
+
+  /// Asserts the configuration invariants. Kept off the `const` constructor so
+  /// the public const construction path is preserved; [KeyframeAnimationDriver]
+  /// calls this before the controller runs, so an invalid config still fails
+  /// before controller execution. Per-track segment durations are validated by
+  /// [KeyframeTrack] itself.
+  void validate() {
+    assert(
+      // Track ids are the lookup keys for `KeyframeAnimationResult.get`; a
+      // duplicate silently shadows a track.
+      timeline.map((t) => t.id).toSet().length == timeline.length,
+      'KeyframeAnimationConfig requires unique track ids; found a duplicate.',
+    );
+    assert(
+      // A looping (untriggered) timeline is driven by `controller.repeat()`,
+      // which requires a positive period.
+      trigger != null || timeline.any((t) => t.totalDuration > .zero),
+      'A looping KeyframeAnimationConfig (trigger == null) must have at least '
+      'one track with a positive duration.',
+    );
+  }
 
   @override
   List<Object?> get props => [trigger, timeline, initialStyle];

@@ -1037,4 +1037,212 @@ void main() {
       expect(driver.animation.value?.spec.resolvedValue, 1.0);
     });
   });
+
+  group('PhaseAnimationDriver lifecycle (regression)', () {
+    PhaseAnimationDriver<MockSpec<double>> makeDriver(
+      PhaseAnimationConfig<MockSpec<double>, MockStyle<double>> config,
+    ) {
+      return PhaseAnimationDriver<MockSpec<double>>(
+        vsync: const TestVSync(),
+        config: config,
+        initialSpec: MockSpec(resolvedValue: 0.0).toStyleSpec(),
+        context: MockBuildContext(),
+      );
+    }
+
+    testWidgets(
+      'delay belongs to the destination transition, including last -> first',
+      (tester) async {
+        final trigger = ValueNotifier(false);
+        final config = PhaseAnimationConfig<MockSpec<double>, MockStyle<double>>(
+          styles: [MockStyle(10.0), MockStyle(20.0)],
+          curveConfigs: const [
+            // config[0]: no delay; owns the 1 -> 0 (last -> first) transition.
+            CurveAnimationConfig(
+              duration: Duration(milliseconds: 80),
+              curve: Curves.linear,
+            ),
+            // config[1]: 40ms delay; owns the 0 -> 1 transition.
+            CurveAnimationConfig(
+              duration: Duration(milliseconds: 80),
+              curve: Curves.linear,
+              delay: Duration(milliseconds: 40),
+            ),
+          ],
+          trigger: trigger,
+        );
+        final driver = makeDriver(config);
+        addTearDown(() {
+          trigger.dispose();
+          driver.dispose();
+        });
+
+        double? valueNow() => driver.animation.value?.spec.resolvedValue;
+
+        trigger.value = true;
+        await tester.pump(); // forward(from: 0) begins
+
+        // [0, 40): the 0 -> 1 transition's 40ms delay holds phase 0 (10).
+        await tester.pump(const Duration(milliseconds: 20));
+        expect(valueNow(), 10.0);
+
+        // [40, 120): transition to phase 1 (20).
+        await tester.pump(const Duration(milliseconds: 40)); // t=60
+        expect(valueNow(), 20.0);
+
+        // [120, 200): last -> first transition (config[0], no delay) to phase 0.
+        await tester.pump(const Duration(milliseconds: 80)); // t=140
+        expect(valueNow(), 10.0);
+
+        await tester.pumpAndSettle();
+      },
+    );
+
+    testWidgets(
+      'PhaseAnimationConfig.onEnd fires exactly once per run despite repeated '
+      'updates',
+      (tester) async {
+        var endCount = 0;
+        final trigger = ValueNotifier(false);
+        PhaseAnimationConfig<MockSpec<double>, MockStyle<double>> makeConfig() {
+          return PhaseAnimationConfig(
+            styles: [MockStyle(0.0), MockStyle(1.0)],
+            curveConfigs: const [
+              CurveAnimationConfig(
+                duration: Duration(milliseconds: 100),
+                curve: Curves.linear,
+              ),
+              CurveAnimationConfig(
+                duration: Duration(milliseconds: 100),
+                curve: Curves.linear,
+              ),
+            ],
+            trigger: trigger,
+            onEnd: () => endCount++,
+          );
+        }
+
+        final driver = makeDriver(makeConfig());
+        addTearDown(() {
+          trigger.dispose();
+          driver.dispose();
+        });
+
+        // Each updateDriver previously stacked another status listener, so a
+        // single completed run fired onEnd once per accumulated listener.
+        driver.updateDriver(makeConfig());
+        driver.updateDriver(makeConfig());
+        driver.updateDriver(makeConfig());
+
+        trigger.value = true;
+        await tester.pumpAndSettle();
+
+        expect(endCount, 1);
+      },
+    );
+
+    testWidgets(
+      'replacing the trigger and disposing remove the old trigger listeners',
+      (tester) async {
+        final triggerA = ValueNotifier(false);
+        final triggerB = ValueNotifier(false);
+        PhaseAnimationConfig<MockSpec<double>, MockStyle<double>> configFor(
+          ValueNotifier<bool> trigger,
+        ) {
+          return PhaseAnimationConfig(
+            styles: [MockStyle(0.0), MockStyle(1.0)],
+            curveConfigs: const [
+              CurveAnimationConfig(
+                duration: Duration(milliseconds: 100),
+                curve: Curves.linear,
+              ),
+              CurveAnimationConfig(
+                duration: Duration(milliseconds: 100),
+                curve: Curves.linear,
+              ),
+            ],
+            trigger: trigger,
+          );
+        }
+
+        final driver = makeDriver(configFor(triggerA));
+        addTearDown(() {
+          triggerA.dispose();
+          triggerB.dispose();
+        });
+
+        driver.updateDriver(configFor(triggerB));
+        await tester.pump();
+
+        // The replaced trigger no longer drives the animation.
+        triggerA.value = true;
+        await tester.pump();
+        expect(driver.animation.isAnimating, isFalse);
+
+        // The current trigger does.
+        triggerB.value = true;
+        await tester.pump();
+        expect(driver.animation.isAnimating, isTrue);
+        await tester.pumpAndSettle();
+
+        // After disposal, toggling the trigger must not reach the disposed
+        // controller.
+        driver.dispose();
+        expect(() => triggerB.value = false, returnsNormally);
+      },
+    );
+  });
+
+  group('driver validates config before running (regression)', () {
+    test('PhaseAnimationDriver rejects an invalid config on construction', () {
+      // Mismatched styles/curveConfigs must fail via validate() before any
+      // controller work — proves the driver is wired to config.validate().
+      expect(
+        () => PhaseAnimationDriver<MockSpec<double>>(
+          vsync: const TestVSync(),
+          config: PhaseAnimationConfig<MockSpec<double>, MockStyle<double>>(
+            styles: [MockStyle(0.0), MockStyle(1.0)],
+            curveConfigs: const [
+              CurveAnimationConfig(
+                duration: Duration(milliseconds: 100),
+                curve: Curves.linear,
+              ),
+            ],
+            trigger: null,
+          ),
+          initialSpec: MockSpec(resolvedValue: 0.0).toStyleSpec(),
+          context: MockBuildContext(),
+        ),
+        throwsA(isA<AssertionError>()),
+      );
+    });
+
+    test('KeyframeAnimationDriver rejects an invalid config on construction', () {
+      final trigger = ValueNotifier(false);
+      addTearDown(trigger.dispose);
+
+      // Duplicate track ids must fail via validate() before any controller work.
+      expect(
+        () => KeyframeAnimationDriver<MockSpec<double>>(
+          vsync: const TestVSync(),
+          config: KeyframeAnimationConfig<MockSpec<double>>(
+            trigger: trigger,
+            timeline: [
+              KeyframeTrack<double>('dup', const [
+                Keyframe.linear(1.0, Duration(milliseconds: 100)),
+              ], initial: 0.0),
+              KeyframeTrack<double>('dup', const [
+                Keyframe.linear(1.0, Duration(milliseconds: 100)),
+              ], initial: 0.0),
+            ],
+            styleBuilder: (result, style) => style,
+            initialStyle: MockStyle(0.0),
+          ),
+          initialSpec: MockSpec(resolvedValue: 0.0).toStyleSpec(),
+          context: MockBuildContext(),
+        ),
+        throwsA(isA<AssertionError>()),
+      );
+    });
+  });
 }

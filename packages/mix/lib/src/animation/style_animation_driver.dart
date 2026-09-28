@@ -158,7 +158,11 @@ class CurveAnimationDriver<S extends Spec<S>>
   TweenSequence<StyleSpec<S>?> _createTweenSequence() => .new([
     if (config.delay > .zero)
       TweenSequenceItem(
-        tween: ConstantTween(_initialSpec),
+        // Hold the currently displayed value during the delay. `_animateTo`
+        // sets `_tween.begin` to the current interpolated spec just before
+        // this runs, so an interrupted transition holds where it is visually
+        // instead of snapping back to the driver's original `_initialSpec`.
+        tween: ConstantTween(_tween.begin),
         weight: config.delay.inMilliseconds.toDouble(),
       ),
     TweenSequenceItem(
@@ -238,7 +242,15 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
     required super.initialSpec,
     required this.context,
   }) {
+    // Validate before any controller work so invalid configs fail early. Kept
+    // here (not in the const constructor) to preserve const construction.
+    config.validate();
     _setUpAnimation();
+    // Register the completion listener on the controller once, for the driver's
+    // whole lifetime. `_setUpAnimation` re-drives `_animation` on every
+    // `updateDriver`, so registering the listener there (as before) leaked a new
+    // listener per update and fired `onEnd` once per accumulated listener.
+    controller.addStatusListener(_onStatusChanged);
     if (config.isLooping) {
       _startLoopingAnimation();
     }
@@ -255,14 +267,15 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
     _animation = controller.drive(_PhasedSpecTween(_tweenSequence));
 
     config.trigger?.addListener(_onTriggerChanged);
+  }
 
-    // Add status listener for onEnd callback
-    if (config.curveConfigs.last.onEnd != null) {
-      _animation.addStatusListener((status) {
-        if (status == .completed) {
-          config.curveConfigs.last.onEnd!();
-        }
-      });
+  // Phase completion is owned by `PhaseAnimationConfig.onEnd`. The per-phase
+  // `CurveAnimationConfig.onEnd` values are not a completion contract; they only
+  // carry timing/curve data for each transition. Reads the current `config` so
+  // an `updateDriver` that swaps the callback is honored.
+  void _onStatusChanged(AnimationStatus status) {
+    if (status == .completed) {
+      config.onEnd?.call();
     }
   }
 
@@ -279,7 +292,11 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
       final currentIndex = i % specs.length;
       final nextIndex = (i + 1) % specs.length;
 
-      if (configs[currentIndex].delay > .zero) {
+      // The transition into `nextIndex` is owned by `configs[nextIndex]`: its
+      // delay, duration, and curve all describe arriving at `specs[nextIndex]`.
+      // Use `nextIndex` for both the delay check and its weight so placement and
+      // duration always agree (previously the check read `currentIndex.delay`).
+      if (configs[nextIndex].delay > .zero) {
         items.add(
           TweenSequenceItem(
             tween: ConstantTween(specs[currentIndex]),
@@ -320,6 +337,7 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
   @override
   void dispose() {
     config.trigger?.removeListener(_onTriggerChanged);
+    controller.removeStatusListener(_onStatusChanged);
     controller.stop();
     super.dispose();
   }
@@ -333,6 +351,7 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
 
   @override
   void updateDriver(covariant PhaseAnimationConfig config) {
+    config.validate();
     this.config.trigger?.removeListener(_onTriggerChanged);
     if (config != this.config) {
       controller.reset();
@@ -361,6 +380,9 @@ class KeyframeAnimationDriver<S extends Spec<S>>
     required super.initialSpec,
     required this.context,
   }) : _config = config {
+    // Validate before any controller work so invalid configs fail early. Kept
+    // here (not in the const constructor) to preserve const construction.
+    config.validate();
     _setUpAnimation();
     if (config.isLooping) {
       _startLoopingAnimation();
@@ -418,6 +440,7 @@ class KeyframeAnimationDriver<S extends Spec<S>>
 
   @override
   void updateDriver(covariant KeyframeAnimationConfig<S> config) {
+    config.validate();
     _config.trigger?.removeListener(_onTriggerChanged);
     if (_config != config) {
       controller.reset();

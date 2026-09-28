@@ -25,11 +25,16 @@ mixin AnimationStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
   }
 
   /// Creates a phase animation. It will animate through the given phases.
+  ///
+  /// [onEnd] fires once each time a triggered sequence completes; it is the
+  /// single phase-completion contract. The per-phase [CurveAnimationConfig]s
+  /// returned by [configBuilder] only carry timing/curve data.
   T phaseAnimation<P>({
     Listenable? trigger,
     required List<P> phases,
     required T Function(P phase, T style) styleBuilder,
     required CurveAnimationConfig Function(P phase) configBuilder,
+    VoidCallback? onEnd,
   }) {
     final styles = <T>[];
     final configs = <CurveAnimationConfig>[];
@@ -44,6 +49,7 @@ mixin AnimationStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
         styles: styles,
         curveConfigs: configs,
         trigger: trigger,
+        onEnd: onEnd,
       ),
     );
   }

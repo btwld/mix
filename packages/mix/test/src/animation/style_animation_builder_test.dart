@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
+import '../../helpers/testing_utils.dart';
+
 Widget styleAnimationBuilderCapturingColor(
   StyleSpec<TestSpec> spec,
   void Function(Color?) onColor,
@@ -407,6 +409,308 @@ void main() {
       expect(find.byKey(const Key('test-container')), findsOneWidget);
     });
   });
+
+  group('interrupted implicit animation (regression)', () {
+    testWidgets(
+      'a delayed transition holds the interrupted value instead of snapping to '
+      'the start',
+      (tester) async {
+        Color? captured;
+        Widget build(StyleSpec<TestSpec> spec) =>
+            styleAnimationBuilderCapturingColor(spec, (c) => captured = c);
+
+        const red = StyleSpec<TestSpec>(
+          spec: TestSpec(color: Colors.red),
+          animation: CurveAnimationConfig(
+            duration: Duration(milliseconds: 200),
+            curve: Curves.linear,
+          ),
+        );
+        const blue = StyleSpec<TestSpec>(
+          spec: TestSpec(color: Colors.blue),
+          animation: CurveAnimationConfig(
+            duration: Duration(milliseconds: 200),
+            curve: Curves.linear,
+          ),
+        );
+        const greenDelayed = StyleSpec<TestSpec>(
+          spec: TestSpec(color: Colors.green),
+          animation: CurveAnimationConfig(
+            duration: Duration(milliseconds: 200),
+            curve: Curves.linear,
+            delay: Duration(milliseconds: 100),
+          ),
+        );
+
+        await tester.pumpWidget(build(red));
+        await tester.pumpAndSettle();
+        expect(captured, Colors.red);
+
+        // Begin red -> blue and stop halfway.
+        await tester.pumpWidget(build(blue));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 100));
+        final interrupted = captured;
+        expect(interrupted, isNot(Colors.red));
+        expect(interrupted, isNot(Colors.blue));
+
+        // Interrupt with a delayed transition to green. During the delay the
+        // value must hold where it was, not jump back to the driver's original
+        // red (`_initialSpec`).
+        await tester.pumpWidget(build(greenDelayed));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 50));
+        expect(
+          captured,
+          interrupted,
+          reason: 'the delay must hold the interrupted value',
+        );
+        expect(captured, isNot(Colors.red));
+
+        // Once the delay elapses it animates to the new target.
+        await tester.pumpAndSettle();
+        expect(captured, Colors.green);
+      },
+    );
+  });
+
+  group('implicit animation removal (regression)', () {
+    testWidgets(
+      'spring removal reuses the previous config to animate to the new target',
+      (tester) async {
+        Color? captured;
+        Widget build(StyleSpec<TestSpec> spec) =>
+            styleAnimationBuilderCapturingColor(spec, (c) => captured = c);
+
+        final withSpring = StyleSpec<TestSpec>(
+          spec: const TestSpec(color: Colors.red),
+          animation: SpringAnimationConfig.standard(),
+        );
+        const withoutAnimation = StyleSpec<TestSpec>(
+          spec: TestSpec(color: Colors.blue),
+          animation: null,
+        );
+
+        await tester.pumpWidget(build(withSpring));
+        await tester.pumpAndSettle();
+        expect(captured, Colors.red);
+
+        await tester.pumpWidget(build(withoutAnimation));
+        await tester.pump();
+        // The spring should animate out rather than jump straight to blue.
+        expect(
+          captured,
+          isNot(Colors.blue),
+          reason: 'spring removal should animate, not jump to the target',
+        );
+
+        await tester.pumpAndSettle();
+        // A spring settles within its tolerance rather than exactly on the end
+        // control value, so assert channel closeness to the target instead of
+        // exact equality.
+        final settled = captured!;
+        expect(settled.r, closeTo(Colors.blue.r, 0.02));
+        expect(settled.g, closeTo(Colors.blue.g, 0.02));
+        expect(settled.b, closeTo(Colors.blue.b, 0.02));
+      },
+    );
+  });
+
+  group('phase and keyframe removal (regression)', () {
+    testWidgets(
+      'removing a looping phase animation shows the new target immediately and '
+      'stops the loop',
+      (tester) async {
+        double? captured;
+        await tester.pumpWidget(
+          _mockAnimationApp(_mockSpec(1.0, _loopingPhaseConfig()), (v) {
+            captured = v;
+          }),
+        );
+        await tester.pump(const Duration(milliseconds: 50));
+        expect(tester.hasRunningAnimations, isTrue);
+
+        await tester.pumpWidget(
+          _mockAnimationApp(_mockSpec(42.0, null), (v) {
+            captured = v;
+          }),
+        );
+        await tester.pump();
+
+        expect(captured, 42.0);
+        expect(tester.hasRunningAnimations, isFalse);
+      },
+    );
+
+    testWidgets(
+      'removing a looping keyframe animation shows the new target immediately '
+      'and stops the loop',
+      (tester) async {
+        double? captured;
+        await tester.pumpWidget(
+          _mockAnimationApp(_mockSpec(1.0, _loopingKeyframeConfig()), (v) {
+            captured = v;
+          }),
+        );
+        await tester.pump(const Duration(milliseconds: 50));
+        expect(tester.hasRunningAnimations, isTrue);
+
+        await tester.pumpWidget(
+          _mockAnimationApp(_mockSpec(42.0, null), (v) {
+            captured = v;
+          }),
+        );
+        await tester.pump();
+
+        expect(captured, 42.0);
+        expect(tester.hasRunningAnimations, isFalse);
+      },
+    );
+  });
+
+  group('driver transition matrix (regression)', () {
+    final families = <String, AnimationConfig? Function()>{
+      'null': () => null,
+      'curve': _curveConfig,
+      'spring': SpringAnimationConfig.standard,
+      'phase': _loopingPhaseConfig,
+      'keyframe': _loopingKeyframeConfig,
+    };
+    // Configs that settle to the widget's target value (they retarget via
+    // `didUpdateSpec`), so we can assert the final rendered spec == target.
+    const settlingNew = ['null', 'curve', 'spring'];
+    // Looping configs never settle; we only assert the new loop took over.
+    const loopingNew = ['phase', 'keyframe'];
+
+    for (final oldEntry in families.entries) {
+      for (final newKey in settlingNew) {
+        testWidgets(
+          '${oldEntry.key} -> $newKey disposes old and reaches target',
+          (tester) async {
+            double? captured;
+            await tester.pumpWidget(
+              _mockAnimationApp(_mockSpec(1.0, oldEntry.value()), (v) {
+                captured = v;
+              }),
+            );
+            await tester.pump(const Duration(milliseconds: 20));
+
+            await tester.pumpWidget(
+              _mockAnimationApp(_mockSpec(2.0, families[newKey]!()), (v) {
+                captured = v;
+              }),
+            );
+            await tester.pumpAndSettle();
+
+            expect(tester.takeException(), isNull);
+            expect(
+              captured,
+              2.0,
+              reason: '${oldEntry.key} -> $newKey should render the new target',
+            );
+            expect(
+              tester.hasRunningAnimations,
+              isFalse,
+              reason: 'the old ${oldEntry.key} ticker should be disposed',
+            );
+          },
+        );
+      }
+
+      for (final newKey in loopingNew) {
+        testWidgets(
+          '${oldEntry.key} -> $newKey disposes old and starts new loop',
+          (tester) async {
+            await tester.pumpWidget(
+              _mockAnimationApp(_mockSpec(1.0, oldEntry.value()), (_) {}),
+            );
+            await tester.pump(const Duration(milliseconds: 20));
+
+            await tester.pumpWidget(
+              _mockAnimationApp(_mockSpec(2.0, families[newKey]!()), (_) {}),
+            );
+            await tester.pump();
+            await tester.pump(const Duration(milliseconds: 20));
+
+            expect(tester.takeException(), isNull);
+            expect(
+              tester.hasRunningAnimations,
+              isTrue,
+              reason: '${oldEntry.key} -> $newKey should run the new loop',
+            );
+
+            // Unmount so the repeating controller is disposed before teardown.
+            await tester.pumpWidget(const SizedBox());
+          },
+        );
+      }
+    }
+  });
+}
+
+// Builds a MaterialApp hosting a StyleAnimationBuilder over a MockSpec and
+// reports the resolved value on every rebuild.
+Widget _mockAnimationApp(
+  StyleSpec<MockSpec<double>> spec,
+  void Function(double?) onValue,
+) {
+  return MaterialApp(
+    home: StyleAnimationBuilder<MockSpec<double>>(
+      spec: spec,
+      builder: (context, resolved) {
+        onValue(resolved.spec.resolvedValue);
+
+        return const SizedBox();
+      },
+    ),
+  );
+}
+
+StyleSpec<MockSpec<double>> _mockSpec(
+  double value,
+  AnimationConfig? animation,
+) {
+  return StyleSpec<MockSpec<double>>(
+    spec: MockSpec<double>(resolvedValue: value),
+    animation: animation,
+  );
+}
+
+AnimationConfig _curveConfig() => const CurveAnimationConfig(
+  duration: Duration(milliseconds: 100),
+  curve: Curves.linear,
+);
+
+// A looping (untriggered) phase animation cycling between two phases.
+AnimationConfig _loopingPhaseConfig() {
+  return PhaseAnimationConfig<MockSpec<double>, MockStyle<double>>(
+    styles: [MockStyle(0.0), MockStyle(1.0)],
+    curveConfigs: const [
+      CurveAnimationConfig(
+        duration: Duration(milliseconds: 100),
+        curve: Curves.linear,
+      ),
+      CurveAnimationConfig(
+        duration: Duration(milliseconds: 100),
+        curve: Curves.linear,
+      ),
+    ],
+    trigger: null,
+  );
+}
+
+// A looping (untriggered) keyframe animation.
+AnimationConfig _loopingKeyframeConfig() {
+  return KeyframeAnimationConfig<MockSpec<double>>(
+    trigger: null,
+    timeline: [
+      KeyframeTrack<double>('value', const [
+        Keyframe.linear(1.0, Duration(milliseconds: 100)),
+      ], initial: 0.0),
+    ],
+    styleBuilder: (result, style) => MockStyle(result.get<double>('value')),
+    initialStyle: MockStyle(0.0),
+  );
 }
 
 // Test helpers
