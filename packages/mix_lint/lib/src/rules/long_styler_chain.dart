@@ -37,7 +37,11 @@ class LongStylerChain extends AnalysisRule {
     RuleVisitorRegistry registry,
     RuleContext context,
   ) {
-    registry.addInstanceCreationExpression(this, _Visitor(this, maxLength));
+    final visitor = _Visitor(this, maxLength);
+    registry
+      ..addDotShorthandConstructorInvocation(this, visitor)
+      ..addDotShorthandInvocation(this, visitor)
+      ..addInstanceCreationExpression(this, visitor);
   }
 }
 
@@ -47,13 +51,24 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   const _Visitor(this.rule, this.maxLength);
 
-  @override
-  void visitInstanceCreationExpression(InstanceCreationExpression node) {
-    if (!isMixStylerType(node.staticType)) return;
+  void _check(Expression root) {
+    if (!isMixStylerType(root.staticType)) return;
 
-    final length = collectDirectMethodChain(node).length;
+    final length = collectDirectMethodChain(root).length;
     if (length > maxLength) {
-      rule.reportAtNode(node, arguments: [length, maxLength]);
+      rule.reportAtNode(root, arguments: [length, maxLength]);
     }
   }
+
+  @override
+  void visitDotShorthandConstructorInvocation(
+    DotShorthandConstructorInvocation node,
+  ) => _check(node);
+
+  @override
+  void visitDotShorthandInvocation(DotShorthandInvocation node) => _check(node);
+
+  @override
+  void visitInstanceCreationExpression(InstanceCreationExpression node) =>
+      _check(node);
 }

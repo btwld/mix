@@ -112,8 +112,9 @@ class _Visitor extends SimpleAstVisitor<void> {
       if (isFromMix(element)) return .mix;
       if (_isInAnalyzedPackage(element)) return .unknown;
 
-      // Instance receiver, for example `BoxStyler().color(...)`.
-      final receiverType = consumer.target?.staticType;
+      // Instance receiver, for example `BoxStyler().color(...)`. realTarget
+      // also covers cascades such as `BoxStyler()..color(...)`.
+      final receiverType = consumer.realTarget?.staticType;
       if (receiverType is InterfaceType) {
         return isMixType(receiverType) ? .mix : .notMix;
       }

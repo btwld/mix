@@ -40,6 +40,14 @@ final s = TextStyler().fontWeight([!ui.FontWeight.w600!]);
 ''');
   }
 
+  void test_named_constructor_of_parameter_type_reports() async {
+    await assertLints(r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+final s = BoxStyler().shadow([!BoxShadowMix.color(Colors.blue)!]);
+''');
+  }
+
   // No diagnostics.
 
   void test_dot_shorthand_no_diagnostic() async {
@@ -92,6 +100,26 @@ final s = BoxStyler().shadow(BoxShadowMix());
     await assertNoDiagnostics(r'''
 import 'package:mix/mix.dart';
 final s = BoxStyler().width(1).onHovered(BoxStyler().width(2));
+''');
+  }
+
+  void test_explicit_type_arguments_no_diagnostic() async {
+    // `.linear()` would drop the explicit type argument.
+    await assertNoDiagnostics(r'''
+import 'package:mix/mix.dart';
+final s = BoxStyler().gradient(GradientMix<Object>.linear());
+''');
+  }
+
+  void test_generic_method_parameter_no_diagnostic() async {
+    // T is inferred from the argument, so `.w600` would have no context type.
+    await assertNoDiagnostics(r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+extension on BoxStyler {
+  BoxStyler tagged<T>(T value) => this;
+}
+final s = BoxStyler().tagged(FontWeight.w600);
 ''');
   }
 

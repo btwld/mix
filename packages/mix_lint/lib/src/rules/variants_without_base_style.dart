@@ -3,6 +3,7 @@ import 'package:analyzer/analysis_rule/rule_context.dart';
 import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
+import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
 
 import '../utils/styler_calls.dart';
@@ -33,7 +34,11 @@ class VariantsWithoutBaseStyle extends AnalysisRule {
     RuleVisitorRegistry registry,
     RuleContext context,
   ) {
-    registry.addInstanceCreationExpression(this, _Visitor(this));
+    final visitor = _Visitor(this);
+    registry
+      ..addDotShorthandConstructorInvocation(this, visitor)
+      ..addDotShorthandInvocation(this, visitor)
+      ..addInstanceCreationExpression(this, visitor);
   }
 }
 
@@ -42,33 +47,61 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   const _Visitor(this.rule);
 
-  /// Returns true if [styler] is the style passed to a variant or to
-  /// `merge()`, such as the inner Styler in `.onDark(BoxStyler().onHovered(x))`.
-  /// Such a Styler overrides another style, so it needs no base.
-  bool _isNestedStyle(Expression styler) {
-    final argumentList = styler.parent;
-    if (argumentList is! ArgumentList) return false;
-    final invocation = argumentList.parent;
+  void _check(Expression root) {
+    if (!isMixStylerType(root.staticType)) return;
+    if (rootSetsBaseStyle(root)) return;
 
-    return invocation is MethodInvocation &&
-        isMixStylerType(invocation.staticType) &&
-        stylerCallKind(invocation) != .baseStyle;
-  }
-
-  @override
-  void visitInstanceCreationExpression(InstanceCreationExpression node) {
-    if (!isMixStylerType(node.staticType)) return;
-
-    final chain = collectDirectMethodChain(node);
-    if (_isNestedStyle(chain.lastOrNull ?? node)) return;
+    final chain = collectDirectMethodChain(root);
+    if (_isNestedStyle(chain.lastOrNull ?? root)) return;
 
     final kinds = chain.map(stylerCallKind).toSet();
-    // onBuilder() builds the whole style from context, so it may stand alone.
+    // onBuilder() builds the whole style from context, and merge() may bring
+    // in a base style, so either one may stand in for base style calls.
     if (kinds.contains(StylerCallKind.builder)) return;
+    if (chain.any((call) => call.methodName.name == 'merge')) return;
 
     if (kinds.contains(StylerCallKind.variant) &&
         !kinds.contains(StylerCallKind.baseStyle)) {
-      rule.reportAtNode(node);
+      rule.reportAtNode(root);
     }
   }
+
+  /// Returns true if [styler] overrides another style: it is passed to a
+  /// variant or to `merge()`, returned from an `onBuilder` callback, or
+  /// wrapped in a `VariantStyle`. Such a Styler needs no base of its own.
+  bool _isNestedStyle(Expression styler) {
+    for (
+      AstNode? node = styler.parent;
+      node != null && node is! Declaration;
+      node = node.parent
+    ) {
+      if (node is ArgumentList) {
+        final invocation = node.parent;
+        if (invocation is MethodInvocation &&
+            isMixStylerType(invocation.staticType)) {
+          return stylerCallKind(invocation) != .baseStyle;
+        }
+      }
+      if (node is InstanceCreationExpression) {
+        final type = node.staticType;
+        if (type is InterfaceType && isMixClass(type.element, 'VariantStyle')) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  @override
+  void visitDotShorthandConstructorInvocation(
+    DotShorthandConstructorInvocation node,
+  ) => _check(node);
+
+  @override
+  void visitDotShorthandInvocation(DotShorthandInvocation node) => _check(node);
+
+  @override
+  void visitInstanceCreationExpression(InstanceCreationExpression node) =>
+      _check(node);
 }

@@ -11,6 +11,12 @@ import '../utils/type_helpers.dart';
 /// Reports a `@Mixable` or `@MixableStyler` class that has no `.create`
 /// constructor while its generated `merge()` needs one.
 class MissingCreateConstructor extends AnalysisRule {
+  /// `GeneratedMixMethods.merge` from `package:mix_annotations`.
+  static const mixableMergeFlag = 0x01;
+
+  /// `GeneratedStylerMethods.merge` from `package:mix_annotations`.
+  static const mixableStylerMergeFlag = 0x02;
+
   static const LintCode code = LintCode(
     'missing_create_constructor',
     "The class '{0}' is annotated with '@{1}' but has no '.create' "
@@ -43,10 +49,11 @@ class MissingCreateConstructor extends AnalysisRule {
 
 /// A code-generation annotation whose generated `merge()` calls `.create`.
 enum _GeneratorAnnotation {
-  // Flags from GeneratedMixMethods.merge and GeneratedStylerMethods.merge in
-  // package:mix_annotations.
-  mixable('Mixable', mergeFlag: 0x01),
-  mixableStyler('MixableStyler', mergeFlag: 0x02);
+  mixable('Mixable', mergeFlag: MissingCreateConstructor.mixableMergeFlag),
+  mixableStyler(
+    'MixableStyler',
+    mergeFlag: MissingCreateConstructor.mixableStylerMergeFlag,
+  );
 
   final String className;
   final int mergeFlag;

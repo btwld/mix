@@ -66,8 +66,11 @@ class _Visitor extends SimpleAstVisitor<void> {
     if (typeName != null && _referencedType(typeName) == null) return;
     if (!_isStaticOrNamedConstructor(member)) return;
 
+    final parameter = node.correspondingParameter;
+    if (_isMethodTypeParameter(parameter)) return;
+
     final declaringType = member?.enclosingElement;
-    final parameterType = node.correspondingParameter?.type;
+    final parameterType = parameter?.type;
     if (declaringType is! InterfaceElement ||
         parameterType is! InterfaceType ||
         parameterType.element != declaringType) {
@@ -78,6 +81,19 @@ class _Visitor extends SimpleAstVisitor<void> {
       node,
       arguments: [declaringType.name ?? '', member?.name ?? ''],
     );
+  }
+
+  /// Returns true if [parameter] is declared with a type parameter of the
+  /// invoked method, such as `T` in `foo<T>(T value)`. The argument infers
+  /// that type, so a dot shorthand there has no context type.
+  bool _isMethodTypeParameter(FormalParameterElement? parameter) {
+    final declaredType = switch (parameter?.baseElement) {
+      FormalParameterElement(:final type) => type,
+      _ => null,
+    };
+
+    return declaredType is TypeParameterType &&
+        declaredType.element.enclosingElement is ExecutableElement;
   }
 
   bool _isStylerArgument(Expression node) {
@@ -112,6 +128,8 @@ class _Visitor extends SimpleAstVisitor<void> {
   void visitInstanceCreationExpression(InstanceCreationExpression node) {
     // Only named constructors. Mix style does not use `.new(...)`.
     if (node.constructorName.name == null) return;
+    // `Type<Args>.name()` would lose its explicit type arguments.
+    if (node.constructorName.type.typeArguments != null) return;
     _check(node, member: node.constructorName.element, typeName: null);
   }
 

@@ -25,6 +25,49 @@ final s = [!BoxStyler()!].onHovered(BoxStyler().width(1)).animate(Object());
 ''');
   }
 
+  void test_dot_shorthand_root_reports() async {
+    await assertLints(r'''
+import 'package:mix/mix.dart';
+final BoxStyler s = [!.new()!].onHovered(BoxStyler().width(1));
+''');
+  }
+
+  void test_base_style_from_factory_no_diagnostic() async {
+    await assertNoDiagnostics(r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+final a = BoxStyler.color(Colors.blue).onHovered(BoxStyler().width(1));
+final b = BoxStyler(color: Colors.blue).onHovered(BoxStyler().width(1));
+final BoxStyler c = .color(Colors.blue).onHovered(BoxStyler().width(1));
+''');
+  }
+
+  void test_base_style_from_merge_no_diagnostic() async {
+    await assertNoDiagnostics(r'''
+import 'package:mix/mix.dart';
+final base = BoxStyler().width(1);
+final s = BoxStyler().merge(base).onHovered(BoxStyler().width(2));
+''');
+  }
+
+  void test_style_returned_from_on_builder_no_diagnostic() async {
+    await assertNoDiagnostics(r'''
+import 'package:mix/mix.dart';
+final s = BoxStyler()
+    .width(1)
+    .onBuilder((context) => BoxStyler().onDark(BoxStyler().width(2)));
+''');
+  }
+
+  void test_style_in_variant_style_no_diagnostic() async {
+    await assertNoDiagnostics(r'''
+import 'package:mix/mix.dart';
+final s = BoxStyler().width(1).variants([
+  VariantStyle(Object(), BoxStyler().onHovered(BoxStyler().width(2))),
+]);
+''');
+  }
+
   void test_base_style_then_variants_no_diagnostic() async {
     await assertNoDiagnostics(r'''
 import 'package:mix/mix.dart';

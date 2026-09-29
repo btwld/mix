@@ -81,7 +81,7 @@ dependencies:
 
 ```dart
 // tool/my_mix_lint/lib/main.dart
-import 'package:mix_lint/plugin.dart';
+import 'package:mix_lint/mix_lint.dart';
 
 final plugin = MixLintPlugin(
   config: const MixLintConfig(maxStylerChainLength: 20),
@@ -264,9 +264,9 @@ final style = BoxStyler()
     .onPressed(.color(Colors.green));
 ```
 
-## Rule names in 2.0.0
+## Renamed rules
 
-The first release of the plugin used different names. Update `analysis_options.yaml` and `ignore` comments:
+`mix_lint` 2.0.0 used the names below. If you configured or ignored them, update `analysis_options.yaml` and your `ignore` comments:
 
 | 2.0.0 name | Current name |
 |---|---|

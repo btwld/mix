@@ -45,6 +45,13 @@ final s = [!BoxStyler()!].width(1).height(2).width(3);
     );
   }
 
+  void test_dot_shorthand_root_reports() async {
+    await assertLints(r'''
+import 'package:mix/mix.dart';
+final BoxStyler s = [!.new()!].width(1).height(2).width(3);
+''');
+  }
+
   void test_at_configured_limit_no_diagnostic() async {
     await assertNoDiagnostics(r'''
 import 'package:mix/mix.dart';

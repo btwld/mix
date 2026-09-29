@@ -2,7 +2,7 @@ import 'package:analysis_server_plugin/registry.dart';
 import 'package:analyzer/analysis_rule/analysis_rule.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:mix_lint/main.dart' as entry_point;
-import 'package:mix_lint/plugin.dart';
+import 'package:mix_lint/mix_lint.dart';
 import 'package:mix_lint/src/rules/long_styler_chain.dart';
 import 'package:mix_lint/src/rules/unnecessary_type_name.dart';
 import 'package:test/test.dart';

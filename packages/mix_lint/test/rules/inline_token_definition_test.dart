@@ -19,6 +19,13 @@ final s = BoxStyler().color([!ColorToken('primary')!]());
     );
   }
 
+  void test_token_in_dot_shorthand_styler_reports() async {
+    await assertLints(r'''
+import 'package:mix/mix.dart';
+final BoxStyler s = .color([!ColorToken('primary')!]());
+''');
+  }
+
   void test_token_in_mix_scope_reports() async {
     await assertLints(
       r'''

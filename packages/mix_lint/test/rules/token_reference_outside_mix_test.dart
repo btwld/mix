@@ -9,6 +9,19 @@ class TokenReferenceOutsideMixTest extends MixRuleTest {
   @override
   AbstractAnalysisRule createRule() => TokenReferenceOutsideMix();
 
+  @override
+  void setUp() {
+    // A third-party design system that extends BoxStyler.
+    newPackage('ds').addFile('lib/ds.dart', r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+extension DsBoxStyler on BoxStyler {
+  BoxStyler brand(Color color) => this;
+}
+''');
+    super.setUp();
+  }
+
   // Reports.
 
   void test_call_into_flutter_widget_reports() async {
@@ -83,6 +96,15 @@ final s = BoxStyler().shadow(BoxShadowMix(color: $primary()));
 import 'package:mix/mix.dart';
 const $gap = SpaceToken('gap');
 final t = GridTrack.fixed($gap());
+''');
+  }
+
+  void test_call_into_extension_in_cascade_no_diagnostic() async {
+    await assertNoDiagnostics(r'''
+import 'package:ds/ds.dart';
+import 'package:mix/mix.dart';
+const $primary = ColorToken('primary');
+final s = BoxStyler()..brand($primary());
 ''');
   }
 

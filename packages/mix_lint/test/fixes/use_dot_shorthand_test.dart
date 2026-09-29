@@ -51,6 +51,21 @@ final s = TextStyler().fontWeight(.w600);
     );
   }
 
+  void test_replaces_named_constructor() async {
+    await _assertFix(
+      r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+final s = BoxStyler().shadow([!BoxShadowMix.color(Colors.blue)!]);
+''',
+      r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+final s = BoxStyler().shadow(.color(Colors.blue));
+''',
+    );
+  }
+
   void test_replaces_import_prefix_and_type_name() async {
     await _assertFix(
       r'''

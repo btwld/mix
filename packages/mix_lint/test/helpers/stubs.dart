@@ -110,19 +110,36 @@ final class EdgeInsetsDirectionalMix extends EdgeInsetsGeometryMix {
 
 class BoxShadowMix extends Mix<Object> {
   BoxShadowMix({Color? color});
+  BoxShadowMix.color(Color value);
+}
+
+class GradientMix<T> extends Mix<T> {
+  GradientMix.linear();
+}
+
+class VariantStyle<S extends Spec<S>> extends Mixable<Object> {
+  VariantStyle(Object variant, Style<S> style);
+}
+
+mixin DecorationStyleMixin<T extends Style<S>, S extends Spec<S>>
+    on Style<S> {
+  T color(Color? value) => this as T;
 }
 
 final class BoxSpec extends Spec<BoxSpec> {}
 
 // Generated Stylers override the mixin methods, as BoxStyler does here.
-class BoxStyler extends MixStyler<BoxStyler, BoxSpec> {
-  BoxStyler();
+class BoxStyler extends MixStyler<BoxStyler, BoxSpec>
+    with DecorationStyleMixin<BoxStyler, BoxSpec> {
+  BoxStyler({Color? color});
 
-  BoxStyler color(Color? value) => this;
+  factory BoxStyler.color(Color value) => BoxStyler().color(value);
+
   BoxStyler width(double value) => this;
   BoxStyler height(double value) => this;
   BoxStyler padding(EdgeInsetsGeometryMix value) => this;
   BoxStyler shadow(BoxShadowMix value) => this;
+  BoxStyler gradient(GradientMix<Object> value) => this;
 
   @override
   BoxStyler variants(List<Object> value) => this;

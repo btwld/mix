@@ -1,4 +1,4 @@
-import 'plugin.dart';
+import 'mix_lint.dart';
 
 /// The plugin instance that the Dart analysis server loads.
 ///

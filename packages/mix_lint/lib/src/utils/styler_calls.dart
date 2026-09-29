@@ -50,6 +50,29 @@ StylerCallKind stylerCallKind(MethodInvocation node) {
   return .baseStyle;
 }
 
+/// Returns true if [root], the first call of a Styler chain, sets base style
+/// itself: a factory such as `BoxStyler.color(...)` or `.color(...)`, or a
+/// constructor call with arguments such as `BoxStyler(padding: ...)`.
+///
+/// `BoxStyler()`, `.new()`, and `BoxStyler.create()` without arguments set
+/// nothing.
+bool rootSetsBaseStyle(Expression root) => switch (root) {
+  InstanceCreationExpression(:final constructorName, :final argumentList) =>
+    !_isEmptyConstructor(constructorName.name?.name, argumentList),
+  DotShorthandConstructorInvocation(
+    :final constructorName,
+    :final argumentList,
+  ) =>
+    !_isEmptyConstructor(constructorName.name, argumentList),
+  // A static factory, such as `.color(...)`.
+  DotShorthandInvocation() => true,
+  _ => false,
+};
+
+bool _isEmptyConstructor(String? name, ArgumentList argumentList) =>
+    (name == null || name == 'new' || name == 'create') &&
+    argumentList.arguments.isEmpty;
+
 /// Collects the method chain that directly follows [root].
 ///
 /// Stops when the chain branches into another context, such as an argument
