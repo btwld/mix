@@ -841,4 +841,22 @@ void main() {
       expect(t.takeException(), isNull);
     }
   });
+  testWidgets('border glow spins while running and settles when stopped', (
+    t,
+  ) async {
+    await pumpBit(t, const BorderGlow());
+    final idle = await pixels(t);
+    await press(t, 'border-glow');
+    await t.pump(const Duration(milliseconds: 600));
+    expect(find.text('Glowing…'), findsOneWidget);
+    final first = await pixels(t);
+    expect(first, isNot(equals(idle)));
+    await t.pump(const Duration(milliseconds: 400));
+    expect(await pixels(t), isNot(equals(first)));
+    await press(t, 'border-glow');
+    expect(find.text('Tap to glow'), findsOneWidget);
+    // The idle ease-out replaces the keyframe loop, so the tree can settle.
+    await t.pumpAndSettle();
+    expect(pixelDifference(await pixels(t), idle), lessThan(0.001));
+  });
 }

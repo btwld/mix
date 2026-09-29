@@ -30,3 +30,4 @@ export '../examples/snacks/voice_pill.dart' show VoicePill;
 export '../examples/snacks/thought_line.dart' show ThoughtLine;
 export '../examples/snacks/refine_frame.dart' show RefineFrame;
 export '../examples/snacks/slosh_gauge.dart' show SloshGauge;
+export '../examples/snacks/border_glow.dart' show BorderGlow;

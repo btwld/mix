@@ -5,7 +5,7 @@ One app contains four catalog sections:
 - **Core widgets:** focused, runnable [Box, Text, Image, and Pressable files](lib/examples/core/).
 - **Layouts:** focused [FlexBox, WrapBox, and GridBox files](lib/examples/layouts/)
   plus deeper [interactive galleries](docs/layouts.md).
-- **Snacks:** [30 self-contained DartPad examples](docs/snacks.md), with
+- **Snacks:** [31 self-contained DartPad examples](docs/snacks.md), with
   category filters and a copy-source action.
 - **Charts:** focused [Line, Bar, and Pie examples](lib/examples/charts/)
   backed by `mix_chart`.
@@ -24,7 +24,7 @@ the standalone app shell and starts with the example's widget before its
 supporting styles. **Copy code** copies the complete standalone file; the
 Snacks files are DartPad-ready. Catalog metadata lives in
 [catalog.dart](lib/catalog/catalog.dart); the shell lives in [main.dart](lib/main.dart).
-Each live preview and copied source use the same file. The 30 Snacks live
+Each live preview and copied source use the same file. The 31 Snacks live
 as flat, standalone files under `lib/examples/snacks/`; their metadata is in
 `lib/snacks/catalog.dart`.
 

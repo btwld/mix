@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 const _service = 'https://stable.api.dartpad.dev/api/v3';
-const _expectedSnippetCount = 30;
+const _expectedSnippetCount = 31;
 const _workerCount = 3;
 const _maxAttempts = 3;
 

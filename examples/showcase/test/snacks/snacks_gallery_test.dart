@@ -31,26 +31,29 @@ void main() {
     await tester.pump(const Duration(milliseconds: 400));
   }
 
-  testWidgets('catalog renders all 30 React Bits micro examples', (
-    tester,
-  ) async {
+  testWidgets('catalog renders every Snacks example', (tester) async {
     await pumpGallery(tester);
 
     expect(find.byType(GridBox), findsOneWidget);
-    expect(find.byType(DemoCard, skipOffstage: false), findsNWidgets(30));
+    expect(
+      find.byType(DemoCard, skipOffstage: false),
+      findsNWidgets(snackDemos.length),
+    );
     expect(find.text('Mix Snacks'), findsWidgets);
     expect(find.text('Squish Switch'), findsOneWidget);
     expect(find.text('Branched Menu', skipOffstage: false), findsOneWidget);
     expect(find.text('Slosh Gauge', skipOffstage: false), findsOneWidget);
   });
 
-  testWidgets('all 30 gallery entries point to self-contained snippets', (
+  testWidgets('every gallery entry points to a self-contained snippet', (
     tester,
   ) async {
     await pumpGallery(tester);
 
-    expect(snackDemos, hasLength(30));
-    expect(snackDemos.map((demo) => demo.sourceAsset).toSet(), hasLength(30));
+    expect(
+      snackDemos.map((demo) => demo.sourceAsset).toSet(),
+      hasLength(snackDemos.length),
+    );
 
     for (final demo in snackDemos) {
       final source = await rootBundle.loadString(demo.sourceAsset);
@@ -163,7 +166,7 @@ void main() {
     expect(find.text('129'), findsOneWidget);
   });
   for (final width in [390.0, 1100.0]) {
-    testWidgets('all 30 cards fit at width $width', (tester) async {
+    testWidgets('every card fits at width $width', (tester) async {
       await pumpGallery(tester, size: Size(width, 1000));
       for (final demo in snackDemos) {
         final card = find.byKey(Key('demo-${demo.title}'));

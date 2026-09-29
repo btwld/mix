@@ -357,6 +357,14 @@ void main() {
     await d.settle();
     expect(d.text('0%'), findsOneWidget);
   });
+  check('Border Glow', (d) async {
+    await d.tap(d.key);
+    await d.until(d.text('Glowing…'));
+    await d.t.pump(const Duration(milliseconds: 500));
+    await d.tap(d.key);
+    await d.settle();
+    expect(d.text('Tap to glow'), findsOneWidget);
+  });
 }
 
 class _Demo {

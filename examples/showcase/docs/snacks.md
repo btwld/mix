@@ -1,6 +1,6 @@
 # Mix Snacks
 
-Thirty small, stateful styling lessons inspired by the [React Bits Micro catalog](https://github.com/DavidHDev/react-bits/tree/5fc9addb5b2362043332ad6d403bb436f2596318/src/content/Micro).
+Thirty-one small, stateful styling lessons inspired by the [React Bits Micro catalog](https://github.com/DavidHDev/react-bits/tree/5fc9addb5b2362043332ad6d403bb436f2596318/src/content/Micro).
 These are **Mix adaptations, not behavior-identical ports**. Named styles describe
 the appearance and motion; widget state owns interaction and composition.
 
@@ -40,7 +40,7 @@ pasted into [DartPad](https://dartpad.dev/) and run as a Flutter example.
 | [Glide Select](../lib/examples/snacks/glide_select.dart) | [Sling Button](../lib/examples/snacks/sling_button.dart) | [Branched Menu](../lib/examples/snacks/branched_menu.dart) | [Thought Line](../lib/examples/snacks/thought_line.dart) |
 | [Scrub Field](../lib/examples/snacks/scrub_field.dart) |  |  | [Refine Frame](../lib/examples/snacks/refine_frame.dart) |
 | [Code Slots](../lib/examples/snacks/code_slots.dart) |  |  | [Slosh Gauge](../lib/examples/snacks/slosh_gauge.dart) |
-| [Wake Slider](../lib/examples/snacks/wake_slider.dart) |  |  |  |
+| [Wake Slider](../lib/examples/snacks/wake_slider.dart) |  |  | [Border Glow](../lib/examples/snacks/border_glow.dart) |
 | [Comet Dial](../lib/examples/snacks/comet_dial.dart) |  |  |  |
 
 The gallery imports these same files through `lib/snacks/examples.dart`; there is no
@@ -68,6 +68,7 @@ dart run tool/verify_dartpad.dart
 - **Wake Slider / Comet Dial:** custom-painted direct-input accents with 320ms release decay. The comet trail follows drag direction; angular flick/momentum physics remain outside this example.
 - **Slosh Gauge:** direct liquid-level input and a temporarily tilted surface that springs flat on release; no splash simulation. Fill height and tilt animate separately so a spring cannot overshoot the height below zero.
 - **Status Mark / Prompt Bar / Thought Line:** status glyph reveal, send/stop, and animated staged rows; not upstream's full shape morphs, composer features or interactive trace.
+- **Border Glow:** a Mix adaptation of the animated border from [Libraries.dev](https://libraries.dev), with no painter. A keyframe loop spins a comet-shaped `SweepGradientMix` behind the card, and the card covers all but a 1.5px padding ring. The play button springs on hover and press, its icon pops on a triggered keyframe, and a looping keyframe halo orbits it in step with the comet, cycling its colors. When stopped, an ease-out replaces each loop.
 - **Voice Pill:** a synthetic waveform, not microphone capture. **Refine Frame:** a gradient specimen, not generation output.
 
 Roundness follows purpose: 6px checkbox; 8–10px inset selections/menu; 12–16px fields and action surfaces; 20px gallery cards; stadium/circle only for pills, tracks and round handles.
@@ -87,7 +88,7 @@ Flutter `TextField` owns text editing, selection, focus and formatters. Painters
 
 ## Verification
 
-The Snacks tests cover all 30 primary interactions, interruption/reversal, deterministic intermediate and settled frames, compact/wide gallery layouts, source-asset integrity, clipboard behavior, and three goldens (wide gallery and unchecked/checked Spring Check). Continuous animations use exact duration pumps, never `pumpAndSettle`. Pixel comparisons are used for custom drawing, while ordinary motion checks use global painted geometry rather than generated Transform nesting.
+The Snacks tests cover all 31 primary interactions, interruption/reversal, deterministic intermediate and settled frames, compact/wide gallery layouts, source-asset integrity, clipboard behavior, and three goldens (wide gallery and unchecked/checked Spring Check). Continuous animations use exact duration pumps, never `pumpAndSettle`. Pixel comparisons are used for custom drawing, while ordinary motion checks use global painted geometry rather than generated Transform nesting.
 
 `test/snacks/snacks_standalone_test.dart` also launches every snippet's real `main()` on
 a compact screen, without the gallery's theme, tokens or overlay setup. Dedicated
@@ -109,7 +110,7 @@ them with different controls.
 
 ### Headless integration tests (no desktop input)
 
-`integration_test/snacks_gallery_test.dart` runs all 30 examples inside the real
+`integration_test/snacks_gallery_test.dart` runs all 31 examples inside the real
 scrollable app, with one scenario per example. It covers hover, drag, hold,
 text entry, timed completion, and reruns using Flutter-injected input. Existing
 widget tests remain the place for exact intermediate-frame/golden assertions.

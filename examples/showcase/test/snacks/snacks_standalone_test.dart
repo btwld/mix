@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix_showcase/examples/snacks/bell_toggle.dart' as bell_toggle;
+import 'package:mix_showcase/examples/snacks/border_glow.dart' as border_glow;
 import 'package:mix_showcase/examples/snacks/branched_menu.dart'
     as branched_menu;
 import 'package:mix_showcase/examples/snacks/call_chip.dart' as call_chip;
@@ -39,6 +40,7 @@ import 'package:mix_showcase/examples/snacks/warm_tooltip.dart' as warm_tooltip;
 void main() {
   final examples = <String, VoidCallback>{
     'bell_toggle': bell_toggle.main,
+    'border_glow': border_glow.main,
     'branched_menu': branched_menu.main,
     'call_chip': call_chip.main,
     'code_slots': code_slots.main,

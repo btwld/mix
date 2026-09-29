@@ -220,4 +220,11 @@ final snackDemos = <SnackDemo>[
     group: SnackGroup.agent,
     builder: (_) => const SloshGauge(),
   ),
+  SnackDemo(
+    title: 'Border Glow',
+    caption:
+        'Press play: a comet spins around the border while the button glows.',
+    group: SnackGroup.agent,
+    builder: (_) => const BorderGlow(),
+  ),
 ];
