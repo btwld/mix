@@ -37,12 +37,16 @@ jobs:
         run: flutter pub get
       - name: Resolve minimum allowed Mix
         run: flutter pub downgrade mix
+      - name: Show minimum selected Mix
+        run: dart pub deps --json | jq -r '.packages[] | select(.name == "mix") | "selected mix \(.version) from \(.source)"'
       - name: Analyze against minimum Mix
         run: flutter analyze --no-fatal-infos
       - name: Test against minimum Mix
         run: flutter test
       - name: Resolve latest allowed Mix
         run: flutter pub upgrade mix
+      - name: Show latest selected Mix
+        run: dart pub deps --json | jq -r '.packages[] | select(.name == "mix") | "selected mix \(.version) from \(.source)"'
       - name: Analyze against latest Mix
         run: flutter analyze --no-fatal-infos
       - name: Test against latest Mix
@@ -69,12 +73,16 @@ jobs:
         run: flutter pub get
       - name: Resolve minimum allowed Mix and Protocol
         run: flutter pub downgrade mix mix_protocol
+      - name: Show minimum selected dependencies
+        run: dart pub deps --json | jq -r '.packages[] | select(.name == "mix" or .name == "mix_protocol") | "selected \(.name) \(.version) from \(.source)"'
       - name: Analyze against minimum dependencies
         run: flutter analyze --no-fatal-infos
       - name: Test against minimum dependencies
         run: flutter test
       - name: Resolve latest allowed Mix and Protocol
         run: flutter pub upgrade mix mix_protocol
+      - name: Show latest selected dependencies
+        run: dart pub deps --json | jq -r '.packages[] | select(.name == "mix" or .name == "mix_protocol") | "selected \(.name) \(.version) from \(.source)"'
       - name: Analyze against latest dependencies
         run: flutter analyze --no-fatal-infos
       - name: Test against latest dependencies
