@@ -56,9 +56,18 @@ jobs:
       id-token: write
       contents: read
 
+  check_mix_protocol_release:
+    if: startsWith(github.ref_name, 'mix_protocol-v') && github.ref_name != 'mix_protocol-v1.0.0-alpha.0'
+    uses: ./.github/workflows/release-dependencies.yml
+    with:
+      package: protocol
+    permissions:
+      contents: read
+
   publish_mix_protocol:
     # pub.dev requires the first version to be published manually. The initial
     # release tag is kept for traceability but must not attempt OIDC publishing.
+    needs: check_mix_protocol_release
     if: startsWith(github.ref_name, 'mix_protocol-v') && github.ref_name != 'mix_protocol-v1.0.0-alpha.0'
     uses: btwld/dart-actions/.github/workflows/publish.yml@main
     with:
@@ -69,7 +78,16 @@ jobs:
       id-token: write
       contents: read
 
+  check_mix_winds_release:
+    if: startsWith(github.ref_name, 'mix_winds-v')
+    uses: ./.github/workflows/release-dependencies.yml
+    with:
+      package: winds
+    permissions:
+      contents: read
+
   publish_mix_winds:
+    needs: check_mix_winds_release
     if: startsWith(github.ref_name, 'mix_winds-v')
     uses: btwld/dart-actions/.github/workflows/publish.yml@main
     with:
