@@ -376,6 +376,68 @@ void main() {
       },
     );
 
+    group('dropping a looping animation config', () {
+      Color? boxColor(WidgetTester tester) {
+        final decoratedBox = tester.widget<DecoratedBox>(
+          find.descendant(
+            of: find.byType(Box),
+            matching: find.byType(DecoratedBox),
+          ),
+        );
+
+        return (decoratedBox.decoration as BoxDecoration).color;
+      }
+
+      testWidgets('stops a looping keyframe animation', (tester) async {
+        final loopingStyle = BoxStyler().keyframeAnimation(
+          timeline: [
+            KeyframeTrack<double>('t', [
+              Keyframe.linear(1, const Duration(milliseconds: 1000)),
+            ], initial: 0),
+          ],
+          styleBuilder: (values, style) => style.color(
+            Color.lerp(Colors.red, Colors.green, values.get<double>('t'))!,
+          ),
+        );
+        final plainStyle = BoxStyler().color(Colors.blue);
+
+        await tester.pumpWidget(MaterialApp(home: Box(style: loopingStyle)));
+        await tester.pump(const Duration(milliseconds: 300));
+        expect(tester.hasRunningAnimations, isTrue);
+
+        await tester.pumpWidget(MaterialApp(home: Box(style: plainStyle)));
+        await tester.pump();
+
+        expect(tester.hasRunningAnimations, isFalse);
+        expect(boxColor(tester), Colors.blue);
+
+        await tester.pump(const Duration(milliseconds: 500));
+        expect(boxColor(tester), Colors.blue);
+      });
+
+      testWidgets('stops a looping phase animation', (tester) async {
+        final loopingStyle = BoxStyler().phaseAnimation<Color>(
+          phases: const [Colors.red, Colors.green],
+          styleBuilder: (color, style) => style.color(color),
+          configBuilder: (_) => const CurveAnimationConfig(
+            duration: Duration(milliseconds: 500),
+            curve: Curves.linear,
+          ),
+        );
+        final plainStyle = BoxStyler().color(Colors.blue);
+
+        await tester.pumpWidget(MaterialApp(home: Box(style: loopingStyle)));
+        await tester.pump(const Duration(milliseconds: 300));
+        expect(tester.hasRunningAnimations, isTrue);
+
+        await tester.pumpWidget(MaterialApp(home: Box(style: plainStyle)));
+        await tester.pump();
+
+        expect(tester.hasRunningAnimations, isFalse);
+        expect(boxColor(tester), Colors.blue);
+      });
+    });
+
     testWidgets('handles null animation value gracefully', (tester) async {
       // Create spec with animation that produces null value
       const animationConfig = CurveAnimationConfig(
