@@ -93,6 +93,8 @@ StackBoxStyler glowCardStyle({required bool isActive}) {
   final card = StackBoxStyler()
       .size(240, 120)
       .borderRadius(.circular(glowRadius - glowWidth))
+      // Keeps the veil's blurred shadow from spilling past the card.
+      .clipBehavior(.antiAlias)
       .fit(.expand);
   if (!isActive) return card.color(surfaceColor).animate(.easeOut(400.ms));
 
