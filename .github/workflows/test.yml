@@ -14,16 +14,6 @@ on:
       - 'assets/**'
       - 'tool/**'
 
-  # Run before tagging a dependent package release: with published_deps
-  # enabled, the release-dependency jobs resolve Mix from pub.dev instead of
-  # the repository, which is what the publish workflow will do.
-  workflow_dispatch:
-    inputs:
-      published_deps:
-        description: Resolve dependents against published pub.dev packages
-        type: boolean
-        default: false
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
@@ -101,23 +91,6 @@ jobs:
       - run: flutter test
       - run: flutter build web
 
-  # The release-dependency jobs check each dependent as a standalone package:
-  # plain `flutter pub get` (no Melos), analyze, test, and a publish dry run.
-  #
-  # On pushes and PRs they resolve in-repo packages (mix, mix_annotations,
-  # mix_protocol) from the repository, so a framework change and the
-  # dependent changes it requires can land in one PR (e.g. #1072). Compiling
-  # against pub.dev here would fail every PR, and main itself, until Mix is
-  # released.
-  #
-  # Compatibility with published Mix is still enforced:
-  # - publish.yml (btwld/dart-actions) resolves hosted dependencies, runs the
-  #   package tests, and dry-runs before it publishes, so a dependent that
-  #   needs unreleased Mix cannot be published.
-  # - Running this workflow manually with published_deps enabled runs these
-  #   jobs against pub.dev ahead of tagging a release.
-  # - The publish dry run below always resolves the declared constraints
-  #   against pub.dev, because the overrides are removed first.
   winds-release:
     name: Winds / Release dependency check
     runs-on: ubuntu-latest
@@ -130,40 +103,16 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
-      - name: Use in-repo dependencies
-        if: ${{ !inputs.published_deps }}
-        run: |
-          cat > pubspec_overrides.yaml <<'YAML'
-          dependency_overrides:
-            mix:
-              path: ../mix
-            mix_annotations:
-              path: ../mix_annotations
-            mix_protocol:
-              path: ../mix_protocol
-          YAML
-          cat > example/pubspec_overrides.yaml <<'YAML'
-          dependency_overrides:
-            mix:
-              path: ../../mix
-            mix_annotations:
-              path: ../../mix_annotations
-            mix_protocol:
-              path: ../../mix_protocol
-          YAML
-      - name: Resolve dependencies
+      # Match release installation before Melos creates local overrides.
+      - name: Resolve hosted release dependencies
         run: flutter pub get
-      # Infos are not fatal, matching `melos run analyze:dart`: deprecations
-      # in unreleased Mix surface as infos in dependents.
-      - name: Analyze
-        run: flutter analyze --no-fatal-infos
-      - name: Test
+      - name: Analyze against published Mix
+        run: flutter analyze
+      - name: Test against published Mix
         run: flutter test
       - name: Restore files modified by Flutter tooling
-        run: |
-          git restore -- .
-          rm -f pubspec_overrides.yaml example/pubspec_overrides.yaml
-      - name: Validate publish archive against published dependencies
+        run: git restore -- .
+      - name: Validate publish archive
         run: dart pub publish --dry-run
 
   protocol-release:
@@ -181,27 +130,15 @@ jobs:
         with:
           flutter-version: ${{ steps.fvm-config-action.outputs.FLUTTER_VERSION }}
           channel: ${{ steps.fvm-config-action.outputs.FLUTTER_CHANNEL }}
-      - name: Use in-repo dependencies
-        if: ${{ !inputs.published_deps }}
-        run: |
-          cat > pubspec_overrides.yaml <<'YAML'
-          dependency_overrides:
-            mix:
-              path: ../mix
-            mix_annotations:
-              path: ../mix_annotations
-          YAML
-      - name: Resolve dependencies
+      - name: Resolve hosted release dependencies
         run: flutter pub get
-      - name: Analyze
-        run: flutter analyze --no-fatal-infos
-      - name: Test
+      - name: Analyze against published Mix
+        run: flutter analyze
+      - name: Test against published Mix
         run: flutter test
       - name: Restore files modified by Flutter tooling
-        run: |
-          git restore -- .
-          rm -f pubspec_overrides.yaml
-      - name: Validate publish archive against published dependencies
+        run: git restore -- .
+      - name: Validate publish archive
         run: dart pub publish --dry-run
 
   protocol-schema:
