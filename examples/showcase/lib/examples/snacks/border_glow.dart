@@ -19,6 +19,13 @@ const violetColor = Color(0xFF6446FF);
 
 const glowRadius = 16.0;
 const glowWidth = 1.5;
+const glowVeilInset = 4.0;
+
+/// One turn of the comet; the halo's color cycle and breath divide it evenly.
+final glowPeriod = 1960.ms;
+
+/// How the ring, card and halo fade back once the loop stops.
+final glowSettle = AnimationConfig.easeOut(400.ms);
 
 /// A comet: hairline tail, colored body with a white-hot core, hairline head.
 const glowStops = [0.30, 0.40, 0.52, 0.62, 0.70, 0.78, 0.86, 0.95];
@@ -38,29 +45,31 @@ const haloColors = [roseColor, amberColor, greenColor, cyanColor, violetColor];
 
 final glowGradient = SweepGradientMix.colors(glowColors).stops(glowStops);
 
-/// One 1.96s loop shared by the ring, card glow and button halo, so all three
-/// stay in step: the comet's angle, a color cycle and a slow breath.
+/// One loop shared by the ring, card glow and button halo, so all three stay
+/// in step: the comet's angle, a color cycle and a slow breath.
 final glowTimeline = [
-  KeyframeTrack<double>('angle', [.linear(math.pi * 2, 1960.ms)], initial: 0),
+  KeyframeTrack<double>('angle', [
+    .linear(math.pi * 2, glowPeriod),
+  ], initial: 0),
   KeyframeTrack<Color>(
     'color',
     [
       for (final color in [...haloColors.skip(1), haloColors.first])
-        .linear(color, 392.ms),
+        .linear(color, glowPeriod ~/ haloColors.length),
     ],
     initial: haloColors.first,
     tweenBuilder: ColorTween.new,
   ),
   KeyframeTrack<double>('alpha', [
-    .easeInOut(1, 980.ms),
-    .easeInOut(0.5, 980.ms),
+    .easeInOut(1, glowPeriod ~/ 2),
+    .easeInOut(0.5, glowPeriod ~/ 2),
   ], initial: 0.5),
 ];
 
 /// Paints the border ring: the child covers everything inside the padding.
-/// While active, a keyframe loop spins the comet around once per 1.96s; the
-/// idle ease-out replaces that loop and fades the comet back to a hairline,
-/// which brightens on hover to invite a press.
+/// While active, a keyframe loop spins the comet around once per
+/// [glowPeriod]; the idle ease-out replaces that loop and fades the comet back
+/// to a hairline, which brightens on hover to invite a press.
 BoxStyler glowRingStyle({required bool isActive}) {
   final ring = BoxStyler()
       .padding(.all(glowWidth))
@@ -69,7 +78,7 @@ BoxStyler glowRingStyle({required bool isActive}) {
     return ring
         .color(hairlineColor)
         .onHovered(.color(hoverColor))
-        .animate(.easeOut(400.ms));
+        .animate(glowSettle);
   }
 
   return ring.keyframeAnimation(
@@ -96,7 +105,7 @@ StackBoxStyler glowCardStyle({required bool isActive}) {
       // Keeps the veil's blurred shadow from spilling past the card.
       .clipBehavior(.antiAlias)
       .fit(.expand);
-  if (!isActive) return card.color(surfaceColor).animate(.easeOut(400.ms));
+  if (!isActive) return card.color(surfaceColor).animate(glowSettle);
 
   return card.keyframeAnimation(
     timeline: glowTimeline,
@@ -111,8 +120,8 @@ StackBoxStyler glowCardStyle({required bool isActive}) {
 /// A surface-colored shadow inset from the edge; its blur feathers the glow
 /// from the border inward.
 final glowVeil = BoxStyler()
-    .margin(.all(4))
-    .borderRadius(.circular(10))
+    .margin(.all(glowVeilInset))
+    .borderRadius(.circular(glowRadius - glowWidth - glowVeilInset))
     .shadow(.color(surfaceColor).blurRadius(14));
 
 final glowRow = FlexBoxStyler()
@@ -133,7 +142,7 @@ BoxStyler glowButtonStyle({required bool isActive}) => BoxStyler()
 /// a wrapper so its loop never fights the button's hover and press spring.
 BoxStyler glowHaloStyle({required bool isActive}) {
   final halo = BoxStyler().shape(.circle());
-  if (!isActive) return halo.animate(.easeOut(400.ms));
+  if (!isActive) return halo.animate(glowSettle);
 
   return halo.keyframeAnimation(
     timeline: glowTimeline,
