@@ -19,7 +19,7 @@ packages/
   mix/              # Core framework (v2.0.0-rc.0)
   mix_annotations/  # Annotations for codegen
   mix_generator/    # build_runner generator
-  mix_lint/         # Analyzer plugin with Mix lint rules (not in pub workspace, see below)
+  mix_lint/         # Custom linter (not in pub workspace, see below)
 ```
 
 ## Pub workspace
@@ -27,7 +27,7 @@ packages/
 The repo uses [Dart pub workspaces](https://dart.dev/tools/pub/workspaces): a single `pubspec.lock` and shared resolution at the root. Run `dart pub get` at the repo root to resolve all workspace packages.
 
 - **In the workspace:** mix, mix_annotations, mix_generator, mix_winds, mix_winds/example.
-- **Excluded:** `mix_lint` (an `analysis_server_plugin` analyzer plugin; each plugin release pins one exact analyzer version, currently 14.x, while other packages use analyzer >=9 <11). Run `dart pub get` inside `packages/mix_lint` when working on the linter.
+- **Excluded:** `mix_lint` (an analyzer plugin; it uses the analyzer version its `analysis_server_plugin` requires, currently 14.x, while `mix_generator` uses analyzer >=9 <11). Run `dart pub get` inside `packages/mix_lint` when working on the linter.
 
 ## Commands
 
