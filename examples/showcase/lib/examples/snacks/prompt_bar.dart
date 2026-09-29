@@ -106,7 +106,7 @@ class _PromptBarState extends State<PromptBar> {
             child: SizedBox(
               height: 34,
               child: TextField(
-                textAlignVertical: TextAlignVertical.center,
+                textAlignVertical: .center,
                 controller: _controller,
                 textInputAction: .send,
                 onSubmitted: (_) => _send(),
@@ -114,7 +114,7 @@ class _PromptBarState extends State<PromptBar> {
                 style: TextStyle(color: inkColor, fontSize: 13),
                 decoration: const InputDecoration(
                   isDense: true,
-                  contentPadding: EdgeInsets.symmetric(horizontal: 4),
+                  contentPadding: .symmetric(horizontal: 4),
                   hintText: 'Ask Mix…',
                   hintStyle: TextStyle(color: Color(0xFF8B8B93)),
                   border: InputBorder.none,

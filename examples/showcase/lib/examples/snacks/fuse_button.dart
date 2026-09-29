@@ -183,9 +183,9 @@ class _FuseOutline extends CustomPainter {
       metric.extractPath(metric.length * progress.value, metric.length),
       Paint()
         ..color = color
-        ..style = PaintingStyle.stroke
+        ..style = .stroke
         ..strokeWidth = stroke
-        ..strokeCap = StrokeCap.round,
+        ..strokeCap = .round,
     );
   }
 

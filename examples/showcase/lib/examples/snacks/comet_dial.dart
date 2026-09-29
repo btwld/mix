@@ -123,7 +123,7 @@ class _CometPainter extends CustomPainter {
         Paint()
           ..color = t <= angle ? ink : muted
           ..strokeWidth = 2
-          ..strokeCap = StrokeCap.round,
+          ..strokeCap = .round,
       );
     }
     final head = Offset(
@@ -144,7 +144,7 @@ class _CometPainter extends CustomPainter {
             alpha: 0.45 * (speed.abs() / 12).clamp(0.0, 1.0),
           )
           ..strokeWidth = 5
-          ..strokeCap = StrokeCap.round,
+          ..strokeCap = .round,
       );
     }
   }

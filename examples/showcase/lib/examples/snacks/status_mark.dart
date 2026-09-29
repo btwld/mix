@@ -125,9 +125,9 @@ class _StatusPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final center = size.center(Offset.zero);
     final paint = Paint()
-      ..style = PaintingStyle.stroke
+      ..style = .stroke
       ..strokeWidth = 2
-      ..strokeCap = StrokeCap.round;
+      ..strokeCap = .round;
     if (stage == 0) {
       paint.color = muted.withValues(alpha: reveal);
       canvas.drawCircle(center, 8, paint..strokeWidth = 1.5);

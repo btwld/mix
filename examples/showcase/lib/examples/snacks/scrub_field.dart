@@ -55,7 +55,7 @@ final scrubLabel = TextStyler().color(inkColor).fontSize(14).fontWeight(.w600);
 const scrubTextStyle = TextStyle(
   color: inkColor,
   fontSize: 14,
-  fontWeight: FontWeight.w600,
+  fontWeight: .w600,
 );
 
 /// Drag horizontally to scrub the value, or click to edit and press Enter.
@@ -116,14 +116,14 @@ class _ScrubFieldState extends State<ScrubField> {
                   controller: _controller,
                   autofocus: true,
                   selectAllOnFocus: true,
-                  textAlign: TextAlign.center,
-                  textAlignVertical: TextAlignVertical.center,
+                  textAlign: .center,
+                  textAlignVertical: .center,
                   keyboardType: TextInputType.number,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   style: scrubTextStyle,
                   decoration: const InputDecoration(
                     isCollapsed: true,
-                    contentPadding: EdgeInsets.zero,
+                    contentPadding: .zero,
                     suffixText: ' px',
                     suffixStyle: scrubTextStyle,
                     border: InputBorder.none,
