@@ -679,7 +679,8 @@ Modifier payloads use a `type` discriminator. Supported kinds are:
 
 - `align`: optional `alignment`, `widthFactor`, and `heightFactor`
 - `aspect_ratio`: optional positive `aspectRatio`
-- `blur`: required `sigma`
+- `blur`: required `sigma` and optional `tileMode` (`clamp`, `repeated`,
+  `mirror`, or `decal`)
 - `box`: required nested box `style`
 - `clip_oval`, `clip_rect`, `clip_triangle`: optional `clipBehavior`
 - `clip_r_rect`: optional `borderRadius` and `clipBehavior`
