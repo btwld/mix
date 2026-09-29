@@ -96,7 +96,7 @@ const strutStyleMixInventory = {
 
 const modifierAlignInventory = {'alignment', 'widthFactor', 'heightFactor'};
 const modifierAspectRatioInventory = {'aspectRatio'};
-const modifierBlurInventory = {'sigma'};
+const modifierBlurInventory = {'sigma', 'tileMode'};
 const modifierBoxInventory = {'spec'};
 const modifierClipOvalInventory = {'clipper', 'clipBehavior'};
 const modifierClipRectInventory = {'clipper', 'clipBehavior'};
