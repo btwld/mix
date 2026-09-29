@@ -13,18 +13,3 @@ targets:
           - lib/src/specs/**/*.dart
         options:
           debug: false
-      # The consolidated example lives below this package directory, but its
-      # Vanilla UI sources resolve Remix types that are not dependencies of Mix.
-      # Keep Mix's auto-applied builders scoped to the framework sources.
-      mix_generator:styler_generator:
-        generate_for:
-          - lib/src/**/*.dart
-      mix_generator:mixable_generator:
-        generate_for:
-          - lib/src/**/*.dart
-      mix_generator:mix_widget_generator:
-        generate_for:
-          - lib/src/**/*.dart
-      mix_generator:modifier_generator:
-        generate_for:
-          - lib/src/**/*.dart
