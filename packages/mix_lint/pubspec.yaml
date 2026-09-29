@@ -1,18 +1,27 @@
 name: mix_lint
-description: A linter for the mix package
+description: Analyzer plugin with lint rules and quick fixes for Mix, the Flutter styling framework. Catches Styler, variant, and design-token mistakes.
 version: 2.0.0
+homepage: https://github.com/btwld/mix
 repository: https://github.com/btwld/mix/tree/main/packages/mix_lint
+issue_tracker: https://github.com/btwld/mix/issues
+topics:
+  - lints
+  - analyzer
+  - flutter
+  - design-system
 
 environment:
   sdk: ">=3.12.0 <4.0.0"
 
+# analysis_server_plugin pins one exact analyzer version per release, so bump
+# both together with each Dart SDK release.
 dependencies:
-  analysis_server_plugin: ^0.3.0
-  analyzer: ">=8.4.0 <12.0.0"
-  analyzer_plugin: ^0.14.0
+  analysis_server_plugin: ^0.3.23
+  analyzer: ^14.4.0
 
 dev_dependencies:
-  analyzer_testing: ^0.1.10
+  analyzer_plugin: ^0.14.17
+  analyzer_testing: ^0.4.2
   test: ^1.24.0
   test_reflective_loader: ^0.4.0
   dart_code_metrics_presets: ^2.24.0
