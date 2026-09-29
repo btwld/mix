@@ -66,8 +66,10 @@ final class WidgetModifierConfig with Equatable {
     return WidgetModifierConfig.modifier(OpacityModifierMix(opacity: opacity));
   }
 
-  factory WidgetModifierConfig.blur(double sigma) {
-    return WidgetModifierConfig.modifier(BlurModifierMix(sigma: sigma));
+  factory WidgetModifierConfig.blur(double sigma, {TileMode? tileMode}) {
+    return WidgetModifierConfig.modifier(
+      BlurModifierMix(sigma: sigma, tileMode: tileMode),
+    );
   }
 
   factory WidgetModifierConfig.aspectRatio(double aspectRatio) {
@@ -456,8 +458,8 @@ final class WidgetModifierConfig with Equatable {
     return merge(WidgetModifierConfig.opacity(value));
   }
 
-  WidgetModifierConfig blur(double sigma) {
-    return merge(WidgetModifierConfig.blur(sigma));
+  WidgetModifierConfig blur(double sigma, {TileMode? tileMode}) {
+    return merge(WidgetModifierConfig.blur(sigma, tileMode: tileMode));
   }
 
   WidgetModifierConfig aspectRatio(double value) {
