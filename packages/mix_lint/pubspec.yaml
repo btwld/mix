@@ -7,12 +7,12 @@ environment:
   sdk: ">=3.12.0 <4.0.0"
 
 dependencies:
-  analysis_server_plugin: ^0.3.0
-  analyzer: ">=8.4.0 <12.0.0"
-  analyzer_plugin: ^0.14.0
+  analysis_server_plugin: ^0.3.23
+  analyzer: ^14.4.0
+  analyzer_plugin: ^0.14.17
 
 dev_dependencies:
-  analyzer_testing: ^0.1.10
+  analyzer_testing: ^0.4.2
   test: ^1.24.0
   test_reflective_loader: ^0.4.0
   dart_code_metrics_presets: ^2.24.0
