@@ -30,7 +30,7 @@ final style = BoxStyler()
 | Factory Method | Modifier | Effect |
 |---------------|----------|--------|
 | `.opacity(value)` | `OpacityModifier` | Widget opacity |
-| `.blur(sigma)` | `BlurModifier` | Gaussian blur |
+| `.blur(sigma, {tileMode})` | `BlurModifier` | Gaussian blur; `tileMode` defaults to `TileMode.clamp`, use `TileMode.decal` for soft glows |
 | `.aspectRatio(ratio)` | `AspectRatioModifier` | Aspect ratio constraint |
 | `.clipOval()` | `ClipOvalModifier` | Oval clip |
 | `.clipRect()` | `ClipRectModifier` | Rectangular clip |

@@ -237,6 +237,28 @@ void main() {
 
       expect(base.box(spec), base.merge(WidgetModifierConfig.box(spec)));
     });
+
+    test('blur forwards tileMode', () {
+      final base = WidgetModifierConfig.opacity(0.5);
+
+      expect(
+        base.blur(4, tileMode: TileMode.decal),
+        base.merge(WidgetModifierConfig.blur(4, tileMode: TileMode.decal)),
+      );
+    });
+
+    test('blur resolves tileMode and defaults to clamp', () {
+      expect(WidgetModifierConfig.blur(4).resolve(MockBuildContext()), [
+        const BlurModifier(4, TileMode.clamp),
+      ]);
+      expect(
+        WidgetModifierConfig.blur(
+          4,
+          tileMode: TileMode.decal,
+        ).resolve(MockBuildContext()),
+        [const BlurModifier(4, TileMode.decal)],
+      );
+    });
   });
 
   group('WidgetModifierConfig composition invariants', () {
