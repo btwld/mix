@@ -1,3 +1,16 @@
+## Unreleased
+
+### New features
+
+- **Gradient shorthand transforms:** `linearGradient`, `radialGradient`,
+  `sweepGradient`, and their `foreground*Gradient` counterparts (plus the
+  generated `BoxStyler`, `FlexBoxStyler`, `StackBoxStyler`, and `WrapBoxStyler`
+  factories) now accept an optional `GradientTransform transform`, so a
+  gradient can be rotated, for example
+  `.sweepGradient(colors: colors, transform: GradientRotation(angle))`, without
+  switching to `gradient(SweepGradientMix(...))`. The parameter is optional and
+  existing calls are unchanged.
+
 ## 2.2.0
 
 Stable release of the 2.2.0 line, cumulative over the `2.2.0-beta.0` through

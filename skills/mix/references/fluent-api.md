@@ -66,7 +66,7 @@ Decoration, color, gradient, border, shadow, shape, background image:
 | `shape(v)` | Shape border |
 | `shape(.circle())`, `shape(.stadium())`, `shape(.roundedRectangle())`, etc. | Shape shortcuts |
 | `backgroundImage(image)`, `backgroundImageUrl(url)`, `backgroundImageAsset(path)` | Background image utilities |
-| `linearGradient(...)`, `radialGradient(...)`, `sweepGradient(...)` | Gradient shortcuts |
+| `linearGradient(...)`, `radialGradient(...)`, `sweepGradient(...)` | Gradient shortcuts; accept `stops`, `tileMode`, and `transform` (e.g. `GradientRotation`) |
 | `foregroundLinearGradient(...)`, etc. | Foreground gradient shortcuts |
 
 ### BorderStyleMixin

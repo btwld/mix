@@ -175,6 +175,28 @@ Each track represents one animatable property:
 
 Keyframes within a track run in sequence; tracks run in parallel.
 
+### Spinning a gradient
+
+Drive a `GradientRotation` from a looping track. The gradient shorthands take `transform`, so there is no need to drop to `gradient(SweepGradientMix(...))`:
+
+```dart
+final style = BoxStyler()
+    .size(120, 120)
+    .shape(.circle())
+    .keyframeAnimation(
+      timeline: [
+        KeyframeTrack<double>('turn', [.linear(2 * math.pi, 2.s)], initial: 0),
+      ],
+      styleBuilder: (values, style) => style.sweepGradient(
+        colors: [Colors.cyan, Colors.purple, Colors.cyan],
+        stops: [0.0, 0.5, 1.0],
+        transform: GradientRotation(values.get<double>('turn')),
+      ),
+    );
+```
+
+`GradientRotation` takes radians and rotates around the paint bounds' center. The same `transform:` parameter exists on `linearGradient`, `radialGradient`, and the `foreground*Gradient` variants.
+
 ## Comparison
 
 | Type | Use Case | Complexity | Control |

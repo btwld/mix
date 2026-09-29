@@ -229,12 +229,16 @@ mixin DecorationStyleMixin<T extends Mix<Object?>> {
   // Foreground gradient utilities
 
   /// Sets a foreground linear gradient
+  ///
+  /// Pass [transform] (for example a [GradientRotation]) to rotate or
+  /// otherwise transform the gradient without leaving the shorthand.
   T foregroundLinearGradient({
     required List<Color> colors,
     List<double>? stops,
     AlignmentGeometry? begin,
     AlignmentGeometry? end,
     TileMode? tileMode,
+    GradientTransform? transform,
   }) {
     return foregroundDecoration(
       BoxDecorationMix.gradient(
@@ -242,6 +246,7 @@ mixin DecorationStyleMixin<T extends Mix<Object?>> {
           begin: begin,
           end: end,
           tileMode: tileMode,
+          transform: transform,
           colors: colors,
           stops: stops,
         ),
@@ -250,6 +255,9 @@ mixin DecorationStyleMixin<T extends Mix<Object?>> {
   }
 
   /// Sets a foreground radial gradient
+  ///
+  /// Pass [transform] (for example a [GradientRotation]) to rotate or
+  /// otherwise transform the gradient without leaving the shorthand.
   T foregroundRadialGradient({
     required List<Color> colors,
     List<double>? stops,
@@ -258,6 +266,7 @@ mixin DecorationStyleMixin<T extends Mix<Object?>> {
     AlignmentGeometry? focal,
     double? focalRadius,
     TileMode? tileMode,
+    GradientTransform? transform,
   }) {
     return foregroundDecoration(
       BoxDecorationMix.gradient(
@@ -265,6 +274,7 @@ mixin DecorationStyleMixin<T extends Mix<Object?>> {
           center: center,
           radius: radius,
           tileMode: tileMode,
+          transform: transform,
           focal: focal,
           focalRadius: focalRadius,
           colors: colors,
@@ -275,6 +285,9 @@ mixin DecorationStyleMixin<T extends Mix<Object?>> {
   }
 
   /// Sets a foreground sweep gradient
+  ///
+  /// Pass [transform] (for example a [GradientRotation]) to rotate or
+  /// otherwise transform the gradient without leaving the shorthand.
   T foregroundSweepGradient({
     required List<Color> colors,
     List<double>? stops,
@@ -282,6 +295,7 @@ mixin DecorationStyleMixin<T extends Mix<Object?>> {
     double? startAngle,
     double? endAngle,
     TileMode? tileMode,
+    GradientTransform? transform,
   }) {
     return foregroundDecoration(
       BoxDecorationMix.gradient(
@@ -290,6 +304,7 @@ mixin DecorationStyleMixin<T extends Mix<Object?>> {
           startAngle: startAngle,
           endAngle: endAngle,
           tileMode: tileMode,
+          transform: transform,
           colors: colors,
           stops: stops,
         ),
@@ -300,12 +315,16 @@ mixin DecorationStyleMixin<T extends Mix<Object?>> {
   // Background gradient utilities
 
   /// Sets a background linear gradient
+  ///
+  /// Pass [transform] (for example a [GradientRotation]) to rotate or
+  /// otherwise transform the gradient without leaving the shorthand.
   T linearGradient({
     required List<Color> colors,
     List<double>? stops,
     AlignmentGeometry? begin,
     AlignmentGeometry? end,
     TileMode? tileMode,
+    GradientTransform? transform,
   }) {
     return decoration(
       BoxDecorationMix.gradient(
@@ -313,6 +332,7 @@ mixin DecorationStyleMixin<T extends Mix<Object?>> {
           begin: begin,
           end: end,
           tileMode: tileMode,
+          transform: transform,
           colors: colors,
           stops: stops,
         ),
@@ -321,6 +341,9 @@ mixin DecorationStyleMixin<T extends Mix<Object?>> {
   }
 
   /// Sets a background radial gradient
+  ///
+  /// Pass [transform] (for example a [GradientRotation]) to rotate or
+  /// otherwise transform the gradient without leaving the shorthand.
   T radialGradient({
     required List<Color> colors,
     List<double>? stops,
@@ -329,6 +352,7 @@ mixin DecorationStyleMixin<T extends Mix<Object?>> {
     AlignmentGeometry? focal,
     double? focalRadius,
     TileMode? tileMode,
+    GradientTransform? transform,
   }) {
     return decoration(
       BoxDecorationMix.gradient(
@@ -336,6 +360,7 @@ mixin DecorationStyleMixin<T extends Mix<Object?>> {
           center: center,
           radius: radius,
           tileMode: tileMode,
+          transform: transform,
           focal: focal,
           focalRadius: focalRadius,
           colors: colors,
@@ -346,6 +371,9 @@ mixin DecorationStyleMixin<T extends Mix<Object?>> {
   }
 
   /// Sets a background sweep gradient
+  ///
+  /// Pass [transform] (for example a [GradientRotation]) to rotate or
+  /// otherwise transform the gradient without leaving the shorthand.
   T sweepGradient({
     required List<Color> colors,
     List<double>? stops,
@@ -353,6 +381,7 @@ mixin DecorationStyleMixin<T extends Mix<Object?>> {
     double? startAngle,
     double? endAngle,
     TileMode? tileMode,
+    GradientTransform? transform,
   }) {
     return decoration(
       BoxDecorationMix.gradient(
@@ -361,6 +390,7 @@ mixin DecorationStyleMixin<T extends Mix<Object?>> {
           startAngle: startAngle,
           endAngle: endAngle,
           tileMode: tileMode,
+          transform: transform,
           colors: colors,
           stops: stops,
         ),
