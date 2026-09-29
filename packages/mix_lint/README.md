@@ -26,6 +26,7 @@ Warnings catch bugs and are on by default. Lints enforce Mix style and are off u
 | [`base_style_after_variant`](#base_style_after_variant) | Lint | | base style calls come before variants |
 | [`inline_token_definition`](#inline_token_definition) | Lint | | tokens are not created inside Stylers or `MixScope` |
 | [`long_styler_chain`](#long_styler_chain) | Lint | | Styler chains stay short |
+| [`unnecessary_styler_constructor`](#unnecessary_styler_constructor) | Lint | Yes | nested Stylers use factory shorthands, such as `.color(...)` |
 | [`unnecessary_type_name`](#unnecessary_type_name) | Lint | Yes | Styler arguments use dot shorthands |
 | [`variants_without_base_style`](#variants_without_base_style) | Lint | | Stylers set a base style before variants |
 
@@ -41,6 +42,7 @@ plugins:
       base_style_after_variant: true
       inline_token_definition: true
       long_styler_chain: true
+      unnecessary_styler_constructor: true
       unnecessary_type_name: true
       variants_without_base_style: true
       token_reference_outside_mix: error
@@ -218,6 +220,39 @@ final surface = BoxStyler().color(Colors.blue).borderRadius(.circular(8));
 
 final card = layout.merge(surface).onHovered(.color(Colors.red));
 ```
+
+### unnecessary_styler_constructor
+
+An empty Styler constructor starts a chain where the factory shorthand would do. Has a quick fix, including "fix all in file".
+
+The rule reports:
+
+- `BoxStyler().color(...)` passed to another Styler method, such as a variant, where the parameter type is `BoxStyler`;
+- `.new().color(...)` anywhere.
+
+Both become `.color(...)`. Every generated Styler setter has a matching factory, so the result is the same.
+
+Don't:
+
+```dart
+final style = BoxStyler()
+    .color(Colors.white)
+    .onHovered(BoxStyler().color(Colors.blue));
+
+final BoxStyler card = .new().padding(.all(16));
+```
+
+Do:
+
+```dart
+final style = BoxStyler()
+    .color(Colors.white)
+    .onHovered(.color(Colors.blue));
+
+final BoxStyler card = .padding(.all(16));
+```
+
+Top-level declarations such as `final style = BoxStyler()...` keep the constructor, and so do widget arguments such as `Box(style: BoxStyler()...)`, whose parameter type (`Style<BoxSpec>`) gives a dot shorthand nothing to resolve against. The rule stays silent when the first call has no factory, or when the factory would not accept the same arguments.
 
 ### unnecessary_type_name
 

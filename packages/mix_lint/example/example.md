@@ -10,6 +10,7 @@ plugins:
       base_style_after_variant: true
       inline_token_definition: true
       long_styler_chain: true
+      unnecessary_styler_constructor: true
       unnecessary_type_name: true
       variants_without_base_style: true
 ```
@@ -30,6 +31,11 @@ final card = BoxStyler()
     .color(Colors.white)
     .onHovered(.color(Colors.blue))
     .padding(.all(16));
+
+// unnecessary_styler_constructor (quick fix: `.onHovered(.color(...))`)
+final button = BoxStyler()
+    .color(Colors.white)
+    .onHovered(BoxStyler().color(Colors.blue));
 
 // unnecessary_type_name (quick fix: `.all(16)`)
 final padded = BoxStyler().padding(EdgeInsetsGeometryMix.all(16));

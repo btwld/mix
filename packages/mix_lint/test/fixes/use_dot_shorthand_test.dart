@@ -1,6 +1,7 @@
 import 'package:analysis_server_plugin/edit/dart/correction_producer.dart';
 import 'package:analyzer/analysis_rule/analysis_rule.dart';
 import 'package:mix_lint/src/fixes/use_dot_shorthand.dart';
+import 'package:mix_lint/src/rules/unnecessary_styler_constructor.dart';
 import 'package:mix_lint/src/rules/unnecessary_type_name.dart';
 import 'package:test/test.dart';
 import 'package:test_reflective_loader/test_reflective_loader.dart';
@@ -94,8 +95,57 @@ final s = TextStyler().fontWeight(.w600);
   }
 }
 
+@reflectiveTest
+class UseDotShorthandForStylerConstructorTest extends MixRuleTest {
+  @override
+  AbstractAnalysisRule createRule() => UnnecessaryStylerConstructor();
+
+  void test_replaces_nested_constructor_with_factory() async {
+    await _assertFix(
+      r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+final s = BoxStyler().width(1).onHovered([!BoxStyler().color!](Colors.blue));
+''',
+      r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+final s = BoxStyler().width(1).onHovered(.color(Colors.blue));
+''',
+    );
+  }
+
+  void test_replaces_new_with_factory() async {
+    await _assertFix(
+      r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+final BoxStyler s = [!.new().color!](Colors.blue).width(2);
+''',
+      r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+final BoxStyler s = .color(Colors.blue).width(2);
+''',
+    );
+  }
+
+  Future<void> _assertFix(String markedCode, String expected) async {
+    await assertLints(markedCode);
+
+    final fixed = await applyFix(
+      result,
+      UnnecessaryStylerConstructor.code,
+      UseDotShorthand.new,
+    );
+
+    expect(fixed, expected);
+  }
+}
+
 void main() {
   defineReflectiveSuite(() {
     defineReflectiveTests(UseDotShorthandTest);
+    defineReflectiveTests(UseDotShorthandForStylerConstructorTest);
   });
 }

@@ -8,6 +8,7 @@ import 'src/rules/inline_token_definition.dart';
 import 'src/rules/long_styler_chain.dart';
 import 'src/rules/missing_create_constructor.dart';
 import 'src/rules/token_reference_outside_mix.dart';
+import 'src/rules/unnecessary_styler_constructor.dart';
 import 'src/rules/unnecessary_type_name.dart';
 import 'src/rules/variants_without_base_style.dart';
 
@@ -44,9 +45,15 @@ final class MixLintPlugin extends Plugin {
       ..registerLintRule(
         LongStylerChain(maxLength: config.maxStylerChainLength),
       )
+      ..registerLintRule(UnnecessaryStylerConstructor())
       ..registerLintRule(UnnecessaryTypeName())
       ..registerLintRule(VariantsWithoutBaseStyle());
 
-    registry.registerFixForRule(UnnecessaryTypeName.code, UseDotShorthand.new);
+    registry
+      ..registerFixForRule(
+        UnnecessaryStylerConstructor.code,
+        UseDotShorthand.new,
+      )
+      ..registerFixForRule(UnnecessaryTypeName.code, UseDotShorthand.new);
   }
 }

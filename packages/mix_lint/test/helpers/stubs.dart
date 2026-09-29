@@ -151,6 +151,10 @@ class BoxStyler extends MixStyler<BoxStyler, BoxSpec>
   BoxStyler merge(BoxStyler? other) => this;
 }
 
+class Box extends Widget {
+  const Box({Style<BoxSpec>? style, Widget? child});
+}
+
 final class TextSpec extends Spec<TextSpec> {}
 
 class TextStyler extends MixStyler<TextStyler, TextSpec> {

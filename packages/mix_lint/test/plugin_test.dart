@@ -4,6 +4,7 @@ import 'package:analyzer/error/error.dart';
 import 'package:mix_lint/main.dart' as entry_point;
 import 'package:mix_lint/mix_lint.dart';
 import 'package:mix_lint/src/rules/long_styler_chain.dart';
+import 'package:mix_lint/src/rules/unnecessary_styler_constructor.dart';
 import 'package:mix_lint/src/rules/unnecessary_type_name.dart';
 import 'package:test/test.dart';
 
@@ -31,10 +32,14 @@ void main() {
       'base_style_after_variant',
       'inline_token_definition',
       'long_styler_chain',
+      'unnecessary_styler_constructor',
       'unnecessary_type_name',
       'variants_without_base_style',
     ]);
-    expect(registry.fixedCodes, [UnnecessaryTypeName.code]);
+    expect(registry.fixedCodes, [
+      UnnecessaryStylerConstructor.code,
+      UnnecessaryTypeName.code,
+    ]);
   });
 
   test('warning codes have warning severity; lint codes have info', () {
