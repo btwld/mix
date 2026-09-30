@@ -13,9 +13,7 @@ void main() {
       });
 
       test('chaining after factory constructor works', () {
-        final styler = ImageStyler.color(
-          Colors.red,
-        ).width(100).fit(BoxFit.cover);
+        final styler = ImageStyler.color(Colors.red).width(100).fit(.cover);
         expect(styler.$color, isNotNull);
         expect(styler.$width, isNotNull);
         expect(styler.$fit, isNotNull);
@@ -44,10 +42,7 @@ void main() {
       });
 
       test('fit', () {
-        expect(
-          ImageStyler.fit(BoxFit.cover),
-          equals(ImageStyler(fit: BoxFit.cover)),
-        );
+        expect(ImageStyler.fit(.cover), equals(ImageStyler(fit: .cover)));
       });
 
       test('alignment', () {
@@ -59,29 +54,29 @@ void main() {
 
       test('repeat', () {
         expect(
-          ImageStyler.repeat(ImageRepeat.repeat),
-          equals(ImageStyler(repeat: ImageRepeat.repeat)),
+          ImageStyler.repeat(.repeat),
+          equals(ImageStyler(repeat: .repeat)),
         );
       });
 
       test('centerSlice', () {
         expect(
-          ImageStyler.centerSlice(const Rect.fromLTWH(0, 0, 10, 10)),
-          equals(ImageStyler(centerSlice: const Rect.fromLTWH(0, 0, 10, 10))),
+          ImageStyler.centerSlice(const .fromLTWH(0, 0, 10, 10)),
+          equals(ImageStyler(centerSlice: const .fromLTWH(0, 0, 10, 10))),
         );
       });
 
       test('filterQuality', () {
         expect(
-          ImageStyler.filterQuality(FilterQuality.high),
-          equals(ImageStyler(filterQuality: FilterQuality.high)),
+          ImageStyler.filterQuality(.high),
+          equals(ImageStyler(filterQuality: .high)),
         );
       });
 
       test('colorBlendMode', () {
         expect(
-          ImageStyler.colorBlendMode(BlendMode.multiply),
-          equals(ImageStyler(colorBlendMode: BlendMode.multiply)),
+          ImageStyler.colorBlendMode(.multiply),
+          equals(ImageStyler(colorBlendMode: .multiply)),
         );
       });
 
@@ -117,7 +112,7 @@ void main() {
 
       test('fit resolves correctly', () {
         final fit = ImageStyler.fit(
-          BoxFit.cover,
+          .cover,
         ).$fit!.resolveProp(MockBuildContext());
         expect(fit, BoxFit.cover);
       });

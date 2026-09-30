@@ -25,12 +25,10 @@ void main() {
               style: mode == 'defaults'
                   ? const PieChartStyler.create()
                   : PieChartStyler().tooltip(
-                      ChartTooltipStyler().text(
-                        TextStyler()
-                            .fontSize(17)
-                            .textAlign(TextAlign.end)
-                            .maxLines(1)
-                            .overflow(TextOverflow.ellipsis),
+                      .text(
+                        .fontSize(
+                          17,
+                        ).textAlign(.end).maxLines(1).overflow(.ellipsis),
                       ),
                     ),
             ),

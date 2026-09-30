@@ -9,14 +9,14 @@ void main() {
     group('Constructor', () {
       test('creates with all properties', () {
         final attribute = FlexStyler(
-          direction: Axis.horizontal,
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.max,
-          verticalDirection: VerticalDirection.down,
-          textDirection: TextDirection.ltr,
-          textBaseline: TextBaseline.alphabetic,
-          clipBehavior: Clip.antiAlias,
+          direction: .horizontal,
+          mainAxisAlignment: .center,
+          crossAxisAlignment: .stretch,
+          mainAxisSize: .max,
+          verticalDirection: .down,
+          textDirection: .ltr,
+          textBaseline: .alphabetic,
+          clipBehavior: .antiAlias,
           spacing: 16.0,
         );
 
@@ -58,14 +58,14 @@ void main() {
     group('only constructor', () {
       test('creates with mixed properties', () {
         final attribute = FlexStyler(
-          direction: Axis.vertical,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          verticalDirection: VerticalDirection.up,
-          textDirection: TextDirection.rtl,
-          textBaseline: TextBaseline.ideographic,
-          clipBehavior: Clip.hardEdge,
+          direction: .vertical,
+          mainAxisAlignment: .spaceEvenly,
+          crossAxisAlignment: .center,
+          mainAxisSize: .min,
+          verticalDirection: .up,
+          textDirection: .rtl,
+          textBaseline: .ideographic,
+          clipBehavior: .hardEdge,
           spacing: 8.0,
         );
 
@@ -87,7 +87,7 @@ void main() {
       });
 
       test('creates with partial properties', () {
-        final attribute = FlexStyler(direction: Axis.horizontal, spacing: 12.0);
+        final attribute = FlexStyler(direction: .horizontal, spacing: 12.0);
 
         expect(attribute.$direction, resolvesTo(Axis.horizontal));
         expect(attribute.$spacing, resolvesTo(12.0));
@@ -104,17 +104,15 @@ void main() {
 
   group('Utility Methods', () {
     test('direction utility works correctly', () {
-      final horizontal = FlexStyler().direction(Axis.horizontal);
-      final vertical = FlexStyler().direction(Axis.vertical);
+      final horizontal = FlexStyler().direction(.horizontal);
+      final vertical = FlexStyler().direction(.vertical);
 
       expect(horizontal.$direction, resolvesTo(Axis.horizontal));
       expect(vertical.$direction, resolvesTo(Axis.vertical));
     });
 
     test('mainAxisAlignment utility works correctly', () {
-      final attribute = FlexStyler().mainAxisAlignment(
-        MainAxisAlignment.spaceAround,
-      );
+      final attribute = FlexStyler().mainAxisAlignment(.spaceAround);
 
       expect(
         attribute.$mainAxisAlignment,
@@ -123,37 +121,37 @@ void main() {
     });
 
     test('crossAxisAlignment utility works correctly', () {
-      final attribute = FlexStyler().crossAxisAlignment(CrossAxisAlignment.end);
+      final attribute = FlexStyler().crossAxisAlignment(.end);
 
       expect(attribute.$crossAxisAlignment, resolvesTo(CrossAxisAlignment.end));
     });
 
     test('mainAxisSize utility works correctly', () {
-      final attribute = FlexStyler().mainAxisSize(MainAxisSize.min);
+      final attribute = FlexStyler().mainAxisSize(.min);
 
       expect(attribute.$mainAxisSize, resolvesTo(MainAxisSize.min));
     });
 
     test('verticalDirection utility works correctly', () {
-      final attribute = FlexStyler().verticalDirection(VerticalDirection.up);
+      final attribute = FlexStyler().verticalDirection(.up);
 
       expect(attribute.$verticalDirection, resolvesTo(VerticalDirection.up));
     });
 
     test('textDirection utility works correctly', () {
-      final attribute = FlexStyler().textDirection(TextDirection.rtl);
+      final attribute = FlexStyler().textDirection(.rtl);
 
       expect(attribute.$textDirection, resolvesTo(TextDirection.rtl));
     });
 
     test('textBaseline utility works correctly', () {
-      final attribute = FlexStyler().textBaseline(TextBaseline.ideographic);
+      final attribute = FlexStyler().textBaseline(.ideographic);
 
       expect(attribute.$textBaseline, resolvesTo(TextBaseline.ideographic));
     });
 
     test('clipBehavior utility works correctly', () {
-      final attribute = FlexStyler().clipBehavior(Clip.antiAliasWithSaveLayer);
+      final attribute = FlexStyler().clipBehavior(.antiAliasWithSaveLayer);
 
       expect(attribute.$clipBehavior, resolvesTo(Clip.antiAliasWithSaveLayer));
     });
@@ -167,9 +165,9 @@ void main() {
     test('chaining utilities accumulates properties correctly', () {
       // Chaining now properly accumulates all properties
       final chained = FlexStyler()
-          .direction(Axis.horizontal)
+          .direction(.horizontal)
           .mainAxisAlignment(.spaceBetween)
-          .crossAxisAlignment(CrossAxisAlignment.center)
+          .crossAxisAlignment(.center)
           .spacing(16.0);
 
       // All properties should be set when chaining
@@ -188,14 +186,11 @@ void main() {
     test('merge combines different attribute instances', () {
       // Merge is still useful for combining separate attribute instances
       final first = FlexStyler(
-        direction: Axis.horizontal,
-        mainAxisAlignment: MainAxisAlignment.start,
+        direction: .horizontal,
+        mainAxisAlignment: .start,
       );
 
-      final second = FlexStyler(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        spacing: 16.0,
-      );
+      final second = FlexStyler(crossAxisAlignment: .center, spacing: 16.0);
 
       final combined = first.merge(second);
 
@@ -219,7 +214,7 @@ void main() {
 
     test('variant factory creates with variant', () {
       final variant = ContextVariant.brightness(Brightness.dark);
-      final style = FlexStyler(direction: Axis.horizontal);
+      final style = FlexStyler(direction: .horizontal);
       final flexMix = FlexStyler().variant(variant, style);
 
       expect(flexMix.$variants, isNotNull);
@@ -251,14 +246,14 @@ void main() {
   group('Resolution', () {
     test('resolves to FlexSpec correctly', () {
       final attribute = FlexStyler(
-        direction: Axis.horizontal,
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.max,
-        verticalDirection: VerticalDirection.down,
-        textDirection: TextDirection.ltr,
-        textBaseline: TextBaseline.alphabetic,
-        clipBehavior: Clip.antiAlias,
+        direction: .horizontal,
+        mainAxisAlignment: .center,
+        crossAxisAlignment: .stretch,
+        mainAxisSize: .max,
+        verticalDirection: .down,
+        textDirection: .ltr,
+        textBaseline: .alphabetic,
+        clipBehavior: .antiAlias,
         spacing: 16.0,
       );
 
@@ -278,7 +273,7 @@ void main() {
     });
 
     test('resolves with null values correctly', () {
-      final attribute = FlexStyler().direction(Axis.vertical).spacing(12.0);
+      final attribute = FlexStyler().direction(.vertical).spacing(12.0);
 
       final context = MockBuildContext();
       final spec = attribute.resolve(context);
@@ -299,15 +294,15 @@ void main() {
   group('Merge', () {
     test('merges properties correctly', () {
       final first = FlexStyler(
-        direction: Axis.horizontal,
-        mainAxisAlignment: MainAxisAlignment.start,
+        direction: .horizontal,
+        mainAxisAlignment: .start,
         spacing: 8.0,
       );
 
       final second = FlexStyler(
-        direction: Axis.vertical,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
+        direction: .vertical,
+        crossAxisAlignment: .center,
+        mainAxisSize: .min,
       );
 
       final merged = first.merge(second);
@@ -326,7 +321,7 @@ void main() {
     });
 
     test('returns this when other is null', () {
-      final attribute = FlexStyler().direction(Axis.horizontal);
+      final attribute = FlexStyler().direction(.horizontal);
       final merged = attribute.merge(null);
 
       expect(identical(attribute, merged), isFalse);
@@ -335,18 +330,18 @@ void main() {
 
     test('merges all properties when both have values', () {
       final first = FlexStyler()
-          .direction(Axis.horizontal)
+          .direction(.horizontal)
           .mainAxisAlignment(.center)
-          .crossAxisAlignment(CrossAxisAlignment.start)
-          .mainAxisSize(MainAxisSize.max)
-          .verticalDirection(VerticalDirection.down);
+          .crossAxisAlignment(.start)
+          .mainAxisSize(.max)
+          .verticalDirection(.down);
 
       final second = FlexStyler()
-          .direction(Axis.vertical)
+          .direction(.vertical)
           .mainAxisAlignment(.end)
-          .textDirection(TextDirection.rtl)
-          .textBaseline(TextBaseline.ideographic)
-          .clipBehavior(Clip.hardEdge)
+          .textDirection(.rtl)
+          .textBaseline(.ideographic)
+          .clipBehavior(.hardEdge)
           .spacing(20.0);
 
       final merged = first.merge(second);
@@ -381,12 +376,12 @@ void main() {
   group('Equality', () {
     test('equal attributes have same hashCode', () {
       final attr1 = FlexStyler()
-          .direction(Axis.horizontal)
+          .direction(.horizontal)
           .mainAxisAlignment(.center)
           .spacing(16.0);
 
       final attr2 = FlexStyler()
-          .direction(Axis.horizontal)
+          .direction(.horizontal)
           .mainAxisAlignment(.center)
           .spacing(16.0);
 
@@ -395,8 +390,8 @@ void main() {
     });
 
     test('different attributes are not equal', () {
-      final attr1 = FlexStyler().direction(Axis.horizontal);
-      final attr2 = FlexStyler().direction(Axis.vertical);
+      final attr1 = FlexStyler().direction(.horizontal);
+      final attr2 = FlexStyler().direction(.vertical);
 
       expect(attr1, isNot(equals(attr2)));
     });
@@ -412,14 +407,14 @@ void main() {
   group('Props getter', () {
     test('props includes all properties', () {
       final attribute = FlexStyler(
-        direction: Axis.horizontal,
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.max,
-        verticalDirection: VerticalDirection.down,
-        textDirection: TextDirection.ltr,
-        textBaseline: TextBaseline.alphabetic,
-        clipBehavior: Clip.antiAlias,
+        direction: .horizontal,
+        mainAxisAlignment: .center,
+        crossAxisAlignment: .stretch,
+        mainAxisSize: .max,
+        verticalDirection: .down,
+        textDirection: .ltr,
+        textBaseline: .alphabetic,
+        clipBehavior: .antiAlias,
         spacing: 16.0,
       );
 
@@ -474,7 +469,7 @@ void main() {
   group('Variant Methods', () {
     test('variant method sets single variant', () {
       final variant = ContextVariant.brightness(Brightness.dark);
-      final style = FlexStyler(direction: Axis.horizontal);
+      final style = FlexStyler(direction: .horizontal);
       final flexMix = FlexStyler().variant(variant, style);
 
       expect(flexMix.$variants, isNotNull);
@@ -485,11 +480,11 @@ void main() {
       final variants = [
         VariantStyle(
           ContextVariant.brightness(Brightness.dark),
-          FlexStyler(direction: Axis.horizontal),
+          FlexStyler(direction: .horizontal),
         ),
         VariantStyle(
           ContextVariant.brightness(Brightness.light),
-          FlexStyler(direction: Axis.vertical),
+          FlexStyler(direction: .vertical),
         ),
       ];
       final flexMix = FlexStyler().variants(variants);
@@ -502,7 +497,7 @@ void main() {
   group('Builder pattern', () {
     test('builder methods create new instances', () {
       final original = FlexStyler();
-      final modified = original.direction(Axis.horizontal);
+      final modified = original.direction(.horizontal);
 
       expect(identical(original, modified), isFalse);
       expect(original.$direction, isNull);
@@ -511,10 +506,10 @@ void main() {
 
     test('builder methods can be combined with merge', () {
       final attribute = FlexStyler()
-          .direction(Axis.horizontal)
-          .merge(FlexStyler().mainAxisAlignment(.spaceBetween))
-          .merge(FlexStyler().crossAxisAlignment(CrossAxisAlignment.center))
-          .merge(FlexStyler().spacing(16.0));
+          .direction(.horizontal)
+          .merge(.mainAxisAlignment(.spaceBetween))
+          .merge(.crossAxisAlignment(.center))
+          .merge(.spacing(16.0));
 
       final context = MockBuildContext();
       final spec = attribute.resolve(context);
@@ -530,7 +525,7 @@ void main() {
     test('debugFillProperties includes all properties', () {
       // This test verifies that the attribute implements Diagnosticable correctly
       final attribute = FlexStyler()
-          .direction(Axis.horizontal)
+          .direction(.horizontal)
           .mainAxisAlignment(.center)
           .spacing(16.0);
 

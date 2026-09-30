@@ -77,8 +77,8 @@ void main() {
 
       test('clipBehavior', () {
         expect(
-          BoxStyler.clipBehavior(Clip.hardEdge),
-          equals(BoxStyler().clipBehavior(Clip.hardEdge)),
+          BoxStyler.clipBehavior(.hardEdge),
+          equals(BoxStyler().clipBehavior(.hardEdge)),
         );
       });
 
@@ -108,10 +108,7 @@ void main() {
       });
 
       test('elevation', () {
-        expect(
-          BoxStyler.elevation(ElevationShadow.one),
-          equals(BoxStyler().elevation(ElevationShadow.one)),
-        );
+        expect(BoxStyler.elevation(.one), equals(BoxStyler().elevation(.one)));
       });
 
       test('shadow', () {
@@ -161,8 +158,8 @@ void main() {
 
       test('scale with alignment', () {
         expect(
-          BoxStyler.scale(0.5, alignment: Alignment.topLeft),
-          equals(BoxStyler().scale(0.5, alignment: Alignment.topLeft)),
+          BoxStyler.scale(0.5, alignment: .topLeft),
+          equals(BoxStyler().scale(0.5, alignment: .topLeft)),
         );
       });
 
@@ -172,8 +169,8 @@ void main() {
 
       test('rotate with alignment', () {
         expect(
-          BoxStyler.rotate(0.5, alignment: Alignment.bottomRight),
-          equals(BoxStyler().rotate(0.5, alignment: Alignment.bottomRight)),
+          BoxStyler.rotate(0.5, alignment: .bottomRight),
+          equals(BoxStyler().rotate(0.5, alignment: .bottomRight)),
         );
       });
 
@@ -274,8 +271,8 @@ void main() {
 
       test('transform', () {
         expect(
-          BoxStyler.transform(Matrix4.identity()),
-          equals(BoxStyler().transform(Matrix4.identity())),
+          BoxStyler.transform(.identity()),
+          equals(BoxStyler().transform(.identity())),
         );
       });
 

@@ -96,9 +96,7 @@ void main() {
                 child: PieChart(
                   slices: [PieSlice(id: 'm', label: 'Mobile', value: 64)],
                   style: PieChartStyler().tooltip(
-                    ChartTooltipStyler()
-                        .fitHorizontally(horizontal)
-                        .fitVertically(vertical),
+                    .fitHorizontally(horizontal).fitVertically(vertical),
                   ),
                 ),
               ),

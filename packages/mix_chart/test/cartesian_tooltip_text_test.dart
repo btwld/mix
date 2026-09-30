@@ -12,10 +12,7 @@ void main() {
       ) async {
         final tooltip = styled
             ? ChartTooltipStyler().text(
-                TextStyler()
-                    .fontSize(19)
-                    .textAlign(TextAlign.end)
-                    .textDirection(TextDirection.rtl),
+                .fontSize(19).textAlign(.end).textDirection(.rtl),
               )
             : const ChartTooltipStyler.create();
         await tester.pumpWidget(

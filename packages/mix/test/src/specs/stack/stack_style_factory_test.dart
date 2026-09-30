@@ -15,7 +15,7 @@ void main() {
       test('chaining after factory constructor works', () {
         final styler = StackStyler.alignment(
           Alignment.center,
-        ).fit(StackFit.expand).clipBehavior(Clip.hardEdge);
+        ).fit(.expand).clipBehavior(.hardEdge);
         expect(styler.$alignment, isNotNull);
         expect(styler.$fit, isNotNull);
         expect(styler.$clipBehavior, isNotNull);
@@ -31,23 +31,20 @@ void main() {
       });
 
       test('fit', () {
-        expect(
-          StackStyler.fit(StackFit.expand),
-          equals(StackStyler(fit: StackFit.expand)),
-        );
+        expect(StackStyler.fit(.expand), equals(StackStyler(fit: .expand)));
       });
 
       test('clipBehavior', () {
         expect(
-          StackStyler.clipBehavior(Clip.hardEdge),
-          equals(StackStyler(clipBehavior: Clip.hardEdge)),
+          StackStyler.clipBehavior(.hardEdge),
+          equals(StackStyler(clipBehavior: .hardEdge)),
         );
       });
 
       test('textDirection', () {
         expect(
-          StackStyler.textDirection(TextDirection.rtl),
-          equals(StackStyler(textDirection: TextDirection.rtl)),
+          StackStyler.textDirection(.rtl),
+          equals(StackStyler(textDirection: .rtl)),
         );
       });
     });
@@ -62,7 +59,7 @@ void main() {
 
       test('fit resolves correctly', () {
         final fit = StackStyler.fit(
-          StackFit.expand,
+          .expand,
         ).$fit!.resolveProp(MockBuildContext());
         expect(fit, StackFit.expand);
       });

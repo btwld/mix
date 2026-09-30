@@ -123,7 +123,7 @@ void main() {
       final style = BoxStyler()
           .color(Colors.blue)
           .animate(
-            AnimationConfig.curve(
+            .curve(
               duration: const Duration(milliseconds: 300),
               curve: Curves.easeInOut,
             ),

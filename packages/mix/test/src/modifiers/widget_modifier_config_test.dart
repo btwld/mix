@@ -141,10 +141,7 @@ void main() {
         MaterialApp(
           home: Box(
             style: BoxStyler().wrap(
-              .scrollView(
-                scrollDirection: Axis.horizontal,
-                padding: EdgeInsetsGeometryMix.all(8),
-              ),
+              .scrollView(scrollDirection: .horizontal, padding: .all(8)),
             ),
             child: const SizedBox(width: 2000, height: 50),
           ),
@@ -232,7 +229,7 @@ void main() {
     });
 
     test('box', () {
-      final spec = BoxStyler(padding: EdgeInsetsGeometryMix.all(8));
+      final spec = BoxStyler(padding: .all(8));
       final base = WidgetModifierConfig.opacity(0.5);
 
       expect(base.box(spec), base.merge(WidgetModifierConfig.box(spec)));
