@@ -26,7 +26,9 @@ enum _Verdict {
 ///
 /// Only APIs from other packages, such as Flutter widgets or `dart:core`, are
 /// reported. Code in the analyzed package may forward the value into Mix, so
-/// the rule stays silent for it.
+/// the rule stays silent for it. So does a Flutter value that is passed on to
+/// Mix, such as the `TextStyle` in `TextStyleMix.value(TextStyle(...))`:
+/// Mix converts it field by field and keeps the reference.
 class TokenReferenceOutsideMix extends AnalysisRule {
   static const LintCode code = LintCode(
     'token_reference_outside_mix',
@@ -72,11 +74,39 @@ class _Visitor extends SimpleAstVisitor<void> {
   /// cannot be resolved.
   void _check(Expression reference) {
     final consumer = _enclosingConsumer(reference);
-    if (consumer == null) return;
-
-    if (_classify(consumer) == .notMix) {
+    if (consumer != null && _escapesMix(consumer)) {
       rule.reportAtNode(reference);
     }
+  }
+
+  /// Returns true if a reference passed to [consumer] leaves Mix.
+  bool _escapesMix(AstNode consumer) {
+    if (_classify(consumer) != .notMix) return false;
+    // A Flutter value, such as `TextStyle(...)`, that is itself passed to Mix
+    // keeps the reference. A widget or a method call never does.
+    final isValue =
+        (consumer is InstanceCreationExpression ||
+            consumer is DotShorthandConstructorInvocation) &&
+        !isFlutterWidgetType((consumer as Expression).staticType);
+    if (!isValue) return true;
+    final outer = _directConsumer(consumer);
+
+    return outer == null || _escapesMix(outer);
+  }
+
+  /// Returns the invocation that [value] is passed to directly, possibly as a
+  /// named argument or inside a collection literal, or null.
+  AstNode? _directConsumer(Expression value) {
+    var current = value.parent;
+    while (current is NamedArgument ||
+        current is ParenthesizedExpression ||
+        current is ListLiteral ||
+        current is SetOrMapLiteral ||
+        current is MapLiteralEntry) {
+      current = current?.parent;
+    }
+
+    return current is ArgumentList ? current.parent : null;
   }
 
   /// Walks up from [reference] to the innermost invocation it is an argument
@@ -96,13 +126,24 @@ class _Visitor extends SimpleAstVisitor<void> {
   }
 
   _Verdict _classify(AstNode consumer) {
-    if (consumer is InstanceCreationExpression) {
-      final type = consumer.staticType;
+    // `Type(...)`, `Type.named(...)`, and `.named(...)`.
+    if (consumer is InstanceCreationExpression ||
+        consumer is DotShorthandConstructorInvocation) {
+      final type = (consumer as Expression).staticType;
       if (type is InterfaceType && _isInAnalyzedPackage(type.element)) {
         return .unknown;
       }
 
       return _verdictForType(type);
+    }
+
+    // A static method through a dot shorthand, such as `.all(...)`.
+    if (consumer is DotShorthandInvocation) {
+      final element = consumer.memberName.element;
+      if (isFromMix(element)) return .mix;
+      if (_isInAnalyzedPackage(element)) return .unknown;
+
+      return _verdictForElement(element);
     }
 
     if (consumer is MethodInvocation) {

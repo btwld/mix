@@ -32,6 +32,16 @@ final BoxStyler s = [!.new()!].onHovered(BoxStyler().width(1));
 ''');
   }
 
+  void test_structural_or_variant_factory_root_reports() async {
+    await assertLints(r'''
+import 'package:mix/mix.dart';
+final a = [!BoxStyler.animate(Object())!].onHovered(BoxStyler().width(1));
+final BoxStyler b = [!.animate(Object())!].onHovered(BoxStyler().width(1));
+final c = [!GridBoxStyler.onConstraints(Object(), GridBoxStyler().gap(1))!]
+    .onHovered(GridBoxStyler().gap(2));
+''');
+  }
+
   void test_base_style_from_factory_no_diagnostic() async {
     await assertNoDiagnostics(r'''
 import 'package:flutter/widgets.dart';

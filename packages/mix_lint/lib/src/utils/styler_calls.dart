@@ -15,14 +15,15 @@ enum StylerCallKind {
   builder,
 
   /// Changes how the style is applied, not what it sets: `animate`,
-  /// `keyframeAnimation`, `phaseAnimation`, `wrap`, `merge`, and
+  /// `keyframeAnimation`, `phaseAnimation`, `wrap`, `modifier`, `merge`, and
   /// `applyVariants`.
   structural,
 }
 
 const _variantMixins = {'VariantStyleMixin', 'WidgetStateVariantMixin'};
 const _structuralMixins = {'AnimationStyleMixin', 'WidgetModifierStyleMixin'};
-const _structuralMethods = {'merge', 'applyVariants'};
+// `modifier` is the generated alias of `wrap`.
+const _structuralMethods = {'merge', 'applyVariants', 'modifier'};
 
 /// Classifies [node], a method call on a Styler.
 ///
@@ -30,10 +31,15 @@ const _structuralMethods = {'merge', 'applyVariants'};
 /// `variants`), so this checks which Mix mixin declares the method name, not
 /// where the override lives.
 StylerCallKind stylerCallKind(MethodInvocation node) {
-  final name = node.methodName.name;
   final receiver = node.realTarget?.staticType ?? node.staticType;
-  if (receiver is! InterfaceType) return .baseStyle;
 
+  return receiver is InterfaceType
+      ? _stylerMemberKind(receiver, node.methodName.name)
+      : .baseStyle;
+}
+
+/// Classifies the method or factory [name] of the Styler [receiver].
+StylerCallKind _stylerMemberKind(InterfaceType receiver, String name) {
   if (_structuralMethods.contains(name)) return .structural;
   if (_isDeclaredByMixMixin(receiver, name, _structuralMixins)) {
     return .structural;
@@ -55,23 +61,43 @@ StylerCallKind stylerCallKind(MethodInvocation node) {
 /// constructor call with arguments such as `BoxStyler(padding: ...)`.
 ///
 /// `BoxStyler()`, `.new()`, and `BoxStyler.create()` without arguments set
-/// nothing.
+/// nothing, and neither do factories that are not base style, such as
+/// `BoxStyler.animate(...)` or `GridBoxStyler.onConstraints(...)`.
 bool rootSetsBaseStyle(Expression root) => switch (root) {
   InstanceCreationExpression(:final constructorName, :final argumentList) =>
-    !_isEmptyConstructor(constructorName.name?.name, argumentList),
+    _constructorSetsBaseStyle(
+      root.staticType,
+      constructorName.name?.name,
+      argumentList,
+    ),
   DotShorthandConstructorInvocation(
     :final constructorName,
     :final argumentList,
   ) =>
-    !_isEmptyConstructor(constructorName.name, argumentList),
-  // A static factory, such as `.color(...)`.
-  DotShorthandInvocation() => true,
+    _constructorSetsBaseStyle(
+      root.staticType,
+      constructorName.name,
+      argumentList,
+    ),
+  // A static method, such as `.color(...)` on a hand-written Styler.
+  DotShorthandInvocation(:final memberName) => _factorySetsBaseStyle(
+    root.staticType,
+    memberName.name,
+  ),
   _ => false,
 };
 
-bool _isEmptyConstructor(String? name, ArgumentList argumentList) =>
-    (name == null || name == 'new' || name == 'create') &&
-    argumentList.arguments.isEmpty;
+bool _constructorSetsBaseStyle(
+  DartType? styler,
+  String? name,
+  ArgumentList argumentList,
+) => name == null || name == 'new' || name == 'create'
+    ? argumentList.arguments.isNotEmpty
+    : _factorySetsBaseStyle(styler, name);
+
+bool _factorySetsBaseStyle(DartType? styler, String name) =>
+    styler is! InterfaceType ||
+    _stylerMemberKind(styler, name) == StylerCallKind.baseStyle;
 
 /// Collects the method chain that directly follows [root].
 ///

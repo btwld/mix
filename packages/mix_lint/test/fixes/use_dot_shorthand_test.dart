@@ -112,6 +112,21 @@ final s = TextStyler().fontWeight(.w600);
     );
   }
 
+  void test_removes_new_keyword() async {
+    await _assertFix(
+      r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+final s = BoxStyler().shadow([!new BoxShadowMix.color(Colors.blue)!]);
+''',
+      r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+final s = BoxStyler().shadow(.color(Colors.blue));
+''',
+    );
+  }
+
   Future<void> _assertFix(String markedCode, String expected) async {
     await assertLints(markedCode);
 
@@ -122,6 +137,7 @@ final s = TextStyler().fontWeight(.w600);
     );
 
     expect(fixed, expected);
+    await assertFixedCodeIsClean(fixed);
   }
 }
 
@@ -170,6 +186,7 @@ final BoxStyler s = .color(Colors.blue).width(2);
     );
 
     expect(fixed, expected);
+    await assertFixedCodeIsClean(fixed);
   }
 }
 

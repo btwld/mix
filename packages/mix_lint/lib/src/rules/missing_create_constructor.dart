@@ -23,7 +23,7 @@ class MissingCreateConstructor extends AnalysisRule {
         'constructor.',
     correctionMessage:
         "Try adding a 'const {0}.create(...)' constructor. The generated "
-        'merge() method calls it.',
+        "'merge()' method calls it.",
     severity: .WARNING,
   );
 

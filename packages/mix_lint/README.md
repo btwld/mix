@@ -30,6 +30,8 @@ Warnings catch bugs and are on by default. Lints enforce Mix style and are off u
 | [`unnecessary_type_name`](#unnecessary_type_name) | Lint | Yes | Styler arguments use dot shorthands |
 | [`variants_without_base_style`](#variants_without_base_style) | Lint | | Stylers set a base style before variants |
 
+Quick fixes run in the IDE, for one diagnostic or for a whole file. `dart fix` does not apply fixes from analyzer plugins. A fix can leave an import unused, for example `package:flutter/widgets.dart` after `FontWeight.w600` becomes `.w600`. The analyzer then reports `unused_import`, which has its own fix.
+
 ### Enable lints and change severity
 
 List rules under `diagnostics`. Use `true` to enable a lint with its default severity, `error`, `warning`, or `info` to set the severity, and `false` to turn off a rule (including a warning).
@@ -127,7 +129,12 @@ For new Stylers, prefer `@MixableSpec(target: Widget.new)`; `@MixableStyler` is 
 
 **Warning.** Calling a token (`$primary()`, `$primary.call()`, or `$body.mix()`) creates a token reference. A reference only resolves inside Mix, against the surrounding `MixScope`. Passed to a Flutter widget or any other API outside Mix, it never resolves.
 
-The rule reports only APIs from other packages, such as Flutter widgets and `dart:core`. It accepts any API that Mix declares and any Mix value type, including types generated in your package. It also stays silent for functions and widgets in your own package, because they may forward the value into Mix. To read a concrete value outside Mix, use `token.resolve(context)`.
+The rule reports only APIs from other packages, such as Flutter widgets and `dart:core`. It accepts any API that Mix declares and any Mix value type, including types generated in your package. It also stays silent for:
+
+- functions and widgets in your own package, because they may forward the value into Mix;
+- Flutter values passed on to Mix, such as `TextStyleMix.value(TextStyle(color: $primary()))`, because Mix converts them field by field and keeps the reference.
+
+To read a concrete value outside Mix, use `token.resolve(context)`.
 
 Don't:
 
@@ -150,7 +157,7 @@ The check is syntactic: a reference stored in a variable first (`final c = $prim
 
 ### base_style_after_variant
 
-A base style call, such as `padding()`, comes after a variant, such as `onHovered()`. Keep base style first and variants last so the default appearance reads in one place. `animate()`, `keyframeAnimation()`, `phaseAnimation()`, `wrap()`, `merge()`, and `applyVariants()` may follow variants.
+A base style call, such as `padding()`, comes after a variant, such as `onHovered()`. Keep base style first and variants last so the default appearance reads in one place. `animate()`, `keyframeAnimation()`, `phaseAnimation()`, `wrap()`, `modifier()`, `merge()`, and `applyVariants()` may follow variants.
 
 Don't:
 
@@ -173,7 +180,7 @@ final style = BoxStyler()
 
 ### inline_token_definition
 
-A design token is created inside a Styler chain or a `MixScope`. Tokens are meant to be shared: define each one once and reference it.
+A design token is created inside a Styler chain or in the token maps of a `MixScope`, such as `colors:`. Tokens are meant to be shared: define each one once and reference it. The widget tree under `child:` is checked like any other code, so a token there is reported only inside a Styler chain.
 
 Don't:
 

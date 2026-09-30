@@ -67,15 +67,13 @@ class _Visitor extends SimpleAstVisitor<void> {
     required Element? member,
     required Expression? typeName,
   }) {
+    // Cheap checks first: these visitors see every call and property access.
+    if (!_isStaticOrNamedConstructor(member)) return;
+    if (typeName != null && _referencedType(typeName) == null) return;
+
     final parent = node.parent;
     final Argument argument = parent is NamedArgument ? parent : node;
-    if (!_isMixApiArgument(argument)) return;
-    if (typeName != null && _referencedType(typeName) == null) return;
-    if (!_isStaticOrNamedConstructor(member)) return;
-
     final parameter = argument.correspondingParameter;
-    if (_isMethodTypeParameter(parameter)) return;
-
     final declaringType = member?.enclosingElement;
     final parameterType = parameter?.type;
     if (declaringType is! InterfaceElement ||
@@ -83,24 +81,13 @@ class _Visitor extends SimpleAstVisitor<void> {
         parameterType.element != declaringType) {
       return;
     }
+    if (isMethodTypeParameter(parameter)) return;
+    if (!_isMixApiArgument(argument)) return;
 
     rule.reportAtNode(
       node,
       arguments: [declaringType.name ?? '', member?.name ?? ''],
     );
-  }
-
-  /// Returns true if [parameter] is declared with a type parameter of the
-  /// invoked method, such as `T` in `foo<T>(T value)`. The argument infers
-  /// that type, so a dot shorthand there has no context type.
-  bool _isMethodTypeParameter(FormalParameterElement? parameter) {
-    final declaredType = switch (parameter?.baseElement) {
-      FormalParameterElement(:final type) => type,
-      _ => null,
-    };
-
-    return declaredType is TypeParameterType &&
-        declaredType.element.enclosingElement is ExecutableElement;
   }
 
   /// Returns true if [argument] is passed to a call that builds a Styler, or

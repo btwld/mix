@@ -16,8 +16,12 @@
  - **FIX**: Add `lib/main.dart`, the entry point the analysis server loads.
    2.0.0 did not load without it.
  - **FIX**: Remove false positives in `token_reference_outside_mix`,
-   `variants_without_base_style`, `base_style_after_variant`, and
-   `unnecessary_type_name`, found by running the rules on Mix itself.
+   `variants_without_base_style`, `base_style_after_variant`,
+   `inline_token_definition`, and `unnecessary_type_name`, found by running
+   the rules on Mix itself.
+ - **FIX**: `token_reference_outside_mix` also catches references passed to
+   Flutter APIs through dot shorthands, such as
+   `Padding(padding: .all($space()))`.
  - **CHORE**: Require `analysis_server_plugin` ^0.3.23 and `analyzer`
    ^14.4.0 (Dart 3.12 or later). Plugins that a project enables together
    resolve in one package, so they must accept the same analyzer version.

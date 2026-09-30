@@ -84,6 +84,19 @@ final BoxStyler s = .new();
 ''');
   }
 
+  void test_generic_method_parameter_no_diagnostic() async {
+    // T is inferred from the argument, so `.color(...)` would have no
+    // context type.
+    await assertNoDiagnostics(r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+extension on BoxStyler {
+  BoxStyler pick<T extends BoxStyler>(T style) => this;
+}
+final s = BoxStyler().width(1).pick(BoxStyler().color(Colors.blue));
+''');
+  }
+
   void test_language_before_dot_shorthands_no_diagnostic() async {
     await assertNoDiagnostics(r'''
 // @dart=3.9

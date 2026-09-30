@@ -66,6 +66,18 @@ final s = BoxStyler()
 ''');
   }
 
+  void test_modifier_after_variant_no_diagnostic() async {
+    // `modifier` is the generated alias of `wrap`.
+    await assertNoDiagnostics(r'''
+import 'package:mix/mix.dart';
+final s = BoxStyler()
+    .width(1)
+    .onHovered(BoxStyler().width(2))
+    .modifier(Object())
+    .phaseAnimation(Object());
+''');
+  }
+
   void test_structural_calls_after_variant_no_diagnostic() async {
     await assertNoDiagnostics(r'''
 import 'package:mix/mix.dart';

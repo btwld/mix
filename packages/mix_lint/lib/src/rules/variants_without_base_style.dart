@@ -15,8 +15,8 @@ class VariantsWithoutBaseStyle extends AnalysisRule {
     'variants_without_base_style',
     'This Styler chain has variants but no base style.',
     correctionMessage:
-        'Try adding base style calls, such as color() or padding(), before '
-        'the variants.',
+        "Try adding base style calls, such as 'color()' or 'padding()', "
+        'before the variants.',
   );
 
   VariantsWithoutBaseStyle()

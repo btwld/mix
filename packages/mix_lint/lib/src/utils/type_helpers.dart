@@ -38,6 +38,30 @@ bool isMixType(DartType? type) =>
 bool isMixScopeType(DartType? type) =>
     type is InterfaceType && isMixClass(type.element, 'MixScope');
 
+/// Returns true if [type] is a Flutter widget (a subtype of `Widget`).
+bool isFlutterWidgetType(DartType? type) {
+  if (type is! InterfaceType) return false;
+
+  bool isWidget(InterfaceElement element) =>
+      element.name == 'Widget' && isFromPackage(element, 'flutter');
+
+  return isWidget(type.element) ||
+      type.element.allSupertypes.any((t) => isWidget(t.element));
+}
+
+/// Returns true if [parameter] is declared with a type parameter of the
+/// invoked method, such as `T` in `foo<T>(T value)`. The argument infers
+/// that type, so a dot shorthand there has no context type.
+bool isMethodTypeParameter(FormalParameterElement? parameter) {
+  final declaredType = switch (parameter?.baseElement) {
+    FormalParameterElement(:final type) => type,
+    _ => null,
+  };
+
+  return declaredType is TypeParameterType &&
+      declaredType.element.enclosingElement is ExecutableElement;
+}
+
 /// Returns true if [type] is [className] from `package:mix`, or a subtype
 /// of it.
 bool _isMixSubtype(DartType? type, String className) {
