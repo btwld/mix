@@ -78,6 +78,14 @@ final s = BoxStyler().width(1).height(2);
   }
 
   void test_missing_section_uses_default() async {
+    configure('');
+    await assertNoDiagnostics(r'''
+import 'package:mix/mix.dart';
+final s = BoxStyler().width(1).height(2).width(3);
+''');
+  }
+
+  void test_other_rule_section_uses_default() async {
     configure('''
 mix_lint:
   other_rule:
@@ -89,11 +97,23 @@ final s = BoxStyler().width(1).height(2).width(3);
 ''');
   }
 
-  void test_invalid_max_calls_uses_default() async {
+  void test_non_integer_max_calls_uses_default() async {
     configure('''
 mix_lint:
   long_styler_chain:
     max_calls: none
+''');
+    await assertNoDiagnostics(r'''
+import 'package:mix/mix.dart';
+final s = BoxStyler().width(1).height(2).width(3);
+''');
+  }
+
+  void test_zero_max_calls_uses_default() async {
+    configure('''
+mix_lint:
+  long_styler_chain:
+    max_calls: 0
 ''');
     await assertNoDiagnostics(r'''
 import 'package:mix/mix.dart';

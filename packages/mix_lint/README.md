@@ -87,7 +87,7 @@ mix_lint:
 |---|---|---|
 | `long_styler_chain` | `max_calls`: the most calls allowed in one chain | `15` |
 
-Each Dart file uses the nearest `analysis_options.yaml` above it. `mix_lint` follows `include:` entries, by relative path or `package:` URI, and values in the including file win. In a pub workspace, put `plugins:` and `mix_lint:` in the root options file and have each member include it.
+Each library uses the nearest `analysis_options.yaml` above its file. `mix_lint` follows `include:` entries, by relative path or `package:` URI, and values in the including file win. In a pub workspace, put `plugins:` and `mix_lint:` in the root options file and have each member include it.
 
 If a change to the options does not show up, restart the analysis server.
 
