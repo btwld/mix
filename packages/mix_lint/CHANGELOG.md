@@ -1,3 +1,54 @@
+## Unreleased
+
+ - **BREAKING**: Renamed every rule. Plugin rules are already scoped by the
+   plugin name, as in `// ignore: mix_lint/<rule>`, so the `mix_` prefix is
+   gone, and each name now describes the problem it reports. The two
+   inline-token rules are now one rule, `inline_token_definition`. See the
+   migration table below.
+ - **BREAKING**: `missing_create_constructor` and
+   `token_reference_outside_mix` are now warnings, on by default. The other
+   rules are lints, off until you enable them.
+ - **FEAT**: Add `unnecessary_styler_constructor`, with a quick fix: it turns
+   `.onHovered(BoxStyler().color(...))` into `.onHovered(.color(...))`.
+ - **FEAT**: `long_styler_chain` reads its limit from `max_calls` in a
+   top-level `mix_lint:` section of `analysis_options.yaml`, including files
+   that it includes. The default stays 15.
+ - **FIX**: Add `lib/main.dart`, the entry point the analysis server loads.
+   2.0.0 did not load without it.
+ - **FIX**: Remove false positives in `token_reference_outside_mix`,
+   `variants_without_base_style`, `base_style_after_variant`, and
+   `unnecessary_type_name`, found by running the rules on Mix itself.
+ - **CHORE**: Require `analysis_server_plugin` ^0.3.23 and `analyzer`
+   ^14.4.0 (Dart 3.12 or later). Plugins that a project enables together
+   resolve in one package, so they must accept the same analyzer version.
+
+### Migrate from 2.0.0
+
+| 2.0.0 name | New name |
+|---|---|
+| `mix_avoid_defining_tokens_within_scope` | `inline_token_definition` |
+| `mix_avoid_defining_tokens_within_style` | `inline_token_definition` |
+| `mix_avoid_empty_variants` | `variants_without_base_style` |
+| `mix_avoid_token_ref_outside_mix` | `token_reference_outside_mix` |
+| `mix_max_number_of_attributes_per_style` | `long_styler_chain` |
+| `mix_mixable_styler_has_create` | `missing_create_constructor` |
+| `mix_prefer_dot_shorthands` | `unnecessary_type_name` |
+| `mix_variants_last` | `base_style_after_variant` |
+
+Update each old name in these places:
+
+ 1. `diagnostics:` entries under `plugins: mix_lint:` in
+    `analysis_options.yaml`. The analyzer ignores unknown names there, so an
+    old name silently stops working.
+ 2. `// ignore: mix_lint/<rule>` and `// ignore_for_file: mix_lint/<rule>`
+    comments.
+
+To find them, search for the old prefixes:
+
+```sh
+grep -rnE "mix_(avoid|max|mixable|prefer|variants)_" --include='*.dart' --include='*.yaml' .
+```
+
 ## 2.0.0
 
  - **BREAKING**: Rebuilt `mix_lint` on top of the `analysis_server_plugin` API,

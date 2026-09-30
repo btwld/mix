@@ -5,11 +5,20 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
-import '../../config.dart';
+import '../config.dart';
 import '../utils/styler_calls.dart';
 import '../utils/type_helpers.dart';
 
-/// Reports a Styler chain with more calls than [maxLength].
+/// Reports a Styler chain with more calls than the limit.
+///
+/// The limit is [defaultMaxCalls] unless the project's
+/// `analysis_options.yaml` sets another positive number:
+///
+/// ```yaml
+/// mix_lint:
+///   long_styler_chain:
+///     max_calls: 20
+/// ```
 class LongStylerChain extends AnalysisRule {
   static const LintCode code = LintCode(
     'long_styler_chain',
@@ -19,10 +28,10 @@ class LongStylerChain extends AnalysisRule {
         'merge().',
   );
 
-  /// The maximum number of calls allowed in one chain.
-  final int maxLength;
+  /// The limit when `max_calls` is not configured.
+  static const defaultMaxCalls = 15;
 
-  LongStylerChain({this.maxLength = MixLintConfig.defaultMaxStylerChainLength})
+  LongStylerChain()
     : super(
         name: 'long_styler_chain',
         description:
@@ -37,7 +46,14 @@ class LongStylerChain extends AnalysisRule {
     RuleVisitorRegistry registry,
     RuleContext context,
   ) {
-    final visitor = _Visitor(this, maxLength);
+    final maxCalls = switch (RuleOptions.forRule(
+      context.definingUnit.file,
+      name,
+    )?['max_calls']) {
+      final int value when value > 0 => value,
+      _ => defaultMaxCalls,
+    };
+    final visitor = _Visitor(this, maxCalls);
     registry
       ..addDotShorthandConstructorInvocation(this, visitor)
       ..addDotShorthandInvocation(this, visitor)
@@ -47,16 +63,16 @@ class LongStylerChain extends AnalysisRule {
 
 class _Visitor extends SimpleAstVisitor<void> {
   final AnalysisRule rule;
-  final int maxLength;
+  final int maxCalls;
 
-  const _Visitor(this.rule, this.maxLength);
+  const _Visitor(this.rule, this.maxCalls);
 
   void _check(Expression root) {
     if (!isMixStylerType(root.staticType)) return;
 
     final length = collectDirectMethodChain(root).length;
-    if (length > maxLength) {
-      rule.reportAtNode(root, arguments: [length, maxLength]);
+    if (length > maxCalls) {
+      rule.reportAtNode(root, arguments: [length, maxCalls]);
     }
   }
 

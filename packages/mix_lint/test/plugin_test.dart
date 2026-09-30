@@ -3,15 +3,14 @@ import 'package:analyzer/analysis_rule/analysis_rule.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:mix_lint/main.dart' as entry_point;
 import 'package:mix_lint/mix_lint.dart';
-import 'package:mix_lint/src/rules/long_styler_chain.dart';
 import 'package:mix_lint/src/rules/unnecessary_styler_constructor.dart';
 import 'package:mix_lint/src/rules/unnecessary_type_name.dart';
 import 'package:test/test.dart';
 
 void main() {
-  _RecordingRegistry register([MixLintConfig config = const MixLintConfig()]) {
+  _RecordingRegistry register() {
     final registry = _RecordingRegistry();
-    MixLintPlugin(config: config).register(registry);
+    MixLintPlugin().register(registry);
 
     return registry;
   }
@@ -71,12 +70,6 @@ void main() {
         expect(code.correctionMessage, startsWith('Try '));
       }
     }
-  });
-
-  test('passes the config to long_styler_chain', () {
-    final registry = register(const MixLintConfig(maxStylerChainLength: 3));
-
-    expect(registry.lints.whereType<LongStylerChain>().single.maxLength, 3);
   });
 }
 
