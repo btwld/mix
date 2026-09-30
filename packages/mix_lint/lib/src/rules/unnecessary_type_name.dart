@@ -10,8 +10,13 @@ import 'package:analyzer/error/error.dart';
 
 import '../utils/type_helpers.dart';
 
-/// Reports `TypeName.member` in a Styler argument when the dot shorthand
+/// Reports `TypeName.member` in a Styler expression when the dot shorthand
 /// `.member` resolves to the same member.
+///
+/// A Styler expression is an argument of a Styler call, or of a Mix call
+/// nested inside one, such as `.widgetState(...)` in
+/// `.onNot(.widgetState(WidgetState.hovered), ...)`. Mix code outside Styler
+/// expressions, such as the framework's own implementation, is not checked.
 ///
 /// Dot shorthands resolve against the parameter's type, so the rule only
 /// reports a static member or named constructor declared by that exact type.
@@ -27,7 +32,7 @@ class UnnecessaryTypeName extends AnalysisRule {
     : super(
         name: 'unnecessary_type_name',
         description:
-            'Prefer dot shorthands over type names in Styler arguments.',
+            'Prefer dot shorthands over type names in Styler expressions.',
       );
 
   @override
@@ -55,18 +60,20 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   const _Visitor(this.rule);
 
-  /// Reports [node] when it is an argument of a Styler method and [member]
-  /// is a static member or named constructor of the parameter's type.
+  /// Reports [node] when it is an argument to a Mix API and [member] is a
+  /// static member or named constructor of the parameter's type.
   void _check(
     Expression node, {
     required Element? member,
     required Expression? typeName,
   }) {
-    if (!_isStylerArgument(node)) return;
+    final parent = node.parent;
+    final Argument argument = parent is NamedArgument ? parent : node;
+    if (!_isMixApiArgument(argument)) return;
     if (typeName != null && _referencedType(typeName) == null) return;
     if (!_isStaticOrNamedConstructor(member)) return;
 
-    final parameter = node.correspondingParameter;
+    final parameter = argument.correspondingParameter;
     if (_isMethodTypeParameter(parameter)) return;
 
     final declaringType = member?.enclosingElement;
@@ -96,19 +103,55 @@ class _Visitor extends SimpleAstVisitor<void> {
         declaredType.element.enclosingElement is ExecutableElement;
   }
 
-  /// Returns true if [node] is a positional argument of a call that builds a
-  /// Styler: a method such as `.padding(...)`, a factory such as
-  /// `BoxStyler.padding(...)`, or a dot shorthand such as `.padding(...)`.
-  bool _isStylerArgument(Expression node) {
-    final argumentList = node.parent;
+  /// Returns true if [argument] is passed to a call that builds a Styler, or
+  /// to a Mix call nested inside one. Mix calls are calls that `package:mix`
+  /// declares and calls that build Mix values, including generated types.
+  bool _isMixApiArgument(Argument argument) {
+    final argumentList = argument.parent;
     if (argumentList is! ArgumentList) return false;
-    final invocation = argumentList.parent;
 
-    return (invocation is MethodInvocation ||
-            invocation is InstanceCreationExpression ||
-            invocation is DotShorthandInvocation ||
-            invocation is DotShorthandConstructorInvocation) &&
-        isMixStylerType((invocation as Expression).staticType);
+    final (invocation, callee) = switch (argumentList.parent) {
+      final MethodInvocation node => (node, node.methodName.element),
+      final InstanceCreationExpression node => (
+        node,
+        node.constructorName.element,
+      ),
+      final DotShorthandInvocation node => (node, node.memberName.element),
+      final DotShorthandConstructorInvocation node => (
+        node,
+        node.constructorName.element,
+      ),
+      _ => (null, null),
+    };
+    if (invocation == null) return false;
+    if (_buildsStyler(invocation)) return true;
+    if (!isFromMix(callee) && !isMixType(invocation.staticType)) return false;
+
+    return _isInsideStylerCall(invocation);
+  }
+
+  bool _buildsStyler(AstNode? call) =>
+      (call is MethodInvocation ||
+          call is InstanceCreationExpression ||
+          call is DotShorthandInvocation ||
+          call is DotShorthandConstructorInvocation) &&
+      isMixStylerType((call as Expression).staticType);
+
+  /// Returns true if [node] is nested in an argument of a Styler call, such
+  /// as `.widgetState(...)` in `.onNot(.widgetState(...), ...)`.
+  bool _isInsideStylerCall(AstNode node) {
+    for (
+      AstNode? current = node.parent;
+      current != null &&
+          current is! Statement &&
+          current is! Declaration &&
+          current is! FunctionBody;
+      current = current.parent
+    ) {
+      if (current is ArgumentList && _buildsStyler(current.parent)) return true;
+    }
+
+    return false;
   }
 
   /// Returns the type that [target] names, such as `FontWeight` in

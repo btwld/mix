@@ -256,13 +256,14 @@ Top-level declarations such as `final style = BoxStyler()...` keep the construct
 
 ### unnecessary_type_name
 
-A Styler argument names a type that dot shorthand can infer from the parameter type. Has a quick fix, including "fix all in file".
+An argument in a Styler expression names a type that dot shorthand can infer from the parameter type. A Styler expression is an argument of a Styler call, or of a Mix call nested inside one. Has a quick fix, including "fix all in file".
 
 Don't:
 
 ```dart
 BoxStyler().padding(EdgeInsetsGeometryMix.all(16));
 TextStyler().fontWeight(FontWeight.w600);
+BoxStyler().onNot(.widgetState(WidgetState.hovered), .color(Colors.grey));
 ```
 
 Do:
@@ -270,12 +271,14 @@ Do:
 ```dart
 BoxStyler().padding(.all(16));
 TextStyler().fontWeight(.w600);
+BoxStyler().onNot(.widgetState(.hovered), .color(Colors.grey));
 ```
 
 The rule only reports a static member or named constructor of the parameter's exact type, because that is where dot shorthand looks it up. It does not report:
 
 - members of another type, such as `Colors.blue` for a `Color` parameter;
 - unnamed constructors, such as `BoxShadowMix(...)`;
+- Mix code outside Styler expressions, such as `final v = ContextVariant.widgetState(WidgetState.hovered);`;
 - code with a language version below 3.10.
 
 ### variants_without_base_style

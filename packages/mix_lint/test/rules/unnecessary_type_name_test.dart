@@ -58,6 +58,17 @@ final c = TextStyler().onHovered(.fontWeight([!FontWeight.w600!]));
 ''');
   }
 
+  void test_argument_of_mix_call_inside_styler_reports() async {
+    await assertLints(r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+final s = BoxStyler()
+    .width(1)
+    .onNot(.widgetState([!WidgetState.hovered!]), BoxStyler().width(2))
+    .border(BorderSideMix(style: [!BorderStyle.solid!]));
+''');
+  }
+
   // No diagnostics.
 
   void test_dot_shorthand_no_diagnostic() async {
@@ -103,6 +114,24 @@ final s = BoxStyler()
     await assertNoDiagnostics(r'''
 import 'package:mix/mix.dart';
 final s = BoxStyler().shadow(BoxShadowMix());
+''');
+  }
+
+  void test_mix_call_outside_styler_no_diagnostic() async {
+    // Only Styler expressions are checked, not other Mix code.
+    await assertNoDiagnostics(r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+final v = ContextVariant.widgetState(WidgetState.pressed);
+final b = BorderSideMix(style: BorderStyle.solid);
+''');
+  }
+
+  void test_argument_of_flutter_api_no_diagnostic() async {
+    // Only Mix APIs are checked.
+    await assertNoDiagnostics(r'''
+import 'package:flutter/widgets.dart';
+final r = Row(mainAxisAlignment: MainAxisAlignment.center);
 ''');
   }
 

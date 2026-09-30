@@ -32,6 +32,16 @@ class Container extends Widget {
   const Container({Color? color, Widget? child});
 }
 
+enum WidgetState { hovered, pressed }
+
+enum BorderStyle { none, solid }
+
+enum MainAxisAlignment { start, center }
+
+class Row extends Widget {
+  const Row({MainAxisAlignment? mainAxisAlignment});
+}
+
 double lerpDouble(double a, double b, double t) => a;
 ''';
 
@@ -54,6 +64,8 @@ mixin VariantStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
   T variant(Object variant, T style) => variants([variant, style]);
   T applyVariants(Iterable<Object> variants) => this as T;
   T onDark(T style) => variant(Object(), style);
+  T onNot(ContextVariant contextVariant, T style) =>
+      variant(contextVariant, style);
   T onBuilder(T Function(BuildContext context) fn) => this as T;
 }
 
@@ -108,6 +120,14 @@ final class EdgeInsetsDirectionalMix extends EdgeInsetsGeometryMix {
   const EdgeInsetsDirectionalMix.only({double? start});
 }
 
+class ContextVariant {
+  static ContextVariant widgetState(WidgetState state) => ContextVariant();
+}
+
+class BorderSideMix extends Mix<Object> {
+  BorderSideMix({BorderStyle? style});
+}
+
 class BoxShadowMix extends Mix<Object> {
   BoxShadowMix({Color? color});
   BoxShadowMix.color(Color value);
@@ -139,6 +159,7 @@ class BoxStyler extends MixStyler<BoxStyler, BoxSpec>
   BoxStyler height(double value) => this;
   BoxStyler padding(EdgeInsetsGeometryMix value) => this;
   BoxStyler shadow(BoxShadowMix value) => this;
+  BoxStyler border(BorderSideMix value) => this;
   BoxStyler gradient(GradientMix<Object> value) => this;
 
   @override

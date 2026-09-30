@@ -67,6 +67,36 @@ final s = BoxStyler().shadow(.color(Colors.blue));
     );
   }
 
+  void test_replaces_enum_in_nested_mix_call() async {
+    await _assertFix(
+      r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+final s = BoxStyler().onNot(.widgetState([!WidgetState.hovered!]), BoxStyler());
+''',
+      r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+final s = BoxStyler().onNot(.widgetState(.hovered), BoxStyler());
+''',
+    );
+  }
+
+  void test_replaces_named_argument() async {
+    await _assertFix(
+      r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+final s = BoxStyler().border(BorderSideMix(style: [!BorderStyle.solid!]));
+''',
+      r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+final s = BoxStyler().border(BorderSideMix(style: .solid));
+''',
+    );
+  }
+
   void test_replaces_import_prefix_and_type_name() async {
     await _assertFix(
       r'''
