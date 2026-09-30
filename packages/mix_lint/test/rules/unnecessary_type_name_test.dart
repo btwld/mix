@@ -48,6 +48,16 @@ final s = BoxStyler().shadow([!BoxShadowMix.color(Colors.blue)!]);
 ''');
   }
 
+  void test_argument_of_styler_factory_reports() async {
+    await assertLints(r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+final a = TextStyler.fontWeight([!FontWeight.w600!]);
+final TextStyler b = .fontWeight([!FontWeight.w600!]);
+final c = TextStyler().onHovered(.fontWeight([!FontWeight.w600!]));
+''');
+  }
+
   // No diagnostics.
 
   void test_dot_shorthand_no_diagnostic() async {

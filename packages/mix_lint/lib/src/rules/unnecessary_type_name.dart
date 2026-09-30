@@ -96,13 +96,19 @@ class _Visitor extends SimpleAstVisitor<void> {
         declaredType.element.enclosingElement is ExecutableElement;
   }
 
+  /// Returns true if [node] is a positional argument of a call that builds a
+  /// Styler: a method such as `.padding(...)`, a factory such as
+  /// `BoxStyler.padding(...)`, or a dot shorthand such as `.padding(...)`.
   bool _isStylerArgument(Expression node) {
     final argumentList = node.parent;
     if (argumentList is! ArgumentList) return false;
     final invocation = argumentList.parent;
 
-    return invocation is MethodInvocation &&
-        isMixStylerType(invocation.staticType);
+    return (invocation is MethodInvocation ||
+            invocation is InstanceCreationExpression ||
+            invocation is DotShorthandInvocation ||
+            invocation is DotShorthandConstructorInvocation) &&
+        isMixStylerType((invocation as Expression).staticType);
   }
 
   /// Returns the type that [target] names, such as `FontWeight` in

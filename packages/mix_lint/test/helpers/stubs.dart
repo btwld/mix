@@ -157,10 +157,17 @@ class Box extends Widget {
 
 final class TextSpec extends Spec<TextSpec> {}
 
-class TextStyler extends MixStyler<TextStyler, TextSpec> {
+mixin TextStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
+  T fontWeight(FontWeight value) => this as T;
+}
+
+class TextStyler extends MixStyler<TextStyler, TextSpec>
+    with TextStyleMixin<TextStyler, TextSpec> {
   TextStyler();
 
-  TextStyler fontWeight(FontWeight value) => this;
+  factory TextStyler.fontWeight(FontWeight value) =>
+      TextStyler().fontWeight(value);
+
   TextStyler style(Object value) => this;
 }
 
