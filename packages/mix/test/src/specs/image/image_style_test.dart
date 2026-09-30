@@ -12,12 +12,12 @@ void main() {
           width: 100.0,
           height: 200.0,
           color: Colors.red,
-          repeat: ImageRepeat.repeat,
-          fit: BoxFit.cover,
+          repeat: .repeat,
+          fit: .cover,
           alignment: Alignment.center,
-          centerSlice: Rect.fromLTWH(10, 10, 20, 20),
-          filterQuality: FilterQuality.high,
-          colorBlendMode: BlendMode.multiply,
+          centerSlice: .fromLTWH(10, 10, 20, 20),
+          filterQuality: .high,
+          colorBlendMode: .multiply,
           semanticLabel: 'Test image',
           excludeFromSemantics: true,
           gaplessPlayback: true,
@@ -150,13 +150,13 @@ void main() {
       });
 
       test('repeat utility works correctly', () {
-        final attribute = ImageStyler().repeat(ImageRepeat.repeatX);
+        final attribute = ImageStyler().repeat(.repeatX);
 
         expect(attribute.$repeat, resolvesTo(ImageRepeat.repeatX));
       });
 
       test('fit utility works correctly', () {
-        final attribute = ImageStyler().fit(BoxFit.fill);
+        final attribute = ImageStyler().fit(.fill);
 
         expect(attribute.$fit, resolvesTo(BoxFit.fill));
       });
@@ -175,13 +175,13 @@ void main() {
       });
 
       test('filterQuality utility works correctly', () {
-        final attribute = ImageStyler().filterQuality(FilterQuality.medium);
+        final attribute = ImageStyler().filterQuality(.medium);
 
         expect(attribute.$filterQuality, resolvesTo(FilterQuality.medium));
       });
 
       test('colorBlendMode utility works correctly', () {
-        final attribute = ImageStyler().colorBlendMode(BlendMode.overlay);
+        final attribute = ImageStyler().colorBlendMode(.overlay);
 
         expect(attribute.$colorBlendMode, resolvesTo(BlendMode.overlay));
       });
@@ -239,12 +239,12 @@ void main() {
           width: 100.0,
           height: 200.0,
           color: Colors.red,
-          repeat: ImageRepeat.repeat,
-          fit: BoxFit.cover,
+          repeat: .repeat,
+          fit: .cover,
           alignment: Alignment.center,
-          centerSlice: Rect.fromLTWH(10, 10, 20, 20),
-          filterQuality: FilterQuality.high,
-          colorBlendMode: BlendMode.multiply,
+          centerSlice: .fromLTWH(10, 10, 20, 20),
+          filterQuality: .high,
+          colorBlendMode: .multiply,
         );
 
         final context = MockBuildContext();
@@ -291,7 +291,7 @@ void main() {
 
         final second = ImageStyler(
           width: 150.0,
-          fit: BoxFit.cover,
+          fit: .cover,
           alignment: Alignment.center,
         );
 
@@ -344,12 +344,12 @@ void main() {
           height: 200.0,
           color: Colors.red,
           image: AssetImage('test_image.png'),
-          repeat: ImageRepeat.repeat,
-          fit: BoxFit.cover,
+          repeat: .repeat,
+          fit: .cover,
           alignment: Alignment.center,
-          centerSlice: Rect.fromLTWH(10, 10, 20, 20),
-          filterQuality: FilterQuality.high,
-          colorBlendMode: BlendMode.multiply,
+          centerSlice: .fromLTWH(10, 10, 20, 20),
+          filterQuality: .high,
+          colorBlendMode: .multiply,
         );
 
         expect(attribute.props.length, 18);

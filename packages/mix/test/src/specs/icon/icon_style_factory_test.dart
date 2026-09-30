@@ -74,8 +74,8 @@ void main() {
 
       test('textDirection', () {
         expect(
-          IconStyler.textDirection(TextDirection.rtl),
-          equals(IconStyler(textDirection: TextDirection.rtl)),
+          IconStyler.textDirection(.rtl),
+          equals(IconStyler(textDirection: .rtl)),
         );
       });
 
@@ -88,8 +88,8 @@ void main() {
 
       test('blendMode', () {
         expect(
-          IconStyler.blendMode(BlendMode.multiply),
-          equals(IconStyler(blendMode: BlendMode.multiply)),
+          IconStyler.blendMode(.multiply),
+          equals(IconStyler(blendMode: .multiply)),
         );
       });
     });

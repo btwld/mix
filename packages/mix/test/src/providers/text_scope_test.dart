@@ -6,8 +6,8 @@ void main() {
   group('TextScope', () {
     testWidgets('provides text data to descendants', (tester) async {
       final text = TextStyler(
-        textAlign: TextAlign.center,
-        overflow: TextOverflow.ellipsis,
+        textAlign: .center,
+        overflow: .ellipsis,
         maxLines: 2,
       );
 
@@ -59,8 +59,8 @@ void main() {
 
     testWidgets('wraps child with DefaultTextStyle', (tester) async {
       final text = TextStyler(
-        textAlign: TextAlign.center,
-        overflow: TextOverflow.ellipsis,
+        textAlign: .center,
+        overflow: .ellipsis,
         maxLines: 3,
         softWrap: false,
       );
@@ -169,7 +169,7 @@ void main() {
     group('default values', () {
       testWidgets('softWrap defaults to true when null', (tester) async {
         // TextStyler with no softWrap specified
-        final text = TextStyler(textAlign: TextAlign.left);
+        final text = TextStyler(textAlign: .left);
 
         await tester.pumpWidget(
           MaterialApp(
@@ -191,7 +191,7 @@ void main() {
         tester,
       ) async {
         // TextStyler with no overflow specified
-        final text = TextStyler(textAlign: TextAlign.left);
+        final text = TextStyler(textAlign: .left);
 
         await tester.pumpWidget(
           MaterialApp(
@@ -213,7 +213,7 @@ void main() {
         'textWidthBasis defaults to TextWidthBasis.parent when null',
         (tester) async {
           // TextStyler with no textWidthBasis specified
-          final text = TextStyler(textAlign: TextAlign.left);
+          final text = TextStyler(textAlign: .left);
 
           await tester.pumpWidget(
             MaterialApp(

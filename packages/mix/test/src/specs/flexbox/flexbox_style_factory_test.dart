@@ -66,38 +66,36 @@ void main() {
 
       test('clipBehavior', () {
         expect(
-          FlexBoxStyler.clipBehavior(Clip.hardEdge),
-          equals(FlexBoxStyler().clipBehavior(Clip.hardEdge)),
+          FlexBoxStyler.clipBehavior(.hardEdge),
+          equals(FlexBoxStyler().clipBehavior(.hardEdge)),
         );
       });
 
       test('direction', () {
         expect(
-          FlexBoxStyler.direction(Axis.horizontal),
-          equals(FlexBoxStyler().direction(Axis.horizontal)),
+          FlexBoxStyler.direction(.horizontal),
+          equals(FlexBoxStyler().direction(.horizontal)),
         );
       });
 
       test('mainAxisAlignment', () {
         expect(
           FlexBoxStyler.mainAxisAlignment(.center),
-          equals(FlexBoxStyler().mainAxisAlignment(MainAxisAlignment.center)),
+          equals(FlexBoxStyler().mainAxisAlignment(.center)),
         );
       });
 
       test('crossAxisAlignment', () {
         expect(
-          FlexBoxStyler.crossAxisAlignment(CrossAxisAlignment.stretch),
-          equals(
-            FlexBoxStyler().crossAxisAlignment(CrossAxisAlignment.stretch),
-          ),
+          FlexBoxStyler.crossAxisAlignment(.stretch),
+          equals(FlexBoxStyler().crossAxisAlignment(.stretch)),
         );
       });
 
       test('mainAxisSize', () {
         expect(
-          FlexBoxStyler.mainAxisSize(MainAxisSize.min),
-          equals(FlexBoxStyler().mainAxisSize(MainAxisSize.min)),
+          FlexBoxStyler.mainAxisSize(.min),
+          equals(FlexBoxStyler().mainAxisSize(.min)),
         );
       });
 
@@ -107,22 +105,22 @@ void main() {
 
       test('verticalDirection', () {
         expect(
-          FlexBoxStyler.verticalDirection(VerticalDirection.up),
-          equals(FlexBoxStyler().verticalDirection(VerticalDirection.up)),
+          FlexBoxStyler.verticalDirection(.up),
+          equals(FlexBoxStyler().verticalDirection(.up)),
         );
       });
 
       test('textDirection', () {
         expect(
-          FlexBoxStyler.textDirection(TextDirection.rtl),
-          equals(FlexBoxStyler().textDirection(TextDirection.rtl)),
+          FlexBoxStyler.textDirection(.rtl),
+          equals(FlexBoxStyler().textDirection(.rtl)),
         );
       });
 
       test('textBaseline', () {
         expect(
-          FlexBoxStyler.textBaseline(TextBaseline.alphabetic),
-          equals(FlexBoxStyler().textBaseline(TextBaseline.alphabetic)),
+          FlexBoxStyler.textBaseline(.alphabetic),
+          equals(FlexBoxStyler().textBaseline(.alphabetic)),
         );
       });
 
@@ -157,8 +155,8 @@ void main() {
 
       test('elevation', () {
         expect(
-          FlexBoxStyler.elevation(ElevationShadow.one),
-          equals(FlexBoxStyler().elevation(ElevationShadow.one)),
+          FlexBoxStyler.elevation(.one),
+          equals(FlexBoxStyler().elevation(.one)),
         );
       });
 
@@ -255,8 +253,8 @@ void main() {
       // Extended transform convenience factories
       test('transform', () {
         expect(
-          FlexBoxStyler.transform(Matrix4.identity()),
-          equals(FlexBoxStyler().transform(Matrix4.identity())),
+          FlexBoxStyler.transform(.identity()),
+          equals(FlexBoxStyler().transform(.identity())),
         );
       });
 
@@ -325,8 +323,8 @@ void main() {
 
       test('scale with alignment', () {
         expect(
-          FlexBoxStyler.scale(0.5, alignment: Alignment.topLeft),
-          equals(FlexBoxStyler().scale(0.5, alignment: Alignment.topLeft)),
+          FlexBoxStyler.scale(0.5, alignment: .topLeft),
+          equals(FlexBoxStyler().scale(0.5, alignment: .topLeft)),
         );
       });
 
@@ -336,8 +334,8 @@ void main() {
 
       test('rotate with alignment', () {
         expect(
-          FlexBoxStyler.rotate(0.5, alignment: Alignment.bottomRight),
-          equals(FlexBoxStyler().rotate(0.5, alignment: Alignment.bottomRight)),
+          FlexBoxStyler.rotate(0.5, alignment: .bottomRight),
+          equals(FlexBoxStyler().rotate(0.5, alignment: .bottomRight)),
         );
       });
 

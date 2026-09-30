@@ -44,7 +44,7 @@ void main() {
   test('onConstraints rejects clipBehavior with an actionable message', () {
     expect(
       () => const GridBoxStyler().onConstraints(
-        Breakpoint.maxWidth(400),
+        .maxWidth(400),
         const GridBoxStyler(clipBehavior: .hardEdge),
       ),
       throwsA(

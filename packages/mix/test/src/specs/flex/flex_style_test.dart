@@ -26,14 +26,14 @@ void main() {
         'constructor with parameters creates FlexStyle with correct properties',
         () {
           final flexMix = FlexStyler(
-            direction: Axis.horizontal,
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            verticalDirection: VerticalDirection.up,
-            textDirection: TextDirection.rtl,
-            textBaseline: TextBaseline.ideographic,
-            clipBehavior: Clip.antiAlias,
+            direction: .horizontal,
+            mainAxisAlignment: .center,
+            crossAxisAlignment: .start,
+            mainAxisSize: .min,
+            verticalDirection: .up,
+            textDirection: .rtl,
+            textBaseline: .ideographic,
+            clipBehavior: .antiAlias,
             spacing: 16.0,
           );
 
@@ -56,14 +56,12 @@ void main() {
       );
 
       test('direction factory creates correct FlexStyle', () {
-        final flexMix = FlexStyler().direction(Axis.vertical);
+        final flexMix = FlexStyler().direction(.vertical);
         expect(flexMix.$direction, resolvesTo(Axis.vertical));
       });
 
       test('mainAxisAlignment factory creates correct FlexStyle', () {
-        final flexMix = FlexStyler().mainAxisAlignment(
-          MainAxisAlignment.spaceEvenly,
-        );
+        final flexMix = FlexStyler().mainAxisAlignment(.spaceEvenly);
         expect(
           flexMix.$mainAxisAlignment,
           resolvesTo(MainAxisAlignment.spaceEvenly),
@@ -71,9 +69,7 @@ void main() {
       });
 
       test('crossAxisAlignment factory creates correct FlexStyle', () {
-        final flexMix = FlexStyler().crossAxisAlignment(
-          CrossAxisAlignment.stretch,
-        );
+        final flexMix = FlexStyler().crossAxisAlignment(.stretch);
         expect(
           flexMix.$crossAxisAlignment,
           resolvesTo(CrossAxisAlignment.stretch),
@@ -81,27 +77,27 @@ void main() {
       });
 
       test('mainAxisSize factory creates correct FlexStyle', () {
-        final flexMix = FlexStyler().mainAxisSize(MainAxisSize.max);
+        final flexMix = FlexStyler().mainAxisSize(.max);
         expect(flexMix.$mainAxisSize, resolvesTo(MainAxisSize.max));
       });
 
       test('verticalDirection factory creates correct FlexStyle', () {
-        final flexMix = FlexStyler().verticalDirection(VerticalDirection.down);
+        final flexMix = FlexStyler().verticalDirection(.down);
         expect(flexMix.$verticalDirection, resolvesTo(VerticalDirection.down));
       });
 
       test('textDirection factory creates correct FlexStyle', () {
-        final flexMix = FlexStyler().textDirection(TextDirection.ltr);
+        final flexMix = FlexStyler().textDirection(.ltr);
         expect(flexMix.$textDirection, resolvesTo(TextDirection.ltr));
       });
 
       test('textBaseline factory creates correct FlexStyle', () {
-        final flexMix = FlexStyler().textBaseline(TextBaseline.alphabetic);
+        final flexMix = FlexStyler().textBaseline(.alphabetic);
         expect(flexMix.$textBaseline, resolvesTo(TextBaseline.alphabetic));
       });
 
       test('clipBehavior factory creates correct FlexStyle', () {
-        final flexMix = FlexStyler().clipBehavior(Clip.hardEdge);
+        final flexMix = FlexStyler().clipBehavior(.hardEdge);
         expect(flexMix.$clipBehavior, resolvesTo(Clip.hardEdge));
       });
 
@@ -114,7 +110,7 @@ void main() {
     group('Builder methods', () {
       test('direction method creates new instance with updated value', () {
         final original = FlexStyler();
-        final modified = original.direction(Axis.horizontal);
+        final modified = original.direction(.horizontal);
 
         expect(identical(original, modified), isFalse);
         expect(original.$direction, isNull);
@@ -134,7 +130,7 @@ void main() {
 
       test('crossAxisAlignment method creates new instance', () {
         final original = FlexStyler();
-        final modified = original.crossAxisAlignment(CrossAxisAlignment.end);
+        final modified = original.crossAxisAlignment(.end);
 
         expect(identical(original, modified), isFalse);
         expect(
@@ -164,7 +160,7 @@ void main() {
 
     group('Merge functionality', () {
       test('merge with null returns original', () {
-        final original = FlexStyler(direction: Axis.horizontal);
+        final original = FlexStyler(direction: .horizontal);
         final result = original.merge(null);
 
         expect(identical(original, result), isFalse);
@@ -172,11 +168,8 @@ void main() {
       });
 
       test('merge combines properties correctly', () {
-        final first = FlexStyler(direction: Axis.horizontal, spacing: 8.0);
-        final second = FlexStyler(
-          mainAxisAlignment: MainAxisAlignment.center,
-          spacing: 16.0,
-        );
+        final first = FlexStyler(direction: .horizontal, spacing: 8.0);
+        final second = FlexStyler(mainAxisAlignment: .center, spacing: 16.0);
 
         final merged = first.merge(second);
 
@@ -186,7 +179,7 @@ void main() {
       });
 
       test('merge preserves null properties', () {
-        final first = FlexStyler(direction: Axis.horizontal);
+        final first = FlexStyler(direction: .horizontal);
         final second = FlexStyler(spacing: 8.0);
 
         final merged = first.merge(second);
@@ -200,8 +193,8 @@ void main() {
     group('Resolve functionality', () {
       test('resolve creates FlexStyleSpec with resolved properties', () {
         final flexMix = FlexStyler(
-          direction: Axis.vertical,
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          direction: .vertical,
+          mainAxisAlignment: .spaceAround,
           spacing: 12.0,
         );
 
@@ -224,16 +217,16 @@ void main() {
 
     group('Equality and props', () {
       test('equal instances have same props', () {
-        final flexMix1 = FlexStyler(direction: Axis.horizontal, spacing: 8.0);
-        final flexMix2 = FlexStyler(direction: Axis.horizontal, spacing: 8.0);
+        final flexMix1 = FlexStyler(direction: .horizontal, spacing: 8.0);
+        final flexMix2 = FlexStyler(direction: .horizontal, spacing: 8.0);
 
         expect(flexMix1, equals(flexMix2));
         expect(flexMix1.props, equals(flexMix2.props));
       });
 
       test('different instances have different props', () {
-        final flexMix1 = FlexStyler(direction: Axis.horizontal);
-        final flexMix2 = FlexStyler(direction: Axis.vertical);
+        final flexMix1 = FlexStyler(direction: .horizontal);
+        final flexMix2 = FlexStyler(direction: .vertical);
 
         expect(flexMix1, isNot(equals(flexMix2)));
         expect(flexMix1.props, isNot(equals(flexMix2.props)));
@@ -241,8 +234,8 @@ void main() {
 
       test('props contains all properties', () {
         final flexMix = FlexStyler(
-          direction: Axis.horizontal,
-          mainAxisAlignment: MainAxisAlignment.center,
+          direction: .horizontal,
+          mainAxisAlignment: .center,
           spacing: 8.0,
         );
 
@@ -257,8 +250,8 @@ void main() {
     group('Diagnostics', () {
       test('debugFillProperties includes all properties', () {
         final flexMix = FlexStyler(
-          direction: Axis.horizontal,
-          mainAxisAlignment: MainAxisAlignment.center,
+          direction: .horizontal,
+          mainAxisAlignment: .center,
           spacing: 8.0,
         );
 

@@ -38,10 +38,10 @@ TextStyler gridHeadline({required bool detailed}) => TextStyler()
     .color(_ink);
 
 TextStyler gridSupport() =>
-    TextStyler().fontSize(12).fontWeight(FontWeight.w600).color(_muted);
+    TextStyler().fontSize(12).fontWeight(.w600).color(_muted);
 
 TextStyler gridCaption() =>
-    TextStyler().fontSize(12).fontWeight(FontWeight.w600).color(_muted);
+    TextStyler().fontSize(12).fontWeight(.w600).color(_muted);
 
 class _Picker<T> extends StatelessWidget {
   const _Picker({
