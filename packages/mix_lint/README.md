@@ -69,36 +69,27 @@ analyzer:
 
 ### Configure rules
 
-Analyzer plugins cannot read rule options from `analysis_options.yaml`. To change a setting, such as the `long_styler_chain` limit, create a small local plugin package:
-
-```yaml
-# tool/my_mix_lint/pubspec.yaml
-name: my_mix_lint
-publish_to: none
-environment:
-  sdk: ^3.12.0
-dependencies:
-  mix_lint: ^2.0.0
-```
-
-```dart
-// tool/my_mix_lint/lib/main.dart
-import 'package:mix_lint/mix_lint.dart';
-
-final plugin = MixLintPlugin(
-  config: const MixLintConfig(maxStylerChainLength: 20),
-);
-```
-
-Then enable it by path instead of `mix_lint`. Its rules are namespaced by the new plugin name, for example `// ignore: my_mix_lint/long_styler_chain`.
+Rules that take options read them from a top-level `mix_lint:` section of the same `analysis_options.yaml`. The analyzer passes plugins only `diagnostics` settings, so options go in this separate section.
 
 ```yaml
 plugins:
-  my_mix_lint:
-    path: tool/my_mix_lint
+  mix_lint:
+    version: ^2.0.0
     diagnostics:
       long_styler_chain: true
+
+mix_lint:
+  long_styler_chain:
+    max_calls: 20
 ```
+
+| Rule | Option | Default |
+|---|---|---|
+| `long_styler_chain` | `max_calls`: the most calls allowed in one chain | `15` |
+
+Each Dart file uses the nearest `analysis_options.yaml` above it. `mix_lint` follows `include:` entries, by relative path or `package:` URI, and values in the including file win. In a pub workspace, put `plugins:` and `mix_lint:` in the root options file and have each member include it.
+
+If a change to the options does not show up, restart the analysis server.
 
 ## Rule reference
 
@@ -210,7 +201,7 @@ MixScope(
 
 ### long_styler_chain
 
-A Styler chain has more calls than the limit (15 by default). Split large styles into smaller Stylers and combine them with `merge()`. To change the limit, see [Configure rules](#configure-rules).
+A Styler chain has more calls than the limit (15 by default). Split large styles into smaller Stylers and combine them with `merge()`. To change the limit, set `max_calls` (see [Configure rules](#configure-rules)).
 
 Do:
 
