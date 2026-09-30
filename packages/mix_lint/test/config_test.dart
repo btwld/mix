@@ -152,6 +152,7 @@ include:
   - package:missing/options.yaml
   - package:broken/options.yaml
   - missing.yaml
+  - '%FF.yaml'
 mix_lint:
   long_styler_chain:
     max_calls: 7

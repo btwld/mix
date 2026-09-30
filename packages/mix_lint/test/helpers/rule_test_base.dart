@@ -1,5 +1,7 @@
 import 'package:analyzer/analysis_rule/analysis_rule.dart';
+import 'package:analyzer/diagnostic/diagnostic.dart';
 import 'package:analyzer_testing/analysis_rule/analysis_rule.dart';
+import 'package:test/test.dart';
 
 import 'stubs.dart';
 
@@ -36,6 +38,27 @@ abstract class MixRuleTest extends AnalysisRuleTest {
       for (final (offset, length) in ranges)
         lint(offset, length, messageContainsAll: messageContains),
     ]);
+  }
+
+  /// Asserts that [fixedCode], the output of a quick fix, has no errors and
+  /// no diagnostics from the rule under test.
+  ///
+  /// Other warnings are allowed, such as an import that the fix left unused.
+  /// The test file is cached after its first analysis, so this analyzes a
+  /// new file.
+  Future<void> assertFixedCodeIsClean(String fixedCode) async {
+    final path = '$testPackageLibPath/fixed.dart';
+    newFile(path, fixedCode);
+    final fixed = await resolveFile(path);
+
+    expect(
+      fixed.diagnostics.where(
+        (d) =>
+            d.severity == Severity.error ||
+            rule.diagnosticCodes.contains(d.diagnosticCode),
+      ),
+      isEmpty,
+    );
   }
 }
 

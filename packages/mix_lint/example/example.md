@@ -18,7 +18,7 @@ plugins:
 With that config, the analyzer reports each commented line below:
 
 ```dart
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
 final $primary = ColorToken('primary');

@@ -74,6 +74,29 @@ void f() {
 
   // No diagnostics.
 
+  void test_call_into_dot_shorthand_consumers_reports() async {
+    // `.all(...)` is a static method and `.new(...)` a constructor, both
+    // resolved against a Flutter parameter type.
+    await assertLints(r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+final $primary = ColorToken('primary');
+final $space = SpaceToken('space');
+final a = Padding(padding: .all([!$space()!]));
+final b = Text('x', style: .new(color: [!$primary()!]));
+''');
+  }
+
+  void test_flutter_value_in_flutter_widget_reports() async {
+    await assertLints(r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+final $primary = ColorToken('primary');
+final a = Container(decoration: BoxDecoration(color: [!$primary()!]));
+final b = TextStyle(color: [!$primary()!]);
+''');
+  }
+
   void test_call_into_styler_method_no_diagnostic() async {
     await assertNoDiagnostics(r'''
 import 'package:mix/mix.dart';
@@ -105,6 +128,16 @@ import 'package:ds/ds.dart';
 import 'package:mix/mix.dart';
 const $primary = ColorToken('primary');
 final s = BoxStyler()..brand($primary());
+''');
+  }
+
+  void test_flutter_value_converted_by_mix_no_diagnostic() async {
+    // TextStyleMix.value copies each field, and the reference with it.
+    await assertNoDiagnostics(r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+final $primary = ColorToken('primary');
+final s = TextStyler().style(TextStyleMix.value(TextStyle(color: $primary())));
 ''');
   }
 

@@ -73,17 +73,31 @@ class _Visitor extends SimpleAstVisitor<void> {
   void visitInstanceCreationExpression(InstanceCreationExpression node) {
     if (!isMixTokenType(node.staticType)) return;
 
+    // The argument of the innermost call that the walk has passed through.
+    Argument? argument;
+    AstNode previous = node;
     for (final ancestor in ancestorsBeforeStatementOrDeclaration(node)) {
+      if (ancestor is ArgumentList && previous is Argument) {
+        argument = previous;
+      }
       if (_isStylerCall(ancestor)) {
         rule.reportAtNode(node, diagnosticCode: InlineTokenDefinition.inStyler);
 
         return;
       }
       if (_isMixScopeCall(ancestor)) {
-        rule.reportAtNode(node, diagnosticCode: InlineTokenDefinition.inScope);
+        // Only the token maps define tokens. A token under `child:` belongs
+        // to the widget tree below the scope.
+        if (argument?.correspondingParameter?.type.isDartCoreMap ?? false) {
+          rule.reportAtNode(
+            node,
+            diagnosticCode: InlineTokenDefinition.inScope,
+          );
+        }
 
         return;
       }
+      previous = ancestor;
     }
   }
 }

@@ -25,7 +25,7 @@ class LongStylerChain extends AnalysisRule {
     'This Styler chain has {0} calls, more than the limit of {1}.',
     correctionMessage:
         'Try splitting it into smaller Stylers and combining them with '
-        'merge().',
+        "'merge()'.",
   );
 
   /// The limit when `max_calls` is missing, or is not a positive integer.

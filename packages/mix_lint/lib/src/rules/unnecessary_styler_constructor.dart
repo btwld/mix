@@ -95,7 +95,11 @@ class _Visitor extends SimpleAstVisitor<void> {
       return false;
     }
 
-    final parameterType = argument.correspondingParameter?.type;
+    final parameter = argument.correspondingParameter;
+    // `pick<T extends BoxStyler>(T style)` infers T from the argument, so a
+    // dot shorthand there has no context type.
+    if (isMethodTypeParameter(parameter)) return false;
+    final parameterType = parameter?.type;
 
     return parameterType is InterfaceType && parameterType.element == styler;
   }

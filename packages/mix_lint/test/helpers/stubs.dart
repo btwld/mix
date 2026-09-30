@@ -29,7 +29,33 @@ class FontWeight {
 }
 
 class Container extends Widget {
-  const Container({Color? color, Widget? child});
+  const Container({Color? color, BoxDecoration? decoration, Widget? child});
+}
+
+class BoxDecoration {
+  const BoxDecoration({Color? color});
+}
+
+class TextStyle {
+  const TextStyle({Color? color});
+}
+
+class Text extends Widget {
+  const Text(String data, {TextStyle? style});
+}
+
+abstract class EdgeInsetsGeometry {
+  const EdgeInsetsGeometry();
+
+  static EdgeInsetsGeometry all(double value) => EdgeInsets.all(value);
+}
+
+class EdgeInsets extends EdgeInsetsGeometry {
+  const EdgeInsets.all(double value);
+}
+
+class Padding extends Widget {
+  const Padding({required EdgeInsetsGeometry padding, Widget? child});
 }
 
 enum WidgetState { hovered, pressed }
@@ -79,6 +105,7 @@ mixin WidgetStateVariantMixin<T extends Style<S>, S extends Spec<S>>
 mixin AnimationStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
   T animate(Object config);
   T keyframeAnimation(Object config) => animate(config);
+  T phaseAnimation(Object config) => animate(config);
 }
 
 mixin WidgetModifierStyleMixin<T extends Style<S>, S extends Spec<S>>
@@ -124,6 +151,10 @@ class ContextVariant {
   static ContextVariant widgetState(WidgetState state) => ContextVariant();
 }
 
+class TextStyleMix extends Mix<Object> {
+  TextStyleMix.value(TextStyle style);
+}
+
 class BorderSideMix extends Mix<Object> {
   BorderSideMix({BorderStyle? style});
 }
@@ -154,6 +185,7 @@ class BoxStyler extends MixStyler<BoxStyler, BoxSpec>
   BoxStyler({Color? color});
 
   factory BoxStyler.color(Color value) => BoxStyler().color(value);
+  factory BoxStyler.animate(Object config) => BoxStyler().animate(config);
 
   BoxStyler width(double value) => this;
   BoxStyler height(double value) => this;
@@ -161,6 +193,8 @@ class BoxStyler extends MixStyler<BoxStyler, BoxSpec>
   BoxStyler shadow(BoxShadowMix value) => this;
   BoxStyler border(BorderSideMix value) => this;
   BoxStyler gradient(GradientMix<Object> value) => this;
+  // Generated alias of `wrap`.
+  BoxStyler modifier(Object value) => this;
 
   @override
   BoxStyler variants(List<Object> value) => this;
@@ -189,13 +223,16 @@ class TextStyler extends MixStyler<TextStyler, TextSpec>
   factory TextStyler.fontWeight(FontWeight value) =>
       TextStyler().fontWeight(value);
 
-  TextStyler style(Object value) => this;
+  TextStyler style(TextStyleMix value) => this;
 }
 
 final class GridBoxSpec extends Spec<GridBoxSpec> {}
 
 class GridBoxStyler extends MixStyler<GridBoxStyler, GridBoxSpec> {
   GridBoxStyler();
+
+  factory GridBoxStyler.onConstraints(Object breakpoint, GridBoxStyler patch) =>
+      GridBoxStyler().onConstraints(breakpoint, patch);
 
   GridBoxStyler gap(double value) => this;
   GridBoxStyler onConstraints(Object breakpoint, GridBoxStyler patch) => this;

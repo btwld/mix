@@ -129,10 +129,15 @@ final class _SectionReader {
         ? _resolvePackageUri(uri)
         : pathContext.toUri(from.path).resolveUri(uri);
     if (resolved == null || !resolved.isScheme('file')) return null;
+    final String path;
+    try {
+      path = pathContext.fromUri(resolved);
+    } on FormatException {
+      // Percent escapes that are not valid UTF-8, such as `%FF`.
+      return null;
+    }
 
-    return provider.getFile(
-      pathContext.normalize(pathContext.fromUri(resolved)),
-    );
+    return provider.getFile(pathContext.normalize(path));
   }
 
   /// Resolves `package:<name>/<path>` with the package config.

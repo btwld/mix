@@ -4,6 +4,7 @@ import 'package:analysis_server_plugin/edit/dart/dart_fix_kind_priority.dart';
 import 'package:analysis_server_plugin/edit/fix/fix.dart';
 import 'package:analysis_server_plugin/edit/range_factory.dart';
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/source/source_range.dart';
 
 /// Quick fix for `unnecessary_type_name` and `unnecessary_styler_constructor`:
@@ -51,10 +52,14 @@ class UseDotShorthand extends ResolvedCorrectionProducer {
     MethodInvocation() => range.startStart(node, node.methodName),
     PropertyAccess() => range.startStart(node, node.propertyName),
     PrefixedIdentifier() => range.startStart(node, node.identifier),
-    InstanceCreationExpression(:final constructorName) =>
+    // `new` can't precede a dot shorthand, so it goes too; `const` stays.
+    InstanceCreationExpression(:final keyword, :final constructorName) =>
       constructorName.name == null
           ? null
-          : range.startStart(constructorName, constructorName.name!),
+          : range.startStart(
+              keyword?.keyword == Keyword.NEW ? node : constructorName,
+              constructorName.name!,
+            ),
     _ => null,
   };
 }
