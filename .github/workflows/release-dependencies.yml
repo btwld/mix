@@ -1,0 +1,93 @@
+name: Hosted dependency release checks
+
+on:
+  workflow_dispatch:
+    inputs:
+      package:
+        description: Dependent package to validate before tagging
+        required: true
+        type: choice
+        options: [all, protocol, winds]
+        default: all
+  workflow_call:
+    inputs:
+      package:
+        required: true
+        type: string
+
+jobs:
+  protocol:
+    if: ${{ inputs.package == 'all' || inputs.package == 'protocol' }}
+    name: Protocol / Hosted release check
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: packages/mix_protocol
+    steps:
+      - uses: actions/checkout@v4
+      - uses: kuhnroyal/flutter-fvm-config-action@v2
+        id: fvm-config-action
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ steps.fvm-config-action.outputs.FLUTTER_VERSION }}
+          channel: ${{ steps.fvm-config-action.outputs.FLUTTER_CHANNEL }}
+      # No Melos or path overrides: every version selected below is hosted.
+      - name: Resolve hosted dependencies
+        run: flutter pub get
+      - name: Resolve minimum allowed Mix
+        run: flutter pub downgrade mix
+      - name: Show minimum selected Mix
+        run: dart pub deps --json | jq -r '.packages[] | select(.name == "mix") | "selected mix \(.version) from \(.source)"'
+      - name: Analyze against minimum Mix
+        run: flutter analyze --no-fatal-infos
+      - name: Test against minimum Mix
+        run: flutter test
+      - name: Resolve latest allowed Mix
+        run: flutter pub upgrade mix
+      - name: Show latest selected Mix
+        run: dart pub deps --json | jq -r '.packages[] | select(.name == "mix") | "selected mix \(.version) from \(.source)"'
+      - name: Analyze against latest Mix
+        run: flutter analyze --no-fatal-infos
+      - name: Test against latest Mix
+        run: flutter test
+      - name: Restore files modified by Flutter tooling
+        run: git restore -- .
+      - name: Validate publish archive
+        run: dart pub publish --dry-run
+
+  winds:
+    if: ${{ inputs.package == 'all' || inputs.package == 'winds' }}
+    name: Winds / Hosted release check
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: packages/mix_winds
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Resolve hosted dependencies
+        run: flutter pub get
+      - name: Resolve minimum allowed Mix and Protocol
+        run: flutter pub downgrade mix mix_protocol
+      - name: Show minimum selected dependencies
+        run: dart pub deps --json | jq -r '.packages[] | select(.name == "mix" or .name == "mix_protocol") | "selected \(.name) \(.version) from \(.source)"'
+      - name: Analyze against minimum dependencies
+        run: flutter analyze --no-fatal-infos
+      - name: Test against minimum dependencies
+        run: flutter test
+      - name: Resolve latest allowed Mix and Protocol
+        run: flutter pub upgrade mix mix_protocol
+      - name: Show latest selected dependencies
+        run: dart pub deps --json | jq -r '.packages[] | select(.name == "mix" or .name == "mix_protocol") | "selected \(.name) \(.version) from \(.source)"'
+      - name: Analyze against latest dependencies
+        run: flutter analyze --no-fatal-infos
+      - name: Test against latest dependencies
+        run: flutter test
+      - name: Restore files modified by Flutter tooling
+        run: git restore -- .
+      - name: Validate publish archive
+        run: dart pub publish --dry-run
