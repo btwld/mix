@@ -11,8 +11,8 @@
  - **FEAT**: Add `unnecessary_styler_constructor`, with a quick fix: it turns
    `.onHovered(BoxStyler().color(...))` into `.onHovered(.color(...))`.
  - **FEAT**: `long_styler_chain` reads its limit from `max_calls` in a
-   top-level `mix_lint:` section of `analysis_options.yaml`, including files
-   that it includes. The default stays 15.
+   top-level `mix_lint:` section of `analysis_options.yaml` and from files it
+   includes. The default stays 15.
  - **FIX**: Add `lib/main.dart`, the entry point the analysis server loads.
    2.0.0 did not load without it.
  - **FIX**: Remove false positives in `token_reference_outside_mix`,

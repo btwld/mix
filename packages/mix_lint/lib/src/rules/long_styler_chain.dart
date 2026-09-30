@@ -28,7 +28,7 @@ class LongStylerChain extends AnalysisRule {
         'merge().',
   );
 
-  /// The limit when `max_calls` is not configured.
+  /// The limit when `max_calls` is missing, or is not a positive integer.
   static const defaultMaxCalls = 15;
 
   LongStylerChain()
