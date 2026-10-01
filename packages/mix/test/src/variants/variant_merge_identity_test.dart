@@ -55,15 +55,15 @@ void main() {
       final second = ContextVariant('shared', (_) => secondActive);
       final merged = _withVariant(
         first,
-        BoxStyler().width(100.0),
-      ).merge(_withVariant(second, BoxStyler().height(50.0)));
+        .width(100.0),
+      ).merge(_withVariant(second, .height(50.0)));
       final context = MockBuildContext();
 
       expect(merged.$variants!.map((entry) => entry.variant), [first, second]);
       final reused = _withVariant(
         first,
-        BoxStyler().width(100.0),
-      ).merge(_withVariant(first, BoxStyler().height(50.0)));
+        .width(100.0),
+      ).merge(_withVariant(first, .height(50.0)));
       expect(reused.$variants, hasLength(1));
 
       final firstResult = merged
@@ -98,14 +98,14 @@ void main() {
 
       final distinctBuilders = _withVariant(
         first,
-        BoxStyler().width(100.0),
-      ).merge(_withVariant(second, BoxStyler().height(50.0)));
+        .width(100.0),
+      ).merge(_withVariant(second, .height(50.0)));
       expect(distinctBuilders.$variants, hasLength(2));
 
       final sameBuilders = _withVariant(
         first,
-        BoxStyler().width(100.0),
-      ).merge(_withVariant(sameFunction, BoxStyler().height(50.0)));
+        .width(100.0),
+      ).merge(_withVariant(sameFunction, .height(50.0)));
       expect(sameBuilders.$variants, hasLength(1));
 
       final namedWithBuilderKey = NamedVariant(first.key);
@@ -116,8 +116,8 @@ void main() {
       ]) {
         final merged = _withVariant(
           left,
-          BoxStyler().width(100.0),
-        ).merge(_withVariant(right, BoxStyler().height(50.0)));
+          .width(100.0),
+        ).merge(_withVariant(right, .height(50.0)));
         expect(merged.$variants, hasLength(2));
       }
     });
@@ -187,8 +187,8 @@ void main() {
       for (final (first, second) in cases) {
         final merged = _withVariant(
           first,
-          BoxStyler().width(100.0).height(40.0),
-        ).merge(_withVariant(second, BoxStyler().width(200.0)));
+          .width(100.0).height(40.0),
+        ).merge(_withVariant(second, .width(200.0)));
 
         expect(merged.$variants, hasLength(1));
         expect(merged.$variants!.single.variant, same(first));
@@ -240,8 +240,8 @@ void main() {
       for (final (first, second) in cases) {
         final merged = _withVariant(
           first,
-          BoxStyler().width(100.0),
-        ).merge(_withVariant(second, BoxStyler().height(50.0)));
+          .width(100.0),
+        ).merge(_withVariant(second, .height(50.0)));
 
         expect(
           merged.$variants,

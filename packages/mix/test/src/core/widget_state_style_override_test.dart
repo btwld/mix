@@ -128,10 +128,7 @@ void main() {
   ) async {
     final scrolledUnderStyle = BoxStyler()
         .color(Colors.red)
-        .variant(
-          WidgetStateVariant(WidgetState.scrolledUnder),
-          BoxStyler().color(Colors.green),
-        );
+        .variant(WidgetStateVariant(.scrolledUnder), .color(Colors.green));
 
     await tester.pumpWidget(
       MaterialApp(

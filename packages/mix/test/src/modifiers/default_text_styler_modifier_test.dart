@@ -149,7 +149,7 @@ void main() {
           style: TextStyleMix(
             fontSize: 24,
             color: Colors.red,
-            fontWeight: FontWeight.bold,
+            fontWeight: .bold,
           ),
         );
 

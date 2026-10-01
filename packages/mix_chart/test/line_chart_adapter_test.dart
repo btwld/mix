@@ -18,7 +18,7 @@ void main() {
             ChartPoint(id: 'gap', x: 1),
             ChartPoint(id: 'mar', x: 2, y: 9),
           ],
-          style: .curve(LineCurve.stepBefore).stroke(.width(5)),
+          style: .curve(.stepBefore).stroke(.width(5)),
         ),
       ],
       xAxis: ChartAxis.numeric(min: 0, max: 2, interval: 1),
@@ -290,9 +290,7 @@ void main() {
       await tester.pumpWidget(const SizedBox.shrink());
     }
 
-    await tester.pumpWidget(
-      host(LineChartStyler.grid(ChartGridStyler.verticalInterval(-1))),
-    );
+    await tester.pumpWidget(host(LineChartStyler.grid(.verticalInterval(-1))));
     final error = tester.takeException();
 
     expect(error, isA<ArgumentError>());

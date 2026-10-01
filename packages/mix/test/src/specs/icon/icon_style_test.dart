@@ -15,7 +15,7 @@ void main() {
           grade: 0.0,
           opticalSize: 24.0,
           shadows: [ShadowMix(color: Colors.black, offset: Offset(1, 1))],
-          textDirection: TextDirection.ltr,
+          textDirection: .ltr,
           applyTextScaling: true,
           fill: 1.0,
         );
@@ -115,7 +115,7 @@ void main() {
     });
 
     test('textDirection utility works correctly', () {
-      final attribute = IconStyler().textDirection(TextDirection.rtl);
+      final attribute = IconStyler().textDirection(.rtl);
 
       expect(attribute.$textDirection, resolvesTo(TextDirection.rtl));
     });
@@ -213,7 +213,7 @@ void main() {
         weight: 700.0,
         grade: 50.0,
         opticalSize: 36.0,
-        textDirection: TextDirection.ltr,
+        textDirection: .ltr,
         applyTextScaling: true,
         fill: 1.0,
       );

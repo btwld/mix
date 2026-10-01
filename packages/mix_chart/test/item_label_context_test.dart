@@ -38,9 +38,7 @@ void main() {
                     width: 260,
                     height: 200,
                     child: PieChart(
-                      style: PieChartStyler().slice(
-                        PieSliceStyler().label(common),
-                      ),
+                      style: PieChartStyler().slice(.label(common)),
                       styleSpec: raw
                           ? const StyleSpec(
                               spec: PieChartSpec(
@@ -65,8 +63,8 @@ void main() {
                     height: 200,
                     child: BarChart(
                       style: BarChartStyler()
-                          .bar(BarStyler().label(common))
-                          .segment(BarSegmentStyler().label(common)),
+                          .bar(.label(common))
+                          .segment(.label(common)),
                       styleSpec: raw
                           ? const StyleSpec(
                               spec: BarChartSpec(
