@@ -1,4 +1,4 @@
-## Unreleased
+## 2.2.1
 
 ### New features
 
@@ -10,6 +10,23 @@
   `.sweepGradient(colors: colors, transform: GradientRotation(angle))`, without
   switching to `gradient(SweepGradientMix(...))`. The parameter is optional and
   existing calls are unchanged.
+- **Blur tile mode:** `BlurModifier`, `BlurModifierMix`, and the
+  `WidgetModifierConfig.blur` factory and instance method now accept an optional
+  `TileMode tileMode`, carried through the protocol as well. The parameter is
+  optional and defaults to the previous `TileMode.clamp` behavior, so existing
+  calls are unchanged.
+
+### Deprecations
+
+- **Styler convenience shorthands:** the convenience shorthands on the stylers
+  are deprecated in favor of the canonical shorthand forms. Nothing is removed
+  in this release; see the migration notes in the docs for the canonical
+  replacement of each deprecated call.
+
+### Bug fixes
+
+- **Animation:** a style that drops its animation config now stops the running
+  animation instead of leaving it playing.
 
 ## 2.2.0
 
