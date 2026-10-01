@@ -15,6 +15,9 @@ on:
         required: true
         type: string
 
+permissions:
+  contents: read
+
 jobs:
   protocol:
     if: ${{ inputs.package == 'all' || inputs.package == 'protocol' }}
