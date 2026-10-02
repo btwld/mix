@@ -165,10 +165,15 @@ final class BoxShadowMixRef extends Prop<BoxShadow>
   }
 }
 
-/// Token reference for [ShadowListMix] that implements Mix interface instead of Flutter interface
+/// Token reference for [ShadowListMix] that implements Mix interface instead of Flutter interface.
+///
+/// Also implements `List<ShadowMix>` so that `shadowToken.mix()` can be passed
+/// directly to styler methods that accept a raw `List<ShadowMix>` (e.g.
+/// `TextStyler.shadows`) without changing their signatures. The list members
+/// are never invoked — the ref is detected as a token and routed as a Mix.
 final class ShadowListMixRef extends Prop<List<Shadow>>
     with ValueRef<List<Shadow>>
-    implements ShadowListMix {
+    implements ShadowListMix, List<ShadowMix> {
   ShadowListMixRef(super.prop) : super.fromProp();
 
   @override
@@ -177,10 +182,16 @@ final class ShadowListMixRef extends Prop<List<Shadow>>
   }
 }
 
-/// Token reference for [BoxShadowListMix] that implements Mix interface instead of Flutter interface
+/// Token reference for [BoxShadowListMix] that implements Mix interface instead of Flutter interface.
+///
+/// Also implements `List<BoxShadowMix>` so that `boxShadowToken.mix()` can be
+/// passed directly to styler methods that accept a raw `List<BoxShadowMix>`
+/// (e.g. `BoxStyler.boxShadows`, `BoxStyler.shadows`) without changing their
+/// signatures. The list members are never invoked — the ref is detected as a
+/// token and routed as a Mix.
 final class BoxShadowListMixRef extends Prop<List<BoxShadow>>
     with ValueRef<List<BoxShadow>>
-    implements BoxShadowListMix {
+    implements BoxShadowListMix, List<BoxShadowMix> {
   BoxShadowListMixRef(super.prop) : super.fromProp();
 
   @override
