@@ -1,9 +1,9 @@
 # Callable pressable builders across Mix
 
-Status: implemented and reviewed.  
-PR: [#1088](https://github.com/btwld/mix/pull/1088)  
-Implementation revision: `cc88dcff9a583b539a6c99803c1d02c3e577b1f9`  
-Branch: `feat/boxstyler-pressable` → `main`
+- Status: implemented and reviewed.
+- PR: [#1088](https://github.com/btwld/mix/pull/1088)
+- Implementation revision: `cc88dcff9a583b539a6c99803c1d02c3e577b1f9`
+- Branch: `feat/boxstyler-pressable` → `main`
 
 This is the approved plan for the revision of PR #1088. It supersedes the
 initial, unreleased BoxStyler extension implementation.
