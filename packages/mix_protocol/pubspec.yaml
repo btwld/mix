@@ -14,7 +14,7 @@ dependencies:
   mix: ^2.2.0
 
 dev_dependencies:
-  analyzer: '>=9.0.0 <11.0.0'
+  analyzer: '>=13.0.0 <15.0.0'
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0

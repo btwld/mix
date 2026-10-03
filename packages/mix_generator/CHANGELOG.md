@@ -1,3 +1,8 @@
+## Unreleased
+
+ - **FIX**: Support analyzer `>=10.0.0 <15.0.0`, including analyzer 14,
+   by replacing the removed synthetic-field API with field-origin checks.
+
 ## 2.2.0
 
 Stable release of the 2.2.0 line. Cumulative since 2.1.3:

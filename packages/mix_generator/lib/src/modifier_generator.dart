@@ -61,7 +61,7 @@ class ModifierGenerator extends GeneratorForAnnotation<MixableModifier> {
     }
 
     final instanceFields = classElement.fields
-        .where((field) => !field.isStatic && !field.isSynthetic)
+        .where((field) => !field.isStatic && !field.isOriginGetterSetter)
         .toList();
 
     for (final field in instanceFields) {

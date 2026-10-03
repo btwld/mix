@@ -653,8 +653,8 @@ ArgumentList? _argumentList(Expression? expression) {
 
 Expression? _namedArgument(ArgumentList argumentList, String name) {
   for (final argument in argumentList.arguments) {
-    if (argument is NamedExpression && argument.name.label.name == name) {
-      return argument.expression;
+    if (argument is NamedArgument && argument.name.lexeme == name) {
+      return argument.argumentExpression;
     }
   }
 
@@ -669,7 +669,7 @@ String? _namedStringArgument(ArgumentList argumentList, String name) {
 
 String? _firstPositionalStringArgument(ArgumentList argumentList) {
   for (final argument in argumentList.arguments) {
-    if (argument is NamedExpression) continue;
+    if (argument is NamedArgument) continue;
 
     return argument is StringLiteral ? argument.stringValue : null;
   }
