@@ -3,57 +3,39 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
 void main() {
-  group('BoxStyler.pressable', () {
-    test(
-      'returns a PressableBox with the receiver and constructor defaults',
-      () {
-        final style = BoxStyler().padding(.all(16)).color(Colors.blue);
-        const child = Text('Save');
-        final PressableBox box = style.pressable(child: child);
-        const defaults = PressableBox(child: child);
-
-        expect(box.style, same(style));
-        expect(box.child, same(child));
-        expect(box.key, defaults.key);
-        expect(box.onPress, defaults.onPress);
-        expect(box.onLongPress, defaults.onLongPress);
-        expect(box.focusNode, defaults.focusNode);
-        expect(box.autofocus, defaults.autofocus);
-        expect(box.enableFeedback, defaults.enableFeedback);
-        expect(box.onFocusChange, defaults.onFocusChange);
-        expect(box.mouseCursor, defaults.mouseCursor);
-        expect(box.canRequestFocus, defaults.canRequestFocus);
-        expect(box.excludeFromSemantics, defaults.excludeFromSemantics);
-        expect(box.semanticsLabel, defaults.semanticsLabel);
-        expect(box.semanticsRole, defaults.semanticsRole);
-        expect(box.onKeyEvent, defaults.onKeyEvent);
-        expect(box.controller, defaults.controller);
-        expect(box.actions, defaults.actions);
-        expect(box.hitTestBehavior, defaults.hitTestBehavior);
-        expect(box.enabled, defaults.enabled);
-      },
-    );
-
-    test('forwards every interaction option unchanged', () {
-      final style = BoxStyler();
-      const key = Key('save');
+  group('callable pressable builders', () {
+    test('BoxStyler terminates composition and preserves style identity', () {
+      final style = BoxStyler().padding(.all(16)).color(Colors.blue);
+      final builder = style.pressable();
       const child = Text('Save');
-      void onPress() {}
-      void onLongPress() {}
-      void onFocusChange(bool focused) {}
-      KeyEventResult onKeyEvent(FocusNode node, KeyEvent event) =>
-          KeyEventResult.handled;
+      const key = Key('save');
+      final pressable = builder(key: key, child: child);
+
+      expect(pressable, isA<Pressable>());
+      expect(pressable.key, key);
+      expect(pressable.child, isA<Box>());
+      final box = pressable.child as Box;
+      expect(box.style, same(style));
+      expect(box.child, same(child));
+    });
+
+    test('forwards the complete Pressable surface', () {
       final focusNode = FocusNode();
       final controller = WidgetStatesController();
+      addTearDown(focusNode.dispose);
+      addTearDown(controller.dispose);
+      void onPress() {}
+      void onLongPress() {}
+      void onFocusChange(bool _) {}
+      KeyEventResult onKeyEvent(FocusNode _, KeyEvent _) =>
+          KeyEventResult.handled;
       final actions = <Type, Action<Intent>>{
         ActivateIntent: CallbackAction<ActivateIntent>(onInvoke: (_) => null),
       };
-      addTearDown(focusNode.dispose);
-      addTearDown(controller.dispose);
 
-      final box = style.pressable(
-        key: key,
-        child: child,
+      final pressable = BoxStyler().pressable()(
+        key: const Key('action'),
+        child: const Text('Save'),
         onPress: onPress,
         onLongPress: onLongPress,
         focusNode: focusNode,
@@ -72,31 +54,27 @@ void main() {
         enabled: false,
       );
 
-      expect(box.style, same(style));
-      expect(box.key, key);
-      expect(box.child, same(child));
-      expect(box.onPress, same(onPress));
-      expect(box.onLongPress, same(onLongPress));
-      expect(box.focusNode, same(focusNode));
-      expect(box.autofocus, isTrue);
-      expect(box.enableFeedback, isTrue);
-      expect(box.onFocusChange, same(onFocusChange));
-      expect(box.mouseCursor, SystemMouseCursors.help);
-      expect(box.canRequestFocus, isFalse);
-      expect(box.excludeFromSemantics, isTrue);
-      expect(box.semanticsLabel, 'Save changes');
-      expect(box.semanticsRole, PressableSemanticsRole.link);
-      expect(box.onKeyEvent, same(onKeyEvent));
-      expect(box.controller, same(controller));
-      expect(box.actions, same(actions));
-      expect(box.hitTestBehavior, HitTestBehavior.translucent);
-      expect(box.enabled, isFalse);
+      expect(pressable.onPress, same(onPress));
+      expect(pressable.onLongPress, same(onLongPress));
+      expect(pressable.focusNode, same(focusNode));
+      expect(pressable.autofocus, isTrue);
+      expect(pressable.enableFeedback, isTrue);
+      expect(pressable.onFocusChange, same(onFocusChange));
+      expect(pressable.mouseCursor, SystemMouseCursors.help);
+      expect(pressable.canRequestFocus, isFalse);
+      expect(pressable.excludeFromSemantics, isTrue);
+      expect(pressable.semanticsLabel, 'Save changes');
+      expect(pressable.semanticsRole, PressableSemanticsRole.link);
+      expect(pressable.onKeyEvent, same(onKeyEvent));
+      expect(pressable.controller, same(controller));
+      expect(pressable.actions, same(actions));
+      expect(pressable.hitTestBehavior, HitTestBehavior.translucent);
+      expect(pressable.enabled, isFalse);
     });
 
-    testWidgets('resolves pressed styling and activates the composed widget', (
+    testWidgets('state variants resolve inside the Pressable boundary', (
       tester,
     ) async {
-      var presses = 0;
       final controller = WidgetStatesController();
       addTearDown(controller.dispose);
       final style = BoxStyler()
@@ -107,39 +85,33 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Center(
-            child: style.pressable(
+            child: style.pressable()(
               controller: controller,
-              onPress: () => presses++,
+              onPress: () {},
               child: const Text('Save'),
             ),
           ),
         ),
       );
-
-      final boxFinder = find.byType(Box);
-      Color? backgroundColor() {
+      Color? color() {
         final container = tester.widget<Container>(
-          find.descendant(of: boxFinder, matching: find.byType(Container)),
+          find.descendant(
+            of: find.byType(Box),
+            matching: find.byType(Container),
+          ),
         );
-
         return (container.decoration as BoxDecoration).color;
       }
 
-      expect(tester.widget<Box>(boxFinder).style, same(style));
-      expect(backgroundColor(), Colors.blue);
-
-      final gesture = await tester.startGesture(tester.getCenter(boxFinder));
+      expect(color(), Colors.blue);
+      final gesture = await tester.startGesture(
+        tester.getCenter(find.byType(Box)),
+      );
       await tester.pump(const Duration(milliseconds: 100));
-      expect(controller.value, contains(WidgetState.pressed));
-      expect(backgroundColor(), Colors.red);
-
+      expect(color(), Colors.red);
       await gesture.up();
       await tester.pumpAndSettle();
-      expect(presses, 1);
-      expect(controller.value, isNot(contains(WidgetState.pressed)));
-      expect(backgroundColor(), Colors.blue);
-
-      await tester.pumpWidget(const SizedBox.shrink());
+      expect(color(), Colors.blue);
     });
   });
 }

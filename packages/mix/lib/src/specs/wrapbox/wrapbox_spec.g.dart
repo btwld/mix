@@ -92,7 +92,8 @@ class WrapBoxStyler extends MixStyler<WrapBoxStyler, WrapBoxSpec>
         BorderRadiusStyleMixin<WrapBoxStyler>,
         ShadowStyleMixin<WrapBoxStyler>,
         TransformStyleMixin<WrapBoxStyler>,
-        WrapStyleMixin<WrapBoxStyler>
+        WrapStyleMixin<WrapBoxStyler>,
+        _WrapBoxStylerPressableMixin<WrapBoxStyler>
     implements StylerFieldMetadata {
   final Prop<StyleSpec<BoxSpec>>? $box;
   final Prop<StyleSpec<WrapSpec>>? $flow;

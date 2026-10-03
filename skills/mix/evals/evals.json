@@ -22,7 +22,7 @@
     {
       "id": 4,
       "prompt": "Make a PressableBox darken on hover, shrink while pressed, show a keyboard-only focus ring, and animate between those states.",
-      "expected_output": "Uses PressableBox with BoxStyler widget-state variants onHovered/onPressed/onFocusVisible and an AnimationConfig via animate; uses bare dot shorthand in typed nested variant and animation contexts and does not manually manage hover/press booleans.",
+      "expected_output": "Checks the consuming Mix dependency first. If callable builders are available, uses BoxStyler widget-state variants onHovered/onPressed/onFocusVisible and animate, finishes with .pressable(), then supplies action and child per call. Otherwise retains compatible PressableBox syntax. Uses typed dot shorthand and does not manually track hover/press booleans. Honors an explicit request to retain PressableBox; direct Pressable remains valid for arbitrary widget trees.",
       "files": []
     },
     {

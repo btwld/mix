@@ -127,7 +127,7 @@ class ThemedProfilePage extends StatelessWidget {
 
 ## Dark/Light Toggle
 
-`onDark` responds to the platform brightness in `MediaQuery`, so this example keeps the toggle local by overriding `platformBrightness`.
+`onDark` responds to the platform brightness in `MediaQuery`, so this example keeps the toggle local by overriding `platformBrightness`. The callable builder examples below require the unreleased API; use `PressableBox(style: buttonStyle, ...)` with published versions that do not expose `.pressable()`.
 
 ```dart
 import 'package:flutter/material.dart';
@@ -170,8 +170,7 @@ class _ThemeToggleState extends State<ThemeToggle> {
       data: MediaQuery.of(context).copyWith(
         platformBrightness: isDark ? Brightness.dark : Brightness.light,
       ),
-      child: PressableBox(
-        style: buttonStyle,
+      child: buttonStyle.pressable()(
         onPress: () => setState(() => isDark = !isDark),
         child: StyledIcon(style: iconStyle),
       ),
@@ -182,7 +181,9 @@ class _ThemeToggleState extends State<ThemeToggle> {
 
 ## Pressable Button
 
-`PressableBox` combines gesture/focus state handling with a `BoxStyler`, so widget-state variants such as `onHovered` and `onPressed` can live in the style.
+Compose the surface style first, then finish with `.pressable()` when the
+styled widget owns the interaction. Widget-state variants such as `onHovered`
+and `onPressed` resolve inside the returned `Pressable`.
 
 ```dart
 import 'package:flutter/material.dart';
@@ -215,8 +216,8 @@ class PrimaryActionButton extends StatelessWidget {
         .fontSize(16)
         .fontWeight(FontWeight.w700);
 
-    return PressableBox(
-      style: buttonStyle,
+    final button = buttonStyle.pressable();
+    return button(
       onPress: onPressed,
       child: StyledText(label, style: labelStyle),
     );

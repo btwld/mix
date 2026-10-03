@@ -92,7 +92,8 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
         BorderRadiusStyleMixin<FlexBoxStyler>,
         ShadowStyleMixin<FlexBoxStyler>,
         TransformStyleMixin<FlexBoxStyler>,
-        FlexStyleMixin<FlexBoxStyler>
+        FlexStyleMixin<FlexBoxStyler>,
+        _FlexBoxStylerPressableMixin<FlexBoxStyler>
     implements StylerFieldMetadata {
   final Prop<StyleSpec<BoxSpec>>? $box;
   final Prop<StyleSpec<FlexSpec>>? $flex;

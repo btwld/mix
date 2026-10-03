@@ -5,7 +5,8 @@ import 'package:mix_annotations/mix_annotations.dart';
 
 import '../../generated_styler_support.dart';
 
-import '../pressable/pressable_widget.dart';
+import '../pressable/pressable_builders.dart';
+
 import '../text/text_spec.dart';
 import 'box_widget.dart';
 
@@ -16,7 +17,7 @@ part 'box_spec.g.dart';
 /// Provides comprehensive box styling including alignment, padding, margin, constraints,
 /// decoration, transformation, and clipping behavior. Used as the resolved form
 /// of [BoxStyle] styling attributes.
-@MixableSpec(target: Box.new)
+@MixableSpec(target: Box.new, extraStylerMixins: [_BoxStylerPressableMixin])
 @immutable
 final class BoxSpec with _$BoxSpec {
   /// Aligns the child within the box.
@@ -68,63 +69,9 @@ final class BoxSpec with _$BoxSpec {
   });
 }
 
-/// Builds interactive boxes from a [BoxStyler].
-extension BoxStylerPressable on BoxStyler {
-  /// Creates a [PressableBox] using this style.
-  ///
-  /// Call this after composing the style; the result is a widget, while the
-  /// original style remains reusable. All interaction options have the same
-  /// behavior and defaults as [PressableBox].
-  ///
-  /// ```dart
-  /// final button = BoxStyler()
-  ///     .padding(.all(16))
-  ///     .color(Colors.blue)
-  ///     .onPressed(.color(Colors.indigo))
-  ///     .pressable(
-  ///       onPress: save,
-  ///       semanticsLabel: 'Save',
-  ///       child: const Text('Save'),
-  ///     );
-  /// ```
-  PressableBox pressable({
-    Key? key,
-    required Widget child,
-    VoidCallback? onPress,
-    VoidCallback? onLongPress,
-    FocusNode? focusNode,
-    bool autofocus = false,
-    bool enableFeedback = false,
-    ValueChanged<bool>? onFocusChange,
-    MouseCursor? mouseCursor,
-    bool canRequestFocus = true,
-    bool excludeFromSemantics = false,
-    String? semanticsLabel,
-    PressableSemanticsRole semanticsRole = .button,
-    FocusOnKeyEventCallback? onKeyEvent,
-    WidgetStatesController? controller,
-    Map<Type, Action<Intent>>? actions,
-    HitTestBehavior hitTestBehavior = .opaque,
-    bool enabled = true,
-  }) => .new(
-    key: key,
-    style: this,
-    onLongPress: onLongPress,
-    focusNode: focusNode,
-    autofocus: autofocus,
-    enableFeedback: enableFeedback,
-    onFocusChange: onFocusChange,
-    onPress: onPress,
-    mouseCursor: mouseCursor,
-    canRequestFocus: canRequestFocus,
-    excludeFromSemantics: excludeFromSemantics,
-    semanticsLabel: semanticsLabel,
-    semanticsRole: semanticsRole,
-    onKeyEvent: onKeyEvent,
-    controller: controller,
-    actions: actions,
-    hitTestBehavior: hitTestBehavior,
-    enabled: enabled,
-    child: child,
-  );
+/// Adds the terminal interactive builder to [BoxStyler].
+// The extraStylerMixins generator hook supplies the owning styler type.
+// ignore: avoid-unused-generics
+mixin _BoxStylerPressableMixin<ST extends Style<BoxSpec>> on Style<BoxSpec> {
+  PressableBoxBuilder pressable() => .new(this);
 }
