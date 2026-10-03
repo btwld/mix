@@ -110,6 +110,14 @@ melos run test:coverage   # With coverage report
 
 ## Git Conventions
 
+**PR plans and review records:**
+- Keep implementation plans in `plans/` using descriptive, dated filenames.
+- Commit and push the plan with the PR implementation; do not leave the only
+  copy in a local workspace or chat.
+- Include relevant review/audit records, validation results and deferred work.
+  Update the plan when the agreed scope changes and link it from the PR body.
+
+
 **Branch naming** (Git Flow prefixes):
 - `feat/` - New features
 - `fix/` - Bug fixes
