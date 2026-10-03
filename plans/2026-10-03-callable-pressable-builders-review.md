@@ -1,9 +1,9 @@
 # Callable pressable builders: review and validation
 
-PR: [#1088](https://github.com/btwld/mix/pull/1088)  
-Reviewed implementation: `cc88dcff9a583b539a6c99803c1d02c3e577b1f9`  
-Base: `40898888f63a01df9f8dadfb2ed325d0eed81926`  
-Plan: [callable pressable builders](2026-10-03-callable-pressable-builders.md)
+- PR: [#1088](https://github.com/btwld/mix/pull/1088)
+- Reviewed implementation: `cc88dcff9a583b539a6c99803c1d02c3e577b1f9`
+- Base: `40898888f63a01df9f8dadfb2ed325d0eed81926`
+- Plan: [callable pressable builders](2026-10-03-callable-pressable-builders.md)
 
 ## Review outcome
 
