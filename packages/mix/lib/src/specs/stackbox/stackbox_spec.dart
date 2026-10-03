@@ -6,6 +6,8 @@ import 'package:mix_annotations/mix_annotations.dart';
 
 import '../../generated_styler_support.dart';
 
+import '../pressable/pressable_builders.dart';
+
 import '../box/box_spec.dart';
 import '../stack/stack_spec.dart';
 import '../text/text_spec.dart';
@@ -18,7 +20,10 @@ part 'stackbox_spec.g.dart';
 /// Provides comprehensive styling for widgets that need both
 /// box decoration and stack layout capabilities. Merges [BoxSpec] and
 /// [StackSpec] into a unified specification.
-@MixableSpec(target: StackBox.new)
+@MixableSpec(
+  target: StackBox.new,
+  extraStylerMixins: [_StackBoxStylerPressableMixin],
+)
 @immutable
 final class StackBoxSpec with _$StackBoxSpec {
   /// Box styling properties for decoration, padding, constraints, etc.
@@ -30,4 +35,13 @@ final class StackBoxSpec with _$StackBoxSpec {
   final StyleSpec<StackSpec>? stack;
 
   const StackBoxSpec({this.box, this.stack});
+}
+
+/// Adds the terminal interactive builder to [StackBoxStyler].
+// The extraStylerMixins generator hook supplies the owning styler type.
+// ignore: avoid-unused-generics
+mixin _StackBoxStylerPressableMixin<ST extends Style<StackBoxSpec>>
+    on Style<StackBoxSpec> {
+  PressableChildrenBuilder pressable() =>
+      .new((children) => StackBox(style: this, children: children));
 }

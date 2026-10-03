@@ -15,6 +15,40 @@ Rules for static factory constructors on Styler classes and Dart 3.12+ dot-short
 
 Requires Dart SDK >=3.12.0 and Flutter >=3.44.0.
 
+## Terminal Pressable Builders
+
+When a Mix styler owns the interactive surface, compose its appearance first,
+then call `.pressable()` with no arguments. The returned immutable builder is
+callable and accepts the content plus the full `Pressable` interaction surface:
+
+```dart
+final save = BoxStyler()
+    .padding(.all(16))
+    .onPressed(.scale(0.96))
+    .pressable();
+
+save(onPress: submit, child: const StyledText('Save'));
+TextStyler().fontSize(18).pressable()('Settings', onPress: openSettings);
+IconStyler().size(24).pressable()(
+  icon: Icons.star,
+  semanticLabel: 'Favorite',
+  onPress: toggleFavorite,
+);
+ImageStyler().fit(.cover).pressable()(
+  image: provider,
+  semanticsLabel: 'Open photo',
+  onPress: openPhoto,
+);
+```
+
+This is a terminal boundary: builders expose no styling methods and do not
+support a second `.pressable()`. Reuse a builder for independent calls, and
+provide callbacks, focus nodes, and controllers per call. Use direct
+`Pressable` when the surface contains arbitrary widget trees or nested controls.
+The callable builder API is only available in the unreleased revision that
+introduces it; published dependency examples should retain direct
+`Pressable`/`PressableBox` forms until that release.
+
 ## The Top-Level Rule
 
 Start ordinary top-level style declarations with an instance constructor, then chain:

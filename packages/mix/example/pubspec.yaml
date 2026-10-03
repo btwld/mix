@@ -1,0 +1,11 @@
+name: mix_pressable_builder_example
+description: Runnable example for Mix callable pressable builders.
+publish_to: none
+environment:
+  sdk: ">=3.12.0 <4.0.0"
+  flutter: ">=3.44.0"
+dependencies:
+  flutter:
+    sdk: flutter
+  mix:
+    path: ..
