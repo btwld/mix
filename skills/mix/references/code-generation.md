@@ -136,6 +136,12 @@ Mix repository, also consult its `guides/mix-widget-variant-constructors.md`
 decision record if present; do not treat a proposed curation rename as shipped
 API unless the current source exposes it.
 
+`@MixWidget` factories continue to return styles in this revision. They do not
+generate or wrap the callable `.pressable()` builders; use a widget-backed
+Styler's terminal builder directly after composing its style. Keep this
+boundary explicit when documenting a recipe so a factory is not mistaken for
+an interactive widget constructor.
+
 ### `@MixableModifier()`
 
 Applied to `WidgetModifier` classes. The modifier class mixes in the generated `_$FooModifier` mixin, and the generator emits both the modifier contract implementation and the matching `FooModifierMix` class.

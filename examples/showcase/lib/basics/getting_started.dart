@@ -76,6 +76,9 @@ class _GettingStartedDemoState extends State<GettingStartedDemo> {
           children: [
             heading('Make it yours.'),
             body('Named styles. A little state. One animated button.'),
+            // The hosted showcase follows the published Mix dependency. The
+            // callable `.pressable()` builder is used in the in-repo example
+            // and becomes available here after its release.
             Pressable(
               onPress: () => setState(() => _saved = !_saved),
               child: button(

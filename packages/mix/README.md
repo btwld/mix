@@ -201,6 +201,36 @@ final buttonStyle = BoxStyler()
 
 Built-in variants include `onHovered`, `onPressed`, `onFocused`, `onDisabled`, `onDark`, `onLight`, `onBreakpoint`, `onMobile`, `onTablet`, `onDesktop`, and platform/context variants.
 
+Finish a composed style with `.pressable()`, then call the returned builder to
+create interactive widgets:
+
+```dart
+final button = buttonStyle.pressable();
+final saveButton = button(
+  onPress: save,
+  semanticsLabel: 'Save',
+  child: const StyledText('Save'),
+);
+
+final title = TextStyler().fontSize(18)('Settings');
+final row = FlexBoxStyler().direction(.horizontal)(
+  children: [const Icon(Icons.settings), title],
+);
+final settings = TextStyler().fontSize(18).pressable()(
+  'Open settings',
+  onPress: openSettings,
+);
+```
+
+The builder is the terminal step in the styling chain and returns a `Pressable`
+whose child is the corresponding styled widget. Box, text, icon, image, and
+the FlexBox, StackBox, WrapBox, and GridBox layout stylers are supported. Every
+call accepts the same interaction, keyboard, focus, semantics, controller, and
+enabled options as `Pressable`. Builders are reusable; callbacks and state are
+provided per call. This API is available in the unreleased revision that adds
+callable builders; keep published Snacks on `Pressable`/`PressableBox` until a
+release containing this API lands.
+
 [Dynamic styling guide →](https://www.fluttermix.com/documentation/mix/guides/dynamic-styling)
 
 ### Design Tokens and Theming
