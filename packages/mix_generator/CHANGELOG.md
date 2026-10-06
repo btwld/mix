@@ -1,7 +1,9 @@
-## Unreleased
+## 2.2.1
 
  - **FIX**: Support analyzer `>=10.0.0 <15.0.0`, including analyzer 14,
    by replacing the removed synthetic-field API with field-origin checks.
+ - **COMPATIBILITY**: The minimum supported analyzer version increases from
+   9.0.0 to 10.0.0. Generated runtime APIs are unchanged.
 
 ## 2.2.0
 
