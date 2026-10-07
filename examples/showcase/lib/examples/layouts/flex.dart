@@ -46,15 +46,15 @@ FlexBoxStyler actionCopy() => FlexBoxStyler()
     .mainAxisSize(.min);
 
 TextStyler actionLabel() =>
-    TextStyler().fontSize(14).fontWeight(FontWeight.w700).color(_ink);
+    TextStyler().fontSize(14).fontWeight(.w700).color(_ink);
 
 TextStyler actionDetail() =>
-    TextStyler().fontSize(12).fontWeight(FontWeight.w500).color(_muted);
+    TextStyler().fontSize(12).fontWeight(.w500).color(_muted);
 
 IconStyler actionIcon() => IconStyler().size(18).color(_blue);
 
 TextStyler flexCaption() =>
-    TextStyler().fontSize(12).fontWeight(FontWeight.w600).color(_muted);
+    TextStyler().fontSize(12).fontWeight(.w600).color(_muted);
 
 class _Picker<T> extends StatelessWidget {
   const _Picker({

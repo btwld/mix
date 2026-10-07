@@ -9,7 +9,7 @@ void main() {
     testWidgets('explicit label typography wins replace=$replace', (
       tester,
     ) async {
-      final common = TextStyler().fontSize(24).fontWeight(FontWeight.w700);
+      final common = TextStyler().fontSize(24).fontWeight(.w700);
       final override = TextStyler()
           .fontSize(17)
           .color(Colors.red)
@@ -22,7 +22,7 @@ void main() {
                 width: 260,
                 height: 200,
                 child: PieChart(
-                  style: PieChartStyler().slice(PieSliceStyler().label(common)),
+                  style: PieChartStyler().slice(.label(common)),
                   slices: [
                     PieSlice(
                       id: 'p',
@@ -38,8 +38,8 @@ void main() {
                 height: 200,
                 child: BarChart(
                   style: BarChartStyler()
-                      .bar(BarStyler().label(common))
-                      .segment(BarSegmentStyler().label(common)),
+                      .bar(.label(common))
+                      .segment(.label(common)),
                   groups: [
                     BarGroup(
                       id: 'g',
@@ -92,10 +92,8 @@ void main() {
   testWidgets('per-slice color preserves common label typography', (
     tester,
   ) async {
-    final common = PieSliceStyler().label(
-      TextStyler().fontSize(24).fontWeight(FontWeight.w700),
-    );
-    final override = PieSliceStyler().label(TextStyler().color(Colors.red));
+    final common = PieSliceStyler().label(.fontSize(24).fontWeight(.w700));
+    final override = PieSliceStyler().label(.color(Colors.red));
     await tester.pumpWidget(
       MaterialApp(
         home: SizedBox(
@@ -147,16 +145,8 @@ void main() {
             height: 280,
             child: BarChart(
               style: BarChartStyler()
-                  .bar(
-                    BarStyler().label(
-                      TextStyler().fontSize(24).fontWeight(FontWeight.w700),
-                    ),
-                  )
-                  .segment(
-                    BarSegmentStyler().label(
-                      TextStyler().fontSize(22).fontWeight(FontWeight.w500),
-                    ),
-                  ),
+                  .bar(.label(.fontSize(24).fontWeight(.w700)))
+                  .segment(.label(.fontSize(22).fontWeight(.w500))),
               groups: [
                 BarGroup(
                   id: 'g',
@@ -166,16 +156,14 @@ void main() {
                       id: 'b',
                       label: 'Bar',
                       toY: 4,
-                      style: BarStyler().label(TextStyler().color(Colors.red)),
+                      style: BarStyler().label(.color(Colors.red)),
                       segments: [
                         BarSegment(
                           id: 's',
                           label: 'Segment',
                           fromY: 0,
                           toY: 4,
-                          style: BarSegmentStyler().label(
-                            TextStyler().color(Colors.blue),
-                          ),
+                          style: BarSegmentStyler().label(.color(Colors.blue)),
                         ),
                       ],
                     ),

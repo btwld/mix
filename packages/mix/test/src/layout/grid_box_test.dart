@@ -587,15 +587,15 @@ void main() {
     test('rejects modifiers, animations, variants, nested branches, empty', () {
       expect(
         () => GridBoxStyler().onConstraints(
-          Breakpoint.maxWidth(400),
+          .maxWidth(400),
           GridBoxStyler().wrap(const WidgetModifierConfig()),
         ),
         throwsA(isA<FlutterError>()),
       );
       expect(
         () => GridBoxStyler().onConstraints(
-          Breakpoint.maxWidth(400),
-          GridBoxStyler().animate(
+          .maxWidth(400),
+          .animate(
             const CurveAnimationConfig(
               duration: Duration(milliseconds: 100),
               curve: Curves.linear,
@@ -606,7 +606,7 @@ void main() {
       );
       expect(
         () => GridBoxStyler().onConstraints(
-          Breakpoint.maxWidth(400),
+          .maxWidth(400),
           GridBoxStyler().onDark(const GridBoxStyler()),
         ),
         throwsA(isA<FlutterError>()),
@@ -614,13 +614,13 @@ void main() {
       expect(
         () => GridBoxStyler()
             .onConstraints(
-              Breakpoint.maxWidth(400),
+              .maxWidth(400),
               const GridBoxStyler(columns: [GridTrack.fr(1)]),
             )
             .onConstraints(
-              Breakpoint.maxWidth(300),
-              GridBoxStyler().onConstraints(
-                Breakpoint.maxWidth(200),
+              .maxWidth(300),
+              .onConstraints(
+                .maxWidth(200),
                 const GridBoxStyler(columns: [GridTrack.fr(1)]),
               ),
             ),
@@ -628,7 +628,7 @@ void main() {
       );
       expect(
         () => GridBoxStyler().onConstraints(
-          Breakpoint.maxWidth(400),
+          .maxWidth(400),
           const GridBoxStyler(),
         ),
         throwsA(isA<FlutterError>()),
@@ -638,13 +638,12 @@ void main() {
     test('merge appends constraint branches and merges geometry', () {
       final a = GridBoxStyler(columns: const [GridTrack.fr(1), GridTrack.fr(1)])
           .onConstraints(
-            Breakpoint.maxWidth(560),
+            .maxWidth(560),
             const GridBoxStyler(columns: [GridTrack.fr(1)]),
           );
-      final b = const GridBoxStyler(columnGap: 8).onConstraints(
-        Breakpoint.maxWidth(400),
-        const GridBoxStyler(columnGap: 4),
-      );
+      final b = const GridBoxStyler(
+        columnGap: 8,
+      ).onConstraints(.maxWidth(400), const GridBoxStyler(columnGap: 4));
 
       final merged = a.merge(b);
       expect(merged.$constraintBranches, hasLength(2));
@@ -653,8 +652,8 @@ void main() {
     });
 
     test('base modifiers merge via MixOps.mergeModifier', () {
-      final base = GridBoxStyler().wrap(WidgetModifierConfig.opacity(0.5));
-      final other = GridBoxStyler().wrap(WidgetModifierConfig.opacity(0.8));
+      final base = GridBoxStyler().wrap(.opacity(0.5));
+      final other = GridBoxStyler().wrap(.opacity(0.8));
       final merged = base.merge(other);
       expect(merged.$modifier, isNotNull);
       // Merged config is a new object combining both.
@@ -679,14 +678,14 @@ void main() {
               GridTrack.fr(fractionalTrack()),
             ],
             rows: [GridTrack.fixed(fixedTrack())],
-            autoRows: GridTrack.fixed(automaticRow()),
+            autoRows: .fixed(automaticRow()),
             columnGap: gap(),
             rowGap: gap(),
           ).onConstraints(
-            const Breakpoint.maxWidth(400),
+            const .maxWidth(400),
             GridBoxStyler(
               columns: [GridTrack.fixed(compactTrack())],
-              autoRows: GridTrack.fixed(automaticRow()),
+              autoRows: .fixed(automaticRow()),
               columnGap: gap(),
               rowGap: gap(),
             ),
@@ -776,19 +775,16 @@ void main() {
                   width: 400,
                   height: 200,
                   child: GridBox(
-                    style:
-                        GridBoxStyler(
-                          columns: [
-                            GridTrack.fixed(expanded ? 200 : 100),
-                            GridTrack.fr(expanded ? 3 : 1),
-                          ],
-                          rows: [GridTrack.fixed(expanded ? 100 : 40)],
-                          autoRows: GridTrack.fixed(expanded ? 80 : 20),
-                          columnGap: expanded ? 40 : 0,
-                          rowGap: expanded ? 20 : 0,
-                        ).animate(
-                          AnimationConfig.linear(const Duration(seconds: 1)),
-                        ),
+                    style: GridBoxStyler(
+                      columns: [
+                        GridTrack.fixed(expanded ? 200 : 100),
+                        GridTrack.fr(expanded ? 3 : 1),
+                      ],
+                      rows: [GridTrack.fixed(expanded ? 100 : 40)],
+                      autoRows: .fixed(expanded ? 80 : 20),
+                      columnGap: expanded ? 40 : 0,
+                      rowGap: expanded ? 20 : 0,
+                    ).animate(.linear(const Duration(seconds: 1))),
                     children: const [
                       SizedBox(key: Key('animated-left')),
                       SizedBox(key: Key('animated-right')),
@@ -1051,7 +1047,7 @@ void main() {
                     height: 100,
                     child: GridBox(
                       style: GridBoxStyler(columns: baseColumns).onBreakpoint(
-                        const Breakpoint.maxWidth(560),
+                        const .maxWidth(560),
                         const GridBoxStyler(columns: narrowColumns),
                       ),
                     ),
@@ -1061,7 +1057,7 @@ void main() {
                     height: 100,
                     child: GridBox(
                       style: GridBoxStyler(columns: baseColumns).onConstraints(
-                        const Breakpoint.maxWidth(560),
+                        const .maxWidth(560),
                         const GridBoxStyler(columns: narrowColumns),
                       ),
                     ),
@@ -1287,11 +1283,11 @@ void main() {
                               GridTrack.fr(2),
                               GridTrack.fr(1),
                             ],
-                            autoRows: const GridTrack.fr(1),
+                            autoRows: const .fr(1),
                             columnGap: 8,
                             rowGap: 8,
                           ).onConstraints(
-                            Breakpoint.maxWidth(560),
+                            .maxWidth(560),
                             const GridBoxStyler(
                               columns: [GridTrack.fr(1)],
                               columnGap: 8,
@@ -1348,11 +1344,11 @@ void main() {
                         GridTrack.fr(1),
                         GridTrack.fr(1),
                       ],
-                      autoRows: const GridTrack.fr(1),
+                      autoRows: const .fr(1),
                       columnGap: 8,
                       rowGap: 8,
                     ).onConstraints(
-                      Breakpoint.maxWidth(560),
+                      .maxWidth(560),
                       const GridBoxStyler(
                         columns: [GridTrack.fr(1)],
                         columnGap: 8,
@@ -1399,7 +1395,7 @@ void main() {
                 GridBox(
                   style: const GridBoxStyler(
                     columns: [GridTrack.fixed(100)],
-                    autoRows: GridTrack.fixed(40),
+                    autoRows: .fixed(40),
                     rowGap: 8,
                   ),
                   children: const [
@@ -1437,7 +1433,7 @@ void main() {
                 child: GridBox(
                   style: const GridBoxStyler(
                     columns: [GridTrack.fixed(100)],
-                    autoRows: GridTrack.fixed(40),
+                    autoRows: .fixed(40),
                     rowGap: 8,
                   ),
                   children: const [
@@ -1607,7 +1603,7 @@ void main() {
       final automatic = await pump(
         const GridBoxStyler(
           columns: [GridTrack.fr(1), GridTrack.fr(1)],
-          autoRows: GridTrack.auto(),
+          autoRows: .auto(),
         ),
       );
       final explicit = await pump(
