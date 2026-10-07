@@ -212,7 +212,16 @@ class TextStyleMix extends Mix<TextStyle>
          debugLabel: Prop.maybe(debugLabel),
          wordSpacing: Prop.maybe(wordSpacing),
          textBaseline: Prop.maybe(textBaseline),
-         shadows: shadows != null ? Prop.mix(ShadowListMix(shadows)) : null,
+         // A `shadowToken.mix()` ref already is a [ShadowListMix] (and a
+         // token-carrying [Prop]); pass it straight to [Prop.mix] so its token
+         // source is preserved instead of being wrapped into a fresh list.
+         shadows: shadows != null
+             ? Prop.mix(
+                 shadows is ShadowListMix
+                     ? shadows as ShadowListMix
+                     : ShadowListMix(shadows),
+               )
+             : null,
          fontFeatures: Prop.maybe(fontFeatures),
          decoration: Prop.maybe(decoration),
          decorationColor: Prop.maybe(decorationColor),
