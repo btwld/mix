@@ -1,35 +1,47 @@
 import 'package:analysis_server_plugin/plugin.dart';
 import 'package:analysis_server_plugin/registry.dart';
 
-import 'src/fixes/mix_prefer_dot_shorthands_fix.dart';
-import 'src/rules/mix_avoid_defining_tokens_within_scope.dart';
-import 'src/rules/mix_avoid_defining_tokens_within_style.dart';
-import 'src/rules/mix_avoid_empty_variants.dart';
-import 'src/rules/mix_avoid_token_ref_outside_mix.dart';
-import 'src/rules/mix_max_number_of_attributes_per_style.dart';
-import 'src/rules/mix_mixable_styler_has_create.dart';
-import 'src/rules/mix_prefer_dot_shorthands.dart';
-import 'src/rules/mix_variants_last.dart';
+import 'src/fixes/use_dot_shorthand.dart';
+import 'src/rules/base_style_after_variant.dart';
+import 'src/rules/inline_token_definition.dart';
+import 'src/rules/long_styler_chain.dart';
+import 'src/rules/missing_create_constructor.dart';
+import 'src/rules/token_reference_outside_mix.dart';
+import 'src/rules/unnecessary_styler_constructor.dart';
+import 'src/rules/unnecessary_type_name.dart';
+import 'src/rules/variants_without_base_style.dart';
 
-final plugin = MixLintPlugin();
-
-class MixLintPlugin extends Plugin {
-  @override
-  void register(PluginRegistry registry) {
-    registry.registerLintRule(MixAvoidDefiningTokensWithinStyle());
-    registry.registerLintRule(MixAvoidDefiningTokensWithinScope());
-    registry.registerLintRule(MixAvoidTokenRefOutsideMix());
-    registry.registerLintRule(MixAvoidEmptyVariants());
-    registry.registerLintRule(MixMaxNumberOfAttributesPerStyle());
-    registry.registerLintRule(MixVariantsLast());
-    registry.registerLintRule(MixMixableStylerHasCreate());
-    registry.registerLintRule(MixPreferDotShorthands());
-    registry.registerFixForRule(
-      MixPreferDotShorthands.code,
-      MixPreferDotShorthandsFix.new,
-    );
-  }
-
+/// The `mix_lint` analyzer plugin.
+///
+/// Rules that catch bugs are registered as warnings, which are on by default.
+/// Style rules are registered as lints, which you enable in
+/// `analysis_options.yaml`. Rules that take options read them from the
+/// top-level `mix_lint:` section of the same file.
+final class MixLintPlugin extends Plugin {
   @override
   String get name => 'mix_lint';
+
+  @override
+  void register(PluginRegistry registry) {
+    // Warnings: on by default.
+    registry
+      ..registerWarningRule(MissingCreateConstructor())
+      ..registerWarningRule(TokenReferenceOutsideMix());
+
+    // Lints: off until enabled in analysis_options.yaml.
+    registry
+      ..registerLintRule(BaseStyleAfterVariant())
+      ..registerLintRule(InlineTokenDefinition())
+      ..registerLintRule(LongStylerChain())
+      ..registerLintRule(UnnecessaryStylerConstructor())
+      ..registerLintRule(UnnecessaryTypeName())
+      ..registerLintRule(VariantsWithoutBaseStyle());
+
+    registry
+      ..registerFixForRule(
+        UnnecessaryStylerConstructor.code,
+        UseDotShorthand.new,
+      )
+      ..registerFixForRule(UnnecessaryTypeName.code, UseDotShorthand.new);
+  }
 }
