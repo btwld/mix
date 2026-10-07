@@ -33,14 +33,7 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
     extends State<StyleAnimationBuilder<S>>
     with TickerProviderStateMixin {
   late StyleAnimationDriver<S> animationDriver;
-
-  @override
-  void initState() {
-    super.initState();
-    final spec = widget.spec;
-    final config = spec.animation;
-    animationDriver = _createAnimationDriver(config: config, initialSpec: spec);
-  }
+  bool _hasInitializedAnimationDriver = false;
 
   StyleAnimationDriver<S> _createAnimationDriver({
     required AnimationConfig? config,
@@ -89,6 +82,24 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
       CurveAnimationConfig() || SpringAnimationConfig() => oldConfig,
       _ => null,
     };
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (!_hasInitializedAnimationDriver) {
+      final spec = widget.spec;
+      animationDriver = _createAnimationDriver(
+        config: spec.animation,
+        initialSpec: spec,
+      );
+      _hasInitializedAnimationDriver = true;
+
+      return;
+    }
+
+    animationDriver.didChangeDependencies();
   }
 
   @override

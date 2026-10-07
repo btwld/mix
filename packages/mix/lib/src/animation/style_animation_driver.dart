@@ -53,6 +53,8 @@ abstract class StyleAnimationDriver<S extends Spec<S>> {
 
   // ignore: no-empty-block
   void didUpdateSpec(StyleSpec<S> oldSpec, StyleSpec<S> newSpec) {}
+  // ignore: no-empty-block
+  void didChangeDependencies() {}
   void updateDriver(AnimationConfig config);
 
   /// Execute the animation (curve vs spring).
@@ -245,14 +247,7 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
   }
 
   void _setUpAnimation() {
-    final specs = config.styles
-        .map((e) => e.resolve(context) as StyleSpec<S>)
-        .toList();
-
-    _tweenSequence = _createTweenSequence(specs, config.curveConfigs);
-
-    // Override the animation to use TweenSequence wrapped in a tween
-    _animation = controller.drive(_PhasedSpecTween(_tweenSequence));
+    _resolveStyles();
 
     config.trigger?.addListener(_onTriggerChanged);
 
@@ -264,6 +259,17 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
         }
       });
     }
+  }
+
+  void _resolveStyles() {
+    final specs = config.styles
+        .map((e) => e.resolve(context) as StyleSpec<S>)
+        .toList();
+
+    _tweenSequence = _createTweenSequence(specs, config.curveConfigs);
+
+    // Override the animation to use TweenSequence wrapped in a tween
+    _animation = controller.drive(_PhasedSpecTween(_tweenSequence));
   }
 
   void _onTriggerChanged() {
@@ -329,6 +335,11 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
     controller.duration = totalDuration;
 
     await controller.forward(from: 0.0);
+  }
+
+  @override
+  void didChangeDependencies() {
+    _resolveStyles();
   }
 
   @override
