@@ -269,6 +269,8 @@ class IconStyler extends MixStyler<IconStyler, IconSpec>
       IconStyler().blendMode(value);
   factory IconStyler.icon(IconData value) => IconStyler().icon(value);
   factory IconStyler.shadow(ShadowMix value) => IconStyler().shadow(value);
+  factory IconStyler.wrap(WidgetModifierConfig value) =>
+      IconStyler().wrap(value);
 
   IconStyler shadow(ShadowMix value) {
     return merge(IconStyler(shadows: [value]));

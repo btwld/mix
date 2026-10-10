@@ -14,6 +14,14 @@ void main() {
       expect(descriptor.forwardingInvocation, 'visibility(value)');
     });
 
+    test('provides canonical wrap factory descriptor for all stylers', () {
+      final descriptor = wrapFactoryDescriptor();
+
+      expect(descriptor.name, 'wrap');
+      expect(descriptor.signature, 'wrap(WidgetModifierConfig value)');
+      expect(descriptor.invocation, 'wrap(value)');
+    });
+
     test(
       'contains the complete handwritten TextStyler convenience surface',
       () {

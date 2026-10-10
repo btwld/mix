@@ -4136,5 +4136,45 @@ void main() {
         );
       },
     );
+
+    test(
+      'emits factory <Styler>.wrap(WidgetModifierConfig value) and resolves .wrap(...) dot shorthand',
+      () async {
+        const input = r'''
+        library spike;
+        import 'package:flutter/foundation.dart';
+        import 'package:flutter/widgets.dart';
+        import 'package:mix/mix.dart';
+        import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
+
+        @MixableSpec()
+        final class LabelSpec extends Spec<LabelSpec> {
+          final String? text;
+          const LabelSpec({this.text});
+        }
+
+        LabelStyler acceptLabel(LabelStyler style) => style;
+        LabelStyler shorthandWrap() =>
+            acceptLabel(.wrap(WidgetModifierConfig()));
+      ''';
+
+        await expectGeneratorOutputResolves(
+          builder: _specStylerPartBuilder(),
+          sources: {
+            ...mixAnnotationsSources,
+            ..._mixSources,
+            ..._flutterResolveStubs,
+            'mix|lib/spike.dart': input,
+          },
+          inputAsset: 'mix|lib/spike.dart',
+          outputAsset: 'mix|lib/spike.g.dart',
+          outputMatcher: contains(
+            'factory LabelStyler.wrap(WidgetModifierConfig value) =>\n'
+            '      LabelStyler().wrap(value);',
+          ),
+        );
+      },
+    );
   });
 }
