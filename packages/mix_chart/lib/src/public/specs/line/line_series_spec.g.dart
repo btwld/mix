@@ -277,6 +277,8 @@ class LineSeriesStyler extends MixStyler<LineSeriesStyler, LineSeriesSpec>
       LineSeriesStyler().aboveArea(value);
   factory LineSeriesStyler.shadow(ShadowMix value) =>
       LineSeriesStyler().shadow(value);
+  factory LineSeriesStyler.wrap(WidgetModifierConfig value) =>
+      LineSeriesStyler().wrap(value);
 
   @override
   Set<String> get $stylerFieldNames => const {

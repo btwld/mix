@@ -213,6 +213,8 @@ class PieSliceStyler extends MixStyler<PieSliceStyler, PieSliceSpec>
       PieSliceStyler().cornerRadius(value);
   factory PieSliceStyler.badgePosition(double value) =>
       PieSliceStyler().badgePosition(value);
+  factory PieSliceStyler.wrap(WidgetModifierConfig value) =>
+      PieSliceStyler().wrap(value);
 
   @override
   Set<String> get $stylerFieldNames => const {

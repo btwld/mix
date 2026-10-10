@@ -355,6 +355,8 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
   }) => StackBoxStyler().transform(value, alignment: alignment);
   factory StackBoxStyler.animate(AnimationConfig value) =>
       StackBoxStyler().animate(value);
+  factory StackBoxStyler.wrap(WidgetModifierConfig value) =>
+      StackBoxStyler().wrap(value);
 
   StackBoxStyler textStyle(TextStyler value) {
     return wrap(WidgetModifierConfig.defaultTextStyler(value));

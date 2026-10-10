@@ -92,6 +92,11 @@ void main() {
           equals(IconStyler(blendMode: BlendMode.multiply)),
         );
       });
+
+      test('wrap', () {
+        final modifier = WidgetModifierConfig.rotate(radians: -0.12);
+        expect(IconStyler.wrap(modifier), equals(IconStyler().wrap(modifier)));
+      });
     });
 
     group('resolved values', () {

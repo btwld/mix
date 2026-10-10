@@ -236,6 +236,8 @@ class ChartAxisStyler extends MixStyler<ChartAxisStyler, ChartAxisSpec>
       ChartAxisStyler().drawBelowEverything(value);
   factory ChartAxisStyler.alignment(ChartAxisLabelAlignment value) =>
       ChartAxisStyler().alignment(value);
+  factory ChartAxisStyler.wrap(WidgetModifierConfig value) =>
+      ChartAxisStyler().wrap(value);
 
   @override
   Set<String> get $stylerFieldNames => const {

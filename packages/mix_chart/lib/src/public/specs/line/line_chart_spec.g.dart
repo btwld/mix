@@ -228,6 +228,8 @@ class LineChartStyler extends MixStyler<LineChartStyler, LineChartSpec>
       LineChartStyler().palette(value);
   factory LineChartStyler.tooltip(ChartTooltipStyler value) =>
       LineChartStyler().tooltip(value);
+  factory LineChartStyler.wrap(WidgetModifierConfig value) =>
+      LineChartStyler().wrap(value);
 
   @override
   Set<String> get $stylerFieldNames => const {

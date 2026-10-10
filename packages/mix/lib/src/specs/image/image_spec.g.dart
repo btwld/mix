@@ -316,6 +316,8 @@ class ImageStyler extends MixStyler<ImageStyler, ImageSpec>
       ImageStyler().isAntiAlias(value);
   factory ImageStyler.matchTextDirection(bool value) =>
       ImageStyler().matchTextDirection(value);
+  factory ImageStyler.wrap(WidgetModifierConfig value) =>
+      ImageStyler().wrap(value);
 
   @override
   Set<String> get $stylerFieldNames => const {
