@@ -202,7 +202,8 @@ typedef _$ImageSpecMethods = _$ImageSpec; // ignore: unused_element
 // SpecStylerGenerator
 // **************************************************************************
 
-class ImageStyler extends MixStyler<ImageStyler, ImageSpec> {
+class ImageStyler extends MixStyler<ImageStyler, ImageSpec>
+    implements StylerFieldMetadata {
   final Prop<ImageProvider<Object>>? $image;
   final Prop<double>? $width;
   final Prop<double>? $height;
@@ -315,6 +316,28 @@ class ImageStyler extends MixStyler<ImageStyler, ImageSpec> {
       ImageStyler().isAntiAlias(value);
   factory ImageStyler.matchTextDirection(bool value) =>
       ImageStyler().matchTextDirection(value);
+
+  @override
+  Set<String> get $stylerFieldNames => const {
+    'image',
+    'width',
+    'height',
+    'color',
+    'repeat',
+    'fit',
+    'alignment',
+    'centerSlice',
+    'filterQuality',
+    'colorBlendMode',
+    'semanticLabel',
+    'excludeFromSemantics',
+    'gaplessPlayback',
+    'isAntiAlias',
+    'matchTextDirection',
+    'animation',
+    'modifier',
+    'variants',
+  };
 
   /// Sets the image.
   ImageStyler image(ImageProvider<Object> value) {

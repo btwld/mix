@@ -15,6 +15,7 @@ void main() {
       expectIdentityStyle(const RowBox().style, const FlexBoxSpec());
       expectIdentityStyle(const ColumnBox().style, const FlexBoxSpec());
       expectIdentityStyle(const StackBox().style, const StackBoxSpec());
+      expectIdentityStyle(const WrapBox().style, const WrapBoxSpec());
     });
 
     test('preserves explicit concrete widget styles', () {
@@ -24,6 +25,7 @@ void main() {
       final imageStyle = ImageStyler().width(200);
       final flexBoxStyle = FlexBoxStyler().direction(Axis.vertical);
       final stackBoxStyle = StackBoxStyler().fit(StackFit.expand);
+      final wrapBoxStyle = WrapBoxStyler().spacing(8);
 
       expect(Box(style: boxStyle).style, same(boxStyle));
       expect(StyledText('', style: textStyle).style, same(textStyle));
@@ -33,6 +35,7 @@ void main() {
       expect(RowBox(style: flexBoxStyle).style, same(flexBoxStyle));
       expect(ColumnBox(style: flexBoxStyle).style, same(flexBoxStyle));
       expect(StackBox(style: stackBoxStyle).style, same(stackBoxStyle));
+      expect(WrapBox(style: wrapBoxStyle).style, same(wrapBoxStyle));
     });
 
     testWidgets('routes styleSpec directly without resolving style', (

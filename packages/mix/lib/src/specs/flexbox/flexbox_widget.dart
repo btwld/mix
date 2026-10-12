@@ -23,10 +23,10 @@ import 'flexbox_spec.dart';
 ///   .direction(Axis.horizontal)
 ///   .mainAxisAlignment(.spaceBetween)
 ///   .crossAxisAlignment(CrossAxisAlignment.center)
-///   .padding(16)
+///   .padding(.all(16))
 ///   .spacing(12)
 ///   .color(Colors.grey.shade100)
-///   .borderRounded(8);
+///   .borderRadius(.circular(8));
 ///
 /// FlexBox(
 ///   style: style,

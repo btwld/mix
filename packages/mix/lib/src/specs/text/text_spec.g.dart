@@ -175,7 +175,8 @@ typedef _$TextSpecMethods = _$TextSpec; // ignore: unused_element
 // **************************************************************************
 
 class TextStyler extends MixStyler<TextStyler, TextSpec>
-    with TextStyleMixin<TextStyler> {
+    with TextStyleMixin<TextStyler>
+    implements StylerFieldMetadata {
   final Prop<TextOverflow>? $overflow;
   final Prop<StrutStyle>? $strutStyle;
   final Prop<TextAlign>? $textAlign;
@@ -364,6 +365,27 @@ class TextStyler extends MixStyler<TextStyler, TextSpec>
       TextStyler(textDirectives: [const SentenceCaseStringDirective()]),
     );
   }
+
+  @override
+  Set<String> get $stylerFieldNames => const {
+    'overflow',
+    'strutStyle',
+    'textAlign',
+    'textScaler',
+    'maxLines',
+    'style',
+    'textWidthBasis',
+    'textHeightBehavior',
+    'textDirection',
+    'softWrap',
+    'textDirectives',
+    'selectionColor',
+    'semanticsLabel',
+    'locale',
+    'animation',
+    'modifier',
+    'variants',
+  };
 
   /// Sets the overflow.
   TextStyler overflow(TextOverflow value) {

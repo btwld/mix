@@ -2,6 +2,13 @@
 
 Three animation systems in Mix, from simple to full control.
 
+## Table of Contents
+
+- [Implicit animations](#implicit-animations)
+- [Phase animations](#phase-animations)
+- [Keyframe animations](#keyframe-animations)
+- [Comparison](#comparison)
+
 ## Implicit Animations
 
 Simplest approach. Call `.animate()` on any Styler — Mix interpolates between old and new values automatically when state or variants change.
@@ -33,7 +40,7 @@ class _ScaleAnimationState extends State<ScaleAnimation> {
         .color(Colors.black)
         .height(100)
         .width(100)
-        .borderRounded(10)
+        .borderRadius(.circular(10))
         .scale(appear ? 1 : 0.1)
         .animate(.easeInOut(1.s));
 
@@ -49,7 +56,7 @@ final style = BoxStyler()
     .color(Colors.black)
     .height(100)
     .width(100)
-    .borderRounded(10)
+    .borderRadius(.circular(10))
     .scale(1)
     .onHovered(
       BoxStyler()
@@ -89,14 +96,14 @@ final style = BoxStyler()
     .color(Colors.deepPurple)
     .height(100)
     .width(100)
-    .borderRounded(40)
+    .borderRadius(.circular(40))
     .phaseAnimation(
       trigger: _isExpanded,  // Listenable; each notification starts one run
       phases: AnimationPhases.values,
       styleBuilder: (phase, style) => switch (phase) {
         .initial => style.scale(1),
         .compress => style.scale(0.75).color(Colors.red.shade800),
-        .expanded => style.scale(1.25).borderRounded(20).color(Colors.yellow.shade300),
+        .expanded => style.scale(1.25).borderRadius(.circular(20)).color(Colors.yellow.shade300),
       },
       configBuilder: (phase) => switch (phase) {
         .initial => CurveAnimationConfig.springWithDampingRatio(800.ms, ratio: 0.3),
@@ -167,6 +174,28 @@ Each track represents one animatable property:
 `values.get<T>(key)` reads by the track `id`.
 
 Keyframes within a track run in sequence; tracks run in parallel.
+
+### Spinning a gradient
+
+Drive a `GradientRotation` from a looping track. The gradient shorthands take `transform`, so there is no need to drop to `gradient(SweepGradientMix(...))`:
+
+```dart
+final style = BoxStyler()
+    .size(120, 120)
+    .shape(.circle())
+    .keyframeAnimation(
+      timeline: [
+        KeyframeTrack<double>('turn', [.linear(2 * math.pi, 2.s)], initial: 0),
+      ],
+      styleBuilder: (values, style) => style.sweepGradient(
+        colors: [Colors.cyan, Colors.purple, Colors.cyan],
+        stops: [0.0, 0.5, 1.0],
+        transform: GradientRotation(values.get<double>('turn')),
+      ),
+    );
+```
+
+`GradientRotation` takes radians and rotates around the paint bounds' center. The same `transform:` parameter exists on `linearGradient`, `radialGradient`, and the `foreground*Gradient` variants.
 
 ## Comparison
 

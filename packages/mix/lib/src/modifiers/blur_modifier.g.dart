@@ -8,22 +8,26 @@ part of 'blur_modifier.dart';
 
 mixin _$BlurModifier implements WidgetModifier<BlurModifier>, Diagnosticable {
   double get sigma;
+  TileMode get tileMode;
 
   @override
   Type get type => BlurModifier;
 
   @override
-  BlurModifier copyWith({double? sigma}) {
-    return BlurModifier(sigma ?? this.sigma);
+  BlurModifier copyWith({double? sigma, TileMode? tileMode}) {
+    return BlurModifier(sigma ?? this.sigma, tileMode ?? this.tileMode);
   }
 
   @override
   BlurModifier lerp(BlurModifier? other, double t) {
-    return BlurModifier(MixOps.lerp(sigma, other?.sigma, t));
+    return BlurModifier(
+      MixOps.lerp(sigma, other?.sigma, t),
+      MixOps.lerpSnap(tileMode, other?.tileMode, t),
+    );
   }
 
   @override
-  List<Object?> get props => [sigma];
+  List<Object?> get props => [sigma, tileMode];
 
   @override
   bool operator ==(Object other) {
@@ -67,35 +71,47 @@ mixin _$BlurModifier implements WidgetModifier<BlurModifier>, Diagnosticable {
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    properties.add(DoubleProperty('sigma', sigma));
+    properties
+      ..add(DoubleProperty('sigma', sigma))
+      ..add(DiagnosticsProperty('tileMode', tileMode));
   }
 }
 
 class BlurModifierMix extends ModifierMix<BlurModifier> with Diagnosticable {
   final Prop<double>? sigma;
+  final Prop<TileMode>? tileMode;
 
-  const BlurModifierMix.create({this.sigma});
+  const BlurModifierMix.create({this.sigma, this.tileMode});
 
-  BlurModifierMix({double? sigma}) : this.create(sigma: Prop.maybe(sigma));
+  BlurModifierMix({double? sigma, TileMode? tileMode})
+    : this.create(sigma: Prop.maybe(sigma), tileMode: Prop.maybe(tileMode));
 
   @override
   BlurModifier resolve(BuildContext context) {
-    return BlurModifier(MixOps.resolve(context, sigma));
+    return BlurModifier(
+      MixOps.resolve(context, sigma),
+      MixOps.resolve(context, tileMode),
+    );
   }
 
   @override
   BlurModifierMix merge(BlurModifierMix? other) {
     if (other == null) return this;
 
-    return BlurModifierMix.create(sigma: MixOps.merge(sigma, other.sigma));
+    return BlurModifierMix.create(
+      sigma: MixOps.merge(sigma, other.sigma),
+      tileMode: MixOps.merge(tileMode, other.tileMode),
+    );
   }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('sigma', sigma));
+    properties
+      ..add(DiagnosticsProperty('sigma', sigma))
+      ..add(DiagnosticsProperty('tileMode', tileMode));
   }
 
   @override
-  List<Object?> get props => [sigma];
+  List<Object?> get props => [sigma, tileMode];
 }

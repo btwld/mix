@@ -1,5 +1,5 @@
 interface:
   display_name: "Mix"
-  short_description: "Work with Mix Flutter styles, specs, and codegen."
+  short_description: "Build Flutter UI with Mix styles and codegen"
   brand_color: "#13B9FD"
-  default_prompt: "Use Mix to build a responsive Flutter card style."
+  default_prompt: "Use $mix to build this Flutter interface with composable Mix stylers, variants, and tokens."

@@ -438,85 +438,28 @@ class WidgetVisitor extends RecursiveAstVisitor<void> {
 
   void _extractConstructorParams(ConstructorDeclaration constructor) {
     for (final param in constructor.parameters.parameters) {
-      if (param is DefaultFormalParameter) {
-        final normalParam = param.parameter;
-        String paramName = '';
-        String paramType = 'dynamic';
+      final paramName = param.name?.lexeme ?? '';
+      if (paramName == 'key') continue;
 
-        if (normalParam is SimpleFormalParameter) {
-          paramName = normalParam.name?.lexeme ?? '';
-          paramType = normalParam.type?.toSource() ?? 'dynamic';
-        } else if (normalParam is SuperFormalParameter) {
-          paramName = normalParam.name.lexeme;
-          paramType = _resolveSuperParamType(
-            paramName,
-            normalParam.type?.toSource(),
-          );
-        } else if (normalParam is FieldFormalParameter) {
-          paramName = normalParam.name.lexeme;
-          paramType =
-              normalParam.type?.toSource() ??
-              fieldTypes[paramName] ??
-              'dynamic';
-        }
-
-        // Skip 'key' parameter
-        if (paramName == 'key') continue;
-
-        final defaultValue = param.defaultValue?.toSource();
-        final isRequired = param.isRequired;
-
-        constructorParams.add(
-          ConstructorParam(
-            name: paramName,
-            type: paramType,
-            isRequired: isRequired,
-            defaultValue: defaultValue,
-          ),
-        );
-      } else if (param is SimpleFormalParameter) {
-        final paramName = param.name?.lexeme ?? '';
-        final paramType = param.type?.toSource() ?? 'dynamic';
-
-        // Skip 'key' parameter
-        if (paramName == 'key') continue;
-
-        constructorParams.add(
-          ConstructorParam(name: paramName, type: paramType, isRequired: true),
-        );
-      } else if (param is SuperFormalParameter) {
-        final paramName = param.name.lexeme;
-        final paramType = _resolveSuperParamType(
+      final declaredType = param.type?.toSource();
+      final paramType = switch (param) {
+        SuperFormalParameter() => _resolveSuperParamType(
           paramName,
-          param.type?.toSource(),
-        );
+          declaredType,
+        ),
+        FieldFormalParameter() =>
+          declaredType ?? fieldTypes[paramName] ?? 'dynamic',
+        _ => declaredType ?? 'dynamic',
+      };
 
-        // Skip super parameters that we don't want to document
-        if (paramName == 'key') continue;
-
-        constructorParams.add(
-          ConstructorParam(
-            name: paramName,
-            type: paramType,
-            isRequired: param.isRequired,
-          ),
-        );
-      } else if (param is FieldFormalParameter) {
-        final paramName = param.name.lexeme;
-        final paramType =
-            param.type?.toSource() ?? fieldTypes[paramName] ?? 'dynamic';
-
-        // Skip 'key' parameter
-        if (paramName == 'key') continue;
-
-        constructorParams.add(
-          ConstructorParam(
-            name: paramName,
-            type: paramType,
-            isRequired: param.isRequired,
-          ),
-        );
-      }
+      constructorParams.add(
+        ConstructorParam(
+          name: paramName,
+          type: paramType,
+          isRequired: param.isRequired,
+          defaultValue: param.defaultClause?.value.toSource(),
+        ),
+      );
     }
   }
 
@@ -596,7 +539,7 @@ class StylerVisitor extends RecursiveAstVisitor<void> {
       _currentSource = node.name.lexeme;
 
       // Extract public methods from mixin
-      for (final member in node.body.members) {
+      for (final member in (node.body as BlockClassBody).members) {
         if (member is MethodDeclaration) {
           if (!member.isStatic &&
               !member.isGetter &&
@@ -632,42 +575,15 @@ class StylerVisitor extends RecursiveAstVisitor<void> {
     final parameters = <MethodParam>[];
     if (method.parameters != null) {
       for (final param in method.parameters!.parameters) {
-        if (param is DefaultFormalParameter) {
-          final normalParam = param.parameter;
-          String paramName = '';
-          String paramType = 'dynamic';
-
-          if (normalParam is SimpleFormalParameter) {
-            paramName = normalParam.name?.lexeme ?? '';
-            paramType = normalParam.type?.toSource() ?? 'dynamic';
-          }
-
-          final defaultValue = param.defaultValue?.toSource();
-          final isRequired = param.isRequired;
-          final isNamed = param.isNamed;
-
-          parameters.add(
-            MethodParam(
-              name: paramName,
-              type: paramType,
-              isRequired: isRequired,
-              isNamed: isNamed,
-              defaultValue: defaultValue,
-            ),
-          );
-        } else if (param is SimpleFormalParameter) {
-          final paramName = param.name?.lexeme ?? '';
-          final paramType = param.type?.toSource() ?? 'dynamic';
-
-          parameters.add(
-            MethodParam(
-              name: paramName,
-              type: paramType,
-              isRequired: true,
-              isNamed: false,
-            ),
-          );
-        }
+        parameters.add(
+          MethodParam(
+            name: param.name?.lexeme ?? '',
+            type: param.type?.toSource() ?? 'dynamic',
+            isRequired: param.isRequired,
+            isNamed: param.isNamed,
+            defaultValue: param.defaultClause?.value.toSource(),
+          ),
+        );
       }
     }
 

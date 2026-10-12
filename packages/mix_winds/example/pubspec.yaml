@@ -1,0 +1,39 @@
+name: mix_winds_example
+description: "Demo app showing mix_winds output next to real Tailwind CSS references."
+publish_to: "none"
+version: 0.1.0+1
+
+environment:
+  sdk: ">=3.12.0 <4.0.0"
+  flutter: ">=3.44.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  mix_winds:
+    path: ..
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - "assets/images/flowbite-card-hero.png"
+    # Source-backed showcase snippets. The browser reads the same fixtures that
+    # are compiled and parity-tested instead of maintaining copied examples.
+    - "lib/advanced_parity_preview.dart"
+    - "real_tailwind/advanced-examples.html"
+  fonts:
+    - family: TwParityRoboto
+      fonts:
+        - asset: "assets/fonts/roboto/Roboto[wdth,wght].ttf"
+          weight: 400
+        - asset: "assets/fonts/roboto/Roboto[wdth,wght].ttf"
+          weight: 500
+        - asset: "assets/fonts/roboto/Roboto[wdth,wght].ttf"
+          weight: 600
+        - asset: "assets/fonts/roboto/Roboto[wdth,wght].ttf"
+          weight: 700

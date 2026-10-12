@@ -4,6 +4,7 @@ library;
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 
+import '../checkers.dart';
 import '../curated/type_metadata.dart';
 import '../errors.dart';
 import 'type_helpers.dart';
@@ -26,7 +27,11 @@ String deriveStylerName(String specName) {
 ///
 /// Returns an empty list when the class has no unnamed constructor. Fails via
 /// [fail] when a named parameter is missing a matching field declaration.
-List<FieldModel> extractSpecFields(ClassElement classElement, String specName) {
+List<FieldModel> extractSpecFields(
+  ClassElement classElement,
+  String specName, {
+  LibraryElement? visibleFrom,
+}) {
   final constructor = classElement.unnamedConstructor;
   if (constructor == null) return [];
 
@@ -42,7 +47,11 @@ List<FieldModel> extractSpecFields(ClassElement classElement, String specName) {
       fail(classElement, 'Field $paramName not found in $specName');
     }
 
-    return FieldModel.fromElement(field, stylerName: stylerName);
+    return FieldModel.fromElement(
+      field,
+      stylerName: stylerName,
+      visibleFrom: visibleFrom ?? classElement.library,
+    );
   }).toList();
 }
 
@@ -59,6 +68,20 @@ class FieldModel {
 
   /// The list element type when [isList] is true.
   final String? listElementType;
+
+  /// The spec type argument name `X` when the field type is Mix's
+  /// `StyleSpec<X>`, or `null` otherwise.
+  ///
+  /// Analyzer-derived (URL-checked against `package:mix`, so same-named user
+  /// classes never match); synthesized models must set it explicitly.
+  final String? styleSpecArgument;
+
+  /// The resolved spec element inside Mix's `StyleSpec<X>`, when available.
+  ///
+  /// The source spec remains resolvable even when its generated Styler does
+  /// not, which lets later generator stages derive the Styler's public surface
+  /// during clean same-package builds.
+  final InterfaceElement? styleSpecElement;
 
   /// The type emitted in generated `copyWith` and `lerp` methods.
   final String effectiveSpecType;
@@ -80,6 +103,8 @@ class FieldModel {
     required this.typeName,
     required this.isList,
     this.listElementType,
+    this.styleSpecArgument,
+    this.styleSpecElement,
     required this.effectiveSpecType,
     required this.isLerpable,
     required this.diagnosticKind,
@@ -91,6 +116,7 @@ class FieldModel {
   factory FieldModel.fromElement(
     FieldElement element, {
     required String stylerName,
+    LibraryElement? visibleFrom,
   }) {
     final field = extractField(element);
     final type = field.type;
@@ -100,7 +126,10 @@ class FieldModel {
     final isList = _isList(type);
     final listElementType = isList ? _getListElementType(type) : null;
 
-    final effectiveSpecType = _getEffectiveSpecType(element);
+    final effectiveSpecType = _getEffectiveSpecType(
+      element,
+      visibleFrom ?? element.library,
+    );
     final isLerpable = _isLerpable(typeName, isList, listElementType);
     final diagnosticKind = diagnosticKindFor(typeName, isList: isList);
 
@@ -111,11 +140,15 @@ class FieldModel {
         ? flagDescriptionFor(name)
         : null;
 
+    final styleSpec = _styleSpecOf(type);
+
     return FieldModel(
       name: name,
       typeName: typeName,
       isList: isList,
       listElementType: listElementType,
+      styleSpecArgument: styleSpec?.name,
+      styleSpecElement: styleSpec?.element,
       effectiveSpecType: effectiveSpecType,
       isLerpable: isLerpable,
       diagnosticKind: diagnosticKind,
@@ -140,6 +173,21 @@ bool _isList(DartType type) {
   return type.isDartCoreList;
 }
 
+/// The spec type argument name `X` of Mix's `StyleSpec<X>`, or `null` when
+/// [type] is not that `StyleSpec` or its argument is not an interface type.
+({String name, InterfaceElement element})? _styleSpecOf(DartType type) {
+  if (type is! InterfaceType) return null;
+  if (!styleSpecChecker.isExactlyType(type)) return null;
+  if (type.typeArguments.length != 1) return null;
+
+  final argument = type.typeArguments.single;
+
+  if (argument is! InterfaceType) return null;
+  final name = argument.element.name;
+
+  return name == null ? null : (name: name, element: argument.element);
+}
+
 String? _getListElementType(DartType type) {
   if (type is! InterfaceType) return null;
   if (!type.isDartCoreList) return null;
@@ -148,8 +196,8 @@ String? _getListElementType(DartType type) {
   return getBaseTypeName(type.typeArguments.first);
 }
 
-String _getEffectiveSpecType(FieldElement element) {
-  return visibleTypeCodeForField(element, visibleFrom: element.library);
+String _getEffectiveSpecType(FieldElement element, LibraryElement visibleFrom) {
+  return visibleTypeCodeForField(element, visibleFrom: visibleFrom);
 }
 
 bool _isLerpable(String typeName, bool isList, String? listElementType) {

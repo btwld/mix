@@ -150,7 +150,8 @@ class BoxStyler extends MixStyler<BoxStyler, BoxSpec>
         BorderStyleMixin<BoxStyler>,
         BorderRadiusStyleMixin<BoxStyler>,
         ShadowStyleMixin<BoxStyler>,
-        TransformStyleMixin<BoxStyler> {
+        TransformStyleMixin<BoxStyler>
+    implements StylerFieldMetadata {
   final Prop<AlignmentGeometry>? $alignment;
   final Prop<EdgeInsetsGeometry>? $padding;
   final Prop<EdgeInsetsGeometry>? $margin;
@@ -293,12 +294,14 @@ class BoxStyler extends MixStyler<BoxStyler, BoxSpec>
     AlignmentGeometry? begin,
     AlignmentGeometry? end,
     TileMode? tileMode,
+    GradientTransform? transform,
   }) => BoxStyler().linearGradient(
     colors: colors,
     stops: stops,
     begin: begin,
     end: end,
     tileMode: tileMode,
+    transform: transform,
   );
   factory BoxStyler.radialGradient({
     required List<Color> colors,
@@ -308,6 +311,7 @@ class BoxStyler extends MixStyler<BoxStyler, BoxSpec>
     AlignmentGeometry? focal,
     double? focalRadius,
     TileMode? tileMode,
+    GradientTransform? transform,
   }) => BoxStyler().radialGradient(
     colors: colors,
     stops: stops,
@@ -316,6 +320,7 @@ class BoxStyler extends MixStyler<BoxStyler, BoxSpec>
     focal: focal,
     focalRadius: focalRadius,
     tileMode: tileMode,
+    transform: transform,
   );
   factory BoxStyler.sweepGradient({
     required List<Color> colors,
@@ -324,6 +329,7 @@ class BoxStyler extends MixStyler<BoxStyler, BoxSpec>
     double? startAngle,
     double? endAngle,
     TileMode? tileMode,
+    GradientTransform? transform,
   }) => BoxStyler().sweepGradient(
     colors: colors,
     stops: stops,
@@ -331,6 +337,7 @@ class BoxStyler extends MixStyler<BoxStyler, BoxSpec>
     startAngle: startAngle,
     endAngle: endAngle,
     tileMode: tileMode,
+    transform: transform,
   );
   factory BoxStyler.foregroundLinearGradient({
     required List<Color> colors,
@@ -338,12 +345,14 @@ class BoxStyler extends MixStyler<BoxStyler, BoxSpec>
     AlignmentGeometry? begin,
     AlignmentGeometry? end,
     TileMode? tileMode,
+    GradientTransform? transform,
   }) => BoxStyler().foregroundLinearGradient(
     colors: colors,
     stops: stops,
     begin: begin,
     end: end,
     tileMode: tileMode,
+    transform: transform,
   );
   factory BoxStyler.foregroundRadialGradient({
     required List<Color> colors,
@@ -353,6 +362,7 @@ class BoxStyler extends MixStyler<BoxStyler, BoxSpec>
     AlignmentGeometry? focal,
     double? focalRadius,
     TileMode? tileMode,
+    GradientTransform? transform,
   }) => BoxStyler().foregroundRadialGradient(
     colors: colors,
     stops: stops,
@@ -361,6 +371,7 @@ class BoxStyler extends MixStyler<BoxStyler, BoxSpec>
     focal: focal,
     focalRadius: focalRadius,
     tileMode: tileMode,
+    transform: transform,
   );
   factory BoxStyler.foregroundSweepGradient({
     required List<Color> colors,
@@ -369,6 +380,7 @@ class BoxStyler extends MixStyler<BoxStyler, BoxSpec>
     double? startAngle,
     double? endAngle,
     TileMode? tileMode,
+    GradientTransform? transform,
   }) => BoxStyler().foregroundSweepGradient(
     colors: colors,
     stops: stops,
@@ -376,6 +388,7 @@ class BoxStyler extends MixStyler<BoxStyler, BoxSpec>
     startAngle: startAngle,
     endAngle: endAngle,
     tileMode: tileMode,
+    transform: transform,
   );
   factory BoxStyler.transform(Matrix4 value, {Alignment alignment = .center}) =>
       BoxStyler().transform(value, alignment: alignment);
@@ -390,6 +403,22 @@ class BoxStyler extends MixStyler<BoxStyler, BoxSpec>
   BoxStyler transform(Matrix4 value, {Alignment alignment = .center}) {
     return merge(BoxStyler(transform: value, transformAlignment: alignment));
   }
+
+  @override
+  Set<String> get $stylerFieldNames => const {
+    'alignment',
+    'padding',
+    'margin',
+    'constraints',
+    'decoration',
+    'foregroundDecoration',
+    'transform',
+    'transformAlignment',
+    'clipBehavior',
+    'animation',
+    'modifier',
+    'variants',
+  };
 
   /// Sets the alignment.
   BoxStyler alignment(AlignmentGeometry value) {

@@ -168,7 +168,8 @@ typedef _$IconSpecMethods = _$IconSpec; // ignore: unused_element
 // SpecStylerGenerator
 // **************************************************************************
 
-class IconStyler extends MixStyler<IconStyler, IconSpec> {
+class IconStyler extends MixStyler<IconStyler, IconSpec>
+    implements StylerFieldMetadata {
   final Prop<Color>? $color;
   final Prop<double>? $size;
   final Prop<double>? $weight;
@@ -272,6 +273,26 @@ class IconStyler extends MixStyler<IconStyler, IconSpec> {
   IconStyler shadow(ShadowMix value) {
     return merge(IconStyler(shadows: [value]));
   }
+
+  @override
+  Set<String> get $stylerFieldNames => const {
+    'color',
+    'size',
+    'weight',
+    'grade',
+    'opticalSize',
+    'shadows',
+    'textDirection',
+    'applyTextScaling',
+    'fill',
+    'semanticsLabel',
+    'opacity',
+    'blendMode',
+    'icon',
+    'animation',
+    'modifier',
+    'variants',
+  };
 
   /// Sets the color.
   IconStyler color(Color value) {

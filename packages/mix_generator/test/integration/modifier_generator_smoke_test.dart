@@ -193,6 +193,44 @@ class OpacityModifierMix extends ModifierMix<OpacityModifier>
 
 void main() {
   group('ModifierGenerator', () {
+    test('ignores static fields and fields induced by accessors', () async {
+      const body = r'''
+@MixableModifier()
+final class OpacityModifier with _$OpacityModifier {
+  static const double defaultOpacity = 1.0;
+
+  @override
+  final double opacity;
+
+  const OpacityModifier([double? opacity])
+    : opacity = opacity ?? defaultOpacity;
+
+  double get doubledOpacity => opacity * 2;
+
+  set ignoredOpacity(double value) {}
+
+  @override
+  Widget build(Widget child) => child;
+}
+''';
+
+      await expectGeneratorOutputResolves(
+        builder: partBuilder(const ModifierGenerator()),
+        sources: {
+          ..._modifierSupportSources,
+          'mix_generator|lib/modifier_case.dart': _modifierSource(body),
+        },
+        inputAsset: 'mix_generator|lib/modifier_case.dart',
+        outputAsset: 'mix_generator|lib/modifier_case.g.dart',
+        outputMatcher: allOf([
+          contains('List<Object?> get props => [opacity];'),
+          isNot(contains('doubledOpacity')),
+          isNot(contains('ignoredOpacity')),
+          isNot(contains('defaultOpacity')),
+        ]),
+      );
+    });
+
     test('emits resolving spec-style modifier output', () async {
       const body = r'''
 @MixableModifier()

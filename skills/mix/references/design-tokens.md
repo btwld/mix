@@ -2,6 +2,17 @@
 
 Centralized visual properties via `MixToken` and `MixScope`.
 
+## Table of Contents
+
+- [Overview](#overview)
+- [Token workflow](#token-workflow)
+- [Built-in token types](#built-in-token-types)
+- [MixScope](#mixscope)
+- [Theme switching](#theme-switching)
+- [Custom token types](#custom-token-types)
+- [Programmatic resolution](#programmatic-resolution)
+- [Material integration](#mixscopewithmaterial)
+
 ## Overview
 
 Design tokens define visual properties (colors, typography, spacing) in a centralized, swappable way. Mix provides token types and `MixScope` (an `InheritedModel`) to provide values to the widget tree.
@@ -23,7 +34,7 @@ MixScope(
 // 3. Use in styles — call() creates a token reference
 final style = BoxStyler()
     .color($primary())
-    .paddingAll($spacingMd());
+    .padding(.all($spacingMd()));
 ```
 
 The `()` call syntax on tokens creates a type-specific reference (`ColorRef`, `DoubleRef`, `RadiusRef`, etc.) that the `Prop` system recognizes as a token source and resolves from `MixScope` during style resolution.

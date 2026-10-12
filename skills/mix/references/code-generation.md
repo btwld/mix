@@ -2,6 +2,16 @@
 
 Annotations, generators, and the codegen workflow in Mix.
 
+## Table of Contents
+
+- [Spec-driven generation](#current-default-spec-driven-styler-generation)
+- [Annotations](#annotations)
+- [File structure](#file-structure-per-widget-spec)
+- [Type metadata](#type-metadata-registry)
+- [Run code generation](#running-code-generation)
+- [Box reference implementation](#reference-implementation-box)
+- [Generator flags](#generator-flags)
+
 ## Current Default: Spec-Driven Styler Generation
 
 For widget-backed specs, prefer `@MixableSpec(target: Widget.new)`. The generator emits both:
@@ -47,6 +57,10 @@ Optional method flags:
 - `GeneratedSpecMethods.skipLerp`
 
 With `target: Widget.new`, it also drives generated Styler and `call()` support from the target widget constructor.
+The target can be any `Widget` constructor with a named `style` parameter that
+accepts the generated Styler; extending `StyleWidget` is not required. A
+`styleSpec` parameter must be optional because generated calls omit it.
+Direct, uninstantiated generic targets are supported; generated `call()` methods preserve and forward their type parameters and bounds. Instantiated targets such as `Widget<int>.new` and generic constructor tear-offs through typedefs are rejected because their substitutions are not yet supported. A target type parameter named `Key` is also rejected when the constructor forwards Flutter's `key`, because it would shadow the generated `Key? key` parameter.
 
 ### `@MixableStyler()` Legacy
 
@@ -56,17 +70,71 @@ Use legacy `@MixableStyler()` only when maintaining an existing handwritten Styl
 
 ### `@MixWidget()`
 
-Applied to a top-level variable or function returning a `Style<S>`. It generates a `StatelessWidget` wrapper whose `build()` delegates to the styler's `call()`.
+Apply to a top-level variable or function returning a `Style<S>`. It generates a
+`StatelessWidget` wrapper whose `build()` delegates to the styler's `call()` or
+to an explicitly configured plain Widget target.
 
 ```dart
 @MixWidget()
-final cardStyle = BoxStyler().paddingAll(16).borderRounded(12);
+final cardStyle = BoxStyler().padding(.all(16)).borderRadius(.circular(12));
 // Generates `class Card extends StatelessWidget { ... }`.
 ```
 
 By default, the widget name is derived from a lowerCamelCase element name ending in `Style`: `cardStyle` becomes `Card`, and leading underscores are preserved. Override the name with `@MixWidget(name: 'X')`.
 
-`@MixWidget` complements `@MixableSpec(target:)`; it wraps a style factory after a Styler exists, while `@MixableSpec(target:)` generates the Styler and its `call()` support. Mix's own specs use `@MixableSpec(target:)`; `@MixWidget` is mainly a downstream-author convenience.
+For a plain Widget with a compatible named `style` parameter, pass its
+constructor tear-off through `target`. The Widget does not need to extend
+`StyleWidget` or expose a Styler extension `call()` method. This direct-target
+path ships in `mix_generator 2.2.0-beta.2` with
+`mix_annotations 2.2.0-beta.1`:
+
+```dart
+@MixWidget(
+  name: 'AppButton',
+  target: PlainButton.new,
+  widgetParameters: .only({'label', 'onPressed'}),
+  factoryParameters: .only({'variant', 'size'}),
+)
+ButtonStyler appButtonStyle({
+  ButtonVariant variant = .solid,
+  ButtonSize size = .medium,
+  bool highContrast = false,
+}) => switch (variant) {
+  .solid => solidButtonStyle(size, highContrast: highContrast),
+  .soft => softButtonStyle(size, highContrast: highContrast),
+};
+```
+
+Use `widgetParameters` to curate parameters read from the Styler `call()` or
+plain target constructor. Use `factoryParameters` to curate the recipe
+function's own parameters. Required parameters must remain selected; omitted
+optional parameters use their original defaults. The target's `style` and
+`styleSpec` parameters never become generated wrapper fields.
+
+When a recipe function has a named, non-nullable enum parameter named exactly
+`variant` and that parameter remains selected by `factoryParameters`, generate
+one named constructor per accessible enum value while retaining the unnamed
+constructor:
+
+```dart
+AppButton.solid(label: 'Save')
+AppButton.soft(label: 'Save')
+AppButton(variant: selectedVariant, label: 'Save')
+```
+
+Do not add an `EnumVariant` mixin solely for this feature. The enum is a recipe
+switch key and does not enter Mix's runtime variant system. Nullable,
+positional, non-enum, or differently named parameters retain the unnamed-only
+constructor shape. Preserve the unnamed constructor because runtime-selected
+variants cannot choose a named constructor at compile time.
+
+`@MixWidget` complements `@MixableSpec(target:)`; it wraps a style recipe after
+a Styler exists, while `@MixableSpec(target:)` generates the Styler and its
+`call()` support. Mix's own specs use `@MixableSpec(target:)`; `@MixWidget` is
+mainly a downstream-author convenience. When changing this contract inside the
+Mix repository, also consult its `guides/mix-widget-variant-constructors.md`
+decision record if present; do not treat a proposed curation rename as shipped
+API unless the current source exposes it.
 
 ### `@MixableModifier()`
 
@@ -125,7 +193,16 @@ final EdgeInsetsGeometry? padding;
 
 @MixableField(skipMixin: true)
 final Matrix4? transform;
+
+@MixableField(forwardStyler: true)
+final StyleSpec<LabelSpec>? label;
 ```
+
+Nested `StyleSpec<XSpec>` fields derive `XStyler` by convention for generated
+constructors and setters. Use `setterType` only to override that convention.
+Use `forwardStyler: true` to project a nested Styler's canonical factories and
+fluent anchors onto the parent Styler; add `stylerSurface` only when generation
+needs an explicit compatible surface during a same-package clean build.
 
 For legacy handwritten stylers:
 

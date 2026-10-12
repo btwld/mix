@@ -49,18 +49,28 @@ class StylerGenerator extends GeneratorForAnnotation<MixableStyler> {
     ClassElement classElement,
     String stylerName,
   ) {
-    return classElement.fields
+    for (final member in [...classElement.fields, ...classElement.methods]) {
+      if (member.name != stylerFieldMetadataGetter) continue;
+      fail(
+        member,
+        '`$stylerFieldMetadataGetter` is reserved for generated Styler metadata. '
+        'Rename the Styler member.',
+        todo: 'Rename the Styler member.',
+      );
+    }
+
+    final fields = classElement.fields
         .where((f) => f.name?.startsWith(r'$') ?? false)
-        .where((f) => !_isBaseField(f.name!))
-        .map((field) {
-          return StylerFieldModel.fromElement(field, stylerName: stylerName);
-        })
-        .toList();
+        .where((f) => !_isBaseField(f.name!));
+
+    return fields.map((field) {
+      return StylerFieldModel.fromElement(field, stylerName: stylerName);
+    }).toList();
   }
 
   bool _isBaseField(String name) {
     // Base fields come from `Style<T>` and are handled separately.
-    return const {r'$variants', r'$modifier', r'$animation'}.contains(name);
+    return stylerBaseFieldNames.any((fieldName) => name == '\$$fieldName');
   }
 
   MixableStylerAnnotationConfig _extractAnnotationConfig(
@@ -75,7 +85,6 @@ class StylerGenerator extends GeneratorForAnnotation<MixableStyler> {
     required ClassElement stylerElement,
     required String stylerName,
     required InterfaceElement specElement,
-    required String specName,
   }) {
     final specAnnotation = mixableSpecAnnotationChecker.firstAnnotationOf(
       specElement,
@@ -85,8 +94,8 @@ class StylerGenerator extends GeneratorForAnnotation<MixableStyler> {
     return buildMixableSpecTargetCall(
       annotation: ConstantReader(specAnnotation),
       specElement: specElement,
-      specName: specName,
       stylerName: stylerName,
+      allowExactGeneratedStyler: false,
       hostElement: stylerElement,
       hostLibrary: stylerElement.library,
       validateTargetVisibility: true,
@@ -130,7 +139,6 @@ class StylerGenerator extends GeneratorForAnnotation<MixableStyler> {
       stylerElement: classElement,
       stylerName: stylerName,
       specElement: specType.element,
-      specName: specName,
     );
     final fields = _extractFields(classElement, stylerName);
     final config = _extractAnnotationConfig(annotation);

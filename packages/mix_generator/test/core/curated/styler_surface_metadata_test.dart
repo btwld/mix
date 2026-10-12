@@ -3,6 +3,17 @@ import 'package:test/test.dart';
 
 void main() {
   group('styler surface metadata', () {
+    test('retargets aliased factory invocations for forwarding anchors', () {
+      const descriptor = StylerFactoryDescriptor(
+        name: 'visibility',
+        signature: 'visibility(bool value)',
+        invocation: 'visible(value)',
+      );
+
+      expect(descriptor.invocationName, 'visible');
+      expect(descriptor.forwardingInvocation, 'visibility(value)');
+    });
+
     test(
       'contains the complete handwritten TextStyler convenience surface',
       () {
@@ -36,12 +47,17 @@ void main() {
         stylerSurfaceFor('StackBoxStyler')!.generatesAnimateFactory,
         isTrue,
       );
+      expect(
+        stylerSurfaceFor('WrapBoxStyler')!.generatesAnimateFactory,
+        isTrue,
+      );
 
       expect(stylerSurfaceFor('FlexStyler')!.generatesAnimateFactory, isFalse);
       expect(stylerSurfaceFor('IconStyler')!.generatesAnimateFactory, isFalse);
       expect(stylerSurfaceFor('ImageStyler')!.generatesAnimateFactory, isFalse);
       expect(stylerSurfaceFor('StackStyler')!.generatesAnimateFactory, isFalse);
       expect(stylerSurfaceFor('TextStyler')!.generatesAnimateFactory, isFalse);
+      expect(stylerSurfaceFor('WrapStyler')!.generatesAnimateFactory, isFalse);
     });
 
     test('gates icon single-shadow convenience to IconStyler only', () {
@@ -58,6 +74,8 @@ void main() {
         'TextStyler',
         'FlexBoxStyler',
         'StackBoxStyler',
+        'WrapStyler',
+        'WrapBoxStyler',
       ]) {
         expect(
           stylerSurfaceFor(stylerName)!.generatesSingleShadowConvenience,
@@ -85,6 +103,7 @@ void main() {
     test('contains compound metadata for nested styler delegation', () {
       final flexBox = compoundStylerSurfaceFor('FlexBoxStyler');
       final stackBox = compoundStylerSurfaceFor('StackBoxStyler');
+      final wrapBox = compoundStylerSurfaceFor('WrapBoxStyler');
 
       expect(flexBox, isNotNull);
       expect(
@@ -110,6 +129,62 @@ void main() {
       );
       expect(stackBox.methodNames, containsAll(['stack', 'stackClipBehavior']));
       expect(stackBox.methodNames, isNot(contains('box')));
+
+      expect(wrapBox, isNotNull);
+      expect(
+        wrapBox!.constructorParamNames,
+        orderedEquals([
+          'decoration',
+          'foregroundDecoration',
+          'padding',
+          'margin',
+          'alignment',
+          'constraints',
+          'transform',
+          'transformAlignment',
+          'clipBehavior',
+          'direction',
+          'wrapAlignment',
+          'spacing',
+          'runAlignment',
+          'runSpacing',
+          'crossAxisAlignment',
+          'textDirection',
+          'verticalDirection',
+          'wrapClipBehavior',
+        ]),
+      );
+      expect(
+        wrapBox.factoryNames,
+        containsAll([
+          'alignment',
+          'clipBehavior',
+          'direction',
+          'wrapAlignment',
+          'spacing',
+          'runAlignment',
+          'runSpacing',
+          'crossAxisAlignment',
+          'textDirection',
+          'verticalDirection',
+          'wrapClipBehavior',
+        ]),
+      );
+      expect(wrapBox.ownerMixinNames, contains('WrapStyleMixin'));
+      expect(wrapBox.methodNames, contains('flow'));
+      expect(wrapBox.methodNames, isNot(contains('box')));
+    });
+
+    test('contains WrapStyler mixin and alias metadata', () {
+      final wrap = stylerSurfaceFor('WrapStyler');
+
+      expect(wrap, isNotNull);
+      expect(wrap!.ownerMixinNames, contains('WrapStyleMixin'));
+      expect(
+        wrap.factoryNames,
+        containsAll(['wrapAlignment', 'wrapClipBehavior']),
+      );
+      expect(wrap.methodNames, contains('flow'));
     });
   });
 }

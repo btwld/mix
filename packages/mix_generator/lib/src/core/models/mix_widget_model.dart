@@ -51,6 +51,32 @@ class WidgetCallTypeParam {
       boundCode == null ? name : '$name extends $boundCode';
 }
 
+/// One named constructor generated from an enum-valued factory parameter.
+class WidgetVariantConstructor {
+  /// The named constructor identifier (for example, `solid`).
+  final String name;
+
+  /// Dart source code for the enum value assigned by the constructor.
+  ///
+  /// The enum type is already resolved for the annotated library's import
+  /// scope (for example, `variants.ButtonVariant.solid`).
+  final String valueCode;
+
+  /// Doc comment copied from the enum constant, including `///` markers.
+  final String? doc;
+
+  /// A source-safe `@Deprecated(...)` annotation, when the enum constant is
+  /// deprecated.
+  final String? deprecationCode;
+
+  const WidgetVariantConstructor({
+    required this.name,
+    required this.valueCode,
+    this.doc,
+    this.deprecationCode,
+  });
+}
+
 /// The complete shape of a generated `@MixWidget` class.
 class MixWidgetModel {
   /// The generated `StatelessWidget` class name (e.g. `Card`).
@@ -84,9 +110,23 @@ class MixWidgetModel {
   /// and the generated `build()` forwards `key: this.key`.
   final bool stylerCallForwardsKey;
 
+  /// Plain widget type instantiated directly, or `null` for the legacy Styler
+  /// `call()` path.
+  final String? targetTypeReference;
+
+  /// Named constructor suffix for [targetTypeReference], or `null` for `.new`.
+  final String? targetConstructorName;
+
   /// Doc comment carried over from the annotated element (with leading
   /// `///` markers intact), or `null` when the element has no doc.
   final String? doc;
+
+  /// Factory parameter initialized by [variantConstructors], or `null` when
+  /// this widget has no convention-derived variant constructors.
+  final String? variantParamName;
+
+  /// Named constructors derived from the enum values of [variantParamName].
+  final List<WidgetVariantConstructor> variantConstructors;
 
   const MixWidgetModel({
     required this.widgetName,
@@ -96,7 +136,11 @@ class MixWidgetModel {
     required this.callParams,
     this.callTypeParams = const [],
     required this.stylerCallForwardsKey,
+    this.targetTypeReference,
+    this.targetConstructorName,
     this.doc,
+    this.variantParamName,
+    this.variantConstructors = const [],
   });
 
   String _typeParameterSuffix(String Function(WidgetCallTypeParam) render) {
@@ -110,7 +154,14 @@ class MixWidgetModel {
   ///
   /// The builder applies Dart constructor syntax ordering when emitting code:
   /// all positional params first, then named params.
-  List<WidgetCallParam> get allParams => [...factoryParams, ...callParams];
+  List<WidgetCallParam> get allParams {
+    final seen = <String>{};
+
+    return [
+      for (final parameter in [...factoryParams, ...callParams])
+        if (seen.add(parameter.name)) parameter,
+    ];
+  }
 
   /// Type parameter declaration suffix for the generated widget class.
   String get typeParameterDeclaration =>

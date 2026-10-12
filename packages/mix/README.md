@@ -1,13 +1,13 @@
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/leoafarias/mix/main/assets/dark.svg">
-  <img alt="Mix logo" src="https://raw.githubusercontent.com/leoafarias/mix/main/assets/light.svg">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/btwld/mix/main/assets/dark.svg">
+  <img alt="Mix logo" src="https://raw.githubusercontent.com/btwld/mix/main/assets/light.svg">
 </picture>
 
 ![GitHub stars](https://img.shields.io/github/stars/btwld/mix?style=for-the-badge&logo=GitHub&logoColor=black&labelColor=white&color=dddddd)
 [![Pub Version](https://img.shields.io/pub/v/mix?label=version&style=for-the-badge)](https://pub.dev/packages/mix/changelog)
 ![Pub Likes](https://img.shields.io/pub/likes/mix?label=Pub%20Likes&style=for-the-badge)
 ![Pub Points](https://img.shields.io/pub/points/mix?label=Pub%20Points&style=for-the-badge)
-[![MIT Licence](https://img.shields.io/github/license/leoafarias/mix?style=for-the-badge&longCache=true)](https://opensource.org/licenses/mit-license.php)
+[![MIT Licence](https://img.shields.io/github/license/btwld/mix?style=for-the-badge&longCache=true)](https://opensource.org/license/mit)
 [![Awesome Flutter](https://img.shields.io/badge/awesome-flutter-purple?longCache=true&style=for-the-badge)](https://github.com/Solido/awesome-flutter)
 
 **Mix** is a styling system for Flutter that separates style definitions from widget structure. It provides a composable, type-safe way to define and apply styles using a fluent API, design tokens, and context-aware variants.
@@ -44,8 +44,8 @@ Mix solves these by giving you a dedicated styling layer that stays consistent a
 
 ### Prerequisites
 
-- **Dart SDK**: 3.11.0 or higher
-- **Flutter**: 3.41.0 or higher
+- **Dart SDK**: 3.12.0 or higher
+- **Flutter**: 3.44.0 or higher
 
 ### Installation
 
@@ -71,7 +71,7 @@ final cardStyle = BoxStyler()
     .size(240, 100)
     .color(Colors.blue)
     .alignment(.center)
-    .borderRounded(12)
+    .borderRadius(.circular(12))
     .border(.color(Colors.black).width(1).style(.solid));
 
 Box(
@@ -92,8 +92,8 @@ The default constructor gives you a chainable API:
 ```dart
 final style = BoxStyler()
     .color(Colors.blue)
-    .paddingAll(16)
-    .borderRounded(8);
+    .padding(.all(16))
+    .borderRadius(.circular(8));
 ```
 
 Use this when defining styles with direct values and chaining properties.
@@ -125,7 +125,7 @@ final boxStyle = BoxStyler()
     .height(100)
     .width(100)
     .color(Colors.purple)
-    .borderRounded(10);
+    .borderRadius(.circular(10));
 
 final textStyle = TextStyler()
     .fontSize(20)
@@ -134,14 +134,57 @@ final textStyle = TextStyler()
 
 // Compose from a base style
 final base = BoxStyler()
-    .paddingX(16)
-    .paddingY(8)
-    .borderRounded(8)
+    .padding(.horizontal(16))
+    .padding(.vertical(8))
+    .borderRadius(.circular(8))
     .color(Colors.black);
 final solid = base.color(Colors.blue);
 ```
 
-[Styling guide →](https://fluttermix.com/docs/guides/styling)
+[Styling guide →](https://www.fluttermix.com/documentation/mix/guides/styling)
+
+### Wrapping Layouts
+
+`WrapBox` combines Box chrome with Flutter's run-based `Wrap` layout. Its Wrap
+fields are available directly on `WrapBoxStyler`:
+
+```dart
+final tagCloud = WrapBoxStyler()
+    .padding(.all(16))
+    .spacing(8)
+    .runSpacing(10)
+    .wrapAlignment(WrapAlignment.center);
+
+WrapBox(style: tagCloud, children: tags);
+```
+
+On the composite styler, `alignment` and `clipBehavior` configure the outer
+Box; `wrapAlignment` and `wrapClipBehavior` configure the inner Wrap. Use
+`.flow(WrapStyler(...))` when direct nested-style composition is needed. See
+the runnable [WrapBox example](../../examples/showcase/docs/layouts.md).
+
+### Grid Layouts
+
+`GridBox` uses fixed and fractional columns plus vertical auto rows, and can
+adapt to the width offered by its own parent. Dot shorthand keeps nested track
+and breakpoint declarations compact. Omit `autoRows` (or set `.autoRows(.auto())`)
+when row height should follow the tallest child:
+
+```dart
+final GridBoxStyler dashboardGrid = .equalColumns(3)
+    .gap(16)
+    .onConstraints(
+  .maxWidth(720),
+  .equalColumns(1).gap(12),
+);
+
+GridBox(style: dashboardGrid, children: panels);
+```
+
+`onConstraints` observes local Grid constraints; `onBreakpoint` continues to
+observe the viewport. Compatible track, row, and gap changes can use Mix's
+implicit `animate` API. See the [Grid layout guide](doc/grid-layout.md) and the
+runnable [Grid examples](../../examples/showcase/docs/layouts.md).
 
 ### Dynamic Styling (Variants)
 
@@ -150,7 +193,7 @@ Styles adapt to interactions and context (hover, press, dark mode, breakpoints) 
 ```dart
 final buttonStyle = BoxStyler()
     .height(50)
-    .borderRounded(25)
+    .borderRadius(.circular(25))
     .color(Colors.blue)
     .onHovered(.color(Colors.blue.shade700))
     .onDark(.color(Colors.blue.shade200));
@@ -158,7 +201,7 @@ final buttonStyle = BoxStyler()
 
 Built-in variants include `onHovered`, `onPressed`, `onFocused`, `onDisabled`, `onDark`, `onLight`, `onBreakpoint`, `onMobile`, `onTablet`, `onDesktop`, and platform/context variants.
 
-[Dynamic styling guide →](https://fluttermix.com/docs/guides/dynamic-styling)
+[Dynamic styling guide →](https://www.fluttermix.com/documentation/mix/guides/dynamic-styling)
 
 ### Design Tokens and Theming
 
@@ -176,10 +219,10 @@ MixScope(
 
 final style = BoxStyler()
     .color($primary())
-    .paddingAll($spacingMd());
+    .padding(.all($spacingMd()));
 ```
 
-[Design tokens guide →](https://fluttermix.com/docs/guides/design-token)
+[Design tokens guide →](https://www.fluttermix.com/documentation/mix/guides/design-token)
 
 ### Animations
 
@@ -187,19 +230,19 @@ final style = BoxStyler()
 - **Phase** — Multi-step flows (e.g. tap → compress → expand) with `.phaseAnimation(...)`
 - **Keyframe** — Full control with tracks and keyframes
 
-[Animations guide →](https://fluttermix.com/docs/guides/animations)
+[Animations guide →](https://www.fluttermix.com/documentation/mix/guides/animations)
 
 ### Widget Modifiers
 
 Some visual effects — opacity, clipping, visibility — aren't style properties. Modifiers let you declare widget wrappers inside your style so they stay composable and animatable.
 
-[Widget modifiers guide →](https://fluttermix.com/docs/guides/widget-modifiers)
+[Widget modifiers guide →](https://www.fluttermix.com/documentation/mix/guides/widget-modifiers)
 
 ### Directives
 
 Directives transform values (text casing, number scaling, color adjustments) at resolve time, keeping transformations inside the style so they survive merging.
 
-[Directives guide →](https://fluttermix.com/docs/guides/directives)
+[Directives guide →](https://www.fluttermix.com/documentation/mix/guides/directives)
 
 ### Utility-First Approach
 
@@ -207,13 +250,13 @@ Stylers expose small, composable utilities you combine. The API follows Flutter 
 
 ```dart
 BoxStyler()
-    .paddingAll(20)
-    .paddingX(16)
-    .paddingY(8)
+    .padding(.all(20))
+    .padding(.horizontal(16))
+    .padding(.vertical(8))
     .border(.color(Colors.red));
 ```
 
-[Utility-first overview →](https://fluttermix.com/docs/overview/utility-first)
+[Utility-first overview →](https://www.fluttermix.com/documentation/mix/overview/utility-first)
 
 ## Ecosystem
 
@@ -222,19 +265,19 @@ BoxStyler()
 | [mix_annotations](https://pub.dev/packages/mix_annotations) | Annotations for code generation |
 | [mix_generator](https://pub.dev/packages/mix_generator) | build_runner generator for specs |
 | [mix_lint](https://pub.dev/packages/mix_lint) | Custom linter rules |
-| [mix_tailwinds](https://pub.dev/packages/mix_tailwinds) | Utility-first styling inspired by Tailwind CSS |
+| [mix_winds](https://pub.dev/packages/mix_winds) | Utility-first styling inspired by Tailwind CSS |
 
 ## Documentation
 
-- [Introduction](https://fluttermix.com/docs/overview/introduction)
-- [Getting started](https://fluttermix.com/docs/overview/getting-started)
-- [Styling](https://fluttermix.com/docs/guides/styling)
-- [Dynamic styling](https://fluttermix.com/docs/guides/dynamic-styling)
-- [Design tokens](https://fluttermix.com/docs/guides/design-token)
-- [Animations](https://fluttermix.com/docs/guides/animations)
-- [Widget modifiers](https://fluttermix.com/docs/guides/widget-modifiers)
-- [Directives](https://fluttermix.com/docs/guides/directives)
-- [Widgets](https://fluttermix.com/docs/widgets/box) (Box, Text, Icon, FlexBox, Stack, etc.)
+- [Introduction](https://www.fluttermix.com/documentation/mix/overview/introduction)
+- [Getting started](https://www.fluttermix.com/documentation/mix/overview/getting-started)
+- [Styling](https://www.fluttermix.com/documentation/mix/guides/styling)
+- [Dynamic styling](https://www.fluttermix.com/documentation/mix/guides/dynamic-styling)
+- [Design tokens](https://www.fluttermix.com/documentation/mix/guides/design-token)
+- [Animations](https://www.fluttermix.com/documentation/mix/guides/animations)
+- [Widget modifiers](https://www.fluttermix.com/documentation/mix/guides/widget-modifiers)
+- [Directives](https://www.fluttermix.com/documentation/mix/guides/directives)
+- [Widgets](https://www.fluttermix.com/documentation/mix/widgets/box) (Box, Text, Icon, FlexBox, WrapBox, GridBox, StackBox, etc.)
 
 ## Contributors
 

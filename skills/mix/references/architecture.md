@@ -2,6 +2,16 @@
 
 Core abstractions of the Mix styling system.
 
+## Table of Contents
+
+- [Spec](#spec--immutable-resolved-data)
+- [Style and Styler](#style--styler--immutable-fluent-builder)
+- [Prop](#propv--unified-property-system)
+- [StyleWidget](#stylewidget--base-widget)
+- [Resolution pipeline](#resolution-pipeline)
+- [WidgetModifier](#widgetmodifier--widget-wrapper)
+- [Mix values](#mixv--resolvable-dto)
+
 ## Spec — Immutable Resolved Data
 
 **File:** `packages/mix/lib/src/core/spec.dart`

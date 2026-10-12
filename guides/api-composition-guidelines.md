@@ -20,6 +20,11 @@ Stack layout
 - Chaining: `StackStyler().alignment(.center).fit(.expand)`
 - Constructor bundle: `StackStyler(alignment: Alignment.center, fit: StackFit.expand)`
 
+Widget modifiers
+- Chain on `WidgetModifierConfig` inside `wrap`: `BoxStyler().wrap(.mouseCursor(SystemMouseCursors.click))`
+- Every built-in modifier has both a factory and a matching chain method; reserve `.modifier(...)`/`.modifiers([...])` for custom modifiers
+- `.reset()` drops the modifiers chained before it in the same configuration
+
 Composition
 - Reuse fragments: `final card = base.merge(elevated);`
 - Everyday props: use chaining instead of merging multiple Styler instances
@@ -82,6 +87,20 @@ final interactive = BoxStyler().color(Colors.blue)
   .border(.color(Colors.white).width(1))
   .onHovered(.shadow(.color(Colors.black12).blurRadius(8)))
   .onDisabled(.color(Colors.grey));
+```
+
+Example F — Widget modifiers
+```dart
+final scrollableRow = BoxStyler().wrap(
+  .scrollView(scrollDirection: Axis.horizontal, padding: .all(8)),
+);
+
+// Chain modifiers on a single configuration
+final interactiveCard = BoxStyler().wrap(
+  WidgetModifierConfig.opacity(0.9)
+      .mouseCursor(SystemMouseCursors.click)
+      .clipRRect(borderRadius: BorderRadiusMix.circular(12)),
+);
 ```
 
 ---

@@ -16,6 +16,16 @@ sealed class StyleElement {
   const StyleElement();
 }
 
+/// Field metadata exposed by Styler classes produced by Mix's generator.
+///
+/// Protocols and tooling can use this capability to inspect a Styler's complete
+/// field surface without duplicating generated field names. Handwritten Stylers
+/// can implement this interface when they want to expose the same metadata.
+abstract interface class StylerFieldMetadata {
+  /// Names of every field represented by the Styler's [Mix.props].
+  Set<String> get $stylerFieldNames;
+}
+
 /// Base class for style classes that can be resolved to specifications.
 ///
 /// Provides variant support, modifiers, and animation configuration for styled elements.
@@ -66,51 +76,93 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
 
   @internal
   Set<WidgetState> get widgetStates {
-    return ($variants ?? [])
-        .where((v) => v.variant is WidgetStateVariant)
-        .map((v) => (v.variant as WidgetStateVariant).state)
-        .toSet();
+    final states = <WidgetState>{};
+    // Identity, not equality, and it earns its keep twice over:
+    //  1. Cycles. `$variants` is stored by reference, so a caller can pass a
+    //     list to a styler constructor and then append the styler to that same
+    //     list. Value equality would also recurse forever comparing the cycle.
+    //  2. Sharing. A style instance can be shared between multiple context-
+    //     variant branches, so identity avoids visiting it more than once.
+    final visited = Set<Style<S>>.identity();
+
+    void collectDependencies(Style<S> style) {
+      if (!visited.add(style)) return;
+
+      final variants = style.$variants;
+      if (variants == null) return;
+
+      for (final variantStyle in variants) {
+        // Only ContextVariant-headed entries can activate through StyleBuilder,
+        // which always resolves with empty namedVariants: NamedVariant branches
+        // are inert until applyVariants hoists their value to the top level, and
+        // ContextVariantBuilder ignores its stored placeholder value at
+        // resolution. Walking them would mount the interaction detector for
+        // states that can never fire.
+        if (variantStyle.variant case final ContextVariant variant) {
+          states.addAll(variant.widgetStateDependencies);
+          collectDependencies(variantStyle.value);
+        }
+      }
+    }
+
+    collectDependencies(this);
+
+    return states;
   }
 
   /// Merges all active variants with their nested variants recursively.
   ///
-  /// This method evaluates which variants should be active based on the current
-  /// context and named variants, then recursively processes nested variants
-  /// within each active variant's style. The result is a fully merged style
-  /// with all applicable variants applied.
+  /// Evaluates which variants are active in [context] and against
+  /// [namedVariants], then recursively resolves the nested variants inside each
+  /// active variant's style.
   ///
-  /// Variant priority order (lowest to highest):
-  /// 1. ContextVariant and NamedVariant (applied first)
-  /// 2. StyleVariation (applied second)
-  /// 3. WidgetStateVariant (applied last, highest priority)
+  /// Active variants apply in two priority groups, lowest first: those that
+  /// declare no [ContextVariant.widgetStateDependencies], then those that do.
+  /// Within a group, the variant declared last merges last and so wins on the
+  /// properties they share.
   @visibleForTesting
   Style<S> mergeActiveVariants(
     BuildContext context, {
     required Set<NamedVariant> namedVariants,
   }) {
-    // Filter variants that should be active in this context
-    final activeVariants = ($variants ?? [])
-        .where(
-          (variantAttr) => switch (variantAttr.variant) {
-            (ContextVariant variant) => variant.when(context),
-            (NamedVariant variant) => namedVariants.contains(variant),
-            (ContextVariantBuilder _) => true,
-          },
-        )
-        .toList();
+    final variants = $variants;
+    if (variants == null) return this;
 
-    // Sort by priority: WidgetStateVariant gets applied last (highest priority)
-    activeVariants.sort(
-      (a, b) => Comparable.compare(
-        a.variant is WidgetStateVariant ? 1 : 0,
-        b.variant is WidgetStateVariant ? 1 : 0,
-      ),
-    );
+    // Partition, don't sort: declaration order inside a group is load-bearing,
+    // and List.sort is only stable by accident of the insertion sort it falls
+    // back to below 32 elements.
+    final lowPriority = <VariantStyle<S>>[];
+    final highPriority = <VariantStyle<S>>[];
+
+    for (final variantAttr in variants) {
+      final variant = variantAttr.variant;
+
+      final isActive = switch (variant) {
+        ContextVariant() => variant.when(context),
+        NamedVariant() => namedVariants.contains(variant),
+        ContextVariantBuilder() => true,
+      };
+      if (!isActive) continue;
+
+      // Keyed off the declaration, not the class: FocusVisibleVariant is not a
+      // WidgetStateVariant yet reads WidgetState.focused just the same, and
+      // NotVariant forwards whatever its inner variant reads.
+      //
+      // The getter stays on ContextVariant rather than moving up to Variant
+      // because ContextVariant is also the only kind widgetStates walks, so a
+      // dependency declared on any other kind would never get tracking
+      // installed.
+      final readsWidgetState =
+          variant is ContextVariant &&
+          variant.widgetStateDependencies.isNotEmpty;
+
+      (readsWidgetState ? highPriority : lowPriority).add(variantAttr);
+    }
 
     // Extract the style from each active variant
     final stylesToMerge = <(Style<S>, bool)>[]; // (style, isFromStyleVariation)
 
-    for (final variantAttr in activeVariants) {
+    for (final variantAttr in lowPriority.followedBy(highPriority)) {
       final result = switch (variantAttr.variant) {
         ContextVariantBuilder variant => (
           variant.build(context) as Style<S>,
@@ -245,6 +297,18 @@ abstract class ModifierMix<S extends WidgetModifier<S>> extends Mix<S>
   Type get mergeKey => S;
 }
 
+enum _VariantMergeNamespace { named, context, builder }
+
+// Keep diagnostic labels out of semantic identity. Record equality delegates
+// to the value semantics already defined by each supported variant kind.
+Object _variantMergeKey(Variant variant) {
+  return switch (variant) {
+    NamedVariant(:final name) => (_VariantMergeNamespace.named, name),
+    ContextVariantBuilder(:final fn) => (_VariantMergeNamespace.builder, fn),
+    ContextVariant() => (_VariantMergeNamespace.context, variant),
+  };
+}
+
 /// Variant wrapper for conditional styling
 final class VariantStyle<S extends Spec<S>> extends Mixable<StyleSpec<S>>
     with Equatable
@@ -273,10 +337,12 @@ final class VariantStyle<S extends Spec<S>> extends Mixable<StyleSpec<S>>
       return VariantStyle(variant, _style);
     }
 
-    if (variant.key != other.variant.key) {
+    if (mergeKey != other.mergeKey) {
       throw ArgumentError(
         'Cannot merge VariantStyle with different variants. '
-        'Attempted to merge variant "${variant.key}" with "${other.variant.key}".',
+        '${variant.runtimeType}(key: "${variant.key}") and '
+        '${other.variant.runtimeType}(key: "${other.variant.key}") do not '
+        'have the same semantic merge identity.',
       );
     }
 
@@ -286,6 +352,7 @@ final class VariantStyle<S extends Spec<S>> extends Mixable<StyleSpec<S>>
   @override
   List<Object?> get props => [variant, _style];
 
+  /// Opaque semantic identity used when merging variant style fragments.
   @override
-  Object get mergeKey => variant.key;
+  Object get mergeKey => _variantMergeKey(variant);
 }

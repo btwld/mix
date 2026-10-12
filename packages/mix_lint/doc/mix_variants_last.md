@@ -8,8 +8,8 @@ Ensures that variant methods (`onHovered`, `onPressed`, `onFocused`, `onDisabled
 final style = BoxStyler()
     .color(Colors.red)
     .onHovered(.color(Colors.blue))
-    .paddingAll(16)
-    .borderRounded(8)
+    .padding(.all(16))
+    .borderRadius(.circular(8))
     .onPressed(.color(Colors.green));
 ```
 
@@ -18,8 +18,8 @@ final style = BoxStyler()
 ```dart
 final style = BoxStyler()
     .color(Colors.red)
-    .paddingAll(16)
-    .borderRounded(8)
+    .padding(.all(16))
+    .borderRadius(.circular(8))
     .onHovered(.color(Colors.blue))
     .onPressed(.color(Colors.green));
 ```

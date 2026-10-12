@@ -71,6 +71,19 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
     };
   }
 
+  /// The config to keep using when a style drops its animation config.
+  ///
+  /// Implicit configs (curve, spring) keep animating toward the new spec, so a
+  /// variant that removes its animation still transitions back smoothly.
+  /// Keyframe and phase configs produce their own specs and may loop forever,
+  /// so they are dropped and the new spec is applied directly.
+  static AnimationConfig? _fallbackConfig(AnimationConfig? oldConfig) {
+    return switch (oldConfig) {
+      CurveAnimationConfig() || SpringAnimationConfig() => oldConfig,
+      _ => null,
+    };
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -107,7 +120,7 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
     } else {
       animationDriver.dispose();
       animationDriver = _createAnimationDriver(
-        config: config ?? oldConfig,
+        config: config ?? _fallbackConfig(oldConfig),
         initialSpec: oldWidget.spec,
       );
     }

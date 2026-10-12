@@ -4,6 +4,8 @@ import 'generator_flags.dart';
 ///
 /// [methods] specifies generated methods within the annotated class.
 /// [components] specifies external generated code like utility classes or extensions.
+/// The source field name `stylerFieldNames` is reserved for generated Styler
+/// metadata.
 class MixableSpec {
   final int methods;
   final int components;
@@ -32,6 +34,11 @@ const mixableSpec = MixableSpec();
 /// - `resolve()` method for resolving to StyleSpec
 /// - `debugFillProperties()` for diagnostics
 /// - `props` getter for equality comparison
+///
+/// The generated mixin always includes `$stylerFieldNames` metadata, even when
+/// [methods] disables `props` or every optional method. A custom `props`
+/// implementation must preserve that complete field surface. The member name
+/// `$stylerFieldNames` is reserved for this metadata.
 ///
 /// Example usage:
 /// ```dart
@@ -65,15 +72,31 @@ const mixableStyler = MixableStyler();
 /// [skipMixin] prevents spec-driven stylers from inferring an owner mixin.
 /// [factoryName] optionally overrides the generated field factory name.
 /// [skipFactory] prevents spec-driven stylers from generating a field factory.
+/// [forwardStyler] projects the canonical named-factory surface of a nested
+/// `StyleSpec<XSpec>` field onto its generated parent Styler.
+/// [stylerSurface] optionally restricts forwarding to the generated Styler
+/// surface of another `@MixableSpec` type, such as `BoxSpec` for a
+/// `StyleSpec<FlexBoxSpec>` field.
 ///
 /// For spec-driven stylers ([MixableSpec]), [setterType] also drives the
 /// generated field factory and `Prop` wrapping: a nested `StyleSpec<S>` field
 /// can expose its `Styler` so it accepts fluent values (e.g.
-/// `UIAppBarStyler.container(BoxStyler().paddingAll(8))`).
+/// `UIAppBarStyler.container(BoxStyler().padding(.all(8)))`).
+///
+/// Nested `StyleSpec<XSpec>` fields derive `XStyler` automatically by the
+/// generator's naming convention, so [setterType] is only needed when the
+/// styler name deviates from that convention. The derived name is not
+/// validated during generation (same-package generated stylers are not
+/// resolvable then); a wrong convention surfaces as an analyzer error in the
+/// generated output.
 ///
 /// When used on a `@MixableSpec` field, `setterType` must be a Mix/Styler type
 /// (i.e. assignable to `Mix<...>`), because generated constructors wrap the
-/// argument with `Prop.maybeMix(...)`.
+/// argument with `Prop.maybeMix(...)`. When combined with [forwardStyler], the
+/// override must also be a concrete class with an accessible unnamed
+/// constructor callable without arguments. It must implement every forwarded
+/// fluent method with the generated signature and a return type assignable to
+/// itself.
 /// Example usage:
 /// ```dart
 /// @MixableField(ignoreSetter: true)
@@ -105,6 +128,15 @@ class MixableField {
   /// Whether to skip field factory generation for spec-driven stylers.
   final bool skipFactory;
 
+  /// Whether to forward a nested Styler's canonical factory surface.
+  final bool forwardStyler;
+
+  /// Optional `@MixableSpec` type whose generated Styler surface is forwarded.
+  ///
+  /// The source Spec type is used instead of its generated Styler type so the
+  /// annotation also works during clean same-package builds.
+  final Type? stylerSurface;
+
   const MixableField({
     this.ignoreSetter = false,
     this.setterType,
@@ -112,7 +144,34 @@ class MixableField {
     this.skipMixin = false,
     this.factoryName,
     this.skipFactory = false,
+    this.forwardStyler = false,
+    this.stylerSurface,
   });
+}
+
+/// Selects styler `call()` value parameters exposed by a generated [MixWidget].
+///
+/// [MixWidget] defaults to [MixWidgetParameterSelection.all], which includes
+/// every non-`key` value parameter. Use [MixWidgetParameterSelection.only] to
+/// expose a stable, explicit value-parameter subset instead. Factory
+/// parameters, a valid `Key? key`, and method-level `call<T>()` type parameters
+/// remain automatic in both modes.
+final class MixWidgetParameterSelection {
+  /// Whether every selectable styler `call()` value parameter is included.
+  final bool includesAll;
+
+  /// The selected non-`key` styler `call()` value parameter names.
+  ///
+  /// This is empty for [MixWidgetParameterSelection.all].
+  final Set<String> names;
+
+  /// Includes every non-`key` styler `call()` value parameter.
+  const MixWidgetParameterSelection.all()
+    : includesAll = true,
+      names = const {};
+
+  /// Includes exactly the non-`key` styler `call()` value parameters in [names].
+  const MixWidgetParameterSelection.only(this.names) : includesAll = false;
 }
 
 /// Annotation that drives generation of a `StatelessWidget` wrapper for a
@@ -127,7 +186,7 @@ class MixableField {
 /// Example — variable-backed:
 /// ```dart
 /// @MixWidget()
-/// final cardStyle = BoxStyler().paddingAll(16).borderRounded(12);
+/// final cardStyle = BoxStyler().padding(.all(16)).borderRadius(.circular(12));
 /// // Generates `class Card extends StatelessWidget { ... }`.
 /// ```
 ///
@@ -140,6 +199,15 @@ class MixableField {
 /// // `color` (factory param) plus `child` (from `BoxStyler.call`).
 /// ```
 ///
+/// [widgetParameters] controls which non-`key` styler `call()` value parameters
+/// are exposed by the generated widget. It defaults to
+/// [MixWidgetParameterSelection.all]. Use
+/// `widgetParameters: .only({'controller', 'focusNode'})` when the widget
+/// should expose only a curated subset. Factory parameters, a valid `Key? key`,
+/// and method-level `call<T>()` type parameters remain automatic. Optional
+/// value parameters omitted by `.only(...)` are not forwarded, so the styler
+/// method's defaults apply.
+///
 /// Requires the annotated element's name to be `lowerCamelCase` ending in
 /// `Style` (for example, `cardStyle`, `primaryButtonStyle`, or
 /// `_internalCardStyle`). The generator strips a trailing `Style` and
@@ -150,7 +218,34 @@ class MixWidget {
   /// the name is derived from the annotated element's name.
   final String? name;
 
-  const MixWidget({this.name});
+  /// Optional plain widget constructor rendered directly by the generated
+  /// wrapper.
+  ///
+  /// When set, widget parameters are read from this constructor instead of a
+  /// Styler `call()` method. The constructor must expose a compatible named
+  /// `style` parameter. `style` and `styleSpec` are supplied or omitted by the
+  /// generator and never become wrapper fields.
+  // A constructor tear-off's signature differs per annotation, so no explicit
+  // function type fits; the generator narrows it via `toFunctionValue()`.
+  // ignore: prefer-explicit-function-type
+  final Function? target;
+
+  /// Selection of non-`key` styler `call()` value parameters exposed by the
+  /// generated widget.
+  final MixWidgetParameterSelection widgetParameters;
+
+  /// Selection of recipe factory parameters exposed by the generated widget.
+  ///
+  /// Required factory parameters must be selected. Optional parameters omitted
+  /// by `.only(...)` use the factory's own defaults.
+  final MixWidgetParameterSelection factoryParameters;
+
+  const MixWidget({
+    this.name,
+    this.target,
+    this.widgetParameters = const MixWidgetParameterSelection.all(),
+    this.factoryParameters = const MixWidgetParameterSelection.all(),
+  });
 }
 
 const mixWidget = MixWidget();

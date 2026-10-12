@@ -99,7 +99,8 @@ typedef _$StackSpecMethods = _$StackSpec; // ignore: unused_element
 // SpecStylerGenerator
 // **************************************************************************
 
-class StackStyler extends MixStyler<StackStyler, StackSpec> {
+class StackStyler extends MixStyler<StackStyler, StackSpec>
+    implements StylerFieldMetadata {
   final Prop<AlignmentGeometry>? $alignment;
   final Prop<StackFit>? $fit;
   final Prop<TextDirection>? $textDirection;
@@ -143,6 +144,17 @@ class StackStyler extends MixStyler<StackStyler, StackSpec> {
       StackStyler().textDirection(value);
   factory StackStyler.clipBehavior(Clip value) =>
       StackStyler().clipBehavior(value);
+
+  @override
+  Set<String> get $stylerFieldNames => const {
+    'alignment',
+    'fit',
+    'textDirection',
+    'clipBehavior',
+    'animation',
+    'modifier',
+    'variants',
+  };
 
   /// Sets the alignment.
   StackStyler alignment(AlignmentGeometry value) {

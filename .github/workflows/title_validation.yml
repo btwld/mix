@@ -11,8 +11,13 @@ on:
 permissions:
   pull-requests: read
 
+concurrency:
+  group: pr-${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request_target' }}
+
 jobs:
   main:
+    timeout-minutes: 5
     name: Validate PR title
     runs-on: ubuntu-latest
     steps:

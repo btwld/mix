@@ -2,6 +2,12 @@
 
 Worked examples that show current Mix APIs in complete Flutter snippets.
 
+## Table of Contents
+
+- [Themed profile page](#themed-profile-page)
+- [Dark and light toggle](#darklight-toggle)
+- [Pressable button](#pressable-button)
+
 ## Themed Profile Page
 
 Tokens define the visual vocabulary, `MixScope` provides concrete values, and Stylers consume token refs with `$token()` or `$token.mix()`.
@@ -52,23 +58,23 @@ class ThemedProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final pageStyle = FlexBoxStyler()
         .color($background())
-        .paddingAll($spaceLg())
+        .padding(.all($spaceLg()))
         .spacing($spaceMd());
 
     final cardStyle = BoxStyler()
         .color($surface())
-        .paddingAll($spaceMd())
-        .borderRadiusAll($radiusMd())
-        .shadowOnly(
-          color: Colors.black.withValues(alpha: 0.08),
-          offset: Offset(0, 6),
-          blurRadius: 18,
+        .padding(.all($spaceMd()))
+        .borderRadius(.all($radiusMd()))
+        .shadow(
+          .color(
+            Colors.black.withValues(alpha: 0.08),
+          ).offset(x: 0, y: 6).blurRadius(18),
         );
 
     final avatarStyle = BoxStyler()
         .color($primary())
         .size(56, 56)
-        .borderRadiusAll($radiusMd())
+        .borderRadius(.all($radiusMd()))
         .alignment(Alignment.center);
 
     final avatarTextStyle = TextStyler()
@@ -142,13 +148,13 @@ class _ThemeToggleState extends State<ThemeToggle> {
     final buttonStyle = BoxStyler()
         .height(60)
         .width(60)
-        .borderRounded(30)
+        .borderRadius(.circular(30))
         .color(Colors.grey.shade200)
         .alignment(Alignment.center)
-        .shadowOnly(
-          color: Colors.black.withValues(alpha: 0.1),
-          offset: Offset(0, 4),
-          blurRadius: 10,
+        .shadow(
+          .color(
+            Colors.black.withValues(alpha: 0.1),
+          ).offset(x: 0, y: 4).blurRadius(10),
         )
         .onDark(BoxStyler().color(Colors.grey.shade800))
         .animate(AnimationConfig.easeInOut(600.ms));
@@ -196,9 +202,9 @@ class PrimaryActionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final buttonStyle = BoxStyler()
         .color(Colors.blue)
-        .paddingX(24)
-        .paddingY(12)
-        .borderRounded(8)
+        .padding(.horizontal(24))
+        .padding(.vertical(12))
+        .borderRadius(.circular(8))
         .alignment(Alignment.center)
         .onHovered(BoxStyler().color(Colors.blue.shade700).translate(0, -1))
         .onPressed(BoxStyler().color(Colors.blue.shade900).scale(0.98))

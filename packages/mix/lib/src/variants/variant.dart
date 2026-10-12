@@ -2,7 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../core/breakpoint.dart';
+import '../core/providers/focus_highlight_mode_provider.dart';
 import '../core/providers/widget_state_provider.dart';
+import '../core/providers/widget_state_style_override.dart';
 import '../core/spec.dart';
 import '../core/style.dart';
 import '../theme/tokens/token_refs.dart';
@@ -16,6 +18,9 @@ sealed class Variant {
   /// Factory method to create a named variant
   static NamedVariant named(String name) => .new(name);
 
+  /// Human-readable label used for diagnostics.
+  ///
+  /// This label is not guaranteed to be unique across variant kinds.
   String get key;
 }
 
@@ -51,6 +56,10 @@ class ContextVariant extends Variant {
 
   static WidgetStateVariant widgetState(WidgetState state) {
     return WidgetStateVariant(state);
+  }
+
+  static FocusVisibleVariant focusVisible() {
+    return FocusVisibleVariant();
   }
 
   static OrientationVariant orientation(Orientation orientation) {
@@ -103,6 +112,26 @@ class ContextVariant extends Variant {
   static ContextVariant desktop() {
     return ContextVariant.breakpoint(BreakpointToken.desktop());
   }
+
+  /// Widget states that must be tracked for this variant to be evaluated.
+  ///
+  /// [Style.widgetStates] uses this declaration to discover dependencies in a
+  /// complete nested style. [StyleBuilder] can then install automatic tracking
+  /// for pointer-driven states such as hovered and pressed. Other states, such
+  /// as focused and disabled, still require an ancestor state scope or an
+  /// external [WidgetStatesController]. Subclasses that read widget state —
+  /// directly, or by delegating to another variant the way [NotVariant] does —
+  /// must override this getter.
+  ///
+  /// Discovery does not execute context closures, so states introduced by a
+  /// [ContextVariantBuilder], or read by a plain [ContextVariant] closure,
+  /// cannot contribute automatic dependencies.
+  ///
+  /// Discovery is static: dependencies nested under variants that are inactive
+  /// in the current context (for example hover declared inside a dark-mode
+  /// branch while in light mode) still count, so state tracking may be installed
+  /// before the enclosing variant activates.
+  Set<WidgetState> get widgetStateDependencies => const {};
 
   /// Check if this variant should be active for the given context
   bool when(BuildContext context) {
@@ -182,6 +211,9 @@ final class NotVariant extends ContextVariant {
       identical(this, other) || other is NotVariant && other.inner == inner;
 
   @override
+  Set<WidgetState> get widgetStateDependencies => inner.widgetStateDependencies;
+
+  @override
   int get hashCode => inner.hashCode;
 }
 
@@ -239,6 +271,9 @@ final class WidgetStateVariant extends ContextVariant {
 
   WidgetStateVariant(this.state)
     : super('widget_state_${state.name}', (context) {
+        final override = WidgetStateStyleOverride.maybeOf(context);
+        if (override != null) return override.states.contains(state);
+
         return WidgetStateProvider.hasStateOf(context, state);
       });
 
@@ -248,7 +283,39 @@ final class WidgetStateVariant extends ContextVariant {
       other is WidgetStateVariant && other.state == state;
 
   @override
+  Set<WidgetState> get widgetStateDependencies => {state};
+
+  @override
   int get hashCode => state.hashCode;
+}
+
+/// Context variant that applies to traditionally highlighted keyboard focus.
+///
+/// Modality changes are reactive inside Mix-managed widget-state scopes and
+/// apply on the next rebuild under a manually mounted [WidgetStateProvider].
+final class FocusVisibleVariant extends ContextVariant {
+  FocusVisibleVariant()
+    : super('focus_visible', (context) {
+        // A forced state override is authoritative and skips the modality
+        // check: preview tooling asks for the focus-visible look directly and
+        // has no real input modality to read.
+        final override = WidgetStateStyleOverride.maybeOf(context);
+        if (override != null) {
+          return override.states.contains(WidgetState.focused);
+        }
+
+        return WidgetStateProvider.hasStateOf(context, .focused) &&
+            FocusHighlightModeProvider.of(context) == .traditional;
+      });
+
+  @override
+  bool operator ==(Object other) => other is FocusVisibleVariant;
+
+  @override
+  Set<WidgetState> get widgetStateDependencies => const {.focused};
+
+  @override
+  int get hashCode => key.hashCode;
 }
 
 String _breakpointKey(Breakpoint breakpoint) {

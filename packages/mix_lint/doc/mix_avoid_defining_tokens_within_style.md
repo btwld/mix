@@ -10,7 +10,7 @@ Tokens are meant to be shared across the app. Creating them inline inside a Styl
 // Inline token inside a Styler
 final style = BoxStyler()
     .color(ColorToken('primary').call())
-    .borderRadiusTopLeft(RadiusToken('rounded')());
+    .borderRadius(.topLeft(RadiusToken('rounded')()));
 ```
 
 #### Do
@@ -21,5 +21,5 @@ final rounded = RadiusToken('rounded');
 
 final style = BoxStyler()
     .color(primary())
-    .borderRadiusTopLeft(rounded());
+    .borderRadius(.topLeft(rounded()));
 ```

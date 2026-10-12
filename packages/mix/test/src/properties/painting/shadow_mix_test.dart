@@ -207,12 +207,14 @@ void main() {
       test('creates BoxShadowMix with all properties', () {
         final boxShadowMix = BoxShadowMix(
           blurRadius: 10.0,
+          blurStyle: BlurStyle.inner,
           color: Colors.blue,
           offset: const Offset(5.0, 8.0),
           spreadRadius: 2.0,
         );
 
         expect(boxShadowMix.$blurRadius, resolvesTo(10.0));
+        expect(boxShadowMix.$blurStyle, resolvesTo(BlurStyle.inner));
         expect(boxShadowMix.$color, resolvesTo(Colors.blue));
         expect(boxShadowMix.$offset, resolvesTo(const Offset(5.0, 8.0)));
         expect(boxShadowMix.$spreadRadius, resolvesTo(2.0));
@@ -222,6 +224,7 @@ void main() {
         final boxShadowMix = BoxShadowMix();
 
         expect(boxShadowMix.$blurRadius, isNull);
+        expect(boxShadowMix.$blurStyle, isNull);
         expect(boxShadowMix.$color, isNull);
         expect(boxShadowMix.$offset, isNull);
         expect(boxShadowMix.$spreadRadius, isNull);
@@ -256,6 +259,16 @@ void main() {
         expect(boxShadowMix.$spreadRadius, isNull);
       });
 
+      test('blurStyle factory creates BoxShadowMix with blurStyle', () {
+        final boxShadowMix = BoxShadowMix.blurStyle(BlurStyle.outer);
+
+        expect(boxShadowMix.$blurStyle, resolvesTo(BlurStyle.outer));
+        expect(boxShadowMix.$blurRadius, isNull);
+        expect(boxShadowMix.$color, isNull);
+        expect(boxShadowMix.$offset, isNull);
+        expect(boxShadowMix.$spreadRadius, isNull);
+      });
+
       test('spreadRadius factory creates BoxShadowMix with spreadRadius', () {
         final boxShadowMix = BoxShadowMix.spreadRadius(3.0);
 
@@ -280,6 +293,7 @@ void main() {
       test('creates BoxShadowMix from BoxShadow', () {
         const boxShadow = BoxShadow(
           blurRadius: 15.0,
+          blurStyle: BlurStyle.inner,
           color: Colors.red,
           offset: Offset(3.0, 6.0),
           spreadRadius: 4.0,
@@ -288,9 +302,11 @@ void main() {
         final boxShadowMix = BoxShadowMix.value(boxShadow);
 
         expect(boxShadowMix.$blurRadius, resolvesTo(15.0));
+        expect(boxShadowMix.$blurStyle, resolvesTo(BlurStyle.inner));
         expect(boxShadowMix.$color, resolvesTo(Colors.red));
         expect(boxShadowMix.$offset, resolvesTo(const Offset(3.0, 6.0)));
         expect(boxShadowMix.$spreadRadius, resolvesTo(4.0));
+        expect(boxShadowMix, resolvesTo(boxShadow));
       });
 
       test('maybeValue returns null for null boxShadow', () {
@@ -298,12 +314,18 @@ void main() {
       });
 
       test('maybeValue returns BoxShadowMix for non-null boxShadow', () {
-        const boxShadow = BoxShadow(blurRadius: 5.0, spreadRadius: 1.0);
+        const boxShadow = BoxShadow(
+          blurRadius: 5.0,
+          blurStyle: BlurStyle.outer,
+          spreadRadius: 1.0,
+        );
         final boxShadowMix = BoxShadowMix.maybeValue(boxShadow);
 
         expect(boxShadowMix, isNotNull);
         expect(boxShadowMix!.$blurRadius, resolvesTo(5.0));
+        expect(boxShadowMix.$blurStyle, resolvesTo(BlurStyle.outer));
         expect(boxShadowMix.$spreadRadius, resolvesTo(1.0));
+        expect(boxShadowMix, resolvesTo(boxShadow));
       });
     });
 
@@ -326,6 +348,12 @@ void main() {
         expect(boxShadowMix.$blurRadius, resolvesTo(12.0));
       });
 
+      test('blurStyle utility works correctly', () {
+        final boxShadowMix = BoxShadowMix().blurStyle(BlurStyle.solid);
+
+        expect(boxShadowMix.$blurStyle, resolvesTo(BlurStyle.solid));
+      });
+
       test('spreadRadius utility works correctly', () {
         final boxShadowMix = BoxShadowMix().spreadRadius(4.0);
 
@@ -337,6 +365,7 @@ void main() {
       test('resolves to BoxShadow with correct properties', () {
         final boxShadowMix = BoxShadowMix(
           blurRadius: 12.0,
+          blurStyle: BlurStyle.inner,
           color: Colors.green,
           offset: const Offset(2.0, 4.0),
           spreadRadius: 3.0,
@@ -344,6 +373,7 @@ void main() {
 
         const resolvedValue = BoxShadow(
           blurRadius: 12.0,
+          blurStyle: BlurStyle.inner,
           color: Colors.green,
           offset: Offset(2.0, 4.0),
           spreadRadius: 3.0,
@@ -370,11 +400,13 @@ void main() {
       test('merges properties correctly', () {
         final first = BoxShadowMix(
           blurRadius: 10.0,
+          blurStyle: BlurStyle.inner,
           color: Colors.blue,
           spreadRadius: 1.0,
         );
 
         final second = BoxShadowMix(
+          blurStyle: BlurStyle.outer,
           color: Colors.red,
           offset: const Offset(3.0, 3.0),
           spreadRadius: 2.0,
@@ -383,12 +415,30 @@ void main() {
         final merged = first.merge(second);
 
         expect(merged.$blurRadius, resolvesTo(10.0)); // from first
+        expect(
+          merged.$blurStyle,
+          resolvesTo(BlurStyle.outer),
+        ); // second overrides
         expect(merged.$color, resolvesTo(Colors.red)); // second overrides
         expect(
           merged.$offset,
           resolvesTo(const Offset(3.0, 3.0)),
         ); // from second
         expect(merged.$spreadRadius, resolvesTo(2.0)); // second overrides
+      });
+
+      test('later blurStyle overrides earlier blurStyle', () {
+        final first = BoxShadowMix.value(
+          const BoxShadow(blurStyle: BlurStyle.inner),
+        );
+        final second = BoxShadowMix.value(
+          const BoxShadow(blurStyle: BlurStyle.solid),
+        );
+
+        expect(
+          first.merge(second),
+          resolvesTo(const BoxShadow(blurStyle: BlurStyle.solid)),
+        );
       });
 
       test('returns equivalent instance when other is null', () {
@@ -404,12 +454,14 @@ void main() {
       test('equal box shadows have same hashCode', () {
         final boxShadow1 = BoxShadowMix(
           blurRadius: 10.0,
+          blurStyle: BlurStyle.inner,
           color: Colors.blue,
           spreadRadius: 2.0,
         );
 
         final boxShadow2 = BoxShadowMix(
           blurRadius: 10.0,
+          blurStyle: BlurStyle.inner,
           color: Colors.blue,
           spreadRadius: 2.0,
         );
@@ -424,19 +476,28 @@ void main() {
 
         expect(boxShadow1, isNot(equals(boxShadow2)));
       });
+
+      test('different blur styles are not equal', () {
+        final boxShadow1 = BoxShadowMix(blurStyle: BlurStyle.inner);
+        final boxShadow2 = BoxShadowMix(blurStyle: BlurStyle.outer);
+
+        expect(boxShadow1, isNot(equals(boxShadow2)));
+      });
     });
 
     group('Props getter', () {
       test('props includes all properties', () {
         final boxShadowMix = BoxShadowMix(
           blurRadius: 10.0,
+          blurStyle: BlurStyle.inner,
           color: Colors.blue,
           offset: const Offset(5.0, 8.0),
           spreadRadius: 2.0,
         );
 
-        expect(boxShadowMix.props.length, 4);
+        expect(boxShadowMix.props.length, 5);
         expect(boxShadowMix.props, contains(boxShadowMix.$blurRadius));
+        expect(boxShadowMix.props, contains(boxShadowMix.$blurStyle));
         expect(boxShadowMix.props, contains(boxShadowMix.$color));
         expect(boxShadowMix.props, contains(boxShadowMix.$offset));
         expect(boxShadowMix.props, contains(boxShadowMix.$spreadRadius));

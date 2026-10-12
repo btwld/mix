@@ -8,7 +8,7 @@
 ///         \/\\\             \/\\\  /\\\\\\\\\\\  /\\\/   \///\\\
 ///          \///              \///  \///////////  \///       \///
 ///
-///                        https://fluttermix.com
+///                        https://www.fluttermix.com
 ///
 ///             /\///////////////////////////////////////////////////\
 ///             \/\           ***** GENERATED CODE *****            \ \
@@ -40,12 +40,18 @@ export 'src/core/prop_source.dart';
 export 'src/core/providers/style_provider.dart';
 export 'src/core/providers/style_spec_provider.dart';
 export 'src/core/providers/widget_state_provider.dart';
+export 'src/core/providers/widget_state_style_override.dart';
 export 'src/core/spec.dart';
 export 'src/core/style.dart' hide StyleElement;
 export 'src/core/style_builder.dart';
 export 'src/core/style_spec.dart';
 export 'src/core/style_widget.dart';
 export 'src/core/widget_modifier.dart';
+
+/// LAYOUT
+export 'src/layout/grid_box.dart';
+export 'src/layout/grid_box_spec.dart';
+export 'src/layout/grid_track.dart';
 
 /// MODIFIERS
 export 'src/modifiers/align_modifier.dart';
@@ -106,6 +112,9 @@ export 'src/specs/stackbox/stackbox_spec.dart';
 export 'src/specs/stackbox/stackbox_widget.dart';
 export 'src/specs/text/text_spec.dart';
 export 'src/specs/text/text_widget.dart';
+export 'src/specs/wrap/wrap_spec.dart';
+export 'src/specs/wrapbox/wrapbox_spec.dart';
+export 'src/specs/wrapbox/wrapbox_widget.dart';
 
 /// STYLE
 export 'src/style/abstracts/styler.dart';
@@ -122,6 +131,7 @@ export 'src/style/mixins/transform_style_mixin.dart';
 export 'src/style/mixins/variant_style_mixin.dart';
 export 'src/style/mixins/widget_modifier_style_mixin.dart';
 export 'src/style/mixins/widget_state_variant_mixin.dart';
+export 'src/style/mixins/wrap_style_mixin.dart';
 
 /// THEME
 export 'src/theme/material/material_theme.dart';

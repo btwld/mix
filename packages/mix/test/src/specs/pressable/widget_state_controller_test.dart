@@ -217,6 +217,37 @@ void main() {
         isFalse,
       );
     });
+
+    test('notification tracks scrolledUnder state changes', () {
+      final oldModel = WidgetStateProvider(states: {}, child: Container());
+      final newModel = WidgetStateProvider(
+        states: {WidgetState.scrolledUnder},
+        child: Container(),
+      );
+
+      expect(newModel.updateShouldNotify(oldModel), isTrue);
+      expect(
+        newModel.updateShouldNotifyDependent(oldModel, {
+          WidgetState.scrolledUnder,
+        }),
+        isTrue,
+      );
+    });
+
+    test('copies the provided widget states', () {
+      final states = <WidgetState>{WidgetState.hovered};
+      final model = WidgetStateProvider(states: states, child: Container());
+
+      states
+        ..clear()
+        ..add(WidgetState.pressed);
+
+      expect(model.states, {WidgetState.hovered});
+      expect(
+        () => model.states.add(WidgetState.pressed),
+        throwsUnsupportedError,
+      );
+    });
   });
 
   testWidgets('PressableState updates widgets correctly', (

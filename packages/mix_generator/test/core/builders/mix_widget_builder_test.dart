@@ -1,9 +1,72 @@
+import 'dart:io';
+
 import 'package:mix_generator/src/core/builders/mix_widget_builder.dart';
 import 'package:mix_generator/src/core/models/mix_widget_model.dart';
 import 'package:test/test.dart';
 
 void main() {
   group('MixWidgetBuilder', () {
+    test(
+      'generated build is lint-clean and preserves a context field',
+      () async {
+        final code = MixWidgetBuilder(
+          const MixWidgetModel(
+            widgetName: 'Demo',
+            factoryReference: 'demoStyle',
+            isFunctionFactory: true,
+            factoryParams: [
+              WidgetCallParam(
+                name: 'context',
+                typeCode: 'String',
+                isPositional: false,
+                isRequired: true,
+              ),
+            ],
+            callParams: [
+              WidgetCallParam(
+                name: 'label',
+                typeCode: 'String',
+                isPositional: false,
+                isRequired: true,
+              ),
+            ],
+            stylerCallForwardsKey: true,
+          ),
+        ).build();
+        final directory = Directory.systemTemp.createTempSync(
+          'mix-widget-lint-',
+        );
+        addTearDown(() => directory.deleteSync(recursive: true));
+        File(
+          '${directory.path}/analysis_options.yaml',
+        ).writeAsStringSync('linter:\n  rules:\n    unnecessary_this: true\n');
+        File('${directory.path}/example.dart').writeAsStringSync('''
+class Key { const Key(); }
+class BuildContext {}
+class Widget { const Widget({this.key}); final Key? key; }
+abstract class StatelessWidget extends Widget {
+  const StatelessWidget({super.key});
+  Widget build(BuildContext context);
+}
+class DemoStyle {
+  Widget call({Key? key, required String label}) => Widget(key: key);
+}
+DemoStyle demoStyle({required String context}) => DemoStyle();
+$code
+''');
+        final result = await Process.run(Platform.resolvedExecutable, [
+          'analyze',
+          '--fatal-infos',
+          directory.path,
+        ]);
+        expect(
+          result.exitCode,
+          0,
+          reason: '${result.stdout}\n${result.stderr}',
+        );
+      },
+    );
+
     test('variable-backed style with child + key', () {
       final builder = MixWidgetBuilder(
         const MixWidgetModel(
@@ -29,8 +92,8 @@ void main() {
       expect(code, contains('const Card({super.key, this.child});'));
       expect(code, contains('final Widget? child;'));
       expect(code, contains('return cardStyle.call('));
-      expect(code, contains('key: this.key,'));
-      expect(code, contains('child: this.child,'));
+      expect(code, contains('key: key,'));
+      expect(code, contains('child: child,'));
     });
 
     test('function-backed style threads factory args before call', () {
@@ -73,9 +136,7 @@ void main() {
       expect(code, contains('this.child'));
       expect(
         code,
-        contains(
-          'return badgeStyle(color: this.color, style: this.style).call(',
-        ),
+        contains('return badgeStyle(color: color, style: style).call('),
       );
     });
 
@@ -112,8 +173,8 @@ void main() {
         code,
         contains('const Label(this.text, {super.key, this.color});'),
       );
-      expect(code, contains('return labelStyle(color: this.color).call('));
-      expect(code, contains('      this.text,\n      key: this.key,'));
+      expect(code, contains('return labelStyle(color: color).call('));
+      expect(code, contains('      text,\n      key: key,'));
     });
 
     test('required call params surface required keyword', () {
@@ -154,8 +215,8 @@ void main() {
       expect(code, contains('required this.onPressed'));
       expect(code, contains('required this.child'));
       expect(code, contains('this.color = const Color(0xFF0000FF)'));
-      expect(code, contains('onPressed: this.onPressed,'));
-      expect(code, contains('child: this.child,'));
+      expect(code, contains('onPressed: onPressed,'));
+      expect(code, contains('child: child,'));
     });
 
     test('no Key? key on styler call → no key forwarding in build', () {
@@ -173,7 +234,7 @@ void main() {
       final code = builder.build();
 
       expect(code, contains('return keyLessStyle.call();'));
-      expect(code, isNot(contains('key: this.key')));
+      expect(code, isNot(contains('key: key')));
     });
 
     test('generic styler call emits generic widget and forwards type args', () {
@@ -202,7 +263,7 @@ void main() {
       expect(code, contains('required this.value'));
       expect(code, contains('final T value;'));
       expect(code, contains('return fortalRadioStyle().call<T>('));
-      expect(code, contains('value: this.value,'));
+      expect(code, contains('value: value,'));
     });
 
     test('generic styler call preserves bounds', () {
@@ -248,6 +309,143 @@ void main() {
       );
 
       expect(builder.build(), startsWith('/// Documented card.'));
+    });
+
+    test('variant constructors preserve params and pin the enum value', () {
+      final builder = MixWidgetBuilder(
+        const MixWidgetModel(
+          widgetName: 'Button',
+          factoryReference: 'buttonStyle',
+          isFunctionFactory: true,
+          factoryParams: [
+            WidgetCallParam(
+              name: 'variant',
+              typeCode: 'ButtonVariant',
+              isPositional: false,
+              isRequired: false,
+              defaultValueCode: 'ButtonVariant.solid',
+            ),
+            WidgetCallParam(
+              name: 'size',
+              typeCode: 'int',
+              isPositional: false,
+              isRequired: false,
+              defaultValueCode: '2',
+            ),
+          ],
+          callParams: [
+            WidgetCallParam(
+              name: 'label',
+              typeCode: 'String',
+              isPositional: false,
+              isRequired: true,
+            ),
+            WidgetCallParam(
+              name: 'child',
+              typeCode: 'Widget?',
+              isPositional: false,
+              isRequired: false,
+            ),
+          ],
+          stylerCallForwardsKey: true,
+          variantParamName: 'variant',
+          variantConstructors: [
+            WidgetVariantConstructor(
+              name: 'solid',
+              valueCode: 'ButtonVariant.solid',
+              doc: '/// High-emphasis filled button.\n/// Use sparingly.',
+            ),
+          ],
+        ),
+      );
+
+      final code = builder.build();
+      final constructor = RegExp(
+        r'const Button\.solid\(([\s\S]*?)\)\s*:\s*'
+        r'variant\s*=\s*ButtonVariant\.solid;',
+      ).firstMatch(code);
+
+      expect(constructor, isNotNull);
+      expect(constructor!.group(1), isNot(contains('this.variant')));
+      expect(constructor.group(1), contains('this.size = 2'));
+      expect(constructor.group(1), contains('required this.label'));
+      expect(constructor.group(1), contains('this.child'));
+      expect(
+        code,
+        contains(
+          '  /// High-emphasis filled button.\n'
+          '  /// Use sparingly.\n'
+          '  const Button.solid(',
+        ),
+      );
+      expect(code, contains('final ButtonVariant variant;'));
+    });
+
+    test('deprecated variant annotates its generated constructor', () {
+      final builder = MixWidgetBuilder(
+        const MixWidgetModel(
+          widgetName: 'Button',
+          factoryReference: 'buttonStyle',
+          isFunctionFactory: true,
+          factoryParams: [
+            WidgetCallParam(
+              name: 'variant',
+              typeCode: 'ButtonVariant',
+              isPositional: false,
+              isRequired: true,
+            ),
+          ],
+          callParams: [],
+          stylerCallForwardsKey: false,
+          variantParamName: 'variant',
+          variantConstructors: [
+            WidgetVariantConstructor(
+              name: 'legacy',
+              valueCode: 'ButtonVariant.legacy',
+              deprecationCode: "@Deprecated('Use solid instead.')",
+            ),
+          ],
+        ),
+      );
+
+      expect(
+        builder.build(),
+        contains(
+          "  @Deprecated('Use solid instead.')\n"
+          '  const Button.legacy({super.key}) '
+          ': variant = ButtonVariant.legacy;',
+        ),
+      );
+    });
+
+    test('empty variant metadata leaves output byte-identical', () {
+      final code = MixWidgetBuilder(
+        const MixWidgetModel(
+          widgetName: 'Card',
+          factoryReference: 'cardStyle',
+          isFunctionFactory: false,
+          factoryParams: [],
+          callParams: [],
+          stylerCallForwardsKey: false,
+        ),
+      ).build();
+
+      expect(
+        code,
+        equals(
+          '''
+class Card extends StatelessWidget {
+  const Card({super.key});
+
+  @override
+  Widget build(BuildContext _) {
+    return cardStyle.call();
+  }
+}
+'''
+              .trimLeft(),
+        ),
+      );
     });
   });
 }

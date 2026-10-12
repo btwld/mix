@@ -6,6 +6,15 @@ import 'package:test/test.dart';
 
 void main() {
   const defaultConfig = MixableStylerAnnotationConfig();
+  const metadataField = StylerFieldModel(
+    name: 'gap',
+    declaredName: r'$gap',
+    fieldTypeCode: 'Prop<double>?',
+    isRawList: false,
+    effectivePublicParamType: 'double',
+    generateSetter: true,
+    setterName: 'gap',
+  );
 
   group('StylerMixinBuilder', () {
     group('mixinName', () {
@@ -42,7 +51,10 @@ void main() {
 
         expect(
           code,
-          contains('mixin _\$BoxStylerMixin on Style<BoxSpec>, Diagnosticable'),
+          contains(
+            'mixin _\$BoxStylerMixin on Style<BoxSpec>, Diagnosticable '
+            'implements StylerFieldMetadata',
+          ),
         );
       });
 
@@ -157,6 +169,52 @@ void main() {
 
         expect(code, contains('@override'));
         expect(code, contains('List<Object?> get props =>'));
+      });
+
+      test('generates the complete styler field-name inventory', () {
+        final builder = StylerMixinBuilder(
+          stylerName: 'BoxStyler',
+          specName: 'BoxSpec',
+          fields: const [metadataField],
+          config: defaultConfig,
+        );
+        final code = builder.build();
+
+        expect(
+          code,
+          contains(r'''Set<String> get $stylerFieldNames => const {
+    'gap',
+    'animation',
+    'modifier',
+    'variants',
+  };'''),
+        );
+      });
+
+      test(r'escapes $ in generated styler field-name literals', () {
+        final builder = StylerMixinBuilder(
+          stylerName: 'PriceStyler',
+          specName: 'PriceSpec',
+          fields: [
+            StylerFieldModel(
+              name: r'price$usd',
+              declaredName: r'$price$usd',
+              fieldTypeCode: 'Prop<double>?',
+              isRawList: false,
+              effectivePublicParamType: 'double',
+              generateSetter: true,
+              setterName: r'price$usd',
+            ),
+          ],
+          config: defaultConfig,
+        );
+        final code = builder.build();
+
+        expect(code, contains(r"'price\$usd',"));
+        expect(
+          code,
+          contains(r"DiagnosticsProperty('price\$usd', $price$usd)"),
+        );
       });
 
       test('emits optional call method before merge', () {
@@ -457,7 +515,7 @@ void main() {
         final builder = StylerMixinBuilder(
           stylerName: 'BoxStyler',
           specName: 'BoxSpec',
-          fields: [],
+          fields: const [metadataField],
           config: const MixableStylerAnnotationConfig(
             methods: GeneratedStylerMethods.skipProps,
           ),
@@ -465,16 +523,18 @@ void main() {
         final code = builder.build();
 
         expect(code, isNot(contains('List<Object?> get props =>')));
+        expect(code, contains(r'Set<String> get $stylerFieldNames'));
+        expect(code, contains("'gap',"));
         expect(code, contains('BoxStyler merge('));
         expect(code, contains('StyleSpec<BoxSpec> resolve('));
         expect(code, contains('void debugFillProperties('));
       });
 
-      test('generates nothing when all flags disabled', () {
+      test('generates only field metadata when all flags are disabled', () {
         final builder = StylerMixinBuilder(
           stylerName: 'BoxStyler',
           specName: 'BoxSpec',
-          fields: [],
+          fields: const [metadataField],
           config: const MixableStylerAnnotationConfig(
             methods: GeneratedStylerMethods.none,
           ),
@@ -485,6 +545,8 @@ void main() {
           code,
           contains('mixin _\$BoxStylerMixin on Style<BoxSpec>, Diagnosticable'),
         );
+        expect(code, contains(r'Set<String> get $stylerFieldNames'));
+        expect(code, contains("'gap',"));
         expect(code, isNot(contains('BoxStyler merge(')));
         expect(code, isNot(contains('StyleSpec<BoxSpec> resolve(')));
         expect(code, isNot(contains('void debugFillProperties(')));

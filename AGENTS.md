@@ -10,7 +10,7 @@ If Flutter is not installed or `flutter --version` fails, run the setup script:
 bash setup.sh
 ```
 
-This installs FVM, Flutter SDK (3.41.7), DCM, and melos, then bootstraps all packages.
+This installs FVM, Flutter SDK (3.44.0), DCM, and melos, then bootstraps all packages.
 
 ## Structure
 
@@ -26,8 +26,8 @@ packages/
 
 The repo uses [Dart pub workspaces](https://dart.dev/tools/pub/workspaces): a single `pubspec.lock` and shared resolution at the root. Run `dart pub get` at the repo root to resolve all workspace packages.
 
-- **In the workspace:** mix, mix_annotations, mix_generator, mix_tailwinds, mix_tailwinds/example.
-- **Excluded:** `mix_lint` (uses analyzer ^7.x for custom_lint_builder; other packages use analyzer >=9). Run `dart pub get` inside `packages/mix_lint` when working on the linter.
+- **In the workspace:** mix, mix_annotations, mix_generator, mix_winds, mix_winds/example.
+- **Excluded:** `mix_lint` (an analyzer plugin; it uses the analyzer version its `analysis_server_plugin` requires, currently 14.x, while `mix_generator` supports analyzer >=10 <15). Run `dart pub get` inside `packages/mix_lint` when working on the linter.
 
 ## Commands
 
@@ -36,6 +36,8 @@ melos bootstrap           # Install dependencies
 melos run gen:build       # Generate code (specs, exports)
 melos run ci              # Run all tests
 melos run analyze         # Dart + DCM analysis
+melos run schema:fixtures # Regenerate checked-in packages/*/schema exports and fixtures
+melos run schema:check    # Validate those files with Ajv (needs Node)
 melos run fix             # Auto-fix lint issues
 ```
 
@@ -66,8 +68,8 @@ packages/mix/lib/src/
 final style = BoxStyler()
     .color(Colors.blue)
     .size(100, 100)
-    .paddingAll(16)
-    .borderRounded(8);
+    .padding(.all(16))
+    .borderRadius(.circular(8));
 
 Box(style: style, child: child)
 ```
@@ -92,8 +94,8 @@ final style = BoxStyler()
 
 ## Critical Rules
 
-- **Dart SDK:** >=3.11.0 (enables dot-shorthands)
-- **Flutter:** >=3.41.0
+- **Dart SDK:** >=3.12.0 (enables dot-shorthands)
+- **Flutter:** >=3.44.0
 - **Immutability:** Specs are always immutable; use `copyWith()` for changes
 - **Code generation:** Run `melos run gen:build` after modifying specs
 - **mix.dart is generated:** Don't edit directly; run `melos run exports`
@@ -128,5 +130,5 @@ scope: mix, mix_generator, mix_annotations, mix_lint
 
 - `melos.yaml` - All script definitions
 - `lints_with_dcm.yaml` - Linting rules
-- `.fvmrc` - Flutter version (3.41.7)
+- `.fvmrc` - Flutter version (3.44.0)
 - `packages/mix/lib/src/core/` - Core abstractions

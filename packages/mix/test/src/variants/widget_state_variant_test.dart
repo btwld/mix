@@ -89,6 +89,26 @@ void main() {
         final keys = variants.map((v) => v.key).toSet();
         expect(keys.length, WidgetState.values.length);
       });
+
+      test('declares its widget state dependency', () {
+        final variant = ContextVariant.widgetState(WidgetState.hovered);
+
+        expect(variant.widgetStateDependencies, {WidgetState.hovered});
+      });
+
+      test('negated variants delegate widget state dependencies', () {
+        final variant = ContextVariant.not(
+          ContextVariant.widgetState(WidgetState.disabled),
+        );
+
+        expect(variant.widgetStateDependencies, {WidgetState.disabled});
+      });
+
+      test('non-widget-state variants have no widget state dependencies', () {
+        final variant = ContextVariant.brightness(Brightness.dark);
+
+        expect(variant.widgetStateDependencies, isEmpty);
+      });
     });
 
     group('Equality and hashCode', () {
@@ -352,7 +372,6 @@ void main() {
 
         expect(variantAttr.variant, hoverVariant);
         expect(variantAttr.value, style);
-        expect(variantAttr.mergeKey, hoverVariant.key);
       });
 
       test(
@@ -369,8 +388,6 @@ void main() {
           );
 
           expect(hoverStyle.mergeKey, isNot(equals(pressStyle.mergeKey)));
-          expect(hoverStyle.mergeKey, 'widget_state_hovered');
-          expect(pressStyle.mergeKey, 'widget_state_pressed');
         },
       );
 

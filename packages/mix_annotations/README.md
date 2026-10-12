@@ -1,7 +1,7 @@
 # mix_annotations
 
 [![Pub Version](https://img.shields.io/pub/v/mix_annotations?label=version&style=for-the-badge)](https://pub.dev/packages/mix_annotations/changelog)
-[![MIT Licence](https://img.shields.io/github/license/leoafarias/mix?style=for-the-badge&longCache=true)](https://opensource.org/licenses/mit-license.php)
+[![MIT Licence](https://img.shields.io/github/license/btwld/mix?style=for-the-badge&longCache=true)](https://opensource.org/license/mit)
 
 Annotations used by [mix_generator](https://pub.dev/packages/mix_generator) to generate boilerplate code for the [Mix](https://pub.dev/packages/mix) styling framework.
 
@@ -104,7 +104,77 @@ final Prop<Matrix4>? $transform;
 // Override the setter parameter type
 @MixableField(setterType: List<Shadow>)
 final Prop<List<Shadow>>? $shadows;
+
+// Forward canonical factories from a nested generated Styler.
+@MixableField(forwardStyler: true)
+final StyleSpec<BoxSpec>? container;
+
+// Restrict a FlexBox-backed field to the Box-generated Styler surface.
+@MixableField(forwardStyler: true, stylerSurface: BoxSpec)
+final StyleSpec<FlexBoxSpec>? restrictedContainer;
 ```
+
+`stylerSurface` references the source `@MixableSpec` type, not its generated
+Styler, so same-package clean builds do not depend on resolving generated code.
+Forwarding preserves the canonical named-factory allowlist and does not promote
+fluent-only helpers such as `paddingAll`.
+
+When `setterType` and `forwardStyler` are combined, the custom setter type must
+be a concrete class with an accessible unnamed constructor callable without
+arguments. It must implement every forwarded fluent method with the canonical
+generated signature and return a type assignable to itself.
+
+### `@MixWidget`
+
+Generates a `StatelessWidget` wrapper around a top-level styler variable or
+styler-returning function. By default, the wrapper exposes every non-`key`
+value parameter from the styler's `call()` method:
+
+```dart
+@MixWidget() // Equivalent to widgetParameters: .all()
+final cardStyle = BoxStyler();
+```
+
+Use `widgetParameters: .only(...)` to keep the generated widget's value-
+parameter API limited to a deliberate subset. This prevents newly added styler
+value parameters from becoming public widget parameters automatically:
+
+```dart
+@MixWidget(
+  widgetParameters: .only({'controller', 'focusNode'}),
+)
+final editorStyle = EditorStyler();
+```
+
+An empty `.only({})` exposes no selectable styler value parameters. A valid
+`Key? key` and method-level `call<T>()` type parameters remain automatic;
+required styler value parameters must be selected. Excluded optional
+parameters are not forwarded, so the styler method's defaults apply.
+
+Use `target` to wrap a plain widget constructor directly and
+`factoryParameters` to curate recipe controls independently:
+
+```dart
+@MixWidget(
+  name: 'FortalButton',
+  target: RemixButton.new,
+  factoryParameters: .only({'variant', 'size'}),
+)
+ButtonStyler fortalButtonStyler({
+  ButtonVariant variant = .solid,
+  ButtonSize size = .medium,
+  bool highContrast = false,
+});
+```
+
+The target must be a Widget constructor with a compatible named `style`
+parameter. Its `style` and `styleSpec` parameters never surface on the
+generated wrapper. Required factory parameters must be selected; omitted
+optional parameters use the recipe's defaults.
+
+Generators that also support older `mix_annotations` releases interpret an
+annotation without `widgetParameters` as `.all()`. Using `.only(...)` requires
+an annotations release that defines `MixWidgetParameterSelection`.
 
 ## Generator Flags
 

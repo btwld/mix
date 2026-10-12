@@ -1,0 +1,8 @@
+include: ../../lints_with_dcm.yaml
+
+dart_code_metrics:
+  rules:
+    avoid-inferrable-type-arguments:
+      # Dart cannot infer the F-bounded Spec type from Styler alone.
+      ignored-invocations:
+        - MixProtocolStylerCodec.forStyler

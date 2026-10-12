@@ -1,0 +1,53 @@
+{
+  "skill_name": "mix",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "This Flutter app depends on mix. Build a reusable profile card with padding, rounded corners, a background color, an avatar, and styled title/subtitle text.",
+      "expected_output": "Imports package:mix/mix.dart, keeps visual semantics in Mix widgets and stylers (such as Box/BoxStyler and StyledText/TextStyler), starts top-level styles from concrete styler constructors, and avoids replacing the requested Mix styling with nested Container/Padding/TextStyle boilerplate.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Create a dashboard that uses one column when its parent is narrow and three explicit fractional columns when wide. The dashboard can appear inside a side panel, so viewport width is not reliable.",
+      "expected_output": "Chooses GridBox with an explicitly typed GridBoxStyler and uses onConstraints for parent-offered width rather than onBreakpoint/MediaQuery; keeps grid geometry in constraint branches and explains that GridBox needs an outer Box when decoration or padding is required.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Set up brand color, spacing, and body typography tokens with a light/dark theme, then consume them from a Mix-styled card.",
+      "expected_output": "Defines the appropriate ColorToken, SpaceToken, and TextStyleToken values, provides them through MixScope, consumes token references inside stylers (including textToken.mix() for typography), and uses context variants or scope replacement for theme changes instead of resolving raw Theme values inside reusable style declarations.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "Make a PressableBox darken on hover, shrink while pressed, show a keyboard-only focus ring, and animate between those states.",
+      "expected_output": "Uses PressableBox with BoxStyler widget-state variants onHovered/onPressed/onFocusVisible and an AnimationConfig via animate; uses bare dot shorthand in typed nested variant and animation contexts and does not manually manage hover/press booleans.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "Inside the Mix monorepo, add a new widget-backed BannerSpec with generated styling APIs. Which annotations, files, and commands should I use?",
+      "expected_output": "Uses an immutable spec with @MixableSpec(target: Banner.new), a compatible widget style parameter, generated part files and exports, runs melos run gen:build and melos run exports, and treats @MixableStyler as legacy rather than the default implementation path.",
+      "files": []
+    },
+    {
+      "id": 6,
+      "prompt": "I need opacity, clipping, and uppercase text to remain composable when several Mix styles merge. Should these be raw wrapper widgets and pre-transformed strings?",
+      "expected_output": "Keeps wrapper behavior in widget modifiers via wrap() and value transformations in directives, explains modifier ordering and merge-safe resolution, and avoids hard-coding wrapper widgets or eagerly transforming the source string outside the style.",
+      "files": []
+    },
+    {
+      "id": 7,
+      "prompt": "I changed a generated Mix spec and the public mix.dart barrel in this monorepo. Give me the repository verification sequence before I commit.",
+      "expected_output": "Regenerates with melos run gen:build, regenerates the barrel with melos run exports when needed, then runs melos run ci and melos run analyze; it does not edit generated mix.dart or generated .g.dart files by hand.",
+      "files": []
+    },
+    {
+      "id": 8,
+      "prompt": "In a plain Flutter project with no Mix dependency, write a CustomPainter that draws a waveform.",
+      "expected_output": "Does not trigger or invoke the Mix skill, does not add the mix package, and answers with ordinary Flutter CustomPainter guidance.",
+      "files": []
+    }
+  ]
+}

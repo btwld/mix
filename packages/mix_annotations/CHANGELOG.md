@@ -1,3 +1,45 @@
+## 2.2.0
+
+Stable release of the 2.2.0 line. Cumulative since 2.1.3:
+
+ - **FEAT**: Add `MixWidget.target` for plain widget constructor tear-offs and
+   `factoryParameters` for independent recipe parameter curation.
+ - **FEAT**: Add `MixableField.forwardStyler` and `stylerSurface` for opt-in
+   projection of a nested generated Styler's canonical named-factory surface
+   onto its parent Styler (#983).
+ - **DOCS**: Document that `stylerFieldNames` is reserved as a source field name
+   and `$stylerFieldNames` as a generated member name, and that a custom `props`
+   implementation must preserve the complete generated field surface (#1028).
+ - **DOCS**: Document the construction and fluent-method contract for a custom
+   `setterType` combined with `forwardStyler`.
+
+## 2.2.0-beta.1
+
+ - **FEAT**: Add `MixWidget.target` for plain widget constructor tear-offs and
+   `factoryParameters` for independent recipe parameter curation.
+
+## 2.2.0-beta.0
+
+ - **FEAT**: Add `MixableField.forwardStyler` and `stylerSurface` for opt-in
+   projection of a nested generated Styler's canonical named-factory surface
+   onto its parent Styler (#983).
+ - **DOCS**: Document the construction and fluent-method contract for a custom
+   `setterType` combined with `forwardStyler`.
+
+## 2.1.3
+
+ - **FEAT**: Add `MixWidgetParameterSelection` and the
+   `MixWidget.widgetParameters` default. `@MixWidget()` now concretely carries
+   `.all()`, while `.only({...})` supports opt-in curation of generated widget
+   value parameters. Factory parameters, valid `Key? key`, and method-level
+   type parameters remain automatic.
+
+## 2.1.2
+
+ - **DOCS**: Document that nested `StyleSpec<XSpec>` fields derive `XStyler`
+   automatically by convention, so `@MixableField(setterType:)` is only needed
+   to override the derived name (#961).
+
 ## 2.1.1
 
  - **DOCS**: Document `@MixableField(setterType:)` usage for `@MixableSpec` and `@MixableModifier` fields (#950, #951).

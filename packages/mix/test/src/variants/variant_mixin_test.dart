@@ -106,6 +106,16 @@ void main() {
       expect(result.$variants!.first.variant, isA<ContextVariant>());
     });
 
+    test('onFocusVisible creates correct typed variant', () {
+      const attribute = TestVariantAttribute();
+      const style = TestVariantAttribute();
+      final result = attribute.onFocusVisible(style);
+
+      expect(result.$variants, isNotNull);
+      expect(result.$variants, hasLength(1));
+      expect(result.$variants!.first.variant, isA<FocusVisibleVariant>());
+    });
+
     test('onMobile creates correct variant', () {
       const attribute = TestVariantAttribute();
       const style = TestVariantAttribute();

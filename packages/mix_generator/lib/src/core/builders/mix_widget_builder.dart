@@ -16,28 +16,77 @@ class MixWidgetBuilder {
   /// Emits the constructor: positional factory params first, then named
   /// (`{super.key, ...named factory, ...named call}`).
   void _writeConstructor(StringBuffer buffer) {
-    final positional = model.allParams.where((p) => p.isPositional).toList();
-    final named = model.allParams.where((p) => !p.isPositional).toList();
+    _writeConstructorDeclaration(buffer, model.widgetName, model.allParams);
+  }
 
-    buffer.write('  const ${model.widgetName}(');
+  /// Emits the constructors derived from the convention-matched enum values.
+  void _writeVariantConstructors(StringBuffer buffer) {
+    final variantParamName = model.variantParamName;
+    if (variantParamName == null || model.variantConstructors.isEmpty) return;
+
+    final constructorParams = model.allParams
+        .where((param) => param.name != variantParamName)
+        .toList();
+
+    for (final variant in model.variantConstructors) {
+      if (variant.doc != null) {
+        _writeIndentedLines(buffer, variant.doc!);
+      }
+      if (variant.deprecationCode != null) {
+        _writeIndentedLines(buffer, variant.deprecationCode!);
+      }
+
+      _writeConstructorDeclaration(
+        buffer,
+        '${model.widgetName}.${variant.name}',
+        constructorParams,
+        initializer: '$variantParamName = ${variant.valueCode}',
+      );
+      buffer.writeln();
+    }
+  }
+
+  void _writeConstructorDeclaration(
+    StringBuffer buffer,
+    String constructorName,
+    List<WidgetCallParam> constructorParams, {
+    String? initializer,
+  }) {
+    final positional = constructorParams
+        .where((param) => param.isPositional)
+        .toList();
+    final named = constructorParams
+        .where((param) => !param.isPositional)
+        .toList();
+
+    buffer.write('  const $constructorName(');
 
     if (positional.isEmpty && named.isEmpty) {
-      buffer.writeln('{super.key});');
+      buffer.write('{super.key})');
+    } else {
+      for (final param in positional) {
+        buffer.write(_constructorParam(param));
+        buffer.write(', ');
+      }
 
-      return;
+      buffer.write('{super.key');
+      for (final param in named) {
+        buffer.write(', ');
+        buffer.write(_constructorParam(param));
+      }
+      buffer.write('})');
     }
 
-    for (final param in positional) {
-      buffer.write(_constructorParam(param));
-      buffer.write(', ');
+    if (initializer != null) {
+      buffer.write(' : $initializer');
     }
+    buffer.writeln(';');
+  }
 
-    buffer.write('{super.key');
-    for (final param in named) {
-      buffer.write(', ');
-      buffer.write(_constructorParam(param));
+  void _writeIndentedLines(StringBuffer buffer, String value) {
+    for (final line in value.split('\n')) {
+      buffer.writeln('  $line');
     }
-    buffer.writeln('});');
   }
 
   /// Emits one parameter inside the constructor's parameter list.
@@ -63,11 +112,20 @@ class MixWidgetBuilder {
   /// Emits the `build` method that delegates to the styler's `call()`.
   void _writeBuildMethod(StringBuffer buffer) {
     buffer.writeln('  @override');
-    buffer.writeln('  Widget build(BuildContext context) {');
+    buffer.writeln('  Widget build(BuildContext _) {');
 
     final invocation = model.isFunctionFactory
         ? '${model.factoryReference}(${_factoryArgs()})'
         : model.factoryReference;
+
+    // Bind the target type here so the emitter takes it non-null: interpolating
+    // a null reference would silently emit `null(...)` as the widget name.
+    if (model.targetTypeReference case final targetTypeReference?) {
+      _writeDirectTargetBuild(buffer, invocation, targetTypeReference);
+      buffer.writeln('  }');
+
+      return;
+    }
 
     final callArgs = _callArgs();
     final callTarget = '$invocation.call${model.typeParameterInvocation}';
@@ -85,16 +143,43 @@ class MixWidgetBuilder {
     buffer.writeln('  }');
   }
 
+  void _writeDirectTargetBuild(
+    StringBuffer buffer,
+    String styleInvocation,
+    String targetTypeReference,
+  ) {
+    final constructorName = model.targetConstructorName;
+    final constructorSuffix = constructorName == null
+        ? ''
+        : '.$constructorName';
+    final target =
+        '$targetTypeReference${model.typeParameterInvocation}'
+        '$constructorSuffix';
+    final args = [
+      for (final p in model.callParams.where((p) => p.isPositional)) p.name,
+      if (model.stylerCallForwardsKey) 'key: key',
+      'style: $styleInvocation',
+      for (final p in model.callParams.where((p) => !p.isPositional))
+        '${p.name}: ${p.name}',
+    ];
+
+    buffer.writeln('    return $target(');
+    for (final arg in args) {
+      buffer.writeln('      $arg,');
+    }
+    buffer.writeln('    );');
+  }
+
   /// Renders the comma-separated argument list passed to the factory function.
-  /// Positionals and named params are read through `this` so generated field
-  /// names cannot be shadowed by locals in `build`.
+  /// The unused build context is a wildcard, so fields named `context`
+  /// remain accessible without redundant `this` qualifiers.
   String _factoryArgs() {
     final positional = model.factoryParams
         .where((p) => p.isPositional)
-        .map((p) => 'this.${p.name}');
+        .map((p) => p.name);
     final named = model.factoryParams
         .where((p) => !p.isPositional)
-        .map((p) => '${p.name}: this.${p.name}');
+        .map((p) => '${p.name}: ${p.name}');
 
     return [...positional, ...named].join(', ');
   }
@@ -102,11 +187,10 @@ class MixWidgetBuilder {
   /// Renders the lines passed to `.call(...)`.
   List<String> _callArgs() {
     return [
-      for (final p in model.callParams.where((p) => p.isPositional))
-        'this.${p.name}',
-      if (model.stylerCallForwardsKey) 'key: this.key',
+      for (final p in model.callParams.where((p) => p.isPositional)) p.name,
+      if (model.stylerCallForwardsKey) 'key: key',
       for (final p in model.callParams.where((p) => !p.isPositional))
-        '${p.name}: this.${p.name}',
+        '${p.name}: ${p.name}',
     ];
   }
 
@@ -124,6 +208,8 @@ class MixWidgetBuilder {
 
     _writeConstructor(buffer);
     buffer.writeln();
+
+    _writeVariantConstructors(buffer);
 
     _writeFields(buffer);
 

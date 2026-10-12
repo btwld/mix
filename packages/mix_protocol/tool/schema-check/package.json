@@ -1,0 +1,13 @@
+{
+  "name": "mix-protocol-schema-check",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Validates every checked-in Mix Protocol schema and fixture suite with Ajv.",
+  "scripts": {
+    "test": "node check.mjs"
+  },
+  "dependencies": {
+    "ajv": "^8.17.1"
+  }
+}

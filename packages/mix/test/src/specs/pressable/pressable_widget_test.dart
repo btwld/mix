@@ -172,9 +172,7 @@ void main() {
       focusNode.dispose();
     });
 
-    testWidgets('handles keyboard activation with ActivateIntent', (
-      tester,
-    ) async {
+    testWidgets('handles Enter and Space keyboard activation', (tester) async {
       bool wasPressed = false;
       final focusNode = FocusNode();
 
@@ -287,7 +285,7 @@ void main() {
         MaterialApp(
           home: Pressable(
             onPress: () {},
-            semanticButtonLabel: 'Test Button',
+            semanticsLabel: 'Test Button',
             child: const SizedBox(width: 100, height: 100),
           ),
         ),
@@ -299,18 +297,58 @@ void main() {
     });
 
     testWidgets('excludes semantics when requested', (tester) async {
+      final handle = tester.ensureSemantics();
+
       await tester.pumpWidget(
         MaterialApp(
           home: Pressable(
             onPress: () {},
             excludeFromSemantics: true,
-            semanticButtonLabel: 'Test Button',
-            child: const SizedBox(width: 100, height: 100),
+            semanticsLabel: 'Test Button',
+            child: const SizedBox(
+              width: 100,
+              height: 100,
+              child: Text('Visible child'),
+            ),
           ),
         ),
       );
 
       expect(find.bySemanticsLabel('Test Button'), findsNothing);
+      expect(
+        tester.getSemantics(find.text('Visible child')),
+        isSemantics(
+          label: 'Visible child',
+          isFocusable: false,
+          hasFocusAction: false,
+          hasTapAction: false,
+        ),
+      );
+
+      handle.dispose();
+    });
+
+    testWidgets('keeps nested control semantics separate', (tester) async {
+      final handle = tester.ensureSemantics();
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Pressable(
+              onPress: () {},
+              child: const TextField(key: Key('field')),
+            ),
+          ),
+        ),
+      );
+
+      final field = tester
+          .getSemantics(find.byType(EditableText))
+          .flagsCollection;
+      expect(field.isTextField, isTrue);
+      expect(field.isButton, isFalse);
+
+      handle.dispose();
     });
 
     testWidgets('properly disposes controller when not provided', (
@@ -385,6 +423,10 @@ void main() {
       // ignore: unused_local_variable
       bool? focusChanged;
       final focusNode = FocusNode();
+      final controller = WidgetStatesController();
+      final actions = <Type, Action<Intent>>{};
+      KeyEventResult onKeyEvent(FocusNode _, KeyEvent _) =>
+          KeyEventResult.ignored;
 
       await tester.pumpWidget(
         MaterialApp(
@@ -396,7 +438,14 @@ void main() {
             autofocus: true,
             enabled: true,
             enableFeedback: true,
-
+            mouseCursor: SystemMouseCursors.help,
+            canRequestFocus: false,
+            excludeFromSemantics: true,
+            semanticsLabel: 'Forwarded label',
+            semanticsRole: PressableSemanticsRole.link,
+            onKeyEvent: onKeyEvent,
+            controller: controller,
+            actions: actions,
             hitTestBehavior: HitTestBehavior.deferToChild,
             child: const SizedBox(width: 100, height: 100),
           ),
@@ -408,7 +457,15 @@ void main() {
       expect(pressable.enabled, isTrue);
       expect(pressable.autofocus, isTrue);
       expect(pressable.focusNode, same(focusNode));
-
+      expect(pressable.enableFeedback, isTrue);
+      expect(pressable.mouseCursor, SystemMouseCursors.help);
+      expect(pressable.canRequestFocus, isFalse);
+      expect(pressable.excludeFromSemantics, isTrue);
+      expect(pressable.semanticsLabel, 'Forwarded label');
+      expect(pressable.semanticsRole, PressableSemanticsRole.link);
+      expect(pressable.onKeyEvent, same(onKeyEvent));
+      expect(pressable.controller, same(controller));
+      expect(pressable.actions, same(actions));
       expect(pressable.hitTestBehavior, HitTestBehavior.deferToChild);
 
       // Test callbacks work
@@ -421,6 +478,7 @@ void main() {
       expect(wasLongPressed, isTrue);
 
       focusNode.dispose();
+      controller.dispose();
     });
   });
 }

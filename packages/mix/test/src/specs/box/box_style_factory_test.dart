@@ -272,6 +272,161 @@ void main() {
         );
       });
 
+      group('gradient shorthands forward transform', () {
+        const colors = [Colors.red, Colors.blue];
+        const rotation = GradientRotation(1.5);
+
+        Gradient backgroundGradient(BoxStyler styler) {
+          final decoration =
+              styler.$decoration!.resolveProp(MockBuildContext())
+                  as BoxDecoration;
+          return decoration.gradient!;
+        }
+
+        Gradient foregroundGradient(BoxStyler styler) {
+          final decoration =
+              styler.$foregroundDecoration!.resolveProp(MockBuildContext())
+                  as BoxDecoration;
+          return decoration.gradient!;
+        }
+
+        test('linearGradient', () {
+          final styler = BoxStyler().linearGradient(
+            colors: colors,
+            transform: rotation,
+          );
+          final gradient = backgroundGradient(styler);
+
+          expect(gradient, isA<LinearGradient>());
+          expect(gradient.transform, rotation);
+          expect(
+            styler,
+            equals(
+              BoxStyler().gradient(
+                LinearGradientMix(colors: colors, transform: rotation),
+              ),
+            ),
+          );
+          expect(
+            BoxStyler.linearGradient(colors: colors, transform: rotation),
+            equals(styler),
+          );
+        });
+
+        test('radialGradient', () {
+          final styler = BoxStyler().radialGradient(
+            colors: colors,
+            transform: rotation,
+          );
+          final gradient = backgroundGradient(styler);
+
+          expect(gradient, isA<RadialGradient>());
+          expect(gradient.transform, rotation);
+          expect(
+            BoxStyler.radialGradient(colors: colors, transform: rotation),
+            equals(styler),
+          );
+        });
+
+        test('sweepGradient', () {
+          final styler = BoxStyler().sweepGradient(
+            colors: colors,
+            stops: const [0.0, 1.0],
+            tileMode: TileMode.repeated,
+            transform: rotation,
+          );
+          final gradient = backgroundGradient(styler) as SweepGradient;
+
+          expect(gradient.transform, rotation);
+          expect(gradient.tileMode, TileMode.repeated);
+          expect(gradient.stops, [0.0, 1.0]);
+          expect(
+            styler,
+            equals(
+              BoxStyler().gradient(
+                SweepGradientMix(
+                  colors: colors,
+                  stops: const [0.0, 1.0],
+                  tileMode: TileMode.repeated,
+                  transform: rotation,
+                ),
+              ),
+            ),
+          );
+          expect(
+            BoxStyler.sweepGradient(
+              colors: colors,
+              stops: const [0.0, 1.0],
+              tileMode: TileMode.repeated,
+              transform: rotation,
+            ),
+            equals(styler),
+          );
+        });
+
+        test('foregroundLinearGradient', () {
+          final styler = BoxStyler().foregroundLinearGradient(
+            colors: colors,
+            transform: rotation,
+          );
+          final gradient = foregroundGradient(styler);
+
+          expect(gradient, isA<LinearGradient>());
+          expect(gradient.transform, rotation);
+          expect(
+            BoxStyler.foregroundLinearGradient(
+              colors: colors,
+              transform: rotation,
+            ),
+            equals(styler),
+          );
+        });
+
+        test('foregroundRadialGradient', () {
+          final styler = BoxStyler().foregroundRadialGradient(
+            colors: colors,
+            transform: rotation,
+          );
+          final gradient = foregroundGradient(styler);
+
+          expect(gradient, isA<RadialGradient>());
+          expect(gradient.transform, rotation);
+          expect(
+            BoxStyler.foregroundRadialGradient(
+              colors: colors,
+              transform: rotation,
+            ),
+            equals(styler),
+          );
+        });
+
+        test('foregroundSweepGradient', () {
+          final styler = BoxStyler().foregroundSweepGradient(
+            colors: colors,
+            transform: rotation,
+          );
+          final gradient = foregroundGradient(styler);
+
+          expect(gradient, isA<SweepGradient>());
+          expect(gradient.transform, rotation);
+          expect(
+            BoxStyler.foregroundSweepGradient(
+              colors: colors,
+              transform: rotation,
+            ),
+            equals(styler),
+          );
+        });
+
+        test('omitting transform leaves it null', () {
+          final gradient = backgroundGradient(
+            BoxStyler().sweepGradient(colors: colors),
+          );
+
+          expect(gradient.transform, isNull);
+        });
+      });
+
       test('transform', () {
         expect(
           BoxStyler.transform(Matrix4.identity()),

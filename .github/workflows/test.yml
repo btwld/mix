@@ -18,10 +18,17 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   format:
     name: Format Check
     runs-on: ubuntu-latest
+    # Observed ~1m30s. Every job here sets a bound because the GitHub default
+    # is 360 minutes, so a wedged step burns runner time for six hours and
+    # blocks the PR with a check that never resolves.
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: kuhnroyal/flutter-fvm-config-action@v2
@@ -38,10 +45,189 @@ jobs:
         run: melos run format:check
 
   test:
-    name: Test
-    uses: btwld/dart-actions/.github/workflows/ci.yml@main
-    secrets:
-      token: ${{ secrets.GITHUB_TOKEN }}
-    with:
-      flutter-version: 'stable'
-      run-dcm: true
+    name: Test / Run tests for all packages
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    # Observed ~6m for the full workspace suite.
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: kuhnroyal/flutter-fvm-config-action@v2
+        id: fvm-config-action
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ steps.fvm-config-action.outputs.FLUTTER_VERSION }}
+          channel: ${{ steps.fvm-config-action.outputs.FLUTTER_CHANNEL }}
+      - name: Setup Melos
+        run: |
+          dart pub global activate melos 6.3.3
+          melos bootstrap
+      # DCM requires CI credentials; this job still runs all Dart analysis.
+      - name: Generate code
+        run: melos run gen:build
+      - name: Verify schema inventories
+        run: melos run schema:inventory
+      - name: Analyze
+        run: melos run analyze:dart
+      - name: Test
+        run: melos run ci
+
+  hosted-examples:
+    name: Examples / Published Mix
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: examples/showcase
+    steps:
+      - uses: actions/checkout@v4
+      - uses: kuhnroyal/flutter-fvm-config-action@v2
+        id: fvm-config-action
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ steps.fvm-config-action.outputs.FLUTTER_VERSION }}
+          channel: ${{ steps.fvm-config-action.outputs.FLUTTER_CHANNEL }}
+      # Deliberately omit Melos: apps must also work with published Mix.
+      - run: flutter pub get
+      - run: flutter analyze
+      - run: flutter test
+      - run: flutter build web
+
+  # Exercise each dependent against the source tree in this commit. Hosted
+  # compatibility and publish archives are checked by release-dependencies.yml
+  # before a dependent's publish job can start.
+  winds-in-repo:
+    name: Winds / In-repo dependencies
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: packages/mix_winds
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Use in-repo dependencies
+        run: |
+          cat > pubspec_overrides.yaml <<'YAML'
+          dependency_overrides:
+            mix:
+              path: ../mix
+            mix_annotations:
+              path: ../mix_annotations
+            mix_protocol:
+              path: ../mix_protocol
+          YAML
+          cat > example/pubspec_overrides.yaml <<'YAML'
+          dependency_overrides:
+            mix:
+              path: ../../mix
+            mix_annotations:
+              path: ../../mix_annotations
+            mix_protocol:
+              path: ../../mix_protocol
+          YAML
+      - name: Resolve dependencies
+        run: flutter pub get
+      # Infos are not fatal, matching `melos run analyze:dart`: deprecations
+      # in unreleased Mix surface as infos in dependents.
+      - name: Analyze
+        run: flutter analyze --no-fatal-infos
+      - name: Test
+        run: flutter test
+  protocol-in-repo:
+    name: Protocol / In-repo dependencies
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: packages/mix_protocol
+    steps:
+      - uses: actions/checkout@v4
+      - uses: kuhnroyal/flutter-fvm-config-action@v2
+        id: fvm-config-action
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ steps.fvm-config-action.outputs.FLUTTER_VERSION }}
+          channel: ${{ steps.fvm-config-action.outputs.FLUTTER_CHANNEL }}
+      - name: Use in-repo dependencies
+        run: |
+          cat > pubspec_overrides.yaml <<'YAML'
+          dependency_overrides:
+            mix:
+              path: ../mix
+            mix_annotations:
+              path: ../mix_annotations
+          YAML
+      - name: Resolve dependencies
+        run: flutter pub get
+      - name: Analyze
+        run: flutter analyze --no-fatal-infos
+      - name: Test
+        run: flutter test
+  protocol-schema:
+    name: Protocol Schema / Ajv check
+    runs-on: ubuntu-latest
+    # The Dart golden tests in the test job keep packages/*/schema current;
+    # this job validates those checked-in files with an independent Draft 7
+    # implementation and needs no Flutter toolchain.
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: packages/mix_protocol/tool/schema-check
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: packages/mix_protocol/tool/schema-check/package-lock.json
+      - name: Install Node dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Validate schemas and fixtures
+        run: npm test
+
+  showcase-tool:
+    name: Showcase Tool Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: packages/mix_winds/tool/visual-comparison
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: packages/mix_winds/tool/visual-comparison/package-lock.json
+      - name: Install Node dependencies
+        run: npm ci
+      # Skips the download entirely on a hit. The browser only changes when the
+      # pinned Playwright version does, so the lockfile is the right key.
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: >-
+            playwright-${{ runner.os }}-${{
+              hashFiles('packages/mix_winds/tool/visual-comparison/package-lock.json')
+            }}
+      - name: Install Chromium
+        # Deliberately no --with-deps. That flag shells out to apt-get, and the
+        # Azure Ubuntu mirror on GitHub's runners intermittently hangs there:
+        # it stalled this job for 21 minutes on PR #1032 and again to the
+        # 10-minute bound on PR #1031, while every other step passed. The
+        # ubuntu-24.04 image already ships Chromium's shared libraries, and
+        # Playwright is pinned well past 1.45, which is where 24.04 support
+        # landed. If a future image drops a library, this fails fast with a
+        # missing-library error naming it -- add just that package rather than
+        # putting all of apt back on the critical path.
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        timeout-minutes: 10
+        run: npx playwright install chromium
+      - name: Run showcase tool tests
+        run: npm test

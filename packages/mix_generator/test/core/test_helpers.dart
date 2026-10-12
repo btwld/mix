@@ -181,6 +181,22 @@ class Color {
 ''',
 };
 
+/// Stub matching `mix_annotations` 2.1.2, before `MixWidget` exposed
+/// `widgetParameters`. New generators must preserve the legacy `.all()`
+/// behavior when they encounter this annotation shape.
+const legacyMixWidgetAnnotationSources = {
+  'mix_annotations|lib/mix_annotations.dart': "export 'src/annotations.dart';",
+  'mix_annotations|lib/src/annotations.dart': r'''
+library annotations;
+
+class MixWidget {
+  final String? name;
+
+  const MixWidget({this.name});
+}
+''',
+};
+
 /// Stub `mix_annotations` library with the annotation classes and flag
 /// constants the generators read.
 const mixAnnotationsSources = {
@@ -224,6 +240,8 @@ class MixableField {
   final bool skipMixin;
   final String? factoryName;
   final bool skipFactory;
+  final bool forwardStyler;
+  final Type? stylerSurface;
 
   const MixableField({
     this.ignoreSetter = false,
@@ -232,13 +250,34 @@ class MixableField {
     this.skipMixin = false,
     this.factoryName,
     this.skipFactory = false,
+    this.forwardStyler = false,
+    this.stylerSurface,
   });
+}
+
+class MixWidgetParameterSelection {
+  final bool includesAll;
+  final Set<String> names;
+
+  const MixWidgetParameterSelection.all()
+    : includesAll = true,
+      names = const {};
+
+  const MixWidgetParameterSelection.only(this.names) : includesAll = false;
 }
 
 class MixWidget {
   final String? name;
+  final Function? target;
+  final MixWidgetParameterSelection widgetParameters;
+  final MixWidgetParameterSelection factoryParameters;
 
-  const MixWidget({this.name});
+  const MixWidget({
+    this.name,
+    this.target,
+    this.widgetParameters = const MixWidgetParameterSelection.all(),
+    this.factoryParameters = const MixWidgetParameterSelection.all(),
+  });
 }
 
 class MixableModifier {
@@ -266,6 +305,7 @@ FieldModel createTestFieldModel({
   bool isNullable = false,
   bool isList = false,
   String? listElementType,
+  String? styleSpecArgument,
   bool isLerpable = false,
   DiagnosticKind diagnosticKind = DiagnosticKind.diagnostics,
   String? diagnosticLabel,
@@ -283,6 +323,7 @@ FieldModel createTestFieldModel({
     typeName: resolvedTypeName,
     isList: isList,
     listElementType: listElementType,
+    styleSpecArgument: styleSpecArgument,
     effectiveSpecType: resolvedSpecType,
     isLerpable: isLerpable,
     diagnosticKind: diagnosticKind,

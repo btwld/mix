@@ -46,6 +46,7 @@ void main() {
           typeName: 'StyleSpec<BoxSpec>',
           effectiveSpecType: 'StyleSpec<BoxSpec>?',
           isNullable: true,
+          styleSpecArgument: 'BoxSpec',
         );
 
         expect(resolveLerpStrategy(field), LerpStrategy.delegateToSpec);
@@ -57,6 +58,7 @@ void main() {
           typeName: 'StyleSpec<BoxSpec>',
           effectiveSpecType: 'StyleSpec<BoxSpec>?',
           isNullable: true,
+          styleSpecArgument: 'BoxSpec',
           isLerpable: true,
         );
 
@@ -97,6 +99,7 @@ void main() {
           typeName: 'StyleSpec<BoxSpec>',
           effectiveSpecType: 'StyleSpec<BoxSpec>?',
           isNullable: true,
+          styleSpecArgument: 'BoxSpec',
         );
 
         expect(generateLerpCode(field), equals('box?.lerp(other?.box, t)'));
@@ -108,6 +111,7 @@ void main() {
           typeName: 'StyleSpec<BoxSpec>',
           effectiveSpecType: 'StyleSpec<BoxSpec>',
           isNullable: false,
+          styleSpecArgument: 'BoxSpec',
         );
 
         expect(generateLerpCode(field), equals('box.lerp(other?.box, t)'));

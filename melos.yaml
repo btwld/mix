@@ -3,16 +3,17 @@ name: mix_workspace
 
 packages:
   - packages/*
-  - packages/mix/example
+  - examples/showcase
   - packages/mix_generator/example
-  - packages/mix_tailwinds/example
+  - packages/mix_winds/example
+  - packages/mix_chart/example
   - packages/*/demo
 
 command:
   bootstrap:
     environment:
-      sdk: ">=3.11.0 <4.0.0"
-      flutter: ">=3.41.0"
+      sdk: ">=3.12.0 <4.0.0"
+      flutter: ">=3.44.0"
     dependencies:
       meta: ^1.15.0
     dev_dependencies:
@@ -24,9 +25,15 @@ command:
       pre: melos run gen:build
 
 categories:
-  flutter_projects: 
+  flutter_projects:
     - packages/mix
-    - packages/mix/example
+    - packages/mix_protocol
+    - packages/mix_chart_protocol
+    - packages/mix_winds
+    - packages/mix_winds/example
+    - packages/mix_chart
+    - packages/mix_chart/example
+    - examples/showcase
     - packages/mix_lint_test
     - packages/annotations
   dart_projects:
@@ -36,11 +43,21 @@ categories:
 scripts:
   # ANALYSIS
   analyze:
-    run: melos run analyze:dart && melos run analyze:dcm
+    run: melos run schema:inventory --no-select && melos run analyze:dart --no-select && melos run analyze:dcm --no-select
     description: Run all static analysis checks.
-    exec:
-      failFast: true
-      
+
+  schema:inventory:
+    run: melos exec --scope="mix_protocol" -- dart run tool/inventory_check.dart --check && melos exec --scope="mix_chart_protocol" -- dart run tool/inventory_check.dart
+    description: Verify protocol vocabulary inventory coverage decisions.
+
+  schema:fixtures:
+    run: melos exec --scope="mix_protocol,mix_chart_protocol,mix_winds" -- flutter test --update-goldens test/schema_fixtures_test.dart
+    description: Regenerate each package's checked-in schema/ exports and fixtures.
+
+  schema:check:
+    run: npm --prefix packages/mix_protocol/tool/schema-check ci --no-audit --no-fund && npm --prefix packages/mix_protocol/tool/schema-check test
+    description: Validate every checked-in schema and fixture suite with Ajv (needs Node).
+
   analyze:dart:
     run: melos exec -c 4 -- dart analyze .
     description: Run Dart static analysis checks.
@@ -76,8 +93,12 @@ scripts:
       dependsOn: "build_runner"
 
   gen:build:
-    run: melos run gen:clean && melos run gen:build:flutter && melos run gen:build:dart
+    run: melos run gen:clean && melos run gen:build:flutter && melos run gen:build:dart && melos run gen:winds-registry
     description: Generate code for all packages
+
+  gen:winds-registry:
+    run: melos exec --scope="mix_winds" -- dart run tool/gen_registry.dart
+    description: Generate the deterministic mix_winds parser registry
 
   gen:build:flutter:
     run: melos exec --category=flutter_projects --order-dependents -- flutter pub run build_runner build --delete-conflicting-outputs
@@ -126,10 +147,8 @@ scripts:
       dirExists: test
 
   ci:
-    run: melos run test:flutter && melos run test:dart
+    run: melos run test:flutter --no-select && melos run test:dart --no-select
     description: Run flutter and dart tests
-    packageFilters:
-      dirExists: test
 
   brb:
     run: melos run gen:build

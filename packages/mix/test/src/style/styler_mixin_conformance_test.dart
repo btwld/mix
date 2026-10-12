@@ -20,7 +20,7 @@ import 'package:mix/mix.dart';
 /// **Animation (all except ImageStyler):**
 /// - AnimationStyleMixin
 ///
-/// **Box-type (BoxStyler, FlexBoxStyler, StackBoxStyler):**
+/// **Box-type (BoxStyler, FlexBoxStyler, StackBoxStyler, WrapBoxStyler):**
 /// - BorderStyleMixin
 /// - BorderRadiusStyleMixin
 /// - ShadowStyleMixin
@@ -31,6 +31,9 @@ import 'package:mix/mix.dart';
 ///
 /// **Flex-specific (FlexStyler, FlexBoxStyler):**
 /// - FlexStyleMixin
+///
+/// **Wrap-specific (WrapStyler, WrapBoxStyler):**
+/// - WrapStyleMixin
 ///
 /// **Text-specific (TextStyler):**
 /// - TextStyleMixin
@@ -47,6 +50,9 @@ void main() {
         expect(FlexBoxStyler(), isA<WidgetModifierStyleMixin>());
         expect(StackStyler(), isA<WidgetModifierStyleMixin>());
         expect(StackBoxStyler(), isA<WidgetModifierStyleMixin>());
+        expect(WrapStyler(), isA<WidgetModifierStyleMixin>());
+        expect(WrapBoxStyler(), isA<WidgetModifierStyleMixin>());
+        expect(GridBoxStyler(), isA<WidgetModifierStyleMixin>());
         expect(TextStyler(), isA<WidgetModifierStyleMixin>());
         expect(IconStyler(), isA<WidgetModifierStyleMixin>());
         expect(ImageStyler(), isA<WidgetModifierStyleMixin>());
@@ -58,6 +64,9 @@ void main() {
         expect(FlexBoxStyler(), isA<VariantStyleMixin>());
         expect(StackStyler(), isA<VariantStyleMixin>());
         expect(StackBoxStyler(), isA<VariantStyleMixin>());
+        expect(WrapStyler(), isA<VariantStyleMixin>());
+        expect(WrapBoxStyler(), isA<VariantStyleMixin>());
+        expect(GridBoxStyler(), isA<VariantStyleMixin>());
         expect(TextStyler(), isA<VariantStyleMixin>());
         expect(IconStyler(), isA<VariantStyleMixin>());
         expect(ImageStyler(), isA<VariantStyleMixin>());
@@ -69,9 +78,26 @@ void main() {
         expect(FlexBoxStyler(), isA<WidgetStateVariantMixin>());
         expect(StackStyler(), isA<WidgetStateVariantMixin>());
         expect(StackBoxStyler(), isA<WidgetStateVariantMixin>());
+        expect(WrapStyler(), isA<WidgetStateVariantMixin>());
+        expect(WrapBoxStyler(), isA<WidgetStateVariantMixin>());
+        expect(GridBoxStyler(), isA<WidgetStateVariantMixin>());
         expect(TextStyler(), isA<WidgetStateVariantMixin>());
         expect(IconStyler(), isA<WidgetStateVariantMixin>());
         expect(ImageStyler(), isA<WidgetStateVariantMixin>());
+      });
+
+      test('all Stylers name every equality field', () {
+        _verifyFieldInventory(BoxStyler());
+        _verifyFieldInventory(FlexStyler());
+        _verifyFieldInventory(FlexBoxStyler());
+        _verifyFieldInventory(StackStyler());
+        _verifyFieldInventory(StackBoxStyler());
+        _verifyFieldInventory(WrapStyler());
+        _verifyFieldInventory(WrapBoxStyler());
+        _verifyFieldInventory(GridBoxStyler());
+        _verifyFieldInventory(TextStyler());
+        _verifyFieldInventory(IconStyler());
+        _verifyFieldInventory(ImageStyler());
       });
     });
 
@@ -103,6 +129,18 @@ void main() {
         );
       });
 
+      test('WrapStyler has AnimationStyleMixin', () {
+        _verifyAnimationStyleMixin<WrapStyler, WrapSpec>(WrapStyler());
+      });
+
+      test('WrapBoxStyler has AnimationStyleMixin', () {
+        _verifyAnimationStyleMixin<WrapBoxStyler, WrapBoxSpec>(WrapBoxStyler());
+      });
+
+      test('GridBoxStyler has AnimationStyleMixin', () {
+        _verifyAnimationStyleMixin<GridBoxStyler, GridBoxSpec>(GridBoxStyler());
+      });
+
       test('TextStyler has AnimationStyleMixin', () {
         _verifyAnimationStyleMixin<TextStyler, TextSpec>(TextStyler());
       });
@@ -113,49 +151,56 @@ void main() {
     });
 
     // =========================================================================
-    // BOX-TYPE MIXINS - BoxStyler, FlexBoxStyler, StackBoxStyler
+    // BOX-TYPE MIXINS - BoxStyler, FlexBoxStyler, StackBoxStyler, WrapBoxStyler
     // =========================================================================
     group('Box-type Mixins', () {
       test('box-type Stylers have DecorationStyleMixin', () {
         expect(BoxStyler(), isA<DecorationStyleMixin>());
         expect(FlexBoxStyler(), isA<DecorationStyleMixin>());
         expect(StackBoxStyler(), isA<DecorationStyleMixin>());
+        expect(WrapBoxStyler(), isA<DecorationStyleMixin>());
       });
 
       test('box-type Stylers have BorderStyleMixin', () {
         expect(BoxStyler(), isA<BorderStyleMixin>());
         expect(FlexBoxStyler(), isA<BorderStyleMixin>());
         expect(StackBoxStyler(), isA<BorderStyleMixin>());
+        expect(WrapBoxStyler(), isA<BorderStyleMixin>());
       });
 
       test('box-type Stylers have BorderRadiusStyleMixin', () {
         expect(BoxStyler(), isA<BorderRadiusStyleMixin>());
         expect(FlexBoxStyler(), isA<BorderRadiusStyleMixin>());
         expect(StackBoxStyler(), isA<BorderRadiusStyleMixin>());
+        expect(WrapBoxStyler(), isA<BorderRadiusStyleMixin>());
       });
 
       test('box-type Stylers have ShadowStyleMixin', () {
         expect(BoxStyler(), isA<ShadowStyleMixin>());
         expect(FlexBoxStyler(), isA<ShadowStyleMixin>());
         expect(StackBoxStyler(), isA<ShadowStyleMixin>());
+        expect(WrapBoxStyler(), isA<ShadowStyleMixin>());
       });
 
       test('box-type Stylers have SpacingStyleMixin', () {
         expect(BoxStyler(), isA<SpacingStyleMixin>());
         expect(FlexBoxStyler(), isA<SpacingStyleMixin>());
         expect(StackBoxStyler(), isA<SpacingStyleMixin>());
+        expect(WrapBoxStyler(), isA<SpacingStyleMixin>());
       });
 
       test('box-type Stylers have TransformStyleMixin', () {
         expect(BoxStyler(), isA<TransformStyleMixin>());
         expect(FlexBoxStyler(), isA<TransformStyleMixin>());
         expect(StackBoxStyler(), isA<TransformStyleMixin>());
+        expect(WrapBoxStyler(), isA<TransformStyleMixin>());
       });
 
       test('box-type Stylers have ConstraintStyleMixin', () {
         expect(BoxStyler(), isA<ConstraintStyleMixin>());
         expect(FlexBoxStyler(), isA<ConstraintStyleMixin>());
         expect(StackBoxStyler(), isA<ConstraintStyleMixin>());
+        expect(WrapBoxStyler(), isA<ConstraintStyleMixin>());
       });
     });
 
@@ -166,6 +211,16 @@ void main() {
       test('flex Stylers have FlexStyleMixin', () {
         expect(FlexStyler(), isA<FlexStyleMixin>());
         expect(FlexBoxStyler(), isA<FlexStyleMixin>());
+      });
+    });
+
+    // =========================================================================
+    // WRAP-SPECIFIC MIXIN - WrapStyler, WrapBoxStyler
+    // =========================================================================
+    group('Wrap-specific Mixins', () {
+      test('wrap Stylers have WrapStyleMixin', () {
+        expect(WrapStyler(), isA<WrapStyleMixin>());
+        expect(WrapBoxStyler(), isA<WrapStyleMixin>());
       });
     });
 
@@ -281,6 +336,10 @@ void main() {
         // StackBoxStyler
         final stackBoxWithColor = StackBoxStyler().color(Colors.green);
         expect(stackBoxWithColor.$box, isNotNull);
+
+        // WrapBoxStyler
+        final wrapBoxWithColor = WrapBoxStyler().color(Colors.orange);
+        expect(wrapBoxWithColor.$box, isNotNull);
       });
 
       test('box-type spacing methods work', () {
@@ -295,6 +354,10 @@ void main() {
         // StackBoxStyler
         final stackBoxWithPadding = StackBoxStyler().paddingAll(16);
         expect(stackBoxWithPadding.$box, isNotNull);
+
+        // WrapBoxStyler
+        final wrapBoxWithPadding = WrapBoxStyler().paddingAll(16);
+        expect(wrapBoxWithPadding.$box, isNotNull);
       });
 
       test('flex-type direction methods work', () {
@@ -306,8 +369,24 @@ void main() {
         final flexBoxWithDir = FlexBoxStyler().direction(.horizontal);
         expect(flexBoxWithDir.$flex, isNotNull);
       });
+
+      test('wrap-type direction methods work', () {
+        // WrapStyler
+        final wrapWithDir = WrapStyler().direction(.vertical);
+        expect(wrapWithDir.$direction, isNotNull);
+
+        // WrapBoxStyler
+        final wrapBoxWithDir = WrapBoxStyler().direction(.vertical);
+        expect(wrapBoxWithDir.$flow, isNotNull);
+      });
     });
   });
+}
+
+void _verifyFieldInventory<S extends Spec<S>>(Style<S> styler) {
+  expect(styler, isA<StylerFieldMetadata>());
+  final metadata = styler as StylerFieldMetadata;
+  expect(metadata.$stylerFieldNames, hasLength(styler.props.length));
 }
 
 /// Verifies that a Styler has AnimationStyleMixin by calling its methods.

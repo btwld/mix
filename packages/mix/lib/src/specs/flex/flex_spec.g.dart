@@ -156,7 +156,8 @@ typedef _$FlexSpecMethods = _$FlexSpec; // ignore: unused_element
 // **************************************************************************
 
 class FlexStyler extends MixStyler<FlexStyler, FlexSpec>
-    with FlexStyleMixin<FlexStyler> {
+    with FlexStyleMixin<FlexStyler>
+    implements StylerFieldMetadata {
   final Prop<Axis>? $direction;
   final Prop<MainAxisAlignment>? $mainAxisAlignment;
   final Prop<CrossAxisAlignment>? $crossAxisAlignment;
@@ -241,6 +242,22 @@ class FlexStyler extends MixStyler<FlexStyler, FlexSpec>
   FlexStyler flex(FlexStyler value) {
     return merge(value);
   }
+
+  @override
+  Set<String> get $stylerFieldNames => const {
+    'direction',
+    'mainAxisAlignment',
+    'crossAxisAlignment',
+    'mainAxisSize',
+    'verticalDirection',
+    'textDirection',
+    'textBaseline',
+    'clipBehavior',
+    'spacing',
+    'animation',
+    'modifier',
+    'variants',
+  };
 
   /// Sets the direction.
   @override

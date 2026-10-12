@@ -41,6 +41,9 @@ mixin TransformStyleMixin<T extends Mix<Object?>> {
   }
 
   /// Resets transform to identity (no effect)
+  @Deprecated(
+    'Use transform(.identity()) instead. transformReset will be removed in Mix 3.0.',
+  )
   T transformReset() {
     return transform(Matrix4.identity());
   }

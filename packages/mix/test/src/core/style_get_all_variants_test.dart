@@ -219,6 +219,61 @@ void main() {
         final spec = result.resolve(context);
         expect((spec.resolvedValue as Map)['width'], 400.0);
       });
+
+      testWidgets(
+        'NotVariant inherits the priority of the variant it negates',
+        (tester) async {
+          final notHovered = ContextVariant.not(
+            ContextVariant.widgetState(WidgetState.hovered),
+          );
+          final ambient = ContextVariant('ambient', (context) => true);
+
+          final testAttribute = _MockSpecAttribute(
+            width: 50.0,
+            variants: [
+              // Declared first, but forwards hovered as a dependency, so it
+              // still applies after the ambient variant.
+              VariantStyle(notHovered, _MockSpecAttribute(width: 100.0)),
+              VariantStyle(ambient, _MockSpecAttribute(width: 200.0)),
+            ],
+          );
+
+          await testVariantPriority(
+            tester,
+            testAttribute: testAttribute,
+            activeStates: {},
+            namedVariants: {},
+            expectedWidth: 100.0,
+          );
+        },
+      );
+
+      testWidgets('declaration order holds past the 32-element sort threshold', (
+        tester,
+      ) async {
+        // List.sort switches from insertion sort to an unstable quicksort at 32
+        // elements, so this size is the one that would catch a regression back
+        // to sorting. All variants sit in the same priority group, so the last
+        // declared must win.
+        final testAttribute = _MockSpecAttribute(
+          width: 0.0,
+          variants: [
+            for (var i = 1; i <= 40; i++)
+              VariantStyle(
+                ContextVariant('context$i', (context) => true),
+                _MockSpecAttribute(width: i.toDouble()),
+              ),
+          ],
+        );
+
+        await testVariantPriority(
+          tester,
+          testAttribute: testAttribute,
+          activeStates: {},
+          namedVariants: {},
+          expectedWidth: 40.0,
+        );
+      });
     });
 
     group('Variant resolution logic', () {

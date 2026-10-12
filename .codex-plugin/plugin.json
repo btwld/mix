@@ -1,26 +1,27 @@
 {
   "name": "mix",
-  "version": "1.0.0",
-  "description": "Mix Flutter styling framework guidance for agents working on Mix code, projects using package:mix, and the Mix monorepo.",
+  "version": "1.1.0",
+  "description": "Mix Flutter styling and layout guidance for agents working on Mix code, projects using package:mix, and the Mix monorepo.",
   "author": {
     "name": "Leo Farias",
     "url": "https://github.com/leoafarias"
   },
-  "homepage": "https://fluttermix.com",
+  "homepage": "https://www.fluttermix.com",
   "repository": "https://github.com/btwld/mix",
   "license": "BSD-3-Clause",
-  "keywords": ["dart", "flutter", "mix", "styling", "design-systems"],
+  "keywords": ["dart", "flutter", "mix", "styling", "layout", "grid", "design-systems"],
   "skills": "./skills/",
   "interface": {
     "displayName": "Mix",
-    "shortDescription": "Work with Mix Flutter styles, specs, and codegen.",
-    "longDescription": "Use the Mix plugin to work on the Mix Flutter styling framework and projects that use the mix package. It provides version-aware guidance for Stylers, Specs, widgets, variants, animations, design tokens, code generation, and monorepo workflows.",
+    "shortDescription": "Work with Mix Flutter styles, layouts, specs, and codegen.",
+    "longDescription": "Use the Mix plugin to work on the Mix Flutter styling framework and projects that use the mix package. It provides version-aware guidance for Stylers, Specs, FlexBox, WrapBox, GridBox, StackBox, variants, animations, design tokens, code generation, and monorepo workflows.",
     "developerName": "Leo Farias",
     "category": "Productivity",
-    "capabilities": ["Code", "Flutter", "Design Systems"],
-    "websiteURL": "https://fluttermix.com",
+    "capabilities": ["Code", "Flutter", "Layouts", "Design Systems"],
+    "websiteURL": "https://www.fluttermix.com",
     "defaultPrompt": [
-      "Use Mix to build a responsive Flutter card style.",
+      "Use Mix to build a container-responsive GridBox dashboard.",
+      "Choose the right Mix layout primitive for this Flutter UI.",
       "Review this Mix style for API correctness.",
       "Help add a new Mix Spec with code generation."
     ],
