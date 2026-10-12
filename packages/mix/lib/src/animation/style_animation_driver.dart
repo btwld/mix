@@ -139,6 +139,14 @@ abstract class ImplicitAnimationDriver<
   void didUpdateSpec(StyleSpec<S> oldSpec, StyleSpec<S> newSpec) {
     super.didUpdateSpec(oldSpec, newSpec);
 
+    if (oldSpec == newSpec) {
+      // Retain current progress, but refresh ordering for departing modifiers
+      // whose target values are absent and therefore compare equal.
+      _tween.end = newSpec;
+
+      return;
+    }
+
     _animateTo(newSpec);
   }
 }
@@ -240,6 +248,7 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
     required super.initialSpec,
     required this.context,
   }) {
+    controller.addStatusListener(_onAnimationStatusChanged);
     _setUpAnimation();
     if (config.isLooping) {
       _startLoopingAnimation();
@@ -250,14 +259,11 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
     _resolveStyles();
 
     config.trigger?.addListener(_onTriggerChanged);
+  }
 
-    // Add status listener for onEnd callback
-    if (config.curveConfigs.last.onEnd != null) {
-      _animation.addStatusListener((status) {
-        if (status == .completed) {
-          config.curveConfigs.last.onEnd!();
-        }
-      });
+  void _onAnimationStatusChanged(AnimationStatus status) {
+    if (status == .completed) {
+      config.curveConfigs.last.onEnd?.call();
     }
   }
 
@@ -325,6 +331,7 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
 
   @override
   void dispose() {
+    controller.removeStatusListener(_onAnimationStatusChanged);
     config.trigger?.removeListener(_onTriggerChanged);
     controller.stop();
     super.dispose();

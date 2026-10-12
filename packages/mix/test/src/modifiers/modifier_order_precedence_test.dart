@@ -13,6 +13,47 @@ WidgetModifierConfig _opacityThenPadding() => WidgetModifierConfig.modifiers([
 ]);
 
 void main() {
+  for (final keepOpacity in [true, false]) {
+    testWidgets('scope change during removal with keepOpacity=$keepOpacity', (
+      tester,
+    ) async {
+      final host = GlobalKey<_ChangingOrderHostState>();
+      await tester.pumpWidget(
+        _ChangingOrderHost(key: host, keepOpacity: keepOpacity),
+      );
+      await tester.pumpAndSettle();
+      final rotation = find.byType(Transform);
+      final padding = find.byType(Padding);
+      expect(rotation, findsOneWidget);
+      expect(padding, findsOneWidget);
+      expect(find.descendant(of: rotation, matching: padding), findsOneWidget);
+
+      host.currentState!.exit();
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+      expect(tester.widget<Padding>(padding).padding, const EdgeInsets.all(9));
+      expect(find.descendant(of: rotation, matching: padding), findsOneWidget);
+
+      host.currentState!.reverseOrder();
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 1));
+      expect(find.descendant(of: padding, matching: rotation), findsOneWidget);
+      expect(find.descendant(of: rotation, matching: padding), findsNothing);
+      expect(
+        tester.widget<Padding>(padding).padding.resolve(TextDirection.ltr).left,
+        closeTo(8.99, 1e-7),
+      );
+      await tester.pump(const Duration(milliseconds: 899));
+      expect(
+        rotation,
+        findsNothing,
+        reason: 'a scope change must not restart the removal duration',
+      );
+      expect(padding, findsNothing);
+      expect(tester.takeException(), isNull);
+    });
+  }
+
   group('Modifier order precedence (resolved list)', () {
     test('package default places Padding outside Opacity', () {
       final types = _opacityThenPadding()
@@ -209,6 +250,48 @@ void main() {
   });
 
   group('Modifier order phase animation lifecycle', () {
+    for (final baseModifiers in [false, true]) {
+      testWidgets(
+        'scope callback fires once with baseModifiers=$baseModifiers',
+        (tester) async {
+          final trigger = ValueNotifier(false);
+          addTearDown(trigger.dispose);
+          var calls = 0;
+          final base = baseModifiers
+              ? BoxStyler().wrap(_opacityThenPadding())
+              : BoxStyler();
+          final style = base.phaseAnimation<int>(
+            trigger: trigger,
+            phases: const [0, 1],
+            styleBuilder: (_, style) => style.wrap(_opacityThenPadding()),
+            configBuilder: (_) => CurveAnimationConfig(
+              duration: const Duration(milliseconds: 100),
+              curve: Curves.linear,
+              onEnd: () => calls++,
+            ),
+          );
+          final host = GlobalKey<_ScopeHostState>();
+          await tester.pumpWidget(
+            MaterialApp(
+              home: _ScopeHost(
+                key: host,
+                child: Center(child: Box(style: style)),
+              ),
+            ),
+          );
+          trigger.value = true;
+          await tester.pump();
+          await tester.pump(const Duration(milliseconds: 50));
+          host.currentState!.update(
+            order: const [OpacityModifier, PaddingModifier],
+          );
+          await tester.pump();
+          await tester.pumpAndSettle();
+          expect(calls, 1);
+        },
+      );
+    }
+
     testWidgets('phase styles with modifiers mount below MixScope', (
       tester,
     ) async {
@@ -314,6 +397,54 @@ class _ScopeHostState extends State<_ScopeHost> {
       colors: _colors,
       orderOfModifiers: _order,
       child: widget.child,
+    );
+  }
+}
+
+class _ChangingOrderHost extends StatefulWidget {
+  const _ChangingOrderHost({super.key, required this.keepOpacity});
+
+  final bool keepOpacity;
+
+  @override
+  State<_ChangingOrderHost> createState() => _ChangingOrderHostState();
+}
+
+class _ChangingOrderHostState extends State<_ChangingOrderHost> {
+  bool extras = true;
+  List<Type> order = const [RotateModifier, PaddingModifier];
+
+  void exit() => setState(() => extras = false);
+  void reverseOrder() =>
+      setState(() => order = const [PaddingModifier, RotateModifier]);
+
+  @override
+  Widget build(BuildContext context) {
+    final modifiers = WidgetModifierConfig.modifiers([
+      OpacityModifierMix(opacity: 0.5),
+      if (extras) PaddingModifierMix(padding: EdgeInsetsGeometryMix.all(10)),
+      if (extras) RotateModifierMix(radians: 0.4),
+    ]).orderOfModifiers(const [OpacityModifier]);
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: MixScope(
+        orderOfModifiers: order,
+        child: Center(
+          child: Box(
+            style:
+                (extras || widget.keepOpacity
+                        ? BoxStyler().size(64, 32).wrap(modifiers)
+                        : BoxStyler().size(64, 32))
+                    .animate(
+                      const CurveAnimationConfig(
+                        duration: Duration(seconds: 1),
+                        curve: Curves.linear,
+                      ),
+                    ),
+            child: const SizedBox(),
+          ),
+        ),
+      ),
     );
   }
 }

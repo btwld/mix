@@ -381,16 +381,6 @@ final class WidgetModifierConfig with Equatable {
     }
   }
 
-  /// Whether the style-local [$orderOfModifiers] already lists every present
-  /// modifier type, in which case the scope order cannot affect the outcome.
-  bool _localOrderFullyCovers(List<WidgetModifier> modifiers) {
-    final local = $orderOfModifiers;
-    if (local == null || local.isEmpty) return false;
-    final localTypes = local.toSet();
-
-    return modifiers.every((m) => localTypes.contains(m.runtimeType));
-  }
-
   WidgetModifierConfig translate({required double x, required double y}) {
     return merge(WidgetModifierConfig.translate(x: x, y: y));
   }
@@ -729,28 +719,22 @@ final class WidgetModifierConfig with Equatable {
   ///     style-local order > nearest MixScope order > package default order
   ///       > remaining configured types in stable order
   List<WidgetModifier> resolve(BuildContext context) {
-    if ($modifiers == null || $modifiers!.isEmpty) return const [];
-
     // Resolve each modifier attribute to its corresponding modifier spec.
     // Reset specs are filtered here so they never reach rendering.
     final resolvedModifiers = <WidgetModifier>[];
-    for (final attribute in $modifiers!) {
+    for (final attribute in $modifiers ?? const <ModifierMix>[]) {
       final resolved = attribute.resolve(context);
       if (resolved is! ResetModifier) {
         resolvedModifiers.add(resolved as WidgetModifier);
       }
     }
-    if (resolvedModifiers.isEmpty) return const [];
-
-    // Only subscribe to the `modifierOrder` inherited-model aspect when a scope
-    // order could actually change the result: modifiers are present and the
-    // style-local order does not already cover every present type. This keeps a
-    // modifier-order-only consumer from rebuilding on unrelated token changes,
-    // and avoids a spurious dependency when the local order fully determines
-    // the outcome.
-    final scopeOrder = _localOrderFullyCovers(resolvedModifiers)
-        ? null
-        : MixScope.maybeOf(context, 'modifierOrder')?.orderOfModifiers;
+    // Keep the full policy, including for an empty target: an animation can
+    // still contain departing modifiers absent from this resolved style.
+    // Depend only on modifierOrder, not unrelated token changes.
+    final scopeOrder = MixScope.maybeOf(
+      context,
+      'modifierOrder',
+    )?.orderOfModifiers;
 
     return _orderModifiers(
       resolvedModifiers,
@@ -774,8 +758,6 @@ List<WidgetModifier> _orderModifiers(
   List<WidgetModifier> modifiers, {
   List<Type> preferredOrder = const [],
 }) {
-  if (modifiers.isEmpty) return modifiers;
-
   final orderOfModifiers = <Type>{
     ...preferredOrder,
     ..._defaultOrder,

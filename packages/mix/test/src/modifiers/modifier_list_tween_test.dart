@@ -54,6 +54,88 @@ void _expectIntermediateOrder(
 }
 
 void main() {
+  test(
+    'departing modifiers retain ambient precedence with fully covered target',
+    () {
+      final context = MockBuildContext(
+        orderOfModifiers: const [RotateModifier, PaddingModifier],
+      );
+      final begin = WidgetModifierConfig.modifiers([
+        OpacityModifierMix(opacity: 0.5),
+        PaddingModifierMix(padding: EdgeInsetsGeometryMix.all(10)),
+        RotateModifierMix(radians: 0.4),
+      ]).orderOfModifiers(const [OpacityModifier]).resolve(context);
+      final end = WidgetModifierConfig.opacity(
+        0.5,
+      ).orderOfModifiers(const [OpacityModifier]).resolve(context);
+      final expected = [OpacityModifier, RotateModifier, PaddingModifier];
+      expect(begin.map((m) => m.runtimeType), expected);
+      expect(end.map((m) => m.runtimeType), [OpacityModifier]);
+      final tween = ModifierListTween(begin: begin, end: end);
+      expect(tween.lerp(0.01)!.map((m) => m.runtimeType), expected);
+    },
+  );
+
+  test('departing opacity remains renderable when spring overshoots', () {
+    final tween = ModifierListTween(
+      begin: [OpacityModifier(0.5)],
+      end: const [],
+    );
+    final modifier = tween.lerp(1.1)!.single;
+    expect(() => modifier.build(const SizedBox()), returnsNormally);
+  });
+
+  test('departing padding and blur remain in their renderable ranges', () {
+    final padding =
+        ModifierListTween(
+              begin: [
+                const PaddingModifier(
+                  EdgeInsetsDirectional.only(start: 10, top: 4),
+                ),
+              ],
+            ).lerp(1.1)!.single
+            as PaddingModifier;
+    expect(padding.padding.resolve(TextDirection.ltr), EdgeInsets.zero);
+    expect(() => padding.build(const SizedBox()), returnsNormally);
+
+    final blur =
+        ModifierListTween(begin: [const BlurModifier(10)]).lerp(1.1)!.single
+            as BlurModifier;
+    expect(blur.sigma, 0);
+    expect(() => blur.build(const SizedBox()), returnsNormally);
+  });
+
+  test('valid padding and blur overshoot is preserved', () {
+    final padding =
+        ModifierListTween(
+              end: [const PaddingModifier(EdgeInsets.all(10))],
+            ).lerp(1.1)!.single
+            as PaddingModifier;
+    expect(padding.padding, const EdgeInsets.all(11));
+    final blur =
+        ModifierListTween(end: [const BlurModifier(10)]).lerp(1.1)!.single
+            as BlurModifier;
+    expect(blur.sigma, 11);
+  });
+
+  test('empty resolved targets retain their configured order during exit', () {
+    final context = MockBuildContext();
+    final begin = WidgetModifierConfig.padding(
+      EdgeInsetsGeometryMix.all(10),
+    ).rotate(radians: 0.4).resolve(context);
+    final end = WidgetModifierConfig.orderOfModifiers(const [
+      RotateModifier,
+      PaddingModifier,
+    ]).resolve(context);
+    expect(end, isEmpty);
+    final tween = ModifierListTween(begin: begin, end: end);
+    expect(tween.lerp(0.25)!.map((m) => m.runtimeType), [
+      RotateModifier,
+      PaddingModifier,
+    ]);
+    expect(tween.lerp(1), same(end));
+  });
+
   // Membership snap point documented by ModifierListTween.
   const snap = 0.5;
   const belowSnap = 0.49;
