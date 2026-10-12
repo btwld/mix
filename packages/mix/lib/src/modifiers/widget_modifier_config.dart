@@ -937,18 +937,17 @@ final defaultModifier = {
 };
 
 class ModifierListTween extends Tween<List<WidgetModifier>?> {
-  /// The target's resolved local/scope precedence, falling back to the
-  /// beginning precedence when there is no resolved target list.
-  final List<Type>? _preferredOrder;
+  ModifierListTween({super.begin, super.end});
 
-  ModifierListTween({super.begin, super.end})
-    : _preferredOrder = switch (end) {
-        _ResolvedModifierList() => end.preferredOrder,
-        _ => switch (begin) {
-          _ResolvedModifierList() => begin.preferredOrder,
-          _ => null,
-        },
-      };
+  /// Read the current endpoints because Tween allows them to be reassigned.
+  /// Prefer the target's resolved order, falling back to the beginning order.
+  List<Type>? get _preferredOrder => switch (end) {
+    _ResolvedModifierList(:final preferredOrder) => preferredOrder,
+    _ => switch (begin) {
+      _ResolvedModifierList(:final preferredOrder) => preferredOrder,
+      _ => null,
+    },
+  };
 
   @override
   List<WidgetModifier>? lerp(double t) {
@@ -1009,8 +1008,9 @@ class ModifierListTween extends Tween<List<WidgetModifier>?> {
     // A plain list with no beginning-only member already has the complete
     // target order. Otherwise, order the transient union with the precedence
     // retained during resolution, or the package default for direct callers.
-    if (_preferredOrder == null && !emittedBeginningOnly) return lerped;
+    final preferredOrder = _preferredOrder;
+    if (preferredOrder == null && !emittedBeginningOnly) return lerped;
 
-    return _orderModifiers(lerped, preferredOrder: _preferredOrder ?? const []);
+    return _orderModifiers(lerped, preferredOrder: preferredOrder ?? const []);
   }
 }

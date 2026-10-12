@@ -290,6 +290,41 @@ void main() {
       );
     });
 
+    test('reassigned tween endpoints use their current precedence', () {
+      final context = MockBuildContext();
+      const order = [OpacityModifier, PaddingModifier];
+      final tween = ModifierListTween();
+      tween.begin = WidgetModifierConfig.padding(
+        EdgeInsetsGeometryMix.all(8),
+      ).orderOfModifiers(order).resolve(context);
+      tween.end = WidgetModifierConfig.opacity(
+        0.5,
+      ).orderOfModifiers(order).resolve(context);
+
+      _expectIntermediateOrder(tween, order);
+
+      // Tween endpoints are mutable. Reusing it must also discard the previous
+      // target's precedence when the new endpoints use the package defaults.
+      tween.begin = WidgetModifierConfig.opacity(0.5).resolve(context);
+      tween.end = WidgetModifierConfig.padding(
+        EdgeInsetsGeometryMix.all(8),
+      ).resolve(context);
+      _expectIntermediateOrder(tween, [PaddingModifier, OpacityModifier]);
+    });
+
+    test('rotation extrapolates through the neutral on spring overshoot', () {
+      final addition = ModifierListTween(end: [RotateModifier(radians: 0.1)]);
+      final removal = ModifierListTween(begin: [RotateModifier(radians: 0.1)]);
+      expect(
+        _firstOfType<RotateModifier>(addition.lerp(1.1))!.radians,
+        closeTo(0.11, 1e-9),
+      );
+      expect(
+        _firstOfType<RotateModifier>(removal.lerp(1.1))!.radians,
+        closeTo(-0.01, 1e-9),
+      );
+    });
+
     test('uses style-local order for disjoint endpoints', () {
       const localOrder = [OpacityModifier, PaddingModifier];
       final context = MockBuildContext();

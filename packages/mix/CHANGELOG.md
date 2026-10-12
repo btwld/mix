@@ -1,3 +1,16 @@
+## Unreleased
+
+### Bug fixes
+
+- **Modifier animation:** hover-only modifiers such as `.rotate(0.1)` now
+  animate back to their neutral value on exit without an explicit `.rotate(0)`.
+  Modifier tweens preserve exact endpoints, support interrupted transitions,
+  and snap additions/removals at the midpoint when no neutral value exists.
+- **Modifier order:** `MixScope.orderOfModifiers` now affects rendering, with
+  style-local order taking precedence. Animated modifier lists retain this
+  order, and phase styles respond to inherited order changes. Existing scope
+  order settings that were previously ignored can change wrapper nesting.
+
 ## 2.2.1
 
 ### New features
