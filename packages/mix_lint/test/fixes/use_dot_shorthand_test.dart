@@ -127,9 +127,22 @@ final s = BoxStyler().shadow(.color(Colors.blue));
     );
   }
 
+  void test_keeps_const_keyword() async {
+    // Outside a const context, `.none()` would build a new object each time.
+    await _assertFix(
+      r'''
+import 'package:mix/mix.dart';
+final s = BoxStyler().shadow([!const BoxShadowMix.none()!]);
+''',
+      r'''
+import 'package:mix/mix.dart';
+final s = BoxStyler().shadow(const .none());
+''',
+    );
+  }
+
   void test_does_not_flag_const_dot_shorthand() async {
-    // A `const .named(...)` shorthand has no type name to strip, so the rule
-    // must not report it (and the fix must never emit `const .named(...)`).
+    // A `const .named(...)` shorthand has no type name to remove.
     await assertLints(r'''
 import 'package:mix/mix.dart';
 final s = BoxStyler().shadow(const .none());
