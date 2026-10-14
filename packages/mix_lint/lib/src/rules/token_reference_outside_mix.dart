@@ -9,6 +9,16 @@ import 'package:analyzer/error/error.dart';
 
 import '../utils/type_helpers.dart';
 
+/// Color methods that a color token reference keeps as directives.
+const _colorDirectives = {
+  'withValues',
+  'withAlpha',
+  'withRed',
+  'withGreen',
+  'withBlue',
+  'withOpacity',
+};
+
 /// Whether the consumer of a token reference belongs to Mix.
 enum _Verdict {
   /// The consumer is a Mix API, so the reference resolves.
@@ -68,28 +78,75 @@ class _Visitor extends SimpleAstVisitor<void> {
   /// cannot be resolved.
   void _check(Expression reference) {
     final consumer = _enclosingConsumer(reference);
-    if (consumer == null) return;
-    // Mix keeps a reference in a converted Flutter value only when it is
-    // passed unchanged; `$space() * 2` is a plain number.
-    final escapes = _directConsumer(reference) == consumer
-        ? _escapesMix(consumer)
-        : _classify(consumer) == .notMix;
-    if (escapes) rule.reportAtNode(reference);
+    if (consumer == null || _classify(consumer) != .notMix) return;
+    // Mix's `.value()` conversions, such as `TextStyleMix.value(...)`, copy a
+    // Flutter value field by field, so a reference inside it resolves if it
+    // gets there unchanged. `$space() * 2` is a plain number.
+    if (_reachesUnchanged(reference, consumer) &&
+        _reachesMixConversion(consumer)) {
+      return;
+    }
+    rule.reportAtNode(reference);
   }
 
-  /// Returns true if a reference passed to [consumer] leaves Mix.
-  bool _escapesMix(AstNode consumer) {
-    if (_classify(consumer) != .notMix) return false;
-    // A Flutter value, such as `TextStyle(...)`, that is itself passed to Mix
-    // keeps the reference. A widget or a method call never does.
-    final isValue =
-        (consumer is InstanceCreationExpression ||
-            consumer is DotShorthandConstructorInvocation) &&
-        !isFlutterWidgetType((consumer as Expression).staticType);
-    if (!isValue) return true;
-    final outer = _directConsumer(consumer);
+  /// Returns true if [reference] reaches [consumer] as a reference: directly,
+  /// or through a color method that Mix keeps as a directive, such as
+  /// `withValues`.
+  bool _reachesUnchanged(Expression reference, AstNode consumer) {
+    var value = reference;
+    for (
+      var call = value.parent;
+      call is MethodInvocation &&
+          call.target == value &&
+          _colorDirectives.contains(call.methodName.name);
+      call = value.parent
+    ) {
+      value = call;
+    }
 
-    return outer == null || _escapesMix(outer);
+    return _directConsumer(value) == consumer;
+  }
+
+  /// Returns true if [value], a Flutter value such as `TextStyle(...)`, is
+  /// passed to a Mix `.value()` conversion, directly or inside other Flutter
+  /// values.
+  bool _reachesMixConversion(AstNode value) {
+    if (value is! InstanceCreationExpression &&
+        value is! DotShorthandConstructorInvocation) {
+      return false;
+    }
+    if (isFlutterWidgetType((value as Expression).staticType)) return false;
+    final outer = _directConsumer(value);
+    if (outer == null) return false;
+    if (_isMixConversion(outer)) return true;
+
+    return _classify(outer) == .notMix && _reachesMixConversion(outer);
+  }
+
+  /// Returns true if [node] calls `value` or `maybeValue` on a Mix value
+  /// type, such as `TextStyleMix.value(...)`. `Prop.value` stores its
+  /// argument whole, so it doesn't count.
+  bool _isMixConversion(AstNode node) {
+    final (name, element) = switch (node) {
+      InstanceCreationExpression(:final constructorName) => (
+        constructorName.name?.name,
+        constructorName.element,
+      ),
+      DotShorthandConstructorInvocation(:final constructorName) => (
+        constructorName.name,
+        constructorName.element,
+      ),
+      MethodInvocation(:final methodName) ||
+      DotShorthandInvocation(
+        memberName: final methodName,
+      ) => (methodName.name, methodName.element),
+      _ => (null, null),
+    };
+
+    if (name != 'value' && name != 'maybeValue') return false;
+    final owner = element?.enclosingElement;
+
+    return owner is InterfaceElement && isMixType(owner.thisType);
   }
 
   /// Returns the invocation that [value] is passed to directly, possibly as a

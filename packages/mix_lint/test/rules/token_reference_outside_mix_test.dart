@@ -100,10 +100,28 @@ final b = TextStyle(color: [!$primary()!]);
     await assertLints(r'''
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
-final $primary = ColorToken('primary');
-final s = TextStyleMix.value(
-  TextStyle(color: [!$primary()!].withValues(alpha: .5)),
-);
+final $space = SpaceToken('space');
+final s = TextStyleMix.value(TextStyle(fontSize: [!$space()!] * 2));
+''');
+  }
+
+  void test_flutter_value_in_styler_method_reports() async {
+    // The Styler stores the Alignment as one value; it never reads its fields.
+    await assertLints(r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+final $space = SpaceToken('space');
+final s = BoxStyler().alignment(Alignment([!$space()!], 0));
+''');
+  }
+
+  void test_flutter_value_in_prop_value_reports() async {
+    // Prop.value stores the value whole, unlike the Mix value conversions.
+    await assertLints(r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+final $space = SpaceToken('space');
+final p = Prop.value(Alignment([!$space()!], 0));
 ''');
   }
 
@@ -150,6 +168,31 @@ import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 final $primary = ColorToken('primary');
 final s = TextStyler().style(TextStyleMix.value(TextStyle(color: $primary())));
+''');
+  }
+
+  void test_color_directive_in_converted_flutter_value_no_diagnostic() async {
+    // `withValues` on a color reference returns a reference with a directive.
+    await assertNoDiagnostics(r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+final $primary = ColorToken('primary');
+final s = TextStyleMix.value(
+  TextStyle(color: $primary().withValues(alpha: .5)),
+);
+''');
+  }
+
+  void test_flutter_value_converted_by_local_mix_type_no_diagnostic() async {
+    // Value types generated with @Mixable live in the user's package.
+    await assertNoDiagnostics(r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+final $primary = ColorToken('primary');
+class BrandMix extends Mix<Object> {
+  BrandMix.value(TextStyle style);
+}
+final s = BrandMix.value(TextStyle(color: $primary()));
 ''');
   }
 

@@ -41,7 +41,7 @@ class Shadow {
 }
 
 class TextStyle {
-  const TextStyle({Color? color, List<Shadow>? shadows});
+  const TextStyle({Color? color, double? fontSize, List<Shadow>? shadows});
 }
 
 class Text extends Widget {
@@ -60,6 +60,10 @@ class EdgeInsets extends EdgeInsetsGeometry {
 
 class Padding extends Widget {
   const Padding({required EdgeInsetsGeometry padding, Widget? child});
+}
+
+class Alignment {
+  const Alignment(double x, double y);
 }
 
 enum WidgetState { hovered, pressed }
@@ -155,6 +159,10 @@ class ContextVariant {
   static ContextVariant widgetState(WidgetState state) => ContextVariant();
 }
 
+class Prop<V> {
+  static Prop<T> value<T>(T value) => throw UnimplementedError();
+}
+
 class TextStyleMix extends Mix<Object> {
   TextStyleMix.value(TextStyle style);
 }
@@ -197,6 +205,7 @@ class BoxStyler extends MixStyler<BoxStyler, BoxSpec>
   BoxStyler shadow(BoxShadowMix value) => this;
   BoxStyler border(BorderSideMix value) => this;
   BoxStyler gradient(GradientMix<Object> value) => this;
+  BoxStyler alignment(Alignment value) => this;
   // Generated alias of `wrap`.
   BoxStyler modifier(Object value) => this;
 
