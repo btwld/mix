@@ -170,6 +170,21 @@ final s = BoxStyler().width(1).onHovered(.color(Colors.blue));
     );
   }
 
+  void test_replaces_parenthesized_constructor() async {
+    await _assertFix(
+      r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+final s = BoxStyler().width(1).onHovered([!(BoxStyler()).color!](Colors.blue));
+''',
+      r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+final s = BoxStyler().width(1).onHovered(.color(Colors.blue));
+''',
+    );
+  }
+
   void test_replaces_new_with_factory() async {
     await _assertFix(
       r'''

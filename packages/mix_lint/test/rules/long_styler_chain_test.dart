@@ -93,6 +93,18 @@ final BoxStyler s = [!.color(Colors.blue)!].width(1).height(2);
     );
   }
 
+  void test_parenthesized_root_reports() async {
+    configure('''
+mix_lint:
+  long_styler_chain:
+    max_calls: 2
+''');
+    await assertLints(r'''
+import 'package:mix/mix.dart';
+final s = ([!BoxStyler()!]).width(1).height(2).width(3);
+''');
+  }
+
   void test_missing_section_uses_default() async {
     configure('');
     await assertNoDiagnostics(r'''

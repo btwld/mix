@@ -32,6 +32,16 @@ final BoxStyler s = [!.new().color!](Colors.blue);
 ''');
   }
 
+  void test_parenthesized_constructor_reports() async {
+    await assertLints(r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+final s = BoxStyler()
+    .width(1)
+    .onHovered([!(BoxStyler()).color!](Colors.blue));
+''');
+  }
+
   // No diagnostics.
 
   void test_constructor_in_styler_factory_reports() async {

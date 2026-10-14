@@ -40,8 +40,17 @@ class Shadow {
   const Shadow({Color? color});
 }
 
+class FontVariation {
+  const FontVariation(String axis, double value);
+}
+
 class TextStyle {
-  const TextStyle({Color? color, double? fontSize, List<Shadow>? shadows});
+  const TextStyle({
+    Color? color,
+    double? fontSize,
+    List<Shadow>? shadows,
+    List<FontVariation>? fontVariations,
+  });
 }
 
 class Text extends Widget {
@@ -165,6 +174,10 @@ class Prop<V> {
 
 class TextStyleMix extends Mix<Object> {
   TextStyleMix.value(TextStyle style);
+}
+
+class ShadowMix extends Mix<Object> {
+  ShadowMix.value(Shadow shadow);
 }
 
 class BorderSideMix extends Mix<Object> {

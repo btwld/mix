@@ -48,7 +48,7 @@ class _Visitor extends SimpleAstVisitor<void> {
 
     // Walk back through the chain. Structural calls such as animate() and
     // wrap() may sit anywhere, so skip them.
-    var target = node.target;
+    var target = node.target?.unParenthesized;
     while (target is MethodInvocation && isMixStylerType(target.staticType)) {
       switch (stylerCallKind(target)) {
         case .variant:
@@ -63,7 +63,7 @@ class _Visitor extends SimpleAstVisitor<void> {
           // Only the first base call after a variant is reported.
           return;
         case .structural:
-          target = target.target;
+          target = target.target?.unParenthesized;
       }
     }
     // The chain can also start with a variant factory, such as

@@ -73,8 +73,9 @@ class _Visitor extends SimpleAstVisitor<void> {
     }
     if (!_hasMatchingFactory(type.element, first)) return;
 
+    // From the start of the chain, which includes any parentheses.
     rule.reportAtSourceRange(
-      SourceRange(root.offset, first.methodName.end - root.offset),
+      SourceRange(first.offset, first.methodName.end - first.offset),
       arguments: [first.methodName.name],
     );
   }

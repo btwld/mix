@@ -128,7 +128,7 @@ For new Stylers, prefer `@MixableSpec(target: Widget.new)`; `@MixableStyler` is 
 The rule reports only APIs from other packages, such as Flutter widgets and `dart:core`. It accepts any API that Mix declares and any Mix value type, including types generated in your package. It also stays silent for:
 
 - functions and widgets in your own package, because they may forward the value into Mix;
-- Flutter values passed to a Mix `.value()` conversion, such as `TextStyleMix.value(TextStyle(color: $primary()))`, because Mix converts them field by field and keeps a reference that reaches it unchanged.
+- Flutter values passed to a Mix `.value()` conversion, such as `TextStyleMix.value(TextStyle(color: $primary()))`, because Mix converts them field by field and keeps a reference that reaches it unchanged. A nested value counts only when Mix has a value type for it, such as `ShadowMix` for `Shadow`; Mix copies other values, such as `FontVariation`, whole.
 
 To read a concrete value outside Mix, use `token.resolve(context)`.
 

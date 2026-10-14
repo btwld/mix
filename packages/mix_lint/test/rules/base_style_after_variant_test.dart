@@ -40,6 +40,23 @@ final s = BoxStyler()
 ''');
   }
 
+  void test_parenthesized_chain_reports() async {
+    await assertLints(r'''
+import 'package:mix/mix.dart';
+final s = (BoxStyler().onHovered(BoxStyler().width(1))).[!height!](8);
+''');
+  }
+
+  void test_on_constraints_on_grid_subtype_is_a_variant() async {
+    await assertLints(r'''
+import 'package:mix/mix.dart';
+class BrandGridStyler extends GridBoxStyler {}
+final s = BrandGridStyler()
+    .onConstraints(Object(), GridBoxStyler().gap(1))
+    .[!gap!](2);
+''');
+  }
+
   void test_grid_on_constraints_is_a_variant() async {
     await assertLints(r'''
 import 'package:mix/mix.dart';

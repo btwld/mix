@@ -54,8 +54,7 @@ final s = [!BoxStyler(animation: Object())!].onHovered(BoxStyler().width(1));
     await assertLints(r'''
 import 'package:mix/mix.dart';
 final a = [!GridBoxStyler.onConstraints(Object(), GridBoxStyler.gap(1))!];
-final b = [!GridBoxStyler(constraintBranches: [])!]
-    .onHovered(GridBoxStyler().gap(2));
+final b = [!GridBoxStyler(constraintBranches: [Object()])!];
 ''');
   }
 
@@ -110,6 +109,38 @@ final VariantStyle<BoxSpec> v = .new(
   Object(),
   BoxStyler().onDark(BoxStyler().width(1)),
 );
+''');
+  }
+
+  void test_merge_null_reports() async {
+    // merge(null) brings in no base style.
+    await assertLints(r'''
+import 'package:mix/mix.dart';
+final s = [!BoxStyler()!].merge(null).onHovered(BoxStyler().width(1));
+''');
+  }
+
+  void test_parenthesized_root_reports() async {
+    await assertLints(r'''
+import 'package:mix/mix.dart';
+final s = ([!BoxStyler()!]).onHovered(BoxStyler().width(1));
+''');
+  }
+
+  void test_on_constraints_on_grid_subtype_reports() async {
+    await assertLints(r'''
+import 'package:mix/mix.dart';
+class BrandGridStyler extends GridBoxStyler {}
+final s = [!BrandGridStyler()!]
+    .onConstraints(Object(), GridBoxStyler().gap(1));
+''');
+  }
+
+  void test_empty_variant_list_no_diagnostic() async {
+    await assertNoDiagnostics(r'''
+import 'package:mix/mix.dart';
+final a = BoxStyler(variants: const []);
+final b = GridBoxStyler(constraintBranches: const []);
 ''');
   }
 

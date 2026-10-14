@@ -89,8 +89,7 @@ StylerCallKind _stylerMemberKind(InterfaceType receiver, String name) {
     return name == 'onBuilder' ? .builder : .variant;
   }
   // GridBoxStyler.onConstraints is a local-constraint variant.
-  if (name == 'onConstraints' &&
-      isMixClass(receiver.element, 'GridBoxStyler')) {
+  if (name == 'onConstraints' && isMixSubtype(receiver, 'GridBoxStyler')) {
     return .variant;
   }
 
@@ -149,8 +148,16 @@ bool rootSetsVariants(Expression root) => _constructorArguments(root).any(
   (argument) =>
       argument is NamedArgument &&
       _variantParameters.contains(argument.name.lexeme) &&
-      argument.argumentExpression is! NullLiteral,
+      !_isEmpty(argument.argumentExpression),
 );
+
+/// Whether [value] is `null` or an empty collection literal.
+bool _isEmpty(Expression value) => switch (value) {
+  NullLiteral() => true,
+  ListLiteral(:final elements) ||
+  SetOrMapLiteral(:final elements) => elements.isEmpty,
+  _ => false,
+};
 
 List<Argument> _constructorArguments(Expression root) => switch (root) {
   InstanceCreationExpression(:final argumentList) ||
@@ -168,14 +175,18 @@ Expression? _valueOf(Argument argument) => switch (argument) {
 
 /// Collects the method chain that directly follows [root].
 ///
-/// Stops when the chain branches into another context, such as an argument
-/// list.
+/// Looks through parentheses, as in `(BoxStyler()).color(...)`, and stops
+/// when the chain branches into another context, such as an argument list.
 List<MethodInvocation> collectDirectMethodChain(Expression root) {
   final chain = <MethodInvocation>[];
   AstNode current = root;
 
   while (true) {
-    final parent = current.parent;
+    var parent = current.parent;
+    while (parent is ParenthesizedExpression) {
+      current = parent;
+      parent = parent.parent;
+    }
     if (parent is! MethodInvocation || parent.target != current) break;
 
     chain.add(parent);

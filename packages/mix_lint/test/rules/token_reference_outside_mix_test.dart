@@ -105,6 +105,18 @@ final s = TextStyleMix.value(TextStyle(fontSize: [!$space()!] * 2));
 ''');
   }
 
+  void test_nested_value_copied_whole_reports() async {
+    // TextStyleMix.value copies fontVariations whole; it converts shadows.
+    await assertLints(r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+final $space = SpaceToken('space');
+final s = TextStyleMix.value(
+  TextStyle(fontVariations: [FontVariation('wght', [!$space()!])]),
+);
+''');
+  }
+
   void test_flutter_value_in_styler_method_reports() async {
     // The Styler stores the Alignment as one value; it never reads its fields.
     await assertLints(r'''

@@ -117,12 +117,36 @@ class _Visitor extends SimpleAstVisitor<void> {
         value is! DotShorthandConstructorInvocation) {
       return false;
     }
-    if (isFlutterWidgetType((value as Expression).staticType)) return false;
+    final type = (value as Expression).staticType;
+    if (isFlutterWidgetType(type)) return false;
     final outer = _directConsumer(value);
     if (outer == null) return false;
     if (_isMixConversion(outer)) return true;
 
-    return _classify(outer) == .notMix && _reachesMixConversion(outer);
+    // A conversion converts a nested value only through its Mix value type,
+    // such as ShadowMix for the shadows of a TextStyle. It copies other
+    // values, such as FontVariation, whole.
+    return _hasMixValueType(type) &&
+        _classify(outer) == .notMix &&
+        _reachesMixConversion(outer);
+  }
+
+  /// Whether a Mix value type for [type] is visible in this library, such as
+  /// `ShadowMix` for `Shadow`.
+  bool _hasMixValueType(DartType? type) {
+    final library = context.libraryElement;
+    if (type is! InterfaceType || library == null) return false;
+    final name = '${type.element.name}Mix';
+    final libraries = [
+      library,
+      ...library.fragments.expand((fragment) => fragment.importedLibraries),
+    ];
+
+    return libraries.any((candidate) {
+      final element = candidate.exportNamespace.get2(name);
+
+      return element is InterfaceElement && isMixType(element.thisType);
+    });
   }
 
   /// Whether [node] calls `value` or `maybeValue` on a Mix value type, such

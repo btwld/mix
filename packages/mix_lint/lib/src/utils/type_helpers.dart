@@ -21,10 +21,10 @@ bool isMixClass(Element? element, String className) =>
     isFromMix(element);
 
 /// Whether [type] is a Styler (a subtype of `MixStyler`).
-bool isMixStylerType(DartType? type) => _isMixSubtype(type, 'MixStyler');
+bool isMixStylerType(DartType? type) => isMixSubtype(type, 'MixStyler');
 
 /// Whether [type] is a design token (a subtype of `MixToken`).
-bool isMixTokenType(DartType? type) => _isMixSubtype(type, 'MixToken');
+bool isMixTokenType(DartType? type) => isMixSubtype(type, 'MixToken');
 
 /// Whether [type] is a Mix value (a subtype of `Mix` or `Mixable`).
 ///
@@ -32,7 +32,7 @@ bool isMixTokenType(DartType? type) => _isMixSubtype(type, 'MixToken');
 /// `EdgeInsetsGeometryMix` share this base, including types generated in a
 /// user's package with `@MixableSpec` or `@Mixable`.
 bool isMixType(DartType? type) =>
-    _isMixSubtype(type, 'Mix') || _isMixSubtype(type, 'Mixable');
+    isMixSubtype(type, 'Mix') || isMixSubtype(type, 'Mixable');
 
 /// Whether [type] is exactly `MixScope`.
 bool isMixScopeType(DartType? type) =>
@@ -65,7 +65,7 @@ bool isMethodTypeParameter(FormalParameterElement? parameter) {
 }
 
 /// Whether [type] is the `package:mix` class [className] or a subtype of it.
-bool _isMixSubtype(DartType? type, String className) {
+bool isMixSubtype(DartType? type, String className) {
   if (type is! InterfaceType) return false;
   final element = type.element;
   if (isMixClass(element, className)) return true;

@@ -60,8 +60,9 @@ class _Visitor extends SimpleAstVisitor<void> {
     };
     // onBuilder() builds the whole style from context, and merge() may bring
     // in a base style, so either one may stand in for base style calls.
+    // merge(null) brings in nothing.
     if (kinds.contains(StylerCallKind.builder)) return;
-    if (chain.any((call) => call.methodName.name == 'merge')) return;
+    if (chain.any(_mergesStyle)) return;
 
     if (kinds.contains(StylerCallKind.variant) &&
         !kinds.contains(StylerCallKind.baseStyle)) {
@@ -104,6 +105,11 @@ class _Visitor extends SimpleAstVisitor<void> {
 
     return false;
   }
+
+  /// Whether [call] is a `merge()` call with an argument other than `null`.
+  bool _mergesStyle(MethodInvocation call) =>
+      call.methodName.name == 'merge' &&
+      call.argumentList.arguments.firstOrNull is! NullLiteral;
 
   /// Whether [node] declares a local variable.
   bool _isLocalVariable(AstNode node) =>
