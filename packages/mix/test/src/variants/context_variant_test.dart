@@ -162,8 +162,8 @@ void main() {
               key: const Key('target'),
               style: BoxStyler()
                   .size(50, 50)
-                  .onEnabled(BoxStyler().color(Colors.blue))
-                  .onDark(BoxStyler().color(Colors.black)),
+                  .onEnabled(.color(Colors.blue))
+                  .onDark(.color(Colors.black)),
             ),
           ),
         ),

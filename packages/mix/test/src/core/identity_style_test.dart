@@ -75,7 +75,7 @@ void main() {
 
     test('is ignored when active as a variant style', () {
       final style = BoxStyler(
-        decoration: DecorationMix.color(Colors.red),
+        decoration: .color(Colors.red),
         variants: const [
           VariantStyle<BoxSpec>(
             NamedVariant('test'),

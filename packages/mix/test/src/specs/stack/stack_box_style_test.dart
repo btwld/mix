@@ -20,7 +20,7 @@ void main() {
           padding: EdgeInsetsMix.all(16.0),
           // Stack properties
           stackAlignment: Alignment.center,
-          fit: StackFit.expand,
+          fit: .expand,
         );
 
         // Verify the properties are stored correctly
@@ -56,9 +56,7 @@ void main() {
 
     group('Individual property constructors', () {
       test('creates StackBoxStyle with only box properties', () {
-        final stackBoxStyle = StackBoxStyler(
-          constraints: BoxConstraintsMix.width(100.0),
-        );
+        final stackBoxStyle = StackBoxStyler(constraints: .width(100.0));
 
         expect(stackBoxStyle.$box, isNotNull);
         expect(stackBoxStyle.$stack, isNotNull);
@@ -80,9 +78,7 @@ void main() {
 
       test('creates StackBoxStyle with variants', () {
         final variant = ContextVariant.brightness(Brightness.dark);
-        final style = StackBoxStyler(
-          decoration: DecorationMix.color(Colors.white),
-        );
+        final style = StackBoxStyler(decoration: .color(Colors.white));
         final stackBoxStyle = StackBoxStyler(
           variants: [VariantStyle(variant, style)],
         );
@@ -94,9 +90,7 @@ void main() {
 
     group('Property methods', () {
       test('padding method creates new instance', () {
-        final first = StackBoxStyler(
-          constraints: BoxConstraintsMix.width(100.0),
-        );
+        final first = StackBoxStyler(constraints: .width(100.0));
         final second = first.padding(EdgeInsetsMix.all(16.0));
 
         expect(first, isNot(second));
@@ -108,9 +102,7 @@ void main() {
       });
 
       test('margin method creates new instance', () {
-        final first = StackBoxStyler(
-          constraints: BoxConstraintsMix.width(100.0),
-        );
+        final first = StackBoxStyler(constraints: .width(100.0));
         final second = first.margin(EdgeInsetsMix.all(8.0));
 
         expect(first, isNot(second));
@@ -122,12 +114,8 @@ void main() {
       });
 
       test('decoration method creates new instance', () {
-        final attribute = StackBoxStyler(
-          constraints: BoxConstraintsMix.width(100.0),
-        );
-        final decorated = attribute.decoration(
-          DecorationMix.color(Colors.blue),
-        );
+        final attribute = StackBoxStyler(constraints: .width(100.0));
+        final decorated = attribute.decoration(.color(Colors.blue));
 
         expect(attribute, isNot(decorated));
         expect(decorated.$box, isNotNull);
@@ -157,11 +145,9 @@ void main() {
 
     group('Merge', () {
       test('merges two StackBoxStyles correctly', () {
-        final first = StackBoxStyler(
-          constraints: BoxConstraintsMix.width(100.0),
-        );
+        final first = StackBoxStyler(constraints: .width(100.0));
         final second = StackBoxStyler(
-          constraints: BoxConstraintsMix.height(200.0),
+          constraints: .height(200.0),
           stackAlignment: Alignment.center,
         );
 
@@ -177,9 +163,7 @@ void main() {
       });
 
       test('null merge returns original', () {
-        final attribute = StackBoxStyler(
-          constraints: BoxConstraintsMix.width(100.0),
-        );
+        final attribute = StackBoxStyler(constraints: .width(100.0));
         final merged = attribute.merge(null);
 
         expect(merged, attribute);
@@ -205,22 +189,18 @@ void main() {
       });
 
       test('different StackBoxStyles are not equal', () {
-        final attr1 = StackBoxStyler(
-          constraints: BoxConstraintsMix.width(100.0),
-        );
-        final attr2 = StackBoxStyler(
-          constraints: BoxConstraintsMix.width(200.0),
-        );
+        final attr1 = StackBoxStyler(constraints: .width(100.0));
+        final attr2 = StackBoxStyler(constraints: .width(200.0));
 
         expect(attr1, isNot(attr2));
       });
 
       test('Stylers with different animation are not equal', () {
         final attr1 = StackBoxStyler(
-          animation: AnimationConfig.linear(const Duration(milliseconds: 100)),
+          animation: .linear(const Duration(milliseconds: 100)),
         );
         final attr2 = StackBoxStyler(
-          animation: AnimationConfig.linear(const Duration(milliseconds: 200)),
+          animation: .linear(const Duration(milliseconds: 200)),
         );
 
         expect(attr1, isNot(equals(attr2)));
@@ -268,7 +248,7 @@ void main() {
       test('props includes all base Style fields', () {
         final styler = StackBoxStyler(
           stackAlignment: Alignment.center,
-          animation: AnimationConfig.linear(const Duration(milliseconds: 100)),
+          animation: .linear(const Duration(milliseconds: 100)),
         );
 
         // Guard: If a field is added/removed, this count will fail
@@ -286,7 +266,7 @@ void main() {
     group('Debug', () {
       test('debugFillProperties includes all properties', () {
         final attribute = StackBoxStyler(
-          constraints: BoxConstraintsMix.width(100.0),
+          constraints: .width(100.0),
           stackAlignment: Alignment.center,
         );
 
@@ -306,10 +286,10 @@ void main() {
           decoration: DecorationMix.color(
             Colors.white,
           ).borderRadius(BorderRadiusMix.circular(8.0)),
-          constraints: BoxConstraintsMix.minWidth(200.0),
+          constraints: .minWidth(200.0),
           // Stack layout
           stackAlignment: Alignment.center,
-          fit: StackFit.expand,
+          fit: .expand,
         );
 
         final context = MockBuildContext();

@@ -14,14 +14,14 @@ void main() {
         );
 
         final flexAttr = FlexStyler(
-          direction: Axis.horizontal,
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          direction: .horizontal,
+          mainAxisAlignment: .center,
+          crossAxisAlignment: .start,
         );
 
         final attribute = FlexBoxStyler.create(
-          box: Prop.maybeMix(containerAttr),
-          flex: Prop.maybeMix(flexAttr),
+          box: .maybeMix(containerAttr),
+          flex: .maybeMix(flexAttr),
         );
 
         // Verify properties are set
@@ -43,8 +43,8 @@ void main() {
         final attribute = FlexBoxStyler(
           alignment: Alignment.center,
           padding: EdgeInsetsMix(top: 10.0, bottom: 20.0),
-          direction: Axis.horizontal,
-          mainAxisAlignment: MainAxisAlignment.center,
+          direction: .horizontal,
+          mainAxisAlignment: .center,
         );
 
         final context = MockBuildContext();
@@ -67,16 +67,14 @@ void main() {
         final attribute = FlexBoxStyler(
           decoration: BoxDecorationMix(
             color: Colors.red,
-            border: BoxBorderMix.all(
-              BorderSideMix(color: Colors.blue, width: 2.0),
-            ),
+            border: .all(BorderSideMix(color: Colors.blue, width: 2.0)),
             borderRadius: BorderRadiusMix(
-              topLeft: const Radius.circular(8.0),
-              topRight: const Radius.circular(8.0),
+              topLeft: const .circular(8.0),
+              topRight: const .circular(8.0),
             ),
           ),
           spacing: 10.0,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: .spaceBetween,
         );
 
         final context = MockBuildContext();
@@ -116,13 +114,13 @@ void main() {
         final first = FlexBoxStyler(
           alignment: Alignment.center,
           padding: EdgeInsetsMix.all(10.0),
-          direction: Axis.horizontal,
+          direction: .horizontal,
         );
 
         final second = FlexBoxStyler(
           alignment: Alignment.topLeft, // This should override
           margin: EdgeInsetsMix.all(20.0), // This should be added
-          mainAxisAlignment: MainAxisAlignment.center, // This should be added
+          mainAxisAlignment: .center, // This should be added
         );
 
         final merged = first.merge(second);
@@ -161,7 +159,7 @@ void main() {
 
         final second = FlexBoxStyler(
           decoration: BoxDecorationMix(
-            border: BoxBorderMix.all(BorderSideMix(color: Colors.blue)),
+            border: .all(BorderSideMix(color: Colors.blue)),
           ),
         );
 
@@ -181,12 +179,12 @@ void main() {
       test('equal attributes have same hashCode', () {
         final attr1 = FlexBoxStyler(
           alignment: Alignment.center,
-          direction: Axis.horizontal,
+          direction: .horizontal,
         );
 
         final attr2 = FlexBoxStyler(
           alignment: Alignment.center,
-          direction: Axis.horizontal,
+          direction: .horizontal,
         );
 
         expect(attr1, equals(attr2));
@@ -202,19 +200,19 @@ void main() {
       });
 
       test('attributes with different nested properties are not equal', () {
-        final attr1 = FlexBoxStyler(direction: Axis.horizontal);
+        final attr1 = FlexBoxStyler(direction: .horizontal);
 
-        final attr2 = FlexBoxStyler(direction: Axis.vertical);
+        final attr2 = FlexBoxStyler(direction: .vertical);
 
         expect(attr1, isNot(equals(attr2)));
       });
 
       test('Stylers with different animation are not equal', () {
         final attr1 = FlexBoxStyler(
-          animation: AnimationConfig.linear(const Duration(milliseconds: 100)),
+          animation: .linear(const Duration(milliseconds: 100)),
         );
         final attr2 = FlexBoxStyler(
-          animation: AnimationConfig.linear(const Duration(milliseconds: 200)),
+          animation: .linear(const Duration(milliseconds: 200)),
         );
 
         expect(attr1, isNot(equals(attr2)));
@@ -252,7 +250,7 @@ void main() {
       test('props includes all base Style fields', () {
         final styler = FlexBoxStyler(
           alignment: Alignment.center,
-          animation: AnimationConfig.linear(const Duration(milliseconds: 100)),
+          animation: .linear(const Duration(milliseconds: 100)),
         );
 
         // Guard: If a field is added/removed, this count will fail
@@ -273,10 +271,7 @@ void main() {
           modifier: WidgetModifierConfig(
             modifiers: [
               OpacityModifierMix(opacity: 0.5),
-              TransformModifierMix(
-                transform: Matrix4.identity(),
-                alignment: Alignment.center,
-              ),
+              TransformModifierMix(transform: .identity(), alignment: .center),
             ],
           ),
         );
@@ -294,7 +289,7 @@ void main() {
 
         final second = FlexBoxStyler(
           modifier: WidgetModifierConfig(
-            modifiers: [TransformModifierMix(transform: Matrix4.identity())],
+            modifiers: [TransformModifierMix(transform: .identity())],
           ),
         );
 
@@ -346,7 +341,7 @@ void main() {
       test('box and flex attributes work independently', () {
         final boxOnly = FlexBoxStyler(alignment: Alignment.center);
 
-        final flexOnly = FlexBoxStyler(direction: Axis.horizontal);
+        final flexOnly = FlexBoxStyler(direction: .horizontal);
 
         expect(boxOnly.$box, isNotNull);
         expect(
@@ -364,7 +359,7 @@ void main() {
       test('partial updates preserve other attribute', () {
         final initial = FlexBoxStyler(
           alignment: Alignment.center,
-          direction: Axis.horizontal,
+          direction: .horizontal,
         );
 
         final updateBox = FlexBoxStyler(padding: EdgeInsetsMix.all(10.0));

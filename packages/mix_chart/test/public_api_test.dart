@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mix/mix.dart';
 import 'package:mix_chart/mix_chart.dart';
 
 void main() {
   test('factory and instance shorthand compose without backend types', () {
-    final fromFactory = LineChartStyler.axis(
-      ChartAxisStyler.label(TextStyler.fontSize(11)),
-    );
+    final fromFactory = LineChartStyler.axis(.label(.fontSize(11)));
     final fromInstance = LineChartStyler()
         .axis(.label(.fontSize(11)))
         .grid(.stroke(.width(1)))

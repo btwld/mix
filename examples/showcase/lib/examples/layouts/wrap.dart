@@ -29,10 +29,10 @@ BoxStyler tagChip() => BoxStyler()
     .borderRadius(.circular(999));
 
 TextStyler tagLabel() =>
-    TextStyler().fontSize(13).fontWeight(FontWeight.w600).color(_ink);
+    TextStyler().fontSize(13).fontWeight(.w600).color(_ink);
 
 TextStyler wrapCaption() =>
-    TextStyler().fontSize(12).fontWeight(FontWeight.w600).color(_muted);
+    TextStyler().fontSize(12).fontWeight(.w600).color(_muted);
 
 class _Picker<T> extends StatelessWidget {
   const _Picker({

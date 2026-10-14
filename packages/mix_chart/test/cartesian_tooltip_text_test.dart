@@ -1,7 +1,6 @@
 import 'package:fl_chart/fl_chart.dart' as fl;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mix/mix.dart';
 import 'package:mix_chart/mix_chart.dart';
 
 void main() {
@@ -12,10 +11,7 @@ void main() {
       ) async {
         final tooltip = styled
             ? ChartTooltipStyler().text(
-                TextStyler()
-                    .fontSize(19)
-                    .textAlign(TextAlign.end)
-                    .textDirection(TextDirection.rtl),
+                .fontSize(19).textAlign(.end).textDirection(.rtl),
               )
             : const ChartTooltipStyler.create();
         await tester.pumpWidget(

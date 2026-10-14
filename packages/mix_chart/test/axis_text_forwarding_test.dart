@@ -106,20 +106,16 @@ void main() {
             ),
             style: LineChartStyler()
                 .axis(
-                  ChartAxisStyler().label(
+                  .label(
                     TextStyler().wrap(
-                      WidgetModifierConfig.modifiers([
-                        OpacityModifierMix(opacity: 0.2),
-                      ]),
+                      .modifiers([OpacityModifierMix(opacity: 0.2)]),
                     ),
                   ),
                 )
                 .xAxis(
-                  ChartAxisStyler().label(
+                  .label(
                     TextStyler().wrap(
-                      WidgetModifierConfig.modifiers([
-                        OpacityModifierMix(opacity: 0.7),
-                      ]),
+                      .modifiers([OpacityModifierMix(opacity: 0.7)]),
                     ),
                   ),
                 ),
@@ -144,18 +140,17 @@ void main() {
       '${bar ? 'bar' : 'line'} preserves common fields and specific overrides',
       (tester) async {
         final common = ChartAxisStyler().label(
-          TextStyler()
-              .style(
+          .style(
                 TextStyleMix(
                   fontFamilyFallback: ['FallbackFont'],
-                  fontStyle: FontStyle.italic,
-                  fontWeight: FontWeight.w300,
+                  fontStyle: .italic,
+                  fontWeight: .w300,
                   height: 1.4,
                   letterSpacing: 0.8,
                   wordSpacing: 1.5,
-                  decoration: TextDecoration.underline,
+                  decoration: .underline,
                   decorationColor: Colors.green,
-                  decorationStyle: TextDecorationStyle.dashed,
+                  decorationStyle: .dashed,
                   decorationThickness: 2,
                 ),
               )
@@ -163,13 +158,13 @@ void main() {
               .fontFamily('CommonFont')
               .fontSize(15)
               .color(Colors.purple)
-              .textAlign(TextAlign.end)
+              .textAlign(.end)
               .maxLines(2)
               .softWrap(false)
-              .overflow(TextOverflow.fade)
-              .textDirection(TextDirection.rtl)
-              .textScaler(const TextScaler.linear(1.2))
-              .textWidthBasis(TextWidthBasis.longestLine)
+              .overflow(.fade)
+              .textDirection(.rtl)
+              .textScaler(const .linear(1.2))
+              .textWidthBasis(.longestLine)
               .textHeightBehavior(
                 TextHeightBehaviorMix(applyHeightToFirstAscent: false),
               )
@@ -179,10 +174,9 @@ void main() {
               .uppercase(),
         );
         final specific = ChartAxisStyler().label(
-          TextStyler()
-              .fontSize(19)
-              .textAlign(TextAlign.center)
-              .strutStyle(StrutStyleMix(height: 1.6)),
+          .fontSize(
+            19,
+          ).textAlign(.center).strutStyle(StrutStyleMix(height: 1.6)),
         );
         final axis = ChartAxis.numeric(
           min: 0,
@@ -281,11 +275,7 @@ void main() {
               labelBuilder: (_, _) =>
                   const Text('Custom', textAlign: TextAlign.left),
             ),
-            style: LineChartStyler().axis(
-              ChartAxisStyler().label(
-                TextStyler().uppercase().textAlign(TextAlign.end),
-              ),
-            ),
+            style: LineChartStyler().axis(.label(.uppercase().textAlign(.end))),
           ),
         ),
       ),
@@ -322,15 +312,14 @@ void main() {
               ),
             ],
             style: LineChartStyler().axis(
-              ChartAxisStyler().label(
-                TextStyler()
-                    .fontFamily('AuditFont')
+              .label(
+                .fontFamily('AuditFont')
                     .fontSize(17)
-                    .fontWeight(FontWeight.w300)
-                    .textAlign(TextAlign.end)
+                    .fontWeight(.w300)
+                    .textAlign(.end)
                     .maxLines(2)
                     .softWrap(false)
-                    .overflow(TextOverflow.fade),
+                    .overflow(.fade),
               ),
             ),
           ),
