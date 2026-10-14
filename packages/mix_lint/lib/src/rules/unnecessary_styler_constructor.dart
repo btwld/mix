@@ -13,8 +13,11 @@ import 'package:analyzer/source/source_range.dart';
 import '../utils/styler_calls.dart';
 import '../utils/type_helpers.dart';
 
-/// Reports `.new().color(x)`, and `BoxStyler().color(x)` passed to a Styler
-/// method, when the factory `.color(x)` accepts the same arguments.
+/// A rule that reports a Styler constructor that the factory of its first
+/// call can replace.
+///
+/// It reports `.new().color(x)` anywhere, and `BoxStyler().color(x)` passed to
+/// a Styler method, when the factory `.color(x)` accepts the same arguments.
 class UnnecessaryStylerConstructor extends AnalysisRule {
   static const LintCode code = LintCode(
     'unnecessary_styler_constructor',
@@ -76,12 +79,10 @@ class _Visitor extends SimpleAstVisitor<void> {
     );
   }
 
-  /// Returns true if [expression] is an argument of a Styler method whose
-  /// parameter type is [styler], so a dot shorthand resolves against it.
+  /// Whether [expression] is an argument of a Styler method whose parameter
+  /// type is [styler], so a dot shorthand resolves against it.
   bool _isStylerArgument(Expression expression, InterfaceElement styler) {
-    final value = outermostBranch(expression);
-    final parent = value.parent;
-    final Argument argument = parent is NamedArgument ? parent : value;
+    final argument = enclosingArgument(expression);
     final argumentList = argument.parent;
     if (argumentList is! ArgumentList) return false;
     if (!isStylerCall(argumentList.parent)) return false;
@@ -93,8 +94,8 @@ class _Visitor extends SimpleAstVisitor<void> {
     return parameterType is InterfaceType && parameterType.element == styler;
   }
 
-  /// Returns true if [styler] declares a factory or static method named like
-  /// [call] that accepts the same arguments.
+  /// Whether [styler] declares a factory or static method named like [call]
+  /// that accepts the same arguments.
   bool _hasMatchingFactory(InterfaceElement styler, MethodInvocation call) {
     final name = call.methodName.name;
     final ExecutableElement? factory =
@@ -108,7 +109,7 @@ class _Visitor extends SimpleAstVisitor<void> {
     return _acceptsArguments(factory, call.argumentList);
   }
 
-  /// Returns true if [arguments] would type-check against [executable].
+  /// Whether [arguments] would type-check against [executable].
   bool _acceptsArguments(ExecutableElement executable, ArgumentList arguments) {
     final positional = executable.formalParameters
         .where((p) => p.isPositional)

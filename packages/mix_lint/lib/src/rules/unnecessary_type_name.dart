@@ -11,8 +11,10 @@ import 'package:analyzer/error/error.dart';
 import '../utils/styler_calls.dart';
 import '../utils/type_helpers.dart';
 
-/// Reports `TypeName.member` in a Styler expression when the parameter's
-/// exact type declares `member`, so `.member` resolves to the same member.
+/// A rule that reports `TypeName.member` in a Styler expression when
+/// `.member` resolves to the same member.
+///
+/// That is the case when the exact parameter type declares `member`.
 class UnnecessaryTypeName extends AnalysisRule {
   static const LintCode code = LintCode(
     'unnecessary_type_name',
@@ -61,11 +63,9 @@ class _Visitor extends SimpleAstVisitor<void> {
   }) {
     // Cheap checks first: these visitors see every call and property access.
     if (!_isStaticOrNamedConstructor(member)) return;
-    if (typeName != null && _referencedType(typeName) == null) return;
+    if (typeName != null && !_isTypeName(typeName)) return;
 
-    final value = outermostBranch(node);
-    final parent = value.parent;
-    final Argument argument = parent is NamedArgument ? parent : value;
+    final argument = enclosingArgument(node);
     final parameter = argument.correspondingParameter;
     final declaringType = member?.enclosingElement;
     final parameterType = parameter?.type;
@@ -83,9 +83,11 @@ class _Visitor extends SimpleAstVisitor<void> {
     );
   }
 
-  /// Returns true if [argument] is passed to a call that builds a Styler, or
-  /// to a Mix call nested inside one. Mix calls are calls that `package:mix`
-  /// declares and calls that build Mix values, including generated types.
+  /// Whether [argument] is passed to a call that builds a Styler, or to a Mix
+  /// call nested inside one.
+  ///
+  /// Mix calls are calls that `package:mix` declares and calls that build Mix
+  /// values, including generated types.
   bool _isMixApiArgument(Argument argument) {
     final argumentList = argument.parent;
     if (argumentList is! ArgumentList) return false;
@@ -110,8 +112,8 @@ class _Visitor extends SimpleAstVisitor<void> {
     return _isInsideStylerCall(invocation);
   }
 
-  /// Returns true if [node] is nested in an argument of a Styler call, such
-  /// as `.widgetState(...)` in `.onNot(.widgetState(...), ...)`.
+  /// Whether [node] is nested in an argument of a Styler call, such as
+  /// `.widgetState(...)` in `.onNot(.widgetState(...), ...)`.
   bool _isInsideStylerCall(AstNode node) {
     for (
       AstNode? current = node.parent;
@@ -127,16 +129,12 @@ class _Visitor extends SimpleAstVisitor<void> {
     return false;
   }
 
-  /// Returns the type that [target] names, such as `FontWeight` in
-  /// `FontWeight.w600` or `ui.FontWeight` with an import prefix.
-  InterfaceElement? _referencedType(Expression target) {
-    final element = switch (target) {
-      SimpleIdentifier() => target.element,
-      PrefixedIdentifier() => target.identifier.element,
-      _ => null,
-    };
+  /// Whether [target] names a type, such as `FontWeight` in `FontWeight.w600`
+  /// or `ui.FontWeight` with an import prefix.
+  bool _isTypeName(Expression target) {
+    final name = target is PrefixedIdentifier ? target.identifier : target;
 
-    return element is InterfaceElement ? element : null;
+    return name is SimpleIdentifier && name.element is InterfaceElement;
   }
 
   bool _isStaticOrNamedConstructor(Element? member) => switch (member) {

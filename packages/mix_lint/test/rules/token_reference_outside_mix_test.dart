@@ -144,7 +144,7 @@ final s = BoxStyler().shadow(BoxShadowMix(color: $primary()));
   }
 
   void test_call_into_plain_mix_class_no_diagnostic() async {
-    // GridTrack is not a Mix value, but Mix declares it and resolves refs.
+    // GridTrack isn't a Mix value, but Mix declares it and resolves references.
     await assertNoDiagnostics(r'''
 import 'package:mix/mix.dart';
 const $gap = SpaceToken('gap');

@@ -6,8 +6,8 @@ import 'package:yaml/yaml.dart';
 /// The key of this plugin's section in `analysis_options.yaml`.
 const _sectionName = 'mix_lint';
 
-/// Reads rule options from the `mix_lint:` section of the analysis options
-/// file that applies to a Dart library.
+/// A reader for rule options in the `mix_lint:` section of the analysis
+/// options file that applies to a Dart library.
 ///
 /// The analyzer passes plugin rules only whether they are enabled and their
 /// severity, so rules that take options read this top-level section, which
@@ -60,8 +60,11 @@ abstract final class RuleOptions {
   }
 }
 
-/// Reads the `mix_lint:` section of an options file and the files it
-/// includes, and records the stamp of every file it looks up.
+/// A reader for the `mix_lint:` section of an options file and the files it
+/// includes.
+///
+/// It records the stamp of every file it looks up, so the cache can tell when
+/// the result is stale.
 final class _SectionReader {
   /// The options file that applies to the library.
   final File root;
@@ -79,7 +82,9 @@ final class _SectionReader {
   _SectionReader(this.root);
 
   /// The section of [file] merged over the sections of the files it
-  /// includes. [chain] holds the files being read, to stop at include cycles.
+  /// includes.
+  ///
+  /// [chain] holds the files being read, to stop at include cycles.
   Map<String, Object?> read(File file, Set<String> chain) {
     if (!chain.add(file.path)) return {};
     try {

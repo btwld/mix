@@ -8,7 +8,7 @@ import 'package:analyzer/error/error.dart';
 import '../utils/styler_calls.dart';
 import '../utils/type_helpers.dart';
 
-/// Reports a base style call that comes after a variant in a Styler chain.
+/// A rule that reports a base style call after a variant in a Styler chain.
 class BaseStyleAfterVariant extends AnalysisRule {
   static const LintCode code = LintCode(
     'base_style_after_variant',

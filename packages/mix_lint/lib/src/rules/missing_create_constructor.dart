@@ -8,8 +8,8 @@ import 'package:analyzer/error/error.dart';
 
 import '../utils/type_helpers.dart';
 
-/// Reports a `@Mixable` or `@MixableStyler` class that has no `.create`
-/// constructor while its generated `merge()` needs one.
+/// A rule that reports a `@Mixable` or `@MixableStyler` class without the
+/// `.create` constructor that its generated `merge()` calls.
 class MissingCreateConstructor extends AnalysisRule {
   /// `GeneratedMixMethods.merge` from `package:mix_annotations`.
   static const mixableMergeFlag = 0x01;

@@ -19,7 +19,7 @@ const _colorDirectives = {
   'withOpacity',
 };
 
-/// Whether the consumer of a token reference belongs to Mix.
+/// A verdict on whether the consumer of a token reference belongs to Mix.
 enum _Verdict {
   /// The consumer is a Mix API, so the reference resolves.
   mix,
@@ -31,8 +31,10 @@ enum _Verdict {
   unknown,
 }
 
-/// Reports a token reference (`token()`, `token.call()`, or `token.mix()`)
-/// passed to an API from another package, where it never resolves.
+/// A rule that reports a token reference passed to an API from another
+/// package, where it never resolves.
+///
+/// A token reference is `token()`, `token.call()`, or `token.mix()`.
 class TokenReferenceOutsideMix extends AnalysisRule {
   static const LintCode code = LintCode(
     'token_reference_outside_mix',
@@ -74,6 +76,7 @@ class _Visitor extends SimpleAstVisitor<void> {
   const _Visitor(this.rule, this.context);
 
   /// Reports [reference] when it is passed as an argument to a non-Mix API.
+  ///
   /// Stays silent when the reference is not an argument or when the consumer
   /// cannot be resolved.
   void _check(Expression reference) {
@@ -89,8 +92,8 @@ class _Visitor extends SimpleAstVisitor<void> {
     rule.reportAtNode(reference);
   }
 
-  /// Returns true if [reference] reaches [consumer] as a reference: directly,
-  /// or through a color method that Mix keeps as a directive, such as
+  /// Whether [reference] reaches [consumer] as a reference, directly or
+  /// through a color method that Mix keeps as a directive, such as
   /// `withValues`.
   bool _reachesUnchanged(Expression reference, AstNode consumer) {
     var value = reference;
@@ -107,9 +110,8 @@ class _Visitor extends SimpleAstVisitor<void> {
     return _directConsumer(value) == consumer;
   }
 
-  /// Returns true if [value], a Flutter value such as `TextStyle(...)`, is
-  /// passed to a Mix `.value()` conversion, directly or inside other Flutter
-  /// values.
+  /// Whether [value], a Flutter value such as `TextStyle(...)`, is passed to
+  /// a Mix `.value()` conversion, directly or inside other Flutter values.
   bool _reachesMixConversion(AstNode value) {
     if (value is! InstanceCreationExpression &&
         value is! DotShorthandConstructorInvocation) {
@@ -123,9 +125,10 @@ class _Visitor extends SimpleAstVisitor<void> {
     return _classify(outer) == .notMix && _reachesMixConversion(outer);
   }
 
-  /// Returns true if [node] calls `value` or `maybeValue` on a Mix value
-  /// type, such as `TextStyleMix.value(...)`. `Prop.value` stores its
-  /// argument whole, so it doesn't count.
+  /// Whether [node] calls `value` or `maybeValue` on a Mix value type, such
+  /// as `TextStyleMix.value(...)`.
+  ///
+  /// `Prop.value` stores its argument whole, so it doesn't count.
   bool _isMixConversion(AstNode node) {
     final (name, element) = switch (node) {
       InstanceCreationExpression(:final constructorName) => (
@@ -149,8 +152,8 @@ class _Visitor extends SimpleAstVisitor<void> {
     return owner is InterfaceElement && isMixType(owner.thisType);
   }
 
-  /// Returns the invocation that [value] is passed to directly, possibly as a
-  /// named argument or inside a collection literal, or null.
+  /// The invocation that [value] is passed to directly, possibly as a named
+  /// argument or inside a collection literal, or null.
   AstNode? _directConsumer(Expression value) {
     var current = value.parent;
     while (current is NamedArgument ||
@@ -170,8 +173,7 @@ class _Visitor extends SimpleAstVisitor<void> {
     return current is ArgumentList ? current.parent : null;
   }
 
-  /// Walks up from [reference] to the innermost invocation it is an argument
-  /// to, passing through collection literals and named arguments. Returns null
+  /// The innermost invocation whose arguments contain [reference], or null
   /// when a statement, declaration, or function body comes first.
   AstNode? _enclosingConsumer(Expression reference) {
     AstNode? current = reference.parent;
@@ -230,7 +232,7 @@ class _Visitor extends SimpleAstVisitor<void> {
     return .unknown;
   }
 
-  /// Returns true if [element] is declared in the package being analyzed.
+  /// Whether [element] is declared in the package being analyzed.
   bool _isInAnalyzedPackage(Element? element) {
     final library = element?.library;
     if (library == null) return false;

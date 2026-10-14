@@ -9,7 +9,7 @@ import 'package:analyzer/error/error.dart';
 import '../utils/styler_calls.dart';
 import '../utils/type_helpers.dart';
 
-/// Reports a Styler chain that adds variants but sets no base style.
+/// A rule that reports a Styler chain that adds variants but no base style.
 class VariantsWithoutBaseStyle extends AnalysisRule {
   static const LintCode code = LintCode(
     'variants_without_base_style',
@@ -69,9 +69,12 @@ class _Visitor extends SimpleAstVisitor<void> {
     }
   }
 
-  /// Returns true if [styler] overrides another style: it is passed to a
-  /// variant or to `merge()`, returned from an `onBuilder` callback, or
-  /// wrapped in a `VariantStyle`. Such a Styler needs no base of its own.
+  /// Whether [styler] overrides another style, so it needs no base style of
+  /// its own.
+  ///
+  /// It does when it is passed to a variant or to `merge()`, returned from an
+  /// `onBuilder` callback, or wrapped in a `VariantStyle`. The walk continues
+  /// past local variables, such as one that an `onBuilder` callback returns.
   bool _isNestedStyle(Expression styler) {
     for (
       AstNode? node = styler.parent;
@@ -102,8 +105,7 @@ class _Visitor extends SimpleAstVisitor<void> {
     return false;
   }
 
-  /// Local variables, such as one an `onBuilder` callback returns, don't end
-  /// the walk.
+  /// Whether [node] declares a local variable.
   bool _isLocalVariable(AstNode node) =>
       node is VariableDeclaration &&
       node.parent?.parent is VariableDeclarationStatement;

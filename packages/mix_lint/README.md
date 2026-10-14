@@ -217,7 +217,7 @@ final card = layout.merge(surface).onHovered(.color(Colors.red));
 
 ### unnecessary_styler_constructor
 
-An empty Styler constructor starts a chain where a dot shorthand for the factory would do. Has a quick fix, including "fix all in file".
+An empty Styler constructor starts a chain where a dot shorthand for the factory would do. The quick fix can also fix the whole file.
 
 The rule reports:
 
@@ -246,11 +246,11 @@ final style = BoxStyler()
 final BoxStyler card = .padding(.all(16));
 ```
 
-Top-level declarations such as `final style = BoxStyler()...` keep the constructor, and so do widget arguments such as `Box(style: BoxStyler()...)`, whose parameter type (`Style<BoxSpec>`) gives a dot shorthand nothing to resolve against. The rule stays silent when the first call has no factory, or when the factory would not accept the same arguments.
+The rule doesn't report a constructor where a dot shorthand has no Styler type to resolve against: a top-level declaration such as `final style = BoxStyler()...`, or a widget argument such as `Box(style: BoxStyler()...)`, whose parameter type is `Style<BoxSpec>`. It also stays silent when the first call has no factory, or when the factory doesn't accept the same arguments.
 
 ### unnecessary_type_name
 
-An argument in a Styler expression names a type that dot shorthand can infer from the parameter type. A Styler expression is an argument of a Styler call, or of a Mix call nested inside one. Has a quick fix, including "fix all in file".
+An argument in a Styler expression names a type that dot shorthand can infer from the parameter type. A Styler expression is an argument of a Styler call, or of a Mix call nested inside one. The quick fix can also fix the whole file.
 
 Don't:
 

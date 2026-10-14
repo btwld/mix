@@ -9,8 +9,10 @@ import '../config.dart';
 import '../utils/styler_calls.dart';
 import '../utils/type_helpers.dart';
 
-/// Reports a Styler chain with more calls than `max_calls`, read from the
-/// `mix_lint:` section of `analysis_options.yaml`.
+/// A rule that reports a Styler chain with more calls than `max_calls`.
+///
+/// It reads `max_calls` from the `mix_lint:` section of
+/// `analysis_options.yaml`.
 class LongStylerChain extends AnalysisRule {
   static const LintCode code = LintCode(
     'long_styler_chain',

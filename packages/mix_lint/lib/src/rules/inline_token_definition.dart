@@ -8,7 +8,8 @@ import 'package:analyzer/error/error.dart';
 import '../utils/styler_calls.dart';
 import '../utils/type_helpers.dart';
 
-/// Reports a design token created inside a Styler chain or a `MixScope`.
+/// A rule that reports a design token created inside a Styler chain or a
+/// `MixScope`.
 class InlineTokenDefinition extends MultiAnalysisRule {
   static const LintCode inStyler = LintCode(
     'inline_token_definition',
@@ -55,6 +56,7 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   const _Visitor(this.rule);
 
+  /// Whether [node] creates a `MixScope`.
   bool _isMixScopeCall(AstNode node) => switch (node) {
     InstanceCreationExpression() || DotShorthandConstructorInvocation() =>
       isMixScopeType((node as Expression).staticType),
@@ -65,15 +67,6 @@ class _Visitor extends SimpleAstVisitor<void> {
     ),
     _ => false,
   };
-
-  @override
-  void visitDotShorthandConstructorInvocation(
-    DotShorthandConstructorInvocation node,
-  ) => _check(node);
-
-  @override
-  void visitInstanceCreationExpression(InstanceCreationExpression node) =>
-      _check(node);
 
   void _check(Expression node) {
     if (!isMixTokenType(node.staticType)) return;
@@ -105,4 +98,13 @@ class _Visitor extends SimpleAstVisitor<void> {
       previous = ancestor;
     }
   }
+
+  @override
+  void visitDotShorthandConstructorInvocation(
+    DotShorthandConstructorInvocation node,
+  ) => _check(node);
+
+  @override
+  void visitInstanceCreationExpression(InstanceCreationExpression node) =>
+      _check(node);
 }

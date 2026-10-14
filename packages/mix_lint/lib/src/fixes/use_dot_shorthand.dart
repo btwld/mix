@@ -6,9 +6,10 @@ import 'package:analysis_server_plugin/edit/range_factory.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/source/source_range.dart';
 
-/// Quick fix for `unnecessary_type_name` and `unnecessary_styler_constructor`:
-/// replaces `TypeName.member(...)`, `BoxStyler().member(...)`, or
-/// `.new().member(...)` with `.member(...)`.
+/// A quick fix that replaces `TypeName.member(...)`, `BoxStyler().member(...)`,
+/// or `.new().member(...)` with `.member(...)`.
+///
+/// It fixes `unnecessary_type_name` and `unnecessary_styler_constructor`.
 class UseDotShorthand extends ResolvedCorrectionProducer {
   static const _fixKind = FixKind(
     'mix_lint.fix.useDotShorthand',
@@ -45,8 +46,8 @@ class UseDotShorthand extends ResolvedCorrectionProducer {
     });
   }
 
-  /// Returns the range of `TypeName.` (including any import prefix) in
-  /// [node], or null when [node] is not a fixable shape.
+  /// The range of `TypeName.`, including any import prefix, in [node], or
+  /// null when [node] can't be fixed.
   SourceRange? _typeNameRange(AstNode node) => switch (node) {
     MethodInvocation() => range.startStart(node, node.methodName),
     PropertyAccess() => range.startStart(node, node.propertyName),
