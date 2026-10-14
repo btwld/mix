@@ -72,8 +72,6 @@ void f() {
 ''');
   }
 
-  // No diagnostics.
-
   void test_call_into_dot_shorthand_consumers_reports() async {
     // `.all(...)` is a static method and `.new(...)` a constructor, both
     // resolved against a Flutter parameter type.
@@ -96,6 +94,8 @@ final a = Container(decoration: BoxDecoration(color: [!$primary()!]));
 final b = TextStyle(color: [!$primary()!]);
 ''');
   }
+
+  // No diagnostics.
 
   void test_call_into_styler_method_no_diagnostic() async {
     await assertNoDiagnostics(r'''

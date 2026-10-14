@@ -22,13 +22,7 @@ enum _Verdict {
 }
 
 /// Reports a token reference (`token()`, `token.call()`, or `token.mix()`)
-/// passed to an API outside Mix, where it never resolves.
-///
-/// Only APIs from other packages, such as Flutter widgets or `dart:core`, are
-/// reported. Code in the analyzed package may forward the value into Mix, so
-/// the rule stays silent for it. So does a Flutter value that is passed on to
-/// Mix, such as the `TextStyle` in `TextStyleMix.value(TextStyle(...))`:
-/// Mix converts it field by field and keeps the reference.
+/// passed to an API from another package, where it never resolves.
 class TokenReferenceOutsideMix extends AnalysisRule {
   static const LintCode code = LintCode(
     'token_reference_outside_mix',

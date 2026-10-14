@@ -26,11 +26,11 @@ Warnings catch bugs and are on by default. Lints enforce Mix style and are off u
 | [`base_style_after_variant`](#base_style_after_variant) | Lint | | base style calls come before variants |
 | [`inline_token_definition`](#inline_token_definition) | Lint | | tokens are not created inside Stylers or `MixScope` |
 | [`long_styler_chain`](#long_styler_chain) | Lint | | Styler chains stay short |
-| [`unnecessary_styler_constructor`](#unnecessary_styler_constructor) | Lint | Yes | nested Stylers use factory shorthands, such as `.color(...)` |
+| [`unnecessary_styler_constructor`](#unnecessary_styler_constructor) | Lint | Yes | nested Stylers use dot shorthands, such as `.color(...)` |
 | [`unnecessary_type_name`](#unnecessary_type_name) | Lint | Yes | Styler arguments use dot shorthands |
 | [`variants_without_base_style`](#variants_without_base_style) | Lint | | Stylers set a base style before variants |
 
-Quick fixes run in the IDE, for one diagnostic or for a whole file. `dart fix` does not apply fixes from analyzer plugins. A fix can leave an import unused, for example `package:flutter/widgets.dart` after `FontWeight.w600` becomes `.w600`. The analyzer then reports `unused_import`, which has its own fix.
+Quick fixes run in the IDE only; `dart fix` does not apply plugin fixes. A fix can leave an import unused, which the analyzer then reports as `unused_import`.
 
 ### Enable lints and change severity
 
@@ -85,13 +85,9 @@ mix_lint:
     max_calls: 20
 ```
 
-| Rule | Option | Default |
-|---|---|---|
-| `long_styler_chain` | `max_calls`: the most calls allowed in one chain | `15` |
+`long_styler_chain` takes `max_calls`, the most calls allowed in one chain (default 15).
 
 Each library uses the nearest `analysis_options.yaml` above its file. `mix_lint` follows `include:` entries, by relative path or `package:` URI, and values in the including file win. In a pub workspace, put `plugins:` and `mix_lint:` in the root options file and have each member include it.
-
-If a change to the options does not show up, restart the analysis server.
 
 ## Rule reference
 
@@ -221,7 +217,7 @@ final card = layout.merge(surface).onHovered(.color(Colors.red));
 
 ### unnecessary_styler_constructor
 
-An empty Styler constructor starts a chain where the factory shorthand would do. Has a quick fix, including "fix all in file".
+An empty Styler constructor starts a chain where a dot shorthand for the factory would do. Has a quick fix, including "fix all in file".
 
 The rule reports:
 
@@ -302,15 +298,4 @@ final style = BoxStyler()
 
 ## Renamed rules
 
-`mix_lint` 2.0.0 used the names below. If you configured or ignored them, update `analysis_options.yaml` and your `ignore` comments:
-
-| 2.0.0 name | Current name |
-|---|---|
-| `mix_avoid_defining_tokens_within_style` | `inline_token_definition` |
-| `mix_avoid_defining_tokens_within_scope` | `inline_token_definition` |
-| `mix_avoid_token_ref_outside_mix` | `token_reference_outside_mix` |
-| `mix_avoid_empty_variants` | `variants_without_base_style` |
-| `mix_max_number_of_attributes_per_style` | `long_styler_chain` |
-| `mix_mixable_styler_has_create` | `missing_create_constructor` |
-| `mix_prefer_dot_shorthands` | `unnecessary_type_name` |
-| `mix_variants_last` | `base_style_after_variant` |
+`mix_lint` 2.0.0 used different rule names. See the [migration table](CHANGELOG.md#migrate-from-200) to update `analysis_options.yaml` and `ignore` comments.

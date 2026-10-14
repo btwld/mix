@@ -9,16 +9,8 @@ import '../config.dart';
 import '../utils/styler_calls.dart';
 import '../utils/type_helpers.dart';
 
-/// Reports a Styler chain with more calls than the limit.
-///
-/// The limit is [defaultMaxCalls] unless the project's
-/// `analysis_options.yaml` sets another positive number:
-///
-/// ```yaml
-/// mix_lint:
-///   long_styler_chain:
-///     max_calls: 20
-/// ```
+/// Reports a Styler chain with more calls than `max_calls`, read from the
+/// `mix_lint:` section of `analysis_options.yaml`.
 class LongStylerChain extends AnalysisRule {
   static const LintCode code = LintCode(
     'long_styler_chain',

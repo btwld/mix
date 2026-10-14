@@ -25,6 +25,15 @@ const _structuralMixins = {'AnimationStyleMixin', 'WidgetModifierStyleMixin'};
 // `modifier` is the generated alias of `wrap`.
 const _structuralMethods = {'merge', 'applyVariants', 'modifier'};
 
+/// Returns true if [node] is a call that builds a Styler, such as
+/// `BoxStyler()`, `.color(...)`, or `style.padding(...)`.
+bool isStylerCall(AstNode? node) =>
+    (node is MethodInvocation ||
+        node is InstanceCreationExpression ||
+        node is DotShorthandInvocation ||
+        node is DotShorthandConstructorInvocation) &&
+    isMixStylerType((node as Expression).staticType);
+
 /// Classifies [node], a method call on a Styler.
 ///
 /// Generated Stylers override some mixin methods (for example `animate` and

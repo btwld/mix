@@ -1,30 +1,27 @@
 ## Unreleased
 
- - **BREAKING**: Renamed every rule. Plugin rules are already scoped by the
-   plugin name, as in `// ignore: mix_lint/<rule>`, so the `mix_` prefix is
-   gone, and each name now describes the problem it reports. The two
-   inline-token rules are now one rule, `inline_token_definition`. See the
-   migration table below.
+ - **BREAKING**: Renamed every rule and merged the two inline-token rules into
+   `inline_token_definition`. See the table below.
  - **BREAKING**: `missing_create_constructor` and
-   `token_reference_outside_mix` are now warnings, on by default. The other
-   rules are lints, off until you enable them.
- - **FEAT**: Add `unnecessary_styler_constructor`, with a quick fix: it turns
-   `.onHovered(BoxStyler().color(...))` into `.onHovered(.color(...))`.
- - **FEAT**: `long_styler_chain` reads its limit from `max_calls` in a
-   top-level `mix_lint:` section of `analysis_options.yaml` and from files it
-   includes. The default stays 15.
- - **FIX**: Add `lib/main.dart`, the entry point the analysis server loads.
-   2.0.0 did not load without it.
- - **FIX**: Remove false positives in `token_reference_outside_mix`,
-   `variants_without_base_style`, `base_style_after_variant`,
-   `inline_token_definition`, and `unnecessary_type_name`, found by running
-   the rules on Mix itself.
- - **FIX**: `token_reference_outside_mix` also catches references passed to
-   Flutter APIs through dot shorthands, such as
-   `Padding(padding: .all($space()))`.
- - **CHORE**: Require `analysis_server_plugin` ^0.3.23 and `analyzer`
-   ^14.4.0 (Dart 3.12 or later). Plugins that a project enables together
-   resolve in one package, so they must accept the same analyzer version.
+   `token_reference_outside_mix` are warnings, on by default. The other rules
+   are lints, off until you enable them.
+ - **BREAKING**: `MixLintPlugin` is `final`, and the `plugin` instance moved
+   from `mix_lint.dart` to `main.dart`.
+ - **FEAT**: Add `unnecessary_styler_constructor`, with a quick fix that turns
+   `.onHovered(BoxStyler().color(x))` into `.onHovered(.color(x))`.
+ - **FEAT**: `long_styler_chain` reads `max_calls` from a top-level
+   `mix_lint:` section of `analysis_options.yaml`. The default stays 15.
+ - **FIX**: Add `lib/main.dart`, which the analysis server loads. 2.0.0 did
+   not load without it.
+ - **FIX**: Narrow rules to remove false positives:
+   - `token_reference_outside_mix` reports only APIs from other packages, and
+     catches references passed through dot shorthands.
+   - `unnecessary_type_name` reports only members of the parameter's exact
+     type.
+   - `base_style_after_variant` and `variants_without_base_style` treat only
+     Mix's own variant methods as variants.
+ - **CHORE**: Require `analysis_server_plugin` ^0.3.23 and `analyzer` ^14.4.0
+   (Dart 3.12 or later).
 
 ### Migrate from 2.0.0
 
@@ -39,19 +36,9 @@
 | `mix_prefer_dot_shorthands` | `unnecessary_type_name` |
 | `mix_variants_last` | `base_style_after_variant` |
 
-Update each old name in these places:
-
- 1. `diagnostics:` entries under `plugins: mix_lint:` in
-    `analysis_options.yaml`. The analyzer ignores unknown names there, so an
-    old name silently stops working.
- 2. `// ignore: mix_lint/<rule>` and `// ignore_for_file: mix_lint/<rule>`
-    comments.
-
-To find them, search for the old prefixes:
-
-```sh
-grep -rnE "mix_(avoid|max|mixable|prefer|variants)_" --include='*.dart' --include='*.yaml' .
-```
+Update old names under `diagnostics:` and in `// ignore:` and
+`// ignore_for_file:` comments. The analyzer ignores an unknown name under
+`diagnostics:` without a warning.
 
 ## 2.0.0
 

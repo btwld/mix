@@ -13,14 +13,8 @@ import 'package:analyzer/source/source_range.dart';
 import '../utils/styler_calls.dart';
 import '../utils/type_helpers.dart';
 
-/// Reports an empty Styler constructor that starts a chain where the
-/// matching factory shorthand would do: `.new().color(x)` anywhere, and
-/// `BoxStyler().color(x)` passed to another Styler method, such as a variant.
-///
-/// Both become `.color(x)`. Generated Stylers declare one factory per setter
-/// (`factory BoxStyler.color(Color value) => BoxStyler().color(value)`), so
-/// the result is the same. Widget arguments such as `Box(style: ...)` and
-/// top-level declarations keep the constructor, as the Mix style guide asks.
+/// Reports `.new().color(x)`, and `BoxStyler().color(x)` passed to a Styler
+/// method, when the factory `.color(x)` accepts the same arguments.
 class UnnecessaryStylerConstructor extends AnalysisRule {
   static const LintCode code = LintCode(
     'unnecessary_styler_constructor',
@@ -96,8 +90,6 @@ class _Visitor extends SimpleAstVisitor<void> {
     }
 
     final parameter = argument.correspondingParameter;
-    // `pick<T extends BoxStyler>(T style)` infers T from the argument, so a
-    // dot shorthand there has no context type.
     if (isMethodTypeParameter(parameter)) return false;
     final parameterType = parameter?.type;
 

@@ -8,19 +8,11 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
 
+import '../utils/styler_calls.dart';
 import '../utils/type_helpers.dart';
 
-/// Reports `TypeName.member` in a Styler expression when the dot shorthand
-/// `.member` resolves to the same member.
-///
-/// A Styler expression is an argument of a Styler call, or of a Mix call
-/// nested inside one, such as `.widgetState(...)` in
-/// `.onNot(.widgetState(WidgetState.hovered), ...)`. Mix code outside Styler
-/// expressions, such as the framework's own implementation, is not checked.
-///
-/// Dot shorthands resolve against the parameter's type, so the rule only
-/// reports a static member or named constructor declared by that exact type.
-/// It never suggests `.new(...)` for unnamed constructors.
+/// Reports `TypeName.member` in a Styler expression when the parameter's
+/// exact type declares `member`, so `.member` resolves to the same member.
 class UnnecessaryTypeName extends AnalysisRule {
   static const LintCode code = LintCode(
     'unnecessary_type_name',
@@ -111,18 +103,11 @@ class _Visitor extends SimpleAstVisitor<void> {
       _ => (null, null),
     };
     if (invocation == null) return false;
-    if (_buildsStyler(invocation)) return true;
+    if (isStylerCall(invocation)) return true;
     if (!isFromMix(callee) && !isMixType(invocation.staticType)) return false;
 
     return _isInsideStylerCall(invocation);
   }
-
-  bool _buildsStyler(AstNode? call) =>
-      (call is MethodInvocation ||
-          call is InstanceCreationExpression ||
-          call is DotShorthandInvocation ||
-          call is DotShorthandConstructorInvocation) &&
-      isMixStylerType((call as Expression).staticType);
 
   /// Returns true if [node] is nested in an argument of a Styler call, such
   /// as `.widgetState(...)` in `.onNot(.widgetState(...), ...)`.
@@ -135,7 +120,7 @@ class _Visitor extends SimpleAstVisitor<void> {
           current is! FunctionBody;
       current = current.parent
     ) {
-      if (current is ArgumentList && _buildsStyler(current.parent)) return true;
+      if (current is ArgumentList && isStylerCall(current.parent)) return true;
     }
 
     return false;

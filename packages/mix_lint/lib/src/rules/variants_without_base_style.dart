@@ -22,8 +22,7 @@ class VariantsWithoutBaseStyle extends AnalysisRule {
   VariantsWithoutBaseStyle()
     : super(
         name: 'variants_without_base_style',
-        description:
-            'Do give a Styler base style values before adding variants.',
+        description: 'Do set a base style before adding variants.',
       );
 
   @override

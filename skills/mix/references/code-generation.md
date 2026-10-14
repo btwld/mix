@@ -176,8 +176,7 @@ final class BoxConstraintsMix extends ConstraintsMix<BoxConstraints>
   BoxConstraintsMix({double? minWidth, double? maxWidth})
     : this.create(minWidth: Prop.maybe(minWidth), maxWidth: Prop.maybe(maxWidth));
 
-  // The generated merge() calls .create; mix_lint's
-  // missing_create_constructor warning checks for it.
+  // The generated merge() calls .create.
   const BoxConstraintsMix.create({Prop<double>? minWidth, Prop<double>? maxWidth})
     : $minWidth = minWidth,
       $maxWidth = maxWidth,

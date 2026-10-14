@@ -52,13 +52,6 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   const _Visitor(this.rule);
 
-  bool _isStylerCall(AstNode node) =>
-      (node is MethodInvocation ||
-          node is InstanceCreationExpression ||
-          node is DotShorthandInvocation ||
-          node is DotShorthandConstructorInvocation) &&
-      isMixStylerType((node as Expression).staticType);
-
   bool _isMixScopeCall(AstNode node) => switch (node) {
     InstanceCreationExpression() => isMixScopeType(node.staticType),
     // MixScope.inherit(), MixScope.withMaterial(), and similar.
@@ -80,7 +73,7 @@ class _Visitor extends SimpleAstVisitor<void> {
       if (ancestor is ArgumentList && previous is Argument) {
         argument = previous;
       }
-      if (_isStylerCall(ancestor)) {
+      if (isStylerCall(ancestor)) {
         rule.reportAtNode(node, diagnosticCode: InlineTokenDefinition.inStyler);
 
         return;
