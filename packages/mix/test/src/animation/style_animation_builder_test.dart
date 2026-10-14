@@ -376,6 +376,48 @@ void main() {
       },
     );
 
+    testWidgets(
+      'applies later changes instantly once the fallback animation completes',
+      (tester) async {
+        const curveConfig = CurveAnimationConfig(
+          duration: Duration(milliseconds: 200),
+          curve: Curves.linear,
+        );
+
+        Color? capturedColor;
+
+        Future<void> pumpSpec(StyleSpec<TestSpec> spec) {
+          return tester.pumpWidget(
+            styleAnimationBuilderCapturingColor(
+              spec,
+              (color) => capturedColor = color,
+            ),
+          );
+        }
+
+        await pumpSpec(
+          const StyleSpec(
+            spec: TestSpec(color: Colors.red),
+            animation: curveConfig,
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        // Dropping the config animates back with the previous config.
+        await pumpSpec(const StyleSpec(spec: TestSpec(color: Colors.blue)));
+        await tester.pumpAndSettle();
+
+        expect(capturedColor, Colors.blue);
+
+        // A later change on a spec that still has no animation config must
+        // not reuse the stale config from before it was dropped.
+        await pumpSpec(const StyleSpec(spec: TestSpec(color: Colors.green)));
+
+        expect(capturedColor, Colors.green);
+        expect(tester.hasRunningAnimations, isFalse);
+      },
+    );
+
     group('dropping a looping animation config', () {
       Color? boxColor(WidgetTester tester) {
         final decoratedBox = tester.widget<DecoratedBox>(

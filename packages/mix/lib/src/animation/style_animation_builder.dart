@@ -95,6 +95,20 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
     super.dispose();
   }
 
+  /// Whether to keep the implicit driver after the style's config is gone.
+  ///
+  /// It is retained for the update that drops the config, so the style
+  /// animates back, and for later updates while that return animation is
+  /// still in flight. Once it settles, the style no longer animates.
+  /// Phase/keyframe drivers must stop as soon as their config disappears.
+  bool _retainsImplicitDriver(AnimationConfig? oldConfig) {
+    if (animationDriver is! ImplicitAnimationDriver<S, AnimationConfig>) {
+      return false;
+    }
+
+    return oldConfig != null || animationDriver.isAnimating;
+  }
+
   @override
   void didUpdateWidget(StyleAnimationBuilder<S> oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -104,11 +118,7 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
 
     if ((oldConfig.runtimeType == config.runtimeType) && config != null) {
       animationDriver.updateDriver(config);
-    } else if (config != null ||
-        animationDriver is! ImplicitAnimationDriver<S, AnimationConfig>) {
-      // Retain an implicit driver when its config disappears, including
-      // later dependency updates while that return animation is in flight.
-      // Phase/keyframe drivers must stop when their config disappears.
+    } else if (config != null || !_retainsImplicitDriver(oldConfig)) {
       animationDriver.dispose();
       animationDriver = _createAnimationDriver(
         config: config,
