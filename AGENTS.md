@@ -78,8 +78,8 @@ Box(style: style, child: child)
 ```dart
 final style = BoxStyler()
     .color(Colors.white)
-    .onDark(BoxStyler().color(Colors.black))
-    .onHovered(BoxStyler().color(Colors.blue));
+    .onDark(.color(Colors.black))
+    .onHovered(.color(Colors.blue));
 ```
 
 ## Documentation

@@ -156,15 +156,15 @@ class _ThemeToggleState extends State<ThemeToggle> {
             Colors.black.withValues(alpha: 0.1),
           ).offset(x: 0, y: 4).blurRadius(10),
         )
-        .onDark(BoxStyler().color(Colors.grey.shade800))
-        .animate(AnimationConfig.easeInOut(600.ms));
+        .onDark(.color(Colors.grey.shade800))
+        .animate(.easeInOut(600.ms));
 
     final iconStyle = IconStyler()
         .color(Colors.grey.shade800)
         .size(28)
         .icon(Icons.dark_mode)
-        .onDark(IconStyler().icon(Icons.light_mode).color(Colors.yellow))
-        .animate(AnimationConfig.easeInOut(200.ms));
+        .onDark(.icon(Icons.light_mode).color(Colors.yellow))
+        .animate(.easeInOut(200.ms));
 
     return MediaQuery(
       data: MediaQuery.of(context).copyWith(
@@ -206,9 +206,9 @@ class PrimaryActionButton extends StatelessWidget {
         .padding(.vertical(12))
         .borderRadius(.circular(8))
         .alignment(Alignment.center)
-        .onHovered(BoxStyler().color(Colors.blue.shade700).translate(0, -1))
-        .onPressed(BoxStyler().color(Colors.blue.shade900).scale(0.98))
-        .animate(AnimationConfig.easeInOut(150.ms));
+        .onHovered(.color(Colors.blue.shade700).translate(0, -1))
+        .onPressed(.color(Colors.blue.shade900).scale(0.98))
+        .animate(.easeInOut(150.ms));
 
     final labelStyle = TextStyler()
         .color(Colors.white)

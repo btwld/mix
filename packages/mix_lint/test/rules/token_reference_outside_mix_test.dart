@@ -1,0 +1,311 @@
+import 'package:analyzer/analysis_rule/analysis_rule.dart';
+import 'package:mix_lint/src/rules/token_reference_outside_mix.dart';
+import 'package:test_reflective_loader/test_reflective_loader.dart';
+
+import '../helpers/rule_test_base.dart';
+
+@reflectiveTest
+class TokenReferenceOutsideMixTest extends MixRuleTest {
+  @override
+  AbstractAnalysisRule createRule() => TokenReferenceOutsideMix();
+
+  @override
+  void setUp() {
+    // A third-party design system that extends BoxStyler.
+    newPackage('ds').addFile('lib/ds.dart', r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+extension DsBoxStyler on BoxStyler {
+  BoxStyler brand(Color color) => this;
+}
+''');
+    super.setUp();
+  }
+
+  // Reports.
+
+  void test_call_into_flutter_widget_reports() async {
+    await assertLints(r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+const $primary = ColorToken('primary');
+final w = Container(color: [!$primary()!]);
+''');
+  }
+
+  void test_explicit_call_into_flutter_widget_reports() async {
+    await assertLints(r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+const $primary = ColorToken('primary');
+final w = Container(color: [!$primary.call()!]);
+''');
+  }
+
+  void test_mix_method_into_non_mix_function_reports() async {
+    await assertLints(r'''
+import 'package:mix/mix.dart';
+const $body = TextStyleToken('body');
+void f() {
+  print([!$body.mix()!]);
+}
+''');
+  }
+
+  void test_call_into_top_level_function_reports() async {
+    await assertLints(r'''
+import 'package:mix/mix.dart';
+const $primary = ColorToken('primary');
+void f() {
+  print([!$primary()!]);
+}
+''');
+  }
+
+  void test_call_inside_collection_into_non_mix_reports() async {
+    await assertLints(r'''
+import 'package:mix/mix.dart';
+const $primary = ColorToken('primary');
+void f() {
+  print([[!$primary()!]]);
+}
+''');
+  }
+
+  void test_call_into_dot_shorthand_consumers_reports() async {
+    // `.all(...)` is a static method and `.new(...)` a constructor, both
+    // resolved against a Flutter parameter type.
+    await assertLints(r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+final $primary = ColorToken('primary');
+final $space = SpaceToken('space');
+final a = Padding(padding: .all([!$space()!]));
+final b = Text('x', style: .new(color: [!$primary()!]));
+''');
+  }
+
+  void test_flutter_value_in_flutter_widget_reports() async {
+    await assertLints(r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+final $primary = ColorToken('primary');
+final a = Container(decoration: BoxDecoration(color: [!$primary()!]));
+final b = TextStyle(color: [!$primary()!]);
+''');
+  }
+
+  void test_changed_reference_in_converted_flutter_value_reports() async {
+    // Only an unchanged reference survives the conversion.
+    await assertLints(r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+final $space = SpaceToken('space');
+final s = TextStyleMix.value(TextStyle(fontSize: [!$space()!] * 2));
+''');
+  }
+
+  void test_nested_value_copied_whole_reports() async {
+    // TextStyleMix.value copies fontVariations whole; it converts shadows.
+    await assertLints(r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+final $space = SpaceToken('space');
+final s = TextStyleMix.value(
+  TextStyle(fontVariations: [FontVariation('wght', [!$space()!])]),
+);
+''');
+  }
+
+  void test_flutter_value_in_styler_method_reports() async {
+    // The Styler stores the Alignment as one value; it never reads its fields.
+    await assertLints(r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+final $space = SpaceToken('space');
+final s = BoxStyler().alignment(Alignment([!$space()!], 0));
+''');
+  }
+
+  void test_flutter_value_in_prop_value_reports() async {
+    // Prop.value stores the value whole, unlike the Mix value conversions.
+    await assertLints(r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+final $space = SpaceToken('space');
+final p = Prop.value(Alignment([!$space()!], 0));
+''');
+  }
+
+  // No diagnostics.
+
+  void test_call_into_styler_method_no_diagnostic() async {
+    await assertNoDiagnostics(r'''
+import 'package:mix/mix.dart';
+const $primary = ColorToken('primary');
+final s = BoxStyler().color($primary()).color($primary.call());
+''');
+  }
+
+  void test_call_into_mix_static_method_no_diagnostic() async {
+    await assertNoDiagnostics(r'''
+import 'package:mix/mix.dart';
+const $primary = ColorToken('primary');
+final s = BoxStyler().shadow(BoxShadowMix(color: $primary()));
+''');
+  }
+
+  void test_call_into_plain_mix_class_no_diagnostic() async {
+    // GridTrack isn't a Mix value, but Mix declares it and resolves references.
+    await assertNoDiagnostics(r'''
+import 'package:mix/mix.dart';
+const $gap = SpaceToken('gap');
+final t = GridTrack.fixed($gap());
+''');
+  }
+
+  void test_call_into_extension_in_cascade_no_diagnostic() async {
+    await assertNoDiagnostics(r'''
+import 'package:ds/ds.dart';
+import 'package:mix/mix.dart';
+const $primary = ColorToken('primary');
+final s = BoxStyler()..brand($primary());
+''');
+  }
+
+  void test_flutter_value_converted_by_mix_no_diagnostic() async {
+    // TextStyleMix.value copies each field, and the reference with it.
+    await assertNoDiagnostics(r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+final $primary = ColorToken('primary');
+final s = TextStyler().style(TextStyleMix.value(TextStyle(color: $primary())));
+''');
+  }
+
+  void test_color_directive_in_converted_flutter_value_no_diagnostic() async {
+    // `withValues` on a color reference returns a reference with a directive.
+    await assertNoDiagnostics(r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+final $primary = ColorToken('primary');
+final s = TextStyleMix.value(
+  TextStyle(color: $primary().withValues(alpha: .5)),
+);
+''');
+  }
+
+  void test_flutter_value_converted_by_local_mix_type_no_diagnostic() async {
+    // Value types generated with @Mixable live in the user's package.
+    await assertNoDiagnostics(r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+final $primary = ColorToken('primary');
+class BrandMix extends Mix<Object> {
+  BrandMix.value(TextStyle style);
+}
+final s = BrandMix.value(TextStyle(color: $primary()));
+''');
+  }
+
+  void test_converted_flutter_value_in_conditional_no_diagnostic() async {
+    await assertNoDiagnostics(r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+final $primary = ColorToken('primary');
+const flag = true;
+final a = TextStyleMix.value(
+  flag ? TextStyle(color: $primary()) : const TextStyle(),
+);
+final b = TextStyleMix.value(switch (flag) {
+  true => TextStyle(color: $primary()),
+  false => const TextStyle(),
+});
+''');
+  }
+
+  void
+  test_converted_flutter_value_in_collection_element_no_diagnostic() async {
+    await assertNoDiagnostics(r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+final $primary = ColorToken('primary');
+const flag = true;
+final s = TextStyleMix.value(
+  TextStyle(
+    shadows: [
+      if (flag) Shadow(color: $primary()),
+      ...[Shadow(color: $primary())],
+    ],
+  ),
+);
+''');
+  }
+
+  void test_call_into_local_helper_no_diagnostic() async {
+    // A helper in the analyzed package may forward the value into Mix.
+    await assertNoDiagnostics(r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+const $primary = ColorToken('primary');
+BoxStyler filled({required Color fill}) => BoxStyler().color(fill);
+final s = filled(fill: $primary());
+''');
+  }
+
+  void test_closure_return_value_no_diagnostic() async {
+    await assertNoDiagnostics(r'''
+import 'package:mix/mix.dart';
+const $body = TextStyleToken('body');
+final refs = List.generate(3, (i) => $body.mix());
+''');
+  }
+
+  void test_resolve_is_not_a_reference_no_diagnostic() async {
+    await assertNoDiagnostics(r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+const $primary = ColorToken('primary');
+Widget build(BuildContext context) =>
+    Container(color: $primary.resolve(context));
+''');
+  }
+
+  void test_call_assigned_to_variable_no_diagnostic() async {
+    await assertNoDiagnostics(r'''
+import 'package:mix/mix.dart';
+const $primary = ColorToken('primary');
+void f() {
+  final color = $primary();
+  print(color);
+}
+''');
+  }
+
+  void test_call_in_return_no_diagnostic() async {
+    await assertNoDiagnostics(r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+const $primary = ColorToken('primary');
+Color f() {
+  return $primary();
+}
+''');
+  }
+
+  void test_call_into_dynamic_receiver_no_diagnostic() async {
+    await assertNoDiagnostics(r'''
+import 'package:mix/mix.dart';
+const $primary = ColorToken('primary');
+void f(dynamic d) {
+  d.foo($primary());
+}
+''');
+  }
+}
+
+void main() {
+  defineReflectiveSuite(() {
+    defineReflectiveTests(TokenReferenceOutsideMixTest);
+  });
+}

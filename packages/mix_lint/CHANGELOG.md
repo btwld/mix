@@ -1,3 +1,45 @@
+## Unreleased
+
+ - **BREAKING**: Renamed every rule and merged the two inline-token rules into
+   `inline_token_definition`. See the table below.
+ - **BREAKING**: `missing_create_constructor` and
+   `token_reference_outside_mix` are warnings, on by default. The other rules
+   are lints, off until you enable them.
+ - **BREAKING**: `MixLintPlugin` is `final`, and the `plugin` instance moved
+   from `mix_lint.dart` to `main.dart`.
+ - **FEAT**: Add `unnecessary_styler_constructor`, with a quick fix that turns
+   `.onHovered(BoxStyler().color(x))` into `.onHovered(.color(x))`.
+ - **FEAT**: `long_styler_chain` reads `max_calls` from a top-level
+   `mix_lint:` section of `analysis_options.yaml`. The default stays 15.
+ - **FIX**: Add `lib/main.dart`, which the analysis server loads. 2.0.0 did
+   not load without it.
+ - **FIX**: Narrow rules to remove false positives:
+   - `token_reference_outside_mix` reports only APIs from other packages, and
+     catches references passed through dot shorthands.
+   - `unnecessary_type_name` reports only members of the parameter's exact
+     type.
+   - `base_style_after_variant` and `variants_without_base_style` treat only
+     Mix's own variant methods as variants.
+ - **CHORE**: Require `analysis_server_plugin` ^0.3.23 and `analyzer` ^14.4.0
+   (Dart 3.12 or later).
+
+### Migrate from 2.0.0
+
+| 2.0.0 name | New name |
+|---|---|
+| `mix_avoid_defining_tokens_within_scope` | `inline_token_definition` |
+| `mix_avoid_defining_tokens_within_style` | `inline_token_definition` |
+| `mix_avoid_empty_variants` | `variants_without_base_style` |
+| `mix_avoid_token_ref_outside_mix` | `token_reference_outside_mix` |
+| `mix_max_number_of_attributes_per_style` | `long_styler_chain` |
+| `mix_mixable_styler_has_create` | `missing_create_constructor` |
+| `mix_prefer_dot_shorthands` | `unnecessary_type_name` |
+| `mix_variants_last` | `base_style_after_variant` |
+
+Update old names under `diagnostics:` and in `// ignore:` and
+`// ignore_for_file:` comments. The analyzer ignores an unknown name under
+`diagnostics:` without a warning.
+
 ## 2.0.0
 
  - **BREAKING**: Rebuilt `mix_lint` on top of the `analysis_server_plugin` API,

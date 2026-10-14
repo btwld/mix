@@ -58,11 +58,7 @@ final style = BoxStyler()
     .width(100)
     .borderRadius(.circular(10))
     .scale(1)
-    .onHovered(
-      BoxStyler()
-        .color(Colors.blue)
-        .scale(1.5),
-    )
+    .onHovered(.color(Colors.blue).scale(1.5))
     .animate(.spring(800.ms));
 ```
 

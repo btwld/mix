@@ -172,6 +172,15 @@ final class BoxConstraintsMix extends ConstraintsMix<BoxConstraints>
     with DefaultValue<BoxConstraints>, Diagnosticable, _$BoxConstraintsMixMixin {
   final Prop<double>? $minWidth;
   final Prop<double>? $maxWidth;
+
+  BoxConstraintsMix({double? minWidth, double? maxWidth})
+    : this.create(minWidth: Prop.maybe(minWidth), maxWidth: Prop.maybe(maxWidth));
+
+  // The generated merge() calls .create.
+  const BoxConstraintsMix.create({Prop<double>? minWidth, Prop<double>? maxWidth})
+    : $minWidth = minWidth,
+      $maxWidth = maxWidth,
+      super.create();
 }
 ```
 

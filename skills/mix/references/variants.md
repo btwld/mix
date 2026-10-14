@@ -85,7 +85,7 @@ Available on all Stylers via `WidgetStateVariantMixin`:
 ```dart
 final style = BoxStyler()
     .color(Colors.white)
-    .onDark(BoxStyler().color(Colors.grey.shade900));
+    .onDark(.color(Colors.grey.shade900));
 ```
 
 ### Composing Variants
@@ -94,9 +94,9 @@ final style = BoxStyler()
 final style = BoxStyler()
     .color(Colors.white)
     .padding(.all(16))
-    .onDark(BoxStyler().color(Colors.black))
-    .onHovered(BoxStyler().color(Colors.blue.shade100))
-    .onPressed(BoxStyler().color(Colors.blue.shade300));
+    .onDark(.color(Colors.black))
+    .onHovered(.color(Colors.blue.shade100))
+    .onPressed(.color(Colors.blue.shade300));
 ```
 
 ### Named Variants
