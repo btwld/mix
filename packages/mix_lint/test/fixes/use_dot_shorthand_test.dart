@@ -127,6 +127,15 @@ final s = BoxStyler().shadow(.color(Colors.blue));
     );
   }
 
+  void test_does_not_flag_const_dot_shorthand() async {
+    // A `const .named(...)` shorthand has no type name to strip, so the rule
+    // must not report it (and the fix must never emit `const .named(...)`).
+    await assertLints(r'''
+import 'package:mix/mix.dart';
+final s = BoxStyler().shadow(const .none());
+''');
+  }
+
   Future<void> _assertFix(String markedCode, String expected) async {
     await assertLints(markedCode);
 

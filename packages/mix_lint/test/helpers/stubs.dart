@@ -174,6 +174,7 @@ class BorderSideMix extends Mix<Object> {
 class BoxShadowMix extends Mix<Object> {
   BoxShadowMix({Color? color});
   BoxShadowMix.color(Color value);
+  const BoxShadowMix.none();
 }
 
 class GradientMix<T> extends Mix<T> {
