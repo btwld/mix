@@ -34,6 +34,28 @@ final BoxStyler s = [!.new().color!](Colors.blue);
 
   // No diagnostics.
 
+  void test_constructor_in_styler_factory_reports() async {
+    await assertLints(r'''
+import 'package:mix/mix.dart';
+final s = GridBoxStyler.onConstraints(Object(), [!GridBoxStyler().gap!](1));
+''');
+  }
+
+  void test_constructor_in_conditional_branches_reports() async {
+    // The last line shows the fixed form compiles.
+    await assertLints(r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+const flag = true;
+final a = BoxStyler()
+    .width(1)
+    .onHovered(flag ? [!BoxStyler().color!](Colors.blue) : [!BoxStyler().color!](Colors.blue));
+final b = BoxStyler()
+    .width(1)
+    .onHovered(flag ? .color(Colors.blue) : .color(Colors.blue));
+''');
+  }
+
   void test_top_level_constructor_no_diagnostic() async {
     // Top-level declarations start with the Styler constructor.
     await assertNoDiagnostics(r'''

@@ -79,15 +79,12 @@ class _Visitor extends SimpleAstVisitor<void> {
   /// Returns true if [expression] is an argument of a Styler method whose
   /// parameter type is [styler], so a dot shorthand resolves against it.
   bool _isStylerArgument(Expression expression, InterfaceElement styler) {
-    final parent = expression.parent;
-    final Argument argument = parent is NamedArgument ? parent : expression;
+    final value = outermostBranch(expression);
+    final parent = value.parent;
+    final Argument argument = parent is NamedArgument ? parent : value;
     final argumentList = argument.parent;
     if (argumentList is! ArgumentList) return false;
-    final invocation = argumentList.parent;
-    if (invocation is! MethodInvocation ||
-        !isMixStylerType(invocation.staticType)) {
-      return false;
-    }
+    if (!isStylerCall(argumentList.parent)) return false;
 
     final parameter = argument.correspondingParameter;
     if (isMethodTypeParameter(parameter)) return false;

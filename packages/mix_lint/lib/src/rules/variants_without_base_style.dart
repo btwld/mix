@@ -53,7 +53,7 @@ class _Visitor extends SimpleAstVisitor<void> {
     final chain = collectDirectMethodChain(root);
     if (_isNestedStyle(chain.lastOrNull ?? root)) return;
 
-    final kinds = chain.map(stylerCallKind).toSet();
+    final kinds = {?rootFactoryKind(root), ...chain.map(stylerCallKind)};
     // onBuilder() builds the whole style from context, and merge() may bring
     // in a base style, so either one may stand in for base style calls.
     if (kinds.contains(StylerCallKind.builder)) return;
@@ -71,15 +71,20 @@ class _Visitor extends SimpleAstVisitor<void> {
   bool _isNestedStyle(Expression styler) {
     for (
       AstNode? node = styler.parent;
-      node != null && node is! Declaration;
+      node != null && (node is! Declaration || _isLocalVariable(node));
       node = node.parent
     ) {
       if (node is ArgumentList) {
-        final invocation = node.parent;
-        if (invocation is MethodInvocation &&
-            isMixStylerType(invocation.staticType)) {
-          return stylerCallKind(invocation) != .baseStyle;
-        }
+        final kind = switch (node.parent) {
+          final MethodInvocation call when isMixStylerType(call.staticType) =>
+            stylerCallKind(call),
+          // A Styler factory, such as `.onConstraints(breakpoint, patch)`.
+          final Expression call when isStylerCall(call) => rootFactoryKind(
+            call,
+          ),
+          _ => null,
+        };
+        if (kind != null) return kind != .baseStyle;
       }
       if (node is InstanceCreationExpression ||
           node is DotShorthandConstructorInvocation) {
@@ -92,6 +97,12 @@ class _Visitor extends SimpleAstVisitor<void> {
 
     return false;
   }
+
+  /// Local variables, such as one an `onBuilder` callback returns, don't end
+  /// the walk.
+  bool _isLocalVariable(AstNode node) =>
+      node is VariableDeclaration &&
+      node.parent?.parent is VariableDeclarationStatement;
 
   @override
   void visitDotShorthandConstructorInvocation(

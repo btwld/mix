@@ -34,6 +34,24 @@ bool isStylerCall(AstNode? node) =>
         node is DotShorthandConstructorInvocation) &&
     isMixStylerType((node as Expression).staticType);
 
+/// Returns the outermost expression that passes [node]'s value through with
+/// the same context type: parentheses, conditional branches, and switch
+/// expression cases.
+Expression outermostBranch(Expression node) {
+  var current = node;
+  while (true) {
+    final parent = current.parent;
+    if (parent is ParenthesizedExpression ||
+        parent is ConditionalExpression && parent.condition != current) {
+      current = parent as Expression;
+    } else if (parent is SwitchExpressionCase && parent.expression == current) {
+      current = parent.parent as SwitchExpression;
+    } else {
+      return current;
+    }
+  }
+}
+
 /// Classifies [node], a method call on a Styler.
 ///
 /// Generated Stylers override some mixin methods (for example `animate` and
@@ -115,8 +133,13 @@ bool rootSetsBaseStyle(Expression root) {
   );
 }
 
-/// Constructor parameters of generated Stylers that set no style value.
-const _structuralParameters = {'animation', 'modifier', 'variants'};
+/// Constructor parameters of Stylers that set no base style value.
+const _structuralParameters = {
+  'animation',
+  'modifier',
+  'variants',
+  'constraintBranches',
+};
 
 /// Collects the method chain that directly follows [root].
 ///

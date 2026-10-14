@@ -36,8 +36,12 @@ class BoxDecoration {
   const BoxDecoration({Color? color});
 }
 
+class Shadow {
+  const Shadow({Color? color});
+}
+
 class TextStyle {
-  const TextStyle({Color? color});
+  const TextStyle({Color? color, List<Shadow>? shadows});
 }
 
 class Text extends Widget {
@@ -229,7 +233,9 @@ class TextStyler extends MixStyler<TextStyler, TextSpec>
 final class GridBoxSpec extends Spec<GridBoxSpec> {}
 
 class GridBoxStyler extends MixStyler<GridBoxStyler, GridBoxSpec> {
-  GridBoxStyler();
+  GridBoxStyler({List<Object>? constraintBranches});
+
+  factory GridBoxStyler.gap(double value) => GridBoxStyler().gap(value);
 
   factory GridBoxStyler.onConstraints(Object breakpoint, GridBoxStyler patch) =>
       GridBoxStyler().onConstraints(breakpoint, patch);

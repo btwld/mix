@@ -157,6 +157,24 @@ final b = TextStyleMix.value(switch (flag) {
 ''');
   }
 
+  void
+  test_converted_flutter_value_in_collection_element_no_diagnostic() async {
+    await assertNoDiagnostics(r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+final $primary = ColorToken('primary');
+const flag = true;
+final s = TextStyleMix.value(
+  TextStyle(
+    shadows: [
+      if (flag) Shadow(color: $primary()),
+      ...[Shadow(color: $primary())],
+    ],
+  ),
+);
+''');
+  }
+
   void test_call_into_local_helper_no_diagnostic() async {
     // A helper in the analyzed package may forward the value into Mix.
     await assertNoDiagnostics(r'''

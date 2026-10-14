@@ -99,7 +99,10 @@ class _Visitor extends SimpleAstVisitor<void> {
         current is SwitchExpression ||
         current is ListLiteral ||
         current is SetOrMapLiteral ||
-        current is MapLiteralEntry) {
+        current is MapLiteralEntry ||
+        current is IfElement ||
+        current is ForElement ||
+        current is SpreadElement) {
       current = current?.parent;
     }
 

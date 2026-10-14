@@ -50,6 +50,15 @@ final s = [!BoxStyler(animation: Object())!].onHovered(BoxStyler().width(1));
 ''');
   }
 
+  void test_variant_factory_alone_reports() async {
+    await assertLints(r'''
+import 'package:mix/mix.dart';
+final a = [!GridBoxStyler.onConstraints(Object(), GridBoxStyler.gap(1))!];
+final b = [!GridBoxStyler(constraintBranches: [])!]
+    .onHovered(GridBoxStyler().gap(2));
+''');
+  }
+
   void test_base_style_from_factory_no_diagnostic() async {
     await assertNoDiagnostics(r'''
 import 'package:flutter/widgets.dart';
@@ -93,6 +102,27 @@ final VariantStyle<BoxSpec> v = .new(
   Object(),
   BoxStyler().onDark(BoxStyler().width(1)),
 );
+''');
+  }
+
+  void test_patch_in_variant_factory_reports_only_the_root() async {
+    // The patch overrides the base style below the breakpoint.
+    await assertLints(r'''
+import 'package:mix/mix.dart';
+final s = [!GridBoxStyler.onConstraints(
+  Object(),
+  GridBoxStyler().onHovered(GridBoxStyler().gap(2)),
+)!];
+''');
+  }
+
+  void test_local_returned_from_on_builder_no_diagnostic() async {
+    await assertNoDiagnostics(r'''
+import 'package:mix/mix.dart';
+final s = BoxStyler().width(1).onBuilder((context) {
+  final built = BoxStyler().onDark(BoxStyler().width(2));
+  return built;
+});
 ''');
   }
 
