@@ -94,6 +94,9 @@ class _Visitor extends SimpleAstVisitor<void> {
     var current = value.parent;
     while (current is NamedArgument ||
         current is ParenthesizedExpression ||
+        current is ConditionalExpression ||
+        current is SwitchExpressionCase ||
+        current is SwitchExpression ||
         current is ListLiteral ||
         current is SetOrMapLiteral ||
         current is MapLiteralEntry) {

@@ -182,7 +182,7 @@ final class BoxSpec extends Spec<BoxSpec> {}
 // Generated Stylers override the mixin methods, as BoxStyler does here.
 class BoxStyler extends MixStyler<BoxStyler, BoxSpec>
     with DecorationStyleMixin<BoxStyler, BoxSpec> {
-  BoxStyler({Color? color});
+  BoxStyler({Color? color, Object? animation});
 
   factory BoxStyler.color(Color value) => BoxStyler().color(value);
   factory BoxStyler.animate(Object config) => BoxStyler().animate(config);

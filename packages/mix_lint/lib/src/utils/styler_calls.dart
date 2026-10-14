@@ -65,48 +65,58 @@ StylerCallKind _stylerMemberKind(InterfaceType receiver, String name) {
   return .baseStyle;
 }
 
-/// Returns true if [root], the first call of a Styler chain, sets base style
-/// itself: a factory such as `BoxStyler.color(...)` or `.color(...)`, or a
-/// constructor call with arguments such as `BoxStyler(padding: ...)`.
-///
-/// `BoxStyler()`, `.new()`, and `BoxStyler.create()` without arguments set
-/// nothing, and neither do factories that are not base style, such as
-/// `BoxStyler.animate(...)` or `GridBoxStyler.onConstraints(...)`.
-bool rootSetsBaseStyle(Expression root) => switch (root) {
-  InstanceCreationExpression(:final constructorName, :final argumentList) =>
-    _constructorSetsBaseStyle(
-      root.staticType,
+/// Returns the factory name of [root], the first call of a Styler chain,
+/// such as `color` in `BoxStyler.color(...)` or `.color(...)`, or null for a
+/// plain constructor such as `BoxStyler()`, `.new()`, or `BoxStyler.create()`.
+String? rootFactoryName(Expression root) {
+  final name = switch (root) {
+    InstanceCreationExpression(:final constructorName) =>
       constructorName.name?.name,
-      argumentList,
-    ),
-  DotShorthandConstructorInvocation(
-    :final constructorName,
-    :final argumentList,
-  ) =>
-    _constructorSetsBaseStyle(
-      root.staticType,
+    DotShorthandConstructorInvocation(:final constructorName) =>
       constructorName.name,
-      argumentList,
-    ),
-  // A static method, such as `.color(...)` on a hand-written Styler.
-  DotShorthandInvocation(:final memberName) => _factorySetsBaseStyle(
-    root.staticType,
-    memberName.name,
-  ),
-  _ => false,
-};
+    DotShorthandInvocation(:final memberName) => memberName.name,
+    _ => null,
+  };
 
-bool _constructorSetsBaseStyle(
-  DartType? styler,
-  String? name,
-  ArgumentList argumentList,
-) => name == null || name == 'new' || name == 'create'
-    ? argumentList.arguments.isNotEmpty
-    : _factorySetsBaseStyle(styler, name);
+  return name == 'new' || name == 'create' ? null : name;
+}
 
-bool _factorySetsBaseStyle(DartType? styler, String name) =>
-    styler is! InterfaceType ||
-    _stylerMemberKind(styler, name) == StylerCallKind.baseStyle;
+/// Classifies the factory that starts a Styler chain, or returns null when
+/// [root] is not a factory (see [rootFactoryName]).
+StylerCallKind? rootFactoryKind(Expression root) {
+  final name = rootFactoryName(root);
+  final styler = root.staticType;
+  if (name == null) return null;
+
+  return styler is InterfaceType
+      ? _stylerMemberKind(styler, name)
+      : StylerCallKind.baseStyle;
+}
+
+/// Returns true if [root], the first call of a Styler chain, sets base style
+/// itself: a base style factory such as `.color(...)`, or a constructor with
+/// a style argument such as `BoxStyler(padding: ...)`.
+bool rootSetsBaseStyle(Expression root) {
+  if (rootFactoryName(root) != null) {
+    return rootFactoryKind(root) == StylerCallKind.baseStyle;
+  }
+  final arguments = switch (root) {
+    InstanceCreationExpression(:final argumentList) ||
+    DotShorthandConstructorInvocation(
+      :final argumentList,
+    ) => argumentList.arguments,
+    _ => const <Argument>[],
+  };
+
+  return arguments.any(
+    (argument) =>
+        argument is! NamedArgument ||
+        !_structuralParameters.contains(argument.name.lexeme),
+  );
+}
+
+/// Constructor parameters of generated Stylers that set no style value.
+const _structuralParameters = {'animation', 'modifier', 'variants'};
 
 /// Collects the method chain that directly follows [root].
 ///

@@ -81,8 +81,9 @@ class _Visitor extends SimpleAstVisitor<void> {
           return stylerCallKind(invocation) != .baseStyle;
         }
       }
-      if (node is InstanceCreationExpression) {
-        final type = node.staticType;
+      if (node is InstanceCreationExpression ||
+          node is DotShorthandConstructorInvocation) {
+        final type = (node as Expression).staticType;
         if (type is InterfaceType && isMixClass(type.element, 'VariantStyle')) {
           return true;
         }

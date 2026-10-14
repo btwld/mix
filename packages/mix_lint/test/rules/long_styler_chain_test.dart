@@ -77,6 +77,22 @@ final s = BoxStyler().width(1).height(2);
 ''');
   }
 
+  void test_factory_root_counts_as_a_call() async {
+    configure('''
+mix_lint:
+  long_styler_chain:
+    max_calls: 2
+''');
+    await assertLints(
+      r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+final BoxStyler s = [!.color(Colors.blue)!].width(1).height(2);
+''',
+      messageContains: ['3 calls'],
+    );
+  }
+
   void test_missing_section_uses_default() async {
     configure('');
     await assertNoDiagnostics(r'''

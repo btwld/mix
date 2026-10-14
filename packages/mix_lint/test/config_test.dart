@@ -149,6 +149,7 @@ include: package:presets/v2.yaml
 include:
   - 'package:'
   - package:shared/
+  - package:shared/%FF.yaml
   - package:missing/options.yaml
   - package:broken/options.yaml
   - missing.yaml

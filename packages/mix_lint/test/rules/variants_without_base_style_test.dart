@@ -42,6 +42,14 @@ final c = [!GridBoxStyler.onConstraints(Object(), GridBoxStyler().gap(1))!]
 ''');
   }
 
+  void test_structural_constructor_argument_reports() async {
+    // `animation` sets no style value.
+    await assertLints(r'''
+import 'package:mix/mix.dart';
+final s = [!BoxStyler(animation: Object())!].onHovered(BoxStyler().width(1));
+''');
+  }
+
   void test_base_style_from_factory_no_diagnostic() async {
     await assertNoDiagnostics(r'''
 import 'package:flutter/widgets.dart';
@@ -75,6 +83,16 @@ import 'package:mix/mix.dart';
 final s = BoxStyler().width(1).variants([
   VariantStyle(Object(), BoxStyler().onHovered(BoxStyler().width(2))),
 ]);
+''');
+  }
+
+  void test_style_in_dot_shorthand_variant_style_no_diagnostic() async {
+    await assertNoDiagnostics(r'''
+import 'package:mix/mix.dart';
+final VariantStyle<BoxSpec> v = .new(
+  Object(),
+  BoxStyler().onDark(BoxStyler().width(1)),
+);
 ''');
   }
 

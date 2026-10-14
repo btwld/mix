@@ -62,7 +62,10 @@ class _Visitor extends SimpleAstVisitor<void> {
   void _check(Expression root) {
     if (!isMixStylerType(root.staticType)) return;
 
-    final length = collectDirectMethodChain(root).length;
+    // A factory root, such as `.color(...)`, is a call too.
+    final length =
+        collectDirectMethodChain(root).length +
+        (rootFactoryName(root) == null ? 0 : 1);
     if (length > maxCalls) {
       rule.reportAtNode(root, arguments: [length, maxCalls]);
     }

@@ -43,7 +43,10 @@ class InlineTokenDefinition extends MultiAnalysisRule {
     RuleVisitorRegistry registry,
     RuleContext context,
   ) {
-    registry.addInstanceCreationExpression(this, _Visitor(this));
+    final visitor = _Visitor(this);
+    registry
+      ..addDotShorthandConstructorInvocation(this, visitor)
+      ..addInstanceCreationExpression(this, visitor);
   }
 }
 
@@ -63,7 +66,15 @@ class _Visitor extends SimpleAstVisitor<void> {
   };
 
   @override
-  void visitInstanceCreationExpression(InstanceCreationExpression node) {
+  void visitDotShorthandConstructorInvocation(
+    DotShorthandConstructorInvocation node,
+  ) => _check(node);
+
+  @override
+  void visitInstanceCreationExpression(InstanceCreationExpression node) =>
+      _check(node);
+
+  void _check(Expression node) {
     if (!isMixTokenType(node.staticType)) return;
 
     // The argument of the innermost call that the walk has passed through.

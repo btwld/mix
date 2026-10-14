@@ -47,6 +47,17 @@ final s = GridBoxStyler().onConstraints(Object(), GridBoxStyler()).[!gap!](8);
 ''');
   }
 
+  void test_base_style_after_variant_factory_root_reports() async {
+    await assertLints(
+      r'''
+import 'package:mix/mix.dart';
+final a = GridBoxStyler.onConstraints(Object(), GridBoxStyler()).[!gap!](8);
+final GridBoxStyler b = .onConstraints(Object(), GridBoxStyler()).[!gap!](8);
+''',
+      messageContains: ["'gap'", "'onConstraints'"],
+    );
+  }
+
   void test_variants_last_no_diagnostic() async {
     await assertNoDiagnostics(r'''
 import 'package:mix/mix.dart';
