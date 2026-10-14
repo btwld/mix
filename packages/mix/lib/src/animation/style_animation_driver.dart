@@ -53,6 +53,8 @@ abstract class StyleAnimationDriver<S extends Spec<S>> {
 
   // ignore: no-empty-block
   void didUpdateSpec(StyleSpec<S> oldSpec, StyleSpec<S> newSpec) {}
+  // ignore: no-empty-block
+  void didChangeDependencies() {}
   void updateDriver(AnimationConfig config);
 
   /// Execute the animation (curve vs spring).
@@ -136,6 +138,14 @@ abstract class ImplicitAnimationDriver<
   @override
   void didUpdateSpec(StyleSpec<S> oldSpec, StyleSpec<S> newSpec) {
     super.didUpdateSpec(oldSpec, newSpec);
+
+    if (oldSpec == newSpec) {
+      // Retain current progress, but refresh ordering for departing modifiers
+      // whose target values are absent and therefore compare equal.
+      _tween.end = newSpec;
+
+      return;
+    }
 
     _animateTo(newSpec);
   }
@@ -238,6 +248,7 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
     required super.initialSpec,
     required this.context,
   }) {
+    controller.addStatusListener(_onAnimationStatusChanged);
     _setUpAnimation();
     if (config.isLooping) {
       _startLoopingAnimation();
@@ -245,6 +256,18 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
   }
 
   void _setUpAnimation() {
+    _resolveStyles();
+
+    config.trigger?.addListener(_onTriggerChanged);
+  }
+
+  void _onAnimationStatusChanged(AnimationStatus status) {
+    if (status == .completed) {
+      config.curveConfigs.last.onEnd?.call();
+    }
+  }
+
+  void _resolveStyles() {
     final specs = config.styles
         .map((e) => e.resolve(context) as StyleSpec<S>)
         .toList();
@@ -253,17 +276,6 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
 
     // Override the animation to use TweenSequence wrapped in a tween
     _animation = controller.drive(_PhasedSpecTween(_tweenSequence));
-
-    config.trigger?.addListener(_onTriggerChanged);
-
-    // Add status listener for onEnd callback
-    if (config.curveConfigs.last.onEnd != null) {
-      _animation.addStatusListener((status) {
-        if (status == .completed) {
-          config.curveConfigs.last.onEnd!();
-        }
-      });
-    }
   }
 
   void _onTriggerChanged() {
@@ -319,6 +331,7 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
 
   @override
   void dispose() {
+    controller.removeStatusListener(_onAnimationStatusChanged);
     config.trigger?.removeListener(_onTriggerChanged);
     controller.stop();
     super.dispose();
@@ -329,6 +342,11 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
     controller.duration = totalDuration;
 
     await controller.forward(from: 0.0);
+  }
+
+  @override
+  void didChangeDependencies() {
+    _resolveStyles();
   }
 
   @override
