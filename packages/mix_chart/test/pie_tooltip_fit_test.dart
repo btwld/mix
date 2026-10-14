@@ -30,7 +30,7 @@ void main() {
                       : null,
                   style: PieChartStyler().tooltip(
                     value == null
-                        ? const ChartTooltipStyler.create()
+                        ? const .create()
                         : .fitHorizontally(value).fitVertically(value),
                   ),
                 ),
