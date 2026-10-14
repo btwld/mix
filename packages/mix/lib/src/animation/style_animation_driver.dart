@@ -51,6 +51,9 @@ abstract class StyleAnimationDriver<S extends Spec<S>> {
   /// Gets the animation that drives spec changes.
   Animation<StyleSpec<S>?> get animation => _animation;
 
+  /// Whether an animation is currently in flight.
+  bool get isAnimating => _controller.isAnimating;
+
   // ignore: no-empty-block
   void didUpdateSpec(StyleSpec<S> oldSpec, StyleSpec<S> newSpec) {}
   // ignore: no-empty-block
