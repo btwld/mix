@@ -118,20 +118,40 @@ bool rootSetsBaseStyle(Expression root) {
   if (rootFactoryName(root) != null) {
     return rootFactoryKind(root) == StylerCallKind.baseStyle;
   }
-  final arguments = switch (root) {
-    InstanceCreationExpression(:final argumentList) ||
-    DotShorthandConstructorInvocation(
-      :final argumentList,
-    ) => argumentList.arguments,
-    _ => const <Argument>[],
-  };
 
-  return arguments.any(
+  return _constructorArguments(root).any(
     (argument) =>
-        argument is! NamedArgument ||
-        !_structuralParameters.contains(argument.name.lexeme),
+        _valueOf(argument) is! NullLiteral &&
+        (argument is! NamedArgument ||
+            !_structuralParameters.contains(argument.name.lexeme)),
   );
 }
+
+/// Returns true if [root] passes variants to the Styler constructor, such as
+/// `BoxStyler(variants: [...])`.
+bool rootSetsVariants(Expression root) => _constructorArguments(root).any(
+  (argument) =>
+      argument is NamedArgument &&
+      _variantParameters.contains(argument.name.lexeme) &&
+      argument.argumentExpression is! NullLiteral,
+);
+
+List<Argument> _constructorArguments(Expression root) => switch (root) {
+  InstanceCreationExpression(:final argumentList) ||
+  DotShorthandConstructorInvocation(
+    :final argumentList,
+  ) => argumentList.arguments,
+  _ => const [],
+};
+
+Expression? _valueOf(Argument argument) => switch (argument) {
+  NamedArgument(:final argumentExpression) => argumentExpression,
+  Expression() => argument,
+  _ => null,
+};
+
+/// Constructor parameters that hold variants.
+const _variantParameters = {'variants', 'constraintBranches'};
 
 /// Constructor parameters of Stylers that set no base style value.
 const _structuralParameters = {

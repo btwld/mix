@@ -69,6 +69,16 @@ final s = BoxStyler()
 ''');
   }
 
+  void test_type_name_in_conditional_branches_reports() async {
+    await assertLints(r'''
+import 'package:mix/mix.dart';
+const flag = true;
+final s = BoxStyler().padding(
+  flag ? [!EdgeInsetsGeometryMix.all(8)!] : [!EdgeInsetsGeometryMix.all(4)!],
+);
+''');
+  }
+
   // No diagnostics.
 
   void test_dot_shorthand_no_diagnostic() async {

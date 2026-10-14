@@ -95,6 +95,18 @@ final b = TextStyle(color: [!$primary()!]);
 ''');
   }
 
+  void test_changed_reference_in_converted_flutter_value_reports() async {
+    // Only an unchanged reference survives the conversion.
+    await assertLints(r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+final $primary = ColorToken('primary');
+final s = TextStyleMix.value(
+  TextStyle(color: [!$primary()!].withValues(alpha: .5)),
+);
+''');
+  }
+
   // No diagnostics.
 
   void test_call_into_styler_method_no_diagnostic() async {

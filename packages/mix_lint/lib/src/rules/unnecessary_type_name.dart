@@ -63,8 +63,9 @@ class _Visitor extends SimpleAstVisitor<void> {
     if (!_isStaticOrNamedConstructor(member)) return;
     if (typeName != null && _referencedType(typeName) == null) return;
 
-    final parent = node.parent;
-    final Argument argument = parent is NamedArgument ? parent : node;
+    final value = outermostBranch(node);
+    final parent = value.parent;
+    final Argument argument = parent is NamedArgument ? parent : value;
     final parameter = argument.correspondingParameter;
     final declaringType = member?.enclosingElement;
     final parameterType = parameter?.type;

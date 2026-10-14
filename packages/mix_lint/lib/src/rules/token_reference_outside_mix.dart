@@ -68,9 +68,13 @@ class _Visitor extends SimpleAstVisitor<void> {
   /// cannot be resolved.
   void _check(Expression reference) {
     final consumer = _enclosingConsumer(reference);
-    if (consumer != null && _escapesMix(consumer)) {
-      rule.reportAtNode(reference);
-    }
+    if (consumer == null) return;
+    // Mix keeps a reference in a converted Flutter value only when it is
+    // passed unchanged; `$space() * 2` is a plain number.
+    final escapes = _directConsumer(reference) == consumer
+        ? _escapesMix(consumer)
+        : _classify(consumer) == .notMix;
+    if (escapes) rule.reportAtNode(reference);
   }
 
   /// Returns true if a reference passed to [consumer] leaves Mix.

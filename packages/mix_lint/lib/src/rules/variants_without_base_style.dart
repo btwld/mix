@@ -53,7 +53,11 @@ class _Visitor extends SimpleAstVisitor<void> {
     final chain = collectDirectMethodChain(root);
     if (_isNestedStyle(chain.lastOrNull ?? root)) return;
 
-    final kinds = {?rootFactoryKind(root), ...chain.map(stylerCallKind)};
+    final kinds = {
+      ?rootFactoryKind(root),
+      if (rootSetsVariants(root)) StylerCallKind.variant,
+      ...chain.map(stylerCallKind),
+    };
     // onBuilder() builds the whole style from context, and merge() may bring
     // in a base style, so either one may stand in for base style calls.
     if (kinds.contains(StylerCallKind.builder)) return;

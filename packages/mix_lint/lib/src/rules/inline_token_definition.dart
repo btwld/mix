@@ -56,7 +56,8 @@ class _Visitor extends SimpleAstVisitor<void> {
   const _Visitor(this.rule);
 
   bool _isMixScopeCall(AstNode node) => switch (node) {
-    InstanceCreationExpression() => isMixScopeType(node.staticType),
+    InstanceCreationExpression() || DotShorthandConstructorInvocation() =>
+      isMixScopeType((node as Expression).staticType),
     // MixScope.inherit(), MixScope.withMaterial(), and similar.
     MethodInvocation() => isMixClass(
       node.methodName.element?.enclosingElement,

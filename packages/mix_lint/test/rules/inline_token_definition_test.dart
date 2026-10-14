@@ -69,6 +69,14 @@ final w = MixScope(colors: {[!.new('primary')!]: Colors.blue});
 ''');
   }
 
+  void test_token_in_dot_shorthand_mix_scope_reports() async {
+    await assertLints(r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+final MixScope s = .new(colors: {[!ColorToken('primary')!]: Colors.blue});
+''');
+  }
+
   void test_token_defined_outside_styler_no_diagnostic() async {
     await assertNoDiagnostics(r'''
 import 'package:mix/mix.dart';

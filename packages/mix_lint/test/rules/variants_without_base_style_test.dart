@@ -59,6 +59,14 @@ final b = [!GridBoxStyler(constraintBranches: [])!]
 ''');
   }
 
+  void test_constructor_variants_reports() async {
+    await assertLints(r'''
+import 'package:mix/mix.dart';
+final a = [!BoxStyler(variants: [Object()])!];
+final b = [!BoxStyler(color: null)!].onHovered(BoxStyler().width(1));
+''');
+  }
+
   void test_base_style_from_factory_no_diagnostic() async {
     await assertNoDiagnostics(r'''
 import 'package:flutter/widgets.dart';
