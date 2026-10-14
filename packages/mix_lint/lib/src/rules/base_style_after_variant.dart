@@ -66,14 +66,18 @@ class _Visitor extends SimpleAstVisitor<void> {
           target = target.target?.unParenthesized;
       }
     }
-    // The chain can also start with a variant factory, such as
-    // `.onConstraints(...)`.
+    // The chain can also start with variants: a variant factory, such as
+    // `.onConstraints(...)`, or a constructor argument, such as
+    // `BoxStyler(variants: [...])`.
     if (target == null) return;
     final rootKind = rootFactoryKind(target);
-    if (rootKind == .variant || rootKind == .builder) {
+    final variant = rootKind == .variant || rootKind == .builder
+        ? rootFactoryName(target)
+        : rootVariantsArgument(target);
+    if (variant != null) {
       rule.reportAtNode(
         node.methodName,
-        arguments: [node.methodName.name, rootFactoryName(target)!],
+        arguments: [node.methodName.name, variant],
       );
     }
   }

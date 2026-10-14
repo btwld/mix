@@ -142,14 +142,19 @@ bool rootSetsBaseStyle(Expression root) {
   );
 }
 
-/// Whether [root] passes variants to the Styler constructor, such as
-/// `BoxStyler(variants: [...])`.
-bool rootSetsVariants(Expression root) => _constructorArguments(root).any(
-  (argument) =>
-      argument is NamedArgument &&
-      _variantParameters.contains(argument.name.lexeme) &&
-      !_isEmpty(argument.argumentExpression),
-);
+/// The name of the argument that passes variants to the Styler constructor
+/// [root], such as `variants` in `BoxStyler(variants: [...])`, or null.
+String? rootVariantsArgument(Expression root) {
+  for (final argument in _constructorArguments(root)) {
+    if (argument is NamedArgument &&
+        _variantParameters.contains(argument.name.lexeme) &&
+        !_isEmpty(argument.argumentExpression)) {
+      return argument.name.lexeme;
+    }
+  }
+
+  return null;
+}
 
 /// Whether [value] is `null` or an empty collection literal.
 bool _isEmpty(Expression value) => switch (value) {

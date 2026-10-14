@@ -57,6 +57,30 @@ final s = BrandGridStyler()
 ''');
   }
 
+  void test_base_style_after_constructor_variants_reports() async {
+    await assertLints(
+      r'''
+import 'package:mix/mix.dart';
+final s = BoxStyler(variants: [Object()]).[!width!](1);
+''',
+      messageContains: ["'width'", "'variants'"],
+    );
+  }
+
+  void test_base_style_after_constraint_branches_reports() async {
+    await assertLints(r'''
+import 'package:mix/mix.dart';
+final s = GridBoxStyler(constraintBranches: [Object()]).[!gap!](8);
+''');
+  }
+
+  void test_base_style_after_empty_constructor_variants_no_diagnostic() async {
+    await assertNoDiagnostics(r'''
+import 'package:mix/mix.dart';
+final s = BoxStyler(variants: const []).width(1);
+''');
+  }
+
   void test_grid_on_constraints_is_a_variant() async {
     await assertLints(r'''
 import 'package:mix/mix.dart';

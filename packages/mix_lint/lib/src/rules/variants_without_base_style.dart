@@ -55,7 +55,7 @@ class _Visitor extends SimpleAstVisitor<void> {
 
     final kinds = {
       ?rootFactoryKind(root),
-      if (rootSetsVariants(root)) StylerCallKind.variant,
+      if (rootVariantsArgument(root) != null) StylerCallKind.variant,
       ...chain.map(stylerCallKind),
     };
     // onBuilder() builds the whole style from context, and merge() may bring
