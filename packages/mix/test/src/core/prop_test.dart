@@ -191,5 +191,27 @@ void main() {
       expect(resolved.right, 8.0); // from converted prop1
       expect(resolved.bottom, 8.0); // from converted prop1
     });
+
+    test(
+      'throws FlutterError in debug mode when merging an unconverted value with a Mix',
+      () {
+        final prop1 = Prop.value(10.0);
+        final prop2 = Prop.mix(MockMix<double>(20.0));
+        final merged = prop1.mergeProp(prop2);
+
+        expect(
+          () => merged.resolveProp(MockBuildContext()),
+          throwsA(
+            isA<FlutterError>().having(
+              (error) => error.message,
+              'message',
+              contains(
+                'Mix: could not convert value of type double to Mix<double>',
+              ),
+            ),
+          ),
+        );
+      },
+    );
   });
 }
