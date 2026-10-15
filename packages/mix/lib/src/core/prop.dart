@@ -242,6 +242,9 @@ class Prop<V> {
           if (converted != null) {
             mixValues.add(converted);
           } else {
+            // An unconverted regular value cannot merge with earlier Mix
+            // sources, so it replaces them unless a later Mix source follows.
+            mixValues.clear();
             // Debug-only diagnostic to surface silent conversion failures while
             // still returning the fallback resolved value.
             assert(() {
@@ -262,14 +265,8 @@ class Prop<V> {
         }
       }
 
-      // Invariant check: when hasMixValues is true, we expect at least one Mix collected
-      assert(
-        mixValues.isNotEmpty,
-        'Mix: invariant violated in Prop<$V>.resolveProp - hasMixValues was true, but no Mix values were collected from sources. Falling back to last value.',
-      );
-
       if (mixValues.isEmpty) {
-        // Release-safe fallback to maintain stability
+        // Release-safe fallback when the latest source is an unconverted value
         resolvedValue = values.last as V;
       } else {
         // Merge all Mix values
