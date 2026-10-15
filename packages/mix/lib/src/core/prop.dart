@@ -242,12 +242,21 @@ class Prop<V> {
           if (converted != null) {
             mixValues.add(converted);
           } else {
-            // Debug-only diagnostic to surface silent conversion failures
+            // Debug-only diagnostic to surface silent conversion failures while
+            // still returning the fallback resolved value.
             assert(() {
-              throw FlutterError(
-                'Mix: could not convert value of type ${value.runtimeType} '
-                'to Mix<$V>. Register a MixConverter for <$V> or pass a Mix via Prop.mix.',
+              FlutterError.reportError(
+                FlutterErrorDetails(
+                  exception: FlutterError(
+                    'Mix: could not convert value of type ${value.runtimeType} '
+                    'to Mix<$V>. Register a MixConverter for <$V> or pass a Mix via Prop.mix.',
+                  ),
+                  library: 'mix',
+                  context: ErrorDescription('while resolving Prop<$V>'),
+                ),
               );
+
+              return true;
             }());
           }
         }

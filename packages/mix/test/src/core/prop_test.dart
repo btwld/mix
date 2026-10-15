@@ -193,22 +193,27 @@ void main() {
     });
 
     test(
-      'throws FlutterError in debug mode when merging an unconverted value with a Mix',
+      'reports FlutterErrorDetails in debug mode and returns fallback value when merging an unconverted value with a Mix',
       () {
         final prop1 = Prop.value(10.0);
         final prop2 = Prop.mix(MockMix<double>(20.0));
         final merged = prop1.mergeProp(prop2);
 
+        FlutterErrorDetails? reported;
+        final previousOnError = FlutterError.onError;
+        FlutterError.onError = (details) {
+          reported = details;
+        };
+        addTearDown(() => FlutterError.onError = previousOnError);
+
+        final resolved = merged.resolveProp(MockBuildContext());
+
+        expect(resolved, 20.0);
+        expect(reported, isNotNull);
         expect(
-          () => merged.resolveProp(MockBuildContext()),
-          throwsA(
-            isA<FlutterError>().having(
-              (error) => error.message,
-              'message',
-              contains(
-                'Mix: could not convert value of type double to Mix<double>',
-              ),
-            ),
+          reported!.exceptionAsString(),
+          contains(
+            'Mix: could not convert value of type double to Mix<double>',
           ),
         );
       },
