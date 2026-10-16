@@ -10,7 +10,7 @@ Add the plugin to the top-level `plugins` section of your `analysis_options.yaml
 
 ```yaml
 plugins:
-  mix_lint: ^2.0.0
+  mix_lint: ^2.0.1
 ```
 
 Then restart the analysis server (or your IDE). Restart it again after any change to the `plugins` section.
@@ -39,7 +39,7 @@ List rules under `diagnostics`. Use `true` to enable a lint with its default sev
 ```yaml
 plugins:
   mix_lint:
-    version: ^2.0.0
+    version: ^2.0.1
     diagnostics:
       base_style_after_variant: true
       inline_token_definition: true
@@ -76,7 +76,7 @@ Rules that take options read them from a top-level `mix_lint:` section of the sa
 ```yaml
 plugins:
   mix_lint:
-    version: ^2.0.0
+    version: ^2.0.1
     diagnostics:
       long_styler_chain: true
 
