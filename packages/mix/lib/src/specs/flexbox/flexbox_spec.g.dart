@@ -373,6 +373,8 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
   }) => FlexBoxStyler().transform(value, alignment: alignment);
   factory FlexBoxStyler.animate(AnimationConfig value) =>
       FlexBoxStyler().animate(value);
+  factory FlexBoxStyler.wrap(WidgetModifierConfig value) =>
+      FlexBoxStyler().wrap(value);
 
   FlexBoxStyler textStyle(TextStyler value) {
     return wrap(WidgetModifierConfig.defaultTextStyler(value));

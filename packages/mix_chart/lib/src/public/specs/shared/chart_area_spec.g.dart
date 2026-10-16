@@ -155,6 +155,8 @@ class ChartAreaStyler extends MixStyler<ChartAreaStyler, ChartAreaSpec>
       ChartAreaStyler().cutoffY(value);
   factory ChartAreaStyler.applyCutoff(bool value) =>
       ChartAreaStyler().applyCutoff(value);
+  factory ChartAreaStyler.wrap(WidgetModifierConfig value) =>
+      ChartAreaStyler().wrap(value);
 
   @override
   Set<String> get $stylerFieldNames => const {

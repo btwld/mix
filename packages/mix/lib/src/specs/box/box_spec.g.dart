@@ -394,6 +394,7 @@ class BoxStyler extends MixStyler<BoxStyler, BoxSpec>
       BoxStyler().transform(value, alignment: alignment);
   factory BoxStyler.animate(AnimationConfig value) =>
       BoxStyler().animate(value);
+  factory BoxStyler.wrap(WidgetModifierConfig value) => BoxStyler().wrap(value);
 
   BoxStyler textStyle(TextStyler value) {
     return wrap(WidgetModifierConfig.defaultTextStyler(value));

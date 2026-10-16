@@ -279,6 +279,8 @@ class BarChartStyler extends MixStyler<BarChartStyler, BarChartSpec>
       BarChartStyler().alignment(value);
   factory BarChartStyler.tooltip(ChartTooltipStyler value) =>
       BarChartStyler().tooltip(value);
+  factory BarChartStyler.wrap(WidgetModifierConfig value) =>
+      BarChartStyler().wrap(value);
 
   @override
   Set<String> get $stylerFieldNames => const {

@@ -327,6 +327,8 @@ class TextStyler extends MixStyler<TextStyler, TextSpec>
   factory TextStyler.capitalize() => TextStyler().capitalize();
   factory TextStyler.titlecase() => TextStyler().titlecase();
   factory TextStyler.sentencecase() => TextStyler().sentencecase();
+  factory TextStyler.wrap(WidgetModifierConfig value) =>
+      TextStyler().wrap(value);
 
   TextStyler textDirective(Directive<String> value) {
     return merge(TextStyler(textDirectives: [value]));

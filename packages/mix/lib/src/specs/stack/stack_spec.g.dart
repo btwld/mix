@@ -144,6 +144,8 @@ class StackStyler extends MixStyler<StackStyler, StackSpec>
       StackStyler().textDirection(value);
   factory StackStyler.clipBehavior(Clip value) =>
       StackStyler().clipBehavior(value);
+  factory StackStyler.wrap(WidgetModifierConfig value) =>
+      StackStyler().wrap(value);
 
   @override
   Set<String> get $stylerFieldNames => const {

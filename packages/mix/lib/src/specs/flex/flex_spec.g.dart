@@ -237,6 +237,8 @@ class FlexStyler extends MixStyler<FlexStyler, FlexSpec>
   factory FlexStyler.spacing(double value) => FlexStyler().spacing(value);
   factory FlexStyler.row() => FlexStyler().row();
   factory FlexStyler.column() => FlexStyler().column();
+  factory FlexStyler.wrap(WidgetModifierConfig value) =>
+      FlexStyler().wrap(value);
 
   @override
   FlexStyler flex(FlexStyler value) {
