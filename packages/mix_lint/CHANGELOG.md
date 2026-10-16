@@ -1,4 +1,4 @@
-## Unreleased
+## 2.0.1
 
  - **BREAKING**: Renamed every rule and merged the two inline-token rules into
    `inline_token_definition`. See the table below.
@@ -20,6 +20,8 @@
      type.
    - `base_style_after_variant` and `variants_without_base_style` treat only
      Mix's own variant methods as variants.
+ - **FIX**: The `unnecessary_type_name` quick fix keeps `const` when it
+   rewrites an expression to a dot shorthand (#1095).
  - **CHORE**: Require `analysis_server_plugin` ^0.3.23 and `analyzer` ^14.4.0
    (Dart 3.12 or later).
 

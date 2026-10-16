@@ -5,7 +5,7 @@ Enable the plugin and the lints in `analysis_options.yaml`:
 ```yaml
 plugins:
   mix_lint:
-    version: ^2.0.0
+    version: ^2.0.1
     diagnostics:
       base_style_after_variant: true
       inline_token_definition: true
