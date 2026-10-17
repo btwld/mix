@@ -106,6 +106,7 @@ export 'src/specs/icon/icon_spec.dart';
 export 'src/specs/icon/icon_widget.dart';
 export 'src/specs/image/image_spec.dart';
 export 'src/specs/image/image_widget.dart';
+export 'src/specs/pressable/pressable_builders.dart';
 export 'src/specs/pressable/pressable_widget.dart';
 export 'src/specs/stack/stack_spec.dart';
 export 'src/specs/stackbox/stackbox_spec.dart';

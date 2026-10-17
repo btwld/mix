@@ -8,6 +8,7 @@ import '../core/style.dart';
 import '../core/style_spec.dart';
 import '../core/style_widget.dart';
 import '../modifiers/widget_modifier_config.dart';
+import '../specs/pressable/pressable_builders.dart';
 import '../style/abstracts/styler.dart';
 import '../theme/tokens/token_refs.dart';
 import 'grid_box_spec.dart';
@@ -131,6 +132,10 @@ class GridBoxStyler extends MixStyler<GridBoxStyler, GridBoxSpec>
   /// match. Different counts or kinds snap at the animation midpoint.
   factory GridBoxStyler.animate(AnimationConfig animation) =>
       GridBoxStyler().animate(animation);
+
+  /// Finishes this style and returns a reusable interactive builder.
+  PressableChildrenBuilder pressable() =>
+      .new((children) => GridBox(style: this, children: children));
 
   /// Replaces the column tracks with [value].
   GridBoxStyler columns(List<GridTrack> value) =>

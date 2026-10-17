@@ -94,7 +94,8 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
         BorderStyleMixin<StackBoxStyler>,
         BorderRadiusStyleMixin<StackBoxStyler>,
         ShadowStyleMixin<StackBoxStyler>,
-        TransformStyleMixin<StackBoxStyler>
+        TransformStyleMixin<StackBoxStyler>,
+        _StackBoxStylerPressableMixin<StackBoxStyler>
     implements StylerFieldMetadata {
   final Prop<StyleSpec<BoxSpec>>? $box;
   final Prop<StyleSpec<StackSpec>>? $stack;

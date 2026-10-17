@@ -203,6 +203,7 @@ typedef _$ImageSpecMethods = _$ImageSpec; // ignore: unused_element
 // **************************************************************************
 
 class ImageStyler extends MixStyler<ImageStyler, ImageSpec>
+    with _ImageStylerPressableMixin<ImageStyler>
     implements StylerFieldMetadata {
   final Prop<ImageProvider<Object>>? $image;
   final Prop<double>? $width;

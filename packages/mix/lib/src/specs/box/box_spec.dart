@@ -5,6 +5,7 @@ import 'package:mix_annotations/mix_annotations.dart';
 
 import '../../generated_styler_support.dart';
 
+import '../pressable/pressable_builders.dart';
 import '../text/text_spec.dart';
 import 'box_widget.dart';
 
@@ -15,7 +16,7 @@ part 'box_spec.g.dart';
 /// Provides comprehensive box styling including alignment, padding, margin, constraints,
 /// decoration, transformation, and clipping behavior. Used as the resolved form
 /// of [BoxStyle] styling attributes.
-@MixableSpec(target: Box.new)
+@MixableSpec(target: Box.new, extraStylerMixins: [_BoxStylerPressableMixin])
 @immutable
 final class BoxSpec with _$BoxSpec {
   /// Aligns the child within the box.
@@ -65,4 +66,10 @@ final class BoxSpec with _$BoxSpec {
     this.transformAlignment,
     this.clipBehavior,
   });
+}
+
+mixin _BoxStylerPressableMixin<ST extends Style<BoxSpec>>
+    on MixStyler<ST, BoxSpec> {
+  /// Finishes this style and returns a reusable interactive builder.
+  PressableBoxBuilder pressable() => .new(this);
 }

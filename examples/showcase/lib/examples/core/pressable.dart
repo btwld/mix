@@ -10,6 +10,10 @@ void main() => runApp(
 );
 
 /// PressableBox supplies keyboard, pointer, focus, and pressed-state behavior.
+///
+/// The callable `BoxStyler().pressable()` builder is documented in the Mix
+/// repository's unreleased revision. This hosted example stays on the
+/// published PressableBox API until that revision is released.
 class PressableExample extends StatefulWidget {
   const PressableExample({super.key});
 

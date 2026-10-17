@@ -7,6 +7,7 @@ import 'package:mix_annotations/mix_annotations.dart';
 import '../../generated_styler_support.dart';
 
 import '../box/box_spec.dart';
+import '../pressable/pressable_builders.dart';
 import '../text/text_spec.dart';
 import '../wrap/wrap_spec.dart';
 import 'wrapbox_widget.dart';
@@ -19,7 +20,10 @@ part 'wrapbox_spec.g.dart';
 /// widget-modifier method on generated stylers. [WrapBoxStyler] also flattens
 /// Wrap properties for ordinary fluent use while retaining `flow(...)` as the
 /// advanced nested composition escape hatch.
-@MixableSpec(target: WrapBox.new)
+@MixableSpec(
+  target: WrapBox.new,
+  extraStylerMixins: [_WrapBoxStylerPressableMixin],
+)
 @immutable
 final class WrapBoxSpec with _$WrapBoxSpec {
   /// Box styling properties for decoration, padding, constraints, etc.
@@ -33,4 +37,11 @@ final class WrapBoxSpec with _$WrapBoxSpec {
   final StyleSpec<WrapSpec>? flow;
 
   const WrapBoxSpec({this.box, this.flow});
+}
+
+mixin _WrapBoxStylerPressableMixin<ST extends Style<WrapBoxSpec>>
+    on MixStyler<ST, WrapBoxSpec> {
+  /// Finishes this style and returns a reusable interactive builder.
+  PressableChildrenBuilder pressable() =>
+      .new((children) => WrapBox(style: this, children: children));
 }

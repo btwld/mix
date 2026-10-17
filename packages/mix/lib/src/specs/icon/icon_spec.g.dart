@@ -169,6 +169,7 @@ typedef _$IconSpecMethods = _$IconSpec; // ignore: unused_element
 // **************************************************************************
 
 class IconStyler extends MixStyler<IconStyler, IconSpec>
+    with _IconStylerPressableMixin<IconStyler>
     implements StylerFieldMetadata {
   final Prop<Color>? $color;
   final Prop<double>? $size;

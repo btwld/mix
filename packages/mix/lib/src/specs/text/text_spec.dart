@@ -4,6 +4,7 @@ import 'package:mix_annotations/mix_annotations.dart';
 
 import '../../generated_styler_support.dart';
 
+import '../pressable/pressable_builders.dart';
 import 'text_widget.dart';
 
 part 'text_spec.g.dart';
@@ -12,7 +13,10 @@ part 'text_spec.g.dart';
 ///
 /// Provides comprehensive text styling including overflow behavior, structure styling,
 /// alignment, line limits, text direction, and string directive support.
-@MixableSpec(target: StyledText.new)
+@MixableSpec(
+  target: StyledText.new,
+  extraStylerMixins: [_TextStylerPressableMixin],
+)
 @immutable
 final class TextSpec with _$TextSpec {
   /// How visual overflow should be handled.
@@ -87,4 +91,10 @@ final class TextSpec with _$TextSpec {
     this.semanticsLabel,
     this.locale,
   });
+}
+
+mixin _TextStylerPressableMixin<ST extends Style<TextSpec>>
+    on MixStyler<ST, TextSpec> {
+  /// Finishes this style and returns a reusable interactive builder.
+  PressableTextBuilder pressable() => .new(this);
 }
