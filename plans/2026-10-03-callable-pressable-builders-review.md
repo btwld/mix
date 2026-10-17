@@ -23,9 +23,11 @@ Review findings were resolved before delivery:
 - Added a minimal web entry point and reproducible run/build instructions to
   the local example; verified its web build.
 
-The private mixins' narrowly documented unused-generic exceptions are required
-because the existing generation hook always supplies the owning styler type.
-The generator implementation was not changed.
+At this reviewed revision, the private mixins used narrowly documented
+unused-generic exceptions because the generation hook supplies an owner type.
+The [October 17 review](2026-10-17-callable-pressable-builders-review.md)
+subsequently removed those exceptions by using that type in the existing
+`MixStyler` receiver constraint. The generator implementation remains unchanged.
 
 ## Scope audit
 

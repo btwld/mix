@@ -247,8 +247,10 @@ Builders are reusable; callbacks and controllers are supplied per call. The key
 belongs to the outer Pressable only. Preserve hit areas when converting Icon
 or Text surfaces; these builders do not automatically add padding. When an
 outer Semantics owns a checkbox/switch role, retain `excludeFromSemantics: true`
-on the inner builder call. Keep
-published examples on direct `Pressable`/`PressableBox` until the dependency
+on the inner builder call. Visible text already supplies its semantic label;
+do not repeat it in the outer `semanticsLabel`. Icon calls retain the native
+`semanticLabel` for the icon and `semanticsLabel` for the outer Pressable.
+Keep published examples on direct `Pressable`/`PressableBox` until the dependency
 release that contains callable builders.
 
 ### Pressable

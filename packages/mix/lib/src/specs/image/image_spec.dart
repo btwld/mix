@@ -5,7 +5,6 @@ import 'package:mix_annotations/mix_annotations.dart';
 import '../../generated_styler_support.dart';
 
 import '../pressable/pressable_builders.dart';
-
 import 'image_widget.dart';
 
 part 'image_spec.g.dart';
@@ -99,10 +98,8 @@ final class ImageSpec with _$ImageSpec {
   });
 }
 
-/// Adds the terminal interactive builder to [ImageStyler].
-// The extraStylerMixins generator hook supplies the owning styler type.
-// ignore: avoid-unused-generics
 mixin _ImageStylerPressableMixin<ST extends Style<ImageSpec>>
-    on Style<ImageSpec> {
+    on MixStyler<ST, ImageSpec> {
+  /// Finishes this style and returns a reusable interactive builder.
   PressableImageBuilder pressable() => .new(this);
 }

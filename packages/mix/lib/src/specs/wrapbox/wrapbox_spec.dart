@@ -6,9 +6,8 @@ import 'package:mix_annotations/mix_annotations.dart';
 
 import '../../generated_styler_support.dart';
 
-import '../pressable/pressable_builders.dart';
-
 import '../box/box_spec.dart';
+import '../pressable/pressable_builders.dart';
 import '../text/text_spec.dart';
 import '../wrap/wrap_spec.dart';
 import 'wrapbox_widget.dart';
@@ -40,11 +39,9 @@ final class WrapBoxSpec with _$WrapBoxSpec {
   const WrapBoxSpec({this.box, this.flow});
 }
 
-/// Adds the terminal interactive builder to [WrapBoxStyler].
-// The extraStylerMixins generator hook supplies the owning styler type.
-// ignore: avoid-unused-generics
 mixin _WrapBoxStylerPressableMixin<ST extends Style<WrapBoxSpec>>
-    on Style<WrapBoxSpec> {
+    on MixStyler<ST, WrapBoxSpec> {
+  /// Finishes this style and returns a reusable interactive builder.
   PressableChildrenBuilder pressable() =>
       .new((children) => WrapBox(style: this, children: children));
 }

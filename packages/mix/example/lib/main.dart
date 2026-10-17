@@ -26,11 +26,7 @@ class PressableBuilderExample extends StatelessWidget {
             children: [
               heading('Callable pressable builders'),
               textAction('Open settings', onPress: () {}),
-              button(
-                onPress: () {},
-                semanticsLabel: 'Save',
-                child: const StyledText('Save'),
-              ),
+              button(onPress: () {}, child: const StyledText('Save')),
             ],
           ),
         ),

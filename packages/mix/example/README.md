@@ -22,6 +22,9 @@ Tab to the controls and use Enter or Space to activate them. The callbacks are
 empty demonstration actions. The surrounding FlexBox and heading are ordinary
 styled widgets.
 
+Visible button text supplies its accessible label. Add `semanticsLabel` when
+the content does not supply one; repeating the same label makes it spoken twice.
+
 For all eight supported stylers, native Icon/Image arguments, reuse and release
 migration guidance, see the Mix README and
 [`pressable-builders-release-audit.md`](../../../guides/pressable-builders-release-audit.md).

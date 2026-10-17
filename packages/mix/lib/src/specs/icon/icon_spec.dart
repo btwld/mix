@@ -5,7 +5,6 @@ import 'package:mix_annotations/mix_annotations.dart';
 import '../../generated_styler_support.dart';
 
 import '../pressable/pressable_builders.dart';
-
 import 'icon_widget.dart';
 
 part 'icon_spec.g.dart';
@@ -89,9 +88,8 @@ final class IconSpec with _$IconSpec {
   });
 }
 
-/// Adds the terminal interactive builder to [IconStyler].
-// The extraStylerMixins generator hook supplies the owning styler type.
-// ignore: avoid-unused-generics
-mixin _IconStylerPressableMixin<ST extends Style<IconSpec>> on Style<IconSpec> {
+mixin _IconStylerPressableMixin<ST extends Style<IconSpec>>
+    on MixStyler<ST, IconSpec> {
+  /// Finishes this style and returns a reusable interactive builder.
   PressableIconBuilder pressable() => .new(this);
 }

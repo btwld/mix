@@ -6,10 +6,9 @@ import 'package:mix_annotations/mix_annotations.dart';
 
 import '../../generated_styler_support.dart';
 
-import '../pressable/pressable_builders.dart';
-
 import '../box/box_spec.dart';
 import '../flex/flex_spec.dart';
+import '../pressable/pressable_builders.dart';
 import '../text/text_spec.dart';
 import 'flexbox_widget.dart';
 
@@ -37,11 +36,9 @@ final class FlexBoxSpec with _$FlexBoxSpec {
   const FlexBoxSpec({this.box, this.flex});
 }
 
-/// Adds the terminal interactive builder to [FlexBoxStyler].
-// The extraStylerMixins generator hook supplies the owning styler type.
-// ignore: avoid-unused-generics
 mixin _FlexBoxStylerPressableMixin<ST extends Style<FlexBoxSpec>>
-    on Style<FlexBoxSpec> {
+    on MixStyler<ST, FlexBoxSpec> {
+  /// Finishes this style and returns a reusable interactive builder.
   PressableChildrenBuilder pressable() =>
       .new((children) => FlexBox(style: this, children: children));
 }

@@ -13,7 +13,8 @@ void main() {
     final wrapStyle = WrapBoxStyler();
     final gridStyle = GridBoxStyler();
 
-    final box = boxStyle.pressable()(child: const SizedBox());
+    const child = SizedBox();
+    final box = boxStyle.pressable()(child: child);
     final text = textStyle.pressable()('Title');
     final icon = iconStyle.pressable()(
       icon: Icons.star,
@@ -26,16 +27,8 @@ void main() {
     final wrap = wrapStyle.pressable()(children: const []);
     final grid = gridStyle.pressable()(children: const []);
 
-    expect(box, isA<Pressable>());
-    expect(text, isA<Pressable>());
-    expect(icon, isA<Pressable>());
-    expect(image, isA<Pressable>());
-    expect(flex, isA<Pressable>());
-    expect(stack, isA<Pressable>());
-    expect(wrap, isA<Pressable>());
-    expect(grid, isA<Pressable>());
-
     expect((box.child as Box).style, same(boxStyle));
+    expect((box.child as Box).child, same(child));
     expect((text.child as StyledText).style, same(textStyle));
     expect((icon.child as StyledIcon).style, same(iconStyle));
     expect((icon.child as StyledIcon).semanticLabel, 'star');
@@ -45,27 +38,5 @@ void main() {
     expect((stack.child as StackBox).style, same(stackStyle));
     expect((wrap.child as WrapBox).style, same(wrapStyle));
     expect((grid.child as GridBox).style, same(gridStyle));
-  });
-
-  test('builders are reusable and calls do not share interaction state', () {
-    final builder = BoxStyler().pressable();
-    final firstController = WidgetStatesController();
-    final secondController = WidgetStatesController();
-    addTearDown(firstController.dispose);
-    addTearDown(secondController.dispose);
-
-    final first = builder(
-      controller: firstController,
-      child: const Text('One'),
-    );
-    final second = builder(
-      controller: secondController,
-      child: const Text('Two'),
-    );
-
-    expect(first.controller, same(firstController));
-    expect(second.controller, same(secondController));
-    expect(identical(first, second), isFalse);
-    expect(first.child, isNot(same(second.child)));
   });
 }

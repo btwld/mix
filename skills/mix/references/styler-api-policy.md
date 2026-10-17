@@ -5,6 +5,7 @@ Rules for static factory constructors on Styler classes and Dart 3.12+ dot-short
 ## Table of Contents
 
 - [Top-level rule](#the-top-level-rule)
+- [Terminal pressable builders](#terminal-pressable-builders)
 - [Nested shorthand](#nested-shorthand-rule)
 - [Enum shorthand](#dot-shorthand-for-enumconstant-arguments)
 - [Factory constructors](#factory-constructors-by-styler)
@@ -44,7 +45,8 @@ ImageStyler().fit(.cover).pressable()(
 This is a terminal boundary: builders expose no styling methods and do not
 support a second `.pressable()`. Reuse a builder for independent calls, and
 provide callbacks, focus nodes, and controllers per call. Use direct
-`Pressable` when the surface contains arbitrary widget trees or nested controls.
+`Pressable` when defining an interaction boundary around an arbitrary widget
+tree. Preserve nested controls' own focus and semantics with either API.
 The callable builder API is only available in the unreleased revision that
 introduces it; published dependency examples should retain direct
 `Pressable`/`PressableBox` forms until that release.
