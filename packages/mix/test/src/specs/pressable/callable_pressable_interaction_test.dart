@@ -107,6 +107,8 @@ void main() {
     tester,
   ) async {
     final button = BoxStyler().size(100, 60).pressable();
+    var firstPresses = 0;
+    var secondPresses = 0;
     final states = <String, bool>{};
     Widget probe(String name) => Builder(
       builder: (context) {
@@ -117,8 +119,18 @@ void main() {
         return Text(name);
       },
     );
-    final first = button(key: const Key('first'), child: probe('first'));
-    final second = button(key: const Key('second'), child: probe('second'));
+    final first = button(
+      key: const Key('first'),
+      onPress: () => firstPresses++,
+      child: probe('first'),
+    );
+    final second = button(
+      key: const Key('second'),
+      onPress: () => secondPresses++,
+      child: probe('second'),
+    );
+    expect(first, isNot(same(second)));
+    expect(first.child, isNot(same(second.child)));
     expect(first.child.key, isNull);
     expect(second.child.key, isNull);
     await tester.pumpWidget(
@@ -134,6 +146,12 @@ void main() {
     await gesture.up();
     await tester.pump();
     expect(states, {'first': false, 'second': false});
+    expect(firstPresses, 1);
+    expect(secondPresses, 0);
+    await tester.tap(find.byKey(const Key('second')));
+    await tester.pump();
+    expect(firstPresses, 1);
+    expect(secondPresses, 1);
     expect(tester.takeException(), isNull);
   });
 

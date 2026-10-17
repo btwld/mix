@@ -6,7 +6,6 @@ import 'package:mix_annotations/mix_annotations.dart';
 import '../../generated_styler_support.dart';
 
 import '../pressable/pressable_builders.dart';
-
 import '../text/text_spec.dart';
 import 'box_widget.dart';
 
@@ -69,9 +68,8 @@ final class BoxSpec with _$BoxSpec {
   });
 }
 
-/// Adds the terminal interactive builder to [BoxStyler].
-// The extraStylerMixins generator hook supplies the owning styler type.
-// ignore: avoid-unused-generics
-mixin _BoxStylerPressableMixin<ST extends Style<BoxSpec>> on Style<BoxSpec> {
+mixin _BoxStylerPressableMixin<ST extends Style<BoxSpec>>
+    on MixStyler<ST, BoxSpec> {
+  /// Finishes this style and returns a reusable interactive builder.
   PressableBoxBuilder pressable() => .new(this);
 }

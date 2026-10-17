@@ -7,9 +7,9 @@ import '../icon/icon_spec.dart';
 import '../icon/icon_widget.dart';
 import '../image/image_spec.dart';
 import '../image/image_widget.dart';
-import '../pressable/pressable_widget.dart';
 import '../text/text_spec.dart';
 import '../text/text_widget.dart';
+import 'pressable_widget.dart';
 
 /// A terminal builder for an interactive styled box.
 ///
@@ -115,6 +115,9 @@ final class PressableTextBuilder {
 }
 
 /// A terminal builder for an interactive styled icon widget.
+///
+/// On [call], `semanticLabel` labels the icon, while `semanticsLabel` labels
+/// the surrounding [Pressable].
 @immutable
 final class PressableIconBuilder {
   final Style<IconSpec> _style;

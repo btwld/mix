@@ -109,6 +109,10 @@ Generation, formatting and full CI passed, including 3,027 core Mix tests and
 383 generator tests. Repository analysis passes its Dart/schema stages but
 retains four pre-existing DCM findings in unchanged files.
 
+The [October 17 review and simplification](2026-10-17-callable-pressable-builders-review.md)
+records the subsequent complete review, smaller test suite, typed mixin cleanup,
+example accessibility correction and fresh validation.
+
 ## Release follow-ups
 
 - Publish the callable builders, then raise hosted showcase/DartPad dependencies

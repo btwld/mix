@@ -208,17 +208,30 @@ create interactive widgets:
 final button = buttonStyle.pressable();
 final saveButton = button(
   onPress: save,
-  semanticsLabel: 'Save',
   child: const StyledText('Save'),
 );
+final undoButton = button(onPress: undo, child: const StyledText('Undo'));
 
-final title = TextStyler().fontSize(18)('Settings');
-final row = FlexBoxStyler().direction(.horizontal)(
-  children: [const Icon(Icons.settings), title],
-);
 final settings = TextStyler().fontSize(18).pressable()(
   'Open settings',
   onPress: openSettings,
+);
+final settingsRow = FlexBoxStyler().direction(.horizontal).pressable()(
+  onPress: openSettings,
+  children: [
+    const StyledIcon(icon: Icons.settings),
+    const StyledText('Settings'),
+  ],
+);
+final favorite = IconStyler().size(24).pressable()(
+  icon: Icons.star,
+  semanticLabel: 'Favorite',
+  onPress: toggleFavorite,
+);
+final photo = ImageStyler().fit(.cover).pressable()(
+  image: const AssetImage('assets/photo.png'),
+  semanticsLabel: 'Open photo',
+  onPress: openPhoto,
 );
 ```
 
@@ -227,9 +240,15 @@ whose child is the corresponding styled widget. Box, text, icon, image, and
 the FlexBox, StackBox, WrapBox, and GridBox layout stylers are supported. Every
 call accepts the same interaction, keyboard, focus, semantics, controller, and
 enabled options as `Pressable`. Builders are reusable; callbacks and state are
-provided per call. This API is available in the unreleased revision that adds
-callable builders; keep published Snacks on `Pressable`/`PressableBox` until a
-release containing this API lands.
+provided per call. Icon calls retain `semanticLabel` for the icon; the separate
+`semanticsLabel` labels the outer Pressable. Visible text already supplies a
+semantic label, so do not repeat it on the outer widget. Image calls also accept
+`frameBuilder`, `loadingBuilder`, `errorBuilder`, and `opacity`. These builders
+preserve the styled widget's hit area; add padding when a small icon or text
+needs a larger target.
+
+This API is unreleased and absent from Mix 2.2.1. Keep published Snacks on
+`Pressable`/`PressableBox` until a release containing this API lands.
 
 [Dynamic styling guide →](https://www.fluttermix.com/documentation/mix/guides/dynamic-styling)
 

@@ -5,7 +5,6 @@ import 'package:mix_annotations/mix_annotations.dart';
 import '../../generated_styler_support.dart';
 
 import '../pressable/pressable_builders.dart';
-
 import 'text_widget.dart';
 
 part 'text_spec.g.dart';
@@ -94,9 +93,8 @@ final class TextSpec with _$TextSpec {
   });
 }
 
-/// Adds the terminal interactive builder to [TextStyler].
-// The extraStylerMixins generator hook supplies the owning styler type.
-// ignore: avoid-unused-generics
-mixin _TextStylerPressableMixin<ST extends Style<TextSpec>> on Style<TextSpec> {
+mixin _TextStylerPressableMixin<ST extends Style<TextSpec>>
+    on MixStyler<ST, TextSpec> {
+  /// Finishes this style and returns a reusable interactive builder.
   PressableTextBuilder pressable() => .new(this);
 }

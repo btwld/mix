@@ -6,9 +6,8 @@ import 'package:mix_annotations/mix_annotations.dart';
 
 import '../../generated_styler_support.dart';
 
-import '../pressable/pressable_builders.dart';
-
 import '../box/box_spec.dart';
+import '../pressable/pressable_builders.dart';
 import '../stack/stack_spec.dart';
 import '../text/text_spec.dart';
 import 'stackbox_widget.dart';
@@ -37,11 +36,9 @@ final class StackBoxSpec with _$StackBoxSpec {
   const StackBoxSpec({this.box, this.stack});
 }
 
-/// Adds the terminal interactive builder to [StackBoxStyler].
-// The extraStylerMixins generator hook supplies the owning styler type.
-// ignore: avoid-unused-generics
 mixin _StackBoxStylerPressableMixin<ST extends Style<StackBoxSpec>>
-    on Style<StackBoxSpec> {
+    on MixStyler<ST, StackBoxSpec> {
+  /// Finishes this style and returns a reusable interactive builder.
   PressableChildrenBuilder pressable() =>
       .new((children) => StackBox(style: this, children: children));
 }
