@@ -74,7 +74,7 @@ Available on all Stylers via `WidgetStateVariantMixin`:
 | `onHovered(style)` | `WidgetState.hovered` |
 | `onPressed(style)` | `WidgetState.pressed` |
 | `onFocused(style)` | `WidgetState.focused` |
-| `onFocusVisible(style)` | `WidgetState.focused` after keyboard input, like CSS `:focus-visible` — use it for focus rings that should not appear after a mouse click or touch; editable text fields match after a click, as in browsers |
+| `onFocusVisible(style)` | `WidgetState.focused`, except after a pointer press until the next keyboard input, like CSS `:focus-visible` — use it for focus rings; use `onFocused` for text-input rings |
 | `onDisabled(style)` | `WidgetState.disabled` |
 | `onEnabled(style)` | Not disabled |
 

@@ -49,9 +49,9 @@ mixin WidgetStateVariantMixin<T extends Style<S>, S extends Spec<S>>
 
   /// Creates a variant for focus that should show a focus indicator.
   ///
-  /// Like CSS `:focus-visible`, this applies after keyboard input and in
-  /// editable text fields, but not after a pointer press elsewhere; see
-  /// [FocusVisibility]. Use [onFocused] for styles that follow any focus.
+  /// Like CSS `:focus-visible`, this stops applying after a pointer press until
+  /// the next keyboard input; see [FocusVisibility]. Use [onFocused] for styles
+  /// that follow any focus, such as text-input rings.
   ///
   /// Modality changes rebuild reactively under Mix-managed state scopes such as
   /// [Pressable] or a [StyleBuilder] with a controller. Under a manually mounted

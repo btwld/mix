@@ -313,7 +313,7 @@ promise that the adaptation is final.
 | Tailwind feature | Current mix_winds behavior |
 |---|---|
 | `active:` | Uses Mix's pressed widget state. |
-| `focus-visible:` | Uses Mix's focus-visible state, driven by Mix's app-wide input modality rather than CSS's per-element focus heuristics. As in CSS, focus matches after keyboard input and in editable text fields, but not after a pointer press elsewhere. |
+| `focus-visible:` | Uses Mix's focus-visible state, driven by Mix's app-wide input modality rather than CSS's per-element focus heuristics. As in CSS, focus stops matching after a pointer press until the next keyboard input. Unlike CSS, a text input focused by a pointer press does not match. |
 | `dark:` | Uses Flutter platform brightness rather than a CSS selector strategy. |
 | `light:` | A mix_winds parser-registry extension that uses Flutter platform brightness as the inverse of `dark:`. |
 | `not-hover:` | Uses Mix's inverse-hover runtime state. This is partial support for Tailwind's compound `not` variant; other `not-*` forms remain unsupported and are reported through `onDiagnostic`. |

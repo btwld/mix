@@ -126,33 +126,21 @@ void main() {
       variant: desktop,
     );
 
-    for (final readOnly in [false, true]) {
+    for (final platform in [TargetPlatform.macOS, TargetPlatform.windows]) {
+      final countsAsKeyboard = platform == .macOS;
       testWidgets(
-        'a mouse press into a ${readOnly ? 'read-only' : 'editable'} text '
-        'field ${readOnly ? 'hides' : 'shows'} focus',
+        'Alt with a key ${countsAsKeyboard ? 'counts' : 'does not count'} '
+        'as keyboard input on ${platform.name}',
         (tester) async {
-          final controller = TextEditingController(text: 'text');
-          addTearDown(controller.dispose);
-          await tester.pumpWidget(
-            MaterialApp(
-              home: Material(
-                child: TextField(controller: controller, readOnly: readOnly),
-              ),
-            ),
-          );
+          await _pumpFocusable(tester);
+          await _pressOutside(tester);
 
-          await tester.tap(find.byType(EditableText), kind: .mouse);
-          await tester.pump();
-          expect(
-            tester
-                .widget<EditableText>(find.byType(EditableText))
-                .focusNode
-                .hasFocus,
-            isTrue,
-          );
-          expect(FocusVisibility.isVisible, !readOnly);
+          await tester.sendKeyDownEvent(.altLeft);
+          await tester.sendKeyEvent(.keyB);
+          await tester.sendKeyUpEvent(.altLeft);
+          expect(FocusVisibility.isVisible, countsAsKeyboard);
         },
-        variant: desktop,
+        variant: TargetPlatformVariant({platform}),
       );
     }
 
@@ -171,8 +159,6 @@ void main() {
       tester,
     ) async {
       final focusManager = FocusManager.instance;
-      final previousStrategy = focusManager.highlightStrategy;
-      addTearDown(() => focusManager.highlightStrategy = previousStrategy);
       await _pumpFocusable(tester);
       await _pressOutside(tester);
 
@@ -182,8 +168,6 @@ void main() {
 
     testWidgets('alwaysTouch hides focus after keyboard input', (tester) async {
       final focusManager = FocusManager.instance;
-      final previousStrategy = focusManager.highlightStrategy;
-      addTearDown(() => focusManager.highlightStrategy = previousStrategy);
       await _pumpFocusable(tester);
 
       focusManager.highlightStrategy = .alwaysTouch;
@@ -191,19 +175,38 @@ void main() {
       expect(FocusVisibility.isVisible, isFalse);
     }, variant: desktop);
 
-    testWidgets('notifies listeners when visibility changes', (tester) async {
-      await _pumpFocusable(tester);
-      var notifications = 0;
-      void listener() => notifications++;
-      final listenable = FocusVisibility.listenable..addListener(listener);
-      addTearDown(() => listenable.removeListener(listener));
+    testWidgets(
+      'a scope updates styles under a manually mounted widget-state scope',
+      (tester) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Align(
+              alignment: Alignment.topLeft,
+              child: FocusVisibilityScope(
+                child: WidgetStateProvider(
+                  states: const {.focused},
+                  child: Box(
+                    key: _boxKey,
+                    style: BoxStyler()
+                        .size(100, 100)
+                        .color(Colors.blue)
+                        .onFocusVisible(.color(Colors.red)),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+        expect(_colorOf(tester), Colors.red);
 
-      await _pressOutside(tester);
-      await _pressOutside(tester);
-      expect(notifications, 1);
+        await _pressOutside(tester);
+        expect(_colorOf(tester), Colors.blue);
 
-      await tester.sendKeyEvent(.arrowDown);
-      expect(notifications, 2);
-    }, variant: desktop);
+        await tester.sendKeyEvent(.arrowDown);
+        await tester.pump();
+        expect(_colorOf(tester), Colors.red);
+      },
+      variant: desktop,
+    );
   });
 }

@@ -650,8 +650,8 @@ preserved; `not(not(web))` encodes as nested `context_not` selectors rather
 than being normalized away.
 
 `context_focus_visible` decodes to `ContextVariant.focusVisible()`. It matches
-focused state while `FocusVisibility.isVisible`: after keyboard input or in an
-editable text field, and not after a pointer press elsewhere.
+focused state while `FocusVisibility.isVisible`, which turns off after a pointer
+press until the next keyboard input.
 `WidgetStateStyleOverride` controls focused state directly, including touch
 mode. The same selector works inside `context_not.variant`.
 
