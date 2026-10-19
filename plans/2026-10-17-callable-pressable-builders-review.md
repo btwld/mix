@@ -9,6 +9,11 @@
   [October 3 review](2026-10-03-callable-pressable-builders-review.md) retains
   its original implementation snapshot and validation results.
 
+The later [October 19 CI follow-up](2026-10-19-callable-pressable-ci-followup.md)
+records an analyzer compatibility error found when GitHub tested this revision
+merged with newer `main`. The validation below describes the local October 17
+dependency resolution.
+
 ## Findings and changes
 
 - **P2 — duplicated accessible label in the new example**

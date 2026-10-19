@@ -113,6 +113,10 @@ The [October 17 review and simplification](2026-10-17-callable-pressable-builder
 records the subsequent complete review, smaller test suite, typed mixin cleanup,
 example accessibility correction and fresh validation.
 
+The [October 19 CI follow-up](2026-10-19-callable-pressable-ci-followup.md)
+records the analyzer compatibility fix needed when GitHub merges this branch
+with newer `main` for validation.
+
 ## Release follow-ups
 
 - Publish the callable builders, then raise hosted showcase/DartPad dependencies
