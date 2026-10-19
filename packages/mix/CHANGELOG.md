@@ -1,3 +1,16 @@
+## Unreleased
+
+### Bug fixes
+
+- **Focus visible:** `onFocusVisible` now behaves like CSS `:focus-visible`: a
+  pointer press hides focus indicators until the next keyboard input, so focus
+  from a mouse click, or moved in code after one, no longer shows a focus ring
+  on desktop. Text inputs that should show a ring on click can use
+  `onFocused`. `FocusHighlightStrategy.alwaysTraditional` and `alwaysTouch`
+  keep overriding input. The new `FocusVisibility` and `FocusVisibilityScope`
+  expose the same signal to widgets that draw their own focus indicators or
+  publish widget states themselves.
+
 ## 2.2.2
 
 ### Bug fixes
