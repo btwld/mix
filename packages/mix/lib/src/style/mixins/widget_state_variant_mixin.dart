@@ -47,7 +47,11 @@ mixin WidgetStateVariantMixin<T extends Style<S>, S extends Spec<S>>
     return variant(ContextVariant.widgetState(.focused), style);
   }
 
-  /// Creates a variant for focus shown in Flutter's traditional highlight mode.
+  /// Creates a variant for focus that should show a focus indicator.
+  ///
+  /// Like CSS `:focus-visible`, this applies after keyboard input and in
+  /// editable text fields, but not after a pointer press elsewhere; see
+  /// [FocusVisibility]. Use [onFocused] for styles that follow any focus.
   ///
   /// Modality changes rebuild reactively under Mix-managed state scopes such as
   /// [Pressable] or a [StyleBuilder] with a controller. Under a manually mounted

@@ -1,3 +1,16 @@
+## Unreleased
+
+### Bug fixes
+
+- **Focus visible:** `onFocusVisible` now follows the most recent input, like
+  CSS `:focus-visible`. A pointer press hides focus indicators until the next
+  keyboard input, so focus moved by a mouse click or by code after one no
+  longer shows a focus ring on desktop. Focus in an editable text field stays
+  visible, as in browsers. Lone modifier keys and Control or Meta shortcuts do
+  not count as keyboard input, nor do Alt shortcuts outside macOS. `FocusHighlightStrategy.alwaysTraditional` and `alwaysTouch` keep
+  overriding input. The new `FocusVisibility` exposes the same signal to
+  widgets that draw their own focus indicators.
+
 ## 2.2.2
 
 ### Bug fixes
