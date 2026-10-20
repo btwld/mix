@@ -561,6 +561,8 @@ void main() {
       () async {
         const input = '''
         library spike;
+        import 'package:flutter/widgets.dart';
+        import 'package:mix/mix.dart';
         import 'package:mix_annotations/mix_annotations.dart';
         part 'spike.g.dart';
 
@@ -569,24 +571,23 @@ void main() {
         }
 
         @MixableSpec(extraStylerMixins: [_TerminalMixin])
-        final class TrivialSpec {
+        final class TrivialSpec extends Spec<TrivialSpec> {
           final int? count;
           const TrivialSpec({this.count});
         }
       ''';
 
-        await testBuilder(
-          _specStylerPartBuilder(),
-          {
+        await expectGeneratorOutputResolves(
+          builder: _specStylerPartBuilder(),
+          sources: {
             ...mixAnnotationsSources,
+            ..._flutterResolveStubs,
             ..._mixSources,
             'mix|lib/spike.dart': input,
           },
-          outputs: {
-            'mix|lib/spike.g.dart': decodedMatches(
-              contains('with _TerminalMixin<TrivialStyler>'),
-            ),
-          },
+          inputAsset: 'mix|lib/spike.dart',
+          outputAsset: 'mix|lib/spike.g.dart',
+          outputMatcher: contains('with _TerminalMixin<TrivialStyler>'),
         );
       },
     );

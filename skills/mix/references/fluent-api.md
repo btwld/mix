@@ -256,9 +256,7 @@ do not automatically add padding. When an outer Semantics owns a
 checkbox/switch role, retain `excludeFromSemantics: true` on the inner builder
 call. Visible text already supplies its semantic label; do not repeat it in the
 outer `semanticsLabel`. Icon calls retain the native `semanticLabel` for the
-icon and `semanticsLabel` for the outer Pressable. Keep published examples on
-direct `Pressable`/`PressableBox` until the dependency release that contains
-callable builders.
+icon and `semanticsLabel` for the outer Pressable.
 
 ### Pressable
 

@@ -3,15 +3,33 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
 void main() {
+  final boxStyle = BoxStyler();
+  final textStyle = TextStyler();
+  final iconStyle = IconStyler();
+  final imageStyle = ImageStyler();
+  final flexStyle = FlexBoxStyler();
+  final stackStyle = StackBoxStyler();
+  final wrapStyle = WrapBoxStyler();
+  final gridStyle = GridBoxStyler();
+
+  final boxBuilder = boxStyle.pressable();
+  final textBuilder = textStyle.pressable();
+  final iconBuilder = iconStyle.pressable();
+  final imageBuilder = imageStyle.pressable();
+  final flexBuilder = flexStyle.pressable();
+  final stackBuilder = stackStyle.pressable();
+  final wrapBuilder = wrapStyle.pressable();
+  final gridBuilder = gridStyle.pressable();
+
   final surfaces = <String, (Function, List<Object>)>{
-    'Box': (BoxStyler().pressable().call, []),
-    'Text': (TextStyler().pressable().call, ['Settings']),
-    'Icon': (IconStyler().pressable().call, []),
-    'Image': (ImageStyler().pressable().call, []),
-    'FlexBox': (FlexBoxStyler().pressable().call, []),
-    'StackBox': (StackBoxStyler().pressable().call, []),
-    'WrapBox': (WrapBoxStyler().pressable().call, []),
-    'GridBox': (GridBoxStyler().pressable().call, []),
+    'Box': (boxBuilder.call, []),
+    'Text': (textBuilder.call, ['Settings']),
+    'Icon': (iconBuilder.call, []),
+    'Image': (imageBuilder.call, []),
+    'FlexBox': (flexBuilder.call, []),
+    'StackBox': (stackBuilder.call, []),
+    'WrapBox': (wrapBuilder.call, []),
+    'GridBox': (gridBuilder.call, []),
   };
 
   for (final entry in surfaces.entries) {
@@ -83,25 +101,25 @@ void main() {
   }
 
   test('native content parameters and defaults are retained', () {
-    final boxBuilder = BoxStyler().pressable();
-    final textBuilder = TextStyler().pressable();
-    final iconBuilder = IconStyler().pressable();
-    final imageBuilder = ImageStyler().pressable();
-    final flexBuilder = FlexBoxStyler().pressable();
-    final stackBuilder = StackBoxStyler().pressable();
-    final wrapBuilder = WrapBoxStyler().pressable();
-    final gridBuilder = GridBoxStyler().pressable();
-
+    const child = SizedBox();
+    final box = boxBuilder(child: child).child as Box;
+    expect(box.style, same(boxStyle));
+    expect(box.child, same(child));
     expect((boxBuilder().child as Box).child, isNull);
+
     final text = textBuilder('Settings').child as StyledText;
+    expect(text.style, same(textStyle));
     expect(text.text, 'Settings');
+
     final icon = iconBuilder(
       icon: Icons.star,
       semanticLabel: 'Star',
       semanticsLabel: 'Favorite',
     );
-    expect((icon.child as StyledIcon).icon, Icons.star);
-    expect((icon.child as StyledIcon).semanticLabel, 'Star');
+    final styledIcon = icon.child as StyledIcon;
+    expect(styledIcon.style, same(iconStyle));
+    expect(styledIcon.icon, Icons.star);
+    expect(styledIcon.semanticLabel, 'Star');
     expect(icon.semanticsLabel, 'Favorite');
 
     const provider = AssetImage('photo.png');
@@ -131,6 +149,7 @@ void main() {
               errorBuilder: errorBuilder,
             ).child
             as StyledImage;
+    expect(image.style, same(imageStyle));
     expect(image.image, same(provider));
     expect(image.opacity, same(opacity));
     expect(image.frameBuilder, same(frameBuilder));
@@ -138,22 +157,18 @@ void main() {
     expect(image.errorBuilder, same(errorBuilder));
 
     final children = <Widget>[const Text('First'), const Text('Second')];
-    expect(
-      (flexBuilder(children: children).child as FlexBox).children,
-      same(children),
-    );
-    expect(
-      (stackBuilder(children: children).child as StackBox).children,
-      same(children),
-    );
-    expect(
-      (wrapBuilder(children: children).child as WrapBox).children,
-      same(children),
-    );
-    expect(
-      (gridBuilder(children: children).child as GridBox).children,
-      same(children),
-    );
+    final flex = flexBuilder(children: children).child as FlexBox;
+    final stack = stackBuilder(children: children).child as StackBox;
+    final wrap = wrapBuilder(children: children).child as WrapBox;
+    final grid = gridBuilder(children: children).child as GridBox;
+    expect(flex.style, same(flexStyle));
+    expect(flex.children, same(children));
+    expect(stack.style, same(stackStyle));
+    expect(stack.children, same(children));
+    expect(wrap.style, same(wrapStyle));
+    expect(wrap.children, same(children));
+    expect(grid.style, same(gridStyle));
+    expect(grid.children, same(children));
     expect((flexBuilder().child as FlexBox).children, isEmpty);
     expect((stackBuilder().child as StackBox).children, isEmpty);
     expect((wrapBuilder().child as WrapBox).children, isEmpty);

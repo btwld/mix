@@ -72,9 +72,7 @@ Interactive: `Pressable` (gesture + focus + mouse), `PressableBox` (Pressable + 
 and terminal callable builders from widget-backed stylers via `.pressable()`.
 Assign a styler or its `.pressable()` builder to a variable and invoke that
 variable as a callable to return the widget; do not chain `()()` directly on the
-styler or `.pressable()` call. The callable builder API is available only in the
-unreleased revision that introduces it; inspect the consuming dependency before
-using it.
+styler or `.pressable()` call.
 
 `GridBox` is a Mix-owned layout primitive, but unlike `FlexBox`, `WrapBox`, and `StackBox`, it does not include outer `Box` decoration or padding. Compose it inside `Box` when the grid itself needs chrome.
 

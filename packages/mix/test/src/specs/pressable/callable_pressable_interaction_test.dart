@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
+import '../../../helpers/testing_utils.dart';
+
 void main() {
   testWidgets(
     'reused builders resolve tokens and animated variants in context',
@@ -40,17 +42,14 @@ void main() {
           ),
         ),
       );
-      Color? surface(String key) =>
-          (tester
-                      .widget<Container>(
-                        find.descendant(
-                          of: find.byKey(Key(key)),
-                          matching: find.byType(Container),
-                        ),
-                      )
-                      .decoration
-                  as BoxDecoration)
-              .color;
+      Color? surface(String key) => boxDecorationFrom(
+        tester.widget<Container>(
+          find.descendant(
+            of: find.byKey(Key(key)),
+            matching: find.byType(Container),
+          ),
+        ),
+      ).color;
       expect(surface('blue'), Colors.blue);
       expect(surface('green'), Colors.green);
       final gesture = await tester.startGesture(

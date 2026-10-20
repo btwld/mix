@@ -252,9 +252,6 @@ semantic label, so do not repeat it on the outer widget. Image calls also accept
 preserve the styled widget's hit area; add padding when a small icon or text
 needs a larger target.
 
-This API is unreleased and absent from Mix 2.2.1. Keep published Snacks on
-`Pressable`/`PressableBox` until a release containing this API lands.
-
 [Dynamic styling guide →](https://www.fluttermix.com/documentation/mix/guides/dynamic-styling)
 
 ### Design Tokens and Theming

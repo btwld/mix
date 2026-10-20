@@ -1,7 +1,7 @@
 # Callable pressable builders
 
-This example uses the Mix source in the parent directory. The callable API is
-unreleased and is not available in Mix 2.2.1. Use Flutter 3.44.0 or newer.
+This example uses the local `mix` package in the parent directory. Requires
+Flutter 3.44.0 or newer.
 
 From this directory:
 

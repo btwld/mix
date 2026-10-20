@@ -127,7 +127,7 @@ class ThemedProfilePage extends StatelessWidget {
 
 ## Dark/Light Toggle
 
-`onDark` responds to the platform brightness in `MediaQuery`, so this example keeps the toggle local by overriding `platformBrightness`. The callable builder examples below require the unreleased API; use `PressableBox(style: buttonStyle, ...)` with published versions that do not expose `.pressable()`.
+`onDark` responds to the platform brightness in `MediaQuery`, so this example keeps the toggle local by overriding `platformBrightness`.
 
 ```dart
 import 'package:flutter/material.dart';
@@ -178,6 +178,7 @@ class _ThemeToggleState extends State<ThemeToggle> {
     );
   }
 }
+```
 
 ## Pressable Button
 

@@ -14,6 +14,16 @@ const _builders = [
   'PressableChildrenBuilder',
 ];
 
+const _generatedSpecs = [
+  'Box',
+  'Text',
+  'Icon',
+  'Image',
+  'FlexBox',
+  'StackBox',
+  'WrapBox',
+];
+
 void main() {
   final mixRoot =
       [
@@ -31,16 +41,8 @@ void main() {
     expectedErrors[lines.length] = code;
   }
 
-  for (final styler in [
-    'BoxStyler',
-    'TextStyler',
-    'IconStyler',
-    'ImageStyler',
-    'FlexBoxStyler',
-    'StackBoxStyler',
-    'WrapBoxStyler',
-    'GridBoxStyler',
-  ]) {
+  for (final spec in [..._generatedSpecs, 'GridBox']) {
+    final styler = '${spec}Styler';
     final variable = styler[0].toLowerCase() + styler.substring(1);
     lines.add('final $variable = $styler().pressable();');
     negative('$variable.pressable();', 'undefined_method');
@@ -167,25 +169,16 @@ void main() {
   test(
     'checked-in generation applies each private hook and exports builders',
     () async {
-      const hooks = <String, String>{
-        'box': 'Box',
-        'text': 'Text',
-        'icon': 'Icon',
-        'image': 'Image',
-        'flexbox': 'FlexBox',
-        'stackbox': 'StackBox',
-        'wrapbox': 'WrapBox',
-      };
-      for (final entry in hooks.entries) {
-        final path =
-            '$mixRoot/lib/src/specs/${entry.key}/${entry.key}_spec.dart';
+      for (final spec in _generatedSpecs) {
+        final slug = spec.toLowerCase();
+        final path = '$mixRoot/lib/src/specs/$slug/${slug}_spec.dart';
         final source = File(path).readAsStringSync();
-        final hook = '_${entry.value}StylerPressableMixin';
+        final hook = '_${spec}StylerPressableMixin';
         expect(source, contains('extraStylerMixins: [$hook]'));
         final generated = File(
           path.replaceFirst('.dart', '.g.dart'),
         ).readAsStringSync();
-        expect(generated, contains('$hook<${entry.value}Styler>'));
+        expect(generated, contains('$hook<${spec}Styler>'));
       }
       expect(
         File('$mixRoot/lib/mix.dart').readAsStringSync(),

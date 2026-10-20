@@ -53,9 +53,6 @@ support a second `.pressable()`. Reuse a builder for independent calls, and
 provide callbacks, focus nodes, and controllers per call. Use direct
 `Pressable` when defining an interaction boundary around an arbitrary widget
 tree. Preserve nested controls' own focus and semantics with either API.
-The callable builder API is only available in the unreleased revision that
-introduces it; published dependency examples should retain direct
-`Pressable`/`PressableBox` forms until that release.
 
 ## The Top-Level Rule
 

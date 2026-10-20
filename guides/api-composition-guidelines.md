@@ -117,10 +117,7 @@ at that boundary. Assign the builder to a variable rather than chaining
 widget. The builder can be reused with different children and
 callbacks. Use the direct `Pressable` widget to define an interaction boundary
 around an arbitrary widget tree. Preserve nested controls' own focus and
-semantics with either API. Callable builders are part of the
-unreleased revision that adds this API; examples that run against the
-published package should continue using `Pressable` and `PressableBox` until a
-release containing the builders.
+semantics with either API.
 
 ---
 
