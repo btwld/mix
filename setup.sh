@@ -15,17 +15,15 @@ as_root() {
   fi
 }
 
+ensure_symlink() {
+  if [ "$(readlink "$2" 2>/dev/null || true)" != "$1" ]; then
+    as_root ln -sf "$1" "$2"
+    log "Created symlink: $2 -> $1"
+  fi
+}
+
 is_remote_env() {
-  [ "${CLAUDE_CODE_REMOTE:-}" = "true" ] ||
-    [ "${CURSOR_CLOUD_ENV:-}" = "true" ] ||
-    [ -n "${CURSOR_AGENT:-}" ] ||
-    [ "${CODESPACES:-}" = "true" ] ||
-    [ "${REMOTE_CONTAINERS:-}" = "true" ] ||
-    [ -n "${CODEX_ENV_PYTHON_VERSION:-}" ] ||
-    [ "${CI:-}" = "true" ] ||
-    [ "${REMOTE_ENV:-}" = "true" ] ||
-    [ -f /.dockerenv ] ||
-    [ -f /run/.containerenv ]
+  [ "${CLAUDE_CODE_REMOTE:-}" = "true" ] || [ "${REMOTE_ENV:-}" = "true" ]
 }
 
 # ----------------------------
@@ -36,7 +34,7 @@ if ! is_remote_env; then
        Set REMOTE_ENV=true (or CLAUDE_CODE_REMOTE=true) to override, or use standard Flutter/FVM installation."
 fi
 
-REPO_ROOT="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+REPO_ROOT="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)"
 cd "$REPO_ROOT"
 
 # ----------------------------
@@ -45,30 +43,12 @@ cd "$REPO_ROOT"
 FVM_VERSION="${FVM_VERSION:-4.3.2}"
 FVM_INSTALL_DIR="${FVM_INSTALL_DIR:-$HOME/fvm}"
 FVM_BIN_DIR="$FVM_INSTALL_DIR/bin"
-export FVM_CACHE_PATH="${FVM_CACHE_PATH:-$FVM_INSTALL_DIR}"
-export FVM_USE_GIT_CACHE="${FVM_USE_GIT_CACHE:-false}"
 PUB_CACHE_BIN="${PUB_CACHE:-$HOME/.pub-cache}/bin"
 SYMLINK_DIR="/usr/local/bin"
 
 # ----------------------------
 # Requirements
 # ----------------------------
-if [ "$(uname -s)" = "Linux" ] && have apt-get; then
-  MISSING_PKGS=""
-  have curl  || MISSING_PKGS="$MISSING_PKGS curl ca-certificates"
-  have tar   || MISSING_PKGS="$MISSING_PKGS tar"
-  have git   || MISSING_PKGS="$MISSING_PKGS git"
-  have unzip || MISSING_PKGS="$MISSING_PKGS unzip"
-  have xz    || MISSING_PKGS="$MISSING_PKGS xz-utils"
-  have zip   || MISSING_PKGS="$MISSING_PKGS zip"
-  have bash  || MISSING_PKGS="$MISSING_PKGS bash"
-  if [ -n "$MISSING_PKGS" ]; then
-    log "Installing missing system packages:$MISSING_PKGS"
-    # shellcheck disable=SC2086
-    as_root apt-get update && as_root apt-get install -y --no-install-recommends $MISSING_PKGS
-  fi
-fi
-
 have curl  || die "curl is required"
 have tar   || die "tar is required"
 have git   || die "git is required"
@@ -77,26 +57,27 @@ have xz    || die "xz (xz-utils) is required"
 have zip   || die "zip is required"
 have bash  || die "bash is required for the FVM install script"
 
-git config --global --get-all safe.directory 2>/dev/null | grep -qx '\*' ||
-  git config --global --add safe.directory '*' 2>/dev/null || true
+if ! git config --global --get-all safe.directory 2>/dev/null | grep -qx '\*'; then
+  git config --global --add safe.directory '*'
+fi
 
 # ----------------------------
 # Install FVM
 # ----------------------------
-if [ ! -x "$FVM_BIN_DIR/fvm" ]; then
+CURRENT_FVM_VERSION=""
+if [ -x "$FVM_BIN_DIR/fvm" ]; then
+  CURRENT_FVM_VERSION="$("$FVM_BIN_DIR/fvm" --version 2>/dev/null || true)"
+fi
+
+if [ "$CURRENT_FVM_VERSION" != "$FVM_VERSION" ]; then
   log "Installing FVM ${FVM_VERSION}..."
   curl -fsSL https://fvm.app/install.sh | bash -s "$FVM_VERSION"
 fi
 
-if [ -x "$FVM_BIN_DIR/fvm" ]; then
-  as_root ln -sf "$FVM_BIN_DIR/fvm" "$SYMLINK_DIR/fvm"
-  log "Created symlink: $SYMLINK_DIR/fvm"
-fi
-
-export PATH="$FVM_BIN_DIR:$FVM_CACHE_PATH/default/bin:$PUB_CACHE_BIN:$SYMLINK_DIR:$PATH"
+export PATH="$FVM_BIN_DIR:$FVM_INSTALL_DIR/default/bin:$PUB_CACHE_BIN:$PATH"
 have fvm || die "fvm not found on PATH after install"
 
-fvm config --no-use-git-cache --no-update-check >/dev/null 2>&1 || true
+fvm config --no-use-git-cache --no-update-check
 log "FVM: $(fvm --version)"
 
 # ----------------------------
@@ -104,29 +85,31 @@ log "FVM: $(fvm --version)"
 # ----------------------------
 if [ -f ".fvmrc" ] || [ -f ".fvm/fvm_config.json" ]; then
   log "Installing Flutter SDK..."
-  fvm install --skip-pub-get --fvm-skip-input
+  fvm install
 else
   log "No .fvmrc found; skipping Flutter install"
 fi
 
 if [ -d ".fvm/flutter_sdk/bin" ]; then
-  SDK_VERSION="$(basename "$(cd .fvm/flutter_sdk && pwd -P)")"
-  fvm global "$SDK_VERSION" --fvm-skip-input >/dev/null 2>&1 || true
-  DEFAULT_SDK_BIN="$FVM_CACHE_PATH/default/bin"
-  if [ ! -d "$DEFAULT_SDK_BIN" ]; then
-    DEFAULT_SDK_BIN="$(cd .fvm/flutter_sdk/bin && pwd -P)"
-  fi
+  FLUTTER_SDK_DIR="$(cd .fvm/flutter_sdk && pwd -P)"
+  VERSIONS_DIR="$(cd "$FVM_INSTALL_DIR/versions" && pwd -P)"
+  SDK_VERSION="${FLUTTER_SDK_DIR#"$VERSIONS_DIR"/}"
+  fvm global "$SDK_VERSION"
 
+  DEFAULT_SDK_BIN="$FVM_INSTALL_DIR/default/bin"
   for cmd in flutter dart; do
     if [ -x "$DEFAULT_SDK_BIN/$cmd" ]; then
-      as_root ln -sf "$DEFAULT_SDK_BIN/$cmd" "$SYMLINK_DIR/$cmd"
-      log "Created symlink: $SYMLINK_DIR/$cmd -> $DEFAULT_SDK_BIN/$cmd"
+      ensure_symlink "$DEFAULT_SDK_BIN/$cmd" "$SYMLINK_DIR/$cmd"
     fi
   done
 fi
 
-flutter config --no-analytics >/dev/null 2>&1 || true
-dart --disable-analytics >/dev/null 2>&1 || true
+if [ -x "$FVM_BIN_DIR/fvm" ]; then
+  ensure_symlink "$FVM_BIN_DIR/fvm" "$SYMLINK_DIR/fvm"
+fi
+
+flutter config --no-analytics >/dev/null
+dart --disable-analytics >/dev/null
 log "Flutter: $(flutter --version | head -n 1)"
 
 # ----------------------------
@@ -179,18 +162,19 @@ fi
 # Melos bootstrap
 # ----------------------------
 if [ -f "melos.yaml" ]; then
-  MELOS_VERSION="${MELOS_VERSION:-$(sed -n 's/^[[:space:]]*melos:[[:space:]]*\^*\([0-9][0-9A-Za-z.+_-]*\).*/\1/p' pubspec.yaml 2>/dev/null | head -n 1)}"
-  log "Installing melos ${MELOS_VERSION:-latest} and bootstrapping..."
-  if [ -n "$MELOS_VERSION" ]; then
+  MELOS_VERSION="$(dart run melos --version | head -n 1)"
+  CURRENT_MELOS_VERSION=""
+  if [ -x "$PUB_CACHE_BIN/melos" ]; then
+    CURRENT_MELOS_VERSION="$("$PUB_CACHE_BIN/melos" --version 2>/dev/null | head -n 1 || true)"
+  fi
+  if [ "$CURRENT_MELOS_VERSION" != "$MELOS_VERSION" ]; then
+    log "Installing melos ${MELOS_VERSION}..."
     dart pub global activate melos "$MELOS_VERSION" >/dev/null
-  else
-    dart pub global activate melos >/dev/null
   fi
   if [ -x "$PUB_CACHE_BIN/melos" ]; then
-    as_root ln -sf "$PUB_CACHE_BIN/melos" "$SYMLINK_DIR/melos"
-    log "Created symlink: $SYMLINK_DIR/melos"
+    ensure_symlink "$PUB_CACHE_BIN/melos" "$SYMLINK_DIR/melos"
   fi
-  melos bootstrap
+  dart run melos bootstrap
 elif [ -f "pubspec.yaml" ]; then
   log "Running: flutter pub get"
   flutter pub get

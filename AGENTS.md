@@ -7,10 +7,12 @@ Type-safe styling system for Flutter that separates style semantics from widgets
 If Flutter is not installed or `flutter --version` fails, run the setup script:
 
 ```bash
-bash setup.sh
+REMOTE_ENV=true bash setup.sh
 ```
 
 This installs FVM, Flutter SDK (3.44.0), DCM, and melos, then bootstraps all packages.
+
+**Cursor Cloud:** The environment is pre-built from `.cursor/environment.json`. If `.fvmrc` or `pubspec.yaml` changes on your branch, rerun `REMOTE_ENV=true bash setup.sh`.
 
 ## Structure
 
