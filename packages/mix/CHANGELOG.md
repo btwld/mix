@@ -1,4 +1,4 @@
-## Unreleased
+## 2.3.0
 
 ### New features
 
@@ -6,6 +6,11 @@
   `PressableBox` that uses the style, so `button.pressable(onPress: save,
   child: label('Save'))` replaces `PressableBox(style: button, ...)`. It accepts
   the same parameters and defaults as `PressableBox`.
+- **Focus visibility API:** The new `FocusVisibility` and
+  `FocusVisibilityScope` expose the same signal to widgets that draw their own
+  focus indicators or publish widget states themselves. Call
+  `FocusVisibility.ensureInitialized()` at startup if a pointer press can
+  happen before the first Mix widget builds.
 
 ### Bug fixes
 
@@ -16,11 +21,6 @@
   exception; use `onFocused` for a ring on any focus.
   `FocusHighlightStrategy.alwaysTraditional` and `alwaysTouch` still override
   input.
-- **Focus visibility API:** The new `FocusVisibility` and
-  `FocusVisibilityScope` expose the same signal to widgets that draw their own
-  focus indicators or publish widget states themselves. Call
-  `FocusVisibility.ensureInitialized()` at startup if a pointer press can
-  happen before the first Mix widget builds.
 
 ## 2.2.2
 
