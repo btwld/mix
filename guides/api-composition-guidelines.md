@@ -107,11 +107,14 @@ final save = BoxStyler()
     .padding(.all(16))
     .onPressed(.scale(0.96))
     .pressable();
-save(onPress: submit, child: const StyledText('Save'));
+final saveLabel = TextStyler().fontWeight(.w600);
+save(onPress: submit, child: saveLabel('Save'));
 ```
 
 `.pressable()` returns an immutable callable builder, so style composition ends
-at that boundary. The builder can be reused with different children and
+at that boundary. Assign the builder to a variable rather than chaining
+`.pressable()(...)`, then call it to build a `Pressable` wrapping the styled
+widget. The builder can be reused with different children and
 callbacks. Use the direct `Pressable` widget to define an interaction boundary
 around an arbitrary widget tree. Preserve nested controls' own focus and
 semantics with either API. Callable builders are part of the

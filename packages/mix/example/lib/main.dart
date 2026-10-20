@@ -8,25 +8,25 @@ class PressableBuilderExample extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final column = FlexBoxStyler().direction(.vertical).spacing(16);
+    final heading = TextStyler().fontSize(22).fontWeight(.bold);
+    final textAction = TextStyler().color(Colors.blue).pressable();
     final button = BoxStyler()
         .padding(.symmetric(vertical: 12, horizontal: 20))
         .borderRadius(.circular(12))
         .color(Colors.blue)
         .onPressed(.color(Colors.indigo))
         .pressable();
-
-    final heading = TextStyler().fontSize(22).fontWeight(.bold);
-    final textAction = TextStyler().color(Colors.blue).pressable();
+    final buttonLabel = TextStyler().color(Colors.white).fontWeight(.w600);
 
     return MaterialApp(
       home: Scaffold(
         body: Center(
-          child: FlexBox(
-            style: FlexBoxStyler().direction(.vertical).spacing(16),
+          child: column(
             children: [
               heading('Callable pressable builders'),
               textAction('Open settings', onPress: () {}),
-              button(onPress: () {}, child: const StyledText('Save')),
+              button(onPress: () {}, child: buttonLabel('Save')),
             ],
           ),
         ),

@@ -83,10 +83,19 @@ void main() {
   }
 
   test('native content parameters and defaults are retained', () {
-    expect((BoxStyler().pressable()().child as Box).child, isNull);
-    final text = TextStyler().pressable()('Settings').child as StyledText;
+    final boxBuilder = BoxStyler().pressable();
+    final textBuilder = TextStyler().pressable();
+    final iconBuilder = IconStyler().pressable();
+    final imageBuilder = ImageStyler().pressable();
+    final flexBuilder = FlexBoxStyler().pressable();
+    final stackBuilder = StackBoxStyler().pressable();
+    final wrapBuilder = WrapBoxStyler().pressable();
+    final gridBuilder = GridBoxStyler().pressable();
+
+    expect((boxBuilder().child as Box).child, isNull);
+    final text = textBuilder('Settings').child as StyledText;
     expect(text.text, 'Settings');
-    final icon = IconStyler().pressable()(
+    final icon = iconBuilder(
       icon: Icons.star,
       semanticLabel: 'Star',
       semanticsLabel: 'Favorite',
@@ -114,15 +123,13 @@ void main() {
       StackTrace? stackTrace,
     ) => const SizedBox();
     final image =
-        ImageStyler()
-                .pressable()(
-                  image: provider,
-                  opacity: opacity,
-                  frameBuilder: frameBuilder,
-                  loadingBuilder: loadingBuilder,
-                  errorBuilder: errorBuilder,
-                )
-                .child
+        imageBuilder(
+              image: provider,
+              opacity: opacity,
+              frameBuilder: frameBuilder,
+              loadingBuilder: loadingBuilder,
+              errorBuilder: errorBuilder,
+            ).child
             as StyledImage;
     expect(image.image, same(provider));
     expect(image.opacity, same(opacity));
@@ -132,32 +139,25 @@ void main() {
 
     final children = <Widget>[const Text('First'), const Text('Second')];
     expect(
-      (FlexBoxStyler().pressable()(children: children).child as FlexBox)
-          .children,
+      (flexBuilder(children: children).child as FlexBox).children,
       same(children),
     );
     expect(
-      (StackBoxStyler().pressable()(children: children).child as StackBox)
-          .children,
+      (stackBuilder(children: children).child as StackBox).children,
       same(children),
     );
     expect(
-      (WrapBoxStyler().pressable()(children: children).child as WrapBox)
-          .children,
+      (wrapBuilder(children: children).child as WrapBox).children,
       same(children),
     );
     expect(
-      (GridBoxStyler().pressable()(children: children).child as GridBox)
-          .children,
+      (gridBuilder(children: children).child as GridBox).children,
       same(children),
     );
-    expect((FlexBoxStyler().pressable()().child as FlexBox).children, isEmpty);
-    expect(
-      (StackBoxStyler().pressable()().child as StackBox).children,
-      isEmpty,
-    );
-    expect((WrapBoxStyler().pressable()().child as WrapBox).children, isEmpty);
-    expect((GridBoxStyler().pressable()().child as GridBox).children, isEmpty);
+    expect((flexBuilder().child as FlexBox).children, isEmpty);
+    expect((stackBuilder().child as StackBox).children, isEmpty);
+    expect((wrapBuilder().child as WrapBox).children, isEmpty);
+    expect((gridBuilder().child as GridBox).children, isEmpty);
   });
 }
 

@@ -14,18 +14,27 @@ void main() {
     final gridStyle = GridBoxStyler();
 
     const child = SizedBox();
-    final box = boxStyle.pressable()(child: child);
-    final text = textStyle.pressable()('Title');
-    final icon = iconStyle.pressable()(
+    final boxBuilder = boxStyle.pressable();
+    final textBuilder = textStyle.pressable();
+    final iconBuilder = iconStyle.pressable();
+    final imageBuilder = imageStyle.pressable();
+    final flexBuilder = flexStyle.pressable();
+    final stackBuilder = stackStyle.pressable();
+    final wrapBuilder = wrapStyle.pressable();
+    final gridBuilder = gridStyle.pressable();
+
+    final box = boxBuilder(child: child);
+    final text = textBuilder('Title');
+    final icon = iconBuilder(
       icon: Icons.star,
       semanticLabel: 'star',
       semanticsLabel: 'Activate star',
     );
-    final image = imageStyle.pressable()(image: const AssetImage('photo.png'));
-    final flex = flexStyle.pressable()(children: const []);
-    final stack = stackStyle.pressable()(children: const []);
-    final wrap = wrapStyle.pressable()(children: const []);
-    final grid = gridStyle.pressable()(children: const []);
+    final image = imageBuilder(image: const AssetImage('photo.png'));
+    final flex = flexBuilder(children: const []);
+    final stack = stackBuilder(children: const []);
+    final wrap = wrapBuilder(children: const []);
+    final grid = gridBuilder(children: const []);
 
     expect((box.child as Box).style, same(boxStyle));
     expect((box.child as Box).child, same(child));

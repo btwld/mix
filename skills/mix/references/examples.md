@@ -145,7 +145,7 @@ class _ThemeToggleState extends State<ThemeToggle> {
 
   @override
   Widget build(BuildContext context) {
-    final buttonStyle = BoxStyler()
+    final button = BoxStyler()
         .height(60)
         .width(60)
         .borderRadius(.circular(30))
@@ -157,9 +157,10 @@ class _ThemeToggleState extends State<ThemeToggle> {
           ).offset(x: 0, y: 4).blurRadius(10),
         )
         .onDark(.color(Colors.grey.shade800))
-        .animate(.easeInOut(600.ms));
+        .animate(.easeInOut(600.ms))
+        .pressable();
 
-    final iconStyle = IconStyler()
+    final icon = IconStyler()
         .color(Colors.grey.shade800)
         .size(28)
         .icon(Icons.dark_mode)
@@ -170,20 +171,20 @@ class _ThemeToggleState extends State<ThemeToggle> {
       data: MediaQuery.of(context).copyWith(
         platformBrightness: isDark ? Brightness.dark : Brightness.light,
       ),
-      child: buttonStyle.pressable()(
+      child: button(
         onPress: () => setState(() => isDark = !isDark),
-        child: StyledIcon(style: iconStyle),
+        child: icon(),
       ),
     );
   }
 }
-```
 
 ## Pressable Button
 
-Compose the surface style first, then finish with `.pressable()` when the
-styled widget owns the interaction. Widget-state variants such as `onHovered`
-and `onPressed` resolve inside the returned `Pressable`.
+Compose the surface style first, finish with `.pressable()`, and assign the
+callable builder to a variable when the styled widget owns the interaction.
+Calling the builder returns a `Pressable` widget, and widget-state variants
+such as `onHovered` and `onPressed` resolve inside it.
 
 ```dart
 import 'package:flutter/material.dart';
@@ -201,7 +202,7 @@ class PrimaryActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final buttonStyle = BoxStyler()
+    final button = BoxStyler()
         .color(Colors.blue)
         .padding(.horizontal(24))
         .padding(.vertical(12))
@@ -209,17 +210,17 @@ class PrimaryActionButton extends StatelessWidget {
         .alignment(Alignment.center)
         .onHovered(.color(Colors.blue.shade700).translate(0, -1))
         .onPressed(.color(Colors.blue.shade900).scale(0.98))
-        .animate(.easeInOut(150.ms));
+        .animate(.easeInOut(150.ms))
+        .pressable();
 
-    final labelStyle = TextStyler()
+    final buttonLabel = TextStyler()
         .color(Colors.white)
         .fontSize(16)
         .fontWeight(FontWeight.w700);
 
-    final button = buttonStyle.pressable();
     return button(
       onPress: onPressed,
-      child: StyledText(label, style: labelStyle),
+      child: buttonLabel(label),
     );
   }
 }

@@ -82,13 +82,11 @@ void main() {
     final controller = WidgetStatesController();
     addTearDown(controller.dispose);
     var presses = 0;
+    final button = BoxStyler().size(100, 60).pressable();
     await tester.pumpWidget(
       MaterialApp(
         home: Center(
-          child: BoxStyler().size(100, 60).pressable()(
-            controller: controller,
-            onPress: () => presses++,
-          ),
+          child: button(controller: controller, onPress: () => presses++),
         ),
       ),
     );
@@ -160,6 +158,7 @@ void main() {
       'builder preserves external ${isSwitch ? 'switch' : 'checkbox'} semantics',
       (tester) async {
         var presses = 0;
+        final control = BoxStyler().size(100, 60).pressable();
         await tester.pumpWidget(
           MaterialApp(
             home: Center(
@@ -170,7 +169,7 @@ void main() {
                 checked: isSwitch ? null : true,
                 toggled: isSwitch ? true : null,
                 onTap: () => presses++,
-                child: BoxStyler().size(100, 60).pressable()(
+                child: control(
                   excludeFromSemantics: true,
                   onPress: () => presses++,
                 ),
@@ -300,10 +299,11 @@ void main() {
       addTearDown(node.dispose);
       addTearDown(controller.dispose);
       var presses = 0;
+      final textAction = TextStyler().pressable();
       await tester.pumpWidget(
         MaterialApp(
           home: Center(
-            child: TextStyler().pressable()(
+            child: textAction(
               'Settings',
               onPress: () => presses++,
               semanticsRole: role,

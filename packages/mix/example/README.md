@@ -16,15 +16,15 @@ To verify the web build without launching a browser:
 flutter build web
 ```
 
-The example composes styles before `.pressable()`, then passes content and
-callbacks to the reusable builder. Press and hold Save to see its pressed color;
-Tab to the controls and use Enter or Space to activate them. The callbacks are
-empty demonstration actions. The surrounding FlexBox and heading are ordinary
-styled widgets.
+The example composes styles before `.pressable()`, assigns each callable to a
+variable, and calls it to build the widget. Press and hold Save to see its
+pressed color; Tab to the controls and use Enter or Space to activate them.
+The callbacks are empty demonstration actions. `column`, `heading`, and
+`buttonLabel` are ordinary callable stylers.
 
 Visible button text supplies its accessible label. Add `semanticsLabel` when
 the content does not supply one; repeating the same label makes it spoken twice.
 
-For all eight supported stylers, native Icon/Image arguments, reuse and release
-migration guidance, see the Mix README and
-[`pressable-builders-release-audit.md`](../../../guides/pressable-builders-release-audit.md).
+For all eight supported stylers, native Icon/Image arguments, and builder reuse,
+see the [Mix README](../README.md) and
+[`api-composition-guidelines.md`](../../../guides/api-composition-guidelines.md).

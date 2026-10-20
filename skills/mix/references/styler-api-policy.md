@@ -19,23 +19,29 @@ Requires Dart SDK >=3.12.0 and Flutter >=3.44.0.
 ## Terminal Pressable Builders
 
 When a Mix styler owns the interactive surface, compose its appearance first,
-then call `.pressable()` with no arguments. The returned immutable builder is
-callable and accepts the content plus the full `Pressable` interaction surface:
+finish with `.pressable()`, and assign the returned callable builder to a
+variable. Calling that builder returns a `Pressable` widget with the content
+and the full `Pressable` interaction surface. Avoid immediate double invocation
+(`.pressable()(...)`):
 
 ```dart
 final save = BoxStyler()
     .padding(.all(16))
     .onPressed(.scale(0.96))
     .pressable();
+final saveLabel = TextStyler().fontWeight(.w600);
+final settings = TextStyler().fontSize(18).pressable();
+final favorite = IconStyler().size(24).pressable();
+final photo = ImageStyler().fit(.cover).pressable();
 
-save(onPress: submit, child: const StyledText('Save'));
-TextStyler().fontSize(18).pressable()('Settings', onPress: openSettings);
-IconStyler().size(24).pressable()(
+save(onPress: submit, child: saveLabel('Save'));
+settings('Settings', onPress: openSettings);
+favorite(
   icon: Icons.star,
   semanticLabel: 'Favorite',
   onPress: toggleFavorite,
 );
-ImageStyler().fit(.cover).pressable()(
+photo(
   image: provider,
   semanticsLabel: 'Open photo',
   onPress: openPhoto,

@@ -201,44 +201,49 @@ final buttonStyle = BoxStyler()
 
 Built-in variants include `onHovered`, `onPressed`, `onFocused`, `onDisabled`, `onDark`, `onLight`, `onBreakpoint`, `onMobile`, `onTablet`, `onDesktop`, and platform/context variants.
 
-Finish a composed style with `.pressable()`, then call the returned builder to
-create interactive widgets:
+Finish a composed style with `.pressable()`, assign the callable builder to a
+variable, and call it to create interactive widgets:
 
 ```dart
 final button = buttonStyle.pressable();
-final saveButton = button(
-  onPress: save,
-  child: const StyledText('Save'),
-);
-final undoButton = button(onPress: undo, child: const StyledText('Undo'));
+final label = TextStyler().color(Colors.white).fontWeight(.w600);
+final saveButton = button(onPress: save, child: label('Save'));
+final undoButton = button(onPress: undo, child: label('Undo'));
 
-final settings = TextStyler().fontSize(18).pressable()(
-  'Open settings',
-  onPress: openSettings,
-);
-final settingsRow = FlexBoxStyler().direction(.horizontal).pressable()(
+final settingsAction = TextStyler().fontSize(18).pressable();
+final settings = settingsAction('Open settings', onPress: openSettings);
+
+final rowAction = FlexBoxStyler().direction(.horizontal).spacing(8).pressable();
+final rowIcon = IconStyler().size(20);
+final rowLabel = TextStyler().fontSize(16);
+final settingsRow = rowAction(
   onPress: openSettings,
   children: [
-    const StyledIcon(icon: Icons.settings),
-    const StyledText('Settings'),
+    rowIcon(icon: Icons.settings),
+    rowLabel('Settings'),
   ],
 );
-final favorite = IconStyler().size(24).pressable()(
+
+final favoriteAction = IconStyler().size(24).pressable();
+final favorite = favoriteAction(
   icon: Icons.star,
   semanticLabel: 'Favorite',
   onPress: toggleFavorite,
 );
-final photo = ImageStyler().fit(.cover).pressable()(
+
+final photoAction = ImageStyler().fit(.cover).pressable();
+final photo = photoAction(
   image: const AssetImage('assets/photo.png'),
   semanticsLabel: 'Open photo',
   onPress: openPhoto,
 );
 ```
 
-The builder is the terminal step in the styling chain and returns a `Pressable`
-whose child is the corresponding styled widget. Box, text, icon, image, and
-the FlexBox, StackBox, WrapBox, and GridBox layout stylers are supported. Every
-call accepts the same interaction, keyboard, focus, semantics, controller, and
+`.pressable()` is the terminal step in the styling chain. Assign the builder to a
+variable rather than chaining `.pressable()(...)`, then call it to build a
+`Pressable` wrapping the styled widget. Box, text, icon, image, and the
+FlexBox, StackBox, WrapBox, and GridBox layout stylers are supported. Every call
+accepts the same interaction, keyboard, focus, semantics, controller, and
 enabled options as `Pressable`. Builders are reusable; callbacks and state are
 provided per call. Icon calls retain `semanticLabel` for the icon; the separate
 `semanticsLabel` labels the outer Pressable. Visible text already supplies a

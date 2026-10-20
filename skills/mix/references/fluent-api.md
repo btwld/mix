@@ -222,36 +222,43 @@ See also [`styler-api-policy.md`](styler-api-policy.md) for top-level factory an
 
 Use `Pressable` for arbitrary widget trees, and finish a Mix style with
 `.pressable()` when the styled widget owns the interactive surface. The
-callable builder is terminal: compose the style first, then provide content and
-interaction options when calling it.
+callable builder is terminal: compose the style first, assign the builder to a
+variable, and call it to construct the `Pressable` widget. Avoid immediate
+double invocation (`.pressable()(...)`).
 
 ```dart
 final save = BoxStyler()
     .padding(.all(16))
     .onPressed(.scale(0.96))
     .pressable();
+final saveLabel = TextStyler().fontWeight(.w600);
+final settings = TextStyler().fontSize(18).pressable();
+final settingsRow = FlexBoxStyler().direction(.horizontal).spacing(8).pressable();
+final rowIcon = IconStyler().size(20);
+final rowLabel = TextStyler().fontSize(16);
 
-save(onPress: submit, child: const StyledText('Save'));
-TextStyler().fontSize(18).pressable()('Settings', onPress: openSettings);
-FlexBoxStyler().direction(.horizontal).pressable()(
-  children: [const StyledIcon(icon: Icons.settings), const StyledText('Settings')],
+save(onPress: submit, child: saveLabel('Save'));
+settings('Settings', onPress: openSettings);
+settingsRow(
+  children: [rowIcon(icon: Icons.settings), rowLabel('Settings')],
   onPress: openSettings,
 );
 ```
 
 Callable builders support `Box`, `Text`, `Icon`, `Image`, `FlexBox`,
-`StackBox`, `WrapBox`, and `GridBox` stylers. They return `Pressable`, preserve
-the receiver style without early resolution, and accept the complete
-`Pressable` interaction, focus, semantics, controller, and enabled surface.
-Builders are reusable; callbacks and controllers are supplied per call. The key
-belongs to the outer Pressable only. Preserve hit areas when converting Icon
-or Text surfaces; these builders do not automatically add padding. When an
-outer Semantics owns a checkbox/switch role, retain `excludeFromSemantics: true`
-on the inner builder call. Visible text already supplies its semantic label;
-do not repeat it in the outer `semanticsLabel`. Icon calls retain the native
-`semanticLabel` for the icon and `semanticsLabel` for the outer Pressable.
-Keep published examples on direct `Pressable`/`PressableBox` until the dependency
-release that contains callable builders.
+`StackBox`, `WrapBox`, and `GridBox` stylers. Calling a builder returns a
+`Pressable` wrapping the styled widget, preserves the receiver style without
+early resolution, and accepts the complete `Pressable` interaction, focus,
+semantics, controller, and enabled surface. Builders are reusable; callbacks
+and controllers are supplied per call. The key belongs to the outer Pressable
+only. Preserve hit areas when converting Icon or Text surfaces; these builders
+do not automatically add padding. When an outer Semantics owns a
+checkbox/switch role, retain `excludeFromSemantics: true` on the inner builder
+call. Visible text already supplies its semantic label; do not repeat it in the
+outer `semanticsLabel`. Icon calls retain the native `semanticLabel` for the
+icon and `semanticsLabel` for the outer Pressable. Keep published examples on
+direct `Pressable`/`PressableBox` until the dependency release that contains
+callable builders.
 
 ### Pressable
 
@@ -312,9 +319,12 @@ Use `merge()` for combining reusable style fragments; see [`styler-api-policy.md
 
 ## Callable Stylers
 
-Widget-backed generated Stylers support `call()` for inline widget creation. This includes `BoxStyler`, `TextStyler`, `IconStyler`, `ImageStyler`, `FlexBoxStyler`, `WrapBoxStyler`, and `StackBoxStyler`; layout-only stylers such as `FlexStyler`, `WrapStyler`, and `StackStyler` do not create widgets directly. `GridBoxStyler` is handwritten; construct `GridBox(style: ..., children: ...)` for ordinary output, or use its `.pressable()` terminal builder for an interactive grid. Use `.pressable()` after composing any of the eight widget-backed stylers when the result should be interactive.
+Widget-backed generated Stylers support `call()` for inline widget creation. This includes `BoxStyler`, `TextStyler`, `IconStyler`, `ImageStyler`, `FlexBoxStyler`, `WrapBoxStyler`, and `StackBoxStyler`; layout-only stylers such as `FlexStyler`, `WrapStyler`, and `StackStyler` do not create widgets directly. `GridBoxStyler` is handwritten; construct `GridBox(style: ..., children: ...)` for ordinary output, or use its `.pressable()` terminal builder for an interactive grid. Assign the styler or its `.pressable()` builder to a variable and invoke that variable as a callable to return the widget, rather than chaining `()()` directly on the expression:
 
 ```dart
-BoxStyler().color(Colors.blue).padding(.all(16))(child: Text('Hello'))
-// Equivalent to: Box(style: BoxStyler()..., child: Text('Hello'))
+final card = BoxStyler().color(Colors.blue).padding(.all(16));
+final label = TextStyler().color(Colors.white);
+
+card(child: label('Hello'))
+// Equivalent to: Box(style: card, child: StyledText('Hello', style: label))
 ```

@@ -52,7 +52,11 @@ void main() {
     );
     lines.add('$variable($positional);');
     // Preserve ordinary styler calls. GridBoxStyler intentionally has no call().
-    if (styler != 'GridBoxStyler') lines.add('$styler()($positional);');
+    if (styler != 'GridBoxStyler') {
+      final styleVar = '${variable}Style';
+      lines.add('final $styleVar = $styler();');
+      lines.add('$styleVar($positional);');
+    }
   }
   for (final styler in ['FlexStyler', 'StackStyler', 'WrapStyler']) {
     negative('$styler().pressable();', 'undefined_method');
