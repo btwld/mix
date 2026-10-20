@@ -212,7 +212,7 @@ final saveButton = buttonStyle.pressable(
 );
 ```
 
-`pressable(...)` forwards all `PressableBox` interaction, focus, and semantics options with identical defaults while keeping `buttonStyle` reusable.
+It takes the same parameters as `PressableBox`.
 
 [Dynamic styling guide →](https://www.fluttermix.com/documentation/mix/guides/dynamic-styling)
 

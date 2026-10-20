@@ -231,7 +231,7 @@ final label = TextStyler().fontWeight(.w600);
 button.pressable(onPress: submit, child: label('Save'));
 ```
 
-`BoxStyler.pressable(...)` returns `PressableBox(style: this, ...)` directly and forwards every `PressableBox` parameter with identical defaults, leaving `button` reusable across calls.
+`button.pressable(...)` is shorthand for `PressableBox(style: button, ...)` and takes the same parameters.
 
 ### Pressable
 

@@ -111,7 +111,7 @@ final label = TextStyler().fontWeight(.w600);
 button.pressable(onPress: submit, child: label('Save'));
 ```
 
-`BoxStyler.pressable(...)` returns a `PressableBox(style: this, ...)` with all `PressableBox` interaction, focus, and semantics options while keeping `button` reusable. Use `Pressable` directly when wrapping a non-`Box` widget or an arbitrary widget tree.
+`button.pressable(...)` is shorthand for `PressableBox(style: button, ...)` and takes the same parameters. Use `Pressable` directly to make a non-`Box` widget interactive.
 
 ---
 

@@ -5,7 +5,6 @@ Rules for static factory constructors on Styler classes and Dart 3.12+ dot-short
 ## Table of Contents
 
 - [Top-level rule](#the-top-level-rule)
-- [Interactive BoxStyler.pressable](#interactive-boxstylerpressable)
 - [Nested shorthand](#nested-shorthand-rule)
 - [Enum shorthand](#dot-shorthand-for-enumconstant-arguments)
 - [Factory constructors](#factory-constructors-by-styler)
@@ -15,21 +14,6 @@ Rules for static factory constructors on Styler classes and Dart 3.12+ dot-short
 - [Composition](#composition-decision-tree)
 
 Requires Dart SDK >=3.12.0 and Flutter >=3.44.0.
-
-## Interactive BoxStyler.pressable
-
-When a `BoxStyler` owns an interactive surface, call `.pressable(...)` to construct a `PressableBox(style: this, ...)` with all `PressableBox` parameters and defaults while keeping the style reusable:
-
-```dart
-final button = BoxStyler()
-    .padding(.all(16))
-    .onPressed(.scale(0.96));
-final label = TextStyler().fontWeight(.w600);
-
-button.pressable(onPress: submit, child: label('Save'));
-```
-
-Use `Pressable` directly when wrapping a non-`Box` widget or an arbitrary widget tree.
 
 ## The Top-Level Rule
 

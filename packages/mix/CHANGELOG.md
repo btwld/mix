@@ -2,7 +2,10 @@
 
 ### New features
 
-- **BoxStyler.pressable:** Added `BoxStyler.pressable(...)` to construct a `PressableBox` directly from a composed `BoxStyler`.
+- **Pressable boxes from stylers:** `BoxStyler.pressable(...)` returns a
+  `PressableBox` that uses the style, so `button.pressable(onPress: save,
+  child: label('Save'))` replaces `PressableBox(style: button, ...)`. It accepts
+  the same parameters and defaults as `PressableBox`.
 
 ### Bug fixes
 
