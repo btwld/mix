@@ -101,7 +101,17 @@ final interactiveCard = BoxStyler().wrap(
       .mouseCursor(SystemMouseCursors.click)
       .clipRRect(borderRadius: BorderRadiusMix.circular(12)),
 );
+
+// Interactive box from a composed BoxStyler
+final button = BoxStyler()
+    .padding(.all(16))
+    .onPressed(.scale(0.96));
+final label = TextStyler().fontWeight(.w600);
+
+button.pressable(onPress: submit, child: label('Save'));
 ```
+
+`button.pressable(...)` is shorthand for `PressableBox(style: button, ...)` and takes the same parameters. Use `Pressable` directly to make a non-`Box` widget interactive.
 
 ---
 

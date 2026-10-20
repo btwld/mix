@@ -201,6 +201,19 @@ final buttonStyle = BoxStyler()
 
 Built-in variants include `onHovered`, `onPressed`, `onFocused`, `onDisabled`, `onDark`, `onLight`, `onBreakpoint`, `onMobile`, `onTablet`, `onDesktop`, and platform/context variants.
 
+Create an interactive `PressableBox` directly from a `BoxStyler` with `.pressable(...)`:
+
+```dart
+final label = TextStyler().color(Colors.white).fontWeight(.w600);
+
+final saveButton = buttonStyle.pressable(
+  onPress: save,
+  child: label('Save'),
+);
+```
+
+It takes the same parameters as `PressableBox`.
+
 [Dynamic styling guide →](https://www.fluttermix.com/documentation/mix/guides/dynamic-styling)
 
 ### Design Tokens and Theming

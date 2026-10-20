@@ -68,7 +68,7 @@ Resolution pipeline: `StyleWidget` → `StyleBuilder` → merge active variants 
 | `IconStyler` | `IconSpec` | `StyledIcon` | `Icon` |
 | `ImageStyler` | `ImageSpec` | `StyledImage` | `Image` |
 
-Interactive: `Pressable` (gesture + focus + mouse), `PressableBox` (Pressable + Box).
+Interactive: `Pressable` (gesture + focus + mouse), `PressableBox` (Pressable + Box, also constructed via `BoxStyler.pressable(...)`).
 
 `GridBox` is a Mix-owned layout primitive, but unlike `FlexBox`, `WrapBox`, and `StackBox`, it does not include outer `Box` decoration or padding. Compose it inside `Box` when the grid itself needs chrome.
 

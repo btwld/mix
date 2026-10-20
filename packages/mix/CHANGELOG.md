@@ -1,5 +1,12 @@
 ## Unreleased
 
+### New features
+
+- **Pressable boxes from stylers:** `BoxStyler.pressable(...)` returns a
+  `PressableBox` that uses the style, so `button.pressable(onPress: save,
+  child: label('Save'))` replaces `PressableBox(style: button, ...)`. It accepts
+  the same parameters and defaults as `PressableBox`.
+
 ### Bug fixes
 
 - **Focus visible:** `onFocusVisible` hides focus indicators after a pointer
