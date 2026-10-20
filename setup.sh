@@ -31,7 +31,7 @@ is_remote_env() {
 # ----------------------------
 if ! is_remote_env; then
   die "This setup script is intended for remote/cloud agent environments only.
-       Set REMOTE_ENV=true (or CLAUDE_CODE_REMOTE=true) to override, or use standard Flutter/FVM installation."
+       On a local machine, run 'fvm install' instead (never pass REMOTE_ENV=true locally)."
 fi
 
 REPO_ROOT="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)"
@@ -74,7 +74,7 @@ if [ "$CURRENT_FVM_VERSION" != "$FVM_VERSION" ]; then
   curl -fsSL https://fvm.app/install.sh | bash -s "$FVM_VERSION"
 fi
 
-export PATH="$FVM_BIN_DIR:$FVM_INSTALL_DIR/default/bin:$PUB_CACHE_BIN:$PATH"
+export PATH="$FVM_BIN_DIR:${FVM_CACHE_PATH:-$FVM_INSTALL_DIR}/default/bin:$PUB_CACHE_BIN:$PATH"
 have fvm || die "fvm not found on PATH after install"
 
 fvm config --no-use-git-cache --no-update-check
@@ -91,15 +91,14 @@ else
 fi
 
 if [ -d ".fvm/flutter_sdk/bin" ]; then
-  FLUTTER_SDK_DIR="$(cd .fvm/flutter_sdk && pwd -P)"
-  VERSIONS_DIR="$(cd "$FVM_INSTALL_DIR/versions" && pwd -P)"
-  SDK_VERSION="${FLUTTER_SDK_DIR#"$VERSIONS_DIR"/}"
+  SDK_VERSION="$(fvm api project | sed -n 's/.*"flutter":[[:space:]]*"\([^"]*\)".*/\1/p')"
+  [ -n "$SDK_VERSION" ] || die "Could not determine Flutter version from FVM project config"
   fvm global "$SDK_VERSION"
 
-  DEFAULT_SDK_BIN="$FVM_INSTALL_DIR/default/bin"
+  FLUTTER_SDK_BIN="$(cd .fvm/flutter_sdk/bin && pwd -P)"
   for cmd in flutter dart; do
-    if [ -x "$DEFAULT_SDK_BIN/$cmd" ]; then
-      ensure_symlink "$DEFAULT_SDK_BIN/$cmd" "$SYMLINK_DIR/$cmd"
+    if [ -x "$FLUTTER_SDK_BIN/$cmd" ]; then
+      ensure_symlink "$FLUTTER_SDK_BIN/$cmd" "$SYMLINK_DIR/$cmd"
     fi
   done
 fi
@@ -162,7 +161,8 @@ fi
 # Melos bootstrap
 # ----------------------------
 if [ -f "melos.yaml" ]; then
-  MELOS_VERSION="$(dart run melos --version | head -n 1)"
+  MELOS_VERSION="$(sed -n 's/^[[:space:]]*melos:[[:space:]]*\^*\([^[:space:]]*\).*/\1/p' pubspec.yaml)"
+  [ -n "$MELOS_VERSION" ] || die "Could not determine melos version from pubspec.yaml"
   CURRENT_MELOS_VERSION=""
   if [ -x "$PUB_CACHE_BIN/melos" ]; then
     CURRENT_MELOS_VERSION="$("$PUB_CACHE_BIN/melos" --version 2>/dev/null | head -n 1 || true)"
@@ -171,10 +171,8 @@ if [ -f "melos.yaml" ]; then
     log "Installing melos ${MELOS_VERSION}..."
     dart pub global activate melos "$MELOS_VERSION" >/dev/null
   fi
-  if [ -x "$PUB_CACHE_BIN/melos" ]; then
-    ensure_symlink "$PUB_CACHE_BIN/melos" "$SYMLINK_DIR/melos"
-  fi
-  dart run melos bootstrap
+  ensure_symlink "$PUB_CACHE_BIN/melos" "$SYMLINK_DIR/melos"
+  melos bootstrap
 elif [ -f "pubspec.yaml" ]; then
   log "Running: flutter pub get"
   flutter pub get

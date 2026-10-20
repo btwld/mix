@@ -4,15 +4,15 @@ Type-safe styling system for Flutter that separates style semantics from widgets
 
 ## Environment Setup
 
-If Flutter is not installed or `flutter --version` fails, run the setup script:
+**Local development:** Install the pinned Flutter SDK with `fvm install` (or use your own Flutter installation matching `.fvmrc`), then run `melos bootstrap`. Never run `setup.sh` with `REMOTE_ENV=true` or `CLAUDE_CODE_REMOTE=true` on a local machine — it is designed for ephemeral cloud containers and modifies `/usr/local/bin`, global FVM configuration, the global Flutter version, and global git `safe.directory`.
+
+**Cursor Cloud / remote containers only:** The Cursor Cloud environment is pre-built from `.cursor/environment.json`. In a remote container where Flutter is not yet installed, or if `.fvmrc` or `pubspec.yaml` changes on your branch, run:
 
 ```bash
 REMOTE_ENV=true bash setup.sh
 ```
 
-This installs FVM, Flutter SDK (3.44.0), DCM, and melos, then bootstraps all packages.
-
-**Cursor Cloud:** The environment is pre-built from `.cursor/environment.json`. If `.fvmrc` or `pubspec.yaml` changes on your branch, rerun `REMOTE_ENV=true bash setup.sh`.
+This installs FVM, Flutter SDK (from `.fvmrc`), DCM, and melos, then bootstraps all packages.
 
 ## Structure
 

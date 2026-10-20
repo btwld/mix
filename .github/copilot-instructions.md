@@ -53,7 +53,7 @@ The following issues were observed in one constrained CI-like onboarding environ
 If your local setup works, you can ignore this section.
 
 1. `flutter --version` returned: `flutter: command not found`.
-2. Running setup with `CLAUDE_CODE_REMOTE=true bash setup.sh` failed:
+2. Running setup in that remote container with `CLAUDE_CODE_REMOTE=true bash setup.sh` (remote/cloud containers only — never pass `CLAUDE_CODE_REMOTE=true` or `REMOTE_ENV=true` on a local machine; use `fvm install` locally) failed:
    - `curl: (6) Could not resolve host: fvm.app`
    - `ERROR: fvm not found on PATH after install`
 3. `dart --version` and `melos --version` were also unavailable.
