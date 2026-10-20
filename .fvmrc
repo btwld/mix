@@ -5,6 +5,7 @@
     "mincompat": "3.44.0"
   },
   "runPubGetOnSdkChanges": true,
+  "updateVscodeSettings": false,
   "updateGitIgnore": false,
-  "updateVscodeSettings": false
+  "updateMelosSettings": false
 }

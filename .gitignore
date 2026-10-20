@@ -118,7 +118,9 @@ pubspec.lock
 packages/remix/context.md
 packages/mix/.cody/ignore
 
-.cursor
+.cursor/*
+!.cursor/Dockerfile
+!.cursor/environment.json
 .orbit
 CLAUDE.md
 !packages/mix_winds/CLAUDE.md
