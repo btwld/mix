@@ -3,5 +3,5 @@
     "dockerfile": "Dockerfile",
     "context": ".."
   },
-  "install": "fvm install --skip-setup && sudo ln -sf /workspace/.fvm/flutter_sdk/bin/flutter /usr/local/bin/flutter && sudo ln -sf /workspace/.fvm/flutter_sdk/bin/dart /usr/local/bin/dart && flutter config --no-analytics && dart --disable-analytics && dart pub global activate melos 6.3.3 && melos bootstrap"
+  "install": "fvm install --no-setup && REPO_ROOT=$(git rev-parse --show-toplevel) && sudo ln -sf \"$REPO_ROOT/.fvm/flutter_sdk/bin/flutter\" /usr/local/bin/flutter && sudo ln -sf \"$REPO_ROOT/.fvm/flutter_sdk/bin/dart\" /usr/local/bin/dart && flutter config --no-analytics && dart --disable-analytics && dart pub global activate melos 6.3.3 && melos bootstrap"
 }
