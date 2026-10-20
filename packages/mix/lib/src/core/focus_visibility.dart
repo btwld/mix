@@ -3,19 +3,38 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
-/// Whether focused widgets should show a focus indicator, following the CSS
-/// `:focus-visible` heuristics.
+/// Whether focused widgets should show a focus indicator.
 ///
-/// [FocusManager.highlightMode] ignores mouse and trackpad input. Here, a
-/// pointer press of any kind also hides focus indicators, until the next
-/// keyboard input. Lone modifier keys and Control or Meta shortcuts do not
-/// count as keyboard input, nor do Alt shortcuts outside macOS. Focus moved in
-/// code keeps the current visibility. Text inputs usually style any focus
-/// instead, as Radix and React Aria do.
+/// A pointer press hides the indicator until the next keyboard input. Lone
+/// modifier and lock keys do not count, nor do Control, Meta, Super, or Hyper
+/// shortcuts, nor Alt shortcuts outside macOS. Key repeat does. Focus moved in
+/// code keeps the current visibility.
 ///
-/// [FocusHighlightStrategy.alwaysTraditional] always shows focus indicators,
-/// and [FocusHighlightStrategy.alwaysTouch] never does.
+/// This follows the pointer and keyboard part of CSS `:focus-visible`. It does
+/// not copy the text-input exception: a text field focused by a pointer does
+/// not show an indicator. Style any focus, including that case, with
+/// `onFocused`.
+///
+/// [FocusHighlightStrategy.alwaysTraditional] always shows indicators, and
+/// [FocusHighlightStrategy.alwaysTouch] never does. A [FocusHighlightStrategy]
+/// change that leaves [FocusManager.highlightMode] unchanged applies on the
+/// next rebuild.
+///
+/// Call [ensureInitialized] after [WidgetsFlutterBinding.ensureInitialized],
+/// or before mounting UI that is not built with Mix, so a pointer press before
+/// the first [FocusVisibilityScope] or [isVisible] read is recorded.
 abstract final class FocusVisibility {
+  /// Starts pointer and keyboard tracking immediately.
+  ///
+  /// Call this after [WidgetsFlutterBinding.ensureInitialized], or before
+  /// mounting non-Mix UI. Tracking then starts before the first
+  /// [FocusVisibilityScope] or [isVisible] read, so a pointer press in between
+  /// is not missed. Calling it again restores keyboard tracking after
+  /// [HardwareKeyboard.clearState], which drops key handlers. Safe to call
+  /// more than once.
+  static void ensureInitialized() =>
+      _FocusVisibilityTracker.current._ensureKeyHandler();
+
   /// Returns [isVisible], rebuilding [context] when it changes inside a
   /// [FocusVisibilityScope].
   static bool of(BuildContext context) {
@@ -36,34 +55,48 @@ abstract final class FocusVisibility {
 /// `onFocusVisible` styles beneath it update on input changes. A
 /// [FocusHighlightStrategy] change that leaves [FocusManager.highlightMode]
 /// unchanged applies on the next rebuild.
-class FocusVisibilityScope extends InheritedNotifier<Listenable> {
+final class FocusVisibilityScope extends InheritedNotifier<Listenable> {
   /// Creates a scope for [child].
   FocusVisibilityScope({super.key, required super.child})
     : super(notifier: _FocusVisibilityTracker.current);
 }
 
-// One tracker per FocusManager, since tests replace the manager and clear
-// HardwareKeyboard handlers between runs.
+// One tracker per FocusManager. Tests replace the manager between runs.
 final class _FocusVisibilityTracker extends ChangeNotifier {
   static final _trackers = Expando<_FocusVisibilityTracker>();
   static var _pointerRouteInstalled = false;
 
-  // Control and Meta are excluded by the pressed-key checks.
-  static final _modifierKeys = {
-    LogicalKeyboardKey.altLeft,
-    LogicalKeyboardKey.altRight,
-    LogicalKeyboardKey.capsLock,
-    LogicalKeyboardKey.fn,
-    LogicalKeyboardKey.shiftLeft,
-    LogicalKeyboardKey.shiftRight,
+  // Control, Meta, Super, and Hyper are excluded by the pressed-key checks.
+  static final _modifierKeys = <LogicalKeyboardKey>{
+    .altGraph,
+    .altLeft,
+    .altRight,
+    .capsLock,
+    .fn,
+    .fnLock,
+    .hyper,
+    .numLock,
+    .scrollLock,
+    .shiftLeft,
+    .shiftRight,
+    .superKey,
+    .symbol,
+    .symbolLock,
   };
 
   final FocusManager _focusManager;
   bool _pointerSinceKeyboard = false;
+  late final KeyEventCallback _onKeyEvent = _handleKeyEvent;
 
   _FocusVisibilityTracker._(this._focusManager) {
     _focusManager.addHighlightModeListener(_handleHighlightModeChange);
-    HardwareKeyboard.instance.addHandler(_handleKeyEvent);
+    HardwareKeyboard.instance.addHandler(_onKeyEvent);
+  }
+
+  static void _ensurePointerRoute() {
+    if (_pointerRouteInstalled) return;
+    GestureBinding.instance.pointerRouter.addGlobalRoute(_handlePointerEvent);
+    _pointerRouteInstalled = true;
   }
 
   static void _handlePointerEvent(PointerEvent event) {
@@ -71,11 +104,16 @@ final class _FocusVisibilityTracker extends ChangeNotifier {
   }
 
   static bool _isKeyboardInput(KeyEvent event) {
-    if (event is! KeyDownEvent || _modifierKeys.contains(event.logicalKey)) {
+    if (event is! KeyDownEvent && event is! KeyRepeatEvent) return false;
+    if (_modifierKeys.contains(event.logicalKey)) return false;
+
+    final keyboard = HardwareKeyboard.instance;
+    if (keyboard.isControlPressed ||
+        keyboard.isMetaPressed ||
+        keyboard.isLogicalKeyPressed(.superKey) ||
+        keyboard.isLogicalKeyPressed(.hyper)) {
       return false;
     }
-    final keyboard = HardwareKeyboard.instance;
-    if (keyboard.isControlPressed || keyboard.isMetaPressed) return false;
 
     // Option composes characters on macOS; elsewhere Alt starts a shortcut.
     return !keyboard.isAltPressed || defaultTargetPlatform == .macOS;
@@ -91,19 +129,33 @@ final class _FocusVisibilityTracker extends ChangeNotifier {
     return false;
   }
 
-  void _handleHighlightModeChange(FocusHighlightMode _) => notifyListeners();
+  void _ensureKeyHandler() {
+    HardwareKeyboard.instance
+      ..removeHandler(_onKeyEvent)
+      ..addHandler(_onKeyEvent);
+  }
+
+  // A pointer press in automatic mode already hid the indicator. A later
+  // touch leaves it hidden, so that mode change has nothing to repaint.
+  void _handleHighlightModeChange(FocusHighlightMode _) {
+    if (!_pointerSinceKeyboard ||
+        _focusManager.highlightStrategy != .automatic) {
+      notifyListeners();
+    }
+  }
 
   void _setPointerSinceKeyboard(bool value) {
     if (_pointerSinceKeyboard == value) return;
     _pointerSinceKeyboard = value;
-    notifyListeners();
+    // The flag only changes visibility in automatic traditional mode.
+    if (_focusManager.highlightMode == .traditional &&
+        _focusManager.highlightStrategy == .automatic) {
+      notifyListeners();
+    }
   }
 
   static _FocusVisibilityTracker get current {
-    if (!_pointerRouteInstalled) {
-      GestureBinding.instance.pointerRouter.addGlobalRoute(_handlePointerEvent);
-      _pointerRouteInstalled = true;
-    }
+    _ensurePointerRoute();
     final manager = FocusManager.instance;
 
     return _trackers[manager] ??= _FocusVisibilityTracker._(manager);

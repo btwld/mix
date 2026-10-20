@@ -2,12 +2,18 @@
 
 ### Bug fixes
 
-- **Focus visible:** `onFocusVisible` now behaves like CSS `:focus-visible`: a
-  pointer press hides focus indicators until the next keyboard input, so focus
-  from a mouse click, or moved in code after one, no longer shows a focus ring
-  on desktop. Text inputs that should show a ring on click can use
-  `onFocused`. `FocusHighlightStrategy.alwaysTraditional` and `alwaysTouch`
-  keep overriding input. The new `FocusVisibility` and `FocusVisibilityScope`
+- **Focus visible:** `onFocusVisible` hides focus indicators after a pointer
+  press until the next keyboard input, so focus from a mouse click, or moved
+  in code after one, no longer shows a focus ring on desktop. This matches the
+  pointer and keyboard part of CSS `:focus-visible`, not its text-input
+  exception: a text field focused by a pointer does not match. Use `onFocused`
+  for a ring on any focus. `FocusHighlightStrategy.alwaysTraditional` and
+  `alwaysTouch` still override input. A strategy change that leaves
+  `highlightMode` unchanged applies on the next rebuild, because `FocusManager`
+  does not notify in that case. `FocusVisibility.ensureInitialized()` starts
+  pointer and keyboard tracking before the first `FocusVisibilityScope` or
+  `FocusVisibility.isVisible` read, and restores key tracking after
+  `HardwareKeyboard.clearState`. `FocusVisibility` and `FocusVisibilityScope`
   expose the same signal to widgets that draw their own focus indicators or
   publish widget states themselves.
 
