@@ -291,10 +291,13 @@ final class WidgetStateVariant extends ContextVariant {
 
 /// Context variant that applies to focus while [FocusVisibility.isVisible].
 ///
-/// Like CSS `:focus-visible`, it stops matching after a pointer press until the
-/// next keyboard input. Visibility changes are reactive inside Mix-managed
-/// widget-state scopes and apply on the next rebuild under a manually mounted
-/// [WidgetStateProvider].
+/// It stops matching after a pointer press until the next keyboard input: the
+/// pointer and keyboard part of CSS `:focus-visible`. A text input focused by
+/// a pointer does not match; use `onFocused` for any focus.
+///
+/// [FocusVisibilityScope] rebuilds dependents when visibility changes. Mix
+/// mounts that scope with its widget-state scopes. Mount one above a manually
+/// created [WidgetStateProvider] so those updates reach it.
 final class FocusVisibleVariant extends ContextVariant {
   FocusVisibleVariant()
     : super('focus_visible', (context) {

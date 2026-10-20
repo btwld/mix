@@ -2,14 +2,18 @@
 
 ### Bug fixes
 
-- **Focus visible:** `onFocusVisible` now behaves like CSS `:focus-visible`: a
-  pointer press hides focus indicators until the next keyboard input, so focus
-  from a mouse click, or moved in code after one, no longer shows a focus ring
-  on desktop. Text inputs that should show a ring on click can use
-  `onFocused`. `FocusHighlightStrategy.alwaysTraditional` and `alwaysTouch`
-  keep overriding input. The new `FocusVisibility` and `FocusVisibilityScope`
-  expose the same signal to widgets that draw their own focus indicators or
-  publish widget states themselves.
+- **Focus visible:** `onFocusVisible` hides focus indicators after a pointer
+  press until the next keyboard input, so focus from a mouse click, or moved
+  in code after one, no longer shows a focus ring on desktop. This follows the
+  pointer and keyboard part of CSS `:focus-visible` but not its text-input
+  exception; use `onFocused` for a ring on any focus.
+  `FocusHighlightStrategy.alwaysTraditional` and `alwaysTouch` still override
+  input.
+- **Focus visibility API:** The new `FocusVisibility` and
+  `FocusVisibilityScope` expose the same signal to widgets that draw their own
+  focus indicators or publish widget states themselves. Call
+  `FocusVisibility.ensureInitialized()` at startup if a pointer press can
+  happen before the first Mix widget builds.
 
 ## 2.2.2
 

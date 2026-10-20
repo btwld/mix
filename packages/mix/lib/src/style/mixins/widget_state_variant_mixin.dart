@@ -49,13 +49,15 @@ mixin WidgetStateVariantMixin<T extends Style<S>, S extends Spec<S>>
 
   /// Creates a variant for focus that should show a focus indicator.
   ///
-  /// Like CSS `:focus-visible`, this stops applying after a pointer press until
-  /// the next keyboard input; see [FocusVisibility]. Use [onFocused] for styles
-  /// that follow any focus, such as text-input rings.
+  /// This stops applying after a pointer press until the next keyboard input;
+  /// see [FocusVisibility]. That is the pointer and keyboard part of CSS
+  /// `:focus-visible`. A text input focused by a pointer does not match. Use
+  /// [onFocused] for a ring on any focus.
   ///
-  /// Modality changes rebuild reactively under Mix-managed state scopes such as
-  /// [Pressable] or a [StyleBuilder] with a controller. Under a manually mounted
-  /// [WidgetStateProvider], they apply on the next rebuild.
+  /// Modality changes rebuild under Mix-managed state scopes such as
+  /// [Pressable] or a [StyleBuilder] with a controller. Mount a
+  /// [FocusVisibilityScope] above a manually created [WidgetStateProvider] so
+  /// those changes rebuild there too.
   T onFocusVisible(T style) {
     return variant(ContextVariant.focusVisible(), style);
   }
