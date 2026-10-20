@@ -129,7 +129,7 @@ final style = TextStyler().uppercase();
 
 StyledText('hello world', style: style);
 // or
-style('hello world');
+TextStyler().uppercase()('hello world');
 ```
 
 ### Prop Number Directives

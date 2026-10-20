@@ -150,8 +150,7 @@ class BoxStyler extends MixStyler<BoxStyler, BoxSpec>
         BorderStyleMixin<BoxStyler>,
         BorderRadiusStyleMixin<BoxStyler>,
         ShadowStyleMixin<BoxStyler>,
-        TransformStyleMixin<BoxStyler>,
-        _BoxStylerPressableMixin<BoxStyler>
+        TransformStyleMixin<BoxStyler>
     implements StylerFieldMetadata {
   final Prop<AlignmentGeometry>? $alignment;
   final Prop<EdgeInsetsGeometry>? $padding;

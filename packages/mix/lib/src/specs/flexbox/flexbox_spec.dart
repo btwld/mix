@@ -8,7 +8,6 @@ import '../../generated_styler_support.dart';
 
 import '../box/box_spec.dart';
 import '../flex/flex_spec.dart';
-import '../pressable/pressable_builders.dart';
 import '../text/text_spec.dart';
 import 'flexbox_widget.dart';
 
@@ -19,10 +18,7 @@ part 'flexbox_spec.g.dart';
 /// Provides comprehensive styling for widgets that need both
 /// box decoration and flex layout capabilities. Merges [BoxSpec] and
 /// [FlexSpec] into a unified specification.
-@MixableSpec(
-  target: FlexBox.new,
-  extraStylerMixins: [_FlexBoxStylerPressableMixin],
-)
+@MixableSpec(target: FlexBox.new)
 @immutable
 final class FlexBoxSpec with _$FlexBoxSpec {
   /// Box styling properties for decoration, padding, constraints, etc.
@@ -34,11 +30,4 @@ final class FlexBoxSpec with _$FlexBoxSpec {
   final StyleSpec<FlexSpec>? flex;
 
   const FlexBoxSpec({this.box, this.flex});
-}
-
-mixin _FlexBoxStylerPressableMixin<ST extends Style<FlexBoxSpec>>
-    on MixStyler<ST, FlexBoxSpec> {
-  /// Finishes this style and returns a reusable interactive builder.
-  PressableChildrenBuilder pressable() =>
-      .new((children) => FlexBox(style: this, children: children));
 }

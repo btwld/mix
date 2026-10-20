@@ -1,5 +1,5 @@
-name: mix_pressable_builder_example
-description: Runnable example for Mix callable pressable builders.
+name: mix_pressable_example
+description: Runnable example for BoxStyler.pressable.
 publish_to: none
 environment:
   sdk: ">=3.12.0 <4.0.0"

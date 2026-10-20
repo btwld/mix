@@ -556,42 +556,6 @@ Future<String> _expectSpecStylerValidationError(
 
 void main() {
   group('SpecStylerGenerator smoke', () {
-    test(
-      'applies private extraStylerMixins with the owning styler type',
-      () async {
-        const input = '''
-        library spike;
-        import 'package:flutter/widgets.dart';
-        import 'package:mix/mix.dart';
-        import 'package:mix_annotations/mix_annotations.dart';
-        part 'spike.g.dart';
-
-        mixin _TerminalMixin<ST> {
-          Object pressable() => Object();
-        }
-
-        @MixableSpec(extraStylerMixins: [_TerminalMixin])
-        final class TrivialSpec extends Spec<TrivialSpec> {
-          final int? count;
-          const TrivialSpec({this.count});
-        }
-      ''';
-
-        await expectGeneratorOutputResolves(
-          builder: _specStylerPartBuilder(),
-          sources: {
-            ...mixAnnotationsSources,
-            ..._flutterResolveStubs,
-            ..._mixSources,
-            'mix|lib/spike.dart': input,
-          },
-          inputAsset: 'mix|lib/spike.dart',
-          outputAsset: 'mix|lib/spike.g.dart',
-          outputMatcher: contains('with _TerminalMixin<TrivialStyler>'),
-        );
-      },
-    );
-
     test('emits a class shell for a trivial spec', () async {
       const input = '''
         library spike;

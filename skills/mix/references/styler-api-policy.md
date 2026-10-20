@@ -5,7 +5,7 @@ Rules for static factory constructors on Styler classes and Dart 3.12+ dot-short
 ## Table of Contents
 
 - [Top-level rule](#the-top-level-rule)
-- [Terminal pressable builders](#terminal-pressable-builders)
+- [Interactive BoxStyler.pressable](#interactive-boxstylerpressable)
 - [Nested shorthand](#nested-shorthand-rule)
 - [Enum shorthand](#dot-shorthand-for-enumconstant-arguments)
 - [Factory constructors](#factory-constructors-by-styler)
@@ -16,43 +16,20 @@ Rules for static factory constructors on Styler classes and Dart 3.12+ dot-short
 
 Requires Dart SDK >=3.12.0 and Flutter >=3.44.0.
 
-## Terminal Pressable Builders
+## Interactive BoxStyler.pressable
 
-When a Mix styler owns the interactive surface, compose its appearance first,
-finish with `.pressable()`, and assign the returned callable builder to a
-variable. Calling that builder returns a `Pressable` widget with the content
-and the full `Pressable` interaction surface. Avoid immediate double invocation
-(`.pressable()(...)`):
+When a `BoxStyler` owns an interactive surface, call `.pressable(...)` to construct a `PressableBox(style: this, ...)` with all `PressableBox` parameters and defaults while keeping the style reusable:
 
 ```dart
-final save = BoxStyler()
+final button = BoxStyler()
     .padding(.all(16))
-    .onPressed(.scale(0.96))
-    .pressable();
-final saveLabel = TextStyler().fontWeight(.w600);
-final settings = TextStyler().fontSize(18).pressable();
-final favorite = IconStyler().size(24).pressable();
-final photo = ImageStyler().fit(.cover).pressable();
+    .onPressed(.scale(0.96));
+final label = TextStyler().fontWeight(.w600);
 
-save(onPress: submit, child: saveLabel('Save'));
-settings('Settings', onPress: openSettings);
-favorite(
-  icon: Icons.star,
-  semanticLabel: 'Favorite',
-  onPress: toggleFavorite,
-);
-photo(
-  image: provider,
-  semanticsLabel: 'Open photo',
-  onPress: openPhoto,
-);
+button.pressable(onPress: submit, child: label('Save'));
 ```
 
-This is a terminal boundary: builders expose no styling methods and do not
-support a second `.pressable()`. Reuse a builder for independent calls, and
-provide callbacks, focus nodes, and controllers per call. Use direct
-`Pressable` when defining an interaction boundary around an arbitrary widget
-tree. Preserve nested controls' own focus and semantics with either API.
+Use `Pressable` directly when wrapping a non-`Box` widget or an arbitrary widget tree.
 
 ## The Top-Level Rule
 

@@ -1,4 +1,4 @@
-# Callable pressable builders
+# BoxStyler.pressable example
 
 This example uses the local `mix` package in the parent directory. Requires
 Flutter 3.44.0 or newer.
@@ -16,15 +16,6 @@ To verify the web build without launching a browser:
 flutter build web
 ```
 
-The example composes styles before `.pressable()`, assigns each callable to a
-variable, and calls it to build the widget. Press and hold Save to see its
-pressed color; Tab to the controls and use Enter or Space to activate them.
-The callbacks are empty demonstration actions. `column`, `heading`, and
-`buttonLabel` are ordinary callable stylers.
+The example composes a `BoxStyler` and calls `button.pressable(onPress: ..., child: ...)` to construct a `PressableBox`. Press and hold Save to see its pressed color, or focus it with Tab and activate it with Enter or Space.
 
-Visible button text supplies its accessible label. Add `semanticsLabel` when
-the content does not supply one; repeating the same label makes it spoken twice.
-
-For all eight supported stylers, native Icon/Image arguments, and builder reuse,
-see the [Mix README](../README.md) and
-[`api-composition-guidelines.md`](../../../guides/api-composition-guidelines.md).
+See the [Mix README](../README.md) and [`api-composition-guidelines.md`](../../../guides/api-composition-guidelines.md) for more composition patterns.

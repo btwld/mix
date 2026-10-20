@@ -68,11 +68,7 @@ Resolution pipeline: `StyleWidget` → `StyleBuilder` → merge active variants 
 | `IconStyler` | `IconSpec` | `StyledIcon` | `Icon` |
 | `ImageStyler` | `ImageSpec` | `StyledImage` | `Image` |
 
-Interactive: `Pressable` (gesture + focus + mouse), `PressableBox` (Pressable + Box),
-and terminal callable builders from widget-backed stylers via `.pressable()`.
-Assign a styler or its `.pressable()` builder to a variable and invoke that
-variable as a callable to return the widget; do not chain `()()` directly on the
-styler or `.pressable()` call.
+Interactive: `Pressable` (gesture + focus + mouse), `PressableBox` (Pressable + Box, also constructed via `BoxStyler.pressable(...)`).
 
 `GridBox` is a Mix-owned layout primitive, but unlike `FlexBox`, `WrapBox`, and `StackBox`, it does not include outer `Box` decoration or padding. Compose it inside `Box` when the grid itself needs chrome.
 

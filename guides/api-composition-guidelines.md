@@ -102,22 +102,16 @@ final interactiveCard = BoxStyler().wrap(
       .clipRRect(borderRadius: BorderRadiusMix.circular(12)),
 );
 
-// Terminal interactive construction: compose first, then call the builder.
-final save = BoxStyler()
+// Interactive box from a composed BoxStyler
+final button = BoxStyler()
     .padding(.all(16))
-    .onPressed(.scale(0.96))
-    .pressable();
-final saveLabel = TextStyler().fontWeight(.w600);
-save(onPress: submit, child: saveLabel('Save'));
+    .onPressed(.scale(0.96));
+final label = TextStyler().fontWeight(.w600);
+
+button.pressable(onPress: submit, child: label('Save'));
 ```
 
-`.pressable()` returns an immutable callable builder, so style composition ends
-at that boundary. Assign the builder to a variable rather than chaining
-`.pressable()(...)`, then call it to build a `Pressable` wrapping the styled
-widget. The builder can be reused with different children and
-callbacks. Use the direct `Pressable` widget to define an interaction boundary
-around an arbitrary widget tree. Preserve nested controls' own focus and
-semantics with either API.
+`BoxStyler.pressable(...)` returns a `PressableBox(style: this, ...)` with all `PressableBox` interaction, focus, and semantics options while keeping `button` reusable. Use `Pressable` directly when wrapping a non-`Box` widget or an arbitrary widget tree.
 
 ---
 

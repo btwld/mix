@@ -4,7 +4,6 @@ import 'package:mix_annotations/mix_annotations.dart';
 
 import '../../generated_styler_support.dart';
 
-import '../pressable/pressable_builders.dart';
 import 'icon_widget.dart';
 
 part 'icon_spec.g.dart';
@@ -13,10 +12,7 @@ part 'icon_spec.g.dart';
 ///
 /// Provides comprehensive icon styling including color, size, weight, optical properties,
 /// text direction, scaling behavior, and shadow effects.
-@MixableSpec(
-  target: StyledIcon.new,
-  extraStylerMixins: [_IconStylerPressableMixin],
-)
+@MixableSpec(target: StyledIcon.new)
 @immutable
 final class IconSpec with _$IconSpec {
   /// The color to use when drawing the icon.
@@ -86,10 +82,4 @@ final class IconSpec with _$IconSpec {
     this.blendMode,
     this.icon,
   });
-}
-
-mixin _IconStylerPressableMixin<ST extends Style<IconSpec>>
-    on MixStyler<ST, IconSpec> {
-  /// Finishes this style and returns a reusable interactive builder.
-  PressableIconBuilder pressable() => .new(this);
 }

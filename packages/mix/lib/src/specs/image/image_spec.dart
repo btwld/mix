@@ -4,7 +4,6 @@ import 'package:mix_annotations/mix_annotations.dart';
 
 import '../../generated_styler_support.dart';
 
-import '../pressable/pressable_builders.dart';
 import 'image_widget.dart';
 
 part 'image_spec.g.dart';
@@ -13,10 +12,7 @@ part 'image_spec.g.dart';
 ///
 /// Provides comprehensive image styling including dimensions, color, fit,
 /// alignment, filtering, and semantic properties.
-@MixableSpec(
-  target: StyledImage.new,
-  extraStylerMixins: [_ImageStylerPressableMixin],
-)
+@MixableSpec(target: StyledImage.new)
 @immutable
 final class ImageSpec with _$ImageSpec {
   /// The image to display.
@@ -96,10 +92,4 @@ final class ImageSpec with _$ImageSpec {
     this.isAntiAlias,
     this.matchTextDirection,
   });
-}
-
-mixin _ImageStylerPressableMixin<ST extends Style<ImageSpec>>
-    on MixStyler<ST, ImageSpec> {
-  /// Finishes this style and returns a reusable interactive builder.
-  PressableImageBuilder pressable() => .new(this);
 }

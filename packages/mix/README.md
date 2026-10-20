@@ -201,56 +201,18 @@ final buttonStyle = BoxStyler()
 
 Built-in variants include `onHovered`, `onPressed`, `onFocused`, `onDisabled`, `onDark`, `onLight`, `onBreakpoint`, `onMobile`, `onTablet`, `onDesktop`, and platform/context variants.
 
-Finish a composed style with `.pressable()`, assign the callable builder to a
-variable, and call it to create interactive widgets:
+Create an interactive `PressableBox` directly from a `BoxStyler` with `.pressable(...)`:
 
 ```dart
-final button = buttonStyle.pressable();
 final label = TextStyler().color(Colors.white).fontWeight(.w600);
-final saveButton = button(onPress: save, child: label('Save'));
-final undoButton = button(onPress: undo, child: label('Undo'));
 
-final settingsAction = TextStyler().fontSize(18).pressable();
-final settings = settingsAction('Open settings', onPress: openSettings);
-
-final rowAction = FlexBoxStyler().direction(.horizontal).spacing(8).pressable();
-final rowIcon = IconStyler().size(20);
-final rowLabel = TextStyler().fontSize(16);
-final settingsRow = rowAction(
-  onPress: openSettings,
-  children: [
-    rowIcon(icon: Icons.settings),
-    rowLabel('Settings'),
-  ],
-);
-
-final favoriteAction = IconStyler().size(24).pressable();
-final favorite = favoriteAction(
-  icon: Icons.star,
-  semanticLabel: 'Favorite',
-  onPress: toggleFavorite,
-);
-
-final photoAction = ImageStyler().fit(.cover).pressable();
-final photo = photoAction(
-  image: const AssetImage('assets/photo.png'),
-  semanticsLabel: 'Open photo',
-  onPress: openPhoto,
+final saveButton = buttonStyle.pressable(
+  onPress: save,
+  child: label('Save'),
 );
 ```
 
-`.pressable()` is the terminal step in the styling chain. Assign the builder to a
-variable rather than chaining `.pressable()(...)`, then call it to build a
-`Pressable` wrapping the styled widget. Box, text, icon, image, and the
-FlexBox, StackBox, WrapBox, and GridBox layout stylers are supported. Every call
-accepts the same interaction, keyboard, focus, semantics, controller, and
-enabled options as `Pressable`. Builders are reusable; callbacks and state are
-provided per call. Icon calls retain `semanticLabel` for the icon; the separate
-`semanticsLabel` labels the outer Pressable. Visible text already supplies a
-semantic label, so do not repeat it on the outer widget. Image calls also accept
-`frameBuilder`, `loadingBuilder`, `errorBuilder`, and `opacity`. These builders
-preserve the styled widget's hit area; add padding when a small icon or text
-needs a larger target.
+`pressable(...)` forwards all `PressableBox` interaction, focus, and semantics options with identical defaults while keeping `buttonStyle` reusable.
 
 [Dynamic styling guide →](https://www.fluttermix.com/documentation/mix/guides/dynamic-styling)
 

@@ -1,5 +1,9 @@
 ## Unreleased
 
+### New features
+
+- **BoxStyler.pressable:** Added `BoxStyler.pressable(...)` to construct a `PressableBox` directly from a composed `BoxStyler`.
+
 ### Bug fixes
 
 - **Focus visible:** `onFocusVisible` now behaves like CSS `:focus-visible`: a

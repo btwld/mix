@@ -157,8 +157,7 @@ class _ThemeToggleState extends State<ThemeToggle> {
           ).offset(x: 0, y: 4).blurRadius(10),
         )
         .onDark(.color(Colors.grey.shade800))
-        .animate(.easeInOut(600.ms))
-        .pressable();
+        .animate(.easeInOut(600.ms));
 
     final icon = IconStyler()
         .color(Colors.grey.shade800)
@@ -171,7 +170,7 @@ class _ThemeToggleState extends State<ThemeToggle> {
       data: MediaQuery.of(context).copyWith(
         platformBrightness: isDark ? Brightness.dark : Brightness.light,
       ),
-      child: button(
+      child: button.pressable(
         onPress: () => setState(() => isDark = !isDark),
         child: icon(),
       ),
@@ -182,10 +181,7 @@ class _ThemeToggleState extends State<ThemeToggle> {
 
 ## Pressable Button
 
-Compose the surface style first, finish with `.pressable()`, and assign the
-callable builder to a variable when the styled widget owns the interaction.
-Calling the builder returns a `Pressable` widget, and widget-state variants
-such as `onHovered` and `onPressed` resolve inside it.
+`BoxStyler.pressable(...)` constructs a `PressableBox` directly from a composed `BoxStyler`, so widget-state variants such as `onHovered` and `onPressed` resolve inside it.
 
 ```dart
 import 'package:flutter/material.dart';
@@ -211,15 +207,14 @@ class PrimaryActionButton extends StatelessWidget {
         .alignment(Alignment.center)
         .onHovered(.color(Colors.blue.shade700).translate(0, -1))
         .onPressed(.color(Colors.blue.shade900).scale(0.98))
-        .animate(.easeInOut(150.ms))
-        .pressable();
+        .animate(.easeInOut(150.ms));
 
     final buttonLabel = TextStyler()
         .color(Colors.white)
         .fontSize(16)
         .fontWeight(FontWeight.w700);
 
-    return button(
+    return button.pressable(
       onPress: onPressed,
       child: buttonLabel(label),
     );

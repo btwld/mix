@@ -1,32 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
-void main() => runApp(const PressableBuilderExample());
+void main() => runApp(const PressableExample());
 
-class PressableBuilderExample extends StatelessWidget {
-  const PressableBuilderExample({super.key});
+class PressableExample extends StatelessWidget {
+  const PressableExample({super.key});
 
   @override
   Widget build(BuildContext context) {
     final column = FlexBoxStyler().direction(.vertical).spacing(16);
     final heading = TextStyler().fontSize(22).fontWeight(.bold);
-    final textAction = TextStyler().color(Colors.blue).pressable();
     final button = BoxStyler()
         .padding(.symmetric(vertical: 12, horizontal: 20))
         .borderRadius(.circular(12))
         .color(Colors.blue)
-        .onPressed(.color(Colors.indigo))
-        .pressable();
-    final buttonLabel = TextStyler().color(Colors.white).fontWeight(.w600);
+        .onPressed(.color(Colors.indigo));
+    final label = TextStyler().color(Colors.white).fontWeight(.w600);
 
     return MaterialApp(
       home: Scaffold(
         body: Center(
           child: column(
             children: [
-              heading('Callable pressable builders'),
-              textAction('Open settings', onPress: () {}),
-              button(onPress: () {}, child: buttonLabel('Save')),
+              heading('BoxStyler.pressable'),
+              button.pressable(onPress: () {}, child: label('Save')),
             ],
           ),
         ),

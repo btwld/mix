@@ -175,7 +175,7 @@ typedef _$TextSpecMethods = _$TextSpec; // ignore: unused_element
 // **************************************************************************
 
 class TextStyler extends MixStyler<TextStyler, TextSpec>
-    with TextStyleMixin<TextStyler>, _TextStylerPressableMixin<TextStyler>
+    with TextStyleMixin<TextStyler>
     implements StylerFieldMetadata {
   final Prop<TextOverflow>? $overflow;
   final Prop<StrutStyle>? $strutStyle;

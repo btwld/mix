@@ -5,7 +5,7 @@ import 'package:mix_annotations/mix_annotations.dart';
 
 import '../../generated_styler_support.dart';
 
-import '../pressable/pressable_builders.dart';
+import '../pressable/pressable_widget.dart';
 import '../text/text_spec.dart';
 import 'box_widget.dart';
 
@@ -16,7 +16,7 @@ part 'box_spec.g.dart';
 /// Provides comprehensive box styling including alignment, padding, margin, constraints,
 /// decoration, transformation, and clipping behavior. Used as the resolved form
 /// of [BoxStyle] styling attributes.
-@MixableSpec(target: Box.new, extraStylerMixins: [_BoxStylerPressableMixin])
+@MixableSpec(target: Box.new)
 @immutable
 final class BoxSpec with _$BoxSpec {
   /// Aligns the child within the box.
@@ -68,8 +68,57 @@ final class BoxSpec with _$BoxSpec {
   });
 }
 
-mixin _BoxStylerPressableMixin<ST extends Style<BoxSpec>>
-    on MixStyler<ST, BoxSpec> {
-  /// Finishes this style and returns a reusable interactive builder.
-  PressableBoxBuilder pressable() => .new(this);
+/// Builds interactive boxes from a [BoxStyler].
+extension BoxStylerPressable on BoxStyler {
+  /// Creates a [PressableBox] using this style.
+  ///
+  /// ```dart
+  /// final button = BoxStyler()
+  ///     .padding(.all(16))
+  ///     .color(Colors.blue)
+  ///     .onPressed(.color(Colors.indigo));
+  /// final label = TextStyler().color(Colors.white).fontWeight(.w600);
+  ///
+  /// button.pressable(onPress: save, child: label('Save'));
+  /// ```
+  PressableBox pressable({
+    Key? key,
+    VoidCallback? onPress,
+    VoidCallback? onLongPress,
+    FocusNode? focusNode,
+    bool autofocus = false,
+    bool enableFeedback = false,
+    ValueChanged<bool>? onFocusChange,
+    MouseCursor? mouseCursor,
+    bool canRequestFocus = true,
+    bool excludeFromSemantics = false,
+    String? semanticsLabel,
+    PressableSemanticsRole semanticsRole = .button,
+    FocusOnKeyEventCallback? onKeyEvent,
+    WidgetStatesController? controller,
+    Map<Type, Action<Intent>>? actions,
+    HitTestBehavior hitTestBehavior = .opaque,
+    bool enabled = true,
+    required Widget child,
+  }) => PressableBox(
+    key: key,
+    style: this,
+    onLongPress: onLongPress,
+    focusNode: focusNode,
+    autofocus: autofocus,
+    enableFeedback: enableFeedback,
+    onFocusChange: onFocusChange,
+    onPress: onPress,
+    mouseCursor: mouseCursor,
+    canRequestFocus: canRequestFocus,
+    excludeFromSemantics: excludeFromSemantics,
+    semanticsLabel: semanticsLabel,
+    semanticsRole: semanticsRole,
+    onKeyEvent: onKeyEvent,
+    controller: controller,
+    actions: actions,
+    hitTestBehavior: hitTestBehavior,
+    enabled: enabled,
+    child: child,
+  );
 }
