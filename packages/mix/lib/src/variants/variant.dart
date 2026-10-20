@@ -297,11 +297,7 @@ final class WidgetStateVariant extends ContextVariant {
 ///
 /// [FocusVisibilityScope] rebuilds dependents when visibility changes. Mix
 /// mounts that scope with its widget-state scopes. Mount one above a manually
-/// created [WidgetStateProvider] so those updates reach it. A
-/// [FocusHighlightStrategy] change that leaves [FocusManager.highlightMode]
-/// unchanged applies on the next rebuild. Call
-/// [FocusVisibility.ensureInitialized] before non-Mix UI so a pointer press
-/// that happens first is not missed.
+/// created [WidgetStateProvider] so those updates reach it.
 final class FocusVisibleVariant extends ContextVariant {
   FocusVisibleVariant()
     : super('focus_visible', (context) {

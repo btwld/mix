@@ -20,20 +20,20 @@ import 'package:flutter/widgets.dart';
 /// change that leaves [FocusManager.highlightMode] unchanged applies on the
 /// next rebuild.
 ///
-/// Call [ensureInitialized] after [WidgetsFlutterBinding.ensureInitialized],
-/// or before mounting UI that is not built with Mix, so a pointer press before
-/// the first [FocusVisibilityScope] or [isVisible] read is recorded.
+/// Tracking starts on first use. Call [ensureInitialized] at startup when a
+/// pointer press can happen before the first Mix widget builds.
 abstract final class FocusVisibility {
-  /// Starts pointer and keyboard tracking immediately.
+  /// Starts pointer and keyboard tracking now instead of on first use.
   ///
-  /// Call this after [WidgetsFlutterBinding.ensureInitialized], or before
-  /// mounting non-Mix UI. Tracking then starts before the first
-  /// [FocusVisibilityScope] or [isVisible] read, so a pointer press in between
-  /// is not missed. Calling it again restores keyboard tracking after
-  /// [HardwareKeyboard.clearState], which drops key handlers. Safe to call
-  /// more than once.
-  static void ensureInitialized() =>
-      _FocusVisibilityTracker.current._ensureKeyHandler();
+  /// Call it before [runApp] when the app can receive a pointer press before
+  /// any Mix widget builds, for example a click on a non-Mix screen that opens
+  /// one with an autofocused control. Otherwise that press is missed and the
+  /// control shows a focus ring. Safe to call more than once.
+  static void ensureInitialized() {
+    WidgetsFlutterBinding.ensureInitialized();
+    // Creating the tracker installs the pointer route and key handler.
+    _FocusVisibilityTracker.current;
+  }
 
   /// Returns [isVisible], rebuilding [context] when it changes inside a
   /// [FocusVisibilityScope].
@@ -52,9 +52,7 @@ abstract final class FocusVisibility {
 ///
 /// Pressable and styled widgets driven by a [WidgetStatesController] provide
 /// one. Mount it above a manually mounted widget-state scope so
-/// `onFocusVisible` styles beneath it update on input changes. A
-/// [FocusHighlightStrategy] change that leaves [FocusManager.highlightMode]
-/// unchanged applies on the next rebuild.
+/// `onFocusVisible` styles beneath it update on input changes.
 final class FocusVisibilityScope extends InheritedNotifier<Listenable> {
   /// Creates a scope for [child].
   FocusVisibilityScope({super.key, required super.child})
@@ -86,11 +84,10 @@ final class _FocusVisibilityTracker extends ChangeNotifier {
 
   final FocusManager _focusManager;
   bool _pointerSinceKeyboard = false;
-  late final KeyEventCallback _onKeyEvent = _handleKeyEvent;
 
   _FocusVisibilityTracker._(this._focusManager) {
     _focusManager.addHighlightModeListener(_handleHighlightModeChange);
-    HardwareKeyboard.instance.addHandler(_onKeyEvent);
+    HardwareKeyboard.instance.addHandler(_handleKeyEvent);
   }
 
   static void _ensurePointerRoute() {
@@ -129,20 +126,9 @@ final class _FocusVisibilityTracker extends ChangeNotifier {
     return false;
   }
 
-  void _ensureKeyHandler() {
-    HardwareKeyboard.instance
-      ..removeHandler(_onKeyEvent)
-      ..addHandler(_onKeyEvent);
-  }
-
-  // A pointer press in automatic mode already hid the indicator. A later
-  // touch leaves it hidden, so that mode change has nothing to repaint.
-  void _handleHighlightModeChange(FocusHighlightMode _) {
-    if (!_pointerSinceKeyboard ||
-        _focusManager.highlightStrategy != .automatic) {
-      notifyListeners();
-    }
-  }
+  // Always notify: a strategy change can flip visibility while the pointer
+  // flag stays set, so the flag alone cannot rule a mode change out.
+  void _handleHighlightModeChange(FocusHighlightMode _) => notifyListeners();
 
   void _setPointerSinceKeyboard(bool value) {
     if (_pointerSinceKeyboard == value) return;

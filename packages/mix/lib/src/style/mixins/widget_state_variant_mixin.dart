@@ -57,10 +57,7 @@ mixin WidgetStateVariantMixin<T extends Style<S>, S extends Spec<S>>
   /// Modality changes rebuild under Mix-managed state scopes such as
   /// [Pressable] or a [StyleBuilder] with a controller. Mount a
   /// [FocusVisibilityScope] above a manually created [WidgetStateProvider] so
-  /// those changes rebuild there too. A [FocusHighlightStrategy] change that
-  /// leaves [FocusManager.highlightMode] unchanged applies on the next rebuild.
-  /// Call [FocusVisibility.ensureInitialized] before non-Mix UI so a pointer
-  /// press that happens first is not missed.
+  /// those changes rebuild there too.
   T onFocusVisible(T style) {
     return variant(ContextVariant.focusVisible(), style);
   }

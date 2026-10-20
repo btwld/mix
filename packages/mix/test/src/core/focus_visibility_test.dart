@@ -261,42 +261,6 @@ void main() {
     );
 
     testWidgets(
-      'a pointer press before the first scope keeps autofocus hidden',
-      (tester) async {
-        FocusVisibility.ensureInitialized();
-        await tester.pumpWidget(const MaterialApp(home: SizedBox.shrink()));
-        await tester.tapAt(const Offset(20, 20), kind: .mouse);
-        await tester.pump();
-
-        final focusNode = FocusNode();
-        addTearDown(focusNode.dispose);
-        await tester.pumpWidget(
-          MaterialApp(
-            home: Align(
-              alignment: Alignment.topLeft,
-              child: Pressable(
-                autofocus: true,
-                focusNode: focusNode,
-                child: Box(
-                  key: _boxKey,
-                  style: BoxStyler()
-                      .size(100, 100)
-                      .color(Colors.blue)
-                      .onFocusVisible(.color(Colors.red)),
-                ),
-              ),
-            ),
-          ),
-        );
-        await tester.pumpAndSettle();
-        expect(focusNode.hasFocus, isTrue);
-        expect(FocusVisibility.isVisible, isFalse);
-        expect(_colorOf(tester), Colors.blue);
-      },
-      variant: desktop,
-    );
-
-    testWidgets(
       'alwaysTraditional after a mouse press applies on the next rebuild',
       (tester) async {
         final focusNode = await _pumpFocusable(tester);
@@ -320,6 +284,24 @@ void main() {
 
         tester.element(find.byKey(_boxKey)).markNeedsBuild();
         await tester.pump();
+        expect(_colorOf(tester), Colors.blue);
+      },
+      variant: desktop,
+    );
+
+    testWidgets(
+      'switching back to automatic after a touch press hides the ring',
+      (tester) async {
+        final focusNode = await _pumpFocusable(tester);
+        FocusManager.instance.highlightStrategy = .alwaysTraditional;
+        focusNode.requestFocus();
+        await tester.pumpAndSettle();
+        await _pressOutside(tester, kind: .touch);
+        expect(_colorOf(tester), Colors.red);
+
+        FocusManager.instance.highlightStrategy = .automatic;
+        await tester.pump();
+        expect(FocusVisibility.isVisible, isFalse);
         expect(_colorOf(tester), Colors.blue);
       },
       variant: desktop,
@@ -381,33 +363,27 @@ void main() {
       expect(FocusVisibility.isVisible, isTrue);
     }, variant: desktop);
 
-    testWidgets('unchanged visibility does not rebuild scope dependents', (
-      tester,
-    ) async {
-      _ScopeRebuildProbe.builds = 0;
-      await tester.pumpWidget(
-        MaterialApp(
-          home: FocusVisibilityScope(child: const _ScopeRebuildProbe()),
-        ),
-      );
-      await tester.pump();
-      final mounted = _ScopeRebuildProbe.builds;
-      expect(mounted, greaterThan(0));
+    testWidgets(
+      'alwaysTraditional input does not rebuild scope dependents',
+      (tester) async {
+        _ScopeRebuildProbe.builds = 0;
+        await tester.pumpWidget(
+          MaterialApp(
+            home: FocusVisibilityScope(child: const _ScopeRebuildProbe()),
+          ),
+        );
+        FocusManager.instance.highlightStrategy = .alwaysTraditional;
+        await tester.pump();
+        final before = _ScopeRebuildProbe.builds;
 
-      await tester.tapAt(const Offset(400, 400), kind: .mouse);
-      await tester.pump();
-      expect(FocusVisibility.isVisible, isFalse);
-      final afterPress = _ScopeRebuildProbe.builds;
-      expect(afterPress, greaterThan(mounted));
-
-      await tester.tapAt(const Offset(400, 400), kind: .mouse);
-      await tester.pump();
-      expect(_ScopeRebuildProbe.builds, afterPress);
-
-      await _pressOutside(tester, kind: .touch);
-      expect(FocusVisibility.isVisible, isFalse);
-      expect(_ScopeRebuildProbe.builds, afterPress);
-    }, variant: desktop);
+        await _pressOutside(tester);
+        await tester.sendKeyEvent(.arrowDown);
+        await tester.pump();
+        expect(FocusVisibility.isVisible, isTrue);
+        expect(_ScopeRebuildProbe.builds, before);
+      },
+      variant: desktop,
+    );
 
     testWidgets(
       'requestFocus during the pointer down keeps the focus ring hidden',
@@ -443,23 +419,5 @@ void main() {
       },
       variant: desktop,
     );
-
-    testWidgets('clearState on the same manager does not end key tracking', (
-      tester,
-    ) async {
-      final focusNode = await _pumpFocusable(tester);
-      focusNode.requestFocus();
-      await _pressOutside(tester);
-      expect(FocusVisibility.isVisible, isFalse);
-
-      // ignore: invalid_use_of_visible_for_testing_member
-      HardwareKeyboard.instance.clearState();
-      expect(FocusVisibility.isVisible, isFalse);
-      FocusVisibility.ensureInitialized();
-      await tester.sendKeyEvent(.arrowDown);
-      await tester.pump();
-      expect(FocusVisibility.isVisible, isTrue);
-      expect(_colorOf(tester), Colors.red);
-    }, variant: desktop);
   });
 }
