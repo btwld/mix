@@ -71,7 +71,11 @@ fi
 
 if [ "$CURRENT_FVM_VERSION" != "$FVM_VERSION" ]; then
   log "Installing FVM ${FVM_VERSION}..."
-  curl -fsSL https://fvm.app/install.sh | bash -s "$FVM_VERSION"
+  # Download first: piping curl into bash would hide a failed download.
+  FVM_INSTALLER="$(mktemp)"
+  curl -fsSL https://fvm.app/install.sh -o "$FVM_INSTALLER"
+  bash "$FVM_INSTALLER" "$FVM_VERSION"
+  rm -f "$FVM_INSTALLER"
 fi
 
 export PATH="$FVM_BIN_DIR:${FVM_CACHE_PATH:-$FVM_INSTALL_DIR}/default/bin:$PUB_CACHE_BIN:$PATH"
