@@ -1,0 +1,3 @@
+{
+  "install": "REMOTE_ENV=true bash setup.sh"
+}
