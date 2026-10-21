@@ -1,3 +1,13 @@
+## Unreleased
+
+### Bug fixes
+
+- **Prop resolution:** when a value can't be converted to a `Mix`, the latest
+  source now wins, as everywhere else in Mix. Previously the value was dropped
+  and an earlier `Mix` source was used instead. Debug builds report the missing
+  converter through `FlutterError.reportError` instead of `debugPrint`, so it
+  shows up in `FlutterError.onError` and fails widget tests.
+
 ## 2.3.0
 
 ### New features
