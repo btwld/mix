@@ -1,4 +1,28 @@
-## Unreleased
+## 2.3.0
+
+### New features
+
+- **Pressable boxes from stylers:** `BoxStyler.pressable(...)` returns a
+  `PressableBox` that uses the style, so `button.pressable(onPress: save,
+  child: label('Save'))` replaces `PressableBox(style: button, ...)`. It accepts
+  the same parameters and defaults as `PressableBox`.
+- **Focus visibility API:** The new `FocusVisibility` and
+  `FocusVisibilityScope` expose the same signal to widgets that draw their own
+  focus indicators or publish widget states themselves. Call
+  `FocusVisibility.ensureInitialized()` at startup if a pointer press can
+  happen before the first Mix widget builds.
+
+### Bug fixes
+
+- **Focus visible:** `onFocusVisible` hides focus indicators after a pointer
+  press until the next keyboard input, so focus from a mouse click, or moved
+  in code after one, no longer shows a focus ring on desktop. This follows the
+  pointer and keyboard part of CSS `:focus-visible` but not its text-input
+  exception; use `onFocused` for a ring on any focus.
+  `FocusHighlightStrategy.alwaysTraditional` and `alwaysTouch` still override
+  input.
+
+## 2.2.2
 
 ### Bug fixes
 

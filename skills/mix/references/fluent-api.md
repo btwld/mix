@@ -220,7 +220,18 @@ See also [`styler-api-policy.md`](styler-api-policy.md) for top-level factory an
 
 ## Interaction Widgets
 
-Use `Pressable` for interaction state around any child, and `PressableBox` when the interactive surface is also a `Box`.
+Use `Pressable` for interaction state around any child, and `PressableBox` (or `BoxStyler.pressable(...)`) when the interactive surface is also a `Box`.
+
+```dart
+final button = BoxStyler()
+    .padding(.all(16))
+    .onPressed(.scale(0.96));
+final label = TextStyler().fontWeight(.w600);
+
+button.pressable(onPress: submit, child: label('Save'));
+```
+
+`button.pressable(...)` is shorthand for `PressableBox(style: button, ...)` and takes the same parameters.
 
 ### Pressable
 

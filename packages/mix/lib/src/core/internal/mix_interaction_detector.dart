@@ -3,7 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import '../pointer_position.dart';
-import '../providers/focus_highlight_mode_provider.dart';
+import '../focus_visibility.dart';
 import '../providers/widget_state_provider.dart';
 
 /// A widget that detects user interactions and provides state tracking with automatic mouse position tracking.
@@ -268,12 +268,12 @@ class _MixInteractionDetectorState extends State<MixInteractionDetector> {
 
   @override
   Widget build(BuildContext context) {
-    // Build order: FocusHighlightModeProvider -> IgnorePointer -> MouseRegion -> Listener -> PointerPositionProvider -> ListenableBuilder -> WidgetStateProvider
+    // Build order: FocusVisibilityScope -> IgnorePointer -> MouseRegion -> Listener -> PointerPositionProvider -> ListenableBuilder -> WidgetStateProvider
     //
-    // The focus-highlight scope is paired with the widget-state scope: any
+    // The focus-visibility scope is paired with the widget-state scope: any
     // subtree that can resolve widget-state variants can also resolve the
     // focus-visible variant, which needs both signals.
-    return FocusHighlightModeProvider(
+    return FocusVisibilityScope(
       child: IgnorePointer(
         ignoring: !widget.enabled,
         child: MouseRegion(

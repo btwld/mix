@@ -74,7 +74,7 @@ Available on all Stylers via `WidgetStateVariantMixin`:
 | `onHovered(style)` | `WidgetState.hovered` |
 | `onPressed(style)` | `WidgetState.pressed` |
 | `onFocused(style)` | `WidgetState.focused` |
-| `onFocusVisible(style)` | `WidgetState.focused` while Flutter's focus highlight mode is `traditional` (keyboard/directional input) — use it for focus rings that should not appear on touch |
+| `onFocusVisible(style)` | `WidgetState.focused`, except after a pointer press until the next keyboard input, like CSS `:focus-visible` — use it for focus rings; use `onFocused` for text-input rings |
 | `onDisabled(style)` | `WidgetState.disabled` |
 | `onEnabled(style)` | Not disabled |
 

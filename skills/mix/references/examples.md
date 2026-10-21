@@ -145,7 +145,7 @@ class _ThemeToggleState extends State<ThemeToggle> {
 
   @override
   Widget build(BuildContext context) {
-    final buttonStyle = BoxStyler()
+    final button = BoxStyler()
         .height(60)
         .width(60)
         .borderRadius(.circular(30))
@@ -159,7 +159,7 @@ class _ThemeToggleState extends State<ThemeToggle> {
         .onDark(.color(Colors.grey.shade800))
         .animate(.easeInOut(600.ms));
 
-    final iconStyle = IconStyler()
+    final icon = IconStyler()
         .color(Colors.grey.shade800)
         .size(28)
         .icon(Icons.dark_mode)
@@ -170,10 +170,9 @@ class _ThemeToggleState extends State<ThemeToggle> {
       data: MediaQuery.of(context).copyWith(
         platformBrightness: isDark ? Brightness.dark : Brightness.light,
       ),
-      child: PressableBox(
-        style: buttonStyle,
+      child: button.pressable(
         onPress: () => setState(() => isDark = !isDark),
-        child: StyledIcon(style: iconStyle),
+        child: icon(),
       ),
     );
   }
@@ -182,7 +181,7 @@ class _ThemeToggleState extends State<ThemeToggle> {
 
 ## Pressable Button
 
-`PressableBox` combines gesture/focus state handling with a `BoxStyler`, so widget-state variants such as `onHovered` and `onPressed` can live in the style.
+`BoxStyler.pressable(...)` constructs a `PressableBox` directly from a composed `BoxStyler`, so widget-state variants such as `onHovered` and `onPressed` resolve inside it.
 
 ```dart
 import 'package:flutter/material.dart';
@@ -200,7 +199,7 @@ class PrimaryActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final buttonStyle = BoxStyler()
+    final button = BoxStyler()
         .color(Colors.blue)
         .padding(.horizontal(24))
         .padding(.vertical(12))
@@ -210,15 +209,14 @@ class PrimaryActionButton extends StatelessWidget {
         .onPressed(.color(Colors.blue.shade900).scale(0.98))
         .animate(.easeInOut(150.ms));
 
-    final labelStyle = TextStyler()
+    final buttonLabel = TextStyler()
         .color(Colors.white)
         .fontSize(16)
         .fontWeight(FontWeight.w700);
 
-    return PressableBox(
-      style: buttonStyle,
+    return button.pressable(
       onPress: onPressed,
-      child: StyledText(label, style: labelStyle),
+      child: buttonLabel(label),
     );
   }
 }
