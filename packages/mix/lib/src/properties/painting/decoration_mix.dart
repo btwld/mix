@@ -141,8 +141,15 @@ final class BoxDecorationMix extends DecorationMix<BoxDecoration>
          color: Prop.maybe(color),
          image: Prop.maybeMix(image),
          gradient: Prop.maybeMix(gradient),
+         // A `boxShadowToken.mix()` ref already is a [BoxShadowListMix] (and a
+         // token-carrying [Prop]); pass it straight to [Prop.mix] so its token
+         // source is preserved instead of being wrapped into a fresh list.
          boxShadow: boxShadow != null
-             ? Prop.mix(BoxShadowListMix(boxShadow))
+             ? Prop.mix(
+                 boxShadow is BoxShadowListMix
+                     ? boxShadow as BoxShadowListMix
+                     : BoxShadowListMix(boxShadow),
+               )
              : null,
        );
 
