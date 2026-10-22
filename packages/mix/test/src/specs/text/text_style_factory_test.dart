@@ -261,6 +261,11 @@ void main() {
       test('sentencecase', () {
         expect(TextStyler.sentencecase(), equals(TextStyler().sentencecase()));
       });
+
+      test('wrap', () {
+        final modifier = WidgetModifierConfig.opacity(0.5);
+        expect(TextStyler.wrap(modifier), equals(TextStyler().wrap(modifier)));
+      });
     });
 
     group('resolved values', () {

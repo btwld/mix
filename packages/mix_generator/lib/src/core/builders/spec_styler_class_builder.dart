@@ -627,10 +627,10 @@ class SpecStylerClassBuilder {
       }
 
       for (final descriptor in selectedFactories) {
-        // `animate` configures the parent Styler's own lifecycle and already
-        // exists as a base method. It is deliberately not projected as nested
-        // field API.
-        if (descriptor.name == 'animate') continue;
+        // `animate` and `wrap` configure the parent Styler's own lifecycle or
+        // widget modifiers and already exist as base methods. They are
+        // deliberately not projected as nested field API.
+        if (descriptor.name == 'animate' || descriptor.name == 'wrap') continue;
 
         final actualDescriptor = actualByName[descriptor.name];
         if (actualDescriptor == null ||
@@ -893,6 +893,7 @@ class SpecStylerClassBuilder {
       ...?compound?.surface.factoryDescriptors,
       if (useSurface && surface.generatesAnimateFactory)
         animateFactoryDescriptor(),
+      wrapFactoryDescriptor(),
     ];
   }
 

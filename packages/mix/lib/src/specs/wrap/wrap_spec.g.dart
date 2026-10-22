@@ -227,6 +227,8 @@ class WrapStyler extends MixStyler<WrapStyler, WrapSpec>
       WrapStyler().wrapAlignment(value);
   factory WrapStyler.wrapClipBehavior(Clip value) =>
       WrapStyler().wrapClipBehavior(value);
+  factory WrapStyler.wrap(WidgetModifierConfig value) =>
+      WrapStyler().wrap(value);
 
   @override
   WrapStyler flow(WrapStyler value) {
