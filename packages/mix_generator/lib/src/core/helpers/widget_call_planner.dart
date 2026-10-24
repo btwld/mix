@@ -203,10 +203,10 @@ void validateGenericTargetTearOff({
 
   final preservesClassTypeParams =
       tearOffType is FunctionType &&
-      tearOffType.typeParameters.length == classTypeParams.length &&
-      tearOffType.typeParameters.indexed.every(
-        (entry) =>
-            entry.$2.baseElement == classTypeParams[entry.$1].baseElement,
+      _declaresClassTypeParameters(
+        tearOffType,
+        constructor.enclosingElement,
+        classTypeParams,
       );
   if (preservesClassTypeParams) return;
 
@@ -222,6 +222,50 @@ void validateGenericTargetTearOff({
         'Use the class constructor tear-off directly, without type arguments '
         'or a typedef, so the generated API can preserve its generics.',
   );
+}
+
+/// Whether [tearOff] is `C<T1..Tn> Function<T1..Tn>(...)` for the class [owner]:
+/// one type parameter per class type parameter, with the class parameter's
+/// name and bound, declared by [owner] itself or by no element (never by a
+/// typedef), and a return type that instantiates the class with exactly those
+/// parameters.
+///
+/// Compared structurally rather than by element identity: under build_runner,
+/// analyzer 11 and later can hand back the tear-off's type with freshly
+/// created type parameters that have no enclosing element, so they are not
+/// the class's `TypeParameterElement`s even for a direct `C.new`.
+bool _declaresClassTypeParameters(
+  FunctionType tearOff,
+  InterfaceElement owner,
+  List<TypeParameterElement> classTypeParams,
+) {
+  final own = tearOff.typeParameters;
+  final returnType = tearOff.returnType;
+  if (own.length != classTypeParams.length ||
+      returnType is! InterfaceType ||
+      returnType.typeArguments.length != own.length) {
+    return false;
+  }
+  for (final (index, parameter) in own.indexed) {
+    final classParameter = classTypeParams[index];
+    final declaredBy = parameter.enclosingElement;
+    if (parameter.name != classParameter.name ||
+        (declaredBy != null &&
+            (declaredBy is! InterfaceElement ||
+                declaredBy.name != owner.name ||
+                declaredBy.library.uri != owner.library.uri)) ||
+        parameter.bound?.getDisplayString() !=
+            classParameter.bound?.getDisplayString()) {
+      return false;
+    }
+    final argument = returnType.typeArguments[index];
+    if (argument is! TypeParameterType ||
+        argument.element.name != parameter.name) {
+      return false;
+    }
+  }
+
+  return true;
 }
 
 String mixableSpecTargetWidgetName(ConstructorElement constructor) {
