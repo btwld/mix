@@ -3,78 +3,49 @@
   <img alt="Mix logo" src="https://raw.githubusercontent.com/btwld/mix/main/assets/light.svg">
 </picture>
 
-![GitHub stars](https://img.shields.io/github/stars/btwld/mix?style=for-the-badge&logo=GitHub&logoColor=black&labelColor=white&color=dddddd)
-[![Pub Version](https://img.shields.io/pub/v/mix?label=version&style=for-the-badge)](https://pub.dev/packages/mix/changelog)
-![Pub Likes](https://img.shields.io/pub/likes/mix?label=Pub%20Likes&style=for-the-badge)
-![Pub Points](https://img.shields.io/pub/points/mix?label=Pub%20Points&style=for-the-badge)
-[![MIT Licence](https://img.shields.io/github/license/btwld/mix?style=for-the-badge&longCache=true)](https://opensource.org/license/mit)
-[![Awesome Flutter](https://img.shields.io/badge/awesome-flutter-purple?longCache=true&style=for-the-badge)](https://github.com/Solido/awesome-flutter)
+# Mix
 
-**Mix** is a styling system for Flutter that separates style definitions from widget structure. It provides a composable, type-safe way to define and apply styles using a fluent API, design tokens, and context-aware variants.
+Type-safe styling for Flutter, with styles defined separately from widget structure.
 
-- Compose, merge, and apply styles across widgets
-- Write maintainable styling definitions separate from widget code
-- Adapt styles conditionally based on interactions and context
+[Documentation](https://www.fluttermix.com) ·
+[Source](https://github.com/btwld/mix) · [BSD 3-Clause license](LICENSE)
 
-## Why Mix?
+## Core concepts
 
-Flutter's built-in styling works well for simple widgets, but as your app grows, common pain points emerge:
+- Styler → Spec → Widget: a typed style resolves to data that a widget renders.
+- Styles are values: fluent methods return new merged styles, so bases can be reused.
+- Props defer values: concrete values, tokens, and Mix values resolve with context;
+  plain values replace, while Mix values accumulate fieldwise.
+- Tokens name values: `MixScope` supplies them; `ContextToken` can compute a default.
+- Variants are conditional patches: state-dependent patches have higher priority,
+  with declaration order preserved within each priority group.
+- Modifiers wrap widgets; directives transform values during resolution or rendering.
+- Animation interpolates resolved specs: implicit, phase, and keyframe modes.
+- Annotations generate typed plumbing and widgets from style recipes.
 
-- **Style duplication**: The same colors, spacing, and borders are repeated across widgets with no easy way to share them.
-- **Tight coupling**: Style logic lives inside `build()` methods, making it hard to reuse or test independently.
-- **No conditional styling**: Adapting styles for hover, press, dark mode, or breakpoints requires manual boilerplate.
+The [decision log](https://github.com/btwld/mix/blob/main/ARCHITECTURE.md)
+record the rationale behind the model.
 
-Mix solves these by giving you a dedicated styling layer that stays consistent across widgets and files — without being tied to Material Design.
-
-## Goals
-
-- **Define styles outside widgets** while retaining `BuildContext` access (resolved at build time, like `Theme.of`, with more flexibility)
-- **Reuse style definitions** across your app for consistency
-- **Adapt styles conditionally** using variants (hover, dark mode, breakpoints)
-- **Type-safe composability** using Dart's type system
-
-## Guiding Principles
-
-- **Simple** — Thin layer over Flutter; widgets remain compatible and predictable
-- **Consistent** — API mirrors Flutter naming conventions
-- **Composable** — Build complex styles from simple, reusable pieces
-- **Extensible** — Override and extend utilities to fit your needs
-
-## Getting Started
-
-### Prerequisites
-
-- **Dart SDK**: 3.12.0 or higher
-- **Flutter**: 3.44.0 or higher
-
-### Installation
+## Install
 
 ```bash
 flutter pub add mix
 ```
 
-Or in `pubspec.yaml`:
-
-```yaml
-dependencies:
-  mix: <latest>
-```
+Current sources require Dart 3.12+ and Flutter 3.44+; check
+[pubspec.yaml](pubspec.yaml) for this package's constraints.
 
 ```dart
+import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
-```
 
-### First Widget
-
-```dart
 final cardStyle = BoxStyler()
     .size(240, 100)
     .color(Colors.blue)
     .alignment(.center)
-    .borderRadius(.circular(12))
-    .border(.color(Colors.black).width(1).style(.solid));
+    .borderRadius(.circular(12));
 
-Box(
+final card = Box(
   style: cardStyle,
   child: StyledText(
     'Hello Mix',
@@ -83,217 +54,92 @@ Box(
 );
 ```
 
-## Understanding the Styler Pattern
-
-### Fluent API: `BoxStyler()`
-
-The default constructor gives you a chainable API:
+## Compose styles
 
 ```dart
-final style = BoxStyler()
-    .color(Colors.blue)
-    .padding(.all(16))
-    .borderRadius(.circular(8));
+final base = BoxStyler().padding(.all(16)).borderRadius(.circular(8));
+final highlighted = base.color(Colors.blue);
+final interactive = highlighted
+    .onDark(.color(Colors.blue.shade200))
+    .onHovered(.color(Colors.blue.shade700));
 ```
 
-Use this when defining styles with direct values and chaining properties.
+`base` retains its original style. Later plain values replace earlier values;
+partial Mix values merge their fields. Use `.create()` when supplying explicit
+`Prop` values rather than the normal fluent surface.
 
-### Prop-Based API: `BoxStyler.create()`
+For interactive surfaces, use `PressableBox` or `BoxStyler.pressable(...)` so
+state variants have a shared interaction owner.
 
-The `.create()` constructor accepts `Prop<T>` for advanced composition (tokens, directives):
+## Choose a layout
 
-```dart
-final style = BoxStyler.create(
-  color: Prop.token($primaryColor),
-  padding: Prop.value(EdgeInsets.all(16)),
-);
-```
+| Need | Widget |
+|---|---|
+| One styled child | `Box` |
+| Non-wrapping row or column | `RowBox`, `ColumnBox`, `FlexBox` |
+| Items flowing across runs | `WrapBox` |
+| Explicit two-dimensional tracks | `GridBox` |
+| Overlays | `StackBox` |
 
-Use this when working with design tokens or number directives like `multiply()` or `clamp()`.
-
-## Key Features
-
-### Styling API
-
-Define styles with a fluent, chainable API. Style composition and override are supported — later attributes override earlier ones when chained:
-
-```dart
-import 'package:flutter/material.dart';
-import 'package:mix/mix.dart';
-
-final boxStyle = BoxStyler()
-    .height(100)
-    .width(100)
-    .color(Colors.purple)
-    .borderRadius(.circular(10));
-
-final textStyle = TextStyler()
-    .fontSize(20)
-    .fontWeight(.bold)
-    .color(Colors.black);
-
-// Compose from a base style
-final base = BoxStyler()
-    .padding(.horizontal(16))
-    .padding(.vertical(8))
-    .borderRadius(.circular(8))
-    .color(Colors.black);
-final solid = base.color(Colors.blue);
-```
-
-[Styling guide →](https://www.fluttermix.com/documentation/mix/guides/styling)
-
-### Wrapping Layouts
-
-`WrapBox` combines Box chrome with Flutter's run-based `Wrap` layout. Its Wrap
-fields are available directly on `WrapBoxStyler`:
+`GridBox` has no outer Box chrome. Wrap it in `Box` for padding or decoration.
+Its local `onConstraints` patches change geometry; `onBreakpoint` uses viewport
+width. Fixed/fractional columns and content-sized rows have different measurement
+costs; see the [Grid guide](doc/grid-layout.md).
 
 ```dart
-final tagCloud = WrapBoxStyler()
-    .padding(.all(16))
-    .spacing(8)
-    .runSpacing(10)
-    .wrapAlignment(WrapAlignment.center);
-
-WrapBox(style: tagCloud, children: tags);
-```
-
-On the composite styler, `alignment` and `clipBehavior` configure the outer
-Box; `wrapAlignment` and `wrapClipBehavior` configure the inner Wrap. Use
-`.flow(WrapStyler(...))` when direct nested-style composition is needed. See
-the runnable [WrapBox example](../../examples/showcase/docs/layouts.md).
-
-### Grid Layouts
-
-`GridBox` uses fixed and fractional columns plus vertical auto rows, and can
-adapt to the width offered by its own parent. Dot shorthand keeps nested track
-and breakpoint declarations compact. Omit `autoRows` (or set `.autoRows(.auto())`)
-when row height should follow the tallest child:
-
-```dart
-final GridBoxStyler dashboardGrid = .equalColumns(3)
-    .gap(16)
-    .onConstraints(
+final GridBoxStyler grid = .equalColumns(3).gap(16).onConstraints(
   .maxWidth(720),
   .equalColumns(1).gap(12),
 );
-
-GridBox(style: dashboardGrid, children: panels);
 ```
 
-`onConstraints` observes local Grid constraints; `onBreakpoint` continues to
-observe the viewport. Compatible track, row, and gap changes can use Mix's
-implicit `animate` API. See the [Grid layout guide](doc/grid-layout.md) and the
-runnable [Grid examples](../../examples/showcase/docs/layouts.md).
+`WrapBox` combines outer Box styling with inner Wrap layout. Use
+`wrapAlignment` and `wrapClipBehavior` for the inner layout; `alignment` and
+`clipBehavior` apply to the outer Box. `.flow(WrapStyler(...))` supplies a
+nested Wrap style.
 
-### Dynamic Styling (Variants)
-
-Styles adapt to interactions and context (hover, press, dark mode, breakpoints) in one place:
+## Tokens and theming
 
 ```dart
-final buttonStyle = BoxStyler()
-    .height(50)
-    .borderRadius(.circular(25))
-    .color(Colors.blue)
-    .onHovered(.color(Colors.blue.shade700))
-    .onDark(.color(Colors.blue.shade200));
-```
+const primary = ColorToken('brand.primary');
+const spacing = SpaceToken('space.md');
 
-Built-in variants include `onHovered`, `onPressed`, `onFocused`, `onDisabled`, `onDark`, `onLight`, `onBreakpoint`, `onMobile`, `onTablet`, `onDesktop`, and platform/context variants.
-
-Create an interactive `PressableBox` directly from a `BoxStyler` with `.pressable(...)`:
-
-```dart
-final label = TextStyler().color(Colors.white).fontWeight(.w600);
-
-final saveButton = buttonStyle.pressable(
-  onPress: save,
-  child: label('Save'),
+final themedCard = MixScope(
+  colors: {primary: Colors.blue},
+  spaces: {spacing: 16.0},
+  child: Box(style: BoxStyler().color(primary()).padding(.all(spacing()))),
 );
 ```
 
-It takes the same parameters as `PressableBox`.
+Calling a token creates a deferred reference; `token.resolve(context)` retrieves
+a value. A plain nested `MixScope` shadows its ancestor; use `MixScope.inherit`
+for partial overrides. `ContextToken` computes a fallback even without a scope.
+See [scope and theming](doc/mix-scope-and-theming.md).
 
-[Dynamic styling guide →](https://www.fluttermix.com/documentation/mix/guides/dynamic-styling)
+## Animation, modifiers and directives
 
-### Design Tokens and Theming
+- `.animate(...)` interpolates compatible resolved specs.
+- `.phaseAnimation(...)` and `.keyframeAnimation(...)` express sequenced changes.
+- `.wrap(...)` composes widget modifiers such as opacity and clipping.
+- Directives transform resolved values, for example text casing.
 
-Define reusable tokens and provide them via `MixScope`:
+These compose with variants; consult the versioned API for exact signatures.
 
-```dart
-final $primary = ColorToken('primary');
-final $spacingMd = SpaceToken('spacing.md');
+## Learn and extend
 
-MixScope(
-  colors: { $primary: Colors.blue },
-  spaces: { $spacingMd: 16.0 },
-  child: MyApp(),
-);
-
-final style = BoxStyler()
-    .color($primary())
-    .padding(.all($spacingMd()));
-```
-
-[Design tokens guide →](https://www.fluttermix.com/documentation/mix/guides/design-token)
-
-### Animations
-
-- **Implicit** — Values animate smoothly with `.animate(AnimationConfig....)`
-- **Phase** — Multi-step flows (e.g. tap → compress → expand) with `.phaseAnimation(...)`
-- **Keyframe** — Full control with tracks and keyframes
-
-[Animations guide →](https://www.fluttermix.com/documentation/mix/guides/animations)
-
-### Widget Modifiers
-
-Some visual effects — opacity, clipping, visibility — aren't style properties. Modifiers let you declare widget wrappers inside your style so they stay composable and animatable.
-
-[Widget modifiers guide →](https://www.fluttermix.com/documentation/mix/guides/widget-modifiers)
-
-### Directives
-
-Directives transform values (text casing, number scaling, color adjustments) at resolve time, keeping transformations inside the style so they survive merging.
-
-[Directives guide →](https://www.fluttermix.com/documentation/mix/guides/directives)
-
-### Utility-First Approach
-
-Stylers expose small, composable utilities you combine. The API follows Flutter naming so it stays familiar:
-
-```dart
-BoxStyler()
-    .padding(.all(20))
-    .padding(.horizontal(16))
-    .padding(.vertical(8))
-    .border(.color(Colors.red));
-```
-
-[Utility-first overview →](https://www.fluttermix.com/documentation/mix/overview/utility-first)
-
-## Ecosystem
-
-| Package | Description |
-|---------|-------------|
-| [mix_annotations](https://pub.dev/packages/mix_annotations) | Annotations for code generation |
-| [mix_generator](https://pub.dev/packages/mix_generator) | build_runner generator for specs |
-| [mix_lint](https://pub.dev/packages/mix_lint) | Custom linter rules |
-| [mix_winds](https://pub.dev/packages/mix_winds) | Utility-first styling inspired by Tailwind CSS |
-
-## Documentation
-
-- [Introduction](https://www.fluttermix.com/documentation/mix/overview/introduction)
-- [Getting started](https://www.fluttermix.com/documentation/mix/overview/getting-started)
-- [Styling](https://www.fluttermix.com/documentation/mix/guides/styling)
-- [Dynamic styling](https://www.fluttermix.com/documentation/mix/guides/dynamic-styling)
-- [Design tokens](https://www.fluttermix.com/documentation/mix/guides/design-token)
-- [Animations](https://www.fluttermix.com/documentation/mix/guides/animations)
-- [Widget modifiers](https://www.fluttermix.com/documentation/mix/guides/widget-modifiers)
-- [Directives](https://www.fluttermix.com/documentation/mix/guides/directives)
-- [Widgets](https://www.fluttermix.com/documentation/mix/widgets/box) (Box, Text, Icon, FlexBox, WrapBox, GridBox, StackBox, etc.)
-
-## Contributors
-
-<a href="https://github.com/btwld/mix/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=btwld/mix" />
-</a>
+- [Styling](https://www.fluttermix.com/documentation/mix/guides/styling),
+  [variants](https://www.fluttermix.com/documentation/mix/guides/dynamic-styling),
+  [tokens](https://www.fluttermix.com/documentation/mix/guides/design-token),
+  [animations](https://www.fluttermix.com/documentation/mix/guides/animations).
+- [Runnable showcase](https://github.com/btwld/mix/tree/main/examples/showcase)
+  and [layout examples](https://github.com/btwld/mix/blob/main/examples/showcase/docs/layouts.md).
+- [Token migration](doc/token-migration-guide.md).
+- [mix_annotations](https://pub.dev/packages/mix_annotations) and
+  [mix_generator](https://pub.dev/packages/mix_generator): specs and recipe widgets.
+- [mix_protocol](https://pub.dev/packages/mix_protocol): optional JSON boundary.
+- [mix_winds](https://pub.dev/packages/mix_winds): Tailwind-style classes.
+- [mix_chart](https://pub.dev/packages/mix_chart): Mix-styled charts;
+  [mix_chart_protocol](https://github.com/btwld/mix/tree/main/packages/mix_chart_protocol)
+  adds serialization.
+- [mix_lint](https://pub.dev/packages/mix_lint): analyzer rules.
+- [Mix skill](https://github.com/btwld/mix/tree/main/skills/mix): agent API references.

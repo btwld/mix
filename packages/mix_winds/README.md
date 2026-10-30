@@ -1,7 +1,6 @@
 # mix_winds
 
-> **Warning**
-> This package is **highly experimental** and should be considered a **proof of concept**. The API is unstable and subject to breaking changes without notice. Use at your own risk in production environments.
+Experimental alpha: APIs and CSS coverage may change.
 
 Current release channel: **`0.1.0-alpha.1`** (experimental alpha).
 
@@ -116,6 +115,10 @@ final encoded = mixProtocol.encodeStyle(result.styler);
 ```
 
 The same pattern applies to `compileFlex`, `compileText`, and `compileIcon`.
+The compiler produces both the styler and a typed layout plan. Widgets evaluate
+the plan against live Flutter constraints; they do not independently interpret
+the class string. Flex-item, responsive sizing, and margin effects may therefore
+require widget runtime even when the styler is portable.
 Inspect `result.diagnostics` before accepting user-authored classes and always
 handle `MixProtocolFailure` from the codec. Protocol vocabulary support is
 separate from `requiresWidgetRuntime`. Protocol v1 encodes `FocusVisibleVariant`
@@ -123,50 +126,12 @@ as `context_focus_visible`. When
 `requiresWidgetRuntime` is true, even a successfully encoded styler is not the
 complete behavior; render the same classes with a `mix_winds` widget so its
 Flutter layout plan is evaluated. JSON is a consumer boundary representation,
-not an intermediate representation inside `mix_winds`.
+not an intermediate representation inside `mix_winds`. See the
+[compiler decision](../../ARCHITECTURE.md#winds-compiles-both-style-and-runtime-layout).
 
-## Supported Tokens
-
-This proof of concept supports a subset of Tailwind CSS utilities including:
-
-- **Layout**: `flex`, `flex-row`, `flex-col`, `items-*`, `justify-*`, `gap-*`
-- **Spacing**: `p-*`, `px-*`, `py-*`, `m-*`, `mx-*`, `my-*`
-- **Sizing**: `w-*`, `h-*`, `min-w-*`, `min-h-*`
-- **Typography**: `text-*`, `font-*`, `leading-*`, `tracking-*`
-- **Colors**: `bg-*`, `text-*`, `border-*`
-- **Borders**: `border`, `border-*`, `rounded-*`
-- **Effects**: `shadow-*`
-- **Responsive**: `sm:`, `md:`, `lg:`, `xl:`, `2xl:` prefixes
-
-## Limitations
-
-As an experimental proof of concept:
-
-- Not all Tailwind utilities are implemented
-- Some utilities may behave differently than their CSS counterparts
-- Performance has not been optimized for production use
-- The API may change significantly in future versions
-
-## Semantic Differences from Tailwind CSS
-
-For the authoritative list of Tailwind ↔ Flutter behavioral differences and recommended workarounds, see `FLUTTER_ADAPTATIONS.md`. This README focuses on the surface API and supported tokens to avoid duplication.
-
-For default typography parity guidance (Tailwind base defaults vs Flutter `TwScope`/`MixScope`), see the "Default Typography Parity" section in `FLUTTER_ADAPTATIONS.md`.
-
-### Flex Item Tokens
-
-Flex item tokens (`flex-1`, `flex-auto`, `flex-none`, `basis-*`, `self-*`, `shrink-*`) are handled at the widget layer, not the parser layer.
-
-| Token | Supported Values | Notes |
-|-------|------------------|-------|
-| `flex-1`, `flex-auto`, `flex-initial`, `flex-none` | ✅ Supported | Maps to Flutter flex behavior; owned Tailwind flex containers reserve unequal non-content size for zero-basis growers when positive content space remains |
-| `basis-*` | Spacing scale only (e.g., `basis-32`) | Unsupported fractional, full, arbitrary, and unknown values are no-ops reported through `onDiagnostic` |
-| `self-start`, `self-center`, `self-end` | ✅ Supported | Cross-axis alignment |
-| `shrink`, `shrink-0` | ✅ Supported | Controls shrink behavior |
-
-**Important**: Flex item tokens are handled at the widget layer rather than as
-Mix styler properties. Supported values stay quiet; unsupported `basis-*`
-values such as `basis-1/2` are reported through `onDiagnostic`.
+For CSS differences, supported flex-item boundaries, and typography parity,
+see [Flutter adaptations](FLUTTER_ADAPTATIONS.md). The generated compatibility
+ledger records coverage; it is not a promise of complete CSS equivalence.
 
 ## Custom Configuration
 
@@ -232,13 +197,10 @@ Div(
 )
 ```
 
-This callback receives:
-- The original class token, including variant prefixes when present
-- A stable `TwDiagnosticCode` plus a human-readable reason
-- An optional supported workaround
-- Tokens that cannot be mapped to Mix stylers, unsupported widget-layer values,
-  and adaptations intentionally ignored by Flutter
-- It's safe to throw from this callback (will surface during development)
+Diagnostics contain the original token, a stable code, a reason, and an
+optional workaround. Unsupported and intentionally ignored adaptations are
+reported; supported layout-plan tokens stay quiet. Throwing in the callback
+surfaces during development.
 
 Supported flex item tokens (`flex-*`, `basis-*`, `self-*`, `shrink-*`, and
 `grow-*`) do not trigger `onDiagnostic`.

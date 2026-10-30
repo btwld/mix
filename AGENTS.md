@@ -1,134 +1,56 @@
-# Mix 2.0
+# Mix contributor instructions
 
-Type-safe styling system for Flutter that separates style semantics from widgets.
+Mix is a type-safe Flutter styling system: immutable fluent Styler → resolved
+Spec → Widget. Read [Architecture](ARCHITECTURE.md) for boundaries and decisions;
+[the Mix skill](skills/mix/SKILL.md) routes to focused API references.
 
-## Environment Setup
+## Setup and packages
 
-If Flutter is not installed or `flutter --version` fails, run the setup script:
+If `flutter --version` fails, run `bash setup.sh` to install the toolchain and
+bootstrap. SDK requirements live in `packages/mix/pubspec.yaml` and `melos.yaml`;
+`.fvmrc` pins Flutter. Use the consuming project's resolved version downstream.
 
-```bash
-bash setup.sh
-```
+This checkout uses **Melos package discovery and bootstrap**, not a Dart pub
+workspace. Root `dart pub get` does not resolve every package. Run
+`melos bootstrap`; use package-local `dart pub get` for isolated Dart work.
+`mix_lint` is an analyzer plugin with its own analyzer requirements; check its
+manifest before aligning versions with `mix_generator`.
 
-This installs FVM, Flutter SDK (3.44.0), DCM, and melos, then bootstraps all packages.
-
-## Structure
-
-```
-packages/
-  mix/              # Core framework (v2.0.0-rc.0)
-  mix_annotations/  # Annotations for codegen
-  mix_generator/    # build_runner generator
-  mix_lint/         # Custom linter (not in pub workspace, see below)
-```
-
-## Pub workspace
-
-The repo uses [Dart pub workspaces](https://dart.dev/tools/pub/workspaces): a single `pubspec.lock` and shared resolution at the root. Run `dart pub get` at the repo root to resolve all workspace packages.
-
-- **In the workspace:** mix, mix_annotations, mix_generator, mix_winds, mix_winds/example.
-- **Excluded:** `mix_lint` (an analyzer plugin; it uses the analyzer version its `analysis_server_plugin` requires, currently 14.x, while `mix_generator` supports analyzer >=10 <15). Run `dart pub get` inside `packages/mix_lint` when working on the linter.
+- `mix`: runtime; `mix_annotations` / `mix_generator`: typed generation.
+- `mix_lint`: analyzer rules; `mix_protocol`: JSON codecs and schemas.
+- `mix_chart` / `mix_chart_protocol`: charts and optional serialization.
+- `mix_winds`: utility compiler and widgets; `examples/showcase`: runnable UI.
 
 ## Commands
 
-```bash
-melos bootstrap           # Install dependencies
-melos run gen:build       # Generate code (specs, exports)
-melos run ci              # Run all tests
-melos run analyze         # Dart + DCM analysis
-melos run schema:fixtures # Regenerate checked-in packages/*/schema exports and fixtures
-melos run schema:check    # Validate those files with Ajv (needs Node)
-melos run fix             # Auto-fix lint issues
-```
-
-## Verification
-
-Before committing:
-```bash
-melos run gen:build && melos run ci && melos run analyze
-```
-
-## Architecture
-
-Core pattern: **Spec** (immutable data) + **Style** (mutable builder) + **Widget**
-
-```
-packages/mix/lib/src/
-  core/       # Mix, Spec, Style, Prop, Directive
-  specs/      # BoxSpec, TextSpec, IconSpec, etc.
-  modifiers/  # Widget wrappers (Padding, Align, etc.)
-  variants/   # NamedVariant, ContextVariant
-  theme/      # Tokens, Material integration
-```
-
-## Examples
-
-**Fluent chaining (recommended):**
-```dart
-final style = BoxStyler()
-    .color(Colors.blue)
-    .size(100, 100)
-    .padding(.all(16))
-    .borderRadius(.circular(8));
-
-Box(style: style, child: child)
-```
-
-**Variants:** Context-aware styling:
-```dart
-final style = BoxStyler()
-    .color(Colors.white)
-    .onDark(.color(Colors.black))
-    .onHovered(.color(Colors.blue));
-```
-
-## Documentation
-
-**Guides:**
-- `guides/api-composition-guidelines.md` - Fluent chaining, sizing, merge patterns
-
-**Website (comprehensive docs):** See [btwld/mix-docs](https://github.com/btwld/mix-docs)
-
-**Reference implementations:**
-- `packages/mix/lib/src/specs/box/` - Spec/Style/Widget pattern
-
-## Critical Rules
-
-- **Dart SDK:** >=3.12.0 (enables dot-shorthands)
-- **Flutter:** >=3.44.0
-- **Immutability:** Specs are always immutable; use `copyWith()` for changes
-- **Code generation:** Run `melos run gen:build` after modifying specs
-- **mix.dart is generated:** Don't edit directly; run `melos run exports`
-
-## Testing
+Run from the repository root; `melos.yaml` owns the script definitions.
 
 ```bash
-melos run test:flutter    # Flutter package tests
-melos run test:dart       # Dart package tests
-melos run test:coverage   # With coverage report
+melos bootstrap
+melos run gen:build       # Clean, Flutter/Dart generation, Winds registry
+melos run exports         # Separate generation of mix.dart
+melos run ci              # Flutter + Dart tests
+melos run analyze         # Inventory, Dart + DCM analysis
+melos run schema:fixtures # Regenerate checked-in schemas and fixtures
+melos run schema:check    # Independent Ajv validation (Node required)
+melos run fix             # Apply lint fixes and formatting
 ```
 
-## Git Conventions
+## Editing and verification
 
-**Branch naming** (Git Flow prefixes):
-- `feat/` - New features
-- `fix/` - Bug fixes
-- `chore/` - Maintenance (deps, config, cleanup)
-- `docs/` - Documentation changes
-- `refactor/` - Code restructuring
-- `test/` - Test additions/updates
+- Edit spec, annotation or generator inputs, not `*.g.dart` or `mix.dart`.
+- Prefer `@MixableSpec(target: Widget.new)` for widget-backed APIs. Use the
+  `packages/mix/lib/src/specs/box/` implementation as the reference.
+- Specs are immutable; fluent styler calls return new merged values. Plain
+  values replace, while Mix values merge fieldwise.
+- After runtime, spec, styler, generated API or generator changes, run
+  `melos run gen:build && melos run ci && melos run analyze` before committing.
+  Run `exports` separately when the public barrel changes, and schema fixture
+  generation/validation when serialized output changes.
+- Use focused tests while iterating (`test:flutter`, `test:dart`, package tests).
+  For prose-only edits, check links and `git diff --check`; CI still runs.
+- Follow package-specific instructions for Winds parity and other specialized work.
 
-**Commit messages** (Conventional Commits):
-```
-<type>(<scope>): <description>
-
-type: feat, fix, chore, docs, refactor, test, ci
-scope: mix, mix_generator, mix_annotations, mix_lint
-```
-
-## Key Files
-
-- `melos.yaml` - All script definitions
-- `lints_with_dcm.yaml` - Linting rules
-- `.fvmrc` - Flutter version (3.44.0)
-- `packages/mix/lib/src/core/` - Core abstractions
+Use Conventional Commits (`docs:`, `fix(mix):`, etc.) and descriptive
+`feat/`, `fix/`, `docs/`, `chore/`, `refactor/`, or `test/` branches.
+Website documentation is maintained in [btwld/mix-docs](https://github.com/btwld/mix-docs).

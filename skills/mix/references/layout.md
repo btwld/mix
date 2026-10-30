@@ -1,293 +1,128 @@
 # Layout with Mix
 
-Choose and compose Mix-owned layout primitives without falling back to raw
-Flutter layout widgets for styling concerns.
+Confirm the consuming package's resolved API before using newer primitives.
+Local source takes priority in the Mix repository; downstream releases may
+lack WrapBox or GridBox.
 
-## Table of Contents
+## Select the primitive
 
-- [Verify API availability](#verify-api-availability)
-- [Select a primitive](#select-the-primitive)
-- [Understand composites](#understand-composite-layouts)
-- [One-dimensional layouts](#build-one-dimensional-layouts)
-- [Wrapping layouts](#build-wrapping-layouts)
-- [Grid layouts](#build-two-dimensional-grid-layouts)
-- [Overlays](#build-overlays)
-- [Verification](#verify-layout-work)
+| Need | Use |
+|---|---|
+| One styled child | `Box` / `BoxStyler` |
+| Non-wrapping row or column | `RowBox`, `ColumnBox`, `FlexBox` / `FlexBoxStyler` |
+| Intrinsic items flowing across runs | `WrapBox` / `WrapBoxStyler` |
+| Explicit two-dimensional tracks | `GridBox` / `GridBoxStyler` |
+| Overlays | `StackBox` / `StackBoxStyler` |
 
-## Verify API Availability
+FlexBox, WrapBox and StackBox combine layout with an optional outer BoxSpec.
+Keep chrome on the composite styler. Grid owns geometry, clipping, variants,
+modifiers and animation, but **has no outer Box**; wrap it in Box for padding
+or decoration. Use raw Flutter layout when its semantics are needed.
 
-Check the consuming package's `pubspec.yaml` and resolved dependency before
-using a layout API. This repository's `main` branch includes `WrapBox` and
-`GridBox`, both first shipped in the `mix 2.2.0-beta.2` release. When working in
-the Mix repository, prefer local source. When working downstream, confirm the
-installed version exposes the referenced classes.
-
-## Select the Primitive
-
-| Layout need | Mix primitive | Why |
-|---|---|---|
-| One child with size, padding, constraints, or decoration | `Box` + `BoxStyler` | Owns single-child box styling |
-| One non-wrapping horizontal or vertical sequence | `RowBox`, `ColumnBox`, or `FlexBox` + `FlexBoxStyler` | Combines Flex geometry with outer Box styling |
-| Intrinsic items that should flow onto additional runs | `WrapBox` + `WrapBoxStyler` | Models tags, chips, and button groups without fixed tracks |
-| Explicit two-dimensional rows and columns | `GridBox` + `GridBoxStyler` | Models dashboards, card catalogs, and galleries with fixed/`fr` columns and fixed, `fr`, or auto rows |
-| Overlapping or positioned children | `StackBox` + `StackBoxStyler` | Combines Stack geometry with outer Box styling |
-
-Prefer the simplest primitive that represents the layout semantics. Do not use
-Grid merely to place a single row, and do not use Wrap when columns must align
-across runs.
-
-## Understand Composite Layouts
-
-`FlexBox`, `WrapBox`, and `StackBox` resolve a layout sub-spec and optionally an
-outer `BoxSpec`. Their Stylers therefore expose both layout and Box methods.
-Keep decoration, padding, margin, transforms, and constraints on the composite
-Styler instead of nesting a raw `Container`.
-
-`GridBox` is different: it owns Grid geometry, clipping, Mix variants,
-modifiers, and animation, but it does not contain an outer `BoxSpec`. Wrap it
-in `Box` when the grid itself needs padding or decoration:
+## Flex and Wrap
 
 ```dart
-Box(
-  style: BoxStyler().padding(.all(16)).color(Colors.white),
-  child: GridBox(style: gridStyle, children: cards),
-);
+final toolbar = FlexBoxStyler().spacing(12).padding(.all(16));
+RowBox(style: toolbar, children: actions);
+
+final tags = WrapBoxStyler().spacing(8).runSpacing(10).wrapAlignment(.center);
+WrapBox(style: tags, children: chips);
 ```
 
-Use the layout-only `FlexStyler`, `WrapStyler`, and `StackStyler` when composing
-the nested sub-style directly. For ordinary widget code, start from the
-corresponding `*BoxStyler`.
+Do not set a direction conflicting with RowBox/ColumnBox. Use FlexBox when
+direction is dynamic. Put alignment/gaps on the parent; child
+`.wrap(WidgetModifierConfig.flexible(...))` supplies Flexible behavior.
 
-## Build One-Dimensional Layouts
+Wrap chooses line breaks from intrinsic item widths. Grid shares column
+boundaries across rows. For WrapBox, `alignment`/`clipBehavior` affect the outer
+Box; `wrapAlignment`/`wrapClipBehavior` affect the inner Wrap. `.flow(...)`
+composes a nested WrapStyler; `.wrap(...)` still means widget modifiers.
 
-Use `RowBox` or `ColumnBox` when direction is fixed by the widget:
-
-```dart
-final toolbarStyle = FlexBoxStyler()
-    .mainAxisAlignment(.spaceBetween)
-    .crossAxisAlignment(.center)
-    .spacing(12)
-    .padding(.all(16));
-
-RowBox(style: toolbarStyle, children: actions);
-```
-
-Do not set a conflicting direction on a `RowBox` or `ColumnBox` style. Use
-`FlexBox` when direction itself is dynamic:
+## Grid tracks
 
 ```dart
-final contentStyle = FlexBoxStyler()
-    .direction(isCompact ? .vertical : .horizontal)
-    .spacing(16);
+final GridBoxStyler cards = .equalColumns(3).gap(16).autoRows(.auto());
+GridBox(style: cards, children: panels);
 
-FlexBox(style: contentStyle, children: sections);
-```
-
-Use `.wrap(WidgetModifierConfig.flexible(...))` on a child Styler when that
-child needs Flutter `Flexible` behavior inside a Flex layout. Keep parent
-alignment and spacing on `FlexBoxStyler`.
-
-## Build Wrapping Layouts
-
-Use `WrapBox` for items whose intrinsic widths determine where runs break:
-
-```dart
-final tagCloudStyle = WrapBoxStyler()
-    .padding(.all(16))
-    .spacing(8)
-    .runSpacing(10)
-    .wrapAlignment(.center);
-
-WrapBox(style: tagCloudStyle, children: tags);
-```
-
-Distinguish the collision-safe composite names:
-
-- `.alignment(...)` and `.clipBehavior(...)` configure the outer Box.
-- `.wrapAlignment(...)` and `.wrapClipBehavior(...)` configure the inner Wrap.
-- `.flow(WrapStyler(...))` replaces or merges the nested Wrap style directly.
-- `.wrap(...)` remains Mix's widget-modifier API, so the nested Wrap field is
-  intentionally named `flow`.
-
-Choose Wrap over Grid for tags, filters, and button groups that have varying
-intrinsic widths. Choose Grid when cells need shared column boundaries or
-explicit row heights.
-
-## Build Two-Dimensional Grid Layouts
-
-### Start with explicit tracks
-
-Give a Grid declaration an explicit `GridBoxStyler` type, then use factory
-shorthand to make its topology visible:
-
-```dart
-final GridBoxStyler cardGridStyle = .equalColumns(3)
-    .gap(16)
-    .autoRows(.auto());
-
-GridBox(style: cardGridStyle, children: cards);
-```
-
-Use `.equalColumns(count)` for equal `fr(1)` columns. Use `.columns([...])` for
-mixed geometry:
-
-```dart
-final GridBoxStyler reportGridStyle = .columns([
+final GridBoxStyler report = .columns([
   .fixed(240),
   .fr(2),
   .fr(1),
 ]).columnGap(16).autoRows(.fixed(280));
 ```
 
-Interpret tracks as follows:
+- Fixed tracks preserve their logical-pixel size, even if they overflow.
+- Fractional tracks divide remaining space after fixed tracks, auto rows and gaps.
+  Fractional columns need bounded width; fractional rows need bounded height.
+- Auto is vertical-only, sizing a row to the tallest natural child at its
+  resolved column width. Shorter siblings may be laid out again to stretch;
+  fixed cells are not speculatively measured.
+- Children fill left to right, row by row. Explicit `rows` cover their positions;
+  remaining rows repeat `autoRows`, which defaults to auto when omitted.
+- In vertical scrolling, use auto rows or deliberate fixed heights, not fractional
+  rows on an unbounded axis. Auto-row children need finite natural height;
+  avoid Expanded/Spacer in an auto row under unbounded height.
 
-- `.fixed(240)` consumes 240 logical pixels and does not shrink. On a row it
-  is a hard height: children stretch or clip to that cell.
-- `.fr(2)` receives twice the remaining space of `.fr(1)` after fixed tracks,
-  auto tracks, and gaps.
-- `.auto()` is vertical-only and sizes the row to its tallest child's natural
-  height at the resolved column width. Auto-row children are measured at that
-  width; only a child shorter than the resolved row is laid out again to
-  stretch it. That extra pass is only for children in auto rows, and nesting
-  auto Grids does not compound it.
-- Fractional columns require bounded width.
-- Fractional rows and fractional `autoRows` require bounded height.
+Use Grid for aligned dashboards, catalogs and galleries. There are no auto
+columns, spans, named areas, masonry packing, direction-aware placement or
+baseline alignment in the current contract.
 
-### Provide row geometry
-
-Children fill columns left to right, then advance row by row. Provide enough
-explicit `.rows([...])` tracks for every required row or set `.autoRows(...)`
-for the remaining rows. Omitted `autoRows` defaults to `.auto()`, so a
-non-empty Grid with columns and no row declaration sizes implicit rows to
-content.
+## Local constraints versus viewport
 
 ```dart
-final GridBoxStyler galleryStyle = .equalColumns(2)
-    .rows([.fixed(180)])
-    .autoRows(.auto())
-    .columnGap(12)
-    .rowGap(12);
+final GridBoxStyler responsive = .equalColumns(3).gap(16)
+    .onConstraints(.maxWidth(760), .equalColumns(2).gap(12))
+    .onConstraints(.maxWidth(520), .equalColumns(1).gap(10));
 ```
 
-With five children and two columns, this Grid needs three rows. The first uses
-the explicit track and the next two repeat `autoRows`. In a vertical
-`SingleChildScrollView`, omit `autoRows` or use `.autoRows(.auto())`. Keep
-`.fixed(...)` only when clipping or constraining height is intentional. Auto
-rows require finite-height children; do not put `Expanded` or `Spacer` in an
-auto row inside a scroll view.
+All matching branches apply in declaration order. Below 520 both match, and
+the last refines the prior patch. `onConstraints` observes the Grid parent's
+offered constraints. `onBreakpoint` observes the viewport through MediaQuery.
+Two grids in the same viewport can therefore choose different local branches.
 
-### Respond to the offered container
+Constraint patches may set columns, rows, autoRows, columnGap and rowGap only.
+Put clipping, modifiers, animation and ordinary variants on the base style;
+nested constraint branches are rejected.
 
-Use `.onConstraints(...)` when a Grid should adapt to the maximum size offered
-by its own parent:
-
-```dart
-final GridBoxStyler responsiveCards = .equalColumns(3)
-    .gap(16)
-    .onConstraints(
-      .maxWidth(760),
-      .equalColumns(2).gap(12),
-    )
-    .onConstraints(
-      .maxWidth(520),
-      .equalColumns(1).gap(10),
-    );
-```
-
-Apply matching branches in declaration order. In the example, both maximum
-width branches match below 520, so the later one-column patch refines the
-earlier two-column patch.
-
-Keep `onConstraints` patches geometry-only. They may set columns, rows,
-`autoRows`, `columnGap`, and `rowGap`. They may not set clipping, modifiers,
-animations, ordinary variants, or nested constraint branches. Put those values
-on the base `GridBoxStyler`.
-
-Use `.onBreakpoint(...)` instead when the decision should observe viewport
-size through `MediaQuery`. Two Grids in the same viewport can select different
-`onConstraints` branches because their parents offer different widths.
-
-### Pick Grid for concrete use cases
-
-Use responsive `GridBox` for:
-
-- metric dashboards whose panels collapse from four to two to one column;
-- product catalogs with equal card widths and content-sized or fixed rows;
-- media galleries with aligned tracks and controlled clipping;
-- asymmetric report layouts using fixed sidebar tracks plus fractional content;
-- nested components that should respond to their container rather than the
-  whole device viewport.
-
-Avoid the current Grid API when the design requires content-sized columns,
-spans, named areas, masonry packing, direction-aware placement, or baseline
-alignment. Those features are intentionally outside the current contract. Use
-a more suitable Flutter layout or redesign the track model rather than
-pretending the API supports them.
-
-### Animate compatible geometry
-
-Use the standard Mix `.animate(...)` API when state changes Grid geometry:
+## Animation and overflow
 
 ```dart
-final GridBoxStyler animatedGrid = .columns([
+final GridBoxStyler animated = .columns([
   .fr(focused ? 2 : 1),
   .fr(1),
-])
-    .autoRows(.fixed(focused ? 148 : 112))
-    .gap(focused ? 20 : 12)
-    .animate(.easeInOut(const Duration(milliseconds: 400)));
+]).autoRows(.fixed(120)).gap(16).animate(.easeInOut(400.ms));
 ```
 
-Keep track lists the same length and keep each positional track kind compatible
-(`fixed` with `fixed`, `fr` with `fr`, `auto` with `auto`) for continuous
-interpolation. Compatible rows, `autoRows`, and gaps interpolate too.
-Track-count or track-kind changes, clipping, and constraint-patch lists
-switch at the midpoint. A live
-`onConstraints` branch change remains immediate because selection happens
-during layout rather than creating a new animation target.
+Continuous interpolation needs equal-length track lists with compatible kinds
+at each position. Compatible rows, autoRows and gaps interpolate; track count
+or kind changes, clipping and constraint-patch lists switch at the midpoint.
+Live constraint-branch selection remains immediate during layout rather than
+creating an animation target.
 
-### Handle overflow deliberately
+Overflow stays visible with diagnostics under `clipBehavior: .none`; set
+`.clipBehavior(.hardEdge)` on the base style when paint must be contained.
 
-Expect fixed tracks to preserve their requested size even when they exceed the
-available extent. Leave `clipBehavior` at `.none` when overflow should remain
-visible with diagnostics, or set it on the base style when painting must be
-contained:
+## Stack and nested styles
 
 ```dart
-final GridBoxStyler clippedGallery = .equalColumns(4)
-    .autoRows(.fixed(160))
-    .gap(12)
-    .clipBehavior(.hardEdge);
-```
-
-## Build Overlays
-
-Use `StackBox` for badges, overlays, and positioned content:
-
-```dart
-final overlayStyle = StackBoxStyler()
+final overlay = StackBoxStyler()
     .padding(.all(12))
-    .borderRadius(.circular(16))
     .stackAlignment(.bottomCenter)
     .stackClipBehavior(.none);
-
-StackBox(style: overlayStyle, children: layers);
+StackBox(style: overlay, children: layers);
 ```
 
-Distinguish `.alignment(...)` and `.clipBehavior(...)` for the outer Box from
-`.stackAlignment(...)` and `.stackClipBehavior(...)` for the inner Stack. Use
-`.stack(StackStyler(...))` for direct nested-style composition.
+`alignment` and `clipBehavior` configure the outer Box. `.stack(...)` supplies
+a nested StackStyler. Layout-only Flex/Wrap/Stack stylers compose substyles;
+ordinary widgets use their composite Box stylers.
 
-## Verify Layout Work
+## Inspect and verify
 
-Check the smallest source and test surface that owns the behavior:
-
-- Grid guide: `packages/mix/doc/grid-layout.md`
-- Grid runnable use cases: `examples/showcase/lib/layouts/grid/grid_example.dart`
-- Grid contract tests: `packages/mix/test/src/layout/`
-- Wrap runnable use case: `examples/showcase/lib/layouts/wrap/main.dart`
-- Flex, Wrap, and Stack composites: `packages/mix/lib/src/specs/`
-
-Run focused widget tests while iterating. Before handing off changes to Mix
-layout internals, run the repository-required generation, test, and analysis
-commands from the main skill.
+The [Grid contract](https://github.com/btwld/mix/blob/main/packages/mix/doc/grid-layout.md)
+contains full measurement and validation rules. The
+[runnable layout guide](https://github.com/btwld/mix/blob/main/examples/showcase/docs/layouts.md)
+links source examples. In a checkout inspect `packages/mix/lib/src/layout/`,
+`specs/`, and focused tests under `packages/mix/test/src/layout/`.
+Test bounds at responsive transitions and exercise overflow/unbounded cases
+when changing layout behavior. Follow the project's required checks for changes
+to internals; see [development workflow](development-workflow.md).
