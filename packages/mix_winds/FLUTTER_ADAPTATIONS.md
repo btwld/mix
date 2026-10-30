@@ -3,7 +3,7 @@
 Tailwind candidates compile into Mix stylers and typed Flutter layout plans.
 Widgets evaluate the plan where live constraints or parent data are required;
 they do not run a second token interpreter. A portable styler alone may omit
-runtime behavior. See the [compiler decision](../../ARCHITECTURE.md#winds-compiler-and-flutter-runtime)
+runtime behavior. See the [compiler decision](../../ARCHITECTURE.md#winds-compiles-both-style-and-runtime-layout)
 and the [visual comparison workflow](COMPARISON_TESTING.md).
 
 ## Flex distribution

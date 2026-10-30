@@ -1,7 +1,7 @@
 # MixWidget variant constructors
 
 **Shipped:** [#968](https://github.com/btwld/mix/pull/968), 2026-07-11.
-The [architecture decision log](../ARCHITECTURE.md#mixwidget-variant-constructors)
+The [architecture decision log](../ARCHITECTURE.md#keep-the-unnamed-mixwidget-constructor)
 records the rationale and rejected alternatives. This page describes generation.
 
 ## Detection and output
@@ -47,7 +47,7 @@ inside `StyleBuilder` resolve the existing style without invoking the recipe.
 parameters cannot be hidden. Omitting an optional `variant` through curation
 silently prevents named constructors.
 
-The [pending proposal](../ARCHITECTURE.md#recipe-parameter-curation) to remove
+The [pending proposal](../ARCHITECTURE.md#remove-recipe-parameter-curation) to remove
 `factoryParameters` and rename `widgetParameters` to `targetParameters` remains
 **unimplemented**. Its old beta target is not current release guidance.
 For annotation and generated API examples, see the

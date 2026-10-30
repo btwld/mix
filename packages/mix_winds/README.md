@@ -127,7 +127,7 @@ as `context_focus_visible`. When
 complete behavior; render the same classes with a `mix_winds` widget so its
 Flutter layout plan is evaluated. JSON is a consumer boundary representation,
 not an intermediate representation inside `mix_winds`. See the
-[compiler decision](../../ARCHITECTURE.md#winds-compiler-and-flutter-runtime).
+[compiler decision](../../ARCHITECTURE.md#winds-compiles-both-style-and-runtime-layout).
 
 For CSS differences, supported flex-item boundaries, and typography parity,
 see [Flutter adaptations](FLUTTER_ADAPTATIONS.md). The generated compatibility

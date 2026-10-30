@@ -2,7 +2,7 @@
 
 Optional JSON integration between `mix_chart` and `mix_protocol`. Dart has no
 optional package dependencies, so rendering apps avoid codecs by omitting this
-sidecar. See the [dependency decision](../../ARCHITECTURE.md#chart-renderer-and-optional-serialization).
+sidecar. See the [dependency decision](../../ARCHITECTURE.md#keep-chart-serialization-optional).
 
 ```dart
 import 'package:mix_chart_protocol/mix_chart_protocol.dart';

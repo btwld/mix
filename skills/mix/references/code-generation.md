@@ -121,7 +121,7 @@ styler itself. The proposal to remove `factoryParameters` and rename
 `widgetParameters` to `targetParameters` is **unimplemented**. Current source
 and the [constructor guide](https://github.com/btwld/mix/blob/main/guides/mix-widget-variant-constructors.md)
 remain authoritative. Rationale lives in the
-[decision log](https://github.com/btwld/mix/blob/main/ARCHITECTURE.md#mixwidget-variant-constructors).
+[decision log](https://github.com/btwld/mix/blob/main/ARCHITECTURE.md#keep-the-unnamed-mixwidget-constructor).
 
 ### `@MixableModifier()`
 

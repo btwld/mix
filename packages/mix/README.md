@@ -12,18 +12,18 @@ Type-safe styling for Flutter, with styles defined separately from widget struct
 
 ## Core concepts
 
-- **Styler → Spec → Widget:** a typed style resolves to data that a widget renders.
-- **Styles are values:** fluent methods return new merged styles, so bases can be reused.
-- **Props defer values:** concrete values, tokens, and Mix values resolve with context;
+- Styler → Spec → Widget: a typed style resolves to data that a widget renders.
+- Styles are values: fluent methods return new merged styles, so bases can be reused.
+- Props defer values: concrete values, tokens, and Mix values resolve with context;
   plain values replace, while Mix values accumulate fieldwise.
-- **Tokens name values:** `MixScope` supplies them; `ContextToken` can compute a default.
-- **Variants are conditional patches:** state-dependent patches have higher priority,
+- Tokens name values: `MixScope` supplies them; `ContextToken` can compute a default.
+- Variants are conditional patches: state-dependent patches have higher priority,
   with declaration order preserved within each priority group.
-- **Modifiers wrap widgets; directives transform values** during resolution or rendering.
-- **Animation interpolates resolved specs:** implicit, phase, and keyframe modes.
-- **Annotations generate typed plumbing** and widgets from style recipes.
+- Modifiers wrap widgets; directives transform values during resolution or rendering.
+- Animation interpolates resolved specs: implicit, phase, and keyframe modes.
+- Annotations generate typed plumbing and widgets from style recipes.
 
-The [architecture map and decision log](https://github.com/btwld/mix/blob/main/ARCHITECTURE.md)
+The [decision log](https://github.com/btwld/mix/blob/main/ARCHITECTURE.md)
 record the rationale behind the model.
 
 ## Install

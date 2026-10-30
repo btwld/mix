@@ -3,7 +3,7 @@
 Mix-styled Flutter line/area, grouped/stacked/floating bar, and pie/donut charts.
 Mix owns data models, stable IDs, interactions, semantics and generated stylers;
 `fl_chart` is a private renderer, with no raw configuration escape hatch.
-See the [decision log](../../ARCHITECTURE.md#chart-renderer-and-optional-serialization).
+See the [decision log](../../ARCHITECTURE.md#keep-chart-serialization-optional).
 
 ## Quick start
 
