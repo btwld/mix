@@ -1,15 +1,5 @@
 # Widget Modifiers & Directives
 
-## Table of Contents
-
-- [Widget modifiers](#widget-modifiers)
-- [Modifier usage](#usage)
-- [Built-in modifiers](#built-in-modifiers)
-- [Authoring modifiers](#authoring-modifiers)
-- [Modifier ordering](#modifier-ordering)
-- [Fluent chaining](#fluent-chaining)
-- [Directives](#directives)
-
 ## Widget Modifiers
 
 Modifiers wrap a widget with another widget (`Transform`, `Padding`, `Opacity`, etc.) without changing the styled widget API. Apply them with `.wrap()` on a Styler, or use convenience methods such as `BoxStyler().rotate(...)` when the Styler exposes them.
@@ -23,37 +13,13 @@ final style = BoxStyler()
     .wrap(WidgetModifierConfig.rotate(radians: 0.1));
 ```
 
-### Built-in Modifiers
+### Available wrappers
 
-**File:** `packages/mix/lib/src/modifiers/widget_modifier_config.dart`
-
-| Factory Method | Modifier | Effect |
-|---------------|----------|--------|
-| `.opacity(value)` | `OpacityModifier` | Widget opacity |
-| `.blur(sigma, {tileMode})` | `BlurModifier` | Gaussian blur; `tileMode` defaults to `TileMode.clamp`, use `TileMode.decal` for soft glows |
-| `.aspectRatio(ratio)` | `AspectRatioModifier` | Aspect ratio constraint |
-| `.clipOval()` | `ClipOvalModifier` | Oval clip |
-| `.clipRect()` | `ClipRectModifier` | Rectangular clip |
-| `.clipRRect(borderRadius: value)` | `ClipRRectModifier` | Rounded rectangle clip |
-| `.clipPath(clipper: value)` | `ClipPathModifier` | Custom path clip |
-| `.clipTriangle()` | `ClipTriangleModifier` | Triangle clip |
-| `.transform(transform: matrix)` | `TransformModifier` | Matrix4 transform |
-| `.scale(x: value, y: value)` | `ScaleModifier` | Scale using transform |
-| `.rotate(radians: angle)` | `RotateModifier` | Rotation |
-| `.translate(x: x, y: y)` | `TranslateModifier` | Translation |
-| `.skew(skewX: x, skewY: y)` | `SkewModifier` | Skew |
-| `.shaderMask(...)` | `ShaderMaskModifier` | Shader mask |
-| `.visibility(visible)` | `VisibilityModifier` | Show/hide |
-| `.align(alignment: value)` | `AlignModifier` | Alignment |
-| `.padding(insets)` | `PaddingModifier` | Extra padding |
-| `.sizedBox(width: value, height: value)` | `SizedBoxModifier` | Fixed size box |
-| `.flexible(flex: value, fit: value)` | `FlexibleModifier` | Flex layout |
-| `.rotatedBox(quarterTurns)` | `RotatedBoxModifier` | 90-degree rotations |
-| `.intrinsicHeight()` / `.intrinsicWidth()` | `IntrinsicModifier` | Intrinsic sizing |
-| `.fractionallySizedBox(...)` | `FractionallySizedBoxModifier` | Fractional sizing |
-| `.defaultTextStyle(...)` | `DefaultTextStyleModifier` | Default Flutter text style |
-| `.defaultTextStyler(style)` | `DefaultTextStylerModifier` | Inherited Mix text style |
-| `.iconTheme(...)` | `IconThemeModifier` | Icon theme |
+`WidgetModifierConfig` includes opacity/blur/shader masks, clips, transforms,
+alignment/padding, size/aspect/intrinsic/fractional sizing, Flexible, visibility,
+and inherited text/icon defaults. Read its declaration for exact signatures;
+the complete generated surface is not duplicated here. Blur defaults to
+`TileMode.clamp`; use `TileMode.decal` for soft glows when appropriate.
 
 ### Authoring Modifiers
 
@@ -96,7 +62,10 @@ final style = BoxStyler().wrap(
 );
 ```
 
-`MixScope(orderOfModifiers: ...)` stores an inherited default for callers that explicitly read it, but modifier rendering uses the order in the resolved `WidgetModifierConfig`.
+Resolution takes style-local ordering first, then the nearest
+`MixScope(orderOfModifiers: ...)`, then package defaults. Remaining configured
+types append stably. A local list overrides the scope default; the scope is
+actually consulted during resolution, not merely stored for explicit callers.
 
 ### Fluent Chaining
 
@@ -136,18 +105,9 @@ TextStyler().uppercase()('hello world');
 
 Applied to `Prop<T extends num>` and returned as `Prop<num>`:
 
-| Method | Effect |
-|--------|--------|
-| `.multiply(factor)` | `value * factor` |
-| `.add(amount)` | `value + amount` |
-| `.subtract(amount)` | `value - amount` |
-| `.divide(divisor)` | `value / divisor` |
-| `.clamp(min, max)` | Clamp to range |
-| `.abs()` | Absolute value |
-| `.round()` | Round to nearest int |
-| `.floor()` | Floor |
-| `.ceil()` | Ceiling |
-| `.scale(factor)` | Alias for multiply |
+Arithmetic methods include multiply/add/subtract/divide, clamp, abs,
+round/floor/ceil and scale (multiply alias). Check the result type when an API
+requires a specific numeric Prop.
 
 ```dart
 final value = Prop.value(10.0).multiply(2).add(4);
@@ -157,12 +117,8 @@ final value = Prop.value(10.0).multiply(2).add(4);
 
 `ColorRef` exposes channel methods that return a color token reference with directives attached:
 
-| Method | Effect |
-|--------|--------|
-| `.withValues(alpha:, red:, green:, blue:, colorSpace:)` | Override multiple channels |
-| `.withAlpha(value)` | Override alpha channel |
-| `.withRed(value)` / `.withGreen(value)` / `.withBlue(value)` | Override one RGB channel |
-| `.withOpacity(value)` | Set alpha from opacity |
+Channel methods include `withValues`, `withAlpha`, RGB setters and
+`withOpacity`; they attach directives to the token reference.
 
 ```dart
 final $primary = ColorToken('primary');

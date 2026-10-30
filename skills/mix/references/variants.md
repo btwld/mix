@@ -1,185 +1,92 @@
 # Variants
 
-Context-aware and state-driven styling in Mix.
+Variants apply conditional style patches. Inspect the installed version's
+`variants/variant.dart` and `core/style.dart` before extending activation.
 
-## Table of Contents
+## Kinds and priority
 
-- [Variant hierarchy](#variant-hierarchy)
-- [Priority order](#priority-order)
-- [Built-in variants](#built-in-variant-methods)
-- [Usage patterns](#usage-patterns)
-- [Named variants](#pre-defined-named-variants)
-- [ContextVariant factories](#contextvariant-factory-methods)
-- [StyleVariation](#stylevariation)
+- `NamedVariant`: selected explicitly through `namedVariants` or `applyVariants`.
+- `ContextVariant`: evaluates a condition against `BuildContext`.
+- `WidgetStateVariant`: a ContextVariant for an interaction state.
+- `ContextVariantBuilder`: computes a style from context.
 
-## Variant Hierarchy
+Active entries without declared `widgetStateDependencies` merge first, then
+entries declaring state dependencies. Declaration order is stable **within**
+each group; later patches win shared replacement properties. This is not a
+class sort: `FocusVisibleVariant` is state-dependent without being a
+`WidgetStateVariant`, and `NotVariant` forwards its inner dependencies.
+`StyleVariation` is not a third priority tier.
 
-**File:** `packages/mix/lib/src/variants/variant.dart`
-
-```dart
-sealed class Variant {
-  String get key;
-}
-```
-
-| Type | Activation | Use Case |
-|------|-----------|----------|
-| `NamedVariant` | Manual — via `namedVariants` set in `build()` | Design system: `primary`, `secondary`, `small`, `large` |
-| `ContextVariant` | Auto — evaluates `bool Function(BuildContext)` | Environment: dark mode, orientation, breakpoint, platform |
-| `WidgetStateVariant` | Auto — extends `ContextVariant` for `WidgetState` | Interaction: hovered, pressed, focused, disabled |
-| `ContextVariantBuilder` | Auto — dynamically builds a Style from context | Dynamic: computed styles based on context |
-
-## Priority Order
-
-During `mergeActiveVariants()`, active variants are resolved and widget-state variants are applied last:
-
-1. Resolve active `ContextVariant` and `NamedVariant` entries.
-2. Sort matching entries so `WidgetStateVariant` entries run last.
-3. Run `StyleVariation` values when their `variantType` is active; their results skip recursive variant resolution.
-
-## Built-in Variant Methods
-
-### VariantStyleMixin (context/platform/breakpoint)
-
-Available on all Stylers via `VariantStyleMixin`:
-
-| Method | Variant Type | Triggers When |
-|--------|-------------|---------------|
-| `onDark(style)` | ContextVariant | `Brightness.dark` |
-| `onLight(style)` | ContextVariant | `Brightness.light` |
-| `onPortrait(style)` | ContextVariant | Portrait orientation |
-| `onLandscape(style)` | ContextVariant | Landscape orientation |
-| `onMobile(style)` | ContextVariant | Mobile breakpoint |
-| `onTablet(style)` | ContextVariant | Tablet breakpoint |
-| `onDesktop(style)` | ContextVariant | Desktop breakpoint |
-| `onBreakpoint(bp, style)` | ContextVariant | Custom breakpoint |
-| `onLtr(style)` | ContextVariant | Left-to-right direction |
-| `onRtl(style)` | ContextVariant | Right-to-left direction |
-| `onIos(style)` | ContextVariant | iOS platform |
-| `onAndroid(style)` | ContextVariant | Android platform |
-| `onMacos(style)` | ContextVariant | macOS platform |
-| `onWindows(style)` | ContextVariant | Windows platform |
-| `onLinux(style)` | ContextVariant | Linux platform |
-| `onFuchsia(style)` | ContextVariant | Fuchsia platform |
-| `onWeb(style)` | ContextVariant | Web platform |
-| `onNot(variant, style)` | ContextVariant | Negation of any ContextVariant |
-| `onBuilder(fn)` | ContextVariantBuilder | Dynamic style from BuildContext |
-
-### WidgetStateVariantMixin (interaction states)
-
-Available on all Stylers via `WidgetStateVariantMixin`:
-
-| Method | Widget State |
-|--------|-------------|
-| `onHovered(style)` | `WidgetState.hovered` |
-| `onPressed(style)` | `WidgetState.pressed` |
-| `onFocused(style)` | `WidgetState.focused` |
-| `onFocusVisible(style)` | `WidgetState.focused`, except after a pointer press until the next keyboard input, like CSS `:focus-visible` — use it for focus rings; use `onFocused` for text-input rings |
-| `onDisabled(style)` | `WidgetState.disabled` |
-| `onEnabled(style)` | Not disabled |
-
-## Usage Patterns
-
-### Basic Variant
+## Context and interaction
 
 ```dart
 final style = BoxStyler()
     .color(Colors.white)
-    .onDark(.color(Colors.grey.shade900));
-```
-
-### Composing Variants
-
-```dart
-final style = BoxStyler()
-    .color(Colors.white)
-    .padding(.all(16))
     .onDark(.color(Colors.black))
     .onHovered(.color(Colors.blue.shade100))
     .onPressed(.color(Colors.blue.shade300));
 ```
 
-### Named Variants
+Environment methods cover brightness, orientation, direction, platform, web,
+and viewport breakpoints. `onMobile`, `onTablet`, and `onDesktop` use canonical
+breakpoint tokens; `onBreakpoint` accepts a custom breakpoint. Grid's
+`onConstraints` uses local layout constraints instead; see [Layout](layout.md).
+
+Interaction methods include hover, press, focus, focus-visible, enabled and
+disabled. `onFocusVisible` stops matching after pointer press until keyboard
+input; pointer-focused text inputs do not match. Use `onFocused` for any focus.
+Use `Pressable` / `PressableBox` for a shared interaction owner.
+
+## Custom state dependencies
+
+Context variants that read widget state must declare `widgetStateDependencies`,
+including when delegating to another variant. Discovery is static; nested
+ContextVariant branches contribute dependencies even while inactive.
+Plain context closures and context builders are not executed to discover reads.
+Focused and disabled states still need an ancestor state scope or external
+controller; dependency discovery does not synthesize them.
 
 ```dart
-// Define
+final compact = ContextVariant.size('compact', (size) => size.width < 600);
+final notCompact = ContextVariant.not(compact);
+```
+
+A diagnostic key is not guaranteed unique across kinds. Use structured equality
+and the supported factory, not key-string comparisons, when matching variants.
+
+## Named variants
+
+```dart
 const primary = NamedVariant('primary');
 const small = NamedVariant('small');
 
-// Apply in style
 final style = BoxStyler()
     .padding(.all(16))
-    .variant(primary, BoxStyler().color(Colors.blue))
-    .variant(small, BoxStyler().padding(.all(8)));
+    .variant(primary, .color(Colors.blue))
+    .variant(small, .padding(.all(8)));
 
-// Resolve with named variants where a BuildContext is available
 final spec = style.build(context, namedVariants: {primary, small}).spec;
+final selected = style.applyVariants([primary]);
 ```
 
-### Programmatic Variant Application
+Built-in names include primary, secondary, outlined, solid, danger, small and
+large. An enum can mix in `EnumVariant` to act as named runtime variants. This
+is separate from `@MixWidget`'s plain enum recipe switch, which needs no mixin.
+
+## Context builders
 
 ```dart
-final style = BoxStyler()
-    .padding(.all(16))
-    .variant(primary, BoxStyler().color(Colors.blue));
-
-// Apply named variants to a style
-final resolved = style.applyVariants([primary]);
+final responsive = BoxStyler().onBuilder((context) {
+  return BoxStyler().width(MediaQuery.sizeOf(context).width * 0.5);
+});
 ```
 
-### Dynamic Context Builder
-
-```dart
-final style = BoxStyler()
-    .onBuilder((context) {
-      final size = MediaQuery.sizeOf(context);
-      return BoxStyler().width(size.width * 0.5);
-    });
-```
-
-## Pre-defined Named Variants
-
-```dart
-const primary   = NamedVariant('primary');
-const secondary = NamedVariant('secondary');
-const outlined  = NamedVariant('outlined');
-const solid     = NamedVariant('solid');
-const danger    = NamedVariant('danger');
-const small     = NamedVariant('small');
-const large     = NamedVariant('large');
-```
-
-## ContextVariant Factory Methods
-
-Create custom context variants:
-
-```dart
-ContextVariant.brightness(Brightness.dark)
-ContextVariant.orientation(Orientation.portrait)
-ContextVariant.platform(TargetPlatform.iOS)
-ContextVariant.directionality(TextDirection.rtl)
-ContextVariant.breakpoint(myBreakpoint)
-ContextVariant.web()
-ContextVariant.mobile()
-ContextVariant.tablet()
-ContextVariant.desktop()
-ContextVariant.not(existingVariant)   // Negation
-ContextVariant.size('compact', (size) => size.width < 600)
-```
+Use a builder for computed values; use declared variants when state tracking
+must be discoverable before activation.
 
 ## StyleVariation
 
-Interface for design system components that adapt styling based on active variants:
-
-```dart
-abstract class StyleVariation<S extends Spec<S>> {
-  NamedVariant get variantType;
-  Style<S> styleBuilder(
-    covariant Style<S> style,
-    Set<NamedVariant> activeVariants,
-    BuildContext context,
-  );
-}
-```
-
-StyleVariation results skip recursive variant resolution to prevent infinite recursion.
+A component implementing `StyleVariation<S>` supplies `variantType` and
+`styleBuilder(style, activeVariants, context)`. Its result is used when its
+named variant is active and skips recursive variant resolution to avoid cycles.
+Do not rely on variants attached to that result being merged again.

@@ -1,146 +1,66 @@
-# Design Tokens
+# Design tokens
 
-Centralized visual properties via `MixToken` and `MixScope`.
+`MixToken<T>` names a value; `MixScope` supplies values to descendants. Token
+identity includes the concrete runtime type and name, so different concrete
+classes with the same name remain distinct.
 
-## Table of Contents
-
-- [Overview](#overview)
-- [Token workflow](#token-workflow)
-- [Built-in token types](#built-in-token-types)
-- [MixScope](#mixscope)
-- [Theme switching](#theme-switching)
-- [Custom token types](#custom-token-types)
-- [Programmatic resolution](#programmatic-resolution)
-- [Material integration](#mixscopewithmaterial)
-
-## Overview
-
-Design tokens define visual properties (colors, typography, spacing) in a centralized, swappable way. Mix provides token types and `MixScope` (an `InheritedModel`) to provide values to the widget tree.
-
-## Token Workflow
+## Declare, provide, reference
 
 ```dart
-// 1. Declare tokens
-final $primary = ColorToken('primary');
-final $spacingMd = SpaceToken('spacingMd');
+const primary = ColorToken('brand.primary');
+const space = SpaceToken('space.md');
 
-// 2. Provide values via MixScope
 MixScope(
-  colors: { $primary: Colors.blue },
-  spaces: { $spacingMd: 16.0 },
+  colors: {primary: Colors.blue},
+  spaces: {space: 16.0},
   child: MyApp(),
 );
 
-// 3. Use in styles — call() creates a token reference
-final style = BoxStyler()
-    .color($primary())
-    .padding(.all($spacingMd()));
+final style = BoxStyler().color(primary()).padding(.all(space()));
 ```
 
-The `()` call syntax on tokens creates a type-specific reference (`ColorRef`, `DoubleRef`, `RadiusRef`, etc.) that the `Prop` system recognizes as a token source and resolves from `MixScope` during style resolution.
+Calling a token creates a deferred reference. Use `primary.resolve(context)`
+when a concrete value is needed. For text Mix composition use
+`textToken.mix()`; `textToken()` returns a Flutter-shaped reference.
 
-## Built-in Token Types
+## Shapes and maps
 
-| Token Type | Value Type | MixScope Parameter |
-|------------|-----------|-------------------|
-| `ColorToken` | `Color` | `colors:` |
-| `SpaceToken` | `double` | `spaces:` |
-| `DoubleToken` | `double` | `doubles:` |
-| `RadiusToken` | `Radius` | `radii:` |
-| `TextStyleToken` | `TextStyle` | `textStyles:` |
-| `BorderSideToken` | `BorderSide` | `borders:` |
-| `ShadowToken` | `List<Shadow>` | `shadows:` |
-| `BoxShadowToken` | `List<BoxShadow>` | `boxShadows:` |
-| `FontWeightToken` | `FontWeight` | `fontWeights:` |
-| `DurationToken` | `Duration` | generic `tokens:` |
-| `BreakpointToken` | `Breakpoint` | `breakpoints:` |
+| Token | Value / scope map |
+|---|---|
+| `ColorToken` | `Color` / `colors:` |
+| `SpaceToken`, `DoubleToken` | `double` / `spaces:`, `doubles:` |
+| `RadiusToken` | `Radius` / `radii:` |
+| `TextStyleToken` | `TextStyle` / `textStyles:` |
+| `BorderSideToken` | `BorderSide` / `borders:` |
+| `ShadowToken`, `BoxShadowToken` | Lists / `shadows:`, `boxShadows:` |
+| `FontWeightToken` | `FontWeight` / `fontWeights:` |
+| `BreakpointToken` | `Breakpoint` / `breakpoints:` |
+| `DurationToken`, custom tokens | Generic `tokens:` map |
 
-## MixScope
+Ordinary tokens need a matching scope value. `ContextToken` can compute its
+fallback from context without a scope; a scope entry overrides it. Canonical
+breakpoint tokens also provide defaults.
 
-**File:** `packages/mix/lib/src/theme/mix_theme.dart`
+A plain nested scope shadows ancestor values. `MixScope.inherit(...)` merges
+partial overrides; `MixScope.combine(scopes: [...], child: ...)` merges explicit
+scopes left to right. `withMaterial(...)` reads the surrounding `Theme` and adds
+explicit overrides; place it below the theme it should use.
 
-```dart
-MixScope(
-  colors: { $primary: Colors.blue, $secondary: Colors.green },
-  spaces: { $spacingSm: 8.0, $spacingMd: 16.0, $spacingLg: 24.0 },
-  radii: { $radiusSm: Radius.circular(4), $radiusMd: Radius.circular(8) },
-  textStyles: { $heading: TextStyle(fontSize: 24, fontWeight: FontWeight.bold) },
-  child: MaterialApp(home: MyHomePage()),
-)
-```
+`MixScope.of(context, 'tokens')` registers token-aspect dependency;
+`MixScope.maybeOf` permits no scope. Missing ordinary tokens and wrong value
+types fail; do not treat every missing token as a context default.
 
-### Key API
+## Custom values and reference limits
 
-| Method | Description |
-|--------|-------------|
-| `MixScope(colors:, spaces:, radii:, ...)` | Constructor with typed token maps |
-| `MixScope.withMaterial(...)` | Pre-configured with Material Design tokens |
-| `MixScope.combine(scopes: [...], child: ...)` | Merge multiple scopes |
-| `MixScope.of(context)` | Get nearest scope (throws if not found) |
-| `MixScope.maybeOf(context)` | Get nearest scope or null |
-| `MixScope.tokenOf<T>(token, context)` | Resolve a single token value |
+Subclass abstract `MixToken<T>` for a custom value type. Supply it with
+`tokens:` and use `token.resolve(context)` or explicit `Prop.token(token)`.
+Inherited `call()` supports only known reference shapes; unsupported `T` throws
+`UnsupportedError`, not a generic Prop fallback. Override it only with a
+compatible reference implementation.
 
-### Token Resolution
+Double references use registered sentinels recognized by `Prop.value`; do not
+perform ordinary arithmetic on them before resolution. Use an explicit Prop
+when the API accepts it. Shadow tokens take lists, even for a single shadow.
 
-During `Prop.resolveProp()`, `TokenSource` resolves via:
-```dart
-MixScope.tokenOf(token, context)
-```
-
-If no `MixScope` is found, `MixScope.of` throws a `FlutterError`. If a scope exists but a token is missing or has the wrong value type, token resolution throws `StateError`.
-
-## Theme Switching
-
-```dart
-class MyApp extends StatefulWidget {
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  bool isDark = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return MixScope(
-      colors: isDark
-          ? { $primary: Colors.blue.shade200, $background: Colors.grey.shade900 }
-          : { $primary: Colors.blue, $background: Colors.white },
-      child: MaterialApp(home: MyHomePage()),
-    );
-  }
-}
-```
-
-## Custom Token Types
-
-Extend `MixToken<T>` for custom value types:
-
-```dart
-class CustomToken extends MixToken<MyCustomType> {
-  const CustomToken(super.name);
-}
-```
-
-Arbitrary custom tokens can be supplied through the generic `tokens:` map and resolved with `MixScope.tokenOf` or `token.resolve(context)`. The convenient `token()` call syntax returns a supported reference type when Mix has one; otherwise it falls back to a `Prop<T>` reference.
-
-## Programmatic Resolution
-
-Resolve tokens outside of style context:
-
-```dart
-final color = MixScope.tokenOf($primary, context);
-```
-
-## MixScope.withMaterial
-
-Pre-configures tokens that map to Material Design's `ThemeData`:
-
-```dart
-MixScope.withMaterial(
-  colors: { $primary: Colors.blue },  // Override specific tokens
-  child: MyApp(),
-)
-```
-
-Material tokens are extracted from `Theme.of(context)` and merged with any explicit overrides.
+For repo migration detail, see
+[Token migration](https://github.com/btwld/mix/blob/main/packages/mix/doc/token-migration-guide.md).

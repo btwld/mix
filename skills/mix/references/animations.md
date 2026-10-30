@@ -1,13 +1,6 @@
 # Animations
 
-Three animation systems in Mix, from simple to full control.
-
-## Table of Contents
-
-- [Implicit animations](#implicit-animations)
-- [Phase animations](#phase-animations)
-- [Keyframe animations](#keyframe-animations)
-- [Comparison](#comparison)
+Choose implicit interpolation, phases, or parallel keyframe tracks.
 
 ## Implicit Animations
 
@@ -15,41 +8,8 @@ Simplest approach. Call `.animate()` on any Styler — Mix interpolates between 
 
 **When to use:** Simple hover/press effects, state transitions, variant-driven changes.
 
-### State-Triggered
-
-```dart
-class ScaleAnimation extends StatefulWidget {
-  @override
-  State<ScaleAnimation> createState() => _ScaleAnimationState();
-}
-
-class _ScaleAnimationState extends State<ScaleAnimation> {
-  bool appear = false;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() => appear = true);
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final style = BoxStyler()
-        .color(Colors.black)
-        .height(100)
-        .width(100)
-        .borderRadius(.circular(10))
-        .scale(appear ? 1 : 0.1)
-        .animate(.easeInOut(1.s));
-
-    return Box(style: style);
-  }
-}
-```
-
-### Variant-Triggered
+For state changes, rebuild the style with the new target value. For interaction
+changes, a variant can supply the target:
 
 ```dart
 final style = BoxStyler()
@@ -192,11 +152,3 @@ final style = BoxStyler()
 ```
 
 `GradientRotation` takes radians and rotates around the paint bounds' center. The same `transform:` parameter exists on `linearGradient`, `radialGradient`, and the `foreground*Gradient` variants.
-
-## Comparison
-
-| Type | Use Case | Complexity | Control |
-|------|----------|------------|---------|
-| **Implicit** | Simple state/variant transitions | Low | Basic |
-| **Phase** | Multi-step / state machine | Medium | Moderate |
-| **Keyframe** | Choreographed, multi-track | High | Full |

@@ -2,16 +2,6 @@
 
 Annotations, generators, and the codegen workflow in Mix.
 
-## Table of Contents
-
-- [Spec-driven generation](#current-default-spec-driven-styler-generation)
-- [Annotations](#annotations)
-- [File structure](#file-structure-per-widget-spec)
-- [Type metadata](#type-metadata-registry)
-- [Run code generation](#running-code-generation)
-- [Box reference implementation](#reference-implementation-box)
-- [Generator flags](#generator-flags)
-
 ## Current Default: Spec-Driven Styler Generation
 
 For widget-backed specs, prefer `@MixableSpec(target: Widget.new)`. The generator emits both:
@@ -84,9 +74,7 @@ By default, the widget name is derived from a lowerCamelCase element name ending
 
 For a plain Widget with a compatible named `style` parameter, pass its
 constructor tear-off through `target`. The Widget does not need to extend
-`StyleWidget` or expose a Styler extension `call()` method. This direct-target
-path ships in `mix_generator 2.2.0-beta.2` with
-`mix_annotations 2.2.0-beta.1`:
+`StyleWidget` or expose a Styler extension `call()` method. For example:
 
 ```dart
 @MixWidget(
@@ -128,13 +116,12 @@ positional, non-enum, or differently named parameters retain the unnamed-only
 constructor shape. Preserve the unnamed constructor because runtime-selected
 variants cannot choose a named constructor at compile time.
 
-`@MixWidget` complements `@MixableSpec(target:)`; it wraps a style recipe after
-a Styler exists, while `@MixableSpec(target:)` generates the Styler and its
-`call()` support. Mix's own specs use `@MixableSpec(target:)`; `@MixWidget` is
-mainly a downstream-author convenience. When changing this contract inside the
-Mix repository, also consult its `guides/mix-widget-variant-constructors.md`
-decision record if present; do not treat a proposed curation rename as shipped
-API unless the current source exposes it.
+`@MixWidget` wraps an existing recipe; `@MixableSpec(target:)` generates the
+styler itself. The proposal to remove `factoryParameters` and rename
+`widgetParameters` to `targetParameters` is **unimplemented**. Current source
+and the [constructor guide](https://github.com/btwld/mix/blob/main/guides/mix-widget-variant-constructors.md)
+remain authoritative. Rationale lives in the
+[decision log](https://github.com/btwld/mix/blob/main/ARCHITECTURE.md#mixwidget-variant-constructors).
 
 ### `@MixableModifier()`
 
@@ -159,30 +146,10 @@ Use `@MixableModifier(lerp: false)` when interpolation needs custom behavior and
 
 ### `@Mixable()`
 
-Applied to Mix/DTO classes. Generates `_$FooMixin` with:
-
-- `merge()`
-- `resolve()`
-- `props`
-- `debugFillProperties()`
-
-```dart
-@Mixable()
-final class BoxConstraintsMix extends ConstraintsMix<BoxConstraints>
-    with DefaultValue<BoxConstraints>, Diagnosticable, _$BoxConstraintsMixMixin {
-  final Prop<double>? $minWidth;
-  final Prop<double>? $maxWidth;
-
-  BoxConstraintsMix({double? minWidth, double? maxWidth})
-    : this.create(minWidth: Prop.maybe(minWidth), maxWidth: Prop.maybe(maxWidth));
-
-  // The generated merge() calls .create.
-  const BoxConstraintsMix.create({Prop<double>? minWidth, Prop<double>? maxWidth})
-    : $minWidth = minWidth,
-      $maxWidth = maxWidth,
-      super.create();
-}
-```
+Generates merge, resolution, equality props and diagnostics for Mix/DTO values.
+Keep the `.create()` constructor compatible with generated merge calls and
+wrap ergonomic nullable inputs using `Prop.maybe` / `Prop.maybeMix`. Inspect an
+existing Mix counterpart before adding one.
 
 ### `@MixableField()`
 
@@ -223,80 +190,33 @@ final Prop<Matrix4>? $transform;
 final Prop<List<Shadow>>? $shadows;
 ```
 
-## File Structure Per Widget Spec
+## Generation workflow
 
-Current spec-driven shape:
-
-```text
-specs/box/
-├── box_spec.dart     # Hand-written: @MixableSpec(target: Box.new), fields
-├── box_spec.g.dart   # Generated: _$BoxSpec + BoxStyler
-└── box_widget.dart   # Hand-written: Box extends StyleWidget<BoxSpec>
-```
-
-There is no handwritten `box_style.dart` for the current `Box` implementation; `BoxStyler` is generated from `box_spec.dart`.
-
-Current generated modifier shape:
-
-```text
-modifiers/
-├── opacity_modifier.dart     # Hand-written: @MixableModifier(), fields, build()
-└── opacity_modifier.g.dart   # Generated: _$OpacityModifier + OpacityModifierMix
-```
-
-## Type Metadata Registry
-
-**File:** `packages/mix_generator/lib/src/core/curated/type_metadata.dart`
-
-The generator uses `typeMetadata` and helpers from the curated registry to determine:
-
-- Mix counterpart type (`TypeMetadata.mixType`, exposed through helpers such as `mixTypeFor`)
-- Owner mixins for generated Styler methods
-- Lerp behavior (`TypeCategory.lerpable`, `.snappable`, `.enumType`)
-- Diagnostic property behavior
-
-When generating `lerp()`, the generator selects:
-
-- Lerpable → `MixOps.lerp(field, other?.field, t)`
-- Snappable/enum → `MixOps.lerpSnap(field, other?.field, t)`
-- Nested `StyleSpec<T>` → delegate to the nested spec lerp path
-
-## Running Code Generation
+In the monorepo, `packages/mix/lib/src/specs/box/` is canonical:
+`box_spec.dart` owns the annotation and nullable final fields,
+`box_spec.g.dart` contains `_$BoxSpec` and `BoxStyler`, and `box_widget.dart`
+maps resolved values to Flutter. Do not add a parallel handwritten Box styler.
 
 ```bash
-# Full clean + rebuild
 melos run gen:build
-
-# Watch mode during development
-melos run gen:watch
-
-# Clean generated files
-melos run gen:clean
+melos run exports
 ```
 
-`gen:build` runs:
+`gen:build` cleans, builds Flutter and Dart outputs, and regenerates the Winds
+registry. It does **not** run exports. `gen:watch` supports iteration;
+`gen:clean` removes generated outputs. Downstream, use the project's
+`build_runner` command and dependencies instead of assuming Melos is present.
 
-1. `gen:clean`
-2. `gen:build:flutter`
-3. `gen:build:dart`
+## Type metadata and flags
 
-The build commands pass `--delete-conflicting-outputs`; the clean scripts remove generated outputs separately.
+`packages/mix_generator/lib/src/core/curated/type_metadata.dart` maps analyzer
+types to Mix counterparts, owning mixins, lerp categories and diagnostics.
+Lerpable values use `MixOps.lerp`, snappable/enums use `lerpSnap`, and nested
+`StyleSpec` uses its nested interpolation path. Update metadata when adding a
+new supported Flutter value shape.
 
-## Reference Implementation: Box
-
-Use `packages/mix/lib/src/specs/box/` as the canonical current pattern:
-
-1. `box_spec.dart` — `BoxSpec` with `@MixableSpec(target: Box.new)` and nullable final fields
-2. `box_spec.g.dart` — generated `_$BoxSpec` and `BoxStyler`
-3. `box_widget.dart` — `Box extends StyleWidget<BoxSpec>`, defaults to `IdentityStyle(BoxSpec())`, maps `BoxSpec` fields to `Container`
-
-## Generator Flags
-
-Fine-grained control uses bitflags in annotation parameters:
-
-```dart
-@MixableSpec(methods: GeneratedSpecMethods.skipLerp)
-@Mixable(methods: GeneratedMixMethods.skipResolve)
-```
-
-`GeneratedStylerMethods.call` / `skipCall` are deprecated compatibility flags. `call()` for widget-backed generated stylers comes from `@MixableSpec(target: Widget.new)`, not from the legacy styler flag.
+Method flags can skip generated operations, e.g.
+`@MixableSpec(methods: GeneratedSpecMethods.skipLerp)` or
+`@Mixable(methods: GeneratedMixMethods.skipResolve)`.
+`GeneratedStylerMethods.call` / `skipCall` are deprecated compatibility flags;
+widget-backed calls come from the spec's target.
