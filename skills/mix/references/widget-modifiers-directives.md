@@ -62,10 +62,11 @@ final style = BoxStyler().wrap(
 );
 ```
 
-Resolution takes style-local ordering first, then the nearest
-`MixScope(orderOfModifiers: ...)`, then package defaults. Remaining configured
-types append stably. A local list overrides the scope default; the scope is
-actually consulted during resolution, not merely stored for explicit callers.
+Resolution concatenates style-local ordering, the nearest
+`MixScope(orderOfModifiers: ...)` list, and package defaults, keeping the first
+occurrence of each type. Local ordering takes priority; scoped types absent
+from the local list retain their order after it. Remaining configured types
+append stably.
 
 ### Fluent Chaining
 

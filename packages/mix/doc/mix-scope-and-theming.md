@@ -96,10 +96,11 @@ MixScope(
 );
 ```
 
-Resolution chooses a style-local order first, then the nearest scope's order,
-then the package default. Remaining configured modifier types are appended in
-stable order. The resolved list runs outermost to innermost; the renderer wraps
-in reverse. A local order overrides the inherited one rather than extending it.
+Resolution concatenates the style-local order, the nearest scope's order, and
+the package default, keeping the first occurrence of each type. Local ordering
+takes priority; scoped types absent from the local list retain their order
+after it. Remaining configured modifier types are appended in stable order.
+The resolved list runs outermost to innermost; the renderer wraps in reverse.
 See the [modifier reference](../../../skills/mix/references/widget-modifiers-directives.md)
 for composition and exact types.
 
