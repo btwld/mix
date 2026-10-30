@@ -29,10 +29,16 @@ For partial subtree overrides use `MixScope.inherit`; plain nesting shadows.
 
 ## Keep identity and value separate
 
-`MixToken<T>` is abstract. Concrete tokens compare by concrete runtime type and
-name: recreating `ColorToken('brand.primary')` addresses the same token, while
-different concrete token classes sharing a name remain distinct. Use semantic
-names consistently; do not compare tokens only by their displayed names.
+`MixToken<T>` is abstract. Ordinary tokens using its default equality compare
+by concrete runtime type and name: recreating `ColorToken('brand.primary')`
+addresses the same token, while different concrete token classes sharing a
+name remain distinct. Use semantic names consistently.
+
+`ContextToken<T>` instead compares the value type `T` and resolver identity.
+Its name is always `context`; different resolver closures remain unequal even
+with that shared name. Declare context tokens as top-level or static finals,
+or reuse a stable top-level or static resolver with the same value type when
+recreating them, so scope overrides and consumers address matching tokens.
 
 ```dart
 final style = BoxStyler().color(primary()).padding(.all(space()));

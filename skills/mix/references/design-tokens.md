@@ -1,8 +1,14 @@
 # Design tokens
 
-`MixToken<T>` names a value; `MixScope` supplies values to descendants. Token
-identity includes the concrete runtime type and name, so different concrete
-classes with the same name remain distinct.
+`MixToken<T>` names a value; `MixScope` supplies values to descendants. Ordinary
+tokens using `MixToken`'s default equality compare by concrete runtime type and
+name, so different concrete classes with the same name remain distinct.
+
+`ContextToken<T>` instead compares the value type `T` and resolver identity.
+All context tokens have the name `context`; different resolver closures stay
+unequal despite that shared name. Declare context tokens as top-level or static
+finals, or reuse a stable top-level or static resolver with the same value type
+when recreating them, so scope overrides match the tokens used by consumers.
 
 ## Declare, provide, reference
 
