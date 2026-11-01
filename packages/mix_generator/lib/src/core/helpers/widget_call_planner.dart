@@ -3,6 +3,10 @@ library;
 
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
+// Analyzer has no public substitution API for bounds that refer to other
+// generic parameters.
+// ignore: implementation_imports
+import 'package:analyzer/src/dart/element/type_algebra.dart';
 import 'package:source_gen/source_gen.dart';
 
 import '../checkers.dart';
@@ -225,10 +229,8 @@ void validateGenericTargetTearOff({
 }
 
 /// Whether [tearOff] is `C<T1..Tn> Function<T1..Tn>(...)` for the class [owner]:
-/// one type parameter per class type parameter, with the class parameter's
-/// name and bound, declared by [owner] itself or by no element (never by a
-/// typedef), and a return type that instantiates the class with exactly those
-/// parameters.
+/// one type parameter per class type parameter, with matching names and bounds,
+/// and a return type that instantiates [owner] with exactly those parameters.
 ///
 /// Compared structurally rather than by element identity: under build_runner,
 /// analyzer 11 and later can hand back the tear-off's type with freshly
@@ -243,9 +245,15 @@ bool _declaresClassTypeParameters(
   final returnType = tearOff.returnType;
   if (own.length != classTypeParams.length ||
       returnType is! InterfaceType ||
+      returnType.element.baseElement != owner.baseElement ||
       returnType.typeArguments.length != own.length) {
     return false;
   }
+  final substitution = Substitution.fromPairs2(own, [
+    for (final parameter in classTypeParams)
+      parameter.instantiate(nullabilitySuffix: .none),
+  ]);
+  final implicitBound = owner.library.typeProvider.objectQuestionType;
   for (final (index, parameter) in own.indexed) {
     final classParameter = classTypeParams[index];
     final declaredBy = parameter.enclosingElement;
@@ -254,13 +262,14 @@ bool _declaresClassTypeParameters(
             (declaredBy is! InterfaceElement ||
                 declaredBy.name != owner.name ||
                 declaredBy.library.uri != owner.library.uri)) ||
-        parameter.bound?.getDisplayString() !=
-            classParameter.bound?.getDisplayString()) {
+        substitution.substituteType(parameter.bound ?? implicitBound) !=
+            (classParameter.bound ?? implicitBound)) {
       return false;
     }
     final argument = returnType.typeArguments[index];
     if (argument is! TypeParameterType ||
-        argument.element.name != parameter.name) {
+        argument.element.baseElement != parameter.baseElement ||
+        argument.nullabilitySuffix != .none) {
       return false;
     }
   }
