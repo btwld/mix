@@ -8,13 +8,13 @@ void main() {
   group('FlexStyler factory constructors', () {
     group('dot-shorthand resolution', () {
       test('factory resolves via dot-shorthand typed assignment', () {
-        FlexStyler styler = FlexStyler.direction(Axis.horizontal);
+        FlexStyler styler = FlexStyler.direction(.horizontal);
         expect(styler.$direction, isNotNull);
       });
 
       test('chaining after factory constructor works', () {
         final styler = FlexStyler.direction(
-          Axis.horizontal,
+          .horizontal,
         ).spacing(8).mainAxisAlignment(.center);
         expect(styler.$direction, isNotNull);
         expect(styler.$spacing, isNotNull);
@@ -25,29 +25,29 @@ void main() {
     group('factory matches instance method', () {
       test('direction', () {
         expect(
-          FlexStyler.direction(Axis.horizontal),
-          equals(FlexStyler(direction: Axis.horizontal)),
+          FlexStyler.direction(.horizontal),
+          equals(FlexStyler(direction: .horizontal)),
         );
       });
 
       test('mainAxisAlignment', () {
         expect(
           FlexStyler.mainAxisAlignment(.center),
-          equals(FlexStyler(mainAxisAlignment: MainAxisAlignment.center)),
+          equals(FlexStyler(mainAxisAlignment: .center)),
         );
       });
 
       test('crossAxisAlignment', () {
         expect(
-          FlexStyler.crossAxisAlignment(CrossAxisAlignment.stretch),
-          equals(FlexStyler(crossAxisAlignment: CrossAxisAlignment.stretch)),
+          FlexStyler.crossAxisAlignment(.stretch),
+          equals(FlexStyler(crossAxisAlignment: .stretch)),
         );
       });
 
       test('mainAxisSize', () {
         expect(
-          FlexStyler.mainAxisSize(MainAxisSize.min),
-          equals(FlexStyler(mainAxisSize: MainAxisSize.min)),
+          FlexStyler.mainAxisSize(.min),
+          equals(FlexStyler(mainAxisSize: .min)),
         );
       });
 
@@ -57,43 +57,37 @@ void main() {
 
       test('clipBehavior', () {
         expect(
-          FlexStyler.clipBehavior(Clip.hardEdge),
-          equals(FlexStyler(clipBehavior: Clip.hardEdge)),
+          FlexStyler.clipBehavior(.hardEdge),
+          equals(FlexStyler(clipBehavior: .hardEdge)),
         );
       });
 
       test('row', () {
-        expect(
-          FlexStyler.row(),
-          equals(FlexStyler(direction: Axis.horizontal)),
-        );
+        expect(FlexStyler.row(), equals(FlexStyler(direction: .horizontal)));
       });
 
       test('column', () {
-        expect(
-          FlexStyler.column(),
-          equals(FlexStyler(direction: Axis.vertical)),
-        );
+        expect(FlexStyler.column(), equals(FlexStyler(direction: .vertical)));
       });
 
       test('verticalDirection', () {
         expect(
-          FlexStyler.verticalDirection(VerticalDirection.up),
-          equals(FlexStyler(verticalDirection: VerticalDirection.up)),
+          FlexStyler.verticalDirection(.up),
+          equals(FlexStyler(verticalDirection: .up)),
         );
       });
 
       test('textDirection', () {
         expect(
-          FlexStyler.textDirection(TextDirection.rtl),
-          equals(FlexStyler(textDirection: TextDirection.rtl)),
+          FlexStyler.textDirection(.rtl),
+          equals(FlexStyler(textDirection: .rtl)),
         );
       });
 
       test('textBaseline', () {
         expect(
-          FlexStyler.textBaseline(TextBaseline.alphabetic),
-          equals(FlexStyler(textBaseline: TextBaseline.alphabetic)),
+          FlexStyler.textBaseline(.alphabetic),
+          equals(FlexStyler(textBaseline: .alphabetic)),
         );
       });
     });
@@ -101,7 +95,7 @@ void main() {
     group('resolved values', () {
       test('direction resolves correctly', () {
         final direction = FlexStyler.direction(
-          Axis.horizontal,
+          .horizontal,
         ).$direction!.resolveProp(MockBuildContext());
         expect(direction, Axis.horizontal);
       });

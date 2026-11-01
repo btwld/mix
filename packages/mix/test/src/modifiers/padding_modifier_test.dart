@@ -5,6 +5,21 @@ import 'package:mix/mix.dart';
 import '../../helpers/testing_utils.dart';
 
 void main() {
+  test('bounded padding lerp preserves directional inset values', () {
+    const begin = PaddingModifier(
+      EdgeInsetsDirectional.only(start: 10, end: 4),
+    );
+    const end = PaddingModifier(EdgeInsetsDirectional.only(start: 20, end: 8));
+    final middle = begin.lerp(end, 0.5).padding;
+    expect(
+      middle.resolve(TextDirection.ltr),
+      const EdgeInsets.only(left: 15, right: 6),
+    );
+    expect(
+      middle.resolve(TextDirection.rtl),
+      const EdgeInsets.only(left: 6, right: 15),
+    );
+  });
   group('PaddingModifier', () {
     group('Constructor', () {
       test('creates with zero padding by default', () {

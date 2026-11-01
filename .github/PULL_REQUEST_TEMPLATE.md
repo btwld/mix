@@ -1,22 +1,11 @@
-#### Related issue
+## Changes
 
-Is it related to any opened issue?
+Describe the problem, resulting behavior, and any related issue.
 
-### Description
+## Validation
 
-Please summarize the changes.
+List checks run and any limits on verification.
 
-### Changes
-
-List specific changes made in this PR.
-
-**Review Checklist**
-
-- [ ] **Testing**: Have you tested your changes, including unit tests and integration tests for affected code?
-- [ ] **Breaking Changes**: Does this change introduce breaking changes affecting existing code or users?
-- [ ] **Documentation Updates**: Are all relevant documentation files (e.g. README, API docs) updated to reflect the changes in this PR?
-- [ ] **Website Updates**: Is the website containing the updates you make on documentation?
-
-### Additional Information (optional)
-
-Is there any additional context or documentation that might be helpful for reviewers?
+- [ ] Compatibility and breaking changes considered.
+- [ ] Relevant repository documentation updated.
+- [ ] Website documentation updated in btwld/mix-docs when needed.

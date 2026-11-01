@@ -328,7 +328,7 @@ void main() {
                   style: BoxStyler()
                       .size(100, 100)
                       .color(Colors.blue)
-                      .onPressed(BoxStyler().color(Colors.red)),
+                      .onPressed(.color(Colors.red)),
                 ),
               );
             },
@@ -750,7 +750,7 @@ void main() {
               style: BoxStyler()
                   .size(100, 100)
                   .color(Colors.blue)
-                  .onFocusVisible(BoxStyler().color(Colors.red)),
+                  .onFocusVisible(.color(Colors.red)),
             ),
           ),
         ),

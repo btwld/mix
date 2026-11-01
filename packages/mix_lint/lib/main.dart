@@ -1,7 +1,7 @@
-/// The entry point the Dart analysis server loads for this plugin.
-///
-/// The analysis server imports `package:mix_lint/main.dart` and reads its
-/// top-level `plugin`; without this file the plugin fails to compile there.
-library;
+import 'mix_lint.dart';
 
-export 'mix_lint.dart' show plugin;
+/// The plugin instance that the Dart analysis server loads.
+///
+/// The analysis server imports `package:mix_lint/main.dart` and reads this
+/// top-level variable, so its name and location must not change.
+final plugin = MixLintPlugin();

@@ -86,8 +86,8 @@ void main() {
           child: Box(
             style: BoxStyler()
                 .paddingAll(8)
-                .onBreakpoint(mobileToken(), BoxStyler().color(Colors.red))
-                .onBreakpoint(customToken(), BoxStyler().color(Colors.blue)),
+                .onBreakpoint(mobileToken(), .color(Colors.red))
+                .onBreakpoint(customToken(), .color(Colors.blue)),
           ),
         ),
       );

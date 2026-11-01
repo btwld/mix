@@ -34,14 +34,14 @@ FlexBoxStyler gridCopy() => FlexBoxStyler()
 
 TextStyler gridHeadline({required bool detailed}) => TextStyler()
     .fontSize(detailed ? 14 : 20)
-    .fontWeight(detailed ? FontWeight.w700 : FontWeight.w800)
+    .fontWeight(detailed ? .w700 : .w800)
     .color(_ink);
 
 TextStyler gridSupport() =>
-    TextStyler().fontSize(12).fontWeight(FontWeight.w600).color(_muted);
+    TextStyler().fontSize(12).fontWeight(.w600).color(_muted);
 
 TextStyler gridCaption() =>
-    TextStyler().fontSize(12).fontWeight(FontWeight.w600).color(_muted);
+    TextStyler().fontSize(12).fontWeight(.w600).color(_muted);
 
 class _Picker<T> extends StatelessWidget {
   const _Picker({

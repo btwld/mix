@@ -57,10 +57,10 @@ BoxStyler folderFrontStyle({required bool isOpen}) => BoxStyler()
     .size(72, 56)
     .borderRadius(
       .only(
-        topLeft: const Radius.circular(8),
-        topRight: const Radius.circular(18),
-        bottomLeft: const Radius.circular(12),
-        bottomRight: const Radius.circular(12),
+        topLeft: const .circular(8),
+        topRight: const .circular(18),
+        bottomLeft: const .circular(12),
+        bottomRight: const .circular(12),
       ),
     )
     .color(warningColor)

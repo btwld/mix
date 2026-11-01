@@ -50,7 +50,7 @@ void main() {
         );
         final boxAttribute = BoxStyler(
           constraints: BoxConstraintsMix().width(100).height(200),
-          decoration: DecorationMix.color(Colors.blue),
+          decoration: .color(Colors.blue),
           animation: animation,
         );
 
@@ -199,9 +199,9 @@ void main() {
             .height(100)
             .alignment(Alignment.center)
             .wrap(
-              WidgetModifierConfig.modifiers([
+              .modifiers([
                 OpacityModifierMix(opacity: 0.5),
-                PaddingModifierMix(padding: EdgeInsetsGeometryMix.all(10)),
+                PaddingModifierMix(padding: .all(10)),
                 ClipOvalModifierMix(),
               ]),
             );
@@ -248,9 +248,9 @@ void main() {
             .height(100)
             .color(Colors.blue)
             .wrap(
-              WidgetModifierConfig.modifiers([
+              .modifiers([
                 OpacityModifierMix(opacity: 0.5),
-                PaddingModifierMix(padding: EdgeInsetsGeometryMix.all(10)),
+                PaddingModifierMix(padding: .all(10)),
                 ClipOvalModifierMix(),
                 VisibilityModifierMix(visible: true),
               ]),
@@ -324,7 +324,7 @@ void main() {
             .wrap(
               WidgetModifierConfig.modifiers([
                 OpacityModifierMix(opacity: 0.5),
-                PaddingModifierMix(padding: EdgeInsetsGeometryMix.all(10)),
+                PaddingModifierMix(padding: .all(10)),
                 ClipOvalModifierMix(),
               ]).orderOfModifiers(customOrder),
             );
@@ -510,7 +510,7 @@ void main() {
       testWidgets('Nested inheritance with multiple levels', (tester) async {
         final grandparentStyle = BoxStyler()
             .color(Colors.blue)
-            .padding(EdgeInsetsGeometryMix.all(20));
+            .padding(.all(20));
 
         final parentStyle = BoxStyler()
             .width(150)
@@ -630,11 +630,7 @@ void main() {
       testWidgets('inheritable works with widget modifiers', (tester) async {
         final parentStyle = BoxStyler()
             .color(Colors.red)
-            .wrap(
-              WidgetModifierConfig.modifiers([
-                OpacityModifierMix(opacity: 0.5),
-              ]),
-            );
+            .wrap(.modifiers([OpacityModifierMix(opacity: 0.5)]));
 
         final childStyle = BoxStyler().width(100).height(100);
 
@@ -671,13 +667,9 @@ void main() {
       testWidgets('StyleProvider scope works correctly with nested inheritance', (
         tester,
       ) async {
-        final outerStyle = BoxStyler()
-            .color(Colors.blue)
-            .padding(EdgeInsetsGeometryMix.all(10));
+        final outerStyle = BoxStyler().color(Colors.blue).padding(.all(10));
 
-        final middleStyle = BoxStyler()
-            .color(Colors.red)
-            .margin(EdgeInsetsGeometryMix.all(5));
+        final middleStyle = BoxStyler().color(Colors.red).margin(.all(5));
 
         final innerStyle = BoxStyler().width(50).height(50);
 
@@ -732,7 +724,7 @@ void main() {
               .width(100)
               .height(100)
               .color(Colors.blue)
-              .onHovered(BoxStyler().color(Colors.red));
+              .onHovered(.color(Colors.red));
 
           // Child style is just a simple style
           final childStyle = BoxStyler().width(50).height(50);
@@ -777,9 +769,7 @@ void main() {
 
           await tester.pumpWidget(
             StyleBuilder<BoxSpec>(
-              style: BoxStyler()
-                  .paddingAll(1)
-                  .onPressed(BoxStyler().padding(paddingMix)),
+              style: BoxStyler().paddingAll(1).onPressed(.padding(paddingMix)),
               controller: controller,
               builder: (context, spec) {
                 final expectedPadding = paddingMix.resolve(context);
@@ -812,7 +802,7 @@ void main() {
                     controller: controller,
                     style: BoxStyler()
                         .color(Colors.red)
-                        .onHovered(BoxStyler().color(Colors.blue)),
+                        .onHovered(.color(Colors.blue)),
                     builder: (context, spec) {
                       return Container(decoration: spec.decoration);
                     },
@@ -878,7 +868,7 @@ void main() {
           style: BoxStyler()
               .size(100, 100)
               .color(Colors.red)
-              .onHovered(BoxStyler().color(Colors.blueGrey)),
+              .onHovered(.color(Colors.blueGrey)),
           builder: (context, spec) {
             return Box(styleSpec: StyleSpec(spec: spec));
           },

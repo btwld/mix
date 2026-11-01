@@ -1,3 +1,55 @@
+## 2.3.1
+
+### Bug fixes
+
+- **Prop resolution:** when a value can't be converted to a `Mix`, the latest
+  source now wins, as everywhere else in Mix. Previously the value was dropped
+  and an earlier `Mix` source was used instead. Debug builds report the missing
+  converter through `FlutterError.reportError` instead of `debugPrint`, so it
+  shows up in `FlutterError.onError` and fails widget tests.
+
+## 2.3.0
+
+### New features
+
+- **Pressable boxes from stylers:** `BoxStyler.pressable(...)` returns a
+  `PressableBox` that uses the style, so `button.pressable(onPress: save,
+  child: label('Save'))` replaces `PressableBox(style: button, ...)`. It accepts
+  the same parameters and defaults as `PressableBox`.
+- **Focus visibility API:** The new `FocusVisibility` and
+  `FocusVisibilityScope` expose the same signal to widgets that draw their own
+  focus indicators or publish widget states themselves. Call
+  `FocusVisibility.ensureInitialized()` at startup if a pointer press can
+  happen before the first Mix widget builds.
+
+### Bug fixes
+
+- **Focus visible:** `onFocusVisible` hides focus indicators after a pointer
+  press until the next keyboard input, so focus from a mouse click, or moved
+  in code after one, no longer shows a focus ring on desktop. This follows the
+  pointer and keyboard part of CSS `:focus-visible` but not its text-input
+  exception; use `onFocused` for a ring on any focus.
+  `FocusHighlightStrategy.alwaysTraditional` and `alwaysTouch` still override
+  input.
+
+## 2.2.2
+
+### Bug fixes
+
+- **Modifier animation:** hover-only modifiers such as `.rotate(0.1)` now
+  animate back to their neutral value on exit without an explicit `.rotate(0)`.
+  Modifier tweens preserve exact endpoints, support interrupted transitions,
+  and snap additions/removals at the midpoint when no neutral value exists.
+  Interpolated opacity, padding, and blur remain within renderable bounds
+  during spring overshoot; rotation and valid overshoot still extrapolate.
+- **Modifier order:** `MixScope.orderOfModifiers` now affects rendering, with
+  style-local order taking precedence. Animated modifier lists retain this
+  order, including when scope order changes during removal, and phase styles
+  respond to inherited order changes without duplicating completion callbacks.
+  Implicit return animations keep their timing when a variant drops its
+  animation config. Existing scope
+  order settings that were previously ignored can change wrapper nesting.
+
 ## 2.2.1
 
 ### New features

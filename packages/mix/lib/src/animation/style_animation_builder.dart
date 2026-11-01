@@ -33,14 +33,7 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
     extends State<StyleAnimationBuilder<S>>
     with TickerProviderStateMixin {
   late StyleAnimationDriver<S> animationDriver;
-
-  @override
-  void initState() {
-    super.initState();
-    final spec = widget.spec;
-    final config = spec.animation;
-    animationDriver = _createAnimationDriver(config: config, initialSpec: spec);
-  }
+  bool _hasInitializedAnimationDriver = false;
 
   StyleAnimationDriver<S> _createAnimationDriver({
     required AnimationConfig? config,
@@ -78,23 +71,42 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
     };
   }
 
-  /// The config to keep using when a style drops its animation config.
-  ///
-  /// Implicit configs (curve, spring) keep animating toward the new spec, so a
-  /// variant that removes its animation still transitions back smoothly.
-  /// Keyframe and phase configs produce their own specs and may loop forever,
-  /// so they are dropped and the new spec is applied directly.
-  static AnimationConfig? _fallbackConfig(AnimationConfig? oldConfig) {
-    return switch (oldConfig) {
-      CurveAnimationConfig() || SpringAnimationConfig() => oldConfig,
-      _ => null,
-    };
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (!_hasInitializedAnimationDriver) {
+      final spec = widget.spec;
+      animationDriver = _createAnimationDriver(
+        config: spec.animation,
+        initialSpec: spec,
+      );
+      _hasInitializedAnimationDriver = true;
+
+      return;
+    }
+
+    animationDriver.didChangeDependencies();
   }
 
   @override
   void dispose() {
     animationDriver.dispose();
     super.dispose();
+  }
+
+  /// Whether to keep the implicit driver after the style's config is gone.
+  ///
+  /// It is retained for the update that drops the config, so the style
+  /// animates back, and for later updates while that return animation is
+  /// still in flight. Once it settles, the style no longer animates.
+  /// Phase/keyframe drivers must stop as soon as their config disappears.
+  bool _retainsImplicitDriver(AnimationConfig? oldConfig) {
+    if (animationDriver is! ImplicitAnimationDriver<S, AnimationConfig>) {
+      return false;
+    }
+
+    return oldConfig != null || animationDriver.isAnimating;
   }
 
   @override
@@ -106,17 +118,16 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
 
     if ((oldConfig.runtimeType == config.runtimeType) && config != null) {
       animationDriver.updateDriver(config);
-    } else {
+    } else if (config != null || !_retainsImplicitDriver(oldConfig)) {
       animationDriver.dispose();
       animationDriver = _createAnimationDriver(
-        config: config ?? _fallbackConfig(oldConfig),
+        config: config,
         initialSpec: oldWidget.spec,
       );
     }
 
-    if (oldWidget.spec != widget.spec) {
-      animationDriver.didUpdateSpec(oldWidget.spec, widget.spec);
-    }
+    // Equal visible values can carry refreshed modifier-order metadata.
+    animationDriver.didUpdateSpec(oldWidget.spec, widget.spec);
   }
 
   @override

@@ -19,11 +19,6 @@ mixin _$PaddingModifier
   }
 
   @override
-  PaddingModifier lerp(PaddingModifier? other, double t) {
-    return PaddingModifier(MixOps.lerp(padding, other?.padding, t));
-  }
-
-  @override
   List<Object?> get props => [padding];
 
   @override

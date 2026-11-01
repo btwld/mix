@@ -2,7 +2,6 @@ import 'package:fl_chart/fl_chart.dart' as fl;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mix/mix.dart';
 import 'package:mix_chart/mix_chart.dart';
 
 void main() {
@@ -25,12 +24,10 @@ void main() {
               style: mode == 'defaults'
                   ? const PieChartStyler.create()
                   : PieChartStyler().tooltip(
-                      ChartTooltipStyler().text(
-                        TextStyler()
-                            .fontSize(17)
-                            .textAlign(TextAlign.end)
-                            .maxLines(1)
-                            .overflow(TextOverflow.ellipsis),
+                      .text(
+                        .fontSize(
+                          17,
+                        ).textAlign(.end).maxLines(1).overflow(.ellipsis),
                       ),
                     ),
             ),

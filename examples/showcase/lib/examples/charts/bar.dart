@@ -37,6 +37,6 @@ class BarExample extends StatelessWidget {
         .palette(_palette)
         .frame(.showBorder(false))
         .grid(.showHorizontal(false).showVertical(false))
-        .bar(.width(24).borderRadius(BorderRadius.circular(4))),
+        .bar(.width(24).borderRadius(.circular(4))),
   );
 }

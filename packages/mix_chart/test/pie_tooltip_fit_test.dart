@@ -30,10 +30,8 @@ void main() {
                       : null,
                   style: PieChartStyler().tooltip(
                     value == null
-                        ? const ChartTooltipStyler.create()
-                        : ChartTooltipStyler()
-                              .fitHorizontally(value)
-                              .fitVertically(value),
+                        ? const .create()
+                        : .fitHorizontally(value).fitVertically(value),
                   ),
                 ),
               ),
@@ -96,9 +94,7 @@ void main() {
                 child: PieChart(
                   slices: [PieSlice(id: 'm', label: 'Mobile', value: 64)],
                   style: PieChartStyler().tooltip(
-                    ChartTooltipStyler()
-                        .fitHorizontally(horizontal)
-                        .fitVertically(vertical),
+                    .fitHorizontally(horizontal).fitVertically(vertical),
                   ),
                 ),
               ),

@@ -1,43 +1,74 @@
+import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 
-/// Returns true if [type] is a subtype of [MixStyler] (the Mix fluent API base).
-bool isMixStylerType(DartType? type) => _isSubtypeByName(type, 'MixStyler');
+/// Whether [element] is declared in a library of [packageName].
+bool isFromPackage(Element? element, String packageName) {
+  final uri = element?.library?.uri;
 
-/// Returns true if [type] is a subtype of [MixToken] (any token type).
-bool isMixTokenType(DartType? type) => _isSubtypeByName(type, 'MixToken');
-
-/// Returns true if [type] is a subtype of the Mix value base (`Mix`/`Mixable`).
-///
-/// Every ref-consuming Mix API — both Stylers (`MixStyler` → `Style` → `Mix`)
-/// and value utilities (`EdgeInsetsGeometryMix`, `DecorationMix`, ... → `Mix`) —
-/// shares this base, whether shipped in `package:mix` or generated in a user's
-/// package via `@MixableType`/`@MixableSpec`.
-bool isMixType(DartType? type) =>
-    _isSubtypeByName(type, 'Mix') || _isSubtypeByName(type, 'Mixable');
-
-/// Returns true if [type] is exactly [MixScope].
-bool isMixScopeType(DartType? type) => _matchesByName(type, 'MixScope');
-
-/// Returns true if [name] follows the variant method naming pattern
-/// (starts with 'on' followed by an uppercase letter, e.g. onHovered, onDark).
-bool isVariantMethodName(String name) {
-  if (name.length <= 2) return false;
-  if (!name.startsWith('on')) return false;
-  final third = name[2];
-
-  return third == third.toUpperCase() && third != third.toLowerCase();
+  return uri != null &&
+      uri.scheme == 'package' &&
+      uri.pathSegments.isNotEmpty &&
+      uri.pathSegments.first == packageName;
 }
 
-bool _isSubtypeByName(DartType? type, String className) {
+/// Whether [element] is declared in `package:mix`.
+bool isFromMix(Element? element) => isFromPackage(element, 'mix');
+
+/// Whether [element] is the `package:mix` class named [className].
+bool isMixClass(Element? element, String className) =>
+    element is InterfaceElement &&
+    element.name == className &&
+    isFromMix(element);
+
+/// Whether [type] is a Styler (a subtype of `MixStyler`).
+bool isMixStylerType(DartType? type) => isMixSubtype(type, 'MixStyler');
+
+/// Whether [type] is a design token (a subtype of `MixToken`).
+bool isMixTokenType(DartType? type) => isMixSubtype(type, 'MixToken');
+
+/// Whether [type] is a Mix value (a subtype of `Mix` or `Mixable`).
+///
+/// Stylers (`MixStyler` → `Style` → `Mix`) and value types such as
+/// `EdgeInsetsGeometryMix` share this base, including types generated in a
+/// user's package with `@MixableSpec` or `@Mixable`.
+bool isMixType(DartType? type) =>
+    isMixSubtype(type, 'Mix') || isMixSubtype(type, 'Mixable');
+
+/// Whether [type] is exactly `MixScope`.
+bool isMixScopeType(DartType? type) =>
+    type is InterfaceType && isMixClass(type.element, 'MixScope');
+
+/// Whether [type] is a Flutter widget (a subtype of `Widget`).
+bool isFlutterWidgetType(DartType? type) {
+  if (type is! InterfaceType) return false;
+
+  bool isWidget(InterfaceElement element) =>
+      element.name == 'Widget' && isFromPackage(element, 'flutter');
+
+  return isWidget(type.element) ||
+      type.element.allSupertypes.any((t) => isWidget(t.element));
+}
+
+/// Whether [parameter] is declared with a type parameter of its method, such
+/// as `T` in `foo<T>(T value)`.
+///
+/// The argument infers that type, so a dot shorthand there has no context
+/// type.
+bool isMethodTypeParameter(FormalParameterElement? parameter) {
+  final declaredType = switch (parameter?.baseElement) {
+    FormalParameterElement(:final type) => type,
+    _ => null,
+  };
+
+  return declaredType is TypeParameterType &&
+      declaredType.element.enclosingElement is ExecutableElement;
+}
+
+/// Whether [type] is the `package:mix` class [className] or a subtype of it.
+bool isMixSubtype(DartType? type, String className) {
   if (type is! InterfaceType) return false;
   final element = type.element;
-  if (element.name == className) return true;
+  if (isMixClass(element, className)) return true;
 
-  return element.allSupertypes.any((t) => t.element.name == className);
-}
-
-bool _matchesByName(DartType? type, String className) {
-  if (type is! InterfaceType) return false;
-
-  return type.element.name == className;
+  return element.allSupertypes.any((t) => isMixClass(t.element, className));
 }

@@ -15,7 +15,7 @@ void main() {
       test('chaining after factory constructor works', () {
         final styler = TextStyler.color(
           Colors.red,
-        ).fontSize(16).fontWeight(FontWeight.bold);
+        ).fontSize(16).fontWeight(.bold);
         expect(styler.$style, isNotNull);
       });
     });
@@ -24,15 +24,15 @@ void main() {
       // Direct constructor param factories
       test('overflow', () {
         expect(
-          TextStyler.overflow(TextOverflow.ellipsis),
-          equals(TextStyler(overflow: TextOverflow.ellipsis)),
+          TextStyler.overflow(.ellipsis),
+          equals(TextStyler(overflow: .ellipsis)),
         );
       });
 
       test('textAlign', () {
         expect(
-          TextStyler.textAlign(TextAlign.center),
-          equals(TextStyler(textAlign: TextAlign.center)),
+          TextStyler.textAlign(.center),
+          equals(TextStyler(textAlign: .center)),
         );
       });
 
@@ -46,8 +46,8 @@ void main() {
 
       test('textDirection', () {
         expect(
-          TextStyler.textDirection(TextDirection.rtl),
-          equals(TextStyler(textDirection: TextDirection.rtl)),
+          TextStyler.textDirection(.rtl),
+          equals(TextStyler(textDirection: .rtl)),
         );
       });
 
@@ -70,15 +70,15 @@ void main() {
 
       test('fontWeight', () {
         expect(
-          TextStyler.fontWeight(FontWeight.bold),
-          equals(TextStyler().fontWeight(FontWeight.bold)),
+          TextStyler.fontWeight(.bold),
+          equals(TextStyler().fontWeight(.bold)),
         );
       });
 
       test('fontStyle', () {
         expect(
-          TextStyler.fontStyle(FontStyle.italic),
-          equals(TextStyler().fontStyle(FontStyle.italic)),
+          TextStyler.fontStyle(.italic),
+          equals(TextStyler().fontStyle(.italic)),
         );
       });
 
@@ -109,8 +109,8 @@ void main() {
 
       test('decoration', () {
         expect(
-          TextStyler.decoration(TextDecoration.underline),
-          equals(TextStyler().decoration(TextDecoration.underline)),
+          TextStyler.decoration(.underline),
+          equals(TextStyler().decoration(.underline)),
         );
       });
 
@@ -122,15 +122,15 @@ void main() {
 
       test('textWidthBasis', () {
         expect(
-          TextStyler.textWidthBasis(TextWidthBasis.longestLine),
-          equals(TextStyler(textWidthBasis: TextWidthBasis.longestLine)),
+          TextStyler.textWidthBasis(.longestLine),
+          equals(TextStyler(textWidthBasis: .longestLine)),
         );
       });
 
       test('textScaler', () {
         expect(
-          TextStyler.textScaler(const TextScaler.linear(2.0)),
-          equals(TextStyler(textScaler: const TextScaler.linear(2.0))),
+          TextStyler.textScaler(const .linear(2.0)),
+          equals(TextStyler(textScaler: const .linear(2.0))),
         );
       });
 
@@ -166,8 +166,8 @@ void main() {
 
       test('textBaseline', () {
         expect(
-          TextStyler.textBaseline(TextBaseline.alphabetic),
-          equals(TextStyler().textBaseline(TextBaseline.alphabetic)),
+          TextStyler.textBaseline(.alphabetic),
+          equals(TextStyler().textBaseline(.alphabetic)),
         );
       });
 
@@ -180,8 +180,8 @@ void main() {
 
       test('decorationStyle', () {
         expect(
-          TextStyler.decorationStyle(TextDecorationStyle.dashed),
-          equals(TextStyler().decorationStyle(TextDecorationStyle.dashed)),
+          TextStyler.decorationStyle(.dashed),
+          equals(TextStyler().decorationStyle(.dashed)),
         );
       });
 

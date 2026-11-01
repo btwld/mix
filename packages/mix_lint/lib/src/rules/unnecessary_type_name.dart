@@ -1,0 +1,174 @@
+import 'package:analyzer/analysis_rule/analysis_rule.dart';
+import 'package:analyzer/analysis_rule/rule_context.dart';
+import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
+import 'package:analyzer/dart/analysis/features.dart';
+import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/visitor.dart';
+import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/type.dart';
+import 'package:analyzer/error/error.dart';
+
+import '../utils/styler_calls.dart';
+import '../utils/type_helpers.dart';
+
+/// A rule that reports `TypeName.member` in a Styler expression when
+/// `.member` resolves to the same member.
+///
+/// That is the case when the exact parameter type declares `member`.
+class UnnecessaryTypeName extends AnalysisRule {
+  static const LintCode code = LintCode(
+    'unnecessary_type_name',
+    "The type name '{0}' can be inferred from the parameter type.",
+    correctionMessage: "Try using the dot shorthand '.{1}'.",
+  );
+
+  UnnecessaryTypeName()
+    : super(
+        name: 'unnecessary_type_name',
+        description:
+            'Prefer dot shorthands over type names in Styler expressions.',
+      );
+
+  @override
+  LintCode get diagnosticCode => code;
+
+  @override
+  void registerNodeProcessors(
+    RuleVisitorRegistry registry,
+    RuleContext context,
+  ) {
+    // Dot shorthands need language version 3.10 or later.
+    if (!context.isFeatureEnabled(Feature.dot_shorthands)) return;
+
+    final visitor = _Visitor(this);
+    registry
+      ..addInstanceCreationExpression(this, visitor)
+      ..addMethodInvocation(this, visitor)
+      ..addPrefixedIdentifier(this, visitor)
+      ..addPropertyAccess(this, visitor);
+  }
+}
+
+class _Visitor extends SimpleAstVisitor<void> {
+  final AnalysisRule rule;
+
+  const _Visitor(this.rule);
+
+  /// Reports [node] when it is an argument to a Mix API and [member] is a
+  /// static member or named constructor of the parameter's type.
+  void _check(
+    Expression node, {
+    required Element? member,
+    required Expression? typeName,
+  }) {
+    // Cheap checks first: these visitors see every call and property access.
+    if (!_isStaticOrNamedConstructor(member)) return;
+    if (typeName != null && !_isTypeName(typeName)) return;
+
+    final argument = enclosingArgument(node);
+    final parameter = argument.correspondingParameter;
+    final declaringType = member?.enclosingElement;
+    final parameterType = parameter?.type;
+    if (declaringType is! InterfaceElement ||
+        parameterType is! InterfaceType ||
+        parameterType.element != declaringType) {
+      return;
+    }
+    if (isMethodTypeParameter(parameter)) return;
+    if (!_isMixApiArgument(argument)) return;
+
+    rule.reportAtNode(
+      node,
+      arguments: [declaringType.name ?? '', member?.name ?? ''],
+    );
+  }
+
+  /// Whether [argument] is passed to a call that builds a Styler, or to a Mix
+  /// call nested inside one.
+  ///
+  /// Mix calls are calls that `package:mix` declares and calls that build Mix
+  /// values, including generated types.
+  bool _isMixApiArgument(Argument argument) {
+    final argumentList = argument.parent;
+    if (argumentList is! ArgumentList) return false;
+
+    final (invocation, callee) = switch (argumentList.parent) {
+      final MethodInvocation node => (node, node.methodName.element),
+      final InstanceCreationExpression node => (
+        node,
+        node.constructorName.element,
+      ),
+      final DotShorthandInvocation node => (node, node.memberName.element),
+      final DotShorthandConstructorInvocation node => (
+        node,
+        node.constructorName.element,
+      ),
+      _ => (null, null),
+    };
+    if (invocation == null) return false;
+    if (isStylerCall(invocation)) return true;
+    if (!isFromMix(callee) && !isMixType(invocation.staticType)) return false;
+
+    return _isInsideStylerCall(invocation);
+  }
+
+  /// Whether [node] is nested in an argument of a Styler call, such as
+  /// `.widgetState(...)` in `.onNot(.widgetState(...), ...)`.
+  bool _isInsideStylerCall(AstNode node) {
+    for (
+      AstNode? current = node.parent;
+      current != null &&
+          current is! Statement &&
+          current is! Declaration &&
+          current is! FunctionBody;
+      current = current.parent
+    ) {
+      if (current is ArgumentList && isStylerCall(current.parent)) return true;
+    }
+
+    return false;
+  }
+
+  /// Whether [target] names a type, such as `FontWeight` in `FontWeight.w600`
+  /// or `ui.FontWeight` with an import prefix.
+  bool _isTypeName(Expression target) {
+    final name = target is PrefixedIdentifier ? target.identifier : target;
+
+    return name is SimpleIdentifier && name.element is InterfaceElement;
+  }
+
+  bool _isStaticOrNamedConstructor(Element? member) => switch (member) {
+    ConstructorElement() => member.name != 'new',
+    ExecutableElement() => member.isStatic,
+    FieldElement() => member.isStatic,
+    _ => false,
+  };
+
+  @override
+  void visitInstanceCreationExpression(InstanceCreationExpression node) {
+    // Only named constructors. Mix style does not use `.new(...)`.
+    if (node.constructorName.name == null) return;
+    // `Type<Args>.name()` would lose its explicit type arguments.
+    if (node.constructorName.type.typeArguments != null) return;
+    _check(node, member: node.constructorName.element, typeName: null);
+  }
+
+  @override
+  void visitMethodInvocation(MethodInvocation node) {
+    final target = node.target;
+    if (target == null) return;
+    _check(node, member: node.methodName.element, typeName: target);
+  }
+
+  @override
+  void visitPrefixedIdentifier(PrefixedIdentifier node) {
+    _check(node, member: node.identifier.element, typeName: node.prefix);
+  }
+
+  @override
+  void visitPropertyAccess(PropertyAccess node) {
+    final target = node.target;
+    if (target == null) return;
+    _check(node, member: node.propertyName.element, typeName: target);
+  }
+}

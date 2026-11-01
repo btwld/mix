@@ -38,7 +38,7 @@ void main() {
         BoxStyler()
             .size(50, 50)
             .color(Colors.blue)
-            .onFocusVisible(BoxStyler().color(Colors.red)),
+            .onFocusVisible(.color(Colors.red)),
         controller,
       );
     }
@@ -97,7 +97,7 @@ void main() {
               style: BoxStyler()
                   .size(50, 50)
                   .color(Colors.blue)
-                  .onFocusVisible(BoxStyler().color(Colors.red)),
+                  .onFocusVisible(.color(Colors.red)),
             ),
           ),
         ),
@@ -139,8 +139,8 @@ void main() {
           buildStyle(
             BoxStyler()
                 .size(50, 50)
-                .variant(selected, BoxStyler().color(Colors.red))
-                .onFocusVisible(BoxStyler().color(Colors.blue)),
+                .variant(selected, .color(Colors.red))
+                .onFocusVisible(.color(Colors.blue)),
             selectedAndFocusVisible(),
           ),
         );
@@ -155,8 +155,8 @@ void main() {
           buildStyle(
             BoxStyler()
                 .size(50, 50)
-                .onFocusVisible(BoxStyler().color(Colors.blue))
-                .variant(selected, BoxStyler().color(Colors.red)),
+                .onFocusVisible(.color(Colors.blue))
+                .variant(selected, .color(Colors.red)),
             selectedAndFocusVisible(),
           ),
         );

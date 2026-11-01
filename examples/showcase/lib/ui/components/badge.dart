@@ -63,7 +63,7 @@ const _noFill = Color(0x00000000);
 BadgeStyler _base() => BadgeStyler()
     .padding(.symmetric(horizontal: _paddingX, vertical: _paddingY))
     .borderRadius(.all(UiTokens.radius()))
-    .label(.fontSize(_labelSize).fontWeight(FontWeight.w500));
+    .label(.fontSize(_labelSize).fontWeight(.w500));
 
 BadgeStyler _variantStyle(UiBadgeVariant variant) => switch (variant) {
   .primary => _filled(

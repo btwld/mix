@@ -1,213 +1,76 @@
 # Architecture
 
-Core abstractions of the Mix styling system.
+Portable model of Mix's resolution pipeline. For repository history and pending
+proposals, see the [architecture decision log](https://github.com/btwld/mix/blob/main/ARCHITECTURE.md).
+Confirm exact signatures in the installed version.
 
-## Table of Contents
+## Spec, Styler and Widget
 
-- [Spec](#spec--immutable-resolved-data)
-- [Style and Styler](#style--styler--immutable-fluent-builder)
-- [Prop](#propv--unified-property-system)
-- [StyleWidget](#stylewidget--base-widget)
-- [Resolution pipeline](#resolution-pipeline)
-- [WidgetModifier](#widgetmodifier--widget-wrapper)
-- [Mix values](#mixv--resolvable-dto)
+A `Spec<S>` stores immutable resolved data and supports copying, interpolation
+and equality. Widget-backed specs commonly use `@MixableSpec(target: Foo.new)`
+and a generated `_$FooSpec` mixin. Nullable fields leave defaults to rendering.
+Use `copyWith()` for changes; do not mutate shared specs.
 
-## Spec — Immutable Resolved Data
+A `Style<S>` resolves to `StyleSpec<S>`, which combines the spec with animation
+and resolved modifiers. Generated stylers extend `MixStyler` and return new
+merged instances. `.create()` takes `Prop<V>` fields; normal constructors and
+fluent methods accept the ergonomic Flutter/Mix surface.
 
-**File:** `packages/mix/lib/src/core/spec.dart`
+A `StyleWidget<S>` accepts a style or a pre-resolved `styleSpec`. The latter
+bypasses style resolution, not all rendering behavior. Generated callable
+stylers construct compatible target widgets. Plain Widget targets need a
+compatible named `style` parameter, not inheritance from `StyleWidget`.
 
-```dart
-@immutable
-abstract class Spec<T extends Spec<T>> with Equatable {
-  const Spec();
-  T copyWith();
-  T lerp(covariant T? other, double t);
-}
-```
+## Props and Mix values
 
-All Specs are `@immutable final class` with nullable fields representing resolved values. Generated `_$FooSpec` mixin provides `copyWith()`, `lerp()`, equality/props, and diagnostics. `_$FooSpecMethods` is only a deprecated compatibility typedef.
+`Prop<V>` defers a value until context is available:
 
-**Example — BoxSpec:**
+| Source | Construction | Behavior |
+|---|---|---|
+| Concrete value | `Prop.value(v)` | Replacement at resolution |
+| Token | `Prop.token(token)` | Resolve a named value or context default |
+| Mix value | `Prop.mix(mix)` | Accumulate fieldwise, then resolve |
+| Directives only | `Prop.directives(...)` | Transform the resolved value |
 
-```dart
-@MixableSpec(target: Box.new)
-@immutable
-final class BoxSpec with _$BoxSpec {
-  final AlignmentGeometry? alignment;
-  final EdgeInsetsGeometry? padding;
-  final EdgeInsetsGeometry? margin;
-  final BoxConstraints? constraints;
-  final Decoration? decoration;
-  final Decoration? foregroundDecoration;
-  final Matrix4? transform;
-  final AlignmentGeometry? transformAlignment;
-  final Clip? clipBehavior;
+`Prop.maybe` and `maybeMix` return null for null inputs. `mergeProp()` collects
+sources; during resolution Mix converters may convert compatible plain values
+for accumulation. If only plain values remain, the last wins. Directives merge
+and run after resolving sources. Avoid describing all style merges as either
+unconditional replacement or deep merge.
 
-  const BoxSpec({this.alignment, this.padding, this.margin, ...});
-}
-```
+A `Mix<V>` is a resolvable intermediate value, such as `EdgeInsetsGeometryMix`.
+Separate partial Mix inputs can contribute different sides of padding. A later
+plain whole value and a later partial Mix value therefore need not behave alike.
 
-Requires `part 'box_spec.g.dart'` for the generated Spec mixin and, when `target:` is provided, the generated Styler.
+## Resolution pipeline
 
-## Style / Styler — Immutable Fluent Builder
+1. `StyleBuilder` builds the style in context and merges active variants.
+2. Active patches without declared widget-state dependencies merge first;
+   state-dependent patches merge last, stably in declaration order per group.
+3. `resolve()` resolves property sources and directives into `StyleSpec<S>`.
+4. Style animation interpolates compatible specs.
+5. The widget maps spec values to Flutter rendering.
+6. Providers expose the resolved style; modifiers wrap the rendered widget.
 
-**Files:** `packages/mix/lib/src/core/style.dart`, `packages/mix/lib/src/style/abstracts/styler.dart`
+`StyleVariation` results skip recursive variant merging. `FocusVisibleVariant`
+is state-dependent even though it is not a `WidgetStateVariant`; declared
+dependencies determine priority. Read [variants](variants.md) before extending
+tracking or activation behavior.
 
-```dart
-abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>> {
-  final List<VariantStyle<S>>? $variants;
-  final WidgetModifierConfig? $modifier;
-  final AnimationConfig? $animation;
+## Tokens and wrappers
 
-  Style<S> mergeActiveVariants(BuildContext context, {required Set<NamedVariant> namedVariants});
-  StyleSpec<S> resolve(BuildContext context);
-  Style<S> merge(covariant Style<S>? other);
-  StyleSpec<S> build(BuildContext context, {Set<NamedVariant> namedVariants = const {}});
-}
-```
+`MixScope` supplies token values and inherited modifier order. Ordinary tokens
+need values; `ContextToken` can compute a default without a scope. A plain
+nested scope shadows, while `MixScope.inherit` merges partial overrides.
 
-Generated Stylers extend `MixStyler<ST, SP>` and return new merged instances from fluent methods:
-- `VariantStyleMixin` — `onDark()`, `onLight()`, breakpoint/platform variants
-- `WidgetStateVariantMixin` — `onHovered()`, `onPressed()`, `onFocused()`, etc.
-- `AnimationStyleMixin` — `animate()`, `phaseAnimation()`, `keyframeAnimation()`
-- `WidgetModifierStyleMixin` — `wrap()`
-- Plus domain mixins: `SpacingStyleMixin`, `DecorationStyleMixin`, `BorderStyleMixin`, etc.
+Modifiers are resolved specs that wrap widgets. A style-local modifier order
+wins over the nearest scope and package default; remaining configured types
+are appended stably. The resolved order is outermost to innermost, so rendering
+wraps the list in reverse. See [modifiers](widget-modifiers-directives.md).
 
-**Example — BoxStyler:**
+## Where to inspect source
 
-```dart
-class BoxStyler extends MixStyler<BoxStyler, BoxSpec>
-    with
-        BorderStyleMixin<BoxStyler>,
-        BorderRadiusStyleMixin<BoxStyler>,
-        ShadowStyleMixin<BoxStyler>,
-        DecorationStyleMixin<BoxStyler>,
-        SpacingStyleMixin<BoxStyler>,
-        TransformStyleMixin<BoxStyler>,
-        ConstraintStyleMixin<BoxStyler>,
-        TransformStyleMixin<BoxStyler> {
-
-  final Prop<AlignmentGeometry>? $alignment;
-  final Prop<EdgeInsetsGeometry>? $padding;
-  final Prop<BoxConstraints>? $constraints;
-  final Prop<Decoration>? $decoration;
-  // ...
-
-  // Internal constructor (const-capable, takes raw Prop<V>)
-  const BoxStyler.create({
-    Prop<AlignmentGeometry>? alignment,
-    Prop<EdgeInsetsGeometry>? padding,
-    // ...
-    super.variants, super.modifier, super.animation,
-  }) : $alignment = alignment, $padding = padding, ...;
-
-  // Public constructor (takes Flutter/Mix types, wraps with Prop)
-  BoxStyler({
-    AlignmentGeometry? alignment,
-    EdgeInsetsGeometryMix? padding,
-    // ...
-  }) : this.create(
-    alignment: Prop.maybe(alignment),
-    padding: Prop.maybeMix(padding),
-    // ...
-  );
-}
-```
-
-## Prop<V> — Unified Property System
-
-**File:** `packages/mix/lib/src/core/prop.dart`
-
-The central value wrapper enabling tokens, Mix types, merging, and directives.
-
-### Sources
-
-Each Prop holds `List<PropSource<V>>`:
-
-| Source | Created By | Resolution |
-|--------|-----------|------------|
-| `ValueSource<V>` | `Prop.value(v)` | Returns value directly |
-| `TokenSource<V>` | `Prop.token(t)` | Resolves from `MixScope` via `BuildContext` |
-| `MixSource<V>` | `Prop.mix(m)` | Holds a `Mix<V>` DTO for accumulation |
-
-### Factory Methods
-
-```dart
-Prop.value(v)       // Direct value (no auto-conversion to Mix)
-Prop.mix(m)         // Explicit Mix value for accumulation merge
-Prop.token(t)       // Token reference resolved from MixScope
-Prop.maybe(v)       // Nullable — returns null if v is null
-Prop.maybeMix(m)    // Nullable — returns null if m is null
-Prop.directives(ds) // Directives only, no value source
-```
-
-### Merge Behavior
-
-`mergeProp()` always accumulates all sources. During resolution:
-
-- **Regular values (ValueSource)**: last value wins (replacement)
-- **Mix values (MixSource)**: all Mix values merged via accumulation, then resolved
-- **Directives**: merged from both Prop instances, applied after resolution
-
-### Resolution Process
-
-```
-1. Resolve all sources (tokens → values, Mix types stay as Mix)
-2. If Mix values present → try to convert regular values through `MixConverterRegistry`, merge convertible Mix values, resolve
-3. If only regular values → use last value (replacement)
-4. Apply directives to final value
-```
-
-## StyleWidget — Base Widget
-
-**File:** `packages/mix/lib/src/core/style_widget.dart`
-
-```dart
-abstract class StyleWidget<S extends Spec<S>> extends StatefulWidget {
-  final Style<S> style;
-  final StyleSpec<S>? styleSpec;
-
-  Widget build(BuildContext context, S spec);
-}
-```
-
-Accepts either `style` (goes through full resolution) or `styleSpec` (pre-resolved, bypasses resolution). `StyleBuilder` merges variants and resolves the style; `StyleSpecBuilder` runs animation, provides the `StyleSpec`, and applies modifiers.
-
-## Resolution Pipeline
-
-```
-StyleWidget.build(context)
-  → StyleBuilder<S>
-    → style.build(context, namedVariants)
-      → mergeActiveVariants(context)     // evaluate variants, sort by priority
-      → resolve(context)                 // Prop.resolveProp() for each field
-      → StyleSpec<S>                     // wraps Spec + AnimationConfig + resolved WidgetModifier list
-    → StyleAnimationBuilder              // implicit animation via SpecTween
-    → widget.build(context, spec)        // map Spec fields to Flutter widgets
-    → StyleSpecProvider                  // expose active StyleSpec
-    → RenderModifiers                    // wrap with ordered widget modifiers
-```
-
-## WidgetModifier — Widget Wrapper
-
-**File:** `packages/mix/lib/src/core/widget_modifier.dart`
-
-```dart
-abstract class WidgetModifier<Self extends WidgetModifier<Self>> extends Spec<Self> {
-  Widget build(Widget child);
-}
-```
-
-Modifiers wrap the rendered widget with additional Flutter widgets (Padding, Opacity, Transform, etc.). Defined at the style level via `ModifierMix<S>` and resolved during the pipeline.
-
-## Mix<V> — Resolvable DTO
-
-```dart
-abstract class Mix<V> extends Mixable<V> with Resolvable<V>, Equatable {
-  V resolve(BuildContext context);
-}
-```
-
-Mix types are intermediate representations (DTOs) between user-facing API and resolved Flutter types. Examples: `EdgeInsetsGeometryMix`, `DecorationMix`, `BoxConstraintsMix`, `BorderRadiusMix`.
-
-They support field-wise merging — setting `padding: EdgeInsetsGeometryMix.only(left: 8)` then merging with `padding: EdgeInsetsGeometryMix.only(right: 16)` produces `EdgeInsets.only(left: 8, right: 16)`.
+In a Mix checkout: `packages/mix/lib/src/core/` owns resolution, `theme/` owns
+scopes/tokens, `modifiers/` owns wrappers, and `specs/box/` is the generated
+Spec/Styler/Widget reference. Outside the repo, inspect the resolved package
+source or version-pinned API docs rather than copying a declaration catalog.

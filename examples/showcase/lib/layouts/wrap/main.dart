@@ -195,13 +195,13 @@ class WrapCloudPreview extends StatelessWidget {
         .padding(.all(compact ? 10 : 16))
         .color(const Color(0xFFFFFFFF))
         .borderRadius(.circular(18))
-        .clipBehavior(Clip.antiAlias)
+        .clipBehavior(.antiAlias)
         .direction(axis)
         .spacing(8)
         .runSpacing(10)
-        .wrapAlignment(WrapAlignment.center)
-        .runAlignment(WrapAlignment.center)
-        .crossAxisAlignment(WrapCrossAlignment.center)
+        .wrapAlignment(.center)
+        .runAlignment(.center)
+        .crossAxisAlignment(.center)
         .textDirection(textDirection);
 
     return RepaintBoundary(
@@ -317,13 +317,7 @@ class _AdvancedFlowExample extends StatelessWidget {
         .padding(.all(12))
         .color(const Color(0xFF202033))
         .borderRadius(.circular(14))
-        .flow(
-          WrapStyler(
-            spacing: 8,
-            runSpacing: 8,
-            alignment: WrapAlignment.spaceBetween,
-          ),
-        );
+        .flow(WrapStyler(spacing: 8, runSpacing: 8, alignment: .spaceBetween));
 
     return ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: 360),

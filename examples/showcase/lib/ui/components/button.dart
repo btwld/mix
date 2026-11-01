@@ -177,7 +177,7 @@ ButtonStyler _base(_UiButtonMetrics metrics) => ButtonStyler()
     .padding(.horizontal(metrics.paddingX))
     .spacing(metrics.gap)
     .borderRadius(.all(UiTokens.radius()))
-    .label(.fontSize(metrics.labelSize).fontWeight(FontWeight.w500))
+    .label(.fontSize(metrics.labelSize).fontWeight(.w500))
     .icon(.size(metrics.iconSize))
     .spinner(
       .size(

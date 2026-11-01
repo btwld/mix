@@ -10,9 +10,9 @@ void main() {
       test('', () {
         final attribute = StackStyler(
           alignment: Alignment.center,
-          fit: StackFit.expand,
-          textDirection: TextDirection.ltr,
-          clipBehavior: Clip.antiAlias,
+          fit: .expand,
+          textDirection: .ltr,
+          clipBehavior: .antiAlias,
         );
 
         expect(attribute.$alignment, resolvesTo(Alignment.center));
@@ -39,19 +39,19 @@ void main() {
       });
 
       test('', () {
-        final stackMix = StackStyler().fit(StackFit.loose);
+        final stackMix = StackStyler().fit(.loose);
 
         expect(stackMix.$fit, resolvesTo(StackFit.loose));
       });
 
       test('', () {
-        final stackMix = StackStyler().textDirection(TextDirection.rtl);
+        final stackMix = StackStyler().textDirection(.rtl);
 
         expect(stackMix.$textDirection, resolvesTo(TextDirection.rtl));
       });
 
       test('', () {
-        final stackMix = StackStyler().clipBehavior(Clip.hardEdge);
+        final stackMix = StackStyler().clipBehavior(.hardEdge);
 
         expect(stackMix.$clipBehavior, resolvesTo(Clip.hardEdge));
       });
@@ -81,21 +81,19 @@ void main() {
       });
 
       test('fit utility works correctly', () {
-        final attribute = StackStyler().fit(StackFit.expand);
+        final attribute = StackStyler().fit(.expand);
 
         expect(attribute.$fit, resolvesTo(StackFit.expand));
       });
 
       test('textDirection utility works correctly', () {
-        final attribute = StackStyler().textDirection(TextDirection.rtl);
+        final attribute = StackStyler().textDirection(.rtl);
 
         expect(attribute.$textDirection, resolvesTo(TextDirection.rtl));
       });
 
       test('clipBehavior utility works correctly', () {
-        final attribute = StackStyler().clipBehavior(
-          Clip.antiAliasWithSaveLayer,
-        );
+        final attribute = StackStyler().clipBehavior(.antiAliasWithSaveLayer);
 
         expect(
           attribute.$clipBehavior,
@@ -143,9 +141,9 @@ void main() {
       test('', () {
         final attribute = StackStyler(
           alignment: Alignment.center,
-          fit: StackFit.expand,
-          textDirection: TextDirection.ltr,
-          clipBehavior: Clip.antiAlias,
+          fit: .expand,
+          textDirection: .ltr,
+          clipBehavior: .antiAlias,
         );
 
         final context = MockBuildContext();
@@ -161,7 +159,7 @@ void main() {
       test('resolves with null values correctly', () {
         final attribute = StackStyler()
             .alignment(Alignment.topLeft)
-            .fit(StackFit.loose);
+            .fit(.loose);
 
         final context = MockBuildContext();
         final spec = attribute.resolve(context);
@@ -176,15 +174,12 @@ void main() {
 
     group('Merge', () {
       test('merges properties correctly', () {
-        final first = StackStyler(
-          alignment: Alignment.topLeft,
-          fit: StackFit.loose,
-        );
+        final first = StackStyler(alignment: Alignment.topLeft, fit: .loose);
 
         final second = StackStyler(
           alignment: Alignment.bottomRight,
-          textDirection: TextDirection.rtl,
-          clipBehavior: Clip.hardEdge,
+          textDirection: .rtl,
+          clipBehavior: .hardEdge,
         );
 
         final merged = first.merge(second);
@@ -214,15 +209,15 @@ void main() {
       test('equal attributes have same hashCode', () {
         final attr1 = StackStyler()
             .alignment(Alignment.center)
-            .fit(StackFit.loose)
-            .textDirection(TextDirection.ltr)
-            .clipBehavior(Clip.antiAlias);
+            .fit(.loose)
+            .textDirection(.ltr)
+            .clipBehavior(.antiAlias);
 
         final attr2 = StackStyler()
             .alignment(Alignment.center)
-            .fit(StackFit.loose)
-            .textDirection(TextDirection.ltr)
-            .clipBehavior(Clip.antiAlias);
+            .fit(.loose)
+            .textDirection(.ltr)
+            .clipBehavior(.antiAlias);
 
         expect(attr1, equals(attr2));
       });
@@ -239,9 +234,9 @@ void main() {
       test('props includes all properties', () {
         final attribute = StackStyler(
           alignment: Alignment.center,
-          fit: StackFit.expand,
-          textDirection: TextDirection.ltr,
-          clipBehavior: Clip.antiAlias,
+          fit: .expand,
+          textDirection: .ltr,
+          clipBehavior: .antiAlias,
         );
 
         expect(attribute.props.length, 7);

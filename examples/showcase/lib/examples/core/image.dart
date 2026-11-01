@@ -21,7 +21,7 @@ class ImageExample extends StatelessWidget {
       style: ImageStyler()
           .width(320)
           .height(190)
-          .fit(BoxFit.cover)
+          .fit(.cover)
           .semanticLabel('Mountain lake landscape'),
     ),
   );
