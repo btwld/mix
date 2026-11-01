@@ -1,4 +1,4 @@
-## Unreleased
+## 2.2.2
 
  - **FIX**: Preserve valid generic constructor targets when analyzer summary
    loading recreates their type parameters. Validate generic bounds and return
