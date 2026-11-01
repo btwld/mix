@@ -747,6 +747,124 @@ class BoxStyler extends Style<BoxSpec> {
       },
     );
 
+    for (final target in [
+      (
+        description: 'accepts a direct generic target',
+        reference: 'GenericWidget.new',
+        alias: '',
+        succeeds: true,
+      ),
+      (
+        description: 'rejects an instantiated generic target',
+        reference: 'GenericWidget<int>.new',
+        alias: '',
+        succeeds: false,
+      ),
+      (
+        description: 'rejects a generic target typedef',
+        reference: 'GenericAlias.new',
+        alias: 'typedef GenericAlias<T> = GenericWidget<T>;',
+        succeeds: false,
+      ),
+      (
+        description: 'rejects a nullable-substitution generic target typedef',
+        reference: 'GenericAlias.new',
+        alias: 'typedef GenericAlias<T> = GenericWidget<T?>;',
+        succeeds: false,
+      ),
+    ]) {
+      test(
+        'StylerGenerator ${target.description} from another library',
+        () async {
+          final sources = {
+            ...mixAnnotationsSources,
+            ...widgetStub,
+            'mix|lib/src/core/style.dart':
+                styleStub +
+                r'''
+mixin Diagnosticable {}
+
+abstract interface class StylerFieldMetadata {
+  Set<String> get $stylerFieldNames;
+}
+''',
+            'mix_generator|lib/target.dart':
+                '''
+import 'package:flutter/widgets.dart';
+
+${target.alias}
+
+const targetConstructor = ${target.reference};
+
+class GenericWidget<T> extends Widget {
+  const GenericWidget({Key? key, required this.style, required this.value})
+      : super(key: key);
+
+  final Object style;
+  final T value;
+}
+''',
+            'mix_generator|lib/spec.dart': r'''
+import 'package:mix_annotations/mix_annotations.dart';
+import 'target.dart';
+
+@MixableSpec(target: targetConstructor)
+class GenericSpec {
+  const GenericSpec();
+}
+''',
+            'mix_generator|lib/styler_validation.dart': r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+import 'package:mix/src/core/style.dart';
+import 'spec.dart';
+import 'target.dart';
+
+part 'styler_validation.g.dart';
+
+@MixableStyler(methods: 0)
+class GenericStyler extends Style<GenericSpec>
+    with Diagnosticable, _$GenericStylerMixin {
+  const GenericStyler();
+}
+''',
+          };
+
+          if (target.succeeds) {
+            await expectGeneratorOutputResolves(
+              builder: partBuilder(const StylerGenerator()),
+              sources: sources,
+              inputAsset: 'mix_generator|lib/styler_validation.dart',
+              outputAsset: 'mix_generator|lib/styler_validation.g.dart',
+              outputMatcher: allOf(
+                contains(
+                  'GenericWidget<T> call<T>({Key? key, required T value})',
+                ),
+                contains(
+                  'return GenericWidget<T>(key: key, style: this, value: value);',
+                ),
+              ),
+            );
+          } else {
+            final result = await testBuilder(
+              partBuilder(const StylerGenerator()),
+              sources,
+              generateFor: {'mix_generator|lib/styler_validation.dart'},
+            );
+
+            expect(result.succeeded, isFalse);
+            expect(
+              result.errors.join('\n'),
+              contains(
+                '@MixableSpec(target:) only supports direct, uninstantiated '
+                'constructor tear-offs for generic target `GenericWidget`',
+              ),
+            );
+          }
+        },
+      );
+    }
+
     /// This visibility split is only reachable through the legacy
     /// `@MixableStyler` path because generated specs and their stylers share a
     /// library.

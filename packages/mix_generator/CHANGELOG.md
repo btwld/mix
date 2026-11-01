@@ -1,3 +1,10 @@
+## Unreleased
+
+ - **FIX**: Preserve valid generic constructor targets when analyzer summary
+   loading recreates their type parameters. Validate generic bounds and return
+   arguments without admitting nullable substitutions or different bound types
+   that share a display name.
+
 ## 2.2.1
 
  - **FIX**: Support analyzer `>=10.0.0 <15.0.0`, including analyzer 14,
