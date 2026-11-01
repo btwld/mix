@@ -82,29 +82,29 @@ class _DemoCardState extends State<DemoCard> {
                     ? 'Copied'
                     : 'Copy ${widget.title} DartPad snippet',
                 showDuration: const Duration(milliseconds: 1500),
-                child: PressableBox(
-                  key: Key('copy-${widget.title}'),
-                  semanticsLabel: _copied
-                      ? '${widget.title} snippet copied'
-                      : 'Copy ${widget.title} DartPad snippet',
-                  onPress: () => unawaited(_copySource()),
-                  style: BoxStyler()
-                      .size(32, 32)
-                      .alignment(.center)
-                      .borderRadius(.all($radiusXs()))
-                      .color($track())
-                      .onHovered(.color($hover()))
-                      .onPressed(.scale(0.94))
-                      .animate(.easeOut(160.ms)),
-                  child: StyledIcon(
-                    icon: _copied
-                        ? Icons.check_rounded
-                        : Icons.content_copy_rounded,
-                    style: IconStyler()
-                        .size(15)
-                        .color(_copied ? $success() : $muted()),
-                  ),
-                ),
+                child: BoxStyler()
+                    .size(32, 32)
+                    .alignment(.center)
+                    .borderRadius(.all($radiusXs()))
+                    .color($track())
+                    .onHovered(.color($hover()))
+                    .onPressed(.scale(0.94))
+                    .animate(.easeOut(160.ms))
+                    .pressable(
+                      key: Key('copy-${widget.title}'),
+                      semanticsLabel: _copied
+                          ? '${widget.title} snippet copied'
+                          : 'Copy ${widget.title} DartPad snippet',
+                      onPress: () => unawaited(_copySource()),
+                      child: StyledIcon(
+                        icon: _copied
+                            ? Icons.check_rounded
+                            : Icons.content_copy_rounded,
+                        style: IconStyler()
+                            .size(15)
+                            .color(_copied ? $success() : $muted()),
+                      ),
+                    ),
               ),
             ],
           ),
