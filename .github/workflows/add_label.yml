@@ -12,6 +12,10 @@ on:
 permissions:
   pull-requests: write
 
+concurrency:
+  group: labels-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
 jobs:
   apply-label:
     timeout-minutes: 5
