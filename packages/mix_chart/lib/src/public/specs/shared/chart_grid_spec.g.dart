@@ -183,6 +183,8 @@ class ChartGridStyler extends MixStyler<ChartGridStyler, ChartGridSpec>
       ChartGridStyler().verticalInterval(value);
   factory ChartGridStyler.stroke(ChartStrokeStyler value) =>
       ChartGridStyler().stroke(value);
+  factory ChartGridStyler.wrap(WidgetModifierConfig value) =>
+      ChartGridStyler().wrap(value);
 
   @override
   Set<String> get $stylerFieldNames => const {

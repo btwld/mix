@@ -157,6 +157,8 @@ class ChartStrokeStyler extends MixStyler<ChartStrokeStyler, ChartStrokeSpec>
       ChartStrokeStyler().dashArray(value);
   factory ChartStrokeStyler.opacity(double value) =>
       ChartStrokeStyler().opacity(value);
+  factory ChartStrokeStyler.wrap(WidgetModifierConfig value) =>
+      ChartStrokeStyler().wrap(value);
 
   @override
   Set<String> get $stylerFieldNames => const {

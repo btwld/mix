@@ -166,6 +166,8 @@ class ChartFrameStyler extends MixStyler<ChartFrameStyler, ChartFrameSpec>
   factory ChartFrameStyler.clip(bool value) => ChartFrameStyler().clip(value);
   factory ChartFrameStyler.rotationQuarterTurns(int value) =>
       ChartFrameStyler().rotationQuarterTurns(value);
+  factory ChartFrameStyler.wrap(WidgetModifierConfig value) =>
+      ChartFrameStyler().wrap(value);
 
   @override
   Set<String> get $stylerFieldNames => const {

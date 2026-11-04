@@ -158,6 +158,8 @@ class BarBackgroundStyler
       BarBackgroundStyler().color(value);
   factory BarBackgroundStyler.gradient(Gradient value) =>
       BarBackgroundStyler().gradient(value);
+  factory BarBackgroundStyler.wrap(WidgetModifierConfig value) =>
+      BarBackgroundStyler().wrap(value);
 
   @override
   Set<String> get $stylerFieldNames => const {

@@ -235,6 +235,8 @@ class PieChartStyler extends MixStyler<PieChartStyler, PieChartSpec>
       PieChartStyler().sunbeamLabels(value);
   factory PieChartStyler.tooltip(ChartTooltipStyler value) =>
       PieChartStyler().tooltip(value);
+  factory PieChartStyler.wrap(WidgetModifierConfig value) =>
+      PieChartStyler().wrap(value);
 
   @override
   Set<String> get $stylerFieldNames => const {

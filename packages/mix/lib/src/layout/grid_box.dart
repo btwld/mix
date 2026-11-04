@@ -132,6 +132,10 @@ class GridBoxStyler extends MixStyler<GridBoxStyler, GridBoxSpec>
   factory GridBoxStyler.animate(AnimationConfig animation) =>
       GridBoxStyler().animate(animation);
 
+  /// Creates a Grid style that wraps the widget with [value].
+  factory GridBoxStyler.wrap(WidgetModifierConfig value) =>
+      GridBoxStyler().wrap(value);
+
   /// Replaces the column tracks with [value].
   GridBoxStyler columns(List<GridTrack> value) =>
       merge(GridBoxStyler(columns: value));

@@ -188,6 +188,8 @@ class ChartMarkerStyler extends MixStyler<ChartMarkerStyler, ChartMarkerSpec>
       ChartMarkerStyler().borderWidth(value);
   factory ChartMarkerStyler.shadow(ShadowMix value) =>
       ChartMarkerStyler().shadow(value);
+  factory ChartMarkerStyler.wrap(WidgetModifierConfig value) =>
+      ChartMarkerStyler().wrap(value);
 
   @override
   Set<String> get $stylerFieldNames => const {

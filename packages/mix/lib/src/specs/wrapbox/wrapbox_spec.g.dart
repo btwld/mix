@@ -373,6 +373,8 @@ class WrapBoxStyler extends MixStyler<WrapBoxStyler, WrapBoxSpec>
   }) => WrapBoxStyler().transform(value, alignment: alignment);
   factory WrapBoxStyler.animate(AnimationConfig value) =>
       WrapBoxStyler().animate(value);
+  factory WrapBoxStyler.wrap(WidgetModifierConfig value) =>
+      WrapBoxStyler().wrap(value);
 
   WrapBoxStyler textStyle(TextStyler value) {
     return wrap(WidgetModifierConfig.defaultTextStyler(value));
