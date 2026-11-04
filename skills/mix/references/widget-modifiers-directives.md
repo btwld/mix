@@ -9,8 +9,7 @@ Modifiers wrap a widget with another widget (`Transform`, `Padding`, `Opacity`, 
 ```dart
 final style = BoxStyler()
     .color(Colors.blue)
-    .wrap(WidgetModifierConfig.opacity(0.5))
-    .wrap(WidgetModifierConfig.rotate(radians: 0.1));
+    .wrap(.opacity(0.5).rotate(radians: 0.1));
 ```
 
 ### Available wrappers
