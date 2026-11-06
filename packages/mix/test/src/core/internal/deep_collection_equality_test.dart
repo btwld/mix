@@ -288,6 +288,68 @@ void main() {
       expect(deepEquality.equals(list1, list3), isFalse);
     });
   });
+
+  group('DeepCollectionEquality collection shapes', () {
+    const deepEquality = DeepCollectionEquality();
+
+    test('returns false for mismatched collection shapes', () {
+      expect(deepEquality.equals({1}, [1]), isFalse);
+      expect(deepEquality.equals([1], {1}), isFalse);
+      expect(deepEquality.equals({'a': 1}, [1]), isFalse);
+      expect(deepEquality.equals([1], {'a': 1}), isFalse);
+      expect(deepEquality.equals({1}, {'a': 1}), isFalse);
+      expect(deepEquality.equals({'a': 1}, {1}), isFalse);
+      expect(deepEquality.equals([1], 1), isFalse);
+      expect(deepEquality.equals({'a': 1}, 1), isFalse);
+      expect(deepEquality.equals({1}, 1), isFalse);
+    });
+
+    test('compares non-List iterables in order', () {
+      final same = [1, 2].map((element) => element);
+      final copy = [1, 2].map((element) => element);
+      final reversed = [2, 1].map((element) => element);
+      final shorter = [1].map((element) => element);
+
+      expect(deepEquality.equals(same, copy), isTrue);
+      expect(deepEquality.equals(same, reversed), isFalse);
+      expect(deepEquality.equals(same, shorter), isFalse);
+      expect(
+        deepEquality.equals(
+          <int>[].map((element) => element),
+          <int>[].map((element) => element),
+        ),
+        isTrue,
+      );
+      expect(
+        deepEquality.equals(
+          [
+            [1, 2],
+            [3],
+          ].map((element) => element),
+          [
+            [1, 2],
+            [3],
+          ].map((element) => element),
+        ),
+        isTrue,
+      );
+      expect(
+        deepEquality.equals(
+          [
+            [1, 2],
+          ].map((element) => element),
+          [
+            [1, 3],
+          ].map((element) => element),
+        ),
+        isFalse,
+      );
+      expect(
+        deepEquality.equals([1, 2], [1, 2].map((element) => element)),
+        isTrue,
+      );
+    });
+  });
 }
 
 // A dummy custom object class for testing purposes
