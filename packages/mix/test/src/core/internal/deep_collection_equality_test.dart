@@ -156,6 +156,43 @@ void main() {
       expect(deepEquality.hash(map1), deepEquality.hash(map2));
     });
 
+    test('maps with equal mapped iterable values share a hash code', () {
+      final left = {
+        'items': [1, 2].map((element) => element),
+      };
+      final right = {
+        'items': [1, 2].map((element) => element),
+      };
+      final reordered = {
+        'items': [2, 1].map((element) => element),
+      };
+
+      expect(deepEquality.equals(left, right), isTrue);
+      expect(deepEquality.hash(left), deepEquality.hash(right));
+      expect(deepEquality.equals(left, reordered), isFalse);
+      expect(deepEquality.hash(left), isNot(deepEquality.hash(reordered)));
+    });
+
+    test('ordered iterables with equal elements share a hash code', () {
+      final list = [
+        [1, 2],
+        [3],
+      ];
+      final mapped = [
+        [1, 2],
+        [3],
+      ].map((element) => element);
+      final reversed = [2, 1].map((element) => element);
+
+      expect(deepEquality.equals(list, mapped), isTrue);
+      expect(deepEquality.hash(list), deepEquality.hash(mapped));
+      expect(deepEquality.hash([1, 2]), isNot(deepEquality.hash([2, 1])));
+      expect(
+        deepEquality.hash([1, 2].map((element) => element)),
+        isNot(deepEquality.hash(reversed)),
+      );
+    });
+
     test(
       'nested collections with identical contents produce the same hash code',
       () {
