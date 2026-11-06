@@ -7,6 +7,10 @@
 
 Type-safe styling for Flutter, with style definitions separate from widget structure.
 
+[![pub package](https://img.shields.io/pub/v/mix)](https://pub.dev/packages/mix)
+[![Test Workflow](https://img.shields.io/github/actions/workflow/status/btwld/mix/test.yml?branch=main&label=Test%20Workflow)](https://github.com/btwld/mix/actions/workflows/test.yml?query=branch%3Amain)
+[![BSD 3-Clause license](https://img.shields.io/github/license/btwld/mix)](LICENSE)
+
 [Package](https://pub.dev/packages/mix) ·
 [Documentation](https://www.fluttermix.com) ·
 [BSD 3-Clause license](LICENSE)
