@@ -30,18 +30,17 @@ class DeepCollectionEquality {
   /// The iterables are equal if they have the same length and contain the same
   /// elements in the same order.
   bool _iterablesEqual(Iterable iter1, Iterable iter2) {
-    if (iter1.length != iter2.length) return false;
-    if (iter1 is List && iter2 is List) {
-      for (int i = 0; i < iter1.length; i++) {
-        if (!equals(iter1[i], iter2[i])) {
-          return false;
-        }
-      }
+    final iterator1 = iter1.iterator;
+    final iterator2 = iter2.iterator;
 
-      return true;
+    while (iterator1.moveNext()) {
+      if (!iterator2.moveNext() ||
+          !equals(iterator1.current, iterator2.current)) {
+        return false;
+      }
     }
 
-    return false;
+    return !iterator2.moveNext();
   }
 
   /// Compares two sets for deep equality.
@@ -59,18 +58,29 @@ class DeepCollectionEquality {
   }
 
   /// Compares two objects for deep equality, handling maps, sets, and iterables.
-  /// The objects are equal if they reference the same object
-  /// or their types are equal and their fields are equal.
+  /// The objects are equal if they reference the same object, or if they have
+  /// the same collection shape and equal elements.
+  /// Maps match by key and value, sets match without regard to order, and
+  /// other iterables match in order.
+  /// Mismatched collection shapes are not equal. Other values use `==`.
   bool equals(Object? obj1, Object? obj2) {
     if (identical(obj1, obj2)) return true;
     if (obj1 == null || obj2 == null) return false;
 
-    if (obj1 is Map) {
-      return _mapsEqual(obj1, obj2 as Map);
-    } else if (obj1 is Set) {
-      return _setsEqual(obj1, obj2 as Set);
-    } else if (obj1 is Iterable) {
-      return _iterablesEqual(obj1, obj2 as Iterable);
+    if (obj1 is Map || obj2 is Map) {
+      if (obj1 is! Map || obj2 is! Map) return false;
+
+      return _mapsEqual(obj1, obj2);
+    }
+    if (obj1 is Set || obj2 is Set) {
+      if (obj1 is! Set || obj2 is! Set) return false;
+
+      return _setsEqual(obj1, obj2);
+    }
+    if (obj1 is Iterable || obj2 is Iterable) {
+      if (obj1 is! Iterable || obj2 is! Iterable) return false;
+
+      return _iterablesEqual(obj1, obj2);
     }
 
     return obj1 == obj2;
@@ -81,17 +91,14 @@ class DeepCollectionEquality {
   /// The hash code is consistent with [equals].
   int hash(Object? obj) {
     if (obj is Map) {
-      return Object.hashAllUnordered(obj.keys) ^
-          Object.hashAllUnordered(obj.values);
+      return Object.hashAllUnordered([
+        for (final entry in obj.entries)
+          Object.hash(hash(entry.key), hash(entry.value)),
+      ]);
     } else if (obj is Set) {
       return Object.hashAllUnordered(obj);
     } else if (obj is Iterable) {
-      int hashCode = 0;
-      for (var value in obj) {
-        hashCode ^= hash(value);
-      }
-
-      return hashCode;
+      return Object.hashAll([for (final element in obj) hash(element)]);
     }
 
     return obj.hashCode;
