@@ -1,14 +1,6 @@
 ## 2.3.2
 
-### Bug fixes
-
-- **Deep collection equality:** comparisons between different collection shapes,
-  or between a collection and a scalar, now return `false` instead of throwing.
-  Non-`List` iterables compare by their ordered contents. Maps with deeply equal
-  nested collection values now produce equal hash codes. Hash codes for maps
-  containing collection values may change; primitive-only map hashes are
-  unchanged. Fixes [#1036](https://github.com/btwld/mix/issues/1036) via
-  [#1113](https://github.com/btwld/mix/pull/1113).
+- Fix deep collection comparisons and hash codes for nested collections ([#1113](https://github.com/btwld/mix/pull/1113)).
 
 ## 2.3.1
 
