@@ -1,3 +1,7 @@
+## 2.3.2
+
+- Fix deep collection comparisons and hash codes for nested collections ([#1113](https://github.com/btwld/mix/pull/1113)).
+
 ## 2.3.1
 
 ### Bug fixes
