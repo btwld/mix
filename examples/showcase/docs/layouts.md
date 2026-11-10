@@ -51,7 +51,7 @@ final GridBoxStyler cardGrid = .equalColumns(3)
   .equalColumns(1).gap(10),
 );
 
-cardGrid(children: cards);
+GridBox(style: cardGrid, children: cards);
 ```
 
 The dashboard composes two independent GridBoxes: metrics transition from four

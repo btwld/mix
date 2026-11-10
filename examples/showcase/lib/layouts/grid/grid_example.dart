@@ -240,8 +240,9 @@ class DashboardGridPreview extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        metrics(
+        GridBox(
           key: const Key('dashboard-metrics-grid'),
+          style: metrics,
           children: const [
             _MetricCard(
               label: 'Revenue',
@@ -270,8 +271,9 @@ class DashboardGridPreview extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 18),
-        panels(
+        GridBox(
           key: const Key('dashboard-panels-grid'),
+          style: panels,
           children: const [_RevenuePanel(), _TrafficPanel()],
         ),
       ],
@@ -447,8 +449,9 @@ class CatalogGridPreview extends StatelessWidget {
         .onConstraints(.maxWidth(760), .equalColumns(2).gap(12))
         .onConstraints(.maxWidth(520), .equalColumns(1).gap(10));
 
-    return style(
+    return GridBox(
       key: const Key('catalog-grid'),
+      style: style,
       children: const [
         _ProductCard(
           key: Key('catalog-card-0'),
@@ -595,8 +598,9 @@ class GalleryGridPreview extends StatelessWidget {
         .onConstraints(.maxWidth(920), .equalColumns(3))
         .onConstraints(.maxWidth(620), .equalColumns(2).autoRows(.fixed(142)));
 
-    return style(
+    return GridBox(
       key: const Key('gallery-grid'),
+      style: style,
       children: const [
         _GalleryTile(
           'Coastline',
@@ -720,8 +724,9 @@ class _AnimatedGridPreviewState extends State<AnimatedGridPreview> {
           ],
         ),
         const SizedBox(height: 16),
-        style(
+        GridBox(
           key: const Key('animated-grid'),
+          style: style,
           children: const [
             _AnimatedMetricCard(
               key: Key('animation-card-reach'),
