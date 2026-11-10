@@ -42,7 +42,7 @@ composes a nested WrapStyler; `.wrap(...)` still means widget modifiers.
 
 ```dart
 final GridBoxStyler cards = .equalColumns(3).gap(16).autoRows(.auto());
-GridBox(style: cards, children: panels);
+cards(children: panels);
 
 final GridBoxStyler report = .columns([
   .fixed(240),

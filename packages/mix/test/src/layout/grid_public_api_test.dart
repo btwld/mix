@@ -1,9 +1,72 @@
-import 'package:flutter/foundation.dart' show FlutterError;
-import 'package:flutter/widgets.dart' show Clip;
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
 void main() {
+  group('GridBoxStyler.call', () {
+    test('returns a GridBox with this style, key and children', () {
+      final GridBoxStyler style = .equalColumns(2).gap(10);
+      const key = ValueKey('grid');
+      const children = <Widget>[SizedBox(), SizedBox()];
+
+      final GridBox grid = style(key: key, children: children);
+
+      expect(grid.style, same(style));
+      expect(grid.key, same(key));
+      expect(grid.children, same(children));
+    });
+
+    test('defaults to no key and empty children', () {
+      const style = GridBoxStyler();
+
+      final grid = style();
+
+      expect(grid.style, same(style));
+      expect(grid.key, isNull);
+      expect(grid.children, isEmpty);
+    });
+
+    testWidgets('lays out the same as the GridBox constructor', (tester) async {
+      final GridBoxStyler style = .columns([
+        .fixed(80),
+        .fr(1),
+      ]).autoRows(.fixed(40)).columnGap(10).rowGap(8);
+      const key = ValueKey('grid');
+      const children = <Widget>[
+        SizedBox(key: ValueKey('first')),
+        SizedBox(key: ValueKey('second')),
+        SizedBox(key: ValueKey('third')),
+      ];
+
+      Future<void> pump(Widget grid) => tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: Center(child: SizedBox(width: 300, child: grid)),
+        ),
+      );
+
+      List<Rect> bounds() => [
+        tester.getRect(find.byKey(key)),
+        for (final child in children) tester.getRect(find.byKey(child.key!)),
+      ];
+
+      await pump(GridBox(key: key, style: style, children: children));
+      final constructorBounds = bounds();
+      expect(constructorBounds.first.size, const Size(300, 88));
+      expect(constructorBounds[1].size, const Size(80, 40));
+      expect(constructorBounds[2].size, const Size(210, 40));
+      expect(
+        constructorBounds[3].topLeft - constructorBounds[1].topLeft,
+        const Offset(0, 48),
+      );
+
+      await tester.pumpWidget(const SizedBox.shrink());
+      await pump(style(key: key, children: children));
+
+      expect(bounds(), constructorBounds);
+    });
+  });
+
   test('Grid public API supports nested dot shorthand composition', () {
     final GridBoxStyler style = .columns([
       .fixed(220),

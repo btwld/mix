@@ -1,3 +1,10 @@
+## Unreleased
+
+### New features
+
+- **Callable grid styles:** `GridBoxStyler` now constructs a `GridBox` with
+  `grid(children: [...])`, forwarding its style, key, and children.
+
 ## 2.3.1
 
 ### Bug fixes
