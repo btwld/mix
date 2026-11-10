@@ -64,9 +64,8 @@ class _SnacksGalleryScreenState extends State<SnacksGalleryScreen> {
         SliverPadding(
           padding: const EdgeInsets.fromLTRB(24, 0, 24, 32),
           sliver: SliverToBoxAdapter(
-            child: GridBox(
+            child: catalog(
               key: const Key('snacks-catalog'),
-              style: catalog,
               children: [
                 for (final demo in demos)
                   DemoCard(
