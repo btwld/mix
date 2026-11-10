@@ -1,9 +1,17 @@
-## Unreleased
+## 2.4.0
 
 ### New features
 
 - **Callable grid styles:** `GridBoxStyler` now constructs a `GridBox` with
   `grid(children: [...])`, forwarding its style, key, and children.
+  `GridBox(style: ..., children: ...)` still works.
+
+### Bug fixes
+
+- **Deep equality:** comparing a map, set or other iterable with a value of a
+  different shape now returns `false` instead of throwing. Non-`List`
+  iterables with the same elements in the same order compare equal, and maps
+  whose values are deeply equal collections now share a hash code (#1113).
 
 ## 2.3.1
 
