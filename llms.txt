@@ -14,7 +14,7 @@ Prefer local source, then the consuming project's resolved package version and v
 ## Layout and styling
 
 - [Layout](https://raw.githubusercontent.com/btwld/mix/main/skills/mix/references/layout.md): Box, Flex, Wrap, Grid and Stack selection; Grid has auto rows, not auto columns.
-- [Grid contract](https://raw.githubusercontent.com/btwld/mix/main/packages/mix/doc/grid-layout.md): tracks, local constraints, animation and limitations.
+- [Grid contract](https://raw.githubusercontent.com/btwld/mix/main/packages/mix/doc/grid-layout.md): callable GridBoxStyler (`grid(children: [...])`), tracks, local constraints, animation and limitations.
 - [Runnable layouts](https://raw.githubusercontent.com/btwld/mix/main/examples/showcase/docs/layouts.md): setup and source examples.
 - [Fluent API](https://raw.githubusercontent.com/btwld/mix/main/skills/mix/references/fluent-api.md) and [authoring policy](https://raw.githubusercontent.com/btwld/mix/main/skills/mix/references/styler-api-policy.md): composition, shorthand and migration spellings.
 - [Variants](https://raw.githubusercontent.com/btwld/mix/main/skills/mix/references/variants.md), [animations](https://raw.githubusercontent.com/btwld/mix/main/skills/mix/references/animations.md), [tokens](https://raw.githubusercontent.com/btwld/mix/main/skills/mix/references/design-tokens.md), [modifiers and directives](https://raw.githubusercontent.com/btwld/mix/main/skills/mix/references/widget-modifiers-directives.md): runtime behavior.

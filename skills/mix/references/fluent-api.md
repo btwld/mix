@@ -46,7 +46,7 @@ address the outer Box. `.flow(WrapStyler(...))` is its nested-style entry;
 `.wrap(...)` remains the modifier API. Stack uses `stackAlignment`,
 `stackClipBehavior` and `.stack(...)` for the same collision distinction.
 
-Grid has no outer Box and is not callable. Give its initializer an explicit
+Grid has no outer Box. Give its initializer an explicit
 type, e.g. `final GridBoxStyler grid = .equalColumns(3).gap(16)`.
 See [Layout](layout.md) for selection, constraints and interpolation boundaries.
 
@@ -93,7 +93,8 @@ TextStyler().fontSize(16)('Label');
 ```
 
 Layout-only `FlexStyler`, `WrapStyler`, and `StackStyler` do not create widgets.
-Handwritten `GridBoxStyler` needs `GridBox(style: ..., children: ...)`.
+Handwritten `GridBoxStyler` also constructs its widget: `grid(children: panels)`.
+`GridBox(style: grid, children: panels)` remains available.
 Use constructors for prebuilt values and `merge()` for reusable fragments;
 confirm generated `call()` support against the target rather than assuming all
 stylers expose it.
