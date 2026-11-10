@@ -238,8 +238,7 @@ class _GridExampleState extends State<GridExample> {
             child: _OfferedWidth(
               width: width.pixels,
               panelKey: const Key('grid-layout'),
-              child: GridBox(
-                style: responsiveGrid(),
+              child: responsiveGrid()(
                 children: [
                   for (var index = 0; index < cells.length; index++)
                     Box(
