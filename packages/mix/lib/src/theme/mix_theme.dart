@@ -254,9 +254,9 @@ class MixScope extends InheritedModel<String> {
   /// `$primary()`, still use Mix's existing token-reference support and are
   /// limited to the same supported value types.
   T getToken<T>(MixToken<T> token, BuildContext context) {
-    // Built per call: MixScope's constructors are const, and a const
-    // initializer list cannot construct the store from the tokens parameter.
-    return core.TokenStore<BuildContext>(_tokens).getToken(token, context);
+    // Static lookup, not a TokenStore: MixScope's constructors are const, so
+    // it holds the raw token map and cannot hold a store.
+    return core.TokenStore.resolve<BuildContext, T>(_tokens, token, context);
   }
 
   /// Returns a new [MixScope] by merging this scope with [other].
