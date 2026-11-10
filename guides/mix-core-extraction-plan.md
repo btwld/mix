@@ -378,16 +378,29 @@ awaiting an answer, these are answers already given.
    root cause and the same API-reshape blocker; (1) and (2) should be designed
    and landed together, not separately.
 
-3. **`SpecGenerator` unconditionally emits `Diagnosticable`** —
-   `packages/mix_generator/lib/src/core/helpers/generated_contract_emitter.dart`
-   (`buildDiagnosticableSurface`), consumed by `mix_generator.dart` and
-   `core/builders/modifier_mixin_builder.dart`. `Diagnosticable` comes from
-   `package:flutter/foundation.dart`, so a terminal or Jaspr package **cannot
-   use the generator to produce specs at all** — it can only hand-write them.
-   Of the items in this list this is the highest-value one: it is the concrete
-   remaining blocker for the non-Flutter consumer that motivated the entire
-   extraction. Making the emission opt-out (a generator option, defaulting to
-   on so existing output stays byte-identical) is the likely shape.
+3. **`mix_generator` is bound to `package:mix` and Flutter throughout** — so
+   non-Flutter codegen is a workstream, not a flag. An earlier revision of this
+   entry understated this: it named the unconditional `Diagnosticable` emission
+   as the one remaining blocker and proposed an opt-out generator option as the
+   fix. That is only one of three layers:
+   - **Type resolution.** `packages/mix_generator/lib/src/core/checkers.dart`
+     resolves `Style`, `StyleSpec`, `Prop` and `WidgetModifier` at
+     `package:mix/...` URLs, and `Widget` / `Key` at `package:flutter/...`.
+     Only `Mix`, `Mixable` and `DefaultValue` resolve at `package:mix_core`. A
+     terminal or Jaspr package's types match none of the other checkers.
+   - **Vocabulary.** `packages/mix_generator/lib/src/core/curated/` maps
+     Flutter value types (`EdgeInsetsGeometry`, `TextStyle`, `BoxBorder`, …)
+     to mix's `*Mix` counterparts and styler mixins (`SpacingStyleMixin`,
+     `DecorationStyleMixin`, …).
+   - **Emitted contract.** Generated spec and modifier mixins implement
+     `Diagnosticable` (from `package:flutter/foundation.dart`), whose surface
+     is emitted by `buildDiagnosticableSurface` in
+     `core/helpers/generated_contract_emitter.dart`.
+
+   Today a non-Flutter package gets the engine but **cannot use the generator
+   at all** — it must hand-write every spec and styler. Of the items in this
+   list this is the highest-value one, but it is a generator redesign, not a
+   small change on this branch.
 
 4. **`MixScope.orderOfModifiers` is dead wiring** — threaded through
    `packages/mix/lib/src/theme/mix_theme.dart` and
