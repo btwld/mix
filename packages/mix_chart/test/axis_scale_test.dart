@@ -358,6 +358,25 @@ void main() {
       expect(data.maxY, isNaN);
       expect(tester.takeException(), isNull);
     });
+
+    testWidgets('keeps explicit x bounds on a chart without points', (
+      tester,
+    ) async {
+      await _pump(
+        tester,
+        LineChart(
+          series: [
+            _series([null, null]),
+          ],
+          xAxis: ChartAxis.numeric(min: 0, max: 10),
+        ),
+      );
+
+      final data = _lineData(tester);
+      expect(data.minX, 0);
+      expect(data.maxX, 10);
+      expect(data.titlesData.bottomTitles.sideTitles.interval, isNull);
+    });
   });
 
   group('tick text', () {

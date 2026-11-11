@@ -184,8 +184,8 @@ typedef FlCartesianAxes = ({
 /// Resolves all four Cartesian axes for a chart laid out in [size].
 ///
 /// The value axis is scaled first, so its labels can be measured before the
-/// x axis is given the remaining width. [xData] is null for a categorical x
-/// axis, whose [categoryLabel] names each position.
+/// x axis is given the remaining width. A [categoryLabel] makes the x axis
+/// categorical: it names each position and [xData] is ignored.
 FlCartesianAxes flResolveCartesianAxes({
   required BuildContext context,
   required Size size,
@@ -258,19 +258,19 @@ FlCartesianAxes flResolveCartesianAxes({
   final rightReserved = right.valueAxisReservedSize(context, y, baselineY);
   final plotWidth =
       width - left.extent(leftReserved) - right.extent(rightReserved);
-  final x = xData == null
-      ? FlAxisScale(
-          min: null,
-          max: null,
-          step: xAxis?.interval ?? 1,
-          interval: xAxis?.interval ?? 1,
-        )
-      : flResolveAxisScale(
+  final x = categoryLabel == null
+      ? flResolveAxisScale(
           axis: xAxis,
           data: xData,
           extent: plotWidth,
           roundBounds: false,
           zoomable: zoom == .horizontal || zoom == .both,
+        )
+      : FlAxisScale(
+          min: null,
+          max: null,
+          step: xAxis?.interval ?? 1,
+          interval: xAxis?.interval ?? 1,
         );
   final categoryStride = categoryLabel == null || categorySpacing == null
       ? 1
