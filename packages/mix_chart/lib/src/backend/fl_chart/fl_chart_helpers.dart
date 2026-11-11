@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:fl_chart/fl_chart.dart' as fl;
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart' show RenderProxyBox;
 import 'package:mix/mix.dart';
 
 import '../../public/models/chart_config.dart';
@@ -10,6 +11,33 @@ import '../../public/specs/shared/chart_frame_spec.dart';
 import '../../public/specs/shared/chart_grid_spec.dart';
 import '../../public/specs/shared/chart_stroke_spec.dart';
 import 'fl_axis_scale.dart';
+
+/// Answers intrinsic and dry layout queries as the chart renderer does, which
+/// the [LayoutBuilder] that sizes chart content cannot.
+final class FlRendererIntrinsics extends SingleChildRenderObjectWidget {
+  const FlRendererIntrinsics({required super.child, super.key});
+
+  @override
+  RenderObject createRenderObject(BuildContext context) =>
+      _RenderRendererIntrinsics();
+}
+
+final class _RenderRendererIntrinsics extends RenderProxyBox {
+  @override
+  double computeMinIntrinsicWidth(double height) => 0;
+
+  @override
+  double computeMaxIntrinsicWidth(double height) => 0;
+
+  @override
+  double computeMinIntrinsicHeight(double width) => 0;
+
+  @override
+  double computeMaxIntrinsicHeight(double width) => 0;
+
+  @override
+  Size computeDryLayout(BoxConstraints constraints) => constraints.biggest;
+}
 
 /// Deterministic fallback colors used when a chart does not provide a palette.
 const flDefaultPalette = [

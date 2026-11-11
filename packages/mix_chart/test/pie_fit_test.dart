@@ -61,26 +61,59 @@ void main() {
     expect(radii, everyElement(80 - 40 - 4));
   });
 
-  testWidgets('sizes to its row inside IntrinsicHeight', (tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Align(
-          alignment: Alignment.topLeft,
-          child: IntrinsicHeight(
-            child: Row(
-              children: [
-                const SizedBox(width: 100, height: 200),
-                SizedBox(width: 160, child: PieChart(slices: _slices)),
-              ],
+  for (final (name, chart) in <(String, Widget)>[
+    ('pie', PieChart(slices: _slices)),
+    (
+      'line',
+      LineChart(
+        series: [
+          LineSeries(
+            id: 'series',
+            label: 'Series',
+            points: [
+              ChartPoint(id: 'a', x: 0, y: 1),
+              ChartPoint(id: 'b', x: 1, y: 2),
+            ],
+          ),
+        ],
+      ),
+    ),
+    (
+      'bar',
+      BarChart(
+        groups: [
+          BarGroup(
+            id: 'group',
+            label: 'Group',
+            bars: [BarValue(id: 'bar', label: 'Bar', toY: 2)],
+          ),
+        ],
+      ),
+    ),
+  ]) {
+    testWidgets('$name sizes to its row inside IntrinsicHeight', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Align(
+            alignment: Alignment.topLeft,
+            child: IntrinsicHeight(
+              child: Row(
+                children: [
+                  const SizedBox(width: 100, height: 200),
+                  SizedBox(width: 160, child: chart),
+                ],
+              ),
             ),
           ),
         ),
-      ),
-    );
+      );
 
-    expect(tester.takeException(), isNull);
-    expect(tester.getSize(find.byType(PieChart)), const Size(160, 200));
-  });
+      expect(tester.takeException(), isNull);
+      expect(tester.getSize(find.byWidget(chart)), const Size(160, 200));
+    });
+  }
 
   testWidgets('an explicit slice radius wins', (tester) async {
     final radii = await _radii(

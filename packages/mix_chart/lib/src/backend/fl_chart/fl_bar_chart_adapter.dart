@@ -398,7 +398,7 @@ final class _FlBarChartAdapterState extends State<FlBarChartAdapter> {
       hit: _tooltipHit,
       builder: widget.tooltipBuilder,
       margin: widget.spec.tooltip?.spec.margin ?? 12,
-      child: chart,
+      child: FlRendererIntrinsics(child: chart),
     );
   }
 }

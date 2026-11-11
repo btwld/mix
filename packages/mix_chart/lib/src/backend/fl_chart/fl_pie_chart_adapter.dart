@@ -2,7 +2,6 @@ import 'dart:math' as math;
 
 import 'package:fl_chart/fl_chart.dart' as fl;
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart' show RenderProxyBox;
 import 'package:mix/mix.dart';
 
 import '../../public/models/chart_config.dart';
@@ -233,7 +232,7 @@ final class _FlPieChartAdapterState extends State<FlPieChartAdapter> {
       final duration = disableAnimations || !_topologyCompatible
           ? Duration.zero
           : widget.dataTransition.duration;
-      chart = _RendererIntrinsics(
+      chart = FlRendererIntrinsics(
         child: LayoutBuilder(
           builder: (context, constraints) {
             final defaultRadius = _defaultSliceRadius(constraints.biggest);
@@ -407,33 +406,6 @@ PieSliceSpec _mergeSlice(PieSliceSpec? base, PieSliceSpec? override) {
 }
 
 const _preferredSliceRadius = 80.0;
-
-/// Answers intrinsic and dry layout queries as the pie renderer does, which
-/// the [LayoutBuilder] that sizes the slices cannot.
-final class _RendererIntrinsics extends SingleChildRenderObjectWidget {
-  const _RendererIntrinsics({required super.child});
-
-  @override
-  RenderObject createRenderObject(BuildContext context) =>
-      _RenderRendererIntrinsics();
-}
-
-final class _RenderRendererIntrinsics extends RenderProxyBox {
-  @override
-  double computeMinIntrinsicWidth(double height) => 0;
-
-  @override
-  double computeMaxIntrinsicWidth(double height) => 0;
-
-  @override
-  double computeMinIntrinsicHeight(double width) => 0;
-
-  @override
-  double computeMaxIntrinsicHeight(double width) => 0;
-
-  @override
-  Size computeDryLayout(BoxConstraints constraints) => constraints.biggest;
-}
 
 bool _hasSameTopology(List<PieSlice> oldSlices, List<PieSlice> newSlices) {
   if (oldSlices.length != newSlices.length) return false;

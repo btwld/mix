@@ -393,7 +393,7 @@ final class _FlLineChartAdapterState extends State<FlLineChartAdapter> {
       hit: _tooltipHit,
       builder: widget.tooltipBuilder,
       margin: widget.spec.tooltip?.spec.margin ?? 12,
-      child: chart,
+      child: FlRendererIntrinsics(child: chart),
     );
   }
 }
