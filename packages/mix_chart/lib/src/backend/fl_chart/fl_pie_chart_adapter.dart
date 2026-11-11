@@ -7,6 +7,7 @@ import '../../public/models/chart_hit.dart';
 import '../../public/models/pie_data.dart';
 import '../../public/specs/pie/pie_chart_spec.dart';
 import '../../public/specs/pie/pie_slice_spec.dart';
+import '../../public/widgets/chart_value_format.dart';
 import 'fl_chart_helpers.dart';
 import 'fl_chart_tooltip_overlay.dart';
 
@@ -51,7 +52,7 @@ final class _FlPieChartAdapterState extends State<FlPieChartAdapter> {
     PieSliceSpec presentation,
     Color fallbackColor,
   ) {
-    final formatter = widget.valueFormatter ?? (double value) => '$value';
+    final formatter = widget.valueFormatter ?? formatChartValue;
     final selected = widget.selectedSliceIds.contains(slice.id);
 
     return fl.PieChartSectionData(
@@ -88,7 +89,7 @@ final class _FlPieChartAdapterState extends State<FlPieChartAdapter> {
     );
     if (sliceIndex < 0) return const SizedBox.shrink();
     final slice = widget.slices[sliceIndex];
-    final formatter = widget.valueFormatter ?? (double value) => '$value';
+    final formatter = widget.valueFormatter ?? formatChartValue;
     final borderSide = tooltip?.border ?? .none;
     final text = tooltip?.text ?? const StyleSpec(spec: TextSpec());
 

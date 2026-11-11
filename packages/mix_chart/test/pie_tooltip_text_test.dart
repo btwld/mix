@@ -52,7 +52,7 @@ void main() {
       await tester.pump();
       final rich = tester.widget<RichText>(
         find.descendant(
-          of: find.text(mode == 'custom' ? 'Custom' : 'Mobile\n64.0'),
+          of: find.text(mode == 'custom' ? 'Custom' : 'Mobile\n64'),
           matching: find.byType(RichText),
         ),
       );
@@ -74,7 +74,7 @@ void main() {
         expect(rich.maxLines, isNull);
       } else {
         expect(rich.maxLines, 2);
-        expect(find.text('Mobile\n64.0'), findsNothing);
+        expect(find.text('Mobile\n64'), findsNothing);
       }
     });
   }

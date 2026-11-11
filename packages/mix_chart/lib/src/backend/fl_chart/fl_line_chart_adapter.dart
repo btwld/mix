@@ -13,6 +13,7 @@ import '../../public/specs/line/line_series_spec.dart';
 import '../../public/specs/shared/chart_area_spec.dart';
 import '../../public/specs/shared/chart_marker_spec.dart';
 import '../../public/specs/shared/chart_stroke_spec.dart';
+import '../../public/widgets/chart_value_format.dart';
 import 'fl_axis_scale.dart';
 import 'fl_chart_helpers.dart';
 import 'fl_chart_tooltip_overlay.dart';
@@ -35,6 +36,7 @@ final class FlLineChartAdapter extends StatefulWidget {
     required this.tooltipBuilder,
     required this.hitTestRadius,
     required this.mouseCursorResolver,
+    required this.valueFormatter,
     super.key,
   });
 
@@ -54,6 +56,8 @@ final class FlLineChartAdapter extends StatefulWidget {
   final double hitTestRadius;
 
   final ChartMouseCursorResolver<LineChartHit>? mouseCursorResolver;
+
+  final ChartAxisLabelFormatter? valueFormatter;
 
   @override
   State<FlLineChartAdapter> createState() => _FlLineChartAdapterState();
@@ -150,8 +154,10 @@ final class _FlLineChartAdapterState extends State<FlLineChartAdapter> {
       fontSize: 12,
       fontWeight: .w600,
     ).merge(tooltip?.text?.spec.style);
-    final formatter =
-        widget.yAxis?.labelFormatter ?? (double value) => '$value';
+    final formatter = resolveChartValueFormatter(
+      valueFormatter: widget.valueFormatter,
+      axisFormatter: widget.yAxis?.labelFormatter,
+    );
 
     return fl.LineTouchData(
       touchCallback: _handleTouch,

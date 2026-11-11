@@ -10,6 +10,7 @@ import '../models/chart_hit.dart';
 import '../specs/bar/bar_chart_spec.dart';
 import 'chart_semantics.dart';
 import 'chart_validation.dart';
+import 'chart_value_format.dart';
 
 /// A grouped, stacked, or floating bar chart with a Mix-owned API.
 final class BarChart extends StyleWidget<BarChartSpec> {
@@ -29,6 +30,7 @@ final class BarChart extends StyleWidget<BarChartSpec> {
     this.tooltipBuilder,
     this.hitTestPadding = const EdgeInsets.all(4),
     this.mouseCursorResolver,
+    this.valueFormatter,
     this.semanticsLabel,
     this.semanticsValue,
     this.excludeFromSemantics = false,
@@ -92,6 +94,12 @@ final class BarChart extends StyleWidget<BarChartSpec> {
   /// Resolves the mouse cursor from the bar under the pointer.
   final ChartMouseCursorResolver<BarChartHit>? mouseCursorResolver;
 
+  /// Formats bar values for default tooltips, bar labels and semantics.
+  ///
+  /// Falls back to the y-axis label formatter when that returns text, then
+  /// to a plain number without a trailing `.0`.
+  final ChartAxisLabelFormatter? valueFormatter;
+
   /// Accessible chart name.
   final String? semanticsLabel;
 
@@ -102,7 +110,10 @@ final class BarChart extends StyleWidget<BarChartSpec> {
   final bool excludeFromSemantics;
 
   String _barSummary() {
-    final formatter = yAxis?.labelFormatter ?? (double value) => '$value';
+    final formatter = resolveChartValueFormatter(
+      valueFormatter: valueFormatter,
+      axisFormatter: yAxis?.labelFormatter,
+    );
 
     return groups
         .map((group) {
@@ -133,6 +144,7 @@ final class BarChart extends StyleWidget<BarChartSpec> {
       tooltipBuilder: tooltipBuilder,
       hitTestPadding: hitTestPadding,
       mouseCursorResolver: mouseCursorResolver,
+      valueFormatter: valueFormatter,
     );
 
     return buildChartSemantics(

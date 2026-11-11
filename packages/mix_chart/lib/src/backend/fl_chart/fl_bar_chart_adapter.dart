@@ -11,6 +11,7 @@ import '../../public/models/chart_hit.dart';
 import '../../public/specs/bar/bar_background_spec.dart';
 import '../../public/specs/bar/bar_chart_spec.dart';
 import '../../public/specs/bar/bar_spec.dart';
+import '../../public/widgets/chart_value_format.dart';
 import 'fl_axis_scale.dart';
 import 'fl_chart_helpers.dart';
 import 'fl_chart_tooltip_overlay.dart';
@@ -33,6 +34,7 @@ final class FlBarChartAdapter extends StatefulWidget {
     required this.tooltipBuilder,
     required this.hitTestPadding,
     required this.mouseCursorResolver,
+    required this.valueFormatter,
     super.key,
   });
 
@@ -52,6 +54,8 @@ final class FlBarChartAdapter extends StatefulWidget {
   final EdgeInsets hitTestPadding;
 
   final ChartMouseCursorResolver<BarChartHit>? mouseCursorResolver;
+
+  final ChartAxisLabelFormatter? valueFormatter;
 
   @override
   State<FlBarChartAdapter> createState() => _FlBarChartAdapterState();
@@ -83,8 +87,10 @@ final class _FlBarChartAdapterState extends State<FlBarChartAdapter> {
           BarSelectionKey.bar(groupId: group.id, barId: bar.id),
         ) ||
         bar.segments.any((segment) => _isSegmentSelected(group, bar, segment));
-    final formatter =
-        widget.yAxis?.labelFormatter ?? (double value) => '$value';
+    final formatter = resolveChartValueFormatter(
+      valueFormatter: widget.valueFormatter,
+      axisFormatter: widget.yAxis?.labelFormatter,
+    );
 
     return fl.BarChartRodData(
       fromY: bar.fromY,
@@ -153,8 +159,10 @@ final class _FlBarChartAdapterState extends State<FlBarChartAdapter> {
       fontSize: 12,
       fontWeight: .w600,
     ).merge(tooltip?.text?.spec.style);
-    final formatter =
-        widget.yAxis?.labelFormatter ?? (double value) => '$value';
+    final formatter = resolveChartValueFormatter(
+      valueFormatter: widget.valueFormatter,
+      axisFormatter: widget.yAxis?.labelFormatter,
+    );
 
     return fl.BarTouchData(
       touchCallback: _handleTouch,

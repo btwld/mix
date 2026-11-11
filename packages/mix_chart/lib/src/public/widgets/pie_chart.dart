@@ -10,6 +10,7 @@ import '../models/pie_data.dart';
 import '../specs/pie/pie_chart_spec.dart';
 import 'chart_semantics.dart';
 import 'chart_validation.dart';
+import 'chart_value_format.dart';
 
 /// A pie or donut chart with a Mix-owned public API.
 final class PieChart extends StyleWidget<PieChartSpec> {
@@ -60,7 +61,9 @@ final class PieChart extends StyleWidget<PieChartSpec> {
   /// Resolves the mouse cursor from the slice under the pointer.
   final ChartMouseCursorResolver<PieChartHit>? mouseCursorResolver;
 
-  /// Formats numeric values for default tooltips and semantics.
+  /// Formats numeric values for slice labels, default tooltips and semantics.
+  ///
+  /// Defaults to a plain number without a trailing `.0`.
   final ChartAxisLabelFormatter? valueFormatter;
 
   /// Accessible chart name.
@@ -73,7 +76,7 @@ final class PieChart extends StyleWidget<PieChartSpec> {
   final bool excludeFromSemantics;
 
   String _pieSummary() {
-    final formatter = valueFormatter ?? (double value) => '$value';
+    final formatter = valueFormatter ?? formatChartValue;
 
     return slices
         .map((slice) => '${slice.label}: ${formatter(slice.value)}')
