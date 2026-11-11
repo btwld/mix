@@ -1,4 +1,4 @@
-import '../models/chart_config.dart';
+import 'chart_config.dart';
 
 /// Formats a data value for tooltips and screen readers.
 ///

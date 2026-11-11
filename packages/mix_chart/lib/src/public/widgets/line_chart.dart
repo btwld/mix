@@ -6,11 +6,11 @@ import 'package:mix/mix.dart';
 import '../../backend/chart_backend.dart';
 import '../models/chart_config.dart';
 import '../models/chart_hit.dart';
+import '../models/chart_value_format.dart';
 import '../models/line_data.dart';
 import '../specs/line/line_chart_spec.dart';
 import 'chart_semantics.dart';
 import 'chart_validation.dart';
-import 'chart_value_format.dart';
 
 /// A line or area chart with a Mix-owned public API.
 final class LineChart extends StyleWidget<LineChartSpec> {

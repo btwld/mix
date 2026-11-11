@@ -7,10 +7,10 @@ import '../../backend/chart_backend.dart';
 import '../models/bar_data.dart';
 import '../models/chart_config.dart';
 import '../models/chart_hit.dart';
+import '../models/chart_value_format.dart';
 import '../specs/bar/bar_chart_spec.dart';
 import 'chart_semantics.dart';
 import 'chart_validation.dart';
-import 'chart_value_format.dart';
 
 /// A grouped, stacked, or floating bar chart with a Mix-owned API.
 final class BarChart extends StyleWidget<BarChartSpec> {

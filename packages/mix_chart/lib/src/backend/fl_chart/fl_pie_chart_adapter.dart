@@ -7,10 +7,10 @@ import 'package:mix/mix.dart';
 
 import '../../public/models/chart_config.dart';
 import '../../public/models/chart_hit.dart';
+import '../../public/models/chart_value_format.dart';
 import '../../public/models/pie_data.dart';
 import '../../public/specs/pie/pie_chart_spec.dart';
 import '../../public/specs/pie/pie_slice_spec.dart';
-import '../../public/widgets/chart_value_format.dart';
 import 'fl_chart_helpers.dart';
 import 'fl_chart_tooltip_overlay.dart';
 
