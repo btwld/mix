@@ -361,7 +361,7 @@ void main() {
     );
     await tester.pump();
     expect(hovered?.sliceId, 'mobile');
-    expect(find.text('Mobile\n64.0'), findsOneWidget);
+    expect(find.text('Mobile\n64'), findsOneWidget);
 
     backend.data.pieTouchData.touchCallback!(
       fl.FlTapUpEvent(
@@ -385,7 +385,7 @@ void main() {
     );
     await tester.pump();
 
-    expect(find.text('Mobile\n64.0'), findsNothing);
+    expect(find.text('Mobile\n64'), findsNothing);
   });
 
   testWidgets('removing a hovered pie slice clears its default tooltip', (
@@ -428,7 +428,7 @@ void main() {
       response,
     );
     await tester.pump();
-    expect(find.text('Mobile\n64.0'), findsOneWidget);
+    expect(find.text('Mobile\n64'), findsOneWidget);
 
     setHostState(() {
       slices = [PieSlice(id: 'desktop', label: 'Desktop', value: 36)];
@@ -436,6 +436,6 @@ void main() {
     await tester.pump();
 
     expect(tester.takeException(), isNull);
-    expect(find.text('Mobile\n64.0'), findsNothing);
+    expect(find.text('Mobile\n64'), findsNothing);
   });
 }

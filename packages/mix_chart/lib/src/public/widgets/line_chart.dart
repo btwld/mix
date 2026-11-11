@@ -6,6 +6,7 @@ import 'package:mix/mix.dart';
 import '../../backend/chart_backend.dart';
 import '../models/chart_config.dart';
 import '../models/chart_hit.dart';
+import '../models/chart_value_format.dart';
 import '../models/line_data.dart';
 import '../specs/line/line_chart_spec.dart';
 import 'chart_semantics.dart';
@@ -29,6 +30,7 @@ final class LineChart extends StyleWidget<LineChartSpec> {
     this.tooltipBuilder,
     this.hitTestRadius = 10,
     this.mouseCursorResolver,
+    this.valueFormatter,
     this.semanticsLabel,
     this.semanticsValue,
     this.excludeFromSemantics = false,
@@ -92,6 +94,12 @@ final class LineChart extends StyleWidget<LineChartSpec> {
   /// Resolves the mouse cursor from the point under the pointer.
   final ChartMouseCursorResolver<LineChartHit>? mouseCursorResolver;
 
+  /// Formats point values for default tooltips and semantics.
+  ///
+  /// Falls back to the y-axis label formatter when that returns text, then
+  /// to a plain number without a trailing `.0`.
+  final ChartAxisLabelFormatter? valueFormatter;
+
   /// Accessible chart name.
   final String? semanticsLabel;
 
@@ -102,7 +110,10 @@ final class LineChart extends StyleWidget<LineChartSpec> {
   final bool excludeFromSemantics;
 
   String _lineSummary() {
-    final formatter = yAxis?.labelFormatter ?? (double value) => '$value';
+    final formatter = resolveChartValueFormatter(
+      valueFormatter: valueFormatter,
+      axisFormatter: yAxis?.labelFormatter,
+    );
 
     return series
         .map((item) {
@@ -134,6 +145,7 @@ final class LineChart extends StyleWidget<LineChartSpec> {
       tooltipBuilder: tooltipBuilder,
       hitTestRadius: hitTestRadius,
       mouseCursorResolver: mouseCursorResolver,
+      valueFormatter: valueFormatter,
     );
 
     return buildChartSemantics(

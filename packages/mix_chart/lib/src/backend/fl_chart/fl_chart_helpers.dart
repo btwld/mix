@@ -1,5 +1,8 @@
+import 'dart:math' as math;
+
 import 'package:fl_chart/fl_chart.dart' as fl;
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart' show RenderProxyBox;
 import 'package:mix/mix.dart';
 
 import '../../public/models/chart_config.dart';
@@ -7,6 +10,34 @@ import '../../public/specs/shared/chart_axis_spec.dart';
 import '../../public/specs/shared/chart_frame_spec.dart';
 import '../../public/specs/shared/chart_grid_spec.dart';
 import '../../public/specs/shared/chart_stroke_spec.dart';
+import 'fl_axis_scale.dart';
+
+/// Answers intrinsic and dry layout queries as the chart renderer does, which
+/// the [LayoutBuilder] that sizes chart content cannot.
+final class FlRendererIntrinsics extends SingleChildRenderObjectWidget {
+  const FlRendererIntrinsics({required super.child, super.key});
+
+  @override
+  RenderObject createRenderObject(BuildContext context) =>
+      _RenderRendererIntrinsics();
+}
+
+final class _RenderRendererIntrinsics extends RenderProxyBox {
+  @override
+  double computeMinIntrinsicWidth(double height) => 0;
+
+  @override
+  double computeMaxIntrinsicWidth(double height) => 0;
+
+  @override
+  double computeMinIntrinsicHeight(double width) => 0;
+
+  @override
+  double computeMaxIntrinsicHeight(double width) => 0;
+
+  @override
+  Size computeDryLayout(BoxConstraints constraints) => constraints.biggest;
+}
 
 /// Deterministic fallback colors used when a chart does not provide a palette.
 const flDefaultPalette = [
@@ -67,17 +98,17 @@ fl.FlBorderData flResolveBorder(StyleSpec<ChartFrameSpec>? frame) {
 }
 
 /// Maps the Cartesian grid shared by line and bar charts.
-fl.FlGridData flResolveGrid(StyleSpec<ChartGridSpec>? grid) {
+///
+/// Grid lines follow the axis steps unless the grid style sets intervals.
+fl.FlGridData flResolveGrid(
+  StyleSpec<ChartGridSpec>? grid, {
+  double? horizontalInterval,
+  double? verticalInterval,
+}) {
   final value = grid?.spec;
   final stroke = value?.stroke?.spec;
-  final horizontalInterval = _validatedGridInterval(
-    value?.horizontalInterval,
-    'horizontalInterval',
-  );
-  final verticalInterval = _validatedGridInterval(
-    value?.verticalInterval,
-    'verticalInterval',
-  );
+  final styledHorizontal = _gridInterval(grid, horizontal: true);
+  final styledVertical = _gridInterval(grid, horizontal: false);
   final line = flResolveLine(
     stroke,
     fallbackColor: const Color(0xFFE2E8F0),
@@ -87,13 +118,24 @@ fl.FlGridData flResolveGrid(StyleSpec<ChartGridSpec>? grid) {
   return fl.FlGridData(
     show: value?.show ?? true,
     drawHorizontalLine: value?.showHorizontal ?? true,
-    horizontalInterval: horizontalInterval,
+    horizontalInterval: styledHorizontal ?? horizontalInterval,
     getDrawingHorizontalLine: (_) => line,
     drawVerticalLine: value?.showVertical ?? true,
-    verticalInterval: verticalInterval,
+    verticalInterval: styledVertical ?? verticalInterval,
     getDrawingVerticalLine: (_) => line,
   );
 }
+
+/// The grid interval set by the grid style, validated.
+double? _gridInterval(
+  StyleSpec<ChartGridSpec>? grid, {
+  required bool horizontal,
+}) => horizontal
+    ? _validatedGridInterval(
+        grid?.spec.horizontalInterval,
+        'horizontalInterval',
+      )
+    : _validatedGridInterval(grid?.spec.verticalInterval, 'verticalInterval');
 
 double? _validatedGridInterval(double? value, String name) {
   if (value == null) return null;
@@ -149,9 +191,47 @@ PointerEvent? flPointerEvent(fl.FlTouchEvent event) => switch (event) {
   _ => null,
 };
 
-/// Maps all four Cartesian axes, merging the common axis style with each side.
-fl.FlTitlesData flResolveTitles({
+/// Size assumed along an unbounded constraint.
+///
+/// It only guides tick density; the renderer still reports its own layout
+/// error for an unbounded chart.
+const _unboundedLayoutSize = Size(300, 200);
+
+/// The size a chart lays out in, with a fallback for unbounded constraints.
+Size flLayoutSize(BoxConstraints constraints) => .new(
+  constraints.hasBoundedWidth
+      ? constraints.maxWidth
+      : _unboundedLayoutSize.width,
+  constraints.hasBoundedHeight
+      ? constraints.maxHeight
+      : _unboundedLayoutSize.height,
+);
+
+/// Titles, scales and tick origins resolved for one Cartesian chart.
+typedef FlCartesianAxes = ({
+  fl.FlTitlesData titles,
+  FlAxisScale x,
+  FlAxisScale y,
+  double baselineX,
+  double baselineY,
+});
+
+/// The positions of a categorical x axis: how many there are, the label of
+/// each, and the distance between neighbours for a given plot width.
+typedef FlCategories = ({
+  int count,
+  ChartAxisLabelFormatter label,
+  double Function(double plotWidth) spacing,
+});
+
+/// Resolves all four Cartesian axes for a chart laid out in [size].
+///
+/// The value axis is scaled first, so its labels can be measured before the
+/// x axis is given the remaining width. With [categories] the x axis is
+/// categorical and [xData] is not used.
+FlCartesianAxes flResolveCartesianAxes({
   required BuildContext context,
+  required Size size,
   required StyleSpec<ChartAxisSpec>? commonStyle,
   required StyleSpec<ChartAxisSpec>? xStyle,
   required StyleSpec<ChartAxisSpec>? yStyle,
@@ -161,158 +241,380 @@ fl.FlTitlesData flResolveTitles({
   required ChartAxis? yAxis,
   required ChartAxis? topAxis,
   required ChartAxis? rightAxis,
-}) => fl.FlTitlesData(
-  leftTitles: _resolveAxisTitles(
-    context: context,
-    common: commonStyle?.spec,
+  FlAxisData? xData,
+  required FlAxisData? yData,
+  required ChartViewport? viewport,
+  required int rotationQuarterTurns,
+  required StyleSpec<ChartGridSpec>? grid,
+  FlCategories? categories,
+}) {
+  final common = commonStyle?.spec;
+  final left = _AxisSide(
+    side: .left,
+    common: common,
     specific: yStyle?.spec,
     axis: yAxis,
-    side: .left,
     shownByDefault: true,
-  ),
-  topTitles: _resolveAxisTitles(
-    context: context,
-    common: commonStyle?.spec,
+  );
+  final top = _AxisSide(
+    side: .top,
+    common: common,
     specific: topStyle?.spec,
     axis: topAxis,
-    side: .top,
     shownByDefault: false,
-  ),
-  rightTitles: _resolveAxisTitles(
-    context: context,
-    common: commonStyle?.spec,
+  );
+  final right = _AxisSide(
+    side: .right,
+    common: common,
     specific: rightStyle?.spec,
     axis: rightAxis,
-    side: .right,
     shownByDefault: false,
-  ),
-  bottomTitles: _resolveAxisTitles(
-    context: context,
-    common: commonStyle?.spec,
+  );
+  final bottom = _AxisSide(
+    side: .bottom,
+    common: common,
     specific: xStyle?.spec,
     axis: xAxis,
-    side: .bottom,
     shownByDefault: true,
-  ),
-);
-
-fl.AxisTitles _resolveAxisTitles({
-  required BuildContext context,
-  required ChartAxisSpec? common,
-  required ChartAxisSpec? specific,
-  required ChartAxis? axis,
-  required ChartAxisSide side,
-  required bool shownByDefault,
-}) {
-  T? pick<T>(T? commonValue, T? specificValue) => specificValue ?? commonValue;
-
-  final showLabels =
-      pick(common?.showLabels, specific?.showLabels) ??
-      (shownByDefault || axis != null);
-  final textStyle = const TextStyle(
-    color: Color(0xFF64748B),
-    fontSize: 11,
-    height: 1.2,
-  ).merge(common?.label?.spec.style).merge(specific?.label?.spec.style);
-  final commonLabel = common?.label;
-  final specificLabel = specific?.label;
-  final specificText = specificLabel?.spec;
-  // Axes can arrive as raw StyleSpecs, so compose resolved values here.
-  // Rebuild raw struts without reapplying package prefixes to qualified fonts.
-  // StrutStyleMix does not retain leadingDistribution or debugLabel.
-  final commonStrut = commonLabel?.spec.strutStyle;
-  final specificStrut = specificText?.strutStyle;
-  final strut = commonStrut == null
-      ? specificStrut
-      : specificStrut == null
-      ? commonStrut
-      : StrutStyle(
-          fontFamily: specificStrut.fontFamily ?? commonStrut.fontFamily,
-          fontFamilyFallback:
-              specificStrut.fontFamilyFallback ??
-              commonStrut.fontFamilyFallback,
-          fontSize: specificStrut.fontSize ?? commonStrut.fontSize,
-          height: specificStrut.height ?? commonStrut.height,
-          leadingDistribution:
-              specificStrut.leadingDistribution ??
-              commonStrut.leadingDistribution,
-          leading: specificStrut.leading ?? commonStrut.leading,
-          fontWeight: specificStrut.fontWeight ?? commonStrut.fontWeight,
-          fontStyle: specificStrut.fontStyle ?? commonStrut.fontStyle,
-          forceStrutHeight:
-              specificStrut.forceStrutHeight ?? commonStrut.forceStrutHeight,
-          debugLabel: specificStrut.debugLabel ?? commonStrut.debugLabel,
-        );
-  final labelSpec = StyleSpec(
-    spec: (commonLabel?.spec ?? const TextSpec()).copyWith(
-      overflow: specificText?.overflow,
-      strutStyle: strut,
-      textAlign: specificText?.textAlign,
-      textScaler: specificText?.textScaler,
-      maxLines: specificText?.maxLines,
-      style: textStyle,
-      textWidthBasis: specificText?.textWidthBasis,
-      textHeightBehavior: specificText?.textHeightBehavior,
-      textDirection: specificText?.textDirection,
-      softWrap: specificText?.softWrap,
-      textDirectives: specificText?.textDirectives,
-      selectionColor: specificText?.selectionColor,
-      semanticsLabel: specificText?.semanticsLabel,
-      locale: specificText?.locale,
-    ),
-    animation: specificLabel?.animation ?? commonLabel?.animation,
-    widgetModifiers:
-        specificLabel?.widgetModifiers ?? commonLabel?.widgetModifiers,
   );
-  final labelSpace = pick(common?.labelSpace, specific?.labelSpace) ?? 8;
-  final labelAngle = pick(common?.labelAngle, specific?.labelAngle) ?? 0;
-  final fitInside = pick(common?.fitInside, specific?.fitInside) ?? false;
-  final fitInsideDistance =
-      pick(common?.fitInsideDistance, specific?.fitInsideDistance) ?? 6;
 
-  return fl.AxisTitles(
-    axisNameWidget: axis?.name,
-    axisNameSize: pick(common?.nameSize, specific?.nameSize) ?? 18,
-    sideTitles: fl.SideTitles(
-      showTitles: showLabels,
-      getTitlesWidget: (value, meta) {
-        final formatted =
-            axis?.labelFormatter?.call(value) ?? meta.formattedValue;
-        final label = ChartAxisLabel(
-          value: value,
-          formattedValue: formatted,
-          side: side,
-          min: meta.min,
-          max: meta.max,
-        );
-        final child =
-            axis?.labelBuilder?.call(context, label) ??
-            StyledText(formatted, styleSpec: labelSpec);
-
-        return fl.SideTitleWidget(
-          meta: meta,
-          space: labelSpace,
-          angle: labelAngle,
-          fitInside: fl.SideTitleFitInsideData.fromTitleMeta(
-            meta,
-            enabled: fitInside,
-            distanceFromEdge: fitInsideDistance,
-          ),
-          child: child,
-        );
-      },
-      reservedSize:
-          pick(common?.reservedSize, specific?.reservedSize) ??
-          (side == .left || side == .right ? 44 : 30),
-      interval: axis?.interval,
-      minIncluded: axis?.minIncluded ?? true,
-      maxIncluded: axis?.maxIncluded ?? true,
-    ),
-    drawBelowEverything:
-        pick(common?.drawBelowEverything, specific?.drawBelowEverything) ??
-        true,
-    sideTitleAlignment: pick(common?.alignment, specific?.alignment) == .inside
-        ? fl.SideTitleAlignment.inside
-        : fl.SideTitleAlignment.outside,
+  final turned = rotationQuarterTurns.isOdd;
+  final width = turned ? size.height : size.width;
+  final height = turned ? size.width : size.height;
+  final zoom = viewport?.axis ?? .none;
+  final y = flResolveAxisScale(
+    axis: yAxis,
+    data: yData,
+    extent: height - top.defaultExtent - bottom.defaultExtent,
+    roundBounds: true,
+    zoomable: zoom == .vertical || zoom == .both,
   );
+  final baselineY = y.baselineFor([
+    y.interval,
+    rightAxis?.interval,
+    _gridInterval(grid, horizontal: true),
+  ]);
+  final leftReserved = left.valueAxisReservedSize(context, y, baselineY);
+  final rightReserved = right.valueAxisReservedSize(context, y, baselineY);
+  final plotWidth =
+      width - left.extent(leftReserved) - right.extent(rightReserved);
+  final x = categories == null
+      ? flResolveAxisScale(
+          axis: xAxis,
+          data: xData,
+          extent: plotWidth,
+          roundBounds: false,
+          zoomable: zoom == .horizontal || zoom == .both,
+        )
+      : FlAxisScale(
+          min: null,
+          max: null,
+          step: xAxis?.interval ?? 1,
+          interval: xAxis?.interval ?? 1,
+        );
+  final categoryStride = categories == null
+      ? 1
+      : bottom.categoryLabelStride(
+          context,
+          count: categories.count,
+          spacing: categories.spacing(plotWidth),
+          categoryLabel: categories.label,
+        );
+  final baselineX = x.baselineFor([
+    x.interval,
+    topAxis?.interval,
+    _gridInterval(grid, horizontal: false),
+  ]);
+
+  return (
+    titles: fl.FlTitlesData(
+      leftTitles: left.titles(context, y, reservedSize: leftReserved),
+      topTitles: top.titles(context, x),
+      rightTitles: right.titles(context, y, reservedSize: rightReserved),
+      bottomTitles: bottom.titles(
+        context,
+        x,
+        fallbackLabel: categories?.label,
+        labelStride: categoryStride,
+      ),
+    ),
+    x: x,
+    y: y,
+    baselineX: baselineX,
+    baselineY: baselineY,
+  );
+}
+
+/// Label space a value axis reserves when its style does not set one.
+const _valueAxisReservedSize = 44.0;
+
+/// Label space a category axis reserves when its style does not set one.
+const _categoryAxisReservedSize = 30.0;
+
+/// Smallest gap kept between neighbouring category labels.
+const _minCategoryLabelGap = 6.0;
+
+/// One side of a Cartesian chart: its axis data and merged presentation.
+final class _AxisSide {
+  final ChartAxisSide side;
+  final ChartAxisSpec? common;
+  final ChartAxisSpec? specific;
+  final ChartAxis? axis;
+  final bool shownByDefault;
+
+  const _AxisSide({
+    required this.side,
+    required this.common,
+    required this.specific,
+    required this.axis,
+    required this.shownByDefault,
+  });
+
+  bool get isVertical => side == .left || side == .right;
+
+  bool get showLabels =>
+      pick((spec) => spec.showLabels) ?? (shownByDefault || axis != null);
+
+  double get nameSize => pick((spec) => spec.nameSize) ?? 18;
+
+  double get labelSpace => pick((spec) => spec.labelSpace) ?? 8;
+
+  double get labelAngle => pick((spec) => spec.labelAngle) ?? 0;
+
+  /// Reserved label space: the style's, or the package default.
+  double get reservedSize =>
+      pick((spec) => spec.reservedSize) ??
+      (isVertical ? _valueAxisReservedSize : _categoryAxisReservedSize);
+
+  /// Space this side takes from the plot with its default reserved size.
+  double get defaultExtent => extent(reservedSize);
+
+  T? pick<T>(T? Function(ChartAxisSpec spec) read) {
+    final specific = this.specific;
+    final common = this.common;
+
+    return (specific == null ? null : read(specific)) ??
+        (common == null ? null : read(common));
+  }
+
+  /// Space this side takes from the plot, mirroring the renderer's rules.
+  double extent(double reservedSize) =>
+      (showLabels && reservedSize != 0 ? reservedSize : 0) +
+      (axis?.name != null && nameSize != 0 ? nameSize : 0);
+
+  /// Reserved space for a value axis drawn along [scale].
+  ///
+  /// The style's value wins. Otherwise the default grows, never shrinks, to
+  /// fit the widest default text label, so a long tick stays on one line.
+  double valueAxisReservedSize(
+    BuildContext context,
+    FlAxisScale scale,
+    double baseline,
+  ) {
+    final styled = pick((spec) => spec.reservedSize);
+    if (styled != null) return styled;
+    if (!showLabels || axis?.labelBuilder != null) return reservedSize;
+    final min = scale.min;
+    final max = scale.max;
+    final settings = scale.titlesFor(axis);
+    final interval = settings.interval ?? scale.step;
+    if (min == null || max == null || interval == null) return reservedSize;
+
+    final widest = widestLabel(context, [
+      for (final value in flTickValues(
+        min: min,
+        max: max,
+        interval: interval,
+        baseline: baseline,
+        minIncluded: settings.minIncluded,
+        maxIncluded: settings.maxIncluded,
+      ))
+        labelText(value, min, max, interval),
+    ]);
+
+    return math.max(reservedSize, (widest + labelSpace).ceilToDouble());
+  }
+
+  /// How many category labels to step over so neighbours do not overlap.
+  ///
+  /// Every label is kept when they fit [spacing], the distance between
+  /// category centres. Otherwise every n-th label is kept, starting with the
+  /// first. Custom label widgets cannot be measured and are all kept.
+  int categoryLabelStride(
+    BuildContext context, {
+    required int count,
+    required double spacing,
+    required ChartAxisLabelFormatter categoryLabel,
+  }) {
+    if (!showLabels || axis?.labelBuilder != null || count < 2) return 1;
+    if (!spacing.isFinite || spacing <= 0) return 1;
+    final widest = widestLabel(context, [
+      for (var index = 0; index < count; index++)
+        labelText(index.toDouble(), 0, count - 1, 1, fallback: categoryLabel),
+    ]);
+
+    return math.max(1, ((widest + _minCategoryLabelGap) / spacing).ceil());
+  }
+
+  /// Horizontal footprint of the widest of [texts] drawn as default labels.
+  double widestLabel(BuildContext context, Iterable<String> texts) {
+    final label = labelStyle();
+    final media = MediaQuery.maybeOf(context);
+    var style = DefaultTextStyle.of(context).style.merge(label.spec.style);
+    if (media?.boldText ?? false) {
+      style = style.merge(const TextStyle(fontWeight: .bold));
+    }
+    final cos = math.cos(labelAngle).abs();
+    final sin = math.sin(labelAngle).abs();
+    var widest = 0.0;
+    for (final text in texts) {
+      final painter = TextPainter(
+        text: TextSpan(text: text, style: style),
+        textDirection:
+            label.spec.textDirection ?? Directionality.maybeOf(context) ?? .ltr,
+        textScaler: label.spec.textScaler ?? media?.textScaler ?? .noScaling,
+        maxLines: 1,
+      )..layout();
+      final size = painter.size;
+      painter.dispose();
+      widest = math.max(widest, size.width * cos + size.height * sin);
+    }
+
+    return widest;
+  }
+
+  /// Text of the default label at [value].
+  String labelText(
+    double value,
+    double min,
+    double max,
+    double interval, {
+    ChartAxisLabelFormatter? fallback,
+  }) =>
+      axis?.labelFormatter?.call(value) ??
+      fallback?.call(value) ??
+      flFormatTick(min, max, value, interval);
+
+  /// Text presentation of default labels on this side.
+  StyleSpec<TextSpec> labelStyle() {
+    final textStyle = const TextStyle(
+      color: Color(0xFF64748B),
+      fontSize: 11,
+      height: 1.2,
+    ).merge(common?.label?.spec.style).merge(specific?.label?.spec.style);
+    final commonLabel = common?.label;
+    final specificLabel = specific?.label;
+    final specificText = specificLabel?.spec;
+    // Axes can arrive as raw StyleSpecs, so compose resolved values here.
+    // Rebuild raw struts without reapplying package prefixes to qualified fonts.
+    // StrutStyleMix does not retain leadingDistribution or debugLabel.
+    final commonStrut = commonLabel?.spec.strutStyle;
+    final specificStrut = specificText?.strutStyle;
+    final strut = commonStrut == null
+        ? specificStrut
+        : specificStrut == null
+        ? commonStrut
+        : StrutStyle(
+            fontFamily: specificStrut.fontFamily ?? commonStrut.fontFamily,
+            fontFamilyFallback:
+                specificStrut.fontFamilyFallback ??
+                commonStrut.fontFamilyFallback,
+            fontSize: specificStrut.fontSize ?? commonStrut.fontSize,
+            height: specificStrut.height ?? commonStrut.height,
+            leadingDistribution:
+                specificStrut.leadingDistribution ??
+                commonStrut.leadingDistribution,
+            leading: specificStrut.leading ?? commonStrut.leading,
+            fontWeight: specificStrut.fontWeight ?? commonStrut.fontWeight,
+            fontStyle: specificStrut.fontStyle ?? commonStrut.fontStyle,
+            forceStrutHeight:
+                specificStrut.forceStrutHeight ?? commonStrut.forceStrutHeight,
+            debugLabel: specificStrut.debugLabel ?? commonStrut.debugLabel,
+          );
+
+    return StyleSpec(
+      spec: (commonLabel?.spec ?? const TextSpec()).copyWith(
+        overflow: specificText?.overflow,
+        strutStyle: strut,
+        textAlign: specificText?.textAlign,
+        textScaler: specificText?.textScaler,
+        maxLines: specificText?.maxLines,
+        style: textStyle,
+        textWidthBasis: specificText?.textWidthBasis,
+        textHeightBehavior: specificText?.textHeightBehavior,
+        textDirection: specificText?.textDirection,
+        softWrap: specificText?.softWrap,
+        textDirectives: specificText?.textDirectives,
+        selectionColor: specificText?.selectionColor,
+        semanticsLabel: specificText?.semanticsLabel,
+        locale: specificText?.locale,
+      ),
+      animation: specificLabel?.animation ?? commonLabel?.animation,
+      widgetModifiers:
+          specificLabel?.widgetModifiers ?? commonLabel?.widgetModifiers,
+    );
+  }
+
+  fl.AxisTitles titles(
+    BuildContext context,
+    FlAxisScale scale, {
+    double? reservedSize,
+    ChartAxisLabelFormatter? fallbackLabel,
+    int labelStride = 1,
+  }) {
+    final labelSpec = labelStyle();
+    final fitInside = pick((spec) => spec.fitInside) ?? false;
+    final fitInsideDistance = pick((spec) => spec.fitInsideDistance) ?? 6;
+    final settings = scale.titlesFor(axis);
+
+    return fl.AxisTitles(
+      axisNameWidget: axis?.name,
+      axisNameSize: nameSize,
+      sideTitles: fl.SideTitles(
+        showTitles: showLabels,
+        getTitlesWidget: (value, meta) {
+          if (labelStride > 1 && value.round() % labelStride != 0) {
+            return const SizedBox.shrink();
+          }
+          final formatted = labelText(
+            value,
+            meta.min,
+            meta.max,
+            meta.appliedInterval,
+            fallback: fallbackLabel,
+          );
+          final label = ChartAxisLabel(
+            value: value,
+            formattedValue: formatted,
+            side: side,
+            min: meta.min,
+            max: meta.max,
+          );
+          final child =
+              axis?.labelBuilder?.call(context, label) ??
+              StyledText(formatted, styleSpec: labelSpec);
+
+          return fl.SideTitleWidget(
+            meta: meta,
+            space: labelSpace,
+            angle: labelAngle,
+            fitInside: fl.SideTitleFitInsideData.fromTitleMeta(
+              meta,
+              enabled: fitInside,
+              distanceFromEdge: fitInsideDistance,
+            ),
+            child: child,
+          );
+        },
+        reservedSize: reservedSize ?? this.reservedSize,
+        interval: settings.interval,
+        minIncluded: settings.minIncluded,
+        maxIncluded: settings.maxIncluded,
+      ),
+      drawBelowEverything: pick((spec) => spec.drawBelowEverything) ?? true,
+      sideTitleAlignment: pick((spec) => spec.alignment) == .inside
+          ? fl.SideTitleAlignment.inside
+          : fl.SideTitleAlignment.outside,
+    );
+  }
 }
