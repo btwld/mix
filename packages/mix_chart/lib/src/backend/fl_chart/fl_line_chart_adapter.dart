@@ -340,14 +340,6 @@ final class _FlLineChartAdapterState extends State<FlLineChartAdapter> {
         : widget.dataTransition.duration;
     final chart = LayoutBuilder(
       builder: (context, constraints) {
-        final horizontalGridInterval = flGridInterval(
-          widget.spec.grid,
-          horizontal: true,
-        );
-        final verticalGridInterval = flGridInterval(
-          widget.spec.grid,
-          horizontal: false,
-        );
         final axes = flResolveCartesianAxes(
           context: context,
           size: flLayoutSize(constraints),
@@ -364,8 +356,7 @@ final class _FlLineChartAdapterState extends State<FlLineChartAdapter> {
           yData: extents.y,
           viewport: widget.viewport,
           rotationQuarterTurns: frame?.rotationQuarterTurns ?? 0,
-          horizontalGridInterval: horizontalGridInterval,
-          verticalGridInterval: verticalGridInterval,
+          grid: widget.spec.grid,
         );
         final data = fl.LineChartData(
           lineBarsData: bars,

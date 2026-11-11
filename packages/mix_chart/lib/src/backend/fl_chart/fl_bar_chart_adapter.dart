@@ -355,14 +355,7 @@ final class _FlBarChartAdapterState extends State<FlBarChartAdapter> {
           yData: valueExtent,
           viewport: widget.viewport,
           rotationQuarterTurns: frame?.rotationQuarterTurns ?? 0,
-          horizontalGridInterval: flGridInterval(
-            widget.spec.grid,
-            horizontal: true,
-          ),
-          verticalGridInterval: flGridInterval(
-            widget.spec.grid,
-            horizontal: false,
-          ),
+          grid: widget.spec.grid,
           categoryLabel: _categoryLabel,
           categoryCount: groups.length,
           categorySpacing: (plotWidth) => _categorySpacing(

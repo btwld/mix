@@ -79,8 +79,8 @@ fl.FlGridData flResolveGrid(
 }) {
   final value = grid?.spec;
   final stroke = value?.stroke?.spec;
-  final styledHorizontal = flGridInterval(grid, horizontal: true);
-  final styledVertical = flGridInterval(grid, horizontal: false);
+  final styledHorizontal = _gridInterval(grid, horizontal: true);
+  final styledVertical = _gridInterval(grid, horizontal: false);
   final line = flResolveLine(
     stroke,
     fallbackColor: const Color(0xFFE2E8F0),
@@ -99,7 +99,7 @@ fl.FlGridData flResolveGrid(
 }
 
 /// The grid interval set by the grid style, validated.
-double? flGridInterval(
+double? _gridInterval(
   StyleSpec<ChartGridSpec>? grid, {
   required bool horizontal,
 }) => horizontal
@@ -202,8 +202,7 @@ FlCartesianAxes flResolveCartesianAxes({
   required FlAxisData? yData,
   required ChartViewport? viewport,
   required int rotationQuarterTurns,
-  required double? horizontalGridInterval,
-  required double? verticalGridInterval,
+  required StyleSpec<ChartGridSpec>? grid,
   ChartAxisLabelFormatter? categoryLabel,
   int categoryCount = 0,
   double Function(double plotWidth)? categorySpacing,
@@ -252,7 +251,7 @@ FlCartesianAxes flResolveCartesianAxes({
   final baselineY = y.baselineFor([
     y.interval,
     rightAxis?.interval,
-    horizontalGridInterval,
+    _gridInterval(grid, horizontal: true),
   ]);
   final leftReserved = left.valueAxisReservedSize(context, y, baselineY);
   final rightReserved = right.valueAxisReservedSize(context, y, baselineY);
@@ -283,7 +282,7 @@ FlCartesianAxes flResolveCartesianAxes({
   final baselineX = x.baselineFor([
     x.interval,
     topAxis?.interval,
-    verticalGridInterval,
+    _gridInterval(grid, horizontal: false),
   ]);
 
   return (
