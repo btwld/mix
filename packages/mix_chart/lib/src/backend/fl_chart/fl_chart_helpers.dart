@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:fl_chart/fl_chart.dart' as fl;
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
@@ -250,8 +252,8 @@ FlCartesianAxes flResolveCartesianAxes({
     rightAxis?.interval,
     horizontalGridInterval,
   ]);
-  final leftReserved = left.reservedSize;
-  final rightReserved = right.reservedSize;
+  final leftReserved = left.valueAxisReservedSize(context, y, baselineY);
+  final rightReserved = right.valueAxisReservedSize(context, y, baselineY);
   final x = xData == null
       ? FlAxisScale(
           min: null,
@@ -340,6 +342,62 @@ final class _AxisSide {
   double extent(double reservedSize) =>
       (showLabels && reservedSize != 0 ? reservedSize : 0) +
       (axis?.name != null && nameSize != 0 ? nameSize : 0);
+
+  /// Reserved space for a value axis drawn along [scale].
+  ///
+  /// The style's value wins. Otherwise the default grows, never shrinks, to
+  /// fit the widest default text label, so a long tick stays on one line.
+  double valueAxisReservedSize(
+    BuildContext context,
+    FlAxisScale scale,
+    double baseline,
+  ) {
+    final styled = pick((spec) => spec.reservedSize);
+    if (styled != null) return styled;
+    if (!showLabels || axis?.labelBuilder != null) return reservedSize;
+    final min = scale.min;
+    final max = scale.max;
+    final settings = scale.titlesFor(axis);
+    final interval = settings.interval ?? scale.step;
+    if (min == null || max == null || interval == null) return reservedSize;
+
+    final label = labelStyle();
+    final media = MediaQuery.maybeOf(context);
+    var style = DefaultTextStyle.of(context).style.merge(label.spec.style);
+    if (media?.boldText ?? false) {
+      style = style.merge(const TextStyle(fontWeight: .bold));
+    }
+    final angle = labelAngle;
+    var widest = 0.0;
+    for (final value in flTickValues(
+      min: min,
+      max: max,
+      interval: interval,
+      baseline: baseline,
+      minIncluded: settings.minIncluded,
+      maxIncluded: settings.maxIncluded,
+    )) {
+      final painter = TextPainter(
+        text: TextSpan(
+          text: labelText(value, min, max, interval),
+          style: style,
+        ),
+        textDirection:
+            label.spec.textDirection ?? Directionality.maybeOf(context) ?? .ltr,
+        textScaler: label.spec.textScaler ?? media?.textScaler ?? .noScaling,
+        maxLines: 1,
+      )..layout();
+      final size = painter.size;
+      painter.dispose();
+      widest = math.max(
+        widest,
+        size.width * math.cos(angle).abs() +
+            size.height * math.sin(angle).abs(),
+      );
+    }
+
+    return math.max(reservedSize, (widest + labelSpace).ceilToDouble());
+  }
 
   /// Text of the default label at [value].
   String labelText(
