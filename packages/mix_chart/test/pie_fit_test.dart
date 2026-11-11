@@ -44,6 +44,13 @@ void main() {
     expect(radii, everyElement(60 - 8));
   });
 
+  testWidgets('keeps room for the selection just above 80px', (tester) async {
+    final radii = await _radii(tester, 170);
+
+    // An 85px half box holds an 80px slice but not its 8px expansion.
+    expect(radii, everyElement(85 - 8));
+  });
+
   testWidgets('fits a donut ring around its hole', (tester) async {
     final radii = await _radii(
       tester,

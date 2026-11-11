@@ -86,19 +86,18 @@ final class _FlPieChartAdapterState extends State<FlPieChartAdapter> {
 
   /// Slice thickness when no style sets one.
   ///
-  /// 80 logical pixels when the pie fits its box. In a smaller box the slices
-  /// thin out to fit, keeping room for a selected slice to expand.
+  /// 80 logical pixels when the pie, with room for a selected slice to
+  /// expand, fits its box. In a smaller box the slices thin out to fit.
   double _defaultSliceRadius(Size size) {
     final available = math.min(size.width, size.height) / 2;
     if (!available.isFinite) return _preferredSliceRadius;
     final center = widget.spec.centerRadius ?? 0;
-    if (center + _preferredSliceRadius <= available) {
-      return _preferredSliceRadius;
-    }
     final expansion = math.max(widget.spec.selectedSliceRadiusOffset ?? 8, 0);
     final fitted = available - center - expansion;
 
-    return fitted > 0 ? fitted : math.max(available - center, 1);
+    return fitted > 0
+        ? math.min(fitted, _preferredSliceRadius)
+        : math.max(available - center, 1);
   }
 
   Widget _buildDefaultTooltip(BuildContext context, ChartHit chartHit) {

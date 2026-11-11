@@ -88,8 +88,8 @@ and variants when needed; the package does not require a token registry.
 - Horizontal bar scaling requires `spaceEvenly`, `spaceAround`, or `spaceBetween`.
 - `selectedSliceRadiusOffset` adds to the resolved per-slice radius. Unset keeps
   the 8 logical-pixel default; zero disables expansion.
-- Unset slice radius is 80 logical pixels, reduced when the pie or donut would
-  not fit its box.
+- Unset slice radius is 80 logical pixels, reduced when the pie or donut and
+  the selected-slice expansion would not fit its box.
 - Axis label builders, badges and tooltips accept Flutter widgets. Hits carry
   public IDs, values, local position and pointer events, not backend indices.
 
