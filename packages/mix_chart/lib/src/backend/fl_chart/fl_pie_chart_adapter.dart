@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:fl_chart/fl_chart.dart' as fl;
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
@@ -51,6 +53,7 @@ final class _FlPieChartAdapterState extends State<FlPieChartAdapter> {
     PieSlice slice,
     PieSliceSpec presentation,
     Color fallbackColor,
+    double defaultRadius,
   ) {
     final formatter = widget.valueFormatter ?? formatChartValue;
     final selected = widget.selectedSliceIds.contains(slice.id);
@@ -60,7 +63,7 @@ final class _FlPieChartAdapterState extends State<FlPieChartAdapter> {
       color: presentation.color ?? fallbackColor,
       gradient: presentation.gradient,
       radius:
-          (presentation.radius ?? 80) +
+          (presentation.radius ?? defaultRadius) +
           (selected ? (widget.spec.selectedSliceRadiusOffset ?? 8.0) : 0),
       showTitle: presentation.showLabel ?? true,
       titleStyle:
@@ -79,6 +82,23 @@ final class _FlPieChartAdapterState extends State<FlPieChartAdapter> {
       titlePositionPercentageOffset: presentation.labelPosition ?? 0.58,
       badgePositionPercentageOffset: presentation.badgePosition ?? 0.5,
     );
+  }
+
+  /// Slice thickness when no style sets one.
+  ///
+  /// 80 logical pixels when the pie fits its box. In a smaller box the slices
+  /// thin out to fit, keeping room for a selected slice to expand.
+  double _defaultSliceRadius(Size size) {
+    final available = math.min(size.width, size.height) / 2;
+    if (!available.isFinite) return _preferredSliceRadius;
+    final center = widget.spec.centerRadius ?? 0;
+    if (center + _preferredSliceRadius <= available) {
+      return _preferredSliceRadius;
+    }
+    final expansion = math.max(widget.spec.selectedSliceRadiusOffset ?? 8, 0);
+    final fitted = available - center - expansion;
+
+    return fitted > 0 ? fitted : math.max(available - center, 1);
   }
 
   Widget _buildDefaultTooltip(BuildContext context, ChartHit chartHit) {
@@ -201,42 +221,55 @@ final class _FlPieChartAdapterState extends State<FlPieChartAdapter> {
 
     if (hasDrawableData) {
       final palette = flResolvePalette(widget.spec.palette);
-      final sections = <fl.PieChartSectionData>[];
-      for (var index = 0; index < widget.slices.length; index++) {
-        final slice = widget.slices[index];
-        final override = slice.style?.build(context).spec;
-        final presentation = _mergeSlice(widget.spec.slice?.spec, override);
-        sections.add(
-          _resolveSlice(slice, presentation, palette[index % palette.length]),
-        );
-      }
-      final data = fl.PieChartData(
-        sections: sections,
-        centerSpaceRadius: widget.spec.centerRadius ?? 0,
-        centerSpaceColor: widget.spec.centerColor ?? Colors.transparent,
-        sectionsSpace: widget.spec.sliceSpacing ?? 2,
-        startDegreeOffset:
-            (widget.spec.startAngle ?? -90) +
-            (frame?.rotationQuarterTurns ?? 0) * 90.0,
-        pieTouchData: fl.PieTouchData(
-          touchCallback: _handleTouch,
-          mouseCursorResolver: widget.mouseCursorResolver == null
-              ? null
-              : (event, response) =>
-                    widget.mouseCursorResolver!(_pieHit(event, response)),
-        ),
-        borderData: flResolveBorder(widget.spec.frame),
-        titleSunbeamLayout: widget.spec.sunbeamLabels ?? false,
-      );
+      final presentations = [
+        for (final slice in widget.slices)
+          _mergeSlice(
+            widget.spec.slice?.spec,
+            slice.style?.build(context).spec,
+          ),
+      ];
       final disableAnimations =
           MediaQuery.maybeOf(context)?.disableAnimations ?? false;
       final duration = disableAnimations || !_topologyCompatible
           ? Duration.zero
           : widget.dataTransition.duration;
-      chart = fl.PieChart(
-        data,
-        duration: duration,
-        curve: widget.dataTransition.curve,
+      chart = LayoutBuilder(
+        builder: (context, constraints) {
+          final defaultRadius = _defaultSliceRadius(constraints.biggest);
+          final sections = [
+            for (var index = 0; index < widget.slices.length; index++)
+              _resolveSlice(
+                widget.slices[index],
+                presentations[index],
+                palette[index % palette.length],
+                defaultRadius,
+              ),
+          ];
+          final data = fl.PieChartData(
+            sections: sections,
+            centerSpaceRadius: widget.spec.centerRadius ?? 0,
+            centerSpaceColor: widget.spec.centerColor ?? Colors.transparent,
+            sectionsSpace: widget.spec.sliceSpacing ?? 2,
+            startDegreeOffset:
+                (widget.spec.startAngle ?? -90) +
+                (frame?.rotationQuarterTurns ?? 0) * 90.0,
+            pieTouchData: fl.PieTouchData(
+              touchCallback: _handleTouch,
+              mouseCursorResolver: widget.mouseCursorResolver == null
+                  ? null
+                  : (event, response) =>
+                        widget.mouseCursorResolver!(_pieHit(event, response)),
+            ),
+            borderData: flResolveBorder(widget.spec.frame),
+            titleSunbeamLayout: widget.spec.sunbeamLabels ?? false,
+          );
+
+          return fl.PieChart(
+            data,
+            duration: duration,
+            curve: widget.dataTransition.curve,
+          );
+        },
       );
     } else {
       chart = const SizedBox.expand();
@@ -284,6 +317,8 @@ PieSliceSpec _mergeSlice(PieSliceSpec? base, PieSliceSpec? override) {
     badgePosition: override.badgePosition ?? base.badgePosition,
   );
 }
+
+const _preferredSliceRadius = 80.0;
 
 bool _hasSameTopology(List<PieSlice> oldSlices, List<PieSlice> newSlices) {
   if (oldSlices.length != newSlices.length) return false;
