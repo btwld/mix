@@ -3,16 +3,13 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  test('package manifest remains independently publishable as a beta', () {
+  test('package manifest remains independently publishable', () {
     final pubspec = File('pubspec.yaml').readAsStringSync();
     final changelog = File('CHANGELOG.md').readAsStringSync();
 
     expect(pubspec, contains(RegExp(r'^name: mix_chart$', multiLine: true)));
-    expect(
-      pubspec,
-      contains(RegExp(r'^version: 0\.0\.1-beta\.3$', multiLine: true)),
-    );
-    expect(changelog, startsWith('## 0.0.1-beta.3\n'));
+    expect(pubspec, contains(RegExp(r'^version: 0\.0\.1$', multiLine: true)));
+    expect(changelog, startsWith('## 0.0.1\n'));
     expect(
       pubspec,
       isNot(contains('publish_to: none')),
