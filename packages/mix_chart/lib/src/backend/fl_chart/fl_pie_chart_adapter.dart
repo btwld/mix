@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:fl_chart/fl_chart.dart' as fl;
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart' show RenderProxyBox;
 import 'package:mix/mix.dart';
 
 import '../../public/models/chart_config.dart';
@@ -232,43 +233,45 @@ final class _FlPieChartAdapterState extends State<FlPieChartAdapter> {
       final duration = disableAnimations || !_topologyCompatible
           ? Duration.zero
           : widget.dataTransition.duration;
-      chart = LayoutBuilder(
-        builder: (context, constraints) {
-          final defaultRadius = _defaultSliceRadius(constraints.biggest);
-          final sections = [
-            for (var index = 0; index < widget.slices.length; index++)
-              _resolveSlice(
-                widget.slices[index],
-                presentations[index],
-                palette[index % palette.length],
-                defaultRadius,
+      chart = _RendererIntrinsics(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final defaultRadius = _defaultSliceRadius(constraints.biggest);
+            final sections = [
+              for (var index = 0; index < widget.slices.length; index++)
+                _resolveSlice(
+                  widget.slices[index],
+                  presentations[index],
+                  palette[index % palette.length],
+                  defaultRadius,
+                ),
+            ];
+            final data = fl.PieChartData(
+              sections: sections,
+              centerSpaceRadius: widget.spec.centerRadius ?? 0,
+              centerSpaceColor: widget.spec.centerColor ?? Colors.transparent,
+              sectionsSpace: widget.spec.sliceSpacing ?? 2,
+              startDegreeOffset:
+                  (widget.spec.startAngle ?? -90) +
+                  (frame?.rotationQuarterTurns ?? 0) * 90.0,
+              pieTouchData: fl.PieTouchData(
+                touchCallback: _handleTouch,
+                mouseCursorResolver: widget.mouseCursorResolver == null
+                    ? null
+                    : (event, response) =>
+                          widget.mouseCursorResolver!(_pieHit(event, response)),
               ),
-          ];
-          final data = fl.PieChartData(
-            sections: sections,
-            centerSpaceRadius: widget.spec.centerRadius ?? 0,
-            centerSpaceColor: widget.spec.centerColor ?? Colors.transparent,
-            sectionsSpace: widget.spec.sliceSpacing ?? 2,
-            startDegreeOffset:
-                (widget.spec.startAngle ?? -90) +
-                (frame?.rotationQuarterTurns ?? 0) * 90.0,
-            pieTouchData: fl.PieTouchData(
-              touchCallback: _handleTouch,
-              mouseCursorResolver: widget.mouseCursorResolver == null
-                  ? null
-                  : (event, response) =>
-                        widget.mouseCursorResolver!(_pieHit(event, response)),
-            ),
-            borderData: flResolveBorder(widget.spec.frame),
-            titleSunbeamLayout: widget.spec.sunbeamLabels ?? false,
-          );
+              borderData: flResolveBorder(widget.spec.frame),
+              titleSunbeamLayout: widget.spec.sunbeamLabels ?? false,
+            );
 
-          return fl.PieChart(
-            data,
-            duration: duration,
-            curve: widget.dataTransition.curve,
-          );
-        },
+            return fl.PieChart(
+              data,
+              duration: duration,
+              curve: widget.dataTransition.curve,
+            );
+          },
+        ),
       );
     } else {
       chart = const SizedBox.expand();
@@ -318,6 +321,33 @@ PieSliceSpec _mergeSlice(PieSliceSpec? base, PieSliceSpec? override) {
 }
 
 const _preferredSliceRadius = 80.0;
+
+/// Answers intrinsic and dry layout queries as the pie renderer does, which
+/// the [LayoutBuilder] that sizes the slices cannot.
+final class _RendererIntrinsics extends SingleChildRenderObjectWidget {
+  const _RendererIntrinsics({required super.child});
+
+  @override
+  RenderObject createRenderObject(BuildContext context) =>
+      _RenderRendererIntrinsics();
+}
+
+final class _RenderRendererIntrinsics extends RenderProxyBox {
+  @override
+  double computeMinIntrinsicWidth(double height) => 0;
+
+  @override
+  double computeMaxIntrinsicWidth(double height) => 0;
+
+  @override
+  double computeMinIntrinsicHeight(double width) => 0;
+
+  @override
+  double computeMaxIntrinsicHeight(double width) => 0;
+
+  @override
+  Size computeDryLayout(BoxConstraints constraints) => constraints.biggest;
+}
 
 bool _hasSameTopology(List<PieSlice> oldSlices, List<PieSlice> newSlices) {
   if (oldSlices.length != newSlices.length) return false;
