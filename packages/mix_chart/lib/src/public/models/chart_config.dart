@@ -41,11 +41,11 @@ typedef ChartAxisLabelBuilder =
 
 /// Numeric axis configuration independent of the rendering backend.
 ///
-/// Unset values follow common charting practice. Ticks fall on a round step
-/// (1, 2 or 5 times a power of ten) chosen for the space available, and never
-/// on fractions when every value on the axis is a whole number. A value-axis
-/// bound left to the data is rounded out to that step, so the first and last
-/// ticks are round numbers too.
+/// Unset values are chosen from the data and the space available. Ticks fall
+/// on a round step (1, 2 or 5 times a power of ten), and never on fractions
+/// when every value on the axis is a whole number. A value-axis bound left to
+/// the data is rounded out to that step, so the first and last ticks are round
+/// numbers too; a line chart's x bounds are not rounded.
 @immutable
 final class ChartAxis {
   /// Explicit lower bound, or null to derive it from the data.
@@ -61,7 +61,8 @@ final class ChartAxis {
   /// Tick interval, or null to choose a round step from the data range and the
   /// available space.
   ///
-  /// Grid lines follow this interval unless the grid sets its own.
+  /// Value-axis bounds left to the data round out to this interval. Grid
+  /// lines follow it unless the grid sets its own.
   final double? interval;
 
   /// Optional text formatter used by default labels and semantics.
@@ -129,16 +130,18 @@ final class ChartAxis {
     );
   }
 
-  /// Whether the minimum value is always included as a label.
+  /// Whether the lower bound was set to be labelled even off a tick.
   ///
-  /// False when not set explicitly: the bound is then labelled only when it
-  /// falls on a tick.
+  /// True only for an explicit `minIncluded: true`. False covers both an
+  /// explicit false, which never labels the bound, and the unset default,
+  /// which labels it only when it falls on a tick.
   bool get minIncluded => _minIncluded ?? false;
 
-  /// Whether the maximum value is always included as a label.
+  /// Whether the upper bound was set to be labelled even off a tick.
   ///
-  /// False when not set explicitly: the bound is then labelled only when it
-  /// falls on a tick.
+  /// True only for an explicit `maxIncluded: true`. False covers both an
+  /// explicit false, which never labels the bound, and the unset default,
+  /// which labels it only when it falls on a tick.
   bool get maxIncluded => _maxIncluded ?? false;
 
   /// Whether the lower bound gets a label, given whether it falls on a tick.

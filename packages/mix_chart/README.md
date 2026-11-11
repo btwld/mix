@@ -95,25 +95,29 @@ and variants when needed; the package does not require a token registry.
 
 ## Axes and values
 
-Charts read cleanly without axis configuration:
+Without axis configuration:
 
 - Ticks fall on a round step (1, 2 or 5 times a power of ten) sized to the
   plot, and never on fractions when every value on the axis is a whole number.
 - A value-axis bound left to the data is rounded out to that step, so the
-  first and last ticks are round numbers too.
-- A bound is labelled only when it falls on a tick. Pass `minIncluded: true`
-  or `maxIncluded: true` to label an off-tick bound; `false` never labels it.
+  first and last ticks are round numbers too. A line chart's x bounds are not
+  rounded.
+- A bound, explicit or derived, is labelled only when it falls on a tick. Pass
+  `minIncluded: true` or `maxIncluded: true` to label an off-tick bound;
+  `false` never labels it.
 - Grid lines follow the axis step unless the grid style sets an interval.
 - An unstyled value axis widens its label space to fit its ticks on one line.
   Crowded bar category labels are thinned to every n-th label.
 
-Explicit `min`, `max` and `interval` always win. Tooltips, bar labels and the
-semantics summary write values without a trailing `.0`; pass `valueFormatter`
-for currency or units. Line and bar charts fall back to the y-axis
-`labelFormatter` when it returns text.
+Explicit `min`, `max` and `interval` always win; a bound left open rounds out
+to an explicit `interval`. Tooltips, bar labels and the semantics summary
+write values without a trailing `.0`; pass `valueFormatter` for currency or
+units. Line and bar charts fall back to the y-axis `labelFormatter` when it
+returns non-blank text.
 
 The line hover indicator draws the series marker in its selected state over a
-hairline guide in the grid stroke, so marker and grid styles restyle it.
+guide line. The guide uses the grid stroke when one is styled, and otherwise a
+1px slate line a shade darker than the default grid.
 
 ## Animation ownership
 

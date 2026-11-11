@@ -69,7 +69,7 @@ void main() {
       expect(titles.maxIncluded, isTrue);
     });
 
-    testWidgets('labels round ticks only, never the raw extremes', (
+    testWidgets('labels round ticks only, never the raw data bounds', (
       tester,
     ) async {
       await _pump(tester, LineChart(series: [_series(_audit)]));
@@ -491,14 +491,17 @@ void main() {
   });
 
   group('tick text', () {
-    test('matches fl_chart 1.3 on every supported renderer version', () {
-      expect(flFormatTick(1050, 1300, 1050, 50), '1.05K');
-      expect(flFormatTick(1050, 1300, 1100, 50), '1.1K');
-      expect(flFormatTick(0, 5000000, 2500000, 1000000), '2.5M');
-      expect(flFormatTick(0, 1, 0.2, 0.2), '0.2');
-      expect(flFormatTick(-10, 10, -5, 5), '-5');
-      expect(flFormatTick(-1, 1, -0.0, 0.5), '0');
-    });
+    test(
+      'writes ticks with K, M and B suffixes and the decimals the step needs',
+      () {
+        expect(flFormatTick(1050, 1300, 1050, 50), '1.05K');
+        expect(flFormatTick(1050, 1300, 1100, 50), '1.1K');
+        expect(flFormatTick(0, 5000000, 2500000, 1000000), '2.5M');
+        expect(flFormatTick(0, 1, 0.2, 0.2), '0.2');
+        expect(flFormatTick(-10, 10, -5, 5), '-5');
+        expect(flFormatTick(-1, 1, -0.0, 0.5), '0');
+      },
+    );
 
     test('nice steps are 1, 2 or 5 times a power of ten', () {
       expect(flNiceStep(39.2), 50);

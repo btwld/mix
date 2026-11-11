@@ -6,8 +6,7 @@ import '../../public/models/chart_config.dart';
 
 /// Plot length per tick interval targeted by the automatic step.
 ///
-/// This is the figure fl_chart uses for its own automatic interval, so charts
-/// keep the tick density they had.
+/// The figure fl_chart uses for its own automatic interval.
 const flPixelsPerInterval = 40.0;
 
 /// Smallest plot length allowed per interval after bounds are rounded out.
@@ -161,8 +160,9 @@ FlAxisScale flResolveAxisScale({
 
 /// Rounds [rough] to 1, 2, 5 or 10 times a power of ten.
 ///
-/// Uses fl_chart's thresholds, so an automatic step matches the one the
-/// renderer would have picked for the same range and space.
+/// Uses fl_chart's 1.6, 2.6 and 7.6 thresholds. fl_chart's own interval can
+/// still differ: it keeps the raw value below 1e-6 or when two or fewer
+/// intervals fit.
 double flNiceStep(double rough) {
   if (!rough.isFinite || rough <= 0) return 1;
   final magnitude = _powerOfTen((math.log(rough) / math.ln10).floor());
@@ -254,8 +254,10 @@ bool _boundOnTick(double? bound, double? step) =>
 
 /// The values the renderer labels along an axis, in order.
 ///
-/// Mirrors fl_chart's own iteration, so label sizes can be measured before
-/// layout.
+/// Mirrors the iteration in fl_chart 1.3's private `AxisChartHelper`, so label
+/// sizes can be measured before layout. fl_chart 1.2 treats a bound that sits
+/// on a tick slightly differently, and later versions may drift; the result
+/// only sizes label space.
 Iterable<double> flTickValues({
   required double min,
   required double max,

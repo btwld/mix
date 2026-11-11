@@ -150,7 +150,8 @@ final class _FlLineChartAdapterState extends State<FlLineChartAdapter> {
   /// Hover indicator drawn from existing styles.
   ///
   /// The dot is the series marker in its selected state, so it follows the
-  /// marker style; the guide is a hairline in the grid stroke.
+  /// marker style. The guide uses the grid stroke when one is styled, and
+  /// otherwise a 1px line in [_hoverGuideColor].
   fl.GetTouchedSpotIndicator _touchedSpotIndicator(
     List<fl.LineChartBarData> bars,
     List<ChartMarkerSpec?> markers,
