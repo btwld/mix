@@ -433,32 +433,17 @@ double _categorySpacing(
 }
 
 /// Value extent of the drawn rods, matching the renderer's own derivation.
-FlAxisData? _valueExtent(List<fl.BarChartGroupData> groups) {
-  double? low, high;
-  var whole = true;
-  void include(double value) {
-    low = low == null ? value : math.min(low!, value);
-    high = high == null ? value : math.max(high!, value);
-    whole = whole && value == value.roundToDouble();
-  }
-
-  for (final group in groups) {
-    for (final rod in group.barRods) {
-      include(rod.fromY);
-      include(rod.toY);
-      if (rod.backDrawRodData.show) {
-        include(rod.backDrawRodData.fromY);
-        include(rod.backDrawRodData.toY);
-      }
-    }
-  }
-  final min = low;
-  final max = high;
-
-  return min == null || max == null
-      ? null
-      : (min: min, max: max, wholeNumbers: whole);
-}
+FlAxisData? _valueExtent(List<fl.BarChartGroupData> groups) => flAxisData([
+  for (final group in groups)
+    for (final rod in group.barRods) ...[
+      rod.fromY,
+      rod.toY,
+      if (rod.backDrawRodData.show) ...[
+        rod.backDrawRodData.fromY,
+        rod.backDrawRodData.toY,
+      ],
+    ],
+]);
 
 void _validateViewport(BarAlignment? alignment, ChartViewport? viewport) {
   final scalesHorizontally = switch (viewport?.axis ?? .none) {

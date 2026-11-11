@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:fl_chart/fl_chart.dart' as fl;
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
@@ -408,27 +406,15 @@ const _hoverGuideColor = Color(0xFFCBD5E1);
 
 /// Data extents of the drawn spots, matching the renderer's own derivation.
 ({FlAxisData? x, FlAxisData? y}) _dataExtents(List<fl.LineChartBarData> bars) {
-  double? minX, maxX, minY, maxY;
-  var wholeX = true;
-  var wholeY = true;
-  for (final bar in bars) {
-    for (final spot in bar.spots) {
-      if (spot.isNull()) continue;
-      minX = minX == null ? spot.x : math.min(minX, spot.x);
-      maxX = maxX == null ? spot.x : math.max(maxX, spot.x);
-      minY = minY == null ? spot.y : math.min(minY, spot.y);
-      maxY = maxY == null ? spot.y : math.max(maxY, spot.y);
-      wholeX = wholeX && spot.x == spot.x.roundToDouble();
-      wholeY = wholeY && spot.y == spot.y.roundToDouble();
-    }
-  }
-  if (minX == null || maxX == null || minY == null || maxY == null) {
-    return (x: null, y: null);
-  }
+  final spots = [
+    for (final bar in bars)
+      for (final spot in bar.spots)
+        if (!spot.isNull()) spot,
+  ];
 
   return (
-    x: (min: minX, max: maxX, wholeNumbers: wholeX),
-    y: (min: minY, max: maxY, wholeNumbers: wholeY),
+    x: flAxisData([for (final spot in spots) spot.x]),
+    y: flAxisData([for (final spot in spots) spot.y]),
   );
 }
 

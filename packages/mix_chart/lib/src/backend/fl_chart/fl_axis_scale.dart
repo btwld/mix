@@ -33,6 +33,20 @@ const _tickTolerance = 1e-6;
 /// Data extent of one Cartesian axis.
 typedef FlAxisData = ({double min, double max, bool wholeNumbers});
 
+/// Extent of [values], or null when there are none.
+FlAxisData? flAxisData(Iterable<double> values) {
+  double? min, max;
+  var wholeNumbers = true;
+  for (final value in values) {
+    min = min == null ? value : math.min(min, value);
+    max = max == null ? value : math.max(max, value);
+    wholeNumbers = wholeNumbers && value == value.roundToDouble();
+  }
+  if (min == null || max == null) return null;
+
+  return (min: min, max: max, wholeNumbers: wholeNumbers);
+}
+
 /// Bounds and tick step resolved for one numeric Cartesian axis.
 @immutable
 final class FlAxisScale {
