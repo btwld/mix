@@ -147,7 +147,41 @@ final class _FlLineChartAdapterState extends State<FlLineChartAdapter> {
     );
   }
 
-  fl.LineTouchData _resolveTouchData() {
+  /// Hover indicator drawn from existing styles.
+  ///
+  /// The dot is the series marker in its selected state, so it follows the
+  /// marker style; the guide is a hairline in the grid stroke.
+  fl.GetTouchedSpotIndicator _touchedSpotIndicator(
+    List<fl.LineChartBarData> bars,
+    List<ChartMarkerSpec?> markers,
+  ) {
+    final guide = flResolveLine(
+      widget.spec.grid?.spec.stroke?.spec,
+      fallbackColor: const Color(0xFFCBD5E1),
+      fallbackWidth: 1,
+    );
+
+    return (barData, spotIndexes) {
+      final index = bars.indexOf(barData);
+      final marker = index < 0
+          ? widget.spec.series?.spec.marker?.spec
+          : markers[index];
+      final color =
+          barData.gradient?.colors.first ?? barData.color ?? Colors.black;
+      final dot = fl.FlDotData(
+        getDotPainter: (_, _, _, _) => _resolveMarker(marker, color, true),
+      );
+
+      return [
+        for (final _ in spotIndexes) fl.TouchedSpotIndicatorData(guide, dot),
+      ];
+    };
+  }
+
+  fl.LineTouchData _resolveTouchData(
+    List<fl.LineChartBarData> bars,
+    List<ChartMarkerSpec?> markers,
+  ) {
     final tooltip = widget.spec.tooltip?.spec;
     final textStyle = const TextStyle(
       color: Colors.white,
@@ -189,6 +223,7 @@ final class _FlLineChartAdapterState extends State<FlLineChartAdapter> {
         fitInsideVertically: tooltip?.fitVertically ?? true,
         tooltipBorder: tooltip?.border ?? .none,
       ),
+      getTouchedSpotIndicator: _touchedSpotIndicator(bars, markers),
       touchSpotThreshold: widget.hitTestRadius,
       handleBuiltInTouches: widget.tooltipBuilder == null,
     );
@@ -284,6 +319,7 @@ final class _FlLineChartAdapterState extends State<FlLineChartAdapter> {
   Widget build(BuildContext context) {
     final palette = flResolvePalette(widget.spec.palette);
     final bars = <fl.LineChartBarData>[];
+    final markers = <ChartMarkerSpec?>[];
 
     for (var index = 0; index < widget.series.length; index++) {
       final series = widget.series[index];
@@ -292,6 +328,7 @@ final class _FlLineChartAdapterState extends State<FlLineChartAdapter> {
       bars.add(
         _resolveSeries(series, presentation, palette[index % palette.length]),
       );
+      markers.add(presentation.marker?.spec);
     }
 
     final frame = widget.spec.frame?.spec;
@@ -333,7 +370,7 @@ final class _FlLineChartAdapterState extends State<FlLineChartAdapter> {
         final data = fl.LineChartData(
           lineBarsData: bars,
           titlesData: axes.titles,
-          lineTouchData: _resolveTouchData(),
+          lineTouchData: _resolveTouchData(bars, markers),
           gridData: flResolveGrid(
             widget.spec.grid,
             horizontalInterval: axes.y.interval,
