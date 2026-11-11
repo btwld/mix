@@ -298,6 +298,29 @@ void main() {
     });
   });
 
+  group('zoomable axes', () {
+    testWidgets('let the renderer refine ticks from round values', (
+      tester,
+    ) async {
+      await _pump(
+        tester,
+        LineChart(
+          series: [_series(_audit)],
+          viewport: ChartViewport(axis: .vertical),
+        ),
+      );
+
+      final data = _lineData(tester);
+      expect(data.minY, 1050);
+      expect(data.maxY, 1300);
+      expect(data.titlesData.leftTitles.sideTitles.interval, isNull);
+      expect(data.gridData.horizontalInterval, isNull);
+      expect(data.baselineY, 0);
+      // The x axis does not zoom, so it keeps the resolved step.
+      expect(data.titlesData.bottomTitles.sideTitles.interval, 1);
+    });
+  });
+
   group('degenerate data', () {
     testWidgets('centres a single point', (tester) async {
       await _pump(

@@ -47,10 +47,11 @@ final class FlAxisScale {
   /// Origin the renderer counts ticks from.
   ///
   /// The lower bound when it lies on every interval in [intervals], so the
-  /// renderer's first tick lands on it exactly; zero otherwise.
+  /// renderer's first tick lands on it exactly; zero otherwise, including
+  /// when the renderer chooses the interval itself while zooming.
   double baselineFor(Iterable<double?> intervals) {
     final min = this.min;
-    if (min == null) return 0;
+    if (min == null || interval == null) return 0;
     for (final interval in intervals) {
       if (interval != null && !flIsOnTick(min, interval)) return 0;
     }
