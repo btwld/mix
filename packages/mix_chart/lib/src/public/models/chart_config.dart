@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show internal;
 import 'package:flutter/widgets.dart';
 
 /// The side of a Cartesian chart occupied by an axis label.
@@ -39,22 +40,29 @@ typedef ChartAxisLabelBuilder =
     Widget Function(BuildContext context, ChartAxisLabel label);
 
 /// Numeric axis configuration independent of the rendering backend.
+///
+/// Unset values follow common charting practice. Ticks fall on a round step
+/// (1, 2 or 5 times a power of ten) chosen for the space available, and never
+/// on fractions when every value on the axis is a whole number. A value-axis
+/// bound left to the data is rounded out to that step, so the first and last
+/// ticks are round numbers too.
 @immutable
 final class ChartAxis {
   /// Explicit lower bound, or null to derive it from the data.
+  ///
+  /// A derived value-axis bound is rounded down to the tick step.
   final double? min;
 
   /// Explicit upper bound, or null to derive it from the data.
+  ///
+  /// A derived value-axis bound is rounded up to the tick step.
   final double? max;
 
-  /// Tick interval, or null to let the renderer calculate it.
+  /// Tick interval, or null to choose a round step from the data range and the
+  /// available space.
+  ///
+  /// Grid lines follow this interval unless the grid sets its own.
   final double? interval;
-
-  /// Whether the minimum value is always included as a label.
-  final bool minIncluded;
-
-  /// Whether the maximum value is always included as a label.
-  final bool maxIncluded;
 
   /// Optional text formatter used by default labels and semantics.
   final ChartAxisLabelFormatter? labelFormatter;
@@ -65,24 +73,32 @@ final class ChartAxis {
   /// Optional widget displayed as the axis name.
   final Widget? name;
 
+  final bool? _minIncluded;
+  final bool? _maxIncluded;
+
   const ChartAxis._({
     required this.min,
     required this.max,
     required this.interval,
-    required this.minIncluded,
-    required this.maxIncluded,
+    required this._minIncluded,
+    required this._maxIncluded,
     required this.labelFormatter,
     required this.labelBuilder,
     required this.name,
   });
 
   /// Creates a numeric axis.
+  ///
+  /// [minIncluded] and [maxIncluded] force a label at the axis bound even when
+  /// the bound is not on a tick. Set them to false to never label the bound.
+  /// When they are not set, a bound is labelled only when it falls on a tick,
+  /// so a label at an arbitrary data value never crowds the round ticks.
   factory ChartAxis.numeric({
     double? min,
     double? max,
     double? interval,
-    bool minIncluded = true,
-    bool maxIncluded = true,
+    bool? minIncluded,
+    bool? maxIncluded,
     ChartAxisLabelFormatter? labelFormatter,
     ChartAxisLabelBuilder? labelBuilder,
     Widget? name,
@@ -112,6 +128,26 @@ final class ChartAxis {
       name: name,
     );
   }
+
+  /// Whether the minimum value is always included as a label.
+  ///
+  /// False when not set explicitly: the bound is then labelled only when it
+  /// falls on a tick.
+  bool get minIncluded => _minIncluded ?? false;
+
+  /// Whether the maximum value is always included as a label.
+  ///
+  /// False when not set explicitly: the bound is then labelled only when it
+  /// falls on a tick.
+  bool get maxIncluded => _maxIncluded ?? false;
+
+  /// Whether the lower bound gets a label, given whether it falls on a tick.
+  @internal
+  bool labelsMin({required bool onTick}) => _minIncluded ?? onTick;
+
+  /// Whether the upper bound gets a label, given whether it falls on a tick.
+  @internal
+  bool labelsMax({required bool onTick}) => _maxIncluded ?? onTick;
 }
 
 /// Axes affected by Cartesian chart pan and zoom.

@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:fl_chart/fl_chart.dart' as fl;
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
@@ -9,6 +11,7 @@ import '../../public/models/chart_hit.dart';
 import '../../public/specs/bar/bar_background_spec.dart';
 import '../../public/specs/bar/bar_chart_spec.dart';
 import '../../public/specs/bar/bar_spec.dart';
+import 'fl_axis_scale.dart';
 import 'fl_chart_helpers.dart';
 import 'fl_chart_tooltip_overlay.dart';
 
@@ -279,27 +282,12 @@ final class _FlBarChartAdapterState extends State<FlBarChartAdapter> {
     );
   }
 
-  ChartAxis _resolveXAxis() {
-    final axis = widget.xAxis;
+  String _categoryLabel(double value) {
+    final index = value.round();
 
-    return ChartAxis.numeric(
-      min: axis?.min,
-      max: axis?.max,
-      interval: axis?.interval ?? 1,
-      minIncluded: axis?.minIncluded ?? true,
-      maxIncluded: axis?.maxIncluded ?? true,
-      labelFormatter:
-          axis?.labelFormatter ??
-          (value) {
-            final index = value.round();
-
-            return index >= 0 && index < widget.groups.length
-                ? widget.groups[index].label
-                : '';
-          },
-      labelBuilder: axis?.labelBuilder,
-      name: axis?.name,
-    );
+    return index >= 0 && index < widget.groups.length
+        ? widget.groups[index].label
+        : '';
   }
 
   @override
@@ -335,41 +323,65 @@ final class _FlBarChartAdapterState extends State<FlBarChartAdapter> {
     }
 
     final frame = widget.spec.frame?.spec;
-    final effectiveXAxis = _resolveXAxis();
-    final data = fl.BarChartData(
-      barGroups: groups,
-      groupsSpace: widget.spec.groupSpacing ?? 16,
-      alignment: _resolveAlignment(widget.spec.alignment),
-      titlesData: flResolveTitles(
-        context: context,
-        commonStyle: widget.spec.axis,
-        xStyle: widget.spec.xAxis,
-        yStyle: widget.spec.yAxis,
-        topStyle: widget.spec.topAxis,
-        rightStyle: widget.spec.rightAxis,
-        xAxis: effectiveXAxis,
-        yAxis: widget.yAxis,
-        topAxis: widget.topAxis,
-        rightAxis: widget.rightAxis,
-      ),
-      barTouchData: _resolveTouchData(),
-      maxY: widget.yAxis?.max,
-      minY: widget.yAxis?.min,
-      gridData: flResolveGrid(widget.spec.grid),
-      borderData: flResolveBorder(widget.spec.frame),
-      backgroundColor: frame?.backgroundColor,
-      rotationQuarterTurns: frame?.rotationQuarterTurns ?? 0,
-    );
+    final valueExtent = _valueExtent(groups);
     final disableAnimations =
         MediaQuery.maybeOf(context)?.disableAnimations ?? false;
     final duration = disableAnimations || !_topologyCompatible
         ? Duration.zero
         : widget.dataTransition.duration;
-    Widget chart = fl.BarChart(
-      data,
-      duration: duration,
-      curve: widget.dataTransition.curve,
-      transformationConfig: flResolveViewport(widget.viewport),
+    Widget chart = LayoutBuilder(
+      builder: (context, constraints) {
+        final axes = flResolveCartesianAxes(
+          context: context,
+          size: flLayoutSize(constraints),
+          commonStyle: widget.spec.axis,
+          xStyle: widget.spec.xAxis,
+          yStyle: widget.spec.yAxis,
+          topStyle: widget.spec.topAxis,
+          rightStyle: widget.spec.rightAxis,
+          xAxis: widget.xAxis,
+          yAxis: widget.yAxis,
+          topAxis: widget.topAxis,
+          rightAxis: widget.rightAxis,
+          xData: null,
+          yData: valueExtent,
+          viewport: widget.viewport,
+          rotationQuarterTurns: frame?.rotationQuarterTurns ?? 0,
+          horizontalGridInterval: flGridInterval(
+            widget.spec.grid,
+            horizontal: true,
+          ),
+          verticalGridInterval: flGridInterval(
+            widget.spec.grid,
+            horizontal: false,
+          ),
+          categoryLabel: _categoryLabel,
+        );
+        final data = fl.BarChartData(
+          barGroups: groups,
+          groupsSpace: widget.spec.groupSpacing ?? 16,
+          alignment: _resolveAlignment(widget.spec.alignment),
+          titlesData: axes.titles,
+          barTouchData: _resolveTouchData(),
+          maxY: axes.y.max,
+          minY: axes.y.min,
+          baselineY: axes.baselineY,
+          gridData: flResolveGrid(
+            widget.spec.grid,
+            horizontalInterval: axes.y.interval,
+          ),
+          borderData: flResolveBorder(widget.spec.frame),
+          backgroundColor: frame?.backgroundColor,
+          rotationQuarterTurns: frame?.rotationQuarterTurns ?? 0,
+        );
+
+        return fl.BarChart(
+          data,
+          duration: duration,
+          curve: widget.dataTransition.curve,
+          transformationConfig: flResolveViewport(widget.viewport),
+        );
+      },
     );
     if (frame?.clip == true) chart = ClipRect(child: chart);
 
@@ -380,6 +392,34 @@ final class _FlBarChartAdapterState extends State<FlBarChartAdapter> {
       child: chart,
     );
   }
+}
+
+/// Value extent of the drawn rods, matching the renderer's own derivation.
+FlAxisData? _valueExtent(List<fl.BarChartGroupData> groups) {
+  double? low, high;
+  var whole = true;
+  void include(double value) {
+    low = low == null ? value : math.min(low!, value);
+    high = high == null ? value : math.max(high!, value);
+    whole = whole && value == value.roundToDouble();
+  }
+
+  for (final group in groups) {
+    for (final rod in group.barRods) {
+      include(rod.fromY);
+      include(rod.toY);
+      if (rod.backDrawRodData.show) {
+        include(rod.backDrawRodData.fromY);
+        include(rod.backDrawRodData.toY);
+      }
+    }
+  }
+  final min = low;
+  final max = high;
+
+  return min == null || max == null
+      ? null
+      : (min: min, max: max, wholeNumbers: whole);
 }
 
 void _validateViewport(BarAlignment? alignment, ChartViewport? viewport) {

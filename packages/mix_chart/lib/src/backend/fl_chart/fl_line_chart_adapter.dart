@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:fl_chart/fl_chart.dart' as fl;
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
@@ -11,6 +13,7 @@ import '../../public/specs/line/line_series_spec.dart';
 import '../../public/specs/shared/chart_area_spec.dart';
 import '../../public/specs/shared/chart_marker_spec.dart';
 import '../../public/specs/shared/chart_stroke_spec.dart';
+import 'fl_axis_scale.dart';
 import 'fl_chart_helpers.dart';
 import 'fl_chart_tooltip_overlay.dart';
 
@@ -286,43 +289,71 @@ final class _FlLineChartAdapterState extends State<FlLineChartAdapter> {
     }
 
     final frame = widget.spec.frame?.spec;
-    final data = fl.LineChartData(
-      lineBarsData: bars,
-      titlesData: flResolveTitles(
-        context: context,
-        commonStyle: widget.spec.axis,
-        xStyle: widget.spec.xAxis,
-        yStyle: widget.spec.yAxis,
-        topStyle: widget.spec.topAxis,
-        rightStyle: widget.spec.rightAxis,
-        xAxis: widget.xAxis,
-        yAxis: widget.yAxis,
-        topAxis: widget.topAxis,
-        rightAxis: widget.rightAxis,
-      ),
-      lineTouchData: _resolveTouchData(),
-      gridData: flResolveGrid(widget.spec.grid),
-      borderData: flResolveBorder(widget.spec.frame),
-      minX: widget.xAxis?.min,
-      maxX: widget.xAxis?.max,
-      minY: widget.yAxis?.min,
-      maxY: widget.yAxis?.max,
-      clipData: frame?.clip == true
-          ? const fl.FlClipData.all()
-          : const fl.FlClipData.none(),
-      backgroundColor: frame?.backgroundColor,
-      rotationQuarterTurns: frame?.rotationQuarterTurns ?? 0,
-    );
+    final extents = _dataExtents(bars);
     final disableAnimations =
         MediaQuery.maybeOf(context)?.disableAnimations ?? false;
     final duration = disableAnimations || !_topologyCompatible
         ? Duration.zero
         : widget.dataTransition.duration;
-    final chart = fl.LineChart(
-      data,
-      duration: duration,
-      curve: widget.dataTransition.curve,
-      transformationConfig: flResolveViewport(widget.viewport),
+    final chart = LayoutBuilder(
+      builder: (context, constraints) {
+        final horizontalGridInterval = flGridInterval(
+          widget.spec.grid,
+          horizontal: true,
+        );
+        final verticalGridInterval = flGridInterval(
+          widget.spec.grid,
+          horizontal: false,
+        );
+        final axes = flResolveCartesianAxes(
+          context: context,
+          size: flLayoutSize(constraints),
+          commonStyle: widget.spec.axis,
+          xStyle: widget.spec.xAxis,
+          yStyle: widget.spec.yAxis,
+          topStyle: widget.spec.topAxis,
+          rightStyle: widget.spec.rightAxis,
+          xAxis: widget.xAxis,
+          yAxis: widget.yAxis,
+          topAxis: widget.topAxis,
+          rightAxis: widget.rightAxis,
+          xData: extents.x,
+          yData: extents.y,
+          viewport: widget.viewport,
+          rotationQuarterTurns: frame?.rotationQuarterTurns ?? 0,
+          horizontalGridInterval: horizontalGridInterval,
+          verticalGridInterval: verticalGridInterval,
+        );
+        final data = fl.LineChartData(
+          lineBarsData: bars,
+          titlesData: axes.titles,
+          lineTouchData: _resolveTouchData(),
+          gridData: flResolveGrid(
+            widget.spec.grid,
+            horizontalInterval: axes.y.interval,
+            verticalInterval: axes.x.interval,
+          ),
+          borderData: flResolveBorder(widget.spec.frame),
+          minX: axes.x.min,
+          maxX: axes.x.max,
+          baselineX: axes.baselineX,
+          minY: axes.y.min,
+          maxY: axes.y.max,
+          baselineY: axes.baselineY,
+          clipData: frame?.clip == true
+              ? const fl.FlClipData.all()
+              : const fl.FlClipData.none(),
+          backgroundColor: frame?.backgroundColor,
+          rotationQuarterTurns: frame?.rotationQuarterTurns ?? 0,
+        );
+
+        return fl.LineChart(
+          data,
+          duration: duration,
+          curve: widget.dataTransition.curve,
+          transformationConfig: flResolveViewport(widget.viewport),
+        );
+      },
     );
 
     return flWrapTooltipOverlay(
@@ -332,6 +363,32 @@ final class _FlLineChartAdapterState extends State<FlLineChartAdapter> {
       child: chart,
     );
   }
+}
+
+/// Data extents of the drawn spots, matching the renderer's own derivation.
+({FlAxisData? x, FlAxisData? y}) _dataExtents(List<fl.LineChartBarData> bars) {
+  double? minX, maxX, minY, maxY;
+  var wholeX = true;
+  var wholeY = true;
+  for (final bar in bars) {
+    for (final spot in bar.spots) {
+      if (spot.isNull()) continue;
+      minX = minX == null ? spot.x : math.min(minX, spot.x);
+      maxX = maxX == null ? spot.x : math.max(maxX, spot.x);
+      minY = minY == null ? spot.y : math.min(minY, spot.y);
+      maxY = maxY == null ? spot.y : math.max(maxY, spot.y);
+      wholeX = wholeX && spot.x == spot.x.roundToDouble();
+      wholeY = wholeY && spot.y == spot.y.roundToDouble();
+    }
+  }
+  if (minX == null || maxX == null || minY == null || maxY == null) {
+    return (x: null, y: null);
+  }
+
+  return (
+    x: (min: minX, max: maxX, wholeNumbers: wholeX),
+    y: (min: minY, max: maxY, wholeNumbers: wholeY),
+  );
 }
 
 fl.BarAreaData _resolveArea(ChartAreaSpec? area, Color fallbackColor) {
