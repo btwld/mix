@@ -93,9 +93,7 @@ FlAxisScale flResolveAxisScale({
   final explicitMin = axis?.min;
   final explicitMax = axis?.max;
   final explicitStep = axis?.interval;
-  var low = explicitMin ?? data?.min;
-  var high = explicitMax ?? data?.max;
-  if (low == null || high == null || data == null) {
+  if (data == null) {
     return FlAxisScale(
       min: explicitMin,
       max: explicitMax,
@@ -103,6 +101,8 @@ FlAxisScale flResolveAxisScale({
       interval: explicitStep,
     );
   }
+  var low = explicitMin ?? data.min;
+  var high = explicitMax ?? data.max;
   final wholeNumbers = data.wholeNumbers;
   if (high <= low) {
     (low, high) = _widen(
@@ -121,8 +121,8 @@ FlAxisScale flResolveAxisScale({
   if (explicitStep == null && wholeNumbers) step = math.max(step, 1);
 
   (double, double) bounds() => (
-    explicitMin ?? (roundBounds ? _floorToStep(low!, step) : low!),
-    explicitMax ?? (roundBounds ? _ceilToStep(high!, step) : high!),
+    explicitMin ?? (roundBounds ? _floorToStep(low, step) : low),
+    explicitMax ?? (roundBounds ? _ceilToStep(high, step) : high),
   );
   var (min, max) = bounds();
   if (explicitStep == null) {
