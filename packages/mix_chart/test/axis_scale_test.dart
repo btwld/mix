@@ -157,6 +157,22 @@ void main() {
       expect(_labels(tester, fl.AxisSide.left), ['0', '1', '2', '3']);
     });
 
+    testWidgets('large values keep the data inside the bounds', (tester) async {
+      // Epoch milliseconds: 13 significant digits.
+      await _pump(
+        tester,
+        LineChart(
+          series: [
+            _series([1698797425999, 1698797426003]),
+          ],
+        ),
+      );
+
+      final data = _lineData(tester);
+      expect(data.minY, lessThanOrEqualTo(1698797425999));
+      expect(data.maxY, greaterThanOrEqualTo(1698797426003));
+    });
+
     testWidgets('fractional data keeps fractional steps', (tester) async {
       await _pump(
         tester,

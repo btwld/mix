@@ -186,11 +186,26 @@ double _powerOfTen(int exponent) => exponent >= 0
 /// Drops binary noise such as the 4 in 0.30000000000000004.
 double _clean(double value) => double.parse(value.toStringAsPrecision(12));
 
-double _floorToStep(double value, double step) =>
-    _clean((value / step + _tickTolerance).floorToDouble() * step);
+double _floorToStep(double value, double step) => _cleanMultiple(
+  (value / step + _tickTolerance).floorToDouble() * step,
+  step,
+);
 
 double _ceilToStep(double value, double step) =>
-    _clean((value / step - _tickTolerance).ceilToDouble() * step);
+    _cleanMultiple((value / step - _tickTolerance).ceilToDouble() * step, step);
+
+/// Drops binary noise from a multiple of [step], as [_clean] does.
+///
+/// A value many steps from zero keeps more digits, so cleaning never moves
+/// it by more than [_tickTolerance] steps: 1698797425999 stays put.
+double _cleanMultiple(double value, double step) {
+  if (value == 0) return value;
+  final stepDigits = (math.log((value / step).abs()) / math.ln10).ceil();
+  // Six digits for the tolerance, one for rounding; 17 round-trips exactly.
+  final digits = (stepDigits + 7).clamp(12, 17);
+
+  return double.parse(value.toStringAsPrecision(digits));
+}
 
 /// Whether [value] lies on a multiple of [step].
 bool flIsOnTick(double value, double step) {
