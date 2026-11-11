@@ -88,8 +88,32 @@ and variants when needed; the package does not require a token registry.
 - Horizontal bar scaling requires `spaceEvenly`, `spaceAround`, or `spaceBetween`.
 - `selectedSliceRadiusOffset` adds to the resolved per-slice radius. Unset keeps
   the 8 logical-pixel default; zero disables expansion.
+- Unset slice radius is 80 logical pixels, reduced when the pie or donut would
+  not fit its box.
 - Axis label builders, badges and tooltips accept Flutter widgets. Hits carry
   public IDs, values, local position and pointer events, not backend indices.
+
+## Axes and values
+
+Charts read cleanly without axis configuration:
+
+- Ticks fall on a round step (1, 2 or 5 times a power of ten) sized to the
+  plot, and never on fractions when every value on the axis is a whole number.
+- A value-axis bound left to the data is rounded out to that step, so the
+  first and last ticks are round numbers too.
+- A bound is labelled only when it falls on a tick. Pass `minIncluded: true`
+  or `maxIncluded: true` to label an off-tick bound; `false` never labels it.
+- Grid lines follow the axis step unless the grid style sets an interval.
+- An unstyled value axis widens its label space to fit its ticks on one line.
+  Crowded bar category labels are thinned to every n-th label.
+
+Explicit `min`, `max` and `interval` always win. Tooltips, bar labels and the
+semantics summary write values without a trailing `.0`; pass `valueFormatter`
+for currency or units. Line and bar charts fall back to the y-axis
+`labelFormatter` when it returns text.
+
+The line hover indicator draws the series marker in its selected state over a
+hairline guide in the grid stroke, so marker and grid styles restyle it.
 
 ## Animation ownership
 
