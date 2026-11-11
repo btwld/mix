@@ -11,7 +11,22 @@ import '../../public/models/chart_config.dart';
 const flPixelsPerInterval = 40.0;
 
 /// Smallest plot length allowed per interval after bounds are rounded out.
+///
+/// Leaves about 10px between default labels, which are 11px text on a 1.2
+/// line height.
 const _minPixelsPerInterval = 24.0;
+
+/// Plot length assumed when the available one is unknown or not positive.
+const _fallbackExtent = 200.0;
+
+/// Times the step may be widened to space out ticks after rounding.
+///
+/// Each widening at least doubles the step, so this covers a 256-fold
+/// shortfall; the loop usually ends after one or two.
+const _maxStepWidenings = 8;
+
+/// Fraction of the value a zero-width range is widened by on each side.
+const _flatRangePadding = 0.05;
 
 /// Tolerance, in steps, for treating a value as lying on a tick.
 const _tickTolerance = 1e-6;
@@ -115,7 +130,7 @@ FlAxisScale flResolveAxisScale({
     );
   }
 
-  final length = extent.isFinite && extent > 0 ? extent : 200.0;
+  final length = extent.isFinite && extent > 0 ? extent : _fallbackExtent;
   final count = math.max(length ~/ flPixelsPerInterval, 1);
   var step = explicitStep ?? flNiceStep((high - low) / count);
   if (explicitStep == null && wholeNumbers) step = math.max(step, 1);
@@ -128,7 +143,7 @@ FlAxisScale flResolveAxisScale({
   if (explicitStep == null) {
     // Rounding the bounds out adds up to two intervals. Widen the step when
     // that leaves the ticks too close together for the space.
-    for (var attempt = 0; attempt < 8; attempt++) {
+    for (var attempt = 0; attempt < _maxStepWidenings; attempt++) {
       final intervals = (max - min) / step;
       if (intervals <= 1 || length / intervals >= _minPixelsPerInterval) break;
       step = _nextNiceStep(step);
@@ -226,8 +241,8 @@ bool _boundOnTick(double? bound, double? step) =>
   required bool wholeNumbers,
 }) {
   double padding(double value) => roundBounds
-      ? (value == 0 ? 1 : value.abs() * 0.05)
-      : (wholeNumbers || value == 0 ? 0.5 : value.abs() * 0.05);
+      ? (value == 0 ? 1 : value.abs() * _flatRangePadding)
+      : (wholeNumbers || value == 0 ? 0.5 : value.abs() * _flatRangePadding);
 
   if (minIsExplicit) return (low, low + padding(low));
   if (maxIsExplicit) return (high - padding(high), high);

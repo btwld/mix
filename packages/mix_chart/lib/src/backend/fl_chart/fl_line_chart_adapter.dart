@@ -157,7 +157,7 @@ final class _FlLineChartAdapterState extends State<FlLineChartAdapter> {
   ) {
     final guide = flResolveLine(
       widget.spec.grid?.spec.stroke?.spec,
-      fallbackColor: const Color(0xFFCBD5E1),
+      fallbackColor: _hoverGuideColor,
       fallbackWidth: 1,
     );
 
@@ -398,6 +398,12 @@ final class _FlLineChartAdapterState extends State<FlLineChartAdapter> {
     );
   }
 }
+
+/// Hover guide colour when the grid stroke sets none.
+///
+/// A shade darker than the default grid line (0xFFE2E8F0), so the guide
+/// reads over the grid.
+const _hoverGuideColor = Color(0xFFCBD5E1);
 
 /// Data extents of the drawn spots, matching the renderer's own derivation.
 ({FlAxisData? x, FlAxisData? y}) _dataExtents(List<fl.LineChartBarData> bars) {

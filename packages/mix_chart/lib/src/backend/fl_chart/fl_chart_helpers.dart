@@ -163,13 +163,20 @@ PointerEvent? flPointerEvent(fl.FlTouchEvent event) => switch (event) {
   _ => null,
 };
 
-/// The size a chart lays out in, with a fallback for unbounded constraints.
+/// Size assumed along an unbounded constraint.
 ///
-/// The fallback only guides tick density; the renderer still reports its own
-/// layout error for an unbounded chart.
+/// It only guides tick density; the renderer still reports its own layout
+/// error for an unbounded chart.
+const _unboundedLayoutSize = Size(300, 200);
+
+/// The size a chart lays out in, with a fallback for unbounded constraints.
 Size flLayoutSize(BoxConstraints constraints) => .new(
-  constraints.hasBoundedWidth ? constraints.maxWidth : 300,
-  constraints.hasBoundedHeight ? constraints.maxHeight : 200,
+  constraints.hasBoundedWidth
+      ? constraints.maxWidth
+      : _unboundedLayoutSize.width,
+  constraints.hasBoundedHeight
+      ? constraints.maxHeight
+      : _unboundedLayoutSize.height,
 );
 
 /// Titles, scales and tick origins resolved for one Cartesian chart.
