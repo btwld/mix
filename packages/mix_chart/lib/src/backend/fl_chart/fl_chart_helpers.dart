@@ -181,11 +181,19 @@ typedef FlCartesianAxes = ({
   double baselineY,
 });
 
+/// The positions of a categorical x axis: how many there are, the label of
+/// each, and the distance between neighbours for a given plot width.
+typedef FlCategories = ({
+  int count,
+  ChartAxisLabelFormatter label,
+  double Function(double plotWidth) spacing,
+});
+
 /// Resolves all four Cartesian axes for a chart laid out in [size].
 ///
 /// The value axis is scaled first, so its labels can be measured before the
-/// x axis is given the remaining width. A [categoryLabel] makes the x axis
-/// categorical: it names each position and [xData] is ignored.
+/// x axis is given the remaining width. With [categories] the x axis is
+/// categorical and [xData] is not used.
 FlCartesianAxes flResolveCartesianAxes({
   required BuildContext context,
   required Size size,
@@ -198,14 +206,12 @@ FlCartesianAxes flResolveCartesianAxes({
   required ChartAxis? yAxis,
   required ChartAxis? topAxis,
   required ChartAxis? rightAxis,
-  required FlAxisData? xData,
+  FlAxisData? xData,
   required FlAxisData? yData,
   required ChartViewport? viewport,
   required int rotationQuarterTurns,
   required StyleSpec<ChartGridSpec>? grid,
-  ChartAxisLabelFormatter? categoryLabel,
-  int categoryCount = 0,
-  double Function(double plotWidth)? categorySpacing,
+  FlCategories? categories,
 }) {
   final common = commonStyle?.spec;
   final left = _AxisSide(
@@ -257,7 +263,7 @@ FlCartesianAxes flResolveCartesianAxes({
   final rightReserved = right.valueAxisReservedSize(context, y, baselineY);
   final plotWidth =
       width - left.extent(leftReserved) - right.extent(rightReserved);
-  final x = categoryLabel == null
+  final x = categories == null
       ? flResolveAxisScale(
           axis: xAxis,
           data: xData,
@@ -271,13 +277,13 @@ FlCartesianAxes flResolveCartesianAxes({
           step: xAxis?.interval ?? 1,
           interval: xAxis?.interval ?? 1,
         );
-  final categoryStride = categoryLabel == null || categorySpacing == null
+  final categoryStride = categories == null
       ? 1
       : bottom.categoryLabelStride(
           context,
-          count: categoryCount,
-          spacing: categorySpacing(plotWidth),
-          categoryLabel: categoryLabel,
+          count: categories.count,
+          spacing: categories.spacing(plotWidth),
+          categoryLabel: categories.label,
         );
   final baselineX = x.baselineFor([
     x.interval,
@@ -293,7 +299,7 @@ FlCartesianAxes flResolveCartesianAxes({
       bottomTitles: bottom.titles(
         context,
         x,
-        fallbackLabel: categoryLabel,
+        fallbackLabel: categories?.label,
         labelStride: categoryStride,
       ),
     ),

@@ -351,18 +351,19 @@ final class _FlBarChartAdapterState extends State<FlBarChartAdapter> {
           yAxis: widget.yAxis,
           topAxis: widget.topAxis,
           rightAxis: widget.rightAxis,
-          xData: null,
           yData: valueExtent,
           viewport: widget.viewport,
           rotationQuarterTurns: frame?.rotationQuarterTurns ?? 0,
           grid: widget.spec.grid,
-          categoryLabel: _categoryLabel,
-          categoryCount: groups.length,
-          categorySpacing: (plotWidth) => _categorySpacing(
-            groups,
-            _resolveAlignment(widget.spec.alignment),
-            widget.spec.groupSpacing ?? 16,
-            plotWidth,
+          categories: (
+            count: groups.length,
+            label: _categoryLabel,
+            spacing: (plotWidth) => _categorySpacing(
+              groups,
+              _resolveAlignment(widget.spec.alignment),
+              widget.spec.groupSpacing ?? 16,
+              plotWidth,
+            ),
           ),
         );
         final data = fl.BarChartData(
