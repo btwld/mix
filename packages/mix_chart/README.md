@@ -151,3 +151,8 @@ Confirm pub.dev publisher ownership before relying on OIDC. The
 shared OIDC prerequisites; its package name and tag prefix are Protocol-specific.
 
 BSD 3-Clause. See [LICENSE](LICENSE).
+
+Pie labels with default placement use the full label and value when they fit,
+then the value alone, and finally no in-slice text for very narrow slices.
+Tooltips and semantics retain the full information. Explicit `labelPosition`
+keeps caller-controlled placement. Text is measured at the current text scale.

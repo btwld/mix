@@ -246,6 +246,92 @@ final class _FlPieChartAdapterState extends State<FlPieChartAdapter> {
                   defaultRadius,
                 ),
             ];
+            final total = widget.slices.fold(
+              0.0,
+              (sum, slice) => sum + slice.value,
+            );
+            var angle =
+                ((widget.spec.startAngle ?? -90) +
+                    (frame?.rotationQuarterTurns ?? 0) * 90) *
+                math.pi /
+                180;
+            for (var index = 0; index < sections.length; index++) {
+              final section = sections[index];
+              final halfSweep = math.pi * section.value / total;
+              final middle = angle + halfSweep;
+              angle += halfSweep * 2;
+              // Explicit placement may intentionally put text outside the slice.
+              if (!section.showTitle ||
+                  presentations[index].labelPosition != null) {
+                continue;
+              }
+              final center = widget.spec.centerRadius ?? 0.0;
+              final distance = center + section.radius * 0.58;
+              final inset = (widget.spec.sliceSpacing ?? 2) / 2 + 2;
+              bool fits(String text) {
+                final painter = TextPainter(
+                  text: TextSpan(
+                    text: text,
+                    style: DefaultTextStyle.of(context).style
+                        .merge(section.titleStyle)
+                        .merge(
+                          MediaQuery.boldTextOf(context)
+                              ? const TextStyle(fontWeight: FontWeight.bold)
+                              : null,
+                        ),
+                  ),
+                  textAlign: TextAlign.center,
+                  textDirection: TextDirection.ltr,
+                  textScaler: MediaQuery.textScalerOf(context),
+                )..layout();
+                final width = painter.width / 2;
+                final height = painter.height / 2;
+                painter.dispose();
+                final rotation = widget.spec.sunbeamLabels == true
+                    ? 0.0
+                    : -middle;
+                final cos = math.cos(rotation);
+                final sin = math.sin(rotation);
+                // Distance from the hole's centre to the oriented text rectangle.
+                final nearX = math.max(0.0, (distance * cos).abs() - width);
+                final nearY = math.max(0.0, (distance * sin).abs() - height);
+                if (center > 0 &&
+                    math.sqrt(nearX * nearX + nearY * nearY) < center + 2) {
+                  return false;
+                }
+                for (final x in [-width, width]) {
+                  for (final y in [-height, height]) {
+                    final radial = distance + x * cos - y * sin;
+                    final tangent = x * sin + y * cos;
+                    if (math.sqrt(radial * radial + tangent * tangent) >
+                        center + section.radius - 2) {
+                      return false;
+                    }
+                    if (halfSweep < math.pi / 2) {
+                      if (radial * math.sin(halfSweep) -
+                              tangent.abs() * math.cos(halfSweep) <
+                          inset) {
+                        return false;
+                      }
+                    } else if (halfSweep < math.pi && radial < inset) {
+                      // Conservative for reflex sectors; never bridge adjacent slices.
+                      return false;
+                    }
+                  }
+                }
+                return true;
+              }
+
+              if (!fits(section.title)) {
+                final value = (widget.valueFormatter ?? formatChartValue)(
+                  section.value,
+                );
+                sections[index] = section.copyWith(
+                  title: value,
+                  showTitle: fits(value),
+                );
+              }
+            }
             final data = fl.PieChartData(
               sections: sections,
               centerSpaceRadius: widget.spec.centerRadius ?? 0,
