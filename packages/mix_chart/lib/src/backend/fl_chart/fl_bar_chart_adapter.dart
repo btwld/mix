@@ -364,6 +364,13 @@ final class _FlBarChartAdapterState extends State<FlBarChartAdapter> {
             horizontal: false,
           ),
           categoryLabel: _categoryLabel,
+          categoryCount: groups.length,
+          categorySpacing: (plotWidth) => _categorySpacing(
+            groups,
+            _resolveAlignment(widget.spec.alignment),
+            widget.spec.groupSpacing ?? 16,
+            plotWidth,
+          ),
         );
         final data = fl.BarChartData(
           barGroups: groups,
@@ -400,6 +407,35 @@ final class _FlBarChartAdapterState extends State<FlBarChartAdapter> {
       child: chart,
     );
   }
+}
+
+/// Smallest distance between neighbouring group centres.
+///
+/// Mirrors how the renderer positions groups for each alignment.
+double _categorySpacing(
+  List<fl.BarChartGroupData> groups,
+  fl.BarChartAlignment alignment,
+  double groupsSpace,
+  double viewWidth,
+) {
+  if (groups.length < 2) return .infinity;
+  final widths = [for (final group in groups) group.width];
+  final sumWidth = widths.reduce((a, b) => a + b);
+  final packed = sumWidth + groupsSpace * (groups.length - 1);
+  final evenGap = (viewWidth - sumWidth) / (groups.length + 1);
+  // Packed alignments fall back to even spacing when the groups overflow.
+  final gap = switch (alignment) {
+    .start || .center || .end => packed <= viewWidth ? groupsSpace : evenGap,
+    .spaceBetween => (viewWidth - sumWidth) / (groups.length - 1),
+    .spaceAround => (viewWidth - sumWidth) / groups.length,
+    .spaceEvenly => evenGap,
+  };
+  var spacing = double.infinity;
+  for (var index = 1; index < widths.length; index++) {
+    spacing = math.min(spacing, (widths[index - 1] + widths[index]) / 2 + gap);
+  }
+
+  return spacing;
 }
 
 /// Value extent of the drawn rods, matching the renderer's own derivation.

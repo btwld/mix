@@ -205,6 +205,8 @@ FlCartesianAxes flResolveCartesianAxes({
   required double? horizontalGridInterval,
   required double? verticalGridInterval,
   ChartAxisLabelFormatter? categoryLabel,
+  int categoryCount = 0,
+  double Function(double plotWidth)? categorySpacing,
 }) {
   final common = commonStyle?.spec;
   final left = _AxisSide(
@@ -254,6 +256,8 @@ FlCartesianAxes flResolveCartesianAxes({
   ]);
   final leftReserved = left.valueAxisReservedSize(context, y, baselineY);
   final rightReserved = right.valueAxisReservedSize(context, y, baselineY);
+  final plotWidth =
+      width - left.extent(leftReserved) - right.extent(rightReserved);
   final x = xData == null
       ? FlAxisScale(
           min: null,
@@ -264,10 +268,17 @@ FlCartesianAxes flResolveCartesianAxes({
       : flResolveAxisScale(
           axis: xAxis,
           data: xData,
-          extent:
-              width - left.extent(leftReserved) - right.extent(rightReserved),
+          extent: plotWidth,
           roundBounds: false,
           zoomable: zoom == .horizontal || zoom == .both,
+        );
+  final categoryStride = categoryLabel == null || categorySpacing == null
+      ? 1
+      : bottom.categoryLabelStride(
+          context,
+          count: categoryCount,
+          spacing: categorySpacing(plotWidth),
+          categoryLabel: categoryLabel,
         );
   final baselineX = x.baselineFor([
     x.interval,
@@ -280,7 +291,12 @@ FlCartesianAxes flResolveCartesianAxes({
       leftTitles: left.titles(context, y, reservedSize: leftReserved),
       topTitles: top.titles(context, x),
       rightTitles: right.titles(context, y, reservedSize: rightReserved),
-      bottomTitles: bottom.titles(context, x, fallbackLabel: categoryLabel),
+      bottomTitles: bottom.titles(
+        context,
+        x,
+        fallbackLabel: categoryLabel,
+        labelStride: categoryStride,
+      ),
     ),
     x: x,
     y: y,
@@ -294,6 +310,9 @@ const _valueAxisReservedSize = 44.0;
 
 /// Label space a category axis reserves when its style does not set one.
 const _categoryAxisReservedSize = 30.0;
+
+/// Smallest gap kept between neighbouring category labels.
+const _minCategoryLabelGap = 6.0;
 
 /// One side of a Cartesian chart: its axis data and merged presentation.
 final class _AxisSide {
@@ -361,27 +380,56 @@ final class _AxisSide {
     final interval = settings.interval ?? scale.step;
     if (min == null || max == null || interval == null) return reservedSize;
 
+    final widest = widestLabel(context, [
+      for (final value in flTickValues(
+        min: min,
+        max: max,
+        interval: interval,
+        baseline: baseline,
+        minIncluded: settings.minIncluded,
+        maxIncluded: settings.maxIncluded,
+      ))
+        labelText(value, min, max, interval),
+    ]);
+
+    return math.max(reservedSize, (widest + labelSpace).ceilToDouble());
+  }
+
+  /// How many category labels to step over so neighbours do not overlap.
+  ///
+  /// Every label is kept when they fit [spacing], the distance between
+  /// category centres. Otherwise every n-th label is kept, starting with the
+  /// first. Custom label widgets cannot be measured and are all kept.
+  int categoryLabelStride(
+    BuildContext context, {
+    required int count,
+    required double spacing,
+    required ChartAxisLabelFormatter categoryLabel,
+  }) {
+    if (!showLabels || axis?.labelBuilder != null || count < 2) return 1;
+    if (!spacing.isFinite || spacing <= 0) return 1;
+    final widest = widestLabel(context, [
+      for (var index = 0; index < count; index++)
+        labelText(index.toDouble(), 0, count - 1, 1, fallback: categoryLabel),
+    ]);
+
+    return math.max(1, ((widest + _minCategoryLabelGap) / spacing).ceil());
+  }
+
+  /// Horizontal footprint of the widest of [texts] drawn as default labels.
+  double widestLabel(BuildContext context, Iterable<String> texts) {
     final label = labelStyle();
     final media = MediaQuery.maybeOf(context);
     var style = DefaultTextStyle.of(context).style.merge(label.spec.style);
     if (media?.boldText ?? false) {
       style = style.merge(const TextStyle(fontWeight: .bold));
     }
-    final angle = labelAngle;
+    final cos = math.cos(labelAngle).abs();
+    final sin = math.sin(labelAngle).abs();
     var widest = 0.0;
-    for (final value in flTickValues(
-      min: min,
-      max: max,
-      interval: interval,
-      baseline: baseline,
-      minIncluded: settings.minIncluded,
-      maxIncluded: settings.maxIncluded,
-    )) {
+    for (final text in texts) {
       final painter = TextPainter(
-        text: TextSpan(
-          text: labelText(value, min, max, interval),
-          style: style,
-        ),
+        text: TextSpan(text: text, style: style),
         textDirection:
             label.spec.textDirection ?? Directionality.maybeOf(context) ?? .ltr,
         textScaler: label.spec.textScaler ?? media?.textScaler ?? .noScaling,
@@ -389,14 +437,10 @@ final class _AxisSide {
       )..layout();
       final size = painter.size;
       painter.dispose();
-      widest = math.max(
-        widest,
-        size.width * math.cos(angle).abs() +
-            size.height * math.sin(angle).abs(),
-      );
+      widest = math.max(widest, size.width * cos + size.height * sin);
     }
 
-    return math.max(reservedSize, (widest + labelSpace).ceilToDouble());
+    return widest;
   }
 
   /// Text of the default label at [value].
@@ -476,6 +520,7 @@ final class _AxisSide {
     FlAxisScale scale, {
     double? reservedSize,
     ChartAxisLabelFormatter? fallbackLabel,
+    int labelStride = 1,
   }) {
     final labelSpec = labelStyle();
     final fitInside = pick((spec) => spec.fitInside) ?? false;
@@ -488,6 +533,9 @@ final class _AxisSide {
       sideTitles: fl.SideTitles(
         showTitles: showLabels,
         getTitlesWidget: (value, meta) {
+          if (labelStride > 1 && value.round() % labelStride != 0) {
+            return const SizedBox.shrink();
+          }
           final formatted = labelText(
             value,
             meta.min,
