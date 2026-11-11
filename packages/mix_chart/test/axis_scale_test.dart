@@ -357,6 +357,101 @@ void main() {
       expect(_labels(tester, fl.AxisSide.bottom), ['0']);
     });
 
+    testWidgets('centres a single negative point', (tester) async {
+      await _pump(
+        tester,
+        LineChart(
+          series: [
+            _series([-42]),
+          ],
+        ),
+      );
+
+      final data = _lineData(tester);
+      expect(data.minY, lessThan(-42));
+      expect(data.maxY, greaterThan(-42));
+      expect(data.minY + data.maxY, -84);
+    });
+
+    testWidgets('a single bar rises from zero', (tester) async {
+      await _pump(tester, BarChart(groups: _groups([42])));
+
+      final data = _barData(tester);
+      expect(data.minY, 0);
+      expect(data.maxY, greaterThanOrEqualTo(42));
+      expect(_labels(tester, fl.AxisSide.left).first, '0');
+    });
+
+    testWidgets('a single negative bar hangs from zero', (tester) async {
+      await _pump(tester, BarChart(groups: _groups([-5])));
+
+      final data = _barData(tester);
+      expect(data.minY, lessThanOrEqualTo(-5));
+      expect(data.maxY, 0);
+      expect(_labels(tester, fl.AxisSide.left).last, '0');
+    });
+
+    testWidgets('very small values keep distinct ticks', (tester) async {
+      await _pump(
+        tester,
+        LineChart(
+          series: [
+            _series([1e-7, 2e-7, 5e-7]),
+          ],
+        ),
+      );
+
+      final data = _lineData(tester);
+      expect(data.minY, lessThanOrEqualTo(1e-7));
+      expect(data.maxY, greaterThanOrEqualTo(5e-7));
+      final labels = _labels(tester, fl.AxisSide.left);
+      expect(labels.length, greaterThan(1));
+      expect(labels.toSet(), hasLength(labels.length));
+    });
+
+    testWidgets('a plot with almost no height still contains its data', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Align(
+            alignment: Alignment.topLeft,
+            child: SizedBox(
+              width: 360,
+              height: 40,
+              child: LineChart(series: [_series(_audit)]),
+            ),
+          ),
+        ),
+      );
+
+      final data = _lineData(tester);
+      expect(tester.takeException(), isNull);
+      expect(data.minY, lessThanOrEqualTo(1088));
+      expect(data.maxY, greaterThanOrEqualTo(1284));
+    });
+
+    testWidgets('charts in a zero-size box do not throw', (tester) async {
+      for (final chart in [
+        LineChart(series: [_series(_audit)]),
+        BarChart(groups: _groups([5, 6, 4])),
+        PieChart(
+          slices: [PieSlice(id: 'a', label: 'A', value: 1)],
+        ),
+      ]) {
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Align(
+              alignment: Alignment.topLeft,
+              child: SizedBox.shrink(child: chart),
+            ),
+          ),
+        );
+
+        expect(tester.takeException(), isNull);
+      }
+    });
+
     testWidgets('keeps zero as the floor of all-zero data', (tester) async {
       await _pump(tester, BarChart(groups: _groups([0, 0, 0])));
 
