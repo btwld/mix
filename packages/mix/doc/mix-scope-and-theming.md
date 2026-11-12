@@ -74,6 +74,53 @@ For explicit reusable scope objects, `MixScope.combine(scopes: [base, feature],
 child: MyApp())` merges left to right. Later tokens override earlier tokens;
 a later non-null modifier order replaces the earlier order.
 
+## Overlays and separate routes
+
+`InheritedTheme.captureAll` captures Flutter inherited themes, but does not
+capture `MixScope`: it is an `InheritedModel`. An overlay entry or route outside
+a local scope therefore sees the destination's scope, if any.
+
+Use the existing `MixScope.combine` API to reapply the **nearest effective
+scope** around the overlay content. Capture it while the source context is
+mounted, before inserting the entry or pushing the route:
+
+```dart
+Widget captureMixScope(BuildContext context, Widget child) {
+  final scope = context.getInheritedWidgetOfExactType<MixScope>();
+  return scope == null
+      ? child
+      : MixScope.combine(scopes: [scope], child: child);
+}
+
+// In an event callback, with a context below the local MixScope:
+final content = captureMixScope(
+  context,
+  InheritedTheme.captureAll(context, const MyOverlayContent()),
+);
+final entry = OverlayEntry(builder: (_) => content);
+Overlay.of(context).insert(entry);
+// The owner must remove and dispose the entry when it is no longer needed.
+```
+
+This preserves tokens and modifier order without collecting all ancestor
+scopes. A plain nested scope must continue to hide its ancestors' tokens;
+`MixScope.inherit` has already merged its ancestor values into the nearest
+scope. Merging every ancestor again would undo that boundary. When no source
+scope exists, return the child unchanged so it can use the destination's scope.
+
+This is a snapshot of the supplied configuration, not a live subscription.
+Later source-scope changes do not update the entry automatically. Recapture and
+rebuild it when needed, or put a shared `MixScope` above the navigator/overlay.
+For capture during widget building, `MixScope.maybeOf(context)` can establish
+a dependency; the event-callback example uses a non-listening lookup instead.
+Reapplied scopes retain normal `tokens`/`modifierOrder` aspect notifications.
+
+Resolver functions stored in the token map are preserved, not evaluated during
+capture. They receive the **destination** context when resolved. Reapply any
+other inherited dependencies they need, or provide concrete token values when
+the source's resolved values must be frozen. Mutable token values and modifier
+lists are not deep-copied; do not mutate them in place.
+
 ## Material integration
 
 ```dart
