@@ -1,3 +1,11 @@
+## Unreleased
+
+### Bug fixes
+
+- **Blur lifecycle:** preserve child state, focus, text editing, and active
+  tickers when blur changes to or from zero. The `ImageFiltered` wrapper stays
+  mounted with filtering disabled at zero sigma.
+
 ## 2.4.0
 
 ### New features

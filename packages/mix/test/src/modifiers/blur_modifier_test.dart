@@ -153,13 +153,17 @@ void main() {
     });
 
     group('build', () {
-      test('returns child unchanged when sigma is 0.0', () {
+      testWidgets('disables the filter when sigma is 0.0', (tester) async {
         const modifier = BlurModifier(0.0);
         const child = SizedBox(width: 50, height: 50);
 
-        final result = modifier.build(child);
+        await tester.pumpWidget(modifier.build(child));
 
-        expect(result, same(child));
+        final imageFiltered = tester.widget<ImageFiltered>(
+          find.byType(ImageFiltered),
+        );
+        expect(imageFiltered.enabled, isFalse);
+        expect(imageFiltered.child, same(child));
       });
 
       testWidgets('creates ImageFiltered widget when sigma > 0', (
@@ -175,6 +179,7 @@ void main() {
           find.byType(ImageFiltered),
         );
         expect(imageFiltered.child, same(child));
+        expect(imageFiltered.enabled, isTrue);
 
         // Verify the blur is applied (ImageFiltered with blur filter)
         expect(find.byType(ImageFiltered), findsOneWidget);
