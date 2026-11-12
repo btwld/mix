@@ -57,9 +57,8 @@ BoxStyler thoughtRevealStyle({required bool isVisible}) => BoxStyler()
         alignment: .topLeft,
         widthFactor: 1,
         heightFactor: isVisible ? 1 : 0,
-      ),
+      ).opacity(isVisible ? 1 : 0),
     )
-    .wrap(.opacity(isVisible ? 1 : 0))
     .animate(.easeOut(180.ms));
 
 final thoughtInset = BoxStyler().padding(.top(6)).padding(.left(24));
