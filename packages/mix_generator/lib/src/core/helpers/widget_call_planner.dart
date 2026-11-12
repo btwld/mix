@@ -535,7 +535,7 @@ String renderWidgetCall({
     ...positional.map((p) => p.name),
     if (forwardsKey) 'key: key',
     'style: this',
-    ...named.map((p) => '${p.name}: ${p.name}'),
+    ...childLast(named).map((p) => '${p.name}: ${p.name}'),
   ];
 
   return '''
@@ -543,6 +543,27 @@ $indent$widgetName$invocationSuffix call$declarationSuffix(${signatureParams.joi
 $indent  return $widgetName$invocationSuffix(${invocationArgs.join(', ')});
 $indent}
 ''';
+}
+
+/// Names of named arguments that `sort_child_properties_last` requires last.
+const _childLastNames = {'child', 'children'};
+
+/// Returns [params] with `child` and `children` moved after every other
+/// parameter, keeping all other parameters, and the two moved ones, in their
+/// original relative order.
+///
+/// Apply only to the named arguments of a widget instance creation: the
+/// `sort_child_properties_last` lint flags generated code otherwise. Positional
+/// parameters are never reordered.
+List<WidgetCallParam> childLast(Iterable<WidgetCallParam> params) {
+  final list = params.toList();
+
+  return [
+    for (final p in list)
+      if (!_childLastNames.contains(p.name)) p,
+    for (final p in list)
+      if (_childLastNames.contains(p.name)) p,
+  ];
 }
 
 String renderCallParameter(WidgetCallParam param) {

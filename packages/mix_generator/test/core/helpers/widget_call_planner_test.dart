@@ -5,6 +5,7 @@ import 'package:analyzer/src/dart/element/element.dart';
 import 'package:analyzer/src/dart/element/type.dart';
 import 'package:build_test/build_test.dart';
 import 'package:mix_generator/src/core/helpers/widget_call_planner.dart';
+import 'package:mix_generator/src/core/models/mix_widget_model.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:test/test.dart';
 
@@ -28,6 +29,29 @@ void main() {
     ''',
       (resolver) async =>
           (await resolver.findLibraryByName('tear_off_validation'))!,
+    );
+  });
+
+  test('renderWidgetCall passes child and children last, keeps the rest', () {
+    WidgetCallParam named(String name) => WidgetCallParam(
+      name: name,
+      typeCode: 'Object?',
+      isPositional: false,
+      isRequired: false,
+    );
+
+    final code = renderWidgetCall(
+      widgetName: 'RemixDialog',
+      params: [named('child'), named('a'), named('children'), named('b')],
+      forwardsKey: true,
+    );
+
+    expect(
+      code,
+      contains(
+        'return RemixDialog(key: key, style: this, a: a, b: b, '
+        'child: child, children: children);',
+      ),
     );
   });
 
