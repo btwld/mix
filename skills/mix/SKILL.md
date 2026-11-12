@@ -76,7 +76,7 @@ Grid is an intentional entry-point exception: make topology explicit with
 | Add specs, recipe widgets, modifiers or generator fields | [Code generation](references/code-generation.md) |
 | Conditional context, named or interaction patches | [Variants](references/variants.md) |
 | Implicit, phase or keyframe transitions | [Animations](references/animations.md) |
-| Scope values, custom tokens or Material defaults | [Design tokens](references/design-tokens.md) |
+| Scope values, custom tokens, Material defaults or overlay/route propagation | [Design tokens](references/design-tokens.md) |
 | Wrapper order or value transformations | [Modifiers and directives](references/widget-modifiers-directives.md) |
 | Locate runnable UI patterns | [Examples](references/examples.md) |
 | Work inside the monorepo | [Development workflow](references/development-workflow.md) |
