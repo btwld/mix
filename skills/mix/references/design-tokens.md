@@ -56,6 +56,27 @@ explicit overrides; place it below the theme it should use.
 `MixScope.maybeOf` permits no scope. Missing ordinary tokens and wrong value
 types fail; do not treat every missing token as a context default.
 
+## Overlays and separate routes
+
+An overlay entry or route outside a local scope uses the destination's scope.
+`InheritedTheme.captureAll` excludes `MixScope` because it is an
+`InheritedModel`.
+
+Capture the nearest effective scope from a mounted source context and reapply
+it with `MixScope.combine(scopes: [scope], child: child)`. A plain nested scope
+shadows its ancestors; `MixScope.inherit` has already merged its ancestor values.
+Collecting every ancestor would undo that boundary. If no source scope exists,
+leave the child unchanged so it can use the destination's scope.
+
+Capture is a snapshot: recapture and rebuild after source changes, or place a
+shared scope above the navigator/overlay. Stored token resolvers run with the
+destination context; reapply their dependencies or provide concrete values to
+freeze source-resolved values. Mutable values and modifier lists are not
+deep-copied; avoid mutating them in place.
+
+See the [overlay and route recipe](https://github.com/btwld/mix/blob/main/packages/mix/doc/mix-scope-and-theming.md#overlays-and-separate-routes)
+for non-listening capture, inherited-theme integration and entry cleanup.
+
 ## Custom values and reference limits
 
 Subclass abstract `MixToken<T>` for a custom value type. Supply it with
