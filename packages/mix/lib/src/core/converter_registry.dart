@@ -62,8 +62,11 @@ class MixConverterRegistry implements ConversionContext {
   /// Registers a converter for type [T].
   ///
   /// The converter will be used when [tryConvert] or [convert] is called
-  /// with a value of type [T].
+  /// with type argument [T], not based on the value's runtime subtype.
+  /// Replaces any converter already registered for [T]. Built-in converters
+  /// are initialized first, so registration during app startup is preserved.
   void register<T>(MixConverter<T> converter) {
+    _ensureInitialized();
     _converters[T] = converter;
   }
 
@@ -77,7 +80,8 @@ class MixConverterRegistry implements ConversionContext {
   /// Converts a value to its [Mix] representation.
   ///
   /// Throws [StateError] if no converter is registered for type [T].
-  /// Use [tryConvert] for a non-throwing alternative.
+  /// Use [tryConvert] to return null when no converter is registered.
+  /// Exceptions thrown by a registered converter still propagate.
   Mix<T> convert<T>(T value) {
     final result = tryConvert<T>(value);
     if (result == null) {
