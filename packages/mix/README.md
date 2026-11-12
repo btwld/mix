@@ -134,6 +134,7 @@ These compose with variants; consult the versioned API for exact signatures.
 - [Runnable showcase](https://github.com/btwld/mix/tree/main/examples/showcase)
   and [layout examples](https://github.com/btwld/mix/blob/main/examples/showcase/docs/layouts.md).
 - [Token migration](doc/token-migration-guide.md).
+- [Custom values and converters](doc/custom-mix-values.md).
 - [mix_annotations](https://pub.dev/packages/mix_annotations) and
   [mix_generator](https://pub.dev/packages/mix_generator): specs and recipe widgets.
 - [mix_protocol](https://pub.dev/packages/mix_protocol): optional JSON boundary.
