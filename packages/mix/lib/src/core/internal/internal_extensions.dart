@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../theme/mix_theme.dart';
 
@@ -230,14 +230,14 @@ extension ColorExtensions on Color {
   Color tint([int amount = 10]) {
     final p = _normalizeAmount(amount);
 
-    return Color.lerp(this, Colors.white, p)!;
+    return Color.lerp(this, const Color(0xFFFFFFFF), p)!;
   }
 
   /// Shades the color by mixing with black by [amount] percent.
   Color shade([int amount = 10]) {
     final p = _normalizeAmount(amount);
 
-    return Color.lerp(this, Colors.black, p)!;
+    return Color.lerp(this, const Color(0xFF000000), p)!;
   }
 
   /// Desaturates the color by decreasing saturation in HSL space by [amount] percent.
@@ -286,23 +286,8 @@ extension BuildContextExt on BuildContext {
   /// Gets the screen size.
   Size get screenSize => MediaQuery.of(this).size;
 
-  // Theme Context Extensions.
-  Brightness get brightness => Theme.of(this).brightness;
-
-  /// Theme context helpers.
-  ThemeData get theme => Theme.of(this);
-
-  /// Theme color scheme.
-  ColorScheme get colorScheme => theme.colorScheme;
-
-  /// Theme text theme.
-  TextTheme get textTheme => theme.textTheme;
-
   /// Mix Theme Data.
   MixScope get mixTheme => MixScope.of(this);
-
-  /// Check if brightness is Brightness.dark.
-  bool get isDarkMode => brightness == .dark;
 
   /// Is device in landscape mode.
   bool get isLandscape => orientation == .landscape;

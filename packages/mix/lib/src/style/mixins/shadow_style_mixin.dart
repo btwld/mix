@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../core/mix_element.dart';
 import '../../properties/painting/decoration_mix.dart';

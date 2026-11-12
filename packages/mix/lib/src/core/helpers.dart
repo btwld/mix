@@ -1,8 +1,8 @@
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
-import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' as r;
+import 'package:flutter/widgets.dart';
 import 'package:flutter/widgets.dart' as w;
 
 import '../animation/animation_config.dart';

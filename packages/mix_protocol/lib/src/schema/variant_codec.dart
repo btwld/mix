@@ -1,5 +1,5 @@
 import 'package:ack/ack.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
 import '../errors/mix_protocol_error.dart';

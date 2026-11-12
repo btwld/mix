@@ -1,5 +1,5 @@
 import 'package:fl_chart/fl_chart.dart' as fl;
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
 import '../../public/models/chart_config.dart';
@@ -129,7 +129,7 @@ final class _FlLineChartAdapterState extends State<FlLineChartAdapter> {
         },
       ),
       dashArray: flResolveDashArray(stroke?.dashArray),
-      shadow: presentation.shadow ?? const Shadow(color: Colors.transparent),
+      shadow: presentation.shadow ?? const Shadow(color: Color(0x00000000)),
       isStepLineChart: switch (curve) {
         .stepBefore || .stepMiddle || .stepAfter => true,
         .straight || .curved => false,
@@ -166,7 +166,9 @@ final class _FlLineChartAdapterState extends State<FlLineChartAdapter> {
           ? widget.spec.series?.spec.marker?.spec
           : markers[index];
       final color =
-          barData.gradient?.colors.first ?? barData.color ?? Colors.black;
+          barData.gradient?.colors.first ??
+          barData.color ??
+          const Color(0xFF000000);
       final dot = fl.FlDotData(
         getDotPainter: (_, _, _, _) => _resolveMarker(marker, color, true),
       );
@@ -183,7 +185,7 @@ final class _FlLineChartAdapterState extends State<FlLineChartAdapter> {
   ) {
     final tooltip = widget.spec.tooltip?.spec;
     final textStyle = const TextStyle(
-      color: Colors.white,
+      color: Color(0xFFFFFFFF),
       fontSize: 12,
       fontWeight: .w600,
     ).merge(tooltip?.text?.spec.style);
@@ -439,7 +441,7 @@ fl.FlDotPainter _resolveMarker(
 ) {
   final radius = (marker?.radius ?? 4) * (selected ? 1.35 : 1);
   final color = marker?.color ?? fallbackColor;
-  final borderColor = marker?.borderColor ?? Colors.white;
+  final borderColor = marker?.borderColor ?? const Color(0xFFFFFFFF);
   final borderWidth = marker?.borderWidth ?? 2;
 
   final painter = switch (marker?.shape ?? ChartMarkerShape.circle) {

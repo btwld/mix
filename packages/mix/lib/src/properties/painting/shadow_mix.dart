@@ -1,10 +1,11 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:mix_annotations/mix_annotations.dart';
 
 import '../../core/helpers.dart';
 import '../../core/mix_element.dart' hide Mixable;
 import '../../core/prop.dart';
+import 'elevation_shadows.dart';
 
 part 'shadow_mix.g.dart';
 
@@ -166,9 +167,7 @@ class BoxShadowMix extends BaseShadowMix<BoxShadow>
 
   /// Creates shadows from elevation level.
   static List<BoxShadowMix> fromElevation(ElevationShadow value) {
-    return kElevationToShadow[value.elevation]!
-        .map(BoxShadowMix.value)
-        .toList();
+    return elevationToShadow[value.elevation]!.map(BoxShadowMix.value).toList();
   }
 
   /// Copy with color.

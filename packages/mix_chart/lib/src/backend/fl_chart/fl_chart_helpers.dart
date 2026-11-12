@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:fl_chart/fl_chart.dart' as fl;
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter/rendering.dart' show RenderProxyBox;
 import 'package:mix/mix.dart';
 

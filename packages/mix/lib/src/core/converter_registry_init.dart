@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../properties/layout/constraints_mix.dart';
 import '../properties/layout/edge_insets_geometry_mix.dart';

@@ -402,29 +402,10 @@ void main() {
       // Test screen size
       expect(capturedContext.screenSize, MediaQuery.of(capturedContext).size);
 
-      // Test brightness
-      expect(capturedContext.brightness, Theme.of(capturedContext).brightness);
-
-      // Test theme
-      expect(capturedContext.theme, Theme.of(capturedContext));
-
-      // Test color scheme
-      expect(
-        capturedContext.colorScheme,
-        Theme.of(capturedContext).colorScheme,
-      );
-
-      // Test text theme
-      expect(capturedContext.textTheme, Theme.of(capturedContext).textTheme);
-
       // Test mix theme
       expect(capturedContext.mixTheme, isA<MixScope>());
 
       // Test computed properties
-      expect(
-        capturedContext.isDarkMode,
-        Theme.of(capturedContext).brightness == Brightness.dark,
-      );
       expect(
         capturedContext.isLandscape,
         MediaQuery.of(capturedContext).orientation == Orientation.landscape,
@@ -433,27 +414,6 @@ void main() {
         capturedContext.isPortrait,
         MediaQuery.of(capturedContext).orientation == Orientation.portrait,
       );
-    });
-
-    testWidgets('handles dark theme correctly', (WidgetTester tester) async {
-      late BuildContext capturedContext;
-
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: ThemeData.dark(),
-          home: MixScope.empty(
-            child: Builder(
-              builder: (context) {
-                capturedContext = context;
-                return const SizedBox.shrink();
-              },
-            ),
-          ),
-        ),
-      );
-
-      expect(capturedContext.brightness, Brightness.dark);
-      expect(capturedContext.isDarkMode, true);
     });
 
     testWidgets('handles orientation changes', (WidgetTester tester) async {

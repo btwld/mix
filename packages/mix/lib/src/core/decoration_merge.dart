@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../properties/painting/decoration_mix.dart';
 import '../properties/painting/shape_border_mix.dart';

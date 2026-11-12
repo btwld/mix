@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:fl_chart/fl_chart.dart' as fl;
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
 import '../../public/models/chart_config.dart';
@@ -68,7 +68,7 @@ final class _FlPieChartAdapterState extends State<FlPieChartAdapter> {
       showTitle: presentation.showLabel ?? true,
       titleStyle:
           const TextStyle(
-                color: Colors.white,
+                color: Color(0xFFFFFFFF),
                 fontSize: 12,
                 fontWeight: .w600,
                 height: 1.15,
@@ -128,7 +128,7 @@ final class _FlPieChartAdapterState extends State<FlPieChartAdapter> {
             styleSpec: text.copyWith(
               spec: text.spec.copyWith(
                 style: const TextStyle(
-                  color: Colors.white,
+                  color: Color(0xFFFFFFFF),
                   fontSize: 12,
                   fontWeight: .w600,
                 ).merge(text.spec.style),
@@ -334,7 +334,8 @@ final class _FlPieChartAdapterState extends State<FlPieChartAdapter> {
             final data = fl.PieChartData(
               sections: sections,
               centerSpaceRadius: widget.spec.centerRadius ?? 0,
-              centerSpaceColor: widget.spec.centerColor ?? Colors.transparent,
+              centerSpaceColor:
+                  widget.spec.centerColor ?? const Color(0x00000000),
               sectionsSpace: widget.spec.sliceSpacing ?? 2,
               startDegreeOffset:
                   (widget.spec.startAngle ?? -90) +

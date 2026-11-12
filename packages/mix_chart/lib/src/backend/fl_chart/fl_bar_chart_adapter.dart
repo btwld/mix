@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:fl_chart/fl_chart.dart' as fl;
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
 import '../../public/models/bar_data.dart';
@@ -135,7 +135,9 @@ final class _FlBarChartAdapterState extends State<FlBarChartAdapter> {
     final selected = _isSegmentSelected(group, bar, segment);
     final border =
         presentation.border ??
-        (selected ? const BorderSide(color: Colors.white, width: 2) : .none);
+        (selected
+            ? const BorderSide(color: Color(0xFFFFFFFF), width: 2)
+            : .none);
 
     return fl.BarChartRodStackItem(
       segment.fromY,
@@ -155,7 +157,7 @@ final class _FlBarChartAdapterState extends State<FlBarChartAdapter> {
   fl.BarTouchData _resolveTouchData() {
     final tooltip = widget.spec.tooltip?.spec;
     final textStyle = const TextStyle(
-      color: Colors.white,
+      color: Color(0xFFFFFFFF),
       fontSize: 12,
       fontWeight: .w600,
     ).merge(tooltip?.text?.spec.style);

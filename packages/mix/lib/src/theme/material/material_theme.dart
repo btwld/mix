@@ -5,14 +5,21 @@
 /// Mix styling and Material Design systems.
 library;
 
+// The Material theme bridge is the only part of Mix that reads Material types.
+import 'package:flutter/material.dart' show ColorScheme, TextTheme, Theme;
 import 'package:flutter/widgets.dart';
 
-import '../../core/internal/internal_extensions.dart';
 import '../mix_theme.dart';
 import '../tokens/mix_token.dart';
 import 'material_tokens.dart';
 
 const _md = MaterialTokens();
+
+extension _MaterialThemeContext on BuildContext {
+  ColorScheme get colorScheme => Theme.of(this).colorScheme;
+
+  TextTheme get textTheme => Theme.of(this).textTheme;
+}
 
 /// Creates color token map from the current Material theme context.
 Map<MixToken, Object> _createMaterialColorTokens(BuildContext context) {

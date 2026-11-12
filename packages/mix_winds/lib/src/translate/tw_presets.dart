@@ -1,7 +1,7 @@
 /// Tailwind preset values that are not represented in the generated theme maps.
 library;
 
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
 enum TextShadowPreset { twoXs, xs, sm, md, lg }

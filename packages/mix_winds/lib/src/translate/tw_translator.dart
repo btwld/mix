@@ -1,7 +1,7 @@
 /// Tailwind candidate to Mix styler translator.
 library;
 
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
 
 import '../parser/candidate_parser.dart';
