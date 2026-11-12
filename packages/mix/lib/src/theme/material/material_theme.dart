@@ -6,6 +6,8 @@
 library;
 
 // The Material theme bridge is the only part of Mix that reads Material types.
+// It is deprecated and goes away, together with this import, in Mix 3.0.
+// ignore: deprecated_member_use
 import 'package:flutter/material.dart' show ColorScheme, TextTheme, Theme;
 import 'package:flutter/widgets.dart';
 
@@ -78,6 +80,9 @@ Map<MixToken, Object> _createMaterialTextStyleTokens(BuildContext context) {
 ///
 /// This method uses a Builder to dynamically access the current Material theme
 /// and creates token map with concrete values from the theme.
+@Deprecated(
+  'Use MixScope with resolver entries that read your own theme instead, such as tokens: {token: (context) => Theme.of(context).colorScheme.primary}. createMaterialMixScope will be removed in Mix 3.0.',
+)
 Widget createMaterialMixScope({
   Map<MixToken, Object>? additionalTokens,
   List<Type>? orderOfModifiers,

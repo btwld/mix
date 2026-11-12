@@ -49,8 +49,14 @@ breakpoint tokens also provide defaults.
 
 A plain nested scope shadows ancestor values. `MixScope.inherit(...)` merges
 partial overrides; `MixScope.combine(scopes: [...], child: ...)` merges explicit
-scopes left to right. `withMaterial(...)` reads the surrounding `Theme` and adds
-explicit overrides; place it below the theme it should use.
+scopes left to right.
+
+To follow a Material theme, give the token a resolver entry in the generic
+`tokens:` map, such as
+`primary: (BuildContext context) => Theme.of(context).colorScheme.primary`, and
+place the scope below that theme. `MixScope.withMaterial(...)` and
+`MaterialTokens` are deprecated and will be removed in Mix 3.0; do not use them
+in new code.
 
 `MixScope.of(context, 'tokens')` registers token-aspect dependency;
 `MixScope.maybeOf` permits no scope. Missing ordinary tokens and wrong value

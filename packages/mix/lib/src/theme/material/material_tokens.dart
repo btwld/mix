@@ -6,6 +6,9 @@ import '../tokens/value_tokens.dart';
 ///
 /// Contains organized token collections that map to Material Design 3
 /// color schemes and typography system.
+@Deprecated(
+  'Define your own tokens and supply their values through MixScope instead. MaterialTokens will be removed in Mix 3.0.',
+)
 @immutable
 class MaterialTokens {
   final colorScheme = const _MaterialColorTokens();

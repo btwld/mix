@@ -76,16 +76,29 @@ a later non-null modifier order replaces the earlier order.
 
 ## Material integration
 
+Map your own tokens to the app's theme with resolver entries. A resolver is a
+`T Function(BuildContext)` scope value, invoked at resolution time:
+
 ```dart
-MixScope.withMaterial(
-  colors: {primary: Colors.indigo},
+const primary = ColorToken('brand.primary');
+
+MixScope(
+  tokens: {
+    primary: (BuildContext context) => Theme.of(context).colorScheme.primary,
+  },
   child: MyApp(),
 );
 ```
 
-`withMaterial` reads the surrounding `Theme` at build time, supplies Material
-tokens, and adds custom overrides. Place it below the theme it should read.
-The same typed maps and generic `tokens:` map are available.
+`Theme` comes from your own import, so this works with both
+`package:material_ui` and the Material library bundled with the Flutter SDK.
+Place the scope below the theme it should read.
+
+`MixScope.withMaterial`, `createMaterialMixScope`, and `MaterialTokens` are
+deprecated and will be removed in Mix 3.0. They read the SDK-bundled Material
+theme, which Flutter deprecated in 3.50; in an app migrated to
+`package:material_ui` they resolve the default theme unless the app is wrapped
+in `MaterialUiCompatibilityBridge`.
 
 ## Modifier ordering
 

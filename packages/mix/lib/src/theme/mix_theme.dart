@@ -63,6 +63,23 @@ class MixScope extends InheritedModel<String> {
       orderOfModifiers = null;
 
   /// Creates a widget with Material Design tokens pre-configured.
+  ///
+  /// This reads the theme of the Material library bundled with the Flutter SDK,
+  /// which Flutter deprecated in favor of the standalone `material_ui` package.
+  /// Map your own tokens to your app's theme with resolver entries instead:
+  ///
+  /// ```dart
+  /// MixScope(
+  ///   tokens: {
+  ///     $primary: (BuildContext context) =>
+  ///         Theme.of(context).colorScheme.primary,
+  ///   },
+  ///   child: app,
+  /// )
+  /// ```
+  @Deprecated(
+    'Use MixScope with resolver entries that read your own theme instead, such as tokens: {token: (context) => Theme.of(context).colorScheme.primary}. withMaterial will be removed in Mix 3.0.',
+  )
   static Widget withMaterial({
     Map<MixToken, Object>? tokens,
     Map<ColorToken, Color>? colors,
