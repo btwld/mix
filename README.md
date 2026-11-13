@@ -12,7 +12,7 @@ Type-safe styling for Flutter, with style definitions separate from widget struc
 [![BSD 3-Clause license](https://img.shields.io/github/license/btwld/mix)](LICENSE)
 
 [Package](https://pub.dev/packages/mix) ·
-[Documentation](https://www.fluttermix.com) ·
+[Documentation](https://fluttermix.com/mix/docs/) ·
 [BSD 3-Clause license](LICENSE)
 
 ## Core concepts
@@ -77,10 +77,10 @@ final card = Box(
 
 - [Showcase](examples/showcase): widgets, responsive layouts, interactions and charts.
 - [Example workspace setup](examples): dependencies and web builds.
-- [Styling](https://www.fluttermix.com/documentation/mix/guides/styling),
-  [variants](https://www.fluttermix.com/documentation/mix/guides/dynamic-styling),
-  [tokens](https://www.fluttermix.com/documentation/mix/guides/design-token),
-  [animation](https://www.fluttermix.com/documentation/mix/guides/animations).
+- [Styling](https://fluttermix.com/mix/docs/guides/styling/),
+  [variants](https://fluttermix.com/mix/docs/guides/dynamic-styling/),
+  [tokens](https://fluttermix.com/mix/docs/guides/design-token/),
+  [animation](https://fluttermix.com/mix/docs/guides/animations/).
 - [Grid layout](packages/mix/doc/grid-layout.md),
   [scope and theming](packages/mix/doc/mix-scope-and-theming.md),
   [token migration](packages/mix/doc/token-migration-guide.md).
