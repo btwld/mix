@@ -7,7 +7,7 @@
 
 Type-safe styling for Flutter, with styles defined separately from widget structure.
 
-[Documentation](https://www.fluttermix.com) ·
+[Documentation](https://fluttermix.com/mix/docs/) ·
 [Source](https://github.com/btwld/mix) · [BSD 3-Clause license](LICENSE)
 
 ## Core concepts
@@ -127,10 +127,10 @@ These compose with variants; consult the versioned API for exact signatures.
 
 ## Learn and extend
 
-- [Styling](https://www.fluttermix.com/documentation/mix/guides/styling),
-  [variants](https://www.fluttermix.com/documentation/mix/guides/dynamic-styling),
-  [tokens](https://www.fluttermix.com/documentation/mix/guides/design-token),
-  [animations](https://www.fluttermix.com/documentation/mix/guides/animations).
+- [Styling](https://fluttermix.com/mix/docs/guides/styling/),
+  [variants](https://fluttermix.com/mix/docs/guides/dynamic-styling/),
+  [tokens](https://fluttermix.com/mix/docs/guides/design-token/),
+  [animations](https://fluttermix.com/mix/docs/guides/animations/).
 - [Runnable showcase](https://github.com/btwld/mix/tree/main/examples/showcase)
   and [layout examples](https://github.com/btwld/mix/blob/main/examples/showcase/docs/layouts.md).
 - [Token migration](doc/token-migration-guide.md).
