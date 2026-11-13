@@ -320,7 +320,7 @@ Then connect your debugger to `localhost:8888`.
 
 ## Learn More
 
-- [Mix documentation](https://www.fluttermix.com)
+- [Mix documentation](https://fluttermix.com/mix/docs/)
 - [mix](https://pub.dev/packages/mix) — Core framework
 - [mix_annotations](https://pub.dev/packages/mix_annotations) — Annotation definitions
 - [GitHub repository](https://github.com/btwld/mix)

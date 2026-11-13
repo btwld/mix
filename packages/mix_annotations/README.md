@@ -213,7 +213,7 @@ melos run gen:build
 
 ## Learn More
 
-- [Mix documentation](https://www.fluttermix.com)
+- [Mix documentation](https://fluttermix.com/mix/docs/)
 - [mix](https://pub.dev/packages/mix) — Core framework
 - [mix_generator](https://pub.dev/packages/mix_generator) — Code generator
 - [GitHub repository](https://github.com/btwld/mix)
