@@ -20,6 +20,9 @@ external actions. In a consumer app, inspect its manifest and resolved Mix
 version before adding or using APIs. Install with `flutter pub add mix` only
 when adding Mix is part of the task.
 
+For interaction design or review, the `mix-microinteractions-ui` companion
+covers state feedback, motion, accessibility and working showcase Snacks.
+
 ## Resolve API questions
 
 Use local source first, then connected Dart MCP signature/hover tools, then

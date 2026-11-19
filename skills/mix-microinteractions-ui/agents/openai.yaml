@@ -1,0 +1,5 @@
+interface:
+  display_name: "Mix Micro-interactions"
+  short_description: "Design and review feedback in Mix controls"
+  brand_color: "#13B9FD"
+  default_prompt: "Use $mix-microinteractions-ui to review this control's feedback, accessibility, and motion."

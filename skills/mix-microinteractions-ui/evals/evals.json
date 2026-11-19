@@ -1,0 +1,29 @@
+{
+  "skill_name": "mix-microinteractions-ui",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Review a Squish Switch adaptation in a Mix app. Tapping twice during travel makes the thumb jump. The designer wants to keep the squish. What would you inspect and test?",
+      "expected_output": "Explains press feedback, semantic toggle, travel and accent separately. Checks spring retargeting, separate animation owners, final value after reversal, cancellation, keyboard activation and the reduced-motion endpoint. Marks unobserved behavior as a hypothesis.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Our composer uses Mix. Send has no callback for empty input. After Stop and a new send, the first request sometimes clears the new draft. Review this flow and tell us how to verify the fix.",
+      "expected_output": "Explains the stale completion, preserves the newer draft and request, keeps Stop enabled while busy, explicitly disables empty Send, verifies the exposed action name/state and exercises the stop-and-restart sequence.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Our showcase uses a local checkout where BoxStyler.pressable works. The DartPad service for this snippet reports Mix 2.2.x. How should we make the card, including its icon and text, one keyboard-accessible action?",
+      "expected_output": "Uses a compatible PressableBox or one direct Pressable for a compound surface. Keeps the hit area, focus, label and one activation path. Checks standalone compilation against DartPad's version.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "I'm building a plain Flutter settings screen with Material SwitchListTile. Does this interaction need the Mix companion skill?",
+      "expected_output": "Recognizes the generic Flutter request is outside this skill's trigger and does not introduce Mix.",
+      "files": []
+    }
+  ]
+}

@@ -95,10 +95,13 @@ verification. Dependencies are bootstrapped with Melos.
 The [website source](https://github.com/btwld/mix-docs) lives separately.
 
 The [Mix agent skill](skills/mix/SKILL.md) includes portable API references.
-Install it in a consuming project with:
+The [micro-interactions companion](skills/mix-microinteractions-ui/SKILL.md)
+covers input feedback, accessible state changes, and motion using the showcase Snacks.
+Select either skill by name in a consuming project:
 
 ```bash
 npx skills add btwld/mix --skill mix -y
+npx skills add btwld/mix --skill mix-microinteractions-ui -y
 ```
 
 [Contributors](https://github.com/btwld/mix/graphs/contributors)
