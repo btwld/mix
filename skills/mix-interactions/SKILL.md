@@ -1,13 +1,13 @@
 ---
-name: mix-microinteractions-ui
+name: mix-interactions
 description: >-
-  Design, implement, or review interaction feedback in Flutter projects that use
+  Design, implement, or review micro-interactions in Flutter projects that use
   or explicitly request Mix. Use for press and toggle behavior, drag and
   disclosure, loading and recovery, keyboard and screen-reader feedback,
   reduced motion, or adapting a Mix showcase Snack.
 ---
 
-# Mix micro-interactions
+# Mix Interactions
 
 Start with one user moment. Name the trigger, the rule that changes state, the
 feedback the person gets, and when the interaction repeats, expires or changes
