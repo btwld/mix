@@ -25,6 +25,7 @@ void main() {
       expect(box.canRequestFocus, defaults.canRequestFocus);
       expect(box.excludeFromSemantics, defaults.excludeFromSemantics);
       expect(box.semanticsLabel, defaults.semanticsLabel);
+      expect(box.semanticsIdentifier, defaults.semanticsIdentifier);
       expect(box.semanticsRole, defaults.semanticsRole);
       expect(box.onKeyEvent, defaults.onKeyEvent);
       expect(box.controller, defaults.controller);
@@ -62,6 +63,7 @@ void main() {
         canRequestFocus: false,
         excludeFromSemantics: true,
         semanticsLabel: 'Save changes',
+        semanticsIdentifier: 'save_button',
         semanticsRole: .link,
         onKeyEvent: onKeyEvent,
         controller: controller,
@@ -84,6 +86,7 @@ void main() {
       expect(box.canRequestFocus, isFalse);
       expect(box.excludeFromSemantics, isTrue);
       expect(box.semanticsLabel, 'Save changes');
+      expect(box.semanticsIdentifier, 'save_button');
       expect(box.semanticsRole, PressableSemanticsRole.link);
       expect(box.onKeyEvent, same(onKeyEvent));
       expect(box.controller, same(controller));

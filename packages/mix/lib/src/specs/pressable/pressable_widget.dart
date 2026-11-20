@@ -38,6 +38,7 @@ class PressableBox extends StatelessWidget {
     this.canRequestFocus = true,
     this.excludeFromSemantics = false,
     this.semanticsLabel,
+    this.semanticsIdentifier,
     this.semanticsRole = PressableSemanticsRole.button,
     this.onKeyEvent,
     this.controller,
@@ -66,6 +67,9 @@ class PressableBox extends StatelessWidget {
   final bool canRequestFocus;
   final bool excludeFromSemantics;
   final String? semanticsLabel;
+
+  /// Stable id for UI automation, set as [SemanticsProperties.identifier].
+  final String? semanticsIdentifier;
   final PressableSemanticsRole semanticsRole;
 
   /// Handles key events before built-in activation while enabled.
@@ -92,6 +96,7 @@ class PressableBox extends StatelessWidget {
       canRequestFocus: canRequestFocus,
       excludeFromSemantics: excludeFromSemantics,
       semanticsLabel: semanticsLabel,
+      semanticsIdentifier: semanticsIdentifier,
       semanticsRole: semanticsRole,
       onKeyEvent: onKeyEvent,
       controller: controller,
@@ -128,6 +133,7 @@ extension BoxStylerPressable on BoxStyler {
     bool canRequestFocus = true,
     bool excludeFromSemantics = false,
     String? semanticsLabel,
+    String? semanticsIdentifier,
     PressableSemanticsRole semanticsRole = .button,
     FocusOnKeyEventCallback? onKeyEvent,
     WidgetStatesController? controller,
@@ -148,6 +154,7 @@ extension BoxStylerPressable on BoxStyler {
     canRequestFocus: canRequestFocus,
     excludeFromSemantics: excludeFromSemantics,
     semanticsLabel: semanticsLabel,
+    semanticsIdentifier: semanticsIdentifier,
     semanticsRole: semanticsRole,
     onKeyEvent: onKeyEvent,
     controller: controller,
@@ -176,6 +183,7 @@ class Pressable extends StatefulWidget {
     this.canRequestFocus = true,
     this.excludeFromSemantics = false,
     this.semanticsLabel,
+    this.semanticsIdentifier,
     this.semanticsRole = PressableSemanticsRole.button,
     this.onKeyEvent,
     this.controller,
@@ -190,6 +198,9 @@ class Pressable extends StatefulWidget {
   final MouseCursor? mouseCursor;
 
   final String? semanticsLabel;
+
+  /// Stable id for UI automation, set as [SemanticsProperties.identifier].
+  final String? semanticsIdentifier;
 
   final PressableSemanticsRole semanticsRole;
 
@@ -525,6 +536,7 @@ class PressableWidgetState extends State<Pressable> {
         button: widget.semanticsRole == .button ? true : null,
         link: widget.semanticsRole == .link ? true : null,
         label: widget.semanticsLabel,
+        identifier: widget.semanticsIdentifier,
         onTap: widget.enabled && widget.onPress != null ? _onTap : null,
         onLongPress: widget.enabled && widget.onLongPress != null
             ? _onLongPress
