@@ -106,6 +106,10 @@ class MixWidgetModel {
   /// Type parameters declared by the styler `call()` method.
   final List<WidgetCallTypeParam> callTypeParams;
 
+  /// Retains the supplied value for compatibility. The generator ignores it.
+  @Deprecated('Ignored. Generated adapters keep their own key.')
+  final bool stylerCallForwardsKey;
+
   /// Plain widget type instantiated directly, or `null` for the legacy Styler
   /// `call()` path.
   final String? targetTypeReference;
@@ -131,6 +135,8 @@ class MixWidgetModel {
     required this.factoryParams,
     required this.callParams,
     this.callTypeParams = const [],
+    @Deprecated('Ignored. Generated adapters keep their own key.')
+    this.stylerCallForwardsKey = false,
     this.targetTypeReference,
     this.targetConstructorName,
     this.doc,

@@ -10,6 +10,10 @@ generated constructor signatures, so it is not a source break.
 inner widget (`RemixCard`). To find the inner widget in a test, use
 `find.descendant(of: find.byKey(key), matching: find.byType(RemixCard))`.
 
+The `MixWidgetModel.stylerCallForwardsKey` getter and constructor argument are
+deprecated but still available for source compatibility. The generator ignores
+the flag; callers can stop passing it.
+
 ## 2.2.2
 
  - **FIX**: Preserve valid generic constructor targets when analyzer summary

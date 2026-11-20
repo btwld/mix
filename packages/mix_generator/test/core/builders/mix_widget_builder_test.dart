@@ -1,7 +1,6 @@
 import 'dart:io';
 
-import 'package:mix_generator/src/core/builders/mix_widget_builder.dart';
-import 'package:mix_generator/src/core/models/mix_widget_model.dart';
+import 'package:mix_generator/mix_generator.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -92,6 +91,23 @@ $code
       expect(code, contains('return cardStyle.call('));
       expect(code, isNot(contains('key:')));
       expect(code, contains('child: child,'));
+    });
+
+    test('deprecated key forwarding flag is accepted but ignored', () {
+      const model = MixWidgetModel(
+        widgetName: 'Card',
+        factoryReference: 'cardStyle',
+        isFunctionFactory: false,
+        factoryParams: [],
+        callParams: [],
+        stylerCallForwardsKey: true,
+      );
+
+      expect(model.stylerCallForwardsKey, isTrue);
+      expect(
+        MixWidgetBuilder(model).build(),
+        contains('return cardStyle.call();'),
+      );
     });
 
     test('function-backed style threads factory args before call', () {
