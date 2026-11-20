@@ -403,7 +403,7 @@ final brokenStyle = const BoxStyler();
       final errors = await _expectMixWidgetValidationError(libSource);
 
       expect(errors, contains('must not select `key`'));
-      expect(errors, contains('The generated widget owns its `Key? key`.'));
+      expect(errors, contains('the generated widget owns its `Key? key`.'));
     });
 
     test(
@@ -501,7 +501,7 @@ final brokenStyle = const BoxStyler();
 
       final errors = await _expectMixWidgetValidationError(libSource);
 
-      expect(errors, contains('only forwards a `key` parameter'));
+      expect(errors, contains('requires `key` to be declared as `Key? key`'));
       expect(errors, contains('must use the exact `Key` type'));
     });
 
@@ -1029,7 +1029,7 @@ final brokenStyle = const BoxStyler();
 
         final errors = await _expectMixWidgetValidationError(libSource);
 
-        expect(errors, contains('only forwards a `key` parameter'));
+        expect(errors, contains('`Key? key` when present'));
         expect(errors, contains('must not be `required`'));
         expect(errors, contains('must be nullable'));
       },

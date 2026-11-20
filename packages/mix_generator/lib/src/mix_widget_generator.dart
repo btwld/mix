@@ -137,7 +137,7 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
             library: library,
           );
     _requireUnprefixedFlutterSymbols(variable, callSource.call, library);
-    final call = _extractWidgetCallParams(
+    final params = _extractWidgetCallParams(
       callSource.call,
       anchor: variable,
       library: library,
@@ -146,9 +146,9 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
       baseExcluded: callSource.baseExcluded,
     );
     final callParams = targetConstructor == null
-        ? call.params
+        ? params
         : qualifyTargetMemberDefaults(
-            call.params,
+            params,
             constructor: targetConstructor,
             targetTypeReference: callSource.targetTypeReference!,
           );
@@ -175,7 +175,6 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
               targetConstructor.enclosingElement.typeParameters,
               library: library,
             ),
-      stylerCallForwardsKey: call.forwardsKey,
       targetTypeReference: callSource.targetTypeReference,
       targetConstructorName: callSource.targetConstructorName,
       doc: variable.documentationComment,
@@ -227,7 +226,7 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
       factoryReference: functionName,
       factoryParameters: factoryParameters,
     );
-    final call = _extractWidgetCallParams(
+    final params = _extractWidgetCallParams(
       callSource.call,
       anchor: function,
       library: library,
@@ -236,9 +235,9 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
       baseExcluded: callSource.baseExcluded,
     );
     final callParams = targetConstructor == null
-        ? call.params
+        ? params
         : qualifyTargetMemberDefaults(
-            call.params,
+            params,
             constructor: targetConstructor,
             targetTypeReference: callSource.targetTypeReference!,
           );
@@ -283,7 +282,6 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
       factoryParams: factoryParams,
       callParams: callParams,
       callTypeParams: callTypeParams,
-      stylerCallForwardsKey: call.forwardsKey,
       targetTypeReference: callSource.targetTypeReference,
       targetConstructorName: callSource.targetConstructorName,
       doc: function.documentationComment,
@@ -713,7 +711,7 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
   /// Excluded parameters are removed before optional-positional, reserved-name,
   /// visibility, and collision validation. `key` is reserved for the wrapper,
   /// so any child `key` parameter is validated even in an empty `only` selection.
-  ({List<WidgetCallParam> params, bool forwardsKey}) _extractWidgetCallParams(
+  List<WidgetCallParam> _extractWidgetCallParams(
     ExecutableElement callMethod, {
     required Element anchor,
     required LibraryElement library,
@@ -739,7 +737,7 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
           fail(
             anchor,
             '$_annotationLabel widgetParameters must not select `key`; '
-            'The generated widget owns its `Key? key`.',
+            'the generated widget owns its `Key? key`.',
             todo: 'Remove `key` from the selection.',
           );
         }
@@ -807,7 +805,7 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
       library: library,
       factoryReference: factoryReference,
       excludeNames: {...excludedNames, ...baseExcluded},
-    );
+    ).params;
   }
 
   /// A generic `call<T extends Widget>()` reports its return as `T`; validate

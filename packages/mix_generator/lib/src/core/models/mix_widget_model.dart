@@ -106,10 +106,6 @@ class MixWidgetModel {
   /// Type parameters declared by the styler `call()` method.
   final List<WidgetCallTypeParam> callTypeParams;
 
-  /// Whether the child API accepts an optional `Key? key` parameter.
-  /// Generated wrappers never pass their own key to the child.
-  final bool stylerCallForwardsKey;
-
   /// Plain widget type instantiated directly, or `null` for the legacy Styler
   /// `call()` path.
   final String? targetTypeReference;
@@ -135,7 +131,6 @@ class MixWidgetModel {
     required this.factoryParams,
     required this.callParams,
     this.callTypeParams = const [],
-    required this.stylerCallForwardsKey,
     this.targetTypeReference,
     this.targetConstructorName,
     this.doc,

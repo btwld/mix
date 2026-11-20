@@ -30,7 +30,6 @@ void main() {
                 isRequired: true,
               ),
             ],
-            stylerCallForwardsKey: true,
           ),
         ).build();
         final directory = Directory.systemTemp.createTempSync(
@@ -82,7 +81,6 @@ $code
               isRequired: false,
             ),
           ],
-          stylerCallForwardsKey: true,
         ),
       );
 
@@ -124,7 +122,6 @@ $code
               isRequired: false,
             ),
           ],
-          stylerCallForwardsKey: true,
         ),
       );
 
@@ -162,7 +159,6 @@ $code
               isRequired: true,
             ),
           ],
-          stylerCallForwardsKey: true,
         ),
       );
 
@@ -206,7 +202,6 @@ $code
               isRequired: true,
             ),
           ],
-          stylerCallForwardsKey: true,
         ),
       );
 
@@ -227,7 +222,6 @@ $code
           isFunctionFactory: false,
           factoryParams: [],
           callParams: [],
-          stylerCallForwardsKey: false,
         ),
       );
 
@@ -253,7 +247,6 @@ $code
             ),
           ],
           callTypeParams: [WidgetCallTypeParam(name: 'T')],
-          stylerCallForwardsKey: true,
         ),
       );
 
@@ -282,7 +275,6 @@ $code
             ),
           ],
           callTypeParams: [WidgetCallTypeParam(name: 'T', boundCode: 'Enum')],
-          stylerCallForwardsKey: false,
         ),
       );
 
@@ -303,7 +295,6 @@ $code
           isFunctionFactory: false,
           factoryParams: [],
           callParams: [],
-          stylerCallForwardsKey: false,
           doc: '/// Documented card.',
         ),
       );
@@ -347,7 +338,6 @@ $code
               isRequired: false,
             ),
           ],
-          stylerCallForwardsKey: true,
           variantParamName: 'variant',
           variantConstructors: [
             WidgetVariantConstructor(
@@ -396,7 +386,6 @@ $code
             ),
           ],
           callParams: [],
-          stylerCallForwardsKey: false,
           variantParamName: 'variant',
           variantConstructors: [
             WidgetVariantConstructor(
@@ -426,7 +415,6 @@ $code
           isFunctionFactory: false,
           factoryParams: [],
           callParams: [],
-          stylerCallForwardsKey: false,
         ),
       ).build();
 
@@ -482,7 +470,6 @@ class Card extends StatelessWidget {
           isFunctionFactory: false,
           factoryParams: [],
           callParams: params,
-          stylerCallForwardsKey: true,
           targetTypeReference: 'RemixDialog',
         ),
       ).build();

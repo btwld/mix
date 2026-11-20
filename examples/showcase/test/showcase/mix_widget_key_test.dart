@@ -9,6 +9,11 @@ void main() {
     tester,
   ) async {
     final key = GlobalKey();
+    final adapter = find.byKey(key);
+    final child = find.descendant(
+      of: adapter,
+      matching: find.byType(RemixButton),
+    );
 
     Future<void> pumpButton(UiButton button) => tester.pumpWidget(
       Directionality(
@@ -20,16 +25,16 @@ void main() {
     await pumpButton(UiButton(key: key, label: 'Before'));
 
     expect(tester.takeException(), isNull);
-    expect(key.currentWidget, isA<UiButton>());
+    expect(tester.widget(adapter), isA<UiButton>());
     final adapterContext = key.currentContext;
-    expect(tester.widget<RemixButton>(find.byType(RemixButton)).key, isNull);
+    expect(tester.widget(child).key, isNull);
     expect(find.text('Before'), findsOneWidget);
 
     await pumpButton(UiButton.primary(key: key, label: 'After'));
 
     expect(tester.takeException(), isNull);
     expect(key.currentContext, same(adapterContext));
-    expect(tester.widget<RemixButton>(find.byType(RemixButton)).key, isNull);
+    expect(tester.widget(child).key, isNull);
     expect(find.text('After'), findsOneWidget);
   });
 }
