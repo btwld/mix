@@ -321,5 +321,8 @@ class Prop<V> {
   }
 
   @override
-  int get hashCode => Object.hash(Object.hashAll(sources), $directives);
+  int get hashCode => Object.hash(
+    Object.hashAll(sources),
+    $directives == null ? null : Object.hashAll($directives!),
+  );
 }
