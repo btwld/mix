@@ -69,6 +69,18 @@ void main() {
       expect(merged.$directives, a.$directives); // preserved from a
     });
 
+    test('equal props with directives share a hash code', () {
+      // Directive lists are compared by value in ==, so props carrying equal
+      // but separately constructed directive lists are equal and must hash
+      // the same to honor the Object contract (e.g. when used in a Set).
+      final a = Prop.value('x').directives([const UppercaseStringDirective()]);
+      final b = Prop.value('x').directives([const UppercaseStringDirective()]);
+
+      expect(a, b);
+      expect(a.hashCode, b.hashCode);
+      expect({a, b}, hasLength(1));
+    });
+
     test('throws when resolving without value or token', () {
       final p = const Prop<int>.directives([]);
       expect(
