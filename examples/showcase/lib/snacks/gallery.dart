@@ -64,9 +64,8 @@ class _SnacksGalleryScreenState extends State<SnacksGalleryScreen> {
         SliverPadding(
           padding: const EdgeInsets.fromLTRB(24, 0, 24, 32),
           sliver: SliverToBoxAdapter(
-            child: GridBox(
+            child: catalog(
               key: const Key('snacks-catalog'),
-              style: catalog,
               children: [
                 for (final demo in demos)
                   DemoCard(
@@ -98,22 +97,22 @@ class _FilterChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PressableBox(
-      onPress: onPress,
-      style: BoxStyler()
-          .padding(.horizontal(12))
-          .padding(.vertical(8))
-          .shape(.stadium())
-          .color(selected ? $ink() : $track())
-          .onPressed(.scale(0.97))
-          .animate(.spring(280.ms, bounce: 0.08)),
-      child: StyledText(
-        label,
-        style: TextStyler()
-            .fontSize(12)
-            .fontWeight(.w600)
-            .color(selected ? $page() : $ink()),
-      ),
-    );
+    return BoxStyler()
+        .padding(.horizontal(12))
+        .padding(.vertical(8))
+        .shape(.stadium())
+        .color(selected ? $ink() : $track())
+        .onPressed(.scale(0.97))
+        .animate(.spring(280.ms, bounce: 0.08))
+        .pressable(
+          onPress: onPress,
+          child: StyledText(
+            label,
+            style: TextStyler()
+                .fontSize(12)
+                .fontWeight(.w600)
+                .color(selected ? $page() : $ink()),
+          ),
+        );
   }
 }

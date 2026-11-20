@@ -1339,7 +1339,7 @@ const generatedTailwindVariantCompatibilityLedger = <TailwindCompatibilityEntry>
     .staticVariant,
     .adapted,
     reason:
-        'Mapped to Mix\'s focus-visible state using Flutter\'s app-wide input modality; encoded through the Mix Protocol v1 context_focus_visible selector; see FLUTTER_ADAPTATIONS.md (Compatibility Ledger Status Notes).',
+        'Mapped to Mix\'s focus-visible state using Mix\'s app-wide input modality; encoded through the Mix Protocol v1 context_focus_visible selector; see FLUTTER_ADAPTATIONS.md (Compatibility Ledger Status Notes).',
   ),
   TailwindCompatibilityEntry('focus-within', .staticVariant, .unsupported),
   TailwindCompatibilityEntry('forced-colors', .staticVariant, .unsupported),

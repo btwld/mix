@@ -3,6 +3,10 @@ library;
 
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
+// Analyzer has no public substitution API for bounds that refer to other
+// generic parameters.
+// ignore: implementation_imports
+import 'package:analyzer/src/dart/element/type_algebra.dart';
 import 'package:source_gen/source_gen.dart';
 
 import '../checkers.dart';
@@ -203,10 +207,10 @@ void validateGenericTargetTearOff({
 
   final preservesClassTypeParams =
       tearOffType is FunctionType &&
-      tearOffType.typeParameters.length == classTypeParams.length &&
-      tearOffType.typeParameters.indexed.every(
-        (entry) =>
-            entry.$2.baseElement == classTypeParams[entry.$1].baseElement,
+      _declaresClassTypeParameters(
+        tearOffType,
+        constructor.enclosingElement,
+        classTypeParams,
       );
   if (preservesClassTypeParams) return;
 
@@ -222,6 +226,55 @@ void validateGenericTargetTearOff({
         'Use the class constructor tear-off directly, without type arguments '
         'or a typedef, so the generated API can preserve its generics.',
   );
+}
+
+/// Whether [tearOff] is `C<T1..Tn> Function<T1..Tn>(...)` for the class [owner]:
+/// one type parameter per class type parameter, with matching names and bounds,
+/// and a return type that instantiates [owner] with exactly those parameters.
+///
+/// Compared structurally rather than by element identity: under build_runner,
+/// analyzer 11 and later can hand back the tear-off's type with freshly
+/// created type parameters that have no enclosing element, so they are not
+/// the class's `TypeParameterElement`s even for a direct `C.new`.
+bool _declaresClassTypeParameters(
+  FunctionType tearOff,
+  InterfaceElement owner,
+  List<TypeParameterElement> classTypeParams,
+) {
+  final own = tearOff.typeParameters;
+  final returnType = tearOff.returnType;
+  if (own.length != classTypeParams.length ||
+      returnType is! InterfaceType ||
+      returnType.element.baseElement != owner.baseElement ||
+      returnType.typeArguments.length != own.length) {
+    return false;
+  }
+  final substitution = Substitution.fromPairs2(own, [
+    for (final parameter in classTypeParams)
+      parameter.instantiate(nullabilitySuffix: .none),
+  ]);
+  final implicitBound = owner.library.typeProvider.objectQuestionType;
+  for (final (index, parameter) in own.indexed) {
+    final classParameter = classTypeParams[index];
+    final declaredBy = parameter.enclosingElement;
+    if (parameter.name != classParameter.name ||
+        (declaredBy != null &&
+            (declaredBy is! InterfaceElement ||
+                declaredBy.name != owner.name ||
+                declaredBy.library.uri != owner.library.uri)) ||
+        substitution.substituteType(parameter.bound ?? implicitBound) !=
+            (classParameter.bound ?? implicitBound)) {
+      return false;
+    }
+    final argument = returnType.typeArguments[index];
+    if (argument is! TypeParameterType ||
+        argument.element.baseElement != parameter.baseElement ||
+        argument.nullabilitySuffix != .none) {
+      return false;
+    }
+  }
+
+  return true;
 }
 
 String mixableSpecTargetWidgetName(ConstructorElement constructor) {
@@ -482,7 +535,7 @@ String renderWidgetCall({
     ...positional.map((p) => p.name),
     if (forwardsKey) 'key: key',
     'style: this',
-    ...named.map((p) => '${p.name}: ${p.name}'),
+    ...childLast(named).map((p) => '${p.name}: ${p.name}'),
   ];
 
   return '''
@@ -490,6 +543,27 @@ $indent$widgetName$invocationSuffix call$declarationSuffix(${signatureParams.joi
 $indent  return $widgetName$invocationSuffix(${invocationArgs.join(', ')});
 $indent}
 ''';
+}
+
+/// Names of named arguments that `sort_child_properties_last` requires last.
+const _childLastNames = {'child', 'children'};
+
+/// Returns [params] with `child` and `children` moved after every other
+/// parameter, keeping all other parameters, and the two moved ones, in their
+/// original relative order.
+///
+/// Apply only to the named arguments of a widget instance creation: the
+/// `sort_child_properties_last` lint flags generated code otherwise. Positional
+/// parameters are never reordered.
+List<WidgetCallParam> childLast(Iterable<WidgetCallParam> params) {
+  final list = params.toList();
+
+  return [
+    for (final p in list)
+      if (!_childLastNames.contains(p.name)) p,
+    for (final p in list)
+      if (_childLastNames.contains(p.name)) p,
+  ];
 }
 
 String renderCallParameter(WidgetCallParam param) {

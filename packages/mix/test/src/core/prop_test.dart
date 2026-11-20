@@ -191,5 +191,39 @@ void main() {
       expect(resolved.right, 8.0); // from converted prop1
       expect(resolved.bottom, 8.0); // from converted prop1
     });
+
+    group('unconverted values', () {
+      late List<FlutterErrorDetails> reported;
+
+      setUp(() {
+        reported = [];
+        final previousOnError = FlutterError.onError;
+        FlutterError.onError = reported.add;
+        addTearDown(() => FlutterError.onError = previousOnError);
+      });
+
+      test('a later Mix wins and the conversion failure is reported', () {
+        final valueThenMix = Prop.value(
+          10.0,
+        ).mergeProp(Prop.mix(MockMix<double>(20.0)));
+
+        expect(valueThenMix.resolveProp(MockBuildContext()), 20.0);
+        expect(
+          reported.single.exceptionAsString(),
+          contains(
+            'Mix: could not convert value of type double to Mix<double>',
+          ),
+        );
+      });
+
+      test('a later unconverted value wins over an earlier Mix', () {
+        final mixThenValue = Prop.mix(
+          MockMix<double>(20.0),
+        ).mergeProp(Prop.value(30.0));
+
+        expect(mixThenValue.resolveProp(MockBuildContext()), 30.0);
+        expect(reported, hasLength(1));
+      });
+    });
   });
 }

@@ -3182,16 +3182,15 @@ void main() {
       expect(find.byType(ImageFiltered), findsOneWidget);
     });
 
-    testWidgets('Div with blur-none does not apply ImageFiltered', (
-      tester,
-    ) async {
+    testWidgets('Div with blur-none disables ImageFiltered', (tester) async {
       await pumpDiv(
         tester,
         'blur-none',
         child: const SizedBox(width: 40, height: 40),
       );
 
-      expect(find.byType(ImageFiltered), findsNothing);
+      final filter = tester.widget<ImageFiltered>(find.byType(ImageFiltered));
+      expect(filter.enabled, isFalse);
     });
 
     testWidgets('hover:blur-lg applies blur on hover only', (tester) async {

@@ -288,6 +288,145 @@ void main() {
       expect(deepEquality.equals(list1, list3), isFalse);
     });
   });
+
+  group('DeepCollectionEquality collection shapes', () {
+    const deepEquality = DeepCollectionEquality();
+
+    test('returns false instead of throwing for mismatched shapes', () {
+      expect(deepEquality.equals({1}, [1]), isFalse);
+      expect(deepEquality.equals([1], {1}), isFalse);
+      expect(deepEquality.equals({'a': 1}, [1]), isFalse);
+      expect(deepEquality.equals([1], {'a': 1}), isFalse);
+      expect(deepEquality.equals({1}, {'a': 1}), isFalse);
+      expect(deepEquality.equals({'a': 1}, {1}), isFalse);
+      expect(deepEquality.equals([1], 1), isFalse);
+      expect(deepEquality.equals({'a': 1}, 1), isFalse);
+      expect(deepEquality.equals({1}, 1), isFalse);
+      expect(deepEquality.equals(1, [1]), isFalse);
+      expect(deepEquality.equals(null, [1]), isFalse);
+      expect(deepEquality.equals([1], null), isFalse);
+      expect(
+        deepEquality.equals({1, 2}, [1, 2].map((element) => element)),
+        isFalse,
+      );
+      expect(
+        deepEquality.equals([1, 2].map((element) => element), {1, 2}),
+        isFalse,
+      );
+      expect(
+        deepEquality.equals({'a': 1}, [1].map((element) => element)),
+        isFalse,
+      );
+    });
+
+    test('compares non-List iterables by order', () {
+      final same = [1, 2].map((element) => element);
+      final copy = [1, 2].map((element) => element);
+      final reversed = [2, 1].map((element) => element);
+      final shorter = [1].map((element) => element);
+
+      expect(deepEquality.equals(same, copy), isTrue);
+      expect(deepEquality.equals(same, reversed), isFalse);
+      expect(deepEquality.equals(same, shorter), isFalse);
+      expect(deepEquality.equals([1, 2], same), isTrue);
+      expect(deepEquality.equals(same, [1, 2]), isTrue);
+      expect(
+        deepEquality.equals(
+          {'items': same},
+          {
+            'items': [2, 1].map((element) => element),
+          },
+        ),
+        isFalse,
+      );
+      expect(
+        deepEquality.equals(
+          <int>[].map((element) => element),
+          <int>[].map((element) => element),
+        ),
+        isTrue,
+      );
+      expect(
+        deepEquality.equals(Iterable<int>.generate(2, (index) => index + 1), [
+          1,
+          2,
+        ]),
+        isTrue,
+      );
+      expect(
+        deepEquality.equals(
+          [
+            [1, 2],
+            [3],
+          ].map((element) => element),
+          [
+            [1, 2],
+            [3],
+          ].map((element) => element),
+        ),
+        isTrue,
+      );
+      expect(
+        deepEquality.equals(
+          [
+            [1, 2],
+          ].map((element) => element),
+          [
+            [1, 3],
+          ].map((element) => element),
+        ),
+        isFalse,
+      );
+    });
+
+    test('gives equal collections the same hash code', () {
+      final mapped = [1, 2].map((element) => element);
+      final mappedCopy = [1, 2].map((element) => element);
+      expect(deepEquality.equals(mapped, mappedCopy), isTrue);
+      expect(deepEquality.hash(mapped), deepEquality.hash(mappedCopy));
+      expect(deepEquality.hash([1, 2]), deepEquality.hash(mapped));
+
+      final left = {
+        'items': [1, 2].map((element) => element),
+      };
+      final right = {
+        'items': [1, 2].map((element) => element),
+      };
+      expect(deepEquality.equals(left, right), isTrue);
+      expect(deepEquality.hash(left), deepEquality.hash(right));
+
+      final listsLeft = {
+        'items': [1, 2],
+      };
+      final listsRight = {
+        'items': [1, 2],
+      };
+      expect(deepEquality.equals(listsLeft, listsRight), isTrue);
+      expect(deepEquality.hash(listsLeft), deepEquality.hash(listsRight));
+      expect(
+        deepEquality.hash(listsLeft),
+        deepEquality.hash({
+          'items': [1, 2].map((element) => element),
+        }),
+      );
+
+      final nestedLeft = {
+        'key1': {'inner': 1},
+      };
+      final nestedRight = {
+        'key1': {'inner': 1},
+      };
+      expect(deepEquality.equals(nestedLeft, nestedRight), isTrue);
+      expect(deepEquality.hash(nestedLeft), deepEquality.hash(nestedRight));
+
+      const primitive = {'a': 1, 'b': 2};
+      expect(
+        deepEquality.hash(primitive),
+        Object.hashAllUnordered(primitive.keys) ^
+            Object.hashAllUnordered(primitive.values),
+      );
+    });
+  });
 }
 
 // A dummy custom object class for testing purposes

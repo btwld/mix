@@ -8,6 +8,11 @@ on:
       - 'tool/**'
 
   pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
     branches: [main, next]
     paths-ignore:
       - 'test_resources/**'
@@ -22,8 +27,12 @@ permissions:
   contents: read
 
 jobs:
+  # Draft pull requests skip every job. Marking the pull request ready fires
+  # ready_for_review and runs them. Push still runs because its event name
+  # is not pull_request.
   format:
     name: Format Check
+    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.draft == false }}
     runs-on: ubuntu-latest
     # Observed ~1m30s. Every job here sets a bound because the GitHub default
     # is 360 minutes, so a wedged step burns runner time for six hours and
@@ -46,6 +55,7 @@ jobs:
 
   test:
     name: Test / Run tests for all packages
+    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.draft == false }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -75,6 +85,7 @@ jobs:
 
   hosted-examples:
     name: Examples / Published Mix
+    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.draft == false }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     defaults:
@@ -99,6 +110,7 @@ jobs:
   # before a dependent's publish job can start.
   winds-in-repo:
     name: Winds / In-repo dependencies
+    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.draft == false }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     defaults:
@@ -139,6 +151,7 @@ jobs:
         run: flutter test
   protocol-in-repo:
     name: Protocol / In-repo dependencies
+    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.draft == false }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     defaults:
@@ -169,6 +182,7 @@ jobs:
         run: flutter test
   protocol-schema:
     name: Protocol Schema / Ajv check
+    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.draft == false }}
     runs-on: ubuntu-latest
     # The Dart golden tests in the test job keep packages/*/schema current;
     # this job validates those checked-in files with an independent Draft 7
@@ -191,6 +205,7 @@ jobs:
 
   showcase-tool:
     name: Showcase Tool Tests
+    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.draft == false }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     defaults:

@@ -1,46 +1,33 @@
-# mix_winds — Agent Guide
+# mix_winds agent guide
 
-## Goal
+Follow the root [AGENTS.md](../../AGENTS.md). Aim for Tailwind behavior where
+Flutter permits it; document intentional differences instead of promising full
+CSS equivalence.
 
-Build a **1:1 mapping** from **Tailwind CSS utilities → Mix stylers/widgets** (“Mix partners”) with:
+## Ownership
 
-- **Same behavior** as Tailwind where Flutter semantics allow
-- **Same mental model** as Tailwind (variants/prefixes, composability, scales)
-- A **matching structure + file tree** (organized like Tailwind’s docs/sections) so parity work is obvious and traceable
+- `lib/src/parser/`: pure candidate parsing and generated utility registry.
+- `lib/src/translate/`: routing, target filtering, accumulation and Mix translation.
+- `lib/src/tw_compilation.dart` / `tw_layout_plan.dart`: compiler output and typed
+  layout declarations. The compiler owns both style and layout-plan decisions.
+- `lib/src/tw_widget.dart`: evaluate the plan using live constraints and parent
+  data. Do not add an independent class-string interpreter here.
+- `lib/src/tw_config.dart` and `theme/data/`: scales and generated theme defaults.
 
-## Project Map
+Extend the owning module rather than creating disconnected Tailwind-section
+files. Wire any new utility module into translation in the same change.
 
-- `lib/src/parser/` — pure Tailwind candidate parser and generated utility registry
-- `lib/src/translate/` — candidate → Mix styler translation, accumulators, routing, and presets
-- `lib/src/theme/data/` — generated default Tailwind theme data
-- `lib/src/tw_parser.dart` — public parser facade over the translator
-- `lib/src/tw_config.dart` — scales/colors/breakpoints + `TwConfigProvider`
-- `lib/src/tw_widget.dart` — widget-layer behaviors (e.g. flex-item tokens that can’t live purely in the parser)
-- `test/` — correctness tests for tokens + widget behavior
-- `example/` — demo app + visual parity harness (Flutter + real Tailwind HTML)
+## Parity workflow
 
-Key docs:
-- `COMPARISON_TESTING.md` — screenshot + pixel-diff workflow for Flutter vs Tailwind
-- `FLUTTER_ADAPTATIONS.md` — intentional/necessary semantic differences vs CSS
+1. Match the reference HTML and Flutter class strings, including order and
+   expanded reusable/dynamic fragments.
+2. Implement at the owning parser, translator or runtime stage and add focused
+   semantic/geometry tests.
+3. Use [COMPARISON_TESTING.md](COMPARISON_TESTING.md) for browser captures,
+   selected metrics and golden-harness diagnosis when visual parity is affected.
+4. Update [FLUTTER_ADAPTATIONS.md](FLUTTER_ADAPTATIONS.md) for necessary semantic
+   differences and report unsupported utilities through `onDiagnostic`.
 
-## Workflow (Preferred)
-
-1. Define expected Tailwind output in `example/real_tailwind/` (HTML + classes).
-2. Implement the mapping in the parser/translator module that owns the utility family.
-3. Add tests (unit + golden/parity when it matters).
-4. Validate with the visual comparison workflow in `COMPARISON_TESTING.md`.
-
-## Current Internal Structure
-
-The current implementation keeps parsing and translation separate:
-
-- `lib/src/parser/candidate_parser.dart` — parse candidates, variants, modifiers, arbitrary values
-- `lib/src/parser/data/parser_registry.g.dart` — generated known utility registry
-- `lib/src/translate/tw_translator.dart` — maps parsed candidates into Mix stylers
-- `lib/src/translate/tw_accumulators.dart` — cross-token accumulation for borders and transforms
-- `lib/src/translate/tw_gradient.dart` — gradient accumulation and Mix conversion
-- `lib/src/translate/tw_routing.dart` — early classification for ignored, unsupported, gradient, and typed styler tokens
-- `lib/src/translate/tw_target.dart` — target filtering for Box, FlexBox, and Text
-- `lib/src/tw_widget.dart` — widget-only behavior such as flex-item tokens
-
-Prefer extending these modules over reintroducing disconnected section files. If utility-family modules are added later, wire them into `TwTranslator` behavior in the same change.
+Keep generated registry and theme output reproducible; use the generation
+commands in `melos.yaml` and the package README. Protocol is a development-only
+representability check here, not an internal compiler representation.

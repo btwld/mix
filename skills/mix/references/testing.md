@@ -1,58 +1,16 @@
 # Testing
 
-Testing patterns for Mix, adapted from `packages/mix/test/helpers/testing_utils.dart`.
+Prefer resolved behavior over a generated object's internal shape. Repository
+helpers live in `packages/mix/test/helpers/testing_utils.dart`; widget-state
+helpers live alongside them in `widget_state_test_helper.dart`. Downstream,
+pump real scopes and use the app's testing utilities; these helpers are not a
+public package API.
 
-## Table of Contents
+## Resolution and tokens
 
-- [Philosophy](#core-philosophy)
-- [Utilities](#utilities)
-- [Testing patterns](#testing-patterns)
-- [MockBuildContext](#mockbuildcontext)
-- [Widget testing](#widget-testing)
-- [Common mistakes](#common-mistakes)
-- [Best practices](#best-practices)
-
-## Core Philosophy
-
-Testing in Mix focuses on **resolution testing**: verify what `Resolvable` types, `Prop` values, Mix value objects, Stylers, and modifier Mix classes resolve to in a `BuildContext`.
-
-## Utilities
-
-Core resolution utilities live in `packages/mix/test/helpers/testing_utils.dart`; widget-state helpers live in `packages/mix/test/helpers/widget_state_test_helper.dart`.
-
-| Utility | Purpose |
-|---------|---------|
-| `resolvesTo<T>(expected, {context})` | Core matcher for `Resolvable` and `Prop` values |
-| `MockBuildContext` | BuildContext with `MixScope` token and modifier-order support |
-| `MockStyle<T>` | Universal test style wrapping any type |
-| `MockSpec<T>` | Simple spec for test resolution |
-| `pumpWithMixScope()` | Widget tester extension: pump a widget inside `MixScope` |
-| `pumpMaterialApp()` | Widget tester extension: pump in `MaterialApp` |
-| `TestToken<T>` | Test-only concrete `MixToken<T>` implementation |
-
-## Testing Patterns
-
-### Basic Prop Resolution
-
-```dart
-test('Props resolve to their values', () {
-  final colorProp = Prop.value(Colors.red);
-
-  expect(colorProp, resolvesTo(Colors.red));
-});
-```
-
-### Mix Type Resolution
-
-```dart
-test('Mix types resolve to Flutter types', () {
-  final radiusMix = BorderRadiusMix.all(Radius.circular(8.0));
-  expect(radiusMix, resolvesTo(BorderRadius.circular(8.0)));
-
-  final edgeInsetsMix = EdgeInsetsGeometryMix.all(16.0);
-  expect(edgeInsetsMix, resolvesTo(const EdgeInsets.all(16.0)));
-});
-```
+`resolvesTo(expected, context: ...)` matches Resolvable or Prop values.
+Use `MockBuildContext(tokens:, orderOfModifiers:)` for scoped values and
+ordering. `MockSpec` / `MockStyle` cover simple test doubles.
 
 ### Token Resolution
 
@@ -76,21 +34,11 @@ const custom = TestToken<MyValue>('custom');
 final context = MockBuildContext(tokens: {custom: myValue});
 ```
 
-### Merge Behavior: Replacement
 
-Regular `Prop<T>` sources use last-value-wins merge behavior:
+## Merge behavior
 
-```dart
-test('Prop<T> merge - replacement strategy', () {
-  final prop1 = Prop.value(100.0);
-  final prop2 = Prop.value(200.0);
-  final prop3 = Prop.value(300.0);
-
-  final merged = prop1.mergeProp(prop2).mergeProp(prop3);
-
-  expect(merged, resolvesTo(300.0));
-});
-```
+Plain Prop values replace: `Prop.value(100.0).mergeProp(Prop.value(200.0))`
+resolves to 200.0. Mixed values accumulate fields:
 
 ### Merge Behavior: Accumulation
 
@@ -110,99 +58,36 @@ test('Prop<V> with Mix values - accumulation strategy', () {
 });
 ```
 
-### Generated Styler Resolution
 
-Generated Stylers expose raw resolved fields with `$` prefixes and resolve to `StyleSpec<TSpec>`:
+Also verify base styler reuse and a later override through resolved specs:
 
 ```dart
-test('BoxStyler resolves props and spec values', () {
-  final style = BoxStyler()
-      .width(100)
-      .padding(EdgeInsetsGeometryMix.all(16));
-
-  expect(style.$constraints, resolvesTo(BoxConstraints.tightFor(width: 100)));
-  expect(style.$padding, resolvesTo(const EdgeInsets.all(16)));
-
-  final resolved = style.resolve(MockBuildContext());
-  expect(resolved.spec.constraints, BoxConstraints.tightFor(width: 100));
-  expect(resolved.spec.padding, const EdgeInsets.all(16));
-});
+final base = BoxStyler().width(100).padding(.left(8));
+final merged = base.merge(BoxStyler().width(200).padding(.right(16)));
+final spec = merged.resolve(MockBuildContext()).spec;
+expect(spec.constraints, BoxConstraints.tightFor(width: 200));
+expect(spec.padding, const EdgeInsets.only(left: 8, right: 16));
+expect(base.resolve(MockBuildContext()).spec.padding, const EdgeInsets.only(left: 8));
 ```
 
-### Styler Merge
+Tests inside the package may inspect `$padding` / `$constraints` with
+`resolvesTo`. Consumer tests should favor public rendering behavior.
+
+## Generated modifiers
 
 ```dart
-test('BoxStyler merging combines replacement and accumulation fields', () {
-  final base = BoxStyler()
-      .width(100)
-      .padding(EdgeInsetsGeometryMix.only(left: 8.0));
+final modifier = OpacityModifierMix(opacity: 0.8);
+expect(modifier, resolvesTo(const OpacityModifier(0.8)));
 
-  final override = BoxStyler()
-      .width(200)
-      .padding(EdgeInsetsGeometryMix.only(right: 16.0));
-
-  final merged = base.merge(override);
-
-  expect(merged.$constraints, resolvesTo(BoxConstraints.tightFor(width: 200)));
-  expect(
-    merged.$padding,
-    resolvesTo(const EdgeInsets.only(left: 8.0, right: 16.0)),
-  );
-});
-```
-
-### Modifier Mix Testing
-
-```dart
-test('modifier mix resolves to modifier', () {
-  final modifier = OpacityModifierMix(opacity: 0.8);
-
-  expect(modifier, resolvesTo(const OpacityModifier(0.8)));
-});
-
-test('modifier mix merging uses replacement for scalar props', () {
-  final base = AspectRatioModifierMix(aspectRatio: 1.0);
-  final override = AspectRatioModifierMix(aspectRatio: 2.0);
-
-  final merged = base.merge(override);
-
-  expect(merged.aspectRatio, resolvesTo(2.0));
-});
-```
-
-### Utility and Fluent API Testing
-
-Test public fluent methods through the generated Styler instead of removed utility classes:
-
-```dart
-test('fluent utility method creates correct style', () {
-  final style = BoxStyler().color(Colors.orange);
-  final resolved = style.resolve(MockBuildContext());
-
-  final decoration = resolved.spec.decoration as BoxDecoration;
-  expect(decoration.color, Colors.orange);
-});
-```
-
-## MockBuildContext
-
-Use `MockBuildContext` when resolution requires a `BuildContext`:
-
-```dart
-// Basic context with an empty MixScope.
-final context = MockBuildContext();
-
-// Context with token values.
-const primary = ColorToken('primary');
-final contextWithTokens = MockBuildContext(
-  tokens: {primary: Colors.blue},
-);
-
-// Context with custom modifier order.
-final contextWithOrder = MockBuildContext(
+final context = MockBuildContext(
   orderOfModifiers: [OpacityModifier, PaddingModifier],
 );
 ```
+
+Use current generated `*ModifierMix` names, not removed `*Attribute` classes or
+scope-data wrappers. For ordering changes, assert wrapper nesting with a real
+widget test as well as the resolved list. For interaction changes, exercise
+activation and state priority with the widget-state helpers.
 
 ## Widget Testing
 
@@ -224,28 +109,19 @@ testWidgets('Box renders with style', (tester) async {
 });
 ```
 
-## Common Mistakes
 
-### Tokens Need Context
+`pumpMaterialApp` is also available when Material context is required. Token
+expectations need an explicit context or a pumped scope; plain token Props do
+not resolve in an empty mock. `ContextToken` fallbacks are a separate case.
 
-```dart
-// Wrong: token values require context for resolution.
-expect(tokenProp, resolvesTo(Colors.blue));
+## What to cover
 
-// Correct: provide a context with token mappings.
-final context = MockBuildContext(tokens: {token: Colors.blue});
-expect(tokenProp, resolvesTo(Colors.blue, context: context));
-```
+- Replacement versus field accumulation, including collisions and nullable inputs.
+- Token resolution and missing/wrong-type values when changing token boundaries.
+- Generated public calls and annotation contracts when changing generation.
+- Focus/keyboard/interaction state when changing Pressable or variant behavior.
+- Widget bounds for layout changes; avoid treating a harness assertion as a golden diff.
 
-### Use Current Generated Names
-
-Current Mix tests use generated Stylers, modifier Mix classes, direct `MockBuildContext` constructor arguments, and public fluent Styler methods. Avoid older spec-attribute classes, modifier-attribute classes, scope-data wrappers, and utility classes from pre-generated APIs.
-
-## Best Practices
-
-1. Prefer resolution tests for Props, Mix values, Stylers, and modifiers.
-2. Use `MockBuildContext(tokens: ...)` when token resolution is involved.
-3. Test generated Styler fields through `$field` access only in package tests.
-4. Test widget integration with `pumpWithMixScope(widget, tokens: ...)`.
-5. Test merge behavior through resolved values, not only object shape.
-6. Add widget-state helper tests when interaction variants are involved.
+Use the narrow package check while iterating, then the repository-required
+commands from [development workflow](development-workflow.md). Prose-only edits
+need link and diff checks rather than new implementation-mirroring tests.

@@ -447,5 +447,59 @@ class Card extends StatelessWidget {
         ),
       );
     });
+
+    test('direct target invocation passes child and children last', () {
+      const params = [
+        WidgetCallParam(
+          name: 'child',
+          typeCode: 'Widget?',
+          isPositional: false,
+          isRequired: false,
+        ),
+        WidgetCallParam(
+          name: 'barrierDismissible',
+          typeCode: 'bool',
+          isPositional: false,
+          isRequired: false,
+        ),
+        WidgetCallParam(
+          name: 'children',
+          typeCode: 'List<Widget>',
+          isPositional: false,
+          isRequired: false,
+        ),
+        WidgetCallParam(
+          name: 'semanticLabel',
+          typeCode: 'String?',
+          isPositional: false,
+          isRequired: false,
+        ),
+      ];
+      final code = MixWidgetBuilder(
+        const MixWidgetModel(
+          widgetName: 'AcmeDialog',
+          factoryReference: 'acmeDialogStyle',
+          isFunctionFactory: false,
+          factoryParams: [],
+          callParams: params,
+          stylerCallForwardsKey: true,
+          targetTypeReference: 'RemixDialog',
+        ),
+      ).build();
+
+      expect(
+        code,
+        contains(
+          '    return RemixDialog(\n'
+          '      key: key,\n'
+          '      style: acmeDialogStyle,\n'
+          '      barrierDismissible: barrierDismissible,\n'
+          '      semanticLabel: semanticLabel,\n'
+          '      child: child,\n'
+          '      children: children,\n'
+          '    );',
+        ),
+      );
+    });
   });
 }
