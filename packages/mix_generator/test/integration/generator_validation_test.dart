@@ -403,7 +403,7 @@ final brokenStyle = const BoxStyler();
       final errors = await _expectMixWidgetValidationError(libSource);
 
       expect(errors, contains('must not select `key`'));
-      expect(errors, contains('automatically'));
+      expect(errors, contains('The generated widget owns its `Key? key`.'));
     });
 
     test(

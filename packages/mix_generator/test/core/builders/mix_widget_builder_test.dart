@@ -67,7 +67,7 @@ $code
       },
     );
 
-    test('variable-backed style with child + key', () {
+    test('variable-backed adapter keeps its key out of the styler call', () {
       final builder = MixWidgetBuilder(
         const MixWidgetModel(
           widgetName: 'Card',
@@ -92,7 +92,7 @@ $code
       expect(code, contains('const Card({super.key, this.child});'));
       expect(code, contains('final Widget? child;'));
       expect(code, contains('return cardStyle.call('));
-      expect(code, contains('key: key,'));
+      expect(code, isNot(contains('key:')));
       expect(code, contains('child: child,'));
     });
 
@@ -174,7 +174,7 @@ $code
         contains('const Label(this.text, {super.key, this.color});'),
       );
       expect(code, contains('return labelStyle(color: color).call('));
-      expect(code, contains('      text,\n      key: key,'));
+      expect(code, contains('      text,\n    );'));
     });
 
     test('required call params surface required keyword', () {
@@ -234,7 +234,7 @@ $code
       final code = builder.build();
 
       expect(code, contains('return keyLessStyle.call();'));
-      expect(code, isNot(contains('key: key')));
+      expect(code, isNot(contains('key:')));
     });
 
     test('generic styler call emits generic widget and forwards type args', () {
@@ -487,11 +487,11 @@ class Card extends StatelessWidget {
         ),
       ).build();
 
+      expect(code, isNot(contains('key:')));
       expect(
         code,
         contains(
           '    return RemixDialog(\n'
-          '      key: key,\n'
           '      style: acmeDialogStyle,\n'
           '      barrierDismissible: barrierDismissible,\n'
           '      semanticLabel: semanticLabel,\n'

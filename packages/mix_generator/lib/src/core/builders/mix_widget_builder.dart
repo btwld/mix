@@ -158,7 +158,6 @@ class MixWidgetBuilder {
         '$constructorSuffix';
     final args = [
       for (final p in model.callParams.where((p) => p.isPositional)) p.name,
-      if (model.stylerCallForwardsKey) 'key: key',
       'style: $styleInvocation',
       for (final p in childLast(model.callParams.where((p) => !p.isPositional)))
         '${p.name}: ${p.name}',
@@ -189,7 +188,6 @@ class MixWidgetBuilder {
   List<String> _callArgs() {
     return [
       for (final p in model.callParams.where((p) => p.isPositional)) p.name,
-      if (model.stylerCallForwardsKey) 'key: key',
       for (final p in model.callParams.where((p) => !p.isPositional))
         '${p.name}: ${p.name}',
     ];

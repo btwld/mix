@@ -711,8 +711,8 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
   /// a generated widget.
   ///
   /// Excluded parameters are removed before optional-positional, reserved-name,
-  /// visibility, and collision validation. `key` remains automatic and is
-  /// therefore always validated, even in an empty `only` selection.
+  /// visibility, and collision validation. `key` is reserved for the wrapper,
+  /// so any child `key` parameter is validated even in an empty `only` selection.
   ({List<WidgetCallParam> params, bool forwardsKey}) _extractWidgetCallParams(
     ExecutableElement callMethod, {
     required Element anchor,
@@ -739,7 +739,7 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
           fail(
             anchor,
             '$_annotationLabel widgetParameters must not select `key`; '
-            '`Key? key` is forwarded automatically.',
+            'The generated widget owns its `Key? key`.',
             todo: 'Remove `key` from the selection.',
           );
         }
@@ -894,9 +894,8 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
     return params;
   }
 
-  /// Reserves the parameter name `key` on factory functions. The forwarded
-  /// `super.key` always comes from the styler's `call()`; a factory-level
-  /// `key` would collide with that.
+  /// Reserves the parameter name `key` on factory functions. A factory-level
+  /// `key` would collide with the wrapper's `super.key`.
   void _rejectFactoryKeyParam(
     FormalParameterElement parameter,
     Element anchor,
@@ -904,8 +903,8 @@ class MixWidgetGenerator extends GeneratorForAnnotation<MixWidget> {
     if (parameter.name != 'key') return;
     fail(
       anchor,
-      '$_annotationLabel reserves the parameter name `key` for the styler '
-      "`call()`'s `Key? key`. Factory functions must not declare a parameter "
+      '$_annotationLabel reserves the parameter name `key` for the generated '
+      'widget. Factory functions must not declare a parameter '
       'named `key`.',
       todo: 'Rename the factory parameter to something other than `key`.',
     );

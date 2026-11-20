@@ -99,15 +99,15 @@ class MixWidgetModel {
 
   /// Styler `call()` parameters, excluding `Key? key`.
   ///
-  /// [stylerCallForwardsKey] handles `key` separately. Ordering preserves
-  /// positionals first, then named parameters.
+  /// The generated wrapper owns its key. Ordering preserves positionals
+  /// first, then named parameters.
   final List<WidgetCallParam> callParams;
 
   /// Type parameters declared by the styler `call()` method.
   final List<WidgetCallTypeParam> callTypeParams;
 
-  /// `true` when the styler's `call()` declares a `Key? key` named parameter
-  /// and the generated `build()` forwards `key: this.key`.
+  /// Whether the child API accepts an optional `Key? key` parameter.
+  /// Generated wrappers never pass their own key to the child.
   final bool stylerCallForwardsKey;
 
   /// Plain widget type instantiated directly, or `null` for the legacy Styler
