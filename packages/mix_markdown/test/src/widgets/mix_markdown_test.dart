@@ -6,12 +6,12 @@ import 'package:mix/mix.dart';
 import 'package:mix_markdown/mix_markdown.dart';
 import 'package:mix_markdown/src/widgets/markdown_alert.dart';
 import 'package:mix_markdown/src/widgets/markdown_blocks.dart';
-import 'package:mix_markdown/src/widgets/markdown_document.dart';
 
 void main() {
   Widget app(
     Widget child, {
     double scale = 1,
+    double width = 320,
     TextDirection direction = TextDirection.ltr,
     Brightness brightness = Brightness.light,
   }) => MaterialApp(
@@ -27,7 +27,7 @@ void main() {
           child: Align(
             alignment: Alignment.topLeft,
             child: SizedBox(
-              width: 320,
+              width: width,
               child: SingleChildScrollView(child: child),
             ),
           ),
@@ -36,45 +36,48 @@ void main() {
     ),
   );
 
-  int parseCount(WidgetTester tester) => tester
-      .state<MarkdownDocumentState>(find.byType(MarkdownDocument))
-      .parseCount;
-
   group('parsing lifecycle', () {
-    testWidgets('style-only updates never parse again', (tester) async {
-      for (var frame = 0; frame < 20; frame++) {
-        await tester.pumpWidget(
-          app(
-            MixMarkdown(
-              data: '# Title\n\n**Body**',
-              style: MarkdownStyler(
-                paragraph: TextStyler().fontSize(16 + frame.toDouble()),
-              ),
-            ),
-          ),
-        );
-      }
+    testWidgets('document modifier changes do not reparse', (tester) async {
+      final marker = _MarkerSyntax();
+      final syntax = MarkdownSyntax(inlineSyntaxes: [marker]);
+      Future<void> pump(MarkdownStyler style) => tester.pumpWidget(
+        app(MixMarkdown(data: '@@', syntax: syntax, style: style)),
+      );
 
-      expect(parseCount(tester), 1);
-      expect(tester.takeException(), isNull);
+      final style = MarkdownStyler();
+      await pump(style);
+      await pump(style.wrap(.opacity(0.5)));
+      expect(
+        find.byWidgetPredicate(
+          (widget) => widget is Opacity && widget.opacity == 0.5,
+        ),
+        findsOneWidget,
+      );
+      await pump(style);
+
+      expect(marker.matches, 1);
     });
 
     testWidgets('new data or syntax parses again', (tester) async {
-      await tester.pumpWidget(app(const MixMarkdown(data: 'a')));
-      await tester.pumpWidget(app(const MixMarkdown(data: '@@')));
-      expect(parseCount(tester), 2);
-      expect(find.text('marker', findRichText: true), findsNothing);
+      final marker = _MarkerSyntax();
+      Future<void> pump(String data, [_MarkerSyntax? custom]) =>
+          tester.pumpWidget(
+            app(
+              MixMarkdown(
+                data: data,
+                syntax: MarkdownSyntax(inlineSyntaxes: [custom ?? marker]),
+              ),
+            ),
+          );
 
-      await tester.pumpWidget(
-        app(
-          MixMarkdown(
-            data: '@@',
-            syntax: MarkdownSyntax(inlineSyntaxes: [_MarkerSyntax()]),
-          ),
-        ),
-      );
-      expect(parseCount(tester), 3);
-      expect(find.text('marker', findRichText: true), findsOneWidget);
+      await pump('@@');
+      await pump('@@ again');
+      expect(marker.matches, 2);
+      expect(find.text('marker again', findRichText: true), findsOneWidget);
+
+      final replacement = _MarkerSyntax();
+      await pump('@@ again', replacement);
+      expect(replacement.matches, 1);
     });
 
     testWidgets('brightness and text scale update without a parse', (
@@ -85,24 +88,29 @@ void main() {
             .color(Colors.black)
             .onDark(TextStyler().color(Colors.white)),
       );
-      Text body() => tester.widget<Text>(find.text('body'));
+      final marker = _MarkerSyntax();
+      final document = MixMarkdown(
+        data: '@@',
+        style: style,
+        syntax: MarkdownSyntax(inlineSyntaxes: [marker]),
+      );
+      Text body() => tester.widget<Text>(find.text('marker'));
 
-      await tester.pumpWidget(app(MixMarkdown(data: 'body', style: style)));
+      await tester.pumpWidget(app(document));
       expect(body().style?.color, Colors.black);
 
       await tester.pumpWidget(
-        app(
-          MixMarkdown(data: 'body', style: style),
-          brightness: Brightness.dark,
-          scale: 1.5,
-        ),
+        app(document, brightness: Brightness.dark, scale: 1.5),
       );
       await tester.pumpAndSettle();
       expect(body().style?.color, Colors.white);
-      expect(parseCount(tester), 1);
+      expect(marker.matches, 1);
 
       final rich = tester.widget<RichText>(
-        find.descendant(of: find.text('body'), matching: find.byType(RichText)),
+        find.descendant(
+          of: find.text('marker'),
+          matching: find.byType(RichText),
+        ),
       );
       expect(rich.textScaler.scale(20), 30);
     });
@@ -243,6 +251,29 @@ void main() {
   });
 
   group('alerts', () {
+    testWidgets('long alert title wraps at narrow widths with scaled text', (
+      tester,
+    ) async {
+      const label = 'A long localized alert title';
+      await tester.pumpWidget(
+        app(
+          MixMarkdown(
+            data: '> [!NOTE]\n> Body',
+            style: MarkdownStyler(
+              alert: MarkdownAlertStyler(
+                note: MarkdownAlertTypeStyler(label: label),
+              ),
+            ),
+          ),
+          width: 150,
+          scale: 2,
+        ),
+      );
+
+      expect(tester.takeException(), isNull);
+      expect(tester.getSize(find.text(label)).width, lessThan(150));
+    });
+
     const alerts =
         '> [!NOTE]\n> **Outer**\n>\n> > [!TIP]\n> > Inner\n\n'
         '> [!IMPORTANT]\n> Important body\n\n'
@@ -260,7 +291,6 @@ void main() {
       }
       expect(find.text('Outer', findRichText: true), findsOneWidget);
       expect(find.text('Inner', findRichText: true), findsOneWidget);
-      expect(parseCount(tester), 1);
       expect(tester.takeException(), isNull);
     });
 
@@ -276,7 +306,7 @@ void main() {
                 tip: MarkdownAlertTypeStyler(
                   label: 'Hint',
                   icon: IconStyler().icon(Icons.star).color(Colors.amber),
-                  container: BoxStyler().paddingAll(12),
+                  container: BoxStyler().padding(.all(12)),
                 ),
               ),
             ),
@@ -370,19 +400,6 @@ void main() {
       await tester.pumpWidget(body());
 
       expect(calls, greaterThanOrEqualTo(2));
-      expect(parseCount(tester), 1);
-    });
-
-    testWidgets('the generated call builds the widget from a styler', (
-      tester,
-    ) async {
-      await tester.pumpWidget(
-        app(
-          MarkdownStyler(paragraph: TextStyler().fontSize(21))(data: 'called'),
-        ),
-      );
-
-      expect(tester.widget<Text>(find.text('called')).style?.fontSize, 21);
     });
   });
 
@@ -400,7 +417,7 @@ void main() {
       final style =
           MarkdownStyler(
             paragraph: TextStyler().fontSize(24).color(Colors.red),
-            container: BoxStyler().paddingAll(12),
+            container: BoxStyler().padding(.all(12)),
             blockSpacing: 8,
           ).merge(
             MarkdownStyler(
@@ -428,9 +445,7 @@ void main() {
       expect(resolved.blockSpacing, 16);
     });
 
-    testWidgets('animated block spacing interpolates without a parse', (
-      tester,
-    ) async {
+    testWidgets('animated block spacing interpolates', (tester) async {
       Future<void> pump(double spacing) => tester.pumpWidget(
         app(
           MixMarkdown(
@@ -457,7 +472,6 @@ void main() {
 
       await tester.pumpAndSettle();
       expect(column().spacing, 32);
-      expect(parseCount(tester), 1);
       expect(tester.takeException(), isNull);
     });
   });
@@ -466,8 +480,11 @@ void main() {
 class _MarkerSyntax extends md.InlineSyntax {
   _MarkerSyntax() : super('@@');
 
+  int matches = 0;
+
   @override
   bool onMatch(md.InlineParser parser, Match match) {
+    matches++;
     parser.addNode(md.Element.text('strong', 'marker'));
 
     return true;

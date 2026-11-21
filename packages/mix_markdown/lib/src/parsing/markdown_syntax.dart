@@ -1,12 +1,30 @@
 import 'package:flutter/foundation.dart';
 import 'package:markdown/markdown.dart' as md;
 
+final _htmlBreak = _HtmlBreakSyntax();
+
+class _HtmlBreakSyntax extends md.InlineSyntax {
+  _HtmlBreakSyntax()
+    : super(
+        r'<br\s*/?>',
+        caseSensitive: false,
+        startCharacter: '<'.codeUnitAt(0),
+      );
+
+  @override
+  bool onMatch(md.InlineParser parser, Match match) {
+    parser.addNode(md.Element.empty('br'));
+
+    return true;
+  }
+}
+
 /// Parser configuration for a Markdown document.
 ///
 /// Two configurations are equal when they hold the same syntax instances and
 /// the same extension set, so a mounted renderer parses again only when the
-/// configuration actually changes. Create a new instance when a stateful
-/// syntax changes behavior, and treat the lists as immutable once passed in.
+/// configuration changes. Supply a new syntax instance when its behavior
+/// changes, and treat the lists as immutable once passed in.
 @immutable
 class MarkdownSyntax {
   /// Block syntaxes tried before those of [extensionSet].
@@ -30,7 +48,7 @@ class MarkdownSyntax {
   /// rendered as text, not markup.
   md.Document createDocument() => md.Document(
     blockSyntaxes: blockSyntaxes,
-    inlineSyntaxes: inlineSyntaxes,
+    inlineSyntaxes: [...inlineSyntaxes, _htmlBreak],
     extensionSet: extensionSet ?? md.ExtensionSet.gitHubWeb,
     encodeHtml: false,
   );

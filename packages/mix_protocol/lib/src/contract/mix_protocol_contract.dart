@@ -27,7 +27,7 @@ import '../schema/wire_schema.dart';
 import '../tokens/token_reference_walker.dart';
 
 /// Package version stamped into exported JSON Schema metadata.
-const mixProtocolVersion = '1.0.0';
+const mixProtocolVersion = '1.0.0-alpha.0';
 
 /// Current `mix_protocol` wire-format version for top-level style documents.
 const mixProtocolFormatVersion = 1;
@@ -111,14 +111,11 @@ final class MixProtocol {
   }
 
   const MixProtocol._({
-    required AckSchema<JsonMap, Object> rootSchema,
-    required MixProtocolIdentityContextHolder identityContext,
-    required List<({String id, int wireVersion})> contributedVocabularies,
-    required List<List<String>> lenientListEntryPathSuffixes,
-  }) : _rootSchema = rootSchema,
-       _identityContext = identityContext,
-       _contributedVocabularies = contributedVocabularies,
-       _lenientListEntryPathSuffixes = lenientListEntryPathSuffixes;
+    required this._rootSchema,
+    required this._identityContext,
+    required this._contributedVocabularies,
+    required this._lenientListEntryPathSuffixes,
+  });
 
   R _withIdentityContext<R>(
     MixProtocolIdentityContext context,

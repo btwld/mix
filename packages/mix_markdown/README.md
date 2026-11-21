@@ -1,25 +1,21 @@
 # mix_markdown
 
-Markdown rendering styled with [Mix](https://pub.dev/packages/mix).
+Render headings, paragraphs, and GitHub alerts with [Mix](https://pub.dev/packages/mix).
 
-`MixMarkdown` parses a document with [markdown](https://pub.dev/packages/markdown)
-and renders it through generated Mix Specs and Stylers. Every text slot is a
-`TextStyler`, so tokens, variants such as `onDark`, modifiers, and animation
-work the same way as in the rest of a Mix app.
-
-**Experimental.** The renderer covers a deliberate subset of Markdown; see
-[Supported content](#supported-content).
+**Experimental beta.** The API may change before a stable release. See
+[Supported content](#supported-content) for what the renderer handles today.
 
 ## Quick start
 
 ```dart
+import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 import 'package:mix_markdown/mix_markdown.dart';
 
 final body = TextStyler().fontSize(16).onDark(TextStyler().color(Colors.white70));
 
 final style = MarkdownStyler(
-  container: BoxStyler().paddingAll(24),
+  container: BoxStyler().padding(.all(24)),
   blockSpacing: 16,
   paragraph: body,
   h1: body.fontSize(32).fontWeight(FontWeight.bold),
@@ -43,9 +39,10 @@ MixMarkdown(data: source, style: style);
 | `strong`, `emphasis`, `strikethrough`, `code`, `link` | `TextStyler` | Inline runs |
 | `alert` | `MarkdownAlertStyler` | GitHub alerts |
 
-Inline slots are layered over a default (bold, italic, line-through,
-monospace) and contribute only their resolved `TextStyle`, because inline runs
-are text spans rather than widgets.
+Block text slots support Mix modifiers, animation, and text directives. Inline
+slots layer their resolved `TextStyle` over defaults such as bold or italic.
+Tokens and variants can affect that style, but inline slots do not apply
+their own modifiers, animation, or text directives.
 
 ### Alerts
 
@@ -56,7 +53,10 @@ Each type has a `MarkdownAlertTypeStyler` slot:
 ```dart
 MarkdownAlertStyler(
   note: MarkdownAlertTypeStyler(
-    container: BoxStyler().paddingAll(12).borderRounded(8).color(Colors.blue.shade50),
+    container: BoxStyler()
+        .padding(.all(12))
+        .borderRadius(.circular(8))
+        .color(Colors.blue.shade50),
     header: FlexBoxStyler().spacing(8),
     icon: IconStyler().size(20).color(Colors.blue),
     title: TextStyler().fontWeight(FontWeight.bold).color(Colors.blue),
@@ -73,6 +73,7 @@ the icon. The default icons come from Material, so the app needs
 - Paragraphs and `h1` to `h6` headings, with heading semantics.
 - Nested inline formatting: strong, emphasis, strikethrough, inline code,
   and links. Links are styled but not activated.
+- Markdown hard breaks and inline `<br>` tags. Soft line breaks become spaces.
 - Inline images contribute their alt text.
 - GitHub alerts, including nested alerts and shared link references.
 
@@ -90,13 +91,12 @@ MixMarkdown(
 
 ## Parsing
 
-The document is parsed once and parsed again only when `data` or `syntax`
-changes. Style, theme, and text-scale updates reuse the parsed nodes.
+While mounted, `MixMarkdown` reparses only when `data` or `syntax` changes.
 
 `MarkdownSyntax` configures the parser. It defaults to
 `ExtensionSet.gitHubWeb`, which includes the alert syntax. Two configurations
-are equal when they hold the same syntax instances, so create a new one when
-a stateful syntax changes behavior.
+are equal when they hold the same syntax instances and extension set. Use a
+new syntax instance when changing its behavior.
 
 `wrapBlock` receives each rendered block with its parsed element, for example
 to wrap a heading in a `Hero`.

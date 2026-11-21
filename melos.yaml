@@ -3,7 +3,7 @@ name: mix_workspace
 
 packages:
   - packages/*
-  - packages/mix/example
+  - examples/showcase
   - packages/mix_generator/example
   - packages/mix_winds/example
   - packages/mix_chart/example
@@ -13,8 +13,8 @@ packages:
 command:
   bootstrap:
     environment:
-      sdk: ">=3.11.0 <4.0.0"
-      flutter: ">=3.41.0"
+      sdk: ">=3.12.0 <4.0.0"
+      flutter: ">=3.44.0"
     dependencies:
       meta: ^1.15.0
     dev_dependencies:
@@ -36,8 +36,7 @@ categories:
     - packages/mix_chart/example
     - packages/mix_markdown
     - packages/mix_markdown/example
-    - packages/mix/example
-    - packages/mix_lint_test
+    - examples/showcase
     - packages/annotations
   dart_projects:
     - packages/mix_generator
@@ -161,8 +160,6 @@ scripts:
   fix:
     run: melos run lint:fix:all
     description: Apply Dart fix, DCM fix, and Dart formatting.
-  custom_lint_analyze:
-    run: melos exec --depends-on="mix_lint" dart pub run custom_lint
 
   exports:
     run: melos exec --scope="mix" -- "dart run ../../scripts/exports.dart . && dart format lib/mix.dart"

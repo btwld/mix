@@ -1,10 +1,3 @@
-/// The Markdown element tags this package renders.
-///
-/// One enum per nesting level keeps the supported subset in a single place.
-/// Switches over these are exhaustive, so adding a tag makes the compiler
-/// point at every site that has to handle it.
-library;
-
 /// A block element the renderer draws directly.
 enum MarkdownBlockTag {
   paragraph('p'),

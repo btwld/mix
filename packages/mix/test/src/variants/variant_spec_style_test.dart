@@ -307,7 +307,7 @@ void main() {
     group('Different SpecAttribute Types', () {
       test('works with TextSpecAttribute', () {
         const variant = NamedVariant('large');
-        final textStyle = TextStyler(textAlign: TextAlign.center, maxLines: 2);
+        final textStyle = TextStyler(textAlign: .center, maxLines: 2);
         final variantAttr = VariantStyle(variant, textStyle);
 
         expect(variantAttr.variant, variant);
@@ -319,11 +319,7 @@ void main() {
 
       test('', () {
         const variant = NamedVariant('avatar');
-        final imageStyle = ImageStyler(
-          width: 50.0,
-          height: 50.0,
-          fit: BoxFit.cover,
-        );
+        final imageStyle = ImageStyler(width: 50.0, height: 50.0, fit: .cover);
         final variantAttr = VariantStyle(variant, imageStyle);
 
         expect(variantAttr.variant, variant);

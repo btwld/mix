@@ -92,9 +92,19 @@ class BoxDecorationConverter implements MixConverter<BoxDecoration> {
   }
 }
 
+/// Converts [ShapeDecoration] to [ShapeDecorationMix].
+class ShapeDecorationConverter implements MixConverter<ShapeDecoration> {
+  const ShapeDecorationConverter();
+
+  @override
+  Mix<ShapeDecoration> toMix(ShapeDecoration value, ConversionContext context) {
+    return ShapeDecorationMix.value(value);
+  }
+}
+
 /// Converts [Decoration] to its corresponding Mix type.
 ///
-/// Currently supports [BoxDecoration]. Other decoration types
+/// Supports [BoxDecoration] and [ShapeDecoration]. Other decoration types
 /// will throw [UnimplementedError].
 class DecorationConverter implements MixConverter<Decoration> {
   const DecorationConverter();
@@ -105,6 +115,14 @@ class DecorationConverter implements MixConverter<Decoration> {
       final result = context.tryConvert<BoxDecoration>(value);
       if (result == null) {
         throw StateError('BoxDecoration converter not registered');
+      }
+
+      return result;
+    }
+    if (value is ShapeDecoration) {
+      final result = context.tryConvert<ShapeDecoration>(value);
+      if (result == null) {
+        throw StateError('ShapeDecoration converter not registered');
       }
 
       return result;
@@ -332,6 +350,7 @@ void initializeMixConverters() {
 
   // Painting
   registry.register<BoxDecoration>(const BoxDecorationConverter());
+  registry.register<ShapeDecoration>(const ShapeDecorationConverter());
   registry.register<Decoration>(const DecorationConverter());
   registry.register<BorderSide>(const BorderSideConverter());
   registry.register<Border>(const BorderConverter());

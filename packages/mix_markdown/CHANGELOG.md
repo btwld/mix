@@ -1,8 +1,6 @@
-## 0.0.1-beta.0
+## 0.1.0-beta.1
 
-- Adds `MixMarkdown`, which parses a Markdown document once and renders
-  paragraphs, headings, nested inline formatting, and GitHub alerts.
-- Adds generated `MarkdownSpec`, `MarkdownAlertSpec`, and
-  `MarkdownAlertTypeSpec` with fluent Stylers for every slot.
-- Adds `MarkdownSyntax` for parser configuration and an
-  `unsupportedBuilder` hook for documents that use other block types.
+- First experimental release. `MixMarkdown` styles paragraphs, headings,
+  inline formatting, and GitHub alerts with Mix.
+- Customize parsing with `MarkdownSyntax` and hand off unsupported documents
+  with `unsupportedBuilder`.

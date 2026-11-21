@@ -240,12 +240,14 @@ class WrapBoxStyler extends MixStyler<WrapBoxStyler, WrapBoxSpec>
     AlignmentGeometry? begin,
     AlignmentGeometry? end,
     TileMode? tileMode,
+    GradientTransform? transform,
   }) => WrapBoxStyler().linearGradient(
     colors: colors,
     stops: stops,
     begin: begin,
     end: end,
     tileMode: tileMode,
+    transform: transform,
   );
   factory WrapBoxStyler.radialGradient({
     required List<Color> colors,
@@ -255,6 +257,7 @@ class WrapBoxStyler extends MixStyler<WrapBoxStyler, WrapBoxSpec>
     AlignmentGeometry? focal,
     double? focalRadius,
     TileMode? tileMode,
+    GradientTransform? transform,
   }) => WrapBoxStyler().radialGradient(
     colors: colors,
     stops: stops,
@@ -263,6 +266,7 @@ class WrapBoxStyler extends MixStyler<WrapBoxStyler, WrapBoxSpec>
     focal: focal,
     focalRadius: focalRadius,
     tileMode: tileMode,
+    transform: transform,
   );
   factory WrapBoxStyler.sweepGradient({
     required List<Color> colors,
@@ -271,6 +275,7 @@ class WrapBoxStyler extends MixStyler<WrapBoxStyler, WrapBoxSpec>
     double? startAngle,
     double? endAngle,
     TileMode? tileMode,
+    GradientTransform? transform,
   }) => WrapBoxStyler().sweepGradient(
     colors: colors,
     stops: stops,
@@ -278,6 +283,7 @@ class WrapBoxStyler extends MixStyler<WrapBoxStyler, WrapBoxSpec>
     startAngle: startAngle,
     endAngle: endAngle,
     tileMode: tileMode,
+    transform: transform,
   );
   factory WrapBoxStyler.foregroundLinearGradient({
     required List<Color> colors,
@@ -285,12 +291,14 @@ class WrapBoxStyler extends MixStyler<WrapBoxStyler, WrapBoxSpec>
     AlignmentGeometry? begin,
     AlignmentGeometry? end,
     TileMode? tileMode,
+    GradientTransform? transform,
   }) => WrapBoxStyler().foregroundLinearGradient(
     colors: colors,
     stops: stops,
     begin: begin,
     end: end,
     tileMode: tileMode,
+    transform: transform,
   );
   factory WrapBoxStyler.foregroundRadialGradient({
     required List<Color> colors,
@@ -300,6 +308,7 @@ class WrapBoxStyler extends MixStyler<WrapBoxStyler, WrapBoxSpec>
     AlignmentGeometry? focal,
     double? focalRadius,
     TileMode? tileMode,
+    GradientTransform? transform,
   }) => WrapBoxStyler().foregroundRadialGradient(
     colors: colors,
     stops: stops,
@@ -308,6 +317,7 @@ class WrapBoxStyler extends MixStyler<WrapBoxStyler, WrapBoxSpec>
     focal: focal,
     focalRadius: focalRadius,
     tileMode: tileMode,
+    transform: transform,
   );
   factory WrapBoxStyler.foregroundSweepGradient({
     required List<Color> colors,
@@ -316,6 +326,7 @@ class WrapBoxStyler extends MixStyler<WrapBoxStyler, WrapBoxSpec>
     double? startAngle,
     double? endAngle,
     TileMode? tileMode,
+    GradientTransform? transform,
   }) => WrapBoxStyler().foregroundSweepGradient(
     colors: colors,
     stops: stops,
@@ -323,6 +334,7 @@ class WrapBoxStyler extends MixStyler<WrapBoxStyler, WrapBoxSpec>
     startAngle: startAngle,
     endAngle: endAngle,
     tileMode: tileMode,
+    transform: transform,
   );
   factory WrapBoxStyler.alignment(AlignmentGeometry value) =>
       WrapBoxStyler().alignment(value);

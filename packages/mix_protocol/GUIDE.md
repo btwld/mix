@@ -23,14 +23,12 @@ boundary.
 
 ## Setup
 
-The package is still unpublished (`publish_to: none`), so use a path dependency
-or a pinned repository reference:
+Add the published pre-release to your app:
 
 ```yaml
 dependencies:
-  mix: ^2.1.0
-  mix_protocol:
-    path: ../packages/mix_protocol
+  mix: ^2.2.0
+  mix_protocol: ^1.0.0-alpha.0
 ```
 
 ```dart

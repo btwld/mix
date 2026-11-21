@@ -11,7 +11,7 @@ void main() {
     final fromInstance = MarkdownStyler()
         .paragraph(.fontSize(16))
         .h1(.fontSize(32).fontWeight(FontWeight.bold))
-        .alert(.note(.container(BoxStyler().paddingAll(12))));
+        .alert(.note(.container(BoxStyler().padding(.all(12)))));
 
     late MarkdownSpec factorySpec;
     late MarkdownSpec instanceSpec;
@@ -43,7 +43,7 @@ void main() {
         home: Material(
           child: Column(
             children: [
-              MixMarkdown(data: '# Styled', style: .h1(.fontSize(30))),
+              MarkdownStyler.h1(.fontSize(30))(data: '# Styled'),
               const MixMarkdown(
                 data: 'Resolved',
                 styleSpec: StyleSpec(

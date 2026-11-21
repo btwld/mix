@@ -4,16 +4,10 @@ import 'package:markdown/markdown.dart' as md;
 import '../parsing/markdown_tags.dart';
 import '../specs/markdown_spec.dart';
 
-final _rawBreak = RegExp(r'<br\s*/?>', caseSensitive: false);
-
 /// Builds the spans of one block from its inline [nodes].
 ///
-/// Nested formatting composes, so `***both***` is bold and italic. Inline
-/// images contribute their alt text. Outside code, soft line breaks become
-/// spaces and raw `<br>` tags become line breaks; hard breaks arrive as `br`
-/// elements. A [transform] that keeps the character count keeps every
-/// styled run; one that changes it yields a single unstyled span, because
-/// the runs can no longer be mapped onto the new text.
+/// A [transform] runs on the entire block. Inline styles are retained only
+/// when the original run boundaries can be mapped onto the result.
 List<InlineSpan> buildInlineSpans(
   List<md.Node> nodes, {
   required MarkdownSpec spec,
@@ -23,48 +17,96 @@ List<InlineSpan> buildInlineSpans(
 
   void collect(md.Node node, TextStyle style, {required bool inCode}) {
     if (node is md.Text) {
-      final text = inCode ? node.text : _normalizeBreaks(node.text);
+      final text = inCode ? node.text : node.text.replaceAll('\n', ' ');
       if (text.isNotEmpty) runs.add(_Run(text, style));
-    } else if (node is md.Element) {
-      final tag = MarkdownInlineTag.from(node.tag);
-      final merged = style.merge(_inlineStyle(spec, tag));
-      switch (tag) {
-        case MarkdownInlineTag.lineBreak:
-          runs.add(_Run('\n', merged));
-        case MarkdownInlineTag.image:
-          final alt = node.attributes['alt'] ?? '';
-          if (alt.isNotEmpty) runs.add(_Run(alt, merged));
-        default:
-          final nested = inCode || tag == MarkdownInlineTag.code;
-          for (final child in node.children ?? const <md.Node>[]) {
-            collect(child, merged, inCode: nested);
-          }
-      }
+
+      return;
+    }
+    if (node is! md.Element) return;
+
+    final tag = MarkdownInlineTag.from(node.tag);
+    final merged = style.merge(_inlineStyle(spec, tag));
+    switch (tag) {
+      case MarkdownInlineTag.lineBreak:
+        runs.add(_Run('\n', merged));
+      case MarkdownInlineTag.image:
+        final alt = node.attributes['alt'] ?? '';
+        if (alt.isNotEmpty) runs.add(_Run(alt, merged));
+      case MarkdownInlineTag.strong:
+      case MarkdownInlineTag.boldAlias:
+      case MarkdownInlineTag.emphasis:
+      case MarkdownInlineTag.italicAlias:
+      case MarkdownInlineTag.strikethrough:
+      case MarkdownInlineTag.strikethroughAlias:
+      case MarkdownInlineTag.link:
+      case MarkdownInlineTag.code:
+      case null:
+        final nested = inCode || tag == MarkdownInlineTag.code;
+        for (final child in node.children ?? const <md.Node>[]) {
+          collect(child, merged, inCode: nested);
+        }
     }
   }
 
   for (final node in nodes) {
     collect(node, const TextStyle(), inCode: false);
   }
-  if (transform != null) {
-    final plain = runs.map((run) => run.text).join();
-    final transformed = transform(plain);
-    if (plain.characters.length != transformed.characters.length) {
-      return [TextSpan(text: transformed)];
-    }
-    var remaining = transformed.characters;
-    for (var index = 0; index < runs.length; index++) {
-      final length = runs[index].text.characters.length;
-      runs[index] = _Run(remaining.take(length).string, runs[index].style);
-      remaining = remaining.skip(length);
-    }
-  }
+  if (transform != null) return _transformRuns(runs, transform);
 
   return [for (final run in runs) TextSpan(text: run.text, style: run.style)];
 }
 
-String _normalizeBreaks(String text) =>
-    text.replaceAll('\n', ' ').replaceAll(_rawBreak, '\n');
+List<TextSpan> _transformRuns(
+  List<_Run> runs,
+  String Function(String) transform,
+) {
+  final source = runs.map((run) => run.text).join().characters;
+  final transformed = transform(source.string);
+  final target = transformed.characters;
+  if (source.length != target.length) {
+    return [TextSpan(text: transformed)];
+  }
+
+  final sourceClusters = source.iterator;
+  final targetClusters = target.iterator;
+  final spans = <TextSpan>[];
+  var sourceEnd = 0;
+  var targetStart = 0;
+  var sourceClusterEnd = 0;
+  var targetClusterEnd = 0;
+  for (final run in runs) {
+    sourceEnd += run.text.length;
+    while (sourceClusterEnd < sourceEnd) {
+      sourceClusters.moveNext();
+      targetClusters.moveNext();
+      sourceClusterEnd += sourceClusters.current.length;
+      targetClusterEnd += targetClusters.current.length;
+    }
+
+    var targetEnd = targetClusterEnd;
+    if (sourceEnd < sourceClusterEnd) {
+      final sourceCluster = sourceClusters.current;
+      final targetCluster = targetClusters.current;
+      if (sourceCluster.runes.length != targetCluster.runes.length) {
+        return [TextSpan(text: transformed)];
+      }
+      final offset = sourceEnd - (sourceClusterEnd - sourceCluster.length);
+      final leadingRunes = sourceCluster.substring(0, offset).runes.length;
+      targetEnd -= String.fromCharCodes(
+        targetCluster.runes.skip(leadingRunes),
+      ).length;
+    }
+    spans.add(
+      TextSpan(
+        text: transformed.substring(targetStart, targetEnd),
+        style: run.style,
+      ),
+    );
+    targetStart = targetEnd;
+  }
+
+  return spans;
+}
 
 TextStyle _inlineStyle(MarkdownSpec spec, MarkdownInlineTag? tag) =>
     switch (tag) {

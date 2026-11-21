@@ -19,11 +19,6 @@ mixin _$OpacityModifier
   }
 
   @override
-  OpacityModifier lerp(OpacityModifier? other, double t) {
-    return OpacityModifier(MixOps.lerp(opacity, other?.opacity, t));
-  }
-
-  @override
   List<Object?> get props => [opacity];
 
   @override

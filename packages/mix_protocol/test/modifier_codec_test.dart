@@ -78,6 +78,31 @@ void main() {
     });
   });
 
+  test('blur tileMode round-trips as an enum name', () {
+    final payload = {
+      'v': 1,
+      'type': 'box',
+      'modifiers': [
+        {'type': 'blur', 'sigma': 8.0, 'tileMode': 'decal'},
+      ],
+    };
+
+    final decoded = contract().decodeStyle<BoxStyler>(payload);
+    final style = switch (decoded) {
+      MixProtocolSuccess<BoxStyler>(:final value) => value,
+      MixProtocolFailure<BoxStyler>(:final errors) => fail('$errors'),
+    };
+    final blur = style.$modifier!.$modifiers!.single as BlurModifierMix;
+    expect(singleValueProp(blur.tileMode, 'tileMode'), TileMode.decal);
+
+    final encoded = contract().encodeStyle(style);
+    final reencoded = switch (encoded) {
+      MixProtocolSuccess<JsonMap>(:final value) => value,
+      MixProtocolFailure<JsonMap>(:final errors) => fail('$errors'),
+    };
+    expect(reencoded, payload);
+  });
+
   test('data-representable modifiers decode and re-encode canonically', () {
     final payload = {
       'v': 1,

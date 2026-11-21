@@ -23,8 +23,8 @@ void main() {
       final textStyle = TextStyler().fontSize(16);
       final iconStyle = IconStyler().size(24);
       final imageStyle = ImageStyler().width(200);
-      final flexBoxStyle = FlexBoxStyler().direction(Axis.vertical);
-      final stackBoxStyle = StackBoxStyler().fit(StackFit.expand);
+      final flexBoxStyle = FlexBoxStyler().direction(.vertical);
+      final stackBoxStyle = StackBoxStyler().fit(.expand);
       final wrapBoxStyle = WrapBoxStyler().spacing(8);
 
       expect(Box(style: boxStyle).style, same(boxStyle));

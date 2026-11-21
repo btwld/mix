@@ -8,6 +8,11 @@ on:
       - 'tool/**'
 
   pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
     branches: [main, next]
     paths-ignore:
       - 'test_resources/**'
@@ -18,9 +23,16 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
+  # Draft pull requests skip every job. Marking the pull request ready fires
+  # ready_for_review and runs them. Push still runs because its event name
+  # is not pull_request.
   format:
     name: Format Check
+    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.draft == false }}
     runs-on: ubuntu-latest
     # Observed ~1m30s. Every job here sets a bound because the GitHub default
     # is 360 minutes, so a wedged step burns runner time for six hours and
@@ -43,6 +55,7 @@ jobs:
 
   test:
     name: Test / Run tests for all packages
+    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.draft == false }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -70,8 +83,34 @@ jobs:
       - name: Test
         run: melos run ci
 
-  winds-release:
-    name: Winds / Release dependency check
+  hosted-examples:
+    name: Examples / Published Mix
+    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.draft == false }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: examples/showcase
+    steps:
+      - uses: actions/checkout@v4
+      - uses: kuhnroyal/flutter-fvm-config-action@v2
+        id: fvm-config-action
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ steps.fvm-config-action.outputs.FLUTTER_VERSION }}
+          channel: ${{ steps.fvm-config-action.outputs.FLUTTER_CHANNEL }}
+      # Deliberately omit Melos: apps must also work with published Mix.
+      - run: flutter pub get
+      - run: flutter analyze
+      - run: flutter test
+      - run: flutter build web
+
+  # Exercise each dependent against the source tree in this commit. Hosted
+  # compatibility and publish archives are checked by release-dependencies.yml
+  # before a dependent's publish job can start.
+  winds-in-repo:
+    name: Winds / In-repo dependencies
+    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.draft == false }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     defaults:
@@ -82,20 +121,68 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
-      # Match release installation before Melos creates local overrides.
-      - name: Resolve hosted release dependencies
+      - name: Use in-repo dependencies
+        run: |
+          cat > pubspec_overrides.yaml <<'YAML'
+          dependency_overrides:
+            mix:
+              path: ../mix
+            mix_annotations:
+              path: ../mix_annotations
+            mix_protocol:
+              path: ../mix_protocol
+          YAML
+          cat > example/pubspec_overrides.yaml <<'YAML'
+          dependency_overrides:
+            mix:
+              path: ../../mix
+            mix_annotations:
+              path: ../../mix_annotations
+            mix_protocol:
+              path: ../../mix_protocol
+          YAML
+      - name: Resolve dependencies
         run: flutter pub get
-      - name: Analyze against published Mix
-        run: flutter analyze
-      - name: Test against published Mix
+      # Infos are not fatal, matching `melos run analyze:dart`: deprecations
+      # in unreleased Mix surface as infos in dependents.
+      - name: Analyze
+        run: flutter analyze --no-fatal-infos
+      - name: Test
         run: flutter test
-      - name: Restore files modified by Flutter tooling
-        run: git restore -- .
-      - name: Validate publish archive
-        run: dart pub publish --dry-run
-
+  protocol-in-repo:
+    name: Protocol / In-repo dependencies
+    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.draft == false }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: packages/mix_protocol
+    steps:
+      - uses: actions/checkout@v4
+      - uses: kuhnroyal/flutter-fvm-config-action@v2
+        id: fvm-config-action
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ steps.fvm-config-action.outputs.FLUTTER_VERSION }}
+          channel: ${{ steps.fvm-config-action.outputs.FLUTTER_CHANNEL }}
+      - name: Use in-repo dependencies
+        run: |
+          cat > pubspec_overrides.yaml <<'YAML'
+          dependency_overrides:
+            mix:
+              path: ../mix
+            mix_annotations:
+              path: ../mix_annotations
+          YAML
+      - name: Resolve dependencies
+        run: flutter pub get
+      - name: Analyze
+        run: flutter analyze --no-fatal-infos
+      - name: Test
+        run: flutter test
   protocol-schema:
     name: Protocol Schema / Ajv check
+    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.draft == false }}
     runs-on: ubuntu-latest
     # The Dart golden tests in the test job keep packages/*/schema current;
     # this job validates those checked-in files with an independent Draft 7
@@ -118,6 +205,7 @@ jobs:
 
   showcase-tool:
     name: Showcase Tool Tests
+    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.draft == false }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     defaults:

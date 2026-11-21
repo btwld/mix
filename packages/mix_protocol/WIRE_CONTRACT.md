@@ -650,7 +650,8 @@ preserved; `not(not(web))` encodes as nested `context_not` selectors rather
 than being normalized away.
 
 `context_focus_visible` decodes to `ContextVariant.focusVisible()`. It matches
-focused state when Flutter uses traditional focus highlighting.
+focused state while `FocusVisibility.isVisible`, which turns off after a pointer
+press until the next keyboard input.
 `WidgetStateStyleOverride` controls focused state directly, including touch
 mode. The same selector works inside `context_not.variant`.
 
@@ -679,7 +680,8 @@ Modifier payloads use a `type` discriminator. Supported kinds are:
 
 - `align`: optional `alignment`, `widthFactor`, and `heightFactor`
 - `aspect_ratio`: optional positive `aspectRatio`
-- `blur`: required `sigma`
+- `blur`: required `sigma` and optional `tileMode` (`clamp`, `repeated`,
+  `mirror`, or `decal`)
 - `box`: required nested box `style`
 - `clip_oval`, `clip_rect`, `clip_triangle`: optional `clipBehavior`
 - `clip_r_rect`: optional `borderRadius` and `clipBehavior`

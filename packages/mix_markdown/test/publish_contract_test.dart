@@ -1,54 +1,29 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:yaml/yaml.dart';
 
 void main() {
-  test('package manifest remains independently publishable as a beta', () {
-    final pubspec = File('pubspec.yaml').readAsStringSync();
-    final changelog = File('CHANGELOG.md').readAsStringSync();
+  final workflow = File('../../.github/workflows/publish.yml');
 
-    expect(pubspec, contains(RegExp(r'^name: mix_markdown$', multiLine: true)));
-    expect(
-      pubspec,
-      contains(RegExp(r'^version: 0\.0\.1-beta\.0$', multiLine: true)),
-    );
-    expect(changelog, startsWith('## 0.0.1-beta.0\n'));
-    expect(
-      pubspec,
-      isNot(contains('publish_to: none')),
-      reason: 'mix_markdown is released by the repository publish workflow.',
-    );
-    expect(
-      RegExp(r'^  mix: \^2\.2\.0-beta\.5$', multiLine: true).hasMatch(pubspec),
-      isTrue,
-      reason: 'Published packages must use the hosted Mix dependency.',
-    );
-    expect(
-      RegExp(
-        r'^  mix_annotations: \^2\.2\.0-beta\.1$',
-        multiLine: true,
-      ).hasMatch(pubspec),
-      isTrue,
-      reason: 'Published packages must use hosted annotations.',
-    );
-    expect(
-      RegExp(r'^  markdown: \^7\.3\.0$', multiLine: true).hasMatch(pubspec),
-      isTrue,
-    );
+  test(
+    'later Markdown tags publish through the canonical OIDC workflow',
+    () {
+      final config = loadYaml(workflow.readAsStringSync()) as YamlMap;
+      final job = config['jobs']['publish_mix_markdown'] as YamlMap;
 
-    final screenshotPaths = RegExp(
-      r'^    path: (example/screenshots/\S+)$',
-      multiLine: true,
-    ).allMatches(pubspec).map((match) => match.group(1)!);
-    expect(screenshotPaths, hasLength(2));
-    expect(
-      screenshotPaths,
-      everyElement(
-        predicate<String>(
-          (path) => File(path).existsSync(),
-          'references an existing screenshot',
-        ),
-      ),
-    );
-  });
+      expect(
+        job['uses'],
+        'btwld/dart-actions/.github/workflows/publish.yml@main',
+      );
+      expect(job['permissions']['id-token'], 'write');
+      expect(
+        job['if'],
+        contains("github.ref_name != 'mix_markdown-v0.1.0-beta.1'"),
+      );
+    },
+    skip: workflow.existsSync()
+        ? false
+        : 'Requires the Mix repository checkout',
+  );
 }

@@ -69,11 +69,9 @@ void main() {
           .width(100)
           .height(100)
           .onHovered(
-            BoxStyler()
-                .color(Colors.red)
-                .width(100)
-                .height(100)
-                .alignment(Alignment.center),
+            .color(
+              Colors.red,
+            ).width(100).height(100).alignment(Alignment.center),
           );
 
       Color? currentColor;
@@ -143,7 +141,7 @@ void main() {
                     .color(Colors.green)
                     .width(150)
                     .height(150)
-                    .onHovered(BoxStyler().color(Colors.orange)),
+                    .onHovered(.color(Colors.orange)),
                 child: const Text('Hover me'),
               ),
             ),
@@ -199,7 +197,7 @@ void main() {
             .borderRounded(18)
             .color(Colors.indigo.shade400)
             .animate(.easeInOut(220.ms))
-            .onHovered(BoxStyler().color(Colors.indigo.shade500).scale(1.02));
+            .onHovered(.color(Colors.indigo.shade500).scale(1.02));
 
         await tester.pumpWidget(
           MaterialApp(
@@ -239,10 +237,7 @@ void main() {
         final style = BoxStyler()
             .size(100, 100)
             .color(Colors.blue)
-            .onNot(
-              ContextVariant.widgetState(WidgetState.hovered),
-              BoxStyler().color(Colors.red),
-            );
+            .onNot(.widgetState(.hovered), .color(Colors.red));
 
         await expectHoverColors(
           tester,
@@ -257,8 +252,8 @@ void main() {
             .size(100, 100)
             .color(Colors.blue)
             .onBreakpoint(
-              const Breakpoint.minWidth(0),
-              BoxStyler().onHovered(BoxStyler().color(Colors.red)),
+              const .minWidth(0),
+              BoxStyler().onHovered(.color(Colors.red)),
             );
 
         await expectHoverColors(
@@ -273,7 +268,7 @@ void main() {
         final style = BoxStyler()
             .size(100, 100)
             .color(Colors.blue)
-            .onDark(BoxStyler().onHovered(BoxStyler().color(Colors.red)));
+            .onDark(BoxStyler().onHovered(.color(Colors.red)));
 
         await expectHoverColors(
           tester,
@@ -291,10 +286,7 @@ void main() {
             .size(100, 100)
             .color(Colors.blue)
             .onHovered(
-              BoxStyler().onBreakpoint(
-                const Breakpoint.minWidth(0),
-                BoxStyler().color(Colors.red),
-              ),
+              BoxStyler().onBreakpoint(const .minWidth(0), .color(Colors.red)),
             );
 
         await expectHoverColors(
@@ -316,8 +308,8 @@ void main() {
                     .size(100, 100)
                     .color(Colors.blue)
                     .onBreakpoint(
-                      const Breakpoint.minWidth(0),
-                      BoxStyler().onPressed(BoxStyler().color(Colors.red)),
+                      const .minWidth(0),
+                      BoxStyler().onPressed(.color(Colors.red)),
                     ),
                 builder: (context, spec) {
                   currentColor = (spec.decoration as BoxDecoration?)?.color;
@@ -353,7 +345,7 @@ void main() {
         // so it is the case users actually hit.
         final style = BoxStyler()
             .color(Colors.blue)
-            .onEnabled(BoxStyler().color(Colors.red));
+            .onEnabled(.color(Colors.red));
 
         expect(style.widgetStates, {WidgetState.disabled});
       });
@@ -447,7 +439,7 @@ void main() {
         expect(
           await reachesWidgetBeneath(
             tester,
-            BoxStyler().size(100, 100).onEnabled(BoxStyler().size(100, 100)),
+            BoxStyler().size(100, 100).onEnabled(.size(100, 100)),
           ),
           isTrue,
         );
@@ -463,10 +455,7 @@ void main() {
             tester,
             BoxStyler()
                 .size(100, 100)
-                .variant(
-                  primary,
-                  BoxStyler().onHovered(BoxStyler().size(100, 100)),
-                ),
+                .variant(primary, BoxStyler().onHovered(.size(100, 100))),
           ),
           isTrue,
         );
@@ -481,8 +470,8 @@ void main() {
             BoxStyler()
                 .size(100, 100)
                 .onBreakpoint(
-                  const Breakpoint.minWidth(0),
-                  BoxStyler().onHovered(BoxStyler().size(100, 100)),
+                  const .minWidth(0),
+                  BoxStyler().onHovered(.size(100, 100)),
                 ),
           ),
           isFalse,
@@ -504,13 +493,13 @@ void main() {
                 key: const Key('outer'),
                 style: BoxStyler()
                     .size(400, 400)
-                    .onDisabled(BoxStyler().color(Colors.grey)),
+                    .onDisabled(.color(Colors.grey)),
                 child: Center(
                   child: StyleBuilder<BoxSpec>(
                     style: BoxStyler()
                         .size(50, 50)
                         .color(Colors.blue)
-                        .onHovered(BoxStyler().color(Colors.red)),
+                        .onHovered(.color(Colors.red)),
                     builder: (context, spec) {
                       innerColor = (spec.decoration as BoxDecoration?)?.color;
 

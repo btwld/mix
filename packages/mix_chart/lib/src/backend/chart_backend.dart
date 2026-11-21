@@ -29,6 +29,7 @@ Widget buildLineChartBackend({
   required ChartTooltipBuilder? tooltipBuilder,
   required double hitTestRadius,
   required ChartMouseCursorResolver<LineChartHit>? mouseCursorResolver,
+  required ChartAxisLabelFormatter? valueFormatter,
 }) => FlLineChartAdapter(
   spec: spec,
   series: series,
@@ -45,6 +46,7 @@ Widget buildLineChartBackend({
   tooltipBuilder: tooltipBuilder,
   hitTestRadius: hitTestRadius,
   mouseCursorResolver: mouseCursorResolver,
+  valueFormatter: valueFormatter,
 );
 
 /// Creates the private rendering backend for a bar chart.
@@ -64,6 +66,7 @@ Widget buildBarChartBackend({
   required ChartTooltipBuilder? tooltipBuilder,
   required EdgeInsets hitTestPadding,
   required ChartMouseCursorResolver<BarChartHit>? mouseCursorResolver,
+  required ChartAxisLabelFormatter? valueFormatter,
 }) => FlBarChartAdapter(
   spec: spec,
   groups: groups,
@@ -80,6 +83,7 @@ Widget buildBarChartBackend({
   tooltipBuilder: tooltipBuilder,
   hitTestPadding: hitTestPadding,
   mouseCursorResolver: mouseCursorResolver,
+  valueFormatter: valueFormatter,
 );
 
 /// Creates the private rendering backend for a pie chart.

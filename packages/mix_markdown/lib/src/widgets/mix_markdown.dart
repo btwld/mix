@@ -3,6 +3,7 @@ import 'package:markdown/markdown.dart' as md;
 import 'package:mix/mix.dart';
 
 import '../parsing/markdown_syntax.dart';
+import '../parsing/unsupported_nodes.dart';
 import '../specs/markdown_spec.dart';
 import 'markdown_document.dart';
 
@@ -25,11 +26,21 @@ typedef MarkdownUnsupportedBuilder =
 /// their alt text. A document with any other block is rendered by
 /// [unsupportedBuilder] instead, or as a diagnostic when that is null.
 ///
-/// The document is parsed once and parsed again only when [data] or [syntax]
-/// changes; style, theme, and text scale updates reuse the parsed nodes. The
+/// While mounted, the document is reparsed only when [data] or [syntax]
+/// changes. Style, theme, and text scale updates reuse the parsed nodes. The
 /// widget does not scroll. Place it in a scroll view, and in a
 /// [SelectionArea] when the text should be selectable.
-class MixMarkdown extends StyleWidget<MarkdownSpec> {
+class MixMarkdown extends StatefulWidget {
+  const MixMarkdown({
+    required this.data,
+    this.syntax = const MarkdownSyntax(),
+    this.wrapBlock,
+    this.unsupportedBuilder,
+    this.style = const MarkdownStyler.create(),
+    this.styleSpec,
+    super.key,
+  });
+
   /// Markdown source.
   final String data;
 
@@ -42,22 +53,55 @@ class MixMarkdown extends StyleWidget<MarkdownSpec> {
   /// Renders the whole document when it contains unsupported nodes.
   final MarkdownUnsupportedBuilder? unsupportedBuilder;
 
-  const MixMarkdown({
-    required this.data,
-    this.syntax = const MarkdownSyntax(),
-    this.wrapBlock,
-    this.unsupportedBuilder,
-    MarkdownStyler style = const MarkdownStyler.create(),
-    super.styleSpec,
-    super.key,
-  }) : super(style: style);
+  /// Style applied to the document when [styleSpec] is not provided.
+  final MarkdownStyler style;
+
+  /// Resolved style that takes precedence over [style].
+  final StyleSpec<MarkdownSpec>? styleSpec;
 
   @override
-  Widget build(BuildContext context, MarkdownSpec spec) => MarkdownDocument(
-    data: data,
-    syntax: syntax,
-    spec: spec,
-    wrapBlock: wrapBlock,
-    unsupportedBuilder: unsupportedBuilder,
-  );
+  State<MixMarkdown> createState() => _MixMarkdownState();
+}
+
+class _MixMarkdownState extends State<MixMarkdown> {
+  late List<md.Node> _nodes;
+  late Set<String> _unsupported;
+
+  @override
+  void initState() {
+    super.initState();
+    _parse();
+  }
+
+  void _parse() {
+    _nodes = widget.syntax.createDocument().parse(widget.data);
+    _unsupported = unsupportedNodes(_nodes);
+  }
+
+  @override
+  void didUpdateWidget(MixMarkdown oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.data != oldWidget.data || widget.syntax != oldWidget.syntax) {
+      _parse();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Widget buildDocument(BuildContext context, MarkdownSpec spec) =>
+        MarkdownDocument(
+          spec: spec,
+          nodes: _nodes,
+          unsupported: _unsupported,
+          wrapBlock: widget.wrapBlock,
+          unsupportedBuilder: widget.unsupportedBuilder,
+        );
+
+    final styleSpec = widget.styleSpec;
+    if (styleSpec != null) {
+      return StyleSpecBuilder(builder: buildDocument, styleSpec: styleSpec);
+    }
+
+    return StyleBuilder(style: widget.style, builder: buildDocument);
+  }
 }

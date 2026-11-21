@@ -1,10 +1,8 @@
 # mix_chart_protocol
 
-`mix_chart_protocol` is the optional integration between the publishable
-`mix_chart` runtime and `mix_protocol`. It depends on both packages so
-`mix_chart` does not have to make serialization part of every chart app.
-
-Use the ready-to-use protocol for the common core-plus-chart composition:
+Optional JSON integration between `mix_chart` and `mix_protocol`. Dart has no
+optional package dependencies, so rendering apps avoid codecs by omitting this
+sidecar. See the [dependency decision](../../ARCHITECTURE.md#keep-chart-serialization-optional).
 
 ```dart
 import 'package:mix_chart_protocol/mix_chart_protocol.dart';
@@ -12,16 +10,10 @@ import 'package:mix_chart_protocol/mix_chart_protocol.dart';
 final encoded = mixChartProtocol.encodeStyle(chartStyle);
 ```
 
-Applications, servers, and tooling opt into this sidecar only when they cross a
-JSON boundary. `mix_chart` itself must not depend on it: Dart packages have no
-optional dependencies, and most chart rendering does not need the protocol.
-
-Use the exported vocabulary directly only when combining charts with another
-package vocabulary:
+`mixChartProtocol` is the ready-made core-plus-chart composition. Only compose
+explicitly when adding another vocabulary:
 
 ```dart
-import 'package:mix_chart_protocol/mix_chart_protocol.dart';
-
 final protocol = MixProtocol.compose([
   mixProtocolCoreVocabulary,
   mixChartVocabulary,
@@ -29,15 +21,11 @@ final protocol = MixProtocol.compose([
 ]);
 ```
 
-The sidecar re-exports the protocol API used by `mixChartProtocol`, so this
-integration needs only one protocol import.
+The sidecar re-exports the protocol API. Its `mix_chart.v1.*` vocabulary covers
+all 15 chart stylers, including nested stylers. Core styles in chart labels use
+the same composed union; variants, modifiers, animation, tokens and lenient
+decoding follow the ordinary [wire contract](../mix_protocol/WIRE_CONTRACT.md).
 
-The vocabulary uses the `mix_chart.v1.*` namespace and contains all 15 chart
-stylers, including shared nested stylers. Core stylers such as `TextStyler`
-inside chart labels recurse through the same composed union. Variants,
-modifiers, animation, property terms, tokens, and lenient decoding use the
-ordinary `mix_protocol` grammar.
-
-This sidecar is unpublished while `mix_protocol` is unpublished. Keeping it
-separate preserves `mix_chart`'s existing publish contract and avoids exposing
-the private Ack implementation.
+The manifest currently sets `publish_to: none`; `mix_protocol` has a hosted
+prerelease. Check sidecar availability independently of the runtime package's
+release. Keeping this boundary separate also hides the private Ack engine.

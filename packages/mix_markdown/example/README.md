@@ -1,12 +1,11 @@
 # mix_markdown example
 
-Renders a sample document with `MixMarkdown` and a `MarkdownStyler` that
-covers every slot: the document container, paragraphs, headings, inline
-runs, and all five GitHub alert types. Each slot carries an `onDark` variant,
-and the app bar button toggles the theme to show them.
+Renders a sample document with inline styles and all five GitHub alert types.
+The app bar button toggles the theme to show Mix's `onDark` variants.
 
-Run from this directory:
+To run on the web, generate the platform files from this directory first:
 
 ```sh
-flutter run
+flutter create --platforms=web .
+flutter run -d chrome
 ```

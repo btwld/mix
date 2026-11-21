@@ -5,6 +5,7 @@
 /// `build()` delegates to that styler's `call()`.
 library;
 
+import '../helpers/widget_call_planner.dart';
 import '../models/mix_widget_model.dart';
 
 /// Builds the `StatelessWidget` wrapper for a `@MixWidget`-annotated factory.
@@ -157,9 +158,8 @@ class MixWidgetBuilder {
         '$constructorSuffix';
     final args = [
       for (final p in model.callParams.where((p) => p.isPositional)) p.name,
-      if (model.stylerCallForwardsKey) 'key: key',
       'style: $styleInvocation',
-      for (final p in model.callParams.where((p) => !p.isPositional))
+      for (final p in childLast(model.callParams.where((p) => !p.isPositional)))
         '${p.name}: ${p.name}',
     ];
 
@@ -188,7 +188,6 @@ class MixWidgetBuilder {
   List<String> _callArgs() {
     return [
       for (final p in model.callParams.where((p) => p.isPositional)) p.name,
-      if (model.stylerCallForwardsKey) 'key: key',
       for (final p in model.callParams.where((p) => !p.isPositional))
         '${p.name}: ${p.name}',
     ];

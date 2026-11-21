@@ -328,7 +328,7 @@ void main() {
                   style: BoxStyler()
                       .size(100, 100)
                       .color(Colors.blue)
-                      .onPressed(BoxStyler().color(Colors.red)),
+                      .onPressed(.color(Colors.red)),
                 ),
               );
             },
@@ -750,7 +750,7 @@ void main() {
               style: BoxStyler()
                   .size(100, 100)
                   .color(Colors.blue)
-                  .onFocusVisible(BoxStyler().color(Colors.red)),
+                  .onFocusVisible(.color(Colors.red)),
             ),
           ),
         ),
@@ -935,6 +935,77 @@ void main() {
       expect(
         tester.getSemantics(find.byKey(const Key('control'))),
         isSemantics(hasEnabledState: true, isEnabled: false, isButton: false),
+      );
+
+      handle.dispose();
+    });
+
+    testWidgets('sets the identifier on the actionable node', (tester) async {
+      final handle = tester.ensureSemantics();
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: PressableBox(
+            semanticsLabel: 'Save',
+            semanticsIdentifier: 'save_button',
+            onPress: () {},
+            child: const SizedBox(width: 100, height: 100),
+          ),
+        ),
+      );
+
+      expect(
+        tester.getSemantics(find.bySemanticsIdentifier('save_button')),
+        isSemantics(
+          identifier: 'save_button',
+          label: 'Save',
+          isButton: true,
+          hasTapAction: true,
+        ),
+      );
+
+      handle.dispose();
+    });
+
+    testWidgets('omits the identifier when excluded from semantics', (
+      tester,
+    ) async {
+      final handle = tester.ensureSemantics();
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Pressable(
+            excludeFromSemantics: true,
+            semanticsIdentifier: 'save_button',
+            onPress: () {},
+            child: const SizedBox(width: 100, height: 100),
+          ),
+        ),
+      );
+
+      expect(find.bySemanticsIdentifier('save_button'), findsNothing);
+
+      handle.dispose();
+    });
+
+    testWidgets('a roleless wrapper with an identifier gets its own node', (
+      tester,
+    ) async {
+      final handle = tester.ensureSemantics();
+
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Pressable(
+            semanticsRole: PressableSemanticsRole.none,
+            semanticsIdentifier: 'wrapper',
+            child: SizedBox(width: 100, height: 100),
+          ),
+        ),
+      );
+
+      expect(
+        tester.getSemantics(find.bySemanticsIdentifier('wrapper')),
+        isSemantics(identifier: 'wrapper', hasEnabledState: false),
       );
 
       handle.dispose();

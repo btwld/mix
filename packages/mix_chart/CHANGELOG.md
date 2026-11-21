@@ -1,3 +1,30 @@
+## 0.0.1
+
+### Compatibility
+
+- Require Flutter 3.44 / Dart 3.12, Mix ^2.2.0, and mix_annotations ^2.2.0.
+- Axis endpoints are labelled only when they fall on a tick by default. The
+  `minIncluded` and `maxIncluded` getters now report false when unset; pass
+  true explicitly to retain off-tick endpoint labels.
+
+### Features and defaults
+
+- Add `valueFormatter` to line and bar charts. Tooltips, labels, and semantics
+  use concise values without trailing `.0` or floating-point noise.
+- Choose round 1/2/5 axis steps from the plot size, keep whole-number data on
+  whole-number steps, and round data-derived value-axis bounds outward.
+- Align grid intervals with axis ticks, grow default value-label space to fit,
+  and thin crowded default bar category labels. Explicit settings still win.
+- Use the selected series marker and a thin guide for line hover indicators.
+- Fit default pies and donuts inside compact layouts, and fit in-slice labels
+  to their available space and text scale. Tooltips and semantics retain the
+  full information when a label must be shortened or hidden.
+
+### Fixes
+
+- Preserve intrinsic sizing for line and bar charts while measuring their plot.
+- Handle constant, zero, single-value, and very small chart layouts safely.
+
 ## 0.0.1-beta.3
 
 - Fix axis labels ignoring supported text settings.

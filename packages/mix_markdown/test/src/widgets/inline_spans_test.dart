@@ -75,15 +75,19 @@ void main() {
     expect(result.single.style, isNull);
   });
 
-  test('grapheme boundaries survive emoji and combining marks', () {
-    final result = spans('**é** *👩‍💻*', transform: (s) => s);
+  test('a combining mark across runs stays outside the bold span', () {
+    final result = spans('**a**\u0301b', transform: (s) => s.toUpperCase());
 
-    expect(plain(result), 'é 👩‍💻');
+    expect(result.map((run) => run.text), ['A', '\u0301B']);
     expect(result.first.style?.fontWeight, FontWeight.bold);
+    expect(result.last.style?.fontWeight, isNull);
   });
 
-  test('raw br tags break lines outside inline code', () {
-    expect(plain(spans('a<br />b `<br />`')), 'a\nb <br />');
+  test('only raw br tags outside inline code break lines', () {
+    expect(
+      plain(spans(r'a<br />b &lt;br&gt; \<br> `<br />`')),
+      'a\nb <br> <br> <br />',
+    );
   });
 
   test('soft line breaks become spaces', () {

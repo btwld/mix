@@ -13,9 +13,9 @@ void main() {
 
     expect(schema[r'$schema'], contains('draft-07'));
     expect(schema['x-mix-protocol-contract'], 'mix_protocol');
-    expect(schema['x-mix-protocol-version'], '1.0.0');
+    expect(schema['x-mix-protocol-version'], '1.0.0-alpha.0');
     expect(schema['x-mix-protocol-format-version'], mixProtocolFormatVersion);
-    expect(mixProtocolVersion, '1.0.0');
+    expect(mixProtocolVersion, '1.0.0-alpha.0');
     expect(jsonEncode(schema), isNot(contains('mix_schema')));
   });
 

@@ -118,14 +118,20 @@ AckSchema<JsonMap, AspectRatioModifierMix> _aspectRatioModifierCodec() {
 AckSchema<JsonMap, BlurModifierMix> _blurModifierCodec() {
   return Ack.object({
     'sigma': _doubleProp('modifiers.blur.sigma'),
+    'tileMode': valuePropCodec<TileMode>(
+      enumNameCodec(TileMode.values),
+      fieldName: 'modifiers.blur.tileMode',
+    ).optional(),
   }).codec<BlurModifierMix>(
-    decode: (data) =>
-        BlurModifierMix.create(sigma: data['sigma'] as Prop<double>?),
+    decode: (data) => BlurModifierMix.create(
+      sigma: data['sigma'] as Prop<double>?,
+      tileMode: data['tileMode'] as Prop<TileMode>?,
+    ),
     encode: (value) => _encodeKnownModifier(
       value,
       'BlurModifierMix',
       modifierBlurInventory,
-      {'sigma': value.sigma},
+      {'sigma': value.sigma, 'tileMode': value.tileMode},
     ),
   );
 }

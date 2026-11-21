@@ -69,8 +69,8 @@ void main() {
 
       test('clipBehavior', () {
         expect(
-          StackBoxStyler.clipBehavior(Clip.hardEdge),
-          equals(StackBoxStyler().clipBehavior(Clip.hardEdge)),
+          StackBoxStyler.clipBehavior(.hardEdge),
+          equals(StackBoxStyler().clipBehavior(.hardEdge)),
         );
       });
 
@@ -83,22 +83,22 @@ void main() {
 
       test('fit', () {
         expect(
-          StackBoxStyler.fit(StackFit.expand),
-          equals(StackBoxStyler().fit(StackFit.expand)),
+          StackBoxStyler.fit(.expand),
+          equals(StackBoxStyler().fit(.expand)),
         );
       });
 
       test('textDirection', () {
         expect(
-          StackBoxStyler.textDirection(TextDirection.rtl),
-          equals(StackBoxStyler().textDirection(TextDirection.rtl)),
+          StackBoxStyler.textDirection(.rtl),
+          equals(StackBoxStyler().textDirection(.rtl)),
         );
       });
 
       test('stackClipBehavior', () {
         expect(
-          StackBoxStyler.stackClipBehavior(Clip.antiAlias),
-          equals(StackBoxStyler().stackClipBehavior(Clip.antiAlias)),
+          StackBoxStyler.stackClipBehavior(.antiAlias),
+          equals(StackBoxStyler().stackClipBehavior(.antiAlias)),
         );
       });
 
@@ -133,8 +133,8 @@ void main() {
 
       test('elevation', () {
         expect(
-          StackBoxStyler.elevation(ElevationShadow.one),
-          equals(StackBoxStyler().elevation(ElevationShadow.one)),
+          StackBoxStyler.elevation(.one),
+          equals(StackBoxStyler().elevation(.one)),
         );
       });
 
@@ -231,8 +231,8 @@ void main() {
       // Extended transform convenience factories
       test('transform', () {
         expect(
-          StackBoxStyler.transform(Matrix4.identity()),
-          equals(StackBoxStyler().transform(Matrix4.identity())),
+          StackBoxStyler.transform(.identity()),
+          equals(StackBoxStyler().transform(.identity())),
         );
       });
 
@@ -304,8 +304,8 @@ void main() {
 
       test('scale with alignment', () {
         expect(
-          StackBoxStyler.scale(0.5, alignment: Alignment.topLeft),
-          equals(StackBoxStyler().scale(0.5, alignment: Alignment.topLeft)),
+          StackBoxStyler.scale(0.5, alignment: .topLeft),
+          equals(StackBoxStyler().scale(0.5, alignment: .topLeft)),
         );
       });
 
@@ -318,10 +318,8 @@ void main() {
 
       test('rotate with alignment', () {
         expect(
-          StackBoxStyler.rotate(0.5, alignment: Alignment.bottomRight),
-          equals(
-            StackBoxStyler().rotate(0.5, alignment: Alignment.bottomRight),
-          ),
+          StackBoxStyler.rotate(0.5, alignment: .bottomRight),
+          equals(StackBoxStyler().rotate(0.5, alignment: .bottomRight)),
         );
       });
 

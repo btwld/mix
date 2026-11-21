@@ -6,23 +6,7 @@ import '../parsing/markdown_tags.dart';
 import '../specs/markdown_spec.dart';
 import 'inline_spans.dart';
 
-/// A paragraph or heading rendered as rich text.
-///
-/// Forwards the same [TextSpec] properties as [StyledText], and marks
-/// headings as such for assistive technology.
 class MarkdownText extends StatelessWidget {
-  /// The parsed element this block renders.
-  final md.Element element;
-
-  /// Which block this is, which decides the heading semantics.
-  final MarkdownBlockTag block;
-
-  /// Block text style.
-  final StyleSpec<TextSpec> styleSpec;
-
-  /// Document style, read for the inline slots.
-  final MarkdownSpec spec;
-
   const MarkdownText({
     super.key,
     required this.element,
@@ -30,6 +14,11 @@ class MarkdownText extends StatelessWidget {
     required this.styleSpec,
     required this.spec,
   });
+
+  final md.Element element;
+  final MarkdownBlockTag block;
+  final StyleSpec<TextSpec> styleSpec;
+  final MarkdownSpec spec;
 
   Widget _buildText(BuildContext context, TextSpec textSpec) {
     final spans = buildInlineSpans(
@@ -60,5 +49,5 @@ class MarkdownText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) =>
-      StyleSpecBuilder<TextSpec>(styleSpec: styleSpec, builder: _buildText);
+      StyleSpecBuilder<TextSpec>(builder: _buildText, styleSpec: styleSpec);
 }

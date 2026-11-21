@@ -235,6 +235,7 @@ final class _TokenReferenceWalker {
         visit(modifier.opacity);
       case BlurModifierMix():
         visit(modifier.sigma);
+        visit(modifier.tileMode);
       case FlexibleModifierMix():
         visit(modifier.flex);
         visit(modifier.fit);

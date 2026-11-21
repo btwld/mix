@@ -15,7 +15,7 @@ final GridBoxStyler style = .equalColumns(3)
     .gap(16)
     .autoRows(.auto());
 
-GridBox(style: style, children: cards);
+style(children: cards);
 ```
 
 `GridTrack.fixed(size)` keeps its logical-pixel size and is a hard constraint:
@@ -129,7 +129,7 @@ final GridBoxStyler tokenGrid = .columns([
 MixScope(
   spaces: {cardWidth: 160, gridGap: 12},
   doubles: {contentWeight: 2},
-  child: GridBox(style: tokenGrid, children: cards),
+  child: tokenGrid(children: cards),
 );
 ```
 
@@ -159,7 +159,7 @@ return Column(
       onPressed: () => setState(() => focused = !focused),
       child: Text(focused ? 'Animate to 1:1' : 'Animate to 2:1'),
     ),
-    GridBox(style: animatedGrid, children: cards),
+    animatedGrid(children: cards),
   ],
 );
 ```
@@ -189,8 +189,8 @@ change itself should animate.
 The runnable gallery includes balanced and focused states of this example:
 
 <p>
-  <img src="../example/test/goldens/grid_animation_balanced.png" alt="Balanced animated GridBox state" width="46%">
-  <img src="../example/test/goldens/grid_animation_focused.png" alt="Focused animated GridBox state" width="46%">
+  <img src="../../../examples/showcase/test/layouts/goldens/grid_animation_balanced.png" alt="Balanced animated GridBox state" width="46%">
+  <img src="../../../examples/showcase/test/layouts/goldens/grid_animation_focused.png" alt="Focused animated GridBox state" width="46%">
 </p>
 
 ## Overflow and clipping
@@ -227,13 +227,13 @@ columns, spans, named areas, direction-aware placement, and baseline alignment
 are not part of the current API.
 
 Run the card, dashboard, gallery, and animation examples from
-`packages/mix/example`:
+`examples/showcase`:
 
 ```sh
-flutter run -t lib/grid_main.dart
+flutter run -t lib/layouts/grid/main.dart
 ```
 
 <p>
-  <img src="../example/test/goldens/grid_dashboard_wide.png" alt="Wide GridBox dashboard" width="66%">
-  <img src="../example/test/goldens/grid_dashboard_compact.png" alt="Compact GridBox dashboard" width="24%">
+  <img src="../../../examples/showcase/test/layouts/goldens/grid_dashboard_wide.png" alt="Wide GridBox dashboard" width="66%">
+  <img src="../../../examples/showcase/test/layouts/goldens/grid_dashboard_compact.png" alt="Compact GridBox dashboard" width="24%">
 </p>

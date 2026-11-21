@@ -1,14 +1,10 @@
 import 'package:flutter/widgets.dart';
 
-/// A start-aligned column of rendered blocks.
 class MarkdownBlocks extends StatelessWidget {
-  /// Vertical space between blocks.
-  final double? spacing;
-
-  /// Rendered blocks.
-  final List<Widget> children;
-
   const MarkdownBlocks({super.key, this.spacing, required this.children});
+
+  final double? spacing;
+  final List<Widget> children;
 
   @override
   Widget build(BuildContext context) => Column(

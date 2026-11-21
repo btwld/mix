@@ -21,9 +21,9 @@ void main() {
             style: parentStyle,
             child: Box(
               style: BoxStyler(
-                modifier: WidgetModifierConfig.modifier(
+                modifier: .modifier(
                   DefaultTextStyleModifierMix(
-                    style: TextStyleMix(fontWeight: FontWeight.w500),
+                    style: TextStyleMix(fontWeight: .w500),
                   ),
                 ),
               ),

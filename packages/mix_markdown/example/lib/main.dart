@@ -82,9 +82,8 @@ class _MarkdownDemoAppState extends State<MarkdownDemoApp> {
   );
 }
 
-/// The demo document style.
 final _documentStyle = MarkdownStyler(
-  container: BoxStyler().paddingAll(24),
+  container: BoxStyler().padding(.all(24)),
   blockSpacing: 16,
   paragraph: _text,
   h1: _text.fontSize(32).fontWeight(FontWeight.bold),
@@ -112,14 +111,14 @@ final _text = TextStyler()
 
 MarkdownAlertTypeStyler _alert(MaterialColor color) => MarkdownAlertTypeStyler(
   container: BoxStyler()
-      .paddingAll(12)
-      .borderRounded(8)
+      .padding(.all(12))
+      .borderRadius(.circular(8))
       .color(color.shade50)
-      .borderAll(color: color.shade200)
+      .border(.color(color.shade200))
       .onDark(
         BoxStyler()
             .color(color.shade900.withValues(alpha: 0.3))
-            .borderAll(color: color.shade700),
+            .border(.color(color.shade700)),
       ),
   header: FlexBoxStyler().spacing(8),
   icon: IconStyler()

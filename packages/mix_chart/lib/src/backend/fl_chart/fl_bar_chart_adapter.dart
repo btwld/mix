@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:fl_chart/fl_chart.dart' as fl;
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
@@ -6,9 +8,11 @@ import '../../public/models/bar_data.dart';
 import '../../public/models/chart_config.dart';
 import '../../public/models/chart_enums.dart';
 import '../../public/models/chart_hit.dart';
+import '../../public/models/chart_value_format.dart';
 import '../../public/specs/bar/bar_background_spec.dart';
 import '../../public/specs/bar/bar_chart_spec.dart';
 import '../../public/specs/bar/bar_spec.dart';
+import 'fl_axis_scale.dart';
 import 'fl_chart_helpers.dart';
 import 'fl_chart_tooltip_overlay.dart';
 
@@ -30,6 +34,7 @@ final class FlBarChartAdapter extends StatefulWidget {
     required this.tooltipBuilder,
     required this.hitTestPadding,
     required this.mouseCursorResolver,
+    required this.valueFormatter,
     super.key,
   });
 
@@ -49,6 +54,8 @@ final class FlBarChartAdapter extends StatefulWidget {
   final EdgeInsets hitTestPadding;
 
   final ChartMouseCursorResolver<BarChartHit>? mouseCursorResolver;
+
+  final ChartAxisLabelFormatter? valueFormatter;
 
   @override
   State<FlBarChartAdapter> createState() => _FlBarChartAdapterState();
@@ -80,8 +87,10 @@ final class _FlBarChartAdapterState extends State<FlBarChartAdapter> {
           BarSelectionKey.bar(groupId: group.id, barId: bar.id),
         ) ||
         bar.segments.any((segment) => _isSegmentSelected(group, bar, segment));
-    final formatter =
-        widget.yAxis?.labelFormatter ?? (double value) => '$value';
+    final formatter = resolveChartValueFormatter(
+      valueFormatter: widget.valueFormatter,
+      axisFormatter: widget.yAxis?.labelFormatter,
+    );
 
     return fl.BarChartRodData(
       fromY: bar.fromY,
@@ -150,8 +159,10 @@ final class _FlBarChartAdapterState extends State<FlBarChartAdapter> {
       fontSize: 12,
       fontWeight: .w600,
     ).merge(tooltip?.text?.spec.style);
-    final formatter =
-        widget.yAxis?.labelFormatter ?? (double value) => '$value';
+    final formatter = resolveChartValueFormatter(
+      valueFormatter: widget.valueFormatter,
+      axisFormatter: widget.yAxis?.labelFormatter,
+    );
 
     return fl.BarTouchData(
       touchCallback: _handleTouch,
@@ -279,27 +290,12 @@ final class _FlBarChartAdapterState extends State<FlBarChartAdapter> {
     );
   }
 
-  ChartAxis _resolveXAxis() {
-    final axis = widget.xAxis;
+  String _categoryLabel(double value) {
+    final index = value.round();
 
-    return ChartAxis.numeric(
-      min: axis?.min,
-      max: axis?.max,
-      interval: axis?.interval ?? 1,
-      minIncluded: axis?.minIncluded ?? true,
-      maxIncluded: axis?.maxIncluded ?? true,
-      labelFormatter:
-          axis?.labelFormatter ??
-          (value) {
-            final index = value.round();
-
-            return index >= 0 && index < widget.groups.length
-                ? widget.groups[index].label
-                : '';
-          },
-      labelBuilder: axis?.labelBuilder,
-      name: axis?.name,
-    );
+    return index >= 0 && index < widget.groups.length
+        ? widget.groups[index].label
+        : '';
   }
 
   @override
@@ -335,41 +331,66 @@ final class _FlBarChartAdapterState extends State<FlBarChartAdapter> {
     }
 
     final frame = widget.spec.frame?.spec;
-    final effectiveXAxis = _resolveXAxis();
-    final data = fl.BarChartData(
-      barGroups: groups,
-      groupsSpace: widget.spec.groupSpacing ?? 16,
-      alignment: _resolveAlignment(widget.spec.alignment),
-      titlesData: flResolveTitles(
-        context: context,
-        commonStyle: widget.spec.axis,
-        xStyle: widget.spec.xAxis,
-        yStyle: widget.spec.yAxis,
-        topStyle: widget.spec.topAxis,
-        rightStyle: widget.spec.rightAxis,
-        xAxis: effectiveXAxis,
-        yAxis: widget.yAxis,
-        topAxis: widget.topAxis,
-        rightAxis: widget.rightAxis,
-      ),
-      barTouchData: _resolveTouchData(),
-      maxY: widget.yAxis?.max,
-      minY: widget.yAxis?.min,
-      gridData: flResolveGrid(widget.spec.grid),
-      borderData: flResolveBorder(widget.spec.frame),
-      backgroundColor: frame?.backgroundColor,
-      rotationQuarterTurns: frame?.rotationQuarterTurns ?? 0,
-    );
+    final valueExtent = _valueExtent(groups);
     final disableAnimations =
         MediaQuery.maybeOf(context)?.disableAnimations ?? false;
     final duration = disableAnimations || !_topologyCompatible
         ? Duration.zero
         : widget.dataTransition.duration;
-    Widget chart = fl.BarChart(
-      data,
-      duration: duration,
-      curve: widget.dataTransition.curve,
-      transformationConfig: flResolveViewport(widget.viewport),
+    Widget chart = LayoutBuilder(
+      builder: (context, constraints) {
+        final axes = flResolveCartesianAxes(
+          context: context,
+          size: flLayoutSize(constraints),
+          commonStyle: widget.spec.axis,
+          xStyle: widget.spec.xAxis,
+          yStyle: widget.spec.yAxis,
+          topStyle: widget.spec.topAxis,
+          rightStyle: widget.spec.rightAxis,
+          xAxis: widget.xAxis,
+          yAxis: widget.yAxis,
+          topAxis: widget.topAxis,
+          rightAxis: widget.rightAxis,
+          yData: valueExtent,
+          viewport: widget.viewport,
+          rotationQuarterTurns: frame?.rotationQuarterTurns ?? 0,
+          grid: widget.spec.grid,
+          categories: (
+            count: groups.length,
+            label: _categoryLabel,
+            spacing: (plotWidth) => _categorySpacing(
+              groups,
+              _resolveAlignment(widget.spec.alignment),
+              widget.spec.groupSpacing ?? 16,
+              plotWidth,
+            ),
+          ),
+        );
+        final data = fl.BarChartData(
+          barGroups: groups,
+          groupsSpace: widget.spec.groupSpacing ?? 16,
+          alignment: _resolveAlignment(widget.spec.alignment),
+          titlesData: axes.titles,
+          barTouchData: _resolveTouchData(),
+          maxY: axes.y.max,
+          minY: axes.y.min,
+          baselineY: axes.baselineY,
+          gridData: flResolveGrid(
+            widget.spec.grid,
+            horizontalInterval: axes.y.interval,
+          ),
+          borderData: flResolveBorder(widget.spec.frame),
+          backgroundColor: frame?.backgroundColor,
+          rotationQuarterTurns: frame?.rotationQuarterTurns ?? 0,
+        );
+
+        return fl.BarChart(
+          data,
+          duration: duration,
+          curve: widget.dataTransition.curve,
+          transformationConfig: flResolveViewport(widget.viewport),
+        );
+      },
     );
     if (frame?.clip == true) chart = ClipRect(child: chart);
 
@@ -377,10 +398,52 @@ final class _FlBarChartAdapterState extends State<FlBarChartAdapter> {
       hit: _tooltipHit,
       builder: widget.tooltipBuilder,
       margin: widget.spec.tooltip?.spec.margin ?? 12,
-      child: chart,
+      child: FlRendererIntrinsics(child: chart),
     );
   }
 }
+
+/// Smallest distance between neighbouring group centres.
+///
+/// Mirrors how the renderer positions groups for each alignment.
+double _categorySpacing(
+  List<fl.BarChartGroupData> groups,
+  fl.BarChartAlignment alignment,
+  double groupsSpace,
+  double viewWidth,
+) {
+  if (groups.length < 2) return .infinity;
+  final widths = [for (final group in groups) group.width];
+  final sumWidth = widths.reduce((a, b) => a + b);
+  final packed = sumWidth + groupsSpace * (groups.length - 1);
+  final evenGap = (viewWidth - sumWidth) / (groups.length + 1);
+  // Packed alignments fall back to even spacing when the groups overflow.
+  final gap = switch (alignment) {
+    .start || .center || .end => packed <= viewWidth ? groupsSpace : evenGap,
+    .spaceBetween => (viewWidth - sumWidth) / (groups.length - 1),
+    .spaceAround => (viewWidth - sumWidth) / groups.length,
+    .spaceEvenly => evenGap,
+  };
+  var spacing = double.infinity;
+  for (var index = 1; index < widths.length; index++) {
+    spacing = math.min(spacing, (widths[index - 1] + widths[index]) / 2 + gap);
+  }
+
+  return spacing;
+}
+
+/// Value extent of the drawn rods, matching the renderer's own derivation.
+FlAxisData? _valueExtent(List<fl.BarChartGroupData> groups) => flAxisData([
+  for (final group in groups)
+    for (final rod in group.barRods) ...[
+      rod.fromY,
+      rod.toY,
+      if (rod.backDrawRodData.show) ...[
+        rod.backDrawRodData.fromY,
+        rod.backDrawRodData.toY,
+      ],
+    ],
+]);
 
 void _validateViewport(BarAlignment? alignment, ChartViewport? viewport) {
   final scalesHorizontally = switch (viewport?.axis ?? .none) {

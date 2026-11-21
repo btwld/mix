@@ -157,7 +157,7 @@ SchemaPathError _unsupportedNestedStyler(
 /// Collapses every compatible nested [Styler] source on [prop] into a single
 /// styler using Mix merge semantics, preserving source order.
 ///
-/// Fluent chaining (`FlexBoxStyler().color(...).paddingAll(...)`) accumulates
+/// Fluent chaining (`FlexBoxStyler().color(...).padding(...)`) accumulates
 /// one nested [MixSource] per authoring call, so a normally-composed composite
 /// slot can carry several `BoxStyler`/`FlexStyler`/`StackStyler` sources.
 /// Merging here is what lets the per-field encoders emit the ordinary v1
