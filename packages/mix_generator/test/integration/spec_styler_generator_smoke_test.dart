@@ -4138,10 +4138,9 @@ void main() {
     );
 
     test(
-      'emits factory <Styler>.wrap(WidgetModifierConfig value) and resolves .wrap(...) dot shorthand',
+      'preserves a wrap factory alias alongside modifier shorthand',
       () async {
-        const input = r'''
-        library spike;
+        const input = '''
         import 'package:flutter/foundation.dart';
         import 'package:flutter/widgets.dart';
         import 'package:mix/mix.dart';
@@ -4150,13 +4149,19 @@ void main() {
 
         @MixableSpec()
         final class LabelSpec extends Spec<LabelSpec> {
+          @MixableField(factoryName: 'wrap')
           final String? text;
+
           const LabelSpec({this.text});
         }
 
-        LabelStyler acceptLabel(LabelStyler style) => style;
-        LabelStyler shorthandWrap() =>
-            acceptLabel(.wrap(WidgetModifierConfig()));
+        @MixableSpec()
+        final class BadgeSpec extends Spec<BadgeSpec> {
+          const BadgeSpec();
+        }
+
+        LabelStyler styledLabel() => .wrap('Label').wrap(WidgetModifierConfig());
+        BadgeStyler styledBadge() => .wrap(WidgetModifierConfig());
       ''';
 
         await expectGeneratorOutputResolves(
@@ -4169,9 +4174,9 @@ void main() {
           },
           inputAsset: 'mix|lib/spike.dart',
           outputAsset: 'mix|lib/spike.g.dart',
-          outputMatcher: contains(
-            'factory LabelStyler.wrap(WidgetModifierConfig value) =>\n'
-            '      LabelStyler().wrap(value);',
+          outputMatcher: allOf(
+            contains('factory LabelStyler.wrap(String value)'),
+            contains('factory BadgeStyler.wrap(WidgetModifierConfig value)'),
           ),
         );
       },

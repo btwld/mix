@@ -519,10 +519,20 @@ class SpecStylerClassBuilder {
       existingFactories: factoryDescriptors,
       existingMethods: curatedMethods,
     );
+    final factories = [...factoryDescriptors, ...forwardedApi.factories];
+    if (!factories.any((factory) => factory.name == 'wrap')) {
+      factories.add(
+        const StylerFactoryDescriptor(
+          name: 'wrap',
+          signature: 'wrap(WidgetModifierConfig value)',
+          invocation: 'wrap(value)',
+        ),
+      );
+    }
 
     return planStylerApi(
       stylerName: stylerName,
-      curatedFactories: [...factoryDescriptors, ...forwardedApi.factories],
+      curatedFactories: factories,
       curatedMethods: [...curatedMethods, ...forwardedApi.methods],
       generatedSetterNames: _generatedSetterNames(fields, mixins),
     );
@@ -627,10 +637,10 @@ class SpecStylerClassBuilder {
       }
 
       for (final descriptor in selectedFactories) {
-        // `animate` and `wrap` configure the parent Styler's own lifecycle or
-        // widget modifiers and already exist as base methods. They are
-        // deliberately not projected as nested field API.
-        if (descriptor.name == 'animate' || descriptor.name == 'wrap') continue;
+        // `animate` configures the parent Styler's own lifecycle and already
+        // exists as a base method. It is deliberately not projected as nested
+        // field API.
+        if (descriptor.name == 'animate') continue;
 
         final actualDescriptor = actualByName[descriptor.name];
         if (actualDescriptor == null ||
@@ -852,10 +862,7 @@ class SpecStylerClassBuilder {
     return builder._canonicalFactoryDescriptors(fields, mixins);
   }
 
-  /// The complete ordered named-factory contract emitted for this spec's
-  /// generated Styler. Keeping direct and curated factories in one descriptor
-  /// form lets nested fields project exactly this surface without inspecting a
-  /// generated Styler element.
+  /// Field and curated factories, before forwarding and modifier shorthand.
   List<StylerFactoryDescriptor> _canonicalFactoryDescriptors(
     List<FieldModel> fields,
     List<_OwnerMixinReference> mixins,
@@ -893,7 +900,6 @@ class SpecStylerClassBuilder {
       ...?compound?.surface.factoryDescriptors,
       if (useSurface && surface.generatesAnimateFactory)
         animateFactoryDescriptor(),
-      wrapFactoryDescriptor(),
     ];
   }
 

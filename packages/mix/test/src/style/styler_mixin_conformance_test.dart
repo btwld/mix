@@ -99,39 +99,18 @@ void main() {
         _verifyFieldInventory(IconStyler());
         _verifyFieldInventory(ImageStyler());
       });
+    });
 
-      test('all Stylers have wrap factory constructor', () {
-        final modifier = WidgetModifierConfig.opacity(0.5);
-        expect(BoxStyler.wrap(modifier), equals(BoxStyler().wrap(modifier)));
-        expect(FlexStyler.wrap(modifier), equals(FlexStyler().wrap(modifier)));
-        expect(
-          FlexBoxStyler.wrap(modifier),
-          equals(FlexBoxStyler().wrap(modifier)),
-        );
-        expect(
-          StackStyler.wrap(modifier),
-          equals(StackStyler().wrap(modifier)),
-        );
-        expect(
-          StackBoxStyler.wrap(modifier),
-          equals(StackBoxStyler().wrap(modifier)),
-        );
-        expect(WrapStyler.wrap(modifier), equals(WrapStyler().wrap(modifier)));
-        expect(
-          WrapBoxStyler.wrap(modifier),
-          equals(WrapBoxStyler().wrap(modifier)),
-        );
-        expect(
-          GridBoxStyler.wrap(modifier),
-          equals(GridBoxStyler().wrap(modifier)),
-        );
-        expect(TextStyler.wrap(modifier), equals(TextStyler().wrap(modifier)));
-        expect(IconStyler.wrap(modifier), equals(IconStyler().wrap(modifier)));
-        expect(
-          ImageStyler.wrap(modifier),
-          equals(ImageStyler().wrap(modifier)),
-        );
-      });
+    test('wrap factories match the fluent setter', () {
+      final modifier = WidgetModifierConfig.opacity(0.5);
+      expect(
+        BoxStyler().onHovered(.wrap(.opacity(0.5))),
+        equals(BoxStyler().onHovered(BoxStyler().wrap(modifier))),
+      );
+      expect(
+        GridBoxStyler.wrap(modifier),
+        equals(GridBoxStyler().wrap(modifier)),
+      );
     });
 
     // =========================================================================

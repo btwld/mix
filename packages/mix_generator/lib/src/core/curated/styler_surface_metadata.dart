@@ -1029,12 +1029,3 @@ StylerFactoryDescriptor animateFactoryDescriptor() {
     invocation: 'animate(value)',
   );
 }
-
-/// Static wrap factory descriptor.
-StylerFactoryDescriptor wrapFactoryDescriptor() {
-  return const StylerFactoryDescriptor(
-    name: 'wrap',
-    signature: 'wrap(WidgetModifierConfig value)',
-    invocation: 'wrap(value)',
-  );
-}
