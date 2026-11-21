@@ -200,9 +200,17 @@ class MarkdownAlertTypeStyler
   }
 
   /// Sets the animation configuration.
+  /// [reverse] sets variant exit timing for curve or spring configs.
   @override
-  MarkdownAlertTypeStyler animate(AnimationConfig value) {
-    return merge(MarkdownAlertTypeStyler(animation: value));
+  MarkdownAlertTypeStyler animate(
+    AnimationConfig value, {
+    AnimationConfig? reverse,
+  }) {
+    final config = reverse == null
+        ? value
+        : ReversibleAnimationConfig(forward: value, reverse: reverse);
+
+    return merge(MarkdownAlertTypeStyler(animation: config));
   }
 
   /// Sets the style variants.
