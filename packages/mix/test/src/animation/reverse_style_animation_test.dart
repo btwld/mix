@@ -56,9 +56,9 @@ void main() {
 
       controller.update(WidgetState.hovered, false);
       await tester.pump();
-      await tester.pump(20.ms);
+      await tester.pump(10.ms);
       expect(_color(tester), isSameColorAs(Colors.red));
-      await tester.pump(50.ms);
+      await tester.pump(60.ms);
       expect(
         _color(tester),
         isSameColorAs(Color.lerp(Colors.red, Colors.blue, 0.5)!),

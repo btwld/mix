@@ -36,8 +36,8 @@ final style = BoxStyler().color(Colors.black).onHovered(
 A newly active animation owner uses its forward config. Otherwise, the
 previous owner's reverse config applies only when its variant deactivates.
 Both configs must be curves or springs; phase and keyframe targets still run
-their own timelines. With an `AnimationStyleMixin`-typed styler, pass a
-`ReversibleAnimationConfig` to `animate` instead.
+their own timelines. If a custom styler only exposes `animate(config)`, pass
+a `ReversibleAnimationConfig` as that config.
 
 ### AnimationConfig Options
 
