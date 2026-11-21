@@ -304,9 +304,14 @@ class WrapStyler extends MixStyler<WrapStyler, WrapSpec>
   }
 
   /// Sets the animation configuration.
+  /// [reverse] sets variant exit timing for curve or spring configs.
   @override
-  WrapStyler animate(AnimationConfig value) {
-    return merge(WrapStyler(animation: value));
+  WrapStyler animate(AnimationConfig value, {AnimationConfig? reverse}) {
+    final config = reverse == null
+        ? value
+        : ReversibleAnimationConfig(forward: value, reverse: reverse);
+
+    return merge(WrapStyler(animation: config));
   }
 
   /// Sets the style variants.

@@ -74,6 +74,105 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
     return provider?.style;
   }
 
+  ({Style<S> style, Object? animationOwner}) _mergeActiveVariants(
+    BuildContext context,
+    Set<NamedVariant> namedVariants,
+    Set<Object> active,
+    Object? parent,
+  ) {
+    final variants = $variants;
+    if (variants == null) return (style: this, animationOwner: parent);
+
+    // Partition, don't sort: declaration order inside a group is load-bearing,
+    // and List.sort is only stable by accident of the insertion sort it falls
+    // back to below 32 elements.
+    final lowPriority = <VariantStyle<S>>[];
+    final highPriority = <VariantStyle<S>>[];
+
+    for (final variantAttr in variants) {
+      final variant = variantAttr.variant;
+
+      final isActive = switch (variant) {
+        ContextVariant() => variant.when(context),
+        NamedVariant() => namedVariants.contains(variant),
+        ContextVariantBuilder() => true,
+      };
+      if (!isActive) continue;
+
+      // Keyed off the declaration, not the class: FocusVisibleVariant is not a
+      // WidgetStateVariant yet reads WidgetState.focused just the same, and
+      // NotVariant forwards whatever its inner variant reads.
+      //
+      // The getter stays on ContextVariant rather than moving up to Variant
+      // because ContextVariant is also the only kind widgetStates walks, so a
+      // dependency declared on any other kind would never get tracking
+      // installed.
+      final readsWidgetState =
+          variant is ContextVariant &&
+          variant.widgetStateDependencies.isNotEmpty;
+
+      (readsWidgetState ? highPriority : lowPriority).add(variantAttr);
+    }
+
+    // Extract the style from each active variant
+    final stylesToMerge = <(Object, Style<S>, bool)>[];
+
+    for (final variantAttr in lowPriority.followedBy(highPriority)) {
+      final result = switch (variantAttr.variant) {
+        ContextVariantBuilder variant => (
+          variant.build(context) as Style<S>,
+          false,
+        ),
+        (ContextVariant() || NamedVariant()) => () {
+          // Check if the value is a StyleVariation
+          // ignore: avoid-unrelated-type-assertions
+          if (variantAttr.value is StyleVariation<S>) {
+            // ignore: avoid-unrelated-type-casts
+            final styleVariation = variantAttr.value as StyleVariation<S>;
+            // Only apply if this variant is active
+            if (namedVariants.contains(styleVariation.variantType)) {
+              return (
+                styleVariation.styleBuilder(this, namedVariants, context),
+                true,
+              );
+            }
+          }
+
+          return (variantAttr.value, false);
+        }(),
+      };
+      final path = (parent, variantAttr.mergeKey);
+      active.add(path);
+      stylesToMerge.add((path, result.$1, result.$2));
+    }
+
+    // Start with current style as base
+    Style<S> mergedStyle = this;
+    Object? animationOwner = parent;
+
+    // Merge each variant style, recursively resolving nested variants
+    for (final (path, variantStyle, isFromStyleVariation) in stylesToMerge) {
+      final resolved = isFromStyleVariation
+          // For StyleVariation results, we don't recursively resolve variants
+          // since StyleVariation.styleBuilder should handle its own variant logic
+          // and return a final style. This prevents infinite recursion.
+          ? (style: variantStyle, animationOwner: path)
+          // For regular variants, recursively resolve any nested variants
+          : variantStyle._mergeActiveVariants(
+              context,
+              namedVariants,
+              active,
+              path,
+            );
+      mergedStyle = _mergeStyles(mergedStyle, resolved.style);
+      if (resolved.style.$animation != null) {
+        animationOwner = resolved.animationOwner;
+      }
+    }
+
+    return (style: mergedStyle, animationOwner: animationOwner);
+  }
+
   @internal
   Set<WidgetState> get widgetStates {
     final states = <WidgetState>{};
@@ -124,91 +223,7 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
   Style<S> mergeActiveVariants(
     BuildContext context, {
     required Set<NamedVariant> namedVariants,
-  }) {
-    final variants = $variants;
-    if (variants == null) return this;
-
-    // Partition, don't sort: declaration order inside a group is load-bearing,
-    // and List.sort is only stable by accident of the insertion sort it falls
-    // back to below 32 elements.
-    final lowPriority = <VariantStyle<S>>[];
-    final highPriority = <VariantStyle<S>>[];
-
-    for (final variantAttr in variants) {
-      final variant = variantAttr.variant;
-
-      final isActive = switch (variant) {
-        ContextVariant() => variant.when(context),
-        NamedVariant() => namedVariants.contains(variant),
-        ContextVariantBuilder() => true,
-      };
-      if (!isActive) continue;
-
-      // Keyed off the declaration, not the class: FocusVisibleVariant is not a
-      // WidgetStateVariant yet reads WidgetState.focused just the same, and
-      // NotVariant forwards whatever its inner variant reads.
-      //
-      // The getter stays on ContextVariant rather than moving up to Variant
-      // because ContextVariant is also the only kind widgetStates walks, so a
-      // dependency declared on any other kind would never get tracking
-      // installed.
-      final readsWidgetState =
-          variant is ContextVariant &&
-          variant.widgetStateDependencies.isNotEmpty;
-
-      (readsWidgetState ? highPriority : lowPriority).add(variantAttr);
-    }
-
-    // Extract the style from each active variant
-    final stylesToMerge = <(Style<S>, bool)>[]; // (style, isFromStyleVariation)
-
-    for (final variantAttr in lowPriority.followedBy(highPriority)) {
-      final result = switch (variantAttr.variant) {
-        ContextVariantBuilder variant => (
-          variant.build(context) as Style<S>,
-          false,
-        ),
-        (ContextVariant() || NamedVariant()) => () {
-          // Check if the value is a StyleVariation
-          // ignore: avoid-unrelated-type-assertions
-          if (variantAttr.value is StyleVariation<S>) {
-            // ignore: avoid-unrelated-type-casts
-            final styleVariation = variantAttr.value as StyleVariation<S>;
-            // Only apply if this variant is active
-            if (namedVariants.contains(styleVariation.variantType)) {
-              return (
-                styleVariation.styleBuilder(this, namedVariants, context),
-                true,
-              );
-            }
-          }
-
-          return (variantAttr.value, false);
-        }(),
-      };
-      stylesToMerge.add(result);
-    }
-
-    // Start with current style as base
-    Style<S> mergedStyle = this;
-
-    // Merge each variant style, recursively resolving nested variants
-    for (final (variantStyle, isFromStyleVariation) in stylesToMerge) {
-      final fullyResolvedStyle = isFromStyleVariation
-          // For StyleVariation results, we don't recursively resolve variants
-          // since StyleVariation.styleBuilder should handle its own variant logic
-          // and return a final style. This prevents infinite recursion.
-          ? variantStyle
-          // For regular variants, recursively resolve any nested variants
-          : variantStyle.mergeActiveVariants(
-              context,
-              namedVariants: namedVariants,
-            );
-      mergedStyle = _mergeStyles(mergedStyle, fullyResolvedStyle);
-    }
-
-    return mergedStyle;
-  }
+  }) => _mergeActiveVariants(context, namedVariants, {}, null).style;
 
   /// Resolves this attribute to its concrete value using the provided [BuildContext].
   @override
@@ -229,12 +244,22 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
     BuildContext context, {
     Set<NamedVariant> namedVariants = const {},
   }) {
-    final styleData = mergeActiveVariants(
-      context,
-      namedVariants: namedVariants,
-    );
+    if ($variants == null) return resolve(context);
 
-    return styleData.resolve(context);
+    final active = <Object>{};
+    final resolved = _mergeActiveVariants(context, namedVariants, active, null);
+    final spec = resolved.style.resolve(context);
+    if (active.isEmpty) return spec;
+
+    return StyleSpec.withVariantActivation(
+      spec: spec.spec,
+      animation: spec.animation,
+      widgetModifiers: spec.widgetModifiers,
+      variantActivation: (
+        animationOwner: resolved.animationOwner,
+        active: Set.unmodifiable(active),
+      ),
+    );
   }
 }
 

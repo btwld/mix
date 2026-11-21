@@ -1022,10 +1022,14 @@ StylerMethodDescriptor transformAnchorMethodDescriptor() {
 }
 
 /// Static animate factory descriptor.
-StylerFactoryDescriptor animateFactoryDescriptor() {
-  return const StylerFactoryDescriptor(
+StylerFactoryDescriptor animateFactoryDescriptor({required bool withReverse}) {
+  return StylerFactoryDescriptor(
     name: 'animate',
-    signature: 'animate(AnimationConfig value)',
-    invocation: 'animate(value)',
+    signature: withReverse
+        ? 'animate(AnimationConfig value, {AnimationConfig? reverse})'
+        : 'animate(AnimationConfig value)',
+    invocation: withReverse
+        ? 'animate(value, reverse: reverse)'
+        : 'animate(value)',
   );
 }

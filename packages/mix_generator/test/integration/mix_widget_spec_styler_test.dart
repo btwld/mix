@@ -21,9 +21,11 @@ import '../core/test_helpers.dart';
 /// declared at the real paths so the URL-based type checkers match.
 const _mixStub = r'''
   import 'package:flutter/foundation.dart';
+  import 'src/animation/animation_config.dart';
   import 'src/core/mix_element.dart';
   import 'src/core/style_spec.dart';
 
+  export 'src/animation/animation_config.dart';
   export 'src/core/mix_element.dart';
   export 'src/core/style_spec.dart';
 
@@ -54,7 +56,6 @@ const _mixStub = r'''
     const MixStyler({super.variants, super.modifier, super.animation});
   }
 
-  class AnimationConfig {}
   class WidgetModifierConfig {
     Object? resolve(Object context) => null;
   }
@@ -90,6 +91,7 @@ const _mixStub = r'''
 
 const _mixSources = {
   'mix|lib/mix.dart': _mixStub,
+  'mix|lib/src/animation/animation_config.dart': animationConfigSource,
   'mix|lib/src/core/mix_element.dart': '''
     abstract class Mix<T> {
       const Mix();

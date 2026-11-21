@@ -9,6 +9,7 @@ import '../core/test_helpers.dart';
 
 const _mixSources = {
   'mix|lib/mix.dart': _mixStub,
+  'mix|lib/src/animation/animation_config.dart': animationConfigSource,
   'mix|lib/src/core/mix_element.dart': '''
     abstract class Mix<T> {
       const Mix();
@@ -41,6 +42,7 @@ const _canonicalStyleStub = '''
 ''';
 
 const _setterTypeMixSources = {
+  'mix|lib/src/animation/animation_config.dart': animationConfigSource,
   'mix|lib/src/core/mix_element.dart': '''
     abstract class Mix<T> {
       const Mix();
@@ -50,9 +52,11 @@ const _setterTypeMixSources = {
   'mix|lib/mix.dart': '''
     import 'package:flutter/foundation.dart';
 
+    import 'src/animation/animation_config.dart';
     import 'src/core/mix_element.dart';
     import 'src/core/style_spec.dart';
 
+    export 'src/animation/animation_config.dart';
     export 'src/core/mix_element.dart';
     export 'src/core/style_spec.dart';
 
@@ -82,8 +86,6 @@ const _setterTypeMixSources = {
         extends Style<SP> with Diagnosticable {
       const MixStyler({super.variants, super.modifier, super.animation});
     }
-
-    class AnimationConfig {}
 
     class WidgetModifierConfig {
       Object? resolve(Object context) => null;
@@ -142,9 +144,11 @@ const _mixSourcesWithStyleWidget = {
 /// part styler tests.
 const _mixStub = '''
   import 'package:flutter/foundation.dart';
+  import 'src/animation/animation_config.dart';
   import 'src/core/mix_element.dart';
   import 'src/core/style_spec.dart';
 
+  export 'src/animation/animation_config.dart';
   export 'src/core/mix_element.dart';
   export 'src/core/style_spec.dart';
 
@@ -177,7 +181,6 @@ const _mixStub = '''
     ST onHovered(ST style) => style;
   }
 
-  class AnimationConfig {}
   class WidgetModifierConfig {
     static WidgetModifierConfig defaultTextStyler(Object value) => WidgetModifierConfig();
     Object? resolve(Object context) => null;
@@ -532,8 +535,10 @@ const _flutterResolveStubs = {
   ''',
 };
 
-Builder _specStylerPartBuilder() {
-  return PartBuilder([const SpecStylerGenerator()], '.g.dart');
+Builder _specStylerPartBuilder({bool generateReverseAnimation = true}) {
+  return PartBuilder([
+    SpecStylerGenerator(generateReverseAnimation: generateReverseAnimation),
+  ], '.g.dart');
 }
 
 Future<String> _expectSpecStylerValidationError(
@@ -1929,7 +1934,6 @@ void main() {
               contains('TrivialStyler({'),
               contains('EdgeInsetsGeometryMix? padding'),
               contains('Prop.maybeMix(padding)'),
-              contains('TrivialStyler animate(AnimationConfig value)'),
               contains(
                 'TrivialStyler variants(List<VariantStyle<TrivialSpec>> value)',
               ),
@@ -3459,25 +3463,58 @@ void main() {
         }
       ''';
 
-      await testBuilder(
-        _specStylerPartBuilder(),
-        {...mixAnnotationsSources, ..._mixSources, 'mix|lib/spike.dart': input},
-        outputs: {
-          'mix|lib/spike.g.dart': decodedMatches(
-            allOf([
-              contains('factory BoxStyler.color(Color value)'),
-              contains('factory BoxStyler.width(double value)'),
-              contains('factory BoxStyler.size(double width, double height)'),
-              contains(
-                'factory BoxStyler.scale(double scale, {Alignment alignment = .center})',
-              ),
-              contains('factory BoxStyler.translate(double x, double y'),
-              contains('factory BoxStyler.textStyle(TextStyler value)'),
-              contains('factory BoxStyler.animate(AnimationConfig value)'),
-            ]),
-          ),
-        },
-      );
+      const signature = 'animate(AnimationConfig value';
+      const reverseSignature = '$signature, {AnimationConfig? reverse})';
+      for (final (supportsReverse, generateReverse) in [
+        (true, true),
+        (false, true),
+        (true, false),
+      ]) {
+        final withReverse = supportsReverse && generateReverse;
+        final expectedSignature = withReverse
+            ? reverseSignature
+            : '$signature)';
+        await testBuilder(
+          _specStylerPartBuilder(generateReverseAnimation: generateReverse),
+          {
+            ...mixAnnotationsSources,
+            ..._mixSources,
+            if (!supportsReverse)
+              'mix|lib/src/animation/animation_config.dart':
+                  'class AnimationConfig {}',
+            'mix|lib/spike.dart': input,
+          },
+          outputs: {
+            'mix|lib/spike.g.dart': decodedMatches(
+              allOf([
+                contains('factory BoxStyler.color(Color value)'),
+                contains('factory BoxStyler.width(double value)'),
+                contains('factory BoxStyler.size(double width, double height)'),
+                contains(
+                  'factory BoxStyler.scale(double scale, {Alignment alignment = .center})',
+                ),
+                contains('factory BoxStyler.translate(double x, double y'),
+                contains('factory BoxStyler.textStyle(TextStyler value)'),
+                contains('BoxStyler $expectedSignature'),
+                if (withReverse) ...[
+                  matches(
+                    r'factory BoxStyler\.animate\(\s*AnimationConfig value, '
+                    r'\{\s*AnimationConfig\? reverse,?\s*\}\)',
+                  ),
+                  contains('.animate(value, reverse: reverse)'),
+                  contains(
+                    'ReversibleAnimationConfig(forward: value, reverse: reverse)',
+                  ),
+                ] else ...[
+                  contains('factory BoxStyler.$expectedSignature'),
+                  contains('.animate(value)'),
+                  isNot(contains('ReversibleAnimationConfig')),
+                ],
+              ]),
+            ),
+          },
+        );
+      }
     });
 
     test('emits curated Flex zero-argument factories', () async {
@@ -3559,9 +3596,7 @@ void main() {
               isNot(
                 contains('factory TextStyler.semanticsLabel(String value)'),
               ),
-              isNot(
-                contains('factory TextStyler.animate(AnimationConfig value)'),
-              ),
+              isNot(contains('factory TextStyler.animate(')),
             ]),
           ),
         },
@@ -3596,9 +3631,7 @@ void main() {
               isNot(
                 contains('factory IconStyler.semanticsLabel(String value)'),
               ),
-              isNot(
-                contains('factory IconStyler.animate(AnimationConfig value)'),
-              ),
+              isNot(contains('factory IconStyler.animate(')),
             ]),
           ),
         },
@@ -3644,7 +3677,7 @@ void main() {
           'mix|lib/box_spec.g.dart': decodedMatches(
             allOf([
               contains('factory BoxStyler.clipBehavior(Clip value)'),
-              contains('factory BoxStyler.animate(AnimationConfig value)'),
+              contains('factory BoxStyler.animate('),
               isNot(contains('factory BoxStyler.color(Color value)')),
               isNot(contains('factory BoxStyler.width(double value)')),
               isNot(contains('factory BoxStyler.scale(double scale')),

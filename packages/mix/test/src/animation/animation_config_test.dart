@@ -655,4 +655,31 @@ void main() {
       trigger2.dispose();
     });
   });
+
+  group('ReversibleAnimationConfig', () {
+    test('rejects timeline configs in either direction', () {
+      const curve = CurveAnimationConfig.linear(Duration(milliseconds: 100));
+      const phase = PhaseAnimationConfig<BoxSpec, BoxStyler>(
+        styles: [BoxStyler.create()],
+        curveConfigs: [curve],
+        trigger: null,
+      );
+      final keyframe = KeyframeAnimationConfig<BoxSpec>(
+        trigger: null,
+        timeline: [],
+        styleBuilder: (_, style) => style,
+        initialStyle: const BoxStyler.create(),
+      );
+      for (final timeline in <AnimationConfig>[phase, keyframe]) {
+        expect(
+          () => BoxStyler.animate(timeline, reverse: curve),
+          throwsArgumentError,
+        );
+        expect(
+          () => BoxStyler.animate(curve, reverse: timeline),
+          throwsArgumentError,
+        );
+      }
+    });
+  });
 }

@@ -371,8 +371,10 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
     Matrix4 value, {
     Alignment alignment = .center,
   }) => FlexBoxStyler().transform(value, alignment: alignment);
-  factory FlexBoxStyler.animate(AnimationConfig value) =>
-      FlexBoxStyler().animate(value);
+  factory FlexBoxStyler.animate(
+    AnimationConfig value, {
+    AnimationConfig? reverse,
+  }) => FlexBoxStyler().animate(value, reverse: reverse);
   factory FlexBoxStyler.wrap(WidgetModifierConfig value) =>
       FlexBoxStyler().wrap(value);
 
@@ -442,9 +444,14 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
   };
 
   /// Sets the animation configuration.
+  /// [reverse] sets variant exit timing for curve or spring configs.
   @override
-  FlexBoxStyler animate(AnimationConfig value) {
-    return merge(FlexBoxStyler(animation: value));
+  FlexBoxStyler animate(AnimationConfig value, {AnimationConfig? reverse}) {
+    final config = reverse == null
+        ? value
+        : ReversibleAnimationConfig(forward: value, reverse: reverse);
+
+    return merge(FlexBoxStyler(animation: config));
   }
 
   /// Sets the style variants.

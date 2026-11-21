@@ -22,6 +22,24 @@ final style = BoxStyler()
     .animate(.spring(800.ms));
 ```
 
+### Variant exit timing
+
+Set `reverse:` on a concrete styler's `animate` call to set exit timing for a
+context variant such as hover:
+
+```dart
+final style = BoxStyler().color(Colors.black).onHovered(
+  BoxStyler().color(Colors.blue).animate(.easeIn(120.ms), reverse: .easeOut(240.ms)),
+);
+```
+
+If the variant that sets the animation just became active, Mix uses its
+forward config. Otherwise, on exit Mix uses the reverse config of the
+variant that deactivated.
+Both configs must be curves or springs; phase and keyframe targets still run
+their own timelines. If a custom styler only exposes `animate(config)`, pass
+a `ReversibleAnimationConfig` as that config.
+
 ### AnimationConfig Options
 
 `AnimationConfig` is a sealed class with curve-based factories and spring helpers:

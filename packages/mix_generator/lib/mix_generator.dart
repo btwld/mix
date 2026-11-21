@@ -62,9 +62,12 @@ Builder mixGenerator(BuilderOptions _) {
 /// Builder factory for `spec_styler_generator`.
 ///
 /// Generates full Styler classes from `@MixableSpec` classes.
-Builder specStylerGenerator(BuilderOptions _) {
+Builder specStylerGenerator(BuilderOptions options) {
   return _sharedPartBuilder(
-    const SpecStylerGenerator(),
+    SpecStylerGenerator(
+      generateReverseAnimation:
+          options.config['generate_reverse_animation'] != false,
+    ),
     'spec_styler_generator',
   );
 }

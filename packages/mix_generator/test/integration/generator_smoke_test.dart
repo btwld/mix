@@ -49,9 +49,7 @@ class MixOps {
   static T? resolve<T>(Object context, Prop<T>? prop) => null;
 }
 ''',
-  'mix|lib/src/animation/animation_config.dart': r'''
-class AnimationConfig {}
-''',
+  'mix|lib/src/animation/animation_config.dart': animationConfigSource,
   'mix|lib/src/core/prop.dart': r'''
 class Prop<T> {
   const Prop();
@@ -621,6 +619,8 @@ class BoxStyler extends Style<BoxSpec>
           ...legacyFlutterSources,
           ...widgetStub,
           ...legacyMixSources,
+          'mix|lib/src/animation/animation_config.dart':
+              'class AnimationConfig {}',
           'mix_generator|lib/styler_case.dart': source,
         },
         generateFor: {'mix_generator|lib/styler_case.dart'},
@@ -632,6 +632,8 @@ class BoxStyler extends Style<BoxSpec>
               ),
               contains(r'Prop<Color>? get $color;'),
               contains('BoxStyler color(Color value)'),
+              contains('BoxStyler animate(AnimationConfig value)'),
+              isNot(contains('ReversibleAnimationConfig')),
               contains('return merge(BoxStyler(color: value));'),
               contains(r'color: MixOps.merge($color, other?.$color),'),
               contains(
@@ -704,6 +706,9 @@ class BoxStyler extends Style<BoxSpec>
             allOf([
               contains('Box call({Key? key, Widget? child})'),
               contains('return Box(key: key, style: this, child: child);'),
+              contains(
+                'ReversibleAnimationConfig(forward: value, reverse: reverse)',
+              ),
             ]),
           ),
         },

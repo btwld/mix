@@ -427,6 +427,33 @@ sealed class AnimationConfig {
   );
 }
 
+/// Pairs two implicit configs for a variant's enter and exit transitions.
+/// Both [forward] and [reverse] must be curve or spring configs.
+final class ReversibleAnimationConfig extends AnimationConfig with Equatable {
+  final AnimationConfig forward;
+  final AnimationConfig reverse;
+
+  ReversibleAnimationConfig({required this.forward, required this.reverse}) {
+    if (forward is! CurveAnimationConfig && forward is! SpringAnimationConfig) {
+      throw ArgumentError.value(
+        forward,
+        'forward',
+        'Expected a curve or spring config',
+      );
+    }
+    if (reverse is! CurveAnimationConfig && reverse is! SpringAnimationConfig) {
+      throw ArgumentError.value(
+        reverse,
+        'reverse',
+        'Expected a curve or spring config',
+      );
+    }
+  }
+
+  @override
+  List<Object?> get props => [forward, reverse];
+}
+
 /// Curve-based animation configuration with fixed duration.
 ///
 /// This configuration provides duration, curve, and optional completion callback

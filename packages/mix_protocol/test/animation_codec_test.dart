@@ -251,6 +251,22 @@ void main() {
     );
   });
 
+  test('variant exit timing is not representable in v1', () {
+    const curve = CurveAnimationConfig.linear(Duration(milliseconds: 100));
+    final result = mixProtocol.encodeStyle(
+      BoxStyler.animate(curve, reverse: curve),
+    );
+
+    expect(
+      result,
+      isA<MixProtocolFailure<JsonMap>>().having(
+        (failure) => failure.errors.map((error) => error.code),
+        'error codes',
+        contains(MixProtocolErrorCode.unsupportedEncodeValue),
+      ),
+    );
+  });
+
   test('animation callbacks fail encode instead of serializing closures', () {
     void onEnd() {}
     final result = mixProtocol.encodeStyle(

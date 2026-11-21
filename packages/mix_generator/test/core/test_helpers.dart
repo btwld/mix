@@ -7,6 +7,17 @@ import 'package:mix_generator/src/core/models/mix_field_model.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:test/test.dart';
 
+const animationConfigSource = '''
+  class AnimationConfig {}
+
+  class ReversibleAnimationConfig extends AnimationConfig {
+    ReversibleAnimationConfig({
+      required AnimationConfig forward,
+      required AnimationConfig reverse,
+    });
+  }
+''';
+
 /// Wraps [generator] in a `PartBuilder` that writes a single `.g.dart` part.
 Builder partBuilder(Generator generator) => PartBuilder([generator], '.g.dart');
 

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../core/spec.dart';
@@ -34,6 +35,8 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
     with TickerProviderStateMixin {
   late StyleAnimationDriver<S> animationDriver;
   bool _hasInitializedAnimationDriver = false;
+  AnimationConfig? _driverConfig;
+  bool _isExiting = false;
 
   StyleAnimationDriver<S> _createAnimationDriver({
     required AnimationConfig? config,
@@ -66,9 +69,31 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
         initialSpec: initialSpec,
         context: context,
       ),
+      ReversibleAnimationConfig() => throw StateError(
+        'Select a forward or reverse config before creating a driver.',
+      ),
       // ignore: avoid-undisposed-instances
       null => NoAnimationDriver(vsync: this, initialSpec: initialSpec),
     };
+  }
+
+  AnimationConfig? _forwardConfig(AnimationConfig? config) =>
+      config is ReversibleAnimationConfig ? config.forward : config;
+
+  AnimationConfig? _exitConfig(StyleSpec<S> previous, StyleSpec<S> target) {
+    final previousConfig = previous.animation;
+    final activation = previous.variantActivation;
+    final targetActivation = target.variantActivation;
+    if (previousConfig is! ReversibleAnimationConfig ||
+        activation == null ||
+        activation.animationOwner == null) {
+      return null;
+    }
+    if (targetActivation?.active.contains(activation.animationOwner) ?? false) {
+      return null;
+    }
+
+    return previousConfig.reverse;
   }
 
   @override
@@ -77,8 +102,9 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
 
     if (!_hasInitializedAnimationDriver) {
       final spec = widget.spec;
+      _driverConfig = _forwardConfig(spec.animation);
       animationDriver = _createAnimationDriver(
-        config: spec.animation,
+        config: _driverConfig,
         initialSpec: spec,
       );
       _hasInitializedAnimationDriver = true;
@@ -95,39 +121,81 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
     super.dispose();
   }
 
-  /// Whether to keep the implicit driver after the style's config is gone.
-  ///
-  /// It is retained for the update that drops the config, so the style
-  /// animates back, and for later updates while that return animation is
-  /// still in flight. Once it settles, the style no longer animates.
-  /// Phase/keyframe drivers must stop as soon as their config disappears.
-  bool _retainsImplicitDriver(AnimationConfig? oldConfig) {
-    if (animationDriver is! ImplicitAnimationDriver<S, AnimationConfig>) {
-      return false;
-    }
-
-    return oldConfig != null || animationDriver.isAnimating;
-  }
-
   @override
   void didUpdateWidget(StyleAnimationBuilder<S> oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    final config = widget.spec.animation;
-    final oldConfig = oldWidget.spec.animation;
+    final previous = oldWidget.spec;
+    final target = widget.spec;
+    final forward = _forwardConfig(target.animation);
+    final isTimeline =
+        forward is PhaseAnimationConfig || forward is KeyframeAnimationConfig;
+    bool matchesTarget(StyleSpec<S> source) =>
+        source.spec == target.spec &&
+        listEquals(source.widgetModifiers, target.widgetModifiers);
 
-    if ((oldConfig.runtimeType == config.runtimeType) && config != null) {
-      animationDriver.updateDriver(config);
-    } else if (config != null || !_retainsImplicitDriver(oldConfig)) {
+    final targetChanged = !matchesTarget(previous);
+    final targetOwner = target.variantActivation?.animationOwner;
+    final hasNewAnimationOwner =
+        targetOwner != null &&
+        !(previous.variantActivation?.active.contains(targetOwner) ?? false);
+    final isSameTargetImplicitTransition =
+        !targetChanged &&
+        !isTimeline &&
+        animationDriver is ImplicitAnimationDriver<S, AnimationConfig> &&
+        animationDriver.isAnimating;
+    final reverse = !isTimeline && !hasNewAnimationOwner
+        ? _exitConfig(previous, target)
+        : null;
+    final rendered = isSameTargetImplicitTransition && reverse != null
+        ? animationDriver.animation.value
+        : null;
+    final exitConfig =
+        targetChanged || (rendered != null && !matchesTarget(rendered))
+        ? reverse
+        : null;
+    final isSameTargetExit = _isExiting && isSameTargetImplicitTransition;
+    if (isSameTargetExit && !hasNewAnimationOwner && exitConfig == null) {
+      animationDriver.didUpdateSpec(target, target);
+
+      return;
+    }
+
+    var config = exitConfig ?? forward;
+    if (config == null &&
+        animationDriver is ImplicitAnimationDriver<S, AnimationConfig>) {
+      config =
+          _forwardConfig(previous.animation) ??
+          (animationDriver.isAnimating ? _driverConfig : null);
+    }
+    _isExiting = exitConfig != null;
+
+    final changesDriver = _driverConfig.runtimeType != config.runtimeType;
+    final startsImplicitDriver =
+        changesDriver &&
+        (config is CurveAnimationConfig || config is SpringAnimationConfig);
+    final restartsSameTarget =
+        isSameTargetImplicitTransition &&
+        (isSameTargetExit || exitConfig != null);
+    var source = previous;
+    if (reverse != null && exitConfig == null) {
+      source = target;
+    } else if (restartsSameTarget || startsImplicitDriver) {
+      source = animationDriver.animation.value ?? previous;
+    }
+    if (changesDriver) {
       animationDriver.dispose();
       animationDriver = _createAnimationDriver(
         config: config,
-        initialSpec: oldWidget.spec,
+        initialSpec: source,
       );
+    } else if (config != null) {
+      animationDriver.updateDriver(config);
     }
+    _driverConfig = config;
 
     // Equal visible values can carry refreshed modifier-order metadata.
-    animationDriver.didUpdateSpec(oldWidget.spec, widget.spec);
+    animationDriver.didUpdateSpec(source, target);
   }
 
   @override

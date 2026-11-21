@@ -315,9 +315,14 @@ class FlexStyler extends MixStyler<FlexStyler, FlexSpec>
   }
 
   /// Sets the animation configuration.
+  /// [reverse] sets variant exit timing for curve or spring configs.
   @override
-  FlexStyler animate(AnimationConfig value) {
-    return merge(FlexStyler(animation: value));
+  FlexStyler animate(AnimationConfig value, {AnimationConfig? reverse}) {
+    final config = reverse == null
+        ? value
+        : ReversibleAnimationConfig(forward: value, reverse: reverse);
+
+    return merge(FlexStyler(animation: config));
   }
 
   /// Sets the style variants.

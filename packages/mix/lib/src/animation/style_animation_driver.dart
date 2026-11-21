@@ -171,7 +171,7 @@ class CurveAnimationDriver<S extends Spec<S>>
   TweenSequence<StyleSpec<S>?> _createTweenSequence() => .new([
     if (config.delay > .zero)
       TweenSequenceItem(
-        tween: ConstantTween(_initialSpec),
+        tween: ConstantTween(_tween.begin),
         weight: config.delay.inMilliseconds.toDouble(),
       ),
     TweenSequenceItem(

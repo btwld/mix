@@ -432,6 +432,10 @@ const _supportedInventory = <SchemaInventoryEntry>[
 ];
 
 const _v1UnsupportedInventory = <SchemaInventoryEntry>[
+  SchemaInventoryEntry.knownUnsupported(
+    'animation:ReversibleAnimationConfig',
+    _v1OutOfScope,
+  ),
   SchemaInventoryEntry.knownUnsupported('enum:ElevationShadow', _v1OutOfScope),
   SchemaInventoryEntry.knownUnsupported(
     'enum:PressableSemanticsRole',

@@ -353,8 +353,10 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
     Matrix4 value, {
     Alignment alignment = .center,
   }) => StackBoxStyler().transform(value, alignment: alignment);
-  factory StackBoxStyler.animate(AnimationConfig value) =>
-      StackBoxStyler().animate(value);
+  factory StackBoxStyler.animate(
+    AnimationConfig value, {
+    AnimationConfig? reverse,
+  }) => StackBoxStyler().animate(value, reverse: reverse);
   factory StackBoxStyler.wrap(WidgetModifierConfig value) =>
       StackBoxStyler().wrap(value);
 
@@ -439,9 +441,14 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
   };
 
   /// Sets the animation configuration.
+  /// [reverse] sets variant exit timing for curve or spring configs.
   @override
-  StackBoxStyler animate(AnimationConfig value) {
-    return merge(StackBoxStyler(animation: value));
+  StackBoxStyler animate(AnimationConfig value, {AnimationConfig? reverse}) {
+    final config = reverse == null
+        ? value
+        : ReversibleAnimationConfig(forward: value, reverse: reverse);
+
+    return merge(StackBoxStyler(animation: config));
   }
 
   /// Sets the style variants.

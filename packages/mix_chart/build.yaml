@@ -13,3 +13,4 @@ targets:
           - lib/src/public/specs/**/*.dart
         options:
           debug: false
+          generate_reverse_animation: false

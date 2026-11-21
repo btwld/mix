@@ -25,6 +25,7 @@ class SpecStylerClassBuilder {
   final ConstantReader annotation;
   final KnownMixSymbolResolver symbolResolver;
   final LibraryElement? emissionLibrary;
+  final bool generateReverseAnimation;
 
   const SpecStylerClassBuilder({
     required this.specElement,
@@ -32,6 +33,7 @@ class SpecStylerClassBuilder {
     required this.annotation,
     required this.symbolResolver,
     this.emissionLibrary,
+    this.generateReverseAnimation = true,
   });
 
   String _fieldValueType(FieldModel field) =>
@@ -851,6 +853,7 @@ class SpecStylerClassBuilder {
       annotation: ConstantReader(surfaceAnnotation),
       symbolResolver: symbolResolver,
       emissionLibrary: _emissionLibrary,
+      generateReverseAnimation: false,
     );
     final fields = extractSpecFields(
       surfaceSpec,
@@ -899,7 +902,7 @@ class SpecStylerClassBuilder {
         iconShadowFactoryDescriptor(),
       ...?compound?.surface.factoryDescriptors,
       if (useSurface && surface.generatesAnimateFactory)
-        animateFactoryDescriptor(),
+        animateFactoryDescriptor(withReverse: _reverseConstructor != null),
     ];
   }
 
@@ -1155,6 +1158,10 @@ class SpecStylerClassBuilder {
 
   LibraryElement get _emissionLibrary => emissionLibrary ?? specElement.library;
 
+  String? get _reverseConstructor => generateReverseAnimation
+      ? symbolResolver.reversibleAnimationConstructor(specElement.library)
+      : null;
+
   String get stylerName => deriveStylerName(specName);
 
   String build() {
@@ -1210,6 +1217,7 @@ class SpecStylerClassBuilder {
       fields: stylerFields,
       config: const MixableStylerAnnotationConfig(),
       callMethodCode: _buildCallMethod(),
+      reverseConstructor: _reverseConstructor,
     ).buildMembers(methodOverrides: _memberOverrideNames(mixins, stylerFields));
     buffer.writeln(members);
 

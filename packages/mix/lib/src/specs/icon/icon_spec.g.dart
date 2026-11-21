@@ -362,9 +362,14 @@ class IconStyler extends MixStyler<IconStyler, IconSpec>
   }
 
   /// Sets the animation configuration.
+  /// [reverse] sets variant exit timing for curve or spring configs.
   @override
-  IconStyler animate(AnimationConfig value) {
-    return merge(IconStyler(animation: value));
+  IconStyler animate(AnimationConfig value, {AnimationConfig? reverse}) {
+    final config = reverse == null
+        ? value
+        : ReversibleAnimationConfig(forward: value, reverse: reverse);
+
+    return merge(IconStyler(animation: config));
   }
 
   /// Sets the style variants.

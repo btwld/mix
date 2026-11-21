@@ -11,7 +11,9 @@ import 'core/errors.dart';
 import 'core/resolvers/known_mix_symbol_resolver.dart';
 
 class SpecStylerGenerator extends GeneratorForAnnotation<MixableSpec> {
-  const SpecStylerGenerator();
+  final bool generateReverseAnimation;
+
+  const SpecStylerGenerator({this.generateReverseAnimation = true});
 
   @override
   Future<String> generateForAnnotatedElement(
@@ -34,6 +36,7 @@ class SpecStylerGenerator extends GeneratorForAnnotation<MixableSpec> {
       specName: specName,
       annotation: annotation,
       symbolResolver: symbolResolver,
+      generateReverseAnimation: generateReverseAnimation,
     ).build();
   }
 }

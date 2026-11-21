@@ -5,9 +5,22 @@
 - Start a style with widget modifiers using `BoxStyler.wrap(...)` or typed
   shorthand such as `BoxStyler style = .wrap(.opacity(0.5));`. Available on
   generated Mix and chart stylers, and on `GridBoxStyler`.
+- `animate(forward, reverse: exit)` lets a variant set its own exit timing.
+  Both configs must be curve or spring animations.
+
+### Breaking changes
+
+- Exhaustive switches over sealed `AnimationConfig` must handle the new
+  `ReversibleAnimationConfig` subtype.
+- Overrides of a concrete styler's `animate` method must accept the optional
+  named `AnimationConfig? reverse` parameter. Existing calls and the protected
+  `AnimationStyleMixin.animate(AnimationConfig)` signature are unchanged.
+- Downstream implementations of `StyleSpec` must implement the new `@internal`
+  `variantActivation` getter. Return `null` if they do not track variants.
 
 ### Bug fixes
 
+- Delayed curve transitions hold the current rendered value during the delay.
 - **Blur lifecycle:** preserve child state, focus, text editing, and active
   tickers when blur changes to or from zero. The `ImageFiltered` wrapper stays
   mounted with filtering disabled at zero sigma.
