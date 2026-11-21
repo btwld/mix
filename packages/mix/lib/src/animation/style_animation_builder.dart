@@ -130,27 +130,37 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
     final forward = _forwardConfig(target.animation);
     final isTimeline =
         forward is PhaseAnimationConfig || forward is KeyframeAnimationConfig;
-    final targetChanged =
-        previous.spec != target.spec ||
-        !listEquals(previous.widgetModifiers, target.widgetModifiers);
+    bool matchesTarget(StyleSpec<S> source) =>
+        source.spec == target.spec &&
+        listEquals(source.widgetModifiers, target.widgetModifiers);
+
+    final targetChanged = !matchesTarget(previous);
     final targetOwner = target.variantActivation?.animationOwner;
     final hasNewAnimationOwner =
         targetOwner != null &&
         !(previous.variantActivation?.active.contains(targetOwner) ?? false);
-    final isSameTargetExit =
-        _isExiting &&
-        animationDriver.isAnimating &&
+    final isSameTargetImplicitTransition =
         !targetChanged &&
-        !isTimeline;
-    if (isSameTargetExit && !hasNewAnimationOwner) {
+        !isTimeline &&
+        animationDriver is ImplicitAnimationDriver<S, AnimationConfig> &&
+        animationDriver.isAnimating;
+    final reverse = !isTimeline && !hasNewAnimationOwner
+        ? _exitConfig(previous, target)
+        : null;
+    final rendered = isSameTargetImplicitTransition && reverse != null
+        ? animationDriver.animation.value
+        : null;
+    final exitConfig =
+        targetChanged || (rendered != null && !matchesTarget(rendered))
+        ? reverse
+        : null;
+    final isSameTargetExit = _isExiting && isSameTargetImplicitTransition;
+    if (isSameTargetExit && !hasNewAnimationOwner && exitConfig == null) {
       animationDriver.didUpdateSpec(target, target);
 
       return;
     }
 
-    final exitConfig = targetChanged && !isTimeline && !hasNewAnimationOwner
-        ? _exitConfig(previous, target)
-        : null;
     var config = exitConfig ?? forward;
     if (config == null &&
         animationDriver is ImplicitAnimationDriver<S, AnimationConfig>) {
@@ -164,9 +174,15 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
     final startsImplicitDriver =
         changesDriver &&
         (config is CurveAnimationConfig || config is SpringAnimationConfig);
-    final source = isSameTargetExit || startsImplicitDriver
-        ? (animationDriver.animation.value ?? previous)
-        : previous;
+    final restartsSameTarget =
+        isSameTargetImplicitTransition &&
+        (isSameTargetExit || exitConfig != null);
+    var source = previous;
+    if (reverse != null && exitConfig == null) {
+      source = target;
+    } else if (restartsSameTarget || startsImplicitDriver) {
+      source = animationDriver.animation.value ?? previous;
+    }
     if (changesDriver) {
       animationDriver.dispose();
       animationDriver = _createAnimationDriver(

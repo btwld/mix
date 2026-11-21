@@ -853,7 +853,7 @@ class SpecStylerClassBuilder {
       annotation: ConstantReader(surfaceAnnotation),
       symbolResolver: symbolResolver,
       emissionLibrary: _emissionLibrary,
-      generateReverseAnimation: generateReverseAnimation,
+      generateReverseAnimation: false,
     );
     final fields = extractSpecFields(
       surfaceSpec,

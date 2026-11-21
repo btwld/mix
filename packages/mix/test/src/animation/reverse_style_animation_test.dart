@@ -110,6 +110,59 @@ void main() {
     expect(_color(tester), Colors.blue);
   });
 
+  testWidgets(
+    'a deactivated owner retimes an in-flight enter to the same target',
+    (tester) async {
+      final controller = WidgetStatesController({WidgetState.hovered});
+      addTearDown(controller.dispose);
+      final style = BoxStyler()
+          .color(Colors.blue)
+          .onHovered(BoxStyler().color(Colors.red))
+          .onFocused(
+            BoxStyler()
+                .color(Colors.blue)
+                .animate(.linear(400.ms), reverse: .linear(100.ms)),
+          );
+      await tester.pumpWidget(_box(style, controller));
+      expect(_color(tester), Colors.red);
+
+      controller.update(WidgetState.hovered, false);
+      controller.update(WidgetState.focused, true);
+      await tester.pump();
+      await tester.pump(50.ms);
+      await tester.pumpWidget(_box(style, controller));
+      await tester.pump(50.ms);
+      final handoffColor = Color.lerp(Colors.red, Colors.blue, 0.25)!;
+      expect(_color(tester), isSameColorAs(handoffColor));
+
+      controller.update(WidgetState.focused, false);
+      await tester.pump();
+      expect(_color(tester), isSameColorAs(handoffColor));
+      await tester.pump(50.ms);
+      expect(
+        _color(tester),
+        isSameColorAs(Color.lerp(handoffColor, Colors.blue, 0.5)!),
+      );
+      await tester.pump(50.ms);
+      expect(_color(tester), Colors.blue);
+      await tester.pumpAndSettle();
+
+      controller.update(WidgetState.hovered, true);
+      await tester.pump();
+      expect(_color(tester), Colors.red);
+      controller.update(WidgetState.hovered, false);
+      controller.update(WidgetState.focused, true);
+      await tester.pump();
+      await tester.pump(400.ms);
+      expect(_color(tester), Colors.blue);
+      controller.update(WidgetState.focused, false);
+      await tester.pump();
+      await tester.pump(1.ms);
+      expect(_color(tester), Colors.blue);
+      expect(tester.hasRunningAnimations, isFalse);
+    },
+  );
+
   testWidgets('equal configs do not hide which variant deactivated', (
     tester,
   ) async {
