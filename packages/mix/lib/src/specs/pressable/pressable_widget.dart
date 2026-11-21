@@ -38,6 +38,7 @@ class PressableBox extends StatelessWidget {
     this.canRequestFocus = true,
     this.excludeFromSemantics = false,
     this.semanticsLabel,
+    this.semanticsIdentifier,
     this.semanticsRole = PressableSemanticsRole.button,
     this.onKeyEvent,
     this.controller,
@@ -66,6 +67,9 @@ class PressableBox extends StatelessWidget {
   final bool canRequestFocus;
   final bool excludeFromSemantics;
   final String? semanticsLabel;
+
+  /// Stable id for UI automation, set as [SemanticsProperties.identifier].
+  final String? semanticsIdentifier;
   final PressableSemanticsRole semanticsRole;
 
   /// Handles key events before built-in activation while enabled.
@@ -92,6 +96,7 @@ class PressableBox extends StatelessWidget {
       canRequestFocus: canRequestFocus,
       excludeFromSemantics: excludeFromSemantics,
       semanticsLabel: semanticsLabel,
+      semanticsIdentifier: semanticsIdentifier,
       semanticsRole: semanticsRole,
       onKeyEvent: onKeyEvent,
       controller: controller,
@@ -101,6 +106,63 @@ class PressableBox extends StatelessWidget {
           : Box(style: style, child: child),
     );
   }
+}
+
+/// Builds interactive boxes from a [BoxStyler].
+extension BoxStylerPressable on BoxStyler {
+  /// Creates a [PressableBox] using this style.
+  ///
+  /// ```dart
+  /// final button = BoxStyler()
+  ///     .padding(.all(16))
+  ///     .color(Colors.blue)
+  ///     .onPressed(.color(Colors.indigo));
+  /// final label = TextStyler().color(Colors.white).fontWeight(.w600);
+  ///
+  /// button.pressable(onPress: save, child: label('Save'));
+  /// ```
+  PressableBox pressable({
+    Key? key,
+    VoidCallback? onPress,
+    VoidCallback? onLongPress,
+    FocusNode? focusNode,
+    bool autofocus = false,
+    bool enableFeedback = false,
+    ValueChanged<bool>? onFocusChange,
+    MouseCursor? mouseCursor,
+    bool canRequestFocus = true,
+    bool excludeFromSemantics = false,
+    String? semanticsLabel,
+    String? semanticsIdentifier,
+    PressableSemanticsRole semanticsRole = .button,
+    FocusOnKeyEventCallback? onKeyEvent,
+    WidgetStatesController? controller,
+    Map<Type, Action<Intent>>? actions,
+    HitTestBehavior hitTestBehavior = .opaque,
+    bool enabled = true,
+    required Widget child,
+  }) => PressableBox(
+    key: key,
+    style: this,
+    onLongPress: onLongPress,
+    focusNode: focusNode,
+    autofocus: autofocus,
+    enableFeedback: enableFeedback,
+    onFocusChange: onFocusChange,
+    onPress: onPress,
+    mouseCursor: mouseCursor,
+    canRequestFocus: canRequestFocus,
+    excludeFromSemantics: excludeFromSemantics,
+    semanticsLabel: semanticsLabel,
+    semanticsIdentifier: semanticsIdentifier,
+    semanticsRole: semanticsRole,
+    onKeyEvent: onKeyEvent,
+    controller: controller,
+    actions: actions,
+    hitTestBehavior: hitTestBehavior,
+    enabled: enabled,
+    child: child,
+  );
 }
 
 /// Base widget for handling press gestures and states.
@@ -121,6 +183,7 @@ class Pressable extends StatefulWidget {
     this.canRequestFocus = true,
     this.excludeFromSemantics = false,
     this.semanticsLabel,
+    this.semanticsIdentifier,
     this.semanticsRole = PressableSemanticsRole.button,
     this.onKeyEvent,
     this.controller,
@@ -135,6 +198,9 @@ class Pressable extends StatefulWidget {
   final MouseCursor? mouseCursor;
 
   final String? semanticsLabel;
+
+  /// Stable id for UI automation, set as [SemanticsProperties.identifier].
+  final String? semanticsIdentifier;
 
   final PressableSemanticsRole semanticsRole;
 
@@ -470,6 +536,7 @@ class PressableWidgetState extends State<Pressable> {
         button: widget.semanticsRole == .button ? true : null,
         link: widget.semanticsRole == .link ? true : null,
         label: widget.semanticsLabel,
+        identifier: widget.semanticsIdentifier,
         onTap: widget.enabled && widget.onPress != null ? _onTap : null,
         onLongPress: widget.enabled && widget.onLongPress != null
             ? _onLongPress

@@ -136,6 +136,11 @@ class GridBoxStyler extends MixStyler<GridBoxStyler, GridBoxSpec>
   factory GridBoxStyler.wrap(WidgetModifierConfig value) =>
       GridBoxStyler().wrap(value);
 
+  /// Creates a [GridBox] with this style and the given [children].
+  GridBox call({Key? key, List<Widget> children = const <Widget>[]}) {
+    return GridBox(key: key, style: this, children: children);
+  }
+
   /// Replaces the column tracks with [value].
   GridBoxStyler columns(List<GridTrack> value) =>
       merge(GridBoxStyler(columns: value));

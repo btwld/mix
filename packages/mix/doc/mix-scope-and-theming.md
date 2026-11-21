@@ -1,275 +1,161 @@
-# MixScope and Theming Guide
+# MixScope and theming
 
-This guide explains how theming works in Mix using MixScope, tokens, and Material integration. It covers setup, usage patterns, and practical examples.
+`MixScope` is an `InheritedModel` providing token values and modifier ordering.
+Consumers can depend on the `tokens` or `modifierOrder` aspect so changes to one
+need not notify dependents of the other. For token identity, reference limits,
+and migration, see [Token migration](token-migration-guide.md).
 
-## Overview
-
-- MixScope is an InheritedModel that provides design tokens and configuration to descendant widgets
-- Aspects enable efficient rebuilds:
-  - "tokens": rebuild when token values change
-  - "modifierOrder": rebuild when the modifier ordering changes
-- Tokens are type-safe and can resolve values dynamically from BuildContext
-
-## Core Concepts
-
-### MixToken<T>
-- Declares a named, type-safe token
-- Can be called to resolve via the reference system or resolved with context
+## Provide values
 
 ```dart
-// Declaration
-const primary = ColorToken('color.primary');
-const spacingMd = SpaceToken('space.md');
-const h1 = TextStyleToken('text.h1');
+const primary = ColorToken('brand.primary');
+const space = SpaceToken('space.md');
 
-// Resolution options
-final color1 = primary();                 // via reference system
-final color2 = primary.resolve(context);  // via BuildContext
+MixScope(
+  colors: {primary: Colors.blue},
+  spaces: {space: 16.0},
+  child: MyApp(),
+);
 ```
 
-### Token Values
-- MixScope stores concrete values mapped by `MixToken<T>` keys.
-- Provide them via the typed maps in the MixScope constructor or in `MixScope.withMaterial`.
+Typed maps cover colors, spaces, doubles, radii, text styles, breakpoints,
+shadows, box shadows, borders, and font weights. Use `tokens:` for a generic
+`Map<MixToken, Object>`, including custom types and durations. Typed maps are
+merged after the generic map, so a typed entry wins on duplicate keys.
 
-## Setting Up MixScope
+```dart
+MixScope(
+  tokens: {primary: Colors.blue, space: 16.0},
+  child: MyApp(),
+);
+```
 
-### 1) Basic setup with typed token maps
+## Reference versus resolution
+
+```dart
+final reference = primary(); // Deferred token reference, not a resolved color.
+final style = BoxStyler().color(reference).padding(.all(space()));
+
+// Where a BuildContext is available:
+final color = primary.resolve(context);
+```
+
+Ordinary tokens need a matching scope value. `ContextToken` can compute a
+fallback without a scope, and a scope entry overrides that fallback. A plain
+nested scope can therefore hide ordinary tokens while context-backed defaults
+remain available.
+
+For direct scoped access, use `MixScope.tokenOf(token, context)` or
+`MixScope.of(context, 'tokens').getToken(token, context)`. A missing scope or
+missing ordinary token is an error, rather than a silent fallback.
+
+## Partial overrides
+
+A plain nested `MixScope` **shadows** the ancestor; it does not merge token maps.
+Use `MixScope.inherit` to preserve ancestor values and override only a subset:
 
 ```dart
 MixScope(
   colors: {
-    ColorToken('brand.primary'): Colors.blue,
+    primary: Colors.blue,
+    ColorToken('brand.surface'): Colors.white,
   },
-  spaces: {
-    SpaceToken('space.md'): 16.0,
-  },
-  doubles: {
-    DoubleToken('elevation.card'): 2.0,
-  },
-  radii: {
-    RadiusToken('radius.pill'): const Radius.circular(20),
-  },
-  textStyles: {
-    TextStyleToken('text.h1'): const TextStyle(
-      fontSize: 24,
-      fontWeight: FontWeight.bold,
-    ),
-  },
-  fontWeights: {
-    FontWeightToken('weight.semibold'): FontWeight.w600,
-  },
-  borders: {
-    BorderSideToken('border.default'): const BorderSide(width: 1),
-  },
-  shadows: {
-    ShadowToken('shadow.sm'): const [Shadow(blurRadius: 2, offset: Offset(0, 1))],
-  },
-  boxShadows: {
-    BoxShadowToken('shadow.card'): const [
-      BoxShadow(blurRadius: 8, spreadRadius: 0, offset: Offset(0, 4)),
-    ],
-  },
-  child: MyApp(),
-)
+  child: MixScope.inherit(
+    colors: {primary: Colors.green},
+    child: FeatureWidget(),
+  ),
+);
 ```
 
-### 2) Using the generic `tokens:` map
+`inherit` obtains a context below the ancestor through a `Builder`; it returns
+a `Widget`, not a `MixScope`. With no ancestor it acts like a plain scope.
 
-You can also combine values into a single `Map<MixToken, Object>` via `tokens:`:
+For explicit reusable scope objects, `MixScope.combine(scopes: [base, feature],
+child: MyApp())` merges left to right. Later tokens override earlier tokens;
+a later non-null modifier order replaces the earlier order.
+
+## Overlays and separate routes
+
+`InheritedTheme.captureAll` captures Flutter inherited themes, but does not
+capture `MixScope`: it is an `InheritedModel`. An overlay entry or route outside
+a local scope therefore sees the destination's scope, if any.
+
+Use the existing `MixScope.combine` API to reapply the **nearest effective
+scope** around the overlay content. Capture it while the source context is
+mounted, before inserting the entry or pushing the route:
 
 ```dart
-MixScope(
-  tokens: {
-    ColorToken('brand.primary'): Colors.blue,
-    SpaceToken('space.md'): 16.0,
-    ShadowToken('shadow.sm'): const [Shadow(blurRadius: 2, offset: Offset(0, 1))],
-  },
-  child: MyApp(),
-)
+Widget captureMixScope(BuildContext context, Widget child) {
+  final scope = context.getInheritedWidgetOfExactType<MixScope>();
+  return scope == null
+      ? child
+      : MixScope.combine(scopes: [scope], child: child);
+}
+
+// In an event callback, with a context below the local MixScope:
+final content = captureMixScope(
+  context,
+  InheritedTheme.captureAll(context, const MyOverlayContent()),
+);
+final entry = OverlayEntry(builder: (_) => content);
+Overlay.of(context).insert(entry);
+// The owner must remove and dispose the entry when it is no longer needed.
 ```
 
-### 3) Material integration
+This preserves tokens and modifier order without collecting all ancestor
+scopes. A plain nested scope must continue to hide its ancestors' tokens;
+`MixScope.inherit` has already merged its ancestor values into the nearest
+scope. Merging every ancestor again would undo that boundary. When no source
+scope exists, return the child unchanged so it can use the destination's scope.
 
-Use Material tokens resolved from the current Material Theme.
+This is a snapshot of the supplied configuration, not a live subscription.
+Later source-scope changes do not update the entry automatically. Recapture and
+rebuild it when needed, or put a shared `MixScope` above the navigator/overlay.
+For capture during widget building, `MixScope.maybeOf(context)` can establish
+a dependency; the event-callback example uses a non-listening lookup instead.
+Reapplied scopes retain normal `tokens`/`modifierOrder` aspect notifications.
+
+Resolver functions stored in the token map are preserved, not evaluated during
+capture. They receive the **destination** context when resolved. Reapply any
+other inherited dependencies they need, or provide concrete token values when
+the source's resolved values must be frozen. Mutable token values and modifier
+lists are not deep-copied; do not mutate them in place.
+
+## Material integration
 
 ```dart
 MixScope.withMaterial(
-  // Optionally add/override custom tokens
-  colors: {
-    ColorToken('brand.primary'): Colors.indigo,
-  },
+  colors: {primary: Colors.indigo},
   child: MyApp(),
-)
+);
 ```
 
-Notes:
-- `withMaterial` reads `Theme.of(context)` at build time and maps Material tokens.
-- You can combine Material tokens with your own values via any of the typed maps or the generic `tokens:`.
+`withMaterial` reads the surrounding `Theme` at build time, supplies Material
+tokens, and adds custom overrides. Place it below the theme it should read.
+The same typed maps and generic `tokens:` map are available.
 
-## Accessing Tokens
-
-### In widget/utility code
-
-```dart
-final scope = MixScope.of(context, 'tokens');
-final brand = scope.getToken(ColorToken('brand.primary'), context);
-```
-
-Or directly on the token:
-
-```dart
-final brand = ColorToken('brand.primary').resolve(context);
-```
-
-### In styles (typical usage)
-
-```dart
-// Example from an app style
-final $primary = ColorToken('brand.primary');
-final $spacing = SpaceToken('space.md');
-final $cardShadow = BoxShadowToken('shadow.card');
-
-final style = BoxStyler()
-  .color($primary())
-  .padding(.all($spacing()));
-  // For APIs that take lists of shadows/boxShadows
-  // .boxShadow($cardShadow())
-```
-
-## Modifier Ordering
-
-MixScope can define the default order Mix modifiers are applied. You can provide a list of Type to `orderOfModifiers`. Widgets can depend on the "modifierOrder" aspect and rebuild only when the order changes.
+## Modifier ordering
 
 ```dart
 MixScope(
-  orderOfModifiers: [/* e.g., OpacityModifier, PaddingModifier, ... */],
-  child: MyApp(),
-)
-```
-
-## Combining/Overriding Scopes
-
-You can merge several explicit scopes into one with `MixScope.combine`:
-
-```dart
-final base = MixScope(
-  colors: { ColorToken('brand.primary'): Colors.blue },
-  child: const SizedBox(),
-);
-
-final feature = MixScope(
-  colors: { ColorToken('brand.primary'): Colors.green },
-  child: const SizedBox(),
-);
-
-final combined = MixScope.combine(
-  scopes: [base, feature],
+  orderOfModifiers: [OpacityModifier, PaddingModifier],
   child: MyApp(),
 );
 ```
 
-### Overriding part of the tree with `MixScope.inherit`
+Resolution concatenates the style-local order, the nearest scope's order, and
+the package default, keeping the first occurrence of each type. Local ordering
+takes priority; scoped types absent from the local list retain their order
+after it. Remaining configured modifier types are appended in stable order.
+The resolved list runs outermost to innermost; the renderer wraps in reverse.
+See the [modifier reference](../../../skills/mix/references/widget-modifiers-directives.md)
+for composition and exact types.
 
-To override a subset of tokens for a feature or screen, use `MixScope.inherit`.
-It reads the nearest ancestor `MixScope` and merges the provided values on top
-of it — the same pattern as `DefaultTextStyle.merge` / `IconTheme.merge`:
+## Diagnose a missing value
 
-```dart
-MixScope(
-  colors: {
-    ColorToken('brand.primary'): Colors.blue,
-    ColorToken('brand.surface'): Colors.white,
-  },
-  child: FeatureShell(
-    // Inherits brand.surface, overrides only brand.primary.
-    child: MixScope.inherit(
-      colors: { ColorToken('brand.primary'): Colors.green },
-      child: FeatureWidget(),
-    ),
-  ),
-)
-```
-
-> **Note:** Nesting a plain `MixScope` does **not** merge — it fully shadows the
-> ancestor, so any token not redefined in the inner scope becomes unresolvable.
-> Use `MixScope.inherit` whenever you only want to override a subset of tokens.
-
-## Hands‑On Tutorial
-
-This tutorial creates brand color and spacing tokens, applies them, and integrates Material.
-
-1) Define tokens
-
-```dart
-const $brandPrimary = ColorToken('brand.primary');
-const $contentPadding = SpaceToken('layout.content.padding');
-```
-
-2) Provide tokens at the app root
-
-```dart
-void main() {
-  runApp(
-    MixScope(
-      colors: { $brandPrimary: Colors.blue },
-      spaces: { $contentPadding: 20.0 },
-      child: const MyApp(),
-    ),
-  );
-}
-```
-
-3) Use tokens in your UI/styles
-
-```dart
-class MyButton extends StatelessWidget {
-  const MyButton({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final style = BoxStyler()
-        .color($brandPrimary())
-        .padding(.all($contentPadding()))
-        .borderRadius(.all(const Radius.circular(12)));
-
-    return Box(style: style, child: const Text('Press me'));
-  }
-}
-```
-
-4) Switch to Material integration (optional)
-
-```dart
-void main() {
-  runApp(
-    MixScope.withMaterial(
-      // Add or override your own tokens
-      colors: { $brandPrimary: Colors.indigo },
-      child: const MyApp(),
-    ),
-  );
-}
-```
-
-## Best Practices
-
-- Prefer semantic token names, e.g., `brand.primary`, `layout.content.padding`
-- Keep tokens type-safe using the provided token classes (ColorToken, SpaceToken, DoubleToken, RadiusToken, TextStyleToken, BreakpointToken, ShadowToken, BoxShadowToken, BorderSideToken, FontWeightToken)
-- Centralize token declarations for discoverability
-- Use `MixScope.inherit` for feature- or screen-level overrides so inherited tokens are preserved
-- Leverage `withMaterial` when you want automatic alignment with Material Theme
-
-## Troubleshooting
-
-- No MixScope found
-  - Error: "No MixScope found" — ensure your app is wrapped with MixScope at the root
-- Token not found
-  - Ensure the token is provided in MixScope via typed maps or TokenDefinition
-- Type mismatch
-  - Check that the token type matches the expected type at usage site
-- Rebuild performance
-  - Depend on aspect "tokens" or "modifierOrder" when appropriate to limit rebuilds
-
-## Notes on Older Docs
-
-If you encounter references to `MixScopeData` in older documents, note that the current implementation exposes token resolution directly from `MixScope` (an InheritedModel with aspects), storing `Map<MixToken, ValueBuilder>`. Use the APIs above.
+- Check the token's concrete class and name, not just its displayed name.
+- Check the nearest scope: a plain nested scope hides ancestor values.
+- Match the value type to the token type; shadow tokens take lists.
+- Use `MixScope.inherit` when a feature needs partial overrides.
+- Replace old `MixScopeData` setup with direct maps; use public
+  `package:mix/mix.dart` imports.

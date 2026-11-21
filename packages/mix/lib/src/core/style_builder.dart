@@ -1,9 +1,11 @@
 import 'package:flutter/widgets.dart';
 
+import '../animation/animation_config.dart';
 import '../animation/style_animation_builder.dart';
 import '../modifiers/internal/render_modifier.dart';
+import '../modifiers/widget_modifier_config.dart';
 import 'internal/mix_interaction_detector.dart';
-import 'providers/focus_highlight_mode_provider.dart';
+import 'focus_visibility.dart';
 import 'providers/style_provider.dart';
 import 'providers/style_spec_provider.dart';
 import 'providers/widget_state_provider.dart';
@@ -190,8 +192,22 @@ class StyleSpecBuilder<S extends Spec<S>> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Implicit animations can retain departing wrappers on an empty target.
+    // Phase/keyframe drivers manage their own inherited dependencies instead.
+    final needsModifierOrder = switch (styleSpec.animation) {
+      CurveAnimationConfig() ||
+      SpringAnimationConfig() ||
+      null => styleSpec.widgetModifiers == null,
+      PhaseAnimationConfig() || KeyframeAnimationConfig() => false,
+    };
+    final targetSpec = needsModifierOrder
+        ? styleSpec.copyWith(
+            widgetModifiers: const WidgetModifierConfig().resolve(context),
+          )
+        : styleSpec;
+
     return StyleAnimationBuilder<S>(
-      spec: styleSpec,
+      spec: targetSpec,
 
       builder: (context, animatedWrappedSpec) {
         Widget animatedChild = builder(context, animatedWrappedSpec.spec);
@@ -230,7 +246,7 @@ class _ExternalControllerProvider extends StatelessWidget {
   Widget build(BuildContext context) {
     // Paired with the widget-state scope so the focus-visible variant can read
     // the input modality wherever focused state is published.
-    return FocusHighlightModeProvider(
+    return FocusVisibilityScope(
       child: ListenableBuilder(
         listenable: controller,
         builder: (_, _) {

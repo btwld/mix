@@ -19,14 +19,6 @@ mixin _$BlurModifier implements WidgetModifier<BlurModifier>, Diagnosticable {
   }
 
   @override
-  BlurModifier lerp(BlurModifier? other, double t) {
-    return BlurModifier(
-      MixOps.lerp(sigma, other?.sigma, t),
-      MixOps.lerpSnap(tileMode, other?.tileMode, t),
-    );
-  }
-
-  @override
   List<Object?> get props => [sigma, tileMode];
 
   @override

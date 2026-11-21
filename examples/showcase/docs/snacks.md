@@ -48,12 +48,12 @@ second implementation to drift. `lib/snacks/theme.dart` only styles the gallery 
 The copy button on every card loads and copies its exact `.dart` asset.
 On narrow screens, a preview that needs more room can scroll horizontally.
 
-The gallery declares Mix ^2.2.0. DartPad stable currently reports Dart 3.13.4,
-Flutter 3.47.5, and Mix 2.2.0. The snippets retain their existing syntax, which
-was also verified with Mix 2.1.0; this consolidation does not change their
-styling or interaction APIs. Recheck the live service below before adopting
-newer APIs. See [app setup](../README.md) for local overrides and published-dependency
-web builds.
+The gallery shell requires Mix ^2.3.0 and uses `BoxStyler.pressable(...)` for
+its filter and copy controls. Copied examples retain `PressableBox` and
+`Pressable` constructors because DartPad's supported package versions can lag
+behind pub.dev. Before using `.pressable(...)` in a copied file, verify that
+the live service reports Mix 2.3.0 or later. See [app setup](../README.md) for
+local overrides and published-dependency web builds.
 
 From `examples/showcase`, recheck the live DartPad service with:
 

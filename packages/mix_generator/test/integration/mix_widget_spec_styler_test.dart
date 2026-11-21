@@ -257,7 +257,7 @@ ButtonStyler buttonStyle({Color? color}) => ButtonStyler(color: color);
           contains('final Widget? child;'),
           // build() delegates through the factory to the styler call().
           contains('buttonStyle('),
-          contains('.call(key: key, label: label, child: child)'),
+          contains('.call(label: label, child: child)'),
         ]),
       );
     });
@@ -316,10 +316,7 @@ final ButtonStyler cardStyle = ButtonStyler(color: Color(0xFF000000));
         outputAsset: 'mix|lib/button.g.dart',
         outputMatcher: allOf([
           contains('class Card extends StatelessWidget {'),
-          contains(
-            'cardStyle.call(key: key, label: label, '
-            'child: child)',
-          ),
+          contains('cardStyle.call(label: label, child: child)'),
         ]),
       );
     });
@@ -479,7 +476,7 @@ ButtonStyler fortalButtonStyler({
           isNot(contains('final Style<ButtonSpec> style;')),
           isNot(contains('final StyleSpec<ButtonSpec>? styleSpec;')),
           contains('return PlainButton('),
-          contains('key: key,'),
+          isNot(contains('key:')),
           contains(
             'style: fortalButtonStyler(variant: variant, '
             'size: size),',

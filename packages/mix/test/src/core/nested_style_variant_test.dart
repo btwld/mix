@@ -23,10 +23,8 @@ void main() {
       // The hover variant lives on the NESTED box style, while the top-level
       // FlexBoxStyler has no widget-state variants of its own.
       final style = FlexBoxStyler.create(
-        box: Prop.maybeMix(
-          BoxStyler()
-              .color(Colors.blue)
-              .onHovered(BoxStyler().color(Colors.red)),
+        box: .maybeMix(
+          BoxStyler().color(Colors.blue).onHovered(.color(Colors.red)),
         ),
       );
 
@@ -67,7 +65,7 @@ void main() {
       addTearDown(controller.dispose);
 
       final style = FlexBoxStyler.create(
-        box: Prop.maybeMix(BoxStyler().color(Colors.green)),
+        box: .maybeMix(BoxStyler().color(Colors.green)),
       );
 
       Color? boxColor;

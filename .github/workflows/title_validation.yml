@@ -7,6 +7,7 @@ on:
       - edited
       - synchronize
       - reopened
+      - ready_for_review
 
 permissions:
   pull-requests: read
@@ -17,6 +18,9 @@ concurrency:
 
 jobs:
   main:
+    # Drafts skip title validation. ready_for_review runs it when the pull
+    # request is marked ready, and later title edits still do.
+    if: ${{ github.event.pull_request.draft == false }}
     timeout-minutes: 5
     name: Validate PR title
     runs-on: ubuntu-latest

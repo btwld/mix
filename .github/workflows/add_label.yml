@@ -7,13 +7,21 @@ on:
       - edited
       - synchronize
       - reopened
+      - ready_for_review
 
 
 permissions:
   pull-requests: write
 
+concurrency:
+  group: labels-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
 jobs:
   apply-label:
+    # Drafts apply no labels. ready_for_review runs this once the pull request
+    # is marked ready. Title and body edits still refresh labels after that.
+    if: ${{ github.event.pull_request.draft == false }}
     timeout-minutes: 5
     runs-on: ubuntu-latest
     steps:

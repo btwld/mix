@@ -32,8 +32,11 @@ BoxStyler selectMenuStyle({required bool isOpen}) => BoxStyler()
     .borderRadius(.circular(10))
     .padding(.all(4))
     .border(.color(const Color(0x22FFFFFF)).width(1))
-    .wrap(.opacity(isOpen ? 1 : 0))
-    .wrap(.scale(x: isOpen ? 1 : .95, y: isOpen ? 1 : .95, alignment: .topLeft))
+    .wrap(
+      .opacity(
+        isOpen ? 1 : 0,
+      ).scale(isOpen ? 1 : .95, isOpen ? 1 : .95, alignment: .topLeft),
+    )
     .animate(.easeOut(isOpen ? 180.ms : 120.ms));
 
 final selectStack = StackBoxStyler().stackAlignment(.topLeft);

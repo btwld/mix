@@ -154,8 +154,8 @@ class MixableField {
 /// [MixWidget] defaults to [MixWidgetParameterSelection.all], which includes
 /// every non-`key` value parameter. Use [MixWidgetParameterSelection.only] to
 /// expose a stable, explicit value-parameter subset instead. Factory
-/// parameters, a valid `Key? key`, and method-level `call<T>()` type parameters
-/// remain automatic in both modes.
+/// parameters, the wrapper's `Key? key`, and method-level `call<T>()` type
+/// parameters remain automatic in both modes.
 final class MixWidgetParameterSelection {
   /// Whether every selectable styler `call()` value parameter is included.
   final bool includesAll;
@@ -203,10 +203,10 @@ final class MixWidgetParameterSelection {
 /// are exposed by the generated widget. It defaults to
 /// [MixWidgetParameterSelection.all]. Use
 /// `widgetParameters: .only({'controller', 'focusNode'})` when the widget
-/// should expose only a curated subset. Factory parameters, a valid `Key? key`,
-/// and method-level `call<T>()` type parameters remain automatic. Optional
-/// value parameters omitted by `.only(...)` are not forwarded, so the styler
-/// method's defaults apply.
+/// should expose only a curated subset. Factory parameters and method-level
+/// `call<T>()` type parameters remain automatic. The wrapper's `Key? key` is
+/// not passed to its child. Optional value parameters omitted by `.only(...)`
+/// are not forwarded, so the styler method's defaults apply.
 ///
 /// Requires the annotated element's name to be `lowerCamelCase` ending in
 /// `Style` (for example, `cardStyle`, `primaryButtonStyle`, or

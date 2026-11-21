@@ -758,7 +758,7 @@ final cardStyle = const BoxStyler();
             contains('const Card({super.key, this.child});'),
             contains('final Widget? child;'),
             contains('return cardStyle.call('),
-            contains('key: key'),
+            isNot(contains('key:')),
             contains('child: child'),
           ]),
         );
@@ -806,7 +806,7 @@ final legacyStyle = const BoxStyler();
           contains('class Legacy extends StatelessWidget'),
           contains('final String? label;'),
           contains('final Widget? child;'),
-          contains('key: key'),
+          isNot(contains('key:')),
           contains('label: label'),
           contains('child: child'),
         ]),
@@ -854,14 +854,14 @@ final allStyle = const BoxStyler();
           contains('class All extends StatelessWidget'),
           contains('final String? label;'),
           contains('final Widget? child;'),
-          contains('key: key'),
+          isNot(contains('key:')),
           contains('label: label'),
           contains('child: child'),
         ]),
       );
     });
 
-    test('empty only selection keeps automatic key forwarding', () async {
+    test('empty only selection still exposes the wrapper key', () async {
       const source = r'''
 library widget_case;
 
@@ -901,7 +901,7 @@ final emptyStyle = const BoxStyler();
         outputMatcher: allOf([
           contains('class Empty extends StatelessWidget'),
           contains('const Empty({super.key});'),
-          contains('return emptyStyle.call(key: key);'),
+          contains('return emptyStyle.call();'),
           isNot(contains('final Widget? child;')),
           isNot(contains('child: child')),
         ]),
@@ -1235,7 +1235,7 @@ final genericCallStyle = const GenericCallStyler();
           contains('final Widget? child;'),
           isNot(contains('final T? value;')),
           contains('return genericCallStyle.call<T>('),
-          contains('key: key'),
+          isNot(contains('key:')),
           contains('child: child'),
           isNot(contains('value: value')),
         ]),
@@ -1397,7 +1397,7 @@ TextStyler labelStyle({Color? color}) => const TextStyler();
           contains('final Color? color;'),
           contains('return labelStyle(color: color).call('),
           contains('this.text'),
-          contains('key: key'),
+          isNot(contains('key:')),
         ]),
       );
     });
@@ -1504,7 +1504,7 @@ final keyLessStyle = const BoxStyler();
             contains('const KeyLess({super.key, this.child});'),
             contains('return keyLessStyle.call('),
             contains('child: child'),
-            isNot(contains('key: key')),
+            isNot(contains('key:')),
           ]),
         );
       },
@@ -1593,7 +1593,7 @@ BoxStyler contextualStyle({BuildContext? context}) => const BoxStyler();
           contains('final BuildContext? context;'),
           contains('return contextualStyle('),
           contains('context: context'),
-          contains('key: key'),
+          isNot(contains('key:')),
           contains('child: child'),
         ]),
       );
@@ -1641,7 +1641,7 @@ BoxStyler chipStyle(Color color, {BoxStyler? style}) => const BoxStyler();
           contains('return chipStyle('),
           contains('this.color'),
           contains('style: style'),
-          contains('key: key'),
+          isNot(contains('key:')),
           contains('child: child'),
         ]),
       );

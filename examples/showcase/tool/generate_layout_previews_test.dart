@@ -24,7 +24,7 @@ void main() {
   final previews = <String, Widget>{
     'flexbox': Center(
       child: FlexBox(
-        style: flex.actionRow(direction: Axis.horizontal, briefs: false),
+        style: flex.actionRow(direction: .horizontal, briefs: false),
         children: [
           for (final (icon, label) in [
             (Icons.save_outlined, 'Save'),

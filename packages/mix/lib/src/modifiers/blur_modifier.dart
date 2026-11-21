@@ -14,7 +14,9 @@ part 'blur_modifier.g.dart';
 /// Modifier that applies a Gaussian blur filter to its child.
 ///
 /// Wraps the child in an [ImageFiltered] widget using [ui.ImageFilter.blur].
-@MixableModifier()
+/// At zero sigma, the filter is disabled while the wrapper stays mounted to
+/// preserve child state across blur changes.
+@MixableModifier(lerp: false)
 final class BlurModifier with _$BlurModifier {
   /// Blur sigma for X and Y axis.
   @override
@@ -33,10 +35,19 @@ final class BlurModifier with _$BlurModifier {
       tileMode = tileMode ?? ui.TileMode.clamp;
 
   @override
-  Widget build(Widget child) {
-    if (sigma == 0.0) return child;
+  BlurModifier lerp(BlurModifier? other, double t) {
+    final value = MixOps.lerp(sigma, other?.sigma, t)!;
 
+    return BlurModifier(
+      value.clamp(0.0, double.infinity),
+      MixOps.lerp(tileMode, other?.tileMode, t),
+    );
+  }
+
+  @override
+  Widget build(Widget child) {
     return ImageFiltered(
+      enabled: sigma != 0.0,
       imageFilter: ui.ImageFilter.blur(
         sigmaX: sigma,
         sigmaY: sigma,

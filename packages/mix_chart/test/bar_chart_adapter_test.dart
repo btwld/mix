@@ -39,7 +39,7 @@ void main() {
           segmentId: 'services',
         ),
       },
-      style: .alignment(BarAlignment.spaceBetween)
+      style: .alignment(.spaceBetween)
           .groupSpacing(24)
           .barSpacing(7)
           .bar(

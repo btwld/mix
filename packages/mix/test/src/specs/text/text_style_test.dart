@@ -10,15 +10,15 @@ void main() {
     group('Constructor', () {
       test('creates TextStyling with all properties', () {
         final attribute = TextStyler(
-          overflow: TextOverflow.ellipsis,
+          overflow: .ellipsis,
           strutStyle: StrutStyleMix(fontSize: 16.0),
-          textAlign: TextAlign.center,
-          textScaler: TextScaler.linear(1.2),
+          textAlign: .center,
+          textScaler: .linear(1.2),
           maxLines: 3,
           style: TextStyleMix(fontSize: 14.0),
-          textWidthBasis: TextWidthBasis.longestLine,
+          textWidthBasis: .longestLine,
           textHeightBehavior: TextHeightBehaviorMix(),
-          textDirection: TextDirection.rtl,
+          textDirection: .rtl,
           softWrap: false,
         );
 
@@ -68,17 +68,13 @@ void main() {
       });
 
       test('fontWeight factory creates TextStyling with fontWeight', () {
-        final textMix = TextStyler(
-          style: TextStyleMix(fontWeight: FontWeight.bold),
-        );
+        final textMix = TextStyler(style: TextStyleMix(fontWeight: .bold));
 
         expect(textMix.$style, isNotNull);
       });
 
       test('fontStyle factory creates TextStyling with fontStyle', () {
-        final textMix = TextStyler(
-          style: TextStyleMix(fontStyle: FontStyle.italic),
-        );
+        final textMix = TextStyler(style: TextStyleMix(fontStyle: .italic));
 
         expect(textMix.$style, isNotNull);
       });
@@ -103,7 +99,7 @@ void main() {
 
       test('textBaseline factory creates TextStyling with textBaseline', () {
         final textMix = TextStyler(
-          style: TextStyleMix(textBaseline: TextBaseline.alphabetic),
+          style: TextStyleMix(textBaseline: .alphabetic),
         );
 
         expect(textMix.$style, isNotNull);
@@ -150,9 +146,7 @@ void main() {
       );
 
       test('decoration factory creates TextStyling with decoration', () {
-        final textMix = TextStyler(
-          style: TextStyleMix(decoration: TextDecoration.underline),
-        );
+        final textMix = TextStyler(style: TextStyleMix(decoration: .underline));
 
         expect(textMix.$style, isNotNull);
       });
@@ -172,7 +166,7 @@ void main() {
         'decorationStyle factory creates TextStyling with decorationStyle',
         () {
           final textMix = TextStyler(
-            style: TextStyleMix(decorationStyle: TextDecorationStyle.dashed),
+            style: TextStyleMix(decorationStyle: .dashed),
           );
 
           expect(textMix.$style, isNotNull);
@@ -208,7 +202,7 @@ void main() {
       );
 
       test('overflow factory creates TextStyling with overflow', () {
-        final textMix = TextStyler(overflow: TextOverflow.fade);
+        final textMix = TextStyler(overflow: .fade);
 
         expect(textMix.$overflow, resolvesTo(TextOverflow.fade));
       });
@@ -220,13 +214,13 @@ void main() {
       });
 
       test('textAlign factory creates TextStyling with textAlign', () {
-        final textMix = TextStyler(textAlign: TextAlign.justify);
+        final textMix = TextStyler(textAlign: .justify);
 
         expect(textMix.$textAlign, resolvesTo(TextAlign.justify));
       });
 
       test('textScaler factory creates TextStyling with textScaler', () {
-        final textMix = TextStyler(textScaler: TextScaler.linear(1.2));
+        final textMix = TextStyler(textScaler: .linear(1.2));
 
         expect(textMix.$textScaler, resolvesTo(TextScaler.linear(1.2)));
       });
@@ -240,9 +234,7 @@ void main() {
       test(
         'textWidthBasis factory creates TextStyling with textWidthBasis',
         () {
-          final textMix = TextStyler(
-            textWidthBasis: TextWidthBasis.longestLine,
-          );
+          final textMix = TextStyler(textWidthBasis: .longestLine);
 
           expect(
             textMix.$textWidthBasis,
@@ -263,7 +255,7 @@ void main() {
       );
 
       test('textDirection factory creates TextStyling with textDirection', () {
-        final textMix = TextStyler(textDirection: TextDirection.rtl);
+        final textMix = TextStyler(textDirection: .rtl);
 
         expect(textMix.$textDirection, resolvesTo(TextDirection.rtl));
       });
@@ -399,7 +391,7 @@ void main() {
 
     group('Utility Methods', () {
       test('overflow utility works correctly', () {
-        final attribute = TextStyler().overflow(TextOverflow.ellipsis);
+        final attribute = TextStyler().overflow(.ellipsis);
 
         expect(attribute.$overflow, resolvesTo(TextOverflow.ellipsis));
       });
@@ -413,13 +405,13 @@ void main() {
       });
 
       test('textAlign utility works correctly', () {
-        final attribute = TextStyler().textAlign(TextAlign.center);
+        final attribute = TextStyler().textAlign(.center);
 
         expect(attribute.$textAlign, resolvesTo(TextAlign.center));
       });
 
       test('textScaler utility works correctly', () {
-        final attribute = TextStyler().textScaler(TextScaler.linear(1.5));
+        final attribute = TextStyler().textScaler(.linear(1.5));
 
         expect(attribute.$textScaler, resolvesTo(TextScaler.linear(1.5)));
       });
@@ -431,7 +423,7 @@ void main() {
       });
 
       test('textWidthBasis utility works correctly', () {
-        final attribute = TextStyler().textWidthBasis(TextWidthBasis.parent);
+        final attribute = TextStyler().textWidthBasis(.parent);
 
         expect(attribute.$textWidthBasis, resolvesTo(TextWidthBasis.parent));
       });
@@ -445,7 +437,7 @@ void main() {
       });
 
       test('textDirection utility works correctly', () {
-        final attribute = TextStyler().textDirection(TextDirection.ltr);
+        final attribute = TextStyler().textDirection(.ltr);
 
         expect(attribute.$textDirection, resolvesTo(TextDirection.ltr));
       });
@@ -478,13 +470,13 @@ void main() {
       });
 
       test('fontWeight utility works correctly', () {
-        final attribute = TextStyler().fontWeight(FontWeight.w600);
+        final attribute = TextStyler().fontWeight(.w600);
 
         expect(attribute.$style, isNotNull);
       });
 
       test('fontStyle utility works correctly', () {
-        final attribute = TextStyler().fontStyle(FontStyle.italic);
+        final attribute = TextStyler().fontStyle(.italic);
 
         expect(attribute.$style, isNotNull);
       });
@@ -508,7 +500,7 @@ void main() {
       });
 
       test('textBaseline utility works correctly', () {
-        final attribute = TextStyler().textBaseline(TextBaseline.ideographic);
+        final attribute = TextStyler().textBaseline(.ideographic);
 
         expect(attribute.$style, isNotNull);
       });
@@ -562,7 +554,7 @@ void main() {
       });
 
       test('decoration utility works correctly', () {
-        final attribute = TextStyler().decoration(TextDecoration.lineThrough);
+        final attribute = TextStyler().decoration(.lineThrough);
 
         expect(attribute.$style, isNotNull);
       });
@@ -574,9 +566,7 @@ void main() {
       });
 
       test('decorationStyle utility works correctly', () {
-        final attribute = TextStyler().decorationStyle(
-          TextDecorationStyle.dotted,
-        );
+        final attribute = TextStyler().decorationStyle(.dotted);
 
         expect(attribute.$style, isNotNull);
       });
@@ -667,8 +657,8 @@ void main() {
     group('Resolution', () {
       test('resolves to TextSpec with correct properties', () {
         final attribute = TextStyler(
-          overflow: TextOverflow.ellipsis,
-          textAlign: TextAlign.center,
+          overflow: .ellipsis,
+          textAlign: .center,
           maxLines: 3,
           style: TextStyleMix(fontSize: 16.0, color: Colors.blue),
           softWrap: true,
@@ -716,7 +706,7 @@ void main() {
       });
 
       test('resolves with null values correctly', () {
-        final attribute = TextStyler().overflow(TextOverflow.fade).maxLines(2);
+        final attribute = TextStyler().overflow(.fade).maxLines(2);
 
         final context = MockBuildContext();
         final spec = attribute.resolve(context);
@@ -737,11 +727,11 @@ void main() {
 
     group('Merge', () {
       test('merges properties correctly', () {
-        final first = TextStyler(overflow: TextOverflow.clip, maxLines: 2);
+        final first = TextStyler(overflow: .clip, maxLines: 2);
 
         final second = TextStyler(
-          overflow: TextOverflow.ellipsis,
-          textAlign: TextAlign.center,
+          overflow: .ellipsis,
+          textAlign: .center,
           softWrap: false,
         );
 
@@ -757,7 +747,7 @@ void main() {
       });
 
       test('returns this when other is null', () {
-        final attribute = TextStyler().overflow(TextOverflow.ellipsis);
+        final attribute = TextStyler().overflow(.ellipsis);
         final merged = attribute.merge(null);
 
         expect(identical(attribute, merged), isFalse);
@@ -768,22 +758,22 @@ void main() {
     group('Equality', () {
       test('equal attributes have same hashCode', () {
         final attr1 = TextStyler()
-            .overflow(TextOverflow.ellipsis)
+            .overflow(.ellipsis)
             .maxLines(2)
-            .textAlign(TextAlign.center);
+            .textAlign(.center);
 
         final attr2 = TextStyler()
-            .overflow(TextOverflow.ellipsis)
+            .overflow(.ellipsis)
             .maxLines(2)
-            .textAlign(TextAlign.center);
+            .textAlign(.center);
 
         expect(attr1, equals(attr2));
         expect(attr1.hashCode, equals(attr2.hashCode));
       });
 
       test('different attributes are not equal', () {
-        final attr1 = TextStyler().overflow(TextOverflow.ellipsis);
-        final attr2 = TextStyler().overflow(TextOverflow.fade);
+        final attr1 = TextStyler().overflow(.ellipsis);
+        final attr2 = TextStyler().overflow(.fade);
 
         expect(attr1, isNot(equals(attr2)));
       });
@@ -792,15 +782,15 @@ void main() {
     group('Props getter', () {
       test('props includes all properties', () {
         final attribute = TextStyler(
-          overflow: TextOverflow.ellipsis,
+          overflow: .ellipsis,
           strutStyle: StrutStyleMix(fontSize: 16.0),
-          textAlign: TextAlign.center,
-          textScaler: TextScaler.linear(1.2),
+          textAlign: .center,
+          textScaler: .linear(1.2),
           maxLines: 3,
           style: TextStyleMix(fontSize: 14.0),
-          textWidthBasis: TextWidthBasis.longestLine,
+          textWidthBasis: .longestLine,
           textHeightBehavior: TextHeightBehaviorMix(),
-          textDirection: TextDirection.rtl,
+          textDirection: .rtl,
           softWrap: false,
         );
 
@@ -848,8 +838,8 @@ void main() {
           final styler = TextStyler(
             style: token.mix(),
             maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center,
+            overflow: .ellipsis,
+            textAlign: .center,
           );
 
           expect(styler.$style, isA<Prop<TextStyle>>());
@@ -897,7 +887,7 @@ void main() {
           final token = TextStyleToken('test-style');
 
           final styler1 = TextStyler(style: token.mix());
-          final styler2 = TextStyler(maxLines: 3, overflow: TextOverflow.fade);
+          final styler2 = TextStyler(maxLines: 3, overflow: .fade);
 
           final merged = styler1.merge(styler2);
 
@@ -940,7 +930,7 @@ void main() {
           final styler = TextStyler()
               .style(token.mix())
               .maxLines(2)
-              .overflow(TextOverflow.ellipsis);
+              .overflow(.ellipsis);
 
           // After chaining, the style is merged but should still be valid
           expect(styler.$style, isNotNull);
@@ -984,7 +974,7 @@ void main() {
 
           final styler = TextStyler(
             style: token.mix(),
-          ).color(Colors.orange).fontSize(16).fontWeight(FontWeight.bold);
+          ).color(Colors.orange).fontSize(16).fontWeight(.bold);
 
           expect(styler.$style, isNotNull);
           expect(styler.$style, isA<Prop<TextStyle>>());
@@ -1000,8 +990,8 @@ void main() {
             final styler = TextStyler(
               style: token.mix(),
               maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,
+              overflow: .ellipsis,
+              textAlign: .center,
             );
 
             // Verify the styler was created correctly with all properties
@@ -1020,7 +1010,7 @@ void main() {
 
             final styler = TextStyler(
               style: token.mix(),
-            ).color(Colors.blue).fontWeight(FontWeight.w600);
+            ).color(Colors.blue).fontWeight(.w600);
 
             // Verify the chained styler has the expected structure
             expect(styler.$style, isNotNull);

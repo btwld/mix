@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../core/breakpoint.dart';
-import '../core/providers/focus_highlight_mode_provider.dart';
+import '../core/focus_visibility.dart';
 import '../core/providers/widget_state_provider.dart';
 import '../core/providers/widget_state_style_override.dart';
 import '../core/spec.dart';
@@ -289,10 +289,15 @@ final class WidgetStateVariant extends ContextVariant {
   int get hashCode => state.hashCode;
 }
 
-/// Context variant that applies to traditionally highlighted keyboard focus.
+/// Context variant that applies to focus while [FocusVisibility.isVisible].
 ///
-/// Modality changes are reactive inside Mix-managed widget-state scopes and
-/// apply on the next rebuild under a manually mounted [WidgetStateProvider].
+/// It stops matching after a pointer press until the next keyboard input: the
+/// pointer and keyboard part of CSS `:focus-visible`. A text input focused by
+/// a pointer does not match; use `onFocused` for any focus.
+///
+/// [FocusVisibilityScope] rebuilds dependents when visibility changes. Mix
+/// mounts that scope with its widget-state scopes. Mount one above a manually
+/// created [WidgetStateProvider] so those updates reach it.
 final class FocusVisibleVariant extends ContextVariant {
   FocusVisibleVariant()
     : super('focus_visible', (context) {
@@ -305,7 +310,7 @@ final class FocusVisibleVariant extends ContextVariant {
         }
 
         return WidgetStateProvider.hasStateOf(context, .focused) &&
-            FocusHighlightModeProvider.of(context) == .traditional;
+            FocusVisibility.of(context);
       });
 
   @override

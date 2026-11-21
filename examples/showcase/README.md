@@ -39,7 +39,7 @@ fvm flutter analyze --no-fatal-infos
 ```
 
 Without Melos-generated overrides, `flutter pub get` resolves published Mix
-(`^2.2.0`). This app is not publishable (`publish_to: none`).
+(`^2.3.0`). This app is not publishable (`publish_to: none`).
 
 The shell uses the application-owned **Vanilla** preset from Remix
 `1.0.0-beta.10`: `UiButton`, `UiBadge`, `UiCard`, and `UiThemeScope` under

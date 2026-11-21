@@ -34,7 +34,6 @@ categories:
     - packages/mix_chart
     - packages/mix_chart/example
     - examples/showcase
-    - packages/mix_lint_test
     - packages/annotations
   dart_projects:
     - packages/mix_generator
@@ -158,8 +157,6 @@ scripts:
   fix:
     run: melos run lint:fix:all
     description: Apply Dart fix, DCM fix, and Dart formatting.
-  custom_lint_analyze:
-    run: melos exec --depends-on="mix_lint" dart pub run custom_lint
 
   exports:
     run: melos exec --scope="mix" -- "dart run ../../scripts/exports.dart . && dart format lib/mix.dart"

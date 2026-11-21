@@ -43,7 +43,8 @@ void main() {
       expect(data.titleSunbeamLayout, isTrue);
       expect(data.sections, hasLength(2));
       expect(data.sections.first.radius, 64);
-      expect(data.sections.first.title, 'Mobile\n64%');
+      expect(data.sections.first.title, '64%');
+      expect(data.sections.first.showTitle, isTrue);
       expect(data.sections.last.color, const Color(0xFF06B6D4));
       expect(data.sections.last.radius, 80);
       expect(data.sections.last.cornerRadius, 5);

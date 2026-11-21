@@ -5,12 +5,14 @@ import 'package:mix/mix.dart';
 import '../../public/models/chart_config.dart';
 import '../../public/models/chart_enums.dart';
 import '../../public/models/chart_hit.dart';
+import '../../public/models/chart_value_format.dart';
 import '../../public/models/line_data.dart';
 import '../../public/specs/line/line_chart_spec.dart';
 import '../../public/specs/line/line_series_spec.dart';
 import '../../public/specs/shared/chart_area_spec.dart';
 import '../../public/specs/shared/chart_marker_spec.dart';
 import '../../public/specs/shared/chart_stroke_spec.dart';
+import 'fl_axis_scale.dart';
 import 'fl_chart_helpers.dart';
 import 'fl_chart_tooltip_overlay.dart';
 
@@ -32,6 +34,7 @@ final class FlLineChartAdapter extends StatefulWidget {
     required this.tooltipBuilder,
     required this.hitTestRadius,
     required this.mouseCursorResolver,
+    required this.valueFormatter,
     super.key,
   });
 
@@ -51,6 +54,8 @@ final class FlLineChartAdapter extends StatefulWidget {
   final double hitTestRadius;
 
   final ChartMouseCursorResolver<LineChartHit>? mouseCursorResolver;
+
+  final ChartAxisLabelFormatter? valueFormatter;
 
   @override
   State<FlLineChartAdapter> createState() => _FlLineChartAdapterState();
@@ -140,15 +145,52 @@ final class _FlLineChartAdapterState extends State<FlLineChartAdapter> {
     );
   }
 
-  fl.LineTouchData _resolveTouchData() {
+  /// Hover indicator drawn from existing styles.
+  ///
+  /// The dot is the series marker in its selected state, so it follows the
+  /// marker style. The guide uses the grid stroke when one is styled, and
+  /// otherwise a 1px line in [_hoverGuideColor].
+  fl.GetTouchedSpotIndicator _touchedSpotIndicator(
+    List<fl.LineChartBarData> bars,
+    List<ChartMarkerSpec?> markers,
+  ) {
+    final guide = flResolveLine(
+      widget.spec.grid?.spec.stroke?.spec,
+      fallbackColor: _hoverGuideColor,
+      fallbackWidth: 1,
+    );
+
+    return (barData, spotIndexes) {
+      final index = bars.indexOf(barData);
+      final marker = index < 0
+          ? widget.spec.series?.spec.marker?.spec
+          : markers[index];
+      final color =
+          barData.gradient?.colors.first ?? barData.color ?? Colors.black;
+      final dot = fl.FlDotData(
+        getDotPainter: (_, _, _, _) => _resolveMarker(marker, color, true),
+      );
+
+      return [
+        for (final _ in spotIndexes) fl.TouchedSpotIndicatorData(guide, dot),
+      ];
+    };
+  }
+
+  fl.LineTouchData _resolveTouchData(
+    List<fl.LineChartBarData> bars,
+    List<ChartMarkerSpec?> markers,
+  ) {
     final tooltip = widget.spec.tooltip?.spec;
     final textStyle = const TextStyle(
       color: Colors.white,
       fontSize: 12,
       fontWeight: .w600,
     ).merge(tooltip?.text?.spec.style);
-    final formatter =
-        widget.yAxis?.labelFormatter ?? (double value) => '$value';
+    final formatter = resolveChartValueFormatter(
+      valueFormatter: widget.valueFormatter,
+      axisFormatter: widget.yAxis?.labelFormatter,
+    );
 
     return fl.LineTouchData(
       touchCallback: _handleTouch,
@@ -180,6 +222,7 @@ final class _FlLineChartAdapterState extends State<FlLineChartAdapter> {
         fitInsideVertically: tooltip?.fitVertically ?? true,
         tooltipBorder: tooltip?.border ?? .none,
       ),
+      getTouchedSpotIndicator: _touchedSpotIndicator(bars, markers),
       touchSpotThreshold: widget.hitTestRadius,
       handleBuiltInTouches: widget.tooltipBuilder == null,
     );
@@ -275,6 +318,7 @@ final class _FlLineChartAdapterState extends State<FlLineChartAdapter> {
   Widget build(BuildContext context) {
     final palette = flResolvePalette(widget.spec.palette);
     final bars = <fl.LineChartBarData>[];
+    final markers = <ChartMarkerSpec?>[];
 
     for (var index = 0; index < widget.series.length; index++) {
       final series = widget.series[index];
@@ -283,55 +327,95 @@ final class _FlLineChartAdapterState extends State<FlLineChartAdapter> {
       bars.add(
         _resolveSeries(series, presentation, palette[index % palette.length]),
       );
+      markers.add(presentation.marker?.spec);
     }
 
     final frame = widget.spec.frame?.spec;
-    final data = fl.LineChartData(
-      lineBarsData: bars,
-      titlesData: flResolveTitles(
-        context: context,
-        commonStyle: widget.spec.axis,
-        xStyle: widget.spec.xAxis,
-        yStyle: widget.spec.yAxis,
-        topStyle: widget.spec.topAxis,
-        rightStyle: widget.spec.rightAxis,
-        xAxis: widget.xAxis,
-        yAxis: widget.yAxis,
-        topAxis: widget.topAxis,
-        rightAxis: widget.rightAxis,
-      ),
-      lineTouchData: _resolveTouchData(),
-      gridData: flResolveGrid(widget.spec.grid),
-      borderData: flResolveBorder(widget.spec.frame),
-      minX: widget.xAxis?.min,
-      maxX: widget.xAxis?.max,
-      minY: widget.yAxis?.min,
-      maxY: widget.yAxis?.max,
-      clipData: frame?.clip == true
-          ? const fl.FlClipData.all()
-          : const fl.FlClipData.none(),
-      backgroundColor: frame?.backgroundColor,
-      rotationQuarterTurns: frame?.rotationQuarterTurns ?? 0,
-    );
+    final extents = _dataExtents(bars);
     final disableAnimations =
         MediaQuery.maybeOf(context)?.disableAnimations ?? false;
     final duration = disableAnimations || !_topologyCompatible
         ? Duration.zero
         : widget.dataTransition.duration;
-    final chart = fl.LineChart(
-      data,
-      duration: duration,
-      curve: widget.dataTransition.curve,
-      transformationConfig: flResolveViewport(widget.viewport),
+    final chart = LayoutBuilder(
+      builder: (context, constraints) {
+        final axes = flResolveCartesianAxes(
+          context: context,
+          size: flLayoutSize(constraints),
+          commonStyle: widget.spec.axis,
+          xStyle: widget.spec.xAxis,
+          yStyle: widget.spec.yAxis,
+          topStyle: widget.spec.topAxis,
+          rightStyle: widget.spec.rightAxis,
+          xAxis: widget.xAxis,
+          yAxis: widget.yAxis,
+          topAxis: widget.topAxis,
+          rightAxis: widget.rightAxis,
+          xData: extents.x,
+          yData: extents.y,
+          viewport: widget.viewport,
+          rotationQuarterTurns: frame?.rotationQuarterTurns ?? 0,
+          grid: widget.spec.grid,
+        );
+        final data = fl.LineChartData(
+          lineBarsData: bars,
+          titlesData: axes.titles,
+          lineTouchData: _resolveTouchData(bars, markers),
+          gridData: flResolveGrid(
+            widget.spec.grid,
+            horizontalInterval: axes.y.interval,
+            verticalInterval: axes.x.interval,
+          ),
+          borderData: flResolveBorder(widget.spec.frame),
+          minX: axes.x.min,
+          maxX: axes.x.max,
+          baselineX: axes.baselineX,
+          minY: axes.y.min,
+          maxY: axes.y.max,
+          baselineY: axes.baselineY,
+          clipData: frame?.clip == true
+              ? const fl.FlClipData.all()
+              : const fl.FlClipData.none(),
+          backgroundColor: frame?.backgroundColor,
+          rotationQuarterTurns: frame?.rotationQuarterTurns ?? 0,
+        );
+
+        return fl.LineChart(
+          data,
+          duration: duration,
+          curve: widget.dataTransition.curve,
+          transformationConfig: flResolveViewport(widget.viewport),
+        );
+      },
     );
 
     return flWrapTooltipOverlay(
       hit: _tooltipHit,
       builder: widget.tooltipBuilder,
       margin: widget.spec.tooltip?.spec.margin ?? 12,
-      child: chart,
+      child: FlRendererIntrinsics(child: chart),
     );
   }
+}
+
+/// Hover guide colour when the grid stroke sets none.
+///
+/// A shade darker than the default grid line (0xFFE2E8F0), so the guide
+/// reads over the grid.
+const _hoverGuideColor = Color(0xFFCBD5E1);
+
+/// Data extents of the drawn spots, matching the renderer's own derivation.
+({FlAxisData? x, FlAxisData? y}) _dataExtents(List<fl.LineChartBarData> bars) {
+  final spots = [
+    for (final bar in bars)
+      for (final spot in bar.spots)
+        if (!spot.isNull()) spot,
+  ];
+
+  return (
+    x: flAxisData([for (final spot in spots) spot.x]),
+    y: flAxisData([for (final spot in spots) spot.y]),
+  );
 }
 
 fl.BarAreaData _resolveArea(ChartAreaSpec? area, Color fallbackColor) {

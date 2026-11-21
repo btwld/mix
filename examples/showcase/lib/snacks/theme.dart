@@ -87,10 +87,10 @@ FlexBoxStyler snacksRow({double spacing = 10}) => FlexBoxStyler()
     .mainAxisSize(.min);
 
 TextStyler snacksTitle() =>
-    TextStyler().color($ink()).fontSize(16).fontWeight(FontWeight.w700);
+    TextStyler().color($ink()).fontSize(16).fontWeight(.w700);
 
 TextStyler snacksLabel([double size = 14]) =>
-    TextStyler().color($ink()).fontSize(size).fontWeight(FontWeight.w600);
+    TextStyler().color($ink()).fontSize(size).fontWeight(.w600);
 
 TextStyler snacksMuted([double size = 12]) =>
-    TextStyler().color($muted()).fontSize(size).fontWeight(FontWeight.w500);
+    TextStyler().color($muted()).fontSize(size).fontWeight(.w500);
