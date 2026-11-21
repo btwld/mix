@@ -49,6 +49,7 @@ coverage. Do not update fixtures just to hide an unexplained mismatch.
 - `mix_generator`: builder/annotation contracts and generated output tests.
 - `mix_protocol` / chart sidecar: wire behavior, inventory and schema fixtures.
 - `mix_winds`: translation, compiled layout plan, widget geometry and parity.
+- `mix_markdown`: parser, supported nodes, and styled document rendering.
 
 Use focused package tests while iterating; `test:flutter` and `test:dart` run
 broader groups. `format:check` verifies formatting and `analyze` includes Dart,

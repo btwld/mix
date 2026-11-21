@@ -10,6 +10,7 @@ on:
       - 'mix_protocol-v[0-9]+.[0-9]+.[0-9]+*'
       - 'mix_winds-v[0-9]+.[0-9]+.[0-9]+*'
       - 'mix_chart-v[0-9]+.[0-9]+.[0-9]+*'
+      - 'mix_markdown-v[0-9]+.[0-9]+.[0-9]+*'
 
 jobs:
   publish_mix:
@@ -105,6 +106,17 @@ jobs:
       packages_folder_path: "packages"
       packages: |
         mix_chart
+    permissions:
+      id-token: write
+      contents: read
+
+  publish_mix_markdown:
+    if: startsWith(github.ref_name, 'mix_markdown-v') && github.ref_name != 'mix_markdown-v0.1.0-beta.1'
+    uses: btwld/dart-actions/.github/workflows/publish.yml@main
+    with:
+      packages_folder_path: "packages"
+      packages: |
+        mix_markdown
     permissions:
       id-token: write
       contents: read

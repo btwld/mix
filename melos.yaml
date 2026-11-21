@@ -7,6 +7,7 @@ packages:
   - packages/mix_generator/example
   - packages/mix_winds/example
   - packages/mix_chart/example
+  - packages/mix_markdown/example
   - packages/*/demo
 
 command:
@@ -33,6 +34,8 @@ categories:
     - packages/mix_winds/example
     - packages/mix_chart
     - packages/mix_chart/example
+    - packages/mix_markdown
+    - packages/mix_markdown/example
     - examples/showcase
     - packages/annotations
   dart_projects:
@@ -146,8 +149,8 @@ scripts:
       dirExists: test
 
   ci:
-    run: melos run test:flutter --no-select && melos run test:dart --no-select
-    description: Run flutter and dart tests
+    run: dart run scripts/check_publish_workflow.dart && melos run test:flutter --no-select && melos run test:dart --no-select
+    description: Check the publish workflow and run Flutter and Dart tests
 
   brb:
     run: melos run gen:build

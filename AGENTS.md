@@ -19,6 +19,7 @@ manifest before aligning versions with `mix_generator`.
 - `mix`: runtime; `mix_annotations` / `mix_generator`: typed generation.
 - `mix_lint`: analyzer rules; `mix_protocol`: JSON codecs and schemas.
 - `mix_chart` / `mix_chart_protocol`: charts and optional serialization.
+- `mix_markdown`: Markdown renderer styled with Mix.
 - `mix_winds`: utility compiler and widgets; `examples/showcase`: runnable UI.
 
 ## Commands

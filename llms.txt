@@ -29,3 +29,4 @@ Prefer local source, then the consuming project's resolved package version and v
 
 - [Protocol guide](https://raw.githubusercontent.com/btwld/mix/main/packages/mix_protocol/GUIDE.md) and [wire contract](https://raw.githubusercontent.com/btwld/mix/main/packages/mix_protocol/WIRE_CONTRACT.md): JSON boundary and compatibility.
 - [Winds](https://raw.githubusercontent.com/btwld/mix/main/packages/mix_winds/README.md), [charts](https://raw.githubusercontent.com/btwld/mix/main/packages/mix_chart/README.md), [chart protocol](https://raw.githubusercontent.com/btwld/mix/main/packages/mix_chart_protocol/README.md), [lint](https://raw.githubusercontent.com/btwld/mix/main/packages/mix_lint/README.md): package-specific integration.
+- [Markdown](https://raw.githubusercontent.com/btwld/mix/main/packages/mix_markdown/README.md): experimental Markdown renderer styled with Mix.

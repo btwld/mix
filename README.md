@@ -72,6 +72,7 @@ final card = Box(
 | [mix_winds](packages/mix_winds) | Tailwind utility compiler and Flutter widgets |
 | [mix_chart](packages/mix_chart) | Line, bar and pie charts |
 | [mix_chart_protocol](packages/mix_chart_protocol) | Optional chart JSON vocabulary |
+| [mix_markdown](packages/mix_markdown) | Experimental Markdown renderer styled with Mix |
 
 ## Examples and guides
 
