@@ -213,6 +213,8 @@ class PieSliceStyler extends MixStyler<PieSliceStyler, PieSliceSpec>
       PieSliceStyler().cornerRadius(value);
   factory PieSliceStyler.badgePosition(double value) =>
       PieSliceStyler().badgePosition(value);
+  factory PieSliceStyler.wrap(WidgetModifierConfig value) =>
+      PieSliceStyler().wrap(value);
 
   @override
   Set<String> get $stylerFieldNames => const {
@@ -275,15 +277,10 @@ class PieSliceStyler extends MixStyler<PieSliceStyler, PieSliceSpec>
     return merge(PieSliceStyler(badgePosition: value));
   }
 
-  /// Sets the animation configuration. [reverse] sets variant exit timing
-  /// and can only pair curve and spring configs.
+  /// Sets the animation configuration.
   @override
-  PieSliceStyler animate(AnimationConfig value, {AnimationConfig? reverse}) {
-    final config = reverse == null
-        ? value
-        : ReversibleAnimationConfig(forward: value, reverse: reverse);
-
-    return merge(PieSliceStyler(animation: config));
+  PieSliceStyler animate(AnimationConfig value) {
+    return merge(PieSliceStyler(animation: value));
   }
 
   /// Sets the style variants.

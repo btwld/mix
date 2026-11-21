@@ -166,6 +166,8 @@ class ChartFrameStyler extends MixStyler<ChartFrameStyler, ChartFrameSpec>
   factory ChartFrameStyler.clip(bool value) => ChartFrameStyler().clip(value);
   factory ChartFrameStyler.rotationQuarterTurns(int value) =>
       ChartFrameStyler().rotationQuarterTurns(value);
+  factory ChartFrameStyler.wrap(WidgetModifierConfig value) =>
+      ChartFrameStyler().wrap(value);
 
   @override
   Set<String> get $stylerFieldNames => const {
@@ -204,15 +206,10 @@ class ChartFrameStyler extends MixStyler<ChartFrameStyler, ChartFrameSpec>
     return merge(ChartFrameStyler(rotationQuarterTurns: value));
   }
 
-  /// Sets the animation configuration. [reverse] sets variant exit timing
-  /// and can only pair curve and spring configs.
+  /// Sets the animation configuration.
   @override
-  ChartFrameStyler animate(AnimationConfig value, {AnimationConfig? reverse}) {
-    final config = reverse == null
-        ? value
-        : ReversibleAnimationConfig(forward: value, reverse: reverse);
-
-    return merge(ChartFrameStyler(animation: config));
+  ChartFrameStyler animate(AnimationConfig value) {
+    return merge(ChartFrameStyler(animation: value));
   }
 
   /// Sets the style variants.

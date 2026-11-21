@@ -33,8 +33,9 @@ final style = BoxStyler().color(Colors.black).onHovered(
 );
 ```
 
-A newly active animation owner uses its forward config. Otherwise, the
-previous owner's reverse config applies only when its variant deactivates.
+If the variant that sets the animation just became active, Mix uses its
+forward config. Otherwise, on exit Mix uses the reverse config of the
+variant that deactivated.
 Both configs must be curves or springs; phase and keyframe targets still run
 their own timelines. If a custom styler only exposes `animate(config)`, pass
 a `ReversibleAnimationConfig` as that config.

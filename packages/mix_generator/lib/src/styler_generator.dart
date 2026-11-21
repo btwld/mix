@@ -17,6 +17,7 @@ import 'core/helpers/type_hierarchy.dart';
 import 'core/helpers/widget_call_planner.dart';
 import 'core/models/annotation_config.dart';
 import 'core/models/styler_field_model.dart';
+import 'core/resolvers/known_mix_symbol_resolver.dart';
 
 /// Source-gen generator for legacy handwritten Mix Styler code.
 class StylerGenerator extends GeneratorForAnnotation<MixableStyler> {
@@ -104,11 +105,11 @@ class StylerGenerator extends GeneratorForAnnotation<MixableStyler> {
   }
 
   @override
-  String generateForAnnotatedElement(
+  Future<String> generateForAnnotatedElement(
     Element element,
     ConstantReader annotation,
     BuildStep buildStep,
-  ) {
+  ) async {
     final classElement = requireClassElement(element, '@MixableStyler');
     final stylerName = requireName(
       classElement,
@@ -142,6 +143,9 @@ class StylerGenerator extends GeneratorForAnnotation<MixableStyler> {
     );
     final fields = _extractFields(classElement, stylerName);
     final config = _extractAnnotationConfig(annotation);
+    final symbolResolver = config.generateSetters
+        ? await KnownMixSymbolResolver.load(buildStep, classElement)
+        : null;
 
     return StylerMixinBuilder(
       stylerName: stylerName,
@@ -149,6 +153,9 @@ class StylerGenerator extends GeneratorForAnnotation<MixableStyler> {
       fields: fields,
       config: config,
       callMethodCode: callMethodCode,
+      reverseConstructor: symbolResolver?.reversibleAnimationConstructor(
+        classElement.library,
+      ),
     ).build();
   }
 }

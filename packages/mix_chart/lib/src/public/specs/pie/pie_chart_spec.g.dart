@@ -235,6 +235,8 @@ class PieChartStyler extends MixStyler<PieChartStyler, PieChartSpec>
       PieChartStyler().sunbeamLabels(value);
   factory PieChartStyler.tooltip(ChartTooltipStyler value) =>
       PieChartStyler().tooltip(value);
+  factory PieChartStyler.wrap(WidgetModifierConfig value) =>
+      PieChartStyler().wrap(value);
 
   @override
   Set<String> get $stylerFieldNames => const {
@@ -303,15 +305,10 @@ class PieChartStyler extends MixStyler<PieChartStyler, PieChartSpec>
     return merge(PieChartStyler(tooltip: value));
   }
 
-  /// Sets the animation configuration. [reverse] sets variant exit timing
-  /// and can only pair curve and spring configs.
+  /// Sets the animation configuration.
   @override
-  PieChartStyler animate(AnimationConfig value, {AnimationConfig? reverse}) {
-    final config = reverse == null
-        ? value
-        : ReversibleAnimationConfig(forward: value, reverse: reverse);
-
-    return merge(PieChartStyler(animation: config));
+  PieChartStyler animate(AnimationConfig value) {
+    return merge(PieChartStyler(animation: value));
   }
 
   /// Sets the style variants.

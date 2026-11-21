@@ -345,6 +345,7 @@ void main() {
           specName: 'BoxSpec',
           fields: [],
           config: defaultConfig,
+          reverseConstructor: 'ReversibleAnimationConfig',
         );
         final code = builder.build();
 

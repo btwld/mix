@@ -316,6 +316,8 @@ class ImageStyler extends MixStyler<ImageStyler, ImageSpec>
       ImageStyler().isAntiAlias(value);
   factory ImageStyler.matchTextDirection(bool value) =>
       ImageStyler().matchTextDirection(value);
+  factory ImageStyler.wrap(WidgetModifierConfig value) =>
+      ImageStyler().wrap(value);
 
   @override
   Set<String> get $stylerFieldNames => const {
@@ -414,8 +416,8 @@ class ImageStyler extends MixStyler<ImageStyler, ImageSpec>
     return merge(ImageStyler(matchTextDirection: value));
   }
 
-  /// Sets the animation configuration. [reverse] sets variant exit timing
-  /// and can only pair curve and spring configs.
+  /// Sets the animation configuration.
+  /// [reverse] sets variant exit timing for curve or spring configs.
   @override
   ImageStyler animate(AnimationConfig value, {AnimationConfig? reverse}) {
     final config = reverse == null

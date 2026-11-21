@@ -5,6 +5,7 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
 
 import '../errors.dart';
+import '../helpers/library_scope.dart';
 
 const mixPublicImport = 'package:mix/mix.dart';
 
@@ -36,6 +37,14 @@ final class KnownMixSymbolResolver {
             'generated stylers. Original resolver error: $error',
       );
     }
+  }
+
+  String? reversibleAnimationConstructor(LibraryElement library) {
+    final element = supportLibrary.exportNamespace.get2(
+      'ReversibleAnimationConfig',
+    );
+
+    return element is ClassElement ? referenceFor(element, library) : null;
   }
 
   InterfaceElement requireInterface(String symbolName, Element errorElement) {

@@ -375,6 +375,8 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
     AnimationConfig value, {
     AnimationConfig? reverse,
   }) => FlexBoxStyler().animate(value, reverse: reverse);
+  factory FlexBoxStyler.wrap(WidgetModifierConfig value) =>
+      FlexBoxStyler().wrap(value);
 
   FlexBoxStyler textStyle(TextStyler value) {
     return wrap(WidgetModifierConfig.defaultTextStyler(value));
@@ -441,8 +443,8 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
     'variants',
   };
 
-  /// Sets the animation configuration. [reverse] sets variant exit timing
-  /// and can only pair curve and spring configs.
+  /// Sets the animation configuration.
+  /// [reverse] sets variant exit timing for curve or spring configs.
   @override
   FlexBoxStyler animate(AnimationConfig value, {AnimationConfig? reverse}) {
     final config = reverse == null

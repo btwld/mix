@@ -134,6 +134,10 @@ class GridBoxStyler extends MixStyler<GridBoxStyler, GridBoxSpec>
     AnimationConfig? reverse,
   }) => GridBoxStyler().animate(animation, reverse: reverse);
 
+  /// Creates a Grid style that wraps the widget with [value].
+  factory GridBoxStyler.wrap(WidgetModifierConfig value) =>
+      GridBoxStyler().wrap(value);
+
   /// Creates a [GridBox] with this style and the given [children].
   GridBox call({Key? key, List<Widget> children = const <Widget>[]}) {
     return GridBox(key: key, style: this, children: children);

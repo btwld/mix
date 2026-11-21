@@ -144,6 +144,8 @@ class StackStyler extends MixStyler<StackStyler, StackSpec>
       StackStyler().textDirection(value);
   factory StackStyler.clipBehavior(Clip value) =>
       StackStyler().clipBehavior(value);
+  factory StackStyler.wrap(WidgetModifierConfig value) =>
+      StackStyler().wrap(value);
 
   @override
   Set<String> get $stylerFieldNames => const {
@@ -176,8 +178,8 @@ class StackStyler extends MixStyler<StackStyler, StackSpec>
     return merge(StackStyler(clipBehavior: value));
   }
 
-  /// Sets the animation configuration. [reverse] sets variant exit timing
-  /// and can only pair curve and spring configs.
+  /// Sets the animation configuration.
+  /// [reverse] sets variant exit timing for curve or spring configs.
   @override
   StackStyler animate(AnimationConfig value, {AnimationConfig? reverse}) {
     final config = reverse == null

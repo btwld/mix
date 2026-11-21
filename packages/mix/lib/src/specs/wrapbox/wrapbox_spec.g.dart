@@ -375,6 +375,8 @@ class WrapBoxStyler extends MixStyler<WrapBoxStyler, WrapBoxSpec>
     AnimationConfig value, {
     AnimationConfig? reverse,
   }) => WrapBoxStyler().animate(value, reverse: reverse);
+  factory WrapBoxStyler.wrap(WidgetModifierConfig value) =>
+      WrapBoxStyler().wrap(value);
 
   WrapBoxStyler textStyle(TextStyler value) {
     return wrap(WidgetModifierConfig.defaultTextStyler(value));
@@ -441,8 +443,8 @@ class WrapBoxStyler extends MixStyler<WrapBoxStyler, WrapBoxSpec>
     'variants',
   };
 
-  /// Sets the animation configuration. [reverse] sets variant exit timing
-  /// and can only pair curve and spring configs.
+  /// Sets the animation configuration.
+  /// [reverse] sets variant exit timing for curve or spring configs.
   @override
   WrapBoxStyler animate(AnimationConfig value, {AnimationConfig? reverse}) {
     final config = reverse == null

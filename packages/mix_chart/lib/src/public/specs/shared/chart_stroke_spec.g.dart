@@ -157,6 +157,8 @@ class ChartStrokeStyler extends MixStyler<ChartStrokeStyler, ChartStrokeSpec>
       ChartStrokeStyler().dashArray(value);
   factory ChartStrokeStyler.opacity(double value) =>
       ChartStrokeStyler().opacity(value);
+  factory ChartStrokeStyler.wrap(WidgetModifierConfig value) =>
+      ChartStrokeStyler().wrap(value);
 
   @override
   Set<String> get $stylerFieldNames => const {
@@ -195,15 +197,10 @@ class ChartStrokeStyler extends MixStyler<ChartStrokeStyler, ChartStrokeSpec>
     return merge(ChartStrokeStyler(opacity: value));
   }
 
-  /// Sets the animation configuration. [reverse] sets variant exit timing
-  /// and can only pair curve and spring configs.
+  /// Sets the animation configuration.
   @override
-  ChartStrokeStyler animate(AnimationConfig value, {AnimationConfig? reverse}) {
-    final config = reverse == null
-        ? value
-        : ReversibleAnimationConfig(forward: value, reverse: reverse);
-
-    return merge(ChartStrokeStyler(animation: config));
+  ChartStrokeStyler animate(AnimationConfig value) {
+    return merge(ChartStrokeStyler(animation: value));
   }
 
   /// Sets the style variants.

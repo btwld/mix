@@ -396,6 +396,7 @@ class BoxStyler extends MixStyler<BoxStyler, BoxSpec>
     AnimationConfig value, {
     AnimationConfig? reverse,
   }) => BoxStyler().animate(value, reverse: reverse);
+  factory BoxStyler.wrap(WidgetModifierConfig value) => BoxStyler().wrap(value);
 
   BoxStyler textStyle(TextStyler value) {
     return wrap(WidgetModifierConfig.defaultTextStyler(value));
@@ -462,8 +463,8 @@ class BoxStyler extends MixStyler<BoxStyler, BoxSpec>
     return merge(BoxStyler(clipBehavior: value));
   }
 
-  /// Sets the animation configuration. [reverse] sets variant exit timing
-  /// and can only pair curve and spring configs.
+  /// Sets the animation configuration.
+  /// [reverse] sets variant exit timing for curve or spring configs.
   @override
   BoxStyler animate(AnimationConfig value, {AnimationConfig? reverse}) {
     final config = reverse == null

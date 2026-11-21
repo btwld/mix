@@ -236,6 +236,8 @@ class ChartAxisStyler extends MixStyler<ChartAxisStyler, ChartAxisSpec>
       ChartAxisStyler().drawBelowEverything(value);
   factory ChartAxisStyler.alignment(ChartAxisLabelAlignment value) =>
       ChartAxisStyler().alignment(value);
+  factory ChartAxisStyler.wrap(WidgetModifierConfig value) =>
+      ChartAxisStyler().wrap(value);
 
   @override
   Set<String> get $stylerFieldNames => const {
@@ -304,15 +306,10 @@ class ChartAxisStyler extends MixStyler<ChartAxisStyler, ChartAxisSpec>
     return merge(ChartAxisStyler(alignment: value));
   }
 
-  /// Sets the animation configuration. [reverse] sets variant exit timing
-  /// and can only pair curve and spring configs.
+  /// Sets the animation configuration.
   @override
-  ChartAxisStyler animate(AnimationConfig value, {AnimationConfig? reverse}) {
-    final config = reverse == null
-        ? value
-        : ReversibleAnimationConfig(forward: value, reverse: reverse);
-
-    return merge(ChartAxisStyler(animation: config));
+  ChartAxisStyler animate(AnimationConfig value) {
+    return merge(ChartAxisStyler(animation: value));
   }
 
   /// Sets the style variants.

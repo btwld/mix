@@ -227,6 +227,8 @@ class WrapStyler extends MixStyler<WrapStyler, WrapSpec>
       WrapStyler().wrapAlignment(value);
   factory WrapStyler.wrapClipBehavior(Clip value) =>
       WrapStyler().wrapClipBehavior(value);
+  factory WrapStyler.wrap(WidgetModifierConfig value) =>
+      WrapStyler().wrap(value);
 
   @override
   WrapStyler flow(WrapStyler value) {
@@ -301,8 +303,8 @@ class WrapStyler extends MixStyler<WrapStyler, WrapSpec>
     return merge(WrapStyler(clipBehavior: value));
   }
 
-  /// Sets the animation configuration. [reverse] sets variant exit timing
-  /// and can only pair curve and spring configs.
+  /// Sets the animation configuration.
+  /// [reverse] sets variant exit timing for curve or spring configs.
   @override
   WrapStyler animate(AnimationConfig value, {AnimationConfig? reverse}) {
     final config = reverse == null

@@ -84,13 +84,9 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
     final previousConfig = previous.animation;
     final activation = previous.variantActivation;
     final targetActivation = target.variantActivation;
-    final targetOwner = targetActivation?.animationOwner;
     if (previousConfig is! ReversibleAnimationConfig ||
         activation == null ||
         activation.animationOwner == null) {
-      return null;
-    }
-    if (targetOwner != null && !activation.active.contains(targetOwner)) {
       return null;
     }
     if (targetActivation?.active.contains(activation.animationOwner) ?? false) {
@@ -137,33 +133,41 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
     final targetChanged =
         previous.spec != target.spec ||
         !listEquals(previous.widgetModifiers, target.widgetModifiers);
-    if (_isExiting &&
+    final targetOwner = target.variantActivation?.animationOwner;
+    final hasNewAnimationOwner =
+        targetOwner != null &&
+        !(previous.variantActivation?.active.contains(targetOwner) ?? false);
+    final isSameTargetExit =
+        _isExiting &&
         animationDriver.isAnimating &&
         !targetChanged &&
-        !isTimeline) {
+        !isTimeline;
+    if (isSameTargetExit && !hasNewAnimationOwner) {
       animationDriver.didUpdateSpec(target, target);
 
       return;
     }
 
-    final exitConfig = targetChanged && !isTimeline
+    final exitConfig = targetChanged && !isTimeline && !hasNewAnimationOwner
         ? _exitConfig(previous, target)
         : null;
     var config = exitConfig ?? forward;
     if (config == null &&
         animationDriver is ImplicitAnimationDriver<S, AnimationConfig>) {
-      config = _forwardConfig(previous.animation);
-      if (config == null && animationDriver.isAnimating) {
-        config = _driverConfig;
-      }
+      config =
+          _forwardConfig(previous.animation) ??
+          (animationDriver.isAnimating ? _driverConfig : null);
     }
     _isExiting = exitConfig != null;
 
-    var source = previous;
-    if (_driverConfig.runtimeType != config.runtimeType) {
-      if (config is CurveAnimationConfig || config is SpringAnimationConfig) {
-        source = animationDriver.animation.value ?? previous;
-      }
+    final changesDriver = _driverConfig.runtimeType != config.runtimeType;
+    final startsImplicitDriver =
+        changesDriver &&
+        (config is CurveAnimationConfig || config is SpringAnimationConfig);
+    final source = isSameTargetExit || startsImplicitDriver
+        ? (animationDriver.animation.value ?? previous)
+        : previous;
+    if (changesDriver) {
       animationDriver.dispose();
       animationDriver = _createAnimationDriver(
         config: config,

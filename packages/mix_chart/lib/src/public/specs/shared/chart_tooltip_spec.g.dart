@@ -219,6 +219,8 @@ class ChartTooltipStyler extends MixStyler<ChartTooltipStyler, ChartTooltipSpec>
       ChartTooltipStyler().fitVertically(value);
   factory ChartTooltipStyler.text(TextStyler value) =>
       ChartTooltipStyler().text(value);
+  factory ChartTooltipStyler.wrap(WidgetModifierConfig value) =>
+      ChartTooltipStyler().wrap(value);
 
   @override
   Set<String> get $stylerFieldNames => const {
@@ -281,18 +283,10 @@ class ChartTooltipStyler extends MixStyler<ChartTooltipStyler, ChartTooltipSpec>
     return merge(ChartTooltipStyler(text: value));
   }
 
-  /// Sets the animation configuration. [reverse] sets variant exit timing
-  /// and can only pair curve and spring configs.
+  /// Sets the animation configuration.
   @override
-  ChartTooltipStyler animate(
-    AnimationConfig value, {
-    AnimationConfig? reverse,
-  }) {
-    final config = reverse == null
-        ? value
-        : ReversibleAnimationConfig(forward: value, reverse: reverse);
-
-    return merge(ChartTooltipStyler(animation: config));
+  ChartTooltipStyler animate(AnimationConfig value) {
+    return merge(ChartTooltipStyler(animation: value));
   }
 
   /// Sets the style variants.

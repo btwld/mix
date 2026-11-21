@@ -327,6 +327,8 @@ class TextStyler extends MixStyler<TextStyler, TextSpec>
   factory TextStyler.capitalize() => TextStyler().capitalize();
   factory TextStyler.titlecase() => TextStyler().titlecase();
   factory TextStyler.sentencecase() => TextStyler().sentencecase();
+  factory TextStyler.wrap(WidgetModifierConfig value) =>
+      TextStyler().wrap(value);
 
   TextStyler textDirective(Directive<String> value) {
     return merge(TextStyler(textDirectives: [value]));
@@ -453,8 +455,8 @@ class TextStyler extends MixStyler<TextStyler, TextSpec>
     return merge(TextStyler(locale: value));
   }
 
-  /// Sets the animation configuration. [reverse] sets variant exit timing
-  /// and can only pair curve and spring configs.
+  /// Sets the animation configuration.
+  /// [reverse] sets variant exit timing for curve or spring configs.
   @override
   TextStyler animate(AnimationConfig value, {AnimationConfig? reverse}) {
     final config = reverse == null

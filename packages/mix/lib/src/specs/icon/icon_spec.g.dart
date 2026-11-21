@@ -269,6 +269,8 @@ class IconStyler extends MixStyler<IconStyler, IconSpec>
       IconStyler().blendMode(value);
   factory IconStyler.icon(IconData value) => IconStyler().icon(value);
   factory IconStyler.shadow(ShadowMix value) => IconStyler().shadow(value);
+  factory IconStyler.wrap(WidgetModifierConfig value) =>
+      IconStyler().wrap(value);
 
   IconStyler shadow(ShadowMix value) {
     return merge(IconStyler(shadows: [value]));
@@ -359,8 +361,8 @@ class IconStyler extends MixStyler<IconStyler, IconSpec>
     return merge(IconStyler(icon: value));
   }
 
-  /// Sets the animation configuration. [reverse] sets variant exit timing
-  /// and can only pair curve and spring configs.
+  /// Sets the animation configuration.
+  /// [reverse] sets variant exit timing for curve or spring configs.
   @override
   IconStyler animate(AnimationConfig value, {AnimationConfig? reverse}) {
     final config = reverse == null

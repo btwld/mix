@@ -188,6 +188,8 @@ class ChartMarkerStyler extends MixStyler<ChartMarkerStyler, ChartMarkerSpec>
       ChartMarkerStyler().borderWidth(value);
   factory ChartMarkerStyler.shadow(ShadowMix value) =>
       ChartMarkerStyler().shadow(value);
+  factory ChartMarkerStyler.wrap(WidgetModifierConfig value) =>
+      ChartMarkerStyler().wrap(value);
 
   @override
   Set<String> get $stylerFieldNames => const {
@@ -238,15 +240,10 @@ class ChartMarkerStyler extends MixStyler<ChartMarkerStyler, ChartMarkerSpec>
     return merge(ChartMarkerStyler(shadow: value));
   }
 
-  /// Sets the animation configuration. [reverse] sets variant exit timing
-  /// and can only pair curve and spring configs.
+  /// Sets the animation configuration.
   @override
-  ChartMarkerStyler animate(AnimationConfig value, {AnimationConfig? reverse}) {
-    final config = reverse == null
-        ? value
-        : ReversibleAnimationConfig(forward: value, reverse: reverse);
-
-    return merge(ChartMarkerStyler(animation: config));
+  ChartMarkerStyler animate(AnimationConfig value) {
+    return merge(ChartMarkerStyler(animation: value));
   }
 
   /// Sets the style variants.

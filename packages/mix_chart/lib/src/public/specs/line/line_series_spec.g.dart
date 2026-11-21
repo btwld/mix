@@ -277,6 +277,8 @@ class LineSeriesStyler extends MixStyler<LineSeriesStyler, LineSeriesSpec>
       LineSeriesStyler().aboveArea(value);
   factory LineSeriesStyler.shadow(ShadowMix value) =>
       LineSeriesStyler().shadow(value);
+  factory LineSeriesStyler.wrap(WidgetModifierConfig value) =>
+      LineSeriesStyler().wrap(value);
 
   @override
   Set<String> get $stylerFieldNames => const {
@@ -357,15 +359,10 @@ class LineSeriesStyler extends MixStyler<LineSeriesStyler, LineSeriesSpec>
     return merge(LineSeriesStyler(shadow: value));
   }
 
-  /// Sets the animation configuration. [reverse] sets variant exit timing
-  /// and can only pair curve and spring configs.
+  /// Sets the animation configuration.
   @override
-  LineSeriesStyler animate(AnimationConfig value, {AnimationConfig? reverse}) {
-    final config = reverse == null
-        ? value
-        : ReversibleAnimationConfig(forward: value, reverse: reverse);
-
-    return merge(LineSeriesStyler(animation: config));
+  LineSeriesStyler animate(AnimationConfig value) {
+    return merge(LineSeriesStyler(animation: value));
   }
 
   /// Sets the style variants.

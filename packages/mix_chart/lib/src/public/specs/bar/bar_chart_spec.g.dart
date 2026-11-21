@@ -279,6 +279,8 @@ class BarChartStyler extends MixStyler<BarChartStyler, BarChartSpec>
       BarChartStyler().alignment(value);
   factory BarChartStyler.tooltip(ChartTooltipStyler value) =>
       BarChartStyler().tooltip(value);
+  factory BarChartStyler.wrap(WidgetModifierConfig value) =>
+      BarChartStyler().wrap(value);
 
   @override
   Set<String> get $stylerFieldNames => const {
@@ -371,15 +373,10 @@ class BarChartStyler extends MixStyler<BarChartStyler, BarChartSpec>
     return merge(BarChartStyler(tooltip: value));
   }
 
-  /// Sets the animation configuration. [reverse] sets variant exit timing
-  /// and can only pair curve and spring configs.
+  /// Sets the animation configuration.
   @override
-  BarChartStyler animate(AnimationConfig value, {AnimationConfig? reverse}) {
-    final config = reverse == null
-        ? value
-        : ReversibleAnimationConfig(forward: value, reverse: reverse);
-
-    return merge(BarChartStyler(animation: config));
+  BarChartStyler animate(AnimationConfig value) {
+    return merge(BarChartStyler(animation: value));
   }
 
   /// Sets the style variants.

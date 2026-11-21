@@ -237,6 +237,8 @@ class FlexStyler extends MixStyler<FlexStyler, FlexSpec>
   factory FlexStyler.spacing(double value) => FlexStyler().spacing(value);
   factory FlexStyler.row() => FlexStyler().row();
   factory FlexStyler.column() => FlexStyler().column();
+  factory FlexStyler.wrap(WidgetModifierConfig value) =>
+      FlexStyler().wrap(value);
 
   @override
   FlexStyler flex(FlexStyler value) {
@@ -312,8 +314,8 @@ class FlexStyler extends MixStyler<FlexStyler, FlexSpec>
     return merge(FlexStyler(spacing: value));
   }
 
-  /// Sets the animation configuration. [reverse] sets variant exit timing
-  /// and can only pair curve and spring configs.
+  /// Sets the animation configuration.
+  /// [reverse] sets variant exit timing for curve or spring configs.
   @override
   FlexStyler animate(AnimationConfig value, {AnimationConfig? reverse}) {
     final config = reverse == null

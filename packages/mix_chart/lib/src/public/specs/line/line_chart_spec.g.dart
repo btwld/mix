@@ -228,6 +228,8 @@ class LineChartStyler extends MixStyler<LineChartStyler, LineChartSpec>
       LineChartStyler().palette(value);
   factory LineChartStyler.tooltip(ChartTooltipStyler value) =>
       LineChartStyler().tooltip(value);
+  factory LineChartStyler.wrap(WidgetModifierConfig value) =>
+      LineChartStyler().wrap(value);
 
   @override
   Set<String> get $stylerFieldNames => const {
@@ -296,15 +298,10 @@ class LineChartStyler extends MixStyler<LineChartStyler, LineChartSpec>
     return merge(LineChartStyler(tooltip: value));
   }
 
-  /// Sets the animation configuration. [reverse] sets variant exit timing
-  /// and can only pair curve and spring configs.
+  /// Sets the animation configuration.
   @override
-  LineChartStyler animate(AnimationConfig value, {AnimationConfig? reverse}) {
-    final config = reverse == null
-        ? value
-        : ReversibleAnimationConfig(forward: value, reverse: reverse);
-
-    return merge(LineChartStyler(animation: config));
+  LineChartStyler animate(AnimationConfig value) {
+    return merge(LineChartStyler(animation: value));
   }
 
   /// Sets the style variants.

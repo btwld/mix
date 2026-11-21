@@ -357,6 +357,8 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
     AnimationConfig value, {
     AnimationConfig? reverse,
   }) => StackBoxStyler().animate(value, reverse: reverse);
+  factory StackBoxStyler.wrap(WidgetModifierConfig value) =>
+      StackBoxStyler().wrap(value);
 
   StackBoxStyler textStyle(TextStyler value) {
     return wrap(WidgetModifierConfig.defaultTextStyler(value));
@@ -438,8 +440,8 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
     'variants',
   };
 
-  /// Sets the animation configuration. [reverse] sets variant exit timing
-  /// and can only pair curve and spring configs.
+  /// Sets the animation configuration.
+  /// [reverse] sets variant exit timing for curve or spring configs.
   @override
   StackBoxStyler animate(AnimationConfig value, {AnimationConfig? reverse}) {
     final config = reverse == null

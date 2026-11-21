@@ -183,6 +183,8 @@ class ChartGridStyler extends MixStyler<ChartGridStyler, ChartGridSpec>
       ChartGridStyler().verticalInterval(value);
   factory ChartGridStyler.stroke(ChartStrokeStyler value) =>
       ChartGridStyler().stroke(value);
+  factory ChartGridStyler.wrap(WidgetModifierConfig value) =>
+      ChartGridStyler().wrap(value);
 
   @override
   Set<String> get $stylerFieldNames => const {
@@ -227,15 +229,10 @@ class ChartGridStyler extends MixStyler<ChartGridStyler, ChartGridSpec>
     return merge(ChartGridStyler(stroke: value));
   }
 
-  /// Sets the animation configuration. [reverse] sets variant exit timing
-  /// and can only pair curve and spring configs.
+  /// Sets the animation configuration.
   @override
-  ChartGridStyler animate(AnimationConfig value, {AnimationConfig? reverse}) {
-    final config = reverse == null
-        ? value
-        : ReversibleAnimationConfig(forward: value, reverse: reverse);
-
-    return merge(ChartGridStyler(animation: config));
+  ChartGridStyler animate(AnimationConfig value) {
+    return merge(ChartGridStyler(animation: value));
   }
 
   /// Sets the style variants.

@@ -314,6 +314,7 @@ class BarStyler extends MixStyler<BarStyler, BarSpec>
   factory BarStyler.label(TextStyler value) => BarStyler().label(value);
   factory BarStyler.labelOffset(Offset value) => BarStyler().labelOffset(value);
   factory BarStyler.labelAngle(double value) => BarStyler().labelAngle(value);
+  factory BarStyler.wrap(WidgetModifierConfig value) => BarStyler().wrap(value);
 
   @override
   Set<String> get $stylerFieldNames => const {
@@ -382,15 +383,10 @@ class BarStyler extends MixStyler<BarStyler, BarSpec>
     return merge(BarStyler(labelAngle: value));
   }
 
-  /// Sets the animation configuration. [reverse] sets variant exit timing
-  /// and can only pair curve and spring configs.
+  /// Sets the animation configuration.
   @override
-  BarStyler animate(AnimationConfig value, {AnimationConfig? reverse}) {
-    final config = reverse == null
-        ? value
-        : ReversibleAnimationConfig(forward: value, reverse: reverse);
-
-    return merge(BarStyler(animation: config));
+  BarStyler animate(AnimationConfig value) {
+    return merge(BarStyler(animation: value));
   }
 
   /// Sets the style variants.
@@ -533,6 +529,8 @@ class BarSegmentStyler extends MixStyler<BarSegmentStyler, BarSegmentSpec>
       BarSegmentStyler().border(value);
   factory BarSegmentStyler.label(TextStyler value) =>
       BarSegmentStyler().label(value);
+  factory BarSegmentStyler.wrap(WidgetModifierConfig value) =>
+      BarSegmentStyler().wrap(value);
 
   @override
   Set<String> get $stylerFieldNames => const {
@@ -565,15 +563,10 @@ class BarSegmentStyler extends MixStyler<BarSegmentStyler, BarSegmentSpec>
     return merge(BarSegmentStyler(label: value));
   }
 
-  /// Sets the animation configuration. [reverse] sets variant exit timing
-  /// and can only pair curve and spring configs.
+  /// Sets the animation configuration.
   @override
-  BarSegmentStyler animate(AnimationConfig value, {AnimationConfig? reverse}) {
-    final config = reverse == null
-        ? value
-        : ReversibleAnimationConfig(forward: value, reverse: reverse);
-
-    return merge(BarSegmentStyler(animation: config));
+  BarSegmentStyler animate(AnimationConfig value) {
+    return merge(BarSegmentStyler(animation: value));
   }
 
   /// Sets the style variants.

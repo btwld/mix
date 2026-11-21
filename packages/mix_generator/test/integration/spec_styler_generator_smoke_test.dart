@@ -535,8 +535,10 @@ const _flutterResolveStubs = {
   ''',
 };
 
-Builder _specStylerPartBuilder() {
-  return PartBuilder([const SpecStylerGenerator()], '.g.dart');
+Builder _specStylerPartBuilder({bool generateReverseAnimation = true}) {
+  return PartBuilder([
+    SpecStylerGenerator(generateReverseAnimation: generateReverseAnimation),
+  ], '.g.dart');
 }
 
 Future<String> _expectSpecStylerValidationError(
@@ -1932,9 +1934,6 @@ void main() {
               contains('TrivialStyler({'),
               contains('EdgeInsetsGeometryMix? padding'),
               contains('Prop.maybeMix(padding)'),
-              contains(
-                'TrivialStyler animate(AnimationConfig value, {AnimationConfig? reverse})',
-              ),
               contains(
                 'TrivialStyler variants(List<VariantStyle<TrivialSpec>> value)',
               ),
@@ -3464,25 +3463,58 @@ void main() {
         }
       ''';
 
-      await testBuilder(
-        _specStylerPartBuilder(),
-        {...mixAnnotationsSources, ..._mixSources, 'mix|lib/spike.dart': input},
-        outputs: {
-          'mix|lib/spike.g.dart': decodedMatches(
-            allOf([
-              contains('factory BoxStyler.color(Color value)'),
-              contains('factory BoxStyler.width(double value)'),
-              contains('factory BoxStyler.size(double width, double height)'),
-              contains(
-                'factory BoxStyler.scale(double scale, {Alignment alignment = .center})',
-              ),
-              contains('factory BoxStyler.translate(double x, double y'),
-              contains('factory BoxStyler.textStyle(TextStyler value)'),
-              contains('factory BoxStyler.animate('),
-            ]),
-          ),
-        },
-      );
+      const signature = 'animate(AnimationConfig value';
+      const reverseSignature = '$signature, {AnimationConfig? reverse})';
+      for (final (supportsReverse, generateReverse) in [
+        (true, true),
+        (false, true),
+        (true, false),
+      ]) {
+        final withReverse = supportsReverse && generateReverse;
+        final expectedSignature = withReverse
+            ? reverseSignature
+            : '$signature)';
+        await testBuilder(
+          _specStylerPartBuilder(generateReverseAnimation: generateReverse),
+          {
+            ...mixAnnotationsSources,
+            ..._mixSources,
+            if (!supportsReverse)
+              'mix|lib/src/animation/animation_config.dart':
+                  'class AnimationConfig {}',
+            'mix|lib/spike.dart': input,
+          },
+          outputs: {
+            'mix|lib/spike.g.dart': decodedMatches(
+              allOf([
+                contains('factory BoxStyler.color(Color value)'),
+                contains('factory BoxStyler.width(double value)'),
+                contains('factory BoxStyler.size(double width, double height)'),
+                contains(
+                  'factory BoxStyler.scale(double scale, {Alignment alignment = .center})',
+                ),
+                contains('factory BoxStyler.translate(double x, double y'),
+                contains('factory BoxStyler.textStyle(TextStyler value)'),
+                contains('BoxStyler $expectedSignature'),
+                if (withReverse) ...[
+                  matches(
+                    r'factory BoxStyler\.animate\(\s*AnimationConfig value, '
+                    r'\{\s*AnimationConfig\? reverse,?\s*\}\)',
+                  ),
+                  contains('.animate(value, reverse: reverse)'),
+                  contains(
+                    'ReversibleAnimationConfig(forward: value, reverse: reverse)',
+                  ),
+                ] else ...[
+                  contains('factory BoxStyler.$expectedSignature'),
+                  contains('.animate(value)'),
+                  isNot(contains('ReversibleAnimationConfig')),
+                ],
+              ]),
+            ),
+          },
+        );
+      }
     });
 
     test('emits curated Flex zero-argument factories', () async {
@@ -4134,6 +4166,51 @@ void main() {
               ),
             ),
           },
+        );
+      },
+    );
+
+    test(
+      'preserves a wrap factory alias alongside modifier shorthand',
+      () async {
+        const input = '''
+        import 'package:flutter/foundation.dart';
+        import 'package:flutter/widgets.dart';
+        import 'package:mix/mix.dart';
+        import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
+
+        @MixableSpec()
+        final class LabelSpec extends Spec<LabelSpec> {
+          @MixableField(factoryName: 'wrap')
+          final String? text;
+
+          const LabelSpec({this.text});
+        }
+
+        @MixableSpec()
+        final class BadgeSpec extends Spec<BadgeSpec> {
+          const BadgeSpec();
+        }
+
+        LabelStyler styledLabel() => .wrap('Label').wrap(WidgetModifierConfig());
+        BadgeStyler styledBadge() => .wrap(WidgetModifierConfig());
+      ''';
+
+        await expectGeneratorOutputResolves(
+          builder: _specStylerPartBuilder(),
+          sources: {
+            ...mixAnnotationsSources,
+            ..._mixSources,
+            ..._flutterResolveStubs,
+            'mix|lib/spike.dart': input,
+          },
+          inputAsset: 'mix|lib/spike.dart',
+          outputAsset: 'mix|lib/spike.g.dart',
+          outputMatcher: allOf(
+            contains('factory LabelStyler.wrap(String value)'),
+            contains('factory BadgeStyler.wrap(WidgetModifierConfig value)'),
+          ),
         );
       },
     );

@@ -155,6 +155,8 @@ class ChartAreaStyler extends MixStyler<ChartAreaStyler, ChartAreaSpec>
       ChartAreaStyler().cutoffY(value);
   factory ChartAreaStyler.applyCutoff(bool value) =>
       ChartAreaStyler().applyCutoff(value);
+  factory ChartAreaStyler.wrap(WidgetModifierConfig value) =>
+      ChartAreaStyler().wrap(value);
 
   @override
   Set<String> get $stylerFieldNames => const {
@@ -193,15 +195,10 @@ class ChartAreaStyler extends MixStyler<ChartAreaStyler, ChartAreaSpec>
     return merge(ChartAreaStyler(applyCutoff: value));
   }
 
-  /// Sets the animation configuration. [reverse] sets variant exit timing
-  /// and can only pair curve and spring configs.
+  /// Sets the animation configuration.
   @override
-  ChartAreaStyler animate(AnimationConfig value, {AnimationConfig? reverse}) {
-    final config = reverse == null
-        ? value
-        : ReversibleAnimationConfig(forward: value, reverse: reverse);
-
-    return merge(ChartAreaStyler(animation: config));
+  ChartAreaStyler animate(AnimationConfig value) {
+    return merge(ChartAreaStyler(animation: value));
   }
 
   /// Sets the style variants.

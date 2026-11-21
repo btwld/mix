@@ -38,6 +38,7 @@ class StylerMixinBuilder {
   final List<StylerFieldModel> fields;
   final MixableStylerAnnotationConfig config;
   final String? callMethodCode;
+  final String? reverseConstructor;
 
   const StylerMixinBuilder({
     required this.stylerName,
@@ -45,6 +46,7 @@ class StylerMixinBuilder {
     required this.fields,
     required this.config,
     this.callMethodCode,
+    this.reverseConstructor,
   });
 
   FieldEmitter<StylerFieldModel> _fieldEmitter() => .new(fields);
@@ -89,21 +91,29 @@ class StylerMixinBuilder {
   String _buildBaseMethods({Set<String> methodOverrides = const {}}) {
     final buffer = StringBuffer();
 
-    buffer.writeln(
-      '  /// Sets the animation configuration. [reverse] sets variant exit timing',
-    );
-    buffer.writeln('  /// and can only pair curve and spring configs.');
+    final reverseConstructor = this.reverseConstructor;
+    buffer.writeln('  /// Sets the animation configuration.');
+    if (reverseConstructor != null) {
+      buffer.writeln(
+        '  /// [reverse] sets variant exit timing for curve or spring configs.',
+      );
+    }
     _writeMethodOverride(buffer, 'animate', methodOverrides);
-    buffer.writeln(
-      '  $stylerName animate(AnimationConfig value, {AnimationConfig? reverse}) {',
-    );
-    buffer.writeln('    final config = reverse == null');
-    buffer.writeln('        ? value');
-    buffer.writeln(
-      '        : ReversibleAnimationConfig(forward: value, reverse: reverse);',
-    );
-    buffer.writeln();
-    buffer.writeln('    return merge($stylerName(animation: config));');
+    if (reverseConstructor == null) {
+      buffer.writeln('  $stylerName animate(AnimationConfig value) {');
+      buffer.writeln('    return merge($stylerName(animation: value));');
+    } else {
+      buffer.writeln(
+        '  $stylerName animate(AnimationConfig value, {AnimationConfig? reverse}) {',
+      );
+      buffer.writeln('    final config = reverse == null');
+      buffer.writeln('        ? value');
+      buffer.writeln(
+        '        : $reverseConstructor(forward: value, reverse: reverse);',
+      );
+      buffer.writeln();
+      buffer.writeln('    return merge($stylerName(animation: config));');
+    }
     buffer.writeln('  }');
     buffer.writeln();
 

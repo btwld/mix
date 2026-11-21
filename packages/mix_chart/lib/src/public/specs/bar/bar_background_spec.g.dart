@@ -158,6 +158,8 @@ class BarBackgroundStyler
       BarBackgroundStyler().color(value);
   factory BarBackgroundStyler.gradient(Gradient value) =>
       BarBackgroundStyler().gradient(value);
+  factory BarBackgroundStyler.wrap(WidgetModifierConfig value) =>
+      BarBackgroundStyler().wrap(value);
 
   @override
   Set<String> get $stylerFieldNames => const {
@@ -196,18 +198,10 @@ class BarBackgroundStyler
     return merge(BarBackgroundStyler(gradient: value));
   }
 
-  /// Sets the animation configuration. [reverse] sets variant exit timing
-  /// and can only pair curve and spring configs.
+  /// Sets the animation configuration.
   @override
-  BarBackgroundStyler animate(
-    AnimationConfig value, {
-    AnimationConfig? reverse,
-  }) {
-    final config = reverse == null
-        ? value
-        : ReversibleAnimationConfig(forward: value, reverse: reverse);
-
-    return merge(BarBackgroundStyler(animation: config));
+  BarBackgroundStyler animate(AnimationConfig value) {
+    return merge(BarBackgroundStyler(animation: value));
   }
 
   /// Sets the style variants.
