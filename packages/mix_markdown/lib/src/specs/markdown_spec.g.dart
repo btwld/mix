@@ -386,14 +386,9 @@ class MarkdownStyler extends MixStyler<MarkdownStyler, MarkdownSpec>
   }
 
   /// Sets the animation configuration.
-  /// [reverse] sets variant exit timing for curve or spring configs.
   @override
-  MarkdownStyler animate(AnimationConfig value, {AnimationConfig? reverse}) {
-    final config = reverse == null
-        ? value
-        : ReversibleAnimationConfig(forward: value, reverse: reverse);
-
-    return merge(MarkdownStyler(animation: config));
+  MarkdownStyler animate(AnimationConfig value) {
+    return merge(MarkdownStyler(animation: value));
   }
 
   /// Sets the style variants.
