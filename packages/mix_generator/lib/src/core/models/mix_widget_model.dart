@@ -99,15 +99,15 @@ class MixWidgetModel {
 
   /// Styler `call()` parameters, excluding `Key? key`.
   ///
-  /// [stylerCallForwardsKey] handles `key` separately. Ordering preserves
-  /// positionals first, then named parameters.
+  /// The generated wrapper owns its key. Ordering preserves positionals
+  /// first, then named parameters.
   final List<WidgetCallParam> callParams;
 
   /// Type parameters declared by the styler `call()` method.
   final List<WidgetCallTypeParam> callTypeParams;
 
-  /// `true` when the styler's `call()` declares a `Key? key` named parameter
-  /// and the generated `build()` forwards `key: this.key`.
+  /// Retains the supplied value for compatibility. The generator ignores it.
+  @Deprecated('Ignored. Generated adapters keep their own key.')
   final bool stylerCallForwardsKey;
 
   /// Plain widget type instantiated directly, or `null` for the legacy Styler
@@ -135,7 +135,8 @@ class MixWidgetModel {
     required this.factoryParams,
     required this.callParams,
     this.callTypeParams = const [],
-    required this.stylerCallForwardsKey,
+    @Deprecated('Ignored. Generated adapters keep their own key.')
+    this.stylerCallForwardsKey = false,
     this.targetTypeReference,
     this.targetConstructorName,
     this.doc,

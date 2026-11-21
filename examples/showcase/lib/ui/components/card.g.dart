@@ -40,7 +40,6 @@ class UiCard extends StatelessWidget {
   @override
   Widget build(BuildContext _) {
     return RemixCard(
-      key: key,
       style: uiCardStyle(style: style),
       child: child,
     );

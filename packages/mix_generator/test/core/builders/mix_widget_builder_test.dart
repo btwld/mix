@@ -1,7 +1,6 @@
 import 'dart:io';
 
-import 'package:mix_generator/src/core/builders/mix_widget_builder.dart';
-import 'package:mix_generator/src/core/models/mix_widget_model.dart';
+import 'package:mix_generator/mix_generator.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -30,7 +29,6 @@ void main() {
                 isRequired: true,
               ),
             ],
-            stylerCallForwardsKey: true,
           ),
         ).build();
         final directory = Directory.systemTemp.createTempSync(
@@ -67,7 +65,7 @@ $code
       },
     );
 
-    test('variable-backed style with child + key', () {
+    test('variable-backed adapter keeps its key out of the styler call', () {
       final builder = MixWidgetBuilder(
         const MixWidgetModel(
           widgetName: 'Card',
@@ -82,7 +80,6 @@ $code
               isRequired: false,
             ),
           ],
-          stylerCallForwardsKey: true,
         ),
       );
 
@@ -92,8 +89,25 @@ $code
       expect(code, contains('const Card({super.key, this.child});'));
       expect(code, contains('final Widget? child;'));
       expect(code, contains('return cardStyle.call('));
-      expect(code, contains('key: key,'));
+      expect(code, isNot(contains('key:')));
       expect(code, contains('child: child,'));
+    });
+
+    test('deprecated key forwarding flag is accepted but ignored', () {
+      const model = MixWidgetModel(
+        widgetName: 'Card',
+        factoryReference: 'cardStyle',
+        isFunctionFactory: false,
+        factoryParams: [],
+        callParams: [],
+        stylerCallForwardsKey: true,
+      );
+
+      expect(model.stylerCallForwardsKey, isTrue);
+      expect(
+        MixWidgetBuilder(model).build(),
+        contains('return cardStyle.call();'),
+      );
     });
 
     test('function-backed style threads factory args before call', () {
@@ -124,7 +138,6 @@ $code
               isRequired: false,
             ),
           ],
-          stylerCallForwardsKey: true,
         ),
       );
 
@@ -162,7 +175,6 @@ $code
               isRequired: true,
             ),
           ],
-          stylerCallForwardsKey: true,
         ),
       );
 
@@ -174,7 +186,7 @@ $code
         contains('const Label(this.text, {super.key, this.color});'),
       );
       expect(code, contains('return labelStyle(color: color).call('));
-      expect(code, contains('      text,\n      key: key,'));
+      expect(code, contains('      text,\n    );'));
     });
 
     test('required call params surface required keyword', () {
@@ -206,7 +218,6 @@ $code
               isRequired: true,
             ),
           ],
-          stylerCallForwardsKey: true,
         ),
       );
 
@@ -227,14 +238,13 @@ $code
           isFunctionFactory: false,
           factoryParams: [],
           callParams: [],
-          stylerCallForwardsKey: false,
         ),
       );
 
       final code = builder.build();
 
       expect(code, contains('return keyLessStyle.call();'));
-      expect(code, isNot(contains('key: key')));
+      expect(code, isNot(contains('key:')));
     });
 
     test('generic styler call emits generic widget and forwards type args', () {
@@ -253,7 +263,6 @@ $code
             ),
           ],
           callTypeParams: [WidgetCallTypeParam(name: 'T')],
-          stylerCallForwardsKey: true,
         ),
       );
 
@@ -282,7 +291,6 @@ $code
             ),
           ],
           callTypeParams: [WidgetCallTypeParam(name: 'T', boundCode: 'Enum')],
-          stylerCallForwardsKey: false,
         ),
       );
 
@@ -303,7 +311,6 @@ $code
           isFunctionFactory: false,
           factoryParams: [],
           callParams: [],
-          stylerCallForwardsKey: false,
           doc: '/// Documented card.',
         ),
       );
@@ -347,7 +354,6 @@ $code
               isRequired: false,
             ),
           ],
-          stylerCallForwardsKey: true,
           variantParamName: 'variant',
           variantConstructors: [
             WidgetVariantConstructor(
@@ -396,7 +402,6 @@ $code
             ),
           ],
           callParams: [],
-          stylerCallForwardsKey: false,
           variantParamName: 'variant',
           variantConstructors: [
             WidgetVariantConstructor(
@@ -426,7 +431,6 @@ $code
           isFunctionFactory: false,
           factoryParams: [],
           callParams: [],
-          stylerCallForwardsKey: false,
         ),
       ).build();
 
@@ -482,16 +486,15 @@ class Card extends StatelessWidget {
           isFunctionFactory: false,
           factoryParams: [],
           callParams: params,
-          stylerCallForwardsKey: true,
           targetTypeReference: 'RemixDialog',
         ),
       ).build();
 
+      expect(code, isNot(contains('key:')));
       expect(
         code,
         contains(
           '    return RemixDialog(\n'
-          '      key: key,\n'
           '      style: acmeDialogStyle,\n'
           '      barrierDismissible: barrierDismissible,\n'
           '      semanticLabel: semanticLabel,\n'

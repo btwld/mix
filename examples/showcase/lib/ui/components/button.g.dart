@@ -235,7 +235,6 @@ class UiButton extends StatelessWidget {
   @override
   Widget build(BuildContext _) {
     return RemixButton(
-      key: key,
       style: uiButtonStyle(variant: variant, size: size, style: style),
       label: label,
       leadingIcon: leadingIcon,

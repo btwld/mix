@@ -178,11 +178,11 @@ stable as a styler evolves, select the supported parameters explicitly:
 final editorStyle = EditorStyler();
 ```
 
-`.only({})` exposes none of the selectable styler value parameters. A valid
-`Key? key` and method-level `call<T>()` type parameters remain automatic, and
-required styler value parameters must be included in an `.only(...)`
-selection. Excluded optional parameters are not forwarded, so the styler
-method's defaults apply.
+`.only({})` exposes none of the selectable styler value parameters. The
+wrapper always accepts `Key? key` and does not pass it to its child.
+Method-level `call<T>()` type parameters remain automatic, and required styler
+value parameters must be included in an `.only(...)` selection. Excluded
+optional parameters are not forwarded, so the styler method's defaults apply.
 
 For a plain Widget that accepts a generated Styler through a named `style`
 parameter, configure a direct target and curate factory controls separately:
@@ -226,8 +226,8 @@ final cardStyle = BoxStyler()
 //   class Card extends StatelessWidget {
 //     const Card({super.key, this.child});
 //     final Widget? child;
-//     @override Widget build(BuildContext context) =>
-//         cardStyle.call(key: this.key, child: this.child);
+//     @override Widget build(BuildContext _) =>
+//         cardStyle.call(child: child);
 //   }
 ```
 
@@ -253,7 +253,7 @@ non-enum `variant` parameters retain the single-constructor behavior. Variant
 constructors are also skipped when an enum value conflicts with a generated
 widget type parameter.
 
-See [`mix_annotations`](https://pub.dev/packages/mix_annotations) for the full annotation contract (parameter rules, `Key? key` forwarding, naming/visibility constraints).
+See [`mix_annotations`](https://pub.dev/packages/mix_annotations) for the full annotation contract (parameter rules, key ownership, naming/visibility constraints).
 
 ### Field-level control with `@MixableField`
 

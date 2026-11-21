@@ -90,14 +90,13 @@ String? buildMixableSpecTargetCall({
     factoryReference: stylerName,
     excludeNames: stylerBackedTargetParams,
     annotationLabel: '@MixableSpec(target:)',
-    keyOwner: 'the target constructor',
   );
   final callParams = qualifyTargetMemberDefaults(
     call.params,
     constructor: constructor,
     targetTypeReference: widgetName,
   );
-  if (call.forwardsKey) {
+  if (call.hasKey) {
     for (final typeParameter in constructor.enclosingElement.typeParameters) {
       if (typeParameter.name != 'Key') continue;
       fail(
@@ -120,7 +119,7 @@ String? buildMixableSpecTargetCall({
   return renderWidgetCall(
     widgetName: widgetName,
     params: callParams,
-    forwardsKey: call.forwardsKey,
+    hasKey: call.hasKey,
     typeParams: typeParams,
     indent: indent,
   );
@@ -407,29 +406,27 @@ bool _targetStyleAcceptsGeneratedStyler(
   );
 }
 
-({List<WidgetCallParam> params, bool forwardsKey}) extractCallParams(
+({List<WidgetCallParam> params, bool hasKey}) extractCallParams(
   ExecutableElement executable, {
   required Element anchor,
   required LibraryElement library,
   required String factoryReference,
   Set<String> excludeNames = const {},
   String annotationLabel = '@MixWidget',
-  String keyOwner = 'the styler `call()`',
 }) {
-  var forwardsKey = false;
+  var hasKey = false;
   final params = <WidgetCallParam>[];
 
   for (final parameter in executable.formalParameters) {
     final name = parameter.name;
     if (name != null && excludeNames.contains(name)) continue;
 
-    if (validateAndDetectCallKey(
+    if (_validateAndDetectCallKey(
       parameter,
       anchor,
       annotationLabel: annotationLabel,
-      keyOwner: keyOwner,
     )) {
-      forwardsKey = true;
+      hasKey = true;
       continue;
     }
     rejectReservedName(parameter, anchor, annotationLabel: annotationLabel);
@@ -444,7 +441,7 @@ bool _targetStyleAcceptsGeneratedStyler(
     );
   }
 
-  return (params: params, forwardsKey: forwardsKey);
+  return (params: params, hasKey: hasKey);
 }
 
 enum WidgetCallTypeParamContext {
@@ -514,7 +511,7 @@ WidgetCallTypeParam _typeParam(
 String renderWidgetCall({
   required String widgetName,
   required List<WidgetCallParam> params,
-  required bool forwardsKey,
+  required bool hasKey,
   List<WidgetCallTypeParam> typeParams = const [],
   String indent = '',
 }) {
@@ -528,12 +525,12 @@ String renderWidgetCall({
   final named = params.where((p) => !p.isPositional).toList();
   final signatureParams = [
     ...positional.map(renderCallParameter),
-    if (forwardsKey || named.isNotEmpty)
-      '{${[if (forwardsKey) 'Key? key', ...named.map(renderCallParameter)].join(', ')}}',
+    if (hasKey || named.isNotEmpty)
+      '{${[if (hasKey) 'Key? key', ...named.map(renderCallParameter)].join(', ')}}',
   ];
   final invocationArgs = [
     ...positional.map((p) => p.name),
-    if (forwardsKey) 'key: key',
+    if (hasKey) 'key: key',
     'style: this',
     ...childLast(named).map((p) => '${p.name}: ${p.name}'),
   ];
@@ -612,17 +609,11 @@ void rejectFactoryReferenceCollision(
   );
 }
 
-/// Returns `true` when [parameter] is the forwarded `Key? key`.
-///
-/// Any other shape of a `key`-named parameter fails with a clear error: the
-/// generated APIs expose `Key? key` as Flutter widget identity, so allowing a
-/// divergent `key` parameter would silently change its contract or emit a
-/// duplicate key surface.
-bool validateAndDetectCallKey(
+/// Recognizes an optional Flutter `Key? key` and rejects other `key` shapes.
+bool _validateAndDetectCallKey(
   FormalParameterElement parameter,
   Element anchor, {
-  String annotationLabel = '@MixWidget',
-  String keyOwner = 'the styler `call()`',
+  required String annotationLabel,
 }) {
   if (parameter.name != 'key') return false;
 
@@ -646,8 +637,8 @@ bool validateAndDetectCallKey(
     final typeDisplay = parameter.type.getDisplayString();
     fail(
       anchor,
-      '$annotationLabel only forwards a `key` parameter when it is '
-      'declared as `Key? key` on $keyOwner. Found `$typeDisplay key` '
+      '$annotationLabel requires `key` to be declared as `Key? key` when '
+      'present. Found `$typeDisplay key` '
       'which ${issues.join(' and ')}.',
       todo:
           'Use `Key? key` (named, nullable, no default, not `required`) or '

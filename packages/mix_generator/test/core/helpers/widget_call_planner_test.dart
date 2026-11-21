@@ -43,7 +43,7 @@ void main() {
     final code = renderWidgetCall(
       widgetName: 'RemixDialog',
       params: [named('child'), named('a'), named('children'), named('b')],
-      forwardsKey: true,
+      hasKey: true,
     );
 
     expect(

@@ -146,10 +146,11 @@ value parameters from becoming public widget parameters automatically:
 final editorStyle = EditorStyler();
 ```
 
-An empty `.only({})` exposes no selectable styler value parameters. A valid
-`Key? key` and method-level `call<T>()` type parameters remain automatic;
-required styler value parameters must be selected. Excluded optional
-parameters are not forwarded, so the styler method's defaults apply.
+An empty `.only({})` exposes no selectable styler value parameters. The
+wrapper always accepts `Key? key` and does not pass it to its child.
+Method-level `call<T>()` type parameters remain automatic; required styler
+value parameters must be selected. Excluded optional parameters are not
+forwarded, so the styler method's defaults apply.
 
 Use `target` to wrap a plain widget constructor directly and
 `factoryParameters` to curate recipe controls independently:
