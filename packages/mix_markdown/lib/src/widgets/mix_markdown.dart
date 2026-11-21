@@ -22,9 +22,11 @@ typedef MarkdownUnsupportedBuilder =
 /// Renders a Markdown document with Mix styles.
 ///
 /// Supports paragraphs, headings, nested inline formatting, and GitHub
-/// alerts. Links are styled but not activated, and inline images contribute
-/// their alt text. A document with any other block is rendered by
-/// [unsupportedBuilder] instead, or as a diagnostic when that is null.
+/// alerts. Links are styled but not activated. Images in prose contribute
+/// their alt text. Standalone images (including linked images) and
+/// other unsupported blocks go to [unsupportedBuilder], or display a
+/// diagnostic when that is null. Unsupported raw inline HTML such as `<kbd>`
+/// renders as literal text and does not invoke [unsupportedBuilder].
 ///
 /// While mounted, the document is reparsed only when [data] or [syntax]
 /// changes. Style, theme, and text scale updates reuse the parsed nodes. The

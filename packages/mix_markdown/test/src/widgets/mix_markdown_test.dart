@@ -232,7 +232,11 @@ void main() {
         ),
       );
 
-      expect(find.text('HELLO WORLD', findRichText: true), findsOneWidget);
+      final text = tester.widget<Text>(find.text('HELLO WORLD'));
+      final world = text.textSpan!.getSpanForPosition(
+        const TextPosition(offset: 7),
+      );
+      expect(world?.style?.fontWeight, FontWeight.bold);
     });
 
     testWidgets('a host SelectionArea registers the text', (tester) async {
@@ -273,6 +277,73 @@ void main() {
       expect(tester.takeException(), isNull);
       expect(tester.getSize(find.text(label)).width, lessThan(150));
     });
+
+    testWidgets('alert headers support intrinsic sizing in a dialog', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: AlertDialog(content: MixMarkdown(data: '> [!NOTE]\n> Body')),
+        ),
+      );
+
+      expect(tester.takeException(), isNull);
+      expect(find.text('Note'), findsOneWidget);
+      expect(find.text('Body', findRichText: true), findsOneWidget);
+    });
+
+    testWidgets(
+      'default alert headers shrink-wrap with or without a width bound',
+      (tester) async {
+        const alert = MixMarkdown(data: '> [!NOTE]\n> Body');
+        final header = find.byType(RowBox);
+        await tester.pumpWidget(app(alert));
+
+        final boundedWidth = tester.getSize(header).width;
+        expect(boundedWidth, lessThan(320));
+
+        await tester.pumpWidget(
+          app(
+            const SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: alert,
+            ),
+          ),
+        );
+
+        expect(tester.takeException(), isNull);
+        expect(tester.getSize(header).width, boundedWidth);
+      },
+    );
+
+    testWidgets(
+      'alert title wraps at the header width in a horizontal scroll view',
+      (tester) async {
+        const label = 'A long localized alert title';
+        await tester.pumpWidget(
+          app(
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: MixMarkdown(
+                data: '> [!NOTE]\n> Body',
+                style: MarkdownStyler(
+                  alert: MarkdownAlertStyler(
+                    note: MarkdownAlertTypeStyler(
+                      label: label,
+                      header: FlexBoxStyler().width(100),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+
+        expect(tester.takeException(), isNull);
+        expect(tester.getSize(find.byType(RowBox)).width, 100);
+        expect(tester.getSize(find.text(label)).width, lessThan(100));
+      },
+    );
 
     const alerts =
         '> [!NOTE]\n> **Outer**\n>\n> > [!TIP]\n> > Inner\n\n'
@@ -374,6 +445,29 @@ void main() {
       );
 
       expect(find.textContaining('standalone-image'), findsOneWidget);
+    });
+
+    testWidgets('linked images in prose render their alt text', (tester) async {
+      await tester.pumpWidget(
+        app(
+          const MixMarkdown(
+            data:
+                'Status: [![CI](https://example.com/badge.svg)]'
+                '(https://example.com/build).',
+          ),
+        ),
+      );
+
+      expect(find.text('Status: CI.', findRichText: true), findsOneWidget);
+    });
+
+    testWidgets('unsupported raw inline HTML renders literally', (
+      tester,
+    ) async {
+      const source = 'Press <kbd>Ctrl</kbd>.';
+      await tester.pumpWidget(app(const MixMarkdown(data: source)));
+
+      expect(find.text(source, findRichText: true), findsOneWidget);
     });
   });
 

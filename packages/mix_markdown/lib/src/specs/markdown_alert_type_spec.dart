@@ -16,7 +16,8 @@ final class MarkdownAlertTypeSpec with _$MarkdownAlertTypeSpec {
   @override
   final StyleSpec<BoxSpec>? container;
 
-  /// Row holding the icon and the title.
+  /// Row holding the icon and the title. Defaults to [MainAxisSize.min].
+  /// Use [MainAxisSize.max] only when the header has a bounded width.
   @override
   final StyleSpec<FlexBoxSpec>? header;
 

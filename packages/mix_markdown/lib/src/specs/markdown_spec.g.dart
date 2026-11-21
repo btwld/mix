@@ -285,6 +285,8 @@ class MarkdownStyler extends MixStyler<MarkdownStyler, MarkdownSpec>
   factory MarkdownStyler.link(TextStyler value) => MarkdownStyler().link(value);
   factory MarkdownStyler.alert(MarkdownAlertStyler value) =>
       MarkdownStyler().alert(value);
+  factory MarkdownStyler.wrap(WidgetModifierConfig value) =>
+      MarkdownStyler().wrap(value);
 
   @override
   Set<String> get $stylerFieldNames => const {

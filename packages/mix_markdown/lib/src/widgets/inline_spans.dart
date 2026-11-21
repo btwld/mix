@@ -8,7 +8,7 @@ import '../specs/markdown_spec.dart';
 ///
 /// A [transform] runs on the entire block. Inline styles are retained only
 /// when the original run boundaries can be mapped onto the result.
-List<InlineSpan> buildInlineSpans(
+List<TextSpan> buildInlineSpans(
   List<md.Node> nodes, {
   required MarkdownSpec spec,
   String Function(String)? transform,

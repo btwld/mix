@@ -18,11 +18,7 @@ void main() {
   List<TextSpan> spans(String source, {String Function(String)? transform}) {
     final nodes = const MarkdownSyntax().createDocument().parseInline(source);
 
-    return buildInlineSpans(
-      nodes,
-      spec: spec,
-      transform: transform,
-    ).cast<TextSpan>().toList();
+    return buildInlineSpans(nodes, spec: spec, transform: transform);
   }
 
   String plain(List<TextSpan> result) =>
@@ -97,12 +93,7 @@ void main() {
     final paragraph = nodes.single as md.Element;
 
     expect(
-      plain(
-        buildInlineSpans(
-          paragraph.children!,
-          spec: spec,
-        ).cast<TextSpan>().toList(),
-      ),
+      plain(buildInlineSpans(paragraph.children!, spec: spec)),
       'one two three four',
     );
   });
@@ -111,14 +102,6 @@ void main() {
     final nodes = const MarkdownSyntax().createDocument().parse('a  \nb');
     final paragraph = nodes.single as md.Element;
 
-    expect(
-      plain(
-        buildInlineSpans(
-          paragraph.children!,
-          spec: spec,
-        ).cast<TextSpan>().toList(),
-      ),
-      'a\nb',
-    );
+    expect(plain(buildInlineSpans(paragraph.children!, spec: spec)), 'a\nb');
   });
 }

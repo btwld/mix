@@ -159,6 +159,8 @@ class MarkdownAlertTypeStyler
       MarkdownAlertTypeStyler().title(value);
   factory MarkdownAlertTypeStyler.label(String value) =>
       MarkdownAlertTypeStyler().label(value);
+  factory MarkdownAlertTypeStyler.wrap(WidgetModifierConfig value) =>
+      MarkdownAlertTypeStyler().wrap(value);
 
   @override
   Set<String> get $stylerFieldNames => const {

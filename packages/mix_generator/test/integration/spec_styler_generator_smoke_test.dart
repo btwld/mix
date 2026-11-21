@@ -4136,5 +4136,50 @@ void main() {
         );
       },
     );
+
+    test(
+      'preserves a wrap factory alias alongside modifier shorthand',
+      () async {
+        const input = '''
+        import 'package:flutter/foundation.dart';
+        import 'package:flutter/widgets.dart';
+        import 'package:mix/mix.dart';
+        import 'package:mix_annotations/mix_annotations.dart';
+        part 'spike.g.dart';
+
+        @MixableSpec()
+        final class LabelSpec extends Spec<LabelSpec> {
+          @MixableField(factoryName: 'wrap')
+          final String? text;
+
+          const LabelSpec({this.text});
+        }
+
+        @MixableSpec()
+        final class BadgeSpec extends Spec<BadgeSpec> {
+          const BadgeSpec();
+        }
+
+        LabelStyler styledLabel() => .wrap('Label').wrap(WidgetModifierConfig());
+        BadgeStyler styledBadge() => .wrap(WidgetModifierConfig());
+      ''';
+
+        await expectGeneratorOutputResolves(
+          builder: _specStylerPartBuilder(),
+          sources: {
+            ...mixAnnotationsSources,
+            ..._mixSources,
+            ..._flutterResolveStubs,
+            'mix|lib/spike.dart': input,
+          },
+          inputAsset: 'mix|lib/spike.dart',
+          outputAsset: 'mix|lib/spike.g.dart',
+          outputMatcher: allOf(
+            contains('factory LabelStyler.wrap(String value)'),
+            contains('factory BadgeStyler.wrap(WidgetModifierConfig value)'),
+          ),
+        );
+      },
+    );
   });
 }

@@ -158,6 +158,8 @@ class MarkdownAlertStyler
       MarkdownAlertStyler().warning(value);
   factory MarkdownAlertStyler.caution(MarkdownAlertTypeStyler value) =>
       MarkdownAlertStyler().caution(value);
+  factory MarkdownAlertStyler.wrap(WidgetModifierConfig value) =>
+      MarkdownAlertStyler().wrap(value);
 
   @override
   Set<String> get $stylerFieldNames => const {

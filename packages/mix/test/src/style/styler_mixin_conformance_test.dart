@@ -101,6 +101,18 @@ void main() {
       });
     });
 
+    test('wrap factories match the fluent setter', () {
+      final modifier = WidgetModifierConfig.opacity(0.5);
+      expect(
+        BoxStyler().onHovered(.wrap(.opacity(0.5))),
+        equals(BoxStyler().onHovered(BoxStyler().wrap(modifier))),
+      );
+      expect(
+        GridBoxStyler.wrap(modifier),
+        equals(GridBoxStyler().wrap(modifier)),
+      );
+    });
+
     // =========================================================================
     // ANIMATION MIXIN - All Stylers except ImageStyler
     // =========================================================================

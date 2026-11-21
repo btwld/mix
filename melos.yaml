@@ -149,8 +149,8 @@ scripts:
       dirExists: test
 
   ci:
-    run: melos run test:flutter --no-select && melos run test:dart --no-select
-    description: Run flutter and dart tests
+    run: dart run scripts/check_publish_workflow.dart && melos run test:flutter --no-select && melos run test:dart --no-select
+    description: Check the publish workflow and run Flutter and Dart tests
 
   brb:
     run: melos run gen:build

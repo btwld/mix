@@ -68,19 +68,23 @@ Set `label` to change the title text and `IconStyler().icon(...)` to change
 the icon. The default icons come from Material, so the app needs
 `uses-material-design: true`.
 
+Headers shrink-wrap by default. To fill a bounded width, set
+`FlexBoxStyler().mainAxisSize(.max)` on the header.
+
 ## Supported content
 
 - Paragraphs and `h1` to `h6` headings, with heading semantics.
 - Nested inline formatting: strong, emphasis, strikethrough, inline code,
   and links. Links are styled but not activated.
 - Markdown hard breaks and inline `<br>` tags. Soft line breaks become spaces.
-- Inline images contribute their alt text.
+- Images in prose contribute their alt text.
 - GitHub alerts, including nested alerts and shared link references.
 
-A document that contains any other block, such as a list, table, or fenced
-code block, is handed to `unsupportedBuilder` with the offending tags. Without
-a builder the widget shows a diagnostic instead of silently flattening the
-content.
+A document with unsupported blocks (such as lists, tables, or fenced code)
+goes to `unsupportedBuilder` with the offending tags. A paragraph containing
+only an image, even a linked one, reports `standalone-image`. Without a
+builder, the widget shows a diagnostic. Unsupported raw inline HTML such as
+`<kbd>` renders as literal text and does not invoke `unsupportedBuilder`.
 
 ```dart
 MixMarkdown(

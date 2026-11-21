@@ -52,12 +52,17 @@ Set<String> unsupportedNodes(List<md.Node> nodes) {
 }
 
 bool _isStandaloneImage(md.Element paragraph) {
-  final content = [
-    for (final child in paragraph.children ?? const <md.Node>[])
-      if (child is! md.Text || child.text.trim().isNotEmpty) child,
-  ];
+  final content = _inlineContent(paragraph).singleOrNull;
 
-  return content.length == 1 &&
-      content.single is md.Element &&
-      (content.single as md.Element).tag == MarkdownInlineTag.image.tag;
+  return content is md.Element && content.tag == MarkdownInlineTag.image.tag;
+}
+
+Iterable<md.Node> _inlineContent(md.Node node) sync* {
+  if (node is md.Element && node.tag != MarkdownInlineTag.image.tag) {
+    for (final child in node.children ?? const <md.Node>[]) {
+      yield* _inlineContent(child);
+    }
+  } else if (node is! md.Text || node.text.trim().isNotEmpty) {
+    yield node;
+  }
 }

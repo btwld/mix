@@ -1,5 +1,11 @@
 ## Unreleased
 
+### New features
+
+- Start a style with widget modifiers using `BoxStyler.wrap(...)` or typed
+  shorthand such as `BoxStyler style = .wrap(.opacity(0.5));`. Available on
+  generated Mix and chart stylers, and on `GridBoxStyler`.
+
 ### Bug fixes
 
 - **Blur lifecycle:** preserve child state, focus, text editing, and active

@@ -519,10 +519,20 @@ class SpecStylerClassBuilder {
       existingFactories: factoryDescriptors,
       existingMethods: curatedMethods,
     );
+    final factories = [...factoryDescriptors, ...forwardedApi.factories];
+    if (!factories.any((factory) => factory.name == 'wrap')) {
+      factories.add(
+        const StylerFactoryDescriptor(
+          name: 'wrap',
+          signature: 'wrap(WidgetModifierConfig value)',
+          invocation: 'wrap(value)',
+        ),
+      );
+    }
 
     return planStylerApi(
       stylerName: stylerName,
-      curatedFactories: [...factoryDescriptors, ...forwardedApi.factories],
+      curatedFactories: factories,
       curatedMethods: [...curatedMethods, ...forwardedApi.methods],
       generatedSetterNames: _generatedSetterNames(fields, mixins),
     );
@@ -852,10 +862,7 @@ class SpecStylerClassBuilder {
     return builder._canonicalFactoryDescriptors(fields, mixins);
   }
 
-  /// The complete ordered named-factory contract emitted for this spec's
-  /// generated Styler. Keeping direct and curated factories in one descriptor
-  /// form lets nested fields project exactly this surface without inspecting a
-  /// generated Styler element.
+  /// Field and curated factories, before forwarding and modifier shorthand.
   List<StylerFactoryDescriptor> _canonicalFactoryDescriptors(
     List<FieldModel> fields,
     List<_OwnerMixinReference> mixins,

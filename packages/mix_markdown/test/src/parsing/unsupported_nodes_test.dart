@@ -27,9 +27,18 @@ void main() {
   });
 
   test('reports a paragraph that holds only an image', () {
-    expect(unsupportedNodes(parse('![alt][img]\n\n[img]: image.png')), {
-      'standalone-image',
-    });
+    const linkedImage =
+        '[![CI](https://example.com/badge.svg)]'
+        '(https://example.com/build)';
+    for (final source in [
+      '![alt][img]\n\n[img]: image.png',
+      linkedImage,
+      '$linkedImage<br>',
+    ]) {
+      expect(unsupportedNodes(parse(source)), {
+        'standalone-image',
+      }, reason: source);
+    }
     expect(unsupportedNodes(parse('text ![alt](image.png)')), isEmpty);
   });
 }
