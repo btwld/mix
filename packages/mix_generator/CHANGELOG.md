@@ -1,17 +1,19 @@
-## Unreleased
+## 2.3.0
 
 ### New features
 
 - Generate `animate(config, reverse: exit)` when the resolved Mix runtime
   exports `ReversibleAnimationConfig` and the generated part can reference it.
-  The minimum compatible runtime is the first Mix release with that subtype
-  (unreleased; Mix 2.4.0 and older retain `animate(config)`). Upgrade `mix`
-  and `mix_generator` together before regenerating to use `reverse:`.
+  Otherwise, the generator retains `animate(config)`.
 - Set `generate_reverse_animation: false` on `spec_styler_generator` to keep
   generating `animate(config)` for packages that still support older Mix.
-
 - Generate a `Styler.wrap(WidgetModifierConfig)` factory unless the styler
   already has a factory named `wrap`. Existing field aliases are unchanged.
+
+### Bug fixes
+
+- Pass named `child` and `children` arguments last in generated widget calls
+  to satisfy `sort_child_properties_last` (#1124).
 
 ### Behavior change
 
