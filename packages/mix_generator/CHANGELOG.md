@@ -1,5 +1,10 @@
 ## Unreleased
 
+### New features
+
+- Generate a `Styler.wrap(WidgetModifierConfig)` factory unless the styler
+  already has a factory named `wrap`. Existing field aliases are unchanged.
+
 ### Behavior change
 
 After regeneration, `@MixWidget` adapters keep their `key` instead of sharing

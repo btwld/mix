@@ -314,6 +314,7 @@ class BarStyler extends MixStyler<BarStyler, BarSpec>
   factory BarStyler.label(TextStyler value) => BarStyler().label(value);
   factory BarStyler.labelOffset(Offset value) => BarStyler().labelOffset(value);
   factory BarStyler.labelAngle(double value) => BarStyler().labelAngle(value);
+  factory BarStyler.wrap(WidgetModifierConfig value) => BarStyler().wrap(value);
 
   @override
   Set<String> get $stylerFieldNames => const {
@@ -528,6 +529,8 @@ class BarSegmentStyler extends MixStyler<BarSegmentStyler, BarSegmentSpec>
       BarSegmentStyler().border(value);
   factory BarSegmentStyler.label(TextStyler value) =>
       BarSegmentStyler().label(value);
+  factory BarSegmentStyler.wrap(WidgetModifierConfig value) =>
+      BarSegmentStyler().wrap(value);
 
   @override
   Set<String> get $stylerFieldNames => const {

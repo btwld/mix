@@ -120,7 +120,9 @@ See [scope and theming](doc/mix-scope-and-theming.md).
 
 - `.animate(...)` interpolates compatible resolved specs.
 - `.phaseAnimation(...)` and `.keyframeAnimation(...)` express sequenced changes.
-- `.wrap(...)` composes widget modifiers such as opacity and clipping.
+- `.wrap(...)` composes widget modifiers such as opacity and clipping. Start a
+  style with `BoxStyler.wrap(.opacity(0.5))` or use shorthand in a typed context:
+  `BoxStyler().onHovered(.wrap(.opacity(0.5)))`.
 - Directives transform resolved values, for example text casing.
 
 These compose with variants; consult the versioned API for exact signatures.

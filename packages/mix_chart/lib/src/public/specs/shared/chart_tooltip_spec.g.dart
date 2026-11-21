@@ -219,6 +219,8 @@ class ChartTooltipStyler extends MixStyler<ChartTooltipStyler, ChartTooltipSpec>
       ChartTooltipStyler().fitVertically(value);
   factory ChartTooltipStyler.text(TextStyler value) =>
       ChartTooltipStyler().text(value);
+  factory ChartTooltipStyler.wrap(WidgetModifierConfig value) =>
+      ChartTooltipStyler().wrap(value);
 
   @override
   Set<String> get $stylerFieldNames => const {
