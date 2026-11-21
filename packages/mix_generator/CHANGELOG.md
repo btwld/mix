@@ -5,6 +5,9 @@
 - Generate `animate(config, reverse: exit)` when the resolved Mix runtime
   exports `ReversibleAnimationConfig` and the generated part can reference it.
   Otherwise, the generator retains `animate(config)`.
+  When regenerating against a reverse-capable Mix runtime, add the optional
+  named `AnimationConfig? reverse` parameter to subclass overrides of `animate`,
+  or set `generate_reverse_animation: false` to keep the one-argument signature.
 - Set `generate_reverse_animation: false` on `spec_styler_generator` to keep
   generating `animate(config)` for packages that still support older Mix.
 - Generate a `Styler.wrap(WidgetModifierConfig)` factory unless the styler
@@ -28,6 +31,21 @@ inner widget (`RemixCard`). To find the inner widget in a test, use
 The `MixWidgetModel.stylerCallForwardsKey` getter and constructor argument are
 deprecated but still available for source compatibility. The generator ignores
 the flag; callers can stop passing it.
+
+### Internal API
+
+The internals re-exported from `mix_generator.dart` exist for generator tests
+and are not a supported API.
+
+- `animateFactoryDescriptor()` now requires the named argument `bool withReverse`.
+- `StylerGenerator.generateForAnnotatedElement()` now returns `Future<String>`
+  instead of `String`.
+- The `MixWidgetModel` constructor now defaults `stylerCallForwardsKey` to
+  `false` instead of requiring it.
+- `SpecStylerGenerator` adds `bool generateReverseAnimation = true` and
+  `StylerMixinBuilder` adds `String? reverseConstructor` as optional named
+  constructor parameters, each with a matching getter.
+- `KnownMixSymbolResolver` adds `String? reversibleAnimationConstructor(LibraryElement library)`.
 
 ## 2.2.2
 
