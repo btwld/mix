@@ -92,7 +92,8 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
         BorderRadiusStyleMixin<FlexBoxStyler>,
         ShadowStyleMixin<FlexBoxStyler>,
         TransformStyleMixin<FlexBoxStyler>,
-        FlexStyleMixin<FlexBoxStyler> {
+        FlexStyleMixin<FlexBoxStyler>
+    implements StylerFieldMetadata {
   final Prop<StyleSpec<BoxSpec>>? $box;
   final Prop<StyleSpec<FlexSpec>>? $flex;
 
@@ -239,12 +240,14 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
     AlignmentGeometry? begin,
     AlignmentGeometry? end,
     TileMode? tileMode,
+    GradientTransform? transform,
   }) => FlexBoxStyler().linearGradient(
     colors: colors,
     stops: stops,
     begin: begin,
     end: end,
     tileMode: tileMode,
+    transform: transform,
   );
   factory FlexBoxStyler.radialGradient({
     required List<Color> colors,
@@ -254,6 +257,7 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
     AlignmentGeometry? focal,
     double? focalRadius,
     TileMode? tileMode,
+    GradientTransform? transform,
   }) => FlexBoxStyler().radialGradient(
     colors: colors,
     stops: stops,
@@ -262,6 +266,7 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
     focal: focal,
     focalRadius: focalRadius,
     tileMode: tileMode,
+    transform: transform,
   );
   factory FlexBoxStyler.sweepGradient({
     required List<Color> colors,
@@ -270,6 +275,7 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
     double? startAngle,
     double? endAngle,
     TileMode? tileMode,
+    GradientTransform? transform,
   }) => FlexBoxStyler().sweepGradient(
     colors: colors,
     stops: stops,
@@ -277,6 +283,7 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
     startAngle: startAngle,
     endAngle: endAngle,
     tileMode: tileMode,
+    transform: transform,
   );
   factory FlexBoxStyler.foregroundLinearGradient({
     required List<Color> colors,
@@ -284,12 +291,14 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
     AlignmentGeometry? begin,
     AlignmentGeometry? end,
     TileMode? tileMode,
+    GradientTransform? transform,
   }) => FlexBoxStyler().foregroundLinearGradient(
     colors: colors,
     stops: stops,
     begin: begin,
     end: end,
     tileMode: tileMode,
+    transform: transform,
   );
   factory FlexBoxStyler.foregroundRadialGradient({
     required List<Color> colors,
@@ -299,6 +308,7 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
     AlignmentGeometry? focal,
     double? focalRadius,
     TileMode? tileMode,
+    GradientTransform? transform,
   }) => FlexBoxStyler().foregroundRadialGradient(
     colors: colors,
     stops: stops,
@@ -307,6 +317,7 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
     focal: focal,
     focalRadius: focalRadius,
     tileMode: tileMode,
+    transform: transform,
   );
   factory FlexBoxStyler.foregroundSweepGradient({
     required List<Color> colors,
@@ -315,6 +326,7 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
     double? startAngle,
     double? endAngle,
     TileMode? tileMode,
+    GradientTransform? transform,
   }) => FlexBoxStyler().foregroundSweepGradient(
     colors: colors,
     stops: stops,
@@ -322,6 +334,7 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
     startAngle: startAngle,
     endAngle: endAngle,
     tileMode: tileMode,
+    transform: transform,
   );
   factory FlexBoxStyler.row() => FlexBoxStyler().row();
   factory FlexBoxStyler.column() => FlexBoxStyler().column();
@@ -419,10 +432,17 @@ class FlexBoxStyler extends MixStyler<FlexBoxStyler, FlexBoxSpec>
     return merge(FlexBoxStyler.create(flex: Prop.maybeMix(value)));
   }
 
-  /// Sets the animation configuration.
-  ///
-  /// When [reverse] is provided, it is used as the exit transition
-  /// config when leaving this style.
+  @override
+  Set<String> get $stylerFieldNames => const {
+    'box',
+    'flex',
+    'animation',
+    'modifier',
+    'variants',
+  };
+
+  /// Sets the animation configuration. [reverse] sets variant exit timing
+  /// and can only pair curve and spring configs.
   @override
   FlexBoxStyler animate(AnimationConfig value, {AnimationConfig? reverse}) {
     final config = reverse == null

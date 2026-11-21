@@ -19,7 +19,7 @@
 # flutter create --platforms=android,ios,web,windows,macos .
 **/example/android/
 **/example/ios/
-**/example/web/
+# The getting-started web runner is checked in.
 **/example/windows/
 **/example/macos/
 **/example/linux/

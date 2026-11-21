@@ -1,114 +1,109 @@
-# Styler API Policy
+# Styler API policy
 
-Rules for static factory constructors on Styler classes and Dart 3.11+ dot-shorthand usage.
+Preferred authoring spellings for current Dart 3.12+ Mix APIs. Confirm the
+consuming project's SDK and resolved Mix version. A preference does not deprecate
+another valid constructor or factory.
 
-Requires Dart SDK >=3.11.0 and Flutter >=3.41.0.
+## The top-level rule
 
-## The Top-Level Rule
-
-Start every top-level style declaration with an instance constructor, then chain:
-
-```dart
-// CORRECT — instance constructor at top-level
-BoxStyler().color(Colors.blue).padding(.all(16))
-TextStyler().fontSize(18).color(Colors.white)
-IconStyler().size(24).color(Colors.red)
-FlexBoxStyler().direction(.horizontal).spacing(8).padding(.all(16))
-```
+Start ordinary declarations with a concrete instance, then chain:
 
 ```dart
-// Discouraged by policy at top-level, though valid API
-BoxStyler.color(Colors.blue)
-
-// WRONG — bare dot-shorthand at top-level
-.color(Colors.blue)
+final card = BoxStyler().color(Colors.blue).padding(.all(16));
+final title = TextStyler().fontSize(18).fontWeight(.bold);
 ```
 
-## Nested Shorthand Rule
-
-In typed contexts (variants, state callbacks, typed params), use bare shorthand without the type prefix:
+Generated factories remain valid API. Consult `*_spec.g.dart` for exact coverage;
+there is no maintained factory inventory here. For Grid, use an explicitly
+typed initializer so required topology is visible:
 
 ```dart
-// CORRECT — bare shorthand in nested contexts
-style.onHovered(.color(Colors.blue))
-style.onDark(.color(Colors.white))
-style.onDisabled(.color(Colors.grey))
-BoxStyler().color(Colors.blue)
-  .onHovered(.shadow(.color(Colors.black12).blurRadius(10)))
+final GridBoxStyler grid = .equalColumns(3).gap(16);
 ```
+
+`final grid = .equalColumns(3)` lacks a contextual type.
+
+## Nested shorthand
+
+Use bare shorthand where the expected type is known:
 
 ```dart
-// WRONG — explicit constructor in nested context
-style.onHovered(BoxStyler().color(Colors.blue))
+card.onHovered(.color(Colors.blue.shade700));
+BoxStyler().border(.top(.color(Colors.grey).width(2)));
 ```
 
-Common typed contexts:
-- `.container(.shadow(...))`
-- `.onHovered(.color(...))`
-- `.onDisabled(.color(...))`
+Dart shorthand resolves against the **argument's type**. Flutter class constants
+whose target is a primitive stay qualified:
+`strokeAlign(BorderSide.strokeAlignOutside)` takes a `double`, so
+`strokeAlign(.strokeAlignOutside)` is invalid.
 
-## Dot-Shorthand for Enum/Constant Arguments
+## Compound and nullable values
 
-Within chains, use Dart 3.11+ inferred shorthand for enum and constant values:
+For uniform known borders, prefer `.border(.color(c).width(w).style(s))`.
+Use a side wrapper for a specific side, a reusable side, or nullable forwarding:
 
 ```dart
-BoxStyler().alignment(.center)
-FlexBoxStyler().mainAxisAlignment(.center)
-StackBoxStyler().fit(.expand)
+BoxStyler().border(.top(.color(Colors.grey).width(2)));
+BoxStyler().border(.all(sharedSide));
+BoxStyler().border(.all(BorderSideMix(color: color, width: width)));
 ```
 
-## Factory Constructors by Styler
+Known nested values chain; nullable inputs use explicit constructors. Do not
+rewrite nullables into non-null setters or recommend `.new(...)` as the normal
+style. Grouped factories remain available for nullable fields.
 
-Generated Styler factories are valid API, but this skill intentionally discourages top-level factory entry points in favor of `Styler().chain()` declarations. The factory surface is generated and can drift, so confirm against the local `*_spec.g.dart` file when exact coverage matters.
+Where the styler exposes a property, set it there:
+`.minWidth(100).maxWidth(300)`. Use `.constraints(existing)` for a prebuilt value.
+Factory/static methods start a value; instance methods extend it. These are
+complementary surfaces. Keep a subtype selector where nested shorthand needs it.
+Text directives, for example `TextStyler.uppercase`, can have factories too;
+there is no general rule that compound methods are chain-only.
 
-Common generated factories include:
+## Retired Conveniences
 
-| Styler | Common factory groups |
+These one-line shorthands are deprecated and will be removed in Mix 3.0. Write the dot-shorthand call instead; token arguments pass through unchanged (`.padding(.all($spaceLg()))`).
+
+| Deprecated | Write instead |
 |---|---|
-| `BoxStyler` | layout (`alignment`, `padding`, `margin`, constraints), decoration (`color`, `gradient`, `border`, `borderRadius`, `shadow`, `image`, `shape`), transforms (`transform`, `scale`, `rotate`, `translate`, `skew`), gradients/background images, `textStyle`, `animate` |
-| `FlexStyler` | `direction`, `mainAxisAlignment`, `crossAxisAlignment`, `mainAxisSize`, `spacing`, row/column presets |
-| `FlexBoxStyler` | generated flexbox spec fields plus many box-style factories; verify clip/flex naming in `flexbox_spec.g.dart` |
-| `StackStyler` | `alignment`, `fit`, `clipBehavior` |
-| `StackBoxStyler` | generated stackbox spec fields plus box-style factories; verify stack-specific names in `stackbox_spec.g.dart` |
-| `TextStyler` | layout (`overflow`, `textAlign`, `maxLines`, `softWrap`, direction), typography (`style`, color/font/decoration/spacing), paint/shadow/font-feature fields, text directives (`uppercase`, `lowercase`, `capitalize`, `titlecase`, `sentencecase`) |
-| `IconStyler` | `icon`, `color`, `size`, `weight`, `grade`, `opticalSize`, `fill`, `opacity`, `shadows`, `shadow`, `textDirection`, `applyTextScaling`, `blendMode` |
-| `ImageStyler` | `image`, dimensions, `color`, `repeat`, `fit`, `alignment`, `centerSlice`, `filterQuality`, `colorBlendMode`, `gaplessPlayback`, `isAntiAlias`, `matchTextDirection` |
+| `paddingAll(v)`, `paddingX(v)`, `paddingY(v)` | `padding(.all(v))`, `padding(.horizontal(v))`, `padding(.vertical(v))` |
+| `paddingTop(v)`, `paddingLeft(v)`, `paddingStart(v)`, … | `padding(.top(v))`, `padding(.left(v))`, `padding(.start(v))`, … |
+| `paddingOnly(...)` | Physical, broad setter first: `padding(.horizontal(8).left(4))`. `start`/`end` are peers, either order: `padding(.start(4).end(16))`. Nullables: resolve each side, then `.only` or `.directional` |
+| `marginAll(v)`, `marginTop(v)`, `marginOnly(...)`, … | Same split as padding. Broad setter first only for horizontal/vertical plus a physical side. `start`/`end` are peers |
+| `borderRounded(x)`, `borderRoundedTop(x)`, … | `borderRadius(.circular(x))`, `borderRadius(.top(.circular(x)))`, … |
+| `borderRadiusAll(r)`, `borderRadiusTopLeft(r)`, … | `borderRadius(.all(r))`, `borderRadius(.topLeft(r))`, … |
+| `borderAll(...)`, `borderTop(...)`, … | Known: `border(.color(c).width(w).style(s).strokeAlign(a))`, `border(.top(.color(c).width(w).style(s).strokeAlign(a)))`. Nullables: `border(.all(BorderSideMix(color: color, width: width, style: style, strokeAlign: strokeAlign)))`, `border(.top(BorderSideMix(...)))` |
+| `shapeCircle(...)`, `shapeStadium(...)`, … | `shape(.circle(...))`, `shape(.stadium(...))`, … |
+| `constraintsOnly(...)` | Known, broad then specific: `width(200).minWidth(100)`. Nullables: `constraints(BoxConstraintsMix(minWidth: minWidth ?? width, maxWidth: maxWidth ?? width, minHeight: minHeight ?? height, maxHeight: maxHeight ?? height))`. Prebuilt: `constraints(existing)` |
+| `shadowOnly(...)`, `boxShadows(v)`, `boxElevation(v)` | Known: `shadow(.color(c).offset(x: x, y: y).blurRadius(b).spreadRadius(s))`. Null offset: `shadow(BoxShadowMix(...))`. `shadows(v)`, `elevation(v)` |
+| `transformReset()` | `transform(.identity())` (default alignment stays `Alignment.center`) |
 
-## Methods WITHOUT Factories (Chain-Only)
+`paddingOnly` / `marginOnly` resolve each side on its own:
 
-These are mid-chain or end-of-chain policy choices. Some may also have generated factories; still prefer chained usage in top-level declarations:
+- `left = left ?? horizontal`
+- `right = right ?? horizontal`
+- `top = top ?? vertical`
+- `bottom = bottom ?? vertical`
+- If `start` or `end` is set, the result is directional: `start = start ?? left ?? horizontal`, `end = end ?? right ?? horizontal`, with the top and bottom values above.
+- Otherwise pass those four concretes to `.only(...)`. `.only` and `.directional` do not apply horizontal or vertical fallback themselves.
+- A chain matches only with the broad setter first: `padding(.horizontal(8).left(4))` equals `paddingOnly(horizontal: 8, left: 4)`. `padding(.left(4).horizontal(8))` lets `horizontal` overwrite left. The same order applies to `.vertical(...).top(...)` and to margin.
+- `start` / `end` stay directional in RTL. Physical `left` / `right` do not flip.
 
-| Category | Methods |
-|---|---|
-| Compound spacing | `padding(.all(8))`, `padding(.horizontal(8))`, `padding(.vertical(8))`, `margin(.all(8))`, `margin(.horizontal(8))`, `margin(.vertical(8))`, `padding(.only(left: 8, right: 8))` |
-| Compound border | `border(.all())`, `border(.top())`, `borderRadius(.circular())` |
-| Compound box | `shadow(.color(...).blurRadius(...))`, `backgroundImageUrl` |
-| Text directives | `uppercase`, `lowercase`, `capitalize`, `titlecase`, `sentencecase` |
-| Variants | `onHovered`, `onPressed`, `onDark`, `onLight`, `onDisabled`, `onFocused`, `variant`, `onBreakpoint` |
-| Advanced modifiers | `wrap`, `phaseAnimation`, `keyframeAnimation` |
+`constraintsOnly` resolves each bound on its own:
 
-**Rationale:** Factory constructors are reserved for primitives that map to stable style concepts. Compound convenience methods remain as instance methods to keep the static API focused.
+- `minWidth = minWidth ?? width`
+- `maxWidth = maxWidth ?? width`
+- `minHeight = minHeight ?? height`
+- `maxHeight = maxHeight ?? height`
+- Known values chain with the broad setter first: `width(200).maxWidth(320)` keeps min width at 200. `maxWidth(320).width(200)` lets `width` replace both bounds and does not match.
 
-## Composition Decision Tree
 
-- Fixed size? → `BoxStyler().size(w, h)`
-- Square? → `BoxStyler().size(s, s)` or `BoxStyler(constraints: BoxConstraintsMix.square(s))`
-- Min/max bounds? → `BoxStyler().minWidth(100).maxWidth(300)`
-- Pre-built Size/constraints? → Pass via constructor
-- Combining fragments? → `merge()`
-- Otherwise → Chain on the Styler instance
+## Composition decision tree
 
-## Composition Examples
+- One style: chain on a concrete styler.
+- Reusable independent fragments: `base.merge(patch)`.
+- Prebuilt constraints/Mix values: pass the value rather than reconstructing it.
+- Nullable grouped inputs: preserve fallback semantics with explicit constructors.
+- A layout choice: see [Layout](layout.md).
 
-```dart
-// Chaining (preferred for everyday use)
-final style = BoxStyler().color(Colors.blue).padding(.all(16)).borderRadius(.circular(8));
-
-// merge() for combining reusable fragments
-final base = BoxStyler().padding(.all(16));
-final elevated = BoxStyler().borderRadius(.circular(12));
-final card = base.merge(elevated);
-
-// Constructor for passing pre-built objects
-final box = BoxStyler(constraints: BoxConstraintsMix.square(200));
-```
+Plain values replace; partial Mix values accumulate fields. See the
+[fluent reference](fluent-api.md) for a merge example and interactions.

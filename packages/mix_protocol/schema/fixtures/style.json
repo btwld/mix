@@ -1,0 +1,1526 @@
+{
+  "accept": [
+    {
+      "name": "breakpoint selector token",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "variants": [
+          {
+            "kind": "context_breakpoint",
+            "token": "breakpoint.desktop",
+            "style": {
+              "type": "box",
+              "padding": 8
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "breakpoint selector token nested in context_not",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "variants": [
+          {
+            "kind": "context_not",
+            "variant": {
+              "kind": "context_breakpoint",
+              "token": "breakpoint.desktop"
+            },
+            "style": {
+              "type": "box",
+              "padding": 8
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "breakpoint selector minWidth",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "variants": [
+          {
+            "kind": "context_breakpoint",
+            "minWidth": 600,
+            "style": {
+              "type": "box",
+              "padding": 8
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "breakpoint selector minWidth nested in context_not",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "variants": [
+          {
+            "kind": "context_not",
+            "variant": {
+              "kind": "context_breakpoint",
+              "minWidth": 600
+            },
+            "style": {
+              "type": "box",
+              "padding": 8
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "breakpoint selector maxWidth",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "variants": [
+          {
+            "kind": "context_breakpoint",
+            "maxWidth": 1024,
+            "style": {
+              "type": "box",
+              "padding": 8
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "breakpoint selector maxWidth nested in context_not",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "variants": [
+          {
+            "kind": "context_not",
+            "variant": {
+              "kind": "context_breakpoint",
+              "maxWidth": 1024
+            },
+            "style": {
+              "type": "box",
+              "padding": 8
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "breakpoint selector minWidth+maxWidth",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "variants": [
+          {
+            "kind": "context_breakpoint",
+            "minWidth": 600,
+            "maxWidth": 1024,
+            "style": {
+              "type": "box",
+              "padding": 8
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "breakpoint selector minWidth+maxWidth nested in context_not",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "variants": [
+          {
+            "kind": "context_not",
+            "variant": {
+              "kind": "context_breakpoint",
+              "minWidth": 600,
+              "maxWidth": 1024
+            },
+            "style": {
+              "type": "box",
+              "padding": 8
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "box.padding canonical term 0",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "padding": 16
+      }
+    },
+    {
+      "name": "box.padding canonical term 1",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "padding": {
+          "left": 8,
+          "top": 4
+        }
+      }
+    },
+    {
+      "name": "box.padding canonical term 2",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "padding": {
+          "$token": "space.pad",
+          "kind": "space"
+        }
+      }
+    },
+    {
+      "name": "box.padding canonical term 3",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "padding": {
+          "$merge": [
+            4,
+            {
+              "left": 8
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "box.padding two-item merge",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "padding": {
+          "$merge": [
+            4,
+            8
+          ]
+        }
+      }
+    },
+    {
+      "name": "box.padding token without kind",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "padding": {
+          "$token": "space.stack.sm"
+        }
+      }
+    },
+    {
+      "name": "text.style.color merge",
+      "payload": {
+        "v": 1,
+        "type": "text",
+        "style": {
+          "color": {
+            "$merge": [
+              "#123456",
+              "#123456"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "text.strutStyle.fontSize merge",
+      "payload": {
+        "v": 1,
+        "type": "text",
+        "strutStyle": {
+          "fontSize": {
+            "$merge": [
+              12,
+              12
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "box.decoration.boxShadow merge",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "decoration": {
+          "boxShadow": {
+            "$merge": [
+              [],
+              []
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "wrap_box.decoration.boxShadow merge",
+      "payload": {
+        "v": 1,
+        "type": "wrap_box",
+        "decoration": {
+          "boxShadow": {
+            "$merge": [
+              [],
+              []
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "wrap_box.foregroundDecoration.boxShadow merge",
+      "payload": {
+        "v": 1,
+        "type": "wrap_box",
+        "foregroundDecoration": {
+          "boxShadow": {
+            "$merge": [
+              [],
+              []
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "flex.spacing space token",
+      "payload": {
+        "v": 1,
+        "type": "flex",
+        "spacing": {
+          "$token": "space.stack.sm",
+          "kind": "space"
+        }
+      }
+    },
+    {
+      "name": "flex.spacing double token",
+      "payload": {
+        "v": 1,
+        "type": "flex",
+        "spacing": {
+          "$token": "double.gap",
+          "kind": "double"
+        }
+      }
+    },
+    {
+      "name": "wrap.spacing space token",
+      "payload": {
+        "v": 1,
+        "type": "wrap",
+        "spacing": {
+          "$token": "space.wrap.gap",
+          "kind": "space"
+        }
+      }
+    },
+    {
+      "name": "wrap_box.spacing double token",
+      "payload": {
+        "v": 1,
+        "type": "wrap_box",
+        "spacing": {
+          "$token": "double.wrap.gap",
+          "kind": "double"
+        }
+      }
+    },
+    {
+      "name": "wrap.runSpacing space token",
+      "payload": {
+        "v": 1,
+        "type": "wrap",
+        "runSpacing": {
+          "$token": "space.wrap.gap",
+          "kind": "space"
+        }
+      }
+    },
+    {
+      "name": "wrap_box.runSpacing double token",
+      "payload": {
+        "v": 1,
+        "type": "wrap_box",
+        "runSpacing": {
+          "$token": "double.wrap.gap",
+          "kind": "double"
+        }
+      }
+    },
+    {
+      "name": "wrap_box.padding space token",
+      "payload": {
+        "v": 1,
+        "type": "wrap_box",
+        "padding": {
+          "$token": "space.wrap.padding",
+          "kind": "space"
+        }
+      }
+    },
+    {
+      "name": "wrap_box.margin space token",
+      "payload": {
+        "v": 1,
+        "type": "wrap_box",
+        "margin": {
+          "$token": "space.wrap.margin",
+          "kind": "space"
+        }
+      }
+    },
+    {
+      "name": "grid_box.columnGap space token",
+      "payload": {
+        "v": 1,
+        "type": "grid_box",
+        "columnGap": {
+          "$token": "space.grid.gap",
+          "kind": "space"
+        }
+      }
+    },
+    {
+      "name": "grid_box.rowGap space token",
+      "payload": {
+        "v": 1,
+        "type": "grid_box",
+        "rowGap": {
+          "$token": "space.grid.gap",
+          "kind": "space"
+        }
+      }
+    },
+    {
+      "name": "text.style.fontSize space token",
+      "payload": {
+        "v": 1,
+        "type": "text",
+        "style": {
+          "fontSize": {
+            "$token": "space.font.md",
+            "kind": "space"
+          }
+        }
+      }
+    },
+    {
+      "name": "text.strutStyle.leading space token",
+      "payload": {
+        "v": 1,
+        "type": "text",
+        "strutStyle": {
+          "leading": {
+            "$token": "space.leading.tight",
+            "kind": "space"
+          }
+        }
+      }
+    },
+    {
+      "name": "grid_box.columns numeric tokens",
+      "payload": {
+        "v": 1,
+        "type": "grid_box",
+        "columns": [
+          {
+            "type": "fixed",
+            "size": {
+              "$token": "space.grid.track",
+              "kind": "space"
+            }
+          },
+          {
+            "type": "fr",
+            "fraction": {
+              "$token": "double.grid.weight",
+              "kind": "double"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "grid_box.rows auto track",
+      "payload": {
+        "v": 1,
+        "type": "grid_box",
+        "rows": [
+          {
+            "type": "auto"
+          }
+        ]
+      }
+    },
+    {
+      "name": "grid_box.autoRows auto track",
+      "payload": {
+        "v": 1,
+        "type": "grid_box",
+        "autoRows": {
+          "type": "auto"
+        }
+      }
+    },
+    {
+      "name": "grid_box.constraintBranches numeric tokens",
+      "payload": {
+        "v": 1,
+        "type": "grid_box",
+        "constraintBranches": [
+          {
+            "breakpoint": {
+              "maxWidth": 600
+            },
+            "patch": {
+              "autoRows": {
+                "type": "fixed",
+                "size": {
+                  "$token": "space.grid.row",
+                  "kind": "space"
+                }
+              },
+              "rowGap": {
+                "$token": "space.grid.gap",
+                "kind": "space"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "grid_box.constraintBranches auto tracks",
+      "payload": {
+        "v": 1,
+        "type": "grid_box",
+        "constraintBranches": [
+          {
+            "breakpoint": {
+              "maxWidth": 600
+            },
+            "patch": {
+              "autoRows": {
+                "type": "auto"
+              },
+              "rows": [
+                {
+                  "type": "auto"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "color directive color_opacity",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "decoration": {
+          "color": {
+            "$merge": [
+              "#336699"
+            ],
+            "apply": [
+              {
+                "op": "color_opacity",
+                "opacity": 0.5
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "color directive color_with_values",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "decoration": {
+          "color": {
+            "$merge": [
+              "#336699"
+            ],
+            "apply": [
+              {
+                "op": "color_with_values",
+                "alpha": 0.7,
+                "red": 0.2,
+                "green": 0.3,
+                "blue": 0.4,
+                "colorSpace": "sRGB"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "color directive color_alpha",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "decoration": {
+          "color": {
+            "$merge": [
+              "#336699"
+            ],
+            "apply": [
+              {
+                "op": "color_alpha",
+                "alpha": 128
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "color directive color_darken",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "decoration": {
+          "color": {
+            "$merge": [
+              "#336699"
+            ],
+            "apply": [
+              {
+                "op": "color_darken",
+                "amount": 10
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "color directive color_lighten",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "decoration": {
+          "color": {
+            "$merge": [
+              "#336699"
+            ],
+            "apply": [
+              {
+                "op": "color_lighten",
+                "amount": 10
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "color directive color_saturate",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "decoration": {
+          "color": {
+            "$merge": [
+              "#336699"
+            ],
+            "apply": [
+              {
+                "op": "color_saturate",
+                "amount": 10
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "color directive color_desaturate",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "decoration": {
+          "color": {
+            "$merge": [
+              "#336699"
+            ],
+            "apply": [
+              {
+                "op": "color_desaturate",
+                "amount": 10
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "color directive color_tint",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "decoration": {
+          "color": {
+            "$merge": [
+              "#336699"
+            ],
+            "apply": [
+              {
+                "op": "color_tint",
+                "amount": 10
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "color directive color_shade",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "decoration": {
+          "color": {
+            "$merge": [
+              "#336699"
+            ],
+            "apply": [
+              {
+                "op": "color_shade",
+                "amount": 10
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "color directive color_brighten",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "decoration": {
+          "color": {
+            "$merge": [
+              "#336699"
+            ],
+            "apply": [
+              {
+                "op": "color_brighten",
+                "amount": 10
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "color directive color_with_red",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "decoration": {
+          "color": {
+            "$merge": [
+              "#336699"
+            ],
+            "apply": [
+              {
+                "op": "color_with_red",
+                "red": 12
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "color directive color_with_green",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "decoration": {
+          "color": {
+            "$merge": [
+              "#336699"
+            ],
+            "apply": [
+              {
+                "op": "color_with_green",
+                "green": 34
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "color directive color_with_blue",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "decoration": {
+          "color": {
+            "$merge": [
+              "#336699"
+            ],
+            "apply": [
+              {
+                "op": "color_with_blue",
+                "blue": 56
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "string directive uppercase",
+      "payload": {
+        "v": 1,
+        "type": "text",
+        "semanticsLabel": {
+          "$merge": [
+            "hello world"
+          ],
+          "apply": [
+            {
+              "op": "uppercase"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "string directive lowercase",
+      "payload": {
+        "v": 1,
+        "type": "text",
+        "semanticsLabel": {
+          "$merge": [
+            "hello world"
+          ],
+          "apply": [
+            {
+              "op": "lowercase"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "string directive capitalize",
+      "payload": {
+        "v": 1,
+        "type": "text",
+        "semanticsLabel": {
+          "$merge": [
+            "hello world"
+          ],
+          "apply": [
+            {
+              "op": "capitalize"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "string directive title_case",
+      "payload": {
+        "v": 1,
+        "type": "text",
+        "semanticsLabel": {
+          "$merge": [
+            "hello world"
+          ],
+          "apply": [
+            {
+              "op": "title_case"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "string directive sentence_case",
+      "payload": {
+        "v": 1,
+        "type": "text",
+        "semanticsLabel": {
+          "$merge": [
+            "hello world"
+          ],
+          "apply": [
+            {
+              "op": "sentence_case"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "number directive number_multiply",
+      "payload": {
+        "v": 1,
+        "type": "flex",
+        "spacing": {
+          "$merge": [
+            4
+          ],
+          "apply": [
+            {
+              "op": "number_multiply",
+              "factor": 1.5
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "number directive number_add",
+      "payload": {
+        "v": 1,
+        "type": "flex",
+        "spacing": {
+          "$merge": [
+            4
+          ],
+          "apply": [
+            {
+              "op": "number_add",
+              "addend": 2
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "number directive number_subtract",
+      "payload": {
+        "v": 1,
+        "type": "flex",
+        "spacing": {
+          "$merge": [
+            4
+          ],
+          "apply": [
+            {
+              "op": "number_subtract",
+              "subtrahend": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "number directive number_divide",
+      "payload": {
+        "v": 1,
+        "type": "flex",
+        "spacing": {
+          "$merge": [
+            4
+          ],
+          "apply": [
+            {
+              "op": "number_divide",
+              "divisor": 2
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "number directive number_clamp",
+      "payload": {
+        "v": 1,
+        "type": "flex",
+        "spacing": {
+          "$merge": [
+            4
+          ],
+          "apply": [
+            {
+              "op": "number_clamp",
+              "min": 1,
+              "max": 8
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "number directive number_abs",
+      "payload": {
+        "v": 1,
+        "type": "flex",
+        "spacing": {
+          "$merge": [
+            4
+          ],
+          "apply": [
+            {
+              "op": "number_abs"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "number directive number_round",
+      "payload": {
+        "v": 1,
+        "type": "flex",
+        "spacing": {
+          "$merge": [
+            4
+          ],
+          "apply": [
+            {
+              "op": "number_round"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "number directive number_floor",
+      "payload": {
+        "v": 1,
+        "type": "flex",
+        "spacing": {
+          "$merge": [
+            4
+          ],
+          "apply": [
+            {
+              "op": "number_floor"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "number directive number_ceil",
+      "payload": {
+        "v": 1,
+        "type": "flex",
+        "spacing": {
+          "$merge": [
+            4
+          ],
+          "apply": [
+            {
+              "op": "number_ceil"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "flex.spacing merge with apply",
+      "payload": {
+        "v": 1,
+        "type": "flex",
+        "spacing": {
+          "$merge": [
+            4
+          ],
+          "apply": [
+            {
+              "op": "number_multiply",
+              "factor": 2
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "flex.spacing merges token and literal",
+      "payload": {
+        "v": 1,
+        "type": "flex",
+        "spacing": {
+          "$merge": [
+            {
+              "$token": "space.stack.sm",
+              "kind": "space"
+            },
+            4
+          ]
+        }
+      }
+    },
+    {
+      "name": "text.style.color token with directive",
+      "payload": {
+        "v": 1,
+        "type": "text",
+        "style": {
+          "color": {
+            "$token": "color.brand",
+            "apply": [
+              {
+                "op": "color_alpha",
+                "alpha": 128
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "text.semanticsLabel string directive",
+      "payload": {
+        "v": 1,
+        "type": "text",
+        "semanticsLabel": {
+          "$merge": [
+            "hello world"
+          ],
+          "apply": [
+            {
+              "op": "title_case"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "text.strutStyle.fontSize merge with directive",
+      "payload": {
+        "v": 1,
+        "type": "text",
+        "strutStyle": {
+          "fontSize": {
+            "$merge": [
+              12
+            ],
+            "apply": [
+              {
+                "op": "number_multiply",
+                "factor": 1.5
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "box.decoration.boxShadow merge of lists",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "decoration": {
+          "boxShadow": {
+            "$merge": [
+              [
+                {
+                  "color": "#000000",
+                  "offset": {
+                    "x": 0,
+                    "y": 1
+                  },
+                  "blurRadius": 2
+                }
+              ],
+              [
+                {
+                  "color": "#FFFFFF",
+                  "offset": {
+                    "x": 2,
+                    "y": 3
+                  },
+                  "blurRadius": 4
+                }
+              ]
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "reject": [
+    {
+      "name": "breakpoint selector ",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "variants": [
+          {
+            "kind": "context_breakpoint",
+            "style": {
+              "type": "box",
+              "padding": 8
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "breakpoint selector  nested in context_not",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "variants": [
+          {
+            "kind": "context_not",
+            "variant": {
+              "kind": "context_breakpoint"
+            },
+            "style": {
+              "type": "box",
+              "padding": 8
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "breakpoint selector token+minWidth",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "variants": [
+          {
+            "kind": "context_breakpoint",
+            "token": "breakpoint.desktop",
+            "minWidth": 600,
+            "style": {
+              "type": "box",
+              "padding": 8
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "breakpoint selector token+minWidth nested in context_not",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "variants": [
+          {
+            "kind": "context_not",
+            "variant": {
+              "kind": "context_breakpoint",
+              "token": "breakpoint.desktop",
+              "minWidth": 600
+            },
+            "style": {
+              "type": "box",
+              "padding": 8
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "breakpoint selector token+maxWidth",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "variants": [
+          {
+            "kind": "context_breakpoint",
+            "token": "breakpoint.desktop",
+            "maxWidth": 1024,
+            "style": {
+              "type": "box",
+              "padding": 8
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "breakpoint selector token+maxWidth nested in context_not",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "variants": [
+          {
+            "kind": "context_not",
+            "variant": {
+              "kind": "context_breakpoint",
+              "token": "breakpoint.desktop",
+              "maxWidth": 1024
+            },
+            "style": {
+              "type": "box",
+              "padding": 8
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "invalid term 0 padding",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "padding": null
+      }
+    },
+    {
+      "name": "invalid term 1 padding",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "padding": {
+          "$merge": [
+            true,
+            false
+          ]
+        }
+      }
+    },
+    {
+      "name": "invalid term 2 padding",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "padding": {
+          "$token": "space.pad",
+          "kind": "color"
+        }
+      }
+    },
+    {
+      "name": "invalid term 3 padding",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "padding": {
+          "$token": "invalid token name"
+        }
+      }
+    },
+    {
+      "name": "invalid term 4 decoration",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "decoration": {
+          "color": {
+            "$merge": [
+              "#123456"
+            ],
+            "apply": [
+              {
+                "op": "number_add",
+                "addend": 1
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "invalid term 5 decoration",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "decoration": {
+          "color": {
+            "$merge": [
+              "#123456"
+            ],
+            "apply": [
+              {
+                "op": "color_opacity",
+                "opacity": "half"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "box.padding wrong literal type",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "padding": true
+      }
+    },
+    {
+      "name": "box.clipBehavior wrong literal type",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "clipBehavior": 17
+      }
+    },
+    {
+      "name": "box.transform wrong literal type",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "transform": [
+          1,
+          2
+        ]
+      }
+    },
+    {
+      "name": "box.padding token with non-string name",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "padding": {
+          "$token": 7
+        }
+      }
+    },
+    {
+      "name": "box.padding token with unknown key",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "padding": {
+          "$token": "x",
+          "bad": 1
+        }
+      }
+    },
+    {
+      "name": "box.padding empty merge",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "padding": {
+          "$merge": []
+        }
+      }
+    },
+    {
+      "name": "box.padding single-item merge without apply",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "padding": {
+          "$merge": [
+            4
+          ]
+        }
+      }
+    },
+    {
+      "name": "box.padding apply without source",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "padding": {
+          "apply": []
+        }
+      }
+    },
+    {
+      "name": "flex.spacing empty apply list",
+      "payload": {
+        "v": 1,
+        "type": "flex",
+        "spacing": {
+          "$merge": [
+            4
+          ],
+          "apply": []
+        }
+      }
+    },
+    {
+      "name": "text.style.color empty apply list",
+      "payload": {
+        "v": 1,
+        "type": "text",
+        "style": {
+          "color": {
+            "$token": "color.brand",
+            "apply": []
+          }
+        }
+      }
+    },
+    {
+      "name": "text.selectionColor token with space kind",
+      "payload": {
+        "v": 1,
+        "type": "text",
+        "selectionColor": {
+          "$token": "color.brand",
+          "kind": "space"
+        }
+      }
+    },
+    {
+      "name": "text.style.color token with space kind",
+      "payload": {
+        "v": 1,
+        "type": "text",
+        "style": {
+          "color": {
+            "$token": "color.brand",
+            "kind": "space"
+          }
+        }
+      }
+    },
+    {
+      "name": "color directive with extra parameter",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "decoration": {
+          "color": {
+            "$merge": [
+              "#336699"
+            ],
+            "apply": [
+              {
+                "op": "color_opacity",
+                "opacity": 0.5,
+                "alpha": 0.7
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "color directive with unknown op",
+      "payload": {
+        "v": 1,
+        "type": "box",
+        "decoration": {
+          "color": {
+            "$merge": [
+              "#336699"
+            ],
+            "apply": [
+              {
+                "op": "color_invert"
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

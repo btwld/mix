@@ -1,11 +1,489 @@
 ## Unreleased
 
-This release hardens the token-reference system: it fixes correctness gaps
-around `DoubleRef` sentinels, breakpoint resolution, and numeric directives,
-and tightens public API around the internal token registry.
+### New features
+
+- `animate(forward, reverse: exit)` lets a variant set its own exit timing.
+  Both configs must be curve or spring animations.
+
+### Migration
+
+- Calls to `animate(config)` and implementations of `AnimationStyleMixin`
+  are unchanged. Overrides of a concrete styler's `animate` method must
+  accept the optional named `AnimationConfig? reverse` parameter. Upgrade
+  `mix` and `mix_generator` together to regenerate stylers with `reverse:`.
+  Exhaustive switches over `AnimationConfig` must handle
+  `ReversibleAnimationConfig`.
+
+### Bug fixes
+
+- Delayed curve transitions hold the current rendered value during the delay.
+- **Blur lifecycle:** preserve child state, focus, text editing, and active
+  tickers when blur changes to or from zero. The `ImageFiltered` wrapper stays
+  mounted with filtering disabled at zero sigma.
+
+## 2.4.0
+
+### New features
+
+- **Callable grid styles:** `GridBoxStyler` now constructs a `GridBox` with
+  `grid(children: [...])`, forwarding its style, key, and children.
+  `GridBox(style: ..., children: ...)` still works.
+
+### Bug fixes
+
+- **Deep equality:** comparing a map, set or other iterable with a value of a
+  different shape now returns `false` instead of throwing. Non-`List`
+  iterables with the same elements in the same order compare equal, and maps
+  whose values are deeply equal collections now share a hash code (#1113).
+
+## 2.3.1
+
+### Bug fixes
+
+- **Prop resolution:** when a value can't be converted to a `Mix`, the latest
+  source now wins, as everywhere else in Mix. Previously the value was dropped
+  and an earlier `Mix` source was used instead. Debug builds report the missing
+  converter through `FlutterError.reportError` instead of `debugPrint`, so it
+  shows up in `FlutterError.onError` and fails widget tests.
+
+## 2.3.0
+
+### New features
+
+- **Pressable boxes from stylers:** `BoxStyler.pressable(...)` returns a
+  `PressableBox` that uses the style, so `button.pressable(onPress: save,
+  child: label('Save'))` replaces `PressableBox(style: button, ...)`. It accepts
+  the same parameters and defaults as `PressableBox`.
+- **Focus visibility API:** The new `FocusVisibility` and
+  `FocusVisibilityScope` expose the same signal to widgets that draw their own
+  focus indicators or publish widget states themselves. Call
+  `FocusVisibility.ensureInitialized()` at startup if a pointer press can
+  happen before the first Mix widget builds.
+
+### Bug fixes
+
+- **Focus visible:** `onFocusVisible` hides focus indicators after a pointer
+  press until the next keyboard input, so focus from a mouse click, or moved
+  in code after one, no longer shows a focus ring on desktop. This follows the
+  pointer and keyboard part of CSS `:focus-visible` but not its text-input
+  exception; use `onFocused` for a ring on any focus.
+  `FocusHighlightStrategy.alwaysTraditional` and `alwaysTouch` still override
+  input.
+
+## 2.2.2
+
+### Bug fixes
+
+- **Modifier animation:** hover-only modifiers such as `.rotate(0.1)` now
+  animate back to their neutral value on exit without an explicit `.rotate(0)`.
+  Modifier tweens preserve exact endpoints, support interrupted transitions,
+  and snap additions/removals at the midpoint when no neutral value exists.
+  Interpolated opacity, padding, and blur remain within renderable bounds
+  during spring overshoot; rotation and valid overshoot still extrapolate.
+- **Modifier order:** `MixScope.orderOfModifiers` now affects rendering, with
+  style-local order taking precedence. Animated modifier lists retain this
+  order, including when scope order changes during removal, and phase styles
+  respond to inherited order changes without duplicating completion callbacks.
+  Implicit return animations keep their timing when a variant drops its
+  animation config. Existing scope
+  order settings that were previously ignored can change wrapper nesting.
+
+## 2.2.1
+
+### New features
+
+- **Gradient shorthand transforms:** `linearGradient`, `radialGradient`,
+  `sweepGradient`, and their `foreground*Gradient` counterparts (plus the
+  generated `BoxStyler`, `FlexBoxStyler`, `StackBoxStyler`, and `WrapBoxStyler`
+  factories) now accept an optional `GradientTransform transform`, so a
+  gradient can be rotated, for example
+  `.sweepGradient(colors: colors, transform: GradientRotation(angle))`, without
+  switching to `gradient(SweepGradientMix(...))`. The parameter is optional and
+  existing calls are unchanged.
+- **Blur tile mode:** `BlurModifier`, `BlurModifierMix`, and the
+  `WidgetModifierConfig.blur` factory and instance method now accept an optional
+  `TileMode tileMode`, carried through the protocol as well. The parameter is
+  optional and defaults to the previous `TileMode.clamp` behavior, so existing
+  calls are unchanged.
+
+### Deprecations
+
+- **Styler convenience shorthands:** the convenience shorthands on the stylers
+  are deprecated in favor of the canonical shorthand forms. Nothing is removed
+  in this release; see the migration notes in the docs for the canonical
+  replacement of each deprecated call.
+
+### Bug fixes
+
+- **Animation:** a style that drops its animation config now stops the running
+  animation instead of leaving it playing.
+
+## 2.2.0
+
+Stable release of the 2.2.0 line, cumulative over the `2.2.0-beta.0` through
+`2.2.0-beta.6` prereleases. This release adds the `GridBox` and `WrapBox` layout
+families, a typed and extensible context-variant system with focus-visible
+support, a fuller `Pressable` input and semantics surface, and complete
+`WidgetModifierConfig` convenience APIs; it fixes variant merge priority and
+nested widget-state discovery, and it carries breaking changes to `Pressable`
+and to `GridBox` implicit rows.
+
+### New features
+
+- **GridBox:** Added the public `GridTrack`, `GridBoxSpec`, `GridBoxStyler`, and
+  `GridBox` API with fixed/fractional tracks, explicit and repeated rows, gaps,
+  row-major placement, clipping, and local `Breakpoint`-based constraint
+  branches. Equal fractional columns use `equalColumns`; numeric tracks and
+  gaps support Mix tokens; compatible geometry participates in implicit style
+  animation. `GridTrack.auto()` adds content-sized row tracks for `rows` and
+  `autoRows`: an auto row sizes to its tallest child's natural height at the
+  resolved column width, then stretches shorter children to fill the row. `auto`
+  is vertical-only; `columns` rejects it.
+- **WrapBox:** Added the public `WrapSpec`, `WrapStyler`, `WrapBoxSpec`,
+  `WrapBoxStyler`, and `WrapBox` family with flattened fluent Wrap styling,
+  collision-safe Box/Wrap names, generated constructors and factories, and a
+  runnable gallery example.
+- **Complete `WidgetModifierConfig` convenience APIs:** `mouseCursor` and
+  `scrollView` are now available as factories and chain methods, and `skew`,
+  `defaultIcon`, `iconTheme`, `box`, and `reset` gained the chain methods their
+  factories were missing. Every built-in modifier can now be reached without
+  `.modifier(SomeModifierMix(...))`, for example
+  `BoxStyler().wrap(.mouseCursor(SystemMouseCursors.click))`. The chained
+  `reset()` clears the modifiers accumulated in that configuration only; use the
+  `WidgetModifierConfig.reset()` factory when the reset must also clear the
+  configuration it is merged into.
+- **`ContextVariant.widgetStateDependencies`:** Context variants now declare the
+  widget states they read, so custom variants participate in nested dependency
+  discovery instead of relying on the framework recognizing a specific variant
+  type. Automatic self-tracking is limited to pointer-driven hover and press;
+  other states still require an ancestor scope or external controller.
+- **Typed focus-visible variants:** Added `FocusVisibleVariant`,
+  `ContextVariant.focusVisible()`, and `onFocusVisible(...)`, which apply while
+  focus is highlighted in Flutter's traditional (keyboard/directional) mode.
+- **Pressable semantics roles:** Added `PressableSemanticsRole` with button,
+  link, and neutral roles. `PressableBox` now forwards the full Pressable
+  focus, keyboard, controller, feedback, cursor, action, and semantics surface.
+- **Typed context variants:** `BrightnessVariant`, `BreakpointVariant`,
+  `OrientationVariant`, `DirectionalityVariant`, `PlatformVariant`,
+  `WebVariant`, and `NotVariant` are now public value objects behind their
+  `ContextVariant` factories, giving schema and tooling code stable typed data
+  to inspect instead of parsing keys.
+- **Style-state override scope:** `WidgetStateStyleOverride` lets tooling and
+  tests force widget-state variants through normal `style` resolution, taking
+  precedence over controllers and nested interaction providers without
+  changing component behavior.
+- **Generated Styler field metadata:** Every generated Styler now exposes its
+  complete source-field inventory through
+  `StylerFieldMetadata.$stylerFieldNames`, allowing schema tooling to validate
+  coverage without maintaining duplicate string manifests. Handwritten and
+  previously generated Stylers do not implement this capability until they opt
+  in or are regenerated.
+- **`CssKeywordLinearTransform`:** Adds a reusable bounds-aware
+  `GradientTransform` for CSS linear-gradient keyword directions, so Tailwind
+  corner gradients can round-trip through schema tooling without losing visual
+  parity.
+
+### Breaking changes
+
+- **Pressable input and semantics:** Replaced `semanticButtonLabel` with
+  `semanticsLabel`, added `semanticsRole`, and removed the deprecated `onKey`
+  callback. Use `onKeyEvent` for custom keyboard handling.
+- **Reserved activation keys:** While it holds primary focus and can activate,
+  Pressable owns unmodified Space, Enter, numpad Enter, select, and game button
+  A so it can model held-key state consistently. Override those direct key
+  bindings with `onKeyEvent`. `onPress` still honors `ActivateIntent` dispatched
+  by remapped shortcuts or programmatic invocation, and custom `actions` can
+  override that binding or handle other intents. Only those five reserved keys
+  are claimed raw; they are left untouched when a descendant holds focus, and
+  modified chords are left to application shortcuts. A link-role Pressable
+  activates with Enter but leaves Space available for scrolling.
+- **Omitted GridBox `autoRows` no longer throws:** Children needing more rows
+  than were declared previously required an explicit `autoRows` track, or the
+  Grid threw. Omitted `autoRows` now defaults to `GridTrack.auto()`, so
+  implicit rows size to their tallest child — both when no rows are declared
+  and when explicit rows run out. Fractional rows still require a bounded
+  height, and fixed tracks remain hard constraints. If you relied on the throw
+  to catch an under-declared Grid, declare `rows` explicitly or set `autoRows`
+  to the track you want repeated.
 
 ### Fixes
 
+- **Variant merge priority follows declared state dependencies:** Priority now
+  groups active variants by whether they declare
+  `ContextVariant.widgetStateDependencies` rather than by whether they are a
+  `WidgetStateVariant`, so `onFocusVisible(...)` competes by declaration order
+  instead of always losing to any widget-state variant sharing a property, which
+  had been silently replacing focus rings. Variants built on
+  `ContextVariant.not(...)` move with their inner variant, so `onEnabled(...)`
+  now outranks an ambient variant such as `onDark(...)` declared after it.
+- **Declaration order within a priority group is reliable:** Grouping is a
+  stable partition rather than a `List.sort`, which fell back to an unstable
+  quicksort at 32 elements and could reorder equal-priority variants in styles
+  that large.
+- **Nested widget-state discovery:** `Style.widgetStates` now discovers state
+  requirements recursively through nested and negated context-variant branches
+  with identity-based cycle protection, so variants like
+  `onDark(BoxStyler().onHovered(...))` and `onEnabled(...)` are tracked instead
+  of silently never activating. Branches under un-applied named variants are
+  deliberately not tracked because they cannot activate until `applyVariants`
+  hoists them to the top level.
+- **Interaction detector is mounted only when it can help:** `StyleBuilder` now
+  installs its pointer-interaction detector only for the states that detector
+  actually drives (`hovered`/`pressed`). States such as `disabled` and `focused`
+  can only come from an external `WidgetStatesController` or an ancestor scope,
+  so styles depending solely on those no longer gain an opaque hit-test target
+  that swallowed pointer events aimed at widgets beneath them, and no longer
+  hijack the state scope of descendants that do track hover.
+- **Pressable lifecycle:** Pointer and keyboard press sources are combined
+  without clearing each other, keyboard activation fires once on key-up,
+  cancellation clears held state, focus-visible follows Flutter input modality,
+  and disabled controls ignore custom key handling and expose neither semantic
+  nor custom actions.
+- **Press state ends with the gesture:** A pointer that drifts past the tap slop
+  stops counting as a press, so items no longer stay visually pressed while a
+  list scrolls under the finger.
+- **Focus-visible scope:** The focus-highlight scope is now provided wherever
+  widget states are, so `onFocusVisible` also resolves — and repaints on input
+  modality changes — outside a `Pressable`. A `WidgetStateStyleOverride` forcing
+  `focused` now applies it too, matching `onFocused`.
+- **Variant merge-key collisions:** Variant styles now merge by an opaque,
+  semantic identity instead of the human-readable `Variant.key`. Equivalent
+  named, enum-backed, and built-in context variants still coalesce, while
+  unrelated variants with the same label retain their own predicates. Dynamic
+  builders keep their existing build-then-merge behavior and use function
+  equality instead of a hash string for merge identity.
+- **Context variant equality:** `ContextVariant.brightness`,
+  `ContextVariant.breakpoint`, `ContextVariant.orientation`,
+  `ContextVariant.directionality`, `ContextVariant.platform`,
+  `ContextVariant.web`, and `ContextVariant.not` now compare by their typed
+  values instead of identity, so equivalent variants deduplicate and
+  round-trip predictably.
+- **Default text style modifier merge:** Partial `DefaultTextStyleModifierMix`
+  overrides now merge with the ambient `DefaultTextStyle` instead of replacing
+  inherited text style fields.
+- **Box shadow blur styles:** `BoxShadowMix` now preserves non-default
+  `BoxShadow.blurStyle` values across construction, conversion, merging,
+  resolution, diagnostics, equality, and its fluent and factory APIs (#992).
+
+### API changes
+
+- **`tokenFromReferenceValue`** is now public for schema/tooling code that needs
+  to identify unresolved token references, including sentinel-backed
+  `DoubleRef` values, without importing Mix internals.
+
+## 2.2.0-beta.6
+
+### New features
+
+- **Complete `WidgetModifierConfig` convenience APIs:** `mouseCursor` and
+  `scrollView` are now available as factories and chain methods, and `skew`,
+  `defaultIcon`, `iconTheme`, `box`, and `reset` gained the chain methods their
+  factories were missing. Every built-in modifier can now be reached without
+  `.modifier(SomeModifierMix(...))`, for example
+  `BoxStyler().wrap(.mouseCursor(SystemMouseCursors.click))`. The chained
+  `reset()` clears the modifiers accumulated in that configuration only; use the
+  `WidgetModifierConfig.reset()` factory when the reset must also clear the
+  configuration it is merged into. Existing factories and chain methods are
+  unchanged, and `.modifier(...)`/`.modifiers([...])` remain the entry points
+  for custom modifiers.
+
+## 2.2.0-beta.5
+
+### New features
+
+- **`GridTrack.auto()`:** Content-sized row tracks for `rows` and `autoRows`.
+  An auto row sizes to its tallest child's natural height at the resolved
+  column width, then stretches shorter children to fill the row. Use it — or
+  omit `autoRows` — when child heights are unknown, such as a card grid in a
+  scroll view. `auto` is vertical-only; `columns` rejects it. Grids built only
+  from fixed and `fr` tracks are unaffected and still lay each child out once.
+- **Generated Styler field metadata:** Every generated Styler now exposes its
+  complete source-field inventory through
+  `StylerFieldMetadata.$stylerFieldNames`, allowing schema tooling to validate
+  coverage without maintaining duplicate string manifests. Handwritten and
+  previously generated Stylers do not implement this capability until they opt
+  in or are regenerated.
+
+### Breaking changes
+
+- **Omitted GridBox `autoRows` no longer throws:** Children needing more rows
+  than were declared previously required an explicit `autoRows` track, or the
+  Grid threw. Omitted `autoRows` now defaults to `GridTrack.auto()`, so
+  implicit rows size to their tallest child — both when no rows are declared
+  and when explicit rows run out. Fractional rows still require a bounded
+  height, and fixed tracks remain hard constraints. If you relied on the throw
+  to catch an under-declared Grid, declare `rows` explicitly or set `autoRows`
+  to the track you want repeated.
+
+## 2.2.0-beta.4
+
+### Fixes
+
+- **Variant merge priority follows declared state dependencies:** Priority now
+  groups active variants by whether they declare
+  `ContextVariant.widgetStateDependencies` rather than by whether they are a
+  `WidgetStateVariant`, so `onFocusVisible(...)` competes by declaration order
+  instead of always losing to any widget-state variant sharing a property, which
+  had been silently replacing focus rings. Variants built on
+  `ContextVariant.not(...)` move with their inner variant, so `onEnabled(...)`
+  now outranks an ambient variant such as `onDark(...)` declared after it.
+- **Declaration order within a priority group is reliable:** Grouping is a
+  stable partition rather than a `List.sort`, which fell back to an unstable
+  quicksort at 32 elements and could reorder equal-priority variants in styles
+  that large.
+
+## 2.2.0-beta.3
+
+### New features
+
+- **`ContextVariant.widgetStateDependencies`:** Context variants now declare the
+  widget states they read, so custom variants participate in nested dependency
+  discovery instead of relying on the framework recognizing a specific variant
+  type. Automatic self-tracking is limited to pointer-driven hover and press;
+  other states still require an ancestor scope or external controller.
+- **Typed focus-visible variants:** Added `FocusVisibleVariant`,
+  `ContextVariant.focusVisible()`, and `onFocusVisible(...)`, which apply while
+  focus is highlighted in Flutter's traditional (keyboard/directional) mode.
+- **Pressable semantics roles:** Added `PressableSemanticsRole` with button,
+  link, and neutral roles. `PressableBox` now forwards the full Pressable
+  focus, keyboard, controller, feedback, cursor, action, and semantics surface.
+
+### Breaking changes
+
+- **Pressable input and semantics:** Replaced `semanticButtonLabel` with
+  `semanticsLabel`, added `semanticsRole`, and removed the deprecated `onKey`
+  callback. Use `onKeyEvent` for custom keyboard handling.
+- **Reserved activation keys:** While it holds primary focus and can activate,
+  Pressable owns unmodified Space, Enter, numpad Enter, select, and game button
+  A so it can model held-key state consistently. Override those direct key
+  bindings with `onKeyEvent`. `onPress` still honors `ActivateIntent` dispatched
+  by remapped shortcuts or programmatic invocation, and custom `actions` can
+  override that binding or handle other intents. Only those five reserved keys
+  are claimed raw; they are left untouched when a descendant holds focus, and
+  modified chords are left to application shortcuts. A link-role Pressable
+  activates with Enter but leaves Space available for scrolling.
+
+### Fixes
+
+- **Nested widget-state discovery:** `Style.widgetStates` now discovers state
+  requirements recursively through nested and negated context-variant branches
+  with identity-based cycle protection, so variants like
+  `onDark(BoxStyler().onHovered(...))` and `onEnabled(...)` are tracked instead
+  of silently never activating. Branches under un-applied named variants are
+  deliberately not tracked because they cannot activate until `applyVariants`
+  hoists them to the top level.
+- **Interaction detector is mounted only when it can help:** `StyleBuilder` now
+  installs its pointer-interaction detector only for the states that detector
+  actually drives (`hovered`/`pressed`). States such as `disabled` and `focused`
+  can only come from an external `WidgetStatesController` or an ancestor scope,
+  so styles depending solely on those no longer gain an opaque hit-test target
+  that swallowed pointer events aimed at widgets beneath them, and no longer
+  hijack the state scope of descendants that do track hover.
+- **Pressable lifecycle:** Pointer and keyboard press sources are combined
+  without clearing each other, keyboard activation fires once on key-up,
+  cancellation clears held state, focus-visible follows Flutter input modality,
+  and disabled controls ignore custom key handling and expose neither semantic
+  nor custom actions.
+- **Press state ends with the gesture:** A pointer that drifts past the tap slop
+  stops counting as a press, so items no longer stay visually pressed while a
+  list scrolls under the finger.
+- **Focus-visible scope:** The focus-highlight scope is now provided wherever
+  widget states are, so `onFocusVisible` also resolves — and repaints on input
+  modality changes — outside a `Pressable`. A `WidgetStateStyleOverride` forcing
+  `focused` now applies it too, matching `onFocused`.
+
+## 2.2.0-beta.2
+
+### New features
+
+- **GridBox:** Added the public `GridTrack`, `GridBoxSpec`, `GridBoxStyler`, and
+  `GridBox` API with fixed/fractional tracks, explicit and repeated rows, gaps,
+  row-major placement, clipping, and local `Breakpoint`-based constraint
+  branches. Equal fractional columns use `equalColumns`; numeric tracks and
+  gaps support Mix tokens; compatible geometry participates in implicit style
+  animation.
+- **WrapBox:** Added the public `WrapSpec`, `WrapStyler`, `WrapBoxSpec`,
+  `WrapBoxStyler`, and `WrapBox` family with flattened fluent Wrap styling,
+  collision-safe Box/Wrap names, generated constructors and factories, and a
+  runnable gallery example.
+
+## 2.2.0-beta.1
+
+### Fixes
+
+- **Box shadow blur styles:** `BoxShadowMix` now preserves non-default
+  `BoxShadow.blurStyle` values across construction, conversion, merging,
+  resolution, diagnostics, equality, and its fluent and factory APIs (#992).
+
+## 2.2.0-beta.0
+
+### New features
+
+- **Style-state override scope:** `WidgetStateStyleOverride` lets tooling and
+  tests force widget-state variants through normal `style` resolution, taking
+  precedence over controllers and nested interaction providers without
+  changing component behavior.
+- **`CssKeywordLinearTransform`:** Adds a reusable bounds-aware
+  `GradientTransform` for CSS linear-gradient keyword directions, so Tailwind
+  corner gradients can round-trip through schema tooling without losing visual
+  parity.
+- **Typed context variants:** `BrightnessVariant`, `BreakpointVariant`,
+  `OrientationVariant`, `DirectionalityVariant`, `PlatformVariant`,
+  `WebVariant`, and `NotVariant` are now public value objects behind their
+  `ContextVariant` factories, giving schema and tooling code stable typed data
+  to inspect instead of parsing keys.
+
+### Fixes
+
+- **Variant merge-key collisions:** Variant styles now merge by an opaque,
+  semantic identity instead of the human-readable `Variant.key`. Equivalent
+  named, enum-backed, and built-in context variants still coalesce, while
+  unrelated variants with the same label retain their own predicates. Dynamic
+  builders keep their existing build-then-merge behavior and use function
+  equality instead of a hash string for merge identity.
+- **Context variant equality:** `ContextVariant.brightness`,
+  `ContextVariant.breakpoint`, `ContextVariant.orientation`,
+  `ContextVariant.directionality`, `ContextVariant.platform`,
+  `ContextVariant.web`, and `ContextVariant.not` now compare by their typed
+  values instead of identity, so equivalent variants deduplicate and
+  round-trip predictably.
+- **Default text style modifier merge:** Partial `DefaultTextStyleModifierMix`
+  overrides now merge with the ambient `DefaultTextStyle` instead of replacing
+  inherited text style fields.
+
+### API changes
+
+- **`tokenFromReferenceValue`** is now public for schema/tooling code that needs
+  to identify unresolved token references, including sentinel-backed
+  `DoubleRef` values, without importing Mix internals.
+
+## 2.1.0
+
+This release adds context-derived token resolution and richer animation
+configuration, fixes variant resolution in nested styles and animation
+interpolation edge cases, and hardens the token-reference system while
+tightening the public API around the internal token registry.
+
+### New features
+
+- **`ContextToken`:** Zero-config token whose value is derived directly from
+  the build context, so context-dependent values resolve without first
+  registering a token in a scope (#938).
+- **Spring animation helpers:** `AnimationConfig` statics are now factories,
+  with added spring-curve wrappers for configuring physics-based transitions
+  (#937).
+
+### Fixes
+
+- **Variants in nested styles:** A `Style` nested inside another style's `Prop`
+  (a component sub-style) now applies its own context variants — widget states,
+  brightness, breakpoints. Previously `Prop.resolveProp` resolved the merged
+  nested style via `resolve()`, which skips variants. No-op for nested styles
+  without variants (#926).
+- **`Matrix4` interpolation:** Tween a transform against the identity matrix
+  when one endpoint is null, instead of producing a degenerate result (#931).
+- **Animation config fallback:** Fall back to the previous animation config
+  when a transition resolves to null, rather than dropping the animation (#930).
 - **`DoubleRef` sentinel collisions:** Two distinct `MixToken<double>`
   instances whose hashes landed in the same bucket previously aliased to the
   same sentinel. The registry now hands out sentinels from a monotonic
@@ -42,6 +520,11 @@ and tightens public API around the internal token registry.
 - **`isAnyTokenRef`** drops the brittle `runtimeType.toString().endsWith(...)`
   check; a `Prop` carrying a `TokenSource` is now the sole class-based
   invariant.
+
+### Other changes
+
+- **`StyleWidget` defaults to `IdentityStyle<Spec>`**, giving widgets a
+  well-defined no-op style when none is supplied (#921).
 
 ## 2.0.3
 
@@ -297,13 +780,13 @@ Mix 2.0 is a ground-up rethink of how styling works in Flutter. This release int
 - Extensive bug fixes for increased stability.
 - Too many things to list; view our docs for more info.
 
-Visit our documentation site for more information [https://fluttermix.com](https://fluttermix.com)
+Visit our documentation site for more information [https://www.fluttermix.com](https://www.fluttermix.com)
 
 ## 0.0.7
 
 - Performance improvements.
-- Bug fixes [#59](https://github.com/leoafarias/mix/issues/59) by @bdlukaa.
-- InheritedAttribute - Custom Mix attributes [#94](https://github.com/leoafarias/mix/pull/94) by @pbissonho.
+- Bug fixes [#59](https://github.com/conceptadev/mix/issues/59) by @bdlukaa.
+- InheritedAttribute - Custom Mix attributes [#94](https://github.com/conceptadev/mix/pull/94) by @pbissonho.
 
 ## 0.0.6
 

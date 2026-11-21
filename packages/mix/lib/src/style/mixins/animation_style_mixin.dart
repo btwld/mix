@@ -6,7 +6,7 @@ import '../../core/style.dart';
 
 mixin AnimationStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
   @protected
-  T animate(AnimationConfig config, {AnimationConfig? reverse});
+  T animate(AnimationConfig config);
 
   /// Creates a keyframe animation. It will animate through the given timeline.
   T keyframeAnimation({

@@ -9,6 +9,8 @@
 ///   `variants`, `wrap`, `modifier`), `merge`, `resolve`,
 ///   `debugFillProperties`, `props`.
 /// - Mix mixin `_$XMixin`: `merge`, `resolve`, `props`.
+/// - Modifier mixin `_$XModifier` and `XModifierMix`: immutable modifier
+///   contract plus style-facing resolve/merge plumbing.
 /// - Widget wrapper `class X extends StatelessWidget` for a `Style<S>`
 ///   factory annotated with `@MixWidget`.
 library;
@@ -39,30 +41,31 @@ export 'src/modifier_generator.dart';
 export 'src/spec_styler_generator.dart';
 export 'src/styler_generator.dart';
 
-/// Builder factory for `mix_generator`.
-///
-/// Generates `_$XSpec` mixins for `@MixableSpec` classes, including `type`,
-/// `copyWith`, `lerp`, `props`, and `debugFillProperties` overrides.
-Builder mixGenerator(BuilderOptions _) {
+Builder _sharedPartBuilder(Generator generator, String partId) {
   return SharedPartBuilder(
-    [SpecGenerator()],
-    'mix_generator',
+    [generator],
+    partId,
     formatOutput: (code, version) {
       return DartFormatter(languageVersion: version).format(code);
     },
   );
 }
 
+/// Builder factory for `mix_generator`.
+///
+/// Generates `_$XSpec` mixins for `@MixableSpec` classes, including `type`,
+/// `copyWith`, `lerp`, `props`, and `debugFillProperties` overrides.
+Builder mixGenerator(BuilderOptions _) {
+  return _sharedPartBuilder(const SpecGenerator(), 'mix_generator');
+}
+
 /// Builder factory for `spec_styler_generator`.
 ///
 /// Generates full Styler classes from `@MixableSpec` classes.
 Builder specStylerGenerator(BuilderOptions _) {
-  return SharedPartBuilder(
-    [const SpecStylerGenerator()],
+  return _sharedPartBuilder(
+    const SpecStylerGenerator(),
     'spec_styler_generator',
-    formatOutput: (code, version) {
-      return DartFormatter(languageVersion: version).format(code);
-    },
   );
 }
 
@@ -71,51 +74,27 @@ Builder specStylerGenerator(BuilderOptions _) {
 /// Generates legacy `_$XStylerMixin` implementations for handwritten
 /// `@MixableStyler` classes.
 Builder stylerGenerator(BuilderOptions _) {
-  return SharedPartBuilder(
-    [StylerGenerator()],
-    'styler_generator',
-    formatOutput: (code, version) {
-      return DartFormatter(languageVersion: version).format(code);
-    },
-  );
+  return _sharedPartBuilder(const StylerGenerator(), 'styler_generator');
 }
 
 /// Builder factory for `mixable_generator`.
 ///
 /// Generates `_$XMixin` implementations for `@Mixable` classes.
 Builder mixableGenerator(BuilderOptions _) {
-  return SharedPartBuilder(
-    [MixableGenerator()],
-    'mixable_generator',
-    formatOutput: (code, version) {
-      return DartFormatter(languageVersion: version).format(code);
-    },
-  );
+  return _sharedPartBuilder(const MixableGenerator(), 'mixable_generator');
 }
 
 /// Builder factory for `mix_widget_generator`.
 ///
 /// Generates `StatelessWidget` wrappers for `@MixWidget` top-level factories.
 Builder mixWidgetGenerator(BuilderOptions _) {
-  return SharedPartBuilder(
-    [MixWidgetGenerator()],
-    'mix_widget_generator',
-    formatOutput: (code, version) {
-      return DartFormatter(languageVersion: version).format(code);
-    },
-  );
+  return _sharedPartBuilder(const MixWidgetGenerator(), 'mix_widget_generator');
 }
 
 /// Builder factory for `modifier_generator`.
 ///
-/// Generates `_$XModifierMethods` mixins and `XModifierMix` classes for
+/// Generates `_$XModifier` mixins and `XModifierMix` classes for
 /// `@MixableModifier` `WidgetModifier` subclasses.
 Builder modifierGenerator(BuilderOptions _) {
-  return SharedPartBuilder(
-    [ModifierGenerator()],
-    'modifier_generator',
-    formatOutput: (code, version) {
-      return DartFormatter(languageVersion: version).format(code);
-    },
-  );
+  return _sharedPartBuilder(const ModifierGenerator(), 'modifier_generator');
 }

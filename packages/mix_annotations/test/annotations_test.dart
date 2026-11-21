@@ -25,10 +25,76 @@ void main() {
       expect(annotation.skipFactory, isFalse);
     });
 
+    test('defaults nested styler forwarding to disabled', () {
+      const annotation = MixableField();
+      expect(annotation.forwardStyler, isFalse);
+      expect(annotation.stylerSurface, isNull);
+    });
+
     test('preserves mixin and factoryName overrides', () {
       const annotation = MixableField(mixin: String, factoryName: 'foo');
       expect(annotation.mixin, String);
       expect(annotation.factoryName, 'foo');
     });
+
+    test('preserves nested styler forwarding configuration', () {
+      const annotation = MixableField(
+        forwardStyler: true,
+        stylerSurface: String,
+      );
+
+      expect(annotation.forwardStyler, isTrue);
+      expect(annotation.stylerSurface, String);
+    });
   });
+
+  group('MixWidget', () {
+    test('defaults widgetParameters to all', () {
+      const annotation = MixWidget();
+
+      expect(annotation.target, isNull);
+      expect(annotation.widgetParameters.includesAll, isTrue);
+      expect(annotation.widgetParameters.names, isEmpty);
+      expect(annotation.factoryParameters.includesAll, isTrue);
+      expect(annotation.factoryParameters.names, isEmpty);
+    });
+
+    test('preserves an explicit all selection', () {
+      const annotation = MixWidget(widgetParameters: .all());
+
+      expect(annotation.widgetParameters.includesAll, isTrue);
+      expect(annotation.widgetParameters.names, isEmpty);
+    });
+
+    test('preserves selected widget parameters', () {
+      const annotation = MixWidget(
+        widgetParameters: .only({'controller', 'focusNode'}),
+      );
+
+      expect(annotation.widgetParameters.includesAll, isFalse);
+      expect(annotation.widgetParameters.names, {'controller', 'focusNode'});
+    });
+
+    test('allows an empty widget parameter selection', () {
+      const annotation = MixWidget(widgetParameters: .only({}));
+
+      expect(annotation.widgetParameters.includesAll, isFalse);
+      expect(annotation.widgetParameters.names, isEmpty);
+    });
+
+    test('preserves target and selected factory parameters', () {
+      const annotation = MixWidget(
+        target: _Target.new,
+        factoryParameters: .only({'variant', 'size'}),
+      );
+
+      expect(annotation.target, _Target.new);
+      expect(annotation.factoryParameters.includesAll, isFalse);
+      expect(annotation.factoryParameters.names, {'variant', 'size'});
+    });
+  });
+}
+
+class _Target {
+  const _Target();
 }

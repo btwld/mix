@@ -1,4 +1,5 @@
 import 'package:build_test/build_test.dart';
+import 'package:logging/logging.dart';
 import 'package:mix_generator/mix_generator.dart';
 import 'package:source_gen_test/source_gen_test.dart';
 import 'package:test/test.dart';
@@ -24,6 +25,25 @@ Future<String> _expectMixWidgetValidationError(
   expect(result.succeeded, isFalse);
 
   return result.errors.join('\n');
+}
+
+Future<String> _expectStylerValidationError(String libSource) async {
+  final logs = <LogRecord>[];
+  await testBuilder(
+    partBuilder(const StylerGenerator()),
+    {
+      ...mixAnnotationsSources,
+      'mix|lib/src/core/style.dart': styleStub,
+      'mix_generator|lib/styler_validation.dart': libSource,
+    },
+    generateFor: {'mix_generator|lib/styler_validation.dart'},
+    onLog: logs.add,
+  );
+
+  return logs
+      .where((record) => record.level == Level.SEVERE)
+      .map((record) => record.message)
+      .join('\n');
 }
 
 void main() {
@@ -122,6 +142,68 @@ class NotAStyle {}
       },
     );
 
+    test('StylerGenerator rejects a getter reserved for metadata', () async {
+      const libSource = r'''
+library styler_validation;
+
+import 'package:mix_annotations/mix_annotations.dart';
+import 'package:mix/src/core/style.dart';
+
+part 'styler_validation.g.dart';
+
+@MixableStyler()
+class ReservedStyler extends Style<Object> {
+  Object? get $stylerFieldNames => null;
+
+  const ReservedStyler()
+    : super(variants: null, modifier: null, animation: null);
+}
+''';
+
+      final errors = await _expectStylerValidationError(libSource);
+
+      expect(
+        errors,
+        allOf(
+          contains(
+            r'`$stylerFieldNames` is reserved for generated Styler metadata',
+          ),
+          contains('Rename the Styler member'),
+        ),
+      );
+    });
+
+    test('StylerGenerator rejects a method reserved for metadata', () async {
+      const libSource = r'''
+library styler_validation;
+
+import 'package:mix_annotations/mix_annotations.dart';
+import 'package:mix/src/core/style.dart';
+
+part 'styler_validation.g.dart';
+
+@MixableStyler()
+class ReservedStyler extends Style<Object> {
+  const ReservedStyler()
+    : super(variants: null, modifier: null, animation: null);
+
+  Object? $stylerFieldNames() => null;
+}
+''';
+
+      final errors = await _expectStylerValidationError(libSource);
+
+      expect(
+        errors,
+        allOf(
+          contains(
+            r'`$stylerFieldNames` is reserved for generated Styler metadata',
+          ),
+          contains('Rename the Styler member'),
+        ),
+      );
+    });
+
     test('MixWidgetGenerator rejects annotation on a class', () async {
       const libSource = r'''
 library widget_validation;
@@ -217,10 +299,637 @@ final brokenStyle = const BadStyler();
 
         expect(
           errors,
-          contains('does not support optional positional `call()` parameters'),
+          contains(
+            'does not support selected optional positional `call()` parameters',
+          ),
         );
       },
     );
+
+    test(
+      'MixWidgetGenerator rejects selected optional positional call params',
+      () async {
+        const libSource = r'''
+library widget_validation;
+
+import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+import 'package:mix/src/core/style.dart';
+
+class BoxSpec { const BoxSpec(); }
+
+class BadStyler extends Style<BoxSpec> {
+  const BadStyler();
+  Widget call([Widget? child]) => const _S();
+}
+
+class _S extends StatelessWidget {
+  const _S();
+  @override
+  Widget build(BuildContext context) => const _S();
+}
+
+@MixWidget(widgetParameters: .only({'child'}))
+final brokenStyle = const BadStyler();
+''';
+
+        final errors = await _expectMixWidgetValidationError(libSource);
+
+        expect(
+          errors,
+          contains(
+            'does not support selected optional positional `call()` parameters',
+          ),
+        );
+      },
+    );
+
+    test('MixWidgetGenerator rejects unknown selected call params', () async {
+      const libSource = r'''
+library widget_validation;
+
+import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+import 'package:mix/src/core/style.dart';
+
+class BoxSpec { const BoxSpec(); }
+
+class BoxStyler extends Style<BoxSpec> {
+  const BoxStyler();
+  Widget call({Key? key, Widget? child}) => const _S();
+}
+
+class _S extends StatelessWidget {
+  const _S();
+  @override
+  Widget build(BuildContext context) => const _S();
+}
+
+@MixWidget(widgetParameters: .only({'missing'}))
+final brokenStyle = const BoxStyler();
+''';
+
+      final errors = await _expectMixWidgetValidationError(libSource);
+
+      expect(errors, contains('selects unknown'));
+      expect(errors, contains('`missing`'));
+    });
+
+    test('MixWidgetGenerator rejects selecting automatic key', () async {
+      const libSource = r'''
+library widget_validation;
+
+import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+import 'package:mix/src/core/style.dart';
+
+class BoxSpec { const BoxSpec(); }
+
+class BoxStyler extends Style<BoxSpec> {
+  const BoxStyler();
+  Widget call({Key? key, Widget? child}) => const _S();
+}
+
+class _S extends StatelessWidget {
+  const _S();
+  @override
+  Widget build(BuildContext context) => const _S();
+}
+
+@MixWidget(widgetParameters: .only({'key'}))
+final brokenStyle = const BoxStyler();
+''';
+
+      final errors = await _expectMixWidgetValidationError(libSource);
+
+      expect(errors, contains('must not select `key`'));
+      expect(errors, contains('the generated widget owns its `Key? key`.'));
+    });
+
+    test(
+      'MixWidgetGenerator rejects omitting required named call params',
+      () async {
+        const libSource = r'''
+library widget_validation;
+
+import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+import 'package:mix/src/core/style.dart';
+
+class BoxSpec { const BoxSpec(); }
+
+class BoxStyler extends Style<BoxSpec> {
+  const BoxStyler();
+  Widget call({Key? key, required Widget child, String? label}) => const _S();
+}
+
+class _S extends StatelessWidget {
+  const _S();
+  @override
+  Widget build(BuildContext context) => const _S();
+}
+
+@MixWidget(widgetParameters: .only({'label'}))
+final brokenStyle = const BoxStyler();
+''';
+
+        final errors = await _expectMixWidgetValidationError(libSource);
+
+        expect(errors, contains('must include required'));
+        expect(errors, contains('`child`'));
+      },
+    );
+
+    test(
+      'MixWidgetGenerator rejects omitting required positional call params',
+      () async {
+        const libSource = r'''
+library widget_validation;
+
+import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+import 'package:mix/src/core/style.dart';
+
+class BoxSpec { const BoxSpec(); }
+
+class BoxStyler extends Style<BoxSpec> {
+  const BoxStyler();
+  Widget call(Widget child, {Key? key, String? label}) => const _S();
+}
+
+class _S extends StatelessWidget {
+  const _S();
+  @override
+  Widget build(BuildContext context) => const _S();
+}
+
+@MixWidget(widgetParameters: .only({'label'}))
+final brokenStyle = const BoxStyler();
+''';
+
+        final errors = await _expectMixWidgetValidationError(libSource);
+
+        expect(errors, contains('must include required'));
+        expect(errors, contains('`child`'));
+      },
+    );
+
+    test('MixWidgetGenerator validates key in only mode', () async {
+      const libSource = r'''
+library widget_validation;
+
+import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+import 'package:mix/src/core/style.dart';
+
+class BoxSpec { const BoxSpec(); }
+
+class BoxStyler extends Style<BoxSpec> {
+  const BoxStyler();
+  Widget call({String? key, Widget? child}) => const _S();
+}
+
+class _S extends StatelessWidget {
+  const _S();
+  @override
+  Widget build(BuildContext context) => const _S();
+}
+
+@MixWidget(widgetParameters: .only({'child'}))
+final brokenStyle = const BoxStyler();
+''';
+
+      final errors = await _expectMixWidgetValidationError(libSource);
+
+      expect(errors, contains('requires `key` to be declared as `Key? key`'));
+      expect(errors, contains('must use the exact `Key` type'));
+    });
+
+    test('MixWidgetGenerator rejects selected reserved call params', () async {
+      const libSource = r'''
+library widget_validation;
+
+import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+import 'package:mix/src/core/style.dart';
+
+class BoxSpec { const BoxSpec(); }
+
+class BoxStyler extends Style<BoxSpec> {
+  const BoxStyler();
+  Widget call({Widget? build}) => const _S();
+}
+
+class _S extends StatelessWidget {
+  const _S();
+  @override
+  Widget build(BuildContext context) => const _S();
+}
+
+@MixWidget(widgetParameters: .only({'build'}))
+final brokenStyle = const BoxStyler();
+''';
+
+      final errors = await _expectMixWidgetValidationError(libSource);
+
+      expect(errors, contains('reserves the parameter name `build`'));
+    });
+
+    test(
+      'MixWidgetGenerator rejects selected invisible call param types',
+      () async {
+        const libSource = r'''
+library widget_validation;
+
+import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+import 'external_styler.dart';
+
+@MixWidget(widgetParameters: .only({'hidden'}))
+final brokenStyle = const ExternalStyler();
+''';
+
+        final errors = await _expectMixWidgetValidationError(
+          libSource,
+          extraSources: {
+            'mix_generator|lib/external_styler.dart': r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix/src/core/style.dart';
+
+class ExternalSpec { const ExternalSpec(); }
+class _Hidden {}
+
+class ExternalStyler extends Style<ExternalSpec> {
+  const ExternalStyler();
+  Widget call({_Hidden? hidden}) => const _S();
+}
+
+class _S extends StatelessWidget {
+  const _S();
+  @override
+  Widget build(BuildContext context) => const _S();
+}
+''',
+          },
+        );
+
+        expect(errors, contains('Parameter `hidden` uses type `_Hidden`'));
+        expect(errors, contains('not visible from the annotated library'));
+      },
+    );
+
+    test(
+      'MixWidgetGenerator rejects selected factory/call name collisions',
+      () async {
+        const libSource = r'''
+library widget_validation;
+
+import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+import 'package:mix/src/core/style.dart';
+
+class BoxSpec { const BoxSpec(); }
+
+class BoxStyler extends Style<BoxSpec> {
+  const BoxStyler();
+  Widget call({Widget? child}) => const _S();
+}
+
+class _S extends StatelessWidget {
+  const _S();
+  @override
+  Widget build(BuildContext context) => const _S();
+}
+
+@MixWidget(widgetParameters: .only({'child'}))
+BoxStyler brokenStyle({String? child}) => const BoxStyler();
+''';
+
+        final errors = await _expectMixWidgetValidationError(libSource);
+
+        expect(errors, contains('parameter name collision: `child`'));
+      },
+    );
+
+    test(
+      'MixWidgetGenerator rejects generic call returns with non-widget bounds',
+      () async {
+        const libSource = r'''
+library widget_validation;
+
+import 'package:mix_annotations/mix_annotations.dart';
+import 'package:mix/src/core/style.dart';
+
+class BoxSpec { const BoxSpec(); }
+
+class BadStyler extends Style<BoxSpec> {
+  const BadStyler();
+  T call<T extends Object>({required T value}) => value;
+}
+
+@MixWidget()
+final brokenStyle = const BadStyler();
+''';
+
+        final errors = await _expectMixWidgetValidationError(libSource);
+
+        expect(errors, contains('return a Widget subtype'));
+        expect(errors, contains('returns `T`'));
+      },
+    );
+
+    test('MixWidgetGenerator rejects a call type parameter bound that is not '
+        'visible from the annotated library', () async {
+      const libSource = r'''
+library widget_validation;
+
+import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+import 'radio_styler.dart';
+
+@MixWidget()
+final radioStyle = const RadioStyler();
+''';
+
+      final errors = await _expectMixWidgetValidationError(
+        libSource,
+        extraSources: {
+          // `RadioValue` is only reachable through `radio_styler.dart`'s own
+          // import, not re-exported — so it stays invisible from
+          // `widget_validation.dart`, which imports `radio_styler.dart` but
+          // never `hidden_bound.dart` directly.
+          'mix_generator|lib/hidden_bound.dart': r'''
+library hidden_bound;
+
+class RadioValue {}
+''',
+          'mix_generator|lib/radio_styler.dart': r'''
+library radio_styler;
+
+import 'package:flutter/widgets.dart';
+import 'package:mix/src/core/style.dart';
+
+import 'hidden_bound.dart';
+
+class BoxSpec { const BoxSpec(); }
+
+class RadioStyler extends Style<BoxSpec> {
+  const RadioStyler();
+
+  Widget call<T extends RadioValue>({Key? key, required T value}) =>
+      const _Stub();
+}
+
+class _Stub extends StatelessWidget {
+  const _Stub();
+  @override
+  Widget build(BuildContext context) => const _Stub();
+}
+''',
+        },
+      );
+
+      expect(
+        errors,
+        contains('Call type parameter `T` has bound `RadioValue`'),
+      );
+      expect(errors, contains('not visible from the annotated library'));
+    });
+
+    test(
+      'StylerGenerator rejects targets requiring the concrete legacy Styler',
+      () async {
+        const source = r'''
+library styler_validation;
+
+import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+import 'package:mix/src/core/style.dart';
+
+part 'styler_validation.g.dart';
+
+@MixableSpec(target: PlainWidget.new)
+class BoxSpec {
+  const BoxSpec();
+}
+
+class PlainWidget extends Widget {
+  const PlainWidget({required this.style});
+
+  final BoxStyler style;
+}
+
+@MixableStyler()
+class BoxStyler extends Style<BoxSpec> {
+  const BoxStyler();
+}
+''';
+
+        final result = await testBuilder(
+          partBuilder(const StylerGenerator()),
+          {
+            ...mixAnnotationsSources,
+            ...widgetStub,
+            'mix|lib/src/core/style.dart': styleStub,
+            'mix_generator|lib/styler_validation.dart': source,
+          },
+          generateFor: {'mix_generator|lib/styler_validation.dart'},
+        );
+
+        expect(result.succeeded, isFalse);
+        expect(
+          result.errors.join('\n'),
+          contains(
+            '@MixableSpec(target:) PlainWidget `style` parameter cannot '
+            'accept the generated `BoxStyler`',
+          ),
+        );
+      },
+    );
+
+    for (final target in [
+      (
+        description: 'accepts a direct generic target',
+        reference: 'GenericWidget.new',
+        alias: '',
+        succeeds: true,
+      ),
+      (
+        description: 'rejects an instantiated generic target',
+        reference: 'GenericWidget<int>.new',
+        alias: '',
+        succeeds: false,
+      ),
+      (
+        description: 'rejects a generic target typedef',
+        reference: 'GenericAlias.new',
+        alias: 'typedef GenericAlias<T> = GenericWidget<T>;',
+        succeeds: false,
+      ),
+      (
+        description: 'rejects a nullable-substitution generic target typedef',
+        reference: 'GenericAlias.new',
+        alias: 'typedef GenericAlias<T> = GenericWidget<T?>;',
+        succeeds: false,
+      ),
+    ]) {
+      test(
+        'StylerGenerator ${target.description} from another library',
+        () async {
+          final sources = {
+            ...mixAnnotationsSources,
+            ...widgetStub,
+            'mix|lib/src/core/style.dart':
+                styleStub +
+                r'''
+mixin Diagnosticable {}
+
+abstract interface class StylerFieldMetadata {
+  Set<String> get $stylerFieldNames;
+}
+''',
+            'mix_generator|lib/target.dart':
+                '''
+import 'package:flutter/widgets.dart';
+
+${target.alias}
+
+const targetConstructor = ${target.reference};
+
+class GenericWidget<T> extends Widget {
+  const GenericWidget({Key? key, required this.style, required this.value})
+      : super(key: key);
+
+  final Object style;
+  final T value;
+}
+''',
+            'mix_generator|lib/spec.dart': r'''
+import 'package:mix_annotations/mix_annotations.dart';
+import 'target.dart';
+
+@MixableSpec(target: targetConstructor)
+class GenericSpec {
+  const GenericSpec();
+}
+''',
+            'mix_generator|lib/styler_validation.dart': r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+import 'package:mix/src/core/style.dart';
+import 'spec.dart';
+import 'target.dart';
+
+part 'styler_validation.g.dart';
+
+@MixableStyler(methods: 0)
+class GenericStyler extends Style<GenericSpec>
+    with Diagnosticable, _$GenericStylerMixin {
+  const GenericStyler();
+}
+''',
+          };
+
+          if (target.succeeds) {
+            await expectGeneratorOutputResolves(
+              builder: partBuilder(const StylerGenerator()),
+              sources: sources,
+              inputAsset: 'mix_generator|lib/styler_validation.dart',
+              outputAsset: 'mix_generator|lib/styler_validation.g.dart',
+              outputMatcher: allOf(
+                contains(
+                  'GenericWidget<T> call<T>({Key? key, required T value})',
+                ),
+                contains(
+                  'return GenericWidget<T>(key: key, style: this, value: value);',
+                ),
+              ),
+            );
+          } else {
+            final result = await testBuilder(
+              partBuilder(const StylerGenerator()),
+              sources,
+              generateFor: {'mix_generator|lib/styler_validation.dart'},
+            );
+
+            expect(result.succeeded, isFalse);
+            expect(
+              result.errors.join('\n'),
+              contains(
+                '@MixableSpec(target:) only supports direct, uninstantiated '
+                'constructor tear-offs for generic target `GenericWidget`',
+              ),
+            );
+          }
+        },
+      );
+    }
+
+    /// This visibility split is only reachable through the legacy
+    /// `@MixableStyler` path because generated specs and their stylers share a
+    /// library.
+    test('StylerGenerator rejects a target widget type parameter bound that '
+        'is not visible from the annotated library', () async {
+      const stylerSource = r'''
+library styler_validation;
+
+import 'package:mix_annotations/mix_annotations.dart';
+import 'package:mix/src/core/style.dart';
+import 'target.dart';
+
+@MixableStyler()
+class GenericStyler extends Style<GenericSpec> {
+  const GenericStyler();
+}
+''';
+
+      final result = await testBuilder(
+        partBuilder(const StylerGenerator()),
+        {
+          ...mixAnnotationsSources,
+          ...widgetStub,
+          'mix|lib/src/core/style.dart': styleStub,
+          'mix|lib/src/core/style_widget.dart': r'''
+import 'package:flutter/widgets.dart';
+import 'style.dart';
+
+abstract class StyleWidget<S> extends Widget {
+  final Style<S> style;
+
+  const StyleWidget({required this.style});
+}
+''',
+          'mix_generator|lib/hidden_bound.dart': r'''
+class HiddenBound {}
+''',
+          'mix_generator|lib/target.dart': r'''
+import 'package:flutter/widgets.dart';
+import 'package:mix_annotations/mix_annotations.dart';
+import 'package:mix/src/core/style_widget.dart';
+import 'hidden_bound.dart';
+
+@MixableSpec(target: GenericWidget.new)
+class GenericSpec {
+  const GenericSpec();
+}
+
+class GenericWidget<T extends HiddenBound> extends StyleWidget<GenericSpec> {
+  const GenericWidget({required super.style});
+}
+''',
+          'mix_generator|lib/styler_validation.dart': stylerSource,
+        },
+        generateFor: {'mix_generator|lib/styler_validation.dart'},
+      );
+
+      expect(result.succeeded, isFalse);
+      final errors = result.errors.join('\n');
+      expect(
+        errors,
+        contains('Target widget type parameter `T` has bound `HiddenBound`'),
+      );
+      expect(errors, contains('not visible from the annotated library'));
+    });
 
     test(
       'MixWidgetGenerator rejects optional positional factory params',
@@ -320,7 +1029,7 @@ final brokenStyle = const BoxStyler();
 
         final errors = await _expectMixWidgetValidationError(libSource);
 
-        expect(errors, contains('only forwards a `key` parameter'));
+        expect(errors, contains('`Key? key` when present'));
         expect(errors, contains('must not be `required`'));
         expect(errors, contains('must be nullable'));
       },
@@ -708,6 +1417,33 @@ final cardStyle = const BoxStyler();
 
       expect(errors, contains('visible unprefixed'));
     });
+
+    test(
+      'MixWidgetGenerator rejects prefixed Flutter imports for generic returns',
+      () async {
+        const libSource = r'''
+library widget_validation;
+
+import 'package:flutter/widgets.dart' as fw;
+import 'package:mix_annotations/mix_annotations.dart';
+import 'package:mix/src/core/style.dart';
+
+class BoxSpec { const BoxSpec(); }
+
+class BoxStyler extends Style<BoxSpec> {
+  const BoxStyler();
+  T call<T extends fw.Widget>({fw.Key? key, required T child}) => child;
+}
+
+@MixWidget()
+final cardStyle = const BoxStyler();
+''';
+
+        final errors = await _expectMixWidgetValidationError(libSource);
+
+        expect(errors, contains('visible unprefixed'));
+      },
+    );
 
     test('MixWidgetGenerator rejects invalid name overrides', () async {
       const cases = {

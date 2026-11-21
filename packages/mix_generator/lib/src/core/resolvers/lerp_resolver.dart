@@ -17,14 +17,10 @@ enum LerpStrategy {
   delegateToSpec,
 }
 
-bool _isStyleSpecField(String typeName) {
-  return typeName.startsWith('StyleSpec<');
-}
-
 /// Resolves the lerp strategy for a field.
 LerpStrategy resolveLerpStrategy(FieldModel field) {
   // Composite `StyleSpec<T>` fields delegate interpolation to the nested spec.
-  if (_isStyleSpecField(field.typeName)) {
+  if (field.styleSpecArgument != null) {
     return .delegateToSpec;
   }
 

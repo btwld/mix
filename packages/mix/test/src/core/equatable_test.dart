@@ -84,6 +84,40 @@ void main() {
         ' [[value5, value6], [value7, value8]]])',
       );
     });
+
+    group('propsEquals and propsDiff', () {
+      test('propsEquals matches Equatable equality for equal props', () {
+        final left = TestClass(1, 'A');
+        final right = TestClass(1, 'A');
+
+        expect(propsEquals(left.props, right.props), isTrue);
+        expect(left.getDiff(right), isEmpty);
+      });
+
+      test('propsEquals rejects unequal props', () {
+        final left = TestClass(1, 'A');
+        final right = TestClass(2, 'B');
+
+        expect(propsEquals(left.props, right.props), isFalse);
+        expect(left.getDiff(right), isNotEmpty);
+      });
+
+      test('propsDiff reports prop list length mismatch', () {
+        final diff = propsDiff([1, 'A'], [1, 'A', true]);
+
+        expect(diff['props.length'], 'this: 2, other: 3');
+      });
+
+      test('propsHash is stable for equal prop lists', () {
+        final left = TestClass(1, 'A');
+        final right = TestClass(1, 'A');
+
+        expect(
+          propsHash(left.runtimeType, left.props),
+          propsHash(right.runtimeType, right.props),
+        );
+      });
+    });
   });
 }
 

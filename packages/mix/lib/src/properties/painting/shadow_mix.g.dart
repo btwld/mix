@@ -48,6 +48,7 @@ mixin _$ShadowMixMixin on Mix<Shadow>, DefaultValue<Shadow>, Diagnosticable {
 mixin _$BoxShadowMixMixin
     on Mix<BoxShadow>, DefaultValue<BoxShadow>, Diagnosticable {
   Prop<double>? get $blurRadius;
+  Prop<BlurStyle>? get $blurStyle;
   Prop<Color>? get $color;
   Prop<Offset>? get $offset;
   Prop<double>? get $spreadRadius;
@@ -57,6 +58,7 @@ mixin _$BoxShadowMixMixin
   BoxShadowMix merge(BoxShadowMix? other) {
     return BoxShadowMix.create(
       blurRadius: MixOps.merge($blurRadius, other?.$blurRadius),
+      blurStyle: MixOps.merge($blurStyle, other?.$blurStyle),
       color: MixOps.merge($color, other?.$color),
       offset: MixOps.merge($offset, other?.$offset),
       spreadRadius: MixOps.merge($spreadRadius, other?.$spreadRadius),
@@ -69,6 +71,7 @@ mixin _$BoxShadowMixMixin
     return BoxShadow(
       blurRadius:
           MixOps.resolve(context, $blurRadius) ?? defaultValue.blurRadius,
+      blurStyle: MixOps.resolve(context, $blurStyle) ?? defaultValue.blurStyle,
       color: MixOps.resolve(context, $color) ?? defaultValue.color,
       offset: MixOps.resolve(context, $offset) ?? defaultValue.offset,
       spreadRadius:
@@ -81,11 +84,18 @@ mixin _$BoxShadowMixMixin
     super.debugFillProperties(properties);
     properties
       ..add(DiagnosticsProperty('blurRadius', $blurRadius))
+      ..add(DiagnosticsProperty('blurStyle', $blurStyle))
       ..add(DiagnosticsProperty('color', $color))
       ..add(DiagnosticsProperty('offset', $offset))
       ..add(DiagnosticsProperty('spreadRadius', $spreadRadius));
   }
 
   @override
-  List<Object?> get props => [$blurRadius, $color, $offset, $spreadRadius];
+  List<Object?> get props => [
+    $blurRadius,
+    $blurStyle,
+    $color,
+    $offset,
+    $spreadRadius,
+  ];
 }

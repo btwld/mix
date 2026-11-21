@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
+import '../../helpers/testing_utils.dart';
+
 void main() {
   group('StyleWidget default style', () {
     test('uses IdentityStyle with the concrete default spec', () {
@@ -13,6 +15,7 @@ void main() {
       expectIdentityStyle(const RowBox().style, const FlexBoxSpec());
       expectIdentityStyle(const ColumnBox().style, const FlexBoxSpec());
       expectIdentityStyle(const StackBox().style, const StackBoxSpec());
+      expectIdentityStyle(const WrapBox().style, const WrapBoxSpec());
     });
 
     test('preserves explicit concrete widget styles', () {
@@ -20,8 +23,9 @@ void main() {
       final textStyle = TextStyler().fontSize(16);
       final iconStyle = IconStyler().size(24);
       final imageStyle = ImageStyler().width(200);
-      final flexBoxStyle = FlexBoxStyler().direction(Axis.vertical);
-      final stackBoxStyle = StackBoxStyler().fit(StackFit.expand);
+      final flexBoxStyle = FlexBoxStyler().direction(.vertical);
+      final stackBoxStyle = StackBoxStyler().fit(.expand);
+      final wrapBoxStyle = WrapBoxStyler().spacing(8);
 
       expect(Box(style: boxStyle).style, same(boxStyle));
       expect(StyledText('', style: textStyle).style, same(textStyle));
@@ -31,6 +35,42 @@ void main() {
       expect(RowBox(style: flexBoxStyle).style, same(flexBoxStyle));
       expect(ColumnBox(style: flexBoxStyle).style, same(flexBoxStyle));
       expect(StackBox(style: stackBoxStyle).style, same(stackBoxStyle));
+      expect(WrapBox(style: wrapBoxStyle).style, same(wrapBoxStyle));
+    });
+
+    testWidgets('routes styleSpec directly without resolving style', (
+      tester,
+    ) async {
+      const boxKey = Key('box');
+      final ignoredStyle = BoxStyler().width(999);
+      final directSpec = StyleSpec(
+        spec: BoxStyler()
+            .width(120)
+            .height(80)
+            .color(Colors.green)
+            .resolve(MockBuildContext())
+            .spec,
+      );
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Box(key: boxKey, style: ignoredStyle, styleSpec: directSpec),
+        ),
+      );
+
+      final styledContainer = tester.widget<Container>(
+        find.descendant(
+          of: find.byKey(boxKey),
+          matching: find.byType(Container),
+        ),
+      );
+
+      expect(styledContainer.constraints?.maxWidth, 120);
+      expect(styledContainer.constraints?.maxHeight, 80);
+      expect(
+        (styledContainer.decoration as BoxDecoration?)?.color,
+        Colors.green,
+      );
     });
 
     testWidgets('default Box inherits parent style', (tester) async {

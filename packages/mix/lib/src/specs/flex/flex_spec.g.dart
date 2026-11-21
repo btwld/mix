@@ -156,7 +156,8 @@ typedef _$FlexSpecMethods = _$FlexSpec; // ignore: unused_element
 // **************************************************************************
 
 class FlexStyler extends MixStyler<FlexStyler, FlexSpec>
-    with FlexStyleMixin<FlexStyler> {
+    with FlexStyleMixin<FlexStyler>
+    implements StylerFieldMetadata {
   final Prop<Axis>? $direction;
   final Prop<MainAxisAlignment>? $mainAxisAlignment;
   final Prop<CrossAxisAlignment>? $crossAxisAlignment;
@@ -242,6 +243,22 @@ class FlexStyler extends MixStyler<FlexStyler, FlexSpec>
     return merge(value);
   }
 
+  @override
+  Set<String> get $stylerFieldNames => const {
+    'direction',
+    'mainAxisAlignment',
+    'crossAxisAlignment',
+    'mainAxisSize',
+    'verticalDirection',
+    'textDirection',
+    'textBaseline',
+    'clipBehavior',
+    'spacing',
+    'animation',
+    'modifier',
+    'variants',
+  };
+
   /// Sets the direction.
   @override
   FlexStyler direction(Axis value) {
@@ -295,10 +312,8 @@ class FlexStyler extends MixStyler<FlexStyler, FlexSpec>
     return merge(FlexStyler(spacing: value));
   }
 
-  /// Sets the animation configuration.
-  ///
-  /// When [reverse] is provided, it is used as the exit transition
-  /// config when leaving this style.
+  /// Sets the animation configuration. [reverse] sets variant exit timing
+  /// and can only pair curve and spring configs.
   @override
   FlexStyler animate(AnimationConfig value, {AnimationConfig? reverse}) {
     final config = reverse == null

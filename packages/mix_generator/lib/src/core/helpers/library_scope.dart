@@ -97,6 +97,10 @@ String typeCode(DartType type, {LibraryElement? visibleFrom}) {
     return '$name<$arguments>$nullableSuffix';
   }
 
+  if (type is RecordType) {
+    return _recordTypeCode(type, visibleFrom: visibleFrom);
+  }
+
   if (type is FunctionType) {
     return _functionTypeCode(type, visibleFrom: visibleFrom);
   }
@@ -105,6 +109,11 @@ String typeCode(DartType type, {LibraryElement? visibleFrom}) {
 }
 
 /// Returns the first type name in [type] that is not visible from [library].
+///
+/// This deliberately does not recurse into a [TypeParameterType]'s bound.
+/// Bounds are checked once at their declaration site by `extractTypeParams`;
+/// following them here would recurse forever for F-bounded parameters such as
+/// `T extends Comparable<T>`.
 String? firstInvisibleTypeName(DartType type, LibraryElement library) {
   final alias = type.alias;
   if (alias != null) {
@@ -119,6 +128,10 @@ String? firstInvisibleTypeName(DartType type, LibraryElement library) {
         return hiddenName;
       }
     }
+
+    // Generated code names the alias and never its expansion, so the types
+    // inside the aliased declaration do not need to be visible.
+    return null;
   }
 
   if (type is InterfaceType) {
@@ -147,6 +160,15 @@ String? firstInvisibleTypeName(DartType type, LibraryElement library) {
         return hiddenName;
       }
     }
+
+    for (final typeParameter in type.typeParameters) {
+      final bound = typeParameter.bound;
+      if (bound == null) continue;
+      final hiddenName = firstInvisibleTypeName(bound, library);
+      if (hiddenName != null) {
+        return hiddenName;
+      }
+    }
   }
 
   if (type is RecordType) {
@@ -170,8 +192,29 @@ String? firstInvisibleTypeName(DartType type, LibraryElement library) {
 String _nullableSuffix(DartType type) =>
     type.nullabilitySuffix == .question ? '?' : '';
 
+String _recordTypeCode(RecordType type, {LibraryElement? visibleFrom}) {
+  final positional = [
+    for (final field in type.positionalFields)
+      typeCode(field.type, visibleFrom: visibleFrom),
+  ];
+  final named = [
+    for (final field in type.namedFields)
+      '${typeCode(field.type, visibleFrom: visibleFrom)} ${field.name}',
+  ];
+  final fields = [
+    ...positional,
+    if (named.isNotEmpty) '{${named.join(', ')}}',
+  ].join(', ');
+  final trailingComma = positional.length == 1 && named.isEmpty ? ',' : '';
+
+  return '($fields$trailingComma)${_nullableSuffix(type)}';
+}
+
 String _functionTypeCode(FunctionType type, {LibraryElement? visibleFrom}) {
   final returnType = typeCode(type.returnType, visibleFrom: visibleFrom);
+  final typeParameters = type.typeParameters.isEmpty
+      ? ''
+      : '<${type.typeParameters.map((parameter) => _functionTypeParameterCode(parameter, visibleFrom: visibleFrom)).join(', ')}>';
   final requiredPositional = <String>[];
   final optionalPositional = <String>[];
   final named = <String>[];
@@ -197,7 +240,19 @@ String _functionTypeCode(FunctionType type, {LibraryElement? visibleFrom}) {
     if (named.isNotEmpty) '{${named.join(', ')}}',
   ].join(', ');
 
-  return '$returnType Function($parameters)${_nullableSuffix(type)}';
+  return '$returnType Function$typeParameters($parameters)'
+      '${_nullableSuffix(type)}';
+}
+
+String _functionTypeParameterCode(
+  TypeParameterElement parameter, {
+  LibraryElement? visibleFrom,
+}) {
+  final name = parameter.name ?? parameter.displayName;
+  final bound = parameter.bound;
+  if (bound == null) return name;
+
+  return '$name extends ${typeCode(bound, visibleFrom: visibleFrom)}';
 }
 
 String _functionParameterCode(

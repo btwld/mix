@@ -69,7 +69,6 @@ void main() {
         final variantStyle = VariantStyle(ButtonVariant.primary, style);
 
         expect(variantStyle.variant, ButtonVariant.primary);
-        expect(variantStyle.mergeKey, 'primary');
       });
 
       test('different enum values create different mergeKeys', () {
@@ -89,8 +88,8 @@ void main() {
     group('applyVariants integration', () {
       test('applies matching enum variant style', () {
         final style = BoxStyler()
-            .variant(ButtonVariant.primary, BoxStyler().width(100.0))
-            .variant(ButtonVariant.secondary, BoxStyler().width(200.0));
+            .variant(ButtonVariant.primary, .width(100.0))
+            .variant(ButtonVariant.secondary, .width(200.0));
 
         final resolved = style.applyVariants([ButtonVariant.primary]);
         final context = MockBuildContext();
@@ -102,8 +101,8 @@ void main() {
 
       test('applies multiple enum variants', () {
         final style = BoxStyler()
-            .variant(ButtonVariant.primary, BoxStyler().width(100.0))
-            .variant(SizeVariant.large, BoxStyler().height(200.0));
+            .variant(ButtonVariant.primary, .width(100.0))
+            .variant(SizeVariant.large, .height(200.0));
 
         final resolved = style.applyVariants([
           ButtonVariant.primary,
@@ -120,8 +119,8 @@ void main() {
 
       test('does not apply non-matching enum variants', () {
         final style = BoxStyler()
-            .variant(ButtonVariant.primary, BoxStyler().width(100.0))
-            .variant(ButtonVariant.secondary, BoxStyler().width(200.0));
+            .variant(ButtonVariant.primary, .width(100.0))
+            .variant(ButtonVariant.secondary, .width(200.0));
 
         final resolved = style.applyVariants([ButtonVariant.secondary]);
         final context = MockBuildContext();

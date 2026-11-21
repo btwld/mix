@@ -1,5 +1,6 @@
 import 'package:mix_annotations/mix_annotations.dart';
 import 'package:mix_generator/src/core/builders/spec_mixin_builder.dart';
+import 'package:mix_generator/src/core/curated/type_metadata.dart';
 import 'package:mix_generator/src/core/models/annotation_config.dart';
 import 'package:test/test.dart';
 
@@ -383,6 +384,59 @@ void main() {
           expect(code, contains('BoxSpec lerp('));
         },
       );
+    });
+
+    group('single-field cascade lint regression', () {
+      test(
+        'single-field spec uses `properties.add(...)` not a `..add` cascade',
+        () {
+          final builder = SpecMixinBuilder(
+            specName: 'UIImageSpec',
+            fields: [
+              createTestFieldModel(
+                name: 'fit',
+                effectiveSpecType: 'BoxFit?',
+                isNullable: true,
+                diagnosticKind: DiagnosticKind.enumProperty,
+              ),
+            ],
+            config: defaultConfig,
+          );
+          final code = builder.build();
+
+          // A single-element cascade (`properties..add(...)`) trips the
+          // `unnecessary_cascade` lint in user projects.
+          expect(
+            code,
+            contains("properties.add(EnumProperty<BoxFit>('fit', fit));"),
+          );
+          expect(code, isNot(contains('properties..add(')));
+        },
+      );
+
+      test('multi-field spec still uses the `..add` cascade chain', () {
+        final builder = SpecMixinBuilder(
+          specName: 'TwoFieldSpec',
+          fields: [
+            createTestFieldModel(
+              name: 'fit',
+              effectiveSpecType: 'BoxFit?',
+              isNullable: true,
+              diagnosticKind: DiagnosticKind.enumProperty,
+            ),
+            createTestFieldModel(
+              name: 'color',
+              effectiveSpecType: 'Color?',
+              isNullable: true,
+            ),
+          ],
+          config: defaultConfig,
+        );
+        final code = builder.build();
+
+        // With more than one field the cascade is legitimate.
+        expect(code, contains('properties\n      ..add('));
+      });
     });
 
     group('copyWith optional parameters', () {

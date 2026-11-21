@@ -228,6 +228,23 @@ MixToken<T>? getTokenFromValue<T>(Object value) {
   return _doubleTokenRegistry[value] as MixToken<T>?;
 }
 
+/// Returns the token carried by a supported token reference value, if any.
+///
+/// This covers both class-based references backed by [Prop.token] and
+/// sentinel-backed [DoubleRef] values. It is intended for tooling and codecs
+/// that need to inspect unresolved token references without resolving them
+/// through a [BuildContext].
+MixToken<T>? tokenFromReferenceValue<T>(Object? value) {
+  if (value == null) return null;
+  if (value is Prop<T> && value.sources.length == 1) {
+    final source = value.sources.single;
+
+    if (source is TokenSource<T>) return source.token;
+  }
+
+  return getTokenFromValue(value);
+}
+
 /// Token reference for [double] values that implements the double interface.
 ///
 /// `DoubleRef` is a sentinel-backed ergonomic shim: it lets a [MixToken<double>]

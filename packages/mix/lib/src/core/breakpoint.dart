@@ -1,15 +1,16 @@
 import 'package:flutter/widgets.dart';
 
-/// Represents a responsive breakpoint for screen size-based styling.
+/// Represents an inclusive size range used for responsive styling.
 ///
-/// A breakpoint defines a range of screen sizes where certain styles should apply.
-/// It can have a minimum width, maximum width, or both.
+/// Use [matchesContext] to evaluate the viewport size from `MediaQuery`, or
+/// [matches] to evaluate any [Size], including one derived from local layout
+/// constraints.
 ///
 /// Example usage:
 /// ```dart
-/// const mobile = Breakpoint(maxWidth: 767);
-/// const tablet = Breakpoint(minWidth: 768, maxWidth: 1023);
-/// const desktop = Breakpoint(minWidth: 1024);
+/// const Breakpoint mobile = .maxWidth(767);
+/// const Breakpoint tablet = .widthRange(768, 1023);
+/// const Breakpoint desktop = .minWidth(1024);
 /// ```
 @immutable
 class Breakpoint {
@@ -51,23 +52,23 @@ class Breakpoint {
          'At least one constraint must be provided',
        );
 
-  /// Creates a breakpoint that matches screens with width less than or equal to [maxWidth].
+  /// Creates a breakpoint that matches widths less than or equal to [maxWidth].
   const Breakpoint.maxWidth(double maxWidth) : this(maxWidth: maxWidth);
 
-  /// Creates a breakpoint that matches screens with width greater than or equal to [minWidth].
+  /// Creates a breakpoint that matches widths greater than or equal to [minWidth].
   const Breakpoint.minWidth(double minWidth) : this(minWidth: minWidth);
 
-  /// Creates a breakpoint that matches screens with width between [minWidth] and [maxWidth] (inclusive).
+  /// Creates a breakpoint that matches widths from [minWidth] to [maxWidth].
   const Breakpoint.widthRange(double minWidth, double maxWidth)
     : this(minWidth: minWidth, maxWidth: maxWidth);
 
-  /// Creates a breakpoint that matches screens with height less than or equal to [maxHeight].
+  /// Creates a breakpoint that matches heights less than or equal to [maxHeight].
   const Breakpoint.maxHeight(double maxHeight) : this(maxHeight: maxHeight);
 
-  /// Creates a breakpoint that matches screens with height greater than or equal to [minHeight].
+  /// Creates a breakpoint that matches heights greater than or equal to [minHeight].
   const Breakpoint.minHeight(double minHeight) : this(minHeight: minHeight);
 
-  /// Creates a breakpoint that matches screens with height between [minHeight] and [maxHeight] (inclusive).
+  /// Creates a breakpoint that matches heights from [minHeight] to [maxHeight].
   const Breakpoint.heightRange(double minHeight, double maxHeight)
     : this(minHeight: minHeight, maxHeight: maxHeight);
 
@@ -84,7 +85,7 @@ class Breakpoint {
     return true;
   }
 
-  /// Checks if this breakpoint matches the current screen size from the given [context].
+  /// Checks whether this breakpoint matches the viewport size from [context].
   bool matchesContext(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
 

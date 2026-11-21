@@ -1,0 +1,624 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "type": {
+      "type": "string",
+      "const": "theme"
+    },
+    "colors": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9_.-]{1,128}$"
+      },
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "string",
+            "pattern": "^(?:#[0-9A-Fa-f]{6}|#[0-9A-Fa-f]{8}|rgb\\(\\s*-?\\d+\\s*,\\s*-?\\d+\\s*,\\s*-?\\d+\\s*\\)|rgba\\(\\s*-?\\d+\\s*,\\s*-?\\d+\\s*,\\s*-?\\d+\\s*,\\s*-?(?:\\d+(?:\\.\\d+)?|\\.\\d+)\\s*\\))$"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "$token": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_.-]{1,128}$"
+              }
+            },
+            "required": [
+              "$token"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      }
+    },
+    "spaces": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9_.-]{1,128}$"
+      },
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "$token": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_.-]{1,128}$"
+              },
+              "kind": {
+                "type": "string",
+                "const": "space"
+              }
+            },
+            "required": [
+              "$token"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      }
+    },
+    "doubles": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9_.-]{1,128}$"
+      },
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "$token": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_.-]{1,128}$"
+              },
+              "kind": {
+                "type": "string",
+                "const": "double"
+              }
+            },
+            "required": [
+              "$token"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      }
+    },
+    "radii": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9_.-]{1,128}$"
+      },
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "x": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "y": {
+                    "type": "number",
+                    "minimum": 0
+                  }
+                },
+                "required": [
+                  "x",
+                  "y"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "$token": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_.-]{1,128}$"
+              }
+            },
+            "required": [
+              "$token"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      }
+    },
+    "textStyles": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9_.-]{1,128}$"
+      },
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "color": {
+                "type": "string",
+                "pattern": "^(?:#[0-9A-Fa-f]{6}|#[0-9A-Fa-f]{8}|rgb\\(\\s*-?\\d+\\s*,\\s*-?\\d+\\s*,\\s*-?\\d+\\s*\\)|rgba\\(\\s*-?\\d+\\s*,\\s*-?\\d+\\s*,\\s*-?\\d+\\s*,\\s*-?(?:\\d+(?:\\.\\d+)?|\\.\\d+)\\s*\\))$"
+              },
+              "backgroundColor": {
+                "type": "string",
+                "pattern": "^(?:#[0-9A-Fa-f]{6}|#[0-9A-Fa-f]{8}|rgb\\(\\s*-?\\d+\\s*,\\s*-?\\d+\\s*,\\s*-?\\d+\\s*\\)|rgba\\(\\s*-?\\d+\\s*,\\s*-?\\d+\\s*,\\s*-?\\d+\\s*,\\s*-?(?:\\d+(?:\\.\\d+)?|\\.\\d+)\\s*\\))$"
+              },
+              "fontSize": {
+                "type": "number"
+              },
+              "fontWeight": {
+                "type": "string",
+                "enum": [
+                  "w100",
+                  "w200",
+                  "w300",
+                  "w400",
+                  "w500",
+                  "w600",
+                  "w700",
+                  "w800",
+                  "w900"
+                ]
+              },
+              "fontStyle": {
+                "type": "string",
+                "enum": [
+                  "normal",
+                  "italic"
+                ]
+              },
+              "letterSpacing": {
+                "type": "number"
+              },
+              "debugLabel": {
+                "type": "string"
+              },
+              "wordSpacing": {
+                "type": "number"
+              },
+              "textBaseline": {
+                "type": "string",
+                "enum": [
+                  "alphabetic",
+                  "ideographic"
+                ]
+              },
+              "height": {
+                "type": "number"
+              },
+              "fontFamily": {
+                "type": "string"
+              },
+              "fontFamilyFallback": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "fontFeatures": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "feature": {
+                      "type": "string",
+                      "minLength": 4,
+                      "maxLength": 4
+                    },
+                    "value": {
+                      "type": "integer",
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "feature",
+                    "value"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "fontVariations": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "axis": {
+                      "type": "string",
+                      "minLength": 4,
+                      "maxLength": 4
+                    },
+                    "value": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "axis",
+                    "value"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "decoration": {
+                "type": "string",
+                "enum": [
+                  "none",
+                  "underline",
+                  "overline",
+                  "line_through"
+                ]
+              },
+              "decorationColor": {
+                "type": "string",
+                "pattern": "^(?:#[0-9A-Fa-f]{6}|#[0-9A-Fa-f]{8}|rgb\\(\\s*-?\\d+\\s*,\\s*-?\\d+\\s*,\\s*-?\\d+\\s*\\)|rgba\\(\\s*-?\\d+\\s*,\\s*-?\\d+\\s*,\\s*-?\\d+\\s*,\\s*-?(?:\\d+(?:\\.\\d+)?|\\.\\d+)\\s*\\))$"
+              },
+              "decorationStyle": {
+                "type": "string",
+                "enum": [
+                  "solid",
+                  "double",
+                  "dotted",
+                  "dashed",
+                  "wavy"
+                ]
+              },
+              "decorationThickness": {
+                "type": "number"
+              },
+              "shadows": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "color": {
+                      "type": "string",
+                      "pattern": "^(?:#[0-9A-Fa-f]{6}|#[0-9A-Fa-f]{8}|rgb\\(\\s*-?\\d+\\s*,\\s*-?\\d+\\s*,\\s*-?\\d+\\s*\\)|rgba\\(\\s*-?\\d+\\s*,\\s*-?\\d+\\s*,\\s*-?\\d+\\s*,\\s*-?(?:\\d+(?:\\.\\d+)?|\\.\\d+)\\s*\\))$"
+                    },
+                    "offset": {
+                      "type": "object",
+                      "properties": {
+                        "x": {
+                          "type": "number"
+                        },
+                        "y": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "x",
+                        "y"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "blurRadius": {
+                      "type": "number"
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            },
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "$token": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_.-]{1,128}$"
+              }
+            },
+            "required": [
+              "$token"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      }
+    },
+    "shadows": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9_.-]{1,128}$"
+      },
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "color": {
+                  "type": "string",
+                  "pattern": "^(?:#[0-9A-Fa-f]{6}|#[0-9A-Fa-f]{8}|rgb\\(\\s*-?\\d+\\s*,\\s*-?\\d+\\s*,\\s*-?\\d+\\s*\\)|rgba\\(\\s*-?\\d+\\s*,\\s*-?\\d+\\s*,\\s*-?\\d+\\s*,\\s*-?(?:\\d+(?:\\.\\d+)?|\\.\\d+)\\s*\\))$"
+                },
+                "offset": {
+                  "type": "object",
+                  "properties": {
+                    "x": {
+                      "type": "number"
+                    },
+                    "y": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "x",
+                    "y"
+                  ],
+                  "additionalProperties": false
+                },
+                "blurRadius": {
+                  "type": "number"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          {
+            "type": "object",
+            "properties": {
+              "$token": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_.-]{1,128}$"
+              }
+            },
+            "required": [
+              "$token"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      }
+    },
+    "boxShadows": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9_.-]{1,128}$"
+      },
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "color": {
+                  "type": "string",
+                  "pattern": "^(?:#[0-9A-Fa-f]{6}|#[0-9A-Fa-f]{8}|rgb\\(\\s*-?\\d+\\s*,\\s*-?\\d+\\s*,\\s*-?\\d+\\s*\\)|rgba\\(\\s*-?\\d+\\s*,\\s*-?\\d+\\s*,\\s*-?\\d+\\s*,\\s*-?(?:\\d+(?:\\.\\d+)?|\\.\\d+)\\s*\\))$"
+                },
+                "offset": {
+                  "type": "object",
+                  "properties": {
+                    "x": {
+                      "type": "number"
+                    },
+                    "y": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "x",
+                    "y"
+                  ],
+                  "additionalProperties": false
+                },
+                "blurRadius": {
+                  "type": "number"
+                },
+                "spreadRadius": {
+                  "type": "number"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          {
+            "type": "object",
+            "properties": {
+              "$token": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_.-]{1,128}$"
+              }
+            },
+            "required": [
+              "$token"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      }
+    },
+    "borders": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9_.-]{1,128}$"
+      },
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "color": {
+                "type": "string",
+                "pattern": "^(?:#[0-9A-Fa-f]{6}|#[0-9A-Fa-f]{8}|rgb\\(\\s*-?\\d+\\s*,\\s*-?\\d+\\s*,\\s*-?\\d+\\s*\\)|rgba\\(\\s*-?\\d+\\s*,\\s*-?\\d+\\s*,\\s*-?\\d+\\s*,\\s*-?(?:\\d+(?:\\.\\d+)?|\\.\\d+)\\s*\\))$"
+              },
+              "width": {
+                "type": "number",
+                "minimum": 0
+              },
+              "style": {
+                "type": "string",
+                "enum": [
+                  "none",
+                  "solid"
+                ]
+              },
+              "strokeAlign": {
+                "type": "number"
+              }
+            },
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "$token": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_.-]{1,128}$"
+              }
+            },
+            "required": [
+              "$token"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      }
+    },
+    "fontWeights": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9_.-]{1,128}$"
+      },
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "string",
+            "enum": [
+              "w100",
+              "w200",
+              "w300",
+              "w400",
+              "w500",
+              "w600",
+              "w700",
+              "w800",
+              "w900"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "$token": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_.-]{1,128}$"
+              }
+            },
+            "required": [
+              "$token"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      }
+    },
+    "breakpoints": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9_.-]{1,128}$"
+      },
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "minWidth": {
+                "type": "number"
+              },
+              "maxWidth": {
+                "type": "number"
+              },
+              "minHeight": {
+                "type": "number"
+              },
+              "maxHeight": {
+                "type": "number"
+              }
+            },
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "$token": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_.-]{1,128}$"
+              }
+            },
+            "required": [
+              "$token"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      }
+    },
+    "durations": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9_.-]{1,128}$"
+      },
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "integer",
+            "minimum": 0
+          },
+          {
+            "type": "object",
+            "properties": {
+              "$token": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_.-]{1,128}$"
+              }
+            },
+            "required": [
+              "$token"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      }
+    },
+    "v": {
+      "type": "integer",
+      "const": 1
+    }
+  },
+  "required": [
+    "v",
+    "type"
+  ],
+  "additionalProperties": false,
+  "x-mix-protocol-contract": "mix_protocol_theme",
+  "x-mix-protocol-version": "1.0.0-alpha.0",
+  "x-mix-protocol-format-version": 1
+}

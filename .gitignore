@@ -5,10 +5,15 @@
 *.pyc
 *.swp
 .DS_Store
+.context/
 .atom/
 .buildlog/
 .history
 .svn/
+
+# Public skills live in /skills; keep CLI-installed local copies untracked.
+/.agents/
+/.claude/skills
 
 # IntelliJ related
 *.iml
@@ -24,6 +29,14 @@
 **/example/windows/
 **/example/macos/
 **/example/linux/
+
+# Gallery web runners are tracked; other platforms can be generated locally.
+/examples/*/android/
+/examples/*/ios/
+/examples/*/windows/
+/examples/*/macos/
+/examples/*/linux/
+/examples/*/.metadata
 
 # The .vscode folder contains launch configuration and tasks you configure in
 # VS Code which you may wish to be included in version control, so this line
@@ -108,7 +121,7 @@ packages/mix/.cody/ignore
 .cursor
 .orbit
 CLAUDE.md
-!packages/mix_tailwinds/CLAUDE.md
+!packages/mix_winds/CLAUDE.md
 .augment/env/setup.sh
 
 # API compatibility reports
@@ -121,7 +134,7 @@ website/public/_pagefind/
 
 # Claude Code
 CLAUDE.md
-!packages/mix_tailwinds/CLAUDE.md
+!packages/mix_winds/CLAUDE.md
 .claude/settings.local.json
 
 # Flutter web previews (generated via: packages/mix_docs_preview/scripts/build_web_previews.sh)
@@ -131,3 +144,9 @@ website/public/previews/
 # Playwright
 website/playwright-report/
 website/test-results/
+
+# The mix_winds example has a hand-authored web showcase. Keep its source
+# in version control while excluding parity evidence generated during builds.
+!packages/mix_winds/example/web/
+!packages/mix_winds/example/web/**
+packages/mix_winds/example/web/generated/

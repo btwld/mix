@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Complex mix_winds parity cases</title>
+    <script src="../../tool/visual-comparison/node_modules/@tailwindcss/browser/dist/index.global.js"></script>
+    <link rel="stylesheet" href="parity-font.css" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        width: 100%;
+        min-height: 100%;
+        background: #f3f4f6;
+      }
+
+      #capture {
+        box-sizing: border-box;
+        width: 100vw;
+        height: 320px;
+        overflow: hidden;
+        padding: 16px;
+        background: #f3f4f6;
+      }
+
+      [data-case][hidden] {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="capture">
+      <section data-case="01" class="w-fit">
+        <div
+          data-parity-class
+          data-subject
+          class="w-80 h-48 p-6 bg-slate-900 border-2 border-slate-700 rounded-2xl shadow-lg"
+        ></div>
+      </section>
+
+      <section
+        data-case="02"
+        data-parity-class
+        class="flex w-full flex-col"
+      >
+        <div
+          data-parity-class
+          class="p-2 px-6 pt-4 m-2 mx-4 mt-8 bg-red-500"
+        >
+          <div data-parity-class class="w-16 h-12 bg-white"></div>
+        </div>
+        <div
+          data-parity-class
+          class="bg-red-500 mt-8 mx-4 m-2 pt-4 px-6 p-2"
+        >
+          <div data-parity-class class="w-16 h-12 bg-white"></div>
+        </div>
+      </section>
+
+      <section data-case="03" class="w-fit">
+        <div
+          data-parity-class
+          data-subject
+          class="w-[37px] h-[29px] bg-[#123456]/[50%] translate-x-[11px] -translate-y-[7px]"
+        ></div>
+      </section>
+
+      <section data-case="04" class="w-44">
+        <p
+          data-parity-class
+          data-subject
+          class="text-2xl font-bold leading-tight tracking-tight text-slate-700 uppercase text-center truncate"
+        >complex tailwind overflow sample</p>
+      </section>
+
+      <section data-case="05" class="w-fit">
+        <div
+          data-parity-class
+          data-subject
+          class="w-[300px] h-[120px] bg-linear-to-br from-blue-500 via-purple-500 to-pink-500"
+        ></div>
+      </section>
+
+      <section data-case="06" class="w-fit p-8">
+        <div
+          data-parity-class
+          data-subject
+          class="w-24 h-24 bg-emerald-500 translate-x-4 -translate-y-2 rotate-45 scale-105"
+        ></div>
+      </section>
+
+      <section data-case="07" class="w-full">
+        <div
+          data-parity-class
+          data-subject
+          class="w-full md:w-1/2 lg:w-1/3 h-12 bg-blue-500"
+        ></div>
+      </section>
+
+      <section data-case="08" class="w-full">
+        <div
+          data-parity-class
+          data-subject
+          class="w-full h-40 flex flex-col gap-2 md:flex-row md:gap-6 items-center justify-between"
+        >
+          <div
+            data-parity-class
+            class="w-10 h-10 rounded-lg bg-blue-500"
+          ></div>
+          <div
+            data-parity-class
+            class="w-10 h-10 rounded-lg bg-purple-500"
+          ></div>
+          <div
+            data-parity-class
+            class="w-10 h-10 rounded-lg bg-pink-500"
+          ></div>
+        </div>
+      </section>
+
+      <section data-case="09" class="w-fit">
+        <div
+          data-parity-class
+          data-subject
+          class="w-24 h-24 bg-white dark:bg-slate-900 dark:hover:bg-blue-900"
+        ></div>
+      </section>
+
+      <section data-case="10" class="w-fit">
+        <div
+          data-parity-class
+          data-subject
+          class="w-24 h-24 bg-red-500 hover:bg-blue-500 transition-colors duration-300 ease-in-out delay-100"
+        ></div>
+      </section>
+    </main>
+
+    <script>
+      const selectedCase = new URLSearchParams(window.location.search).get('case') ?? '01';
+      for (const section of document.querySelectorAll('[data-case]')) {
+        section.hidden = section.dataset.case !== selectedCase;
+      }
+      document.documentElement.dataset.selectedCase = selectedCase;
+    </script>
+  </body>
+</html>

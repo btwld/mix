@@ -7,7 +7,9 @@ on:
       - 'mix_annotations-v[0-9]+.[0-9]+.[0-9]+*'
       - 'mix_generator-v[0-9]+.[0-9]+.[0-9]+*'
       - 'mix_lint-v[0-9]+.[0-9]+.[0-9]+*'
-      - 'mix_tailwinds-v[0-9]+.[0-9]+.[0-9]+*'
+      - 'mix_protocol-v[0-9]+.[0-9]+.[0-9]+*'
+      - 'mix_winds-v[0-9]+.[0-9]+.[0-9]+*'
+      - 'mix_chart-v[0-9]+.[0-9]+.[0-9]+*'
 
 jobs:
   publish_mix:
@@ -54,13 +56,55 @@ jobs:
       id-token: write
       contents: read
 
-  publish_mix_tailwinds:
-    if: startsWith(github.ref_name, 'mix_tailwinds-v')
+  check_mix_protocol_release:
+    if: startsWith(github.ref_name, 'mix_protocol-v') && github.ref_name != 'mix_protocol-v1.0.0-alpha.0'
+    uses: ./.github/workflows/release-dependencies.yml
+    with:
+      package: protocol
+    permissions:
+      contents: read
+
+  publish_mix_protocol:
+    # pub.dev requires the first version to be published manually. The initial
+    # release tag is kept for traceability but must not attempt OIDC publishing.
+    needs: check_mix_protocol_release
+    if: startsWith(github.ref_name, 'mix_protocol-v') && github.ref_name != 'mix_protocol-v1.0.0-alpha.0'
     uses: btwld/dart-actions/.github/workflows/publish.yml@main
     with:
       packages_folder_path: "packages"
       packages: |
-        mix_tailwinds
+        mix_protocol
+    permissions:
+      id-token: write
+      contents: read
+
+  check_mix_winds_release:
+    if: startsWith(github.ref_name, 'mix_winds-v')
+    uses: ./.github/workflows/release-dependencies.yml
+    with:
+      package: winds
+    permissions:
+      contents: read
+
+  publish_mix_winds:
+    needs: check_mix_winds_release
+    if: startsWith(github.ref_name, 'mix_winds-v')
+    uses: btwld/dart-actions/.github/workflows/publish.yml@main
+    with:
+      packages_folder_path: "packages"
+      packages: |
+        mix_winds
+    permissions:
+      id-token: write
+      contents: read
+
+  publish_mix_chart:
+    if: startsWith(github.ref_name, 'mix_chart-v')
+    uses: btwld/dart-actions/.github/workflows/publish.yml@main
+    with:
+      packages_folder_path: "packages"
+      packages: |
+        mix_chart
     permissions:
       id-token: write
       contents: read

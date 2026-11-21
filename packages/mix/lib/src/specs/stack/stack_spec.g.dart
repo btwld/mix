@@ -99,7 +99,8 @@ typedef _$StackSpecMethods = _$StackSpec; // ignore: unused_element
 // SpecStylerGenerator
 // **************************************************************************
 
-class StackStyler extends MixStyler<StackStyler, StackSpec> {
+class StackStyler extends MixStyler<StackStyler, StackSpec>
+    implements StylerFieldMetadata {
   final Prop<AlignmentGeometry>? $alignment;
   final Prop<StackFit>? $fit;
   final Prop<TextDirection>? $textDirection;
@@ -144,6 +145,17 @@ class StackStyler extends MixStyler<StackStyler, StackSpec> {
   factory StackStyler.clipBehavior(Clip value) =>
       StackStyler().clipBehavior(value);
 
+  @override
+  Set<String> get $stylerFieldNames => const {
+    'alignment',
+    'fit',
+    'textDirection',
+    'clipBehavior',
+    'animation',
+    'modifier',
+    'variants',
+  };
+
   /// Sets the alignment.
   StackStyler alignment(AlignmentGeometry value) {
     return merge(StackStyler(alignment: value));
@@ -164,10 +176,8 @@ class StackStyler extends MixStyler<StackStyler, StackSpec> {
     return merge(StackStyler(clipBehavior: value));
   }
 
-  /// Sets the animation configuration.
-  ///
-  /// When [reverse] is provided, it is used as the exit transition
-  /// config when leaving this style.
+  /// Sets the animation configuration. [reverse] sets variant exit timing
+  /// and can only pair curve and spring configs.
   @override
   StackStyler animate(AnimationConfig value, {AnimationConfig? reverse}) {
     final config = reverse == null

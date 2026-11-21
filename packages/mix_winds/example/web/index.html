@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <base href="$FLUTTER_BASE_HREF">
+    <meta charset="UTF-8">
+    <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+      name="description"
+      content="Compare Tailwind utility strings with the native Flutter widgets they produce through mix_winds."
+    >
+    <meta name="theme-color" content="#ffffff">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="mix_winds showcase">
+    <link rel="icon" type="image/svg+xml" href="mix-icon.svg">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="showcase.css">
+    <title>mix_winds — Tailwind utilities, native Flutter</title>
+    <script>
+      const pageQuery = new URLSearchParams(window.location.search);
+      if (
+        pageQuery.get('screenshot') === 'true' ||
+        pageQuery.get('fullPage') === 'true'
+      ) {
+        document.documentElement.classList.add('flutter-full-page');
+      }
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#showcase-workspace">Skip to comparison</a>
+
+    <div class="showcase-shell">
+      <header class="site-header">
+        <div class="site-header-inner">
+          <div class="brand-lockup">
+            <span class="brand-mark" aria-hidden="true">mix<span>tw</span></span>
+            <span class="brand-name">mix_winds</span>
+            <span class="alpha-badge">Alpha</span>
+          </div>
+          <p class="header-thesis">Tailwind vocabulary. Native Flutter output.</p>
+          <label class="mobile-example-picker">
+            <span>Example</span>
+            <select id="mobile-example-select"></select>
+          </label>
+        </div>
+      </header>
+
+      <main class="showcase-main">
+        <section class="intro" aria-labelledby="showcase-title">
+          <div class="intro-copy">
+            <p class="eyebrow">A source-backed comparison</p>
+            <h1 id="showcase-title">Same classes.<br><em>Two renderers.</em></h1>
+            <p class="intro-deck">
+              Product-scale Tailwind examples rendered side by side in the browser
+              and as native Flutter widgets. The matching source stays directly below.
+            </p>
+          </div>
+          <dl class="showcase-facts" aria-label="Showcase verification summary">
+            <div><dt>Examples</dt><dd>05</dd></div>
+            <div><dt>Verified viewports</dt><dd>15</dd></div>
+            <div><dt>Average tolerant delta</dt><dd id="showcase-average">—</dd></div>
+          </dl>
+        </section>
+
+        <section class="example-strip" aria-labelledby="example-strip-title">
+          <div class="section-label-row">
+            <p id="example-strip-title" class="micro-label">Choose a specimen</p>
+            <p>Five product-scale surfaces</p>
+          </div>
+          <nav
+            id="example-navigation"
+            class="example-navigation"
+            aria-label="Showcase examples"
+          ></nav>
+        </section>
+
+        <article
+          id="showcase-workspace"
+          class="workspace"
+          aria-labelledby="example-title"
+        >
+          <header class="workspace-header">
+            <div>
+              <p id="example-eyebrow" class="eyebrow"></p>
+              <h2 id="example-title"></h2>
+              <p id="example-description" class="workspace-description"></p>
+              <div
+                id="example-features"
+                class="feature-list"
+                aria-label="Example features"
+              ></div>
+            </div>
+            <div class="proof-chip" title="The enforced visual-parity contract">
+              <span class="proof-dot" aria-hidden="true"></span>
+              <span id="example-proof">Loading proof</span>
+            </div>
+          </header>
+
+          <div class="utility-contract" aria-label="Shared utility string">
+            <div class="contract-label">
+              <span>Shared utility contract</span>
+              <strong>HTML class = Dart classes</strong>
+            </div>
+            <code id="source-utility"></code>
+          </div>
+
+          <section
+            id="panel-preview"
+            class="workbench-section"
+            aria-labelledby="render-heading"
+          >
+            <div class="section-heading">
+              <div>
+                <p class="micro-label">01 · Render comparison</p>
+                <h3 id="render-heading">The same surface, rendered twice</h3>
+              </div>
+              <div class="preview-controls">
+                <fieldset class="segmented-control" id="viewport-control">
+                  <legend>Viewport</legend>
+                  <button type="button" data-width="480">480</button>
+                  <button type="button" data-width="768">768</button>
+                  <button type="button" data-width="1024">1024</button>
+                </fieldset>
+                <p id="flutter-status" class="runtime-status" aria-live="polite">
+                  Starting Flutter engine…
+                </p>
+              </div>
+            </div>
+
+            <div id="single-preview" class="render-pair">
+              <article class="render-card">
+                <header><span>Tailwind reference</span><b>Browser DOM</b></header>
+                <div class="scaled-preview" data-preview-kind="tailwind">
+                  <div class="scaled-preview-inner">
+                    <iframe id="tailwind-preview" title="Tailwind reference preview"></iframe>
+                  </div>
+                </div>
+              </article>
+              <article class="render-card render-card-flutter">
+                <header><span>mix_winds</span><b>Native Flutter view</b></header>
+                <div class="scaled-preview" data-preview-kind="flutter">
+                  <div class="scaled-preview-inner">
+                    <div
+                      id="flutter-preview"
+                      class="flutter-host"
+                      aria-label="Embedded Flutter example"
+                    ></div>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <section
+            id="panel-source"
+            class="workbench-section source-section"
+            aria-labelledby="source-heading"
+          >
+            <div class="section-heading">
+              <div>
+                <p class="micro-label">02 · Code comparison</p>
+                <h3 id="source-heading">Matching structure, matching utilities</h3>
+                <p class="section-description">
+                  Widget syntax changes; the utility vocabulary and element nesting stay visible.
+                </p>
+              </div>
+            </div>
+            <div class="code-pair">
+              <article class="code-card">
+                <header>
+                  <div><span class="runtime-badge">HTML</span><strong>Tailwind CSS</strong></div>
+                  <button type="button" data-copy="tailwind">Copy HTML</button>
+                </header>
+                <pre tabindex="0"><code id="tailwind-source"></code></pre>
+              </article>
+              <article class="code-card">
+                <header>
+                  <div>
+                    <span class="runtime-badge runtime-badge-dart">DART</span>
+                    <strong>Flutter + Mix</strong>
+                  </div>
+                  <button type="button" data-copy="flutter">Copy Dart</button>
+                </header>
+                <pre tabindex="0"><code id="flutter-source"></code></pre>
+              </article>
+            </div>
+          </section>
+
+          <details id="panel-parity" class="parity-disclosure">
+            <summary>
+              <span>
+                <span class="micro-label">03 · Verification</span>
+                <strong>Visual parity evidence and diff artifacts</strong>
+              </span>
+              <span class="summary-action">Inspect evidence</span>
+            </summary>
+            <div id="parity-content" class="parity-content"></div>
+          </details>
+        </article>
+      </main>
+
+      <footer class="showcase-footer">
+        <p>Real Tailwind 4.3.1 reference · Flutter 3.44 · Mix 2</p>
+        <p>Source-backed · responsive · measured</p>
+      </footer>
+    </div>
+
+    <div id="copy-status" class="copy-status" aria-live="polite"></div>
+    <script type="module" src="showcase.js"></script>
+    <script src="flutter_bootstrap.js" async></script>
+  </body>
+</html>

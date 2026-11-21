@@ -29,3 +29,4 @@ export 'style/mixins/shadow_style_mixin.dart';
 export 'style/mixins/spacing_style_mixin.dart';
 export 'style/mixins/text_style_mixin.dart';
 export 'style/mixins/transform_style_mixin.dart';
+export 'style/mixins/wrap_style_mixin.dart';

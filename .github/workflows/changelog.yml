@@ -7,21 +7,22 @@ on:
         type: boolean
         description: whether to update mix core packages (mix, mix_lint, mix_annotations, mix_generator)
         default: true
-      update_mix_tailwinds:
+      update_mix_winds:
         type: boolean
-        description: whether to update mix_tailwinds package
+        description: whether to update mix_winds package
         default: false
       mix_version:
         type: string
         description: set the version for mix core packages
         default: ""
-      mix_tailwinds_version:
+      mix_winds_version:
         type: string
-        description: set the version for mix_tailwinds
+        description: set the version for mix_winds
         default: ""
 
 jobs:
   version:
+    timeout-minutes: 20
     runs-on: ubuntu-latest
     
     steps:
@@ -70,8 +71,8 @@ jobs:
           ignored_packages="$ignored_packages --ignore=mix,mix_lint,mix_annotations,mix_generator"
         fi
 
-        if [ "${{ github.event.inputs.update_mix_tailwinds }}" == "false" ]; then
-          ignored_packages="$ignored_packages --ignore=mix_tailwinds"
+        if [ "${{ github.event.inputs.update_mix_winds }}" == "false" ]; then
+          ignored_packages="$ignored_packages --ignore=mix_winds"
         fi
 
 
@@ -84,8 +85,8 @@ jobs:
           packages_with_versions="$packages_with_versions -V mix_generator:${{ github.event.inputs.mix_version }}"
         fi
 
-        if [ "${{ github.event.inputs.mix_tailwinds_version }}" != "" ]; then
-          packages_with_versions="$packages_with_versions -V mix_tailwinds:${{ github.event.inputs.mix_tailwinds_version }}"
+        if [ "${{ github.event.inputs.mix_winds_version }}" != "" ]; then
+          packages_with_versions="$packages_with_versions -V mix_winds:${{ github.event.inputs.mix_winds_version }}"
         fi
 
         melos version $ignored_packages --yes --no-git-tag-version $packages_with_versions

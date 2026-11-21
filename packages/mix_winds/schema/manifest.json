@@ -1,0 +1,9 @@
+{
+  "suites": [
+    {
+      "name": "style",
+      "schema": "../../mix_protocol/schema/style.schema.json",
+      "fixtures": "fixtures/style.json"
+    }
+  ]
+}

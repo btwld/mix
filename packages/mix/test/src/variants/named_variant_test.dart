@@ -214,7 +214,6 @@ void main() {
 
         expect(variantAttr.variant, primaryVariant);
         expect(variantAttr.value, style);
-        expect(variantAttr.mergeKey, 'primary');
       });
 
       test('different NamedVariants create different mergeKeys', () {
@@ -231,8 +230,6 @@ void main() {
           BoxStyler().width(150.0),
         );
 
-        expect(primaryStyle.mergeKey, 'primary');
-        expect(secondaryStyle.mergeKey, 'secondary');
         expect(primaryStyle.mergeKey, isNot(equals(secondaryStyle.mergeKey)));
       });
 

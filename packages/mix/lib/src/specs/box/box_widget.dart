@@ -17,8 +17,8 @@ import 'box_spec.dart';
 ///   .width(200)
 ///   .height(100)
 ///   .color(Colors.blue)
-///   .borderRounded(12)
-///   .padding(16);
+///   .borderRadius(.circular(12))
+///   .padding(.all(16));
 ///
 /// Box(style: style, child: Text('Hello Mix'))
 /// ```

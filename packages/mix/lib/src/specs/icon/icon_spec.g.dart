@@ -168,7 +168,8 @@ typedef _$IconSpecMethods = _$IconSpec; // ignore: unused_element
 // SpecStylerGenerator
 // **************************************************************************
 
-class IconStyler extends MixStyler<IconStyler, IconSpec> {
+class IconStyler extends MixStyler<IconStyler, IconSpec>
+    implements StylerFieldMetadata {
   final Prop<Color>? $color;
   final Prop<double>? $size;
   final Prop<double>? $weight;
@@ -273,6 +274,26 @@ class IconStyler extends MixStyler<IconStyler, IconSpec> {
     return merge(IconStyler(shadows: [value]));
   }
 
+  @override
+  Set<String> get $stylerFieldNames => const {
+    'color',
+    'size',
+    'weight',
+    'grade',
+    'opticalSize',
+    'shadows',
+    'textDirection',
+    'applyTextScaling',
+    'fill',
+    'semanticsLabel',
+    'opacity',
+    'blendMode',
+    'icon',
+    'animation',
+    'modifier',
+    'variants',
+  };
+
   /// Sets the color.
   IconStyler color(Color value) {
     return merge(IconStyler(color: value));
@@ -338,10 +359,8 @@ class IconStyler extends MixStyler<IconStyler, IconSpec> {
     return merge(IconStyler(icon: value));
   }
 
-  /// Sets the animation configuration.
-  ///
-  /// When [reverse] is provided, it is used as the exit transition
-  /// config when leaving this style.
+  /// Sets the animation configuration. [reverse] sets variant exit timing
+  /// and can only pair curve and spring configs.
   @override
   IconStyler animate(AnimationConfig value, {AnimationConfig? reverse}) {
     final config = reverse == null

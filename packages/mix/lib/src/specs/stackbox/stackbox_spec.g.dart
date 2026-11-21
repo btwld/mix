@@ -94,7 +94,8 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
         BorderStyleMixin<StackBoxStyler>,
         BorderRadiusStyleMixin<StackBoxStyler>,
         ShadowStyleMixin<StackBoxStyler>,
-        TransformStyleMixin<StackBoxStyler> {
+        TransformStyleMixin<StackBoxStyler>
+    implements StylerFieldMetadata {
   final Prop<StyleSpec<BoxSpec>>? $box;
   final Prop<StyleSpec<StackSpec>>? $stack;
 
@@ -231,12 +232,14 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
     AlignmentGeometry? begin,
     AlignmentGeometry? end,
     TileMode? tileMode,
+    GradientTransform? transform,
   }) => StackBoxStyler().linearGradient(
     colors: colors,
     stops: stops,
     begin: begin,
     end: end,
     tileMode: tileMode,
+    transform: transform,
   );
   factory StackBoxStyler.radialGradient({
     required List<Color> colors,
@@ -246,6 +249,7 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
     AlignmentGeometry? focal,
     double? focalRadius,
     TileMode? tileMode,
+    GradientTransform? transform,
   }) => StackBoxStyler().radialGradient(
     colors: colors,
     stops: stops,
@@ -254,6 +258,7 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
     focal: focal,
     focalRadius: focalRadius,
     tileMode: tileMode,
+    transform: transform,
   );
   factory StackBoxStyler.sweepGradient({
     required List<Color> colors,
@@ -262,6 +267,7 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
     double? startAngle,
     double? endAngle,
     TileMode? tileMode,
+    GradientTransform? transform,
   }) => StackBoxStyler().sweepGradient(
     colors: colors,
     stops: stops,
@@ -269,6 +275,7 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
     startAngle: startAngle,
     endAngle: endAngle,
     tileMode: tileMode,
+    transform: transform,
   );
   factory StackBoxStyler.foregroundLinearGradient({
     required List<Color> colors,
@@ -276,12 +283,14 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
     AlignmentGeometry? begin,
     AlignmentGeometry? end,
     TileMode? tileMode,
+    GradientTransform? transform,
   }) => StackBoxStyler().foregroundLinearGradient(
     colors: colors,
     stops: stops,
     begin: begin,
     end: end,
     tileMode: tileMode,
+    transform: transform,
   );
   factory StackBoxStyler.foregroundRadialGradient({
     required List<Color> colors,
@@ -291,6 +300,7 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
     AlignmentGeometry? focal,
     double? focalRadius,
     TileMode? tileMode,
+    GradientTransform? transform,
   }) => StackBoxStyler().foregroundRadialGradient(
     colors: colors,
     stops: stops,
@@ -299,6 +309,7 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
     focal: focal,
     focalRadius: focalRadius,
     tileMode: tileMode,
+    transform: transform,
   );
   factory StackBoxStyler.foregroundSweepGradient({
     required List<Color> colors,
@@ -307,6 +318,7 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
     double? startAngle,
     double? endAngle,
     TileMode? tileMode,
+    GradientTransform? transform,
   }) => StackBoxStyler().foregroundSweepGradient(
     colors: colors,
     stops: stops,
@@ -314,6 +326,7 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
     startAngle: startAngle,
     endAngle: endAngle,
     tileMode: tileMode,
+    transform: transform,
   );
   factory StackBoxStyler.alignment(AlignmentGeometry value) =>
       StackBoxStyler().alignment(value);
@@ -416,10 +429,17 @@ class StackBoxStyler extends MixStyler<StackBoxStyler, StackBoxSpec>
     return merge(StackBoxStyler(stackClipBehavior: value));
   }
 
-  /// Sets the animation configuration.
-  ///
-  /// When [reverse] is provided, it is used as the exit transition
-  /// config when leaving this style.
+  @override
+  Set<String> get $stylerFieldNames => const {
+    'box',
+    'stack',
+    'animation',
+    'modifier',
+    'variants',
+  };
+
+  /// Sets the animation configuration. [reverse] sets variant exit timing
+  /// and can only pair curve and spring configs.
   @override
   StackBoxStyler animate(AnimationConfig value, {AnimationConfig? reverse}) {
     final config = reverse == null

@@ -1,0 +1,18 @@
+{
+    "name": "mix_winds Showcase",
+    "short_name": "mix_winds",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#F4F6F8",
+    "theme_color": "#FFFFFF",
+    "description": "Compare Tailwind utility strings with the native Flutter widgets they produce through mix_winds.",
+    "prefer_related_applications": false,
+    "icons": [
+        {
+            "src": "mix-icon.svg",
+            "sizes": "any",
+            "type": "image/svg+xml",
+            "purpose": "any"
+        }
+    ]
+}

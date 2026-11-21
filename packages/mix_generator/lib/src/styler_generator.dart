@@ -49,18 +49,28 @@ class StylerGenerator extends GeneratorForAnnotation<MixableStyler> {
     ClassElement classElement,
     String stylerName,
   ) {
-    return classElement.fields
+    for (final member in [...classElement.fields, ...classElement.methods]) {
+      if (member.name != stylerFieldMetadataGetter) continue;
+      fail(
+        member,
+        '`$stylerFieldMetadataGetter` is reserved for generated Styler metadata. '
+        'Rename the Styler member.',
+        todo: 'Rename the Styler member.',
+      );
+    }
+
+    final fields = classElement.fields
         .where((f) => f.name?.startsWith(r'$') ?? false)
-        .where((f) => !_isBaseField(f.name!))
-        .map((field) {
-          return StylerFieldModel.fromElement(field, stylerName: stylerName);
-        })
-        .toList();
+        .where((f) => !_isBaseField(f.name!));
+
+    return fields.map((field) {
+      return StylerFieldModel.fromElement(field, stylerName: stylerName);
+    }).toList();
   }
 
   bool _isBaseField(String name) {
     // Base fields come from `Style<T>` and are handled separately.
-    return const {r'$variants', r'$modifier', r'$animation'}.contains(name);
+    return stylerBaseFieldNames.any((fieldName) => name == '\$$fieldName');
   }
 
   MixableStylerAnnotationConfig _extractAnnotationConfig(
@@ -75,111 +85,21 @@ class StylerGenerator extends GeneratorForAnnotation<MixableStyler> {
     required ClassElement stylerElement,
     required String stylerName,
     required InterfaceElement specElement,
-    required String specName,
   }) {
     final specAnnotation = mixableSpecAnnotationChecker.firstAnnotationOf(
       specElement,
     );
     if (specAnnotation == null) return null;
 
-    final reader = ConstantReader(specAnnotation).peek('target');
-    if (reader == null || reader.isNull) return null;
-
-    final fn = reader.objectValue.toFunctionValue();
-    if (fn is! ConstructorElement) {
-      fail(
-        specElement,
-        '@MixableSpec(target:) must be a constructor tear-off '
-        '(e.g., Box.new).',
-      );
-    }
-
-    final widgetClass = fn.enclosingElement;
-    final widgetName = requireName(
-      widgetClass,
-      orFailWith: '@MixableSpec(target:) widget class must have a name.',
-    );
-    final hiddenWidgetType = firstInvisibleTypeName(
-      widgetClass.thisType,
-      stylerElement.library,
-    );
-    if (hiddenWidgetType != null) {
-      fail(
-        stylerElement,
-        'Target widget `$hiddenWidgetType` is used by @MixableSpec(target:) '
-        'but is not visible from the @MixableStyler library.',
-        todo:
-            'Import or re-export `$hiddenWidgetType` where the styler is declared.',
-      );
-    }
-
-    final styleWidgetSupertype = findSupertypeMatching(
-      widgetClass.thisType,
-      styleWidgetChecker,
-    );
-    if (styleWidgetSupertype == null) {
-      fail(
-        specElement,
-        'Widget $widgetName must extend StyleWidget<$specName> '
-        'to be used as @MixableSpec(target:).',
-      );
-    }
-
-    final widgetSpecArg = styleWidgetSupertype.typeArguments.first;
-    if (widgetSpecArg is! InterfaceType ||
-        widgetSpecArg.element != specElement) {
-      fail(
-        specElement,
-        'Spec generic mismatch: $specName annotated, but '
-        '$widgetName extends StyleWidget<${widgetSpecArg.getDisplayString()}>.',
-      );
-    }
-
-    final optionalPositional = optionalPositionalNames(fn.formalParameters);
-    if (optionalPositional.isNotEmpty) {
-      fail(
-        specElement,
-        '@MixableSpec(target:) does not support optional positional target '
-        'constructor parameters on $widgetName: '
-        '[${optionalPositional.join(', ')}].',
-        todo: 'Convert these parameters to required positional or named.',
-      );
-    }
-
-    _requireStyleParameter(fn, widgetName, specElement);
-
-    final result = extractCallParams(
-      fn,
-      anchor: stylerElement,
-      library: stylerElement.library,
-      factoryReference: stylerName,
-      excludeNames: const {'style', 'styleSpec'},
-      annotationLabel: '@MixableSpec(target:)',
-      keyOwner: 'the target constructor',
-    );
-
-    return renderWidgetCall(
-      widgetName: widgetName,
-      params: result.params,
-      forwardsKey: result.forwardsKey,
+    return buildMixableSpecTargetCall(
+      annotation: ConstantReader(specAnnotation),
+      specElement: specElement,
+      stylerName: stylerName,
+      allowExactGeneratedStyler: false,
+      hostElement: stylerElement,
+      hostLibrary: stylerElement.library,
+      validateTargetVisibility: true,
       indent: '  ',
-    );
-  }
-
-  void _requireStyleParameter(
-    ConstructorElement constructor,
-    String widgetName,
-    Element anchor,
-  ) {
-    for (final parameter in constructor.formalParameters) {
-      if (parameter.name == 'style' && parameter.isNamed) return;
-    }
-
-    fail(
-      anchor,
-      '@MixableSpec(target:) requires $widgetName to expose a named '
-      '`style` constructor parameter so the generated call() can pass '
-      '`style: this`.',
     );
   }
 
@@ -219,7 +139,6 @@ class StylerGenerator extends GeneratorForAnnotation<MixableStyler> {
       stylerElement: classElement,
       stylerName: stylerName,
       specElement: specType.element,
-      specName: specName,
     );
     final fields = _extractFields(classElement, stylerName);
     final config = _extractAnnotationConfig(annotation);

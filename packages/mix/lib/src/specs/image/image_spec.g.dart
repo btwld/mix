@@ -202,7 +202,8 @@ typedef _$ImageSpecMethods = _$ImageSpec; // ignore: unused_element
 // SpecStylerGenerator
 // **************************************************************************
 
-class ImageStyler extends MixStyler<ImageStyler, ImageSpec> {
+class ImageStyler extends MixStyler<ImageStyler, ImageSpec>
+    implements StylerFieldMetadata {
   final Prop<ImageProvider<Object>>? $image;
   final Prop<double>? $width;
   final Prop<double>? $height;
@@ -316,6 +317,28 @@ class ImageStyler extends MixStyler<ImageStyler, ImageSpec> {
   factory ImageStyler.matchTextDirection(bool value) =>
       ImageStyler().matchTextDirection(value);
 
+  @override
+  Set<String> get $stylerFieldNames => const {
+    'image',
+    'width',
+    'height',
+    'color',
+    'repeat',
+    'fit',
+    'alignment',
+    'centerSlice',
+    'filterQuality',
+    'colorBlendMode',
+    'semanticLabel',
+    'excludeFromSemantics',
+    'gaplessPlayback',
+    'isAntiAlias',
+    'matchTextDirection',
+    'animation',
+    'modifier',
+    'variants',
+  };
+
   /// Sets the image.
   ImageStyler image(ImageProvider<Object> value) {
     return merge(ImageStyler(image: value));
@@ -391,10 +414,8 @@ class ImageStyler extends MixStyler<ImageStyler, ImageSpec> {
     return merge(ImageStyler(matchTextDirection: value));
   }
 
-  /// Sets the animation configuration.
-  ///
-  /// When [reverse] is provided, it is used as the exit transition
-  /// config when leaving this style.
+  /// Sets the animation configuration. [reverse] sets variant exit timing
+  /// and can only pair curve and spring configs.
   @override
   ImageStyler animate(AnimationConfig value, {AnimationConfig? reverse}) {
     final config = reverse == null

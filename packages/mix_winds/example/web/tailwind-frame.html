@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tailwind reference</title>
+    <style>
+      html, body { min-height: 100%; }
+      body.reference-body {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 24px;
+        overflow: auto;
+        background: #f1f5f9;
+        font-family: "TwParityRoboto", ui-sans-serif, system-ui, sans-serif;
+      }
+      #reference-root { width: 100%; }
+      .reference-error {
+        margin: 24px;
+        padding: 16px;
+        border: 1px solid #fecaca;
+        border-radius: 12px;
+        background: #fff1f2;
+        color: #9f1239;
+        font: 600 14px/1.5 ui-sans-serif, system-ui, sans-serif;
+      }
+    </style>
+  </head>
+  <body class="reference-body">
+    <main id="reference-root" aria-live="polite"></main>
+    <script type="module" src="tailwind-frame.js"></script>
+  </body>
+</html>

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../core/spec.dart';
@@ -33,20 +34,9 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
     extends State<StyleAnimationBuilder<S>>
     with TickerProviderStateMixin {
   late StyleAnimationDriver<S> animationDriver;
-
-  /// The config currently driving the active driver. Tracked separately from
-  /// the spec's config because a reverse transition can leave the driver using
-  /// a different kind from the current spec's forward config.
-  AnimationConfig? _activeConfig;
-
-  @override
-  void initState() {
-    super.initState();
-    final spec = widget.spec;
-    final config = _forwardOf(spec.animation);
-    animationDriver = _createAnimationDriver(config: config, initialSpec: spec);
-    _activeConfig = config;
-  }
+  bool _hasInitializedAnimationDriver = false;
+  AnimationConfig? _driverConfig;
+  bool _isExiting = false;
 
   StyleAnimationDriver<S> _createAnimationDriver({
     required AnimationConfig? config,
@@ -79,14 +69,54 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
         initialSpec: initialSpec,
         context: context,
       ),
-      // A reversible config is unwrapped to its forward config for driving.
-      ReversibleAnimationConfig() => _createAnimationDriver(
-        config: config.forward,
-        initialSpec: initialSpec,
+      ReversibleAnimationConfig() => throw StateError(
+        'Select a forward or reverse config before creating a driver.',
       ),
       // ignore: avoid-undisposed-instances
       null => NoAnimationDriver(vsync: this, initialSpec: initialSpec),
     };
+  }
+
+  AnimationConfig? _forwardConfig(AnimationConfig? config) =>
+      config is ReversibleAnimationConfig ? config.forward : config;
+
+  AnimationConfig? _exitConfig(StyleSpec<S> previous, StyleSpec<S> target) {
+    final previousConfig = previous.animation;
+    final activation = previous.variantActivation;
+    final targetActivation = target.variantActivation;
+    final targetOwner = targetActivation?.animationOwner;
+    if (previousConfig is! ReversibleAnimationConfig ||
+        activation == null ||
+        activation.animationOwner == null) {
+      return null;
+    }
+    if (targetOwner != null && !activation.active.contains(targetOwner)) {
+      return null;
+    }
+    if (targetActivation?.active.contains(activation.animationOwner) ?? false) {
+      return null;
+    }
+
+    return previousConfig.reverse;
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (!_hasInitializedAnimationDriver) {
+      final spec = widget.spec;
+      _driverConfig = _forwardConfig(spec.animation);
+      animationDriver = _createAnimationDriver(
+        config: _driverConfig,
+        initialSpec: spec,
+      );
+      _hasInitializedAnimationDriver = true;
+
+      return;
+    }
+
+    animationDriver.didChangeDependencies();
   }
 
   @override
@@ -99,30 +129,53 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
   void didUpdateWidget(StyleAnimationBuilder<S> oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    final newConfig = widget.spec.animation;
-    final oldConfig = oldWidget.spec.animation;
+    final previous = oldWidget.spec;
+    final target = widget.spec;
+    final forward = _forwardConfig(target.animation);
+    final isTimeline =
+        forward is PhaseAnimationConfig || forward is KeyframeAnimationConfig;
+    final targetChanged =
+        previous.spec != target.spec ||
+        !listEquals(previous.widgetModifiers, target.widgetModifiers);
+    if (_isExiting &&
+        animationDriver.isAnimating &&
+        !targetChanged &&
+        !isTimeline) {
+      animationDriver.didUpdateSpec(target, target);
 
-    // Select the effective transition config: the leaving style's reverse
-    // config when leaving it, otherwise the target style's forward config.
-    final config =
-        _transitionConfig(oldConfig, newConfig) ?? _forwardOf(oldConfig);
+      return;
+    }
 
-    // Compare against the active driver's config kind, not the spec's, because
-    // a reverse transition can leave the driver using a different kind.
-    if ((_activeConfig.runtimeType == config.runtimeType) && config != null) {
-      animationDriver.updateDriver(config);
-    } else {
+    final exitConfig = targetChanged && !isTimeline
+        ? _exitConfig(previous, target)
+        : null;
+    var config = exitConfig ?? forward;
+    if (config == null &&
+        animationDriver is ImplicitAnimationDriver<S, AnimationConfig>) {
+      config = _forwardConfig(previous.animation);
+      if (config == null && animationDriver.isAnimating) {
+        config = _driverConfig;
+      }
+    }
+    _isExiting = exitConfig != null;
+
+    var source = previous;
+    if (_driverConfig.runtimeType != config.runtimeType) {
+      if (config is CurveAnimationConfig || config is SpringAnimationConfig) {
+        source = animationDriver.animation.value ?? previous;
+      }
       animationDriver.dispose();
       animationDriver = _createAnimationDriver(
         config: config,
-        initialSpec: oldWidget.spec,
+        initialSpec: source,
       );
+    } else if (config != null) {
+      animationDriver.updateDriver(config);
     }
-    _activeConfig = config;
+    _driverConfig = config;
 
-    if (oldWidget.spec != widget.spec) {
-      animationDriver.didUpdateSpec(oldWidget.spec, widget.spec);
-    }
+    // Equal visible values can carry refreshed modifier-order metadata.
+    animationDriver.didUpdateSpec(source, target);
   }
 
   @override
@@ -136,39 +189,4 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
       },
     );
   }
-}
-
-/// Unwraps the forward (enter) config from a [ReversibleAnimationConfig].
-AnimationConfig? _forwardOf(AnimationConfig? config) {
-  return switch (config) {
-    ReversibleAnimationConfig(:final forward) => forward,
-    _ => config,
-  };
-}
-
-/// Unwraps the reverse (exit) config from a [ReversibleAnimationConfig].
-AnimationConfig? _reverseOf(AnimationConfig? config) {
-  return switch (config) {
-    ReversibleAnimationConfig(:final reverse) => reverse,
-    _ => null,
-  };
-}
-
-/// Selects the effective transition config when moving from [oldConfig] to
-/// [newConfig].
-///
-/// Uses the leaving style's reverse config only when the old and new configs
-/// are distinct; otherwise uses the target style's forward config. This keeps
-/// an inherited base reversible config from being mistaken for an exit
-/// animation on enter.
-AnimationConfig? _transitionConfig(
-  AnimationConfig? oldConfig,
-  AnimationConfig? newConfig,
-) {
-  if (oldConfig != newConfig) {
-    final reverse = _reverseOf(oldConfig);
-    if (reverse != null) return reverse;
-  }
-
-  return _forwardOf(newConfig);
 }

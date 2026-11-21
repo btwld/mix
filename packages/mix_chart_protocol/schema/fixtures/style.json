@@ -1,0 +1,554 @@
+{
+  "accept": [
+    {
+      "name": "populated BarBackgroundStyler 0",
+      "payload": {
+        "type": "mix_chart.v1.bar_background",
+        "show": true,
+        "fromY": -4.0,
+        "toY": 8.0,
+        "color": "#102030",
+        "gradient": {
+          "kind": "linear",
+          "begin": "centerLeft",
+          "end": "centerRight",
+          "colors": [
+            "#112233",
+            "#445566"
+          ],
+          "tileMode": "clamp"
+        },
+        "v": 1
+      }
+    },
+    {
+      "name": "populated BarChartStyler 1",
+      "payload": {
+        "type": "mix_chart.v1.bar_chart",
+        "frame": {
+          "type": "mix_chart.v1.chart_frame",
+          "showBorder": true
+        },
+        "axis": {
+          "type": "mix_chart.v1.chart_axis",
+          "showLabels": true
+        },
+        "xAxis": {
+          "type": "mix_chart.v1.chart_axis",
+          "labelSpace": 4.0
+        },
+        "yAxis": {
+          "type": "mix_chart.v1.chart_axis",
+          "reservedSize": 24.0
+        },
+        "topAxis": {
+          "type": "mix_chart.v1.chart_axis",
+          "fitInside": true
+        },
+        "rightAxis": {
+          "type": "mix_chart.v1.chart_axis",
+          "drawBelowEverything": false
+        },
+        "grid": {
+          "type": "mix_chart.v1.chart_grid",
+          "show": true
+        },
+        "bar": {
+          "type": "mix_chart.v1.bar",
+          "width": 12.0
+        },
+        "segment": {
+          "type": "mix_chart.v1.bar_segment",
+          "color": "#203040"
+        },
+        "palette": [
+          "#304050",
+          "#405060"
+        ],
+        "groupSpacing": 8.0,
+        "barSpacing": 2.0,
+        "alignment": "start",
+        "tooltip": {
+          "type": "mix_chart.v1.chart_tooltip",
+          "margin": 6.0
+        },
+        "v": 1
+      }
+    },
+    {
+      "name": "populated BarSegmentStyler 2",
+      "payload": {
+        "type": "mix_chart.v1.bar_segment",
+        "color": "#506070",
+        "gradient": {
+          "kind": "linear",
+          "begin": "centerLeft",
+          "end": "centerRight",
+          "colors": [
+            "#112233",
+            "#445566"
+          ],
+          "tileMode": "clamp"
+        },
+        "border": {
+          "color": "#778899",
+          "width": 2.0,
+          "style": "solid",
+          "strokeAlign": -1.0
+        },
+        "label": {
+          "type": "text",
+          "maxLines": 1
+        },
+        "v": 1
+      }
+    },
+    {
+      "name": "populated BarStyler 3",
+      "payload": {
+        "type": "mix_chart.v1.bar",
+        "color": "#607080",
+        "gradient": {
+          "kind": "linear",
+          "begin": "centerLeft",
+          "end": "centerRight",
+          "colors": [
+            "#112233",
+            "#445566"
+          ],
+          "tileMode": "clamp"
+        },
+        "width": 16.0,
+        "borderRadius": 5.0,
+        "border": {
+          "color": "#778899",
+          "width": 2.0,
+          "style": "solid",
+          "strokeAlign": -1.0
+        },
+        "borderDashArray": [
+          2,
+          4
+        ],
+        "background": {
+          "type": "mix_chart.v1.bar_background",
+          "show": true
+        },
+        "label": {
+          "type": "text",
+          "style": {
+            "fontSize": 11.0
+          }
+        },
+        "labelOffset": {
+          "x": 1.0,
+          "y": 2.0
+        },
+        "labelAngle": 0.25,
+        "v": 1
+      }
+    },
+    {
+      "name": "populated ChartAreaStyler 4",
+      "payload": {
+        "type": "mix_chart.v1.chart_area",
+        "show": true,
+        "color": "#708090",
+        "gradient": {
+          "kind": "linear",
+          "begin": "centerLeft",
+          "end": "centerRight",
+          "colors": [
+            "#112233",
+            "#445566"
+          ],
+          "tileMode": "clamp"
+        },
+        "cutoffY": -1.0,
+        "applyCutoff": true,
+        "v": 1
+      }
+    },
+    {
+      "name": "populated ChartAxisStyler 5",
+      "payload": {
+        "type": "mix_chart.v1.chart_axis",
+        "showLabels": true,
+        "label": {
+          "type": "text",
+          "style": {
+            "fontSize": 10.0
+          }
+        },
+        "reservedSize": 30.0,
+        "labelSpace": 5.0,
+        "labelAngle": 0.5,
+        "fitInside": true,
+        "fitInsideDistance": 3.0,
+        "nameSize": 12.0,
+        "drawBelowEverything": false,
+        "alignment": "outside",
+        "v": 1
+      }
+    },
+    {
+      "name": "populated ChartFrameStyler 6",
+      "payload": {
+        "type": "mix_chart.v1.chart_frame",
+        "backgroundColor": "#8090A0",
+        "border": {
+          "top": {
+            "color": "#90A0B0",
+            "width": 1.0,
+            "style": "solid",
+            "strokeAlign": -1.0
+          },
+          "right": {
+            "color": "#90A0B0",
+            "width": 1.0,
+            "style": "solid",
+            "strokeAlign": -1.0
+          },
+          "bottom": {
+            "color": "#90A0B0",
+            "width": 1.0,
+            "style": "solid",
+            "strokeAlign": -1.0
+          },
+          "left": {
+            "color": "#90A0B0",
+            "width": 1.0,
+            "style": "solid",
+            "strokeAlign": -1.0
+          }
+        },
+        "showBorder": true,
+        "clip": true,
+        "rotationQuarterTurns": 1,
+        "v": 1
+      }
+    },
+    {
+      "name": "populated ChartGridStyler 7",
+      "payload": {
+        "type": "mix_chart.v1.chart_grid",
+        "show": true,
+        "showHorizontal": true,
+        "showVertical": false,
+        "horizontalInterval": 2.0,
+        "verticalInterval": 4.0,
+        "stroke": {
+          "type": "mix_chart.v1.chart_stroke",
+          "width": 1.0
+        },
+        "v": 1
+      }
+    },
+    {
+      "name": "populated ChartMarkerStyler 8",
+      "payload": {
+        "type": "mix_chart.v1.chart_marker",
+        "show": true,
+        "shape": "circle",
+        "color": "#A0B0C0",
+        "radius": 5.0,
+        "borderColor": "#B0C0D0",
+        "borderWidth": 1.0,
+        "shadow": {
+          "color": "#44000000",
+          "offset": {
+            "x": 1.0,
+            "y": 1.0
+          },
+          "blurRadius": 3.0
+        },
+        "v": 1
+      }
+    },
+    {
+      "name": "populated ChartStrokeStyler 9",
+      "payload": {
+        "type": "mix_chart.v1.chart_stroke",
+        "color": "#C0D0E0",
+        "gradient": {
+          "kind": "linear",
+          "begin": "centerLeft",
+          "end": "centerRight",
+          "colors": [
+            "#112233",
+            "#445566"
+          ],
+          "tileMode": "clamp"
+        },
+        "width": 3.0,
+        "dashArray": [
+          3,
+          2
+        ],
+        "opacity": 0.8,
+        "v": 1
+      }
+    },
+    {
+      "name": "populated ChartTooltipStyler 10",
+      "payload": {
+        "type": "mix_chart.v1.chart_tooltip",
+        "backgroundColor": "#D0E0F0",
+        "border": {
+          "color": "#778899",
+          "width": 2.0,
+          "style": "solid",
+          "strokeAlign": -1.0
+        },
+        "borderRadius": 6.0,
+        "padding": 8.0,
+        "margin": 4.0,
+        "maxWidth": 240.0,
+        "fitHorizontally": true,
+        "fitVertically": false,
+        "text": {
+          "type": "text",
+          "maxLines": 2
+        },
+        "v": 1
+      }
+    },
+    {
+      "name": "populated LineChartStyler 11",
+      "payload": {
+        "type": "mix_chart.v1.line_chart",
+        "frame": {
+          "type": "mix_chart.v1.chart_frame",
+          "clip": true
+        },
+        "axis": {
+          "type": "mix_chart.v1.chart_axis",
+          "showLabels": true
+        },
+        "xAxis": {
+          "type": "mix_chart.v1.chart_axis",
+          "labelSpace": 2.0
+        },
+        "yAxis": {
+          "type": "mix_chart.v1.chart_axis",
+          "reservedSize": 20.0
+        },
+        "topAxis": {
+          "type": "mix_chart.v1.chart_axis",
+          "showLabels": false
+        },
+        "rightAxis": {
+          "type": "mix_chart.v1.chart_axis",
+          "fitInside": true
+        },
+        "grid": {
+          "type": "mix_chart.v1.chart_grid",
+          "show": true
+        },
+        "series": {
+          "type": "mix_chart.v1.line_series",
+          "show": true
+        },
+        "palette": [
+          "#E0F001"
+        ],
+        "tooltip": {
+          "type": "mix_chart.v1.chart_tooltip",
+          "maxWidth": 180.0
+        },
+        "v": 1
+      }
+    },
+    {
+      "name": "populated LineSeriesStyler 12",
+      "payload": {
+        "type": "mix_chart.v1.line_series",
+        "show": true,
+        "stroke": {
+          "type": "mix_chart.v1.chart_stroke",
+          "width": 2.0
+        },
+        "curve": "straight",
+        "smoothness": 0.4,
+        "preventCurveOvershooting": true,
+        "curveOvershootingThreshold": 3.0,
+        "roundStrokeCap": true,
+        "roundStrokeJoin": false,
+        "marker": {
+          "type": "mix_chart.v1.chart_marker",
+          "radius": 4.0
+        },
+        "belowArea": {
+          "type": "mix_chart.v1.chart_area",
+          "show": true
+        },
+        "aboveArea": {
+          "type": "mix_chart.v1.chart_area",
+          "show": false
+        },
+        "shadow": {
+          "blurRadius": 2.0
+        },
+        "v": 1
+      }
+    },
+    {
+      "name": "populated PieChartStyler 13",
+      "payload": {
+        "type": "mix_chart.v1.pie_chart",
+        "frame": {
+          "type": "mix_chart.v1.chart_frame",
+          "showBorder": true
+        },
+        "slice": {
+          "type": "mix_chart.v1.pie_slice",
+          "radius": 80.0
+        },
+        "selectedSliceRadiusOffset": 6.0,
+        "palette": [
+          "#F00112",
+          "#011223"
+        ],
+        "centerRadius": 30.0,
+        "centerColor": "#122334",
+        "sliceSpacing": 2.0,
+        "startAngle": -1.5,
+        "sunbeamLabels": true,
+        "tooltip": {
+          "type": "mix_chart.v1.chart_tooltip",
+          "margin": 3.0
+        },
+        "v": 1
+      }
+    },
+    {
+      "name": "populated PieSliceStyler 14",
+      "payload": {
+        "type": "mix_chart.v1.pie_slice",
+        "color": "#233445",
+        "gradient": {
+          "kind": "linear",
+          "begin": "centerLeft",
+          "end": "centerRight",
+          "colors": [
+            "#112233",
+            "#445566"
+          ],
+          "tileMode": "clamp"
+        },
+        "radius": 90.0,
+        "showLabel": true,
+        "label": {
+          "type": "text",
+          "style": {
+            "fontSize": 12.0
+          }
+        },
+        "labelPosition": 0.7,
+        "border": {
+          "color": "#778899",
+          "width": 2.0,
+          "style": "solid",
+          "strokeAlign": -1.0
+        },
+        "cornerRadius": 4.0,
+        "badgePosition": 0.9,
+        "v": 1
+      }
+    },
+    {
+      "name": "chart_stroke width accepted: 2",
+      "payload": {
+        "v": 1,
+        "type": "mix_chart.v1.chart_stroke",
+        "width": 2
+      }
+    },
+    {
+      "name": "chart_stroke width accepted: {$token: stroke.width, kind: double}",
+      "payload": {
+        "v": 1,
+        "type": "mix_chart.v1.chart_stroke",
+        "width": {
+          "$token": "stroke.width",
+          "kind": "double"
+        }
+      }
+    },
+    {
+      "name": "chart_tooltip padding accepted: {left: 8, top: 4}",
+      "payload": {
+        "v": 1,
+        "type": "mix_chart.v1.chart_tooltip",
+        "padding": {
+          "left": 8,
+          "top": 4
+        }
+      }
+    },
+    {
+      "name": "chart_tooltip padding accepted: {$token: space.padding, kind: space}",
+      "payload": {
+        "v": 1,
+        "type": "mix_chart.v1.chart_tooltip",
+        "padding": {
+          "$token": "space.padding",
+          "kind": "space"
+        }
+      }
+    }
+  ],
+  "reject": [
+    {
+      "name": "chart_stroke width rejected: true",
+      "payload": {
+        "v": 1,
+        "type": "mix_chart.v1.chart_stroke",
+        "width": true
+      }
+    },
+    {
+      "name": "chart_stroke opacity rejected: 1.1",
+      "payload": {
+        "v": 1,
+        "type": "mix_chart.v1.chart_stroke",
+        "opacity": 1.1
+      }
+    },
+    {
+      "name": "chart_grid horizontalInterval rejected: 0",
+      "payload": {
+        "v": 1,
+        "type": "mix_chart.v1.chart_grid",
+        "horizontalInterval": 0
+      }
+    },
+    {
+      "name": "chart_marker radius rejected: -1",
+      "payload": {
+        "v": 1,
+        "type": "mix_chart.v1.chart_marker",
+        "radius": -1
+      }
+    },
+    {
+      "name": "chart_tooltip padding rejected: true",
+      "payload": {
+        "v": 1,
+        "type": "mix_chart.v1.chart_tooltip",
+        "padding": true
+      }
+    },
+    {
+      "name": "chart_tooltip padding rejected: {$token: color.padding, kind: color}",
+      "payload": {
+        "v": 1,
+        "type": "mix_chart.v1.chart_tooltip",
+        "padding": {
+          "$token": "color.padding",
+          "kind": "color"
+        }
+      }
+    }
+  ]
+}

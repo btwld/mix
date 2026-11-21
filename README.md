@@ -1,78 +1,57 @@
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/leoafarias/mix/main/assets/dark.svg">
-  <img alt="Mix logo" src="https://raw.githubusercontent.com/leoafarias/mix/main/assets/light.svg">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/btwld/mix/main/assets/dark.svg">
+  <img alt="Mix logo" src="https://raw.githubusercontent.com/btwld/mix/main/assets/light.svg">
 </picture>
 
-![GitHub stars](https://img.shields.io/github/stars/btwld/mix?style=for-the-badge&logo=GitHub&logoColor=black&labelColor=white&color=dddddd)
-[![Pub Version](https://img.shields.io/pub/v/mix?label=version&style=for-the-badge)](https://pub.dev/packages/mix/changelog)
-![Pub Likes](https://img.shields.io/pub/likes/mix?label=Pub%20Likes&style=for-the-badge)
-![Pub Points](https://img.shields.io/pub/points/mix?label=Pub%20Points&style=for-the-badge) [![MIT Licence](https://img.shields.io/github/license/leoafarias/mix?style=for-the-badge&longCache=true)](https://opensource.org/licenses/mit-license.php) [![Awesome Flutter](https://img.shields.io/badge/awesome-flutter-purple?longCache=true&style=for-the-badge)](https://github.com/Solido/awesome-flutter)
+# Mix
 
-**Mix** is a styling system for Flutter that separates style definitions from widget structure. It provides a composable, type-safe way to define and apply styles using a fluent API, design tokens, and context-aware variants.
+Type-safe styling for Flutter, with style definitions separate from widget structure.
 
-- Compose, merge, and apply styles across widgets
-- Write maintainable styling definitions separate from widget code
-- Adapt styles conditionally based on interactions and context
+[![pub package](https://img.shields.io/pub/v/mix)](https://pub.dev/packages/mix)
+[![Test Workflow](https://img.shields.io/github/actions/workflow/status/btwld/mix/test.yml?branch=main&label=Test%20Workflow)](https://github.com/btwld/mix/actions/workflows/test.yml?query=branch%3Amain)
+[![BSD 3-Clause license](https://img.shields.io/github/license/btwld/mix)](LICENSE)
 
-## Why Mix?
+[Package](https://pub.dev/packages/mix) ·
+[Documentation](https://fluttermix.com/mix/docs/) ·
+[BSD 3-Clause license](LICENSE)
 
-Flutter's built-in styling works well for simple widgets, but as your app grows, common pain points emerge:
+## Core concepts
 
-- **Style duplication**: The same colors, spacing, and borders are repeated across widgets with no easy way to share them.
-- **Tight coupling**: Style logic lives inside `build()` methods, making it hard to reuse or test independently.
-- **No conditional styling**: Adapting styles for hover, press, dark mode, or breakpoints requires manual boilerplate.
+- Styler → Spec → Widget: a typed style resolves to data that a widget renders.
+- Styles are values: fluent methods return new merged styles, so bases can be reused.
+- Props defer values: concrete values, tokens, and Mix values resolve with context;
+  plain values replace, while Mix values accumulate fieldwise.
+- Tokens name values: `MixScope` supplies them; `ContextToken` can compute a default.
+- Variants are conditional patches: state-dependent patches have higher priority,
+  with declaration order preserved within each priority group.
+- Modifiers wrap widgets; directives transform values during resolution or rendering.
+- Animation interpolates resolved specs: implicit, phase, and keyframe modes.
+- Annotations generate typed plumbing and widgets from style recipes.
 
-Mix solves these by giving you a dedicated styling layer that stays consistent across widgets and files — without being tied to Material Design.
+The [decision log](ARCHITECTURE.md) explain the boundaries
+and tradeoffs behind these concepts. The bullets describe the model; the log
+preserves reasons to revisit a choice.
 
-## Goals
-
-- **Define styles outside widgets** while retaining `BuildContext` access (resolved at build time, like `Theme.of`, with more flexibility)
-- **Reuse style definitions** across your app for consistency
-- **Adapt styles conditionally** using variants (hover, dark mode, breakpoints)
-- **Type-safe composability** using Dart's type system
-
-## Guiding Principles
-
-- **Simple** — Thin layer over Flutter; widgets remain compatible and predictable
-- **Consistent** — API mirrors Flutter naming conventions
-- **Composable** — Build complex styles from simple, reusable pieces
-- **Extensible** — Override and extend utilities to fit your needs
-
-## Quick Start
-
-### Prerequisites
-
-- **Dart SDK**: 3.11.0 or higher
-- **Flutter**: 3.41.0 or higher
-
-### Installation
+## Start
 
 ```bash
 flutter pub add mix
 ```
 
-Or in `pubspec.yaml`:
-
-```yaml
-dependencies:
-  mix: <latest>
-```
+Current sources require Dart 3.12+ and Flutter 3.44+; check the
+[package manifest](packages/mix/pubspec.yaml) for the version you use.
 
 ```dart
+import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
-```
 
-### First Widget
-
-```dart
 final cardStyle = BoxStyler()
     .size(240, 100)
     .color(Colors.blue)
     .alignment(.center)
-    .borderRounded(12)
-    .border(.color(Colors.black).width(1).style(.solid));
+    .borderRadius(.circular(12));
 
-Box(
+final card = Box(
   style: cardStyle,
   child: StyledText(
     'Hello Mix',
@@ -81,111 +60,45 @@ Box(
 );
 ```
 
-## Key Features
-
-### Styling API
-
-Define styles with a fluent, chainable API. Later attributes override earlier ones when chained:
-
-```dart
-final boxStyle = BoxStyler()
-    .height(100)
-    .width(100)
-    .color(Colors.purple)
-    .borderRounded(10);
-
-// Compose from a base style
-final base = BoxStyler()
-    .paddingX(16)
-    .paddingY(8)
-    .borderRounded(8)
-    .color(Colors.black);
-final solid = base.color(Colors.blue);
-```
-
-[Styling guide →](https://fluttermix.com/docs/guides/styling)
-
-### Dynamic Styling (Variants)
-
-Styles adapt to interactions and context in one place:
-
-```dart
-final buttonStyle = BoxStyler()
-    .height(50)
-    .borderRounded(25)
-    .color(Colors.blue)
-    .onHovered(.color(Colors.blue.shade700))
-    .onDark(.color(Colors.blue.shade200));
-```
-
-Built-in variants include `onHovered`, `onPressed`, `onFocused`, `onDisabled`, `onDark`, `onLight`, `onBreakpoint`, `onMobile`, `onTablet`, `onDesktop`, and platform/context variants.
-
-[Dynamic styling guide →](https://fluttermix.com/docs/guides/dynamic-styling)
-
-### Design Tokens and Theming
-
-Define reusable tokens and provide them via `MixScope`:
-
-```dart
-final $primary = ColorToken('primary');
-final $spacingMd = SpaceToken('spacing.md');
-
-MixScope(
-  colors: { $primary: Colors.blue },
-  spaces: { $spacingMd: 16.0 },
-  child: MyApp(),
-);
-
-final style = BoxStyler()
-    .color($primary())
-    .paddingAll($spacingMd());
-```
-
-[Design tokens guide →](https://fluttermix.com/docs/guides/design-token)
-
-### Animations
-
-- **Implicit** — Values animate smoothly with `.animate(AnimationConfig....)`
-- **Phase** — Multi-step flows (e.g. tap → compress → expand) with `.phaseAnimation(...)`
-- **Keyframe** — Full control with tracks and keyframes
-
-[Animations guide →](https://fluttermix.com/docs/guides/animations)
-
-### Widget Modifiers
-
-Some visual effects — opacity, clipping, visibility — aren't style properties. Modifiers let you declare widget wrappers inside your style so they stay composable and animatable.
-
-[Widget modifiers guide →](https://fluttermix.com/docs/guides/widget-modifiers)
-
-### Directives
-
-Directives transform values (text casing, number scaling, color adjustments) at resolve time, keeping transformations inside the style so they survive merging.
-
-[Directives guide →](https://fluttermix.com/docs/guides/directives)
-
 ## Packages
 
-| Package | Description |
-|---------|-------------|
-| [mix](packages/mix) | Core styling framework |
-| [mix_annotations](packages/mix_annotations) | Annotations for code generation |
-| [mix_generator](packages/mix_generator) | build_runner generator for specs |
-| [mix_lint](packages/mix_lint) | Custom linter rules |
-| [mix_tailwinds](packages/mix_tailwinds) | Utility-first styling inspired by Tailwind CSS |
+| Package | Purpose |
+|---|---|
+| [mix](packages/mix) | Styling, tokens, variants, animation and layout |
+| [mix_annotations](packages/mix_annotations) | Code-generation annotations |
+| [mix_generator](packages/mix_generator) | build_runner generators |
+| [mix_lint](packages/mix_lint) | Mix analyzer rules |
+| [mix_protocol](packages/mix_protocol) | JSON contract, codecs and schemas |
+| [mix_winds](packages/mix_winds) | Tailwind utility compiler and Flutter widgets |
+| [mix_chart](packages/mix_chart) | Line, bar and pie charts |
+| [mix_chart_protocol](packages/mix_chart_protocol) | Optional chart JSON vocabulary |
 
-## Documentation
+## Examples and guides
 
-- [Introduction](https://fluttermix.com/docs/overview/introduction)
-- [Getting started](https://fluttermix.com/docs/overview/getting-started)
-- [Styling](https://fluttermix.com/docs/guides/styling)
-- [Dynamic styling](https://fluttermix.com/docs/guides/dynamic-styling)
-- [Design tokens](https://fluttermix.com/docs/guides/design-token)
-- [Animations](https://fluttermix.com/docs/guides/animations)
-- [Widgets](https://fluttermix.com/docs/widgets/box) (Box, Text, Icon, FlexBox, Stack, etc.)
-- [Ecosystem](https://fluttermix.com/docs/ecosystem/mix-tailwinds)
+- [Showcase](examples/showcase): widgets, responsive layouts, interactions and charts.
+- [Example workspace setup](examples): dependencies and web builds.
+- [Styling](https://fluttermix.com/mix/docs/guides/styling/),
+  [variants](https://fluttermix.com/mix/docs/guides/dynamic-styling/),
+  [tokens](https://fluttermix.com/mix/docs/guides/design-token/),
+  [animation](https://fluttermix.com/mix/docs/guides/animations/).
+- [Grid layout](packages/mix/doc/grid-layout.md),
+  [scope and theming](packages/mix/doc/mix-scope-and-theming.md),
+  [token migration](packages/mix/doc/token-migration-guide.md).
+- [MixWidget constructors](guides/mix-widget-variant-constructors.md),
+  [protocol integration](packages/mix_protocol/GUIDE.md),
+  [protocol publishing](guides/publishing_mix_protocol.md).
 
-## Contributors
+## Contribute
 
-<a href="https://github.com/btwld/mix/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=btwld/mix" />
-</a>
+Read [AGENTS.md](AGENTS.md) for setup, commands, generated-file rules and
+verification. Dependencies are bootstrapped with Melos.
+The [website source](https://github.com/btwld/mix-docs) lives separately.
+
+The [Mix agent skill](skills/mix/SKILL.md) includes portable API references.
+Install it in a consuming project with:
+
+```bash
+npx skills add btwld/mix --skill mix -y
+```
+
+[Contributors](https://github.com/btwld/mix/graphs/contributors)

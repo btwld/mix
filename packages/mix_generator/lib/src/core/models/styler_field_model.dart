@@ -71,16 +71,9 @@ class StylerFieldModel {
         mixableFieldAnnotation?.getField('ignoreSetter')?.toBoolValue() ??
         false;
 
-    final setterTypeValue = mixableFieldAnnotation?.getField('setterType');
-    final setterType = setterTypeValue?.toTypeValue();
-    final setterTypeOverride = setterType == null
-        ? null
-        : type_helpers.visibleTypeCodeForField(
-            element,
-            visibleFrom: element.library,
-            type: setterType,
-            usage: 'setter type',
-          );
+    final setterTypeOverride = type_helpers
+        .setterTypeOverrideForField(element)
+        ?.typeCode;
 
     final effectivePublicParamType =
         setterTypeOverride ??

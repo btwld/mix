@@ -1,8 +1,11 @@
 import 'package:flutter/widgets.dart';
 
+import '../animation/animation_config.dart';
 import '../animation/style_animation_builder.dart';
 import '../modifiers/internal/render_modifier.dart';
+import '../modifiers/widget_modifier_config.dart';
 import 'internal/mix_interaction_detector.dart';
+import 'focus_visibility.dart';
 import 'providers/style_provider.dart';
 import 'providers/style_spec_provider.dart';
 import 'providers/widget_state_provider.dart';
@@ -125,11 +128,18 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
   Widget build(BuildContext context) {
     final style = _buildStyle(context);
 
-    // Calculate interactivity need early
-    final needsToTrackWidgetState =
-        widget.controller == null && style.widgetStates.isNotEmpty;
+    // Calculate interactivity need early. Only states the detector can actually
+    // drive justify mounting it; see [MixInteractionDetector.pointerDrivenStates].
+    final needsPointerStateTracking =
+        widget.controller == null &&
+        style.widgetStates.any(
+          MixInteractionDetector.pointerDrivenStates.contains,
+        );
 
-    final alreadyHasWidgetStateScope = WidgetStateProvider.of(context) != null;
+    // Variant resolution registers its own granular state dependencies; this
+    // existence check must not subscribe to every change in the model.
+    final alreadyHasWidgetStateScope =
+        context.getInheritedWidgetOfExactType<WidgetStateProvider>() != null;
 
     Widget current = Builder(
       builder: (context) {
@@ -142,7 +152,7 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
       },
     );
 
-    if (needsToTrackWidgetState && !alreadyHasWidgetStateScope) {
+    if (needsPointerStateTracking && !alreadyHasWidgetStateScope) {
       // If we need interactivity and no MixWidgetStateModel is present,
       // wrap in MixInteractionDetector
       current = MixInteractionDetector(controller: _controller, child: current);
@@ -182,8 +192,23 @@ class StyleSpecBuilder<S extends Spec<S>> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Implicit animations can retain departing wrappers on an empty target.
+    // Phase/keyframe drivers manage their own inherited dependencies instead.
+    final needsModifierOrder = switch (styleSpec.animation) {
+      CurveAnimationConfig() ||
+      SpringAnimationConfig() ||
+      ReversibleAnimationConfig() ||
+      null => styleSpec.widgetModifiers == null,
+      PhaseAnimationConfig() || KeyframeAnimationConfig() => false,
+    };
+    final targetSpec = needsModifierOrder
+        ? styleSpec.copyWith(
+            widgetModifiers: const WidgetModifierConfig().resolve(context),
+          )
+        : styleSpec;
+
     return StyleAnimationBuilder<S>(
-      spec: styleSpec,
+      spec: targetSpec,
 
       builder: (context, animatedWrappedSpec) {
         Widget animatedChild = builder(context, animatedWrappedSpec.spec);
@@ -220,11 +245,15 @@ class _ExternalControllerProvider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: controller,
-      builder: (_, _) {
-        return WidgetStateProvider(states: controller.value, child: child);
-      },
+    // Paired with the widget-state scope so the focus-visible variant can read
+    // the input modality wherever focused state is published.
+    return FocusVisibilityScope(
+      child: ListenableBuilder(
+        listenable: controller,
+        builder: (_, _) {
+          return WidgetStateProvider(states: controller.value, child: child);
+        },
+      ),
     );
   }
 }

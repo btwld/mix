@@ -1,0 +1,31 @@
+# Mix
+
+> Type-safe Flutter styling: immutable fluent Stylers resolve Props into Specs, which widgets render.
+
+Prefer local source, then the consuming project's resolved package version and version-pinned API docs. Package and SDK versions live in manifests; do not assume main matches an installed release. Generated files are outputs: change their inputs.
+
+## Entry points
+
+- [Contributor instructions](https://raw.githubusercontent.com/btwld/mix/main/AGENTS.md): setup, Melos bootstrap, commands and verification.
+- [Core concepts](https://raw.githubusercontent.com/btwld/mix/main/README.md): purpose, installation, package and example links.
+- [Architecture and decisions](https://raw.githubusercontent.com/btwld/mix/main/ARCHITECTURE.md): rationale, boundaries and pending proposals.
+- [Portable Mix skill](https://raw.githubusercontent.com/btwld/mix/main/skills/mix/SKILL.md): route to the focused API reference needed for a task.
+
+## Layout and styling
+
+- [Layout](https://raw.githubusercontent.com/btwld/mix/main/skills/mix/references/layout.md): Box, Flex, Wrap, Grid and Stack selection; Grid has auto rows, not auto columns.
+- [Grid contract](https://raw.githubusercontent.com/btwld/mix/main/packages/mix/doc/grid-layout.md): callable GridBoxStyler (`grid(children: [...])`), tracks, local constraints, animation and limitations.
+- [Runnable layouts](https://raw.githubusercontent.com/btwld/mix/main/examples/showcase/docs/layouts.md): setup and source examples.
+- [Fluent API](https://raw.githubusercontent.com/btwld/mix/main/skills/mix/references/fluent-api.md) and [authoring policy](https://raw.githubusercontent.com/btwld/mix/main/skills/mix/references/styler-api-policy.md): composition, shorthand and migration spellings.
+- [Variants](https://raw.githubusercontent.com/btwld/mix/main/skills/mix/references/variants.md), [animations](https://raw.githubusercontent.com/btwld/mix/main/skills/mix/references/animations.md), [tokens](https://raw.githubusercontent.com/btwld/mix/main/skills/mix/references/design-tokens.md), [modifiers and directives](https://raw.githubusercontent.com/btwld/mix/main/skills/mix/references/widget-modifiers-directives.md): runtime behavior.
+
+## Generation and maintenance
+
+- [Code generation](https://raw.githubusercontent.com/btwld/mix/main/skills/mix/references/code-generation.md): annotations and generated contracts.
+- [MixWidget rules](https://raw.githubusercontent.com/btwld/mix/main/guides/mix-widget-variant-constructors.md): enum constructors and current curation API.
+- [Testing](https://raw.githubusercontent.com/btwld/mix/main/skills/mix/references/testing.md) and [development workflow](https://raw.githubusercontent.com/btwld/mix/main/skills/mix/references/development-workflow.md): maintained helpers and generation checks.
+
+## Optional packages
+
+- [Protocol guide](https://raw.githubusercontent.com/btwld/mix/main/packages/mix_protocol/GUIDE.md) and [wire contract](https://raw.githubusercontent.com/btwld/mix/main/packages/mix_protocol/WIRE_CONTRACT.md): JSON boundary and compatibility.
+- [Winds](https://raw.githubusercontent.com/btwld/mix/main/packages/mix_winds/README.md), [charts](https://raw.githubusercontent.com/btwld/mix/main/packages/mix_chart/README.md), [chart protocol](https://raw.githubusercontent.com/btwld/mix/main/packages/mix_chart_protocol/README.md), [lint](https://raw.githubusercontent.com/btwld/mix/main/packages/mix_lint/README.md): package-specific integration.

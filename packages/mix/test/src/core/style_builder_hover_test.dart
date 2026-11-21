@@ -5,6 +5,61 @@ import 'package:mix/mix.dart';
 
 void main() {
   group('StyleBuilder hover functionality', () {
+    Future<void> expectHoverColors(
+      WidgetTester tester, {
+      required BoxStyler style,
+      required Color initial,
+      required Color hovered,
+      Brightness platformBrightness = Brightness.light,
+    }) async {
+      Color? currentColor;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: MediaQuery(
+            data: MediaQueryData(
+              size: const Size(800, 600),
+              platformBrightness: platformBrightness,
+            ),
+            child: Center(
+              child: StyleBuilder<BoxSpec>(
+                style: style,
+                builder: (context, spec) {
+                  currentColor = (spec.decoration as BoxDecoration?)?.color;
+
+                  return Container(
+                    key: const Key('nested-hover-target'),
+                    constraints: spec.constraints,
+                    decoration: spec.decoration,
+                  );
+                },
+              ),
+            ),
+          ),
+        ),
+      );
+
+      expect(currentColor, initial, reason: 'before hover');
+
+      final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await gesture.addPointer(location: Offset.zero);
+      await gesture.moveTo(
+        tester.getCenter(find.byKey(const Key('nested-hover-target'))),
+      );
+      await tester.pump();
+
+      expect(currentColor, hovered, reason: 'while hovered');
+
+      // Leaving must restore the original style too — a variant that latches on
+      // is just as broken as one that never activates.
+      await gesture.moveTo(Offset.zero);
+      await tester.pump();
+
+      expect(currentColor, initial, reason: 'after hover exit');
+
+      await gesture.removePointer();
+    }
+
     testWidgets('hover variant changes style when mouse enters and exits', (
       tester,
     ) async {
@@ -14,11 +69,9 @@ void main() {
           .width(100)
           .height(100)
           .onHovered(
-            BoxStyler()
-                .color(Colors.red)
-                .width(100)
-                .height(100)
-                .alignment(Alignment.center),
+            .color(
+              Colors.red,
+            ).width(100).height(100).alignment(Alignment.center),
           );
 
       Color? currentColor;
@@ -88,7 +141,7 @@ void main() {
                     .color(Colors.green)
                     .width(150)
                     .height(150)
-                    .onHovered(BoxStyler().color(Colors.orange)),
+                    .onHovered(.color(Colors.orange)),
                 child: const Text('Hover me'),
               ),
             ),
@@ -144,7 +197,7 @@ void main() {
             .borderRounded(18)
             .color(Colors.indigo.shade400)
             .animate(.easeInOut(220.ms))
-            .onHovered(BoxStyler().color(Colors.indigo.shade500).scale(1.02));
+            .onHovered(.color(Colors.indigo.shade500).scale(1.02));
 
         await tester.pumpWidget(
           MaterialApp(
@@ -179,29 +232,285 @@ void main() {
       },
     );
 
-    testWidgets(
-      'hover with animate(reverse:) uses forward on enter and reverse on exit',
-      (tester) async {
-        // Forward enter is slow (300ms), reverse exit is fast (60ms). We pump
-        // partway through each to assert the correct timing config drives the
-        // transition without throwing.
+    group('nested widget-state dependency discovery', () {
+      testWidgets('tracks a negated hover variant', (tester) async {
         final style = BoxStyler()
+            .size(100, 100)
             .color(Colors.blue)
-            .width(100)
-            .height(100)
-            .animate(.linear(300.ms))
-            .onHovered(
-              BoxStyler()
-                  .color(Colors.red)
-                  .scale(1.02)
-                  .animate(.linear(300.ms), reverse: .linear(60.ms)),
+            .onNot(.widgetState(.hovered), .color(Colors.red));
+
+        await expectHoverColors(
+          tester,
+          style: style,
+          initial: Colors.red,
+          hovered: Colors.blue,
+        );
+      });
+
+      testWidgets('tracks hover nested under a breakpoint', (tester) async {
+        final style = BoxStyler()
+            .size(100, 100)
+            .color(Colors.blue)
+            .onBreakpoint(
+              const .minWidth(0),
+              BoxStyler().onHovered(.color(Colors.red)),
             );
+
+        await expectHoverColors(
+          tester,
+          style: style,
+          initial: Colors.blue,
+          hovered: Colors.red,
+        );
+      });
+
+      testWidgets('tracks hover nested under dark mode', (tester) async {
+        final style = BoxStyler()
+            .size(100, 100)
+            .color(Colors.blue)
+            .onDark(BoxStyler().onHovered(.color(Colors.red)));
+
+        await expectHoverColors(
+          tester,
+          style: style,
+          initial: Colors.blue,
+          hovered: Colors.red,
+          platformBrightness: Brightness.dark,
+        );
+      });
+
+      testWidgets('tracks hover when breakpoint nesting is reversed', (
+        tester,
+      ) async {
+        final style = BoxStyler()
+            .size(100, 100)
+            .color(Colors.blue)
+            .onHovered(
+              BoxStyler().onBreakpoint(const .minWidth(0), .color(Colors.red)),
+            );
+
+        await expectHoverColors(
+          tester,
+          style: style,
+          initial: Colors.blue,
+          hovered: Colors.red,
+        );
+      });
+
+      testWidgets('tracks a nested pressed variant', (tester) async {
+        Color? currentColor;
 
         await tester.pumpWidget(
           MaterialApp(
-            home: Scaffold(
-              body: Center(
-                child: Box(key: const Key('reverse_card'), style: style),
+            home: Center(
+              child: StyleBuilder<BoxSpec>(
+                style: BoxStyler()
+                    .size(100, 100)
+                    .color(Colors.blue)
+                    .onBreakpoint(
+                      const .minWidth(0),
+                      BoxStyler().onPressed(.color(Colors.red)),
+                    ),
+                builder: (context, spec) {
+                  currentColor = (spec.decoration as BoxDecoration?)?.color;
+
+                  return Container(
+                    key: const Key('nested-press-target'),
+                    constraints: spec.constraints,
+                    decoration: spec.decoration,
+                  );
+                },
+              ),
+            ),
+          ),
+        );
+
+        expect(currentColor, Colors.blue, reason: 'before press');
+
+        final gesture = await tester.startGesture(
+          tester.getCenter(find.byKey(const Key('nested-press-target'))),
+        );
+        await tester.pump();
+
+        expect(currentColor, Colors.red, reason: 'while pressed');
+
+        await gesture.up();
+        await tester.pump();
+
+        expect(currentColor, Colors.blue, reason: 'after release');
+      });
+
+      test('discovers the disabled dependency behind onEnabled', () {
+        // onEnabled is the public path that produces NotVariant(WidgetState),
+        // so it is the case users actually hit.
+        final style = BoxStyler()
+            .color(Colors.blue)
+            .onEnabled(.color(Colors.red));
+
+        expect(style.widgetStates, {WidgetState.disabled});
+      });
+
+      test('ignores hover under an un-applied named variant', () {
+        const primary = NamedVariant('primary');
+        final style = BoxStyler().variant(
+          primary,
+          BoxStyler().onHovered(BoxStyler()),
+        );
+
+        expect(style.widgetStates, isEmpty);
+        expect(style.applyVariants([primary]).widgetStates, {
+          WidgetState.hovered,
+        });
+      });
+
+      test('handles cyclic nested variant styles by identity', () {
+        final variants = <VariantStyle<BoxSpec>>[];
+        final cyclicStyle = BoxStyler(variants: variants);
+        variants.add(
+          VariantStyle(ContextVariant.brightness(Brightness.dark), cyclicStyle),
+        );
+        variants.add(
+          VariantStyle(
+            ContextVariant.widgetState(WidgetState.hovered),
+            BoxStyler(),
+          ),
+        );
+        final rootStyle = BoxStyler().onDark(cyclicStyle);
+
+        expect(rootStyle.widgetStates, {WidgetState.hovered});
+      });
+    });
+
+    group('interaction detector mounting', () {
+      // The detector wraps its child in an opaque Listener, so mounting it
+      // swallows pointer events that would otherwise fall through. It only
+      // earns that cost for states it can actually drive from pointer input.
+      Future<bool> reachesWidgetBeneath(
+        WidgetTester tester,
+        BoxStyler style,
+      ) async {
+        var tapped = false;
+
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Stack(
+              children: [
+                Positioned.fill(
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () => tapped = true,
+                    child: const SizedBox.expand(),
+                  ),
+                ),
+                Center(
+                  child: Box(
+                    key: const Key('overlay-box'),
+                    style: style,
+                    child: const SizedBox(),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+
+        await tester.tapAt(
+          tester.getCenter(find.byKey(const Key('overlay-box'))),
+        );
+        await tester.pump();
+
+        return tapped;
+      }
+
+      // Every style below paints nothing, so the box itself never absorbs the
+      // hit and any difference comes from the detector alone.
+      testWidgets('a style with no widget states stays transparent to taps', (
+        tester,
+      ) async {
+        expect(
+          await reachesWidgetBeneath(tester, BoxStyler().size(100, 100)),
+          isTrue,
+        );
+      });
+
+      testWidgets('onEnabled alone stays transparent to taps', (tester) async {
+        // disabled can only come from a controller or an ancestor scope, both
+        // of which bypass the detector, so mounting it would be pure cost.
+        expect(
+          await reachesWidgetBeneath(
+            tester,
+            BoxStyler().size(100, 100).onEnabled(.size(100, 100)),
+          ),
+          isTrue,
+        );
+      });
+
+      testWidgets('un-applied named-variant hover stays transparent to taps', (
+        tester,
+      ) async {
+        const primary = NamedVariant('primary');
+
+        expect(
+          await reachesWidgetBeneath(
+            tester,
+            BoxStyler()
+                .size(100, 100)
+                .variant(primary, BoxStyler().onHovered(.size(100, 100))),
+          ),
+          isTrue,
+        );
+      });
+
+      testWidgets('a nested hover variant does mount the detector', (
+        tester,
+      ) async {
+        expect(
+          await reachesWidgetBeneath(
+            tester,
+            BoxStyler()
+                .size(100, 100)
+                .onBreakpoint(
+                  const .minWidth(0),
+                  BoxStyler().onHovered(.size(100, 100)),
+                ),
+          ),
+          isFalse,
+        );
+      });
+
+      testWidgets('an ancestor does not hijack a descendant hover scope', (
+        tester,
+      ) async {
+        // A descendant reuses an ancestor's state scope instead of opening its
+        // own, so an ancestor that mounts a detector it cannot use would make
+        // the descendant hover on the *ancestor's* bounds.
+        Color? innerColor;
+
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Center(
+              child: Box(
+                key: const Key('outer'),
+                style: BoxStyler()
+                    .size(400, 400)
+                    .onDisabled(.color(Colors.grey)),
+                child: Center(
+                  child: StyleBuilder<BoxSpec>(
+                    style: BoxStyler()
+                        .size(50, 50)
+                        .color(Colors.blue)
+                        .onHovered(.color(Colors.red)),
+                    builder: (context, spec) {
+                      innerColor = (spec.decoration as BoxDecoration?)?.color;
+
+                      return Container(
+                        key: const Key('inner'),
+                        constraints: spec.constraints,
+                        decoration: spec.decoration,
+                      );
+                    },
+                  ),
+                ),
               ),
             ),
           ),
@@ -212,65 +521,58 @@ void main() {
         );
         await gesture.addPointer(location: Offset.zero);
 
-        // Enter: forward (300ms) drives. Settle the animation fully.
+        // Inside the outer box, far outside the inner one.
         await gesture.moveTo(
-          tester.getCenter(find.byKey(const Key('reverse_card'))),
+          tester.getCenter(find.byKey(const Key('outer'))) +
+              const Offset(150, 150),
         );
         await tester.pump();
-        await tester.pumpAndSettle();
-        expect(tester.takeException(), isNull);
 
-        // Exit: reverse (60ms) drives. Pump less than forward duration to make
-        // sure the fast exit config completed the transition.
-        await gesture.moveTo(const Offset(-100, -100));
+        expect(innerColor, Colors.blue, reason: 'hovering the ancestor only');
+
+        await gesture.moveTo(tester.getCenter(find.byKey(const Key('inner'))));
         await tester.pump();
-        await tester.pump(const Duration(milliseconds: 80));
-        expect(tester.takeException(), isNull);
 
-        await tester.pumpAndSettle();
+        expect(innerColor, Colors.red, reason: 'hovering the descendant');
+
         await gesture.removePointer();
-      },
-    );
+      });
 
-    testWidgets('inherited base reversible config does not break hover enter', (
-      tester,
-    ) async {
-      // The base owns a reversible config and the hover style inherits it.
-      // Enter should use the forward config rather than the reverse one.
-      final style = BoxStyler()
-          .color(Colors.blue)
-          .width(100)
-          .height(100)
-          .animate(.linear(120.ms), reverse: .linear(60.ms))
-          .onHovered(BoxStyler().color(Colors.red).scale(1.02));
+      testWidgets('scope lookup ignores unrelated state changes', (
+        tester,
+      ) async {
+        final controller = WidgetStatesController();
+        addTearDown(controller.dispose);
+        var builds = 0;
+        final child = StyleBuilder<BoxSpec>(
+          style: BoxStyler().size(50, 50),
+          builder: (context, spec) {
+            builds++;
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: Center(
-              child: Box(key: const Key('inherited_card'), style: style),
+            return Container(constraints: spec.constraints);
+          },
+        );
+
+        await tester.pumpWidget(
+          MaterialApp(
+            home: ListenableBuilder(
+              listenable: controller,
+              builder: (context, _) =>
+                  WidgetStateProvider(states: controller.value, child: child),
             ),
           ),
-        ),
-      );
+        );
+        expect(builds, 1);
 
-      final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
-      await gesture.addPointer(location: Offset.zero);
+        controller.selected = true;
+        await tester.pump();
 
-      await gesture.moveTo(
-        tester.getCenter(find.byKey(const Key('inherited_card'))),
-      );
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 70));
-      expect(tester.takeException(), isNull);
-
-      await tester.pumpAndSettle();
-      await gesture.moveTo(const Offset(-100, -100));
-      await tester.pump();
-      await tester.pumpAndSettle();
-      expect(tester.takeException(), isNull);
-
-      await gesture.removePointer();
+        expect(
+          builds,
+          1,
+          reason: 'checking for an ancestor scope must not subscribe to it',
+        );
+      });
     });
   });
 }

@@ -1,0 +1,14 @@
+{
+  "suites": [
+    {
+      "name": "style",
+      "schema": "style.schema.json",
+      "fixtures": "fixtures/style.json"
+    },
+    {
+      "name": "theme",
+      "schema": "theme.schema.json",
+      "fixtures": "fixtures/theme.json"
+    }
+  ]
+}

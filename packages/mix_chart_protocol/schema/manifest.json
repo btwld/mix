@@ -1,0 +1,9 @@
+{
+  "suites": [
+    {
+      "name": "style",
+      "schema": "style.schema.json",
+      "fixtures": "fixtures/style.json"
+    }
+  ]
+}

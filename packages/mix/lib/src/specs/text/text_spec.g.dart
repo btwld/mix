@@ -175,7 +175,8 @@ typedef _$TextSpecMethods = _$TextSpec; // ignore: unused_element
 // **************************************************************************
 
 class TextStyler extends MixStyler<TextStyler, TextSpec>
-    with TextStyleMixin<TextStyler> {
+    with TextStyleMixin<TextStyler>
+    implements StylerFieldMetadata {
   final Prop<TextOverflow>? $overflow;
   final Prop<StrutStyle>? $strutStyle;
   final Prop<TextAlign>? $textAlign;
@@ -365,6 +366,27 @@ class TextStyler extends MixStyler<TextStyler, TextSpec>
     );
   }
 
+  @override
+  Set<String> get $stylerFieldNames => const {
+    'overflow',
+    'strutStyle',
+    'textAlign',
+    'textScaler',
+    'maxLines',
+    'style',
+    'textWidthBasis',
+    'textHeightBehavior',
+    'textDirection',
+    'softWrap',
+    'textDirectives',
+    'selectionColor',
+    'semanticsLabel',
+    'locale',
+    'animation',
+    'modifier',
+    'variants',
+  };
+
   /// Sets the overflow.
   TextStyler overflow(TextOverflow value) {
     return merge(TextStyler(overflow: value));
@@ -431,10 +453,8 @@ class TextStyler extends MixStyler<TextStyler, TextSpec>
     return merge(TextStyler(locale: value));
   }
 
-  /// Sets the animation configuration.
-  ///
-  /// When [reverse] is provided, it is used as the exit transition
-  /// config when leaving this style.
+  /// Sets the animation configuration. [reverse] sets variant exit timing
+  /// and can only pair curve and spring configs.
   @override
   TextStyler animate(AnimationConfig value, {AnimationConfig? reverse}) {
     final config = reverse == null

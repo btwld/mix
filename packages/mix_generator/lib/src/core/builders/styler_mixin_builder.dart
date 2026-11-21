@@ -1,12 +1,35 @@
 /// Builder for generated `_$XStylerMixin` code.
 ///
-/// Emits abstract getters, setters, base methods, `merge`, `resolve`,
-/// `debugFillProperties`, and `props` members.
+/// Emits field metadata, abstract getters, setters, base methods, `merge`,
+/// `resolve`, `debugFillProperties`, and `props` members.
 library;
 
 import '../models/annotation_config.dart';
 import '../helpers/field_emitter.dart';
 import '../models/styler_field_model.dart';
+
+/// Source-field name reserved for generated Styler metadata.
+const stylerFieldMetadataName = 'stylerFieldNames';
+
+/// Getter reserved for generated Styler metadata.
+const stylerFieldMetadataGetter = '\$$stylerFieldMetadataName';
+
+/// Source names of the fields inherited from `Style<T>` by every Styler.
+///
+/// The order is shared by generated `props` and field metadata. Legacy field
+/// extraction also uses this list to exclude the inherited storage fields.
+const stylerBaseFieldNames = ['animation', 'modifier', 'variants'];
+
+String _dartStringLiteral(String value) {
+  final escaped = value
+      .replaceAll(r'\', r'\\')
+      .replaceAll("'", r"\'")
+      .replaceAll(r'$', r'\$')
+      .replaceAll('\r', r'\r')
+      .replaceAll('\n', r'\n');
+
+  return "'$escaped'";
+}
 
 /// Builds the `_$XStylerMixin` for a Styler class.
 class StylerMixinBuilder {
@@ -66,12 +89,10 @@ class StylerMixinBuilder {
   String _buildBaseMethods({Set<String> methodOverrides = const {}}) {
     final buffer = StringBuffer();
 
-    buffer.writeln('  /// Sets the animation configuration.');
-    buffer.writeln('  ///');
     buffer.writeln(
-      '  /// When [reverse] is provided, it is used as the exit transition',
+      '  /// Sets the animation configuration. [reverse] sets variant exit timing',
     );
-    buffer.writeln('  /// config when leaving this style.');
+    buffer.writeln('  /// and can only pair curve and spring configs.');
     _writeMethodOverride(buffer, 'animate', methodOverrides);
     buffer.writeln(
       '  $stylerName animate(AnimationConfig value, {AnimationConfig? reverse}) {',
@@ -183,7 +204,9 @@ class StylerMixinBuilder {
     return _fieldEmitter().debugFillProperties(
       callSuper: true,
       propertyCode: (field) {
-        return "DiagnosticsProperty('${field.displayName}', ${field.declaredName})";
+        return 'DiagnosticsProperty('
+            '${_dartStringLiteral(field.displayName)}, '
+            '${field.declaredName})';
       },
     );
   }
@@ -191,8 +214,28 @@ class StylerMixinBuilder {
   String _buildProps() {
     return _fieldEmitter().multilineProps(
       propCode: (field) => field.declaredName,
-      trailingProps: const [r'$animation', r'$modifier', r'$variants'],
+      trailingProps: [
+        for (final fieldName in stylerBaseFieldNames) '\$$fieldName',
+      ],
     );
+  }
+
+  String _buildFieldNames() {
+    final buffer = StringBuffer()
+      ..writeln('  @override')
+      ..writeln('  Set<String> get $stylerFieldMetadataGetter => const {');
+
+    for (final field in fields) {
+      buffer.writeln('    ${_dartStringLiteral(field.name)},');
+    }
+
+    for (final fieldName in stylerBaseFieldNames) {
+      buffer.writeln('    ${_dartStringLiteral(fieldName)},');
+    }
+
+    buffer.writeln('  };');
+
+    return buffer.toString();
   }
 
   /// The mixin name.
@@ -201,6 +244,8 @@ class StylerMixinBuilder {
   /// Builds styler members without a surrounding mixin declaration.
   String buildMembers({Set<String> methodOverrides = const {}}) {
     final buffer = StringBuffer();
+
+    buffer.writeln(_buildFieldNames());
 
     if (config.generateSetters) {
       buffer.writeln(_buildSetters(methodOverrides: methodOverrides));
@@ -237,7 +282,10 @@ class StylerMixinBuilder {
   String build() {
     final buffer = StringBuffer();
 
-    buffer.writeln('mixin $mixinName on Style<$specName>, Diagnosticable {');
+    buffer.writeln(
+      'mixin $mixinName on Style<$specName>, Diagnosticable '
+      'implements StylerFieldMetadata {',
+    );
 
     buffer.writeln(_buildAbstractGetters());
 

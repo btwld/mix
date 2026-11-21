@@ -1,0 +1,55 @@
+{
+  "version": 1,
+  "examples": [
+    {
+      "id": "01",
+      "slug": "launch-command",
+      "title": "Launch command",
+      "eyebrow": "Northstar / Launch control",
+      "description": "A responsive release-control surface with status, metrics, progress, and native interaction states.",
+      "features": ["Responsive flex", "Gradient", "Button"],
+      "signatureUtility": "flex w-full max-w-5xl flex-col overflow-hidden rounded-3xl bg-slate-950 shadow-2xl",
+      "previewHeights": {"480": 837, "768": 583, "1024": 527}
+    },
+    {
+      "id": "02",
+      "slug": "signal-analytics",
+      "title": "Signal analytics",
+      "eyebrow": "Weekly signal / Acquisition",
+      "description": "A dense analytics card that preserves responsive layout, fractional bars, typography, and color across renderers.",
+      "features": ["Responsive metrics", "Fractional sizing", "Data display"],
+      "signatureUtility": "flex w-full max-w-5xl flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl",
+      "previewHeights": {"480": 1057, "768": 620, "1024": 620}
+    },
+    {
+      "id": "03",
+      "slug": "incident-room",
+      "title": "Incident room",
+      "eyebrow": "Incident room / Active",
+      "description": "An operational incident timeline with responsive rows, severity states, avatars, and two native actions.",
+      "features": ["Responsive timeline", "State colors", "Native actions"],
+      "signatureUtility": "flex w-full max-w-5xl flex-col overflow-hidden rounded-3xl border border-amber-200 bg-amber-50 shadow-xl",
+      "previewHeights": {"480": 1047, "768": 698, "1024": 678}
+    },
+    {
+      "id": "04",
+      "slug": "release-timeline",
+      "title": "Release timeline",
+      "eyebrow": "Release orbit / Thursday",
+      "description": "A four-stage launch timeline that exercises gradients, responsive card flow, borders, and nested typography.",
+      "features": ["Responsive cards", "Multi-stop gradient", "Nested type"],
+      "signatureUtility": "flex w-full max-w-5xl flex-col overflow-hidden rounded-3xl bg-linear-to-br from-indigo-950 via-blue-950 to-slate-950 shadow-2xl",
+      "previewHeights": {"480": 1167, "768": 587, "1024": 539}
+    },
+    {
+      "id": "05",
+      "slug": "capacity-map",
+      "title": "Capacity map",
+      "eyebrow": "Capacity map / Sprint 42",
+      "description": "A portfolio allocation view combining responsive sections, gradients, fractional progress, and compact team cards.",
+      "features": ["Responsive sections", "Fractional progress", "Gradient"],
+      "signatureUtility": "flex w-full max-w-5xl flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl",
+      "previewHeights": {"480": 1039, "768": 694, "1024": 646}
+    }
+  ]
+}

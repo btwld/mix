@@ -84,4 +84,11 @@ class FieldEmitter<T> {
 
     return buffer.toString();
   }
+
+  /// Emits a compact `props` getter containing [fields].
+  String inlineProps({required String Function(T field) propCode}) {
+    final values = fields.map(propCode).join(', ');
+
+    return '  @override\n  List<Object?> get props => [$values];\n';
+  }
 }

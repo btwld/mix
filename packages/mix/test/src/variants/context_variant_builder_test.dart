@@ -426,22 +426,26 @@ void main() {
 
         expect(variantAttr.variant, builder);
         expect(variantAttr.value, style);
-        expect(variantAttr.mergeKey, builder.key);
       });
 
-      test('key works as mergeKey for VariantSpecAttribute', () {
-        final builder1 = ContextVariantBuilder<BoxStyler>(
-          (context) => BoxStyler().width(100.0),
-        );
-        final builder2 = ContextVariantBuilder<BoxStyler>(
-          (context) => BoxStyler().width(200.0),
-        );
+      test('function equality determines merge identity', () {
+        BoxStyler firstFunction(BuildContext _) {
+          return BoxStyler().width(100.0);
+        }
+
+        BoxStyler secondFunction(BuildContext _) {
+          return BoxStyler().width(200.0);
+        }
+
+        final builder1 = ContextVariantBuilder<BoxStyler>(firstFunction);
+        final sameFunction = ContextVariantBuilder<BoxStyler>(firstFunction);
+        final builder2 = ContextVariantBuilder<BoxStyler>(secondFunction);
 
         final style1 = VariantStyle(builder1, BoxStyler().height(100.0));
+        final sameStyle = VariantStyle(sameFunction, BoxStyler().height(150.0));
         final style2 = VariantStyle(builder2, BoxStyler().height(200.0));
 
-        expect(style1.mergeKey, builder1.key);
-        expect(style2.mergeKey, builder2.key);
+        expect(style1.mergeKey, equals(sameStyle.mergeKey));
         expect(style1.mergeKey, isNot(equals(style2.mergeKey)));
       });
     });

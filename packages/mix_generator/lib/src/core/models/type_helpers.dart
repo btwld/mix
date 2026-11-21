@@ -20,6 +20,14 @@ class FieldExtraction {
   });
 }
 
+/// A `@MixableField(setterType: ...)` override and its visible type code.
+class SetterTypeOverride {
+  final DartType type;
+  final String typeCode;
+
+  const SetterTypeOverride({required this.type, required this.typeCode});
+}
+
 /// Extracts common field metadata.
 FieldExtraction extractField(FieldElement element, {bool stripDollar = false}) {
   final type = element.type;
@@ -71,6 +79,23 @@ DartType getInnerType(DartType type, {required bool isWrapped}) {
 
 String getInnerTypeName(DartType type, {required bool isWrapped}) {
   return getBaseTypeName(getInnerType(type, isWrapped: isWrapped));
+}
+
+/// Reads `@MixableField(setterType: ...)` on [element], when present.
+SetterTypeOverride? setterTypeOverrideForField(FieldElement element) {
+  final annotation = mixableFieldAnnotationChecker.firstAnnotationOf(element);
+  final setterType = annotation?.getField('setterType')?.toTypeValue();
+  if (setterType == null) return null;
+
+  return SetterTypeOverride(
+    type: setterType,
+    typeCode: visibleTypeCodeForField(
+      element,
+      visibleFrom: element.library,
+      type: setterType,
+      usage: 'setter type',
+    ),
+  );
 }
 
 /// Returns Dart code for a field-related [type] from [visibleFrom].

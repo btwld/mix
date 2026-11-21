@@ -12,12 +12,19 @@ part 'opacity_modifier.g.dart';
 /// Modifier that applies opacity to its child.
 ///
 /// Wraps the child in an [Opacity] widget with the specified opacity value.
-@MixableModifier()
+@MixableModifier(lerp: false)
 final class OpacityModifier with _$OpacityModifier {
   /// Opacity value between 0.0 and 1.0 (inclusive).
   @override
   final double opacity;
   const OpacityModifier([double? opacity]) : opacity = opacity ?? 1.0;
+
+  @override
+  OpacityModifier lerp(OpacityModifier? other, double t) {
+    final value = MixOps.lerp(opacity, other?.opacity, t)!;
+
+    return OpacityModifier(value.clamp(0.0, 1.0));
+  }
 
   @override
   Widget build(Widget child) {

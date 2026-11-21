@@ -1,0 +1,33 @@
+{
+  "accept": [
+    {
+      "name": "space literal and exact-kind alias",
+      "payload": {
+        "v": 1,
+        "type": "theme",
+        "spaces": {
+          "space.base": 8,
+          "space.alias": {
+            "$token": "space.base",
+            "kind": "space"
+          }
+        }
+      }
+    }
+  ],
+  "reject": [
+    {
+      "name": "space alias with double kind",
+      "payload": {
+        "v": 1,
+        "type": "theme",
+        "spaces": {
+          "space.alias": {
+            "$token": "space.base",
+            "kind": "double"
+          }
+        }
+      }
+    }
+  ]
+}

@@ -6,6 +6,7 @@ library;
 
 import 'modifier_mix_builder.dart';
 import '../helpers/field_emitter.dart';
+import '../helpers/generated_contract_emitter.dart';
 import '../resolvers/diagnostic_resolver.dart';
 import '../resolvers/lerp_resolver.dart';
 
@@ -119,76 +120,7 @@ class ModifierMixinBuilder {
   }
 
   String _buildProps() {
-    final buffer = StringBuffer();
-
-    buffer.writeln('  @override');
-    buffer.write('  List<Object?> get props => [');
-
-    if (fields.isEmpty) {
-      buffer.writeln('];');
-    } else {
-      final fieldNames = fields.map((f) => f.name).join(', ');
-      buffer.writeln('$fieldNames];');
-    }
-
-    return buffer.toString();
-  }
-
-  /// Emits `==`, `hashCode`, `stringify`, and `getDiff` overrides that
-  /// delegate to the shared Equatable helpers.
-  String _buildEquatableSurface() {
-    final buffer = StringBuffer();
-
-    buffer.writeln('  @override');
-    buffer.writeln('  bool operator ==(Object other) {');
-    buffer.writeln('    return identical(this, other) ||');
-    buffer.writeln('        other is $modifierName &&');
-    buffer.writeln('            runtimeType == other.runtimeType &&');
-    buffer.writeln('            propsEquals(props, other.props);');
-    buffer.writeln('  }');
-    buffer.writeln();
-    buffer.writeln('  @override');
-    buffer.writeln('  int get hashCode => propsHash(runtimeType, props);');
-    buffer.writeln();
-    buffer.writeln('  @override');
-    buffer.writeln('  bool get stringify => true;');
-    buffer.writeln();
-    buffer.writeln('  @override');
-    buffer.writeln('  Map<String, String> getDiff(Equatable other) {');
-    buffer.writeln('    if (this == other) return const {};');
-    buffer.writeln();
-    buffer.writeln('    return propsDiff(props, other.props);');
-    buffer.writeln('  }');
-
-    return buffer.toString();
-  }
-
-  /// Emits Diagnosticable's concrete bodies because the mixin implements
-  /// Diagnosticable rather than inheriting from it.
-  String _buildDiagnosticableSurface() {
-    final buffer = StringBuffer();
-
-    buffer.writeln('  @override');
-    buffer.writeln("  String toStringShort() => '\$runtimeType';");
-    buffer.writeln();
-    buffer.writeln('  @override');
-    buffer.writeln(
-      '  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) =>',
-    );
-    buffer.writeln(
-      '      toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine)',
-    );
-    buffer.writeln('          .toString(minLevel: minLevel);');
-    buffer.writeln();
-    buffer.writeln('  @override');
-    buffer.writeln(
-      '  DiagnosticsNode toDiagnosticsNode({String? name, DiagnosticsTreeStyle? style}) =>',
-    );
-    buffer.writeln(
-      '      DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);',
-    );
-
-    return buffer.toString();
+    return _fieldEmitter().inlineProps(propCode: (field) => field.name);
   }
 
   /// The mixin name (e.g., AlignModifier -> _$AlignModifier).
@@ -216,8 +148,8 @@ class ModifierMixinBuilder {
 
     // props
     buffer.writeln(_buildProps());
-    buffer.writeln(_buildEquatableSurface());
-    buffer.writeln(_buildDiagnosticableSurface());
+    buffer.writeln(buildEquatableSurface(modifierName));
+    buffer.writeln(buildDiagnosticableSurface());
     buffer.writeln(_buildBuildContract());
 
     // debugFillProperties
