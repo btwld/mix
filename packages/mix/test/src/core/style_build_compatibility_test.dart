@@ -175,7 +175,7 @@ void main() {
     expect(readVariantActivation(shared), isNull);
   });
 
-  testWidgets('build records variant identity only for animated specs', (
+  testWidgets('build records active variants with or without an animation', (
     tester,
   ) async {
     final plain = BoxStyler().onDark(BoxStyler().color(Colors.red));
@@ -200,7 +200,9 @@ void main() {
     );
 
     expect((plainSpec.spec.decoration as BoxDecoration).color, Colors.red);
-    expect(readVariantActivation(plainSpec), isNull);
+    expect(readVariantActivation(plainSpec)?.active, hasLength(1));
+    expect(readVariantActivation(plainSpec)?.animationOwner, isNull);
+    expect(readVariantActivation(animatedSpec)?.active, hasLength(1));
     expect(readVariantActivation(animatedSpec)?.animationOwner, isNotNull);
   });
 

@@ -453,6 +453,47 @@ void main() {
     expect(readVariantActivation(built.lerp(plain, 0.5)), isNull);
   });
 
+  testWidgets('a variant that stays active does not use its exit timing', (
+    tester,
+  ) async {
+    final controller = WidgetStatesController({WidgetState.hovered});
+    addTearDown(controller.dispose);
+    Widget box(BoxStyler style) => Directionality(
+      textDirection: TextDirection.ltr,
+      child: StyleBuilder<BoxSpec>(
+        style: style,
+        controller: controller,
+        builder: (_, spec) =>
+            Align(alignment: spec.alignment!, child: const SizedBox.shrink()),
+      ),
+    );
+    Alignment alignment() =>
+        tester.widget<Align>(find.byType(Align)).alignment as Alignment;
+
+    await tester.pumpWidget(
+      box(
+        BoxStyler().onHovered(
+          BoxStyler()
+              .alignment(Alignment.centerLeft)
+              .animate(.reversible(.linear(400.ms), reverse: .linear(100.ms))),
+        ),
+      ),
+    );
+    expect(alignment(), Alignment.centerLeft);
+
+    // Hover stays active. Only its style changes, and it drops the animation.
+    await tester.pumpWidget(
+      box(BoxStyler().onHovered(BoxStyler().alignment(Alignment.centerRight))),
+    );
+    await tester.pump(100.ms);
+    expect(
+      alignment(),
+      Alignment.lerp(Alignment.centerLeft, Alignment.centerRight, 0.25),
+    );
+    await tester.pump(300.ms);
+    expect(alignment(), Alignment.centerRight);
+  });
+
   testWidgets('a curve subclass keeps its own timing in both directions', (
     tester,
   ) async {

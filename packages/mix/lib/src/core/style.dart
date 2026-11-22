@@ -275,10 +275,10 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
     }
     final spec = merged.resolve(context);
 
-    // Variant identity only selects enter and exit timing. Without an
-    // animation there is nothing to select, and an owner's animation always
-    // survives the merge, so a spec without one can never be an exit source.
-    if (recorder.active.isEmpty || spec.animation == null) return spec;
+    // Record even when the spec has no animation: as the next target it must
+    // still say which variants are active, or a variant that stays active
+    // would be mistaken for one that deactivated.
+    if (recorder.active.isEmpty) return spec;
 
     // Record on a copy, because resolve() may return a shared instance. Keep
     // the original when copyWith cannot produce a distinct spec of the same
