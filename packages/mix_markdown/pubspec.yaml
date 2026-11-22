@@ -1,6 +1,6 @@
 name: mix_markdown
 description: Markdown rendering for Flutter styled with Mix. Supports headings, paragraphs, inline formatting, and GitHub alerts.
-version: 0.1.0-beta.1
+version: 0.1.0-beta.2
 homepage: https://github.com/btwld/mix
 repository: https://github.com/btwld/mix/tree/main/packages/mix_markdown
 
