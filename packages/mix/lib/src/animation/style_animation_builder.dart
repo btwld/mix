@@ -1,9 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
+import '../core/internal/variant_activation.dart';
 import '../core/spec.dart';
 import '../core/style_spec.dart';
 import 'animation_config.dart';
+import 'internal/reversible_animation.dart';
 import 'style_animation_driver.dart';
 
 /// A widget that handles animation of styles using an AnimationDriver.
@@ -69,22 +71,22 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
         initialSpec: initialSpec,
         context: context,
       ),
-      ReversibleAnimationConfig() => throw StateError(
-        'Select a forward or reverse config before creating a driver.',
-      ),
       // ignore: avoid-undisposed-instances
       null => NoAnimationDriver(vsync: this, initialSpec: initialSpec),
     };
   }
 
-  AnimationConfig? _forwardConfig(AnimationConfig? config) =>
-      config is ReversibleAnimationConfig ? config.forward : config;
+  // Drivers run the original forward or reverse instance, never the pair.
+  AnimationConfig? _forwardConfig(AnimationConfig? config) => switch (config) {
+    ReversibleAnimation(:final forward) => forward,
+    _ => config,
+  };
 
   AnimationConfig? _exitConfig(StyleSpec<S> previous, StyleSpec<S> target) {
-    final previousConfig = previous.animation;
-    final activation = previous.variantActivation;
-    final targetActivation = target.variantActivation;
-    if (previousConfig is! ReversibleAnimationConfig ||
+    final reverse = AnimationConfig.reverseOf(previous.animation);
+    final activation = readVariantActivation(previous);
+    final targetActivation = readVariantActivation(target);
+    if (reverse == null ||
         activation == null ||
         activation.animationOwner == null) {
       return null;
@@ -93,7 +95,7 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
       return null;
     }
 
-    return previousConfig.reverse;
+    return reverse;
   }
 
   @override
@@ -135,10 +137,11 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
         listEquals(source.widgetModifiers, target.widgetModifiers);
 
     final targetChanged = !matchesTarget(previous);
-    final targetOwner = target.variantActivation?.animationOwner;
+    final targetOwner = readVariantActivation(target)?.animationOwner;
     final hasNewAnimationOwner =
         targetOwner != null &&
-        !(previous.variantActivation?.active.contains(targetOwner) ?? false);
+        !(readVariantActivation(previous)?.active.contains(targetOwner) ??
+            false);
     final isSameTargetImplicitTransition =
         !targetChanged &&
         !isTimeline &&

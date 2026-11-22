@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
+import 'package:mix/src/core/internal/variant_activation.dart';
 
 Widget _box(BoxStyler style, WidgetStatesController controller) =>
     Directionality(
@@ -14,6 +15,29 @@ Widget _box(BoxStyler style, WidgetStatesController controller) =>
       ),
     );
 
+/// Builds the spec outside StyleBuilder and overrides its animation, the way
+/// a downstream component library feeds built specs into the animator.
+Widget _builtSpecBox(
+  BoxStyler style,
+  Set<WidgetState> states,
+) => Directionality(
+  textDirection: TextDirection.ltr,
+  child: WidgetStateProvider(
+    states: states,
+    child: Builder(
+      builder: (context) {
+        final built = style.build(context);
+
+        return StyleAnimationBuilder<BoxSpec>(
+          spec: built.copyWith(animation: built.animation ?? .linear(400.ms)),
+          builder: (_, spec) =>
+              ColoredBox(color: (spec.spec.decoration as BoxDecoration).color!),
+        );
+      },
+    ),
+  ),
+);
+
 Color _color(WidgetTester tester) =>
     tester.widget<ColoredBox>(find.byType(ColoredBox)).color;
 
@@ -25,7 +49,7 @@ void main() {
       addTearDown(controller.dispose);
       final style = BoxStyler()
           .color(Colors.blue)
-          .animate(.linear(200.ms), reverse: .linear(40.ms))
+          .animate(.reversible(.linear(200.ms), reverse: .linear(40.ms)))
           .onHovered(
             BoxStyler()
                 .color(Colors.red)
@@ -36,8 +60,10 @@ void main() {
                   ]),
                 )
                 .animate(
-                  .linear(300.ms),
-                  reverse: CurveAnimationConfig.linear(100.ms, delay: 20.ms),
+                  .reversible(
+                    .linear(300.ms),
+                    reverse: CurveAnimationConfig.linear(100.ms, delay: 20.ms),
+                  ),
                 ),
           );
       await tester.pumpWidget(
@@ -86,7 +112,7 @@ void main() {
         .onHovered(
           BoxStyler()
               .color(Colors.red)
-              .animate(.linear(100.ms), reverse: .linear(400.ms)),
+              .animate(.reversible(.linear(100.ms), reverse: .linear(400.ms))),
         )
         .onFocused(BoxStyler().color(Colors.blue).animate(.linear(100.ms)));
     await tester.pumpWidget(_box(style, controller));
@@ -121,7 +147,9 @@ void main() {
           .onFocused(
             BoxStyler()
                 .color(Colors.blue)
-                .animate(.linear(400.ms), reverse: .linear(100.ms)),
+                .animate(
+                  .reversible(.linear(400.ms), reverse: .linear(100.ms)),
+                ),
           );
       await tester.pumpWidget(_box(style, controller));
       expect(_color(tester), Colors.red);
@@ -171,8 +199,8 @@ void main() {
       WidgetState.pressed,
     });
     addTearDown(controller.dispose);
-    final config = ReversibleAnimationConfig(
-      forward: .linear(200.ms),
+    final config = AnimationConfig.reversible(
+      .linear(200.ms),
       reverse: .linear(100.ms),
     );
     final style = BoxStyler()
@@ -214,7 +242,7 @@ void main() {
         .onHovered(
           BoxStyler()
               .color(Colors.red)
-              .animate(.linear(100.ms), reverse: .linear(300.ms)),
+              .animate(.reversible(.linear(100.ms), reverse: .linear(300.ms))),
         );
     await tester.pumpWidget(_box(style(), controller));
     expect(_color(tester), Colors.red);
@@ -264,7 +292,7 @@ void main() {
         .onHovered(
           BoxStyler()
               .color(Colors.red)
-              .animate(.linear(400.ms), reverse: reverse),
+              .animate(.reversible(.linear(400.ms), reverse: reverse)),
         );
     await tester.pumpWidget(_box(style, controller));
 
@@ -305,7 +333,7 @@ void main() {
         .onHovered(
           BoxStyler()
               .color(Colors.red)
-              .animate(.linear(100.ms), reverse: .linear(300.ms)),
+              .animate(.reversible(.linear(100.ms), reverse: .linear(300.ms))),
         );
     await tester.pumpWidget(_box(style, controller));
     expect(_color(tester), Colors.red);
@@ -335,8 +363,7 @@ void main() {
             .columnGap(0)
             .onHovered(
               GridBoxStyler.animate(
-                .linear(200.ms),
-                reverse: .linear(100.ms),
+                .reversible(.linear(200.ms), reverse: .linear(100.ms)),
               ).columnGap(20),
             ),
         controller: controller,
@@ -361,4 +388,148 @@ void main() {
     await tester.pump(50.ms);
     expect(gap, 0);
   });
+
+  testWidgets('a built spec copied with an animation keeps its exit timing', (
+    tester,
+  ) async {
+    final style = BoxStyler()
+        .color(Colors.blue)
+        .onHovered(
+          BoxStyler()
+              .color(Colors.red)
+              .animate(.reversible(.linear(200.ms), reverse: .linear(100.ms))),
+        );
+    await tester.pumpWidget(_builtSpecBox(style, const {}));
+    expect(_color(tester), Colors.blue);
+
+    await tester.pumpWidget(_builtSpecBox(style, const {WidgetState.hovered}));
+    await tester.pump(100.ms);
+    expect(_color(tester), Color.lerp(Colors.blue, Colors.red, 0.5));
+    await tester.pump(100.ms);
+    expect(_color(tester), Colors.red);
+
+    await tester.pumpWidget(_builtSpecBox(style, const {}));
+    await tester.pump(50.ms);
+    expect(_color(tester), Color.lerp(Colors.red, Colors.blue, 0.5));
+    await tester.pump(50.ms);
+    expect(_color(tester), Colors.blue);
+  });
+
+  testWidgets('a built spec with an active variant equals a plain StyleSpec', (
+    tester,
+  ) async {
+    final style = BoxStyler()
+        .color(Colors.blue)
+        .onHovered(
+          BoxStyler()
+              .color(Colors.red)
+              .animate(.reversible(.linear(200.ms), reverse: .linear(100.ms))),
+        );
+    late StyleSpec<BoxSpec> built;
+    await tester.pumpWidget(
+      WidgetStateProvider(
+        states: const {WidgetState.hovered},
+        child: Builder(
+          builder: (context) {
+            built = style.build(context);
+
+            return const SizedBox.shrink();
+          },
+        ),
+      ),
+    );
+
+    expect(readVariantActivation(built), isNotNull);
+    final plain = StyleSpec(
+      spec: built.spec,
+      animation: built.animation,
+      widgetModifiers: built.widgetModifiers,
+    );
+    expect(readVariantActivation(plain), isNull);
+    expect(built, equals(plain));
+    expect(plain, equals(built));
+    expect(built.hashCode, plain.hashCode);
+    expect(readVariantActivation(built.copyWith()), isNotNull);
+    expect(readVariantActivation(built.lerp(plain, 0.5)), isNull);
+  });
+
+  testWidgets('a variant that stays active does not use its exit timing', (
+    tester,
+  ) async {
+    final controller = WidgetStatesController({WidgetState.hovered});
+    addTearDown(controller.dispose);
+    Widget box(BoxStyler style) => Directionality(
+      textDirection: TextDirection.ltr,
+      child: StyleBuilder<BoxSpec>(
+        style: style,
+        controller: controller,
+        builder: (_, spec) =>
+            Align(alignment: spec.alignment!, child: const SizedBox.shrink()),
+      ),
+    );
+    Alignment alignment() =>
+        tester.widget<Align>(find.byType(Align)).alignment as Alignment;
+
+    await tester.pumpWidget(
+      box(
+        BoxStyler().onHovered(
+          BoxStyler()
+              .alignment(Alignment.centerLeft)
+              .animate(.reversible(.linear(400.ms), reverse: .linear(100.ms))),
+        ),
+      ),
+    );
+    expect(alignment(), Alignment.centerLeft);
+
+    // Hover stays active. Only its style changes, and it drops the animation.
+    await tester.pumpWidget(
+      box(BoxStyler().onHovered(BoxStyler().alignment(Alignment.centerRight))),
+    );
+    await tester.pump(100.ms);
+    expect(
+      alignment(),
+      Alignment.lerp(Alignment.centerLeft, Alignment.centerRight, 0.25),
+    );
+    await tester.pump(300.ms);
+    expect(alignment(), Alignment.centerRight);
+  });
+
+  testWidgets('a curve subclass keeps its own timing in both directions', (
+    tester,
+  ) async {
+    final controller = WidgetStatesController();
+    addTearDown(controller.dispose);
+    const slow = _SlowCurve();
+    final style = BoxStyler()
+        .color(Colors.blue)
+        .onHovered(
+          BoxStyler()
+              .color(Colors.red)
+              .animate(.reversible(slow, reverse: slow)),
+        );
+    await tester.pumpWidget(_box(style, controller));
+
+    controller.update(WidgetState.hovered, true);
+    await tester.pump();
+    await tester.pump(100.ms);
+    expect(_color(tester), Color.lerp(Colors.blue, Colors.red, 0.5));
+    await tester.pump(100.ms);
+    expect(_color(tester), Colors.red);
+
+    controller.update(WidgetState.hovered, false);
+    await tester.pump();
+    await tester.pump(100.ms);
+    expect(_color(tester), Color.lerp(Colors.red, Colors.blue, 0.5));
+    await tester.pump(100.ms);
+    expect(_color(tester), Colors.blue);
+  });
+}
+
+/// Runs for twice its nominal duration, as a downstream subclass might.
+class _SlowCurve extends CurveAnimationConfig {
+  const _SlowCurve()
+    : super(duration: const Duration(milliseconds: 100), curve: Curves.linear);
+
+  @override
+  Duration get totalDuration => const Duration(milliseconds: 200);
 }

@@ -260,6 +260,37 @@ void main() {
       expect(find.byKey(const Key('test-container')), findsOneWidget);
     });
 
+    testWidgets('a curve replaced by a spring mid-transition continues from '
+        'the rendered value', (tester) async {
+      const curveConfig = CurveAnimationConfig(
+        duration: Duration(milliseconds: 400),
+        curve: Curves.linear,
+      );
+      Color? rendered;
+      Widget host(Color color, AnimationConfig config) =>
+          styleAnimationBuilderCapturingColor(
+            StyleSpec<TestSpec>(
+              spec: TestSpec(color: color),
+              animation: config,
+            ),
+            (color) => rendered = color,
+          );
+
+      await tester.pumpWidget(host(Colors.red, curveConfig));
+      await tester.pumpWidget(host(Colors.blue, curveConfig));
+      await tester.pump(const Duration(milliseconds: 200));
+      final midpoint = Color.lerp(Colors.red, Colors.blue, 0.5);
+      expect(rendered, midpoint);
+
+      // The spring starts at the midpoint, not at the previous blue target.
+      await tester.pumpWidget(
+        host(Colors.green, SpringAnimationConfig.standard()),
+      );
+      expect(rendered, midpoint);
+
+      await tester.pumpAndSettle();
+    });
+
     testWidgets('switches from animation to no animation config', (
       tester,
     ) async {

@@ -456,14 +456,9 @@ class TextStyler extends MixStyler<TextStyler, TextSpec>
   }
 
   /// Sets the animation configuration.
-  /// [reverse] sets variant exit timing for curve or spring configs.
   @override
-  TextStyler animate(AnimationConfig value, {AnimationConfig? reverse}) {
-    final config = reverse == null
-        ? value
-        : ReversibleAnimationConfig(forward: value, reverse: reverse);
-
-    return merge(TextStyler(animation: config));
+  TextStyler animate(AnimationConfig value) {
+    return merge(TextStyler(animation: value));
   }
 
   /// Sets the style variants.

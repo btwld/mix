@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import '../animation/animation_config.dart';
 import '../modifiers/widget_modifier_config.dart';
 import '../variants/variant.dart';
+import 'internal/variant_activation.dart';
 import 'mix_element.dart';
 import 'providers/style_provider.dart';
 import 'spec.dart';
@@ -74,14 +75,73 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
     return provider?.style;
   }
 
-  ({Style<S> style, Object? animationOwner}) _mergeActiveVariants(
-    BuildContext context,
-    Set<NamedVariant> namedVariants,
-    Set<Object> active,
-    Object? parent,
-  ) {
+  @internal
+  Set<WidgetState> get widgetStates {
+    final states = <WidgetState>{};
+    // Identity, not equality, and it earns its keep twice over:
+    //  1. Cycles. `$variants` is stored by reference, so a caller can pass a
+    //     list to a styler constructor and then append the styler to that same
+    //     list. Value equality would also recurse forever comparing the cycle.
+    //  2. Sharing. A style instance can be shared between multiple context-
+    //     variant branches, so identity avoids visiting it more than once.
+    final visited = Set<Style<S>>.identity();
+
+    void collectDependencies(Style<S> style) {
+      if (!visited.add(style)) return;
+
+      final variants = style.$variants;
+      if (variants == null) return;
+
+      for (final variantStyle in variants) {
+        // Only ContextVariant-headed entries can activate through StyleBuilder,
+        // which always resolves with empty namedVariants: NamedVariant branches
+        // are inert until applyVariants hoists their value to the top level, and
+        // ContextVariantBuilder ignores its stored placeholder value at
+        // resolution. Walking them would mount the interaction detector for
+        // states that can never fire.
+        if (variantStyle.variant case final ContextVariant variant) {
+          states.addAll(variant.widgetStateDependencies);
+          collectDependencies(variantStyle.value);
+        }
+      }
+    }
+
+    collectDependencies(this);
+
+    return states;
+  }
+
+  /// Merges all active variants with their nested variants recursively.
+  ///
+  /// Evaluates which variants are active in [context] and against
+  /// [namedVariants], then recursively resolves the nested variants inside each
+  /// active variant's style.
+  ///
+  /// Active variants apply in two priority groups, lowest first: those that
+  /// declare no [ContextVariant.widgetStateDependencies], then those that do.
+  /// Within a group, the variant declared last merges last and so wins on the
+  /// properties they share.
+  @visibleForTesting
+  Style<S> mergeActiveVariants(
+    BuildContext context, {
+    required Set<NamedVariant> namedVariants,
+  }) {
+    // Set only while [build] runs. Recording through it, rather than through
+    // extra parameters or a private method, keeps this public method the one
+    // path for variant merging, so overrides and `implements Style` keep
+    // working.
+    final recorder = _variantRecorder;
+    final parent = recorder?.parent;
     final variants = $variants;
-    if (variants == null) return (style: this, animationOwner: parent);
+    if (variants == null) {
+      recorder?.animationOwner = parent;
+
+      return this;
+    }
+
+    // Variant conditions and builders below are user code. Suspend recording
+    // so a style they build or merge does not record into this build.
+    _variantRecorder = null;
 
     // Partition, don't sort: declaration order inside a group is load-bearing,
     // and List.sort is only stable by accident of the insertion sort it falls
@@ -142,9 +202,10 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
         }(),
       };
       final path = (parent, variantAttr.mergeKey);
-      active.add(path);
+      recorder?.active.add(path);
       stylesToMerge.add((path, result.$1, result.$2));
     }
+    _variantRecorder = recorder;
 
     // Start with current style as base
     Style<S> mergedStyle = this;
@@ -152,78 +213,37 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
 
     // Merge each variant style, recursively resolving nested variants
     for (final (path, variantStyle, isFromStyleVariation) in stylesToMerge) {
-      final resolved = isFromStyleVariation
-          // For StyleVariation results, we don't recursively resolve variants
-          // since StyleVariation.styleBuilder should handle its own variant logic
-          // and return a final style. This prevents infinite recursion.
-          ? (style: variantStyle, animationOwner: path)
-          // For regular variants, recursively resolve any nested variants
-          : variantStyle._mergeActiveVariants(
-              context,
-              namedVariants,
-              active,
-              path,
-            );
-      mergedStyle = _mergeStyles(mergedStyle, resolved.style);
-      if (resolved.style.$animation != null) {
-        animationOwner = resolved.animationOwner;
-      }
-    }
-
-    return (style: mergedStyle, animationOwner: animationOwner);
-  }
-
-  @internal
-  Set<WidgetState> get widgetStates {
-    final states = <WidgetState>{};
-    // Identity, not equality, and it earns its keep twice over:
-    //  1. Cycles. `$variants` is stored by reference, so a caller can pass a
-    //     list to a styler constructor and then append the styler to that same
-    //     list. Value equality would also recurse forever comparing the cycle.
-    //  2. Sharing. A style instance can be shared between multiple context-
-    //     variant branches, so identity avoids visiting it more than once.
-    final visited = Set<Style<S>>.identity();
-
-    void collectDependencies(Style<S> style) {
-      if (!visited.add(style)) return;
-
-      final variants = style.$variants;
-      if (variants == null) return;
-
-      for (final variantStyle in variants) {
-        // Only ContextVariant-headed entries can activate through StyleBuilder,
-        // which always resolves with empty namedVariants: NamedVariant branches
-        // are inert until applyVariants hoists their value to the top level, and
-        // ContextVariantBuilder ignores its stored placeholder value at
-        // resolution. Walking them would mount the interaction detector for
-        // states that can never fire.
-        if (variantStyle.variant case final ContextVariant variant) {
-          states.addAll(variant.widgetStateDependencies);
-          collectDependencies(variantStyle.value);
+      final Style<S> resolved;
+      // The variant itself owns its animation unless a nested variant reports
+      // a deeper owner below.
+      Object? owner = path;
+      if (isFromStyleVariation) {
+        // For StyleVariation results, we don't recursively resolve variants
+        // since StyleVariation.styleBuilder should handle its own variant logic
+        // and return a final style. This prevents infinite recursion.
+        resolved = variantStyle;
+      } else {
+        // For regular variants, recursively resolve any nested variants
+        recorder
+          ?..parent = path
+          ..animationOwner = path;
+        try {
+          resolved = variantStyle.mergeActiveVariants(
+            context,
+            namedVariants: namedVariants,
+          );
+        } finally {
+          recorder?.parent = parent;
         }
+        if (recorder != null) owner = recorder.animationOwner;
       }
+      mergedStyle = _mergeStyles(mergedStyle, resolved);
+      if (resolved.$animation != null) animationOwner = owner;
     }
+    recorder?.animationOwner = animationOwner;
 
-    collectDependencies(this);
-
-    return states;
+    return mergedStyle;
   }
-
-  /// Merges all active variants with their nested variants recursively.
-  ///
-  /// Evaluates which variants are active in [context] and against
-  /// [namedVariants], then recursively resolves the nested variants inside each
-  /// active variant's style.
-  ///
-  /// Active variants apply in two priority groups, lowest first: those that
-  /// declare no [ContextVariant.widgetStateDependencies], then those that do.
-  /// Within a group, the variant declared last merges last and so wins on the
-  /// properties they share.
-  @visibleForTesting
-  Style<S> mergeActiveVariants(
-    BuildContext context, {
-    required Set<NamedVariant> namedVariants,
-  }) => _mergeActiveVariants(context, namedVariants, {}, null).style;
 
   /// Resolves this attribute to its concrete value using the provided [BuildContext].
   @override
@@ -244,24 +264,54 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
     BuildContext context, {
     Set<NamedVariant> namedVariants = const {},
   }) {
-    if ($variants == null) return resolve(context);
+    final recorder = _VariantRecorder();
+    final outer = _variantRecorder;
+    _variantRecorder = recorder;
+    final Style<S> merged;
+    try {
+      merged = mergeActiveVariants(context, namedVariants: namedVariants);
+    } finally {
+      _variantRecorder = outer;
+    }
+    final spec = merged.resolve(context);
 
-    final active = <Object>{};
-    final resolved = _mergeActiveVariants(context, namedVariants, active, null);
-    final spec = resolved.style.resolve(context);
-    if (active.isEmpty) return spec;
+    // Record even when the spec has no animation: as the next target it must
+    // still say which variants are active, or a variant that stays active
+    // would be mistaken for one that deactivated.
+    if (recorder.active.isEmpty) return spec;
 
-    return StyleSpec.withVariantActivation(
-      spec: spec.spec,
-      animation: spec.animation,
-      widgetModifiers: spec.widgetModifiers,
-      variantActivation: (
-        animationOwner: resolved.animationOwner,
-        active: Set.unmodifiable(active),
-      ),
-    );
+    // Record on a copy, because resolve() may return a shared instance. Keep
+    // the original when copyWith cannot produce a distinct spec of the same
+    // type: it stays as resolved, and falls back to target-owned timing.
+    final built = spec.copyWith();
+    if (identical(built, spec) || built.runtimeType != spec.runtimeType) {
+      return spec;
+    }
+    attachVariantActivation(built, (
+      animationOwner: recorder.animationOwner,
+      active: recorder.active,
+    ));
+
+    return built;
   }
 }
+
+/// Collects variant identity while [Style.build] merges active variants.
+final class _VariantRecorder {
+  /// Paths of every variant that was active during the merge.
+  final Set<Object> active = {};
+
+  /// Path of the variant whose style is being merged, or null at the root.
+  Object? parent;
+
+  /// Reported by each merge: the path of the variant that set the merged
+  /// animation, or [parent] when no nested variant did.
+  Object? animationOwner;
+}
+
+/// The recorder of the [Style.build] in progress. Build is synchronous, and a
+/// nested build restores the outer recorder when it finishes.
+_VariantRecorder? _variantRecorder;
 
 Style<S> _mergeStyles<S extends Spec<S>>(Style<S> current, Style<S> other) {
   if (current is IdentityStyle<S>) {

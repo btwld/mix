@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import '../core/internal/constants.dart';
 import '../core/spec.dart';
 import '../core/style.dart';
+import 'internal/reversible_animation.dart';
 import 'spring_curves.dart';
 
 /// Configuration data for animated styles in the Mix framework.
@@ -425,33 +426,68 @@ sealed class AnimationConfig {
     ratio: ratio,
     onEnd: onEnd,
   );
-}
 
-/// Pairs two implicit configs for a variant's enter and exit transitions.
-/// Both [forward] and [reverse] must be curve or spring configs.
-final class ReversibleAnimationConfig extends AnimationConfig with Equatable {
-  final AnimationConfig forward;
-  final AnimationConfig reverse;
-
-  ReversibleAnimationConfig({required this.forward, required this.reverse}) {
-    if (forward is! CurveAnimationConfig && forward is! SpringAnimationConfig) {
+  /// Pairs [forward] enter timing with [reverse] exit timing for a variant.
+  ///
+  /// When the variant that sets this config activates, Mix animates with
+  /// [forward]. When that variant deactivates, Mix animates back with
+  /// [reverse]. Both must be curve or spring configs; otherwise an
+  /// [ArgumentError] is thrown.
+  ///
+  /// The result is a curve config when [forward] is a curve and a spring
+  /// config when it is a spring, with [forward]'s values, so it works with
+  /// every styler's `animate`. Mix animates with the [forward] and [reverse]
+  /// instances themselves; a subclass keeps its own behavior. A reverse
+  /// already paired with [forward] is replaced, and one paired with [reverse]
+  /// is dropped. Read the exit timing back with [reverseOf].
+  ///
+  /// ```dart
+  /// BoxStyler().onHovered(
+  ///   BoxStyler().animate(.reversible(.easeIn(120.ms), reverse: .easeOut(240.ms))),
+  /// );
+  /// ```
+  factory AnimationConfig.reversible(
+    AnimationConfig forward, {
+    required AnimationConfig reverse,
+  }) {
+    final enter = switch (forward) {
+      ReversibleAnimation(:final forward) => forward,
+      _ => forward,
+    };
+    final exit = switch (reverse) {
+      ReversibleAnimation(:final forward) => forward,
+      _ => reverse,
+    };
+    if (enter is! CurveAnimationConfig && enter is! SpringAnimationConfig) {
       throw ArgumentError.value(
         forward,
         'forward',
         'Expected a curve or spring config',
       );
     }
-    if (reverse is! CurveAnimationConfig && reverse is! SpringAnimationConfig) {
+    if (exit is! CurveAnimationConfig && exit is! SpringAnimationConfig) {
       throw ArgumentError.value(
         reverse,
         'reverse',
         'Expected a curve or spring config',
       );
     }
+
+    return switch (enter) {
+      CurveAnimationConfig() => _ReversibleCurveAnimationConfig(enter, exit),
+      SpringAnimationConfig() => _ReversibleSpringAnimationConfig(enter, exit),
+      _ => throw StateError('Unreachable: forward was validated above.'),
+    };
   }
 
-  @override
-  List<Object?> get props => [forward, reverse];
+  /// The exit timing paired with [config] by [AnimationConfig.reversible], or
+  /// null when [config] has none.
+  static AnimationConfig? reverseOf(AnimationConfig? config) {
+    return switch (config) {
+      ReversibleAnimation(:final reverse) => reverse,
+      _ => null,
+    };
+  }
 }
 
 /// Curve-based animation configuration with fixed duration.
@@ -864,6 +900,60 @@ final class SpringAnimationConfig extends AnimationConfig with Equatable {
 
   @override
   List<Object?> get props => [spring.mass, spring.stiffness, spring.damping];
+}
+
+/// A curve config paired with exit timing by [AnimationConfig.reversible].
+final class _ReversibleCurveAnimationConfig extends CurveAnimationConfig
+    implements ReversibleAnimation {
+  @override
+  final CurveAnimationConfig forward;
+  @override
+  final AnimationConfig reverse;
+
+  _ReversibleCurveAnimationConfig(this.forward, this.reverse)
+    : super(
+        duration: forward.duration,
+        curve: forward.curve,
+        delay: forward.delay,
+        onEnd: forward.onEnd,
+      );
+
+  @override
+  Duration get totalDuration => forward.totalDuration;
+
+  @override
+  CurveAnimationConfig copyWith({
+    Duration? duration,
+    Curve? curve,
+    Duration? delay,
+    VoidCallback? onEnd,
+  }) => _ReversibleCurveAnimationConfig(
+    forward.copyWith(
+      duration: duration,
+      curve: curve,
+      delay: delay,
+      onEnd: onEnd,
+    ),
+    reverse,
+  );
+
+  @override
+  List<Object?> get props => [forward, reverse];
+}
+
+/// A spring config paired with exit timing by [AnimationConfig.reversible].
+final class _ReversibleSpringAnimationConfig extends SpringAnimationConfig
+    implements ReversibleAnimation {
+  @override
+  final SpringAnimationConfig forward;
+  @override
+  final AnimationConfig reverse;
+
+  _ReversibleSpringAnimationConfig(this.forward, this.reverse)
+    : super(spring: forward.spring, onEnd: forward.onEnd);
+
+  @override
+  List<Object?> get props => [forward, reverse];
 }
 
 class PhaseAnimationConfig<T extends Spec<T>, U extends Style<T>>

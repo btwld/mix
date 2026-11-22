@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 
 import '../animation/animation_config.dart';
 import 'helpers.dart';
+import 'internal/variant_activation.dart';
 import 'widget_modifier.dart';
 import 'spec.dart';
 import 'style_builder.dart';
@@ -35,37 +36,25 @@ class StyleSpec<T extends Spec<T>> extends Spec<StyleSpec<T>>
   /// Widget-level modifiers to apply around the built widget.
   final List<WidgetModifier>? widgetModifiers;
 
-  /// Variant identity used for transition selection, not spec equality.
-  @internal
-  final ({Object? animationOwner, Set<Object> active})? variantActivation;
-
   /// Creates a [StyleSpec] with the provided spec and optional metadata.
-  const StyleSpec({required this.spec, this.animation, this.widgetModifiers})
-    : variantActivation = null;
-
-  @internal
-  const StyleSpec.withVariantActivation({
-    required this.spec,
-    required this.animation,
-    required this.widgetModifiers,
-    required this.variantActivation,
-  });
+  const StyleSpec({required this.spec, this.animation, this.widgetModifiers});
 
   /// Creates a copy of this [StyleSpec] with the given fields
   /// replaced by the new values.
   @override
-  // ignore: avoid-incomplete-copy-with
   StyleSpec<T> copyWith({
     T? spec,
     AnimationConfig? animation,
     List<WidgetModifier>? widgetModifiers,
   }) {
-    return StyleSpec.withVariantActivation(
+    final copy = StyleSpec(
       spec: spec ?? this.spec,
       animation: animation ?? this.animation,
       widgetModifiers: widgetModifiers ?? this.widgetModifiers,
-      variantActivation: variantActivation,
     );
+    copyVariantActivation(this, copy);
+
+    return copy;
   }
 
   /// Linearly interpolates between this [StyleSpec] and another.
