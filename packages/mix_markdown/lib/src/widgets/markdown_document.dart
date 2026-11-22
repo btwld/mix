@@ -68,7 +68,7 @@ class MarkdownDocument extends StatelessWidget {
 
   List<Widget> _blocks(BuildContext context, List<md.Node> elements) => [
     for (final element in elements.whereType<md.Element>())
-      if (_block(context, element) case final block?) block,
+      ?_block(context, element),
   ];
 
   @override
