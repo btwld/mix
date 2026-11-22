@@ -5,6 +5,7 @@ import 'package:mix/mix.dart';
 import '../parsing/markdown_alert_element.dart';
 import '../parsing/markdown_tags.dart';
 import '../specs/markdown_spec.dart';
+import 'inline_spans.dart';
 import 'markdown_alert.dart';
 import 'markdown_blocks.dart';
 import 'markdown_text.dart';
@@ -40,30 +41,34 @@ class MarkdownDocument extends StatelessWidget {
     return heading ?? spec.paragraph ?? const StyleSpec(spec: TextSpec());
   }
 
-  Widget _block(BuildContext context, md.Element element) {
+  Widget? _block(BuildContext context, md.Element element) {
     final alertType = element.alertType;
-    final block =
-        MarkdownBlockTag.from(element.tag) ?? MarkdownBlockTag.paragraph;
-    final child = alertType == null
-        ? MarkdownText(
-            spec: spec,
-            element: element,
-            block: block,
-            styleSpec: _textSpecFor(block),
-          )
-        : MarkdownAlert(
-            type: alertType,
-            styleSpec: spec.alert,
-            blockSpacing: spec.blockSpacing,
-            children: _blocks(context, element.alertContent),
-          );
+    final Widget child;
+    if (alertType != null) {
+      child = MarkdownAlert(
+        type: alertType,
+        styleSpec: spec.alert,
+        blockSpacing: spec.blockSpacing,
+        children: _blocks(context, element.alertContent),
+      );
+    } else {
+      final spans = buildInlineSpans(element.children ?? const [], spec: spec);
+      if (spans.isEmpty) return null;
+      final block =
+          MarkdownBlockTag.from(element.tag) ?? MarkdownBlockTag.paragraph;
+      child = MarkdownText(
+        spans: spans,
+        block: block,
+        styleSpec: _textSpecFor(block),
+      );
+    }
 
     return wrapBlock?.call(context, element, child) ?? child;
   }
 
   List<Widget> _blocks(BuildContext context, List<md.Node> elements) => [
     for (final element in elements.whereType<md.Element>())
-      _block(context, element),
+      if (_block(context, element) case final block?) block,
   ];
 
   @override

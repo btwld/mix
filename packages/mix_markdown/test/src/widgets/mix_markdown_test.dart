@@ -187,6 +187,36 @@ void main() {
       expect(columns.every((column) => column.spacing == 12), isTrue);
     });
 
+    testWidgets('empty blocks add no spacing and are not wrapped', (
+      tester,
+    ) async {
+      final wrapped = <String>[];
+      await tester.pumpWidget(
+        app(
+          MixMarkdown(
+            data: 'first\n\n#\n\n> [!NOTE]\n> ##\n>\n> inside\n\nlast',
+            style: MarkdownStyler(blockSpacing: 12),
+            wrapBlock: (context, element, child) {
+              wrapped.add(element.tag);
+
+              return child;
+            },
+          ),
+        ),
+      );
+
+      final first = find.text('first');
+      final alert = find.byType(MarkdownAlert);
+      final last = find.text('last');
+      expect(tester.getTopLeft(alert).dy - tester.getBottomLeft(first).dy, 12);
+      expect(tester.getTopLeft(last).dy - tester.getBottomLeft(alert).dy, 12);
+      final alertBlocks = tester.widget<MarkdownBlocks>(
+        find.descendant(of: alert, matching: find.byType(MarkdownBlocks)),
+      );
+      expect(alertBlocks.children, hasLength(2));
+      expect(wrapped, ['p', 'p', 'div', 'p']);
+    });
+
     testWidgets('empty body renders nothing and does not throw', (
       tester,
     ) async {
@@ -429,6 +459,35 @@ void main() {
   });
 
   group('unsupported documents', () {
+    testWidgets('inline colors render as code text without a swatch', (
+      tester,
+    ) async {
+      await tester.pumpWidget(app(const MixMarkdown(data: 'Use `#ff0000`.')));
+
+      final text = tester.widget<Text>(find.text('Use #ff0000.'));
+      final spans = (text.textSpan! as TextSpan).children!.cast<TextSpan>();
+      expect(spans.map((span) => span.text), ['Use ', '#ff0000', '.']);
+      expect(spans[1].style?.fontFamily, 'monospace');
+    });
+
+    testWidgets('block comments are invisible in prose and alerts', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        app(
+          const MixMarkdown(
+            data:
+                'before\n\n<!-- hidden -->\n\n'
+                '> [!NOTE]\n> <!-- also hidden -->\n>\n> inside',
+          ),
+        ),
+      );
+
+      expect(find.text('before'), findsOneWidget);
+      expect(find.text('inside'), findsOneWidget);
+      expect(find.textContaining('hidden'), findsNothing);
+    });
+
     testWidgets('show a diagnostic without a builder', (tester) async {
       await tester.pumpWidget(
         app(const MixMarkdown(data: '| h |\n|---|\n| b |')),
