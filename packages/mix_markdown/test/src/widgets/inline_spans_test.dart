@@ -127,6 +127,19 @@ void main() {
     expect(result[1].style?.fontWeight, FontWeight.bold);
   });
 
+  test('title case can expand a styled camel-case word', () {
+    final result = spans(
+      'use **fastPath** now',
+      transform: const TitleCaseStringDirective().apply,
+    );
+
+    expect(plain(result), 'Use Fast Path Now');
+    expect(
+      result.singleWhere((run) => run.text == 'Fast Path').style?.fontWeight,
+      FontWeight.bold,
+    );
+  });
+
   test('uppercase leaves inline code verbatim even inside a styled run', () {
     final result = spans(
       'call **`fetchUser()`** next',
@@ -158,6 +171,48 @@ void main() {
     expect(result[1].style?.fontFamily, 'monospace');
   });
 
+  test('sentence case keeps code and emphasis when spacing shifts', () {
+    final result = spans(
+      'x  `c`*B*',
+      transform: const SentenceCaseStringDirective().apply,
+    );
+
+    expect(plain(result), 'X c B');
+    expect(
+      result.singleWhere((run) => run.text == 'c').style?.fontFamily,
+      'monospace',
+    );
+    expect(
+      result.singleWhere((run) => run.text!.contains('B')).style?.fontStyle,
+      FontStyle.italic,
+    );
+  });
+
+  test('a custom directive that strips non-ASCII still transforms prose', () {
+    final result = spans(
+      'café **résumé** `café`',
+      transform: const _AsciiDirective().apply,
+    );
+
+    expect(plain(result), 'caf rsum café');
+    expect(
+      result.singleWhere((run) => run.text == 'rsum').style?.fontWeight,
+      FontWeight.bold,
+    );
+    expect(result.last.style?.fontFamily, 'monospace');
+  });
+
+  test(
+    'a transform that duplicates the placeholder still transforms prose',
+    () {
+      final result = spans('**a**`b`c', transform: (value) => value * 2);
+
+      expect(result.map((run) => run.text), ['aa', 'b', 'cc']);
+      expect(result.first.style?.fontWeight, FontWeight.bold);
+      expect(result[1].style?.fontFamily, 'monospace');
+    },
+  );
+
   test('capitalize does not restart after adjacent inline code', () {
     final result = spans(
       'a`b`c',
@@ -179,14 +234,28 @@ void main() {
     expect(result.last.style?.fontWeight, FontWeight.bold);
   });
 
+  test('sentence case does not shift bold from a symbol onto whitespace', () {
+    final result = spans(
+      'Status:  **✅**Done',
+      transform: const SentenceCaseStringDirective().apply,
+    );
+
+    expect(plain(result), 'Status: ✅ Done');
+    expect(
+      result
+          .singleWhere((run) => run.style?.fontWeight == FontWeight.bold)
+          .text,
+      '✅',
+    );
+  });
+
   test('sentence case keeps whole-block text across a camel-case split', () {
     final result = spans(
       'Set **userId** and',
       transform: const SentenceCaseStringDirective().apply,
     );
 
-    expect(result.single.text, 'Set user Id and');
-    expect(result.single.style, isNull);
+    expect(plain(result), 'Set user Id and');
   });
 
   test('title case does not capitalize an inline fragment of a word', () {
@@ -195,8 +264,7 @@ void main() {
       transform: const TitleCaseStringDirective().apply,
     );
 
-    expect(result.single.text, 'Set User Id And Unbelievable');
-    expect(result.single.style, isNull);
+    expect(plain(result), 'Set User Id And Unbelievable');
   });
 
   test('the unstyled fallback keeps inline code verbatim', () {
@@ -216,6 +284,17 @@ void main() {
     );
 
     expect(plain(result), 'A B');
+  });
+
+  test('title case keeps separator whitespace outside the link underline', () {
+    final result = spans(
+      '**a** - [b](u)',
+      transform: const TitleCaseStringDirective().apply,
+    );
+
+    expect(result.map((run) => run.text), ['A', ' ', 'B']);
+    expect(result[1].style?.decoration, isNull);
+    expect(result.last.style?.decoration, TextDecoration.underline);
   });
 
   test('a combining mark across runs stays outside the bold span', () {
@@ -251,4 +330,14 @@ void main() {
 
     expect(plain(buildInlineSpans(paragraph.children!, spec: spec)), 'a\nb');
   });
+}
+
+class _AsciiDirective extends Directive<String> {
+  const _AsciiDirective();
+
+  @override
+  String get key => 'ascii';
+
+  @override
+  String apply(String value) => value.replaceAll(RegExp(r'[^\x00-\x7f]'), '');
 }
