@@ -7,8 +7,8 @@ import '../specs/markdown_spec.dart';
 /// Builds the text spans of one block from its inline [nodes].
 ///
 /// Code spans are marked so [transformInlineSpans] can preserve their text.
-/// Nested decorations are combined; an inner [TextDecoration.none] does not
-/// clear an inherited decoration.
+/// Decorations are combined when both the inner and inherited styles specify
+/// one. An inner [TextDecoration.none] does not clear an inherited decoration.
 List<TextSpan> buildInlineSpans(
   List<md.Node> nodes, {
   required MarkdownSpec spec,
@@ -79,7 +79,8 @@ List<TextSpan> buildInlineSpans(
 /// or when per-span transforms match the block result ignoring whitespace. The
 /// block result supplies the actual text and spacing in either case. If neither
 /// mapping is safe, returns a single unstyled span with the code restored.
-/// If the transform removes or duplicates placeholders, uses the original text.
+/// If placeholders are lost or duplicated, transforms each non-code span
+/// separately and leaves code intact.
 List<TextSpan> transformInlineSpans(
   List<TextSpan> spans,
   String Function(String) transform,
@@ -97,22 +98,30 @@ List<TextSpan> transformInlineSpans(
   final transformed = transform(source);
   if (transformed == source) return spans;
 
-  final mapped =
-      _mapCaseChanges(spanTexts, source, transformed) ??
-      _mapRuns(
-        spanTexts,
-        transformed,
-        (text) => codeSpans.isNotEmpty && text == placeholder
-            ? text
-            : transform(text),
-      );
-  if (mapped != null &&
-      (codeSpans.isEmpty ||
-          spans.indexed.every(
-            (entry) => entry.$2 is _CodeSpan
-                ? mapped[entry.$1].trim() == placeholder
-                : !mapped[entry.$1].contains(placeholder),
-          ))) {
+  final parts = codeSpans.isEmpty ? null : transformed.split(placeholder);
+  String transformRun(String text) =>
+      parts != null && text == placeholder ? text : transform(text);
+
+  List<String>? keepCodeBoundaries(List<String>? mapped) {
+    if (mapped == null || parts == null) return mapped;
+
+    for (final (index, span) in spans.indexed) {
+      final text = mapped[index];
+      if (span is _CodeSpan
+          ? text.trim() != placeholder
+          : text.contains(placeholder)) {
+        return null;
+      }
+    }
+
+    return mapped;
+  }
+
+  final mapped = parts != null && parts.length != codeSpans.length + 1
+      ? spanTexts.map(transformRun).toList()
+      : (keepCodeBoundaries(_mapCaseChanges(spanTexts, source, transformed)) ??
+            keepCodeBoundaries(_mapRuns(spanTexts, transformed, transformRun)));
+  if (mapped != null) {
     return [
       for (final (index, span) in spans.indexed)
         if (mapped[index].isNotEmpty)
@@ -125,12 +134,8 @@ List<TextSpan> transformInlineSpans(
     ];
   }
 
-  if (codeSpans.isEmpty) return [TextSpan(text: transformed)];
+  if (parts == null) return [TextSpan(text: transformed)];
 
-  final parts = transformed.split(placeholder);
-  if (parts.length != codeSpans.length + 1) {
-    return [TextSpan(text: original)];
-  }
   final restored = StringBuffer(parts.first);
   for (final (index, span) in codeSpans.indexed) {
     restored.write(span.text);
@@ -140,14 +145,14 @@ List<TextSpan> transformInlineSpans(
   return [TextSpan(text: restored.toString())];
 }
 
-final _alphanumeric = RegExp(r'[\p{L}\p{N}]', unicode: true);
+final _caseSeparators = RegExp(r'^[\s_-]+$');
 final _nonWhitespace = RegExp(r'\S', unicode: true);
 
 bool _matchesCaseOrSeparator(String source, String target) =>
     source == target ||
     source.toLowerCase() == target.toLowerCase() ||
     source.toUpperCase() == target.toUpperCase() ||
-    (!_alphanumeric.hasMatch(source) && !_alphanumeric.hasMatch(target));
+    (_caseSeparators.hasMatch(source) && _caseSeparators.hasMatch(target));
 
 List<String>? _mapCaseChanges(
   List<String> spanTexts,
@@ -218,13 +223,13 @@ List<String>? _mapRuns(
       end = target.current.end;
       hasTarget = target.moveNext();
     }
-    if (end != start) {
-      if (!hasTarget) {
-        end = transformed.length;
-      } else if (text != text.trimRight() ||
-          candidate != candidate.trimRight()) {
-        end = target.current.start;
-      }
+    final ownsGap = end == start
+        ? _caseSeparators.hasMatch(text)
+        : text != text.trimRight() || candidate != candidate.trimRight();
+    if (hasTarget && ownsGap) {
+      end = target.current.start;
+    } else if (!hasTarget && end != start) {
+      end = transformed.length;
     }
     mapped.add(transformed.substring(start, end));
     start = end;
