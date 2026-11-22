@@ -371,10 +371,8 @@ class WrapBoxStyler extends MixStyler<WrapBoxStyler, WrapBoxSpec>
     Matrix4 value, {
     Alignment alignment = .center,
   }) => WrapBoxStyler().transform(value, alignment: alignment);
-  factory WrapBoxStyler.animate(
-    AnimationConfig value, {
-    AnimationConfig? reverse,
-  }) => WrapBoxStyler().animate(value, reverse: reverse);
+  factory WrapBoxStyler.animate(AnimationConfig value) =>
+      WrapBoxStyler().animate(value);
   factory WrapBoxStyler.wrap(WidgetModifierConfig value) =>
       WrapBoxStyler().wrap(value);
 
@@ -444,14 +442,9 @@ class WrapBoxStyler extends MixStyler<WrapBoxStyler, WrapBoxSpec>
   };
 
   /// Sets the animation configuration.
-  /// [reverse] sets variant exit timing for curve or spring configs.
   @override
-  WrapBoxStyler animate(AnimationConfig value, {AnimationConfig? reverse}) {
-    final config = reverse == null
-        ? value
-        : ReversibleAnimationConfig(forward: value, reverse: reverse);
-
-    return merge(WrapBoxStyler(animation: config));
+  WrapBoxStyler animate(AnimationConfig value) {
+    return merge(WrapBoxStyler(animation: value));
   }
 
   /// Sets the style variants.

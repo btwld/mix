@@ -729,8 +729,9 @@ Animation payloads encode the data-only implicit animation configs.
 - `spring.stiffness`: positive number
 - `spring.damping`: non-negative number
 
-`PhaseAnimationConfig`, `KeyframeAnimationConfig`, `ReversibleAnimationConfig`,
-custom `Curve` subclasses, and configs carrying `onEnd` callbacks fail encode.
+`PhaseAnimationConfig`, `KeyframeAnimationConfig`, curve or spring configs
+carrying a `reverse` exit config (`AnimationConfig.reversible`), custom `Curve`
+subclasses, and configs carrying `onEnd` callbacks fail encode.
 Callback-over-wire is outside v1 and should be revisited with the future
 event/tree layer.
 

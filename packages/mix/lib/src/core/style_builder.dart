@@ -197,7 +197,6 @@ class StyleSpecBuilder<S extends Spec<S>> extends StatelessWidget {
     final needsModifierOrder = switch (styleSpec.animation) {
       CurveAnimationConfig() ||
       SpringAnimationConfig() ||
-      ReversibleAnimationConfig() ||
       null => styleSpec.widgetModifiers == null,
       PhaseAnimationConfig() || KeyframeAnimationConfig() => false,
     };

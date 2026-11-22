@@ -110,6 +110,12 @@ JsonMap _encodeAnimationConfig(AnimationConfig value) {
       'Animation callbacks are not representable in mix_protocol v1.',
     );
   }
+  if (_animationReverse(value) case final reverse?) {
+    throw UnsupportedEncodeValueError(
+      reverse,
+      'Variant exit timing is not representable in mix_protocol v1.',
+    );
+  }
 
   return switch (value) {
     CurveAnimationConfig() => _encodeCurveAnimationConfig(value),
@@ -132,6 +138,14 @@ VoidCallback? _animationCallback(AnimationConfig value) {
     CurveAnimationConfig(:final onEnd) => onEnd,
     SpringAnimationConfig(:final onEnd) => onEnd,
     PhaseAnimationConfig(:final onEnd) => onEnd,
+    _ => null,
+  };
+}
+
+AnimationConfig? _animationReverse(AnimationConfig value) {
+  return switch (value) {
+    CurveAnimationConfig(:final reverse) => reverse,
+    SpringAnimationConfig(:final reverse) => reverse,
     _ => null,
   };
 }

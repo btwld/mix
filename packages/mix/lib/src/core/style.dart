@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import '../animation/animation_config.dart';
 import '../modifiers/widget_modifier_config.dart';
 import '../variants/variant.dart';
+import 'internal/variant_activation.dart';
 import 'mix_element.dart';
 import 'providers/style_provider.dart';
 import 'spec.dart';
@@ -251,15 +252,14 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
     final spec = resolved.style.resolve(context);
     if (active.isEmpty) return spec;
 
-    return StyleSpec.withVariantActivation(
-      spec: spec.spec,
-      animation: spec.animation,
-      widgetModifiers: spec.widgetModifiers,
-      variantActivation: (
-        animationOwner: resolved.animationOwner,
-        active: Set.unmodifiable(active),
-      ),
-    );
+    // Attach to a fresh copy: resolve() may return a shared instance.
+    final built = spec.copyWith();
+    attachVariantActivation(built, (
+      animationOwner: resolved.animationOwner,
+      active: Set.unmodifiable(active),
+    ));
+
+    return built;
   }
 }
 

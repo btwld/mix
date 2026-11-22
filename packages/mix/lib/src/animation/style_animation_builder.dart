@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
+import '../core/internal/variant_activation.dart';
 import '../core/spec.dart';
 import '../core/style_spec.dart';
 import 'animation_config.dart';
@@ -69,31 +70,31 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
         initialSpec: initialSpec,
         context: context,
       ),
-      ReversibleAnimationConfig() => throw StateError(
-        'Select a forward or reverse config before creating a driver.',
-      ),
       // ignore: avoid-undisposed-instances
       null => NoAnimationDriver(vsync: this, initialSpec: initialSpec),
     };
   }
 
-  AnimationConfig? _forwardConfig(AnimationConfig? config) =>
-      config is ReversibleAnimationConfig ? config.forward : config;
-
   AnimationConfig? _exitConfig(StyleSpec<S> previous, StyleSpec<S> target) {
-    final previousConfig = previous.animation;
-    final activation = previous.variantActivation;
-    final targetActivation = target.variantActivation;
-    if (previousConfig is! ReversibleAnimationConfig ||
-        activation == null ||
-        activation.animationOwner == null) {
+    final reverse = switch (previous.animation) {
+      CurveAnimationConfig(:final reverse) => reverse,
+      SpringAnimationConfig(:final reverse) => reverse,
+      _ => null,
+    };
+    final activation = readVariantActivation(previous);
+    final targetActivation = readVariantActivation(target);
+    // The constructor assert is off in release builds, so guard here too.
+    if (reverse is! CurveAnimationConfig && reverse is! SpringAnimationConfig) {
+      return null;
+    }
+    if (activation == null || activation.animationOwner == null) {
       return null;
     }
     if (targetActivation?.active.contains(activation.animationOwner) ?? false) {
       return null;
     }
 
-    return previousConfig.reverse;
+    return reverse;
   }
 
   @override
@@ -102,7 +103,7 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
 
     if (!_hasInitializedAnimationDriver) {
       final spec = widget.spec;
-      _driverConfig = _forwardConfig(spec.animation);
+      _driverConfig = spec.animation;
       animationDriver = _createAnimationDriver(
         config: _driverConfig,
         initialSpec: spec,
@@ -127,7 +128,7 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
 
     final previous = oldWidget.spec;
     final target = widget.spec;
-    final forward = _forwardConfig(target.animation);
+    final forward = target.animation;
     final isTimeline =
         forward is PhaseAnimationConfig || forward is KeyframeAnimationConfig;
     bool matchesTarget(StyleSpec<S> source) =>
@@ -135,10 +136,11 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
         listEquals(source.widgetModifiers, target.widgetModifiers);
 
     final targetChanged = !matchesTarget(previous);
-    final targetOwner = target.variantActivation?.animationOwner;
+    final targetOwner = readVariantActivation(target)?.animationOwner;
     final hasNewAnimationOwner =
         targetOwner != null &&
-        !(previous.variantActivation?.active.contains(targetOwner) ?? false);
+        !(readVariantActivation(previous)?.active.contains(targetOwner) ??
+            false);
     final isSameTargetImplicitTransition =
         !targetChanged &&
         !isTimeline &&
@@ -165,7 +167,7 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
     if (config == null &&
         animationDriver is ImplicitAnimationDriver<S, AnimationConfig>) {
       config =
-          _forwardConfig(previous.animation) ??
+          previous.animation ??
           (animationDriver.isAnimating ? _driverConfig : null);
     }
     _isExiting = exitConfig != null;

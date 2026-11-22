@@ -425,33 +425,66 @@ sealed class AnimationConfig {
     ratio: ratio,
     onEnd: onEnd,
   );
-}
 
-/// Pairs two implicit configs for a variant's enter and exit transitions.
-/// Both [forward] and [reverse] must be curve or spring configs.
-final class ReversibleAnimationConfig extends AnimationConfig with Equatable {
-  final AnimationConfig forward;
-  final AnimationConfig reverse;
-
-  ReversibleAnimationConfig({required this.forward, required this.reverse}) {
-    if (forward is! CurveAnimationConfig && forward is! SpringAnimationConfig) {
-      throw ArgumentError.value(
-        forward,
-        'forward',
-        'Expected a curve or spring config',
-      );
-    }
-    if (reverse is! CurveAnimationConfig && reverse is! SpringAnimationConfig) {
-      throw ArgumentError.value(
+  /// Pairs [forward] enter timing with [reverse] exit timing for a variant.
+  ///
+  /// When the variant that sets this config activates, Mix animates with
+  /// [forward]. When that variant deactivates, Mix animates back with
+  /// [reverse]. Both must be curve or spring configs; otherwise an
+  /// [ArgumentError] is thrown.
+  ///
+  /// Returns a copy of [forward] (including its `onEnd`) that carries
+  /// [reverse]. A reverse already set on [forward] is replaced, and a reverse
+  /// nested inside [reverse] is dropped. A subclass of [CurveAnimationConfig]
+  /// passed as [forward] comes back as a plain [CurveAnimationConfig].
+  ///
+  /// ```dart
+  /// BoxStyler().onHovered(
+  ///   BoxStyler().animate(.reversible(.easeIn(120.ms), reverse: .easeOut(240.ms))),
+  /// );
+  /// ```
+  factory AnimationConfig.reversible(
+    AnimationConfig forward, {
+    required AnimationConfig reverse,
+  }) {
+    final AnimationConfig exit = switch (reverse) {
+      CurveAnimationConfig() => CurveAnimationConfig(
+        duration: reverse.duration,
+        curve: reverse.curve,
+        delay: reverse.delay,
+        onEnd: reverse.onEnd,
+      ),
+      SpringAnimationConfig() => SpringAnimationConfig(
+        spring: reverse.spring,
+        onEnd: reverse.onEnd,
+      ),
+      _ => throw ArgumentError.value(
         reverse,
         'reverse',
         'Expected a curve or spring config',
-      );
-    }
-  }
+      ),
+    };
 
-  @override
-  List<Object?> get props => [forward, reverse];
+    return switch (forward) {
+      CurveAnimationConfig() => CurveAnimationConfig(
+        duration: forward.duration,
+        curve: forward.curve,
+        delay: forward.delay,
+        onEnd: forward.onEnd,
+        reverse: exit,
+      ),
+      SpringAnimationConfig() => SpringAnimationConfig(
+        spring: forward.spring,
+        onEnd: forward.onEnd,
+        reverse: exit,
+      ),
+      _ => throw ArgumentError.value(
+        forward,
+        'forward',
+        'Expected a curve or spring config',
+      ),
+    };
+  }
 }
 
 /// Curve-based animation configuration with fixed duration.
@@ -464,269 +497,324 @@ class CurveAnimationConfig extends AnimationConfig with Equatable {
   final Duration delay;
   final VoidCallback? onEnd;
 
+  /// Exit timing used when the variant that set this config deactivates.
+  ///
+  /// Must be a [CurveAnimationConfig] or [SpringAnimationConfig]. Ignored for
+  /// phase and keyframe animations. See [AnimationConfig.reversible].
+  final AnimationConfig? reverse;
+
   const CurveAnimationConfig({
     required this.duration,
     required this.curve,
     this.delay = Duration.zero,
     this.onEnd,
-  });
+    this.reverse,
+  }) : assert(
+         reverse == null ||
+             reverse is CurveAnimationConfig ||
+             reverse is SpringAnimationConfig,
+         'reverse must be a curve or spring config',
+       );
 
   const CurveAnimationConfig.linear(
     this.duration, {
     this.onEnd,
     this.delay = Duration.zero,
-  }) : curve = Curves.linear;
+  }) : curve = Curves.linear,
+       reverse = null;
 
   const CurveAnimationConfig.decelerate(
     this.duration, {
     this.onEnd,
     this.delay = Duration.zero,
-  }) : curve = Curves.decelerate;
+  }) : curve = Curves.decelerate,
+       reverse = null;
 
   const CurveAnimationConfig.fastLinearToSlowEaseIn(
     this.duration, {
     this.onEnd,
     this.delay = Duration.zero,
-  }) : curve = Curves.fastLinearToSlowEaseIn;
+  }) : curve = Curves.fastLinearToSlowEaseIn,
+       reverse = null;
 
   const CurveAnimationConfig.fastEaseInToSlowEaseOut(
     this.duration, {
     this.onEnd,
     this.delay = Duration.zero,
-  }) : curve = Curves.fastEaseInToSlowEaseOut;
+  }) : curve = Curves.fastEaseInToSlowEaseOut,
+       reverse = null;
 
   const CurveAnimationConfig.ease(
     this.duration, {
     this.onEnd,
     this.delay = Duration.zero,
-  }) : curve = Curves.ease;
+  }) : curve = Curves.ease,
+       reverse = null;
 
   const CurveAnimationConfig.easeIn(
     this.duration, {
     this.onEnd,
     this.delay = Duration.zero,
-  }) : curve = Curves.easeIn;
+  }) : curve = Curves.easeIn,
+       reverse = null;
 
   const CurveAnimationConfig.easeInToLinear(
     this.duration, {
     this.onEnd,
     this.delay = Duration.zero,
-  }) : curve = Curves.easeInToLinear;
+  }) : curve = Curves.easeInToLinear,
+       reverse = null;
 
   const CurveAnimationConfig.easeInSine(
     this.duration, {
     this.onEnd,
     this.delay = Duration.zero,
-  }) : curve = Curves.easeInSine;
+  }) : curve = Curves.easeInSine,
+       reverse = null;
 
   const CurveAnimationConfig.easeInQuad(
     this.duration, {
     this.onEnd,
     this.delay = Duration.zero,
-  }) : curve = Curves.easeInQuad;
+  }) : curve = Curves.easeInQuad,
+       reverse = null;
 
   const CurveAnimationConfig.easeInCubic(
     this.duration, {
     this.onEnd,
     this.delay = Duration.zero,
-  }) : curve = Curves.easeInCubic;
+  }) : curve = Curves.easeInCubic,
+       reverse = null;
 
   const CurveAnimationConfig.easeInQuart(
     this.duration, {
     this.onEnd,
     this.delay = Duration.zero,
-  }) : curve = Curves.easeInQuart;
+  }) : curve = Curves.easeInQuart,
+       reverse = null;
 
   const CurveAnimationConfig.easeInQuint(
     this.duration, {
     this.onEnd,
     this.delay = Duration.zero,
-  }) : curve = Curves.easeInQuint;
+  }) : curve = Curves.easeInQuint,
+       reverse = null;
 
   const CurveAnimationConfig.easeInExpo(
     this.duration, {
     this.onEnd,
     this.delay = Duration.zero,
-  }) : curve = Curves.easeInExpo;
+  }) : curve = Curves.easeInExpo,
+       reverse = null;
 
   const CurveAnimationConfig.easeInCirc(
     this.duration, {
     this.onEnd,
     this.delay = Duration.zero,
-  }) : curve = Curves.easeInCirc;
+  }) : curve = Curves.easeInCirc,
+       reverse = null;
 
   const CurveAnimationConfig.easeInBack(
     this.duration, {
     this.onEnd,
     this.delay = Duration.zero,
-  }) : curve = Curves.easeInBack;
+  }) : curve = Curves.easeInBack,
+       reverse = null;
 
   const CurveAnimationConfig.easeOut(
     this.duration, {
     this.onEnd,
     this.delay = Duration.zero,
-  }) : curve = Curves.easeOut;
+  }) : curve = Curves.easeOut,
+       reverse = null;
 
   const CurveAnimationConfig.linearToEaseOut(
     this.duration, {
     this.onEnd,
     this.delay = Duration.zero,
-  }) : curve = Curves.linearToEaseOut;
+  }) : curve = Curves.linearToEaseOut,
+       reverse = null;
 
   const CurveAnimationConfig.easeOutSine(
     this.duration, {
     this.onEnd,
     this.delay = Duration.zero,
-  }) : curve = Curves.easeOutSine;
+  }) : curve = Curves.easeOutSine,
+       reverse = null;
 
   const CurveAnimationConfig.easeOutQuad(
     this.duration, {
     this.onEnd,
     this.delay = Duration.zero,
-  }) : curve = Curves.easeOutQuad;
+  }) : curve = Curves.easeOutQuad,
+       reverse = null;
 
   const CurveAnimationConfig.easeOutCubic(
     this.duration, {
     this.onEnd,
     this.delay = Duration.zero,
-  }) : curve = Curves.easeOutCubic;
+  }) : curve = Curves.easeOutCubic,
+       reverse = null;
 
   const CurveAnimationConfig.easeOutQuart(
     this.duration, {
     this.onEnd,
     this.delay = Duration.zero,
-  }) : curve = Curves.easeOutQuart;
+  }) : curve = Curves.easeOutQuart,
+       reverse = null;
 
   const CurveAnimationConfig.easeOutQuint(
     this.duration, {
     this.onEnd,
     this.delay = Duration.zero,
-  }) : curve = Curves.easeOutQuint;
+  }) : curve = Curves.easeOutQuint,
+       reverse = null;
 
   const CurveAnimationConfig.easeOutExpo(
     this.duration, {
     this.onEnd,
     this.delay = Duration.zero,
-  }) : curve = Curves.easeOutExpo;
+  }) : curve = Curves.easeOutExpo,
+       reverse = null;
 
   const CurveAnimationConfig.easeOutCirc(
     this.duration, {
     this.onEnd,
     this.delay = Duration.zero,
-  }) : curve = Curves.easeOutCirc;
+  }) : curve = Curves.easeOutCirc,
+       reverse = null;
 
   const CurveAnimationConfig.easeOutBack(
     this.duration, {
     this.onEnd,
     this.delay = Duration.zero,
-  }) : curve = Curves.easeOutBack;
+  }) : curve = Curves.easeOutBack,
+       reverse = null;
 
   const CurveAnimationConfig.easeInOut(
     this.duration, {
     this.onEnd,
     this.delay = Duration.zero,
-  }) : curve = Curves.easeInOut;
+  }) : curve = Curves.easeInOut,
+       reverse = null;
 
   const CurveAnimationConfig.easeInOutSine(
     this.duration, {
     this.onEnd,
     this.delay = Duration.zero,
-  }) : curve = Curves.easeInOutSine;
+  }) : curve = Curves.easeInOutSine,
+       reverse = null;
 
   const CurveAnimationConfig.easeInOutQuad(
     this.duration, {
     this.onEnd,
     this.delay = Duration.zero,
-  }) : curve = Curves.easeInOutQuad;
+  }) : curve = Curves.easeInOutQuad,
+       reverse = null;
 
   const CurveAnimationConfig.easeInOutCubic(
     this.duration, {
     this.onEnd,
     this.delay = Duration.zero,
-  }) : curve = Curves.easeInOutCubic;
+  }) : curve = Curves.easeInOutCubic,
+       reverse = null;
 
   const CurveAnimationConfig.easeInOutCubicEmphasized(
     this.duration, {
     this.onEnd,
     this.delay = Duration.zero,
-  }) : curve = Curves.easeInOutCubicEmphasized;
+  }) : curve = Curves.easeInOutCubicEmphasized,
+       reverse = null;
 
   const CurveAnimationConfig.easeInOutQuart(
     this.duration, {
     this.onEnd,
     this.delay = Duration.zero,
-  }) : curve = Curves.easeInOutQuart;
+  }) : curve = Curves.easeInOutQuart,
+       reverse = null;
   const CurveAnimationConfig.easeInOutQuint(
     this.duration, {
     this.onEnd,
     this.delay = Duration.zero,
-  }) : curve = Curves.easeInOutQuint;
+  }) : curve = Curves.easeInOutQuint,
+       reverse = null;
 
   const CurveAnimationConfig.easeInOutExpo(
     this.duration, {
     this.onEnd,
     this.delay = Duration.zero,
-  }) : curve = Curves.easeInOutExpo;
+  }) : curve = Curves.easeInOutExpo,
+       reverse = null;
 
   const CurveAnimationConfig.easeInOutCirc(
     this.duration, {
     this.onEnd,
     this.delay = Duration.zero,
-  }) : curve = Curves.easeInOutCirc;
+  }) : curve = Curves.easeInOutCirc,
+       reverse = null;
 
   const CurveAnimationConfig.easeInOutBack(
     this.duration, {
     this.onEnd,
     this.delay = Duration.zero,
-  }) : curve = Curves.easeInOutBack;
+  }) : curve = Curves.easeInOutBack,
+       reverse = null;
 
   const CurveAnimationConfig.fastOutSlowIn(
     this.duration, {
     this.onEnd,
     this.delay = Duration.zero,
-  }) : curve = Curves.fastOutSlowIn;
+  }) : curve = Curves.fastOutSlowIn,
+       reverse = null;
 
   const CurveAnimationConfig.slowMiddle(
     this.duration, {
     this.onEnd,
     this.delay = Duration.zero,
-  }) : curve = Curves.slowMiddle;
+  }) : curve = Curves.slowMiddle,
+       reverse = null;
 
   const CurveAnimationConfig.bounceIn(
     this.duration, {
     this.onEnd,
     this.delay = Duration.zero,
-  }) : curve = Curves.bounceIn;
+  }) : curve = Curves.bounceIn,
+       reverse = null;
 
   const CurveAnimationConfig.bounceOut(
     this.duration, {
     this.onEnd,
     this.delay = Duration.zero,
-  }) : curve = Curves.bounceOut;
+  }) : curve = Curves.bounceOut,
+       reverse = null;
 
   const CurveAnimationConfig.bounceInOut(
     this.duration, {
     this.onEnd,
     this.delay = Duration.zero,
-  }) : curve = Curves.bounceInOut;
+  }) : curve = Curves.bounceInOut,
+       reverse = null;
 
   const CurveAnimationConfig.elasticIn(
     this.duration, {
     this.onEnd,
     this.delay = Duration.zero,
-  }) : curve = Curves.elasticIn;
+  }) : curve = Curves.elasticIn,
+       reverse = null;
 
   const CurveAnimationConfig.elasticOut(
     this.duration, {
     this.onEnd,
     this.delay = Duration.zero,
-  }) : curve = Curves.elasticOut;
+  }) : curve = Curves.elasticOut,
+       reverse = null;
 
   const CurveAnimationConfig.elasticInOut(
     this.duration, {
     this.onEnd,
     this.delay = Duration.zero,
-  }) : curve = Curves.elasticInOut;
+  }) : curve = Curves.elasticInOut,
+       reverse = null;
 
   factory CurveAnimationConfig.spring(
     Duration duration, {
@@ -801,10 +889,11 @@ class CurveAnimationConfig extends AnimationConfig with Equatable {
     curve: curve ?? this.curve,
     delay: delay ?? this.delay,
     onEnd: onEnd ?? this.onEnd,
+    reverse: reverse,
   );
 
   @override
-  List<Object?> get props => [duration, curve, delay];
+  List<Object?> get props => [duration, curve, delay, reverse];
 }
 
 /// Spring-based animation configuration for physics-based animations.
@@ -815,7 +904,19 @@ final class SpringAnimationConfig extends AnimationConfig with Equatable {
   final SpringDescription spring;
   final VoidCallback? onEnd;
 
-  const SpringAnimationConfig({required this.spring, this.onEnd});
+  /// Exit timing used when the variant that set this config deactivates.
+  ///
+  /// Must be a [CurveAnimationConfig] or [SpringAnimationConfig]. Ignored for
+  /// phase and keyframe animations. See [AnimationConfig.reversible].
+  final AnimationConfig? reverse;
+
+  const SpringAnimationConfig({required this.spring, this.onEnd, this.reverse})
+    : assert(
+        reverse == null ||
+            reverse is CurveAnimationConfig ||
+            reverse is SpringAnimationConfig,
+        'reverse must be a curve or spring config',
+      );
 
   /// Creates a spring configuration with standard parameters.
   SpringAnimationConfig.standard({
@@ -827,7 +928,8 @@ final class SpringAnimationConfig extends AnimationConfig with Equatable {
          mass: mass,
          stiffness: stiffness,
          damping: damping,
-       );
+       ),
+       reverse = null;
 
   /// Creates a spring configuration with standard parameters.
   SpringAnimationConfig.withDurationAndBounce({
@@ -837,7 +939,8 @@ final class SpringAnimationConfig extends AnimationConfig with Equatable {
   }) : spring = SpringDescription.withDurationAndBounce(
          duration: duration,
          bounce: bounce,
-       );
+       ),
+       reverse = null;
 
   /// Creates a critically damped spring configuration.
   SpringAnimationConfig.criticallyDamped({
@@ -848,7 +951,8 @@ final class SpringAnimationConfig extends AnimationConfig with Equatable {
          mass: mass,
          stiffness: stiffness,
          ratio: 1.0,
-       );
+       ),
+       reverse = null;
 
   /// Creates an under-damped (bouncy) spring configuration.
   SpringAnimationConfig.underdamped({
@@ -860,10 +964,16 @@ final class SpringAnimationConfig extends AnimationConfig with Equatable {
          mass: mass,
          stiffness: stiffness,
          ratio: ratio,
-       );
+       ),
+       reverse = null;
 
   @override
-  List<Object?> get props => [spring.mass, spring.stiffness, spring.damping];
+  List<Object?> get props => [
+    spring.mass,
+    spring.stiffness,
+    spring.damping,
+    reverse,
+  ];
 }
 
 class PhaseAnimationConfig<T extends Spec<T>, U extends Style<T>>

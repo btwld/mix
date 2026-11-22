@@ -417,14 +417,9 @@ class ImageStyler extends MixStyler<ImageStyler, ImageSpec>
   }
 
   /// Sets the animation configuration.
-  /// [reverse] sets variant exit timing for curve or spring configs.
   @override
-  ImageStyler animate(AnimationConfig value, {AnimationConfig? reverse}) {
-    final config = reverse == null
-        ? value
-        : ReversibleAnimationConfig(forward: value, reverse: reverse);
-
-    return merge(ImageStyler(animation: config));
+  ImageStyler animate(AnimationConfig value) {
+    return merge(ImageStyler(animation: value));
   }
 
   /// Sets the style variants.

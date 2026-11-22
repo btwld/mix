@@ -129,10 +129,8 @@ class GridBoxStyler extends MixStyler<GridBoxStyler, GridBoxSpec>
   ///
   /// Same-length track lists interpolate when corresponding track kinds
   /// match. Different counts or kinds snap at the animation midpoint.
-  factory GridBoxStyler.animate(
-    AnimationConfig animation, {
-    AnimationConfig? reverse,
-  }) => GridBoxStyler().animate(animation, reverse: reverse);
+  factory GridBoxStyler.animate(AnimationConfig animation) =>
+      GridBoxStyler().animate(animation);
 
   /// Creates a Grid style that wraps the widget with [value].
   factory GridBoxStyler.wrap(WidgetModifierConfig value) =>
@@ -207,16 +205,11 @@ class GridBoxStyler extends MixStyler<GridBoxStyler, GridBoxSpec>
   /// constant. Track-count or track-kind changes, clipping, and constraint
   /// patches snap at the midpoint. A local [onConstraints] branch switch
   /// remains immediate because it occurs during layout without producing a
-  /// new resolved style. [reverse] sets exit timing for a variant.
+  /// new resolved style. Use [AnimationConfig.reversible] to set exit
+  /// timing for a variant.
   @override
-  GridBoxStyler animate(AnimationConfig value, {AnimationConfig? reverse}) =>
-      merge(
-        GridBoxStyler(
-          animation: reverse == null
-              ? value
-              : ReversibleAnimationConfig(forward: value, reverse: reverse),
-        ),
-      );
+  GridBoxStyler animate(AnimationConfig value) =>
+      merge(GridBoxStyler(animation: value));
 
   @override
   GridBoxStyler variants(List<VariantStyle<GridBoxSpec>> value) =>

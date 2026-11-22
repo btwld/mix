@@ -656,9 +656,106 @@ void main() {
     });
   });
 
-  group('ReversibleAnimationConfig', () {
-    test('rejects timeline configs in either direction', () {
-      const curve = CurveAnimationConfig.linear(Duration(milliseconds: 100));
+  group('reverse', () {
+    const curve = CurveAnimationConfig.linear(Duration(milliseconds: 100));
+    const exit = CurveAnimationConfig.easeOut(Duration(milliseconds: 200));
+
+    test('is part of curve and spring equality and props', () {
+      const withReverse = CurveAnimationConfig(
+        duration: Duration(milliseconds: 100),
+        curve: Curves.linear,
+        reverse: exit,
+      );
+      const plain = CurveAnimationConfig(
+        duration: Duration(milliseconds: 100),
+        curve: Curves.linear,
+      );
+
+      expect(withReverse.props, [
+        const Duration(milliseconds: 100),
+        Curves.linear,
+        Duration.zero,
+        exit,
+      ]);
+      expect(plain.props.last, isNull);
+      expect(withReverse, isNot(equals(plain)));
+      expect(
+        withReverse,
+        const CurveAnimationConfig(
+          duration: Duration(milliseconds: 100),
+          curve: Curves.linear,
+          reverse: exit,
+        ),
+      );
+      expect(curve.reverse, isNull);
+
+      final spring = SpringAnimationConfig.standard();
+      final springWithReverse = AnimationConfig.reversible(
+        spring,
+        reverse: exit,
+      );
+      expect(springWithReverse, isA<SpringAnimationConfig>());
+      expect((springWithReverse as SpringAnimationConfig).props.last, exit);
+      expect(spring.props.last, isNull);
+      expect(springWithReverse, isNot(equals(spring)));
+      expect(
+        springWithReverse,
+        SpringAnimationConfig(spring: spring.spring, reverse: exit),
+      );
+    });
+
+    test('copyWith preserves reverse', () {
+      final config =
+          AnimationConfig.reversible(curve, reverse: exit)
+              as CurveAnimationConfig;
+      final copy = config.copyWith(duration: const Duration(seconds: 1));
+
+      expect(copy.reverse, exit);
+      expect(copy.duration, const Duration(seconds: 1));
+      expect(config.copyWith(), config);
+    });
+
+    test('reversible keeps forward fields and replaces a prior reverse', () {
+      void onEnd() {}
+      final forward = CurveAnimationConfig.easeIn(
+        const Duration(milliseconds: 120),
+        delay: const Duration(milliseconds: 10),
+        onEnd: onEnd,
+      );
+      final first = AnimationConfig.reversible(forward, reverse: exit);
+      final second =
+          AnimationConfig.reversible(first, reverse: curve)
+              as CurveAnimationConfig;
+
+      expect(second.duration, const Duration(milliseconds: 120));
+      expect(second.curve, Curves.easeIn);
+      expect(second.delay, const Duration(milliseconds: 10));
+      expect(second.onEnd, onEnd);
+      expect(second.reverse, curve);
+    });
+
+    test('reversible strips a nested reverse', () {
+      final nested = AnimationConfig.reversible(exit, reverse: curve);
+      final config =
+          AnimationConfig.reversible(curve, reverse: nested)
+              as CurveAnimationConfig;
+      final reverse = config.reverse! as CurveAnimationConfig;
+
+      expect(reverse.reverse, isNull);
+      expect(reverse, exit);
+
+      final springNested = AnimationConfig.reversible(
+        SpringAnimationConfig.standard(),
+        reverse: curve,
+      );
+      final springConfig =
+          AnimationConfig.reversible(curve, reverse: springNested)
+              as CurveAnimationConfig;
+
+      expect((springConfig.reverse! as SpringAnimationConfig).reverse, isNull);
+    });
+
+    test('reversible rejects timeline configs in either direction', () {
       const phase = PhaseAnimationConfig<BoxSpec, BoxStyler>(
         styles: [BoxStyler.create()],
         curveConfigs: [curve],
@@ -672,14 +769,33 @@ void main() {
       );
       for (final timeline in <AnimationConfig>[phase, keyframe]) {
         expect(
-          () => BoxStyler.animate(timeline, reverse: curve),
-          throwsArgumentError,
+          () => AnimationConfig.reversible(timeline, reverse: curve),
+          throwsA(
+            isA<ArgumentError>().having((e) => e.name, 'name', 'forward'),
+          ),
         );
         expect(
-          () => BoxStyler.animate(curve, reverse: timeline),
-          throwsArgumentError,
+          () => AnimationConfig.reversible(curve, reverse: timeline),
+          throwsA(
+            isA<ArgumentError>().having((e) => e.name, 'name', 'reverse'),
+          ),
         );
       }
+    });
+
+    test('primary constructors accept reverse in const contexts', () {
+      const curveConfig = CurveAnimationConfig(
+        duration: Duration(milliseconds: 100),
+        curve: Curves.linear,
+        reverse: exit,
+      );
+      const springConfig = SpringAnimationConfig(
+        spring: SpringDescription(mass: 1, stiffness: 100, damping: 10),
+        reverse: curveConfig,
+      );
+
+      expect(curveConfig.reverse, exit);
+      expect(springConfig.reverse, curveConfig);
     });
   });
 }
