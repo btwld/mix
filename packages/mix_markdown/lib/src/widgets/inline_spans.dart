@@ -4,21 +4,17 @@ import 'package:markdown/markdown.dart' as md;
 import '../parsing/markdown_tags.dart';
 import '../specs/markdown_spec.dart';
 
-/// Builds the spans of one block from its inline [nodes].
-///
-/// A [transform] runs on the entire block. Inline styles are retained only
-/// when the original run boundaries can be mapped onto the result.
+/// Builds the text spans of one block from its inline [nodes].
 List<TextSpan> buildInlineSpans(
   List<md.Node> nodes, {
   required MarkdownSpec spec,
-  String Function(String)? transform,
 }) {
-  final runs = <_Run>[];
+  final spans = <TextSpan>[];
 
   void collect(md.Node node, TextStyle style, {required bool inCode}) {
     if (node is md.Text) {
       final text = inCode ? node.text : node.text.replaceAll('\n', ' ');
-      if (text.isNotEmpty) runs.add(_Run(text, style));
+      if (text.isNotEmpty) spans.add(TextSpan(text: text, style: style));
 
       return;
     }
@@ -28,10 +24,10 @@ List<TextSpan> buildInlineSpans(
     final merged = style.merge(_inlineStyle(spec, tag));
     switch (tag) {
       case MarkdownInlineTag.lineBreak:
-        runs.add(_Run('\n', merged));
+        spans.add(TextSpan(text: '\n', style: merged));
       case MarkdownInlineTag.image:
         final alt = node.attributes['alt'] ?? '';
-        if (alt.isNotEmpty) runs.add(_Run(alt, merged));
+        if (alt.isNotEmpty) spans.add(TextSpan(text: alt, style: merged));
       case MarkdownInlineTag.strong:
       case MarkdownInlineTag.boldAlias:
       case MarkdownInlineTag.emphasis:
@@ -51,16 +47,17 @@ List<TextSpan> buildInlineSpans(
   for (final node in nodes) {
     collect(node, const TextStyle(), inCode: false);
   }
-  if (transform != null) return _transformRuns(runs, transform);
 
-  return [for (final run in runs) TextSpan(text: run.text, style: run.style)];
+  return spans;
 }
 
-List<TextSpan> _transformRuns(
-  List<_Run> runs,
+/// Transforms one block's spans as a whole. Inline styles are retained only
+/// when the original span boundaries can be mapped onto the result.
+List<TextSpan> transformInlineSpans(
+  List<TextSpan> spans,
   String Function(String) transform,
 ) {
-  final source = runs.map((run) => run.text).join().characters;
+  final source = spans.map((span) => span.text).join().characters;
   final transformed = transform(source.string);
   final target = transformed.characters;
   if (source.length != target.length) {
@@ -69,13 +66,13 @@ List<TextSpan> _transformRuns(
 
   final sourceClusters = source.iterator;
   final targetClusters = target.iterator;
-  final spans = <TextSpan>[];
+  final transformedSpans = <TextSpan>[];
   var sourceEnd = 0;
   var targetStart = 0;
   var sourceClusterEnd = 0;
   var targetClusterEnd = 0;
-  for (final run in runs) {
-    sourceEnd += run.text.length;
+  for (final span in spans) {
+    sourceEnd += span.text!.length;
     while (sourceClusterEnd < sourceEnd) {
       sourceClusters.moveNext();
       targetClusters.moveNext();
@@ -96,16 +93,16 @@ List<TextSpan> _transformRuns(
         targetCluster.runes.skip(leadingRunes),
       ).length;
     }
-    spans.add(
+    transformedSpans.add(
       TextSpan(
         text: transformed.substring(targetStart, targetEnd),
-        style: run.style,
+        style: span.style,
       ),
     );
     targetStart = targetEnd;
   }
 
-  return spans;
+  return transformedSpans;
 }
 
 TextStyle _inlineStyle(MarkdownSpec spec, MarkdownInlineTag? tag) =>
@@ -130,10 +127,3 @@ TextStyle _inlineStyle(MarkdownSpec spec, MarkdownInlineTag? tag) =>
       MarkdownInlineTag.image ||
       null => const TextStyle(),
     };
-
-class _Run {
-  final String text;
-  final TextStyle style;
-
-  const _Run(this.text, this.style);
-}

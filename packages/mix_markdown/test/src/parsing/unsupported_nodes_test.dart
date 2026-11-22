@@ -26,6 +26,31 @@ void main() {
     expect(unsupportedNodes(parse('<div>\nraw\n</div>')), {'text'});
   });
 
+  test('accepts color swatches only inside inline code', () {
+    expect(unsupportedNodes(parse('Use `#ff0000`.')), isEmpty);
+    expect(
+      unsupportedNodes([
+        md.Element('p', [md.Element.text('span', '#ff0000')]),
+      ]),
+      {'span'},
+    );
+  });
+
+  test('ignores block text containing only complete HTML comments', () {
+    expect(unsupportedNodes(parse('<!-- note -->')), isEmpty);
+    expect(
+      unsupportedNodes(parse(' <!-- first\nline -->  <!-- second -->')),
+      isEmpty,
+    );
+    for (final source in [
+      '<!-- note --> <div>raw</div> <!-- another -->',
+      '<!-- note -->\n<div>raw</div>',
+      '<!-- unterminated',
+    ]) {
+      expect(unsupportedNodes(parse(source)), {'text'}, reason: source);
+    }
+  });
+
   test('reports a paragraph that holds only an image', () {
     const linkedImage =
         '[![CI](https://example.com/badge.svg)]'

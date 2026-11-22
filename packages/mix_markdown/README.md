@@ -75,10 +75,12 @@ Headers shrink-wrap by default. To fill a bounded width, set
 
 - Paragraphs and `h1` to `h6` headings, with heading semantics.
 - Nested inline formatting: strong, emphasis, strikethrough, inline code,
-  and links. Links are styled but not activated.
+  and links. Inline color codes render as code text without a color swatch.
+  Links are styled but not activated.
 - Markdown hard breaks and inline `<br>` tags. Soft line breaks become spaces.
 - Images in prose contribute their alt text.
 - GitHub alerts, including nested alerts and shared link references.
+- Blocks containing only HTML comments are ignored.
 
 A document with unsupported blocks (such as lists, tables, or fenced code)
 goes to `unsupportedBuilder` with the offending tags. A paragraph containing
@@ -103,4 +105,6 @@ are equal when they hold the same syntax instances and extension set. Use a
 new syntax instance when changing its behavior.
 
 `wrapBlock` receives each rendered block with its parsed element, for example
-to wrap a heading in a `Hero`.
+to wrap a heading in a `Hero`. Empty text blocks are skipped, so they add no
+spacing and are not passed to `wrapBlock`, including inside alerts. Alerts
+with an empty body still render their header and are passed to `wrapBlock`.

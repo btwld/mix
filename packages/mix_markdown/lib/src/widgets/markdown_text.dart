@@ -1,34 +1,29 @@
 import 'package:flutter/widgets.dart';
-import 'package:markdown/markdown.dart' as md;
 import 'package:mix/mix.dart';
 
 import '../parsing/markdown_tags.dart';
-import '../specs/markdown_spec.dart';
 import 'inline_spans.dart';
 
 class MarkdownText extends StatelessWidget {
   const MarkdownText({
     super.key,
-    required this.element,
+    required this.spans,
     required this.block,
     required this.styleSpec,
-    required this.spec,
   });
 
-  final md.Element element;
+  final List<TextSpan> spans;
   final MarkdownBlockTag block;
   final StyleSpec<TextSpec> styleSpec;
-  final MarkdownSpec spec;
 
   Widget _buildText(BuildContext context, TextSpec textSpec) {
-    final spans = buildInlineSpans(
-      element.children ?? const [],
-      spec: spec,
-      transform: textSpec.textDirectives?.apply,
-    );
-    if (spans.isEmpty) return const SizedBox.shrink();
+    final transform = textSpec.textDirectives?.apply;
     final text = Text.rich(
-      TextSpan(children: spans),
+      TextSpan(
+        children: transform == null
+            ? spans
+            : transformInlineSpans(spans, transform),
+      ),
       style: textSpec.style,
       strutStyle: textSpec.strutStyle,
       textAlign: textSpec.textAlign,

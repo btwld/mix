@@ -17,8 +17,9 @@ void main() {
 
   List<TextSpan> spans(String source, {String Function(String)? transform}) {
     final nodes = const MarkdownSyntax().createDocument().parseInline(source);
+    final result = buildInlineSpans(nodes, spec: spec);
 
-    return buildInlineSpans(nodes, spec: spec, transform: transform);
+    return transform == null ? result : transformInlineSpans(result, transform);
   }
 
   String plain(List<TextSpan> result) =>
