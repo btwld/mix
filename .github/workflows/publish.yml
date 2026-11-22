@@ -110,7 +110,16 @@ jobs:
       id-token: write
       contents: read
 
+  check_mix_markdown_release:
+    if: startsWith(github.ref_name, 'mix_markdown-v') && github.ref_name != 'mix_markdown-v0.1.0-beta.1'
+    uses: ./.github/workflows/release-dependencies.yml
+    with:
+      package: markdown
+    permissions:
+      contents: read
+
   publish_mix_markdown:
+    needs: check_mix_markdown_release
     if: startsWith(github.ref_name, 'mix_markdown-v') && github.ref_name != 'mix_markdown-v0.1.0-beta.1'
     uses: btwld/dart-actions/.github/workflows/publish.yml@main
     with:
