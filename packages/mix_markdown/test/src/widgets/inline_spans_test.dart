@@ -42,6 +42,19 @@ void main() {
     expect(run('docs').recognizer, isNull);
   });
 
+  test('strikethrough inside a link keeps the underline', () {
+    final run = spans('[~~gone~~](https://example.com)').single;
+
+    expect(run.text, 'gone');
+    expect(
+      run.style?.decoration,
+      TextDecoration.combine([
+        TextDecoration.underline,
+        TextDecoration.lineThrough,
+      ]),
+    );
+  });
+
   test('inline image contributes alt text only', () {
     final result = spans('before ![alt](asset.png) after');
 
@@ -60,15 +73,46 @@ void main() {
     expect(world.style?.fontWeight, FontWeight.bold);
   });
 
-  test('length-changing transform falls back to one unstyled span', () {
+  test('case-only directives retain context across inline runs', () {
     final result = spans(
-      '**straße**',
+      '**mIx**eD',
+      transform: const CapitalizeStringDirective().apply,
+    );
+
+    expect(result.map((run) => run.text), ['Mix', 'ed']);
+    expect(result.first.style?.fontWeight, FontWeight.bold);
+  });
+
+  test('titlecase keeps the whole styled run and its surrounding spaces', () {
+    final result = spans(
+      'Set **userId**  and',
+      transform: const TitleCaseStringDirective().apply,
+    );
+
+    expect(result.map((run) => run.text), ['Set ', 'User Id', '  And']);
+    expect(result[1].style?.fontWeight, FontWeight.bold);
+    expect(result.last.style?.fontWeight, isNull);
+  });
+
+  test('length-changing transform keeps each inline style', () {
+    final result = spans(
+      'before **straße** after',
       transform: (s) => s.replaceAll('ß', 'SS'),
     );
 
-    expect(result, hasLength(1));
-    expect(result.single.text, 'straSSe');
-    expect(result.single.style, isNull);
+    expect(result.map((run) => run.text), ['before ', 'straSSe', ' after']);
+    expect(result[1].style?.fontWeight, FontWeight.bold);
+  });
+
+  test('uppercase leaves inline code verbatim even inside a styled run', () {
+    final result = spans(
+      'call **`fetchUser()`** next',
+      transform: const UppercaseStringDirective().apply,
+    );
+
+    expect(plain(result), 'CALL fetchUser() NEXT');
+    expect(result[1].style?.fontFamily, 'monospace');
+    expect(result[1].style?.fontWeight, FontWeight.bold);
   });
 
   test('a combining mark across runs stays outside the bold span', () {
