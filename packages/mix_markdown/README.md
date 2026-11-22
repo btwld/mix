@@ -7,6 +7,10 @@ Render headings, paragraphs, and GitHub alerts with [Mix](https://pub.dev/packag
 
 ## Quick start
 
+```sh
+flutter pub add mix_markdown
+```
+
 ```dart
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
@@ -65,8 +69,7 @@ MarkdownAlertStyler(
 ```
 
 Set `label` to change the title text and `IconStyler().icon(...)` to change
-the icon. The default icons come from Material, so the app needs
-`uses-material-design: true`.
+the icon.
 
 Headers shrink-wrap by default. To fill a bounded width, set
 `FlexBoxStyler().mainAxisSize(.max)` on the header.
@@ -76,17 +79,23 @@ Headers shrink-wrap by default. To fill a bounded width, set
 - Paragraphs and `h1` to `h6` headings, with heading semantics.
 - Nested inline formatting: strong, emphasis, strikethrough, inline code,
   and links. Inline color codes render as code text without a color swatch.
-  Links are styled but not activated.
 - Markdown hard breaks and inline `<br>` tags. Soft line breaks become spaces.
 - Images in prose contribute their alt text.
 - GitHub alerts, including nested alerts and shared link references.
 - Blocks containing only HTML comments are ignored.
 
-A document with unsupported blocks (such as lists, tables, or fenced code)
-goes to `unsupportedBuilder` with the offending tags. A paragraph containing
-only an image, even a linked one, reports `standalone-image`. Without a
-builder, the widget shows a diagnostic. Unsupported raw inline HTML such as
-`<kbd>` renders as literal text and does not invoke `unsupportedBuilder`.
+## Known limits
+
+- Lists, fenced code blocks, block quotes other than GitHub alerts, tables,
+  and standalone images are unsupported. The whole document goes to
+  `unsupportedBuilder` with the offending tags, or shows a diagnostic if no
+  builder is set. A paragraph containing only an image, even a linked one,
+  reports `standalone-image`.
+- Links are styled but not tappable.
+- Raw inline HTML other than `<br>` renders as literal text and does not
+  invoke `unsupportedBuilder`.
+- The default alert icons need `uses-material-design: true` under `flutter:`
+  in the app's `pubspec.yaml`.
 
 ```dart
 MixMarkdown(
@@ -101,8 +110,10 @@ While mounted, `MixMarkdown` reparses only when `data` or `syntax` changes.
 
 `MarkdownSyntax` configures the parser. It defaults to
 `ExtensionSet.gitHubWeb`, which includes the alert syntax. Two configurations
-are equal when they hold the same syntax instances and extension set. Use a
-new syntax instance when changing its behavior.
+are equal when they hold the same syntax instances and extension set. Create
+your `MarkdownSyntax` once (as a `const` or a field) and reuse it in `build`.
+Creating new custom syntax instances on each build changes the configuration
+and reparses the document. Use a new syntax instance when its behavior changes.
 
 `wrapBlock` receives each rendered block with its parsed element, for example
 to wrap a heading in a `Hero`. Empty text blocks are skipped, so they add no
