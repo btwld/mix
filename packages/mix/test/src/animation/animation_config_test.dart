@@ -656,51 +656,79 @@ void main() {
     });
   });
 
-  group('reverse', () {
+  group('reversible', () {
     const curve = CurveAnimationConfig.linear(Duration(milliseconds: 100));
     const exit = CurveAnimationConfig.easeOut(Duration(milliseconds: 200));
 
-    test('is part of curve and spring equality and props', () {
-      const withReverse = CurveAnimationConfig(
-        duration: Duration(milliseconds: 100),
-        curve: Curves.linear,
-        reverse: exit,
+    test('returns a curve or spring config with the forward values', () {
+      void onEnd() {}
+      final forward = CurveAnimationConfig.easeIn(
+        const Duration(milliseconds: 120),
+        delay: const Duration(milliseconds: 10),
+        onEnd: onEnd,
       );
-      const plain = CurveAnimationConfig(
-        duration: Duration(milliseconds: 100),
-        curve: Curves.linear,
-      );
+      final config = AnimationConfig.reversible(forward, reverse: exit);
 
-      expect(withReverse.props, [
+      expect(config, isA<CurveAnimationConfig>());
+      config as CurveAnimationConfig;
+      expect(config.duration, const Duration(milliseconds: 120));
+      expect(config.curve, Curves.easeIn);
+      expect(config.delay, const Duration(milliseconds: 10));
+      expect(config.onEnd, onEnd);
+      expect(config.totalDuration, const Duration(milliseconds: 130));
+      expect(AnimationConfig.reverseOf(config), same(exit));
+
+      final spring = SpringAnimationConfig.standard(onEnd: onEnd);
+      final springConfig = AnimationConfig.reversible(spring, reverse: exit);
+
+      expect(springConfig, isA<SpringAnimationConfig>());
+      springConfig as SpringAnimationConfig;
+      expect(springConfig.spring, spring.spring);
+      expect(springConfig.onEnd, onEnd);
+      expect(AnimationConfig.reverseOf(springConfig), same(exit));
+    });
+
+    test('leaves plain configs as they were in 2.4.0', () {
+      final spring = SpringAnimationConfig.standard();
+
+      expect(curve.props, [
         const Duration(milliseconds: 100),
         Curves.linear,
         Duration.zero,
-        exit,
       ]);
-      expect(plain.props.last, isNull);
-      expect(withReverse, isNot(equals(plain)));
+      expect(spring.props, [
+        spring.spring.mass,
+        spring.spring.stiffness,
+        spring.spring.damping,
+      ]);
+      expect(AnimationConfig.reverseOf(curve), isNull);
+      expect(AnimationConfig.reverseOf(spring), isNull);
+      expect(AnimationConfig.reverseOf(null), isNull);
+      expect(_kind(curve), 'curve');
+      expect(_kind(AnimationConfig.reversible(curve, reverse: exit)), 'curve');
       expect(
-        withReverse,
-        const CurveAnimationConfig(
-          duration: Duration(milliseconds: 100),
-          curve: Curves.linear,
-          reverse: exit,
+        _kind(AnimationConfig.reversible(spring, reverse: exit)),
+        'spring',
+      );
+      expect(const _CurveAdapter(curve).duration, curve.duration);
+    });
+
+    test('takes part in equality', () {
+      final config = AnimationConfig.reversible(curve, reverse: exit);
+      final same = AnimationConfig.reversible(
+        const CurveAnimationConfig.linear(Duration(milliseconds: 100)),
+        reverse: const CurveAnimationConfig.easeOut(
+          Duration(milliseconds: 200),
         ),
       );
-      expect(curve.reverse, isNull);
 
-      final spring = SpringAnimationConfig.standard();
-      final springWithReverse = AnimationConfig.reversible(
-        spring,
-        reverse: exit,
-      );
-      expect(springWithReverse, isA<SpringAnimationConfig>());
-      expect((springWithReverse as SpringAnimationConfig).props.last, exit);
-      expect(spring.props.last, isNull);
-      expect(springWithReverse, isNot(equals(spring)));
+      expect(config, same);
+      expect(config.hashCode, same.hashCode);
+      expect(config, isNot(equals(curve)));
+      expect(curve, isNot(equals(config)));
       expect(
-        springWithReverse,
-        SpringAnimationConfig(spring: spring.spring, reverse: exit),
+        config,
+        isNot(equals(AnimationConfig.reversible(curve, reverse: curve))),
       );
     });
 
@@ -710,52 +738,49 @@ void main() {
               as CurveAnimationConfig;
       final copy = config.copyWith(duration: const Duration(seconds: 1));
 
-      expect(copy.reverse, exit);
+      expect(AnimationConfig.reverseOf(copy), same(exit));
       expect(copy.duration, const Duration(seconds: 1));
       expect(config.copyWith(), config);
     });
 
-    test('reversible keeps forward fields and replaces a prior reverse', () {
-      void onEnd() {}
-      final forward = CurveAnimationConfig.easeIn(
-        const Duration(milliseconds: 120),
-        delay: const Duration(milliseconds: 10),
-        onEnd: onEnd,
-      );
-      final first = AnimationConfig.reversible(forward, reverse: exit);
-      final second =
-          AnimationConfig.reversible(first, reverse: curve)
-              as CurveAnimationConfig;
+    test('replaces a prior reverse', () {
+      final first = AnimationConfig.reversible(curve, reverse: exit);
+      final second = AnimationConfig.reversible(first, reverse: curve);
 
-      expect(second.duration, const Duration(milliseconds: 120));
-      expect(second.curve, Curves.easeIn);
-      expect(second.delay, const Duration(milliseconds: 10));
-      expect(second.onEnd, onEnd);
-      expect(second.reverse, curve);
+      expect(AnimationConfig.reverseOf(second), same(curve));
+      expect(second, AnimationConfig.reversible(curve, reverse: curve));
     });
 
-    test('reversible strips a nested reverse', () {
+    test('strips a nested reverse', () {
       final nested = AnimationConfig.reversible(exit, reverse: curve);
-      final config =
-          AnimationConfig.reversible(curve, reverse: nested)
-              as CurveAnimationConfig;
-      final reverse = config.reverse! as CurveAnimationConfig;
+      final config = AnimationConfig.reversible(curve, reverse: nested);
+      final reverse = AnimationConfig.reverseOf(config);
 
-      expect(reverse.reverse, isNull);
-      expect(reverse, exit);
+      expect(reverse, same(exit));
+      expect(AnimationConfig.reverseOf(reverse), isNull);
 
-      final springNested = AnimationConfig.reversible(
-        SpringAnimationConfig.standard(),
-        reverse: curve,
+      final spring = SpringAnimationConfig.standard();
+      final springNested = AnimationConfig.reversible(spring, reverse: curve);
+      final springConfig = AnimationConfig.reversible(
+        curve,
+        reverse: springNested,
       );
-      final springConfig =
-          AnimationConfig.reversible(curve, reverse: springNested)
-              as CurveAnimationConfig;
 
-      expect((springConfig.reverse! as SpringAnimationConfig).reverse, isNull);
+      expect(AnimationConfig.reverseOf(springConfig), same(spring));
     });
 
-    test('reversible rejects timeline configs in either direction', () {
+    test('keeps the behavior of a curve subclass in both directions', () {
+      const slow = _SlowCurve();
+      final config = AnimationConfig.reversible(slow, reverse: slow);
+
+      expect(
+        (config as CurveAnimationConfig).totalDuration,
+        const Duration(milliseconds: 200),
+      );
+      expect(AnimationConfig.reverseOf(config), same(slow));
+    });
+
+    test('rejects timeline configs in either direction', () {
       const phase = PhaseAnimationConfig<BoxSpec, BoxStyler>(
         styles: [BoxStyler.create()],
         curveConfigs: [curve],
@@ -782,20 +807,60 @@ void main() {
         );
       }
     });
-
-    test('primary constructors accept reverse in const contexts', () {
-      const curveConfig = CurveAnimationConfig(
-        duration: Duration(milliseconds: 100),
-        curve: Curves.linear,
-        reverse: exit,
-      );
-      const springConfig = SpringAnimationConfig(
-        spring: SpringDescription(mass: 1, stiffness: 100, damping: 10),
-        reverse: curveConfig,
-      );
-
-      expect(curveConfig.reverse, exit);
-      expect(springConfig.reverse, curveConfig);
-    });
   });
+}
+
+/// An exhaustive switch over the four 2.4.0 subtypes. It must keep compiling.
+String _kind(AnimationConfig config) => switch (config) {
+  CurveAnimationConfig() => 'curve',
+  SpringAnimationConfig() => 'spring',
+  PhaseAnimationConfig() => 'phase',
+  KeyframeAnimationConfig() => 'keyframe',
+};
+
+/// Reports twice its nominal duration, as a downstream subclass might.
+class _SlowCurve extends CurveAnimationConfig {
+  const _SlowCurve()
+    : super(duration: const Duration(milliseconds: 100), curve: Curves.linear);
+
+  @override
+  Duration get totalDuration => const Duration(milliseconds: 200);
+}
+
+/// Implements every member `CurveAnimationConfig` had in 2.4.0 and nothing
+/// else. A new instance member on the class would stop this compiling.
+class _CurveAdapter implements CurveAnimationConfig {
+  const _CurveAdapter(this._inner);
+
+  final CurveAnimationConfig _inner;
+
+  @override
+  Duration get duration => _inner.duration;
+  @override
+  Curve get curve => _inner.curve;
+  @override
+  Duration get delay => _inner.delay;
+  @override
+  VoidCallback? get onEnd => _inner.onEnd;
+  @override
+  Duration get totalDuration => _inner.totalDuration;
+  @override
+  CurveAnimationConfig copyWith({
+    Duration? duration,
+    Curve? curve,
+    Duration? delay,
+    VoidCallback? onEnd,
+  }) => _inner.copyWith(
+    duration: duration,
+    curve: curve,
+    delay: delay,
+    onEnd: onEnd,
+  );
+  @override
+  List<Object?> get props => _inner.props;
+  @override
+  bool get stringify => _inner.stringify;
+  @override
+  // ignore: invalid_use_of_visible_for_testing_member
+  Map<String, String> getDiff(Equatable other) => _inner.getDiff(other);
 }

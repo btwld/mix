@@ -5,6 +5,7 @@ import '../core/internal/variant_activation.dart';
 import '../core/spec.dart';
 import '../core/style_spec.dart';
 import 'animation_config.dart';
+import 'internal/reversible_animation.dart';
 import 'style_animation_driver.dart';
 
 /// A widget that handles animation of styles using an AnimationDriver.
@@ -75,19 +76,19 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
     };
   }
 
+  // Drivers run the original forward or reverse instance, never the pair.
+  AnimationConfig? _forwardConfig(AnimationConfig? config) => switch (config) {
+    ReversibleAnimation(:final forward) => forward,
+    _ => config,
+  };
+
   AnimationConfig? _exitConfig(StyleSpec<S> previous, StyleSpec<S> target) {
-    final reverse = switch (previous.animation) {
-      CurveAnimationConfig(:final reverse) => reverse,
-      SpringAnimationConfig(:final reverse) => reverse,
-      _ => null,
-    };
+    final reverse = AnimationConfig.reverseOf(previous.animation);
     final activation = readVariantActivation(previous);
     final targetActivation = readVariantActivation(target);
-    // The constructor assert is off in release builds, so guard here too.
-    if (reverse is! CurveAnimationConfig && reverse is! SpringAnimationConfig) {
-      return null;
-    }
-    if (activation == null || activation.animationOwner == null) {
+    if (reverse == null ||
+        activation == null ||
+        activation.animationOwner == null) {
       return null;
     }
     if (targetActivation?.active.contains(activation.animationOwner) ?? false) {
@@ -103,7 +104,7 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
 
     if (!_hasInitializedAnimationDriver) {
       final spec = widget.spec;
-      _driverConfig = spec.animation;
+      _driverConfig = _forwardConfig(spec.animation);
       animationDriver = _createAnimationDriver(
         config: _driverConfig,
         initialSpec: spec,
@@ -128,7 +129,7 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
 
     final previous = oldWidget.spec;
     final target = widget.spec;
-    final forward = target.animation;
+    final forward = _forwardConfig(target.animation);
     final isTimeline =
         forward is PhaseAnimationConfig || forward is KeyframeAnimationConfig;
     bool matchesTarget(StyleSpec<S> source) =>
@@ -167,7 +168,7 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
     if (config == null &&
         animationDriver is ImplicitAnimationDriver<S, AnimationConfig>) {
       config =
-          previous.animation ??
+          _forwardConfig(previous.animation) ??
           (animationDriver.isAnimating ? _driverConfig : null);
     }
     _isExiting = exitConfig != null;

@@ -8,7 +8,9 @@
 - `AnimationConfig.reversible(forward, reverse: exit)` lets a variant set its
   own exit timing, for example
   `.animate(.reversible(.easeIn(120.ms), reverse: .easeOut(240.ms)))`. Both
-  configs must be curve or spring animations.
+  configs must be curve or spring animations. The result is itself a curve or
+  spring config, so it works with every styler's `animate`.
+  `AnimationConfig.reverseOf(config)` reads the exit timing back.
 
 ### Bug fixes
 

@@ -452,4 +452,43 @@ void main() {
     expect(readVariantActivation(built.copyWith()), isNotNull);
     expect(readVariantActivation(built.lerp(plain, 0.5)), isNull);
   });
+
+  testWidgets('a curve subclass keeps its own timing in both directions', (
+    tester,
+  ) async {
+    final controller = WidgetStatesController();
+    addTearDown(controller.dispose);
+    const slow = _SlowCurve();
+    final style = BoxStyler()
+        .color(Colors.blue)
+        .onHovered(
+          BoxStyler()
+              .color(Colors.red)
+              .animate(.reversible(slow, reverse: slow)),
+        );
+    await tester.pumpWidget(_box(style, controller));
+
+    controller.update(WidgetState.hovered, true);
+    await tester.pump();
+    await tester.pump(100.ms);
+    expect(_color(tester), Color.lerp(Colors.blue, Colors.red, 0.5));
+    await tester.pump(100.ms);
+    expect(_color(tester), Colors.red);
+
+    controller.update(WidgetState.hovered, false);
+    await tester.pump();
+    await tester.pump(100.ms);
+    expect(_color(tester), Color.lerp(Colors.red, Colors.blue, 0.5));
+    await tester.pump(100.ms);
+    expect(_color(tester), Colors.blue);
+  });
+}
+
+/// Runs for twice its nominal duration, as a downstream subclass might.
+class _SlowCurve extends CurveAnimationConfig {
+  const _SlowCurve()
+    : super(duration: const Duration(milliseconds: 100), curve: Curves.linear);
+
+  @override
+  Duration get totalDuration => const Duration(milliseconds: 200);
 }

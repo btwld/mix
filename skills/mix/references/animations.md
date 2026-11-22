@@ -40,7 +40,9 @@ forward config. Otherwise, on exit Mix uses the reverse config of the
 variant that deactivated.
 Both configs must be curves or springs; phase and keyframe targets still run
 their own timelines. `.reversible` returns a curve or spring config, so it
-works with any styler's `animate(config)`.
+works with any styler's `animate(config)`. Read the exit timing back with
+`AnimationConfig.reverseOf(config)`. Code that rebuilds a curve or spring
+config field by field drops the exit timing.
 
 ### AnimationConfig Options
 

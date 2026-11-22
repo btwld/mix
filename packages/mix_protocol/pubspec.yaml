@@ -11,7 +11,7 @@ dependencies:
   ack: ^1.6.1
   flutter:
     sdk: flutter
-  mix: ^2.2.0
+  mix: ^2.5.0
 
 dev_dependencies:
   analyzer: '>=13.0.0 <15.0.0'
