@@ -3,28 +3,36 @@ import 'package:markdown/markdown.dart' as md;
 import 'markdown_alert_element.dart';
 import 'markdown_tags.dart';
 
+final _htmlComment = RegExp(r'<!--.*?-->', dotAll: true);
+
 /// The tags in [nodes] that the renderer cannot draw; empty when it can
 /// draw the whole document.
 ///
 /// Block-level text, which the parser emits for raw HTML, reports `text`.
+/// Whitespace and HTML comments in block-level text are ignored.
 /// A paragraph holding only an image reports `standalone-image`, because
 /// rendering it as alt text would silently drop the image.
 Set<String> unsupportedNodes(List<md.Node> nodes) {
   final unsupported = <String>{};
 
-  void visitInline(md.Node node) {
+  void visitInline(md.Node node, {bool inCode = false}) {
     if (node is! md.Element) return;
-    if (MarkdownInlineTag.from(node.tag) == null) {
+    final tag = MarkdownInlineTag.from(node.tag);
+    if (tag == null && !(inCode && node.tag == 'span')) {
       unsupported.add(node.tag);
 
       return;
     }
-    node.children?.forEach(visitInline);
+    for (final child in node.children ?? const <md.Node>[]) {
+      visitInline(child, inCode: tag == MarkdownInlineTag.code);
+    }
   }
 
   void visitBlock(md.Node node) {
     if (node is md.Text) {
-      if (node.text.trim().isNotEmpty) unsupported.add('text');
+      if (node.text.replaceAll(_htmlComment, '').trim().isNotEmpty) {
+        unsupported.add('text');
+      }
 
       return;
     }

@@ -4,21 +4,27 @@ import 'package:markdown/markdown.dart' as md;
 import '../parsing/markdown_tags.dart';
 import '../specs/markdown_spec.dart';
 
-/// Builds the spans of one block from its inline [nodes].
+/// Builds the text spans of one block from its inline [nodes].
 ///
-/// A [transform] leaves inline code unchanged. It applies to contiguous prose
-/// when only letter case changes, and to individual runs otherwise.
+/// Code spans are marked so [transformInlineSpans] can preserve their text.
+/// Nested decorations are combined; an inner [TextDecoration.none] does not
+/// clear an inherited decoration.
 List<TextSpan> buildInlineSpans(
   List<md.Node> nodes, {
   required MarkdownSpec spec,
-  String Function(String)? transform,
 }) {
-  final runs = <_Run>[];
+  final spans = <TextSpan>[];
 
   void collect(md.Node node, TextStyle style, {required bool inCode}) {
     if (node is md.Text) {
       final text = inCode ? node.text : node.text.replaceAll('\n', ' ');
-      if (text.isNotEmpty) runs.add(_Run(text, style, inCode: inCode));
+      if (text.isNotEmpty) {
+        spans.add(
+          inCode
+              ? _CodeSpan(text: text, style: style)
+              : TextSpan(text: text, style: style),
+        );
+      }
 
       return;
     }
@@ -39,10 +45,10 @@ List<TextSpan> buildInlineSpans(
     }
     switch (tag) {
       case MarkdownInlineTag.lineBreak:
-        runs.add(_Run('\n', merged));
+        spans.add(TextSpan(text: '\n', style: merged));
       case MarkdownInlineTag.image:
         final alt = node.attributes['alt'] ?? '';
-        if (alt.isNotEmpty) runs.add(_Run(alt, merged));
+        if (alt.isNotEmpty) spans.add(TextSpan(text: alt, style: merged));
       case MarkdownInlineTag.strong:
       case MarkdownInlineTag.boldAlias:
       case MarkdownInlineTag.emphasis:
@@ -62,62 +68,114 @@ List<TextSpan> buildInlineSpans(
   for (final node in nodes) {
     collect(node, const TextStyle(), inCode: false);
   }
-  if (transform != null) return _transformRuns(runs, transform);
-
-  return [for (final run in runs) TextSpan(text: run.text, style: run.style)];
-}
-
-List<TextSpan> _transformRuns(
-  List<_Run> runs,
-  String Function(String) transform,
-) {
-  final spans = <TextSpan>[];
-  final prose = <_Run>[];
-  for (final run in runs) {
-    if (!run.inCode) {
-      prose.add(run);
-      continue;
-    }
-
-    if (prose.isNotEmpty) {
-      spans.addAll(_transformProse(prose, transform));
-      prose.clear();
-    }
-    spans.add(TextSpan(text: run.text, style: run.style));
-  }
-  if (prose.isNotEmpty) spans.addAll(_transformProse(prose, transform));
 
   return spans;
 }
 
-List<TextSpan> _transformProse(
-  List<_Run> runs,
+/// Applies [transform] to the joined block, using placeholders for inline
+/// code so it contributes context without having its text transformed.
+///
+/// Keeps inline styles when case or separator changes preserve span boundaries,
+/// or when per-span transforms match the block result ignoring whitespace. The
+/// block result supplies the actual text and spacing in either case. If neither
+/// mapping is safe, returns a single unstyled span with the code restored.
+/// If the transform removes or duplicates placeholders, uses the original text.
+List<TextSpan> transformInlineSpans(
+  List<TextSpan> spans,
   String Function(String) transform,
 ) {
-  List<TextSpan> transformIndividually() => [
-    for (final run in runs)
-      TextSpan(text: _transformRun(run.text, transform), style: run.style),
-  ];
-
-  final source = runs.map((run) => run.text).join().characters;
-  final transformed = transform(source.string);
-  final target = transformed.characters;
-  if (source.length != target.length) {
-    return transformIndividually();
+  final codeSpans = spans.whereType<_CodeSpan>().toList();
+  final original = spans.map((span) => span.text).join();
+  var placeholder = '\uFFFC';
+  while (codeSpans.isNotEmpty && original.contains(placeholder)) {
+    placeholder = '\uE000$placeholder\uE001';
   }
+  final spanTexts = [
+    for (final span in spans) span is _CodeSpan ? placeholder : span.text!,
+  ];
+  final source = spanTexts.join();
+  final transformed = transform(source);
+  if (transformed == source) return spans;
+
+  final mapped =
+      _mapCaseChanges(spanTexts, source, transformed) ??
+      _mapRuns(
+        spanTexts,
+        transformed,
+        (text) => codeSpans.isNotEmpty && text == placeholder
+            ? text
+            : transform(text),
+      );
+  if (mapped != null &&
+      (codeSpans.isEmpty ||
+          spans.indexed.every(
+            (entry) => entry.$2 is _CodeSpan
+                ? mapped[entry.$1].trim() == placeholder
+                : !mapped[entry.$1].contains(placeholder),
+          ))) {
+    return [
+      for (final (index, span) in spans.indexed)
+        if (mapped[index].isNotEmpty)
+          TextSpan(
+            text: span is _CodeSpan
+                ? mapped[index].replaceFirst(placeholder, span.text!)
+                : mapped[index],
+            style: span.style,
+          ),
+    ];
+  }
+
+  if (codeSpans.isEmpty) return [TextSpan(text: transformed)];
+
+  final parts = transformed.split(placeholder);
+  if (parts.length != codeSpans.length + 1) {
+    return [TextSpan(text: original)];
+  }
+  final restored = StringBuffer(parts.first);
+  for (final (index, span) in codeSpans.indexed) {
+    restored.write(span.text);
+    restored.write(parts[index + 1]);
+  }
+
+  return [TextSpan(text: restored.toString())];
+}
+
+final _alphanumeric = RegExp(r'[\p{L}\p{N}]', unicode: true);
+final _nonWhitespace = RegExp(r'\S', unicode: true);
+
+bool _matchesCaseOrSeparator(String source, String target) =>
+    source == target ||
+    source.toLowerCase() == target.toLowerCase() ||
+    source.toUpperCase() == target.toUpperCase() ||
+    (!_alphanumeric.hasMatch(source) && !_alphanumeric.hasMatch(target));
+
+List<String>? _mapCaseChanges(
+  List<String> spanTexts,
+  String original,
+  String transformed,
+) {
+  final source = original.characters;
+  final target = transformed.characters;
+  if (source.length != target.length) return null;
 
   final sourceClusters = source.iterator;
   final targetClusters = target.iterator;
-  final spans = <TextSpan>[];
+  final mapped = <String>[];
   var sourceEnd = 0;
   var targetStart = 0;
   var sourceClusterEnd = 0;
   var targetClusterEnd = 0;
-  for (final run in runs) {
-    sourceEnd += run.text.length;
+  for (final text in spanTexts) {
+    sourceEnd += text.length;
     while (sourceClusterEnd < sourceEnd) {
       sourceClusters.moveNext();
       targetClusters.moveNext();
+      if (!_matchesCaseOrSeparator(
+        sourceClusters.current,
+        targetClusters.current,
+      )) {
+        return null;
+      }
       sourceClusterEnd += sourceClusters.current.length;
       targetClusterEnd += targetClusters.current.length;
     }
@@ -127,7 +185,7 @@ List<TextSpan> _transformProse(
       final sourceCluster = sourceClusters.current;
       final targetCluster = targetClusters.current;
       if (sourceCluster.runes.length != targetCluster.runes.length) {
-        return transformIndividually();
+        return null;
       }
       final offset = sourceEnd - (sourceClusterEnd - sourceCluster.length);
       final leadingRunes = sourceCluster.substring(0, offset).runes.length;
@@ -135,32 +193,48 @@ List<TextSpan> _transformProse(
         targetCluster.runes.skip(leadingRunes),
       ).length;
     }
-    final text = transformed.substring(targetStart, targetEnd);
-    if (text != run.text &&
-        text.toLowerCase() != run.text.toLowerCase() &&
-        text.toUpperCase() != run.text.toUpperCase()) {
-      return transformIndividually();
-    }
-    spans.add(TextSpan(text: text, style: run.style));
+    mapped.add(transformed.substring(targetStart, targetEnd));
     targetStart = targetEnd;
   }
 
-  return spans;
+  return mapped;
 }
 
-String _transformRun(String text, String Function(String) transform) {
-  final transformed = transform(text);
-  final trimmedLeft = text.trimLeft();
-  if (trimmedLeft.isEmpty) return transformed.isEmpty ? text : transformed;
+List<String>? _mapRuns(
+  List<String> spanTexts,
+  String transformed,
+  String Function(String) transform,
+) {
+  final target = _nonWhitespace.allMatches(transformed).iterator;
+  var hasTarget = target.moveNext();
+  final mapped = <String>[];
+  var start = 0;
+  for (final text in spanTexts) {
+    final candidate = transform(text);
+    var end = start;
+    for (final match in _nonWhitespace.allMatches(candidate)) {
+      if (!hasTarget || match.group(0) != target.current.group(0)) return null;
 
-  final leading = transformed == transformed.trimLeft()
-      ? text.substring(0, text.length - trimmedLeft.length)
-      : '';
-  final trailing = transformed == transformed.trimRight()
-      ? text.substring(text.trimRight().length)
-      : '';
+      end = target.current.end;
+      hasTarget = target.moveNext();
+    }
+    if (end != start) {
+      if (!hasTarget) {
+        end = transformed.length;
+      } else if (text != text.trimRight() ||
+          candidate != candidate.trimRight()) {
+        end = target.current.start;
+      }
+    }
+    mapped.add(transformed.substring(start, end));
+    start = end;
+  }
 
-  return '$leading$transformed$trailing';
+  return start == transformed.length ? mapped : null;
+}
+
+class _CodeSpan extends TextSpan {
+  const _CodeSpan({required String super.text, required super.style});
 }
 
 TextStyle _inlineStyle(MarkdownSpec spec, MarkdownInlineTag? tag) =>
@@ -185,11 +259,3 @@ TextStyle _inlineStyle(MarkdownSpec spec, MarkdownInlineTag? tag) =>
       MarkdownInlineTag.image ||
       null => const TextStyle(),
     };
-
-class _Run {
-  final String text;
-  final TextStyle style;
-  final bool inCode;
-
-  const _Run(this.text, this.style, {this.inCode = false});
-}

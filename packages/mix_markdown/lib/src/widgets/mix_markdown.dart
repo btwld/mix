@@ -9,6 +9,9 @@ import 'markdown_document.dart';
 
 /// Wraps a rendered block, for example to add a [Hero] around a heading.
 ///
+/// Blocks with no inline spans are skipped. Alerts still render their header
+/// and can be wrapped even when their body is empty.
+///
 /// [element] is the parsed node of the block. Do not mutate or retain it.
 typedef MarkdownBlockWrapper =
     Widget Function(BuildContext context, md.Element element, Widget child);

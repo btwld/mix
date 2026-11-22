@@ -15,10 +15,15 @@ void main() {
     ),
   );
 
-  List<TextSpan> spans(String source, {String Function(String)? transform}) {
+  List<TextSpan> spans(
+    String source, {
+    String Function(String)? transform,
+    MarkdownSpec markdownSpec = spec,
+  }) {
     final nodes = const MarkdownSyntax().createDocument().parseInline(source);
+    final result = buildInlineSpans(nodes, spec: markdownSpec);
 
-    return buildInlineSpans(nodes, spec: spec, transform: transform);
+    return transform == null ? result : transformInlineSpans(result, transform);
   }
 
   String plain(List<TextSpan> result) =>
@@ -55,6 +60,24 @@ void main() {
     );
   });
 
+  test('an inner decoration of none does not clear the link underline', () {
+    final run = spans(
+      '[**docs**](u)',
+      markdownSpec: const MarkdownSpec(
+        strong: StyleSpec(
+          spec: TextSpec(style: TextStyle(decoration: TextDecoration.none)),
+        ),
+        link: StyleSpec(
+          spec: TextSpec(
+            style: TextStyle(decoration: TextDecoration.underline),
+          ),
+        ),
+      ),
+    ).single;
+
+    expect(run.style?.decoration, TextDecoration.underline);
+  });
+
   test('inline image contributes alt text only', () {
     final result = spans('before ![alt](asset.png) after');
 
@@ -83,13 +106,13 @@ void main() {
     expect(result.first.style?.fontWeight, FontWeight.bold);
   });
 
-  test('titlecase keeps the whole styled run and its surrounding spaces', () {
+  test('title case keeps the styled run and uses the block spacing', () {
     final result = spans(
       'Set **userId**  and',
       transform: const TitleCaseStringDirective().apply,
     );
 
-    expect(result.map((run) => run.text), ['Set ', 'User Id', '  And']);
+    expect(result.map((run) => run.text), ['Set ', 'User Id', ' And']);
     expect(result[1].style?.fontWeight, FontWeight.bold);
     expect(result.last.style?.fontWeight, isNull);
   });
@@ -113,6 +136,86 @@ void main() {
     expect(plain(result), 'CALL fetchUser() NEXT');
     expect(result[1].style?.fontFamily, 'monospace');
     expect(result[1].style?.fontWeight, FontWeight.bold);
+  });
+
+  test('literal object replacement characters are not treated as code', () {
+    final result = spans(
+      'say \uFFFC `code` now',
+      transform: const UppercaseStringDirective().apply,
+    );
+
+    expect(plain(result), 'SAY \uFFFC code NOW');
+    expect(result[1].style?.fontFamily, 'monospace');
+  });
+
+  test('sentence case does not restart after inline code', () {
+    final result = spans(
+      'hello `code` world',
+      transform: const SentenceCaseStringDirective().apply,
+    );
+
+    expect(result.map((run) => run.text), ['Hello ', 'code', ' world']);
+    expect(result[1].style?.fontFamily, 'monospace');
+  });
+
+  test('capitalize does not restart after adjacent inline code', () {
+    final result = spans(
+      'a`b`c',
+      transform: const CapitalizeStringDirective().apply,
+    );
+
+    expect(result.map((run) => run.text), ['A', 'b', 'c']);
+    expect(result[1].style?.fontFamily, 'monospace');
+  });
+
+  test('sentence case keeps bold after replacing a hyphen with a space', () {
+    final result = spans(
+      'a well-known **fact**',
+      transform: const SentenceCaseStringDirective().apply,
+    );
+
+    expect(plain(result), 'A well known fact');
+    expect(result.last.text, 'fact');
+    expect(result.last.style?.fontWeight, FontWeight.bold);
+  });
+
+  test('sentence case keeps whole-block text across a camel-case split', () {
+    final result = spans(
+      'Set **userId** and',
+      transform: const SentenceCaseStringDirective().apply,
+    );
+
+    expect(result.single.text, 'Set user Id and');
+    expect(result.single.style, isNull);
+  });
+
+  test('title case does not capitalize an inline fragment of a word', () {
+    final result = spans(
+      'Set **userId** and un**believ**able',
+      transform: const TitleCaseStringDirective().apply,
+    );
+
+    expect(result.single.text, 'Set User Id And Unbelievable');
+    expect(result.single.style, isNull);
+  });
+
+  test('the unstyled fallback keeps inline code verbatim', () {
+    final result = spans(
+      'Set **userId** to `get_ID()`',
+      transform: const SentenceCaseStringDirective().apply,
+    );
+
+    expect(result.single.text, 'Set user Id to get_ID()');
+    expect(result.single.style, isNull);
+  });
+
+  test('title case does not double spaces around a removed separator', () {
+    final result = spans(
+      '[a](u) - **b**',
+      transform: const TitleCaseStringDirective().apply,
+    );
+
+    expect(plain(result), 'A B');
   });
 
   test('a combining mark across runs stays outside the bold span', () {

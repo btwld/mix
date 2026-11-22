@@ -4,6 +4,17 @@ import 'package:mix/mix.dart';
 import 'package:mix_markdown/mix_markdown.dart';
 
 void main() {
+  test('default alert icons match their Material counterparts', () {
+    expect(MarkdownAlertType.note.defaultIcon, Icons.info_outline);
+    expect(MarkdownAlertType.tip.defaultIcon, Icons.lightbulb_outline);
+    expect(
+      MarkdownAlertType.important.defaultIcon,
+      Icons.label_important_outline,
+    );
+    expect(MarkdownAlertType.warning.defaultIcon, Icons.warning_amber_outlined);
+    expect(MarkdownAlertType.caution.defaultIcon, Icons.dangerous_outlined);
+  });
+
   testWidgets('factory and instance shorthand resolve the same slots', (
     tester,
   ) async {

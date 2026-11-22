@@ -1,13 +1,20 @@
 name: Hosted dependency release checks
 
 on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/release-dependencies.yml'
+      - '.github/workflows/publish.yml'
+      - '.fvmrc'
+      - 'packages/mix_markdown/**'
   workflow_dispatch:
     inputs:
       package:
         description: Dependent package to validate before tagging
         required: true
         type: choice
-        options: [all, protocol, winds]
+        options: [all, protocol, winds, markdown]
         default: all
   workflow_call:
     inputs:
@@ -86,6 +93,45 @@ jobs:
         run: flutter pub upgrade mix mix_protocol
       - name: Show latest selected dependencies
         run: dart pub deps --json | jq -r '.packages[] | select(.name == "mix" or .name == "mix_protocol") | "selected \(.name) \(.version) from \(.source)"'
+      - name: Analyze against latest dependencies
+        run: flutter analyze --no-fatal-infos
+      - name: Test against latest dependencies
+        run: flutter test
+      - name: Restore files modified by Flutter tooling
+        run: git restore -- .
+      - name: Validate publish archive
+        run: dart pub publish --dry-run
+
+  markdown:
+    if: ${{ github.event_name == 'pull_request' || inputs.package == 'all' || inputs.package == 'markdown' }}
+    name: Markdown / Hosted release check
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: packages/mix_markdown
+    steps:
+      - uses: actions/checkout@v4
+      - uses: kuhnroyal/flutter-fvm-config-action@v2
+        id: fvm-config-action
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ steps.fvm-config-action.outputs.FLUTTER_VERSION }}
+          channel: ${{ steps.fvm-config-action.outputs.FLUTTER_CHANNEL }}
+      - name: Resolve hosted dependencies
+        run: flutter pub get
+      - name: Resolve minimum allowed Mix and Mix Annotations
+        run: flutter pub downgrade mix mix_annotations
+      - name: Show minimum selected dependencies
+        run: dart pub deps --json | jq -r '.packages[] | select(.name == "mix" or .name == "mix_annotations") | "selected \(.name) \(.version) from \(.source)"'
+      - name: Analyze against minimum dependencies
+        run: flutter analyze --no-fatal-infos
+      - name: Test against minimum dependencies
+        run: flutter test
+      - name: Resolve latest allowed Mix and Mix Annotations
+        run: flutter pub upgrade mix mix_annotations
+      - name: Show latest selected dependencies
+        run: dart pub deps --json | jq -r '.packages[] | select(.name == "mix" or .name == "mix_annotations") | "selected \(.name) \(.version) from \(.source)"'
       - name: Analyze against latest dependencies
         run: flutter analyze --no-fatal-infos
       - name: Test against latest dependencies
