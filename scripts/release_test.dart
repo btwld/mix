@@ -53,6 +53,31 @@ void main() {
   _expect('empty matching section', changelogSection(changelog, '2.3.0'), '');
   _expect('no matching section', changelogSection(changelog, '2.5.1'), null);
 
+  const fencedChangelog = '''
+```markdown
+## 9.9.9
+```
+## 2.5.0
+~~~~markdown
+## Example
+~~~
+## Still fenced
+~~~~
+More notes.
+## 2.4.0
+Older notes.
+''';
+  _expect(
+    'fenced version is not a heading',
+    changelogSection(fencedChangelog, '9.9.9'),
+    null,
+  );
+  _expect(
+    'fenced headings do not truncate notes',
+    changelogSection(fencedChangelog, '2.5.0'),
+    '~~~~markdown\n## Example\n~~~\n## Still fenced\n~~~~\nMore notes.',
+  );
+
   const link = '[GitHub Release](https://example.com/release)';
   _expect('Markdown link only', isLinkOnly('\n $link\n'), true);
   _expect('bare link only', isLinkOnly('https://example.com/release'), true);

@@ -20,6 +20,7 @@ final _pubspecVersion = RegExp(r'^version:[ \t]+([^#\r\n]+)', multiLine: true);
 final _tag = RegExp(r'^([a-z_]+)-v(.+)$');
 final _heading = RegExp(r'^ {0,3}#{1,2}(?:[ \t]+(.*?)|$)[ \t]*$');
 final _closingHashes = RegExp(r'[ \t]+#+$');
+final _fence = RegExp(r'^ {0,3}(`{3,}|~{3,})(.*)$');
 final _onlyLink = RegExp(
   r'^(?:[-+*][ \t]+)?(?:\[[^\]\r\n]+\]\((?:[^()\s]|\([^()\s]*\))+\)'
   r'|<https?://[^>\s]+>|https?://\S+)$',
@@ -38,8 +39,22 @@ String? versionFromPubspec(String pubspec) {
 
 String? changelogSection(String changelog, String version) {
   List<String>? section;
+  String? openFence;
   for (final line in const LineSplitter().convert(changelog)) {
-    final heading = _heading.firstMatch(line);
+    final fence = _fence.firstMatch(line);
+    if (fence != null) {
+      final marker = fence.group(1)!;
+      final suffix = fence.group(2)!;
+      if (openFence == null) {
+        if (!marker.startsWith('`') || !suffix.contains('`'))
+          openFence = marker;
+      } else if (marker.startsWith(openFence) && suffix.trim().isEmpty) {
+        openFence = null;
+      }
+      section?.add(line);
+      continue;
+    }
+    final heading = openFence == null ? _heading.firstMatch(line) : null;
     if (heading != null) {
       if (section != null) break;
       final title = heading.group(1)?.replaceFirst(_closingHashes, '');
