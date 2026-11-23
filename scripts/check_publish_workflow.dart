@@ -11,6 +11,18 @@ void main() {
   );
   const prefix = 'publish_';
   final jobs = workflow['jobs'] as YamlMap;
+  final triggers = workflow['on'] as YamlMap;
+  final push = triggers['push'];
+  if (triggers.length != 1 ||
+      push is! YamlMap ||
+      push.length != 1 ||
+      push['tags'] is! YamlList) {
+    stderr.writeln(
+      'The publish workflow must only run on pushes of release tags.',
+    );
+    exitCode = 1;
+    return;
+  }
   final publishJobs = jobs.keys
       .whereType<String>()
       .where((name) => name.startsWith(prefix))
@@ -27,8 +39,16 @@ void main() {
     exitCode = 1;
     return;
   }
+  for (final package in publishJobs) {
+    final needs = jobs['$prefix$package']['needs'];
+    if (needs != 'validate' &&
+        (needs is! YamlList || !needs.contains('validate'))) {
+      stderr.writeln('$prefix$package must need the validate job.');
+      exitCode = 1;
+      return;
+    }
+  }
   if (workflow case {
-    'on': {'workflow_dispatch': null},
     'jobs': {
       'publish_mix_markdown': {
         'uses': 'btwld/dart-actions/.github/workflows/publish.yml@main',
@@ -43,7 +63,7 @@ void main() {
   }
 
   stderr.writeln(
-    'publish_mix_markdown must support tag-only dispatch, use btwld/dart-actions with OIDC, and skip the first manual-release tag.',
+    'publish_mix_markdown must use btwld/dart-actions with OIDC and skip the first manual-release tag.',
   );
   exitCode = 1;
 }

@@ -24,6 +24,9 @@ jobs:
   version:
     timeout-minutes: 20
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     
     steps:
     - uses: actions/checkout@v4
@@ -51,7 +54,7 @@ jobs:
         
     - name: Setup Melos
       run: |
-        dart pub global activate melos
+        dart pub global activate melos 6.3.3
         melos bs
 
     - name: Configure Git User
@@ -89,9 +92,20 @@ jobs:
           packages_with_versions="$packages_with_versions -V mix_winds:${{ github.event.inputs.mix_winds_version }}"
         fi
 
-        melos version $ignored_packages --yes --no-git-tag-version $packages_with_versions
+        printf '' | melos version $ignored_packages --yes --no-git-commit-version --no-git-tag-version $packages_with_versions
 
-        git push --follow-tags
-        gh pr create --title "chore: version packages" --body "This PR was opened by the changelog GitHub Actions workflow" --reviewer leoafarias
+        drafts=$(dart --disable-dart-dev scripts/release.dart prepare-changelog --changed-since HEAD)
+        if [[ -z "$drafts" ]]; then
+          echo 'No publishable versions changed.'
+          exit 0
+        fi
+        pr_body="$RUNNER_TEMP/version-pr.md"
+        printf '## Draft GitHub Release notes\n\n%s\n' "$drafts" > "$pr_body"
+        cat "$pr_body" >> "$GITHUB_STEP_SUMMARY"
+
+        git add --update -- ':(glob)**/pubspec.yaml' ':(glob)**/CHANGELOG.md'
+        git commit -m 'chore: version packages'
+        git push
+        gh pr create --title "chore: version packages" --body-file "$pr_body" --reviewer leoafarias
       env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

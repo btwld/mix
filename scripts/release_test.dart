@@ -29,142 +29,88 @@ String _commit(String message) {
   return _git(['rev-parse', 'HEAD']);
 }
 
-void _testPlanning() {
+void _expectStateError(void Function() run, String message) {
+  try {
+    run();
+  } on StateError catch (error) {
+    _expect('clear error: $message', error.message.contains(message), true);
+    return;
+  }
+  throw StateError('Expected error: $message');
+}
+
+void _testTagAndBump() {
   final originalDirectory = Directory.current;
   final fixture = Directory.systemTemp.createTempSync('release-test-');
   try {
     Directory.current = fixture;
-    _git(['init', '--bare', 'remote.git']);
     _git(['init', '--initial-branch=main', 'work']);
     Directory.current = Directory('work');
     _git(['config', 'user.name', 'Release test']);
     _git(['config', 'user.email', 'release-test@example.com']);
     _git(['config', 'commit.gpgsign', 'false']);
-    _git(['remote', 'add', 'origin', '../remote.git']);
+    const older = '## 1.0.0\n\nInitial release.\n';
     for (final package in publishablePackages) {
-      _writePackage(package, '1.0.0', '## 1.0.0\nInitial release.\n');
+      _writePackage(package, '1.0.0', older);
     }
-    final before = _commit('Create packages');
-    _git(['switch', '-c', 'bump']);
-    _writePackage('mix', '2.0.0', '## 2.0.0\n');
-    _writePackage('mix_annotations', '2.0.0', '## 1.0.0\n');
-    _writePackage('mix_generator', '2.0.0', '## 2.0.0\n');
-    _writePackage('mix_winds', '2.0.0', '## 2.0.0\n');
-    final branchBump = _commit('Bump packages');
-    _git(['switch', 'main']);
-    _git(['merge', '--no-ff', 'bump', '-m', 'Merge bumps']);
-    final bump = _git(['rev-parse', 'HEAD']);
-    _expect('fixture uses the main merge commit', bump == branchBump, false);
-
-    File(
-      'packages/mix/pubspec.yaml',
-    ).writeAsStringSync('description: Unreleased changes.\nversion: 2.0.0\n');
-    File(
-      'packages/mix_annotations/CHANGELOG.md',
-    ).writeAsStringSync('## 2.0.0\nHeading added after the bump.\n');
-    final head = _commit('Later changes without a version bump');
-    _git(['tag', 'mix_generator-v2.0.0', head]);
-    _git(['tag', '-a', 'mix_winds-v2.0.0', bump, '-m', 'Matching tag']);
-    _git(['push', '--tags', 'origin', 'main']);
-    _git(['tag', '-d', 'mix_generator-v2.0.0', 'mix_winds-v2.0.0']);
-
-    final selected = planReleases(packages: dispatchPackages(' mix ')).single;
-    _expect(
-      'dispatch scopes to the requested package',
-      selected.tag,
-      'mix-v2.0.0',
+    _commit('Create packages');
+    _writePackage('mix', '2.0.0', '## 2.0.0\n\nNew Mix notes.\n\n$older');
+    _writePackage(
+      'mix_winds',
+      '2.0.0-beta.1',
+      '## 2.0.0-beta.1\n\nNew Winds notes.\n\n$older',
     );
-    _expect(
-      'an empty matching heading is enough',
-      selected.status,
-      ReleaseStatus.due,
+    File('packages/mix_lint/pubspec.yaml').writeAsStringSync(
+      'description: Dependency-only edits.\nversion: 1.0.0\n',
     );
+    final bumps = changedReleases('HEAD').toList();
     _expect(
-      'dispatch targets the version bump, not HEAD',
-      selected.detail,
-      bump,
+      'only version bumps are selected',
+      bumps.map((release) => release.tag).join(','),
+      'mix-v2.0.0,mix_winds-v2.0.0-beta.1',
     );
-    _expect(
-      'dispatch accepts multiple packages',
-      dispatchPackages('mix,mix_lint').length,
-      2,
-    );
-    for (final input in ['', 'mix,unknown']) {
-      try {
-        dispatchPackages(input);
-        throw StateError('Expected invalid dispatch package input: $input');
-      } on FormatException {
-        continue;
-      }
+    for (final release in bumps) {
+      final notes = prepareChangelog(release);
+      _expect(
+        'draft for ${release.tag}',
+        notes,
+        release.package == 'mix' ? 'New Mix notes.' : 'New Winds notes.',
+      );
+      _expect(
+        'link and historical entry for ${release.tag}',
+        File(release.changelogPath).readAsStringSync(),
+        '## ${release.version}\n\n${release.changelogLink}\n\n$older',
+      );
     }
-
-    final push = {
-      for (final plan in planReleases(before: resolvePushBase(before)))
-        plan.tag: plan,
-    };
+    final bump = _commit('Bump packages with link-only changelogs');
     _expect(
-      'push targets the main version bump',
-      push['mix-v2.0.0']?.detail,
-      bump,
-    );
-    _expect(
-      'unchanged version is skipped on push',
-      push['mix_lint-v1.0.0']?.status,
-      ReleaseStatus.skipped,
-    );
-    _expect(
-      'heading added too late blocks release',
-      push['mix_annotations-v2.0.0']?.status,
-      ReleaseStatus.blocked,
-    );
-    _expect(
-      'missing heading reports the bump',
-      push['mix_annotations-v2.0.0']?.detail,
-      'no ## 2.0.0 CHANGELOG heading at version bump $bump',
-    );
-    _expect(
-      'remote tag at another commit blocks release',
-      push['mix_generator-v2.0.0']?.status,
-      ReleaseStatus.blocked,
-    );
-    _expect(
-      'tag conflict reports both commits',
-      push['mix_generator-v2.0.0']?.detail,
-      'tag points to $head, expected version bump $bump',
-    );
-    _expect(
-      'matching remote annotated tag is skipped',
-      push['mix_winds-v2.0.0']?.status,
-      ReleaseStatus.skipped,
-    );
-    _expect(
-      'matching annotated tag is peeled',
-      push['mix_winds-v2.0.0']?.detail,
-      'tag already exists at $bump',
-    );
-    _expect(
-      'an unchanged push does not block existing versions',
-      planReleases(
-        before: bump,
-      ).every((plan) => plan.status == ReleaseStatus.skipped),
+      'a committed bump does not draft again',
+      changedReleases('HEAD').isEmpty,
       true,
     );
+    _writePackage('mix', '2.1.0', '## 2.1.0\nUnreleased notes.\n');
+    final tip = _commit('Advance main');
+    _git(['update-ref', 'refs/remotes/origin/main', tip]);
+    _git(['checkout', '--detach', bump]);
+    validateTag('mix-v2.0.0');
+    validateTag('mix_winds-v2.0.0-beta.1');
+    _expectStateError(
+      () => validateTag('mix-v2.1.0'),
+      'found 2.0.0 at the tagged commit',
+    );
 
-    final missingBefore = resolvePushBase('f' * 40);
-    _expect('unavailable push base falls back', missingBefore, null);
-    final fallback = planReleases(before: missingBefore).toList();
-    _expect(
-      'fallback checks every package',
-      fallback.length,
-      publishablePackages.length,
+    _git(['switch', '-c', 'unmerged']);
+    _writePackage('mix', '2.2.0', '## 2.2.0\nUnmerged notes.\n');
+    final unmerged = _commit('Unmerged bump');
+    _expectStateError(() => validateTag('mix-v2.2.0'), 'not on origin/main');
+    _git(['update-ref', 'refs/remotes/origin/main', unmerged]);
+    _writePackage('mix', '2.3.0', '```markdown\n## 2.3.0\n```\n');
+    final missingHeading = _commit('Bump without a real heading');
+    _git(['update-ref', 'refs/remotes/origin/main', missingHeading]);
+    _expectStateError(
+      () => validateTag('mix-v2.3.0'),
+      'CHANGELOG.md is missing ## 2.3.0',
     );
-    final lint = fallback.singleWhere((plan) => plan.tag == 'mix_lint-v1.0.0');
-    _expect(
-      'fallback finds a missing tag for an unchanged package',
-      lint.status,
-      ReleaseStatus.due,
-    );
-    _expect('fallback still tags the version bump', lint.detail, before);
   } finally {
     Directory.current = originalDirectory;
     fixture.deleteSync(recursive: true);
@@ -243,25 +189,36 @@ Older notes.
     '~~~~markdown\n## Example\n~~~\n## Still fenced\n~~~~\nMore notes.',
   );
 
-  const link = '[GitHub Release](https://example.com/release)';
-  _expect('Markdown link only', isLinkOnly('\n $link\n'), true);
-  _expect('bare link only', isLinkOnly('https://example.com/release'), true);
+  const release = PackageRelease('mix', '2.5.0');
+  const link =
+      'See the [release notes](https://github.com/btwld/mix/releases/tag/mix-v2.5.0).';
+  final rewritten = rewriteChangelog(release, changelog);
   _expect(
-    'one list link only',
-    isLinkOnly('- <https://example.com/release>'),
-    true,
+    'draft keeps original body',
+    rewritten.notes,
+    '### Fixes\r\n\r\n- Fix a bug.',
   );
-  _expect('link with additional notes', isLinkOnly('$link\n- A fix'), false);
-  _expect('prose between links', isLinkOnly('$link and $link'), false);
   _expect(
-    'override wins',
-    selectNotes(' Custom notes ', section),
-    'Custom notes',
+    'only the selected changelog section changes',
+    rewritten.changelog,
+    '# Changelog\r\n## 2.5.0-beta.1\r\nBeta notes\r\n'
+        '## 2.5.0 ##\r\n\r\n$link\r\n\r\n'
+        '## 2.4.0\r\nOlder notes.\r\n## 2.3.0\r\n',
   );
-  _expect('changelog is next', selectNotes(null, section), section);
-  _expect('link-only uses generated notes', selectNotes(null, link), null);
-  _expect('empty uses generated notes', selectNotes(null, ' \n'), null);
-  _expect('missing uses generated notes', selectNotes(null, null), null);
+  _expect(
+    'no draft is repeated on rerun',
+    rewriteChangelog(release, rewritten.changelog),
+    (changelog: rewritten.changelog, notes: ''),
+  );
+  _expect(
+    'first-line Markdown indentation is preserved',
+    rewriteChangelog(release, '## 2.5.0\n\n    Indented code.\n').notes,
+    '    Indented code.',
+  );
+  _expectStateError(
+    () => rewriteChangelog(release, '## 2.4.0\n'),
+    'No ## 2.5.0 heading',
+  );
 
   _expect(
     'previous tag is an earlier same-package version, sorted by SemVer',
@@ -295,6 +252,6 @@ Older notes.
     ]),
     null,
   );
-  _testPlanning();
+  _testTagAndBump();
   print('Release script tests passed.');
 }

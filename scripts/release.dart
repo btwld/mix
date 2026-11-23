@@ -22,10 +22,9 @@ final _tag = RegExp(r'^([a-z_]+)-v(.+)$');
 final _heading = RegExp(r'^ {0,3}#{1,2}(?:[ \t]+(.*?)|$)[ \t]*$');
 final _closingHashes = RegExp(r'[ \t]+#+$');
 final _fence = RegExp(r'^ {0,3}(`{3,}|~{3,})(.*)$');
-final _onlyLink = RegExp(
-  r'^(?:[-+*][ \t]+)?(?:\[[^\]\r\n]+\]\((?:[^()\s]|\([^()\s]*\))+\)'
-  r'|<https?://[^>\s]+>|https?://\S+)$',
-);
+final _changelogLine = RegExp(r'([^\r\n]*)(?:\r\n|[\r\n]|$)');
+final _leadingBlankLines = RegExp(r'^(?:[ \t]*(?:\r\n|\r|\n))+');
+final _trailingBlankLines = RegExp(r'(?:\r\n|\r|\n)[ \t\r\n]*$');
 
 String? versionFromPubspec(String pubspec) {
   var version = _pubspecVersion.firstMatch(pubspec)?.group(1)?.trim();
@@ -38,10 +37,11 @@ String? versionFromPubspec(String pubspec) {
   return _version.hasMatch(version) ? version : null;
 }
 
-String? changelogSection(String changelog, String version) {
-  List<String>? section;
+({int start, int end})? _changelogRange(String changelog, String version) {
+  int? start;
   String? openFence;
-  for (final line in const LineSplitter().convert(changelog)) {
+  for (final match in _changelogLine.allMatches(changelog)) {
+    final line = match.group(1)!;
     final fence = _fence.firstMatch(line);
     if (fence != null) {
       final marker = fence.group(1)!;
@@ -52,29 +52,28 @@ String? changelogSection(String changelog, String version) {
       } else if (marker.startsWith(openFence) && suffix.trim().isEmpty) {
         openFence = null;
       }
-      section?.add(line);
       continue;
     }
     final heading = openFence == null ? _heading.firstMatch(line) : null;
     if (heading != null) {
-      if (section != null) break;
+      if (start != null) return (start: start, end: match.start);
       final title = heading.group(1)?.replaceFirst(_closingHashes, '');
-      if (line.trimLeft().startsWith('##') && title == version) section = [];
-    } else {
-      section?.add(line);
+      if (line.trimLeft().startsWith('##') && title == version) {
+        start = match.start + line.length;
+      }
     }
   }
-  return section?.join('\n').trim();
+  return start == null ? null : (start: start, end: changelog.length);
 }
 
-bool isLinkOnly(String section) => _onlyLink.hasMatch(section.trim());
-
-String? selectNotes(String? override, String? section) {
-  if (override != null) return override.trim();
-  if (section == null || section.trim().isEmpty || isLinkOnly(section)) {
-    return null;
-  }
-  return section.trim();
+String? changelogSection(String changelog, String version) {
+  final range = _changelogRange(changelog, version);
+  return range == null
+      ? null
+      : changelog
+            .substring(range.start, range.end)
+            .replaceAll('\r\n', '\n')
+            .trim();
 }
 
 class PackageRelease {
@@ -96,8 +95,41 @@ class PackageRelease {
   String get tag => '$package-v$version';
   String get title => '$package $version';
   String get pubLink => 'https://pub.dev/packages/$package/versions/$version';
+  String get pubspecPath => 'packages/$package/pubspec.yaml';
+  String get changelogPath => 'packages/$package/CHANGELOG.md';
+  String get changelogLink =>
+      'See the [release notes](https://github.com/btwld/mix/releases/tag/$tag).';
   bool get prerelease => _version.firstMatch(version)?.group(4) != null;
   bool get latest => package == 'mix' && !prerelease;
+}
+
+({String changelog, String notes}) rewriteChangelog(
+  PackageRelease release,
+  String changelog,
+) {
+  final range = _changelogRange(changelog, release.version);
+  if (range == null) {
+    throw StateError(
+      'No ## ${release.version} heading in ${release.changelogPath}.',
+    );
+  }
+  final original = changelog.substring(range.start, range.end);
+  final notes = original
+      .replaceFirst(_leadingBlankLines, '')
+      .replaceFirst(_trailingBlankLines, '');
+  if (notes.trim() == release.changelogLink) {
+    return (changelog: changelog, notes: '');
+  }
+  final newline = original.startsWith('\r\n') ? '\r\n' : '\n';
+  final separator = range.end < changelog.length ? newline : '';
+  return (
+    changelog: changelog.replaceRange(
+      range.start,
+      range.end,
+      '$newline$newline${release.changelogLink}$newline$separator',
+    ),
+    notes: notes,
+  );
 }
 
 int _compareVersions(String left, String right) {
@@ -157,25 +189,18 @@ String _git(List<String> args) {
   return result.stdout as String;
 }
 
-String? _readFile(String path) {
-  final file = File(path);
-  return file.existsSync() ? file.readAsStringSync() : null;
-}
-
-Map<String, String> _remoteTagCommits([String pattern = 'refs/tags/*']) {
+Iterable<String> _remoteTags(String package) {
   const prefix = 'refs/tags/';
-  final commits = <String, String>{};
-  final refs = _git(['ls-remote', '--tags', 'origin', pattern]);
-  for (final line in const LineSplitter().convert(refs)) {
-    final [sha, ref] = line.split('\t');
-    final tag = ref.substring(prefix.length);
-    if (tag.endsWith('^{}')) {
-      commits[tag.substring(0, tag.length - 3)] = sha;
-    } else {
-      commits.putIfAbsent(tag, () => sha);
-    }
-  }
-  return commits;
+  final refs = _git([
+    'ls-remote',
+    '--tags',
+    '--refs',
+    'origin',
+    '$prefix$package-v*',
+  ]);
+  return const LineSplitter()
+      .convert(refs)
+      .map((line) => line.split('\t').last.substring(prefix.length));
 }
 
 String? _fileAtCommit(String commit, String path) =>
@@ -183,157 +208,113 @@ String? _fileAtCommit(String commit, String path) =>
     ? null
     : _git(['show', '$commit:$path']);
 
-String? _versionAtCommit(String commit, String path) =>
-    versionFromPubspec(_fileAtCommit(commit, path) ?? '');
-
-String _versionCommit(String path, String version) {
-  final history = _git([
-    'log',
-    '--first-parent',
-    '--format=%H',
-    'HEAD',
-    '--',
-    path,
-  ]);
-  String? bump;
-  for (final commit in const LineSplitter().convert(history)) {
-    if (_versionAtCommit(commit, path) != version) break;
-    bump = commit;
-  }
-  return bump ??
-      (throw StateError('Cannot locate the bump to $version in $path'));
-}
-
-String? resolvePushBase(String before) {
-  if (before.isEmpty || RegExp(r'^0+$').hasMatch(before)) return null;
-  final result = Process.runSync('git', [
-    'rev-parse',
-    '--verify',
-    '--quiet',
-    '$before^{commit}',
-  ]);
-  if (result.exitCode == 0) return (result.stdout as String).trim();
-  if (result.exitCode != 1) {
-    throw StateError('Cannot check push base $before: ${result.stderr}');
-  }
-  stderr.writeln(
-    'Push base $before is unavailable; checking all current versions.',
+void validateTag(String tag) {
+  final release = PackageRelease.fromTag(tag);
+  final version = versionFromPubspec(
+    _fileAtCommit('HEAD', release.pubspecPath) ?? '',
   );
-  return null;
-}
-
-Set<String> dispatchPackages(String input) {
-  final packages = input.split(',').map((package) => package.trim()).toSet();
-  final unknown = packages.difference(publishablePackages.toSet());
-  if (unknown.isNotEmpty) {
-    throw FormatException(
-      'Provide comma-separated packages from ${publishablePackages.join(', ')}',
-      input,
+  if (version != release.version) {
+    throw StateError(
+      '$tag requires version ${release.version} in ${release.pubspecPath}; '
+      'found ${version ?? 'no valid version'} at the tagged commit.',
     );
   }
-  return packages;
+  final changelog = _fileAtCommit('HEAD', release.changelogPath) ?? '';
+  if (_changelogRange(changelog, release.version) == null) {
+    throw StateError(
+      '${release.changelogPath} is missing ## ${release.version} at $tag.',
+    );
+  }
+  final result = Process.runSync('git', [
+    'merge-base',
+    '--is-ancestor',
+    'HEAD',
+    'refs/remotes/origin/main',
+  ]);
+  if (result.exitCode == 1)
+    throw StateError('The tagged commit for $tag is not on origin/main.');
+  if (result.exitCode != 0)
+    throw StateError(
+      'Cannot check that $tag is on origin/main: ${result.stderr}',
+    );
 }
 
-enum ReleaseStatus { due, skipped, blocked }
+PackageRelease _workingRelease(String package) {
+  if (!publishablePackages.contains(package)) {
+    throw FormatException('Unknown publishable package', package);
+  }
+  final path = 'packages/$package/pubspec.yaml';
+  final version = versionFromPubspec(File(path).readAsStringSync());
+  if (version == null) throw StateError('No valid version in $path.');
+  return PackageRelease(package, version);
+}
 
-typedef ReleasePlan = ({String tag, ReleaseStatus status, String detail});
+String prepareChangelog(PackageRelease release) {
+  final file = File(release.changelogPath);
+  final original = file.readAsStringSync();
+  final update = rewriteChangelog(release, original);
+  if (original != update.changelog) file.writeAsStringSync(update.changelog);
+  return update.notes;
+}
 
-Iterable<ReleasePlan> planReleases({
-  String? before,
-  Iterable<String> packages = publishablePackages,
-}) sync* {
-  final remoteTags = _remoteTagCommits();
-  for (final package in packages) {
-    final path = 'packages/$package/pubspec.yaml';
-    final version = _versionAtCommit('HEAD', path);
-    if (version == null) throw FormatException('No valid version in $path');
-    final tag = PackageRelease(package, version).tag;
-    if (before != null && _versionAtCommit(before, path) == version) {
-      yield (
-        tag: tag,
-        status: ReleaseStatus.skipped,
-        detail: 'version unchanged',
-      );
-      continue;
-    }
-
-    final bump = _versionCommit(path, version);
-    final taggedCommit = remoteTags[tag];
-    if (taggedCommit != null) {
-      yield taggedCommit == bump
-          ? (
-              tag: tag,
-              status: ReleaseStatus.skipped,
-              detail: 'tag already exists at $bump',
-            )
-          : (
-              tag: tag,
-              status: ReleaseStatus.blocked,
-              detail:
-                  'tag points to $taggedCommit, expected version bump $bump',
-            );
-      continue;
-    }
-
-    final changelog =
-        _fileAtCommit(bump, 'packages/$package/CHANGELOG.md') ?? '';
-    if (changelogSection(changelog, version) == null) {
-      yield (
-        tag: tag,
-        status: ReleaseStatus.blocked,
-        detail: 'no ## $version CHANGELOG heading at version bump $bump',
-      );
-      continue;
-    }
-    yield (tag: tag, status: ReleaseStatus.due, detail: bump);
+Iterable<PackageRelease> changedReleases(String before) sync* {
+  final base = _git(['rev-parse', '--verify', '$before^{commit}']).trim();
+  for (final package in publishablePackages) {
+    final release = _workingRelease(package);
+    final previous = versionFromPubspec(
+      _fileAtCommit(base, release.pubspecPath) ?? '',
+    );
+    if (previous != release.version) yield release;
   }
 }
 
-void _printPlan(Iterable<ReleasePlan> plans) {
-  for (final plan in plans) {
-    stdout.writeln('${plan.tag}\t${plan.status.name}\t${plan.detail}');
-  }
-}
-
-void _printNotes(String tag) {
+void _printReleaseInfo(String tag) {
   final release = PackageRelease.fromTag(tag);
-  final changelog = _readFile('packages/${release.package}/CHANGELOG.md') ?? '';
-  final notes = selectNotes(
-    _readFile('.github/release-notes/$tag.md'),
-    changelogSection(changelog, release.version),
-  );
   stdout.writeln(
     jsonEncode({
       'title': release.title,
       'prerelease': release.prerelease,
       'latest': release.latest,
       'pubLink': release.pubLink,
-      'notes': notes,
-      'previousTag': notes == null
-          ? previousReleaseTag(
-              release,
-              _remoteTagCommits('refs/tags/${release.package}-v*').keys,
-            )
-          : null,
     }),
   );
 }
 
 void main(List<String> args) {
-  switch (args) {
-    case ['plan', final before]:
-      _printPlan(planReleases(before: resolvePushBase(before)));
-    case ['plan-for', final packages]:
-      _printPlan(planReleases(packages: dispatchPackages(packages)));
-    case ['validate-tag', final tag]:
-      PackageRelease.fromTag(tag);
-    case ['notes', final tag]:
-      _printNotes(tag);
-    default:
-      stderr.writeln(
-        'Usage: dart scripts/release.dart plan <before-sha> | '
-        'plan-for <package[,package...]> | validate-tag <tag> | notes <tag>',
-      );
-      exitCode = 64;
+  try {
+    switch (args) {
+      case ['validate-tag', final tag]:
+        validateTag(tag);
+      case ['release-info', final tag]:
+        _printReleaseInfo(tag);
+      case ['previous-tag', final tag]:
+        final release = PackageRelease.fromTag(tag);
+        final previous = previousReleaseTag(
+          release,
+          _remoteTags(release.package),
+        );
+        if (previous != null) stdout.writeln(previous);
+      case ['prepare-changelog', final package]:
+        stdout.writeln(prepareChangelog(_workingRelease(package)));
+      case ['prepare-changelog', '--changed-since', final before]:
+        for (final release in changedReleases(before)) {
+          final notes = prepareChangelog(release);
+          stdout.writeln(
+            '### ${release.tag}\n\n${notes.isEmpty ? '_Add release notes._' : notes}\n',
+          );
+        }
+      default:
+        stderr.writeln(
+          'Usage: dart scripts/release.dart validate-tag <tag> | release-info <tag> | '
+          'previous-tag <tag> | prepare-changelog <pkg> | prepare-changelog --changed-since <ref>',
+        );
+        exitCode = 64;
+    }
+  } on FormatException catch (error) {
+    stderr.writeln(error);
+    exitCode = 1;
+  } on StateError catch (error) {
+    stderr.writeln(error.message);
+    exitCode = 1;
   }
 }
