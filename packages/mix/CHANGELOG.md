@@ -1,26 +1,42 @@
-## Unreleased
+## 2.5.0
 
 ### New features
 
 - Start a style with widget modifiers using `BoxStyler.wrap(...)` or typed
   shorthand such as `BoxStyler style = .wrap(.opacity(0.5));`. Available on
-  generated Mix and chart stylers, and on `GridBoxStyler`.
+  generated Mix stylers and on `GridBoxStyler` (#1091).
 - `AnimationConfig.reversible(forward, reverse: exit)` lets a variant set its
   own exit timing, for example
   `.animate(.reversible(.easeIn(120.ms), reverse: .easeOut(240.ms)))`. Both
   configs must be curve or spring animations. The result is itself a curve or
   spring config, so it works with every styler's `animate`.
-  `AnimationConfig.reverseOf(config)` reads the exit timing back.
+  `AnimationConfig.reverseOf(config)` reads the exit timing back (#1131, #1134).
+- `Pressable.semanticsIdentifier` sets a stable identifier for native UI
+  automation. `PressableBox` and `BoxStyler.pressable(...)` also accept it (#1109).
 
 ### Bug fixes
 
-- Delayed curve transitions hold the current rendered value during the delay.
+- Delayed curve transitions hold the current rendered value during the delay
+  (#1131, #1134).
 - Replacing a curve or spring driver mid-transition (for example switching from
   a curve to a spring config) now continues from the rendered value instead of
-  jumping to the previous target.
+  jumping to the previous target (#1131, #1134).
 - **Blur lifecycle:** preserve child state, focus, text editing, and active
   tickers when blur changes to or from zero. The `ImageFiltered` wrapper stays
-  mounted with filtering disabled at zero sigma.
+  mounted with filtering disabled at zero sigma (#1121).
+- **Prop hashing:** props with equal directive lists now share a hash code
+  (#1129).
+- **Converter registration:** custom converters registered at startup are no
+  longer overwritten when built-in converters initialize (#1123).
+- **Decoration merging:** raw `ShapeDecoration` values and tokens now convert
+  to `ShapeDecorationMix` during property merges, including when typed as
+  `Decoration` (#1126).
+
+### Documentation
+
+- Document how `MixScope` propagates to overlays and routes, and how to create
+  custom Mix values and converters (#1120, #1123, #1125).
+- Update documentation links to FlutterMix (#1127).
 
 ## 2.4.0
 
