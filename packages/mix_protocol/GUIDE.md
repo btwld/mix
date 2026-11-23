@@ -27,7 +27,7 @@ Add the published pre-release to your app:
 
 ```yaml
 dependencies:
-  mix: ^2.2.0
+  mix: ^2.5.0
   mix_protocol: ^1.0.0-alpha.0
 ```
 
