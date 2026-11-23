@@ -93,6 +93,7 @@ final card = Box(
 
 Read [AGENTS.md](AGENTS.md) for setup, commands, generated-file rules and
 verification. Dependencies are bootstrapped with Melos.
+See [Releasing packages](guides/publishing.md) for the release process.
 The [website source](https://github.com/btwld/mix-docs) lives separately.
 
 The [Mix agent skill](skills/mix/SKILL.md) includes portable API references.

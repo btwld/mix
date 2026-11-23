@@ -1,0 +1,58 @@
+name: Tag releases
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  tag-releases:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      actions: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: dart-lang/setup-dart@v1
+      - name: Plan and tag releases
+        env:
+          BEFORE_SHA: ${{ github.event.before }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          plan="$RUNNER_TEMP/release-plan.tsv"
+          dart scripts/release.dart plan "$BEFORE_SHA" > "$plan"
+
+          echo '### Package release tags' >> "$GITHUB_STEP_SUMMARY"
+          report() { echo "- $*" | tee -a "$GITHUB_STEP_SUMMARY"; }
+          failed=0
+          while IFS=$'\t' read -r tag decision; do
+            if [[ "$decision" != due ]]; then
+              report "$tag: skipped ($decision)"
+              continue
+            fi
+
+            if ! gh api --method POST "repos/$GITHUB_REPOSITORY/git/refs" \
+              -f ref="refs/tags/$tag" -f sha="$GITHUB_SHA" --silent; then
+              if git ls-remote --exit-code --refs origin "refs/tags/$tag" >/dev/null; then
+                report "$tag: skipped (tag already exists)"
+              else
+                report "$tag: tag creation failed"
+                failed=1
+              fi
+              continue
+            fi
+
+            if gh workflow run publish.yml --repo "$GITHUB_REPOSITORY" --ref "$tag"; then
+              report "$tag: tagged and publish dispatched"
+            else
+              report "$tag: tagged, but dispatch failed; run Publish to pub.dev on this tag"
+              failed=1
+            fi
+          done < "$plan"
+          exit "$failed"

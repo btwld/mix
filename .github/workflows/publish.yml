@@ -11,10 +11,11 @@ on:
       - 'mix_winds-v[0-9]+.[0-9]+.[0-9]+*'
       - 'mix_chart-v[0-9]+.[0-9]+.[0-9]+*'
       - 'mix_markdown-v[0-9]+.[0-9]+.[0-9]+*'
+  workflow_dispatch:
 
 jobs:
   publish_mix:
-    if: startsWith(github.ref_name, 'mix-v')
+    if: github.ref_type == 'tag' && startsWith(github.ref_name, 'mix-v')
     uses: btwld/dart-actions/.github/workflows/publish.yml@main
     with:
       packages_folder_path: "packages"
@@ -25,7 +26,7 @@ jobs:
       contents: read
 
   publish_mix_annotations:
-    if: startsWith(github.ref_name, 'mix_annotations-v')
+    if: github.ref_type == 'tag' && startsWith(github.ref_name, 'mix_annotations-v')
     uses: btwld/dart-actions/.github/workflows/publish.yml@main
     with:
       packages_folder_path: "packages"
@@ -36,7 +37,7 @@ jobs:
       contents: read
 
   publish_mix_generator:
-    if: startsWith(github.ref_name, 'mix_generator-v')
+    if: github.ref_type == 'tag' && startsWith(github.ref_name, 'mix_generator-v')
     uses: btwld/dart-actions/.github/workflows/publish.yml@main
     with:
       packages_folder_path: "packages"
@@ -47,7 +48,7 @@ jobs:
       contents: read
 
   publish_mix_lint:
-    if: startsWith(github.ref_name, 'mix_lint-v')
+    if: github.ref_type == 'tag' && startsWith(github.ref_name, 'mix_lint-v')
     uses: btwld/dart-actions/.github/workflows/publish.yml@main
     with:
       packages_folder_path: "packages"
@@ -58,7 +59,7 @@ jobs:
       contents: read
 
   check_mix_protocol_release:
-    if: startsWith(github.ref_name, 'mix_protocol-v') && github.ref_name != 'mix_protocol-v1.0.0-alpha.0'
+    if: github.ref_type == 'tag' && startsWith(github.ref_name, 'mix_protocol-v') && github.ref_name != 'mix_protocol-v1.0.0-alpha.0'
     uses: ./.github/workflows/release-dependencies.yml
     with:
       package: protocol
@@ -69,7 +70,7 @@ jobs:
     # pub.dev requires the first version to be published manually. The initial
     # release tag is kept for traceability but must not attempt OIDC publishing.
     needs: check_mix_protocol_release
-    if: startsWith(github.ref_name, 'mix_protocol-v') && github.ref_name != 'mix_protocol-v1.0.0-alpha.0'
+    if: github.ref_type == 'tag' && startsWith(github.ref_name, 'mix_protocol-v') && github.ref_name != 'mix_protocol-v1.0.0-alpha.0'
     uses: btwld/dart-actions/.github/workflows/publish.yml@main
     with:
       packages_folder_path: "packages"
@@ -80,7 +81,7 @@ jobs:
       contents: read
 
   check_mix_winds_release:
-    if: startsWith(github.ref_name, 'mix_winds-v')
+    if: github.ref_type == 'tag' && startsWith(github.ref_name, 'mix_winds-v')
     uses: ./.github/workflows/release-dependencies.yml
     with:
       package: winds
@@ -89,7 +90,7 @@ jobs:
 
   publish_mix_winds:
     needs: check_mix_winds_release
-    if: startsWith(github.ref_name, 'mix_winds-v')
+    if: github.ref_type == 'tag' && startsWith(github.ref_name, 'mix_winds-v')
     uses: btwld/dart-actions/.github/workflows/publish.yml@main
     with:
       packages_folder_path: "packages"
@@ -100,7 +101,7 @@ jobs:
       contents: read
 
   publish_mix_chart:
-    if: startsWith(github.ref_name, 'mix_chart-v')
+    if: github.ref_type == 'tag' && startsWith(github.ref_name, 'mix_chart-v')
     uses: btwld/dart-actions/.github/workflows/publish.yml@main
     with:
       packages_folder_path: "packages"
@@ -111,7 +112,7 @@ jobs:
       contents: read
 
   check_mix_markdown_release:
-    if: startsWith(github.ref_name, 'mix_markdown-v') && github.ref_name != 'mix_markdown-v0.1.0-beta.1'
+    if: github.ref_type == 'tag' && startsWith(github.ref_name, 'mix_markdown-v') && github.ref_name != 'mix_markdown-v0.1.0-beta.1'
     uses: ./.github/workflows/release-dependencies.yml
     with:
       package: markdown
@@ -120,7 +121,7 @@ jobs:
 
   publish_mix_markdown:
     needs: check_mix_markdown_release
-    if: startsWith(github.ref_name, 'mix_markdown-v') && github.ref_name != 'mix_markdown-v0.1.0-beta.1'
+    if: github.ref_type == 'tag' && startsWith(github.ref_name, 'mix_markdown-v') && github.ref_name != 'mix_markdown-v0.1.0-beta.1'
     uses: btwld/dart-actions/.github/workflows/publish.yml@main
     with:
       packages_folder_path: "packages"
@@ -129,3 +130,62 @@ jobs:
     permissions:
       id-token: write
       contents: read
+
+  github-release:
+    needs:
+      - publish_mix
+      - publish_mix_annotations
+      - publish_mix_generator
+      - publish_mix_lint
+      - publish_mix_protocol
+      - publish_mix_winds
+      - publish_mix_chart
+      - publish_mix_markdown
+    if: >-
+      github.ref_type == 'tag' && !cancelled() &&
+      contains(needs.*.result, 'success') && !contains(needs.*.result, 'failure')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    concurrency:
+      group: github-release-${{ github.ref }}
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          persist-credentials: false
+      - uses: dart-lang/setup-dart@v1
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          if gh release view "$RELEASE_TAG" --json url --jq .url; then
+            echo "Release already exists for $RELEASE_TAG; skipping."
+            exit 0
+          fi
+
+          release=$(dart scripts/release.dart notes "$RELEASE_TAG")
+          title=$(jq -r '.title' <<< "$release")
+          pub_link=$(jq -r '.pubLink' <<< "$release")
+          if [[ $(jq -r '.notes == null' <<< "$release") == true ]]; then
+            notes=$(gh api --method POST "repos/$GITHUB_REPOSITORY/releases/generate-notes" \
+              -f tag_name="$RELEASE_TAG" -f target_commitish="$GITHUB_SHA" --jq .body)
+          else
+            notes=$(jq -r '.notes' <<< "$release")
+          fi
+
+          flags=(--latest=false)
+          if [[ $(jq -r '.latest' <<< "$release") == true ]]; then
+            flags=(--latest)
+          fi
+          if [[ $(jq -r '.prerelease' <<< "$release") == true ]]; then
+            flags+=(--prerelease)
+          fi
+
+          notes_file="$RUNNER_TEMP/release-notes.md"
+          printf '%s\n\n%s\n' "$notes" "$pub_link" > "$notes_file"
+          gh release create "$RELEASE_TAG" --verify-tag --title "$title" \
+            --notes-file "$notes_file" "${flags[@]}"
