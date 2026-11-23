@@ -2,12 +2,31 @@ import 'dart:io';
 
 import 'package:yaml/yaml.dart';
 
+import 'release.dart' show publishablePackages;
 import 'release_test.dart' as release_test;
 
 void main() {
   final workflow = loadYaml(
     File('.github/workflows/publish.yml').readAsStringSync(),
   );
+  const prefix = 'publish_';
+  final jobs = workflow['jobs'] as YamlMap;
+  final publishJobs = jobs.keys
+      .whereType<String>()
+      .where((name) => name.startsWith(prefix))
+      .map((name) => name.substring(prefix.length))
+      .toSet();
+  final allowed = publishablePackages.toSet();
+  final missing = allowed.difference(publishJobs);
+  final extra = publishJobs.difference(allowed);
+  if (missing.isNotEmpty || extra.isNotEmpty) {
+    stderr.writeln(
+      'publish_<pkg> jobs must match publishablePackages. '
+      'Missing: $missing. Unexpected: $extra.',
+    );
+    exitCode = 1;
+    return;
+  }
   if (workflow case {
     'on': {'workflow_dispatch': null},
     'jobs': {

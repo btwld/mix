@@ -2,9 +2,10 @@
 
 1. Merge a version-bump PR into `main` with an updated package `pubspec.yaml`
    and a matching `## <version>` heading in its `CHANGELOG.md`.
-2. **Tag releases** creates each missing `<pkg>-v<version>` tag at the merge
-   commit and dispatches **Publish to pub.dev** on that tag. Existing tags are
-   never moved or deleted.
+2. **Tag releases** creates each missing `<pkg>-v<version>` tag at the commit on
+   `main` that last changed the package's version, then dispatches **Publish to
+   pub.dev** on that tag. It fails if that commit lacks the changelog heading
+   or the tag points elsewhere. Existing tags are never moved or deleted.
 3. Approve the `Production` deployment. After the package publishes to pub.dev,
    the workflow creates its GitHub Release.
 
@@ -20,16 +21,20 @@ existing `Production` deployment tag policy before releasing them.
 
 To override the GitHub Release notes, include `.github/release-notes/<tag>.md`
 in the bump PR. Otherwise the workflow uses the version's changelog section,
-or GitHub's generated notes if that section is blank or just a link. It appends
-a link to the published version on pub.dev.
+or GitHub's generated notes if that section is blank or just a link and an
+earlier tag exists for the same package. It always adds a link to the published
+version on pub.dev.
 
 A hand-pushed package tag still triggers publishing and gets a GitHub Release
 after publishing succeeds, provided the tagged commit contains the new workflow.
 The first-publication exceptions for [mix_protocol](publishing_mix_protocol.md)
 and [mix_markdown](publishing_mix_markdown.md) still apply.
 
-If a bump was missed, run **Tag releases** on `main` to check all current
-versions for missing tags. If tag creation succeeded but dispatch failed,
-run `gh workflow run publish.yml --ref <tag>` without moving the tag.
+If a bump was missed, run **Tag releases** on `main` and enter only the package
+names to recover in the required `packages` input (comma-separated, e.g.
+`mix,mix_lint`). It finds each selected package's current version and tags its
+bump commit, not today's `main`. That commit must already contain the
+dispatch-enabled publish workflow. If tag creation succeeded but dispatch
+failed, run `gh workflow run publish.yml --ref <tag>` without moving the tag.
 If publishing started but failed, fix the cause and rerun the failed jobs
 on the existing run when the tagged package itself does not need changes.
