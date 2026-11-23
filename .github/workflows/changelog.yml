@@ -63,49 +63,56 @@ jobs:
         git config --global user.email 'action@github.com'
 
     - name: Creating the new version
-
+      shell: bash
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        UPDATE_MIX_PACKAGES: ${{ inputs.update_mix_packages }}
+        UPDATE_MIX_WINDS: ${{ inputs.update_mix_winds }}
+        MIX_VERSION: ${{ inputs.mix_version }}
+        MIX_WINDS_VERSION: ${{ inputs.mix_winds_version }}
+        LC_ALL: C.UTF-8
       run: |
         git checkout -b release/package-versions
         git push --set-upstream origin release/package-versions
 
-        ignored_packages=""
-
-        if [ "${{ github.event.inputs.update_mix_packages }}" == "false" ]; then
-          ignored_packages="$ignored_packages --ignore=mix,mix_lint,mix_annotations,mix_generator"
+        melos_args=()
+        if [[ "$UPDATE_MIX_PACKAGES" == false ]]; then
+          melos_args+=(--ignore=mix,mix_lint,mix_annotations,mix_generator)
+        fi
+        if [[ "$UPDATE_MIX_WINDS" == false ]]; then
+          melos_args+=(--ignore=mix_winds)
+        fi
+        if [[ -n "$MIX_VERSION" ]]; then
+          for package in mix mix_lint mix_annotations mix_generator; do
+            melos_args+=(-V "$package:$MIX_VERSION")
+          done
+        fi
+        if [[ -n "$MIX_WINDS_VERSION" ]]; then
+          melos_args+=(-V "mix_winds:$MIX_WINDS_VERSION")
         fi
 
-        if [ "${{ github.event.inputs.update_mix_winds }}" == "false" ]; then
-          ignored_packages="$ignored_packages --ignore=mix_winds"
-        fi
-
-
-        packages_with_versions=""
-
-        if [ "${{ github.event.inputs.mix_version }}" != "" ]; then
-          packages_with_versions="$packages_with_versions -V mix:${{ github.event.inputs.mix_version }}"
-          packages_with_versions="$packages_with_versions -V mix_lint:${{ github.event.inputs.mix_version }}"
-          packages_with_versions="$packages_with_versions -V mix_annotations:${{ github.event.inputs.mix_version }}"
-          packages_with_versions="$packages_with_versions -V mix_generator:${{ github.event.inputs.mix_version }}"
-        fi
-
-        if [ "${{ github.event.inputs.mix_winds_version }}" != "" ]; then
-          packages_with_versions="$packages_with_versions -V mix_winds:${{ github.event.inputs.mix_winds_version }}"
-        fi
-
-        printf '' | melos version $ignored_packages --yes --no-git-commit-version --no-git-tag-version $packages_with_versions
+        printf '' | melos version --yes --no-git-commit-version --no-git-tag-version "${melos_args[@]}"
 
         drafts=$(dart --disable-dart-dev scripts/release.dart prepare-changelog --changed-since HEAD)
         if [[ -z "$drafts" ]]; then
           echo 'No publishable versions changed.'
           exit 0
         fi
+        heading='## Draft GitHub Release notes'
+        fence='```'
+        while [[ "$drafts" == *"$fence"* ]]; do fence+='`'; done
+        printf '%s\n\n%smarkdown\n%s\n%s\n' "$heading" "$fence" "$drafts" "$fence" >> "$GITHUB_STEP_SUMMARY"
+
         pr_body="$RUNNER_TEMP/version-pr.md"
-        printf '## Draft GitHub Release notes\n\n%s\n' "$drafts" > "$pr_body"
-        cat "$pr_body" >> "$GITHUB_STEP_SUMMARY"
+        prefix="$heading"$'\n\n'
+        if (( ${#prefix} + ${#drafts} + 1 > 60000 )); then
+          run_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          prefix+="Draft truncated. See the [workflow step summary]($run_url) for the full Markdown."$'\n\n'
+          drafts="${drafts:0:$((60000 - ${#prefix} - 1))}"
+        fi
+        printf '%s%s\n' "$prefix" "$drafts" > "$pr_body"
 
         git add --update -- ':(glob)**/pubspec.yaml' ':(glob)**/CHANGELOG.md'
         git commit -m 'chore: version packages'
         git push
         gh pr create --title "chore: version packages" --body-file "$pr_body" --reviewer leoafarias
-      env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

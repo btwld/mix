@@ -70,11 +70,14 @@ String? changelogSection(String changelog, String version) {
   final range = _changelogRange(changelog, version);
   return range == null
       ? null
-      : changelog
-            .substring(range.start, range.end)
-            .replaceAll('\r\n', '\n')
-            .trim();
+      : _sectionBody(
+          changelog.substring(range.start, range.end),
+        ).replaceAll('\r\n', '\n');
 }
+
+String _sectionBody(String section) => section
+    .replaceFirst(_leadingBlankLines, '')
+    .replaceFirst(_trailingBlankLines, '');
 
 class PackageRelease {
   final String package;
@@ -100,7 +103,6 @@ class PackageRelease {
   String get changelogLink =>
       'See the [release notes](https://github.com/btwld/mix/releases/tag/$tag).';
   bool get prerelease => _version.firstMatch(version)?.group(4) != null;
-  bool get latest => package == 'mix' && !prerelease;
 }
 
 ({String changelog, String notes}) rewriteChangelog(
@@ -114,10 +116,8 @@ class PackageRelease {
     );
   }
   final original = changelog.substring(range.start, range.end);
-  final notes = original
-      .replaceFirst(_leadingBlankLines, '')
-      .replaceFirst(_trailingBlankLines, '');
-  if (notes.trim() == release.changelogLink) {
+  final notes = _sectionBody(original);
+  if (notes == release.changelogLink) {
     return (changelog: changelog, notes: '');
   }
   final newline = original.startsWith('\r\n') ? '\r\n' : '\n';
@@ -170,7 +170,9 @@ String? previousReleaseTag(PackageRelease release, Iterable<String> tags) {
   for (final tag in tags) {
     if (!tag.startsWith(prefix)) continue;
     final version = tag.substring(prefix.length);
-    if (!_version.hasMatch(version) ||
+    final match = _version.firstMatch(version);
+    if (match == null ||
+        (!release.prerelease && match.group(4) != null) ||
         _compareVersions(version, release.version) >= 0) {
       continue;
     }
@@ -179,6 +181,28 @@ String? previousReleaseTag(PackageRelease release, Iterable<String> tags) {
     }
   }
   return previous == null ? null : '$prefix$previous';
+}
+
+String? newestStableMixTag(Iterable<String> tags) {
+  const prefix = 'mix-v';
+  String? newest;
+  for (final tag in tags) {
+    if (!tag.startsWith(prefix)) continue;
+    final version = tag.substring(prefix.length);
+    final match = _version.firstMatch(version);
+    if (match == null || match.group(4) != null) continue;
+    if (newest == null || _compareVersions(version, newest) > 0) {
+      newest = version;
+    }
+  }
+  return newest == null ? null : '$prefix$newest';
+}
+
+bool isLatestRelease(PackageRelease release, Iterable<String> mixTags) {
+  if (release.package != 'mix' || release.prerelease) return false;
+  final newest = newestStableMixTag(mixTags);
+  return newest == null ||
+      _compareVersions(release.version, newest.substring('mix-v'.length)) >= 0;
 }
 
 String _git(List<String> args) {
@@ -210,8 +234,20 @@ String? _fileAtCommit(String commit, String path) =>
 
 void validateTag(String tag) {
   final release = PackageRelease.fromTag(tag);
+  final resolved = Process.runSync('git', [
+    'rev-parse',
+    '--verify',
+    '--quiet',
+    'refs/tags/$tag^{commit}',
+  ]);
+  if (resolved.exitCode != 0) {
+    throw StateError(
+      'Cannot resolve tag $tag to a commit. ${resolved.stderr}'.trim(),
+    );
+  }
+  final commit = (resolved.stdout as String).trim();
   final version = versionFromPubspec(
-    _fileAtCommit('HEAD', release.pubspecPath) ?? '',
+    _fileAtCommit(commit, release.pubspecPath) ?? '',
   );
   if (version != release.version) {
     throw StateError(
@@ -219,16 +255,23 @@ void validateTag(String tag) {
       'found ${version ?? 'no valid version'} at the tagged commit.',
     );
   }
-  final changelog = _fileAtCommit('HEAD', release.changelogPath) ?? '';
-  if (_changelogRange(changelog, release.version) == null) {
+  final changelog = _fileAtCommit(commit, release.changelogPath) ?? '';
+  final notes = changelogSection(changelog, release.version);
+  if (notes == null) {
     throw StateError(
       '${release.changelogPath} is missing ## ${release.version} at $tag.',
+    );
+  }
+  if (notes != release.changelogLink) {
+    throw StateError(
+      '${release.changelogPath} section ## ${release.version} at $tag '
+      'must contain only this line: ${release.changelogLink}',
     );
   }
   final result = Process.runSync('git', [
     'merge-base',
     '--is-ancestor',
-    'HEAD',
+    commit,
     'refs/remotes/origin/main',
   ]);
   if (result.exitCode == 1)
@@ -268,16 +311,103 @@ Iterable<PackageRelease> changedReleases(String before) sync* {
   }
 }
 
-void _printReleaseInfo(String tag) {
-  final release = PackageRelease.fromTag(tag);
-  stdout.writeln(
-    jsonEncode({
-      'title': release.title,
-      'prerelease': release.prerelease,
-      'latest': release.latest,
-      'pubLink': release.pubLink,
-    }),
-  );
+void syncRelease(
+  PackageRelease release, {
+  required String repository,
+  required Iterable<String> Function(String package) tagsFor,
+  required ProcessResult Function(List<String> args) gh,
+}) {
+  String checkedOutput(ProcessResult result) {
+    if (result.exitCode != 0) {
+      throw StateError(
+        'GitHub CLI failed: ${(result.stderr as String).trim()}',
+      );
+    }
+    return result.stdout as String;
+  }
+
+  String runGh(List<String> args) => checkedOutput(gh(args));
+
+  final existing = gh(['release', 'view', release.tag, '--json', 'isDraft']);
+  final missing =
+      existing.exitCode != 0 &&
+      (existing.stderr as String).trim() == 'release not found';
+  final isDraft =
+      !missing &&
+      (jsonDecode(checkedOutput(existing)) as Map)['isDraft'] == true;
+  final tags = missing || (release.package == 'mix' && !release.prerelease)
+      ? tagsFor(release.package)
+      : const <String>[];
+  final latest = isLatestRelease(release, tags);
+  final flags = ['--prerelease=${release.prerelease}', '--latest=$latest'];
+
+  if (!missing) {
+    stdout.write(
+      runGh([
+        'release',
+        'edit',
+        release.tag,
+        ...flags,
+        if (isDraft) '--draft=false',
+      ]),
+    );
+  } else {
+    final previous = previousReleaseTag(release, tags);
+    final notes = previous == null
+        ? ''
+        : runGh([
+            'api',
+            '--method',
+            'POST',
+            'repos/$repository/releases/generate-notes',
+            '-f',
+            'tag_name=${release.tag}',
+            '-f',
+            'previous_tag_name=$previous',
+            '--jq',
+            '.body',
+          ]).trimRight();
+    final directory = Directory.systemTemp.createTempSync('release-notes-');
+    try {
+      final file = File('${directory.path}/notes.md');
+      file.writeAsStringSync(
+        '${notes.isEmpty ? '' : '$notes\n\n'}${release.pubLink}\n',
+      );
+      stdout.write(
+        runGh([
+          'release',
+          'create',
+          release.tag,
+          '--verify-tag',
+          '--title',
+          release.title,
+          '--notes-file',
+          file.path,
+          ...flags,
+        ]),
+      );
+    } finally {
+      directory.deleteSync(recursive: true);
+    }
+  }
+
+  if (!latest) {
+    final publishedTags = runGh([
+      'api',
+      '--paginate',
+      'repos/$repository/releases?per_page=100',
+      '--jq',
+      '.[] | select(.draft == false) | .tag_name',
+    ]);
+    final newest = newestStableMixTag(
+      const LineSplitter().convert(publishedTags),
+    );
+    if (newest != null && newest != release.tag) {
+      stdout.write(
+        runGh(['release', 'edit', newest, '--prerelease=false', '--latest']),
+      );
+    }
+  }
 }
 
 void main(List<String> args) {
@@ -285,15 +415,13 @@ void main(List<String> args) {
     switch (args) {
       case ['validate-tag', final tag]:
         validateTag(tag);
-      case ['release-info', final tag]:
-        _printReleaseInfo(tag);
-      case ['previous-tag', final tag]:
-        final release = PackageRelease.fromTag(tag);
-        final previous = previousReleaseTag(
-          release,
-          _remoteTags(release.package),
+      case ['sync-release', final tag, final repository]:
+        syncRelease(
+          PackageRelease.fromTag(tag),
+          repository: repository,
+          tagsFor: _remoteTags,
+          gh: (args) => Process.runSync('gh', args),
         );
-        if (previous != null) stdout.writeln(previous);
       case ['prepare-changelog', final package]:
         stdout.writeln(prepareChangelog(_workingRelease(package)));
       case ['prepare-changelog', '--changed-since', final before]:
@@ -305,8 +433,9 @@ void main(List<String> args) {
         }
       default:
         stderr.writeln(
-          'Usage: dart scripts/release.dart validate-tag <tag> | release-info <tag> | '
-          'previous-tag <tag> | prepare-changelog <pkg> | prepare-changelog --changed-since <ref>',
+          'Usage: dart --disable-dart-dev scripts/release.dart validate-tag <tag> | '
+          'sync-release <tag> <owner/repo> | prepare-changelog <pkg> | '
+          'prepare-changelog --changed-since <ref>',
         );
         exitCode = 64;
     }

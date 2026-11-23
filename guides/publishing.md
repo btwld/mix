@@ -7,8 +7,10 @@
    See the [release notes](https://github.com/btwld/mix/releases/tag/<pkg>-v<version>).
    ```
 
-   Leave older entries unchanged. **Changelog** drafts the release notes from
-   the new entries and puts them in the bump PR body and workflow summary.
+   Leave older entries unchanged. CI checks only the section for the tagged
+   version; older full-note entries can stay as they are. **Changelog** puts
+   the draft in the bump PR body and the full, copyable Markdown in the
+   workflow step summary.
    For a manual bump,
    `dart --disable-dart-dev scripts/release.dart prepare-changelog <pkg>`
    rewrites the new entry and prints the original notes for the PR.
@@ -17,22 +19,25 @@
    intended package version. Write the final notes in the Release, using the
    bump PR draft as a starting point. The GitHub Release is the source of
    truth for notes. Tick **Set as a pre-release** for versions with a suffix
-   such as `-beta.1`; only a stable `mix` release should be marked Latest.
+   such as `-beta.1`; leave **Set as the latest release** unchecked unless
+   this is the highest stable `mix` version.
 3. Publish the GitHub Release. This creates the tag, and the tag push starts
    **Publish to pub.dev**. CI checks that the tag, pubspec, and changelog agree
    and that the tagged commit is on `main`. Then approve the `Production`
    deployment. After publishing succeeds, CI sets the Release's pre-release
-   and Latest flags without changing the notes.
+   and Latest flags without changing the notes. Publishing or retrying an
+   older tag does not replace a newer stable `mix` Release as Latest.
 
 Publish dependency bumps first if another package needs the new version.
-Finish stable `mix` releases in version order, since each is marked Latest
-after publishing. Check that new tag formats (such as multi-digit minor
+Check that new tag formats (such as multi-digit minor
 versions) match the `Production` deployment tag policy before release.
 
 A hand-pushed tag still publishes the package. If no GitHub Release exists
 after publishing succeeds, CI creates one with a pub.dev link and generated
-notes when an earlier tag exists for the same package. The first-publication
-exceptions for [mix_protocol](publishing_mix_protocol.md) and
+notes when an earlier tag exists for the same package. Stable versions compare
+only to earlier stable tags. If a draft exists, CI publishes it with its notes
+intact. The first-publication exceptions for
+[mix_protocol](publishing_mix_protocol.md) and
 [mix_markdown](publishing_mix_markdown.md) still apply.
 
 If publishing fails after the GitHub Release is public, the Release stays

@@ -173,8 +173,8 @@ jobs:
     permissions:
       contents: write
     concurrency:
-      group: github-release-${{ github.ref }}
-      cancel-in-progress: false
+      group: github-release
+      queue: max
     steps:
       - uses: actions/checkout@v4
         with:
@@ -184,34 +184,4 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ github.ref_name }}
-        run: |
-          release=$(dart --disable-dart-dev scripts/release.dart release-info "$RELEASE_TAG")
-          prerelease=$(jq -r '.prerelease' <<< "$release")
-          latest=$(jq -r '.latest' <<< "$release")
-
-          if existing=$(gh release view "$RELEASE_TAG" --json isDraft); then
-            flags=(--prerelease="$prerelease")
-            if [[ $(jq -r '.isDraft' <<< "$existing") == false ]]; then
-              flags+=(--latest="$latest")
-            fi
-            gh release edit "$RELEASE_TAG" "${flags[@]}"
-            exit 0
-          fi
-
-          title=$(jq -r '.title' <<< "$release")
-          pub_link=$(jq -r '.pubLink' <<< "$release")
-          previous_tag=$(dart --disable-dart-dev scripts/release.dart previous-tag "$RELEASE_TAG")
-          notes=''
-          if [[ -n "$previous_tag" ]]; then
-            notes=$(gh api --method POST "repos/$GITHUB_REPOSITORY/releases/generate-notes" \
-              -f tag_name="$RELEASE_TAG" -f target_commitish="$GITHUB_SHA" \
-              -f previous_tag_name="$previous_tag" --jq .body)
-          fi
-
-          notes_file="$RUNNER_TEMP/release-notes.md"
-          {
-            if [[ -n "$notes" ]]; then printf '%s\n\n' "$notes"; fi
-            printf '%s\n' "$pub_link"
-          } > "$notes_file"
-          gh release create "$RELEASE_TAG" --verify-tag --title "$title" \
-            --notes-file "$notes_file" --prerelease="$prerelease" --latest="$latest"
+        run: dart --disable-dart-dev scripts/release.dart sync-release "$RELEASE_TAG" "$GITHUB_REPOSITORY"
