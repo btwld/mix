@@ -205,7 +205,7 @@ void _testReleaseSync() {
   view = ProcessResult(0, 0, '{"isDraft":true}', '');
   sync('mix-v2.9.0');
   _expect(
-    'publish draft without changing notes',
+    'make draft public without changing notes',
     commands[1],
     'release edit mix-v2.9.0 --prerelease=false --latest=false --draft=false',
   );

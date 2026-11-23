@@ -145,9 +145,9 @@ The [gallery and playground](example/) contain bar, pie, token, interaction,
 label and tooltip examples. JSON consumers opt into
 [mix_chart_protocol](../mix_chart_protocol); rendering apps do not need it.
 
-Publishing uses `mix_chart-v<version>` tags and requires maintainer action.
+Follow the [release process](../../RELEASING.md) with `mix_chart-v<version>` tags.
 Confirm pub.dev publisher ownership before relying on OIDC. The
-[Protocol publishing guide](../../guides/publishing_mix_protocol.md) explains
+[first Protocol release guide](../../guides/publishing_mix_protocol.md) explains
 shared OIDC prerequisites; its package name and tag prefix are Protocol-specific.
 
 BSD 3-Clause. See [LICENSE](LICENSE).

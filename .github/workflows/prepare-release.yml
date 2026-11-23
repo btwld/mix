@@ -1,23 +1,23 @@
-name: Changelog
+name: Prepare release
 
 on:
   workflow_dispatch:
     inputs:
       update_mix_packages:
         type: boolean
-        description: whether to update mix core packages (mix, mix_lint, mix_annotations, mix_generator)
+        description: Bump Mix core packages (mix, mix_lint, mix_annotations, mix_generator)
         default: true
       update_mix_winds:
         type: boolean
-        description: whether to update mix_winds package
+        description: Bump mix_winds
         default: false
       mix_version:
         type: string
-        description: set the version for mix core packages
+        description: Override the version for Mix core packages
         default: ""
       mix_winds_version:
         type: string
-        description: set the version for mix_winds
+        description: Override the version for mix_winds
         default: ""
 
 jobs:
@@ -62,7 +62,7 @@ jobs:
         git config --global user.name 'GitHub Action'
         git config --global user.email 'action@github.com'
 
-    - name: Creating the new version
+    - name: Bump package versions and open a release PR
       shell: bash
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -95,10 +95,10 @@ jobs:
 
         drafts=$(dart --disable-dart-dev scripts/release.dart prepare-changelog --changed-since HEAD)
         if [[ -z "$drafts" ]]; then
-          echo 'No publishable versions changed.'
+          echo 'No package version bumps to release.'
           exit 0
         fi
-        heading='## Draft GitHub Release notes'
+        heading='## Draft release notes'
         fence='```'
         while [[ "$drafts" == *"$fence"* ]]; do fence+='`'; done
         printf '%s\n\n%smarkdown\n%s\n%s\n' "$heading" "$fence" "$drafts" "$fence" >> "$GITHUB_STEP_SUMMARY"
@@ -113,6 +113,6 @@ jobs:
         printf '%s%s\n' "$prefix" "$drafts" > "$pr_body"
 
         git add --update -- ':(glob)**/pubspec.yaml' ':(glob)**/CHANGELOG.md'
-        git commit -m 'chore: version packages'
+        git commit -m 'chore: prepare package releases'
         git push
-        gh pr create --title "chore: version packages" --body-file "$pr_body" --reviewer leoafarias
+        gh pr create --title 'chore: prepare package releases' --body-file "$pr_body" --reviewer leoafarias

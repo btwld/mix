@@ -87,13 +87,13 @@ final card = Box(
   [token migration](packages/mix/doc/token-migration-guide.md).
 - [MixWidget constructors](guides/mix-widget-variant-constructors.md),
   [protocol integration](packages/mix_protocol/GUIDE.md),
-  [protocol publishing](guides/publishing_mix_protocol.md).
+  [first Protocol release](guides/publishing_mix_protocol.md).
 
 ## Contribute
 
 Read [AGENTS.md](AGENTS.md) for setup, commands, generated-file rules and
 verification. Dependencies are bootstrapped with Melos.
-See [Releasing packages](guides/publishing.md) for the release process.
+See [Releasing packages](RELEASING.md) for the release process.
 The [website source](https://github.com/btwld/mix-docs) lives separately.
 
 The [Mix agent skill](skills/mix/SKILL.md) includes portable API references.
